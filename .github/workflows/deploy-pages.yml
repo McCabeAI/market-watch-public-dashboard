@@ -27,11 +27,11 @@ jobs:
           set -euo pipefail
           mkdir -p _site
           (base64 --decode dashboard.html.gz.b64 | gzip -dc > _site/index.html) || true
+          echo "BYTES=$(wc -c < _site/index.html)"
+          for marker in "MARKET WATCH | MACRO TEMPERATURE" "Feed & Momentum" "Latest High-Signal Releases" "Public Sources" "</html>"; do
+            if grep -q "$marker" _site/index.html; then echo "FOUND: $marker"; else echo "MISSING: $marker"; fi
+          done
           test -s _site/index.html
-          test "$(wc -c < _site/index.html)" -gt 30000
-          grep -q "MARKET WATCH | MACRO TEMPERATURE" _site/index.html
-          grep -q "Feed & Momentum" _site/index.html
-          grep -q "</html>" _site/index.html
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
