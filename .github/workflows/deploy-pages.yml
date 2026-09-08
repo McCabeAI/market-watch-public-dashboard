@@ -26,21 +26,17 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p _site
-          cat payload_v6/part*.b64 > /tmp/dashboard.b64
-          test "$(wc -c < /tmp/dashboard.b64)" -eq 41912
-          base64 --decode /tmp/dashboard.b64 > /tmp/dashboard.html.gz
-          test "$(wc -c < /tmp/dashboard.html.gz)" -eq 31432
-          gzip -t /tmp/dashboard.html.gz
-          gzip -dc /tmp/dashboard.html.gz > _site/index.html
-          test "$(wc -c < _site/index.html)" -eq 134496
-          echo "2c68341978db2ccc8efdd8f1af7bee4e105c89427f741bb10e7747cb98dde917  _site/index.html" | sha256sum -c -
-          grep -Fq 'Market Watch | Public Macro Temperature Dashboard v6' _site/index.html
-          grep -Fq 'Market News · 7-day window' _site/index.html
-          grep -Fq 'Central Bank Research · 30-day window' _site/index.html
-          grep -Fq 'Saudi energy attacks send Brent to $97.92' _site/index.html
-          grep -Fq 'RBNZ confirms the 25bp OCR hike to 2.75%' _site/index.html
-          grep -Fq 'X Signal' _site/index.html
-          grep -Fq '</html>' _site/index.html
+          test "$(wc -c < payload/v7/dashboard.html.gz)" -eq 33100
+          echo "309503e113b5c2568f7b911ac54e4a8d270d48b31b67933e540672100a289527  payload/v7/dashboard.html.gz" | sha256sum -c -
+          gzip -t payload/v7/dashboard.html.gz
+          gzip -dc payload/v7/dashboard.html.gz > _site/index.html
+          test "$(wc -c < _site/index.html)" -eq 141174
+          echo "c0c7e973e23b04ada07baac7636fa4fb0e424c0e0d5def2e4ff5305f718f7952  _site/index.html" | sha256sum -c -
+          grep -q "Last 24 Hours · Desk Summary" _site/index.html
+          grep -q "Top Market Drivers" _site/index.html
+          grep -q "X Signal · public posts" _site/index.html
+          grep -q "Central-bank Research" _site/index.html
+          test "$(grep -o 'class=\"last24-item\"' _site/index.html | wc -l)" -eq 6
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
