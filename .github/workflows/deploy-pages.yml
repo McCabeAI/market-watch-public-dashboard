@@ -34,8 +34,8 @@ jobs:
           echo "c0c7e973e23b04ada07baac7636fa4fb0e424c0e0d5def2e4ff5305f718f7952  _site/index.html" | sha256sum -c -
           grep -q "Last 24 Hours · Desk Summary" _site/index.html
           grep -q "Top Market Drivers" _site/index.html
-          grep -q "X Signal · public posts" _site/index.html
-          grep -q "Central-bank Research" _site/index.html
+          grep -q "X Signal" _site/index.html
+          grep -q "Central Bank Research · 30-day window" _site/index.html
           test "$(grep -o 'class=\"last24-item\"' _site/index.html | wc -l)" -eq 6
 
       - name: Configure Pages
