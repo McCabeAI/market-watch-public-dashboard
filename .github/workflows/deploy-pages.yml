@@ -21,15 +21,38 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Build and validate static site
+      - name: Rebuild v6 base
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p _site
-          test "$(wc -c < payload/v7/dashboard.html.gz)" -eq 33100
-          echo "309503e113b5c2568f7b911ac54e4a8d270d48b31b67933e540672100a289527  payload/v7/dashboard.html.gz" | sha256sum -c -
-          gzip -t payload/v7/dashboard.html.gz
-          gzip -dc payload/v7/dashboard.html.gz > _site/index.html
+          cat payload_v6/part*.b64 > /tmp/v6.b64
+          test "$(wc -c < /tmp/v6.b64)" -eq 41912
+          base64 --decode /tmp/v6.b64 > /tmp/v6.html.gz
+          gzip -t /tmp/v6.html.gz
+          gzip -dc /tmp/v6.html.gz > /tmp/v6.html
+          test "$(wc -c < /tmp/v6.html)" -eq 134496
+          echo "2c68341978db2ccc8efdd8f1af7bee4e105c89427f741bb10e7747cb98dde917  /tmp/v6.html" | sha256sum -c -
+
+      - name: Apply last-24-hours patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat patch_v7/last24_*.html > /tmp/last24.html
+          python - <<'PY'
+          from pathlib import Path
+          base = Path('/tmp/v6.html').read_text()
+          css = Path('patch_v7/last24.css').read_text()
+          html = Path('/tmp/last24.html').read_text()
+          anchor = '<div class="stitle">Top Market Drivers</div>'
+          if '.last24{' in base or 'Last 24 Hours · Desk Summary' in base:
+              raise SystemExit('v6 base already contains v7 patch')
+          if base.count('</style>') < 1 or base.count(anchor) != 1:
+              raise SystemExit('v6 patch anchors changed')
+          out = base.replace('</style>', css + '\n</style>', 1)
+          out = out.replace(anchor, '\n' + html + anchor, 1)
+          Path('_site/index.html').write_text(out)
+          PY
           test "$(wc -c < _site/index.html)" -eq 141174
           echo "c0c7e973e23b04ada07baac7636fa4fb0e424c0e0d5def2e4ff5305f718f7952  _site/index.html" | sha256sum -c -
 
