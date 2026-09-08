@@ -26,14 +26,12 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p _site
-          set +e
-          base64 --decode dashboard.html.gz.b64 | gzip -dc > _site/index.html
-          gzip_status=$?
-          set -e
+          (base64 --decode dashboard.html.gz.b64 | gzip -dc > _site/index.html) || true
           test -s _site/index.html
+          test "$(wc -c < _site/index.html)" -gt 30000
           grep -q "MARKET WATCH | MACRO TEMPERATURE" _site/index.html
+          grep -q "Feed & Momentum" _site/index.html
           grep -q "</html>" _site/index.html
-          echo "gzip exit status: $gzip_status (non-zero is tolerated only because the stored payload has a trailer checksum mismatch; HTML integrity checks above must pass)"
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
