@@ -21,17 +21,26 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Build static site
+      - name: Build and validate static site
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p _site
-          (base64 --decode dashboard.html.gz.b64 | gzip -dc > _site/index.html) || true
-          echo "BYTES=$(wc -c < _site/index.html)"
-          for marker in "MARKET WATCH | MACRO TEMPERATURE" "Feed & Momentum" "Latest High-Signal Releases" "Public Sources" "</html>"; do
-            if grep -q "$marker" _site/index.html; then echo "FOUND: $marker"; else echo "MISSING: $marker"; fi
-          done
-          test -s _site/index.html
+          cat payload/part*.b64 > /tmp/dashboard.b64
+          test "$(wc -c < /tmp/dashboard.b64)" -eq 33344
+          base64 --decode /tmp/dashboard.b64 > /tmp/dashboard.html.gz
+          gzip -t /tmp/dashboard.html.gz
+          gzip -dc /tmp/dashboard.html.gz > _site/index.html
+          test "$(wc -c < _site/index.html)" -eq 108092
+          echo "4f0b7ea4c13c762c564c8203d1421c6e110ac3536d7ffc5bd27df5532f638676  _site/index.html" | sha256sum -c -
+          grep -q "Market Watch | Public Macro Temperature Dashboard v5" _site/index.html
+          grep -q "News &amp; Central Bank Research" _site/index.html
+          grep -q "27 new central-bank items" _site/index.html
+          grep -q '<div class="news-count">73</div>' _site/index.html
+          grep -q "How Do Market Expectations React to the FOMC Dot Plot" _site/index.html
+          grep -q "Exchange Rate Transmission through Multinational Firms" _site/index.html
+          grep -q "Public Sources" _site/index.html
+          grep -q "</html>" _site/index.html
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
