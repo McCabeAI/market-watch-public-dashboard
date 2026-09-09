@@ -53,8 +53,11 @@ def main() -> None:
     assert "Cursor must not:" in protocol
     assert "Cursor Cloud" in protocol
     assert DRIVE_FOLDER_ID in protocol
-    assert "trader-room/outbox/<run_id>.md" in protocol
     assert "must not require Kevin to open a computer" in protocol
+    assert "public `market-watch-public-dashboard` repository" in protocol
+    assert "Google Drive is the only normal handoff" in protocol
+    assert "fail closed" in protocol
+    assert "trader-room/outbox" not in protocol
 
     command = (ROOT / ".cursor" / "commands" / "trader-room.md").read_text(encoding="utf-8")
     assert "all 14 standing advocates concurrently" in command
@@ -62,8 +65,10 @@ def main() -> None:
     assert "STATUS: AWAITING_CHATGPT_ARBITRATION" in command
     assert "Cursor Cloud" in command
     assert DRIVE_FOLDER_ID in command
-    assert "trader-room/outbox/<run_id>.md" in command
+    assert "public GitHub repository" in command
     assert "Do not require a local checkout, local terminal, or local Cursor session" in command
+    assert "trader-room/outbox" not in command
+    assert "GITHUB_HANDOFF" not in command
 
     mcp_path = ROOT / ".cursor" / "mcp.json"
     config = json.loads(mcp_path.read_text(encoding="utf-8"))
@@ -75,7 +80,7 @@ def main() -> None:
 
     print(
         "Trader Room configuration validated: 14 Grok 4.6 agents, read-only Supabase, "
-        "Cursor Cloud execution, and Google Drive arbiter handoff."
+        "Cursor Cloud execution, and private Google Drive-only arbiter handoff."
     )
 
 if __name__ == "__main__":
