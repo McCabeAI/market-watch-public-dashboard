@@ -6,6 +6,8 @@ Trader Room turns Market Watch evidence into adversarial FX trade proposals. Cur
 
 The design objective is productive disagreement. Agents should expose different priors, different preferred expressions, and different reasons a trade can fail. Consensus is not a success condition.
 
+The normal execution environment is Cursor Cloud, not a local workstation. A Trader Room run must not require Kevin to open a computer, pull a repository, or run terminal commands.
+
 ## Standing floor
 
 The standing archetypes are:
@@ -25,9 +27,20 @@ The standing archetypes are:
 13. `vol-convexity`
 14. `no-trade-skeptic`
 
-All standing advocates use Cursor Grok 4.6. They are read-only and run in isolated contexts. They are biased by design. Their bias changes what they search for and how they frame a trade; it does not lower the evidence standard.
+All standing advocates use Cursor Grok 4.6 standard. They are read-only and run in isolated contexts. They are biased by design. Their bias changes what they search for and how they frame a trade; it does not lower the evidence standard.
 
 Specialists such as commodities/terms-of-trade, balance of payments, fiscal, China, microstructure/execution, or country specialists are not permanent seats yet. Add or summon them only when repeated use proves they are needed.
+
+## Cloud execution and triggers
+
+Ordinary run surfaces are:
+
+1. Kevin launches `/trader-room ...` from Cursor for iOS or Cursor Web.
+2. Cursor Automation runs the Trader Room workflow from an intentionally configured cloud schedule or supported private trigger.
+
+Do not require Cursor Desktop or a local terminal for ordinary Trader Room operation.
+
+Do not use issues, comments, branches, commits, workflow artifacts, or other surfaces in the public `market-watch-public-dashboard` repository to transport private Trader Room prompts, hypotheses, agent contributions, rebuttals, or arbiter packets.
 
 ## Evidence contract
 
@@ -38,7 +51,7 @@ The parent agent should populate the packet from the best currently available so
 - Market Watch Supabase operational state, through the project-scoped read-only MCP connection;
 - repository technical/research context that is relevant to interpretation;
 - current official/public sources and web research for facts that require freshness;
-- any private research/methodology that is actually accessible in the current Cursor session;
+- any private research/methodology that is actually accessible in the current Cursor Cloud session;
 - user-supplied prices, positions, constraints or hypotheses.
 
 Do not claim access to a source that is not connected. Paid/private research is a first-class input only when its lawful source material or retained synthesis is actually available.
@@ -169,7 +182,7 @@ Round 2 output:
 
 ## Cursor stop line
 
-Cursor must stop after assembling the arbiter packet.
+Cursor must stop after assembling and delivering the arbiter packet.
 
 Cursor must not:
 - choose the winning trade;
@@ -184,7 +197,7 @@ Those are arbiter functions and belong to ChatGPT in the Trader Room.
 
 ## Arbiter packet
 
-Return one final Markdown response containing:
+Build one Markdown packet containing:
 
 1. run ID and as-of time;
 2. source coverage and material gaps;
@@ -199,9 +212,26 @@ Return one final Markdown response containing:
 
 Do not append a recommendation after that marker.
 
+## Handoff and storage
+
+Google Drive is the only normal handoff for unarbitrated Trader Room content. The canonical landing folder is:
+
+- `Market Watch/Trader Room`
+- Drive folder ID: `1NS6Qb6vNGKM18_PW0zPl4NOIJZOLyfUD`
+
+Before starting a full debate, the parent agent must confirm the Cursor Google Drive plugin is authorized and can write to that folder. If it cannot, fail before spending the full 14-agent run.
+
+Create one UTF-8 Markdown file named `Trader Room Arbiter Packet - <run_id>.md` containing the complete arbiter packet. Verify the created file before reporting success.
+
+Google Drive owns the unarbitrated debate packet as research evidence. Do not copy the same packet into Notion, Supabase, or the public GitHub repository merely for convenience.
+
+If the Drive write fails after one retry, fail closed. Keep the packet only inside the active Cloud Agent session and report the access/write failure. Do not commit, push, publish, or otherwise expose the packet through the public repository.
+
+ChatGPT can read the latest packet from Drive and arbitrate it without Kevin moving files manually.
+
 ## ChatGPT arbitration
 
-When the packet is brought to the Market Watch Trader Room, ChatGPT is expected to:
+When the packet is available in the Market Watch Trader Room, ChatGPT is expected to:
 - verify time-sensitive facts again where material;
 - identify which disagreements are factual versus judgmental;
 - test the strongest case on each side;
@@ -215,6 +245,8 @@ Cursor advocacy is input to the decision, not the decision itself.
 
 - Advocates are read-only.
 - Supabase MCP is project-scoped to `market-watch-dev` and read-only.
+- The Google Drive plugin may write only the arbiter handoff file for an ordinary debate run; it must not reorganize or delete Drive content.
+- Private Trader Room payloads must never be written to the public dashboard repository.
 - Do not put service-role keys, database passwords, paid-research credentials or other secrets in the repo or prompts.
 - Do not write Trader Room tables to Supabase until a real persistence workflow and a least-privilege writer exist.
 - Do not republish paywalled source text. Use lawful retained summaries/methodology and provenance.
