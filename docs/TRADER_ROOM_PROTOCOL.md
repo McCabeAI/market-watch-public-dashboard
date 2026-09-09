@@ -33,15 +33,14 @@ Specialists such as commodities/terms-of-trade, balance of payments, fiscal, Chi
 
 ## Cloud execution and triggers
 
-Preferred run surfaces, in order of convenience:
+Ordinary run surfaces are:
 
-1. ChatGPT creates a GitHub issue/comment containing `@cursor` plus the Trader Room instruction when the Cursor GitHub integration is active.
-2. Kevin launches `/trader-room ...` from Cursor for iOS or Cursor Web.
-3. Cursor Automation runs the command from a schedule, webhook, GitHub event, or another supported trigger when a recurring workflow is intentionally configured.
+1. Kevin launches `/trader-room ...` from Cursor for iOS or Cursor Web.
+2. Cursor Automation runs the Trader Room workflow from an intentionally configured cloud schedule or supported private trigger.
 
 Do not require Cursor Desktop or a local terminal for ordinary Trader Room operation.
 
-The GitHub trigger is only transport. It does not make GitHub the research system of record and it does not give Cursor arbitration authority.
+Do not use issues, comments, branches, commits, workflow artifacts, or other surfaces in the public `market-watch-public-dashboard` repository to transport private Trader Room prompts, hypotheses, agent contributions, rebuttals, or arbiter packets.
 
 ## Evidence contract
 
@@ -215,16 +214,18 @@ Do not append a recommendation after that marker.
 
 ## Handoff and storage
 
-Primary handoff is Google Drive. The canonical landing folder is:
+Google Drive is the only normal handoff for unarbitrated Trader Room content. The canonical landing folder is:
 
 - `Market Watch/Trader Room`
 - Drive folder ID: `1NS6Qb6vNGKM18_PW0zPl4NOIJZOLyfUD`
 
-When the Cursor Google Drive plugin is available, create one UTF-8 Markdown file named `Trader Room Arbiter Packet - <run_id>.md` containing the complete arbiter packet. Verify the created file before reporting success.
+Before starting a full debate, the parent agent must confirm the Cursor Google Drive plugin is authorized and can write to that folder. If it cannot, fail before spending the full 14-agent run.
 
-Google Drive owns the unarbitrated debate packet as research evidence. Do not copy the same packet into Notion or Supabase merely for convenience.
+Create one UTF-8 Markdown file named `Trader Room Arbiter Packet - <run_id>.md` containing the complete arbiter packet. Verify the created file before reporting success.
 
-If Google Drive is unavailable, the fail-safe handoff is `trader-room/outbox/<run_id>.md` on the active Cursor Cloud branch. Commit and push only that handoff artifact and report the branch, commit, and path. The fail-safe copy is temporary transport and should not become a second canonical archive.
+Google Drive owns the unarbitrated debate packet as research evidence. Do not copy the same packet into Notion, Supabase, or the public GitHub repository merely for convenience.
+
+If the Drive write fails after one retry, fail closed. Keep the packet only inside the active Cloud Agent session and report the access/write failure. Do not commit, push, publish, or otherwise expose the packet through the public repository.
 
 ChatGPT can read the latest packet from Drive and arbitrate it without Kevin moving files manually.
 
@@ -245,6 +246,7 @@ Cursor advocacy is input to the decision, not the decision itself.
 - Advocates are read-only.
 - Supabase MCP is project-scoped to `market-watch-dev` and read-only.
 - The Google Drive plugin may write only the arbiter handoff file for an ordinary debate run; it must not reorganize or delete Drive content.
+- Private Trader Room payloads must never be written to the public dashboard repository.
 - Do not put service-role keys, database passwords, paid-research credentials or other secrets in the repo or prompts.
 - Do not write Trader Room tables to Supabase until a real persistence workflow and a least-privilege writer exist.
 - Do not republish paywalled source text. Use lawful retained summaries/methodology and provenance.
