@@ -58,7 +58,8 @@ jobs:
           test "$news_count" -ge 1
           test "$news_count" -le 6
           grep -Fq 'Last 24 Hours · Desk Summary' _site/index.html
-          grep -Fq 'Last refreshed 9 Sep 2026' _site/index.html
+          grep -Fq 'class="last24-window"' _site/index.html
+          grep -Fq 'Last refreshed' _site/index.html
 
       - name: Restore 1-100 temperature input scores
         shell: bash
@@ -126,7 +127,7 @@ jobs:
           test "$(grep -o '/100' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
           test "$(grep -o 'Temperature Inputs · 1–100' _site/index.html | wc -l | tr -d '[:space:]')" -eq 4
           grep -Fq '<title>Market Watch | Public Macro Temperature Dashboard v8</title>' _site/index.html
-          grep -Fq 'Last refreshed 9 Sep 2026' _site/index.html
+          grep -Fq 'Last refreshed' _site/index.html
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
