@@ -1,4 +1,4 @@
-Run a full Market Watch Trader Room debate.
+Run a full Market Watch Trader Room debate in Cursor Cloud.
 
 Read `docs/TRADER_ROOM_PROTOCOL.md` first and follow it exactly. This command is advocacy/orchestration only. You are not the arbiter. ChatGPT in the Market Watch Trader Room is the sole arbiter.
 
@@ -8,10 +8,10 @@ Execution:
 
 1. Preflight.
    - Confirm all 14 standing subagents listed in the protocol are available.
-   - Confirm the `market-watch-supabase` MCP server is available. It is intentionally project-scoped and read-only.
-   - If MCP authentication is required, stop and report only the exact authentication blocker. Do not degrade silently to invented or stale database state.
+   - Confirm the Market Watch Supabase MCP connection is available and read-only. If the cloud environment exposes the project-scoped connection under a different tool name, use that connection rather than inventing a replacement.
+   - Confirm whether the Cursor Google Drive plugin is available. Primary handoff destination is Google Drive folder `Market Watch/Trader Room`, folder ID `1NS6Qb6vNGKM18_PW0zPl4NOIJZOLyfUD`.
    - Record the current UTC cutoff.
-   - Identify which other lawful research sources are actually available in this session. Never claim access that you do not have.
+   - Identify which lawful research sources are actually available in this cloud session. Never claim access that you do not have.
 
 2. Build one common evidence packet.
    - Query the relevant Market Watch Supabase operational state and provenance.
@@ -46,12 +46,17 @@ Execution:
    - Validate each output against `TRADER_ROOM_REBUTTAL`.
    - One retry maximum for malformed output.
 
-7. Return the arbiter packet exactly as specified in the protocol.
-   - Include the source coverage and known gaps.
-   - Include all 14 Round 1 contributions.
-   - Include the conflict map and any Round 2 rebuttals.
-   - Do not choose a winner.
-   - End with exactly:
-     `STATUS: AWAITING_CHATGPT_ARBITRATION`
+7. Assemble and hand off the arbiter packet.
+   - Build the exact Markdown arbiter packet specified in the protocol.
+   - End the packet itself with exactly `STATUS: AWAITING_CHATGPT_ARBITRATION`.
+   - Primary transport: create one UTF-8 Markdown file in Google Drive folder ID `1NS6Qb6vNGKM18_PW0zPl4NOIJZOLyfUD` named `Trader Room Arbiter Packet - <run_id>.md`. Write the complete packet verbatim. Read the created file back or verify its metadata/content before claiming success.
+   - If Google Drive is unavailable or the write fails after one retry, use the fail-safe transport: write only the packet to `trader-room/outbox/<run_id>.md`, commit that single handoff artifact, and push the current cloud branch. Do not modify any other repository file during the debate run.
+   - Never create an official trade-decision record. The packet is unarbitrated input only.
 
-Do not edit repository files, mutate Supabase, open PRs, or commit anything during a debate run.
+8. Return only a handoff receipt.
+   - State the run ID.
+   - State `DRIVE_HANDOFF: <Drive file URL>` if the primary transport succeeded, otherwise `GITHUB_HANDOFF: <branch> <commit> <path>`.
+   - State any hard evidence-access failures.
+   - End with exactly `STATUS: AWAITING_CHATGPT_ARBITRATION`.
+
+This workflow is designed to run entirely in Cursor Cloud/Automations. Do not require a local checkout, local terminal, or local Cursor session.
