@@ -8,6 +8,7 @@ on:
       - 'scripts/sal_market_data.py'
       - 'scripts/run_sal_market_data.py'
       - 'tests/test_sal_market_data.py'
+      - 'tests/test_sal_twelvedata_fx.py'
       - 'requirements-sal.txt'
       - 'patch_v10/**'
       - '.github/workflows/validate-sal-market-data.yml'
@@ -28,7 +29,19 @@ jobs:
         run: python -m pip install -r requirements-sal.txt
       - name: Unit tests
         run: PYTHONPATH=. python -m unittest discover -s tests -v
-      - name: Live official-source smoke test
+      - name: Require direct FX feed secret
+        env:
+          TWELVE_DATA_API_KEY: ${{ secrets.TWELVE_DATA_API_KEY }}
+        run: |
+          if [ -z "$TWELVE_DATA_API_KEY" ]; then
+            echo 'TWELVE_DATA_API_KEY repository secret is required for live direct-pair FX validation.' >&2
+            exit 2
+          fi
+      - name: Live source smoke test
+        env:
+          TWELVE_DATA_API_KEY: ${{ secrets.TWELVE_DATA_API_KEY }}
+          TWELVE_DATA_BATCH_SIZE: '8'
+          TWELVE_DATA_BATCH_DELAY_SECONDS: '61'
         run: |
           mkdir -p /tmp/sal
           PYTHONPATH=. python scripts/run_sal_market_data.py --output /tmp/sal/state.json --html /tmp/sal/market.html
@@ -38,14 +51,21 @@ jobs:
           s = json.loads(Path('/tmp/sal/state.json').read_text())
           assert s['method']['model_calls'] == 0
           assert s['method']['fx_pair_count'] == 45
+          assert s['method']['fx_cross_construction'] is False
+          assert s['method']['fx_source'] == 'twelve_data_direct_composite'
           assert s['method']['rate_rv_count'] == 15
           assert set(s['rates']) == {'US','CA','AU','NZ'}
+          assert len(s['fx']['pairs']) == 45
+          assert 'AUDNZD' in s['fx']['pairs']
+          assert 'NOKSEK' in s['fx']['pairs']
           assert Path('/tmp/sal/market.html').stat().st_size > 1000
+          assert 'No synthetic crosses are constructed by Sal.' in Path('/tmp/sal/market.html').read_text()
           print({
               'fx_as_of': s['fx']['source_observation'],
               'rate_as_of': {k:v['latest_observation'] for k,v in s['rates'].items()},
               'fx_pairs': len(s['fx']['pairs']),
               'rate_rv': len(s['rate_rv']),
+              'fx_source': s['method']['fx_source'],
           })
           PY
       - name: Upload validation snapshot
