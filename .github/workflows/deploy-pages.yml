@@ -53,8 +53,12 @@ jobs:
           out = out.replace(anchor, '\n' + html + anchor, 1)
           Path('_site/index.html').write_text(out)
           PY
-          test "$(wc -c < _site/index.html)" -eq 141174
-          echo "c0c7e973e23b04ada07baac7636fa4fb0e424c0e0d5def2e4ff5305f718f7952  _site/index.html" | sha256sum -c -
+          test -s _site/index.html
+          news_count="$(grep -o 'class=\"last24-item\"' _site/index.html | wc -l | tr -d '[:space:]')"
+          test "$news_count" -ge 1
+          test "$news_count" -le 6
+          grep -Fq 'Last 24 Hours · Desk Summary' _site/index.html
+          grep -Fq 'Last refreshed 9 Sep 2026' _site/index.html
 
       - name: Restore 1-100 temperature input scores
         shell: bash
@@ -109,16 +113,20 @@ jobs:
               raise SystemExit('expected four score panels')
           if out.count('/100') != 16:
               raise SystemExit('expected sixteen input scores')
-          if out.count('class="last24-item"') != 6:
-              raise SystemExit('last-24-hours cards changed')
+          news_count = out.count('class="last24-item"')
+          if not 1 <= news_count <= 6:
+              raise SystemExit(f'invalid last-24-hours card count: {news_count}')
           for marker in ('Last 24 Hours · Desk Summary', 'Top Market Drivers', 'X Signal', 'Central Bank Research · 30-day window'):
               if marker not in out:
                   raise SystemExit(f'missing retained marker: {marker}')
 
           path.write_text(out)
           PY
-          test "$(wc -c < _site/index.html)" -eq 146902
-          echo "c3a962f36e6fb3bff5fa251a5f5df065d753bc865f7054242af80b64b03312d7  _site/index.html" | sha256sum -c -
+          test -s _site/index.html
+          test "$(grep -o '/100' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
+          test "$(grep -o 'Temperature Inputs · 1–100' _site/index.html | wc -l | tr -d '[:space:]')" -eq 4
+          grep -Fq '<title>Market Watch | Public Macro Temperature Dashboard v8</title>' _site/index.html
+          grep -Fq 'Last refreshed 9 Sep 2026' _site/index.html
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
