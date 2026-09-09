@@ -41,7 +41,7 @@ def main() -> None:
         missing = REQUIRED_FIELDS - set(fm)
         assert not missing, f"{name}: missing frontmatter fields {sorted(missing)}"
         assert fm["name"] == name, f"{name}: frontmatter name mismatch"
-        assert fm["model"] == "grok-4.6", f"{name}: wrong model {fm['model']}"
+        assert fm["model"] == "grok-4.6[]", f"{name}: wrong model {fm['model']}"
         assert fm["readonly"] == "true", f"{name}: must be readonly"
         assert fm["is_background"] == "true", f"{name}: must run in background"
     protocol = (ROOT / "docs" / "TRADER_ROOM_PROTOCOL.md").read_text(encoding="utf-8")

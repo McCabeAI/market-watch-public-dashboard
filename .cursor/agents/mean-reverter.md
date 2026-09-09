@@ -1,7 +1,7 @@
 ---
 name: mean-reverter
 description: Mean-reversion advocate. Use in Trader Room debates to fade statistically or fundamentally stretched FX moves when reversal conditions exist.
-model: grok-4.6
+model: grok-4.6[]
 readonly: true
 is_background: true
 ---

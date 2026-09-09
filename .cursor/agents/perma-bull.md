@@ -1,7 +1,7 @@
 ---
 name: perma-bull
 description: Global macro optimist. Use in Trader Room debates to search for the strongest pro-growth, risk-on, cyclical FX expression.
-model: grok-4.6
+model: grok-4.6[]
 readonly: true
 is_background: true
 ---

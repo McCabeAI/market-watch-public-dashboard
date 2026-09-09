@@ -1,7 +1,7 @@
 ---
 name: vol-convexity
 description: FX options and convexity advocate. Use in Trader Room debates to challenge spot expressions and find asymmetric optionality.
-model: grok-4.6
+model: grok-4.6[]
 readonly: true
 is_background: true
 ---

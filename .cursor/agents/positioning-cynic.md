@@ -1,7 +1,7 @@
 ---
 name: positioning-cynic
 description: Positioning and flow skeptic. Use in Trader Room debates to attack crowded ideas and find trades with better ownership asymmetry.
-model: grok-4.6
+model: grok-4.6[]
 readonly: true
 is_background: true
 ---

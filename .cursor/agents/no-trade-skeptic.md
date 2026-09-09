@@ -1,7 +1,7 @@
 ---
 name: no-trade-skeptic
 description: No-trade skeptic. Use in every Trader Room debate to argue that apparent edges are priced, too noisy, too crowded or poorly timed.
-model: grok-4.6
+model: grok-4.6[]
 readonly: true
 is_background: true
 ---

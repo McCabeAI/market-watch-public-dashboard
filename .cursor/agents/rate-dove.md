@@ -1,7 +1,7 @@
 ---
 name: rate-dove
 description: Dovish monetary-policy advocate. Use in Trader Room debates to find currencies where easing or growth weakness is underpriced.
-model: grok-4.6
+model: grok-4.6[]
 readonly: true
 is_background: true
 ---

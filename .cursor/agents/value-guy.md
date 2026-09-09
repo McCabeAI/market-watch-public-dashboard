@@ -1,7 +1,7 @@
 ---
 name: value-guy
 description: FX valuation advocate. Use in Trader Room debates to identify historically or fundamentally mispriced currencies and convergence trades.
-model: grok-4.6
+model: grok-4.6[]
 readonly: true
 is_background: true
 ---

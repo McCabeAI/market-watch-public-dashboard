@@ -1,7 +1,7 @@
 ---
 name: carry-is-king
 description: Carry-first FX advocate. Use in Trader Room debates to favor positive carry and patient expressions unless a catalyst overwhelms it.
-model: grok-4.6
+model: grok-4.6[]
 readonly: true
 is_background: true
 ---

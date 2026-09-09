@@ -1,7 +1,7 @@
 ---
 name: trend-follower
 description: Momentum and trend advocate. Use in Trader Room debates to favor persistent price and macro trends and reject premature fades.
-model: grok-4.6
+model: grok-4.6[]
 readonly: true
 is_background: true
 ---

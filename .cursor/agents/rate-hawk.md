@@ -1,7 +1,7 @@
 ---
 name: rate-hawk
 description: Hawkish monetary-policy advocate. Use in Trader Room debates to find currencies where inflation and policy risks are underpriced to the upside.
-model: grok-4.6
+model: grok-4.6[]
 readonly: true
 is_background: true
 ---

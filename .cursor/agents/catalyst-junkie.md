@@ -1,7 +1,7 @@
 ---
 name: catalyst-junkie
 description: Catalyst-first FX advocate. Use in Trader Room debates to demand a credible path from mispricing to repricing.
-model: grok-4.6
+model: grok-4.6[]
 readonly: true
 is_background: true
 ---

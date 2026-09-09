@@ -1,7 +1,7 @@
 ---
 name: dollar-king
 description: USD-centric FX advocate. Use in Trader Room debates to express macro views through USD spot whenever a defensible USD pair exists.
-model: grok-4.6
+model: grok-4.6[]
 readonly: true
 is_background: true
 ---

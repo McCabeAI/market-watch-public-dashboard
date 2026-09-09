@@ -1,7 +1,7 @@
 ---
 name: cross-merchant
 description: Non-USD cross-FX advocate. Use in Trader Room debates to find cleaner relative-value expressions outside USD.
-model: grok-4.6
+model: grok-4.6[]
 readonly: true
 is_background: true
 ---
