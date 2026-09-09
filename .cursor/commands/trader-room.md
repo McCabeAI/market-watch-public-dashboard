@@ -9,7 +9,8 @@ Execution:
 1. Preflight.
    - Confirm all 14 standing subagents listed in the protocol are available.
    - Confirm the Market Watch Supabase MCP connection is available and read-only. If the cloud environment exposes the project-scoped connection under a different tool name, use that connection rather than inventing a replacement.
-   - Confirm whether the Cursor Google Drive plugin is available. Primary handoff destination is Google Drive folder `Market Watch/Trader Room`, folder ID `1NS6Qb6vNGKM18_PW0zPl4NOIJZOLyfUD`.
+   - Confirm the Cursor Google Drive plugin is available and can write to Google Drive folder `Market Watch/Trader Room`, folder ID `1NS6Qb6vNGKM18_PW0zPl4NOIJZOLyfUD`.
+   - If Google Drive is not authorized or writable, stop before running the debate and report the exact authorization/access blocker. Do not use the public GitHub repository as a fallback for private Trader Room content.
    - Record the current UTC cutoff.
    - Identify which lawful research sources are actually available in this cloud session. Never claim access that you do not have.
 
@@ -49,13 +50,15 @@ Execution:
 7. Assemble and hand off the arbiter packet.
    - Build the exact Markdown arbiter packet specified in the protocol.
    - End the packet itself with exactly `STATUS: AWAITING_CHATGPT_ARBITRATION`.
-   - Primary transport: create one UTF-8 Markdown file in Google Drive folder ID `1NS6Qb6vNGKM18_PW0zPl4NOIJZOLyfUD` named `Trader Room Arbiter Packet - <run_id>.md`. Write the complete packet verbatim. Read the created file back or verify its metadata/content before claiming success.
-   - If Google Drive is unavailable or the write fails after one retry, use the fail-safe transport: write only the packet to `trader-room/outbox/<run_id>.md`, commit that single handoff artifact, and push the current cloud branch. Do not modify any other repository file during the debate run.
+   - Create one UTF-8 Markdown file in Google Drive folder ID `1NS6Qb6vNGKM18_PW0zPl4NOIJZOLyfUD` named `Trader Room Arbiter Packet - <run_id>.md`.
+   - Write the complete packet verbatim.
+   - Read the created file back or verify its metadata/content before claiming success.
+   - If the Drive write fails, retry once. If it still fails, return a hard failure and preserve the packet only in the active Cloud Agent session. Do not commit, push, publish, or place the packet in the public repository.
    - Never create an official trade-decision record. The packet is unarbitrated input only.
 
 8. Return only a handoff receipt.
    - State the run ID.
-   - State `DRIVE_HANDOFF: <Drive file URL>` if the primary transport succeeded, otherwise `GITHUB_HANDOFF: <branch> <commit> <path>`.
+   - State `DRIVE_HANDOFF: <Drive file URL>` when the write and verification succeeded.
    - State any hard evidence-access failures.
    - End with exactly `STATUS: AWAITING_CHATGPT_ARBITRATION`.
 
