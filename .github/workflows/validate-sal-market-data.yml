@@ -6,6 +6,7 @@ on:
   pull_request:
     paths:
       - 'scripts/sal_market_data.py'
+      - 'scripts/run_sal_market_data.py'
       - 'tests/test_sal_market_data.py'
       - 'requirements-sal.txt'
       - 'patch_v10/**'
@@ -30,7 +31,7 @@ jobs:
       - name: Live official-source smoke test
         run: |
           mkdir -p /tmp/sal
-          python scripts/sal_market_data.py --output /tmp/sal/state.json --html /tmp/sal/market.html
+          PYTHONPATH=. python scripts/run_sal_market_data.py --output /tmp/sal/state.json --html /tmp/sal/market.html
           python - <<'PY'
           import json
           from pathlib import Path
