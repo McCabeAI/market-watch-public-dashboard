@@ -27,22 +27,69 @@ The default is incremental refresh, not reconstruction. No new observation means
 
 ## 3. News refresh
 
+The news desk is a sparse trader feed, not a general G10 or macro-news digest. Its purpose is to surface developments that can plausibly change the USD/CAD/AUD/NZD rates or FX view.
+
+### Coverage hierarchy
+
+**Tier 1 — core universe**
+
+- United States / USD
+- Canada / CAD
+- Australia / AUD
+- New Zealand / NZD
+- Fed, BoC, RBA and RBNZ policy expectations
+
+**Tier 2 — spillover universe**
+
+China, euro area, United Kingdom, Japan, Switzerland, Norway, Sweden, global rates, commodities / energy, trade policy and geopolitics are eligible only when there is a direct and material transmission channel into the Tier 1 universe or broad G10 rates pricing.
+
+Do not scan Tier 2 as a standalone world-news feed.
+
+### Admission gate
+
+Adopt an item only when at least one of the following is true:
+
+1. It materially changes or could immediately reprice the expected path of the Fed, BoC, RBA or RBNZ, or creates a material global-rates spillover into those curves.
+2. It materially changes the inflation, labor, growth, fiscal or trade outlook for the United States, Canada, Australia or New Zealand.
+3. It is a China, commodity or energy development with a direct terms-of-trade, growth, inflation or risk channel for CAD, AUD or NZD.
+4. It is a geopolitical development with an observable or credible near-term transmission channel through rates, oil / gas, trade, funding or risk premia.
+5. It is a market-structure, liquidity or financial-stability event that is already affecting or is credibly capable of affecting G10 FX / rates price formation.
+
+Exclude:
+
+- generic equity-market or cross-asset recaps
+- single-company news unless systemically or commodity relevant
+- domestic politics without a concrete macro, fiscal, trade or policy channel
+- routine central-bank speeches that repeat the known reaction function
+- opinion, forecasts or strategist commentary presented as news
+- speculative geopolitical developments without a defined market transmission channel
+- repeated coverage of an event already represented in the feed
+- stories included merely because they are recent or mention a G10 economy
+
+### Ranking rule
+
+Score every candidate before adoption:
+
+- direct Tier 1 FX / rates relevance: `0–3`
+- novelty versus current dashboard state: `0–2`
+- strength of market / macro transmission channel: `0–3`
+- verification / source quality: `0–2`
+
+A normal news item must score at least `6/10` and at least `2/3` on direct Tier 1 relevance. A Top Market Driver should normally score at least `8/10`.
+
+If an item does not clear the gate, omit it. Do not lower the threshold to fill space.
+
 ### Last 24 Hours
 
 Use an exact rolling one-day window ending at the run cutoff.
 
-Search current official/public sources and established financial/mainstream reporting for material developments relevant to G10 FX and rates, with priority on:
+Hard cap: **6 items**. Fewer is better when fewer qualify.
 
-- United States
-- Canada
-- Australia
-- New Zealand
-- global rates / central-bank repricing
-- commodities and energy
-- fiscal / trade policy
-- geopolitics with a credible macro or market transmission channel
+Prefer sources in this order:
 
-Prefer first-party sources when available. Reuters and other established financial/mainstream reporting may be used for timely confirmed developments.
+1. first-party official source
+2. Reuters for timely confirmed reporting and market context
+3. another established financial publication only when it adds a material fact or confirmation not available from the first two
 
 Each adopted item must preserve:
 
@@ -52,8 +99,9 @@ Each adopted item must preserve:
 - country / region
 - primary and secondary category
 - verification state
+- admission score and qualifying gate
 - factual summary
-- separate market read
+- separate concise market read
 - provenance / corroboration where relevant
 
 Verification states remain:
@@ -67,11 +115,13 @@ Do not present `unverified` material as established fact.
 
 ### Top Market Drivers
 
-Select only the small subset most likely to affect price formation, policy expectations, growth / inflation trajectories, risk premia or cross-asset transmission.
+Hard cap: **3 items**.
+
+Select only the highest-ranked developments most likely to change price formation, policy expectations, growth / inflation trajectories, risk premia or cross-asset transmission for the Tier 1 universe. Do not promote an item merely because it was widely reported.
 
 ### 7-Day Quick Digest
 
-Maintain a rolling seven-day set of material developments. Remove items that age out. Do not duplicate the same event merely because several outlets repeated it.
+Maintain a rolling seven-day set of at most **12 distinct events** that still matter to the current USD/CAD/AUD/NZD macro / rates setup. Remove items that age out or have ceased to matter even if they are still inside seven days. Do not duplicate the same event merely because several outlets repeated it.
 
 ## 4. Central-bank research refresh
 
@@ -106,7 +156,7 @@ A research paper, staff paper or speech is evidence about analysis / communicati
 
 ## 5. X Signal
 
-X is supplemental.
+X is supplemental and must obey the same Tier 1 / spillover admission gate as the news desk. Do not use X as a separate broad discovery feed.
 
 When the personalized X source universe is populated in Supabase, use accounts classified as Market Watch sources as a preferred discovery seed. Until then, use publicly discoverable official and high-quality media X posts only.
 
@@ -116,7 +166,7 @@ Evidence levels must remain distinct:
 - media X post: media-social signal
 - individual commentator X post: individual-social signal
 
-Corroborate material media/commentator claims before promoting them to confirmed news.
+Corroborate material media/commentator claims before promoting them to confirmed news. If the underlying development would not qualify for the news desk, do not promote it merely because it appeared on X.
 
 ## 6. Quick macro data scope
 
