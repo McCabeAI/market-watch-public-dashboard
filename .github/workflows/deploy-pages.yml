@@ -56,6 +56,70 @@ jobs:
           test "$(wc -c < _site/index.html)" -eq 141174
           echo "c0c7e973e23b04ada07baac7636fa4fb0e424c0e0d5def2e4ff5305f718f7952  _site/index.html" | sha256sum -c -
 
+      - name: Restore 1-100 temperature input scores
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('_site/index.html')
+          base = path.read_text()
+          css = Path('patch_v8/temp_scores.css').read_text()
+          blocks = {
+              'us': Path('patch_v8/us.html').read_text(),
+              'ca': Path('patch_v8/ca.html').read_text(),
+              'au': Path('patch_v8/au.html').read_text(),
+              'nz': Path('patch_v8/nz.html').read_text(),
+          }
+          anchors = {
+              'us': '<div class="kpis"><div class="kpi"><div class="name">Core PCE</div><div class="num">3.3%</div></div><div class="kpi"><div class="name">Core CPI</div><div class="num">2.5%</div></div><div class="kpi"><div class="name">Payrolls</div><div class="num">+162k</div></div><div class="kpi"><div class="name">Unemployment</div><div class="num">4.1%</div></div></div>',
+              'ca': '<div class="kpis"><div class="kpi"><div class="name">CPI trim</div><div class="num">1.9%</div></div><div class="kpi"><div class="name">CPI median</div><div class="num">2.0%</div></div><div class="kpi"><div class="name">Employment</div><div class="num">-42k</div></div><div class="kpi"><div class="name">Unemployment</div><div class="num">6.4%</div></div></div>',
+              'au': '<div class="kpis"><div class="kpi"><div class="name">Headline CPI</div><div class="num">3.5%</div></div><div class="kpi"><div class="name">Trimmed CPI</div><div class="num">3.6%</div></div><div class="kpi"><div class="name">Unemployment</div><div class="num">4.5%</div></div><div class="kpi"><div class="name">Q2 GDP</div><div class="num">+0.4%</div></div></div>',
+              'nz': '<div class="kpis"><div class="kpi"><div class="name">Headline CPI</div><div class="num">4.1%</div></div><div class="kpi"><div class="name">CPI ex fuel</div><div class="num">2.9%</div></div><div class="kpi"><div class="name">Unemployment</div><div class="num">5.6%</div></div><div class="kpi"><div class="name">OCR</div><div class="num">2.75%</div></div></div>',
+          }
+          old_method = 'State: Cold / Cool / Neutral / Warm / Hot. Direction: Cooling / Static / Warming. Direction carries more weight. Consumer capacity—jobs, wages, inflation and purchasing power—is the first-order lens. Prototype labels are not the canonical project baselines.'
+          new_method = 'State: Cold / Cool / Neutral / Warm / Hot. The restored 1–100 interface scores map 1–20 Cold, 21–40 Cool, 41–60 Neutral, 61–80 Warm and 81–100 Hot across Inflation, Labor, Activity and Consumer inputs. Direction: Cooling / Static / Warming and carries more trading weight. The numeric scores and labels are prototype presentation, not canonical project baselines.'
+
+          if '.temp-inputs{' in base or 'Temperature Inputs · 1–100' in base:
+              raise SystemExit('v7 base already contains v8 score patch')
+          if base.count('</style>') < 1:
+              raise SystemExit('style anchor missing')
+          for name, anchor in anchors.items():
+              if base.count(anchor) != 1:
+                  raise SystemExit(f'{name} KPI anchor changed')
+          if base.count(old_method) != 1:
+              raise SystemExit('temperature-method anchor changed')
+          if base.count('<title>Market Watch | Public Macro Temperature Dashboard v6</title>') != 1:
+              raise SystemExit('title anchor changed')
+          old_footer = 'Market Watch public-data prototype v3 · no Bloomberg dependency · no proprietary office data'
+          if base.count(old_footer) != 1:
+              raise SystemExit('footer anchor changed')
+
+          out = base.replace('</style>', css + '\n</style>', 1)
+          for name, anchor in anchors.items():
+              out = out.replace(anchor, anchor + '\n' + blocks[name], 1)
+          out = out.replace('<title>Market Watch | Public Macro Temperature Dashboard v6</title>',
+                            '<title>Market Watch | Public Macro Temperature Dashboard v8</title>', 1)
+          out = out.replace(old_method, new_method, 1)
+          out = out.replace(old_footer,
+                            'Market Watch public-data prototype v8 · no Bloomberg dependency · no proprietary office data', 1)
+
+          if out.count('Temperature Inputs · 1–100') != 4:
+              raise SystemExit('expected four score panels')
+          if out.count('/100') != 16:
+              raise SystemExit('expected sixteen input scores')
+          if out.count('class="last24-item"') != 6:
+              raise SystemExit('last-24-hours cards changed')
+          for marker in ('Last 24 Hours · Desk Summary', 'Top Market Drivers', 'X Signal', 'Central Bank Research · 30-day window'):
+              if marker not in out:
+                  raise SystemExit(f'missing retained marker: {marker}')
+
+          path.write_text(out)
+          PY
+          test "$(wc -c < _site/index.html)" -eq 146902
+          echo "c3a962f36e6fb3bff5fa251a5f5df065d753bc865f7054242af80b64b03312d7  _site/index.html" | sha256sum -c -
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
