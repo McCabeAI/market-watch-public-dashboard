@@ -266,13 +266,21 @@ Base release adjustment:
 
 Large, unambiguous shocks may use `+6` or `-6`, but only when the underlying release is genuinely exceptional. Do not use the extreme bucket merely because a headline is surprising.
 
-When several new inputs hit the same dimension on one refresh, combine their weighted evidence but cap the net daily dimension move at `+8` / `-8`.
+For each dimension, calculate the refresh move across the full fixed component set:
+
+`raw dimension move = Σ(component weight × component impulse)`
+
+A component that did not release or revise on that refresh has an impulse of `0`. Its weight is not reassigned to components that did release. Missing or inaccessible expected inputs also do not transfer their weight to other components; they reduce coverage instead.
+
+Cap the net daily dimension move at `+8` / `-8`.
+
+Example: if payroll growth alone is clearly stronger (`+4`) while unemployment and wages have no new observation, the Labor move is `35% × 4 = +1.4`, not `+4`.
 
 Do not move a score because of market price action, news commentary or a model opinion. Only the defined macro inputs can move these four data scores.
 
 ### Simple within-dimension weights
 
-Use these default V0 weights when multiple current quick inputs are available. Renormalize across the inputs actually present; do not invent a missing component.
+Use these fixed V0 weights. Do not renormalize them because of release timing, stale data, or missing inputs.
 
 **Inflation**
 - core / trimmed / preferred underlying inflation: 60%
@@ -292,11 +300,9 @@ Use these default V0 weights when multiple current quick inputs are available. R
 - household income / real purchasing power measure: 30%
 - confidence / household-finance / credit-stress indicator already present in the quick dashboard set: 30%
 
-If only one or two current quick inputs exist for a dimension, renormalize weights across those observed inputs and lower confidence / coverage accordingly.
-
 ### Coverage rule
 
-Store / report which inputs were available for each score update.
+Store / report which inputs were available for each score update. Coverage affects confidence and whether a move is permitted; it never changes the fixed component weights.
 
 - 100% expected inputs present: normal
 - 67–99%: usable but flag reduced coverage
