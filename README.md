@@ -2,7 +2,7 @@
 
 Public dashboard and operational data layer for Market Watch.
 
-- Live dashboard: https://kevinnmccabe-pc.github.io/market-watch-public-dashboard/
+- Live dashboard: https://mccabeai.github.io/market-watch-public-dashboard/
 - Canonical technical runbook: [`docs/OPERATING_ARCHITECTURE.md`](docs/OPERATING_ARCHITECTURE.md)
 - Active light daily refresh specification: [`docs/DAILY_REFRESH_V0.md`](docs/DAILY_REFRESH_V0.md)
 - Supabase schema migrations: [`supabase/migrations/`](supabase/migrations/)
