@@ -37,7 +37,7 @@ Repository: `McCabeAI/market-watch-public-dashboard`
 
 Permanent public URL:
 
-`https://kevinnmccabe-pc.github.io/market-watch-public-dashboard/`
+`https://mccabeai.github.io/market-watch-public-dashboard/`
 
 Current deploy path:
 
