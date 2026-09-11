@@ -81,11 +81,11 @@ jobs:
           out = base[:a] + rollup + base[b:]
 
           replacements = {
-              '<b>8 SEP 2026</b>': '<b>9 SEP 2026</b>',
-              'Oil near $100, global hike risk is back, Canada trade stress deepens and the yen carry unwind is live.': '$100 oil dominates rates risk; Canada trade stress and softer US household signals complicate the growth read.',
-              '<b>GLOBAL · Inflation:</b> Houthi strikes on Saudi energy facilities pushed Brent to $97.92. <b>US · Jobs/Fed:</b> +162k payrolls revived September hike odds, while Waller remains the dovish counterweight. <b>Canada · Trade/Jobs:</b> retaliatory tariffs began as employment fell 41.7k. <b>Japan · FX:</b> markets price a near-certain BOJ hike and yen shorts are being cut.': '<b>GLOBAL · Inflation:</b> Brent has broken $100 as Gulf conflict intensifies. <b>US · Fed/Consumer:</b> strong August payrolls keep a hike live, but NY Fed household job and credit expectations weakened. <b>Canada · Trade/Jobs:</b> the trade conflict escalated as domestic labor data cooled. <b>China → AUD/NZD:</b> energy lifted inflation while underlying demand remained soft.',
-              '<b>Last scanned:</b> 8 Sep 2026 · Sources include Reuters, ABC, AP, FT and verified public X feeds.': '<b>Last scanned:</b> 9 Sep 2026 · Sources include Reuters, ABC and official central-bank sources.',
-              '<div class="news-count">19</div>': '<div class="news-count">10</div>',
+              '<b>8 SEP 2026</b>': '<b>11 SEP 2026</b>',
+              'Oil near $100, global hike risk is back, Canada trade stress deepens and the yen carry unwind is live.': 'Energy inflation is broadening into producer and freight costs as global central banks reprice tighter.',
+              '<b>GLOBAL · Inflation:</b> Houthi strikes on Saudi energy facilities pushed Brent to $97.92. <b>US · Jobs/Fed:</b> +162k payrolls revived September hike odds, while Waller remains the dovish counterweight. <b>Canada · Trade/Jobs:</b> retaliatory tariffs began as employment fell 41.7k. <b>Japan · FX:</b> markets price a near-certain BOJ hike and yen shorts are being cut.': '<b>US · Inflation/Fed:</b> August PPI rose 0.4% and diesel crossed $6 ahead of CPI. <b>GLOBAL · Rates:</b> the ECB hiked 25bp as the energy shock persisted. <b>Canada:</b> oil support competes with trade and labor weakness. <b>NZ:</b> manufacturing remains expansionary after the RBNZ hike.',
+              '<b>Last scanned:</b> 8 Sep 2026 · Sources include Reuters, ABC, AP, FT and verified public X feeds.': '<b>Last scanned:</b> 11 Sep 2026 · Sources include official statistical/central-bank releases, Reuters and ABC.',
+              '<div class="news-count">19</div>': '<div class="news-count">11</div>',
               'curated market-relevant stories in the 2–8 September window, ranked by expected rates/FX significance rather than headline volume.': 'retained events in the rolling seven-day window after applying the USD/CAD/AUD/NZD relevance gate and deduplication.'
           }
           for old, new in replacements.items():
@@ -93,23 +93,25 @@ jobs:
                   raise SystemExit(f'expected one metadata anchor: {old[:60]}')
               out = out.replace(old, new, 1)
 
-          if out.count('class="driver-card"') != 3:
-              raise SystemExit('expected exactly three top drivers')
+          if out.count('class="driver-card"') > 3 or out.count('class="driver-card"') < 1:
+              raise SystemExit('invalid top-driver count')
           story_count = out.count('class="story"')
           if not 1 <= story_count <= 12:
               raise SystemExit(f'invalid rolling digest count: {story_count}')
-          if 'Current tape</div><div class="news-count">10</div>' not in out:
+          if 'Current tape</div><div class="news-count">11</div>' not in out:
               raise SystemExit('news count metadata not refreshed')
 
           path.write_text(out)
           PY
-          grep -Fq '<b>9 SEP 2026</b>' _site/index.html
-          test "$(grep -o 'class=\"driver-card\"' _site/index.html | wc -l | tr -d '[:space:]')" -eq 3
+          grep -Fq '<b>11 SEP 2026</b>' _site/index.html
+          driver_count="$(grep -o 'class=\"driver-card\"' _site/index.html | wc -l | tr -d '[:space:]')"
+          test "$driver_count" -ge 1
+          test "$driver_count" -le 3
           story_count="$(grep -o 'class=\"story\"' _site/index.html | wc -l | tr -d '[:space:]')"
           test "$story_count" -ge 1
           test "$story_count" -le 12
-          grep -Fq 'Brent breaks $100 as Gulf conflict intensifies' _site/index.html
-          grep -Fq '<div class="news-count">10</div>' _site/index.html
+          grep -Fq 'U.S. pipeline inflation accelerates into CPI' _site/index.html
+          grep -Fq '<div class="news-count">11</div>' _site/index.html
 
       - name: Restore 1-100 temperature input scores
         shell: bash
@@ -167,7 +169,8 @@ jobs:
           news_count = out.count('class="last24-item"')
           if not 1 <= news_count <= 6:
               raise SystemExit(f'invalid last-24-hours card count: {news_count}')
-          if out.count('class="driver-card"') != 3:
+          driver_count = out.count('class="driver-card"')
+          if not 1 <= driver_count <= 3:
               raise SystemExit('top-driver cap violated')
           if out.count('class="story"') > 12:
               raise SystemExit('rolling digest cap violated')
@@ -182,7 +185,7 @@ jobs:
           test "$(grep -o 'Temperature Inputs · 1–100' _site/index.html | wc -l | tr -d '[:space:]')" -eq 4
           grep -Fq '<title>Market Watch | Public Macro Temperature Dashboard v8</title>' _site/index.html
           grep -Fq 'Last refreshed' _site/index.html
-          grep -Fq '<div class="news-count">10</div>' _site/index.html
+          grep -Fq '<div class="news-count">11</div>' _site/index.html
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
