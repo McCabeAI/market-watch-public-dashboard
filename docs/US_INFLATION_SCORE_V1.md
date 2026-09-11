@@ -25,6 +25,12 @@ When a new Core PCE release arrives:
 
 The current anchor is the most recently verified Core PCE release.
 
+### V1 transition anchor
+
+V1 retains the recovered `72.0` US Inflation score as the transition anchor. Do not retroactively rebuild the entire 1–100 history merely to adopt this methodology. From V1 activation onward, the US Inflation score can move only from an actual Core PCE release or an eligible mapped CPI/PPI bridge input under this document.
+
+The anchor score is therefore a transition state, not a claim that `72.0` was historically derived from a Core-PCE-only backtest.
+
 ## 3. Interim CPI/PPI bridge
 
 Between Core PCE releases, update the score only from CPI/PPI components that are used to construct Core PCE.
@@ -110,13 +116,19 @@ Do not manufacture historical comparability across methodology breaks. Do not sh
 
 This presentation standard follows the Market Watch empirical workflow: establish the macro trajectory, compare current readings with their own history and suitable analogues, identify discrepancies, and keep the factual data layer separate from the trading conclusion.
 
-## 8. Current PPI handling
+## 8. Current August 2026 PPI bridge
 
 The August 2026 PPI release is a material US inflation release and belongs on the US country page.
 
 The headline final-demand PPI (`+0.4% m/m`, `+5.4% y/y`) does **not** directly change the Core PCE score. Energy drove much of the headline increase and Core PCE excludes energy.
 
-The PPI release's PCE-relevant detailed components are bridge candidates only after the BEA Core PCE source mapping and current expenditure-share weights are applied. Until that component bridge is established, preserve the Core PCE anchor score rather than assigning an invented aggregate PPI weight.
+The current evidence file is `data/us_core_pce_ppi_bridge_2026-08.csv`. Using BEA source mapping and Q2 2026 current-dollar PCE expenditure shares:
+
+- clean PPI-sourced categories identified in the current Core PCE basket total about `21.7%` of Core PCE;
+- about `95%` of that mapped PPI weight has an observed August source move in the current bridge;
+- the observed mapped subset contributes roughly `+0.07pp` to monthly Core PCE inflation in August versus roughly `+0.08pp` in July.
+
+That PPI-linked subset is economically unchanged to slightly cooler versus July, despite the hot headline PPI. Under the current temperature-impulse framework, the PPI bridge therefore does not move the transition score from `72.0`. August CPI remains pending; its eligible mapped Core PCE components should be added when released, without double counting categories already controlled by PPI source mapping.
 
 Official methodology references:
 
