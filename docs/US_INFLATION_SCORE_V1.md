@@ -31,7 +31,30 @@ V1 retains the recovered `72.0` US Inflation score as the transition anchor. Do 
 
 The anchor score is therefore a transition state, not a claim that `72.0` was historically derived from a Core-PCE-only backtest.
 
-## 3. Interim CPI/PPI bridge
+## 3. Core PCE trend lens
+
+The primary trend lens for actual Core PCE is the **seasonally adjusted month-over-month Core PCE rate annualized**, not the year-over-year rate.
+
+Show, when the official data permit:
+
+- latest 1-month annualized Core PCE;
+- rolling 3-month annualized Core PCE;
+- rolling 6-month annualized Core PCE;
+- year-over-year Core PCE as secondary context.
+
+For monthly Core PCE change `m` as a decimal:
+
+`1m annualized = ((1 + m)^12 - 1) × 100`
+
+For an N-month window:
+
+`N-month annualized = ((Π(1 + m_i))^(12/N) - 1) × 100`
+
+Use compounding, not `m × 12`, as the preferred calculation. Prefer BEA index levels or sufficiently precise official monthly data. If the calculation uses rounded published monthly percentage changes, label the resulting annualized rate as approximate.
+
+The year-over-year rate remains useful for persistence and public communication, but it is not the primary indicator of the current run rate on the country page.
+
+## 4. Interim CPI/PPI bridge
 
 Between Core PCE releases, update the score only from CPI/PPI components that are used to construct Core PCE.
 
@@ -54,7 +77,7 @@ Then:
 
 Use the latest available expenditure shares. Do **not** impose a permanent fixed CPI/PPI split: PCE is Fisher chain-weighted and the relative weights change over time.
 
-## 4. Component rules
+## 5. Component rules
 
 - Only use a CPI/PPI series when BEA documentation maps that source to the relevant PCE category.
 - If a PCE category uses a mixed source, apply only the documented source-linked portion when it can be established. Otherwise treat the release as context-only until the mapping is resolved.
@@ -63,7 +86,7 @@ Use the latest available expenditure shares. Do **not** impose a permanent fixed
 - A headline CPI or PPI surprise can be important market information and should appear on the country page, but it receives no direct score weight merely because the headline moved.
 - Missing or unavailable bridge inputs receive zero interim impulse. Their weights are not reassigned.
 
-## 5. Temperature impulse
+## 6. Temperature impulse
 
 Use the existing release impulse scale at the mapped component level:
 
@@ -80,23 +103,25 @@ Component weights always apply. Example: a clearly hotter component with a 7% Co
 
 Carry fractional score changes internally and display at least one decimal place when a bridge adjustment is active.
 
-## 6. Score lineage displayed on the country page
+## 7. Score lineage displayed on the country page
 
-The US country page must make the score auditable. Inflation should show:
+The US country page must make the score auditable under `docs/COUNTRY_SCORE_EVIDENCE_V1.md`. Inflation should show:
 
-- Core PCE anchor period and value
-- anchor score
-- current CPI/PPI bridge adjustment
-- provisional score after the bridge
-- bridge coverage / unresolved mappings when relevant
+- Core PCE anchor period and actual m/m value;
+- 1m / 3m / 6m annualized Core PCE trend where available;
+- year-over-year Core PCE as secondary context;
+- anchor score;
+- current CPI/PPI bridge adjustment;
+- provisional score after the bridge;
+- bridge coverage / unresolved mappings when relevant.
 
-Example presentation:
+Example score lineage:
 
 `Core PCE anchor 72.0 + interim CPI/PPI bridge +0.6 = 72.6`
 
 Do not imply precision when bridge coverage is incomplete.
 
-## 7. Country-page data standard
+## 8. Country-page data standard
 
 A release can matter without changing a score. Important US data must still be visible on the US country page and retained as a time series.
 
@@ -116,9 +141,9 @@ Do not manufacture historical comparability across methodology breaks. Do not sh
 
 This presentation standard follows the Market Watch empirical workflow: establish the macro trajectory, compare current readings with their own history and suitable analogues, identify discrepancies, and keep the factual data layer separate from the trading conclusion.
 
-## 8. Current August 2026 PPI bridge
+## 9. Current August 2026 PPI bridge
 
-The August 2026 PPI release is a material US inflation release and belongs on the US country page.
+The August 2026 PPI release is a material US inflation release and belongs inside the expandable US Inflation evidence.
 
 The headline final-demand PPI (`+0.4% m/m`, `+5.4% y/y`) does **not** directly change the Core PCE score. Energy drove much of the headline increase and Core PCE excludes energy.
 
