@@ -292,7 +292,7 @@ A component that did not release or revise on that refresh has an impulse of `0`
 
 Cap the net daily dimension move at `+8` / `-8`.
 
-Example: if payroll growth alone is clearly stronger (`+4`) while unemployment and wages have no new observation, the Labor move is `35% × 4 = +1.4`, not `+4`.
+Example: if payroll / employment growth alone is clearly stronger (`+4`) while unemployment and wages have no new observation, the Labor move is `10% × 4 = +0.4`, not `+4`. If unemployment alone is clearly cooler / looser (`-4`), its Labor contribution is `70% × -4 = -2.8`.
 
 Do not move a score because of market price action, news commentary or a model opinion. Only the defined macro inputs can move these four data scores.
 
@@ -310,10 +310,12 @@ Use these fixed V0 weights. Do not renormalize them because of release timing, s
 - Between Core PCE releases, CPI/PPI can move the score only through BEA-mapped Core PCE source components at their current Core PCE expenditure-share weights.
 - Headline CPI/PPI receive no standalone score weight; missing bridge weights are not renormalized.
 
-**Labor**
-- employment / payroll growth: 35%
-- unemployment rate: 35%
-- wage growth: 30%
+**Labor — all four economies**
+- `docs/LABOR_SCORE_V1.md` is the governing cross-country Labor methodology.
+- unemployment rate: 70%
+- wage / earnings growth: 20%
+- employment / payroll growth: 10%
+- private payroll estimates, vacancies/JOLTS, claims, survey employment, participation, employment-to-population, population/migration context and payroll revisions are important contextual evidence but receive no additional independent score weight.
 
 **Activity**
 - GDP / domestic-demand measure: 60%
