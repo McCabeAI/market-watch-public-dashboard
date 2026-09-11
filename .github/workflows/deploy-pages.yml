@@ -156,6 +156,13 @@ jobs:
           out = base.replace('</style>', css + '\n</style>', 1)
           for name, anchor in anchors.items():
               out = out.replace(anchor, anchor + '\n' + blocks[name], 1)
+
+          old_nz_kpi = '<div class="name">CPI ex fuel</div><div class="num">2.9%</div>'
+          new_nz_kpi = '<div class="name">CPI ex food/energy/fuel</div><div class="num">2.5%</div>'
+          if out.count(old_nz_kpi) != 1:
+              raise SystemExit('NZ CPI KPI correction anchor changed')
+          out = out.replace(old_nz_kpi, new_nz_kpi, 1)
+
           out = out.replace('<title>Market Watch | Public Macro Temperature Dashboard v6</title>',
                             '<title>Market Watch | Public Macro Temperature Dashboard v8</title>', 1)
           out = out.replace(old_method, new_method, 1)
@@ -166,6 +173,10 @@ jobs:
               raise SystemExit('expected four score panels')
           if out.count('/100') != 16:
               raise SystemExit('expected sixteen input scores')
+          if out.count('class="temp-dimension score-detail"') != 16:
+              raise SystemExit('expected sixteen expandable score controls')
+          if out.count('Hard score inputs') != 16 or out.count('Context / corroboration') != 16:
+              raise SystemExit('expected hard-input and context layers for every score')
           news_count = out.count('class="last24-item"')
           if not 1 <= news_count <= 6:
               raise SystemExit(f'invalid last-24-hours card count: {news_count}')
@@ -183,6 +194,13 @@ jobs:
           test -s _site/index.html
           test "$(grep -o '/100' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
           test "$(grep -o 'Temperature Inputs · 1–100' _site/index.html | wc -l | tr -d '[:space:]')" -eq 4
+          test "$(grep -o 'class=\"temp-dimension score-detail\"' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
+          test "$(grep -o 'Hard score inputs' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
+          test "$(grep -o 'Context / corroboration' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
+          grep -Fq '1m annualized</span><b>≈2.4%' _site/index.html
+          grep -Fq 'JOLTS openings' _site/index.html
+          grep -Fq 'ADP private payrolls' _site/index.html
+          grep -Fq 'CPI ex food/energy/fuel</div><div class="num">2.5%' _site/index.html
           grep -Fq '<title>Market Watch | Public Macro Temperature Dashboard v8</title>' _site/index.html
           grep -Fq 'Last refreshed' _site/index.html
           grep -Fq '<div class="news-count">11</div>' _site/index.html
