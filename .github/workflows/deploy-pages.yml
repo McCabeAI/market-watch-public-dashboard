@@ -175,8 +175,8 @@ jobs:
               raise SystemExit('expected sixteen input scores')
           if out.count('class="temp-dimension score-detail"') != 16:
               raise SystemExit('expected sixteen expandable score controls')
-          if out.count('Hard score inputs') != 16 or out.count('Context / corroboration') != 16:
-              raise SystemExit('expected hard-input and context layers for every score')
+          if out.count('Hard score inputs') != 16 or out.count('class="evidence-block context"') != 16:
+              raise SystemExit('expected hard-input and context evidence blocks for every score')
           news_count = out.count('class="last24-item"')
           if not 1 <= news_count <= 6:
               raise SystemExit(f'invalid last-24-hours card count: {news_count}')
@@ -196,10 +196,14 @@ jobs:
           test "$(grep -o 'Temperature Inputs · 1–100' _site/index.html | wc -l | tr -d '[:space:]')" -eq 4
           test "$(grep -o 'class=\"temp-dimension score-detail\"' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
           test "$(grep -o 'Hard score inputs' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
-          test "$(grep -o 'Context / corroboration' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
+          test "$(grep -o 'class=\"evidence-block context\"' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
           grep -Fq '1m annualized</span><b>≈2.4%' _site/index.html
           grep -Fq 'JOLTS openings' _site/index.html
           grep -Fq 'ADP private payrolls' _site/index.html
+          grep -Fq 'ISM Services PMI' _site/index.html
+          grep -Fq 'Ivey PMI' _site/index.html
+          grep -Fq 'Monthly household spending' _site/index.html
+          grep -Fq 'ANZ–Roy Morgan confidence' _site/index.html
           grep -Fq 'CPI ex food/energy/fuel</div><div class="num">2.5%' _site/index.html
           grep -Fq '<title>Market Watch | Public Macro Temperature Dashboard v8</title>' _site/index.html
           grep -Fq 'Last refreshed' _site/index.html
