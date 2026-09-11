@@ -33,7 +33,7 @@ Do not create a second canonical copy of any state without an explicit decision.
 
 ## 3. Public dashboard architecture
 
-Repository: `kevinnmccabe-PC/market-watch-public-dashboard`
+Repository: `McCabeAI/market-watch-public-dashboard`
 
 Permanent public URL:
 
