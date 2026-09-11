@@ -174,7 +174,8 @@ Refresh only the small current-state dataset already used by the dashboard. Do n
 
 ### United States
 
-- headline and core inflation measures currently shown
+- Core PCE as the authoritative Inflation-score target, with CPI/PPI interim bridge inputs handled only under `docs/US_INFLATION_SCORE_V1.md`
+- headline and core CPI/PPI measures that materially inform the inflation trajectory, even when they are not direct score inputs
 - employment / payroll growth
 - unemployment rate
 - wage growth
@@ -214,6 +215,23 @@ Refresh only the small current-state dataset already used by the dashboard. Do n
 Official statistical agencies and central banks are the preferred authorities for macro observations. Preserve period, release date, units and revisions when available.
 
 If a series has no new release, retain the last verified value and mark it unchanged.
+
+### Country-page data presentation
+
+A material macro release belongs on the relevant country page even when it does not change one of the four 1–100 scores. Do not hide a release merely because its score weight is zero.
+
+Retain material series as time series and, where the data support it, show:
+
+- latest and prior observations, reference period and release date;
+- short and medium rolling trend;
+- surprise versus a reliable consensus when available;
+- historical mean / median, range, percentile or z-score when the sample is structurally comparable;
+- relevant rolling annualized rates for inflation or growth series;
+- economically meaningful comparable-series, indexed or spread relationships when they test a real discrepancy;
+- score role: `DIRECT`, `BRIDGE`, or `CONTEXT ONLY`;
+- official source and revision state.
+
+Use these statistics to answer an economic question, not to decorate the page. Preserve methodology breaks and conflicting signals rather than forcing them into a single summary number.
 
 ## 7. Lightweight 1–100 scoring V0
 
@@ -282,9 +300,15 @@ Do not move a score because of market price action, news commentary or a model o
 
 Use these fixed V0 weights. Do not renormalize them because of release timing, stale data, or missing inputs.
 
-**Inflation**
+**Inflation — Canada / Australia / New Zealand**
 - core / trimmed / preferred underlying inflation: 60%
 - headline inflation: 40%
+
+**Inflation — United States exception**
+- `docs/US_INFLATION_SCORE_V1.md` overrides the generic V0 inflation weights for the United States.
+- The US Inflation score is a Core PCE score. Actual Core PCE is the authoritative target.
+- Between Core PCE releases, CPI/PPI can move the score only through BEA-mapped Core PCE source components at their current Core PCE expenditure-share weights.
+- Headline CPI/PPI receive no standalone score weight; missing bridge weights are not renormalized.
 
 **Labor**
 - employment / payroll growth: 35%
