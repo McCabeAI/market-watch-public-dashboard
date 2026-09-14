@@ -1,0 +1,137 @@
+{
+  "schema_version": 1,
+  "public_only": true,
+  "run": {
+    "run_kind": "news_refresh",
+    "window_start": "2026-09-13T10:50:00Z",
+    "window_end": "2026-09-14T10:50:00Z",
+    "requested_by": "market-watch-catch-up",
+    "source_scope": {
+      "scope": "USD/CAD/AUD/NZD V0 gated refresh",
+      "cutoff": "2026-09-14T10:50:00Z",
+      "mode": "catch-up-replay"
+    }
+  },
+  "items": [
+    {
+      "content_type": "news",
+      "headline": "Saudi pipeline outage threatens loss of 4% of global oil supply",
+      "summary": "Saudi Arabia's East-West pipeline remained shut after a drone attack, threatening a further major loss of global oil supply if the outage persists.",
+      "market_read": "Direct inflation and terms-of-trade shock: tighter G10 policy constraints and a CAD energy-income tailwind, without a clean risk-on signal.",
+      "published_at": "2026-09-13T12:04:04Z",
+      "observed_at": "2026-09-14T10:50:00Z",
+      "country_codes": ["SA", "US", "CA"],
+      "primary_category": "inflation",
+      "secondary_categories": ["energy", "commodities", "rates", "risk"],
+      "institution": null,
+      "author_or_account": null,
+      "source_name": "Reuters",
+      "canonical_url": "https://www.reuters.com/business/energy/saudi-pipeline-outage-threatens-loss-4-global-oil-supply-2026-09-13/",
+      "external_id": null,
+      "content_fingerprint": "mw_20260914_saudi_pipeline_4pct",
+      "verification_status": "single_source",
+      "market_impact": "high",
+      "is_top_driver": true,
+      "is_last24": true,
+      "is_active": true,
+      "raw_evidence_url": null,
+      "lineage": {
+        "admission_score": 10,
+        "qualifying_gate": "energy shock with direct inflation/rates/CAD transmission",
+        "refresh": "2026-09-14"
+      },
+      "evidence": [
+        {
+          "evidence_type": "media_report",
+          "source_name": "Reuters",
+          "source_url": "https://www.reuters.com/business/energy/saudi-pipeline-outage-threatens-loss-4-global-oil-supply-2026-09-13/",
+          "published_at": "2026-09-13T12:04:04Z",
+          "source_account": null,
+          "source_registry_ref": null,
+          "is_primary": true,
+          "notes": "Reuters source used for gated V0 catch-up refresh."
+        }
+      ]
+    },
+    {
+      "content_type": "news",
+      "headline": "Fed hike pricing hardens ahead of the September 15-16 meeting",
+      "summary": "Markets were heavily priced for a 25bp increase to a 3.75%-4.00% target range as elevated inflation and $100-plus oil reinforced the Fed's price-stability constraint.",
+      "market_read": "Material hawkish repricing of the near-term Fed path; this is an expectation rather than a policy decision.",
+      "published_at": "2026-09-14T10:02:50Z",
+      "observed_at": "2026-09-14T10:50:00Z",
+      "country_codes": ["US"],
+      "primary_category": "monetary_policy",
+      "secondary_categories": ["rates", "inflation", "fx"],
+      "institution": "Federal Reserve",
+      "author_or_account": null,
+      "source_name": "Reuters",
+      "canonical_url": "https://www.reuters.com/business/feds-table-is-set-rate-hike-first-under-warsh-2026-09-14/",
+      "external_id": null,
+      "content_fingerprint": "mw_20260914_fed_hike_pricing",
+      "verification_status": "single_source",
+      "market_impact": "high",
+      "is_top_driver": true,
+      "is_last24": true,
+      "is_active": true,
+      "raw_evidence_url": null,
+      "lineage": {
+        "admission_score": 10,
+        "qualifying_gate": "direct Fed-path repricing",
+        "refresh": "2026-09-14"
+      },
+      "evidence": [
+        {
+          "evidence_type": "media_report",
+          "source_name": "Reuters",
+          "source_url": "https://www.reuters.com/business/feds-table-is-set-rate-hike-first-under-warsh-2026-09-14/",
+          "published_at": "2026-09-14T10:02:50Z",
+          "source_account": null,
+          "source_registry_ref": null,
+          "is_primary": true,
+          "notes": "Reuters source used for gated V0 catch-up refresh."
+        }
+      ]
+    },
+    {
+      "content_type": "news",
+      "headline": "U.S. 10-year Treasury yield tests the 5% threshold",
+      "summary": "The 10-year Treasury yield reached 4.9915%, its highest in nearly three years, as oil and inflation concerns pushed the benchmark toward 5%.",
+      "market_read": "Observable tightening in the transmission channel, amplifying the Fed repricing and broadening the financial-conditions headwind.",
+      "published_at": "2026-09-14T10:28:27Z",
+      "observed_at": "2026-09-14T10:50:00Z",
+      "country_codes": ["US"],
+      "primary_category": "rates",
+      "secondary_categories": ["inflation", "financial_conditions", "risk"],
+      "institution": null,
+      "author_or_account": null,
+      "source_name": "Reuters",
+      "canonical_url": "https://www.reuters.com/markets/us/global-markets-technicals-graphic-2026-09-14/",
+      "external_id": null,
+      "content_fingerprint": "mw_20260914_ust10y_near5",
+      "verification_status": "single_source",
+      "market_impact": "high",
+      "is_top_driver": true,
+      "is_last24": true,
+      "is_active": true,
+      "raw_evidence_url": null,
+      "lineage": {
+        "admission_score": 8,
+        "qualifying_gate": "observable global-rates/financial-conditions transmission",
+        "refresh": "2026-09-14"
+      },
+      "evidence": [
+        {
+          "evidence_type": "media_report",
+          "source_name": "Reuters",
+          "source_url": "https://www.reuters.com/markets/us/global-markets-technicals-graphic-2026-09-14/",
+          "published_at": "2026-09-14T10:28:27Z",
+          "source_account": null,
+          "source_registry_ref": null,
+          "is_primary": true,
+          "notes": "Reuters source used for gated V0 catch-up refresh."
+        }
+      ]
+    }
+  ]
+}
