@@ -1,0 +1,58 @@
+name: Persist Market Watch Supabase Feed
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "ops/supabase/inbox/latest.json"
+  workflow_dispatch:
+    inputs:
+      payload:
+        description: "Repo-relative public feed payload path"
+        required: false
+        default: "ops/supabase/inbox/latest.json"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: market-watch-supabase-persist
+  cancel-in-progress: false
+
+jobs:
+  persist:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Require server-side database secret
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "${SUPABASE_DB_URL:-}" ]; then
+            echo "::error::Repository secret SUPABASE_DB_URL is not configured. Use the Supabase Postgres connection string for the private writer; do not expose it in files or chat."
+            exit 1
+          fi
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install pinned Postgres driver
+        shell: bash
+        run: python -m pip install --disable-pip-version-check "psycopg[binary]==3.2.10"
+
+      - name: Persist and verify public feed payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          payload="${{ github.event.inputs.payload }}"
+          if [ -z "$payload" ]; then
+            payload="ops/supabase/inbox/latest.json"
+          fi
+          python scripts/persist_market_watch.py "$payload"
