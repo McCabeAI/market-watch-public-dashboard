@@ -1,6 +1,6 @@
 # Market Watch — Operating Architecture and Data Pipeline
 
-Last updated: 2026-09-08
+Last updated: 2026-09-14
 
 This is the canonical technical runbook for the public Market Watch dashboard and its Supabase pilot. It records how the current system is built, what each storage layer owns, the data-source classes in use, the ingestion and verification rules, deployment mechanics, validation gates, and known gaps.
 
@@ -10,13 +10,17 @@ Notion remains the canonical home for durable operating decisions and research s
 
 The public dashboard is live on GitHub Pages. As of this document:
 
-- v6 provides the 7-day market-news layer, X signal, and 30-day central-bank research feed.
+- v6 provides the original 7-day market-news layer, X signal, and 30-day central-bank research feed.
 - v7 adds a Last 24 Hours desk summary above the weekly news layer.
-- the current news/research collections are curated snapshots, not yet automatically refreshed.
+- v8 restores the four 1–100 expandable temperature-input score drawers for each of the US, Canada, Australia and New Zealand.
+- v9 replaces the rolling Top Market Drivers and 7-Day Quick Digest with the current V0 trader-feed rollup.
+- v10 adds August 2026 CPI context and the explicit unresolved CPI-to-Core-PCE bridge lineage warning to the US Inflation drawer.
+- the Sep 14 completeness transform in `scripts/apply_v11_refresh.py` rolls the central-bank research window, refreshes X status and catalysts, updates the US Core CPI quick/feed state, and moves realized CPI/PPI releases into release history.
+- the light V0 refresh is scheduled externally at 04:00 America/New_York, but the repository still uses deterministic patch/transformation authoring rather than a native source-ingestion generator.
 - the Supabase pilot is active in project `market-watch-dev`, private schema `market_watch`.
-- Supabase currently stores normalized operational feed state and provenance; it is not the canonical raw-evidence archive or canonical macro time-series warehouse.
+- Supabase stores normalized operational feed state and provenance when persistence succeeds; it is not the canonical raw-evidence archive or canonical macro time-series warehouse.
 - X follow-list ingestion is prepared but waiting for Kevin's requested X data archive.
-- public dashboard temperature labels remain prototype/illustrative until the research architecture establishes canonical baselines.
+- public dashboard temperature labels remain prototype/derived V0 presentation and are not the governed Country Expert temperature model.
 
 ## 2. Source-of-truth ownership
 
@@ -43,18 +47,22 @@ Current deploy path:
 
 1. GitHub Actions triggers on every push to `main` or manual workflow dispatch.
 2. The workflow reconstructs the known-good v6 HTML from `payload_v6/part*.b64`.
-3. It verifies the v6 base by exact byte count and SHA-256.
-4. It applies the v7 Last 24 Hours CSS and HTML patches from `patch_v7/`.
-5. It verifies the final v7 HTML by exact byte count and SHA-256.
-6. Only then is `_site/index.html` uploaded as the GitHub Pages artifact.
-7. The deploy job publishes that artifact to GitHub Pages.
+3. It verifies the v6 base by exact byte count, gzip integrity and SHA-256.
+4. It applies the v7 Last 24 Hours CSS/HTML patch from `patch_v7/`.
+5. It applies the current v9 rolling news rollup from `patch_v9/news_rollup.html`.
+6. It restores the v8 country score drawers from `patch_v8/`, including deterministic checks for all 16 score controls and hard/context evidence blocks.
+7. It applies the v10 August CPI context patch to the US Inflation drawer.
+8. It runs `scripts/apply_v11_refresh.py` as a fail-closed completeness transform. The Sep 14 version asserts the strict 30-day central-bank research count/window, removes aged research and stale X/catalyst state, updates current US Core CPI quick/feed presentation, inserts realized August CPI/PPI rows, and verifies that all 16 expandable score controls and the US CPI bridge lineage warning remain present.
+9. Only after all deterministic content/count/anchor checks pass is `_site/index.html` uploaded as the GitHub Pages artifact.
+10. The deploy job publishes that artifact to GitHub Pages.
+11. The operational run must still verify the live deployed page; a green workflow alone is not completion.
 
-Current validation constants in `.github/workflows/deploy-pages.yml`:
+Current immutable base validation constants in `.github/workflows/deploy-pages.yml`:
 
 - v6 HTML bytes: `134496`
 - v6 SHA-256: `2c68341978db2ccc8efdd8f1af7bee4e105c89427f741bb10e7747cb98dde917`
-- v7 HTML bytes: `141174`
-- v7 SHA-256: `c0c7e973e23b04ada07baac7636fa4fb0e424c0e0d5def2e4ff5305f718f7952`
+
+Later patches are validated by deterministic anchor, semantic and count assertions rather than one final static artifact hash because the rolling V0 content changes between refreshes.
 
 The unusual base64/patched deployment exists because large binary/text transfer through the connector was unreliable during the build. It is a known-good recovery-safe path, not the desired long-run content-authoring method.
 
@@ -141,9 +149,9 @@ Current dashboard windows:
 - Last 24 Hours: rolling one-day desk summary.
 - 7-Day Quick Digest: material market-moving news from the previous week.
 - Central-Bank Research: strict rolling 30-day publication window.
-- `NEW` research designation: currently based on a recent-publication cutoff within that 30-day scan; this should become computed from refresh time when automation is built.
+- `NEW` research designation: based on recent publication within that rolling research window.
 
-A publication outside the stated window must be excluded even if analytically useful. Example from the build: the NY Fed tariff pass-through paper dated 2026-08-01 was removed from the strict Aug 10–Sep 8 30-day window.
+A publication outside the stated window must be excluded even if analytically useful. The Sep 14 refresh, for example, rolls the central-bank research window to Aug 16–Sep 14 and ages out Aug 10–14 publications rather than retaining them for analytical convenience.
 
 ## 7. Normalization and analytical rules
 
@@ -270,9 +278,9 @@ When Kevin uploads the X archive:
 
 Never replace the raw archive with the normalized database representation.
 
-## 12. Current manual refresh runbook
+## 12. Current manual/light-agent refresh runbook
 
-Until automated ingestion exists:
+The scheduled light V0 agent and any manual catch-up use the same incremental runbook:
 
 1. Define the exact time window.
 2. Search official sources, financial/mainstream media and public X for relevant developments.
@@ -282,18 +290,20 @@ Until automated ingestion exists:
 6. Assign country, primary category, secondary categories, verification state and market-impact rank.
 7. Write a concise factual summary and a separate market read.
 8. Preserve canonical URLs/provenance.
-9. Populate/update the relevant dashboard section.
-10. Write normalized operational rows to Supabase for the adopted feed workflow.
+9. Populate/update only the affected dashboard sections.
+10. Write normalized operational rows to Supabase for the adopted feed workflow. A required write failure makes the run partial and must be reported; it does not authorize silently skipping persistence.
 11. Run deterministic validation before deployment.
-12. Deploy through GitHub Actions only after the artifact hash/content gate passes.
+12. Deploy through GitHub Actions only after all content/count/anchor gates pass.
 13. Verify the actual deployed artifact when practical, not only the workflow status.
 14. Update the Notion Project State capsule only if project state materially changed.
 
-## 13. Planned automated refresh flow
+## 13. Planned native automated refresh flow
 
-Not implemented yet. The intended direction is:
+A repository-native source-ingestion/generation pipeline is not implemented yet. The intended direction is:
 
 source discovery -> fetch/normalize -> deduplicate -> classify -> corroborate/verify -> rank -> write Supabase operational state -> generate public read model -> build dashboard -> validate -> deploy
+
+The current 04:00 V0 task uses an external scheduled agent to execute the light runbook and update the deterministic patch chain; this is operational automation, but not yet a native data pipeline.
 
 Automation must preserve the same epistemic separation now enforced manually:
 
@@ -321,11 +331,12 @@ Deployment should fail closed.
 
 Current controls include:
 
-- exact payload/base byte counts;
-- gzip integrity checks where applicable;
-- exact SHA-256 checks for the reconstructed HTML;
-- explicit build failure when patch anchors are not unique or the v7 patch is already present;
-- GitHub Pages deploy only after the build job succeeds.
+- exact base payload byte count, gzip integrity and v6 SHA-256;
+- explicit build failure when patch anchors are missing, duplicated or already applied;
+- hard count gates for Last 24 Hours, Top Market Drivers, rolling digest, 16 score controls and hard/context evidence blocks;
+- v11 research-window/count, stale-content, release-history, catalyst and lineage assertions;
+- GitHub Pages deploy only after the build job succeeds;
+- live-page verification after deployment when practical.
 
 Database validation performed at pilot creation included:
 
@@ -343,7 +354,7 @@ Dashboard:
 
 - Git history is the rollback mechanism.
 - v6 payload remains in the repository as a known-good base.
-- v7 is applied as a small deterministic patch, so reverting the patch/build commit restores the previous known-good artifact.
+- v7/v8/v9/v10 and the v11 transform are deterministic layers over that base; reverting the relevant patch/build commits restores the previous known-good artifact.
 - never delete known-good payloads while a new content-generation path is still being proven.
 
 Supabase:
@@ -355,10 +366,11 @@ Supabase:
 
 ## 17. Known gaps / next work
 
-- News and central-bank feeds are still snapshots, not scheduled refreshes.
-- X Following personalization is waiting for the X archive.
+- The 04:00 light V0 refresh is scheduled, but source discovery, ingestion and read-model generation are still agent-driven rather than a native repository pipeline.
+- Sep 14 exposed a connector-side Supabase write block during the catch-up refresh; the live dashboard is current, but the missing Sep 14 normalized operational rows/provenance must be replayed once writes are available.
+- X Following personalization is waiting for the X archive; public-web X scanning is therefore explicitly bounded rather than a complete Following feed.
 - The public dashboard does not yet consume a narrow read model from Supabase.
-- The repo's current compressed-payload/patch authoring path is reliable but awkward; a normal source/generator pipeline should replace it once automation is built and validated.
+- The repo's compressed-payload/patch authoring path is reliable but awkward; a normal source/generator pipeline should replace it once automation is built and validated.
 - Current source discovery is not yet represented as a machine-maintained source registry in code. Do not create one until the refresh workflow is actively using it.
 - Market tape remains a public snapshot, not a licensed live feed.
 
@@ -366,7 +378,11 @@ Supabase:
 
 - `.github/workflows/deploy-pages.yml` — exact Pages build and validation gate
 - `payload_v6/` — known-good compressed/base64 v6 dashboard base
-- `patch_v7/` — Last 24 Hours v7 patch
+- `patch_v7/` — Last 24 Hours patch
+- `patch_v8/` — expandable 1–100 country score drawers and evidence panels
+- `patch_v9/` — rolling Top Market Drivers and 7-Day Quick Digest
+- `patch_v10/` — August CPI context / bridge-lineage patch for US Inflation
+- `scripts/apply_v11_refresh.py` — rolling research/X/catalyst/CPI/release completeness transform and assertions
 - `supabase/migrations/` — version-controlled database schema changes
 - `docs/OPERATING_ARCHITECTURE.md` — this canonical technical runbook
 
