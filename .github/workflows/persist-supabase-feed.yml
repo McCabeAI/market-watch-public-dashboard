@@ -29,6 +29,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Validate writer and staged JSON syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          payload="${{ github.event.inputs.payload }}"
+          if [ -z "$payload" ]; then
+            payload="ops/supabase/inbox/latest.json"
+          fi
+          python -m py_compile scripts/persist_market_watch.py
+          python -m json.tool "$payload" >/dev/null
+
       - name: Require server-side database secret
         shell: bash
         run: |
@@ -37,11 +53,6 @@ jobs:
             echo "::error::Repository secret SUPABASE_DB_URL is not configured. Use the Supabase Postgres connection string for the private writer; do not expose it in files or chat."
             exit 1
           fi
-
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.12"
 
       - name: Install pinned Postgres driver
         shell: bash
