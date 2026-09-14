@@ -231,6 +231,22 @@ jobs:
           test "$(grep -o '/100' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
           test "$(grep -o 'class=\"temp-dimension score-detail\"' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
 
+      - name: Apply Sep 14 completeness refresh
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/apply_v11_refresh.py _site/index.html
+          test "$(grep -o 'class=\"news-card' _site/index.html | wc -l | tr -d '[:space:]')" -eq 66
+          test "$(grep -o 'class=\"temp-dimension score-detail\"' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
+          grep -Fq '16 Aug–14 Sep 2026' _site/index.html
+          grep -Fq '14 Sep 2026 · Rolling 30-day refresh' _site/index.html
+          grep -Fq 'NO FRESH PROMOTION' _site/index.html
+          grep -Fq '<b>Sep 16</b>FOMC + SEP' _site/index.html
+          grep -Fq '<b>Oct 28</b>BoC + MPR' _site/index.html
+          grep -Fq 'Core CPI</div><div class="num">2.4%' _site/index.html
+          grep -Fq 'August CPI</td><td data-label="Actual">+0.4% m/m · 3.4% y/y' _site/index.html
+          grep -Fq 'August PPI</td><td data-label="Actual">+0.4% m/m · 5.4% y/y' _site/index.html
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
