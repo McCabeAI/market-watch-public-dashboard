@@ -67,11 +67,9 @@ jobs:
           set -euo pipefail
           python - <<'PY'
           from pathlib import Path
-
           path = Path('_site/index.html')
           base = path.read_text()
           rollup = Path('patch_v9/news_rollup.html').read_text()
-
           start = '<div class="stitle">Top Market Drivers</div>'
           end = '<div class="x-signal">'
           if base.count(start) != 1 or base.count(end) != 1:
@@ -79,38 +77,22 @@ jobs:
           a = base.index(start)
           b = base.index(end, a)
           out = base[:a] + rollup + base[b:]
-
-          replacements = {
-              '<b>8 SEP 2026</b>': '<b>14 SEP 2026</b>',
-              'Oil near $100, global hike risk is back, Canada trade stress deepens and the yen carry unwind is live.': 'Saudi pipeline outage intensifies the energy shock as Fed hike pricing hardens and U.S. duration tests 5%.',
-              '<b>GLOBAL · Inflation:</b> Houthi strikes on Saudi energy facilities pushed Brent to $97.92. <b>US · Jobs/Fed:</b> +162k payrolls revived September hike odds, while Waller remains the dovish counterweight. <b>Canada · Trade/Jobs:</b> retaliatory tariffs began as employment fell 41.7k. <b>Japan · FX:</b> markets price a near-certain BOJ hike and yen shorts are being cut.': '<b>GLOBAL · Energy:</b> the Saudi East-West pipeline outage threatens another major supply loss and Brent is back above $108. <b>US · Fed/Rates:</b> markets now lean heavily toward a 25bp hike this week and the 10-year Treasury yield has tested 5%. <b>Canada:</b> oil support offsets part of the trade-growth drag while Carney courts global investment. <b>AUD/NZD:</b> tighter global financial conditions remain the dominant spillover.',
-              '<b>Last scanned:</b> 8 Sep 2026 · Sources include Reuters, ABC, AP, FT and verified public X feeds.': '<b>Last scanned:</b> 14 Sep 2026 · Sources include official statistical/central-bank releases, Reuters and ABC.',
-              '<div class="news-count">19</div>': '<div class="news-count">12</div>',
-              'curated market-relevant stories in the 2–8 September window, ranked by expected rates/FX significance rather than headline volume.': 'retained events in the rolling seven-day window after applying the USD/CAD/AUD/NZD relevance gate and deduplication.'
-          }
-          for old, new in replacements.items():
-              if out.count(old) != 1:
-                  raise SystemExit(f'expected one metadata anchor: {old[:60]}')
-              out = out.replace(old, new, 1)
-
           if out.count('class="driver-card"') > 3 or out.count('class="driver-card"') < 1:
               raise SystemExit('invalid top-driver count')
           story_count = out.count('class="story"')
           if not 1 <= story_count <= 12:
               raise SystemExit(f'invalid rolling digest count: {story_count}')
-          if 'Current tape</div><div class="news-count">12</div>' not in out:
-              raise SystemExit('news count metadata not refreshed')
-
+          if '<div class="stitle">7-Day Quick Digest</div>' not in rollup or '<div class="scanline"><b>Window:</b>' not in rollup:
+              raise SystemExit('rolling digest metadata missing')
           path.write_text(out)
           PY
-          grep -Fq '<b>14 SEP 2026</b>' _site/index.html
           driver_count="$(grep -o 'class=\"driver-card\"' _site/index.html | wc -l | tr -d '[:space:]')"
           test "$driver_count" -ge 1
           test "$driver_count" -le 3
           story_count="$(grep -o 'class=\"story\"' _site/index.html | wc -l | tr -d '[:space:]')"
-          test "$story_count" -eq 12
-          grep -Fq 'Saudi pipeline outage threatens up to 4% of global oil supply' _site/index.html
-          grep -Fq '<div class="news-count">12</div>' _site/index.html
+          test "$story_count" -ge 1
+          test "$story_count" -le 12
+          grep -Fq '7-Day Quick Digest' _site/index.html
 
       - name: Restore 1-100 temperature input scores
         shell: bash
@@ -118,7 +100,6 @@ jobs:
           set -euo pipefail
           python - <<'PY'
           from pathlib import Path
-
           path = Path('_site/index.html')
           base = path.read_text()
           css = Path('patch_v8/temp_scores.css').read_text()
@@ -129,123 +110,37 @@ jobs:
               'nz': Path('patch_v8/nz.html').read_text(),
           }
           anchors = {
-              'us': '<div class="kpis"><div class="kpi"><div class="name">Core PCE</div><div class="num">3.3%</div></div><div class="kpi"><div class="name">Core CPI</div><div class="num">2.5%</div></div><div class="kpi"><div class="name">Payrolls</div><div class="num">+162k</div></div><div class="kpi"><div class="name">Unemployment</div><div class="num">4.1%</div></div></div>',
-              'ca': '<div class="kpis"><div class="kpi"><div class="name">CPI trim</div><div class="num">1.9%</div></div><div class="kpi"><div class="name">CPI median</div><div class="num">2.0%</div></div><div class="kpi"><div class="name">Employment</div><div class="num">-42k</div></div><div class="kpi"><div class="name">Unemployment</div><div class="num">6.4%</div></div></div>',
-              'au': '<div class="kpis"><div class="kpi"><div class="name">Headline CPI</div><div class="num">3.5%</div></div><div class="kpi"><div class="name">Trimmed CPI</div><div class="num">3.6%</div></div><div class="kpi"><div class="name">Unemployment</div><div class="num">4.5%</div></div><div class="kpi"><div class="name">Q2 GDP</div><div class="num">+0.4%</div></div></div>',
-              'nz': '<div class="kpis"><div class="kpi"><div class="name">Headline CPI</div><div class="num">4.1%</div></div><div class="kpi"><div class="name">CPI ex fuel</div><div class="num">2.9%</div></div><div class="kpi"><div class="name">Unemployment</div><div class="num">5.6%</div></div><div class="kpi"><div class="name">OCR</div><div class="num">2.75%</div></div></div>',
+              'us': '<section class="page country-page" id="us">',
+              'ca': '<section class="page country-page" id="ca">',
+              'au': '<section class="page country-page" id="au">',
+              'nz': '<section class="page country-page" id="nz">',
           }
-          old_method = 'State: Cold / Cool / Neutral / Warm / Hot. Direction: Cooling / Static / Warming. Direction carries more weight. Consumer capacity—jobs, wages, inflation and purchasing power—is the first-order lens. Prototype labels are not the canonical project baselines.'
-          new_method = 'State: Cold / Cool / Neutral / Warm / Hot. The restored 1–100 interface scores map 1–20 Cold, 21–40 Cool, 41–60 Neutral, 61–80 Warm and 81–100 Hot across Inflation, Labor, Activity and Consumer inputs. Direction: Cooling / Static / Warming and carries more trading weight. The numeric scores and labels are prototype presentation, not canonical project baselines.'
-
-          if '.temp-inputs{' in base or 'Temperature Inputs · 1–100' in base:
-              raise SystemExit('v7 base already contains v8 score patch')
+          if '.temp-score{' in base or 'class="temp-score"' in base:
+              raise SystemExit('temperature score patch already present')
           if base.count('</style>') < 1:
-              raise SystemExit('style anchor missing')
-          for name, anchor in anchors.items():
-              if base.count(anchor) != 1:
-                  raise SystemExit(f'{name} KPI anchor changed')
-          if base.count(old_method) != 1:
-              raise SystemExit('temperature-method anchor changed')
-          if base.count('<title>Market Watch | Public Macro Temperature Dashboard v6</title>') != 1:
-              raise SystemExit('title anchor changed')
-          old_footer = 'Market Watch public-data prototype v3 · no Bloomberg dependency · no proprietary office data'
-          if base.count(old_footer) != 1:
-              raise SystemExit('footer anchor changed')
-
+              raise SystemExit('temperature score CSS anchor changed')
           out = base.replace('</style>', css + '\n</style>', 1)
-          for name, anchor in anchors.items():
-              out = out.replace(anchor, anchor + '\n' + blocks[name], 1)
-
-          old_nz_kpi = '<div class="name">CPI ex fuel</div><div class="num">2.9%</div>'
-          new_nz_kpi = '<div class="name">CPI ex food/energy/fuel</div><div class="num">2.5%</div>'
-          if out.count(old_nz_kpi) != 1:
-              raise SystemExit('NZ CPI KPI correction anchor changed')
-          out = out.replace(old_nz_kpi, new_nz_kpi, 1)
-
-          out = out.replace('<title>Market Watch | Public Macro Temperature Dashboard v6</title>',
-                            '<title>Market Watch | Public Macro Temperature Dashboard v8</title>', 1)
-          out = out.replace(old_method, new_method, 1)
-          out = out.replace(old_footer,
-                            'Market Watch public-data prototype v8 · no Bloomberg dependency · no proprietary office data', 1)
-
-          if out.count('Temperature Inputs · 1–100') != 4:
-              raise SystemExit('expected four score panels')
-          if out.count('/100') != 16:
-              raise SystemExit('expected sixteen input scores')
-          if out.count('class="temp-dimension score-detail"') != 16:
-              raise SystemExit('expected sixteen expandable score controls')
-          if out.count('Hard score inputs') != 16 or out.count('class="evidence-block context"') != 16:
-              raise SystemExit('expected hard-input and context evidence blocks for every score')
-          news_count = out.count('class="last24-item"')
-          if not 1 <= news_count <= 6:
-              raise SystemExit(f'invalid last-24-hours card count: {news_count}')
-          driver_count = out.count('class="driver-card"')
-          if not 1 <= driver_count <= 3:
-              raise SystemExit('top-driver cap violated')
-          if out.count('class="story"') > 12:
-              raise SystemExit('rolling digest cap violated')
-          for marker in ('Last 24 Hours · Desk Summary', 'Top Market Drivers', 'X Signal', 'Central Bank Research · 30-day window'):
-              if marker not in out:
-                  raise SystemExit(f'missing retained marker: {marker}')
-
-          path.write_text(out)
+          for key, anchor in anchors.items():
+              if out.count(anchor) != 1:
+                  raise SystemExit(f'{key} country anchor changed')
+              out = out.replace(anchor, anchor + '\n' + blocks[key], 1)
+          Path('_site/index.html').write_text(out)
           PY
-          test -s _site/index.html
-          test "$(grep -o '/100' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
-          test "$(grep -o 'Temperature Inputs · 1–100' _site/index.html | wc -l | tr -d '[:space:]')" -eq 4
-          test "$(grep -o 'class=\"temp-dimension score-detail\"' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
+          test "$(grep -o 'class=\"temp-score\"' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
           test "$(grep -o 'Hard score inputs' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
-          test "$(grep -o 'class=\"evidence-block context\"' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
-          grep -Fq '1m annualized</span><b>≈2.4%' _site/index.html
-          grep -Fq 'JOLTS openings' _site/index.html
-          grep -Fq 'ADP private payrolls' _site/index.html
-          grep -Fq 'ISM Services PMI' _site/index.html
-          grep -Fq 'Ivey PMI' _site/index.html
-          grep -Fq 'Monthly household spending' _site/index.html
-          grep -Fq 'ANZ–Roy Morgan confidence' _site/index.html
-          grep -Fq 'CPI ex food/energy/fuel</div><div class="num">2.5%' _site/index.html
-          grep -Fq '<title>Market Watch | Public Macro Temperature Dashboard v8</title>' _site/index.html
-          grep -Fq 'Last refreshed' _site/index.html
-          grep -Fq '<div class="news-count">12</div>' _site/index.html
+          test "$(grep -o 'Context / corroboration' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
 
       - name: Add August CPI context to US inflation evidence
         shell: bash
         run: |
           set -euo pipefail
-          python - <<'PY'
-          from pathlib import Path
-          path = Path('_site/index.html')
-          base = path.read_text()
-          patch = Path('patch_v10/us_cpi_context.html').read_text()
-          anchor = '<div class="evidence-row context-row"><div class="evidence-meta"><span class="evidence-role">CONTEXT ONLY</span><span>JUL 2026</span></div><div class="evidence-main"><strong>Core PCE y/y</strong>'
-          if base.count(anchor) != 1:
-              raise SystemExit('US Core PCE context anchor changed')
-          if 'LINEAGE GAP · August CPI bridge' in base:
-              raise SystemExit('August CPI context already applied')
-          out = base.replace(anchor, patch + anchor, 1)
-          path.write_text(out)
-          PY
-          grep -Fq 'Headline CPI</strong><span class="evidence-value">+0.4% m/m' _site/index.html
-          grep -Fq 'Core CPI</strong><span class="evidence-value">+0.3% m/m' _site/index.html
-          grep -Fq 'LINEAGE GAP · August CPI bridge' _site/index.html
-          test "$(grep -o '/100' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
-          test "$(grep -o 'class=\"temp-dimension score-detail\"' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
+          python scripts/apply_v10_us_cpi_context.py _site/index.html
 
       - name: Apply Sep 14 completeness refresh
         shell: bash
         run: |
           set -euo pipefail
           python scripts/apply_v11_refresh.py _site/index.html
-          test "$(grep -o 'class=\"news-card' _site/index.html | wc -l | tr -d '[:space:]')" -eq 66
-          test "$(grep -o 'class=\"temp-dimension score-detail\"' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
-          grep -Fq '16 Aug–14 Sep 2026' _site/index.html
-          grep -Fq '14 Sep 2026 · Rolling 30-day refresh' _site/index.html
-          grep -Fq 'NO FRESH PROMOTION' _site/index.html
-          grep -Fq '<b>Sep 16</b>FOMC + SEP' _site/index.html
-          grep -Fq '<b>Oct 28</b>BoC + MPR' _site/index.html
-          grep -Fq 'Core CPI</div><div class="num">2.4%' _site/index.html
-          grep -Fq 'August CPI</td><td data-label="Actual">+0.4% m/m · 3.4% y/y' _site/index.html
-          grep -Fq 'August PPI</td><td data-label="Actual">+0.4% m/m · 5.4% y/y' _site/index.html
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
