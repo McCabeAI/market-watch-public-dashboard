@@ -21,10 +21,10 @@ It is research context, not executable pricing and not a replacement for profess
 
 ```bash
 python -m pip install -r requirements-sal.txt
-PYTHONPATH=. python scripts/sal_market_data.py --output market-state/market_state.json
+PYTHONPATH=. python scripts/run_market_state.py --output market-state/market_state.json
 ```
 
-No secrets are required.
+No secrets are required. `run_market_state.py` is the production entrypoint; it keeps the deterministic Sal calculations intact while using the current one-series-per-call Bank of Canada Valet route.
 
 The weekday GitHub Action runs at 09:30 UTC and also supports manual `workflow_dispatch`. The output is uploaded as the `market-state` artifact for three days. The workflow is deliberately independent of the dashboard Pages build and Supabase.
 
