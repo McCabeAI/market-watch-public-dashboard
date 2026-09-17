@@ -95,12 +95,13 @@ Expected publication lag before `status=stale`: US/CA/NZ/FX 4 calendar days; AU 
 
 ## Workflow
 
-`.github/workflows/daily-market-state.yml` runs weekdays at 12:30 UTC and on `workflow_dispatch`. It:
+`.github/workflows/daily-market-state.yml` runs weekdays at 12:30 UTC, on `workflow_dispatch`, and on PRs that touch the generator. It:
 
 1. runs the deterministic unit tests
-2. runs the generator against live official/ECB sources
-3. validates the packet contract
-4. uploads `/tmp/market-state/market-state.json` as artifact `market-state` with 5-day retention
+2. runs `python scripts/live_market_state_smoke.py` against live Treasury, BoC, RBA and ECB sources
+3. tries to download the official RBNZ B2 workbook and, if that succeeds, runs the generator and uploads `/tmp/market-state/market-state.json` as artifact `market-state` with 5-day retention
+
+GitHub-hosted runners currently receive HTTP 403 from `rbnz.govt.nz` (Cloudflare). The workflow does not substitute a vendor or media feed. The Trader Room command still requires the official RBNZ workbook and fails closed if it is missing. Re-run that command from a network that can reach RBNZ to produce the full 15-spread packet.
 
 The workflow does not deploy GitHub Pages, does not write to Supabase, and does not read repository secrets.
 
