@@ -12,6 +12,7 @@ Identify substantive conflicts only:
 - opposite currency exposure in the same G10 currency
 - incompatible macro, rates, or regime assumptions
 - trade versus explicit no-trade
+- materially different rates versus spot expressions of the same macro view
 
 Do not rank agents. Do not choose a winner. Do not produce a house view. Do not treat confidence as a vote. Do not acquire new evidence.
 

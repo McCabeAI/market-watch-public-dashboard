@@ -20,14 +20,19 @@ from scripts.trader_room.budget import BudgetLedger
 from scripts.trader_room.conflict import currency_exposure, detect_conflicts, rebuttal_assignments
 from scripts.trader_room.constants import (
     ADVOCATE_MODEL,
+    ADVOCATE_REMITS,
+    COMPARISON_AGENTS,
     COMPOSER_CEILING,
     GROK_CEILING,
     HANDOFF_MARKER,
     NO_TRADE_AGENT,
+    SPOT_SPECIALIST_AGENTS,
     STANDING_ADVOCATES,
     SUBAGENT_MODEL,
     TRADE_REQUIRED_AGENTS,
+    VOL_SPECIALIST_AGENT,
 )
+from scripts.trader_room.mandate import validate_expression_comparison
 from scripts.trader_room.errors import (
     BudgetError,
     DataBoundaryError,
@@ -51,7 +56,8 @@ from scripts.trader_room.models import (
     load_registry,
     trader_room_hook_policy,
 )
-from scripts.trader_room.orchestrator import go, prepare_evidence, run_debate
+from scripts.trader_room.artifacts import sanitize_packet
+from scripts.trader_room.orchestrator import go, prepare_evidence, run_debate, run_recorded_debate
 from scripts.trader_room.runners import DryRunRunner, LiveRunner
 from scripts.trader_room.schema import validate_contribution, validate_pm_handoff, validate_trade
 
@@ -117,6 +123,24 @@ class EvidenceTests(unittest.TestCase):
         self.assertEqual(statuses["temperature_gauges"], "available")
         self.assertEqual(statuses["research_method"], "available")
         self.assertTrue(packet["central_bank_research"] or packet["news_and_research"])
+
+
+PINNED_REMITS = {
+    "perma-bull": "strongest pro-growth, risk-on, cyclical FX expression",
+    "perma-bear": "strongest defensive, slowdown, stress or risk-off FX expression",
+    "dollar-king": "express macro views through USD spot whenever a defensible USD pair exists",
+    "cross-merchant": "cleaner relative-value expressions outside USD",
+    "carry-is-king": "positive carry and patient expressions unless a catalyst overwhelms it",
+    "rate-hawk": "currencies where inflation and policy risks are underpriced to the upside",
+    "rate-dove": "currencies where easing or growth weakness is underpriced",
+    "value-guy": "historically or fundamentally mispriced currencies and convergence trades",
+    "trend-follower": "persistent price and macro trends; reject premature fades",
+    "mean-reverter": "fade statistically or fundamentally stretched FX moves when reversal conditions exist",
+    "positioning-cynic": "attack crowded ideas; prefer better ownership asymmetry",
+    "catalyst-junkie": "credible path from mispricing to repricing",
+    "vol-convexity": "asymmetric optionality; challenge spot expressions",
+    "no-trade-skeptic": "apparent edges are priced, too noisy, too crowded or poorly timed; may submit no-trade",
+}
 
 
 class SchemaAndBoundaryTests(unittest.TestCase):
@@ -326,6 +350,96 @@ class HookTests(unittest.TestCase):
             self.assertEqual(allowed_composer.returncode, 0, allowed_composer.stdout)
         finally:
             Path(transcript).unlink(missing_ok=True)
+
+
+class MandateAndHandoffTests(unittest.TestCase):
+    def test_roster_remits_and_models_stay_pinned(self):
+        self.assertEqual(len(STANDING_ADVOCATES), 14)
+        self.assertEqual(ADVOCATE_REMITS, PINNED_REMITS)
+        self.assertEqual(ADVOCATE_MODEL, "grok-4.6")
+        self.assertEqual(SPOT_SPECIALIST_AGENTS, ("dollar-king", "cross-merchant"))
+        self.assertEqual(VOL_SPECIALIST_AGENT, "vol-convexity")
+        self.assertNotIn("vol-convexity", COMPARISON_AGENTS)
+        self.assertNotIn("dollar-king", COMPARISON_AGENTS)
+
+    def test_comparison_seat_must_compare_rates_and_spot(self):
+        packet = _packet()
+        runner = DryRunRunner()
+        contribution = runner.run_advocate("rate-hawk", packet, BudgetLedger())
+        validate_contribution(contribution, packet=packet, expected_agent="rate-hawk")
+        self.assertEqual(contribution["expression_comparison"]["chosen_expression"], "outright_duration")
+        broken = deepcopy(contribution)
+        broken["expression_comparison"]["considered_rates"] = broken["expression_comparison"]["considered_rates"][:1]
+        with self.assertRaises(SchemaError):
+            validate_expression_comparison(broken, agent="rate-hawk")
+
+    def test_spot_specialist_cannot_switch_to_rates(self):
+        packet = _packet()
+        contribution = DryRunRunner().run_advocate("dollar-king", packet, BudgetLedger())
+        validate_contribution(contribution, packet=packet, expected_agent="dollar-king")
+        contribution["trade"]["instrument"] = "UST 10Y"
+        contribution["trade"]["direction"] = "short"
+        with self.assertRaises(SchemaError):
+            validate_contribution(contribution, packet=packet, expected_agent="dollar-king")
+
+    def test_non_vol_seat_cannot_default_to_options(self):
+        packet = _packet()
+        contribution = DryRunRunner().run_advocate("perma-bull", packet, BudgetLedger())
+        contribution["trade"]["instrument"] = "AUDUSD 1-month straddle"
+        contribution["trade"]["structure"] = "long 1-month AUDUSD straddle"
+        contribution["trade"]["direction"] = "long volatility"
+        with self.assertRaises(SchemaError):
+            validate_contribution(contribution, packet=packet, expected_agent="perma-bull")
+
+    def test_vol_convexity_remains_unchanged(self):
+        packet = _packet()
+        contribution = DryRunRunner().run_advocate("vol-convexity", packet, BudgetLedger())
+        self.assertIsNone(contribution.get("expression_comparison"))
+        validate_contribution(contribution, packet=packet, expected_agent="vol-convexity")
+        contribution["expression_comparison"] = {"seat_class": "vol_specialist"}
+        with self.assertRaises(SchemaError):
+            validate_contribution(contribution, packet=packet, expected_agent="vol-convexity")
+
+    def test_sanitize_drops_paid_and_method_text(self):
+        packet = _packet()
+        packet["research_method"]["text"] = "Start with a causal question. PRIVATE METHOD BODY."
+        packet["private_methodology_available"] = [{"text": "paid memo"}]
+        packet["paid_source_text"] = "do not commit"
+        clean = sanitize_packet(packet)
+        self.assertTrue(clean["sanitized"])
+        self.assertIsNone(clean["research_method"]["text"])
+        self.assertEqual(clean["research_method"]["text_ref"], "docs/TRADER_RESEARCH_METHOD.md")
+        self.assertEqual(clean["private_methodology_available"], [])
+        self.assertNotIn("paid_source_text", clean)
+
+    def test_recorded_debate_persists_markdown_handoff(self):
+        packet, preflight = prepare_evidence(topic="go", synthetic=True)
+        runner = DryRunRunner()
+        originals = {
+            agent: runner.run_advocate(agent, packet, BudgetLedger())
+            for agent in STANDING_ADVOCATES
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            result = run_recorded_debate(
+                packet,
+                preflight,
+                originals,
+                artifact_root=Path(tmp),
+                live=True,
+            )
+            self.assertEqual(result["handoff"]["status"], HANDOFF_MARKER)
+            self.assertNotIn("winner", result["handoff"])
+            self.assertNotIn("house_view", result["handoff"])
+            md = retrieve(Path(tmp), result["run_id"], "pm_handoff_markdown")
+            self.assertIn(HANDOFF_MARKER, md["markdown"])
+            self.assertIn("dollar-king", md["markdown"])
+            packet_out = retrieve(Path(tmp), result["run_id"], "evidence_packet")
+            self.assertTrue(packet_out["sanitized"])
+            self.assertIsNone(packet_out["research_method"]["text"])
+            for item in result["handoff"]["proposed_trades"]:
+                self.assertIn("thesis", item)
+                self.assertIn("catalysts", item)
+                self.assertIn("invalidation", item)
 
 
 if __name__ == "__main__":

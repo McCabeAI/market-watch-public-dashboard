@@ -8,7 +8,7 @@ from uuid import uuid4
 
 from scripts.trader_room.artifacts import persist_run
 from scripts.trader_room.budget import BudgetLedger
-from scripts.trader_room.conflict import rebuttal_assignments
+from scripts.trader_room.conflict import detect_conflicts, rebuttal_assignments
 from scripts.trader_room.constants import (
     DEFAULT_ESSENTIAL_FAMILIES,
     ROOT,
@@ -20,10 +20,18 @@ from scripts.trader_room.evidence import (
     assess_families,
     freeze_packet,
     load_synthetic_packet,
+    resolve_market_state_path,
     validate_preflight,
 )
 from scripts.trader_room.models import load_registry, trader_room_hook_policy
-from scripts.trader_room.runners import DryRunRunner, LiveRunner, ModelRunner, build_launch_plan
+from scripts.trader_room.runners import (
+    DryRunRunner,
+    LiveRunner,
+    ModelRunner,
+    build_launch_plan,
+    build_pm_handoff,
+    mechanical_rebuttal,
+)
 from scripts.trader_room.schema import (
     validate_conflict_map,
     validate_contribution,
@@ -48,8 +56,13 @@ def prepare_evidence(
         raw = load_synthetic_packet(fixture or DEFAULT_FIXTURE, topic=topic)
         raw["run_id"] = f"tr-dryrun-{uuid4().hex[:12]}"
     else:
-        raw = assemble_packet(topic=topic, root=root, market_state_path=market_state_path)
+        raw = assemble_packet(
+            topic=topic,
+            root=root,
+            market_state_path=resolve_market_state_path(market_state_path, root=root),
+        )
     statuses = raw.get("family_status") or assess_families(raw)
+    raw["family_status"] = statuses
     preflight = validate_preflight(raw, statuses, essential_families=essential_families)
     frozen, digest = freeze_packet({k: v for k, v in raw.items() if k != "packet_sha256"})
     preflight["packet_sha256"] = digest
@@ -151,3 +164,83 @@ def go(
     if live:
         raise LiveRunBlocked("live debate dispatch is gated after evidence freeze")
     return run_debate(packet, preflight, runner=runner, root=root, artifact_root=artifact_root)
+
+
+def run_recorded_debate(
+    packet: dict[str, Any],
+    preflight: dict[str, Any],
+    originals: dict[str, dict[str, Any]],
+    *,
+    rebuttals: dict[str, dict[str, Any]] | None = None,
+    root: Path = ROOT,
+    artifact_root: Path | None = None,
+    live: bool = False,
+    execution_note: str | None = None,
+) -> dict[str, Any]:
+    """Complete a debate from already-authored 14 submissions.
+
+    Used for a production-evidence run when ACP cannot dispatch the standing
+    grok-4.6 seats. Roster, remits, and model assignment stay unchanged.
+    """
+    budget = BudgetLedger()
+    validated: dict[str, dict[str, Any]] = {}
+    for agent in STANDING_ADVOCATES:
+        if agent not in originals:
+            raise SchemaError(f"recorded debate missing {agent}")
+        validated[agent] = validate_contribution(originals[agent], packet=packet, expected_agent=agent)
+    if set(validated) != set(STANDING_ADVOCATES):
+        raise SchemaError("recorded debate did not return the complete 14-advocate roster")
+
+    conflict_map = detect_conflicts(validated)
+    conflict_map = validate_conflict_map(conflict_map, validated)
+    assignments = rebuttal_assignments(conflict_map)
+    resolved_rebuttals: dict[str, dict[str, Any]] = {}
+    for agent, assignment in assignments.items():
+        if rebuttals and agent in rebuttals:
+            payload = rebuttals[agent]
+        else:
+            payload = mechanical_rebuttal(agent, packet, validated[agent], assignment)
+        resolved_rebuttals[agent] = validate_rebuttal(
+            payload,
+            packet=packet,
+            expected_agent=agent,
+            allowed_opponents=set(assignment["opponents"]),
+        )
+
+    handoff = build_pm_handoff(packet, validated, conflict_map, resolved_rebuttals)
+    handoff["live"] = live
+    if execution_note:
+        handoff["execution_note"] = execution_note
+    launch_plan = build_launch_plan(packet)
+    index = persist_run(
+        root=artifact_root or root,
+        packet=packet,
+        preflight=preflight,
+        originals=validated,
+        conflict_map=conflict_map,
+        rebuttals=resolved_rebuttals,
+        handoff=handoff,
+        budget=budget.snapshot(),
+        launch_plan=launch_plan,
+    )
+    handoff["artifact_index"] = index
+    validate_pm_handoff(
+        handoff,
+        packet=packet,
+        originals=validated,
+        conflict_map=conflict_map,
+        rebuttals=resolved_rebuttals,
+    )
+    return {
+        "run_id": packet["run_id"],
+        "evidence_cutoff": packet["as_of"],
+        "packet_sha256": packet["packet_sha256"],
+        "preflight": preflight,
+        "originals": validated,
+        "conflict_map": conflict_map,
+        "rebuttals": resolved_rebuttals,
+        "handoff": handoff,
+        "budget": budget.snapshot(),
+        "launch_plan": launch_plan,
+        "artifact_index": index,
+    }

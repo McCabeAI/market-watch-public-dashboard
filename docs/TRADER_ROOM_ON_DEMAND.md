@@ -17,10 +17,11 @@ That command prepares and freeze-validates one evidence packet, then runs the co
 3. Fourteen independent standing advocates, each exact model `grok-4.6`, each bound to its existing remit.
 4. Each advocate may make at most two internal subagent calls. Those subagents may use only `composer-2.5` and inherit the same frozen packet.
 5. Every advocate except `no-trade-skeptic` must end with one cogent actionable trade. The skeptic may submit no-trade.
-6. First aggregator is a separate `grok-4.6` invocation. It receives all 14 originals. It must not rank or choose winners. It only maps substantive conflicts.
-7. Each conflicted advocate gets exactly one rebuttal pass: own original + opposing original trade(s) + unchanged frozen packet. No additional subagent calls. No new evidence. Defend, amend, or withdraw, and explicitly shoot holes in the opposing case.
-8. Final aggregator is a separate `grok-4.6` invocation. It receives all originals, the conflict map, and every rebuttal. It must not select a winner or house view. It emits the structured PM handoff.
-9. Persist complete run artifacts under `trader-room/runs/<run_id>/` with immutable run ID and evidence cutoff. Do not put project output in ACP.
+6. Spot-specialist seats (`dollar-king`, `cross-merchant`) stay spot-dedicated. Every other macro/rates-capable seat must compare outright duration, curve, and cross-market rates RV against spot FX, then choose the cleaner expression. The `vol-convexity` remit is unchanged; other seats must not default to vol.
+7. First aggregator is a separate `grok-4.6` invocation. It receives all 14 originals. It must not rank or choose winners. It only maps substantive conflicts.
+8. Each conflicted advocate gets exactly one rebuttal pass: own original + opposing original trade(s) + unchanged frozen packet. No additional subagent calls. No new evidence. Defend, amend, or withdraw, and explicitly shoot holes in the opposing case.
+9. Final aggregator is a separate `grok-4.6` invocation. It receives all originals, the conflict map, and every rebuttal. It must not select a winner or house view. It emits the structured PM handoff with thesis/evidence/expression/catalyst/invalidation detail.
+10. Persist complete sanitized run artifacts under `trader-room/runs/<run_id>/` with immutable run ID and evidence cutoff. That folder is the Git-durable ChatGPT retrieval surface. Unsanitized local packets may use `trader-room/runs/.local/`. Do not put project output in ACP.
 
 ## Model routing
 
@@ -51,8 +52,10 @@ No other model is allowed on this workflow. `grok-4.5`, Composer fast variants, 
 
 ## ChatGPT retrieval
 
-The PM handoff `artifact_index` stores durable relative paths for the packet, every original submission, the conflict map, and every rebuttal. ChatGPT retrieves any artifact with:
+Sanitized run folders are committed under `trader-room/runs/<run_id>/`. `trader-room/runs/latest.json` and `trader-room/runs/INDEX.json` identify the latest published run. The PM handoff `artifact_index` stores durable relative paths for the packet, every original submission, the conflict map, every rebuttal, and the Markdown arbiter packet. ChatGPT retrieves any artifact with:
 
 ```bash
 PYTHONPATH=. python scripts/trader_room_go.py retrieve --run-id <run_id> --kind submission --agent <name>
+PYTHONPATH=. python scripts/trader_room_go.py retrieve --run-id <run_id> --kind pm_handoff
+PYTHONPATH=. python scripts/trader_room_go.py retrieve --run-id <run_id> --kind pm_handoff_markdown
 ```

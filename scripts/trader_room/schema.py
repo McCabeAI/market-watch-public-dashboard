@@ -7,6 +7,7 @@ from typing import Any
 
 from scripts.trader_room.constants import (
     ADVOCATE_REMITS,
+    COMPARISON_AGENTS,
     FORBIDDEN_RANKING_KEYS,
     HANDOFF_MARKER,
     NO_TRADE_AGENT,
@@ -17,6 +18,7 @@ from scripts.trader_room.constants import (
 )
 from scripts.trader_room.errors import DataBoundaryError, SchemaError
 from scripts.trader_room.evidence import assert_same_frozen_packet
+from scripts.trader_room.mandate import compact_comparison, seat_class, validate_expression_comparison
 
 LEVEL_RE = re.compile(r"[-+]?\d+(?:\.\d+)?")
 FORBIDDEN_ACQUISITION = (
@@ -142,6 +144,7 @@ def validate_contribution(
     validate_trade(contribution["trade"], agent=agent, packet=packet)
     if agent in TRADE_REQUIRED_AGENTS and contribution["trade"] is None:
         raise SchemaError(f"{agent} must end with one cogent actionable trade")
+    validate_expression_comparison(contribution, agent=agent)
     assert_data_only_boundary(contribution, packet, agent)
     return contribution
 
@@ -243,6 +246,7 @@ def validate_pm_handoff(
         "amendments_and_withdrawals",
         "shared_assumptions",
         "unresolved_questions_and_gaps",
+        "expression_comparisons",
         "artifact_index",
         "status",
     )
@@ -259,8 +263,23 @@ def validate_pm_handoff(
     proposed_agents = {item["agent"] for item in handoff["proposed_trades"]}
     if proposed_agents != set(originals):
         raise SchemaError("PM handoff must preserve every original proposed trade")
+    detail_fields = ("thesis", "evidence_refs", "expression", "catalysts", "invalidation")
+    for item in handoff["proposed_trades"]:
+        missing = [field for field in detail_fields if field not in item]
+        if missing:
+            raise SchemaError(f"PM handoff proposed trade for {item.get('agent')} missing {missing}")
+        if "winner" in item or "rank" in item:
+            raise SchemaError("PM handoff proposed_trades must not rank or pick a winner")
     if set(handoff["rebuttals"]) != set(rebuttals):
         raise SchemaError("PM handoff must preserve every rebuttal")
+    comparisons = handoff["expression_comparisons"]
+    if set(comparisons) != set(originals):
+        raise SchemaError("PM handoff must preserve every seat's expression comparison")
+    for agent, original in originals.items():
+        if agent in COMPARISON_AGENTS and not original.get("expression_comparison"):
+            raise SchemaError(f"PM handoff lost {agent} expression comparison")
+        if seat_class(agent) != "vol_specialist" and comparisons.get(agent) is None:
+            raise SchemaError(f"PM handoff missing expression comparison for {agent}")
     index = handoff["artifact_index"]
     for agent in originals:
         if agent not in (index.get("submissions") or {}):
@@ -273,3 +292,21 @@ def validate_pm_handoff(
     if len(handoff["conflicts"]) != len(conflict_map["conflicts"]):
         raise SchemaError("PM handoff conflict count does not match conflict map")
     return handoff
+
+
+def proposed_trade_row(name: str, item: dict[str, Any]) -> dict[str, Any]:
+    trade = item.get("trade")
+    comparison = item.get("expression_comparison")
+    return {
+        "agent": name,
+        "trade": trade,
+        "ref": f"submissions/{name}.json",
+        "thesis": (trade or {}).get("thesis") or item.get("stance_summary"),
+        "evidence_refs": list((trade or {}).get("evidence_refs") or []),
+        "expression": (trade or {}).get("structure")
+        or (trade or {}).get("instrument")
+        or "no-trade",
+        "catalysts": list((trade or {}).get("catalysts") or []),
+        "invalidation": None if trade is None else trade.get("invalidation"),
+        "expression_comparison": compact_comparison(comparison),
+    }

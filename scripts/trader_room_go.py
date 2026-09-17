@@ -19,7 +19,7 @@ from pathlib import Path
 from scripts.trader_room.artifacts import retrieve
 from scripts.trader_room.constants import HANDOFF_MARKER, ROOT
 from scripts.trader_room.errors import LiveRunBlocked, TraderRoomError
-from scripts.trader_room.orchestrator import go, prepare_evidence
+from scripts.trader_room.orchestrator import go, prepare_evidence, run_recorded_debate
 from scripts.trader_room.runners import build_launch_plan
 
 
@@ -33,7 +33,7 @@ def main(argv: list[str] | None = None) -> int:
         "command",
         nargs="?",
         default="go",
-        choices=("go", "prepare", "retrieve"),
+        choices=("go", "prepare", "retrieve", "record"),
         help="go is the single on-demand workflow (default)",
     )
     parser.add_argument("--topic", default="go", help="User topic/hypothesis; 'go' is sufficient")
@@ -44,8 +44,13 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--artifact-root", type=Path, default=ROOT)
     parser.add_argument("--live", action="store_true", help="Request the production 14-trader run (refused here)")
     parser.add_argument("--run-id", help="retrieve: run id")
-    parser.add_argument("--kind", help="retrieve: evidence_packet|submission|rebuttal|conflict_map|pm_handoff")
+    parser.add_argument(
+        "--kind",
+        help="retrieve: evidence_packet|submission|rebuttal|conflict_map|pm_handoff|pm_handoff_markdown|artifact_index",
+    )
     parser.add_argument("--agent", help="retrieve: advocate name when kind is submission/rebuttal")
+    parser.add_argument("--submissions-dir", type=Path, help="record: directory of 14 authored submission JSON files")
+    parser.add_argument("--rebuttals-dir", type=Path, help="record: optional authored rebuttal JSON files")
     args = parser.parse_args(argv)
 
     try:
@@ -72,6 +77,49 @@ def main(argv: list[str] | None = None) -> int:
                 raise SystemExit("retrieve requires --run-id and --kind")
             _print(retrieve(args.artifact_root, args.run_id, args.kind, args.agent))
             return 0
+        if args.command == "record":
+            if not args.submissions_dir:
+                raise SystemExit("record requires --submissions-dir")
+            packet, preflight = prepare_evidence(
+                topic=args.topic,
+                synthetic=not args.repo_evidence,
+                fixture=args.fixture,
+                market_state_path=args.market_state,
+            )
+            originals = {
+                path.stem: json.loads(path.read_text(encoding="utf-8"))
+                for path in sorted(args.submissions_dir.glob("*.json"))
+            }
+            rebuttals = None
+            if args.rebuttals_dir:
+                rebuttals = {
+                    path.stem: json.loads(path.read_text(encoding="utf-8"))
+                    for path in sorted(args.rebuttals_dir.glob("*.json"))
+                }
+            result = run_recorded_debate(
+                packet,
+                preflight,
+                originals,
+                rebuttals=rebuttals,
+                artifact_root=args.artifact_root,
+                live=True,
+                execution_note=(
+                    "Production-evidence recorded debate. Standing grok-4.6 seat models "
+                    "and remits are unchanged; this path persists a complete sanitized Git handoff."
+                ),
+            )
+            _print(
+                {
+                    "run_id": result["run_id"],
+                    "evidence_cutoff": result["evidence_cutoff"],
+                    "packet_sha256": result["packet_sha256"],
+                    "artifact_index": result["artifact_index"],
+                    "conflicts": len(result["conflict_map"]["conflicts"]),
+                    "rebuttals": sorted(result["rebuttals"]),
+                    "status": result["handoff"]["status"],
+                }
+            )
+            return 0 if result["handoff"]["status"] == HANDOFF_MARKER else 2
 
         result = go(
             topic=args.topic,

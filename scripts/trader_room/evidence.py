@@ -189,6 +189,24 @@ def load_news_and_research(root: Path = ROOT) -> tuple[list[dict[str, Any]], lis
     return cb, news
 
 
+DEFAULT_MARKET_STATE_CANDIDATES = (
+    ROOT / "trader-room" / "evidence" / "market-state.json",
+    ROOT / "_site" / "market-state.json",
+)
+
+
+def resolve_market_state_path(path: Path | None, *, root: Path = ROOT) -> Path | None:
+    if path is not None:
+        return path
+    for candidate in (
+        root / "trader-room" / "evidence" / "market-state.json",
+        root / "_site" / "market-state.json",
+    ):
+        if candidate.is_file():
+            return candidate
+    return None
+
+
 def load_market_state(path: Path | None) -> dict[str, Any]:
     if path is None or not path.is_file():
         return {"status": "unavailable", "detail": "no market-state snapshot supplied"}
