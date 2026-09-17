@@ -8,7 +8,16 @@ The user only needs to say `go` in the Trader Room chat. The repository entrypoi
 PYTHONPATH=. python scripts/trader_room_go.py go
 ```
 
-That command prepares and freeze-validates one evidence packet, then runs the complete debate. Default `go` is a dry-run that does not consume the production Grok/Composer budget. The live 14-trader research run is refused unless a later authenticated human arms `TRADER_ROOM_LIVE=1`; this entrypoint still does not dispatch production models.
+That command prepares and freeze-validates one evidence packet, then runs the complete debate. Default `go` is a dry-run that does not consume the production Grok/Composer budget.
+
+A live 14-trader research run is armed with `TRADER_ROOM_LIVE=1` and `--live`. It uses Cursor native parent-agent orchestration: one Grok 4.6 parent invokes the 14 standing `grok-4.6` seats against the identical frozen production packet, then `conflict-aggregator`, one rebuttal pass for each conflicted seat, and `final-aggregator`. `LiveRunner` does not synthesize model output. CI remains refused. Unarmed `--live` remains refused.
+
+```bash
+TRADER_ROOM_LIVE=1 PYTHONPATH=. python scripts/trader_room_go.py go --live --repo-evidence --market-state <production-market-state.json>
+TRADER_ROOM_LIVE=1 PYTHONPATH=. python scripts/trader_room_go.py go --live --resume --run-id <run_id>
+```
+
+The first live call freeze-validates four-family evidence and writes dispatch prompts under `trader-room/runs/<run_id>/dispatch/`. Exit code 4 means `AWAITING_PARENT_DISPATCH`: the parent must invoke the named seats and write JSON results, then resume. Do not simulate those results.
 
 ## Architecture
 

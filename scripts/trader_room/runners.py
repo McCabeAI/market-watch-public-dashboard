@@ -5,6 +5,7 @@ from __future__ import annotations
 import os
 from typing import Any, Protocol
 
+from scripts.trader_room.artifacts import run_dir
 from scripts.trader_room.budget import BudgetLedger
 from scripts.trader_room.constants import (
     ADVOCATE_MODEL,
@@ -311,27 +312,262 @@ def _clusters(originals: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
 
 
 class LiveRunner:
-    """Hard gate. This deployment path must not launch the real 14-trader run."""
+    """Cursor-native live dispatch. Does not synthesize advocate or aggregator output.
 
-    def __init__(self) -> None:
+    One grok-4.6 parent invokes the 14 standing grok-4.6 seats, then the
+    conflict aggregator, conflicted-seat rebuttals, and final aggregator.
+    Results are accepted only from a DispatchBackend (mailbox or injected).
+    """
+
+    def __init__(self, dispatcher: Any | None = None) -> None:
         if os.environ.get(LIVE_ENV) != "1":
             raise LiveRunBlocked(
                 f"refusing live 14-advocate Grok run; {LIVE_ENV}=1 is required"
             )
         if os.environ.get("CI", "").lower() in {"1", "true", "yes"}:
             raise LiveRunBlocked("refusing live Trader Room run in CI")
+        self._dispatcher = dispatcher
+        self._store = None
+
+    def bind(self, store) -> None:
+        from scripts.trader_room.dispatch import MailboxDispatcher
+
+        self._store = store
+        if self._dispatcher is None:
+            self._dispatcher = MailboxDispatcher(store)
+
+    @property
+    def dispatcher(self):
+        if self._dispatcher is None:
+            raise LiveRunBlocked(
+                "live runner is not bound to a Cursor parent-agent dispatcher"
+            )
+        return self._dispatcher
+
+    def _paths(self, packet: dict[str, Any]) -> dict[str, str]:
+        if self._store is None:
+            run_id = packet["run_id"]
+            return {
+                "packet": f"trader-room/runs/{run_id}/evidence_packet.json",
+                "originals": f"trader-room/runs/{run_id}/submissions",
+                "conflict": f"trader-room/runs/{run_id}/conflict_map.json",
+                "rebuttals": f"trader-room/runs/{run_id}/rebuttals",
+            }
+        root = self._store.root
+        base = run_dir(root, packet["run_id"])
+        return {
+            "packet": str((base / "evidence_packet.json").relative_to(root)),
+            "originals": str((base / "submissions").relative_to(root)),
+            "conflict": str((base / "conflict_map.json").relative_to(root)),
+            "rebuttals": str((base / "rebuttals").relative_to(root)),
+        }
+
+    def _request(
+        self,
+        *,
+        role: str,
+        agent: str,
+        packet: dict[str, Any],
+        phase: str,
+        prompt: str,
+    ):
+        from scripts.trader_room.dispatch import DispatchRequest, frontmatter_for, seat_model, subagent_allowance
+
+        max_sub, sub_model = subagent_allowance(role)
+        store = self._store
+        key = f"{role}.{agent}"
+        if store is None:
+            packet_path = f"trader-room/runs/{packet['run_id']}/evidence_packet.json"
+            prompt_path = f"trader-room/runs/{packet['run_id']}/dispatch/prompts/{key}.md"
+            result_path = f"trader-room/runs/{packet['run_id']}/dispatch/results/{key}.json"
+        else:
+            packet_path = store.relative(run_dir(store.root, packet["run_id"]) / "evidence_packet.json")
+            prompt_path = store.relative(store.prompt_path(key))
+            result_path = store.relative(store.result_path(key))
+        return DispatchRequest(
+            run_id=packet["run_id"],
+            role=role,
+            agent=agent,
+            model=seat_model(role),
+            frontmatter_model=frontmatter_for(role),
+            max_subagents=max_sub,
+            subagent_model=sub_model,
+            packet_sha256=packet["packet_sha256"],
+            packet_path=packet_path,
+            prompt=prompt,
+            prompt_path=prompt_path,
+            result_path=result_path,
+            phase=phase,
+        )
+
+    def prepare_round(self, phase: str, **kwargs: Any) -> list[Any]:
+        from scripts.trader_room.dispatch import require_results
+        from scripts.trader_room.prompts import (
+            advocate_prompt,
+            conflict_prompt,
+            final_prompt,
+            rebuttal_prompt,
+        )
+
+        packet: dict[str, Any] = kwargs["packet"]
+        paths = self._paths(packet)
+        requests = []
+        if phase == "round1":
+            for agent in STANDING_ADVOCATES:
+                requests.append(
+                    self._request(
+                        role="advocate",
+                        agent=agent,
+                        packet=packet,
+                        phase=phase,
+                        prompt=advocate_prompt(agent, packet, packet_path=paths["packet"]),
+                    )
+                )
+        elif phase == "conflict":
+            requests.append(
+                self._request(
+                    role="conflict-aggregator",
+                    agent="conflict-aggregator",
+                    packet=packet,
+                    phase=phase,
+                    prompt=conflict_prompt(
+                        packet,
+                        kwargs["originals"],
+                        packet_path=paths["packet"],
+                        originals_dir=paths["originals"],
+                    ),
+                )
+            )
+        elif phase == "rebuttal":
+            for agent, assignment in kwargs["assignments"].items():
+                requests.append(
+                    self._request(
+                        role="rebuttal",
+                        agent=agent,
+                        packet=packet,
+                        phase=phase,
+                        prompt=rebuttal_prompt(
+                            agent,
+                            packet,
+                            kwargs["originals"][agent],
+                            assignment,
+                            packet_path=paths["packet"],
+                        ),
+                    )
+                )
+        elif phase == "final":
+            requests.append(
+                self._request(
+                    role="final-aggregator",
+                    agent="final-aggregator",
+                    packet=packet,
+                    phase=phase,
+                    prompt=final_prompt(
+                        packet,
+                        packet_path=paths["packet"],
+                        originals_dir=paths["originals"],
+                        conflict_path=paths["conflict"],
+                        rebuttals_dir=paths["rebuttals"],
+                    ),
+                )
+            )
+        else:
+            raise LiveRunBlocked(f"unknown live phase {phase}")
+        for request in requests:
+            self.dispatcher.ensure(request)
+        require_results(packet["run_id"], phase, requests, self.dispatcher)
+        return requests
+
+    def _invoke(self, request, budget: BudgetLedger, role: str, agent: str, purpose: str) -> dict[str, Any]:
+        assert_advocate_model(request.model) if role != "subagent" else None
+        if role in {"advocate", "rebuttal"}:
+            assert_advocate_model(ADVOCATE_MODEL)
+            budget.charge(role, ADVOCATE_MODEL, agent, purpose)
+        elif role in {"conflict-aggregator", "final-aggregator"}:
+            assert_aggregator_model(AGGREGATOR_MODEL)
+            budget.charge(role, AGGREGATOR_MODEL, agent, purpose)
+        payload = self.dispatcher.read(request)
+        if payload is None:
+            raise LiveRunBlocked(f"missing live result for {request.key}")
+        subagent_calls = int(payload.get("subagent_calls") or 0)
+        if role != "advocate" and subagent_calls:
+            raise ModelPolicyError(f"{role} may not make subagent calls")
+        if subagent_calls:
+            model = payload.get("subagent_model") or SUBAGENT_MODEL
+            for idx in range(subagent_calls):
+                assert_subagent_model(model)
+                budget.charge("subagent", model, agent, f"{purpose}:subagent:{idx+1}")
+        return payload
 
     def run_advocate(self, agent: str, packet: dict[str, Any], budget: BudgetLedger) -> dict[str, Any]:
-        raise LiveRunBlocked(f"live advocate dispatch is not implemented in this entrypoint: {agent}")
+        paths = self._paths(packet)
+        from scripts.trader_room.prompts import advocate_prompt
+
+        request = self._request(
+            role="advocate",
+            agent=agent,
+            packet=packet,
+            phase="round1",
+            prompt=advocate_prompt(agent, packet, packet_path=paths["packet"]),
+        )
+        self.dispatcher.ensure(request)
+        return self._invoke(request, budget, "advocate", agent, f"round1:{agent}")
 
     def run_conflict_aggregator(self, originals, packet, budget) -> dict[str, Any]:
-        raise LiveRunBlocked("live conflict aggregator dispatch is not implemented in this entrypoint")
+        paths = self._paths(packet)
+        from scripts.trader_room.prompts import conflict_prompt
+
+        request = self._request(
+            role="conflict-aggregator",
+            agent="conflict-aggregator",
+            packet=packet,
+            phase="conflict",
+            prompt=conflict_prompt(
+                packet, originals, packet_path=paths["packet"], originals_dir=paths["originals"]
+            ),
+        )
+        self.dispatcher.ensure(request)
+        return self._invoke(
+            request, budget, "conflict-aggregator", "conflict-aggregator", "conflict-map"
+        )
 
     def run_rebuttal(self, agent, packet, original, assignment, budget) -> dict[str, Any]:
-        raise LiveRunBlocked(f"live rebuttal dispatch is not implemented in this entrypoint: {agent}")
+        paths = self._paths(packet)
+        from scripts.trader_room.prompts import rebuttal_prompt
+
+        request = self._request(
+            role="rebuttal",
+            agent=agent,
+            packet=packet,
+            phase="rebuttal",
+            prompt=rebuttal_prompt(
+                agent, packet, original, assignment, packet_path=paths["packet"]
+            ),
+        )
+        self.dispatcher.ensure(request)
+        return self._invoke(request, budget, "rebuttal", agent, f"rebuttal:{agent}")
 
     def run_final_aggregator(self, packet, originals, conflict_map, rebuttals, budget) -> dict[str, Any]:
-        raise LiveRunBlocked("live final aggregator dispatch is not implemented in this entrypoint")
+        paths = self._paths(packet)
+        from scripts.trader_room.prompts import final_prompt
+
+        request = self._request(
+            role="final-aggregator",
+            agent="final-aggregator",
+            packet=packet,
+            phase="final",
+            prompt=final_prompt(
+                packet,
+                packet_path=paths["packet"],
+                originals_dir=paths["originals"],
+                conflict_path=paths["conflict"],
+                rebuttals_dir=paths["rebuttals"],
+            ),
+        )
+        self.dispatcher.ensure(request)
+        return self._invoke(
+            request, budget, "final-aggregator", "final-aggregator", "pm-handoff"
+        )
 
 
 def build_launch_plan(packet: dict[str, Any]) -> dict[str, Any]:

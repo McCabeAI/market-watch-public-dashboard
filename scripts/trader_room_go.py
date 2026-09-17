@@ -5,8 +5,10 @@ Default `go` is a complete dry-run: freeze-validate the evidence packet and
 run the 14-advocate -> conflict aggregator -> one-pass rebuttal -> final
 aggregator workflow without consuming the production Grok/Composer budget.
 
-A live 14-trader research run is refused unless a later authenticated human
-explicitly arms TRADER_ROOM_LIVE=1. This CLI still will not dispatch models.
+A live 14-trader research run requires TRADER_ROOM_LIVE=1 and `--live`.
+That path uses Cursor native parent-agent orchestration: one grok-4.6 parent
+invokes the 14 standing grok-4.6 seats against the identical frozen packet.
+The Python LiveRunner does not synthesize model output. CI remains refused.
 """
 
 from __future__ import annotations
@@ -18,7 +20,7 @@ from pathlib import Path
 
 from scripts.trader_room.artifacts import retrieve
 from scripts.trader_room.constants import HANDOFF_MARKER, ROOT
-from scripts.trader_room.errors import LiveRunBlocked, TraderRoomError
+from scripts.trader_room.errors import LiveRunBlocked, ParentDispatchRequired, TraderRoomError
 from scripts.trader_room.orchestrator import go, prepare_evidence
 from scripts.trader_room.runners import build_launch_plan
 
@@ -42,8 +44,13 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--fixture", type=Path, help="Override synthetic fixture path")
     parser.add_argument("--market-state", type=Path, help="Optional market-state JSON")
     parser.add_argument("--artifact-root", type=Path, default=ROOT)
-    parser.add_argument("--live", action="store_true", help="Request the production 14-trader run (refused here)")
-    parser.add_argument("--run-id", help="retrieve: run id")
+    parser.add_argument(
+        "--live",
+        action="store_true",
+        help="Request the production 14-trader Cursor-native run (requires TRADER_ROOM_LIVE=1)",
+    )
+    parser.add_argument("--resume", action="store_true", help="Resume a live run from persisted packet")
+    parser.add_argument("--run-id", help="retrieve/resume: run id")
     parser.add_argument("--kind", help="retrieve: evidence_packet|submission|rebuttal|conflict_map|pm_handoff")
     parser.add_argument("--agent", help="retrieve: advocate name when kind is submission/rebuttal")
     args = parser.parse_args(argv)
@@ -80,6 +87,7 @@ def main(argv: list[str] | None = None) -> int:
             fixture=args.fixture,
             market_state_path=args.market_state,
             artifact_root=args.artifact_root,
+            resume_run_id=args.run_id if args.resume else None,
         )
         _print(
             {
@@ -101,6 +109,9 @@ def main(argv: list[str] | None = None) -> int:
         if result["handoff"]["status"] != HANDOFF_MARKER:
             return 2
         return 0
+    except ParentDispatchRequired as exc:
+        _print(exc.as_dict())
+        return 4
     except LiveRunBlocked as exc:
         print(f"LIVE RUN BLOCKED: {exc}", file=sys.stderr)
         return 3

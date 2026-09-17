@@ -30,6 +30,23 @@ def write_json(path: Path, payload: Any) -> Path:
     return path
 
 
+def persist_launch_kit(
+    *,
+    root: Path,
+    packet: dict[str, Any],
+    preflight: dict[str, Any],
+    launch_plan: dict[str, Any],
+) -> Path:
+    """Persist the frozen packet before any parent-agent seat is invoked."""
+    run_id = packet["run_id"]
+    base = run_dir(root, run_id)
+    write_json(base / ARTIFACT_FILES["evidence_packet"], packet)
+    (base / "evidence_packet.sha256").write_text(packet["packet_sha256"] + "\n", encoding="utf-8")
+    write_json(base / ARTIFACT_FILES["preflight"], preflight)
+    write_json(base / ARTIFACT_FILES["launch_plan"], launch_plan)
+    return base
+
+
 def persist_run(
     *,
     root: Path,
@@ -41,6 +58,7 @@ def persist_run(
     handoff: dict[str, Any],
     budget: dict[str, Any],
     launch_plan: dict[str, Any],
+    live: bool = False,
 ) -> dict[str, Any]:
     run_id = packet["run_id"]
     base = run_dir(root, run_id)
@@ -80,7 +98,8 @@ def persist_run(
             "evidence_cutoff": packet["as_of"],
             "artifact_root": str(base.relative_to(root)),
             "status": handoff["status"],
-            "live": False,
+            "live": live,
+            "orchestration": "cursor-native-parent" if live else "dry-run",
         }
         write_json(base / ARTIFACT_FILES["receipt"], receipt)
     except OSError as exc:

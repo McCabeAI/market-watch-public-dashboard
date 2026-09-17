@@ -8,7 +8,7 @@ The single repository entrypoint is:
 PYTHONPATH=. python scripts/trader_room_go.py go --topic "<user text or go>"
 ```
 
-Default `go` freeze-validates the packet and runs the complete 14-advocate -> conflict aggregator -> one-pass rebuttal -> final aggregator workflow as a dry-run. It does not consume the production Trader Room model budget and must not launch the real 14-trader research run. Refuse `--live` unless a later authenticated human has armed `TRADER_ROOM_LIVE=1`.
+Default `go` freeze-validates the packet and runs the complete 14-advocate -> conflict aggregator -> one-pass rebuttal -> final aggregator workflow as a dry-run. It does not consume the production Trader Room model budget and must not launch the real 14-trader research run. Refuse `--live` unless a later authenticated human has armed `TRADER_ROOM_LIVE=1`. When armed, `--live` uses Cursor native parent-agent orchestration: one grok-4.6 parent invokes the 14 standing grok-4.6 seats and both aggregators against the identical frozen packet. `LiveRunner` does not synthesize model output.
 
 User topic/hypothesis: use the text supplied after `/trader-room` or `go`. If none is supplied, use `go` and let the frozen packet define G10 FX scope, with emphasis on CAD/AUD/NZD and USD as benchmark, without inventing a trade.
 
