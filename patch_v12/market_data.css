@@ -1,0 +1,17 @@
+.marketdata .md-banner{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin:0 0 12px;font-size:11px;color:#4b6171}
+.marketdata .md-pill{display:inline-block;padding:4px 8px;border-radius:6px;border:1px solid var(--line);background:#f8fafb;font-weight:700}
+.marketdata .md-pill.warn{border-color:#e0b35a;background:#fff8e8;color:#7a4e00}
+.marketdata .md-pill.bad{border-color:#d9a3a3;background:#fff3f3;color:#7a1f1f}
+.marketdata .md-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:12px}
+.marketdata .md-grid.one{grid-template-columns:1fr}
+.marketdata .md-panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px;box-shadow:var(--shadow)}
+.marketdata .md-panel h4{margin:0 0 8px;font-size:12px;color:#203e53}
+.marketdata table{width:100%;border-collapse:collapse;font-size:11px}
+.marketdata th,.marketdata td{padding:5px 6px;border-bottom:1px solid #e7edf2;text-align:right}
+.marketdata th:first-child,.marketdata td:first-child{text-align:left}
+.marketdata th{background:#f5f9fb;font-weight:800;color:#4a6274}
+.marketdata .na{color:#8a9aa8;font-style:italic}
+.marketdata .fx-scroll{max-height:420px;overflow:auto;border:1px solid #e7edf2;border-radius:6px}
+.marketdata .md-note{font-size:10px;color:var(--muted);margin-top:8px;line-height:1.45}
+#p-marketdata:checked~.app .nav label[for=p-marketdata]{color:var(--ink);border-bottom-color:var(--navy);font-weight:800}
+#p-marketdata:checked~.app .marketdata{display:block}

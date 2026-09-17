@@ -1,6 +1,6 @@
 # Market Watch — Operating Architecture and Data Pipeline
 
-Last updated: 2026-09-14
+Last updated: 2026-09-17
 
 This is the canonical technical runbook for the public Market Watch dashboard and its Supabase pilot. It records how the current system is built, what each storage layer owns, the data-source classes in use, the ingestion and verification rules, deployment mechanics, validation gates, and known gaps.
 
@@ -53,9 +53,11 @@ Current deploy path:
 6. It restores the v8 country score drawers from `patch_v8/`, including deterministic checks for all 16 score controls and hard/context evidence blocks.
 7. It applies the v10 August CPI context patch to the US Inflation drawer.
 8. It runs `scripts/apply_v11_refresh.py` as a fail-closed completeness transform. The Sep 14 version asserts the strict 30-day central-bank research count/window, removes aged research and stale X/catalyst state, updates current US Core CPI quick/feed presentation, inserts realized August CPI/PPI rows, and verifies that all 16 expandable score controls and the US CPI bridge lineage warning remain present.
-9. Only after all deterministic content/count/anchor checks pass is `_site/index.html` uploaded as the GitHub Pages artifact.
-10. The deploy job publishes that artifact to GitHub Pages.
-11. The operational run must still verify the live deployed page; a green workflow alone is not completion.
+9. It runs `scripts/market_state.py` to emit `_site/market-state.json` (no API keys; NZ may be `unavailable` when RBNZ is blocked).
+10. It applies the v12 **Market Data** tab from `patch_v12/` via `scripts/apply_market_data_tab.py`, which serves `market-data.js` and loads the same-origin JSON packet in the browser.
+11. Only after all deterministic content/count/anchor checks pass are `_site/index.html`, `market-state.json`, and `market-data.js` uploaded as the GitHub Pages artifact.
+12. The deploy job publishes that artifact to GitHub Pages on `main` pushes, weekday schedule, or manual dispatch.
+13. The operational run must still verify the live deployed page; a green workflow alone is not completion.
 
 Current immutable base validation constants in `.github/workflows/deploy-pages.yml`:
 
@@ -373,15 +375,20 @@ Supabase:
 - The repo's compressed-payload/patch authoring path is reliable but awkward; a normal source/generator pipeline should replace it once automation is built and validated.
 - Current source discovery is not yet represented as a machine-maintained source registry in code. Do not create one until the refresh workflow is actively using it.
 - Market tape remains a public snapshot, not a licensed live feed.
+- A standalone no-secret rates/FX research snapshot now exists at `scripts/market_state.py` and is documented in `docs/MARKET_STATE_FEED_V1.md`. It is independent of Pages and Supabase and must not be treated as executable pricing. GitHub-hosted runners currently receive HTTP 403 from the official RBNZ B2 workbook; the generator fails closed rather than substituting a vendor feed.
 
 ## 18. Repo map
 
 - `.github/workflows/deploy-pages.yml` — exact Pages build and validation gate
+- `.github/workflows/daily-market-state.yml` — weekday/manual no-secret rates and G10 FX research snapshot
+- `scripts/market_state.py` — deterministic market-state generator
+- `docs/MARKET_STATE_FEED_V1.md` — generator command and JSON output contract
 - `payload_v6/` — known-good compressed/base64 v6 dashboard base
 - `patch_v7/` — Last 24 Hours patch
 - `patch_v8/` — expandable 1–100 country score drawers and evidence panels
 - `patch_v9/` — rolling Top Market Drivers and 7-Day Quick Digest
 - `patch_v10/` — August CPI context / bridge-lineage patch for US Inflation
+- `patch_v12/` — Market Data tab (rates, RV spreads, G10 FX from `market-state.json`)
 - `scripts/apply_v11_refresh.py` — rolling research/X/catalyst/CPI/release completeness transform and assertions
 - `supabase/migrations/` — version-controlled database schema changes
 - `docs/OPERATING_ARCHITECTURE.md` — this canonical technical runbook
