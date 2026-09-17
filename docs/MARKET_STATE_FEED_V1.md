@@ -20,6 +20,12 @@ Optional test override:
 PYTHONPATH=. python scripts/market_state.py --output /tmp/market-state/market-state.json --today 2026-09-17
 ```
 
+If a host can download the official RBNZ B2 xlsx but Python cannot, pass the same official file through:
+
+```bash
+PYTHONPATH=. python scripts/market_state.py --output /tmp/market-state/market-state.json --nz-workbook /tmp/market-state/hb2-daily-close.xlsx
+```
+
 Dependency (RBNZ workbook only):
 
 ```bash

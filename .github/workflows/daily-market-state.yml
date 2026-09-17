@@ -40,11 +40,30 @@ jobs:
       - name: Deterministic parser and calculation tests
         run: PYTHONPATH=. python -m unittest tests.test_market_state -v
 
-      - name: Generate market-state packet
+      - name: Fetch official RBNZ B2 workbook
         run: |
           set -euo pipefail
           mkdir -p /tmp/market-state
-          PYTHONPATH=. python scripts/market_state.py --output /tmp/market-state/market-state.json
+          curl -fL --retry 3 --retry-delay 2 \
+            -A "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36" \
+            -H "Accept: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/octet-stream,*/*" \
+            -H "Accept-Language: en-US,en;q=0.9" \
+            -H "Referer: https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/wholesale-interest-rates" \
+            -o /tmp/market-state/hb2-daily-close.xlsx \
+            "https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx"
+          python - <<'PY'
+          from pathlib import Path
+          path = Path("/tmp/market-state/hb2-daily-close.xlsx")
+          data = path.read_bytes()
+          if data[:2] != b"PK":
+              raise SystemExit(f"RBNZ download was not an xlsx workbook; starts with {data[:40]!r}")
+          print(f"downloaded official RBNZ B2 workbook ({path.stat().st_size} bytes)")
+          PY
+
+      - name: Generate market-state packet
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python scripts/market_state.py --output /tmp/market-state/market-state.json --nz-workbook /tmp/market-state/hb2-daily-close.xlsx
 
       - name: Validate packet contract
         run: |

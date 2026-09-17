@@ -9,6 +9,7 @@ from scripts.market_state import (
     build_fx_crosses,
     build_snapshot,
     curve_spread,
+    fetch_nz_rates,
     fx_metrics,
     parse_boc_json,
     parse_ecb_fx_csv,
@@ -191,6 +192,12 @@ class MarketStateTests(unittest.TestCase):
         parsed = parse_rbnz_xlsx(buf.getvalue())
         self.assertEqual(parsed["2Y"][date(2026, 9, 8)], 3.6)
         self.assertEqual(parsed["10Y"][date(2026, 9, 8)], 4.8)
+        local = fetch_nz_rates(date(2026, 9, 1), date(2026, 9, 17), workbook_bytes=buf.getvalue())
+        self.assertEqual(local["10Y"][date(2026, 9, 8)], 4.8)
+
+    def test_nz_rejects_html_challenge_page(self):
+        with self.assertRaises(MarketStateError):
+            fetch_nz_rates(date(2026, 9, 1), date(2026, 9, 17), workbook_bytes=b"<html>cloudflare</html>")
 
     def test_build_snapshot_contract_and_staleness(self):
         start = date(2026, 8, 1)

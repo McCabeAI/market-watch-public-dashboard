@@ -30,6 +30,10 @@ USER_AGENT = (
     "MarketWatch-MarketState/1.0 "
     "(+https://github.com/McCabeAI/market-watch-public-dashboard)"
 )
+BROWSER_USER_AGENT = (
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+)
 DEFAULT_TIMEOUT = 45
 RETRIES = 3
 
@@ -85,10 +89,16 @@ class MarketStateError(RuntimeError):
     """Hard failure: a required official source or calculation is unusable."""
 
 
-def fetch_bytes(url: str, *, timeout: int = DEFAULT_TIMEOUT, retries: int = RETRIES) -> bytes:
+def fetch_bytes(
+    url: str,
+    *,
+    timeout: int = DEFAULT_TIMEOUT,
+    retries: int = RETRIES,
+    user_agent: str | None = None,
+) -> bytes:
     last: Exception | None = None
     headers = {
-        "User-Agent": USER_AGENT,
+        "User-Agent": user_agent or USER_AGENT,
         "Accept": "*/*",
         "Accept-Language": "en-US,en;q=0.8",
     }
@@ -108,17 +118,17 @@ def fetch_bytes(url: str, *, timeout: int = DEFAULT_TIMEOUT, retries: int = RETR
                 return data
         except urllib.error.HTTPError as exc:
             last = exc
-            if exc.code == 403 and "rbnz.govt.nz" in url:
-                raise MarketStateError(
-                    f"RBNZ official B2 workbook returned HTTP 403 from {url}. "
-                    "Refusing to substitute a third-party or vendor feed."
-                ) from exc
             if attempt + 1 < retries:
                 time.sleep(1.5 * (attempt + 1))
         except (urllib.error.URLError, TimeoutError, MarketStateError) as exc:
             last = exc
             if attempt + 1 < retries:
                 time.sleep(1.5 * (attempt + 1))
+    if isinstance(last, urllib.error.HTTPError) and last.code == 403 and "rbnz.govt.nz" in url:
+        raise MarketStateError(
+            f"RBNZ official B2 workbook returned HTTP 403 from {url}. "
+            "Refusing to substitute a third-party or vendor feed."
+        ) from last
     raise MarketStateError(f"failed to fetch {url}: {last}")
 
 
@@ -444,8 +454,20 @@ def parse_rbnz_xlsx(data: bytes) -> dict[str, dict[date, float]]:
     return out
 
 
-def fetch_nz_rates(start: date, end: date) -> dict[str, dict[date, float]]:
-    parsed = parse_rbnz_xlsx(fetch_bytes(RBNZ_URL))
+def fetch_nz_rates(
+    start: date,
+    end: date,
+    *,
+    workbook_bytes: bytes | None = None,
+) -> dict[str, dict[date, float]]:
+    if workbook_bytes is None:
+        try:
+            workbook_bytes = fetch_bytes(RBNZ_URL, user_agent=BROWSER_USER_AGENT)
+        except MarketStateError:
+            workbook_bytes = fetch_bytes(RBNZ_URL)
+    if workbook_bytes[:2] != b"PK":
+        raise MarketStateError("RBNZ download was not an xlsx workbook; refusing to parse a substitute page")
+    parsed = parse_rbnz_xlsx(workbook_bytes)
     out = {k: {d: v for d, v in s.items() if start <= d <= end} for k, s in parsed.items()}
     if any(not out[k] for k in RATE_TENORS):
         raise MarketStateError("RBNZ history missing required tenors after date filter")
@@ -575,14 +597,15 @@ def _freshness(age_days: int, key: str) -> str:
     return "stale" if age_days > STALE_AFTER_DAYS[key] else "ok"
 
 
-def build_snapshot(*, today: date | None = None) -> dict:
+def build_snapshot(*, today: date | None = None, nz_workbook: Path | None = None) -> dict:
     today = today or datetime.now(timezone.utc).date()
     start = today - timedelta(days=366 * 5 + 15)
+    nz_bytes = nz_workbook.read_bytes() if nz_workbook else None
     rates_raw = {
         "US": fetch_us_rates(start, today),
         "CA": fetch_ca_rates(start, today),
         "AU": fetch_au_rates(start, today),
-        "NZ": fetch_nz_rates(start, today),
+        "NZ": fetch_nz_rates(start, today, workbook_bytes=nz_bytes),
     }
     rates: dict[str, dict] = {}
     stale_sources: list[str] = []
@@ -744,9 +767,16 @@ def main(argv: Sequence[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="Generate the Market Watch daily market-state packet")
     ap.add_argument("--output", required=True, help="JSON snapshot path")
     ap.add_argument("--today", help="override current date (YYYY-MM-DD), useful for testing")
+    ap.add_argument(
+        "--nz-workbook",
+        help="optional local official RBNZ B2 xlsx (same file as the public download URL)",
+    )
     args = ap.parse_args(argv)
     today = date.fromisoformat(args.today) if args.today else None
-    snapshot = build_snapshot(today=today)
+    nz_workbook = Path(args.nz_workbook) if args.nz_workbook else None
+    if nz_workbook and not nz_workbook.is_file():
+        raise MarketStateError(f"RBNZ workbook not found: {nz_workbook}")
+    snapshot = build_snapshot(today=today, nz_workbook=nz_workbook)
     validate_snapshot(snapshot)
     out = Path(args.output)
     out.parent.mkdir(parents=True, exist_ok=True)
