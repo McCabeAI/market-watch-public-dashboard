@@ -1,6 +1,6 @@
 # Market Watch — Operating Architecture and Data Pipeline
 
-Last updated: 2026-09-14
+Last updated: 2026-09-17
 
 This is the canonical technical runbook for the public Market Watch dashboard and its Supabase pilot. It records how the current system is built, what each storage layer owns, the data-source classes in use, the ingestion and verification rules, deployment mechanics, validation gates, and known gaps.
 
@@ -373,10 +373,14 @@ Supabase:
 - The repo's compressed-payload/patch authoring path is reliable but awkward; a normal source/generator pipeline should replace it once automation is built and validated.
 - Current source discovery is not yet represented as a machine-maintained source registry in code. Do not create one until the refresh workflow is actively using it.
 - Market tape remains a public snapshot, not a licensed live feed.
+- A standalone no-secret rates/FX research snapshot now exists at `scripts/market_state.py` and is documented in `docs/MARKET_STATE_FEED_V1.md`. It is independent of Pages and Supabase and must not be treated as executable pricing.
 
 ## 18. Repo map
 
 - `.github/workflows/deploy-pages.yml` — exact Pages build and validation gate
+- `.github/workflows/daily-market-state.yml` — weekday/manual no-secret rates and G10 FX research snapshot
+- `scripts/market_state.py` — deterministic market-state generator
+- `docs/MARKET_STATE_FEED_V1.md` — generator command and JSON output contract
 - `payload_v6/` — known-good compressed/base64 v6 dashboard base
 - `patch_v7/` — Last 24 Hours patch
 - `patch_v8/` — expandable 1–100 country score drawers and evidence panels

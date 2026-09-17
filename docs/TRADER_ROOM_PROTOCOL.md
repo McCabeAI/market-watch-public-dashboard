@@ -50,6 +50,7 @@ The parent agent should populate the packet from the best currently available so
 
 - Market Watch Supabase operational state, through the project-scoped read-only MCP connection;
 - repository technical/research context that is relevant to interpretation;
+- the standalone market-state snapshot from `scripts/market_state.py` when a fresh official rates/G10 FX research packet is needed (command and contract: `docs/MARKET_STATE_FEED_V1.md`);
 - current official/public sources and web research for facts that require freshness;
 - any private research/methodology that is actually accessible in the current Cursor Cloud session;
 - user-supplied prices, positions, constraints or hypotheses.
