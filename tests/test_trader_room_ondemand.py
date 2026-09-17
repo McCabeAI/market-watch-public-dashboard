@@ -38,8 +38,10 @@ from scripts.trader_room.errors import (
     DataBoundaryError,
     EvidenceImmutabilityError,
     EvidencePreflightError,
+    IndependentSeatRequired,
     LiveRunBlocked,
     ModelPolicyError,
+    ParentAuthoredSeatError,
     SchemaError,
 )
 from scripts.trader_room.evidence import (
@@ -57,8 +59,11 @@ from scripts.trader_room.models import (
     trader_room_hook_policy,
 )
 from scripts.trader_room.artifacts import sanitize_packet
+from scripts.trader_room.hook_enforce import decide as hook_decide
+from scripts.trader_room.independent import persist_independent_run
 from scripts.trader_room.orchestrator import go, prepare_evidence, run_debate, run_recorded_debate
 from scripts.trader_room.production_live import build_live_originals, build_live_rebuttals
+from scripts.trader_room.provenance import stamp_independent_invocation
 from scripts.trader_room.runners import DryRunRunner, LiveRunner
 from scripts.trader_room.schema import validate_contribution, validate_pm_handoff, validate_trade
 
@@ -443,7 +448,7 @@ class MandateAndHandoffTests(unittest.TestCase):
                 preflight,
                 originals,
                 artifact_root=Path(tmp),
-                live=True,
+                live=False,
             )
             self.assertEqual(result["handoff"]["status"], HANDOFF_MARKER)
             self.assertNotIn("winner", result["handoff"])
@@ -459,24 +464,126 @@ class MandateAndHandoffTests(unittest.TestCase):
                 self.assertIn("catalysts", item)
                 self.assertIn("invalidation", item)
 
-    def test_production_briefs_validate_on_synthetic_packet(self):
+    def test_production_briefs_are_refused(self):
         packet, preflight = prepare_evidence(topic="go", synthetic=True)
-        originals = build_live_originals(packet)
-        self.assertEqual(set(originals), set(STANDING_ADVOCATES))
-        assignments = rebuttal_assignments(detect_conflicts(originals))
-        rebuttals = build_live_rebuttals(packet, originals, assignments)
+        with self.assertRaises(ParentAuthoredSeatError):
+            build_live_originals(packet)
+        with self.assertRaises(ParentAuthoredSeatError):
+            build_live_rebuttals(packet, {}, {})
+        with self.assertRaises(IndependentSeatRequired):
+            run_recorded_debate(packet, preflight, {}, live=True)
+
+    def test_parent_authored_contribution_is_rejected(self):
+        packet = _packet()
+        contribution = DryRunRunner().run_advocate("perma-bull", packet, BudgetLedger())
+        validate_contribution(contribution, packet=packet, expected_agent="perma-bull")
+        contribution["execution"] = "parent_authored_production_evidence"
+        with self.assertRaises(ParentAuthoredSeatError):
+            validate_contribution(contribution, packet=packet, expected_agent="perma-bull")
+
+
+class IndependentExecutionTests(unittest.TestCase):
+    def test_hook_role_policy_and_acp_is_not_an_immediate_grant(self):
         with tempfile.TemporaryDirectory() as tmp:
-            result = run_recorded_debate(
-                packet,
-                preflight,
-                originals,
-                rebuttals=rebuttals,
-                artifact_root=Path(tmp),
+            count_dir = Path(tmp) / "counts"
+            transcript = Path(tmp) / "transcript.txt"
+            transcript.write_text(
+                'ACP_SUBAGENT_POLICY={"version":1,"allowed_models":["grok-4.6","composer-2.5"]}\n'
+                + trader_room_hook_policy()
+                + "\n",
+                encoding="utf-8",
             )
-        self.assertEqual(result["originals"]["rate-hawk"]["expression_comparison"]["chosen_expression"], "outright_duration")
-        self.assertEqual(result["originals"]["dollar-king"]["expression_comparison"]["chosen_expression"], "spot_fx")
-        self.assertIsNone(result["originals"]["vol-convexity"].get("expression_comparison"))
-        self.assertIsNone(result["originals"]["no-trade-skeptic"]["trade"])
+            ok, _ = hook_decide(
+                json.dumps({"subagent_model": "grok-4.6", "subagent_type": "perma-bull", "transcript_path": str(transcript)}),
+                count_dir=count_dir,
+            )
+            self.assertTrue(ok)
+            ok, msg = hook_decide(
+                json.dumps(
+                    {
+                        "subagent_model": "composer-2.5",
+                        "subagent_type": "conflict-aggregator",
+                        "transcript_path": str(transcript),
+                    }
+                ),
+                count_dir=count_dir,
+            )
+            self.assertFalse(ok)
+            self.assertIn("exact grok-4.6", msg)
+            ok, msg = hook_decide(
+                json.dumps(
+                    {
+                        "subagent_model": "composer-2.5",
+                        "subagent_type": "generalPurpose",
+                        "transcript_path": str(transcript),
+                        "prompt": "TRADER_ROOM_SEAT_ROLE=rebuttal",
+                    }
+                ),
+                count_dir=count_dir,
+            )
+            self.assertFalse(ok)
+            research = json.dumps(
+                {
+                    "subagent_model": "composer-2.5",
+                    "subagent_type": "generalPurpose",
+                    "transcript_path": str(transcript),
+                    "prompt": "TRADER_ROOM_SEAT_ROLE=advocate-research",
+                }
+            )
+            ok, _ = hook_decide(research, count_dir=count_dir)
+            self.assertTrue(ok)
+            ok, _ = hook_decide(research, count_dir=count_dir)
+            self.assertTrue(ok)
+            ok, msg = hook_decide(research, count_dir=count_dir)
+            self.assertFalse(ok)
+            self.assertIn("max 2", msg)
+
+    def test_persist_independent_requires_complete_grok_evidence(self):
+        packet, preflight = prepare_evidence(topic="go", synthetic=True)
+        runner = DryRunRunner()
+        originals = {
+            agent: stamp_independent_invocation(
+                runner.run_advocate(agent, packet, BudgetLedger()),
+                role="advocate",
+                model="grok-4.6",
+                invocation_id=f"seat-{agent}",
+                agent=agent,
+            )
+            for agent in STANDING_ADVOCATES
+        }
+        with self.assertRaises(IndependentSeatRequired):
+            persist_independent_run(
+                packet=packet,
+                preflight=preflight,
+                originals=originals,
+                conflict_map=None,  # type: ignore[arg-type]
+                rebuttals={},
+                handoff={},
+            )
+        missing = dict(originals)
+        missing.pop("dollar-king")
+        with self.assertRaises(IndependentSeatRequired):
+            persist_independent_run(
+                packet=packet,
+                preflight=preflight,
+                originals=missing,
+                conflict_map={"type": "TRADER_ROOM_CONFLICT_MAP", "run_id": packet["run_id"], "conflicts": []},
+                rebuttals={},
+                handoff={"type": "TRADER_ROOM_PM_HANDOFF"},
+            )
+
+    def test_invalid_prior_run_is_not_latest(self):
+        latest = json.loads((ROOT / "trader-room" / "runs" / "latest.json").read_text(encoding="utf-8"))
+        catalog = json.loads((ROOT / "trader-room" / "runs" / "INDEX.json").read_text(encoding="utf-8"))
+        self.assertFalse(latest.get("valid"))
+        self.assertIsNone(latest.get("run_id"))
+        marked = next(item for item in catalog["runs"] if item["run_id"] == "tr-20260917T231827Z-4ca9133b")
+        self.assertFalse(marked["valid"])
+        self.assertEqual(marked["status"], "INVALID")
+        validity = json.loads(
+            (ROOT / "trader-room" / "runs" / "tr-20260917T231827Z-4ca9133b" / "VALIDITY.json").read_text(encoding="utf-8")
+        )
+        self.assertFalse(validity["valid"])
 
 
 if __name__ == "__main__":

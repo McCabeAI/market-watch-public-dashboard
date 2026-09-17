@@ -1,25 +1,30 @@
 {
   "durable_channel": "git",
-  "latest_run_id": "tr-20260917T231827Z-4ca9133b",
-  "retrieve_command": "PYTHONPATH=. python scripts/trader_room_go.py retrieve --run-id tr-20260917T231827Z-4ca9133b --kind pm_handoff",
+  "latest_run_id": null,
+  "latest_valid_run_id": null,
+  "retrieve_command": null,
   "runs": [
     {
       "artifact_root": "trader-room/runs/tr-20260917T231827Z-4ca9133b",
       "durable_channel": "git",
       "evidence_cutoff": "2026-09-17T23:18:27Z",
+      "invalid_reason": "Parent authored standing-seat briefs instead of launching the 14 independent grok-4.6 seats. This run is not a valid Trader Room result.",
       "packet_sha256": "2e2494d98a6d094453f361975e7ec3992b4b13fafd4519ed7dca2b4c5f0045f2",
       "run_id": "tr-20260917T231827Z-4ca9133b",
       "sanitized": true,
-      "status": "STATUS: AWAITING_CHATGPT_ARBITRATION"
+      "status": "INVALID",
+      "valid": false
     },
     {
       "artifact_root": "trader-room/runs/tr-20260917T231806Z-b88b5ace",
       "durable_channel": "git",
       "evidence_cutoff": "2026-09-17T23:18:06Z",
+      "invalid_reason": "Catalog residue from the parent-authored execution path; artifacts are not a valid independent grok-4.6 run.",
       "packet_sha256": "a4deb96e159d0a5efacea97bb51671781ae05b65af8195c2215a095f6e435880",
       "run_id": "tr-20260917T231806Z-b88b5ace",
       "sanitized": true,
-      "status": "STATUS: AWAITING_CHATGPT_ARBITRATION"
+      "status": "INVALID",
+      "valid": false
     }
   ]
 }

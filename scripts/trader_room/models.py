@@ -84,5 +84,8 @@ def trader_room_hook_policy() -> str:
         'TRADER_ROOM_MODEL_POLICY={"version":1,'
         f'"advocate_model":"{ADVOCATE_MODEL}",'
         f'"aggregator_model":"{AGGREGATOR_MODEL}",'
-        f'"subagent_models":["{SUBAGENT_MODEL}"]}}'
+        f'"rebuttal_model":"{ADVOCATE_MODEL}",'
+        f'"subagent_models":["{SUBAGENT_MODEL}"],'
+        '"composer_max_per_advocate":2,'
+        '"composer_allowed_role":"advocate-research"}'
     )

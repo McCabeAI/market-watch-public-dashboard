@@ -98,7 +98,7 @@ Use this structure:
 
 ## Round 1: independent pitches
 
-Launch all 14 standing advocates in parallel unless the user explicitly requests a smaller floor.
+Launch all 14 standing advocates in parallel unless the user explicitly requests a smaller floor. Each launch must be an independent `grok-4.6` seat. The parent must not synthesize, ghostwrite, substitute, or simulate a seat output if a required Grok seat fails to launch. Fail loudly instead.
 
 Do not let an advocate see another advocate's Round 1 work before it submits. Independent first passes are required to reduce anchoring.
 

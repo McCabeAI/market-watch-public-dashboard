@@ -6,7 +6,8 @@ run the 14-advocate -> conflict aggregator -> one-pass rebuttal -> final
 aggregator workflow without consuming the production Grok/Composer budget.
 
 A live 14-trader research run is refused unless a later authenticated human
-explicitly arms TRADER_ROOM_LIVE=1. This CLI still will not dispatch models.
+explicitly arms TRADER_ROOM_LIVE=1. This CLI still will not author or dispatch
+standing seats; persist-independent requires already-returned grok-4.6 payloads.
 """
 
 from __future__ import annotations
@@ -19,6 +20,8 @@ from pathlib import Path
 from scripts.trader_room.artifacts import retrieve
 from scripts.trader_room.constants import HANDOFF_MARKER, ROOT
 from scripts.trader_room.errors import LiveRunBlocked, TraderRoomError
+from scripts.trader_room.errors import IndependentSeatRequired
+from scripts.trader_room.independent import persist_independent_run
 from scripts.trader_room.orchestrator import go, prepare_evidence, run_recorded_debate
 from scripts.trader_room.runners import build_launch_plan
 
@@ -33,7 +36,7 @@ def main(argv: list[str] | None = None) -> int:
         "command",
         nargs="?",
         default="go",
-        choices=("go", "prepare", "retrieve", "record"),
+        choices=("go", "prepare", "retrieve", "record", "persist-independent"),
         help="go is the single on-demand workflow (default)",
     )
     parser.add_argument("--topic", default="go", help="User topic/hypothesis; 'go' is sufficient")
@@ -49,8 +52,13 @@ def main(argv: list[str] | None = None) -> int:
         help="retrieve: evidence_packet|submission|rebuttal|conflict_map|pm_handoff|pm_handoff_markdown|artifact_index",
     )
     parser.add_argument("--agent", help="retrieve: advocate name when kind is submission/rebuttal")
-    parser.add_argument("--submissions-dir", type=Path, help="record: directory of 14 authored submission JSON files")
-    parser.add_argument("--rebuttals-dir", type=Path, help="record: optional authored rebuttal JSON files")
+    parser.add_argument("--submissions-dir", type=Path, help="directory of 14 standing-seat submission JSON files")
+    parser.add_argument("--rebuttals-dir", type=Path, help="directory of independent rebuttal JSON files")
+    parser.add_argument("--conflict-map", type=Path, help="persist-independent: conflict-aggregator JSON")
+    parser.add_argument("--handoff", type=Path, help="persist-independent: final-aggregator JSON")
+    parser.add_argument("--invocation-ledger", type=Path, help="persist-independent: invocation/model evidence JSON")
+    parser.add_argument("--frozen-packet", type=Path, help="persist-independent: already-frozen evidence packet JSON")
+    parser.add_argument("--preflight-json", type=Path, help="persist-independent: matching preflight JSON")
     args = parser.parse_args(argv)
 
     try:
@@ -96,17 +104,19 @@ def main(argv: list[str] | None = None) -> int:
                     path.stem: json.loads(path.read_text(encoding="utf-8"))
                     for path in sorted(args.rebuttals_dir.glob("*.json"))
                 }
+            if args.live:
+                raise IndependentSeatRequired(
+                    "record --live is refused; parent-authored or recorded briefs "
+                    "cannot replace independent grok-4.6 seats"
+                )
             result = run_recorded_debate(
                 packet,
                 preflight,
                 originals,
                 rebuttals=rebuttals,
                 artifact_root=args.artifact_root,
-                live=True,
-                execution_note=(
-                    "Production-evidence recorded debate. Standing grok-4.6 seat models "
-                    "and remits are unchanged; this path persists a complete sanitized Git handoff."
-                ),
+                live=False,
+                execution_note="Dry-run recorded debate. Not a live independent grok-4.6 result.",
             )
             _print(
                 {
@@ -117,6 +127,75 @@ def main(argv: list[str] | None = None) -> int:
                     "conflicts": len(result["conflict_map"]["conflicts"]),
                     "rebuttals": sorted(result["rebuttals"]),
                     "status": result["handoff"]["status"],
+                }
+            )
+            return 0 if result["handoff"]["status"] == HANDOFF_MARKER else 2
+
+        if args.command == "persist-independent":
+            if not args.submissions_dir or not args.conflict_map or not args.handoff:
+                raise SystemExit("persist-independent requires --submissions-dir, --conflict-map, and --handoff")
+            if args.frozen_packet:
+                packet = json.loads(args.frozen_packet.read_text(encoding="utf-8"))
+                if args.preflight_json:
+                    preflight = json.loads(args.preflight_json.read_text(encoding="utf-8"))
+                else:
+                    preflight = {
+                        "run_id": packet.get("run_id"),
+                        "evidence_cutoff": packet.get("as_of"),
+                        "packet_sha256": packet.get("packet_sha256"),
+                        "ok": True,
+                    }
+            else:
+                packet, preflight = prepare_evidence(
+                    topic=args.topic,
+                    synthetic=not args.repo_evidence,
+                    fixture=args.fixture,
+                    market_state_path=args.market_state,
+                )
+            originals = {
+                path.stem: json.loads(path.read_text(encoding="utf-8"))
+                for path in sorted(args.submissions_dir.glob("*.json"))
+            }
+            if not args.rebuttals_dir:
+                raise IndependentSeatRequired(
+                    "persist-independent requires --rebuttals-dir; missing rebuttals must not be synthesized"
+                )
+            rebuttals = {
+                path.stem: json.loads(path.read_text(encoding="utf-8"))
+                for path in sorted(args.rebuttals_dir.glob("*.json"))
+            }
+            conflict_map = json.loads(args.conflict_map.read_text(encoding="utf-8"))
+            handoff = json.loads(args.handoff.read_text(encoding="utf-8"))
+            ledger = None
+            if args.invocation_ledger:
+                ledger = json.loads(args.invocation_ledger.read_text(encoding="utf-8"))
+            result = persist_independent_run(
+                packet=packet,
+                preflight=preflight,
+                originals=originals,
+                conflict_map=conflict_map,
+                rebuttals=rebuttals,
+                handoff=handoff,
+                artifact_root=args.artifact_root,
+                invocation_ledger=ledger,
+            )
+            _print(
+                {
+                    "run_id": result["run_id"],
+                    "evidence_cutoff": result["evidence_cutoff"],
+                    "packet_sha256": result["packet_sha256"],
+                    "artifact_index": result["artifact_index"],
+                    "budget": {
+                        "grok": result["budget"]["grok"],
+                        "composer": result["budget"]["composer"],
+                        "rebuttals": result["budget"]["rebuttals"],
+                        "ceilings": result["budget"]["ceilings"],
+                    },
+                    "conflicts": len(result["conflict_map"]["conflicts"]),
+                    "rebuttals": sorted(result["rebuttals"]),
+                    "status": result["handoff"]["status"],
+                    "valid": True,
+                    "execution": "independent_grok_seat",
                 }
             )
             return 0 if result["handoff"]["status"] == HANDOFF_MARKER else 2

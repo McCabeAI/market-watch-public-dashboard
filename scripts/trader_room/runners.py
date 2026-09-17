@@ -18,7 +18,7 @@ from scripts.trader_room.constants import (
     SUBAGENT_MODEL,
     VOL_SPECIALIST_AGENT,
 )
-from scripts.trader_room.errors import LiveRunBlocked, ModelPolicyError
+from scripts.trader_room.errors import IndependentSeatRequired, LiveRunBlocked, ModelPolicyError
 from scripts.trader_room.mandate import seat_class
 from scripts.trader_room.models import assert_advocate_model, assert_aggregator_model, assert_subagent_model
 from scripts.trader_room.schema import proposed_trade_row
@@ -414,7 +414,7 @@ def _clusters(originals: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
 
 
 class LiveRunner:
-    """Hard gate. This deployment path must not launch the real 14-trader run."""
+    """Hard gate. Python must not synthesize or dispatch standing-seat output."""
 
     def __init__(self) -> None:
         if os.environ.get(LIVE_ENV) != "1":
@@ -425,16 +425,28 @@ class LiveRunner:
             raise LiveRunBlocked("refusing live Trader Room run in CI")
 
     def run_advocate(self, agent: str, packet: dict[str, Any], budget: BudgetLedger) -> dict[str, Any]:
-        raise LiveRunBlocked(f"live advocate dispatch is not implemented in this entrypoint: {agent}")
+        raise IndependentSeatRequired(
+            f"refusing to synthesize live advocate output for {agent}; "
+            "launch the independent grok-4.6 seat or fail the run"
+        )
 
     def run_conflict_aggregator(self, originals, packet, budget) -> dict[str, Any]:
-        raise LiveRunBlocked("live conflict aggregator dispatch is not implemented in this entrypoint")
+        raise IndependentSeatRequired(
+            "refusing to synthesize the live conflict aggregator; "
+            "launch the independent grok-4.6 conflict-aggregator seat"
+        )
 
     def run_rebuttal(self, agent, packet, original, assignment, budget) -> dict[str, Any]:
-        raise LiveRunBlocked(f"live rebuttal dispatch is not implemented in this entrypoint: {agent}")
+        raise IndependentSeatRequired(
+            f"refusing to synthesize live rebuttal output for {agent}; "
+            "launch the independent grok-4.6 rebuttal seat"
+        )
 
     def run_final_aggregator(self, packet, originals, conflict_map, rebuttals, budget) -> dict[str, Any]:
-        raise LiveRunBlocked("live final aggregator dispatch is not implemented in this entrypoint")
+        raise IndependentSeatRequired(
+            "refusing to synthesize the live final aggregator; "
+            "launch the independent grok-4.6 final-aggregator seat"
+        )
 
 
 def build_launch_plan(packet: dict[str, Any]) -> dict[str, Any]:

@@ -25,6 +25,8 @@ ARTIFACT_FILES = {
     "launch_plan": "launch_plan.json",
     "artifact_index": "artifact_index.json",
     "receipt": "receipt.json",
+    "invocation_ledger": "invocation_ledger.json",
+    "validity": "VALIDITY.json",
 }
 PRIVATE_KEYS = {
     "private_methodology_available",
@@ -83,6 +85,14 @@ def _catalog_paths(root: Path) -> tuple[Path, Path]:
     return runs / INDEX_NAME, runs / LATEST_NAME
 
 
+def _latest_valid_run(runs: list[dict[str, Any]]) -> dict[str, Any] | None:
+    for item in runs:
+        if item.get("valid") is False or item.get("status") == "INVALID":
+            continue
+        return item
+    return None
+
+
 def update_run_catalog(root: Path, entry: dict[str, Any]) -> None:
     index_path, latest_path = _catalog_paths(root)
     catalog = {"durable_channel": "git", "latest_run_id": None, "runs": []}
@@ -90,26 +100,84 @@ def update_run_catalog(root: Path, entry: dict[str, Any]) -> None:
         catalog = json.loads(index_path.read_text(encoding="utf-8"))
     runs = [item for item in catalog.get("runs") or [] if item.get("run_id") != entry["run_id"]]
     runs.insert(0, entry)
+    latest_valid = _latest_valid_run(runs)
+    latest_id = (latest_valid or {}).get("run_id")
     catalog = {
         "durable_channel": "git",
-        "latest_run_id": entry["run_id"],
+        "latest_run_id": latest_id,
+        "latest_valid_run_id": latest_id,
         "retrieve_command": (
             "PYTHONPATH=. python scripts/trader_room_go.py retrieve "
-            f"--run-id {entry['run_id']} --kind pm_handoff"
+            f"--run-id {latest_id} --kind pm_handoff"
+            if latest_id
+            else None
         ),
         "runs": runs,
     }
     write_json(index_path, catalog)
-    write_json(
-        latest_path,
+    if latest_valid:
+        write_json(
+            latest_path,
+            {
+                "run_id": latest_valid["run_id"],
+                "path": latest_valid["artifact_root"],
+                "evidence_cutoff": latest_valid.get("evidence_cutoff"),
+                "retrieve_command": catalog["retrieve_command"],
+                "durable_channel": "git",
+                "valid": latest_valid.get("valid", True),
+            },
+        )
+    else:
+        write_json(
+            latest_path,
+            {
+                "run_id": None,
+                "path": None,
+                "valid": False,
+                "note": "No valid independently launched Trader Room run is published.",
+                "durable_channel": "git",
+            },
+        )
+
+
+def mark_run_invalid(root: Path, run_id: str, reason: str) -> Path:
+    base = run_dir(root, run_id)
+    if not base.is_dir():
+        raise ArtifactError(f"cannot invalidate missing run {run_id}")
+    validity = {
+        "run_id": run_id,
+        "valid": False,
+        "status": "INVALID",
+        "reason": reason,
+    }
+    write_json(base / ARTIFACT_FILES["validity"], validity)
+    receipt_path = base / ARTIFACT_FILES["receipt"]
+    receipt: dict[str, Any] = {}
+    if receipt_path.is_file():
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+        receipt["valid"] = False
+        receipt["status"] = "INVALID"
+        receipt["invalid_reason"] = reason
+        write_json(receipt_path, receipt)
+    packet_sha = None
+    sha_path = base / "evidence_packet.sha256"
+    if sha_path.is_file():
+        packet_sha = sha_path.read_text(encoding="utf-8").strip()
+    update_run_catalog(
+        root,
         {
-            "run_id": entry["run_id"],
-            "path": entry["artifact_root"],
-            "evidence_cutoff": entry.get("evidence_cutoff"),
-            "retrieve_command": catalog["retrieve_command"],
+            "run_id": run_id,
+            "evidence_cutoff": receipt.get("evidence_cutoff"),
+            "packet_sha256": packet_sha,
+            "artifact_root": str(base.relative_to(root)),
+            "sanitized": True,
             "durable_channel": "git",
+            "status": "INVALID",
+            "valid": False,
+            "invalid_reason": reason,
         },
     )
+    return base / ARTIFACT_FILES["validity"]
 
 
 def persist_run(
@@ -125,6 +193,8 @@ def persist_run(
     launch_plan: dict[str, Any],
     update_catalog: bool | None = None,
     local: bool = False,
+    invocation_ledger: dict[str, Any] | None = None,
+    valid: bool = True,
 ) -> dict[str, Any]:
     run_id = packet["run_id"]
     base = run_dir(root, run_id, local=local)
@@ -161,6 +231,9 @@ def persist_run(
                 for agent in rebuttals
             },
         }
+        if invocation_ledger is not None:
+            write_json(base / ARTIFACT_FILES["invocation_ledger"], invocation_ledger)
+            index["invocation_ledger"] = str((base / ARTIFACT_FILES["invocation_ledger"]).relative_to(root))
         handoff = dict(handoff)
         handoff["artifact_index"] = index
         write_json(base / ARTIFACT_FILES["pm_handoff"], handoff)
@@ -173,12 +246,22 @@ def persist_run(
         )
         (base / ARTIFACT_FILES["pm_handoff_markdown"]).write_text(markdown, encoding="utf-8")
         write_json(base / ARTIFACT_FILES["artifact_index"], index)
+        write_json(
+            base / ARTIFACT_FILES["validity"],
+            {
+                "run_id": run_id,
+                "valid": valid,
+                "status": "VALID" if valid else "INVALID",
+                "execution": handoff.get("execution") or packet.get("execution"),
+            },
+        )
         receipt = {
             "run_id": run_id,
             "evidence_cutoff": packet["as_of"],
             "artifact_root": str(base.relative_to(root)),
             "status": handoff["status"],
             "live": bool(handoff.get("live") or packet.get("live")),
+            "valid": valid,
             "sanitized": True,
             "durable_channel": index["durable_channel"],
             "retrieve_command": (
@@ -197,7 +280,8 @@ def persist_run(
                     "artifact_root": str(base.relative_to(root)),
                     "sanitized": True,
                     "durable_channel": "git",
-                    "status": handoff["status"],
+                    "status": handoff["status"] if valid else "INVALID",
+                    "valid": valid,
                 },
             )
     except OSError as exc:

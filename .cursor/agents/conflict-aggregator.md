@@ -14,6 +14,6 @@ Identify substantive conflicts only:
 - trade versus explicit no-trade
 - materially different rates versus spot expressions of the same macro view
 
-Do not rank agents. Do not choose a winner. Do not produce a house view. Do not treat confidence as a vote. Do not acquire new evidence.
+Do not rank agents. Do not choose a winner. Do not produce a house view. Do not treat confidence as a vote. Do not acquire new evidence. You may not make any internal subagent calls.
 
 Return only one `TRADER_ROOM_CONFLICT_MAP` JSON object. For each conflict include `id`, `kind`, `agents`, `opposing_trades`, and `description`.

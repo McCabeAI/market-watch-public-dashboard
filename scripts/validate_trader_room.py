@@ -81,6 +81,8 @@ def main() -> None:
     for name, path in sorted(agent_files.items()):
         assert_agent_file(name, path)
         body = path.read_text(encoding="utf-8")
+        if name in EXPECTED_AGGREGATORS:
+            assert "may not make any internal subagent calls" in body, f"{name}: aggregators get no subagents"
         if name in EXPECTED_ADVOCATES:
             assert "composer-2.5" in body, f"{name}: missing composer-2.5 subagent bound"
             assert "No web, search, or new evidence" in body, f"{name}: missing data-only bound"
@@ -128,6 +130,9 @@ def main() -> None:
     assert "trader-room/runs/<run_id>/" in on_demand
     assert "outright duration" in on_demand
     assert "Git-durable" in on_demand
+    assert "fail loudly" in on_demand
+    assert "Parent-authored or simulated standing-seat output is rejected" in on_demand
+    assert "must not synthesize" in protocol or "must not synthesize" in on_demand
 
     evidence_contract = (ROOT / "docs" / "TRADER_ROOM_EVIDENCE_CONTRACT.md").read_text(encoding="utf-8")
     method = (ROOT / "docs" / "TRADER_RESEARCH_METHOD.md").read_text(encoding="utf-8")
@@ -179,6 +184,13 @@ def main() -> None:
     hook = (ROOT / ".cursor" / "hooks" / "enforce-subagent-models.sh").read_text(encoding="utf-8")
     assert "TRADER_ROOM_MODEL_POLICY" in hook
     assert "grok-4.6|composer-2.5" in hook
+    assert "advocate-research" in hook
+    enforcer = (ROOT / "scripts" / "trader_room" / "hook_enforce.py").read_text(encoding="utf-8")
+    assert "advocate-research" in enforcer
+    assert "NO_COMPOSER_ROLES" in enforcer
+    production_live = (ROOT / "scripts" / "trader_room" / "production_live.py").read_text(encoding="utf-8")
+    assert "Parent-authored" in production_live
+    assert "build_live_originals" in production_live
 
     mcp_path = ROOT / ".cursor" / "mcp.json"
     config = json.loads(mcp_path.read_text(encoding="utf-8"))

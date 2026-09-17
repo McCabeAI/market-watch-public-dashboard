@@ -14,7 +14,7 @@ from scripts.trader_room.constants import (
     ROOT,
     STANDING_ADVOCATES,
 )
-from scripts.trader_room.errors import LiveRunBlocked, SchemaError
+from scripts.trader_room.errors import IndependentSeatRequired, LiveRunBlocked, SchemaError
 from scripts.trader_room.evidence import (
     assemble_packet,
     assess_families,
@@ -162,7 +162,12 @@ def go(
         root=root,
     )
     if live:
-        raise LiveRunBlocked("live debate dispatch is gated after evidence freeze")
+        raise IndependentSeatRequired(
+            "evidence frozen; Python will not dispatch or author standing seats. "
+            "Launch 14 independent grok-4.6 first-pass seats, then the grok-4.6 "
+            "conflict aggregator, one grok-4.6 rebuttal pass for conflicted seats, "
+            "and the grok-4.6 final aggregator. Persist with persist_independent_run."
+        )
     return run_debate(packet, preflight, runner=runner, root=root, artifact_root=artifact_root)
 
 
@@ -177,11 +182,17 @@ def run_recorded_debate(
     live: bool = False,
     execution_note: str | None = None,
 ) -> dict[str, Any]:
-    """Complete a debate from already-authored 14 submissions.
+    """Complete a dry-run debate from already-produced submissions.
 
-    Used for a production-evidence run when ACP cannot dispatch the standing
-    grok-4.6 seats. Roster, remits, and model assignment stay unchanged.
+    Live production runs must use persist_independent_run with grok-4.6
+    invocation evidence. This path will not accept parent-authored seats
+    and will not claim a live independent result.
     """
+    if live:
+        raise IndependentSeatRequired(
+            "recorded debate cannot stand in for live grok-4.6 seat dispatch; "
+            "use persist_independent_run after independent seats return"
+        )
     budget = BudgetLedger()
     validated: dict[str, dict[str, Any]] = {}
     for agent in STANDING_ADVOCATES:
