@@ -137,7 +137,7 @@ jobs:
           PY
           test "$(grep -o 'class=\"temp-dimension\"' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
           test "$(grep -o 'Hard score inputs' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
-          test "$(grep -o 'Context / corroboration' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
+          test "$(grep -o 'class=\"evidence-block context\"' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
 
       - name: Add August CPI context to US inflation evidence
         shell: bash
