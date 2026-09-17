@@ -43,10 +43,10 @@ class MarketStateTests(unittest.TestCase):
             "observations": [
                 {
                     "d": "2026-09-08",
-                    "V39051": {"v": "2.50"},
-                    "V39053": {"v": "2.75"},
-                    "V39055": {"v": "3.00"},
-                    "V39056": {"v": "3.40"},
+                    "BD.CDN.2YR.DQ.YLD": {"v": "2.50"},
+                    "BD.CDN.5YR.DQ.YLD": {"v": "2.75"},
+                    "BD.CDN.10YR.DQ.YLD": {"v": "3.00"},
+                    "BD.CDN.LONG.DQ.YLD": {"v": "3.40"},
                 }
             ]
         }
@@ -59,9 +59,9 @@ class MarketStateTests(unittest.TestCase):
             "observations": [
                 {
                     "d": "2026-09-08",
-                    "V39051": {"v": "2.50"},
-                    "V39053": {"v": "2.75"},
-                    "V39055": {"v": "3.00"},
+                    "BD.CDN.2YR.DQ.YLD": {"v": "2.50"},
+                    "BD.CDN.5YR.DQ.YLD": {"v": "2.75"},
+                    "BD.CDN.10YR.DQ.YLD": {"v": "3.00"},
                 }
             ]
         }

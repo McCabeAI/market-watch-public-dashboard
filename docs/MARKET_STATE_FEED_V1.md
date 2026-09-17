@@ -80,9 +80,9 @@ Null lookbacks stay null. A missing required source, tenor, currency, overlappin
 | Block | Authority | Notes |
 | --- | --- | --- |
 | US rates | U.S. Treasury daily par yield curve | Daily official CSV |
-| CA rates | Bank of Canada Valet benchmark bonds | Explicit per-series calls for V39051/V39053/V39055/V39056 |
+| CA rates | Bank of Canada Valet benchmark bonds | Official `bond_yields_benchmark` group (`BD.CDN.2YR/5YR/10YR/LONG.DQ.YLD`) |
 | AU rates | RBA F2 government-bond yields | Assessed closing yields; research context; typically weekly with a two-business-day lag |
-| NZ rates | RBNZ B2 wholesale interest rates | Indicative government-bond closes; one-day publication lag |
+| NZ rates | RBNZ B2 wholesale interest rates | Official `hb2-daily-close.xlsx`; indicative government-bond closes; one-day publication lag. A Cloudflare block is a hard failure, not a reason to use a vendor mirror. |
 | FX | ECB euro foreign-exchange reference rates | Same-fixing EUR legs only; not executable prices |
 
 Expected publication lag before `status=stale`: US/CA/NZ/FX 4 calendar days; AU 12 calendar days. Observations older than 21 calendar days fail the run.

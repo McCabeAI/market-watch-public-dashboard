@@ -52,8 +52,14 @@ TREASURY_PAGE = (
     "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/"
     "TextView?type=daily_treasury_yield_curve"
 )
-BOC_SERIES = {"V39051": "2Y", "V39053": "5Y", "V39055": "10Y", "V39056": "LONG"}
-BOC_URL = "https://www.bankofcanada.ca/valet/observations/{series}/json"
+BOC_SERIES = {
+    "BD.CDN.2YR.DQ.YLD": "2Y",
+    "BD.CDN.5YR.DQ.YLD": "5Y",
+    "BD.CDN.10YR.DQ.YLD": "10Y",
+    "BD.CDN.LONG.DQ.YLD": "LONG",
+}
+BOC_GROUP_URL = "https://www.bankofcanada.ca/valet/observations/group/bond_yields_benchmark/json"
+BOC_SERIES_URL = "https://www.bankofcanada.ca/valet/observations/{series}/json"
 BOC_DOCS = "https://www.bankofcanada.ca/valet/docs/"
 RBA_URL = "https://www.rba.gov.au/statistics/tables/csv/f2-data.csv"
 RBA_PAGE = "https://www.rba.gov.au/statistics/tables/"
@@ -75,9 +81,17 @@ class MarketStateError(RuntimeError):
 
 def fetch_bytes(url: str, *, timeout: int = DEFAULT_TIMEOUT, retries: int = RETRIES) -> bytes:
     last: Exception | None = None
+    headers = {
+        "User-Agent": USER_AGENT,
+        "Accept": "*/*",
+        "Accept-Language": "en-US,en;q=0.8",
+    }
+    if "rbnz.govt.nz" in url:
+        headers["Referer"] = RBNZ_PAGE
+        headers["Accept"] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,*/*"
     for attempt in range(retries):
         try:
-            req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT, "Accept": "*/*"})
+            req = urllib.request.Request(url, headers=headers)
             with urllib.request.urlopen(req, timeout=timeout) as resp:
                 status = getattr(resp, "status", 200)
                 if status != 200:
@@ -86,6 +100,15 @@ def fetch_bytes(url: str, *, timeout: int = DEFAULT_TIMEOUT, retries: int = RETR
                 if not data:
                     raise MarketStateError(f"empty response from {url}")
                 return data
+        except urllib.error.HTTPError as exc:
+            last = exc
+            if exc.code == 403 and "rbnz.govt.nz" in url:
+                raise MarketStateError(
+                    f"RBNZ official B2 workbook returned HTTP 403 from {url}. "
+                    "Refusing to substitute a third-party or vendor feed."
+                ) from exc
+            if attempt + 1 < retries:
+                time.sleep(1.5 * (attempt + 1))
         except (urllib.error.URLError, TimeoutError, MarketStateError) as exc:
             last = exc
             if attempt + 1 < retries:
@@ -244,7 +267,7 @@ def fetch_us_rates(start: date, end: date) -> dict[str, dict[date, float]]:
     return out
 
 
-def parse_boc_json(payload: Mapping) -> dict[str, dict[date, float]]:
+def parse_boc_json(payload: Mapping, *, require_all: bool = True) -> dict[str, dict[date, float]]:
     out = {v: {} for v in BOC_SERIES.values()}
     for obs in payload.get("observations", []):
         d = parse_date(obs.get("d"))
@@ -256,30 +279,32 @@ def parse_boc_json(payload: Mapping) -> dict[str, dict[date, float]]:
             v = to_float(value)
             if v is not None:
                 out[tenor][d] = v
-    if any(not out[k] for k in RATE_TENORS) or not out["LONG"]:
+    if require_all and (any(not out[k] for k in RATE_TENORS) or not out["LONG"]):
         raise MarketStateError("BoC response missing required benchmark tenors")
     return out
 
 
 def fetch_ca_rates(start: date, end: date) -> dict[str, dict[date, float]]:
-    """Fetch each BoC benchmark series explicitly. Combined Valet URLs have been unreliable."""
+    """Fetch current BoC benchmark bond yields.
+
+    The legacy V39051/V39053/V39055/V39056 series IDs now 404. Use the official
+    `bond_yields_benchmark` group, then fail closed if a required tenor is absent.
+    """
     qs = urllib.parse.urlencode({"start_date": start.isoformat(), "end_date": end.isoformat()})
-    out = {tenor: {} for tenor in BOC_SERIES.values()}
+    payload = json.loads(fetch_bytes(f"{BOC_GROUP_URL}?{qs}").decode("utf-8"))
+    parsed = parse_boc_json(payload)
+    missing = [k for k in (*RATE_TENORS, "LONG") if not parsed.get(k)]
+    if not missing:
+        return parsed
     for series_id, tenor in BOC_SERIES.items():
-        url = f"{BOC_URL.format(series=series_id)}?{qs}"
-        payload = json.loads(fetch_bytes(url).decode("utf-8"))
-        for obs in payload.get("observations", []):
-            d = parse_date(obs.get("d"))
-            if not d:
-                continue
-            cell = obs.get(series_id)
-            value = cell.get("v") if isinstance(cell, Mapping) else cell
-            v = to_float(value)
-            if v is not None:
-                out[tenor][d] = v
-    if any(not out[k] for k in RATE_TENORS) or not out["LONG"]:
-        raise MarketStateError("BoC single-series calls missing required benchmark tenors")
-    return out
+        if parsed.get(tenor):
+            continue
+        series_payload = json.loads(fetch_bytes(f"{BOC_SERIES_URL.format(series=series_id)}?{qs}").decode("utf-8"))
+        extra = parse_boc_json(series_payload, require_all=False)
+        parsed[tenor].update(extra.get(tenor, {}))
+    if any(not parsed[k] for k in RATE_TENORS) or not parsed["LONG"]:
+        raise MarketStateError("BoC benchmark group missing required tenors")
+    return parsed
 
 
 def parse_rba_csv(text: str) -> dict[str, dict[date, float]]:
@@ -583,7 +608,7 @@ def build_snapshot(*, today: date | None = None) -> dict:
             "CA_rates": {
                 "name": "Bank of Canada Valet benchmark bonds",
                 "url": BOC_DOCS,
-                "download_url": "https://www.bankofcanada.ca/valet/observations/V39051,V39053,V39055,V39056/json",
+                "download_url": BOC_GROUP_URL,
                 "observation_date": rates["CA"]["latest_observation"],
                 "status": rates["CA"]["status"],
             },
