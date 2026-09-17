@@ -12,6 +12,7 @@ from scripts.market_state import (
     fx_metrics,
     parse_boc_json,
     parse_ecb_fx_csv,
+    parse_ecb_sdmx_csv,
     parse_rba_csv,
     parse_rbnz_xlsx,
     parse_treasury_csv,
@@ -81,6 +82,21 @@ class MarketStateTests(unittest.TestCase):
         parsed = parse_rba_csv(text)
         self.assertEqual(parsed["5Y"][date(2026, 9, 7)], 3.4)
 
+    def test_rba_parser_prefers_title_and_skips_indexed(self):
+        text = "\n".join(
+            [
+                "Title,Australian Government 2 year bond,Australian Government 3 year bond,Australian Government 5 year bond,Australian Government 10 year bond,Australian Government Indexed Bond",
+                'Description,"Yields on Australian government bonds, interpolated, 2 years maturity","Yields on Australian government bonds, interpolated, 3 years maturity","Yields on Australian government bonds, interpolated, 5 years maturity","Yields on Australian government bonds, interpolated, 10 years maturity","Yields on Australian government indexed bonds, interpolated, 10 years maturity"',
+                "Frequency,Daily,Daily,Daily,Daily,Daily",
+                "Series ID,FCMYGBAG2D,FCMYGBAG3D,FCMYGBAG5D,FCMYGBAG10D,FCMYGBAGID",
+                "2026-09-09,3.10,3.20,3.40,3.70,1.50",
+            ]
+        )
+        parsed = parse_rba_csv(text)
+        self.assertEqual(parsed["2Y"][date(2026, 9, 9)], 3.10)
+        self.assertEqual(parsed["10Y"][date(2026, 9, 9)], 3.70)
+        self.assertNotIn(1.50, parsed["10Y"].values())
+
     def test_ecb_and_all_45_crosses(self):
         headers = ["Date", "USD", "JPY", "GBP", "CHF", "CAD", "AUD", "NZD", "SEK", "NOK"]
         rows = [
@@ -96,6 +112,28 @@ class MarketStateTests(unittest.TestCase):
         self.assertAlmostEqual(crosses["AUDNZD"][date(2026, 9, 8)], 1.99 / 1.63)
         self.assertAlmostEqual(crosses["USDJPY"][date(2026, 9, 8)], 181 / 1.21)
         self.assertIn("NOKSEK", crosses)
+
+    def test_ecb_sdmx_parser(self):
+        text = "\n".join(
+            [
+                "CURRENCY,TIME_PERIOD,OBS_VALUE",
+                "USD,2026-09-16,1.1537",
+                "GBP,2026-09-16,0.8600",
+                "JPY,2026-09-16,178.10",
+                "CHF,2026-09-16,0.9470",
+                "CAD,2026-09-16,1.6070",
+                "AUD,2026-09-16,1.6120",
+                "NZD,2026-09-16,1.9980",
+                "SEK,2026-09-16,11.20",
+                "NOK,2026-09-16,10.80",
+            ]
+        )
+        parsed = parse_ecb_sdmx_csv(text)
+        self.assertEqual(parsed["EUR"][date(2026, 9, 16)], 1.0)
+        self.assertAlmostEqual(parsed["USD"][date(2026, 9, 16)], 1.1537)
+        crosses = build_fx_crosses(parsed, date(2026, 1, 1))
+        self.assertEqual(len(crosses), 45)
+        self.assertAlmostEqual(crosses["EURUSD"][date(2026, 9, 16)], 1.1537)
 
     def test_ecb_rejects_missing_g10_currency(self):
         text = "Date,USD,JPY\n2026-09-08,1.21,181\n"

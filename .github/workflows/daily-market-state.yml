@@ -4,6 +4,14 @@ on:
   schedule:
     - cron: "30 12 * * 1-5"
   workflow_dispatch:
+  pull_request:
+    paths:
+      - "scripts/market_state.py"
+      - "scripts/__init__.py"
+      - "tests/test_market_state.py"
+      - "requirements-market-state.txt"
+      - ".github/workflows/daily-market-state.yml"
+      - "docs/MARKET_STATE_FEED_V1.md"
 
 permissions:
   contents: read

@@ -68,11 +68,17 @@ RBNZ_PAGE = (
     "https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/"
     "wholesale-interest-rates"
 )
-ECB_FX_URL = "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist.csv"
+ECB_FX_SDMX_URL = (
+    "https://data-api.ecb.europa.eu/service/data/EXR/"
+    "D.{currencies}.EUR.SP00.A"
+)
 ECB_FX_PAGE = (
     "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/"
     "euro_reference_exchange_rates/html/index.en.html"
 )
+# Classic hist CSV is retained only as a parser test fixture. The public
+# eurofxref-hist.csv file is not used in production because CDN copies have
+# been observed stale or corrupted; SDMX is the live official series.
 
 
 class MarketStateError(RuntimeError):
@@ -322,17 +328,24 @@ def parse_rba_csv(text: str) -> dict[str, dict[date, float]]:
             break
     if series_row_idx is None:
         raise MarketStateError("RBA F2 CSV missing Series ID row")
-    labels = metadata.get("description") or metadata.get("title")
-    if not labels:
-        raise MarketStateError("RBA F2 CSV missing descriptive metadata")
     selected: dict[int, str] = {}
-    for idx in range(1, len(labels)):
-        label = labels[idx].strip().lower() if idx < len(labels) else ""
-        if "australian government" not in label and "government" not in label:
+    for key in ("title", "description"):
+        labels = metadata.get(key)
+        if not labels:
             continue
-        for n, tenor in ((2, "2Y"), (5, "5Y"), (10, "10Y")):
-            if re.search(rf"\b{n}\s*[- ]?year\b", label):
-                selected[idx] = tenor
+        candidate: dict[int, str] = {}
+        for idx in range(1, len(labels)):
+            label = labels[idx].strip().lower() if idx < len(labels) else ""
+            if "indexed" in label:
+                continue
+            if "australian government" not in label and "government" not in label:
+                continue
+            for n, tenor in ((2, "2Y"), (5, "5Y"), (10, "10Y")):
+                if re.search(rf"\b{n}\s*[- ]?years?\b", label):
+                    candidate[idx] = tenor
+        if set(candidate.values()) == set(RATE_TENORS):
+            selected = candidate
+            break
     if set(selected.values()) != set(RATE_TENORS):
         raise MarketStateError(f"RBA F2 tenor discovery failed: {selected}")
     out = {k: {} for k in RATE_TENORS}
@@ -439,6 +452,26 @@ def fetch_nz_rates(start: date, end: date) -> dict[str, dict[date, float]]:
     return out
 
 
+def parse_ecb_sdmx_csv(text: str) -> dict[str, dict[date, float]]:
+    """Parse ECB Data Portal SDMX-CSV daily EUR reference rates."""
+    reader = csv.DictReader(io.StringIO(text))
+    currency = {c: {} for c in G10}
+    needed = {c for c in G10 if c != "EUR"}
+    for row in reader:
+        ccy = str(row.get("CURRENCY") or "").strip()
+        if ccy not in needed:
+            continue
+        d = parse_date(row.get("TIME_PERIOD"))
+        v = to_float(row.get("OBS_VALUE"))
+        if d and v is not None and v > 0:
+            currency[ccy][d] = v
+            currency["EUR"][d] = 1.0
+    missing = [c for c in G10 if not currency[c]]
+    if missing:
+        raise MarketStateError(f"ECB SDMX FX missing G10 currencies: {missing}")
+    return currency
+
+
 def parse_ecb_fx_csv(text: str) -> dict[str, dict[date, float]]:
     reader = csv.DictReader(io.StringIO(text))
     fieldnames = [x.strip() for x in (reader.fieldnames or [])]
@@ -485,8 +518,18 @@ def build_fx_crosses(currency_per_eur: Mapping[str, Mapping[date, float]], start
 
 
 def fetch_fx(start: date) -> dict[str, dict[date, float]]:
-    text = fetch_bytes(ECB_FX_URL).decode("utf-8-sig")
-    return build_fx_crosses(parse_ecb_fx_csv(text), start)
+    currencies = "+".join(c for c in G10 if c != "EUR")
+    qs = urllib.parse.urlencode({"format": "csvdata", "startPeriod": start.isoformat()})
+    url = f"{ECB_FX_SDMX_URL.format(currencies=currencies)}?{qs}"
+    parsed = parse_ecb_sdmx_csv(fetch_bytes(url).decode("utf-8-sig"))
+    latest = max(max(series) for series in parsed.values() if series)
+    if (datetime.now(timezone.utc).date() - latest).days > FAIL_AFTER_DAYS:
+        raise MarketStateError(f"ECB SDMX latest observation {latest.isoformat()} is too old")
+    usd = parsed["USD"]
+    latest_usd = usd[max(usd)]
+    if not (0.5 < latest_usd < 2.5):
+        raise MarketStateError(f"implausible ECB EURUSD reference rate: {latest_usd}")
+    return build_fx_crosses(parsed, start)
 
 
 def curve_spread(short: Mapping[date, float], long: Mapping[date, float]) -> dict[date, float]:
@@ -631,7 +674,9 @@ def build_snapshot(*, today: date | None = None) -> dict:
             "FX": {
                 "name": "ECB euro foreign exchange reference rates",
                 "url": ECB_FX_PAGE,
-                "download_url": ECB_FX_URL,
+                "download_url": ECB_FX_SDMX_URL.format(
+                    currencies="+".join(c for c in G10 if c != "EUR")
+                ),
                 "observation_date": latest_fx_date.isoformat(),
                 "status": fx_status,
                 "note": "Information/reference rates, not executable prices. All 45 G10 crosses are deterministic ratios of the same ECB EUR fixing date.",
