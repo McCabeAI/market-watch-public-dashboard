@@ -373,7 +373,7 @@ Supabase:
 - The repo's compressed-payload/patch authoring path is reliable but awkward; a normal source/generator pipeline should replace it once automation is built and validated.
 - Current source discovery is not yet represented as a machine-maintained source registry in code. Do not create one until the refresh workflow is actively using it.
 - Market tape remains a public snapshot, not a licensed live feed.
-- A standalone no-secret rates/FX research snapshot now exists at `scripts/market_state.py` and is documented in `docs/MARKET_STATE_FEED_V1.md`. It is independent of Pages and Supabase and must not be treated as executable pricing.
+- A standalone no-secret rates/FX research snapshot now exists at `scripts/market_state.py` and is documented in `docs/MARKET_STATE_FEED_V1.md`. It is independent of Pages and Supabase and must not be treated as executable pricing. GitHub-hosted runners currently receive HTTP 403 from the official RBNZ B2 workbook; the generator fails closed rather than substituting a vendor feed.
 
 ## 18. Repo map
 
