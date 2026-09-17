@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "source": "repository Cursor model-routing surfaces",
+  "validated_against": [
+    ".cursor/hooks/enforce-subagent-models.sh",
+    ".cursor/agents/*.md frontmatter",
+    "docs/TRADER_ROOM_PROTOCOL.md"
+  ],
+  "notes": [
+    "Exact IDs are taken from the current repository hook/agent catalog, not guessed from marketing names.",
+    "Cursor custom-agent frontmatter uses grok-4.6[] (empty thinking-level parameter), which routes to grok-4.6.",
+    "Internal advocate subagents may use only composer-2.5. Fast/high/low variants are not allowed."
+  ],
+  "advocate_model": "grok-4.6",
+  "aggregator_model": "grok-4.6",
+  "agent_frontmatter_model": "grok-4.6[]",
+  "subagent_models": ["composer-2.5"],
+  "forbidden_models": [
+    "grok-4.5",
+    "composer-2.5-fast",
+    "cursor-grok-4.6-high",
+    "cursor-grok-4.6-high-fast",
+    "cursor-grok-4.6-low",
+    "cursor-grok-4.6-low-fast",
+    "cursor-grok-4.6-medium",
+    "cursor-grok-4.6-medium-fast",
+    "cursor-grok-4.6-xhigh",
+    "cursor-grok-4.6-xhigh-fast"
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "run_id": "tr-synthetic-minimal",
+  "as_of": "2026-09-17T21:00:00Z",
+  "topic": "go",
+  "user_hypothesis": null,
+  "temperature_gauges": [
+    {
+      "id": "temp:US:inflation",
+      "country": "US",
+      "dimension": "Inflation",
+      "score": 72.0,
+      "as_of": "2026-09-17",
+      "hard_inputs": [{"name": "Core PCE", "value": "+0.2% m/m"}],
+      "context": [],
+      "source": "fixture",
+      "staleness": "synthetic"
+    }
+  ],
+  "central_bank_research": [
+    {
+      "id": "cb:fed:2026-09-16",
+      "headline": "FOMC delivered a 25bp hike to 3.75-4.00%",
+      "summary": "Synthetic retained official decision for dry-run only.",
+      "published_at": "2026-09-16T18:00:00Z",
+      "source_name": "Federal Reserve",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm",
+      "country_codes": ["US"],
+      "verification_status": "synthetic"
+    }
+  ],
+  "news_and_research": [
+    {
+      "id": "news:energy:2026-09-16",
+      "headline": "Energy shock remains a live G10 inflation driver",
+      "summary": "Synthetic retained news item.",
+      "published_at": "2026-09-16T12:00:00Z",
+      "source_name": "fixture",
+      "url": null,
+      "country_codes": ["US", "CA"],
+      "verification_status": "synthetic"
+    }
+  ],
+  "market_state": {
+    "schema_version": 1,
+    "status": "available",
+    "generated_at": "2026-09-17T21:00:00Z",
+    "fx": {"AUDUSD": {"spot": 0.66}, "USDJPY": {"spot": 148.0}, "USDCAD": {"spot": 1.36}, "AUDNZD": {"spot": 1.09}},
+    "rates": {"US": {"10Y": 4.2}, "AU": {"10Y": 4.4}}
+  },
+  "research_method": {
+    "document": "docs/TRADER_RESEARCH_METHOD.md",
+    "text": "Start with a causal question. Make market expectations explicit. Build a discrepancy map.",
+    "as_of": "standing",
+    "status": "available"
+  },
+  "source_index": [
+    {"id": "temp:US:inflation", "name": "US Inflation", "url": null, "as_of": "2026-09-17", "family": "temperature_gauges"},
+    {"id": "cb:fed:2026-09-16", "name": "FOMC hike", "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm", "as_of": "2026-09-16T18:00:00Z", "family": "central_bank_research"},
+    {"id": "news:energy:2026-09-16", "name": "Energy shock", "url": null, "as_of": "2026-09-16T12:00:00Z", "family": "news_and_research"},
+    {"id": "market_state", "name": "market-state snapshot", "url": null, "as_of": "2026-09-17T21:00:00Z", "family": "market_state"},
+    {"id": "research_method", "name": "docs/TRADER_RESEARCH_METHOD.md", "url": null, "as_of": "standing", "family": "research_method"}
+  ],
+  "known_gaps": ["Synthetic fixture; not a live market packet."],
+  "family_status": {
+    "temperature_gauges": "available",
+    "central_bank_research": "available",
+    "market_state": "available",
+    "research_method": "available"
+  },
+  "market_levels": [],
+  "macro_state": [],
+  "rates_and_policy": [],
+  "positioning_and_flow": [],
+  "cross_asset": [],
+  "private_methodology_available": []
+}

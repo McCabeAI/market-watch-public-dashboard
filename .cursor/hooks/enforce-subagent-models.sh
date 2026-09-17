@@ -55,6 +55,21 @@ if [ -n "$POLICY" ]; then
   esac
 fi
 
+TR_POLICY=""
+if [ -n "$TRANSCRIPT" ] && [ -r "$TRANSCRIPT" ]; then
+  TR_POLICY=$(head -c 65536 "$TRANSCRIPT" 2>/dev/null \
+    | sed 's/\\"/"/g' \
+    | grep -o 'TRADER_ROOM_MODEL_POLICY={"version":1,[^}]*}' \
+    | head -n 1 || true)
+fi
+
+if [ -n "$TR_POLICY" ]; then
+  case "$MODEL" in
+    grok-4.6|composer-2.5) allow ;;
+    *) deny "Trader Room model policy allows only grok-4.6 (advocates/aggregators) and composer-2.5 (internal advocate subagents). Refusing '$MODEL'." ;;
+  esac
+fi
+
 case " $DEFAULT_MODELS " in
   *" $MODEL "*) allow ;;
   *) deny "Subagent model '$MODEL' is outside the repository default Cursor-model allowlist (composer-2.5, grok-4.6, grok-4.5). Use an allowed model or launch a new ACP run with an explicit allowed_subagent_models override." ;;

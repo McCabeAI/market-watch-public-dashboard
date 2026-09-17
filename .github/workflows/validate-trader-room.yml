@@ -5,17 +5,31 @@ on:
     paths:
       - ".cursor/agents/**"
       - ".cursor/commands/trader-room.md"
+      - ".cursor/hooks/**"
       - ".cursor/mcp.json"
       - "docs/TRADER_ROOM_PROTOCOL.md"
+      - "docs/TRADER_ROOM_ON_DEMAND.md"
+      - "docs/TRADER_ROOM_EVIDENCE_CONTRACT.md"
       - "scripts/validate_trader_room.py"
+      - "scripts/trader_room/**"
+      - "scripts/trader_room_go.py"
+      - "tests/test_trader_room_ondemand.py"
+      - "trader-room/**"
       - ".github/workflows/validate-trader-room.yml"
   pull_request:
     paths:
       - ".cursor/agents/**"
       - ".cursor/commands/trader-room.md"
+      - ".cursor/hooks/**"
       - ".cursor/mcp.json"
       - "docs/TRADER_ROOM_PROTOCOL.md"
+      - "docs/TRADER_ROOM_ON_DEMAND.md"
+      - "docs/TRADER_ROOM_EVIDENCE_CONTRACT.md"
       - "scripts/validate_trader_room.py"
+      - "scripts/trader_room/**"
+      - "scripts/trader_room_go.py"
+      - "tests/test_trader_room_ondemand.py"
+      - "trader-room/**"
       - ".github/workflows/validate-trader-room.yml"
 
 jobs:
@@ -27,3 +41,5 @@ jobs:
         with:
           python-version: "3.12"
       - run: python scripts/validate_trader_room.py
+      - run: python -m unittest tests.test_trader_room_ondemand
+      - run: PYTHONPATH=. python scripts/trader_room_go.py go --synthetic --topic go --artifact-root /tmp/trader-room-ci
