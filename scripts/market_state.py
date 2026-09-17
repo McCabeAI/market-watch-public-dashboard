@@ -36,6 +36,8 @@ BROWSER_USER_AGENT = (
 )
 DEFAULT_TIMEOUT = 45
 RETRIES = 3
+ECB_TIMEOUT = 90
+ECB_RETRIES = 4
 
 G10 = ("EUR", "GBP", "AUD", "NZD", "USD", "CAD", "CHF", "NOK", "SEK", "JPY")
 FX_ORDER = G10
@@ -119,7 +121,8 @@ def fetch_bytes(
         except urllib.error.HTTPError as exc:
             last = exc
             if attempt + 1 < retries:
-                time.sleep(1.5 * (attempt + 1))
+                # 5xx and timeouts are retried; 403/404 are still retried a bounded number of times
+                time.sleep(2.0 * (attempt + 1) if exc.code >= 500 else 1.5 * (attempt + 1))
         except (urllib.error.URLError, TimeoutError, MarketStateError) as exc:
             last = exc
             if attempt + 1 < retries:
@@ -475,7 +478,11 @@ def fetch_nz_rates(
 
 
 def parse_ecb_sdmx_csv(text: str) -> dict[str, dict[date, float]]:
-    """Parse ECB Data Portal SDMX-CSV daily EUR reference rates."""
+    """Parse ECB Data Portal SDMX-CSV daily EUR reference rates.
+
+    Completeness is checked by the caller so a combined query and a
+    per-currency fallback can share the same parser.
+    """
     reader = csv.DictReader(io.StringIO(text))
     currency = {c: {} for c in G10}
     needed = {c for c in G10 if c != "EUR"}
@@ -488,10 +495,15 @@ def parse_ecb_sdmx_csv(text: str) -> dict[str, dict[date, float]]:
         if d and v is not None and v > 0:
             currency[ccy][d] = v
             currency["EUR"][d] = 1.0
-    missing = [c for c in G10 if not currency[c]]
+    if not any(currency[c] for c in needed):
+        raise MarketStateError("ECB SDMX FX contained no G10 observations")
+    return currency
+
+
+def require_g10_fx(currency: Mapping[str, Mapping[date, float]]) -> None:
+    missing = [c for c in G10 if not currency.get(c)]
     if missing:
         raise MarketStateError(f"ECB SDMX FX missing G10 currencies: {missing}")
-    return currency
 
 
 def parse_ecb_fx_csv(text: str) -> dict[str, dict[date, float]]:
@@ -539,11 +551,48 @@ def build_fx_crosses(currency_per_eur: Mapping[str, Mapping[date, float]], start
     return out
 
 
-def fetch_fx(start: date) -> dict[str, dict[date, float]]:
-    currencies = "+".join(c for c in G10 if c != "EUR")
+def _fetch_ecb_sdmx(
+    currencies: str,
+    start: date,
+    *,
+    timeout: int = ECB_TIMEOUT,
+    retries: int = ECB_RETRIES,
+) -> dict[str, dict[date, float]]:
     qs = urllib.parse.urlencode({"format": "csvdata", "startPeriod": start.isoformat()})
     url = f"{ECB_FX_SDMX_URL.format(currencies=currencies)}?{qs}"
-    parsed = parse_ecb_sdmx_csv(fetch_bytes(url).decode("utf-8-sig"))
+    return parse_ecb_sdmx_csv(fetch_bytes(url, timeout=timeout, retries=retries).decode("utf-8-sig"))
+
+
+def _merge_fx_legs(
+    dest: dict[str, dict[date, float]], extra: Mapping[str, Mapping[date, float]]
+) -> None:
+    for key, series in extra.items():
+        dest.setdefault(key, {}).update(series)
+
+
+def fetch_fx(start: date) -> dict[str, dict[date, float]]:
+    needed = [c for c in G10 if c != "EUR"]
+    try:
+        # Combined 5-year query is one round-trip but ECB sometimes 504s it.
+        parsed = _fetch_ecb_sdmx("+".join(needed), start, timeout=60, retries=2)
+        require_g10_fx(parsed)
+    except MarketStateError as exc:
+        parsed = {c: {} for c in G10}
+        errors = [str(exc)]
+        for ccy in needed:
+            try:
+                extra = _fetch_ecb_sdmx(ccy, start, timeout=ECB_TIMEOUT, retries=ECB_RETRIES)
+            except MarketStateError as inner:
+                errors.append(f"{ccy}: {inner}")
+                continue
+            _merge_fx_legs(parsed, extra)
+        try:
+            require_g10_fx(parsed)
+        except MarketStateError:
+            raise MarketStateError(
+                "ECB SDMX combined query failed and per-currency fallback still missing "
+                f"{[c for c in G10 if not parsed[c]]}: {errors[-1]}"
+            ) from exc
     latest = max(max(series) for series in parsed.values() if series)
     if (datetime.now(timezone.utc).date() - latest).days > FAIL_AFTER_DAYS:
         raise MarketStateError(f"ECB SDMX latest observation {latest.isoformat()} is too old")

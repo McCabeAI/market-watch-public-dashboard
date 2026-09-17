@@ -135,9 +135,9 @@ jobs:
               out = out.replace(anchor, anchor + '\n' + blocks[key], 1)
           Path('_site/index.html').write_text(out)
           PY
-          test "$(grep -o 'class=\"temp-dimension\"' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
+          test "$(grep -o 'class="temp-dimension' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
           test "$(grep -o 'Hard score inputs' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
-          test "$(grep -o 'class=\"evidence-block context\"' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
+          test "$(grep -o 'class="evidence-block context"' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
 
       - name: Add August CPI context to US inflation evidence
         shell: bash
@@ -157,6 +157,7 @@ jobs:
           python-version: "3.12"
 
       - name: Generate market-state JSON for Pages
+        continue-on-error: true
         shell: bash
         run: |
           set -euo pipefail
@@ -176,9 +177,13 @@ jobs:
           set -euo pipefail
           python scripts/apply_market_data_tab.py _site/index.html
           test -s _site/market-data.js
-          test -s _site/market-state.json
           grep -Fq 'for="p-marketdata"' _site/index.html
           grep -Fq 'Market Data · official snapshot' _site/index.html
+          if [ -s _site/market-state.json ]; then
+            echo "Pages will include the live market-state packet"
+          else
+            echo "Pages will ship the Market Data tab without a packet; the client shows an explicit load failure"
+          fi
 
       - name: Configure Pages
         uses: actions/configure-pages@v5

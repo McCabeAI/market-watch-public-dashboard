@@ -5,10 +5,12 @@ from unittest import mock
 
 from scripts.market_state import (
     FAIL_AFTER_DAYS,
+    G10,
     MarketStateError,
     build_fx_crosses,
     build_snapshot,
     curve_spread,
+    fetch_fx,
     fetch_nz_rates,
     fx_metrics,
     parse_boc_json,
@@ -19,6 +21,7 @@ from scripts.market_state import (
     parse_treasury_csv,
     percentile_rank,
     rate_metrics,
+    require_g10_fx,
     rv_spread,
     validate_snapshot,
 )
@@ -132,9 +135,55 @@ class MarketStateTests(unittest.TestCase):
         parsed = parse_ecb_sdmx_csv(text)
         self.assertEqual(parsed["EUR"][date(2026, 9, 16)], 1.0)
         self.assertAlmostEqual(parsed["USD"][date(2026, 9, 16)], 1.1537)
+        require_g10_fx(parsed)
         crosses = build_fx_crosses(parsed, date(2026, 1, 1))
         self.assertEqual(len(crosses), 45)
         self.assertAlmostEqual(crosses["EURUSD"][date(2026, 9, 16)], 1.1537)
+
+    def test_ecb_sdmx_parser_accepts_partial_for_fallback_merge(self):
+        parsed = parse_ecb_sdmx_csv("CURRENCY,TIME_PERIOD,OBS_VALUE\nUSD,2026-09-16,1.1537\n")
+        self.assertAlmostEqual(parsed["USD"][date(2026, 9, 16)], 1.1537)
+        self.assertEqual(parsed["EUR"][date(2026, 9, 16)], 1.0)
+        self.assertEqual(parsed["GBP"], {})
+        with self.assertRaises(MarketStateError):
+            require_g10_fx(parsed)
+        with self.assertRaises(MarketStateError):
+            parse_ecb_sdmx_csv("CURRENCY,TIME_PERIOD,OBS_VALUE\n")
+
+    def test_fetch_fx_falls_back_to_per_currency_sdmx(self):
+        asof = date(2026, 9, 16)
+        legs = {
+            ccy: {ccy: {asof: 1.1 + i * 0.01}, "EUR": {asof: 1.0}}
+            for i, ccy in enumerate(c for c in G10 if c != "EUR")
+        }
+        legs["USD"]["USD"][asof] = 1.15
+
+        def fake_sdmx(currencies, start, timeout=90, retries=4):
+            if "+" in currencies:
+                raise MarketStateError("HTTP 504 from combined SDMX")
+            if currencies not in legs:
+                raise MarketStateError(f"unexpected currency {currencies}")
+            return {c: dict(series) for c, series in legs[currencies].items()} | {
+                c: {} for c in G10 if c not in legs[currencies]
+            }
+
+        with mock.patch("scripts.market_state._fetch_ecb_sdmx", side_effect=fake_sdmx):
+            crosses = fetch_fx(date(2021, 1, 1))
+        self.assertEqual(len(crosses), 45)
+        self.assertAlmostEqual(crosses["EURUSD"][asof], 1.15)
+
+    def test_fetch_fx_fails_loudly_if_fallback_still_incomplete(self):
+        def fake_sdmx(currencies, start, timeout=90, retries=4):
+            if "+" in currencies:
+                raise MarketStateError("HTTP 504 from combined SDMX")
+            if currencies == "USD":
+                return {"USD": {date(2026, 9, 16): 1.15}, "EUR": {date(2026, 9, 16): 1.0}}
+            raise MarketStateError(f"{currencies} 504")
+
+        with mock.patch("scripts.market_state._fetch_ecb_sdmx", side_effect=fake_sdmx):
+            with self.assertRaises(MarketStateError) as ctx:
+                fetch_fx(date(2021, 1, 1))
+        self.assertIn("per-currency fallback still missing", str(ctx.exception))
 
     def test_ecb_rejects_missing_g10_currency(self):
         text = "Date,USD,JPY\n2026-09-08,1.21,181\n"

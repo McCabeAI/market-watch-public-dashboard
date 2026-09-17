@@ -90,7 +90,7 @@ Null lookbacks stay null. A missing US, Canada, Australia, or ECB FX source, ten
 | CA rates | Bank of Canada Valet benchmark bonds | Official `bond_yields_benchmark` group (`BD.CDN.2YR/5YR/10YR/LONG.DQ.YLD`) |
 | AU rates | RBA F2 government-bond yields | Assessed closing yields; research context; typically weekly with a two-business-day lag |
 | NZ rates | RBNZ B2 wholesale interest rates | Official `hb2-daily-close.xlsx`; indicative government-bond closes; one-day publication lag. A Cloudflare block marks NZ unavailable in the packet; no vendor mirror. |
-| FX | ECB euro foreign-exchange reference rates | Official Data Portal SDMX daily `EXR` series; same-fixing EUR legs only; not executable prices |
+| FX | ECB euro foreign-exchange reference rates | Official Data Portal SDMX daily `EXR` series; same-fixing EUR legs only; not executable prices. Combined G10 query first; per-currency SDMX fallback on 5xx/timeout. No vendor substitute. |
 
 Expected publication lag before `status=stale`: US/CA/NZ/FX 4 calendar days; AU 12 calendar days. Observations older than 21 calendar days fail the run.
 
@@ -104,7 +104,7 @@ Expected publication lag before `status=stale`: US/CA/NZ/FX 4 calendar days; AU 
 
 GitHub-hosted runners often receive HTTP 403 from `rbnz.govt.nz` (Cloudflare). The workflow does not substitute a vendor or media feed; NZ rates and NZ-dependent RV spreads are emitted as `unavailable` while US/CA/AU/ECB remain required.
 
-The GitHub Pages deploy workflow also runs the same generator into `_site/market-state.json` and serves it to the dashboard **Market Data** tab (`patch_v12/`). It does not write to Supabase and does not read repository secrets.
+The GitHub Pages deploy workflow also runs the same generator into `_site/market-state.json` when live official sources respond, and serves it to the dashboard **Market Data** tab (`patch_v12/`). Pages generation is best-effort (`continue-on-error`) so a live-source outage does not block the dashboard deploy. The daily market-state workflow remains the required packet producer. It does not write to Supabase and does not read repository secrets.
 
 ## Trader Room use
 
