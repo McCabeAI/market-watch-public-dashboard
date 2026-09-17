@@ -3,7 +3,16 @@ name: Deploy Market Watch Dashboard
 on:
   push:
     branches: [main]
+  schedule:
+    - cron: "45 12 * * 1-5"
   workflow_dispatch:
+  pull_request:
+    paths:
+      - ".github/workflows/deploy-pages.yml"
+      - "patch_v12/**"
+      - "scripts/apply_market_data_tab.py"
+      - "scripts/market_state.py"
+      - "requirements-market-state.txt"
 
 permissions:
   contents: read
@@ -110,12 +119,12 @@ jobs:
               'nz': Path('patch_v8/nz.html').read_text(),
           }
           anchors = {
-              'us': '<section class="page country-page" id="us">',
-              'ca': '<section class="page country-page" id="ca">',
-              'au': '<section class="page country-page" id="au">',
-              'nz': '<section class="page country-page" id="nz">',
+              'us': '<div class="cdetail us">',
+              'ca': '<div class="cdetail ca">',
+              'au': '<div class="cdetail au">',
+              'nz': '<div class="cdetail nz">',
           }
-          if '.temp-score{' in base or 'class="temp-score"' in base:
+          if '.temp-inputs{' in base or 'class="temp-dimension"' in base:
               raise SystemExit('temperature score patch already present')
           if base.count('</style>') < 1:
               raise SystemExit('temperature score CSS anchor changed')
@@ -126,7 +135,7 @@ jobs:
               out = out.replace(anchor, anchor + '\n' + blocks[key], 1)
           Path('_site/index.html').write_text(out)
           PY
-          test "$(grep -o 'class=\"temp-score\"' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
+          test "$(grep -o 'class=\"temp-dimension\"' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
           test "$(grep -o 'Hard score inputs' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
           test "$(grep -o 'Context / corroboration' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
 
@@ -141,6 +150,35 @@ jobs:
         run: |
           set -euo pipefail
           python scripts/apply_v11_refresh.py _site/index.html
+
+      - name: Set up Python for market-state packet
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Generate market-state JSON for Pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check -r requirements-market-state.txt
+          PYTHONPATH=. python scripts/market_state.py --output _site/market-state.json
+          PYTHONPATH=. python - <<'PY'
+          import json
+          from pathlib import Path
+          from scripts.market_state import validate_snapshot
+          packet = json.loads(Path("_site/market-state.json").read_text())
+          validate_snapshot(packet)
+          PY
+
+      - name: Add Market Data tab
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/apply_market_data_tab.py _site/index.html
+          test -s _site/market-data.js
+          test -s _site/market-state.json
+          grep -Fq 'for="p-marketdata"' _site/index.html
+          grep -Fq 'Market Data · official snapshot' _site/index.html
 
       - name: Configure Pages
         uses: actions/configure-pages@v5

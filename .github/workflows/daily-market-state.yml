@@ -13,6 +13,9 @@ on:
       - "requirements-market-state.txt"
       - ".github/workflows/daily-market-state.yml"
       - "docs/MARKET_STATE_FEED_V1.md"
+      - "patch_v12/**"
+      - "scripts/apply_market_data_tab.py"
+      - ".github/workflows/deploy-pages.yml"
 
 permissions:
   contents: read
@@ -61,33 +64,11 @@ jobs:
       - name: Install generator dependency
         run: python -m pip install --disable-pip-version-check -r requirements-market-state.txt
 
-      - name: Fetch official RBNZ B2 workbook
-        id: rbnz
-        continue-on-error: true
+      - name: Generate market-state packet
         run: |
           set -euo pipefail
           mkdir -p /tmp/market-state
-          curl -fL --retry 3 --retry-delay 2 \
-            -A "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36" \
-            -H "Accept: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/octet-stream,*/*" \
-            -H "Accept-Language: en-US,en;q=0.9" \
-            -H "Referer: https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/wholesale-interest-rates" \
-            -o /tmp/market-state/hb2-daily-close.xlsx \
-            "https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx"
-          python - <<'PY'
-          from pathlib import Path
-          path = Path("/tmp/market-state/hb2-daily-close.xlsx")
-          data = path.read_bytes()
-          if data[:2] != b"PK":
-              raise SystemExit(f"RBNZ download was not an xlsx workbook; starts with {data[:40]!r}")
-          print(f"downloaded official RBNZ B2 workbook ({path.stat().st_size} bytes)")
-          PY
-
-      - name: Generate market-state packet
-        if: steps.rbnz.outcome == 'success'
-        run: |
-          set -euo pipefail
-          PYTHONPATH=. python scripts/market_state.py --output /tmp/market-state/market-state.json --nz-workbook /tmp/market-state/hb2-daily-close.xlsx
+          PYTHONPATH=. python scripts/market_state.py --output /tmp/market-state/market-state.json
           python - <<'PY'
           import json
           from pathlib import Path
@@ -101,27 +82,24 @@ jobs:
           assert packet["method"]["rate_rv_count"] == 15
           assert set(packet["rates"]) == {"US", "CA", "AU", "NZ"}
           assert "TWELVE_DATA" not in json.dumps(packet)
+          nz = packet["rates"]["NZ"]
+          if nz.get("status") == "unavailable":
+              assert packet["unavailable_sources"] == ["NZ_rates"]
+              assert packet["rate_rv"]["NZ-US_2Y"]["status"] == "unavailable"
+          else:
+              assert nz.get("status") in ("ok", "stale")
           print({
               "status": packet["status"],
               "fx_as_of": packet["fx"]["source_observation"],
-              "rate_as_of": {k: v["latest_observation"] for k, v in packet["rates"].items()},
+              "rate_as_of": {k: v.get("latest_observation") for k, v in packet["rates"].items()},
               "stale_sources": packet["stale_sources"],
+              "unavailable_sources": packet.get("unavailable_sources", []),
           })
           PY
 
       - name: Upload market-state artifact
-        if: steps.rbnz.outcome == 'success'
         uses: actions/upload-artifact@v4
         with:
           name: market-state
           path: /tmp/market-state/market-state.json
           retention-days: 5
-
-      - name: Refuse vendor substitute when official RBNZ is blocked
-        if: steps.rbnz.outcome != 'success'
-        run: |
-          echo "::error::Official RBNZ B2 workbook returned HTTP 403 from GitHub-hosted runners. The generator will not substitute a vendor or media feed. Unit tests and the US/CA/AU/ECB live smoke already passed. Re-run the documented generator command from a network that can reach rbnz.govt.nz to produce the full packet."
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            exit 0
-          fi
-          exit 2

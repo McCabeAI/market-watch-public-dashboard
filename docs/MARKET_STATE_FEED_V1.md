@@ -51,7 +51,8 @@ The JSON object always contains:
 | `generated_at` | UTC timestamp of the run (`...Z`) |
 | `window_start` | Inclusive history start used for context (~5 years) |
 | `status` | `ok` if every required source is within its expected publication lag; `stale` if one or more sources are older than that lag but still present |
-| `stale_sources` | List of stale source keys, else `[]` |
+| `stale_sources` | List of stale or blocked source keys, else `[]` |
+| `unavailable_sources` | Official sources that could not be fetched (currently NZ-only), else `[]` |
 | `rates` | `US`, `CA`, `AU`, `NZ` blocks |
 | `rate_rv` | 15 matching-tenor spreads |
 | `fx` | 45 G10 crosses from one ECB fixing |
@@ -79,7 +80,7 @@ The 10 G10 currencies are `EUR, GBP, AUD, NZD, USD, CAD, CHF, NOK, SEK, JPY`. Pa
 
 `method.fx_source` is always `ecb_euro_reference_crosses`. `method.model_calls` is always `0`.
 
-Null lookbacks stay null. A missing required source, tenor, currency, overlapping spread date, or sanity-gate failure is a hard error.
+Null lookbacks stay null. A missing US, Canada, Australia, or ECB FX source, tenor, currency, overlapping non-NZ spread date, or sanity-gate failure is a hard error. A blocked official RBNZ download marks `rates.NZ` and NZ-dependent `rate_rv` entries (`NZ-US`, `AU-NZ`) as `unavailable` with explicit `error` / `reason` fields and does not stop the packet.
 
 ## Sources
 
@@ -88,7 +89,7 @@ Null lookbacks stay null. A missing required source, tenor, currency, overlappin
 | US rates | U.S. Treasury daily par yield curve | Daily official CSV |
 | CA rates | Bank of Canada Valet benchmark bonds | Official `bond_yields_benchmark` group (`BD.CDN.2YR/5YR/10YR/LONG.DQ.YLD`) |
 | AU rates | RBA F2 government-bond yields | Assessed closing yields; research context; typically weekly with a two-business-day lag |
-| NZ rates | RBNZ B2 wholesale interest rates | Official `hb2-daily-close.xlsx`; indicative government-bond closes; one-day publication lag. A Cloudflare block is a hard failure, not a reason to use a vendor mirror. |
+| NZ rates | RBNZ B2 wholesale interest rates | Official `hb2-daily-close.xlsx`; indicative government-bond closes; one-day publication lag. A Cloudflare block marks NZ unavailable in the packet; no vendor mirror. |
 | FX | ECB euro foreign-exchange reference rates | Official Data Portal SDMX daily `EXR` series; same-fixing EUR legs only; not executable prices |
 
 Expected publication lag before `status=stale`: US/CA/NZ/FX 4 calendar days; AU 12 calendar days. Observations older than 21 calendar days fail the run.
@@ -99,11 +100,11 @@ Expected publication lag before `status=stale`: US/CA/NZ/FX 4 calendar days; AU 
 
 1. runs the deterministic unit tests
 2. runs `python scripts/live_market_state_smoke.py` against live Treasury, BoC, RBA and ECB sources
-3. tries to download the official RBNZ B2 workbook and, if that succeeds, runs the generator and uploads `/tmp/market-state/market-state.json` as artifact `market-state` with 5-day retention
+3. runs the generator and uploads `/tmp/market-state/market-state.json` as artifact `market-state` with 5-day retention (NZ may be `unavailable` when RBNZ is blocked)
 
-GitHub-hosted runners currently receive HTTP 403 from `rbnz.govt.nz` (Cloudflare). The workflow does not substitute a vendor or media feed. The Trader Room command still requires the official RBNZ workbook and fails closed if it is missing. Re-run that command from a network that can reach RBNZ to produce the full 15-spread packet.
+GitHub-hosted runners often receive HTTP 403 from `rbnz.govt.nz` (Cloudflare). The workflow does not substitute a vendor or media feed; NZ rates and NZ-dependent RV spreads are emitted as `unavailable` while US/CA/AU/ECB remain required.
 
-The workflow does not deploy GitHub Pages, does not write to Supabase, and does not read repository secrets.
+The GitHub Pages deploy workflow also runs the same generator into `_site/market-state.json` and serves it to the dashboard **Market Data** tab (`patch_v12/`). It does not write to Supabase and does not read repository secrets.
 
 ## Trader Room use
 

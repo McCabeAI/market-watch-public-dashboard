@@ -199,6 +199,44 @@ class MarketStateTests(unittest.TestCase):
         with self.assertRaises(MarketStateError):
             fetch_nz_rates(date(2026, 9, 1), date(2026, 9, 17), workbook_bytes=b"<html>cloudflare</html>")
 
+    def test_nz_blocked_still_emits_packet(self):
+        start = date(2026, 8, 1)
+        us = {
+            "2Y": _series(start, [4.0] * 30),
+            "5Y": _series(start, [4.2] * 30),
+            "10Y": _series(start, [4.4] * 30),
+            "30Y": _series(start, [4.7] * 30),
+        }
+        ca = {
+            "2Y": _series(start, [2.5] * 30),
+            "5Y": _series(start, [2.7] * 30),
+            "10Y": _series(start, [3.0] * 30),
+            "LONG": _series(start, [3.3] * 30),
+        }
+        au = {
+            "2Y": _series(start, [3.5] * 30),
+            "5Y": _series(start, [3.8] * 30),
+            "10Y": _series(start, [4.1] * 30),
+        }
+        fx_hist = _series(start, [1.10 + i * 0.001 for i in range(30)])
+        fx = {
+            f"{a}{b}": dict(fx_hist)
+            for i, a in enumerate(("EUR", "GBP", "AUD", "NZD", "USD", "CAD", "CHF", "NOK", "SEK", "JPY"))
+            for b in ("EUR", "GBP", "AUD", "NZD", "USD", "CAD", "CHF", "NOK", "SEK", "JPY")[i + 1 :]
+        }
+        with mock.patch("scripts.market_state.fetch_us_rates", return_value=us), mock.patch(
+            "scripts.market_state.fetch_ca_rates", return_value=ca
+        ), mock.patch("scripts.market_state.fetch_au_rates", return_value=au), mock.patch(
+            "scripts.market_state.fetch_nz_rates", side_effect=MarketStateError("RBNZ HTTP 403")
+        ), mock.patch("scripts.market_state.fetch_fx", return_value=fx):
+            snapshot = build_snapshot(today=date(2026, 8, 30))
+        validate_snapshot(snapshot)
+        self.assertEqual(snapshot["rates"]["NZ"]["status"], "unavailable")
+        self.assertIn("NZ_rates", snapshot["unavailable_sources"])
+        self.assertIsNone(snapshot["rate_rv"]["NZ-US_2Y"]["bps"])
+        self.assertEqual(snapshot["rate_rv"]["NZ-US_2Y"]["status"], "unavailable")
+        self.assertAlmostEqual(snapshot["rate_rv"]["CA-US_2Y"]["bps"], -150.0)
+
     def test_build_snapshot_contract_and_staleness(self):
         start = date(2026, 8, 1)
         us = {

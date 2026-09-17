@@ -597,19 +597,81 @@ def _freshness(age_days: int, key: str) -> str:
     return "stale" if age_days > STALE_AFTER_DAYS[key] else "ok"
 
 
+def _empty_tenor_metrics() -> dict:
+    return {
+        "as_of": None,
+        "value": None,
+        "bp_1d": None,
+        "bp_5d": None,
+        "bp_1m": None,
+        "bp_3m": None,
+        "pctile_1y": None,
+        "pctile_5y": None,
+        "z_1y": None,
+        "z_5y": None,
+    }
+
+
+def _unavailable_rate_rv(reason: str) -> dict:
+    return {
+        "as_of": None,
+        "bps": None,
+        "chg_1d_bps": None,
+        "chg_5d_bps": None,
+        "chg_1m_bps": None,
+        "chg_3m_bps": None,
+        "pctile_1y": None,
+        "pctile_5y": None,
+        "z_1y": None,
+        "z_5y": None,
+        "status": "unavailable",
+        "reason": reason,
+    }
+
+
+def _nz_rates_unavailable(error: str) -> tuple[dict[str, dict[date, float]], dict]:
+    """Return empty NZ raw series and a rates block with explicit provenance."""
+    empty = {t: {} for t in RATE_TENORS}
+    block = {
+        "tenors": {t: _empty_tenor_metrics() for t in RATE_TENORS},
+        "curves": {},
+        "latest_observation": None,
+        "age_days": None,
+        "status": "unavailable",
+        "error": error,
+    }
+    return empty, block
+
+
 def build_snapshot(*, today: date | None = None, nz_workbook: Path | None = None) -> dict:
     today = today or datetime.now(timezone.utc).date()
     start = today - timedelta(days=366 * 5 + 15)
     nz_bytes = nz_workbook.read_bytes() if nz_workbook else None
+    nz_error: str | None = None
+    try:
+        nz_raw = fetch_nz_rates(start, today, workbook_bytes=nz_bytes)
+    except MarketStateError as exc:
+        nz_error = str(exc)
+        nz_raw, nz_block = _nz_rates_unavailable(nz_error)
+    else:
+        nz_block = None
+
     rates_raw = {
         "US": fetch_us_rates(start, today),
         "CA": fetch_ca_rates(start, today),
         "AU": fetch_au_rates(start, today),
-        "NZ": fetch_nz_rates(start, today, workbook_bytes=nz_bytes),
+        "NZ": nz_raw,
     }
     rates: dict[str, dict] = {}
     stale_sources: list[str] = []
+    unavailable_sources: list[str] = []
+    if nz_error:
+        unavailable_sources.append("NZ_rates")
+        stale_sources.append("NZ_rates")
     for country, tenors in rates_raw.items():
+        if country == "NZ" and nz_block is not None:
+            rates[country] = nz_block
+            continue
         required = ("2Y", "5Y", "10Y", "30Y") if country == "US" else ("2Y", "5Y", "10Y", "LONG") if country == "CA" else RATE_TENORS
         missing = [t for t in required if t not in tenors or not tenors[t]]
         if missing:
@@ -633,8 +695,12 @@ def build_snapshot(*, today: date | None = None, nz_workbook: Path | None = None
         }
 
     rate_rv: dict[str, dict] = {}
+    nz_available = nz_error is None
     for a, b in RV_PAIRS:
         for tenor in RATE_TENORS:
+            if not nz_available and ("NZ" in (a, b)):
+                rate_rv[f"{a}-{b}_{tenor}"] = _unavailable_rate_rv(nz_error or "NZ rates unavailable")
+                continue
             common = rv_spread(rates_raw[a][tenor], rates_raw[b][tenor])
             if not common:
                 raise MarketStateError(f"no overlapping {a}/{b} {tenor} observation dates; refusing to forward-fill")
@@ -649,12 +715,24 @@ def build_snapshot(*, today: date | None = None, nz_workbook: Path | None = None
         stale_sources.append("FX")
 
     packet_status = "stale" if stale_sources else "ok"
+    nz_source = {
+        "name": "Reserve Bank of New Zealand B2 wholesale interest rates",
+        "url": RBNZ_PAGE,
+        "download_url": RBNZ_URL,
+        "observation_date": rates["NZ"]["latest_observation"],
+        "status": rates["NZ"]["status"],
+        "note": "Indicative closing government-bond yields with a one-day publication lag.",
+    }
+    if nz_error:
+        nz_source["error"] = nz_error
+        nz_source["observation_date"] = None
     return {
         "schema_version": 1,
         "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
         "window_start": start.isoformat(),
         "status": packet_status,
         "stale_sources": stale_sources,
+        "unavailable_sources": unavailable_sources,
         "rates": rates,
         "rate_rv": rate_rv,
         "fx": {
@@ -686,14 +764,7 @@ def build_snapshot(*, today: date | None = None, nz_workbook: Path | None = None
                 "status": rates["AU"]["status"],
                 "note": "RBA assessed closing yields; research context only; not a financial benchmark; typically weekly with a two-business-day lag.",
             },
-            "NZ_rates": {
-                "name": "Reserve Bank of New Zealand B2 wholesale interest rates",
-                "url": RBNZ_PAGE,
-                "download_url": RBNZ_URL,
-                "observation_date": rates["NZ"]["latest_observation"],
-                "status": rates["NZ"]["status"],
-                "note": "Indicative closing government-bond yields with a one-day publication lag.",
-            },
+            "NZ_rates": nz_source,
             "FX": {
                 "name": "ECB euro foreign exchange reference rates",
                 "url": ECB_FX_PAGE,
@@ -714,8 +785,10 @@ def build_snapshot(*, today: date | None = None, nz_workbook: Path | None = None
             "credentials_required": [],
             "note": (
                 "Live authorities remain canonical. This artifact is a compact research snapshot. "
-                "Missing required sources fail the run. Cross-country spreads use exact common "
-                "observation dates only. No historical warehouse is written to GitHub or Supabase."
+                "US, Canada, Australia and ECB FX are required; a blocked official RBNZ source "
+                "marks NZ rates and NZ-dependent RV spreads unavailable without fabricating data. "
+                "Cross-country spreads use exact common observation dates only. "
+                "No historical warehouse is written to GitHub or Supabase."
             ),
         },
     }
@@ -735,15 +808,29 @@ def validate_snapshot(s: Mapping) -> None:
     if set(s.get("rates", {})) != set(RATE_COUNTRIES):
         raise MarketStateError("rates block must contain US, CA, AU and NZ")
     for c in RATE_COUNTRIES:
+        block = s["rates"][c]
+        if block.get("status") == "unavailable":
+            if c != "NZ":
+                raise MarketStateError(f"only NZ may be unavailable, not {c}")
+            if not block.get("error"):
+                raise MarketStateError("NZ unavailable block must include error provenance")
+            continue
         for t in RATE_TENORS:
-            value = s["rates"][c]["tenors"][t]["value"]
+            value = block["tenors"][t]["value"]
             if not (0 < value < 25):
                 raise MarketStateError(f"implausible {c} {t} yield: {value}")
-            if not s["rates"][c]["tenors"][t].get("as_of"):
+            if not block["tenors"][t].get("as_of"):
                 raise MarketStateError(f"{c} {t} missing observation date")
         extra = "30Y" if c == "US" else "LONG" if c == "CA" else None
-        if extra and extra not in s["rates"][c]["tenors"]:
+        if extra and extra not in block["tenors"]:
             raise MarketStateError(f"{c} missing {extra} tenor")
+    for _key, rv in s.get("rate_rv", {}).items():
+        if rv.get("status") == "unavailable":
+            if rv.get("bps") is not None:
+                raise MarketStateError("unavailable RV spread must not include fabricated bps")
+            continue
+        if rv.get("bps") is None:
+            raise MarketStateError("available RV spread missing bps")
     if len(s["fx"]["pairs"]) != 45:
         raise MarketStateError("FX pairs must be exactly 45")
     for required in ("EURUSD", "USDJPY", "AUDNZD", "NOKSEK", "USDCAD"):
@@ -757,6 +844,10 @@ def validate_snapshot(s: Mapping) -> None:
     for key, src in s.get("sources", {}).items():
         if not src.get("url"):
             raise MarketStateError(f"source {key} missing url")
+        if src.get("status") == "unavailable":
+            if key != "NZ_rates" or not src.get("error"):
+                raise MarketStateError(f"source {key} unavailable without provenance")
+            continue
         if not src.get("observation_date"):
             raise MarketStateError(f"source {key} missing observation_date")
     if not s.get("generated_at"):
