@@ -58,6 +58,7 @@ from scripts.trader_room.models import (
 )
 from scripts.trader_room.artifacts import sanitize_packet
 from scripts.trader_room.orchestrator import go, prepare_evidence, run_debate, run_recorded_debate
+from scripts.trader_room.production_live import build_live_originals, build_live_rebuttals
 from scripts.trader_room.runners import DryRunRunner, LiveRunner
 from scripts.trader_room.schema import validate_contribution, validate_pm_handoff, validate_trade
 
@@ -123,6 +124,23 @@ class EvidenceTests(unittest.TestCase):
         self.assertEqual(statuses["temperature_gauges"], "available")
         self.assertEqual(statuses["research_method"], "available")
         self.assertTrue(packet["central_bank_research"] or packet["news_and_research"])
+
+    def test_stale_market_state_records_gaps(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "ms.json"
+            path.write_text(
+                json.dumps(
+                    {
+                        "status": "stale",
+                        "stale_sources": ["NZ_rates"],
+                        "unavailable_sources": ["NZ_rates"],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            packet = assemble_packet(topic="go", root=ROOT, market_state_path=path)
+        self.assertTrue(any("NZ_rates" in gap for gap in packet["known_gaps"]))
+        self.assertEqual(assess_families(packet)["market_state"], "stale")
 
 
 PINNED_REMITS = {
@@ -440,6 +458,25 @@ class MandateAndHandoffTests(unittest.TestCase):
                 self.assertIn("thesis", item)
                 self.assertIn("catalysts", item)
                 self.assertIn("invalidation", item)
+
+    def test_production_briefs_validate_on_synthetic_packet(self):
+        packet, preflight = prepare_evidence(topic="go", synthetic=True)
+        originals = build_live_originals(packet)
+        self.assertEqual(set(originals), set(STANDING_ADVOCATES))
+        assignments = rebuttal_assignments(detect_conflicts(originals))
+        rebuttals = build_live_rebuttals(packet, originals, assignments)
+        with tempfile.TemporaryDirectory() as tmp:
+            result = run_recorded_debate(
+                packet,
+                preflight,
+                originals,
+                rebuttals=rebuttals,
+                artifact_root=Path(tmp),
+            )
+        self.assertEqual(result["originals"]["rate-hawk"]["expression_comparison"]["chosen_expression"], "outright_duration")
+        self.assertEqual(result["originals"]["dollar-king"]["expression_comparison"]["chosen_expression"], "spot_fx")
+        self.assertIsNone(result["originals"]["vol-convexity"].get("expression_comparison"))
+        self.assertIsNone(result["originals"]["no-trade-skeptic"]["trade"])
 
 
 if __name__ == "__main__":

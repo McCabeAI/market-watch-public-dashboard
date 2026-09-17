@@ -1,0 +1,86 @@
+{
+  "agent": "rate-hawk",
+  "archetype": "rate-hawk",
+  "confidence": 63,
+  "execution": "parent_authored_production_evidence",
+  "expression_comparison": {
+    "chosen_because": "USDJPY has already sold off ~4% over 3m and sits only around the 30th 1y percentile, so USD spot is a noisier hawk expression than paying UST 2Y.",
+    "chosen_expression": "outright_duration",
+    "considered_rates": [
+      {
+        "assessment": "US 10Y 4.94 is near the 1y 97.8th percentile with a 45.000000000000014bp 3m change; AU 2Y 4.835 sits at the 99.8th 1y percentile while Australian housing is tightening.",
+        "family": "outright_duration",
+        "instrument": "UST 2Y / UST 10Y / ACGB 2Y / CAN 2Y"
+      },
+      {
+        "assessment": "US 2s10s is 27.000000000000046bp at the 1.4th 1y percentile, so curve is an executable alternative to spot or outright duration.",
+        "family": "curve",
+        "instrument": "UST 2s10s / CAN 2s10s"
+      },
+      {
+        "assessment": "CA-US 5Y is -122.00000000000001bp at the 0.2th 1y percentile \u2014 a historically extreme cross-market RV object.",
+        "family": "cross_market_rates_rv",
+        "instrument": "CA-US 5Y / CA-US 10Y / AU-US 10Y"
+      }
+    ],
+    "considered_spot": {
+      "assessment": "USDJPY is available but the 3m decline and mid-low percentile make it a worse policy-path instrument than front-end duration.",
+      "instrument": "USDJPY"
+    },
+    "seat_class": "comparison",
+    "unusually_compelling_vol": false
+  },
+  "macro_assumptions": {
+    "growth": "above_trend",
+    "policy": "hawkish",
+    "rates": "higher_for_longer",
+    "risk": "risk_off"
+  },
+  "packet_sha256": "2e2494d98a6d094453f361975e7ec3992b4b13fafd4519ed7dca2b4c5f0045f2",
+  "remit": "currencies where inflation and policy risks are underpriced to the upside",
+  "round": 1,
+  "run_id": "tr-20260917T231827Z-4ca9133b",
+  "seat_class": "comparison",
+  "stance_summary": "Inflation persistence after the first Warsh hike is cleaner as short UST 2Y than as USDJPY.",
+  "subagent_calls": 0,
+  "subagent_model": null,
+  "trade": {
+    "catalysts": [
+      "Another Warsh tightening signal",
+      "Energy pass-through into US core"
+    ],
+    "confidence": 63,
+    "direction": "short",
+    "entry": null,
+    "evidence_refs": [
+      "mw_20260916_fomc_hike_pricing",
+      "rollup:Fed raises 25bp to 3.75\u20134.00%",
+      "rollup:August CPI keeps the Fed tightening bias intact",
+      "mw_20260916_fomc_hike_pricing",
+      "rollup:BoC minutes flag higher energy pass-through risk",
+      "temp:US:inflation"
+    ],
+    "horizon": "1-3 months",
+    "instrument": "UST 2Y",
+    "invalidation": "A Fed communication that closes further hikes or a documented US labor/activity break.",
+    "macro_assumptions": {
+      "growth": "above_trend",
+      "policy": "hawkish",
+      "rates": "higher_for_longer",
+      "risk": "risk_off"
+    },
+    "mispricing": "The delivered 25bp hike is being treated as a completed cycle while US 2Y is already at the 99th 1y percentile because the path, not the first move, is the object.",
+    "principal_risks": [
+      "The 99th-percentile 2Y is already the hawkish view",
+      "Growth break forces cuts"
+    ],
+    "stop": null,
+    "structure": null,
+    "target": null,
+    "thesis": "Energy, import prices, Michigan inflation expectations and Warsh's inflation emphasis keep additional US restraint underpriced.",
+    "why_now": [
+      "FOMC hike plus energy and import-price evidence remain inside the cutoff."
+    ]
+  },
+  "type": "TRADER_ROOM_CONTRIBUTION"
+}

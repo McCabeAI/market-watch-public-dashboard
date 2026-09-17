@@ -1,0 +1,71 @@
+{
+  "agent": "vol-convexity",
+  "attack": [
+    "Implementation is hard, but this is the unusual two-way plus data-gap case the remit exists for."
+  ],
+  "concession_trigger": "A packet update that removes this remit's discrepancy or supplies the missing NZ official yields in a way that reverses the expression ranking.",
+  "defense": [
+    "The straddle stays the challenge to spot; marks are explicitly null."
+  ],
+  "holes_in_opposing_case": [
+    "Direction seats assume the AUDNZD extreme resolves one way despite a missing NZ yield source."
+  ],
+  "opponents": [
+    "perma-bull",
+    "cross-merchant",
+    "perma-bear",
+    "dollar-king",
+    "carry-is-king",
+    "rate-hawk",
+    "trend-follower",
+    "catalyst-junkie",
+    "rate-dove",
+    "value-guy",
+    "mean-reverter",
+    "positioning-cynic",
+    "no-trade-skeptic"
+  ],
+  "own_original_ref": "submissions/vol-convexity.json",
+  "packet_sha256": "2e2494d98a6d094453f361975e7ec3992b4b13fafd4519ed7dca2b4c5f0045f2",
+  "revised_trade": {
+    "catalysts": [
+      "NZ data or a restored RBNZ B2 print",
+      "AU housing follow-through"
+    ],
+    "confidence": 51,
+    "direction": "long volatility",
+    "entry": null,
+    "evidence_refs": [
+      "mw_20260916_au_housing_tightening",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "temp:NZ:inflation",
+      "temp:NZ:labor",
+      "market_state"
+    ],
+    "horizon": "2-5 weeks",
+    "instrument": "AUDNZD 1-month straddle",
+    "invalidation": "A one-way official AU/NZ data path that makes spot dominate, or still-missing option marks that keep the structure unexecutable.",
+    "macro_assumptions": {
+      "growth": "above_trend",
+      "rates": "higher_for_longer",
+      "risk": "risk_off"
+    },
+    "mispricing": "Spot-only expressions assume the AUDNZD extreme will resolve in one known direction despite a missing NZ rates family.",
+    "principal_risks": [
+      "Implied vol already prices the two-way risk; no option marks are in the packet"
+    ],
+    "stop": null,
+    "structure": "long 1-month AUDNZD straddle",
+    "target": null,
+    "thesis": "Cross-merchant continuation and a mean-reversion fade cannot both be right; the packet also lacks NZ official yields, so direction is the wrong instrument.",
+    "why_now": [
+      "AUDNZD 1y percentile is extreme in the same packet that marks NZ rates unavailable."
+    ]
+  },
+  "round": 2,
+  "run_id": "tr-20260917T231827Z-4ca9133b",
+  "subagent_calls": 0,
+  "trade_change": "unchanged",
+  "type": "TRADER_ROOM_REBUTTAL",
+  "unresolved_question": "Whether the post-hike US front end and AU housing channel are one regime or two."
+}

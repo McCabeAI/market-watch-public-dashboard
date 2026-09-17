@@ -1,0 +1,84 @@
+{
+  "agent": "perma-bear",
+  "archetype": "perma-bear",
+  "confidence": 61,
+  "execution": "parent_authored_production_evidence",
+  "expression_comparison": {
+    "chosen_because": "Short AU duration is crowded by 99th-percentile yields already. Short AUDUSD adds the growth/housing and risk-off legs the duration tape has partly spent.",
+    "chosen_expression": "spot_fx",
+    "considered_rates": [
+      {
+        "assessment": "US 10Y 4.94 is near the 1y 97.8th percentile with a 45.000000000000014bp 3m change; AU 2Y 4.835 sits at the 99.8th 1y percentile while Australian housing is tightening.",
+        "family": "outright_duration",
+        "instrument": "UST 2Y / UST 10Y / ACGB 2Y / CAN 2Y"
+      },
+      {
+        "assessment": "US 2s10s is 27.000000000000046bp at the 1.4th 1y percentile, so curve is an executable alternative to spot or outright duration.",
+        "family": "curve",
+        "instrument": "UST 2s10s / CAN 2s10s"
+      },
+      {
+        "assessment": "CA-US 5Y is -122.00000000000001bp at the 0.2th 1y percentile \u2014 a historically extreme cross-market RV object.",
+        "family": "cross_market_rates_rv",
+        "instrument": "CA-US 5Y / CA-US 10Y / AU-US 10Y"
+      }
+    ],
+    "considered_spot": {
+      "assessment": "Spot shorts AUD against a hawkish USD benchmark and the housing/inflation mix.",
+      "instrument": "AUDUSD"
+    },
+    "seat_class": "comparison",
+    "unusually_compelling_vol": false
+  },
+  "macro_assumptions": {
+    "growth": "below_trend",
+    "rates": "higher_for_longer",
+    "risk": "risk_off"
+  },
+  "packet_sha256": "2e2494d98a6d094453f361975e7ec3992b4b13fafd4519ed7dca2b4c5f0045f2",
+  "remit": "strongest defensive, slowdown, stress or risk-off FX expression",
+  "round": 1,
+  "run_id": "tr-20260917T231827Z-4ca9133b",
+  "seat_class": "comparison",
+  "stance_summary": "Housing, energy inflation and a live Fed tightening path favor defensive USD over AUD.",
+  "subagent_calls": 0,
+  "subagent_model": null,
+  "trade": {
+    "catalysts": [
+      "Further AU housing/activity deterioration",
+      "Another Warsh tightening signal"
+    ],
+    "confidence": 61,
+    "direction": "short",
+    "entry": null,
+    "evidence_refs": [
+      "mw_20260916_au_housing_tightening",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "mw_20260916_fomc_hike_pricing",
+      "rollup:Fed raises 25bp to 3.75\u20134.00%",
+      "mw_20260916_fomc_hike_pricing",
+      "rollup:BoC minutes flag higher energy pass-through risk"
+    ],
+    "horizon": "4-8 weeks",
+    "instrument": "AUDUSD",
+    "invalidation": "Official AU housing/activity stabilization plus a Fed communication that closes the hike option.",
+    "macro_assumptions": {
+      "growth": "below_trend",
+      "rates": "higher_for_longer",
+      "risk": "risk_off"
+    },
+    "mispricing": "AUDUSD has not fully marked the coincidence of AU housing damage, AU inflation 82/100, and a Warsh-led tightening bias.",
+    "principal_risks": [
+      "Oil shock fades quickly",
+      "RBA is already fully priced"
+    ],
+    "stop": null,
+    "structure": null,
+    "target": null,
+    "thesis": "Australian housing transmission plus energy-driven inflation and a just-delivered Fed hike is the cleanest risk-off expression.",
+    "why_now": [
+      "The packet's AU housing and FOMC items are contemporaneous, not sequential."
+    ]
+  },
+  "type": "TRADER_ROOM_CONTRIBUTION"
+}

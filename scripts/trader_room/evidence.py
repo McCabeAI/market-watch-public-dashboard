@@ -340,6 +340,11 @@ def assemble_packet(
     }
     if market.get("status") == "unavailable":
         packet["known_gaps"].append("market_state snapshot was not supplied")
+    for src in market.get("unavailable_sources") or []:
+        packet["known_gaps"].append(f"market_state source unavailable: {src}")
+    if market.get("status") == "stale":
+        stale = ", ".join(market.get("stale_sources") or []) or "unspecified sources"
+        packet["known_gaps"].append(f"market_state snapshot is stale: {stale}")
     packet["source_index"] = source_index_from_packet(packet)
     return packet
 

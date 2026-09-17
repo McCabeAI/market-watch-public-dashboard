@@ -1,0 +1,84 @@
+{
+  "agent": "perma-bull",
+  "archetype": "perma-bull",
+  "confidence": 54,
+  "execution": "parent_authored_production_evidence",
+  "expression_comparison": {
+    "chosen_because": "Outright long duration fights the 97-99th percentile yield tape; AU-US RV is mid-history. Long AUDUSD isolates the pro-cyclical residual after those rates objects are considered.",
+    "chosen_expression": "spot_fx",
+    "considered_rates": [
+      {
+        "assessment": "US 10Y 4.94 is near the 1y 97.8th percentile with a 45.000000000000014bp 3m change; AU 2Y 4.835 sits at the 99.8th 1y percentile while Australian housing is tightening.",
+        "family": "outright_duration",
+        "instrument": "UST 2Y / UST 10Y / ACGB 2Y / CAN 2Y"
+      },
+      {
+        "assessment": "US 2s10s is 27.000000000000046bp at the 1.4th 1y percentile, so curve is an executable alternative to spot or outright duration.",
+        "family": "curve",
+        "instrument": "UST 2s10s / CAN 2s10s"
+      },
+      {
+        "assessment": "CA-US 5Y is -122.00000000000001bp at the 0.2th 1y percentile \u2014 a historically extreme cross-market RV object.",
+        "family": "cross_market_rates_rv",
+        "instrument": "CA-US 5Y / CA-US 10Y / AU-US 10Y"
+      }
+    ],
+    "considered_spot": {
+      "assessment": "AUDUSD 1y percentile is far less extreme than AU 2Y or US 2Y, so spot is the cleaner risk-on vehicle.",
+      "instrument": "AUDUSD"
+    },
+    "seat_class": "comparison",
+    "unusually_compelling_vol": false
+  },
+  "macro_assumptions": {
+    "growth": "above_trend",
+    "rates": "higher_for_longer",
+    "risk": "risk_on"
+  },
+  "packet_sha256": "2e2494d98a6d094453f361975e7ec3992b4b13fafd4519ed7dca2b4c5f0045f2",
+  "remit": "strongest pro-growth, risk-on, cyclical FX expression",
+  "round": 1,
+  "run_id": "tr-20260917T231827Z-4ca9133b",
+  "seat_class": "comparison",
+  "stance_summary": "Growth/risk resilience is still cleaner in AUDUSD than in already-extreme global duration.",
+  "subagent_calls": 0,
+  "subagent_model": null,
+  "trade": {
+    "catalysts": [
+      "Stabilization in energy-shock headlines",
+      "No follow-through US labor break"
+    ],
+    "confidence": 54,
+    "direction": "long",
+    "entry": null,
+    "evidence_refs": [
+      "mw_20260916_fomc_hike_pricing",
+      "rollup:Fed raises 25bp to 3.75\u20134.00%",
+      "mw_20260916_au_housing_tightening",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "temp:US:inflation",
+      "temp:US:labor"
+    ],
+    "horizon": "4-8 weeks",
+    "instrument": "AUDUSD",
+    "invalidation": "Packet-updated evidence of a US activity/labor break or a fresh official AU hard-landing print.",
+    "macro_assumptions": {
+      "growth": "above_trend",
+      "rates": "higher_for_longer",
+      "risk": "risk_on"
+    },
+    "mispricing": "AUDUSD treats Australian housing and the Fed hike as a full risk-off reset while US activity/labor gauges remain warm and AUDUSD is only mid-to-upper 1y history.",
+    "principal_risks": [
+      "RBA/housing feedback intensifies",
+      "Warsh delivers another hike"
+    ],
+    "stop": null,
+    "structure": null,
+    "target": null,
+    "thesis": "Cyclical AUD still expresses under-discounted growth/risk continuity better than owning 98th-percentile global yields.",
+    "why_now": [
+      "Frozen packet cutoff keeps the post-FOMC risk-reset and AU housing scare simultaneous."
+    ]
+  },
+  "type": "TRADER_ROOM_CONTRIBUTION"
+}

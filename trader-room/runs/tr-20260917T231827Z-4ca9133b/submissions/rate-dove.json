@@ -1,0 +1,86 @@
+{
+  "agent": "rate-dove",
+  "archetype": "rate-dove",
+  "confidence": 59,
+  "execution": "parent_authored_production_evidence",
+  "expression_comparison": {
+    "chosen_because": "Short AUDUSD mixes a USD overlay and a risk-off call into a local housing/policy discrepancy. Receiving ACGB 2Y is the direct rates expression of underpriced easing.",
+    "chosen_expression": "outright_duration",
+    "considered_rates": [
+      {
+        "assessment": "US 10Y 4.94 is near the 1y 97.8th percentile with a 45.000000000000014bp 3m change; AU 2Y 4.835 sits at the 99.8th 1y percentile while Australian housing is tightening.",
+        "family": "outright_duration",
+        "instrument": "UST 2Y / UST 10Y / ACGB 2Y / CAN 2Y"
+      },
+      {
+        "assessment": "US 2s10s is 27.000000000000046bp at the 1.4th 1y percentile, so curve is an executable alternative to spot or outright duration.",
+        "family": "curve",
+        "instrument": "UST 2s10s / CAN 2s10s"
+      },
+      {
+        "assessment": "CA-US 5Y is -122.00000000000001bp at the 0.2th 1y percentile \u2014 a historically extreme cross-market RV object.",
+        "family": "cross_market_rates_rv",
+        "instrument": "CA-US 5Y / CA-US 10Y / AU-US 10Y"
+      }
+    ],
+    "considered_spot": {
+      "assessment": "Spot would work if the view were AUD-specific versus USD, but the discrepancy is local policy transmission.",
+      "instrument": "AUDUSD"
+    },
+    "seat_class": "comparison",
+    "unusually_compelling_vol": false
+  },
+  "macro_assumptions": {
+    "growth": "below_trend",
+    "policy": "dovish",
+    "rates": "easing_cycle",
+    "risk": "risk_on"
+  },
+  "packet_sha256": "2e2494d98a6d094453f361975e7ec3992b4b13fafd4519ed7dca2b4c5f0045f2",
+  "remit": "currencies where easing or growth weakness is underpriced",
+  "round": 1,
+  "run_id": "tr-20260917T231827Z-4ca9133b",
+  "seat_class": "comparison",
+  "stance_summary": "Australian housing shows the tightening channel biting; receiving ACGB 2Y is cleaner than short AUD.",
+  "subagent_calls": 0,
+  "subagent_model": null,
+  "trade": {
+    "catalysts": [
+      "More AU housing/activity weakness",
+      "RBA communication that tightening has transmitted"
+    ],
+    "confidence": 59,
+    "direction": "long",
+    "entry": null,
+    "evidence_refs": [
+      "mw_20260916_au_housing_tightening",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "market_state",
+      "temp:AU:inflation",
+      "temp:AU:labor",
+      "market_state"
+    ],
+    "horizon": "1-3 months",
+    "instrument": "ACGB 2Y",
+    "invalidation": "Official AU inflation/housing evidence that the RBA must hike again regardless of housing.",
+    "macro_assumptions": {
+      "growth": "below_trend",
+      "policy": "dovish",
+      "rates": "easing_cycle",
+      "risk": "risk_on"
+    },
+    "mispricing": "AU 2Y at the 99.8th 1y percentile still treats another hike as the base while the housing channel is already open.",
+    "principal_risks": [
+      "AU inflation 82/100 keeps the RBA hiking",
+      "Global yield beta overwhelms the local housing story"
+    ],
+    "stop": null,
+    "structure": null,
+    "target": null,
+    "thesis": "Stamp-duty and home-price declines show RBA restraint is already hitting domestic demand, so further AU hike pricing is the underpriced easing risk.",
+    "why_now": [
+      "The packet's NSW stamp-duty/housing evidence is contemporaneous with extreme AU front-end yields."
+    ]
+  },
+  "type": "TRADER_ROOM_CONTRIBUTION"
+}

@@ -1,0 +1,73 @@
+{
+  "agent": "cross-merchant",
+  "attack": [
+    "You cannot call the cross complete when the NZ official yield family is unavailable."
+  ],
+  "concession_trigger": "A packet update that removes this remit's discrepancy or supplies the missing NZ official yields in a way that reverses the expression ranking.",
+  "defense": [
+    "The non-USD differential remains the seat's required expression."
+  ],
+  "holes_in_opposing_case": [
+    "AUDNZD fade arguments treat the 99.8th percentile as sufficient without a NZ rates observation."
+  ],
+  "opponents": [
+    "perma-bull",
+    "vol-convexity",
+    "perma-bear",
+    "dollar-king",
+    "carry-is-king",
+    "rate-hawk",
+    "trend-follower",
+    "catalyst-junkie",
+    "rate-dove",
+    "value-guy",
+    "mean-reverter",
+    "positioning-cynic",
+    "no-trade-skeptic"
+  ],
+  "own_original_ref": "submissions/cross-merchant.json",
+  "packet_sha256": "2e2494d98a6d094453f361975e7ec3992b4b13fafd4519ed7dca2b4c5f0045f2",
+  "revised_trade": {
+    "catalysts": [
+      "NZ data disappointment versus Australia",
+      "USD-driven compression that leaves the cross intact"
+    ],
+    "confidence": 52,
+    "direction": "long",
+    "entry": null,
+    "evidence_refs": [
+      "mw_20260916_au_housing_tightening",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "temp:NZ:inflation",
+      "temp:NZ:labor",
+      "temp:AU:inflation",
+      "temp:AU:labor"
+    ],
+    "horizon": "1-2 months",
+    "instrument": "AUDNZD",
+    "invalidation": "Packet evidence that NZ activity/labor is outperforming Australia or that AUDNZD's extreme is official-source mean-reverting.",
+    "macro_assumptions": {
+      "growth": "above_trend",
+      "rates": "easing_cycle",
+      "risk": "risk_on"
+    },
+    "mispricing": "AUDNZD's extreme 1y percentile is being read as a completed move rather than a still-live relative-growth/policy gap.",
+    "principal_risks": [
+      "The 1y extreme is the whole trade and mean-reverts immediately",
+      "NZ rates gap is unknown"
+    ],
+    "stop": null,
+    "structure": null,
+    "target": null,
+    "thesis": "Relative AU/NZ activity, inflation and the NZ-India trade news are cleaner in a non-USD cross than through USD pairs.",
+    "why_now": [
+      "AU housing is a domestic-demand hit, but NZ labor is colder and NZ official rates are unavailable."
+    ]
+  },
+  "round": 2,
+  "run_id": "tr-20260917T231827Z-4ca9133b",
+  "subagent_calls": 0,
+  "trade_change": "unchanged",
+  "type": "TRADER_ROOM_REBUTTAL",
+  "unresolved_question": "Whether the post-hike US front end and AU housing channel are one regime or two."
+}

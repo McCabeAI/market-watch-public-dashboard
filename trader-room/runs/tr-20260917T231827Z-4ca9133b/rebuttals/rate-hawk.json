@@ -1,0 +1,74 @@
+{
+  "agent": "rate-hawk",
+  "attack": [
+    "A 99th-percentile 2Y is not a reversal signal when the reaction function is still open."
+  ],
+  "concession_trigger": "A packet update that removes this remit's discrepancy or supplies the missing NZ official yields in a way that reverses the expression ranking.",
+  "defense": [
+    "Paying UST 2Y stays the cleaner hawk expression than USDJPY."
+  ],
+  "holes_in_opposing_case": [
+    "Long-duration fades assume the first hike closes the path; Warsh's inflation language says otherwise."
+  ],
+  "opponents": [
+    "perma-bull",
+    "dollar-king",
+    "cross-merchant",
+    "carry-is-king",
+    "trend-follower",
+    "catalyst-junkie",
+    "vol-convexity",
+    "perma-bear",
+    "rate-dove",
+    "value-guy",
+    "mean-reverter",
+    "positioning-cynic",
+    "no-trade-skeptic"
+  ],
+  "own_original_ref": "submissions/rate-hawk.json",
+  "packet_sha256": "2e2494d98a6d094453f361975e7ec3992b4b13fafd4519ed7dca2b4c5f0045f2",
+  "revised_trade": {
+    "catalysts": [
+      "Another Warsh tightening signal",
+      "Energy pass-through into US core"
+    ],
+    "confidence": 63,
+    "direction": "short",
+    "entry": null,
+    "evidence_refs": [
+      "mw_20260916_fomc_hike_pricing",
+      "rollup:Fed raises 25bp to 3.75\u20134.00%",
+      "rollup:August CPI keeps the Fed tightening bias intact",
+      "mw_20260916_fomc_hike_pricing",
+      "rollup:BoC minutes flag higher energy pass-through risk",
+      "temp:US:inflation"
+    ],
+    "horizon": "1-3 months",
+    "instrument": "UST 2Y",
+    "invalidation": "A Fed communication that closes further hikes or a documented US labor/activity break.",
+    "macro_assumptions": {
+      "growth": "above_trend",
+      "policy": "hawkish",
+      "rates": "higher_for_longer",
+      "risk": "risk_off"
+    },
+    "mispricing": "The delivered 25bp hike is being treated as a completed cycle while US 2Y is already at the 99th 1y percentile because the path, not the first move, is the object.",
+    "principal_risks": [
+      "The 99th-percentile 2Y is already the hawkish view",
+      "Growth break forces cuts"
+    ],
+    "stop": null,
+    "structure": null,
+    "target": null,
+    "thesis": "Energy, import prices, Michigan inflation expectations and Warsh's inflation emphasis keep additional US restraint underpriced.",
+    "why_now": [
+      "FOMC hike plus energy and import-price evidence remain inside the cutoff."
+    ]
+  },
+  "round": 2,
+  "run_id": "tr-20260917T231827Z-4ca9133b",
+  "subagent_calls": 0,
+  "trade_change": "unchanged",
+  "type": "TRADER_ROOM_REBUTTAL",
+  "unresolved_question": "Whether the post-hike US front end and AU housing channel are one regime or two."
+}

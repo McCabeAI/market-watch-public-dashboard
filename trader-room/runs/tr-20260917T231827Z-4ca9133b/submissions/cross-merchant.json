@@ -1,0 +1,63 @@
+{
+  "agent": "cross-merchant",
+  "archetype": "cross-merchant",
+  "confidence": 52,
+  "execution": "parent_authored_production_evidence",
+  "expression_comparison": {
+    "chosen_because": "This seat is intentionally non-USD spot dedicated.",
+    "chosen_expression": "spot_fx",
+    "seat_class": "spot_specialist",
+    "spot_dedicated": true
+  },
+  "macro_assumptions": {
+    "growth": "above_trend",
+    "rates": "easing_cycle",
+    "risk": "risk_on"
+  },
+  "packet_sha256": "2e2494d98a6d094453f361975e7ec3992b4b13fafd4519ed7dca2b4c5f0045f2",
+  "remit": "cleaner relative-value expressions outside USD",
+  "round": 1,
+  "run_id": "tr-20260917T231827Z-4ca9133b",
+  "seat_class": "spot_specialist",
+  "stance_summary": "AUDNZD isolates the Australia/New Zealand differential without a USD overlay.",
+  "subagent_calls": 0,
+  "subagent_model": null,
+  "trade": {
+    "catalysts": [
+      "NZ data disappointment versus Australia",
+      "USD-driven compression that leaves the cross intact"
+    ],
+    "confidence": 52,
+    "direction": "long",
+    "entry": null,
+    "evidence_refs": [
+      "mw_20260916_au_housing_tightening",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "temp:NZ:inflation",
+      "temp:NZ:labor",
+      "temp:AU:inflation",
+      "temp:AU:labor"
+    ],
+    "horizon": "1-2 months",
+    "instrument": "AUDNZD",
+    "invalidation": "Packet evidence that NZ activity/labor is outperforming Australia or that AUDNZD's extreme is official-source mean-reverting.",
+    "macro_assumptions": {
+      "growth": "above_trend",
+      "rates": "easing_cycle",
+      "risk": "risk_on"
+    },
+    "mispricing": "AUDNZD's extreme 1y percentile is being read as a completed move rather than a still-live relative-growth/policy gap.",
+    "principal_risks": [
+      "The 1y extreme is the whole trade and mean-reverts immediately",
+      "NZ rates gap is unknown"
+    ],
+    "stop": null,
+    "structure": null,
+    "target": null,
+    "thesis": "Relative AU/NZ activity, inflation and the NZ-India trade news are cleaner in a non-USD cross than through USD pairs.",
+    "why_now": [
+      "AU housing is a domestic-demand hit, but NZ labor is colder and NZ official rates are unavailable."
+    ]
+  },
+  "type": "TRADER_ROOM_CONTRIBUTION"
+}
