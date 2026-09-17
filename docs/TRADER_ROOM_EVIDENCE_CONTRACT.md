@@ -56,4 +56,6 @@ Before launching any of the 14 advocates, the parent must validate that all four
 
 A full debate may proceed with partial/unavailable evidence only when the missing family is not essential to the user question. The gap must be copied into `known_gaps`, and advocate confidence must reflect it. If a missing family is essential to the question, fail before spending the 14-agent run.
 
+The on-demand orchestrator (`scripts/trader_room_go.py`) treats all four families as essential by default and fails loud on `unavailable` before any advocate is charged. After freeze, no advocate may use web/search or otherwise leave the packet.
+
 Every advocate receives the exact same common packet. No advocate may privately replace a missing mandatory input with an unsupported assumption.

@@ -8,6 +8,7 @@ Public dashboard and operational data layer for Market Watch.
 - Standalone daily rates/FX research snapshot: [`docs/MARKET_STATE_FEED_V1.md`](docs/MARKET_STATE_FEED_V1.md)
 - Supabase schema migrations: [`supabase/migrations/`](supabase/migrations/)
 - GitHub Pages build/deploy gate: [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml)
+- On-demand Trader Room entrypoint: [`scripts/trader_room_go.py`](scripts/trader_room_go.py) (`go`); contract: [`docs/TRADER_ROOM_ON_DEMAND.md`](docs/TRADER_ROOM_ON_DEMAND.md)
 
 The light V0 daily refresh is the current operational path for news, central-bank research, quick macro data and the 1–100 score panels. Where older runbook language still describes automation as planned, `docs/DAILY_REFRESH_V0.md` is authoritative for this active lightweight workflow.
 

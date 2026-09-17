@@ -27,7 +27,9 @@ The standing archetypes are:
 13. `vol-convexity`
 14. `no-trade-skeptic`
 
-All standing advocates use Cursor Grok 4.6 standard. They are read-only and run in isolated contexts. They are biased by design. Their bias changes what they search for and how they frame a trade; it does not lower the evidence standard.
+All standing advocates use exact model `grok-4.6` (Cursor frontmatter `grok-4.6[]`). They are read-only and run in isolated contexts. They are biased by design. Their bias changes how they frame a trade from the frozen packet; it does not lower the evidence standard and does not authorize new evidence acquisition.
+
+The on-demand workflow also seats two aggregators on exact model `grok-4.6`: `conflict-aggregator` and `final-aggregator`. Internal advocate subagents may use only `composer-2.5`, at most two per initial advocate. See `docs/TRADER_ROOM_ON_DEMAND.md`.
 
 Specialists such as commodities/terms-of-trade, balance of payments, fiscal, China, microstructure/execution, or country specialists are not permanent seats yet. Add or summon them only when repeated use proves they are needed.
 
@@ -35,12 +37,12 @@ Specialists such as commodities/terms-of-trade, balance of payments, fiscal, Chi
 
 Ordinary run surfaces are:
 
-1. Kevin launches `/trader-room ...` from Cursor for iOS or Cursor Web.
-2. Cursor Automation runs the Trader Room workflow from an intentionally configured cloud schedule or supported private trigger.
+1. Kevin says `go` in the Trader Room chat, or launches `/trader-room go`. The repository entrypoint is `python scripts/trader_room_go.py go`.
+2. Cursor Automation runs the same on-demand workflow from an intentionally configured cloud schedule or supported private trigger.
 
 Do not require Cursor Desktop or a local terminal for ordinary Trader Room operation.
 
-Do not use issues, comments, branches, commits, workflow artifacts, or other surfaces in the public `market-watch-public-dashboard` repository to transport private Trader Room prompts, hypotheses, agent contributions, rebuttals, or arbiter packets.
+The approved artifact surface for complete run packets is `trader-room/runs/<run_id>/` in this repository. Do not put project output in ACP. Do not use issues or comments to transport private Trader Room prompts.
 
 ## Evidence contract
 
@@ -51,9 +53,10 @@ The parent agent should populate the packet from the best currently available so
 - Market Watch Supabase operational state, through the project-scoped read-only MCP connection;
 - repository technical/research context that is relevant to interpretation;
 - the standalone market-state snapshot from `scripts/market_state.py` when a fresh official rates/G10 FX research packet is needed (command and contract: `docs/MARKET_STATE_FEED_V1.md`);
-- current official/public sources and web research for facts that require freshness;
-- any private research/methodology that is actually accessible in the current Cursor Cloud session;
+- any private research/methodology that is actually accessible while the packet is being assembled;
 - user-supplied prices, positions, constraints or hypotheses.
+
+After the packet is frozen, advocates and aggregators may use only that packet. No web, search, or new evidence acquisition is allowed during the debate.
 
 Do not claim access to a source that is not connected. Paid/private research is a first-class input only when its lawful source material or retained synthesis is actually available.
 
@@ -129,36 +132,39 @@ Each advocate returns exactly one JSON object. No extra prose.
 }
 ```
 
-`trade` may be `null`. Confidence is 0-100 and must fall when the evidence packet has material gaps.
+Every advocate except `no-trade-skeptic` must end with one cogent actionable trade inside its remit. `no-trade-skeptic` may explicitly submit `trade: null`. Confidence is 0-100 and must fall when the evidence packet has material gaps.
 
-Do not invent executable levels. A null entry or target is preferable to false precision.
+Required trade fields: `instrument`, `structure`, `direction`, `thesis`, `mispricing`, `why_now`, `evidence_refs` into the frozen packet, `horizon`, `entry`, `target`, `stop`, `invalidation`, `catalysts`, `principal_risks`, `confidence`. Unsupported levels must be JSON `null`. Do not invent executable levels.
 
 ## Conflict detection
 
-After Round 1, the parent agent groups genuine conflicts without judging them.
+After Round 1, the `conflict-aggregator` (exact model `grok-4.6`) receives all 14 originals and the unchanged frozen packet. It groups genuine conflicts without judging them.
 
 A conflict exists when two or more advocates:
 
-- take opposite directions in the same pair;
+- take opposite directions in the same instrument;
+- take opposite currency exposure in the same G10 currency;
+- hold incompatible macro, rates, or regime assumptions;
 - prefer materially different expressions of the same macro view, such as USD spot versus a non-USD cross;
-- disagree on whether carry, valuation, positioning, policy, trend or catalyst dominates;
 - disagree on whether a trade exists at all.
 
-Do not use majority vote. Do not rank agents by confidence. Confidence scores are self-assessments, not votes.
+Do not use majority vote. Do not rank agents by confidence. Do not choose a winner or house view. Confidence scores are self-assessments, not votes.
 
 ## Round 2: rebuttal
 
-Choose at most six advocates whose Round 1 proposals form the most decision-relevant conflicts. If there is no meaningful conflict, skip Round 2 and state that explicitly.
+Each conflicted advocate gets exactly one rebuttal pass. There is no ranking-based shortlist. Maximum rebuttal Grok calls is 14. If there is no meaningful conflict, skip Round 2 and state that explicitly.
 
-Give each selected advocate:
-- the unchanged common evidence packet;
-- the exact Round 1 contribution(s) it must attack;
-- no other hidden synthesis.
+Give each conflicted advocate:
+- the unchanged frozen common evidence packet;
+- its own original submission;
+- the exact opposing original trade(s) from the conflict map;
+- no other hidden synthesis;
+- no additional subagent calls.
 
 Each rebuttal must:
 1. identify the opponent's strongest claim;
-2. attack the weakest assumption or evidence link;
-3. defend or modify its own trade;
+2. explicitly shoot holes in the opposing case;
+3. defend, amend, or withdraw its own trade;
 4. state one fact that would concede the argument to the opponent;
 5. preserve unresolved uncertainty.
 
@@ -183,7 +189,9 @@ Round 2 output:
 
 ## Cursor stop line
 
-Cursor must stop after assembling and delivering the arbiter packet.
+The `final-aggregator` (a separate `grok-4.6` invocation) receives all 14 originals, the conflict map, and every rebuttal. It produces the structured PM handoff. It must not select a winner or house view.
+
+Cursor must stop after assembling and delivering the arbiter / PM packet.
 
 Cursor must not:
 - choose the winning trade;
@@ -215,20 +223,13 @@ Do not append a recommendation after that marker.
 
 ## Handoff and storage
 
-Google Drive is the only normal handoff for unarbitrated Trader Room content. The canonical landing folder is:
+The approved on-demand artifact surface is `trader-room/runs/<run_id>/` with an immutable run ID and evidence cutoff. Persist the frozen packet, every original submission, the conflict map, every rebuttal, the PM handoff, and an artifact index ChatGPT can retrieve on request.
 
-- `Market Watch/Trader Room`
-- Drive folder ID: `1NS6Qb6vNGKM18_PW0zPl4NOIJZOLyfUD`
+Google Drive folder `Market Watch/Trader Room` (folder ID `1NS6Qb6vNGKM18_PW0zPl4NOIJZOLyfUD`) remains an optional private Markdown copy when the Drive plugin is authorized. It is not required to start the on-demand `go` entrypoint. If Drive is used and the write fails after one retry, fail closed for the Drive copy only; keep the structured packet on the repository artifact surface.
 
-Before starting a full debate, the parent agent must confirm the Cursor Google Drive plugin is authorized and can write to that folder. If it cannot, fail before spending the full 14-agent run.
+Do not put project output in ACP. Do not write Trader Room tables to Supabase.
 
-Create one UTF-8 Markdown file named `Trader Room Arbiter Packet - <run_id>.md` containing the complete arbiter packet. Verify the created file before reporting success.
-
-Google Drive owns the unarbitrated debate packet as research evidence. Do not copy the same packet into Notion, Supabase, or the public GitHub repository merely for convenience.
-
-If the Drive write fails after one retry, fail closed. Keep the packet only inside the active Cloud Agent session and report the access/write failure. Do not commit, push, publish, or otherwise expose the packet through the public repository.
-
-ChatGPT can read the latest packet from Drive and arbitrate it without Kevin moving files manually.
+ChatGPT retrieves any trader submission or conflict exchange from the artifact index.
 
 ## ChatGPT arbitration
 
@@ -247,7 +248,7 @@ Cursor advocacy is input to the decision, not the decision itself.
 - Advocates are read-only.
 - Supabase MCP is project-scoped to `market-watch-dev` and read-only.
 - The Google Drive plugin may write only the arbiter handoff file for an ordinary debate run; it must not reorganize or delete Drive content.
-- Private Trader Room payloads must never be written to the public dashboard repository.
+- Structured on-demand run artifacts belong only under `trader-room/runs/<run_id>/`. Do not put them in ACP.
 - Do not put service-role keys, database passwords, paid-research credentials or other secrets in the repo or prompts.
 - Do not write Trader Room tables to Supabase until a real persistence workflow and a least-privilege writer exist.
 - Do not republish paywalled source text. Use lawful retained summaries/methodology and provenance.
