@@ -9,6 +9,7 @@ on:
       - 'scripts/sal_market_data.py'
       - 'scripts/run_market_state.py'
       - 'tests/test_sal_market_data.py'
+      - 'tests/test_run_market_state.py'
       - 'requirements-sal.txt'
       - 'docs/MARKET_STATE_FEED.md'
       - '.github/workflows/market-state-daily.yml'
@@ -27,7 +28,7 @@ jobs:
       - name: Install parser dependency
         run: python -m pip install -r requirements-sal.txt
       - name: Unit tests
-        run: PYTHONPATH=. python -m unittest tests.test_sal_market_data -v
+        run: PYTHONPATH=. python -m unittest discover -s tests -p 'test_*market_state.py' -v
       - name: Live source smoke test
         run: |
           mkdir -p market-state
@@ -40,6 +41,7 @@ jobs:
           assert s['method']['fx_pair_count'] == 45
           assert set(s['rates']) == {'US', 'CA', 'AU', 'NZ'}
           assert len(s['rate_rv']) == 15
+          assert s['rates']['CA']['history_limited'] is True
           print({
               'fx_as_of': s['fx']['source_observation'],
               'fx_age_days': s['fx']['age_days'],
