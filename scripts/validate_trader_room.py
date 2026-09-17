@@ -14,6 +14,10 @@ EXPECTED = {
     "catalyst-junkie", "vol-convexity", "no-trade-skeptic",
 }
 REQUIRED_FIELDS = {"name", "description", "model", "readonly", "is_background"}
+MANDATORY_PACKET_SECTIONS = {
+    "temperature_gauges", "central_bank_research", "news_and_research",
+    "market_state", "research_method", "source_index", "known_gaps",
+}
 
 def parse_frontmatter(text: str) -> dict[str, str]:
     if not text.startswith("---\n"):
@@ -59,6 +63,21 @@ def main() -> None:
     assert "fail closed" in protocol
     assert "trader-room/outbox" not in protocol
 
+    evidence_contract = (ROOT / "docs" / "TRADER_ROOM_EVIDENCE_CONTRACT.md").read_text(encoding="utf-8")
+    method = (ROOT / "docs" / "TRADER_RESEARCH_METHOD.md").read_text(encoding="utf-8")
+    for section in MANDATORY_PACKET_SECTIONS:
+        assert f'"{section}"' in evidence_contract, f"evidence contract missing {section}"
+    assert "Temperature Inputs" in evidence_contract
+    assert "central-bank" in evidence_contract
+    assert "MARKET_STATE_FEED_V1.md" in evidence_contract
+    assert "TRADER_RESEARCH_METHOD.md" in evidence_contract
+    assert "Bob Elliott" in evidence_contract and "David Cervantes" in evidence_contract
+    assert "available`, `partial`, `stale`, or `unavailable`" in evidence_contract
+    assert "Start with a causal question" in method
+    assert "Make market expectations explicit" in method
+    assert "Build a discrepancy map" in method
+    assert "Mean reversion is a yardstick, not a signal" in method
+
     command = (ROOT / ".cursor" / "commands" / "trader-room.md").read_text(encoding="utf-8")
     assert "all 14 standing advocates concurrently" in command
     assert "You are not the arbiter" in command
@@ -67,6 +86,11 @@ def main() -> None:
     assert DRIVE_FOLDER_ID in command
     assert "public GitHub repository" in command
     assert "Do not require a local checkout, local terminal, or local Cursor session" in command
+    assert "TRADER_ROOM_EVIDENCE_CONTRACT.md" in command
+    assert "TRADER_RESEARCH_METHOD.md" in command
+    for section in MANDATORY_PACKET_SECTIONS:
+        assert f'`{section}`' in command, f"command missing mandatory packet section {section}"
+    assert "exact same frozen common evidence packet" in command
     assert "trader-room/outbox" not in command
     assert "GITHUB_HANDOFF" not in command
 
@@ -79,8 +103,8 @@ def main() -> None:
     assert "service_role" not in mcp_path.read_text(encoding="utf-8").lower()
 
     print(
-        "Trader Room configuration validated: 14 Grok 4.6 agents, read-only Supabase, "
-        "Cursor Cloud execution, and private Google Drive-only arbiter handoff."
+        "Trader Room configuration validated: 14 Grok 4.6 agents, mandatory Market Watch evidence, "
+        "durable empirical research method, read-only Supabase, Cursor Cloud execution, and private Drive handoff."
     )
 
 if __name__ == "__main__":
