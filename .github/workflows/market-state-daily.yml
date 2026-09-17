@@ -1,0 +1,54 @@
+name: Build Market State
+
+on:
+  schedule:
+    - cron: '30 9 * * 1-5'
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'scripts/sal_market_data.py'
+      - 'tests/test_sal_market_data.py'
+      - 'requirements-sal.txt'
+      - 'docs/MARKET_STATE_FEED.md'
+      - '.github/workflows/market-state-daily.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build-market-state:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install parser dependency
+        run: python -m pip install -r requirements-sal.txt
+      - name: Unit tests
+        run: PYTHONPATH=. python -m unittest tests.test_sal_market_data -v
+      - name: Live source smoke test
+        run: |
+          mkdir -p market-state
+          PYTHONPATH=. python scripts/sal_market_data.py --output market-state/market_state.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          s = json.loads(Path('market-state/market_state.json').read_text())
+          assert s['method']['model_calls'] == 0
+          assert s['method']['fx_pair_count'] == 45
+          assert set(s['rates']) == {'US', 'CA', 'AU', 'NZ'}
+          assert len(s['rate_rv']) == 15
+          print({
+              'fx_as_of': s['fx']['source_observation'],
+              'fx_age_days': s['fx']['age_days'],
+              'rate_as_of': {k: v['latest_observation'] for k, v in s['rates'].items()},
+              'rate_age_days': {k: v['age_days'] for k, v in s['rates'].items()},
+          })
+          PY
+      - name: Upload market-state packet
+        uses: actions/upload-artifact@v4
+        with:
+          name: market-state
+          path: market-state/market_state.json
+          retention-days: 3
