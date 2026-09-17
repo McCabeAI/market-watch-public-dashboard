@@ -1,1 +1,1 @@
-{"version":1,"hooks":{"subagentStart":[{"command":"python3 .cursor/hooks/subagent-model-policy.py","timeout":5,"failClosed":true}]}}
+{"version":1,"hooks":{"subagentStart":[{"command":"sh .cursor/hooks/enforce-subagent-models.sh"}]}}
