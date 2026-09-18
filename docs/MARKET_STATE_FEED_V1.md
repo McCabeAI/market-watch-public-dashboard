@@ -109,3 +109,7 @@ The GitHub Pages deploy workflow also runs the same generator into `_site/market
 ## Trader Room use
 
 Immediately before a debate, run the command above and attach the JSON as research/reference `market_levels` / `rates_and_policy` evidence. Preserve source names, URLs, observation dates, `generated_at`, and `stale_sources`. Do not treat ECB crosses or official yields as tradable quotes. If the generator exits `2`, record the hard failure as a known gap and do not fabricate replacements.
+
+## Opportunity monitor extension (2026-09-18)
+
+Every normal generator call now includes `cross_assets` source metadata and `opportunities` analytics. The core schema stays backward compatible. See [MARKET_OPPORTUNITIES.md](MARKET_OPPORTUNITIES.md) for added coverage, publication lags, screen formulas and limitations. The core packet status describes the original required rates/FX sources; `cross_assets.status` independently exposes partial broader coverage. Added-source failures never become zero-price or fabricated signals.

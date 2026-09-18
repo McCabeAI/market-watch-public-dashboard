@@ -26,6 +26,9 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Mapping, Sequence
 
+from scripts.cross_asset_data import collect_cross_assets
+from scripts.market_opportunities import build_opportunities
+
 USER_AGENT = (
     "MarketWatch-MarketState/1.0 "
     "(+https://github.com/McCabeAI/market-watch-public-dashboard)"
@@ -692,7 +695,7 @@ def _nz_rates_unavailable(error: str) -> tuple[dict[str, dict[date, float]], dic
     return empty, block
 
 
-def build_snapshot(*, today: date | None = None, nz_workbook: Path | None = None) -> dict:
+def build_snapshot(*, today: date | None = None, nz_workbook: Path | None = None, include_cross_assets: bool = True) -> dict:
     today = today or datetime.now(timezone.utc).date()
     start = today - timedelta(days=366 * 5 + 15)
     nz_bytes = nz_workbook.read_bytes() if nz_workbook else None
@@ -763,6 +766,8 @@ def build_snapshot(*, today: date | None = None, nz_workbook: Path | None = None
     if fx_status == "stale":
         stale_sources.append("FX")
 
+    cross_raw, cross_meta = collect_cross_assets(start, today, fetch_bytes) if include_cross_assets else ({}, {})
+    opportunities = build_opportunities(rates_raw, fx_raw, cross_raw, cross_meta, today)
     packet_status = "stale" if stale_sources else "ok"
     nz_source = {
         "name": "Reserve Bank of New Zealand B2 wholesale interest rates",
@@ -776,6 +781,8 @@ def build_snapshot(*, today: date | None = None, nz_workbook: Path | None = None
         nz_source["error"] = nz_error
         nz_source["observation_date"] = None
     return {
+        "cross_assets": {"series": cross_meta, "status": "partial" if any(m["status"] != "ok" for m in cross_meta.values()) else "ok"},
+        "opportunities": opportunities,
         "schema_version": 1,
         "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
         "window_start": start.isoformat(),
@@ -911,6 +918,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "--nz-workbook",
         help="optional local official RBNZ B2 xlsx (same file as the public download URL)",
     )
+    ap.add_argument("--public", action="store_true", help="Omit restricted index observations from the public read model")
     args = ap.parse_args(argv)
     today = date.fromisoformat(args.today) if args.today else None
     nz_workbook = Path(args.nz_workbook) if args.nz_workbook else None
@@ -918,6 +926,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         raise MarketStateError(f"RBNZ workbook not found: {nz_workbook}")
     snapshot = build_snapshot(today=today, nz_workbook=nz_workbook)
     validate_snapshot(snapshot)
+    if args.public:
+        from scripts.cross_asset_data import public_snapshot
+        snapshot = public_snapshot(snapshot)
     out = Path(args.output)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(snapshot, indent=2, sort_keys=True) + "\n")
