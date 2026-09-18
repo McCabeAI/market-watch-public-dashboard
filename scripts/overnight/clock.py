@@ -6,7 +6,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Any
 from zoneinfo import ZoneInfo
 
-from scripts.overnight.constants import OVERNIGHT_TZ, STAGE_SCHEDULE, STAGES, UTC_CRON
+from scripts.overnight.constants import LOCAL_CRON, OVERNIGHT_TZ, STAGE_SCHEDULE, STAGES
 from scripts.overnight.errors import SchemaError
 
 NY = ZoneInfo(OVERNIGHT_TZ)
@@ -73,4 +73,4 @@ def stage_for_time(when: datetime | None = None) -> str | None:
 
 
 def schedule_catalog() -> list[dict[str, Any]]:
-    return [stage_window(stage) | {"utc_cron": list(UTC_CRON[stage])} for stage in STAGES]
+    return [stage_window(stage) | {"cron": LOCAL_CRON[stage]} for stage in STAGES]
