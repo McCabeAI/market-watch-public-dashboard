@@ -57,6 +57,7 @@ def stage_window(stage: str, when: datetime | None = None) -> dict[str, Any]:
         "window_start": start.isoformat(),
         "window_end": end.isoformat(),
         "window_minutes": spec["window_minutes"],
+        "owner": spec["owner"],
         "summary": spec["summary"],
     }
 
@@ -73,4 +74,7 @@ def stage_for_time(when: datetime | None = None) -> str | None:
 
 
 def schedule_catalog() -> list[dict[str, Any]]:
-    return [stage_window(stage) | {"cron": LOCAL_CRON[stage]} for stage in STAGES]
+    return [
+        stage_window(stage) | {"cron": LOCAL_CRON.get(stage)}
+        for stage in STAGES
+    ]
