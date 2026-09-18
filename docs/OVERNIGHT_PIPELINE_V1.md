@@ -1,6 +1,6 @@
 # Market Watch — Overnight Production Pipeline V1
 
-Status: TARGET-SIDE READY · ACP SCHEDULE NOT YET ENABLED
+Status: LIVE · ACP SCHEDULE ENABLED
 
 This is the technical contract for the unattended Market Watch morning pipeline. GitHub owns deterministic work. ACP owns every recurring model/provider clock. Market Watch never stores a Cursor credential and never invokes Cursor directly.
 
@@ -223,7 +223,7 @@ MW_OVERNIGHT_RUN_POLICY={"version":1,"schedule_id":"market-watch-weekday-0205","
 
 The parent must perform research first, freeze the final packet, then launch the 14 direct trader children. It must not update books/P&L and must not launch grandchildren.
 
-The schedule is not enabled merely by this target-repository contract. ACP standing authorization begins only after Kevin explicitly approves the ACP schedule definition and it is merged into ACP main.
+The schedule is enabled on ACP `main` as `market-watch-weekday-0205` under Kevin's explicit 2026-09-18 approval (ACP commit `f5b75df8`). That committed definition is standing authorization for its normal weekday 02:05 America/New_York occurrences only; ad hoc runs, retries, follow-ups, model substitutions, or other material schedule changes still require fresh explicit authorization.
 
 ## 13. Persistence and the Supabase boundary
 
