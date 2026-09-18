@@ -1,0 +1,857 @@
+{
+  "allowed_evidence_refs": [
+    "temp:US:inflation",
+    "temp:US:labor",
+    "temp:US:activity",
+    "temp:US:consumer",
+    "temp:CA:inflation",
+    "temp:CA:labor",
+    "temp:CA:activity",
+    "temp:CA:consumer",
+    "temp:AU:inflation",
+    "temp:AU:labor",
+    "temp:AU:activity",
+    "temp:AU:consumer",
+    "temp:NZ:inflation",
+    "temp:NZ:labor",
+    "temp:NZ:activity",
+    "temp:NZ:consumer",
+    "mw_20260916_fomc_hike_pricing",
+    "mw_20260916_au_housing_tightening",
+    "rollup:BoE holds 3.75% with three votes for a hike",
+    "rollup:Fed raises 25bp to 3.75\u20134.00%",
+    "rollup:BoC minutes flag higher energy pass-through risk",
+    "rollup:New Zealand Q2 GDP slows to 0.2% q/q but beats forecasts",
+    "rollup:Canada August inflation holds at 3%, core stays near 2%",
+    "rollup:August CPI keeps the Fed tightening bias intact",
+    "last24:2026-09-18:desk-thesis",
+    "last24:2026-09-17:boj-hike",
+    "last24:2026-09-17:boe-hold",
+    "mw_20260916_saudi_oman_workaround",
+    "mw_20260916_nz_india_trade",
+    "rollup:BoJ raises its policy rate to 1.25%",
+    "rollup:Energy-market shock absorbers weaken",
+    "rollup:Australian housing downturn deepens under higher rates",
+    "market_state",
+    "research_method",
+    "paper_books",
+    "pos:unavailable",
+    "macro:desk-18sep",
+    "xa:energy-retained",
+    "fx:EURUSD",
+    "fx:GBPUSD",
+    "fx:AUDUSD",
+    "fx:NZDUSD",
+    "fx:USDCAD",
+    "fx:USDJPY",
+    "fx:USDCHF",
+    "fx:AUDNZD",
+    "fx:AUDCAD",
+    "fx:NZDCAD",
+    "fx:EURJPY",
+    "fx:GBPJPY",
+    "rates:AU",
+    "rates:CA",
+    "rates:NZ",
+    "rates:US"
+  ],
+  "as_of": "2026-09-18T18:29:33Z",
+  "central_bank_headlines": [
+    {
+      "headline": "Fed decision arrives with markets heavily priced for a 25bp hike",
+      "id": "mw_20260916_fomc_hike_pricing",
+      "institution": "Federal Reserve",
+      "published_at": "2026-09-16T03:01:14Z"
+    },
+    {
+      "headline": "Australian housing downturn shows the RBA tightening channel biting",
+      "id": "mw_20260916_au_housing_tightening",
+      "institution": null,
+      "published_at": "2026-09-16T03:34:50Z"
+    },
+    {
+      "headline": "BoE holds 3.75% with three votes for a hike",
+      "id": "rollup:BoE holds 3.75% with three votes for a hike",
+      "institution": null,
+      "published_at": null
+    },
+    {
+      "headline": "Fed raises 25bp to 3.75\u20134.00%",
+      "id": "rollup:Fed raises 25bp to 3.75\u20134.00%",
+      "institution": null,
+      "published_at": null
+    },
+    {
+      "headline": "BoC minutes flag higher energy pass-through risk",
+      "id": "rollup:BoC minutes flag higher energy pass-through risk",
+      "institution": null,
+      "published_at": null
+    },
+    {
+      "headline": "New Zealand Q2 GDP slows to 0.2% q/q but beats forecasts",
+      "id": "rollup:New Zealand Q2 GDP slows to 0.2% q/q but beats forecasts",
+      "institution": null,
+      "published_at": null
+    },
+    {
+      "headline": "Canada August inflation holds at 3%, core stays near 2%",
+      "id": "rollup:Canada August inflation holds at 3%, core stays near 2%",
+      "institution": null,
+      "published_at": null
+    },
+    {
+      "headline": "August CPI keeps the Fed tightening bias intact",
+      "id": "rollup:August CPI keeps the Fed tightening bias intact",
+      "institution": null,
+      "published_at": null
+    },
+    {
+      "headline": "Global tightening broadens after the Fed move",
+      "id": "last24:2026-09-18:desk-thesis",
+      "institution": null,
+      "published_at": "2026-09-18T08:00:00Z"
+    },
+    {
+      "headline": "BoJ raises its policy rate to 1.25%",
+      "id": "last24:2026-09-17:boj-hike",
+      "institution": "Bank of Japan",
+      "published_at": "2026-09-17T00:00:00Z"
+    },
+    {
+      "headline": "BoE holds 3.75%, but three members vote to hike",
+      "id": "last24:2026-09-17:boe-hold",
+      "institution": "Bank of England",
+      "published_at": "2026-09-17T00:00:00Z"
+    }
+  ],
+  "family_status": {
+    "central_bank_research": "available",
+    "market_state": "stale",
+    "research_method": "available",
+    "temperature_gauges": "available"
+  },
+  "known_gaps": [
+    "Supabase MCP is not connected in this ACP execution; temperature values come from the live repo ledger data/temperature_scores.json rather than a live Supabase query.",
+    "Official RBNZ B2 workbook returned HTTP 403. NZ sovereign yields and NZ-involved rate RV are unavailable; no third-party substitute was used.",
+    "Market-state snapshot status is stale solely because NZ_rates is unavailable. US/CA/AU yields and the 45 ECB G10 FX crosses are present.",
+    "Persistent paper books are empty $100m seed accounts with no open positions (data/overnight/books/latest.json). No overnight review has completed.",
+    "ops/supabase/inbox/latest.json last window ended 2026-09-16T10:30:00Z; newer news is taken from the Sep 18 last24/news_rollup production surfaces.",
+    "No paid/private research or positioning/flow dataset is connected. Cot/positioning is a known gap.",
+    "Executable broker prices are not in the packet. ECB FX and official yield history are research/reference only. Unsupported trade levels must remain JSON null."
+  ],
+  "market_levels": [
+    {
+      "as_of": "2026-09-18",
+      "id": "fx:EURUSD",
+      "instrument": "EURUSD",
+      "note": "ECB same-fixing research/reference crosses; not executable pricing.",
+      "ret_1d_pct": -0.18291089626338852,
+      "ret_1m_pct": -1.891961304682821,
+      "ret_5d_pct": -1.1387163561076719,
+      "rv_20d": 3.296938042675636,
+      "source": "market_state",
+      "spot": 1.146
+    },
+    {
+      "as_of": "2026-09-18",
+      "id": "fx:GBPUSD",
+      "instrument": "GBPUSD",
+      "note": "ECB same-fixing research/reference crosses; not executable pricing.",
+      "ret_1d_pct": -0.24102517729723827,
+      "ret_1m_pct": -2.0690310065665463,
+      "ret_5d_pct": -1.21354150092432,
+      "rv_20d": 3.179558948777529,
+      "source": "market_state",
+      "spot": 1.3344201210992082
+    },
+    {
+      "as_of": "2026-09-18",
+      "id": "fx:AUDUSD",
+      "instrument": "AUDUSD",
+      "note": "ECB same-fixing research/reference crosses; not executable pricing.",
+      "ret_1d_pct": 0.08996589283660761,
+      "ret_1m_pct": 0.19881578587286342,
+      "ret_5d_pct": -0.7333205983880653,
+      "rv_20d": 4.714212639621865,
+      "source": "market_state",
+      "spot": 0.712022367194781
+    },
+    {
+      "as_of": "2026-09-18",
+      "id": "fx:NZDUSD",
+      "instrument": "NZDUSD",
+      "note": "ECB same-fixing research/reference crosses; not executable pricing.",
+      "ret_1d_pct": -0.555956624924947,
+      "ret_1m_pct": -3.9012499185843263,
+      "ret_5d_pct": -1.8973688217823415,
+      "rv_20d": 6.313284602821049,
+      "source": "market_state",
+      "spot": 0.5710584014351205
+    },
+    {
+      "as_of": "2026-09-18",
+      "id": "fx:USDCAD",
+      "instrument": "USDCAD",
+      "note": "ECB same-fixing research/reference crosses; not executable pricing.",
+      "ret_1d_pct": 0.10842662141394843,
+      "ret_1m_pct": 1.7446777346133757,
+      "ret_5d_pct": 1.1014580421768505,
+      "rv_20d": 5.16743604950073,
+      "source": "market_state",
+      "spot": 1.4010471204188482
+    },
+    {
+      "as_of": "2026-09-18",
+      "id": "fx:USDJPY",
+      "instrument": "USDJPY",
+      "note": "ECB same-fixing research/reference crosses; not executable pricing.",
+      "ret_1d_pct": 1.4106659832314294,
+      "ret_1m_pct": -0.5503739077203251,
+      "ret_5d_pct": 2.5000703709958882,
+      "rv_20d": 11.037965324753946,
+      "source": "market_state",
+      "spot": 157.88830715532288
+    },
+    {
+      "as_of": "2026-09-18",
+      "id": "fx:USDCHF",
+      "instrument": "USDCHF",
+      "note": "ECB same-fixing research/reference crosses; not executable pricing.",
+      "ret_1d_pct": 0.140912142990679,
+      "ret_1m_pct": 3.3372938337924873,
+      "ret_5d_pct": 1.269562876251773,
+      "rv_20d": 5.199501196938118,
+      "source": "market_state",
+      "spot": 0.8256544502617802
+    },
+    {
+      "as_of": "2026-09-18",
+      "id": "fx:AUDNZD",
+      "instrument": "AUDNZD",
+      "note": "ECB same-fixing research/reference crosses; not executable pricing.",
+      "ret_1d_pct": 0.6495336430813792,
+      "ret_1m_pct": 4.266513040995412,
+      "ret_5d_pct": 1.1865616746605134,
+      "rv_20d": 5.09230743331807,
+      "source": "market_state",
+      "spot": 1.246846846846847
+    },
+    {
+      "as_of": "2026-09-18",
+      "id": "fx:AUDCAD",
+      "instrument": "AUDCAD",
+      "note": "ECB same-fixing research/reference crosses; not executable pricing.",
+      "ret_1d_pct": 0.19849006122858448,
+      "ret_1m_pct": 1.9469622152352706,
+      "ret_5d_pct": 0.36006022508290325,
+      "rv_20d": 4.382519054754998,
+      "source": "market_state",
+      "spot": 0.9975768872320596
+    },
+    {
+      "as_of": "2026-09-18",
+      "id": "fx:NZDCAD",
+      "instrument": "NZDCAD",
+      "note": "ECB same-fixing research/reference crosses; not executable pricing.",
+      "ret_1d_pct": -0.44813280849592685,
+      "ret_1m_pct": -2.2246364226720994,
+      "ret_5d_pct": -0.8168095010827825,
+      "rv_20d": 5.0596911299552785,
+      "source": "market_state",
+      "spot": 0.8000797289216662
+    },
+    {
+      "as_of": "2026-09-18",
+      "id": "fx:EURJPY",
+      "instrument": "EURJPY",
+      "note": "ECB same-fixing research/reference crosses; not executable pricing.",
+      "ret_1d_pct": 1.225174825174813,
+      "ret_1m_pct": -2.4319223510380072,
+      "ret_5d_pct": 1.3328853046594924,
+      "rv_20d": 9.26950071751291,
+      "source": "market_state",
+      "spot": 180.94
+    },
+    {
+      "as_of": "2026-09-18",
+      "id": "fx:GBPJPY",
+      "instrument": "GBPJPY",
+      "note": "ECB same-fixing research/reference crosses; not executable pricing.",
+      "ret_1d_pct": 1.166240745747027,
+      "ret_1m_pct": -2.608017507484095,
+      "ret_5d_pct": 1.2561894785672267,
+      "rv_20d": 10.041715899081836,
+      "source": "market_state",
+      "spot": 210.6893339543549
+    }
+  ],
+  "news_headlines": [
+    {
+      "headline": "Saudi workaround reduces the extreme oil-supply tail",
+      "id": "mw_20260916_saudi_oman_workaround",
+      "published_at": "2026-09-16T00:41:06Z"
+    },
+    {
+      "headline": "New Zealand passes India trade agreement",
+      "id": "mw_20260916_nz_india_trade",
+      "published_at": "2026-09-16T00:14:05Z"
+    },
+    {
+      "headline": "BoJ raises its policy rate to 1.25%",
+      "id": "rollup:BoJ raises its policy rate to 1.25%",
+      "published_at": null
+    },
+    {
+      "headline": "Energy-market shock absorbers weaken",
+      "id": "rollup:Energy-market shock absorbers weaken",
+      "published_at": null
+    },
+    {
+      "headline": "Australian housing downturn deepens under higher rates",
+      "id": "rollup:Australian housing downturn deepens under higher rates",
+      "published_at": null
+    }
+  ],
+  "packet_path": "trader-room/runs/tr-20260918T182933Z-ondemand/evidence_packet.json",
+  "packet_sha256": "63f781354ed4048cf1091125e35854ed64db800467e7a98c336cf72032a33956",
+  "paper_books": {
+    "as_of": "2026-09-18T07:39:31.391259-04:00",
+    "id": "paper_books",
+    "note": "Context only. Empty seed books do not constrain or invent positions.",
+    "overnight_pointer": {
+      "as_of": null,
+      "assembled_dataset": null,
+      "books_path": "data/overnight/books/latest.json",
+      "dry_run": false,
+      "overnight_run_id": null,
+      "publication": {
+        "core_status": "ok",
+        "last_successful_review_run_id": null,
+        "may_publish": true,
+        "reason": "No production overnight run has completed yet. Seed books are empty $100m paper accounts.",
+        "trader_books_status": "stale"
+      }
+    },
+    "path": "data/overnight/books/latest.json",
+    "review_status": "missing",
+    "seats": {
+      "carry-is-king": {
+        "cash_usd": 100000000,
+        "conviction": 0,
+        "expression_rule": "rates_first",
+        "last_action": "HOLD",
+        "nav_usd": 100000000,
+        "positions": [],
+        "seat": "carry-is-king",
+        "thesis": null
+      },
+      "catalyst-junkie": {
+        "cash_usd": 100000000,
+        "conviction": 0,
+        "expression_rule": "rates_first",
+        "last_action": "HOLD",
+        "nav_usd": 100000000,
+        "positions": [],
+        "seat": "catalyst-junkie",
+        "thesis": null
+      },
+      "cross-merchant": {
+        "cash_usd": 100000000,
+        "conviction": 0,
+        "expression_rule": "spot_only",
+        "last_action": "HOLD",
+        "nav_usd": 100000000,
+        "positions": [],
+        "seat": "cross-merchant",
+        "thesis": null
+      },
+      "dollar-king": {
+        "cash_usd": 100000000,
+        "conviction": 0,
+        "expression_rule": "spot_only",
+        "last_action": "HOLD",
+        "nav_usd": 100000000,
+        "positions": [],
+        "seat": "dollar-king",
+        "thesis": null
+      },
+      "mean-reverter": {
+        "cash_usd": 100000000,
+        "conviction": 0,
+        "expression_rule": "rates_first",
+        "last_action": "HOLD",
+        "nav_usd": 100000000,
+        "positions": [],
+        "seat": "mean-reverter",
+        "thesis": null
+      },
+      "no-trade-skeptic": {
+        "cash_usd": 100000000,
+        "conviction": 0,
+        "expression_rule": "rates_first",
+        "last_action": "HOLD",
+        "nav_usd": 100000000,
+        "positions": [],
+        "seat": "no-trade-skeptic",
+        "thesis": null
+      },
+      "perma-bear": {
+        "cash_usd": 100000000,
+        "conviction": 0,
+        "expression_rule": "rates_first",
+        "last_action": "HOLD",
+        "nav_usd": 100000000,
+        "positions": [],
+        "seat": "perma-bear",
+        "thesis": null
+      },
+      "perma-bull": {
+        "cash_usd": 100000000,
+        "conviction": 0,
+        "expression_rule": "rates_first",
+        "last_action": "HOLD",
+        "nav_usd": 100000000,
+        "positions": [],
+        "seat": "perma-bull",
+        "thesis": null
+      },
+      "positioning-cynic": {
+        "cash_usd": 100000000,
+        "conviction": 0,
+        "expression_rule": "rates_first",
+        "last_action": "HOLD",
+        "nav_usd": 100000000,
+        "positions": [],
+        "seat": "positioning-cynic",
+        "thesis": null
+      },
+      "rate-dove": {
+        "cash_usd": 100000000,
+        "conviction": 0,
+        "expression_rule": "rates_first",
+        "last_action": "HOLD",
+        "nav_usd": 100000000,
+        "positions": [],
+        "seat": "rate-dove",
+        "thesis": null
+      },
+      "rate-hawk": {
+        "cash_usd": 100000000,
+        "conviction": 0,
+        "expression_rule": "rates_first",
+        "last_action": "HOLD",
+        "nav_usd": 100000000,
+        "positions": [],
+        "seat": "rate-hawk",
+        "thesis": null
+      },
+      "trend-follower": {
+        "cash_usd": 100000000,
+        "conviction": 0,
+        "expression_rule": "rates_first",
+        "last_action": "HOLD",
+        "nav_usd": 100000000,
+        "positions": [],
+        "seat": "trend-follower",
+        "thesis": null
+      },
+      "value-guy": {
+        "cash_usd": 100000000,
+        "conviction": 0,
+        "expression_rule": "rates_first",
+        "last_action": "HOLD",
+        "nav_usd": 100000000,
+        "positions": [],
+        "seat": "value-guy",
+        "thesis": null
+      },
+      "vol-convexity": {
+        "cash_usd": 100000000,
+        "conviction": 0,
+        "expression_rule": "rates_first",
+        "last_action": "HOLD",
+        "nav_usd": 100000000,
+        "positions": [],
+        "seat": "vol-convexity",
+        "thesis": null
+      }
+    },
+    "starting_nav_usd": 100000000
+  },
+  "rate_rv_highlights": {
+    "AU-NZ_2Y": {
+      "as_of": null,
+      "bps": null,
+      "chg_1d_bps": null,
+      "chg_1m_bps": null,
+      "chg_3m_bps": null,
+      "chg_5d_bps": null,
+      "pctile_1y": null,
+      "pctile_5y": null,
+      "reason": "RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.",
+      "status": "unavailable",
+      "z_1y": null,
+      "z_5y": null
+    },
+    "AU-US_10Y": {
+      "as_of": "2026-09-16",
+      "bps": 33.80000000000001,
+      "chg_1d_bps": -7.299999999999947,
+      "chg_1m_bps": 2.700000000000017,
+      "chg_3m_bps": -6.700000000000017,
+      "chg_5d_bps": -3.3999999999999773,
+      "pctile_1y": 31.944444444444443,
+      "pctile_5y": 77.46536267318663,
+      "z_1y": -0.5659273415345912,
+      "z_5y": 0.7664605389732839
+    },
+    "AU-US_2Y": {
+      "as_of": "2026-09-16",
+      "bps": 25.899999999999945,
+      "chg_1d_bps": -12.500000000000089,
+      "chg_1m_bps": -11.500000000000018,
+      "chg_3m_bps": -16.300000000000114,
+      "chg_5d_bps": -14.600000000000083,
+      "pctile_1y": 25.595238095238095,
+      "pctile_5y": 84.71882640586797,
+      "z_1y": -0.5185268004122016,
+      "z_5y": 1.1575215793853681
+    },
+    "CA-AU_2Y": {
+      "as_of": "2026-09-16",
+      "bps": -164.89999999999995,
+      "chg_1d_bps": 5.500000000000057,
+      "chg_1m_bps": -5.499999999999972,
+      "chg_3m_bps": 7.300000000000097,
+      "chg_5d_bps": 2.6000000000000227,
+      "pctile_1y": 51.388888888888886,
+      "pctile_5y": 10.502838605028385,
+      "z_1y": -0.40082008755744697,
+      "z_5y": -1.635163935345354
+    },
+    "CA-US_10Y": {
+      "as_of": "2026-09-17",
+      "bps": -111.00000000000003,
+      "chg_1d_bps": -2.0000000000000426,
+      "chg_1m_bps": -10.000000000000057,
+      "chg_3m_bps": -5.000000000000071,
+      "chg_5d_bps": -10.0,
+      "pctile_1y": 0.1984126984126984,
+      "pctile_5y": 10.592532467532468,
+      "z_1y": -1.9104058517615377,
+      "z_5y": -1.1001971426644155
+    },
+    "CA-US_2Y": {
+      "as_of": "2026-09-17",
+      "bps": -140.0,
+      "chg_1d_bps": -1.0,
+      "chg_1m_bps": -16.999999999999957,
+      "chg_3m_bps": -8.999999999999943,
+      "chg_5d_bps": -15.000000000000043,
+      "pctile_1y": 3.7698412698412698,
+      "pctile_5y": 4.3019480519480515,
+      "z_1y": -1.8400695277520684,
+      "z_5y": -1.5132410815208162
+    },
+    "NZ-US_2Y": {
+      "as_of": null,
+      "bps": null,
+      "chg_1d_bps": null,
+      "chg_1m_bps": null,
+      "chg_3m_bps": null,
+      "chg_5d_bps": null,
+      "pctile_1y": null,
+      "pctile_5y": null,
+      "reason": "RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.",
+      "status": "unavailable",
+      "z_1y": null,
+      "z_5y": null
+    }
+  },
+  "rates_and_policy": [
+    {
+      "age_days": 2,
+      "country": "AU",
+      "error": null,
+      "id": "rates:AU",
+      "latest_observation": "2026-09-16",
+      "status": "ok",
+      "tenors": {
+        "10Y": {
+          "as_of": "2026-09-16",
+          "chg_1d_bp": null,
+          "chg_5d_bp": null,
+          "pctile_1y": 99.0079365079365,
+          "value": 5.348,
+          "z_1y": 2.061105419938145
+        },
+        "2Y": {
+          "as_of": "2026-09-16",
+          "chg_1d_bp": null,
+          "chg_5d_bp": null,
+          "pctile_1y": 99.0079365079365,
+          "value": 4.999,
+          "z_1y": 1.6668784352122055
+        },
+        "5Y": {
+          "as_of": "2026-09-16",
+          "chg_1d_bp": null,
+          "chg_5d_bp": null,
+          "pctile_1y": 99.0079365079365,
+          "value": 5.041,
+          "z_1y": 1.8286744132816273
+        }
+      }
+    },
+    {
+      "age_days": 1,
+      "country": "CA",
+      "error": null,
+      "id": "rates:CA",
+      "latest_observation": "2026-09-17",
+      "status": "ok",
+      "tenors": {
+        "10Y": {
+          "as_of": "2026-09-17",
+          "chg_1d_bp": null,
+          "chg_5d_bp": null,
+          "pctile_1y": 97.42063492063492,
+          "value": 3.83,
+          "z_1y": 2.121982164561663
+        },
+        "2Y": {
+          "as_of": "2026-09-17",
+          "chg_1d_bp": null,
+          "chg_5d_bp": null,
+          "pctile_1y": 97.81746031746032,
+          "value": 3.27,
+          "z_1y": 2.4628832525179494
+        },
+        "5Y": {
+          "as_of": "2026-09-17",
+          "chg_1d_bp": null,
+          "chg_5d_bp": null,
+          "pctile_1y": 97.81746031746032,
+          "value": 3.54,
+          "z_1y": 2.3590400147039268
+        },
+        "LONG": {
+          "as_of": "2026-09-17",
+          "chg_1d_bp": null,
+          "chg_5d_bp": null,
+          "pctile_1y": 96.42857142857143,
+          "value": 4.17,
+          "z_1y": 1.9910881489321834
+        }
+      }
+    },
+    {
+      "age_days": null,
+      "country": "NZ",
+      "error": "RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.",
+      "id": "rates:NZ",
+      "latest_observation": null,
+      "status": "unavailable",
+      "tenors": {
+        "10Y": {
+          "as_of": null,
+          "chg_1d_bp": null,
+          "chg_5d_bp": null,
+          "pctile_1y": null,
+          "value": null,
+          "z_1y": null
+        },
+        "2Y": {
+          "as_of": null,
+          "chg_1d_bp": null,
+          "chg_5d_bp": null,
+          "pctile_1y": null,
+          "value": null,
+          "z_1y": null
+        },
+        "5Y": {
+          "as_of": null,
+          "chg_1d_bp": null,
+          "chg_5d_bp": null,
+          "pctile_1y": null,
+          "value": null,
+          "z_1y": null
+        }
+      }
+    },
+    {
+      "age_days": 1,
+      "country": "US",
+      "error": null,
+      "id": "rates:US",
+      "latest_observation": "2026-09-17",
+      "status": "ok",
+      "tenors": {
+        "10Y": {
+          "as_of": "2026-09-17",
+          "chg_1d_bp": null,
+          "chg_5d_bp": null,
+          "pctile_1y": 97.81746031746032,
+          "value": 4.94,
+          "z_1y": 2.4842134872201176
+        },
+        "2Y": {
+          "as_of": "2026-09-17",
+          "chg_1d_bp": null,
+          "chg_5d_bp": null,
+          "pctile_1y": 99.2063492063492,
+          "value": 4.67,
+          "z_1y": 2.6178948987872523
+        },
+        "30Y": {
+          "as_of": "2026-09-17",
+          "chg_1d_bp": null,
+          "chg_5d_bp": null,
+          "pctile_1y": 97.42063492063492,
+          "value": 5.29,
+          "z_1y": 1.9829778994837082
+        },
+        "5Y": {
+          "as_of": "2026-09-17",
+          "chg_1d_bp": null,
+          "chg_5d_bp": null,
+          "pctile_1y": 98.41269841269842,
+          "value": 4.78,
+          "z_1y": 2.5932663497418926
+        }
+      }
+    }
+  ],
+  "research_method_document": "docs/TRADER_RESEARCH_METHOD.md",
+  "run_id": "tr-20260918T182933Z-ondemand",
+  "standing_remits": {
+    "carry-is-king": "positive carry and patient expressions unless a catalyst overwhelms it",
+    "catalyst-junkie": "credible path from mispricing to repricing",
+    "cross-merchant": "cleaner relative-value expressions outside USD",
+    "dollar-king": "express macro views through USD spot whenever a defensible USD pair exists",
+    "mean-reverter": "fade statistically or fundamentally stretched FX moves when reversal conditions exist",
+    "no-trade-skeptic": "apparent edges are priced, too noisy, too crowded or poorly timed; may submit no-trade",
+    "perma-bear": "strongest defensive, slowdown, stress or risk-off FX expression",
+    "perma-bull": "strongest pro-growth, risk-on, cyclical FX expression",
+    "positioning-cynic": "attack crowded ideas; prefer better ownership asymmetry",
+    "rate-dove": "currencies where easing or growth weakness is underpriced",
+    "rate-hawk": "currencies where inflation and policy risks are underpriced to the upside",
+    "trend-follower": "persistent price and macro trends; reject premature fades",
+    "value-guy": "historically or fundamentally mispriced currencies and convergence trades",
+    "vol-convexity": "asymmetric optionality; challenge spot expressions"
+  },
+  "temperature_gauges": [
+    {
+      "as_of": "2026-07",
+      "country": "US",
+      "dimension": "Inflation",
+      "id": "temp:US:inflation",
+      "score": 52.0
+    },
+    {
+      "as_of": "2026-08",
+      "country": "US",
+      "dimension": "Labor",
+      "id": "temp:US:labor",
+      "score": 50.2
+    },
+    {
+      "as_of": "2026-Q2",
+      "country": "US",
+      "dimension": "Activity",
+      "id": "temp:US:activity",
+      "score": 49.92
+    },
+    {
+      "as_of": "2026-09-16",
+      "country": "US",
+      "dimension": "Consumer",
+      "id": "temp:US:consumer",
+      "score": 48.5
+    },
+    {
+      "as_of": "2026-08",
+      "country": "CA",
+      "dimension": "Inflation",
+      "id": "temp:CA:inflation",
+      "score": 50.0
+    },
+    {
+      "as_of": "2026-08",
+      "country": "CA",
+      "dimension": "Labor",
+      "id": "temp:CA:labor",
+      "score": 48.8
+    },
+    {
+      "as_of": "2026-Q2",
+      "country": "CA",
+      "dimension": "Activity",
+      "id": "temp:CA:activity",
+      "score": 53.2
+    },
+    {
+      "as_of": "2026-Q2",
+      "country": "CA",
+      "dimension": "Consumer",
+      "id": "temp:CA:consumer",
+      "score": 52.5
+    },
+    {
+      "as_of": "2026-07",
+      "country": "AU",
+      "dimension": "Inflation",
+      "id": "temp:AU:inflation",
+      "score": 49.2
+    },
+    {
+      "as_of": "2026-Q2",
+      "country": "AU",
+      "dimension": "Labor",
+      "id": "temp:AU:labor",
+      "score": 47.8
+    },
+    {
+      "as_of": "2026-Q2",
+      "country": "AU",
+      "dimension": "Activity",
+      "id": "temp:AU:activity",
+      "score": 49.2
+    },
+    {
+      "as_of": "2026-Q2",
+      "country": "AU",
+      "dimension": "Consumer",
+      "id": "temp:AU:consumer",
+      "score": 51.0
+    },
+    {
+      "as_of": "2026-Q2",
+      "country": "NZ",
+      "dimension": "Inflation",
+      "id": "temp:NZ:inflation",
+      "score": 51.6
+    },
+    {
+      "as_of": "2026-Q2",
+      "country": "NZ",
+      "dimension": "Labor",
+      "id": "temp:NZ:labor",
+      "score": 47.0
+    },
+    {
+      "as_of": "2026-Q1",
+      "country": "NZ",
+      "dimension": "Activity",
+      "id": "temp:NZ:activity",
+      "score": 52.0
+    },
+    {
+      "as_of": "2026-Q2",
+      "country": "NZ",
+      "dimension": "Consumer",
+      "id": "temp:NZ:consumer",
+      "score": 48.5
+    }
+  ]
+}
