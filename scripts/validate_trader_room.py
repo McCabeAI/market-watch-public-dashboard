@@ -85,8 +85,10 @@ def main() -> None:
     assert "scripts/trader_room_go.py go" in on_demand
     assert "grok-4.6" in on_demand
     assert "composer-2.5" in on_demand
-    assert "Total Grok ceiling = 30" in on_demand
+    assert "Total Grok ceiling including parent = 31" in on_demand
     assert "Composer ceiling = 28" in on_demand
+    assert "Total model-invocation ceiling = 59" in on_demand
+    assert "MW_TRADER_ROOM_RUN_POLICY=" in on_demand
     assert "trader-room/runs/<run_id>/" in on_demand
 
     evidence_contract = (ROOT / "docs" / "TRADER_ROOM_EVIDENCE_CONTRACT.md").read_text(encoding="utf-8")
