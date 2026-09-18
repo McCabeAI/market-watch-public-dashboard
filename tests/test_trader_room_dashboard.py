@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 
 from scripts.apply_trader_room_tab import apply_trader_room_tab
-from scripts.trader_room_public import build_public_packet
+from scripts.trader_room_public import build_from_run, build_public_packet
 
 
 class TraderRoomDashboardTests(unittest.TestCase):
@@ -81,7 +81,7 @@ class TraderRoomDashboardTests(unittest.TestCase):
                 }),
                 encoding="utf-8",
             )
-            packet = build_public_packet(root)
+            packet = build_from_run(run)
             self.assertTrue(packet["available"])
             self.assertEqual(packet["seat_count"], 1)
             self.assertEqual(packet["conflict_count"], 1)
