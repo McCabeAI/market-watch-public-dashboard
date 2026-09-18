@@ -59,7 +59,7 @@ Current deploy path:
 11. It applies the v12 **Market Data** tab from `patch_v12/` via `scripts/apply_market_data_tab.py`, which serves `market-data.js` and loads the same-origin JSON packet in the browser.
 12. It applies the additive v13 **Trader Book** tab from `patch_v13/` via `scripts/apply_trader_book_tab.py`, validates the overnight publication gate, and emits `_site/trader-books.json` from the canonical morning dataset or the seeded $100m paper books.
 13. Only after all deterministic content/count/anchor checks pass are `_site/index.html`, `market-state.json`, `market-data.js`, `trader-book.js`, and `trader-books.json` uploaded as the GitHub Pages artifact.
-14. The deploy job publishes that artifact to GitHub Pages on `main` pushes, weekday schedule, or manual dispatch. GitHub Actions remains the only website publisher.
+14. The deploy job publishes that artifact to GitHub Pages on ordinary `main` pushes, manual dispatch, and the weekday 04:15 America/New_York schedule. The 04:07 overnight gate runs first and scheduled Pages publication requires the assembled morning dataset. GitHub Actions remains the only website publisher.
 15. The operational run must still verify the live deployed page; a green workflow alone is not completion.
 
 Current immutable base validation constants in `.github/workflows/deploy-pages.yml`:
