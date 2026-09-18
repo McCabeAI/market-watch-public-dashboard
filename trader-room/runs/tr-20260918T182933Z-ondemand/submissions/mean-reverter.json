@@ -1,0 +1,89 @@
+{
+  "agent": "mean-reverter",
+  "archetype": "fade stretched FX when a reversal condition exists",
+  "confidence": 46,
+  "conflict_synopsis": {
+    "au_rates_view": "higher",
+    "aud_view": "lower",
+    "ca_rates_view": "not_relevant",
+    "cad_view": "not_relevant",
+    "carry_view": "not_relevant",
+    "confidence": 46,
+    "conflict_tags": [
+      "AUD_DOWN",
+      "NZD_UP",
+      "AUDNZD_DOWN",
+      "AU_RATES_UP",
+      "RISK_OFF"
+    ],
+    "core_view": "AUDNZD's 5y extreme is an NZD-leg overshoot, not a justified AU-NZ re-rating, with AU housing bite and a clipped oil tail as reversal conditions.",
+    "key_catalyst": "AU housing/labor transmission plus the Saudi workaround clipping the oil tail that had supported AUD versus NZD.",
+    "key_invalidation": "AUDNZD makes a new high after NZ activity/labor deteriorate versus Australia, or AU housing stops showing the tightening channel biting.",
+    "nz_rates_view": "not_relevant",
+    "nzd_view": "higher",
+    "primary_trade": "short AUDNZD / long NZD",
+    "risk_view": "risk_off",
+    "seat": "mean-reverter",
+    "time_horizon": "2-6 weeks tactical / 1-3 months strategic",
+    "us_rates_view": "not_relevant",
+    "usd_view": "not_relevant"
+  },
+  "macro_assumptions": {
+    "growth": "below_trend",
+    "policy": "hawkish",
+    "rates": "higher_for_longer",
+    "risk": "risk_off"
+  },
+  "packet_sha256": "63f781354ed4048cf1091125e35854ed64db800467e7a98c336cf72032a33956",
+  "remit": "fade statistically or fundamentally stretched FX moves when reversal conditions exist",
+  "round": 1,
+  "run_id": "tr-20260918T182933Z-ondemand",
+  "stance_summary": "Fade AUDNZD: the 5y extreme is an NZD-leg overshoot, not a justified AU-NZ fundamental re-rating, and AU housing bite plus a clipped oil tail are the reversal conditions.",
+  "subagent_calls": 0,
+  "subagent_model": null,
+  "trade": {
+    "catalysts": [
+      "Further confirmation that the RBA tightening channel is biting",
+      "NZQ2 GDP beat plus the India FTA reducing the case for NZD as the residual funding currency",
+      "Saudi workaround clipping the extreme oil-supply tail"
+    ],
+    "confidence": 46,
+    "direction": "short",
+    "entry": "ECB same-fixing research/reference AUDNZD 1.246846846846847 as of 2026-09-18; not executable broker pricing",
+    "evidence_refs": [
+      "fx:AUDNZD",
+      "fx:AUDUSD",
+      "fx:NZDUSD",
+      "market_state",
+      "rates:AU",
+      "rates:NZ",
+      "temp:AU:labor",
+      "temp:NZ:activity",
+      "mw_20260916_au_housing_tightening",
+      "rollup:New Zealand Q2 GDP slows to 0.2% q/q but beats forecasts",
+      "mw_20260916_saudi_oman_workaround",
+      "research_method"
+    ],
+    "horizon": "tactical 2-6 weeks against the latest extension; strategic 1-3 months to mean-revert the 5y extreme",
+    "instrument": "AUDNZD",
+    "invalidation": "AUDNZD makes a new high versus the 2026-09-18 ECB research/reference fixing after NZ activity or labor deteriorates relative to Australia, or after AU housing evidence stops showing the tightening channel biting",
+    "mispricing": "Market pricing treats NZD as the clear Australasian underperformer versus AUD at a 5y 99.96th percentile / z +3.12, even though AU labor and housing are already softening and NZ inflation is the hotter of the two.",
+    "principal_risks": [
+      "Energy shock re-widens and AUD ToT keep outrunning NZD",
+      "NZ labor and consumer weakness may be the true relative story",
+      "Unavailable NZ yields hide a genuine AU-NZ rate differential",
+      "No positioning feed",
+      "ECB reference levels are not executable"
+    ],
+    "stop": null,
+    "structure": "spot FX short AUD / long NZD",
+    "target": null,
+    "thesis": "AUDNZD is the packet's cleanest G10 stretch on both 1y and 5y history. Decomposition shows the 1m +4.27% is almost entirely NZDUSD weakness, not AUDUSD strength, while AU housing is already transmitting tighter policy, NZ Q2 GDP slowed but beat and stayed positive, NZ headline inflation remains hotter than Australia's, and the Saudi workaround clips the extreme oil-supply tail.",
+    "why_now": [
+      "AUDNZD printed a further +0.65% 1d and +1.19% 5d extension into a 5y extreme after AU housing evidence and the NZ GDP beat were already in the packet.",
+      "The preferred rates-first AU-NZ RV expression cannot be built because official NZ yields are unavailable.",
+      "The energy-tail bid that can keep AUD bid versus NZD is the live mechanism to fade after the Saudi workaround."
+    ]
+  },
+  "type": "TRADER_ROOM_CONTRIBUTION"
+}

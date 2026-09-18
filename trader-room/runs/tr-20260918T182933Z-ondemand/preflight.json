@@ -1,0 +1,31 @@
+{
+  "essential_families": [
+    "temperature_gauges",
+    "central_bank_research",
+    "market_state",
+    "research_method"
+  ],
+  "evidence_cutoff": "2026-09-18T18:29:33Z",
+  "families": {
+    "central_bank_research": "available",
+    "market_state": "stale",
+    "research_method": "available",
+    "temperature_gauges": "available"
+  },
+  "families_attempted": [
+    "temperature_gauges",
+    "central_bank_research",
+    "market_state",
+    "research_method"
+  ],
+  "hook_policy": "TRADER_ROOM_MODEL_POLICY={\"version\":1,\"advocate_model\":\"grok-4.6\",\"aggregator_model\":\"grok-4.6\",\"subagent_models\":[\"composer-2.5\"]}",
+  "ok": true,
+  "packet_sha256": "63f781354ed4048cf1091125e35854ed64db800467e7a98c336cf72032a33956",
+  "parent_invocation": {
+    "counted": true,
+    "model": "grok-4.6",
+    "role": "acp_parent"
+  },
+  "run_id": "tr-20260918T182933Z-ondemand",
+  "run_policy": "MW_TRADER_ROOM_RUN_POLICY={\"version\":1,\"run_type\":\"trader-room-ondemand\",\"total_model_cap\":59,\"grok_cap\":31,\"composer_cap\":28,\"parent_model\":\"grok-4.6\",\"parent_total\":1,\"parent_grok\":1}"
+}

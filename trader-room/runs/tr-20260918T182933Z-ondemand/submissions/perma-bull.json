@@ -1,0 +1,97 @@
+{
+  "agent": "perma-bull",
+  "archetype": "perma-bull",
+  "confidence": 52,
+  "conflict_synopsis": {
+    "au_rates_view": "not_relevant",
+    "aud_view": "lower",
+    "ca_rates_view": "higher",
+    "cad_view": "higher",
+    "carry_view": "opposes_trade",
+    "confidence": 52,
+    "conflict_tags": [
+      "USD_DOWN",
+      "CAD_UP",
+      "USDCAD_DOWN",
+      "CA_RATES_UP",
+      "RISK_ON",
+      "AUD_DOWN"
+    ],
+    "core_view": "Canada's relative growth and energy ToT are stronger than the post-Fed USDCAD squeeze prices, so fade USD versus CAD.",
+    "key_catalyst": "Post-FOMC USD squeeze fades while Canadian activity/ToT stay firm and CA-US 2Y cheapness mean-reverts.",
+    "key_invalidation": "Canada loses its activity/consumer lead, oil demand destruction removes CAD ToT support, or G10 tightening extends the USD squeeze.",
+    "nz_rates_view": "not_relevant",
+    "nzd_view": "not_relevant",
+    "primary_trade": "short USDCAD / long CAD",
+    "risk_view": "risk_on",
+    "seat": "perma-bull",
+    "time_horizon": "4-8 weeks",
+    "us_rates_view": "higher",
+    "usd_view": "lower"
+  },
+  "macro_assumptions": {
+    "growth": "above_trend",
+    "policy": "hawkish",
+    "rates": "higher_for_longer",
+    "risk": "risk_on"
+  },
+  "packet_sha256": "63f781354ed4048cf1091125e35854ed64db800467e7a98c336cf72032a33956",
+  "remit": "strongest pro-growth, risk-on, cyclical FX expression",
+  "round": 1,
+  "run_id": "tr-20260918T182933Z-ondemand",
+  "stance_summary": "Fade the post-Fed defensive USD bid in USDCAD: Canada still has the strongest growth/consumer gauges in the emphasis set, energy terms-of-trade remain a CAD tailwind, and the 1m CAD selloff prices more fragility than the hard data show.",
+  "subagent_calls": 0,
+  "subagent_model": null,
+  "trade": {
+    "catalysts": [
+      "Canadian activity/retail/GDP prints that keep the Q2 impulse from fading",
+      "BoC communication that energy pass-through limits relative easing versus the Fed",
+      "Oil remaining high enough for CAD ToT while the Saudi workaround caps the extreme supply tail",
+      "Post-FOMC USD squeeze fading once the priced hike is digested"
+    ],
+    "confidence": 52,
+    "direction": "short",
+    "entry": "ECB same-fixing research/reference USDCAD 1.4010471204188482 as of 2026-09-18; not executable broker pricing",
+    "evidence_refs": [
+      "temp:CA:activity",
+      "temp:CA:consumer",
+      "temp:US:activity",
+      "fx:USDCAD",
+      "rates:CA",
+      "rates:US",
+      "xa:energy-retained",
+      "mw_20260916_saudi_oman_workaround",
+      "last24:2026-09-18:desk-thesis",
+      "research_method"
+    ],
+    "horizon": "4-8 weeks tactical fade of the post-FOMC USD/CAD squeeze",
+    "instrument": "USDCAD",
+    "invalidation": "Thesis fails if Canada loses its activity/consumer lead versus the US, if oil demand destruction removes CAD terms-of-trade support, or if additional G10 tightening extends the USD squeeze without a Canadian growth confirmation.",
+    "macro_assumptions": {
+      "growth": "above_trend",
+      "policy": "hawkish",
+      "rates": "higher_for_longer",
+      "risk": "risk_on"
+    },
+    "mispricing": "USDCAD\u2019s 1m/5d USD bid and a historically cheap CA-US 2Y (-140bp, ~4th percentile 1y/5y) price Canada as the soft cyclical that must ease versus a hawkish Fed. Packet growth gauges say the opposite on activity and consumer: CA activity 53.2 and consumer 52.5 versus US 49.92 and 48.5.",
+    "principal_risks": [
+      "Negative carry: CA 2Y 3.27 versus US 2Y 4.67",
+      "Canadian labor already soft (score 48.8; employment -42k)",
+      "US services still strong (ISM Services 55.4)",
+      "Fed/BoJ/hawkish-BoE tightening can keep a USD-bid regime",
+      "No positioning/flow data",
+      "No executable broker prices"
+    ],
+    "stop": null,
+    "structure": "spot short USDCAD (long CAD versus USD)",
+    "target": null,
+    "thesis": "The global-tightening narrative is being expressed as a USD squeeze against the one G10 cyclical that still has above-baseline activity, a recovering consumer, and an energy terms-of-trade cushion. Canada\u2019s Q2 real GDP printed +0.8% q/q versus revised +0.1% in Q1, with Ivey PMI net stronger; the US activity gauge is mixed. That relative cycle, plus crude still near $110 with a Saudi/Oman workaround shrinking the extreme supply-disruption tail, is CAD-constructive. Markets instead cheapened CAD: USDCAD is +1.74% over 1m and +1.10% over 5d, while CA-US 2Y sits at -140bp. AUD is not the cyclical given housing stress; NZD is oversold without triangulated yields.",
+    "why_now": [
+      "The 16 Sep Fed hike to 3.75-4.00% was already >90% priced; the live impulse is the subsequent 5d/1m USDCAD squeeze as the last24 desk framed broader G10 tightening, not new Canadian weakness.",
+      "Saudi ship-to-ship crude via Oman cut the extreme oil-supply tail while retained energy research still has crude near $110, which is CAD terms-of-trade support.",
+      "CA-US 2Y cheapened 17bp over 1m to -140bp even after Canada\u2019s stronger Q2 GDP and consumption impulse.",
+      "AUD is disqualified as the risk-on vehicle by a documented housing downturn and 99th-percentile AU yields."
+    ]
+  },
+  "type": "TRADER_ROOM_CONTRIBUTION"
+}

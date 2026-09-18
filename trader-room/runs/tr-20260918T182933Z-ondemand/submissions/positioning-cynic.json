@@ -1,0 +1,91 @@
+{
+  "agent": "positioning-cynic",
+  "archetype": "crowded-ownership skeptic",
+  "confidence": 37,
+  "conflict_synopsis": {
+    "au_rates_view": "neutral",
+    "aud_view": "lower",
+    "ca_rates_view": "not_relevant",
+    "cad_view": "not_relevant",
+    "carry_view": "not_relevant",
+    "confidence": 37,
+    "conflict_tags": [
+      "AUD_DOWN",
+      "NZD_UP",
+      "AUDNZD_DOWN",
+      "USD_NOT_CHASE",
+      "RISK_ON"
+    ],
+    "core_view": "Fade the packet's most extended momentum-owned expression\u2014long AUD versus dumped NZD\u2014rather than chase a fully priced post-hike USD move.",
+    "key_catalyst": "Momentum/CTA de-lever of long AUDNZD after AU-US 2Y compressed and NZ's incremental news was a GDP beat plus FTA.",
+    "key_invalidation": "NZ activity/labor keep deteriorating versus Australia, official NZ yields justify the cross, or a positioning print shows the opposite crowd.",
+    "nz_rates_view": "not_relevant",
+    "nzd_view": "higher",
+    "primary_trade": "short AUDNZD / long NZD",
+    "risk_view": "risk_on",
+    "seat": "positioning-cynic",
+    "time_horizon": "2-6 weeks",
+    "us_rates_view": "higher",
+    "usd_view": "not_relevant"
+  },
+  "macro_assumptions": {
+    "growth": "below_trend",
+    "policy": "hawkish",
+    "rates": "higher_for_longer",
+    "risk": "risk_on"
+  },
+  "packet_sha256": "63f781354ed4048cf1091125e35854ed64db800467e7a98c336cf72032a33956",
+  "remit": "attack crowded ideas; prefer better ownership asymmetry",
+  "round": 1,
+  "run_id": "tr-20260918T182933Z-ondemand",
+  "stance_summary": "Fade the packet's most extended, momentum-owned expression\u2014long AUD versus dumped NZD\u2014rather than chase post-hike USD or pile into NZDUSD shorts after a fully priced Fed event.",
+  "subagent_calls": 0,
+  "subagent_model": null,
+  "trade": {
+    "catalysts": [
+      "Momentum/CTA de-lever of long AUDNZD after AU 2Y rate-cushion compression",
+      "Digestion of NZ GDP beat and India FTA against a still-unbid NZD",
+      "Further evidence that AU housing tightening is the under-owned AUD negative",
+      "Post-event positioning unwind"
+    ],
+    "confidence": 37,
+    "direction": "short",
+    "entry": null,
+    "evidence_refs": [
+      "pos:unavailable",
+      "fx:AUDNZD",
+      "fx:NZDUSD",
+      "fx:AUDUSD",
+      "mw_20260916_fomc_hike_pricing",
+      "last24:2026-09-18:desk-thesis",
+      "mw_20260916_au_housing_tightening",
+      "rollup:New Zealand Q2 GDP slows to 0.2% q/q but beats forecasts",
+      "rates:AU",
+      "market_state",
+      "research_method",
+      "rates:NZ"
+    ],
+    "horizon": "2-6 weeks",
+    "instrument": "AUDNZD",
+    "invalidation": "The fade is wrong if NZ-specific activity/labor keeps deteriorating versus Australia, if official NZ yields once available confirm a persistent AU 2Y premium, or if AUDNZD's 1m outperformance re-accelerates after AU housing/activity stabilize.",
+    "mispricing": "AUDNZD prices a large, still-extending AU-over-NZ divergence as if NZ were uniquely broken. Price is the only positioning proxy in the packet. CFTC/skew/CTA holdings are unavailable, so this is inferred crowding, not measured open interest.",
+    "principal_risks": [
+      "CFTC/options/CTA data are missing; crowding is inferred",
+      "NZ sovereign yields are unavailable",
+      "Trend continuation can keep squeezing short AUDNZD",
+      "NZ labor temperature 47.0 is the weakest labor gauge",
+      "Executable broker prices are not in the packet"
+    ],
+    "stop": null,
+    "structure": null,
+    "target": null,
+    "thesis": "The good macro is already the desk consensus; the bad trade is owning it through long AUDNZD / short NZD after NZDUSD has already dropped 3.90% over 1 month and AUDNZD has rallied 4.27%. NZ incremental news (Q2 GDP beat, India FTA) is the opposite of a fresh NZD-dump catalyst. Short AUDNZD attacks the crowded relative without requiring the hawkish regime to be wrong.",
+    "why_now": [
+      "AUDNZD is still being added after the information is old: +0.65% on 1d and +1.19% on 5d on top of +4.27% over 1m.",
+      "The Fed 25bp hike arrived with >90% futures probability already in the price.",
+      "AU-US 2Y fell 12.5bp on 2026-09-16, shrinking the rate cushion under AUD while AUDNZD continued higher.",
+      "NZ Q2 GDP 0.2% q/q beat forecasts and the India FTA passed; those incremental NZ prints have not been bid in NZDUSD."
+    ]
+  },
+  "type": "TRADER_ROOM_CONTRIBUTION"
+}
