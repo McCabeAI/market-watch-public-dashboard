@@ -2,26 +2,24 @@ name: Overnight Production Pipeline
 
 on:
   schedule:
-    # America/New_York stages. Dual UTC offsets cover EDT (UTC-4) and EST (UTC-5).
-    # Jobs self-gate on the NY clock and no-op outside the matching window.
+    - cron: "7 0 * * 1-5"
+      timezone: "America/New_York"
+    - cron: "40 1 * * 1-5"
+      timezone: "America/New_York"
+    - cron: "50 1 * * 1-5"
+      timezone: "America/New_York"
+    - cron: "5 2 * * 1-5"
+      timezone: "America/New_York"
+    - cron: "35 3 * * 1-5"
+      timezone: "America/New_York"
+    - cron: "50 3 * * 1-5"
+      timezone: "America/New_York"
     - cron: "7 4 * * 1-5"
-    - cron: "7 5 * * 1-5"
-    - cron: "40 5 * * 1-5"
-    - cron: "40 6 * * 1-5"
-    - cron: "50 5 * * 1-5"
-    - cron: "50 6 * * 1-5"
-    - cron: "5 6 * * 1-5"
-    - cron: "5 7 * * 1-5"
-    - cron: "35 7 * * 1-5"
-    - cron: "35 8 * * 1-5"
-    - cron: "50 7 * * 1-5"
-    - cron: "50 8 * * 1-5"
-    - cron: "7 8 * * 1-5"
-    - cron: "7 9 * * 1-5"
+      timezone: "America/New_York"
   workflow_dispatch:
     inputs:
       mode:
-        description: "dry-run exercises every stage with zero trader model calls"
+        description: "dry-run validates every stage with zero live model calls"
         required: true
         default: dry-run
         type: choice
@@ -42,17 +40,21 @@ on:
           - assemble
           - publish
       as_of:
-        description: "Optional ISO timestamp used as the NY clock"
+        description: "Optional ISO timestamp for a manual live-stage run"
         required: false
         type: string
   pull_request:
     paths:
+      - ".cursor/hooks.json"
+      - ".cursor/hooks/enforce-overnight-runtime.py"
       - "scripts/overnight/**"
       - "scripts/overnight_pipeline.py"
       - "scripts/apply_trader_book_tab.py"
+      - "scripts/apply_daily_refresh.py"
       - "patch_v13/**"
       - "data/overnight/**"
       - "tests/test_overnight_pipeline.py"
+      - "tests/test_overnight_cursor_runtime.py"
       - "docs/OVERNIGHT_PIPELINE_V1.md"
       - ".github/workflows/overnight-pipeline.yml"
       - ".github/workflows/deploy-pages.yml"
@@ -68,7 +70,7 @@ jobs:
   validate:
     name: Overnight contracts and dry-run
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -78,8 +80,22 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Verify Cursor runtime secret exists
+        env:
+          CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "$CURSOR_API_KEY" ]; then
+            echo "::error::CURSOR_API_KEY is not available to this repository. The 00:07 refresh and 02:05 trader review cannot run unattended."
+            exit 1
+          fi
+
       - name: Unit tests
-        run: PYTHONPATH=. python3 -m unittest tests.test_overnight_pipeline -v
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python3 -m unittest \
+            tests.test_overnight_pipeline \
+            tests.test_overnight_cursor_runtime -v
 
       - name: End-to-end dry-run
         run: |
@@ -92,16 +108,18 @@ jobs:
           from pathlib import Path
           packet = json.loads(Path("/tmp/overnight-site/trader-books.json").read_text())
           assert packet["seat_count"] == 14
-          assert packet["publication"]["may_publish"] is True if "may_publish" in packet["publication"] else True
+          assert packet["publication"].get("may_publish", True) is True
           print({"overnight_run_id": packet.get("overnight_run_id"), "review_status": packet.get("review_status")})
           PY
 
-  scheduled-stage:
-    name: NY-gated scheduled stage
+  resolve:
+    name: Resolve scheduled stage
     if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'live-stage')
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
     needs: validate
+    runs-on: ubuntu-latest
+    outputs:
+      stage: ${{ steps.resolve.outputs.stage }}
+      run_id: ${{ steps.resolve.outputs.run_id }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -111,45 +129,259 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Resolve and run stage
-        id: stage
+      - name: Resolve
+        id: resolve
         env:
-          DISPATCH_STAGE: ${{ github.event_name == 'workflow_dispatch' && inputs.stage || '' }}
-          AS_OF: ${{ github.event.inputs.as_of || '' }}
+          EVENT_NAME: ${{ github.event_name }}
+          SCHEDULE: ${{ github.event.schedule }}
+          MANUAL_STAGE: ${{ inputs.stage }}
+          AS_OF: ${{ inputs.as_of }}
         run: |
           set -euo pipefail
-          if [ -n "${DISPATCH_STAGE}" ]; then
-            STAGE="${DISPATCH_STAGE}"
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            STAGE="$MANUAL_STAGE"
           else
-            STAGE="$(PYTHONPATH=. python3 scripts/overnight_pipeline.py which-stage ${AS_OF:+--as-of "$AS_OF"})"
+            case "$SCHEDULE" in
+              "7 0 * * 1-5") STAGE="collect" ;;
+              "40 1 * * 1-5") STAGE="pre_trader_delta" ;;
+              "50 1 * * 1-5") STAGE="freeze_evidence" ;;
+              "5 2 * * 1-5") STAGE="trader_review" ;;
+              "35 3 * * 1-5") STAGE="final_delta" ;;
+              "50 3 * * 1-5") STAGE="assemble" ;;
+              "7 4 * * 1-5") STAGE="publish" ;;
+              *) echo "::error::Unknown scheduled cron: $SCHEDULE"; exit 1 ;;
+            esac
           fi
-          echo "Resolved stage=${STAGE}"
-          echo "stage=${STAGE}" >> "$GITHUB_OUTPUT"
-          if [ "${STAGE}" = "idle" ]; then
-            echo "Outside an America/New_York stage window; no-op."
-            exit 0
-          fi
-          if [ "${STAGE}" = "publish" ]; then
-            PYTHONPATH=. python3 scripts/overnight_pipeline.py stage publish --require-dataset ${AS_OF:+--as-of "$AS_OF"}
+          if [ -n "$AS_OF" ]; then
+            RUN_ID="$(PYTHONPATH=. python3 scripts/overnight_pipeline.py run-id --as-of "$AS_OF")"
           else
-            PYTHONPATH=. python3 scripts/overnight_pipeline.py stage "${STAGE}" ${AS_OF:+--as-of "$AS_OF"}
+            RUN_ID="$(PYTHONPATH=. python3 scripts/overnight_pipeline.py run-id)"
           fi
-          echo "Live trader model calls are not made by this workflow. Cursor supplies trader_review payloads separately."
+          echo "stage=$STAGE" >> "$GITHUB_OUTPUT"
+          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+          echo "Resolved stage=$STAGE run_id=$RUN_ID"
 
-      - name: Persist overnight artifacts on main
-        if: github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+  scheduled-stage:
+    name: Deterministic overnight stage
+    if: needs.resolve.outputs.stage != 'trader_review'
+    needs: [validate, resolve]
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout current main
+        uses: actions/checkout@v6
+        with:
+          ref: main
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install market-state dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-market-state.txt
+
+      - name: Install Cursor CLI for the 00:07 V0 refresh
+        if: needs.resolve.outputs.stage == 'collect'
+        run: |
+          curl https://cursor.com/install -fsS | bash
+          echo "$HOME/.cursor/bin" >> "$GITHUB_PATH"
+
+      - name: Run one restricted V0 refresh agent
+        if: needs.resolve.outputs.stage == 'collect'
+        env:
+          CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
+          RUN_ID: ${{ needs.resolve.outputs.run_id }}
+          AS_OF: ${{ inputs.as_of }}
         run: |
           set -euo pipefail
-          if [ "${{ steps.stage.outputs.stage }}" = "idle" ]; then
-            echo "No stage ran; nothing to persist."
-            exit 0
-          fi
+          AS_OF_ARGS=()
+          if [ -n "$AS_OF" ]; then AS_OF_ARGS=(--as-of "$AS_OF"); fi
+          PYTHONPATH=. python3 scripts/overnight/cursor_runtime.py refresh-prompt \
+            --run-id "$RUN_ID" ${AS_OF_ARGS[@]} > /tmp/market-watch-refresh-prompt.txt
+          agent -p "$(cat /tmp/market-watch-refresh-prompt.txt)" \
+            --model "grok-4.6" \
+            --mode=agent \
+            --output-format text > /tmp/market-watch-refresh-result.txt
+          test -s /tmp/market-watch-refresh-result.txt
+
+      - name: Validate refreshed V0 state
+        if: needs.resolve.outputs.stage == 'collect'
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python3 scripts/validate_score_sources.py
+          PYTHONPATH=. python3 -m unittest tests.test_temperature_scores tests.test_sync_news_summary
+          python3 -m py_compile scripts/apply_daily_refresh.py
+
+      - name: Run deterministic stage
+        env:
+          STAGE: ${{ needs.resolve.outputs.stage }}
+          RUN_ID: ${{ needs.resolve.outputs.run_id }}
+          AS_OF: ${{ inputs.as_of }}
+        run: |
+          set -euo pipefail
+          AS_OF_ARGS=()
+          if [ -n "$AS_OF" ]; then AS_OF_ARGS=(--as-of "$AS_OF"); fi
+          case "$STAGE" in
+            collect|pre_trader_delta|final_delta)
+              PYTHONPATH=. python3 scripts/overnight_pipeline.py stage "$STAGE" \
+                --run-id "$RUN_ID" --live-market-state "${AS_OF_ARGS[@]}"
+              ;;
+            publish)
+              PYTHONPATH=. python3 scripts/overnight_pipeline.py stage publish \
+                --run-id "$RUN_ID" --require-dataset "${AS_OF_ARGS[@]}"
+              ;;
+            *)
+              PYTHONPATH=. python3 scripts/overnight_pipeline.py stage "$STAGE" \
+                --run-id "$RUN_ID" "${AS_OF_ARGS[@]}"
+              ;;
+          esac
+
+      - name: Persist stage state to main
+        env:
+          STAGE: ${{ needs.resolve.outputs.stage }}
+          RUN_ID: ${{ needs.resolve.outputs.run_id }}
+        run: |
+          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/overnight
+          if [ "$STAGE" = "collect" ]; then
+            git add patch_v7 patch_v8 patch_v9/news_rollup.html \
+              data/temperature_scores.json ops/supabase/inbox/latest.json \
+              scripts/apply_daily_refresh.py
+          fi
           if git diff --cached --quiet; then
             echo "No overnight state changes"
             exit 0
           fi
-          git commit -m "chore: persist overnight ${{ steps.stage.outputs.stage }} ledger"
-          git push
+          git commit -m "chore: overnight $STAGE $RUN_ID"
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+  trader-seat:
+    name: Trader seat - ${{ matrix.seat }}
+    if: needs.resolve.outputs.stage == 'trader_review'
+    needs: [validate, resolve]
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    strategy:
+      fail-fast: false
+      matrix:
+        seat:
+          - perma-bull
+          - perma-bear
+          - dollar-king
+          - cross-merchant
+          - carry-is-king
+          - rate-hawk
+          - rate-dove
+          - value-guy
+          - trend-follower
+          - mean-reverter
+          - positioning-cynic
+          - catalyst-junkie
+          - vol-convexity
+          - no-trade-skeptic
+    steps:
+      - name: Checkout current main
+        uses: actions/checkout@v6
+        with:
+          ref: main
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install Cursor CLI
+        run: |
+          curl https://cursor.com/install -fsS | bash
+          echo "$HOME/.cursor/bin" >> "$GITHUB_PATH"
+
+      - name: Run evidence-closed Grok seat review
+        env:
+          CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
+          RUN_ID: ${{ needs.resolve.outputs.run_id }}
+          SEAT: ${{ matrix.seat }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/overnight-seat
+          PYTHONPATH=. python3 scripts/overnight/cursor_runtime.py seat-prompt \
+            --run-id "$RUN_ID" --seat "$SEAT" > /tmp/overnight-seat/prompt.txt
+          agent -p "$(cat /tmp/overnight-seat/prompt.txt)" \
+            --model "grok-4.6" \
+            --mode=ask \
+            --sandbox enabled \
+            --output-format text > /tmp/overnight-seat/raw.txt
+          PYTHONPATH=. python3 scripts/overnight/cursor_runtime.py normalize-seat \
+            --run-id "$RUN_ID" --seat "$SEAT" \
+            --input /tmp/overnight-seat/raw.txt \
+            --output "/tmp/overnight-seat/$SEAT.json"
+
+      - name: Upload seat review
+        uses: actions/upload-artifact@v4
+        with:
+          name: overnight-seat-${{ matrix.seat }}
+          path: /tmp/overnight-seat/${{ matrix.seat }}.json
+          if-no-files-found: error
+          retention-days: 2
+
+  trader-apply:
+    name: Apply overnight trader books
+    if: always() && needs.resolve.result == 'success' && needs.resolve.outputs.stage == 'trader_review'
+    needs: [validate, resolve, trader-seat]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout current main
+        uses: actions/checkout@v6
+        with:
+          ref: main
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Download successful seat reviews
+        if: needs.trader-seat.result == 'success'
+        uses: actions/download-artifact@v4
+        with:
+          pattern: overnight-seat-*
+          path: /tmp/overnight-seat-reviews
+          merge-multiple: true
+
+      - name: Apply review or explicit stale fallback
+        env:
+          RUN_ID: ${{ needs.resolve.outputs.run_id }}
+          SEAT_RESULT: ${{ needs.trader-seat.result }}
+        run: |
+          set -euo pipefail
+          if [ "$SEAT_RESULT" = "success" ]; then
+            PYTHONPATH=. python3 scripts/overnight/cursor_runtime.py combine \
+              --input-dir /tmp/overnight-seat-reviews \
+              --output /tmp/overnight-reviews.json
+            OVERNIGHT_TRADER_REVIEW_LIVE=1 PYTHONPATH=. \
+              python3 scripts/overnight_pipeline.py stage trader_review \
+              --run-id "$RUN_ID" --reviews /tmp/overnight-reviews.json
+          else
+            echo "::warning::One or more trader seat calls failed; preserving prior books and recording this review stale."
+            PYTHONPATH=. python3 scripts/overnight_pipeline.py stage trader_review --run-id "$RUN_ID"
+          fi
+
+      - name: Persist trader books to main
+        env:
+          RUN_ID: ${{ needs.resolve.outputs.run_id }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/overnight
+          if git diff --cached --quiet; then
+            echo "No trader-book state changes"
+            exit 0
+          fi
+          git commit -m "chore: overnight trader_review $RUN_ID"
+          git pull --rebase origin main
+          git push origin HEAD:main
