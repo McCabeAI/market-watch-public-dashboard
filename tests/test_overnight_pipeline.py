@@ -276,7 +276,7 @@ class PipelineDryRunTests(unittest.TestCase):
         run_id = result["overnight_run_id"]
         run = store.read_artifact(run_id, "run.json")
         self.assertEqual(run["overnight_run_id"], run_id)
-        self.assertEqual(set(run["stages"]), set(UTC_CRON))
+        self.assertEqual(set(run["stages"]), set(LOCAL_CRON))
         snapshot = store.read_artifact(run_id, "evidence_snapshot.json")
         review = store.read_artifact(run_id, "trader_review.json")
         self.assertEqual(review["packet_sha256"], snapshot["packet_sha256"])
