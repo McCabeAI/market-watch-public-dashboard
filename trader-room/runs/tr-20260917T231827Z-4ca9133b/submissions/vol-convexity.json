@@ -1,0 +1,56 @@
+{
+  "agent": "vol-convexity",
+  "archetype": "vol-convexity",
+  "confidence": 51,
+  "execution": "parent_authored_production_evidence",
+  "expression_comparison": null,
+  "macro_assumptions": {
+    "growth": "above_trend",
+    "rates": "higher_for_longer",
+    "risk": "risk_off"
+  },
+  "packet_sha256": "2e2494d98a6d094453f361975e7ec3992b4b13fafd4519ed7dca2b4c5f0045f2",
+  "remit": "asymmetric optionality; challenge spot expressions",
+  "round": 1,
+  "run_id": "tr-20260917T231827Z-4ca9133b",
+  "seat_class": "vol_specialist",
+  "stance_summary": "AUDNZD direction is two-way at a 99.8th percentile; a straddle challenges both continuation and snap-back.",
+  "subagent_calls": 0,
+  "subagent_model": null,
+  "trade": {
+    "catalysts": [
+      "NZ data or a restored RBNZ B2 print",
+      "AU housing follow-through"
+    ],
+    "confidence": 51,
+    "direction": "long volatility",
+    "entry": null,
+    "evidence_refs": [
+      "mw_20260916_au_housing_tightening",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "temp:NZ:inflation",
+      "temp:NZ:labor",
+      "market_state"
+    ],
+    "horizon": "2-5 weeks",
+    "instrument": "AUDNZD 1-month straddle",
+    "invalidation": "A one-way official AU/NZ data path that makes spot dominate, or still-missing option marks that keep the structure unexecutable.",
+    "macro_assumptions": {
+      "growth": "above_trend",
+      "rates": "higher_for_longer",
+      "risk": "risk_off"
+    },
+    "mispricing": "Spot-only expressions assume the AUDNZD extreme will resolve in one known direction despite a missing NZ rates family.",
+    "principal_risks": [
+      "Implied vol already prices the two-way risk; no option marks are in the packet"
+    ],
+    "stop": null,
+    "structure": "long 1-month AUDNZD straddle",
+    "target": null,
+    "thesis": "Cross-merchant continuation and a mean-reversion fade cannot both be right; the packet also lacks NZ official yields, so direction is the wrong instrument.",
+    "why_now": [
+      "AUDNZD 1y percentile is extreme in the same packet that marks NZ rates unavailable."
+    ]
+  },
+  "type": "TRADER_ROOM_CONTRIBUTION"
+}

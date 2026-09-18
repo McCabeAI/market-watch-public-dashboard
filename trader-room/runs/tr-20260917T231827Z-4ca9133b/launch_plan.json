@@ -1,0 +1,189 @@
+{
+  "advocates": [
+    {
+      "expression_comparison_required": true,
+      "frontmatter_model": "grok-4.6[]",
+      "max_subagents": 2,
+      "model": "grok-4.6",
+      "name": "perma-bull",
+      "seat_class": "comparison",
+      "spot_dedicated": false,
+      "subagent_model": "composer-2.5",
+      "trade_required": true,
+      "vol_remit_unchanged": false
+    },
+    {
+      "expression_comparison_required": true,
+      "frontmatter_model": "grok-4.6[]",
+      "max_subagents": 2,
+      "model": "grok-4.6",
+      "name": "perma-bear",
+      "seat_class": "comparison",
+      "spot_dedicated": false,
+      "subagent_model": "composer-2.5",
+      "trade_required": true,
+      "vol_remit_unchanged": false
+    },
+    {
+      "expression_comparison_required": false,
+      "frontmatter_model": "grok-4.6[]",
+      "max_subagents": 2,
+      "model": "grok-4.6",
+      "name": "dollar-king",
+      "seat_class": "spot_specialist",
+      "spot_dedicated": true,
+      "subagent_model": "composer-2.5",
+      "trade_required": true,
+      "vol_remit_unchanged": false
+    },
+    {
+      "expression_comparison_required": false,
+      "frontmatter_model": "grok-4.6[]",
+      "max_subagents": 2,
+      "model": "grok-4.6",
+      "name": "cross-merchant",
+      "seat_class": "spot_specialist",
+      "spot_dedicated": true,
+      "subagent_model": "composer-2.5",
+      "trade_required": true,
+      "vol_remit_unchanged": false
+    },
+    {
+      "expression_comparison_required": true,
+      "frontmatter_model": "grok-4.6[]",
+      "max_subagents": 2,
+      "model": "grok-4.6",
+      "name": "carry-is-king",
+      "seat_class": "comparison",
+      "spot_dedicated": false,
+      "subagent_model": "composer-2.5",
+      "trade_required": true,
+      "vol_remit_unchanged": false
+    },
+    {
+      "expression_comparison_required": true,
+      "frontmatter_model": "grok-4.6[]",
+      "max_subagents": 2,
+      "model": "grok-4.6",
+      "name": "rate-hawk",
+      "seat_class": "comparison",
+      "spot_dedicated": false,
+      "subagent_model": "composer-2.5",
+      "trade_required": true,
+      "vol_remit_unchanged": false
+    },
+    {
+      "expression_comparison_required": true,
+      "frontmatter_model": "grok-4.6[]",
+      "max_subagents": 2,
+      "model": "grok-4.6",
+      "name": "rate-dove",
+      "seat_class": "comparison",
+      "spot_dedicated": false,
+      "subagent_model": "composer-2.5",
+      "trade_required": true,
+      "vol_remit_unchanged": false
+    },
+    {
+      "expression_comparison_required": true,
+      "frontmatter_model": "grok-4.6[]",
+      "max_subagents": 2,
+      "model": "grok-4.6",
+      "name": "value-guy",
+      "seat_class": "comparison",
+      "spot_dedicated": false,
+      "subagent_model": "composer-2.5",
+      "trade_required": true,
+      "vol_remit_unchanged": false
+    },
+    {
+      "expression_comparison_required": true,
+      "frontmatter_model": "grok-4.6[]",
+      "max_subagents": 2,
+      "model": "grok-4.6",
+      "name": "trend-follower",
+      "seat_class": "comparison",
+      "spot_dedicated": false,
+      "subagent_model": "composer-2.5",
+      "trade_required": true,
+      "vol_remit_unchanged": false
+    },
+    {
+      "expression_comparison_required": true,
+      "frontmatter_model": "grok-4.6[]",
+      "max_subagents": 2,
+      "model": "grok-4.6",
+      "name": "mean-reverter",
+      "seat_class": "comparison",
+      "spot_dedicated": false,
+      "subagent_model": "composer-2.5",
+      "trade_required": true,
+      "vol_remit_unchanged": false
+    },
+    {
+      "expression_comparison_required": true,
+      "frontmatter_model": "grok-4.6[]",
+      "max_subagents": 2,
+      "model": "grok-4.6",
+      "name": "positioning-cynic",
+      "seat_class": "comparison",
+      "spot_dedicated": false,
+      "subagent_model": "composer-2.5",
+      "trade_required": true,
+      "vol_remit_unchanged": false
+    },
+    {
+      "expression_comparison_required": true,
+      "frontmatter_model": "grok-4.6[]",
+      "max_subagents": 2,
+      "model": "grok-4.6",
+      "name": "catalyst-junkie",
+      "seat_class": "comparison",
+      "spot_dedicated": false,
+      "subagent_model": "composer-2.5",
+      "trade_required": true,
+      "vol_remit_unchanged": false
+    },
+    {
+      "expression_comparison_required": false,
+      "frontmatter_model": "grok-4.6[]",
+      "max_subagents": 2,
+      "model": "grok-4.6",
+      "name": "vol-convexity",
+      "seat_class": "vol_specialist",
+      "spot_dedicated": false,
+      "subagent_model": "composer-2.5",
+      "trade_required": true,
+      "vol_remit_unchanged": true
+    },
+    {
+      "expression_comparison_required": true,
+      "frontmatter_model": "grok-4.6[]",
+      "max_subagents": 2,
+      "model": "grok-4.6",
+      "name": "no-trade-skeptic",
+      "seat_class": "comparison",
+      "spot_dedicated": false,
+      "subagent_model": "composer-2.5",
+      "trade_required": false,
+      "vol_remit_unchanged": false
+    }
+  ],
+  "ceilings": {
+    "composer_ceiling": 28,
+    "grok_baseline": 16,
+    "grok_ceiling": 30,
+    "grok_rebuttal_max": 14
+  },
+  "conflict_aggregator": {
+    "model": "grok-4.6",
+    "name": "conflict-aggregator"
+  },
+  "evidence_cutoff": "2026-09-17T23:18:27Z",
+  "final_aggregator": {
+    "model": "grok-4.6",
+    "name": "final-aggregator"
+  },
+  "packet_sha256": "2e2494d98a6d094453f361975e7ec3992b4b13fafd4519ed7dca2b4c5f0045f2",
+  "run_id": "tr-20260917T231827Z-4ca9133b"
+}

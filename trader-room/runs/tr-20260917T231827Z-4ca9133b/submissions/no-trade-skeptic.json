@@ -1,0 +1,48 @@
+{
+  "agent": "no-trade-skeptic",
+  "archetype": "no-trade-skeptic",
+  "confidence": 42,
+  "execution": "parent_authored_production_evidence",
+  "expression_comparison": {
+    "chosen_because": "UST 2Y, AU 2Y, CA-US 5Y and AUDNZD are already historically extreme, the FOMC event has occurred, and NZ official rates are unavailable. Neither a fresh rates expression nor spot adds an uncrowded, executable edge.",
+    "chosen_expression": "no_trade",
+    "considered_rates": [
+      {
+        "assessment": "US 10Y 4.94 is near the 1y 97.8th percentile with a 45.000000000000014bp 3m change; AU 2Y 4.835 sits at the 99.8th 1y percentile while Australian housing is tightening.",
+        "family": "outright_duration",
+        "instrument": "UST 2Y / UST 10Y / ACGB 2Y / CAN 2Y"
+      },
+      {
+        "assessment": "US 2s10s is 27.000000000000046bp at the 1.4th 1y percentile, so curve is an executable alternative to spot or outright duration.",
+        "family": "curve",
+        "instrument": "UST 2s10s / CAN 2s10s"
+      },
+      {
+        "assessment": "CA-US 5Y is -122.00000000000001bp at the 0.2th 1y percentile \u2014 a historically extreme cross-market RV object.",
+        "family": "cross_market_rates_rv",
+        "instrument": "CA-US 5Y / CA-US 10Y / AU-US 10Y"
+      }
+    ],
+    "considered_spot": {
+      "assessment": "Spot pitches recycle the same post-hike and housing headlines without a clean unused discrepancy.",
+      "instrument": "AUDUSD / USDCAD / AUDNZD"
+    },
+    "seat_class": "comparison",
+    "unusually_compelling_vol": false
+  },
+  "macro_assumptions": {
+    "growth": "below_trend",
+    "rates": "higher_for_longer",
+    "risk": "risk_off"
+  },
+  "packet_sha256": "2e2494d98a6d094453f361975e7ec3992b4b13fafd4519ed7dca2b4c5f0045f2",
+  "remit": "apparent edges are priced, too noisy, too crowded or poorly timed; may submit no-trade",
+  "round": 1,
+  "run_id": "tr-20260917T231827Z-4ca9133b",
+  "seat_class": "comparison",
+  "stance_summary": "The room's cleanest objects are already 98-99th percentile or missing NZ yields; no incremental trade clears the bar.",
+  "subagent_calls": 0,
+  "subagent_model": null,
+  "trade": null,
+  "type": "TRADER_ROOM_CONTRIBUTION"
+}

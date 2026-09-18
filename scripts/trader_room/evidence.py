@@ -189,6 +189,24 @@ def load_news_and_research(root: Path = ROOT) -> tuple[list[dict[str, Any]], lis
     return cb, news
 
 
+DEFAULT_MARKET_STATE_CANDIDATES = (
+    ROOT / "trader-room" / "evidence" / "market-state.json",
+    ROOT / "_site" / "market-state.json",
+)
+
+
+def resolve_market_state_path(path: Path | None, *, root: Path = ROOT) -> Path | None:
+    if path is not None:
+        return path
+    for candidate in (
+        root / "trader-room" / "evidence" / "market-state.json",
+        root / "_site" / "market-state.json",
+    ):
+        if candidate.is_file():
+            return candidate
+    return None
+
+
 def load_market_state(path: Path | None) -> dict[str, Any]:
     if path is None or not path.is_file():
         return {"status": "unavailable", "detail": "no market-state snapshot supplied"}
@@ -322,6 +340,11 @@ def assemble_packet(
     }
     if market.get("status") == "unavailable":
         packet["known_gaps"].append("market_state snapshot was not supplied")
+    for src in market.get("unavailable_sources") or []:
+        packet["known_gaps"].append(f"market_state source unavailable: {src}")
+    if market.get("status") == "stale":
+        stale = ", ".join(market.get("stale_sources") or []) or "unspecified sources"
+        packet["known_gaps"].append(f"market_state snapshot is stale: {stale}")
     packet["source_index"] = source_index_from_packet(packet)
     return packet
 

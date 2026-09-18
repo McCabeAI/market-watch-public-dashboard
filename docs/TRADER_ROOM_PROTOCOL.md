@@ -29,6 +29,16 @@ The standing archetypes are:
 
 All standing advocates use exact model `grok-4.6` (Cursor frontmatter `grok-4.6[]`). They are read-only and run in isolated contexts. They are biased by design. Their bias changes how they frame a trade from the frozen packet; it does not lower the evidence standard and does not authorize new evidence acquisition.
 
+Do not add, remove, repurpose, promote, or demote these 14 seats, and do not change their archetypal remits, exact `grok-4.6` assignment, or orchestration level unless Kevin separately asks.
+
+### Operating Hub expression mandate
+
+`dollar-king` and `cross-merchant` are intentionally spot-FX specialist seats and remain spot-dedicated.
+
+Every other macro/rates-capable seat must explicitly compare expressions before choosing. First consider executable interest-rate trades: outright duration, curve, and cross-market rates RV. Also consider spot FX. Then choose whichever is genuinely the cleaner expression of that seat's unchanged remit and explain why. Do not force rates if spot is superior.
+
+Vol/options are bottom-of-the-barrel for this mandate because implementation is hard. The `vol-convexity` seat and remit stay unchanged. The broader room must not default to vol and should surface it only when it is unusually compelling versus rates and spot.
+
 The on-demand workflow also seats two aggregators on exact model `grok-4.6`: `conflict-aggregator` and `final-aggregator`. Internal advocate subagents may use only `composer-2.5`, at most two per initial advocate. See `docs/TRADER_ROOM_ON_DEMAND.md`.
 
 Specialists such as commodities/terms-of-trade, balance of payments, fiscal, China, microstructure/execution, or country specialists are not permanent seats yet. Add or summon them only when repeated use proves they are needed.
@@ -42,7 +52,7 @@ Ordinary run surfaces are:
 
 Do not require Cursor Desktop or a local terminal for ordinary Trader Room operation.
 
-The approved artifact surface for complete run packets is `trader-room/runs/<run_id>/` in this repository. Do not put project output in ACP. Do not use issues or comments to transport private Trader Room prompts.
+The approved artifact surface for complete run packets is `trader-room/runs/<run_id>/` in this repository. Sanitized analysis artifacts on that surface are Git-durable so ChatGPT can retrieve the complete 14 submissions, conflict map, rebuttals, and PM handoff. Unsanitized provider-local packets may use `trader-room/runs/.local/` and stay gitignored. Do not commit private, licensed, or raw paid evidence. Do not put project output in ACP. Do not use issues or comments to transport private Trader Room prompts.
 
 ## Evidence contract
 
@@ -189,7 +199,7 @@ Round 2 output:
 
 ## Cursor stop line
 
-The `final-aggregator` (a separate `grok-4.6` invocation) receives all 14 originals, the conflict map, and every rebuttal. It produces the structured PM handoff. It must not select a winner or house view.
+The `final-aggregator` (a separate `grok-4.6` invocation) receives all 14 originals, the conflict map, and every rebuttal. It produces the structured PM handoff. It must not select a winner, vote, ranking, or house view. The handoff must preserve enough thesis, evidence, expression-comparison, catalyst, and invalidation detail for ChatGPT to perform the final investment-committee layer.
 
 Cursor must stop after assembling and delivering the arbiter / PM packet.
 
@@ -223,7 +233,7 @@ Do not append a recommendation after that marker.
 
 ## Handoff and storage
 
-The approved on-demand artifact surface is `trader-room/runs/<run_id>/` with an immutable run ID and evidence cutoff. Persist the frozen packet, every original submission, the conflict map, every rebuttal, the PM handoff, and an artifact index ChatGPT can retrieve on request.
+The approved on-demand artifact surface is `trader-room/runs/<run_id>/` with an immutable run ID and evidence cutoff. Persist the sanitized frozen packet, every original submission, the conflict map, every rebuttal, the PM handoff JSON, the Markdown arbiter packet, and an artifact index ChatGPT can retrieve from Git. `trader-room/runs/INDEX.json` and `trader-room/runs/latest.json` point at the latest published run. Do not leave the complete handoff stranded only in a gitignored Cursor-local directory.
 
 Google Drive folder `Market Watch/Trader Room` (folder ID `1NS6Qb6vNGKM18_PW0zPl4NOIJZOLyfUD`) remains an optional private Markdown copy when the Drive plugin is authorized. It is not required to start the on-demand `go` entrypoint. If Drive is used and the write fails after one retry, fail closed for the Drive copy only; keep the structured packet on the repository artifact surface.
 

@@ -38,7 +38,8 @@ Execution:
    - Instruct each advocate to apply `research_method` before its archetypal bias.
    - Each advocate may make at most two internal subagent calls, model `composer-2.5` only, on the same frozen packet.
    - Do not show agents one another's Round 1 work.
-   - Every advocate except `no-trade-skeptic` must return one cogent actionable trade. The skeptic may submit no-trade.
+    - Every advocate except `no-trade-skeptic` must return one cogent actionable trade. The skeptic may submit no-trade.
+   - `dollar-king` and `cross-merchant` remain spot-dedicated. Every other macro/rates-capable seat must compare outright duration, curve, and cross-market rates RV against spot FX, then choose the cleaner expression and record `expression_comparison`. Do not force rates if spot is superior. Do not default to vol; `vol-convexity` stays unchanged.
    - Collect exactly one `TRADER_ROOM_CONTRIBUTION` object from each.
    - Do not retry in a way that silently exceeds the Grok ceiling of 30 or Composer ceiling of 28.
 
@@ -65,9 +66,9 @@ Execution:
 
 7. Final aggregation and artifact persist.
    - Launch `final-aggregator` on exact model `grok-4.6` with all originals, the conflict map, and every rebuttal.
-   - Produce the structured PM handoff: all proposed trades, agreement clusters, conflicts, strongest evidence on each side, rebuttals, amendments/withdrawals, shared assumptions, unresolved questions/gaps, and durable artifact references.
-   - Do not select a winner or house view.
-   - Persist complete run artifacts under `trader-room/runs/<run_id>/` with immutable run ID and evidence cutoff.
+   - Produce the structured PM handoff: all proposed trades, agreement clusters, conflicts, strongest evidence on each side, rebuttals, amendments/withdrawals, shared assumptions, unresolved questions/gaps, expression comparisons, and durable Git artifact references. Preserve thesis/evidence/expression/catalyst/invalidation detail.
+   - Do not select a winner, vote, ranking, or house view.
+   - Persist complete sanitized run artifacts under `trader-room/runs/<run_id>/` with immutable run ID and evidence cutoff. Do not leave the handoff only in a gitignored Cursor-local directory.
    - End the packet itself with exactly `STATUS: AWAITING_CHATGPT_ARBITRATION`.
    - Google Drive folder ID `1NS6Qb6vNGKM18_PW0zPl4NOIJZOLyfUD` is an optional private Markdown copy, not a required preflight for `go`.
    - Never create an official trade-decision record. The packet is unarbitrated input only.

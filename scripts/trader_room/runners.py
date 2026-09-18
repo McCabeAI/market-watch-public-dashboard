@@ -10,13 +10,18 @@ from scripts.trader_room.constants import (
     ADVOCATE_MODEL,
     ADVOCATE_REMITS,
     AGGREGATOR_MODEL,
+    COMPARISON_AGENTS,
     LIVE_ENV,
     NO_TRADE_AGENT,
+    SPOT_SPECIALIST_AGENTS,
     STANDING_ADVOCATES,
     SUBAGENT_MODEL,
+    VOL_SPECIALIST_AGENT,
 )
 from scripts.trader_room.errors import LiveRunBlocked, ModelPolicyError
+from scripts.trader_room.mandate import seat_class
 from scripts.trader_room.models import assert_advocate_model, assert_aggregator_model, assert_subagent_model
+from scripts.trader_room.schema import proposed_trade_row
 
 MOCK_SPECS: dict[str, dict[str, Any]] = {
     "perma-bull": {
@@ -60,20 +65,22 @@ MOCK_SPECS: dict[str, dict[str, Any]] = {
         "assumptions": {"growth": "above_trend", "risk": "risk_on", "rates": "higher_for_longer"},
     },
     "rate-hawk": {
-        "instrument": "USDJPY",
-        "direction": "long",
+        "instrument": "UST 5Y",
+        "direction": "short",
         "thesis": "Inflation persistence keeps US policy restraint underpriced to the upside.",
         "mispricing": "Front-end USD pricing still treats the hike as a one-and-done.",
         "horizon": "1-3 months",
         "assumptions": {"growth": "above_trend", "risk": "risk_off", "rates": "higher_for_longer", "policy": "hawkish"},
+        "chosen_expression": "outright_duration",
     },
     "rate-dove": {
-        "instrument": "USDJPY",
-        "direction": "short",
-        "thesis": "Restrictive policy bites and easing risk is underpriced versus hawkish USD spot.",
-        "mispricing": "USDJPY assumes a durable higher-for-longer path that growth weakness can break.",
+        "instrument": "UST 5Y",
+        "direction": "long",
+        "thesis": "Restrictive policy bites and easing risk is underpriced versus hawkish USD duration.",
+        "mispricing": "UST 5Y assumes a durable higher-for-longer path that growth weakness can break.",
         "horizon": "1-3 months",
         "assumptions": {"growth": "below_trend", "risk": "risk_on", "rates": "easing_cycle", "policy": "dovish"},
+        "chosen_expression": "outright_duration",
     },
     "value-guy": {
         "instrument": "AUDUSD",
@@ -125,6 +132,52 @@ MOCK_SPECS: dict[str, dict[str, Any]] = {
         "assumptions": {"growth": "above_trend", "risk": "risk_off", "rates": "higher_for_longer"},
     },
 }
+
+
+def _dry_comparison(agent: str, spec: dict[str, Any]) -> dict[str, Any] | None:
+    klass = seat_class(agent)
+    if klass == "vol_specialist":
+        return None
+    if klass == "spot_specialist":
+        return {
+            "seat_class": "spot_specialist",
+            "spot_dedicated": True,
+            "chosen_expression": "spot_fx",
+            "chosen_because": "This seat is intentionally spot-FX dedicated.",
+        }
+    chosen = spec.get("chosen_expression") or "spot_fx"
+    instrument = spec.get("instrument") or "AUDUSD"
+    return {
+        "seat_class": "comparison",
+        "considered_rates": [
+            {
+                "family": "outright_duration",
+                "instrument": "UST 5Y",
+                "assessment": "Duration can express the policy-path view if the packet's rates discrepancy is cleaner than FX.",
+            },
+            {
+                "family": "curve",
+                "instrument": "UST 2s10s",
+                "assessment": "Curve can isolate front-end versus long-end policy if the packet's curve evidence is the discrepancy.",
+            },
+            {
+                "family": "cross_market_rates_rv",
+                "instrument": "AU-US 10Y",
+                "assessment": "Cross-market rates RV is available when the packet's spread is the cleaner relative-value object.",
+            },
+        ],
+        "considered_spot": {
+            "instrument": instrument if chosen == "spot_fx" else "AUDUSD",
+            "assessment": "Spot FX remains available when it isolates the remit more cleanly than duration, curve, or rates RV.",
+        },
+        "chosen_expression": chosen,
+        "chosen_because": (
+            "Rates were considered first; the selected expression is the cleaner packet-backed vehicle, not a forced rates default."
+            if chosen != "spot_fx"
+            else "Rates were considered first; spot remains the cleaner expression of this remit on the frozen packet."
+        ),
+        "unusually_compelling_vol": False,
+    }
 
 
 def first_packet_ref(packet: dict[str, Any]) -> str:
@@ -196,6 +249,36 @@ class DryRunRunner:
         for idx in range(self.composer_calls_per_advocate):
             assert_subagent_model(SUBAGENT_MODEL)
             budget.charge("subagent", SUBAGENT_MODEL, agent, f"round1:{agent}:subagent:{idx+1}")
+        spec = MOCK_SPECS.get(agent, {})
+        comparison = _dry_comparison(agent, spec)
+        if agent == NO_TRADE_AGENT:
+            comparison = {
+                "seat_class": "comparison",
+                "considered_rates": [
+                    {
+                        "family": "outright_duration",
+                        "instrument": "UST 5Y",
+                        "assessment": "Duration edge is not uniquely implied by the frozen packet.",
+                    },
+                    {
+                        "family": "curve",
+                        "instrument": "UST 2s10s",
+                        "assessment": "Curve discrepancy is too noisy versus packet gaps.",
+                    },
+                    {
+                        "family": "cross_market_rates_rv",
+                        "instrument": "AU-US 10Y",
+                        "assessment": "Cross-market RV is not a clean uncrowded expression here.",
+                    },
+                ],
+                "considered_spot": {
+                    "instrument": "AUDUSD",
+                    "assessment": "Spot is similarly priced or too noisy after the same packet gaps.",
+                },
+                "chosen_expression": "no_trade",
+                "chosen_because": "Neither rates nor spot clears the skeptic bar on this packet.",
+                "unusually_compelling_vol": False,
+            }
         return {
             "type": "TRADER_ROOM_CONTRIBUTION",
             "run_id": packet["run_id"],
@@ -205,9 +288,10 @@ class DryRunRunner:
             "remit": ADVOCATE_REMITS[agent],
             "stance_summary": f"{agent} argues from its standing remit using only the frozen packet.",
             "trade": _trade_from_spec(agent, packet),
+            "expression_comparison": comparison,
             "confidence": 40 if agent == NO_TRADE_AGENT else 58,
             "packet_sha256": packet["packet_sha256"],
-            "macro_assumptions": MOCK_SPECS.get(agent, {}).get("assumptions", {}),
+            "macro_assumptions": spec.get("assumptions", {}),
             "subagent_calls": self.composer_calls_per_advocate,
             "subagent_model": SUBAGENT_MODEL if self.composer_calls_per_advocate else None,
         }
@@ -233,24 +317,7 @@ class DryRunRunner:
     ) -> dict[str, Any]:
         assert_advocate_model(ADVOCATE_MODEL)
         budget.charge("rebuttal", ADVOCATE_MODEL, agent, f"rebuttal:{agent}")
-        opponents = assignment["opponents"]
-        return {
-            "type": "TRADER_ROOM_REBUTTAL",
-            "run_id": packet["run_id"],
-            "round": 2,
-            "agent": agent,
-            "opponents": opponents,
-            "own_original_ref": f"submissions/{agent}.json",
-            "holes_in_opposing_case": [
-                f"Opposing case from {', '.join(opponents)} leans on an assumption not uniquely implied by the frozen packet."
-            ],
-            "attack": ["The opposing expression does not own the discrepancy as cleanly as this remit."],
-            "defense": ["The original trade remains the remit-consistent expression of the same packet."],
-            "trade_change": "unchanged",
-            "revised_trade": original.get("trade"),
-            "packet_sha256": packet["packet_sha256"],
-            "subagent_calls": 0,
-        }
+        return mechanical_rebuttal(agent, packet, original, assignment)
 
     def run_final_aggregator(
         self,
@@ -262,40 +329,76 @@ class DryRunRunner:
     ) -> dict[str, Any]:
         assert_aggregator_model(AGGREGATOR_MODEL)
         budget.charge("final-aggregator", AGGREGATOR_MODEL, "final-aggregator", "pm-handoff")
-        amendments = [
-            {"agent": name, "trade_change": item["trade_change"]}
+        return build_pm_handoff(packet, originals, conflict_map, rebuttals)
+
+
+def mechanical_rebuttal(
+    agent: str,
+    packet: dict[str, Any],
+    original: dict[str, Any],
+    assignment: dict[str, Any],
+) -> dict[str, Any]:
+    opponents = assignment["opponents"]
+    return {
+        "type": "TRADER_ROOM_REBUTTAL",
+        "run_id": packet["run_id"],
+        "round": 2,
+        "agent": agent,
+        "opponents": opponents,
+        "own_original_ref": f"submissions/{agent}.json",
+        "holes_in_opposing_case": [
+            f"Opposing case from {', '.join(opponents)} leans on an assumption not uniquely implied by the frozen packet."
+        ],
+        "attack": ["The opposing expression does not own the discrepancy as cleanly as this remit."],
+        "defense": ["The original trade remains the remit-consistent expression of the same packet."],
+        "trade_change": "unchanged",
+        "revised_trade": original.get("trade"),
+        "packet_sha256": packet["packet_sha256"],
+        "subagent_calls": 0,
+    }
+
+
+def build_pm_handoff(
+    packet: dict[str, Any],
+    originals: dict[str, dict[str, Any]],
+    conflict_map: dict[str, Any],
+    rebuttals: dict[str, dict[str, Any]],
+) -> dict[str, Any]:
+    amendments = [
+        {"agent": name, "trade_change": item["trade_change"]}
+        for name, item in rebuttals.items()
+        if item["trade_change"] != "unchanged"
+    ]
+    return {
+        "type": "TRADER_ROOM_PM_HANDOFF",
+        "run_id": packet["run_id"],
+        "evidence_cutoff": packet["as_of"],
+        "proposed_trades": [proposed_trade_row(name, item) for name, item in originals.items()],
+        "agreement_clusters": _clusters(originals),
+        "conflicts": conflict_map["conflicts"],
+        "strongest_evidence_by_side": {
+            conflict["id"]: {
+                agent: (originals[agent].get("trade") or {}).get("evidence_refs")
+                for agent in conflict["agents"]
+                if agent in originals
+            }
+            for conflict in conflict_map["conflicts"]
+        },
+        "rebuttals": {
+            name: {"ref": f"rebuttals/{name}.json", "trade_change": item["trade_change"]}
             for name, item in rebuttals.items()
-            if item["trade_change"] != "unchanged"
-        ]
-        return {
-            "type": "TRADER_ROOM_PM_HANDOFF",
-            "run_id": packet["run_id"],
-            "evidence_cutoff": packet["as_of"],
-            "proposed_trades": [
-                {"agent": name, "trade": item.get("trade"), "ref": f"submissions/{name}.json"}
-                for name, item in originals.items()
-            ],
-            "agreement_clusters": _clusters(originals),
-            "conflicts": conflict_map["conflicts"],
-            "strongest_evidence_by_side": {
-                conflict["id"]: {
-                    agent: (originals[agent].get("trade") or {}).get("evidence_refs")
-                    for agent in conflict["agents"]
-                    if agent in originals
-                }
-                for conflict in conflict_map["conflicts"]
-            },
-            "rebuttals": {
-                name: {"ref": f"rebuttals/{name}.json", "trade_change": item["trade_change"]}
-                for name, item in rebuttals.items()
-            },
-            "amendments_and_withdrawals": amendments,
-            "shared_assumptions": ["All 14 seats used the identical frozen packet and cutoff."],
-            "unresolved_questions_and_gaps": packet.get("known_gaps") or ["None recorded."],
-            "artifact_index": {},
-            "status": "STATUS: AWAITING_CHATGPT_ARBITRATION",
-            "packet_sha256": packet["packet_sha256"],
-        }
+        },
+        "amendments_and_withdrawals": amendments,
+        "shared_assumptions": ["All 14 seats used the identical frozen packet and cutoff."],
+        "unresolved_questions_and_gaps": packet.get("known_gaps") or ["None recorded."],
+        "expression_comparisons": {
+            name: item.get("expression_comparison")
+            for name, item in originals.items()
+        },
+        "artifact_index": {},
+        "status": "STATUS: AWAITING_CHATGPT_ARBITRATION",
+        "packet_sha256": packet["packet_sha256"],
+    }
 
 
 def _clusters(originals: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
@@ -347,6 +450,10 @@ def build_launch_plan(packet: dict[str, Any]) -> dict[str, Any]:
                 "max_subagents": 2,
                 "subagent_model": SUBAGENT_MODEL,
                 "trade_required": name != NO_TRADE_AGENT,
+                "seat_class": seat_class(name),
+                "spot_dedicated": name in SPOT_SPECIALIST_AGENTS,
+                "expression_comparison_required": name in COMPARISON_AGENTS,
+                "vol_remit_unchanged": name == VOL_SPECIALIST_AGENT,
             }
             for name in STANDING_ADVOCATES
         ],

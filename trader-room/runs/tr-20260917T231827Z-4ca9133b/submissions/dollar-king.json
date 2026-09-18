@@ -1,0 +1,65 @@
+{
+  "agent": "dollar-king",
+  "archetype": "dollar-king",
+  "confidence": 60,
+  "execution": "parent_authored_production_evidence",
+  "expression_comparison": {
+    "chosen_because": "This seat is intentionally USD-spot dedicated.",
+    "chosen_expression": "spot_fx",
+    "seat_class": "spot_specialist",
+    "spot_dedicated": true
+  },
+  "macro_assumptions": {
+    "growth": "above_trend",
+    "policy": "hawkish",
+    "rates": "higher_for_longer",
+    "risk": "risk_off"
+  },
+  "packet_sha256": "2e2494d98a6d094453f361975e7ec3992b4b13fafd4519ed7dca2b4c5f0045f2",
+  "remit": "express macro views through USD spot whenever a defensible USD pair exists",
+  "round": 1,
+  "run_id": "tr-20260917T231827Z-4ca9133b",
+  "seat_class": "spot_specialist",
+  "stance_summary": "The cleanest USD spot expression is USDCAD after a Fed hike versus a BoC hold.",
+  "subagent_calls": 0,
+  "subagent_model": null,
+  "trade": {
+    "catalysts": [
+      "Warsh keeps the tightening path live",
+      "BoC remains on hold if core stays near 2%"
+    ],
+    "confidence": 60,
+    "direction": "long",
+    "entry": null,
+    "evidence_refs": [
+      "mw_20260916_fomc_hike_pricing",
+      "rollup:Fed raises 25bp to 3.75\u20134.00%",
+      "rollup:August CPI keeps the Fed tightening bias intact",
+      "rollup:BoC minutes flag higher energy pass-through risk",
+      "rollup:Canada August inflation holds at 3%, core stays near 2%",
+      "market_state"
+    ],
+    "horizon": "1-3 months",
+    "instrument": "USDCAD",
+    "invalidation": "A BoC hike or official communication that energy is passing through into core.",
+    "macro_assumptions": {
+      "growth": "above_trend",
+      "policy": "hawkish",
+      "rates": "higher_for_longer",
+      "risk": "risk_off"
+    },
+    "mispricing": "USDCAD still treats the BoC hold and energy-pass-through warning as CAD-supportive rather than a USD policy premium.",
+    "principal_risks": [
+      "Broader Canadian energy pass-through forces a BoC hike",
+      "Oil spike re-bids CAD"
+    ],
+    "stop": null,
+    "structure": null,
+    "target": null,
+    "thesis": "USD spot versus CAD isolates the Fed/BoC policy gap without adding JPY or cross second-order risk.",
+    "why_now": [
+      "FOMC delivered; BoC minutes kept 2.25% and only a conditional tightening trigger."
+    ]
+  },
+  "type": "TRADER_ROOM_CONTRIBUTION"
+}

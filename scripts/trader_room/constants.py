@@ -29,6 +29,21 @@ AGGREGATORS = ("conflict-aggregator", "final-aggregator")
 NO_TRADE_AGENT = "no-trade-skeptic"
 TRADE_REQUIRED_AGENTS = tuple(a for a in STANDING_ADVOCATES if a != NO_TRADE_AGENT)
 
+# Intentionally spot-FX dedicated seats. Do not add, remove, or repurpose.
+SPOT_SPECIALIST_AGENTS = ("dollar-king", "cross-merchant")
+VOL_SPECIALIST_AGENT = "vol-convexity"
+COMPARISON_AGENTS = tuple(
+    agent
+    for agent in STANDING_ADVOCATES
+    if agent not in SPOT_SPECIALIST_AGENTS and agent != VOL_SPECIALIST_AGENT
+)
+
+RATES_EXPRESSION_FAMILIES = ("outright_duration", "curve", "cross_market_rates_rv")
+SPOT_EXPRESSION_FAMILY = "spot_fx"
+VOL_EXPRESSION_FAMILY = "vol_options"
+COMPARISON_EXPRESSION_FAMILIES = RATES_EXPRESSION_FAMILIES + (SPOT_EXPRESSION_FAMILY,)
+CHOSEN_EXPRESSION_FAMILIES = COMPARISON_EXPRESSION_FAMILIES + (VOL_EXPRESSION_FAMILY, "no_trade")
+
 ADVOCATE_REMITS = {
     "perma-bull": "strongest pro-growth, risk-on, cyclical FX expression",
     "perma-bear": "strongest defensive, slowdown, stress or risk-off FX expression",
