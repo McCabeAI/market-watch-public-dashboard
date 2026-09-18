@@ -8,7 +8,7 @@ from uuid import uuid4
 
 from scripts.trader_room.artifacts import persist_run
 from scripts.trader_room.budget import BudgetLedger
-from scripts.trader_room.conflict import rebuttal_assignments
+from scripts.trader_room.conflict import detect_conflicts, rebuttal_assignments
 from scripts.trader_room.constants import (
     DEFAULT_ESSENTIAL_FAMILIES,
     ROOT,
@@ -76,8 +76,7 @@ def run_debate(
     if set(originals) != set(STANDING_ADVOCATES):
         raise SchemaError("round 1 did not return the complete 14-advocate roster")
 
-    conflict_map = runner.run_conflict_aggregator(originals, packet, budget)
-    conflict_map = validate_conflict_map(conflict_map, originals)
+    conflict_map = validate_conflict_map(detect_conflicts(originals), originals)
     assignments = rebuttal_assignments(conflict_map)
 
     rebuttals: dict[str, dict[str, Any]] = {}
