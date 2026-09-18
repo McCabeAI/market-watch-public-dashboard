@@ -285,7 +285,7 @@ Never replace the raw archive with the normalized database representation.
 
 ## 12. Current light-agent refresh runbook
 
-The native 00:07 overnight Cursor refresh and any manual catch-up use the same incremental runbook:
+The ACP-scheduled overnight research run and any explicitly authorized manual catch-up use the same incremental runbook:
 
 1. Define the exact time window.
 2. Search official sources, financial/mainstream media and public X for relevant developments.
@@ -305,11 +305,11 @@ The native 00:07 overnight Cursor refresh and any manual catch-up use the same i
 
 ## 13. Native overnight automation and long-run ingestion direction
 
-Overnight orchestration, source-refresh invocation, full evidence freeze, persistent paper books, freshness/publication gates, and the additive Trader Book tab are implemented in-repo. The current 00:07 source-discovery step deliberately executes the light V0 runbook through a restricted Cursor agent rather than pretending the patch chain is already a deterministic ingestion generator. The intended long-run direction remains:
+Market Watch owns deterministic collection, snapshots, book mechanics, validation, assembly, and publication. ACP owns the recurring provider/model clock. Scheduled model output arrives as a data-only PR and is accepted through a trusted event-driven gate. The intended long-run direction remains:
 
 source discovery -> fetch/normalize -> deduplicate -> classify -> corroborate/verify -> rank -> write Supabase operational state -> generate public read model -> build dashboard -> validate -> deploy
 
-The current 00:07 V0 step is scheduled by GitHub Actions. It invokes exactly one `grok-4.6` Cursor CLI refresh session with web/read access and a narrow write allowlist; GitHub owns validation, commits, stage sequencing and all publication. At 02:05, fourteen independent `grok-4.6` seat calls consume the same immutable packet with all tools blocked. This removes ChatGPT scheduling from the production path while retaining the current patch authoring model.
+The 00:07 job contains no model invocation. At 02:05 ACP launches one bounded `grok-4.6` parent. Repository hooks enforce the Grok/Composer allowlist, hard total/per-model child budgets, no grandchildren, and evidence-closed trader children. The provider writes research plus structured trader decisions only. Trusted Market Watch code validates the output and computes canonical books, P&L, and NAV.
 
 Automation must preserve the same epistemic separation now enforced manually:
 
@@ -372,8 +372,8 @@ Supabase:
 
 ## 17. Known gaps / next work
 
-- Source discovery and public read-model authoring are still the light V0 agent workflow rather than a deterministic normalized generator; the scheduling/control path is now native GitHub Actions.
-- Scheduled live runtime requires `CURSOR_API_KEY` to be available as an Actions secret in this repository. Dry-run never spends model calls. A failed/missing 02:05 seat review publishes stale books rather than blocking Pages.
+- Source discovery and public read-model authoring are still the light V0 agent workflow rather than a deterministic normalized generator; recurring model execution is controlled by ACP.
+- Market Watch never stores `CURSOR_API_KEY` and never invokes Cursor directly. A failed/missing 02:05 scheduled output publishes stale books rather than blocking Pages.
 - Sep 14 exposed a connector-side Supabase write block during the catch-up refresh; the live dashboard is current, but the missing Sep 14 normalized operational rows/provenance must be replayed once writes are available.
 - X Following personalization is waiting for the X archive; public-web X scanning is therefore explicitly bounded rather than a complete Following feed.
 - The public dashboard does not yet consume a narrow read model from Supabase.
@@ -385,10 +385,11 @@ Supabase:
 ## 18. Repo map
 
 - `.github/workflows/deploy-pages.yml` — exact Pages build and validation gate, including the Trader Book tab
-- `.github/workflows/overnight-pipeline.yml` — America/New_York overnight scheduler, restricted V0 refresh, 14-seat Grok review matrix, persistence, and dry-run
+- `.github/workflows/overnight-pipeline.yml` — deterministic America/New_York overnight stages and dry-run
+- `.github/workflows/overnight-scheduled-output.yml` — trusted event-driven validation/apply/merge gate for ACP scheduled output
 - `.github/workflows/daily-market-state.yml` — weekday/manual no-secret rates and G10 FX research snapshot
 - `docs/OVERNIGHT_PIPELINE_V1.md` — overnight run-id, books, freshness, and publication contract
-- `scripts/overnight/` / `scripts/overnight_pipeline.py` — overnight stage orchestrator and Cursor runtime prompt/normalization boundary
+- `scripts/overnight/` / `scripts/overnight_pipeline.py` — deterministic stage orchestration, scheduled-output validation, and book mechanics
 - `data/overnight/` — git-auditable paper books and run ledgers
 - `patch_v13/` — additive Trader Book / P&L tab
 - `scripts/market_state.py` — deterministic market-state generator
