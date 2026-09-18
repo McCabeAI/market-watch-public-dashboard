@@ -1,0 +1,106 @@
+{
+  "agent": "cross-merchant",
+  "archetype": "cross-merchant",
+  "confidence": 56,
+  "conflict_synopsis": {
+    "au_rates_view": "not_relevant",
+    "aud_view": "lower",
+    "ca_rates_view": "not_relevant",
+    "cad_view": "not_relevant",
+    "carry_view": "not_relevant",
+    "confidence": 56,
+    "conflict_tags": [
+      "AUD_DOWN",
+      "NZD_UP",
+      "AUDNZD_SHORT"
+    ],
+    "core_view": "AUDNZD at a 5y extreme prices AU outperformance that housing, cooler inflation and softer activity do not support versus NZ, and USD pairs contaminate that gap.",
+    "key_catalyst": "AU housing/financial-conditions confirmation versus NZ activity/inflation follow-through after the GDP beat and India FTA.",
+    "key_invalidation": "AU housing stabilizes versus NZ, or NZ labor deterioration plus unobserved NZ yield premium justifies the AUDNZD extreme.",
+    "nz_rates_view": "not_relevant",
+    "nzd_view": "higher",
+    "primary_trade": "short AUDNZD",
+    "risk_view": "neutral",
+    "seat": "cross-merchant",
+    "time_horizon": "tactical 2-6 weeks",
+    "us_rates_view": "not_relevant",
+    "usd_view": "not_relevant"
+  },
+  "macro_assumptions": {
+    "growth": "below_trend",
+    "policy": "hawkish",
+    "rates": "higher_for_longer",
+    "risk": "risk_off"
+  },
+  "packet_sha256": "b4c642412ddcc969d6fd135638baede8f3e9f987015684f2085c8460c3af466a",
+  "remit": "cleaner relative-value expressions outside USD",
+  "round": 1,
+  "run_id": "tr-20260918T223926Z-ondemand",
+  "stance_summary": "USD pairs mix a common post-FOMC tightening bid into otherwise distinct AU-NZ differentials. Short AUDNZD spot isolates Australian housing/financial-conditions damage against New Zealand's hotter inflation, firmer activity and GDP beat without owning the dollar.",
+  "subagent_calls": 0,
+  "subagent_model": null,
+  "trade": {
+    "asset_class": "spot_fx",
+    "catalysts": [
+      "Further Australian housing/financial-conditions prints confirming the RBA tightening channel.",
+      "NZ activity/inflation follow-through after the Q2 GDP beat and India FTA implementation.",
+      "Any fade in the common USD tightening bid that currently masks NZDUSD cheapness and leaves AUDNZD as the residual."
+    ],
+    "confidence": 56,
+    "direction": "short",
+    "entry": null,
+    "evidence_refs": [
+      "fx:AUDNZD",
+      "fx:AUDUSD",
+      "fx:NZDUSD",
+      "fx:AUDCAD",
+      "market_state",
+      "xa:opportunities",
+      "temp:AU:inflation",
+      "temp:AU:labor",
+      "temp:AU:activity",
+      "temp:AU:consumer",
+      "temp:NZ:inflation",
+      "temp:NZ:labor",
+      "temp:NZ:activity",
+      "temp:NZ:consumer",
+      "mw_20260916_au_housing_tightening",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "rollup:New Zealand Q2 GDP slows to 0.2% q/q but beats forecasts",
+      "mw_20260916_nz_india_trade",
+      "last24:2026-09-18:desk-thesis",
+      "macro:desk-18sep",
+      "rates:AU",
+      "rates:NZ",
+      "research_method",
+      "pos:unavailable"
+    ],
+    "expression_comparison": {
+      "rates_candidate": null,
+      "rationale": "Dedicated spot-FX seat. The intended discrepancy is an AU-versus-NZ relative-value gap in currency space. Official NZ sovereign yields are unavailable in this packet, so AU-NZ rate RV, AUDNZD carry, and the AUDNZD~AU-NZ_2Y screen cannot be formed. Short AUDUSD or long NZDUSD would import the common USD tightening factor after the Fed hike; short AUDCAD fights a measured +165bp 2Y AUD-over-CAD carry that can justify that cross's richness. AUDNZD is the cleaner isolation.",
+      "selected": "spot",
+      "spot_candidate": "short AUDNZD spot"
+    },
+    "horizon": "tactical 2-6 weeks",
+    "instrument": "AUDNZD",
+    "invalidation": "Thesis fails if AU housing and activity stabilize or rebound relative to NZ while NZ labor deterioration (unemployment already 5.6%) and missing NZ yield information resolve as a large, persistent AUD carry premium that can justify the 5y AUDNZD extreme. A 1d extension is not itself invalidation; a regime in which AUDUSD, not the cross, becomes the stretching leg would mean USD is the true driver and this expression no longer owns the gap.",
+    "mispricing": "AUDNZD is at a 5y extreme (z 3.12) while AUDUSD is not. Pricing implies AU outperformance versus NZ that is not supported by cooler AU inflation (49.2 vs 51.6), weaker AU activity (49.2 vs 52.0), or the RBA housing channel versus NZ's GDP beat and FTA. USD expressions bury that gap inside Fed/USD beta. AUDCAD richness has a documented carry explanation; AUDNZD richness does not, because NZ yields are missing rather than because a measured NZ rate discount justifies the cross.",
+    "principal_risks": [
+      "NZ labor is already the softer of the two (score 47.0; unemployment 5.6%); a labor-led NZ slowdown can keep NZD the funding/weak leg.",
+      "Official NZ yields are unavailable, so the trade may be fighting unobserved AUDNZD carry; that is a known gap, not a measured tailwind.",
+      "Positioning/flow is unavailable; a crowded short-NZD or CTA trend in AUDNZD can extend a 5y extreme.",
+      "Global energy/tightening shock can keep both commodity currencies offered, with NZD remaining the higher-beta underperformer.",
+      "No executable broker prices; ECB fixings are research/reference only."
+    ],
+    "stop": null,
+    "structure": "spot outright",
+    "target": null,
+    "thesis": "FACT: ECB same-fixing AUDNZD is at 1.2468 on 2026-09-18, 99.96th percentile of the 5y window, z_5y 3.12, +4.27% over 1m and +0.65% on the day. AUDUSD is only 84.3rd percentile 5y (z 1.23, +0.20% 1m). NZDUSD is 8.6th percentile 5y (z -1.15, -3.90% 1m). Decomposition: the 1m AUDNZD rally is NZD underperformance versus a still-bid dollar, not independent AUD strength. AU temperature: inflation 49.2, labor 47.8, activity 49.2, consumer 51.0. NZ temperature: inflation 51.6, labor 47.0, activity 52.0, consumer 48.5. AU 2Y 4.999% and 10Y 5.348% sit at the 99th percentile of their 1y windows, with housing evidence that NSW stamp-duty receipts fell 24% y/y in August, transactions fell 18%, and Sydney/Melbourne values are more than 7% below peak. NZ Q2 GDP printed 0.2% q/q but beat forecasts; NZ parliament passed an India FTA covering about 95% of NZ exports. Desk thesis: energy shock and Fed/BoJ/BoE tightening are a common G10 duration/USD factor. INFERENCE: market pricing of AUDNZD as a 5y extreme requires Australia to remain the relatively stronger Pacific commodity currency, which is the opposite of the housing-versus-activity/inflation split. Expressing AU housing damage in AUDUSD shorts the dollar's post-hike bid; expressing NZ cheapness in NZDUSD does the same in reverse. Short AUDNZD owns the bilateral gap and nets out USD. AUDCAD is also 99.96th percentile 5y (z 2.76) but is co-explained by a live +165bp 2Y yield gap and only +1.95% 1m, so it is the inferior fade. UNKNOWN: NZ 2Y/5Y/10Y, AUDNZD carry, positioning/flow, and executable broker levels. NZ labor is a live offset (unemployment 5.6%).",
+    "why_now": [
+      "AUDNZD printed a 5y extreme on the cutoff date (99.96th percentile, z 3.12) with a 1m move of +4.27% and a 1d extension of +0.65%, so the dislocation is live rather than stale.",
+      "Australian housing evidence from 16 Sep shows the RBA tightening channel already biting (stamp duty -24% y/y, volumes -18%, prices >7% off peak) while NZ Q2 GDP beat and an India FTA passed in the same window.",
+      "The Fed's 25bp hike to 3.75-4.00%, BoJ hike to 1.25%, and hawkish BoE hold make USD the common factor; waiting to express AU-NZ via AUDUSD or NZDUSD now maximally contaminates the view."
+    ]
+  },
+  "type": "TRADER_ROOM_CONTRIBUTION"
+}

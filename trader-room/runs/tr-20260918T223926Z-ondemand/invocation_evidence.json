@@ -1,30 +1,213 @@
 {
-  "run_id": "tr-20260918T223926Z-ondemand",
-  "run_policy": "MW_TRADER_ROOM_RUN_POLICY={\"version\":1,\"run_type\":\"trader-room-ondemand\",\"total_model_cap\":58,\"grok_cap\":30,\"composer_cap\":28,\"parent_model\":\"grok-4.6\",\"parent_total\":1,\"parent_grok\":1}",
-  "parent": {
-    "role": "acp_parent",
-    "model": "grok-4.6",
-    "bcId": "bc-85311f42-f100-4261-afb8-e1649947d6ac",
-    "counted": true
+  "conflict_stage": {
+    "conflict_aggregator_invoked": false,
+    "context_tensions": 2,
+    "direct_conflicts": 3,
+    "method": "deterministic_conflict_synopsis_v1",
+    "model_calls": 0,
+    "rebuttal_seats": [
+      "carry-is-king",
+      "catalyst-junkie",
+      "cross-merchant",
+      "dollar-king",
+      "mean-reverter",
+      "perma-bear",
+      "perma-bull",
+      "rate-dove",
+      "rate-hawk",
+      "trend-follower",
+      "value-guy",
+      "vol-convexity"
+    ],
+    "theoretical_tensions": 4
+  },
+  "counts": {
+    "conflict_grok": 0,
+    "final_grok_planned": 1,
+    "parent_grok": 1,
+    "rebuttal_grok_planned": 12,
+    "round1_composer": 0,
+    "round1_grok": 14,
+    "total_composer": 0,
+    "total_grok_planned": 28
   },
   "freeze": {
+    "advocates_launched_after_freeze": true,
     "evidence_cutoff": "2026-09-18T22:39:26Z",
-    "packet_sha256": "b4c642412ddcc969d6fd135638baede8f3e9f987015684f2085c8460c3af466a",
     "families": {
-      "temperature_gauges": "available",
       "central_bank_research": "available",
       "market_state": "stale",
-      "research_method": "available"
+      "research_method": "available",
+      "temperature_gauges": "available"
     },
-    "advocates_launched_after_freeze": false,
+    "packet_sha256": "b4c642412ddcc969d6fd135638baede8f3e9f987015684f2085c8460c3af466a",
     "previous_run_excluded": "tr-20260918T182933Z-ondemand"
   },
   "invocations": [
     {
-      "role": "acp_parent",
-      "model": "grok-4.6",
       "agent": null,
-      "purpose": "orchestrate-live-trader-room"
+      "model": "grok-4.6",
+      "purpose": "orchestrate-live-trader-room",
+      "role": "acp_parent"
+    },
+    {
+      "agent": "carry-is-king",
+      "bcId": "bc-bc19bb30-d596-54e0-8241-e84854c2696a",
+      "model": "grok-4.6",
+      "purpose": "round1-submission",
+      "role": "advocate_round1",
+      "subagent_calls": 0
+    },
+    {
+      "agent": "catalyst-junkie",
+      "bcId": "bc-8b876cfb-9c91-5c2d-a9ec-ef8e531ebccf",
+      "model": "grok-4.6",
+      "purpose": "round1-submission",
+      "role": "advocate_round1",
+      "subagent_calls": 0
+    },
+    {
+      "agent": "cross-merchant",
+      "bcId": "bc-f38619ce-30a0-50d6-b837-4022ed082c54",
+      "model": "grok-4.6",
+      "purpose": "round1-submission",
+      "role": "advocate_round1",
+      "subagent_calls": 0
+    },
+    {
+      "agent": "dollar-king",
+      "bcId": "bc-5736d589-e9ca-5e54-b9ea-b12575e9d845",
+      "model": "grok-4.6",
+      "purpose": "round1-submission",
+      "role": "advocate_round1",
+      "subagent_calls": 0
+    },
+    {
+      "agent": "mean-reverter",
+      "bcId": "bc-8a8d262b-a5ff-5830-87b6-6c6681f0e0a5",
+      "model": "grok-4.6",
+      "purpose": "round1-submission",
+      "role": "advocate_round1",
+      "subagent_calls": 0
+    },
+    {
+      "agent": "no-trade-skeptic",
+      "bcId": "bc-7f581879-cead-5459-9502-e3a072d332c1",
+      "model": "grok-4.6",
+      "purpose": "round1-submission",
+      "role": "advocate_round1",
+      "subagent_calls": 0
+    },
+    {
+      "agent": "perma-bear",
+      "bcId": "bc-2cf11aa0-3192-5a3d-9053-32ae1b1fd15d",
+      "model": "grok-4.6",
+      "purpose": "round1-submission",
+      "role": "advocate_round1",
+      "subagent_calls": 0
+    },
+    {
+      "agent": "perma-bull",
+      "bcId": "bc-c27e872a-7cd5-5254-889b-18b9574a455f",
+      "model": "grok-4.6",
+      "purpose": "round1-submission",
+      "role": "advocate_round1",
+      "subagent_calls": 0
+    },
+    {
+      "agent": "positioning-cynic",
+      "bcId": "bc-67fdc665-51da-5031-b24d-ccf4d7612b3c",
+      "model": "grok-4.6",
+      "purpose": "round1-submission",
+      "role": "advocate_round1",
+      "subagent_calls": 0
+    },
+    {
+      "agent": "rate-dove",
+      "bcId": "bc-87eaed06-a108-5ab9-84a2-4f2eb61c9a82",
+      "model": "grok-4.6",
+      "purpose": "round1-submission",
+      "role": "advocate_round1",
+      "subagent_calls": 0
+    },
+    {
+      "agent": "rate-hawk",
+      "bcId": "bc-69cd9491-cc24-5dda-864d-ab7eec567423",
+      "model": "grok-4.6",
+      "purpose": "round1-submission",
+      "role": "advocate_round1",
+      "subagent_calls": 0
+    },
+    {
+      "agent": "trend-follower",
+      "bcId": "bc-f0af0d3f-ddb6-5414-b59e-a19121cfec26",
+      "model": "grok-4.6",
+      "purpose": "round1-submission",
+      "role": "advocate_round1",
+      "subagent_calls": 0
+    },
+    {
+      "agent": "value-guy",
+      "bcId": "bc-78b13f87-5732-5f06-ada1-2a33f5848fb0",
+      "model": "grok-4.6",
+      "purpose": "round1-submission",
+      "role": "advocate_round1",
+      "subagent_calls": 0
+    },
+    {
+      "agent": "vol-convexity",
+      "bcId": "bc-2c7730c0-ff24-5ded-b87f-c8690acf8d23",
+      "model": "grok-4.6",
+      "purpose": "round1-submission",
+      "role": "advocate_round1",
+      "subagent_calls": 0
     }
-  ]
+  ],
+  "parent": {
+    "bcId": "bc-85311f42-f100-4261-afb8-e1649947d6ac",
+    "counted": true,
+    "model": "grok-4.6",
+    "role": "acp_parent"
+  },
+  "round1": {
+    "agents": [
+      "carry-is-king",
+      "catalyst-junkie",
+      "cross-merchant",
+      "dollar-king",
+      "mean-reverter",
+      "no-trade-skeptic",
+      "perma-bear",
+      "perma-bull",
+      "positioning-cynic",
+      "rate-dove",
+      "rate-hawk",
+      "trend-follower",
+      "value-guy",
+      "vol-convexity"
+    ],
+    "bcIds": {
+      "carry-is-king": "bc-bc19bb30-d596-54e0-8241-e84854c2696a",
+      "catalyst-junkie": "bc-8b876cfb-9c91-5c2d-a9ec-ef8e531ebccf",
+      "cross-merchant": "bc-f38619ce-30a0-50d6-b837-4022ed082c54",
+      "dollar-king": "bc-5736d589-e9ca-5e54-b9ea-b12575e9d845",
+      "mean-reverter": "bc-8a8d262b-a5ff-5830-87b6-6c6681f0e0a5",
+      "no-trade-skeptic": "bc-7f581879-cead-5459-9502-e3a072d332c1",
+      "perma-bear": "bc-2cf11aa0-3192-5a3d-9053-32ae1b1fd15d",
+      "perma-bull": "bc-c27e872a-7cd5-5254-889b-18b9574a455f",
+      "positioning-cynic": "bc-67fdc665-51da-5031-b24d-ccf4d7612b3c",
+      "rate-dove": "bc-87eaed06-a108-5ab9-84a2-4f2eb61c9a82",
+      "rate-hawk": "bc-69cd9491-cc24-5dda-864d-ab7eec567423",
+      "trend-follower": "bc-f0af0d3f-ddb6-5414-b59e-a19121cfec26",
+      "value-guy": "bc-78b13f87-5732-5f06-ada1-2a33f5848fb0",
+      "vol-convexity": "bc-2c7730c0-ff24-5ded-b87f-c8690acf8d23"
+    },
+    "composer_used": 0,
+    "count": 14,
+    "model": "grok-4.6",
+    "subagent_calls": 0,
+    "validated": true
+  },
+  "run_id": "tr-20260918T223926Z-ondemand",
+  "run_policy": "MW_TRADER_ROOM_RUN_POLICY={\"version\":1,\"run_type\":\"trader-room-ondemand\",\"total_model_cap\":58,\"grok_cap\":30,\"composer_cap\":28,\"parent_model\":\"grok-4.6\",\"parent_total\":1,\"parent_grok\":1}"
 }

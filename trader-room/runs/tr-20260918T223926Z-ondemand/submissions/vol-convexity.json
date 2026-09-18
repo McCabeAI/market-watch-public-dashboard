@@ -1,0 +1,117 @@
+{
+  "agent": "vol-convexity",
+  "archetype": "vol-convexity",
+  "confidence": 55,
+  "conflict_synopsis": {
+    "au_rates_view": "lower",
+    "aud_view": "lower",
+    "ca_rates_view": "not_relevant",
+    "cad_view": "not_relevant",
+    "carry_view": "not_relevant",
+    "confidence": 55,
+    "conflict_tags": [
+      "AUD_DOWN",
+      "NZD_UP",
+      "AUDNZD_DOWN",
+      "OPTIONS"
+    ],
+    "core_view": "AUDNZD's 5y extreme is a two-way event-risk discrepancy that a bounded put spread owns better than spot or blocked AU-NZ rates RV.",
+    "key_catalyst": "AU housing/labor evidence that the tightening channel is biting while NZD stops cheapening through otherwise constructive NZ news.",
+    "key_invalidation": "AUDNZD makes a new extreme as AU housing stabilizes and NZ labor/activity stay NZD-negative, or live implied vol already prices the unwind versus 20d realized.",
+    "nz_rates_view": "not_relevant",
+    "nzd_view": "higher",
+    "primary_trade": "short AUDNZD via 1-3m defined-risk put spread",
+    "risk_view": "risk_off",
+    "seat": "vol-convexity",
+    "time_horizon": "1-3 months",
+    "us_rates_view": "higher",
+    "usd_view": "not_relevant"
+  },
+  "macro_assumptions": {
+    "growth": "below_trend",
+    "policy": "hawkish",
+    "rates": "higher_for_longer",
+    "risk": "risk_off"
+  },
+  "packet_sha256": "b4c642412ddcc969d6fd135638baede8f3e9f987015684f2085c8460c3af466a",
+  "remit": "asymmetric optionality; challenge spot expressions",
+  "round": 1,
+  "run_id": "tr-20260918T223926Z-ondemand",
+  "stance_summary": "AUDNZD is the packet's most stretched G10 cross (5y 99.96th percentile, z 3.12) after a 4.27% one-month rise, while NZ 2Y yields and therefore AU-NZ rate RV and AUDNZD carry are unavailable. Spot shorting the cross is the wrong instrument: timing of mean reversion is unknown, NZD already has two-way event risk (Q2 GDP beat and India trade deal versus 5.6% unemployment), and a spot short has unbounded continuation risk. Own the reversal with a defined-risk 1-3m AUDNZD put spread. Implied vol, skew and strikes are not in the packet and remain unquoted; do not execute until a live screen shows the premium is not already pricing the unwind versus 20d realized 5.09%.",
+  "subagent_calls": 0,
+  "subagent_model": null,
+  "trade": {
+    "asset_class": "options",
+    "catalysts": [
+      "Further evidence that the RBA tightening channel is biting (housing volumes, stamp duty, AU labor) without a matching NZD-negative growth miss.",
+      "NZ data or RBNZ communication that re-anchors NZD after the Q2 GDP beat and India trade implementation, reversing the 1m NZDUSD slide that built the cross extreme.",
+      "Energy/G10 tightening event risk that lifts FX implied from a still-unobserved base; only then is vol itself the P&L, and only if the live screen confirms it was not already priced."
+    ],
+    "confidence": 55,
+    "direction": "short via defined-risk put spread",
+    "entry": null,
+    "evidence_refs": [
+      "fx:AUDNZD",
+      "fx:AUDUSD",
+      "fx:NZDUSD",
+      "fx:AUDCAD",
+      "fx:USDJPY",
+      "rates:AU",
+      "rates:NZ",
+      "xa:opportunities",
+      "market_state",
+      "research_method",
+      "mw_20260916_au_housing_tightening",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "rollup:New Zealand Q2 GDP slows to 0.2% q/q but beats forecasts",
+      "mw_20260916_nz_india_trade",
+      "temp:AU:labor",
+      "temp:AU:activity",
+      "temp:NZ:inflation",
+      "temp:NZ:labor",
+      "temp:NZ:activity",
+      "last24:2026-09-18:desk-thesis",
+      "macro:desk-18sep",
+      "mw_20260916_fomc_hike_pricing",
+      "rollup:Fed raises 25bp to 3.75\u20134.00%",
+      "last24:2026-09-18:boj-raises-its-policy-rate-to-1-25",
+      "rollup:Energy-market shock absorbers weaken",
+      "pos:unavailable"
+    ],
+    "expression_comparison": {
+      "rates_candidate": "AU 10Y outright (5.348, 1y 99th percentile as of 2026-09-16) or AU-NZ 2Y RV; the NZ leg is not executable because official NZ sovereign yields are unavailable (HTTP 403) and AUDNZD vs AU-NZ 2Y is status insufficient.",
+      "rationale": "The discrepancy lives in the AUDNZD distribution and in two-way NZ/AU event risk, not in a clean AU duration or AU-NZ curve view. Rates cannot own the NZ side: rates:NZ is unavailable and xa:opportunities marks AUDNZD carry and AUDNZD~AU-NZ_2Y as unavailable/insufficient. Spot short AUDNZD fights an unknown carry and has unbounded risk if NZD labor weakness (unemployment 5.6%) extends the 1m -3.90% NZDUSD slide. A 1-3m put spread bounds premium, keeps the short-AUD/long-NZD delta, and does not require inventing a reversion clock. Do not substitute an AUDUSD or AUDCAD spot short: AUDUSD is only 84th percentile and has lagged copper (residual z -1.33); AUDCAD is also 99.96th percentile but 2Y carry of 165bp / 60d vol 4.93 explicitly compensates a spot fade, whereas AUDNZD carry cannot even be measured.",
+      "selected": "options",
+      "spot_candidate": "Short AUDNZD cash at ECB reference 1.2468 (research/reference only, not executable)."
+    },
+    "horizon": "1-3 months",
+    "instrument": "AUDNZD",
+    "invalidation": "Thesis is wrong if AUDNZD extends to a new extreme while AU housing/labor stop deteriorating and NZ activity/inflation fail to support NZD, or if a live broker screen shows AUDNZD implied vol and 25d risk-reversal already fully pricing the unwind versus sourced 20d realized 5.09% (AUDNZD) and 6.31% (NZDUSD). Right-thesis/wrong-timing if the mechanism is intact but the option decays through the 1-3m window without a catalyst; reassess rather than rolling into spot.",
+    "macro_assumptions": {
+      "growth": "below_trend",
+      "policy": "hawkish",
+      "rates": "higher_for_longer",
+      "risk": "risk_off"
+    },
+    "mispricing": "Market pricing in the frozen packet is the AUDNZD level itself at a 5y extreme (percentile 99.96, z 3.12) after NZDUSD sold 3.90% in a month through a GDP beat and a trade-deal headline, while AU housing and AU labor are already showing the tightening channel. That is a fundamentals-versus-distribution and market-versus-market discrepancy (AUDUSD not equivalently stretched; AUDUSD vs copper residual z -1.33). It is not an implied-versus-realized claim: FX implied vol and skew are missing. Do not treat the z-score as a mean-reversion signal; it is the historical reference that makes a bounded option the cleaner way to wait for a catalyst.",
+    "principal_risks": [
+      "NZD labor is the weakest of the four (unemployment 5.6%); a spot-like continuation in NZDUSD can grind through a put spread if implied was not cheap.",
+      "Implied vol, skew and fly are unknown; the structure can be a negative-carry debit if AUDNZD implied is already rich to 20d realized 5.09%.",
+      "AUDNZD carry cannot be measured; if the missing NZ 2Y later shows a large AUD yield advantage, theta works against the short cross.",
+      "No positioning/flow dataset: a crowded NZD short squeeze or AUD long liquidation cannot be distinguished from macro.",
+      "Global energy shock and higher-for-longer US yields can hit NZD as the higher-RV, weaker-percentile currency, extending AUDNZD.",
+      "ECB FX prints are research/reference only; executable spot and option markets can differ."
+    ],
+    "stop": null,
+    "structure": "Defined-risk 1-3 month AUDNZD put spread: buy a closer-to-spot AUDNZD put, sell a further out-of-the-money put. Equivalent delta is short AUD / long NZD with known debit. No strike, delta, premium, implied vol or risk-reversal quote is sourced in this packet; those must be taken from a live broker screen before execution. If 25d risk-reversal already prices NZD upside versus 20d realized 5.09% (AUDNZD) and 6.31% (NZDUSD), shrink size or stand down rather than inventing a cheapness claim.",
+    "target": null,
+    "thesis": "FACT: On 2026-09-18 ECB same-fixing research crosses, AUDNZD spot is 1.2468, 5y percentile 99.96, z 3.12, 1m return +4.27%, 20d realized vol 5.09%. The same snapshot has NZDUSD at 0.5711, 5y percentile 8.61, z -1.15, 1m -3.90%, 20d RV 6.31%, versus AUDUSD 0.7120, 5y percentile 84.3, z 1.23, 1m only +0.20%, 20d RV 4.71%. So the cross extreme is mostly NZD underperformance, not an AUD melt-up. AU 10Y is 5.348 (1y percentile 99.0, 1m +26bp) with NSW stamp-duty receipts -24% y/y and Sydney/Melbourne home values more than 7% off peak; AU labor temperature is 47.8 (unemployment 4.5%, employment -15.8k m/m). NZ Q2 GDP printed +0.2% q/q but beat forecasts; NZ inflation temperature is 51.6; NZ labor is 47.0 with unemployment 5.6%; parliament passed an India trade deal covering about 95% of NZ exports to India. Official NZ yields are unavailable, so AUDNZD carry and AU-NZ 2Y RV are not in the packet. Equity VIX is 15.44 (percentile 14.7, z -0.84) while Brent is 130.8 (percentile 99.6) and WTI 107.02 (percentile 96.4); USDJPY 20d RV is 11.04 after a +1.41% 1d rally on the BoJ hike to 1.25%. Positioning/flow is unavailable. Executable option prices are not in the packet. INFERENCE: Spot is the wrong expression because the closing mechanism (AU housing/labor biting versus a sold-off NZD that just beat GDP) has unknown timing and two-way event risk; a cash short is an unbounded bet that NZD cannot cheapen further, and a cash long is buying a 5y extreme. The put spread owns the same AUD-down/NZD-up discrepancy with defined debit. Cross-asset, suppressed VIX against an energy and G10-tightening regime is a reason to worry that event risk is underpriced in vol markets we can observe, but that is equity vol not AUDNZD implied and is not a substitute for a live FX vol screen. UNKNOWN: AUDNZD implied vol, 25d risk reversal, fly, forward points, and NZ 2Y. Cot/positioning. Whether the NZD slide is flow/liquidation rather than macro (no plumbing dataset).",
+    "why_now": [
+      "AUDNZD prints the packet's most extreme G10 FX percentile (99.96) and z (3.12) on the 2026-09-18 snapshot, with the 1m move already +4.27%.",
+      "The Fed 25bp hike to 3.75-4.00% was >90% priced and is now known information; the live relative impulse is AU housing/labor versus a NZD that cheapened through a Q2 GDP beat and the India trade law \u2014 a two-way event window, not a drift that spot can sit on.",
+      "AU-NZ rate RV and AUDNZD carry remain untradeable while NZ yields stay unavailable, so waiting for a rates expression abandons the FX discrepancy.",
+      "VIX at 15.44 (14.7th percentile) versus Brent at the 99.6th percentile and USDJPY 20d RV 11% is the observable vol-regime warning; FX implied is still unchecked and must be checked before paying premium."
+    ]
+  },
+  "type": "TRADER_ROOM_CONTRIBUTION"
+}

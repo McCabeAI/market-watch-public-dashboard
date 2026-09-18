@@ -1,0 +1,93 @@
+{
+  "agent": "positioning-cynic",
+  "archetype": "positioning-cynic",
+  "confidence": 52,
+  "conflict_synopsis": {
+    "au_rates_view": "lower",
+    "aud_view": "lower",
+    "ca_rates_view": "neutral",
+    "cad_view": "neutral",
+    "carry_view": "supports_trade",
+    "confidence": 52,
+    "conflict_tags": [
+      "AU_RATES_DOWN",
+      "AUD_DOWN",
+      "FADE_CROWDED_DURATION_SHORTS",
+      "USD_NEUTRAL"
+    ],
+    "core_view": "Crowded global hawkish duration shorts are a bad entry; receive Australian 2s where housing already shows the tightening channel biting and 5y yield percentiles are most extended.",
+    "key_catalyst": "More Australian housing/financial-conditions evidence that forces the RBA to step back while crowded duration shorts cover.",
+    "key_invalidation": "RBA hikes or housing stabilizes while AU 2Y makes a new high with the global hawkish impulse.",
+    "nz_rates_view": "not_relevant",
+    "nzd_view": "not_relevant",
+    "primary_trade": "long duration AU 2Y government bond",
+    "risk_view": "neutral",
+    "seat": "positioning-cynic",
+    "time_horizon": "4-8 weeks",
+    "us_rates_view": "neutral",
+    "usd_view": "neutral"
+  },
+  "packet_sha256": "b4c642412ddcc969d6fd135638baede8f3e9f987015684f2085c8460c3af466a",
+  "remit": "attack crowded ideas; prefer better ownership asymmetry",
+  "round": 1,
+  "run_id": "tr-20260918T223926Z-ondemand",
+  "stance_summary": "The room's good hawkish macro is a crowded trade: the Fed hike was already >90% priced, US and AU yields sit at one-year extremes, and the desk thesis that global tightening is broadening is now consensus. Cot/CFTC is unavailable, so price stretch plus narrative clustering are the only ownership proxies. Fade the most extended duration shorts where the local thesis is also weakening: receive Australian 2-year bonds. Do not pay US duration (that is the crowded side), and do not fade AUDCAD in spot (that fights documented carry while AUD longs already own the 5y extreme).",
+  "subagent_calls": 0,
+  "subagent_model": null,
+  "trade": {
+    "asset_class": "rates",
+    "catalysts": [
+      "Further Australian housing, stamp-duty, or credit evidence that the RBA tightening channel is still biting.",
+      "RBA communication that steps back from additional hikes while global hawkish consensus is still long yields.",
+      "Post-FOMC duration-short covering if the energy tail keeps fading via the Saudi Oman workaround."
+    ],
+    "confidence": 52,
+    "direction": "long duration",
+    "entry": null,
+    "evidence_refs": [
+      "pos:unavailable",
+      "rates:AU",
+      "rates:US",
+      "mw_20260916_fomc_hike_pricing",
+      "rollup:Fed raises 25bp to 3.75\u20134.00%",
+      "mw_20260916_au_housing_tightening",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "last24:2026-09-18:desk-thesis",
+      "xa:opportunities",
+      "fx:AUDCAD",
+      "fx:AUDNZD",
+      "temp:AU:labor",
+      "temp:AU:inflation",
+      "paper_books",
+      "mw_20260916_saudi_oman_workaround"
+    ],
+    "expression_comparison": {
+      "rates_candidate": "Receive AU 2Y government bonds outright (long duration). Cross-market alternative considered and rejected: receive AU 2Y versus pay US 2Y, because paying US duration joins the crowded post-FOMC short.",
+      "rationale": "Rates are preferred when comparably clean, and here the rates candidate is strictly cleaner. Housing is an RBA/duration mechanism, and AU 2Y is the more extreme 5y stretch. Short AUDCAD is an inferior ownership expression: it fights the packet's AUDCAD 2Y yield-differential carry and requires fading FX longs that already sit at a 5y extreme, while still leaving the crowded global duration-short book unaddressed. Paying US duration as a rates RV leg would add to the most crowded hawkish position in the packet. NZ-involved rates RV is unavailable.",
+      "selected": "rates",
+      "spot_candidate": "Short AUDCAD, fading the 5y extreme in the AUD cross versus CAD."
+    },
+    "horizon": "4-8 weeks",
+    "instrument": "AU 2Y government bond",
+    "invalidation": "RBA hikes or Australian housing turnover and prices stabilize while AU 2Y yields make a new local high with a further global hawkish impulse. A connected CFTC/flow print showing AU duration shorts already washed out would also kill the ownership premise.",
+    "mispricing": "The market is pricing Australia as just another global hawkish beta: AU 2Y/5Y/10Y all sit at the 99.8th percentile of 5y history after the post-Fed/global-tightening selloff. Local evidence says the RBA channel is already biting in housing and labor, so the implied additional tightening in the front end is the crowded side of the book, not a fresh discrepancy. US 2Y is equally extended on a 1y window but less so on 5y (88th percentile) and still has CPI/Fed support; that is a crowded good-thesis/bad-entry, not the trade. AUDCAD at the 99.96th 5y percentile shows the FX-long/carry crowd already owns AUD, so the unowned side of the Australian story is duration, not spot.",
+    "principal_risks": [
+      "Energy shock re-accelerates and global term premium lifts AU yields with the crowded shorts rather than against them.",
+      "RBA looks through housing because trimmed mean remains 3.6% y/y and hikes anyway.",
+      "CFTC/flow is unavailable; price-percentile crowding can be a false proxy if shorts already exited.",
+      "AU yields already fell about 5-6bp on 16 Sep; part of the squeeze may have started.",
+      "No executable broker prices in the packet; this is a research expression, not a sized order."
+    ],
+    "stop": null,
+    "structure": "Outright receive / long duration in Australian 2-year government bonds, cash or listed-futures equivalent. No executable broker mid is in the packet.",
+    "target": null,
+    "thesis": "FACT: Interest-rate futures entered the 16 Sep FOMC with >90% probability of a 25bp hike, and the Fed did hike 25bp to 3.75-4.00%. US 2Y is 4.76% as of 18 Sep (99.8th percentile 1y, +57bp 1m) while AU 2Y is 4.999% as of 16 Sep (99.8th percentile 5y and 99.0th 1y, +39.1bp 1m). NSW stamp-duty receipts fell 24% y/y in August, transaction volumes fell 18%, and Sydney/Melbourne home values are down more than 7% from peak. AU labor temperature is 47.8 with unemployment up to 4.5%; AU inflation temperature is 49.2 with trimmed mean still 3.6% y/y but headline easing to 3.5%. AUDCAD and AUDNZD print at the 99.96th percentile 5y. CFTC/positioning/flow is unavailable; paper books are empty $100m seeds. INFERENCE: 99th-percentile yields after a one-month selloff are a proxy for crowded CTA/momentum duration shorts, and the last-24 desk line that global tightening is broadening is the consensus narrative, not an unowned edge. The Fed event is known information; chasing US shorts from here is a bad entry even if the energy/CPI thesis is not dead. Australia is where ownership is worst on 5y history and where the tightening channel is already visible in housing, so the crowded global-hawkish short is locally the wrong trade. Receiving AU 2Y fades those shorts without paying US duration and without joining crowded long-AUD crosses. UNKNOWN: actual CFTC, options skew, CTA AUM, holder composition, and executable prices. Whether the oil tail is fading (Saudi Oman workaround) or still binding (shock-absorbers-weaken) is unresolved and caps confidence.",
+    "why_now": [
+      "The FOMC hike is a completed, >90%-priced event; remaining US duration shorts are ownership, not new information.",
+      "AU 2Y remains at the 99.8th percentile of 5y history after +39.1bp in one month, while the 16 Sep housing evidence shows the tightening channel already working.",
+      "The 18 Sep desk thesis that global tightening is broadening is now the consensus narrative to attack, not to join.",
+      "AUDCAD and AUDNZD at ~100th percentile 5y show AUD spot longs are already crowded; the cleaner fade of that ownership is to receive AU duration rather than sell the high-carry cross."
+    ]
+  },
+  "type": "TRADER_ROOM_CONTRIBUTION"
+}

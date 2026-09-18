@@ -1,0 +1,1125 @@
+{
+  "assignment": {
+    "agent": "value-guy",
+    "conflict_ids": [
+      "opp-view:USD",
+      "opp-view:CAD"
+    ],
+    "opponents": [
+      "dollar-king",
+      "mean-reverter",
+      "perma-bear",
+      "rate-dove",
+      "rate-hawk",
+      "trend-follower",
+      "perma-bull",
+      "carry-is-king",
+      "catalyst-junkie"
+    ]
+  },
+  "direct_conflicts": [
+    {
+      "agents": [
+        "dollar-king",
+        "mean-reverter",
+        "perma-bear",
+        "rate-dove",
+        "rate-hawk",
+        "trend-follower",
+        "perma-bull",
+        "value-guy"
+      ],
+      "description": "dollar-king, mean-reverter, perma-bear, rate-dove, rate-hawk, trend-follower expect USD higher while perma-bull, value-guy expect USD lower",
+      "id": "opp-view:USD",
+      "kind": "opposite_currency_view"
+    },
+    {
+      "agents": [
+        "carry-is-king",
+        "catalyst-junkie",
+        "perma-bull",
+        "rate-hawk",
+        "value-guy",
+        "dollar-king",
+        "trend-follower"
+      ],
+      "description": "carry-is-king, catalyst-junkie, perma-bull, rate-hawk, value-guy expect CAD higher while dollar-king, trend-follower expect CAD lower",
+      "id": "opp-view:CAD",
+      "kind": "opposite_currency_view"
+    }
+  ],
+  "evidence_cutoff": "2026-09-18T22:39:26Z",
+  "expression_rules": {
+    "options_only": false,
+    "rates_first": true,
+    "spot_only": false
+  },
+  "opposing_originals": [
+    {
+      "agent": "dollar-king",
+      "conflict_id": "opp-view:USD",
+      "contribution": {
+        "agent": "dollar-king",
+        "archetype": "dollar-king",
+        "confidence": 62,
+        "conflict_synopsis": {
+          "au_rates_view": "lower",
+          "aud_view": "lower",
+          "ca_rates_view": "higher",
+          "cad_view": "lower",
+          "carry_view": "opposes_trade",
+          "confidence": 62,
+          "conflict_tags": [
+            "USD_UP",
+            "AUD_DOWN",
+            "CAD_DOWN",
+            "NZD_DOWN",
+            "AUDUSD_SHORT"
+          ],
+          "core_view": "Own the post-FOMC USD tightening premium against AUD, the G10 USD pair that has not yet paid for Australian housing damage and delivered US policy.",
+          "key_catalyst": "Australian housing/labor confirmation plus a still-intact Fed tightening path while AUDUSD catches down to other USD pairs.",
+          "key_invalidation": "US tightening bias withdrawn or Australian housing/labor re-acceleration restoring AUD relative-rate support.",
+          "nz_rates_view": "not_relevant",
+          "nzd_view": "lower",
+          "primary_trade": "short AUDUSD",
+          "risk_view": "risk_off",
+          "seat": "dollar-king",
+          "time_horizon": "2-6 weeks",
+          "us_rates_view": "higher",
+          "usd_view": "higher"
+        },
+        "macro_assumptions": {
+          "growth": "below_trend",
+          "policy": "hawkish",
+          "rates": "higher_for_longer",
+          "risk": "risk_off"
+        },
+        "packet_sha256": "b4c642412ddcc969d6fd135638baede8f3e9f987015684f2085c8460c3af466a",
+        "stance_summary": "USD is the clean benchmark: post-FOMC tightening bias plus broadening G10 tightening should be owned in USD spot, not in a cross. AUDUSD is the laggard USD pair\u2014Australian housing is already breaking while AUD has not paid the USD premium already visible versus EUR, GBP, NZD and CAD.",
+        "trade": {
+          "asset_class": "spot_fx",
+          "catalysts": [
+            "Further Australian housing, transaction, and labor prints confirming the tightening channel is still biting.",
+            "US inflation and Fed communication that keep the post-hike tightening bias intact rather than one-and-done.",
+            "Continued G10 tightening impulse (BoJ follow-through, BoE hawkish dissent/QT) that sustains the USD policy premium AUD has not paid.",
+            "AUDUSD catch-down toward the 1m USD moves already printed in EURUSD, GBPUSD, NZDUSD and USDCAD."
+          ],
+          "confidence": 62,
+          "direction": "short",
+          "entry": null,
+          "evidence_refs": [
+            "rollup:Fed raises 25bp to 3.75\u20134.00%",
+            "rollup:August CPI keeps the Fed tightening bias intact",
+            "mw_20260916_fomc_hike_pricing",
+            "last24:2026-09-18:desk-thesis",
+            "macro:desk-18sep",
+            "last24:2026-09-18:boj-raises-its-policy-rate-to-1-25",
+            "last24:2026-09-18:boe-holds-3-75-but-three-members-vote-to-hike",
+            "mw_20260916_au_housing_tightening",
+            "rollup:Australian housing downturn deepens under higher rates",
+            "temp:US:inflation",
+            "temp:US:labor",
+            "temp:US:activity",
+            "temp:AU:inflation",
+            "temp:AU:labor",
+            "temp:AU:activity",
+            "temp:CA:activity",
+            "temp:CA:consumer",
+            "fx:AUDUSD",
+            "fx:USDCAD",
+            "fx:NZDUSD",
+            "fx:EURUSD",
+            "fx:GBPUSD",
+            "fx:AUDCAD",
+            "rates:US",
+            "rates:AU",
+            "rates:CA",
+            "xa:opportunities",
+            "xa:energy-retained",
+            "rollup:BoC minutes flag higher energy pass-through risk",
+            "mw_20260916_saudi_oman_workaround",
+            "market_state",
+            "research_method",
+            "pos:unavailable"
+          ],
+          "expression_comparison": {
+            "rates_candidate": null,
+            "rationale": "Dedicated USD-spot seat. The discrepancy is that AUDUSD has not repriced the delivered USD policy premium and the Australian housing/tightening-channel break; that lives in the USD pair. A rates sleeve (US outright duration or AU-US 2Y RV) owns yield levels that are already historically extreme and does not harvest the FX lag. A cross such as AUDCAD adds CAD oil, BoC energy-pass-through and stronger Canadian activity as second-order risk on an Australia-versus-USD view.",
+            "selected": "spot",
+            "spot_candidate": "short AUDUSD (USD long versus AUD)"
+          },
+          "horizon": "2-6 weeks",
+          "instrument": "AUDUSD",
+          "invalidation": "Thesis fails if AUDUSD resumes higher because US inflation/labor temperatures roll over and the Fed tightening bias is withdrawn, or if Australian housing and labor evidence reverse into a re-acceleration that restores RBA hawkish relative-rate support versus the US. Wrong-timing, not wrong-thesis, if global USD bid pauses but AU housing physicals and US policy bias remain intact.",
+          "mispricing": "AUDUSD still trades as if Australian financial-conditions damage and the delivered USD tightening premium were comparable to a flat 1m outcome. The pair remains statistically rich (5y 84th percentile) while US front-end yields have already repriced hard and other USD pairs have already moved. The 2Y sovereign differential only mildly favors AUD (about +26bp, carry ratio 0.049) so the FX lag is not explained by a large AUD carry cushion; it is unexplained residual USD-underpricing versus AUD.",
+          "principal_risks": [
+            "FOMC was already >90% priced; buying USD solely on the hike is stale unless the path and the AUD lag remain the live gap.",
+            "AU 2Y 4.999% versus US 2Y 4.76% and AU 10Y 5.348% versus US 10Y 5.01% mean rate differentials do not independently favor short AUDUSD; a relative AU hawkish re-steepening would squeeze the short.",
+            "AUD commodity/terms-of-trade beta into the energy shock is not quantified here and can bid AUD independently of housing.",
+            "US consumer temperature 48.5 with weaker confidence is a USD-negative tail if it ends the Fed tightening bias.",
+            "Positioning/flow is unavailable; crowded USD-long or AUD-short ownership cannot be tested.",
+            "No executable broker prices; research/reference ECB fixes cannot be used as entries, targets or stops."
+          ],
+          "stop": null,
+          "structure": null,
+          "target": null,
+          "thesis": "FACT: The Fed delivered a 25bp hike to 3.75\u20134.00% after August CPI kept the tightening bias intact; rate futures had already assigned greater-than-90% odds to that 25bp step, so the decision itself is largely known information. FACT: US 2Y is 4.76% (1y z 2.84, +57bp over 1m) and US 10Y is 5.01%; the desk thesis is that BoJ\u2019s hike to 1.25% and the BoE\u2019s 6\u20133 hold with three hike votes broaden global tightening and that the energy shock is constraining the G10 easing impulse. FACT: Australian housing is showing the tightening channel in physical data\u2014NSW stamp-duty receipts -24% y/y, transactions -18%, Sydney/Melbourne values more than 7% below peak\u2014while AU labor 47.8 and activity 49.2 sit at or below the US analogs (labor 50.2, activity 49.92). FACT: AUDUSD research/reference fix 0.712 is still in the 84th 5y percentile (z 1.23) with a 1m return of only +0.20%, versus EURUSD -1.89%, GBPUSD -2.07%, NZDUSD -3.90% and USDCAD +1.74% over the same window. INFERENCE: The USD policy premium is being paid in other G10 USD pairs; AUD is the residual, so the clean USD-spot expression is short AUDUSD rather than chasing already-extended USDCAD or already-washed NZDUSD. INFERENCE: Cross-short AUDCAD (5y z 2.76, 99.96th percentile) mixes a valid AUD-rich observation with an implicit CAD long that imports oil, BoC energy-pass-through and Canada\u2019s stronger activity (53.2) and consumer (52.5) temperatures\u2014unnecessary second-order risk. UNKNOWN: Cot/positioning is unavailable; executable broker levels are not in the packet; NZ official yields are unavailable so NZD relative-rate RV cannot be completed; whether AUD\u2019s commodity beta offsets housing stress is not identified in this freeze.",
+          "why_now": [
+            "The FOMC hike is now realized, not just >90% priced, and August CPI left the Fed tightening bias intact\u2014known decision, still-live path.",
+            "Last-24 desk thesis: BoJ 25bp to 1.25% and BoE 6\u20133 hold broaden tightening and keep term-rate pressure elevated even where domestic growth is softer; that is new transmission after the Fed print.",
+            "Australian housing physicals (stamp duty, volumes, home values) document the RBA tightening channel while AUDUSD has not sold off with the rest of the USD complex.",
+            "US 2Y +57bp over 1m versus AUDUSD +0.20% 1m is the live level-versus-change gap; 5d AUDUSD -0.73% is only the start of catch-down."
+          ]
+        }
+      }
+    },
+    {
+      "agent": "mean-reverter",
+      "conflict_id": "opp-view:USD",
+      "contribution": {
+        "agent": "mean-reverter",
+        "archetype": "mean-reverter",
+        "confidence": 58,
+        "conflict_synopsis": {
+          "au_rates_view": "lower",
+          "aud_view": "lower",
+          "ca_rates_view": "not_relevant",
+          "cad_view": "not_relevant",
+          "carry_view": "supports_trade",
+          "confidence": 58,
+          "conflict_tags": [
+            "AU_RATES_DOWN",
+            "AUD_DOWN",
+            "USD_UP",
+            "DURATION_LONG",
+            "FADE_STRETCH"
+          ],
+          "core_view": "AU 10Y has overshot local housing and sub-50 temperatures under a global-tightening narrative and should mean-revert lower in yield.",
+          "key_catalyst": "Housing/activity deterioration feeding back into AU term yields as the known global hike cluster is digested.",
+          "key_invalidation": "AU 10Y makes a new high versus the 16 Sep F2 close while housing stabilizes and AU inflation temperature moves back through 50.",
+          "nz_rates_view": "not_relevant",
+          "nzd_view": "not_relevant",
+          "primary_trade": "long AU 10Y",
+          "risk_view": "risk_off",
+          "seat": "mean-reverter",
+          "time_horizon": "4-12 weeks",
+          "us_rates_view": "neutral",
+          "usd_view": "higher"
+        },
+        "macro_assumptions": {
+          "growth": "below_trend",
+          "policy": "hawkish",
+          "rates": "higher_for_longer",
+          "risk": "risk_off"
+        },
+        "packet_sha256": "b4c642412ddcc969d6fd135638baede8f3e9f987015684f2085c8460c3af466a",
+        "stance_summary": "AU 10Y is statistically extreme on both 252-day and 5-year windows while Australian housing volumes, stamp-duty receipts and home values are already contracting; that is an overshoot of the global-tightening narrative, not a reason to keep extrapolating. Receive AU 10Y outright. The cleaner spot alternative is short AUDNZD, but NZ yields are unavailable so the cross cannot be risk-matched, and AUDUSD is not comparably stretched.",
+        "trade": {
+          "asset_class": "rates",
+          "catalysts": [
+            "Further AU housing, credit or activity deterioration that forces term yields to acknowledge the tightening channel already in the data.",
+            "Digestion of the fully priced 16 Sep Fed hike and the 17 Sep BoJ hike if the Saudi Oman workaround keeps the oil-supply tail contained.",
+            "Follow-through on the 16 Sep AU 10Y -6.3bp print if it is the start of normalization rather than one-day noise."
+          ],
+          "confidence": 58,
+          "direction": "long",
+          "entry": null,
+          "evidence_refs": [
+            "rates:AU",
+            "rates:US",
+            "xa:opportunities",
+            "fx:AUDNZD",
+            "fx:AUDUSD",
+            "fx:AUDCAD",
+            "mw_20260916_au_housing_tightening",
+            "rollup:Australian housing downturn deepens under higher rates",
+            "temp:AU:inflation",
+            "temp:AU:labor",
+            "temp:AU:activity",
+            "temp:AU:consumer",
+            "last24:2026-09-18:desk-thesis",
+            "mw_20260916_fomc_hike_pricing",
+            "rollup:Fed raises 25bp to 3.75\u20134.00%",
+            "last24:2026-09-18:boj-raises-its-policy-rate-to-1-25",
+            "mw_20260916_saudi_oman_workaround",
+            "xa:energy-retained",
+            "research_method",
+            "market_state",
+            "pos:unavailable"
+          ],
+          "expression_comparison": {
+            "rates_candidate": "Receive AU 10Y outright (long ACGB 10Y duration). Alternative rates expression considered but not selected: long US 2s10s (bull steepener) after the post-hike front-end overshoot.",
+            "rationale": "The discrepancy lives in AU term yields versus a housing channel that is already biting, so outright duration owns the edge. AU-US 5Y/10Y spreads are not the stretched object (AU-US 5Y sits only around the 22nd percentile of the 252-day window). US 2s10s is more statistically extreme, but the flattening is the same fully priced Fed hike plus a still-live energy/term-premium impulse, without AU housing's independent physical weakening mechanism. Short AUDNZD is the larger FX z-score, but official NZ sovereign yields are unavailable so AU-NZ rate RV cannot be constructed, NZ labor is already the softest gauge in the set, and AUDUSD is cheap versus copper rather than rich. Short AUDCAD would fight a documented ~165bp 2Y yield differential. Receiving AU 10Y is paid to wait and is the default when rates and spot are not cleaner in spot's favor.",
+            "selected": "rates",
+            "spot_candidate": "Short AUDNZD, the most stretched G10 cross in the packet on 5-year z and 252-day percentile; secondary spot expression short AUDUSD as the FX of AU housing weakness."
+          },
+          "horizon": "4-12 weeks",
+          "instrument": "AU 10Y",
+          "invalidation": "AU 10Y makes a new high versus the 16 Sep official F2 close while housing volumes/prices stabilize or reverse and AU inflation temperature moves back through 50 without further housing deterioration; or a re-acceleration of the energy shock that lifts global term premium and AU CPI together.",
+          "mispricing": "AU 10Y is being priced as if local conditions still require 5-year-high term yields, while the housing channel and sub-50 AU temperatures already show the tightening working. The gap is level versus local transmission, not a stretched AU-US spread.",
+          "principal_risks": [
+            "Desk thesis risk: energy shock and broader G10 tightening keep global term-rate pressure elevated and drag AU 10s with US/CA even if housing stays weak.",
+            "BoC-style fuel pass-through, or a similar AU CPI impulse, can re-justify high term yields; energy-market shock absorbers are described as weakening.",
+            "Positioning and flow are unavailable, so the 'crowded extrapolation' prior is inferred from price extremes plus narrative, not from holdings.",
+            "Housing evidence is single-source Reuters; a data revision or a housing stabilization would remove the reversal condition.",
+            "Executable prices are not in the packet; levels stay null and sizing cannot be calibrated to a live book."
+          ],
+          "stop": null,
+          "structure": "receive AU 10Y outright versus cash",
+          "target": null,
+          "thesis": "FACT: On 16 Sep 2026 the RBA F2 10Y assessed close is 5.348%, 99.8th percentile of the 5-year window (z 1.63) and 99.2nd percentile of the 252-day opportunity window (z 2.08), and it is listed in the |z|>=2 stretched-series screen. AU 2Y and 5Y are also at the 99th percentile of both windows. FACT: NSW stamp-duty receipts fell 24% y/y in August with transaction volumes down 18%, and Sydney/Melbourne home values are down more than 7% from peak. FACT: AU inflation/labor/activity temperatures are 49.2 / 47.8 / 49.2, i.e. at or below the 50 baseline, while the last-24 desk thesis is that the Fed hike, BoJ hike to 1.25% and BoE 6-3 hold are broadening global tightening and keeping term-rate pressure elevated even where domestic growth is softer. FACT: the 16 Sep FOMC hike was >90% priced into the decision. INFERENCE: AU 10s have overshot the local fundamentals. The market is extrapolating the global energy/tightening impulse onto a curve whose domestic transmission channel is already contracting housing and sitting below-50 on inflation, labor and activity. That is crowded narrative, not a new AU-specific tightening need. The reversal condition is that housing/activity weakness feeds back into term yields as the known global hike cluster is digested, especially if the Saudi Oman workaround keeps the oil-supply tail from re-widening. UNKNOWN: no positioning/flow dataset; executable broker prices absent; NZ yields unavailable (does not block AU 10Y); housing print is single-source Reuters; whether RBA looks through housing if energy pass-through arrives with a lag.",
+          "why_now": [
+            "AU 10Y is in the |z|>=2 stretched-series screen at the 99.2nd percentile of 252-day history and the 99.8th percentile of the 5-year tenor window after a +26bp 1m and +53bp 3m rise.",
+            "The 16 Sep housing evidence is the independent weakening mechanism: stamp duty -24% y/y, volumes -18%, home values more than 7% below peak, published as the RBA tightening channel biting.",
+            "AU inflation, labor and activity temperatures are all at or below 50, so the local data do not corroborate a new tightening impulse.",
+            "The Fed hike (pre-priced >90%), BoJ hike and BoE hawkish hold just broadened the global-tightening narrative that is being extrapolated into AU duration; that is known information, not a new AU-specific shock.",
+            "The 16 Sep AU 10Y print already fell 6.3bp, a first tick consistent with normalization rather than a fresh breakout."
+          ]
+        }
+      }
+    },
+    {
+      "agent": "perma-bear",
+      "conflict_id": "opp-view:USD",
+      "contribution": {
+        "agent": "perma-bear",
+        "archetype": "perma-bear",
+        "confidence": 61,
+        "conflict_synopsis": {
+          "au_rates_view": "lower",
+          "aud_view": "lower",
+          "ca_rates_view": "higher",
+          "cad_view": "neutral",
+          "carry_view": "supports_trade",
+          "confidence": 61,
+          "conflict_tags": [
+            "AUD_DOWN",
+            "AU_RATES_DOWN",
+            "USD_UP",
+            "US_RATES_UP",
+            "CA_RATES_UP",
+            "NZD_DOWN",
+            "RISK_OFF",
+            "GROWTH_BELOW_TREND"
+          ],
+          "core_view": "Australian housing and labor are already breaking under higher rates, so AU 2Y at a 5-year extreme still prices too much further RBA tightening while risk assets remain complacent.",
+          "key_catalyst": "Next Australian housing/labor/RBA signal that the tightening channel is still contracting.",
+          "key_invalidation": "Housing/labor stabilize or energy pass-through forces another RBA hike that lifts AU 2Y.",
+          "nz_rates_view": "not_relevant",
+          "nzd_view": "lower",
+          "primary_trade": "Receive AU 2Y",
+          "risk_view": "risk_off",
+          "seat": "perma-bear",
+          "time_horizon": "4-8 weeks",
+          "us_rates_view": "higher",
+          "usd_view": "higher"
+        },
+        "macro_assumptions": {
+          "growth": "below_trend",
+          "policy": "dovish",
+          "rates": "easing_cycle",
+          "risk": "risk_off"
+        },
+        "packet_sha256": "b4c642412ddcc969d6fd135638baede8f3e9f987015684f2085c8460c3af466a",
+        "stance_summary": "Global tightening is being piled into an energy shock while Australian housing and labor are already breaking; markets still price AU 2Y as if more RBA restraint is required, and risk assets remain complacent. The cleanest slowdown expression is receive AU 2Y duration, not chasing already-extended AUD spot.",
+        "trade": {
+          "asset_class": "rates",
+          "catalysts": [
+            "Further Australian housing, employment, or activity prints confirming the tightening channel is still contracting.",
+            "RBA communication that the housing/labor deterioration constrains further tightening despite the global energy overlay.",
+            "Risk-off transmission from still-complacent equity/credit/vol into G10 duration if the energy shock and broader tightening stay live."
+          ],
+          "confidence": 61,
+          "direction": "receive",
+          "entry": null,
+          "evidence_refs": [
+            "mw_20260916_au_housing_tightening",
+            "rollup:Australian housing downturn deepens under higher rates",
+            "temp:AU:labor",
+            "temp:AU:activity",
+            "temp:AU:inflation",
+            "temp:AU:consumer",
+            "rates:AU",
+            "rates:US",
+            "market_state",
+            "xa:opportunities",
+            "last24:2026-09-18:desk-thesis",
+            "macro:desk-18sep",
+            "rollup:Fed raises 25bp to 3.75\u20134.00%",
+            "rollup:August CPI keeps the Fed tightening bias intact",
+            "last24:2026-09-18:boj-raises-its-policy-rate-to-1-25",
+            "last24:2026-09-18:boe-holds-3-75-but-three-members-vote-to-hike",
+            "rollup:Energy-market shock absorbers weaken",
+            "mw_20260916_saudi_oman_workaround",
+            "fx:AUDUSD",
+            "research_method",
+            "pos:unavailable"
+          ],
+          "expression_comparison": {
+            "rates_candidate": "Receive Australian 2-year government bonds (outright long front-end duration on RBA F2 2Y; research/reference yields only).",
+            "rationale": "Rates is the cleaner owner of the discrepancy: AU 2Y sits at a 99th-percentile 1y and 5y stretch while the housing-credit channel is already contracting, so the mispricing is the RBA path not the FX level. Spot AUDUSD is only 84th percentile 5y and already cheap vs copper on the packet residual, so a short is less aligned with where the gap lives. AUDCAD is more statistically extreme but mixes a 165bp AUD-over-CAD carry headwind with Canada energy support, so it is a dirtier slowdown expression. NZ rates RV is unavailable (official B2 403). Curve steepener (receive 2s/pay 10s) is a valid hedge against the desk's term-premium overlay but AU 2s10s is only about the 24th percentile 1y and is not where the stretch or the housing mechanism sits; 2Y tenor owns the policy path and is less exposed to energy-driven term premium than 10Y. Mandate prefers rates when comparably clean; here rates is superior, not merely default.",
+            "selected": "rates",
+            "spot_candidate": "Short AUDUSD (fade still-elevated AUD vs USD as housing/labor slowdown and global tightening hit the cycle currency)."
+          },
+          "horizon": "4-8 weeks",
+          "instrument": "AU 2Y",
+          "invalidation": "Thesis is wrong if Australian housing volumes/prices stabilize and AU labor/activity reheat, or if energy pass-through / an RBA hike lifts AU 2Y as a continued tightening cycle rather than a growth break. Timing is merely delayed if 2Y stays high while housing/labor keep deteriorating.",
+          "mispricing": "AU 2Y at the 99th percentile 1y and 5y still embeds further RBA tightening after the housing channel has already broken (stamp duty -24%, volumes -18%, prices more than 7% off peak) and labor is loosening. Pricing requires housing/labor to re-accelerate or energy to reopen an AU inflation impulse; the packet's domestic gauges do not show that.",
+          "principal_risks": [
+            "Desk-thesis risk: energy shock keeps front-end yields rising even where domestic growth is softer, so receive-AU-2Y is fighting global tightening rather than owning a local pause.",
+            "Energy pass-through into AU inflation (trimmed mean still 3.6%) forces the RBA to hike into housing weakness (policy-error continuation, not pivot).",
+            "Saudi Oman crude workaround already reduced the extreme oil-supply tail, allowing a growth re-acceleration and bond selloff if energy fades.",
+            "No positioning/flow dataset: the AU 2Y extreme could already be owned, and executable levels are absent so sizing/entry cannot be priced from this packet."
+          ],
+          "stop": null,
+          "structure": "Outright receive AU 2Y government bonds / long front-end duration. Packet yields are RBA F2 research/reference closes, not executable broker prices.",
+          "target": null,
+          "thesis": "FACT: NSW stamp-duty receipts fell 24% y/y in August with transaction volumes -18% and Sydney/Melbourne home values more than 7% below peak; AU labor temperature is 47.8 (unemployment 4.5% from 4.4%, employment -15.8k m/m, WPI +3.2% y/y vs +3.4%); AU activity 49.2 with business conditions/confidence soft; headline CPI eased to 3.5% y/y while trimmed mean held 3.6%. FACT: AU 2Y yield is 4.999% as of 2026-09-16, 99.0th percentile 1y and 99.8th percentile 5y, +39bp 1m / +50bp 3m. FACT: Fed hiked 25bp to 3.75-4.00% with August CPI keeping a tightening bias; BoJ hiked to 1.25%; BoE held 3.75% but a 6-3 split with three members preferring a hike plus gilt QT; desk thesis is that the energy shock is constraining global easing and keeping term-rate pressure elevated even where growth is softer. FACT: SPX near the 90th percentile, VIX 15.44 near the 15th percentile, HY OAS 270bp near the 14th percentile, while Brent is 130.8 (near the 99.6th) and WTI 107 (near the 96th). INFERENCE: The tightening channel is already delivering an Australian housing/labor slowdown, so AU 2Y at a 5-year extreme is pricing additional RBA restraint that the domestic data cannot support; the global energy/tightening overlay is why duration has not rallied, which is the mispricing rather than a reason to pay more. 2Y is the correct tenor because it owns the RBA path; 10Y is contaminated by the same term-premium shock the desk flags. INFERENCE: Risk markets have not priced this cluster (complacent vol/credit vs energy and G10 tightening), so the growth-break remains available in rates. UNKNOWN: positioning/flow; executable AU bond prices; whether energy pass-through hits AU CPI next; RBNZ yields (official source blocked); whether the Saudi Oman workaround has already capped the oil tail.",
+          "why_now": [
+            "Sep 16 housing evidence shows the RBA tightening channel biting in real time (stamp duty, volumes, peak-to-trough prices) while AU 2Y remains at a 5-year extreme.",
+            "Sep 16-18 policy cluster (Fed hike, BoJ hike, BoE 6-3 hold with QT) is the overlay keeping global duration offered; that is new information relative to a local AU housing break and is why 2Y has not yet priced the slowdown.",
+            "Risk pricing is still complacent (VIX near the 15th percentile, HY OAS near the 14th, SPX near the 90th) against Brent/WTI at 1y extremes, so the defensive repricing has not happened in beta and remains available in AU front-end rates."
+          ]
+        }
+      }
+    },
+    {
+      "agent": "rate-dove",
+      "conflict_id": "opp-view:USD",
+      "contribution": {
+        "agent": "rate-dove",
+        "archetype": "rate-dove",
+        "confidence": 59,
+        "conflict_synopsis": {
+          "au_rates_view": "lower",
+          "aud_view": "lower",
+          "ca_rates_view": "not_relevant",
+          "cad_view": "not_relevant",
+          "carry_view": "supports_trade",
+          "confidence": 59,
+          "conflict_tags": [
+            "AUD_DOWN",
+            "AU_RATES_DOWN",
+            "USD_UP",
+            "RISK_OFF",
+            "EASING_CYCLE"
+          ],
+          "core_view": "AU 2Y is marked to a 99th-percentile hike-continuation regime while housing, labor and headline CPI already show restrictive policy biting, so receive AUD 2Y.",
+          "key_catalyst": "Next Australian housing, labor or CPI print that confirms the tightening channel against a 99th-percentile 2Y.",
+          "key_invalidation": "AU labor/inflation gauges back above 50 with housing stabilizing, or a live energy-pass-through tightening trigger into a fresh AU 2Y high.",
+          "nz_rates_view": "not_relevant",
+          "nzd_view": "not_relevant",
+          "primary_trade": "long duration AU 2Y",
+          "risk_view": "risk_off",
+          "seat": "rate-dove",
+          "time_horizon": "4-12 weeks",
+          "us_rates_view": "not_relevant",
+          "usd_view": "higher"
+        },
+        "macro_assumptions": {
+          "growth": "below_trend",
+          "policy": "dovish",
+          "rates": "easing_cycle",
+          "risk": "risk_off"
+        },
+        "packet_sha256": "b4c642412ddcc969d6fd135638baede8f3e9f987015684f2085c8460c3af466a",
+        "stance_summary": "Restrictive policy is already transmitting through Australian housing, labor and disinflation while AU 2Y sits at a 99th-percentile 1y/5y extreme after a global tightening impulse. The market is pricing hike-continuation that domestic gauges do not support; receive AUD 2Y outright duration. Spot AUDUSD is the FX analog but is inferior: it is not comparably stretched, 2Y carry opposes short AUD, and AUDUSD is cheap versus copper.",
+        "trade": {
+          "asset_class": "rates",
+          "catalysts": [
+            "Further Australian housing-volume, stamp-duty or home-value weakness confirming the tightening channel.",
+            "AU labor remaining sub-50 (unemployment up / employment down / cooler WPI) against a 99th-percentile 2Y.",
+            "Headline or trimmed-mean CPI rolling over from 3.5%/3.6%, forcing the RBA path off the global hike-continuation narrative.",
+            "Energy-shock tail continuing to fade after the Saudi-Oman workaround, removing the imported justification for extreme AU front-end yields."
+          ],
+          "confidence": 59,
+          "direction": "long duration",
+          "entry": null,
+          "evidence_refs": [
+            "rates:AU",
+            "mw_20260916_au_housing_tightening",
+            "rollup:Australian housing downturn deepens under higher rates",
+            "temp:AU:labor",
+            "temp:AU:inflation",
+            "temp:AU:activity",
+            "temp:AU:consumer",
+            "market_state",
+            "xa:opportunities",
+            "fx:AUDUSD",
+            "rates:US",
+            "rollup:Fed raises 25bp to 3.75\u20134.00%",
+            "mw_20260916_fomc_hike_pricing",
+            "last24:2026-09-18:desk-thesis",
+            "last24:2026-09-18:boj-raises-its-policy-rate-to-1-25",
+            "mw_20260916_saudi_oman_workaround",
+            "research_method"
+          ],
+          "expression_comparison": {
+            "rates_candidate": "Receive AUD 2Y outright duration (long AU 2-year government notes versus cash; research/reference RBA F2 close 4.999% as of 2026-09-16).",
+            "rationale": "The discrepancy lives in the AU policy path versus an extreme front-end yield, not in AUD spot. AU 2Y is at the 99.0th 1y and 99.8th 5y percentile after +39.1bp in one month, while housing transactions, unemployment and headline CPI are already softening. AUDUSD is only the 84.3rd 5y percentile (z_5y 1.23), the AU-US 2Y differential of +26bp means 2Y carry opposes short AUD, and AUDUSD trades cheap versus copper (residual z -1.33). AU-US 2Y RV is the 25.6th 1y percentile, so cross-market RV does not own the underpriced-easing gap either. Outright AU 2Y duration is the cleaner, rates-first expression.",
+            "selected": "rates",
+            "spot_candidate": "Short AUDUSD (ECB same-fixing research/reference 0.712 as of 2026-09-18)."
+          },
+          "horizon": "4-12 weeks, through the next Australian labor, CPI and housing-transaction prints",
+          "instrument": "AU 2Y",
+          "invalidation": "Domestic AU gauges re-accelerate with labor and inflation scores back above 50 and housing transactions stabilizing, or a renewed energy-pass-through shock that the RBA treats as a live tightening trigger while AU 2Y makes a fresh one-month high. A global duration selloff that is confirmed in AU hard data, not just imported from Fed/BoJ headlines, also kills the trade.",
+          "mispricing": "Pricing treats AU 2Y as a 99th-percentile tightening-continuation asset after the Fed/BoJ/energy impulse. Domestic state is already below-50 on inflation, labor and activity, with the housing channel visibly contracting. That gap is underpriced easing / lower-rate repricing in AU 2Y, not a residual FX undervaluation of AUD.",
+          "principal_risks": [
+            "Energy-market shock absorbers remain weak; a second oil leg can re-import inflation and keep the RBA in the global tightening camp even with a housing slump.",
+            "Trimmed-mean CPI still 3.6% y/y and household spending had a third consecutive +1.1% m/m print, so the consumer channel is not uniformly weak.",
+            "Fed tightening bias, BoJ 1.25% and BoE 6-3 hike dissent can keep dragging G10 term yields higher and overwhelm the domestic AU housing signal.",
+            "No RBA-implied path, no positioning, and no executable broker prices are in the packet; levels stay null.",
+            "Risk-off that is stagflationary rather than a growth-scare can cheapen ACGBs instead of rallying them."
+          ],
+          "stop": null,
+          "structure": "Outright receive AUD 2Y duration (long AU 2-year government notes versus cash). Packet yields and ECB FX are research/reference only; not an executable ticket.",
+          "target": null,
+          "thesis": "VERIFIED: AU 2Y closed 4.999% on 2026-09-16 (1y percentile 99.0, 5y percentile 99.8, z_1y 1.67) after +39.1bp 1m and +49.8bp 3m; AU 5Y 5.041% and AU 10Y 5.348% are likewise 99th-percentile on both windows. NSW stamp-duty receipts fell 24% y/y in August with transaction volumes -18% and Sydney/Melbourne home values more than 7% below peak. AU labor 47.8: unemployment 4.5% from 4.4%, employment -15.8k m/m, WPI +3.2% y/y versus +3.4% a year earlier. AU inflation 49.2: headline CPI 3.5% y/y from 3.8%, trimmed mean 3.6% unchanged. AU activity 49.2 with GDP +0.4% q/q and RBA business conditions modestly weaker; Westpac-MI sentiment then fell 5.2% to 84.4 in September. The Fed has already hiked 25bp to 3.75-4.00% with >90% priced into the meeting; BoJ hiked to 1.25% and BoE held 6-3 with three hike votes. Desk synthesis: the energy shock is constraining the global easing impulse even where domestic growth is softer. INFERENCE: AU front-end yields have been marked by that global tightening impulse to a hike-continuation regime that the housing transmission channel, labor softening and headline disinflation already contradict. Restrictive policy is biting; additional AU 2Y backup is an overpriced delay of easing, not a domestic overheating signal. AU-US 2Y at +26bp is only the 25.6th 1y percentile, so the edge is outright AU duration, not paying US versus receiving AU. UNKNOWN: RBA meeting-implied odds and reaction-function details are not in the packet; positioning/flow is unavailable; NZ official yields are unavailable; trimmed mean at 3.6% and still-positive household spending leave an energy pass-through path that could keep the RBA on hold longer than a pure housing-labor read implies.",
+          "why_now": [
+            "AU 2Y, 5Y and 10Y are simultaneously at 99th-percentile 1y and 5y extremes after a 39-50bp three-month backup, coinciding with a documented housing downturn rather than hotter activity.",
+            "The Fed 25bp hike to 3.75-4.00% was >90% priced into 16 Sep and is now a known impulse; the residual is whether AU domestic gauges can justify keeping that tightening marked into ACGB 2Y.",
+            "September Westpac-MI confidence fell 5.2% to 84.4 after the housing and labor prints, a timely confirmation that the tightening channel is still biting.",
+            "Saudi ship-to-ship workaround reduced the extreme oil-supply tail, weakening the energy-shock justification for keeping AU front-end yields at a 99th-percentile extreme."
+          ]
+        }
+      }
+    },
+    {
+      "agent": "rate-hawk",
+      "conflict_id": "opp-view:USD",
+      "contribution": {
+        "agent": "rate-hawk",
+        "archetype": "rate-hawk",
+        "confidence": 59,
+        "conflict_synopsis": {
+          "au_rates_view": "neutral",
+          "aud_view": "neutral",
+          "ca_rates_view": "higher",
+          "cad_view": "higher",
+          "carry_view": "supports_trade",
+          "confidence": 59,
+          "conflict_tags": [
+            "CA_RATES_UP",
+            "US_RATES_UP",
+            "CAD_UP",
+            "USD_UP",
+            "HIGHER_FOR_LONGER",
+            "CA_US_5Y_SPREAD_UP"
+          ],
+          "core_view": "BoC is the laggard: energy pass-through plus still-firm Canadian demand make CA 5Y too rich versus a Fed that has already hiked, so CA-US 5Y should rise from a 0th-percentile -124bp extreme.",
+          "key_catalyst": "BoC confirmation that fuel inflation is passing through, against policy still at 2.25%.",
+          "key_invalidation": "BoC treats labor cooling and on-target core as binding and leaves the Canada discount to US 5Y in place.",
+          "nz_rates_view": "not_relevant",
+          "nzd_view": "not_relevant",
+          "primary_trade": "long CA-US 5Y (pay CA 5Y / receive US 5Y)",
+          "risk_view": "neutral",
+          "seat": "rate-hawk",
+          "time_horizon": "4-12 weeks",
+          "us_rates_view": "higher",
+          "usd_view": "higher"
+        },
+        "macro_assumptions": {
+          "growth": "above_trend",
+          "policy": "hawkish",
+          "rates": "higher_for_longer",
+          "risk": "neutral"
+        },
+        "packet_sha256": "b4c642412ddcc969d6fd135638baede8f3e9f987015684f2085c8460c3af466a",
+        "stance_summary": "Verified: the Fed has already hiked 25bp to 3.75-4.00% into a >90% priced decision, US 5Y is 4.86% near the top of its one-year distribution, while the BoC is still holding 2.25% with CA 5Y at 3.54%. The common-date CA-US 5Y spread is -124bp, 0th percentile, z about -2.05, and cheapened about 12bp over five sessions as US yields rose and Canadian yields fell. Inference: that gap is the underpriced hawk, not another outright pay of already-extreme US duration. BoC minutes flag energy pass-through as the conditional tightening trigger, Brent is 130.8 (99.6th percentile) and WTI 107.02, Canada headline CPI is still 3.0% against policy at 2.25%, and CA activity/consumer temperatures (53.2 / 52.5) plus Q2 GDP +0.8% q/q show demand has not collapsed. Unknown: no BoC OIS path is in the packet; core trim/median are already near 2%; August employment -42k, unemployment 6.4%, and wages +2.0% y/y are genuine labor cooling. The trade is therefore relative: pay Canada 5Y versus receive US 5Y so that a BoC catch-up, not a global duration squeeze, owns the discrepancy.",
+        "trade": {
+          "asset_class": "rates_rv",
+          "catalysts": [
+            "Next BoC deliberations or speakers confirming that fuel inflation is spreading into broader CPI.",
+            "Canadian CPI prints that lift headline further above 3% or push trim/median off the 2% handle.",
+            "Persistence of Brent/WTI near the packet extremes, keeping the pass-through trigger live.",
+            "Continued G10 tightening impulse (post-Fed, post-BoJ, hawkish BoE minority) that forces laggard CBs to reprice."
+          ],
+          "confidence": 59,
+          "direction": "long CA-US 5Y spread (pay CA 5Y / receive US 5Y)",
+          "entry": null,
+          "evidence_refs": [
+            "research_method",
+            "market_state",
+            "rates:CA",
+            "rates:US",
+            "xa:opportunities",
+            "xa:energy-retained",
+            "rollup:BoC minutes flag higher energy pass-through risk",
+            "rollup:Canada August inflation holds at 3%, core stays near 2%",
+            "rollup:Fed raises 25bp to 3.75\u20134.00%",
+            "mw_20260916_fomc_hike_pricing",
+            "rollup:August CPI keeps the Fed tightening bias intact",
+            "last24:2026-09-18:desk-thesis",
+            "last24:2026-09-18:boj-raises-its-policy-rate-to-1-25",
+            "last24:2026-09-18:boe-holds-3-75-but-three-members-vote-to-hike",
+            "rollup:Energy-market shock absorbers weaken",
+            "temp:CA:inflation",
+            "temp:CA:activity",
+            "temp:CA:consumer",
+            "temp:CA:labor",
+            "temp:US:inflation",
+            "fx:USDCAD",
+            "macro:desk-18sep"
+          ],
+          "expression_comparison": {
+            "rates_candidate": "Long CA-US 5Y spread: pay CA 5Y versus receive US 5Y (Canada rates catch up to the post-hike US path).",
+            "rationale": "The discrepancy is a cross-market policy-path gap, not a CAD-beta gap. CA-US 5Y is a clean, executable-from-packet 5Y RV at a 0th-percentile common-date extreme after a 5D cheapening. Short USDCAD is inferior: the packet's USDCAD vs CA-US 2Y screen is weak (r-squared about 0.022), USDCAD already sits at the 87th percentile with a 1m rise of about 1.74%, the 2Y differential of 140bp favors long USD versus CAD so spot fights carry, and high oil is a Canada-exporter CAD tail that contaminates a pure hawk expression. Rates are preferred when comparably clean; here they are cleaner.",
+            "selected": "rates",
+            "spot_candidate": "Short USDCAD (CAD higher if BoC tightening is repriced)."
+          },
+          "horizon": "4-12 weeks, into the next BoC communication cycle on energy pass-through",
+          "instrument": "CA-US 5Y",
+          "invalidation": "BoC communication that energy pass-through will not trigger tightening, or a Canadian data sequence in which core stays at or below 2% while labor keeps deteriorating, such that the CA-US 5Y catch-up thesis is abandoned even if the spread remains historically negative. A US-only further squeeze that cheapens CA-US 5Y without any BoC reaction-function shift also falsifies the relative expression.",
+          "mispricing": "Market pricing embeds a 124bp 5Y Canada discount to the United States at the 0th percentile of the 252-observation common-date sample after a 5D CA-US 5Y move of -12bp (z about -2.03). That is the opposite of a BoC that has just told markets energy pass-through risk has increased. US front-end and 5Y yields already sit at the 99th-100th percentile after a fully priced 25bp hike; Canada has not repriced the same global tightening impulse.",
+          "principal_risks": [
+            "Canada labor is already weak (unemployment 6.4%, employment -42k, wages +2.0% y/y); BoC may treat that as binding and stay on hold.",
+            "CPI-trim 1.9% and CPI-median 2.0% are at target; if energy stays in headline only, the reaction-function trigger never fires.",
+            "Receiving US 5Y loses if the Fed keeps hiking faster than BoC catch-up; US 5Y is already at the 99.6th percentile.",
+            "Saudi workaround and any further oil easing can remove the pass-through catalyst.",
+            "No positioning, OIS, or executable broker prices are in the packet; snapshot CA (17 Sep) and US (18 Sep) as-of dates differ except on the common-date spread.",
+            "AU housing stress and NZ rate unavailability are not used; they do not rescue a Canada-specific miss."
+          ],
+          "stop": null,
+          "structure": "Matched 5Y cross-market RV: pay CA 5Y / receive US 5Y using official research/reference sovereign yields; not broker-executable.",
+          "target": null,
+          "thesis": "Causal question: is the BoC still treating the energy shock as containable while the Fed, BoJ and a hawkish minority of global peers have already tightened, so that Canadian 5Y yields remain too low versus US 5Y? Verified state: Fed funds 3.75-4.00% after a 25bp hike; BoC 2.25% hold; CA-US 5Y -124bp on 2026-09-17, percentile 0.0, z -2.05; CA 5Y 3.54% fell about 9bp over five sessions while US 5Y 4.86% rose about 8bp. Verified composition: Canada headline CPI held at 3.0% y/y, CPI-trim 1.9% and CPI-median 2.0%; activity temperature 53.2 with real GDP +0.8% q/q and strong retail; consumer temperature 52.5. Transmission: xa:energy-retained and BoC minutes identify broader fuel pass-through as the clearest conditional trigger for renewed tightening; Brent 130.8 and WTI 107.02 keep that channel live even after a Saudi workaround reduced the extreme supply tail. Pricing already requires a large Canada discount to the US: US 2Y 4.76% is at the 100th percentile of the stretched screen, so another outright pay of US duration is chasing a completed hike, whereas CA 5Y 5y-z is only about 0.81. Inference: the closing mechanism is BoC reaction-function catch-up into energy persistence and still-firm demand, lifting CA 5Y more than US 5Y and raising the CA-US 5Y spread from a historically extreme negative. Unknowns that cut the size: August CA labor is clearly weaker (employment -42k, unemployment 6.4%, wages +2.0% y/y), core is near target, no hike-probability strip is supplied, and positioning is unavailable.",
+          "why_now": [
+            "Fed hike on 16 Sep 2026 to 3.75-4.00% is now in the price (>90% pre-decision), while CA 5Y still sold off about 9bp over five sessions and the CA-US 5Y spread printed a 0th-percentile extreme.",
+            "BoC minutes retained in xa:energy-retained explicitly raise fuel-inflation pass-through risk as the conditional tightening trigger against policy still at 2.25%.",
+            "Desk thesis on 18 Sep 2026: global tightening is broadening (BoJ to 1.25%, BoE 6-3 hold with three hike votes and gilt QT), keeping term-rate pressure elevated even where domestic growth is softer.",
+            "Brent 130.8 (99.6th percentile) and WTI 107.02 keep the energy channel live; Canada headline inflation remains 3.0% versus a 2.25% policy rate."
+          ]
+        }
+      }
+    },
+    {
+      "agent": "trend-follower",
+      "conflict_id": "opp-view:USD",
+      "contribution": {
+        "agent": "trend-follower",
+        "archetype": "trend-follower",
+        "confidence": 64,
+        "conflict_synopsis": {
+          "au_rates_view": "higher",
+          "aud_view": "neutral",
+          "ca_rates_view": "higher",
+          "cad_view": "lower",
+          "carry_view": "opposes_trade",
+          "confidence": 64,
+          "conflict_tags": [
+            "us_front_end_higher",
+            "reject_mean_reversion_fade",
+            "global_tightening_persistence",
+            "usdcad_secondary",
+            "negative_carry_pay_2y",
+            "ca_us_spread_wider_not_selected"
+          ],
+          "core_view": "US front-end cheapening continues because price, Fed/G10 policy and inflation revisions are aligned; stretch is not a reversal.",
+          "key_catalyst": "Post-Fed/BoJ/BoE-dissent tightening impulse plus energy shock keeping the easing path closed",
+          "key_invalidation": "US 2Y reverses the sourced one-month +57bp uptrend without a new hawkish policy or inflation impulse",
+          "nz_rates_view": "not_relevant",
+          "nzd_view": "lower",
+          "primary_trade": "Pay/short US 2Y duration; reject fading the 100th-percentile front-end yield",
+          "risk_view": "neutral",
+          "seat": "trend-follower",
+          "time_horizon": "2-8 weeks, through the next US inflation/labor prints and any BoC energy pass-through test",
+          "us_rates_view": "higher",
+          "usd_view": "higher"
+        },
+        "macro_assumptions": {
+          "growth": "below_trend",
+          "policy": "hawkish",
+          "rates": "higher_for_longer",
+          "risk": "risk_off"
+        },
+        "packet_sha256": "b4c642412ddcc969d6fd135638baede8f3e9f987015684f2085c8460c3af466a",
+        "stance_summary": "Pay US 2Y duration. Price, policy and revisions are aligned for higher US front-end yields; fading the 100th-percentile print is premature without a reversal signal. Long USDCAD is the concrete spot continuation but is inferior to owning the rates trend directly.",
+        "trade": {
+          "asset_class": "rates",
+          "catalysts": [
+            "Follow-through from the Fed hike and August CPI tightening bias into subsequent US inflation and labor prints.",
+            "Persistence of the energy shock and weaker shock absorbers keeping term-rate pressure elevated.",
+            "Global tightening confirmation via BoJ 1.25% and BoE dissent/QT rather than a dovish hold."
+          ],
+          "confidence": 64,
+          "direction": "short duration / pay fixed",
+          "entry": null,
+          "evidence_refs": [
+            "rates:US",
+            "xa:opportunities",
+            "market_state",
+            "research_method",
+            "rollup:Fed raises 25bp to 3.75\u20134.00%",
+            "mw_20260916_fomc_hike_pricing",
+            "rollup:August CPI keeps the Fed tightening bias intact",
+            "last24:2026-09-18:desk-thesis",
+            "macro:desk-18sep",
+            "last24:2026-09-18:boj-raises-its-policy-rate-to-1-25",
+            "last24:2026-09-18:boe-holds-3-75-but-three-members-vote-to-hike",
+            "rollup:Energy-market shock absorbers weaken",
+            "temp:US:inflation",
+            "fx:USDCAD",
+            "rates:CA",
+            "xa:energy-retained"
+          ],
+          "expression_comparison": {
+            "rates_candidate": "Pay/short US 2Y outright duration (UST 2-year notes). Sourced US 2Y is 4.76% as of 2026-09-18 with +9bp 1d, +13bp 5d and +57bp 1m/3m; opportunity-monitor z 2.89 and 100th percentile. Continuation of the front-end sell-off after the Fed hike, not a 2s10s flattener (term-premium pressure can lift the long end) and not CA-US RV (that spread is already the US-outperformance trend, but BoC energy catch-up is a two-sided residual).",
+            "rationale": "Rates are preferred because they are comparably clean and own the discrepancy more directly. Verified: desk thesis and BoJ last24 both locate the Tier-1 transmission in global duration and term-rate pricing, not FX; US 2Y has same-day official history (age_days 0) with a 1-month move z 3.29; USDCAD versus CA-US 2Y is a weak residual (r-squared 0.022). Inference: fading a 100th-percentile yield because it is stretched is a mean-reversion prior, not a reversal signal. Spot USDCAD is a valid but second-best expression of the same tightening gap. Unknown: executable broker prices are absent, so levels stay null.",
+            "selected": "rates",
+            "spot_candidate": "Long USDCAD. Sourced spot 1.4010 as of 2026-09-18, +0.11% 1d, +1.10% 5d, +1.74% 1m, 87th percentile 5y; 2Y yield differential +140bp USD over CAD. Same Fed-BoC policy-gap continuation."
+          },
+          "horizon": "2-8 weeks, through the next US inflation/labor prints and any BoC energy pass-through test",
+          "instrument": "US 2Y Treasury",
+          "invalidation": "A multi-session US 2Y reversal that erases the sourced one-month +57bp rise without a new hawkish policy or inflation impulse; or a documented G10 easing pivot that reopens the cut path the desk thesis says is constrained.",
+          "mispricing": "The live discrepancy is not that US 2Y is 'too high' versus its 252-observation distribution. Research method: statistical stretch is a yardstick, not a fade signal. The market still treats the post-hike, post-CPI, post-BoJ/BoE-dissent complex as fadeable because the hike was >90% priced and the 2Y sits at the 100th percentile. What is under-owned is persistence: energy-constrained easing plus a broadening G10 tightening impulse that keeps the front-end cheapening after the decision. Expressing that in US 2Y owns the tenor where the 1-month move is largest and freshest.",
+          "principal_risks": [
+            "Negative carry from paying 2Y while waiting; a growth scare that bull-steepens without a policy reversal still hurts a short 2Y.",
+            "Saudi Oman ship-to-ship crude and any further energy workaround could trim the inflation tail the desk is using to block easing.",
+            "US consumer 48.5 and activity 49.92 are already slightly cool; a sharp labor break would be the first real fade catalyst.",
+            "No positioning dataset and no executable broker prices; size and levels cannot be refined from this packet.",
+            "CA 1d yield decline and AU 1d dip show local mean-reversion noise that could temporarily pull US fronts if risk-on duration demand returns."
+          ],
+          "stop": null,
+          "structure": "Outright pay-fixed / short US 2Y duration; cash or futures equivalent. Not a curve flattener and not a CA-US basis.",
+          "target": null,
+          "thesis": "Verified fact: the Fed raised 25bp to 3.75-4.00% on 16 Sep after futures were already >90% priced for the hike; August CPI kept the tightening bias intact; US 2Y then printed 4.76% on 18 Sep with +9bp on the day and +57bp over one month (move z 3.29, level z 2.89, 100th percentile). The same window shows US 5Y +51bp 1m and US 10Y +36bp 1m, so the front end is leading. BoJ hiked to 1.25% (7-2) and BoE held 3.75% 6-3 with three votes for 4.00% plus a multi-year gilt unwind; the last-24 desk thesis states the energy shock is constraining the global easing impulse and keeping term-rate pressure elevated. US inflation temperature is 52.0. Inference: price trend, policy impulse and inflation revision are aligned, so the 2Y uptrend persists longer than a fade of the percentile stretch implies. A 2s10s flattener is the wrong rates expression: 2s10s is already 25bp (0th percentile, -21bp 1m) while BoE QT and the desk's term-premium language can lift the long end even as the front stays bid to cheapen. CA-US 2Y at -140bp and CA-US 5Y at -124bp (0th percentile, -17bp/-16bp 1m) confirm US outperformance versus Canada, but that RV imports BoC energy-pass-through catch-up risk without improving ownership of the US policy path. Spot long USDCAD is the same gap in FX and is retained only as the comparison candidate. Unknown: positioning/flow is unavailable; NZ official yields are unavailable and unused; no executable entry exists in the packet. Saudi ship-to-ship crude is a tail-risk reducer, not a documented reversal of the tightening impulse.",
+          "why_now": [
+            "US 2Y as of 2026-09-18 is still rising after the 16 Sep hike (+9bp 1d, +13bp 5d, +57bp 1m), so the post-decision fade has not started.",
+            "BoJ hike to 1.25% and BoE 6-3 hold with three hike votes arrived after the Fed print and keep the global tightening impulse live into this cutoff.",
+            "Energy-shock-absorber weakening and BoC pass-through risk remain open; they constrain easing more than they justify buying duration at a 100th-percentile yield."
+          ]
+        }
+      }
+    },
+    {
+      "agent": "perma-bull",
+      "conflict_id": "opp-view:USD",
+      "contribution": {
+        "agent": "perma-bull",
+        "archetype": "perma-bull",
+        "confidence": 58,
+        "conflict_synopsis": {
+          "au_rates_view": "lower",
+          "aud_view": "lower",
+          "ca_rates_view": "higher",
+          "cad_view": "higher",
+          "carry_view": "neutral",
+          "confidence": 58,
+          "conflict_tags": [
+            "RISK_ON",
+            "US_CURVE_STEEPENER",
+            "USD_DOWN",
+            "CAD_UP",
+            "AUD_DOWN",
+            "NZD_UP",
+            "CA_RATES_UP",
+            "AU_RATES_DOWN",
+            "US_RATES_SHAPE"
+          ],
+          "core_view": "Post-hike US 2s10s flattening prices a growth scare that hard activity, tight credit and low vol do not confirm, so the curve should steepen.",
+          "key_catalyst": "Expansionary US activity/labor prints after a fully priced 25bp hike, against a 1y-extreme 25bp 2s10s.",
+          "key_invalidation": "Labor and surveys break weaker with HY/VIX stress while 2s10s keeps flattening.",
+          "nz_rates_view": "not_relevant",
+          "nzd_view": "higher",
+          "primary_trade": "long US 2s10s",
+          "risk_view": "risk_on",
+          "seat": "perma-bull",
+          "time_horizon": "4-8 weeks",
+          "us_rates_view": "neutral",
+          "usd_view": "lower"
+        },
+        "macro_assumptions": {
+          "growth": "above_trend",
+          "policy": "hawkish",
+          "rates": "higher_for_longer",
+          "risk": "risk_on"
+        },
+        "packet_sha256": "b4c642412ddcc969d6fd135638baede8f3e9f987015684f2085c8460c3af466a",
+        "stance_summary": "Post-hike recession flattening is over-discounted: hard activity, credit and vol still look expansionary, so the cleanest pro-growth expression is a duration-neutral US 2s10s steepener rather than stretched cyclical FX.",
+        "trade": {
+          "asset_class": "curve",
+          "catalysts": [
+            "US activity and labor prints that stay expansionary versus a curve that already flattened 21bp in a month",
+            "August retail +1.2% feeding into spending and reducing the consumer-scare read from Michigan 47.8",
+            "Canada activity/energy pass-through keeping North American term premium from collapsing even if the Fed is done for this meeting",
+            "NZ GDP beat and India FTA as global cyclical confirmation, expressed here via the US curve rather than NZD because NZ yields are unavailable"
+          ],
+          "confidence": 58,
+          "direction": "long",
+          "entry": null,
+          "evidence_refs": [
+            "research_method",
+            "market_state",
+            "xa:opportunities",
+            "rates:US",
+            "rates:CA",
+            "temp:US:activity",
+            "temp:US:labor",
+            "temp:US:consumer",
+            "temp:CA:activity",
+            "temp:NZ:activity",
+            "mw_20260916_fomc_hike_pricing",
+            "rollup:Fed raises 25bp to 3.75\u20134.00%",
+            "rollup:August CPI keeps the Fed tightening bias intact",
+            "last24:2026-09-18:desk-thesis",
+            "rollup:New Zealand Q2 GDP slows to 0.2% q/q but beats forecasts",
+            "rollup:BoC minutes flag higher energy pass-through risk",
+            "mw_20260916_au_housing_tightening",
+            "mw_20260916_saudi_oman_workaround",
+            "mw_20260916_nz_india_trade",
+            "fx:NZDUSD",
+            "fx:USDCAD"
+          ],
+          "expression_comparison": {
+            "rates_candidate": "Duration-neutral US 2s10s steepener: receive UST 2Y versus pay UST 10Y. Packet print is 25bp on 2026-09-18, 1y percentile 0.2% / z_1y -2.45 after a -21bp 1m flatten (z -2.20). Alternative considered: long CA-US 5Y (pay CA 5Y / receive US 5Y) at -124bp, 1y percentile 0.2% and 5y percentile 6.9%.",
+            "rationale": "Rates are preferred because the growth-versus-recession discrepancy lives in curve shape, not in a cheap FX level. US 2s10s owns that gap directly after a fully priced 25bp hike, while NZDUSD mixes an energy-importer shock, unavailable NZ yields, and weak NZ labor (47.0). USDCAD is inferior because the packet's USDCAD vs CA-US 2Y residual is weak (r-squared 0.022) and 140bp 2Y carry favors USD over CAD. CA-US 5Y is a strong RV but is closer to the existing 150-175bp policy-rate gap (Fed 3.75-4.00% vs BoC 2.25%) than to a growth mispricing. NZ-involved rate RV is unavailable.",
+            "selected": "rates",
+            "spot_candidate": "Long NZDUSD (spot 0.5711, 5y percentile 8.6%, -3.90% 1m) as the cheapest cyclical USD pair after NZ Q2 GDP +0.2% q/q beat forecasts; runner-up short USDCAD on Canada activity 53.2 versus US 49.92."
+          },
+          "horizon": "4-8 weeks; post-hike data and next inflation/labor prints to test whether the 1m flatten was a growth scare or a completed hiking event",
+          "instrument": "US 2s10s",
+          "invalidation": "ISM Services or manufacturing fall into contraction, payrolls and unemployment break materially weaker, and HY OAS/VIX reprice a growth accident while 2s10s keeps flattening. A 5y-window confirmation that 25bp is a normal curve in this hiking regime without a growth rebound would also downgrade the stretch argument.",
+          "mispricing": "US 2s10s at 25bp (1y percentile 0.2%, 1m -21bp) prices a hiking-into-slowdown path that is not confirmed by expansionary ISM services, stable labor, tight HY, low VIX, or high copper. The 5y 2s10s percentile of 54% means this is a change/1y-distribution discrepancy, not a 5y cheapness claim. Credit-equity-survey triangulation says the recession flattening overshot.",
+          "principal_risks": [
+            "Energy shock absorbers weaken further and a genuine stagflation hit validates the flatten; BoC already flags fuel pass-through and Shell/Equinor warn buffers are thinner.",
+            "US consumer remains the soft spot: temperature 48.5, Michigan preliminary September 47.8 (-7.5% m/m), Q2 GDP +1.5% SAAR versus +2.1% in Q1.",
+            "The 5y 2s10s percentile is 54%, so 1y-window extremes can persist if this hiking regime has a lower curve mean; mean reversion is a yardstick, not the signal.",
+            "Another hawkish Fed or upside CPI surprise can extend bear-flattening if 2Y cheapens faster than 10Y; August CPI already kept the tightening bias intact.",
+            "Australian housing (stamp duty -24% y/y, prices more than 7% off peak) is a real regional growth hole; this trade does not own that, but a broader commodity risk-off could still flatten UST via a global scare.",
+            "Positioning, dealer balance sheet and executable levels are unknown; paper books are empty and Cot/flow is a known gap."
+          ],
+          "stop": null,
+          "structure": "Duration-neutral 2s10s steepener: receive US 2Y versus pay US 10Y. Equal-yield weights are not claimed; packet notes 2s5s10s is equal-yield, not DV01-neutral. No executable structure or size is in the packet.",
+          "target": null,
+          "thesis": "FACT: The Fed delivered the widely priced 25bp hike to 3.75-4.00%; futures had assigned greater than 90% odds before the meeting. US 2Y is 4.76% (1y percentile 99.8%, +57bp 1m) and US 10Y is 5.01% (1y percentile 99.6%, +36bp 1m), leaving 2s10s at 25bp. That spread's 252-observation percentile is 0.0 with z -2.49, 1y percentile 0.2% / z_1y -2.45, and a -21bp 1m change (z -2.20); 5s10s is 15bp with 1y percentile 0.4%. FACT: Hard US data are not collapsing. Unemployment is 4.1% unchanged; payrolls +162k with positive revisions; ISM Services 55.4 with business activity and new orders above 60; ISM Manufacturing 54.6 still expansionary; August retail sales +1.2% m/m after July was revised to -0.5%. FACT: Risk markets are not pricing a growth accident: VIX 15.44 (14.7th percentile), HY OAS 270bp (13.7th percentile), S&P 500 7638 (90th percentile, +1.13% 1d), copper 6.59 (92nd percentile). Canada Q2 GDP +0.8% q/q and activity temperature 53.2 are the strongest cyclical prints in the four-country set; NZ Q2 GDP +0.2% q/q beat forecasts. INFERENCE: The 1m bear-flattening is the market's slowdown tax on a hike that was already in the price. If growth and risk appetite remain resilient, 2s should stop cheapening versus 10s: either the additional-hike premium in 2s fades now that September is delivered, or term yields stay bid with activity and the curve re-steepens. The desk line that domestic growth is softer is the over-discounted pessimism. UNKNOWN: Next-meeting hike odds are not in the packet; positioning/flow is unavailable; NZ yields are blocked so NZ growth cannot be expressed in rates; 5y 2s10s percentile is 54%, so the flattening is extreme only on the 1y window.",
+          "why_now": [
+            "The Sep 16 hike is done and had been greater than 90% priced, so further flattening now has to come from a genuine growth scare rather than from delivering a known FOMC outcome.",
+            "US 2s10s just printed the 0th percentile of the 252-observation opportunity screen and 1y percentile 0.2% after a statistically large 1m flatten.",
+            "Same-week triangulation is still expansionary: ISM Services 55.4, August retail +1.2%, payrolls +162k, VIX 15.44, HY OAS 270bp, copper at the 92nd percentile.",
+            "Canada and NZ growth prints (CA GDP +0.8% q/q; NZ GDP beat at +0.2% q/q) argue the global cyclical complex is not rolling over even as the desk narrative leans softer growth.",
+            "Saudi ship-to-ship workaround and modest oil easing reduce the extreme left tail that would justify a lasting curve collapse, even though energy shock absorbers remain a risk."
+          ]
+        }
+      }
+    },
+    {
+      "agent": "carry-is-king",
+      "conflict_id": "opp-view:CAD",
+      "contribution": {
+        "agent": "carry-is-king",
+        "archetype": "carry-is-king",
+        "confidence": 58,
+        "conflict_synopsis": {
+          "au_rates_view": "lower",
+          "aud_view": "lower",
+          "ca_rates_view": "higher",
+          "cad_view": "higher",
+          "carry_view": "supports_trade",
+          "confidence": 58,
+          "conflict_tags": [
+            "AU_RATES_DOWN",
+            "CA_RATES_UP",
+            "US_RATES_UP",
+            "AUD_DOWN",
+            "CAD_UP",
+            "CARRY_SUPPORTS",
+            "AUDCAD_SPOT_REJECTED"
+          ],
+          "core_view": "Receive AU 2Y versus pay CA 2Y to collect the 165bp common-date 2Y gap while housing bites in Australia and BoC energy risk is still only conditional; reject stretched AUDCAD and reject global long duration.",
+          "key_catalyst": "Australian housing/labor confirmation plus any BoC conversion of energy pass-through risk into tightening bias.",
+          "key_invalidation": "AU tightening channel fades while BoC energy risk is retired and the AU\u2013CA 2Y differential no longer pays the AU receiver.",
+          "nz_rates_view": "not_relevant",
+          "nzd_view": "not_relevant",
+          "primary_trade": "long AU2Y / short CA2Y",
+          "risk_view": "neutral",
+          "seat": "carry-is-king",
+          "time_horizon": "1-3 months",
+          "us_rates_view": "higher",
+          "usd_view": "neutral"
+        },
+        "macro_assumptions": {
+          "growth": "below_trend",
+          "policy": "hawkish",
+          "rates": "higher_for_longer",
+          "risk": "risk_off"
+        },
+        "packet_sha256": "b4c642412ddcc969d6fd135638baede8f3e9f987015684f2085c8460c3af466a",
+        "stance_summary": "Receive the Australian 2-year versus pay the Canadian 2-year. Verified: on the common 2026-09-16 date the CA\u2212AU 2Y spread is \u2212164.9bp, the packet\u2019s largest available 2Y yield differential, while AUDCAD spot already sits at a 5-year extreme. Inference: housing is biting in Australia and BoC energy pass-through is still only a conditional tightening trigger, so the remaining AU\u2013CA discrepancy lives in front-end rates, not in stretched AUDCAD. Unknown: forwards, OIS paths, and tickets. Global long-duration is rejected because the post-Fed tightening/energy catalyst overwhelms positive carry there; NZ rates RV is unavailable.",
+        "trade": {
+          "asset_class": "rates_rv",
+          "catalysts": [
+            "Further Australian housing, credit, or labor prints confirming the RBA channel is biting, allowing AU 2Y to ease from 5y extremes while still paying carry.",
+            "BoC communication or Canada CPI energy/core mix that converts the minutes\u2019 pass-through risk into actual tightening bias, lifting CA 2Y versus AU.",
+            "Persistence of the global energy shock (Brent already extreme) that keeps G10 easing capped without forcing a net-long global-duration overlay."
+          ],
+          "confidence": 58,
+          "direction": "long AU2Y / short CA2Y",
+          "entry": null,
+          "evidence_refs": [
+            "rates:AU",
+            "rates:CA",
+            "xa:opportunities",
+            "fx:AUDCAD",
+            "mw_20260916_au_housing_tightening",
+            "rollup:Australian housing downturn deepens under higher rates",
+            "xa:energy-retained",
+            "rollup:BoC minutes flag higher energy pass-through risk",
+            "rollup:Canada August inflation holds at 3%, core stays near 2%",
+            "temp:CA:inflation",
+            "temp:CA:activity",
+            "temp:CA:labor",
+            "temp:AU:labor",
+            "temp:AU:activity",
+            "temp:AU:inflation",
+            "last24:2026-09-18:desk-thesis",
+            "macro:desk-18sep",
+            "rollup:Fed raises 25bp to 3.75\u20134.00%",
+            "mw_20260916_fomc_hike_pricing",
+            "mw_20260916_saudi_oman_workaround",
+            "rollup:Energy-market shock absorbers weaken",
+            "market_state",
+            "research_method",
+            "pos:unavailable",
+            "rates:NZ"
+          ],
+          "expression_comparison": {
+            "rates_candidate": "Duration-matched receive Australian 2-year sovereign versus pay Canadian 2-year sovereign (CA\u2212AU 2Y). Common-date spread \u2212164.9bp as of 2026-09-16; AU 2Y 4.999% (5y percentile 99.80) versus CA 2Y 3.27% on 2026-09-17 (5y percentile 58.59).",
+            "rationale": "Rates is the cleaner expression of the same AU\u2013CA carry gap. AUDCAD has already paid the differential at a 5-year extreme, so chasing spot is late and fading it is negative-carry. The rates spread still has 5y-history cheapness in CA versus AU (CA\u2212AU 2Y 5y percentile 10.50, z_5y \u22121.64) while CA 2Y itself is only 58.59 percentile on 5y history. NZ-involved rate RV is unavailable. Prefer rates when comparably clean; here rates is strictly cleaner.",
+            "selected": "rates",
+            "spot_candidate": "Long AUDCAD: same 2Y differential of 164.9bp versus 60-day FX vol 4.93 (ratio 0.334), but ECB reference spot 0.9976 at 5y percentile 99.96 and z_5y 2.76."
+          },
+          "horizon": "1\u20133 months, patient; let 2Y differential carry fund timing slippage unless a catalyst overwhelms it",
+          "instrument": "AU2Y vs CA2Y",
+          "invalidation": "Mechanism fails if Australian housing and AU labor stop showing tightening-channel bite while Bank of Canada retires energy pass-through risk and core inflation stays near 2%, or if the AU\u2013CA 2Y differential ceases to pay the receiver of AU. No unsourced price stop.",
+          "mispricing": "Verified: FX has already expressed AU versus CA (AUDCAD 5y percentile 99.96, z_5y 2.76) while CA\u2212AU 2Y remains in the 10th percentile of 5y history and CA 2Y is only mid-pack on 5y (percentile 58.59) despite a 1y stretch (percentile 97.82, z_1y 2.46). Inference: the gap between a fully expressed high-carry FX cross and an only-moderately stretched 5y rate spread is the discrepancy; mean reversion of CA\u2212AU 2Y toward less negative, and/or AU yields easing as housing bites, closes it with positive 2Y differential carry. Unknown: whether 1y-window unstretched CA\u2212AU 2Y (percentile 51.39) means the 5y cheapness is a regime level rather than a tradeable gap. Do not treat the z-score as a target.",
+          "principal_risks": [
+            "Canada labor is already cooler (employment \u221242k, wages +2.0% y/y); if that dominates energy, the pay-CA leg is wrong and the spread can stay wide.",
+            "Saudi Oman workaround and modest oil easing can retire the BoC pass-through catalyst even while shock-absorber headlines remain mixed.",
+            "Global tightening (Fed, BoJ 1.25%, BoE 6\u20133 hike dissent) can lift AU yields further despite housing, so the receive-AU leg is not a free hedge.",
+            "CA\u2212AU 2Y is unstretched on the 1y window (percentile 51.39); 5y cheapness may be a regime, not a closing gap.",
+            "Carry screen is a 2Y yield differential over 60d FX vol, not forward carry, roll-down, or expected return; holding-period return is therefore only partly quantified.",
+            "AU yields are two sessions old versus CA; market-state is stale; NZ rates are unavailable; no positioning feed; no executable broker prices.",
+            "Empty paper books are not a constraint and invent no existing risk."
+          ],
+          "stop": null,
+          "structure": "Duration-matched receive Australian 2-year government bonds versus pay Canadian 2-year government bonds (CA\u2212AU 2Y). Research yields only; not a broker ticket and not a DV01-invented size.",
+          "target": null,
+          "thesis": "Causal question: after a global tightening impulse, is the AU\u2013CA 2Y gap still a paid, patient holding-period expression, or has FX already absorbed it? Verified fact: AU 2Y is 4.999% as of 2026-09-16 (5y percentile 99.80, +39.1bp over 1m); CA 2Y is 3.27% as of 2026-09-17 (5y percentile 58.59, 1y percentile 97.82, +31bp over 1m, \u22128bp on 1d); common-date CA\u2212AU 2Y is \u2212164.9bp (5y percentile 10.50, z_5y \u22121.64; 1y percentile 51.39, 1y-window z about \u22120.41). The opportunity monitor flags that 164.9bp AUD\u2013CAD 2Y differential as the largest available carry screen, explicitly not forward carry, funding, roll-down, or expected return. Australian housing evidence shows the RBA channel biting (NSW stamp-duty receipts \u221224% y/y, volumes \u221218%, Sydney and Melbourne values more than 7% from peak); AU labor is softer (unemployment 4.5%, employment \u221215.8k). BoC held 2.25% but judged fuel-inflation pass-through risk higher; Canada August headline CPI held at 3.0% with CPI-trim 1.9% and CPI-median 2.0%; CA Q2 GDP +0.8% q/q while August employment was \u221242k and wage growth cooler. Brent was 130.8 USD/bbl as of 2026-09-15 (1y-window percentile 99.60). Desk synthesis: the energy shock constrains the global easing impulse and keeps term-rate pressure elevated even where domestic growth is softer. Inference: receiving stretched AU front-end versus paying still-cheap-on-5y CA front-end isolates local divergence without owning global duration, and the 2Y yield gap pays the holder while housing transmission and conditional BoC energy risk play out. Unknown: implied OIS hike counts, true forward points, roll-down, funding, positioning, and executable levels.",
+          "why_now": [
+            "Fed has already delivered the widely priced 25bp hike to 3.75\u20134.00%; the residual question is relative, not whether US tightening occurred.",
+            "Australian housing and softer AU labor are current evidence that the high AU 2Y is starting to do work, which is when receiving that yield becomes a paid wait rather than a fight with the RBA.",
+            "BoC minutes plus Brent at a 1y extreme keep CA energy pass-through as a live conditional, while core Canada is still near 2%, so paying CA is relative-value not a committed hike call.",
+            "AUDCAD is already at a 5-year extreme, so the same view in spot is late; the rates RV is the unexpressed remainder."
+          ]
+        }
+      }
+    },
+    {
+      "agent": "catalyst-junkie",
+      "conflict_id": "opp-view:CAD",
+      "contribution": {
+        "agent": "catalyst-junkie",
+        "archetype": "catalyst-junkie",
+        "confidence": 56,
+        "conflict_synopsis": {
+          "au_rates_view": "not_relevant",
+          "aud_view": "not_relevant",
+          "ca_rates_view": "higher",
+          "cad_view": "higher",
+          "carry_view": "supports_trade",
+          "confidence": 56,
+          "conflict_tags": [
+            "CA_RATES_UP",
+            "CAD_UP",
+            "CA_US_5Y_PAY_CA",
+            "RATES_RV"
+          ],
+          "core_view": "BoC energy pass-through hike optionality is the dated closer, and CA-US 5Y cheapened the wrong way after the minutes.",
+          "key_catalyst": "Canadian CPI that shows fuel leaking into underlying inflation, then BoC communications that reprice hike odds.",
+          "key_invalidation": "Trim/median stay near 2 percent, BoC drops the pass-through trigger, or oil collapses and CA-US 5Y makes new lows on US-only backup.",
+          "nz_rates_view": "not_relevant",
+          "nzd_view": "not_relevant",
+          "primary_trade": "pay CA 5Y / receive US 5Y",
+          "risk_view": "not_relevant",
+          "seat": "catalyst-junkie",
+          "time_horizon": "next 1-2 Canadian CPI prints and following BoC window",
+          "us_rates_view": "neutral",
+          "usd_view": "neutral"
+        },
+        "macro_assumptions": {
+          "growth": "above_trend",
+          "policy": "hawkish",
+          "rates": "higher_for_longer",
+          "risk": "risk_off"
+        },
+        "packet_sha256": "b4c642412ddcc969d6fd135638baede8f3e9f987015684f2085c8460c3af466a",
+        "stance_summary": "Valuation stretch in CA-US 5Y is not the trade; the trade is that BoC minutes just named energy pass-through as the hike trigger and the spread cheapened the wrong way. Own the dated CPI-to-BoC transmission in rates RV, not a catalyst-free fade of rich US yields or a noisy CAD spot.",
+        "trade": {
+          "asset_class": "rates_rv",
+          "catalysts": [
+            "Canadian CPI prints that show energy spreading beyond fuel into trim/median/core",
+            "Next BoC deliberation/communications repricing hike odds after the minutes' pass-through language",
+            "Further evidence that energy-market shock absorbers remain weak (or fail), keeping WTI/Brent elevated enough to threaten Canadian fuel pass-through"
+          ],
+          "confidence": 56,
+          "direction": "pay CA 5Y / receive US 5Y",
+          "entry": null,
+          "evidence_refs": [
+            "xa:opportunities",
+            "xa:energy-retained",
+            "rates:CA",
+            "rates:US",
+            "market_state",
+            "rollup:BoC minutes flag higher energy pass-through risk",
+            "rollup:Canada August inflation holds at 3%, core stays near 2%",
+            "rollup:Fed raises 25bp to 3.75\u20134.00%",
+            "mw_20260916_fomc_hike_pricing",
+            "last24:2026-09-18:desk-thesis",
+            "last24:2026-09-18:boj-raises-its-policy-rate-to-1-25",
+            "last24:2026-09-18:boe-holds-3-75-but-three-members-vote-to-hike",
+            "rollup:Energy-market shock absorbers weaken",
+            "mw_20260916_saudi_oman_workaround",
+            "temp:CA:inflation",
+            "temp:CA:activity",
+            "temp:CA:labor",
+            "fx:USDCAD",
+            "pos:unavailable",
+            "research_method"
+          ],
+          "expression_comparison": {
+            "rates_candidate": "Duration-matched pay Canada 5Y versus receive US 5Y (CA-US 5Y spread less negative as BoC hike optionality is priced).",
+            "rationale": "The discrepancy lives in the common-date CA-US 5Y spread (0th percentile, z about -2.05 on 17 Sep), which is the stretched series the packet flags. USDCAD versus CA-US 2Y is a weak residual (status weak, low r-squared), so spot does not own the rates gap; oil can also move CAD independently of BoC odds. Rates RV is comparably cleaner and is the default under the expression mandate. Spot is the backup, not the primary, because it mixes a policy-repricing view with carry (USD +140bp 2Y over CAD, which opposes short USDCAD) and an undocumented oil beta.",
+            "selected": "rates",
+            "spot_candidate": "Short USDCAD (CAD higher) as the FX expression of a BoC tightening catch-up versus the Fed."
+          },
+          "horizon": "Next 1-2 Canadian CPI prints and the following BoC communication window",
+          "instrument": "CA-US 5Y",
+          "invalidation": "Thesis fails if subsequent Canadian CPI keeps CPI-trim and CPI-median near 2 percent with no broadening beyond fuel, or if BoC communications drop the pass-through tightening trigger, or if CA-US 5Y makes new lows on a US-only yield backup rather than Canada failing to catch up. Oil collapsing on the Saudi-Oman workaround would remove the named catalyst even if the spread is still statistically cheap.",
+          "mispricing": "CA-US 5Y at -124bp is the 0th percentile of the packet's 252-observation window and cheapened another 12bp over five days during the week the BoC minutes put hike optionality on the table. Pricing still treats Canada as a structural laggard to the Fed rather than a conditional hiking candidate. That is a fundamentals-versus-pricing and market-versus-market gap with an identified closer, not a z-score fade of US 5Y (US 5Y is also 99th-percentile rich on 1y history, which is why the expression is relative).",
+          "principal_risks": [
+            "Pass-through never arrives: headline stays energy-heavy while trim/median remain near 2 percent, so the BoC never uses the trigger it named.",
+            "Saudi-Oman workaround and any subsequent oil easing cap the energy shock and retire the catalyst.",
+            "CA labor deterioration (August employment -42k, cooler wages, unemployment 6.4 percent) keeps the BoC on hold despite energy talk.",
+            "US yields outpace Canada if another Fed hike is priced, driving CA-US 5Y more negative; receive-US then loses as an overlay.",
+            "Positioning and flow are unavailable; the 17 Sep CA yield decline could be plumbing rather than a policy view.",
+            "CA versus US observation dates are not identical (CA 17 Sep, US 18 Sep in some screens); market_state is stale because NZ rates are unavailable."
+          ],
+          "stop": null,
+          "structure": "Duration-matched pay Canada 5Y versus receive US 5Y",
+          "target": null,
+          "thesis": "FACT: On 16 Sep the Fed delivered the widely pre-priced 25bp hike to 3.75-4.00 percent. The BoC had already held at 2.25 percent; the Sep 16 minutes said the risk of fuel inflation spreading more broadly had increased and the packet's retained read is that broader energy pass-through is the clearest conditional trigger for renewed BoC tightening. Canada August headline CPI held at 3.0 percent y/y while CPI-trim was 1.9 percent and CPI-median 2.0 percent. Common-date CA-US 5Y was -124bp on 17 Sep (opportunity-monitor percentile 0.0, z -2.05; 5d change -12bp). WTI was 107.02 on 15 Sep (96th percentile, about +24 percent 1m log) and Brent 130.8 (99.6th percentile). Desk thesis: energy shock is constraining the global easing impulse after BoJ hiked to 1.25 percent and BoE held 6-3 with gilt QT. CA Q2 real GDP was +0.8 percent q/q and activity temperature 53.2; CA labor temperature 48.8 with August employment -42k and cooler wages. INFERENCE: Markets are still backsolving a durable BoC hold/relative-easing regime from near-target core and the Sep 2 hold, even though the new information is a named pass-through trigger plus still-elevated oil and a broader G10 tightening impulse. The closing mechanism is sequential Canadian CPI prints that show fuel leaking into underlying inflation, then BoC communications that reprice hike odds; that should lift CA 5Y versus US 5Y (spread less negative). Receive-US is a hedge against global duration, not a US-easing call: the Fed event is largely known information. UNKNOWN: exact next CPI and BoC dates are not in the packet; whether pass-through actually broadens versus stays in fuel; positioning/flow; whether the Saudi-Oman workaround caps oil enough to kill the trigger; CA 17 Sep versus US 18 Sep observation lag.",
+          "why_now": [
+            "BoC minutes (Sep 16 surface) newly named broader energy pass-through as the conditional trigger for renewed tightening after a 2.25 percent hold; known hold needs this new transmission to matter.",
+            "CA-US 5Y moved the wrong way into that information: 0th percentile at -124bp, 5d -12bp, 1m -16bp on common dates.",
+            "The Fed hike itself is stale as a US catalyst (greater-than-90 percent priced into 16 Sep); residual repricing is Canada's catch-up versus an already-delivered US move.",
+            "Physical energy channel is live (WTI 96th percentile, Brent 99.6th; shock-absorbers-weaken headline) even after a Saudi-Oman workaround reduced the extreme supply tail.",
+            "Global tightening broadened on 17 Sep (BoJ to 1.25 percent; BoE 6-3 hold plus multi-year gilt unwind), keeping term-rate pressure elevated while Canada remains the policy laggard."
+          ]
+        }
+      }
+    }
+  ],
+  "own_original": {
+    "agent": "value-guy",
+    "archetype": "value-guy",
+    "confidence": 58,
+    "conflict_synopsis": {
+      "au_rates_view": "not_relevant",
+      "aud_view": "not_relevant",
+      "ca_rates_view": "higher",
+      "cad_view": "higher",
+      "carry_view": "supports_trade",
+      "confidence": 58,
+      "conflict_tags": [
+        "CA_US_5Y_LONG",
+        "CA_RATES_UP",
+        "US_RATES_DOWN",
+        "CAD_UP",
+        "USD_DOWN",
+        "RATES_RV"
+      ],
+      "core_view": "Canada 5Y is historically rich versus the US on a cyclically warmer Canada with a live BoC energy pass-through trigger, so the CA-US 5Y spread should converge higher after a fully priced Fed hike.",
+      "key_catalyst": "BoC pass-through communication or Canada data after a delivered, already-priced Fed hike.",
+      "key_invalidation": "BoC takes pass-through off the table while Canada temperatures fall below the US, or a new common-date CA-US 5Y extreme from further US-led selloff.",
+      "nz_rates_view": "not_relevant",
+      "nzd_view": "not_relevant",
+      "primary_trade": "long CA-US 5Y (pay CA 5Y / receive US 5Y)",
+      "risk_view": "neutral",
+      "seat": "value-guy",
+      "time_horizon": "1-3 months",
+      "us_rates_view": "lower",
+      "usd_view": "lower"
+    },
+    "macro_assumptions": {
+      "growth": "above_trend",
+      "policy": "hawkish",
+      "rates": "higher_for_longer"
+    },
+    "packet_sha256": "b4c642412ddcc969d6fd135638baede8f3e9f987015684f2085c8460c3af466a",
+    "stance_summary": "CA-US 5Y at a historical cheap-Canada extreme is a peer-spread dislocation, not a weak-Canada story: Canada activity and consumer temperatures sit above the US, the Fed hike is already delivered into 99th-percentile US yields, and BoC minutes keep energy pass-through as the live tightening trigger while Bank Rate is still 2.25%. Own it in duration-matched 5Y rates RV, not USDCAD.",
+    "trade": {
+      "asset_class": "rates_rv",
+      "catalysts": [
+        "Next BoC minutes, testimony, or CPI print that keeps headline energy pass-through alive versus core still near 2%.",
+        "Global tightening impulse (delivered Fed hike, BoJ to 1.25%, BoE 6-3 hold with QT) keeping the US from being the only hawkish curve.",
+        "Canada activity remaining above-US while US consumer temperature stays at 48.5, forcing the 5Y peer gap to re-normalize rather than trend further cheap."
+      ],
+      "confidence": 58,
+      "direction": "long",
+      "entry": null,
+      "evidence_refs": [
+        "xa:opportunities",
+        "rates:CA",
+        "rates:US",
+        "market_state",
+        "temp:CA:activity",
+        "temp:CA:consumer",
+        "temp:CA:inflation",
+        "temp:US:activity",
+        "temp:US:consumer",
+        "temp:US:inflation",
+        "rollup:Fed raises 25bp to 3.75\u20134.00%",
+        "mw_20260916_fomc_hike_pricing",
+        "rollup:BoC minutes flag higher energy pass-through risk",
+        "xa:energy-retained",
+        "rollup:Canada August inflation holds at 3%, core stays near 2%",
+        "last24:2026-09-18:desk-thesis",
+        "fx:USDCAD",
+        "research_method",
+        "mw_20260916_saudi_oman_workaround",
+        "rollup:Energy-market shock absorbers weaken"
+      ],
+      "expression_comparison": {
+        "rates_candidate": "Pay CA 5Y vs receive US 5Y (long the CA minus US 5Y sovereign spread) using the common-date packet print of -124bp as of 2026-09-17.",
+        "rationale": "The mispricing lives in the 5Y peer spread: CA-US 5Y is a |z|>=2 opportunity-sample extreme at 0th percentile and -124bp, whereas USDCAD is only 87th percentile 5y with z_5y 0.99. The packet USDCAD vs CA-US_2Y residual is weak (r-squared 0.022), so spot does not own the discrepancy. Two-year USD-CAD carry of 140bp supports receive-US/pay-CA and opposes short USDCAD. NZ official yields are unavailable, so NZ-involved rates RV is out. Rates RV is therefore the cleaner, carry-supported expression; spot is the inferior alternative, not the selected trade.",
+        "selected": "rates",
+        "spot_candidate": "Short USDCAD (CAD higher versus USD) as the FX expression of CA-US policy-gap compression."
+      },
+      "horizon": "1-3 months, through the next BoC communication and Canada inflation/activity prints after the delivered FOMC hike",
+      "instrument": "CA-US 5Y",
+      "invalidation": "BoC communication that energy pass-through is contained while Canada activity and consumer temperatures fall below the US, or a new common-date CA-US 5Y extreme driven by further US-led selloff after the already-delivered hike. Right-thesis/wrong-timing if the spread stays cheap without those falsifiers.",
+      "mispricing": "Canada 5Y is historically rich versus US 5Y (CA-US 5Y at the bottom of the 1y distribution and a |z|>=2 opportunity extreme) while Canada's activity/consumer temperatures are above the US and BoC policy is still 2.25% against a delivered Fed 3.75-4.00% band. That is a peer-relationship dislocation, not a justified weak-Canada discount.",
+      "principal_risks": [
+        "Saudi Oman workaround reduced the extreme oil-supply tail and oil eased modestly; if that kills BoC pass-through, Canada can stay rich versus the US.",
+        "Canada core is already near target (CPI-trim 1.9%, CPI-median 2.0%), so headline 3% alone may not force a hike from 2.25%.",
+        "US 5Y rose 8bp on 2026-09-18 after the -124bp common-date print; continued US-led selloff without a Canada print would cheapen the spread further.",
+        "No positioning/flow dataset; crowding of long-US versus short-Canada duration is unknown.",
+        "Executable broker prices are not in the packet; levels stay null."
+      ],
+      "stop": null,
+      "structure": "Duration-matched cross-market 5Y rates RV: pay Canadian 5Y sovereign, receive US 5Y Treasury.",
+      "target": null,
+      "thesis": "Verified fact: on common dates the packet prints CA-US 5Y at -124bp as of 2026-09-17, 1y percentile 0.20, 5y percentile 6.94, z_1y -2.03; the opportunity monitor flags the same series at percentile 0.0 and z -2.05. CA 5Y is 3.54% and CA 2Y 3.27% as of 2026-09-17; US 5Y is 4.86% and US 2Y 4.76% as of 2026-09-18, so the US legs are one session newer. CA-US 2Y is -140bp (1y percentile 3.77, 5y percentile 4.30). Fed funds are 3.75-4.00% after a delivered 25bp hike that futures had priced at greater-than-90% going in; BoC held at 2.25% and named broader energy pass-through as the conditional tightening trigger. Canada August headline CPI is 3.0% y/y with CPI-trim 1.9% and CPI-median 2.0%; US inflation temperature is 52.0 versus CA 50.0. Canada activity 53.2 and consumer 52.5 sit above US activity 49.92 and consumer 48.5; CA Q2 real GDP was +0.8% q/q. Inference: a 124bp 5Y cheap-Canada gap versus the US is not the right peer price for a cyclically warmer Canada with a still-live BoC pass-through trigger. The valuation anchor is the common-date 5Y spread against its 1y/5y distribution plus comparable-country temperatures, not the fact that Canada yields failed to keep up with the post-CPI US selloff. Convergence should begin now because the US hike is behind the market and already in extreme US yield percentiles, while the next relative-policy increment is Canada's reaction function, not another fully priced FOMC step. Two closing channels both raise CA-US 5Y: Canada yields catch up, or stretched US yields cheapen more than Canada. Unknown: executable broker levels; Canada's 2026-09-18 common-date print after the US 5Y +8bp session; whether pass-through actually forces BoC action; positioning.",
+      "why_now": [
+        "The Fed 25bp hike is delivered and had been greater-than-90% priced; US 2Y/5Y/10Y sit at 99th-100th percentiles on the opportunity sample, so incremental US hawkish news is largely in the US legs.",
+        "CA-US 5Y is already a 0th-percentile / z about -2.05 extreme and widened 12bp over five sessions (5d move z -2.03) into the post-FOMC window, which is when relative-policy convergence typically starts.",
+        "BoC minutes just kept energy pass-through as the conditional hike trigger while Bank Rate remains 2.25%, and the desk thesis is that the energy shock is constraining global easing even where growth is softer.",
+        "Canada activity 53.2 and consumer 52.5 versus US 49.92 and 48.5 falsify the idea that the cheap CA-US 5Y is simply a weaker Canadian cycle."
+      ]
+    }
+  },
+  "own_original_ref": "trader-room/runs/tr-20260918T223926Z-ondemand/submissions/value-guy.json",
+  "packet_sha256": "b4c642412ddcc969d6fd135638baede8f3e9f987015684f2085c8460c3af466a",
+  "run_id": "tr-20260918T223926Z-ondemand",
+  "seat": "value-guy"
+}

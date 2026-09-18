@@ -1,0 +1,113 @@
+{
+  "agent": "perma-bear",
+  "archetype": "perma-bear",
+  "confidence": 61,
+  "conflict_synopsis": {
+    "au_rates_view": "lower",
+    "aud_view": "lower",
+    "ca_rates_view": "higher",
+    "cad_view": "neutral",
+    "carry_view": "supports_trade",
+    "confidence": 61,
+    "conflict_tags": [
+      "AUD_DOWN",
+      "AU_RATES_DOWN",
+      "USD_UP",
+      "US_RATES_UP",
+      "CA_RATES_UP",
+      "NZD_DOWN",
+      "RISK_OFF",
+      "GROWTH_BELOW_TREND"
+    ],
+    "core_view": "Australian housing and labor are already breaking under higher rates, so AU 2Y at a 5-year extreme still prices too much further RBA tightening while risk assets remain complacent.",
+    "key_catalyst": "Next Australian housing/labor/RBA signal that the tightening channel is still contracting.",
+    "key_invalidation": "Housing/labor stabilize or energy pass-through forces another RBA hike that lifts AU 2Y.",
+    "nz_rates_view": "not_relevant",
+    "nzd_view": "lower",
+    "primary_trade": "Receive AU 2Y",
+    "risk_view": "risk_off",
+    "seat": "perma-bear",
+    "time_horizon": "4-8 weeks",
+    "us_rates_view": "higher",
+    "usd_view": "higher"
+  },
+  "macro_assumptions": {
+    "growth": "below_trend",
+    "policy": "dovish",
+    "rates": "easing_cycle",
+    "risk": "risk_off"
+  },
+  "packet_sha256": "b4c642412ddcc969d6fd135638baede8f3e9f987015684f2085c8460c3af466a",
+  "remit": "strongest defensive, slowdown, stress or risk-off macro expression",
+  "round": 1,
+  "run_id": "tr-20260918T223926Z-ondemand",
+  "stance_summary": "Global tightening is being piled into an energy shock while Australian housing and labor are already breaking; markets still price AU 2Y as if more RBA restraint is required, and risk assets remain complacent. The cleanest slowdown expression is receive AU 2Y duration, not chasing already-extended AUD spot.",
+  "subagent_calls": 0,
+  "subagent_model": null,
+  "trade": {
+    "asset_class": "rates",
+    "catalysts": [
+      "Further Australian housing, employment, or activity prints confirming the tightening channel is still contracting.",
+      "RBA communication that the housing/labor deterioration constrains further tightening despite the global energy overlay.",
+      "Risk-off transmission from still-complacent equity/credit/vol into G10 duration if the energy shock and broader tightening stay live."
+    ],
+    "confidence": 61,
+    "direction": "receive",
+    "entry": null,
+    "evidence_refs": [
+      "mw_20260916_au_housing_tightening",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "temp:AU:labor",
+      "temp:AU:activity",
+      "temp:AU:inflation",
+      "temp:AU:consumer",
+      "rates:AU",
+      "rates:US",
+      "market_state",
+      "xa:opportunities",
+      "last24:2026-09-18:desk-thesis",
+      "macro:desk-18sep",
+      "rollup:Fed raises 25bp to 3.75\u20134.00%",
+      "rollup:August CPI keeps the Fed tightening bias intact",
+      "last24:2026-09-18:boj-raises-its-policy-rate-to-1-25",
+      "last24:2026-09-18:boe-holds-3-75-but-three-members-vote-to-hike",
+      "rollup:Energy-market shock absorbers weaken",
+      "mw_20260916_saudi_oman_workaround",
+      "fx:AUDUSD",
+      "research_method",
+      "pos:unavailable"
+    ],
+    "expression_comparison": {
+      "rates_candidate": "Receive Australian 2-year government bonds (outright long front-end duration on RBA F2 2Y; research/reference yields only).",
+      "rationale": "Rates is the cleaner owner of the discrepancy: AU 2Y sits at a 99th-percentile 1y and 5y stretch while the housing-credit channel is already contracting, so the mispricing is the RBA path not the FX level. Spot AUDUSD is only 84th percentile 5y and already cheap vs copper on the packet residual, so a short is less aligned with where the gap lives. AUDCAD is more statistically extreme but mixes a 165bp AUD-over-CAD carry headwind with Canada energy support, so it is a dirtier slowdown expression. NZ rates RV is unavailable (official B2 403). Curve steepener (receive 2s/pay 10s) is a valid hedge against the desk's term-premium overlay but AU 2s10s is only about the 24th percentile 1y and is not where the stretch or the housing mechanism sits; 2Y tenor owns the policy path and is less exposed to energy-driven term premium than 10Y. Mandate prefers rates when comparably clean; here rates is superior, not merely default.",
+      "selected": "rates",
+      "spot_candidate": "Short AUDUSD (fade still-elevated AUD vs USD as housing/labor slowdown and global tightening hit the cycle currency)."
+    },
+    "horizon": "4-8 weeks",
+    "instrument": "AU 2Y",
+    "invalidation": "Thesis is wrong if Australian housing volumes/prices stabilize and AU labor/activity reheat, or if energy pass-through / an RBA hike lifts AU 2Y as a continued tightening cycle rather than a growth break. Timing is merely delayed if 2Y stays high while housing/labor keep deteriorating.",
+    "macro_assumptions": {
+      "growth": "below_trend",
+      "policy": "dovish",
+      "rates": "easing_cycle",
+      "risk": "risk_off"
+    },
+    "mispricing": "AU 2Y at the 99th percentile 1y and 5y still embeds further RBA tightening after the housing channel has already broken (stamp duty -24%, volumes -18%, prices more than 7% off peak) and labor is loosening. Pricing requires housing/labor to re-accelerate or energy to reopen an AU inflation impulse; the packet's domestic gauges do not show that.",
+    "principal_risks": [
+      "Desk-thesis risk: energy shock keeps front-end yields rising even where domestic growth is softer, so receive-AU-2Y is fighting global tightening rather than owning a local pause.",
+      "Energy pass-through into AU inflation (trimmed mean still 3.6%) forces the RBA to hike into housing weakness (policy-error continuation, not pivot).",
+      "Saudi Oman crude workaround already reduced the extreme oil-supply tail, allowing a growth re-acceleration and bond selloff if energy fades.",
+      "No positioning/flow dataset: the AU 2Y extreme could already be owned, and executable levels are absent so sizing/entry cannot be priced from this packet."
+    ],
+    "stop": null,
+    "structure": "Outright receive AU 2Y government bonds / long front-end duration. Packet yields are RBA F2 research/reference closes, not executable broker prices.",
+    "target": null,
+    "thesis": "FACT: NSW stamp-duty receipts fell 24% y/y in August with transaction volumes -18% and Sydney/Melbourne home values more than 7% below peak; AU labor temperature is 47.8 (unemployment 4.5% from 4.4%, employment -15.8k m/m, WPI +3.2% y/y vs +3.4%); AU activity 49.2 with business conditions/confidence soft; headline CPI eased to 3.5% y/y while trimmed mean held 3.6%. FACT: AU 2Y yield is 4.999% as of 2026-09-16, 99.0th percentile 1y and 99.8th percentile 5y, +39bp 1m / +50bp 3m. FACT: Fed hiked 25bp to 3.75-4.00% with August CPI keeping a tightening bias; BoJ hiked to 1.25%; BoE held 3.75% but a 6-3 split with three members preferring a hike plus gilt QT; desk thesis is that the energy shock is constraining global easing and keeping term-rate pressure elevated even where growth is softer. FACT: SPX near the 90th percentile, VIX 15.44 near the 15th percentile, HY OAS 270bp near the 14th percentile, while Brent is 130.8 (near the 99.6th) and WTI 107 (near the 96th). INFERENCE: The tightening channel is already delivering an Australian housing/labor slowdown, so AU 2Y at a 5-year extreme is pricing additional RBA restraint that the domestic data cannot support; the global energy/tightening overlay is why duration has not rallied, which is the mispricing rather than a reason to pay more. 2Y is the correct tenor because it owns the RBA path; 10Y is contaminated by the same term-premium shock the desk flags. INFERENCE: Risk markets have not priced this cluster (complacent vol/credit vs energy and G10 tightening), so the growth-break remains available in rates. UNKNOWN: positioning/flow; executable AU bond prices; whether energy pass-through hits AU CPI next; RBNZ yields (official source blocked); whether the Saudi Oman workaround has already capped the oil tail.",
+    "why_now": [
+      "Sep 16 housing evidence shows the RBA tightening channel biting in real time (stamp duty, volumes, peak-to-trough prices) while AU 2Y remains at a 5-year extreme.",
+      "Sep 16-18 policy cluster (Fed hike, BoJ hike, BoE 6-3 hold with QT) is the overlay keeping global duration offered; that is new information relative to a local AU housing break and is why 2Y has not yet priced the slowdown.",
+      "Risk pricing is still complacent (VIX near the 15th percentile, HY OAS near the 14th, SPX near the 90th) against Brent/WTI at 1y extremes, so the defensive repricing has not happened in beta and remains available in AU front-end rates."
+    ]
+  },
+  "type": "TRADER_ROOM_CONTRIBUTION"
+}

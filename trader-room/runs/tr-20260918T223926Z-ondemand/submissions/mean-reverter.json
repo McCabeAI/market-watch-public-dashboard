@@ -1,0 +1,107 @@
+{
+  "agent": "mean-reverter",
+  "archetype": "mean-reverter",
+  "confidence": 58,
+  "conflict_synopsis": {
+    "au_rates_view": "lower",
+    "aud_view": "lower",
+    "ca_rates_view": "not_relevant",
+    "cad_view": "not_relevant",
+    "carry_view": "supports_trade",
+    "confidence": 58,
+    "conflict_tags": [
+      "AU_RATES_DOWN",
+      "AUD_DOWN",
+      "USD_UP",
+      "DURATION_LONG",
+      "FADE_STRETCH"
+    ],
+    "core_view": "AU 10Y has overshot local housing and sub-50 temperatures under a global-tightening narrative and should mean-revert lower in yield.",
+    "key_catalyst": "Housing/activity deterioration feeding back into AU term yields as the known global hike cluster is digested.",
+    "key_invalidation": "AU 10Y makes a new high versus the 16 Sep F2 close while housing stabilizes and AU inflation temperature moves back through 50.",
+    "nz_rates_view": "not_relevant",
+    "nzd_view": "not_relevant",
+    "primary_trade": "long AU 10Y",
+    "risk_view": "risk_off",
+    "seat": "mean-reverter",
+    "time_horizon": "4-12 weeks",
+    "us_rates_view": "neutral",
+    "usd_view": "higher"
+  },
+  "macro_assumptions": {
+    "growth": "below_trend",
+    "policy": "hawkish",
+    "rates": "higher_for_longer",
+    "risk": "risk_off"
+  },
+  "packet_sha256": "b4c642412ddcc969d6fd135638baede8f3e9f987015684f2085c8460c3af466a",
+  "remit": "fade statistically or fundamentally stretched market moves when reversal conditions exist",
+  "round": 1,
+  "run_id": "tr-20260918T223926Z-ondemand",
+  "stance_summary": "AU 10Y is statistically extreme on both 252-day and 5-year windows while Australian housing volumes, stamp-duty receipts and home values are already contracting; that is an overshoot of the global-tightening narrative, not a reason to keep extrapolating. Receive AU 10Y outright. The cleaner spot alternative is short AUDNZD, but NZ yields are unavailable so the cross cannot be risk-matched, and AUDUSD is not comparably stretched.",
+  "subagent_calls": 0,
+  "subagent_model": null,
+  "trade": {
+    "asset_class": "rates",
+    "catalysts": [
+      "Further AU housing, credit or activity deterioration that forces term yields to acknowledge the tightening channel already in the data.",
+      "Digestion of the fully priced 16 Sep Fed hike and the 17 Sep BoJ hike if the Saudi Oman workaround keeps the oil-supply tail contained.",
+      "Follow-through on the 16 Sep AU 10Y -6.3bp print if it is the start of normalization rather than one-day noise."
+    ],
+    "confidence": 58,
+    "direction": "long",
+    "entry": null,
+    "evidence_refs": [
+      "rates:AU",
+      "rates:US",
+      "xa:opportunities",
+      "fx:AUDNZD",
+      "fx:AUDUSD",
+      "fx:AUDCAD",
+      "mw_20260916_au_housing_tightening",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "temp:AU:inflation",
+      "temp:AU:labor",
+      "temp:AU:activity",
+      "temp:AU:consumer",
+      "last24:2026-09-18:desk-thesis",
+      "mw_20260916_fomc_hike_pricing",
+      "rollup:Fed raises 25bp to 3.75\u20134.00%",
+      "last24:2026-09-18:boj-raises-its-policy-rate-to-1-25",
+      "mw_20260916_saudi_oman_workaround",
+      "xa:energy-retained",
+      "research_method",
+      "market_state",
+      "pos:unavailable"
+    ],
+    "expression_comparison": {
+      "rates_candidate": "Receive AU 10Y outright (long ACGB 10Y duration). Alternative rates expression considered but not selected: long US 2s10s (bull steepener) after the post-hike front-end overshoot.",
+      "rationale": "The discrepancy lives in AU term yields versus a housing channel that is already biting, so outright duration owns the edge. AU-US 5Y/10Y spreads are not the stretched object (AU-US 5Y sits only around the 22nd percentile of the 252-day window). US 2s10s is more statistically extreme, but the flattening is the same fully priced Fed hike plus a still-live energy/term-premium impulse, without AU housing's independent physical weakening mechanism. Short AUDNZD is the larger FX z-score, but official NZ sovereign yields are unavailable so AU-NZ rate RV cannot be constructed, NZ labor is already the softest gauge in the set, and AUDUSD is cheap versus copper rather than rich. Short AUDCAD would fight a documented ~165bp 2Y yield differential. Receiving AU 10Y is paid to wait and is the default when rates and spot are not cleaner in spot's favor.",
+      "selected": "rates",
+      "spot_candidate": "Short AUDNZD, the most stretched G10 cross in the packet on 5-year z and 252-day percentile; secondary spot expression short AUDUSD as the FX of AU housing weakness."
+    },
+    "horizon": "4-12 weeks",
+    "instrument": "AU 10Y",
+    "invalidation": "AU 10Y makes a new high versus the 16 Sep official F2 close while housing volumes/prices stabilize or reverse and AU inflation temperature moves back through 50 without further housing deterioration; or a re-acceleration of the energy shock that lifts global term premium and AU CPI together.",
+    "mispricing": "AU 10Y is being priced as if local conditions still require 5-year-high term yields, while the housing channel and sub-50 AU temperatures already show the tightening working. The gap is level versus local transmission, not a stretched AU-US spread.",
+    "principal_risks": [
+      "Desk thesis risk: energy shock and broader G10 tightening keep global term-rate pressure elevated and drag AU 10s with US/CA even if housing stays weak.",
+      "BoC-style fuel pass-through, or a similar AU CPI impulse, can re-justify high term yields; energy-market shock absorbers are described as weakening.",
+      "Positioning and flow are unavailable, so the 'crowded extrapolation' prior is inferred from price extremes plus narrative, not from holdings.",
+      "Housing evidence is single-source Reuters; a data revision or a housing stabilization would remove the reversal condition.",
+      "Executable prices are not in the packet; levels stay null and sizing cannot be calibrated to a live book."
+    ],
+    "stop": null,
+    "structure": "receive AU 10Y outright versus cash",
+    "target": null,
+    "thesis": "FACT: On 16 Sep 2026 the RBA F2 10Y assessed close is 5.348%, 99.8th percentile of the 5-year window (z 1.63) and 99.2nd percentile of the 252-day opportunity window (z 2.08), and it is listed in the |z|>=2 stretched-series screen. AU 2Y and 5Y are also at the 99th percentile of both windows. FACT: NSW stamp-duty receipts fell 24% y/y in August with transaction volumes down 18%, and Sydney/Melbourne home values are down more than 7% from peak. FACT: AU inflation/labor/activity temperatures are 49.2 / 47.8 / 49.2, i.e. at or below the 50 baseline, while the last-24 desk thesis is that the Fed hike, BoJ hike to 1.25% and BoE 6-3 hold are broadening global tightening and keeping term-rate pressure elevated even where domestic growth is softer. FACT: the 16 Sep FOMC hike was >90% priced into the decision. INFERENCE: AU 10s have overshot the local fundamentals. The market is extrapolating the global energy/tightening impulse onto a curve whose domestic transmission channel is already contracting housing and sitting below-50 on inflation, labor and activity. That is crowded narrative, not a new AU-specific tightening need. The reversal condition is that housing/activity weakness feeds back into term yields as the known global hike cluster is digested, especially if the Saudi Oman workaround keeps the oil-supply tail from re-widening. UNKNOWN: no positioning/flow dataset; executable broker prices absent; NZ yields unavailable (does not block AU 10Y); housing print is single-source Reuters; whether RBA looks through housing if energy pass-through arrives with a lag.",
+    "why_now": [
+      "AU 10Y is in the |z|>=2 stretched-series screen at the 99.2nd percentile of 252-day history and the 99.8th percentile of the 5-year tenor window after a +26bp 1m and +53bp 3m rise.",
+      "The 16 Sep housing evidence is the independent weakening mechanism: stamp duty -24% y/y, volumes -18%, home values more than 7% below peak, published as the RBA tightening channel biting.",
+      "AU inflation, labor and activity temperatures are all at or below 50, so the local data do not corroborate a new tightening impulse.",
+      "The Fed hike (pre-priced >90%), BoJ hike and BoE hawkish hold just broadened the global-tightening narrative that is being extrapolated into AU duration; that is known information, not a new AU-specific shock.",
+      "The 16 Sep AU 10Y print already fell 6.3bp, a first tick consistent with normalization rather than a fresh breakout."
+    ]
+  },
+  "type": "TRADER_ROOM_CONTRIBUTION"
+}
