@@ -52,6 +52,7 @@
     const unrealized = seats.reduce(function (sum, seat) { return sum + (finite(seat.unrealized_pnl_usd) ? seat.unrealized_pnl_usd : 0); }, 0);
     const openCount = seats.reduce(function (sum, seat) { return sum + ((seat.positions || []).length); }, 0);
     const changes = packet.overnight_changes || [];
+    const research = packet.overnight_research || null;
 
     let stale = "";
     if (status !== "fresh") {
@@ -87,7 +88,24 @@
         "</span><span>" + esc(row.instrument || "") + "</span><span>" + money(row.notional_usd) + "</span></div>";
     }).join("") : '<div class="tb-empty">No overnight position changes</div>';
 
+    let researchHtml = "";
+    if (research) {
+      const items = []
+        .concat(research.news || [])
+        .concat(research.central_bank_research || [])
+        .slice(0, 8);
+      const rows = items.length ? items.map(function (item) {
+        const title = item.headline || item.title || item.name || "Research item";
+        const note = item.summary || item.market_read || item.note || "";
+        return '<div class="tb-change"><b>' + esc(title) + '</b><span>' + esc(note) + '</span></div>';
+      }).join("") : '<div class="tb-empty">No additional overnight research items</div>';
+      researchHtml = '<section class="tb-panel"><div class="tb-panel-head"><h3>Overnight research</h3><p>' +
+        esc(research.summary || "Research gathered before the trader packet was frozen.") +
+        '</p></div><div class="tb-changes">' + rows + "</div></section>";
+    }
+
     root.innerHTML = stale +
+      researchHtml +
       '<section class="tb-panel"><div class="tb-panel-head"><h3>Book snapshot</h3><p>' +
       esc(packet.as_of || "") + " · evidence cutoff " + esc(packet.evidence_cutoff || "n/a") +
       '</p></div><div class="tb-kpis"><div class="tb-kpi"><span>Seats</span><b>' +
