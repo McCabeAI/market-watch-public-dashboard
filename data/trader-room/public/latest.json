@@ -1,0 +1,289 @@
+{
+  "as_of": "2026-09-18T18:29:33Z",
+  "available": true,
+  "conflict_count": 4,
+  "run_id": "tr-20260918T182933Z-ondemand",
+  "seat_count": 14,
+  "status": "STATUS: AWAITING_CHATGPT_ARBITRATION",
+  "trade_count": 13,
+  "trades": [
+    {
+      "agent": "carry-is-king",
+      "confidence": 50,
+      "entry_reason": "Fed hike to 3.75\u20134.00% is in the rear-view and August CPI keeps the tightening bias intact. CA\u2013US 2Y is -140bp on 2026-09-17, 1y percentile 3.77 and 5y percentile 4.30, after further widening. Canada August inflation holds at 3% with core near 2%, so BoC energy-pass-through risk is a tail, not a delivered hike. Saudi workaround reduced the extreme oil-supply tail that could overwhelm USD\u2013CAD carry.",
+      "mispricing": "Market pricing already embeds a historically wide USD yield premium over CAD, but USDCAD spot has not matched that 5y-percentile extremity. The implied assumption in fading USDCAD is that CAD energy pass-through or a Fed pivot will close the 140bp gap fast enough to beat carry.",
+      "rebuttal": {
+        "strongest_opponent_point": "Canada's Q2 activity/consumer lead, crude still near $110, and BoC energy-pass-through minutes could force a Canadian policy reprice that compresses the historically extreme 140bp CA-US 2Y discount after a fully priced Fed hike.",
+        "trade_change": "unchanged"
+      },
+      "stance_summary": "Own the verified US\u2013CA 2Y carry in patient long USDCAD; reject long-CAD energy narratives that require paying 140bp and reject stretched AUD crosses whose housing/energy catalysts overwhelm the extra carry.",
+      "trade": {
+        "direction": "long",
+        "entry": null,
+        "expression": null,
+        "horizon": "2-4 months patient hold, collecting the 2Y differential unless energy/BoC pass-through overwhelms",
+        "instrument": "USDCAD",
+        "invalidation": "Thesis is wrong if the CA\u2013US 2Y carry proxy compresses because BoC hikes on energy pass-through or the Fed enters an easing cycle, or if an energy-supply shock reopens an extreme oil tail.",
+        "structure": "spot FX; official 2Y yield differential is the carry proxy because forward points and OIS are not in the packet",
+        "target": null
+      }
+    },
+    {
+      "agent": "catalyst-junkie",
+      "confidence": 49,
+      "entry_reason": "The hike itself is known information; the new transmission is BoJ +25bp to 1.25% on 17 Sep and a non-dovish BoE 6-3 hold the same day. Canada-specific overlay is dated 14-16 Sep: August CPI held at 3% with core near 2%, BoC minutes flagged energy pass-through as a risk rather than a delivered hike, and the Saudi workaround reduced the extreme oil-supply tail. Reject fading 5y-extreme AUDNZD/AUDCAD as the trade: NZ s\u2026",
+      "mispricing": "CA-US 2Y at -140bp (1y percentile 3.8, 5y percentile 4.3) prices a durable BoC easing/hold gap versus a Fed that has just hiked; USDCAD at ECB reference 1.4010 is only 74th percentile on 1y, so FX has not fully treated that policy gap as a completed CAD-weakness event.",
+      "rebuttal": {
+        "strongest_opponent_point": "Rate-hawk is right that the next Canadian CPI or BoC communication could convert the minutes' energy pass-through warning, 3% headline, and retained crude-near-$110 into a less-easy CA path that compresses CA-US 2Y and reverses USDCAD.",
+        "trade_change": "unchanged"
+      },
+      "stance_summary": "This week's broadening G10 tightening plus a reduced CAD oil-supply tail is the live path for CAD to keep cheapening versus USD while the extreme CA-US rate gap persists; housing-stretched AUDNZD is a valuation fade wit\u2026",
+      "trade": {
+        "direction": "long",
+        "entry": null,
+        "expression": null,
+        "horizon": "event-driven, 1-4 weeks through the next Canadian CPI/BoC communication window after this G10 decision week",
+        "instrument": "USDCAD",
+        "invalidation": "Thesis is wrong if Canadian core reaccelerates via the energy pass-through named in BoC minutes, or if the energy shock-absorber warning reasserts and CAD yields close the CA-US 2Y gap.",
+        "structure": "outright spot USDCAD as the FX expression of persistent CA-US 2Y cheapness of CAD rates",
+        "target": null
+      }
+    },
+    {
+      "agent": "cross-merchant",
+      "confidence": 47,
+      "entry_reason": "Post-Fed global-tightening desk thesis is keeping USD bid; USDCAD +1.75% over 1m is polluting CAD and stretching AUDCAD. Australian housing transmission is in the latest retained prints plus the 16 Sep Westpac-MI confidence drop. BoC minutes flag energy pass-through while Canadian core stays near 2% and activity/GDP are firmer than Australia's. AUDNZD is more statistically stretched but NZ official yields are a hard\u2026",
+      "mispricing": "AUDCAD prices a near-record Australian premium versus CAD while the CA-AU 2Y differential is only around its 1y median; the 1m AUDCAD rally is mechanically USD-CAD weakness after the Fed hike, not a clean AU-CA re-rating of housing versus energy.",
+      "rebuttal": {
+        "strongest_opponent_point": "CAD-up should be expressed as short USDCAD because that is where CAD cheapened +1.74% over 1m against a 4th-percentile CA-US 2Y, while short AUDCAD pays more AU-CA carry into a 5y extreme that already embeds the USD squeeze\u2014or, if that squeeze persists, long\u2026",
+        "trade_change": "unchanged"
+      },
+      "stance_summary": "Short AUDCAD isolates Australian housing/RBA-channel stress versus Canadian energy pass-through and firmer activity; USD pairs contaminate both legs.",
+      "trade": {
+        "direction": "short",
+        "entry": null,
+        "expression": null,
+        "horizon": "2-8 weeks through subsequent Australian housing/labor/sentiment prints and Canadian inflation/BoC communication",
+        "instrument": "AUDCAD",
+        "invalidation": "Falsified if Australian housing, labor, and sentiment stabilize or rebound while Canadian activity and energy pass-through fade and the CA-AU 2Y spread leaves its 1y-median neighborhood for a new Australian-premium extreme.",
+        "structure": "spot",
+        "target": null
+      }
+    },
+    {
+      "agent": "dollar-king",
+      "confidence": 53,
+      "entry_reason": "The September 16 Fed hike is now realized, not just a >90% priced event. The CA-US 2Y spread widened 15bp over five days and 17bp over one month. The last24 desk thesis dated 2026-09-18 states BoJ tightening and a hawkish BoE hold broadened global tightening after the Fed. Saudi ship-to-ship crude via Oman reduced the extreme oil-supply tail that had been CAD\u2019s best fundamental offset.",
+      "mispricing": "Markets have started to mark USD higher versus CAD but still treat CAD as energy-supported. That is inconsistent with a CA-US 2Y gap at the 4th percentile of the 1y distribution while USDCAD itself is only around the 74th 1y percentile.",
+      "rebuttal": {
+        "strongest_opponent_point": "Canada still leads the packet on activity and consumer gauges while BoC minutes flag energy pass-through after a fully priced Fed hike, so the historically cheap CA-US yield gap should close through CAD strength rather than more USD.",
+        "trade_change": "unchanged"
+      },
+      "stance_summary": "Own the US-Canada policy and front-end gap in USDCAD spot; crosses and AUD/NZD USD pairs add second-order risk or fight carry.",
+      "trade": {
+        "direction": "long",
+        "entry": null,
+        "expression": null,
+        "horizon": "Tactical 2-8 weeks; keep the USD-over-CAD stance while the CA-US 2Y gap remains historically wide versus USDCAD\u2019s more moderate percentile.",
+        "instrument": "USDCAD",
+        "invalidation": "The causal mechanism fails if the CA-US 2Y gap compresses because the BoC hikes on energy pass-through or US front-end yields fall as the Fed\u2019s tightening bias breaks, or if CAD terms of trade re-dominate via a renewed oil-supply tail.",
+        "structure": "spot",
+        "target": null
+      }
+    },
+    {
+      "agent": "mean-reverter",
+      "confidence": 46,
+      "entry_reason": "AUDNZD printed a further +0.65% 1d and +1.19% 5d extension into a 5y extreme after AU housing evidence and the NZ GDP beat were already in the packet. The preferred rates-first AU-NZ RV expression cannot be built because official NZ yields are unavailable. The energy-tail bid that can keep AUD bid versus NZD is the live mechanism to fade after the Saudi workaround.",
+      "mispricing": "Market pricing treats NZD as the clear Australasian underperformer versus AUD at a 5y 99.96th percentile / z +3.12, even though AU labor and housing are already softening and NZ inflation is the hotter of the two.",
+      "rebuttal": {
+        "strongest_opponent_point": "NZDUSD has already dropped 3.90% to the 13th 1y percentile while AUDUSD still sits in the upper quartile, so if Australian housing and labor are the live tightening tax, the unpaid residual looks like short AUD versus USD rather than buying the already-dumped\u2026",
+        "trade_change": "unchanged"
+      },
+      "stance_summary": "Fade AUDNZD: the 5y extreme is an NZD-leg overshoot, not a justified AU-NZ fundamental re-rating, and AU housing bite plus a clipped oil tail are the reversal conditions.",
+      "trade": {
+        "direction": "short",
+        "entry": "ECB same-fixing research/reference AUDNZD 1.246846846846847 as of 2026-09-18; not executable broker pricing",
+        "expression": null,
+        "horizon": "tactical 2-6 weeks against the latest extension; strategic 1-3 months to mean-revert the 5y extreme",
+        "instrument": "AUDNZD",
+        "invalidation": "AUDNZD makes a new high versus the 2026-09-18 ECB research/reference fixing after NZ activity or labor deteriorates relative to Australia, or after AU housing evidence stops showing the tightening channel biting",
+        "structure": "spot FX short AUD / long NZD",
+        "target": null
+      }
+    },
+    {
+      "agent": "no-trade-skeptic",
+      "confidence": 69,
+      "entry_reason": "The live policy cluster is already printed: Fed hike 16 Sep, BoJ hike 17 Sep, hawkish BoE hold 17 Sep. Standing down now is the timing call; chasing the narrative after the events fails the why-now test. Market-state FX is an 18 Sep ECB same-fixing research tape, not a live executable book, while US/AU yields are 16-17 Sep and the snapshot is marked stale solely because NZ_rates is blocked. Empty $100m seed books wi\u2026",
+      "rebuttal": null,
+      "stance_summary": "No G10 FX edge in this packet survives the research-method test: the policy catalysts are already in the tape, temperatures are near-neutral, implieds/positioning/NZ yields/executable prices are missing, and statistical\u2026",
+      "trade": null
+    },
+    {
+      "agent": "perma-bear",
+      "confidence": 47,
+      "entry_reason": "Verified new information after the already >90% priced Fed hike is the broadening of global tightening: BoJ hiked 25bp to 1.25% and BoE held 6-3 with three hike votes. Australian housing is a live transmission channel: stamp-duty and turnover collapsing while home values are already down more than 7% from peak. AUDUSD has not paid that tax, unlike NZDUSD (1m -3.90%). AU-US 2Y compressed 12.5bp on the latest common o\u2026",
+      "mispricing": "AUDUSD remains resilient (ECB 18 Sep 2026 research/reference 0.7120, 1m +0.20%, 1y percentile 76.4) despite NSW stamp-duty receipts -24% y/y, housing turnover -18%, AU labor 47.8, and AU-US 2Y only +25.9bp after compression.",
+      "rebuttal": {
+        "strongest_opponent_point": "Long USDCAD is paid about 140bp on the CA-US 2Y while short AUDUSD still fights a residual +26bp AU-US premium after USDCAD has already ground higher on 1d/5d/1m.",
+        "trade_change": "unchanged"
+      },
+      "stance_summary": "Global tightening is still broadening into a housing-and-labor slowdown that AUDUSD has not paid for, so the cleanest remaining risk-off asymmetry is short AUD versus defensive USD.",
+      "trade": {
+        "direction": "short",
+        "entry": null,
+        "expression": null,
+        "horizon": "4-8 weeks",
+        "instrument": "AUDUSD",
+        "invalidation": "Mechanism fails if Australian labor/housing stabilize or re-accelerate, AU-US front-end re-widens in AUD's favor, and global policy reopens a credible easing path while AUDUSD stays bid versus other high-beta FX.",
+        "structure": "spot",
+        "target": null
+      }
+    },
+    {
+      "agent": "perma-bull",
+      "confidence": 52,
+      "entry_reason": "The 16 Sep Fed hike to 3.75-4.00% was already >90% priced; the live impulse is the subsequent 5d/1m USDCAD squeeze as the last24 desk framed broader G10 tightening, not new Canadian weakness. Saudi ship-to-ship crude via Oman cut the extreme oil-supply tail while retained energy research still has crude near $110, which is CAD terms-of-trade support. CA-US 2Y cheapened 17bp over 1m to -140bp even after Canada\u2019s stro\u2026",
+      "mispricing": "USDCAD\u2019s 1m/5d USD bid and a historically cheap CA-US 2Y (-140bp, ~4th percentile 1y/5y) price Canada as the soft cyclical that must ease versus a hawkish Fed. Packet growth gauges say the opposite on activity and consumer: CA activity 53.2 and consumer 52.5 versus US 49.92 and 48.5.",
+      "rebuttal": {
+        "strongest_opponent_point": "The CA-US 2Y of -140bp at about the 4th percentile is a real holding-cost and percentile gap versus only 74th-percentile USDCAD, so patient long USDCAD can be paid while waiting if BoC never closes the policy gap.",
+        "trade_change": "unchanged"
+      },
+      "stance_summary": "Fade the post-Fed defensive USD bid in USDCAD: Canada still has the strongest growth/consumer gauges in the emphasis set, energy terms-of-trade remain a CAD tailwind, and the 1m CAD selloff prices more fragility than th\u2026",
+      "trade": {
+        "direction": "short",
+        "entry": "ECB same-fixing research/reference USDCAD 1.4010471204188482 as of 2026-09-18; not executable broker pricing",
+        "expression": null,
+        "horizon": "4-8 weeks tactical fade of the post-FOMC USD/CAD squeeze",
+        "instrument": "USDCAD",
+        "invalidation": "Thesis fails if Canada loses its activity/consumer lead versus the US, if oil demand destruction removes CAD terms-of-trade support, or if additional G10 tightening extends the USD squeeze without a Canadian growth confirmation.",
+        "structure": "spot short USDCAD (long CAD versus USD)",
+        "target": null
+      }
+    },
+    {
+      "agent": "positioning-cynic",
+      "confidence": 37,
+      "entry_reason": "AUDNZD is still being added after the information is old: +0.65% on 1d and +1.19% on 5d on top of +4.27% over 1m. The Fed 25bp hike arrived with >90% futures probability already in the price. AU-US 2Y fell 12.5bp on 2026-09-16, shrinking the rate cushion under AUD while AUDNZD continued higher. NZ Q2 GDP 0.2% q/q beat forecasts and the India FTA passed; those incremental NZ prints have not been bid in NZDUSD.",
+      "mispricing": "AUDNZD prices a large, still-extending AU-over-NZ divergence as if NZ were uniquely broken. Price is the only positioning proxy in the packet. CFTC/skew/CTA holdings are unavailable, so this is inferred crowding, not measured open interest.",
+      "rebuttal": {
+        "strongest_opponent_point": "If global tightening keeps USD bid, NZD can remain the high-beta funding dump even after a 3.90% one-month decline because NZ labor at 47.0 is the packet's weakest labor gauge.",
+        "trade_change": "amended"
+      },
+      "stance_summary": "Fade the packet's most extended, momentum-owned expression\u2014long AUD versus dumped NZD\u2014rather than chase post-hike USD or pile into NZDUSD shorts after a fully priced Fed event.",
+      "trade": {
+        "direction": "short",
+        "entry": null,
+        "expression": null,
+        "horizon": "2-6 weeks",
+        "instrument": "AUDNZD",
+        "invalidation": "The fade is wrong if NZ-specific activity/labor keeps deteriorating versus Australia, if official NZ yields once available confirm a persistent AU 2Y premium, or if AUDNZD's 1m outperformance re-accelerates after AU housing/activity stabilize.",
+        "structure": null,
+        "target": null
+      }
+    },
+    {
+      "agent": "rate-dove",
+      "confidence": 52,
+      "entry_reason": "The 16 Sep housing and Westpac-sentiment prints are new transmission evidence that arrived as the Fed delivered a fully priced 25bp hike. AU 2Y still printed +39bp over one month and remains at a 99th-percentile level; AUDUSD\u2019s 1m return is still +0.20% versus NZDUSD \u22123.90%. Housing volumes and sentiment move first, labor next, then the RBA path. That sequence is live in AU now.",
+      "mispricing": "Market-implied assumption backsolved from AU 2Y/10Y at ~99th 1y percentiles plus AUDUSD in the upper quartile is that RBA policy can stay restrictive and AUD can keep its high-yield bid even as the housing channel is already contracting.",
+      "rebuttal": {
+        "strongest_opponent_point": "Dollar-king and carry-is-king's long USDCAD is the strongest opposing USD-up case because a CA-US 2Y gap of about -140bp near the 4th one-year percentile versus USDCAD only around the 74th percentile, with the 2Y differential paying long USD, looks like a cle\u2026",
+        "trade_change": "unchanged"
+      },
+      "stance_summary": "Restrictive policy is already chewing through Australian housing, labor and sentiment while AU front-end yields sit at a one-year extreme and AUDUSD still trades like a supported high-yielder, so AUD easing and growth w\u2026",
+      "trade": {
+        "direction": "short",
+        "entry": null,
+        "expression": null,
+        "horizon": "1-3 months",
+        "instrument": "AUDUSD",
+        "invalidation": "Thesis fails if Australian labor re-tightens and housing turnover/prices stabilize while the RBA delivers another hike or AU 2Y holds its 99th-percentile regime, or if US activity/labor break first.",
+        "structure": "spot FX short AUD versus USD",
+        "target": null
+      }
+    },
+    {
+      "agent": "rate-hawk",
+      "confidence": 55,
+      "entry_reason": "Fed 25bp hike to 3.75-4.00% was greater-than-90% priced and is now known; residual hawk risk has migrated to currencies still priced for easier policy. BoC minutes already flag higher energy pass-through while August CPI held at 3% and CA-US spreads cheapened further over the month. Energy shock absorbers remain weak and the last24 desk says the shock is constraining the global easing impulse.",
+      "mispricing": "CA-US 2Y at -140bp (3.8th one-year percentile) and CA-US 10Y at -111bp (0.20th one-year percentile) assume BoC can stay far easier than the Fed because core is near 2%; that ignores stuck 3% headline CPI, BoC minutes flagging energy pass-through, Canadian activity/consumer still above 52, and crude near $110.",
+      "rebuttal": {
+        "strongest_opponent_point": "The verified CA-US 2Y of about 140bp is paid to long USDCAD while Canadian core near 2% and cooling labor give opponents a coherent case that BoC will not catch the Fed fast enough to beat carry.",
+        "trade_change": "unchanged"
+      },
+      "stance_summary": "CAD inflation and BoC restraint are underpriced versus a historically extreme CA-US yield discount after a fully anticipated Fed hike.",
+      "trade": {
+        "direction": "short",
+        "entry": null,
+        "expression": null,
+        "horizon": "1-3 months",
+        "instrument": "USDCAD",
+        "invalidation": "BoC communication or incoming Canadian CPI shows energy failing to lift headline/core while labor deterioration continues, so the CA-US discount is revealed as warranted easier policy rather than underpriced inflation risk.",
+        "structure": "spot",
+        "target": null
+      }
+    },
+    {
+      "agent": "trend-follower",
+      "confidence": 59,
+      "entry_reason": "Fed hike is delivered and the Sep 18 desk thesis says global tightening broadened via BoJ hike and a hawkish BoE hold. CA-US 2Y widened a further ~15bp against CAD over 5d and ~17bp over 1m, matching USDCAD +1.10% 5d and +1.74% 1m. Canada August core is near target and labor is cooling, so a BoC catch-up hike is not the live catalyst.",
+      "mispricing": "Market pricing still treats CAD energy support and the 3m CAD outperformance as enough to fade USDCAD, even though the live 5d/1m price path, CA-US 2Y/5Y/10Y spread trend, and Fed-versus-BoC policy gap remain USD-positive.",
+      "rebuttal": {
+        "strongest_opponent_point": "The strongest opposing case is that a fully priced Fed hike plus Canada's firmer activity and energy ToT and a BoC energy-pass-through warning make the 5d/1m USDCAD squeeze a known-information overshoot that should reverse as the extreme CA-US yield discount\u2026",
+        "trade_change": "unchanged"
+      },
+      "stance_summary": "Do not fade the USDCAD grind: 1d/5d/1m spot, the still-widening CA-US front-end spread, and post-FOMC global tightening are aligned, and energy ToT is not a reversal signal.",
+      "trade": {
+        "direction": "long",
+        "entry": null,
+        "expression": null,
+        "horizon": "2-6 weeks",
+        "instrument": "USDCAD",
+        "invalidation": "USDCAD 5d and 1m returns both turn negative while the CA-US 2Y spread stops moving against CAD, or Canadian core inflation/BoC policy closes the hawkish US-CA gap.",
+        "structure": "spot",
+        "target": null
+      }
+    },
+    {
+      "agent": "value-guy",
+      "confidence": 53,
+      "entry_reason": "AUDCAD is at a 5y historical extreme after +1.95% in one month. The CA-AU 2Y discount of -165bp is already in the curve; leftover mispricing lives in spot. Australian housing evidence from 16 Sep is the new transmission. The 18 Sep desk thesis that global tightening is broadening keeps Australian term rates elevated.",
+      "mispricing": "AUDCAD prices Australia as the structurally superior commodity currency after the rate market has already paid a historically large AU-over-CA 2Y premium. The residual discrepancy is in the cross.",
+      "rebuttal": {
+        "strongest_opponent_point": "Dollar-king's case that CA-US 2Y at about -140bp (roughly 4th 1y/5y percentile) has not been matched by USDCAD's only-74th 1y percentile is the strongest CAD-lower claim, because it uses a historical spread-versus-spot discrepancy rather than mere post-Fed mo\u2026",
+        "trade_change": "unchanged"
+      },
+      "stance_summary": "AUDCAD is the clean G10 valuation dislocation: a 5y-extreme AUD/CAD spot after the curve has already paid Australia a large 2Y premium, while the new information is Australian housing transmission and CAD energy terms-o\u2026",
+      "trade": {
+        "direction": "short",
+        "entry": null,
+        "expression": null,
+        "horizon": "2-4 months",
+        "instrument": "AUDCAD",
+        "invalidation": "Thesis is falsified if Australian housing and activity re-accelerate while Canadian energy terms-of-trade support fades and the CA-AU 2Y discount reverses without AUDCAD leaving the 5y extreme.",
+        "structure": null,
+        "target": null
+      }
+    },
+    {
+      "agent": "vol-convexity",
+      "confidence": 41,
+      "entry_reason": "The 16 Sep Fed 25bp hike was already greater-than-90% priced, so residual AUD risk is path and event distribution. Verified AU housing transmission is live while AU 2Y/5Y/10Y yields remain at the 99th 1y percentile. Global tightening broadened after the Fed via the BoJ hike and a hawkish BoE hold. AUDUSD 20d realized vol 4.71 is below 60d realized vol 5.29 and far below USDJPY 20d realized vol 11.04.",
+      "mispricing": "Packet AUDUSD is only +0.20% over 1m with 20d realized vol 4.71 versus 60d 5.29, while AU 2Y is 4.999 at the 99th 1y percentile. That is a rates-versus-FX and event-versus-realized-vol discrepancy, not a verified cheap implied-vol print.",
+      "rebuttal": null,
+      "stance_summary": "AUDUSD spot cannot own the unresolved housing-versus-global-tightening fork; a 1-month ATM straddle is the expression, with all executable levels null until implied vol is checked against packet realized vol.",
+      "trade": {
+        "direction": "long volatility",
+        "entry": null,
+        "expression": null,
+        "horizon": "2-5 weeks, through the next RBA and Australian inflation prints",
+        "instrument": "AUDUSD 1-month ATM straddle",
+        "invalidation": "Do not execute if 1-month AUDUSD ATM implied vol is already rich to packet 20d realized vol 4.71 and 60d realized vol 5.29. Thesis is false if AU housing and global tightening resolve as a one-way AUD path.",
+        "structure": "long 1-month ATM AUDUSD straddle, delta-hedged; stand aside if 1m implied vol is already rich to packet 20d/60d realized vol",
+        "target": null
+      }
+    }
+  ]
+}
