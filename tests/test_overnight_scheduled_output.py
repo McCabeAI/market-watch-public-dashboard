@@ -94,7 +94,8 @@ class ScheduledOutputTests(unittest.TestCase):
             "type": AGENT_PACKET_TYPE,
             "overnight_run_id": self.run_id,
             "base_packet_sha256": self.base["packet_sha256"],
-            "evidence_cutoff": self.base["as_of"],
+            "base_evidence_cutoff": self.base["as_of"],
+            "evidence_cutoff": "2026-09-18T02:20:00-04:00",
             "research_supplement": {
                 "summary": "No material new research after the deterministic cutoff.",
                 "news": [],
