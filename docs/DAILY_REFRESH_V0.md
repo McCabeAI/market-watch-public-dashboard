@@ -239,14 +239,13 @@ Use these statistics to answer an economic question, not to decorate the page. P
 
 The V0 score is a compact operational interface for the current quick-data set. It is DERIVED evidence. It is not the canonical Country Expert temperature model and must not be represented as one.
 
-The existing recovered scores are the starting anchors:
+All four dimensions for all four economies were reindexed to a neutral **50.0 baseline on 2026-09-17**. The recovered prototype scores are no longer authoritative starting anchors.
 
-| Economy | Inflation | Labor | Activity | Consumer |
-| --- | ---: | ---: | ---: | ---: |
-| US | 72 | 75 | 69 | 74 |
-| Canada | 55 | 38 | 66 | 45 |
-| Australia | 82 | 50 | 54 | 48 |
-| New Zealand | 80 | 32 | 47 | 38 |
+Current score state is deterministic and versioned in `data/temperature_scores.json`. The dashboard score is:
+
+`current score = 50.0 + cumulative fixed-weight qualifying release impulses since activation`
+
+The activation ledger contains a one-time bootstrap classification of the current hard evidence already present in the dashboard. This is deliberately not a historical backfill. If the scale later proves poorly centered, reindex explicitly rather than freezing current scores while waiting for a perfect historical calibration.
 
 Display mapping:
 
@@ -258,9 +257,9 @@ Display mapping:
 
 ### Update principle
 
-Do not rebuild the score from a large historical distribution. V0 is an incremental release-update model anchored to the current dashboard state.
+Do not rebuild the score from a large historical distribution. V0 is an incremental release-update model indexed to the 50.0 activation baseline.
 
-A dimension score changes only when one of its underlying quick-data inputs changes or is materially revised.
+A dimension score changes when one of its defined hard inputs changes or is materially revised. Record that release as a new event in `data/temperature_scores.json` using the fixed component weight and the temperature impulse below. Missing or unresolved inputs contribute zero; they do not freeze the whole dimension and their weights are not redistributed.
 
 For each new observation, classify its **temperature impulse** relative to the immediately prior verified observation, the direction of the series, and a reliable consensus / policy-neutral reference only when such a reference is actually available.
 
@@ -318,21 +317,28 @@ Use these fixed V0 weights. Do not renormalize them because of release timing, s
 - private payroll estimates, vacancies/JOLTS, claims, survey employment, participation, employment-to-population, population/migration context and payroll revisions are important contextual evidence but receive no additional independent score weight.
 
 **Activity**
+- `docs/ACTIVITY_SCORE_V1.md` governs Activity.
 - GDP / domestic-demand measure: 60%
-- current higher-frequency activity / business indicator already present in the quick dashboard set: 40%
+- business survey composite: 40%
+- for the US survey block: 70% services / 30% manufacturing, equivalent to 28% / 12% of the total Activity score.
 
 **Consumer**
-- spending / retail / consumption measure: 40%
-- household income / real purchasing power measure: 30%
-- confidence / household-finance / credit-stress indicator already present in the quick dashboard set: 30%
+- `docs/CONSUMER_SCORE_V1.md` governs Consumer.
+- retail sales: 25%
+- household / personal income: 25%
+- broad consumer spending / consumption: 25%
+- consumer confidence: 25%
 
 ### Coverage rule
 
-Store / report which inputs were available for each score update. Coverage affects confidence and whether a move is permitted; it never changes the fixed component weights.
+Store / report which inputs were available for each score update. Coverage affects confidence, not the arithmetic. A valid observed hard input may move the score at its fixed weight even when other buckets are missing.
 
-- 100% expected inputs present: normal
-- 67–99%: usable but flag reduced coverage
-- below 67%: do not make a discretionary score change unless the new observed input is itself the clearly dominant defined component; otherwise preserve the prior score and flag insufficient coverage
+- observed qualifying component: apply its fixed weight × impulse;
+- component with no new/revised observation: impulse `0`;
+- missing or unresolved component: impulse `0` and flag the gap;
+- never renormalize remaining weights to compensate for missing data.
+
+This intentionally favors a usable live index over freezing the score until every lineage question is perfect.
 
 ### Direction remains separate
 
