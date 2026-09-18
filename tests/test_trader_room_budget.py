@@ -101,5 +101,64 @@ class TraderRoomBudgetHookTests(unittest.TestCase):
         self.assertNotEqual(blocked.returncode, 0)
 
 
+class TraderRoomContinuationBudgetHookTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.active = Path("/tmp/mw-trader-room-continuation-active.json")
+        self.lock = Path("/tmp/mw-trader-room-continuation-budget.lock")
+        self.active.unlink(missing_ok=True)
+        self.lock.unlink(missing_ok=True)
+        self.tmp = tempfile.TemporaryDirectory()
+        self.transcript = Path(self.tmp.name) / "transcript.txt"
+        policy = {
+            "version": 1,
+            "run_type": "trader-room-continuation",
+            "total_model_cap": 14,
+            "grok_cap": 14,
+            "composer_cap": 0,
+            "parent_model": "grok-4.6",
+            "parent_total": 1,
+            "parent_grok": 1,
+        }
+        marker = "MW_TRADER_ROOM_CONTINUATION_POLICY=" + json.dumps(policy, separators=(",", ":"))
+        self.transcript.write_text(marker + "\n", encoding="utf-8")
+        self.script = ROOT / ".cursor" / "hooks" / "enforce-overnight-budget.py"
+
+    def tearDown(self) -> None:
+        self.active.unlink(missing_ok=True)
+        self.lock.unlink(missing_ok=True)
+        self.tmp.cleanup()
+
+    def _call(self, child: str, model: str = "grok-4.6") -> subprocess.CompletedProcess:
+        event = {
+            "subagent_id": child,
+            "subagent_type": "generalPurpose",
+            "task": "continuation",
+            "parent_conversation_id": "root",
+            "tool_call_id": f"tc-{child}",
+            "subagent_model": model,
+            "is_parallel_worker": False,
+            "transcript_path": str(self.transcript),
+        }
+        return subprocess.run(
+            ["python3", str(self.script)],
+            input=json.dumps(event),
+            text=True,
+            capture_output=True,
+            cwd=ROOT,
+            check=False,
+        )
+
+    def test_continuation_allows_exactly_13_grok_children_after_parent(self) -> None:
+        for i in range(13):
+            self.assertEqual(self._call(f"grok-{i}").returncode, 0)
+        blocked = self._call("grok-overflow")
+        self.assertNotEqual(blocked.returncode, 0)
+        self.assertIn("cap", blocked.stdout.lower())
+
+    def test_continuation_blocks_composer_and_other_models(self) -> None:
+        self.assertNotEqual(self._call("composer", "composer-2.5").returncode, 0)
+        self.assertNotEqual(self._call("other", "claude-sonnet-5").returncode, 0)
+
+
 if __name__ == "__main__":
     unittest.main()
