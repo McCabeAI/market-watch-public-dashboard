@@ -1,160 +1,226 @@
 # Market Watch — Overnight Production Pipeline V1
 
-Status: ACTIVE UNATTENDED OPERATIONAL VERSION
+Status: PRE-MERGE
 
-This document is the contract for the repository-native overnight production pipeline. It does not replace `docs/DAILY_REFRESH_V0.md` for news selection, score methodology, or the restored front-page format. It adds the deterministic scheduler, one-run-id ledger, persistent 14-seat paper books, freshness/failure matrix, canonical morning dataset, and GitHub Pages publication gate.
-
-Do not edit Global Operating Rules or ACP from this repository.
+This is the technical contract for the unattended Market Watch morning pipeline. GitHub owns deterministic work. ACP owns every recurring model/provider clock. Market Watch never stores a Cursor credential and never invokes Cursor directly.
 
 ## 1. Ownership
 
 | Concern | Owner |
 | --- | --- |
-| Deterministic scheduling and stage orchestration | GitHub Actions (`.github/workflows/overnight-pipeline.yml`) |
-| Website publication | GitHub Actions only (`.github/workflows/deploy-pages.yml`) |
-| Reasoning-heavy 14-seat portfolio review | Cursor, consuming the frozen evidence packet only |
-| Durable overnight state | Git-auditable JSON under `data/overnight/` |
-| Front-page news/score authoring | Restricted 00:07 Cursor V0 refresh; GitHub validates and commits only the governed refresh surfaces |
+| Deterministic collection, snapshots, book mechanics, validation, assembly, Pages | Market Watch GitHub Actions |
+| Recurring model/provider launch | ACP scheduled dispatch |
+| Provider authentication / model dispatch / provider-call accounting | ACP |
+| Research + 14 structured trader decisions | Cursor launched by ACP |
+| Canonical books, P&L, NAV | Market Watch deterministic code |
+| Website publication | Market Watch GitHub Actions |
 
-Cursor is not the website publisher. The full adversarial Trader Room (`scripts/trader_room_go.py`) is not the nightly job.
+The on-demand adversarial Trader Room is unchanged. The nightly portfolio review is a separate workflow that reuses the locked 14 seat identities/remits/models but does not run aggregators, rebuttals, or ChatGPT arbitration.
 
-## 2. One immutable `overnight_run_id`
+## 2. Nightly sequence
 
-Every night uses one run id that spans all stages:
+All times are America/New_York.
+
+| Time/event | Owner | Work |
+| --- | --- | --- |
+| 00:07 | Market Watch | deterministic collect + live market-state snapshot |
+| 01:40 | Market Watch | deterministic pre-trader delta |
+| 01:50 | Market Watch | freeze trusted base evidence packet + prior books |
+| 02:05 | ACP | one approved scheduled Cursor parent |
+| provider run | Cursor via ACP | bounded research -> final packet/hash -> 14 direct trader children -> one structured output PR |
+| PR event | Market Watch | validate data-only output, simulate deterministic book application, append generated state, merge |
+| 03:35 | Market Watch | final deterministic market delta |
+| 03:50 | Market Watch | assemble canonical morning dataset |
+| 04:07 | Market Watch | final publication gate |
+| 04:15 | Market Watch | GitHub Pages release |
+
+There is no assumed provider completion clock. The scheduled-output PR is the completion event. If it is absent or rejected before assembly, the website may publish the last successful trader books with explicit stale status.
+
+## 3. Run identity
+
+Every night uses:
 
 ```
 overnight-YYYYMMDD
 ```
 
-The calendar date is `America/New_York`. Dry-run ids are `overnight-YYYYMMDD-dryrun-<suffix>`.
+The date is America/New_York. Deterministic artifacts live under:
 
-The ledger `data/overnight/runs/<run_id>/run.json` records, for every stage:
-
-- status (`pending | running | succeeded | failed | skipped | stale`)
-- `started_at` / `finished_at` / `as_of`
-- inputs, outputs, errors
-
-Stage artifacts stay under the same run directory. The run id is never rewritten.
-
-## 3. Stage schedule
-
-Schedules are declared directly in `America/New_York` using GitHub Actions timezone-aware cron. The scheduled cron string resolves the stage, so a delayed GitHub start does not silently turn a valid stage into an idle no-op.
-
-| Stage | ET | Job |
-| --- | --- | --- |
-| `collect` | 00:07 | Snapshot macro hard inputs, news, central-bank research, market state |
-| `pre_trader_delta` | 01:40 | Refresh pre-trader deltas versus collect |
-| `freeze_evidence` | 01:50 | Freeze the common evidence snapshot (SHA-256) |
-| `trader_review` | 02:05 | Lightweight 14-seat portfolio-management review |
-| `final_delta` | 03:35 | Refresh final market/news delta |
-| `assemble` | 03:50 | Build/validate one canonical morning dataset |
-| `publish` | 04:07 | Validate the final assembled dataset and publication gate |
-
-CLI:
-
-```bash
-PYTHONPATH=. python3 scripts/overnight_pipeline.py schedule
-PYTHONPATH=. python3 scripts/overnight_pipeline.py which-stage
-PYTHONPATH=. python3 scripts/overnight_pipeline.py dry-run --as-of 2026-09-18T12:00:00-04:00
-PYTHONPATH=. python3 scripts/overnight_pipeline.py stage collect --dry-run
+```
+data/overnight/runs/<run_id>/
 ```
 
-## 4. Collect semantics
+The 01:50 base packet is `evidence_snapshot.json` and has a SHA-256. The ACP/Cursor result must reference that exact base hash.
 
-At 00:07 the workflow first runs exactly one restricted `grok-4.6` Cursor refresh call against the active V0 contract. The project hook allows repository reads plus Cursor WebSearch/WebFetch, blocks shell/MCP/subagents, and limits writes to the governed V0 news/macro refresh surfaces. GitHub then validates those edits before committing them. A scheduled live run requires the repository Actions secret `CURSOR_API_KEY`; dry-run never invokes Cursor.
+## 4. ACP/Cursor output boundary
 
-After that refresh, `collect` freezes substantive inputs rather than hashes alone:
+The provider may submit only:
 
-- `macro_hard` — full `data/temperature_scores.json` state plus the complete score-source registry. Corrupt/unreadable JSON is `invalid`.
-- `news` — normalized current news items plus the governed v7/v9 refresh surfaces. Unreadable or unparsable scan state is `invalid`.
-- `central_bank_research` — normalized research items plus the active rolling 30-day overlay.
-- `market_state` — live `scripts/market_state.py` payload on scheduled collect/pre-trader/final-delta stages. A failed official-source fetch is explicit `unavailable`; no vendor substitute is invented.
-- `research_method` and the exact prior 14-seat books are added to the immutable 01:50 packet.
+```
+data/overnight/inbox/<run_id>/scheduled_output.json
+```
 
-## 5. Frozen evidence and the 02:05 review
+The scheduled-output PR must be data-only. Market Watch does not execute code from the provider branch.
 
-The 01:50 snapshot is immutable. At 02:05 GitHub launches exactly 14 independent `grok-4.6` Cursor CLI calls, one per locked seat. Every call receives the same substantive frozen evidence packet plus only that seat's frozen prior book. The `OVERNIGHT_FROZEN_REVIEW_POLICY=1` hook blocks all tools, browsing, file access, shell, MCP and nested agents, so the model cannot acquire evidence outside the packet. Each returned JSON is normalized and checked against the run id, packet SHA and evidence cutoff before book mutation.
+The JSON contains:
 
-This nightly review is **not** the full adversarial Trader Room: there is no conflict aggregator, rebuttal round, or ChatGPT arbitration packet. Each locked seat independently manages its own $100m paper book. The scheduled runtime hard cap is 15 model calls total: one 00:07 refresh call plus fourteen 02:05 seat calls. All are explicitly routed to Cursor Models-pool IDs; nested subagents are blocked.
+- schedule id and run id;
+- trusted 01:50 `base_packet_sha256`;
+- a research-enriched final agent packet and its hash;
+- exactly 14 structured seat decisions;
+- declared model-usage/cap fields.
 
-If any seat call or normalization fails, the apply job records the trader review as stale/failed and preserves the prior books. That failure does not block the website. `OVERNIGHT_TRADER_REVIEW_LIVE=1` is set only by the deterministic apply step after all 14 validated seat artifacts exist.
+It must not contain canonical books, NAV, cash, realized P&L, or unrealized P&L.
 
-## 6. Persistent $100m paper books
+## 5. Model policy and hard budget
 
-Roster, remits, and models remain the standing 14 seats from `scripts/trader_room/constants.py`.
+Approved runtime models:
 
-Each seat starts at `$100,000,000` paper NAV and may `OPEN / ADD / HOLD / REDUCE / HEDGE / CLOSE`.
+- `grok-4.6`
+- `composer-2.5`
 
-Persisted per seat:
+Prohibited:
 
-- positions and entry/exit history
-- realized and unrealized P&L where prices exist (missing marks stay `pnl_unavailable`; prices are never invented)
-- conviction, thesis, invalidation, alerts
-- prior action / last action
-- evidence cutoff
-- `required_pitch` separately from `risk_put_on`
+- Cursor Auto
+- every model outside those two
+- Cursor Other Models usage
 
-Expression rules:
+Run caps:
 
-- `dollar-king` and `cross-merchant` are dedicated spot-FX seats and stay spot-oriented.
-- Every other seat is rates-first: evaluate outright duration / curve / cross-market rates RV, compare a spot candidate, then select the cleaner expression.
-- Options/vol are last-resort. `vol-convexity` may select options only with an explicit last-resort rationale after comparing rates and spot.
+- total model calls: 18
+- Grok 4.6 calls: 16
+- Composer 2.5 calls: 2
 
-Canonical book file: `data/overnight/books/latest.json`.
+The ACP parent counts as total=1 / Grok=1 before any child starts.
 
-## 7. Freshness and publication failure matrix
+`.cursor/hooks/enforce-overnight-budget.py` atomically reserves every `subagentStart` before launch. It blocks a spawn that would exceed any cap. Once an overnight root is active, only that root conversation may spawn children; grandchildren are denied.
 
-Required families for expanding risk (`OPEN`, `ADD`): `macro_hard`, `news`, `market_state`.
+`.cursor/hooks/enforce-subagent-models.sh` separately enforces the exact per-run ACP model allowlist.
 
-| Condition | OPEN/ADD | HOLD/REDUCE/CLOSE | Website publish |
-| --- | --- | --- | --- |
-| Required family `fresh` | allowed | allowed | allowed when core is valid |
-| Required family `stale` / `missing` / `unavailable` | blocked | allowed | allowed; surface the stale family |
-| `macro_hard` or `news` `invalid` | blocked | allowed | **fail closed** (`catastrophic_fail`) |
-| Trader review `failed` / `stale` / missing | n/a | n/a | **publish** with explicit stale trader-books status and last successful review id |
-| Assembled dataset missing on an overnight publish | n/a | n/a | fail if `--require-dataset`; ordinary dashboard pushes may still publish seed/stale books |
+The approved graph is normally:
 
-A failed trader review must not block the website. A catastrophically invalid core macro/news input must not publish a false fresh state.
+- 1 Grok parent;
+- 1 Composer research worker;
+- 14 Grok trader seats;
+- up to one spare Grok and one spare Composer call within the hard caps.
 
-## 8. Canonical morning dataset
+Caps never expand automatically.
 
-`assemble` writes `data/overnight/runs/<run_id>/assembled_dataset.json` and points `data/overnight/latest.json` at it. The overnight `publish` stage validates that dataset at 04:07; the separate GitHub Pages workflow runs at 04:15 America/New_York so publication cannot race the final gate.
+## 6. Frozen trader boundary
 
-The dataset includes core family status, the public trader-book projection, the publication decision, and the stage ledger. Pages publication consumes this file, validates freshness/completeness, and emits `_site/trader-books.json`.
+Research happens before the final agent packet is frozen.
 
-## 9. Dashboard surface
+Every trader child must receive:
 
-The Trader Book tab is additive (`patch_v13/` + `scripts/apply_trader_book_tab.py`). It does not redesign the restored front page, news rollup, score board, or Market Data tab.
+```
+MW_TRADER_FROZEN=1
+```
 
-## 10. Persistence and the Supabase boundary
+and the same final packet/hash. `.cursor/hooks/enforce-overnight-runtime.py` blocks tool use for those children. They may not browse, read files, run shell, use MCP, or launch nested agents.
 
-Shipped durable state is git JSON under `data/overnight/`. That is intentional.
+Each seat returns structured decisions only:
 
-The existing Supabase path (`docs/SUPABASE_PERSISTENCE_V1.md`, `SUPABASE_DB_URL`, `scripts/persist_market_watch.py`) is a public-feed writer. It is not credentialed or scoped for unattended overnight books, and this pipeline does not block on it.
+`OPEN / ADD / HOLD / REDUCE / HEDGE / CLOSE`
 
-Migration boundary, when a least-privilege overnight writer exists:
+The dedicated spot seats remain spot-only. Rates-capable seats compare a rates candidate and a spot candidate before adding risk. Options remain last-resort.
 
-1. Keep `data/overnight/` as the audit snapshot written by Actions.
-2. Mirror the same JSON objects into private `market_watch` tables.
-3. Do not make the public dashboard query Supabase directly.
-4. Do not store secrets, paid research, or raw evidence pointers in git or in the public `trader-books.json`.
+## 7. Deterministic acceptance gate
 
-## 11. Dry-run / CI path
+`.github/workflows/overnight-scheduled-output.yml` uses `pull_request_target` so the gate runs trusted code from `main`, not provider-authored code.
+
+The gate:
+
+1. requires a same-repository PR titled `[overnight-output] ...`;
+2. requires exactly one provider-authored file at the scheduled-output inbox path;
+3. downloads that JSON without checking out provider code;
+4. verifies run id, schedule id, base packet hash, final packet hash, 14 seats, evidence cutoff and model policy;
+5. rejects any model-supplied book/P&L/NAV state;
+6. deterministically simulates `apply_review()`;
+7. runs the overnight tests;
+8. generates canonical books/P&L/run artifacts from trusted code;
+9. appends only those generated files to the PR branch;
+10. squashes and merges the accepted PR.
+
+A failed gate does not mutate canonical books.
+
+## 8. Persistent paper books
+
+Each seat starts at $100m paper NAV.
+
+Canonical mechanics are implemented only by `scripts/overnight/books.py`:
+
+- position creation/resizing/closing;
+- freshness blocks;
+- marks;
+- realized/unrealized P&L;
+- NAV;
+- history;
+- overnight changes.
+
+Canonical file:
+
+```
+data/overnight/books/latest.json
+```
+
+No model may calculate or author this file.
+
+## 9. Freshness and publication
+
+Required families for OPEN/ADD: macro hard data, news, market state.
+
+- stale/missing/unavailable required evidence blocks OPEN/ADD;
+- HOLD/REDUCE/CLOSE remain available;
+- invalid macro/news fails publication closed;
+- missing/failed nightly trader output does not block the website: last successful books publish as stale.
+
+## 10. Morning dataset and UI
+
+At 03:50 Market Watch assembles one canonical dataset containing:
+
+- deterministic core evidence/freshness;
+- overnight ACP research supplement when accepted;
+- deterministic trader books/P&L;
+- publication decision;
+- run ledger.
+
+The existing front page is preserved. The additive Trader Book tab shows paper books, P&L, overnight position changes and accepted overnight research.
+
+## 11. Dry-run
 
 ```bash
-PYTHONPATH=. python3 -m unittest tests.test_overnight_pipeline tests.test_overnight_cursor_runtime
+PYTHONPATH=. python3 -m unittest \
+  tests.test_overnight_pipeline \
+  tests.test_overnight_scheduled_output -v
+
 PYTHONPATH=. python3 scripts/overnight_pipeline.py dry-run --suffix ci
 ```
 
-The dry-run exercises every deterministic stage with fixture reviews and zero Cursor/model calls. `workflow_dispatch` on `.github/workflows/overnight-pipeline.yml` with `mode=dry-run` is the same path. Live-stage/scheduled execution fails loudly before model work if `CURSOR_API_KEY` is not available to the repository.
+Dry-run consumes zero model calls.
 
-## 12. Repo map
+## 12. ACP schedule contract to install
 
-- `scripts/overnight/` — ledger, freshness, books, collect/delta/freeze/review/assemble/publish plus the scheduled Cursor runtime boundary
-- `.cursor/hooks/enforce-overnight-runtime.py` — runtime tool boundary for V0 refresh and evidence-closed seat reviews
-- `scripts/overnight_pipeline.py` — CLI
-- `data/overnight/` — books, run artifacts, latest pointer
-- `docs/OVERNIGHT_PIPELINE_V1.md` — this contract
-- `.github/workflows/overnight-pipeline.yml` — timezone-aware scheduler, V0 refresh, 14-seat review matrix, persistence, and dry-run
-- `patch_v13/` — additive Trader Book tab
-- `tests/test_overnight_pipeline.py` / `tests/test_overnight_cursor_runtime.py` — stage, freshness, P&L, model-boundary, evidence, publication, and tab tests
+ACP remains the only place where the real 02:05 schedule may be enabled. The target job must use:
+
+- id: `market-watch-weekday-0205`
+- timezone: `America/New_York`
+- weekdays: Mon-Fri
+- time: `02:05`
+- provider: Cursor
+- parent model: `grok-4.6`
+- allowed subagent models: `composer-2.5`, `grok-4.6`
+- `max_attempts: 1`
+- target: `McCabeAI/market-watch-public-dashboard`
+- starting ref: `main`
+- delivery: PR
+- title prefix: `[overnight-output]`
+- provider-authored target path: only `data/overnight/inbox/<run_id>/scheduled_output.json`
+- run policy marker:
+
+```
+MW_OVERNIGHT_RUN_POLICY={"version":1,"schedule_id":"market-watch-weekday-0205","total_model_cap":18,"grok_cap":16,"composer_cap":2,"parent_model":"grok-4.6","parent_total":1,"parent_grok":1}
+```
+
+The parent must perform research first, freeze the final packet, then launch the 14 direct trader children. It must not update books/P&L and must not launch grandchildren.
+
+The schedule is not enabled merely by this target-repository contract. ACP standing authorization begins only after Kevin explicitly approves the ACP schedule definition and it is merged into ACP main.
