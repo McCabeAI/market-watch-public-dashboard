@@ -343,31 +343,24 @@ class PipelineDryRunTests(unittest.TestCase):
             publication_gate(store, run_id=run_id, require_dataset=True)
 
     def test_manage_scenario_add_reduce_hedge_close(self):
-        first = dry_run(root=ROOT, state_root=self.tmp, when=AS_OF, suffix="open")
+        dry_run(root=ROOT, state_root=self.tmp, when=AS_OF, suffix="open")
         store = OvernightStore(root=ROOT, state_root=self.tmp)
-        run_id = first["overnight_run_id"]
         opened = store.read_books()
-        hawk_id = opened["seats"]["rate-hawk"]["positions"][0]["position_id"]
-        dollar_id = opened["seats"]["dollar-king"]["positions"][0]["position_id"]
-        bull_id = opened["seats"]["perma-bull"]["positions"][0]["position_id"]
         trend_id = opened["seats"]["trend-follower"]["positions"][0]["position_id"]
-        reviews = dry_run_reviews(scenario="manage")
-        reviews["dollar-king"]["actions"][0]["position_id"] = dollar_id
-        reviews["rate-hawk"]["actions"][0]["position_id"] = hawk_id
-        reviews["perma-bull"]["actions"][0]["position_id"] = bull_id
-        reviews["trend-follower"]["actions"][0]["position_id"] = trend_id
-        reviews["trend-follower"]["actions"][0]["hedge_of"] = trend_id
-        from scripts.overnight.review import run_trader_review
-
-        result = run_trader_review(
-            store,
-            run_id=run_id,
+        second = dry_run(
+            root=ROOT,
+            state_root=self.tmp,
             when=AS_OF,
-            dry_run=False,
-            live_reviews=reviews,
+            suffix="manage",
+            review_scenario="manage",
         )
-        self.assertEqual(result["status"], "succeeded")
+        self.assertEqual(second["publication"]["may_publish"], True)
         books = store.read_books()
+        frozen_prior = store.read_artifact(second["overnight_run_id"], "evidence_snapshot.json")["prior_books"]
+        self.assertEqual(
+            frozen_prior["seats"]["dollar-king"]["positions"][0]["position_id"],
+            opened["seats"]["dollar-king"]["positions"][0]["position_id"],
+        )
         self.assertAlmostEqual(books["seats"]["dollar-king"]["positions"][0]["notional_usd"], 12_000_000)
         self.assertAlmostEqual(books["seats"]["rate-hawk"]["positions"][0]["notional_usd"], 10_000_000)
         self.assertEqual(books["seats"]["perma-bull"]["positions"], [])
