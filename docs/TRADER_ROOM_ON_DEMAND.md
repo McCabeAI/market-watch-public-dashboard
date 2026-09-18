@@ -1,68 +1,125 @@
 # On-demand Trader Room execution contract
 
-This is the user-approved on-demand workflow. It supplements `docs/TRADER_ROOM_PROTOCOL.md` and `docs/TRADER_ROOM_EVIDENCE_CONTRACT.md`. Where they differ on orchestration, model routing, evidence acquisition, rebuttal scope, or artifact storage, this contract wins.
-
-The user only needs to say `go` in the Trader Room chat. The repository entrypoint is:
-
-```bash
-PYTHONPATH=. python scripts/trader_room_go.py go
-```
-
-That command prepares and freeze-validates one evidence packet, then runs the complete debate. Default `go` is a dry-run that does not consume the production Grok/Composer budget. The live 14-trader research run is refused unless a later authenticated human arms `TRADER_ROOM_LIVE=1`; this entrypoint still does not dispatch production models.
+This is the production contract for the full adversarial Trader Room. It supplements `docs/TRADER_ROOM_PROTOCOL.md` and `docs/TRADER_ROOM_EVIDENCE_CONTRACT.md`. The repository dry-run entrypoint is `PYTHONPATH=. python scripts/trader_room_go.py go`; live model execution is dispatched separately through the approved control path.
 
 ## Architecture
 
-1. Four-family evidence preflight. Fail before the 14-agent run if an essential family is missing.
-2. Freeze one common packet. Immutable SHA-256. No advocate may acquire new evidence.
-3. Fourteen independent standing advocates, each exact model `grok-4.6`, each bound to its existing remit.
-4. Each advocate may make at most two internal subagent calls. Those subagents may use only `composer-2.5` and inherit the same frozen packet.
-5. Every advocate except `no-trade-skeptic` must end with one cogent actionable trade. The skeptic may submit no-trade.
-6. First aggregator is a separate `grok-4.6` invocation. It receives all 14 originals. It must not rank or choose winners. It only maps substantive conflicts.
-7. Each conflicted advocate gets exactly one rebuttal pass: own original + opposing original trade(s) + unchanged frozen packet. No additional subagent calls. No new evidence. Defend, amend, or withdraw, and explicitly shoot holes in the opposing case.
-8. Final aggregator is a separate `grok-4.6` invocation. It receives all originals, the conflict map, and every rebuttal. It must not select a winner or house view. It emits the structured PM handoff.
-9. Persist complete run artifacts under `trader-room/runs/<run_id>/` with immutable run ID and evidence cutoff. Do not put project output in ACP.
+1. Preflight the four required evidence families.
+2. Freeze one common evidence packet and SHA-256. No new evidence after freeze.
+3. Launch the locked 14 standing advocates independently on exact `grok-4.6`.
+4. Each initial advocate may use at most two `composer-2.5` subagents on the same frozen packet.
+5. Every advocate returns its full trade pitch plus a compact `conflict_synopsis`.
+6. **Deterministic conflict stage:** code reads only the 14 synopses and structured trades. It identifies direct instrument/currency conflicts, theoretical currency-vs-rates tensions, contextual regime tensions, and the no-trade challenge. This stage consumes zero model calls.
+7. Only advocates involved in **direct conflicts** receive one Grok rebuttal pass. Theoretical/context tensions are shown to the final aggregator but do not automatically spend rebuttal calls.
+8. A separate `grok-4.6` `final-aggregator` receives all originals, the deterministic conflict map, and all rebuttals. It organizes the PM handoff only; it does not pick a winner.
+9. Persist all artifacts under `trader-room/runs/<run_id>/`. ChatGPT remains the final arbiter.
+
+The old model-based conflict-aggregator is not part of the production execution path.
+
+## Round 1 conflict synopsis
+
+Every `TRADER_ROOM_CONTRIBUTION` must include:
+
+```json
+{
+  "conflict_synopsis": {
+    "seat": "<standing seat>",
+    "primary_trade": "<short expression or NO_TRADE>",
+    "core_view": "<one sentence>",
+    "usd_view": "higher|lower|neutral|not_relevant",
+    "cad_view": "higher|lower|neutral|not_relevant",
+    "aud_view": "higher|lower|neutral|not_relevant",
+    "nzd_view": "higher|lower|neutral|not_relevant",
+    "us_rates_view": "higher|lower|neutral|not_relevant",
+    "ca_rates_view": "higher|lower|neutral|not_relevant",
+    "au_rates_view": "higher|lower|neutral|not_relevant",
+    "nz_rates_view": "higher|lower|neutral|not_relevant",
+    "risk_view": "risk_on|risk_off|neutral|not_relevant",
+    "carry_view": "supports_trade|opposes_trade|neutral|not_relevant",
+    "time_horizon": "<short label>",
+    "key_catalyst": "<one sentence>",
+    "key_invalidation": "<one sentence>",
+    "confidence": 0,
+    "conflict_tags": ["USD_UP"]
+  }
+}
+```
+
+The synopsis is a compression of the already-completed pitch, not a second opinion.
+
+## Deterministic conflict logic
+
+`scripts/trader_room/conflict.py` owns conflict discovery.
+
+**Direct conflicts** trigger rebuttal routing:
+- opposite directions in the same instrument;
+- opposite directional views on USD, CAD, AUD or NZD that are not already fully captured by the same-instrument conflict.
+
+**Theoretical tensions** are shown to the final aggregator but do not automatically trigger a rebuttal:
+- currency higher versus same-country rates lower;
+- currency lower versus same-country rates higher.
+
+**Context tensions** are also non-routing context:
+- risk-on versus risk-off;
+- carry-supportive versus carry-opposed.
+
+The `no-trade-skeptic` challenge is preserved separately and does not force all 13 trade pitches into rebuttal calls.
+
+No majority vote, confidence ranking, winner, or house view is permitted.
 
 ## Model routing
 
-Validated against `scripts/trader_room/model_registry.json`, which is sourced from the current repository hook and agent-frontmatter catalog:
-
-| Seat | Exact model |
+| Work | Exact execution |
 | --- | --- |
-| 14 standing advocates | `grok-4.6` (frontmatter `grok-4.6[]`) |
-| conflict aggregator | `grok-4.6` |
+| ACP parent/orchestrator | `grok-4.6` |
+| 14 standing advocates | `grok-4.6` |
+| advocate-internal subagents | `composer-2.5`, max two per initial advocate |
+| conflict map | deterministic Python, zero model calls |
+| direct-conflict rebuttals | `grok-4.6`, max one per conflicted seat |
 | final aggregator | `grok-4.6` |
-| advocate-internal subagents only | `composer-2.5` |
 
-No other model is allowed on this workflow. `grok-4.5`, Composer fast variants, and Cursor Grok thinking-tier slugs are forbidden.
-
-`TRADER_ROOM_MODEL_POLICY` is written into the run context and enforced by `.cursor/hooks/enforce-subagent-models.sh`.
+Cursor Auto and every Other Models route are prohibited.
 
 ## Finite ceilings
 
-The ACP parent is now counted explicitly in the autonomous run budget.
+The ACP parent is counted explicitly.
 
-- ACP parent/orchestrator = 1 Grok 4.6 invocation
-- Baseline debate Grok invocations = 16 (14 advocates + 2 aggregators)
-- Plus only conflict-rebuttal Grok calls, max 14
-- Total Grok ceiling including parent = 31
-- Composer ceiling = 28 (2 per initial advocate only)
-- Total model-invocation ceiling = 59
-- No retries or model reroutes may silently exceed these ceilings
+- ACP parent = 1 Grok 4.6
+- 14 advocates = 14 Grok 4.6
+- conflict mapping = 0 model calls
+- rebuttals = at most 14 Grok 4.6
+- final aggregator = 1 Grok 4.6
+- **Total Grok ceiling including parent = 30**
+- **Composer ceiling = 28**
+- **Total model-invocation ceiling = 58**
 
-Every full live run must carry this exact marker:
+Every full live run carries:
 
-`MW_TRADER_ROOM_RUN_POLICY={"version":1,"run_type":"trader-room-ondemand","total_model_cap":59,"grok_cap":31,"composer_cap":28,"parent_model":"grok-4.6","parent_total":1,"parent_grok":1}`
+`MW_TRADER_ROOM_RUN_POLICY={"version":1,"run_type":"trader-room-ondemand","total_model_cap":58,"grok_cap":30,"composer_cap":28,"parent_model":"grok-4.6","parent_total":1,"parent_grok":1}`
 
-The repository `subagentStart` budget hook enforces the caps. The root parent may launch only direct `grok-4.6` children. Initial advocate tasks must include `TRADER_ROOM_ADVOCATE=1`; only those advocate children may launch `composer-2.5` subagents, with a hard maximum of two each. Aggregators and rebuttal children may not launch subagents, and no deeper nesting is allowed.
+The repository `subagentStart` hook enforces these ceilings. Only initial advocates tagged `TRADER_ROOM_ADVOCATE=1` may create Composer children.
 
 ## Required trade schema
 
-`instrument`, `structure`, `direction`, `thesis`, `mispricing`, `why_now`, `evidence_refs` into the frozen packet, `horizon`, `entry`, `target`, `stop`, `invalidation`, `catalysts`, `principal_risks`, `confidence`. Unsupported levels must be JSON `null`, not invented.
+Every advocate except `no-trade-skeptic` must produce one actionable trade with: `instrument`, `structure`, `direction`, `thesis`, `mispricing`, `why_now`, `evidence_refs`, `horizon`, `entry`, `target`, `stop`, `invalidation`, `catalysts`, `principal_risks`, and `confidence`. Unsupported levels are JSON `null`.
 
-## ChatGPT retrieval
+## Artifact sequence
 
-The PM handoff `artifact_index` stores durable relative paths for the packet, every original submission, the conflict map, and every rebuttal. ChatGPT retrieves any artifact with:
+A complete run contains:
 
-```bash
-PYTHONPATH=. python scripts/trader_room_go.py retrieve --run-id <run_id> --kind submission --agent <name>
-```
+- `evidence_packet.json`
+- `submissions/<seat>.json` ×14
+- `conflict_map.json`
+- `rebuttal_assignments.json`
+- `rebuttals/<seat>.json` only for directly conflicted seats
+- `pm_handoff.json`
+- `artifact_index.json`
+- budget/invocation evidence
+
+The final handoff marker is exactly:
+
+`STATUS: AWAITING_CHATGPT_ARBITRATION`
+
+## Recovery rule
+
+If an agent fails after Round 1, preserve the frozen packet and completed submissions first. Do **not** rerun the 14 advocates merely to recover orchestration state. Materialize the deterministic conflict map from the saved synopses and continue from there.
