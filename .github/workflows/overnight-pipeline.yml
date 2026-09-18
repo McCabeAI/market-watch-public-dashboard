@@ -81,6 +81,7 @@ jobs:
           python-version: "3.12"
 
       - name: Verify Cursor runtime secret exists
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'live-stage')
         env:
           CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
         run: |
