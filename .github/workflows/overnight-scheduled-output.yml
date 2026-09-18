@@ -1,0 +1,103 @@
+name: Accept ACP Overnight Output
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+    paths:
+      - "data/overnight/inbox/**/scheduled_output.json"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: overnight-output-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  validate-apply-merge:
+    if: startsWith(github.event.pull_request.title, '[overnight-output]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout trusted main
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Verify data-only scheduled-output PR
+        id: inspect
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          BASE_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          [ "$HEAD_REPO" = "$BASE_REPO" ] || { echo "::error::Scheduled output must originate in the target repository"; exit 1; }
+          mapfile -t FILES < <(gh api "repos/$REPO/pulls/$PR_NUMBER/files?per_page=100" --paginate --jq '.[].filename')
+          [ "${#FILES[@]}" -eq 1 ] || { printf 'Unexpected files:\n%s\n' "${FILES[@]}"; exit 1; }
+          FILE="${FILES[0]}"
+          [[ "$FILE" =~ ^data/overnight/inbox/overnight-[0-9]{8}/scheduled_output\.json$ ]] || {
+            echo "::error::Unexpected scheduled-output path: $FILE"; exit 1;
+          }
+          mkdir -p /tmp/mw-output
+          gh api "repos/$REPO/contents/$FILE?ref=$HEAD_SHA" --jq '.content'             | tr -d '\n' | base64 -d > /tmp/mw-output/scheduled_output.json
+          RUN_ID="$(basename "$(dirname "$FILE")")"
+          echo "file=$FILE" >> "$GITHUB_OUTPUT"
+          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Validate and deterministically simulate books/P&L
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python3 scripts/overnight/scheduled_output.py validate             --input /tmp/mw-output/scheduled_output.json
+          PYTHONPATH=. python3 -m unittest             tests.test_overnight_pipeline             tests.test_overnight_scheduled_output -v
+
+      - name: Generate canonical deterministic state from trusted main
+        env:
+          RUN_ID: ${{ steps.inspect.outputs.run_id }}
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python3 scripts/overnight/scheduled_output.py apply             --input /tmp/mw-output/scheduled_output.json
+          mkdir -p /tmp/mw-generated
+          cp -a "data/overnight/books" /tmp/mw-generated/
+          mkdir -p "/tmp/mw-generated/runs/$RUN_ID"
+          for name in run.json agent_evidence_packet.json scheduled_output.json trader_review.json; do
+            cp "data/overnight/runs/$RUN_ID/$name" "/tmp/mw-generated/runs/$RUN_ID/$name"
+          done
+
+      - name: Append deterministic state to the scheduled-output branch
+        env:
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          RUN_ID: ${{ steps.inspect.outputs.run_id }}
+        run: |
+          set -euo pipefail
+          git reset --hard
+          git fetch origin "$HEAD_REF"
+          git checkout -B "$HEAD_REF" "origin/$HEAD_REF"
+          rm -rf data/overnight/books
+          cp -a /tmp/mw-generated/books data/overnight/books
+          mkdir -p "data/overnight/runs/$RUN_ID"
+          cp -a "/tmp/mw-generated/runs/$RUN_ID/." "data/overnight/runs/$RUN_ID/"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/overnight/books "data/overnight/runs/$RUN_ID"
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: apply overnight decisions $RUN_ID"
+            git push origin "HEAD:$HEAD_REF"
+          fi
+
+      - name: Merge accepted scheduled output
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: |
+          set -euo pipefail
+          gh pr merge "$PR_URL" --squash --delete-branch
