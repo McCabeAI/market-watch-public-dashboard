@@ -224,3 +224,16 @@ MW_OVERNIGHT_RUN_POLICY={"version":1,"schedule_id":"market-watch-weekday-0205","
 The parent must perform research first, freeze the final packet, then launch the 14 direct trader children. It must not update books/P&L and must not launch grandchildren.
 
 The schedule is not enabled merely by this target-repository contract. ACP standing authorization begins only after Kevin explicitly approves the ACP schedule definition and it is merged into ACP main.
+
+## 13. Persistence and the Supabase boundary
+
+Shipped durable state is git JSON under `data/overnight/`. That is intentional. Market Watch does not require a new paid service or a Kevin-maintained store.
+
+The existing Supabase path (`docs/SUPABASE_PERSISTENCE_V1.md`, `SUPABASE_DB_URL`, `scripts/persist_market_watch.py`) is a public-feed writer. It is not credentialed or scoped for unattended overnight books, and this pipeline does not block on it.
+
+Migration boundary, when a least-privilege overnight writer exists:
+
+1. Keep `data/overnight/` as the audit snapshot written by Actions.
+2. Mirror the same JSON objects into private `market_watch` tables.
+3. Do not make the public dashboard query Supabase directly.
+4. Do not store secrets, paid research, or raw evidence pointers in git or in the public `trader-books.json`.
