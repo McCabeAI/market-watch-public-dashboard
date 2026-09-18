@@ -19,6 +19,30 @@ from scripts.trader_room.errors import DataBoundaryError, SchemaError
 from scripts.trader_room.evidence import assert_same_frozen_packet
 
 LEVEL_RE = re.compile(r"[-+]?\d+(?:\.\d+)?")
+SYNOPSIS_DIRECTION_VALUES = {"higher", "lower", "neutral", "not_relevant"}
+SYNOPSIS_RISK_VALUES = {"risk_on", "risk_off", "neutral", "not_relevant"}
+SYNOPSIS_CARRY_VALUES = {"supports_trade", "opposes_trade", "neutral", "not_relevant"}
+SYNOPSIS_FIELDS = (
+    "seat",
+    "primary_trade",
+    "core_view",
+    "usd_view",
+    "cad_view",
+    "aud_view",
+    "nzd_view",
+    "us_rates_view",
+    "ca_rates_view",
+    "au_rates_view",
+    "nz_rates_view",
+    "risk_view",
+    "carry_view",
+    "time_horizon",
+    "key_catalyst",
+    "key_invalidation",
+    "confidence",
+    "conflict_tags",
+)
+
 FORBIDDEN_ACQUISITION = (
     "web_search",
     "web_fetch",
@@ -57,6 +81,34 @@ def _non_empty_text(value: Any, field: str) -> None:
 def _list_of_text(value: Any, field: str) -> None:
     if not isinstance(value, list) or not value or any(not isinstance(x, str) or not x.strip() for x in value):
         raise SchemaError(f"{field} must be a non-empty list of strings")
+
+
+def validate_conflict_synopsis(
+    synopsis: dict[str, Any],
+    *,
+    agent: str,
+    confidence: int,
+) -> None:
+    if not isinstance(synopsis, dict):
+        raise SchemaError(f"{agent}.conflict_synopsis must be an object")
+    _require_keys(synopsis, SYNOPSIS_FIELDS, f"{agent}.conflict_synopsis")
+    if synopsis["seat"] != agent:
+        raise SchemaError(f"{agent}.conflict_synopsis.seat mismatch")
+    if synopsis["confidence"] != confidence:
+        raise SchemaError(f"{agent}.conflict_synopsis.confidence must match contribution confidence")
+    for field in ("primary_trade", "core_view", "time_horizon", "key_catalyst", "key_invalidation"):
+        _non_empty_text(synopsis[field], f"{agent}.conflict_synopsis.{field}")
+    for field in (
+        "usd_view", "cad_view", "aud_view", "nzd_view",
+        "us_rates_view", "ca_rates_view", "au_rates_view", "nz_rates_view",
+    ):
+        if synopsis[field] not in SYNOPSIS_DIRECTION_VALUES:
+            raise SchemaError(f"{agent}.conflict_synopsis.{field} has invalid value {synopsis[field]!r}")
+    if synopsis["risk_view"] not in SYNOPSIS_RISK_VALUES:
+        raise SchemaError(f"{agent}.conflict_synopsis.risk_view invalid")
+    if synopsis["carry_view"] not in SYNOPSIS_CARRY_VALUES:
+        raise SchemaError(f"{agent}.conflict_synopsis.carry_view invalid")
+    _list_of_text(synopsis["conflict_tags"], f"{agent}.conflict_synopsis.conflict_tags")
 
 
 def validate_trade(
@@ -121,7 +173,7 @@ def validate_contribution(
 ) -> dict[str, Any]:
     _require_keys(
         contribution,
-        ("type", "run_id", "round", "agent", "archetype", "stance_summary", "trade", "confidence", "remit"),
+        ("type", "run_id", "round", "agent", "archetype", "stance_summary", "trade", "confidence", "remit", "conflict_synopsis"),
         "contribution",
     )
     if contribution["type"] != "TRADER_ROOM_CONTRIBUTION":
@@ -139,6 +191,11 @@ def validate_contribution(
         raise SchemaError(f"{agent} remit does not match standing remit")
     if not isinstance(contribution["confidence"], int) or not 0 <= contribution["confidence"] <= 100:
         raise SchemaError(f"{agent} confidence must be int 0-100")
+    validate_conflict_synopsis(
+        contribution["conflict_synopsis"],
+        agent=agent,
+        confidence=contribution["confidence"],
+    )
     validate_trade(contribution["trade"], agent=agent, packet=packet)
     if agent in TRADE_REQUIRED_AGENTS and contribution["trade"] is None:
         raise SchemaError(f"{agent} must end with one cogent actionable trade")
