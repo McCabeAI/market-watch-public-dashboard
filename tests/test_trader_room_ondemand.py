@@ -537,6 +537,30 @@ class IndependentExecutionTests(unittest.TestCase):
             ok, msg = hook_decide(research, count_dir=count_dir)
             self.assertFalse(ok)
             self.assertIn("max 2", msg)
+            ok, msg = hook_decide(
+                json.dumps(
+                    {
+                        "subagent_model": "cursor-grok-4.6-high",
+                        "subagent_type": "final-aggregator",
+                        "transcript_path": str(transcript),
+                        "prompt": "TRADER_ROOM_SEAT_ROLE=final-aggregator",
+                    }
+                ),
+                count_dir=count_dir,
+            )
+            self.assertTrue(ok, msg)
+            ok, msg = hook_decide(
+                json.dumps(
+                    {
+                        "subagent_model": "cursor-grok-4.6-high-fast",
+                        "subagent_type": "final-aggregator",
+                        "transcript_path": str(transcript),
+                    }
+                ),
+                count_dir=count_dir,
+            )
+            self.assertFalse(ok)
+            self.assertIn("ACP", msg)
 
     def test_persist_independent_requires_complete_grok_evidence(self):
         packet, preflight = prepare_evidence(topic="go", synthetic=True)

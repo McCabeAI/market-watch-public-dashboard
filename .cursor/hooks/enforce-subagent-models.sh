@@ -50,6 +50,11 @@ fi
 MODEL=$(printf '%s' "$INPUT" | sed -n 's/.*"subagent_model"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -n 1)
 [ -n "$MODEL" ] || deny "Subagent blocked: Cursor did not provide subagent_model."
 NORMALIZED=$(printf '%s' "$MODEL" | sed 's/\[\]$//')
+case "$NORMALIZED" in
+  cursor-grok-4.6-high|cursor-grok-4.6-medium|cursor-grok-4.6-low|cursor-grok-4.6-xhigh)
+    NORMALIZED=grok-4.6
+    ;;
+esac
 
 TYPE=$(printf '%s' "$INPUT" | sed -n 's/.*"subagent_type"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -n 1)
 

@@ -39,13 +39,24 @@ def load_registry(path: Path | None = None) -> dict[str, Any]:
     return data
 
 
+# Cursor inherit on a grok-4.6 parent reports these provider slugs. They are
+# the same standing grok-4.6 seat, not a different model family. Fast variants stay
+# distinct and are not aliased.
+GROK_INHERIT_ALIASES = {
+    "cursor-grok-4.6-high": ADVOCATE_MODEL,
+    "cursor-grok-4.6-medium": ADVOCATE_MODEL,
+    "cursor-grok-4.6-low": ADVOCATE_MODEL,
+    "cursor-grok-4.6-xhigh": ADVOCATE_MODEL,
+}
+
+
 def normalize_model(model: str | None) -> str:
     if not model:
         raise ModelPolicyError("missing model id")
     value = model.strip()
     if value.endswith("[]"):
         value = value[:-2]
-    return value
+    return GROK_INHERIT_ALIASES.get(value, value)
 
 
 def assert_advocate_model(model: str | None) -> str:
