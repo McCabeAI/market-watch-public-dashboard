@@ -17,7 +17,7 @@ if str(ROOT) not in sys.path:
 
 from scripts.overnight.books import apply_action, empty_books, empty_seat, mark_to_market, position_pnl, public_books_view
 from scripts.overnight.clock import overnight_run_id, stage_for_time, stage_window
-from scripts.overnight.constants import SPOT_SEATS, STANDING_SEATS, STARTING_NAV_USD, UTC_CRON
+from scripts.overnight.constants import LOCAL_CRON, SPOT_SEATS, STANDING_SEATS, STARTING_NAV_USD
 from scripts.overnight.errors import EvidenceBoundaryError, FreshnessError, PublicationError, SchemaError
 from scripts.overnight.expression import expression_rule, validate_expression_memo
 from scripts.overnight.freshness import assert_action_allowed, publication_decision
@@ -78,7 +78,7 @@ class ClockAndScheduleTests(unittest.TestCase):
             ("publish", stage_window("publish", AS_OF)),
         ):
             self.assertFalse(window["et_time"].endswith(":00"), stage)
-        self.assertEqual(len(UTC_CRON), 7)
+        self.assertEqual(len(LOCAL_CRON), 7)
 
 
 class ExpressionRuleTests(unittest.TestCase):
