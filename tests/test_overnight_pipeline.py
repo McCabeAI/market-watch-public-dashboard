@@ -17,7 +17,7 @@ if str(ROOT) not in sys.path:
 
 from scripts.overnight.books import apply_action, empty_books, empty_seat, mark_to_market, position_pnl, public_books_view
 from scripts.overnight.clock import overnight_run_id, stage_for_time, stage_window
-from scripts.overnight.constants import LOCAL_CRON, SPOT_SEATS, STANDING_SEATS, STARTING_NAV_USD
+from scripts.overnight.constants import LOCAL_CRON, SPOT_SEATS, STAGES, STANDING_SEATS, STARTING_NAV_USD
 from scripts.overnight.errors import EvidenceBoundaryError, FreshnessError, PublicationError, SchemaError
 from scripts.overnight.expression import expression_rule, validate_expression_memo
 from scripts.overnight.freshness import assert_action_allowed, publication_decision
@@ -78,7 +78,8 @@ class ClockAndScheduleTests(unittest.TestCase):
             ("publish", stage_window("publish", AS_OF)),
         ):
             self.assertFalse(window["et_time"].endswith(":00"), stage)
-        self.assertEqual(len(LOCAL_CRON), 7)
+        self.assertEqual(len(LOCAL_CRON), 6)
+        self.assertNotIn("trader_review", LOCAL_CRON)
 
 
 class ExpressionRuleTests(unittest.TestCase):
@@ -276,7 +277,7 @@ class PipelineDryRunTests(unittest.TestCase):
         run_id = result["overnight_run_id"]
         run = store.read_artifact(run_id, "run.json")
         self.assertEqual(run["overnight_run_id"], run_id)
-        self.assertEqual(set(run["stages"]), set(LOCAL_CRON))
+        self.assertEqual(set(run["stages"]), set(STAGES))
         snapshot = store.read_artifact(run_id, "evidence_snapshot.json")
         review = store.read_artifact(run_id, "trader_review.json")
         self.assertEqual(review["packet_sha256"], snapshot["packet_sha256"])
