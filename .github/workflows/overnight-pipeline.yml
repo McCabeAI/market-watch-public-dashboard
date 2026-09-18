@@ -1,0 +1,179 @@
+name: Overnight Deterministic Pipeline
+
+on:
+  schedule:
+    - cron: "7 0 * * 1-5"
+      timezone: "America/New_York"
+    - cron: "40 1 * * 1-5"
+      timezone: "America/New_York"
+    - cron: "50 1 * * 1-5"
+      timezone: "America/New_York"
+    - cron: "35 3 * * 1-5"
+      timezone: "America/New_York"
+    - cron: "50 3 * * 1-5"
+      timezone: "America/New_York"
+    - cron: "7 4 * * 1-5"
+      timezone: "America/New_York"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "dry-run validates every deterministic stage with zero model calls"
+        required: true
+        default: dry-run
+        type: choice
+        options: [dry-run, live-stage]
+      stage:
+        description: "Deterministic stage for live-stage mode"
+        required: false
+        default: collect
+        type: choice
+        options:
+          - collect
+          - pre_trader_delta
+          - freeze_evidence
+          - final_delta
+          - assemble
+          - publish
+      as_of:
+        description: "Optional ISO timestamp"
+        required: false
+        type: string
+  pull_request:
+    paths:
+      - ".cursor/hooks.json"
+      - ".cursor/hooks/enforce-subagent-models.sh"
+      - ".cursor/hooks/enforce-overnight-budget.py"
+      - ".cursor/hooks/enforce-overnight-runtime.py"
+      - "scripts/overnight/**"
+      - "scripts/overnight_pipeline.py"
+      - "scripts/apply_trader_book_tab.py"
+      - "patch_v13/**"
+      - "data/overnight/**"
+      - "tests/test_overnight_pipeline.py"
+      - "tests/test_overnight_scheduled_output.py"
+      - "docs/OVERNIGHT_PIPELINE_V1.md"
+      - ".github/workflows/overnight-pipeline.yml"
+      - ".github/workflows/overnight-scheduled-output.yml"
+      - ".github/workflows/deploy-pages.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: overnight-deterministic-pipeline
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Overnight contracts and dry-run
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Unit tests
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python3 -m unittest             tests.test_overnight_pipeline             tests.test_overnight_scheduled_output -v
+      - name: End-to-end zero-model dry-run
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python3 scripts/overnight_pipeline.py schedule
+          PYTHONPATH=. python3 scripts/overnight_pipeline.py dry-run --suffix ci --site-dir /tmp/overnight-site
+          test -s /tmp/overnight-site/trader-books.json
+
+  resolve:
+    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'live-stage')
+    needs: validate
+    runs-on: ubuntu-latest
+    outputs:
+      stage: ${{ steps.resolve.outputs.stage }}
+      run_id: ${{ steps.resolve.outputs.run_id }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - id: resolve
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          SCHEDULE: ${{ github.event.schedule }}
+          MANUAL_STAGE: ${{ inputs.stage }}
+          AS_OF: ${{ inputs.as_of }}
+        run: |
+          set -euo pipefail
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            STAGE="$MANUAL_STAGE"
+          else
+            case "$SCHEDULE" in
+              "7 0 * * 1-5") STAGE="collect" ;;
+              "40 1 * * 1-5") STAGE="pre_trader_delta" ;;
+              "50 1 * * 1-5") STAGE="freeze_evidence" ;;
+              "35 3 * * 1-5") STAGE="final_delta" ;;
+              "50 3 * * 1-5") STAGE="assemble" ;;
+              "7 4 * * 1-5") STAGE="publish" ;;
+              *) echo "::error::Unknown scheduled cron: $SCHEDULE"; exit 1 ;;
+            esac
+          fi
+          if [ -n "$AS_OF" ]; then
+            RUN_ID="$(PYTHONPATH=. python3 scripts/overnight_pipeline.py run-id --as-of "$AS_OF")"
+          else
+            RUN_ID="$(PYTHONPATH=. python3 scripts/overnight_pipeline.py run-id)"
+          fi
+          echo "stage=$STAGE" >> "$GITHUB_OUTPUT"
+          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+
+  run-stage:
+    if: needs.resolve.result == 'success'
+    needs: [validate, resolve]
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout current main
+        uses: actions/checkout@v6
+        with:
+          ref: main
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Install market-state dependencies
+        if: contains(fromJSON('["collect","pre_trader_delta","final_delta"]'), needs.resolve.outputs.stage)
+        run: python -m pip install --disable-pip-version-check -r requirements-market-state.txt
+      - name: Run deterministic stage
+        env:
+          STAGE: ${{ needs.resolve.outputs.stage }}
+          RUN_ID: ${{ needs.resolve.outputs.run_id }}
+          AS_OF: ${{ inputs.as_of }}
+        run: |
+          set -euo pipefail
+          AS_OF_ARGS=()
+          if [ -n "$AS_OF" ]; then AS_OF_ARGS=(--as-of "$AS_OF"); fi
+          case "$STAGE" in
+            collect|pre_trader_delta|final_delta)
+              PYTHONPATH=. python3 scripts/overnight_pipeline.py stage "$STAGE"                 --run-id "$RUN_ID" --live-market-state "${AS_OF_ARGS[@]}"
+              ;;
+            publish)
+              PYTHONPATH=. python3 scripts/overnight_pipeline.py stage publish                 --run-id "$RUN_ID" --require-dataset "${AS_OF_ARGS[@]}"
+              ;;
+            *)
+              PYTHONPATH=. python3 scripts/overnight_pipeline.py stage "$STAGE"                 --run-id "$RUN_ID" "${AS_OF_ARGS[@]}"
+              ;;
+          esac
+      - name: Persist deterministic state to main
+        env:
+          STAGE: ${{ needs.resolve.outputs.stage }}
+          RUN_ID: ${{ needs.resolve.outputs.run_id }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/overnight
+          if git diff --cached --quiet; then
+            echo "No deterministic overnight state changes"
+            exit 0
+          fi
+          git commit -m "chore: overnight $STAGE $RUN_ID"
+          git pull --rebase origin main
+          git push origin HEAD:main

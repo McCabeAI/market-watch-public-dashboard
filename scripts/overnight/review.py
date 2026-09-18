@@ -1,0 +1,413 @@
+"""02:05 ET lightweight 14-seat portfolio review (not the full Trader Room)."""
+
+from __future__ import annotations
+
+import os
+from datetime import datetime
+from typing import Any
+
+from scripts.overnight.books import apply_review, empty_books, validate_books
+from scripts.overnight.clock import isoformat, now_ny
+from scripts.overnight.constants import LIVE_REVIEW_ENV, SCHEMA_VERSION, STANDING_SEATS
+from scripts.overnight.errors import EvidenceBoundaryError, LiveReviewBlocked, SchemaError
+from scripts.overnight.evidence import assert_frozen_only, require_snapshot
+from scripts.overnight.expression import expression_rule
+from scripts.overnight.store import OvernightStore
+
+
+def _spot_memo(instrument: str, rationale: str) -> dict[str, Any]:
+    return {
+        "rates_candidate": None,
+        "spot_candidate": {
+            "instrument": instrument,
+            "asset_class": "spot_fx",
+            "rationale": rationale,
+        },
+        "options_candidate": None,
+        "selected": "spot",
+        "rationale": rationale,
+    }
+
+
+def _rates_memo(rates_instrument: str, spot_instrument: str, selected: str, rationale: str) -> dict[str, Any]:
+    return {
+        "rates_candidate": {
+            "instrument": rates_instrument,
+            "asset_class": "rates",
+            "rationale": f"Rates expression {rates_instrument}",
+        },
+        "spot_candidate": {
+            "instrument": spot_instrument,
+            "asset_class": "spot_fx",
+            "rationale": f"Spot alternative {spot_instrument}",
+        },
+        "options_candidate": None,
+        "selected": selected,
+        "rationale": rationale,
+    }
+
+
+def _hold_memo(seat: str) -> dict[str, Any]:
+    if expression_rule(seat) == "spot_only":
+        return {
+            "rates_candidate": None,
+            "spot_candidate": None,
+            "options_candidate": None,
+            "selected": "none",
+            "rationale": "Dedicated spot seat holds; no incremental FX risk.",
+        }
+    return {
+        "rates_candidate": None,
+        "spot_candidate": None,
+        "options_candidate": None,
+        "selected": "none",
+        "rationale": "Rates-first seat holds after comparing the book to the frozen packet.",
+    }
+
+
+def dry_run_reviews(*, scenario: str = "default") -> dict[str, Any]:
+    """Deterministic reviews. No model calls. Exercises the standing actions."""
+    reviews: dict[str, Any] = {seat: {"seat": seat, "actions": [], "conviction": 40} for seat in STANDING_SEATS}
+
+    if scenario == "default":
+        reviews["dollar-king"] = {
+            "seat": "dollar-king",
+            "conviction": 62,
+            "thesis": "USD policy premium is still the cleanest G10 expression.",
+            "invalidation": "A clean US easing surprise that collapses the USD front-end premium.",
+            "required_pitch": {"instrument": "USDJPY", "note": "Would pitch a larger USDJPY long if asked for a forced idea."},
+            "risk_put_on": {"instrument": "USDCAD", "notional_usd": 10_000_000, "note": "Actual risk is the smaller USDCAD long."},
+            "expression_memo": _spot_memo("USDCAD", "Dedicated USD spot seat opens USDCAD."),
+            "actions": [
+                {
+                    "action": "OPEN",
+                    "instrument": "USDCAD",
+                    "side": "long",
+                    "notional_usd": 10_000_000,
+                    "price": 1.36,
+                    "asset_class": "spot_fx",
+                    "expression_memo": _spot_memo("USDCAD", "Dedicated USD spot seat opens USDCAD."),
+                }
+            ],
+        }
+        reviews["cross-merchant"] = {
+            "seat": "cross-merchant",
+            "conviction": 55,
+            "thesis": "AUDNZD is the cleaner non-USD relative-value expression.",
+            "invalidation": "RBNZ re-prices above RBA in a way that inverts the cross thesis.",
+            "expression_memo": _spot_memo("AUDNZD", "Dedicated cross seat stays in AUDNZD spot."),
+            "actions": [
+                {
+                    "action": "OPEN",
+                    "instrument": "AUDNZD",
+                    "side": "long",
+                    "notional_usd": 8_000_000,
+                    "price": 1.09,
+                    "asset_class": "spot_fx",
+                    "expression_memo": _spot_memo("AUDNZD", "Dedicated cross seat stays in AUDNZD spot."),
+                }
+            ],
+        }
+        reviews["rate-hawk"] = {
+            "seat": "rate-hawk",
+            "conviction": 70,
+            "thesis": "US inflation persistence is cleaner in outright duration than in USD spot.",
+            "invalidation": "A decisive downside Core PCE print that removes upside policy risk.",
+            "expression_memo": _rates_memo("US 10Y", "USDJPY", "rates", "Rates-first: short duration is cleaner than USD spot."),
+            "actions": [
+                {
+                    "action": "OPEN",
+                    "instrument": "US 10Y",
+                    "side": "short",
+                    "notional_usd": 15_000_000,
+                    "price": 4.20,
+                    "asset_class": "rates",
+                    "expression_memo": _rates_memo("US 10Y", "USDJPY", "rates", "Rates-first: short duration is cleaner than USD spot."),
+                }
+            ],
+        }
+        reviews["rate-dove"] = {
+            "seat": "rate-dove",
+            "conviction": 58,
+            "thesis": "Easing risk is underpriced in the US front end.",
+            "invalidation": "Labor re-acceleration that restores a hike premium.",
+            "expression_memo": _rates_memo("US 2Y", "USDJPY", "rates", "Rates-first: long front-end duration vs fading USD spot."),
+            "actions": [
+                {
+                    "action": "OPEN",
+                    "instrument": "US 2Y",
+                    "side": "long",
+                    "notional_usd": 12_000_000,
+                    "price": 3.70,
+                    "asset_class": "rates",
+                    "expression_memo": _rates_memo("US 2Y", "USDJPY", "rates", "Rates-first: long front-end duration vs fading USD spot."),
+                }
+            ],
+        }
+        reviews["perma-bull"] = {
+            "seat": "perma-bull",
+            "conviction": 51,
+            "thesis": "Growth resilience still favors AUD, but the curve is not the cleaner expression tonight.",
+            "invalidation": "A China/commodity shock that breaks AUD terms of trade.",
+            "expression_memo": _rates_memo("AU 10Y", "AUDUSD", "spot", "Compared AU duration; AUDUSD spot is the cleaner pro-growth expression."),
+            "actions": [
+                {
+                    "action": "OPEN",
+                    "instrument": "AUDUSD",
+                    "side": "long",
+                    "notional_usd": 5_000_000,
+                    "price": 0.66,
+                    "asset_class": "spot_fx",
+                    "expression_memo": _rates_memo("AU 10Y", "AUDUSD", "spot", "Compared AU duration; AUDUSD spot is the cleaner pro-growth expression."),
+                }
+            ],
+        }
+        reviews["trend-follower"] = {
+            "seat": "trend-follower",
+            "conviction": 64,
+            "thesis": "USDJPY trend remains aligned with the policy path.",
+            "invalidation": "A daily close that breaks the active USDJPY impulse.",
+            "expression_memo": _rates_memo("US 10Y", "USDJPY", "spot", "Compared US duration; the cleaner trend is USDJPY spot."),
+            "actions": [
+                {
+                    "action": "OPEN",
+                    "instrument": "USDJPY",
+                    "side": "long",
+                    "notional_usd": 7_000_000,
+                    "price": 148.0,
+                    "asset_class": "spot_fx",
+                    "expression_memo": _rates_memo("US 10Y", "USDJPY", "spot", "Compared US duration; the cleaner trend is USDJPY spot."),
+                }
+            ],
+        }
+        reviews["catalyst-junkie"] = {
+            "seat": "catalyst-junkie",
+            "conviction": 48,
+            "thesis": "The live US policy-path catalyst still belongs on the USD curve first.",
+            "invalidation": "The next official US print removes the policy-path surprise.",
+            "expression_memo": _rates_memo("US 2Y", "USDJPY", "rates", "Rates-first: the catalyst is a front-end policy-path mispricing."),
+            "actions": [
+                {
+                    "action": "OPEN",
+                    "instrument": "US 2Y",
+                    "side": "short",
+                    "notional_usd": 4_000_000,
+                    "price": 3.70,
+                    "asset_class": "rates",
+                    "expression_memo": _rates_memo("US 2Y", "USDJPY", "rates", "Rates-first: the catalyst is a front-end policy-path mispricing."),
+                }
+            ],
+        }
+        for seat in STANDING_SEATS:
+            if not reviews[seat]["actions"]:
+                reviews[seat] = {
+                    "seat": seat,
+                    "conviction": 35,
+                    "thesis": f"{seat} finds no incremental edge in the frozen packet.",
+                    "invalidation": "A fresh official print that reopens the seat's remit.",
+                    "expression_memo": _hold_memo(seat),
+                    "actions": [{"action": "HOLD", "expression_memo": _hold_memo(seat)}],
+                    "required_pitch": None,
+                    "risk_put_on": None,
+                }
+    elif scenario == "manage":
+        reviews = dry_run_reviews(scenario="default")
+        reviews["dollar-king"]["actions"] = [
+            {
+                "action": "ADD",
+                "position_id": "__first__",
+                "notional_usd": 2_000_000,
+                "price": 1.362,
+                "expression_memo": _spot_memo("USDCAD", "Add to the existing USD spot book."),
+            }
+        ]
+        reviews["rate-hawk"]["actions"] = [
+            {
+                "action": "REDUCE",
+                "position_id": "__first__",
+                "notional_usd": 5_000_000,
+                "price": 4.25,
+                "expression_memo": _rates_memo("US 10Y", "USDJPY", "rates", "Reduce duration after comparing spot."),
+            }
+        ]
+        reviews["perma-bull"]["actions"] = [
+            {
+                "action": "CLOSE",
+                "position_id": "__first__",
+                "price": 0.665,
+                "expression_memo": _rates_memo("AU 10Y", "AUDUSD", "none", "Close the spot expression; no replacement rates risk."),
+            }
+        ]
+        reviews["trend-follower"]["actions"] = [
+            {
+                "action": "HEDGE",
+                "position_id": "__first__",
+                "hedge_of": "__first__",
+                "notional_usd": 2_000_000,
+                "price": 148.4,
+                "expression_memo": _rates_memo("US 10Y", "USDJPY", "spot", "Hedge part of the USDJPY trend with an offsetting spot."),
+            }
+        ]
+    elif scenario == "stale_hold":
+        for seat in STANDING_SEATS:
+            reviews[seat] = {
+                "seat": seat,
+                "conviction": 30,
+                "thesis": "Required evidence is stale; only risk-reducing or hold actions are allowed.",
+                "invalidation": None,
+                "expression_memo": _hold_memo(seat),
+                "actions": [{"action": "HOLD", "expression_memo": _hold_memo(seat)}],
+            }
+        reviews["dollar-king"]["actions"] = [
+            {
+                "action": "OPEN",
+                "instrument": "USDJPY",
+                "side": "long",
+                "notional_usd": 3_000_000,
+                "price": 148.0,
+                "asset_class": "spot_fx",
+                "expression_memo": _spot_memo("USDJPY", "Attempted new USD spot risk."),
+            }
+        ]
+    else:
+        raise SchemaError(f"unknown dry-run review scenario {scenario}")
+    return reviews
+
+
+def _resolve_first_position(books: dict[str, Any], reviews: dict[str, Any]) -> dict[str, Any]:
+    for seat, payload in reviews.items():
+        positions = books["seats"][seat]["positions"]
+        first = positions[0]["position_id"] if positions else None
+        for action in payload.get("actions") or []:
+            if action.get("position_id") == "__first__":
+                action["position_id"] = first
+            if action.get("hedge_of") == "__first__":
+                action["hedge_of"] = first
+    return reviews
+
+
+def run_trader_review(
+    store: OvernightStore,
+    *,
+    run_id: str,
+    when: datetime | None = None,
+    dry_run: bool = True,
+    scenario: str = "default",
+    live_reviews: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    packet = require_snapshot(store, run_id)
+    if isinstance(packet.get("prior_books"), dict):
+        books = validate_books(packet["prior_books"])
+    elif store.books_path().is_file():
+        books = validate_books(store.read_books())
+    else:
+        books = empty_books(overnight_run_id=run_id, when=when)
+
+    if dry_run:
+        reviews = dry_run_reviews(scenario=scenario)
+        model_calls = 0
+        source = f"dry-run:{scenario}"
+    else:
+        if live_reviews is None and os.environ.get(LIVE_REVIEW_ENV) != "1":
+            raise LiveReviewBlocked(
+                "Live overnight trader review is Cursor-only and not armed. "
+                f"Set {LIVE_REVIEW_ENV}=1 and supply the 14-seat review payload, "
+                "or run dry-run."
+            )
+        if live_reviews is None:
+            raise SchemaError("live trader review payload is required when armed")
+        reviews = live_reviews
+        model_calls = int(reviews.get("model_calls") or 0)
+        source = "cursor-live"
+
+    if "model_calls" in reviews:
+        reviews = {k: v for k, v in reviews.items() if k != "model_calls"}
+    if set(reviews) != set(STANDING_SEATS):
+        raise SchemaError("trader review must cover the locked 14-seat roster")
+    for seat, payload in reviews.items():
+        assert_frozen_only(
+            {
+                **payload,
+                "overnight_run_id": payload.get("overnight_run_id", run_id),
+                "packet_sha256": payload.get("packet_sha256", packet["packet_sha256"]),
+                "evidence_cutoff": payload.get("evidence_cutoff", packet["as_of"]),
+            },
+            packet,
+            seat,
+        )
+
+    reviews = _resolve_first_position(books, reviews)
+    try:
+        updated = apply_review(
+            books,
+            reviews,
+            families=packet["families"],
+            run_id=run_id,
+            evidence_cutoff=packet["as_of"],
+            when=when,
+        )
+        updated["review_status"] = "fresh"
+        updated["last_successful_review_run_id"] = run_id
+        status = "succeeded"
+        errors: list[str] = []
+    except EvidenceBoundaryError:
+        raise
+    except Exception as exc:  # noqa: BLE001 - review failure must not hide the exception class
+        updated = books
+        updated["review_status"] = "failed"
+        status = "failed"
+        errors = [f"{type(exc).__name__}: {exc}"]
+
+    store.write_books(updated)
+    payload = {
+        "schema_version": SCHEMA_VERSION,
+        "type": "OVERNIGHT_TRADER_REVIEW",
+        "overnight_run_id": run_id,
+        "as_of": isoformat(now_ny(when)),
+        "evidence_cutoff": packet["as_of"],
+        "packet_sha256": packet["packet_sha256"],
+        "source": source,
+        "model_calls": model_calls,
+        "full_trader_room": False,
+        "status": status,
+        "errors": errors,
+        "reviews": reviews,
+        "books": updated,
+    }
+    store.write_artifact(run_id, "trader_review.json", payload)
+    return payload
+
+
+def record_missing_live_review(
+    store: OvernightStore,
+    *,
+    run_id: str,
+    when: datetime | None = None,
+    reason: str = "Cursor live review payload was not present; books left unchanged",
+) -> dict[str, Any]:
+    packet = require_snapshot(store, run_id)
+    if isinstance(packet.get("prior_books"), dict):
+        books = validate_books(packet["prior_books"])
+    elif store.books_path().is_file():
+        books = validate_books(store.read_books())
+    else:
+        books = empty_books(overnight_run_id=run_id, when=when)
+    books["review_status"] = "stale"
+    store.write_books(books)
+    payload = {
+        "schema_version": SCHEMA_VERSION,
+        "type": "OVERNIGHT_TRADER_REVIEW",
+        "overnight_run_id": run_id,
+        "as_of": isoformat(now_ny(when)),
+        "evidence_cutoff": packet["as_of"],
+        "packet_sha256": packet["packet_sha256"],
+        "source": "missing-live-review",
+        "model_calls": 0,
+        "full_trader_room": False,
+        "status": "failed",
+        "errors": [reason],
+        "reviews": {},
+        "books": books,
+    }
+    store.write_artifact(run_id, "trader_review.json", payload)
+    return payload
