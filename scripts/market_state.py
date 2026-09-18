@@ -784,8 +784,8 @@ def build_snapshot(
         else {
             "status": "unavailable",
             "error": "positioning collection disabled for this invocation",
-            "cftc_tff": {"status": "unavailable", "instruments": {}},
-            "cme": {"status": "unavailable", "futures": {}, "monthly_options": {}},
+            "cftc_tff": {"status": "unavailable", "error": "positioning collection disabled for this invocation", "instruments": {}},
+            "cme": {"status": "unavailable", "error": "positioning collection disabled for this invocation", "futures": {}, "monthly_options": {}},
             "method": {"model_calls": 0, "credentials_required": []},
         }
     )
