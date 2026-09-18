@@ -278,7 +278,7 @@ class MarketStateTests(unittest.TestCase):
         ), mock.patch("scripts.market_state.fetch_au_rates", return_value=au), mock.patch(
             "scripts.market_state.fetch_nz_rates", side_effect=MarketStateError("RBNZ HTTP 403")
         ), mock.patch("scripts.market_state.fetch_fx", return_value=fx):
-            snapshot = build_snapshot(today=date(2026, 8, 30))
+            snapshot = build_snapshot(include_cross_assets=False, today=date(2026, 8, 30))
         validate_snapshot(snapshot)
         self.assertEqual(snapshot["rates"]["NZ"]["status"], "unavailable")
         self.assertIn("NZ_rates", snapshot["unavailable_sources"])
@@ -318,7 +318,7 @@ class MarketStateTests(unittest.TestCase):
         ), mock.patch("scripts.market_state.fetch_au_rates", return_value=au), mock.patch(
             "scripts.market_state.fetch_nz_rates", return_value=nz
         ), mock.patch("scripts.market_state.fetch_fx", return_value=fx):
-            snapshot = build_snapshot(today=date(2026, 8, 30))
+            snapshot = build_snapshot(include_cross_assets=False, today=date(2026, 8, 30))
 
         validate_snapshot(snapshot)
         self.assertEqual(snapshot["status"], "ok")
@@ -340,7 +340,7 @@ class MarketStateTests(unittest.TestCase):
         ), mock.patch("scripts.market_state.fetch_au_rates", return_value=au), mock.patch(
             "scripts.market_state.fetch_nz_rates", return_value=nz
         ), mock.patch("scripts.market_state.fetch_fx", return_value=fx):
-            stale = build_snapshot(today=date(2026, 9, 6))
+            stale = build_snapshot(include_cross_assets=False, today=date(2026, 9, 6))
         self.assertEqual(stale["status"], "stale")
         self.assertIn("US_rates", stale["stale_sources"])
         self.assertIn("FX", stale["stale_sources"])
@@ -351,7 +351,7 @@ class MarketStateTests(unittest.TestCase):
             "scripts.market_state.fetch_nz_rates", return_value=nz
         ), mock.patch("scripts.market_state.fetch_fx", return_value=fx):
             with self.assertRaises(MarketStateError):
-                build_snapshot(today=date(2026, 8, 30) + timedelta(days=FAIL_AFTER_DAYS + 2))
+                build_snapshot(include_cross_assets=False, today=date(2026, 8, 30) + timedelta(days=FAIL_AFTER_DAYS + 2))
 
 
 if __name__ == "__main__":

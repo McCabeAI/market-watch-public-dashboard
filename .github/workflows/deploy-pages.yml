@@ -34,6 +34,9 @@ on:
       - "scripts/overnight/**"
       - "scripts/overnight_pipeline.py"
       - "scripts/market_state.py"
+      - "scripts/market_opportunities.py"
+      - "scripts/cross_asset_data.py"
+      - "tests/test_market_opportunities.py"
       - "patch_v13/**"
       - "patch_v14/**"
       - "scripts/apply_trader_room_tab.py"
@@ -211,7 +214,7 @@ jobs:
         run: |
           set -euo pipefail
           python -m pip install --disable-pip-version-check -r requirements-market-state.txt
-          PYTHONPATH=. python scripts/market_state.py --output _site/market-state.json
+          PYTHONPATH=. python scripts/market_state.py --output _site/market-state.json --public
           PYTHONPATH=. python - <<'PY'
           import json
           from pathlib import Path
@@ -224,6 +227,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          PYTHONPATH=. python -m unittest tests.test_market_opportunities -v
+          node --check patch_v12/market-data.js
           python scripts/apply_market_data_tab.py _site/index.html
           test -s _site/market-data.js
           grep -Fq 'for="p-marketdata"' _site/index.html
