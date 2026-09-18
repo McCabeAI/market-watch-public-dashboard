@@ -1,0 +1,303 @@
+{
+  "allowed_evidence_refs": [
+    "temp:US:inflation",
+    "temp:US:labor",
+    "temp:US:activity",
+    "temp:US:consumer",
+    "temp:CA:inflation",
+    "temp:CA:labor",
+    "temp:CA:activity",
+    "temp:CA:consumer",
+    "temp:AU:inflation",
+    "temp:AU:labor",
+    "temp:AU:activity",
+    "temp:AU:consumer",
+    "temp:NZ:inflation",
+    "temp:NZ:labor",
+    "temp:NZ:activity",
+    "temp:NZ:consumer",
+    "mw_20260916_fomc_hike_pricing",
+    "mw_20260916_au_housing_tightening",
+    "rollup:BoE holds 3.75% with three votes for a hike",
+    "rollup:Fed raises 25bp to 3.75\u20134.00%",
+    "rollup:BoC minutes flag higher energy pass-through risk",
+    "rollup:New Zealand Q2 GDP slows to 0.2% q/q but beats forecasts",
+    "rollup:Canada August inflation holds at 3%, core stays near 2%",
+    "rollup:August CPI keeps the Fed tightening bias intact",
+    "last24:2026-09-18:boj-raises-its-policy-rate-to-1-25",
+    "last24:2026-09-18:desk-thesis",
+    "mw_20260916_saudi_oman_workaround",
+    "mw_20260916_nz_india_trade",
+    "rollup:BoJ raises its policy rate to 1.25%",
+    "rollup:Energy-market shock absorbers weaken",
+    "rollup:Australian housing downturn deepens under higher rates",
+    "last24:2026-09-18:boe-holds-3-75-but-three-members-vote-to-hike",
+    "market_state",
+    "research_method",
+    "paper_books",
+    "pos:unavailable",
+    "macro:desk-18sep",
+    "xa:opportunities",
+    "xa:energy-retained",
+    "fx:EURUSD",
+    "fx:GBPUSD",
+    "fx:AUDUSD",
+    "fx:NZDUSD",
+    "fx:USDCAD",
+    "fx:USDJPY",
+    "fx:USDCHF",
+    "fx:AUDNZD",
+    "fx:AUDCAD",
+    "fx:NZDCAD",
+    "fx:EURJPY",
+    "fx:GBPJPY",
+    "rates:AU",
+    "rates:CA",
+    "rates:NZ",
+    "rates:US"
+  ],
+  "as_of": "2026-09-18T22:39:26Z",
+  "central_bank_headlines": [
+    {
+      "headline": "Fed decision arrives with markets heavily priced for a 25bp hike",
+      "id": "mw_20260916_fomc_hike_pricing",
+      "institution": "Federal Reserve",
+      "published_at": "2026-09-16T03:01:14Z"
+    },
+    {
+      "headline": "Australian housing downturn shows the RBA tightening channel biting",
+      "id": "mw_20260916_au_housing_tightening",
+      "institution": null,
+      "published_at": "2026-09-16T03:34:50Z"
+    },
+    {
+      "headline": "BoE holds 3.75% with three votes for a hike",
+      "id": "rollup:BoE holds 3.75% with three votes for a hike",
+      "institution": null,
+      "published_at": null
+    },
+    {
+      "headline": "Fed raises 25bp to 3.75\u20134.00%",
+      "id": "rollup:Fed raises 25bp to 3.75\u20134.00%",
+      "institution": null,
+      "published_at": null
+    },
+    {
+      "headline": "BoC minutes flag higher energy pass-through risk",
+      "id": "rollup:BoC minutes flag higher energy pass-through risk",
+      "institution": null,
+      "published_at": null
+    },
+    {
+      "headline": "New Zealand Q2 GDP slows to 0.2% q/q but beats forecasts",
+      "id": "rollup:New Zealand Q2 GDP slows to 0.2% q/q but beats forecasts",
+      "institution": null,
+      "published_at": null
+    },
+    {
+      "headline": "Canada August inflation holds at 3%, core stays near 2%",
+      "id": "rollup:Canada August inflation holds at 3%, core stays near 2%",
+      "institution": null,
+      "published_at": null
+    },
+    {
+      "headline": "August CPI keeps the Fed tightening bias intact",
+      "id": "rollup:August CPI keeps the Fed tightening bias intact",
+      "institution": null,
+      "published_at": null
+    },
+    {
+      "headline": "BoJ raises its policy rate to 1.25%",
+      "id": "last24:2026-09-18:boj-raises-its-policy-rate-to-1-25",
+      "institution": null,
+      "published_at": "2026-09-17T00:00:00Z"
+    },
+    {
+      "headline": "Last 24 Hours desk thesis: global tightening broadens after the Fed move",
+      "id": "last24:2026-09-18:desk-thesis",
+      "institution": null,
+      "published_at": "2026-09-18T08:00:00Z"
+    }
+  ],
+  "expression_mandate": {
+    "options": [
+      "vol-convexity"
+    ],
+    "rates_first": [
+      "perma-bull",
+      "perma-bear",
+      "carry-is-king",
+      "rate-hawk",
+      "rate-dove",
+      "value-guy",
+      "trend-follower",
+      "mean-reverter",
+      "positioning-cynic",
+      "catalyst-junkie",
+      "no-trade-skeptic"
+    ],
+    "spot_only": [
+      "dollar-king",
+      "cross-merchant"
+    ]
+  },
+  "known_gaps": [
+    "Market-state snapshot status is stale. stale_sources=['NZ_rates'] unavailable_sources=['NZ_rates'].",
+    "Official NZ sovereign yields are unavailable: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.. NZ-involved rate RV is unavailable; no third-party substitute was used.",
+    "Supabase MCP is not connected in this ACP execution; temperature values come from the live repo ledger data/temperature_scores.json rather than a live Supabase query.",
+    "ops/supabase/inbox/latest.json last window ended 2026-09-16T10:30:00Z; newer official/news items are taken from the Sep 18 last24/news_rollup production surfaces.",
+    "Last-24 production surface last refreshed 18 Sep 2026 04:00 ET. No newer Market Watch news-refresh artifact is in the repository.",
+    "Persistent paper books are empty $100m seed accounts with no open positions (data/overnight/books/latest.json). No overnight review has completed.",
+    "No paid/private research or positioning/flow dataset is connected. Cot/positioning is a known gap.",
+    "Executable broker prices are not in the packet. ECB FX and official yield history are research/reference only. Unsupported trade levels must remain JSON null.",
+    "This run does not reuse submissions, rebuttals, or conflict maps from tr-20260918T182933Z-ondemand or any earlier Trader Room run."
+  ],
+  "packet_sha256": "b4c642412ddcc969d6fd135638baede8f3e9f987015684f2085c8460c3af466a",
+  "run_id": "tr-20260918T223926Z-ondemand",
+  "standing_advocates": [
+    "perma-bull",
+    "perma-bear",
+    "dollar-king",
+    "cross-merchant",
+    "carry-is-king",
+    "rate-hawk",
+    "rate-dove",
+    "value-guy",
+    "trend-follower",
+    "mean-reverter",
+    "positioning-cynic",
+    "catalyst-junkie",
+    "vol-convexity",
+    "no-trade-skeptic"
+  ],
+  "standing_remits": {
+    "carry-is-king": "positive carry and patient expressions across rates and FX unless a catalyst overwhelms it",
+    "catalyst-junkie": "credible path from mispricing to repricing",
+    "cross-merchant": "cleaner relative-value expressions outside USD",
+    "dollar-king": "express macro views through USD spot whenever a defensible USD pair exists",
+    "mean-reverter": "fade statistically or fundamentally stretched market moves when reversal conditions exist",
+    "no-trade-skeptic": "apparent edges are priced, too noisy, too crowded or poorly timed; may submit no-trade",
+    "perma-bear": "strongest defensive, slowdown, stress or risk-off macro expression",
+    "perma-bull": "strongest pro-growth, risk-on or cyclical macro expression",
+    "positioning-cynic": "attack crowded ideas; prefer better ownership asymmetry",
+    "rate-dove": "underpriced easing, lower-rate repricing, or growth weakness",
+    "rate-hawk": "underpriced hawkish policy, higher terminal rates, or higher-rate repricing",
+    "trend-follower": "persistent price, rates and macro trends; reject premature fades",
+    "value-guy": "historical or fundamental dislocations and convergence trades",
+    "vol-convexity": "asymmetric optionality; challenge spot expressions"
+  },
+  "temperature_snapshot": [
+    {
+      "as_of": "2026-07",
+      "country": "US",
+      "dimension": "Inflation",
+      "id": "temp:US:inflation",
+      "score": 52.0
+    },
+    {
+      "as_of": "2026-08",
+      "country": "US",
+      "dimension": "Labor",
+      "id": "temp:US:labor",
+      "score": 50.2
+    },
+    {
+      "as_of": "2026-Q2",
+      "country": "US",
+      "dimension": "Activity",
+      "id": "temp:US:activity",
+      "score": 49.92
+    },
+    {
+      "as_of": "2026-09",
+      "country": "US",
+      "dimension": "Consumer",
+      "id": "temp:US:consumer",
+      "score": 48.5
+    },
+    {
+      "as_of": "2026-08",
+      "country": "CA",
+      "dimension": "Inflation",
+      "id": "temp:CA:inflation",
+      "score": 50.0
+    },
+    {
+      "as_of": "2026-08",
+      "country": "CA",
+      "dimension": "Labor",
+      "id": "temp:CA:labor",
+      "score": 48.8
+    },
+    {
+      "as_of": "2026-Q2",
+      "country": "CA",
+      "dimension": "Activity",
+      "id": "temp:CA:activity",
+      "score": 53.2
+    },
+    {
+      "as_of": "2026-Q2",
+      "country": "CA",
+      "dimension": "Consumer",
+      "id": "temp:CA:consumer",
+      "score": 52.5
+    },
+    {
+      "as_of": "2026-07",
+      "country": "AU",
+      "dimension": "Inflation",
+      "id": "temp:AU:inflation",
+      "score": 49.2
+    },
+    {
+      "as_of": "2026-Q2",
+      "country": "AU",
+      "dimension": "Labor",
+      "id": "temp:AU:labor",
+      "score": 47.8
+    },
+    {
+      "as_of": "2026-Q2",
+      "country": "AU",
+      "dimension": "Activity",
+      "id": "temp:AU:activity",
+      "score": 49.2
+    },
+    {
+      "as_of": "2026-Q2",
+      "country": "AU",
+      "dimension": "Consumer",
+      "id": "temp:AU:consumer",
+      "score": 51.0
+    },
+    {
+      "as_of": "2026-Q2",
+      "country": "NZ",
+      "dimension": "Inflation",
+      "id": "temp:NZ:inflation",
+      "score": 51.6
+    },
+    {
+      "as_of": "2026-Q2",
+      "country": "NZ",
+      "dimension": "Labor",
+      "id": "temp:NZ:labor",
+      "score": 47.0
+    },
+    {
+      "as_of": "2026-Q2",
+      "country": "NZ",
+      "dimension": "Activity",
+      "id": "temp:NZ:activity",
+      "score": 52.0
+    },
+    {
+      "as_of": "2026-Q2",
+      "country": "NZ",
+      "dimension": "Consumer",
+      "id": "temp:NZ:consumer",
+      "score": 48.5
+    }
+  ]
+}
