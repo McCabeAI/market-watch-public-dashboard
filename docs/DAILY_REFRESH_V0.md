@@ -123,6 +123,8 @@ Select only the highest-ranked developments most likely to change price formatio
 
 Maintain a rolling seven-day set of at most **12 distinct events** that still matter to the current USD/CAD/AUD/NZD macro / rates setup. Remove items that age out or have ceased to matter even if they are still inside seven days. Do not duplicate the same event merely because several outlets repeated it.
 
+The News & Research summary card must be derived from this same rolling digest state on every build. Its **Last scanned** date, **Current tape** count, and displayed seven-day window must match the current 7-Day Quick Digest. A mismatch is a publication failure; never leave the summary card on an older snapshot while the underlying digest is current.
+
 ## 4. Central-bank research refresh
 
 Maintain a strict rolling 30-day publication window from official sources for:
