@@ -78,6 +78,13 @@ CFTC_INSTRUMENT_PATTERNS: dict[str, tuple[str, ...]] = {
     "US30Y": ("TREASURY",),
 }
 CFTC_CONTRACT_CODES = {
+    "EUR": "099741",
+    "GBP": "096742",
+    "JPY": "097741",
+    "CHF": "092741",
+    "CAD": "090741",
+    "AUD": "232741",
+    "NZD": "112741",
     "US2Y": "042601",
     "US5Y": "044601",
     "US10Y": "043602",
@@ -293,7 +300,10 @@ def fetch_cftc_tff(
         "$select": ",".join(CFTC_SELECT_FIELDS),
         "$where": (
             "report_date_as_yyyy_mm_dd >= "
-            f"'{start.isoformat()}T00:00:00.000'"
+            f"'{start.isoformat()}T00:00:00.000' AND "
+            "cftc_contract_market_code in ("
+            + ",".join(f"'{code}'" for code in CFTC_CONTRACT_CODES.values())
+            + ")"
         ),
         "$order": "report_date_as_yyyy_mm_dd ASC",
         "$limit": "50000",
