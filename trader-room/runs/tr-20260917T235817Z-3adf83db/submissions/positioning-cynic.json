@@ -1,0 +1,233 @@
+{
+  "agent": "positioning-cynic",
+  "archetype": "positioning-cynic",
+  "best_counterargument": "NZ labor 32 and activity 47 versus AU 50/54 mean the crowded long AUDNZD is the correct fundamental, and fading a still-positive 1m impulse is just fighting CTA flow that can extend a 5y extreme.",
+  "carry_and_holding_cost": [
+    "AU 2Y 4.835% as of 2026-09-09 is known; NZ government yields are unavailable, so the carry of short AUDNZD is unknown and may be negative.",
+    "ECB FX prints are reference rates, not tradable; holding cost versus an executable forward is unknown."
+  ],
+  "confidence": 38,
+  "evidence": [
+    {
+      "as_of": "2026-09-17",
+      "claim": "AUDNZD ECB-reference spot 1.2388 on 2026-09-17, 1y percentile 99.80, 5y percentile 99.96, 5y z 2.96, 1m return +2.94%.",
+      "source": "market-state snapshot / ECB euro reference crosses",
+      "source_ref": "market_state",
+      "status": "verified"
+    },
+    {
+      "as_of": "2026-09-16T03:01:14Z",
+      "claim": "Interest-rate futures entered the September 16 FOMC with >90% probability of a 25bp hike; Fed raised 25bp to 3.75\u20134.00%.",
+      "source": "Reuters; Federal Reserve",
+      "source_ref": "mw_20260916_fomc_hike_pricing",
+      "status": "verified"
+    },
+    {
+      "as_of": "2026-09-16T03:34:50Z",
+      "claim": "NSW stamp-duty receipts -24% YoY in August, transaction volumes -18%; Sydney and Melbourne home values down more than 7% from peak.",
+      "source": "Reuters",
+      "source_ref": "mw_20260916_au_housing_tightening",
+      "status": "verified"
+    },
+    {
+      "as_of": "2026-09-16T00:14:05Z",
+      "claim": "New Zealand parliament approved an India trade agreement cutting tariffs on about 95% of NZ exports to India.",
+      "source": "Reuters",
+      "source_ref": "mw_20260916_nz_india_trade",
+      "status": "verified"
+    },
+    {
+      "as_of": "2026-09-17T23:10:24Z",
+      "claim": "NZ official yields and AU-NZ rate RV are unavailable after RBNZ B2 HTTP 403; market_state family is stale.",
+      "source": "market-state snapshot",
+      "source_ref": "market_state",
+      "status": "verified"
+    },
+    {
+      "as_of": "2026-09-17T23:58:17Z",
+      "claim": "positioning_and_flow in the frozen packet is an empty array; no CFTC, skew, or CTA inventory.",
+      "source": "frozen evidence packet",
+      "source_ref": "market_state",
+      "status": "verified"
+    },
+    {
+      "as_of": "2026-09-17",
+      "claim": "CTA/momentum and real-money are net long AUDNZD because of the 5y extreme and +2.94% 1m impulse.",
+      "source": "price-proxy reading of market_state FX",
+      "source_ref": "market_state",
+      "status": "inference"
+    },
+    {
+      "as_of": "2026-09-16T03:34:50Z",
+      "claim": "AU housing weakness is not in AUDNZD given the 5y extreme.",
+      "source": "discrepancy map versus mw_20260916_au_housing_tightening",
+      "source_ref": "mw_20260916_au_housing_tightening",
+      "status": "inference"
+    },
+    {
+      "as_of": null,
+      "claim": "Actual leveraged positioning, options skew, and executable AUDNZD forward/carry.",
+      "source": "packet gap",
+      "source_ref": null,
+      "status": "unknown"
+    }
+  ],
+  "execution": "independent_grok_seat",
+  "expression_comparison": {
+    "chosen_because": "The remit is crowded ownership, not a rates call. AUDNZD is the packet\u2019s most extreme crowding proxy, AU-NZ rates RV cannot be executed because NZ yields are missing, and the competing rates expressions are either a right-thesis/bad-entry duration short, a crowded post-FOMC steepener, or a CA-US RV whose weak-Canada fundamental still looks intact. Spot short AUDNZD owns the discrepancy where it lives.",
+    "chosen_expression": "spot_fx",
+    "considered_rates": [
+      {
+        "assessment": "AU 2Y 4.835% as of 2026-09-09 is 99.80th 1y and 99.96th 5y; US 2Y 4.67% on 2026-09-17 is 99.21st 1y. Receiving AU duration would fade crowded global bond shorts into an AU housing break, but AU inflation 82 means those shorts may still be the right thesis, the AU curve is eight days stale, and outright duration does not uniquely own the sharper AUDNZD crowding.",
+        "family": "outright_duration",
+        "instrument": "ACGB 2Y / AU 2Y yield"
+      },
+      {
+        "assessment": "US 2s10s 27bp on 2026-09-17 is 1.39th percentile 1y after a 25bp 1m flattening. A post-hike steepener fades crowded flatteners, but after a >90% priced 25bp hike it is itself the consensus rates-desk trade this seat should attack, and August CPI kept a Fed tightening bias so flatteners may still be right.",
+        "family": "curve",
+        "instrument": "UST 2s10s"
+      },
+      {
+        "assessment": "CA-US 5Y -122bp as of 2026-09-16 is 0.20th percentile 1y (2Y -139bp, 10Y -109bp). Paying CA versus receiving US fades a crowded Canada-dovish/US-hawkish book, and BoC energy pass-through is less-owned, but CA labor 38 supports the crowd\u2019s thesis, CA 2Y has already risen 38bp in 1m, and USDCAD is only 70.8th percentile 1y so spot is not confirming a flow squeeze. AU-NZ 2Y/5Y/10Y RV is unavailable after the RBNZ B2 HTTP 403.",
+        "family": "cross_market_rates_rv",
+        "instrument": "CA-US 5Y yield spread"
+      }
+    ],
+    "considered_spot": {
+      "assessment": "Cleanest ownership expression: 5y 99.96th percentile, 5y z 2.96, 1m +2.94%. Related crowded cousins AUDCAD (5y 99.56th) and USDCHF (1y 99.80th) are inferior: USDCHF is a 1y not 5y extreme and sits inside the fully priced FOMC USD bid this seat refuses to join; AUDCAD is almost as stretched but less extreme than AUDNZD and mixes in weak CA labor.",
+      "instrument": "AUDNZD"
+    },
+    "seat_class": "comparison",
+    "unusually_compelling_vol": false
+  },
+  "invocation": {
+    "agent_url": "https://cursor.com/agents/bc-8932a4e1-3d25-56a1-a70a-fe1877208bba",
+    "frontmatter_model": "grok-4.6[]",
+    "id": "bc-8932a4e1-3d25-56a1-a70a-fe1877208bba",
+    "independent": true,
+    "model": "grok-4.6",
+    "parent_authored": false,
+    "requested_model": "inherit",
+    "role": "advocate",
+    "subagent_calls": 0,
+    "subagent_model": null,
+    "subagent_type": "positioning-cynic",
+    "tools_observed": [
+      "read_file",
+      "read_file",
+      "read_file",
+      "read_file",
+      "glob_file_search",
+      "grep",
+      "glob_file_search",
+      "read_file",
+      "read_file",
+      "read_file",
+      "read_file",
+      "read_file",
+      "read_file"
+    ]
+  },
+  "macro_assumptions": {
+    "growth": "below_trend",
+    "rates": "higher_for_longer",
+    "risk": "risk_off"
+  },
+  "missing_data": [
+    "CFTC/IMM, CTA trend exposure, real-money FX surveys, and AUDNZD/USDCHF options skew.",
+    "Official NZ government yields and AU-NZ 2Y/5Y/10Y RV.",
+    "Executable AUDNZD spot/forward and carry.",
+    "Current Supabase temperature-gauge hard inputs (dashboard_v8 retained, marked stale_if_not_current_supabase).",
+    "Updated AU bond yields after 2026-09-09."
+  ],
+  "packet_sha256": "07d88e1f6351b70033b5c193816bb0605f5d9bb21c43387c6b9f8a4bcaff285e",
+  "parent_authored": false,
+  "pricing_or_mispricing": [
+    "Verified stretch is in spot AUDNZD, not in AU-US 2Y (47th percentile 1y as of 2026-09-09) and not in unobservable AU-NZ yields.",
+    "NZDUSD 5y 11.5th percentile shows the NZD leg is not a crowded USD short; the crowding is the cross."
+  ],
+  "questions_for_opponents": [
+    "If you are long AUDNZD or long AUDCAD, what un-owned catalyst still pays you at a 5y 99th-percentile entry?",
+    "Why join post-FOMC long USD or 2s10s steepeners when the hike was >90% priced?",
+    "If you prefer receive-AU duration instead, how do you size eight-day-stale AU yields against an inflation gauge of 82 without flow data?"
+  ],
+  "remit": "attack crowded ideas; prefer better ownership asymmetry",
+  "round": 1,
+  "run_id": "tr-20260917T235817Z-3adf83db",
+  "seat_model": "grok-4.6",
+  "seat_role": "advocate",
+  "stance_summary": "Fade crowded long AUDNZD: 5y-extreme AUD-outperform ownership is a bad entry even if NZ looks weaker, because AU housing is the un-owned change and washed-out NZD plus the India-trade bid create better asymmetry on the other side.",
+  "subagent_calls": 0,
+  "subagent_model": null,
+  "thesis": [
+    "Price-percentile and 1m-momentum extremes are the only positioning proxies in this packet; they flag AUDNZD as the crowded G10 expression of AUD outperformance.",
+    "Distinguish state from change: NZ weakness is the owned state; AU housing transmission and NZ India-trade are the un-owned change.",
+    "Do not join fully priced FOMC USD, short-duration, or 2s10s-steepener books; those are good-macro, bad-entry crowded ideas."
+  ],
+  "trade": {
+    "catalysts": [
+      "Follow-through AU housing/financial-conditions prints that force AUD de-risking.",
+      "CTA/momentum de-grossing if the 1m AUDNZD impulse stalls (flow itself is unobserved).",
+      "NZ India-trade implementation headlines supporting NZD while NZDUSD is already cheap.",
+      "Post-FOMC exhaustion of the fully priced USD/duration squeeze reducing the bid for AUD as a high-yielder."
+    ],
+    "confidence": 38,
+    "direction": "short",
+    "entry": "ECB euro-reference AUDNZD 1.2388 as of 2026-09-17 (information/reference cross, not an executable dealer quote)",
+    "evidence_refs": [
+      "market_state",
+      "research_method",
+      "mw_20260916_au_housing_tightening",
+      "mw_20260916_nz_india_trade",
+      "mw_20260916_fomc_hike_pricing",
+      "rollup:Fed raises 25bp to 3.75\u20134.00%",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "temp:AU:inflation",
+      "temp:AU:labor",
+      "temp:AU:activity",
+      "temp:AU:consumer",
+      "temp:NZ:inflation",
+      "temp:NZ:labor",
+      "temp:NZ:activity",
+      "temp:NZ:consumer"
+    ],
+    "horizon": "2-8 weeks",
+    "instrument": "AUDNZD",
+    "invalidation": "Wrong thesis, not just early, if AU housing transaction/stamp-duty weakness is revised away or home values stabilize while AUDNZD remains at a 5y extreme, or if NZ labor/activity weaken further and an official NZ-AU yield differential (currently unobservable after the RBNZ 403) confirms the crowded long.",
+    "macro_assumptions": {
+      "growth": "below_trend",
+      "rates": "higher_for_longer",
+      "risk": "risk_off"
+    },
+    "mispricing": "Ownership, not the NZ-weaker narrative, is the edge: AUDNZD\u2019s 5y percentile and 1m impulse imply the next unit of NZ-negative news is in the price, while AU housing tightness and an NZD-positive trade headline are not, given NZDUSD\u2019s 5y cheapness and AUD\u2019s richness versus EUR (EURAUD 1y 1.8th percentile) as well as CAD (AUDCAD 5y 99.56th).",
+    "principal_risks": [
+      "positioning_and_flow is empty: percentiles and 1m returns are ownership proxies, not inventories.",
+      "NZ labor 32 / activity 47 can keep the crowded long AUDNZD fundamentally correct.",
+      "NZ rates unavailable: carry of short AUDNZD is unknown and may be negative.",
+      "AU inflation gauge 82 can sustain an RBA/AUD bid.",
+      "Global risk-off can hit NZD harder than AUD and squeeze the short.",
+      "ECB reference is not executable; live entry/stop cannot be invented from this packet."
+    ],
+    "stop": null,
+    "structure": "outright spot short AUDNZD",
+    "target": null,
+    "thesis": "The frozen packet has no CFTC, skew, or CTA inventory, so crowding is inferred from price extremes and momentum that systematic longs would already own. AUDNZD is the most stretched G10 cross in the snapshot: ECB-reference 1.2388, 1y percentile 99.80, 5y percentile 99.96, 5y z 2.96, 1m +2.94%. That is the consensus high-yield AUD versus weak-NZD book. The state (NZ labor 32, activity 47, consumer 38 versus AU 50/54/48) is already why the crowd is long the cross. The change they do not own is Australian housing transmission: NSW stamp-duty receipts -24% YoY, volumes -18%, Sydney/Melbourne values more than 7% off peak, against AU yields still at a 5y extreme as of 2026-09-09. NZ\u2019s India-trade legislation is incremental NZD-positive while NZDUSD sits at a 5y 11.5th percentile. Short AUDNZD sells the crowded AUD-outperform expression of global higher-for-longer without joining post-FOMC long-USD, short-duration, or 2s10s-steepener books that were already >90% priced into the 25bp hike.",
+    "why_now": [
+      "AUDNZD prints a 5y 99.96th percentile with a still-positive 1m/5d/1d impulse, the strongest price-proxy for crowded CTA/momentum longs in the packet.",
+      "Fed 25bp hike to 3.75\u20134.00% arrived with >90% futures probability: long USD and short duration are known-information trades and a bad entry even if the inflation thesis is intact.",
+      "AU housing receipts/volumes/prices are the fresh tightening-channel print the AUD-outperform crowd is not positioned for.",
+      "NZ India-trade passage is a dated NZD-positive catalyst against a washed-out NZDUSD (5y 11.5th percentile)."
+    ]
+  },
+  "type": "TRADER_ROOM_CONTRIBUTION",
+  "what_changes_my_mind": [
+    "Hard positioning showing AUDNZD is not a crowded long, or is already a crowded short.",
+    "AU housing volumes/prices stabilizing while AU inflation 82 re-accelerates.",
+    "Official NZ yields printing a differential that justifies AUDNZD at a 5y extreme.",
+    "NZ labor/activity gauges falling further with the cross still trending up."
+  ],
+  "why_now": [
+    "AUDNZD at a 5y extreme with trend still intact is when ownership asymmetry is worst for new longs and best for a fade sized for missing flow data.",
+    "The FOMC 25bp hike is known information; the housing print is the marginal AUD supply."
+  ]
+}

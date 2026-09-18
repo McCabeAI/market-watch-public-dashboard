@@ -6,7 +6,7 @@ This directory is the approved Git-durable artifact surface. Sanitized analysis 
 
 Unsanitized provider-local packets may be written under `trader-room/runs/.local/` and remain gitignored.
 
-A run is valid only when every standing trader, aggregator, and rebuttal payload was returned by an independent `grok-4.6` seat. Parent-authored or simulated briefs are `INVALID`. The prior run `tr-20260917T231827Z-4ca9133b` is marked invalid for that reason and must not be presented as a Trader Room result.
+A run is valid only when every standing trader, aggregator, and rebuttal payload was returned by an independent `grok-4.6` seat. Parent-authored or simulated briefs are `INVALID`. The prior run `tr-20260917T231827Z-4ca9133b` is marked invalid for that reason and must not be presented as a Trader Room result. `tr-20260917T235817Z-3adf83db` has independent first-pass, conflict, and rebuttal seats on disk but is `INCOMPLETE` until the grok-4.6 final aggregator returns; it is not a valid complete result.
 
 Published-run pointers:
 

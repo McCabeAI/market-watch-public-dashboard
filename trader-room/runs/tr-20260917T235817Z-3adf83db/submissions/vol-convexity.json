@@ -1,0 +1,212 @@
+{
+  "agent": "vol-convexity",
+  "archetype": "vol-convexity",
+  "best_counterargument": "If 1-month implied vol already sits well above realized 4.83/5.13, the straddle is just paying theta for a move the option market has already warehoused, and a patient spot fade or (if NZ yields return) an AU-NZ rates spread would dominate.",
+  "carry_and_holding_cost": [
+    "Long straddle pays theta and is short a vol-crush if the cross keeps grinding.",
+    "AUDNZD carry is unknown: NZ official yields are unavailable, so no claim that long or short spot is carry-positive.",
+    "Premium, bid-ask, and delta-hedge cost are unknown until a dealer screen is shown.",
+    "ECB reference AUDNZD 1.23880 is not an executable entry."
+  ],
+  "confidence": 41,
+  "evidence": [
+    {
+      "as_of": "2026-09-17",
+      "claim": "AUDNZD spot 1.23880, 5y percentile 99.96, z_5y 2.956, rv_20d 4.832, rv_60d 5.133, ret_1m +2.936% as of 2026-09-17.",
+      "source": "market-state snapshot / ECB euro reference crosses",
+      "source_ref": "market_state",
+      "status": "verified"
+    },
+    {
+      "as_of": "2026-09-16T03:34:50Z",
+      "claim": "NSW residential stamp-duty receipts fell 24% YoY in August; transaction volumes fell 18%; Sydney and Melbourne home values are down more than 7% from peak.",
+      "source": "Reuters",
+      "source_ref": "mw_20260916_au_housing_tightening",
+      "status": "verified"
+    },
+    {
+      "as_of": "2026-09-16T03:01:14Z",
+      "claim": "Interest-rate futures entered the September 16 FOMC with greater-than-90% probability of a 25bp increase; Fed raised 25bp to 3.75\u20134.00%.",
+      "source": "Reuters; Federal Reserve",
+      "source_ref": "mw_20260916_fomc_hike_pricing",
+      "status": "verified"
+    },
+    {
+      "as_of": "dashboard_v8_retained",
+      "claim": "NZ inflation gauge 80, labor 32, activity 47, consumer 38; AU inflation gauge 82, activity 54, consumer 48.",
+      "source": "dashboard_v8_retained temperature gauges",
+      "source_ref": "temp:NZ:inflation",
+      "status": "verified"
+    },
+    {
+      "as_of": "2026-09-16T00:14:05Z",
+      "claim": "New Zealand parliament approved legislation implementing a trade agreement eliminating or reducing tariffs on about 95% of NZ exports to India.",
+      "source": "Reuters",
+      "source_ref": "mw_20260916_nz_india_trade",
+      "status": "verified"
+    },
+    {
+      "as_of": "2026-09-17T23:10:24Z",
+      "claim": "AU-NZ 2Y/5Y/10Y rate RV and NZ government yields are unavailable (RBNZ B2 HTTP 403); market_state status stale.",
+      "source": "market-state snapshot",
+      "source_ref": "market_state",
+      "status": "verified"
+    },
+    {
+      "as_of": "2026-09-17",
+      "claim": "Compressed ~5 realized vol at a 5y AUDNZD extreme underprices two-way housing versus NZ labor/inflation gap risk relative to a spot long or short.",
+      "source": "derived from market_state plus AU housing and NZ gauges",
+      "source_ref": "market_state",
+      "status": "inference"
+    },
+    {
+      "as_of": null,
+      "claim": "1-month ATM implied vol, 25-delta risk-reversal, flies, and option premium for AUDNZD.",
+      "source": "not in frozen packet",
+      "source_ref": null,
+      "status": "unknown"
+    }
+  ],
+  "execution": "independent_grok_seat",
+  "invocation": {
+    "agent_url": "https://cursor.com/agents/bc-20892761-32b8-5379-9f8f-cf4e73f93cee",
+    "frontmatter_model": "grok-4.6[]",
+    "id": "bc-20892761-32b8-5379-9f8f-cf4e73f93cee",
+    "independent": true,
+    "model": "grok-4.6",
+    "parent_authored": false,
+    "requested_model": "inherit",
+    "role": "advocate",
+    "subagent_calls": 0,
+    "subagent_model": null,
+    "subagent_type": "vol-convexity",
+    "tools_observed": [
+      "read_file",
+      "read_file",
+      "read_file",
+      "read_file",
+      "grep",
+      "glob_file_search",
+      "grep",
+      "read_file",
+      "read_file",
+      "read_file",
+      "read_file",
+      "read_file",
+      "read_file",
+      "grep",
+      "read_file",
+      "read_file"
+    ]
+  },
+  "macro_assumptions": {
+    "growth": "below_trend",
+    "rates": "higher_for_longer",
+    "risk": "risk_off"
+  },
+  "missing_data": [
+    "AUDNZD 1-month ATM implied vol versus rv_20d 4.83 / rv_60d 5.13",
+    "AUDNZD 25-delta risk-reversal and butterfly",
+    "Executable option premium, strikes, and bid-ask",
+    "Dealer/executable AUDNZD spot versus ECB reference 1.23880",
+    "Official NZ government-bond yields and AU-NZ 2Y/5Y/10Y RV",
+    "Positioning, option flow, and dealer gamma",
+    "Fresh (non-dashboard-retained) temperature-gauge hard inputs"
+  ],
+  "packet_sha256": "07d88e1f6351b70033b5c193816bb0605f5d9bb21c43387c6b9f8a4bcaff285e",
+  "parent_authored": false,
+  "pricing_or_mispricing": [
+    "Implied versus realized cannot be scored: no implied vol, skew, or option prices are in the packet.",
+    "What is priced in spot is an extreme AUDNZD level (5y percentile 99.96) delivered via a low-RV grind, not a realized-vol event.",
+    "What is not observable: whether 1-month ATM IV already embeds housing/RBNZ jump risk. Pre-trade gate is IV versus rv_20d 4.83 / rv_60d 5.13 and 25-delta RR direction.",
+    "USDJPY rv_20d 9.74 is already elevated, so buying JPY vol from this packet would be buying high realized without an IV discount\u2014rejected. EURCHF rv_20d 2.85 is more compressed but only a 1y extreme (5y percentile 43.9) with a weaker two-way catalyst map."
+  ],
+  "questions_for_opponents": [
+    "If you are long or short AUDNZD spot, what is your timing edge once the cross is already at 5y percentile 99.96 with only ~5 realized vol?",
+    "Why run AU versus NZ in spot or in an invented NZ yield when the packet explicitly marks NZ rates unavailable?",
+    "What observation would make you prefer defined-premium optionality over an unbounded spot expression with timing uncertainty?"
+  ],
+  "remit": "asymmetric optionality; challenge spot expressions",
+  "round": 1,
+  "run_id": "tr-20260917T235817Z-3adf83db",
+  "seat_model": "grok-4.6",
+  "seat_role": "advocate",
+  "stance_summary": "AUDNZD is a five-year spot extreme with compressed realized vol and two-way AU-housing versus NZ-labor/inflation tails, so a 1-month ATM straddle dominates a directional spot bet; implied vol is unobserved and must be checked against realized 4.83/5.13 before execution.",
+  "subagent_calls": 0,
+  "subagent_model": null,
+  "thesis": [
+    "Verified: AUDNZD spot 1.23880 on 2026-09-17, 1y percentile 99.80, 5y percentile 99.96, z_1y 1.705, z_5y 2.956, ret_1m +2.936%, rv_20d 4.832, rv_60d 5.133.",
+    "Verified: NSW stamp-duty receipts fell 24% YoY in August, transaction volumes 18%, Sydney and Melbourne home values down more than 7% from peak; AU inflation gauge 82 versus activity 54 / consumer 48.",
+    "Verified: NZ inflation gauge 80 against labor 32, activity 47, consumer 38; parliament passed the India trade deal cutting tariffs on about 95% of NZ exports to India.",
+    "Verified: Fed hiked 25bp to 3.75\u20134.00% after futures were greater-than-90% priced for that hike; AU-NZ rate RV is unavailable because RBNZ B2 returned HTTP 403.",
+    "Inference: directional spot (long or short AUDNZD) is a timing instrument. Mean-reversion and trend can both be locally right for weeks; the packet\u2019s discrepancy is the combination of extreme spot, suppressed realized vol, and two-way event risk.",
+    "Inference: a 1-month ATM straddle is the cleaner expression because it owns a gap in either direction with defined premium risk and does not require inventing an AU-NZ yield spread.",
+    "Unknown: 1-month implied vol, 25-delta risk-reversal, fly, premium, and executable strikes. Do not treat realized 4.83/5.13 as an implied-vol quote."
+  ],
+  "trade": {
+    "catalysts": [
+      "Further AU housing/stamp-duty/volume deterioration that gaps AUD lower versus NZD.",
+      "NZ labor/consumer weakness colliding with still-hot NZ inflation (gauge 80), forcing an RBNZ path surprise that gaps NZD.",
+      "Implementation of the NZ-India trade agreement as a NZD-positive flow that can extend the already-extreme AUDNZD grind.",
+      "Post-FOMC residual US/global rate-path volatility transmitting into G10 crosses that have been realizing only ~5 vol."
+    ],
+    "confidence": 41,
+    "direction": "long volatility",
+    "entry": null,
+    "evidence_refs": [
+      "market_state",
+      "mw_20260916_au_housing_tightening",
+      "mw_20260916_fomc_hike_pricing",
+      "rollup:Fed raises 25bp to 3.75\u20134.00%",
+      "mw_20260916_nz_india_trade",
+      "temp:AU:inflation",
+      "temp:AU:activity",
+      "temp:AU:consumer",
+      "temp:NZ:inflation",
+      "temp:NZ:labor",
+      "temp:NZ:consumer",
+      "temp:NZ:activity",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "research_method"
+    ],
+    "horizon": "1-month expiry / 2-6 weeks",
+    "instrument": "AUDNZD 1-month ATM straddle",
+    "invalidation": "Do not lift the straddle if live 1-month ATM implied vol is already rich to packet AUDNZD rv_20d 4.83 / rv_60d 5.13 without a two-way event premium. Thesis also fails if AU housing and transaction data reverse and NZ labor/inflation gauges converge, collapsing the two-way tail into a one-way grind; or if an official NZ yield series returns and shows the AU-NZ rate gap already fully expressing the same split.",
+    "macro_assumptions": {
+      "growth": "below_trend",
+      "rates": "higher_for_longer",
+      "risk": "risk_off"
+    },
+    "mispricing": "The mispricing is compressed realized vol at a historically extreme spot with unresolved two-way event risk, not a known cheap implied-vol print. Packet AUDNZD rv_20d is 4.83198 and rv_60d is 5.13260 while spot 1.23880 sits at 1y percentile 99.80 / 5y percentile 99.96 / z_5y 2.956. Implied vol, skew, and premium are absent, so any claim that options are numerically cheap is unknown until those screens are checked against that realized base.",
+    "principal_risks": [
+      "Implied vol, skew, and premium are not in the packet; the straddle can be a negative-carry buy of already-expensive vol.",
+      "Theta/vol-crush if AUDNZD continues a low-RV grind instead of a gap.",
+      "ECB EUR-cross fixings are reference rates, not executable spots; ATM strike must be set on live dealer spot.",
+      "Temperature gauges are dashboard-retained and flagged stale_if_not_current_supabase.",
+      "AU yields are 8 calendar days stale (2026-09-09); NZ rates are unavailable.",
+      "Positioning and option-market flow are empty, so dealer hedging / crowding is unknown."
+    ],
+    "stop": null,
+    "structure": "Long 1-month ATM AUDNZD straddle (long gamma/vega). Do not execute until live 1-month implied vol, 25-delta risk-reversal, and premium are observed. If 1-month IV is already rich to packet realized 20d 4.83 / 60d 5.13, stand down rather than invent a cheap-vol edge; a 25-delta risk-reversal is the fallback only if live skew fails to price the AU-housing downside tail.",
+    "target": null,
+    "thesis": "Spot AUDNZD forces a timing call that the packet cannot support: the cross is at a five-year extreme while 20d/60d realized vol remains ~5, and the live catalysts point both ways (AU housing/financial-conditions break versus NZ labor/consumer already weak with inflation still hot). A bounded long-vol structure owns the gap or unwind without picking which economy cracks first. AU-NZ rate RV is not available in this packet, so options\u2014not duration or a rates spread\u2014are the expression that actually owns the discrepancy.",
+    "why_now": [
+      "The September 16 FOMC 25bp hike to 3.75\u20134.00% arrived with greater-than-90% pricing, so residual event risk has migrated off the Fed print and into idiosyncratic housing/policy tails.",
+      "AUDNZD has ground +2.936% over 1m to a 5y extreme without a high realized-vol regime (20d RV still 4.83), which is the signature of a coiled cross where trend and mean-reversion seats will fight in spot.",
+      "The AU housing channel is now hard data (NSW stamp-duty receipts \u221224% YoY, volumes \u221218%, Sydney/Melbourne values more than 7% from peak), while NZ inflation remains 80 against labor 32 / consumer 38\u2014two live, opposing jump risks.",
+      "Official NZ yields are blocked (RBNZ B2 HTTP 403), so the economically natural AU-NZ rates-RV expression cannot be run from this packet; vol on the FX cross is the remaining instrument that owns the split."
+    ]
+  },
+  "type": "TRADER_ROOM_CONTRIBUTION",
+  "what_changes_my_mind": [
+    "Live 1-month ATM IV rich to rv_20d 4.83 / rv_60d 5.13 with 25-delta RR already paying for the AU-housing tail.",
+    "AU housing/transaction prints reversing and NZ labor/inflation gauges converging.",
+    "Official NZ yields returning that already price the AU-NZ split, making rates RV the cleaner ownership.",
+    "Realized AUDNZD vol rising into the 8\u201310 area without a gap, showing the extreme is being digested in time rather than stored as jump risk."
+  ],
+  "why_now": [
+    "FOMC event risk has already been spent at greater-than-90% odds; the live unpriced tails are AU housing and NZ stagflation split, not the delivered 25bp.",
+    "AUDNZD is still printing near-cycle highs with only ~5 realized vol, so spot expressions are fighting the last month\u2019s grind rather than owning the next jump.",
+    "The rates expression that would normally own AU versus NZ is explicitly missing from the frozen packet."
+  ]
+}

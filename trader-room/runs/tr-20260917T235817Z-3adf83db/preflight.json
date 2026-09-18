@@ -1,0 +1,21 @@
+{
+  "essential_families": [
+    "temperature_gauges",
+    "central_bank_research",
+    "market_state",
+    "research_method"
+  ],
+  "evidence_cutoff": "2026-09-17T23:58:17Z",
+  "families": {
+    "central_bank_research": "available",
+    "market_state": "stale",
+    "research_method": "available",
+    "temperature_gauges": "available"
+  },
+  "hook_policy": "TRADER_ROOM_MODEL_POLICY={\"version\":1,\"advocate_model\":\"grok-4.6\",\"aggregator_model\":\"grok-4.6\",\"rebuttal_model\":\"grok-4.6\",\"subagent_models\":[\"composer-2.5\"],\"composer_max_per_advocate\":2,\"composer_allowed_role\":\"advocate-research\"}",
+  "ok": true,
+  "packet_sha256": "07d88e1f6351b70033b5c193816bb0605f5d9bb21c43387c6b9f8a4bcaff285e",
+  "run_id": "tr-20260917T235817Z-3adf83db",
+  "source_note": "Same production evidence families as the INVALID parent-authored run; new run_id/cutoff for independent seat dispatch.",
+  "source_packet": "tr-20260917T231827Z-4ca9133b"
+}

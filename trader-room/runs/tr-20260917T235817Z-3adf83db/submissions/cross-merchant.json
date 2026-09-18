@@ -1,0 +1,259 @@
+{
+  "agent": "cross-merchant",
+  "archetype": "cross-merchant",
+  "best_counterargument": "NZ's weaker labor/consumer/activity gauges already justify a structurally high AUDNZD, AU housing may be the intended RBA transmission that keeps AUD bid under inflation 82, and without NZ yields the apparent FX mispricing could be a large unobserved AU rate premium.",
+  "carry_and_holding_cost": [
+    "Unknown: NZ official 2Y/5Y/10Y and AU-NZ RV spreads are unavailable (RBNZ B2 403). Do not invent an AUDNZD carry sign.",
+    "Verified contrast: short AUDCAD would pay about 167.5bp of 2Y carry (CA-AU 2Y -167.5bp as of 2026-09-09). That is why AUDNZD is the cleaner fade of rich AUD.",
+    "AU 2Y 4.835 and 10Y 5.202 as of 2026-09-09 are themselves 1y/5y extremes, so if NZ yields are materially lower the short-AUDNZD fade is negative-carry; that is a principal risk, not a reason to switch into USD."
+  ],
+  "confidence": 48,
+  "evidence": [
+    {
+      "as_of": "2026-09-17",
+      "claim": "ECB euro-reference implied AUDNZD spot 1.2388 on 2026-09-17, 1y percentile 99.80, 5y percentile 99.96, z_5y +2.96, 1m return +2.94%, 3m +1.29%, 20d RV 4.83.",
+      "source": "market_state / ECB euro foreign exchange reference rates",
+      "source_ref": "market_state",
+      "status": "verified"
+    },
+    {
+      "as_of": "2026-09-17",
+      "claim": "AUDUSD 0.7114 is 74.8 1y / 83.5 5y percentile (+0.54% 1m); NZDUSD 0.5743 is 21.2 1y / 11.5 5y percentile (-2.33% 1m).",
+      "source": "market_state / ECB euro-reference crosses",
+      "source_ref": "market_state",
+      "status": "verified"
+    },
+    {
+      "as_of": "2026-09-16T03:34:50Z",
+      "claim": "NSW residential stamp-duty receipts fell 24% YoY in August, transaction volumes fell 18%, and Sydney and Melbourne home values are down more than 7% from peak.",
+      "source": "Reuters",
+      "source_ref": "mw_20260916_au_housing_tightening",
+      "status": "verified"
+    },
+    {
+      "as_of": "2026-09-16T00:14:05Z",
+      "claim": "New Zealand's parliament approved legislation implementing a trade agreement eliminating or materially reducing tariffs on about 95% of NZ exports to India.",
+      "source": "Reuters",
+      "source_ref": "mw_20260916_nz_india_trade",
+      "status": "verified"
+    },
+    {
+      "as_of": "dashboard_v8_retained",
+      "claim": "Retained temperature gauges: AU inflation 82 vs NZ 80; AU labor 50 vs NZ 32; AU activity 54 vs NZ 47; AU consumer 48 vs NZ 38.",
+      "source": "dashboard v8 retained gauges",
+      "source_ref": "temp:AU:inflation",
+      "status": "verified"
+    },
+    {
+      "as_of": "2026-09-16T03:01:14Z",
+      "claim": "Interest-rate futures entered the Sep 16 FOMC with >90% probability of a 25bp increase; Fed funds target cited as 3.75\u20134.00% after the decision.",
+      "source": "Reuters / Federal Reserve rollup",
+      "source_ref": "mw_20260916_fomc_hike_pricing",
+      "status": "verified"
+    },
+    {
+      "as_of": "2026-09-09",
+      "claim": "CA-AU 2Y spread -167.5bp as of 2026-09-09 (AU yields higher); AUDCAD 5y percentile 99.56.",
+      "source": "market_state rate_rv and fx",
+      "source_ref": "market_state",
+      "status": "verified"
+    },
+    {
+      "as_of": "2026-09-17",
+      "claim": "EURUSD 1y percentile 13.3 versus AUDUSD 74.8 explains EURAUD at 1.79 1y percentile better than a pure ECB-RBA differential.",
+      "source": "market_state FX percentiles",
+      "source_ref": "market_state",
+      "status": "inference"
+    },
+    {
+      "as_of": "2026-09-17T23:58:17Z",
+      "claim": "Matched AU/NZ inflation plus housing-versus-FTA catalyst asymmetry means AUDNZD at a 5y extreme is mis-set versus the incoming differential.",
+      "source": "gauges plus Sep 16 news versus FX distribution",
+      "source_ref": "research_method",
+      "status": "inference"
+    },
+    {
+      "as_of": null,
+      "claim": "AU-NZ 2Y/5Y/10Y yield differentials.",
+      "source": "RBNZ B2 unavailable HTTP 403",
+      "source_ref": "market_state",
+      "status": "unknown"
+    },
+    {
+      "as_of": null,
+      "claim": "Positioning, executable AUDNZD bid/offer, and AU versus NZ terms-of-trade.",
+      "source": "packet gaps (positioning_and_flow empty; FX are ECB reference rates)",
+      "source_ref": null,
+      "status": "unknown"
+    }
+  ],
+  "execution": "independent_grok_seat",
+  "expression_comparison": {
+    "chosen_because": "This seat stays in non-USD spot. AUDNZD is the pair that owns the AU-housing versus NZ-FTA discrepancy after stripping the Sep 16 Fed residual that contaminates AUDUSD, NZDUSD, EURAUD and USDCAD.",
+    "chosen_expression": "spot_fx",
+    "cross_comparisons": [
+      {
+        "assessment": "Also rich (spot 0.9956, 5y 99.56 percentile, z_5y +2.71), but CA-AU 2Y is -167.5bp as of 2026-09-09 and CA inflation is cooler (gauge 55, CPI 3%/core ~2%). Fading AUDCAD shorts verified carry and fights an inflation gap that is consistent with the rate spread.",
+        "instrument": "AUDCAD"
+      },
+      {
+        "assessment": "EURAUD 1.6139 at 1.79 1y percentile looks like a long-EUR fade of rich AUD, and the ECB did hike 25bp on 2026-09-10. Decomposition shows the cheapness is mostly EURUSD at 13.3 1y percentile versus still-firm AUDUSD. That is Fed residual, not a clean EA-AU view.",
+        "instrument": "EURAUD"
+      },
+      {
+        "assessment": "Cheaper still (5y 0.91 percentile, z_5y -2.26) but the packet has no Norway policy, inflation or rates to triangulate. Extreme z-score without a NZ-NOK mechanism fails the research-method test.",
+        "instrument": "NZDNOK"
+      }
+    ],
+    "rejected_usd_expressions": [
+      {
+        "assessment": "AUDUSD is only 74.8 1y / 83.5 5y percentile and +0.54% 1m. Short AUDUSD mixes a local AU housing hit with long USD after a delivered, >90%-priced 25bp hike. It does not isolate Oceania.",
+        "instrument": "AUDUSD"
+      },
+      {
+        "assessment": "NZDUSD is cheap (21.2 1y / 11.5 5y, z_5y -1.06) and -2.33% 1m, but long NZDUSD is short the same Fed dollar. The FTA is NZ-specific and should print against AUD, not versus a hiking USD.",
+        "instrument": "NZDUSD"
+      }
+    ],
+    "seat_class": "spot_specialist",
+    "spot_dedicated": true
+  },
+  "invocation": {
+    "agent_url": "https://cursor.com/agents/bc-41c2ee7b-770e-5032-bc65-daa81128a5a5",
+    "frontmatter_model": "grok-4.6[]",
+    "id": "bc-41c2ee7b-770e-5032-bc65-daa81128a5a5",
+    "independent": true,
+    "model": "grok-4.6",
+    "parent_authored": false,
+    "requested_model": "inherit",
+    "role": "advocate",
+    "subagent_calls": 0,
+    "subagent_model": null,
+    "subagent_type": "cross-merchant",
+    "tools_observed": [
+      "read_file",
+      "read_file",
+      "read_file",
+      "read_file",
+      "glob_file_search",
+      "grep",
+      "glob_file_search",
+      "read_file",
+      "read_file",
+      "read_file",
+      "read_file",
+      "grep",
+      "read_file",
+      "read_file"
+    ]
+  },
+  "macro_assumptions": {
+    "growth": "below_trend",
+    "rates": "higher_for_longer",
+    "risk": "risk_off"
+  },
+  "missing_data": [
+    "Official NZ government-bond yields and AU-NZ 2Y/5Y/10Y RV (RBNZ B2 403); market_state family marked stale for this reason.",
+    "AU yield observation is 8 days old (2026-09-09) versus FX on 2026-09-17.",
+    "Temperature gauges are dashboard-v8 retained and flagged stale_if_not_current_supabase; no hard_inputs.",
+    "Positioning_and_flow and cross_asset are empty.",
+    "Executable G10 spot (ECB series are information/reference rates).",
+    "RBNZ policy stance, NZ CPI detail, and AU versus NZ commodity terms-of-trade."
+  ],
+  "packet_sha256": "07d88e1f6351b70033b5c193816bb0605f5d9bb21c43387c6b9f8a4bcaff285e",
+  "parent_authored": false,
+  "pricing_or_mispricing": [
+    "Verified: AUDNZD 1.2388, 99.80 1y / 99.96 5y percentile, z_5y +2.96, ret_1m +2.94%.",
+    "Verified: AUDUSD 74.8/83.5 percentiles versus NZDUSD 21.2/11.5; the cross extreme is that residual.",
+    "Inference: matched inflation plus new AU-growth-negative and NZ-trade-positive news means the extreme is stale to the incoming differential.",
+    "Unknown: AU-NZ yield gap, so the rate-justification for the FX extreme cannot be measured."
+  ],
+  "questions_for_opponents": [
+    "Dollar-king: why own a delivered Fed hike inside AUDUSD or NZDUSD when the 1m residual is already isolated in AUDNZD?",
+    "Carry-is-king: without NZ yields, what carry number are you using to reject a fade of 99.96 5y AUDNZD, and why is paying 167.5bp to short AUDCAD any cleaner?",
+    "Rate-hawk: if AU inflation 82 and NZ 80 are both hot, what policy gap justifies this FX extreme?",
+    "Mean-reverter: do you fade AUDNZD on the z-score alone, or do you also require the housing and FTA catalysts?"
+  ],
+  "remit": "cleaner relative-value expressions outside USD",
+  "round": 1,
+  "run_id": "tr-20260917T235817Z-3adf83db",
+  "seat_model": "grok-4.6",
+  "seat_role": "advocate",
+  "stance_summary": "Fade record-rich AUDNZD: matched Oceania inflation plus a new AU housing-break versus an NZ India-FTA catalyst is a cleaner relative-value than any USD pair.",
+  "subagent_calls": 0,
+  "subagent_model": null,
+  "thesis": [
+    "USD contaminates the live AU housing and NZ trade stories: AUDUSD is not extreme and NZDUSD's cheapness is partly a Fed-hike residual.",
+    "AU and NZ inflation gauges are effectively matched (82 vs 80), so a 99.96 5y AUDNZD percentile is the discrepancy to own, not a USD pair.",
+    "AU housing is the new tightening-transmission fact; NZ's India FTA is the new NZ-positive catalyst; together they argue for lower AUDNZD from a 5y extreme.",
+    "AUDCAD and EURAUD fail the expression test: AUDCAD has verified negative carry of 167.5bp on 2Y, EURAUD is a EURUSD-dump residual."
+  ],
+  "trade": {
+    "catalysts": [
+      "Further AU housing, transaction-volume or stamp-duty deterioration confirming RBA tightening is growth-negative.",
+      "RBA communication forced to weigh the housing channel against still-hot AU inflation (gauge 82).",
+      "NZ India FTA implementation/export-flow follow-through as a NZ-specific terms-of-trade positive.",
+      "FOMC event risk now behind the USD pairs, leaving the Oceania residual cleaner to own."
+    ],
+    "confidence": 48,
+    "direction": "short",
+    "entry": "ECB euro-reference implied AUDNZD 1.2388 as of 2026-09-17 (information/reference rate, not an executable bid/offer)",
+    "evidence_refs": [
+      "market_state",
+      "mw_20260916_au_housing_tightening",
+      "mw_20260916_nz_india_trade",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "rollup:New Zealand passes India trade agreement",
+      "temp:AU:inflation",
+      "temp:NZ:inflation",
+      "temp:AU:labor",
+      "temp:NZ:labor",
+      "temp:AU:activity",
+      "temp:NZ:activity",
+      "temp:AU:consumer",
+      "temp:NZ:consumer",
+      "mw_20260916_fomc_hike_pricing",
+      "rollup:ECB raises rates 25bp on energy-driven inflation",
+      "rollup:Canada August inflation holds at 3%, core stays near 2%",
+      "research_method"
+    ],
+    "horizon": "6-10 weeks",
+    "instrument": "AUDNZD",
+    "invalidation": "The relative-value claim is false if official NZ yields (currently unavailable) show a large AU rate premium consistent with the 5y FX extreme; if subsequent AU housing/activity data stabilize or reverse while NZ labor/activity remain weaker (gauges 32/47/38 versus AU 50/54/48); or if AUDNZD makes a new high alongside a genuine AU-NZ inflation or policy re-widening rather than a USD residual.",
+    "macro_assumptions": {
+      "growth": "below_trend",
+      "rates": "higher_for_longer",
+      "risk": "risk_off"
+    },
+    "mispricing": "AUDNZD at 1.2388 is 99.80 1y / 99.96 5y percentile (z_5y +2.96) after +2.94% 1m / +1.29% 3m, despite inflation gauges that do not justify an Oceania blow-out. The 1m decomposition is AUDUSD +0.54% versus NZDUSD -2.33%; the market has already treated NZ as the weaker economy, so additional AU housing deterioration and an NZ-specific trade catalyst are not in a still-rising 5y extreme. Carry of the fade is unknown because official NZ yields are unavailable; that gap cuts confidence, it does not authorize substituting a USD pair.",
+    "principal_risks": [
+      "NZ official yields are missing (RBNZ B2 HTTP 403); a large AU-NZ rate premium would justify rich AUDNZD and make this fade negative-carry.",
+      "NZ labor 32 / consumer 38 / activity 47 are already weaker than AU 50/48/54, so the 5y extreme may be a fair NZ-growth discount rather than a mispricing.",
+      "AU inflation 82 can keep the RBA higher-for-longer even as housing breaks, supporting AUD on policy while NZ eases into weak labor.",
+      "Commodity terms-of-trade (iron ore versus dairy) and positioning are not in the packet.",
+      "ECB EUR-cross construction is not executable; live AUDNZD can differ from 1.2388.",
+      "Risk-off that hits NZD beta harder than AUD would extend the extreme."
+    ],
+    "stop": null,
+    "structure": null,
+    "target": null,
+    "thesis": "The intended differential is Oceania-relative, not a dollar view. Australia and New Zealand print almost identical inflation gauges (AU 82 vs NZ 80), yet ECB-implied AUDNZD sits at a 5y extreme after a +2.94% one-month grind. That richness is the residual of a still-firm AUDUSD (74.8 1y / 83.5 5y percentile) against a cheap NZDUSD (21.2 1y / 11.5 5y). Fresh AU evidence shows the RBA tightening channel now biting housing (NSW stamp-duty receipts -24% YoY, volumes -18%, Sydney/Melbourne values down more than 7% from peak), while New Zealand just passed an India trade agreement cutting tariffs on about 95% of NZ exports. Short AUDUSD would contaminate the AU housing hit with a just-delivered, >90%-priced Fed 25bp hike to 3.75\u20134.00%. Long NZDUSD would contaminate the FTA with the same USD residual. AUDCAD is the wrong alternative: it is also statistically rich (5y 99.56 percentile) but CA-AU 2Y is -167.5bp, so fading AUD there shorts a verified high-carry currency against cooler Canadian inflation (gauge 55, headline 3%, core near 2%). EURAUD looks cheap (1y 1.79 percentile) only because EURUSD is already 13.3 1y percentile after the Fed move; that is a USD-policy residual, not a clean EA-AU differential. AUDNZD isolates policy, growth, inflation, valuation and catalyst asymmetry without the dollar.",
+    "why_now": [
+      "AU housing-tightening evidence printed 2026-09-16, the same day NZ's India FTA passed, against an AUDNZD 5y extreme dated 2026-09-17.",
+      "The Sep 16 FOMC 25bp hike is now a known USD event (>90% priced into the decision); leaving USD in the expression now owns residual dollar beta rather than the Oceania discrepancy.",
+      "AUDNZD 20d RV is only 4.83 and 60d RV 5.13, so the extreme is a grind, not a crash spike that has already mean-reverted."
+    ]
+  },
+  "type": "TRADER_ROOM_CONTRIBUTION",
+  "what_changes_my_mind": [
+    "Official NZ yields showing a large, persistent AU rate premium consistent with the 5y AUDNZD extreme.",
+    "AU housing, volumes or stamp-duty reversing while NZ labor stays in the low-30s.",
+    "An AU-NZ inflation gap reopening enough to rationalize further AUD outperformance.",
+    "Evidence that the 1m NZD underperformance is a USD-beta/liquidity event that will reverse in NZDUSD rather than in AUDNZD."
+  ],
+  "why_now": [
+    "Housing and FTA news hit 2026-09-16 against a 2026-09-17 AUDNZD 5y extreme.",
+    "FOMC is now known information; keeping USD in the trade owns leftover dollar beta.",
+    "The 1m move (+2.94% AUDNZD) is NZD-specific underperformance, not a uniform USD bid (AUDUSD only +0.54%)."
+  ]
+}

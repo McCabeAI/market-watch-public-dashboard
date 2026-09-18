@@ -1,0 +1,241 @@
+{
+  "agent": "mean-reverter",
+  "archetype": "mean-reverter",
+  "best_counterargument": "NZ labor 32 and consumer 38 versus AU labor 50 can justify a structurally rich AUDNZD, and the missing NZ yield curve may already show an AU-NZ gap as extreme as spot; if so this is a fair-value cross, not an overshoot, and AU inflation 82 can keep AUD bid as the high-yielder.",
+  "carry_and_holding_cost": [
+    "Unknown. AU 2Y was 4.835% on 2026-09-09; NZ yields are missing, so the sign and size of AUDNZD short carry cannot be verified. If Australia still yields more than New Zealand, a short AUDNZD pays negative carry and needs the housing/FTA catalysts to work inside weeks, not months."
+  ],
+  "confidence": 46,
+  "evidence": [
+    {
+      "as_of": "2026-09-17",
+      "claim": "AUDNZD spot 1.2388004213396122, pctile_5y 99.96031746031746, z_5y 2.956392537701696, pctile_1y 99.8015873015873, ret_1m 2.936294003399431, as_of 2026-09-17",
+      "source": "market_state.fx.pairs.AUDNZD (ECB euro reference crosses)",
+      "source_ref": "market_state",
+      "status": "verified"
+    },
+    {
+      "as_of": "2026-09-17",
+      "claim": "AUDUSD pctile_1y 74.80 / pctile_5y 83.53; NZDUSD pctile_1y 21.23 / pctile_5y 11.47 \u2014 AUDNZD extreme is relative, not a broad AUD blow-off versus USD",
+      "source": "market_state.fx.pairs",
+      "source_ref": "market_state",
+      "status": "verified"
+    },
+    {
+      "as_of": "2026-09-16T03:34:50Z",
+      "claim": "NSW residential stamp-duty receipts fell 24% YoY in August; transaction volumes fell 18%; Sydney and Melbourne home values down more than 7% from peak",
+      "source": "Reuters via mw_20260916_au_housing_tightening",
+      "source_ref": "mw_20260916_au_housing_tightening",
+      "status": "verified"
+    },
+    {
+      "as_of": "2026-09-16T00:14:05Z",
+      "claim": "New Zealand passed legislation implementing an India trade agreement eliminating or materially reducing tariffs on about 95% of NZ exports to India",
+      "source": "Reuters via mw_20260916_nz_india_trade",
+      "source_ref": "mw_20260916_nz_india_trade",
+      "status": "verified"
+    },
+    {
+      "as_of": "dashboard_v8_retained",
+      "claim": "AU inflation/labor/activity/consumer gauges 82/50/54/48; NZ 80/32/47/38 (dashboard-retained, stale_if_not_current_supabase)",
+      "source": "temperature_gauges",
+      "source_ref": "temp:AU:inflation",
+      "status": "verified"
+    },
+    {
+      "as_of": "2026-09-09",
+      "claim": "AU 2Y 4.835 (pctile_5y 99.96) and AU 10Y 5.202 (pctile_5y 99.88) as_of 2026-09-09, age_days 8",
+      "source": "market_state.rates.AU",
+      "source_ref": "market_state",
+      "status": "verified"
+    },
+    {
+      "as_of": null,
+      "claim": "AU-NZ 2Y/5Y/10Y RV unavailable because RBNZ B2 workbook returned HTTP 403",
+      "source": "market_state.rate_rv / sources.NZ_rates",
+      "source_ref": "market_state",
+      "status": "verified"
+    },
+    {
+      "as_of": "2026-09-16T03:01:14Z",
+      "claim": "Fed 25bp hike to 3.75\u20134.00% on Sep 16; futures had >90% probability of 25bp into the decision",
+      "source": "Federal Reserve rollup + Reuters mw_20260916_fomc_hike_pricing",
+      "source_ref": "rollup:Fed raises 25bp to 3.75\u20134.00%",
+      "status": "verified"
+    },
+    {
+      "as_of": "2026-09-17T23:58:17Z",
+      "claim": "AUDNZD 5y extreme is crowded AU-high-yield / NZ-weak labor extrapolation rather than fair-value rate differential",
+      "source": "synthesis of market_state + gauges + housing/FTA items",
+      "source_ref": "research_method",
+      "status": "inference"
+    },
+    {
+      "as_of": null,
+      "claim": "Sign of AUDNZD short carry; current post-FOMC Australian yields; speculative positioning in AUD and NZD",
+      "source": null,
+      "source_ref": null,
+      "status": "unknown"
+    }
+  ],
+  "execution": "independent_grok_seat",
+  "expression_comparison": {
+    "chosen_because": "The discrepancy is a 5y spot extreme in AUDNZD whose rate-spread explanation cannot be verified and whose AU housing / NZ trade catalysts close in the cross, not in stale AU duration or a 1y-only US/CA curve.",
+    "chosen_expression": "spot_fx",
+    "considered_rates": [
+      {
+        "assessment": "US 10Y 4.94 is 5y percentile 99.40 / 1y z 2.48 and AU 10Y 5.202 is 5y percentile 99.88 \u2014 real statistical stretch. AU housing is a genuine duration-normalization catalyst, but AU observations are 2026-09-09 (age_days 8), so post-FOMC AU yields are unknown and cannot be traded from this packet. US duration is current (2026-09-17) but the inflation mechanism has not broken: US inflation gauge 72, August CPI kept a tightening bias, PPI accelerated, import prices added nonfuel pressure, Michigan inflation expectations rose. Research method: stretch without a weakening inflation mechanism is a yardstick, not a long-bond signal. Post-hike US 10Y/2Y already -7bp on 2026-09-17; some of the obvious mean-reversion print has started.",
+        "family": "outright_duration",
+        "instrument": "US 2Y/5Y/10Y/30Y, AU 2Y/5Y/10Y, CA 2Y/5Y/10Y/LONG"
+      },
+      {
+        "assessment": "US 2s10s 27bp is 1y percentile 1.39 / 1y z -2.30 after a -25bp 1m flatten, but 5y percentile is 56.1 \u2014 a one-year extreme, not a five-year dislocation. CA 2s10s 57bp is 1y percentile 0.79 with the same 5y-mid problem (5y percentile 65.7). A post-hike steepener is a plausible tactical, not the cleaner 5y mean-reversion in this packet.",
+        "family": "curve",
+        "instrument": "US 2s10s, US 5s10s, CA 2s10s, CA 5s10s, AU 2s10s"
+      },
+      {
+        "assessment": "CA-US 5Y -122bp is 1y percentile 0.20 / 1y z -1.91 (10Y 1y percentile 1.79). That is a stretched spread, but CA labor 38 vs US 75 and CA inflation 55 vs US 72 justify Canada yielding less; 5y percentiles (CA-US 5Y 7.35, 10Y 11.4) are cheap, not 99.96-style extremes. BoC energy pass-through is a reason the gap may have gone too far, yet Canada August CPI at 3% with core near 2% does not force CA yields up. AU-US 2Y +40.5bp is 1y percentile 47 \u2014 not stretched on the live 1y window. AU-NZ RV is explicitly unavailable (RBNZ 403). Do not force a rates RV when the 5y mispricing lives in spot AUDNZD.",
+        "family": "cross_market_rates_rv",
+        "instrument": "CA-US 2Y/5Y/10Y, CA-AU 2Y/5Y/10Y, AU-US 2Y/5Y/10Y, AU-NZ and NZ-US unavailable"
+      }
+    ],
+    "considered_spot": {
+      "assessment": "AUDNZD is the only G10 cross at ~5y z 3 and 5y percentile 99.96 with two-sided, same-week catalysts (AU housing negative for AUD, NZ-India FTA positive for NZD) and without a verified rate differential that already explains the level. AUDCAD 5y z 2.71 is almost as stretched but CA-AU 2Y -167.5bp still supports AUD. NZDNOK 5y z -2.26 is a cheap-NZD extreme with an oil-tail-fade catalyst, but Norway has no gauges or rates in the packet. AUDUSD is not extreme enough to fade on this remit.",
+      "instrument": "AUDNZD"
+    },
+    "seat_class": "comparison",
+    "unusually_compelling_vol": false
+  },
+  "invocation": {
+    "agent_url": "https://cursor.com/agents/bc-a3f02ee7-39df-5f9f-9313-9384cd5cda41",
+    "frontmatter_model": "grok-4.6[]",
+    "id": "bc-a3f02ee7-39df-5f9f-9313-9384cd5cda41",
+    "independent": true,
+    "model": "grok-4.6",
+    "parent_authored": false,
+    "requested_model": "inherit",
+    "role": "advocate",
+    "subagent_calls": 0,
+    "subagent_model": null,
+    "subagent_type": "mean-reverter",
+    "tools_observed": [
+      "read_file",
+      "read_file",
+      "read_file",
+      "read_file",
+      "glob_file_search",
+      "grep"
+    ]
+  },
+  "macro_assumptions": {
+    "growth": "below_trend",
+    "rates": "higher_for_longer",
+    "risk": "risk_on"
+  },
+  "missing_data": [
+    "NZ official yields and all AU-NZ / NZ-US RV spreads",
+    "Executable FX (ECB refs only) and any AUDNZD historical mean/median in levels",
+    "Positioning, IMM, or flow for AUD and NZD",
+    "Current AU bond yields after the Sep 16 FOMC",
+    "Updated temperature-gauge hard inputs (all flagged stale_if_not_current_supabase)",
+    "RBA and RBNZ forward guidance / OIS beyond the housing and FTA headlines"
+  ],
+  "packet_sha256": "07d88e1f6351b70033b5c193816bb0605f5d9bb21c43387c6b9f8a4bcaff285e",
+  "parent_authored": false,
+  "pricing_or_mispricing": [
+    "AUDNZD 5y z 2.96 is the largest FX z in the 45-pair snapshot.",
+    "AUDUSD 5y z 1.21 and NZDUSD 5y z -1.06 decompose the cross as mostly NZD-cheap plus some AUD-rich, i.e. a relative overshoot.",
+    "AU 2Y 4.835 / 10Y 5.202 at 5y percentiles 99.96 / 99.88 (as_of 2026-09-09) is the yield narrative being extrapolated into spot; those prints are stale relative to FX.",
+    "CA-US and CA-AU spreads are 1y-stretched in a direction consistent with CA labor/inflation being softer, so they are worse fades."
+  ],
+  "questions_for_opponents": [
+    "If you prefer long AU duration on the same housing catalyst, how do you enter when the only AU yields in the packet are 2026-09-09?",
+    "If you want to fade CA-US 5Y at the 0.20 1y percentile, why is that not just the justified US-hot / CA-soft labor-inflation gap?",
+    "What independent evidence, other than the 5y percentile, says AUDNZD\u2019s last +2.9% month is still incomplete rather than already the overshoot?"
+  ],
+  "remit": "fade statistically or fundamentally stretched FX moves when reversal conditions exist",
+  "round": 1,
+  "run_id": "tr-20260917T235817Z-3adf83db",
+  "seat_model": "grok-4.6",
+  "seat_role": "advocate",
+  "stance_summary": "Fade crowded AUD outperformance versus NZD at a five-year extreme: Australian housing shows the tightening channel is already biting while a fresh NZ-India trade deal is a NZD-positive catalyst, so the cross\u2014not stale duration\u2014owns the overshoot.",
+  "subagent_calls": 0,
+  "subagent_model": null,
+  "thesis": [
+    "Verified fact: AUDNZD ECB reference 1.2388 on 2026-09-17 is 5y percentile 99.96 / 5y z 2.956, 1y percentile 99.80 / 1y z 1.705, 1m return +2.94%.",
+    "Verified fact: NSW stamp-duty receipts -24% YoY in August, transaction volumes -18%, Sydney and Melbourne home values down more than 7% from peak \u2014 RBA tightening channel is biting.",
+    "Verified fact: NZ parliament passed an India FTA cutting tariffs on about 95% of NZ exports (2026-09-16).",
+    "Verified fact: NZ official yields and AU-NZ RV are unavailable (RBNZ B2 HTTP 403); market_state status is stale solely for that source.",
+    "Inference: AUDNZD richness is an over-extrapolation of AU high yields/inflation versus NZ labor/consumer weakness, not a confirmed rate-gap fair value.",
+    "Inference: AU housing is the normalization catalyst on the AUD leg; the India FTA is the independent closer on the NZD leg.",
+    "Unknown: AU-NZ 2Y/5Y/10Y spread, NZ cash-rate path, positioning, and executable AUDNZD."
+  ],
+  "trade": {
+    "catalysts": [
+      "Australian housing/financial-conditions follow-through after the Aug stamp-duty and prices evidence",
+      "RBA reaction-function shift if activity/consumer stay soft against inflation 82",
+      "Implementation/details of the NZ-India tariff cut on ~95% of NZ exports",
+      "Post-FOMC digestion after a >90%-priced 25bp hike, reducing the need for further AUD high-yield extrapolation"
+    ],
+    "confidence": 46,
+    "direction": "short",
+    "entry": null,
+    "evidence_refs": [
+      "market_state",
+      "mw_20260916_au_housing_tightening",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "mw_20260916_nz_india_trade",
+      "rollup:New Zealand passes India trade agreement",
+      "temp:AU:inflation",
+      "temp:AU:labor",
+      "temp:AU:activity",
+      "temp:AU:consumer",
+      "temp:NZ:inflation",
+      "temp:NZ:labor",
+      "temp:NZ:activity",
+      "temp:NZ:consumer",
+      "mw_20260916_fomc_hike_pricing",
+      "rollup:Fed raises 25bp to 3.75\u20134.00%",
+      "research_method"
+    ],
+    "horizon": "2\u20138 weeks tactical; reassess if AU housing stabilization or an official AU-NZ yield gap appears",
+    "instrument": "AUDNZD",
+    "invalidation": "Thesis is wrong if AUDNZD\u2019s 5y extreme is later shown to be matched by a widening official AU-NZ yield gap (currently unavailable), or if AU housing volumes/prices stabilize while NZ labor (gauge 32) and consumer (38) keep deteriorating and NZ inflation (80) forces a tighter NZ regime than Australia. Price invalidation cannot be a numeric stop: no executable quotes or historical mean are in the packet.",
+    "macro_assumptions": {
+      "growth": "below_trend",
+      "rates": "higher_for_longer",
+      "risk": "risk_on"
+    },
+    "mispricing": "Verified ECB-reference AUDNZD 1.2388004213396122 on 2026-09-17 sits at 5y z 2.96 / 5y percentile 99.96031746031746 and 1y z 1.70 / 1y percentile 99.8015873015873. That is a cross-section outlier versus AUDUSD (z_5y 1.21) and versus AUDCAD, whose 5y stretch is partly rate-supported by CA-AU 2Y -167.5bp. AUDNZD has no such verified rate anchor. Inference: the last increment of AUDNZD strength is crowded extrapolation of AU inflation/yields (AU 2Y/10Y 5y percentiles 99.96/99.88 as of 2026-09-09) and NZ labor/consumer weakness (gauges 32/38), not a still-widening verified yield gap.",
+    "principal_risks": [
+      "Unknown AU-NZ carry and yield gap because NZ official B2 yields returned HTTP 403",
+      "AU inflation gauge 82 and NZ inflation gauge 80 can keep both central banks tight and extend AUD as the higher-beta high-yielder",
+      "Temperature gauges are dashboard-retained and flagged stale_if_not_current_supabase",
+      "ECB FX refs are information rates, not executable; AU yields are 8 calendar days stale (2026-09-09)",
+      "Empty positioning_and_flow: crowding is inferred from percentiles/z-scores, not measured",
+      "Oil-tail reduction is CAD/NOK-more-than-AUDNZD; it is not a direct AUDNZD closer"
+    ],
+    "stop": null,
+    "structure": "outright spot short (sell AUD / buy NZD)",
+    "target": null,
+    "thesis": "AUDNZD is the packet\u2019s most stretched G10 cross (5y percentile 99.96, 5y z 2.96, 1y percentile 99.80) after a +2.94% one-month run. The move is not a verified AU-NZ rate-gap trade: NZ official yields are unavailable, AUDUSD is only 1y 75th / 5y 84th, and NZDUSD is already cheap (1y 21st / 5y 11th). The dislocation is relative AUD richness versus NZD. The reversal condition is a local Australian housing break (NSW stamp duty -24% YoY, transactions -18%, Sydney/Melbourne values >7% off peak) against still-hot AU inflation pricing, plus New Zealand\u2019s India FTA covering ~95% of NZ exports as new NZD-supportive information. Mean reversion here is not \u2018price went up\u2019; it is a 5y extreme whose AU high-yield/NZ-weakness narrative is now colliding with a transmission-channel break on the AUD leg and a positive trade shock on the NZD leg.",
+    "why_now": [
+      "AUDNZD printed a fresh 5y extreme on 2026-09-17, one day after the housing and NZ-India news dated 2026-09-16, with 1d still +0.09% \u2014 stretch intact, catalysts live.",
+      "The Sep 16 Fed 25bp hike to 3.75\u20134.00% was >90% priced into the decision; the global rates impulse is known information, not a new reason to extend AUD versus NZD.",
+      "AU housing evidence is the missing local falsifier of the \u2018AU can keep 99th-percentile yields and a 5y-rich cross\u2019 narrative.",
+      "NZ-India FTA is independent, same-week NZD-positive news that the 1m AUDNZD squeeze has not yet mean-reverted.",
+      "AUDCAD is a worse fade: CA-AU 2Y -167.5bp (5y z -1.68) still points the same way as spot. AUDNZD does not have that confirmed rate support."
+    ]
+  },
+  "type": "TRADER_ROOM_CONTRIBUTION",
+  "what_changes_my_mind": [
+    "An official AU-NZ 2Y/10Y gap that is itself at a comparable 5y extreme would convert this from spot fade to \u2018rates already own it\u2019 and I would stand down.",
+    "AU housing volumes/prices reversing higher while NZ activity/labor keep sliding would mean the AUD transmission channel is not breaking.",
+    "A live executable AUDNZD print well off the 5y extreme before entry would remove the stretch that this seat is paid to fade."
+  ],
+  "why_now": [
+    "The 5y stretch is live on 2026-09-17 while the housing and FTA items printed 2026-09-16 and have not yet pulled the cross off the extreme.",
+    "The Fed hike was pre-priced (>90% for 25bp); it is not new information that should extend a 5y AUDNZD outlier.",
+    "Fading AUDCAD instead would fight a still-supportive CA-AU yield gap; AUDNZD does not have that problem in the packet."
+  ]
+}

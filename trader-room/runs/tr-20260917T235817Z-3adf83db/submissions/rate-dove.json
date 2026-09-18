@@ -1,0 +1,271 @@
+{
+  "agent": "rate-dove",
+  "archetype": "rate-dove",
+  "best_counterargument": "AU inflation gauge 82 plus still-hot US CPI/PPI/import prices can justify historically high ACGB yields as inflation insurance rather than a policy error, with housing volumes a lagging RBA input rather than a pivot trigger.",
+  "carry_and_holding_cost": [
+    "At the last matched print the AU 2Y yield exceeded the US 2Y yield by 40.5bp, so receiving ACGB 2Y versus paying UST 2Y was positive carry on 2026-09-09.",
+    "Live carry is unknown because AU yields have not been observed since 2026-09-09 while UST 2Y has since printed 4.67% and rallied 7bp on 2026-09-17.",
+    "Short AUDUSD/AUDCAD would pay Australian yield versus lower-yielding USD/CAD and is inferior on holding cost."
+  ],
+  "confidence": 39,
+  "evidence": [
+    {
+      "as_of": "2026-09-16T03:34:50Z",
+      "claim": "NSW stamp-duty receipts fell 24% YoY in August; transaction volumes fell 18%; Sydney and Melbourne home values are down more than 7% from peak.",
+      "source": "Reuters via mw_20260916_au_housing_tightening",
+      "source_ref": "mw_20260916_au_housing_tightening",
+      "status": "verified"
+    },
+    {
+      "as_of": null,
+      "claim": "Fed raised 25bp to 3.75\u20134.00% on 16 Sep 2026.",
+      "source": "Federal Reserve retained rollup",
+      "source_ref": "rollup:Fed raises 25bp to 3.75\u20134.00%",
+      "status": "verified"
+    },
+    {
+      "as_of": "2026-09-16T03:01:14Z",
+      "claim": "Rate futures entered the 16 Sep FOMC with greater-than-90% probability of a 25bp increase.",
+      "source": "Reuters",
+      "source_ref": "mw_20260916_fomc_hike_pricing",
+      "status": "verified"
+    },
+    {
+      "as_of": "2026-09-09",
+      "claim": "ACGB 2Y 4.835%, 5Y 4.867%, 10Y 5.202% as of 2026-09-09; all at or above the 99th one-year percentile and 99.8th five-year percentile.",
+      "source": "RBA F2 via market_state",
+      "source_ref": "market_state",
+      "status": "verified"
+    },
+    {
+      "as_of": "2026-09-09",
+      "claim": "AU-US 2Y spread +40.5bp as of 2026-09-09; five-year percentile 89.1; five-year z 1.43.",
+      "source": "market_state rate_rv AU-US_2Y",
+      "source_ref": "market_state",
+      "status": "verified"
+    },
+    {
+      "as_of": "2026-09-17",
+      "claim": "UST 2Y 4.67% as of 2026-09-17, +48bp over one month; UST 2s10s +27bp at the 1.4th one-year percentile.",
+      "source": "US Treasury via market_state",
+      "source_ref": "market_state",
+      "status": "verified"
+    },
+    {
+      "as_of": "dashboard_v8_retained",
+      "claim": "Retained AU temperature gauges: inflation 82, labor 50, activity 54, consumer 48. Retained US gauges: inflation 72, labor 75, activity 69, consumer 74.",
+      "source": "dashboard_v8 retained temperature_gauges",
+      "source_ref": "temp:AU:inflation",
+      "status": "verified"
+    },
+    {
+      "as_of": "2026-09-16",
+      "claim": "CA-US 2Y \u2212139bp as of 2026-09-16 at the 4.8th one-year and 4.7th five-year percentiles, so Canadian relative easing versus the US is already priced.",
+      "source": "market_state rate_rv CA-US_2Y",
+      "source_ref": "market_state",
+      "status": "verified"
+    },
+    {
+      "as_of": "2026-09-17",
+      "claim": "AUDUSD 0.7114 on 2026-09-17, 74.8th one-year percentile; AUDCAD 0.9956, 99.6th five-year percentile.",
+      "source": "ECB euro reference crosses via market_state",
+      "source_ref": "market_state",
+      "status": "verified"
+    },
+    {
+      "as_of": null,
+      "claim": "NZ official yields and AU-NZ RV are unavailable after an RBNZ B2 HTTP 403; no substitute feed.",
+      "source": "market_state NZ_rates",
+      "source_ref": "market_state",
+      "status": "verified"
+    },
+    {
+      "as_of": "2026-09-17T23:58:17Z",
+      "claim": "Housing contraction will force an earlier RBA pivot than AU-US 2Y richness implies, compressing the spread.",
+      "source": "rate-dove mechanism on frozen packet",
+      "source_ref": "research_method",
+      "status": "inference"
+    },
+    {
+      "as_of": null,
+      "claim": "Live ACGB yields and the live AU-US 2Y spread after 16 Sep FOMC.",
+      "source": "known_gaps / AU_rates age_days 8",
+      "source_ref": "market_state",
+      "status": "unknown"
+    },
+    {
+      "as_of": null,
+      "claim": "RBA reaction function, priced RBA OIS path, and positioning in ACGBs or AUD.",
+      "source": "empty rates_and_policy and positioning_and_flow",
+      "source_ref": null,
+      "status": "unknown"
+    }
+  ],
+  "execution": "independent_grok_seat",
+  "expression_comparison": {
+    "chosen_because": "Rates were considered first. The mispricing lives in the matched AU-US 2Y gap (five-year 89th percentile) against verified Australian housing transmission, not in modestly rich AUDUSD and not in US or Canadian curves that have already flattened to one-year extremes. Cross-market RV hedges global inflation beta that would punish outright long ACGB after a Fed hike, without defaulting to vol.",
+    "chosen_expression": "cross_market_rates_rv",
+    "considered_rates": [
+      {
+        "assessment": "Verified long-duration candidate: ACGB 2Y 4.835% as of 2026-09-09 at the 99.96th five-year percentile with housing already contracting. Rejected as the working trade because the same packet shows US inflation/PPI/import prices and a delivered Fed hike, so unhedged ACGB duration is contaminated by global inflation beta and by an eight-day-stale AU print.",
+        "family": "outright_duration",
+        "instrument": "ACGB 2Y"
+      },
+      {
+        "assessment": "AU 2s10s is +36.7bp at only the 28th one-year percentile, so unlike UST 2s10s (27bp, 1.4th one-year percentile, \u221225bp over one month) or CAGB 2s10s (57bp, 0.8th one-year percentile) it has not already priced a growth scare. Still second-best: the whole AU curve is at five-year yield extremes, so a housing-driven pivot can rally 10Y with 2Y and need not steepen cleanly.",
+        "family": "curve",
+        "instrument": "ACGB 2s10s bull steepener"
+      },
+      {
+        "assessment": "Cleanest rates expression of the remit. Matched-date AU-US 2Y +40.5bp is a five-year-rich 89th percentile while AU housing is the packet\u2019s hard bite evidence and US labor/inflation gauges remain hot after a 25bp hike. Isolates underpriced RBA easing versus a Fed that can stay restrictive. CA-US 2Y at \u2212139bp (4.8th one-year / 4.7th five-year percentile) already prices Canadian relative easing, so Canada is not where cuts are underpriced versus the US. NZ yields are unavailable, so AU-NZ RV is forbidden.",
+        "family": "cross_market_rates_rv",
+        "instrument": "AU-US 2Y spread"
+      }
+    ],
+    "considered_spot": {
+      "assessment": "AUDUSD spot 0.7114 on 2026-09-17 is only the 74.8th one-year / 83.5th five-year percentile after a \u22120.99% five-day move, so FX has not stretched the same discrepancy the yield gap has. Short AUDCAD (spot 0.9956, 97.8th one-year / 99.6th five-year) is statistically more extreme but mixes a Canada that already has cheap CA-US yields, labor 38, and BoC energy-pass-through minutes; it also sells the high-yielder. AUDNZD is a 99.96th five-year stretch but NZ rates are missing and NZDUSD is already weak (21st one-year / 11th five-year). Spot is therefore a valid alternative, not the cleaner owner of the policy-path gap.",
+      "instrument": "AUDUSD"
+    },
+    "seat_class": "comparison",
+    "unusually_compelling_vol": false
+  },
+  "invocation": {
+    "agent_url": "https://cursor.com/agents/bc-cea87824-55c2-550b-b503-c47be28710f9",
+    "frontmatter_model": "grok-4.6[]",
+    "id": "bc-cea87824-55c2-550b-b503-c47be28710f9",
+    "independent": true,
+    "model": "grok-4.6",
+    "parent_authored": false,
+    "requested_model": "inherit",
+    "role": "advocate",
+    "subagent_calls": 0,
+    "subagent_model": null,
+    "subagent_type": "rate-dove",
+    "tools_observed": [
+      "read_file",
+      "read_file",
+      "read_file",
+      "read_file",
+      "glob_file_search",
+      "grep",
+      "grep",
+      "glob_file_search",
+      "read_file",
+      "read_file",
+      "grep",
+      "read_file",
+      "read_file",
+      "read_file",
+      "read_file",
+      "grep",
+      "read_file",
+      "read_file",
+      "grep",
+      "read_file"
+    ]
+  },
+  "macro_assumptions": {
+    "growth": "below_trend",
+    "policy": "dovish",
+    "rates": "easing_cycle",
+    "risk": "risk_off"
+  },
+  "missing_data": [
+    "Live RBA F2 / ACGB yields after 2026-09-09 (pre-FOMC vintage).",
+    "RBNZ B2 yields and all NZ-dependent RV spreads.",
+    "Priced RBA and Fed OIS/cut paths.",
+    "Positioning and flow in ACGBs, AUD, and UST front end.",
+    "Hard inputs behind retained temperature gauges; gauges flagged stale_if_not_current_supabase.",
+    "Full RBA decision text; packet has housing research, not an RBA policy statement."
+  ],
+  "packet_sha256": "07d88e1f6351b70033b5c193816bb0605f5d9bb21c43387c6b9f8a4bcaff285e",
+  "parent_authored": false,
+  "pricing_or_mispricing": [
+    "Verified: AU-US 2Y +40.5bp as of 2026-09-09, five-year percentile 89.1.",
+    "Verified: ACGB 2Y 4.835%, 99.96th five-year percentile; UST 2Y 4.67% as of 2026-09-17.",
+    "Inference: that gap still assumes RBA can shadow Fed restriction despite a pandemic-sized housing-tax and price hole.",
+    "Unknown: the live AU-US spread after the 16 Sep hike."
+  ],
+  "questions_for_opponents": [
+    "If housing volumes and prices are already contracting at this scale, what remaining AU-US 2Y richness is still required for the RBA to shadow the Fed?",
+    "Why treat CA-US 2Y at the 5th percentile as unused Canadian easing when the packet already shows that relative cut path in the curve?",
+    "What live ACGB print after 9 Sep do you use to claim the AU front end is not still extreme?"
+  ],
+  "remit": "currencies where easing or growth weakness is underpriced",
+  "round": 1,
+  "run_id": "tr-20260917T235817Z-3adf83db",
+  "seat_model": "grok-4.6",
+  "seat_role": "advocate",
+  "stance_summary": "Restrictive policy is already breaking Australian housing while ACGB front-end yields remain at five-year extremes versus a still-hot, just-hiking United States, so relative RBA easing is underpriced.",
+  "subagent_calls": 0,
+  "subagent_model": null,
+  "thesis": [
+    "Australian housing volumes and prices show the tightening channel is already operating.",
+    "ACGB front-end yields and the AU-US 2Y spread still price a relatively restrictive RBA versus a just-hiking Fed.",
+    "US labor and inflation gauges remain too hot for US easing to be the nearer underpriced-cut story; Canadian relative easing versus the US is already at multi-year extremes."
+  ],
+  "trade": {
+    "catalysts": [
+      "Next Australian housing finance, prices, and state-tax/transaction prints confirming the downturn is broadening.",
+      "Australian CPI/labor that weakens the 82 inflation gauge toward the softer activity/consumer gauges.",
+      "RBA communications that acknowledge the housing channel rather than shadowing the Fed.",
+      "Oil remaining contained after the Saudi-Oman workaround, stripping energy cover from keeping ACGB at five-year highs."
+    ],
+    "confidence": 39,
+    "direction": "short",
+    "entry": null,
+    "evidence_refs": [
+      "mw_20260916_au_housing_tightening",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "market_state",
+      "temp:AU:inflation",
+      "temp:AU:labor",
+      "temp:AU:activity",
+      "temp:AU:consumer",
+      "temp:US:inflation",
+      "temp:US:labor",
+      "temp:US:activity",
+      "mw_20260916_fomc_hike_pricing",
+      "rollup:Fed raises 25bp to 3.75\u20134.00%",
+      "mw_20260916_saudi_oman_workaround",
+      "research_method"
+    ],
+    "horizon": "1-3 months",
+    "instrument": "AU-US 2Y spread",
+    "invalidation": "Falsified if matched-date AU-US 2Y re-widens while Australian housing volumes/prices stabilize or rebound, or if AU inflation remains the binding RBA constraint (gauge near 82 or a further RBA hike) while US labor/inflation cool first so the United States becomes the relatively dovish market.",
+    "macro_assumptions": {
+      "growth": "below_trend",
+      "policy": "dovish",
+      "rates": "easing_cycle",
+      "risk": "risk_off"
+    },
+    "mispricing": "Last matched official AU-US 2Y print is +40.5bp as of 2026-09-09 (one-year percentile 47.0, five-year percentile 89.1, five-year z 1.43). Markets are treating a housing-constrained RBA as if it can still hold a historically rich front-end versus a hiking Fed. US 2Y at 4.67% on 2026-09-17 remains well above the new 3.75\u20134.00% funds band, so the United States still prices additional restraint; Australia is the market that has not paid for the bite already visible in volumes and prices.",
+    "principal_risks": [
+      "AU inflation gauge 82 can keep the RBA looking through falling volumes if housing CPI or services stay hot.",
+      "AU official yields are eight days old and predate the 16 Sep FOMC; the live AU-US spread is unknown.",
+      "Paying UST 2Y loses if US labor 75 breaks first and UST front-end rallies more than ACGBs in a global growth scare.",
+      "Energy shock-absorber warnings and BoC-style pass-through can re-ignite a global inflation regime that lifts both curves and supports AUD via yield.",
+      "Single-source housing evidence and stale temperature gauges can overstate the transmission already in train."
+    ],
+    "stop": null,
+    "structure": "receive ACGB 2Y vs pay UST 2Y (short the AU-US 2Y yield spread)",
+    "target": null,
+    "thesis": "The packet\u2019s only hard tightening-channel evidence is Australia: NSW stamp-duty receipts down 24% year over year, transactions down 18%, and Sydney/Melbourne values more than 7% below peak, while AU labor/activity/consumer gauges are mid-to-soft. Official ACGB 2Y still sits at 4.835% as of 2026-09-09, the 99.8th one-year and 99.96th five-year percentiles, and the matched AU-US 2Y spread is +40.5bp at the 89th five-year percentile. That pricing still requires Australia to stay relatively restrictive versus a Federal Reserve that has just delivered a 25bp hike to 3.75\u20134.00% into >90% priced odds, with US labor 75 and US inflation 72. Restrictive policy bites sooner than hawkish RBA-follow-the-Fed pricing admits; the closing mechanism is ACGB 2Y outperforming UST 2Y as housing transmission forces an earlier Australian pivot than US data allow.",
+    "why_now": [
+      "16 Sep housing evidence is contemporaneous with a fully priced 16 Sep FOMC hike, so the relative-policy gap is live rather than retrospective.",
+      "AU 2Y/5Y/10Y are all at or above the 99th one-year and five-year percentiles on the last RBA F2 print, while AU consumer 48, activity 54 and labor 50 already diverge from AU inflation 82.",
+      "Saudi ship-to-ship workaround and modestly easier oil reduce the global energy-inflation cover for keeping Australian yields at five-year extremes.",
+      "US 2s10s is already at the 1.4th one-year percentile after a 25bp one-month flatten, so a US-only dove steepener is largely in the curve; the unpriced residue is Australia versus the US."
+    ]
+  },
+  "type": "TRADER_ROOM_CONTRIBUTION",
+  "what_changes_my_mind": [
+    "A matched-date AU-US 2Y widening alongside stabilizing Australian housing and a still-82-like AU inflation gauge.",
+    "US labor/activity breaking first so UST 2Y rallies more than ACGBs and the relative dove belongs in the United States, not Australia.",
+    "Fresh official AU yields showing the 40.5bp richness has already compressed post-FOMC."
+  ],
+  "why_now": [
+    "Housing evidence and the FOMC decision landed on the same 16 Sep window, while the last official AU-US 2Y print still shows historically rich Australian front-end yields.",
+    "Oil\u2019s extreme-supply tail has been reduced, weakening the inflation alibi for holding ACGBs at five-year highs."
+  ]
+}
