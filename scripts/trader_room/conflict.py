@@ -175,7 +175,7 @@ def _synopsis_conflicts(originals: dict[str, dict[str, Any]]) -> dict[str, Any]:
             ),
         ):
             agents = sorted(set(a + b))
-            if len(agents) >= 2:
+            if a and b and len(agents) >= 2:
                 theoretical.append(
                     {
                         "id": f"theory:{ccy}:{suffix}",
