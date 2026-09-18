@@ -2,9 +2,11 @@
   "artifact_root": "trader-room/runs/tr-20260917T231827Z-4ca9133b",
   "durable_channel": "git",
   "evidence_cutoff": "2026-09-17T23:18:27Z",
+  "invalid_reason": "Parent authored standing-seat briefs instead of launching the 14 independent grok-4.6 seats. This run is not a valid Trader Room result.",
   "live": true,
   "retrieve_command": "PYTHONPATH=. python scripts/trader_room_go.py retrieve --run-id tr-20260917T231827Z-4ca9133b --kind pm_handoff",
   "run_id": "tr-20260917T231827Z-4ca9133b",
   "sanitized": true,
-  "status": "STATUS: AWAITING_CHATGPT_ARBITRATION"
+  "status": "INVALID",
+  "valid": false
 }

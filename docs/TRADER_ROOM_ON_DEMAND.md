@@ -8,7 +8,7 @@ The user only needs to say `go` in the Trader Room chat. The repository entrypoi
 PYTHONPATH=. python scripts/trader_room_go.py go
 ```
 
-That command prepares and freeze-validates one evidence packet, then runs the complete debate. Default `go` is a dry-run that does not consume the production Grok/Composer budget. The live 14-trader research run is refused unless a later authenticated human arms `TRADER_ROOM_LIVE=1`; this entrypoint still does not dispatch production models.
+That command prepares and freeze-validates one evidence packet, then runs the complete debate. Default `go` is a dry-run that does not consume the production Grok/Composer budget. The live 14-trader research run is refused unless a later authenticated human arms `TRADER_ROOM_LIVE=1`. Even when armed, the Python entrypoint must not dispatch, author, ghostwrite, or simulate standing-seat output. The parent launches the independent `grok-4.6` seats and persists only those returned payloads. If a required Grok seat fails to launch, fail loudly.
 
 ## Architecture
 
@@ -36,7 +36,16 @@ Validated against `scripts/trader_room/model_registry.json`, which is sourced fr
 
 No other model is allowed on this workflow. `grok-4.5`, Composer fast variants, and Cursor Grok thinking-tier slugs are forbidden.
 
-`TRADER_ROOM_MODEL_POLICY` is written into the run context and enforced by `.cursor/hooks/enforce-subagent-models.sh`.
+`TRADER_ROOM_MODEL_POLICY` is written into the run context and enforced by `.cursor/hooks/enforce-subagent-models.sh` plus `scripts/trader_room/hook_enforce.py`.
+
+Role rules:
+
+- Standing trader, rebuttal, and aggregator invocations are exact `grok-4.6` only.
+- `composer-2.5` is allowed only for first-pass trader internal research (`TRADER_ROOM_SEAT_ROLE=advocate-research`), max two per trader.
+- Rebuttals and both aggregators get no internal subagents.
+- ACP `allowed_models` is an allowlist, not an immediate grant. Parent-authored or simulated standing-seat output is rejected.
+
+The prior run `tr-20260917T231827Z-4ca9133b` is `INVALID` because the parent authored the seat briefs. Do not present it as a valid Trader Room result.
 
 ## Finite ceilings
 

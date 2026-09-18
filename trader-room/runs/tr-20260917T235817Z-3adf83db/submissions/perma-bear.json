@@ -1,0 +1,249 @@
+{
+  "agent": "perma-bear",
+  "archetype": "perma-bear",
+  "best_counterargument": "The hike was pre-priced, AU yields are already 99th percentile, AUDUSD is not statistically extreme, US growth gauges are still firm, and the Saudi workaround reduced the oil shock that would have forced a sharper risk-off AUD dump\u2014so this can be a known-news fade with negative carry rather than a fresh slowdown mark.",
+  "carry_and_holding_cost": [
+    "Inference from mismatched official yields: AU 2Y 4.835 (2026-09-09) versus US 2Y 4.67 (2026-09-17) implies short AUDUSD pays modest carry, on the order of the +40.5bp AU-US 2Y spread then observed.",
+    "Unknown: current implied yields, basis, and roll after the FOMC, because AU rates were not refreshed to the FX date.",
+    "Horizon is weeks, not a patient positive-carry hold; if housing data stall, carry becomes the reason to exit."
+  ],
+  "confidence": 55,
+  "evidence": [
+    {
+      "as_of": "2026-09-16T03:34:50Z",
+      "claim": "NSW stamp-duty receipts fell 24% YoY in August, transaction volumes fell 18%, and Sydney/Melbourne home values are down more than 7% from peak.",
+      "source": "Reuters via mw_20260916_au_housing_tightening",
+      "source_ref": "mw_20260916_au_housing_tightening",
+      "status": "verified"
+    },
+    {
+      "as_of": "2026-09-16T03:01:14Z",
+      "claim": "Interest-rate futures entered the Sep 16 FOMC with greater-than-90% probability of a 25bp increase.",
+      "source": "Reuters",
+      "source_ref": "mw_20260916_fomc_hike_pricing",
+      "status": "verified"
+    },
+    {
+      "as_of": null,
+      "claim": "Fed raised 25bp to 3.75\u20134.00%.",
+      "source": "Federal Reserve retained rollup",
+      "source_ref": "rollup:Fed raises 25bp to 3.75\u20134.00%",
+      "status": "verified"
+    },
+    {
+      "as_of": "2026-09-17",
+      "claim": "ECB-reference AUDUSD 0.7114 on 2026-09-17; 1y percentile 74.8; 5y percentile 83.5; 5d return -0.99%. These are information/reference rates, not executable prices.",
+      "source": "market_state FX / ECB euro reference",
+      "source_ref": "market_state",
+      "status": "verified"
+    },
+    {
+      "as_of": "2026-09-17",
+      "claim": "US 10Y 4.94 and US 2Y 4.67 on 2026-09-17 are 1y 97.8th and 99.2nd percentiles; 2s10s 27bp is 1y 1.4th percentile; both 2Y and 10Y fell 7bp on the day.",
+      "source": "market_state US Treasury par curve",
+      "source_ref": "market_state",
+      "status": "verified"
+    },
+    {
+      "as_of": "2026-09-09",
+      "claim": "AU 2Y 4.835 / 10Y 5.202 on 2026-09-09 are 1y 99.8th / 99.4th percentiles; AU rates are eight days stale versus FX.",
+      "source": "market_state RBA F2",
+      "source_ref": "market_state",
+      "status": "verified"
+    },
+    {
+      "as_of": "dashboard_v8_retained",
+      "claim": "Retained AU inflation gauge 82 versus activity 54, labor 50, consumer 48; US labor 75 / activity 69 / inflation 72. Gauges are dashboard-retained and may be stale.",
+      "source": "temperature_gauges",
+      "source_ref": "temp:AU:inflation",
+      "status": "inference"
+    },
+    {
+      "as_of": "standing",
+      "claim": "AUD remains too firm versus the housing channel because carry and still-hot US data can keep USD from trending.",
+      "source": "research_method applied to market_state plus housing",
+      "source_ref": "research_method",
+      "status": "inference"
+    },
+    {
+      "as_of": null,
+      "claim": "CTA/positioning crowding in AUDUSD.",
+      "source": "positioning_and_flow empty",
+      "source_ref": null,
+      "status": "unknown"
+    }
+  ],
+  "execution": "independent_grok_seat",
+  "expression_comparison": {
+    "chosen_because": "The discrepancy lives in AUD still printing as a mid-to-high-percentile research level against USD after hard AU housing damage, while AU and US yields are already 97th\u201399th percentile. Long duration fights sticky inflation; the US bull steepener needs a US growth break that gauges do not show; AU-US rates RV is date-mismatched and can fail if the RBA cannot cut. Vol is not unusually compelling versus this spot. Short AUDUSD is the cleaner defensive expression of policy-driven slowdown plus risk-off.",
+    "chosen_expression": "spot_fx",
+    "considered_rates": [
+      {
+        "assessment": "Verified: US 10Y 4.94 on 2026-09-17 is 1y 97.8th percentile (+45bp 3m, -7bp on the day after the hike); AU 2Y 4.835 on 2026-09-09 is 1y 99.8th percentile. A pure growth-scare would own long duration. Rejected as the primary expression because US CPI/PPI/import prices and AU inflation 82 keep a policy-error/inflation tail live, AU yields are eight days stale and pre-FOMC, and 99th-percentile yields have already marked a lot of tightness. Stagflation is toxic for bonds and compatible with short AUD.",
+        "family": "outright_duration",
+        "instrument": "long UST 10Y / long ACGB 2Y"
+      },
+      {
+        "assessment": "Verified: US 2s10s is 27bp on 2026-09-17, 1y 1.4th percentile, flattened 25bp over 1m; CA 2s10s 57bp is 1y 0.8th percentile. A later easing cycle would steepen from a historically flat 1y starting point. Rejected now because US labor 75 and activity 69 have not broken, the Fed just hiked into hot inflation, and a bull steepener requires the front end to reprice cuts that this packet's inflation evidence does not yet support. Curve also does not isolate the AU housing transmission.",
+        "family": "curve",
+        "instrument": "UST 2s10s bull steepener"
+      },
+      {
+        "assessment": "Verified: AU-US 2Y +40.5bp and AU-US 10Y +37.2bp as of 2026-09-09 sit near 1y medians (47th/43rd) though 5y percentiles are high (89th/80th). Housing-led AU easing versus a stuck Fed would compress AU-US, so receive-AU/pay-US is the rates RV of the same thesis. Rejected as cleaner because observation dates do not match (AU 2026-09-09 vs US 2026-09-17), AU inflation 82 can prevent the RBA cut the RV needs, and CA-US 5Y at -122bp (1y 0.2nd percentile) is already an extreme Canada-cheap print rather than a fresh slowdown signal. NZ rate RV is unavailable (RBNZ B2 HTTP 403).",
+        "family": "cross_market_rates_rv",
+        "instrument": "receive ACGB vs pay UST (AU-US 2Y/10Y); faded CA-US 5Y"
+      }
+    ],
+    "considered_spot": {
+      "assessment": "Verified ECB-reference AUDUSD 0.7114 on 2026-09-17 is 1y 74.8th / 5y 83.5th percentile, z_1y 0.86, with -0.99% over 5d. That is elevated but not a 99th-percentile fade. It directly owns AU housing damage versus a still-restrictive USD after a delivered hike. AUDNZD 1.2388 is 1y/5y ~99.8th/99.96th (z_5y 2.96) but NZ labor 32 / consumer 38 are weaker than AU, NZ rates are missing, and the India trade deal is a NZ-positive. AUDCHF 1y 99.8th is a CHF-underperformance 1y tape (USDCHF also 1y 99.8th), not a fresh AUD stress print. Spot AUDUSD is the risk-off pair that still has room versus the already-spent yield tape.",
+      "instrument": "AUDUSD short; AUDNZD and AUDCHF rejected as inferior spots"
+    },
+    "seat_class": "comparison",
+    "spot_dedicated": false,
+    "unusually_compelling_vol": false
+  },
+  "invocation": {
+    "agent_url": "https://cursor.com/agents/bc-bcc220f1-252f-592e-b294-f1eef43b5982",
+    "frontmatter_model": "grok-4.6[]",
+    "id": "bc-bcc220f1-252f-592e-b294-f1eef43b5982",
+    "independent": true,
+    "model": "grok-4.6",
+    "parent_authored": false,
+    "requested_model": "inherit",
+    "role": "advocate",
+    "subagent_calls": 0,
+    "subagent_model": null,
+    "subagent_type": "perma-bear",
+    "tools_observed": [
+      "read_file",
+      "read_file",
+      "read_file",
+      "read_file",
+      "glob_file_search",
+      "grep",
+      "grep",
+      "read_file",
+      "read_file",
+      "read_file",
+      "grep",
+      "read_file",
+      "read_file",
+      "grep",
+      "read_file",
+      "grep",
+      "read_file"
+    ]
+  },
+  "macro_assumptions": {
+    "growth": "below_trend",
+    "rates": "higher_for_longer",
+    "risk": "risk_off"
+  },
+  "missing_data": [
+    "Official NZ government-bond yields and all NZ rate RV (RBNZ B2 HTTP 403); market_state status stale.",
+    "AU bond yields after 2026-09-09, including the post-FOMC window.",
+    "positioning_and_flow, cross_asset, market_levels, and macro_state are empty.",
+    "Executable AUDUSD spot/forward points; packet FX is ECB euro-reference only.",
+    "Temperature-gauge hard inputs; scores are dashboard-retained without vintage.",
+    "Oil price path beyond the qualitative Saudi workaround / shock-absorber headlines."
+  ],
+  "packet_sha256": "07d88e1f6351b70033b5c193816bb0605f5d9bb21c43387c6b9f8a4bcaff285e",
+  "parent_authored": false,
+  "pricing_or_mispricing": [
+    "Verified: Fed hike was >90% priced into the decision; owning 'the hike' in USD is mostly known information.",
+    "Verified: AU 2Y/5Y/10Y were already 99th percentile on 2026-09-09; duration has marked tightness.",
+    "Verified: AUDUSD 1y percentile 74.8 / 5y 83.5 is not a crash print; that is the FX-versus-fundamentals gap.",
+    "Inference: the closing mechanism is continued housing/credit deterioration raising AUD risk premium even if the RBA cannot cut.",
+    "Unknown: positioning, executable bid/ask, and whether post-hike UST -7bp is a one-day noise print."
+  ],
+  "questions_for_opponents": [
+    "If AU yields are already 99th percentile, why should FX rather than duration still have unpaid tightening news?",
+    "Given US labor 75 and a >90%-priced hike, what unused USD bid remains versus simply fading AUD on a cross?",
+    "With NZ labor 32 versus AU 50, why is short AUDUSD cleaner than fading 99th-percentile AUDNZD?",
+    "Does CA-US 5Y at the 1y 0.2nd percentile already express the North American slowdown, making USDCAD the better defensive?"
+  ],
+  "remit": "strongest defensive, slowdown, stress or risk-off FX expression",
+  "round": 1,
+  "run_id": "tr-20260917T235817Z-3adf83db",
+  "seat_model": "grok-4.6",
+  "seat_role": "advocate",
+  "stance_summary": "AU housing is already transmitting restrictive policy while inflation stays hot, so the cleanest defensive expression is short AUDUSD rather than long duration, a bull steepener, or an AUD cross.",
+  "subagent_calls": 0,
+  "subagent_model": null,
+  "thesis": [
+    "Causal question: does realized AU housing transmission plus a delivered Fed hike imply AUD growth/credit risk is still under-marked in spot versus already-extreme yields?",
+    "State versus change: US activity/labor remain hot (69/75); the new information is AU housing hard data and a hike that futures had already assigned >90% odds.",
+    "Normalization: AU inflation 82 versus activity 54 / labor 50 / consumer 48 is restriction-plus-slowdown, not a clean easing cycle. NZ is weaker on growth gauges but already cheaper in NZDUSD (1y 21st / 5y 11th).",
+    "Historical reference: AUDUSD is not the extreme (1y 75th); the extremes are AUDNZD/AUDCAD and the yield percentiles. Mean reversion of AUDNZD is a yardstick, not the trade.",
+    "Market-implied assumption: a delivered hike plus 99th-percentile AU yields should already have done the AUD damage if FX were mechanically following rates; it has not."
+  ],
+  "trade": {
+    "catalysts": [
+      "Further AU housing, stamp-duty, or credit-volume deterioration",
+      "Sticky AU/US inflation that blocks policy relief for the housing hit",
+      "Confirmation of AU activity/labor cooling toward the already-soft consumer gauge (48)",
+      "Risk-off tightening in financial conditions after a hike that was already >90% priced"
+    ],
+    "confidence": 55,
+    "direction": "short",
+    "entry": null,
+    "evidence_refs": [
+      "mw_20260916_au_housing_tightening",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "mw_20260916_fomc_hike_pricing",
+      "rollup:Fed raises 25bp to 3.75\u20134.00%",
+      "rollup:August CPI keeps the Fed tightening bias intact",
+      "rollup:U.S. producer inflation accelerates in August",
+      "rollup:Michigan sentiment falls as inflation expectations rise",
+      "temp:AU:inflation",
+      "temp:AU:activity",
+      "temp:AU:consumer",
+      "temp:AU:labor",
+      "temp:US:labor",
+      "temp:US:inflation",
+      "temp:US:activity",
+      "market_state",
+      "research_method",
+      "mw_20260916_saudi_oman_workaround"
+    ],
+    "horizon": "4-8 weeks",
+    "instrument": "AUDUSD",
+    "invalidation": "Thesis is wrong if official AU housing/transaction data stabilize or reverse while Fed/RBA communication closes further tightening, or if AUDUSD outperforms on a sustained risk-on/commodity impulse that the housing channel cannot explain. Right-thesis/wrong-timing if housing keeps deteriorating but AUD is bid solely on carry versus still-higher AU 2Y yields.",
+    "macro_assumptions": {
+      "growth": "below_trend",
+      "rates": "higher_for_longer",
+      "risk": "risk_off"
+    },
+    "mispricing": "Market pricing already embeds a delivered, >90%-odds Fed hike and near-record AU bond yields, but AUDUSD remains a mid-to-high-percentile research print rather than a stress print. The gap is AU growth/credit damage versus still-firm AUD, not an unpriced US hike. AUDNZD at the 5y 99.96th percentile is the statistical extreme, but that cross is the wrong object: NZ labor/consumer gauges are weaker than AU, NZ rates are unavailable, and an AUD/NZD pair does not own risk-off.",
+    "principal_risks": [
+      "The Fed hike was already >90% priced, so the USD leg may be spent.",
+      "AU 2Y 4.835 vs US 2Y 4.67 (mismatched dates) means short AUDUSD has modest negative carry.",
+      "Temperature gauges are dashboard-retained and flagged stale_if_not_current_supabase; US labor 75 / activity 69 are not a US recession print.",
+      "AU yields last observed 2026-09-09, eight days before the FX snapshot and before the FOMC.",
+      "positioning_and_flow is empty; crowding is unknown.",
+      "A renewed oil shock would re-bid AUD terms of trade even if housing is weak."
+    ],
+    "stop": null,
+    "structure": null,
+    "target": null,
+    "thesis": "The causal mechanism is late-cycle policy error: the RBA tightening channel is already breaking Australian housing (NSW stamp-duty receipts -24% YoY, volumes -18%, Sydney/Melbourne values more than 7% off peak) while AU inflation remains the hottest retained gauge (82). The Fed has just delivered a 25bp hike to 3.75\u20134.00% into still-hot US inflation/labor, so policy cannot easily offset the growth hit. That combination is stagflationary for duration and defensive for high-beta FX. AUDUSD still sits only around the 1y 75th / 5y 84th percentile on the 2026-09-17 ECB reference snapshot, so FX has not fully marked the housing/growth discrepancy that AU yields (99th percentile as of 2026-09-09) have already spent.",
+    "why_now": [
+      "AU housing hard data and the realized Sep 16 FOMC hike are contemporaneous, not sequential.",
+      "AUDUSD is already changing on the margin (ECB-reference -0.99% over 5d, -0.26% on 2026-09-17) while remaining only a 1y 74.8th-percentile level, so the move is starting without being spent.",
+      "Post-hike UST 2Y/10Y each fell 7bp on 2026-09-17, showing the priced hike is not a clean hawkish follow-through in duration; FX can still mark the AU-US growth split.",
+      "The Saudi Oman workaround modestly reduced the extreme oil-supply tail, weakening a commodity offset that would otherwise bid AUD."
+    ]
+  },
+  "type": "TRADER_ROOM_CONTRIBUTION",
+  "what_changes_my_mind": [
+    "Hard AU housing/transaction data stabilize while AUDUSD holds or rises.",
+    "A clear Fed/RBA pivot that converts the packet's higher-for-longer assumption into an easing cycle without further growth damage.",
+    "US labor/activity breaking first, which would make a UST bull steepener or long duration the cleaner slowdown expression.",
+    "Evidence that AUDNZD's 5y extreme is the actual mispricing and that NZ's weaker labor/consumer gauges dominate AU housing."
+  ],
+  "why_now": [
+    "Housing evidence and the Sep 16 FOMC outcome sit inside the same evidence cutoff, with FX observed 2026-09-17.",
+    "Five-day AUDUSD weakness is the change; the still-only-75th 1y percentile is the unused room.",
+    "Oil's extreme tail was modestly reduced, so a commodity bid is a weaker AUD defense this week than housing is an AUD attack."
+  ]
+}

@@ -9,7 +9,8 @@
   "notes": [
     "Exact IDs are taken from the current repository hook/agent catalog, not guessed from marketing names.",
     "Cursor custom-agent frontmatter uses grok-4.6[] (empty thinking-level parameter), which routes to grok-4.6.",
-    "Internal advocate subagents may use only composer-2.5. Fast/high/low variants are not allowed."
+    "Task inherit on a grok-4.6 parent may report cursor-grok-4.6-high/medium/low/xhigh; those aliases normalize to grok-4.6 so standing seats can launch.",
+    "Internal advocate subagents may use only composer-2.5. Fast variants are not allowed."
   ],
   "advocate_model": "grok-4.6",
   "aggregator_model": "grok-4.6",

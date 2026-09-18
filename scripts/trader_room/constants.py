@@ -135,3 +135,13 @@ OPPOSITE_REGIME = {
 
 HANDOFF_MARKER = "STATUS: AWAITING_CHATGPT_ARBITRATION"
 LIVE_ENV = "TRADER_ROOM_LIVE"
+INDEPENDENT_EXECUTION = "independent_grok_seat"
+FORBIDDEN_EXECUTION_MARKERS = (
+    "parent_authored_production_evidence",
+    "parent_authored",
+    "ghostwritten",
+    "simulated_seat",
+    "substituted_seat",
+    "dry_run_presented_as_live",
+)
+INVALID_PRIOR_LIVE_RUN_ID = "tr-20260917T231827Z-4ca9133b"

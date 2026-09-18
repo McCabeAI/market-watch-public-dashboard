@@ -19,6 +19,7 @@ from scripts.trader_room.constants import (
 from scripts.trader_room.errors import DataBoundaryError, SchemaError
 from scripts.trader_room.evidence import assert_same_frozen_packet
 from scripts.trader_room.mandate import compact_comparison, seat_class, validate_expression_comparison
+from scripts.trader_room.provenance import reject_forbidden_execution
 
 LEVEL_RE = re.compile(r"[-+]?\d+(?:\.\d+)?")
 FORBIDDEN_ACQUISITION = (
@@ -128,6 +129,7 @@ def validate_contribution(
     )
     if contribution["type"] != "TRADER_ROOM_CONTRIBUTION":
         raise SchemaError(f"contribution type must be TRADER_ROOM_CONTRIBUTION, got {contribution['type']}")
+    reject_forbidden_execution(contribution, contribution.get("agent") or "contribution")
     if contribution["round"] != 1:
         raise SchemaError("initial contribution round must be 1")
     agent = contribution["agent"]
@@ -175,6 +177,7 @@ def validate_rebuttal(
     )
     if rebuttal["type"] != "TRADER_ROOM_REBUTTAL":
         raise SchemaError("rebuttal type must be TRADER_ROOM_REBUTTAL")
+    reject_forbidden_execution(rebuttal, expected_agent or "rebuttal")
     if rebuttal["round"] != 2:
         raise SchemaError("rebuttal round must be 2")
     if rebuttal["agent"] != expected_agent:
@@ -209,6 +212,7 @@ def validate_conflict_map(conflict_map: dict[str, Any], originals: dict[str, dic
     _require_keys(conflict_map, ("type", "run_id", "conflicts"), "conflict map")
     if conflict_map["type"] != "TRADER_ROOM_CONFLICT_MAP":
         raise SchemaError("conflict map type must be TRADER_ROOM_CONFLICT_MAP")
+    reject_forbidden_execution(conflict_map, "conflict-aggregator")
     _assert_no_ranking(conflict_map, "conflict aggregator")
     seen_ids: set[str] = set()
     for conflict in conflict_map["conflicts"]:
@@ -253,6 +257,7 @@ def validate_pm_handoff(
     _require_keys(handoff, required, "PM handoff")
     if handoff["type"] != "TRADER_ROOM_PM_HANDOFF":
         raise SchemaError("handoff type must be TRADER_ROOM_PM_HANDOFF")
+    reject_forbidden_execution(handoff, "final-aggregator")
     if handoff["run_id"] != packet["run_id"]:
         raise SchemaError("handoff run_id mismatch")
     if handoff["evidence_cutoff"] != packet["as_of"]:

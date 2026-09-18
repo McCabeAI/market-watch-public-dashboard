@@ -33,10 +33,11 @@ Execution:
    - Freeze this packet. Every advocate receives the exact same packet and cutoff. After freeze, no web, search, or new evidence acquisition.
 
 3. Round 1.
-   - Launch all 14 standing advocates concurrently, each exact model `grok-4.6`.
+   - Launch all 14 standing advocates concurrently, each exact model `grok-4.6`. Write `TRADER_ROOM_SEAT_ROLE=advocate` into each seat prompt.
+   - Do not author, ghostwrite, substitute, or simulate a seat brief. If a required Grok seat fails to launch, fail the run loudly.
    - Give each the exact same frozen common evidence packet and user topic.
    - Instruct each advocate to apply `research_method` before its archetypal bias.
-   - Each advocate may make at most two internal subagent calls, model `composer-2.5` only, on the same frozen packet.
+   - Each advocate may make at most two internal subagent calls, model `composer-2.5` only, on the same frozen packet. Those research children use `TRADER_ROOM_SEAT_ROLE=advocate-research`. Rebuttals and aggregators get no subagents.
    - Do not show agents one another's Round 1 work.
     - Every advocate except `no-trade-skeptic` must return one cogent actionable trade. The skeptic may submit no-trade.
    - `dollar-king` and `cross-merchant` remain spot-dedicated. Every other macro/rates-capable seat must compare outright duration, curve, and cross-market rates RV against spot FX, then choose the cleaner expression and record `expression_comparison`. Do not force rates if spot is superior. Do not default to vol; `vol-convexity` stays unchanged.

@@ -35,5 +35,13 @@ class LiveRunBlocked(TraderRoomError):
     """Production 14-advocate research run is not armed."""
 
 
+class ParentAuthoredSeatError(TraderRoomError):
+    """Parent synthesized, ghostwrote, or simulated a standing-seat output."""
+
+
+class IndependentSeatRequired(LiveRunBlocked):
+    """A required independent grok-4.6 seat was not launched; do not substitute."""
+
+
 class ArtifactError(TraderRoomError):
     """Run artifacts could not be persisted or retrieved."""
