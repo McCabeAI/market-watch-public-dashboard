@@ -1,0 +1,90 @@
+{
+  "agent": "rate-dove",
+  "attack": [
+    "Dollar-king and carry-is-king treat a historically cheap CA-US 2Y as if FX had not yet marked CAD down; that spread is the market-implied easier-BoC assumption, and collecting ~140bp does not locate underpriced easing.",
+    "Trend-follower's 1d/5d/1m USDCAD alignment is a continuation argument; 3m USDCAD is still negative, so the path does not prove CAD easing is still cheap versus a 99th-percentile AU front end.",
+    "Catalyst-junkie's G10 decision week (Fed +25bp already >90% priced, BoJ hike, hawkish BoE hold) is global term-premium, not a Canada-specific underpriced-cuts catalyst; BoC still lacks a delivered hike while core is near 2%.",
+    "Mean-reverter uses a five-year AUDNZD extreme as if stretch were a signal; research_method treats mean reversion as a yardstick that still needs a closing mechanism, and NZ's hotter 4.1% CPI plus missing NZ yields are not that mechanism.",
+    "Positioning-cynic infers a crowded long-AUDNZD from price alone (pos:unavailable) and treats an India FTA plus a slowing GDP beat as unbid NZ positives; those do not reprice RBA housing transmission or AU 2Y at a 99th-percentile level.",
+    "Perma-bull and rate-hawk's USD-down / long-CAD case (CA activity lead, energy pass-through, stuck 3% headline) punches a hole in long USDCAD as the USD-up alternative without putting AU housing and 99th-percentile AU yields into AUDUSD.",
+    "Perma-bear is same-instrument short AUDUSD and does not challenge the residual; it does not rescue long USDCAD or long NZD."
+  ],
+  "defense": [
+    "Verified: RBA tightening is already in housing (stamp-duty -24% y/y, turnover -18%, home values down more than 7% from peak), labor (unemployment 4.5%, employment -15.8k, labor score 47.8), and the 16 Sep Westpac sentiment drop to 84.4, while AU 2Y remains 4.999% at the 99th one-year percentile and AUDUSD still prints a +0.20% 1m return at the 76th percentile.",
+    "Inference: that is the underpriced easing/growth-weakness gap. NZD already paid (NZDUSD 13th percentile, -3.90% 1m). CAD easing is already in the CA-US 2Y extreme. Short AUDUSD owns the residual high-yielder bid.",
+    "Unknowns that stay in principal risks: no positioning/flow, no executable broker prices, ECB AUDUSD 0.7120 is research/reference only, and short AUDUSD still faces negative carry versus AU 2Y 4.999% against US 2Y 4.67% plus trimmed-mean CPI 3.6% and July household spending +1.1%.",
+    "Invalidation is unchanged: the thesis fails if AU labor re-tightens and housing turnover/prices stabilize, or if the RBA delivers another hike / AU 2Y holds its 99th-percentile regime, or if US activity/labor break first and collapse USD faster than AUD."
+  ],
+  "holes_in_opposing_case": [
+    "Fact: CA-US 2Y is already -140bp (CA 2Y 3.27 vs US 2Y 4.67) near the 3.8th one-year percentile while Canada core is near 2% and CA activity 53.2 / consumer 52.5 sit above baseline. Inference: long USDCAD owns an already-priced easier-BoC gap and paid carry, not underpriced Canadian cuts; the dove discrepancy is AU 2Y at 4.999% / 99th one-year percentile against a housing-labor contraction that AUDUSD has not paid.",
+    "Fact: USDCAD is already +1.74% over 1m and +1.10% over 5d at only the 74th one-year percentile, while AUDUSD is still +0.20% over 1m at the 76th one-year percentile. Inference: the live USD-up grind is in CAD, so the residual unpriced growth/policy weakness is AUD, not a second USDCAD leg.",
+    "Fact: retained energy research still has crude near $110 and BoC minutes already flag energy pass-through; the Saudi-Oman workaround only reduced the extreme oil-supply tail. Inference: CAD still has a terms-of-trade buffer that long USDCAD must overcome, whereas NSW stamp-duty receipts -24% y/y, housing turnover -18%, and unemployment at 4.5% are a delivered AU tightening channel.",
+    "Fact: AUDNZD is at the 99.96th five-year percentile (z +3.12) because NZDUSD fell 3.90% over 1m to the 13th one-year percentile while AUDUSD rose 0.20%. Inference: that decomposition is a reason to short the still-bid AUDUSD residual, not to buy NZD after the dump.",
+    "Fact: NZ labor is the weakest gauge at 47.0 with unemployment at 5.6%, NZ consumer 48.5, and retail volumes -0.5% q/q; NZ headline CPI is 4.1% vs AU 3.5%. Unknown: official NZ yields are unavailable. Inference: short AUDNZD / long NZD cannot show NZ easing is underpriced, and hotter NZ inflation plus missing NZ rates strips the rates-first closing mechanism.",
+    "Fact: positioning/flow is unavailable and the NZ Q2 GDP print slowed to +0.2% q/q from +0.8% even as it beat forecasts. Inference: inferred CTA crowding and a decelerating beat are not catalysts that reverse NZD weakness or put AU housing into AUDUSD."
+  ],
+  "opponents": [
+    "carry-is-king",
+    "catalyst-junkie",
+    "dollar-king",
+    "perma-bear",
+    "trend-follower",
+    "perma-bull",
+    "rate-hawk",
+    "mean-reverter",
+    "positioning-cynic"
+  ],
+  "own_original_ref": "submissions/rate-dove.json",
+  "packet_sha256": "63f781354ed4048cf1091125e35854ed64db800467e7a98c336cf72032a33956",
+  "revised_trade": {
+    "catalysts": [
+      "Next ABS labor and CPI prints confirming unemployment up and trimmed-mean disinflation",
+      "Further housing-finance or home-value weakness",
+      "Westpac/consumer and household-spending follow-through",
+      "Any RBA communication that treats the housing tax-take hole as policy-relevant"
+    ],
+    "confidence": 52,
+    "direction": "short",
+    "entry": null,
+    "evidence_refs": [
+      "research_method",
+      "mw_20260916_au_housing_tightening",
+      "temp:AU:labor",
+      "temp:AU:inflation",
+      "temp:AU:consumer",
+      "rates:AU",
+      "rates:US",
+      "fx:AUDUSD",
+      "fx:NZDUSD",
+      "market_state",
+      "last24:2026-09-18:desk-thesis",
+      "rollup:Fed raises 25bp to 3.75\u20134.00%"
+    ],
+    "horizon": "1-3 months",
+    "instrument": "AUDUSD",
+    "invalidation": "Thesis fails if Australian labor re-tightens and housing turnover/prices stabilize while the RBA delivers another hike or AU 2Y holds its 99th-percentile regime, or if US activity/labor break first.",
+    "mispricing": "Market-implied assumption backsolved from AU 2Y/10Y at ~99th 1y percentiles plus AUDUSD in the upper quartile is that RBA policy can stay restrictive and AUD can keep its high-yield bid even as the housing channel is already contracting.",
+    "principal_risks": [
+      "Trimmed-mean CPI still 3.6% and July household spending +1.1%",
+      "Global tightening plus crude near $110 can sustain AUD as a high-yielder",
+      "Short AUDUSD has negative carry versus AU 2Y 4.999% against US 2Y 4.67%",
+      "No positioning/flow feed",
+      "ECB AUDUSD 0.7120 is research/reference only"
+    ],
+    "stop": null,
+    "structure": "spot FX short AUD versus USD",
+    "target": null,
+    "thesis": "The RBA tightening channel is already destroying housing turnover and loosening the labor market, so AU cash-rate pricing at a 99th-percentile yield level is too hawkish and AUD should lose its high-yielder bid versus USD. NSW stamp-duty receipts are down 24% y/y; AU unemployment rose to 4.5%; headline CPI eased to 3.5%. Yet RBA 2Y is 4.999% at the 99.0th 1y percentile and AUDUSD still sits at the 76th 1y percentile with a +0.20% 1m return. NZDUSD already prints the 13th 1y percentile after a 3.90% 1m decline; CA-US 2Y is already at the 3.8th 1y percentile. Short AUDUSD owns the residual.",
+    "why_now": [
+      "The 16 Sep housing and Westpac-sentiment prints are new transmission evidence that arrived as the Fed delivered a fully priced 25bp hike.",
+      "AU 2Y still printed +39bp over one month and remains at a 99th-percentile level; AUDUSD\u2019s 1m return is still +0.20% versus NZDUSD \u22123.90%.",
+      "Housing volumes and sentiment move first, labor next, then the RBA path. That sequence is live in AU now."
+    ]
+  },
+  "round": 2,
+  "run_id": "tr-20260918T182933Z-ondemand",
+  "strongest_opponent_point": "Dollar-king and carry-is-king's long USDCAD is the strongest opposing USD-up case because a CA-US 2Y gap of about -140bp near the 4th one-year percentile versus USDCAD only around the 74th percentile, with the 2Y differential paying long USD, looks like a cleaner already-priced USD-over-CAD gap than short AUDUSD, which still fights a positive AU-US 2Y.",
+  "subagent_calls": 0,
+  "trade_change": "unchanged",
+  "type": "TRADER_ROOM_REBUTTAL"
+}

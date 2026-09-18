@@ -1,0 +1,91 @@
+{
+  "agent": "positioning-cynic",
+  "attack": [
+    "NZDUSD at the 13th/9th percentile after a 3.90% 1m decline is the owned trade; piling into NZD-down from here is the bad entry of a maybe-still-true risk-off thesis.",
+    "AUDNZD at 5y percentile 99.96 / z +3.12, still extending +0.65% 1d and +1.19% 5d, is the packet's cleanest momentum-owned G10 expression. Fade that, do not chase USD.",
+    "If the residual they want is AUD-down, they have already described short AUDNZD. NZD_DOWN is crowded surplus.",
+    "Post-hike USD longs versus a still-positive AUDUSD 1m print are consensus ownership, not asymmetry."
+  ],
+  "defense": [
+    "Short AUDNZD is long NZD versus AUD, not a NZDUSD long versus USD. A USD-up tape that drops AUD and NZD together does not kill the cross; only continued NZD underperformance versus AUD does.",
+    "I concede NZ labor 47.0 (unemployment 5.6%) is the weakest labor gauge and is the live squeeze risk if CTA/high-beta shorts stay on. That is why confidence stays low, not why the already-paid NZD short should be added to.",
+    "AU-US 2Y compressed 12.5bp on 2026-09-16 to +25.9bp while AUDNZD kept rallying: the rate cushion under AUD shrank as the crowded cross extended. That is an ownership catalyst for fading AUDNZD, not for chasing AUDUSD shorts into a fully priced Fed event.",
+    "Mean-reverter is not the NZD-down case; their 5y-extreme decomposition agrees the 1m move is an NZD-leg overshoot. The conflict to rebut is the short-AUDUSD NZD-down overlay.",
+    "CFTC/options/CTA remain unavailable: crowding is inferred from price extremes and post-news continuation, not measured open interest. Missing flow lowers confidence; it is not permission to treat the 13th-percentile NZDUSD short as unowned."
+  ],
+  "holes_in_opposing_case": [
+    "The strongest NZD-down case is internally contradictory: both perma-bear and rate-dove justify short AUDUSD by saying NZDUSD already paid (1m -3.90%, 1y percentile 12.9, 5y percentile 8.6) and that the residual unpaid high-beta leg is AUD versus USD; tagging nzd_view lower after that concession is a leftover USD-up overlay, not an independently evidenced NZD short.",
+    "Price decomposition falsifies adding NZD-down: AUDNZD 1m +4.27% is almost entirely NZDUSD -3.90%, not AUDUSD strength (+0.20% 1m, 1y percentile 76.4). If the residual is AUD, the ownership-correct expression is short AUD versus the already-dumped NZD, not more NZDUSD shorts.",
+    "Short AUDUSD after a Fed 25bp that arrived with >90% futures probability is the crowded post-event USD chase; USDCHF already prints 1m +3.34% at the 99.8th 1y percentile, so defensive-USD is not an empty box.",
+    "AU housing and AU labor 47.8 are AUD-specific transmission (NSW stamp-duty -24% y/y, turnover -18%, unemployment 4.5%). That evidence licenses AUD-down versus NZD; it does not license treating NZD as the residual funding dump.",
+    "Incremental NZ news in the packet is the opposite of a fresh dump catalyst: Q2 GDP slowed to +0.2% q/q but beat and stayed positive, NZ activity score is 52.0, and the India FTA passed. NZDUSD still sold 1d -0.56% and 5d -1.90% after that information, which is momentum/flow, not new NZ deterioration.",
+    "NZD-down is unmeasured on the two series that would actually justify it: pos:unavailable (no CFTC/skew/CTA) and rates:NZ / NZ-US 2Y unavailable after the RBNZ B2 403. Inferring NZ as the correct high-beta short without NZ yields is a rates claim with no rates.",
+    "NZ inflation is the hotter gauge (score 51.6, headline 4.1% y/y) versus AU inflation 49.2. That is not a reason NZD should keep being the Australasian funding currency.",
+    "Carry does not rescue short AUDUSD either: AU 2Y 4.999% versus US 2Y 4.67% still leaves +25.9bp of AU-US 2Y, and the two opponents disagree on the AU-rates mechanism (perma-bear higher, rate-dove lower) while sharing the same crowded USD expression."
+  ],
+  "opponents": [
+    "perma-bear",
+    "rate-dove"
+  ],
+  "own_original_ref": "submissions/positioning-cynic.json",
+  "packet_sha256": "63f781354ed4048cf1091125e35854ed64db800467e7a98c336cf72032a33956",
+  "revised_trade": {
+    "catalysts": [
+      "Momentum/CTA de-lever of long AUDNZD after AU-US 2Y compression",
+      "Digestion of the NZ GDP beat and India FTA against a still-unbid NZD",
+      "Further evidence that AU housing tightening is the under-owned AUD-specific negative",
+      "Post-event unwind of crowded USD longs rather than a new NZD dump"
+    ],
+    "confidence": 36,
+    "direction": "short",
+    "entry": null,
+    "evidence_refs": [
+      "pos:unavailable",
+      "fx:AUDNZD",
+      "fx:NZDUSD",
+      "fx:AUDUSD",
+      "fx:USDCHF",
+      "mw_20260916_fomc_hike_pricing",
+      "last24:2026-09-18:desk-thesis",
+      "mw_20260916_au_housing_tightening",
+      "rollup:New Zealand Q2 GDP slows to 0.2% q/q but beats forecasts",
+      "mw_20260916_nz_india_trade",
+      "rates:AU",
+      "rates:US",
+      "rates:NZ",
+      "market_state",
+      "research_method",
+      "temp:NZ:labor",
+      "temp:NZ:activity",
+      "temp:AU:labor",
+      "temp:NZ:inflation"
+    ],
+    "horizon": "2-6 weeks",
+    "instrument": "AUDNZD",
+    "invalidation": "The fade is wrong if NZ-specific activity/labor keeps deteriorating versus Australia, if official NZ yields once available confirm a persistent AU 2Y premium, or if AUDNZD's 1m outperformance re-accelerates after AU housing/activity stabilize.",
+    "mispricing": "AUDNZD still prices NZ as uniquely broken after a GDP beat and India FTA. Price is the only positioning proxy in the packet; CFTC/skew/CTA are unavailable, so crowding is inferred from the 5y extreme and post-news continuation, not measured open interest.",
+    "principal_risks": [
+      "NZ labor 47.0 / unemployment 5.6% can keep NZD as the high-beta funding dump if USD stays bid",
+      "CFTC/options/CTA data are missing; crowding is inferred",
+      "Official NZ yields are unavailable",
+      "Trend continuation can keep squeezing short AUDNZD",
+      "Executable broker prices are not in the packet"
+    ],
+    "stop": null,
+    "structure": "spot FX short AUD / long NZD",
+    "target": null,
+    "thesis": "The NZD-down overlay on short AUDUSD is crowded leftover ownership, not a residual. NZDUSD already dropped 3.90% over 1m to the 12.9th 1y / 8.6th 5y percentile; AUDNZD is the 5y 99.96th-percentile stretch (z +3.12) driven by that NZD dump, not by AUDUSD strength (+0.20% 1m). Perma-bear and rate-dove themselves say the unpaid high-beta leg is AUD versus USD. That residual is short AUD versus dumped NZD. Fade long AUDNZD without needing the hawkish USD regime to be wrong.",
+    "why_now": [
+      "AUDNZD is still being added after the information is old: +0.65% on 1d and +1.19% on 5d on top of +4.27% over 1m into a 5y 99.96th-percentile print.",
+      "The opposing short-AUDUSD case already concedes NZDUSD paid (-3.90% 1m) and names AUD versus USD as the residual, which is an AUDNZD expression, not more NZD-down.",
+      "The Fed 25bp hike arrived with >90% futures probability already in the price, so chasing USD versus AUD is the post-event crowded macro.",
+      "AU-US 2Y fell 12.5bp on 2026-09-16 to +25.9bp, shrinking the rate cushion under AUD while AUDNZD continued higher."
+    ]
+  },
+  "round": 2,
+  "run_id": "tr-20260918T182933Z-ondemand",
+  "strongest_opponent_point": "If global tightening keeps USD bid, NZD can remain the high-beta funding dump even after a 3.90% one-month decline because NZ labor at 47.0 is the packet's weakest labor gauge.",
+  "subagent_calls": 0,
+  "trade_change": "amended",
+  "type": "TRADER_ROOM_REBUTTAL"
+}
