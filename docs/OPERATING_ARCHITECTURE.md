@@ -16,6 +16,7 @@ The public dashboard is live on GitHub Pages. As of this document:
 - v9 replaces the rolling Top Market Drivers and 7-Day Quick Digest with the current V0 trader-feed rollup.
 - v10 adds August 2026 CPI context and the explicit unresolved CPI-to-Core-PCE bridge lineage warning to the US Inflation drawer.
 - the Sep 14 completeness transform in `scripts/apply_v11_refresh.py` rolls the central-bank research window, refreshes X status and catalysts, updates the US Core CPI quick/feed state, and moves realized CPI/PPI releases into release history.
+- `data/temperature_scores.json` is the versioned live score ledger. All 16 V0 scores were reindexed to 50.0 on 2026-09-17; `scripts/apply_temperature_scores.py` deterministically applies cumulative fixed-weight release impulses and overwrites the recovered v8 placeholder values on every build.
 - the light V0 refresh is scheduled externally at 04:00 America/New_York, but the repository still uses deterministic patch/transformation authoring rather than a native source-ingestion generator.
 - the Supabase pilot is active in project `market-watch-dev`, private schema `market_watch`.
 - Supabase stores normalized operational feed state and provenance when persistence succeeds; it is not the canonical raw-evidence archive or canonical macro time-series warehouse.
@@ -53,11 +54,12 @@ Current deploy path:
 6. It restores the v8 country score drawers from `patch_v8/`, including deterministic checks for all 16 score controls and hard/context evidence blocks.
 7. It applies the v10 August CPI context patch to the US Inflation drawer.
 8. It runs `scripts/apply_v11_refresh.py` as a fail-closed completeness transform. The Sep 14 version asserts the strict 30-day central-bank research count/window, removes aged research and stale X/catalyst state, updates current US Core CPI quick/feed presentation, inserts realized August CPI/PPI rows, and verifies that all 16 expandable score controls and the US CPI bridge lineage warning remain present.
-9. It runs `scripts/market_state.py` to emit `_site/market-state.json` (no API keys; NZ may be `unavailable` when RBNZ is blocked).
-10. It applies the v12 **Market Data** tab from `patch_v12/` via `scripts/apply_market_data_tab.py`, which serves `market-data.js` and loads the same-origin JSON packet in the browser.
-11. Only after all deterministic content/count/anchor checks pass are `_site/index.html`, `market-state.json`, and `market-data.js` uploaded as the GitHub Pages artifact.
-12. The deploy job publishes that artifact to GitHub Pages on `main` pushes, weekday schedule, or manual dispatch.
-13. The operational run must still verify the live deployed page; a green workflow alone is not completion.
+9. It validates `data/temperature_scores.json`, runs the score unit tests, and applies `scripts/apply_temperature_scores.py` to overwrite all 16 legacy placeholder scores/bars from the 50.0 activation baseline plus cumulative weighted release impulses.
+10. It runs `scripts/market_state.py` to emit `_site/market-state.json` (no API keys; NZ may be `unavailable` when RBNZ is blocked).
+11. It applies the v12 **Market Data** tab from `patch_v12/` via `scripts/apply_market_data_tab.py`, which serves `market-data.js` and loads the same-origin JSON packet in the browser.
+12. Only after all deterministic content/count/anchor checks pass are `_site/index.html`, `market-state.json`, and `market-data.js` uploaded as the GitHub Pages artifact.
+13. The deploy job publishes that artifact to GitHub Pages on `main` pushes, weekday schedule, or manual dispatch.
+14. The operational run must still verify the live deployed page; a green workflow alone is not completion.
 
 Current immutable base validation constants in `.github/workflows/deploy-pages.yml`:
 
@@ -293,11 +295,12 @@ The scheduled light V0 agent and any manual catch-up use the same incremental ru
 7. Write a concise factual summary and a separate market read.
 8. Preserve canonical URLs/provenance.
 9. Populate/update only the affected dashboard sections.
-10. Write normalized operational rows to Supabase for the adopted feed workflow. A required write failure makes the run partial and must be reported; it does not authorize silently skipping persistence.
-11. Run deterministic validation before deployment.
-12. Deploy through GitHub Actions only after all content/count/anchor gates pass.
-13. Verify the actual deployed artifact when practical, not only the workflow status.
-14. Update the Notion Project State capsule only if project state materially changed.
+10. For every qualifying hard-data release or material revision, append its classified impulse to `data/temperature_scores.json` at the governing fixed weight. Missing inputs contribute zero; do not renormalize or freeze the dimension.
+11. Write normalized operational rows to Supabase for the adopted feed workflow. A required write failure makes the run partial and must be reported; it does not authorize silently skipping persistence.
+12. Run deterministic validation before deployment.
+13. Deploy through GitHub Actions only after all content/count/anchor gates pass.
+14. Verify the actual deployed artifact when practical, not only the workflow status.
+15. Update the Notion Project State capsule only if project state materially changed.
 
 ## 13. Planned native automated refresh flow
 
@@ -385,7 +388,9 @@ Supabase:
 - `docs/MARKET_STATE_FEED_V1.md` — generator command and JSON output contract
 - `payload_v6/` — known-good compressed/base64 v6 dashboard base
 - `patch_v7/` — Last 24 Hours patch
-- `patch_v8/` — expandable 1–100 country score drawers and evidence panels
+- `patch_v8/` — expandable 1–100 country score drawers and evidence panels; embedded recovered values are legacy placeholders
+- `data/temperature_scores.json` — live 50-baseline score ledger and weighted release impulses
+- `scripts/apply_temperature_scores.py` — validates/calculates the ledger and writes live score values/bars into the built dashboard
 - `patch_v9/` — rolling Top Market Drivers and 7-Day Quick Digest
 - `patch_v10/` — August CPI context / bridge-lineage patch for US Inflation
 - `patch_v12/` — Market Data tab (rates, RV spreads, G10 FX from `market-state.json`)

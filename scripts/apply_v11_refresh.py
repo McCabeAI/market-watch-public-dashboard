@@ -134,7 +134,7 @@ tbody = html.index('<tbody>', rs) + len('<tbody>')
 if 'data-label="Release">August CPI' in html[rs:] or 'data-label="Release">August PPI' in html[rs:]:
     raise SystemExit("August CPI/PPI release rows already applied")
 release_rows = '''<tr><td data-label="Date">Sep 11</td><td data-label="Country">US</td><td data-label="Theme">Inflation</td><td data-label="Release">August CPI</td><td data-label="Actual">+0.4% m/m · 3.4% y/y</td><td data-label="Context">Core +0.3% m/m · 2.4% y/y; headline CPI has zero standalone Core PCE score weight</td><td data-label="Source">BLS</td></tr>
-<tr><td data-label="Date">Sep 10</td><td data-label="Country">US</td><td data-label="Theme">Inflation</td><td data-label="Release">August PPI</td><td data-label="Actual">+0.4% m/m · 5.4% y/y</td><td data-label="Context">Goods +1.1%; mapped PPI-linked Core PCE subset left the 72.0 transition score unchanged</td><td data-label="Source">BLS</td></tr>
+<tr><td data-label="Date">Sep 10</td><td data-label="Country">US</td><td data-label="Theme">Inflation</td><td data-label="Release">August PPI</td><td data-label="Actual">+0.4% m/m · 5.4% y/y</td><td data-label="Context">Goods +1.1%; headline PPI has no standalone score weight and only mapped Core PCE components can affect the indexed score</td><td data-label="Source">BLS</td></tr>
 '''
 html = html[:tbody] + release_rows + html[tbody:]
 
@@ -162,7 +162,7 @@ for stale in ('<b>Sep 10</b>US PPI', '<b>Sep 11</b>US CPI', '@ReserveBankofNZ', 
         raise SystemExit(f"stale v11 content remains: {stale}")
 if html.count('class="temp-dimension score-detail"') != 16 or html.count('/100') != 16:
     raise SystemExit("score drawer count changed")
-if 'LINEAGE GAP · August CPI bridge' not in html:
-    raise SystemExit("US CPI bridge lineage gap lost")
+if 'August CPI bridge:' not in html:
+    raise SystemExit("US CPI bridge lineage note lost")
 
 path.write_text(html)

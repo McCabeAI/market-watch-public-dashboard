@@ -13,7 +13,7 @@ Activity has two hard components:
 
 Do not renormalize these weights because of release timing, stale data or missing inputs.
 
-The current displayed Activity scores remain transition anchors unless separately rebuilt under this methodology. New qualifying releases move the score prospectively under the fixed weights above.
+Activity was reindexed to **50.0 on 2026-09-17**. The activation ledger applies current available hard evidence at the fixed weights above; future qualifying releases append weighted impulses prospectively. Missing inputs add zero rather than freezing the dimension.
 
 ## 2. United States business-survey weighting
 
@@ -40,8 +40,10 @@ Until the provider/source mix is formally pinned:
 
 - preserve the 70/30 sector structure;
 - show relevant survey releases and subcomponents as evidence;
-- visibly retain a `LINEAGE GAP` for the unresolved provider mix;
-- do not invent a provider weighting merely to move the score.
+- visibly retain the unresolved provider mix in lineage;
+- use the explicitly identified current survey proxy/composite in the score ledger when the evidence is sufficient to classify it;
+- otherwise assign that unresolved bucket a zero impulse for the refresh;
+- never invent or silently renormalize provider weights.
 
 ## 4. Survey decomposition and contextual routing
 

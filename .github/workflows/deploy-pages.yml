@@ -10,6 +10,11 @@ on:
     paths:
       - ".github/workflows/deploy-pages.yml"
       - "patch_v12/**"
+      - "data/temperature_scores.json"
+      - "scripts/apply_temperature_scores.py"
+      - "tests/test_temperature_scores.py"
+      - "docs/*SCORE*.md"
+      - "docs/DAILY_REFRESH_V0.md"
       - "scripts/apply_market_data_tab.py"
       - "scripts/market_state.py"
       - "requirements-market-state.txt"
@@ -150,6 +155,18 @@ jobs:
         run: |
           set -euo pipefail
           python scripts/apply_v11_refresh.py _site/index.html
+
+      - name: Apply live temperature scores
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -m unittest tests.test_temperature_scores
+          PYTHONPATH=. python scripts/apply_temperature_scores.py _site/index.html --print-scores
+          test "$(grep -o 'Reindexed to 50 on 2026-09-17' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
+          if grep -Fq 'transition anchor' _site/index.html; then
+            echo "stale transition-anchor language remains in built dashboard"
+            exit 1
+          fi
 
       - name: Set up Python for market-state packet
         uses: actions/setup-python@v6

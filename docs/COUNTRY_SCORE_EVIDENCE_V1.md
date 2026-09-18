@@ -38,7 +38,7 @@ Show every input that is allowed to move the score under the governing methodolo
 - authoritative source link;
 - enough lineage to understand why the score is where it is.
 
-If the displayed score is a transition anchor rather than a score historically reconstructed from the current methodology, say that explicitly. Do not manufacture component contributions that were never calculated.
+Show the 50.0 activation baseline, the weighted qualifying impulses recorded since activation, and the resulting current score. Do not manufacture component contributions that were never calculated.
 
 ### Context / corroboration
 
@@ -48,15 +48,16 @@ Label these observations `CONTEXT ONLY`. Context evidence can strengthen or weak
 
 ## 3. Missing lineage
 
-If a score's current V0 methodology does not uniquely identify the active source series, display an explicit `LINEAGE GAP` in the expanded score rather than choosing a plausible series.
+If a score's current V0 methodology does not uniquely identify the permanent source series, show the unresolved source ownership in the expanded score. That gap does not freeze the entire dimension.
 
-A transition-anchor score may remain visible while this gap is resolved, but the page must distinguish:
+The page must distinguish:
 
-- a current observable relevant to the dimension;
+- the actual current observable/proxy used for a scored event;
 - a formally defined hard score input;
-- a context-only series.
+- a context-only series;
+- a missing bucket that contributed zero.
 
-Do not imply mathematical auditability where it does not exist.
+Do not imply more precision than exists, but do not block valid weighted score moves merely because another bucket or long-run provider choice remains unresolved.
 
 ## 4. Trend standard
 
@@ -107,7 +108,7 @@ When a material observation is released or revised, the refresh must:
 
 1. update the relevant hard input or context series;
 2. preserve the source, reference period and revision state;
-3. update score lineage only when the governing methodology permits a score move;
+3. record any qualifying hard-input release in `data/temperature_scores.json` and apply its fixed-weight impulse;
 4. retain material context even when its score weight is zero;
 5. remove or flag stale statements that have been superseded;
 6. validate that the deployed page still exposes both evidence layers by tap/click.
