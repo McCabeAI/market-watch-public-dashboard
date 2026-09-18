@@ -1,6 +1,6 @@
 # Market Watch — Overnight Production Pipeline V1
 
-Status: PRE-MERGE
+Status: TARGET-SIDE READY · ACP SCHEDULE NOT YET ENABLED
 
 This is the technical contract for the unattended Market Watch morning pipeline. GitHub owns deterministic work. ACP owns every recurring model/provider clock. Market Watch never stores a Cursor credential and never invokes Cursor directly.
 
@@ -65,8 +65,8 @@ The scheduled-output PR must be data-only. Market Watch does not execute code fr
 The JSON contains:
 
 - schedule id and run id;
-- trusted 01:50 `base_packet_sha256`;
-- a research-enriched final agent packet and its hash;
+- trusted 01:50 `base_packet_sha256` and `base_evidence_cutoff`;
+- a research-enriched final agent packet, its later final `evidence_cutoff`, and its hash;
 - exactly 14 structured seat decisions;
 - declared model-usage/cap fields.
 
