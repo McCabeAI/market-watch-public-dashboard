@@ -80,6 +80,11 @@ def assemble_dataset(
         },
         "evidence_cutoff": snapshot.get("as_of"),
         "packet_sha256": snapshot.get("packet_sha256"),
+        "agent_research": (
+            store.read_artifact(run_id, "agent_evidence_packet.json").get("research_supplement")
+            if store.has_artifact(run_id, "agent_evidence_packet.json")
+            else None
+        ),
         "trader_books": public_books_view(books),
         "publication": decision,
         "stage_ledger": {name: run["stages"][name]["status"] for name in run["stages"]},
