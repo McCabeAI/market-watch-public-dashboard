@@ -114,7 +114,20 @@ def _country_slice(html: str, key: str) -> tuple[int, int]:
     return start, end
 
 
-def _patch_dimension(block: str, dimension: str, score: float, baseline: float, activation_date: str) -> str:
+def _event_weight(spec: dict[str, Any], event: dict[str, Any]) -> float:
+    if "weight" in event:
+        return float(event["weight"])
+    return float(spec["components"][event["component"]])
+
+
+def _patch_dimension(
+    block: str,
+    dimension: str,
+    score: float,
+    baseline: float,
+    activation_date: str,
+    spec: dict[str, Any],
+) -> str:
     score_text = display_score(score)
     klass = temperature_class(score)
     width = max(1.0, min(100.0, score))
@@ -136,10 +149,22 @@ def _patch_dimension(block: str, dimension: str, score: float, baseline: float, 
         rf'(<details class="temp-dimension score-detail">.*?<b>{re.escape(dimension)}</b>.*?)(<div class="lineage-note(?: lineage-gap)?">.*?</div>)',
         re.S,
     )
+    net_move = score - baseline
+    events = spec.get("events", [])
+    latest_text = ""
+    if events:
+        latest = events[-1]
+        contribution = _event_weight(spec, latest) * int(latest["impulse"])
+        latest_text = (
+            f' Latest recorded: {latest.get("as_of", "n/a")} {latest["component"]} '
+            f'{int(latest["impulse"]):+d} × {_event_weight(spec, latest):.0%} = '
+            f'{contribution:+.1f}.'
+        )
     lineage = (
         f'<div class="lineage-note"><b>Score lineage:</b> Reindexed to {display_score(baseline)} on '
-        f'{activation_date}. Current score = baseline + cumulative fixed-weight release impulses. '
-        'Missing inputs add zero; weights are never redistributed.</div>'
+        f'{activation_date}. Net indexed move {net_move:+.1f}; current score {display_score(score)}. '
+        'Missing inputs add zero; weights are never redistributed.'
+        f'{latest_text}</div>'
     )
     block, count = details_pattern.subn(lambda m: m.group(1) + lineage, block, count=1)
     if count != 1:
@@ -165,6 +190,7 @@ def apply_scores(html: str, state: dict[str, Any]) -> str:
                 scores[country][dimension],
                 float(state["baseline_score"]),
                 str(state["activation_date"]),
+                state["countries"][country][dimension],
             )
         html = html[:start] + block + html[end:]
 

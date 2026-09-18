@@ -12,8 +12,8 @@ class TemperatureScoresTest(unittest.TestCase):
         expected = {
             "US": {"Inflation": 52.0, "Labor": 50.2, "Activity": 49.92, "Consumer": 48.5},
             "CA": {"Inflation": 50.0, "Labor": 48.8, "Activity": 53.2, "Consumer": 52.5},
-            "AU": {"Inflation": 49.2, "Labor": 47.8, "Activity": 49.2, "Consumer": 52.0},
-            "NZ": {"Inflation": 51.6, "Labor": 47.0, "Activity": 53.2, "Consumer": 48.5},
+            "AU": {"Inflation": 49.2, "Labor": 47.8, "Activity": 49.2, "Consumer": 51.0},
+            "NZ": {"Inflation": 51.6, "Labor": 47.0, "Activity": 52.0, "Consumer": 48.5},
         }
         for country, dimensions in expected.items():
             for dimension, value in dimensions.items():

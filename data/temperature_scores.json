@@ -1,5 +1,6 @@
 {
-  "version": 1,
+  "version": 2,
+  "last_refresh_date": "2026-09-17",
   "baseline_score": 50.0,
   "activation_date": "2026-09-17",
   "impulse_scale": [-6, -4, -2, 0, 2, 4, 6],
@@ -40,7 +41,9 @@
           {"id": "bootstrap-us-consumer-retail-2026-07", "as_of": "2026-07", "component": "retail", "impulse": -4, "basis": "Retail and food services -0.6% m/m; clearly weaker.", "source": "Census"},
           {"id": "bootstrap-us-consumer-income-2026-07", "as_of": "2026-07", "component": "income", "impulse": 2, "basis": "Personal income +0.4% m/m and disposable personal income +0.5%; modestly stronger.", "source": "BEA"},
           {"id": "bootstrap-us-consumer-spending-2026-07", "as_of": "2026-07", "component": "spending", "impulse": 0, "basis": "Nominal PCE +0.2% m/m while real PCE was less than +0.1%; mixed.", "source": "BEA"},
-          {"id": "bootstrap-us-consumer-confidence-2026-08", "as_of": "2026-08", "component": "confidence", "impulse": -4, "basis": "Conference Board confidence and Michigan sentiment both declined; clearly weaker.", "source": "Conference Board / Michigan"}
+          {"id": "bootstrap-us-consumer-confidence-2026-08", "as_of": "2026-08", "component": "confidence", "impulse": -4, "basis": "Conference Board confidence and Michigan sentiment both declined; clearly weaker.", "source": "Conference Board / Michigan"},
+          {"id": "us-consumer-retail-2026-08", "as_of": "2026-08", "released_at": "2026-09-16", "component": "retail", "impulse": 4, "basis": "Advance retail and food services sales rose 1.2% m/m in August after July was revised to -0.5%; clearly stronger.", "source": "U.S. Census Bureau"},
+          {"id": "us-consumer-confidence-2026-09", "as_of": "2026-09", "released_at": "2026-09-11", "component": "confidence", "impulse": -4, "basis": "Michigan preliminary September sentiment fell 7.5% m/m to 47.8 from 51.7, with expectations down 11.1%; clearly weaker.", "source": "University of Michigan Surveys of Consumers"}
         ]
       }
     },
@@ -106,7 +109,8 @@
           {"id": "bootstrap-au-consumer-retail-2026-07", "as_of": "2026-07", "component": "retail", "impulse": 0, "basis": "No clean retail comparison in the current score evidence; zero bootstrap impulse.", "source": "current evidence"},
           {"id": "bootstrap-au-consumer-income-2026-q2", "as_of": "2026-Q2", "component": "income", "impulse": 2, "basis": "Household gross disposable income +1.1% q/q; modestly stronger.", "source": "ABS"},
           {"id": "bootstrap-au-consumer-spending-2026-07", "as_of": "2026-07", "component": "spending", "impulse": 4, "basis": "Monthly household spending +1.1% m/m, the third consecutive increase; clearly stronger.", "source": "ABS"},
-          {"id": "bootstrap-au-consumer-confidence-2026-08", "as_of": "2026-08", "component": "confidence", "impulse": 2, "basis": "Westpac-MI sentiment rose 6% from July, though remained pessimistic; modestly stronger.", "source": "Westpac"}
+          {"id": "bootstrap-au-consumer-confidence-2026-08", "as_of": "2026-08", "component": "confidence", "impulse": 2, "basis": "Westpac-MI sentiment rose 6% from July, though remained pessimistic; modestly stronger.", "source": "Westpac"},
+          {"id": "au-consumer-confidence-2026-09", "as_of": "2026-09", "released_at": "2026-09-16", "component": "confidence", "impulse": -4, "basis": "Westpac-Melbourne Institute Consumer Sentiment fell 5.2% to 84.4 from 88.9, with a broad-based decline; clearly weaker.", "source": "Westpac-Melbourne Institute"}
         ]
       }
     },
@@ -130,7 +134,8 @@
         "components": {"gdp_domestic_demand": 0.6, "business_surveys": 0.4},
         "events": [
           {"id": "bootstrap-nz-activity-gdp-2026-q1", "as_of": "2026-Q1", "component": "gdp_domestic_demand", "impulse": 4, "basis": "Real GDP +0.8% q/q; clearly stronger current hard activity observation.", "source": "Stats NZ"},
-          {"id": "bootstrap-nz-activity-surveys-2026-08", "as_of": "2026-08", "component": "business_surveys", "impulse": 2, "basis": "PMI remained expansionary and ANZ business/own-activity readings remained high despite easing; net modestly stronger.", "source": "BusinessNZ / ANZ"}
+          {"id": "bootstrap-nz-activity-surveys-2026-08", "as_of": "2026-08", "component": "business_surveys", "impulse": 2, "basis": "PMI remained expansionary and ANZ business/own-activity readings remained high despite easing; net modestly stronger.", "source": "BusinessNZ / ANZ"},
+          {"id": "nz-activity-gdp-2026-q2", "as_of": "2026-Q2", "released_at": "2026-09-17", "component": "gdp_domestic_demand", "impulse": -2, "basis": "Real GDP slowed to +0.2% q/q from +0.8% in Q1 while expenditure GDP rose 0.4%; modestly cooler, not contractionary.", "source": "Stats NZ"}
         ]
       },
       "Consumer": {
