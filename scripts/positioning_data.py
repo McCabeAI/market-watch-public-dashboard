@@ -1,31 +1,37 @@
 """Deterministic positioning inputs for Market Watch.
 
 Core ownership data comes from the CFTC Traders in Financial Futures (TFF)
-futures-only public dataset. CME Daily Bulletin data supplements it with
-previous-trade-date futures open interest and monthly-options call/put open
-interest. No model calls, credentials, or paid feeds are required.
+futures-only public dataset. CME's public Volume & Open Interest service
+supplements it with daily futures and options open-interest history. No model
+calls, credentials, or paid feeds are required.
 
 These are research/reference observations, not executable prices.
 """
 from __future__ import annotations
 
-import io
 import json
 import math
-import re
 import statistics
 import urllib.parse
-from datetime import date, datetime
+from datetime import date
 from typing import Callable, Mapping, Sequence
 
 CFTC_TFF_DATASET = "gpe5-46if"
 CFTC_TFF_API = f"https://publicreporting.cftc.gov/resource/{CFTC_TFF_DATASET}.json"
 CFTC_TFF_PAGE = "https://publicreporting.cftc.gov/stories/s/TFF-Futures-Only/98ig-3k9y/"
-CME_DAILY_BULLETIN_PAGE = "https://www.cmegroup.com/market-data/daily-bulletin.html"
-CME_FX_SUMMARY_PDF = (
-    "https://www.cmegroup.com/daily_bulletin/current/"
-    "Section01B_Summary_Volume_And_Open_Interest_FX_Futures_And_Options.pdf"
-)
+CME_VOLUME_PAGE = "https://www.cmegroup.com/market-data/volume-open-interest.html"
+CME_LAST_TOTALS = "https://www.cmegroup.com/CmeWS/mvc/Volume/LastTotals/{product_id}?days=30"
+CME_FX_PRODUCTS = {
+    "EUR": "58",
+    "GBP": "42",
+    "JPY": "69",
+    "CHF": "86",
+    "CAD": "48",
+    "AUD": "37",
+    "NZD": "78",
+    "NOK": "825",
+    "SEK": "826",
+}
 
 CFTC_STALE_DAYS = 10
 CME_STALE_DAYS = 4
@@ -66,10 +72,16 @@ CFTC_INSTRUMENT_PATTERNS: dict[str, tuple[str, ...]] = {
     "CAD": ("CANADIAN DOLLAR",),
     "AUD": ("AUSTRALIAN DOLLAR",),
     "NZD": ("NEW ZEALAND DOLLAR",),
-    "US2Y": ("2-YEAR", "TREASURY"),
-    "US5Y": ("5-YEAR", "TREASURY"),
-    "US10Y": ("10-YEAR", "TREASURY"),
-    "US_LONG": ("TREASURY BOND",),
+    "US2Y": ("TREASURY",),
+    "US5Y": ("TREASURY",),
+    "US10Y": ("TREASURY",),
+    "US30Y": ("TREASURY",),
+}
+CFTC_CONTRACT_CODES = {
+    "US2Y": "042601",
+    "US5Y": "044601",
+    "US10Y": "043602",
+    "US30Y": "020601",
 }
 CFTC_EXCLUSIONS = ("MICRO", "E-MINI", "EMINI", "CROSS RATE", "ULTRA")
 
@@ -100,28 +112,6 @@ CATEGORIES: dict[str, tuple[str, str, str | None]] = {
         None,
     ),
 }
-
-CME_FUTURES_PREFIXES = {
-    "EUR": "EC EURO FX FUTURES",
-    "JPY": "JY JAPANESE YEN FUTURE",
-    "GBP": "BP BRITISH POUND FUTURE",
-    "AUD": "AD AUSTRALIAN DLR FUTURES",
-    "CAD": "CD CANADIAN DOLLAR FUTURE",
-    "NZD": "NE NEW ZEALAND DOLLAR FUTURES",
-    "CHF": "SF SWISS FRANC FUTURES",
-    "SEK": "SE SKR/USD CROSS RATE FUTURES",
-    "NOK": "UN NKR/USD CROSS RATE FUTURES",
-}
-CME_MONTHLY_OPTION_PREFIXES = {
-    "EUR": ("EUU EUR/USD Monthly Options C", "EUU EUR/USD Monthly Options P"),
-    "JPY": ("JPU JPY/USD Monthly Options C", "JPU JPY/USD Monthly Options P"),
-    "GBP": ("GBU GBP/USD Monthly Options C", "GBU GBP/USD Monthly Options P"),
-    "AUD": ("ADU AUD/USD Monthly Options C", "ADU AUD/USD Monthly Options P"),
-    "CAD": ("CAU CAD/USD Monthly Options C", "CAU CAD/USD Monthly Options P"),
-    "NZD": ("ZN NZD/USD Monthly Options C", "ZN NZD/USD Monthly Options P"),
-    "CHF": ("CHU CHF/USD Monthly Options C", "CHU CHF/USD Monthly Options P"),
-}
-
 
 class PositioningError(RuntimeError):
     pass
@@ -183,6 +173,9 @@ def _matches_instrument(key: str, row: Mapping[str, object]) -> bool:
     label = _row_label(row)
     if any(term in label for term in CFTC_EXCLUSIONS):
         return False
+    contract_code = CFTC_CONTRACT_CODES.get(key)
+    if contract_code:
+        return str(row.get("cftc_contract_market_code") or "").strip() == contract_code
     return all(term in label for term in CFTC_INSTRUMENT_PATTERNS[key])
 
 
@@ -316,127 +309,114 @@ def fetch_cftc_tff(
     return result
 
 
-def extract_pdf_text(data: bytes) -> str:
-    try:
-        from pypdf import PdfReader
-    except ImportError as exc:
-        raise PositioningError("pypdf is required for CME Daily Bulletin positioning") from exc
-    try:
-        reader = PdfReader(io.BytesIO(data))
-        return "\n".join((page.extract_text() or "") for page in reader.pages)
-    except Exception as exc:
-        raise PositioningError(f"could not parse CME Daily Bulletin PDF: {exc}") from exc
-
-
-def _bulletin_date(text: str) -> date:
-    match = re.search(
-        r"BULLETIN\s+#\s*\d+@\s*(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun),\s*"
-        r"([A-Z][a-z]{2}\s+\d{1,2},\s+\d{4})",
-        text,
-    )
-    if not match:
-        raise PositioningError("CME Daily Bulletin trade date not found")
-    return datetime.strptime(match.group(1), "%b %d, %Y").date()
-
-
-def _find_line(text: str, prefix: str) -> str | None:
-    for line in text.splitlines():
-        clean = " ".join(line.split())
-        if clean.startswith(prefix):
-            return clean
-    return None
-
-
-def _oi_and_change(line: str, prefix: str) -> tuple[int | None, int | None]:
-    tail = line[len(prefix) :].strip()
-    matches = list(re.finditer(r"(\d[\d,]*)\s*([+-])\s*(\d[\d,]*)", tail))
-    if matches:
-        match = matches[0]
-        oi = int(match.group(1).replace(",", ""))
-        change = int(match.group(3).replace(",", ""))
-        return oi, change if match.group(2) == "+" else -change
-    unch = re.search(r"(\d[\d,]*)\s+UNCH\b", tail)
-    if unch:
-        return int(unch.group(1).replace(",", "")), 0
-    nums = [int(x.replace(",", "")) for x in re.findall(r"(?<![.\w])\d[\d,]*(?![.\w])", tail)]
-    if len(nums) == 1:
-        return nums[0], 0
-    return None, None
-
-
-def parse_cme_fx_bulletin(text: str, *, today: date) -> dict:
-    trade_date = _bulletin_date(text)
-    age_days = max(0, (today - trade_date).days)
-    futures: dict[str, dict] = {}
-    for ccy, prefix in CME_FUTURES_PREFIXES.items():
-        line = _find_line(text, prefix)
-        if not line:
+def parse_cme_last_totals(payload: Mapping[str, object], *, ccy: str, today: date) -> dict:
+    rows = payload.get("vdate")
+    if not isinstance(rows, list) or not rows:
+        raise PositioningError(f"CME LastTotals returned no history for {ccy}")
+    observations: list[dict] = []
+    for row in rows:
+        if not isinstance(row, Mapping):
             continue
-        oi, change = _oi_and_change(line, prefix)
-        if oi is not None:
-            futures[ccy] = {"open_interest": oi, "daily_change": change}
-
-    monthly_options: dict[str, dict] = {}
-    for ccy, (call_prefix, put_prefix) in CME_MONTHLY_OPTION_PREFIXES.items():
-        call_line = _find_line(text, call_prefix)
-        put_line = _find_line(text, put_prefix)
-        call_oi, call_change = _oi_and_change(call_line, call_prefix) if call_line else (None, None)
-        put_oi, put_change = _oi_and_change(put_line, put_prefix) if put_line else (None, None)
-        if call_oi is None and put_oi is None:
+        raw_date = str(row.get("formattedDate") or "")
+        if len(raw_date) != 8 or not raw_date.isdigit():
             continue
-        total = (call_oi or 0) + (put_oi or 0)
-        monthly_options[ccy] = {
-            "call_open_interest": call_oi,
-            "put_open_interest": put_oi,
-            "total_open_interest": total,
-            "put_call_oi_ratio": None if not call_oi else (put_oi or 0) / call_oi,
-            "call_daily_change": call_change,
-            "put_daily_change": put_change,
-        }
-
-    def aggregate(prefix: str) -> dict | None:
-        match = re.search(prefix + r"\s+([\d\s]+?)\s+(\d+)\s*([+-])\s*(\d+)", text)
-        if not match:
-            return None
-        # Current OI is the integer immediately before the signed OI change.
-        oi = int(match.group(2))
-        chg = int(match.group(4)) * (1 if match.group(3) == "+" else -1)
-        return {"open_interest": oi, "daily_change": chg}
-
-    aggregate_futures = aggregate(r"FUTURES ONLY-\s*FX")
-    aggregate_options = aggregate(r"OPTIONS ONLY-\s*FX")
-    if not futures:
-        raise PositioningError("CME FX summary contained no mapped G10 futures open interest")
+        d = date(int(raw_date[:4]), int(raw_date[4:6]), int(raw_date[6:8]))
+        future_oi = _number(row.get("futureOi"))
+        option_oi = _number(row.get("optionOi"))
+        future_volume = _number(row.get("futureVolume"))
+        option_volume = _number(row.get("optionVolume"))
+        if future_oi is None:
+            continue
+        observations.append(
+            {
+                "date": d,
+                "future_open_interest": future_oi,
+                "option_open_interest": option_oi,
+                "future_volume": future_volume,
+                "option_volume": option_volume,
+            }
+        )
+    if not observations:
+        raise PositioningError(f"CME LastTotals had no usable observations for {ccy}")
+    observations.sort(key=lambda x: x["date"])
+    latest = observations[-1]
+    prior = observations[-2] if len(observations) > 1 else None
+    age_days = max(0, (today - latest["date"]).days)
+    future_hist = [x["future_open_interest"] for x in observations]
+    option_hist = [x["option_open_interest"] for x in observations if x["option_open_interest"] is not None]
+    future_oi = latest["future_open_interest"]
+    option_oi = latest["option_open_interest"]
     return {
         "status": "stale" if age_days > CME_STALE_DAYS else "ok",
-        "trade_date": trade_date.isoformat(),
+        "trade_date": latest["date"].isoformat(),
         "age_days": age_days,
-        "futures": futures,
-        "monthly_options": monthly_options,
-        "aggregate_fx": {
-            "futures": aggregate_futures,
-            "options": aggregate_options,
-            "options_to_futures_oi_ratio": (
-                None
-                if not aggregate_futures
-                or not aggregate_options
-                or not aggregate_futures["open_interest"]
-                else aggregate_options["open_interest"] / aggregate_futures["open_interest"]
-            ),
-        },
-        "note": (
-            "CME Daily Bulletin is previous-trade-date official exchange open interest. "
-            "Monthly option call/put OI is a participation/shape overlay, not trader identity."
+        "product_id": CME_FX_PRODUCTS[ccy],
+        "future_open_interest": future_oi,
+        "future_oi_daily_change": (
+            None if prior is None else future_oi - prior["future_open_interest"]
         ),
+        "future_oi_pctile_30d": _pct_rank(future_hist, future_oi),
+        "future_oi_z_30d": _z(future_hist, future_oi),
+        "future_volume": latest["future_volume"],
+        "option_open_interest": option_oi,
+        "option_oi_daily_change": (
+            None
+            if prior is None or option_oi is None or prior["option_open_interest"] is None
+            else option_oi - prior["option_open_interest"]
+        ),
+        "option_oi_pctile_30d": (
+            None if option_oi is None else _pct_rank(option_hist, option_oi)
+        ),
+        "option_oi_z_30d": None if option_oi is None else _z(option_hist, option_oi),
+        "option_volume": latest["option_volume"],
+        "options_to_futures_oi_ratio": (
+            None if option_oi is None or not future_oi else option_oi / future_oi
+        ),
+        "history": [
+            {
+                "date": x["date"].isoformat(),
+                "future_open_interest": x["future_open_interest"],
+                "option_open_interest": x["option_open_interest"],
+            }
+            for x in observations
+        ],
     }
 
 
 def fetch_cme_fx_positioning(*, today: date, fetch_bytes: Callable[..., bytes]) -> dict:
-    data = fetch_bytes(CME_FX_SUMMARY_PDF, timeout=60, retries=3)
-    result = parse_cme_fx_bulletin(extract_pdf_text(data), today=today)
-    result["source_url"] = CME_DAILY_BULLETIN_PAGE
-    result["download_url"] = CME_FX_SUMMARY_PDF
-    return result
+    instruments: dict[str, dict] = {}
+    errors: dict[str, str] = {}
+    latest: date | None = None
+    for ccy, product_id in CME_FX_PRODUCTS.items():
+        url = CME_LAST_TOTALS.format(product_id=product_id)
+        try:
+            payload = json.loads(fetch_bytes(url, timeout=45, retries=3).decode("utf-8"))
+            metrics = parse_cme_last_totals(payload, ccy=ccy, today=today)
+        except Exception as exc:
+            errors[ccy] = str(exc)
+            continue
+        instruments[ccy] = metrics
+        d = date.fromisoformat(metrics["trade_date"])
+        latest = d if latest is None or d > latest else latest
+    if not instruments:
+        raise PositioningError("CME LastTotals returned no mapped G10 FX products")
+    status = "partial" if errors else (
+        "stale" if any(v["status"] == "stale" for v in instruments.values()) else "ok"
+    )
+    return {
+        "status": status,
+        "trade_date": latest.isoformat() if latest else None,
+        "age_days": max(0, (today - latest).days) if latest else None,
+        "instruments": instruments,
+        "missing_instruments": sorted(errors),
+        "errors": errors,
+        "source_url": CME_VOLUME_PAGE,
+        "api_template": CME_LAST_TOTALS,
+        "note": (
+            "CME public Volume & Open Interest service supplies daily product-level futures "
+            "and aggregate options OI. It is a participation/crowding overlay, not trader identity."
+        ),
+    }
 
 
 def build_positioning(
@@ -466,10 +446,9 @@ def build_positioning(
         cme = {
             "status": "unavailable",
             "error": cme_error,
-            "source_url": CME_DAILY_BULLETIN_PAGE,
-            "download_url": CME_FX_SUMMARY_PDF,
-            "futures": {},
-            "monthly_options": {},
+            "source_url": CME_VOLUME_PAGE,
+            "api_template": CME_LAST_TOTALS,
+            "instruments": {},
         }
 
     available = [block for block in (cftc, cme) if block.get("status") != "unavailable"]
@@ -490,10 +469,10 @@ def build_positioning(
             "model_calls": 0,
             "credentials_required": [],
             "core_ownership_source": "cftc_tff_futures_only",
-            "daily_open_interest_source": "cme_daily_bulletin",
+            "daily_open_interest_source": "cme_volume_last_totals",
             "crowding_measure": (
                 "Trader-class net positions are normalized by total open interest, "
-                "with 1Y/3Y percentile and z-score context. CME OI is supplemental."
+                "with 1Y/3Y percentile and z-score context. CME daily futures/options OI is supplemental."
             ),
         },
     }
@@ -518,6 +497,9 @@ def validate_positioning(block: Mapping[str, object]) -> None:
                     raise PositioningError(f"invalid CFTC long position for {key}/{category}")
     cme = block.get("cme")
     if isinstance(cme, Mapping) and cme.get("status") != "unavailable":
-        for ccy, item in (cme.get("futures") or {}).items():
-            if item.get("open_interest") is None or item["open_interest"] < 0:
-                raise PositioningError(f"invalid CME open interest for {ccy}")
+        for ccy, item in (cme.get("instruments") or {}).items():
+            if item.get("future_open_interest") is None or item["future_open_interest"] < 0:
+                raise PositioningError(f"invalid CME futures open interest for {ccy}")
+            option_oi = item.get("option_open_interest")
+            if option_oi is not None and option_oi < 0:
+                raise PositioningError(f"invalid CME options open interest for {ccy}")
