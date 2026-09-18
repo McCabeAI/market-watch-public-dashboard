@@ -4,6 +4,8 @@ Status: ACTIVE LIGHT OPERATIONAL VERSION
 
 This document governs the scheduled 04:00 America/New_York Market Watch dashboard refresh. It is intentionally a lightweight current-state workflow. It is not the full Ivory / historical research architecture and must not expand into one without an explicit decision.
 
+GitHub Pages publication for the overnight production path is 04:07 ET and is owned by `docs/OVERNIGHT_PIPELINE_V1.md`. This V0 document still owns news selection, score methodology, and the restored front-page content rules. The overnight collect stage snapshots those inputs; it does not rewrite them.
+
 ## 1. Daily ownership
 
 One integrated daily refresh owns:

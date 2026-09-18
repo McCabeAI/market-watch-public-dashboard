@@ -1,0 +1,155 @@
+name: Overnight Production Pipeline
+
+on:
+  schedule:
+    # America/New_York stages. Dual UTC offsets cover EDT (UTC-4) and EST (UTC-5).
+    # Jobs self-gate on the NY clock and no-op outside the matching window.
+    - cron: "7 4 * * 1-5"
+    - cron: "7 5 * * 1-5"
+    - cron: "40 5 * * 1-5"
+    - cron: "40 6 * * 1-5"
+    - cron: "50 5 * * 1-5"
+    - cron: "50 6 * * 1-5"
+    - cron: "5 6 * * 1-5"
+    - cron: "5 7 * * 1-5"
+    - cron: "35 7 * * 1-5"
+    - cron: "35 8 * * 1-5"
+    - cron: "50 7 * * 1-5"
+    - cron: "50 8 * * 1-5"
+    - cron: "7 8 * * 1-5"
+    - cron: "7 9 * * 1-5"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "dry-run exercises every stage with zero trader model calls"
+        required: true
+        default: dry-run
+        type: choice
+        options:
+          - dry-run
+          - live-stage
+      stage:
+        description: "Stage for live-stage mode; ignored by dry-run"
+        required: false
+        default: collect
+        type: choice
+        options:
+          - collect
+          - pre_trader_delta
+          - freeze_evidence
+          - trader_review
+          - final_delta
+          - assemble
+          - publish
+      as_of:
+        description: "Optional ISO timestamp used as the NY clock"
+        required: false
+        type: string
+  pull_request:
+    paths:
+      - "scripts/overnight/**"
+      - "scripts/overnight_pipeline.py"
+      - "scripts/apply_trader_book_tab.py"
+      - "patch_v13/**"
+      - "data/overnight/**"
+      - "tests/test_overnight_pipeline.py"
+      - "docs/OVERNIGHT_PIPELINE_V1.md"
+      - ".github/workflows/overnight-pipeline.yml"
+      - ".github/workflows/deploy-pages.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: overnight-pipeline
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Overnight contracts and dry-run
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Unit tests
+        run: PYTHONPATH=. python3 -m unittest tests.test_overnight_pipeline -v
+
+      - name: End-to-end dry-run
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python3 scripts/overnight_pipeline.py schedule
+          PYTHONPATH=. python3 scripts/overnight_pipeline.py dry-run --suffix ci --site-dir /tmp/overnight-site
+          test -s /tmp/overnight-site/trader-books.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          packet = json.loads(Path("/tmp/overnight-site/trader-books.json").read_text())
+          assert packet["seat_count"] == 14
+          assert packet["publication"]["may_publish"] is True if "may_publish" in packet["publication"] else True
+          print({"overnight_run_id": packet.get("overnight_run_id"), "review_status": packet.get("review_status")})
+          PY
+
+  scheduled-stage:
+    name: NY-gated scheduled stage
+    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'live-stage')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: validate
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Resolve and run stage
+        id: stage
+        env:
+          DISPATCH_STAGE: ${{ github.event_name == 'workflow_dispatch' && inputs.stage || '' }}
+          AS_OF: ${{ github.event.inputs.as_of || '' }}
+        run: |
+          set -euo pipefail
+          if [ -n "${DISPATCH_STAGE}" ]; then
+            STAGE="${DISPATCH_STAGE}"
+          else
+            STAGE="$(PYTHONPATH=. python3 scripts/overnight_pipeline.py which-stage ${AS_OF:+--as-of "$AS_OF"})"
+          fi
+          echo "Resolved stage=${STAGE}"
+          echo "stage=${STAGE}" >> "$GITHUB_OUTPUT"
+          if [ "${STAGE}" = "idle" ]; then
+            echo "Outside an America/New_York stage window; no-op."
+            exit 0
+          fi
+          if [ "${STAGE}" = "publish" ]; then
+            PYTHONPATH=. python3 scripts/overnight_pipeline.py stage publish --require-dataset ${AS_OF:+--as-of "$AS_OF"}
+          else
+            PYTHONPATH=. python3 scripts/overnight_pipeline.py stage "${STAGE}" ${AS_OF:+--as-of "$AS_OF"}
+          fi
+          echo "Live trader model calls are not made by this workflow. Cursor supplies trader_review payloads separately."
+
+      - name: Persist overnight artifacts on main
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+        run: |
+          set -euo pipefail
+          if [ "${{ steps.stage.outputs.stage }}" = "idle" ]; then
+            echo "No stage ran; nothing to persist."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/overnight
+          if git diff --cached --quiet; then
+            echo "No overnight state changes"
+            exit 0
+          fi
+          git commit -m "chore: persist overnight ${{ steps.stage.outputs.stage }} ledger"
+          git push
