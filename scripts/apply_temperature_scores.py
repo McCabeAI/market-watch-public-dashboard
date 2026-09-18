@@ -131,7 +131,38 @@ def _score_overview_html(scores: dict[str, dict[str, float]], state: dict[str, A
             '<div style="padding:8px 10px;border:1px solid currentColor;border-radius:8px;">'
             f'<b>{country}</b><div style="margin-top:4px;font-size:12px;">{values}</div></div>'
         )
+
+    released_events = []
+    for country, dimensions in state["countries"].items():
+        for dimension, spec in dimensions.items():
+            for event in spec.get("events", []):
+                if not event.get("released_at"):
+                    continue
+                released_events.append(
+                    (
+                        str(event["released_at"]),
+                        country,
+                        dimension,
+                        event,
+                        _event_weight(spec, event) * int(event["impulse"]),
+                    )
+                )
+    released_events.sort(key=lambda item: (item[0], item[1], item[2], str(item[3]["id"])), reverse=True)
+    event_bits = []
+    for released_at, country, dimension, event, contribution in released_events[:4]:
+        event_bits.append(
+            f'<span><b>{country} {dimension}</b> {event.get("as_of", "")}: '
+            f'{int(event["impulse"]):+d} × {_event_weight(state["countries"][country][dimension], event):.0%} '
+            f'= {contribution:+.1f}</span>'
+        )
+
     refreshed = state.get("last_refresh_date", state["activation_date"])
+    latest = ""
+    if event_bits:
+        latest = (
+            '<div style="margin-top:10px;font-size:11px;display:flex;flex-wrap:wrap;gap:6px 14px;">'
+            '<b>Latest scored releases</b>' + "".join(event_bits) + '</div>'
+        )
     return (
         '<div data-score-overview="live" style="margin:0 0 18px;padding:12px;'
         'border:1px solid currentColor;border-radius:10px;">'
@@ -140,7 +171,7 @@ def _score_overview_html(scores: dict[str, dict[str, float]], state: dict[str, A
         f'<span style="font-size:11px;">score ledger through {refreshed}</span></div>'
         '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;">'
         + "".join(cells)
-        + '</div></div>'
+        + '</div>' + latest + '</div>'
     )
 
 
