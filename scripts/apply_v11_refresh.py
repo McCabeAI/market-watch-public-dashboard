@@ -162,7 +162,7 @@ for stale in ('<b>Sep 10</b>US PPI', '<b>Sep 11</b>US CPI', '@ReserveBankofNZ', 
         raise SystemExit(f"stale v11 content remains: {stale}")
 if html.count('class="temp-dimension score-detail"') != 16 or html.count('/100') != 16:
     raise SystemExit("score drawer count changed")
-if 'LINEAGE GAP · August CPI bridge' not in html:
-    raise SystemExit("US CPI bridge lineage gap lost")
+if 'August CPI bridge:' not in html:
+    raise SystemExit("US CPI bridge lineage note lost")
 
 path.write_text(html)
