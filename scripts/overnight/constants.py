@@ -66,16 +66,10 @@ STAGE_SCHEDULE = {
     "publish": {"et_time": time(4, 7), "window_minutes": 25, "summary": "GitHub Pages build and deploy"},
 }
 
-# GitHub cron is UTC-only. Dual offsets cover EDT (UTC-4) and EST (UTC-5).
-# Jobs must still self-gate with America/New_York wall-clock.
-UTC_CRON = {
-    "collect": ("7 4 * * 1-5", "7 5 * * 1-5"),
-    "pre_trader_delta": ("40 5 * * 1-5", "40 6 * * 1-5"),
-    "freeze_evidence": ("50 5 * * 1-5", "50 6 * * 1-5"),
-    "trader_review": ("5 6 * * 1-5", "5 7 * * 1-5"),
-    "final_delta": ("35 7 * * 1-5", "35 8 * * 1-5"),
-    "assemble": ("50 7 * * 1-5", "50 8 * * 1-5"),
-    "publish": ("7 8 * * 1-5", "7 9 * * 1-5"),
+# GitHub Actions schedules are pinned directly to America/New_York.
+LOCAL_CRON = {
+    stage: f"{spec['et_time'].minute} {spec['et_time'].hour} * * 1-5"
+    for stage, spec in STAGE_SCHEDULE.items()
 }
 
 FORBIDDEN_ACQUISITION = (
