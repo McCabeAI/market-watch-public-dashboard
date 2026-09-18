@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from scripts.trader_room.artifacts import retrieve
+from scripts.trader_room.artifacts import persist_launch_kit, retrieve
 from scripts.trader_room.budget import BudgetLedger
 from scripts.trader_room.conflict import currency_exposure, detect_conflicts, rebuttal_assignments
 from scripts.trader_room.constants import (
@@ -28,6 +28,7 @@ from scripts.trader_room.constants import (
     SUBAGENT_MODEL,
     TRADE_REQUIRED_AGENTS,
 )
+from scripts.trader_room.dispatch import ScriptedDispatcher
 from scripts.trader_room.errors import (
     BudgetError,
     DataBoundaryError,
@@ -35,6 +36,7 @@ from scripts.trader_room.errors import (
     EvidencePreflightError,
     LiveRunBlocked,
     ModelPolicyError,
+    ParentDispatchRequired,
     SchemaError,
 )
 from scripts.trader_room.evidence import (
@@ -52,7 +54,7 @@ from scripts.trader_room.models import (
     trader_room_hook_policy,
 )
 from scripts.trader_room.orchestrator import go, prepare_evidence, run_debate
-from scripts.trader_room.runners import DryRunRunner, LiveRunner
+from scripts.trader_room.runners import DryRunRunner, LiveRunner, build_launch_plan
 from scripts.trader_room.schema import validate_contribution, validate_pm_handoff, validate_trade
 
 
@@ -240,12 +242,71 @@ class OrchestratorDryRunTests(unittest.TestCase):
                 rebuttals=result["rebuttals"],
             )
 
-    def test_live_run_is_blocked(self):
+    def test_live_run_is_blocked_unless_armed(self):
         with self.assertRaises(LiveRunBlocked):
             go(topic="go", live=True, synthetic=True)
         with mock.patch.dict(os.environ, {"TRADER_ROOM_LIVE": "1", "CI": "true"}):
             with self.assertRaises(LiveRunBlocked):
                 LiveRunner()
+
+    def _scripted_live_payloads(self, packet):
+        dry = DryRunRunner(composer_calls_per_advocate=1)
+        budget = BudgetLedger()
+        originals = {agent: dry.run_advocate(agent, packet, budget) for agent in STANDING_ADVOCATES}
+        conflict_map = dry.run_conflict_aggregator(originals, packet, BudgetLedger())
+        assignments = rebuttal_assignments(conflict_map)
+        payloads = {("advocate", agent): item for agent, item in originals.items()}
+        payloads[("conflict-aggregator", "conflict-aggregator")] = conflict_map
+        reb_budget = BudgetLedger()
+        for agent, assignment in assignments.items():
+            payloads[("rebuttal", agent)] = dry.run_rebuttal(
+                agent, packet, originals[agent], assignment, reb_budget
+            )
+        payloads[("final-aggregator", "final-aggregator")] = dry.run_final_aggregator(
+            packet, originals, conflict_map, {k: payloads[("rebuttal", k)] for k in assignments}, BudgetLedger()
+        )
+        return payloads, assignments
+
+    def test_live_runner_uses_parent_dispatch_not_mocks(self):
+        packet, preflight = prepare_evidence(topic="go", synthetic=True)
+        payloads, assignments = self._scripted_live_payloads(packet)
+        dispatcher = ScriptedDispatcher(payloads)
+        with mock.patch.dict(os.environ, {"TRADER_ROOM_LIVE": "1", "CI": ""}):
+            with tempfile.TemporaryDirectory() as tmp:
+                dest = Path(tmp)
+                persist_launch_kit(
+                    root=dest,
+                    packet=packet,
+                    preflight=preflight,
+                    launch_plan=build_launch_plan(packet),
+                )
+                result = go(
+                    topic="go",
+                    live=True,
+                    synthetic=True,
+                    artifact_root=dest,
+                    dispatcher=dispatcher,
+                    resume_run_id=packet["run_id"],
+                )
+        self.assertEqual(result["handoff"]["status"], HANDOFF_MARKER)
+        self.assertEqual(set(result["originals"]), set(STANDING_ADVOCATES))
+        self.assertGreaterEqual(result["budget"]["grok"], 16)
+        self.assertLessEqual(result["budget"]["grok"], GROK_CEILING)
+        self.assertEqual(result["budget"]["composer"], 14)
+        self.assertTrue(dispatcher.ensured)
+        source = (ROOT / "scripts" / "trader_room" / "runners.py").read_text(encoding="utf-8")
+        self.assertNotIn("live advocate dispatch is not implemented", source)
+        self.assertIn("Cursor-native live dispatch", source)
+        self.assertGreaterEqual(len(assignments), 1)
+
+    def test_live_mailbox_requests_parent_instead_of_simulating(self):
+        with mock.patch.dict(os.environ, {"TRADER_ROOM_LIVE": "1", "CI": ""}):
+            with tempfile.TemporaryDirectory() as tmp:
+                with self.assertRaises(ParentDispatchRequired) as caught:
+                    go(topic="go", live=True, synthetic=True, artifact_root=Path(tmp))
+        self.assertEqual(caught.exception.phase, "round1")
+        self.assertEqual(len(caught.exception.pending), 14)
+        self.assertEqual(caught.exception.pending[0]["model"], "grok-4.6")
 
     def test_prepare_then_debate_uses_same_hash(self):
         packet, preflight = prepare_evidence(topic="go", synthetic=True)
@@ -289,10 +350,35 @@ class CliTests(unittest.TestCase):
             capture_output=True,
             text=True,
             check=False,
-            env={**os.environ, "PYTHONPATH": str(ROOT)},
+            env={**os.environ, "PYTHONPATH": str(ROOT), "TRADER_ROOM_LIVE": ""},
         )
         self.assertEqual(proc.returncode, 3)
         self.assertIn("LIVE RUN BLOCKED", proc.stderr)
+
+    def test_cli_live_armed_requests_parent_dispatch(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            proc = subprocess.run(
+                [
+                    sys.executable,
+                    "scripts/trader_room_go.py",
+                    "go",
+                    "--live",
+                    "--synthetic",
+                    "--artifact-root",
+                    tmp,
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                check=False,
+                env={**os.environ, "PYTHONPATH": str(ROOT), "TRADER_ROOM_LIVE": "1", "CI": ""},
+            )
+        self.assertEqual(proc.returncode, 4, proc.stderr)
+        payload = json.loads(proc.stdout)
+        self.assertEqual(payload["status"], "AWAITING_PARENT_DISPATCH")
+        self.assertEqual(payload["phase"], "round1")
+        self.assertEqual(len(payload["pending"]), 14)
+        self.assertEqual(payload["pending"][0]["model"], "grok-4.6")
 
 
 class HookTests(unittest.TestCase):

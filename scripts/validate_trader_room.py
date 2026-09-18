@@ -88,6 +88,12 @@ def main() -> None:
     assert "Total Grok ceiling = 30" in on_demand
     assert "Composer ceiling = 28" in on_demand
     assert "trader-room/runs/<run_id>/" in on_demand
+    assert "Cursor native parent-agent orchestration" in on_demand
+    assert "LiveRunner` does not synthesize model output" in on_demand or "LiveRunner does not synthesize model output" in on_demand
+
+    runners = (ROOT / "scripts" / "trader_room" / "runners.py").read_text(encoding="utf-8")
+    assert "live advocate dispatch is not implemented" not in runners
+    assert "Cursor-native live dispatch" in runners
 
     evidence_contract = (ROOT / "docs" / "TRADER_ROOM_EVIDENCE_CONTRACT.md").read_text(encoding="utf-8")
     method = (ROOT / "docs" / "TRADER_RESEARCH_METHOD.md").read_text(encoding="utf-8")

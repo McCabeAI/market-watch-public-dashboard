@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
-from scripts.trader_room.artifacts import persist_run
+from scripts.trader_room.artifacts import persist_launch_kit, persist_run, retrieve, run_dir, write_json
 from scripts.trader_room.budget import BudgetLedger
 from scripts.trader_room.conflict import rebuttal_assignments
 from scripts.trader_room.constants import (
@@ -14,7 +14,8 @@ from scripts.trader_room.constants import (
     ROOT,
     STANDING_ADVOCATES,
 )
-from scripts.trader_room.errors import LiveRunBlocked, SchemaError
+from scripts.trader_room.dispatch import MailboxStore
+from scripts.trader_room.errors import ParentDispatchRequired, SchemaError, TraderRoomError
 from scripts.trader_room.evidence import (
     assemble_packet,
     assess_families,
@@ -59,6 +60,13 @@ def prepare_evidence(
     return frozen, preflight
 
 
+def _prepare_if_live(runner: ModelRunner, phase: str, **kwargs: Any) -> None:
+    prepare = getattr(runner, "prepare_round", None)
+    if prepare is None:
+        return
+    prepare(phase, **kwargs)
+
+
 def run_debate(
     packet: dict[str, Any],
     preflight: dict[str, Any],
@@ -66,9 +74,11 @@ def run_debate(
     runner: ModelRunner,
     root: Path = ROOT,
     artifact_root: Path | None = None,
+    live: bool = False,
 ) -> dict[str, Any]:
     budget = BudgetLedger()
     budget.assert_baseline_room()
+    _prepare_if_live(runner, "round1", packet=packet)
     originals: dict[str, dict[str, Any]] = {}
     for agent in STANDING_ADVOCATES:
         contribution = runner.run_advocate(agent, packet, budget)
@@ -76,10 +86,22 @@ def run_debate(
     if set(originals) != set(STANDING_ADVOCATES):
         raise SchemaError("round 1 did not return the complete 14-advocate roster")
 
+    dest = artifact_root or root
+    if live:
+        base = run_dir(dest, packet["run_id"])
+        for agent, contribution in originals.items():
+            write_json(base / "submissions" / f"{agent}.json", contribution)
+
+    _prepare_if_live(runner, "conflict", packet=packet, originals=originals)
     conflict_map = runner.run_conflict_aggregator(originals, packet, budget)
     conflict_map = validate_conflict_map(conflict_map, originals)
     assignments = rebuttal_assignments(conflict_map)
+    if live:
+        write_json(run_dir(dest, packet["run_id"]) / "conflict_map.json", conflict_map)
 
+    _prepare_if_live(
+        runner, "rebuttal", packet=packet, originals=originals, assignments=assignments
+    )
     rebuttals: dict[str, dict[str, Any]] = {}
     for agent, assignment in assignments.items():
         rebuttal = runner.run_rebuttal(agent, packet, originals[agent], assignment, budget)
@@ -89,7 +111,18 @@ def run_debate(
             expected_agent=agent,
             allowed_opponents=set(assignment["opponents"]),
         )
+    if live:
+        for agent, item in rebuttals.items():
+            write_json(run_dir(dest, packet["run_id"]) / "rebuttals" / f"{agent}.json", item)
 
+    _prepare_if_live(
+        runner,
+        "final",
+        packet=packet,
+        originals=originals,
+        conflict_map=conflict_map,
+        rebuttals=rebuttals,
+    )
     handoff = runner.run_final_aggregator(packet, originals, conflict_map, rebuttals, budget)
     launch_plan = build_launch_plan(packet)
     index = persist_run(
@@ -102,6 +135,7 @@ def run_debate(
         handoff=handoff,
         budget=budget.snapshot(),
         launch_plan=launch_plan,
+        live=live,
     )
     handoff["artifact_index"] = index
     validate_pm_handoff(
@@ -136,18 +170,45 @@ def go(
     root: Path = ROOT,
     artifact_root: Path | None = None,
     composer_calls_per_advocate: int = 0,
+    dispatcher=None,
+    resume_run_id: str | None = None,
 ) -> dict[str, Any]:
+    dest = artifact_root or root
     if live:
-        runner: ModelRunner = LiveRunner()
+        runner: ModelRunner = LiveRunner(dispatcher=dispatcher)
     else:
+        if resume_run_id:
+            raise TraderRoomError("resume is only valid for live Cursor-native runs")
         runner = DryRunRunner(composer_calls_per_advocate=composer_calls_per_advocate)
-    packet, preflight = prepare_evidence(
-        topic=topic,
-        synthetic=synthetic,
-        fixture=fixture,
-        market_state_path=market_state_path,
-        root=root,
-    )
-    if live:
-        raise LiveRunBlocked("live debate dispatch is gated after evidence freeze")
-    return run_debate(packet, preflight, runner=runner, root=root, artifact_root=artifact_root)
+    if resume_run_id:
+        packet = retrieve(dest, resume_run_id, "evidence_packet")
+        preflight = retrieve(dest, resume_run_id, "preflight")
+    else:
+        packet, preflight = prepare_evidence(
+            topic=topic,
+            synthetic=synthetic,
+            fixture=fixture,
+            market_state_path=market_state_path,
+            root=root,
+        )
+        if live:
+            persist_launch_kit(
+                root=dest,
+                packet=packet,
+                preflight=preflight,
+                launch_plan=build_launch_plan(packet),
+            )
+    if live and dispatcher is None:
+        runner.bind(MailboxStore(dest, packet["run_id"]))  # type: ignore[attr-defined]
+    try:
+        return run_debate(
+            packet,
+            preflight,
+            runner=runner,
+            root=root,
+            artifact_root=dest,
+            live=live,
+        )
+    except ParentDispatchRequired as exc:
+        write_json(dest / "trader-room" / "runs" / packet["run_id"] / "dispatch" / "pending.json", exc.as_dict())
+        raise
