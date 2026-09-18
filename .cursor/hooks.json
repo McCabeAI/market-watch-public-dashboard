@@ -1,1 +1,17 @@
-{"version":1,"hooks":{"subagentStart":[{"command":"sh .cursor/hooks/enforce-subagent-models.sh"}]}}
+{
+  "version": 1,
+  "hooks": {
+    "subagentStart": [
+      {
+        "command": "sh .cursor/hooks/enforce-subagent-models.sh"
+      }
+    ],
+    "preToolUse": [
+      {
+        "command": "python3 .cursor/hooks/enforce-overnight-runtime.py",
+        "matcher": ".*",
+        "failClosed": true
+      }
+    ]
+  }
+}
