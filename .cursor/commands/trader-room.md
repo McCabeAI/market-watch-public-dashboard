@@ -27,6 +27,12 @@ Freeze the packet and SHA-256. Every downstream model receives the exact same fr
 
 Launch all 14 standing advocates concurrently on exact `grok-4.6`. Keep the standing remits unchanged.
 
+Expression selection is mandatory before submission:
+- `dollar-king` and `cross-merchant` remain spot-only;
+- `vol-convexity` remains the options specialist;
+- every other seat is rates-first when it submits a trade: construct a concrete rates candidate and a spot candidate, prefer rates when comparably clean, and select spot only with an explicit reason rates is inferior or unavailable;
+- `no-trade-skeptic` may still return no trade.
+
 Each initial advocate:
 - may use at most two `composer-2.5` subagents;
 - must remain on the frozen packet;
@@ -38,7 +44,7 @@ Do not show Round 1 outputs to other advocates.
 
 ## 3. Validate
 
-Validate roster/remit, schema, evidence refs, packet hash, null levels, confidence, and `conflict_synopsis`. Reject malformed work; do not silently guess missing fields.
+Validate roster/remit, schema, evidence refs, packet hash, null levels, confidence, `asset_class`, `expression_comparison`, and `conflict_synopsis`. Reject malformed work; do not silently guess missing fields.
 
 ## 4. Deterministic conflict stage
 
