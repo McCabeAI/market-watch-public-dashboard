@@ -83,8 +83,8 @@ def main() -> None:
         raise SystemExit("\n".join(errors))
 
     rows = checklist(registry)
-    if len(rows) != 42:
-        raise SystemExit(f"expected 42 scored-source checklist rows including US bridge, found {len(rows)}")
+    if len(rows) != 45:
+        raise SystemExit(f"expected 45 scored-source checklist rows including US bridge, found {len(rows)}")
 
     if args.print_checklist:
         print(json.dumps(rows, indent=2))
