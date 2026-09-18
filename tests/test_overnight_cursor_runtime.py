@@ -125,8 +125,11 @@ class CursorRuntimeContractTests(unittest.TestCase):
         self.assertIn("cursor_runtime.py seat-prompt", overnight)
         self.assertIn("cursor_runtime.py refresh-prompt", overnight)
         self.assertNotIn("Cursor supplies trader_review payloads separately", overnight)
+        self.assertIn("if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'live-stage')", overnight)
+        self.assertIn("Live 00:07 V0 refresh requires repository secret CURSOR_API_KEY.", overnight)
         self.assertIn('timezone: "America/New_York"', pages)
         self.assertIn("scripts/apply_daily_refresh.py", pages)
+        self.assertIn("${{ github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'chore: overnight ') }}", pages)
 
 
 if __name__ == "__main__":

@@ -51,7 +51,7 @@ concurrency:
 
 jobs:
   build:
-    if: github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'chore: overnight ')
+    if: ${{ github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'chore: overnight ') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

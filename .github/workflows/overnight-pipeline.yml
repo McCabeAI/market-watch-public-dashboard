@@ -196,6 +196,10 @@ jobs:
           AS_OF: ${{ inputs.as_of }}
         run: |
           set -euo pipefail
+          if [ -z "$CURSOR_API_KEY" ]; then
+            echo "::error::Live 00:07 V0 refresh requires repository secret CURSOR_API_KEY."
+            exit 1
+          fi
           AS_OF_ARGS=()
           if [ -n "$AS_OF" ]; then AS_OF_ARGS=(--as-of "$AS_OF"); fi
           PYTHONPATH=. python3 scripts/overnight/cursor_runtime.py refresh-prompt \
@@ -307,6 +311,10 @@ jobs:
           SEAT: ${{ matrix.seat }}
         run: |
           set -euo pipefail
+          if [ -z "$CURSOR_API_KEY" ]; then
+            echo "::error::Live 02:05 trader review requires repository secret CURSOR_API_KEY."
+            exit 1
+          fi
           mkdir -p /tmp/overnight-seat
           PYTHONPATH=. python3 scripts/overnight/cursor_runtime.py seat-prompt \
             --run-id "$RUN_ID" --seat "$SEAT" > /tmp/overnight-seat/prompt.txt
