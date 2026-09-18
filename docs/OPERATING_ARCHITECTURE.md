@@ -283,9 +283,9 @@ When Kevin uploads the X archive:
 
 Never replace the raw archive with the normalized database representation.
 
-## 12. Current manual/light-agent refresh runbook
+## 12. Current light-agent refresh runbook
 
-The scheduled light V0 agent and any manual catch-up use the same incremental runbook:
+The native 00:07 overnight Cursor refresh and any manual catch-up use the same incremental runbook:
 
 1. Define the exact time window.
 2. Search official sources, financial/mainstream media and public X for relevant developments.
@@ -303,13 +303,13 @@ The scheduled light V0 agent and any manual catch-up use the same incremental ru
 14. Verify the actual deployed artifact when practical, not only the workflow status.
 15. Update the Notion Project State capsule only if project state materially changed.
 
-## 13. Planned native automated refresh flow
+## 13. Native overnight automation and long-run ingestion direction
 
-Overnight orchestration, paper books, freshness/publication gates, and the additive Trader Book tab are implemented in-repo. Source discovery for the news/score authoring path is still the light V0 workflow. The intended long-run direction remains:
+Overnight orchestration, source-refresh invocation, full evidence freeze, persistent paper books, freshness/publication gates, and the additive Trader Book tab are implemented in-repo. The current 00:07 source-discovery step deliberately executes the light V0 runbook through a restricted Cursor agent rather than pretending the patch chain is already a deterministic ingestion generator. The intended long-run direction remains:
 
 source discovery -> fetch/normalize -> deduplicate -> classify -> corroborate/verify -> rank -> write Supabase operational state -> generate public read model -> build dashboard -> validate -> deploy
 
-The current 04:00 V0 task uses an external scheduled agent to execute the light runbook and update the deterministic patch chain; this is operational automation, but not yet a native data pipeline.
+The current 00:07 V0 step is scheduled by GitHub Actions. It invokes exactly one `grok-4.6` Cursor CLI refresh session with web/read access and a narrow write allowlist; GitHub owns validation, commits, stage sequencing and all publication. At 02:05, fourteen independent `grok-4.6` seat calls consume the same immutable packet with all tools blocked. This removes ChatGPT scheduling from the production path while retaining the current patch authoring model.
 
 Automation must preserve the same epistemic separation now enforced manually:
 
@@ -372,8 +372,8 @@ Supabase:
 
 ## 17. Known gaps / next work
 
-- The overnight pipeline snapshots current inputs and publishes through Actions; source discovery, ingestion and read-model generation for the news/score authoring path are still the light V0 workflow rather than a native generator.
-- Live 02:05 trader review still requires a Cursor payload; Actions dry-run never spends trader models. A missing live review publishes stale books rather than blocking Pages.
+- Source discovery and public read-model authoring are still the light V0 agent workflow rather than a deterministic normalized generator; the scheduling/control path is now native GitHub Actions.
+- Scheduled live runtime requires `CURSOR_API_KEY` to be available as an Actions secret in this repository. Dry-run never spends model calls. A failed/missing 02:05 seat review publishes stale books rather than blocking Pages.
 - Sep 14 exposed a connector-side Supabase write block during the catch-up refresh; the live dashboard is current, but the missing Sep 14 normalized operational rows/provenance must be replayed once writes are available.
 - X Following personalization is waiting for the X archive; public-web X scanning is therefore explicitly bounded rather than a complete Following feed.
 - The public dashboard does not yet consume a narrow read model from Supabase.
@@ -385,10 +385,10 @@ Supabase:
 ## 18. Repo map
 
 - `.github/workflows/deploy-pages.yml` — exact Pages build and validation gate, including the Trader Book tab
-- `.github/workflows/overnight-pipeline.yml` — NY-aware overnight scheduler and dry-run
+- `.github/workflows/overnight-pipeline.yml` — America/New_York overnight scheduler, restricted V0 refresh, 14-seat Grok review matrix, persistence, and dry-run
 - `.github/workflows/daily-market-state.yml` — weekday/manual no-secret rates and G10 FX research snapshot
 - `docs/OVERNIGHT_PIPELINE_V1.md` — overnight run-id, books, freshness, and publication contract
-- `scripts/overnight/` / `scripts/overnight_pipeline.py` — overnight stage orchestrator
+- `scripts/overnight/` / `scripts/overnight_pipeline.py` — overnight stage orchestrator and Cursor runtime prompt/normalization boundary
 - `data/overnight/` — git-auditable paper books and run ledgers
 - `patch_v13/` — additive Trader Book / P&L tab
 - `scripts/market_state.py` — deterministic market-state generator
