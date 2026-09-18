@@ -4,6 +4,9 @@
     "subagentStart": [
       {
         "command": "sh .cursor/hooks/enforce-subagent-models.sh"
+      },
+      {
+        "command": "python3 .cursor/hooks/enforce-overnight-budget.py"
       }
     ],
     "preToolUse": [
