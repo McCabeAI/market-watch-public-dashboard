@@ -77,7 +77,7 @@ def main() -> None:
     assert "public `market-watch-public-dashboard` repository" in protocol or "trader-room/runs" in protocol
     assert "fail closed" in protocol
     assert "scripts/trader_room_go.py" in protocol
-    assert "conflict-aggregator" in protocol
+    assert "deterministic" in protocol.lower() and "conflict_synopsis" in protocol
     assert "final-aggregator" in protocol
     assert "trader-room/outbox" not in protocol
 
@@ -85,9 +85,9 @@ def main() -> None:
     assert "scripts/trader_room_go.py go" in on_demand
     assert "grok-4.6" in on_demand
     assert "composer-2.5" in on_demand
-    assert "Total Grok ceiling including parent = 31" in on_demand
+    assert "Total Grok ceiling including parent = 30" in on_demand
     assert "Composer ceiling = 28" in on_demand
-    assert "Total model-invocation ceiling = 59" in on_demand
+    assert "Total model-invocation ceiling = 58" in on_demand
     assert "MW_TRADER_ROOM_RUN_POLICY=" in on_demand
     assert "trader-room/runs/<run_id>/" in on_demand
 
@@ -120,7 +120,7 @@ def main() -> None:
         assert f'`{section}`' in command, f"command missing mandatory packet section {section}"
     assert "exact same frozen common evidence packet" in command
     assert "composer-2.5" in command
-    assert "conflict-aggregator" in command
+    assert "deterministic" in command.lower() and "conflict_synopsis" in command
     assert "final-aggregator" in command
     assert "total Grok ceiling 30" in command
     assert "trader-room/outbox" not in command
@@ -145,8 +145,8 @@ def main() -> None:
     assert "service_role" not in mcp_path.read_text(encoding="utf-8").lower()
 
     print(
-        "Trader Room configuration validated: 14 Grok 4.6 advocates, two Grok 4.6 aggregators, "
-        "composer-2.5-only internal subagents, mandatory Market Watch evidence, "
+        "Trader Room configuration validated: 14 Grok 4.6 advocates, deterministic conflict mapping, "
+        "one Grok 4.6 final aggregator, composer-2.5-only internal subagents, mandatory Market Watch evidence, "
         "on-demand go entrypoint, and repository artifact handoff."
     )
 
