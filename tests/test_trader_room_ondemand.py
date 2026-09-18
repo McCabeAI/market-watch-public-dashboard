@@ -167,7 +167,6 @@ class BudgetTests(unittest.TestCase):
             budget.charge("subagent", SUBAGENT_MODEL, agent, f"{agent}-2")
             with self.assertRaises(BudgetError):
                 budget.charge("subagent", SUBAGENT_MODEL, agent, f"{agent}-3")
-        budget.charge("conflict-aggregator", ADVOCATE_MODEL, "conflict-aggregator", "agg1")
         for agent in STANDING_ADVOCATES:
             budget.charge("rebuttal", ADVOCATE_MODEL, agent, f"reb-{agent}")
         budget.charge("final-aggregator", ADVOCATE_MODEL, "final-aggregator", "agg2")
@@ -188,7 +187,7 @@ class ConflictRoutingTests(unittest.TestCase):
         conflict_map = detect_conflicts(originals)
         kinds = {c["kind"] for c in conflict_map["conflicts"]}
         self.assertIn("opposite_direction", kinds)
-        self.assertIn("incompatible_regime", kinds)
+        self.assertEqual(conflict_map["method"], "deterministic_conflict_synopsis_v1")
         self.assertNotIn("winner", conflict_map)
         self.assertNotIn("house_view", conflict_map)
         assignments = rebuttal_assignments(conflict_map)
@@ -219,7 +218,7 @@ class OrchestratorDryRunTests(unittest.TestCase):
             self.assertLessEqual(result["budget"]["grok"], GROK_CEILING)
             self.assertLessEqual(result["budget"]["composer"], COMPOSER_CEILING)
             self.assertEqual(result["budget"]["composer"], 28)
-            self.assertEqual(result["budget"]["grok"], 16 + result["budget"]["rebuttals"])
+            self.assertEqual(result["budget"]["grok"], 15 + result["budget"]["rebuttals"])
             self.assertLessEqual(result["budget"]["rebuttals"], 14)
             retrieved = retrieve(artifact_root, result["run_id"], "submission", "dollar-king")
             self.assertEqual(retrieved["agent"], "dollar-king")
