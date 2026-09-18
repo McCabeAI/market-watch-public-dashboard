@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 import unittest
 
 from scripts.apply_temperature_scores import all_scores, load_state, temperature_class
@@ -17,6 +18,23 @@ class TemperatureScoresTest(unittest.TestCase):
         for country, dimensions in expected.items():
             for dimension, value in dimensions.items():
                 self.assertAlmostEqual(scores[country][dimension], value, places=6)
+
+    def test_us_mapped_bridge_can_use_documented_dynamic_weight(self) -> None:
+        state = load_state()
+        bridged = copy.deepcopy(state)
+        bridged["countries"]["US"]["Inflation"]["events"].append(
+            {
+                "id": "test-bridge",
+                "as_of": "2026-09",
+                "component": "mapped_bridge",
+                "weight": 0.07,
+                "impulse": 4,
+                "basis": "test",
+                "source": "test",
+            }
+        )
+        scores = all_scores(bridged)
+        self.assertAlmostEqual(scores["US"]["Inflation"], 52.28, places=6)
 
     def test_temperature_bands(self) -> None:
         self.assertEqual(temperature_class(20), "cold")
