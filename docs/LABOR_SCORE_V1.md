@@ -79,15 +79,10 @@ Important labor releases still belong on country pages even when they do not mov
 
 Retain these as time series and present them under the country-page data standard in `docs/DAILY_REFRESH_V0.md`. Their score role is `CONTEXT ONLY` unless they are one of the three defined Labor inputs above.
 
-## 6. Transition rule
+## 6. Baseline and live update rule
 
-The currently displayed Labor scores remain transition anchors:
+Labor was reindexed to **50.0 on 2026-09-17** for all four economies. The prior recovered scores are retired as transition anchors.
 
-- United States: 75
-- Canada: 38
-- Australia: 50
-- New Zealand: 32
-
-Do not retroactively rebuild them from historical data merely because the weights changed. From this change forward, all new Labor score moves must use 70% unemployment / 20% wages / 10% employment-payroll growth.
+The activation ledger in `data/temperature_scores.json` applies the current hard evidence already available using 70% unemployment / 20% wages / 10% employment-payroll growth. Future qualifying releases append a weighted impulse to that ledger. Missing components add zero and never block a valid observed component from moving the score.
 
 Preserve fractional score moves internally and show at least one decimal place when a weighted release changes the score by a fraction.
