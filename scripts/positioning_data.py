@@ -455,7 +455,7 @@ def build_positioning(
     stale = any(block.get("status") == "stale" for block in available)
     if not available:
         status = "unavailable"
-    elif cftc_error or cme_error or cftc.get("status") == "partial":
+    elif cftc_error or cme_error or cftc.get("status") == "partial" or cme.get("status") == "partial":
         status = "partial"
     elif stale:
         status = "stale"
