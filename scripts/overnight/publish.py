@@ -60,6 +60,7 @@ def emit_trader_books_json(store: OvernightStore, site_dir: Path, *, run_id: str
         payload = dataset["trader_books"]
         payload = {
             **payload,
+            "overnight_research": dataset.get("agent_research"),
             "publication": {
                 "core_status": dataset["publication"]["core_status"],
                 "trader_books_status": dataset["publication"]["trader_books_status"],
