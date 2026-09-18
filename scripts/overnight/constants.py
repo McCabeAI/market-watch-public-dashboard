@@ -63,7 +63,7 @@ STAGE_SCHEDULE = {
     "trader_review": {"et_time": time(2, 5), "window_minutes": 85, "summary": "Lightweight 14-seat portfolio-management review"},
     "final_delta": {"et_time": time(3, 35), "window_minutes": 12, "summary": "Refresh final market/news delta"},
     "assemble": {"et_time": time(3, 50), "window_minutes": 12, "summary": "Assemble and validate the canonical morning dataset"},
-    "publish": {"et_time": time(4, 7), "window_minutes": 25, "summary": "GitHub Pages build and deploy"},
+    "publish": {"et_time": time(4, 7), "window_minutes": 8, "summary": "Validate the final assembled dataset before Pages release"},
 }
 
 # GitHub Actions schedules are pinned directly to America/New_York.
