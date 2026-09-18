@@ -10,9 +10,8 @@ on:
       - "data/overnight/books/**"
       - "data/overnight/README.md"
   schedule:
-    # 04:07 America/New_York. Dual UTC offsets cover EDT and EST.
-    - cron: "7 8 * * 1-5"
-    - cron: "7 9 * * 1-5"
+    - cron: "7 4 * * 1-5"
+      timezone: "America/New_York"
   workflow_dispatch:
   pull_request:
     paths:
@@ -23,7 +22,7 @@ on:
       - "data/temperature_scores.json"
       - "data/score_source_registry.json"
       - "scripts/apply_temperature_scores.py"
-      - "scripts/apply_daily_20260918.py"
+      - "scripts/apply_daily_refresh.py"
       - "scripts/sync_news_summary.py"
       - "scripts/validate_score_sources.py"
       - "tests/test_sync_news_summary.py"
@@ -52,6 +51,7 @@ concurrency:
 
 jobs:
   build:
+    if: github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'chore: overnight ')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -172,7 +172,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python scripts/apply_daily_20260918.py _site/index.html
+          python scripts/apply_daily_refresh.py _site/index.html
 
       - name: Sync news summary metadata
         shell: bash
