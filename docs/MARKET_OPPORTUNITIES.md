@@ -63,3 +63,5 @@ Rollback uses the prior Git version of `patch_v12` and the three generator modul
 ## Public read model
 
 The daily/internal packet retains the full research calculations. Pages passes `--public`: S&P/Dow underlying levels and history are omitted, leaving derived screens; ICE high-yield index data/statistics are source-link-only because its source notes explicitly restrict redistribution. This does not change the collection schedule or internal evidence coverage.
+
+The live overnight collector previously imported nonexistent `generate_snapshot`; it now calls `build_snapshot`. A regression test exercises the actual live-collection branch with a mocked source packet and verifies the cross-asset payload is retained.

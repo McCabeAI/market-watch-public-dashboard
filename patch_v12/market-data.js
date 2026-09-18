@@ -21,7 +21,7 @@
     return `<svg class="md-spark ${large?'large':''}" viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(label)}"><title>${esc(label)}: ${esc(items[0][0])} to ${esc(items.at(-1)[0])}; low ${fmt(lo,3)}, high ${fmt(hi,3)}</title><polyline fill="none" stroke="currentColor" stroke-width="${large?2:1.6}" points="${points}" vector-effect="non-scaling-stroke"/></svg>`;
   }
   function percentile(s){
-    return num(s.percentile)?`<div class="md-range"><span style="left:${Math.min(100,Math.max(0,s.percentile))}%"></span></div><small>${fmt(s.percentile,0)}th percentile</small>`:'<small>Insufficient history</small>';
+    return num(s.percentile)?`<div class="md-range"><span style="left:${Math.min(100,Math.max(0,s.percentile))}%"></span></div><small>Percentile ${fmt(s.percentile,0)}</small>`:'<small>Insufficient history</small>';
   }
   function move(s){const m=s.moves?.[horizon]||{};return `${signed(m.value,2)} ${esc(m.unit||'')}`;}
   function evidence(s){
@@ -38,7 +38,7 @@
     const unusual=num(m.z)&&Math.abs(m.z)>=2;
     if(!stretch&&!unusual)return null;
     const strength=Math.max(stretch&&num(z)?Math.abs(z):0,stretch&&num(p)?Math.abs(p-50)/25:0,unusual?Math.abs(m.z):0);
-    const reason=unusual?`${horizon} move ${move(s)} · ${signed(m.z,1)}σ versus prior ${horizon} moves`:`${fmt(p,0)}th percentile · ${signed(z,1)}σ versus prior observations`;
+    const reason=unusual?`${horizon} move ${move(s)} · ${signed(m.z,1)}σ versus prior ${horizon} moves`:`Percentile ${fmt(p,0)} · ${signed(z,1)}σ versus prior observations`;
     let question = unusual ? 'Is a new catalyst repricing this market?' : 'Does the macro case justify this stretch?';
     if(s.category==='Curves') question = s.id.includes('2s5s10s')?'Is the 5Y belly out of line with the wings?':'Does the policy path justify this curve shape?';
     if(s.category==='Relative rates')question='Is the policy divergence already priced too far?';

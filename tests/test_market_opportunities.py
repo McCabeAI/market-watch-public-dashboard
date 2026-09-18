@@ -61,6 +61,18 @@ class AnalyticsTests(unittest.TestCase):
         def stamp(d):return int(__import__('datetime').datetime.combine(d,__import__('datetime').time(),tzinfo=__import__('datetime').timezone.utc).timestamp())
         blob=json.dumps({'chart':{'result':[{'timestamp':[stamp(TODAY-timedelta(days=1)),stamp(TODAY)],'indicators':{'quote':[{'close':[100,999]}]}}]}}).encode()
         self.assertEqual(list(parse_yahoo(blob,TODAY-timedelta(days=2),TODAY).values()),[100])
+    def test_live_overnight_uses_current_generator(self):
+        import tempfile
+        from pathlib import Path
+        from scripts.overnight.collect import collect_inputs
+        from scripts.overnight.store import OvernightStore
+        payload={'status':'ok','generated_at':'2026-09-18T20:00:00Z','cross_assets':{'series':{'GOLD':{'status':'ok'}}}}
+        with tempfile.TemporaryDirectory() as temp, patch('scripts.market_state.build_snapshot',return_value=payload) as generator, patch('scripts.market_state.validate_snapshot') as validator:
+            result=collect_inputs(OvernightStore(root=Path(__file__).resolve().parents[1],state_root=Path(temp)),run_id='overnight-20260918-test',offline=False)
+            generator.assert_called_once_with();validator.assert_called_once_with(payload)
+            self.assertEqual(result['families']['market_state']['status'],'fresh')
+            self.assertIn('GOLD',result['families']['market_state']['data']['cross_assets']['series'])
+
     def test_public_snapshot_preserves_internal_data(self):
         packet={'opportunities':{'series':[{'id':'SP500','value':100,'history':[['2026-09-18',100]],'note':'Index','z':2}, {'id':'HY_OAS','value':270,'history':[], 'z':1,'moves':{'1D':1}}]}, 'cross_assets':{'series':{'HY_OAS':{'status':'ok'}}}}
         out=public_snapshot(packet)

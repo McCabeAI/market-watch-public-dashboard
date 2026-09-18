@@ -214,9 +214,9 @@ def collect_inputs(
         market_notes.append("offline collect: market_state not fetched")
     else:
         try:
-            from scripts.market_state import generate_snapshot, validate_snapshot
+            from scripts.market_state import build_snapshot, validate_snapshot
 
-            market_payload = generate_snapshot()
+            market_payload = build_snapshot()
             validate_snapshot(market_payload)
             market_status = "stale" if market_payload.get("status") == "stale" else "fresh"
             market_as_of = market_payload.get("generated_at")
