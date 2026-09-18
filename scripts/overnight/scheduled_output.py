@@ -118,6 +118,14 @@ def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str,
         raise EvidenceBoundaryError("agent_packet base hash mismatch")
     if agent_packet.get("evidence_cutoff") != base.get("as_of"):
         raise EvidenceBoundaryError("agent_packet evidence_cutoff must equal the trusted base cutoff")
+    supplement = agent_packet.get("research_supplement")
+    if not isinstance(supplement, dict):
+        raise SchemaError("agent_packet missing research_supplement")
+    for key in ("news", "central_bank_research", "sources"):
+        if not isinstance(supplement.get(key), list):
+            raise SchemaError(f"research_supplement.{key} must be a list")
+    if supplement.get("summary") is not None and not isinstance(supplement.get("summary"), str):
+        raise SchemaError("research_supplement.summary must be a string or null")
     expected_packet_hash = _packet_hash(agent_packet)
     if agent_packet.get("packet_sha256") != expected_packet_hash:
         raise EvidenceBoundaryError("agent_packet packet_sha256 mismatch")
