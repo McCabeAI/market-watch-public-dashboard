@@ -2,7 +2,7 @@
 
 Status: ACTIVE LIGHT OPERATIONAL VERSION
 
-This document governs the lightweight current-state refresh content and methodology used by the overnight production pipeline. The native schedule begins its integrated V0 source refresh at 00:07 America/New_York and GitHub Pages publishes the assembled morning product at 04:07. It is not the full Ivory / historical research architecture and must not expand into one without an explicit decision.
+This document governs the lightweight current-state refresh content and methodology used by the overnight production pipeline. The native schedule begins its integrated V0 source refresh at 00:07 America/New_York and the final overnight gate runs at 04:07 and GitHub Pages publishes the assembled morning product at 04:15. It is not the full Ivory / historical research architecture and must not expand into one without an explicit decision.
 
 GitHub Pages publication for the overnight production path is 04:07 ET and is owned by `docs/OVERNIGHT_PIPELINE_V1.md`. This V0 document still owns news selection, score methodology, and the restored front-page content rules. The 00:07 restricted Cursor refresh executes this V0 runbook; GitHub validates its narrow edits, then the overnight collect stage freezes the substantive refreshed state.
 
@@ -373,7 +373,7 @@ After the refresh:
 2. preserve unrelated known-good content;
 3. let GitHub Actions run deterministic score/news validation and commit the governed refresh surfaces;
 4. freeze the refreshed state into the overnight evidence packet before the trader review;
-5. let the 04:07 GitHub Pages workflow deploy only the assembled morning product;
+5. let the 04:07 final overnight gate validate the assembled product and the 04:15 GitHub Pages workflow deploy it;
 6. validate the actual deployed artifact / page when practical;
 7. report stale or failed components explicitly.
 
