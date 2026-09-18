@@ -30,6 +30,23 @@ POLICIES = {
         "root_models": {"grok-4.6", "composer-2.5"},
         "allow_nested_composer": False,
     },
+    "trader-room-continuation": {
+        "marker": "MW_TRADER_ROOM_CONTINUATION_POLICY=",
+        "active": Path("/tmp/mw-trader-room-continuation-active.json"),
+        "lock": Path("/tmp/mw-trader-room-continuation-budget.lock"),
+        "required": {
+            "version": 1,
+            "run_type": "trader-room-continuation",
+            "total_model_cap": 14,
+            "grok_cap": 14,
+            "composer_cap": 0,
+            "parent_model": "grok-4.6",
+            "parent_total": 1,
+            "parent_grok": 1,
+        },
+        "root_models": {"grok-4.6"},
+        "allow_nested_composer": False,
+    },
     "trader-room": {
         "marker": "MW_TRADER_ROOM_RUN_POLICY=",
         "active": Path("/tmp/mw-trader-room-active.json"),
