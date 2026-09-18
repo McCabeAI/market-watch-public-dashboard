@@ -1,0 +1,93 @@
+{
+  "agent": "cross-merchant",
+  "archetype": "non-USD relative-value",
+  "confidence": 47,
+  "conflict_synopsis": {
+    "au_rates_view": "lower",
+    "aud_view": "lower",
+    "ca_rates_view": "higher",
+    "cad_view": "higher",
+    "carry_view": "opposes_trade",
+    "confidence": 47,
+    "conflict_tags": [
+      "AUD_DOWN",
+      "CAD_UP",
+      "AUDCAD_DOWN",
+      "AU_RATES_DOWN",
+      "CA_RATES_UP",
+      "RISK_OFF"
+    ],
+    "core_view": "AUDCAD's 1y/5y extreme is USD-contaminated CAD weakness, not a justified AU-CA premium, so own Australia-versus-Canada outside USD.",
+    "key_catalyst": "Further AU housing/labor/sentiment deterioration versus Canadian energy pass-through and firmer activity.",
+    "key_invalidation": "AU housing/labor rebound while CA activity and energy pass-through fade and CA-AU 2Y re-justifies AUDCAD richness.",
+    "nz_rates_view": "not_relevant",
+    "nzd_view": "not_relevant",
+    "primary_trade": "short AUDCAD",
+    "risk_view": "risk_off",
+    "seat": "cross-merchant",
+    "time_horizon": "2-8 weeks",
+    "us_rates_view": "not_relevant",
+    "usd_view": "not_relevant"
+  },
+  "macro_assumptions": {
+    "growth": "below_trend",
+    "policy": "hawkish",
+    "rates": "higher_for_longer",
+    "risk": "risk_off"
+  },
+  "packet_sha256": "63f781354ed4048cf1091125e35854ed64db800467e7a98c336cf72032a33956",
+  "remit": "cleaner relative-value expressions outside USD",
+  "round": 1,
+  "run_id": "tr-20260918T182933Z-ondemand",
+  "stance_summary": "Short AUDCAD isolates Australian housing/RBA-channel stress versus Canadian energy pass-through and firmer activity; USD pairs contaminate both legs.",
+  "subagent_calls": 0,
+  "subagent_model": null,
+  "trade": {
+    "catalysts": [
+      "Further Australian housing, stamp-duty, volumes, or Westpac-MI/labor deterioration",
+      "BoC communication or CPI that validates energy pass-through",
+      "Energy buffers remaining tight on the retained crude-near-$110 research",
+      "Any fading of USD-only CAD selling"
+    ],
+    "confidence": 47,
+    "direction": "short",
+    "entry": null,
+    "evidence_refs": [
+      "research_method",
+      "fx:AUDCAD",
+      "fx:AUDUSD",
+      "fx:USDCAD",
+      "market_state",
+      "rates:AU",
+      "rates:CA",
+      "temp:AU:labor",
+      "temp:CA:activity",
+      "mw_20260916_au_housing_tightening",
+      "xa:energy-retained",
+      "last24:2026-09-18:desk-thesis"
+    ],
+    "horizon": "2-8 weeks through subsequent Australian housing/labor/sentiment prints and Canadian inflation/BoC communication",
+    "instrument": "AUDCAD",
+    "invalidation": "Falsified if Australian housing, labor, and sentiment stabilize or rebound while Canadian activity and energy pass-through fade and the CA-AU 2Y spread leaves its 1y-median neighborhood for a new Australian-premium extreme.",
+    "mispricing": "AUDCAD prices a near-record Australian premium versus CAD while the CA-AU 2Y differential is only around its 1y median; the 1m AUDCAD rally is mechanically USD-CAD weakness after the Fed hike, not a clean AU-CA re-rating of housing versus energy.",
+    "principal_risks": [
+      "Known adverse carry: AU 2Y 4.999 versus CA 2Y 3.27",
+      "Canadian labor is cooling",
+      "Saudi workaround reduced the extreme oil-supply tail",
+      "Positioning/flow is unavailable",
+      "Executable broker prices are absent",
+      "Common commodity-beta shock can sell CAD with AUD"
+    ],
+    "stop": null,
+    "structure": "spot",
+    "target": null,
+    "thesis": "AUDCAD's 1y-extreme richness still requires an Australian policy premium over Canada, but USD-driven CAD selling plus Australian housing stress left the cross too rich versus the actual AU-CA 2Y spread and growth/ToT mix. Verified 2026-09-18 ECB AUDCAD is 0.9976, 1y percentile 99.80, 5y percentile 99.96. The 1m move decomposes into AUDUSD +0.20% plus USDCAD +1.74%. CA-AU 2Y is only the 51st percentile at -164.9bp. Growth gauges favor CAD. NZ crosses are second-best because official NZ yields are unavailable.",
+    "why_now": [
+      "Post-Fed global-tightening desk thesis is keeping USD bid; USDCAD +1.75% over 1m is polluting CAD and stretching AUDCAD.",
+      "Australian housing transmission is in the latest retained prints plus the 16 Sep Westpac-MI confidence drop.",
+      "BoC minutes flag energy pass-through while Canadian core stays near 2% and activity/GDP are firmer than Australia's.",
+      "AUDNZD is more statistically stretched but NZ official yields are a hard gap."
+    ]
+  },
+  "type": "TRADER_ROOM_CONTRIBUTION"
+}

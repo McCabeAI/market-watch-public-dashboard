@@ -1,0 +1,97 @@
+{
+  "agent": "perma-bear",
+  "archetype": "late-cycle fragility / risk-off",
+  "confidence": 47,
+  "conflict_synopsis": {
+    "au_rates_view": "higher",
+    "aud_view": "lower",
+    "ca_rates_view": "not_relevant",
+    "cad_view": "not_relevant",
+    "carry_view": "opposes_trade",
+    "confidence": 47,
+    "conflict_tags": [
+      "USD_UP",
+      "AUD_DOWN",
+      "AUDUSD_DOWN",
+      "AU_RATES_UP",
+      "RISK_OFF",
+      "NZD_DOWN"
+    ],
+    "core_view": "Australian housing/labor slowdown plus broadening G10 tightening is not in AUDUSD, so the remaining risk-off expression is short AUD versus USD.",
+    "key_catalyst": "Further AU housing/labor deterioration and AU-US 2Y compression strip the AUD high-yielder bid.",
+    "key_invalidation": "Australian labor/housing stabilize, AU-US front-end re-widens, and global policy reopens an easing path.",
+    "nz_rates_view": "not_relevant",
+    "nzd_view": "lower",
+    "primary_trade": "short AUDUSD",
+    "risk_view": "risk_off",
+    "seat": "perma-bear",
+    "time_horizon": "4-8 weeks",
+    "us_rates_view": "higher",
+    "usd_view": "higher"
+  },
+  "macro_assumptions": {
+    "growth": "below_trend",
+    "policy": "hawkish",
+    "rates": "higher_for_longer",
+    "risk": "risk_off"
+  },
+  "packet_sha256": "63f781354ed4048cf1091125e35854ed64db800467e7a98c336cf72032a33956",
+  "remit": "strongest defensive, slowdown, stress or risk-off FX expression",
+  "round": 1,
+  "run_id": "tr-20260918T182933Z-ondemand",
+  "stance_summary": "Global tightening is still broadening into a housing-and-labor slowdown that AUDUSD has not paid for, so the cleanest remaining risk-off asymmetry is short AUD versus defensive USD.",
+  "subagent_calls": 0,
+  "subagent_model": null,
+  "trade": {
+    "catalysts": [
+      "Further Australian housing, labor or confidence deterioration",
+      "Another G10 hawkish surprise or energy-pass-through print",
+      "Continued AU-US 2Y compression"
+    ],
+    "confidence": 47,
+    "direction": "short",
+    "entry": null,
+    "evidence_refs": [
+      "research_method",
+      "mw_20260916_au_housing_tightening",
+      "temp:AU:labor",
+      "temp:AU:activity",
+      "last24:2026-09-18:desk-thesis",
+      "last24:2026-09-17:boj-hike",
+      "rollup:Fed raises 25bp to 3.75\u20134.00%",
+      "rates:AU",
+      "rates:US",
+      "fx:AUDUSD",
+      "fx:NZDUSD",
+      "market_state"
+    ],
+    "horizon": "4-8 weeks",
+    "instrument": "AUDUSD",
+    "invalidation": "Mechanism fails if Australian labor/housing stabilize or re-accelerate, AU-US front-end re-widens in AUD's favor, and global policy reopens a credible easing path while AUDUSD stays bid versus other high-beta FX.",
+    "macro_assumptions": {
+      "growth": "below_trend",
+      "policy": "hawkish",
+      "rates": "higher_for_longer",
+      "risk": "risk_off"
+    },
+    "mispricing": "AUDUSD remains resilient (ECB 18 Sep 2026 research/reference 0.7120, 1m +0.20%, 1y percentile 76.4) despite NSW stamp-duty receipts -24% y/y, housing turnover -18%, AU labor 47.8, and AU-US 2Y only +25.9bp after compression.",
+    "principal_risks": [
+      "US services/activity stay expansionary",
+      "Saudi Oman workaround fades the energy-inflation tail",
+      "China-demand rescue keeps commodity FX bid",
+      "Short AUDUSD pays residual AU-US 2Y premium",
+      "Positioning is unknown"
+    ],
+    "stop": null,
+    "structure": "spot",
+    "target": null,
+    "thesis": "Australia's tightening channel is already biting in housing and labor while AUDUSD still trades as if global risk appetite and AUD rate support can continue. Fed, BoJ and a hawkish BoE hold have broadened higher-for-longer into the commodity-FX complex. NZDUSD already sold; CAD still has an energy terms-of-trade buffer. Remaining downside asymmetry therefore sits in AUD versus USD.",
+    "why_now": [
+      "Verified new information after the already >90% priced Fed hike is the broadening of global tightening: BoJ hiked 25bp to 1.25% and BoE held 6-3 with three hike votes.",
+      "Australian housing is a live transmission channel: stamp-duty and turnover collapsing while home values are already down more than 7% from peak.",
+      "AUDUSD has not paid that tax, unlike NZDUSD (1m -3.90%).",
+      "AU-US 2Y compressed 12.5bp on the latest common observation, removing the relative-rate excuse for holding AUD versus USD."
+    ]
+  },
+  "type": "TRADER_ROOM_CONTRIBUTION"
+}

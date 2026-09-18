@@ -1,0 +1,89 @@
+{
+  "agent": "vol-convexity",
+  "archetype": "asymmetric optionality; challenge spot",
+  "confidence": 41,
+  "conflict_synopsis": {
+    "au_rates_view": "neutral",
+    "aud_view": "not_relevant",
+    "ca_rates_view": "not_relevant",
+    "cad_view": "not_relevant",
+    "carry_view": "opposes_trade",
+    "confidence": 41,
+    "conflict_tags": [
+      "AUDUSD_VOL_UP",
+      "SPOT_DIRECTION_NOT_OWNED",
+      "AU_RATES_FORK",
+      "RISK_OFF"
+    ],
+    "core_view": "AUDUSD spot cannot own the unresolved housing-versus-global-tightening fork; the expression is 1-month ATM vol, not direction.",
+    "key_catalyst": "Next RBA and Australian inflation prints versus still-elevated AU yields, with energy/global-tightening keeping a two-way policy fork.",
+    "key_invalidation": "1-month AUDUSD ATM implied vol is already rich to packet realized vol, or the AU housing/tightening fork resolves as a one-way AUD path.",
+    "nz_rates_view": "not_relevant",
+    "nzd_view": "not_relevant",
+    "primary_trade": "long AUDUSD 1-month ATM straddle",
+    "risk_view": "risk_off",
+    "seat": "vol-convexity",
+    "time_horizon": "2-5 weeks",
+    "us_rates_view": "higher",
+    "usd_view": "not_relevant"
+  },
+  "macro_assumptions": {
+    "growth": "below_trend",
+    "policy": "hawkish",
+    "rates": "higher_for_longer",
+    "risk": "risk_off"
+  },
+  "packet_sha256": "63f781354ed4048cf1091125e35854ed64db800467e7a98c336cf72032a33956",
+  "remit": "asymmetric optionality; challenge spot expressions",
+  "round": 1,
+  "run_id": "tr-20260918T182933Z-ondemand",
+  "stance_summary": "AUDUSD spot cannot own the unresolved housing-versus-global-tightening fork; a 1-month ATM straddle is the expression, with all executable levels null until implied vol is checked against packet realized vol.",
+  "subagent_calls": 0,
+  "subagent_model": null,
+  "trade": {
+    "catalysts": [
+      "Next RBA decision and Australian CPI/trimmed-mean prints",
+      "Energy pass-through versus the Saudi workaround",
+      "Follow-through from the post-Fed global tightening cluster into AUD rate differentials"
+    ],
+    "confidence": 41,
+    "direction": "long volatility",
+    "entry": null,
+    "evidence_refs": [
+      "research_method",
+      "fx:AUDUSD",
+      "fx:USDJPY",
+      "market_state",
+      "rates:AU",
+      "rates:US",
+      "mw_20260916_au_housing_tightening",
+      "temp:AU:labor",
+      "mw_20260916_fomc_hike_pricing",
+      "last24:2026-09-18:desk-thesis",
+      "xa:energy-retained",
+      "pos:unavailable"
+    ],
+    "horizon": "2-5 weeks, through the next RBA and Australian inflation prints",
+    "instrument": "AUDUSD 1-month ATM straddle",
+    "invalidation": "Do not execute if 1-month AUDUSD ATM implied vol is already rich to packet 20d realized vol 4.71 and 60d realized vol 5.29. Thesis is false if AU housing and global tightening resolve as a one-way AUD path.",
+    "mispricing": "Packet AUDUSD is only +0.20% over 1m with 20d realized vol 4.71 versus 60d 5.29, while AU 2Y is 4.999 at the 99th 1y percentile. That is a rates-versus-FX and event-versus-realized-vol discrepancy, not a verified cheap implied-vol print.",
+    "principal_risks": [
+      "Implied vol, skew, and option premiums are missing",
+      "Spot can grind inside a realized-vol 4.7% regime",
+      "One-way USD higher-for-longer can dominate AUD-specific optionality",
+      "Positioning and flow are unavailable",
+      "ECB reference crosses are not executable"
+    ],
+    "stop": null,
+    "structure": "long 1-month ATM AUDUSD straddle, delta-hedged; stand aside if 1m implied vol is already rich to packet 20d/60d realized vol",
+    "target": null,
+    "thesis": "Domestic Australia is cooling through housing and labor while AU yields sit at the top of their 1y distribution and global tightening just broadened. AUDUSD has barely moved over 1m and 20d realized vol is compressed versus 60d, so spot direction is the wrong ownership. A 1-month ATM straddle owns the distribution of the next RBA/inflation/energy transmission; implied vol is not in the packet and must be checked before any fill.",
+    "why_now": [
+      "The 16 Sep Fed 25bp hike was already greater-than-90% priced, so residual AUD risk is path and event distribution.",
+      "Verified AU housing transmission is live while AU 2Y/5Y/10Y yields remain at the 99th 1y percentile.",
+      "Global tightening broadened after the Fed via the BoJ hike and a hawkish BoE hold.",
+      "AUDUSD 20d realized vol 4.71 is below 60d realized vol 5.29 and far below USDJPY 20d realized vol 11.04."
+    ]
+  },
+  "type": "TRADER_ROOM_CONTRIBUTION"
+}

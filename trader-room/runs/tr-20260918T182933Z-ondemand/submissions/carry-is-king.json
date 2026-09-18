@@ -1,0 +1,92 @@
+{
+  "agent": "carry-is-king",
+  "archetype": "carry-is-king",
+  "confidence": 50,
+  "conflict_synopsis": {
+    "au_rates_view": "not_relevant",
+    "aud_view": "lower",
+    "ca_rates_view": "lower",
+    "cad_view": "lower",
+    "carry_view": "supports_trade",
+    "confidence": 50,
+    "conflict_tags": [
+      "USD_UP",
+      "CAD_DOWN",
+      "USDCAD_UP",
+      "US_RATES_UP",
+      "CA_RATES_DOWN",
+      "CARRY_SUPPORTS",
+      "RISK_OFF"
+    ],
+    "core_view": "The verified CA-US 2Y carry of about 140bp is paid in long USDCAD and the energy/CAD narrative is not large enough to overwhelm that holding cost.",
+    "key_catalyst": "Delivered Fed hike plus near-2% Canadian core keeps the 140bp CA-US 2Y differential intact after the oil-supply tail was reduced.",
+    "key_invalidation": "BoC hikes or the Fed eases enough to compress CA-US 2Y, or an energy-supply shock reopens a CAD ToT tail that overwhelms carry.",
+    "nz_rates_view": "not_relevant",
+    "nzd_view": "not_relevant",
+    "primary_trade": "long USDCAD",
+    "risk_view": "risk_off",
+    "seat": "carry-is-king",
+    "time_horizon": "2-4 months",
+    "us_rates_view": "higher",
+    "usd_view": "higher"
+  },
+  "macro_assumptions": {
+    "growth": "below_trend",
+    "policy": "hawkish",
+    "rates": "higher_for_longer",
+    "risk": "risk_off"
+  },
+  "packet_sha256": "63f781354ed4048cf1091125e35854ed64db800467e7a98c336cf72032a33956",
+  "remit": "positive carry and patient expressions unless a catalyst overwhelms it",
+  "round": 1,
+  "run_id": "tr-20260918T182933Z-ondemand",
+  "stance_summary": "Own the verified US\u2013CA 2Y carry in patient long USDCAD; reject long-CAD energy narratives that require paying 140bp and reject stretched AUD crosses whose housing/energy catalysts overwhelm the extra carry.",
+  "subagent_calls": 0,
+  "subagent_model": null,
+  "trade": {
+    "catalysts": [
+      "Delivered Fed 25bp hike with August CPI keeping tightening bias intact",
+      "Canada core inflation near 2% limits an immediate BoC catch-up hike",
+      "Saudi Oman workaround reducing the extreme oil-supply tail",
+      "Global tightening broadening after the Fed move"
+    ],
+    "confidence": 50,
+    "direction": "long",
+    "entry": null,
+    "evidence_refs": [
+      "fx:USDCAD",
+      "rates:US",
+      "rates:CA",
+      "rates:AU",
+      "fx:AUDCAD",
+      "market_state",
+      "research_method",
+      "rollup:Fed raises 25bp to 3.75\u20134.00%",
+      "xa:energy-retained",
+      "mw_20260916_saudi_oman_workaround",
+      "mw_20260916_au_housing_tightening"
+    ],
+    "horizon": "2-4 months patient hold, collecting the 2Y differential unless energy/BoC pass-through overwhelms",
+    "instrument": "USDCAD",
+    "invalidation": "Thesis is wrong if the CA\u2013US 2Y carry proxy compresses because BoC hikes on energy pass-through or the Fed enters an easing cycle, or if an energy-supply shock reopens an extreme oil tail.",
+    "mispricing": "Market pricing already embeds a historically wide USD yield premium over CAD, but USDCAD spot has not matched that 5y-percentile extremity. The implied assumption in fading USDCAD is that CAD energy pass-through or a Fed pivot will close the 140bp gap fast enough to beat carry.",
+    "principal_risks": [
+      "Energy shock absorbers remain weak and crude-near-$110 can reassert CAD ToT",
+      "BoC minutes already flag higher energy pass-through",
+      "No forward points, OIS, or executable broker prices",
+      "Positioning/flow is unavailable",
+      "CA activity temperature 53.2 versus US 49.92"
+    ],
+    "stop": null,
+    "structure": "spot FX; official 2Y yield differential is the carry proxy because forward points and OIS are not in the packet",
+    "target": null,
+    "thesis": "The economically relevant carry in the frozen packet is the common-date CA\u2013US 2Y spread of -140bp as of 2026-09-17: long USD versus short CAD is paid about 140bp annualized on the sovereign 2Y proxy. The Fed has already delivered 25bp to 3.75\u20134.00% while Canada\u2019s headline 3% inflation coexists with core near 2%. Carry improves the holding-period distribution if the energy/CAD terms-of-trade story does not overwhelm. AUDCAD would pay more but is already at a 5y extreme while Australian housing is transmitting tighter policy. NZ yields are unavailable, so AUDNZD carry cannot be quantified and is refused.",
+    "why_now": [
+      "Fed hike to 3.75\u20134.00% is in the rear-view and August CPI keeps the tightening bias intact.",
+      "CA\u2013US 2Y is -140bp on 2026-09-17, 1y percentile 3.77 and 5y percentile 4.30, after further widening.",
+      "Canada August inflation holds at 3% with core near 2%, so BoC energy-pass-through risk is a tail, not a delivered hike.",
+      "Saudi workaround reduced the extreme oil-supply tail that could overwhelm USD\u2013CAD carry."
+    ]
+  },
+  "type": "TRADER_ROOM_CONTRIBUTION"
+}

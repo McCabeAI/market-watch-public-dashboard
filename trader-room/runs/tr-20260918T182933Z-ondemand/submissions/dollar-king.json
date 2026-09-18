@@ -1,0 +1,90 @@
+{
+  "agent": "dollar-king",
+  "archetype": "USD spot as the cleanest benchmark",
+  "confidence": 53,
+  "conflict_synopsis": {
+    "au_rates_view": "not_relevant",
+    "aud_view": "not_relevant",
+    "ca_rates_view": "lower",
+    "cad_view": "lower",
+    "carry_view": "supports_trade",
+    "confidence": 53,
+    "conflict_tags": [
+      "USD_UP",
+      "CAD_DOWN",
+      "USDCAD_UP",
+      "US_RATES_UP",
+      "CA_RATES_DOWN",
+      "RISK_OFF"
+    ],
+    "core_view": "The CA-US yield gap is historically extreme versus only a moderate USDCAD percentile, so own the view in USD spot versus CAD.",
+    "key_catalyst": "Fed tightening bias stays intact while BoC does not match and the Saudi workaround caps CAD's oil-tail hedge.",
+    "key_invalidation": "CA-US 2Y compresses via a BoC hike or Fed easing, or a renewed oil-supply tail restores CAD terms-of-trade dominance.",
+    "nz_rates_view": "not_relevant",
+    "nzd_view": "not_relevant",
+    "primary_trade": "long USDCAD",
+    "risk_view": "risk_off",
+    "seat": "dollar-king",
+    "time_horizon": "2-8 weeks",
+    "us_rates_view": "higher",
+    "usd_view": "higher"
+  },
+  "macro_assumptions": {
+    "growth": "below_trend",
+    "policy": "hawkish",
+    "rates": "higher_for_longer",
+    "risk": "risk_off"
+  },
+  "packet_sha256": "63f781354ed4048cf1091125e35854ed64db800467e7a98c336cf72032a33956",
+  "remit": "express macro views through USD spot whenever a defensible USD pair exists",
+  "round": 1,
+  "run_id": "tr-20260918T182933Z-ondemand",
+  "stance_summary": "Own the US-Canada policy and front-end gap in USDCAD spot; crosses and AUD/NZD USD pairs add second-order risk or fight carry.",
+  "subagent_calls": 0,
+  "subagent_model": null,
+  "trade": {
+    "catalysts": [
+      "Further US inflation or labor prints that keep the Fed tightening bias intact",
+      "BoC communication that energy pass-through does not force a matching hike",
+      "Evidence the Saudi workaround continues to cap the extreme oil-supply tail",
+      "Global term-premium pressure from BoJ tightening and BoE QT"
+    ],
+    "confidence": 53,
+    "direction": "long",
+    "entry": null,
+    "evidence_refs": [
+      "rates:US",
+      "rates:CA",
+      "fx:USDCAD",
+      "market_state",
+      "rollup:Fed raises 25bp to 3.75\u20134.00%",
+      "last24:2026-09-18:desk-thesis",
+      "xa:energy-retained",
+      "mw_20260916_saudi_oman_workaround",
+      "temp:CA:labor",
+      "research_method"
+    ],
+    "horizon": "Tactical 2-8 weeks; keep the USD-over-CAD stance while the CA-US 2Y gap remains historically wide versus USDCAD\u2019s more moderate percentile.",
+    "instrument": "USDCAD",
+    "invalidation": "The causal mechanism fails if the CA-US 2Y gap compresses because the BoC hikes on energy pass-through or US front-end yields fall as the Fed\u2019s tightening bias breaks, or if CAD terms of trade re-dominate via a renewed oil-supply tail.",
+    "mispricing": "Markets have started to mark USD higher versus CAD but still treat CAD as energy-supported. That is inconsistent with a CA-US 2Y gap at the 4th percentile of the 1y distribution while USDCAD itself is only around the 74th 1y percentile.",
+    "principal_risks": [
+      "CAD terms-of-trade support from crude near $110",
+      "BoC energy pass-through risk could force a Canadian hike",
+      "Canada Q2 GDP +0.8% q/q is a growth offset",
+      "Fed hike was greater-than-90% priced",
+      "Positioning and executable broker prices are absent"
+    ],
+    "stop": null,
+    "structure": "spot",
+    "target": null,
+    "thesis": "The economically relevant discrepancy is the CA-US yield gap versus USDCAD, not a commodity-cross or an AUD housing story. After the Fed's delivered 25bp hike, US 2Y sits at 4.67% against CA 2Y at 3.27%. The CA-US 2Y spread is -140bp at the 3.8th 1y percentile. USDCAD is only 74th percentile 1y with a +1.74% 1m gain that has not closed a still-negative 3m return. Energy still supports CAD ToT, but the Saudi workaround reduced the extreme oil-supply tail. Crosses do not own this: AUDCAD is already 99.8th percentile 1y, NZDUSD has already fallen 3.90% over 1m, and short AUDUSD fights a still-positive AU-US 2Y of +26bp.",
+    "why_now": [
+      "The September 16 Fed hike is now realized, not just a >90% priced event.",
+      "The CA-US 2Y spread widened 15bp over five days and 17bp over one month.",
+      "The last24 desk thesis dated 2026-09-18 states BoJ tightening and a hawkish BoE hold broadened global tightening after the Fed.",
+      "Saudi ship-to-ship crude via Oman reduced the extreme oil-supply tail that had been CAD\u2019s best fundamental offset."
+    ]
+  },
+  "type": "TRADER_ROOM_CONTRIBUTION"
+}

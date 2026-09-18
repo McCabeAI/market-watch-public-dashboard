@@ -1,0 +1,91 @@
+{
+  "agent": "rate-dove",
+  "archetype": "rate-dove",
+  "confidence": 52,
+  "conflict_synopsis": {
+    "au_rates_view": "lower",
+    "aud_view": "lower",
+    "ca_rates_view": "not_relevant",
+    "cad_view": "not_relevant",
+    "carry_view": "opposes_trade",
+    "confidence": 52,
+    "conflict_tags": [
+      "USD_UP",
+      "AUD_DOWN",
+      "AUDUSD_DOWN",
+      "AU_RATES_DOWN",
+      "RISK_OFF",
+      "NZD_DOWN"
+    ],
+    "core_view": "RBA tightening is already biting housing, labor and sentiment while AU yields sit at a 99th-percentile extreme and AUDUSD still trades like a supported high-yielder.",
+    "key_catalyst": "Further AU labor/CPI/housing prints force an RBA easing reprice that AUDUSD has not discounted.",
+    "key_invalidation": "AU labor re-tightens and housing stabilizes, or US activity/labor break first and collapse USD faster than AUD.",
+    "nz_rates_view": "not_relevant",
+    "nzd_view": "lower",
+    "primary_trade": "short AUDUSD",
+    "risk_view": "risk_off",
+    "seat": "rate-dove",
+    "time_horizon": "1-3 months",
+    "us_rates_view": "higher",
+    "usd_view": "higher"
+  },
+  "macro_assumptions": {
+    "growth": "below_trend",
+    "policy": "dovish",
+    "rates": "easing_cycle",
+    "risk": "risk_off"
+  },
+  "packet_sha256": "63f781354ed4048cf1091125e35854ed64db800467e7a98c336cf72032a33956",
+  "remit": "currencies where easing or growth weakness is underpriced",
+  "round": 1,
+  "run_id": "tr-20260918T182933Z-ondemand",
+  "stance_summary": "Restrictive policy is already chewing through Australian housing, labor and sentiment while AU front-end yields sit at a one-year extreme and AUDUSD still trades like a supported high-yielder, so AUD easing and growth weakness are the underpriced G10 leg.",
+  "subagent_calls": 0,
+  "subagent_model": null,
+  "trade": {
+    "catalysts": [
+      "Next ABS labor and CPI prints confirming unemployment up and trimmed-mean disinflation",
+      "Further housing-finance or home-value weakness",
+      "Westpac/consumer and household-spending follow-through",
+      "Any RBA communication that treats the housing tax-take hole as policy-relevant"
+    ],
+    "confidence": 52,
+    "direction": "short",
+    "entry": null,
+    "evidence_refs": [
+      "research_method",
+      "mw_20260916_au_housing_tightening",
+      "temp:AU:labor",
+      "temp:AU:inflation",
+      "temp:AU:consumer",
+      "rates:AU",
+      "rates:US",
+      "fx:AUDUSD",
+      "fx:NZDUSD",
+      "market_state",
+      "last24:2026-09-18:desk-thesis",
+      "rollup:Fed raises 25bp to 3.75\u20134.00%"
+    ],
+    "horizon": "1-3 months",
+    "instrument": "AUDUSD",
+    "invalidation": "Thesis fails if Australian labor re-tightens and housing turnover/prices stabilize while the RBA delivers another hike or AU 2Y holds its 99th-percentile regime, or if US activity/labor break first.",
+    "mispricing": "Market-implied assumption backsolved from AU 2Y/10Y at ~99th 1y percentiles plus AUDUSD in the upper quartile is that RBA policy can stay restrictive and AUD can keep its high-yield bid even as the housing channel is already contracting.",
+    "principal_risks": [
+      "Trimmed-mean CPI still 3.6% and July household spending +1.1%",
+      "Global tightening plus crude near $110 can sustain AUD as a high-yielder",
+      "Short AUDUSD has negative carry versus AU 2Y 4.999% against US 2Y 4.67%",
+      "No positioning/flow feed",
+      "ECB AUDUSD 0.7120 is research/reference only"
+    ],
+    "stop": null,
+    "structure": "spot FX short AUD versus USD",
+    "target": null,
+    "thesis": "The RBA tightening channel is already destroying housing turnover and loosening the labor market, so AU cash-rate pricing at a 99th-percentile yield level is too hawkish and AUD should lose its high-yielder bid versus USD. NSW stamp-duty receipts are down 24% y/y; AU unemployment rose to 4.5%; headline CPI eased to 3.5%. Yet RBA 2Y is 4.999% at the 99.0th 1y percentile and AUDUSD still sits at the 76th 1y percentile with a +0.20% 1m return. NZDUSD already prints the 13th 1y percentile after a 3.90% 1m decline; CA-US 2Y is already at the 3.8th 1y percentile. Short AUDUSD owns the residual.",
+    "why_now": [
+      "The 16 Sep housing and Westpac-sentiment prints are new transmission evidence that arrived as the Fed delivered a fully priced 25bp hike.",
+      "AU 2Y still printed +39bp over one month and remains at a 99th-percentile level; AUDUSD\u2019s 1m return is still +0.20% versus NZDUSD \u22123.90%.",
+      "Housing volumes and sentiment move first, labor next, then the RBA path. That sequence is live in AU now."
+    ]
+  },
+  "type": "TRADER_ROOM_CONTRIBUTION"
+}

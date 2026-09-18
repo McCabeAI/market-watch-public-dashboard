@@ -1,0 +1,88 @@
+{
+  "agent": "value-guy",
+  "archetype": "value-guy",
+  "confidence": 53,
+  "conflict_synopsis": {
+    "au_rates_view": "higher",
+    "aud_view": "lower",
+    "ca_rates_view": "neutral",
+    "cad_view": "higher",
+    "carry_view": "opposes_trade",
+    "confidence": 53,
+    "conflict_tags": [
+      "AUD_DOWN",
+      "CAD_UP",
+      "AUDCAD_DOWN",
+      "AU_RATES_UP",
+      "RISK_OFF"
+    ],
+    "core_view": "AUDCAD is a 5y valuation extreme after the curve has already paid a large AU-over-CA 2Y premium, while AU housing is breaking and CAD still has energy ToT support.",
+    "key_catalyst": "Further AU housing/labor damage under 99th-percentile local yields while CAD activity and energy ToT stay the stronger comparable set.",
+    "key_invalidation": "AU housing and activity re-accelerate while CAD ToT fades and the CA-AU 2Y discount reverses without AUDCAD leaving the 5y extreme.",
+    "nz_rates_view": "not_relevant",
+    "nzd_view": "not_relevant",
+    "primary_trade": "short AUDCAD",
+    "risk_view": "risk_off",
+    "seat": "value-guy",
+    "time_horizon": "2-4 months",
+    "us_rates_view": "not_relevant",
+    "usd_view": "not_relevant"
+  },
+  "macro_assumptions": {
+    "growth": "below_trend",
+    "policy": "hawkish",
+    "rates": "higher_for_longer",
+    "risk": "risk_off"
+  },
+  "packet_sha256": "63f781354ed4048cf1091125e35854ed64db800467e7a98c336cf72032a33956",
+  "remit": "historically or fundamentally mispriced currencies and convergence trades",
+  "round": 1,
+  "run_id": "tr-20260918T182933Z-ondemand",
+  "stance_summary": "AUDCAD is the clean G10 valuation dislocation: a 5y-extreme AUD/CAD spot after the curve has already paid Australia a large 2Y premium, while the new information is Australian housing transmission and CAD energy terms-of-trade support.",
+  "subagent_calls": 0,
+  "subagent_model": null,
+  "trade": {
+    "catalysts": [
+      "Further Australian housing, stamp-duty, or labor deterioration",
+      "Sticky energy and refined-fuel tightness that keeps CAD ToT support alive",
+      "Canadian activity/consumer follow-through after Q2 GDP +0.8% q/q"
+    ],
+    "confidence": 53,
+    "direction": "short",
+    "entry": null,
+    "evidence_refs": [
+      "fx:AUDCAD",
+      "market_state",
+      "rates:AU",
+      "rates:CA",
+      "temp:AU:labor",
+      "temp:CA:activity",
+      "mw_20260916_au_housing_tightening",
+      "xa:energy-retained",
+      "last24:2026-09-18:desk-thesis",
+      "research_method"
+    ],
+    "horizon": "2-4 months",
+    "instrument": "AUDCAD",
+    "invalidation": "Thesis is falsified if Australian housing and activity re-accelerate while Canadian energy terms-of-trade support fades and the CA-AU 2Y discount reverses without AUDCAD leaving the 5y extreme.",
+    "mispricing": "AUDCAD prices Australia as the structurally superior commodity currency after the rate market has already paid a historically large AU-over-CA 2Y premium. The residual discrepancy is in the cross.",
+    "principal_risks": [
+      "Negative carry of about 165bp on short AUDCAD",
+      "Canadian labor already cooling",
+      "Saudi/Oman workaround can remove the CAD ToT anchor",
+      "No REER/PPP, no positioning/flow, no executable broker prices",
+      "Australian consumer spending may stay firm despite housing"
+    ],
+    "stop": null,
+    "structure": null,
+    "target": null,
+    "thesis": "On the frozen ECB research/reference sample, AUDCAD sits at the 99.96th 5y percentile with a 5y z of +2.76 after a +1.95% 1m rise, while the CA-AU 2Y spread is already -165bp at the 10.5th 5y percentile. Spot has more than fully capitalized Australia's yield premium. Canada Q2 GDP +0.8% q/q, activity 53.2, core at target, crude-near-$110 ToT support; Australia shows housing biting under 99th-percentile local yields.",
+    "why_now": [
+      "AUDCAD is at a 5y historical extreme after +1.95% in one month.",
+      "The CA-AU 2Y discount of -165bp is already in the curve; leftover mispricing lives in spot.",
+      "Australian housing evidence from 16 Sep is the new transmission.",
+      "The 18 Sep desk thesis that global tightening is broadening keeps Australian term rates elevated."
+    ]
+  },
+  "type": "TRADER_ROOM_CONTRIBUTION"
+}
