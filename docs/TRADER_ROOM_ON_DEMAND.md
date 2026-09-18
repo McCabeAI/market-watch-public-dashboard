@@ -1,6 +1,6 @@
 # On-demand Trader Room execution contract
 
-This is the production contract for the full adversarial Trader Room. It supplements `docs/TRADER_ROOM_PROTOCOL.md` and `docs/TRADER_ROOM_EVIDENCE_CONTRACT.md`.
+This is the production contract for the full adversarial Trader Room. It supplements `docs/TRADER_ROOM_PROTOCOL.md` and `docs/TRADER_ROOM_EVIDENCE_CONTRACT.md`. The repository dry-run entrypoint is `PYTHONPATH=. python scripts/trader_room_go.py go`; live model execution is dispatched separately through the approved control path.
 
 ## Architecture
 
