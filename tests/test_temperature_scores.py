@@ -1,0 +1,30 @@
+from __future__ import annotations
+
+import unittest
+
+from scripts.apply_temperature_scores import all_scores, load_state, temperature_class
+
+
+class TemperatureScoresTest(unittest.TestCase):
+    def test_bootstrap_scores_from_50(self) -> None:
+        scores = all_scores(load_state())
+        expected = {
+            "US": {"Inflation": 52.0, "Labor": 50.2, "Activity": 49.92, "Consumer": 48.5},
+            "CA": {"Inflation": 50.0, "Labor": 48.8, "Activity": 53.2, "Consumer": 52.5},
+            "AU": {"Inflation": 49.2, "Labor": 47.8, "Activity": 49.2, "Consumer": 52.0},
+            "NZ": {"Inflation": 51.6, "Labor": 47.0, "Activity": 53.2, "Consumer": 48.5},
+        }
+        for country, dimensions in expected.items():
+            for dimension, value in dimensions.items():
+                self.assertAlmostEqual(scores[country][dimension], value, places=6)
+
+    def test_temperature_bands(self) -> None:
+        self.assertEqual(temperature_class(20), "cold")
+        self.assertEqual(temperature_class(40), "cool")
+        self.assertEqual(temperature_class(50), "neutral")
+        self.assertEqual(temperature_class(80), "warm")
+        self.assertEqual(temperature_class(81), "hot")
+
+
+if __name__ == "__main__":
+    unittest.main()
