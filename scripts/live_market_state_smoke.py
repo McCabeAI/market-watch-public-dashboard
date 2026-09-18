@@ -18,8 +18,10 @@ from scripts.market_state import (
     fetch_fx,
     fetch_nz_rates,
     fetch_us_rates,
+    fetch_bytes,
     validate_snapshot,
 )
+from scripts.positioning_data import build_positioning, validate_positioning
 
 
 def _latest(series: dict[date, float]) -> tuple[date, float]:
@@ -56,6 +58,22 @@ def main() -> int:
         "pairs": 45,
         "EURUSD": [eurusd_date.isoformat(), eurusd],
         "AUDNZD": [audnzd_date.isoformat(), audnzd],
+    }
+
+    positioning = build_positioning(
+        today=today,
+        start=today - timedelta(days=366 * 3 + 30),
+        fetch_bytes=fetch_bytes,
+    )
+    validate_positioning(positioning)
+    report["positioning"] = {
+        "status": positioning["status"],
+        "cftc": positioning["cftc_tff"].get("status"),
+        "cftc_as_of": positioning["cftc_tff"].get("report_date"),
+        "cme": positioning["cme"].get("status"),
+        "cme_as_of": positioning["cme"].get("trade_date"),
+        "mapped_cftc_instruments": sorted((positioning["cftc_tff"].get("instruments") or {}).keys()),
+        "mapped_cme_futures": sorted((positioning["cme"].get("futures") or {}).keys()),
     }
 
     try:
