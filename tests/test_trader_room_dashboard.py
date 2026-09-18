@@ -38,7 +38,7 @@ class TraderRoomDashboardTests(unittest.TestCase):
             self.assertIn('id="p-traderroom"', out)
             self.assertIn('for="p-traderroom">Trader Room</label>', out)
             self.assertIn("Trader Room · adversarial ideas", out)
-            self.assertIn("Trader Book · paper P&amp;L", out)
+            self.assertIn("Trader Book · paper P&L", out)
             self.assertTrue((site / "trader-room.js").is_file())
 
     def test_empty_public_packet_is_explicit(self):
