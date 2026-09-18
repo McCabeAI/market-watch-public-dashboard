@@ -47,6 +47,9 @@ class TemperatureScoresTest(unittest.TestCase):
         self.assertIn('Macro Snapshot', out)
         self.assertIn('AU</b><div style="margin-top:4px;font-size:12px;">Inf 49.2 · Lab 47.8 · Act 49.2 · Con 51', out)
         self.assertIn('NZ</b><div style="margin-top:4px;font-size:12px;">Inf 51.6 · Lab 47 · Act 52 · Con 48.5', out)
+        self.assertIn('Latest scored releases', out)
+        self.assertIn('<b>NZ Activity</b> 2026-Q2: -2 × 60% = -1.2', out)
+        self.assertIn('<b>AU Consumer</b> 2026-09: -4 × 25% = -1.0', out)
         self.assertNotIn('Temperature Board', out)
 
     def test_temperature_bands(self) -> None:
