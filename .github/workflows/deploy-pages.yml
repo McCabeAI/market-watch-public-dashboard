@@ -37,7 +37,9 @@ on:
       - "patch_v13/**"
       - "data/overnight/**"
       - "tests/test_overnight_pipeline.py"
+      - "tests/test_overnight_scheduled_output.py"
       - "docs/OVERNIGHT_PIPELINE_V1.md"
+      - ".github/workflows/overnight-scheduled-output.yml"
       - "requirements-market-state.txt"
 
 permissions:
@@ -228,7 +230,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          PYTHONPATH=. python -m unittest tests.test_overnight_pipeline tests.test_overnight_cursor_runtime
+          PYTHONPATH=. python -m unittest tests.test_overnight_pipeline tests.test_overnight_scheduled_output
 
       - name: Add Trader Book tab
         shell: bash
