@@ -16,6 +16,37 @@ This is the production contract for the full adversarial Trader Room. It supplem
 
 The old model-based conflict-aggregator is not part of the production execution path.
 
+## Expression selection contract
+
+Before a rates-first advocate can submit its Round 1 trade, it must compare expressions from the frozen packet:
+
+1. one concrete rates candidate: outright duration, curve, or cross-market rates RV;
+2. one concrete spot-FX candidate;
+3. the selected expression family and why it is cleaner.
+
+Rates are preferred when the comparison is close. Spot is allowed only with an explicit reason the rates candidate is inferior or unavailable. This is not a forced-rates quota.
+
+Dedicated exceptions:
+- `dollar-king`, `cross-merchant`: spot only;
+- `vol-convexity`: options/convexity remit unchanged;
+- `no-trade-skeptic`: may return no trade; if it endorses one, use the rates-first comparison.
+
+Every non-null trade adds:
+
+```json
+{
+  "asset_class": "spot_fx | rates | curve | rates_rv | options",
+  "expression_comparison": {
+    "rates_candidate": "concrete rates expression or null for a dedicated specialist",
+    "spot_candidate": "concrete spot expression or null for the vol specialist",
+    "selected": "rates | spot | options",
+    "rationale": "why this expression is cleaner"
+  }
+}
+```
+
+For rates-first seats, both `rates_candidate` and `spot_candidate` are mandatory non-empty strings even when one says it is unavailable and explains why. The selected family must match `asset_class`.
+
 ## Round 1 conflict synopsis
 
 Every `TRADER_ROOM_CONTRIBUTION` must include:
@@ -101,7 +132,7 @@ The repository `subagentStart` hook enforces these ceilings. Only initial advoca
 
 ## Required trade schema
 
-Every advocate except `no-trade-skeptic` must produce one actionable trade with: `instrument`, `structure`, `direction`, `thesis`, `mispricing`, `why_now`, `evidence_refs`, `horizon`, `entry`, `target`, `stop`, `invalidation`, `catalysts`, `principal_risks`, and `confidence`. Unsupported levels are JSON `null`.
+Every advocate except `no-trade-skeptic` must produce one actionable trade with: `instrument`, `asset_class`, `expression_comparison`, `structure`, `direction`, `thesis`, `mispricing`, `why_now`, `evidence_refs`, `horizon`, `entry`, `target`, `stop`, `invalidation`, `catalysts`, `principal_risks`, and `confidence`. Unsupported levels are JSON `null`.
 
 ## Artifact sequence
 
