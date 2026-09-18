@@ -12,8 +12,11 @@ from scripts.trader_room.constants import (
     AGGREGATOR_MODEL,
     LIVE_ENV,
     NO_TRADE_AGENT,
+    RATES_FIRST_SEATS,
+    SPOT_ONLY_SEATS,
     STANDING_ADVOCATES,
     SUBAGENT_MODEL,
+    VOL_SPECIALIST_SEAT,
 )
 from scripts.trader_room.errors import LiveRunBlocked, ModelPolicyError
 from scripts.trader_room.models import assert_advocate_model, assert_aggregator_model, assert_subagent_model
@@ -170,13 +173,42 @@ def _synopsis_from_spec(agent: str, trade: dict[str, Any] | None, confidence: in
     }
 
 
+def _expression_comparison(agent: str, spec: dict[str, Any]) -> tuple[str, dict[str, Any]]:
+    spot = f"{spec['direction']} {spec['instrument']}"
+    if agent in SPOT_ONLY_SEATS:
+        return "spot_fx", {
+            "rates_candidate": None,
+            "spot_candidate": spot,
+            "selected": "spot",
+            "rationale": "Dedicated spot-FX specialist seat.",
+        }
+    if agent == VOL_SPECIALIST_SEAT:
+        return "options", {
+            "rates_candidate": None,
+            "spot_candidate": None,
+            "selected": "options",
+            "rationale": "Dedicated vol/options specialist seat.",
+        }
+    if agent in RATES_FIRST_SEATS:
+        return "spot_fx", {
+            "rates_candidate": "Synthetic dry-run rates candidate: outright, curve, or cross-market RV aligned to this remit.",
+            "spot_candidate": spot,
+            "selected": "spot",
+            "rationale": "Synthetic dry-run preserves deterministic FX conflict fixtures after explicitly considering rates; production seats must choose the genuinely cleaner expression and prefer rates when comparable.",
+        }
+    raise ModelPolicyError(f"no expression policy for {agent}")
+
+
 def _trade_from_spec(agent: str, packet: dict[str, Any]) -> dict[str, Any] | None:
     if agent == NO_TRADE_AGENT:
         return None
     spec = MOCK_SPECS[agent]
     ref = first_packet_ref(packet)
+    asset_class, expression_comparison = _expression_comparison(agent, spec)
     return {
         "instrument": spec["instrument"],
+        "asset_class": asset_class,
+        "expression_comparison": expression_comparison,
         "structure": spec.get("structure"),
         "direction": spec["direction"],
         "thesis": spec["thesis"],
