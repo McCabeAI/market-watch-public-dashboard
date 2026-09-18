@@ -1,0 +1,87 @@
+{
+  "agent": "dollar-king",
+  "attack": [
+    "The strongest opposing case is short USDCAD / long CAD. It asks the book to pay 140bp of CA-US 2Y against a still-widening front-end gap and only 74th-percentile USDCAD, which is incomplete transmission rather than a completed squeeze.",
+    "Rate-hawk converts a BoC minutes risk flag into a CAD policy reprice while core, labor, and the inflation temperature already match that seat's own falsifier.",
+    "Perma-bull uses the wrong denominator: relative Canadian activity/consumer is known information that has not closed CA-US 2Y; growth gauges do not own a policy-gap mispricing in USD spot.",
+    "AUDCAD shorts contaminate CAD-up with AUD housing and adverse carry. AUDUSD shorts (perma-bear, rate-dove) fight residual AU-US 2Y of about +26bp instead of collecting CA-US 2Y of 140bp. Same USD-up view, worse pair."
+  ],
+  "defense": [
+    "Long USDCAD remains the remit-clean USD-spot expression of a historically extreme CA-US policy and front-end gap versus only moderate USDCAD percentiles.",
+    "Carry, the delivered Fed hike with tightening bias intact, broadening G10 tightening (BoJ hike, hawkish BoE hold), and a reduced oil-supply tail still support USD over CAD.",
+    "Concede as verified fact, already in principal_risks, that CA activity/consumer lead Q2 GDP and crude-near-$110 are real CAD offsets. Inference: they do not override the rate-gap discrepancy until BoC actually hikes or CA-US 2Y compresses. Unknown: positioning, executable broker prices, and whether the next Canadian CPI converts the pass-through warning.",
+    "Invalidation is unchanged: the mechanism fails if CA-US 2Y compresses via a BoC hike or Fed easing, or if a renewed oil-supply tail restores CAD terms-of-trade dominance."
+  ],
+  "holes_in_opposing_case": [
+    "Rate-hawk's own invalidation is already the live packet: Canada August core is near 2% (CPI-trim 1.9%, CPI-median 2.0%), CA inflation temperature is 50.0, and labor is cooling (score 48.8, employment -42k, wages +2.0% y/y versus +2.8%). BoC minutes flag energy pass-through as a risk, not a delivered hike, so short USDCAD is fading a warning while the reaction function remains easier.",
+    "Short USDCAD pays the verified CA-US 2Y of -140bp (CA 2Y 3.27 versus US 2Y 4.67, 1y percentile 3.77 / 5y percentile 4.30). Both perma-bull and rate-hawk list that negative carry as a principal risk; a CAD policy reprice that has not started burns 140bp while waiting.",
+    "The priced-Fed-hike fade fails the change test. CA-US 2Y still cheapened 15bp over 5d and 17bp over 1m after a greater-than-90% priced 25bp hike, while USDCAD is only 74th percentile 1y after +1.74% 1m and 3m USDCAD is still -1.25%. Digestion of a known hike does not produce a still-widening front-end gap.",
+    "Perma-bull treats CA activity 53.2, consumer 52.5, and Q2 GDP +0.8% q/q as the closing mechanism, but that growth impulse is already known and the curve remains at a 4th-percentile discount. The economically relevant discrepancy is the rate gap versus moderate USDCAD, not growth gauges versus a 1m USD squeeze.",
+    "US activity 49.92 is mixed, not a soft-cyclical collapse: ISM Services 55.4 with business activity and new orders above 60 supports the delivered Fed tightening bias that perma-bull wants to treat as stale.",
+    "Energy is internally contradictory across the two shorts: retained crude-near-$110 is CAD terms-of-trade support, but the Saudi/Oman workaround reduced the extreme oil-supply tail that both CAD ToT asymmetry and rate-hawk CPI pass-through need. The workaround caps the oil-tail hedge; it is not a CAD-up catalyst.",
+    "Cross-merchant and value-guy CAD-up via short AUDCAD adds AUD housing second-order risk and pays about 165bp of AU-CA 2Y; the 1m AUDCAD stretch is mechanically USDCAD +1.74% plus AUDUSD +0.20%, so the cross does not isolate a clean CAD-versus-USD view."
+  ],
+  "opponents": [
+    "carry-is-king",
+    "catalyst-junkie",
+    "trend-follower",
+    "perma-bull",
+    "rate-hawk",
+    "perma-bear",
+    "rate-dove",
+    "cross-merchant",
+    "value-guy"
+  ],
+  "own_original_ref": "submissions/dollar-king.json",
+  "packet_sha256": "63f781354ed4048cf1091125e35854ed64db800467e7a98c336cf72032a33956",
+  "revised_trade": {
+    "catalysts": [
+      "Further US inflation or labor prints that keep the Fed tightening bias intact",
+      "BoC communication that energy pass-through does not force a matching hike",
+      "Evidence the Saudi workaround continues to cap the extreme oil-supply tail",
+      "Global term-premium pressure from BoJ tightening and BoE QT"
+    ],
+    "confidence": 53,
+    "direction": "long",
+    "entry": null,
+    "evidence_refs": [
+      "rates:US",
+      "rates:CA",
+      "fx:USDCAD",
+      "market_state",
+      "rollup:Fed raises 25bp to 3.75\u20134.00%",
+      "last24:2026-09-18:desk-thesis",
+      "xa:energy-retained",
+      "mw_20260916_saudi_oman_workaround",
+      "temp:CA:labor",
+      "research_method"
+    ],
+    "horizon": "Tactical 2-8 weeks; keep the USD-over-CAD stance while the CA-US 2Y gap remains historically wide versus USDCAD\u2019s more moderate percentile.",
+    "instrument": "USDCAD",
+    "invalidation": "The causal mechanism fails if the CA-US 2Y gap compresses because the BoC hikes on energy pass-through or US front-end yields fall as the Fed\u2019s tightening bias breaks, or if CAD terms of trade re-dominate via a renewed oil-supply tail.",
+    "mispricing": "Markets have started to mark USD higher versus CAD but still treat CAD as energy-supported. That is inconsistent with a CA-US 2Y gap at the 4th percentile of the 1y distribution while USDCAD itself is only around the 74th 1y percentile.",
+    "principal_risks": [
+      "CAD terms-of-trade support from crude near $110",
+      "BoC energy pass-through risk could force a Canadian hike",
+      "Canada Q2 GDP +0.8% q/q is a growth offset",
+      "Fed hike was greater-than-90% priced",
+      "Positioning and executable broker prices are absent"
+    ],
+    "stop": null,
+    "structure": "spot",
+    "target": null,
+    "thesis": "The economically relevant discrepancy is the CA-US yield gap versus USDCAD, not a commodity-cross or an AUD housing story. After the Fed's delivered 25bp hike, US 2Y sits at 4.67% against CA 2Y at 3.27%. The CA-US 2Y spread is -140bp at the 3.8th 1y percentile. USDCAD is only 74th percentile 1y with a +1.74% 1m gain that has not closed a still-negative 3m return. Energy still supports CAD ToT, but the Saudi workaround reduced the extreme oil-supply tail. Crosses do not own this: AUDCAD is already 99.8th percentile 1y, NZDUSD has already fallen 3.90% over 1m, and short AUDUSD fights a still-positive AU-US 2Y of +26bp.",
+    "why_now": [
+      "The September 16 Fed hike is now realized, not just a >90% priced event.",
+      "The CA-US 2Y spread widened 15bp over five days and 17bp over one month.",
+      "The last24 desk thesis dated 2026-09-18 states BoJ tightening and a hawkish BoE hold broadened global tightening after the Fed.",
+      "Saudi ship-to-ship crude via Oman reduced the extreme oil-supply tail that had been CAD\u2019s best fundamental offset."
+    ]
+  },
+  "round": 2,
+  "run_id": "tr-20260918T182933Z-ondemand",
+  "strongest_opponent_point": "Canada still leads the packet on activity and consumer gauges while BoC minutes flag energy pass-through after a fully priced Fed hike, so the historically cheap CA-US yield gap should close through CAD strength rather than more USD.",
+  "subagent_calls": 0,
+  "trade_change": "unchanged",
+  "type": "TRADER_ROOM_REBUTTAL"
+}

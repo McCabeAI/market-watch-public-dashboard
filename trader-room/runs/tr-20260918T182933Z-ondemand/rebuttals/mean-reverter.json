@@ -1,0 +1,83 @@
+{
+  "agent": "mean-reverter",
+  "attack": [
+    "Perma-bear and rate-dove turn a completed NZDUSD liquidation into a still-bearish NZD view, then hunt a less-stretched AUDUSD short as the residual.",
+    "AUDUSD 5y z +1.23 is not the packet extreme; AUDNZD 5y z +3.12 is, so choosing the unpaid-looking pair is trend-chasing dressed as relative value.",
+    "Housing tightness, AU labor 47.8, and AU 2Y at the 99th percentile argue AUD down versus the kiwi that already overshot, not versus post-hike USD.",
+    "If rate-dove's AU easing reprice arrives, it compresses AUDNZD from the AUD leg; it does not require nzd_view lower.",
+    "Positioning-cynic is same-side on NZD-up / short AUDNZD; the opp-view:NZD fight is with the AUDUSD residual-short, not with inferred crowding."
+  ],
+  "defense": [
+    "The remit is fade a stretch when a reversal condition exists: the stretch remains AUDNZD at the 5y 99.96th percentile / z +3.12, and the reversal conditions remain AU housing transmission plus a clipped oil tail, with the NZ GDP beat and FTA as the kiwi-side offset.",
+    "NZ labor 47.0 is the weaker labor gauge versus AU 47.8; that relative is already inside NZDUSD -3.90% over 1m and does not justify adding NZD-down after the dump.",
+    "The fade is wrong if NZ activity or labor deteriorates versus Australia after this print, or if official NZ yields later confirm a persistent AU premium; that invalidation is unchanged.",
+    "Short AUDUSD can coexist with AUD-down in the cross; it does not invalidate long NZD versus AUD. The NZD-down overlay is the part that is statistically stretched the wrong way.",
+    "Trade unchanged: vehicle, direction, and evidence_refs stay short AUDNZD / long NZD."
+  ],
+  "holes_in_opposing_case": [
+    "Short AUDUSD from perma-bear and rate-dove fails the stretch test: AUDUSD is only the 76.4th 1y percentile / z +0.88 and already -0.73% over 5d, while AUDNZD is the packet 5y 99.96th percentile / z +3.12 extreme, so fading the mildly bid USD pair is not mean-reversion.",
+    "The 1m AUDNZD +4.27% decomposes as NZDUSD -3.90% versus AUDUSD +0.20%; treating that dump as proof that NZD should stay lower and that AUD still has unpaid USD downside converts the completed kiwi overshoot into unused residual.",
+    "AU housing and labor bite is a valid AUD-negative, but expressing it versus USD after a greater-than-90% priced Fed hike requires a USD-up stretch that is not in the packet; expressing it versus NZD fades the pair that actually printed the 5y extreme.",
+    "NZ incremental evidence is the opposite of an NZD-down catalyst: Q2 GDP slowed to +0.2% q/q but beat and stayed positive, the India FTA passed, NZ headline CPI is hotter at 4.1% versus AU 3.5%, and NZ activity 52.0 still exceeds AU 49.2.",
+    "Rate-dove cannot backsolve an AU-NZ rate gap that mandates NZD-down because official NZ yields are unavailable; AU 2Y at the 99th percentile is an AUD-versus-NZD negative, not a kiwi-down overlay.",
+    "Perma-bear leftover logic that NZDUSD already sold so remaining asymmetry sits in AUDUSD is momentum extrapolation: NZDUSD is already the 12.9th 1y / 8.6th 5y percentile, which is where mean-reversion lives, not where another short is added.",
+    "Carry and energy work against their vehicle: short AUDUSD pays residual AU-US 2Y 4.999 versus 4.67, while the Saudi workaround clips the oil-supply tail that had supported AUD versus NZD, which is the live reversal condition in the cross."
+  ],
+  "opponents": [
+    "positioning-cynic",
+    "perma-bear",
+    "rate-dove"
+  ],
+  "own_original_ref": "submissions/mean-reverter.json",
+  "packet_sha256": "63f781354ed4048cf1091125e35854ed64db800467e7a98c336cf72032a33956",
+  "revised_trade": {
+    "catalysts": [
+      "Further confirmation that the RBA tightening channel is biting",
+      "NZQ2 GDP beat plus the India FTA reducing the case for NZD as the residual funding currency",
+      "Saudi workaround clipping the extreme oil-supply tail"
+    ],
+    "confidence": 46,
+    "direction": "short",
+    "entry": "ECB same-fixing research/reference AUDNZD 1.246846846846847 as of 2026-09-18; not executable broker pricing",
+    "evidence_refs": [
+      "fx:AUDNZD",
+      "fx:AUDUSD",
+      "fx:NZDUSD",
+      "market_state",
+      "rates:AU",
+      "rates:NZ",
+      "temp:AU:labor",
+      "temp:NZ:activity",
+      "mw_20260916_au_housing_tightening",
+      "rollup:New Zealand Q2 GDP slows to 0.2% q/q but beats forecasts",
+      "mw_20260916_saudi_oman_workaround",
+      "research_method"
+    ],
+    "horizon": "tactical 2-6 weeks against the latest extension; strategic 1-3 months to mean-revert the 5y extreme",
+    "instrument": "AUDNZD",
+    "invalidation": "AUDNZD makes a new high versus the 2026-09-18 ECB research/reference fixing after NZ activity or labor deteriorates relative to Australia, or after AU housing evidence stops showing the tightening channel biting",
+    "mispricing": "Market pricing treats NZD as the clear Australasian underperformer versus AUD at a 5y 99.96th percentile / z +3.12, even though AU labor and housing are already softening and NZ inflation is the hotter of the two.",
+    "principal_risks": [
+      "Energy shock re-widens and AUD ToT keep outrunning NZD",
+      "NZ labor and consumer weakness may be the true relative story",
+      "Unavailable NZ yields hide a genuine AU-NZ rate differential",
+      "No positioning feed",
+      "ECB reference levels are not executable"
+    ],
+    "stop": null,
+    "structure": "spot FX short AUD / long NZD",
+    "target": null,
+    "thesis": "AUDNZD is the packet's cleanest G10 stretch on both 1y and 5y history. Decomposition shows the 1m +4.27% is almost entirely NZDUSD weakness, not AUDUSD strength, while AU housing is already transmitting tighter policy, NZ Q2 GDP slowed but beat and stayed positive, NZ headline inflation remains hotter than Australia's, and the Saudi workaround clips the extreme oil-supply tail.",
+    "why_now": [
+      "AUDNZD printed a further +0.65% 1d and +1.19% 5d extension into a 5y extreme after AU housing evidence and the NZ GDP beat were already in the packet.",
+      "The preferred rates-first AU-NZ RV expression cannot be built because official NZ yields are unavailable.",
+      "The energy-tail bid that can keep AUD bid versus NZD is the live mechanism to fade after the Saudi workaround."
+    ]
+  },
+  "round": 2,
+  "run_id": "tr-20260918T182933Z-ondemand",
+  "strongest_opponent_point": "NZDUSD has already dropped 3.90% to the 13th 1y percentile while AUDUSD still sits in the upper quartile, so if Australian housing and labor are the live tightening tax, the unpaid residual looks like short AUD versus USD rather than buying the already-dumped kiwi.",
+  "subagent_calls": 0,
+  "trade_change": "unchanged",
+  "type": "TRADER_ROOM_REBUTTAL"
+}

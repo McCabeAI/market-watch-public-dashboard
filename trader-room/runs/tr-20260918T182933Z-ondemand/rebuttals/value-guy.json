@@ -1,0 +1,85 @@
+{
+  "agent": "value-guy",
+  "attack": [
+    "Long USDCAD implies CAD lower versus USD; that is a USD-policy/carry/trend claim, not proof CAD is historically cheap, because USDCAD is not the 5y extreme and 3m CAD still outperformed.",
+    "Short AUDCAD does not require CAD higher versus USD; the 1m AUDCAD +1.95% decomposes as AUDUSD +0.20% plus USDCAD +1.74%, so the cross is already rich because CAD was sold in USD, not because Australia earned a new premium versus Canada.",
+    "Express the discrepancy in AUDCAD: CA-AU 2Y is already paid (near 1y median, cheap on 5y) while spot AUDCAD is a 5y extreme, which is leftover FX mispricing after the yield premium.",
+    "Switching to short USDCAD to own long-CAD fights 140bp of carry into a broadening G10 tightening USD bid (Fed hike delivered, BoJ to 1.25%, hawkish BoE split) and uses a pair whose 5y z is only +0.99.",
+    "Perma-bull's risk-on USDCAD fade contradicts last24:2026-09-18:desk-thesis that global tightening is broadening and energy is constraining easing; rate-hawk needs a core/pass-through re-acceleration that August CPI (headline 3%, core near 2%) did not deliver."
+  ],
+  "defense": [
+    "Verified fact: AUDCAD ECB reference 0.9976 on 2026-09-18 is 99.80th 1y / 99.96th 5y, z_5y +2.76, after +1.95% 1m; USDCAD 1.4010 is 74th 1y / 87th 5y, z_5y +0.99. Inference: the historical dislocation is the commodity cross, not USD/CAD.",
+    "Verified fact: CA-AU 2Y -164.9bp on 2026-09-16 is 51st 1y / 10.5th 5y while AU 2Y is 4.999 at the 99th 1y percentile. Inference: the curve has already paid Australia's premium, so convergence now is in spot AUDCAD as AU housing transmits (16 Sep stamp-duty/volumes/prices plus Westpac-MI sentiment -5.2% to 84.4) against CAD energy ToT and CA activity 53.2.",
+    "CAD-higher versus AUD is comparable-country normalization, not a USD call; the cross is robust if USD stays bid or if CAD rallies versus USD, which neither USDCAD direction can claim.",
+    "Unknowns that already sit in principal_risks: about 165bp negative carry, cooling CA labor, Saudi workaround as a ToT-tail risk, no REER/PPP, no positioning/flow, no executable broker prices. Those cut confidence; they do not relocate the 5y extreme into USDCAD.",
+    "Concede the CAD-up-versus-USD alternative if incoming Canadian CPI/BoC communication fails to support pass-through and CA-US 2Y keeps widening; concede the whole short AUDCAD thesis only if AU housing and activity re-accelerate while CAD ToT fades and the CA-AU 2Y discount reverses without AUDCAD leaving the 5y extreme."
+  ],
+  "holes_in_opposing_case": [
+    "The CAD-lower camp treats CA-US 2Y at -140bp (3.8th 1y / 4.3rd 5y percentile) as unpaid CAD weakness, but verified USDCAD is only 74th 1y / 87th 5y with z_5y +0.99 and ret_3m still -1.25%; that is a moderate post-Fed USD bid, not a 5y CAD valuation extreme.",
+    "Rate-percentile versus FX-percentile matching is not an identity: the delivered Fed hike and 1m USDCAD +1.74% already moved the USD pair, while CA activity 53.2 / consumer 52.5 versus US 49.92 / 48.5 and Q2 GDP +0.8% q/q say the cheap CA-US spread can be the rates market over-punishing Canada rather than FX still owing CAD-down.",
+    "Catalyst-junkie and dollar-king convert the 16 Sep Saudi/Oman ship-to-ship workaround into a CAD terms-of-trade breakdown; the packet states it reduced the extreme oil-supply tail while xa:energy-retained still has crude near $110 and tight refined-fuel buffers, so ToT support is not verified as gone.",
+    "Carry-is-king's ~140bp receipt on long USDCAD is a verified holding-cost advantage, not a mispricing: it assumes BoC stays easy because core is near 2% even as headline CPI holds at 3% and BoC minutes already flag energy pass-through.",
+    "Trend-follower's 1d/5d/1m USDCAD grind does not locate a closing mechanism for a 5y AUDCAD extreme and ignores the still-negative 3m USDCAD return that matches Canada's Q2 impulse.",
+    "The long-CAD via short USDCAD camp is not a CAD-lower opponent, but it is the wrong expression of CAD-higher: it pays ~140bp of US-CA 2Y carry to fade a non-extreme USD pair after a fully priced Fed hike, while AUDCAD is at the 99.96th 5y percentile (z_5y +2.76) after CA-AU 2Y of -165bp is already only the 10.5th 5y / 51st 1y percentile.",
+    "Canadian labor cooling (score 48.8, employment -42k, wages +2.0% y/y) is a real hole in rate-hawk's BoC-restraint CAD-up-versus-USD story, but it does not make CAD the cheaper commodity currency versus Australia (labor 47.8, employment -15.8k, housing stamp-duty -24% y/y, volumes -18%, prices more than 7% off peak, AU 2Y 4.999 at the 99th 1y percentile)."
+  ],
+  "opponents": [
+    "dollar-king",
+    "carry-is-king",
+    "catalyst-junkie",
+    "trend-follower",
+    "perma-bull",
+    "rate-hawk"
+  ],
+  "own_original_ref": "submissions/value-guy.json",
+  "packet_sha256": "63f781354ed4048cf1091125e35854ed64db800467e7a98c336cf72032a33956",
+  "revised_trade": {
+    "catalysts": [
+      "Further Australian housing, stamp-duty, or labor deterioration",
+      "Sticky energy and refined-fuel tightness that keeps CAD ToT support alive",
+      "Canadian activity/consumer follow-through after Q2 GDP +0.8% q/q"
+    ],
+    "confidence": 53,
+    "direction": "short",
+    "entry": null,
+    "evidence_refs": [
+      "fx:AUDCAD",
+      "market_state",
+      "rates:AU",
+      "rates:CA",
+      "temp:AU:labor",
+      "temp:CA:activity",
+      "mw_20260916_au_housing_tightening",
+      "xa:energy-retained",
+      "last24:2026-09-18:desk-thesis",
+      "research_method"
+    ],
+    "horizon": "2-4 months",
+    "instrument": "AUDCAD",
+    "invalidation": "Thesis is falsified if Australian housing and activity re-accelerate while Canadian energy terms-of-trade support fades and the CA-AU 2Y discount reverses without AUDCAD leaving the 5y extreme.",
+    "mispricing": "AUDCAD prices Australia as the structurally superior commodity currency after the rate market has already paid a historically large AU-over-CA 2Y premium. The residual discrepancy is in the cross.",
+    "principal_risks": [
+      "Negative carry of about 165bp on short AUDCAD",
+      "Canadian labor already cooling",
+      "Saudi/Oman workaround can remove the CAD ToT anchor",
+      "No REER/PPP, no positioning/flow, no executable broker prices",
+      "Australian consumer spending may stay firm despite housing"
+    ],
+    "stop": null,
+    "structure": null,
+    "target": null,
+    "thesis": "On the frozen ECB research/reference sample, AUDCAD sits at the 99.96th 5y percentile with a 5y z of +2.76 after a +1.95% 1m rise, while the CA-AU 2Y spread is already -165bp at the 10.5th 5y percentile. Spot has more than fully capitalized Australia's yield premium. Canada Q2 GDP +0.8% q/q, activity 53.2, core at target, crude-near-$110 ToT support; Australia shows housing biting under 99th-percentile local yields.",
+    "why_now": [
+      "AUDCAD is at a 5y historical extreme after +1.95% in one month.",
+      "The CA-AU 2Y discount of -165bp is already in the curve; leftover mispricing lives in spot.",
+      "Australian housing evidence from 16 Sep is the new transmission.",
+      "The 18 Sep desk thesis that global tightening is broadening keeps Australian term rates elevated."
+    ]
+  },
+  "round": 2,
+  "run_id": "tr-20260918T182933Z-ondemand",
+  "strongest_opponent_point": "Dollar-king's case that CA-US 2Y at about -140bp (roughly 4th 1y/5y percentile) has not been matched by USDCAD's only-74th 1y percentile is the strongest CAD-lower claim, because it uses a historical spread-versus-spot discrepancy rather than mere post-Fed momentum.",
+  "subagent_calls": 0,
+  "trade_change": "unchanged",
+  "type": "TRADER_ROOM_REBUTTAL"
+}

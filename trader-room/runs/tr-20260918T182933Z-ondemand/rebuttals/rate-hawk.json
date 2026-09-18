@@ -1,0 +1,89 @@
+{
+  "agent": "rate-hawk",
+  "attack": [
+    "Carry-is-king's 140bp coupon is the mispricing, not the trade: a 3.8th-percentile CA-US 2Y already embeds BoC-easier-than-Fed. The hawk owns compression of that spread via delayed CA easing or a hike bias, not collection of a spread that inflation persistence should not justify.",
+    "Dollar-king's 'USDCAD has not caught the rate gap' reading is one-sided. Alternative: the rate gap is the unjustified object. Spot at the 74th 1y percentile with a still-negative 3m return has not confirmed a completed CAD-weakness regime matching a 0.20th-percentile CA-US 10Y.",
+    "Catalyst-junkie dates CAD cheapening to this week's G10 tightening plus a reduced oil-supply tail. That sequence is USD-known and CAD-incomplete: BoC minutes named pass-through as a risk, headline is stuck at 3%, and the desk thesis says energy is constraining the global easing impulse, including Canada's.",
+    "Trend-follower's 1d/5d/1m alignment is flow after a >90% priced hike, not new CA policy information. CA activity 53.2 versus US 49.92 and Q2 GDP +0.8% q/q versus US deceleration to +1.5% SAAR do not support treating CAD as the soft cyclical that must keep cheapening.",
+    "Saudi workaround is not a CAD-policy green light. Fact is tail reduction with modest oil easing; inference that energy/CAD ToT and pass-through are dead overstates a single-source workaround against retained crude-near-$110 and weakened shock absorbers."
+  ],
+  "defense": [
+    "Labor cooling is the real hole in the hawk case and remains the invalidation, not the base case: CA labor score 48.8, employment -42k, wages +2.0% y/y versus +2.8%. Headline held at 3.0% with BoC-named energy pass-through and the strongest activity gauge in the emphasis set still argue CA policy risk is underpriced to the upside.",
+    "Paying the 140bp 2Y proxy is the cost of owning that inflation discrepancy. Carry is adverse, not disqualifying, while the closing mechanism is CA yields up / USDCAD down rather than a Fed pivot.",
+    "US inflation is not the residual hawk trade: August CPI already kept the Fed tightening bias intact and the hike was pre-priced. Residual upside policy risk is in CAD, where core-near-target pricing ignores stuck headline and energy pass-through.",
+    "AUDCAD/AUDUSD expressions own Australian housing or valuation, not the CA inflation/reaction-function gap. Hawk expression stays USDCAD.",
+    "Concede if incoming Canadian CPI shows energy failing to lift headline or core while labor deterioration continues, revealing the CA-US discount as warranted easier policy."
+  ],
+  "holes_in_opposing_case": [
+    "FACT: CA-US 2Y is -140bp on 2026-09-17 at the 3.8th 1y and 4.3rd 5y percentile, still widening 15bp over 5d and 17bp over 1m. INFERENCE: that extremity is the market-implied assumption that BoC can stay far easier than the Fed. Collecting it as carry is owning the priced conclusion, not an edge; the hawk discrepancy is that CA inflation/pass-through should compress the gap. Carry-is-king even states that fading USDCAD requires the 140bp to close faster than carry accrues, which is the hawk closing mechanism, not a reason to stay long USD.",
+    "FACT: the 16 Sep Fed 25bp hike to 3.75-4.00% entered with greater-than-90% odds and is now delivered. INFERENCE: dollar-king/catalyst-junkie treat a completed, pre-priced US event plus BoJ/BoE as live USD-hawk alpha versus CAD. Known information needs new transmission; the residual underpriced hawk risk sits in the currency still priced for easier policy, not in the one that just hiked.",
+    "FACT: Canada headline CPI held at 3.0% y/y; CPI-trim 1.9% and CPI-median 2.0%; BoC minutes flag higher energy pass-through; retained energy research still has crude near $110 with tight refined-fuel buffers; last24 desk says the energy shock is constraining the global easing impulse. INFERENCE: using core-near-2% to declare no BoC catch-up is composition-blind in an energy-shock regime. The Saudi/Oman workaround only reduced the extreme oil-supply tail and prices eased modestly; it did not remove the still-elevated crude level that feeds pass-through. UNKNOWN: the packet has no BoC OIS path, so 'no live hike catalyst' is inferred from core, not from a priced BoC distribution.",
+    "FACT: CA 2Y is 3.27% at the 97.8th 1y percentile and CA 10Y is 3.83% at the 97.4th; US 2Y is 4.67% at the 99.2nd. INFERENCE: opponents tag CA_RATES_DOWN as if Canada were in an easing gap, but locally Canadian yields are already historically high. The cheapness is relative to an even more extreme US front end. A BoC reaction-function shift on energy pass-through can compress CA-US from the CA side without Fed easing.",
+    "FACT: packet has no forward points, OIS, or executable FX carry; USDCAD 3m return is still -1.25% while 1y percentile is only 74th versus a 4th-percentile rate gap. INFERENCE: the 140bp holding cost is a 2Y sovereign proxy, not verified FX carry. Trend-follower's 5d/1m grind (+1.10%/+1.74%) is post-known-hike price action, not proof the inflation discrepancy is closed."
+  ],
+  "opponents": [
+    "carry-is-king",
+    "dollar-king",
+    "catalyst-junkie",
+    "trend-follower"
+  ],
+  "own_original_ref": "submissions/rate-hawk.json",
+  "packet_sha256": "63f781354ed4048cf1091125e35854ed64db800467e7a98c336cf72032a33956",
+  "revised_trade": {
+    "catalysts": [
+      "Next Canadian CPI print that lifts headline or core via energy/food pass-through",
+      "Subsequent BoC communications that convert the minutes' pass-through warning into a delayed-easing or hike-bias reaction function",
+      "Persistence of crude near the retained $110 shock-absorber regime",
+      "US data that stops adding US-only front-end premium"
+    ],
+    "confidence": 55,
+    "direction": "short",
+    "entry": null,
+    "evidence_refs": [
+      "research_method",
+      "temp:CA:inflation",
+      "temp:CA:activity",
+      "temp:US:inflation",
+      "rollup:BoC minutes flag higher energy pass-through risk",
+      "rollup:Fed raises 25bp to 3.75\u20134.00%",
+      "last24:2026-09-18:desk-thesis",
+      "xa:energy-retained",
+      "rates:CA",
+      "rates:US",
+      "fx:USDCAD",
+      "market_state"
+    ],
+    "horizon": "1-3 months",
+    "instrument": "USDCAD",
+    "invalidation": "BoC communication or incoming Canadian CPI shows energy failing to lift headline/core while labor deterioration continues, so the CA-US discount is revealed as warranted easier policy rather than underpriced inflation risk.",
+    "macro_assumptions": {
+      "growth": "above_trend",
+      "policy": "hawkish",
+      "rates": "higher_for_longer",
+      "risk": "risk_off"
+    },
+    "mispricing": "CA-US 2Y at -140bp (3.8th one-year percentile) and CA-US 10Y at -111bp (0.20th one-year percentile) assume BoC can stay far easier than the Fed because core is near 2%; that ignores stuck 3% headline CPI, BoC minutes flagging energy pass-through, Canadian activity/consumer still above 52, and crude near $110.",
+    "principal_risks": [
+      "Core staying near 2% and wages/employment continuing to cool",
+      "Saudi/Oman workaround collapsing the oil tail",
+      "Paying 140bp of US-CA 2Y carry while the reprice is delayed",
+      "Risk-off CAD beta; positioning unknown",
+      "Further Fed tightening that widens CA-US again"
+    ],
+    "stop": null,
+    "structure": "spot",
+    "target": null,
+    "thesis": "Canadian headline inflation persistence plus BoC energy pass-through risk are underpriced relative to a historically extreme CA-US yield discount after a fully anticipated Fed hike, so CAD policy restraint should reprice higher and USDCAD lower.",
+    "why_now": [
+      "Fed 25bp hike to 3.75-4.00% was greater-than-90% priced and is now known; residual hawk risk has migrated to currencies still priced for easier policy.",
+      "BoC minutes already flag higher energy pass-through while August CPI held at 3% and CA-US spreads cheapened further over the month.",
+      "Energy shock absorbers remain weak and the last24 desk says the shock is constraining the global easing impulse."
+    ]
+  },
+  "round": 2,
+  "run_id": "tr-20260918T182933Z-ondemand",
+  "strongest_opponent_point": "The verified CA-US 2Y of about 140bp is paid to long USDCAD while Canadian core near 2% and cooling labor give opponents a coherent case that BoC will not catch the Fed fast enough to beat carry.",
+  "subagent_calls": 0,
+  "trade_change": "unchanged",
+  "type": "TRADER_ROOM_REBUTTAL"
+}

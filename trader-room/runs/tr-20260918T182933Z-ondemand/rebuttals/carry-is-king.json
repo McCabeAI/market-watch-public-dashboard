@@ -1,0 +1,82 @@
+{
+  "agent": "carry-is-king",
+  "attack": [
+    "Short USDCAD / long CAD is a negative-carry expression. Perma-bull lists CA 2Y 3.27 versus US 2Y 4.67 and rate-hawk lists paying 140bp while the reprice is delayed; that is the hole, not a footnote.",
+    "Perma-bull's post-FOMC squeeze-fade treats a greater-than-90% priced Fed hike as stale information while CA-US 2Y cheapened further after the delivered 25bp move and last24:2026-09-18:desk-thesis says global tightening broadened via the BoJ hike and hawkish BoE hold. That is fighting carry and the live rates impulse.",
+    "Rate-hawk converts unchanged 3% headline plus a minutes warning into an imminent less-easy BoC path. The packet has no Canadian core reacceleration, no hike, and no executable curve showing that conversion. Headline stuck at 3% with core near 2% is a wedge, not a catalyst.",
+    "The CA growth-lead argument uses Q2 GDP/activity while August labor is already the easier-policy channel rate-hawk needs to stay closed. Using the stale lead and ignoring the live labor cooling is selection, not a mechanism.",
+    "Cross-merchant and value-guy CAD-up via short AUDCAD pays about 165bp of CA-AU 2Y. That is a worse carry tax on the same CAD-up view and is not a reason to flip long USDCAD. AUDCAD's 5y extreme is a valuation/cross argument, not proof that CAD should be owned against USD at a 140bp cost."
+  ],
+  "defense": [
+    "Verified carry: CA 2Y 3.27% versus US 2Y 4.67% on 2026-09-17, CA-US 2Y -140bp. Long USDCAD is paid on the official 2Y proxy because forward points and OIS are a known gap. Remit is to own that paid distribution unless a catalyst overwhelms it.",
+    "The Fed hike to 3.75\u20134.00% is delivered and August CPI kept the US tightening bias intact while Canadian core remains near 2%. That combination keeps the differential intact; it does not create a BoC catch-up that shorts can collect.",
+    "Energy is a named tail, not an overwhelm. Saudi/Oman reduced the extreme supply tail; crude-near-$110 and weak shock absorbers remain in principal_risks and invalidation. Unknown positioning and no executable broker prices cut both ways and do not justify paying 140bp to be short.",
+    "Patient 2-4 month hold is the right expression: 140bp annualized improves the holding-period distribution while waiting, whereas the opposing 4-8 week fade must win on spot before carry taxes it. Concede only if BoC hikes or the Fed eases enough to compress CA-US 2Y, or if an energy-supply shock reopens an extreme oil tail."
+  ],
+  "holes_in_opposing_case": [
+    "Verified fact: both perma-bull and rate-hawk budget the same 140bp US-over-CA 2Y cost as a principal risk of short USDCAD. Inference: a long-CAD fade that admits it must outrun 140bp annualized has already failed the carry screen unless a catalyst has overwhelmed that cost. Unknown: no OIS, forward points, or BoC path is in the packet showing that recoup is imminent.",
+    "Rate-hawk's own invalidation is the live Canadian print set, not a future tail. Verified: CPI-trim 1.9% and CPI-median 2.0% near target, headline CPI unchanged at 3.0%, labor score 48.8 with employment -42k and wages cooling to +2.0% y/y from +2.8%. Inference: a BoC minutes flag of energy pass-through is a risk mention, not a delivered hike, and cannot pay 140bp while core stays at target.",
+    "Perma-bull treats Q2 CA activity 53.2 and consumer 52.5 as a reason to fade USDCAD while the rate gap is still moving against CAD. Verified: CA-US 2Y is -140bp as of 2026-09-17 and cheapened a further ~15bp over 5d and ~17bp over 1m after Canada's stronger Q2 GDP. Inference: stale quarterly growth does not reverse a still-widening 140bp holding-period tax.",
+    "The energy/ToT case is split against itself. Verified: xa:energy-retained still has crude near $110, but mw_20260916_saudi_oman_workaround reduced the extreme oil-supply tail. Inference: CAD ToT support without a reopened supply shock is a residual risk already in the original invalidation, not a catalyst that overwhelms carry. Perma-bull citing both the workaround and crude-near-$110 as CAD-constructive does not convert a reduced tail into a reason to pay 140bp.",
+    "Fading USDCAD is not fading an FX overshoot of the carry. Verified: USDCAD ECB research/reference 1.4010 is only 74th percentile 1y (87th 5y) with 3m still -1.25%, while CA-US 2Y sits at the 3.8th 1y / 4.3rd 5y percentile. Inference: the implied short-USDCAD mispricing\u2014that spot has already priced the policy gap\u2014is the opposite of the packet's percentile comparison."
+  ],
+  "opponents": [
+    "perma-bull",
+    "rate-hawk",
+    "cross-merchant",
+    "value-guy"
+  ],
+  "own_original_ref": "submissions/carry-is-king.json",
+  "packet_sha256": "63f781354ed4048cf1091125e35854ed64db800467e7a98c336cf72032a33956",
+  "revised_trade": {
+    "catalysts": [
+      "Delivered Fed 25bp hike with August CPI keeping tightening bias intact",
+      "Canada core inflation near 2% limits an immediate BoC catch-up hike",
+      "Saudi Oman workaround reducing the extreme oil-supply tail",
+      "Global tightening broadening after the Fed move"
+    ],
+    "confidence": 50,
+    "direction": "long",
+    "entry": null,
+    "evidence_refs": [
+      "fx:USDCAD",
+      "rates:US",
+      "rates:CA",
+      "rates:AU",
+      "fx:AUDCAD",
+      "market_state",
+      "research_method",
+      "rollup:Fed raises 25bp to 3.75\u20134.00%",
+      "xa:energy-retained",
+      "mw_20260916_saudi_oman_workaround",
+      "mw_20260916_au_housing_tightening"
+    ],
+    "horizon": "2-4 months patient hold, collecting the 2Y differential unless energy/BoC pass-through overwhelms",
+    "instrument": "USDCAD",
+    "invalidation": "Thesis is wrong if the CA\u2013US 2Y carry proxy compresses because BoC hikes on energy pass-through or the Fed enters an easing cycle, or if an energy-supply shock reopens an extreme oil tail.",
+    "mispricing": "Market pricing already embeds a historically wide USD yield premium over CAD, but USDCAD spot has not matched that 5y-percentile extremity. The implied assumption in fading USDCAD is that CAD energy pass-through or a Fed pivot will close the 140bp gap fast enough to beat carry.",
+    "principal_risks": [
+      "Energy shock absorbers remain weak and crude-near-$110 can reassert CAD ToT",
+      "BoC minutes already flag higher energy pass-through",
+      "No forward points, OIS, or executable broker prices",
+      "Positioning/flow is unavailable",
+      "CA activity temperature 53.2 versus US 49.92"
+    ],
+    "stop": null,
+    "structure": "spot FX; official 2Y yield differential is the carry proxy because forward points and OIS are not in the packet",
+    "target": null,
+    "thesis": "The economically relevant carry in the frozen packet is the common-date CA\u2013US 2Y spread of -140bp as of 2026-09-17: long USD versus short CAD is paid about 140bp annualized on the sovereign 2Y proxy. The Fed has already delivered 25bp to 3.75\u20134.00% while Canada\u2019s headline 3% inflation coexists with core near 2%. Carry improves the holding-period distribution if the energy/CAD terms-of-trade story does not overwhelm. AUDCAD would pay more but is already at a 5y extreme while Australian housing is transmitting tighter policy. NZ yields are unavailable, so AUDNZD carry cannot be quantified and is refused.",
+    "why_now": [
+      "Fed hike to 3.75\u20134.00% is in the rear-view and August CPI keeps the tightening bias intact.",
+      "CA\u2013US 2Y is -140bp on 2026-09-17, 1y percentile 3.77 and 5y percentile 4.30, after further widening.",
+      "Canada August inflation holds at 3% with core near 2%, so BoC energy-pass-through risk is a tail, not a delivered hike.",
+      "Saudi workaround reduced the extreme oil-supply tail that could overwhelm USD\u2013CAD carry."
+    ]
+  },
+  "round": 2,
+  "run_id": "tr-20260918T182933Z-ondemand",
+  "strongest_opponent_point": "Canada's Q2 activity/consumer lead, crude still near $110, and BoC energy-pass-through minutes could force a Canadian policy reprice that compresses the historically extreme 140bp CA-US 2Y discount after a fully priced Fed hike.",
+  "subagent_calls": 0,
+  "trade_change": "unchanged",
+  "type": "TRADER_ROOM_REBUTTAL"
+}
