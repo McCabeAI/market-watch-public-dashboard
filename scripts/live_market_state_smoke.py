@@ -73,8 +73,17 @@ def main() -> int:
         "cme": positioning["cme"].get("status"),
         "cme_as_of": positioning["cme"].get("trade_date"),
         "mapped_cftc_instruments": sorted((positioning["cftc_tff"].get("instruments") or {}).keys()),
-        "mapped_cme_futures": sorted((positioning["cme"].get("futures") or {}).keys()),
+        "mapped_cme_instruments": sorted((positioning["cme"].get("instruments") or {}).keys()),
     }
+
+    cftc_keys = set((positioning["cftc_tff"].get("instruments") or {}).keys())
+    required_cftc = {"EUR", "GBP", "JPY", "CHF", "CAD", "AUD", "NZD", "US2Y", "US5Y", "US10Y", "US30Y"}
+    if not required_cftc.issubset(cftc_keys):
+        raise MarketStateError(f"live CFTC positioning missing {sorted(required_cftc - cftc_keys)}")
+    cme_keys = set((positioning["cme"].get("instruments") or {}).keys())
+    required_cme = {"EUR", "GBP", "JPY", "CHF", "CAD", "AUD", "NZD", "NOK", "SEK"}
+    if not required_cme.issubset(cme_keys):
+        raise MarketStateError(f"live CME OI missing {sorted(required_cme - cme_keys)}")
 
     try:
         nz = fetch_nz_rates(start, today)
