@@ -50,8 +50,18 @@ def validate_state(state: dict[str, Any]) -> None:
                     raise ValueError(f"duplicate event id: {event_id}")
                 seen_ids.add(event_id)
                 component = event["component"]
-                if component not in components:
+                has_dynamic_bridge_weight = (
+                    country == "US"
+                    and dimension == "Inflation"
+                    and component == "mapped_bridge"
+                    and "weight" in event
+                )
+                if component not in components and not has_dynamic_bridge_weight:
                     raise ValueError(f"{event_id} references unknown component {component}")
+                if "weight" in event:
+                    weight = float(event["weight"])
+                    if not has_dynamic_bridge_weight or weight <= 0 or weight > 1:
+                        raise ValueError(f"{event_id} has invalid dynamic bridge weight")
                 impulse = int(event["impulse"])
                 if impulse not in allowed:
                     raise ValueError(f"{event_id} has invalid impulse {impulse}")
@@ -60,7 +70,12 @@ def validate_state(state: dict[str, Any]) -> None:
 def dimension_score(state: dict[str, Any], country: str, dimension: str) -> float:
     spec = state["countries"][country][dimension]
     weights = {name: float(weight) for name, weight in spec["components"].items()}
-    move = sum(weights[event["component"]] * int(event["impulse"]) for event in spec.get("events", []))
+    move = sum(
+        float(event["weight"]) * int(event["impulse"])
+        if "weight" in event
+        else weights[event["component"]] * int(event["impulse"])
+        for event in spec.get("events", [])
+    )
     return max(1.0, min(100.0, float(state["baseline_score"]) + move))
 
 
