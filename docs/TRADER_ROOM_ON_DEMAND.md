@@ -39,11 +39,21 @@ No other model is allowed on this workflow. `grok-4.5`, Composer fast variants, 
 
 ## Finite ceilings
 
-- Baseline main Grok invocations = 16 (14 advocates + 2 aggregators)
+The ACP parent is now counted explicitly in the autonomous run budget.
+
+- ACP parent/orchestrator = 1 Grok 4.6 invocation
+- Baseline debate Grok invocations = 16 (14 advocates + 2 aggregators)
 - Plus only conflict-rebuttal Grok calls, max 14
-- Total Grok ceiling = 30
+- Total Grok ceiling including parent = 31
 - Composer ceiling = 28 (2 per initial advocate only)
+- Total model-invocation ceiling = 59
 - No retries or model reroutes may silently exceed these ceilings
+
+Every full live run must carry this exact marker:
+
+`MW_TRADER_ROOM_RUN_POLICY={"version":1,"run_type":"trader-room-ondemand","total_model_cap":59,"grok_cap":31,"composer_cap":28,"parent_model":"grok-4.6","parent_total":1,"parent_grok":1}`
+
+The repository `subagentStart` budget hook enforces the caps. The root parent may launch only direct `grok-4.6` children. Initial advocate tasks must include `TRADER_ROOM_ADVOCATE=1`; only those advocate children may launch `composer-2.5` subagents, with a hard maximum of two each. Aggregators and rebuttal children may not launch subagents, and no deeper nesting is allowed.
 
 ## Required trade schema
 
