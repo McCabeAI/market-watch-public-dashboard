@@ -57,19 +57,20 @@ STAGES = (
 
 # Avoid top-of-hour cron load. Windows are ET wall-clock.
 STAGE_SCHEDULE = {
-    "collect": {"et_time": time(0, 7), "window_minutes": 18, "summary": "Refresh macro hard inputs, news, central-bank research, market state"},
-    "pre_trader_delta": {"et_time": time(1, 40), "window_minutes": 8, "summary": "Refresh pre-trader market/news deltas"},
-    "freeze_evidence": {"et_time": time(1, 50), "window_minutes": 12, "summary": "Freeze the common evidence snapshot"},
-    "trader_review": {"et_time": time(2, 5), "window_minutes": 85, "summary": "Lightweight 14-seat portfolio-management review"},
-    "final_delta": {"et_time": time(3, 35), "window_minutes": 12, "summary": "Refresh final market/news delta"},
-    "assemble": {"et_time": time(3, 50), "window_minutes": 12, "summary": "Assemble and validate the canonical morning dataset"},
-    "publish": {"et_time": time(4, 7), "window_minutes": 8, "summary": "Validate the final assembled dataset before Pages release"},
+    "collect": {"et_time": time(0, 7), "window_minutes": 18, "owner": "market-watch", "summary": "Collect deterministic repository and market-state inputs"},
+    "pre_trader_delta": {"et_time": time(1, 40), "window_minutes": 8, "owner": "market-watch", "summary": "Refresh deterministic pre-trader market deltas"},
+    "freeze_evidence": {"et_time": time(1, 50), "window_minutes": 12, "owner": "market-watch", "summary": "Freeze the trusted base evidence snapshot"},
+    "trader_review": {"et_time": time(2, 5), "window_minutes": 85, "owner": "acp", "summary": "ACP scheduled provider run; completion is event-driven by the output PR"},
+    "final_delta": {"et_time": time(3, 35), "window_minutes": 12, "owner": "market-watch", "summary": "Refresh final deterministic market delta"},
+    "assemble": {"et_time": time(3, 50), "window_minutes": 12, "owner": "market-watch", "summary": "Assemble and validate the canonical morning dataset"},
+    "publish": {"et_time": time(4, 7), "window_minutes": 8, "owner": "market-watch", "summary": "Validate the final assembled dataset before Pages release"},
 }
 
 # GitHub Actions schedules are pinned directly to America/New_York.
 LOCAL_CRON = {
     stage: f"{spec['et_time'].minute} {spec['et_time'].hour} * * 1-5"
     for stage, spec in STAGE_SCHEDULE.items()
+    if spec["owner"] == "market-watch"
 }
 
 FORBIDDEN_ACQUISITION = (
