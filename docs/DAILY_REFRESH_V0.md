@@ -2,9 +2,9 @@
 
 Status: ACTIVE LIGHT OPERATIONAL VERSION
 
-This document governs the scheduled 04:00 America/New_York Market Watch dashboard refresh. It is intentionally a lightweight current-state workflow. It is not the full Ivory / historical research architecture and must not expand into one without an explicit decision.
+This document governs the lightweight current-state refresh content and methodology used by the overnight production pipeline. The native schedule begins its integrated V0 source refresh at 00:07 America/New_York and GitHub Pages publishes the assembled morning product at 04:07. It is not the full Ivory / historical research architecture and must not expand into one without an explicit decision.
 
-GitHub Pages publication for the overnight production path is 04:07 ET and is owned by `docs/OVERNIGHT_PIPELINE_V1.md`. This V0 document still owns news selection, score methodology, and the restored front-page content rules. The overnight collect stage snapshots those inputs; it does not rewrite them.
+GitHub Pages publication for the overnight production path is 04:07 ET and is owned by `docs/OVERNIGHT_PIPELINE_V1.md`. This V0 document still owns news selection, score methodology, and the restored front-page content rules. The 00:07 restricted Cursor refresh executes this V0 runbook; GitHub validates its narrow edits, then the overnight collect stage freezes the substantive refreshed state.
 
 ## 1. Daily ownership
 
@@ -23,7 +23,7 @@ Do not split these into separate scheduled jobs unless reliability evidence late
 
 ## 2. Operating objective
 
-The 04:00 job should answer: what changed since the prior refresh, and does any existing dashboard state need to change?
+The integrated overnight refresh should answer: what changed since the prior refresh, and does any existing dashboard state need to change?
 
 The default is incremental refresh, not reconstruction. No new observation means unchanged state. A missing or inaccessible source means an explicit stale / needs-attention condition, not an invented replacement.
 
@@ -371,10 +371,11 @@ After the refresh:
 
 1. update the affected dashboard sections only;
 2. preserve unrelated known-good content;
-3. commit / push changes to the dashboard repository;
-4. let the existing GitHub Pages workflow deploy;
-5. validate the actual deployed artifact / page when practical;
-6. report stale or failed components explicitly.
+3. let GitHub Actions run deterministic score/news validation and commit the governed refresh surfaces;
+4. freeze the refreshed state into the overnight evidence packet before the trader review;
+5. let the 04:07 GitHub Pages workflow deploy only the assembled morning product;
+6. validate the actual deployed artifact / page when practical;
+7. report stale or failed components explicitly.
 
 A green workflow alone is not sufficient evidence that the intended dashboard content is correct.
 
