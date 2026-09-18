@@ -29,6 +29,19 @@ All standing advocates use exact model `grok-4.6`. Initial advocates alone may u
 
 The production conflict stage is deterministic. The historical `conflict-aggregator` agent file may remain for compatibility/reference, but it is not launched in the production path. The `final-aggregator` remains a separate `grok-4.6` invocation.
 
+## Expression mandate
+
+The room has a strong preference for rates expressions when the same macro discrepancy can be traded cleanly in rates. This is an expression preference, not a quota and not permission to manufacture a rates trade.
+
+- `dollar-king` and `cross-merchant` are dedicated spot-FX specialists and remain spot-only.
+- `vol-convexity` remains the dedicated options/convexity specialist.
+- Every other seat is rates-first whenever it submits a trade. It must first construct a concrete interest-rate candidate using outright duration, curve, or cross-market rates RV, then construct the best spot-FX alternative, then compare them.
+- Rates are the default choice when the two expressions are comparably clean. A rates-first seat may choose spot only when spot is genuinely the cleaner expression and it explicitly states why the rates candidate is inferior or not executable from the frozen packet.
+- A rates-first seat may choose options only when unusually compelling versus both rates and spot and must say why.
+- `no-trade-skeptic` may still submit no trade. If it endorses a trade, the same rates-first comparison applies.
+
+Every non-null trade carries `asset_class` and `expression_comparison`. The comparison records a rates candidate, a spot candidate, the selected expression family, and the rationale. Deterministic validation rejects a rates-first submission that skips either candidate.
+
 ## Evidence contract
 
 Every run uses one common frozen evidence packet. All 14 advocates receive the exact same packet and cutoff. After freeze, advocates, rebuttals and the final aggregator may not browse, search, fetch, or acquire new evidence.

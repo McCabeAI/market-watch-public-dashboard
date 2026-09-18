@@ -24,6 +24,8 @@ from scripts.trader_room.constants import (
     GROK_CEILING,
     HANDOFF_MARKER,
     NO_TRADE_AGENT,
+    RATES_FIRST_SEATS,
+    SPOT_ONLY_SEATS,
     STANDING_ADVOCATES,
     SUBAGENT_MODEL,
     TRADE_REQUIRED_AGENTS,
@@ -124,6 +126,13 @@ class SchemaAndBoundaryTests(unittest.TestCase):
         packet = _packet()
         trade = {
             "instrument": "AUDUSD",
+            "asset_class": "spot_fx",
+            "expression_comparison": {
+                "rates_candidate": "Long AU 2Y vs US 2Y as the rates-first alternative.",
+                "spot_candidate": "Long AUDUSD.",
+                "selected": "spot",
+                "rationale": "Spot is cleaner in this synthetic fixture after explicit rates comparison.",
+            },
             "structure": None,
             "direction": "long",
             "thesis": "Growth resilience is underpriced.",
@@ -146,6 +155,26 @@ class SchemaAndBoundaryTests(unittest.TestCase):
         bad_ref = dict(trade, evidence_refs=["not-in-packet"])
         with self.assertRaises(DataBoundaryError):
             validate_trade(bad_ref, agent="perma-bull", packet=packet)
+
+        missing_rates = deepcopy(trade)
+        missing_rates["expression_comparison"]["rates_candidate"] = None
+        with self.assertRaises(SchemaError):
+            validate_trade(missing_rates, agent="perma-bull", packet=packet)
+
+        dollar = deepcopy(trade)
+        dollar["expression_comparison"] = {
+            "rates_candidate": None,
+            "spot_candidate": "Long USDJPY.",
+            "selected": "spot",
+            "rationale": "Dedicated spot-FX specialist seat.",
+        }
+        validate_trade(dollar, agent="dollar-king", packet=packet)
+
+        wrong_dollar = deepcopy(dollar)
+        wrong_dollar["asset_class"] = "rates"
+        wrong_dollar["expression_comparison"]["selected"] = "rates"
+        with self.assertRaises(SchemaError):
+            validate_trade(wrong_dollar, agent="dollar-king", packet=packet)
 
     def test_data_only_boundary_rejects_web_fields(self):
         packet = _packet()
@@ -214,6 +243,13 @@ class OrchestratorDryRunTests(unittest.TestCase):
             self.assertEqual(set(result["originals"]), set(STANDING_ADVOCATES))
             for agent in TRADE_REQUIRED_AGENTS:
                 self.assertIsNotNone(result["originals"][agent]["trade"])
+            for agent in RATES_FIRST_SEATS:
+                trade = result["originals"][agent]["trade"]
+                if trade is not None:
+                    self.assertTrue(trade["expression_comparison"]["rates_candidate"])
+                    self.assertTrue(trade["expression_comparison"]["spot_candidate"])
+            for agent in SPOT_ONLY_SEATS:
+                self.assertEqual(result["originals"][agent]["trade"]["asset_class"], "spot_fx")
             self.assertIsNone(result["originals"][NO_TRADE_AGENT]["trade"])
             self.assertLessEqual(result["budget"]["grok"], GROK_CEILING)
             self.assertLessEqual(result["budget"]["composer"], COMPOSER_CEILING)

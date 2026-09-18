@@ -7,13 +7,18 @@ from typing import Any
 
 from scripts.trader_room.constants import (
     ADVOCATE_REMITS,
+    ASSET_CLASSES,
+    EXPRESSION_SELECTIONS,
     FORBIDDEN_RANKING_KEYS,
     HANDOFF_MARKER,
     NO_TRADE_AGENT,
     NULLABLE_LEVEL_FIELDS,
+    RATES_FIRST_SEATS,
+    SPOT_ONLY_SEATS,
     REQUIRED_TRADE_FIELDS,
     STANDING_ADVOCATES,
     TRADE_REQUIRED_AGENTS,
+    VOL_SPECIALIST_SEAT,
 )
 from scripts.trader_room.errors import DataBoundaryError, SchemaError
 from scripts.trader_room.evidence import assert_same_frozen_packet
@@ -111,6 +116,50 @@ def validate_conflict_synopsis(
     _list_of_text(synopsis["conflict_tags"], f"{agent}.conflict_synopsis.conflict_tags")
 
 
+def _validate_expression_comparison(trade: dict[str, Any], *, agent: str) -> None:
+    asset_class = trade["asset_class"]
+    if asset_class not in ASSET_CLASSES:
+        raise SchemaError(f"{agent}.trade.asset_class invalid: {asset_class!r}")
+
+    comparison = trade["expression_comparison"]
+    if not isinstance(comparison, dict):
+        raise SchemaError(f"{agent}.trade.expression_comparison must be an object")
+    _require_keys(
+        comparison,
+        ("rates_candidate", "spot_candidate", "selected", "rationale"),
+        f"{agent}.trade.expression_comparison",
+    )
+    selected = comparison["selected"]
+    if selected not in EXPRESSION_SELECTIONS:
+        raise SchemaError(f"{agent}.trade.expression_comparison.selected invalid: {selected!r}")
+    _non_empty_text(comparison["rationale"], f"{agent}.trade.expression_comparison.rationale")
+
+    selected_asset_ok = {
+        "rates": asset_class in {"rates", "curve", "rates_rv"},
+        "spot": asset_class == "spot_fx",
+        "options": asset_class == "options",
+    }
+    if not selected_asset_ok[selected]:
+        raise SchemaError(
+            f"{agent}.trade.asset_class {asset_class!r} does not match selected expression {selected!r}"
+        )
+
+    if agent in SPOT_ONLY_SEATS:
+        if selected != "spot":
+            raise SchemaError(f"{agent} is a dedicated spot-FX seat and must select spot")
+        _non_empty_text(comparison["spot_candidate"], f"{agent}.trade.expression_comparison.spot_candidate")
+        return
+
+    if agent == VOL_SPECIALIST_SEAT:
+        if selected != "options":
+            raise SchemaError(f"{agent} is the dedicated vol/options seat and must select options")
+        return
+
+    if agent in RATES_FIRST_SEATS:
+        _non_empty_text(comparison["rates_candidate"], f"{agent}.trade.expression_comparison.rates_candidate")
+        _non_empty_text(comparison["spot_candidate"], f"{agent}.trade.expression_comparison.spot_candidate")
+
+
 def validate_trade(
     trade: dict[str, Any] | None,
     *,
@@ -124,6 +173,7 @@ def validate_trade(
     if not isinstance(trade, dict):
         raise SchemaError(f"{agent} trade must be an object or null")
     _require_keys(trade, REQUIRED_TRADE_FIELDS, f"{agent} trade")
+    _validate_expression_comparison(trade, agent=agent)
     for field in ("instrument", "direction", "thesis", "mispricing", "horizon"):
         _non_empty_text(trade[field], f"{agent}.trade.{field}")
     for field in ("why_now", "evidence_refs", "catalysts", "principal_risks"):
