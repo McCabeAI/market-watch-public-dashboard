@@ -4,7 +4,7 @@
 
 Trader Room turns Market Watch evidence into adversarial G10 FX/rates trade proposals. Cursor supplies independent advocates with persistent biases. Cursor does not decide the winner. ChatGPT in the Market Watch Trader Room is the final arbiter.
 
-The normal execution environment is Cursor Cloud and ordinary operation must not require Kevin to open a computer, use a local checkout, or run a terminal.
+The normal execution environment is Cursor Cloud and ordinary operation must not require Kevin to open a computer, use a local checkout, or run a terminal. The repository dry-run entrypoint is `scripts/trader_room_go.py`.
 
 ## Standing floor
 
