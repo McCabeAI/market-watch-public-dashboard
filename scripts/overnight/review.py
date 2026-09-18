@@ -296,7 +296,9 @@ def run_trader_review(
     live_reviews: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     packet = require_snapshot(store, run_id)
-    if store.books_path().is_file():
+    if isinstance(packet.get("prior_books"), dict):
+        books = validate_books(packet["prior_books"])
+    elif store.books_path().is_file():
         books = validate_books(store.read_books())
     else:
         books = empty_books(overnight_run_id=run_id, when=when)
@@ -384,7 +386,9 @@ def record_missing_live_review(
     reason: str = "Cursor live review payload was not present; books left unchanged",
 ) -> dict[str, Any]:
     packet = require_snapshot(store, run_id)
-    if store.books_path().is_file():
+    if isinstance(packet.get("prior_books"), dict):
+        books = validate_books(packet["prior_books"])
+    elif store.books_path().is_file():
         books = validate_books(store.read_books())
     else:
         books = empty_books(overnight_run_id=run_id, when=when)
