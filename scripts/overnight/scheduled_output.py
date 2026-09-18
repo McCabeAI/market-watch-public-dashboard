@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Any
 
 from scripts.overnight.books import apply_review, validate_books
-from scripts.overnight.clock import isoformat, now_ny
+from scripts.overnight.clock import isoformat, now_ny, parse_iso
 from scripts.overnight.constants import SCHEMA_VERSION, STANDING_SEATS
 from scripts.overnight.errors import EvidenceBoundaryError, SchemaError
 from scripts.overnight.evidence import require_snapshot
@@ -116,8 +116,20 @@ def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str,
         raise SchemaError("agent_packet overnight_run_id mismatch")
     if agent_packet.get("base_packet_sha256") != base.get("packet_sha256"):
         raise EvidenceBoundaryError("agent_packet base hash mismatch")
-    if agent_packet.get("evidence_cutoff") != base.get("as_of"):
-        raise EvidenceBoundaryError("agent_packet evidence_cutoff must equal the trusted base cutoff")
+    if agent_packet.get("base_evidence_cutoff") != base.get("as_of"):
+        raise EvidenceBoundaryError("agent_packet base_evidence_cutoff must equal the trusted base cutoff")
+    final_cutoff = agent_packet.get("evidence_cutoff")
+    if not isinstance(final_cutoff, str):
+        raise SchemaError("agent_packet evidence_cutoff is required")
+    try:
+        base_cutoff = parse_iso(base["as_of"])
+        frozen_cutoff = parse_iso(final_cutoff)
+    except (TypeError, ValueError) as exc:
+        raise SchemaError("agent_packet evidence_cutoff must be an ISO timestamp") from exc
+    if frozen_cutoff < base_cutoff:
+        raise EvidenceBoundaryError("final agent packet cannot predate the trusted base packet")
+    if frozen_cutoff.date() != base_cutoff.date():
+        raise EvidenceBoundaryError("final agent packet must remain in the same overnight session date")
     supplement = agent_packet.get("research_supplement")
     if not isinstance(supplement, dict):
         raise SchemaError("agent_packet missing research_supplement")
