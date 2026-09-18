@@ -1,21 +1,16 @@
 {
-  "complete": false,
+  "complete": true,
   "composer_model": null,
   "composer_subagent_calls": 0,
   "counts": {
     "composer_2_5": 0,
     "conflict_aggregator_grok": 1,
-    "final_aggregator_grok_returned": 0,
+    "final_aggregator_grok": 1,
     "first_pass_grok": 14,
     "rebuttal_grok": 14,
-    "total_grok_returned": 29
+    "total_grok": 30
   },
   "execution": "independent_grok_seat",
-  "final_aggregator": {
-    "invocation_id": "bc-4ca6502e-16bf-530a-88cc-25872206c91f",
-    "note": "First attempt timed out with empty transcript; same invocation was resumed and is still running. Parent did not synthesize a PM handoff.",
-    "status": "INCOMPLETE"
-  },
   "frontmatter_model": "grok-4.6[]",
   "invocations": {
     "conflict_aggregator": {
@@ -28,7 +23,7 @@
       "agent": "final-aggregator",
       "invocation_id": "bc-4ca6502e-16bf-530a-88cc-25872206c91f",
       "model": "grok-4.6",
-      "status": "INCOMPLETE",
+      "status": "ok",
       "subagent_calls": 0
     },
     "first_pass": [
@@ -249,5 +244,5 @@
   "requested_model": "inherit",
   "run_id": "tr-20260917T235817Z-3adf83db",
   "standing_model": "grok-4.6",
-  "valid": false
+  "valid": true
 }

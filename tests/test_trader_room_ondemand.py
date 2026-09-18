@@ -599,8 +599,8 @@ class IndependentExecutionTests(unittest.TestCase):
     def test_invalid_prior_run_is_not_latest(self):
         latest = json.loads((ROOT / "trader-room" / "runs" / "latest.json").read_text(encoding="utf-8"))
         catalog = json.loads((ROOT / "trader-room" / "runs" / "INDEX.json").read_text(encoding="utf-8"))
-        self.assertFalse(latest.get("valid"))
-        self.assertIsNone(latest.get("run_id"))
+        self.assertTrue(latest.get("valid"))
+        self.assertEqual(latest.get("run_id"), "tr-20260917T235817Z-3adf83db")
         marked = next(item for item in catalog["runs"] if item["run_id"] == "tr-20260917T231827Z-4ca9133b")
         self.assertFalse(marked["valid"])
         self.assertEqual(marked["status"], "INVALID")
@@ -608,6 +608,11 @@ class IndependentExecutionTests(unittest.TestCase):
             (ROOT / "trader-room" / "runs" / "tr-20260917T231827Z-4ca9133b" / "VALIDITY.json").read_text(encoding="utf-8")
         )
         self.assertFalse(validity["valid"])
+        independent = json.loads(
+            (ROOT / "trader-room" / "runs" / "tr-20260917T235817Z-3adf83db" / "VALIDITY.json").read_text(encoding="utf-8")
+        )
+        self.assertTrue(independent["valid"])
+        self.assertEqual(independent.get("execution"), "independent_grok_seat")
 
 
 if __name__ == "__main__":
