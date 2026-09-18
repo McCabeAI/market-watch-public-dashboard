@@ -28,18 +28,23 @@ STANDING_ADVOCATES = (
 AGGREGATORS = ("conflict-aggregator", "final-aggregator")
 NO_TRADE_AGENT = "no-trade-skeptic"
 TRADE_REQUIRED_AGENTS = tuple(a for a in STANDING_ADVOCATES if a != NO_TRADE_AGENT)
+SPOT_ONLY_SEATS = ("dollar-king", "cross-merchant")
+VOL_SPECIALIST_SEAT = "vol-convexity"
+RATES_FIRST_SEATS = tuple(a for a in STANDING_ADVOCATES if a not in (*SPOT_ONLY_SEATS, VOL_SPECIALIST_SEAT))
+ASSET_CLASSES = ("spot_fx", "rates", "curve", "rates_rv", "options")
+EXPRESSION_SELECTIONS = ("rates", "spot", "options")
 
 ADVOCATE_REMITS = {
-    "perma-bull": "strongest pro-growth, risk-on, cyclical FX expression",
-    "perma-bear": "strongest defensive, slowdown, stress or risk-off FX expression",
+    "perma-bull": "strongest pro-growth, risk-on or cyclical macro expression",
+    "perma-bear": "strongest defensive, slowdown, stress or risk-off macro expression",
     "dollar-king": "express macro views through USD spot whenever a defensible USD pair exists",
     "cross-merchant": "cleaner relative-value expressions outside USD",
-    "carry-is-king": "positive carry and patient expressions unless a catalyst overwhelms it",
-    "rate-hawk": "currencies where inflation and policy risks are underpriced to the upside",
-    "rate-dove": "currencies where easing or growth weakness is underpriced",
-    "value-guy": "historically or fundamentally mispriced currencies and convergence trades",
-    "trend-follower": "persistent price and macro trends; reject premature fades",
-    "mean-reverter": "fade statistically or fundamentally stretched FX moves when reversal conditions exist",
+    "carry-is-king": "positive carry and patient expressions across rates and FX unless a catalyst overwhelms it",
+    "rate-hawk": "underpriced hawkish policy, higher terminal rates, or higher-rate repricing",
+    "rate-dove": "underpriced easing, lower-rate repricing, or growth weakness",
+    "value-guy": "historical or fundamental dislocations and convergence trades",
+    "trend-follower": "persistent price, rates and macro trends; reject premature fades",
+    "mean-reverter": "fade statistically or fundamentally stretched market moves when reversal conditions exist",
     "positioning-cynic": "attack crowded ideas; prefer better ownership asymmetry",
     "catalyst-junkie": "credible path from mispricing to repricing",
     "vol-convexity": "asymmetric optionality; challenge spot expressions",
@@ -79,6 +84,8 @@ COMPOSER_CEILING = 28
 
 REQUIRED_TRADE_FIELDS = (
     "instrument",
+    "asset_class",
+    "expression_comparison",
     "structure",
     "direction",
     "thesis",
