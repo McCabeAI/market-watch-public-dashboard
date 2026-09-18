@@ -176,11 +176,53 @@ def _score_overview_html(scores: dict[str, dict[str, float]], state: dict[str, A
 
 
 def _patch_top_board(html: str, scores: dict[str, dict[str, float]], state: dict[str, Any]) -> str:
-    marker = '<div class="stitle">Temperature Board</div>'
-    if html.count(marker) != 1:
+    front_marker = '<section class="page front">'
+    board_marker = '<div class="stitle">Temperature Board</div>'
+    country_marker = '<section class="page country">'
+
+    if html.count(front_marker) != 1:
+        raise ValueError("expected one front-page section")
+    if html.count(board_marker) != 1:
         raise ValueError("expected one top-level Temperature Board marker")
-    replacement = _score_overview_html(scores, state) + '<div class="stitle">Macro Snapshot</div>'
-    return html.replace(marker, replacement, 1)
+    if html.count(country_marker) != 1:
+        raise ValueError("expected one country-page section")
+
+    front_start = html.index(front_marker) + len(front_marker)
+    board_start = html.index(board_marker, front_start)
+    country_start = html.index(country_marker, board_start)
+    front_end = html.rfind("</section>", board_start, country_start)
+    if front_end == -1:
+        raise ValueError("could not locate front-page closing section")
+
+    intro = (
+        '\n<div class="stitle">Live Dashboard</div>'
+        '<div class="note">Current 1–100 score state is ledger-driven. '
+        'Use Market Data for the current official FX/rates snapshot and News & Research '
+        'for the current information flow.</div>\n'
+    )
+    html = (
+        html[:front_start]
+        + intro
+        + _score_overview_html(scores, state)
+        + "\n"
+        + html[front_end:]
+    )
+
+    refreshed = str(state.get("last_refresh_date", state["activation_date"]))
+    year, month, day = refreshed.split("-")
+    month_name = (
+        "JAN", "FEB", "MAR", "APR", "MAY", "JUN",
+        "JUL", "AUG", "SEP", "OCT", "NOV", "DEC",
+    )[int(month) - 1]
+    meta_pattern = re.compile(r'<div class="meta">.*?</div>', re.S)
+    replacement = (
+        f'<div class="meta"><b>SCORE DATA THROUGH {int(day)} {month_name} {year}</b><br>'
+        'Live score ledger + official market-data tab<br>Core controls are script-free</div>'
+    )
+    html, count = meta_pattern.subn(replacement, html, count=1)
+    if count != 1:
+        raise ValueError("could not refresh top-bar metadata")
+    return html
 
 
 def _patch_dimension(
@@ -264,8 +306,15 @@ def apply_scores(html: str, state: dict[str, Any]) -> str:
         raise ValueError("expected 16 reindexed lineage notes")
     if html.count('data-score-overview="live"') != 1:
         raise ValueError("expected one live top-level score overview")
-    if "Temperature Board" in html:
-        raise ValueError("stale top-level Temperature Board label remains")
+    for stale in (
+        "Temperature Board",
+        "Macro Snapshot",
+        "Global Tape · Sep 8 public snapshot",
+        "Momentum Watch",
+        "What Is Moving the Board",
+    ):
+        if stale in html:
+            raise ValueError(f"stale front-page content remains: {stale}")
     return html
 
 
