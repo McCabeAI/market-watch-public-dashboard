@@ -8,10 +8,12 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any
 
+from scripts.overnight.books import empty_books, validate_books
 from scripts.overnight.clock import isoformat, now_ny
 from scripts.overnight.constants import FORBIDDEN_ACQUISITION, SCHEMA_VERSION
 from scripts.overnight.errors import EvidenceBoundaryError, SchemaError
 from scripts.overnight.store import OvernightStore, sha256_json
+from scripts.trader_room.evidence import load_research_method
 
 
 def freeze_snapshot(
@@ -25,6 +27,10 @@ def freeze_snapshot(
     if store.has_artifact(run_id, "pre_trader_delta.json"):
         delta = store.read_artifact(run_id, "pre_trader_delta.json")
     families = (delta or collect)["families"]
+    if store.books_path().is_file():
+        prior_books = validate_books(store.read_books())
+    else:
+        prior_books = empty_books(overnight_run_id=run_id, when=when)
     packet = {
         "schema_version": SCHEMA_VERSION,
         "type": "OVERNIGHT_EVIDENCE_SNAPSHOT",
@@ -34,6 +40,8 @@ def freeze_snapshot(
         "collect_as_of": collect.get("as_of"),
         "pre_trader_delta": None if delta is None else {"as_of": delta.get("as_of"), "changes": delta.get("changes")},
         "temperature_scores": collect.get("temperature_scores"),
+        "research_method": load_research_method(store.root),
+        "prior_books": prior_books,
         "known_gaps": [
             note
             for family in families.values()
