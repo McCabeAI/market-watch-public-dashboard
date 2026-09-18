@@ -35,6 +35,11 @@ on:
       - "scripts/overnight_pipeline.py"
       - "scripts/market_state.py"
       - "patch_v13/**"
+      - "patch_v14/**"
+      - "scripts/apply_trader_room_tab.py"
+      - "scripts/trader_room_public.py"
+      - "data/trader-room/public/**"
+      - "tests/test_trader_room_dashboard.py"
       - "data/overnight/**"
       - "tests/test_overnight_pipeline.py"
       - "tests/test_overnight_scheduled_output.py"
@@ -246,6 +251,20 @@ jobs:
           grep -Fq 'Last 24 Hours · Desk Summary' _site/index.html
           grep -Fq 'Live 1–100 Score Board' _site/index.html
           grep -Fq '7-Day Quick Digest' _site/index.html
+          grep -Fq 'Market Data · official snapshot' _site/index.html
+
+      - name: Add Trader Room tab
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -m unittest tests.test_trader_room_dashboard -v
+          python scripts/apply_trader_room_tab.py _site/index.html
+          PYTHONPATH=. python scripts/trader_room_public.py --output _site/trader-room.json
+          test -s _site/trader-room.js
+          test -s _site/trader-room.json
+          grep -Fq 'for="p-traderroom"' _site/index.html
+          grep -Fq 'Trader Room · adversarial ideas' _site/index.html
+          grep -Fq 'Trader Book · paper P&L' _site/index.html
           grep -Fq 'Market Data · official snapshot' _site/index.html
 
       - name: Configure Pages
