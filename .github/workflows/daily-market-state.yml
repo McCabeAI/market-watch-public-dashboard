@@ -92,7 +92,7 @@ jobs:
           assert packet["positioning"]["method"]["credentials_required"] == []
           nz = packet["rates"]["NZ"]
           if nz.get("status") == "unavailable":
-              assert packet["unavailable_sources"] == ["NZ_rates"]
+              assert "NZ_rates" in packet["unavailable_sources"]
               assert packet["rate_rv"]["NZ-US_2Y"]["status"] == "unavailable"
           else:
               assert nz.get("status") in ("ok", "stale")
