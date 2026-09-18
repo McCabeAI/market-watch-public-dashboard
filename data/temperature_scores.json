@@ -1,12 +1,22 @@
 {
-  "version": 1,
-  "baseline_score": 50.0,
+  "version": 2,
+  "baseline_score": 50,
   "activation_date": "2026-09-17",
-  "impulse_scale": [-6, -4, -2, 0, 2, 4, 6],
+  "impulse_scale": [
+    -6,
+    -4,
+    -2,
+    0,
+    2,
+    4,
+    6
+  ],
   "countries": {
     "US": {
       "Inflation": {
-        "components": {"core_pce": 1.0},
+        "components": {
+          "core_pce": 1
+        },
         "events": [
           {
             "id": "bootstrap-us-inflation-core-pce-2026-07",
@@ -19,129 +29,525 @@
         ]
       },
       "Labor": {
-        "components": {"unemployment": 0.7, "wages": 0.2, "payrolls": 0.1},
+        "components": {
+          "unemployment": 0.7,
+          "wages": 0.2,
+          "payrolls": 0.1
+        },
         "events": [
-          {"id": "bootstrap-us-labor-unemployment-2026-08", "as_of": "2026-08", "component": "unemployment", "impulse": 0, "basis": "Unemployment 4.1%, unchanged in August.", "source": "BLS"},
-          {"id": "bootstrap-us-labor-wages-2026-08", "as_of": "2026-08", "component": "wages", "impulse": 0, "basis": "Average hourly earnings +0.3% m/m and +3.1% y/y; treated as broadly unchanged for bootstrap.", "source": "BLS"},
-          {"id": "bootstrap-us-labor-payrolls-2026-08", "as_of": "2026-08", "component": "payrolls", "impulse": 2, "basis": "Nonfarm payrolls +162k with positive prior-month revisions; modestly stronger.", "source": "BLS"}
+          {
+            "id": "bootstrap-us-labor-unemployment-2026-08",
+            "as_of": "2026-08",
+            "component": "unemployment",
+            "impulse": 0,
+            "basis": "Unemployment 4.1%, unchanged in August.",
+            "source": "BLS"
+          },
+          {
+            "id": "bootstrap-us-labor-wages-2026-08",
+            "as_of": "2026-08",
+            "component": "wages",
+            "impulse": 0,
+            "basis": "Average hourly earnings +0.3% m/m and +3.1% y/y; treated as broadly unchanged for bootstrap.",
+            "source": "BLS"
+          },
+          {
+            "id": "bootstrap-us-labor-payrolls-2026-08",
+            "as_of": "2026-08",
+            "component": "payrolls",
+            "impulse": 2,
+            "basis": "Nonfarm payrolls +162k with positive prior-month revisions; modestly stronger.",
+            "source": "BLS"
+          }
         ]
       },
       "Activity": {
-        "components": {"gdp_domestic_demand": 0.6, "services_surveys": 0.28, "manufacturing_surveys": 0.12},
+        "components": {
+          "gdp_domestic_demand": 0.6,
+          "services_surveys": 0.28,
+          "manufacturing_surveys": 0.12
+        },
         "events": [
-          {"id": "bootstrap-us-activity-gdp-2026-q2", "as_of": "2026-Q2", "component": "gdp_domestic_demand", "impulse": -2, "basis": "Real GDP +1.5% SAAR versus +2.1% in Q1; modest deceleration.", "source": "BEA"},
-          {"id": "bootstrap-us-activity-services-2026-08", "as_of": "2026-08", "component": "services_surveys", "impulse": 4, "basis": "ISM Services PMI 55.4 from 54.1, with business activity and new orders above 60; clearly stronger.", "source": "ISM"},
-          {"id": "bootstrap-us-activity-manufacturing-2026-08", "as_of": "2026-08", "component": "manufacturing_surveys", "impulse": 0, "basis": "ISM Manufacturing 54.6 from 55.6 but still expansionary; mixed bootstrap signal.", "source": "ISM"}
+          {
+            "id": "bootstrap-us-activity-gdp-2026-q2",
+            "as_of": "2026-Q2",
+            "component": "gdp_domestic_demand",
+            "impulse": -2,
+            "basis": "Real GDP +1.5% SAAR versus +2.1% in Q1; modest deceleration.",
+            "source": "BEA"
+          },
+          {
+            "id": "bootstrap-us-activity-services-2026-08",
+            "as_of": "2026-08",
+            "component": "services_surveys",
+            "impulse": 4,
+            "basis": "ISM Services PMI 55.4 from 54.1, with business activity and new orders above 60; clearly stronger.",
+            "source": "ISM"
+          },
+          {
+            "id": "bootstrap-us-activity-manufacturing-2026-08",
+            "as_of": "2026-08",
+            "component": "manufacturing_surveys",
+            "impulse": 0,
+            "basis": "ISM Manufacturing 54.6 from 55.6 but still expansionary; mixed bootstrap signal.",
+            "source": "ISM"
+          }
         ]
       },
       "Consumer": {
-        "components": {"retail": 0.25, "income": 0.25, "spending": 0.25, "confidence": 0.25},
+        "components": {
+          "retail": 0.25,
+          "income": 0.25,
+          "spending": 0.25,
+          "confidence": 0.25
+        },
         "events": [
-          {"id": "bootstrap-us-consumer-retail-2026-07", "as_of": "2026-07", "component": "retail", "impulse": -4, "basis": "Retail and food services -0.6% m/m; clearly weaker.", "source": "Census"},
-          {"id": "bootstrap-us-consumer-income-2026-07", "as_of": "2026-07", "component": "income", "impulse": 2, "basis": "Personal income +0.4% m/m and disposable personal income +0.5%; modestly stronger.", "source": "BEA"},
-          {"id": "bootstrap-us-consumer-spending-2026-07", "as_of": "2026-07", "component": "spending", "impulse": 0, "basis": "Nominal PCE +0.2% m/m while real PCE was less than +0.1%; mixed.", "source": "BEA"},
-          {"id": "bootstrap-us-consumer-confidence-2026-08", "as_of": "2026-08", "component": "confidence", "impulse": -4, "basis": "Conference Board confidence and Michigan sentiment both declined; clearly weaker.", "source": "Conference Board / Michigan"}
+          {
+            "id": "bootstrap-us-consumer-retail-2026-07",
+            "as_of": "2026-07",
+            "component": "retail",
+            "impulse": -4,
+            "basis": "Retail and food services -0.6% m/m; clearly weaker.",
+            "source": "Census"
+          },
+          {
+            "id": "bootstrap-us-consumer-income-2026-07",
+            "as_of": "2026-07",
+            "component": "income",
+            "impulse": 2,
+            "basis": "Personal income +0.4% m/m and disposable personal income +0.5%; modestly stronger.",
+            "source": "BEA"
+          },
+          {
+            "id": "bootstrap-us-consumer-spending-2026-07",
+            "as_of": "2026-07",
+            "component": "spending",
+            "impulse": 0,
+            "basis": "Nominal PCE +0.2% m/m while real PCE was less than +0.1%; mixed.",
+            "source": "BEA"
+          },
+          {
+            "id": "bootstrap-us-consumer-confidence-2026-08",
+            "as_of": "2026-08",
+            "component": "confidence",
+            "impulse": -4,
+            "basis": "Conference Board confidence and Michigan sentiment both declined; clearly weaker.",
+            "source": "Conference Board / Michigan"
+          },
+          {
+            "id": "us-consumer-retail-2026-08",
+            "as_of": "2026-08",
+            "released_at": "2026-09-16",
+            "component": "retail",
+            "impulse": 4,
+            "basis": "Advance retail and food services sales rose 1.2% m/m in August after July was revised to -0.5%; clearly stronger.",
+            "source": "U.S. Census Bureau"
+          },
+          {
+            "id": "us-consumer-confidence-2026-09",
+            "as_of": "2026-09",
+            "released_at": "2026-09-11",
+            "component": "confidence",
+            "impulse": -4,
+            "basis": "Michigan preliminary September sentiment fell 7.5% m/m to 47.8 from 51.7, with expectations down 11.1%; clearly weaker.",
+            "source": "University of Michigan Surveys of Consumers"
+          }
         ]
       }
     },
     "CA": {
       "Inflation": {
-        "components": {"underlying": 0.6, "headline": 0.4},
+        "components": {
+          "underlying": 0.6,
+          "headline": 0.4
+        },
         "events": [
-          {"id": "bootstrap-ca-inflation-underlying-2026-08", "as_of": "2026-08", "component": "underlying", "impulse": 0, "basis": "CPI-trim 1.9% and CPI-median 2.0%; broadly stable near target.", "source": "Statistics Canada"},
-          {"id": "bootstrap-ca-inflation-headline-2026-08", "as_of": "2026-08", "component": "headline", "impulse": 0, "basis": "Headline CPI held at 3.0% y/y; unchanged.", "source": "Statistics Canada"}
+          {
+            "id": "bootstrap-ca-inflation-underlying-2026-08",
+            "as_of": "2026-08",
+            "component": "underlying",
+            "impulse": 0,
+            "basis": "CPI-trim 1.9% and CPI-median 2.0%; broadly stable near target.",
+            "source": "Statistics Canada"
+          },
+          {
+            "id": "bootstrap-ca-inflation-headline-2026-08",
+            "as_of": "2026-08",
+            "component": "headline",
+            "impulse": 0,
+            "basis": "Headline CPI held at 3.0% y/y; unchanged.",
+            "source": "Statistics Canada"
+          }
         ]
       },
       "Labor": {
-        "components": {"unemployment": 0.7, "wages": 0.2, "employment": 0.1},
+        "components": {
+          "unemployment": 0.7,
+          "wages": 0.2,
+          "employment": 0.1
+        },
         "events": [
-          {"id": "bootstrap-ca-labor-unemployment-2026-08", "as_of": "2026-08", "component": "unemployment", "impulse": 0, "basis": "Unemployment 6.4%, unchanged.", "source": "Statistics Canada"},
-          {"id": "bootstrap-ca-labor-wages-2026-08", "as_of": "2026-08", "component": "wages", "impulse": -4, "basis": "Average hourly wages +2.0% y/y versus +2.8% in July; clearly cooler.", "source": "Statistics Canada"},
-          {"id": "bootstrap-ca-labor-employment-2026-08", "as_of": "2026-08", "component": "employment", "impulse": -4, "basis": "Employment -42k in August; clearly weaker.", "source": "Statistics Canada"}
+          {
+            "id": "bootstrap-ca-labor-unemployment-2026-08",
+            "as_of": "2026-08",
+            "component": "unemployment",
+            "impulse": 0,
+            "basis": "Unemployment 6.4%, unchanged.",
+            "source": "Statistics Canada"
+          },
+          {
+            "id": "bootstrap-ca-labor-wages-2026-08",
+            "as_of": "2026-08",
+            "component": "wages",
+            "impulse": -4,
+            "basis": "Average hourly wages +2.0% y/y versus +2.8% in July; clearly cooler.",
+            "source": "Statistics Canada"
+          },
+          {
+            "id": "bootstrap-ca-labor-employment-2026-08",
+            "as_of": "2026-08",
+            "component": "employment",
+            "impulse": -4,
+            "basis": "Employment -42k in August; clearly weaker.",
+            "source": "Statistics Canada"
+          }
         ]
       },
       "Activity": {
-        "components": {"gdp_domestic_demand": 0.6, "business_surveys": 0.4},
+        "components": {
+          "gdp_domestic_demand": 0.6,
+          "business_surveys": 0.4
+        },
         "events": [
-          {"id": "bootstrap-ca-activity-gdp-2026-q2", "as_of": "2026-Q2", "component": "gdp_domestic_demand", "impulse": 4, "basis": "Real GDP +0.8% q/q versus revised +0.1% in Q1; clearly stronger.", "source": "Statistics Canada"},
-          {"id": "bootstrap-ca-activity-surveys-2026-08", "as_of": "2026-08", "component": "business_surveys", "impulse": 2, "basis": "Ivey PMI accelerated sharply while the BoC Business Outlook remained softer; net modestly stronger.", "source": "Ivey / Bank of Canada"}
+          {
+            "id": "bootstrap-ca-activity-gdp-2026-q2",
+            "as_of": "2026-Q2",
+            "component": "gdp_domestic_demand",
+            "impulse": 4,
+            "basis": "Real GDP +0.8% q/q versus revised +0.1% in Q1; clearly stronger.",
+            "source": "Statistics Canada"
+          },
+          {
+            "id": "bootstrap-ca-activity-surveys-2026-08",
+            "as_of": "2026-08",
+            "component": "business_surveys",
+            "impulse": 2,
+            "basis": "Ivey PMI accelerated sharply while the BoC Business Outlook remained softer; net modestly stronger.",
+            "source": "Ivey / Bank of Canada"
+          }
         ]
       },
       "Consumer": {
-        "components": {"retail": 0.25, "income": 0.25, "spending": 0.25, "confidence": 0.25},
+        "components": {
+          "retail": 0.25,
+          "income": 0.25,
+          "spending": 0.25,
+          "confidence": 0.25
+        },
         "events": [
-          {"id": "bootstrap-ca-consumer-retail-2026-06", "as_of": "2026-06", "component": "retail", "impulse": 4, "basis": "Retail sales +0.6% m/m, core retail +1.2%, and volumes +1.5%; clearly stronger.", "source": "Statistics Canada"},
-          {"id": "bootstrap-ca-consumer-income-2026-q2", "as_of": "2026-Q2", "component": "income", "impulse": 4, "basis": "Household disposable income +2.1% q/q; clearly stronger.", "source": "Statistics Canada"},
-          {"id": "bootstrap-ca-consumer-spending-2026-q2", "as_of": "2026-Q2", "component": "spending", "impulse": 4, "basis": "Household consumption +0.8% q/q; clearly stronger.", "source": "Statistics Canada"},
-          {"id": "bootstrap-ca-consumer-confidence-2026-q2", "as_of": "2026-Q2", "component": "confidence", "impulse": -2, "basis": "BoC consumer expectations remained subdued and spending intentions edged down; modestly weaker.", "source": "Bank of Canada"}
+          {
+            "id": "bootstrap-ca-consumer-retail-2026-06",
+            "as_of": "2026-06",
+            "component": "retail",
+            "impulse": 4,
+            "basis": "Retail sales +0.6% m/m, core retail +1.2%, and volumes +1.5%; clearly stronger.",
+            "source": "Statistics Canada"
+          },
+          {
+            "id": "bootstrap-ca-consumer-income-2026-q2",
+            "as_of": "2026-Q2",
+            "component": "income",
+            "impulse": 4,
+            "basis": "Household disposable income +2.1% q/q; clearly stronger.",
+            "source": "Statistics Canada"
+          },
+          {
+            "id": "bootstrap-ca-consumer-spending-2026-q2",
+            "as_of": "2026-Q2",
+            "component": "spending",
+            "impulse": 4,
+            "basis": "Household consumption +0.8% q/q; clearly stronger.",
+            "source": "Statistics Canada"
+          },
+          {
+            "id": "bootstrap-ca-consumer-confidence-2026-q2",
+            "as_of": "2026-Q2",
+            "component": "confidence",
+            "impulse": -2,
+            "basis": "BoC consumer expectations remained subdued and spending intentions edged down; modestly weaker.",
+            "source": "Bank of Canada"
+          }
         ]
       }
     },
     "AU": {
       "Inflation": {
-        "components": {"underlying": 0.6, "headline": 0.4},
+        "components": {
+          "underlying": 0.6,
+          "headline": 0.4
+        },
         "events": [
-          {"id": "bootstrap-au-inflation-underlying-2026-07", "as_of": "2026-07", "component": "underlying", "impulse": 0, "basis": "Trimmed mean CPI 3.6% y/y, unchanged from June.", "source": "ABS"},
-          {"id": "bootstrap-au-inflation-headline-2026-07", "as_of": "2026-07", "component": "headline", "impulse": -2, "basis": "Headline CPI eased to 3.5% y/y from 3.8%; modestly cooler.", "source": "ABS"}
+          {
+            "id": "bootstrap-au-inflation-underlying-2026-07",
+            "as_of": "2026-07",
+            "component": "underlying",
+            "impulse": 0,
+            "basis": "Trimmed mean CPI 3.6% y/y, unchanged from June.",
+            "source": "ABS"
+          },
+          {
+            "id": "bootstrap-au-inflation-headline-2026-07",
+            "as_of": "2026-07",
+            "component": "headline",
+            "impulse": -2,
+            "basis": "Headline CPI eased to 3.5% y/y from 3.8%; modestly cooler.",
+            "source": "ABS"
+          }
         ]
       },
       "Labor": {
-        "components": {"unemployment": 0.7, "wages": 0.2, "employment": 0.1},
+        "components": {
+          "unemployment": 0.7,
+          "wages": 0.2,
+          "employment": 0.1
+        },
         "events": [
-          {"id": "bootstrap-au-labor-unemployment-2026-07", "as_of": "2026-07", "component": "unemployment", "impulse": -2, "basis": "Unemployment rose to 4.5% from 4.4%; modestly looser.", "source": "ABS"},
-          {"id": "bootstrap-au-labor-wages-2026-q2", "as_of": "2026-Q2", "component": "wages", "impulse": -2, "basis": "Wage Price Index +3.2% y/y versus +3.4% a year earlier; modestly cooler.", "source": "ABS"},
-          {"id": "bootstrap-au-labor-employment-2026-07", "as_of": "2026-07", "component": "employment", "impulse": -4, "basis": "Employment -15.8k m/m; clearly weaker.", "source": "ABS"}
+          {
+            "id": "bootstrap-au-labor-unemployment-2026-07",
+            "as_of": "2026-07",
+            "component": "unemployment",
+            "impulse": -2,
+            "basis": "Unemployment rose to 4.5% from 4.4%; modestly looser.",
+            "source": "ABS"
+          },
+          {
+            "id": "bootstrap-au-labor-wages-2026-q2",
+            "as_of": "2026-Q2",
+            "component": "wages",
+            "impulse": -2,
+            "basis": "Wage Price Index +3.2% y/y versus +3.4% a year earlier; modestly cooler.",
+            "source": "ABS"
+          },
+          {
+            "id": "bootstrap-au-labor-employment-2026-07",
+            "as_of": "2026-07",
+            "component": "employment",
+            "impulse": -4,
+            "basis": "Employment -15.8k m/m; clearly weaker.",
+            "source": "ABS"
+          }
         ]
       },
       "Activity": {
-        "components": {"gdp_domestic_demand": 0.6, "business_surveys": 0.4},
+        "components": {
+          "gdp_domestic_demand": 0.6,
+          "business_surveys": 0.4
+        },
         "events": [
-          {"id": "bootstrap-au-activity-gdp-2026-q2", "as_of": "2026-Q2", "component": "gdp_domestic_demand", "impulse": 0, "basis": "Real GDP +0.4% q/q and domestic final demand +0.3%; bootstrap treated as mixed/unchanged.", "source": "ABS"},
-          {"id": "bootstrap-au-activity-surveys-2026-08", "as_of": "2026-08", "component": "business_surveys", "impulse": -2, "basis": "RBA reported business conditions declined modestly and confidence remained below its long-run average; modestly weaker.", "source": "RBA"}
+          {
+            "id": "bootstrap-au-activity-gdp-2026-q2",
+            "as_of": "2026-Q2",
+            "component": "gdp_domestic_demand",
+            "impulse": 0,
+            "basis": "Real GDP +0.4% q/q and domestic final demand +0.3%; bootstrap treated as mixed/unchanged.",
+            "source": "ABS"
+          },
+          {
+            "id": "bootstrap-au-activity-surveys-2026-08",
+            "as_of": "2026-08",
+            "component": "business_surveys",
+            "impulse": -2,
+            "basis": "RBA reported business conditions declined modestly and confidence remained below its long-run average; modestly weaker.",
+            "source": "RBA"
+          }
         ]
       },
       "Consumer": {
-        "components": {"retail": 0.25, "income": 0.25, "spending": 0.25, "confidence": 0.25},
+        "components": {
+          "retail": 0.25,
+          "income": 0.25,
+          "spending": 0.25,
+          "confidence": 0.25
+        },
         "events": [
-          {"id": "bootstrap-au-consumer-retail-2026-07", "as_of": "2026-07", "component": "retail", "impulse": 0, "basis": "No clean retail comparison in the current score evidence; zero bootstrap impulse.", "source": "current evidence"},
-          {"id": "bootstrap-au-consumer-income-2026-q2", "as_of": "2026-Q2", "component": "income", "impulse": 2, "basis": "Household gross disposable income +1.1% q/q; modestly stronger.", "source": "ABS"},
-          {"id": "bootstrap-au-consumer-spending-2026-07", "as_of": "2026-07", "component": "spending", "impulse": 4, "basis": "Monthly household spending +1.1% m/m, the third consecutive increase; clearly stronger.", "source": "ABS"},
-          {"id": "bootstrap-au-consumer-confidence-2026-08", "as_of": "2026-08", "component": "confidence", "impulse": 2, "basis": "Westpac-MI sentiment rose 6% from July, though remained pessimistic; modestly stronger.", "source": "Westpac"}
+          {
+            "id": "bootstrap-au-consumer-retail-2026-07",
+            "as_of": "2026-07",
+            "component": "retail",
+            "impulse": 0,
+            "basis": "No clean retail comparison in the current score evidence; zero bootstrap impulse.",
+            "source": "current evidence"
+          },
+          {
+            "id": "bootstrap-au-consumer-income-2026-q2",
+            "as_of": "2026-Q2",
+            "component": "income",
+            "impulse": 2,
+            "basis": "Household gross disposable income +1.1% q/q; modestly stronger.",
+            "source": "ABS"
+          },
+          {
+            "id": "bootstrap-au-consumer-spending-2026-07",
+            "as_of": "2026-07",
+            "component": "spending",
+            "impulse": 4,
+            "basis": "Monthly household spending +1.1% m/m, the third consecutive increase; clearly stronger.",
+            "source": "ABS"
+          },
+          {
+            "id": "bootstrap-au-consumer-confidence-2026-08",
+            "as_of": "2026-08",
+            "component": "confidence",
+            "impulse": 2,
+            "basis": "Westpac-MI sentiment rose 6% from July, though remained pessimistic; modestly stronger.",
+            "source": "Westpac"
+          },
+          {
+            "id": "au-consumer-confidence-2026-09",
+            "as_of": "2026-09",
+            "released_at": "2026-09-16",
+            "component": "confidence",
+            "impulse": -4,
+            "basis": "Westpac-Melbourne Institute Consumer Sentiment fell 5.2% to 84.4 from 88.9, with a broad-based decline; clearly weaker.",
+            "source": "Westpac-Melbourne Institute"
+          }
         ]
       }
     },
     "NZ": {
       "Inflation": {
-        "components": {"underlying": 0.6, "headline": 0.4},
+        "components": {
+          "underlying": 0.6,
+          "headline": 0.4
+        },
         "events": [
-          {"id": "bootstrap-nz-inflation-underlying-2026-q2", "as_of": "2026-Q2", "component": "underlying", "impulse": 0, "basis": "CPI excluding food, household energy and vehicle fuels was 2.5% y/y; zero bootstrap impulse without a clean prior comparison.", "source": "Stats NZ"},
-          {"id": "bootstrap-nz-inflation-headline-2026-q2", "as_of": "2026-Q2", "component": "headline", "impulse": 4, "basis": "Headline CPI +1.5% q/q and 4.1% y/y, with a large fuel contribution; clearly hotter.", "source": "Stats NZ"}
+          {
+            "id": "bootstrap-nz-inflation-underlying-2026-q2",
+            "as_of": "2026-Q2",
+            "component": "underlying",
+            "impulse": 0,
+            "basis": "CPI excluding food, household energy and vehicle fuels was 2.5% y/y; zero bootstrap impulse without a clean prior comparison.",
+            "source": "Stats NZ"
+          },
+          {
+            "id": "bootstrap-nz-inflation-headline-2026-q2",
+            "as_of": "2026-Q2",
+            "component": "headline",
+            "impulse": 4,
+            "basis": "Headline CPI +1.5% q/q and 4.1% y/y, with a large fuel contribution; clearly hotter.",
+            "source": "Stats NZ"
+          }
         ]
       },
       "Labor": {
-        "components": {"unemployment": 0.7, "wages": 0.2, "employment": 0.1},
+        "components": {
+          "unemployment": 0.7,
+          "wages": 0.2,
+          "employment": 0.1
+        },
         "events": [
-          {"id": "bootstrap-nz-labor-unemployment-2026-q2", "as_of": "2026-Q2", "component": "unemployment", "impulse": -4, "basis": "Unemployment rose 0.2pp to 5.6%; clearly looser.", "source": "Stats NZ"},
-          {"id": "bootstrap-nz-labor-wages-2026-q2", "as_of": "2026-Q2", "component": "wages", "impulse": -2, "basis": "Labour Cost Index wage inflation +2.0% y/y; modestly cooler.", "source": "Stats NZ"},
-          {"id": "bootstrap-nz-labor-employment-2026-q2", "as_of": "2026-Q2", "component": "employment", "impulse": 2, "basis": "Employment +13k q/q; modestly stronger, with labor-force growth providing context.", "source": "Stats NZ"}
+          {
+            "id": "bootstrap-nz-labor-unemployment-2026-q2",
+            "as_of": "2026-Q2",
+            "component": "unemployment",
+            "impulse": -4,
+            "basis": "Unemployment rose 0.2pp to 5.6%; clearly looser.",
+            "source": "Stats NZ"
+          },
+          {
+            "id": "bootstrap-nz-labor-wages-2026-q2",
+            "as_of": "2026-Q2",
+            "component": "wages",
+            "impulse": -2,
+            "basis": "Labour Cost Index wage inflation +2.0% y/y; modestly cooler.",
+            "source": "Stats NZ"
+          },
+          {
+            "id": "bootstrap-nz-labor-employment-2026-q2",
+            "as_of": "2026-Q2",
+            "component": "employment",
+            "impulse": 2,
+            "basis": "Employment +13k q/q; modestly stronger, with labor-force growth providing context.",
+            "source": "Stats NZ"
+          }
         ]
       },
       "Activity": {
-        "components": {"gdp_domestic_demand": 0.6, "business_surveys": 0.4},
+        "components": {
+          "gdp_domestic_demand": 0.6,
+          "business_surveys": 0.4
+        },
         "events": [
-          {"id": "bootstrap-nz-activity-gdp-2026-q1", "as_of": "2026-Q1", "component": "gdp_domestic_demand", "impulse": 4, "basis": "Real GDP +0.8% q/q; clearly stronger current hard activity observation.", "source": "Stats NZ"},
-          {"id": "bootstrap-nz-activity-surveys-2026-08", "as_of": "2026-08", "component": "business_surveys", "impulse": 2, "basis": "PMI remained expansionary and ANZ business/own-activity readings remained high despite easing; net modestly stronger.", "source": "BusinessNZ / ANZ"}
+          {
+            "id": "bootstrap-nz-activity-gdp-2026-q1",
+            "as_of": "2026-Q1",
+            "component": "gdp_domestic_demand",
+            "impulse": 4,
+            "basis": "Real GDP +0.8% q/q; clearly stronger current hard activity observation.",
+            "source": "Stats NZ"
+          },
+          {
+            "id": "bootstrap-nz-activity-surveys-2026-08",
+            "as_of": "2026-08",
+            "component": "business_surveys",
+            "impulse": 2,
+            "basis": "PMI remained expansionary and ANZ business/own-activity readings remained high despite easing; net modestly stronger.",
+            "source": "BusinessNZ / ANZ"
+          },
+          {
+            "id": "nz-activity-gdp-2026-q2",
+            "as_of": "2026-Q2",
+            "released_at": "2026-09-17",
+            "component": "gdp_domestic_demand",
+            "impulse": -2,
+            "basis": "Real GDP slowed to +0.2% q/q from +0.8% in Q1 while expenditure GDP rose 0.4%; modestly cooler, not contractionary.",
+            "source": "Stats NZ"
+          }
         ]
       },
       "Consumer": {
-        "components": {"retail": 0.25, "income": 0.25, "spending": 0.25, "confidence": 0.25},
+        "components": {
+          "retail": 0.25,
+          "income": 0.25,
+          "spending": 0.25,
+          "confidence": 0.25
+        },
         "events": [
-          {"id": "bootstrap-nz-consumer-retail-2026-q2", "as_of": "2026-Q2", "component": "retail", "impulse": -4, "basis": "Retail sales volume -0.5% q/q; clearly weaker.", "source": "Stats NZ"},
-          {"id": "bootstrap-nz-consumer-income-2026-q2", "as_of": "2026-Q2", "component": "income", "impulse": 0, "basis": "No pinned current income observation in the score evidence; zero bootstrap impulse.", "source": "current evidence"},
-          {"id": "bootstrap-nz-consumer-spending-2026-q2", "as_of": "2026-Q2", "component": "spending", "impulse": 0, "basis": "No pinned broad spending observation in the score evidence; zero bootstrap impulse.", "source": "current evidence"},
-          {"id": "bootstrap-nz-consumer-confidence-2026-08", "as_of": "2026-08", "component": "confidence", "impulse": -2, "basis": "ANZ-Roy Morgan confidence fell 1 point to 98.0 and remained below par; modestly weaker.", "source": "ANZ"}
+          {
+            "id": "bootstrap-nz-consumer-retail-2026-q2",
+            "as_of": "2026-Q2",
+            "component": "retail",
+            "impulse": -4,
+            "basis": "Retail sales volume -0.5% q/q; clearly weaker.",
+            "source": "Stats NZ"
+          },
+          {
+            "id": "bootstrap-nz-consumer-income-2026-q2",
+            "as_of": "2026-Q2",
+            "component": "income",
+            "impulse": 0,
+            "basis": "No pinned current income observation in the score evidence; zero bootstrap impulse.",
+            "source": "current evidence"
+          },
+          {
+            "id": "bootstrap-nz-consumer-spending-2026-q2",
+            "as_of": "2026-Q2",
+            "component": "spending",
+            "impulse": 0,
+            "basis": "No pinned broad spending observation in the score evidence; zero bootstrap impulse.",
+            "source": "current evidence"
+          },
+          {
+            "id": "bootstrap-nz-consumer-confidence-2026-08",
+            "as_of": "2026-08",
+            "component": "confidence",
+            "impulse": -2,
+            "basis": "ANZ-Roy Morgan confidence fell 1 point to 98.0 and remained below par; modestly weaker.",
+            "source": "ANZ"
+          }
         ]
       }
     }
-  }
+  },
+  "last_refresh_date": "2026-09-17"
 }
