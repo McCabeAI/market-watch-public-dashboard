@@ -785,7 +785,7 @@ def build_snapshot(
             "status": "unavailable",
             "error": "positioning collection disabled for this invocation",
             "cftc_tff": {"status": "unavailable", "error": "positioning collection disabled for this invocation", "instruments": {}},
-            "cme": {"status": "unavailable", "error": "positioning collection disabled for this invocation", "futures": {}, "monthly_options": {}},
+            "cme": {"status": "unavailable", "error": "positioning collection disabled for this invocation", "instruments": {}},
             "method": {"model_calls": 0, "credentials_required": []},
         }
     )
@@ -861,9 +861,9 @@ def build_snapshot(
                 **({"error": positioning["cftc_tff"].get("error")} if positioning["cftc_tff"].get("status") == "unavailable" else {}),
             },
             "CME_positioning": {
-                "name": "CME Group Daily Bulletin FX futures and options open interest",
-                "url": positioning["cme"].get("source_url", "https://www.cmegroup.com/market-data/daily-bulletin.html"),
-                "download_url": positioning["cme"].get("download_url", "https://www.cmegroup.com/daily_bulletin/current/Section01B_Summary_Volume_And_Open_Interest_FX_Futures_And_Options.pdf"),
+                "name": "CME Group FX futures and options volume/open-interest service",
+                "url": positioning["cme"].get("source_url", "https://www.cmegroup.com/market-data/volume-open-interest.html"),
+                "download_url": positioning["cme"].get("api_template", "https://www.cmegroup.com/CmeWS/mvc/Volume/LastTotals/{product_id}?days=30"),
                 "observation_date": positioning["cme"].get("trade_date"),
                 "status": positioning["cme"].get("status"),
                 **({"error": positioning["cme"].get("error")} if positioning["cme"].get("status") == "unavailable" else {}),
@@ -891,7 +891,7 @@ def build_snapshot(
                 "US, Canada, Australia and ECB FX are required; a blocked official RBNZ source "
                 "marks NZ rates and NZ-dependent RV spreads unavailable without fabricating data. "
                 "Cross-country spreads use exact common observation dates only. "
-                "CFTC TFF supplies trader-class ownership/crowding context and CME Daily Bulletin supplies daily FX futures/open-interest and monthly-options overlays. "
+                "CFTC TFF supplies trader-class ownership/crowding context and CME's public volume/open-interest service supplies daily FX futures and aggregate options OI history. "
                 "No historical warehouse is written to GitHub or Supabase."
             ),
         },
