@@ -214,10 +214,7 @@ def _patch_top_board(html: str, scores: dict[str, dict[str, float]], state: dict
         "JAN", "FEB", "MAR", "APR", "MAY", "JUN",
         "JUL", "AUG", "SEP", "OCT", "NOV", "DEC",
     )[int(month) - 1]
-    meta_pattern = re.compile(
-        r'<div class="meta"><b>.*?</b><br>Official data \+ public market snapshot'
-        r'<br>Core controls are script-free</div>'
-    )
+    meta_pattern = re.compile(r'<div class="meta">.*?</div>', re.S)
     replacement = (
         f'<div class="meta"><b>SCORE DATA THROUGH {int(day)} {month_name} {year}</b><br>'
         'Live score ledger + official market-data tab<br>Core controls are script-free</div>'
