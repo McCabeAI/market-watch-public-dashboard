@@ -25,7 +25,7 @@ class TraderRoomDashboardTests(unittest.TestCase):
             html = """<style></style>
 <input id="p-traderbook" name="page" type="radio"/>
 <label for="p-traderbook">Trader Book</label>
-<section class="page traderbook">Trader Book · paper P&amp;L</section>
+<section class="page traderbook">Trader Book · paper P&L</section>
 <section class="page relative"></section>
 <div>Last 24 Hours · Desk Summary</div>
 <div>Live 1–100 Score Board</div>
