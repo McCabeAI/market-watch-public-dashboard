@@ -4,13 +4,13 @@ on:
   push:
     branches: [main]
     paths-ignore:
-      # Intermediate overnight ledger commits must not publish before 04:07 ET.
+      # Intermediate overnight ledger commits must not publish before the scheduled morning release.
       - "data/overnight/runs/**"
       - "data/overnight/latest.json"
       - "data/overnight/books/**"
       - "data/overnight/README.md"
   schedule:
-    - cron: "7 4 * * 1-5"
+    - cron: "15 4 * * 1-5"
       timezone: "America/New_York"
   workflow_dispatch:
   pull_request:
@@ -228,14 +228,16 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          PYTHONPATH=. python -m unittest tests.test_overnight_pipeline
+          PYTHONPATH=. python -m unittest tests.test_overnight_pipeline tests.test_overnight_cursor_runtime
 
       - name: Add Trader Book tab
         shell: bash
         run: |
           set -euo pipefail
           python scripts/apply_trader_book_tab.py _site/index.html
-          PYTHONPATH=. python scripts/overnight_pipeline.py publish-check --site-dir _site
+          REQUIRE_DATASET=()
+          if [ "$GITHUB_EVENT_NAME" = "schedule" ]; then REQUIRE_DATASET=(--require-dataset); fi
+          PYTHONPATH=. python scripts/overnight_pipeline.py publish-check --site-dir _site "${REQUIRE_DATASET[@]}"
           test -s _site/trader-book.js
           test -s _site/trader-books.json
           grep -Fq 'for="p-traderbook"' _site/index.html
