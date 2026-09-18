@@ -15,7 +15,7 @@ Use four equally weighted hard components:
 
 Do not renormalize these weights because of release timing, stale data or missing inputs.
 
-The current displayed Consumer scores remain transition anchors unless separately rebuilt under this methodology. New qualifying releases move the score prospectively under these fixed weights.
+Consumer was reindexed to **50.0 on 2026-09-17**. The activation ledger applies current available hard evidence under these fixed weights; future qualifying releases append weighted impulses prospectively. Missing buckets add zero rather than freezing the dimension.
 
 ## 2. Interpretation
 
@@ -38,14 +38,16 @@ Route relevant business-survey evidence into Consumer as `CONTEXT ONLY` when it 
 
 ## 4. Source ownership
 
-Each country must explicitly identify the active source series or composite for all four hard buckets before the Consumer score is treated as fully auditable.
+Each score event must identify the source series or current proxy used for its hard bucket. Canonical source ownership should still be tightened over time, but an unresolved long-run source choice does not freeze an otherwise usable live score.
 
-Until a bucket's exact source is pinned:
+When a bucket's permanent source is not yet pinned:
 
 - preserve the 25% hard weight;
-- display a `LINEAGE GAP` for the unresolved source ownership;
-- show relevant official observations and survey evidence as context;
-- do not invent a source or provider weighting merely to move the score.
+- record the actual current observable/proxy used and its provenance in the score ledger;
+- show the unresolved source ownership in lineage;
+- apply the observable's classified impulse when evidence is sufficient;
+- otherwise use a zero impulse for that bucket;
+- do not invent or silently renormalize weights.
 
 ## 5. Score mechanics
 
