@@ -120,6 +120,69 @@ def _event_weight(spec: dict[str, Any], event: dict[str, Any]) -> float:
     return float(spec["components"][event["component"]])
 
 
+def _score_overview_html(scores: dict[str, dict[str, float]], state: dict[str, Any]) -> str:
+    cells = []
+    for country in COUNTRY_KEYS:
+        values = " · ".join(
+            f"{dimension[:3]} {display_score(scores[country][dimension])}"
+            for dimension in DIMENSIONS
+        )
+        cells.append(
+            '<div style="padding:8px 10px;border:1px solid currentColor;border-radius:8px;">'
+            f'<b>{country}</b><div style="margin-top:4px;font-size:12px;">{values}</div></div>'
+        )
+
+    released_events = []
+    for country, dimensions in state["countries"].items():
+        for dimension, spec in dimensions.items():
+            for event in spec.get("events", []):
+                if not event.get("released_at"):
+                    continue
+                released_events.append(
+                    (
+                        str(event["released_at"]),
+                        country,
+                        dimension,
+                        event,
+                        _event_weight(spec, event) * int(event["impulse"]),
+                    )
+                )
+    released_events.sort(key=lambda item: (item[0], item[1], item[2], str(item[3]["id"])), reverse=True)
+    event_bits = []
+    for released_at, country, dimension, event, contribution in released_events[:4]:
+        event_bits.append(
+            f'<span><b>{country} {dimension}</b> {event.get("as_of", "")}: '
+            f'{int(event["impulse"]):+d} × {_event_weight(state["countries"][country][dimension], event):.0%} '
+            f'= {contribution:+.1f}</span>'
+        )
+
+    refreshed = state.get("last_refresh_date", state["activation_date"])
+    latest = ""
+    if event_bits:
+        latest = (
+            '<div style="margin-top:10px;font-size:11px;display:flex;flex-wrap:wrap;gap:6px 14px;">'
+            '<b>Latest scored releases</b>' + "".join(event_bits) + '</div>'
+        )
+    return (
+        '<div data-score-overview="live" style="margin:0 0 18px;padding:12px;'
+        'border:1px solid currentColor;border-radius:10px;">'
+        '<div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline;'
+        'margin-bottom:10px;"><b>Live 1–100 Score Board</b>'
+        f'<span style="font-size:11px;">score ledger through {refreshed}</span></div>'
+        '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;">'
+        + "".join(cells)
+        + '</div>' + latest + '</div>'
+    )
+
+
+def _patch_top_board(html: str, scores: dict[str, dict[str, float]], state: dict[str, Any]) -> str:
+    marker = '<div class="stitle">Temperature Board</div>'
+    if html.count(marker) != 1:
+        raise ValueError("expected one top-level Temperature Board marker")
+    replacement = _score_overview_html(scores, state) + '<div class="stitle">Macro Snapshot</div>'
+    return html.replace(marker, replacement, 1)
+
+
 def _patch_dimension(
     block: str,
     dimension: str,
@@ -174,6 +237,7 @@ def _patch_dimension(
 
 def apply_scores(html: str, state: dict[str, Any]) -> str:
     scores = all_scores(state)
+    html = _patch_top_board(html, scores, state)
     key_text = "50 = neutral baseline · fixed-weight hard-data impulses move the score"
     html = html.replace(
         "Tap any score to inspect hard inputs + corroborating evidence",
@@ -198,6 +262,10 @@ def apply_scores(html: str, state: dict[str, Any]) -> str:
         raise ValueError("expected 16 temperature score drawers")
     if html.count("Reindexed to 50 on 2026-09-17") != 16:
         raise ValueError("expected 16 reindexed lineage notes")
+    if html.count('data-score-overview="live"') != 1:
+        raise ValueError("expected one live top-level score overview")
+    if "Temperature Board" in html:
+        raise ValueError("stale top-level Temperature Board label remains")
     return html
 
 

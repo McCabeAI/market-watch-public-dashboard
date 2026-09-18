@@ -11,7 +11,9 @@ on:
       - ".github/workflows/deploy-pages.yml"
       - "patch_v12/**"
       - "data/temperature_scores.json"
+      - "data/score_source_registry.json"
       - "scripts/apply_temperature_scores.py"
+      - "scripts/validate_score_sources.py"
       - "tests/test_temperature_scores.py"
       - "docs/*SCORE*.md"
       - "docs/DAILY_REFRESH_V0.md"
@@ -160,9 +162,16 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          PYTHONPATH=. python scripts/validate_score_sources.py
           PYTHONPATH=. python -m unittest tests.test_temperature_scores
           PYTHONPATH=. python scripts/apply_temperature_scores.py _site/index.html --print-scores
           test "$(grep -o 'Reindexed to 50 on 2026-09-17' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
+          test "$(grep -o 'data-score-overview="live"' _site/index.html | wc -l | tr -d '[:space:]')" -eq 1
+          grep -Fq 'Live 1–100 Score Board' _site/index.html
+          if grep -Fq '>Temperature Board<' _site/index.html; then
+            echo "stale top-level Temperature Board label remains"
+            exit 1
+          fi
           if grep -Fq 'transition anchor' _site/index.html; then
             echo "stale transition-anchor language remains in built dashboard"
             exit 1

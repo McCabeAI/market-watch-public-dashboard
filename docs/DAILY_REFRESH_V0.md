@@ -259,6 +259,17 @@ Display mapping:
 
 Do not rebuild the score from a large historical distribution. V0 is an incremental release-update model indexed to the 50.0 activation baseline.
 
+### Scored-source checklist
+
+`data/score_source_registry.json` is the mandatory release-discovery checklist for the live score layer. Every daily refresh must inspect every registry entry whose cadence could have produced a new or revised observation since the prior successful refresh. Do not rely on the news scan to discover score releases. The registry is a coverage contract, not a second data warehouse.
+
+`scripts/validate_score_sources.py` must pass before publication. It verifies that every fixed score component has an explicit source/cadence entry and that the governed US CPI/PPI bridge remains explicitly covered.
+
+If a registry source is inaccessible, keep the prior verified observation, record the source failure in the refresh result, and do not invent a release or silently mark that component checked.
+
+The top-level dashboard score board is derived from the same `data/temperature_scores.json` ledger as the country drawers. The older contextual country cards are a macro snapshot, not an independent score source, and must not display a competing set of 1–100 scores.
+
+
 A dimension score changes when one of its defined hard inputs changes or is materially revised. Record that release as a new event in `data/temperature_scores.json` using the fixed component weight and the temperature impulse below. Missing or unresolved inputs contribute zero; they do not freeze the whole dimension and their weights are not redistributed.
 
 For each new observation, classify its **temperature impulse** relative to the immediately prior verified observation, the direction of the series, and a reliable consensus / policy-neutral reference only when such a reference is actually available.

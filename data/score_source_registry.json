@@ -1,0 +1,468 @@
+{
+  "version": 1,
+  "purpose": "Authoritative daily checklist for every component allowed to move the V0 temperature scores. The daily refresh must check every entry for a new or materially revised observation since the latest recorded event.",
+  "countries": {
+    "US": {
+      "Inflation": {
+        "core_pce": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "BEA",
+              "url": "https://www.bea.gov/data/personal-consumption-expenditures-price-index-excluding-food-and-energy"
+            }
+          ]
+        },
+        "mapped_bridge": {
+          "cadence": "monthly-between-Core-PCE-releases",
+          "sources": [
+            {
+              "publisher": "BLS CPI",
+              "url": "https://www.bls.gov/news.release/cpi.htm"
+            },
+            {
+              "publisher": "BLS PPI",
+              "url": "https://www.bls.gov/news.release/ppi.htm"
+            }
+          ],
+          "note": "Only BEA-mapped Core PCE source components can carry dynamic bridge weight; headline CPI/PPI never has standalone weight."
+        }
+      },
+      "Labor": {
+        "unemployment": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "BLS Employment Situation",
+              "url": "https://www.bls.gov/news.release/empsit.htm"
+            }
+          ]
+        },
+        "wages": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "BLS Employment Situation",
+              "url": "https://www.bls.gov/news.release/empsit.htm"
+            }
+          ]
+        },
+        "payrolls": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "BLS Employment Situation",
+              "url": "https://www.bls.gov/news.release/empsit.htm"
+            }
+          ]
+        }
+      },
+      "Activity": {
+        "gdp_domestic_demand": {
+          "cadence": "quarterly",
+          "sources": [
+            {
+              "publisher": "BEA GDP",
+              "url": "https://www.bea.gov/data/gdp/gross-domestic-product"
+            }
+          ]
+        },
+        "services_surveys": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "ISM Services",
+              "url": "https://www.ismworld.org/supply-management-news-and-reports/reports/ism-pmi-reports/services/"
+            }
+          ]
+        },
+        "manufacturing_surveys": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "ISM Manufacturing",
+              "url": "https://www.ismworld.org/supply-management-news-and-reports/reports/ism-pmi-reports/pmi/"
+            }
+          ]
+        }
+      },
+      "Consumer": {
+        "retail": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "U.S. Census Bureau",
+              "url": "https://www.census.gov/retail/sales.html"
+            }
+          ]
+        },
+        "income": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "BEA Personal Income and Outlays",
+              "url": "https://www.bea.gov/data/income-saving/personal-income"
+            }
+          ]
+        },
+        "spending": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "BEA Personal Income and Outlays",
+              "url": "https://www.bea.gov/data/consumer-spending/main"
+            }
+          ]
+        },
+        "confidence": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "University of Michigan Surveys of Consumers",
+              "url": "https://www.sca.isr.umich.edu/"
+            },
+            {
+              "publisher": "Conference Board Consumer Confidence",
+              "url": "https://www.conference-board.org/topics/consumer-confidence"
+            }
+          ]
+        }
+      }
+    },
+    "CA": {
+      "Inflation": {
+        "underlying": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "Statistics Canada CPI",
+              "url": "https://www.statcan.gc.ca/en/subjects-start/prices_and_price_indexes/consumer_price_indexes"
+            }
+          ]
+        },
+        "headline": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "Statistics Canada CPI",
+              "url": "https://www.statcan.gc.ca/en/subjects-start/prices_and_price_indexes/consumer_price_indexes"
+            }
+          ]
+        }
+      },
+      "Labor": {
+        "unemployment": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "Statistics Canada Labour Force Survey",
+              "url": "https://www.statcan.gc.ca/en/subjects-start/labour_"
+            }
+          ]
+        },
+        "wages": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "Statistics Canada Labour Force Survey",
+              "url": "https://www.statcan.gc.ca/en/subjects-start/labour_"
+            }
+          ]
+        },
+        "employment": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "Statistics Canada Labour Force Survey",
+              "url": "https://www.statcan.gc.ca/en/subjects-start/labour_"
+            }
+          ]
+        }
+      },
+      "Activity": {
+        "gdp_domestic_demand": {
+          "cadence": "monthly-and-quarterly",
+          "sources": [
+            {
+              "publisher": "Statistics Canada GDP",
+              "url": "https://www.statcan.gc.ca/en/subjects-start/economic_accounts"
+            }
+          ]
+        },
+        "business_surveys": {
+          "cadence": "monthly-or-quarterly",
+          "sources": [
+            {
+              "publisher": "Ivey PMI",
+              "url": "https://www.iveypmi.ca/"
+            },
+            {
+              "publisher": "Bank of Canada Business Outlook Survey",
+              "url": "https://www.bankofcanada.ca/publications/bos/"
+            }
+          ]
+        }
+      },
+      "Consumer": {
+        "retail": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "Statistics Canada Retail Trade",
+              "url": "https://www.statcan.gc.ca/en/subjects-start/retail_and_wholesale"
+            }
+          ]
+        },
+        "income": {
+          "cadence": "quarterly",
+          "sources": [
+            {
+              "publisher": "Statistics Canada Household Economic Accounts",
+              "url": "https://www.statcan.gc.ca/en/subjects-start/economic_accounts"
+            }
+          ]
+        },
+        "spending": {
+          "cadence": "quarterly",
+          "sources": [
+            {
+              "publisher": "Statistics Canada Household Consumption",
+              "url": "https://www.statcan.gc.ca/en/subjects-start/economic_accounts"
+            }
+          ]
+        },
+        "confidence": {
+          "cadence": "quarterly",
+          "sources": [
+            {
+              "publisher": "Bank of Canada Canadian Survey of Consumer Expectations",
+              "url": "https://www.bankofcanada.ca/publications/canadian-survey-of-consumer-expectations/"
+            }
+          ]
+        }
+      }
+    },
+    "AU": {
+      "Inflation": {
+        "underlying": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "Australian Bureau of Statistics CPI",
+              "url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia"
+            }
+          ]
+        },
+        "headline": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "Australian Bureau of Statistics CPI",
+              "url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia"
+            }
+          ]
+        }
+      },
+      "Labor": {
+        "unemployment": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "ABS Labour Force",
+              "url": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia"
+            }
+          ]
+        },
+        "wages": {
+          "cadence": "quarterly",
+          "sources": [
+            {
+              "publisher": "ABS Wage Price Index",
+              "url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/wage-price-index-australia"
+            }
+          ]
+        },
+        "employment": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "ABS Labour Force",
+              "url": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia"
+            }
+          ]
+        }
+      },
+      "Activity": {
+        "gdp_domestic_demand": {
+          "cadence": "quarterly",
+          "sources": [
+            {
+              "publisher": "ABS National Accounts",
+              "url": "https://www.abs.gov.au/statistics/economy/national-accounts/australian-national-accounts-national-income-expenditure-and-product"
+            }
+          ]
+        },
+        "business_surveys": {
+          "cadence": "monthly-or-quarterly",
+          "sources": [
+            {
+              "publisher": "Reserve Bank of Australia",
+              "url": "https://www.rba.gov.au/publications/smp/"
+            }
+          ]
+        }
+      },
+      "Consumer": {
+        "retail": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "ABS Retail Trade",
+              "url": "https://www.abs.gov.au/statistics/industry/retail-and-wholesale-trade/retail-trade-australia"
+            }
+          ]
+        },
+        "income": {
+          "cadence": "quarterly",
+          "sources": [
+            {
+              "publisher": "ABS National Accounts",
+              "url": "https://www.abs.gov.au/statistics/economy/national-accounts/australian-national-accounts-national-income-expenditure-and-product"
+            }
+          ]
+        },
+        "spending": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "ABS Monthly Household Spending Indicator",
+              "url": "https://www.abs.gov.au/statistics/economy/finance/monthly-household-spending-indicator"
+            }
+          ]
+        },
+        "confidence": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "Westpac-Melbourne Institute",
+              "url": "https://www.westpaciq.com.au/economics"
+            }
+          ]
+        }
+      }
+    },
+    "NZ": {
+      "Inflation": {
+        "underlying": {
+          "cadence": "quarterly",
+          "sources": [
+            {
+              "publisher": "Stats NZ CPI",
+              "url": "https://www.stats.govt.nz/topics/consumers-price-index"
+            }
+          ]
+        },
+        "headline": {
+          "cadence": "quarterly",
+          "sources": [
+            {
+              "publisher": "Stats NZ CPI",
+              "url": "https://www.stats.govt.nz/topics/consumers-price-index"
+            }
+          ]
+        }
+      },
+      "Labor": {
+        "unemployment": {
+          "cadence": "quarterly",
+          "sources": [
+            {
+              "publisher": "Stats NZ Labour Market Statistics",
+              "url": "https://www.stats.govt.nz/topics/labour-market"
+            }
+          ]
+        },
+        "wages": {
+          "cadence": "quarterly",
+          "sources": [
+            {
+              "publisher": "Stats NZ Labour Cost Index",
+              "url": "https://www.stats.govt.nz/topics/labour-market"
+            }
+          ]
+        },
+        "employment": {
+          "cadence": "quarterly",
+          "sources": [
+            {
+              "publisher": "Stats NZ Labour Market Statistics",
+              "url": "https://www.stats.govt.nz/topics/labour-market"
+            }
+          ]
+        }
+      },
+      "Activity": {
+        "gdp_domestic_demand": {
+          "cadence": "quarterly",
+          "sources": [
+            {
+              "publisher": "Stats NZ GDP",
+              "url": "https://www.stats.govt.nz/topics/gross-domestic-product"
+            }
+          ]
+        },
+        "business_surveys": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "BusinessNZ PMI",
+              "url": "https://businessnz.org.nz/pmi/"
+            },
+            {
+              "publisher": "ANZ Business Outlook",
+              "url": "https://www.anz.co.nz/about-us/economic-markets-research/business-outlook/"
+            }
+          ]
+        }
+      },
+      "Consumer": {
+        "retail": {
+          "cadence": "quarterly",
+          "sources": [
+            {
+              "publisher": "Stats NZ Retail Trade",
+              "url": "https://www.stats.govt.nz/topics/retail-trade"
+            }
+          ]
+        },
+        "income": {
+          "cadence": "quarterly",
+          "sources": [
+            {
+              "publisher": "Stats NZ Household Income / National Accounts",
+              "url": "https://www.stats.govt.nz/topics/households"
+            }
+          ]
+        },
+        "spending": {
+          "cadence": "quarterly",
+          "sources": [
+            {
+              "publisher": "Stats NZ National Accounts",
+              "url": "https://www.stats.govt.nz/topics/gross-domestic-product"
+            }
+          ]
+        },
+        "confidence": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "ANZ-Roy Morgan Consumer Confidence",
+              "url": "https://www.anz.co.nz/about-us/economic-markets-research/consumer-confidence/"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
