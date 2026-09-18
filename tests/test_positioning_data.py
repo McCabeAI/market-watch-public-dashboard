@@ -6,7 +6,7 @@ from datetime import date, timedelta
 from scripts.positioning_data import (
     build_positioning,
     parse_cftc_tff_rows,
-    parse_cme_fx_bulletin,
+    parse_cme_last_totals,
     validate_positioning,
 )
 
@@ -84,48 +84,60 @@ class PositioningDataTests(unittest.TestCase):
             }
         )
 
-    def test_cme_summary_parses_futures_and_monthly_options(self):
-        text = """
-PG01B BULLETIN # 179@ Thu, Sep 17, 2026
-EC EURO FX FUTURES 167803 8331 176134 818433 - 303 204770 852084
-JY JAPANESE YEN FUTURE 157840 3650 161490 431866 - 337 174853 306173
-BP BRITISH POUND FUTURE 108581 4620 113201 233149 + 2648 85390 235552
-AD AUSTRALIAN DLR FUTURES 63812 2758 66570 314753 - 2889 104976 153753
-CD CANADIAN DOLLAR FUTURE 60137 3456 63593 292853 + 6383 50958 207017
-NE NEW ZEALAND DOLLAR FUTURES 35743 4734 40477 95408 + 1773 52708 53206
-SF SWISS FRANC FUTURES 23635 540 24175 133267 + 1703 26133 70776
-SE SKR/USD CROSS RATE FUTURES 430 755 1185 5946 + 335 354 3211
-UN NKR/USD CROSS RATE FUTURES 272 309 581 8780 + 215 726 7101
-FUTURES ONLY-
- FX 746227 30381 776608 2877512 - 52542 844981 2326354
-OPTIONS ONLY-
- FX 35036 5600 40636 793885 + 11550 43045 732755
-ADU AUD/USD Monthly Options C 1441 1441 21182 + 1262 724 59533
-ADU AUD/USD Monthly Options P 2520 2520 27769 + 2366 731 20047
-CAU CAD/USD Monthly Options C 221 221 25996 + 193 163 35271
-CAU CAD/USD Monthly Options P 91 91 14904 + 40 567 19631
-EUU EUR/USD Monthly Options C 6631 600 7231 182584 + 3435 4454 157350
-EUU EUR/USD Monthly Options P 7198 5000 12198 185338 + 5468 8722 111248
-GBU GBP/USD Monthly Options C 770 770 32322 + 337 314 30156
-GBU GBP/USD Monthly Options P 1046 1046 33875 + 481 3464 54449
-JPU JPY/USD Monthly Options C 2286 2286 68096 - 233 4390 62516
-JPU JPY/USD Monthly Options P 1293 1293 49553 - 133 1898 45754
-CHU CHF/USD Monthly Options C 22 22 12861 + 10 111 17184
-CHU CHF/USD Monthly Options P 113 113 7198 + 102 66 6541
-ZN NZD/USD Monthly Options C 10 10 6317 + 10 2
-ZN NZD/USD Monthly Options P 9139
-"""
-        result = parse_cme_fx_bulletin(text, today=date(2026, 9, 18))
+    def test_cftc_treasury_contract_code_mapping(self):
+        d = date(2026, 9, 15)
+        rows = [
+            _cftc_row(d, "2-YEAR U.S. TREASURY NOTES", "042601", 3000000, 400000, 800000),
+            _cftc_row(d, "5-YEAR U.S. TREASURY NOTES", "044601", 3500000, 500000, 900000),
+            _cftc_row(d, "10-YEAR U.S. TREASURY NOTES", "043602", 4000000, 600000, 1000000),
+            _cftc_row(d, "U.S. TREASURY BONDS", "020601", 1000000, 100000, 250000),
+        ]
+        result = parse_cftc_tff_rows(rows, today=date(2026, 9, 18))
+        self.assertEqual(
+            {"US2Y", "US5Y", "US10Y", "US30Y"},
+            set(result["instruments"]),
+        )
+        self.assertEqual(
+            result["instruments"]["US2Y"]["cftc_contract_market_code"], "042601"
+        )
+
+    def test_cme_last_totals_parses_daily_futures_and_options_oi(self):
+        payload = {
+            "vdate": [
+                {
+                    "formattedDate": "20260915",
+                    "futureVolume": "70000",
+                    "optionVolume": "10000",
+                    "futureOi": "300000",
+                    "optionOi": "150000",
+                },
+                {
+                    "formattedDate": "20260916",
+                    "futureVolume": "80000",
+                    "optionVolume": "12000",
+                    "futureOi": "305000",
+                    "optionOi": "152000",
+                },
+                {
+                    "formattedDate": "20260917",
+                    "futureVolume": "90000",
+                    "optionVolume": "14000",
+                    "futureOi": "314753",
+                    "optionOi": "153753",
+                },
+            ]
+        }
+        result = parse_cme_last_totals(payload, ccy="AUD", today=date(2026, 9, 18))
         self.assertEqual(result["trade_date"], "2026-09-17")
-        self.assertEqual(result["futures"]["AUD"]["open_interest"], 314753)
-        self.assertEqual(result["futures"]["AUD"]["daily_change"], -2889)
-        self.assertEqual(result["futures"]["NOK"]["open_interest"], 8780)
-        self.assertEqual(result["monthly_options"]["AUD"]["call_open_interest"], 21182)
-        self.assertEqual(result["monthly_options"]["AUD"]["put_open_interest"], 27769)
-        self.assertGreater(result["monthly_options"]["AUD"]["put_call_oi_ratio"], 1.0)
-        self.assertEqual(result["monthly_options"]["NZD"]["put_open_interest"], 9139)
-        self.assertEqual(result["aggregate_fx"]["futures"]["open_interest"], 2877512)
-        self.assertEqual(result["aggregate_fx"]["options"]["open_interest"], 793885)
+        self.assertEqual(result["product_id"], "37")
+        self.assertEqual(result["future_open_interest"], 314753)
+        self.assertEqual(result["future_oi_daily_change"], 9753)
+        self.assertEqual(result["option_open_interest"], 153753)
+        self.assertEqual(result["option_oi_daily_change"], 1753)
+        self.assertEqual(result["future_volume"], 90000)
+        self.assertEqual(result["option_volume"], 14000)
+        self.assertGreater(result["options_to_futures_oi_ratio"], 0)
+        self.assertEqual(len(result["history"]), 3)
 
     def test_build_positioning_fails_soft_by_source(self):
         def broken_fetch(url: str, **_kwargs) -> bytes:
