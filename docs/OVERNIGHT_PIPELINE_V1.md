@@ -48,7 +48,7 @@ Schedules are declared directly in `America/New_York` using GitHub Actions timez
 | `trader_review` | 02:05 | Lightweight 14-seat portfolio-management review |
 | `final_delta` | 03:35 | Refresh final market/news delta |
 | `assemble` | 03:50 | Build/validate one canonical morning dataset |
-| `publish` | 04:07 | Pages build/deploy consumes that dataset |
+| `publish` | 04:07 | Validate the final assembled dataset and publication gate |
 
 CLI:
 
@@ -118,7 +118,7 @@ A failed trader review must not block the website. A catastrophically invalid co
 
 ## 8. Canonical morning dataset
 
-`assemble` writes `data/overnight/runs/<run_id>/assembled_dataset.json` and points `data/overnight/latest.json` at it.
+`assemble` writes `data/overnight/runs/<run_id>/assembled_dataset.json` and points `data/overnight/latest.json` at it. The overnight `publish` stage validates that dataset at 04:07; the separate GitHub Pages workflow runs at 04:15 America/New_York so publication cannot race the final gate.
 
 The dataset includes core family status, the public trader-book projection, the publication decision, and the stage ledger. Pages publication consumes this file, validates freshness/completeness, and emits `_site/trader-books.json`.
 
