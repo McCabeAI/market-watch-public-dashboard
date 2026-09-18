@@ -3,7 +3,7 @@ from __future__ import annotations
 import copy
 import unittest
 
-from scripts.apply_temperature_scores import all_scores, load_state, temperature_class
+from scripts.apply_temperature_scores import _patch_top_board, all_scores, load_state, temperature_class
 
 
 class TemperatureScoresTest(unittest.TestCase):
@@ -35,6 +35,19 @@ class TemperatureScoresTest(unittest.TestCase):
         )
         scores = all_scores(bridged)
         self.assertAlmostEqual(scores["US"]["Inflation"], 52.28, places=6)
+
+
+    def test_top_board_is_ledger_driven(self) -> None:
+        state = load_state()
+        scores = all_scores(state)
+        html = '<div class="stitle">Temperature Board</div><div>legacy cards</div>'
+        out = _patch_top_board(html, scores, state)
+        self.assertIn('data-score-overview="live"', out)
+        self.assertIn('Live 1–100 Score Board', out)
+        self.assertIn('Macro Snapshot', out)
+        self.assertIn('AU</b><div style="margin-top:4px;font-size:12px;">Inf 49.2 · Lab 47.8 · Act 49.2 · Con 51', out)
+        self.assertIn('NZ</b><div style="margin-top:4px;font-size:12px;">Inf 51.6 · Lab 47 · Act 52 · Con 48.5', out)
+        self.assertNotIn('Temperature Board', out)
 
     def test_temperature_bands(self) -> None:
         self.assertEqual(temperature_class(20), "cold")
