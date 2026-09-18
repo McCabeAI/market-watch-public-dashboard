@@ -28,6 +28,7 @@ from typing import Mapping, Sequence
 
 from scripts.cross_asset_data import collect_cross_assets
 from scripts.market_opportunities import build_opportunities
+from scripts.positioning_data import build_positioning, validate_positioning
 
 USER_AGENT = (
     "MarketWatch-MarketState/1.0 "
@@ -695,7 +696,13 @@ def _nz_rates_unavailable(error: str) -> tuple[dict[str, dict[date, float]], dic
     return empty, block
 
 
-def build_snapshot(*, today: date | None = None, nz_workbook: Path | None = None, include_cross_assets: bool = True) -> dict:
+def build_snapshot(
+    *,
+    today: date | None = None,
+    nz_workbook: Path | None = None,
+    include_cross_assets: bool = True,
+    include_positioning: bool | None = None,
+) -> dict:
     today = today or datetime.now(timezone.utc).date()
     start = today - timedelta(days=366 * 5 + 15)
     nz_bytes = nz_workbook.read_bytes() if nz_workbook else None
@@ -768,6 +775,29 @@ def build_snapshot(*, today: date | None = None, nz_workbook: Path | None = None
 
     cross_raw, cross_meta = collect_cross_assets(start, today, fetch_bytes) if include_cross_assets else ({}, {})
     opportunities = build_opportunities(rates_raw, fx_raw, cross_raw, cross_meta, today)
+    if include_positioning is None:
+        include_positioning = include_cross_assets
+    positioning_start = today - timedelta(days=366 * 3 + 30)
+    positioning = (
+        build_positioning(today=today, start=positioning_start, fetch_bytes=fetch_bytes)
+        if include_positioning
+        else {
+            "status": "unavailable",
+            "error": "positioning collection disabled for this invocation",
+            "cftc_tff": {"status": "unavailable", "instruments": {}},
+            "cme": {"status": "unavailable", "futures": {}, "monthly_options": {}},
+            "method": {"model_calls": 0, "credentials_required": []},
+        }
+    )
+    if include_positioning:
+        if positioning["cftc_tff"].get("status") == "unavailable":
+            unavailable_sources.append("CFTC_positioning")
+        if positioning["cme"].get("status") == "unavailable":
+            unavailable_sources.append("CME_positioning")
+        if positioning["cftc_tff"].get("status") == "stale":
+            stale_sources.append("CFTC_positioning")
+        if positioning["cme"].get("status") == "stale":
+            stale_sources.append("CME_positioning")
     packet_status = "stale" if stale_sources else "ok"
     nz_source = {
         "name": "Reserve Bank of New Zealand B2 wholesale interest rates",
@@ -783,6 +813,7 @@ def build_snapshot(*, today: date | None = None, nz_workbook: Path | None = None
     return {
         "cross_assets": {"series": cross_meta, "status": "partial" if any(m["status"] != "ok" for m in cross_meta.values()) else "ok"},
         "opportunities": opportunities,
+        "positioning": positioning,
         "schema_version": 1,
         "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
         "window_start": start.isoformat(),
@@ -821,6 +852,22 @@ def build_snapshot(*, today: date | None = None, nz_workbook: Path | None = None
                 "note": "RBA assessed closing yields; research context only; not a financial benchmark; typically weekly with a two-business-day lag.",
             },
             "NZ_rates": nz_source,
+            "CFTC_positioning": {
+                "name": "CFTC Traders in Financial Futures - Futures Only",
+                "url": positioning["cftc_tff"].get("source_url", "https://publicreporting.cftc.gov/stories/s/TFF-Futures-Only/98ig-3k9y/"),
+                "download_url": positioning["cftc_tff"].get("api_url", "https://publicreporting.cftc.gov/resource/gpe5-46if.json"),
+                "observation_date": positioning["cftc_tff"].get("report_date"),
+                "status": positioning["cftc_tff"].get("status"),
+                **({"error": positioning["cftc_tff"].get("error")} if positioning["cftc_tff"].get("status") == "unavailable" else {}),
+            },
+            "CME_positioning": {
+                "name": "CME Group Daily Bulletin FX futures and options open interest",
+                "url": positioning["cme"].get("source_url", "https://www.cmegroup.com/market-data/daily-bulletin.html"),
+                "download_url": positioning["cme"].get("download_url", "https://www.cmegroup.com/daily_bulletin/current/Section01B_Summary_Volume_And_Open_Interest_FX_Futures_And_Options.pdf"),
+                "observation_date": positioning["cme"].get("trade_date"),
+                "status": positioning["cme"].get("status"),
+                **({"error": positioning["cme"].get("error")} if positioning["cme"].get("status") == "unavailable" else {}),
+            },
             "FX": {
                 "name": "ECB euro foreign exchange reference rates",
                 "url": ECB_FX_PAGE,
@@ -844,6 +891,7 @@ def build_snapshot(*, today: date | None = None, nz_workbook: Path | None = None
                 "US, Canada, Australia and ECB FX are required; a blocked official RBNZ source "
                 "marks NZ rates and NZ-dependent RV spreads unavailable without fabricating data. "
                 "Cross-country spreads use exact common observation dates only. "
+                "CFTC TFF supplies trader-class ownership/crowding context and CME Daily Bulletin supplies daily FX futures/open-interest and monthly-options overlays. "
                 "No historical warehouse is written to GitHub or Supabase."
             ),
         },
@@ -861,6 +909,10 @@ def validate_snapshot(s: Mapping) -> None:
         raise MarketStateError("generator must produce exactly 45 G10 FX crosses")
     if s.get("method", {}).get("rate_rv_count") != len(RV_PAIRS) * len(RATE_TENORS):
         raise MarketStateError("unexpected rate RV count")
+    try:
+        validate_positioning(s.get("positioning") or {})
+    except Exception as exc:
+        raise MarketStateError(f"invalid positioning block: {exc}") from exc
     if set(s.get("rates", {})) != set(RATE_COUNTRIES):
         raise MarketStateError("rates block must contain US, CA, AU and NZ")
     for c in RATE_COUNTRIES:
@@ -901,7 +953,7 @@ def validate_snapshot(s: Mapping) -> None:
         if not src.get("url"):
             raise MarketStateError(f"source {key} missing url")
         if src.get("status") == "unavailable":
-            if key != "NZ_rates" or not src.get("error"):
+            if not src.get("error"):
                 raise MarketStateError(f"source {key} unavailable without provenance")
             continue
         if not src.get("observation_date"):
@@ -941,6 +993,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "fx_as_of": snapshot["fx"]["source_observation"],
                 "rate_as_of": {c: snapshot["rates"][c]["latest_observation"] for c in RATE_COUNTRIES},
                 "stale_sources": snapshot["stale_sources"],
+                "positioning_status": snapshot["positioning"]["status"],
                 "output": str(out),
             }
         )
