@@ -16,7 +16,9 @@ on:
       - "data/score_source_registry.json"
       - "scripts/apply_temperature_scores.py"
       - "scripts/apply_daily_20260918.py"
+      - "scripts/sync_news_summary.py"
       - "scripts/validate_score_sources.py"
+      - "tests/test_sync_news_summary.py"
       - "tests/test_temperature_scores.py"
       - "docs/*SCORE*.md"
       - "docs/DAILY_REFRESH_V0.md"
@@ -156,6 +158,13 @@ jobs:
         run: |
           set -euo pipefail
           python scripts/apply_daily_20260918.py _site/index.html
+
+      - name: Sync news summary metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -m unittest tests.test_sync_news_summary
+          PYTHONPATH=. python scripts/sync_news_summary.py _site/index.html
 
       - name: Apply live temperature scores
         shell: bash
