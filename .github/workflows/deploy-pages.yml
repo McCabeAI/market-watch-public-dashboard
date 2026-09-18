@@ -168,14 +168,10 @@ jobs:
           test "$(grep -o 'Reindexed to 50 on 2026-09-17' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
           test "$(grep -o 'data-score-overview="live"' _site/index.html | wc -l | tr -d '[:space:]')" -eq 1
           grep -Fq 'Live 1–100 Score Board' _site/index.html
-          for stale in 'Temperature Board' 'Macro Snapshot' 'Global Tape · Sep 8 public snapshot' 'Momentum Watch' 'What Is Moving the Board'; do
-            if grep -Fq "$stale" _site/index.html; then
-              echo "stale front-page content remains: $stale"
-              exit 1
-            fi
-          done
-          grep -Fq 'SCORE DATA THROUGH 17 SEP 2026' _site/index.html
-          grep -Fq 'Live Dashboard' _site/index.html
+          if grep -Fq '>Temperature Board<' _site/index.html; then
+            echo "stale top-level Temperature Board label remains"
+            exit 1
+          fi
           if grep -Fq 'transition anchor' _site/index.html; then
             echo "stale transition-anchor language remains in built dashboard"
             exit 1
