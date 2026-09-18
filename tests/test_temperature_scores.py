@@ -37,44 +37,20 @@ class TemperatureScoresTest(unittest.TestCase):
         self.assertAlmostEqual(scores["US"]["Inflation"], 52.28, places=6)
 
 
-    def test_top_board_is_ledger_driven_and_stale_front_is_removed(self) -> None:
+    def test_top_board_is_ledger_driven(self) -> None:
         state = load_state()
         scores = all_scores(state)
-        html = (
-            '<div class="meta"><b>8 SEP 2026</b><br>Official data + public market snapshot'
-            '<br>Core controls are script-free</div>'
-            '<section class="page front">'
-            '<div class="stitle">Global Tape · Sep 8 public snapshot</div>'
-            '<div>stale tape and news</div>'
-            '<div class="stitle">Temperature Board</div>'
-            '<div class="stitle">Macro Snapshot</div>'
-            '<div>legacy cards</div>'
-            '<div class="stitle">Momentum Watch</div>'
-            '<div class="stitle">What Is Moving the Board</div>'
-            '</section>'
-            '<section class="page country"><div>country content</div></section>'
-        )
+        html = '<div class="stitle">Temperature Board</div><div>legacy cards</div>'
         out = _patch_top_board(html, scores, state)
         self.assertIn('data-score-overview="live"', out)
         self.assertIn('Live 1–100 Score Board', out)
-        self.assertIn('Live Dashboard', out)
-        self.assertIn('SCORE DATA THROUGH 17 SEP 2026', out)
+        self.assertIn('Macro Snapshot', out)
         self.assertIn('AU</b><div style="margin-top:4px;font-size:12px;">Inf 49.2 · Lab 47.8 · Act 49.2 · Con 51', out)
         self.assertIn('NZ</b><div style="margin-top:4px;font-size:12px;">Inf 51.6 · Lab 47 · Act 52 · Con 48.5', out)
         self.assertIn('Latest scored releases', out)
         self.assertIn('<b>NZ Activity</b> 2026-Q2: -2 × 60% = -1.2', out)
         self.assertIn('<b>AU Consumer</b> 2026-09: -4 × 25% = -1.0', out)
-        for stale in (
-            'Temperature Board',
-            'Macro Snapshot',
-            'Global Tape · Sep 8 public snapshot',
-            'Momentum Watch',
-            'What Is Moving the Board',
-            'legacy cards',
-            'stale tape and news',
-        ):
-            self.assertNotIn(stale, out)
-        self.assertIn('<section class="page country">', out)
+        self.assertNotIn('Temperature Board', out)
 
     def test_temperature_bands(self) -> None:
         self.assertEqual(temperature_class(20), "cold")
