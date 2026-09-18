@@ -20,16 +20,18 @@ When a new Core PCE release arrives:
 
 1. Core PCE becomes the new authoritative inflation observation.
 2. Apply the full Core PCE release impulse at 100% weight under the existing temperature-impulse framework.
-3. Reset all provisional CPI/PPI bridge adjustments for that PCE month to zero because the actual Core PCE observation supersedes the nowcast inputs.
+3. Remove the provisional CPI/PPI bridge events for that PCE month because the actual Core PCE observation supersedes those nowcast inputs.
 4. Preserve the actual release, revisions, period, source and score lineage.
 
 The current anchor is the most recently verified Core PCE release.
 
-### V1 transition anchor
+### V1 score baseline
 
-V1 retains the recovered `72.0` US Inflation score as the transition anchor. Do not retroactively rebuild the entire 1–100 history merely to adopt this methodology. From V1 activation onward, the US Inflation score can move only from an actual Core PCE release or an eligible mapped CPI/PPI bridge input under this document.
+The US Inflation score was reindexed to **50.0 on 2026-09-17**. The recovered `72.0` prototype score is retired.
 
-The anchor score is therefore a transition state, not a claim that `72.0` was historically derived from a Core-PCE-only backtest.
+The activation ledger classifies the latest verified Core PCE evidence under the normal impulse scale and applies it from the 50.0 baseline. From activation onward, actual Core PCE releases move the score at 100% weight. Eligible mapped CPI/PPI bridge inputs may move it provisionally at their documented Core PCE expenditure-share weight.
+
+This is an operational index, not a claim that the full 1–100 history has been backtested. Reindex explicitly later if calibration warrants it.
 
 ## 3. Core PCE trend lens
 
@@ -73,7 +75,7 @@ where:
 
 Then:
 
-`provisional US inflation score = Core PCE anchor score + Σ bridge contribution_i`
+`provisional US inflation score = current indexed score + Σ active bridge contribution_i`
 
 Use the latest available expenditure shares. Do **not** impose a permanent fixed CPI/PPI split: PCE is Fisher chain-weighted and the relative weights change over time.
 
@@ -110,14 +112,14 @@ The US country page must make the score auditable under `docs/COUNTRY_SCORE_EVID
 - Core PCE anchor period and actual m/m value;
 - 1m / 3m / 6m annualized Core PCE trend where available;
 - year-over-year Core PCE as secondary context;
-- anchor score;
+- 50.0 activation baseline and cumulative Core PCE impulses;
 - current CPI/PPI bridge adjustment;
 - provisional score after the bridge;
 - bridge coverage / unresolved mappings when relevant.
 
 Example score lineage:
 
-`Core PCE anchor 72.0 + interim CPI/PPI bridge +0.6 = 72.6`
+`50.0 activation baseline + cumulative Core PCE impulses + interim CPI/PPI bridge = current score`
 
 Do not imply precision when bridge coverage is incomplete.
 
@@ -153,7 +155,7 @@ The current evidence file is `data/us_core_pce_ppi_bridge_2026-08.csv`. Using BE
 - about `95%` of that mapped PPI weight has an observed August source move in the current bridge;
 - the observed mapped subset contributes roughly `+0.07pp` to monthly Core PCE inflation in August versus roughly `+0.08pp` in July.
 
-That PPI-linked subset is economically unchanged to slightly cooler versus July, despite the hot headline PPI. Under the current temperature-impulse framework, the PPI bridge therefore does not move the transition score from `72.0`. August CPI remains pending; its eligible mapped Core PCE components should be added when released, without double counting categories already controlled by PPI source mapping.
+That PPI-linked subset is economically unchanged to slightly cooler versus July, despite the hot headline PPI. Under the current temperature-impulse framework, this mapped PPI subset receives a zero bootstrap impulse and therefore does not move the indexed score. Eligible CPI components should be added only through their mapped Core PCE weights, without double counting categories already controlled by PPI source mapping.
 
 Official methodology references:
 
