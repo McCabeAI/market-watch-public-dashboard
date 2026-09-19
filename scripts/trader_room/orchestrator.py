@@ -15,6 +15,7 @@ from scripts.trader_room.constants import (
     STANDING_ADVOCATES,
 )
 from scripts.trader_room.errors import LiveRunBlocked, SchemaError
+from scripts.trader_room.handoff import build_pm_handoff
 from scripts.trader_room.evidence import (
     assemble_packet,
     assess_families,
@@ -89,7 +90,12 @@ def run_debate(
             allowed_opponents=set(assignment["opponents"]),
         )
 
-    handoff = runner.run_final_aggregator(packet, originals, conflict_map, rebuttals, budget)
+    handoff = build_pm_handoff(
+        packet=packet,
+        originals=originals,
+        conflict_map=conflict_map,
+        rebuttals=rebuttals,
+    )
     launch_plan = build_launch_plan(packet)
     index = persist_run(
         root=artifact_root or root,
