@@ -166,7 +166,7 @@ def validate_paper_capital(item: dict[str, Any], *, packet: dict[str, Any], seat
         "notional_usd": notional,
         "instrument": instrument,
         "side": side,
-        "asset_class": mark["family"] if asset_class in (None, "", "curve") and mark["family"] == "rates" else (asset_class or mark["family"]),
+        "asset_class": asset_class or mark["family"],
         "price": mark_f,
         "mark_price": mark_f,
         "price_path": mark["path"],
