@@ -45,6 +45,12 @@ on:
       - "patch_v14/**"
       - "scripts/apply_trader_room_tab.py"
       - "scripts/trader_room_public.py"
+      - "scripts/pm_layer.py"
+      - "scripts/pm_review.py"
+      - "data/pm/**"
+      - "tests/test_pm_layer.py"
+      - ".github/workflows/pm-decision-output.yml"
+      - ".github/workflows/trader-room-output.yml"
       - "data/trader-room/public/**"
       - "tests/test_trader_room_dashboard.py"
       - "data/overnight/**"
@@ -243,7 +249,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          PYTHONPATH=. python -m unittest tests.test_overnight_pipeline tests.test_overnight_scheduled_output
+          PYTHONPATH=. python -m unittest tests.test_overnight_pipeline tests.test_overnight_scheduled_output tests.test_pm_layer
 
       - name: Add Trader Book tab
         shell: bash
@@ -257,6 +263,7 @@ jobs:
           test -s _site/trader-books.json
           grep -Fq 'for="p-traderbook"' _site/index.html
           grep -Fq 'Trader Book · paper P&L' _site/index.html
+          grep -Fq 'Portfolio managers · $1bn each' _site/trader-book.js
           grep -Fq 'Last 24 Hours · Desk Summary' _site/index.html
           grep -Fq 'Live 1–100 Score Board' _site/index.html
           grep -Fq '7-Day Quick Digest' _site/index.html
@@ -271,6 +278,12 @@ jobs:
           PYTHONPATH=. python scripts/trader_room_public.py --output _site/trader-room.json
           test -s _site/trader-room.js
           test -s _site/trader-room.json
+          python - <<'PY'
+          import json
+          p=json.load(open('_site/trader-room.json'))
+          assert p.get('available') is True
+          assert p.get('seat_count') == 14
+          PY
           grep -Fq 'for="p-traderroom"' _site/index.html
           grep -Fq 'Trader Room · adversarial ideas' _site/index.html
           grep -Fq 'Trader Book · paper P&L' _site/index.html
