@@ -36,6 +36,10 @@ CME_FX_PRODUCTS = {
 
 CFTC_STALE_DAYS = 10
 CME_STALE_DAYS = 4
+CME_BROWSER_USER_AGENT = (
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+)
 
 CFTC_SELECT_FIELDS = (
     "market_and_exchange_names",
@@ -403,7 +407,14 @@ def fetch_cme_fx_positioning(*, today: date, fetch_bytes: Callable[..., bytes]) 
         ccy, product_id = item
         url = CME_LAST_TOTALS.format(product_id=product_id)
         try:
-            payload = json.loads(fetch_bytes(url, timeout=15, retries=2).decode("utf-8"))
+            payload = json.loads(
+                fetch_bytes(
+                    url,
+                    timeout=15,
+                    retries=2,
+                    user_agent=CME_BROWSER_USER_AGENT,
+                ).decode("utf-8")
+            )
             return ccy, parse_cme_last_totals(payload, ccy=ccy, today=today), None
         except Exception as exc:
             return ccy, None, str(exc)
