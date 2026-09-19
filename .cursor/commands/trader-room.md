@@ -98,9 +98,40 @@ This finalizer reads the already-validated 14 originals, deterministic conflict 
 
 Do not create `FINAL_INPUT.json`, `FINAL_INPUT.compact.json`, or `FINAL_INSTRUCTIONS.md`; those were recovery artifacts from the old model-based final aggregator and are no longer part of production.
 
+## 7. Independent PM layer
+
+After `pm_handoff.json` exists, run three independent PMs on exact `grok-4.6`: `swinger-pm`, `pragmatist-pm`, and `grinder-pm`.
+
+Each PM receives the same full completed Trader Room evidence and all 14 originals/rebuttals through a targeted packet built by:
+
+```bash
+PYTHONPATH=. python scripts/pm_review.py prepare --pm-id <pm-id> --source-type trader_room --source-id <run_id> --output /tmp/<pm-id>.json
+```
+
+Rules:
+- launch the three PMs concurrently as direct children of the parent;
+- no PM subagents;
+- no new evidence after the Trader Room freeze;
+- do not show one PM another PM's decision before all three commit;
+- all three have a $1bn gross-notional ceiling and may return HOLD / no trade;
+- `swinger-pm`: maximize expected absolute P&L, favor concentration/high utilization, HEDGE is prohibited;
+- `pragmatist-pm`: pursue home runs when available but compound singles/doubles otherwise;
+- `grinder-pm`: minimize drawdowns/negative days, favor small repeatable edges and unused capacity;
+- models author decisions/actions only. They must not author entry prices, marks, books, NAV or P&L.
+
+Assemble the three decisions into `trader-room/runs/<run_id>/pm_decisions.json` using the `PM_DECISIONS` contract from `scripts/pm_review.py`, with source type `trader_room`, the exact run ID, evidence packet hash and evidence cutoff. Validate it before handoff:
+
+```bash
+PYTHONPATH=. python scripts/pm_review.py validate --input trader-room/runs/<run_id>/pm_decisions.json
+```
+
+ChatGPT PM is deliberately not model-generated here. It remains the fourth PM and writes independently through the same deterministic PM ingest contract after ChatGPT arbitration.
+
 No winner, ranking, house view, or official decision.
 
-Persist the complete run under `trader-room/runs/<run_id>/` and end with exactly:
+Persist the complete run under `trader-room/runs/<run_id>/`, including `pm_decisions.json`. Commit and push only that run directory, then open a data-only PR titled exactly `[trader-room-output] <run_id>`. The repository workflow validates the run, promotes the public Trader Room packet, deterministically applies the three AI PM decisions, and merges it.
+
+End the provider handoff with exactly:
 
 `STATUS: AWAITING_CHATGPT_ARBITRATION`
 
@@ -110,11 +141,11 @@ Optional private Markdown copy may use Google Drive folder `1NS6Qb6vNGKM18_PW0zP
 
 Full run policy:
 
-`MW_TRADER_ROOM_RUN_POLICY={"version":1,"run_type":"trader-room-ondemand","total_model_cap":57,"grok_cap":29,"composer_cap":28,"parent_model":"grok-4.6","parent_total":1,"parent_grok":1}`
+`MW_TRADER_ROOM_RUN_POLICY={"version":1,"run_type":"trader-room-ondemand","total_model_cap":60,"grok_cap":32,"composer_cap":28,"parent_model":"grok-4.6","parent_total":1,"parent_grok":1}`
 
-- total Grok ceiling 29 including ACP parent;
+- total Grok ceiling 32 including ACP parent and three PMs;
 - Composer ceiling 28;
-- total model ceiling 57;
+- total model ceiling 60;
 - Auto and Other Models prohibited;
 - no silent retries or reroutes.
 
