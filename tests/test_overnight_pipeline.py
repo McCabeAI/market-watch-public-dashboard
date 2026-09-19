@@ -271,8 +271,9 @@ class BookTransitionTests(unittest.TestCase):
         )
         reduced_cash_yield = round(60_000_000 * FUNDING_RATE_ANNUAL / 365, 2)
         self.assertEqual(skeptic["funding_cost_usd"], 0.0)
-        self.assertEqual(skeptic["cash_yield_usd"], full_cash_yield + reduced_cash_yield)
-        self.assertEqual(skeptic["net_pnl_usd"], full_cash_yield + reduced_cash_yield)
+        expected_total = round(full_cash_yield + reduced_cash_yield, 2)
+        self.assertEqual(skeptic["cash_yield_usd"], expected_total)
+        self.assertEqual(skeptic["net_pnl_usd"], expected_total)
 
     def test_missing_mark_does_not_invent_pnl(self):
         pos = {
