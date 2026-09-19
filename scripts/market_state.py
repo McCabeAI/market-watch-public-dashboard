@@ -29,6 +29,7 @@ from typing import Mapping, Sequence
 from scripts.cross_asset_data import collect_cross_assets
 from scripts.market_opportunities import build_opportunities
 from scripts.positioning_data import build_positioning, validate_positioning
+from scripts.policy_path_data import collect_policy_paths, validate_policy_paths
 
 USER_AGENT = (
     "MarketWatch-MarketState/1.0 "
@@ -201,6 +202,49 @@ def lookback_value(items: Sequence[tuple[date, float]], n_obs: int) -> float | N
     return items[-1 - n_obs][1]
 
 
+def _move_analogs(
+    series: Mapping[date, float],
+    *,
+    lookback: int = 21,
+    scale: float = 100.0,
+    forward_1m: int = 21,
+    forward_3m: int = 63,
+    count: int = 4,
+) -> list[dict]:
+    """Closest prior 1-month moves plus subsequent outcomes.
+
+    The dates/math are deterministic. A trader must still explain why an
+    episode is economically comparable and which regime differences matter.
+    """
+    items = sorted(series.items())
+    if len(items) <= lookback + forward_3m + 20:
+        return []
+    current_move = (items[-1][1] - items[-1 - lookback][1]) * scale
+    candidates: list[tuple[float, int, dict]] = []
+    last_candidate = len(items) - 1 - forward_3m
+    for i in range(lookback, last_candidate + 1):
+        prior_move = (items[i][1] - items[i - lookback][1]) * scale
+        row = {
+            "as_of": items[i][0].isoformat(),
+            "level": items[i][1],
+            "prior_1m_move": round(prior_move, 4),
+            "forward_1m_move": round((items[i + forward_1m][1] - items[i][1]) * scale, 4),
+            "forward_3m_move": round((items[i + forward_3m][1] - items[i][1]) * scale, 4),
+            "distance_from_current_move": round(abs(prior_move - current_move), 4),
+        }
+        candidates.append((abs(prior_move - current_move), i, row))
+    selected: list[dict] = []
+    selected_i: list[int] = []
+    for _distance, idx, row in sorted(candidates, key=lambda x: x[0]):
+        if any(abs(idx - old) < 21 for old in selected_i):
+            continue
+        selected.append(row)
+        selected_i.append(idx)
+        if len(selected) >= count:
+            break
+    return selected
+
+
 def rate_metrics(series: Mapping[date, float]) -> dict:
     items = sorted(series.items())
     if not items:
@@ -220,6 +264,9 @@ def rate_metrics(series: Mapping[date, float]) -> dict:
         "bp_5d": bp(5),
         "bp_1m": bp(21),
         "bp_3m": bp(63),
+        "bp_6m": bp(126),
+        "bp_1y": bp(252),
+        "historical_move_analogs": _move_analogs(series, scale=100.0),
         "pctile_1y": percentile_rank(vals_1y, latest),
         "pctile_5y": percentile_rank(vals_5y, latest) if len(vals_5y) >= 60 else None,
         "z_1y": zscore(vals_1y, latest),
@@ -638,6 +685,9 @@ def spread_metrics_bps(series: Mapping[date, float]) -> dict:
         "chg_5d_bps": chg(5),
         "chg_1m_bps": chg(21),
         "chg_3m_bps": chg(63),
+        "chg_6m_bps": chg(126),
+        "chg_1y_bps": chg(252),
+        "historical_move_analogs": _move_analogs(series, scale=1.0),
         "pctile_1y": percentile_rank(vals_1y, latest),
         "pctile_5y": percentile_rank(vals_5y, latest) if len(vals_5y) >= 60 else None,
         "z_1y": zscore(vals_1y, latest),
@@ -705,6 +755,7 @@ def build_snapshot(
     nz_workbook: Path | None = None,
     include_cross_assets: bool = True,
     include_positioning: bool | None = None,
+    include_policy_paths: bool | None = None,
 ) -> dict:
     today = today or datetime.now(timezone.utc).date()
     start = today - timedelta(days=366 * 5 + 15)
@@ -778,6 +829,25 @@ def build_snapshot(
 
     cross_raw, cross_meta = collect_cross_assets(start, today, fetch_bytes) if include_cross_assets else ({}, {})
     opportunities = build_opportunities(rates_raw, fx_raw, cross_raw, cross_meta, today)
+    if include_policy_paths is None:
+        include_policy_paths = include_cross_assets
+    policy_paths = (
+        collect_policy_paths(today=today, fetch_bytes=fetch_bytes)
+        if include_policy_paths
+        else {
+            "status": "unavailable",
+            "countries": {
+                c: {"status": "unavailable", "error": "policy path collection disabled for this invocation"}
+                for c in ("US", "CA", "AU")
+            },
+            "sources": {},
+            "method": {
+                "model_calls": 0,
+                "credentials_required": [],
+                "purpose": "policy expectations context before sovereign-curve/RV trade construction",
+            },
+        }
+    )
     if include_positioning is None:
         include_positioning = include_cross_assets
     positioning_start = today - timedelta(days=366 * 3 + 30)
@@ -814,6 +884,7 @@ def build_snapshot(
         nz_source["error"] = nz_error
         nz_source["observation_date"] = None
     return {
+        "policy_paths": policy_paths,
         "cross_assets": {"series": cross_meta, "status": "partial" if any(m["status"] != "ok" for m in cross_meta.values()) else "ok"},
         "opportunities": opportunities,
         "positioning": positioning,
@@ -894,6 +965,7 @@ def build_snapshot(
                 "US, Canada, Australia and ECB FX are required; a blocked official RBNZ source "
                 "marks NZ rates and NZ-dependent RV spreads unavailable without fabricating data. "
                 "Cross-country spreads use exact common observation dates only. "
+                "Policy-path context uses official overnight benchmarks plus public CORRA/SOFR/AONIA-linked futures and RBA money-market data. "
                 "CFTC TFF supplies trader-class ownership/crowding context and CME's public volume/open-interest service supplies daily FX futures and aggregate options OI history. "
                 "No historical warehouse is written to GitHub or Supabase."
             ),
@@ -916,6 +988,10 @@ def validate_snapshot(s: Mapping) -> None:
         validate_positioning(s.get("positioning") or {})
     except Exception as exc:
         raise MarketStateError(f"invalid positioning block: {exc}") from exc
+    try:
+        validate_policy_paths(s.get("policy_paths") or {})
+    except Exception as exc:
+        raise MarketStateError(f"invalid policy_paths block: {exc}") from exc
     if set(s.get("rates", {})) != set(RATE_COUNTRIES):
         raise MarketStateError("rates block must contain US, CA, AU and NZ")
     for c in RATE_COUNTRIES:
