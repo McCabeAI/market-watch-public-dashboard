@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any
 
 from scripts.trader_room.artifacts import write_json
+from scripts.trader_room.conflict import rebuttal_assignments
 from scripts.trader_room.constants import HANDOFF_MARKER, STANDING_ADVOCATES
 from scripts.trader_room.schema import (
     validate_conflict_map,
@@ -173,14 +174,7 @@ def finalize_run_dir(*, root: Path, run_dir: Path) -> dict[str, Any]:
     conflict_map = json.loads((run_dir / "conflict_map.json").read_text(encoding="utf-8"))
     validate_conflict_map(conflict_map, originals)
 
-    assignments_path = run_dir / "rebuttal_assignments.json"
-    assignments = (
-        json.loads(assignments_path.read_text(encoding="utf-8"))
-        if assignments_path.is_file()
-        else {}
-    )
-    if isinstance(assignments, dict) and "assignments" in assignments:
-        assignments = assignments["assignments"]
+    assignments = rebuttal_assignments(conflict_map)
 
     rebuttals: dict[str, dict[str, Any]] = {}
     rebuttal_dir = run_dir / "rebuttals"
@@ -188,14 +182,19 @@ def finalize_run_dir(*, root: Path, run_dir: Path) -> dict[str, Any]:
         for path in sorted(rebuttal_dir.glob("*.json")):
             agent = path.stem
             item = json.loads(path.read_text(encoding="utf-8"))
-            assignment = assignments.get(agent) if isinstance(assignments, dict) else None
-            allowed = set((assignment or {}).get("opponents") or item.get("opponents") or [])
+            assignment = assignments.get(agent)
+            allowed = set((assignment or {}).get("opponents") or [])
             rebuttals[agent] = validate_rebuttal(
                 item,
                 packet=packet,
                 expected_agent=agent,
                 allowed_opponents=allowed,
             )
+
+    if set(rebuttals) != set(assignments):
+        missing = sorted(set(assignments) - set(rebuttals))
+        extra = sorted(set(rebuttals) - set(assignments))
+        raise ValueError(f"rebuttal set incomplete or unexpected; missing={missing} extra={extra}")
 
     index = artifact_index_for_run(
         root=root,
@@ -220,4 +219,22 @@ def finalize_run_dir(*, root: Path, run_dir: Path) -> dict[str, Any]:
     )
     write_json(run_dir / "pm_handoff.json", handoff)
     write_json(run_dir / "artifact_index.json", index)
+    receipt_path = run_dir / "receipt.json"
+    receipt = (
+        json.loads(receipt_path.read_text(encoding="utf-8"))
+        if receipt_path.is_file()
+        else {}
+    )
+    receipt.update(
+        {
+            "run_id": run_id,
+            "evidence_cutoff": packet["as_of"],
+            "packet_sha256": packet["packet_sha256"],
+            "artifact_root": str(run_dir.relative_to(root)),
+            "status": HANDOFF_MARKER,
+            "final_handoff_method": "deterministic_pm_handoff_v1",
+            "final_handoff_model_calls": 0,
+        }
+    )
+    write_json(receipt_path, receipt)
     return handoff
