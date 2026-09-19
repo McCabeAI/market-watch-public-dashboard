@@ -7,6 +7,7 @@ from scripts.policy_path_data import (
     parse_asx_cash_futures_html,
     parse_boc_corra_html,
     parse_boc_corra_json,
+    parse_cme_sofr_bulletin_text,
     parse_cme_sofr_html,
     parse_cme_sofr_settlements_json,
     parse_mx_expectations_html,
@@ -68,6 +69,19 @@ class PolicyPathParserTests(unittest.TestCase):
         self.assertEqual(rows[1]["change_from_overnight_bps"], 44.0)
         self.assertEqual(rows[0]["open_interest"], 290746.0)
 
+    def test_cme_daily_bulletin_sr1(self):
+        text = """
+SR1 FUT
+SEP26 96.250 96.2525 96.2475 96.250 ( 3.75) + 0.0025 ---- 40670 289321 + 6127 97.060 96.145
+OCT26 96.090 96.095 96.090 96.090 ( 3.91) UNCH ---- 8479 286856 - 1475 97.060 96.060
+DEC26 95.820 95.820 95.795 95.800 ( 4.20) - 0.0100 ---- 9505 153858 + 423 97.025 95.800
+TOTAL SR1 FUT 0 127818 1302349 + 11967
+"""
+        rows = parse_cme_sofr_bulletin_text(text, benchmark=3.85)
+        self.assertEqual(rows[0]["expiry"], "2026-09")
+        self.assertEqual(rows[1]["implied_rate"], 3.91)
+        self.assertEqual(rows[2]["change_from_overnight_bps"], 35.0)
+
     def test_cme_one_month_sofr(self):
         html = """
         <table>
@@ -92,6 +106,21 @@ Series ID,FIRMMCRTD,FIRMMCRID,FIRMMBAB30D,FIRMMBAB90D,FIRMMBAB180D,FIRMMOIS1D,FI
         self.assertEqual(result["benchmark"]["rate"], 4.35)
         self.assertEqual(result["ois"]["3m"]["rate"], 4.62)
         self.assertAlmostEqual(result["bank_bill_minus_ois"]["3m"]["bank_bill_minus_ois_bps"], 6.0)
+
+    def test_rba_stale_ois_does_not_create_fake_current_basis(self):
+        csv_text = """F1 INTEREST RATES AND YIELDS – MONEY MARKET
+Title,Cash Rate Target,Interbank Overnight Cash Rate,EOD 1-month BABs/NCDs,EOD 3-month BABs/NCDs,EOD 6-month BABs/NCDs,1-month OIS,3-month OIS,6-month OIS
+Description,target,aonia,b1,b3,b6,o1,o3,o6
+Series ID,FIRMMCRTD,FIRMMCRID,FIRMMBAB30D,FIRMMBAB90D,FIRMMBAB180D,FIRMMOIS1D,FIRMMOIS3D,FIRMMOIS6D
+01-Dec-2022,2.85,2.85,3.10,3.20,3.30,2.97,3.04,3.22
+17-Sep-2026,4.35,4.35,4.41,4.68,5.07,,,
+"""
+        result = parse_rba_f1_csv(csv_text)
+        basis = result["bank_bill_minus_ois"]["3m"]
+        self.assertEqual(basis["status"], "unavailable_cross_vintage")
+        self.assertIsNone(basis["bank_bill_minus_ois_bps"])
+        self.assertEqual(basis["ois_as_of"], "01-Dec-2022")
+        self.assertEqual(basis["bank_bill_as_of"], "17-Sep-2026")
 
     def test_asx_cash_futures(self):
         html = """
