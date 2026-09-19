@@ -55,8 +55,9 @@ The JSON object always contains:
 | `unavailable_sources` | Official sources that could not be fetched (currently NZ-only), else `[]` |
 | `rates` | `US`, `CA`, `AU`, `NZ` blocks |
 | `rate_rv` | 15 matching-tenor spreads |
-| `policy_paths` | US/Canada/Australia overnight benchmarks plus public money-market/futures-implied policy paths |
-| `official_curves` | Official US/Canada/Australia government zero/forward curves and deterministic discount factors for paper curve/fwd-fwd marks |
+| `policy_paths` | US/Canada/Australia overnight benchmarks and policy-pricing context |
+| `tradable_rate_curves` | Paper-tradable SOFR (`SR3`), CORRA (`CRA`) and AONIA (`IB`) futures strips |
+| `official_curves` | Supplemental US/Canada/Australia government zero/forward curves for bond-curve expressions |
 | `fx` | 45 G10 crosses from one ECB fixing |
 | `positioning` | CFTC trader-class positioning plus CME daily futures/options open-interest context |
 | `sources` | Name, public URL, download URL, observation date, status |
@@ -82,31 +83,43 @@ Each FX pair includes spot, 1D/5D/1M/3M percent returns, 20D/60D annualized real
 
 ### Policy-path block
 
-`policy_paths` is the monetary-policy context layer that must be read **before** sovereign 2Y/5Y yields or cross-country RV are treated as trade signals.
+`policy_paths` is the monetary-policy **context** layer. It answers what the market is pricing around the current SOFR/CORRA/AONIA benchmark before a trader chooses an expression.
 
-- **Canada:** Bank of Canada CORRA benchmark plus Montréal Exchange 1M/3M CORRA futures. Futures are converted as `100 - price` to an implied average CORRA rate and shown versus current CORRA in basis points.
-- **United States:** New York Fed SOFR plus One-Month SOFR futures, converted as `100 - price`. CME Daily Bulletin SR1 settlements are preferred. Because CME returns HTTP 403 to GitHub-hosted runners, production has a delayed ICE One-Month SOFR chain fallback via eSignal. These are monthly average SOFR expectations, not exact FOMC target probabilities.
-- **Australia:** RBA F1 AONIA, 1M/3M/6M OIS, 1M/3M/6M bank bills, bank-bill-minus-OIS basis, plus ASX 30-day interbank cash-rate futures for the longer path. The bill-minus-OIS field is a money-market credit/basis proxy, not an exact FRA-OIS construction.
+- **Canada:** Bank of Canada CORRA plus Montréal Exchange COA/CRA context.
+- **United States:** New York Fed SOFR plus One-Month SOFR (`SR1`) context.
+- **Australia:** RBA F1 AONIA, short OIS/bank-bill context and ASX cash-rate data.
 
-Exchange futures/settlement values are delayed public research/reference data, not executable prices. A normal full Trader Room requires all three policy-path country blocks to be available. A sovereign yield percentile is not an acceptable substitute.
+This block is not the definition of the paper trading universe.
 
-### Official zero/forward curve block
+### Tradable rates curves
 
-`official_curves` supplies the richer maturity grid used for paper curve expressions:
+`tradable_rate_curves` is the primary short-rate trading universe used by Trader Room:
 
-- **United States:** Federal Reserve staff Svensson nominal Treasury curve. Continuously-compounded zero yields are converted deterministically to discount factors; the published instantaneous forward curve is retained.
-- **Canada:** Bank of Canada Government of Canada zero-coupon curve, 0.25Y through 30Y. Published decimal zero yields are converted to semi-annual government-bond proxy discount factors.
-- **Australia:** RBA F17 analytical zero-coupon series. Published discount factors, zero yields and forward rates are retained directly.
+- **SOFR:** CME Three-Month SOFR futures, product `SR3`.
+- **CORRA:** Montréal Exchange Three-Month CORRA futures, product `CRA`.
+- **AONIA:** ASX 30-Day Interbank Cash Rate futures, product `IB`.
 
-For the paper competition these official government curves are deliberately accepted as a **close-enough proxy for swap/OIS curve expressions**. Provenance stays explicit; they are not represented as executable swap quotes. A derived fwd-fwd is recomputed from the frozen curve every review. Missing intermediate coupon nodes may be log-linearly interpolated between official discount-factor nodes.
+Each contract is marked in implied-rate space as `100 - futures price`. Public settlement/reference data are sufficient for the paper book; they are not represented as executable bid/offer quotes.
 
-Example paper expression for US 2y2y:
+A position is permanently associated with the curve family and construction used at entry. Subsequent adds, reductions, closes and daily marks must replay that same family and expression. A bond trade is never silently migrated to SOFR/CORRA/AONIA and a futures-curve trade is never migrated to a government curve.
+
+Forward windows and fwd-fwds on these curves use explicit contracts. Example:
 
 ```json
-{"type":"forward_swap","curve_country":"US","start_years":2,"tenor_years":2,"payment_frequency":1}
+{"type":"futures_strip_average","curve_id":"SOFR","expiries":["2028-03","2028-06","2028-09","2028-12"]}
 ```
 
-The deterministic mark is `(P_start - P_end) / sum(alpha_i * P_i)`.
+Optional positive weights may be supplied. The trader or permitted subagent chooses the contracts; deterministic code owns the mark arithmetic and replay.
+
+### Supplemental government zero/forward curves
+
+`official_curves` retains official government zero/forward data as a separate bond-curve family:
+
+- **United States:** Federal Reserve staff Svensson nominal Treasury curve.
+- **Canada:** Bank of Canada Government of Canada zero-coupon curve when the legacy download endpoint is reachable.
+- **Australia:** RBA F17 analytical zero-coupon series.
+
+These curves can support an explicitly selected government-bond curve or bond-curve forward expression. They are **supplemental**: failure of one of these feeds does not invalidate the SOFR/CORRA/AONIA trading universe, and they are not used to manufacture a substitute swap/OIS curve. Swap-spread trading is out of scope until both legs are deliberately supported.
 
 `historical_move_analogs` are mechanical nearest prior 1-month moves from the retained history, with subsequent 1M/3M changes. They provide candidate episodes and math; advocates still must explain event/regime similarities and differences before calling an episode comparable.
 
@@ -124,19 +137,22 @@ Null lookbacks stay null. A missing US, Canada, Australia, or ECB FX source, ten
 
 | Block | Authority | Notes |
 | --- | --- | --- |
-| US rates | U.S. Treasury daily par yield curve | Daily official CSV |
-| US policy path | New York Fed SOFR + One-Month SOFR futures | NY Fed overnight benchmark; CME Daily Bulletin preferred, delayed ICE/eSignal chain used when CME blocks hosted runners; implied rate = 100 - futures price |
-| US zero/forward curve | Federal Reserve nominal Treasury Svensson curve | Weekly staff research curve; zero yields/forwards; used as paper fwd-fwd proxy |
-| CA rates | Bank of Canada Valet benchmark bonds | Official `bond_yields_benchmark` group (`BD.CDN.2YR/5YR/10YR/LONG.DQ.YLD`) |
-| CA policy path | Bank of Canada CORRA + Montréal Exchange CORRA futures | Official overnight benchmark plus public 1M/3M CORRA futures |
-| CA zero curve | Bank of Canada Government of Canada zero-coupon curve | 0.25Y–30Y curve; typically published with a lag; used as paper fwd-fwd proxy |
-| AU rates | RBA F2 government-bond yields | Assessed closing yields; research context; typically weekly with a two-business-day lag |
-| AU policy / money market | RBA F1 + ASX 30-day cash-rate futures | AONIA, OIS, bank bills and bill-minus-OIS from RBA; public ASX cash-rate futures extend the path |
-| AU zero/forward curve | RBA F17 analytical series | Published discount factors, forwards and zero yields; used as paper fwd-fwd proxy |
-| NZ rates | RBNZ B2 wholesale interest rates | Official `hb2-daily-close.xlsx`; indicative government-bond closes; one-day publication lag. A Cloudflare block marks NZ unavailable in the packet; no vendor mirror. |
-| FX | ECB euro foreign-exchange reference rates | Official Data Portal SDMX daily `EXR` series; same-fixing EUR legs only; not executable prices. Combined G10 query first; per-currency SDMX fallback on 5xx/timeout. No vendor substitute. |
-| Positioning ownership | CFTC Traders in Financial Futures (TFF), Futures Only | Weekly trader-class positions. Core crowding source for the Positioning Cynic; official public API dataset `gpe5-46if`. |
-| Positioning OI overlay | CME Group public Volume & Open Interest service | Daily product-level futures and aggregate options OI/volume via the same public JSON service used by CME's Volume & OI pages. Supplemental to CFTC trader identity. |
+| US rates | U.S. Treasury daily par yield curve | Daily official bond curve |
+| US policy context | New York Fed SOFR + One-Month SOFR (`SR1`) | Overnight benchmark and near-term policy context |
+| US tradable curve | CME Three-Month SOFR (`SR3`) | Quarterly SOFR futures strip; CME Daily Bulletin preferred, delayed eSignal fallback when required |
+| US government zero/forward | Federal Reserve nominal Treasury Svensson curve | Supplemental bond-curve analytics |
+| CA rates | Bank of Canada Valet benchmark bonds | Official 2Y/5Y/10Y/LONG bond yields |
+| CA policy context | Bank of Canada CORRA + MX COA/CRA | Overnight benchmark and policy context |
+| CA tradable curve | Montréal Exchange Three-Month CORRA (`CRA`) | Quarterly CORRA futures strip |
+| CA government zero curve | Bank of Canada zero-coupon curve | Supplemental when the legacy download endpoint is reachable |
+| AU rates | RBA F2 government-bond yields | Assessed government-bond curve |
+| AU policy context | RBA F1 | AONIA, short OIS and bank-bill context |
+| AU tradable curve | ASX 30-Day Interbank Cash Rate (`IB`) | AONIA-linked monthly futures strip |
+| AU government zero/forward | RBA F17 | Supplemental discount factors, forwards and zero yields |
+| NZ rates | RBNZ B2 wholesale interest rates | Best-effort context only; blocked source is reported rather than substituted |
+| FX | ECB euro foreign-exchange reference rates | Same-fixing EUR legs; deterministic G10 crosses |
+| Positioning ownership | CFTC TFF Futures Only | Weekly trader-class positions |
+| Positioning OI overlay | CME public Volume & Open Interest | Supplemental daily product-level OI/volume |
 
 Expected publication lag before `status=stale`: US/CA/NZ/FX 4 calendar days; AU 12 calendar days. Observations older than 21 calendar days fail the run.
 
@@ -154,7 +170,9 @@ The GitHub Pages deploy workflow also runs the same generator into `_site/market
 
 ## Trader Room use
 
-Immediately before a debate, run the command above and attach the JSON as research/reference `market_levels` / `rates_and_policy` evidence. Advocates must read `policy_paths` before interpreting short-end sovereign yields and must use the historical move analogs as candidate comparisons rather than treating percentile/z-score extremes as self-sufficient theses. The complete `positioning` block travels with the same frozen packet, so Positioning Cynic and other seats can use CFTC crowding and CME OI context without private web fetches. Preserve source names, URLs, observation dates, `generated_at`, and `stale_sources`. Do not treat ECB crosses or official yields as tradable quotes. If the generator exits `2`, record the hard failure as a known gap and do not fabricate replacements.
+Immediately before a debate, generate and freeze the market-state packet. Advocates use `policy_paths` to understand what is priced, then choose an actual rates expression from `tradable_rate_curves` or the sovereign bond curves. A full Trader Room requires SOFR/SR3, CORRA/CRA and AONIA/IB to be present before model budget is spent.
+
+The selected curve family is part of the trade definition and remains the mark source until close. Historical move analogs, positioning and cross-asset evidence remain context; they do not replace the tradable mark. Preserve source names, observation dates, `generated_at`, and staleness/provenance. Never fabricate a missing curve or silently substitute another family.
 
 ## Opportunity monitor extension (2026-09-18)
 
