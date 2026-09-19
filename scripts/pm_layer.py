@@ -15,6 +15,8 @@ from scripts.overnight.paper_marks import PaperMarkError, resolve_paper_mid
 SCHEMA_VERSION = 1
 MAX_GROSS_NOTIONAL_USD = 1_000_000_000
 PM_IDS = ("chatgpt-pm", "swinger-pm", "pragmatist-pm", "grinder-pm")
+MODEL_PM_IDS = ("swinger-pm", "pragmatist-pm", "grinder-pm")
+PM_BOOKS_RELPATH = Path("data/pm/books/latest.json")
 PM_SPECS = {
     "chatgpt-pm": {
         "label": "ChatGPT PM",
