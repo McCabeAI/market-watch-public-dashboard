@@ -6,6 +6,7 @@ import unittest
 from scripts.policy_path_data import (
     parse_asx_cash_futures_html,
     parse_boc_corra_html,
+    parse_boc_corra_json,
     parse_cme_sofr_html,
     parse_mx_expectations_html,
     parse_nyfed_sofr_json,
@@ -14,6 +15,13 @@ from scripts.policy_path_data import (
 
 
 class PolicyPathParserTests(unittest.TestCase):
+    def test_boc_corra_json(self):
+        payload = '{"observations":[{"d":"2026-09-17","AVG.INTWO":{"v":"2.2900"}}]}'
+        self.assertEqual(
+            parse_boc_corra_json(payload),
+            {"rate": 2.29, "as_of": "2026-09-17"},
+        )
+
     def test_boc_corra(self):
         html = """
         <table>
