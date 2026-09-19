@@ -7,15 +7,17 @@ from pathlib import Path
 
 from scripts.apply_trader_book_tab import apply_trader_book_tab
 from scripts.pm.cli import init_layer
-from scripts.pm.public import build_public_state, emit_pm_json
+from scripts.pm.books import apply_decision, empty_books
+from scripts.pm.public import build_public_state, emit_pm_json, validate_public_packet
 from scripts.pm.store import PMStore
+from tests.test_pm_books import MARKET, _open
 
 
 REPO = Path(__file__).resolve().parents[1]
 
 
 class PMDashboardTests(unittest.TestCase):
-    def test_public_json_renders_awaiting_state(self) -> None:
+    def test_validate_public_packet_accepts_initial_awaiting_state(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             store = PMStore(root=REPO, state_root=Path(tmp))
             init_layer(store)
@@ -26,8 +28,79 @@ class PMDashboardTests(unittest.TestCase):
             self.assertEqual(statuses["swinger"], "awaiting_automated_pm_review")
             self.assertEqual(statuses["pragmatist"], "awaiting_automated_pm_review")
             self.assertEqual(statuses["grinder"], "awaiting_automated_pm_review")
+            validate_public_packet(public)
             self.assertEqual(len(public["comparison"]), 4)
             self.assertIn("data_requests", public)
+
+    def _mixed_state_books(self):
+        books = empty_books(trader_room_run_id="tr-mixed")
+        books = apply_decision(
+            books,
+            {
+                "pm_id": "swinger",
+                "actions": [_open(notional=200_000_000)],
+                "thesis": "swing",
+            },
+            pm_id="swinger",
+            market_state=MARKET,
+            run_id="tr-mixed",
+            evidence_cutoff="2026-09-19T21:40:00Z",
+            review_packet_id="p-s",
+            review_packet_sha256="h-s",
+        )
+        books = apply_decision(
+            books,
+            {
+                "pm_id": "pragmatist",
+                "actions": [_open(instrument="AUDUSD", notional=50_000_000)],
+                "thesis": "grind",
+            },
+            pm_id="pragmatist",
+            market_state=MARKET,
+            run_id="tr-mixed",
+            evidence_cutoff="2026-09-19T21:40:00Z",
+            review_packet_id="p-p",
+            review_packet_sha256="h-p",
+        )
+        books = apply_decision(
+            books,
+            {"pm_id": "grinder", "actions": [{"action": "NO_TRADE"}], "thesis": "cash"},
+            pm_id="grinder",
+            market_state=MARKET,
+            run_id="tr-mixed",
+            evidence_cutoff="2026-09-19T21:40:00Z",
+            review_packet_id="p-g",
+            review_packet_sha256="h-g",
+        )
+        return books
+
+    def test_validate_public_packet_mixed_active_no_trade_awaiting(self) -> None:
+        from scripts.pm.data_requests import empty_registry
+
+        books = self._mixed_state_books()
+        public = build_public_state(books, empty_registry())
+        statuses = {row["pm_id"]: row["decision_status"] for row in public["pms"]}
+        self.assertEqual(statuses["chatgpt"], "awaiting_chatgpt_decision")
+        self.assertEqual(statuses["swinger"], "active")
+        self.assertEqual(statuses["pragmatist"], "active")
+        self.assertEqual(statuses["grinder"], "no_trade")
+        validate_public_packet(public)
+
+    def test_publication_emit_succeeds_for_mixed_state(self) -> None:
+        from scripts.pm.data_requests import empty_registry
+
+        with tempfile.TemporaryDirectory() as tmp:
+            store = PMStore(root=REPO, state_root=Path(tmp))
+            books = self._mixed_state_books()
+            registry = empty_registry()
+            store.write_books(books)
+            store.write_requests(registry)
+            public = build_public_state(books, registry)
+            store.write_public(public)
+            site = Path(tmp) / "_site"
+            emit_pm_json(store, site)
+            packet = json.loads((site / "pm-books.json").read_text(encoding="utf-8"))
+            validate_public_packet(packet)
 
     def test_trader_book_js_has_pm_section_without_redesigning_seats(self) -> None:
         js = (REPO / "patch_v13" / "trader-book.js").read_text(encoding="utf-8")

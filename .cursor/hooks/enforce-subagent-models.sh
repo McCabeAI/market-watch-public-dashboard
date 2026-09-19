@@ -63,6 +63,24 @@ if [ -n "$TRANSCRIPT" ] && [ -r "$TRANSCRIPT" ]; then
     | head -n 1 || true)
 fi
 
+PM_POLICY=""
+if [ -n "$TRANSCRIPT" ] && [ -r "$TRANSCRIPT" ]; then
+  PM_POLICY=$(head -c 65536 "$TRANSCRIPT" 2>/dev/null \
+    | sed 's/\\"/"/g' \
+    | grep -o 'PM_MODEL_POLICY={"version":1,[^}]*}' \
+    | head -n 1 || true)
+fi
+
+if [ -n "$PM_POLICY" ]; then
+  case "$MODEL" in
+    grok-4.6|composer-2.5) allow ;;
+    cursor-grok-4.6-*)
+      deny "PM routing blocked runtime slug '$MODEL'. Launch principals via .cursor/agents/{swinger,pragmatist,grinder}.md (frontmatter grok-4.6[]), not Task model grok-4.6/inherit."
+      ;;
+    *) deny "PM model policy allows only grok-4.6 principals and grok-4.6/composer-2.5 subagents. Refusing '$MODEL'." ;;
+  esac
+fi
+
 if [ -n "$TR_POLICY" ]; then
   case "$MODEL" in
     grok-4.6|composer-2.5) allow ;;

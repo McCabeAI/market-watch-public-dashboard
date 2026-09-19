@@ -41,5 +41,5 @@ jobs:
         with:
           python-version: "3.12"
       - run: python scripts/validate_trader_room.py
-      - run: python -m unittest tests.test_trader_room_ondemand
+      - run: python -m unittest tests.test_trader_room_ondemand tests.test_pm_launch -v
       - run: PYTHONPATH=. python scripts/trader_room_go.py go --synthetic --topic go --artifact-root /tmp/trader-room-ci
