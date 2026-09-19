@@ -154,6 +154,12 @@ A failed gate does not mutate canonical books.
 
 ## 8. Persistent paper books
 
+Rates quote-unit rule:
+- outright `rates` marks are stored in **percentage points** (for example, 4.76 means 4.76%); therefore 1bp = a 0.01 mark move;
+- `curve` and `rates_rv` marks are stored directly in **basis points**; therefore 1bp = a 1.00 mark move;
+- the book engine converts those units before P&L, so under its simplified duration-1 convention a 1bp favorable move on $100m is $10,000 for either representation.
+
+
 Each seat starts at $100m paper NAV.
 
 Canonical mechanics are implemented only by `scripts/overnight/books.py`:
