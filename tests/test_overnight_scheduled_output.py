@@ -145,6 +145,41 @@ class ScheduledOutputTests(unittest.TestCase):
         self.assertEqual(run["stages"]["trader_review"]["status"], "succeeded")
         self.assertEqual(self.store.read_books()["last_successful_review_run_id"], self.run_id)
 
+    def test_pm_enabled_output_applies_three_model_pm_books(self) -> None:
+        packet = self.payload["agent_packet"]
+        self.payload["pm_decisions"] = {
+            pm_id: {
+                "pm_id": pm_id,
+                "packet_sha256": packet["packet_sha256"],
+                "evidence_cutoff": packet["evidence_cutoff"],
+                "conviction": 20,
+                "thesis": "No incremental PM edge in fixture.",
+                "invalidation": None,
+                "actions": [{"action": "HOLD"}],
+            }
+            for pm_id in ("swinger-pm", "pragmatist-pm", "grinder-pm")
+        }
+        self.payload["execution"].update({
+            "total_model_cap": 21,
+            "grok_cap": 19,
+            "composer_cap": 2,
+            "declared_total_model_calls": 19,
+            "declared_grok_calls": 18,
+            "declared_composer_calls": 1,
+        })
+        review = apply_output(self.store, self.payload)
+        self.assertEqual(review["pm_review_status"], "fresh")
+        self.assertEqual(
+            set(review["pm_ids"]),
+            {"swinger-pm", "pragmatist-pm", "grinder-pm"},
+        )
+        pm_path = self.state_root / "data" / "pm" / "books" / "latest.json"
+        self.assertTrue(pm_path.is_file())
+        pm_books = json.loads(pm_path.read_text(encoding="utf-8"))
+        self.assertEqual(pm_books["pms"]["chatgpt-pm"]["last_review_id"], None)
+        for pm_id in ("swinger-pm", "pragmatist-pm", "grinder-pm"):
+            self.assertEqual(pm_books["pms"][pm_id]["last_review_id"], f"{self.run_id}-pm")
+
     def test_scheduled_open_uses_frozen_mid_not_model_price(self) -> None:
         memo = {
             "rates_candidate": None,
