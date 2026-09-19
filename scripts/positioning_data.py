@@ -310,7 +310,7 @@ def fetch_cftc_tff(
         "$limit": "50000",
     }
     url = f"{CFTC_TFF_API}?{urllib.parse.urlencode(params)}"
-    payload = json.loads(fetch_bytes(url, timeout=60, retries=3).decode("utf-8"))
+    payload = json.loads(fetch_bytes(url, timeout=30, retries=2).decode("utf-8"))
     if not isinstance(payload, list):
         raise PositioningError("CFTC TFF API did not return a list")
     result = parse_cftc_tff_rows(payload, today=today)
