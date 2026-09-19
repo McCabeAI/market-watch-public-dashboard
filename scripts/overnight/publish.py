@@ -60,6 +60,7 @@ def emit_trader_books_json(store: OvernightStore, site_dir: Path, *, run_id: str
         payload = dataset["trader_books"]
         payload = {
             **payload,
+            "pm_books": dataset.get("pm_books"),
             "overnight_research": dataset.get("agent_research"),
             "publication": {
                 "core_status": dataset["publication"]["core_status"],
@@ -75,6 +76,15 @@ def emit_trader_books_json(store: OvernightStore, site_dir: Path, *, run_id: str
         from scripts.overnight.books import public_books_view, validate_books
 
         payload = public_books_view(validate_books(store.read_books()))
+        from scripts.pm_layer import empty_pm_books, public_pm_view
+        import json
+        pm_path = store.root / "data" / "pm" / "books" / "latest.json"
+        if pm_path.is_file():
+            from scripts.pm_layer import validate_pm_books
+            pm_books = validate_pm_books(json.loads(pm_path.read_text(encoding="utf-8")))
+        else:
+            pm_books = empty_pm_books()
+        payload["pm_books"] = public_pm_view(pm_books)
         payload["publication"] = {
             "core_status": "ok",
             "trader_books_status": payload.get("review_status") or "stale",
