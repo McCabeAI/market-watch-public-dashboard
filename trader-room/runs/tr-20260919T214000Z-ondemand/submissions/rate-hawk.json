@@ -1,0 +1,140 @@
+{
+  "type": "TRADER_ROOM_CONTRIBUTION",
+  "run_id": "tr-20260919T214000Z-ondemand",
+  "round": 1,
+  "agent": "rate-hawk",
+  "archetype": "rate-hawk",
+  "remit": "underpriced hawkish policy, higher terminal rates, or higher-rate repricing",
+  "stance_summary": "US inflation, labor, activity and consumer heat are still inconsistent with a SOFR path that peaks at 4.755 in 2027-09 and then eases through 2028. Pay SOFR_2027-09 (long implied rate at the packet 4.755 mid) rather than USD spot, because the mispricing is the policy path itself. Fact: Fed delivered 25bp to 3.75-4.00% and SOFR printed 3.85 on 2026-09-17. Inference: that first hike was a waypoint, not the terminal. Unknown: positioning.",
+  "packet_sha256": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
+  "confidence": 64,
+  "subagent_calls": 0,
+  "subagent_model": null,
+  "memory_context_sha256": "a442f87bad2659798e1bd19b6411a7012b0474fbb7ab66017f362b006a0c4f51",
+  "macro_assumptions": {
+    "growth": "above_trend",
+    "risk": "neutral",
+    "rates": "higher_for_longer",
+    "policy": "hawkish"
+  },
+  "trade": {
+    "instrument": "SOFR_2027-09",
+    "asset_class": "rates",
+    "expression_comparison": {
+      "rates_candidate": "Long implied-rate SOFR_2027-09 (CME SR3U7). Packet tradable-curve / 12m exact-horizon mid is 4.755, 90.5bp above overnight SOFR 3.85. This pays the priced terminal and rejects the subsequent 2028 fade (SR3H8 4.695, SR3U8 4.62).",
+      "spot_candidate": "Long USDJPY at the packet ECB mid 157.88830715532288 as the USD policy-premium alternative to the same hawkish-US view.",
+      "selected": "rates",
+      "rationale": "The discrepancy is the SOFR path: a 4.755 2027-09 peak and a 2028 easing tail after a just-delivered hike into still-hot US gauges. SOFR_2027-09 is a locked, packet-markable implied-rate contract. USDJPY is inferior because it mixes that US path with the BoJ hike to 1.25% and a 1.41% one-day USDJPY jump already in the freeze, so spot does not isolate underpriced US restraint."
+    },
+    "context_build": {
+      "causal_mechanism": "FACT: US temperature gauges remain hot (Inflation 72, Labor 75, Activity 69, Consumer 74), August CPI kept a Fed tightening bias intact, and the Fed raised 25bp to 3.75-4.00%. MECHANISM TESTED: inflation persistence plus still-firm demand/labor keep the reaction function hiking, so the terminal overnight rate and the date of first easing both reprice higher than the locked SR3 strip. INFERENCE: a path that peaks at 4.755 by 2027-09 and then eases through 2028 assumes a cooling that the retained heat scores have not confirmed. UNKNOWN: the composition of August CPI beyond the retained headline, and whether dashboard_v8 gauges match a live Supabase pull.",
+      "path_to_current_price": "FACT: Official NY Fed SOFR held in a 3.50-3.69 range from mid-May through 2026-09-16 (3.62 that day) and then printed 3.85 effective 2026-09-17, a 23bp overnight jump coincident with the delivered hike. Pre-decision, interest-rate futures carried a greater-than-90% probability of that 25bp increase. The tradable SR3 strip now reads 2026-09 4.00, 2026-12 4.32, 2027-03 4.58, 2027-06 4.72, 2027-09 4.755 (peak, +90.5bp vs overnight), 2027-12 4.73, 2028-03 4.695, 2028-09 4.62. US 2Y 4.76 and 10Y 5.01 sit at the 99.8th and 99.6th one-year percentiles with 2s10s at 25bp (0.2nd percentile, -21bp over one month). INFERENCE: the front end did the hike that was already priced; the residual priced object is a shallow remaining cycle that fades inside 18 months. That is a path outcome, not a 2Y percentile thesis.",
+      "known_vs_new_information": "KNOWN before the freeze: August CPI kept tightening bias intact; futures were already >90% priced for 25bp; US gauges were hot. NEW in this freeze: the hike was delivered to 3.75-4.00%; SOFR printed 3.85 on 2026-09-17; the locked strip still peaks at only 4.755 and then discounts 2028. The known CPI/hike facts can explain the overnight jump now because the fixing and the funds-range change are the transmission of already-telegraphed policy into the benchmark. They do not by themselves justify treating 4.755 as a sufficient terminal once heat remains this broad.",
+      "market_implied_assumption": "The locked US policy path requires roughly 90bp of additional tightening from SOFR 3.85 to a 4.755 terminal by 2027-09, then about 6-13.5bp of easing by 2028-03/2028-09 (4.695/4.62), with 1m SOFR also peaking near 4.7225 in 2027-12 before fading. That is a one-year hiking cycle that stops below 5% and starts reversing in 2028. Cross-check: AONIA 4.35 prices only ~59.5bp more to a 4.945 2027-07/09 cap despite AU Inflation 82; CORRA 2.29 prices ~136.5bp more to a 3.655 2028-09 cap despite CA Labor 38 and core near 2%.",
+      "market_assumption_disagreed_with": "Disagree specifically with the assumption that US restriction maxes at a 4.755 2027-09 implied rate and that 2028 forwards should already ease. The disagreed object is the SOFR terminal and the 2028 fade, not the statement that the first 25bp hike was likely.",
+      "price_decomposition": "Level versus change: overnight SOFR is a new 3.85 level after a 23bp change on 2026-09-17; SR3U7 is a 4.755 level only 90.5bp above that overnight. Tenor split: 1m SOFR climbs from 3.75 (2026-09) to 4.7225 (2027-12) then fades; 3m SR3 peaks at 4.755 in 2027-09 then fades. Sovereign 2Y 4.76 is already at the SR3 terminal, while 10Y 5.01 and 30Y 5.34 hold extra term premium; 2s10s at 25bp (0.2nd percentile) is a discovery flag that the curve is flat, not a substitute for the SOFR path. Marginal driver of the latest overnight move is the delivered hike, not a new terminal-repricing impulse. Cross-market: CA-US 2Y at -140bp (3.8th percentile 1y) and CA-US 10Y at -111bp (0.2nd percentile 1y) show Canada still much easier; AU-US 2Y at +26bp (25.6th percentile 1y) shows Australia already tighter despite fewer remaining AONIA hikes.",
+      "historical_reference": {
+        "distribution": "FACT: US 2Y 4.76 is 99.8th percentile 1y / z 2.84 and 88.0th percentile 5y; US 10Y 5.01 is 99.6th percentile 1y / z 2.72; US 2s10s 25bp is 0.2nd percentile 1y. Those percentiles are discovery flags only. The tradable object is SR3U7 at 4.755 versus overnight 3.85. Packet US 2Y/10Y tenor analog arrays are empty, so there is no packet forward-outcome distribution for the sovereign 2Y itself.",
+        "analogs": [
+          "Packet AU-US_2Y analog 2022-02-07: prior 1m spread move -11.5bp, then forward 1m -11.7bp and forward 3m +38.9bp while a hiking regime was still being underpriced at the front end.",
+          "Packet AU-US_10Y analog 2022-03-21: prior 1m +2.6bp, then forward 1m -7.7bp and forward 3m +33.5bp as the 2022 hiking cycle continued to lift longer yields after a pause in the spread.",
+          "Packet CA-US_2Y analog 2022-11-15: prior 1m -17bp at a -51bp level, then mixed forwards (1m -4bp, 3m +6bp), showing that a large cheapening of Canada versus the US during a hiking regime did not reliably mean the US path was finished.",
+          "No packet analog exists for the SOFR_2027-09 contract itself; US tenor analog lists are empty in this freeze."
+        ],
+        "regime_differences": "2022 analogs occurred during a still-accelerating inflation shock with policy starting from near-zero; today SOFR is already 3.85 after a delivered 25bp hike, US 2Y/10Y are already 99th-percentile, and a Saudi ship-to-ship workaround has reduced the extreme oil-supply tail. Australia now shows the housing channel biting (NSW stamp duty -24% y/y, volumes -18%, Sydney/Melbourne values more than 7% below peak), which is a structural difference versus 2022 demand-led inflation. Those differences cut both ways: starting restriction is higher, so less residual tightening may be needed, but heat scores remain broad and the priced terminal is still only 4.755."
+      },
+      "independent_checks": [
+        "Policy-path check: locked SOFR overnight 3.85 versus SR3 2026-12 4.32 / 2027-03 4.58 / 2027-09 4.755 peak / 2028-09 4.62 fade, with matching 1m SOFR peak 4.7225 in 2027-12.",
+        "Temperature-gauge check: US Inflation 72, Labor 75, Activity 69, Consumer 74 remain jointly hot versus that 90bp remaining cycle; AU Inflation 82 with only ~60bp of AONIA hikes left is a same-direction cross-check, while CA Labor 38 and core-near-2% inflation argue Canada is not the primary hawk expression.",
+        "Event-path check: August CPI kept tightening bias intact, then the Fed hiked 25bp, then SOFR printed 3.85; BoE still had three hike votes at a 3.75% hold and BoJ hiked to 1.25%, so global reaction functions are not uniformly easing."
+      ],
+      "flow_and_positioning_check": "FACT: CFTC trader-class nets and CME positioning overlays are unavailable in this freeze (pos:cftc / known gap). Paper books are empty $100m seeds, so there is no seat-level crowding in SOFR_2027-09. INFERENCE cannot attribute the 4.755 peak or the 2028 fade to liquidation, CTA, or dealer hedging. UNKNOWN: speculative net in SR3. Do not treat the 99th-percentile sovereign yields as positioning evidence.",
+      "policy_path_check": {
+        "status": "available",
+        "relevant_countries": [
+          "US",
+          "CA",
+          "AU"
+        ],
+        "pricing_summary": "US: SOFR 3.85 (2026-09-17); SR3U6 4.00, SR3Z6 4.32, SR3H7 4.58, SR3M7 4.72, SR3U7 4.755 peak, then SR3Z7 4.73 / SR3H8 4.695 / SR3U8 4.62. CA: CORRA 2.29; 3m CRA peaks near CRAU28 3.655 (+136.5bp). AU: AONIA 4.35; 1m IB peaks near 4.945 in 2027-07/08/09 (+59.5bp). NZ policy path is unavailable.",
+        "rationale": "This is an outright US STIR terminal trade. The frozen SOFR/SR3 path is the priced object; CORRA and AONIA are independent cross-checks that the hawkish residual is largest in the US remaining cycle relative to US heat, not a CA-US 2Y percentile substitute."
+      }
+    },
+    "structure": "Pay 3-month SOFR / long implied rate in SOFR_2027-09 (SR3U7). Paper mark is the packet tradable-curve implied rate 4.755, not the 95.245 futures price. No strip weights: single locked contract.",
+    "direction": "long",
+    "thesis": "FACT: the Fed has hiked to 3.75-4.00%, SOFR is 3.85, and US heat scores are 72/75/69/74. FACT: SR3 still peaks at 4.755 in 2027-09 and eases into 2028. INFERENCE: inflation persistence keeps the terminal and the duration of restraint higher than that strip. Express the view by paying SOFR_2027-09. UNKNOWN: positioning and the next inflation print's composition.",
+    "mispricing": "SR3U7 at 4.755 prices only 90.5bp of remaining tightening from SOFR 3.85 and already allows a 2028 fade to 4.62. That is too little terminal and too early easing given still-hot US inflation, labor, activity and consumer gauges after a hike that was more than 90% priced going in.",
+    "why_now": [
+      "Overnight SOFR jumped from 3.62 on 2026-09-16 to 3.85 on 2026-09-17, so the path now starts from the post-hike benchmark while the 12m exact-horizon SR3U7 mid is still 4.755.",
+      "The first 25bp hike was greater-than-90% priced before the decision; residual information is the terminal and 2028 fade, which have not been forced higher by the still-hot gauges.",
+      "Flat books still pay official SOFR 3.85 ACT/360 on the full $100m; SOFR_2027-09 is a packet-markable unfunded STIR expression of the hawkish residual."
+    ],
+    "evidence_refs": [
+      "policy:US",
+      "policy_paths",
+      "tradable_rate_curves",
+      "funding_context",
+      "temp:US:inflation",
+      "temp:US:labor",
+      "temp:US:activity",
+      "temp:US:consumer",
+      "rollup:Fed raises 25bp to 3.75–4.00%",
+      "rollup:August CPI keeps the Fed tightening bias intact",
+      "mw_20260916_fomc_hike_pricing",
+      "rates:US",
+      "market_state",
+      "pos:cftc",
+      "fx:USDJPY",
+      "policy:CA",
+      "policy:AU",
+      "temp:AU:inflation",
+      "temp:CA:labor",
+      "rollup:BoJ raises its policy rate to 1.25%",
+      "mw_20260916_saudi_oman_workaround",
+      "mw_20260916_au_housing_tightening",
+      "research_method"
+    ],
+    "horizon": "3-6 months",
+    "entry": "packet mid implied rate 4.755 on SOFR_2027-09 / SR3U7 from tradable_rate_curves and funding_context 12m exact-horizon",
+    "target": null,
+    "stop": null,
+    "invalidation": "Qualitative invalidation, not an invented numeric stop: a lock of SR3U7 implied rate back through the packet 6m SR3H7 mid of 4.58, or retained US Labor/Inflation gauges moving into a clear cooldown that validates the priced 2028 fade. Do not treat a 2Y percentile reversal as the falsifier.",
+    "catalysts": [
+      "Next US inflation or labor prints that keep the tightening bias intact after the delivered hike.",
+      "Additional Fed communications that refuse to treat 3.75-4.00% as sufficient given still-hot gauges.",
+      "Re-acceleration of energy pass-through if the Saudi workaround fails to cap the oil tail."
+    ],
+    "principal_risks": [
+      "The hike was >90% priced; if 4.755 already embeds enough remaining tightening, long implied-rate earns little and still sits behind the 3.85% seat-level SOFR vig.",
+      "US sovereign 2Y/10Y are already 99th-percentile; a growth scare or housing-channel transmission like Australia's could validate the 2028 easing tail.",
+      "Positioning is unavailable, so a crowded short-duration overlay cannot be ruled out.",
+      "Dashboard_v8 temperature gauges may be stale versus live Supabase scores.",
+      "BoJ hike to 1.25% and the 1.41% USDJPY one-day jump show USD spot can move for non-US reasons if the expression is ever swapped into FX."
+    ],
+    "confidence": 64
+  },
+  "conflict_synopsis": {
+    "seat": "rate-hawk",
+    "primary_trade": "long SOFR_2027-09 implied rate (pay SR3U7 4.755)",
+    "core_view": "US heat and a just-delivered hike are inconsistent with a SOFR terminal of 4.755 that already eases in 2028.",
+    "usd_view": "higher",
+    "cad_view": "lower",
+    "aud_view": "neutral",
+    "nzd_view": "not_relevant",
+    "us_rates_view": "higher",
+    "ca_rates_view": "higher",
+    "au_rates_view": "higher",
+    "nz_rates_view": "not_relevant",
+    "risk_view": "neutral",
+    "carry_view": "neutral",
+    "time_horizon": "3-6 months",
+    "key_catalyst": "US inflation or labor data that keep the Fed hiking beyond the 4.755 2027-09 peak.",
+    "key_invalidation": "SR3U7 implied rate back through the packet 4.58 6m mid, or a confirmed US labor/inflation cooldown.",
+    "confidence": 64,
+    "conflict_tags": [
+      "US_RATES_UP",
+      "USD_UP",
+      "HAWKISH_POLICY"
+    ]
+  }
+}

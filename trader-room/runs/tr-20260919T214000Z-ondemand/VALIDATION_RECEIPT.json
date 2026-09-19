@@ -1,6 +1,6 @@
 {
   "type": "MARKET_WATCH_18_STACK_VALIDATION_RECEIPT",
-  "stage": "EVIDENCE_FROZEN",
+  "stage": "ROUND1_IN_FLIGHT",
   "run_id": "tr-20260919T214000Z-ondemand",
   "evidence_cutoff": "2026-09-19T21:40:00Z",
   "packet_sha256": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
@@ -11,9 +11,21 @@
     "sofr_observation_date": "2026-09-17",
     "sofr_source": "NY_FED",
     "convention": "ACT/360",
-    "sr3_3m": {"code": "SR3Z6", "expiry": "2026-12", "implied_rate": 4.32},
-    "sr3_6m": {"code": "SR3H7", "expiry": "2027-03", "implied_rate": 4.58},
-    "sr3_12m": {"code": "SR3U7", "expiry": "2027-09", "implied_rate": 4.755}
+    "sr3_3m": {
+      "code": "SR3Z6",
+      "expiry": "2026-12",
+      "implied_rate": 4.32
+    },
+    "sr3_6m": {
+      "code": "SR3H7",
+      "expiry": "2027-03",
+      "implied_rate": 4.58
+    },
+    "sr3_12m": {
+      "code": "SR3U7",
+      "expiry": "2027-09",
+      "implied_rate": 4.755
+    }
   },
   "preflight": {
     "temperature_gauges": "available",
@@ -34,8 +46,20 @@
     "rebuttals_grok": 0,
     "pm_principals_grok": 0,
     "pm_children": 0,
-    "ceilings": {"total": 69, "grok": 32, "composer": 37}
+    "ceilings": {
+      "total": 69,
+      "grok": 32,
+      "composer": 37
+    }
   },
   "pr_url": "https://github.com/McCabeAI/market-watch-public-dashboard/pull/47",
-  "status": "ROUND1_IN_FLIGHT"
+  "status": "ROUND1_IN_FLIGHT",
+  "round1_submissions_persisted": [
+    "no-trade-skeptic",
+    "perma-bear",
+    "perma-bull",
+    "rate-hawk",
+    "vol-convexity"
+  ],
+  "round1_submissions_count": 5
 }
