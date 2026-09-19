@@ -236,6 +236,46 @@ def _linear_combo(state: Mapping[str, Any], expression: Mapping[str, Any]) -> di
     }
 
 
+def _forward_swap_proxy(state: Mapping[str, Any], expression: Mapping[str, Any]) -> dict[str, Any]:
+    """Paper forward swap from an official government zero-curve proxy."""
+    from scripts.official_forward_curves import ForwardCurveError, forward_swap_proxy
+
+    country = str(expression.get("country") or "").upper()
+    if country not in {"US", "CA", "AU"}:
+        raise PaperMarkError("forward_swap_proxy country must be US, CA or AU")
+    try:
+        start_years = int(expression.get("start_years"))
+        tenor_years = int(expression.get("tenor_years"))
+        payment_frequency = int(expression.get("payment_frequency", 1))
+    except (TypeError, ValueError) as exc:
+        raise PaperMarkError("forward_swap_proxy requires integer start_years/tenor_years") from exc
+    curves = state.get("forward_curves")
+    countries = curves.get("countries") if isinstance(curves, Mapping) else None
+    curve = countries.get(country) if isinstance(countries, Mapping) else None
+    if not isinstance(curve, Mapping) or curve.get("status") not in {"ok", "stale"}:
+        raise PaperMarkError(f"{country} official forward-curve proxy unavailable")
+    try:
+        mark = forward_swap_proxy(
+            curve,
+            start_years=start_years,
+            tenor_years=tenor_years,
+            payment_frequency=payment_frequency,
+        )
+    except ForwardCurveError as exc:
+        raise PaperMarkError(str(exc)) from exc
+    return {
+        "value": float(mark["rate_pct"]),
+        "quote_unit": "percent",
+        "source": (
+            f"derived:official_government_zero_proxy:{country}:"
+            f"{start_years}y{tenor_years}y"
+        ),
+        "as_of": mark.get("as_of") or curve.get("as_of"),
+        "kind": "derived",
+        "expression": deepcopy(dict(expression)),
+    }
+
+
 def _forward_swap(state: Mapping[str, Any], expression: Mapping[str, Any]) -> dict[str, Any]:
     """Forward par swap from deterministic discount factors.
 
@@ -298,6 +338,8 @@ def resolve_paper_mid(
             return _linear_combo(market_state, expression)
         if kind == "forward_swap":
             return _forward_swap(market_state, expression)
+        if kind == "forward_swap_proxy":
+            return _forward_swap_proxy(market_state, expression)
         raise PaperMarkError(f"unsupported paper expression type {kind!r}")
     if not instrument:
         raise PaperMarkError("instrument is required for a paper mid")
