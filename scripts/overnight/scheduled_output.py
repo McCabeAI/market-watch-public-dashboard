@@ -193,6 +193,7 @@ def _apply_validated(
         run_id=run_id,
         evidence_cutoff=payload["agent_packet"]["evidence_cutoff"],
         when=parse_iso(payload["agent_packet"]["evidence_cutoff"]),
+        market_state=(base.get("families", {}).get("market_state", {}) or {}).get("data"),
     )
     updated["review_status"] = "fresh"
     updated["last_successful_review_run_id"] = run_id

@@ -154,11 +154,21 @@ A failed gate does not mutate canonical books.
 
 ## 8. Persistent paper books
 
+Paper-mid convention:
+- paper books **enter, add, reduce and exit at the deterministic mid/reference level in the frozen Market Watch packet**. A broker-executable bid/offer is not required for paper trading;
+- these values are stored with explicit paper/reference provenance and must never be described as executable prices;
+- model-supplied transaction prices are ignored when a deterministic packet mid exists. The model chooses instrument, direction, structure and size; trusted code owns the transaction mark;
+- existing positions are re-marked from the newest deterministic market-state packet before P&L is calculated;
+- spot FX uses the same-fixing ECB cross; outright sovereign rates use the official yield observation; cross-market RV/curve trades use deterministic spread mids; SOFR/CORRA/AONIA-linked futures use the packet's implied-rate mid;
+- derived curve expressions are allowed when every source leg is present in the frozen packet. The position stores the expression definition and trusted code recomputes the derived mid on every review;
+- supported derived math includes linear curve/spread combinations and forward swaps from deterministic discount factors. For a forward swap, trusted code uses `(P_start - P_end) / sum(alpha_i * P_i)`. A 2y2y therefore requires the packet's actual 2y-to-4y discount-curve inputs; par-yield interpolation is not silently substituted;
+- an advocate may use its permitted research/subagent capacity to analyze curve construction, but canonical entry/exit/P&L math is always replayed deterministically from frozen source legs;
+- if a required source leg is missing, that expression is not paper-tradeable. Options likewise remain blocked until the packet contains the premium/IV/strike data needed to mark them.
+
 Rates quote-unit rule:
 - outright `rates` marks are stored in **percentage points** (for example, 4.76 means 4.76%); therefore 1bp = a 0.01 mark move;
 - `curve` and `rates_rv` marks are stored directly in **basis points**; therefore 1bp = a 1.00 mark move;
 - the book engine converts those units before P&L, so under its simplified duration-1 convention a 1bp favorable move on $100m is $10,000 for either representation.
-
 
 Each seat starts at $100m paper NAV.
 

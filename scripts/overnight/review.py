@@ -345,6 +345,7 @@ def run_trader_review(
             run_id=run_id,
             evidence_cutoff=packet["as_of"],
             when=when,
+            market_state=(packet.get("families", {}).get("market_state", {}) or {}).get("data"),
         )
         updated["review_status"] = "fresh"
         updated["last_successful_review_run_id"] = run_id

@@ -35,6 +35,8 @@ Expression selection is mandatory before submission:
 
 Each initial advocate must build the idea in this order: context -> what changed -> what is priced -> historical comparison -> discrepancy -> expression -> sizing. A percentile/z-score is a discovery flag, not a thesis. Complete the validated `context_build` before selecting risk. For rates, inspect the frozen SOFR/CORRA/AONIA-linked policy path before sovereign curves or RV. Use the packet's historical move analogs and explicitly state both similarities and regime differences.
 
+Paper execution is at deterministic packet mid. A broker-executable quote is not required for the paper book. Direct instruments use the frozen reference/fixing/settlement/yield mid. Derived rates structures are allowed when the advocate supplies a structured `paper_expression` whose source legs/formula can be replayed by trusted code. Linear spreads/flies and forward swaps are valid; a forward swap is computed from discount factors as `(P_start - P_end) / sum(alpha_i * P_i)`. A 2y2y is tradeable when the frozen packet contains the required 2y-to-4y discount-curve inputs. Do not silently approximate it from par yields. Advocates may use their permitted Composer subagents to analyze curve construction, but canonical paper marks/P&L are deterministic.
+
 Each initial advocate:
 - may use at most two `composer-2.5` subagents;
 - must remain on the frozen packet;

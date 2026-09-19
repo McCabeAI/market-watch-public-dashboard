@@ -136,6 +136,19 @@ Every advocate except `no-trade-skeptic` must produce one actionable trade with:
 
 `context_build` is a hard gate, not optional prose. It must state the causal mechanism, path to current price, known-vs-new information, market-implied assumption, exact assumption disagreed with, price decomposition, historical reference/analogs and regime differences, at least two independent checks, flow/positioning check, and policy-path check. Statistics may support that context but may not replace it.
 
+## Paper execution and derived curves
+
+Paper execution uses **mid/reference marks**, not executable broker quotes.
+
+- If the frozen packet exposes a deterministic level for the selected instrument, an OPEN/ADD/REDUCE/CLOSE is transacted at that packet mid. Do not block a paper trade merely because the source is an official fixing, settlement, assessed yield or research/reference rate rather than an executable bid/offer.
+- The deterministic book layer records the source and as-of date and owns all entry, exit, mark and P&L arithmetic. A model-authored numeric price is not canonical.
+- Direct supported examples include G10 ECB spot crosses, official sovereign yields, deterministic country curves/RV spreads, and SOFR/CORRA/AONIA-linked contract implied rates.
+- Advocates may propose derived curve structures. A derived trade must include a structured `paper_expression` containing the source legs/formula so trusted code can recompute the same mid at entry and on every subsequent review.
+- Linear spreads/flies may be built from packet rate legs. Forward swaps/fwd-fwds may be built from packet discount factors using `(P_start - P_end) / sum(alpha_i * P_i)`.
+- A true 2y2y is therefore allowed whenever the frozen packet supplies the required 2y-to-4y discount-curve inputs. Do not silently approximate it from unrelated par yields. If the inputs are absent, choose another expression or leave that proposed structure untradeable.
+- Initial advocates may use their already-permitted Composer subagent calls to analyze curve construction. The subagent may recommend the structure, but deterministic code must replay the formula from frozen inputs.
+- Options remain untradeable when premium/IV/strike mids are absent.
+
 ## Artifact sequence
 
 A complete run contains:
