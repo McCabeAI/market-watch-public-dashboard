@@ -428,6 +428,69 @@ class PaperMarkTests(unittest.TestCase):
         expected = 100.0 * (0.93 - 0.83) / (0.88 + 0.83)
         self.assertAlmostEqual(mark["value"], expected, places=8)
 
+    def test_2y2y_uses_official_curve_proxy_compact_syntax(self):
+        state = {
+            "official_curves": {
+                "countries": {
+                    "US": {
+                        "status": "ok",
+                        "as_of": "2026-09-11",
+                        "discount_factors": {
+                            "2Y": {"value": 0.93, "maturity_years": 2.0, "as_of": "2026-09-11", "source": "FED"},
+                            "3Y": {"value": 0.88, "maturity_years": 3.0, "as_of": "2026-09-11", "source": "FED"},
+                            "4Y": {"value": 0.83, "maturity_years": 4.0, "as_of": "2026-09-11", "source": "FED"},
+                        },
+                    }
+                }
+            }
+        }
+        mark = resolve_paper_mid(
+            state,
+            "US_2y2y",
+            asset_class="rates",
+            expression={
+                "type": "forward_swap",
+                "curve_country": "US",
+                "start_years": 2,
+                "tenor_years": 2,
+                "payment_frequency": 1,
+            },
+        )
+        expected = 100.0 * (0.93 - 0.83) / (0.88 + 0.83)
+        self.assertAlmostEqual(mark["value"], expected, places=8)
+        self.assertIn("official_curves.US", mark["source"])
+
+    def test_forward_swap_proxy_loglinearly_interpolates_missing_coupon_nodes(self):
+        state = {
+            "official_curves": {
+                "countries": {
+                    "US": {
+                        "status": "ok",
+                        "as_of": "2026-09-11",
+                        "discount_factors": {
+                            "2Y": {"value": 0.93, "maturity_years": 2.0, "as_of": "2026-09-11", "source": "FED"},
+                            "3Y": {"value": 0.88, "maturity_years": 3.0, "as_of": "2026-09-11", "source": "FED"},
+                            "4Y": {"value": 0.83, "maturity_years": 4.0, "as_of": "2026-09-11", "source": "FED"},
+                        },
+                    }
+                }
+            }
+        }
+        mark = resolve_paper_mid(
+            state,
+            "US_2y2y_semiannual",
+            asset_class="rates",
+            expression={
+                "type": "forward_swap",
+                "curve_country": "US",
+                "start_years": 2,
+                "tenor_years": 2,
+                "payment_frequency": 2,
+            },
+        )
+        self.assertGreater(mark["value"], 0)
+        self.assertIn("loglinear", mark["source"])
+
     def test_forward_swap_refuses_to_fake_missing_curve_inputs(self):
         with self.assertRaises(PaperMarkError):
             resolve_paper_mid(
