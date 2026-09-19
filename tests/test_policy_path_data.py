@@ -10,6 +10,7 @@ from scripts.policy_path_data import (
     parse_cme_sofr_bulletin_text,
     parse_cme_sofr_html,
     parse_cme_sofr_settlements_json,
+    parse_esignal_sofr_html,
     parse_mx_expectations_html,
     parse_nyfed_sofr_json,
     parse_rba_f1_csv,
@@ -81,6 +82,20 @@ TOTAL SR1 FUT 0 127818 1302349 + 11967
         self.assertEqual(rows[0]["expiry"], "2026-09")
         self.assertEqual(rows[1]["implied_rate"], 3.91)
         self.assertEqual(rows[2]["change_from_overnight_bps"], 35.0)
+
+    def test_esignal_sofr_chain(self):
+        html = """
+        <table>
+          <tr><th>Contract</th><th>Month</th><th>Last</th><th>Change</th></tr>
+          <tr><td>ICE ONE MONTH SOFR INDEX FUTURE - ICUS (SR1 V26)</td><td>Oct'26</td><td>96.090 s</td><td>0.00</td></tr>
+          <tr><td>ICE ONE MONTH SOFR INDEX FUTURE - ICUS (SR1 Z26)</td><td>Dec'26</td><td>95.800 s</td><td>-0.01</td></tr>
+          <tr><td>ICE ONE MONTH SOFR INDEX FUTURE - ICUS (SR1 H27)</td><td>Mar'27</td><td>95.580 s</td><td>-0.02</td></tr>
+        </table>
+        """
+        rows = parse_esignal_sofr_html(html, benchmark=3.85)
+        self.assertEqual(rows[0]["expiry"], "2026-10")
+        self.assertEqual(rows[1]["implied_rate"], 4.2)
+        self.assertEqual(rows[2]["change_from_overnight_bps"], 57.0)
 
     def test_cme_one_month_sofr(self):
         html = """
