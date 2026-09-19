@@ -27,7 +27,7 @@ The locked standing advocates are:
 
 All standing advocates use exact model `grok-4.6`. Initial advocates alone may use up to two `composer-2.5` subagents on the same frozen packet.
 
-The production conflict stage is deterministic. The historical `conflict-aggregator` agent file may remain for compatibility/reference, but it is not launched in the production path. The `final-aggregator` remains a separate `grok-4.6` invocation.
+The production conflict stage and final PM handoff are deterministic. The historical `conflict-aggregator` and `final-aggregator` agent files may remain for compatibility/reference, but neither is launched in the production path. ChatGPT remains the only actual arbiter.
 
 ## Expression mandate
 
@@ -107,9 +107,9 @@ No subagents and no new evidence.
 
 A rebuttal may defend, amend, or withdraw. It must identify the strongest opposing claim, attack weaknesses, state its defense, preserve uncertainty, and say what would concede the argument.
 
-## Final aggregation
+## Final handoff
 
-The `final-aggregator` receives all 14 originals, the deterministic conflict map, all rebuttals, theoretical/context tensions and known gaps. It produces a structured PM handoff but must not select a winner or house view.
+After Round 2, run `scripts/trader_room_finalize.py` against the run directory. Deterministic code reads the 14 validated originals, deterministic conflict map, routed rebuttals, theoretical/context tensions and known gaps, then writes the structured PM handoff and artifact index. This stage consumes zero model calls and performs no new analysis.
 
 Cursor must stop after the handoff.
 
