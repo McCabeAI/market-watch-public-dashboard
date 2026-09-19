@@ -2,8 +2,8 @@
 """One on-demand Trader Room entrypoint.
 
 Default `go` is a complete dry-run: freeze-validate the evidence packet and
-run the 14-advocate -> conflict aggregator -> one-pass rebuttal -> final
-aggregator workflow without consuming the production Grok/Composer budget.
+run the 14-advocate -> deterministic conflict map -> one-pass rebuttal ->
+deterministic PM-handoff workflow without consuming the production Grok/Composer budget.
 
 A live 14-trader research run is refused unless a later authenticated human
 explicitly arms TRADER_ROOM_LIVE=1. This CLI still will not dispatch models.
