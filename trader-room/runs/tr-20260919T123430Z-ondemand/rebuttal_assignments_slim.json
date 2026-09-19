@@ -1,0 +1,234 @@
+{
+  "carry-is-king": {
+    "agent": "carry-is-king",
+    "conflict_ids": [
+      "opp-view:USD",
+      "opp-view:CAD"
+    ],
+    "opponents": [
+      "dollar-king",
+      "perma-bear",
+      "rate-hawk",
+      "trend-follower",
+      "catalyst-junkie",
+      "perma-bull",
+      "value-guy",
+      "cross-merchant",
+      "positioning-cynic",
+      "rate-dove"
+    ]
+  },
+  "catalyst-junkie": {
+    "agent": "catalyst-junkie",
+    "conflict_ids": [
+      "opp-view:USD",
+      "opp-view:CAD"
+    ],
+    "opponents": [
+      "carry-is-king",
+      "dollar-king",
+      "perma-bear",
+      "rate-hawk",
+      "trend-follower",
+      "perma-bull",
+      "value-guy",
+      "cross-merchant",
+      "positioning-cynic",
+      "rate-dove"
+    ]
+  },
+  "cross-merchant": {
+    "agent": "cross-merchant",
+    "conflict_ids": [
+      "opp-view:CAD",
+      "opp-view:AUD"
+    ],
+    "opponents": [
+      "catalyst-junkie",
+      "perma-bull",
+      "positioning-cynic",
+      "value-guy",
+      "carry-is-king",
+      "dollar-king",
+      "perma-bear",
+      "rate-dove",
+      "rate-hawk",
+      "trend-follower",
+      "mean-reverter"
+    ]
+  },
+  "dollar-king": {
+    "agent": "dollar-king",
+    "conflict_ids": [
+      "opp-view:USD",
+      "opp-view:CAD",
+      "opp-view:AUD"
+    ],
+    "opponents": [
+      "carry-is-king",
+      "perma-bear",
+      "rate-hawk",
+      "trend-follower",
+      "catalyst-junkie",
+      "perma-bull",
+      "value-guy",
+      "cross-merchant",
+      "positioning-cynic",
+      "rate-dove",
+      "mean-reverter"
+    ]
+  },
+  "mean-reverter": {
+    "agent": "mean-reverter",
+    "conflict_ids": [
+      "opp-view:AUD"
+    ],
+    "opponents": [
+      "rate-hawk",
+      "cross-merchant",
+      "dollar-king",
+      "perma-bear",
+      "positioning-cynic",
+      "rate-dove"
+    ]
+  },
+  "perma-bear": {
+    "agent": "perma-bear",
+    "conflict_ids": [
+      "opp-view:USD",
+      "opp-view:CAD",
+      "opp-view:AUD"
+    ],
+    "opponents": [
+      "carry-is-king",
+      "dollar-king",
+      "rate-hawk",
+      "trend-follower",
+      "catalyst-junkie",
+      "perma-bull",
+      "value-guy",
+      "cross-merchant",
+      "positioning-cynic",
+      "rate-dove",
+      "mean-reverter"
+    ]
+  },
+  "perma-bull": {
+    "agent": "perma-bull",
+    "conflict_ids": [
+      "opp-view:USD",
+      "opp-view:CAD"
+    ],
+    "opponents": [
+      "carry-is-king",
+      "dollar-king",
+      "perma-bear",
+      "rate-hawk",
+      "trend-follower",
+      "catalyst-junkie",
+      "value-guy",
+      "cross-merchant",
+      "positioning-cynic",
+      "rate-dove"
+    ]
+  },
+  "positioning-cynic": {
+    "agent": "positioning-cynic",
+    "conflict_ids": [
+      "opp-view:CAD",
+      "opp-view:AUD"
+    ],
+    "opponents": [
+      "catalyst-junkie",
+      "cross-merchant",
+      "perma-bull",
+      "value-guy",
+      "carry-is-king",
+      "dollar-king",
+      "perma-bear",
+      "rate-dove",
+      "rate-hawk",
+      "trend-follower",
+      "mean-reverter"
+    ]
+  },
+  "rate-dove": {
+    "agent": "rate-dove",
+    "conflict_ids": [
+      "opp-view:CAD",
+      "opp-view:AUD"
+    ],
+    "opponents": [
+      "catalyst-junkie",
+      "cross-merchant",
+      "perma-bull",
+      "positioning-cynic",
+      "value-guy",
+      "carry-is-king",
+      "dollar-king",
+      "perma-bear",
+      "rate-hawk",
+      "trend-follower",
+      "mean-reverter"
+    ]
+  },
+  "rate-hawk": {
+    "agent": "rate-hawk",
+    "conflict_ids": [
+      "opp-view:USD",
+      "opp-view:CAD",
+      "opp-view:AUD"
+    ],
+    "opponents": [
+      "carry-is-king",
+      "dollar-king",
+      "perma-bear",
+      "trend-follower",
+      "catalyst-junkie",
+      "perma-bull",
+      "value-guy",
+      "cross-merchant",
+      "positioning-cynic",
+      "rate-dove",
+      "mean-reverter"
+    ]
+  },
+  "trend-follower": {
+    "agent": "trend-follower",
+    "conflict_ids": [
+      "opp-view:USD",
+      "opp-view:CAD"
+    ],
+    "opponents": [
+      "carry-is-king",
+      "dollar-king",
+      "perma-bear",
+      "rate-hawk",
+      "catalyst-junkie",
+      "perma-bull",
+      "value-guy",
+      "cross-merchant",
+      "positioning-cynic",
+      "rate-dove"
+    ]
+  },
+  "value-guy": {
+    "agent": "value-guy",
+    "conflict_ids": [
+      "opp-view:USD",
+      "opp-view:CAD"
+    ],
+    "opponents": [
+      "carry-is-king",
+      "dollar-king",
+      "perma-bear",
+      "rate-hawk",
+      "trend-follower",
+      "catalyst-junkie",
+      "perma-bull",
+      "cross-merchant",
+      "positioning-cynic",
+      "rate-dove"
+    ]
+  }
+}

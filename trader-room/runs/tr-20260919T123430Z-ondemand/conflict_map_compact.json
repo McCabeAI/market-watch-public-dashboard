@@ -1,0 +1,241 @@
+{
+  "challenges": [
+    {
+      "agents": [
+        "no-trade-skeptic"
+      ],
+      "description": "no-trade-skeptic challenge whether any of the 13 actionable pitches clears the hurdle.",
+      "id": "trade-vs-no-trade",
+      "kind": "skeptic_challenge",
+      "targets": [
+        "carry-is-king",
+        "catalyst-junkie",
+        "cross-merchant",
+        "dollar-king",
+        "mean-reverter",
+        "perma-bear",
+        "perma-bull",
+        "positioning-cynic",
+        "rate-dove",
+        "rate-hawk",
+        "trend-follower",
+        "value-guy",
+        "vol-convexity"
+      ]
+    }
+  ],
+  "conflicts": [
+    {
+      "agents": [
+        "carry-is-king",
+        "dollar-king",
+        "perma-bear",
+        "rate-hawk",
+        "trend-follower",
+        "catalyst-junkie",
+        "perma-bull",
+        "value-guy"
+      ],
+      "description": "carry-is-king, dollar-king, perma-bear, rate-hawk, trend-follower expect USD higher while catalyst-junkie, perma-bull, value-guy expect USD lower",
+      "id": "opp-view:USD",
+      "kind": "opposite_currency_view"
+    },
+    {
+      "agents": [
+        "catalyst-junkie",
+        "cross-merchant",
+        "perma-bull",
+        "positioning-cynic",
+        "value-guy",
+        "carry-is-king",
+        "dollar-king",
+        "perma-bear",
+        "rate-dove",
+        "rate-hawk",
+        "trend-follower"
+      ],
+      "description": "catalyst-junkie, cross-merchant, perma-bull, positioning-cynic, value-guy expect CAD higher while carry-is-king, dollar-king, perma-bear, rate-dove, rate-hawk, trend-follower expect CAD lower",
+      "id": "opp-view:CAD",
+      "kind": "opposite_currency_view"
+    },
+    {
+      "agents": [
+        "rate-hawk",
+        "cross-merchant",
+        "dollar-king",
+        "mean-reverter",
+        "perma-bear",
+        "positioning-cynic",
+        "rate-dove"
+      ],
+      "description": "rate-hawk expect AUD higher while cross-merchant, dollar-king, mean-reverter, perma-bear, positioning-cynic, rate-dove expect AUD lower",
+      "id": "opp-view:AUD",
+      "kind": "opposite_currency_view"
+    }
+  ],
+  "context_tensions": [
+    {
+      "agents": [
+        "perma-bear",
+        "perma-bull",
+        "rate-dove",
+        "rate-hawk",
+        "vol-convexity"
+      ],
+      "description": "Opposing risk regime assumptions: risk_on versus risk_off.",
+      "id": "context:risk_view",
+      "kind": "context_tension",
+      "side_a": [
+        "perma-bull"
+      ],
+      "side_b": [
+        "perma-bear",
+        "rate-dove",
+        "rate-hawk",
+        "vol-convexity"
+      ]
+    },
+    {
+      "agents": [
+        "carry-is-king",
+        "catalyst-junkie",
+        "cross-merchant",
+        "dollar-king",
+        "perma-bull",
+        "positioning-cynic",
+        "rate-dove",
+        "rate-hawk",
+        "trend-follower",
+        "value-guy",
+        "vol-convexity"
+      ],
+      "description": "Opposing carry assumptions: supports_trade versus opposes_trade.",
+      "id": "context:carry_view",
+      "kind": "context_tension",
+      "side_a": [
+        "carry-is-king",
+        "dollar-king",
+        "positioning-cynic",
+        "value-guy"
+      ],
+      "side_b": [
+        "catalyst-junkie",
+        "cross-merchant",
+        "perma-bull",
+        "rate-dove",
+        "rate-hawk",
+        "trend-follower",
+        "vol-convexity"
+      ]
+    }
+  ],
+  "excluded_from_rebuttal": [
+    "no-trade-skeptic",
+    "vol-convexity"
+  ],
+  "method": "deterministic_conflict_synopsis_v1",
+  "rebuttal_seats": [
+    "carry-is-king",
+    "catalyst-junkie",
+    "cross-merchant",
+    "dollar-king",
+    "mean-reverter",
+    "perma-bear",
+    "perma-bull",
+    "positioning-cynic",
+    "rate-dove",
+    "rate-hawk",
+    "trend-follower",
+    "value-guy"
+  ],
+  "run_id": "tr-20260919T123430Z-ondemand",
+  "theoretical_tensions": [
+    {
+      "agents": [
+        "carry-is-king",
+        "dollar-king",
+        "perma-bear",
+        "rate-dove",
+        "rate-hawk",
+        "trend-follower",
+        "value-guy"
+      ],
+      "description": "USD higher views coexist with USD rates-lower views; that is a theoretical policy/FX tension, not an automatic contradiction.",
+      "id": "theory:USD:ccy-up-rates-down",
+      "kind": "currency_rates_tension"
+    },
+    {
+      "agents": [
+        "catalyst-junkie",
+        "dollar-king",
+        "perma-bull",
+        "rate-hawk",
+        "trend-follower",
+        "value-guy"
+      ],
+      "description": "USD lower views coexist with USD rates-higher views; that is a theoretical policy/FX tension, not an automatic contradiction.",
+      "id": "theory:USD:ccy-down-rates-up",
+      "kind": "currency_rates_tension"
+    },
+    {
+      "agents": [
+        "catalyst-junkie",
+        "cross-merchant",
+        "perma-bear",
+        "perma-bull",
+        "positioning-cynic",
+        "rate-dove",
+        "value-guy"
+      ],
+      "description": "CAD higher views coexist with CAD rates-lower views; that is a theoretical policy/FX tension, not an automatic contradiction.",
+      "id": "theory:CAD:ccy-up-rates-down",
+      "kind": "currency_rates_tension"
+    },
+    {
+      "agents": [
+        "carry-is-king",
+        "catalyst-junkie",
+        "cross-merchant",
+        "dollar-king",
+        "perma-bear",
+        "perma-bull",
+        "positioning-cynic",
+        "rate-dove",
+        "rate-hawk",
+        "trend-follower",
+        "value-guy"
+      ],
+      "description": "CAD lower views coexist with CAD rates-higher views; that is a theoretical policy/FX tension, not an automatic contradiction.",
+      "id": "theory:CAD:ccy-down-rates-up",
+      "kind": "currency_rates_tension"
+    },
+    {
+      "agents": [
+        "mean-reverter",
+        "perma-bear",
+        "positioning-cynic",
+        "rate-dove",
+        "rate-hawk"
+      ],
+      "description": "AUD higher views coexist with AUD rates-lower views; that is a theoretical policy/FX tension, not an automatic contradiction.",
+      "id": "theory:AUD:ccy-up-rates-down",
+      "kind": "currency_rates_tension"
+    },
+    {
+      "agents": [
+        "cross-merchant",
+        "dollar-king",
+        "mean-reverter",
+        "perma-bear",
+        "perma-bull",
+        "positioning-cynic",
+        "rate-dove",
+        "rate-hawk",
+        "trend-follower"
+      ],
+      "description": "AUD lower views coexist with AUD rates-higher views; that is a theoretical policy/FX tension, not an automatic contradiction.",
+      "id": "theory:AUD:ccy-down-rates-up",
+      "kind": "currency_rates_tension"
+    }
+  ]
+}
