@@ -428,6 +428,37 @@ class PaperMarkTests(unittest.TestCase):
         expected = 100.0 * (0.93 - 0.83) / (0.88 + 0.83)
         self.assertAlmostEqual(mark["value"], expected, places=8)
 
+    def test_forward_swap_proxy_uses_official_country_curve(self):
+        state = {
+            "forward_curves": {
+                "countries": {
+                    "US": {
+                        "status": "ok",
+                        "as_of": "2026-09-18",
+                        "discount_factors": {
+                            "2Y": {"discount_factor": 0.93, "as_of": "2026-09-18"},
+                            "3Y": {"discount_factor": 0.88, "as_of": "2026-09-18"},
+                            "4Y": {"discount_factor": 0.83, "as_of": "2026-09-18"},
+                        },
+                    }
+                }
+            }
+        }
+        mark = resolve_paper_mid(
+            state,
+            "US_2y2y",
+            asset_class="rates",
+            expression={
+                "type": "forward_swap_proxy",
+                "country": "US",
+                "start_years": 2,
+                "tenor_years": 2,
+            },
+        )
+        expected = 100.0 * (0.93 - 0.83) / (0.88 + 0.83)
+        self.assertAlmostEqual(mark["value"], expected, places=8)
+        self.assertIn("official_government_zero_proxy:US:2y2y", mark["source"])
+
     def test_forward_swap_refuses_to_fake_missing_curve_inputs(self):
         with self.assertRaises(PaperMarkError):
             resolve_paper_mid(
