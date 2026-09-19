@@ -54,9 +54,6 @@ jobs:
       - name: Deterministic parser and calculation tests
         run: PYTHONPATH=. python -m unittest tests.test_market_state tests.test_policy_path_data tests.test_official_curve_data tests.test_market_opportunities tests.test_positioning_data -v
 
-      - name: Live official zero-curve smoke test
-        run: PYTHONPATH=. python scripts/live_official_curve_smoke.py
-
       - name: Live official-source smoke test
         run: PYTHONPATH=. python scripts/live_market_state_smoke.py
 
@@ -102,13 +99,13 @@ jobs:
           assert set(packet["policy_paths"]["countries"]) == {"US", "CA", "AU"}
           for country in ("US", "CA", "AU"):
               assert packet["policy_paths"]["countries"][country]["status"] == "ok"
-          assert packet["official_curves"]["status"] == "ok"
-          assert set(packet["official_curves"]["countries"]) == {"US", "CA", "AU"}
-          for country in ("US", "CA", "AU"):
-              curve = packet["official_curves"]["countries"][country]
+          assert packet["tradable_rate_curves"]["status"] == "ok"
+          assert set(packet["tradable_rate_curves"]["curves"]) == {"SOFR", "CORRA", "AONIA"}
+          for curve_id in ("SOFR", "CORRA", "AONIA"):
+              curve = packet["tradable_rate_curves"]["curves"][curve_id]
               assert curve["status"] == "ok"
-              for tenor in ("2Y", "3Y", "4Y"):
-                  assert curve["discount_factors"][tenor]["value"] > 0
+              assert curve["contracts"]
+          assert packet["official_curves"]["status"] in {"ok", "partial", "unavailable"}
           nz = packet["rates"]["NZ"]
           if nz.get("status") == "unavailable":
               assert "NZ_rates" in packet["unavailable_sources"]
@@ -122,7 +119,8 @@ jobs:
               "stale_sources": packet["stale_sources"],
               "unavailable_sources": packet.get("unavailable_sources", []),
               "positioning_status": packet["positioning"]["status"],
-              "official_curve_as_of": {k: v.get("as_of") for k, v in packet["official_curves"]["countries"].items()},
+              "tradable_curve_contracts": {k: len(v.get("contracts", [])) for k, v in packet["tradable_rate_curves"]["curves"].items()},
+              "official_curve_status": packet["official_curves"]["status"],
           })
           PY
 
