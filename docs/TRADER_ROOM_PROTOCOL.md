@@ -42,6 +42,23 @@ The room has a strong preference for rates expressions when the same macro discr
 
 Every non-null trade carries `asset_class` and `expression_comparison`. The comparison records a rates candidate, a spot candidate, the selected expression family, and the rationale. Deterministic validation rejects a rates-first submission that skips either candidate.
 
+## Context gate
+
+No seat may move from a screen to risk without reconstructing the market context. Every non-null trade must include a validated `context_build` proving:
+
+- **causal mechanism** — what economic/policy mechanism is being tested;
+- **path to current price** — multi-horizon price action and the events/information/flow that got the instrument here;
+- **known vs new information** — why a known fact can explain a new move now;
+- **market-implied assumption** — what the current price/path already requires to be true;
+- **specific disagreement** — the exact priced assumption the trader believes is wrong;
+- **price decomposition** — level versus change, relevant tenor/components and marginal driver;
+- **historical reference** — distribution plus at least one comparable episode (or an explicit statement that no credible analog exists), forward outcome, and structural/regime differences;
+- **independent checks** — at least two distinct datasets/markets/measurement approaches;
+- **flow/positioning check** — whether non-fundamental ownership/plumbing can explain the move;
+- **policy-path check** — for rates, current overnight benchmark and observable market-implied path before sovereign-curve/RV conclusions.
+
+A statistical extreme is a discovery signal, never sufficient evidence. For a short-end US/Canada/Australia rates trade, deterministic validation rejects the idea if the frozen packet lacks the relevant policy path. A 2Y bond percentile is not a substitute for SOFR/CORRA/AONIA-linked pricing.
+
 ## Competition and risk incentive
 
 The standing seats are paper portfolio managers competing for **highest cumulative net P&L** across the persistent Trader Book. Analysis is a means to that outcome, not the score.
