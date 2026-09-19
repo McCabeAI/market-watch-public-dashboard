@@ -542,7 +542,7 @@ class TradingMemoryTests(unittest.TestCase):
             },
             pm_id="chatgpt",
             store=self.store,
-            market_state={**MARKET, "fx": {"pairs": {**MARKET["fx"]["pairs"], "AUDUSD": {"spot": 0.66}}}},
+            market_state={"fx": {"pairs": {"USDCAD": {"spot": 1.40, "as_of": "2026-09-20"}, "AUDUSD": {"spot": 0.66}}}},
             run_id="overnight-20260920",
             evidence_cutoff="c",
             review_packet_id="prp-chatgpt-mixed",

@@ -17,6 +17,7 @@ from scripts.trading.gate import (
     rationale_status_for,
 )
 from scripts.trading.journal import (
+    decision_fingerprint,
     durable_structured_payload,
     find_event,
     new_event_id,
@@ -365,14 +366,22 @@ def apply_trader_review_with_memory(
     store.ensure_initialized()
     stamp = now_ny(when)
     hashes = memory_hashes or {}
+    prepared = deepcopy(reviews)
+    fingerprints = {seat: decision_fingerprint(prepared[seat]) for seat in STANDING_SEATS}
     existing = {
-        seat: find_event(store, owner_type="trader", owner_id=seat, kind="OVERNIGHT_DECISION", run_id=run_id)
+        seat: find_event(
+            store,
+            owner_type="trader",
+            owner_id=seat,
+            kind="OVERNIGHT_DECISION",
+            run_id=run_id,
+            decision_fingerprint=fingerprints[seat],
+        )
         for seat in STANDING_SEATS
     }
     if all(existing.values()):
         return books
 
-    prepared = deepcopy(reviews)
     blocked_by_seat: dict[str, list[dict[str, Any]]] = {}
     reserved_ids: dict[str, str] = {}
     for seat in STANDING_SEATS:
@@ -395,18 +404,15 @@ def apply_trader_review_with_memory(
         seat: {p["position_id"]: deepcopy(p) for p in books["seats"][seat].get("positions") or []}
         for seat in STANDING_SEATS
     }
-    if any(existing.values()):
-        updated = books
-    else:
-        updated = apply_review(
-            books,
-            prepared,
-            families=families,
-            run_id=run_id,
-            evidence_cutoff=evidence_cutoff,
-            when=stamp,
-            market_state=market_state,
-        )
+    updated = apply_review(
+        books,
+        prepared,
+        families=families,
+        run_id=run_id,
+        evidence_cutoff=evidence_cutoff,
+        when=stamp,
+        market_state=market_state,
+    )
     overnight_run_id, trader_room_run_id = _run_ids(run_id)
     for seat in STANDING_SEATS:
         decision = prepared[seat]
@@ -484,6 +490,7 @@ def apply_trader_review_with_memory(
             overnight_run_id=overnight_run_id,
             trader_room_run_id=trader_room_run_id,
             event_id=reserved_ids[seat],
+            decision_fingerprint=fingerprints[seat],
         )
         _observe_marks(store, "trader", seat, list(seat_book.get("positions") or []))
         build_memory_context(store, "trader", seat, when=stamp)
@@ -513,6 +520,7 @@ def apply_pm_decision_with_memory(
     expected = expected_memory_sha256 or decision.get("memory_context_sha256")
     if expected and not decision.get("memory_context_sha256"):
         decision["memory_context_sha256"] = expected
+    fingerprint = decision_fingerprint(decision)
     existing = find_event(
         store,
         owner_type="pm",
@@ -520,6 +528,7 @@ def apply_pm_decision_with_memory(
         kind="PM_DECISION",
         run_id=run_id,
         review_packet_id=review_packet_id,
+        decision_fingerprint=fingerprint,
     )
     if existing:
         decision["journal_event_id"] = existing["event_id"]
@@ -618,6 +627,7 @@ def apply_pm_decision_with_memory(
         trader_room_run_id=trader_room_run_id,
         review_packet_id=review_packet_id,
         event_id=journal_event_id,
+        decision_fingerprint=fingerprint,
     )
     _observe_marks(store, "pm", pm_id, list(book.get("positions") or []))
     build_memory_context(store, "pm", pm_id, when=stamp)

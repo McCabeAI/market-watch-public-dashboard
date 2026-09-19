@@ -8,6 +8,7 @@ from typing import Any
 from uuid import uuid4
 
 from scripts.overnight.clock import isoformat, now_ny
+from scripts.overnight.store import sha256_json
 from scripts.trading.constants import JOURNAL_EVENT_KINDS, SCHEMA_VERSION
 from scripts.trading.errors import SchemaError
 from scripts.trading.store import TradingStore, assert_identity
@@ -40,6 +41,31 @@ def _text(value: Any) -> str | None:
 
 def new_event_id() -> str:
     return f"jde-{uuid4().hex[:16]}"
+
+
+def decision_fingerprint(decision: dict[str, Any] | None) -> str:
+    payload = decision or {}
+    actions = payload.get("_original_actions") or payload.get("actions") or []
+    return sha256_json(
+        {
+            "actions": [
+                {
+                    "action": row.get("action"),
+                    "instrument": row.get("instrument"),
+                    "side": row.get("side"),
+                    "notional_usd": row.get("notional_usd"),
+                    "position_id": row.get("position_id"),
+                    "hedge_of": row.get("hedge_of"),
+                    "price": row.get("price"),
+                }
+                for row in actions
+                if isinstance(row, dict)
+            ],
+            "thesis": payload.get("thesis"),
+            "rationale": payload.get("rationale"),
+            "memory_context_sha256": payload.get("memory_context_sha256"),
+        }
+    )
 
 
 def durable_structured_payload(payload: dict[str, Any] | None) -> dict[str, Any]:
@@ -81,6 +107,7 @@ def find_event(
     run_id: str | None,
     review_packet_id: str | None = None,
     event_id: str | None = None,
+    decision_fingerprint: str | None = None,
 ) -> dict[str, Any] | None:
     if event_id:
         for event in store.read_journal(owner_type, owner_id).get("events") or []:
@@ -93,6 +120,8 @@ def find_event(
         if event.get("kind") != kind or event.get("run_id") != run_id:
             continue
         if review_packet_id and (event.get("provenance") or {}).get("review_packet_id") != review_packet_id:
+            continue
+        if decision_fingerprint and event.get("decision_fingerprint") != decision_fingerprint:
             continue
         return event
     return None
@@ -124,6 +153,7 @@ def record_event(
     postmortem_links: list[str] | None = None,
     extra: dict[str, Any] | None = None,
     event_id: str | None = None,
+    decision_fingerprint: str | None = None,
 ) -> dict[str, Any]:
     assert_identity(owner_type, owner_id)
     if kind not in JOURNAL_EVENT_KINDS:
@@ -138,7 +168,17 @@ def record_event(
             run_id=run_id,
             event_id=event_id,
         )
-    if existing is None:
+    elif decision_fingerprint:
+        existing = find_event(
+            store,
+            owner_type=owner_type,
+            owner_id=owner_id,
+            kind=kind,
+            run_id=run_id,
+            review_packet_id=review_packet_id,
+            decision_fingerprint=decision_fingerprint,
+        )
+    else:
         existing = find_event(
             store,
             owner_type=owner_type,
@@ -164,6 +204,7 @@ def record_event(
         "linked_trade_ids": list(linked_trade_ids or []),
         "linked_position_ids": list(linked_position_ids or []),
         "memory_context_sha256": memory_context_sha256,
+        "decision_fingerprint": decision_fingerprint or (existing or {}).get("decision_fingerprint"),
         "outcome_links": list(outcome_links or []),
         "postmortem_links": list(postmortem_links or []),
         "provenance": {
