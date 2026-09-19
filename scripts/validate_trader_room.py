@@ -88,14 +88,16 @@ def main() -> None:
     assert "scripts/trader_room_go.py go" in on_demand
     assert "grok-4.6" in on_demand
     assert "composer-2.5" in on_demand
-    assert "Total Grok ceiling including parent = 29" in on_demand
+    assert "Total Grok ceiling including parent = 32" in on_demand
     assert "Composer ceiling = 28" in on_demand
-    assert "Total model-invocation ceiling = 57" in on_demand
+    assert "Total model-invocation ceiling = 60" in on_demand
     assert "scripts/trader_room_finalize.py" in on_demand
     assert "context_build" in on_demand
     assert "zero model calls" in on_demand
     assert "MW_TRADER_ROOM_RUN_POLICY=" in on_demand
     assert "trader-room/runs/<run_id>/" in on_demand
+    assert "Swinger / Pragmatist / Grinder PMs" in on_demand
+    assert "ChatGPT PM" in on_demand
 
     evidence_contract = (ROOT / "docs" / "TRADER_ROOM_EVIDENCE_CONTRACT.md").read_text(encoding="utf-8")
     method = (ROOT / "docs" / "TRADER_RESEARCH_METHOD.md").read_text(encoding="utf-8")
