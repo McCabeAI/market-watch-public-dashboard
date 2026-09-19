@@ -5,7 +5,7 @@ import json
 import shutil
 import tempfile
 import unittest
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -17,7 +17,7 @@ if str(ROOT) not in sys.path:
 
 from scripts.overnight.books import apply_action, empty_books, empty_seat, mark_to_market, position_pnl, public_books_view
 from scripts.overnight.clock import overnight_run_id, stage_for_time, stage_window
-from scripts.overnight.constants import LOCAL_CRON, SPOT_SEATS, STAGES, STANDING_SEATS, STARTING_NAV_USD
+from scripts.overnight.constants import FUNDING_RATE_ANNUAL, LOCAL_CRON, SPOT_SEATS, STAGES, STANDING_SEATS, STARTING_NAV_USD
 from scripts.overnight.errors import EvidenceBoundaryError, FreshnessError, PublicationError, SchemaError
 from scripts.overnight.expression import expression_rule, validate_expression_memo
 from scripts.overnight.freshness import assert_action_allowed, publication_decision
@@ -204,6 +204,37 @@ class BookTransitionTests(unittest.TestCase):
         self.assertFalse(any(p["position_id"] == pos["position_id"] for p in self.seat["positions"]))
         self.assertEqual({row["action"] for row in self.seat["history"]}, {"OPEN", "ADD", "HOLD", "HEDGE", "REDUCE", "CLOSE"})
 
+    def test_funding_accrues_on_borrowed_notional_and_reduces_net_pnl(self):
+        apply_action(
+            self.seat,
+            {
+                "action": "OPEN",
+                "instrument": "USDCAD",
+                "side": "long",
+                "notional_usd": 10_000_000,
+                "price": 1.36,
+                "asset_class": "spot_fx",
+                "expression_memo": _spot_memo(),
+            },
+            families=self.families,
+            run_id="overnight-20260918-dryrun-funding",
+            when=AS_OF,
+        )
+        next_day = AS_OF + timedelta(days=1)
+        apply_action(
+            self.seat,
+            {"action": "HOLD", "expression_memo": _spot_memo()},
+            families=self.families,
+            run_id="overnight-20260919-dryrun-funding",
+            when=next_day,
+        )
+        expected = round(10_000_000 * FUNDING_RATE_ANNUAL / 365, 2)
+        self.assertEqual(self.seat["funding_cost_usd"], expected)
+        self.assertEqual(self.seat["gross_pnl_usd"], 0.0)
+        self.assertEqual(self.seat["net_pnl_usd"], -expected)
+        self.assertEqual(self.seat["nav_usd"], STARTING_NAV_USD - expected)
+        self.assertTrue(any(row.get("action") == "FUNDING" for row in self.seat["history"]))
+
     def test_missing_mark_does_not_invent_pnl(self):
         pos = {
             "side": "long",
@@ -294,6 +325,9 @@ class PipelineDryRunTests(unittest.TestCase):
         self.assertTrue(dataset["preservation"]["sep18_news_fixes"])
         view = public_books_view(books)
         self.assertIn("overnight_changes", view)
+        self.assertEqual(view["funding_rate_annual"], FUNDING_RATE_ANNUAL)
+        self.assertEqual(view["competition_metric"], "net_pnl_after_funding")
+        self.assertEqual(len(view["leaderboard"]), 14)
 
     def test_failed_review_still_publishes_stale(self):
         run_id = "overnight-20260918-dryrun-fail"
