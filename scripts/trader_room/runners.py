@@ -240,14 +240,6 @@ class ModelRunner(Protocol):
         assignment: dict[str, Any],
         budget: BudgetLedger,
     ) -> dict[str, Any]: ...
-    def run_final_aggregator(
-        self,
-        packet: dict[str, Any],
-        originals: dict[str, dict[str, Any]],
-        conflict_map: dict[str, Any],
-        rebuttals: dict[str, dict[str, Any]],
-        budget: BudgetLedger,
-    ) -> dict[str, Any]: ...
 
 
 class DryRunRunner:
@@ -323,50 +315,6 @@ class DryRunRunner:
             "subagent_calls": 0,
         }
 
-    def run_final_aggregator(
-        self,
-        packet: dict[str, Any],
-        originals: dict[str, dict[str, Any]],
-        conflict_map: dict[str, Any],
-        rebuttals: dict[str, dict[str, Any]],
-        budget: BudgetLedger,
-    ) -> dict[str, Any]:
-        assert_aggregator_model(AGGREGATOR_MODEL)
-        budget.charge("final-aggregator", AGGREGATOR_MODEL, "final-aggregator", "pm-handoff")
-        amendments = [
-            {"agent": name, "trade_change": item["trade_change"]}
-            for name, item in rebuttals.items()
-            if item["trade_change"] != "unchanged"
-        ]
-        return {
-            "type": "TRADER_ROOM_PM_HANDOFF",
-            "run_id": packet["run_id"],
-            "evidence_cutoff": packet["as_of"],
-            "proposed_trades": [
-                {"agent": name, "trade": item.get("trade"), "ref": f"submissions/{name}.json"}
-                for name, item in originals.items()
-            ],
-            "agreement_clusters": _clusters(originals),
-            "conflicts": conflict_map["conflicts"],
-            "strongest_evidence_by_side": {
-                conflict["id"]: {
-                    agent: (originals[agent].get("trade") or {}).get("evidence_refs")
-                    for agent in conflict["agents"]
-                    if agent in originals
-                }
-                for conflict in conflict_map["conflicts"]
-            },
-            "rebuttals": {
-                name: {"ref": f"rebuttals/{name}.json", "trade_change": item["trade_change"]}
-                for name, item in rebuttals.items()
-            },
-            "amendments_and_withdrawals": amendments,
-            "shared_assumptions": ["All 14 seats used the identical frozen packet and cutoff."],
-            "unresolved_questions_and_gaps": packet.get("known_gaps") or ["None recorded."],
-            "artifact_index": {},
-            "status": "STATUS: AWAITING_CHATGPT_ARBITRATION",
-            "packet_sha256": packet["packet_sha256"],
-        }
 
 
 def _clusters(originals: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
@@ -401,8 +349,6 @@ class LiveRunner:
     def run_rebuttal(self, agent, packet, original, assignment, budget) -> dict[str, Any]:
         raise LiveRunBlocked(f"live rebuttal dispatch is not implemented in this entrypoint: {agent}")
 
-    def run_final_aggregator(self, packet, originals, conflict_map, rebuttals, budget) -> dict[str, Any]:
-        raise LiveRunBlocked("live final aggregator dispatch is not implemented in this entrypoint")
 
 
 def build_launch_plan(packet: dict[str, Any]) -> dict[str, Any]:
@@ -422,13 +368,13 @@ def build_launch_plan(packet: dict[str, Any]) -> dict[str, Any]:
             for name in STANDING_ADVOCATES
         ],
         "conflict_stage": {"type": "deterministic_conflict_synopsis_v1", "model_calls": 0},
-        "final_aggregator": {"name": "final-aggregator", "model": AGGREGATOR_MODEL},
+        "final_handoff": {"type": "deterministic_pm_handoff_v1", "model_calls": 0},
         "ceilings": {
-            "repository_grok_baseline": 15,
+            "repository_grok_baseline": 14,
             "grok_rebuttal_max": 14,
-            "repository_grok_ceiling": 29,
+            "repository_grok_ceiling": 28,
             "composer_ceiling": 28,
-            "acp_parent_inclusive_grok_ceiling": 30,
-            "acp_parent_inclusive_total_ceiling": 58,
+            "acp_parent_inclusive_grok_ceiling": 29,
+            "acp_parent_inclusive_total_ceiling": 57,
         },
     }
