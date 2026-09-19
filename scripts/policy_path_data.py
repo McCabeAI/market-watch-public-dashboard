@@ -28,6 +28,7 @@ NYFED_SOFR_URL = "https://markets.newyorkfed.org/api/rates/secured/sofr/last/10.
 NYFED_SOFR_PAGE = "https://www.newyorkfed.org/markets/reference-rates/sofr"
 CME_SOFR_URL = "https://www.cmegroup.com/markets/interest-rates/stirs/one-month-sofr.quotes.html"
 CME_SOFR_BULLETIN_URL = "https://www.cmegroup.com/daily_bulletin/current/Section10_Interest_Rate_Futures_Continued.pdf"
+ESIGNAL_SOFR_CHAIN_URL = "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR1"
 CME_SOFR_PRODUCT_ID = "8463"
 CME_SOFR_SETTLEMENTS_TEMPLATE = (
     "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/"
@@ -301,6 +302,57 @@ def parse_cme_sofr_bulletin_pdf(data: bytes, *, benchmark: float) -> list[dict[s
     return parse_cme_sofr_bulletin_text(text, benchmark=benchmark)
 
 
+def parse_esignal_sofr_html(text: str, *, benchmark: float) -> list[dict[str, Any]]:
+    """Parse delayed ICE One-Month SOFR index futures chain from eSignal."""
+    parser = _TableParser()
+    parser.feed(text)
+    rows: list[dict[str, Any]] = []
+    month_codes = {"F":1,"G":2,"H":3,"J":4,"K":5,"M":6,"N":7,"Q":8,"U":9,"V":10,"X":11,"Z":12}
+    for table in parser.tables:
+        for row in table:
+            joined = " ".join(row)
+            m = re.search(r"SR1\s+([FGHJKMNQUVXZ])(\d{2})", joined, re.I)
+            if not m:
+                continue
+            nums = [_num(cell) for cell in row]
+            price = next((x for x in nums if x is not None and 90.0 < x < 100.5), None)
+            if price is None:
+                continue
+            year = 2000 + int(m.group(2))
+            expiry = f"{year:04d}-{month_codes[m.group(1).upper()]:02d}"
+            rows.append(
+                _contract_row(
+                    expiry=expiry,
+                    code=f"SR1{m.group(1).upper()}{m.group(2)}",
+                    price=price,
+                    benchmark=benchmark,
+                    source="ESIGNAL_ICE_1M_SOFR_DELAYED",
+                )
+            )
+    if not rows:
+        # Some quote-board responses are layout text rather than table markup.
+        blob = " ".join(parser.text)
+        pattern = re.compile(
+            r"SR1\s+([FGHJKMNQUVXZ])(\d{2}).{0,80}?([9][0-9]\.\d{2,4})\s+[sey]?",
+            re.I,
+        )
+        for m in pattern.finditer(blob):
+            year = 2000 + int(m.group(2))
+            rows.append(
+                _contract_row(
+                    expiry=f"{year:04d}-{month_codes[m.group(1).upper()]:02d}",
+                    code=f"SR1{m.group(1).upper()}{m.group(2)}",
+                    price=float(m.group(3)),
+                    benchmark=benchmark,
+                    source="ESIGNAL_ICE_1M_SOFR_DELAYED",
+                )
+            )
+    rows = sorted({row["expiry"]: row for row in rows}.values(), key=lambda row: row["expiry"])
+    if not rows:
+        raise ValueError("eSignal delayed SOFR quote board exposed no usable contracts")
+    return rows
+
+
 def parse_cme_sofr_html(text: str, *, benchmark: float) -> list[dict[str, Any]]:
     parser = _TableParser()
     parser.feed(text)
@@ -530,26 +582,40 @@ def collect_policy_paths(
     try:
         sofr_payload = fetch_bytes(NYFED_SOFR_URL).decode("utf-8", errors="replace")
         sofr = parse_nyfed_sofr_json(sofr_payload)
-        bulletin = fetch_bytes(
-            CME_SOFR_BULLETIN_URL,
-            user_agent=(
-                "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-                "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
-            ),
-            referer="https://www.cmegroup.com/market-data/daily-bulletin.html",
-        )
-        contracts = parse_cme_sofr_bulletin_pdf(bulletin, benchmark=float(sofr["rate"]))
+        us_curve_source = CME_SOFR_BULLETIN_URL
+        us_curve_method = "CME Daily Bulletin SR1 settlements"
+        try:
+            bulletin = fetch_bytes(
+                CME_SOFR_BULLETIN_URL,
+                user_agent=(
+                    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+                    "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+                ),
+                referer="https://www.cmegroup.com/market-data/daily-bulletin.html",
+            )
+            contracts = parse_cme_sofr_bulletin_pdf(bulletin, benchmark=float(sofr["rate"]))
+        except Exception:
+            fallback = fetch_bytes(
+                ESIGNAL_SOFR_CHAIN_URL,
+                user_agent=(
+                    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+                    "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+                ),
+            ).decode("utf-8", errors="replace")
+            contracts = parse_esignal_sofr_html(fallback, benchmark=float(sofr["rate"]))
+            us_curve_source = ESIGNAL_SOFR_CHAIN_URL
+            us_curve_method = "delayed ICE One-Month SOFR futures chain via eSignal fallback because CME blocks hosted runners"
         countries["US"] = {
             "status": "ok",
             "benchmark": {"name": "SOFR", **sofr},
             "contracts_1m": contracts,
             "terminal": _terminal_summary(contracts),
-            "method": "100 minus delayed public CME 1M SOFR futures last price; monthly average SOFR, not FOMC target probabilities",
+            "method": f"100 minus {us_curve_method}; monthly average SOFR, not FOMC target probabilities",
         }
         sources["US_policy"] = {
             "status": "ok",
             "benchmark_url": NYFED_SOFR_PAGE,
-            "path_url": CME_SOFR_BULLETIN_URL,
+            "path_url": us_curve_source,
         }
     except Exception as exc:
         countries["US"] = {"status": "unavailable", "error": str(exc)}
