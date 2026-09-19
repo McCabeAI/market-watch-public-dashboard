@@ -144,8 +144,9 @@ Paper execution uses **mid/reference marks**, not executable broker quotes.
 - The deterministic book layer records the source and as-of date and owns all entry, exit, mark and P&L arithmetic. A model-authored numeric price is not canonical.
 - Direct supported examples include G10 ECB spot crosses, official sovereign yields, deterministic country curves/RV spreads, and SOFR/CORRA/AONIA-linked contract implied rates.
 - Advocates may propose derived curve structures. A derived trade must include a structured `paper_expression` containing the source legs/formula so trusted code can recompute the same mid at entry and on every subsequent review.
-- Linear spreads/flies may be built from packet rate legs. Forward swaps/fwd-fwds may be built from packet discount factors using `(P_start - P_end) / sum(alpha_i * P_i)`.
-- A true 2y2y is therefore allowed whenever the frozen packet supplies the required 2y-to-4y discount-curve inputs. Do not silently approximate it from unrelated par yields. If the inputs are absent, choose another expression or leave that proposed structure untradeable.
+- Linear spreads/flies may be built from packet rate legs. Forward swaps/fwd-fwds may use `paper_expression.type = "forward_swap_proxy"` with `country`, `start_years`, `tenor_years` and optional `payment_frequency`. Trusted code computes `(P_start - P_end) / sum(alpha_i * P_i)`.
+- For the paper competition, the official Fed/BoC/RBA government zero/forward curves are deliberately accepted as close-enough proxies for swap/OIS forward-forward marks. Preserve that provenance; do not block a trade merely because the curve is government rather than OIS.
+- A trader may therefore express, for example, `pay US 2y2y` as `{"type":"forward_swap_proxy","country":"US","start_years":2,"tenor_years":2}`. The book recomputes the same proxy mid on each review.
 - Initial advocates may use their already-permitted Composer subagent calls to analyze curve construction. The subagent may recommend the structure, but deterministic code must replay the formula from frozen inputs.
 - Options remain untradeable when premium/IV/strike mids are absent.
 
