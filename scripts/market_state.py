@@ -101,6 +101,7 @@ def fetch_bytes(
     timeout: int = DEFAULT_TIMEOUT,
     retries: int = RETRIES,
     user_agent: str | None = None,
+    referer: str | None = None,
 ) -> bytes:
     last: Exception | None = None
     headers = {
@@ -108,6 +109,8 @@ def fetch_bytes(
         "Accept": "*/*",
         "Accept-Language": "en-US,en;q=0.8",
     }
+    if referer:
+        headers["Referer"] = referer
     if "rbnz.govt.nz" in url:
         headers["Referer"] = RBNZ_PAGE
         headers["Accept"] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,*/*"
