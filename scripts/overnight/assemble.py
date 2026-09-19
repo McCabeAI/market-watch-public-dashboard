@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+import json
 from typing import Any
 
 from scripts.overnight.books import empty_books, public_books_view, validate_books
@@ -12,12 +13,25 @@ from scripts.overnight.errors import SchemaError
 from scripts.overnight.freshness import publication_decision
 from scripts.overnight.ledger import artifact_index
 from scripts.overnight.store import OvernightStore
+from scripts.pm_layer import empty_pm_books, public_pm_view, refresh_pm_marks, validate_pm_books
 
 
 def _load_books(store: OvernightStore, run: dict[str, Any]) -> dict[str, Any]:
     if store.books_path().is_file():
         return validate_books(store.read_books())
     return empty_books(overnight_run_id=run["overnight_run_id"])
+
+
+def _load_pm_books(store: OvernightStore, families: dict[str, Any]) -> dict[str, Any]:
+    path = store.root / "data" / "pm" / "books" / "latest.json"
+    if path.is_file():
+        books = validate_pm_books(json.loads(path.read_text(encoding="utf-8")))
+    else:
+        books = empty_pm_books()
+    market_state = ((families.get("market_state") or {}).get("data") or {})
+    if market_state:
+        refresh_pm_marks(books, market_state)
+    return books
 
 
 def _families_for_publication(store: OvernightStore, run_id: str) -> dict[str, Any]:
@@ -41,6 +55,7 @@ def assemble_dataset(
     review_status = "missing"
     last_success = None
     books = _load_books(store, run)
+    pm_books = _load_pm_books(store, families)
     if store.has_artifact(run_id, "trader_review.json"):
         review = store.read_artifact(run_id, "trader_review.json")
         if review.get("status") == "succeeded":
@@ -86,6 +101,7 @@ def assemble_dataset(
             else None
         ),
         "trader_books": public_books_view(books),
+        "pm_books": public_pm_view(pm_books),
         "publication": decision,
         "stage_ledger": {name: run["stages"][name]["status"] for name in run["stages"]},
         "artifacts": artifact_index(run),
@@ -104,6 +120,7 @@ def assemble_dataset(
             "as_of": dataset["as_of"],
             "assembled_dataset": f"data/overnight/runs/{run_id}/assembled_dataset.json",
             "books_path": "data/overnight/books/latest.json",
+            "pm_books_path": "data/pm/books/latest.json",
             "publication": decision,
             "dry_run": bool(run.get("dry_run")),
         }
@@ -126,4 +143,7 @@ def validate_dataset(dataset: dict[str, Any]) -> dict[str, Any]:
     books = dataset.get("trader_books") or {}
     if books.get("seat_count") != 14:
         raise SchemaError("assembled dataset must surface all 14 seats")
+    pm_books = dataset.get("pm_books") or {}
+    if pm_books.get("pm_count") != 4:
+        raise SchemaError("assembled dataset must surface all four PMs")
     return dataset
