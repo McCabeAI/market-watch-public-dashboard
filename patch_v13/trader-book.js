@@ -136,7 +136,91 @@
       '<section class="tb-panel"><div class="tb-panel-head"><h3>P&amp;L leaderboard</h3><p>Thirteen seats pay 5% on the full $100m every day; the No-Trade Skeptic earns 5% on undeployed cash.</p></div><div class="tb-changes">' +
       leaderboardHtml + "</div></section>" +
       '<section class="tb-panel"><div class="tb-panel-head"><h3>Seat books</h3><p>Net P&amp;L includes the standing financing hurdle: funding cost for the 13 trading seats, cash yield for the skeptic.</p></div><div class="tb-seat-grid">' +
-      seatHtml + "</div></section>";
+      seatHtml + "</div></section>" +
+      '<div id="tb-pm-root"></div>';
+    loadPMs();
+  }
+
+  function statusLabel(status, review) {
+    if (review === "stale") return "stale vs latest review packet";
+    const map = {
+      awaiting_chatgpt_decision: "awaiting ChatGPT decision",
+      awaiting_automated_pm_review: "awaiting automated PM review",
+      no_trade: "explicit NO TRADE",
+      hold: "explicit HOLD",
+      active: "active"
+    };
+    return map[status] || status || "awaiting";
+  }
+
+  function statusClass(status, review) {
+    if (review === "stale") return "stale";
+    if (status === "active") return "active";
+    if (status === "no_trade" || status === "hold") return "";
+    return "awaiting";
+  }
+
+  function renderPMs(packet) {
+    const mount = document.getElementById("tb-pm-root");
+    if (!mount) return;
+    const pms = packet.pms || [];
+    const cards = pms.map(function (pm) {
+      const positions = pm.positions || [];
+      const posHtml = positions.length ? positions.map(function (pos) {
+        return '<div class="tb-position"><b>' + esc(pos.instrument) + "</b><span>" +
+          esc(pos.side) + " · " + esc(pos.asset_class) + "</span><span>" +
+          money(pos.notional_usd) + '</span><span class="' + cls(pos.unrealized_pnl_usd) + '">' +
+          money(pos.unrealized_pnl_usd) + "</span></div>";
+      }).join("") : '<div class="tb-empty">No open risk</div>';
+      return '<article class="tb-pm"><div class="tb-seat-top"><div class="tb-seat-name">' +
+        esc(pm.label || pm.pm_id) + '</div><div class="tb-pm-status ' +
+        statusClass(pm.decision_status, pm.review_status) + '">' +
+        esc(statusLabel(pm.decision_status, pm.review_status)) +
+        "</div></div><p class=\"tb-remit\">" + esc(pm.mandate || "") + "</p>" +
+        '<div class="tb-metrics"><div><span>Gross util</span><b>' + money(pm.gross_utilization_usd) +
+        "</b></div><div><span>Paper P&amp;L</span><b class=\"" + cls(pm.total_pnl_usd) + "\">" +
+        money(pm.total_pnl_usd) + "</b></div><div><span>Last action</span><b>" +
+        esc(pm.last_action || "—") + "</b></div></div><div class=\"tb-positions\">" + posHtml + "</div>" +
+        (pm.thesis ? '<p class="tb-thesis"><b>Thesis:</b> ' + esc(pm.thesis) + "</p>" : "") +
+        (pm.invalidation ? '<p class="tb-thesis"><b>Invalidation:</b> ' + esc(pm.invalidation) + "</p>" : "") +
+        "</article>";
+    }).join("");
+    const comparison = (packet.comparison || []).map(function (row) {
+      return '<div class="tb-change"><b>' + esc(row.label || row.pm_id) + '</b><span class="' +
+        cls(row.total_pnl_usd) + '">' + money(row.total_pnl_usd) + "</span><span>" +
+        esc(statusLabel(row.decision_status, row.review_status)) + "</span><span>" +
+        money(row.gross_utilization_usd) + "</span></div>";
+    }).join("") || '<div class="tb-empty">No PM comparison yet</div>';
+    const requests = ((packet.data_requests || {}).requests) || [];
+    const reqHtml = requests.length ? requests.map(function (row) {
+      return '<div class="tb-req-row"><b>' + esc((row.originating_pms || []).join(", ")) +
+        "</b><span>" + esc(row.request) + " — " + esc(row.reason) +
+        "</span><span>" + esc(row.priority) + " · ×" + esc(row.repeat_count || 1) + "</span></div>";
+    }).join("") : '<div class="tb-empty">No future data requests. Requests never break the current evidence freeze.</div>';
+
+    mount.innerHTML =
+      '<section class="tb-panel"><div class="tb-panel-head"><h3>Portfolio Managers</h3><p>' +
+      "Separate $1bn gross-notional books for ChatGPT, Swinger, Pragmatist and Grinder. Not extra trader seats. No 5% funding hurdle.</p></div>" +
+      '<div class="tb-pm-grid">' + cards + "</div></section>" +
+      '<section class="tb-panel"><div class="tb-panel-head"><h3>Four-PM P&amp;L comparison</h3><p>Paper P&amp;L after deterministic packet marks. Comparison is allowed only after decisions are committed.</p></div><div class="tb-changes">' +
+      comparison + "</div></section>" +
+      '<section class="tb-panel"><div class="tb-panel-head"><h3>PM Data Requests</h3><p>' +
+      esc((packet.data_requests || {}).note || "Future runs only; collectors are not launched.") +
+      '</p></div><div class="tb-req">' + reqHtml + "</div></section>";
+  }
+
+  function loadPMs() {
+    fetch("pm-books.json", { cache: "no-store" })
+      .then(function (response) {
+        if (!response.ok) throw new Error("HTTP " + response.status);
+        return response.json();
+      })
+      .then(renderPMs)
+      .catch(function () {
+        const mount = document.getElementById("tb-pm-root");
+        if (!mount) return;
+        mount.innerHTML = '<section class="tb-panel"><div class="tb-panel-head"><h3>Portfolio Managers</h3><p>PM public state is not on this build yet.</p></div></section>';
+      });
   }
 
   function fail(message) {

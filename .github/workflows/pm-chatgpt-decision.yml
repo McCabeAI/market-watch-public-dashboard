@@ -1,0 +1,31 @@
+name: Validate ChatGPT PM Decision
+
+on:
+  pull_request:
+    paths:
+      - "data/pm/inbox/chatgpt_decision.json"
+      - "scripts/pm/**"
+      - "docs/CHATGPT_PM_DECISION_INGEST.md"
+      - "data/pm/schema/chatgpt_decision.v1.json"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Validate inbox decision when present
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -m unittest tests.test_pm_ingest tests.test_pm_books -v
+          if [ -f data/pm/inbox/chatgpt_decision.json ]; then
+            PYTHONPATH=. python scripts/pm/chatgpt_ingest.py validate --input data/pm/inbox/chatgpt_decision.json
+          else
+            echo "No ChatGPT decision in the inbox; schema/tests only."
+          fi
