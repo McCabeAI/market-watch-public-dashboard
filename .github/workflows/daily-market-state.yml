@@ -14,6 +14,7 @@ on:
       - "scripts/cross_asset_data.py"
       - "tests/test_market_opportunities.py"
       - "scripts/live_market_state_smoke.py"
+      - "scripts/live_official_curve_smoke.py"
       - "scripts/__init__.py"
       - "tests/test_market_state.py"
       - "tests/test_policy_path_data.py"
@@ -52,6 +53,9 @@ jobs:
 
       - name: Deterministic parser and calculation tests
         run: PYTHONPATH=. python -m unittest tests.test_market_state tests.test_policy_path_data tests.test_official_curve_data tests.test_market_opportunities tests.test_positioning_data -v
+
+      - name: Live official zero-curve smoke test
+        run: PYTHONPATH=. python scripts/live_official_curve_smoke.py
 
       - name: Live official-source smoke test
         run: PYTHONPATH=. python scripts/live_market_state_smoke.py
