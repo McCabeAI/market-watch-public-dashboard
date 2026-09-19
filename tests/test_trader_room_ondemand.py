@@ -192,6 +192,22 @@ class SchemaAndBoundaryTests(unittest.TestCase):
         }
         validate_trade(dollar, agent="dollar-king", packet=packet)
 
+        derived = deepcopy(trade)
+        derived["instrument"] = "US_2y2y"
+        derived["asset_class"] = "rates"
+        derived["expression_comparison"]["selected"] = "rates"
+        derived["paper_expression"] = {
+            "type": "forward_swap_proxy",
+            "country": "US",
+            "start_years": 2,
+            "tenor_years": 2,
+        }
+        validate_trade(derived, agent="perma-bull", packet=packet)
+        bad_derived = deepcopy(derived)
+        bad_derived["paper_expression"]["country"] = "NZ"
+        with self.assertRaises(SchemaError):
+            validate_trade(bad_derived, agent="perma-bull", packet=packet)
+
         wrong_dollar = deepcopy(dollar)
         wrong_dollar["asset_class"] = "rates"
         wrong_dollar["expression_comparison"]["selected"] = "rates"

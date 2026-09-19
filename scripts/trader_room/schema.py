@@ -233,6 +233,38 @@ def _validate_expression_comparison(trade: dict[str, Any], *, agent: str) -> Non
         _non_empty_text(comparison["spot_candidate"], f"{agent}.trade.expression_comparison.spot_candidate")
 
 
+def validate_paper_expression(expression: Any, *, agent: str, trade: dict[str, Any]) -> None:
+    if expression is None:
+        return
+    if not isinstance(expression, dict):
+        raise SchemaError(f"{agent}.trade.paper_expression must be an object or null")
+    kind = expression.get("type")
+    if kind == "forward_swap_proxy":
+        if trade.get("asset_class") not in {"rates", "curve", "rates_rv"}:
+            raise SchemaError(f"{agent}.trade.paper_expression forward swap requires a rates asset class")
+        if expression.get("country") not in {"US", "CA", "AU"}:
+            raise SchemaError(f"{agent}.trade.paper_expression country must be US, CA or AU")
+        for field in ("start_years", "tenor_years"):
+            value = expression.get(field)
+            if not isinstance(value, int) or isinstance(value, bool) or value <= 0:
+                raise SchemaError(f"{agent}.trade.paper_expression.{field} must be a positive integer")
+        frequency = expression.get("payment_frequency", 1)
+        if frequency not in {1, 2, 4}:
+            raise SchemaError(f"{agent}.trade.paper_expression.payment_frequency must be 1, 2 or 4")
+        return
+    if kind == "linear_combo":
+        legs = expression.get("legs")
+        if not isinstance(legs, list) or not legs:
+            raise SchemaError(f"{agent}.trade.paper_expression linear_combo requires legs")
+        return
+    if kind == "forward_swap":
+        for field in ("start_discount_ref", "end_discount_ref", "payment_discount_refs"):
+            if not expression.get(field):
+                raise SchemaError(f"{agent}.trade.paper_expression forward_swap missing {field}")
+        return
+    raise SchemaError(f"{agent}.trade.paper_expression has unsupported type {kind!r}")
+
+
 def validate_trade(
     trade: dict[str, Any] | None,
     *,
@@ -247,6 +279,7 @@ def validate_trade(
         raise SchemaError(f"{agent} trade must be an object or null")
     _require_keys(trade, REQUIRED_TRADE_FIELDS, f"{agent} trade")
     _validate_expression_comparison(trade, agent=agent)
+    validate_paper_expression(trade.get("paper_expression"), agent=agent, trade=trade)
     validate_context_build(trade["context_build"], agent=agent, trade=trade, packet=packet)
     for field in ("instrument", "direction", "thesis", "mispricing", "horizon"):
         _non_empty_text(trade[field], f"{agent}.trade.{field}")

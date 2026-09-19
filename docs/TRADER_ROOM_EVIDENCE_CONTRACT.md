@@ -26,6 +26,8 @@ Load the freshest valid deterministic market-state snapshot produced under `docs
 
 The market-state packet must also carry the observable **policy-path layer** for the United States, Canada and Australia: current SOFR/CORRA/AONIA benchmarks and public futures/OIS-implied paths. Australia additionally carries official RBA 1M/3M/6M OIS, bank-bill rates and bill-minus-OIS basis context. Sovereign 2Y/5Y levels do not satisfy this requirement. The packet should also include deterministic historical move analogs with prior episode dates and forward outcomes so advocates can test comparable states rather than merely quote percentiles.
 
+The packet also carries **official forward-curve proxies** for US, Canada and Australia. Use the Federal Reserve staff nominal zero curve, Bank of Canada Government of Canada zero-coupon curve, and RBA F17 zero-coupon analytical curve. These government curves are explicitly accepted as close-enough proxies for swap/OIS forward-forward paper expressions. Preserve source/vintage/proxy labeling. They may support structures such as 1y1y, 2y1y, 2y2y, 2y3y and 5y5y when the published discount maturities exist.
+
 Do not invent missing values. A source explicitly marked unavailable or stale remains unavailable/stale in the common packet.
 
 ### 4. Durable empirical research method
