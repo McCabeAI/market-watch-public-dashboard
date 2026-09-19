@@ -16,6 +16,7 @@ from scripts.policy_path_data import (
     parse_cme_sofr_html,
     parse_cme_sofr_settlements_json,
     parse_esignal_sofr_html,
+    parse_esignal_sr3_html,
     parse_mx_expectations_html,
     parse_nyfed_sofr_json,
     parse_rba_f1_csv,
@@ -148,6 +149,20 @@ TOTAL SR3 FUT 0 460000 3500000 + 500
         self.assertEqual(curves["curves"]["SOFR"]["product_code"], "SR3")
         self.assertEqual(curves["curves"]["CORRA"]["product_code"], "CRA")
         self.assertEqual(curves["curves"]["AONIA"]["product_code"], "IB")
+
+    def test_esignal_cme_sr3_chain(self):
+        html = """
+        <table>
+          <tr><th>Contract</th><th>Month</th><th>Last</th><th>Change</th><th>Chg %</th><th>Open</th><th>High</th><th>Low</th><th>Time</th></tr>
+          <tr><td>THREE MONTH SOFR (SR3 Z26-CME)</td><td>Dec'26</td><td>95.68 s</td><td>-0.01</td><td>-0.01</td><td>95.70</td><td>95.705</td><td>95.675</td><td>15:59:57</td></tr>
+          <tr><td>THREE MONTH SOFR (SR3 H27-CME)</td><td>Mar'27</td><td>95.42</td><td>-0.03</td><td>-0.03</td><td>95.47</td><td>95.47</td><td>95.41</td><td>15:59:58</td></tr>
+          <tr><td>THREE MONTH SOFR (SR3 J27-CME)</td><td>Apr'27</td><td>95.30</td><td>-0.02</td><td>-0.02</td><td>95.31</td><td>95.32</td><td>95.29</td><td>15:59:58</td></tr>
+        </table>
+        """
+        rows = parse_esignal_sr3_html(html, benchmark=3.85)
+        self.assertEqual([r["code"] for r in rows], ["SR3Z6", "SR3H7"])
+        self.assertEqual(rows[0]["implied_rate"], 4.32)
+        self.assertEqual(rows[0]["source"], "ESIGNAL_CME_SR3_DELAYED")
 
     def test_esignal_sofr_chain(self):
         html = """
