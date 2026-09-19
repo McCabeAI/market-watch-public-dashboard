@@ -30,7 +30,7 @@ CME_SOFR_URL = "https://www.cmegroup.com/markets/interest-rates/stirs/one-month-
 CME_SR3_URL = "https://www.cmegroup.com/markets/interest-rates/stirs/three-month-sofr.quotes.html"
 CME_SOFR_BULLETIN_URL = "https://www.cmegroup.com/daily_bulletin/current/Section10_Interest_Rate_Futures_Continued.pdf"
 ESIGNAL_SOFR_CHAIN_URL = "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR1"
-ESIGNAL_SR3_CHAIN_URL = "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3"
+ESIGNAL_SR3_CHAIN_URL = "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME"
 CME_SOFR_PRODUCT_ID = "8463"
 CME_SR3_PRODUCT_ID = "8462"
 CME_SOFR_SETTLEMENTS_TEMPLATE = (
@@ -501,36 +501,59 @@ def parse_esignal_sofr_html(text: str, *, benchmark: float) -> list[dict[str, An
 
 
 def parse_esignal_sr3_html(text: str, *, benchmark: float) -> list[dict[str, Any]]:
-    """Parse delayed Three-Month SOFR futures chain from eSignal."""
+    """Parse delayed CME Three-Month SOFR futures chain from eSignal."""
     parser = _TableParser()
     parser.feed(text)
     rows: list[dict[str, Any]] = []
     month_codes = {"H":3,"M":6,"U":9,"Z":12}
+
+    def quote(cell: str) -> float | None:
+        m = re.fullmatch(r"\s*(9\d(?:\.\d+)?)\s*[sey]?\s*", cell, re.I)
+        return float(m.group(1)) if m else None
+
     for table in parser.tables:
         for row in table:
             joined = " ".join(row)
-            m = re.search(r"SR3\s+([HMUZ])(\d{1,2})", joined, re.I)
+            m = re.search(r"SR3\s+([HMUZ])(\d{2})-CME\b", joined, re.I)
             if not m:
                 continue
-            nums = [_num(cell) for cell in row]
-            price = next((x for x in nums if x is not None and 90.0 < x < 100.5), None)
+            price = next((x for x in (quote(cell) for cell in row[1:]) if x is not None), None)
             if price is None:
                 continue
-            year_digits = m.group(2)
-            year = 2000 + int(year_digits) if len(year_digits) == 2 else 2020 + int(year_digits)
+            year = 2000 + int(m.group(2))
             expiry = f"{year:04d}-{month_codes[m.group(1).upper()]:02d}"
             rows.append(
                 _contract_row(
                     expiry=expiry,
-                    code=f"SR3{m.group(1).upper()}{year_digits[-1]}",
+                    code=f"SR3{m.group(1).upper()}{m.group(2)[-1]}",
                     price=price,
                     benchmark=benchmark,
-                    source="ESIGNAL_3M_SOFR_DELAYED",
+                    source="ESIGNAL_CME_SR3_DELAYED",
                 )
             )
+
+    if not rows:
+        # eSignal occasionally flattens the quote board into layout text.
+        blob = " ".join(parser.text)
+        pattern = re.compile(
+            r"SR3\s+([HMUZ])(\d{2})-CME.{0,120}?(9\d(?:\.\d+)?)\s*[sey]?",
+            re.I,
+        )
+        for m in pattern.finditer(blob):
+            year = 2000 + int(m.group(2))
+            rows.append(
+                _contract_row(
+                    expiry=f"{year:04d}-{month_codes[m.group(1).upper()]:02d}",
+                    code=f"SR3{m.group(1).upper()}{m.group(2)[-1]}",
+                    price=float(m.group(3)),
+                    benchmark=benchmark,
+                    source="ESIGNAL_CME_SR3_DELAYED",
+                )
+            )
+
     rows = sorted({row["expiry"]: row for row in rows}.values(), key=lambda row: row["expiry"])
     if not rows:
-        raise ValueError("eSignal delayed SR3 quote board exposed no usable contracts")
+        raise ValueError("eSignal delayed CME SR3 quote board exposed no usable contracts")
     return rows
 
 
@@ -786,55 +809,19 @@ def collect_policy_paths(
             contracts = parse_esignal_sofr_html(fallback, benchmark=float(sofr["rate"]))
             us_curve_source = ESIGNAL_SOFR_CHAIN_URL
             us_curve_method = "delayed ICE One-Month SOFR futures chain via eSignal fallback because CME blocks hosted runners"
-        # Tradable USD curve: quarterly Three-Month SOFR futures (SR3).
-        # Prefer CME's own delayed quote table, then its settlement endpoint,
-        # then the Daily Bulletin. Do not substitute a third-party curve.
-        sr3_errors: list[str] = []
-        contracts_3m: list[dict[str, Any]] | None = None
-        sr3_source = CME_SR3_URL
-        sr3_method = "CME delayed SR3 quotes"
-        try:
-            sr3_html = fetch_bytes(
-                CME_SR3_URL,
-                user_agent=(
-                    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-                    "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
-                ),
-                referer="https://www.cmegroup.com/",
-            ).decode("utf-8", errors="replace")
-            contracts_3m = parse_cme_sr3_html(sr3_html, benchmark=float(sofr["rate"]))
-        except Exception as exc:
-            sr3_errors.append(f"quotes: {exc}")
-
-        if not contracts_3m:
-            try:
-                contracts_3m, sr3_source = _fetch_recent_cme_sr3_settlements(
-                    today=today,
-                    fetch_bytes=fetch_bytes,
-                    benchmark=float(sofr["rate"]),
-                )
-                sr3_method = "CME SR3 settlements"
-            except Exception as exc:
-                sr3_errors.append(f"settlements: {exc}")
-
-        if not contracts_3m:
-            try:
-                sr3_bulletin = fetch_bytes(
-                    CME_SOFR_BULLETIN_URL,
-                    user_agent=(
-                        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-                        "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
-                    ),
-                    referer="https://www.cmegroup.com/market-data/daily-bulletin.html",
-                )
-                contracts_3m = parse_cme_sr3_bulletin_pdf(sr3_bulletin, benchmark=float(sofr["rate"]))
-                sr3_source = CME_SOFR_BULLETIN_URL
-                sr3_method = "CME Daily Bulletin SR3 settlements"
-            except Exception as exc:
-                sr3_errors.append(f"bulletin: {exc}")
-
-        if not contracts_3m:
-            raise ValueError("CME SR3 unavailable across official quote/settlement/bulletin paths: " + " | ".join(sr3_errors))
+        # Tradable USD curve: quarterly CME Three-Month SOFR futures (SR3).
+        # CME rejects GitHub-hosted runners with HTTP 403, so use eSignal's
+        # public delayed CME quote board as the deterministic hosted-runner feed.
+        sr3_html = fetch_bytes(
+            ESIGNAL_SR3_CHAIN_URL,
+            user_agent=(
+                "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+            ),
+        ).decode("utf-8", errors="replace")
+        contracts_3m = parse_esignal_sr3_html(sr3_html, benchmark=float(sofr["rate"]))
+        sr3_source = ESIGNAL_SR3_CHAIN_URL
+        sr3_method = "delayed CME SR3 futures chain via eSignal"
 
         countries["US"] = {
             "status": "ok",
