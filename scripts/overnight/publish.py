@@ -86,3 +86,13 @@ def emit_trader_books_json(store: OvernightStore, site_dir: Path, *, run_id: str
     else:
         raise SchemaError("no trader books available to emit")
     return write_json(site_dir / "trader-books.json", payload)
+
+
+def emit_pm_books_json(site_dir: Path, *, root: Path | None = None) -> Path | None:
+    from scripts.pm.public import emit_pm_json
+    from scripts.pm.store import PMStore
+
+    store = PMStore(root=root)
+    if not store.books_path().is_file() and not store.public_path().is_file():
+        return None
+    return emit_pm_json(store, site_dir)

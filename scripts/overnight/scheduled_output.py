@@ -22,6 +22,7 @@ from scripts.overnight.errors import EvidenceBoundaryError, SchemaError
 from scripts.overnight.evidence import require_snapshot
 from scripts.overnight.ledger import load_or_create, mark_finished, mark_running, persist_run
 from scripts.overnight.store import OvernightStore, sha256_json
+from scripts.pm.automated import apply_automated_pm_decisions, validate_pm_decisions
 
 SCHEDULE_ID = "market-watch-weekday-0205"
 OUTPUT_TYPE = "OVERNIGHT_SCHEDULED_OUTPUT"
@@ -171,6 +172,16 @@ def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str,
                 raise EvidenceBoundaryError(f"{seat} recorded forbidden post-freeze acquisition: {forbidden_key}")
 
     validate_execution(payload.get("execution") or {})
+    if payload.get("pm_decisions") is not None:
+        try:
+            validate_pm_decisions(
+                payload.get("pm_decisions"),
+                overnight_run_id=run_id,
+                packet_sha256=agent_packet["packet_sha256"],
+                evidence_cutoff=agent_packet["evidence_cutoff"],
+            )
+        except Exception as exc:
+            raise SchemaError(str(exc)) from exc
     return payload
 
 
@@ -215,6 +226,27 @@ def _apply_validated(
         "reviews": decisions,
         "books": updated,
     }
+
+    if payload.get("pm_decisions"):
+        from scripts.pm.books import empty_books, validate_books as validate_pm_books
+        from scripts.pm.store import PMStore
+
+        pm_store = PMStore(root=store.root, state_root=store.state_root)
+        if pm_store.books_path().is_file():
+            pm_books = validate_pm_books(pm_store.read_books())
+        else:
+            pm_books = empty_books(trader_room_run_id=run_id)
+        market_state = (base.get("families", {}).get("market_state", {}) or {}).get("data")
+        pm_books = apply_automated_pm_decisions(
+            pm_books,
+            payload["pm_decisions"],
+            market_state=market_state,
+            run_id=run_id,
+            evidence_cutoff=payload["agent_packet"]["evidence_cutoff"],
+        )
+        review["pm_books"] = pm_books
+        if write:
+            pm_store.write_books(pm_books)
 
     if write:
         store.write_artifact(run_id, "agent_evidence_packet.json", payload["agent_packet"])

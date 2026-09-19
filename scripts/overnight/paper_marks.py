@@ -479,38 +479,111 @@ def resolve_paper_mid(
     return _resolve_direct(market_state, instrument, asset_class)
 
 
+def find_position(positions: list[Any] | None, position_id: str, *, owner: str | None = None) -> Mapping[str, Any]:
+    for position in positions or []:
+        if isinstance(position, Mapping) and position.get("position_id") == position_id:
+            return position
+    label = f" for {owner}" if owner else ""
+    raise PaperMarkError(f"unknown position_id {position_id}{label}")
+
+
 def _position_lookup(books: Mapping[str, Any], seat: str, position_id: str) -> Mapping[str, Any]:
     seat_block = (books.get("seats") or {}).get(seat) if isinstance(books, Mapping) else None
     positions = seat_block.get("positions") if isinstance(seat_block, Mapping) else None
-    for position in positions or []:
-        if position.get("position_id") == position_id:
-            return position
-    raise PaperMarkError(f"unknown position_id {position_id} for {seat}")
+    return find_position(list(positions or []), position_id, owner=seat)
+
+
+def apply_resolved_mark(position: dict[str, Any], mark: Mapping[str, Any]) -> None:
+    position["mark_price"] = mark["value"]
+    position["mark_price_source"] = mark["source"]
+    position["mark_price_as_of"] = mark.get("as_of")
+
+
+def clear_unresolved_mark(position: dict[str, Any]) -> None:
+    position["mark_price"] = None
+    position["mark_price_source"] = None
+    position["mark_price_as_of"] = None
+
+
+def refresh_positions(
+    positions: list[dict[str, Any]],
+    market_state: Mapping[str, Any],
+    *,
+    alerts: list[str] | None = None,
+) -> list[dict[str, Any]]:
+    """Re-mark a position list. Missing marks isolate to that position; nothing is invented."""
+    for position in positions:
+        try:
+            mark = resolve_paper_mid(
+                market_state,
+                str(position.get("instrument") or ""),
+                asset_class=position.get("asset_class"),
+                expression=position.get("paper_expression"),
+            )
+        except PaperMarkError as exc:
+            clear_unresolved_mark(position)
+            if alerts is not None:
+                alerts.append(f"Paper mark unavailable for {position.get('instrument')}: {exc}")
+            continue
+        apply_resolved_mark(position, mark)
+    return positions
 
 
 def refresh_book_marks(books: dict[str, Any], market_state: Mapping[str, Any]) -> dict[str, Any]:
     """Refresh every open position to the current deterministic packet mid."""
-    for seat, seat_book in (books.get("seats") or {}).items():
-        for position in seat_book.get("positions") or []:
-            try:
-                mark = resolve_paper_mid(
-                    market_state,
-                    str(position.get("instrument") or ""),
-                    asset_class=position.get("asset_class"),
-                    expression=position.get("paper_expression"),
-                )
-            except PaperMarkError as exc:
-                position["mark_price"] = None
-                position["mark_price_source"] = None
-                position["mark_price_as_of"] = None
-                seat_book.setdefault("alerts", []).append(
-                    f"Paper mark unavailable for {position.get('instrument')}: {exc}"
-                )
-                continue
-            position["mark_price"] = mark["value"]
-            position["mark_price_source"] = mark["source"]
-            position["mark_price_as_of"] = mark.get("as_of")
+    for _seat, seat_book in (books.get("seats") or {}).items():
+        alerts = seat_book.setdefault("alerts", [])
+        refresh_positions(list(seat_book.get("positions") or []), market_state, alerts=alerts)
     return books
+
+
+def hydrate_action_mids(
+    actions: list[dict[str, Any]],
+    market_state: Mapping[str, Any],
+    *,
+    positions: list[Any] | None = None,
+    owner: str | None = None,
+) -> list[dict[str, Any]]:
+    """Replace model-supplied transaction prices with deterministic paper mids.
+
+    OPEN/ADD/HEDGE enter at the current frozen mid. REDUCE/CLOSE exit at that same
+    review mid. Missing marks fail closed; they are never invented.
+    """
+    for action in actions:
+        kind = action.get("action")
+        if kind not in {"OPEN", "ADD", "REDUCE", "CLOSE", "HEDGE"}:
+            continue
+        instrument = action.get("instrument")
+        asset_class = action.get("asset_class")
+        expression = action.get("paper_expression")
+        if kind in {"ADD", "REDUCE", "CLOSE"}:
+            pos = find_position(positions, str(action.get("position_id") or ""), owner=owner)
+            instrument = pos.get("instrument")
+            asset_class = pos.get("asset_class")
+            expression = pos.get("paper_expression")
+        elif kind == "HEDGE" and not instrument:
+            target_id = str(action.get("hedge_of") or action.get("position_id") or "")
+            pos = find_position(positions, target_id, owner=owner)
+            instrument = pos.get("instrument")
+            asset_class = pos.get("asset_class")
+            expression = action.get("paper_expression") or pos.get("paper_expression")
+        mark = resolve_paper_mid(
+            market_state,
+            str(instrument or ""),
+            asset_class=asset_class,
+            expression=expression,
+        )
+        action["instrument"] = instrument
+        if asset_class:
+            action["asset_class"] = asset_class
+        action["price"] = mark["value"]
+        action["mark_price"] = mark["value"]
+        action["paper_mid_source"] = mark["source"]
+        action["paper_mid_as_of"] = mark.get("as_of")
+        action["paper_mid_kind"] = mark["kind"]
+        if expression:
+            action["paper_expression"] = deepcopy(expression)
+    return actions
 
 
 def hydrate_review_mids(
@@ -528,38 +601,12 @@ def hydrate_review_mids(
     for seat, payload in out.items():
         if not isinstance(payload, Mapping):
             continue
-        for action in payload.get("actions") or []:
-            kind = action.get("action")
-            if kind not in {"OPEN", "ADD", "REDUCE", "CLOSE", "HEDGE"}:
-                continue
-            instrument = action.get("instrument")
-            asset_class = action.get("asset_class")
-            expression = action.get("paper_expression")
-            if kind in {"ADD", "REDUCE", "CLOSE"}:
-                pos = _position_lookup(books, seat, str(action.get("position_id") or ""))
-                instrument = pos.get("instrument")
-                asset_class = pos.get("asset_class")
-                expression = pos.get("paper_expression")
-            elif kind == "HEDGE" and not instrument:
-                target_id = str(action.get("hedge_of") or action.get("position_id") or "")
-                pos = _position_lookup(books, seat, target_id)
-                instrument = pos.get("instrument")
-                asset_class = pos.get("asset_class")
-                expression = action.get("paper_expression") or pos.get("paper_expression")
-            mark = resolve_paper_mid(
-                market_state,
-                str(instrument or ""),
-                asset_class=asset_class,
-                expression=expression,
-            )
-            action["instrument"] = instrument
-            if asset_class:
-                action["asset_class"] = asset_class
-            action["price"] = mark["value"]
-            action["mark_price"] = mark["value"]
-            action["paper_mid_source"] = mark["source"]
-            action["paper_mid_as_of"] = mark.get("as_of")
-            action["paper_mid_kind"] = mark["kind"]
-            if expression:
-                action["paper_expression"] = deepcopy(expression)
+        seat_block = (books.get("seats") or {}).get(seat) if isinstance(books, Mapping) else None
+        positions = list((seat_block or {}).get("positions") or [])
+        hydrate_action_mids(
+            list(payload.get("actions") or []),
+            market_state,
+            positions=positions,
+            owner=seat,
+        )
     return out

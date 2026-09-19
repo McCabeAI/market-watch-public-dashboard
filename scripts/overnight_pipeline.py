@@ -109,6 +109,9 @@ def main(argv: list[str] | None = None) -> int:
         gate = publication_gate(store, run_id=args.run_id, require_dataset=args.require_dataset)
         if args.site_dir:
             emit_trader_books_json(store, args.site_dir, run_id=args.run_id)
+            from scripts.overnight.publish import emit_pm_books_json
+
+            emit_pm_books_json(args.site_dir, root=args.root)
         print(json.dumps({k: gate[k] for k in gate if k != "dataset"}, indent=2))
         return 0
     if args.cmd == "stage":

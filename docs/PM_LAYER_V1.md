@@ -1,0 +1,81 @@
+# Market Watch — Portfolio Manager Layer V1
+
+Status: LIVE · IMPLEMENTATION ONLY (no PM model spend)
+
+This is the four-PM layer above the locked 14-seat Trader Room. It does not change the 14 seats, the overnight ACP schedule, or agent-control-plane.
+
+## Roster
+
+| PM | Mandate | Gross limit | HEDGE |
+| --- | --- | --- | --- |
+| `chatgpt` | No forced style. Final synthesis. May trade or choose no-trade. | $1bn gross notional | allowed |
+| `swinger` | Very aggressive/concentrated when the thesis is valid. Reduce/close instead of hedging. | $1bn gross notional | **prohibited** |
+| `pragmatist` | Opportunistic macro. Can swing big or grind singles/doubles. | $1bn gross notional | allowed |
+| `grinder` | Preservation/consistency first. Smaller sizes, high hurdles, quick de-risking. No-trade is valid. | $1bn gross notional | allowed |
+
+`$1bn` is a **gross notional limit**, not borrowed NAV. The 5% trader-seat funding/cash hurdle is not applied. After every action:
+
+```
+sum(abs(open position notional)) <= 1_000_000_000
+```
+
+Cap breach or a missing required paper mark fails closed. Options remain unavailable when premium/IV/strike marks are insufficient.
+
+## Independence
+
+All four PMs receive the same frozen/current Market Watch evidence and the same finalized 14-seat Trader Room output. Each PM sees only its own prior book. No PM sees another PM's current-cycle decision before commit. Comparison is allowed only after decisions are committed.
+
+## Canonical state
+
+`data/pm/books/latest.json` is trusted-code state. Models may not author it.
+
+Each book stores positions, gross utilization, realized/unrealized/total paper P&L, mark provenance, locked expression/curve family, thesis, invalidation, conviction, action history, review status/freshness, and alerts.
+
+Paper marks reuse `scripts/overnight/paper_marks.py`. Packet mids override model-authored prices. SOFR/CORRA/AONIA/bond expression family is locked from OPEN through CLOSE.
+
+Actions: `OPEN / ADD / HOLD / REDUCE / HEDGE / CLOSE` plus explicit `NO_TRADE`.
+
+## Review packets
+
+Deterministic per-PM artifact:
+
+```
+data/pm/review_packets/<pm_id>/latest.json
+```
+
+Each packet has a stable `review_packet_id` / `review_packet_sha256`, the evidence cutoff, compact frozen evidence and market state, SOFR/CORRA/AONIA and sovereign-curve availability, the full finalized 14-seat public Trader Room output, compact conflicts/rebuttals, **only that PM's prior book**, allowable actions, gross limit/utilization, and unresolved future data requests.
+
+Refresh:
+
+```bash
+PYTHONPATH=. python scripts/pm_layer.py refresh-packets
+```
+
+## ChatGPT ingest
+
+Documented schema: [`docs/CHATGPT_PM_DECISION_INGEST.md`](CHATGPT_PM_DECISION_INGEST.md).
+
+```bash
+PYTHONPATH=. python scripts/pm/chatgpt_ingest.py validate --input data/pm/inbox/chatgpt_decision.json
+PYTHONPATH=. python scripts/pm/chatgpt_ingest.py apply --input data/pm/inbox/chatgpt_decision.json
+```
+
+Trusted code hydrates marks, checks packet id/hash/freshness, enforces instruments/cap/curve lock, mutates only the ChatGPT book, persists provenance/history, refreshes marks, and updates public state.
+
+## Future data requests
+
+`data/pm/data_requests/latest.json` is the consolidated Git artifact. Entries carry originating PM, request, reason, decision impact, priority `low|medium|high`, suggested source, first/last requested, repeat count, and `status=requested`. Repeated text is deduped with attribution preserved. Requests are for future runs only; they never break the current evidence freeze and never launch collectors. The Trader Book tab surfaces them to Kevin.
+
+## Optional automated PM decisions
+
+Overnight `scheduled_output.json` may include `pm_decisions` for exactly `swinger`, `pragmatist`, and `grinder`. Absence remains valid; automated PM state stays awaiting/stale rather than fabricated. If present, each decision is applied independently and must declare `principal_model`, `subagent_count` (0–3), and `subagent_models` in `{grok-4.6, composer-2.5}`. This repository does not invoke those models.
+
+## Public dashboard
+
+- Trader Room tab auto-selects the newest complete valid run under `trader-room/runs/`. Pages no longer depends on a manually maintained `data/trader-room/public/latest.json`.
+- Trader Book tab keeps the 14-seat competition and adds a Portfolio Managers section, four-PM P&L comparison, and compact PM Data Requests area.
+- Public PM JSON: `data/pm/public/latest.json` → `_site/pm-books.json`.
+
+## Initial state
+
+All four books start with $1bn capacity and zero positions. ChatGPT is `awaiting_chatgpt_decision`. Swinger/Pragmatist/Grinder are `awaiting_automated_pm_review`. Review packets and the data-request registry exist. No PM trades are invented.

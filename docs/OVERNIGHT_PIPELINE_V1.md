@@ -72,6 +72,8 @@ The JSON contains:
 
 It must not contain canonical books, NAV, cash, realized/unrealized P&L, funding charges, net P&L, or competition rank.
 
+Optional Phase-1 field `pm_decisions` may be omitted. Legacy 14-seat-only output remains valid. When supplied it must contain exactly `swinger`, `pragmatist`, and `grinder` (never ChatGPT) with `principal_model`, `subagent_count` 0–3, and `subagent_models` in `{grok-4.6, composer-2.5}`. Absence does not fabricate automated PM trades. The ACP schedule id, clock, caps, and provider contract are unchanged.
+
 ## 5. Model policy and hard budget
 
 Approved runtime models:
