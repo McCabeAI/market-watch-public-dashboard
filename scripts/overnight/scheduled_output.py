@@ -40,6 +40,8 @@ FORBIDDEN_MODEL_STATE_KEYS = {
     "starting_nav_usd",
     "gross_pnl_usd",
     "funding_cost_usd",
+    "cash_yield_usd",
+    "funding_last_accrual_at",
     "net_pnl_usd",
     "competition_rank",
 }
