@@ -1,0 +1,138 @@
+{
+  "type": "TRADER_ROOM_CONTRIBUTION",
+  "run_id": "tr-20260919T214000Z-ondemand",
+  "round": 1,
+  "agent": "cross-merchant",
+  "archetype": "cross-merchant",
+  "remit": "cleaner relative-value expressions outside USD",
+  "stance_summary": "Short AUDNZD. The intended Australia-versus-New Zealand differential is contaminated in USD pairs: AUDUSD is not stretched while NZDUSD mixes a delivered Fed hike into NZ weakness. Packet facts put AUDNZD at a 5y extreme after a 4.3% 1m squeeze that extended on 18 Sep after AU-negative and NZ-positive news. Verified: ECB spots, AONIA path, gauges, housing/GDP/FTA items. Inference: those catalysts should cap AUD versus NZD. Unknown: NZ policy/2Y, AUDNZD carry, CFTC positioning.",
+  "trade": {
+    "instrument": "AUDNZD",
+    "asset_class": "spot_fx",
+    "expression_comparison": {
+      "rates_candidate": null,
+      "spot_candidate": "short AUDNZD",
+      "selected": "spot",
+      "rationale": "Dedicated spot-FX seat. NZ sovereign rates and AU-NZ 2Y RV are unavailable (RBNZ B2 403), so a rates expression cannot own the AU-NZ differential from this freeze. AUDUSD (1y 76th, +0.20% 1m) does not isolate the view; NZDUSD (1y 13th, -3.90% 1m) loads Fed/USD (SOFR 3.85, funds 3.75-4.00, SR3Z6 4.32). AUDCAD is a 5y level extreme but 1m z is only 0.95 and the packet carry screen awards AUD 165bp versus CAD, so fading AUDCAD fights known carry and CAD/USD. AUDNZD is the markable non-USD cross that owns AU versus NZ."
+    },
+    "context_build": {
+      "causal_mechanism": "Test whether AUD should keep outperforming NZD after the RBA tightening channel is already biting Australian housing while NZ prints a GDP beat and a new India FTA. Similar inflation temperatures (AU 82, NZ 80) do not justify pricing NZ as uniquely weak versus AU in spot. Mechanism: AU-specific demand destruction via housing versus NZ-specific activity/trade positives should compress AUDNZD, not extend it.",
+      "path_to_current_price": "ECB AUDNZD 18 Sep 2026 is 1.246846846846847. Path: 3 Aug 1.193, 20 Aug 1.196, 1 Sep 1.212, 2 Sep jump to 1.226, 8 Sep 1.235, 17 Sep 1.239, 18 Sep 1.247. 1d +0.65%, 5d +1.19%, 1m +4.27%, 3m +2.05%. 1m log z 2.84; 3m log z -0.19. Same-day USD pairs: AUDUSD +0.09% / +0.20% 1m; NZDUSD -0.56% / -3.90% 1m; USDJPY +1.41% 1d. The 1m and 18 Sep extensions are NZ idiosyncratic underperformance, not an AUDUSD rally. 16 Sep packet news (AU housing downturn; NZ Q2 GDP 0.2% q/q beat; NZ-India FTA) was followed by a further AUDNZD rise on 17-18 Sep.",
+      "known_vs_new_information": "Known: NZ labor 32 versus AU labor 50, NZ consumer 38 versus AU 48, NZ activity 47 versus AU 54 (dashboard_v8 retained gauges). Known: AONIA 4.35 with hikes still in the strip. New in this freeze: NSW stamp-duty receipts -24% y/y, volumes -18%, Sydney/Melbourne values more than 7% off peak (16 Sep); NZ Q2 GDP slows to 0.2% q/q but beats forecasts (16 Sep); NZ parliament passes India trade deal (16 Sep); Fed delivers 25bp to 3.75-4.00% with SR3 still pricing more. Known NZ labor weakness cannot by itself explain a new 0.65% 18 Sep AUDNZD extension after AU-negative and NZ-positive releases.",
+      "market_implied_assumption": "AUDNZD at 1y 99.80th / 5y 99.96th (z_1y 1.94, z_5y 3.12; 252-observation percentile 100) prices NZ as the distinctly weaker Oceania cycle versus Australia and treats additional RBA tightening (AONIA Oct 4.565, Dec 4.725) as AUD-supportive versus NZD even after housing is breaking.",
+      "market_assumption_disagreed_with": "Disagree that the AU-NZ relative should keep widening in AUD's favor. Packet incremental news is AU housing pain versus NZ growth beat plus FTA; inflation gauges are nearly identical. The priced assumption that NZ is uniquely weak enough to justify a 5y AUDNZD extreme after a 4.3% 1m squeeze is the error.",
+      "price_decomposition": "Level versus change: the 3m change is not extreme (log z -0.19); the 1m change (log z 2.84) and the 5y level (z 3.12) are the stretched objects. Tenor/components: ECB same-fixing cross. Marginal 1m driver is NZDUSD -3.90% against AUDUSD +0.20%, so the cross is NZ underperformance versus AU, not a broad AUD bid. 18 Sep USDJPY +1.41% shows a USD-up day on which AUDUSD still rose 0.09% while NZDUSD fell 0.56% — USD does not explain AU versus NZ. Carry screen for AUDNZD is status unavailable (needs both 2Y yields). AUDCAD 1m z 0.95 is a level extreme with known 165bp AUD-CAD 2Y differential, a different and dirtier mix.",
+      "historical_reference": {
+        "distribution": "AUDNZD 1y percentile 99.80, 5y 99.96, z_1y 1.94, z_5y 3.12; 252-observation window percentile 100, z 1.96. Move distribution (n=252, % log): 1d z 1.99, 5d z 1.45, 1m z 2.84, 3m z -0.19. 20d RV 5.09, 60d RV 5.28. Packet note on this series: a historical extreme is not proof of mispricing. Percentiles are a discovery flag only.",
+        "analogs": [
+          "No credible named AUDNZD analog with a documented forward FX outcome is attached in this freeze. Sovereign-tenor analog arrays are empty. Closest packet move analogs are on CA-AU_2Y (for example 2023-09-05 prior 1m -5.5bp, forward 1m -7.9bp / 3m -71.3bp), which is a Canada-Australia rates spread, not AUDNZD spot, and cannot be used as an FX forward-outcome analog."
+        ],
+        "regime_differences": "Cannot map this onto a standard AUDNZD carry-unwind because NZ 2Y/OCR are missing. Fed has just hiked to 3.75-4.00% with SOFR 3.85 and SR3 still 47-90bp through Dec/Sep 2027, so USD-pair analogs are a different regime. AU housing is the live tightening channel now, which was not the identified driver in the CA-AU_2Y analog set."
+      },
+      "independent_checks": [
+        "Temperature gauges: AU versus NZ inflation 82 versus 80; labor 50 versus 32; activity 54 versus 47; consumer 48 versus 38. Inflation is not an NZ-unique shock. Labor/activity/consumer are weaker in NZ (known state) but do not match the sign of 16 Sep news (GDP beat, FTA).",
+        "Cross-market spots: AUDUSD 1y 76th / +0.20% 1m versus NZDUSD 1y 13th / 5y 8.6th / -3.90% 1m versus AUDNZD 5y 99.96th / +4.27% 1m. Two USD legs disagree with each other; the cross isolates the AU-NZ residual.",
+        "Policy versus news: AONIA 4.35 with +21.5bp by Oct and +37.5bp by Dec still prices RBA tightening while the housing item says that channel is already biting. NZ policy path is unavailable, so the cross is the only markable AU-NZ expression."
+      ],
+      "flow_and_positioning_check": "CFTC trader-class nets and CME positioning overlays are unavailable this freeze (pos:cftc gap). Cannot confirm crowding, CTA, or dealer hedging as the 1m 4.27% / 18 Sep 0.65% driver. Fail closed: do not treat the move as a documented flow liquidation. 20d RV 5.09 is not extreme versus 60d 5.28, so this is not an obvious vol-spike unwind in the packet.",
+      "policy_path_check": {
+        "status": "available",
+        "relevant_countries": [
+          "AU",
+          "NZ",
+          "US"
+        ],
+        "pricing_summary": "AU AONIA 4.35 (17-Sep-2026); ASX IB implied Oct 4.565 (+21.5bp), Nov 4.685, Dec 4.725 (+37.5bp), Jun 2027 4.94 (+59bp). NZ OCR and NZ sovereign 2Y/5Y/10Y unavailable (RBNZ B2 HTTP 403); AUDNZD~AU-NZ_2Y relationship status insufficient. US: Fed delivered 25bp to 3.75-4.00%; official SOFR 3.85 effective 2026-09-17; SR3Z6 4.32, SR3H7 4.58, SR3U7 4.755.",
+        "rationale": "AU path is live and still prices hikes after housing is rolling over. NZ path cannot be asserted; that gap argues for the spot cross rather than an invented NZ rates trade. US path is cited only to show why AUDUSD/NZDUSD are dirty: a delivered Fed hike plus further SR3 tightening contaminates any USD-leg expression of an AU-NZ view."
+      }
+    },
+    "structure": null,
+    "direction": "short",
+    "thesis": "Verified fact: AUDNZD 1.2468 as of 18 Sep, 5y 99.96th after +4.27% 1m, with the 18 Sep +0.65% print coming after AU housing and NZ GDP/FTA items. Verified: AUDUSD not stretched; NZDUSD weak; AONIA still hiking; NZ rates missing. Inference: the market is still pricing NZ unique weakness versus AU even though incremental catalysts point the other way, so the clean expression is short AUD versus NZD in the cross. Unknown: NZ policy rate, AUDNZD carry, positioning. USD pairs would make the seat long or short the Fed path by accident.",
+    "mispricing": "AUDNZD prices an AU-NZ growth/policy gap that the 16 Sep news flow no longer supports. Similar inflation gauges plus AU housing pain and NZ activity/trade positives should not coexist with a fresh 5y extreme in AUD. The 1m log z 2.84 is the discovery flag, not the thesis; the thesis is the sign error versus new information.",
+    "why_now": [
+      "18 Sep AUDNZD jumped 0.65% to 1.2468 after 16 Sep AU housing, NZ GDP-beat, and NZ-India FTA items — price extended against the incremental news.",
+      "AUDUSD +0.20% 1m versus NZDUSD -3.90% 1m shows the discrepancy lives in the cross, not in a stretched AUDUSD.",
+      "AONIA still prices +21.5bp by October while the housing channel is already biting; waiting lets the RBA path keep being read as AUD-positive versus NZD.",
+      "Empty $100m book pays official SOFR 3.85% ACT/360 every calendar day while flat; a defined AU-NZ spot discrepancy is the seat's way to clear that hurdle."
+    ],
+    "evidence_refs": [
+      "fx:AUDNZD",
+      "fx:AUDUSD",
+      "fx:NZDUSD",
+      "fx:AUDCAD",
+      "fx:USDJPY",
+      "market_state",
+      "policy_paths",
+      "policy:AU",
+      "policy:US",
+      "tradable_rate_curves",
+      "rates:AU",
+      "rates:NZ",
+      "funding_context",
+      "pos:cftc",
+      "mw_20260916_au_housing_tightening",
+      "mw_20260916_nz_india_trade",
+      "mw_20260916_fomc_hike_pricing",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "rollup:New Zealand Q2 GDP slows to 0.2% q/q but beats forecasts",
+      "rollup:Fed raises 25bp to 3.75–4.00%",
+      "temp:AU:inflation",
+      "temp:AU:labor",
+      "temp:AU:activity",
+      "temp:AU:consumer",
+      "temp:NZ:inflation",
+      "temp:NZ:labor",
+      "temp:NZ:activity",
+      "temp:NZ:consumer",
+      "research_method"
+    ],
+    "horizon": "4-8 weeks",
+    "entry": "ECB same-fixing reference mid AUDNZD 1.246846846846847 as_of 2026-09-18 (market_state.fx.pairs and historical window id AUDNZD).",
+    "target": null,
+    "stop": null,
+    "invalidation": "Thesis is wrong if AUDNZD keeps making post-18-Sep highs because NZ labor/activity weakness remains the binding constraint and the GDP beat plus India FTA do not reprice NZD, or if AU inflation 82 produces further AONIA-implied hikes that the housing channel does not offset. Also invalid if NZDUSD and AUDUSD start falling together in a pure USD bid that leaves AUDNZD unchanged — that would mean the residual was USD, not AU-NZ.",
+    "catalysts": [
+      "Further evidence that the RBA tightening channel is biting (housing, activity) against an AONIA strip still pricing hikes.",
+      "NZ data/policy that confirms the Q2 GDP beat and India FTA as NZD-positive rather than a dead-cat print.",
+      "Any restoration of NZ rates would let the market reprice AU-NZ on an observable yield gap; until then spot is the only markable AU-NZ expression."
+    ],
+    "principal_risks": [
+      "NZ labor 32 / activity 47 can keep NZD weak versus AUD if growth disappointment resumes; the trade is not a denial of that level, only of the 1m extension after contrary news.",
+      "NZ policy and 2Y are unknown; if NZ overnight is well below AONIA 4.35 the short may be negative carry versus a 3.85% SOFR funding clock.",
+      "Positioning unknown; a crowded short-NZD book can extend AUDNZD regardless of the catalyst sign.",
+      "Temperature gauges are repo-retained dashboard_v8 (stale if Supabase live scores are absent).",
+      "Broad USD shock can still jolt both legs even in a cross; 18 Sep USDJPY +1.41% is a reminder that USD days happen."
+    ],
+    "confidence": 61
+  },
+  "confidence": 61,
+  "conflict_synopsis": {
+    "seat": "cross-merchant",
+    "primary_trade": "short AUDNZD",
+    "core_view": "AUDNZD at a 5y extreme after a 4.3% 1m squeeze is the wrong sign versus AU housing pain and NZ GDP-beat/FTA news; the AU-NZ view belongs in the cross, not USD pairs.",
+    "usd_view": "not_relevant",
+    "cad_view": "not_relevant",
+    "aud_view": "lower",
+    "nzd_view": "higher",
+    "us_rates_view": "not_relevant",
+    "ca_rates_view": "not_relevant",
+    "au_rates_view": "lower",
+    "nz_rates_view": "not_relevant",
+    "risk_view": "not_relevant",
+    "carry_view": "not_relevant",
+    "time_horizon": "4-8 weeks",
+    "key_catalyst": "AU housing channel biting against still-priced AONIA hikes, plus NZ Q2 GDP beat and India FTA failing to show up in AUDNZD.",
+    "key_invalidation": "AUDNZD makes new highs because NZ labor/activity remains binding and FTA/GDP do not reprice NZD, or a pure USD bid moves both USD legs equally.",
+    "confidence": 61,
+    "conflict_tags": [
+      "AUD_DOWN",
+      "NZD_UP",
+      "AUDNZD_SHORT",
+      "CROSS_RV"
+    ]
+  },
+  "packet_sha256": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
+  "subagent_calls": 0,
+  "subagent_model": null
+}
