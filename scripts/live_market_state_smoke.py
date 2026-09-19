@@ -62,22 +62,6 @@ def main() -> int:
         "AUDNZD": [audnzd_date.isoformat(), audnzd],
     }
 
-    policy_paths = collect_policy_paths(today=today, fetch_bytes=fetch_bytes)
-    validate_policy_paths(policy_paths)
-    missing_policy = [
-        country for country in ("US", "CA", "AU")
-        if (policy_paths.get("countries", {}).get(country) or {}).get("status") != "ok"
-    ]
-    if missing_policy:
-        raise MarketStateError(f"live policy paths unavailable for {missing_policy}: {policy_paths}")
-    report["policy_paths"] = {
-        country: {
-            "benchmark": policy_paths["countries"][country].get("benchmark"),
-            "terminal": policy_paths["countries"][country].get("terminal"),
-        }
-        for country in ("US", "CA", "AU")
-    }
-
     forward_curves = collect_forward_curves(today=today, fetch_bytes=fetch_bytes)
     validate_forward_curves(forward_curves)
     missing_curves = [
@@ -93,6 +77,24 @@ def main() -> int:
             "status": forward_curves["countries"][country].get("status"),
             "as_of": forward_curves["countries"][country].get("as_of"),
             "2y2y": (forward_curves["countries"][country].get("common_forward_swaps") or {}).get("2y2y"),
+        }
+        for country in ("US", "CA", "AU")
+    }
+
+    print(json.dumps({"forward_curves_live": report["forward_curves"]}, indent=2), flush=True)
+
+    policy_paths = collect_policy_paths(today=today, fetch_bytes=fetch_bytes)
+    validate_policy_paths(policy_paths)
+    missing_policy = [
+        country for country in ("US", "CA", "AU")
+        if (policy_paths.get("countries", {}).get(country) or {}).get("status") != "ok"
+    ]
+    if missing_policy:
+        raise MarketStateError(f"live policy paths unavailable for {missing_policy}: {policy_paths}")
+    report["policy_paths"] = {
+        country: {
+            "benchmark": policy_paths["countries"][country].get("benchmark"),
+            "terminal": policy_paths["countries"][country].get("terminal"),
         }
         for country in ("US", "CA", "AU")
     }
