@@ -134,6 +134,27 @@ class SchemaAndBoundaryTests(unittest.TestCase):
                 "selected": "spot",
                 "rationale": "Spot is cleaner in this synthetic fixture after explicit rates comparison.",
             },
+            "context_build": {
+                "causal_mechanism": "Growth resilience should support AUD through relative expected returns.",
+                "path_to_current_price": "Synthetic fixture identifies the prior move before testing the current level.",
+                "known_vs_new_information": "The cutoff supplies the marginal evidence; old facts alone are not treated as catalysts.",
+                "market_implied_assumption": "Current AUDUSD pricing discounts more fragility than the synthetic evidence.",
+                "market_assumption_disagreed_with": "The trade disagrees with the priced persistence of that fragility.",
+                "price_decomposition": "Spot is separated from the rates candidate and current-vs-change is explicit.",
+                "historical_reference": {
+                    "distribution": "Synthetic distribution reference.",
+                    "analogs": ["Synthetic comparable episode with forward outcome."],
+                    "regime_differences": "Synthetic regime differences are acknowledged.",
+                },
+                "independent_checks": ["Growth evidence.", "Market-pricing evidence."],
+                "flow_and_positioning_check": "No synthetic flow signal overrides the fundamental case.",
+                "policy_path_check": {
+                    "status": "not_applicable",
+                    "relevant_countries": [],
+                    "pricing_summary": "Spot selection does not rely on a short-end policy trade.",
+                    "rationale": "The rates alternative was considered but spot was selected.",
+                },
+            },
             "structure": None,
             "direction": "long",
             "thesis": "Growth resilience is underpriced.",
@@ -176,6 +197,60 @@ class SchemaAndBoundaryTests(unittest.TestCase):
         wrong_dollar["expression_comparison"]["selected"] = "rates"
         with self.assertRaises(SchemaError):
             validate_trade(wrong_dollar, agent="dollar-king", packet=packet)
+
+    def test_short_end_rates_trade_requires_policy_path_context(self):
+        packet = _packet()
+        trade = {
+            "instrument": "CA-US_2Y",
+            "asset_class": "rates_rv",
+            "expression_comparison": {
+                "rates_candidate": "Pay CA 2Y versus receive US 2Y.",
+                "spot_candidate": "Short USDCAD.",
+                "selected": "rates",
+                "rationale": "Rates own the discrepancy directly.",
+            },
+            "context_build": {
+                "causal_mechanism": "Relative policy repricing closes the spread.",
+                "path_to_current_price": "The spread moved sharply as US and Canada policy expectations diverged.",
+                "known_vs_new_information": "New policy information must explain the marginal move.",
+                "market_implied_assumption": "Current CORRA and SOFR futures paths are explicitly considered.",
+                "market_assumption_disagreed_with": "The trade disagrees with the relative path embedded in futures.",
+                "price_decomposition": "Short-end policy expectations are separated from sovereign term premium.",
+                "historical_reference": {
+                    "distribution": "Current spread is compared with its historical distribution.",
+                    "analogs": ["A prior comparable spread move and its forward outcome."],
+                    "regime_differences": "Differences in inflation and trade-policy regime are stated.",
+                },
+                "independent_checks": ["Policy futures.", "Macro hard data."],
+                "flow_and_positioning_check": "Positioning is checked separately from fundamentals.",
+                "policy_path_check": {
+                    "status": "available",
+                    "relevant_countries": ["CA", "US"],
+                    "pricing_summary": "Frozen CORRA and SOFR futures paths are available.",
+                    "rationale": "This is a 2Y policy-RV trade, so the path is essential.",
+                },
+            },
+            "structure": "Pay CA 2Y versus receive US 2Y.",
+            "direction": "short",
+            "thesis": "Canada policy is underpriced versus the US.",
+            "mispricing": "The relative policy path is wrong.",
+            "why_now": ["New information changed the relative path."],
+            "evidence_refs": ["market_state"],
+            "horizon": "1-3 months",
+            "entry": None,
+            "target": None,
+            "stop": None,
+            "invalidation": None,
+            "catalysts": ["Policy repricing."],
+            "principal_risks": ["The priced path is correct."],
+            "confidence": 55,
+        }
+        validate_trade(trade, agent="rate-hawk", packet=packet)
+        broken = deepcopy(packet)
+        broken["market_state"]["policy_paths"]["countries"]["CA"]["status"] = "unavailable"
+        broken["market_state"]["policy_paths"]["countries"]["CA"]["error"] = "blocked"
+        with self.assertRaises(SchemaError):
+            validate_trade(trade, agent="rate-hawk", packet=broken)
 
     def test_data_only_boundary_rejects_web_fields(self):
         packet = _packet()
