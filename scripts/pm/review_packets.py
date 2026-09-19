@@ -472,6 +472,7 @@ def build_review_packet(
     source: PMPacketSource,
     run_dir=None,
     evidence: dict[str, Any] | None = None,
+    state_root=None,
 ) -> dict[str, Any]:
     if pm_id not in PM_IDS:
         raise SchemaError(f"unknown pm_id {pm_id}")
@@ -551,9 +552,18 @@ def build_review_packet(
         "independence": {
             "sees_other_current_pm_decisions": False,
             "sees_own_prior_book_only": True,
+            "sees_own_memory_only": True,
             "chatgpt_ingest": pm_id == CHATGPT_PM_ID,
         },
     }
+    from scripts.trading.snapshot import compact_memory_for_packet
+    from scripts.trading.store import TradingStore
+
+    trading = TradingStore(state_root=state_root)
+    packet["memory"] = compact_memory_for_packet(trading, "pm", pm_id)
+    packet["memory_context_sha256"] = packet["memory"]["memory_context_sha256"]
+    packet["postmortems_due"] = packet["memory"]["postmortems_due"]
+    packet["calibration"] = packet["memory"]["calibration"]
     packet["review_packet_sha256"] = sha256_json({k: v for k, v in packet.items() if k != "review_packet_sha256"})
     return packet
 
@@ -583,6 +593,7 @@ def build_all_packets(
             source=selected_source,
             book=books["pms"][pm_id],
             registry=registry,
+            state_root=state_root,
         )
     return packets
 

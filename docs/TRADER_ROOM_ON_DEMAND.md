@@ -6,7 +6,7 @@ This is the production contract for the full adversarial Trader Room. It supplem
 
 1. Preflight the four required evidence families.
 2. Freeze one common evidence packet and SHA-256. No new evidence after freeze.
-3. Launch the locked 14 standing advocates independently on exact `grok-4.6`.
+3. Snapshot each advocate's own compact memory sidecar. Common evidence stays identical; seat memory is a separate immutable sidecar. Launch the locked 14 standing advocates independently on exact `grok-4.6`. Each advocate receives only its own memory sidecar/hash. See `docs/TRADING_LEDGER_MEMORY_V1.md`.
 4. Each initial advocate may use at most two `composer-2.5` subagents on the same frozen packet.
 5. Every advocate returns its full trade pitch plus a compact `conflict_synopsis`.
 6. **Deterministic conflict stage:** code reads only the 14 synopses and structured trades. It identifies direct instrument/currency conflicts, theoretical currency-vs-rates tensions, contextual regime tensions, and the no-trade challenge. This stage consumes zero model calls.

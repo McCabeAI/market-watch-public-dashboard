@@ -85,6 +85,13 @@ FORBIDDEN_MODEL_STATE_KEYS = {
     "mark_price",
     "entry_price",
     "positions",
+    "canonical_ledger",
+    "trade_ledger",
+    "trades",
+    "mfe_usd",
+    "mae_usd",
+    "holding_duration_seconds",
+    "realized_pnl_increment_usd",
 }
 
 STATE_DIRNAME = "data/pm"

@@ -42,6 +42,7 @@ def prepare_evidence(
     fixture: Path | None = None,
     market_state_path: Path | None = None,
     root: Path = ROOT,
+    artifact_root: Path | None = None,
     essential_families: tuple[str, ...] = DEFAULT_ESSENTIAL_FAMILIES,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     load_registry()
@@ -57,6 +58,23 @@ def prepare_evidence(
     preflight["run_id"] = frozen["run_id"]
     preflight["evidence_cutoff"] = frozen["as_of"]
     preflight["hook_policy"] = trader_room_hook_policy()
+    from scripts.trading.snapshot import snapshot_trader_room
+    from scripts.trading.store import TradingStore
+
+    persist_root = Path(artifact_root or root)
+    trading = TradingStore(root=persist_root, state_root=persist_root)
+    memory_index = snapshot_trader_room(
+        trading,
+        run_dir=persist_root / "trader-room" / "runs" / frozen["run_id"],
+        run_id=frozen["run_id"],
+        common_evidence_sha256=digest,
+    )
+    preflight["seat_memory"] = {
+        "isolation": "own_sidecar_only",
+        "common_evidence_sha256": digest,
+        "hashes": memory_index.get("hashes") or {},
+        "paths": memory_index.get("paths") or {},
+    }
     return frozen, preflight
 
 
@@ -96,9 +114,10 @@ def run_debate(
         conflict_map=conflict_map,
         rebuttals=rebuttals,
     )
-    launch_plan = build_launch_plan(packet)
+    launch_plan = build_launch_plan(packet, memory_index=preflight.get("seat_memory"))
+    persist_root = artifact_root or root
     index = persist_run(
-        root=artifact_root or root,
+        root=persist_root,
         packet=packet,
         preflight=preflight,
         originals=originals,
@@ -108,6 +127,31 @@ def run_debate(
         budget=budget.snapshot(),
         launch_plan=launch_plan,
     )
+    from scripts.trading.apply import journal_trader_room_pitch, journal_trader_room_rebuttal
+    from scripts.trading.store import TradingStore
+
+    trading = TradingStore(root=persist_root, state_root=persist_root)
+    hashes = (preflight.get("seat_memory") or {}).get("hashes") or {}
+    for agent, contribution in originals.items():
+        journal_trader_room_pitch(
+            trading,
+            contribution,
+            run_id=packet["run_id"],
+            evidence_cutoff=packet.get("as_of"),
+            evidence_hash=packet.get("packet_sha256"),
+            memory_context_sha256=hashes.get(agent),
+            source_ref=f"trader-room/runs/{packet['run_id']}/submissions/{agent}.json",
+        )
+    for agent, rebuttal in rebuttals.items():
+        journal_trader_room_rebuttal(
+            trading,
+            rebuttal,
+            run_id=packet["run_id"],
+            evidence_cutoff=packet.get("as_of"),
+            evidence_hash=packet.get("packet_sha256"),
+            memory_context_sha256=hashes.get(agent),
+            source_ref=f"trader-room/runs/{packet['run_id']}/rebuttals/{agent}.json",
+        )
     handoff["artifact_index"] = index
     validate_pm_handoff(
         handoff,
@@ -152,6 +196,7 @@ def go(
         fixture=fixture,
         market_state_path=market_state_path,
         root=root,
+        artifact_root=artifact_root,
     )
     if live:
         raise LiveRunBlocked("live debate dispatch is gated after evidence freeze")

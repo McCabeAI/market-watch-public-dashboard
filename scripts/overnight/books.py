@@ -288,6 +288,7 @@ def _history_entry(action: dict[str, Any], *, when: datetime, run_id: str, resul
         "paper_mid_source": action.get("paper_mid_source"),
         "paper_mid_as_of": action.get("paper_mid_as_of"),
         "paper_mid_kind": action.get("paper_mid_kind"),
+        "realized_pnl_usd": action.get("realized_pnl_usd"),
     }
     if extra:
         row.update(extra)
@@ -413,6 +414,7 @@ def _open_position(
         "unrealized_pnl_usd": None,
         "pnl_unavailable": action.get("price") in (None, ""),
     }
+    action["position_id"] = position["position_id"]
     seat_book["positions"].append(position)
     seat_book["cash_usd"] = round(float(seat_book["cash_usd"]) - notional, 2)
     return position

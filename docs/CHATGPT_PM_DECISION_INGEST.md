@@ -25,6 +25,8 @@ Schema file: `data/pm/schema/chatgpt_decision.v1.json`
 | `actions` | list; empty is treated as HOLD |
 | `thesis` / `invalidation` / `conviction` | optional but recommended |
 | `rationale` / `synthesis` | ChatGPT's final write-up |
+| `memory_context_sha256` | required for OPEN/ADD/HEDGE; must match this packet's own memory hash |
+| `postmortems` / `memory_updates` | optional structured reflection; cannot change marks or P&L |
 | `alerts` | list |
 | `future_data_requests` | optional list |
 
@@ -64,7 +66,7 @@ Stale packet hash, wrong packet id, malformed JSON, or model-authored canonical 
 4. Hydrate OPEN/ADD/REDUCE/HEDGE/CLOSE at packet mids.
 5. Enforce supported instruments, $1bn gross cap, curve-family lock, swinger-inapplicable HEDGE rule (N/A here).
 6. Mutate only `pms.chatgpt`.
-7. Persist canonical PM books, decision receipt/history, review packet refresh, public JSON, and any future data requests.
+7. Persist canonical PM books, `data/trading/**` ledger/journal/memory updates, decision receipt/history, review packet refresh, public JSON, and any future data requests.
 8. Commit those trusted generated files to the decision branch and leave the PR mergeable.
 
 A receipt keyed by `review_packet_id` + `review_packet_sha256` + decision fingerprint makes apply idempotent. Workflow reruns do not double-apply OPEN/ADD or increment a data request. Stale or wrong packet hash fails closed with no state mutation. Model-authored P&L, canonical marks, and book state are rejected.

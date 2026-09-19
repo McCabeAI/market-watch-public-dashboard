@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from scripts.pm.books import apply_decision
+from scripts.trading.apply import apply_pm_decision_with_memory
+from scripts.trading.store import TradingStore
 from scripts.pm.constants import ALLOWED_SUBAGENT_MODELS, AUTOMATED_PM_IDS, MAX_SUBAGENTS_PER_PM
 from scripts.pm.errors import IndependenceError, SchemaError
 
@@ -72,19 +73,25 @@ def apply_automated_pm_decisions(
     run_id: str,
     evidence_cutoff: str,
     packets: dict[str, dict[str, Any]] | None = None,
+    trading_store: TradingStore | None = None,
 ) -> dict[str, Any]:
     """Apply each automated PM independently. No PM sees another's current decision."""
     updated = books
+    trading = trading_store or TradingStore()
     for pm_id in AUTOMATED_PM_IDS:
         packet = (packets or {}).get(pm_id) or {}
-        updated = apply_decision(
+        decision = pm_decisions[pm_id]
+        updated = apply_pm_decision_with_memory(
             updated,
-            pm_decisions[pm_id],
+            decision,
             pm_id=pm_id,
+            store=trading,
             market_state=market_state,
             run_id=run_id,
             evidence_cutoff=evidence_cutoff,
             review_packet_id=packet.get("review_packet_id"),
             review_packet_sha256=packet.get("review_packet_sha256"),
+            expected_memory_sha256=packet.get("memory_context_sha256") or decision.get("memory_context_sha256"),
+            evidence_hash=packet.get("review_packet_sha256"),
         )
     return updated

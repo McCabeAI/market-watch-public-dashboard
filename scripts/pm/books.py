@@ -174,6 +174,7 @@ def _history_entry(action: dict[str, Any], *, when: datetime, run_id: str | None
         "paper_mid_as_of": action.get("paper_mid_as_of"),
         "paper_mid_kind": action.get("paper_mid_kind"),
         "locked_expression_family": action.get("locked_expression_family"),
+        "realized_pnl_usd": action.get("realized_pnl_usd"),
     }
     if extra:
         row.update(extra)

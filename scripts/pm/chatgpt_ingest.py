@@ -16,7 +16,9 @@ from typing import Any
 
 from scripts.overnight.clock import isoformat, now_ny
 from scripts.overnight.store import sha256_json
-from scripts.pm.books import apply_decision, empty_books, validate_books
+from scripts.pm.books import empty_books, validate_books
+from scripts.trading.apply import apply_pm_decision_with_memory
+from scripts.trading.store import TradingStore
 from scripts.pm.constants import (
     CHATGPT_PM_ID,
     FORBIDDEN_MODEL_STATE_KEYS,
@@ -183,15 +185,18 @@ def apply_chatgpt_decision(
     payload = validate_chatgpt_decision(payload, packet=packet)
     market_state = market_state_from_source(source)
     run_id = source.overnight_run_id or source.trader_room_run_id
-    updated = apply_decision(
+    updated = apply_pm_decision_with_memory(
         books,
         payload,
         pm_id=CHATGPT_PM_ID,
+        store=TradingStore(root=store.root, state_root=store.state_root),
         market_state=market_state,
         run_id=run_id,
         evidence_cutoff=packet.get("evidence_cutoff"),
         review_packet_id=packet.get("review_packet_id"),
         review_packet_sha256=packet.get("review_packet_sha256"),
+        expected_memory_sha256=packet.get("memory_context_sha256"),
+        evidence_hash=packet.get("review_packet_sha256"),
     )
     registry = apply_requests(
         registry,

@@ -28,6 +28,7 @@ The public dashboard is live on GitHub Pages. As of this document:
 | State | Canonical owner | Notes |
 | --- | --- | --- |
 | Implementation, deployment workflow, schema migrations | GitHub | This repository is technical truth. |
+| Operational trade ledger, decision journal, identity learning memory | Git `data/trading/` | Trusted deterministic facts plus untrusted structured reflections. See `docs/TRADING_LEDGER_MEMORY_V1.md`. |
 | Operating rules, research memory, country conclusions, project state | Notion | Market Watch Operating Hub and linked operating pages. |
 | Raw files, source documents, transcripts, exports, X archive ZIP | Google Drive | Preserve source artifacts and vintages where revisions matter. |
 | Canonical normalized numeric history during pilot | Drive-hosted spreadsheets/workbooks | Do not silently create a competing numeric history in Supabase. |

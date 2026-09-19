@@ -6,7 +6,7 @@ import os
 from datetime import datetime
 from typing import Any
 
-from scripts.overnight.books import apply_review, empty_books, validate_books
+from scripts.overnight.books import empty_books, validate_books
 from scripts.overnight.clock import isoformat, now_ny
 from scripts.overnight.constants import LIVE_REVIEW_ENV, SCHEMA_VERSION, STANDING_SEATS
 from scripts.overnight.errors import EvidenceBoundaryError, LiveReviewBlocked, SchemaError
@@ -337,13 +337,24 @@ def run_trader_review(
         )
 
     reviews = _resolve_first_position(books, reviews)
+    memory_hashes = dict((packet.get("seat_memory") or {}).get("hashes") or {})
+    if dry_run:
+        for seat, payload in reviews.items():
+            if memory_hashes.get(seat) and not payload.get("memory_context_sha256"):
+                payload["memory_context_sha256"] = memory_hashes[seat]
     try:
-        updated = apply_review(
+        from scripts.trading.apply import apply_trader_review_with_memory
+        from scripts.trading.store import TradingStore
+
+        updated = apply_trader_review_with_memory(
             books,
             reviews,
             families=packet["families"],
             run_id=run_id,
             evidence_cutoff=packet["as_of"],
+            store=TradingStore(root=store.root, state_root=store.state_root),
+            memory_hashes=memory_hashes,
+            evidence_hash=packet.get("packet_sha256"),
             when=when,
             market_state=(packet.get("families", {}).get("market_state", {}) or {}).get("data"),
         )

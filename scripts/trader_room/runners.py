@@ -372,11 +372,16 @@ class LiveRunner:
 
 
 
-def build_launch_plan(packet: dict[str, Any]) -> dict[str, Any]:
+def build_launch_plan(packet: dict[str, Any], memory_index: dict[str, Any] | None = None) -> dict[str, Any]:
+    sidecar = memory_index or {}
+    hashes = sidecar.get("hashes") or {}
+    paths = sidecar.get("paths") or {}
     return {
         "run_id": packet["run_id"],
         "evidence_cutoff": packet["as_of"],
         "packet_sha256": packet.get("packet_sha256"),
+        "common_evidence_sha256": packet.get("packet_sha256"),
+        "memory_isolation": "own_sidecar_only",
         "advocates": [
             {
                 "name": name,
@@ -385,6 +390,8 @@ def build_launch_plan(packet: dict[str, Any]) -> dict[str, Any]:
                 "max_subagents": 2,
                 "subagent_model": SUBAGENT_MODEL,
                 "trade_required": name != NO_TRADE_AGENT,
+                "memory_context_sha256": hashes.get(name),
+                "memory_sidecar_path": paths.get(name) or f"memory/{name}.json",
             }
             for name in STANDING_ADVOCATES
         ],

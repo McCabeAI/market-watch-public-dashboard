@@ -70,7 +70,7 @@ The JSON contains:
 - exactly 14 structured seat decisions;
 - declared model-usage/cap fields.
 
-It must not contain canonical books, NAV, cash, realized/unrealized P&L, funding charges, net P&L, or competition rank.
+It must not contain canonical books, NAV, cash, realized/unrealized P&L, funding charges, net P&L, competition rank, or model-authored ledger/P&L facts. Structured postmortems and memory updates are allowed; trusted code validates them.
 
 Optional Phase-1 field `pm_decisions` may be omitted. Legacy 14-seat-only output remains valid. When supplied it must contain exactly `swinger`, `pragmatist`, and `grinder` (never ChatGPT) with `principal_model`, `subagent_count` 0–3, and `subagent_models` in `{grok-4.6, composer-2.5}`. Absence does not fabricate automated PM trades. The ACP schedule id, clock, caps, and provider contract are unchanged.
 
@@ -118,11 +118,15 @@ Every trader child must receive:
 MW_TRADER_FROZEN=1
 ```
 
-and the same final packet/hash. `.cursor/hooks/enforce-overnight-runtime.py` blocks tool use for those children. They may not browse, read files, run shell, use MCP, or launch nested agents.
+the same final common packet/hash, and **only that trader's own frozen memory sidecar / `memory_context_sha256`**. The 01:50 freeze writes per-seat hashes on `evidence_snapshot.seat_memory.hashes` and sidecar files under `data/overnight/runs/<run_id>/memory/`. Common macro evidence stays identical. One seat's private learning context is never given to another seat. See `docs/TRADING_LEDGER_MEMORY_V1.md`.
+
+`.cursor/hooks/enforce-overnight-runtime.py` blocks tool use for those children. They may not browse, read files, run shell, use MCP, or launch nested agents.
 
 Each seat returns structured decisions only:
 
 `OPEN / ADD / HOLD / REDUCE / HEDGE / CLOSE`
+
+Each accepted decision should include the `memory_context_sha256` it used. Risk-expanding `OPEN` / `ADD` / `HEDGE` fail closed on a missing/stale own-seat memory hash or outstanding prior-run `postmortems_due`. `HOLD` / `REDUCE` / `CLOSE` remain possible on memory failure. Canonical ledger, journal, and memory updates are produced by trusted code after acceptance and persisted under `data/trading/`.
 
 The 14 seats are competing portfolio managers. Their standing objective is **highest cumulative net paper P&L**, not highest conviction score, most cautious commentary, or most persuasive prose. Every child receives the same frozen competition contract:
 - ranking metric: net paper P&L after financing economics;
@@ -150,7 +154,7 @@ The gate:
 5. rejects any model-supplied book/P&L/NAV state;
 6. deterministically simulates `apply_review()`;
 7. runs the overnight tests;
-8. generates canonical books/P&L/run artifacts from trusted code;
+8. generates canonical books/P&L/run artifacts and `data/trading/**` from trusted code;
 9. appends only those generated files to the PR branch;
 10. squashes and merges the accepted PR.
 
@@ -255,7 +259,7 @@ ACP remains the only place where the real 02:05 schedule may be enabled. The tar
 MW_OVERNIGHT_RUN_POLICY={"version":1,"schedule_id":"market-watch-weekday-0205","total_model_cap":18,"grok_cap":16,"composer_cap":2,"parent_model":"grok-4.6","parent_total":1,"parent_grok":1}
 ```
 
-The parent must perform research first, freeze the final packet, then launch the 14 direct trader children. It must not update books/P&L and must not launch grandchildren.
+The parent must perform research first, freeze the final packet, then launch the 14 direct trader children. Each child receives the common frozen packet plus only that child's own frozen memory sidecar. It must not update books/P&L and must not launch grandchildren.
 
 The schedule is enabled on ACP `main` as `market-watch-weekday-0205` under Kevin's explicit 2026-09-18 approval (ACP commit `f5b75df8`). That committed definition is standing authorization for its normal weekday 02:05 America/New_York occurrences only; ad hoc runs, retries, follow-ups, model substitutions, or other material schedule changes still require fresh explicit authorization.
 
