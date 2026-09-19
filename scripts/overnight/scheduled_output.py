@@ -37,6 +37,9 @@ ALLOWED_MODELS = {"grok-4.6", "composer-2.5"}
 TOTAL_MODEL_CAP = 18
 GROK_CAP = 16
 COMPOSER_CAP = 2
+PM_TOTAL_MODEL_CAP = 21
+PM_GROK_CAP = 19
+PM_COMPOSER_CAP = 2
 
 FORBIDDEN_MODEL_STATE_KEYS = {
     "books",
@@ -72,7 +75,7 @@ def _packet_hash(packet: dict[str, Any]) -> str:
     return sha256_json({k: v for k, v in packet.items() if k != "packet_sha256"})
 
 
-def validate_execution(execution: dict[str, Any]) -> dict[str, Any]:
+def validate_execution(execution: dict[str, Any], *, pm_enabled: bool = False) -> dict[str, Any]:
     if not isinstance(execution, dict):
         raise SchemaError("scheduled output missing execution object")
     if execution.get("parent_model") != "grok-4.6":
@@ -87,8 +90,13 @@ def validate_execution(execution: dict[str, Any]) -> dict[str, Any]:
     total_cap = int(execution.get("total_model_cap", -1))
     grok_cap = int(execution.get("grok_cap", -1))
     composer_cap = int(execution.get("composer_cap", -1))
-    if (total_cap, grok_cap, composer_cap) != (TOTAL_MODEL_CAP, GROK_CAP, COMPOSER_CAP):
-        raise SchemaError("scheduled output model caps do not match the approved Market Watch contract")
+    expected = (
+        (PM_TOTAL_MODEL_CAP, PM_GROK_CAP, PM_COMPOSER_CAP)
+        if pm_enabled
+        else (TOTAL_MODEL_CAP, GROK_CAP, COMPOSER_CAP)
+    )
+    if (total_cap, grok_cap, composer_cap) != expected:
+        raise SchemaError("scheduled output model caps do not match the selected Market Watch contract")
     total = int(execution.get("declared_total_model_calls", -1))
     grok = int(execution.get("declared_grok_calls", -1))
     composer = int(execution.get("declared_composer_calls", -1))
@@ -195,7 +203,10 @@ def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str,
             if decision.get("evidence_cutoff") not in (None, agent_packet["evidence_cutoff"]):
                 raise EvidenceBoundaryError(f"{pm_id} PM decision evidence cutoff mismatch")
 
-    validate_execution(payload.get("execution") or {})
+    validate_execution(
+        payload.get("execution") or {},
+        pm_enabled=payload.get("pm_decisions") is not None,
+    )
     return payload
 
 
