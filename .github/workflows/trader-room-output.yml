@@ -45,8 +45,13 @@ jobs:
           [ "${#FILES[@]}" -gt 0 ] || { echo "::error::No Trader Room artifacts"; exit 1; }
           RUN_ID=""
           for FILE in "${FILES[@]}"; do
-            [[ "$FILE" =~ ^trader-room/runs/(tr-[^/]+)/ ]] || { echo "::error::Unexpected file: $FILE"; exit 1; }
-            THIS="${BASH_REMATCH[1]}"
+            if [[ "$FILE" =~ ^trader-room/runs/(tr-[^/]+)/ ]]; then
+              THIS="${BASH_REMATCH[1]}"
+            elif [ "$FILE" = "data/trader-room/public/latest.json" ] || [ "$FILE" = "data/pm/books/latest.json" ]; then
+              continue
+            else
+              echo "::error::Unexpected file: $FILE"; exit 1
+            fi
             if [ -z "$RUN_ID" ]; then RUN_ID="$THIS"; fi
             [ "$THIS" = "$RUN_ID" ] || { echo "::error::PR contains multiple Trader Room runs"; exit 1; }
           done
@@ -65,6 +70,10 @@ jobs:
           test -f "trader-room/runs/$RUN_ID/conflict_map.json"
           test "$(find "trader-room/runs/$RUN_ID/submissions" -maxdepth 1 -name '*.json' | wc -l | tr -d ' ')" -eq 14
           PYTHONPATH=. python scripts/trader_room_public.py --from-run "trader-room/runs/$RUN_ID" --output /tmp/trader-room-latest.json
+          if [ -f "trader-room/runs/$RUN_ID/pm_decisions.json" ]; then
+            PYTHONPATH=. python scripts/pm_review.py validate --input "trader-room/runs/$RUN_ID/pm_decisions.json"
+            PYTHONPATH=. python scripts/pm_review.py apply --input "trader-room/runs/$RUN_ID/pm_decisions.json" --output /tmp/pm-books-latest.json
+          fi
           python - <<'PY'
           import json
           p=json.load(open('/tmp/trader-room-latest.json'))
@@ -82,9 +91,14 @@ jobs:
           set -euo pipefail
           mkdir -p data/trader-room/public
           cp /tmp/trader-room-latest.json data/trader-room/public/latest.json
+          if [ -f /tmp/pm-books-latest.json ]; then
+            mkdir -p data/pm/books
+            cp /tmp/pm-books-latest.json data/pm/books/latest.json
+          fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/trader-room/public/latest.json
+          if [ -f data/pm/books/latest.json ]; then git add data/pm/books/latest.json; fi
           if ! git diff --cached --quiet; then
             git commit -m "chore: publish completed Trader Room run"
             git push origin "HEAD:$HEAD_REF"
