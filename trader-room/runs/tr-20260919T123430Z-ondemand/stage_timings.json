@@ -1,0 +1,77 @@
+{
+  "run_id": "tr-20260919T123430Z-ondemand",
+  "stages": [
+    {
+      "ended_at": "2026-09-19T12:34:30Z",
+      "model_calls": 0,
+      "notes": "Live market_state.py plus repo evidence families; policy_paths US/CA/AU ok before any advocate spend.",
+      "stage": "preflight_and_freeze",
+      "started_at": "2026-09-19T12:31:00Z",
+      "status": "succeeded"
+    },
+    {
+      "composer_calls": 0,
+      "ended_at": "2026-09-19T12:49:56Z",
+      "model": "grok-4.6",
+      "model_calls": 14,
+      "model_calls_planned": 14,
+      "notes": "14 independent grok-4.6 advocates on frozen packet 8903f3ed...; zero composer children.",
+      "stage": "round1_advocates",
+      "started_at": "2026-09-19T12:37:20Z",
+      "status": "succeeded"
+    },
+    {
+      "ended_at": "2026-09-19T12:50:40Z",
+      "model_calls": 0,
+      "model_calls_planned": 0,
+      "notes": "deterministic_conflict_synopsis_v1; 3 direct currency-view conflicts; 12 rebuttal seats; vol-convexity and no-trade-skeptic excluded.",
+      "stage": "deterministic_conflict_map",
+      "started_at": "2026-09-19T12:50:40Z",
+      "status": "succeeded"
+    },
+    {
+      "composer_calls": 0,
+      "ended_at": "2026-09-19T12:56:47Z",
+      "model": "grok-4.6",
+      "model_calls": 12,
+      "model_calls_planned": 12,
+      "notes": "12 direct-conflict grok-4.6 rebuttals; all unchanged; zero subagents.",
+      "seats": [
+        "carry-is-king",
+        "catalyst-junkie",
+        "cross-merchant",
+        "dollar-king",
+        "mean-reverter",
+        "perma-bear",
+        "perma-bull",
+        "positioning-cynic",
+        "rate-dove",
+        "rate-hawk",
+        "trend-follower",
+        "value-guy"
+      ],
+      "stage": "rebuttals",
+      "started_at": "2026-09-19T12:56:47Z",
+      "status": "succeeded"
+    },
+    {
+      "ended_at": "2026-09-19T12:56:47Z",
+      "model_calls": 0,
+      "model_calls_planned": 0,
+      "notes": "scripts/trader_room_finalize.py; zero model calls.",
+      "stage": "deterministic_finalize",
+      "started_at": "2026-09-19T12:56:47Z",
+      "status": "succeeded"
+    },
+    {
+      "ended_at": "2026-09-19T12:56:47Z",
+      "model_calls": 0,
+      "model_calls_planned": 0,
+      "notes": "Funding accrued first via apply_review. All requested OPENs recorded execution_blocked/HOLD because no executable marks were in the packet.",
+      "stage": "paper_books",
+      "started_at": "2026-09-19T12:56:47Z",
+      "status": "succeeded"
+    }
+  ],
+  "updated_at": "2026-09-19T12:56:47Z"
+}

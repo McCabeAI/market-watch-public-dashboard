@@ -1,0 +1,135 @@
+{
+  "advocates": [
+    {
+      "frontmatter_model": "grok-4.6[]",
+      "max_subagents": 2,
+      "model": "grok-4.6",
+      "name": "perma-bull",
+      "subagent_model": "composer-2.5",
+      "trade_required": true
+    },
+    {
+      "frontmatter_model": "grok-4.6[]",
+      "max_subagents": 2,
+      "model": "grok-4.6",
+      "name": "perma-bear",
+      "subagent_model": "composer-2.5",
+      "trade_required": true
+    },
+    {
+      "frontmatter_model": "grok-4.6[]",
+      "max_subagents": 2,
+      "model": "grok-4.6",
+      "name": "dollar-king",
+      "subagent_model": "composer-2.5",
+      "trade_required": true
+    },
+    {
+      "frontmatter_model": "grok-4.6[]",
+      "max_subagents": 2,
+      "model": "grok-4.6",
+      "name": "cross-merchant",
+      "subagent_model": "composer-2.5",
+      "trade_required": true
+    },
+    {
+      "frontmatter_model": "grok-4.6[]",
+      "max_subagents": 2,
+      "model": "grok-4.6",
+      "name": "carry-is-king",
+      "subagent_model": "composer-2.5",
+      "trade_required": true
+    },
+    {
+      "frontmatter_model": "grok-4.6[]",
+      "max_subagents": 2,
+      "model": "grok-4.6",
+      "name": "rate-hawk",
+      "subagent_model": "composer-2.5",
+      "trade_required": true
+    },
+    {
+      "frontmatter_model": "grok-4.6[]",
+      "max_subagents": 2,
+      "model": "grok-4.6",
+      "name": "rate-dove",
+      "subagent_model": "composer-2.5",
+      "trade_required": true
+    },
+    {
+      "frontmatter_model": "grok-4.6[]",
+      "max_subagents": 2,
+      "model": "grok-4.6",
+      "name": "value-guy",
+      "subagent_model": "composer-2.5",
+      "trade_required": true
+    },
+    {
+      "frontmatter_model": "grok-4.6[]",
+      "max_subagents": 2,
+      "model": "grok-4.6",
+      "name": "trend-follower",
+      "subagent_model": "composer-2.5",
+      "trade_required": true
+    },
+    {
+      "frontmatter_model": "grok-4.6[]",
+      "max_subagents": 2,
+      "model": "grok-4.6",
+      "name": "mean-reverter",
+      "subagent_model": "composer-2.5",
+      "trade_required": true
+    },
+    {
+      "frontmatter_model": "grok-4.6[]",
+      "max_subagents": 2,
+      "model": "grok-4.6",
+      "name": "positioning-cynic",
+      "subagent_model": "composer-2.5",
+      "trade_required": true
+    },
+    {
+      "frontmatter_model": "grok-4.6[]",
+      "max_subagents": 2,
+      "model": "grok-4.6",
+      "name": "catalyst-junkie",
+      "subagent_model": "composer-2.5",
+      "trade_required": true
+    },
+    {
+      "frontmatter_model": "grok-4.6[]",
+      "max_subagents": 2,
+      "model": "grok-4.6",
+      "name": "vol-convexity",
+      "subagent_model": "composer-2.5",
+      "trade_required": true
+    },
+    {
+      "frontmatter_model": "grok-4.6[]",
+      "max_subagents": 2,
+      "model": "grok-4.6",
+      "name": "no-trade-skeptic",
+      "subagent_model": "composer-2.5",
+      "trade_required": false
+    }
+  ],
+  "ceilings": {
+    "acp_parent_inclusive_grok_ceiling": 29,
+    "acp_parent_inclusive_total_ceiling": 57,
+    "composer_ceiling": 28,
+    "grok_rebuttal_max": 14,
+    "repository_grok_baseline": 14,
+    "repository_grok_ceiling": 28
+  },
+  "conflict_stage": {
+    "model_calls": 0,
+    "type": "deterministic_conflict_synopsis_v1"
+  },
+  "evidence_cutoff": "2026-09-19T12:34:30Z",
+  "final_handoff": {
+    "model_calls": 0,
+    "type": "deterministic_pm_handoff_v1"
+  },
+  "packet_sha256": "8903f3edceded5a5d9866d84bd422940ebc0c93106b761fbcb6267449e9504f9",
+  "run_id": "tr-20260919T123430Z-ondemand"
+}

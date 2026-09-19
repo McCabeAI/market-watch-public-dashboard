@@ -1,0 +1,52 @@
+{
+  "evidence_cutoff": "2026-09-19T12:34:30Z",
+  "note": "After this freeze, no advocate, rebuttal, or finalizer may acquire new evidence.",
+  "packet_sha256": "8903f3edceded5a5d9866d84bd422940ebc0c93106b761fbcb6267449e9504f9",
+  "policy_paths": {
+    "countries": {
+      "AU": {
+        "benchmark": {
+          "as_of": "17-Sep-2026",
+          "name": "AONIA",
+          "rate": 4.35
+        },
+        "source": {
+          "benchmark_url": "https://www.rba.gov.au/statistics/tables/",
+          "path_url": "https://www.asx.com.au/data/futures/reports/EODWebMarketSummary260918SFD.htm",
+          "settlement_history_url": "https://www.asx.com.au/markets/trade-our-derivatives-market/overview/interest-rate-derivatives/interest-rate-derivatives-settlement-history",
+          "status": "ok"
+        },
+        "status": "ok"
+      },
+      "CA": {
+        "benchmark": {
+          "as_of": "2026-09-17",
+          "name": "CORRA",
+          "rate": 2.29
+        },
+        "source": {
+          "benchmark_url": "https://www.bankofcanada.ca/rates/interest-rates/corra/",
+          "path_url": "https://www.m-x.ca/en/trading/tools/canadian-interest-rate-expectations",
+          "status": "ok"
+        },
+        "status": "ok"
+      },
+      "US": {
+        "benchmark": {
+          "as_of": "2026-09-17",
+          "name": "SOFR",
+          "rate": 3.85
+        },
+        "source": {
+          "benchmark_url": "https://www.newyorkfed.org/markets/reference-rates/sofr",
+          "path_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR1",
+          "status": "ok"
+        },
+        "status": "ok"
+      }
+    },
+    "status": "ok"
+  },
+  "run_id": "tr-20260919T123430Z-ondemand",
+  "status": "FROZEN"
+}

@@ -1,0 +1,140 @@
+{
+  "agent": "positioning-cynic",
+  "archetype": "positioning-cynic",
+  "confidence": 57,
+  "conflict_synopsis": {
+    "au_rates_view": "lower",
+    "aud_view": "lower",
+    "ca_rates_view": "higher",
+    "cad_view": "higher",
+    "carry_view": "supports_trade",
+    "confidence": 57,
+    "conflict_tags": [
+      "AUD_DOWN",
+      "CAD_UP"
+    ],
+    "core_view": "Fade the crowded RBA-hawk/BoC-dove package in CA-AU 2Y, not in 99th-percentile unsigned AUD futures OI.",
+    "key_catalyst": "Australian housing/RBA versus October AONIA hike OI, and BoC energy pass-through versus a shallow CORRA path.",
+    "key_invalidation": "AONIA path keeps repricing higher with housing stabilizing, or CORRA path eases while Canada energy/CPI risk fades.",
+    "nz_rates_view": "not_relevant",
+    "nzd_view": "not_relevant",
+    "primary_trade": "long CA-AU_2Y (receive AU 2Y, pay CA 2Y)",
+    "risk_view": "neutral",
+    "seat": "positioning-cynic",
+    "time_horizon": "1-3 months",
+    "us_rates_view": "not_relevant",
+    "usd_view": "not_relevant"
+  },
+  "packet_sha256": "8903f3edceded5a5d9866d84bd422940ebc0c93106b761fbcb6267449e9504f9",
+  "paper_capital": {
+    "asset_class": "rates_rv",
+    "decision": "OPEN",
+    "instrument": "CA-AU_2Y",
+    "notional_usd": 10000000,
+    "rationale": "Receive AU 2Y 4.999 versus pay CA 2Y 3.27 from frozen official yields, so the RV carries a large positive yield pickup against a 5.00% ACT/365 vig that is charged on the full $100m whether deployed or not. $10m is 10% of the empty seed book: enough to clear the hurdle if the crowded RBA-hawk/BoC-dove gap compresses, small enough given null TFF nets, null executable broker prices, and mixed analogs.",
+    "side": "long"
+  },
+  "remit": "attack crowded ideas; prefer better ownership asymmetry",
+  "round": 1,
+  "run_id": "tr-20260919T123430Z-ondemand",
+  "stance_summary": "Verified CFTC TFF nets are all null and CME OI is unavailable, so 99th-percentile AUD/JPY/CHF open interest is a crowded pit, not a signed long. The consensus post-Fed package\u2014global tightening, long AUD versus CAD/NZD, pay duration\u2014is already owned in that FX OI and in 99.8th-percentile AUDCAD/AUDNZD. Prefer fading the RBA-hawk versus BoC-dove gap in CA-AU 2Y, where ASX October AONIA concentrates hike pricing, US 2Y/5Y futures OI is sparse, and the trade earns the AU-CA yield pickup rather than sitting in the AUD futures squeeze.",
+  "trade": {
+    "asset_class": "rates_rv",
+    "catalysts": [
+      "RBA communication or Australian housing/activity prints that mark the tightening channel as having done enough versus October AONIA 4.565.",
+      "BoC follow-through on energy pass-through versus a 2.58 December CORRA implied.",
+      "Next CFTC TFF print: a drop in AUD OI without net data still would not sign the book, but a further OI spike in AUD while CA-AU 2Y is unchanged would argue to stay out of spot and keep the rates RV.",
+      "Fading of the 18 Sep global-tightening desk impulse once the pre-priced Fed hike is fully digested."
+    ],
+    "confidence": 57,
+    "context_build": {
+      "causal_mechanism": "Test whether the post-Fed 'global tightening broadens' narrative has forced an over-owned RBA-hawk versus BoC-dove relative-policy gap. Australia's tightening channel is already visible in housing, while the ASX October AONIA contract still concentrates about 21.5bp of additional hike pricing. Canada prices only 29bp of tightening through December despite BoC minutes flagging energy pass-through and headline CPI at 3% with core near 2%. If housing dominates Australian inflation heat, AU 2Y should fall relative to CA 2Y and CA-AU 2Y (CA minus AU) should rise from the frozen -164.9bp print.",
+      "flow_and_positioning_check": "Verified fact: CFTC TFF report_date 2026-09-15, status ok; CME LastTotals overlay unavailable (HTTP 403)\u2014do not invent CME OI. Every asset-manager, dealer, leveraged-net, 1w-net and 1y-net field is null. Inference, not fact: high OI is two-sided capacity, not a signed crowded long. AUD OI 493141, 99.04th 1y / 99.68th 3y, weekly +37673, z_1y 3.61 / z_3y 5.42 is the most extreme G10 FX OI print in the packet alongside CHF and JPY. NZD OI 135122 is 93.27th 1y so AUDNZD is crowded-versus-crowded. CAD OI 358186 is 81.73rd 1y / 92.63rd 3y\u2014elevated, not 99th. US2Y OI 4433736 is 24.04th 1y; US5Y 22.12th 1y. ASX 30-day AONIA (not CME) shows October OI 21752 and volume 4450 versus December OI 1131 and volume 2: the AU hike is concentrated in the October contract. Unknown: leveraged sign in AUD, CTA/momentum exposure, and MX CORRA open interest (null). Positioning percentiles are a filter against sitting in the AUD pit, not the thesis.",
+      "historical_reference": {
+        "analogs": [
+          "CA-AU 2Y after a similar -5.5bp 1m move on 2025-05-28, at level -74.2bp (closest negative-level analog): forward 1m +14.6bp, forward 3m +10.9bp\u2014spread rose, the direction this trade owns.",
+          "CA-AU 2Y on 2023-09-05 after the same -5.5bp 1m move but at opposite-sign level +80.9bp: forward 1m -7.9bp, forward 3m -71.3bp; that analog started from a positive spread and is a poor level match.",
+          "AU 2Y after a comparable ~39bp 1m rise on 2022-09-28 (level 3.572): forward 1m -37.4bp, forward 3m -15.0bp, a subsequent front-end rally that would help the receive-AU leg.",
+          "AU 2Y on 2025-12-22 after a similar prior 1m rise (level 4.078): forward 1m +8.8bp, forward 3m +54.7bp, so a recent analog continued higher and is the main historical threat to receiving AU."
+        ],
+        "distribution": "CA-AU 2Y: 1y percentile 51.39, 5y percentile 10.51, z_1y -0.40, z_5y -1.63, level -164.9bp. This is a 5y-cheap Canada-versus-Australia 2Y gap that is only mid-pack on 1y, so the 1y percentile is not the thesis. AU 2Y 4.999 sits at 99.01st 1y / 99.80th 5y. AUDCAD and AUDNZD both 99.80th 1y. CFTC AUD OI 99.04th 1y / 99.68th 3y, z_1y 3.61.",
+        "regime_differences": "2025-05-28 analog was at -74bp, not today\u2019s -165bp, and was not immediately after a pre-priced Fed hike plus a BoJ 31-year high. 2022-09-28 AU analog was mid hiking-cycle discovery, not a housing-slump print with October AONIA already +21.5bp and inflation gauge 82. NZ sovereign yields are missing, so AU-NZ 2Y cannot confirm the AUDNZD analog. Energy-shock-absorber research is live and can re-steepen both AU and CA paths together. CFTC nets are null in every analog window here, so holder-class comparison is unavailable."
+      },
+      "independent_checks": [
+        "Policy-path versus sovereign 2s: AONIA 4.35 versus AU 2Y 4.999 and March 2027 implied 4.86; CORRA 2.29 versus CA 2Y 3.27 and December implied 2.58. The AU 2Y still sits above the live AONIA terminal, while Canada\u2019s cash 2Y embeds far more term gap than the +29bp CORRA path\u2014two official-path checks, not a yield percentile.",
+        "Cross-market price versus ownership: AUDCAD/AUDNZD 99.8th 1y and CFTC AUD OI 99th with +37673 contracts, while CA-AU 2Y is only 51st 1y and CAD OI is 81.73rd 1y. The FX and OI surfaces show the crowding; the 2Y RV shows the policy gap without that OI extreme. US2Y futures OI 24.04th 1y and US5Y 22.12th 1y confirm the spectacular US yield backup is not a crowded futures book, so the room should not treat 'pay duration' as an owned-futures squeeze.",
+        "Macro split: AU housing stamp-duty -24% y/y and volumes -18% versus AU inflation gauge 82; Canada headline CPI 3% / core near 2%, labor gauge 38, and BoC energy-pass-through minutes. Housing versus energy is the mechanism cross-check, not a single screen."
+      ],
+      "known_vs_new_information": "Known: Fed hike was >90% priced; US inflation/labor/activity/consumer gauges remain hot (72/75/69/74); AU inflation gauge 82. New/marginal: the hike is now delivered so additional US path must be earned; NSW stamp-duty receipts -24% y/y and transaction volumes -18% with Sydney/Melbourne values more than 7% off peak; BoC minutes flag energy pass-through while Canada labor gauge is 38; BoJ 25bp to a 31-year high; desk extending that into a common G10 tightening impulse; CFTC 15 Sep print with AUD/JPY/CHF OI at 99th percentile and all trader-class nets null; ASX 18 Sep cash-futures path still pricing October 4.565 versus AONIA 4.35 with 21752 open interest versus only 1131 in December.",
+      "market_assumption_disagreed_with": "Disagree that the RBA-hawk/BoC-dove gap should keep widening from here, and disagree that the place to express that view is 99th-percentile AUD futures OI. Housing is already transmitting; October AONIA is the concentrated hike contract; Canada\u2019s +29bp CORRA path is the light-positioned policy leg. The 99.8th-percentile AUD crosses are the crowded expression of an assumption that is at best fully priced.",
+      "market_implied_assumption": "AONIA 4.35 with ASX implied 4.565 in October (+21.5bp), 4.685 November, 4.725 December, and 4.86 by March 2027 (+51bp). CORRA 2.29 with MX implied 2.58 by December (+29bp). That relative path, plus AU 2Y 4.999 versus CA 2Y 3.27, assumes the RBA keeps tightening through visible housing pain and the BoC stays near a shallow +29bp path despite headline 3% inflation and energy pass-through risk. AUDCAD/AUDNZD at 99.8th 1y assume that gap stays wide and is owned in spot.",
+      "path_to_current_price": "Known into the week: August US CPI kept a Fed tightening bias, and rate futures entered the 16 Sep FOMC with greater-than-90% odds of 25bp. Delivered: Fed hike to 3.75-4.00%, BoJ hike to 1.25%, BoE hold at 3.75% with three hike votes, and the 18 Sep desk thesis that energy is constraining global easing. AU 2Y is 4.999 and AU 10Y 5.348 as of 16 Sep (both 99.01st 1y). CA 2Y is 3.27 as of 17 Sep. CA-AU 2Y is -164.9bp (1y percentile 51.39, 5y percentile 10.51), down 5.5bp on the month. Spot AUDCAD 0.9976 and AUDNZD 1.2468 are both 99.80th 1y, with 1m returns +1.95% and +4.27%, while AUDUSD is only 76.39th 1y and +0.20% 1m\u2014the stretch is in the AUD crosses, not versus USD. CFTC TFF as of 15 Sep shows AUD OI 493141 (+37673 week) at 99th percentile; CAD OI 358186 is elevated but less extreme.",
+      "policy_path_check": {
+        "pricing_summary": "AU: AONIA 4.35 as of 17 Sep 2026; ASX 30-day cash-rate futures imply 4.355 Sep, 4.565 Oct (+21.5bp, OI 21752, volume 4450), 4.685 Nov, 4.725 Dec, terminal 4.86 Mar 2027 (+51.0bp). Bank bills 1m/3m/6m 4.41/4.68/5.07. Official RBA F1 OIS is 01-Dec-2022 vintage; bill-minus-OIS is unavailable_cross_vintage and is not used. CA: CORRA 2.29 as of 17 Sep 2026; MX CORRA futures imply 2.2875 Sep, 2.305 Oct, 2.43 Nov, 2.58 Dec (+29.0bp). MX OI is null. US path used only as a cross-check, not as a trade tenor: SOFR 3.85; ICE 1m SOFR implies 3.75 Sep, 3.91 Oct, 4.045 Nov, 4.1975 Dec (+34.75bp), terminal 4.6025 Aug 2028 (+75.25bp). Method notes: AU is 100 minus ASX settlement; CA is 100 minus MX price; US is delayed ICE 1m SOFR monthly average, not FOMC-meeting probabilities. NZ policy path is unavailable.",
+        "rationale": "Short-end CA-AU 2Y requires live AONIA- and CORRA-linked paths before any sovereign-spread conclusion. Both country statuses are ok in the frozen packet. The discrepancy is October AONIA hike concentration versus a shallow CORRA path, not a 2Y percentile.",
+        "relevant_countries": [
+          "AU",
+          "CA"
+        ],
+        "status": "available"
+      },
+      "price_decomposition": "Level: CA-AU 2Y -164.9bp as of 16 Sep (CA 2Y 3.27 on 17 Sep minus AU 2Y 4.999 on 16 Sep is the same sign; vintage differs by one session). Change: -5.5bp 1m, +5.5bp 1d, +2.6bp 5d, -79.3bp 1y. Tenor: 2Y is the policy-gap tenor; AU 2s10s 34.9bp at 24.4th 1y, CA 2s10s 0.60th 1y. Marginal driver of the crowded side is AUD-cross spot and AUD OI, not a 1y extreme in CA-AU 2Y itself (51st 1y). AU-US 2Y compressed 12.5bp on 16 Sep to +25.9bp (25.6th 1y), so AUD strength versus CAD/NZD is not a live AU-US 2Y widening. US 2Y 4.76 versus Dec SOFR implied 4.1975 and Aug-2028 terminal 4.6025 shows the global hawkish chase also overshot the US near-term path, but that is context, not the trade."
+    },
+    "direction": "long CA-AU 2Y (receive AU 2Y, pay CA 2Y)",
+    "entry": null,
+    "evidence_refs": [
+      "pos:cftc",
+      "policy_paths",
+      "policy:AU",
+      "policy:CA",
+      "rates:AU",
+      "rates:CA",
+      "rates:US",
+      "fx:AUDCAD",
+      "fx:AUDNZD",
+      "fx:AUDUSD",
+      "market_state",
+      "research_method",
+      "mw_20260916_fomc_hike_pricing",
+      "mw_20260916_au_housing_tightening",
+      "last24:2026-09-18:desk-thesis",
+      "rollup:Fed raises 25bp to 3.75\u20134.00%",
+      "rollup:BoC minutes flag higher energy pass-through risk",
+      "rollup:Canada August inflation holds at 3%, core stays near 2%",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "temp:AU:inflation",
+      "temp:CA:labor",
+      "temp:CA:inflation",
+      "xa:energy-retained",
+      "paper_books"
+    ],
+    "expression_comparison": {
+      "rates_candidate": "Long CA-AU 2Y (receive Australia 2Y duration, pay Canada 2Y duration): fade the RBA-hawk versus BoC-dove policy gap in sovereign 2s after inspecting AONIA and CORRA paths, not AUD futures OI percentiles.",
+      "rationale": "Rates is the cleaner ownership expression. AUDCAD/AUDNZD are the crowded idea being attacked: CFTC AUD open interest is 99.04th 1y / 99.68th 3y with a +37673 weekly rise, CHF and JPY OI are also 99th, and every TFF net field is null, so a spot short is a two-way squeeze lottery. CA-AU 2Y owns the same relative-policy discrepancy with live AONIA and CORRA paths, ASX cash-futures OI showing where AU hike pricing is concentrated, and CAD FX OI only 81.73rd 1y. AUDNZD rates RV is unavailable because the RBNZ B2 workbook is blocked. Outright receive US 2Y was the uncrowded-book alternative (US2Y futures OI 24.04th 1y) but would join a duration-rally that 2022 hike-cycle analogs often extended; CA-AU better attacks the specific crowded AUD-cross ownership.",
+      "selected": "rates",
+      "spot_candidate": "Short AUDCAD at the 2026-09-18 ECB same-fixing research/reference print 0.9975768872320596 (1y percentile 99.80)."
+    },
+    "horizon": "1-3 months, through the October-December AONIA/CORRA window",
+    "instrument": "CA-AU_2Y",
+    "invalidation": "Thesis is wrong if ASX October-December AONIA implied rates keep rising while Australian housing/activity stops deteriorating, or if the CORRA path flattens/cuts while Canada headline/energy pass-through fades. Separate bad entry from bad thesis: a further AUDCAD squeeze higher with unchanged CA-AU 2Y would confirm the crowding was in spot, not that the rates RV is invalidated. Unsigned TFF nets remaining null is not an invalidation.",
+    "mispricing": "Market prices a still-widening RBA-versus-BoC policy gap in 99.8th-percentile AUDCAD/AUDNZD and in October AONIA +21.5bp. The 2Y sovereign gap at -164.9bp is only 51st 1y, so this is not a 'spread extreme therefore fade' trade. The mispricing is ownership plus policy-path: hike odds are concentrated in a high-OI October AONIA contract after the tightening channel has already hit housing, while Canada\u2019s path remains a shallow +29bp despite energy pass-through and 3% headline CPI. Spot AUD is where crowding lives; CA-AU 2Y is where the relative policy error can be owned without that OI.",
+    "principal_risks": [
+      "AU inflation gauge 82 can keep the RBA hiking through housing pain; 2025-12-22 AU 2Y analog continued higher.",
+      "Canada labor 38 and core near 2% can keep CORRA anchored; the pay-CA leg then needs AU yields to fall alone.",
+      "Energy-shock-absorber research is a common hawkish shock that can lift AU yields as much as or more than CA.",
+      "Null TFF nets and unavailable CME OI: AUD 99th OI could still squeeze AU rates via FX hedging in either direction.",
+      "No executable broker prices in the packet; parent may record execution_blocked. NZ 2Y remains unavailable so AUDNZD cannot be risk-matched in rates."
+    ],
+    "stop": null,
+    "structure": null,
+    "target": null,
+    "thesis": "Fact: the crowded surface is AUD-cross spot plus 99th-percentile CFTC AUD/JPY/CHF open interest with null nets and no CME OI. Fact: ASX October AONIA still prices 4.565 versus overnight 4.35 with the largest cash-futures OI on the strip, while housing receipts and volumes have already broken. Fact: CORRA prices only +29bp through December. Inference: the room\u2019s obvious fade\u2014short AUDCAD/AUDNZD\u2014is a bad entry because unsigned 99th OI is squeeze risk, not an edge. The ownership-asymmetric expression is to receive the expensive, housing-constrained AU 2Y against paying the lightly pathed CA 2Y, letting CA-AU 2Y rise as that relative hawk/dove gap compresses. Unknown: who is long the AUD pit.",
+    "why_now": [
+      "Fed 25bp to 3.75-4.00% is delivered and was >90% priced; the new information is the desk extending that into a global-tightening AUD-cross bid.",
+      "CFTC 15 Sep TFF: AUD OI +37673 to 99th percentile with all nets null; CME OI unavailable\u2014this is the first ownership print after the hike week.",
+      "16 Sep housing evidence (stamp duty -24% y/y, volumes -18%) arrives while 18 Sep ASX still concentrates hike OI in October (21752 versus 1131 December).",
+      "Empty $100m book is already paying 5% ACT/365 vig; receive-AU versus pay-CA has a positive yield pickup and does not require inventing a broker mark."
+    ]
+  },
+  "type": "TRADER_ROOM_CONTRIBUTION"
+}

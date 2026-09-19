@@ -1,0 +1,146 @@
+{
+  "agent": "catalyst-junkie",
+  "archetype": "catalyst-junkie",
+  "confidence": 58,
+  "conflict_synopsis": {
+    "au_rates_view": "not_relevant",
+    "aud_view": "not_relevant",
+    "ca_rates_view": "higher",
+    "cad_view": "higher",
+    "carry_view": "opposes_trade",
+    "confidence": 58,
+    "conflict_tags": [
+      "CA_RATES_UP",
+      "CAD_UP",
+      "USD_DOWN",
+      "US_RATES_UP"
+    ],
+    "core_view": "The 14-18 Sep BoC energy/CPI plus G10 tightening cluster is already out, but CORRA still prices only +1.5bp by October and +29bp by December, so pay the lagging Canadian overnight path.",
+    "key_catalyst": "BoC energy-pass-through minutes (16 Sep) plus 3% CPI (14 Sep) and the Fed/BoJ tightening week, against Oct CORRA still +1.5bp.",
+    "key_invalidation": "Dec CORRA implied 2.58% fades toward overnight 2.29% because core-near-2% and labor 38 dominate, or the Saudi workaround kills the energy tail.",
+    "nz_rates_view": "not_relevant",
+    "nzd_view": "not_relevant",
+    "primary_trade": "short COAZ26 (pay Dec CORRA)",
+    "risk_view": "neutral",
+    "seat": "catalyst-junkie",
+    "time_horizon": "into Dec-26 CORRA expiry",
+    "us_rates_view": "higher",
+    "usd_view": "lower"
+  },
+  "packet_sha256": "8903f3edceded5a5d9866d84bd422940ebc0c93106b761fbcb6267449e9504f9",
+  "paper_capital": {
+    "asset_class": "rates",
+    "decision": "OPEN",
+    "instrument": "COAZ26",
+    "notional_usd": 10000000,
+    "rationale": "The 5.00% ACT/365 vig is charged on the full $100m whether flat or not, so idle cash cannot clear the hurdle. A $10m sleeve on the lagging CORRA Dec path deploys into a dated 14-18 Sep repricing with explicit invalidation; size stays fractional because marks are research/reference only, CA labor/core are live offsets, and MX CORRA OI/volume are null.",
+    "side": "short"
+  },
+  "remit": "credible path from mispricing to repricing",
+  "round": 1,
+  "run_id": "tr-20260919T123430Z-ondemand",
+  "stance_summary": "Valuation without a dated transmission can stay wrong; the 14-18 Sep cluster (BoC energy-pass-through minutes, Canada CPI still at 3%, Fed hike, BoJ hike, desk thesis that the energy shock constrains easing) is already in the tape, but MX CORRA still prices only +1.5bp by October and +29bp by December versus overnight 2.29%. Pay the lagging Canadian overnight path rather than chase USDCAD or fade already-repriced AONIA.",
+  "subagent_calls": 0,
+  "subagent_model": null,
+  "trade": {
+    "asset_class": "rates",
+    "catalysts": [
+      "BoC minutes flag higher energy pass-through risk (Sep 16 retained; Sep 2 FAD).",
+      "Canada August inflation holds at 3%, core stays near 2% (Sep 14).",
+      "Fed raises 25bp to 3.75-4.00% after >90% hike pricing (Sep 16).",
+      "BoJ raises policy rate 25bp to 1.25% (Sep 17).",
+      "Global tightening broadens after the Fed move; energy shock constrains easing (desk thesis Sep 18).",
+      "Energy-market shock absorbers weaken (Sep 16), with Saudi Oman workaround as the offsetting tail-reduction."
+    ],
+    "confidence": 58,
+    "context_build": {
+      "causal_mechanism": "FACT: BoC minutes on the 2026-09-02 fixed announcement date, retained 16 Sep, flag higher energy pass-through risk; Canada August CPI held at 3% with core near 2% (14 Sep); Fed raised 25bp to 3.75-4.00% on 16 Sep; BoJ raised 25bp to 1.25% on 17 Sep; 18 Sep desk thesis says the energy shock is constraining the global easing impulse even where domestic growth is softer. INFERENCE: that cluster should lift the BoC overnight path. The instrument that reprices it is MX CORRA, not CA 2Y percentiles and not USDCAD.",
+      "flow_and_positioning_check": "FACT: CFTC TFF as of 2026-09-15 has CAD open interest 358186 (1y percentile 81.7, weekly +23325) but asset-manager/dealer/leveraged nets are null; CME G10 volume/OI overlay is HTTP 403 unavailable; MX CORRA volume and open interest are null in the packet. INFERENCE: ownership cannot explain the flat Oct CORRA path. UNKNOWN: who is short or long COAZ26. US 2Y futures OI 4433736 is only 24.0 1y percentile, so this is not a crowded US front-end story either.",
+      "historical_reference": {
+        "analogs": [
+          "CA 2Y after a similar +31bp prior-1m backup: 2022-06-30 level 3.10 forward 1m 0bp / 3m +66bp; 2023-04-14 level 3.81 forward 1m -1bp / 3m +83bp; 2026-04-01 level 2.82 forward 1m +12bp / 3m -6bp; 2021-10-14 level 0.72 forward 1m +28bp / 3m +50bp. Three of four 3m outcomes were further backup.",
+          "CA-US 2Y after a similar -17bp 1m cheapening of CAD versus US: 2025-01-30 level -145bp (closest level analog) forward 1m -5bp / 3m +25bp; 2022-11-15 level -51bp forward 1m -4 / 3m +6; 2024-05-02 level -63bp forward 1m -9 / 3m -6; 2024-12-18 level -130bp forward 1m -3 / 3m -20. The nearest-level analog later compressed the CAD discount."
+        ],
+        "distribution": "CA 2Y 3.27% is 97.82 1y percentile and 58.55 5y percentile. CA-US 2Y -140bp is 3.77 1y percentile and 4.31 5y percentile. USDCAD is only 74.0 1y percentile. CORRA path to Dec is +29bp, far less than the 2Y-overnight gap.",
+        "regime_differences": "Analogs mix 2022 hiking, 2024-25 easing, and Apr-2026 CA 2Y at 2.82% when CORRA today is 2.29% and CA 2Y is already 3.27%. Current regime adds an energy shock with both weaker shock absorbers and a Saudi Oman workaround, a fully priced Fed hike, a BoJ hike to a 31-year high, and a BoC minutes warning rather than a delivered BoC hike. Packet CORRA method is research/reference path, not meeting probabilities; only four CA contracts exist through Dec."
+      },
+      "independent_checks": [
+        "Policy-path check: CORRA overnight 2.29% versus Oct +1.5bp / Nov +14bp / Dec +29bp, against SOFR Dec +34.75bp and AONIA Oct +21.5bp, showing Canada as the lagging G10 overnight path after the same tightening week.",
+        "Sovereign versus path: CA 2Y 3.27% versus Dec CORRA implied 2.58% (about 69bp) and versus overnight (about 98bp); the 2Y has moved, the strip has not.",
+        "Cross-market: CA-US 2Y -140bp at the 3.8th 1y percentile while USDCAD is only the 74th 1y percentile, so FX has not fully expressed a CA policy catch-up either.",
+        "Temperature overlay: CA inflation 55, activity 66, consumer 45, labor 38 \u2014 inflation/activity do not match a strip that prices almost no October hike, but labor is a real dovish offset."
+      ],
+      "known_vs_new_information": "KNOWN: CA-US 2Y was already a deep CAD-rate discount versus the US. NEW in this packet window: 14 Sep Canada CPI still at 3% (core near 2%); 16 Sep BoC minutes flag energy pass-through; 16 Sep Fed hike; 16 Sep energy shock-absorbers warning and Saudi ship-to-ship Oman workaround; 17 Sep BoJ 1.25%; 18 Sep desk thesis that global tightening is broadening and energy is blocking easing. WHY THAT MOVES THE STRIP NOW: Oct CORRA still only +1.5bp from overnight, so the strip has not treated this week's communication as a near-term BoC hike even as CA 2Y sits 98bp above CORRA.",
+      "market_assumption_disagreed_with": "The assumption that the already-released 14-18 Sep cluster does not require more than +1.5bp of October CORRA or +29bp of December CORRA. CA 2Y at 3.27% already prices a much higher front-end than Dec implied 2.58%; the lagging price is the overnight path.",
+      "market_implied_assumption": "The CORRA strip assumes roughly one 25bp hike by Dec-26 and almost none by Oct-26; BoC can look through 3% headline and named energy pass-through while labor is soft (temp 38) and core is near 2%.",
+      "path_to_current_price": "FACT: CORRA overnight 2.29% as of 2026-09-17. Front MX CORRA: COAU26 Sep implied 2.2875% (-0.25bp), COAV26 Oct 2.305% (+1.5bp), COAX26 Nov 2.43% (+14.0bp), COAZ26 Dec 2.58% (+29.0bp); packet terminal is that Dec contract. CA 2Y 3.27% on 2026-09-17 (1y percentile 97.82, z 2.46) versus Dec implied 2.58% and overnight 2.29%. CA-US 2Y -140bp on 2026-09-17 (1y percentile 3.77, 5y percentile 4.31) after -17bp 1m and -15bp 5d. USDCAD ECB fix 1.401047 on 2026-09-18, +0.11% 1d / +1.10% 5d / +1.74% 1m, 74.0 1y percentile. SOFR 3.85% on 2026-09-17 with Dec SR1Z26 implied 4.1975% (+34.75bp) after a >90% priced 16 Sep hike. AONIA 4.35% with Oct ASX 30-day cash futures implied 4.565% (+21.5bp). UNKNOWN: pre-minutes CORRA path, so the strip's change across 14-18 Sep is not observed.",
+      "policy_path_check": {
+        "pricing_summary": "CA: CORRA 2.29% (2026-09-17); Sep 2.2875%, Oct 2.305% (+1.5bp), Nov 2.43% (+14bp), Dec 2.58% (+29bp terminal in packet). US: SOFR 3.85% (2026-09-17); Sep 3.75% (-10bp), Oct 3.91% (+6bp), Nov 4.045% (+19.5bp), Dec 4.1975% (+34.75bp); terminal Aug-2028 4.6025% (+75.25bp). AU inspected and not selected: AONIA 4.35%; Oct 4.565% (+21.5bp), Nov 4.685% (+33.5bp), Dec 4.725% (+37.5bp), Mar-2027 4.86% (+51bp). NZ policy path unavailable.",
+        "rationale": "Short-end CA trade is a CORRA-path view, so the live MX CORRA chain is the required pricing input; CA 2Y 3.27% is supporting context only. US SOFR path is the independent check that the same week already repriced more US tightening than Canada. AU AONIA shows another G10 cash path already pricing a near-term hike, which is why receive-AONIA is rejected as the primary expression.",
+        "relevant_countries": [
+          "CA",
+          "US"
+        ],
+        "status": "available"
+      },
+      "price_decomposition": "LEVEL: CORRA 2.29%; Dec implied 2.58% (+29bp path); CA 2Y 3.27% (+98bp over overnight, +69bp over Dec implied); CA 10Y 3.83%; CA 2s10s +56bp at 0.60 1y percentile. CHANGE: CA-US 2Y -17bp 1m / -15bp 5d (CAD rates cheaper versus US). MARGINAL DRIVER this week: G10 tightening plus BoC energy/CPI communication, not a delivered BoC hike. TENOR: Sep-Dec CORRA overnight path, not the 10Y. COMPARISON: SOFR Dec already +34.75bp and AONIA Oct already +21.5bp, so Canada is the lagging G10 path."
+    },
+    "direction": "short",
+    "entry": null,
+    "evidence_refs": [
+      "policy:CA",
+      "policy:US",
+      "policy:AU",
+      "policy_paths",
+      "market_state",
+      "rates:CA",
+      "rates:US",
+      "fx:USDCAD",
+      "rollup:BoC minutes flag higher energy pass-through risk",
+      "rollup:Canada August inflation holds at 3%, core stays near 2%",
+      "rollup:Fed raises 25bp to 3.75\u20134.00%",
+      "rollup:August CPI keeps the Fed tightening bias intact",
+      "mw_20260916_fomc_hike_pricing",
+      "last24:2026-09-18:desk-thesis",
+      "last24:BoJ raises its policy rate to 1.25%",
+      "xa:energy-retained",
+      "rollup:Energy-market shock absorbers weaken",
+      "mw_20260916_saudi_oman_workaround",
+      "mw_20260916_au_housing_tightening",
+      "pos:cftc",
+      "temp:CA:inflation",
+      "temp:CA:labor",
+      "temp:CA:activity"
+    ],
+    "expression_comparison": {
+      "rates_candidate": "Short MX CORRA Dec-26 (COAZ26): pay the Canadian overnight path. Packet: CORRA 2.29% on 2026-09-17; COAV26 Oct implied 2.305% (+1.5bp); COAX26 Nov 2.43% (+14bp); COAZ26 Dec 2.58% (+29bp).",
+      "rationale": "The catalyst is a Canadian policy-path repricing, not an FX terms-of-trade call. CORRA isolates the underpriced overnight path. USDCAD mixes energy ToT (shock absorbers weaken versus Saudi Oman workaround), a 1m CAD-cheapening already in the tape, and no TFF net positioning. Rates is the cleaner and default expression.",
+      "selected": "rates",
+      "spot_candidate": "Short USDCAD (CAD higher) if a BoC catch-up hike reprices the lagging CORRA path; ECB reference 1.401047 on 2026-09-18, +1.7447% 1m, 74.0 1y percentile."
+    },
+    "horizon": "Into Dec-26 CORRA expiry, as the packet terminal; digestion of the already-released 14-18 Sep cluster, not an invented meeting date.",
+    "instrument": "COAZ26",
+    "invalidation": "Thesis is wrong if Dec CORRA implied 2.58% moves back toward overnight CORRA 2.29% because core-near-2% and labor 38 dominate the minutes, or if the Saudi Oman workaround (not the shock-absorber warning) is the binding energy fact and CA-US 2Y stays near -140bp without any CORRA-path backup.",
+    "mispricing": "MX CORRA prices +1.5bp by October and +29bp by December after BoC minutes named energy pass-through, headline CPI held at 3%, and G10 tightening broadened. CA 2Y at 3.27% already sits about 69bp above Dec implied 2.58%, so the strip \u2014 not the 2Y percentile \u2014 is the lagging price.",
+    "principal_risks": [
+      "Core near 2% and CA labor temperature 38 can keep BoC on hold, so a +29bp Dec path is already enough.",
+      "Saudi ship-to-ship crude via Oman reduced the extreme oil-supply tail; energy pass-through may not arrive.",
+      "Packet CORRA is a research/reference path, not meeting probabilities; volume/OI are null.",
+      "Only four CA contracts through Dec; no post-Dec CA path exists in the packet.",
+      "CA 2Y 3.27% may already have done the hawkish work, leaving little strip catch-up.",
+      "Executable broker prices are absent; parent may mark execution_blocked.",
+      "NZ official yields unavailable, so no NZ cross-check."
+    ],
+    "stop": null,
+    "structure": "Short MX CORRA Dec-26 future COAZ26 (packet price 97.42, implied 2.58%); pay Canadian overnight versus CORRA 2.29%. Research/reference path, not executable broker pricing.",
+    "target": null,
+    "thesis": "FACT: after a week of dated G10 tightening and BoC energy/CPI communication, Dec CORRA still implies only 2.58% versus overnight 2.29%. INFERENCE: the overnight path is the mispriced leg; paying COAZ26 is the mechanism that reprices if markets stop treating the minutes as a costless risk flag. UNKNOWN: whether core-near-2% and labor 38 will keep BoC on hold, and whether the Saudi workaround caps the energy tail before pass-through hits the strip. Reject receive AONIA: housing is biting (NSW stamp duty -24% y/y, volumes -18%, Sydney/Melbourne values >7% off peak) but Oct AONIA has already added +21.5bp, so that catalyst is not unpriced. Reject long USDCAD: that trades gap persistence, not repricing.",
+    "why_now": [
+      "BoC minutes retained 16 Sep flag higher energy pass-through on the 2 Sep FAD, and CORRA Oct is still only +1.5bp.",
+      "Canada August CPI held at 3% on 14 Sep while core stays near 2%, so the inflation print is live, not stale.",
+      "Fed hike 16 Sep and BoJ hike 17 Sep, plus the 18 Sep desk thesis that energy is blocking global easing, are the same-week transmission into a still-dovish CA strip.",
+      "AONIA and SOFR have already added more near-term hike pricing than CORRA, isolating Canada as the incomplete repricing."
+    ]
+  },
+  "type": "TRADER_ROOM_CONTRIBUTION"
+}
