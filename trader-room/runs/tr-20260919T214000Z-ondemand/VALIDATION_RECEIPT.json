@@ -1,0 +1,40 @@
+{
+  "type": "MARKET_WATCH_18_STACK_VALIDATION_RECEIPT",
+  "stage": "EVIDENCE_FROZEN",
+  "run_id": "tr-20260919T214000Z-ondemand",
+  "evidence_cutoff": "2026-09-19T21:40:00Z",
+  "packet_sha256": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
+  "starting_ref": "1d8d83a46d3a80bd2c1e73709b1239819b37d804",
+  "branch": "cursor/market-watch-full-18-stack-validation-4343",
+  "funding_context": {
+    "sofr_percent": 3.85,
+    "sofr_observation_date": "2026-09-17",
+    "sofr_source": "NY_FED",
+    "convention": "ACT/360",
+    "sr3_3m": {"code": "SR3Z6", "expiry": "2026-12", "implied_rate": 4.32},
+    "sr3_6m": {"code": "SR3H7", "expiry": "2027-03", "implied_rate": 4.58},
+    "sr3_12m": {"code": "SR3U7", "expiry": "2027-09", "implied_rate": 4.755}
+  },
+  "preflight": {
+    "temperature_gauges": "available",
+    "central_bank_research": "available",
+    "market_state": "stale",
+    "research_method": "available",
+    "ok": true,
+    "known_gaps": [
+      "NZ sovereign rates unavailable",
+      "CFTC/CME positioning unavailable",
+      "temperature gauges are repo-retained dashboard_v8"
+    ]
+  },
+  "model_calls": {
+    "parent_grok": 1,
+    "advocates_grok": 0,
+    "composer_children": 0,
+    "rebuttals_grok": 0,
+    "pm_principals_grok": 0,
+    "pm_children": 0,
+    "ceilings": {"total": 69, "grok": 32, "composer": 37}
+  },
+  "status": "EVIDENCE_FROZEN"
+}
