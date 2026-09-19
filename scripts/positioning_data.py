@@ -410,8 +410,8 @@ def fetch_cme_fx_positioning(*, today: date, fetch_bytes: Callable[..., bytes]) 
             payload = json.loads(
                 fetch_bytes(
                     url,
-                    timeout=15,
-                    retries=2,
+                    timeout=10,
+                    retries=1,
                     user_agent=CME_BROWSER_USER_AGENT,
                     referer=CME_VOLUME_PAGE,
                 ).decode("utf-8")
@@ -503,7 +503,7 @@ def build_positioning(
             "model_calls": 0,
             "credentials_required": [],
             "core_ownership_source": "cftc_tff_futures_only",
-            "daily_open_interest_source": "cme_volume_last_totals",
+            "daily_open_interest_source": "cme_volume_last_totals_best_effort",
             "crowding_measure": (
                 "Trader-class net positions are normalized by total open interest, "
                 "with 1Y/3Y percentile and z-score context. CME daily futures/options OI is supplemental."
