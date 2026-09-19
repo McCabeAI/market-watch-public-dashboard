@@ -51,6 +51,7 @@
     const realized = seats.reduce(function (sum, seat) { return sum + (finite(seat.realized_pnl_usd) ? seat.realized_pnl_usd : 0); }, 0);
     const unrealized = seats.reduce(function (sum, seat) { return sum + (finite(seat.unrealized_pnl_usd) ? seat.unrealized_pnl_usd : 0); }, 0);
     const funding = seats.reduce(function (sum, seat) { return sum + (finite(seat.funding_cost_usd) ? seat.funding_cost_usd : 0); }, 0);
+    const cashYield = seats.reduce(function (sum, seat) { return sum + (finite(seat.cash_yield_usd) ? seat.cash_yield_usd : 0); }, 0);
     const netPnl = seats.reduce(function (sum, seat) { return sum + (finite(seat.net_pnl_usd) ? seat.net_pnl_usd : 0); }, 0);
     const openCount = seats.reduce(function (sum, seat) { return sum + ((seat.positions || []).length); }, 0);
     const changes = packet.overnight_changes || [];
@@ -80,8 +81,12 @@
         "</div></div><p class=\"tb-remit\">" + esc(seat.remit || "") + "</p>" +
         '<div class="tb-metrics"><div><span>NAV</span><b>' + money(seat.nav_usd) +
         "</b></div><div><span>Net P&amp;L</span><b class=\"" + cls(seat.net_pnl_usd) + "\">" +
-        money(seat.net_pnl_usd) + "</b></div><div><span>Funding</span><b class=\"tb-neg\">" +
-        (finite(seat.funding_cost_usd) && seat.funding_cost_usd !== 0 ? "-" + money(seat.funding_cost_usd).replace("-", "") : money(seat.funding_cost_usd)) +
+        money(seat.net_pnl_usd) + "</b></div><div><span>" +
+        (seat.seat === "no-trade-skeptic" ? "Cash yield" : "Funding") + "</span><b class=\"" +
+        (seat.seat === "no-trade-skeptic" ? "tb-pos" : "tb-neg") + "\">" +
+        (seat.seat === "no-trade-skeptic"
+          ? money(seat.cash_yield_usd)
+          : (finite(seat.funding_cost_usd) && seat.funding_cost_usd !== 0 ? "-" + money(seat.funding_cost_usd).replace("-", "") : money(seat.funding_cost_usd))) +
         "</b></div></div><div class=\"tb-positions\">" + posHtml + "</div>" +
         (seat.thesis ? '<p class="tb-thesis">' + esc(seat.thesis) + "</p>" : "") + pitch + "</article>";
     }).join("");
@@ -122,14 +127,15 @@
       '</p></div><div class="tb-kpis"><div class="tb-kpi"><span>Seats</span><b>' +
       esc(packet.seat_count || seats.length) + '</b></div><div class="tb-kpi"><span>Combined NAV</span><b>' +
       money(nav) + '</b></div><div class="tb-kpi"><span>Net P&amp;L</span><b class="' +
-      cls(netPnl) + '">' + money(netPnl) + '</b></div><div class="tb-kpi"><span>Funding</span><b>-' +
-      money(funding).replace("-", "") + '</b></div><div class="tb-kpi"><span>Open sleeves</span><b>' +
+      cls(netPnl) + '">' + money(netPnl) + '</b></div><div class="tb-kpi"><span>Funding costs</span><b>-' +
+      money(funding).replace("-", "") + '</b></div><div class="tb-kpi"><span>Cash yield</span><b class="tb-pos">' +
+      money(cashYield) + '</b></div><div class="tb-kpi"><span>Open sleeves</span><b>' +
       openCount + "</b></div></div></section>" +
       '<section class="tb-panel"><div class="tb-panel-head"><h3>Overnight position changes</h3><p>OPEN / ADD / REDUCE / HEDGE / CLOSE applied in the latest review</p></div><div class="tb-changes">' +
       changeHtml + "</div></section>" +
-      '<section class="tb-panel"><div class="tb-panel-head"><h3>P&amp;L leaderboard</h3><p>Ranked by cumulative net paper P&amp;L after 5% annual funding on outstanding notional.</p></div><div class="tb-changes">' +
+      '<section class="tb-panel"><div class="tb-panel-head"><h3>P&amp;L leaderboard</h3><p>Thirteen seats pay 5% on the full $100m every day; the No-Trade Skeptic earns 5% on undeployed cash.</p></div><div class="tb-changes">' +
       leaderboardHtml + "</div></section>" +
-      '<section class="tb-panel"><div class="tb-panel-head"><h3>Seat books</h3><p>Net P&amp;L is gross mark-to-market minus accrued funding. Missing marks remain unavailable rather than invented.</p></div><div class="tb-seat-grid">' +
+      '<section class="tb-panel"><div class="tb-panel-head"><h3>Seat books</h3><p>Net P&amp;L includes the standing financing hurdle: funding cost for the 13 trading seats, cash yield for the skeptic.</p></div><div class="tb-seat-grid">' +
       seatHtml + "</div></section>";
   }
 
