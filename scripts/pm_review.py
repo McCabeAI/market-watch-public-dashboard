@@ -11,6 +11,7 @@ from typing import Any, Mapping
 
 from scripts.overnight.store import sha256_json, write_json
 from scripts.pm_layer import (
+    PM_BOOKS_RELPATH,
     PM_IDS,
     PM_SPECS,
     apply_pm_decisions,
@@ -22,7 +23,6 @@ from scripts.pm_layer import (
 from scripts.trader_room_public import latest_complete_run_dir
 
 ROOT = Path(__file__).resolve().parents[1]
-BOOKS_RELPATH = Path("data/pm/books/latest.json")
 DECISION_TYPE = "PM_DECISIONS"
 REVIEW_PACKET_TYPE = "PM_REVIEW_PACKET"
 FORBIDDEN_DECISION_KEYS = {
