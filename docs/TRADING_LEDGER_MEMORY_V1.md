@@ -16,7 +16,7 @@ This document does not change the ACP 02:05 schedule, the locked 14-seat roster,
 | Compact learning-memory context | Trusted `scripts/trading/memory.py` | Lessons/postmortems are untrusted structured input; calibration is deterministic |
 | Dashboard / publication | Existing overnight and PM public projections | No new UI in this version |
 
-Account-level 5% Trader Room funding remains account-level. Trade P&L is instrument trading P&L only.
+Account-level official NY Fed SOFR ACT/360 Trader Room funding remains account-level. Trade P&L is instrument trading P&L only. There is no fixed 5% assumption.
 
 ## 2. Identities
 

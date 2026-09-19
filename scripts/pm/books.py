@@ -1,4 +1,9 @@
-"""Four independent $1bn-gross PM books. Not trader seats. No 5% funding hurdle."""
+"""Four independent $1bn-gross PM books. Not trader seats.
+
+$1bn is a gross-notional risk limit, not automatically borrowed capital.
+Realized cash yield / funding uses official NY Fed SOFR ACT/360 only where a
+position's funded-capital draw can be proven from canonical fields.
+"""
 
 from __future__ import annotations
 
@@ -7,6 +12,17 @@ from datetime import datetime
 from typing import Any
 from uuid import uuid4
 
+from scripts.funding.basis import apply_basis_to_position, funded_draw_for_book
+from scripts.funding.sofr import (
+    FUNDING_CONVENTION,
+    FUNDING_DAY_COUNT,
+    FUNDING_SOURCE,
+    FUNDING_SOURCE_URL,
+    FundingHistoryError,
+    accrue_act_360,
+    extract_sofr_history,
+    observed_rate_fields,
+)
 from scripts.overnight.books import position_pnl, realized_increment
 from scripts.overnight.clock import isoformat, now_ny
 from scripts.overnight.paper_marks import (
@@ -19,6 +35,7 @@ from scripts.pm.constants import (
     ACTIONS,
     ASSET_CLASSES,
     DECISION_STATUSES,
+    CASH_CAPITAL_USD,
     GROSS_NOTIONAL_LIMIT_USD,
     MANDATES,
     MARK_REQUIRED_ACTIONS,
@@ -79,6 +96,21 @@ def empty_pm_book(pm_id: str) -> dict[str, Any]:
         "gross_notional_limit_usd": GROSS_NOTIONAL_LIMIT_USD,
         "gross_utilization_usd": 0.0,
         "gross_remaining_usd": float(GROSS_NOTIONAL_LIMIT_USD),
+        "cash_capital_usd": CASH_CAPITAL_USD,
+        "funded_draw_usd": 0.0,
+        "unused_cash_usd": float(CASH_CAPITAL_USD),
+        "funding_cost_usd": 0.0,
+        "cash_yield_usd": 0.0,
+        "net_after_funding_pnl_usd": 0.0,
+        "funding_rate_annual": None,
+        "funding_percent_rate": None,
+        "funding_effective_date": None,
+        "funding_day_count": FUNDING_DAY_COUNT,
+        "funding_convention": FUNDING_CONVENTION,
+        "funding_source": FUNDING_SOURCE,
+        "funding_last_accrual_at": None,
+        "funding_basis_status": "none",
+        "unresolved_funding_positions": [],
         "positions": [],
         "history": [],
         "realized_pnl_usd": 0.0,
@@ -115,6 +147,7 @@ def empty_books(
         "schema_version": SCHEMA_VERSION,
         "type": "PM_BOOKS",
         "gross_notional_limit_usd": GROSS_NOTIONAL_LIMIT_USD,
+        "cash_capital_usd": CASH_CAPITAL_USD,
         "as_of": stamp,
         "overnight_run_id": overnight_run_id,
         "trader_room_run_id": trader_room_run_id,
@@ -142,6 +175,14 @@ def mark_pm_book(book: dict[str, Any]) -> dict[str, Any]:
     used = assert_cap(book)
     book["gross_utilization_usd"] = used
     book["gross_remaining_usd"] = round(float(book["gross_notional_limit_usd"]) - used, 2)
+    book.setdefault("cash_capital_usd", CASH_CAPITAL_USD)
+    draws = funded_draw_for_book(book)
+    book.update(draws)
+    funding = round(float(book.get("funding_cost_usd") or 0.0), 2)
+    cash_yield = round(float(book.get("cash_yield_usd") or 0.0), 2)
+    book["funding_cost_usd"] = funding
+    book["cash_yield_usd"] = cash_yield
+    book["net_after_funding_pnl_usd"] = None if missing else round(realized + unrealized - funding + cash_yield, 2)
     return book
 
 
@@ -231,6 +272,95 @@ def _derive_status(book: dict[str, Any], *, kind: str, had_prior_decision: bool)
     return book.get("decision_status") or awaiting_status(book["pm_id"])
 
 
+def accrue_pm_funding(
+    book: dict[str, Any],
+    *,
+    when: datetime,
+    run_id: str | None = None,
+    market_state: dict[str, Any] | None = None,
+    model_forecast: Any = None,
+) -> dict[str, float]:
+    """Accrue official SOFR on proven unused cash / funded draw only.
+
+    model_forecast is ignored for realized accounting.
+    """
+    del model_forecast
+    book.setdefault("funding_cost_usd", 0.0)
+    book.setdefault("cash_yield_usd", 0.0)
+    book.setdefault("cash_capital_usd", CASH_CAPITAL_USD)
+    draws = funded_draw_for_book(book)
+    book.update(draws)
+    fields = observed_rate_fields(market_state)
+    if fields["funding_rate_annual"] is not None:
+        book["funding_rate_annual"] = fields["funding_rate_annual"]
+        book["funding_percent_rate"] = fields["funding_percent_rate"]
+        book["funding_effective_date"] = fields["funding_effective_date"]
+    book["funding_day_count"] = FUNDING_DAY_COUNT
+    book["funding_convention"] = FUNDING_CONVENTION
+    book["funding_source"] = FUNDING_SOURCE
+    last_raw = book.get("funding_last_accrual_at")
+    if not last_raw:
+        book["funding_last_accrual_at"] = isoformat(when)
+        return {"funding_cost_usd": 0.0, "cash_yield_usd": 0.0}
+    try:
+        last = datetime.fromisoformat(str(last_raw))
+    except ValueError as exc:
+        raise SchemaError(f"invalid PM funding accrual timestamp {last_raw}") from exc
+    if (when - last).total_seconds() <= 0:
+        return {"funding_cost_usd": 0.0, "cash_yield_usd": 0.0}
+    history = extract_sofr_history(market_state or {})
+    try:
+        cost = accrue_act_360(
+            float(book.get("funded_draw_usd") or 0.0),
+            start=last,
+            end=when,
+            history=history,
+            market_state=market_state,
+        )
+        yield_ = accrue_act_360(
+            float(book.get("unused_cash_usd") or 0.0),
+            start=last,
+            end=when,
+            history=history,
+            market_state=market_state,
+        )
+    except FundingHistoryError as exc:
+        book.setdefault("alerts", []).append(f"funding_accrual_failed_closed: {exc}")
+        book["funding_accrual_status"] = "failed_closed"
+        return {"funding_cost_usd": 0.0, "cash_yield_usd": 0.0, "failed_closed": True}
+    book["funding_cost_usd"] = round(float(book.get("funding_cost_usd") or 0.0) + cost["amount"], 2)
+    book["cash_yield_usd"] = round(float(book.get("cash_yield_usd") or 0.0) + yield_["amount"], 2)
+    book["funding_last_accrual_at"] = isoformat(when)
+    book["funding_accrual_status"] = "applied"
+    book["funding_rate_annual"] = yield_["funding_rate_annual"] or cost["funding_rate_annual"]
+    book["funding_percent_rate"] = yield_["latest_percent_rate"] or cost["latest_percent_rate"]
+    book["funding_effective_date"] = yield_["latest_effective_date"] or cost["latest_effective_date"]
+    if cost["amount"] or yield_["amount"]:
+        book.setdefault("history", []).append(
+            {
+                "at": isoformat(when),
+                "run_id": run_id,
+                "action": "FUNDING",
+                "result": "applied",
+                "funding_rate_annual": book["funding_rate_annual"],
+                "funding_percent_rate": book["funding_percent_rate"],
+                "funding_effective_date": book["funding_effective_date"],
+                "funding_source": FUNDING_SOURCE,
+                "funding_source_url": FUNDING_SOURCE_URL,
+                "funding_day_count": FUNDING_DAY_COUNT,
+                "funding_convention": FUNDING_CONVENTION,
+                "accrual_days": max(cost["accrual_days"], yield_["accrual_days"]),
+                "funding_base_usd": book.get("funded_draw_usd"),
+                "cash_yield_base_usd": book.get("unused_cash_usd"),
+                "funding_cost_usd": cost["amount"],
+                "cash_yield_usd": yield_["amount"],
+                "gross_utilization_usd": book.get("gross_utilization_usd"),
+                "funded_draw_usd": book.get("funded_draw_usd"),
+            }
+        )
+    return {"funding_cost_usd": cost["amount"], "cash_yield_usd": yield_["amount"]}
+
+
 def apply_action(
     book: dict[str, Any],
     action: dict[str, Any],
@@ -238,8 +368,16 @@ def apply_action(
     run_id: str | None,
     when: datetime | None = None,
     decision: dict[str, Any] | None = None,
+    market_state: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     stamp = now_ny(when)
+    accrue_pm_funding(
+        book,
+        when=stamp,
+        run_id=run_id,
+        market_state=market_state,
+        model_forecast=(decision or {}).get("funding_forecast") or action.get("funding_forecast"),
+    )
     kind = action.get("action")
     if kind not in ACTIONS:
         raise SchemaError(f"unknown action {kind}")
@@ -311,6 +449,7 @@ def _open_position(book: dict[str, Any], action: dict[str, Any], *, run_id: str 
     preview = deepcopy(book)
     preview["positions"] = list(preview.get("positions") or []) + [position]
     assert_cap(preview)
+    apply_basis_to_position(position)
     book["positions"].append(position)
     return position
 
@@ -459,7 +598,14 @@ def apply_decision(
     actions = prepare_actions(book, decision, market_state=market_state)
     stamp = now_ny(when)
     for action in actions:
-        apply_action(book, action, run_id=run_id, when=stamp, decision=decision)
+        apply_action(
+            book,
+            action,
+            run_id=run_id,
+            when=stamp,
+            decision=decision,
+            market_state=market_state,
+        )
     book["last_decision_at"] = isoformat(stamp)
     book["last_decision_packet_id"] = review_packet_id
     book["last_decision_packet_sha256"] = review_packet_sha256
@@ -532,6 +678,17 @@ def public_pm_view(books: dict[str, Any]) -> dict[str, Any]:
                 "gross_notional_limit_usd": item["gross_notional_limit_usd"],
                 "gross_utilization_usd": item["gross_utilization_usd"],
                 "gross_remaining_usd": item["gross_remaining_usd"],
+                "cash_capital_usd": item.get("cash_capital_usd", CASH_CAPITAL_USD),
+                "funded_draw_usd": item.get("funded_draw_usd", 0.0),
+                "unused_cash_usd": item.get("unused_cash_usd", item.get("cash_capital_usd", CASH_CAPITAL_USD)),
+                "funding_cost_usd": item.get("funding_cost_usd", 0.0),
+                "cash_yield_usd": item.get("cash_yield_usd", 0.0),
+                "net_after_funding_pnl_usd": item.get("net_after_funding_pnl_usd"),
+                "funding_rate_annual": item.get("funding_rate_annual"),
+                "funding_convention": item.get("funding_convention", FUNDING_CONVENTION),
+                "funding_source": item.get("funding_source", FUNDING_SOURCE),
+                "funding_basis_status": item.get("funding_basis_status"),
+                "unresolved_funding_positions": item.get("unresolved_funding_positions") or [],
                 "realized_pnl_usd": item["realized_pnl_usd"],
                 "unrealized_pnl_usd": item["unrealized_pnl_usd"],
                 "total_pnl_usd": item["total_pnl_usd"],
@@ -552,6 +709,9 @@ def public_pm_view(books: dict[str, Any]) -> dict[str, Any]:
                         "entry_price_source": p.get("entry_price_source"),
                         "mark_price_source": p.get("mark_price_source"),
                         "locked_expression_family": p.get("locked_expression_family"),
+                        "funding_basis": p.get("funding_basis"),
+                        "funding_basis_status": p.get("funding_basis_status"),
+                        "funding_draw_usd": p.get("funding_draw_usd"),
                         "unrealized_pnl_usd": p.get("unrealized_pnl_usd"),
                         "hedge_of": p.get("hedge_of"),
                     }
@@ -567,6 +727,9 @@ def public_pm_view(books: dict[str, Any]) -> dict[str, Any]:
             "realized_pnl_usd": row["realized_pnl_usd"],
             "unrealized_pnl_usd": row["unrealized_pnl_usd"],
             "gross_utilization_usd": row["gross_utilization_usd"],
+            "funded_draw_usd": row["funded_draw_usd"],
+            "unused_cash_usd": row["unused_cash_usd"],
+            "net_after_funding_pnl_usd": row["net_after_funding_pnl_usd"],
             "decision_status": row["decision_status"],
             "review_status": row["review_status"],
         }
@@ -580,6 +743,9 @@ def public_pm_view(books: dict[str, Any]) -> dict[str, Any]:
         "trader_room_run_id": books.get("trader_room_run_id"),
         "evidence_cutoff": books.get("evidence_cutoff"),
         "gross_notional_limit_usd": GROSS_NOTIONAL_LIMIT_USD,
+        "cash_capital_usd": CASH_CAPITAL_USD,
+        "funding_convention": FUNDING_CONVENTION,
+        "funding_source": FUNDING_SOURCE,
         "pm_count": len(rows),
         "pms": rows,
         "comparison": comparison,

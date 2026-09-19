@@ -63,6 +63,7 @@ def decision_fingerprint(decision: dict[str, Any] | None) -> str:
             ],
             "thesis": payload.get("thesis"),
             "rationale": payload.get("rationale"),
+            "funding_view": payload.get("funding_view"),
             "memory_context_sha256": payload.get("memory_context_sha256"),
         }
     )
@@ -154,6 +155,7 @@ def record_event(
     extra: dict[str, Any] | None = None,
     event_id: str | None = None,
     decision_fingerprint: str | None = None,
+    funding_view: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     assert_identity(owner_type, owner_id)
     if kind not in JOURNAL_EVENT_KINDS:
@@ -205,6 +207,7 @@ def record_event(
         "linked_position_ids": list(linked_position_ids or []),
         "memory_context_sha256": memory_context_sha256,
         "decision_fingerprint": decision_fingerprint or (existing or {}).get("decision_fingerprint"),
+        "funding_view": funding_view or (extra or {}).get("funding_view") or (existing or {}).get("funding_view"),
         "outcome_links": list(outcome_links or []),
         "postmortem_links": list(postmortem_links or []),
         "provenance": {

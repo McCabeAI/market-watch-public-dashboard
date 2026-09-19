@@ -24,7 +24,7 @@ FetchBytes = Callable[..., bytes]
 BOC_CORRA_PAGE = "https://www.bankofcanada.ca/rates/interest-rates/corra/"
 BOC_CORRA_JSON = "https://www.bankofcanada.ca/valet/observations/group/CORRA/json?recent=10"
 MX_EXPECTATIONS_URL = "https://www.m-x.ca/en/trading/tools/canadian-interest-rate-expectations"
-NYFED_SOFR_URL = "https://markets.newyorkfed.org/api/rates/secured/sofr/last/10.json"
+NYFED_SOFR_URL = "https://markets.newyorkfed.org/api/rates/secured/sofr/last/90.json"
 NYFED_SOFR_PAGE = "https://www.newyorkfed.org/markets/reference-rates/sofr"
 CME_SOFR_URL = "https://www.cmegroup.com/markets/interest-rates/stirs/one-month-sofr.quotes.html"
 CME_SR3_URL = "https://www.cmegroup.com/markets/interest-rates/stirs/three-month-sofr.quotes.html"
@@ -219,18 +219,34 @@ def parse_mx_expectations_html(text: str, *, benchmark: float) -> dict[str, Any]
 def parse_nyfed_sofr_json(text: str) -> dict[str, Any]:
     payload = json.loads(text)
     rows = payload.get("refRates") or payload.get("rates") or []
+    history: list[dict[str, Any]] = []
     for row in rows:
         kind = str(row.get("type") or row.get("rateType") or "").upper()
-        if "SOFR" not in kind:
+        if kind and "SOFR" not in kind:
             continue
         rate = _num(row.get("percentRate") or row.get("rate") or row.get("value"))
         if rate is None:
             continue
-        return {
-            "rate": rate,
-            "as_of": row.get("effectiveDate") or row.get("effective_date") or row.get("date"),
-        }
-    raise ValueError("NY Fed response did not contain SOFR")
+        effective = row.get("effectiveDate") or row.get("effective_date") or row.get("date")
+        history.append(
+            {
+                "effective_date": effective,
+                "percent_rate": rate,
+                "source": "NY_FED",
+                "source_url": NYFED_SOFR_PAGE,
+            }
+        )
+    if not history:
+        raise ValueError("NY Fed response did not contain SOFR")
+    history.sort(key=lambda item: str(item.get("effective_date") or ""))
+    latest = history[-1]
+    return {
+        "rate": latest["percent_rate"],
+        "as_of": latest["effective_date"],
+        "source": "NY_FED",
+        "source_url": NYFED_SOFR_PAGE,
+        "history": history,
+    }
 
 
 def _parse_cme_month(label: str) -> str | None:
@@ -825,7 +841,12 @@ def collect_policy_paths(
 
         countries["US"] = {
             "status": "ok",
-            "benchmark": {"name": "SOFR", **sofr},
+            "benchmark": {
+                "name": "SOFR",
+                **sofr,
+                "source": sofr.get("source") or "NY_FED",
+                "source_url": sofr.get("source_url") or NYFED_SOFR_PAGE,
+            },
             "contracts_1m": contracts,
             "contracts_3m": contracts_3m,
             "terminal": _terminal_summary(contracts),

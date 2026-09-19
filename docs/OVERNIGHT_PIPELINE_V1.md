@@ -130,8 +130,8 @@ Each accepted decision should include the `memory_context_sha256` it used. Risk-
 
 The 14 seats are competing portfolio managers. Their standing objective is **highest cumulative net paper P&L**, not highest conviction score, most cautious commentary, or most persuasive prose. Every child receives the same frozen competition contract:
 - ranking metric: net paper P&L after financing economics;
-- the 13 seats other than `no-trade-skeptic` each borrow the full **$100m** allocation and pay **5.00% per year, simple ACT/365** on that full amount every day, whether deployed or flat;
-- `no-trade-skeptic` is the cash hurdle: it pays no borrowing charge and earns **5.00% per year ACT/365** on the undeployed portion of its original $100m allocation;
+- the 13 seats other than `no-trade-skeptic` each borrow the full **$100m** allocation and pay the **latest published prior-day official NY Fed SOFR, simple ACT/360** on that full amount for every newly accrued calendar day in that run, whether deployed or flat; there is no later true-up;
+- `no-trade-skeptic` is the cash hurdle: it pays no borrowing charge and earns the same prior-day SOFR ACT/360 on the undeployed portion of its original $100m allocation; every fresh scheduled daily skeptic decision, including `HOLD`, must include a structured `funding_view`;
 - when the skeptic deploys $X of notional, that $X stops earning the cash yield for as long as it remains deployed;
 - therefore a flat active trader has negative carry while a flat skeptic earns the risk-free hurdle;
 - no-trade remains valid for every seat, but inactivity is economically costly for the 13 funded traders;
@@ -188,8 +188,8 @@ Canonical mechanics are implemented only by `scripts/overnight/books.py`:
 - freshness blocks;
 - marks;
 - realized/unrealized gross P&L;
-- 5% annual funding accrual on the full $100m allocation for the 13 funded trading seats;
-- 5% annual cash yield on the skeptic's undeployed allocation;
+- official NY Fed SOFR ACT/360 funding accrual on the full $100m allocation for the 13 funded trading seats;
+- official NY Fed SOFR ACT/360 cash yield on the skeptic's undeployed allocation;
 - net P&L after funding/cash yield and competition rank;
 - NAV;
 - history;

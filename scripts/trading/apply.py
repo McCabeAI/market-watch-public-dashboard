@@ -491,6 +491,8 @@ def apply_trader_review_with_memory(
             trader_room_run_id=trader_room_run_id,
             event_id=reserved_ids[seat],
             decision_fingerprint=fingerprints[seat],
+            funding_view=decision.get("funding_view"),
+            extra={"funding_view": decision.get("funding_view")} if decision.get("funding_view") else None,
         )
         _observe_marks(store, "trader", seat, list(seat_book.get("positions") or []))
         build_memory_context(store, "trader", seat, when=stamp)
@@ -679,7 +681,9 @@ def journal_trader_room_pitch(
             "contribution": durable,
             "trade": durable.get("trade") if isinstance(durable.get("trade"), dict) else (trade or None),
             "conflict_synopsis": durable.get("conflict_synopsis"),
+            "funding_view": durable.get("funding_view") or contribution.get("funding_view"),
         },
+        funding_view=durable.get("funding_view") or contribution.get("funding_view"),
     )
 
 

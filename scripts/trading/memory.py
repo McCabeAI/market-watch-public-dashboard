@@ -201,6 +201,11 @@ def build_memory_context(
             for row in due
         ],
         "open_positions": open_position_context(trades),
+        "recent_funding_views": [
+            event.get("funding_view")
+            for event in reversed(store.read_journal(owner_type, owner_id).get("events") or [])
+            if event.get("funding_view")
+        ][:4],
     }
     digest = sha256_json({k: v for k, v in body.items() if k not in {"memory_context_sha256", "as_of"}})
     body["memory_context_sha256"] = digest
