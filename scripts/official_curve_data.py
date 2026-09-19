@@ -18,7 +18,7 @@ import io
 import math
 import urllib.parse
 import zipfile
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from typing import Any, Callable, Mapping
 
 FetchBytes = Callable[..., bytes]
@@ -28,13 +28,21 @@ FED_NOMINAL_CURVE_PAGE = "https://www.federalreserve.gov/data/nominal-yield-curv
 
 BOC_ZERO_CURVE_PAGE = "https://www.bankofcanada.ca/rates/interest-rates/bond-yield-curves/"
 BOC_ZERO_CURVE_ENDPOINT = "https://www.bankofcanada.ca/stats/results/csv"
-BOC_ZERO_CURVE_URL = BOC_ZERO_CURVE_ENDPOINT + "?" + urllib.parse.urlencode(
-    {
-        "lookupPage": "lookup_yield_curve.php",
-        "startRange": "1986-01-01",
-        "searchRange": "all",
-    }
-)
+
+
+def boc_zero_curve_url(today: date) -> str:
+    # The official page publishes with roughly a two-week lag. A 60-day window
+    # is ample while avoiding the multi-decade "all data" download.
+    d_from = today - timedelta(days=60)
+    return BOC_ZERO_CURVE_ENDPOINT + "?" + urllib.parse.urlencode(
+        {
+            "lookupPage": "lookup_yield_curve.php",
+            "startRange": "1986-01-01",
+            "searchRange": "",
+            "dFrom": d_from.isoformat(),
+            "dTo": today.isoformat(),
+        }
+    )
 
 RBA_F17_PAGE = "https://www.rba.gov.au/statistics/tables/"
 RBA_F17_DISCOUNT_URL = "https://www.rba.gov.au/statistics/tables/csv/f17-discount-factors.csv"
@@ -196,7 +204,7 @@ def parse_boc_zero_curve_bytes(data: bytes) -> dict[str, Any]:
         "discount_factors": discount,
         "forward_rates": {},
         "compounding": "BoC published zero yields converted to semi-annual government-bond proxy discount factors",
-        "source_url": BOC_ZERO_CURVE_URL,
+        "source_url": BOC_ZERO_CURVE_PAGE,
         "source_page": BOC_ZERO_CURVE_PAGE,
     }
 
@@ -289,8 +297,9 @@ def collect_official_curves(*, today: date, fetch_bytes: FetchBytes) -> dict[str
         # legacy lookupPage/startRange parameters remain in the URL because the
         # endpoint historically requires dataset context; Referer identifies the
         # authoritative page if the endpoint ignores the legacy fields.
+        boc_url = boc_zero_curve_url(today)
         boc = fetch_bytes(
-            BOC_ZERO_CURVE_URL,
+            boc_url,
             user_agent=(
                 "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
                 "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
@@ -298,6 +307,7 @@ def collect_official_curves(*, today: date, fetch_bytes: FetchBytes) -> dict[str
             referer=BOC_ZERO_CURVE_PAGE,
         )
         countries["CA"] = parse_boc_zero_curve_bytes(boc)
+        countries["CA"]["source_url"] = boc_url
     except Exception as exc:
         countries["CA"] = {"status": "unavailable", "error": str(exc)}
         errors["CA"] = str(exc)
