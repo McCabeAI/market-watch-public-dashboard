@@ -248,10 +248,9 @@ def validate_preflight(
             + ", ".join(failed)
         )
 
-    # Policy-path context is not optional for a full live Trader Room. Sovereign
-    # yields can flag an extreme, but they cannot tell the room what central-bank
-    # path is already discounted. US/CA/AU must all be present before the 14-seat
-    # debate spends model budget.
+    # Policy context and tradable rates curves are distinct. The room needs both:
+    # overnight/policy expectations for context, and SR3/CRA/IB for paper rates
+    # expressions that can be entered and re-marked consistently.
     market = packet.get("market_state") or {}
     if market.get("status") != "unavailable":
         policy = market.get("policy_paths") or {}
@@ -264,7 +263,20 @@ def validate_preflight(
             raise EvidencePreflightError(
                 "policy-path context missing for "
                 + ", ".join(missing_paths)
-                + "; refusing to build short-rate/rates-RV ideas from sovereign yields alone"
+                + "; refusing to spend the 14-agent run without priced policy context"
+            )
+        tradable = market.get("tradable_rate_curves") or {}
+        curves = tradable.get("curves") or {}
+        missing_curves = [
+            curve_id for curve_id in ("SOFR", "CORRA", "AONIA")
+            if (curves.get(curve_id) or {}).get("status") != "ok"
+            or not (curves.get(curve_id) or {}).get("contracts")
+        ]
+        if missing_curves:
+            raise EvidencePreflightError(
+                "tradable rates curve missing for "
+                + ", ".join(missing_curves)
+                + "; refusing to spend the 14-agent run on unmarkable rates ideas"
             )
     return {
         "families": statuses,
