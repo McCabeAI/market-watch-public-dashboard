@@ -54,8 +54,8 @@ POLICIES = {
         "required": {
             "version": 1,
             "run_type": "trader-room-ondemand",
-            "total_model_cap": 57,
-            "grok_cap": 29,
+            "total_model_cap": 60,
+            "grok_cap": 32,
             "composer_cap": 28,
             "parent_model": "grok-4.6",
             "parent_total": 1,
