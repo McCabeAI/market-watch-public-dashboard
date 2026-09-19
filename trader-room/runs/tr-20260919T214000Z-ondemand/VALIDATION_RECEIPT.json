@@ -55,6 +55,7 @@
   "pr_url": "https://github.com/McCabeAI/market-watch-public-dashboard/pull/47",
   "status": "ROUND1_IN_FLIGHT",
   "round1_submissions_persisted": [
+    "catalyst-junkie",
     "cross-merchant",
     "mean-reverter",
     "no-trade-skeptic",
@@ -66,15 +67,13 @@
     "value-guy",
     "vol-convexity"
   ],
-  "round1_submissions_count": 10,
+  "round1_submissions_count": 11,
   "round1_missing": [
     "dollar-king",
     "carry-is-king",
-    "positioning-cynic",
-    "catalyst-junkie"
+    "positioning-cynic"
   ],
   "notes": [
-    "dollar-king and positioning-cynic completed in Ask mode without emitting contribution JSON; parent resuming those two seats to recover the already-constructed payloads.",
-    "carry-is-king and catalyst-junkie still outstanding."
+    "dollar-king, positioning-cynic, and carry-is-king completed in Ask mode without emitting contribution JSON; those seats were resumed to paste the already-constructed payloads."
   ]
 }
