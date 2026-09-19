@@ -390,12 +390,20 @@ def build_launch_plan(packet: dict[str, Any]) -> dict[str, Any]:
         ],
         "conflict_stage": {"type": "deterministic_conflict_synopsis_v1", "model_calls": 0},
         "final_handoff": {"type": "deterministic_pm_handoff_v1", "model_calls": 0},
+        "pm_layer": {
+            "model": "grok-4.6",
+            "pm_ids": ["swinger-pm", "pragmatist-pm", "grinder-pm"],
+            "model_calls": 3,
+            "subagents": 0,
+            "chatgpt_pm": "separate deterministic ingest after arbitration",
+        },
         "ceilings": {
             "repository_grok_baseline": 14,
             "grok_rebuttal_max": 14,
-            "repository_grok_ceiling": 28,
+            "repository_debate_grok_ceiling": 28,
+            "pm_grok_calls": 3,
             "composer_ceiling": 28,
-            "acp_parent_inclusive_grok_ceiling": 29,
-            "acp_parent_inclusive_total_ceiling": 57,
+            "acp_parent_inclusive_grok_ceiling": 32,
+            "acp_parent_inclusive_total_ceiling": 60,
         },
     }
