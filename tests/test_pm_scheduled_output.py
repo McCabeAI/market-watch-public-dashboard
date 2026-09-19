@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import unittest
 
-from scripts.overnight.scheduled_output import validate_output
+from scripts.overnight.scheduled_output import apply_output, validate_output
 from scripts.pm.automated import validate_pm_decisions
 from scripts.pm.errors import SchemaError
 from tests.test_overnight_scheduled_output import ScheduledOutputTests
@@ -31,9 +31,18 @@ class OptionalAutomatedPMDecisionTests(ScheduledOutputTests):
     def test_legacy_fourteen_seat_output_without_pm_decisions_remains_valid(self) -> None:
         self.assertNotIn("pm_decisions", self.payload)
         validate_output(self.store, self.payload)
-        review = self._simulate()
+        review = apply_output(self.store, self.payload)
         self.assertEqual(review["status"], "succeeded")
         self.assertNotIn("pm_books", review)
+        self.assertEqual(review["pm_packets"]["source"], "overnight_scheduled_review")
+        self.assertEqual(review["pm_packets"]["overnight_run_id"], self.run_id)
+        from scripts.pm.store import PMStore
+
+        pm_store = PMStore(root=self.store.root, state_root=self.state_root)
+        chatgpt = pm_store.read_json(pm_store.packet_path("chatgpt"))
+        self.assertEqual(chatgpt["overnight_run_id"], self.run_id)
+        self.assertEqual(chatgpt["source"], "overnight_scheduled_review")
+        self.assertEqual(pm_store.read_books()["pms"]["chatgpt"]["decision_status"], "awaiting_chatgpt_decision")
 
     def test_complete_three_pm_block_is_accepted(self) -> None:
         packet = self.payload["agent_packet"]

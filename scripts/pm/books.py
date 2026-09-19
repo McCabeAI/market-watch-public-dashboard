@@ -107,6 +107,7 @@ def empty_pm_book(pm_id: str) -> dict[str, Any]:
 def empty_books(
     *,
     trader_room_run_id: str | None = None,
+    overnight_run_id: str | None = None,
     when: datetime | None = None,
 ) -> dict[str, Any]:
     stamp = isoformat(now_ny(when))
@@ -115,6 +116,7 @@ def empty_books(
         "type": "PM_BOOKS",
         "gross_notional_limit_usd": GROSS_NOTIONAL_LIMIT_USD,
         "as_of": stamp,
+        "overnight_run_id": overnight_run_id,
         "trader_room_run_id": trader_room_run_id,
         "evidence_cutoff": None,
         "pms": {pm_id: empty_pm_book(pm_id) for pm_id in PM_IDS},
@@ -468,7 +470,10 @@ def apply_decision(
     if evidence_cutoff:
         out["evidence_cutoff"] = evidence_cutoff
     if run_id:
-        out["trader_room_run_id"] = out.get("trader_room_run_id") or run_id
+        if str(run_id).startswith("overnight-"):
+            out["overnight_run_id"] = run_id
+        else:
+            out["trader_room_run_id"] = out.get("trader_room_run_id") or run_id
     mark_pm_book(book)
     return out
 
@@ -570,6 +575,7 @@ def public_pm_view(books: dict[str, Any]) -> dict[str, Any]:
         "schema_version": SCHEMA_VERSION,
         "type": "PM_PUBLIC_BOOKS",
         "as_of": books.get("as_of"),
+        "overnight_run_id": books.get("overnight_run_id"),
         "trader_room_run_id": books.get("trader_room_run_id"),
         "evidence_cutoff": books.get("evidence_cutoff"),
         "gross_notional_limit_usd": GROSS_NOTIONAL_LIMIT_USD,

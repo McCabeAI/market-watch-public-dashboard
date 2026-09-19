@@ -4,6 +4,7 @@
     "HOLD",
     "NO_TRADE"
   ],
+  "base_packet_sha256": null,
   "conflicts": {
     "challenges": [
       {
@@ -1225,6 +1226,9 @@
       "Official sovereign zero/forward curves are missing from this frozen packet."
     ]
   },
+  "overnight_books": null,
+  "overnight_review": null,
+  "overnight_run_id": null,
   "pm_id": "grinder",
   "prior_book": {
     "alerts": [],
@@ -1244,12 +1248,15 @@
     "total_pnl_usd": 0.0,
     "unrealized_pnl_usd": 0.0
   },
+  "research_supplement": null,
   "review_packet_id": "prp-grinder-tr-20260919T123430Z-ondemand",
-  "review_packet_sha256": "48c2323c2da173ffcfaee551bc47bc55b0f5fd592f90ed7ab80140b08290d24c",
+  "review_packet_sha256": "867b5824bba80bd2e16e6a841a7ee446cc9f4d9156884865bf9f8810eda3078e",
   "schema_version": 1,
+  "source": "on_demand_trader_room_fallback",
   "stale_or_missing_warnings": [
     "SOFR/CORRA/AONIA tradable futures curves are missing from this frozen packet.",
-    "Official sovereign zero/forward curves are missing from this frozen packet."
+    "Official sovereign zero/forward curves are missing from this frozen packet.",
+    "PM packet source is the on-demand Trader Room fallback, not a successful overnight 14-seat review."
   ],
   "trader_room": {
     "as_of": "2026-09-19T12:34:30Z",

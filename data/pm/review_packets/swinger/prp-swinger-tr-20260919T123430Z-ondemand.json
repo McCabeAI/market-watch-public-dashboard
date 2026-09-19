@@ -4,6 +4,7 @@
     "HOLD",
     "NO_TRADE"
   ],
+  "base_packet_sha256": null,
   "conflicts": {
     "challenges": [
       {
@@ -1225,6 +1226,9 @@
       "Official sovereign zero/forward curves are missing from this frozen packet."
     ]
   },
+  "overnight_books": null,
+  "overnight_review": null,
+  "overnight_run_id": null,
   "pm_id": "swinger",
   "prior_book": {
     "alerts": [],
@@ -1244,12 +1248,15 @@
     "total_pnl_usd": 0.0,
     "unrealized_pnl_usd": 0.0
   },
+  "research_supplement": null,
   "review_packet_id": "prp-swinger-tr-20260919T123430Z-ondemand",
-  "review_packet_sha256": "05ad5dc3642afec2601ad898cb1fc1f13593f172fd5c2a6ac58feee949cf4e9b",
+  "review_packet_sha256": "8369a028ab0709bf4a1d8237ab19dcae0c5facdb543c5f77c275d5b663df9281",
   "schema_version": 1,
+  "source": "on_demand_trader_room_fallback",
   "stale_or_missing_warnings": [
     "SOFR/CORRA/AONIA tradable futures curves are missing from this frozen packet.",
-    "Official sovereign zero/forward curves are missing from this frozen packet."
+    "Official sovereign zero/forward curves are missing from this frozen packet.",
+    "PM packet source is the on-demand Trader Room fallback, not a successful overnight 14-seat review."
   ],
   "trader_room": {
     "as_of": "2026-09-19T12:34:30Z",

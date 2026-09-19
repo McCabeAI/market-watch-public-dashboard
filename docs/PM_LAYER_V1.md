@@ -43,12 +43,15 @@ Deterministic per-PM artifact:
 data/pm/review_packets/<pm_id>/latest.json
 ```
 
-Each packet has a stable `review_packet_id` / `review_packet_sha256`, the evidence cutoff, compact frozen evidence and market state, SOFR/CORRA/AONIA and sovereign-curve availability, the full finalized 14-seat public Trader Room output, compact conflicts/rebuttals, **only that PM's prior book**, allowable actions, gross limit/utilization, and unresolved future data requests.
+Daily packets are generated from the latest **successful overnight 14-seat scheduled review**, not from the newest on-demand Trader Room run. Each packet records `source=overnight_scheduled_review`, the overnight run id, the final agent-packet cutoff/hash, compact frozen evidence and market state, SOFR/CORRA/AONIA and sovereign-curve availability, the accepted 14 trader decisions, overnight research supplement/canonical books when present, **only that PM's prior book**, allowable actions, gross limit/utilization, and unresolved future data requests.
 
-Refresh:
+All four PMs share the same overnight evidence boundary and 14-seat output. On-demand Trader Room publication stays independent. If no overnight review exists yet, `init` / `refresh-packets --allow-trader-room-fallback` may use `source=on_demand_trader_room_fallback`. That fallback is labeled and never treated as a fresher overnight packet.
+
+Refresh is wired into overnight scheduled-output apply (and assemble catch-up). No new model/provider clock:
 
 ```bash
 PYTHONPATH=. python scripts/pm_layer.py refresh-packets
+PYTHONPATH=. python scripts/pm_layer.py refresh-packets --allow-trader-room-fallback
 ```
 
 ## ChatGPT ingest

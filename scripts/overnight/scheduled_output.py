@@ -22,7 +22,7 @@ from scripts.overnight.errors import EvidenceBoundaryError, SchemaError
 from scripts.overnight.evidence import require_snapshot
 from scripts.overnight.ledger import load_or_create, mark_finished, mark_running, persist_run
 from scripts.overnight.store import OvernightStore, sha256_json
-from scripts.pm.automated import apply_automated_pm_decisions, validate_pm_decisions
+from scripts.pm.automated import validate_pm_decisions
 
 SCHEDULE_ID = "market-watch-weekday-0205"
 OUTPUT_TYPE = "OVERNIGHT_SCHEDULED_OUTPUT"
@@ -227,27 +227,6 @@ def _apply_validated(
         "books": updated,
     }
 
-    if payload.get("pm_decisions"):
-        from scripts.pm.books import empty_books, validate_books as validate_pm_books
-        from scripts.pm.store import PMStore
-
-        pm_store = PMStore(root=store.root, state_root=store.state_root)
-        if pm_store.books_path().is_file():
-            pm_books = validate_pm_books(pm_store.read_books())
-        else:
-            pm_books = empty_books(trader_room_run_id=run_id)
-        market_state = (base.get("families", {}).get("market_state", {}) or {}).get("data")
-        pm_books = apply_automated_pm_decisions(
-            pm_books,
-            payload["pm_decisions"],
-            market_state=market_state,
-            run_id=run_id,
-            evidence_cutoff=payload["agent_packet"]["evidence_cutoff"],
-        )
-        review["pm_books"] = pm_books
-        if write:
-            pm_store.write_books(pm_books)
-
     if write:
         store.write_artifact(run_id, "agent_evidence_packet.json", payload["agent_packet"])
         store.write_artifact(run_id, "scheduled_output.json", payload)
@@ -274,7 +253,55 @@ def _apply_validated(
             },
         )
         persist_run(store, run)
+        review["pm_packets"] = _refresh_pm_after_overnight(store, run_id, payload, review)
     return review
+
+
+def _refresh_pm_after_overnight(
+    store: OvernightStore,
+    run_id: str,
+    payload: dict[str, Any],
+    review: dict[str, Any],
+) -> dict[str, Any]:
+    """Daily PM packets follow this accepted overnight 14-seat review. No Trader Room run."""
+    from scripts.pm.automated import apply_automated_pm_decisions
+    from scripts.pm.books import validate_books as validate_pm_books
+    from scripts.pm.cli import refresh_packets
+    from scripts.pm.review_packets import market_state_from_source, source_from_overnight_run
+    from scripts.pm.store import PMStore
+
+    pm_store = PMStore(root=store.root, state_root=store.state_root)
+    source = source_from_overnight_run(store.run_dir(run_id), review=review)
+    summary = refresh_packets(
+        pm_store,
+        allow_trader_room_fallback=False,
+        overnight_run_id=run_id,
+        source=source,
+    )
+    if payload.get("pm_decisions"):
+        packets = {
+            pm_id: pm_store.read_json(pm_store.packet_path(pm_id))
+            for pm_id in ("chatgpt", "swinger", "pragmatist", "grinder")
+        }
+        pm_books = validate_pm_books(pm_store.read_books())
+        pm_books = apply_automated_pm_decisions(
+            pm_books,
+            payload["pm_decisions"],
+            market_state=market_state_from_source(source),
+            run_id=run_id,
+            evidence_cutoff=payload["agent_packet"]["evidence_cutoff"],
+            packets=packets,
+        )
+        review["pm_books"] = pm_books
+        pm_store.write_books(pm_books)
+        summary = refresh_packets(
+            pm_store,
+            allow_trader_room_fallback=False,
+            overnight_run_id=run_id,
+            source=source,
+        )
+    review["pm_source"] = summary.get("source")
+    return summary
 
 
 def simulate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str, Any]:

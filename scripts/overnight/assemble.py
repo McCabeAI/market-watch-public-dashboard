@@ -98,6 +98,19 @@ def assemble_dataset(
     }
     validate_dataset(dataset)
     store.write_artifact(run_id, "assembled_dataset.json", dataset)
+    if last_success:
+        try:
+            from scripts.pm.cli import refresh_packets
+            from scripts.pm.store import PMStore
+
+            refresh_packets(
+                PMStore(root=store.root, state_root=store.state_root),
+                allow_trader_room_fallback=False,
+                overnight_run_id=last_success,
+            )
+        except Exception:
+            # Morning assembly still publishes trader books if PM refresh cannot run.
+            pass
     store.write_latest(
         {
             "overnight_run_id": run_id,

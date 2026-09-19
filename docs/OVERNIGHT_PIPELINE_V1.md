@@ -139,6 +139,8 @@ The dedicated spot seats remain spot-only. Rates-capable seats compare a rates c
 
 `.github/workflows/overnight-scheduled-output.yml` uses `pull_request_target` so the gate runs trusted code from `main`, not provider-authored code.
 
+After a successful 14-seat apply, trusted code also refreshes the four daily PM review packets from that overnight run's frozen agent packet, accepted trader decisions, research supplement, market state, and canonical books. This is not a second model clock and does not require an on-demand Trader Room run.
+
 The gate:
 
 1. requires a same-repository PR titled `[overnight-output] ...`;

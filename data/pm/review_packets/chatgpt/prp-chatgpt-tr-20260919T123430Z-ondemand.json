@@ -4,6 +4,7 @@
     "HOLD",
     "NO_TRADE"
   ],
+  "base_packet_sha256": null,
   "conflicts": {
     "challenges": [
       {
@@ -1225,6 +1226,9 @@
       "Official sovereign zero/forward curves are missing from this frozen packet."
     ]
   },
+  "overnight_books": null,
+  "overnight_review": null,
+  "overnight_run_id": null,
   "pm_id": "chatgpt",
   "prior_book": {
     "alerts": [],
@@ -1244,12 +1248,15 @@
     "total_pnl_usd": 0.0,
     "unrealized_pnl_usd": 0.0
   },
+  "research_supplement": null,
   "review_packet_id": "prp-chatgpt-tr-20260919T123430Z-ondemand",
-  "review_packet_sha256": "79ad8bb59879a7ec21024e1424dc507b9e64060fc2b246b9e6053d83f74d2773",
+  "review_packet_sha256": "5a7f03c4b2bda62a5287b546cdd37c2839c388ffb6323fb618e54845b2179107",
   "schema_version": 1,
+  "source": "on_demand_trader_room_fallback",
   "stale_or_missing_warnings": [
     "SOFR/CORRA/AONIA tradable futures curves are missing from this frozen packet.",
-    "Official sovereign zero/forward curves are missing from this frozen packet."
+    "Official sovereign zero/forward curves are missing from this frozen packet.",
+    "PM packet source is the on-demand Trader Room fallback, not a successful overnight 14-seat review."
   ],
   "trader_room": {
     "as_of": "2026-09-19T12:34:30Z",
