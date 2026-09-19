@@ -10,6 +10,8 @@ from scripts.policy_path_data import (
     parse_boc_corra_json,
     parse_cme_sofr_bulletin_text,
     parse_cme_sr3_bulletin_text,
+    parse_cme_sr3_html,
+    parse_cme_sr3_settlements_json,
     parse_cme_sofr_html,
     parse_cme_sofr_settlements_json,
     parse_esignal_sofr_html,
@@ -85,6 +87,33 @@ TOTAL SR1 FUT 0 127818 1302349 + 11967
         self.assertEqual(rows[0]["expiry"], "2026-09")
         self.assertEqual(rows[1]["implied_rate"], 3.91)
         self.assertEqual(rows[2]["change_from_overnight_bps"], 35.0)
+
+    def test_cme_sr3_quote_page(self):
+        html = """
+        <table>
+          <tr><th>Month</th><th>Options</th><th>Chart</th><th>Last</th><th>Change</th><th>PriorSettle</th><th>Open</th><th>High</th><th>Low</th><th>Volume</th><th>Updated</th></tr>
+          <tr><td>DEC 2026<br>SR3Z6</td><td>Opt</td><td>Chart</td><td>95.68</td><td>-0.01</td><td>-</td><td>95.70</td><td>95.705</td><td>95.675</td><td>353,812</td><td>18 Sep 2026</td></tr>
+          <tr><td>MAR 2027<br>SR3H7</td><td>Opt</td><td>Chart</td><td>95.42</td><td>-0.03</td><td>-</td><td>95.47</td><td>95.47</td><td>95.41</td><td>371,935</td><td>18 Sep 2026</td></tr>
+          <tr><td>APR 2027<br>SR3J7</td><td>Opt</td><td>Chart</td><td>95.30</td><td>-0.02</td><td>-</td><td>95.31</td><td>95.32</td><td>95.29</td><td>10</td><td>18 Sep 2026</td></tr>
+        </table>
+        """
+        rows = parse_cme_sr3_html(html, benchmark=3.85)
+        self.assertEqual([r["code"] for r in rows], ["SR3Z6", "SR3H7"])
+        self.assertEqual(rows[0]["implied_rate"], 4.32)
+        self.assertEqual(rows[1]["volume"], 371935.0)
+
+    def test_cme_sr3_settlement_api(self):
+        payload = json.dumps({
+            "settlements": [
+                {"month": "DEC 26", "settle": "95.7000", "volume": "353812", "openInterest": "1800000"},
+                {"month": "MAR 27", "settle": "95.4700", "volume": "371935", "openInterest": "1700000"},
+                {"month": "APR 27", "settle": "95.3000", "volume": "10", "openInterest": "100"},
+            ]
+        })
+        rows = parse_cme_sr3_settlements_json(payload, benchmark=3.85)
+        self.assertEqual([r["code"] for r in rows], ["SR3Z6", "SR3H7"])
+        self.assertEqual(rows[0]["implied_rate"], 4.3)
+        self.assertEqual(rows[1]["open_interest"], 1700000.0)
 
     def test_cme_daily_bulletin_sr3(self):
         text = """
