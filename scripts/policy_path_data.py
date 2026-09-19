@@ -15,7 +15,7 @@ import html
 import io
 import json
 import re
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from html.parser import HTMLParser
 from typing import Any, Callable
 
@@ -414,8 +414,8 @@ def parse_rba_f1_csv(text: str) -> dict[str, Any]:
         if not o or not b:
             basis[tenor] = None
         else:
-            o_date = date.fromisoformat(__import__("datetime").datetime.strptime(o["as_of"], "%d-%b-%Y").date().isoformat())
-            b_date = date.fromisoformat(__import__("datetime").datetime.strptime(b["as_of"], "%d-%b-%Y").date().isoformat())
+            o_date = datetime.strptime(o["as_of"], "%d-%b-%Y").date()
+            b_date = datetime.strptime(b["as_of"], "%d-%b-%Y").date()
             if abs((b_date - o_date).days) > 7:
                 basis[tenor] = {
                     "status": "unavailable_cross_vintage",
