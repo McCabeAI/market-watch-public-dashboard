@@ -188,6 +188,7 @@ class TradingMemoryTests(unittest.TestCase):
             evidence_cutoff="2026-09-20T12:00:00-04:00", store=self.store,
             memory_hashes=self.hashes, when=AS_OF, market_state=MARKET,
         )
+        reduced_market = {"fx": {"pairs": {"USDCAD": {"spot": 1.40, "as_of": "2026-09-21"}}}}
         reduce = _hold_reviews(self.hashes)
         reduce["dollar-king"] = {
             "seat": "dollar-king",
@@ -198,7 +199,7 @@ class TradingMemoryTests(unittest.TestCase):
                 "action": "REDUCE",
                 "position_id": pos_id,
                 "notional_usd": 4_000_000,
-                "price": 1.3736,
+                "price": 1.40,
                 "rationale": "Take partial profits.",
                 "expression_memo": _spot_memo(),
             }],
@@ -206,7 +207,7 @@ class TradingMemoryTests(unittest.TestCase):
         books = apply_trader_review_with_memory(
             books, reduce, families=_fresh_families(), run_id="overnight-20260921",
             evidence_cutoff="2026-09-21T12:00:00-04:00", store=self.store,
-            memory_hashes=self.hashes, when=AS_OF, market_state=MARKET,
+            memory_hashes=self.hashes, when=AS_OF, market_state=reduced_market,
         )
         trade = find_trade_by_position(self.store, owner_type="trader", owner_id="dollar-king", position_id=pos_id)
         assert trade is not None
@@ -221,7 +222,7 @@ class TradingMemoryTests(unittest.TestCase):
             "actions": [{
                 "action": "CLOSE",
                 "position_id": pos_id,
-                "price": 1.3736,
+                "price": 1.40,
                 "rationale": "Thesis complete.",
                 "exit_reason_category": "target_reached",
                 "expression_memo": _spot_memo(),
@@ -230,12 +231,12 @@ class TradingMemoryTests(unittest.TestCase):
         books = apply_trader_review_with_memory(
             books, close, families=_fresh_families(), run_id="overnight-20260922",
             evidence_cutoff="2026-09-22T12:00:00-04:00", store=self.store,
-            memory_hashes=self.hashes, when=AS_OF, market_state=MARKET,
+            memory_hashes=self.hashes, when=AS_OF, market_state=reduced_market,
         )
         self.assertFalse(any(p["position_id"] == pos_id for p in books["seats"]["dollar-king"]["positions"]))
         trade = self.store.read_trade(trade["trade_id"])
         self.assertEqual(trade["status"], "closed")
-        self.assertEqual(trade["exit_mark"], 1.3736)
+        self.assertEqual(trade["exit_mark"], 1.4)
         self.assertEqual(trade["exit_rationale"], "Thesis complete.")
         self.assertGreater(trade["realized_pnl_usd"], partial)
         self.assertIsNotNone(trade["holding_duration_seconds"])

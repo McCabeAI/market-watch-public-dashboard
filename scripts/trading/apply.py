@@ -123,6 +123,11 @@ def _sync_history_row(
         mark = current.get("entry_price") if kind in {"OPEN", "HEDGE", "ADD"} else current.get("mark_price")
     if mark in (None, "") and prior is not None:
         mark = prior.get("mark_price") or prior.get("entry_price")
+    realized = row.get("realized_pnl_usd") or action.get("realized_pnl_usd")
+    if realized in (None, "") and kind in {"REDUCE", "CLOSE"} and prior and mark not in (None, "") and notional_change not in (None, ""):
+        from scripts.overnight.books import realized_increment
+
+        realized = realized_increment(prior, exit_price=float(mark), closed_notional=float(notional_change))
 
     linked: list[str] = []
     if kind == "HEDGE":
@@ -207,7 +212,7 @@ def _sync_history_row(
         mark_as_of=row.get("paper_mid_as_of") or (current or prior or {}).get("entry_price_as_of"),
         notional_change_usd=notional_change,
         current_notional_usd=current_notional,
-        realized_increment_usd=row.get("realized_pnl_usd") or action.get("realized_pnl_usd"),
+        realized_increment_usd=realized,
         rationale=rationale,
         rationale_status=status,
         thesis=action.get("thesis") or decision.get("thesis"),
@@ -398,13 +403,17 @@ def apply_pm_decision_with_memory(
 ) -> dict[str, Any]:
     store.ensure_initialized()
     stamp = now_ny(when)
+    decision = deepcopy(decision)
+    expected = expected_memory_sha256 or decision.get("memory_context_sha256")
+    if expected and not decision.get("memory_context_sha256"):
+        decision["memory_context_sha256"] = expected
     _prepare_identity(
         store,
         decision,
         owner_type="pm",
         owner_id=pm_id,
         run_id=run_id,
-        expected_memory_sha256=expected_memory_sha256 or decision.get("memory_context_sha256"),
+        expected_memory_sha256=expected,
         when=stamp,
     )
     prior = {p["position_id"]: deepcopy(p) for p in books["pms"][pm_id].get("positions") or []}

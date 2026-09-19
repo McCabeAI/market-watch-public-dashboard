@@ -202,7 +202,7 @@ def build_memory_context(
         ],
         "open_positions": open_position_context(trades),
     }
-    digest = sha256_json({k: v for k, v in body.items() if k != "memory_context_sha256"})
+    digest = sha256_json({k: v for k, v in body.items() if k not in {"memory_context_sha256", "as_of"}})
     body["memory_context_sha256"] = digest
     store.write_context(owner_type, owner_id, body)
     return body

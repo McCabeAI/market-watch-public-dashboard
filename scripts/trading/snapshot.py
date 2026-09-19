@@ -103,7 +103,6 @@ def compact_memory_for_packet(store: TradingStore, owner_type: str, owner_id: st
         "active_lessons": context["active_lessons"],
         "postmortems_due": context["postmortems_due"],
         "open_positions": context["open_positions"],
-        "as_of": context["as_of"],
     }
 
 
