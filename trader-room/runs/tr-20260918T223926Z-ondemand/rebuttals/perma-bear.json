@@ -1,0 +1,93 @@
+{
+  "agent": "perma-bear",
+  "attack": "The USD-down and NZD-up cases treat either complacent beta or an already-washed NZD as the growth expression. perma-bull's duration-neutral 2s10s steepener and long-NZDUSD overlay convert low VIX/tight HY into a pro-growth signal; the same packet has US activity 49.92, US consumer 48.5, energy at 1y extremes, and a delivered Fed hike plus BoJ 1.25% and BoE 6-3 QT. That is underpriced fragility, not confirmation that 25bp 2s10s (5y percentile 54%) must steepen. value-guy's USD-down is receive-US-5Y after US 5Y already sits near the top of its 1y distribution; Canada labor 48.8 (employment -42k, U 6.4%, wages +2.0%) and on-target core mean BoC catch-up is optional, not a USD-bear. cross-merchant/vol-convexity short AUDNZD to own NZD-up. Their own decomposition says the 5y z 3.12 extreme is NZDUSD -3.90% 1m through a GDP slowdown to +0.2% q/q, not AUD melt-up. Long NZD here is long the weakest labor market (47.0, U 5.6%) and the higher-RV G10 commodity currency into energy and global tightening, with NZ yields missing so carry cannot even be measured. A put spread does not fix a wrong NZD sign: implied vol is unquoted, and the structure still has long-NZD delta.",
+  "defense": "Receive AU 2Y is unchanged. The housing/labor break (stamp duty -24% y/y, volumes -18%, prices more than 7% off peak; AU labor 47.8) versus AU 2Y at 4.999%, 99.0th/99.8th percentile 1y/5y, is still the cleanest documented growth-path mispricing. USD-higher is a conflict tag consistent with the Fed/BoJ/BoE overlay, not a mandate to pay already-100th-percentile US 2Y or to short AUDUSD at only the 84th 5y percentile and cheap versus copper. NZD-lower is a conflict tag I will not express by buying NZD: AUDNZD shorts import the wrong-side Pacific leg. 2Y owns the RBA path; AU 10Y and US 2s10s are more exposed to the energy term-premium the desk flags. Allies on USD-up (dollar-king, trend-follower) do not improve the local AU duration expression.",
+  "holes_in_opposing_case": [
+    "perma-bull reads VIX 15.44 (14.7th percentile), HY OAS 270bp (13.7th) and SPX near the 90th as expansion confirmation; those are the complacent risk prices against Brent 130.8 (99.6th) and WTI 107 (96th) plus a live Fed/BoJ/BoE tightening overlay, not a growth green light. US activity is already 49.92 and consumer 48.5 (Michigan preliminary September 47.8, Q2 GDP +1.5% SAAR vs +2.1% Q1).",
+    "perma-bull's US 2s10s 25bp is extreme only on the 1y/252-observation window (1y percentile 0.2, z_1y -2.45, 1m -21bp). The 5y percentile is 54% with z_5y +0.33, so 'recession flatten overshot' is a 1y-distribution fade, not 5y cheapness, and paying 10s fights the desk's energy/term-premium overlay.",
+    "perma-bull's NZD-up / long NZDUSD rests on Q2 GDP +0.2% q/q 'beating forecasts'. That print is a deceleration from +0.8% q/q in Q1 (activity impulse -2). NZ labor is the weakest of the four-country set at 47.0 (unemployment 5.6%, LCI wages +2.0% y/y) and NZ consumer is 48.5 with retail volumes -0.5% q/q. NZDUSD is already 8.6th percentile 5y, z -1.15, -3.90% 1m / -1.90% 5d / -0.56% 1d.",
+    "value-guy's USD-down is a side-effect of receiving already-extreme US 5Y (4.86%, ~99.6th percentile) after a >90% priced 25bp hike. Canada labor is already 48.8: employment -42k, unemployment 6.4% unchanged, wages +2.0% y/y vs +2.8%. Core is at target (CPI-trim 1.9%, CPI-median 2.0%). Headline 3.0% vs Bank Rate 2.25% is a conditional energy-pass-through trigger, not a USD-bear. Saudi Oman workaround already cut the extreme oil-supply tail.",
+    "cross-merchant and vol-convexity long NZD via short AUDNZD. They admit the 1m +4.27% AUDNZD move (spot 1.2468, 5y percentile 99.96, z 3.12) is NZDUSD underperformance versus a still-bid dollar, not independent AUD strength (AUDUSD +0.20% 1m, 84th percentile 5y). Long NZD in an energy/G10-tightening, risk-off regime owns the higher-beta 8.6th-percentile funding currency. Official NZ yields are unavailable (HTTP 403), so AUDNZD carry and AU-NZ 2Y RV cannot be signed. NZ labor (47.0, U 5.6%) is weaker than AU labor (47.8, U 4.5%).",
+    "vol-convexity cannot claim vol cheapness: implied vol, 25d risk-reversal and fly are missing. AUDNZD 20d realized is only 5.09% (NZDUSD 6.31%). A 1-3m put spread still has long-NZD delta that leaks if NZD keeps cheapening through the tightening/energy overlay. VIX at the 15th percentile is equity vol, not an AUDNZD implied-cheapness proof."
+  ],
+  "opponents": [
+    "perma-bull",
+    "value-guy",
+    "cross-merchant",
+    "vol-convexity"
+  ],
+  "own_original_ref": "trader-room/runs/tr-20260918T223926Z-ondemand/submissions/perma-bear.json",
+  "packet_sha256": "b4c642412ddcc969d6fd135638baede8f3e9f987015684f2085c8460c3af466a",
+  "revised_trade": {
+    "asset_class": "rates",
+    "catalysts": [
+      "Further Australian housing, employment, or activity prints confirming the tightening channel is still contracting.",
+      "RBA communication that the housing/labor deterioration constrains further tightening despite the global energy overlay.",
+      "Risk-off transmission from still-complacent equity/credit/vol into G10 duration if the energy shock and broader tightening stay live."
+    ],
+    "confidence": 61,
+    "direction": "receive",
+    "entry": null,
+    "evidence_refs": [
+      "mw_20260916_au_housing_tightening",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "temp:AU:labor",
+      "temp:AU:activity",
+      "temp:AU:inflation",
+      "temp:AU:consumer",
+      "rates:AU",
+      "rates:US",
+      "market_state",
+      "xa:opportunities",
+      "last24:2026-09-18:desk-thesis",
+      "macro:desk-18sep",
+      "rollup:Fed raises 25bp to 3.75\u20134.00%",
+      "rollup:August CPI keeps the Fed tightening bias intact",
+      "last24:2026-09-18:boj-raises-its-policy-rate-to-1-25",
+      "last24:2026-09-18:boe-holds-3-75-but-three-members-vote-to-hike",
+      "rollup:Energy-market shock absorbers weaken",
+      "mw_20260916_saudi_oman_workaround",
+      "fx:AUDUSD",
+      "research_method",
+      "pos:unavailable"
+    ],
+    "expression_comparison": {
+      "rates_candidate": "Receive Australian 2-year government bonds (outright long front-end duration on RBA F2 2Y; research/reference yields only).",
+      "rationale": "Rates is the cleaner owner of the discrepancy: AU 2Y sits at a 99th-percentile 1y and 5y stretch while the housing-credit channel is already contracting, so the mispricing is the RBA path not the FX level. Spot AUDUSD is only 84th percentile 5y and already cheap vs copper on the packet residual, so a short is less aligned with where the gap lives. AUDCAD is more statistically extreme but mixes a 165bp AUD-over-CAD carry headwind with Canada energy support, so it is a dirtier slowdown expression. NZ rates RV is unavailable (official B2 403). Curve steepener (receive 2s/pay 10s) is a valid hedge against the desk's term-premium overlay but AU 2s10s is only about the 24th percentile 1y and is not where the stretch or the housing mechanism sits; 2Y tenor owns the policy path and is less exposed to energy-driven term premium than 10Y. Mandate prefers rates when comparably clean; here rates is superior, not merely default.",
+      "selected": "rates",
+      "spot_candidate": "Short AUDUSD (fade still-elevated AUD vs USD as housing/labor slowdown and global tightening hit the cycle currency)."
+    },
+    "horizon": "4-8 weeks",
+    "instrument": "AU 2Y",
+    "invalidation": "Thesis is wrong if Australian housing volumes/prices stabilize and AU labor/activity reheat, or if energy pass-through / an RBA hike lifts AU 2Y as a continued tightening cycle rather than a growth break. Timing is merely delayed if 2Y stays high while housing/labor keep deteriorating.",
+    "macro_assumptions": {
+      "growth": "below_trend",
+      "policy": "dovish",
+      "rates": "easing_cycle",
+      "risk": "risk_off"
+    },
+    "mispricing": "AU 2Y at the 99th percentile 1y and 5y still embeds further RBA tightening after the housing channel has already broken (stamp duty -24%, volumes -18%, prices more than 7% off peak) and labor is loosening. Pricing requires housing/labor to re-accelerate or energy to reopen an AU inflation impulse; the packet's domestic gauges do not show that.",
+    "principal_risks": [
+      "Desk-thesis risk: energy shock keeps front-end yields rising even where domestic growth is softer, so receive-AU-2Y is fighting global tightening rather than owning a local pause.",
+      "Energy pass-through into AU inflation (trimmed mean still 3.6%) forces the RBA to hike into housing weakness (policy-error continuation, not pivot).",
+      "Saudi Oman crude workaround already reduced the extreme oil-supply tail, allowing a growth re-acceleration and bond selloff if energy fades.",
+      "No positioning/flow dataset: the AU 2Y extreme could already be owned, and executable levels are absent so sizing/entry cannot be priced from this packet."
+    ],
+    "stop": null,
+    "structure": "Outright receive AU 2Y government bonds / long front-end duration. Packet yields are RBA F2 research/reference closes, not executable broker prices.",
+    "target": null,
+    "thesis": "FACT: NSW stamp-duty receipts fell 24% y/y in August with transaction volumes -18% and Sydney/Melbourne home values more than 7% below peak; AU labor temperature is 47.8 (unemployment 4.5% from 4.4%, employment -15.8k m/m, WPI +3.2% y/y vs +3.4%); AU activity 49.2 with business conditions/confidence soft; headline CPI eased to 3.5% y/y while trimmed mean held 3.6%. FACT: AU 2Y yield is 4.999% as of 2026-09-16, 99.0th percentile 1y and 99.8th percentile 5y, +39bp 1m / +50bp 3m. FACT: Fed hiked 25bp to 3.75-4.00% with August CPI keeping a tightening bias; BoJ hiked to 1.25%; BoE held 3.75% but a 6-3 split with three members preferring a hike plus gilt QT; desk thesis is that the energy shock is constraining global easing and keeping term-rate pressure elevated even where growth is softer. FACT: SPX near the 90th percentile, VIX 15.44 near the 15th percentile, HY OAS 270bp near the 14th percentile, while Brent is 130.8 (near the 99.6th) and WTI 107 (near the 96th). INFERENCE: The tightening channel is already delivering an Australian housing/labor slowdown, so AU 2Y at a 5-year extreme is pricing additional RBA restraint that the domestic data cannot support; the global energy/tightening overlay is why duration has not rallied, which is the mispricing rather than a reason to pay more. 2Y is the correct tenor because it owns the RBA path; 10Y is contaminated by the same term-premium shock the desk flags. INFERENCE: Risk markets have not priced this cluster (complacent vol/credit vs energy and G10 tightening), so the growth-break remains available in rates. UNKNOWN: positioning/flow; executable AU bond prices; whether energy pass-through hits AU CPI next; RBNZ yields (official source blocked); whether the Saudi Oman workaround has already capped the oil tail.",
+    "why_now": [
+      "Sep 16 housing evidence shows the RBA tightening channel biting in real time (stamp duty, volumes, peak-to-trough prices) while AU 2Y remains at a 5-year extreme.",
+      "Sep 16-18 policy cluster (Fed hike, BoJ hike, BoE 6-3 hold with QT) is the overlay keeping global duration offered; that is new information relative to a local AU housing break and is why 2Y has not yet priced the slowdown.",
+      "Risk pricing is still complacent (VIX near the 15th percentile, HY OAS near the 14th, SPX near the 90th) against Brent/WTI at 1y extremes, so the defensive repricing has not happened in beta and remains available in AU front-end rates."
+    ]
+  },
+  "round": 2,
+  "run_id": "tr-20260918T223926Z-ondemand",
+  "strongest_opposing_claim": "AUDNZD at a 5y extreme (spot 1.2468, percentile 99.96, z 3.12, +4.27% 1m) is the packet's most stretched G10 cross, so fading it in spot or a defined-risk put spread isolates AU housing damage versus NZ better than receive AU 2Y and implies NZD higher / USD not the owner.",
+  "trade_change": "unchanged",
+  "type": "TRADER_ROOM_REBUTTAL",
+  "uncertainty": "Positioning/flow unavailable; executable AU bond, FX and option prices absent; official NZ yields blocked so AUDNZD carry and AU-NZ RV cannot be signed; whether energy pass-through hits next AU CPI (trimmed mean still 3.6%); whether the Saudi Oman workaround has already capped the oil tail; whether the NZD slide is flow/liquidation rather than macro.",
+  "what_would_concede": "AU housing volumes/prices stabilize and AU labor/activity reheat while NZ labor/consumer stop deteriorating and NZDUSD stops printing new lows through the tightening overlay; or energy pass-through / an RBA hike lifts AU 2Y as continued tightening rather than a growth break. USD-down would start to bite if US consumer/activity break and VIX/HY reprice a genuine growth accident while USD pairs reverse."
+}

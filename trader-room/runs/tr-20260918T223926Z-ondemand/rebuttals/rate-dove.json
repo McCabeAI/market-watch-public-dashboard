@@ -1,0 +1,89 @@
+{
+  "agent": "rate-dove",
+  "attack": "FACT: perma-bull and value-guy are the only seats in this bundle tagging USD lower. FACT: over one month EURUSD is -1.89%, GBPUSD -2.07%, NZDUSD -3.90% and USDCAD +1.74%, while AUDUSD is only +0.20% at the 84.3rd 5y percentile. FACT: the Fed delivered 25bp to 3.75-4.00% into >90% priced odds with August CPI keeping the tightening bias intact; US inflation temperature is 52.0, US activity 49.92, US consumer 48.5. FACT: US 2Y is 4.76% at the 100th percentile after +57bp 1m; US 2s10s is 25bp with 5y percentile 54% in perma-bull's own write-up. FACT: CA labor is 48.8 (unemployment 6.4%, employment -42k, wages +2.0% y/y) with CPI-trim 1.9% and CPI-median 2.0%, while BoC is still 2.25%. INFERENCE: USD-lower is a category error. perma-bull's 2s10s steepener does not own USD direction; value-guy's CA-US 5Y long can pay via CA catch-up with USD still bid, which is why rate-hawk runs the same RV with USD higher. Receiving already-extreme US duration is fading a live energy-constrained tightening impulse, not harvesting a completed hike. Soft US consumer plus sticky inflation is restrictive policy biting, which supports USD and AU duration, not a USD-down easing pivot. NZDUSD cheapness is a 47.0 labor break with NZ yields unavailable, not a USD fade. UNKNOWN: next-meeting Fed/BoC odds and positioning are not in the packet, so neither USD-down seat can show the USD premium is owned.",
+  "defense": "FACT: AU 2Y closed 4.999% on 2026-09-16 at the 99.0th 1y and 99.8th 5y percentile after +39.1bp 1m, while NSW stamp duty -24% y/y, transactions -18%, Sydney/Melbourne values more than 7% below peak, AU labor 47.8, inflation 49.2 and activity 49.2. FACT: AU-US 2Y is only +26bp at the 25.6th 1y percentile, so Round 1 already rejected paying US versus receiving AU. INFERENCE: usd_view=higher is the FX analog of AUD lower if housing transmits, not a US-rates-higher call (us_rates_view remains not_relevant). The USD-lower seats never falsify the AU policy-path gap: they do not produce housing/labor re-acceleration or an RBA energy-pass-through hike trigger. Spot AUDUSD stays inferior (84.3rd 5y percentile, 2Y carry against short AUD, cheap versus copper residual z -1.33). Receive AU 2Y outright remains the rates-first expression of underpriced easing. UNKNOWN: RBA-implied path, positioning and executable levels stay null.",
+  "holes_in_opposing_case": [
+    "perma-bull maps a duration-neutral US 2s10s steepener onto usd_view=lower; that instrument does not identify USD down. A bear steepener with both legs higher keeps USD bid; a bull steepener is the only USD-negative close, and the packet does not show a Fed easing pivot.",
+    "perma-bull treats ISM Services 55.4, payrolls +162k, VIX 15.44 and HY OAS 270bp as proof the growth scare is fake, while packet US activity is 49.92 and US consumer is 48.5 (Michigan preliminary September 47.8, -7.5% m/m). That is restrictive policy biting with US inflation still 52.0, not an easing-pivot USD-down state.",
+    "Their own thesis admits 5y US 2s10s percentile is 54%; the 1y 0.2nd-percentile flatten after a >90% priced 25bp hike is a known-event stretch, not 5y cheapness that forces USD lower.",
+    "G10 USD pairs already paid the tightening premium over 1m: EURUSD -1.89%, GBPUSD -2.07%, NZDUSD -3.90%, USDCAD +1.74% (spot 1.4010, 87th 5y percentile). USD-lower fights a live USD bid, not a completed one.",
+    "NZ Q2 GDP +0.2% q/q beat does not rescue long NZDUSD as a USD-down expression: NZ labor is 47.0 (unemployment 5.6%) and NZ official yields are unavailable, so the cheapest USD pair is a labor-break, not a cyclical USD fade.",
+    "value-guy's pay-CA 5Y / receive-US 5Y does not require USD lower: the same CA-US 5Y long is used by rate-hawk with usd_view=higher. The spread can rise via CA catch-up with USD still bid.",
+    "value-guy's cyclically-warmer-Canada story skips CA labor 48.8: unemployment 6.4%, employment -42k, wages +2.0% y/y versus +2.8%; CPI-trim 1.9% and CPI-median 2.0% are at target. BoC can stay at 2.25%.",
+    "Receiving US 5Y after US 2Y 4.76% (100th percentile, +57bp 1m) with August CPI keeping the Fed tightening bias intact, BoJ 1.25%, and BoE 6-3 is fading a still-live global tightening impulse the desk says energy is constraining, not fading a completed USD event.",
+    "Their own USDCAD vs CA-US 2Y residual is r-squared about 0.022 and 2Y carry about 140bp favors USD over CAD, so they admit spot does not own the gap, then still tag USD lower.",
+    "The Saudi-Oman workaround already reduced the extreme oil-supply tail that value-guy needs for BoC pass-through to force CAD up / USD down."
+  ],
+  "opponents": [
+    "perma-bull",
+    "value-guy"
+  ],
+  "own_original_ref": "trader-room/runs/tr-20260918T223926Z-ondemand/submissions/rate-dove.json",
+  "packet_sha256": "b4c642412ddcc969d6fd135638baede8f3e9f987015684f2085c8460c3af466a",
+  "revised_trade": {
+    "asset_class": "rates",
+    "catalysts": [
+      "Further Australian housing-volume, stamp-duty or home-value weakness confirming the tightening channel.",
+      "AU labor remaining sub-50 (unemployment up / employment down / cooler WPI) against a 99th-percentile 2Y.",
+      "Headline or trimmed-mean CPI rolling over from 3.5%/3.6%, forcing the RBA path off the global hike-continuation narrative.",
+      "Energy-shock tail continuing to fade after the Saudi-Oman workaround, removing the imported justification for extreme AU front-end yields."
+    ],
+    "confidence": 59,
+    "direction": "long duration",
+    "entry": null,
+    "evidence_refs": [
+      "rates:AU",
+      "mw_20260916_au_housing_tightening",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "temp:AU:labor",
+      "temp:AU:inflation",
+      "temp:AU:activity",
+      "temp:AU:consumer",
+      "market_state",
+      "xa:opportunities",
+      "fx:AUDUSD",
+      "rates:US",
+      "rollup:Fed raises 25bp to 3.75\u20134.00%",
+      "mw_20260916_fomc_hike_pricing",
+      "last24:2026-09-18:desk-thesis",
+      "last24:2026-09-18:boj-raises-its-policy-rate-to-1-25",
+      "mw_20260916_saudi_oman_workaround",
+      "research_method"
+    ],
+    "expression_comparison": {
+      "rates_candidate": "Receive AUD 2Y outright duration (long AU 2-year government notes versus cash; research/reference RBA F2 close 4.999% as of 2026-09-16).",
+      "rationale": "The discrepancy lives in the AU policy path versus an extreme front-end yield, not in AUD spot. AU 2Y is at the 99.0th 1y and 99.8th 5y percentile after +39.1bp in one month, while housing transactions, unemployment and headline CPI are already softening. AUDUSD is only the 84.3rd 5y percentile (z_5y 1.23), the AU-US 2Y differential of +26bp means 2Y carry opposes short AUD, and AUDUSD trades cheap versus copper (residual z -1.33). AU-US 2Y RV is the 25.6th 1y percentile, so cross-market RV does not own the underpriced-easing gap either. Outright AU 2Y duration is the cleaner, rates-first expression.",
+      "selected": "rates",
+      "spot_candidate": "Short AUDUSD (ECB same-fixing research/reference 0.712 as of 2026-09-18)."
+    },
+    "horizon": "4-12 weeks, through the next Australian labor, CPI and housing-transaction prints",
+    "instrument": "AU 2Y",
+    "invalidation": "Domestic AU gauges re-accelerate with labor and inflation scores back above 50 and housing transactions stabilizing, or a renewed energy-pass-through shock that the RBA treats as a live tightening trigger while AU 2Y makes a fresh one-month high. A global duration selloff that is confirmed in AU hard data, not just imported from Fed/BoJ headlines, also kills the trade.",
+    "mispricing": "Pricing treats AU 2Y as a 99th-percentile tightening-continuation asset after the Fed/BoJ/energy impulse. Domestic state is already below-50 on inflation, labor and activity, with the housing channel visibly contracting. That gap is underpriced easing / lower-rate repricing in AU 2Y, not a residual FX undervaluation of AUD.",
+    "principal_risks": [
+      "Energy-market shock absorbers remain weak; a second oil leg can re-import inflation and keep the RBA in the global tightening camp even with a housing slump.",
+      "Trimmed-mean CPI still 3.6% y/y and household spending had a third consecutive +1.1% m/m print, so the consumer channel is not uniformly weak.",
+      "Fed tightening bias, BoJ 1.25% and BoE 6-3 hike dissent can keep dragging G10 term yields higher and overwhelm the domestic AU housing signal.",
+      "No RBA-implied path, no positioning, and no executable broker prices are in the packet; levels stay null.",
+      "Risk-off that is stagflationary rather than a growth-scare can cheapen ACGBs instead of rallying them."
+    ],
+    "stop": null,
+    "structure": "Outright receive AUD 2Y duration (long AU 2-year government notes versus cash). Packet yields and ECB FX are research/reference only; not an executable ticket.",
+    "target": null,
+    "thesis": "VERIFIED: AU 2Y closed 4.999% on 2026-09-16 (1y percentile 99.0, 5y percentile 99.8, z_1y 1.67) after +39.1bp 1m and +49.8bp 3m; AU 5Y 5.041% and AU 10Y 5.348% are likewise 99th-percentile on both windows. NSW stamp-duty receipts fell 24% y/y in August with transaction volumes -18% and Sydney/Melbourne home values more than 7% below peak. AU labor 47.8: unemployment 4.5% from 4.4%, employment -15.8k m/m, WPI +3.2% y/y versus +3.4% a year earlier. AU inflation 49.2: headline CPI 3.5% y/y from 3.8%, trimmed mean 3.6% unchanged. AU activity 49.2 with GDP +0.4% q/q and RBA business conditions modestly weaker; Westpac-MI sentiment then fell 5.2% to 84.4 in September. The Fed has already hiked 25bp to 3.75-4.00% with >90% priced into the meeting; BoJ hiked to 1.25% and BoE held 6-3 with three hike votes. Desk synthesis: the energy shock is constraining the global easing impulse even where domestic growth is softer. INFERENCE: AU front-end yields have been marked by that global tightening impulse to a hike-continuation regime that the housing transmission channel, labor softening and headline disinflation already contradict. Restrictive policy is biting; additional AU 2Y backup is an overpriced delay of easing, not a domestic overheating signal. AU-US 2Y at +26bp is only the 25.6th 1y percentile, so the edge is outright AU duration, not paying US versus receiving AU. UNKNOWN: RBA meeting-implied odds and reaction-function details are not in the packet; positioning/flow is unavailable; NZ official yields are unavailable; trimmed mean at 3.6% and still-positive household spending leave an energy pass-through path that could keep the RBA on hold longer than a pure housing-labor read implies.",
+    "why_now": [
+      "AU 2Y, 5Y and 10Y are simultaneously at 99th-percentile 1y and 5y extremes after a 39-50bp three-month backup, coinciding with a documented housing downturn rather than hotter activity.",
+      "The Fed 25bp hike to 3.75-4.00% was >90% priced into 16 Sep and is now a known impulse; the residual is whether AU domestic gauges can justify keeping that tightening marked into ACGB 2Y.",
+      "September Westpac-MI confidence fell 5.2% to 84.4 after the housing and labor prints, a timely confirmation that the tightening channel is still biting.",
+      "Saudi ship-to-ship workaround reduced the extreme oil-supply tail, weakening the energy-shock justification for keeping AU front-end yields at a 99th-percentile extreme."
+    ]
+  },
+  "round": 2,
+  "run_id": "tr-20260918T223926Z-ondemand",
+  "strongest_opposing_claim": "After a fully priced Fed 25bp hike into 99th-percentile US yields, soft-ish US consumer 48.5 plus still-expansionary ISM/credit/vol means the USD tightening premium is done, so USD should fall via a 2s10s steepener (perma-bull) or pay-CA/receive-US 5Y (value-guy).",
+  "subagent_calls": 0,
+  "trade_change": "unchanged",
+  "type": "TRADER_ROOM_REBUTTAL",
+  "uncertainty": "No RBA or Fed meeting-implied path, no positioning/flow, no executable broker prices; NZ official yields blocked; AU trimmed mean still 3.6% with a third consecutive household-spending +1.1% m/m; energy shock absorbers remain weak even after the Saudi-Oman workaround.",
+  "what_would_concede": "AU labor and inflation scores back above 50 with housing transactions stabilizing; or a documented Fed easing-pivot that withdraws the tightening bias and reverses the 1m G10 USD bid; or an RBA energy-pass-through hike trigger into a fresh AU 2Y high."
+}

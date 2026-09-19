@@ -23,13 +23,51 @@
   },
   "counts": {
     "conflict_grok": 0,
-    "final_grok_planned": 1,
+    "empty_error_bcIds": [
+      "bc-eacd580a-c28c-5bab-842f-bb93167fb016",
+      "bc-87c5e034-d984-5734-81a6-fd0724d89627"
+    ],
+    "empty_error_launches": 2,
+    "final_grok": 1,
+    "if_empty_launches_counted_grok": 30,
     "parent_grok": 1,
-    "rebuttal_grok_planned": 12,
+    "policy_composer_cap": 28,
+    "policy_grok_cap": 30,
+    "policy_total_cap": 58,
+    "rebuttal_grok": 12,
     "round1_composer": 0,
     "round1_grok": 14,
-    "total_composer": 0,
-    "total_grok_planned": 28
+    "successful_composer": 0,
+    "successful_grok": 28,
+    "successful_total": 28
+  },
+  "failed_launches": [
+    {
+      "attempted_subagent_type": "final-aggregator",
+      "bcId": "bc-eacd580a-c28c-5bab-842f-bb93167fb016",
+      "model": "grok-4.6",
+      "note": "Infrastructure ERROR / parent wait timeout with empty transcript; no PM handoff produced.",
+      "role": "final_aggregator",
+      "status": "ERROR",
+      "transcript_messages": 0
+    },
+    {
+      "attempted_subagent_type": "final-aggregator",
+      "bcId": "bc-87c5e034-d984-5734-81a6-fd0724d89627",
+      "model": "grok-4.6",
+      "note": "Second named-type launch also ERROR with empty transcript.",
+      "role": "final_aggregator",
+      "status": "ERROR",
+      "transcript_messages": 0
+    }
+  ],
+  "final": {
+    "bcId": "bc-b73e2753-285d-51ab-85d6-bb34a32bd59a",
+    "count": 1,
+    "launch_note": "Named final-aggregator Task type twice returned ERROR with empty transcripts (bc-eacd580a-c28c-5bab-842f-bb93167fb016, bc-87c5e034-d984-5734-81a6-fd0724d89627). Successful grok-4.6 child used inherit/generalPurpose and produced a schema-valid handoff.",
+    "model": "grok-4.6",
+    "subagent_calls": 0,
+    "validated": true
   },
   "freeze": {
     "advocates_launched_after_freeze": true,
@@ -161,6 +199,110 @@
       "purpose": "round1-submission",
       "role": "advocate_round1",
       "subagent_calls": 0
+    },
+    {
+      "agent": "perma-bull",
+      "bcId": "bc-359d1c4e-f78e-5074-b858-b3f6e4803495",
+      "model": "grok-4.6",
+      "purpose": "direct-conflict-rebuttal",
+      "role": "rebuttal_round2",
+      "subagent_calls": 0
+    },
+    {
+      "agent": "perma-bear",
+      "bcId": "bc-c1940300-9e79-5082-8828-c174a5a80265",
+      "model": "grok-4.6",
+      "purpose": "direct-conflict-rebuttal",
+      "role": "rebuttal_round2",
+      "subagent_calls": 0
+    },
+    {
+      "agent": "dollar-king",
+      "bcId": "bc-73060b1f-6f1a-5e6e-b0c7-a52cc6a5aa28",
+      "model": "grok-4.6",
+      "purpose": "direct-conflict-rebuttal",
+      "role": "rebuttal_round2",
+      "subagent_calls": 0
+    },
+    {
+      "agent": "cross-merchant",
+      "bcId": "bc-2dcada14-7376-5018-b4b5-7b30147f28d9",
+      "model": "grok-4.6",
+      "purpose": "direct-conflict-rebuttal",
+      "role": "rebuttal_round2",
+      "subagent_calls": 0
+    },
+    {
+      "agent": "carry-is-king",
+      "bcId": "bc-b800dcf8-a997-5857-b8fa-f6ee3b429d3a",
+      "model": "grok-4.6",
+      "purpose": "direct-conflict-rebuttal",
+      "role": "rebuttal_round2",
+      "subagent_calls": 0
+    },
+    {
+      "agent": "rate-hawk",
+      "bcId": "bc-0f9a55a1-c513-57c9-ab02-9f6d5953abdf",
+      "model": "grok-4.6",
+      "purpose": "direct-conflict-rebuttal",
+      "role": "rebuttal_round2",
+      "subagent_calls": 0
+    },
+    {
+      "agent": "rate-dove",
+      "bcId": "bc-dfe7e2bb-e946-5263-9b61-ad0f26591f50",
+      "model": "grok-4.6",
+      "purpose": "direct-conflict-rebuttal",
+      "role": "rebuttal_round2",
+      "subagent_calls": 0
+    },
+    {
+      "agent": "value-guy",
+      "bcId": "bc-79eac278-e147-542b-8b02-ad8ca680e9a0",
+      "model": "grok-4.6",
+      "purpose": "direct-conflict-rebuttal",
+      "role": "rebuttal_round2",
+      "subagent_calls": 0
+    },
+    {
+      "agent": "trend-follower",
+      "bcId": "bc-e1fff2f1-8123-5fa9-b9b4-9956668dd26a",
+      "model": "grok-4.6",
+      "purpose": "direct-conflict-rebuttal",
+      "role": "rebuttal_round2",
+      "subagent_calls": 0
+    },
+    {
+      "agent": "mean-reverter",
+      "bcId": "bc-4f541ed5-4223-5712-8c42-87ef427b87f1",
+      "model": "grok-4.6",
+      "purpose": "direct-conflict-rebuttal",
+      "role": "rebuttal_round2",
+      "subagent_calls": 0
+    },
+    {
+      "agent": "catalyst-junkie",
+      "bcId": "bc-d9324105-d19f-5a49-a6f4-25890fcc3812",
+      "model": "grok-4.6",
+      "purpose": "direct-conflict-rebuttal",
+      "role": "rebuttal_round2",
+      "subagent_calls": 0
+    },
+    {
+      "agent": "vol-convexity",
+      "bcId": "bc-3f035e29-38a8-5b0e-a1a5-081f4d3f7dfd",
+      "model": "grok-4.6",
+      "purpose": "direct-conflict-rebuttal",
+      "role": "rebuttal_round2",
+      "subagent_calls": 0
+    },
+    {
+      "agent": "final-aggregator",
+      "bcId": "bc-b73e2753-285d-51ab-85d6-bb34a32bd59a",
+      "model": "grok-4.6",
+      "purpose": "pm-handoff",
+      "role": "final_aggregator",
+      "subagent_calls": 0
     }
   ],
   "parent": {
@@ -204,6 +346,43 @@
     },
     "composer_used": 0,
     "count": 14,
+    "model": "grok-4.6",
+    "subagent_calls": 0,
+    "validated": true
+  },
+  "round2": {
+    "agents": [
+      "carry-is-king",
+      "catalyst-junkie",
+      "cross-merchant",
+      "dollar-king",
+      "mean-reverter",
+      "perma-bear",
+      "perma-bull",
+      "rate-dove",
+      "rate-hawk",
+      "trend-follower",
+      "value-guy",
+      "vol-convexity"
+    ],
+    "all_trade_change": "unchanged",
+    "bcIds": {
+      "carry-is-king": "bc-b800dcf8-a997-5857-b8fa-f6ee3b429d3a",
+      "catalyst-junkie": "bc-d9324105-d19f-5a49-a6f4-25890fcc3812",
+      "cross-merchant": "bc-2dcada14-7376-5018-b4b5-7b30147f28d9",
+      "dollar-king": "bc-73060b1f-6f1a-5e6e-b0c7-a52cc6a5aa28",
+      "mean-reverter": "bc-4f541ed5-4223-5712-8c42-87ef427b87f1",
+      "perma-bear": "bc-c1940300-9e79-5082-8828-c174a5a80265",
+      "perma-bull": "bc-359d1c4e-f78e-5074-b858-b3f6e4803495",
+      "rate-dove": "bc-dfe7e2bb-e946-5263-9b61-ad0f26591f50",
+      "rate-hawk": "bc-0f9a55a1-c513-57c9-ab02-9f6d5953abdf",
+      "trend-follower": "bc-e1fff2f1-8123-5fa9-b9b4-9956668dd26a",
+      "value-guy": "bc-79eac278-e147-542b-8b02-ad8ca680e9a0",
+      "vol-convexity": "bc-3f035e29-38a8-5b0e-a1a5-081f4d3f7dfd"
+    },
+    "composer_used": 0,
+    "conflict_aggregator_invoked": false,
+    "count": 12,
     "model": "grok-4.6",
     "subagent_calls": 0,
     "validated": true

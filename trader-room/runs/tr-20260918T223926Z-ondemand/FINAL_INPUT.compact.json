@@ -1,0 +1,1314 @@
+{
+  "all_rebuttals_unchanged": true,
+  "challenges": [
+    {
+      "agents": [
+        "no-trade-skeptic"
+      ],
+      "description": "no-trade-skeptic challenge whether any of the 13 actionable pitches clears the hurdle.",
+      "id": "trade-vs-no-trade",
+      "kind": "skeptic_challenge",
+      "targets": [
+        "carry-is-king",
+        "catalyst-junkie",
+        "cross-merchant",
+        "dollar-king",
+        "mean-reverter",
+        "perma-bear",
+        "perma-bull",
+        "positioning-cynic",
+        "rate-dove",
+        "rate-hawk",
+        "trend-follower",
+        "value-guy",
+        "vol-convexity"
+      ]
+    }
+  ],
+  "context_tensions": [
+    {
+      "agents": [
+        "dollar-king",
+        "mean-reverter",
+        "perma-bear",
+        "perma-bull",
+        "rate-dove",
+        "vol-convexity"
+      ],
+      "description": "Opposing risk regime assumptions: risk_on versus risk_off.",
+      "id": "context:risk_view",
+      "kind": "context_tension",
+      "side_a": [
+        "perma-bull"
+      ],
+      "side_b": [
+        "dollar-king",
+        "mean-reverter",
+        "perma-bear",
+        "rate-dove",
+        "vol-convexity"
+      ]
+    },
+    {
+      "agents": [
+        "carry-is-king",
+        "catalyst-junkie",
+        "dollar-king",
+        "mean-reverter",
+        "perma-bear",
+        "positioning-cynic",
+        "rate-dove",
+        "rate-hawk",
+        "trend-follower",
+        "value-guy"
+      ],
+      "description": "Opposing carry assumptions: supports_trade versus opposes_trade.",
+      "id": "context:carry_view",
+      "kind": "context_tension",
+      "side_a": [
+        "carry-is-king",
+        "catalyst-junkie",
+        "mean-reverter",
+        "perma-bear",
+        "positioning-cynic",
+        "rate-dove",
+        "rate-hawk",
+        "value-guy"
+      ],
+      "side_b": [
+        "dollar-king",
+        "trend-follower"
+      ]
+    }
+  ],
+  "direct_conflicts": [
+    {
+      "agents": [
+        "dollar-king",
+        "mean-reverter",
+        "perma-bear",
+        "rate-dove",
+        "rate-hawk",
+        "trend-follower",
+        "perma-bull",
+        "value-guy"
+      ],
+      "description": "dollar-king, mean-reverter, perma-bear, rate-dove, rate-hawk, trend-follower expect USD higher while perma-bull, value-guy expect USD lower",
+      "id": "opp-view:USD",
+      "kind": "opposite_currency_view"
+    },
+    {
+      "agents": [
+        "carry-is-king",
+        "catalyst-junkie",
+        "perma-bull",
+        "rate-hawk",
+        "value-guy",
+        "dollar-king",
+        "trend-follower"
+      ],
+      "description": "carry-is-king, catalyst-junkie, perma-bull, rate-hawk, value-guy expect CAD higher while dollar-king, trend-follower expect CAD lower",
+      "id": "opp-view:CAD",
+      "kind": "opposite_currency_view"
+    },
+    {
+      "agents": [
+        "cross-merchant",
+        "perma-bull",
+        "vol-convexity",
+        "dollar-king",
+        "perma-bear",
+        "trend-follower"
+      ],
+      "description": "cross-merchant, perma-bull, vol-convexity expect NZD higher while dollar-king, perma-bear, trend-follower expect NZD lower",
+      "id": "opp-view:NZD",
+      "kind": "opposite_currency_view"
+    }
+  ],
+  "evidence_cutoff": "2026-09-18T22:39:26Z",
+  "family_status": {
+    "central_bank_research": "available",
+    "market_state": "stale",
+    "research_method": "available",
+    "temperature_gauges": "available"
+  },
+  "known_gaps": [
+    "Market-state snapshot status is stale. stale_sources=['NZ_rates'] unavailable_sources=['NZ_rates'].",
+    "Official NZ sovereign yields are unavailable: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.. NZ-involved rate RV is unavailable; no third-party substitute was used.",
+    "Supabase MCP is not connected in this ACP execution; temperature values come from the live repo ledger data/temperature_scores.json rather than a live Supabase query.",
+    "ops/supabase/inbox/latest.json last window ended 2026-09-16T10:30:00Z; newer official/news items are taken from the Sep 18 last24/news_rollup production surfaces.",
+    "Last-24 production surface last refreshed 18 Sep 2026 04:00 ET. No newer Market Watch news-refresh artifact is in the repository.",
+    "Persistent paper books are empty $100m seed accounts with no open positions (data/overnight/books/latest.json). No overnight review has completed.",
+    "No paid/private research or positioning/flow dataset is connected. Cot/positioning is a known gap.",
+    "Executable broker prices are not in the packet. ECB FX and official yield history are research/reference only. Unsupported trade levels must remain JSON null.",
+    "This run does not reuse submissions, rebuttals, or conflict maps from tr-20260918T182933Z-ondemand or any earlier Trader Room run."
+  ],
+  "no_rebuttal_seats": [
+    "no-trade-skeptic",
+    "positioning-cynic"
+  ],
+  "originals": {
+    "carry-is-king": {
+      "agent": "carry-is-king",
+      "confidence": 58,
+      "conflict_synopsis": {
+        "au_rates_view": "lower",
+        "aud_view": "lower",
+        "ca_rates_view": "higher",
+        "cad_view": "higher",
+        "carry_view": "supports_trade",
+        "confidence": 58,
+        "conflict_tags": [
+          "AU_RATES_DOWN",
+          "CA_RATES_UP",
+          "US_RATES_UP",
+          "AUD_DOWN",
+          "CAD_UP",
+          "CARRY_SUPPORTS",
+          "AUDCAD_SPOT_REJECTED"
+        ],
+        "core_view": "Receive AU 2Y versus pay CA 2Y to collect the 165bp common-date 2Y gap while housing bites in Australia and BoC energy risk is still only conditional; reject stretched AUDCAD and reject global long duration.",
+        "key_catalyst": "Australian housing/labor confirmation plus any BoC conversion of energy pass-through risk into tightening bias.",
+        "key_invalidation": "AU tightening channel fades while BoC energy risk is retired and the AU\u2013CA 2Y differential no longer pays the AU receiver.",
+        "nz_rates_view": "not_relevant",
+        "nzd_view": "not_relevant",
+        "primary_trade": "long AU2Y / short CA2Y",
+        "risk_view": "neutral",
+        "seat": "carry-is-king",
+        "time_horizon": "1-3 months",
+        "us_rates_view": "higher",
+        "usd_view": "neutral"
+      },
+      "stance_summary": "Receive the Australian 2-year versus pay the Canadian 2-year. Verified: on the common 2026-09-16 date the CA\u2212AU 2Y spread is \u2212164.9bp, the packet\u2019s largest available 2Y yield differential, while AUDCAD spot already sits\u2026",
+      "trade": {
+        "asset_class": "rates_rv",
+        "confidence": 58,
+        "direction": "long AU2Y / short CA2Y",
+        "evidence_refs": [
+          "rates:AU",
+          "rates:CA",
+          "xa:opportunities",
+          "fx:AUDCAD",
+          "mw_20260916_au_housing_tightening",
+          "rollup:Australian housing downturn deepens under higher rates",
+          "xa:energy-retained",
+          "rollup:BoC minutes flag higher energy pass-through risk"
+        ],
+        "expression_comparison": {
+          "rates_candidate": "Duration-matched receive Australian 2-year sovereign versus pay Canadian 2-year sovereign (CA\u2212AU 2Y). Common-date spread \u2212164.9bp as of 2026-09-16; AU 2Y 4.999% (5y percentile 99.80) versus CA 2Y 3.27% on 2026-09-17 (5y percentile 58.59).",
+          "rationale": "Rates is the cleaner expression of the same AU\u2013CA carry gap. AUDCAD has already paid the differential at a 5-year extreme, so chasing spot is late and fading it is negative-carry. The rates spread still has 5y-history cheapness in CA versus AU (CA\u2212AU 2Y 5y percentile 10.50, z_5y \u22121.64) while CA 2Y itself is only 58.59 percentile on 5y history. NZ-involved rate RV is unavailable. Prefer rates when comparably clean; here rates is strictly cleaner.",
+          "selected": "rates",
+          "spot_candidate": "Long AUDCAD: same 2Y differential of 164.9bp versus 60-day FX vol 4.93 (ratio 0.334), but ECB reference spot 0.9976 at 5y percentile 99.96 and z_5y 2.76."
+        },
+        "horizon": "1\u20133 months, patient; let 2Y differential carry fund timing slippage unless a catalyst overwhelms it",
+        "instrument": "AU2Y vs CA2Y",
+        "mispricing": "Verified: FX has already expressed AU versus CA (AUDCAD 5y percentile 99.96, z_5y 2.76) while CA\u2212AU 2Y remains in the 10th percentile of 5y history and CA 2Y is only mid-pack on 5\u2026",
+        "thesis": "Causal question: after a global tightening impulse, is the AU\u2013CA 2Y gap still a paid, patient holding-period expression, or has FX already absorbed it? Verified fact: AU 2Y is 4.999% as of 2026-09-16 (5y percentile 99.8\u2026"
+      }
+    },
+    "catalyst-junkie": {
+      "agent": "catalyst-junkie",
+      "confidence": 56,
+      "conflict_synopsis": {
+        "au_rates_view": "not_relevant",
+        "aud_view": "not_relevant",
+        "ca_rates_view": "higher",
+        "cad_view": "higher",
+        "carry_view": "supports_trade",
+        "confidence": 56,
+        "conflict_tags": [
+          "CA_RATES_UP",
+          "CAD_UP",
+          "CA_US_5Y_PAY_CA",
+          "RATES_RV"
+        ],
+        "core_view": "BoC energy pass-through hike optionality is the dated closer, and CA-US 5Y cheapened the wrong way after the minutes.",
+        "key_catalyst": "Canadian CPI that shows fuel leaking into underlying inflation, then BoC communications that reprice hike odds.",
+        "key_invalidation": "Trim/median stay near 2 percent, BoC drops the pass-through trigger, or oil collapses and CA-US 5Y makes new lows on US-only backup.",
+        "nz_rates_view": "not_relevant",
+        "nzd_view": "not_relevant",
+        "primary_trade": "pay CA 5Y / receive US 5Y",
+        "risk_view": "not_relevant",
+        "seat": "catalyst-junkie",
+        "time_horizon": "next 1-2 Canadian CPI prints and following BoC window",
+        "us_rates_view": "neutral",
+        "usd_view": "neutral"
+      },
+      "stance_summary": "Valuation stretch in CA-US 5Y is not the trade; the trade is that BoC minutes just named energy pass-through as the hike trigger and the spread cheapened the wrong way. Own the dated CPI-to-BoC transmission in rates RV,\u2026",
+      "trade": {
+        "asset_class": "rates_rv",
+        "confidence": 56,
+        "direction": "pay CA 5Y / receive US 5Y",
+        "evidence_refs": [
+          "xa:opportunities",
+          "xa:energy-retained",
+          "rates:CA",
+          "rates:US",
+          "market_state",
+          "rollup:BoC minutes flag higher energy pass-through risk",
+          "rollup:Canada August inflation holds at 3%, core stays near 2%",
+          "rollup:Fed raises 25bp to 3.75\u20134.00%"
+        ],
+        "expression_comparison": {
+          "rates_candidate": "Duration-matched pay Canada 5Y versus receive US 5Y (CA-US 5Y spread less negative as BoC hike optionality is priced).",
+          "rationale": "The discrepancy lives in the common-date CA-US 5Y spread (0th percentile, z about -2.05 on 17 Sep), which is the stretched series the packet flags. USDCAD versus CA-US 2Y is a weak residual (status weak, low r-squared), so spot does not own the rates gap; oil can also move CAD independently of BoC odds. Rates RV is comparably cleaner and is the default under the expression mandate. Spot is the backup, not the primary, because it mixes a policy-repricing view with carry (USD +140bp 2Y over CAD, which opposes short USDCAD) and an undocumented oil beta.",
+          "selected": "rates",
+          "spot_candidate": "Short USDCAD (CAD higher) as the FX expression of a BoC tightening catch-up versus the Fed."
+        },
+        "horizon": "Next 1-2 Canadian CPI prints and the following BoC communication window",
+        "instrument": "CA-US 5Y",
+        "mispricing": "CA-US 5Y at -124bp is the 0th percentile of the packet's 252-observation window and cheapened another 12bp over five days during the week the BoC minutes put hike optionality on t\u2026",
+        "thesis": "FACT: On 16 Sep the Fed delivered the widely pre-priced 25bp hike to 3.75-4.00 percent. The BoC had already held at 2.25 percent; the Sep 16 minutes said the risk of fuel inflation spreading more broadly had increased a\u2026"
+      }
+    },
+    "cross-merchant": {
+      "agent": "cross-merchant",
+      "confidence": 56,
+      "conflict_synopsis": {
+        "au_rates_view": "not_relevant",
+        "aud_view": "lower",
+        "ca_rates_view": "not_relevant",
+        "cad_view": "not_relevant",
+        "carry_view": "not_relevant",
+        "confidence": 56,
+        "conflict_tags": [
+          "AUD_DOWN",
+          "NZD_UP",
+          "AUDNZD_SHORT"
+        ],
+        "core_view": "AUDNZD at a 5y extreme prices AU outperformance that housing, cooler inflation and softer activity do not support versus NZ, and USD pairs contaminate that gap.",
+        "key_catalyst": "AU housing/financial-conditions confirmation versus NZ activity/inflation follow-through after the GDP beat and India FTA.",
+        "key_invalidation": "AU housing stabilizes versus NZ, or NZ labor deterioration plus unobserved NZ yield premium justifies the AUDNZD extreme.",
+        "nz_rates_view": "not_relevant",
+        "nzd_view": "higher",
+        "primary_trade": "short AUDNZD",
+        "risk_view": "neutral",
+        "seat": "cross-merchant",
+        "time_horizon": "tactical 2-6 weeks",
+        "us_rates_view": "not_relevant",
+        "usd_view": "not_relevant"
+      },
+      "stance_summary": "USD pairs mix a common post-FOMC tightening bid into otherwise distinct AU-NZ differentials. Short AUDNZD spot isolates Australian housing/financial-conditions damage against New Zealand's hotter inflation, firmer activ\u2026",
+      "trade": {
+        "asset_class": "spot_fx",
+        "confidence": 56,
+        "direction": "short",
+        "evidence_refs": [
+          "fx:AUDNZD",
+          "fx:AUDUSD",
+          "fx:NZDUSD",
+          "fx:AUDCAD",
+          "market_state",
+          "xa:opportunities",
+          "temp:AU:inflation",
+          "temp:AU:labor"
+        ],
+        "expression_comparison": {
+          "rates_candidate": null,
+          "rationale": "Dedicated spot-FX seat. The intended discrepancy is an AU-versus-NZ relative-value gap in currency space. Official NZ sovereign yields are unavailable in this packet, so AU-NZ rate RV, AUDNZD carry, and the AUDNZD~AU-NZ_2Y screen cannot be formed. Short AUDUSD or long NZDUSD would import the common USD tightening factor after the Fed hike; short AUDCAD fights a measured +165bp 2Y AUD-over-CAD carry that can justify that cross's richness. AUDNZD is the cleaner isolation.",
+          "selected": "spot",
+          "spot_candidate": "short AUDNZD spot"
+        },
+        "horizon": "tactical 2-6 weeks",
+        "instrument": "AUDNZD",
+        "mispricing": "AUDNZD is at a 5y extreme (z 3.12) while AUDUSD is not. Pricing implies AU outperformance versus NZ that is not supported by cooler AU inflation (49.2 vs 51.6), weaker AU activity\u2026",
+        "thesis": "FACT: ECB same-fixing AUDNZD is at 1.2468 on 2026-09-18, 99.96th percentile of the 5y window, z_5y 3.12, +4.27% over 1m and +0.65% on the day. AUDUSD is only 84.3rd percentile 5y (z 1.23, +0.20% 1m). NZDUSD is 8.6th per\u2026"
+      }
+    },
+    "dollar-king": {
+      "agent": "dollar-king",
+      "confidence": 62,
+      "conflict_synopsis": {
+        "au_rates_view": "lower",
+        "aud_view": "lower",
+        "ca_rates_view": "higher",
+        "cad_view": "lower",
+        "carry_view": "opposes_trade",
+        "confidence": 62,
+        "conflict_tags": [
+          "USD_UP",
+          "AUD_DOWN",
+          "CAD_DOWN",
+          "NZD_DOWN",
+          "AUDUSD_SHORT"
+        ],
+        "core_view": "Own the post-FOMC USD tightening premium against AUD, the G10 USD pair that has not yet paid for Australian housing damage and delivered US policy.",
+        "key_catalyst": "Australian housing/labor confirmation plus a still-intact Fed tightening path while AUDUSD catches down to other USD pairs.",
+        "key_invalidation": "US tightening bias withdrawn or Australian housing/labor re-acceleration restoring AUD relative-rate support.",
+        "nz_rates_view": "not_relevant",
+        "nzd_view": "lower",
+        "primary_trade": "short AUDUSD",
+        "risk_view": "risk_off",
+        "seat": "dollar-king",
+        "time_horizon": "2-6 weeks",
+        "us_rates_view": "higher",
+        "usd_view": "higher"
+      },
+      "stance_summary": "USD is the clean benchmark: post-FOMC tightening bias plus broadening G10 tightening should be owned in USD spot, not in a cross. AUDUSD is the laggard USD pair\u2014Australian housing is already breaking while AUD has not p\u2026",
+      "trade": {
+        "asset_class": "spot_fx",
+        "confidence": 62,
+        "direction": "short",
+        "evidence_refs": [
+          "rollup:Fed raises 25bp to 3.75\u20134.00%",
+          "rollup:August CPI keeps the Fed tightening bias intact",
+          "mw_20260916_fomc_hike_pricing",
+          "last24:2026-09-18:desk-thesis",
+          "macro:desk-18sep",
+          "last24:2026-09-18:boj-raises-its-policy-rate-to-1-25",
+          "last24:2026-09-18:boe-holds-3-75-but-three-members-vote-to-hike",
+          "mw_20260916_au_housing_tightening"
+        ],
+        "expression_comparison": {
+          "rates_candidate": null,
+          "rationale": "Dedicated USD-spot seat. The discrepancy is that AUDUSD has not repriced the delivered USD policy premium and the Australian housing/tightening-channel break; that lives in the USD pair. A rates sleeve (US outright duration or AU-US 2Y RV) owns yield levels that are already historically extreme and does not harvest the FX lag. A cross such as AUDCAD adds CAD oil, BoC energy-pass-through and stronger Canadian activity as second-order risk on an Australia-versus-USD view.",
+          "selected": "spot",
+          "spot_candidate": "short AUDUSD (USD long versus AUD)"
+        },
+        "horizon": "2-6 weeks",
+        "instrument": "AUDUSD",
+        "mispricing": "AUDUSD still trades as if Australian financial-conditions damage and the delivered USD tightening premium were comparable to a flat 1m outcome. The pair remains statistically rich\u2026",
+        "thesis": "FACT: The Fed delivered a 25bp hike to 3.75\u20134.00% after August CPI kept the tightening bias intact; rate futures had already assigned greater-than-90% odds to that 25bp step, so the decision itself is largely known info\u2026"
+      }
+    },
+    "mean-reverter": {
+      "agent": "mean-reverter",
+      "confidence": 58,
+      "conflict_synopsis": {
+        "au_rates_view": "lower",
+        "aud_view": "lower",
+        "ca_rates_view": "not_relevant",
+        "cad_view": "not_relevant",
+        "carry_view": "supports_trade",
+        "confidence": 58,
+        "conflict_tags": [
+          "AU_RATES_DOWN",
+          "AUD_DOWN",
+          "USD_UP",
+          "DURATION_LONG",
+          "FADE_STRETCH"
+        ],
+        "core_view": "AU 10Y has overshot local housing and sub-50 temperatures under a global-tightening narrative and should mean-revert lower in yield.",
+        "key_catalyst": "Housing/activity deterioration feeding back into AU term yields as the known global hike cluster is digested.",
+        "key_invalidation": "AU 10Y makes a new high versus the 16 Sep F2 close while housing stabilizes and AU inflation temperature moves back through 50.",
+        "nz_rates_view": "not_relevant",
+        "nzd_view": "not_relevant",
+        "primary_trade": "long AU 10Y",
+        "risk_view": "risk_off",
+        "seat": "mean-reverter",
+        "time_horizon": "4-12 weeks",
+        "us_rates_view": "neutral",
+        "usd_view": "higher"
+      },
+      "stance_summary": "AU 10Y is statistically extreme on both 252-day and 5-year windows while Australian housing volumes, stamp-duty receipts and home values are already contracting; that is an overshoot of the global-tightening narrative,\u2026",
+      "trade": {
+        "asset_class": "rates",
+        "confidence": 58,
+        "direction": "long",
+        "evidence_refs": [
+          "rates:AU",
+          "rates:US",
+          "xa:opportunities",
+          "fx:AUDNZD",
+          "fx:AUDUSD",
+          "fx:AUDCAD",
+          "mw_20260916_au_housing_tightening",
+          "rollup:Australian housing downturn deepens under higher rates"
+        ],
+        "expression_comparison": {
+          "rates_candidate": "Receive AU 10Y outright (long ACGB 10Y duration). Alternative rates expression considered but not selected: long US 2s10s (bull steepener) after the post-hike front-end overshoot.",
+          "rationale": "The discrepancy lives in AU term yields versus a housing channel that is already biting, so outright duration owns the edge. AU-US 5Y/10Y spreads are not the stretched object (AU-US 5Y sits only around the 22nd percentile of the 252-day window). US 2s10s is more statistically extreme, but the flattening is the same fully priced Fed hike plus a still-live energy/term-premium impulse, without AU housing's independent physical weakening mechanism. Short AUDNZD is the larger FX z-score, but official NZ sovereign yields are unavailable so AU-NZ rate RV cannot be constructed, NZ labor is already the softest gauge in the set, and AUDUSD is cheap versus copper rather than rich. Short AUDCAD would fight a documented ~165bp 2Y yield differential. Receiving AU 10Y is paid to wait and is the default when rates and spot are not cleaner in spot's favor.",
+          "selected": "rates",
+          "spot_candidate": "Short AUDNZD, the most stretched G10 cross in the packet on 5-year z and 252-day percentile; secondary spot expression short AUDUSD as the FX of AU housing weakness."
+        },
+        "horizon": "4-12 weeks",
+        "instrument": "AU 10Y",
+        "mispricing": "AU 10Y is being priced as if local conditions still require 5-year-high term yields, while the housing channel and sub-50 AU temperatures already show the tightening working. The\u2026",
+        "thesis": "FACT: On 16 Sep 2026 the RBA F2 10Y assessed close is 5.348%, 99.8th percentile of the 5-year window (z 1.63) and 99.2nd percentile of the 252-day opportunity window (z 2.08), and it is listed in the |z|>=2 stretched-se\u2026"
+      }
+    },
+    "no-trade-skeptic": {
+      "agent": "no-trade-skeptic",
+      "confidence": 74,
+      "conflict_synopsis": {
+        "au_rates_view": "not_relevant",
+        "aud_view": "not_relevant",
+        "ca_rates_view": "not_relevant",
+        "cad_view": "not_relevant",
+        "carry_view": "not_relevant",
+        "confidence": 74,
+        "conflict_tags": [
+          "NO_TRADE",
+          "PRICED",
+          "CATALYST_SPENT",
+          "STRETCH_NOT_EDGE",
+          "NZ_RATES_UNAVAILABLE",
+          "NO_IMPLIED_PATH",
+          "NO_POSITIONING",
+          "STALE_MARKET_STATE"
+        ],
+        "core_view": "Post-Fed/BoJ/BoE, yield and FX screens are priced or un-risk-matchable stretch without an implied-path gap, so no rates or spot candidate clears the evidence hurdle.",
+        "key_catalyst": "The 16-17 Sep Fed hike, BoJ hike, and BoE hold/dissent have already landed; no remaining unpriced catalyst is identified in this packet.",
+        "key_invalidation": "An observable meeting-implied path that disagrees with triangulated data, restored NZ official yields for any NZ RV, or evidence that BoC energy pass-through is entering core, would reopen a trade.",
+        "nz_rates_view": "not_relevant",
+        "nzd_view": "not_relevant",
+        "primary_trade": "NO_TRADE",
+        "risk_view": "neutral",
+        "seat": "no-trade-skeptic",
+        "time_horizon": "no trade this run until a post-event pricing gap is measurable",
+        "us_rates_view": "not_relevant",
+        "usd_view": "not_relevant"
+      },
+      "stance_summary": "Research method first, remit second. Causal question: after the 16-17 Sep central-bank cluster, does this frozen packet still contain a G10 FX/rates discrepancy versus current pricing with a plausible closing mechanism,\u2026",
+      "trade": null
+    },
+    "perma-bear": {
+      "agent": "perma-bear",
+      "confidence": 61,
+      "conflict_synopsis": {
+        "au_rates_view": "lower",
+        "aud_view": "lower",
+        "ca_rates_view": "higher",
+        "cad_view": "neutral",
+        "carry_view": "supports_trade",
+        "confidence": 61,
+        "conflict_tags": [
+          "AUD_DOWN",
+          "AU_RATES_DOWN",
+          "USD_UP",
+          "US_RATES_UP",
+          "CA_RATES_UP",
+          "NZD_DOWN",
+          "RISK_OFF",
+          "GROWTH_BELOW_TREND"
+        ],
+        "core_view": "Australian housing and labor are already breaking under higher rates, so AU 2Y at a 5-year extreme still prices too much further RBA tightening while risk assets remain complacent.",
+        "key_catalyst": "Next Australian housing/labor/RBA signal that the tightening channel is still contracting.",
+        "key_invalidation": "Housing/labor stabilize or energy pass-through forces another RBA hike that lifts AU 2Y.",
+        "nz_rates_view": "not_relevant",
+        "nzd_view": "lower",
+        "primary_trade": "Receive AU 2Y",
+        "risk_view": "risk_off",
+        "seat": "perma-bear",
+        "time_horizon": "4-8 weeks",
+        "us_rates_view": "higher",
+        "usd_view": "higher"
+      },
+      "stance_summary": "Global tightening is being piled into an energy shock while Australian housing and labor are already breaking; markets still price AU 2Y as if more RBA restraint is required, and risk assets remain complacent. The clean\u2026",
+      "trade": {
+        "asset_class": "rates",
+        "confidence": 61,
+        "direction": "receive",
+        "evidence_refs": [
+          "mw_20260916_au_housing_tightening",
+          "rollup:Australian housing downturn deepens under higher rates",
+          "temp:AU:labor",
+          "temp:AU:activity",
+          "temp:AU:inflation",
+          "temp:AU:consumer",
+          "rates:AU",
+          "rates:US"
+        ],
+        "expression_comparison": {
+          "rates_candidate": "Receive Australian 2-year government bonds (outright long front-end duration on RBA F2 2Y; research/reference yields only).",
+          "rationale": "Rates is the cleaner owner of the discrepancy: AU 2Y sits at a 99th-percentile 1y and 5y stretch while the housing-credit channel is already contracting, so the mispricing is the RBA path not the FX level. Spot AUDUSD is only 84th percentile 5y and already cheap vs copper on the packet residual, so a short is less aligned with where the gap lives. AUDCAD is more statistically extreme but mixes a 165bp AUD-over-CAD carry headwind with Canada energy support, so it is a dirtier slowdown expression. NZ rates RV is unavailable (official B2 403). Curve steepener (receive 2s/pay 10s) is a valid hedge against the desk's term-premium overlay but AU 2s10s is only about the 24th percentile 1y and is not where the stretch or the housing mechanism sits; 2Y tenor owns the policy path and is less exposed to energy-driven term premium than 10Y. Mandate prefers rates when comparably clean; here rates is superior, not merely default.",
+          "selected": "rates",
+          "spot_candidate": "Short AUDUSD (fade still-elevated AUD vs USD as housing/labor slowdown and global tightening hit the cycle currency)."
+        },
+        "horizon": "4-8 weeks",
+        "instrument": "AU 2Y",
+        "mispricing": "AU 2Y at the 99th percentile 1y and 5y still embeds further RBA tightening after the housing channel has already broken (stamp duty -24%, volumes -18%, prices more than 7% off pea\u2026",
+        "thesis": "FACT: NSW stamp-duty receipts fell 24% y/y in August with transaction volumes -18% and Sydney/Melbourne home values more than 7% below peak; AU labor temperature is 47.8 (unemployment 4.5% from 4.4%, employment -15.8k m\u2026"
+      }
+    },
+    "perma-bull": {
+      "agent": "perma-bull",
+      "confidence": 58,
+      "conflict_synopsis": {
+        "au_rates_view": "lower",
+        "aud_view": "lower",
+        "ca_rates_view": "higher",
+        "cad_view": "higher",
+        "carry_view": "neutral",
+        "confidence": 58,
+        "conflict_tags": [
+          "RISK_ON",
+          "US_CURVE_STEEPENER",
+          "USD_DOWN",
+          "CAD_UP",
+          "AUD_DOWN",
+          "NZD_UP",
+          "CA_RATES_UP",
+          "AU_RATES_DOWN",
+          "US_RATES_SHAPE"
+        ],
+        "core_view": "Post-hike US 2s10s flattening prices a growth scare that hard activity, tight credit and low vol do not confirm, so the curve should steepen.",
+        "key_catalyst": "Expansionary US activity/labor prints after a fully priced 25bp hike, against a 1y-extreme 25bp 2s10s.",
+        "key_invalidation": "Labor and surveys break weaker with HY/VIX stress while 2s10s keeps flattening.",
+        "nz_rates_view": "not_relevant",
+        "nzd_view": "higher",
+        "primary_trade": "long US 2s10s",
+        "risk_view": "risk_on",
+        "seat": "perma-bull",
+        "time_horizon": "4-8 weeks",
+        "us_rates_view": "neutral",
+        "usd_view": "lower"
+      },
+      "stance_summary": "Post-hike recession flattening is over-discounted: hard activity, credit and vol still look expansionary, so the cleanest pro-growth expression is a duration-neutral US 2s10s steepener rather than stretched cyclical FX.",
+      "trade": {
+        "asset_class": "curve",
+        "confidence": 58,
+        "direction": "long",
+        "evidence_refs": [
+          "research_method",
+          "market_state",
+          "xa:opportunities",
+          "rates:US",
+          "rates:CA",
+          "temp:US:activity",
+          "temp:US:labor",
+          "temp:US:consumer"
+        ],
+        "expression_comparison": {
+          "rates_candidate": "Duration-neutral US 2s10s steepener: receive UST 2Y versus pay UST 10Y. Packet print is 25bp on 2026-09-18, 1y percentile 0.2% / z_1y -2.45 after a -21bp 1m flatten (z -2.20). Alternative considered: long CA-US 5Y (pay CA 5Y / receive US 5Y) at -124bp, 1y percentile 0.2% and 5y percentile 6.9%.",
+          "rationale": "Rates are preferred because the growth-versus-recession discrepancy lives in curve shape, not in a cheap FX level. US 2s10s owns that gap directly after a fully priced 25bp hike, while NZDUSD mixes an energy-importer shock, unavailable NZ yields, and weak NZ labor (47.0). USDCAD is inferior because the packet's USDCAD vs CA-US 2Y residual is weak (r-squared 0.022) and 140bp 2Y carry favors USD over CAD. CA-US 5Y is a strong RV but is closer to the existing 150-175bp policy-rate gap (Fed 3.75-4.00% vs BoC 2.25%) than to a growth mispricing. NZ-involved rate RV is unavailable.",
+          "selected": "rates",
+          "spot_candidate": "Long NZDUSD (spot 0.5711, 5y percentile 8.6%, -3.90% 1m) as the cheapest cyclical USD pair after NZ Q2 GDP +0.2% q/q beat forecasts; runner-up short USDCAD on Canada activity 53.2 versus US 49.92."
+        },
+        "horizon": "4-8 weeks; post-hike data and next inflation/labor prints to test whether the 1m flatten was a growth scare or a completed hiking event",
+        "instrument": "US 2s10s",
+        "mispricing": "US 2s10s at 25bp (1y percentile 0.2%, 1m -21bp) prices a hiking-into-slowdown path that is not confirmed by expansionary ISM services, stable labor, tight HY, low VIX, or high cop\u2026",
+        "thesis": "FACT: The Fed delivered the widely priced 25bp hike to 3.75-4.00%; futures had assigned greater than 90% odds before the meeting. US 2Y is 4.76% (1y percentile 99.8%, +57bp 1m) and US 10Y is 5.01% (1y percentile 99.6%,\u2026"
+      }
+    },
+    "positioning-cynic": {
+      "agent": "positioning-cynic",
+      "confidence": 52,
+      "conflict_synopsis": {
+        "au_rates_view": "lower",
+        "aud_view": "lower",
+        "ca_rates_view": "neutral",
+        "cad_view": "neutral",
+        "carry_view": "supports_trade",
+        "confidence": 52,
+        "conflict_tags": [
+          "AU_RATES_DOWN",
+          "AUD_DOWN",
+          "FADE_CROWDED_DURATION_SHORTS",
+          "USD_NEUTRAL"
+        ],
+        "core_view": "Crowded global hawkish duration shorts are a bad entry; receive Australian 2s where housing already shows the tightening channel biting and 5y yield percentiles are most extended.",
+        "key_catalyst": "More Australian housing/financial-conditions evidence that forces the RBA to step back while crowded duration shorts cover.",
+        "key_invalidation": "RBA hikes or housing stabilizes while AU 2Y makes a new high with the global hawkish impulse.",
+        "nz_rates_view": "not_relevant",
+        "nzd_view": "not_relevant",
+        "primary_trade": "long duration AU 2Y government bond",
+        "risk_view": "neutral",
+        "seat": "positioning-cynic",
+        "time_horizon": "4-8 weeks",
+        "us_rates_view": "neutral",
+        "usd_view": "neutral"
+      },
+      "stance_summary": "The room's good hawkish macro is a crowded trade: the Fed hike was already >90% priced, US and AU yields sit at one-year extremes, and the desk thesis that global tightening is broadening is now consensus. Cot/CFTC is u\u2026",
+      "trade": {
+        "asset_class": "rates",
+        "confidence": 52,
+        "direction": "long duration",
+        "evidence_refs": [
+          "pos:unavailable",
+          "rates:AU",
+          "rates:US",
+          "mw_20260916_fomc_hike_pricing",
+          "rollup:Fed raises 25bp to 3.75\u20134.00%",
+          "mw_20260916_au_housing_tightening",
+          "rollup:Australian housing downturn deepens under higher rates",
+          "last24:2026-09-18:desk-thesis"
+        ],
+        "expression_comparison": {
+          "rates_candidate": "Receive AU 2Y government bonds outright (long duration). Cross-market alternative considered and rejected: receive AU 2Y versus pay US 2Y, because paying US duration joins the crowded post-FOMC short.",
+          "rationale": "Rates are preferred when comparably clean, and here the rates candidate is strictly cleaner. Housing is an RBA/duration mechanism, and AU 2Y is the more extreme 5y stretch. Short AUDCAD is an inferior ownership expression: it fights the packet's AUDCAD 2Y yield-differential carry and requires fading FX longs that already sit at a 5y extreme, while still leaving the crowded global duration-short book unaddressed. Paying US duration as a rates RV leg would add to the most crowded hawkish position in the packet. NZ-involved rates RV is unavailable.",
+          "selected": "rates",
+          "spot_candidate": "Short AUDCAD, fading the 5y extreme in the AUD cross versus CAD."
+        },
+        "horizon": "4-8 weeks",
+        "instrument": "AU 2Y government bond",
+        "mispricing": "The market is pricing Australia as just another global hawkish beta: AU 2Y/5Y/10Y all sit at the 99.8th percentile of 5y history after the post-Fed/global-tightening selloff. Loca\u2026",
+        "thesis": "FACT: Interest-rate futures entered the 16 Sep FOMC with >90% probability of a 25bp hike, and the Fed did hike 25bp to 3.75-4.00%. US 2Y is 4.76% as of 18 Sep (99.8th percentile 1y, +57bp 1m) while AU 2Y is 4.999% as of\u2026"
+      }
+    },
+    "rate-dove": {
+      "agent": "rate-dove",
+      "confidence": 59,
+      "conflict_synopsis": {
+        "au_rates_view": "lower",
+        "aud_view": "lower",
+        "ca_rates_view": "not_relevant",
+        "cad_view": "not_relevant",
+        "carry_view": "supports_trade",
+        "confidence": 59,
+        "conflict_tags": [
+          "AUD_DOWN",
+          "AU_RATES_DOWN",
+          "USD_UP",
+          "RISK_OFF",
+          "EASING_CYCLE"
+        ],
+        "core_view": "AU 2Y is marked to a 99th-percentile hike-continuation regime while housing, labor and headline CPI already show restrictive policy biting, so receive AUD 2Y.",
+        "key_catalyst": "Next Australian housing, labor or CPI print that confirms the tightening channel against a 99th-percentile 2Y.",
+        "key_invalidation": "AU labor/inflation gauges back above 50 with housing stabilizing, or a live energy-pass-through tightening trigger into a fresh AU 2Y high.",
+        "nz_rates_view": "not_relevant",
+        "nzd_view": "not_relevant",
+        "primary_trade": "long duration AU 2Y",
+        "risk_view": "risk_off",
+        "seat": "rate-dove",
+        "time_horizon": "4-12 weeks",
+        "us_rates_view": "not_relevant",
+        "usd_view": "higher"
+      },
+      "stance_summary": "Restrictive policy is already transmitting through Australian housing, labor and disinflation while AU 2Y sits at a 99th-percentile 1y/5y extreme after a global tightening impulse. The market is pricing hike-continuatio\u2026",
+      "trade": {
+        "asset_class": "rates",
+        "confidence": 59,
+        "direction": "long duration",
+        "evidence_refs": [
+          "rates:AU",
+          "mw_20260916_au_housing_tightening",
+          "rollup:Australian housing downturn deepens under higher rates",
+          "temp:AU:labor",
+          "temp:AU:inflation",
+          "temp:AU:activity",
+          "temp:AU:consumer",
+          "market_state"
+        ],
+        "expression_comparison": {
+          "rates_candidate": "Receive AUD 2Y outright duration (long AU 2-year government notes versus cash; research/reference RBA F2 close 4.999% as of 2026-09-16).",
+          "rationale": "The discrepancy lives in the AU policy path versus an extreme front-end yield, not in AUD spot. AU 2Y is at the 99.0th 1y and 99.8th 5y percentile after +39.1bp in one month, while housing transactions, unemployment and headline CPI are already softening. AUDUSD is only the 84.3rd 5y percentile (z_5y 1.23), the AU-US 2Y differential of +26bp means 2Y carry opposes short AUD, and AUDUSD trades cheap versus copper (residual z -1.33). AU-US 2Y RV is the 25.6th 1y percentile, so cross-market RV does not own the underpriced-easing gap either. Outright AU 2Y duration is the cleaner, rates-first expression.",
+          "selected": "rates",
+          "spot_candidate": "Short AUDUSD (ECB same-fixing research/reference 0.712 as of 2026-09-18)."
+        },
+        "horizon": "4-12 weeks, through the next Australian labor, CPI and housing-transaction prints",
+        "instrument": "AU 2Y",
+        "mispricing": "Pricing treats AU 2Y as a 99th-percentile tightening-continuation asset after the Fed/BoJ/energy impulse. Domestic state is already below-50 on inflation, labor and activity, with\u2026",
+        "thesis": "VERIFIED: AU 2Y closed 4.999% on 2026-09-16 (1y percentile 99.0, 5y percentile 99.8, z_1y 1.67) after +39.1bp 1m and +49.8bp 3m; AU 5Y 5.041% and AU 10Y 5.348% are likewise 99th-percentile on both windows. NSW stamp-dut\u2026"
+      }
+    },
+    "rate-hawk": {
+      "agent": "rate-hawk",
+      "confidence": 59,
+      "conflict_synopsis": {
+        "au_rates_view": "neutral",
+        "aud_view": "neutral",
+        "ca_rates_view": "higher",
+        "cad_view": "higher",
+        "carry_view": "supports_trade",
+        "confidence": 59,
+        "conflict_tags": [
+          "CA_RATES_UP",
+          "US_RATES_UP",
+          "CAD_UP",
+          "USD_UP",
+          "HIGHER_FOR_LONGER",
+          "CA_US_5Y_SPREAD_UP"
+        ],
+        "core_view": "BoC is the laggard: energy pass-through plus still-firm Canadian demand make CA 5Y too rich versus a Fed that has already hiked, so CA-US 5Y should rise from a 0th-percentile -124bp extreme.",
+        "key_catalyst": "BoC confirmation that fuel inflation is passing through, against policy still at 2.25%.",
+        "key_invalidation": "BoC treats labor cooling and on-target core as binding and leaves the Canada discount to US 5Y in place.",
+        "nz_rates_view": "not_relevant",
+        "nzd_view": "not_relevant",
+        "primary_trade": "long CA-US 5Y (pay CA 5Y / receive US 5Y)",
+        "risk_view": "neutral",
+        "seat": "rate-hawk",
+        "time_horizon": "4-12 weeks",
+        "us_rates_view": "higher",
+        "usd_view": "higher"
+      },
+      "stance_summary": "Verified: the Fed has already hiked 25bp to 3.75-4.00% into a >90% priced decision, US 5Y is 4.86% near the top of its one-year distribution, while the BoC is still holding 2.25% with CA 5Y at 3.54%. The common-date CA-\u2026",
+      "trade": {
+        "asset_class": "rates_rv",
+        "confidence": 59,
+        "direction": "long CA-US 5Y spread (pay CA 5Y / receive US 5Y)",
+        "evidence_refs": [
+          "research_method",
+          "market_state",
+          "rates:CA",
+          "rates:US",
+          "xa:opportunities",
+          "xa:energy-retained",
+          "rollup:BoC minutes flag higher energy pass-through risk",
+          "rollup:Canada August inflation holds at 3%, core stays near 2%"
+        ],
+        "expression_comparison": {
+          "rates_candidate": "Long CA-US 5Y spread: pay CA 5Y versus receive US 5Y (Canada rates catch up to the post-hike US path).",
+          "rationale": "The discrepancy is a cross-market policy-path gap, not a CAD-beta gap. CA-US 5Y is a clean, executable-from-packet 5Y RV at a 0th-percentile common-date extreme after a 5D cheapening. Short USDCAD is inferior: the packet's USDCAD vs CA-US 2Y screen is weak (r-squared about 0.022), USDCAD already sits at the 87th percentile with a 1m rise of about 1.74%, the 2Y differential of 140bp favors long USD versus CAD so spot fights carry, and high oil is a Canada-exporter CAD tail that contaminates a pure hawk expression. Rates are preferred when comparably clean; here they are cleaner.",
+          "selected": "rates",
+          "spot_candidate": "Short USDCAD (CAD higher if BoC tightening is repriced)."
+        },
+        "horizon": "4-12 weeks, into the next BoC communication cycle on energy pass-through",
+        "instrument": "CA-US 5Y",
+        "mispricing": "Market pricing embeds a 124bp 5Y Canada discount to the United States at the 0th percentile of the 252-observation common-date sample after a 5D CA-US 5Y move of -12bp (z about -2\u2026",
+        "thesis": "Causal question: is the BoC still treating the energy shock as containable while the Fed, BoJ and a hawkish minority of global peers have already tightened, so that Canadian 5Y yields remain too low versus US 5Y? Verifi\u2026"
+      }
+    },
+    "trend-follower": {
+      "agent": "trend-follower",
+      "confidence": 64,
+      "conflict_synopsis": {
+        "au_rates_view": "higher",
+        "aud_view": "neutral",
+        "ca_rates_view": "higher",
+        "cad_view": "lower",
+        "carry_view": "opposes_trade",
+        "confidence": 64,
+        "conflict_tags": [
+          "us_front_end_higher",
+          "reject_mean_reversion_fade",
+          "global_tightening_persistence",
+          "usdcad_secondary",
+          "negative_carry_pay_2y",
+          "ca_us_spread_wider_not_selected"
+        ],
+        "core_view": "US front-end cheapening continues because price, Fed/G10 policy and inflation revisions are aligned; stretch is not a reversal.",
+        "key_catalyst": "Post-Fed/BoJ/BoE-dissent tightening impulse plus energy shock keeping the easing path closed",
+        "key_invalidation": "US 2Y reverses the sourced one-month +57bp uptrend without a new hawkish policy or inflation impulse",
+        "nz_rates_view": "not_relevant",
+        "nzd_view": "lower",
+        "primary_trade": "Pay/short US 2Y duration; reject fading the 100th-percentile front-end yield",
+        "risk_view": "neutral",
+        "seat": "trend-follower",
+        "time_horizon": "2-8 weeks, through the next US inflation/labor prints and any BoC energy pass-through test",
+        "us_rates_view": "higher",
+        "usd_view": "higher"
+      },
+      "stance_summary": "Pay US 2Y duration. Price, policy and revisions are aligned for higher US front-end yields; fading the 100th-percentile print is premature without a reversal signal. Long USDCAD is the concrete spot continuation but is\u2026",
+      "trade": {
+        "asset_class": "rates",
+        "confidence": 64,
+        "direction": "short duration / pay fixed",
+        "evidence_refs": [
+          "rates:US",
+          "xa:opportunities",
+          "market_state",
+          "research_method",
+          "rollup:Fed raises 25bp to 3.75\u20134.00%",
+          "mw_20260916_fomc_hike_pricing",
+          "rollup:August CPI keeps the Fed tightening bias intact",
+          "last24:2026-09-18:desk-thesis"
+        ],
+        "expression_comparison": {
+          "rates_candidate": "Pay/short US 2Y outright duration (UST 2-year notes). Sourced US 2Y is 4.76% as of 2026-09-18 with +9bp 1d, +13bp 5d and +57bp 1m/3m; opportunity-monitor z 2.89 and 100th percentile. Continuation of the front-end sell-off after the Fed hike, not a 2s10s flattener (term-premium pressure can lift the long end) and not CA-US RV (that spread is already the US-outperformance trend, but BoC energy catch-up is a two-sided residual).",
+          "rationale": "Rates are preferred because they are comparably clean and own the discrepancy more directly. Verified: desk thesis and BoJ last24 both locate the Tier-1 transmission in global duration and term-rate pricing, not FX; US 2Y has same-day official history (age_days 0) with a 1-month move z 3.29; USDCAD versus CA-US 2Y is a weak residual (r-squared 0.022). Inference: fading a 100th-percentile yield because it is stretched is a mean-reversion prior, not a reversal signal. Spot USDCAD is a valid but second-best expression of the same tightening gap. Unknown: executable broker prices are absent, so levels stay null.",
+          "selected": "rates",
+          "spot_candidate": "Long USDCAD. Sourced spot 1.4010 as of 2026-09-18, +0.11% 1d, +1.10% 5d, +1.74% 1m, 87th percentile 5y; 2Y yield differential +140bp USD over CAD. Same Fed-BoC policy-gap continuation."
+        },
+        "horizon": "2-8 weeks, through the next US inflation/labor prints and any BoC energy pass-through test",
+        "instrument": "US 2Y Treasury",
+        "mispricing": "The live discrepancy is not that US 2Y is 'too high' versus its 252-observation distribution. Research method: statistical stretch is a yardstick, not a fade signal. The market st\u2026",
+        "thesis": "Verified fact: the Fed raised 25bp to 3.75-4.00% on 16 Sep after futures were already >90% priced for the hike; August CPI kept the tightening bias intact; US 2Y then printed 4.76% on 18 Sep with +9bp on the day and +57\u2026"
+      }
+    },
+    "value-guy": {
+      "agent": "value-guy",
+      "confidence": 58,
+      "conflict_synopsis": {
+        "au_rates_view": "not_relevant",
+        "aud_view": "not_relevant",
+        "ca_rates_view": "higher",
+        "cad_view": "higher",
+        "carry_view": "supports_trade",
+        "confidence": 58,
+        "conflict_tags": [
+          "CA_US_5Y_LONG",
+          "CA_RATES_UP",
+          "US_RATES_DOWN",
+          "CAD_UP",
+          "USD_DOWN",
+          "RATES_RV"
+        ],
+        "core_view": "Canada 5Y is historically rich versus the US on a cyclically warmer Canada with a live BoC energy pass-through trigger, so the CA-US 5Y spread should converge higher after a fully priced Fed hike.",
+        "key_catalyst": "BoC pass-through communication or Canada data after a delivered, already-priced Fed hike.",
+        "key_invalidation": "BoC takes pass-through off the table while Canada temperatures fall below the US, or a new common-date CA-US 5Y extreme from further US-led selloff.",
+        "nz_rates_view": "not_relevant",
+        "nzd_view": "not_relevant",
+        "primary_trade": "long CA-US 5Y (pay CA 5Y / receive US 5Y)",
+        "risk_view": "neutral",
+        "seat": "value-guy",
+        "time_horizon": "1-3 months",
+        "us_rates_view": "lower",
+        "usd_view": "lower"
+      },
+      "stance_summary": "CA-US 5Y at a historical cheap-Canada extreme is a peer-spread dislocation, not a weak-Canada story: Canada activity and consumer temperatures sit above the US, the Fed hike is already delivered into 99th-percentile US\u2026",
+      "trade": {
+        "asset_class": "rates_rv",
+        "confidence": 58,
+        "direction": "long",
+        "evidence_refs": [
+          "xa:opportunities",
+          "rates:CA",
+          "rates:US",
+          "market_state",
+          "temp:CA:activity",
+          "temp:CA:consumer",
+          "temp:CA:inflation",
+          "temp:US:activity"
+        ],
+        "expression_comparison": {
+          "rates_candidate": "Pay CA 5Y vs receive US 5Y (long the CA minus US 5Y sovereign spread) using the common-date packet print of -124bp as of 2026-09-17.",
+          "rationale": "The mispricing lives in the 5Y peer spread: CA-US 5Y is a |z|>=2 opportunity-sample extreme at 0th percentile and -124bp, whereas USDCAD is only 87th percentile 5y with z_5y 0.99. The packet USDCAD vs CA-US_2Y residual is weak (r-squared 0.022), so spot does not own the discrepancy. Two-year USD-CAD carry of 140bp supports receive-US/pay-CA and opposes short USDCAD. NZ official yields are unavailable, so NZ-involved rates RV is out. Rates RV is therefore the cleaner, carry-supported expression; spot is the inferior alternative, not the selected trade.",
+          "selected": "rates",
+          "spot_candidate": "Short USDCAD (CAD higher versus USD) as the FX expression of CA-US policy-gap compression."
+        },
+        "horizon": "1-3 months, through the next BoC communication and Canada inflation/activity prints after the delivered FOMC hike",
+        "instrument": "CA-US 5Y",
+        "mispricing": "Canada 5Y is historically rich versus US 5Y (CA-US 5Y at the bottom of the 1y distribution and a |z|>=2 opportunity extreme) while Canada's activity/consumer temperatures are abov\u2026",
+        "thesis": "Verified fact: on common dates the packet prints CA-US 5Y at -124bp as of 2026-09-17, 1y percentile 0.20, 5y percentile 6.94, z_1y -2.03; the opportunity monitor flags the same series at percentile 0.0 and z -2.05. CA 5\u2026"
+      }
+    },
+    "vol-convexity": {
+      "agent": "vol-convexity",
+      "confidence": 55,
+      "conflict_synopsis": {
+        "au_rates_view": "lower",
+        "aud_view": "lower",
+        "ca_rates_view": "not_relevant",
+        "cad_view": "not_relevant",
+        "carry_view": "not_relevant",
+        "confidence": 55,
+        "conflict_tags": [
+          "AUD_DOWN",
+          "NZD_UP",
+          "AUDNZD_DOWN",
+          "OPTIONS"
+        ],
+        "core_view": "AUDNZD's 5y extreme is a two-way event-risk discrepancy that a bounded put spread owns better than spot or blocked AU-NZ rates RV.",
+        "key_catalyst": "AU housing/labor evidence that the tightening channel is biting while NZD stops cheapening through otherwise constructive NZ news.",
+        "key_invalidation": "AUDNZD makes a new extreme as AU housing stabilizes and NZ labor/activity stay NZD-negative, or live implied vol already prices the unwind versus 20d realized.",
+        "nz_rates_view": "not_relevant",
+        "nzd_view": "higher",
+        "primary_trade": "short AUDNZD via 1-3m defined-risk put spread",
+        "risk_view": "risk_off",
+        "seat": "vol-convexity",
+        "time_horizon": "1-3 months",
+        "us_rates_view": "higher",
+        "usd_view": "not_relevant"
+      },
+      "stance_summary": "AUDNZD is the packet's most stretched G10 cross (5y 99.96th percentile, z 3.12) after a 4.27% one-month rise, while NZ 2Y yields and therefore AU-NZ rate RV and AUDNZD carry are unavailable. Spot shorting the cross is t\u2026",
+      "trade": {
+        "asset_class": "options",
+        "confidence": 55,
+        "direction": "short via defined-risk put spread",
+        "evidence_refs": [
+          "fx:AUDNZD",
+          "fx:AUDUSD",
+          "fx:NZDUSD",
+          "fx:AUDCAD",
+          "fx:USDJPY",
+          "rates:AU",
+          "rates:NZ",
+          "xa:opportunities"
+        ],
+        "expression_comparison": {
+          "rates_candidate": "AU 10Y outright (5.348, 1y 99th percentile as of 2026-09-16) or AU-NZ 2Y RV; the NZ leg is not executable because official NZ sovereign yields are unavailable (HTTP 403) and AUDNZD vs AU-NZ 2Y is status insufficient.",
+          "rationale": "The discrepancy lives in the AUDNZD distribution and in two-way NZ/AU event risk, not in a clean AU duration or AU-NZ curve view. Rates cannot own the NZ side: rates:NZ is unavailable and xa:opportunities marks AUDNZD carry and AUDNZD~AU-NZ_2Y as unavailable/insufficient. Spot short AUDNZD fights an unknown carry and has unbounded risk if NZD labor weakness (unemployment 5.6%) extends the 1m -3.90% NZDUSD slide. A 1-3m put spread bounds premium, keeps the short-AUD/long-NZD delta, and does not require inventing a reversion clock. Do not substitute an AUDUSD or AUDCAD spot short: AUDUSD is only 84th percentile and has lagged copper (residual z -1.33); AUDCAD is also 99.96th percentile but 2Y carry of 165bp / 60d vol 4.93 explicitly compensates a spot fade, whereas AUDNZD carry cannot even be measured.",
+          "selected": "options",
+          "spot_candidate": "Short AUDNZD cash at ECB reference 1.2468 (research/reference only, not executable)."
+        },
+        "horizon": "1-3 months",
+        "instrument": "AUDNZD",
+        "mispricing": "Market pricing in the frozen packet is the AUDNZD level itself at a 5y extreme (percentile 99.96, z 3.12) after NZDUSD sold 3.90% in a month through a GDP beat and a trade-deal he\u2026",
+        "thesis": "FACT: On 2026-09-18 ECB same-fixing research crosses, AUDNZD spot is 1.2468, 5y percentile 99.96, z 3.12, 1m return +4.27%, 20d realized vol 5.09%. The same snapshot has NZDUSD at 0.5711, 5y percentile 8.61, z -1.15, 1m\u2026"
+      }
+    }
+  },
+  "packet_sha256": "b4c642412ddcc969d6fd135638baede8f3e9f987015684f2085c8460c3af466a",
+  "rebuttals": {
+    "carry-is-king": {
+      "agent": "carry-is-king",
+      "attack": "Strongest opposing CAD claim: the 140bp USD-CAD 2Y screen plus USDCAD already +1.74% over 1m means CAD_DOWN versus USD is the carry-aligned expression, so CAD_UP is fighting the second-largest carry differential. That claim is true only for CAD versus USD in\u2026",
+      "defense": "Trade unchanged: duration-matched receive AU 2Y versus pay CA 2Y. Verified: common-date CA\u2212AU 2Y is \u2212164.9bp as of 2026-09-16 (5y percentile 10.50, z_5y \u22121.64; 1y percentile 51.39); AU 2Y 4.999% (5y percentile 99.80) ve\u2026",
+      "holes_in_opposing_case": [
+        "dollar-king's CAD_DOWN is USD-seat spillover from short AUDUSD, not a Canada-fundamental call. Verified: CA activity temperature is 53.2 versus AU activity 49.\u2026",
+        "dollar-king and trend-follower treat USDCAD +1.74% over 1m to the 87th 5y percentile (spot 1.4010) as CAD_DOWN continuation. Verified: the packet's USDCAD vers\u2026",
+        "Short AUDUSD fights a still-positive AUD-USD 2Y differential of 25.9bp (ratio 0.049). The packet's largest carry screen is AUDCAD 164.9bp (ratio 0.334), and AU\u2026",
+        "trend-follower's live CAD_DOWN exists only in a backup they rejected (long USDCAD). They selected pay US 2Y and said CA-US RV is two-sided because BoC energy p\u2026"
+      ],
+      "opponents": [
+        "catalyst-junkie",
+        "perma-bull",
+        "rate-hawk",
+        "value-guy",
+        "dollar-king",
+        "trend-follower"
+      ],
+      "strongest_opposing_claim": null,
+      "trade_change": "unchanged"
+    },
+    "catalyst-junkie": {
+      "agent": "catalyst-junkie",
+      "attack": "The CAD-lower tags are not CAD trades. dollar-king owns short AUDUSD because AUDUSD has not paid the USD premium already printed in EURUSD, GBPUSD, NZDUSD and USDCAD; USDCAD +1.74% 1m is cited as sunk USD strength, which is an argument that CAD already expres\u2026",
+      "defense": "Keep duration-matched pay CA 5Y / receive US 5Y. CAD_UP in the synopsis is the FX implication of BoC hike optionality, not the selected expression. Round 1 already rejected short USDCAD because the rates gap lives in CA\u2026",
+      "holes_in_opposing_case": [
+        "dollar-king's selected trade is short AUDUSD; CAD_DOWN is USD-up synopsis bleed, not a CAD mechanism with a dated Canadian closer.",
+        "dollar-king treats USDCAD +1.74% 1m as already-paid USD premium versus AUDUSD's +0.20% 1m lag, which undercuts further CAD-down as the live gap rather than pro\u2026",
+        "dollar-king explicitly refuses CAD-mixing (AUDCAD) because BoC energy pass-through, CAD oil, and stronger Canadian activity are second-order CAD-supportive ris\u2026",
+        "trend-follower selected pay US 2Y and called long USDCAD second-best; CAD_DOWN is a rejected backup, not the trade they are willing to own."
+      ],
+      "opponents": [
+        "dollar-king",
+        "trend-follower"
+      ],
+      "strongest_opposing_claim": "trend-follower: USDCAD/CAD-down is the valid spot continuation of a persistent US front-end sell-off and Fed-BoC policy gap; dollar-king: USD strength already printed in USDCAD +1.74% 1m means CAD st\u2026",
+      "trade_change": "unchanged"
+    },
+    "cross-merchant": {
+      "agent": "cross-merchant",
+      "attack": "The NZD-down camp does not own an NZ local view. FACT: on the 2026-09-18 ECB same-fixing snapshot AUDNZD is 1.2468 (5y 99.96th percentile, z 3.12, +4.27% 1m, +0.65% 1d) while AUDUSD is only +0.20% 1m (5y 84.3rd, z 1.23) and NZDUSD is -3.90% 1m (5y 8.6th, z -1\u2026",
+      "defense": "FACT: the intended discrepancy is AU versus NZ in currency space, not USD versus AUD and not US curve shape. Short AUDNZD nets out the common tightening/USD factor the desk flags after the Fed 25bp hike to 3.75-4.00%, B\u2026",
+      "holes_in_opposing_case": [
+        "dollar-king tags NZD lower because NZDUSD already paid the USD premium (1m -3.90%, 5y 8.6th percentile, z -1.15) and then shorts AUDUSD, the non-stretching leg\u2026",
+        "perma-bear's NZD_DOWN is a tag orphan. Primary trade is receive AU 2Y; evidence_refs skip fx:NZDUSD, NZ temperatures, NZ GDP and the FTA. A housing-broken AU f\u2026",
+        "trend-follower smuggles a valid US 2Y persistence rule onto NZD. US 2Y has aligned price, policy and inflation revisions (+57bp 1m, 100th percentile after a de\u2026",
+        "vol-convexity agrees the AUDNZD gap but cannot quote the put spread from this freeze: implied vol, skew, strikes and premium are UNKNOWN. Their own rule is sta\u2026"
+      ],
+      "opponents": [
+        "perma-bull",
+        "vol-convexity",
+        "dollar-king",
+        "perma-bear",
+        "trend-follower"
+      ],
+      "strongest_opposing_claim": "dollar-king: NZDUSD has already paid the post-FOMC USD tightening premium (1m -3.90%, 5y 8.6th percentile), so NZD should stay/go lower as the washed cyclical and the residual USD expression is short\u2026",
+      "trade_change": "unchanged"
+    },
+    "dollar-king": {
+      "agent": "dollar-king",
+      "attack": "The opposing USD-down, CAD-up and NZD-up cases all smuggle a second currency into a view that the packet already expressed against the dollar. FACT: USDCAD +1.74% 1m / 87th 5y percentile and NZDUSD -3.90% 1m / 8.6th 5y percentile have already paid the post-FO\u2026",
+      "defense": "Keep short AUDUSD unchanged. FACT: the Fed hike is delivered but the path is not retired; AU housing/labor/activity are at or below the US analogs; AUDUSD is the lagging USD pair. CAD can have higher rates without CAD-u\u2026",
+      "holes_in_opposing_case": [
+        "CAD-up seats (value-guy, rate-hawk, catalyst-junkie, perma-bull) translate a CA-US 5Y rates gap into CAD-higher FX even though they themselves mark USDCAD vs C\u2026",
+        "BoC energy pass-through is still only a named conditional, not a CAD-up spot catalyst. FACT: CPI-trim 1.9% and CPI-median 2.0% are near target; August employme\u2026",
+        "Cross-merchant and vol-convexity's own decomposition is that AUDNZD's 1m +4.27% / 5y z 3.12 is NZD underperformance versus a still-bid dollar, not independent\u2026",
+        "NZDUSD has already paid: -3.90% over 1m, 8.6th 5y percentile, through a Q2 GDP beat and an India FTA. Long NZD (perma-bull's spot candidate; the long-NZD leg o\u2026"
+      ],
+      "opponents": [
+        "perma-bull",
+        "value-guy",
+        "rate-hawk",
+        "carry-is-king",
+        "catalyst-junkie",
+        "cross-merchant",
+        "vol-convexity"
+      ],
+      "strongest_opposing_claim": "AUDNZD at 5y percentile 99.96 / z 3.12 (and CA-US 5Y at a 0th-percentile -124bp extreme) is a larger statistical object than AUDUSD at the 84th 5y percentile, so the room should own the cross or the\u2026",
+      "trade_change": "unchanged"
+    },
+    "mean-reverter": {
+      "agent": "mean-reverter",
+      "attack": "The USD-down cases are crowded fades of a still-live US yield extreme dressed up as growth-resilience or peer-spread value. Perma-bull's strongest claim is that a completed, >90%-priced 25bp hike plus expansionary ISM/credit/vol means 2s10s should steepen and\u2026",
+      "defense": "USD-higher is a secondary conflict tag, not the selected trade. The stretched object with a reversal condition is AU 10Y at 5.348% (16 Sep F2): 99.2nd percentile of the 252-day screen (z 2.08), 99.8th percentile 5y (z 1\u2026",
+      "holes_in_opposing_case": [
+        "Perma-bull's USD-down is a conflict tag smuggled out of a duration-neutral 2s10s steepener, not a USD-short that owns any dollar discrepancy. A curve re-steepe\u2026",
+        "US 2s10s at 25bp is a 252-day/1y-window extreme (percentile 0.0, z -2.49) but only the 54th percentile on the 5y window. Fading a one-year flatten after a full\u2026",
+        "The post-hike fade they need has not started. FACT: US 2Y printed 4.76% on 18 Sep with +9bp 1d, +13bp 5d, +57bp 1m (opportunity z 2.89, 100th percentile); US 5\u2026",
+        "Perma-bull cherry-picks ISM Services 55.4, retail +1.2%, VIX 15.44 and HY OAS 270bp while burying US consumer 48.5, Michigan preliminary September 47.8 (-7.5%\u2026"
+      ],
+      "opponents": [
+        "perma-bull",
+        "value-guy"
+      ],
+      "strongest_opposing_claim": "Perma-bull: post-hike US 2s10s at 25bp (1y/252-day extreme) prices a growth scare that ISM services, payrolls, tight HY and low VIX do not confirm, so the extra-hike premium should fade, the curve sh\u2026",
+      "trade_change": "unchanged"
+    },
+    "perma-bear": {
+      "agent": "perma-bear",
+      "attack": "The USD-down and NZD-up cases treat either complacent beta or an already-washed NZD as the growth expression. perma-bull's duration-neutral 2s10s steepener and long-NZDUSD overlay convert low VIX/tight HY into a pro-growth signal; the same packet has US activ\u2026",
+      "defense": "Receive AU 2Y is unchanged. The housing/labor break (stamp duty -24% y/y, volumes -18%, prices more than 7% off peak; AU labor 47.8) versus AU 2Y at 4.999%, 99.0th/99.8th percentile 1y/5y, is still the cleanest document\u2026",
+      "holes_in_opposing_case": [
+        "perma-bull reads VIX 15.44 (14.7th percentile), HY OAS 270bp (13.7th) and SPX near the 90th as expansion confirmation; those are the complacent risk prices aga\u2026",
+        "perma-bull's US 2s10s 25bp is extreme only on the 1y/252-observation window (1y percentile 0.2, z_1y -2.45, 1m -21bp). The 5y percentile is 54% with z_5y +0.33\u2026",
+        "perma-bull's NZD-up / long NZDUSD rests on Q2 GDP +0.2% q/q 'beating forecasts'. That print is a deceleration from +0.8% q/q in Q1 (activity impulse -2). NZ la\u2026",
+        "value-guy's USD-down is a side-effect of receiving already-extreme US 5Y (4.86%, ~99.6th percentile) after a >90% priced 25bp hike. Canada labor is already 48.\u2026"
+      ],
+      "opponents": [
+        "perma-bull",
+        "value-guy",
+        "cross-merchant",
+        "vol-convexity"
+      ],
+      "strongest_opposing_claim": "AUDNZD at a 5y extreme (spot 1.2468, percentile 99.96, z 3.12, +4.27% 1m) is the packet's most stretched G10 cross, so fading it in spot or a defined-risk put spread isolates AU housing damage versus\u2026",
+      "trade_change": "unchanged"
+    },
+    "perma-bull": {
+      "agent": "perma-bull",
+      "attack": "The strongest opposing bundle is trend-follower plus dollar-king: US 2Y is still cheapening after a delivered hike (+9bp 1d, +57bp 1m, 100th percentile), G10 tightening is broadening, so USD stays bid and CAD/NZD stay offered, making a 2s10s steepener a prema\u2026",
+      "defense": "The trade is a duration-neutral US 2s10s steepener, not long 2Y duration, not short AUDUSD, and not a chase of cheap NZDUSD. USD-lower is the implication that a hiking-into-slowdown flatten overshot resilient growth, so\u2026",
+      "holes_in_opposing_case": [
+        "USD-higher is a synopsis overlay, not a shared instrument: dollar-king shorts AUDUSD, trend-follower pays US 2Y, rate-hawk receives US 5Y versus Canada, and me\u2026",
+        "The post-hike USD premium is already paid in the pairs the USD-up camp cites: NZDUSD -3.90% 1m at the 8.6th 5y percentile, USDCAD +1.74% 1m at the 87th 5y perc\u2026",
+        "Trend-follower's pay-US-2Y case does not imply CAD lower or a continuing 2s10s flatten. Their own thesis says term-premium/BoE QT can lift the long end even as\u2026",
+        "Dollar-king's CAD-lower and NZD-lower tags contradict their AUDUSD rationale: they refused AUDCAD specifically because an implicit CAD long would import oil, B\u2026"
+      ],
+      "opponents": [
+        "dollar-king",
+        "mean-reverter",
+        "perma-bear",
+        "rate-dove",
+        "rate-hawk",
+        "trend-follower"
+      ],
+      "strongest_opposing_claim": "Trend-follower and dollar-king: post-FOMC US 2Y is still cheapening after a delivered, previously >90% priced hike, G10 tightening is broadening, so USD stays bid, CAD and NZD stay offered, and fadin\u2026",
+      "trade_change": "unchanged"
+    },
+    "rate-dove": {
+      "agent": "rate-dove",
+      "attack": "FACT: perma-bull and value-guy are the only seats in this bundle tagging USD lower. FACT: over one month EURUSD is -1.89%, GBPUSD -2.07%, NZDUSD -3.90% and USDCAD +1.74%, while AUDUSD is only +0.20% at the 84.3rd 5y percentile. FACT: the Fed delivered 25bp to\u2026",
+      "defense": "FACT: AU 2Y closed 4.999% on 2026-09-16 at the 99.0th 1y and 99.8th 5y percentile after +39.1bp 1m, while NSW stamp duty -24% y/y, transactions -18%, Sydney/Melbourne values more than 7% below peak, AU labor 47.8, infla\u2026",
+      "holes_in_opposing_case": [
+        "perma-bull maps a duration-neutral US 2s10s steepener onto usd_view=lower; that instrument does not identify USD down. A bear steepener with both legs higher k\u2026",
+        "perma-bull treats ISM Services 55.4, payrolls +162k, VIX 15.44 and HY OAS 270bp as proof the growth scare is fake, while packet US activity is 49.92 and US con\u2026",
+        "Their own thesis admits 5y US 2s10s percentile is 54%; the 1y 0.2nd-percentile flatten after a >90% priced 25bp hike is a known-event stretch, not 5y cheapness\u2026",
+        "G10 USD pairs already paid the tightening premium over 1m: EURUSD -1.89%, GBPUSD -2.07%, NZDUSD -3.90%, USDCAD +1.74% (spot 1.4010, 87th 5y percentile). USD-lo\u2026"
+      ],
+      "opponents": [
+        "perma-bull",
+        "value-guy"
+      ],
+      "strongest_opposing_claim": "After a fully priced Fed 25bp hike into 99th-percentile US yields, soft-ish US consumer 48.5 plus still-expansionary ISM/credit/vol means the USD tightening premium is done, so USD should fall via a\u2026",
+      "trade_change": "unchanged"
+    },
+    "rate-hawk": {
+      "agent": "rate-hawk",
+      "attack": "The USD and CAD opposite tags do not own the packet discrepancy. FACT: Fed funds are already 3.75-4.00% after a greater-than-90% priced 25bp hike; US 2Y 4.76% is at the 100th percentile (+57bp 1m) and US 5Y 4.86% at the 99.8th (+8bp 1d, +51bp 1m). FACT: BoC i\u2026",
+      "defense": "USD_UP in the original synopsis is a delivered US policy-premium statement, not a long-USDCAD ticket. CAD_UP is the residual FX implication of BoC catch-up, not the selected expression: short USDCAD was already rejected\u2026",
+      "holes_in_opposing_case": [
+        "dollar-king tags CAD lower as a leftover USD-pair dump, but USDCAD has already paid the USD premium: research/reference 1.4010, 5y percentile 87.0, +1.74% 1m a\u2026",
+        "dollar-king's own AUDCAD rejection admits CAD is contaminated by oil, BoC energy pass-through, and stronger Canadian activity (53.2) and consumer (52.5) versus\u2026",
+        "trend-follower treats CA-US 5Y at -124bp (0th percentile, z about -2.05, 5d -12bp) as confirmation of US outperformance to extend, while calling BoC energy cat\u2026",
+        "trend-follower's selected expression pays US 2Y at 4.76%, 100th percentile, +57bp 1m, after a 16 Sep hike that futures had already assigned greater-than-90% od\u2026"
+      ],
+      "opponents": [
+        "dollar-king",
+        "trend-follower",
+        "perma-bull",
+        "value-guy"
+      ],
+      "strongest_opposing_claim": "Trend-follower plus dollar-king: stretch is not a fade, so keep paying already-100th-percentile US fronts and treat CAD as the FX continuation of the delivered USD tightening premium (CAD lower / lon\u2026",
+      "trade_change": "unchanged"
+    },
+    "trend-follower": {
+      "agent": "trend-follower",
+      "attack": "The USD-down, CAD-up and NZD-up bloc is one mean-reversion prior wearing three currency labels. Perma-bull and value-guy fade USD and receive US duration because the hike was priced and US 2Y/5Y sit at 99th-100th percentile; that is the opposite of a reversal\u2026",
+      "defense": "Keep paying US 2Y. Price, policy and revisions remain aligned: US 2Y 4.76% still rising +9bp the session after the hike, August CPI left the tightening bias intact, US inflation temperature is 52.0, and the desk's energ\u2026",
+      "holes_in_opposing_case": [
+        "Perma-bull and value-guy mark USD lower because the 16 Sep hike was already >90% priced. That treats a completed meeting as a reversal. Sourced US 2Y is still\u2026",
+        "Perma-bull's receive-US-2Y / 2s10s steepener fades the leading tenor. Front-end leadership is the trend (US 2Y +57bp 1m versus US 10Y +36bp). 2s10s at 25bp / 0\u2026",
+        "Value-guy, rate-hawk and catalyst-junkie receive US 5Y inside long CA-US 5Y. That is an explicit fade of US 5Y at the 99.6th 1y percentile after +51bp 1m / +8b\u2026",
+        "Their CAD-higher / short-USDCAD sleeve fights both the sourced USDCAD uptrend (87th 5y percentile) and the +140bp 2Y USD-over-CAD carry. The packet marks USDCA\u2026"
+      ],
+      "opponents": [
+        "perma-bull",
+        "value-guy",
+        "rate-hawk",
+        "carry-is-king",
+        "catalyst-junkie",
+        "cross-merchant",
+        "vol-convexity"
+      ],
+      "strongest_opposing_claim": "US 2Y/5Y already sit at 99th-100th percentile after a fully priced Fed hike, so the live increment is fade-US / CA catch-up / NZD mean-reversion rather than more front-end cheapening.",
+      "trade_change": "unchanged"
+    },
+    "value-guy": {
+      "agent": "value-guy",
+      "attack": "The strongest opposing claim is trend-follower's: statistical stretch is not a fade, US 2Y keeps cheapening after a delivered hike, so CA-US staying at a 0th-percentile discount is the trend and long USDCAD is the FX continuation. That is narrative momentum d\u2026",
+      "defense": "Keep long CA-US 5Y (pay CA 5Y / receive US 5Y). The anchor is the common-date 5Y peer spread versus its 1y/5y distribution plus comparable-country temperatures, not the fact that Canada yields lagged a post-CPI US sello\u2026",
+      "holes_in_opposing_case": [
+        "trend-follower treats post-hike US 2Y continuation (4.76%, 100th percentile, +57bp 1m) as a reason to keep widening an already 0th-percentile CA-US 5Y at -124b\u2026",
+        "Long USDCAD is not a stretched FX continuation: 5y percentile 87.0, z_5y 0.99, 1m +1.74%. The packet residual USDCAD versus CA-US 2Y is weak (r-squared 0.022).\u2026",
+        "dollar-king's CAD-lower is a synopsis residual of a USD-spot seat. They refuse to chase USDCAD because it is already-extended after +1.74% 1m, which undercuts\u2026",
+        "dollar-king themselves flag Canada activity 53.2, consumer 52.5, and BoC energy pass-through as CAD-positive second-order risk on AUDCAD. Those are first-order\u2026"
+      ],
+      "opponents": [
+        "dollar-king",
+        "trend-follower",
+        "rate-hawk",
+        "mean-reverter",
+        "perma-bear",
+        "rate-dove"
+      ],
+      "strongest_opposing_claim": "trend-follower: US front-end cheapening continues after a delivered hike; 100th-percentile US 2Y is persistence not a fade; long USDCAD is the FX continuation of the Fed-BoC gap; CA-US RV imports two\u2026",
+      "trade_change": "unchanged"
+    },
+    "vol-convexity": {
+      "agent": "vol-convexity",
+      "attack": "Strongest opposite-NZD claim is dollar-king, trend-follower and perma-bear treating NZDUSD's 1m -3.90% plus unemployment 5.6% and the Fed/BoJ/energy overlay as a live NZD-down continuation, so fading AUDNZD is fighting trend. That claim is not owned and is in\u2026",
+      "defense": "Keep the Round 1 1-3m AUDNZD put spread. It is not a naked long NZDUSD and does not need the NZD-down camp to be wrong on USD. Equivalent delta is short AUD / long NZD with known debit on the only G10 FX print that is a\u2026",
+      "holes_in_opposing_case": [
+        "Dollar-king's NZD_DOWN contradicts its own already-washed NZDUSD claim. If the 1m -3.90% (5y percentile 8.61, z -1.15) is completed wash, the live stretch is A\u2026",
+        "Trend-follower tags NZD_DOWN but pays US 2Y (4.76%, +57bp 1m) and keeps USDCAD as the spot candidate. Paying US 2Y does not require NZD lower. Stretch is not a\u2026",
+        "Perma-bear's NZD_DOWN is unused: the trade is receive AU 2Y. AU housing (stamp duty -24% y/y, volumes -18%, prices more than 7% off peak) and AU labor 47.8 sup\u2026",
+        "None of the NZD-down camp produces a NZ-owned catalyst that NZD must keep cheapening through more constructive NZ news. Fed 25bp to 3.75-4.00%, BoJ to 1.25%, a\u2026"
+      ],
+      "opponents": [
+        "dollar-king",
+        "perma-bear",
+        "trend-follower",
+        "cross-merchant",
+        "perma-bull"
+      ],
+      "strongest_opposing_claim": null,
+      "trade_change": "unchanged"
+    }
+  },
+  "required_artifact_index": {
+    "conflict_map": "trader-room/runs/tr-20260918T223926Z-ondemand/conflict_map.json",
+    "evidence_cutoff": "2026-09-18T22:39:26Z",
+    "evidence_packet": "trader-room/runs/tr-20260918T223926Z-ondemand/evidence_packet.json",
+    "packet_sha256": "b4c642412ddcc969d6fd135638baede8f3e9f987015684f2085c8460c3af466a",
+    "pm_handoff": "trader-room/runs/tr-20260918T223926Z-ondemand/pm_handoff.json",
+    "rebuttals": {
+      "carry-is-king": "trader-room/runs/tr-20260918T223926Z-ondemand/rebuttals/carry-is-king.json",
+      "catalyst-junkie": "trader-room/runs/tr-20260918T223926Z-ondemand/rebuttals/catalyst-junkie.json",
+      "cross-merchant": "trader-room/runs/tr-20260918T223926Z-ondemand/rebuttals/cross-merchant.json",
+      "dollar-king": "trader-room/runs/tr-20260918T223926Z-ondemand/rebuttals/dollar-king.json",
+      "mean-reverter": "trader-room/runs/tr-20260918T223926Z-ondemand/rebuttals/mean-reverter.json",
+      "perma-bear": "trader-room/runs/tr-20260918T223926Z-ondemand/rebuttals/perma-bear.json",
+      "perma-bull": "trader-room/runs/tr-20260918T223926Z-ondemand/rebuttals/perma-bull.json",
+      "rate-dove": "trader-room/runs/tr-20260918T223926Z-ondemand/rebuttals/rate-dove.json",
+      "rate-hawk": "trader-room/runs/tr-20260918T223926Z-ondemand/rebuttals/rate-hawk.json",
+      "trend-follower": "trader-room/runs/tr-20260918T223926Z-ondemand/rebuttals/trend-follower.json",
+      "value-guy": "trader-room/runs/tr-20260918T223926Z-ondemand/rebuttals/value-guy.json",
+      "vol-convexity": "trader-room/runs/tr-20260918T223926Z-ondemand/rebuttals/vol-convexity.json"
+    },
+    "run_id": "tr-20260918T223926Z-ondemand",
+    "submissions": {
+      "carry-is-king": "trader-room/runs/tr-20260918T223926Z-ondemand/submissions/carry-is-king.json",
+      "catalyst-junkie": "trader-room/runs/tr-20260918T223926Z-ondemand/submissions/catalyst-junkie.json",
+      "cross-merchant": "trader-room/runs/tr-20260918T223926Z-ondemand/submissions/cross-merchant.json",
+      "dollar-king": "trader-room/runs/tr-20260918T223926Z-ondemand/submissions/dollar-king.json",
+      "mean-reverter": "trader-room/runs/tr-20260918T223926Z-ondemand/submissions/mean-reverter.json",
+      "no-trade-skeptic": "trader-room/runs/tr-20260918T223926Z-ondemand/submissions/no-trade-skeptic.json",
+      "perma-bear": "trader-room/runs/tr-20260918T223926Z-ondemand/submissions/perma-bear.json",
+      "perma-bull": "trader-room/runs/tr-20260918T223926Z-ondemand/submissions/perma-bull.json",
+      "positioning-cynic": "trader-room/runs/tr-20260918T223926Z-ondemand/submissions/positioning-cynic.json",
+      "rate-dove": "trader-room/runs/tr-20260918T223926Z-ondemand/submissions/rate-dove.json",
+      "rate-hawk": "trader-room/runs/tr-20260918T223926Z-ondemand/submissions/rate-hawk.json",
+      "trend-follower": "trader-room/runs/tr-20260918T223926Z-ondemand/submissions/trend-follower.json",
+      "value-guy": "trader-room/runs/tr-20260918T223926Z-ondemand/submissions/value-guy.json",
+      "vol-convexity": "trader-room/runs/tr-20260918T223926Z-ondemand/submissions/vol-convexity.json"
+    }
+  },
+  "run_id": "tr-20260918T223926Z-ondemand",
+  "theoretical_tensions": [
+    {
+      "agents": [
+        "dollar-king",
+        "mean-reverter",
+        "perma-bear",
+        "rate-dove",
+        "rate-hawk",
+        "trend-follower",
+        "value-guy"
+      ],
+      "currency_camp": [
+        "dollar-king",
+        "mean-reverter",
+        "perma-bear",
+        "rate-dove",
+        "rate-hawk",
+        "trend-follower"
+      ],
+      "description": "USD higher views coexist with USD rates-lower views; that is a theoretical policy/FX tension, not an automatic contradiction.",
+      "id": "theory:USD:ccy-up-rates-down",
+      "kind": "currency_rates_tension",
+      "rates_camp": [
+        "value-guy"
+      ]
+    },
+    {
+      "agents": [
+        "carry-is-king",
+        "dollar-king",
+        "perma-bear",
+        "perma-bull",
+        "rate-hawk",
+        "trend-follower",
+        "value-guy",
+        "vol-convexity"
+      ],
+      "currency_camp": [
+        "perma-bull",
+        "value-guy"
+      ],
+      "description": "USD lower views coexist with USD rates-higher views; that is a theoretical policy/FX tension, not an automatic contradiction.",
+      "id": "theory:USD:ccy-down-rates-up",
+      "kind": "currency_rates_tension",
+      "rates_camp": [
+        "carry-is-king",
+        "dollar-king",
+        "perma-bear",
+        "rate-hawk",
+        "trend-follower",
+        "vol-convexity"
+      ]
+    },
+    {
+      "agents": [
+        "carry-is-king",
+        "catalyst-junkie",
+        "dollar-king",
+        "perma-bear",
+        "perma-bull",
+        "rate-hawk",
+        "trend-follower",
+        "value-guy"
+      ],
+      "currency_camp": [
+        "dollar-king",
+        "trend-follower"
+      ],
+      "description": "CAD lower views coexist with CAD rates-higher views; that is a theoretical policy/FX tension, not an automatic contradiction.",
+      "id": "theory:CAD:ccy-down-rates-up",
+      "kind": "currency_rates_tension",
+      "rates_camp": [
+        "carry-is-king",
+        "catalyst-junkie",
+        "dollar-king",
+        "perma-bear",
+        "perma-bull",
+        "rate-hawk",
+        "trend-follower",
+        "value-guy"
+      ]
+    },
+    {
+      "agents": [
+        "carry-is-king",
+        "cross-merchant",
+        "dollar-king",
+        "mean-reverter",
+        "perma-bear",
+        "perma-bull",
+        "positioning-cynic",
+        "rate-dove",
+        "trend-follower",
+        "vol-convexity"
+      ],
+      "currency_camp": [
+        "carry-is-king",
+        "cross-merchant",
+        "dollar-king",
+        "mean-reverter",
+        "perma-bear",
+        "perma-bull",
+        "positioning-cynic",
+        "rate-dove",
+        "vol-convexity"
+      ],
+      "description": "AUD lower views coexist with AUD rates-higher views; that is a theoretical policy/FX tension, not an automatic contradiction.",
+      "id": "theory:AUD:ccy-down-rates-up",
+      "kind": "currency_rates_tension",
+      "rates_camp": [
+        "trend-follower"
+      ]
+    }
+  ]
+}
