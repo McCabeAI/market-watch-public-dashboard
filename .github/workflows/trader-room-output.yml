@@ -1,0 +1,106 @@
+name: Accept Trader Room Output
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+    paths:
+      - "trader-room/runs/**"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: trader-room-output-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  validate-promote-merge:
+    if: startsWith(github.event.pull_request.title, '[trader-room-output]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout trusted main
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Verify data-only Trader Room PR
+        id: inspect
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          BASE_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          [ "$HEAD_REPO" = "$BASE_REPO" ] || { echo "::error::Trader Room output must originate in this repository"; exit 1; }
+          mapfile -t FILES < <(gh api "repos/$REPO/pulls/$PR_NUMBER/files?per_page=100" --paginate --jq '.[].filename')
+          [ "${#FILES[@]}" -gt 0 ] || { echo "::error::No Trader Room artifacts"; exit 1; }
+          RUN_ID=""
+          for FILE in "${FILES[@]}"; do
+            if [[ "$FILE" =~ ^trader-room/runs/(tr-[^/]+)/ ]]; then
+              THIS="${BASH_REMATCH[1]}"
+            elif [ "$FILE" = "data/trader-room/public/latest.json" ] || [ "$FILE" = "data/pm/books/latest.json" ]; then
+              continue
+            else
+              echo "::error::Unexpected file: $FILE"; exit 1
+            fi
+            if [ -z "$RUN_ID" ]; then RUN_ID="$THIS"; fi
+            [ "$THIS" = "$RUN_ID" ] || { echo "::error::PR contains multiple Trader Room runs"; exit 1; }
+          done
+          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Validate completed run and build public packet
+        env:
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          RUN_ID: ${{ steps.inspect.outputs.run_id }}
+        run: |
+          set -euo pipefail
+          git fetch origin "$HEAD_REF"
+          git checkout -B "$HEAD_REF" "origin/$HEAD_REF"
+          test -f "trader-room/runs/$RUN_ID/pm_handoff.json"
+          test -f "trader-room/runs/$RUN_ID/evidence_packet.json"
+          test -f "trader-room/runs/$RUN_ID/conflict_map.json"
+          test "$(find "trader-room/runs/$RUN_ID/submissions" -maxdepth 1 -name '*.json' | wc -l | tr -d ' ')" -eq 14
+          PYTHONPATH=. python scripts/trader_room_public.py --from-run "trader-room/runs/$RUN_ID" --output /tmp/trader-room-latest.json
+          if [ -f "trader-room/runs/$RUN_ID/pm_decisions.json" ]; then
+            PYTHONPATH=. python scripts/pm_review.py validate --input "trader-room/runs/$RUN_ID/pm_decisions.json"
+            PYTHONPATH=. python scripts/pm_review.py apply --input "trader-room/runs/$RUN_ID/pm_decisions.json" --output /tmp/pm-books-latest.json
+          fi
+          python - <<'PY'
+          import json
+          p=json.load(open('/tmp/trader-room-latest.json'))
+          assert p["available"] is True
+          assert p["seat_count"] == 14
+          assert p["status"] == "STATUS: AWAITING_CHATGPT_ARBITRATION"
+          PY
+
+      - name: Promote run and merge
+        env:
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p data/trader-room/public
+          cp /tmp/trader-room-latest.json data/trader-room/public/latest.json
+          if [ -f /tmp/pm-books-latest.json ]; then
+            mkdir -p data/pm/books
+            cp /tmp/pm-books-latest.json data/pm/books/latest.json
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/trader-room/public/latest.json
+          if [ -f data/pm/books/latest.json ]; then git add data/pm/books/latest.json; fi
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: publish completed Trader Room run"
+            git push origin "HEAD:$HEAD_REF"
+          fi
+          gh pr merge "$PR_URL" --squash --delete-branch

@@ -21,7 +21,14 @@ from scripts.overnight.constants import SCHEMA_VERSION, STANDING_SEATS
 from scripts.overnight.errors import EvidenceBoundaryError, SchemaError
 from scripts.overnight.evidence import require_snapshot
 from scripts.overnight.ledger import load_or_create, mark_finished, mark_running, persist_run
-from scripts.overnight.store import OvernightStore, sha256_json
+from scripts.overnight.store import OvernightStore, sha256_json, write_json
+from scripts.pm_layer import (
+    MODEL_PM_IDS,
+    PM_BOOKS_RELPATH,
+    apply_pm_decisions,
+    empty_pm_books,
+    validate_pm_books,
+)
 
 SCHEDULE_ID = "market-watch-weekday-0205"
 OUTPUT_TYPE = "OVERNIGHT_SCHEDULED_OUTPUT"
@@ -30,6 +37,9 @@ ALLOWED_MODELS = {"grok-4.6", "composer-2.5"}
 TOTAL_MODEL_CAP = 18
 GROK_CAP = 16
 COMPOSER_CAP = 2
+PM_TOTAL_MODEL_CAP = 21
+PM_GROK_CAP = 19
+PM_COMPOSER_CAP = 2
 
 FORBIDDEN_MODEL_STATE_KEYS = {
     "books",
@@ -44,6 +54,12 @@ FORBIDDEN_MODEL_STATE_KEYS = {
     "funding_last_accrual_at",
     "net_pnl_usd",
     "competition_rank",
+    "gross_notional_usd",
+    "total_pnl_usd",
+    "entry_price",
+    "mark_price",
+    "entry_price_source",
+    "mark_price_source",
 }
 
 
@@ -65,7 +81,7 @@ def _packet_hash(packet: dict[str, Any]) -> str:
     return sha256_json({k: v for k, v in packet.items() if k != "packet_sha256"})
 
 
-def validate_execution(execution: dict[str, Any]) -> dict[str, Any]:
+def validate_execution(execution: dict[str, Any], *, pm_enabled: bool = False) -> dict[str, Any]:
     if not isinstance(execution, dict):
         raise SchemaError("scheduled output missing execution object")
     if execution.get("parent_model") != "grok-4.6":
@@ -80,8 +96,13 @@ def validate_execution(execution: dict[str, Any]) -> dict[str, Any]:
     total_cap = int(execution.get("total_model_cap", -1))
     grok_cap = int(execution.get("grok_cap", -1))
     composer_cap = int(execution.get("composer_cap", -1))
-    if (total_cap, grok_cap, composer_cap) != (TOTAL_MODEL_CAP, GROK_CAP, COMPOSER_CAP):
-        raise SchemaError("scheduled output model caps do not match the approved Market Watch contract")
+    expected = (
+        (PM_TOTAL_MODEL_CAP, PM_GROK_CAP, PM_COMPOSER_CAP)
+        if pm_enabled
+        else (TOTAL_MODEL_CAP, GROK_CAP, COMPOSER_CAP)
+    )
+    if (total_cap, grok_cap, composer_cap) != expected:
+        raise SchemaError("scheduled output model caps do not match the selected Market Watch contract")
     total = int(execution.get("declared_total_model_calls", -1))
     grok = int(execution.get("declared_grok_calls", -1))
     composer = int(execution.get("declared_composer_calls", -1))
@@ -170,7 +191,28 @@ def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str,
             if decision.get(forbidden_key):
                 raise EvidenceBoundaryError(f"{seat} recorded forbidden post-freeze acquisition: {forbidden_key}")
 
-    validate_execution(payload.get("execution") or {})
+    pm_decisions = payload.get("pm_decisions")
+    if pm_decisions is not None:
+        if not isinstance(pm_decisions, dict) or set(pm_decisions) != set(MODEL_PM_IDS):
+            raise SchemaError(
+                "scheduled pm_decisions must contain exactly swinger-pm, pragmatist-pm and grinder-pm"
+            )
+        for pm_id, decision in pm_decisions.items():
+            if not isinstance(decision, dict):
+                raise SchemaError(f"{pm_id} PM decision must be an object")
+            if decision.get("pm_id") not in (None, pm_id):
+                raise SchemaError(f"{pm_id} PM decision id mismatch")
+            if not isinstance(decision.get("actions"), list) or not decision["actions"]:
+                raise SchemaError(f"{pm_id} PM decision must contain at least one action")
+            if decision.get("packet_sha256") not in (None, agent_packet["packet_sha256"]):
+                raise EvidenceBoundaryError(f"{pm_id} PM decision packet hash mismatch")
+            if decision.get("evidence_cutoff") not in (None, agent_packet["evidence_cutoff"]):
+                raise EvidenceBoundaryError(f"{pm_id} PM decision evidence cutoff mismatch")
+
+    validate_execution(
+        payload.get("execution") or {},
+        pm_enabled=payload.get("pm_decisions") is not None,
+    )
     return payload
 
 
@@ -198,6 +240,24 @@ def _apply_validated(
     updated["review_status"] = "fresh"
     updated["last_successful_review_run_id"] = run_id
 
+    pm_books = None
+    if payload.get("pm_decisions") is not None:
+        pm_path = store.state_root / PM_BOOKS_RELPATH
+        if pm_path.is_file():
+            pm_books = validate_pm_books(json.loads(pm_path.read_text(encoding="utf-8")))
+        else:
+            pm_books = empty_pm_books()
+        market_state = ((base.get("families") or {}).get("market_state") or {}).get("data") or {}
+        pm_books = apply_pm_decisions(
+            pm_books,
+            decisions=payload["pm_decisions"],
+            market_state=market_state,
+            review_id=f"{run_id}-pm",
+            evidence_cutoff=payload["agent_packet"]["evidence_cutoff"],
+            when=parse_iso(payload["agent_packet"]["evidence_cutoff"]),
+            require_all=False,
+        )
+
     review = {
         "schema_version": SCHEMA_VERSION,
         "type": "OVERNIGHT_TRADER_REVIEW",
@@ -214,6 +274,8 @@ def _apply_validated(
         "errors": [],
         "reviews": decisions,
         "books": updated,
+        "pm_review_status": "fresh" if pm_books is not None else "not_supplied",
+        "pm_ids": sorted(payload.get("pm_decisions") or {}),
     }
 
     if write:
@@ -221,6 +283,22 @@ def _apply_validated(
         store.write_artifact(run_id, "scheduled_output.json", payload)
         store.write_artifact(run_id, "trader_review.json", review)
         store.write_books(updated)
+        if pm_books is not None:
+            write_json(store.state_root / PM_BOOKS_RELPATH, pm_books)
+            store.write_artifact(
+                run_id,
+                "pm_review.json",
+                {
+                    "schema_version": SCHEMA_VERSION,
+                    "type": "OVERNIGHT_PM_REVIEW",
+                    "overnight_run_id": run_id,
+                    "review_id": f"{run_id}-pm",
+                    "evidence_cutoff": payload["agent_packet"]["evidence_cutoff"],
+                    "packet_sha256": payload["agent_packet"]["packet_sha256"],
+                    "pm_ids": sorted(payload["pm_decisions"]),
+                    "status": "succeeded",
+                },
+            )
         run = load_or_create(store, run_id=run_id)
         mark_running(
             run,
@@ -251,6 +329,9 @@ def simulate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str,
         source_state = store.state_dir()
         if source_state.is_dir():
             shutil.copytree(source_state, tmp_root / "data" / "overnight", dirs_exist_ok=True)
+        source_pm = store.state_root / "data" / "pm" / "books"
+        if source_pm.is_dir():
+            shutil.copytree(source_pm, tmp_root / "data" / "pm" / "books", dirs_exist_ok=True)
         temp_store = OvernightStore(root=store.root, state_root=tmp_root)
         return _apply_validated(temp_store, payload, write=True)
 

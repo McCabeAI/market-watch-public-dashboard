@@ -11,8 +11,8 @@ from scripts.overnight.constants import ROOT
 POLICY = {
     "version": 1,
     "run_type": "trader-room-ondemand",
-    "total_model_cap": 57,
-    "grok_cap": 29,
+    "total_model_cap": 60,
+    "grok_cap": 32,
     "composer_cap": 28,
     "parent_model": "grok-4.6",
     "parent_total": 1,
@@ -57,7 +57,7 @@ class TraderRoomBudgetHookTests(unittest.TestCase):
             check=False,
         )
 
-    def test_full_contract_budget_allows_28_grok_children_and_28_composer(self) -> None:
+    def test_full_contract_budget_allows_traders_rebuttals_three_pms_and_28_composer(self) -> None:
         advocates = []
         for i in range(14):
             child = f"adv-{i}"
@@ -68,6 +68,8 @@ class TraderRoomBudgetHookTests(unittest.TestCase):
             )
         for i in range(14):
             self.assertEqual(self._call("root", f"rebuttal-{i}", "grok-4.6").returncode, 0)
+        for pm in ("swinger-pm", "pragmatist-pm", "grinder-pm"):
+            self.assertEqual(self._call("root", pm, "grok-4.6", f"TRADER_ROOM_PM=1 pm={pm}").returncode, 0)
         for advocate in advocates:
             self.assertEqual(self._call(advocate, f"{advocate}-c1", "composer-2.5").returncode, 0)
             self.assertEqual(self._call(advocate, f"{advocate}-c2", "composer-2.5").returncode, 0)

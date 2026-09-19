@@ -104,6 +104,31 @@
         money(row.funding_cost_usd) + '</span></div>';
     }).join("") : '<div class="tb-empty">Leaderboard unavailable</div>';
 
+    const pmPacket = packet.pm_books || {};
+    const pms = pmPacket.pms || [];
+    const pmHtml = pms.length ? pms.map(function (pm) {
+      const positions = pm.positions || [];
+      const positionsHtml = positions.length ? positions.map(function (pos) {
+        return '<div class="tb-position"><b>' + esc(pos.instrument) + '</b><span>' +
+          esc(pos.side) + ' · ' + esc(pos.asset_class) + '</span><span>' +
+          money(pos.notional_usd) + '</span><span class="' + cls(pos.unrealized_pnl_usd) + '">' +
+          money(pos.unrealized_pnl_usd) + '</span></div>';
+      }).join("") : '<div class="tb-empty">No open risk</div>';
+      return '<article class="tb-seat"><div class="tb-seat-top"><div class="tb-seat-name">' +
+        esc(pm.label || pm.pm_id) + '</div><div class="tb-action">' + esc(pm.last_action || "HOLD") +
+        '</div></div><p class="tb-remit">' + esc(pm.objective || "") + '</p>' +
+        '<div class="tb-metrics"><div><span>P&amp;L</span><b class="' + cls(pm.total_pnl_usd) + '">' +
+        money(pm.total_pnl_usd) + '</b></div><div><span>Gross</span><b>' + money(pm.gross_notional_usd) +
+        '</b></div><div><span>Utilization</span><b>' + esc(pm.utilization_pct) + '%</b></div></div>' +
+        '<div class="tb-positions">' + positionsHtml + '</div>' +
+        (pm.thesis ? '<p class="tb-thesis">' + esc(pm.thesis) + '</p>' : '') +
+        (pm.invalidation ? '<p class="tb-pitch"><b>Invalidation:</b> ' + esc(pm.invalidation) + '</p>' : '') +
+        '</article>';
+    }).join("") : '<div class="tb-empty">PM books initialized; no PM decisions have been ingested yet.</div>';
+
+    const pmSection = '<section class="tb-panel"><div class="tb-panel-head"><h3>Portfolio managers · $1bn each</h3><p>Same evidence and deterministic marks; different risk objectives. ChatGPT PM, Swinger, Pragmatist, Grinder.</p></div><div class="tb-seat-grid">' +
+      pmHtml + '</div></section>';
+
     let researchHtml = "";
     if (research) {
       const items = []
@@ -122,6 +147,7 @@
 
     root.innerHTML = stale +
       researchHtml +
+      pmSection +
       '<section class="tb-panel"><div class="tb-panel-head"><h3>Book snapshot</h3><p>' +
       esc(packet.as_of || "") + " · evidence cutoff " + esc(packet.evidence_cutoff || "n/a") +
       '</p></div><div class="tb-kpis"><div class="tb-kpi"><span>Seats</span><b>' +

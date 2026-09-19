@@ -1,6 +1,6 @@
 # Market Watch — Operating Architecture and Data Pipeline
 
-Last updated: 2026-09-18
+Last updated: 2026-09-19
 
 This is the canonical technical runbook for the public Market Watch dashboard and its Supabase pilot. It records how the current system is built, what each storage layer owns, the data-source classes in use, the ingestion and verification rules, deployment mechanics, validation gates, and known gaps.
 
@@ -17,7 +17,7 @@ The public dashboard is live on GitHub Pages. As of this document:
 - v10 adds August 2026 CPI context and the explicit unresolved CPI-to-Core-PCE bridge lineage warning to the US Inflation drawer.
 - the Sep 14 completeness transform in `scripts/apply_v11_refresh.py` rolls the central-bank research window, refreshes X status and catalysts, updates the US Core CPI quick/feed state, and moves realized CPI/PPI releases into release history.
 - `data/temperature_scores.json` is the versioned live score ledger. All 16 V0 scores were reindexed to 50.0 on 2026-09-17; `scripts/apply_temperature_scores.py` deterministically applies cumulative fixed-weight release impulses and overwrites the recovered v8 placeholder values on every build.
-- the light V0 refresh remains the news/score authoring path; the repository now also has a native overnight production pipeline (`docs/OVERNIGHT_PIPELINE_V1.md`) that snapshots those inputs, freezes a common evidence packet, runs a lightweight 14-seat paper-book review, and lets GitHub Actions publish Pages at 04:07 ET.
+- the light V0 refresh remains the news/score authoring path; the repository now also has a native overnight production pipeline (`docs/OVERNIGHT_PIPELINE_V1.md`) that snapshots those inputs, freezes a common evidence packet, runs a lightweight 14-seat paper-book review, maintains four separate $1bn PM books above the traders, and lets GitHub Actions publish Pages at 04:07 ET.
 - the Supabase pilot is active in project `market-watch-dev`, private schema `market_watch`.
 - Supabase stores normalized operational feed state and provenance when persistence succeeds; it is not the canonical raw-evidence archive or canonical macro time-series warehouse.
 - X follow-list ingestion is prepared but waiting for Kevin's requested X data archive.
@@ -57,10 +57,11 @@ Current deploy path:
 9. It validates `data/temperature_scores.json`, runs the score unit tests, and applies `scripts/apply_temperature_scores.py` to overwrite all 16 legacy placeholder scores/bars from the 50.0 activation baseline plus cumulative weighted release impulses.
 10. It runs `scripts/market_state.py` to emit `_site/market-state.json` (no API keys; NZ may be `unavailable` when RBNZ is blocked).
 11. It applies the v12 **Market Data** opportunity monitor (ranked screens, curve diagnostics, cross-asset regressions, carry proxies and drilldowns; see `docs/MARKET_OPPORTUNITIES.md`) from `patch_v12/` via `scripts/apply_market_data_tab.py`, which serves `market-data.js` and loads the same-origin JSON packet in the browser.
-12. It applies the additive v13 **Trader Book** tab from `patch_v13/` via `scripts/apply_trader_book_tab.py`, validates the overnight publication gate, and emits `_site/trader-books.json` from the canonical morning dataset or the seeded $100m paper books.
-13. Only after all deterministic content/count/anchor checks pass are `_site/index.html`, `market-state.json`, `market-data.js`, `trader-book.js`, and `trader-books.json` uploaded as the GitHub Pages artifact.
-14. The deploy job publishes that artifact to GitHub Pages on ordinary `main` pushes, manual dispatch, and the weekday 04:15 America/New_York schedule. The 04:07 overnight gate runs first and scheduled Pages publication requires the assembled morning dataset. GitHub Actions remains the only website publisher.
-15. The operational run must still verify the live deployed page; a green workflow alone is not completion.
+12. It applies the additive v13 **Trader Book** tab from `patch_v13/` via `scripts/apply_trader_book_tab.py`, validates the overnight publication gate, and emits `_site/trader-books.json` containing the four $1bn PM books plus the 14 $100m trader books.
+13. The separate Trader Room tab derives `_site/trader-room.json` from the newest complete 14-seat run rather than relying on a manually advanced pointer; completed data-only Trader Room PRs are validated/promoted by `.github/workflows/trader-room-output.yml`.
+14. Only after all deterministic content/count/anchor checks pass are `_site/index.html`, `market-state.json`, `market-data.js`, `trader-book.js`, `trader-books.json`, and `trader-room.json` uploaded as the GitHub Pages artifact.
+15. The deploy job publishes that artifact to GitHub Pages on ordinary `main` pushes, manual dispatch, and the weekday 04:15 America/New_York schedule. The 04:07 overnight gate runs first and scheduled Pages publication requires the assembled morning dataset. GitHub Actions remains the only website publisher.
+16. The operational run must still verify the live deployed page; a green workflow alone is not completion.
 
 Current immutable base validation constants in `.github/workflows/deploy-pages.yml`:
 
@@ -309,7 +310,7 @@ Market Watch owns deterministic collection, snapshots, book mechanics, validatio
 
 source discovery -> fetch/normalize -> deduplicate -> classify -> corroborate/verify -> rank -> write Supabase operational state -> generate public read model -> build dashboard -> validate -> deploy
 
-The 00:07 job contains no model invocation. At 02:05 ACP launches one bounded `grok-4.6` parent. Repository hooks enforce the Grok/Composer allowlist, hard total/per-model child budgets, no grandchildren, and evidence-closed trader children. The provider writes research plus structured trader decisions only. Trusted Market Watch code validates the output and computes canonical books, P&L, and NAV.
+The 00:07 job contains no model invocation. At 02:05 ACP launches one bounded `grok-4.6` parent under the currently approved 14-seat schedule. Repository hooks enforce the Grok/Composer allowlist, hard total/per-model child budgets, no grandchildren, and evidence-closed trader children. Target code also supports an exact future three-PM extension, but it is inactive until the protected ACP schedule is explicitly changed. Provider output is decisions only; trusted Market Watch code validates the output and computes canonical trader/PM books and P&L.
 
 Automation must preserve the same epistemic separation now enforced manually:
 
@@ -387,10 +388,14 @@ Supabase:
 - `.github/workflows/deploy-pages.yml` — exact Pages build and validation gate, including the Trader Book tab
 - `.github/workflows/overnight-pipeline.yml` — deterministic America/New_York overnight stages and dry-run
 - `.github/workflows/overnight-scheduled-output.yml` — trusted event-driven validation/apply/merge gate for ACP scheduled output
+- `.github/workflows/trader-room-output.yml` — validates/promotes completed on-demand Trader Room runs and applies their three AI PM decisions
+- `.github/workflows/pm-decision-output.yml` — deterministic ingest/apply gate for ChatGPT or other PM decision payloads
 - `.github/workflows/daily-market-state.yml` — weekday/manual no-secret rates and G10 FX research snapshot
 - `docs/OVERNIGHT_PIPELINE_V1.md` — overnight run-id, books, freshness, and publication contract
-- `scripts/overnight/` / `scripts/overnight_pipeline.py` — deterministic stage orchestration, scheduled-output validation, and book mechanics
-- `data/overnight/` — git-auditable paper books and run ledgers
+- `scripts/overnight/` / `scripts/overnight_pipeline.py` — deterministic stage orchestration, scheduled-output validation, and trader book mechanics
+- `scripts/pm_layer.py` / `scripts/pm_review.py` — four-PM book engine, targeted review packets and deterministic decision ingest
+- `data/overnight/` — git-auditable trader paper books and run ledgers
+- `data/pm/books/latest.json` — canonical four-PM paper state
 - `patch_v13/` — additive Trader Book / P&L tab
 - `scripts/market_state.py` — deterministic market-state generator
 - `docs/MARKET_STATE_FEED_V1.md` — generator command and JSON output contract

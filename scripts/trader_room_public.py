@@ -112,19 +112,64 @@ def build_from_run(run_dir: Path) -> dict[str, Any]:
     }
 
 
+def _is_complete_run(run_dir: Path) -> bool:
+    required = (
+        run_dir / "pm_handoff.json",
+        run_dir / "evidence_packet.json",
+        run_dir / "conflict_map.json",
+        run_dir / "submissions",
+    )
+    if not all(path.exists() for path in required):
+        return False
+    try:
+        handoff = _load(run_dir / "pm_handoff.json")
+    except Exception:
+        return False
+    if handoff.get("status") != "STATUS: AWAITING_CHATGPT_ARBITRATION":
+        return False
+    submissions = list((run_dir / "submissions").glob("*.json"))
+    return len(submissions) == 14
+
+
+def latest_complete_run_dir(root: Path = ROOT) -> Path | None:
+    runs_root = root / "trader-room" / "runs"
+    if not runs_root.is_dir():
+        return None
+    candidates: list[tuple[str, str, Path]] = []
+    for run_dir in runs_root.iterdir():
+        if not run_dir.is_dir() or not _is_complete_run(run_dir):
+            continue
+        try:
+            evidence = _load(run_dir / "evidence_packet.json")
+        except Exception:
+            continue
+        candidates.append((str(evidence.get("as_of") or ""), run_dir.name, run_dir))
+    if not candidates:
+        return None
+    candidates.sort()
+    return candidates[-1][2]
+
+
 def build_public_packet(root: Path = ROOT) -> dict[str, Any]:
+    # The run artifacts are authoritative. Derive the website packet from the
+    # newest complete run so a finished debate cannot be stranded behind a stale
+    # manually-maintained latest.json pointer.
+    latest = latest_complete_run_dir(root)
+    if latest is not None:
+        return build_from_run(latest)
+
     published = root / PUBLIC_RELPATH
-    if not published.is_file():
-        return {
-            "available": False,
-            "status": "no_published_run",
-            "message": "No Trader Room run has been published to the dashboard yet.",
-            "trades": [],
-        }
-    packet = _load(published)
-    if not isinstance(packet, dict) or not isinstance(packet.get("trades"), list):
-        raise ValueError("published Trader Room summary is malformed")
-    return packet
+    if published.is_file():
+        packet = _load(published)
+        if not isinstance(packet, dict) or not isinstance(packet.get("trades"), list):
+            raise ValueError("published Trader Room summary is malformed")
+        return packet
+    return {
+        "available": False,
+        "status": "no_published_run",
+        "message": "No complete Trader Room run is available for the dashboard yet.",
+        "trades": [],
+    }
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser()

@@ -46,6 +46,12 @@ on:
       - ".cursor/hooks/enforce-overnight-runtime.py"
       - "scripts/overnight/**"
       - "scripts/overnight_pipeline.py"
+      - "scripts/pm_layer.py"
+      - "scripts/pm_review.py"
+      - "data/pm/**"
+      - "tests/test_pm_layer.py"
+      - ".github/workflows/pm-decision-output.yml"
+      - ".github/workflows/trader-room-output.yml"
       - "scripts/apply_trader_book_tab.py"
       - "patch_v13/**"
       - "data/overnight/**"
@@ -76,7 +82,7 @@ jobs:
       - name: Unit tests
         run: |
           set -euo pipefail
-          PYTHONPATH=. python3 -m unittest tests.test_overnight_pipeline tests.test_overnight_scheduled_output tests.test_trader_room_dashboard -v
+          PYTHONPATH=. python3 -m unittest tests.test_overnight_pipeline tests.test_overnight_scheduled_output tests.test_trader_room_dashboard tests.test_pm_layer -v
       - name: End-to-end zero-model dry-run
         run: |
           set -euo pipefail
@@ -170,6 +176,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/overnight
+          if [ -d data/pm/books ]; then git add data/pm/books; fi
           if git diff --cached --quiet; then
             echo "No deterministic overnight state changes"
             exit 0

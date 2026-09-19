@@ -88,14 +88,16 @@ def main() -> None:
     assert "scripts/trader_room_go.py go" in on_demand
     assert "grok-4.6" in on_demand
     assert "composer-2.5" in on_demand
-    assert "Total Grok ceiling including parent = 29" in on_demand
+    assert "Total Grok ceiling including parent = 32" in on_demand
     assert "Composer ceiling = 28" in on_demand
-    assert "Total model-invocation ceiling = 57" in on_demand
+    assert "Total model-invocation ceiling = 60" in on_demand
     assert "scripts/trader_room_finalize.py" in on_demand
     assert "context_build" in on_demand
     assert "zero model calls" in on_demand
     assert "MW_TRADER_ROOM_RUN_POLICY=" in on_demand
     assert "trader-room/runs/<run_id>/" in on_demand
+    assert "Swinger / Pragmatist / Grinder PMs" in on_demand
+    assert "ChatGPT PM" in on_demand
 
     evidence_contract = (ROOT / "docs" / "TRADER_ROOM_EVIDENCE_CONTRACT.md").read_text(encoding="utf-8")
     method = (ROOT / "docs" / "TRADER_RESEARCH_METHOD.md").read_text(encoding="utf-8")
@@ -136,8 +138,10 @@ def main() -> None:
     assert "SOFR/CORRA/AONIA" in command
     assert "Do **not** launch `final-aggregator`" in command
     assert "scripts/trader_room_finalize.py" in command
-    assert "total Grok ceiling 29" in command
+    assert "total Grok ceiling 32" in command
     assert "FINAL_INPUT.json" in command
+    assert "## 7. Independent PM layer" in command
+    assert "[trader-room-output]" in command
     assert "trader-room/outbox" not in command
     assert "GITHUB_HANDOFF" not in command
 
