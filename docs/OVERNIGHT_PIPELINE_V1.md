@@ -159,10 +159,12 @@ Paper-mid convention:
 - these values are stored with explicit paper/reference provenance and must never be described as executable prices;
 - model-supplied transaction prices are ignored when a deterministic packet mid exists. The model chooses instrument, direction, structure and size; trusted code owns the transaction mark;
 - existing positions are re-marked from the newest deterministic market-state packet before P&L is calculated;
-- spot FX uses the same-fixing ECB cross; outright sovereign rates use the official yield observation; cross-market RV/curve trades use deterministic spread mids; SOFR/CORRA/AONIA-linked futures use the packet's implied-rate mid;
-- derived curve expressions are allowed when every source leg is present in the frozen packet. The position stores the expression definition and trusted code recomputes the derived mid on every review;
-- supported derived math includes linear curve/spread combinations and forward swaps/fwd-fwds from `official_curves`. US/Canada/Australia official government zero curves are accepted as the close-enough paper proxy for the corresponding swap/OIS curve. For a forward swap, trusted code uses `(P_start - P_end) / sum(alpha_i * P_i)`; compact expressions such as US 2y2y are resolved and re-marked from the frozen official curve;
-- an advocate may use its permitted research/subagent capacity to analyze curve construction, but canonical entry/exit/P&L math is always replayed deterministically from frozen source legs;
+- spot FX uses the same-fixing ECB cross; outright sovereign rates use the official yield observation; cross-market RV/curve trades use deterministic spread mids;
+- the primary tradable short-rate curves are SOFR via CME `SR3`, CORRA via MX `CRA`, and AONIA via ASX `IB`; direct contracts are marked in implied-rate space;
+- the curve family and construction used at OPEN are stored on the position and replayed for every ADD/REDUCE/CLOSE and daily re-mark. An open bond trade never migrates onto SOFR/CORRA/AONIA and a futures-curve trade never migrates onto a government curve;
+- derived curve expressions are allowed when every source leg is present in the frozen packet. Linear spreads/flies are deterministic combinations of source legs; futures-curve forward windows/fwd-fwds use `futures_strip_average` with explicit expiries and optional positive weights;
+- `official_curves` remains supplemental government zero/forward data for explicitly selected bond-curve expressions. It is not required to synthesize a swap/OIS curve, and swap-spread trading remains out of scope until both legs are deliberately supported;
+- an advocate may use its permitted research/subagent capacity to choose a construction, but canonical entry/exit/P&L math is always replayed deterministically from the stored frozen-source expression;
 - if a required source leg is missing, that expression is not paper-tradeable. Options likewise remain blocked until the packet contains the premium/IV/strike data needed to mark them.
 
 Rates quote-unit rule:
