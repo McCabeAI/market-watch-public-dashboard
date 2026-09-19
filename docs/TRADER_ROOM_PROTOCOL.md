@@ -42,6 +42,17 @@ The room has a strong preference for rates expressions when the same macro discr
 
 Every non-null trade carries `asset_class` and `expression_comparison`. The comparison records a rates candidate, a spot candidate, the selected expression family, and the rationale. Deterministic validation rejects a rates-first submission that skips either candidate.
 
+## Competition and risk incentive
+
+The standing seats are paper portfolio managers competing for **highest cumulative net P&L** across the persistent Trader Book. Analysis is a means to that outcome, not the score.
+
+- Open paper risk is funded at **5.00% per year** on the stored borrowed `notional_usd`, accrued simple ACT/365 while the position remains outstanding.
+- Leaderboard P&L is gross realized + unrealized P&L **minus funding cost**.
+- A flat book incurs no funding cost and earns zero P&L. `NO TRADE` remains legitimate, including for the skeptic, but it is not a protected outcome: zero must compete against other seats' positive or negative net P&L.
+- Traders should not optimize for avoiding mistakes. If the frozen packet shows a tradeable discrepancy whose expected edge clears funding and has a defined invalidation, the seat should be willing to risk paper capital.
+- Do not force low-quality trades or invent executable levels. The incentive is to make profitable decisions under uncertainty, not to maximize trade count.
+- Funding and leaderboard accounting are deterministic book mechanics. Advocates may reason about the 5% hurdle but may not author or alter canonical P&L, funding charges, NAV, or rank.
+
 ## Evidence contract
 
 Every run uses one common frozen evidence packet. All 14 advocates receive the exact same packet and cutoff. After freeze, advocates, rebuttals and the final aggregator may not browse, search, fetch, or acquire new evidence.
