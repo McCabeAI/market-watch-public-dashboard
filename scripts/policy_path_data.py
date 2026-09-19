@@ -27,6 +27,12 @@ MX_EXPECTATIONS_URL = "https://www.m-x.ca/en/trading/tools/canadian-interest-rat
 NYFED_SOFR_URL = "https://markets.newyorkfed.org/api/rates/secured/sofr/last/10.json"
 NYFED_SOFR_PAGE = "https://www.newyorkfed.org/markets/reference-rates/sofr"
 CME_SOFR_URL = "https://www.cmegroup.com/markets/interest-rates/stirs/one-month-sofr.quotes.html"
+CME_SOFR_PRODUCT_ID = "8463"
+CME_SOFR_SETTLEMENTS_TEMPLATE = (
+    "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/"
+    + CME_SOFR_PRODUCT_ID
+    + "/FUT?tradeDate={trade_date}&strategy=DEFAULT&pageSize=500"
+)
 RBA_F1_URL = "https://www.rba.gov.au/statistics/tables/csv/f1-data.csv"
 RBA_F1_PAGE = "https://www.rba.gov.au/statistics/tables/"
 ASX_EOD_TEMPLATE = "https://www.asx.com.au/data/futures/reports/EODWebMarketSummary{yymmdd}SFD.htm"
@@ -215,6 +221,39 @@ def parse_nyfed_sofr_json(text: str) -> dict[str, Any]:
             "as_of": row.get("effectiveDate") or row.get("effective_date") or row.get("date"),
         }
     raise ValueError("NY Fed response did not contain SOFR")
+
+
+def _parse_cme_month(label: str) -> str | None:
+    m = re.fullmatch(r"([A-Z]{3})\s+(\d{2})", _clean(label).upper())
+    if not m or m.group(1) not in MONTHS:
+        return None
+    year = 2000 + int(m.group(2))
+    return f"{year:04d}-{MONTHS[m.group(1)]:02d}"
+
+
+def parse_cme_sofr_settlements_json(text: str, *, benchmark: float) -> list[dict[str, Any]]:
+    payload = json.loads(text)
+    rows: list[dict[str, Any]] = []
+    for item in payload.get("settlements") or []:
+        expiry = _parse_cme_month(str(item.get("month") or ""))
+        price = _num(item.get("settle"))
+        if not expiry or price is None or not 90.0 < price < 100.5:
+            continue
+        rows.append(
+            _contract_row(
+                expiry=expiry,
+                code=None,
+                price=price,
+                benchmark=benchmark,
+                source="CME_1M_SOFR_SETTLEMENT",
+                volume=_num(item.get("volume")),
+                open_interest=_num(item.get("openInterest")),
+            )
+        )
+    rows.sort(key=lambda row: row["expiry"])
+    if not rows:
+        raise ValueError("CME 1M SOFR settlement response contained no usable contracts")
+    return rows
 
 
 def parse_cme_sofr_html(text: str, *, benchmark: float) -> list[dict[str, Any]]:
@@ -432,15 +471,28 @@ def collect_policy_paths(
     try:
         sofr_payload = fetch_bytes(NYFED_SOFR_URL).decode("utf-8", errors="replace")
         sofr = parse_nyfed_sofr_json(sofr_payload)
-        cme_html = fetch_bytes(
-            CME_SOFR_URL,
-            user_agent=(
-                "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-                "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
-            ),
-            referer="https://www.cmegroup.com/",
-        ).decode("utf-8", errors="replace")
-        contracts = parse_cme_sofr_html(cme_html, benchmark=float(sofr["rate"]))
+        contracts: list[dict[str, Any]] = []
+        cme_settlement_url = None
+        last_cme_error: Exception | None = None
+        for offset in range(0, 8):
+            d = today - timedelta(days=offset)
+            url = CME_SOFR_SETTLEMENTS_TEMPLATE.format(trade_date=d.strftime("%m/%d/%Y"))
+            try:
+                cme_json = fetch_bytes(
+                    url,
+                    user_agent=(
+                        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+                        "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+                    ),
+                    referer="https://www.cmegroup.com/",
+                ).decode("utf-8", errors="replace")
+                contracts = parse_cme_sofr_settlements_json(cme_json, benchmark=float(sofr["rate"]))
+                cme_settlement_url = url
+                break
+            except Exception as exc:
+                last_cme_error = exc
+        if not contracts:
+            raise ValueError(f"no usable CME SR1 settlement in 8-day lookback: {last_cme_error}")
         countries["US"] = {
             "status": "ok",
             "benchmark": {"name": "SOFR", **sofr},
@@ -451,7 +503,7 @@ def collect_policy_paths(
         sources["US_policy"] = {
             "status": "ok",
             "benchmark_url": NYFED_SOFR_PAGE,
-            "path_url": CME_SOFR_URL,
+            "path_url": cme_settlement_url or CME_SOFR_URL,
         }
     except Exception as exc:
         countries["US"] = {"status": "unavailable", "error": str(exc)}
