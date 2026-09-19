@@ -21,6 +21,7 @@ from scripts.market_state import (
     fetch_bytes,
     validate_snapshot,
 )
+from scripts.official_curve_data import collect_official_curves, validate_official_curves
 from scripts.positioning_data import build_positioning, validate_positioning
 from scripts.policy_path_data import collect_policy_paths, validate_policy_paths
 
@@ -73,6 +74,21 @@ def main() -> int:
         country: {
             "benchmark": policy_paths["countries"][country].get("benchmark"),
             "terminal": policy_paths["countries"][country].get("terminal"),
+        }
+        for country in ("US", "CA", "AU")
+    }
+
+    official_curves = collect_official_curves(today=today, fetch_bytes=fetch_bytes)
+    validate_official_curves(official_curves)
+    if official_curves.get("status") != "ok":
+        raise MarketStateError(f"live official zero curves unavailable: {official_curves}")
+    report["official_curves"] = {
+        country: {
+            "as_of": official_curves["countries"][country].get("as_of"),
+            "curve_type": official_curves["countries"][country].get("curve_type"),
+            "df_2y": official_curves["countries"][country]["discount_factors"]["2Y"]["value"],
+            "df_3y": official_curves["countries"][country]["discount_factors"]["3Y"]["value"],
+            "df_4y": official_curves["countries"][country]["discount_factors"]["4Y"]["value"],
         }
         for country in ("US", "CA", "AU")
     }
