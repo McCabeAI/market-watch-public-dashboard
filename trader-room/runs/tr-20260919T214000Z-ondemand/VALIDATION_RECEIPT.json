@@ -1,6 +1,6 @@
 {
   "type": "MARKET_WATCH_18_STACK_VALIDATION_RECEIPT",
-  "stage": "ROUND1_IN_FLIGHT",
+  "stage": "REBUTTALS_IN_FLIGHT",
   "run_id": "tr-20260919T214000Z-ondemand",
   "evidence_cutoff": "2026-09-19T21:40:00Z",
   "packet_sha256": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
@@ -50,11 +50,13 @@
       "total": 69,
       "grok": 32,
       "composer": 37
-    }
+    },
+    "rebuttals_grok_planned": 11
   },
   "pr_url": "https://github.com/McCabeAI/market-watch-public-dashboard/pull/47",
-  "status": "ROUND1_IN_FLIGHT",
+  "status": "REBUTTALS_IN_FLIGHT",
   "round1_submissions_persisted": [
+    "carry-is-king",
     "catalyst-junkie",
     "cross-merchant",
     "dollar-king",
@@ -69,11 +71,34 @@
     "value-guy",
     "vol-convexity"
   ],
-  "round1_submissions_count": 13,
-  "round1_missing": [
-    "carry-is-king"
-  ],
+  "round1_submissions_count": 14,
+  "round1_missing": [],
   "notes": [
-    "dollar-king, positioning-cynic, and carry-is-king completed in Ask mode without emitting contribution JSON; those seats were resumed to paste the already-constructed payloads."
+    "All 14 Round 1 submissions schema-validated on the frozen packet.",
+    "Deterministic conflict map routed 11 direct-conflict seats; no-trade-skeptic, positioning-cynic, and vol-convexity are not directly conflicted."
+  ],
+  "rebuttal_seats": [
+    "carry-is-king",
+    "catalyst-junkie",
+    "cross-merchant",
+    "dollar-king",
+    "mean-reverter",
+    "perma-bear",
+    "perma-bull",
+    "rate-dove",
+    "rate-hawk",
+    "trend-follower",
+    "value-guy"
+  ],
+  "no_rebuttal_seats": [
+    "no-trade-skeptic",
+    "positioning-cynic",
+    "vol-convexity"
+  ],
+  "direct_conflicts": [
+    "opp-dir:AONIA_2026-10",
+    "opp-view:USD",
+    "opp-view:CAD",
+    "opp-view:NZD"
   ]
 }
