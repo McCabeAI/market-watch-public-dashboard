@@ -27,6 +27,7 @@ MX_EXPECTATIONS_URL = "https://www.m-x.ca/en/trading/tools/canadian-interest-rat
 NYFED_SOFR_URL = "https://markets.newyorkfed.org/api/rates/secured/sofr/last/10.json"
 NYFED_SOFR_PAGE = "https://www.newyorkfed.org/markets/reference-rates/sofr"
 CME_SOFR_URL = "https://www.cmegroup.com/markets/interest-rates/stirs/one-month-sofr.quotes.html"
+CME_SOFR_BULLETIN_URL = "https://www.cmegroup.com/daily_bulletin/current/Section10_Interest_Rate_Futures_Continued.pdf"
 CME_SOFR_PRODUCT_ID = "8463"
 CME_SOFR_SETTLEMENTS_TEMPLATE = (
     "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/"
@@ -256,6 +257,50 @@ def parse_cme_sofr_settlements_json(text: str, *, benchmark: float) -> list[dict
     return rows
 
 
+def parse_cme_sofr_bulletin_text(text: str, *, benchmark: float) -> list[dict[str, Any]]:
+    """Parse SR1 rows from CME's official Section 10 Daily Bulletin text."""
+    lines = [re.sub(r"\s+", " ", line).strip() for line in text.splitlines()]
+    try:
+        start = next(i for i, line in enumerate(lines) if line == "SR1 FUT")
+    except StopIteration as exc:
+        raise ValueError("CME Daily Bulletin did not contain SR1 FUT") from exc
+    rows: list[dict[str, Any]] = []
+    for line in lines[start + 1 :]:
+        if line.startswith("TOTAL SR1 FUT"):
+            break
+        m = re.match(
+            r"^(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)(\d{2})\s+"
+            r"(?:----\s+){0,3}.*?\s(9\d\.\d{3,4})\s+\(\s*([0-9.]+)\)",
+            line,
+        )
+        if not m:
+            continue
+        expiry = f"20{m.group(2)}-{MONTHS[m.group(1)]:02d}"
+        price = float(m.group(3))
+        rows.append(
+            _contract_row(
+                expiry=expiry,
+                code=None,
+                price=price,
+                benchmark=benchmark,
+                source="CME_DAILY_BULLETIN_SR1",
+            )
+        )
+    if not rows:
+        raise ValueError("CME Daily Bulletin SR1 block contained no usable contracts")
+    return rows
+
+
+def parse_cme_sofr_bulletin_pdf(data: bytes, *, benchmark: float) -> list[dict[str, Any]]:
+    try:
+        from pypdf import PdfReader
+    except ImportError as exc:
+        raise ValueError("pypdf required for CME Daily Bulletin") from exc
+    reader = PdfReader(io.BytesIO(data))
+    text = "\n".join(page.extract_text() or "" for page in reader.pages)
+    return parse_cme_sofr_bulletin_text(text, benchmark=benchmark)
+
+
 def parse_cme_sofr_html(text: str, *, benchmark: float) -> list[dict[str, Any]]:
     parser = _TableParser()
     parser.feed(text)
@@ -366,10 +411,24 @@ def parse_rba_f1_csv(text: str) -> dict[str, Any]:
     for tenor in ("1m", "3m", "6m"):
         o = ois[tenor]
         b = bills[tenor]
-        basis[tenor] = None if not o or not b else {
-            "as_of": min(o["as_of"], b["as_of"]),
-            "bank_bill_minus_ois_bps": round((b["rate"] - o["rate"]) * 100.0, 2),
-        }
+        if not o or not b:
+            basis[tenor] = None
+        else:
+            o_date = date.fromisoformat(__import__("datetime").datetime.strptime(o["as_of"], "%d-%b-%Y").date().isoformat())
+            b_date = date.fromisoformat(__import__("datetime").datetime.strptime(b["as_of"], "%d-%b-%Y").date().isoformat())
+            if abs((b_date - o_date).days) > 7:
+                basis[tenor] = {
+                    "status": "unavailable_cross_vintage",
+                    "ois_as_of": o["as_of"],
+                    "bank_bill_as_of": b["as_of"],
+                    "bank_bill_minus_ois_bps": None,
+                }
+            else:
+                basis[tenor] = {
+                    "status": "ok",
+                    "as_of": min(o["as_of"], b["as_of"]),
+                    "bank_bill_minus_ois_bps": round((b["rate"] - o["rate"]) * 100.0, 2),
+                }
     return {
         "benchmark": {"name": "AONIA", **aonia},
         "ois": ois,
@@ -471,28 +530,15 @@ def collect_policy_paths(
     try:
         sofr_payload = fetch_bytes(NYFED_SOFR_URL).decode("utf-8", errors="replace")
         sofr = parse_nyfed_sofr_json(sofr_payload)
-        contracts: list[dict[str, Any]] = []
-        cme_settlement_url = None
-        last_cme_error: Exception | None = None
-        for offset in range(0, 8):
-            d = today - timedelta(days=offset)
-            url = CME_SOFR_SETTLEMENTS_TEMPLATE.format(trade_date=d.strftime("%m/%d/%Y"))
-            try:
-                cme_json = fetch_bytes(
-                    url,
-                    user_agent=(
-                        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-                        "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
-                    ),
-                    referer="https://www.cmegroup.com/",
-                ).decode("utf-8", errors="replace")
-                contracts = parse_cme_sofr_settlements_json(cme_json, benchmark=float(sofr["rate"]))
-                cme_settlement_url = url
-                break
-            except Exception as exc:
-                last_cme_error = exc
-        if not contracts:
-            raise ValueError(f"no usable CME SR1 settlement in 8-day lookback: {last_cme_error}")
+        bulletin = fetch_bytes(
+            CME_SOFR_BULLETIN_URL,
+            user_agent=(
+                "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+            ),
+            referer="https://www.cmegroup.com/market-data/daily-bulletin.html",
+        )
+        contracts = parse_cme_sofr_bulletin_pdf(bulletin, benchmark=float(sofr["rate"]))
         countries["US"] = {
             "status": "ok",
             "benchmark": {"name": "SOFR", **sofr},
@@ -503,7 +549,7 @@ def collect_policy_paths(
         sources["US_policy"] = {
             "status": "ok",
             "benchmark_url": NYFED_SOFR_PAGE,
-            "path_url": cme_settlement_url or CME_SOFR_URL,
+            "path_url": CME_SOFR_BULLETIN_URL,
         }
     except Exception as exc:
         countries["US"] = {"status": "unavailable", "error": str(exc)}
