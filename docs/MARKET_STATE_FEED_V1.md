@@ -84,7 +84,7 @@ Each FX pair includes spot, 1D/5D/1M/3M percent returns, 20D/60D annualized real
 `policy_paths` is the monetary-policy context layer that must be read **before** sovereign 2Y/5Y yields or cross-country RV are treated as trade signals.
 
 - **Canada:** Bank of Canada CORRA benchmark plus Montréal Exchange 1M/3M CORRA futures. Futures are converted as `100 - price` to an implied average CORRA rate and shown versus current CORRA in basis points.
-- **United States:** New York Fed SOFR plus CME One-Month SOFR futures, also converted as `100 - price`. These are monthly average SOFR expectations, not exact FOMC target probabilities.
+- **United States:** New York Fed SOFR plus One-Month SOFR futures, converted as `100 - price`. CME Daily Bulletin SR1 settlements are preferred. Because CME returns HTTP 403 to GitHub-hosted runners, production has a delayed ICE One-Month SOFR chain fallback via eSignal. These are monthly average SOFR expectations, not exact FOMC target probabilities.
 - **Australia:** RBA F1 AONIA, 1M/3M/6M OIS, 1M/3M/6M bank bills, bank-bill-minus-OIS basis, plus ASX 30-day interbank cash-rate futures for the longer path. The bill-minus-OIS field is a money-market credit/basis proxy, not an exact FRA-OIS construction.
 
 Exchange futures/settlement values are delayed public research/reference data, not executable prices. A normal full Trader Room requires all three policy-path country blocks to be available. A sovereign yield percentile is not an acceptable substitute.
@@ -106,7 +106,7 @@ Null lookbacks stay null. A missing US, Canada, Australia, or ECB FX source, ten
 | Block | Authority | Notes |
 | --- | --- | --- |
 | US rates | U.S. Treasury daily par yield curve | Daily official CSV |
-| US policy path | New York Fed SOFR + CME One-Month SOFR futures | Official overnight benchmark plus delayed public exchange futures; implied rate = 100 - futures price |
+| US policy path | New York Fed SOFR + One-Month SOFR futures | NY Fed overnight benchmark; CME Daily Bulletin preferred, delayed ICE/eSignal chain used when CME blocks hosted runners; implied rate = 100 - futures price |
 | CA rates | Bank of Canada Valet benchmark bonds | Official `bond_yields_benchmark` group (`BD.CDN.2YR/5YR/10YR/LONG.DQ.YLD`) |
 | CA policy path | Bank of Canada CORRA + Montréal Exchange CORRA futures | Official overnight benchmark plus public 1M/3M CORRA futures |
 | AU rates | RBA F2 government-bond yields | Assessed closing yields; research context; typically weekly with a two-business-day lag |
