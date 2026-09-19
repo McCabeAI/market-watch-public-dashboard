@@ -285,6 +285,9 @@ def _history_entry(action: dict[str, Any], *, when: datetime, run_id: str, resul
         "price": action.get("price"),
         "position_id": action.get("position_id"),
         "note": action.get("note"),
+        "paper_mid_source": action.get("paper_mid_source"),
+        "paper_mid_as_of": action.get("paper_mid_as_of"),
+        "paper_mid_kind": action.get("paper_mid_kind"),
     }
     if extra:
         row.update(extra)
@@ -397,6 +400,11 @@ def _open_position(
         "notional_usd": notional,
         "entry_price": action.get("price"),
         "mark_price": action.get("mark_price", action.get("price")),
+        "entry_price_source": action.get("paper_mid_source"),
+        "entry_price_as_of": action.get("paper_mid_as_of"),
+        "mark_price_source": action.get("paper_mid_source"),
+        "mark_price_as_of": action.get("paper_mid_as_of"),
+        "paper_expression": deepcopy(action.get("paper_expression")),
         "opened_at": isoformat(when),
         "opened_run_id": run_id,
         "thesis": action.get("thesis"),
@@ -435,6 +443,10 @@ def _resize(seat_book: dict[str, Any], action: dict[str, Any], *, factor: int, r
         if add_price not in (None, "") and position.get("entry_price") not in (None, ""):
             position["entry_price"] = (float(position["entry_price"]) * old_n + float(add_price) * delta) / (old_n + delta)
             position["mark_price"] = action.get("mark_price", add_price)
+            position["entry_price_source"] = "weighted_average_paper_mid"
+            position["entry_price_as_of"] = action.get("paper_mid_as_of")
+            position["mark_price_source"] = action.get("paper_mid_source")
+            position["mark_price_as_of"] = action.get("paper_mid_as_of")
         position["notional_usd"] = round(old_n + delta, 2)
         seat_book["cash_usd"] = round(float(seat_book["cash_usd"]) - delta, 2)
     action["overnight_run_id"] = run_id
@@ -479,15 +491,22 @@ def apply_review(
     run_id: str,
     evidence_cutoff: str,
     when: datetime | None = None,
+    market_state: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     if set(reviews) != set(STANDING_SEATS):
         raise SchemaError(f"review must include every standing seat; missing/extra {set(reviews) ^ set(STANDING_SEATS)}")
     out = deepcopy(books)
+    prepared_reviews = deepcopy(reviews)
+    if market_state is not None:
+        from scripts.overnight.paper_marks import hydrate_review_mids, refresh_book_marks
+
+        refresh_book_marks(out, market_state)
+        prepared_reviews = hydrate_review_mids(out, prepared_reviews, market_state)
     out["overnight_run_id"] = run_id
     out["evidence_cutoff"] = evidence_cutoff
     out["as_of"] = isoformat(now_ny(when))
     for seat in STANDING_SEATS:
-        payload = reviews[seat]
+        payload = prepared_reviews[seat]
         if payload.get("seat") not in (None, seat):
             raise SchemaError(f"review seat mismatch for {seat}")
         actions = payload.get("actions") or []
@@ -585,6 +604,11 @@ def public_books_view(books: dict[str, Any]) -> dict[str, Any]:
                         "notional_usd": p["notional_usd"],
                         "entry_price": p.get("entry_price"),
                         "mark_price": p.get("mark_price"),
+                        "entry_price_source": p.get("entry_price_source"),
+                        "entry_price_as_of": p.get("entry_price_as_of"),
+                        "mark_price_source": p.get("mark_price_source"),
+                        "mark_price_as_of": p.get("mark_price_as_of"),
+                        "paper_expression": p.get("paper_expression"),
                         "unrealized_pnl_usd": p.get("unrealized_pnl_usd"),
                         "hedge_of": p.get("hedge_of"),
                     }
