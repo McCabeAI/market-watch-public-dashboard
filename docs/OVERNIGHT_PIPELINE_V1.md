@@ -12,10 +12,12 @@ This is the technical contract for the unattended Market Watch morning pipeline.
 | Recurring model/provider launch | ACP scheduled dispatch |
 | Provider authentication / model dispatch / provider-call accounting | ACP |
 | Research + 14 structured trader decisions | Cursor launched by ACP |
-| Canonical books, P&L, NAV | Market Watch deterministic code |
+| Optional Swinger / Pragmatist / Grinder PM decisions | Cursor launched by ACP only when the approved schedule explicitly includes the PM layer |
+| ChatGPT PM decisions | ChatGPT via the data-only PM decision ingest contract |
+| Canonical trader + PM books and P&L | Market Watch deterministic code |
 | Website publication | Market Watch GitHub Actions |
 
-The on-demand adversarial Trader Room is unchanged. The nightly portfolio review is a separate workflow that reuses the locked 14 seat identities/remits/models but does not run aggregators, rebuttals, or ChatGPT arbitration.
+The on-demand adversarial Trader Room now ends with three independent model PMs after the 14-seat debate; ChatGPT remains a separate fourth PM. The nightly portfolio review is a separate workflow. The currently approved ACP schedule still runs only the locked 14 trader seats; PM-enabled nightly execution is supported by the target repository but is not active until the ACP schedule is explicitly changed.
 
 ## 2. Nightly sequence
 
@@ -27,7 +29,7 @@ All times are America/New_York.
 | 01:40 | Market Watch | deterministic pre-trader delta |
 | 01:50 | Market Watch | freeze trusted base evidence packet + prior books |
 | 02:05 | ACP | one approved scheduled Cursor parent |
-| provider run | Cursor via ACP | bounded research -> final packet/hash -> 14 direct trader children -> one structured output PR |
+| provider run | Cursor via ACP | current approved contract: bounded research -> final packet/hash -> 14 direct trader children -> one structured output PR; target also supports an explicitly approved 3-PM extension |
 | PR event | Market Watch | validate data-only output, simulate deterministic book application, append generated state, merge |
 | 03:35 | Market Watch | final deterministic market delta |
 | 03:50 | Market Watch | assemble canonical morning dataset |
@@ -68,6 +70,7 @@ The JSON contains:
 - trusted 01:50 `base_packet_sha256` and `base_evidence_cutoff`;
 - a research-enriched final agent packet, its later final `evidence_cutoff`, and its hash;
 - exactly 14 structured seat decisions;
+- optionally, exactly three PM decisions for Swinger / Pragmatist / Grinder when the PM-enabled schedule contract is active;
 - declared model-usage/cap fields.
 
 It must not contain canonical books, NAV, cash, realized/unrealized P&L, funding charges, net P&L, or competition rank.
@@ -85,11 +88,20 @@ Prohibited:
 - every model outside those two
 - Cursor Other Models usage
 
-Run caps:
+Current approved schedule caps:
 
 - total model calls: 18
 - Grok 4.6 calls: 16
 - Composer 2.5 calls: 2
+
+Target-repository support for the future three-PM extension is exact and separate:
+
+- `pm_layer: 3`
+- total model calls: 21
+- Grok 4.6 calls: 19
+- Composer 2.5 calls: 2
+
+The PM-enabled variant is not standing authorization; ACP must be explicitly updated before it may run.
 
 The ACP parent counts as total=1 / Grok=1 before any child starts.
 
@@ -195,7 +207,36 @@ data/overnight/books/latest.json
 
 No model may calculate or author this file.
 
-## 9. Freshness and publication
+## 9. Four PM books
+
+The PM layer sits above the 14 Trader Room seats and has four independent books:
+
+- **ChatGPT PM** — unrestricted synthesis; no requirement to trade.
+- **The Swinger** — aggressive concentration/high utilization; `HEDGE` is prohibited, so weakened risk is reduced or closed.
+- **The Pragmatist** — takes large asymmetric bets when available and compounds smaller opportunities otherwise.
+- **The Grinder** — prioritizes consistency and drawdown avoidance; small repeatable edges and unused capacity are acceptable.
+
+Each PM has a hard **$1bn gross-notional ceiling**. This is not a borrowed-NAV funding game: PM performance is paper trade P&L, and idle capacity does not earn a synthetic hurdle.
+
+PM output is untrusted decision data only. Models/chat may choose `OPEN / ADD / HOLD / REDUCE / HEDGE / CLOSE`, instrument, side, structure, notional, thesis and invalidation. Trusted code in `scripts/pm_layer.py` owns entry/exit marks, locked curve construction, realized/unrealized P&L and the gross-risk limit.
+
+Canonical PM state:
+
+```
+data/pm/books/latest.json
+```
+
+At 03:50 the deterministic assemble stage re-marks every open PM position from the newest market-state packet and persists those marks even when no PM changes risk. The Trader Book webpage publishes all four PM books.
+
+Independent PM decision ingest uses a same-repository data-only PR titled `[pm-decision] ...` containing one file under:
+
+```
+data/pm/inbox/<review_id>/pm_decisions.json
+```
+
+`.github/workflows/pm-decision-output.yml` validates the source packet/hash, rejects model-authored pricing/P&L/book state, applies trusted marks, appends canonical PM books and merges.
+
+## 10. Freshness and publication
 
 Required families for OPEN/ADD: macro hard data, news, market state.
 
@@ -204,31 +245,33 @@ Required families for OPEN/ADD: macro hard data, news, market state.
 - invalid macro/news fails publication closed;
 - missing/failed nightly trader output does not block the website: last successful books publish as stale.
 
-## 10. Morning dataset and UI
+## 11. Morning dataset and UI
 
 At 03:50 Market Watch assembles one canonical dataset containing:
 
 - deterministic core evidence/freshness;
 - overnight ACP research supplement when accepted;
 - deterministic trader books/P&L;
+- four deterministically marked PM books/P&L;
 - publication decision;
 - run ledger.
 
-The existing front page is preserved. The additive Trader Book tab shows paper books, P&L, overnight position changes and accepted overnight research.
+The existing front page is preserved. The additive Trader Book tab shows the four $1bn PM books first, then the 14 trader-seat books, P&L, overnight position changes and accepted overnight research.
 
-## 11. Dry-run
+## 12. Dry-run
 
 ```bash
 PYTHONPATH=. python3 -m unittest \
   tests.test_overnight_pipeline \
-  tests.test_overnight_scheduled_output -v
+  tests.test_overnight_scheduled_output \
+  tests.test_pm_layer -v
 
 PYTHONPATH=. python3 scripts/overnight_pipeline.py dry-run --suffix ci
 ```
 
 Dry-run consumes zero model calls.
 
-## 12. ACP schedule contract to install
+## 13. ACP schedule contract
 
 ACP remains the only place where the real 02:05 schedule may be enabled. The target job must use:
 
@@ -253,9 +296,9 @@ MW_OVERNIGHT_RUN_POLICY={"version":1,"schedule_id":"market-watch-weekday-0205","
 
 The parent must perform research first, freeze the final packet, then launch the 14 direct trader children. It must not update books/P&L and must not launch grandchildren.
 
-The schedule is enabled on ACP `main` as `market-watch-weekday-0205` under Kevin's explicit 2026-09-18 approval (ACP commit `f5b75df8`). That committed definition is standing authorization for its normal weekday 02:05 America/New_York occurrences only; ad hoc runs, retries, follow-ups, model substitutions, or other material schedule changes still require fresh explicit authorization.
+The schedule is enabled on ACP `main` as `market-watch-weekday-0205` under Kevin's prior explicit approval. Its current committed definition is the 14-seat 18/16/2 contract above. The target repository is ready for the exact 21/19/2 three-PM variant, but changing ACP to that definition is a material schedule change and therefore requires Kevin's current explicit ACP/control-plane authorization. Ad hoc runs, retries, follow-ups or model substitutions also require fresh authorization.
 
-## 13. Persistence and the Supabase boundary
+## 14. Persistence and the Supabase boundary
 
 Shipped durable state is git JSON under `data/overnight/`. That is intentional. Market Watch does not require a new paid service or a Kevin-maintained store.
 
