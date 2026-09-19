@@ -30,6 +30,7 @@ from scripts.cross_asset_data import collect_cross_assets
 from scripts.market_opportunities import build_opportunities
 from scripts.positioning_data import build_positioning, validate_positioning
 from scripts.policy_path_data import collect_policy_paths, validate_policy_paths
+from scripts.official_forward_curves import collect_forward_curves, validate_forward_curves
 
 USER_AGENT = (
     "MarketWatch-MarketState/1.0 "
@@ -831,6 +832,7 @@ def build_snapshot(
     opportunities = build_opportunities(rates_raw, fx_raw, cross_raw, cross_meta, today)
     if include_policy_paths is None:
         include_policy_paths = include_cross_assets
+    forward_curves = collect_forward_curves(today=today, fetch_bytes=fetch_bytes)
     policy_paths = (
         collect_policy_paths(today=today, fetch_bytes=fetch_bytes)
         if include_policy_paths
@@ -884,6 +886,7 @@ def build_snapshot(
         nz_source["error"] = nz_error
         nz_source["observation_date"] = None
     return {
+        "forward_curves": forward_curves,
         "policy_paths": policy_paths,
         "cross_assets": {"series": cross_meta, "status": "partial" if any(m["status"] != "ok" for m in cross_meta.values()) else "ok"},
         "opportunities": opportunities,
@@ -966,6 +969,7 @@ def build_snapshot(
                 "marks NZ rates and NZ-dependent RV spreads unavailable without fabricating data. "
                 "Cross-country spreads use exact common observation dates only. "
                 "Policy-path context uses official overnight benchmarks plus public CORRA/SOFR/AONIA-linked futures and RBA money-market data. "
+                "Official Fed/BoC/RBA government zero/forward curves provide explicit close-enough paper proxies for swap/OIS forward-forward expressions. "
                 "CFTC TFF supplies trader-class ownership/crowding context and CME's public volume/open-interest service supplies daily FX futures and aggregate options OI history. "
                 "No historical warehouse is written to GitHub or Supabase."
             ),
@@ -992,6 +996,10 @@ def validate_snapshot(s: Mapping) -> None:
         validate_policy_paths(s.get("policy_paths") or {})
     except Exception as exc:
         raise MarketStateError(f"invalid policy_paths block: {exc}") from exc
+    try:
+        validate_forward_curves(s.get("forward_curves") or {})
+    except Exception as exc:
+        raise MarketStateError(f"invalid forward_curves block: {exc}") from exc
     if set(s.get("rates", {})) != set(RATE_COUNTRIES):
         raise MarketStateError("rates block must contain US, CA, AU and NZ")
     for c in RATE_COUNTRIES:
