@@ -43,9 +43,18 @@ jobs:
           set -euo pipefail
           [ "$HEAD_REPO" = "$BASE_REPO" ] || { echo "::error::PM output must originate in this repository"; exit 1; }
           mapfile -t FILES < <(gh api "repos/$REPO/pulls/$PR_NUMBER/files?per_page=100" --paginate --jq '.[].filename')
-          [ "${#FILES[@]}" -eq 1 ] || { printf 'Unexpected files:\n%s\n' "${FILES[@]}"; exit 1; }
-          FILE="${FILES[0]}"
-          [[ "$FILE" =~ ^data/pm/inbox/[^/]+/pm_decisions\.json$ ]] || { echo "::error::Unexpected PM decision path: $FILE"; exit 1; }
+          INPUT_FILES=()
+          for FILE in "${FILES[@]}"; do
+            if [[ "$FILE" =~ ^data/pm/inbox/[^/]+/pm_decisions\.json$ ]]; then
+              INPUT_FILES+=("$FILE")
+            elif [ "$FILE" = "data/pm/books/latest.json" ]; then
+              continue
+            else
+              echo "::error::Unexpected PM decision file: $FILE"; exit 1
+            fi
+          done
+          [ "${#INPUT_FILES[@]}" -eq 1 ] || { echo "::error::Expected exactly one PM decision input"; exit 1; }
+          FILE="${INPUT_FILES[0]}"
           mkdir -p /tmp/pm
           gh api "repos/$REPO/contents/$FILE?ref=$HEAD_SHA" --jq '.content' | tr -d '\n' | base64 -d > /tmp/pm/pm_decisions.json
           echo "file=$FILE" >> "$GITHUB_OUTPUT"
