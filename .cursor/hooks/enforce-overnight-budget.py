@@ -103,7 +103,23 @@ def parse_policy(text: str) -> tuple[str, dict[str, Any], dict[str, Any]] | None
 
 
 def validate_policy(kind: str, policy: dict[str, Any], spec: dict[str, Any]) -> None:
-    for key, expected in spec["required"].items():
+    required = dict(spec["required"])
+    if kind == "overnight":
+        pm_layer = policy.get("pm_layer")
+        if pm_layer is None:
+            pass
+        elif pm_layer == 3:
+            required.update(
+                {
+                    "total_model_cap": 21,
+                    "grok_cap": 19,
+                    "composer_cap": 2,
+                    "pm_layer": 3,
+                }
+            )
+        else:
+            respond("deny", "overnight pm_layer must be omitted or equal 3.")
+    for key, expected in required.items():
         if policy.get(key) != expected:
             respond("deny", f"{kind} run policy {key} must equal {expected!r}.")
 
