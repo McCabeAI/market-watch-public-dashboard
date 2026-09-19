@@ -47,6 +47,15 @@ def _rates_memo(rates_instrument: str, spot_instrument: str, selected: str, rati
     }
 
 
+def _skeptic_funding_view() -> dict[str, Any]:
+    return {
+        "current_sofr": "Frozen official NY Fed SOFR fixing in funding_context.",
+        "sr3_forward_view": "SR3 contracts in the frozen packet are the relevant forward-funding path over the decision horizon; no interpolation is assumed.",
+        "forward_funding_assessment": "about_the_same",
+        "implication": "Prefer undeployed cash earning official SOFR unless a packet-supported trade is expected to beat that realized overnight rate.",
+    }
+
+
 def _hold_memo(seat: str) -> dict[str, Any]:
     if expression_rule(seat) == "spot_only":
         return {
@@ -210,6 +219,8 @@ def dry_run_reviews(*, scenario: str = "default") -> dict[str, Any]:
                     "required_pitch": None,
                     "risk_put_on": None,
                 }
+        if "no-trade-skeptic" in reviews:
+            reviews["no-trade-skeptic"]["funding_view"] = _skeptic_funding_view()
     elif scenario == "manage":
         reviews = dry_run_reviews(scenario="default")
         reviews["dollar-king"]["actions"] = [
@@ -258,6 +269,7 @@ def dry_run_reviews(*, scenario: str = "default") -> dict[str, Any]:
                 "expression_memo": _hold_memo(seat),
                 "actions": [{"action": "HOLD", "expression_memo": _hold_memo(seat)}],
             }
+        reviews["no-trade-skeptic"]["funding_view"] = _skeptic_funding_view()
         reviews["dollar-king"]["actions"] = [
             {
                 "action": "OPEN",

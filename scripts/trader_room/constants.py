@@ -66,6 +66,7 @@ MANDATORY_PACKET_SECTIONS = (
     "research_method",
     "source_index",
     "known_gaps",
+    "funding_context",
 )
 DEFAULT_ESSENTIAL_FAMILIES = EVIDENCE_FAMILIES
 

@@ -8,6 +8,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 SCHEMA_VERSION = 1
 GROSS_NOTIONAL_LIMIT_USD = 1_000_000_000
+CASH_CAPITAL_USD = 1_000_000_000
 PM_IDS = ("chatgpt", "swinger", "pragmatist", "grinder")
 AUTOMATED_PM_IDS = ("swinger", "pragmatist", "grinder")
 CHATGPT_PM_ID = "chatgpt"
@@ -78,6 +79,10 @@ FORBIDDEN_MODEL_STATE_KEYS = {
     "funding_cost_usd",
     "cash_yield_usd",
     "funding_last_accrual_at",
+    "funded_draw_usd",
+    "unused_cash_usd",
+    "net_after_funding_pnl_usd",
+    "funding_rate_annual",
     "net_pnl_usd",
     "competition_rank",
     "canonical_marks",

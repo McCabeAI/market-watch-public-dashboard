@@ -8,10 +8,11 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from scripts.funding.context import build_funding_context
 from scripts.overnight.constants import STANDING_SEATS
 from scripts.overnight.store import sha256_json
 from scripts.pm.books import mandate, mark_pm_book
-from scripts.pm.constants import ACTIONS, CHATGPT_PM_ID, GROSS_NOTIONAL_LIMIT_USD, PM_IDS, SCHEMA_VERSION
+from scripts.pm.constants import ACTIONS, CASH_CAPITAL_USD, CHATGPT_PM_ID, GROSS_NOTIONAL_LIMIT_USD, PM_IDS, SCHEMA_VERSION
 from scripts.pm.data_requests import unresolved_for_pm
 from scripts.pm.errors import SchemaError
 from scripts.trader_room_public import build_from_run, completeness_errors, select_newest_complete_run
@@ -374,6 +375,7 @@ def load_overnight_evidence(run_dir) -> dict[str, Any]:
         "news_and_research": {"headlines": [h for h in headlines if h]},
         "macro_state": _family_data(snapshot.get("families"), "macro_hard") or {},
         "market_state": market,
+        "funding_context": snapshot.get("funding_context") or agent.get("funding_context"),
         "research_supplement": supplement,
         "base_packet_sha256": agent.get("base_packet_sha256") or snapshot.get("packet_sha256"),
         "base_evidence_cutoff": agent.get("base_evidence_cutoff") or snapshot.get("as_of"),
@@ -493,6 +495,9 @@ def build_review_packet(
         raise SchemaError("PM review packet source is required")
     evidence = source.evidence
     market = compact_market_state(evidence)
+    funding_context = evidence.get("funding_context")
+    if not isinstance(funding_context, dict):
+        funding_context = build_funding_context(evidence.get("market_state") or {}, as_of=evidence.get("as_of"))
     prior = mark_pm_book(deepcopy(book))
     stale_warnings = list(market.get("warnings") or [])
     if prior.get("pnl_unavailable"):
@@ -517,6 +522,7 @@ def build_review_packet(
         "base_packet_sha256": source.base_packet_sha256 or evidence.get("base_packet_sha256"),
         "evidence": compact_evidence(evidence),
         "market_state": market,
+        "funding_context": funding_context,
         "overnight_review": overnight_review,
         "research_supplement": source.research_supplement,
         "overnight_books": source.overnight_books,
@@ -529,6 +535,13 @@ def build_review_packet(
             "gross_notional_limit_usd": prior.get("gross_notional_limit_usd"),
             "gross_utilization_usd": prior.get("gross_utilization_usd"),
             "gross_remaining_usd": prior.get("gross_remaining_usd"),
+            "cash_capital_usd": prior.get("cash_capital_usd", CASH_CAPITAL_USD),
+            "funded_draw_usd": prior.get("funded_draw_usd", 0.0),
+            "unused_cash_usd": prior.get("unused_cash_usd"),
+            "funding_cost_usd": prior.get("funding_cost_usd", 0.0),
+            "cash_yield_usd": prior.get("cash_yield_usd", 0.0),
+            "net_after_funding_pnl_usd": prior.get("net_after_funding_pnl_usd"),
+            "funding_basis_status": prior.get("funding_basis_status"),
             "realized_pnl_usd": prior.get("realized_pnl_usd"),
             "unrealized_pnl_usd": prior.get("unrealized_pnl_usd"),
             "total_pnl_usd": prior.get("total_pnl_usd"),
@@ -547,7 +560,9 @@ def build_review_packet(
         "stale_or_missing_warnings": stale_warnings,
         "allowable_actions": allowable_actions(pm_id, prior, market_warnings=stale_warnings),
         "gross_notional_limit_usd": GROSS_NOTIONAL_LIMIT_USD,
+        "cash_capital_usd": CASH_CAPITAL_USD,
         "gross_utilization_usd": prior.get("gross_utilization_usd"),
+        "funded_draw_usd": prior.get("funded_draw_usd", 0.0),
         "unresolved_future_data_requests": unresolved_for_pm(registry, pm_id),
         "independence": {
             "sees_other_current_pm_decisions": False,

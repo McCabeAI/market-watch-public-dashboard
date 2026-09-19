@@ -5,6 +5,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from scripts.funding.view import FundingViewError, assert_no_trade_funding_view
 from scripts.trader_room.constants import (
     ADVOCATE_REMITS,
     ASSET_CLASSES,
@@ -323,6 +324,11 @@ def validate_contribution(
     validate_trade(contribution["trade"], agent=agent, packet=packet)
     if agent in TRADE_REQUIRED_AGENTS and contribution["trade"] is None:
         raise SchemaError(f"{agent} must end with one cogent actionable trade")
+    if agent == NO_TRADE_AGENT:
+        try:
+            assert_no_trade_funding_view(contribution, packet=packet)
+        except FundingViewError as exc:
+            raise SchemaError(str(exc)) from exc
     assert_data_only_boundary(contribution, packet, agent)
     return contribution
 
@@ -373,6 +379,11 @@ def validate_rebuttal(
             raise SchemaError("withdrawn trade must be null")
     elif rebuttal["revised_trade"] is not None:
         validate_trade(rebuttal["revised_trade"], agent=expected_agent, packet=packet)
+    if expected_agent == NO_TRADE_AGENT and rebuttal.get("trade_change") in {"amended", "withdrawn"}:
+        try:
+            assert_no_trade_funding_view({**rebuttal, "agent": expected_agent, "thesis": " ".join(rebuttal.get("defense") or [])}, packet=packet)
+        except FundingViewError as exc:
+            raise SchemaError(str(exc)) from exc
     assert_data_only_boundary(rebuttal, packet, f"{expected_agent} rebuttal")
     return rebuttal
 

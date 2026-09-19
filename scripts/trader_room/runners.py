@@ -279,7 +279,7 @@ class DryRunRunner:
             budget.charge("subagent", SUBAGENT_MODEL, agent, f"round1:{agent}:subagent:{idx+1}")
         trade = _trade_from_spec(agent, packet)
         confidence = 40 if agent == NO_TRADE_AGENT else 58
-        return {
+        payload = {
             "type": "TRADER_ROOM_CONTRIBUTION",
             "run_id": packet["run_id"],
             "round": 1,
@@ -295,6 +295,21 @@ class DryRunRunner:
             "subagent_calls": self.composer_calls_per_advocate,
             "subagent_model": SUBAGENT_MODEL if self.composer_calls_per_advocate else None,
         }
+        if agent == NO_TRADE_AGENT:
+            sofr = ((packet.get("funding_context") or {}).get("sofr") or {})
+            payload["funding_view"] = {
+                "current_sofr": {
+                    "rate": sofr.get("rate"),
+                    "observation_date": sofr.get("observation_date"),
+                    "source": "NY_FED",
+                }
+                if sofr.get("rate") is not None
+                else "Frozen official NY Fed SOFR fixing in funding_context.",
+                "sr3_forward_view": "Frozen SR3 contracts are the relevant forward-funding path; unsupported horizons stay unused.",
+                "forward_funding_assessment": "about_the_same",
+                "implication": "Stay in cash earning official SOFR unless a packet-supported trade is expected to beat realized overnight funding.",
+            }
+        return payload
 
     def run_conflict_aggregator(
         self, originals: dict[str, dict[str, Any]], packet: dict[str, Any], budget: BudgetLedger

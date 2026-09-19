@@ -7,13 +7,21 @@ from datetime import datetime
 from typing import Any
 from uuid import uuid4
 
+from scripts.funding.sofr import (
+    FUNDING_CONVENTION,
+    FUNDING_DAY_COUNT,
+    FUNDING_SOURCE,
+    FUNDING_SOURCE_URL,
+    FundingHistoryError,
+    accrue_act_360,
+    extract_sofr_history,
+    observed_rate_fields,
+)
 from scripts.overnight.clock import isoformat, now_ny
 from scripts.overnight.constants import (
     ACTIONS,
     ASSET_CLASSES,
     EXPANDING_ACTIONS,
-    FUNDING_DAY_COUNT,
-    FUNDING_RATE_ANNUAL,
     SCHEMA_VERSION,
     SIDES,
     STANDING_SEATS,
@@ -47,43 +55,70 @@ def _deployed_notional(seat_book: dict[str, Any]) -> float:
     )
 
 
+def _attach_observed_rate(target: dict[str, Any], market_state: dict[str, Any] | None = None) -> None:
+    fields = observed_rate_fields(market_state)
+    if fields["funding_rate_annual"] is None and target.get("funding_rate_annual") == 0.05:
+        fields["funding_rate_annual"] = None
+        fields["funding_percent_rate"] = None
+    if target.get("funding_rate_annual") == 0.05:
+        target["funding_rate_annual"] = fields["funding_rate_annual"]
+    elif fields["funding_rate_annual"] is not None:
+        target["funding_rate_annual"] = fields["funding_rate_annual"]
+    target["funding_day_count"] = FUNDING_DAY_COUNT
+    target["funding_convention"] = FUNDING_CONVENTION
+    target["funding_source"] = FUNDING_SOURCE
+    target["funding_source_url"] = FUNDING_SOURCE_URL
+    if fields["funding_percent_rate"] is not None:
+        target["funding_percent_rate"] = fields["funding_percent_rate"]
+        target["funding_effective_date"] = fields["funding_effective_date"]
+
+
 def accrue_funding(
     seat_book: dict[str, Any],
     *,
     when: datetime,
     run_id: str | None = None,
+    market_state: dict[str, Any] | None = None,
 ) -> dict[str, float]:
-    """Accrue the standing hedge-fund hurdle between book reviews.
+    """Accrue official NY Fed SOFR ACT/360 between book timestamps.
 
-    The 13 risk-taking seats borrow their full $100m allocation and pay 5% ACT/365
-    regardless of whether they deploy it. The no-trade skeptic is the cash hurdle:
-    it pays no borrowing cost and earns 5% ACT/365 on the undeployed portion of its
-    original $100m allocation.
+    The 13 risk-taking seats borrow their full $100m allocation and pay the
+    applicable published SOFR fixing each calendar day. The no-trade skeptic
+    pays no borrowing cost and earns the same official daily SOFR on undeployed
+    original $100m cash. Historical 5% totals are never restated.
     """
+    seat_book.setdefault("funding_cost_usd", 0.0)
+    seat_book.setdefault("cash_yield_usd", 0.0)
+    _attach_observed_rate(seat_book, market_state)
     last_raw = seat_book.get("funding_last_accrual_at")
     if not last_raw:
         seat_book["funding_last_accrual_at"] = isoformat(when)
-        seat_book.setdefault("funding_cost_usd", 0.0)
-        seat_book.setdefault("cash_yield_usd", 0.0)
-        seat_book["funding_rate_annual"] = FUNDING_RATE_ANNUAL
+        seat_book["funding_regime"] = "sofr_act_360"
         return {"funding_cost_usd": 0.0, "cash_yield_usd": 0.0}
     try:
         last = datetime.fromisoformat(str(last_raw))
     except ValueError as exc:
         raise SchemaError(f"invalid funding accrual timestamp {last_raw}") from exc
-    elapsed = (when - last).total_seconds()
-    if elapsed <= 0:
+    if (when - last).total_seconds() <= 0:
         return {"funding_cost_usd": 0.0, "cash_yield_usd": 0.0}
 
-    year_seconds = FUNDING_DAY_COUNT * 86400.0
+    history = extract_sofr_history(market_state or {}, seat_book.get("funding_context") or {})
+    principal = (
+        max(0.0, STARTING_NAV_USD - _deployed_notional(seat_book))
+        if seat_book["seat"] == "no-trade-skeptic"
+        else STARTING_NAV_USD
+    )
+    try:
+        accrual = accrue_act_360(principal, start=last, end=when, history=history, market_state=market_state)
+    except FundingHistoryError as exc:
+        seat_book.setdefault("alerts", []).append(f"funding_accrual_failed_closed: {exc}")
+        seat_book["funding_accrual_status"] = "failed_closed"
+        return {"funding_cost_usd": 0.0, "cash_yield_usd": 0.0, "failed_closed": True}
+
     funding_increment = 0.0
     cash_yield_increment = 0.0
     if seat_book["seat"] == "no-trade-skeptic":
-        undeployed = max(0.0, STARTING_NAV_USD - _deployed_notional(seat_book))
-        cash_yield_increment = round(
-            undeployed * FUNDING_RATE_ANNUAL * elapsed / year_seconds,
-            2,
-        )
+        cash_yield_increment = accrual["amount"]
         seat_book["cash_yield_usd"] = round(
             float(seat_book.get("cash_yield_usd") or 0.0) + cash_yield_increment,
             2,
@@ -93,10 +128,7 @@ def accrue_funding(
             2,
         )
     else:
-        funding_increment = round(
-            STARTING_NAV_USD * FUNDING_RATE_ANNUAL * elapsed / year_seconds,
-            2,
-        )
+        funding_increment = accrual["amount"]
         seat_book["funding_cost_usd"] = round(
             float(seat_book.get("funding_cost_usd") or 0.0) + funding_increment,
             2,
@@ -107,7 +139,14 @@ def accrue_funding(
         )
 
     seat_book["funding_last_accrual_at"] = isoformat(when)
-    seat_book["funding_rate_annual"] = FUNDING_RATE_ANNUAL
+    seat_book["funding_regime"] = "sofr_act_360"
+    seat_book["funding_accrual_status"] = "applied"
+    seat_book["funding_rate_annual"] = accrual["funding_rate_annual"]
+    seat_book["funding_percent_rate"] = accrual["latest_percent_rate"]
+    seat_book["funding_effective_date"] = accrual["latest_effective_date"]
+    seat_book["funding_day_count"] = FUNDING_DAY_COUNT
+    seat_book["funding_convention"] = FUNDING_CONVENTION
+    seat_book["funding_source"] = FUNDING_SOURCE
     if funding_increment or cash_yield_increment:
         seat_book.setdefault("history", []).append(
             {
@@ -115,7 +154,15 @@ def accrue_funding(
                 "overnight_run_id": run_id,
                 "action": "FUNDING",
                 "result": "applied",
-                "funding_rate_annual": FUNDING_RATE_ANNUAL,
+                "funding_rate_annual": accrual["funding_rate_annual"],
+                "funding_percent_rate": accrual["latest_percent_rate"],
+                "funding_effective_date": accrual["latest_effective_date"],
+                "funding_source": FUNDING_SOURCE,
+                "funding_source_url": FUNDING_SOURCE_URL,
+                "funding_day_count": FUNDING_DAY_COUNT,
+                "funding_convention": FUNDING_CONVENTION,
+                "accrual_days": accrual["accrual_days"],
+                "fixings": accrual["breakdown"],
                 "funding_base_usd": 0.0 if seat_book["seat"] == "no-trade-skeptic" else STARTING_NAV_USD,
                 "cash_yield_base_usd": (
                     max(0.0, STARTING_NAV_USD - _deployed_notional(seat_book))
@@ -208,7 +255,13 @@ def empty_seat(seat: str) -> dict[str, Any]:
         "gross_pnl_usd": 0.0,
         "funding_cost_usd": 0.0,
         "cash_yield_usd": 0.0,
-        "funding_rate_annual": FUNDING_RATE_ANNUAL,
+        "funding_rate_annual": None,
+        "funding_percent_rate": None,
+        "funding_effective_date": None,
+        "funding_day_count": FUNDING_DAY_COUNT,
+        "funding_convention": FUNDING_CONVENTION,
+        "funding_source": FUNDING_SOURCE,
+        "funding_regime": "sofr_act_360",
         "funding_last_accrual_at": None,
         "net_pnl_usd": 0.0,
         "pnl_unavailable": False,
@@ -258,7 +311,7 @@ def mark_to_market(seat_book: dict[str, Any]) -> dict[str, Any]:
     seat_book["gross_pnl_usd"] = None if missing else gross
     seat_book["funding_cost_usd"] = funding
     seat_book["cash_yield_usd"] = cash_yield
-    seat_book["funding_rate_annual"] = FUNDING_RATE_ANNUAL
+    _attach_observed_rate(seat_book)
     seat_book["net_pnl_usd"] = None if missing else round(gross - funding + cash_yield, 2)
     seat_book["nav_usd"] = round(
         float(seat_book["starting_nav_usd"]) + gross - funding + cash_yield,
@@ -302,9 +355,10 @@ def apply_action(
     families: dict[str, Any],
     run_id: str,
     when: datetime | None = None,
+    market_state: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     stamp = now_ny(when)
-    accrue_funding(seat_book, when=stamp, run_id=run_id)
+    accrue_funding(seat_book, when=stamp, run_id=run_id, market_state=market_state)
     kind = action.get("action")
     if kind not in ACTIONS:
         raise SchemaError(f"unknown action {kind}")
@@ -523,7 +577,14 @@ def apply_review(
             action.setdefault("required_pitch", payload.get("required_pitch"))
             action.setdefault("risk_put_on", payload.get("risk_put_on"))
             action.setdefault("evidence_cutoff", evidence_cutoff)
-            apply_action(seat_book, action, families=families, run_id=run_id, when=when)
+            apply_action(
+                seat_book,
+                action,
+                families=families,
+                run_id=run_id,
+                when=when,
+                market_state=market_state,
+            )
         if payload.get("alerts"):
             seat_book["alerts"].extend(list(payload["alerts"]))
         mark_to_market(seat_book)
@@ -565,7 +626,10 @@ def validate_books(books: dict[str, Any]) -> dict[str, Any]:
         item.setdefault("funding_cost_usd", 0.0)
         item.setdefault("cash_yield_usd", 0.0)
         item.setdefault("funding_last_accrual_at", None)
-        item["funding_rate_annual"] = FUNDING_RATE_ANNUAL
+        item.setdefault("funding_regime", "legacy_pending_sofr" if item.get("funding_last_accrual_at") else "sofr_act_360")
+        if item.get("funding_rate_annual") == 0.05:
+            item["funding_rate_annual"] = None
+        _attach_observed_rate(item)
         mark_to_market(item)
     return books
 
@@ -588,7 +652,12 @@ def public_books_view(books: dict[str, Any]) -> dict[str, Any]:
                 "gross_pnl_usd": item.get("gross_pnl_usd"),
                 "funding_cost_usd": item.get("funding_cost_usd", 0.0),
                 "cash_yield_usd": item.get("cash_yield_usd", 0.0),
-                "funding_rate_annual": FUNDING_RATE_ANNUAL,
+                "funding_rate_annual": item.get("funding_rate_annual"),
+                "funding_percent_rate": item.get("funding_percent_rate"),
+                "funding_effective_date": item.get("funding_effective_date"),
+                "funding_day_count": item.get("funding_day_count", FUNDING_DAY_COUNT),
+                "funding_convention": item.get("funding_convention", FUNDING_CONVENTION),
+                "funding_source": item.get("funding_source", FUNDING_SOURCE),
                 "net_pnl_usd": item.get("net_pnl_usd"),
                 "pnl_unavailable": item["pnl_unavailable"],
                 "conviction": item["conviction"],
@@ -664,7 +733,13 @@ def public_books_view(books: dict[str, Any]) -> dict[str, Any]:
         "review_status": books.get("review_status"),
         "last_successful_review_run_id": books.get("last_successful_review_run_id"),
         "starting_nav_usd": STARTING_NAV_USD,
-        "funding_rate_annual": FUNDING_RATE_ANNUAL,
+        "funding_rate_annual": next(
+            (row.get("funding_rate_annual") for row in seats if row.get("funding_rate_annual") is not None),
+            None,
+        ),
+        "funding_day_count": FUNDING_DAY_COUNT,
+        "funding_convention": FUNDING_CONVENTION,
+        "funding_source": FUNDING_SOURCE,
         "competition_metric": "net_pnl_after_funding",
         "seat_count": len(seats),
         "leaderboard": leaderboard,

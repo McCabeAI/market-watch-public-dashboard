@@ -43,6 +43,9 @@ FORBIDDEN_MODEL_STATE_KEYS = {
     "funding_cost_usd",
     "cash_yield_usd",
     "funding_last_accrual_at",
+    "funded_draw_usd",
+    "unused_cash_usd",
+    "net_after_funding_pnl_usd",
     "net_pnl_usd",
     "competition_rank",
     "canonical_ledger",
@@ -174,6 +177,13 @@ def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str,
             raise EvidenceBoundaryError(f"{seat} evidence cutoff mismatch")
         if not isinstance(decision.get("actions"), list) or not decision["actions"]:
             raise SchemaError(f"{seat} must return at least one structured action")
+        if seat == "no-trade-skeptic":
+            from scripts.funding.view import assert_no_trade_funding_view
+
+            try:
+                assert_no_trade_funding_view(decision, packet=base)
+            except Exception as exc:
+                raise SchemaError(str(exc)) from exc
         for forbidden_key in ("tools_used", "web_search", "web_fetch", "fetched_new_evidence"):
             if decision.get(forbidden_key):
                 raise EvidenceBoundaryError(f"{seat} recorded forbidden post-freeze acquisition: {forbidden_key}")
