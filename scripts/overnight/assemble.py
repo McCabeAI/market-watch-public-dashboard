@@ -12,7 +12,7 @@ from scripts.overnight.constants import SCHEMA_VERSION
 from scripts.overnight.errors import SchemaError
 from scripts.overnight.freshness import publication_decision
 from scripts.overnight.ledger import artifact_index
-from scripts.overnight.store import OvernightStore
+from scripts.overnight.store import OvernightStore, write_json
 from scripts.pm_layer import empty_pm_books, public_pm_view, refresh_pm_marks, validate_pm_books
 
 
@@ -56,6 +56,8 @@ def assemble_dataset(
     last_success = None
     books = _load_books(store, run)
     pm_books = _load_pm_books(store, families)
+    # Daily marking advances canonical PM state even when no PM changes risk.
+    write_json(store.state_root / "data" / "pm" / "books" / "latest.json", pm_books)
     if store.has_artifact(run_id, "trader_review.json"):
         review = store.read_artifact(run_id, "trader_review.json")
         if review.get("status") == "succeeded":
