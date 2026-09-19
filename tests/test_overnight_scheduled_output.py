@@ -282,6 +282,28 @@ class BudgetHookTests(unittest.TestCase):
         self.assertNotEqual(blocked.returncode, 0)
         self.assertIn("cap", blocked.stdout.lower())
 
+    def test_pm_enabled_budget_variant_is_exact_and_bounded(self) -> None:
+        self.active.unlink(missing_ok=True)
+        self.lock.unlink(missing_ok=True)
+        pm_policy = {
+            **POLICY,
+            "total_model_cap": 21,
+            "grok_cap": 19,
+            "composer_cap": 2,
+            "pm_layer": 3,
+        }
+        self.transcript.write_text(
+            "MW_OVERNIGHT_RUN_POLICY=" + json.dumps(pm_policy, separators=(",", ":")) + "\n",
+            encoding="utf-8",
+        )
+        for _ in range(18):
+            self.assertEqual(self._call("root", "grok-4.6").returncode, 0)
+        for _ in range(2):
+            self.assertEqual(self._call("root", "composer-2.5").returncode, 0)
+        blocked = self._call("root", "grok-4.6")
+        self.assertNotEqual(blocked.returncode, 0)
+        self.assertIn("cap", blocked.stdout.lower())
+
     def test_nested_child_is_denied(self) -> None:
         self.assertEqual(self._call("root", "composer-2.5").returncode, 0)
         blocked = self._call("child-conversation", "grok-4.6")
