@@ -7,6 +7,7 @@ on:
   pull_request:
     paths:
       - "scripts/market_state.py"
+      - "scripts/policy_path_data.py"
       - "scripts/positioning_data.py"
       - "scripts/market_opportunities.py"
       - "scripts/cross_asset_data.py"
@@ -14,6 +15,7 @@ on:
       - "scripts/live_market_state_smoke.py"
       - "scripts/__init__.py"
       - "tests/test_market_state.py"
+      - "tests/test_policy_path_data.py"
       - "tests/test_positioning_data.py"
       - "requirements-market-state.txt"
       - ".github/workflows/daily-market-state.yml"
@@ -47,7 +49,7 @@ jobs:
         run: python -m pip install --disable-pip-version-check -r requirements-market-state.txt
 
       - name: Deterministic parser and calculation tests
-        run: PYTHONPATH=. python -m unittest tests.test_market_state tests.test_market_opportunities tests.test_positioning_data -v
+        run: PYTHONPATH=. python -m unittest tests.test_market_state tests.test_policy_path_data tests.test_market_opportunities tests.test_positioning_data -v
 
       - name: Live official-source smoke test
         run: PYTHONPATH=. python scripts/live_market_state_smoke.py
@@ -90,6 +92,10 @@ jobs:
           assert packet["positioning"]["status"] in {"ok", "partial", "stale", "unavailable"}
           assert packet["positioning"]["method"]["model_calls"] == 0
           assert packet["positioning"]["method"]["credentials_required"] == []
+          assert packet["policy_paths"]["status"] == "ok"
+          assert set(packet["policy_paths"]["countries"]) == {"US", "CA", "AU"}
+          for country in ("US", "CA", "AU"):
+              assert packet["policy_paths"]["countries"][country]["status"] == "ok"
           nz = packet["rates"]["NZ"]
           if nz.get("status") == "unavailable":
               assert "NZ_rates" in packet["unavailable_sources"]
