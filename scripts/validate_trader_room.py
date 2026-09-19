@@ -138,8 +138,10 @@ def main() -> None:
     assert "SOFR/CORRA/AONIA" in command
     assert "Do **not** launch `final-aggregator`" in command
     assert "scripts/trader_room_finalize.py" in command
-    assert "total Grok ceiling 29" in command
+    assert "total Grok ceiling 32" in command
     assert "FINAL_INPUT.json" in command
+    assert "## 7. Independent PM layer" in command
+    assert "[trader-room-output]" in command
     assert "trader-room/outbox" not in command
     assert "GITHUB_HANDOFF" not in command
 
