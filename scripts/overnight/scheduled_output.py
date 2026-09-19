@@ -38,6 +38,11 @@ FORBIDDEN_MODEL_STATE_KEYS = {
     "realized_pnl_usd",
     "unrealized_pnl_usd",
     "starting_nav_usd",
+    "gross_pnl_usd",
+    "funding_cost_usd",
+    "funding_rate_annual",
+    "net_pnl_usd",
+    "competition_rank",
 }
 
 
@@ -118,6 +123,8 @@ def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str,
         raise EvidenceBoundaryError("agent_packet base hash mismatch")
     if agent_packet.get("base_evidence_cutoff") != base.get("as_of"):
         raise EvidenceBoundaryError("agent_packet base_evidence_cutoff must equal the trusted base cutoff")
+    if agent_packet.get("competition") != base.get("competition"):
+        raise EvidenceBoundaryError("agent_packet must preserve the frozen competition/funding contract")
     final_cutoff = agent_packet.get("evidence_cutoff")
     if not isinstance(final_cutoff, str):
         raise SchemaError("agent_packet evidence_cutoff is required")
@@ -184,6 +191,7 @@ def _apply_validated(
         families=base["families"],
         run_id=run_id,
         evidence_cutoff=payload["agent_packet"]["evidence_cutoff"],
+        when=parse_iso(payload["agent_packet"]["evidence_cutoff"]),
     )
     updated["review_status"] = "fresh"
     updated["last_successful_review_run_id"] = run_id
