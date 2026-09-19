@@ -1,0 +1,114 @@
+{
+  "type": "TRADER_ROOM_CONTRIBUTION",
+  "run_id": "tr-20260919T011817Z-ondemand",
+  "round": 1,
+  "agent": "dollar-king",
+  "archetype": "dollar-king",
+  "stance_summary": "USD remains the cleanest benchmark after the 16 Sep 25bp hike to 3.75–4.00% with the August CPI tightening bias still intact. The strongest USD spot is short AUDUSD: Australia’s housing/labor channel is biting while AUDUSD sits rich (5y 84th percentile, z 1.23) on copper at the 99th percentile and only a 26bp 2Y carry cushion. Long USDCAD has more carry (140bp) but fights WTI at $107 / 96th percentile and hotter CA activity/consumer scores. A non-USD AUD cross would add unnecessary CAD energy second-order risk.",
+  "trade": {
+    "instrument": "AUDUSD",
+    "asset_class": "spot_fx",
+    "expression_comparison": {
+      "rates_candidate": null,
+      "spot_candidate": "short AUDUSD (USD long vs AUD) at executable_marks.spot_fx.AUDUSD 0.712022367194781",
+      "selected": "spot",
+      "rationale": "Dedicated dollar-king remit is spot-only. The discrepancy lives in AUDUSD: AU housing/labor deterioration versus a still-rich AUD that is pricing copper/commodity resilience, against a USD that has just re-tightened. USDCAD is the next-best USD pair but is inferior because the 140bp 2Y gap is already large while WTI 107.02 (96th percentile, +24% 1m) and CA activity 53.2 / consumer 52.5 support CAD. AUDCAD or other crosses discard the USD/Fed leg and add CAD energy risk."
+    },
+    "structure": "spot short AUDUSD",
+    "direction": "short",
+    "thesis": "FACT: Fed raised 25bp to 3.75–4.00% on 16 Sep after futures were >90% priced for the hike; August CPI is cited as keeping the tightening bias intact. US 2Y 4.76 and 10Y 5.01 are at the 99th 1y percentile (+57bp / +36bp 1m). AU 2Y 4.999 / 10Y 5.348 are also 99th 1y, but AU-US 2Y is only +25.9bp. AUDUSD 0.712022367194781 as of 2026-09-18: 1y 76th / 5y 84th, z_5y 1.23, +2.65% 3m, -0.73% 5d. NSW stamp-duty receipts -24% y/y, transaction volumes -18%, Sydney/Melbourne values >7% off peak. AU labor 47.8 (U-rate 4.5% from 4.4%, employment -15.8k); AU activity 49.2 (GDP +0.4% q/q, business conditions softer); trimmed CPI 3.6% unchanged, headline 3.5% from 3.8%; Sep Westpac sentiment -5.2% to 84.4. AUD futures OI 493141, 99th 1y, z 3.61; leveraged funds net long +61135 (+11356 weekly). Copper 6.7155, 99th percentile; WTI 107.02, 96th; VIX 15.44, 15th; broad USD 118.21 stale (as_of 2026-09-11, 12th percentile). Carry screen long AUD / short USD = 26bp / 5.26 vol, ratio 0.049. Paper books are empty $100m seeds paying 5% ACT/365 on the full allocation whether flat or not. INFERENCE: AUDUSD is pricing the copper/commodity state, not the housing-labor change; the Fed path still supports the USD leg even though the 25bp decision was known. The closing mechanism is further AU housing/labor transmission and/or RBA hold-to-ease versus US higher-for-longer, which should cheapen AUD versus USD without needing a CAD or JPY second leg. UNKNOWN: RBA next decision and policy rate path; whether copper at the 99th percentile can keep AUD rich; NZ yields (unavailable); CME daily FX positioning (unavailable); broker-executable prices (ECB reference only).",
+    "mispricing": "AUDUSD at 5y 84th percentile / z 1.23 and +2.65% over 3m is inconsistent with a housing channel that is already cutting volumes 18% and stamp duty 24%, a 47.8 labor score, and only 26bp of AU-US 2Y carry. The market is paying for copper 99th-percentile terms-of-trade as if that dominates domestic tightening; dollar-king owns that gap in USD space.",
+    "why_now": [
+      "Fed has already delivered the 25bp hike to 3.75–4.00% and the retained August CPI item still flags a tightening bias, so the USD policy leg is live rather than a pre-meeting lottery.",
+      "AU housing evidence (stamp duty -24% y/y, volumes -18%, prices >7% off peak) is the new transmission of existing high AU yields, not a restatement of the rate level.",
+      "AUDUSD remains rich (5y 84th, z 1.23) after only a -0.73% 5d dip, while AUD futures open interest is at a 99th-percentile 1y extreme with leveraged funds still adding longs.",
+      "The 5% full-$100m ACT/365 clock runs whether flat or not; an empty seed book with a defined AUDUSD discrepancy should put risk on rather than donate vig with zero edge."
+    ],
+    "evidence_refs": [
+      "market_state",
+      "research_method",
+      "trader_competition",
+      "paper_books",
+      "mw_20260916_fomc_hike_pricing",
+      "mw_20260916_au_housing_tightening",
+      "rollup:Fed raises 25bp to 3.75–4.00%",
+      "rollup:August CPI keeps the Fed tightening bias intact",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "temp:US:inflation",
+      "temp:US:activity",
+      "temp:US:labor",
+      "temp:AU:labor",
+      "temp:AU:activity",
+      "temp:AU:inflation",
+      "temp:AU:consumer",
+      "temp:CA:activity",
+      "temp:CA:consumer"
+    ],
+    "horizon": "4-8 weeks",
+    "entry": "AUDUSD 0.712022367194781 from executable_marks.spot_fx.AUDUSD / market_state.fx.pairs.AUDUSD.spot as of 2026-09-18",
+    "target": null,
+    "stop": null,
+    "invalidation": "Thesis is wrong if AUDUSD holds or rises while AU labor/housing stop deteriorating, or if copper/commodity strength continues to dominate without any offsetting AU domestic softening. Do not invent a numeric stop; reassess if AU unemployment reverses lower or if the Fed tightening-bias narrative is withdrawn in subsequent retained evidence.",
+    "catalysts": [
+      "Further Australian housing, employment, or consumer-sentiment prints confirming the RBA tightening channel.",
+      "US inflation/labor follow-through that keeps the Fed tightening bias intact after the 16 Sep hike.",
+      "Any RBA communication that treats housing stress as a reason to stop leaning hawkish versus a still-restrictive Fed."
+    ],
+    "principal_risks": [
+      "Copper at 6.7155 (99th percentile, +3.5% 1m) can keep AUD bid via terms of trade even if housing stays weak.",
+      "AUD-USD 2Y carry of +26bp slightly opposes a short; a patient squeeze can bleed if the housing catalyst is slow.",
+      "VIX 15.44 (15th percentile) is a complacent/risk-on tape that typically supports AUD.",
+      "The 16 Sep hike was >90% priced; if the residual USD bid is already in EURUSD (-1.89% 1m) and AUDUSD 5d (-0.73%), leftover edge may be small versus 5% book vig.",
+      "ECB FX marks are reference, not broker-executable; CME positioning is unavailable; broad USD is stale as of 2026-09-11."
+    ],
+    "confidence": 59
+  },
+  "confidence": 59,
+  "remit": "express macro views through USD spot whenever a defensible USD pair exists",
+  "conflict_synopsis": {
+    "seat": "dollar-king",
+    "primary_trade": "short AUDUSD",
+    "core_view": "Short rich AUD versus a just-re-tightened USD because AU housing/labor transmission is not in the 84th-percentile AUDUSD price.",
+    "usd_view": "higher",
+    "cad_view": "neutral",
+    "aud_view": "lower",
+    "nzd_view": "not_relevant",
+    "us_rates_view": "higher",
+    "ca_rates_view": "not_relevant",
+    "au_rates_view": "lower",
+    "nz_rates_view": "not_relevant",
+    "risk_view": "risk_on",
+    "carry_view": "opposes_trade",
+    "time_horizon": "4-8 weeks",
+    "key_catalyst": "Next AU housing/labor/sentiment evidence versus a Fed that has already hiked and kept a tightening bias.",
+    "key_invalidation": "AUDUSD stays bid if copper remains extreme and AU labor/housing stabilize.",
+    "confidence": 59,
+    "conflict_tags": [
+      "USD_UP",
+      "AUD_DOWN",
+      "SHORT_AUDUSD"
+    ]
+  },
+  "packet_sha256": "e0da1a0c3331e88bb03e87a4b6cf567c0559de795c55fb93259aaba542e5e37c",
+  "paper_capital": {
+    "risk_put_on": true,
+    "action": "OPEN",
+    "notional_usd": 35000000,
+    "instrument": "AUDUSD",
+    "side": "short",
+    "asset_class": "spot_fx",
+    "price": 0.712022367194781,
+    "mark_price": 0.712022367194781,
+    "price_path": "market_state.fx.pairs.AUDUSD.spot",
+    "execution_blocked": null,
+    "funding_hurdle_rationale": "The 13 funded seats pay 5.00% simple ACT/365 on the full $100m every day whether invested or flat, about $13,699 per day / about $575k over a 6-week horizon. Flat therefore donates vig with zero edge. $35m short AUDUSD at the frozen 0.712022367194781 mark needs roughly a 1.6% AUDUSD decline over six weeks to cover that book-level clock; 20d realized vol is 4.71% and the 5y z is +1.23, so a partial unwind of the richness/housing gap can clear the hurdle without using the full $100m. Carry of only +26bp to AUD slightly opposes the short but is too small to justify staying flat. Notional is capped at $35m because copper at the 99th percentile is a real residual AUD bid."
+  },
+  "macro_assumptions": {
+    "growth": "below_trend",
+    "risk": "risk_on",
+    "rates": "higher_for_longer",
+    "policy": "hawkish"
+  },
+  "subagent_calls": 0,
+  "subagent_model": null
+}

@@ -1,0 +1,116 @@
+{
+  "type": "TRADER_ROOM_CONTRIBUTION",
+  "run_id": "tr-20260919T011817Z-ondemand",
+  "round": 1,
+  "agent": "carry-is-king",
+  "archetype": "carry-is-king",
+  "stance_summary": "The fattest quantified 2Y carry in the packet is Australia over Canada (164.9bp). That gap still sits in rates: AU 2Y/10Y are at 99th-percentile yields after a housing break, while AUDCAD has already paid the carry at a 5y extreme. Receive AU vs pay CA in CA-AU_2Y; do not buy stretched AUDCAD. Flat still pays the 5% $100m ACT/365 vig.",
+  "trade": {
+    "instrument": "CA-AU_2Y",
+    "asset_class": "rates_rv",
+    "expression_comparison": {
+      "rates_candidate": "Short CA-AU_2Y rates RV at executable_marks.rates_rv.CA-AU_2Y.price -164.89999999999995 (path market_state.rate_rv.CA-AU_2Y.bps, as_of 2026-09-16): receive AU 2Y 4.999 versus pay CA 2Y 3.27, owning the packet carry screen's 164.9bp 2Y differential.",
+      "spot_candidate": "Long AUDCAD at executable_marks.spot_fx.AUDCAD.price 0.9975768872320596 (path market_state.fx.pairs.AUDCAD.spot, as_of 2026-09-18): same 164.9bp 2Y differential, carry-screen ratio 0.334, long AUD / short CAD.",
+      "selected": "rates",
+      "rationale": "Rates is cleaner. The 164.9bp 2Y gap is a rates object; AUDCAD spot is already at pctile_1y 99.80 and pctile_5y 99.96 (z_5y 2.76), so FX has paid the carry. NSW stamp-duty/housing deterioration is AUD-negative, so a spot long fights the catalyst. AU 2Y 4.999 and AU 10Y 5.348 remain pctile_1y/pctile_5y 99.0/99.8, so the residual discrepancy is still in yields. Short CA-AU_2Y receives the high-yielder and owns housing-driven AU yield decline versus relatively firmer CA activity/energy without buying the stretched cross. Outright AU_10Y/AU_2Y is the same AU-duration idea but the paper engine quotes tenors in percent, so realistic yield moves cannot clear the 5% $100m clock; the bps-quoted RV can. USDCAD long (140bp 2Y gap) is the next carry screen print, but Fed 25bp hike to 3.75-4.00% with CPI tightening bias makes long-USD-duration vs CA a fight with the Fed, and it does not own the AU housing discrepancy."
+    },
+    "structure": "Short CA-AU 2Y sovereign yield spread: receive Australia 2Y versus pay Canada 2Y.",
+    "direction": "short",
+    "thesis": "FACT: market_state.rate_rv.CA-AU_2Y.bps is -164.89999999999995 as of 2026-09-16 (pctile_5y 10.51, z_5y -1.63; pctile_1y 51.39). AU 2Y is 4.999 and AU 10Y 5.348, both pctile_1y 99.01 and pctile_5y 99.80, after AU 2Y +39.1bp / AU 10Y +26.1bp over 1m. CA 2Y is 3.27. The packet carry screen ranks long AUD / short CAD first on 2Y yield differential over 60d FX vol (164.9bp, ratio 0.334) and explicitly states that print is not forward carry, funding, roll-down, or expected return. FACT: NSW stamp-duty receipts -24% y/y and volumes -18% in August; Sydney and Melbourne home values more than 7% below peak. AU activity 49.2, labor 47.8, inflation 49.2. CA activity 53.2 and consumer 52.5 are the hottest of the four-country set; Canada August CPI 3% with core near 2%; BoC minutes flag energy pass-through. FACT: AUDCAD spot 0.9975768872320596 is pctile_1y 99.80 / pctile_5y 99.96. Fed hiked 25bp to 3.75-4.00% with futures previously >90% priced; August CPI keeps a US tightening bias. Paper books are empty $100m seeds; the 13 funded seats pay 5% ACT/365 on the full allocation whether deployed or not. INFERENCE: Housing is the RBA tightening channel working in physical data, but AU yields have not conceded from 99th-percentile levels. FX has already paid AU-over-CA carry, so buying AUDCAD now is paying up for a completed move and leaning against housing. Receiving AU versus paying CA keeps the 164.9bp 2Y pickup, is long the high-yielder into a housing-driven AU yield decline, and is short the lower-yielder into relatively firmer CA activity/energy. That distribution can beat being flat. UNKNOWN: official NZ yields (blocked; no NZ RV used). Whether CA 2Y, already pctile_1y 97.82 after +31bp 1m, rallies if the Saudi Oman workaround keeps oil contained. AU rates as_of 2026-09-16 versus FX 2026-09-18. CME FX futures OI unavailable.",
+    "mispricing": "Market-vs-market: the 164.9bp AU-over-CA 2Y gap remains in rates (CA-AU_2Y 5y pctile 10.51) while AUDCAD is a 5y extreme, so the currency has already paid the carry the rates market still offers. Fundamentals-vs-pricing: AU housing/tax-take deterioration versus AU 2Y/10Y at 99th-percentile yields after a 1m selloff. Headline-vs-components: Canada core near 2% but activity/consumer still >50 and BoC energy pass-through risk, so CA should not match a housing-driven AU rally one-for-one. The packet carry screen's top ratio is this pair; it is not a forecast, but it identifies where holding-period carry still lives.",
+    "why_now": [
+      "The September 16 Fed 25bp hike to 3.75-4.00% was already >90% priced; the live discrepancy is AU housing versus still-99th-percentile AU yields, not the FOMC event itself.",
+      "AUDCAD has already run to pctile_5y 99.96, so initiating the carry in spot now buys a completed FX move; CA-AU_2Y still embeds 164.9bp.",
+      "Empty $100m books mean the 5% ACT/365 vig is already running with no offsetting risk; being flat does not stop the clock.",
+      "CA activity 53.2 / consumer 52.5 versus AU housing/labor softness is a live relative-growth reason CA yields need not fall with AU."
+    ],
+    "evidence_refs": [
+      "market_state",
+      "research_method",
+      "paper_books",
+      "trader_competition",
+      "mw_20260916_au_housing_tightening",
+      "mw_20260916_fomc_hike_pricing",
+      "mw_20260916_saudi_oman_workaround",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "rollup:BoC minutes flag higher energy pass-through risk",
+      "rollup:Canada August inflation holds at 3%, core stays near 2%",
+      "rollup:Fed raises 25bp to 3.75–4.00%",
+      "rollup:August CPI keeps the Fed tightening bias intact",
+      "rollup:Energy-market shock absorbers weaken",
+      "temp:AU:activity",
+      "temp:AU:labor",
+      "temp:AU:inflation",
+      "temp:CA:activity",
+      "temp:CA:consumer",
+      "temp:CA:inflation"
+    ],
+    "horizon": "1-3 months (patient housing/carry, not an event scalp)",
+    "entry": "Frozen executable_marks.rates_rv.CA-AU_2Y.price -164.89999999999995 (market_state.rate_rv.CA-AU_2Y.bps, as_of 2026-09-16).",
+    "target": null,
+    "stop": null,
+    "invalidation": "Thesis is wrong if AU housing/financial-conditions evidence reverses or if AU yields keep rising versus Canada so CA-AU_2Y becomes more negative rather than compressing. Right-thesis/wrong-timing if housing stays weak but global yield-beta (US 2Y already +57bp over 1m) drags AU higher in the near term; then extend horizon rather than invent a stop.",
+    "catalysts": [
+      "Further Australian housing, transaction, or stamp-duty deterioration forcing RBA/market to reprice AU 2Y/10Y down from 99th-percentile yields.",
+      "BoC energy pass-through and still-firm CA activity/consumer keeping CA 2Y from matching an AU rally."
+    ],
+    "principal_risks": [
+      "Global front-end selloff continues (US 2Y +57bp over 1m, now 4.76 at pctile_1y 99.80) and AU yields make new highs despite housing.",
+      "CA 2Y rallies from pctile_1y 97.82 if core stays near 2% and the Saudi Oman crude workaround caps the energy tail the BoC flagged.",
+      "AU rates mark is 2026-09-16 (age_days 3) versus FX 2026-09-18; the RV is a common-date research print, not a live broker.",
+      "Paper rates_rv is quoted in bps, so a small spread move dominates P&L versus percent-quoted outright tenors; size is the control, not a fabricated hedge.",
+      "Packet carry screen is 2Y yield gap over FX vol, not funded forward points; coupon is not accrued by the book engine, only mark-to-market."
+    ],
+    "confidence": 61
+  },
+  "confidence": 61,
+  "remit": "positive carry and patient expressions across rates and FX unless a catalyst overwhelms it",
+  "conflict_synopsis": {
+    "seat": "carry-is-king",
+    "primary_trade": "short CA-AU_2Y",
+    "core_view": "Receive Australia versus pay Canada in 2Y rates: 164.9bp still lives in yields after housing broke, while AUDCAD has already paid the carry at a 5y extreme.",
+    "usd_view": "neutral",
+    "cad_view": "neutral",
+    "aud_view": "lower",
+    "nzd_view": "not_relevant",
+    "us_rates_view": "higher",
+    "ca_rates_view": "higher",
+    "au_rates_view": "lower",
+    "nz_rates_view": "not_relevant",
+    "risk_view": "risk_off",
+    "carry_view": "supports_trade",
+    "time_horizon": "1-3 months",
+    "key_catalyst": "Australian housing/financial-conditions deterioration repricing AU yields down versus Canada while the 2Y differential still pays the AU receiver.",
+    "key_invalidation": "AU yields keep rising versus Canada, or housing evidence reverses, so the 164.9bp 2Y pickup no longer compensates duration risk.",
+    "confidence": 61,
+    "conflict_tags": [
+      "AU_RATES_DOWN",
+      "CA_RATES_UP",
+      "AUD_DOWN",
+      "CA_AU_2Y_SHORT",
+      "CARRY_SUPPORTS"
+    ]
+  },
+  "packet_sha256": "e0da1a0c3331e88bb03e87a4b6cf567c0559de795c55fb93259aaba542e5e37c",
+  "paper_capital": {
+    "risk_put_on": true,
+    "action": "OPEN",
+    "notional_usd": 20000000,
+    "instrument": "CA-AU_2Y",
+    "side": "short",
+    "asset_class": "rates_rv",
+    "price": -164.89999999999995,
+    "mark_price": -164.89999999999995,
+    "price_path": "market_state.rate_rv.CA-AU_2Y.bps",
+    "execution_blocked": null,
+    "funding_hurdle_rationale": "This seat pays 5% simple ACT/365 on the full $100m every day even if flat; empty seed books mean the vig has started with no offsetting risk. Short CA-AU_2Y is opened only at the frozen executable_marks.rates_rv.CA-AU_2Y price of -164.89999999999995. That RV is the packet's widest quantified 2Y differential (164.9bp AU over CA) and is a bps-quoted mark the book engine can represent. A 10bp AU-versus-CA compression on $20m is order-of-magnitude $2m of paper mark-to-market versus about a quarter of the annual $5m vig, so a 1-3 month housing-driven relative rally can clear the clock; cash cannot. Notional is capped at $20m because bps quoting makes RV P&L large per basis point and CA 2Y is already pctile_1y 97.82, so this is not a max-book punch. Outright AU tenors were rejected for the paper clock: percent-quoted 10bp on $100m is only about $100k and cannot outrun 5% on $100m."
+  },
+  "macro_assumptions": {
+    "growth": "below_trend",
+    "risk": "risk_off",
+    "rates": "higher_for_longer",
+    "policy": "hawkish"
+  },
+  "subagent_calls": 0,
+  "subagent_model": null
+}

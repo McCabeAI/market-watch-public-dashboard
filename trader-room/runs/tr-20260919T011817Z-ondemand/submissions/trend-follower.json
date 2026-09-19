@@ -1,0 +1,113 @@
+{
+  "type": "TRADER_ROOM_CONTRIBUTION",
+  "run_id": "tr-20260919T011817Z-ondemand",
+  "round": 1,
+  "agent": "trend-follower",
+  "archetype": "trend-follower",
+  "stance_summary": "US front-end yields, the Sep 16 hike and August CPI tightening bias are still aligned. Short US 2Y duration is the cleanest continuation; fading 99th-percentile yields or the 1-day Canada dip is premature. USDCAD is the spot alternative but is a weaker, 1-month-only trend versus an unambiguous 1d/5d/1m/3m US 2Y backup. Flat $100m still pays 5% ACT/365, so this empty book must own the live trend.",
+  "trade": {
+    "instrument": "US_2Y",
+    "asset_class": "rates",
+    "expression_comparison": {
+      "rates_candidate": "Short US_2Y outright duration (pay fixed / higher 2Y yield) at executable_marks 4.76. Alternative rates RV: short CA-US_2Y at -140bp (spread already 3.8th percentile 1y and still more negative on 5d/1m) is the same US-outperformance trend but is as-of mismatched (CA 17 Sep vs US 18 Sep) and mixes in Canada-specific labor softness.",
+      "spot_candidate": "Long USDCAD at executable_marks 1.4010471204188482, supported by a 140bp US-CA 2Y differential and a +1.74% 1m / +1.10% 5d USD-CAD trend.",
+      "selected": "rates",
+      "rationale": "Rates is cleaner and is the default when both expressions are usable. US 2Y is higher on every frozen horizon (+9bp 1d, +13bp 5d, +57bp 1m, +57bp 3m; 99.8th percentile 1y; z_1y 2.84) and sits in the tenor that owns the delivered hike plus residual tightening bias. USDCAD's 3m return is still -1.25% with only a 1y z of 0.80, so the spot trend is younger and less aligned than the yield trend. The discrepancy is that discretionary fade of statistically extreme yields after a >90% priced hike; that lives in duration, not in a mixed USD-CAD spot tape."
+    },
+    "structure": "outright short US 2Y duration (pay fixed); paper mark is the 2Y yield",
+    "direction": "short",
+    "thesis": "Causal test: after a delivered 25bp hike, do US front-end yields keep rising because inflation and policy remain aligned, or does 99th-percentile yield automatically mean-revert? Verified fact: Fed funds moved 25bp to 3.75-4.00% on 16 Sep; futures had >90% hike odds into that meeting; August CPI is retained as keeping the tightening bias intact; US 2Y is 4.76 as of 18 Sep, up 9bp 1d / 13bp 5d / 57bp 1m / 57bp 3m, 99.8th percentile 1y. Decomposition: 2Y +57bp 1m versus 10Y +36bp and 2s10s at 25bp (0.2nd percentile 1y, -21bp 1m) is a front-end-led flattening, not a long-end term-premium story. Inference: the post-hike +9bp 2Y backup shows the market is not treating 16 Sep as terminal; price, revisions and policy are still aligned, so the trend should persist longer than a fade of the z-score. Unknown: CME positioning; official NZ yields; whether the next inflation/labor print confirms or kills extra hike risk. Housing pain in Australia is the tightening channel working, not a reversal signal for this US-2Y expression. Mean-reversion without an independent reversal catalyst is rejected.",
+    "mispricing": "The live gap is not 'yields are high so buy duration.' It is the assumption that a fully priced hike plus 1y z of 2.84 is sufficient to fade a still-rising 2Y. Market-implied into 16 Sep required the 25bp hike; it did not require the subsequent 2Y backup or a still-open tightening bias. Fading that tape is the premature reversal. USDCAD does not own the same gap: 3m USDCAD is down even as US 2Y is up on every horizon.",
+    "why_now": [
+      "US 2Y is higher on every frozen horizon: +9bp 1d, +13bp 5d, +57bp 1m, +57bp 3m, 99.8th percentile 1y, z_1y 2.84 (market_state as of 2026-09-18).",
+      "The 16 Sep FOMC hike to 3.75-4.00% has already printed and was >90% priced, yet 2Y still sold off 9bp by 18 Sep — the continuation, not the decision, is the live trend.",
+      "August CPI is retained as keeping the Fed tightening bias intact; ISM Services 55.4 and August retail +1.2% m/m do not give the fade a growth-collapse catalyst.",
+      "This seat's empty $100m book still pays 5% ACT/365 while flat; sitting out after a persistent, policy-aligned yield trend donates the vig with no offsetting P&L."
+    ],
+    "evidence_refs": [
+      "market_state",
+      "research_method",
+      "mw_20260916_fomc_hike_pricing",
+      "rollup:Fed raises 25bp to 3.75–4.00%",
+      "rollup:August CPI keeps the Fed tightening bias intact",
+      "temp:US:inflation",
+      "temp:US:activity",
+      "temp:US:consumer",
+      "temp:US:labor",
+      "rollup:BoC minutes flag higher energy pass-through risk",
+      "rollup:Canada August inflation holds at 3%, core stays near 2%",
+      "mw_20260916_au_housing_tightening",
+      "trader_competition",
+      "paper_books"
+    ],
+    "horizon": "4-8 weeks, through the next US inflation prints and FOMC cycle",
+    "entry": "4.76 (executable_marks.rates.US_2Y / market_state.rates.US.tenors.2Y.value, as_of 2026-09-18)",
+    "target": null,
+    "stop": null,
+    "invalidation": "Invalidate if the US 2Y 1-month uptrend (+57bp to 4.76 as of 2026-09-18) reverses, or if subsequent US inflation/labor evidence removes the Fed tightening bias documented by August CPI and the 16 Sep 25bp hike to 3.75-4.00%. A 1-day dip without that policy/data break is not invalidation.",
+    "catalysts": [
+      "Follow-through in US front-end yields after the delivered 16 Sep hike and the retained August CPI tightening-bias narrative",
+      "US 2s10s at 25bp / 0.2nd percentile 1y already records front-end-led flattening that persists if extra hike risk stays live",
+      "Canada headline CPI still 3.0% with BoC minutes flagging energy pass-through; that supports a wider CA-US yield gap as a secondary confirmation, not the owner of this trade"
+    ],
+    "principal_risks": [
+      "Statistical extension: US 2Y z_1y 2.84 and 99.8th percentile 1y can pause or retrace without a fundamental reversal; this seat still refuses to fade on z-score alone.",
+      "Consumer/confidence softness (Michigan preliminary September 47.8, US consumer score 48.5) and Q2 GDP +1.5% SAAR versus +2.1% Q1 could re-anchor a one-and-done narrative.",
+      "The hike itself was >90% priced; additional backup requires the bias to stay open, which the packet does not guarantee.",
+      "Known gaps: CME positioning unavailable; official NZ yields unavailable; market-state NZ_rates stale/unavailable; no executable broker prices beyond frozen marks.",
+      "Global duration bid: CA 2Y -8bp and CA 10Y -9bp on 17 Sep show a 1-day Canada rally that could spill into US 2s if it becomes a reversal rather than noise."
+    ],
+    "confidence": 63
+  },
+  "confidence": 63,
+  "remit": "persistent price, rates and macro trends; reject premature fades",
+  "conflict_synopsis": {
+    "seat": "trend-follower",
+    "primary_trade": "short US_2Y duration",
+    "core_view": "US 2Y, the delivered hike and August CPI tightening bias remain aligned, so continue to pay the front end rather than fade 99th-percentile yields.",
+    "usd_view": "higher",
+    "cad_view": "lower",
+    "aud_view": "neutral",
+    "nzd_view": "lower",
+    "us_rates_view": "higher",
+    "ca_rates_view": "higher",
+    "au_rates_view": "higher",
+    "nz_rates_view": "not_relevant",
+    "risk_view": "neutral",
+    "carry_view": "opposes_trade",
+    "time_horizon": "4-8 weeks",
+    "key_catalyst": "Post-hike US front-end follow-through while August CPI keeps the tightening bias intact.",
+    "key_invalidation": "US 2Y 1-month uptrend reverses or US inflation/labor evidence removes the Fed tightening bias.",
+    "confidence": 63,
+    "conflict_tags": [
+      "US_RATES_UP",
+      "USD_UP",
+      "CAD_DOWN",
+      "NZD_DOWN",
+      "AU_RATES_UP",
+      "CURVE_FLAT"
+    ]
+  },
+  "packet_sha256": "e0da1a0c3331e88bb03e87a4b6cf567c0559de795c55fb93259aaba542e5e37c",
+  "paper_capital": {
+    "risk_put_on": true,
+    "action": "OPEN",
+    "notional_usd": 75000000,
+    "instrument": "US_2Y",
+    "side": "short",
+    "asset_class": "rates",
+    "price": 4.76,
+    "mark_price": 4.76,
+    "price_path": "market_state.rates.US.tenors.2Y.value",
+    "execution_blocked": null,
+    "funding_hurdle_rationale": "This funded seat pays 5% ACT/365 on the full $100m every day whether risk is on or not; the book is an empty $100m seed with last_action HOLD and no overnight review. A persistent US 2Y uptrend of +57bp over both 1m and 3m, still printing +9bp after a delivered hike, is the highest-velocity marked expression in the packet. Staying flat donates the vig with zero offsetting P&L. $75m short US_2Y at the frozen 4.76 mark is large enough for continued front-end backup to matter versus the clock, and below the $100m cap because z_1y 2.84 and consumer softness are real pause risks, not fade signals. Market coupon carry on a short 2Y opposes the trade; the paper funding clock still requires owning the continuation rather than waiting for a prettier entry that the packet does not provide."
+  },
+  "macro_assumptions": {
+    "growth": "below_trend",
+    "risk": "risk_on",
+    "rates": "higher_for_longer",
+    "policy": "hawkish"
+  },
+  "subagent_calls": 0,
+  "subagent_model": null
+}

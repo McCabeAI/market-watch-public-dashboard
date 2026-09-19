@@ -1,0 +1,115 @@
+{
+  "type": "TRADER_ROOM_CONTRIBUTION",
+  "run_id": "tr-20260919T011817Z-ondemand",
+  "round": 1,
+  "agent": "perma-bear",
+  "archetype": "perma-bear",
+  "stance_summary": "Verified housing, labor and sentiment damage in Australia sits against 5-year extreme local yields; the cleanest defensive expression is outright long AU 2Y duration, not short AUD. Markets still price an RBA that can keep financial conditions tight, while the tightening channel is already breaking the housing market. The 5% full-$100m ACT/365 clock forces full notional because being flat does not stop the vig and paper rates P&L only pays on yield decline.",
+  "trade": {
+    "instrument": "AU_2Y",
+    "asset_class": "rates",
+    "expression_comparison": {
+      "rates_candidate": "Long AU_2Y outright duration (executable_marks.rates.AU_2Y at 4.999 as of 2026-09-16; path market_state.rates.AU.tenors.2Y.value). Alternative inferior rates expressions considered: long AU_10Y (same 99.8th 5y percentile but less of the 1m hawkish overshoot) and long AU-US_2Y RV (spread only 25.9bp / 26th pctile 1y, so the discrepancy is the local yield extreme, not the cross-market spread).",
+      "spot_candidate": "Short AUDUSD (executable_marks.spot_fx.AUDUSD at 0.712022367194781 as of 2026-09-18). Housing stress plus the post-hike USD tightening impulse. AUDUSD is only 76.4th pctile 1y / 84.3rd 5y, and the 2Y yield differential is just 25.9bp, so spot is a weaker owner of the yield-vs-housing gap than duration.",
+      "selected": "rates",
+      "rationale": "The discrepancy lives in AU yields versus realized housing/labor damage, not in a stretched AUDUSD print. AU 2Y is at the 99.0th 1y and 99.8th 5y percentile after +39.1bp in 1m, while NSW stamp-duty receipts are -24% y/y, transaction volumes -18%, and Sydney/Melbourne home values more than 7% below peak. Rates is the default when expressions are comparably clean; here duration is cleaner, not merely default. Spot is inferior because AUDUSD is not at a comparable extreme, short AUDNZD would mostly fade already-weak NZD (NZDUSD 12.9th pctile 1y, Q2 GDP beat, India trade deal) rather than own AU housing, and NZ rates are unavailable so an AU/NZ rates-matched FX trade cannot be constructed. AU_2Y has a frozen executable mark, so paper risk can be opened."
+    },
+    "structure": "Outright long AU 2Y government-bond yield / long duration. Paper side=long so P&L is positive if the quoted yield falls (books.py inverts rates marks). Not a curve or RV structure.",
+    "direction": "long duration",
+    "thesis": "FACT: As of 2026-09-16, AU 2Y yields 4.999% (pctile_1y 99.01, pctile_5y 99.80, z_1y 1.67) after +39.1bp 1m and +49.8bp 3m; AU 10Y is 5.348% on the same extreme percentiles. NSW residential stamp-duty receipts fell 24% y/y in August with transaction volumes -18%; Sydney and Melbourne home values are down more than 7% from peak. AU unemployment rose to 4.5% from 4.4%, employment -15.8k m/m, Wage Price Index +3.2% y/y versus +3.4% a year earlier. Headline CPI eased to 3.5% y/y from 3.8%; trimmed mean held at 3.6%. Westpac-Melbourne Institute sentiment fell 5.2% to 84.4 on 2026-09-16. RBA business conditions declined modestly; Q2 GDP was +0.4% q/q / domestic final demand +0.3%. The Fed raised 25bp to 3.75–4.00% on 16 Sep after futures priced a greater-than-90% hike probability; US 2Y is 4.76% as of 18 Sep (+57bp 1m, 99.8th pctile 1y) and US 2s10s is 25bp (0.2nd pctile 1y). AUDUSD is 0.7120 (76.4th/84.3rd pctile). Paper books are empty $100m seeds paying 5% ACT/365 on the full allocation whether risk is on or not. INFERENCE: The RBA tightening channel is already breaking housing, and labor/sentiment confirm the slowdown, but local yields still sit at five-year extremes as if policy can keep tightening. That is a policy-error/slowdown mispricing owned most directly by front-end duration: if housing and labor keep deteriorating, 2Y policy pricing has to reverse first. The fresh Fed hike tightens global financial conditions further into that AU housing break, which is why the trade is timely rather than a stale housing narrative. US duration is the global alternative but US activity is mixed (GDP +1.5% SAAR decelerating, yet ISM Services 55.4 and August retail +1.2%), so the realized damage is cleaner in Australia. UNKNOWN: no RBA OIS path, no post-16 Sep AU yield print (AU rates age_days=3), no options surface, no CME positioning, no broker executable. CONTRARY FACTS that remain in the packet: monthly household spending +1.1% m/m (third consecutive rise), trimmed mean still 3.6%, AU consumer temperature 51.0, and US services/payrolls not in recession.",
+    "mispricing": "AU 2Y at 4.999% is a 99th-percentile 1y and 99.8th-percentile 5y yield after a 39bp 1m selloff, while the housing market is already in a transaction and price downturn and labor is loosening. Market pricing still requires an RBA that can sustain restrictive settings. The gap is fundamentals (housing/labor/cooling headline CPI) versus local yield extremes, not AUDUSD stretch (only 76th pctile 1y) and not AU-US 2Y (25.9bp, 26th pctile 1y).",
+    "why_now": [
+      "16 Sep housing evidence is new transmission, not a known level: NSW stamp-duty receipts -24% y/y and volumes -18% with Sydney/Melbourne values more than 7% below peak, published the same window as Westpac-MI sentiment -5.2% to 84.4.",
+      "The Fed has now actually hiked 25bp to 3.75–4.00% after >90% priced odds, adding a global financial-conditions impulse into an already-breaking AU housing channel.",
+      "AU 2Y remains at the 99.8th 5y percentile even after a -5.5bp 1d dip; the 1m +39.1bp overshoot has not been unwound.",
+      "Empty $100m books start accruing 5% ACT/365 on the full allocation immediately; being flat does not stop the vig, so a defined housing-vs-yield discrepancy should be expressed now rather than waited out."
+    ],
+    "evidence_refs": [
+      "market_state",
+      "mw_20260916_au_housing_tightening",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "temp:AU:labor",
+      "temp:AU:inflation",
+      "temp:AU:consumer",
+      "temp:AU:activity",
+      "rollup:Fed raises 25bp to 3.75–4.00%",
+      "mw_20260916_fomc_hike_pricing",
+      "rollup:August CPI keeps the Fed tightening bias intact",
+      "temp:US:consumer",
+      "temp:US:activity",
+      "research_method",
+      "trader_competition",
+      "paper_books"
+    ],
+    "horizon": "4-8 weeks",
+    "entry": "4.999 from executable_marks.rates.AU_2Y / market_state.rates.AU.tenors.2Y.value as of 2026-09-16",
+    "target": null,
+    "stop": null,
+    "invalidation": "Thesis is wrong if AU housing transactions and prices stabilize while labor stops loosening and trimmed-mean inflation reaccelerates, or if RBA communication/data force another hawkish repricing that takes AU 2Y to a new high alongside a risk-on AUD bid. Timing is wrong, not the mechanism, if US yields keep selling off and drag AU 2Y higher for a few sessions without any improvement in AU housing/labor. Packet has no sourced stop; do not invent one.",
+    "catalysts": [
+      "Further AU housing finance, prices or stamp-duty weakness confirming the 16 Sep downturn.",
+      "AU labor continuing to loosen from unemployment 4.5% and employment -15.8k.",
+      "RBA communications forced to acknowledge the housing/financial-conditions channel after the Fed hike.",
+      "US growth/confidence deterioration (Michigan 47.8 already weak) pulling global duration with AU 2Y."
+    ],
+    "principal_risks": [
+      "Trimmed-mean CPI still 3.6% y/y can keep the RBA hawkish even as housing falls; yields can stay high or rise while the real economy takes the pain.",
+      "AU sovereign yields are as-of 2026-09-16 (age_days=3) versus US yields and FX as-of 2026-09-18; post-FOMC global selloff (US 2Y +9bp 1d, +57bp 1m) may not be in the AU mark, so near-term duration long has stale-entry risk.",
+      "Household spending +1.1% m/m and Q2 GDP +0.4% q/q mean the slowdown is not yet a broad activity collapse.",
+      "Paper rates P&L is simplified (~$10k per bp per $100m) so a 4-8 week hold must deliver a large yield decline to clear the 5% full-allocation clock; if yields only chop, the vig wins.",
+      "NZ official yields unavailable; CME positioning unavailable; no vol surface; no broker executable."
+    ],
+    "confidence": 60
+  },
+  "confidence": 60,
+  "remit": "strongest defensive, slowdown, stress or risk-off macro expression",
+  "conflict_synopsis": {
+    "seat": "perma-bear",
+    "primary_trade": "long AU_2Y duration",
+    "core_view": "Australian housing and labor are already breaking under restrictive settings while AU 2Y still sits at a five-year yield extreme, so the defensive trade is long front-end duration rather than a mechanically short AUD.",
+    "usd_view": "higher",
+    "cad_view": "not_relevant",
+    "aud_view": "lower",
+    "nzd_view": "not_relevant",
+    "us_rates_view": "lower",
+    "ca_rates_view": "not_relevant",
+    "au_rates_view": "lower",
+    "nz_rates_view": "not_relevant",
+    "risk_view": "risk_off",
+    "carry_view": "opposes_trade",
+    "time_horizon": "4-8 weeks",
+    "key_catalyst": "More AU housing/labor deterioration plus RBA forced to recognize the tightening channel after the Fed hike.",
+    "key_invalidation": "Housing and labor stabilize while trimmed-mean inflation reaccelerates, or AU 2Y makes a new high with a risk-on AUD bid.",
+    "confidence": 60,
+    "conflict_tags": [
+      "AU_RATES_DOWN",
+      "AUD_DOWN",
+      "USD_UP",
+      "US_RATES_DOWN",
+      "RISK_OFF",
+      "DURATION_LONG"
+    ]
+  },
+  "packet_sha256": "e0da1a0c3331e88bb03e87a4b6cf567c0559de795c55fb93259aaba542e5e37c",
+  "paper_capital": {
+    "risk_put_on": true,
+    "action": "OPEN",
+    "notional_usd": 100000000,
+    "instrument": "AU_2Y",
+    "side": "long",
+    "asset_class": "rates",
+    "price": 4.999,
+    "mark_price": 4.999,
+    "price_path": "market_state.rates.AU.tenors.2Y.value",
+    "execution_blocked": null,
+    "funding_hurdle_rationale": "The 13 funded seats pay 5.00% simple ACT/365 on the full $100m every day whether flat or deployed, so HOLD still burns vig. Paper rates P&L is inverted yield-point MTM (about $10k per 1bp on $100m), and the book does not credit coupon, so only a yield decline clears the clock. Partial size cannot help because funding is on the full allocation. Full $100m long AU_2Y at the frozen 4.999 mark is therefore required: a 45-80bp 2Y rally over 4-8 weeks, which is inside the 1m/3m move already printed the other way (+39bp/+50bp) from a 99th-percentile starting yield, is the hurdle math for this housing-break thesis. If yields only chop, the 5% clock wins and the seat should not have been flat anyway."
+  },
+  "macro_assumptions": {
+    "growth": "below_trend",
+    "risk": "risk_off",
+    "rates": "easing_cycle",
+    "policy": "dovish"
+  },
+  "subagent_calls": 0,
+  "subagent_model": null
+}

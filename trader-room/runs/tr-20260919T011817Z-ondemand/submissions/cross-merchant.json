@@ -1,0 +1,110 @@
+{
+  "type": "TRADER_ROOM_CONTRIBUTION",
+  "run_id": "tr-20260919T011817Z-ondemand",
+  "round": 1,
+  "agent": "cross-merchant",
+  "archetype": "cross-merchant",
+  "stance_summary": "USD pairs hide the real AU-versus-CA discrepancy. AUDCAD spot is at a 1y high / 5y extreme while the CA-AU 2Y yield gap that supposedly pays you to own AUD versus CAD is only median. Australian housing is transmitting tighter RBA policy after the print, and Canada still has activity, consumer, and energy-pass-through support. Short AUDCAD is the clean non-USD expression; sitting flat still pays 5% ACT/365 on the full $100m.",
+  "trade": {
+    "instrument": "AUDCAD",
+    "asset_class": "spot_fx",
+    "expression_comparison": {
+      "rates_candidate": null,
+      "spot_candidate": "short AUDCAD spot (sell AUD / buy CAD)",
+      "selected": "spot",
+      "rationale": "The intended differential is Australia versus Canada, not versus the dollar. AUDUSD (1y 76th percentile, z 0.88) and USDCAD (1y 74th percentile, z 0.80) both look ordinary because they mix the 16 Sep Fed 25bp hike to 3.75-4.00% into each leg. AUDCAD concentrates the same two currencies at a 1y 99.80th / 5y 99.96th percentile and a 252-observation 100th percentile. CA-AU 2Y at -164.9bp is only the 51st percentile, so a rates RV on CA-AU 2Y would own an unexceptional yield gap and would miss the FX overshoot. Dedicated spot remit; the mispricing lives in the cross."
+    },
+    "structure": "spot FX short AUDCAD (sell AUD, buy CAD)",
+    "direction": "short",
+    "thesis": "VERIFIED FACT: As of 2026-09-18, executable AUDCAD spot is 0.9975768872320596. market_state.fx.pairs.AUDCAD shows pctile_1y 99.80, pctile_5y 99.96, z_1y 1.29, z_5y 2.76, ret_1m +1.95%, ret_5d +0.36%, rv_20d 4.38%, rv_60d 4.91%; the 252-observation AUDCAD screen is percentile 100.0 / z 1.30. AUDUSD spot 0.7120 is only 76th percentile 1y; USDCAD 1.4010 is 74th percentile 1y. AU 2Y 4.999 versus CA 2Y 3.27 leaves CA-AU 2Y at -164.9bp, 51st percentile, z -0.41; CA-AU 5Y -140.1bp (46th percentile) and CA-AU 10Y -142.8bp (30th percentile). The carry screen ranks long AUD / short CAD first among available pairs at 164.9bp over 4.93 vol, and it explicitly is not forward carry. NSW stamp-duty receipts -24% y/y in August, transaction volumes -18%, Sydney and Melbourne values more than 7% below peak. AU trimmed-mean CPI 3.6% y/y unchanged, headline 3.5% from 3.8%; unemployment 4.5% from 4.4%, employment -15.8k; Q2 GDP +0.4% q/q; RBA business conditions modestly weaker; Westpac-MI sentiment -5.2% to 84.4 on 16 Sep. CA headline CPI 3.0% y/y, CPI-trim 1.9%, CPI-median 2.0%; Q2 GDP +0.8% q/q; activity gauge 53.2 versus AU 49.2; consumer 52.5 versus AU 51.0; labor 48.8 with unemployment 6.4% unchanged, employment -42k, wages +2.0% y/y from +2.8%. Fed hiked 25bp to 3.75-4.00% on 16 Sep with futures >90% priced. BoC minutes flag higher energy pass-through; energy shock-absorbers weaken while a Saudi-Oman workaround modestly eased the oil tail. NZ 2Y and AUDNZD/NZDCAD carry are unavailable. Paper books are empty $100m seeds. INFERENCE: Price is treating AUD as unambiguously preferred to CAD at a 5y extreme even though the yield gap that should justify that preference is historically ordinary. That is an FX-versus-rates discrepancy, not a carry windfall. The 16-18 Sep path (AUDCAD 0.9942 to 0.9976) moved against the housing catalyst, so the cross has not already discounted the RBA tightening channel. CAD still has the stronger activity/consumer state and an energy-inflation risk the BoC itself flagged, while AU labor and housing are the legs that should lose the relative-policy argument. USD expressions contaminate both sides with the same Fed hike and therefore look only mid-range. UNKNOWN: packet has no RBA/BoC decision dates, no FX swap/forward points, no option surface, no official NZ yields, and CME_positioning is unavailable. CFTC TFF is USD-pair futures, not AUDCAD; AUD leveraged-fund net is long but only 32nd percentile 1y, CAD leveraged-fund net is still short but covering.",
+    "mispricing": "AUDCAD spot is at a 1-year high and a 5-year extreme (z_5y 2.76) while CA-AU 2Y, the very differential the carry screen uses to prefer long AUD versus CAD, sits at the 51st percentile. The FX cross has overshot an ordinary rates gap. AUDUSD and USDCAD do not show that stretch because USD policy is in both prices.",
+    "why_now": [
+      "AUDCAD continued higher after the 16 Sep housing evidence (0.9941889218595451 on 16 Sep to 0.9975768872320596 on 18 Sep), so the tightening-channel news is not already in the cross.",
+      "The 16 Sep Fed hike makes USD legs the dirty way to own AU-versus-CA: AUDUSD and USDCAD remain mid-range while the cross is maxed on the 252-observation screen.",
+      "Empty $100m books still pay 5.00% ACT/365 on the full allocation every day; the FX-versus-median-yield-gap discrepancy is large enough versus 4.4-4.9% realized vol to put risk on rather than bleed flat."
+    ],
+    "evidence_refs": [
+      "market_state",
+      "research_method",
+      "mw_20260916_au_housing_tightening",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "rollup:BoC minutes flag higher energy pass-through risk",
+      "rollup:Canada August inflation holds at 3%, core stays near 2%",
+      "rollup:Fed raises 25bp to 3.75–4.00%",
+      "mw_20260916_fomc_hike_pricing",
+      "rollup:Energy-market shock absorbers weaken",
+      "mw_20260916_saudi_oman_workaround",
+      "temp:AU:activity",
+      "temp:AU:labor",
+      "temp:AU:inflation",
+      "temp:AU:consumer",
+      "temp:CA:activity",
+      "temp:CA:consumer",
+      "temp:CA:inflation",
+      "temp:CA:labor",
+      "paper_books",
+      "trader_competition"
+    ],
+    "horizon": "6-8 weeks",
+    "entry": "executable_marks.spot_fx.AUDCAD.price 0.9975768872320596 as of 2026-09-18 at market_state.fx.pairs.AUDCAD.spot",
+    "target": null,
+    "stop": null,
+    "invalidation": "Thesis is wrong if Australian housing, labor and activity reaccelerate while Canadian activity/consumer fade and BoC energy-pass-through risk is clearly downgraded, and AUDCAD holds or extends the 18 Sep high on that information. Do not treat a carry-driven grind alone as invalidation; a renewed AU inflation impulse that re-widens CA-AU 2Y into a historically rich gap would also break the FX-versus-rates discrepancy.",
+    "catalysts": [
+      "Further Australian housing, tax-take and financial-conditions prints confirming the RBA tightening channel.",
+      "Canadian energy and headline CPI persistence versus still-soft core, as flagged in BoC minutes.",
+      "Relative AU versus CA activity/labor updates that keep Canada the firmer domestic-demand story without a new Fed-USD shock that only USD pairs would own."
+    ],
+    "principal_risks": [
+      "Carry opposes: 164.9bp 2Y sovereign differential / 60d vol prefers long AUDCAD; the packet does not supply true forward points, so the economic bleed could differ.",
+      "Canadian labor is already soft (employment -42k, wages cooler). If that dominates Q2 GDP and energy risk, BoC easing can lift AUDCAD.",
+      "Australian trimmed-mean inflation is still 3.6% y/y, hotter than Canadian core near 2%. A re-acceleration in AU inflation can re-justify high AUD versus CAD.",
+      "Mean reversion is a yardstick, not a signal. A 5y extreme can persist if housing is treated as known information without a new transmission mechanism.",
+      "Global risk-off or another energy-supply shock can hit CAD as a commodity currency even if the AU housing story is right; Saudi workaround already modestly eased the oil tail."
+    ],
+    "confidence": 58
+  },
+  "confidence": 58,
+  "remit": "cleaner relative-value expressions outside USD",
+  "conflict_synopsis": {
+    "seat": "cross-merchant",
+    "primary_trade": "short AUDCAD",
+    "core_view": "AUDCAD is a 5y extreme while the CA-AU 2Y gap is only median, so the clean AU-versus-CA view is short the cross rather than any USD pair.",
+    "usd_view": "not_relevant",
+    "cad_view": "higher",
+    "aud_view": "lower",
+    "nzd_view": "not_relevant",
+    "us_rates_view": "not_relevant",
+    "ca_rates_view": "higher",
+    "au_rates_view": "lower",
+    "nz_rates_view": "not_relevant",
+    "risk_view": "neutral",
+    "carry_view": "opposes_trade",
+    "time_horizon": "6-8 weeks",
+    "key_catalyst": "Australian housing/financial-conditions evidence keeps transmitting RBA tightening while BoC energy pass-through prevents CAD from being the funding currency the spot extreme implies.",
+    "key_invalidation": "AU housing and labor stabilize or reaccelerate, CA activity/labor deteriorate and energy risk fades, and AUDCAD holds or extends the 18 Sep high on that information.",
+    "confidence": 58,
+    "conflict_tags": [
+      "AUD_DOWN",
+      "CAD_UP",
+      "AUDCAD_SHORT",
+      "CROSS_OVER_USD"
+    ]
+  },
+  "packet_sha256": "e0da1a0c3331e88bb03e87a4b6cf567c0559de795c55fb93259aaba542e5e37c",
+  "paper_capital": {
+    "risk_put_on": true,
+    "action": "OPEN",
+    "notional_usd": 65000000,
+    "instrument": "AUDCAD",
+    "side": "short",
+    "asset_class": "spot_fx",
+    "price": 0.9975768872320596,
+    "mark_price": 0.9975768872320596,
+    "price_path": "market_state.fx.pairs.AUDCAD.spot",
+    "execution_blocked": null,
+    "funding_hurdle_rationale": "The 13 funded seats pay 5.00% simple ACT/365 on the full $100m every day (~$13,699/day; ~$575k over 42 days and ~$822k over 60 days) even when flat. AUDCAD is in executable_marks.spot_fx at 0.9975768872320596, so the book can mark it. Carry proxy of 164.9bp opposes a short, but that CA-AU 2Y gap is only 51st percentile while spot is a 1y high / 5y extreme, so the edge is FX-versus-ordinary-yields rather than fading rich carry. $65m needs roughly a 1.3-1.6% AUDCAD decline over 6-8 weeks to cover vig plus that proxy bleed; 20d RV 4.38% and 60d RV 4.91% make that a plausible ownership of a 100th-percentile 252-observation stretch. Holding cash cannot stop the clock and leaves the discrepancy unowned. Canonical P&L/funding/NAV are not computed here."
+  },
+  "subagent_calls": 0,
+  "subagent_model": null
+}

@@ -1,0 +1,111 @@
+{
+  "type": "TRADER_ROOM_CONTRIBUTION",
+  "run_id": "tr-20260919T011817Z-ondemand",
+  "round": 1,
+  "agent": "vol-convexity",
+  "archetype": "vol-convexity",
+  "stance_summary": "Spot is the wrong instrument for live USDJPY jump risk. A same-week Fed 25bp hike that was already greater-than-90% priced and a BoJ hike to 1.25% produced a JPY-specific +1.41% 1-day / +2.50% 5-day USDJPY spike from a 52nd-percentile 1-year level, with 20-day realized vol 11.04 versus 60-day 9.26. The residual is two-way event risk, not a signed trend. Buy the 1-month USDJPY ATM straddle. Paper stays HOLD because executable_marks.options is empty; this seat will not invent a premium or substitute spot just to feed the 5.00% ACT/365 clock on the full $100m.",
+  "trade": {
+    "instrument": "USDJPY",
+    "asset_class": "options",
+    "expression_comparison": {
+      "rates_candidate": "Pay US 2Y outright duration at 4.76 (market_state.rates.US.tenors.2Y.value as of 2026-09-18; 99.8th 1y percentile, +13bp 5d). That owns already-printed Fed tightening, not the USDJPY jump.",
+      "spot_candidate": "USDJPY spot long or short at 157.88830715532288 (market_state.fx.pairs.USDJPY.spot / executable_marks.spot_fx.USDCAD is a different pair; USDJPY mark path market_state.fx.pairs.USDJPY.spot as of 2026-09-18). Spot is a signed bet after a +1.41% 1d / +2.50% 5d jump from a 52.2nd 1y percentile.",
+      "selected": "options",
+      "rationale": "FACT: USDJPY 20d realized 11.04 versus 60d 9.26 is the widest USD G10 realized vol in this snapshot, while the 1y percentile is only 52.2 — a jump from mid-range, not a stretched directional extreme. FACT: EURUSD was -0.18% 1d while USDJPY was +1.41% 1d, so this is JPY-specific, not a broad USD trend that a dollar-spot book owns. FACT: the BoJ hike to 1.25% was not followed by a clean JPY-up spot response. INFERENCE: the mispricing is expression — residual risk is both tails, so a 1M ATM straddle dominates signed USDJPY spot and dominates paying US 2Y, which only owns the already-hiked US front end. UNKNOWN: no implied vol, skew, or premium exists in executable_marks.options, so options cannot be marked; that blocks paper OPEN, it does not license substituting spot."
+    },
+    "structure": "Buy 1-month USDJPY ATM straddle (equal vega both wings). Convert to a 25-delta JPY-call versus USD-put risk reversal only if a live surface later shows that skew is the cheaper way to own the JPY tail. Strikes, expiry premium, and implied vol are not in this packet and remain null.",
+    "direction": "buy both tails",
+    "thesis": "Causal question: after a same-week Fed 25bp hike that futures had already heavily priced and a BoJ hike to 1.25%, is residual USDJPY risk a signed drift that spot or US duration owns, or a jump whose sign is not identified? FACT: Fed raised 25bp to 3.75–4.00%; rate futures entered that decision with greater-than-90% probability of the hike; August CPI is cited as keeping the tightening bias intact; US 2Y is 4.76 and US 10Y is 5.01, both 99th-percentile 1y. FACT: BoJ raised its policy rate to 1.25%. FACT: USDJPY spot 157.88830715532288 as of 2026-09-18, +1.41% 1d, +2.50% 5d, -0.55% 1m, 20d RV 11.04, 60d RV 9.26, 1y percentile 52.2, 5y percentile 88.6. FACT: EURJPY +1.23% 1d / 20d RV 9.27; AUDJPY +1.50% 1d / 20d RV 9.18 — JPY crosses jumped together. FACT: CFTC TFF JPY as of 2026-09-15 (pre-BoJ) shows open interest 542802 contracts at the 99th 1y percentile; leveraged funds net long JPY 23170 (99th 1y, z 3.71) after +72268 on the week; dealers net short JPY 168570 after -129093 on the week. CME FX options volume/OI is unavailable. INFERENCE: textbook BoJ-hike-JPY-up spot failed in this window; leveraged-fund long JPY into the event was the wrong sign; the next jump can squeeze either tail. That is why a straddle, not USDJPY spot, owns the discrepancy. UNKNOWN: implied versus realized, 25d risk-reversal, and any option premium — none are in the packet, so no cheap-vol claim is made. AUDCAD at 99.8th 1y / 99.96th 5y with 20d RV 4.38 below 60d 4.91 is a stretched-spot / compressing-vol screen, not a vol-expansion trade. USDCAD energy tails (Saudi Oman workaround versus weakening shock absorbers, BoC energy pass-through) are two-way but 1d USDCAD was only +0.11% with modest RV; they are secondary to the live JPY jump.",
+    "mispricing": "The room will be tempted to express the Fed/BoJ week as long or short USDJPY spot, or as paying US 2Y. Spot requires a sign from a 52nd-percentile 1y level after the jump has already printed; US 2Y already sits at the 99.8th 1y percentile, so duration owns known information. The unowned piece is unsigned USDJPY jump risk. Options are the instrument that owns it. Implied vol is UNKNOWN, so this is an expression discrepancy, not a quantified IV-versus-RV edge.",
+    "why_now": [
+      "Fed just raised 25bp to 3.75–4.00% after futures were already greater-than-90% priced; the decision itself is known information, the residual is path and jump.",
+      "BoJ raised policy to 1.25%; USDJPY then printed +1.41% 1d / +2.50% 5d, not a clean JPY-up spot response, while EURUSD was -0.18% 1d.",
+      "USDJPY 20d realized 11.04 versus 60d 9.26 is the widest USD G10 realized vol in this snapshot, from a 52.2nd 1y percentile — jump from mid-range, not a directional extreme.",
+      "JPY futures OI is 99th 1y with leveraged funds 99th-percentile net long JPY as of 15 Sep, before the BoJ print; that positioning can squeeze either tail.",
+      "The 5.00% simple ACT/365 vig on the full $100m continues while flat, but substituting unmarked options with USDJPY spot would own the wrong instrument rather than clear the hurdle."
+    ],
+    "evidence_refs": [
+      "market_state",
+      "research_method",
+      "mw_20260916_fomc_hike_pricing",
+      "rollup:Fed raises 25bp to 3.75–4.00%",
+      "rollup:August CPI keeps the Fed tightening bias intact",
+      "rollup:BoJ raises its policy rate to 1.25%",
+      "rollup:Energy-market shock absorbers weaken",
+      "mw_20260916_saudi_oman_workaround",
+      "rollup:BoC minutes flag higher energy pass-through risk",
+      "mw_20260916_au_housing_tightening",
+      "paper_books",
+      "trader_competition"
+    ],
+    "horizon": "1-3 weeks through residual G10 policy communication, not a multi-month carry hold",
+    "entry": null,
+    "target": null,
+    "stop": null,
+    "invalidation": "Invalid if a live USDJPY implied-vol surface (absent from this packet) already prices 1-month ATM at or above the packet 20-day realized of 11.04, or if USDJPY 20-day realized falls back through the 60-day 9.26 reading with no further G10 policy surprise. Also invalid if the next USDJPY move is absorbed as a one-way trend from a new extreme 1-year percentile rather than two-way event risk.",
+    "catalysts": [
+      "Residual BoJ and Fed communication after the 1.25% and 3.75–4.00% decisions",
+      "Next USDJPY jump versus the already-realized +2.50% 5-day move from a mid-range 1y percentile",
+      "Positioning squeeze in JPY futures (OI 99th 1y; leveraged funds net long JPY 99th 1y as of 2026-09-15)"
+    ],
+    "principal_risks": [
+      "Implied vol, skew, and any option premium are UNKNOWN; a live surface may already be rich versus 11.04 20d realized, in which case even a marked straddle would not be opened",
+      "Theta on a long straddle and the 5.00% ACT/365 full-$100m funding clock both bleed while waiting; HOLD does not stop the vig",
+      "A one-way grind in USDJPY instead of another jump would make the straddle the wrong convexity",
+      "CFTC JPY as of 2026-09-15 is pre-BoJ and may not describe post-hike ownership; CME FX options OI is unavailable",
+      "NZ official yields are unavailable and must not be backfilled; they are irrelevant to this USDJPY options pitch"
+    ],
+    "confidence": 47
+  },
+  "confidence": 47,
+  "remit": "asymmetric optionality; challenge spot expressions",
+  "conflict_synopsis": {
+    "seat": "vol-convexity",
+    "primary_trade": "USDJPY 1M ATM straddle; paper HOLD until option mark",
+    "core_view": "USDJPY residual after the Fed/BoJ week is unsigned jump risk from a mid-range 1y level, so a 1M ATM straddle dominates signed spot and paying US 2Y, but paper cannot OPEN without an option mark.",
+    "usd_view": "neutral",
+    "cad_view": "not_relevant",
+    "aud_view": "not_relevant",
+    "nzd_view": "not_relevant",
+    "us_rates_view": "higher",
+    "ca_rates_view": "not_relevant",
+    "au_rates_view": "not_relevant",
+    "nz_rates_view": "not_relevant",
+    "risk_view": "neutral",
+    "carry_view": "opposes_trade",
+    "time_horizon": "1-3 weeks",
+    "key_catalyst": "Residual BoJ/Fed communication after 1.25% and 3.75–4.00%, plus the next USDJPY jump versus the already-printed +2.50% 5-day move.",
+    "key_invalidation": "A live USDJPY 1M ATM implied at or above 11.04 20d realized, or 20d realized collapsing through 9.26 60d with no further policy surprise.",
+    "confidence": 47,
+    "conflict_tags": [
+      "USDJPY_STRADDLE",
+      "LONG_VOL",
+      "SPOT_INFERIOR",
+      "BOJ_JUMP",
+      "FED_HIKE_PRICED",
+      "OPTIONS_UNMARKABLE",
+      "US_RATES_HIGHER"
+    ]
+  },
+  "packet_sha256": "e0da1a0c3331e88bb03e87a4b6cf567c0559de795c55fb93259aaba542e5e37c",
+  "paper_capital": {
+    "risk_put_on": false,
+    "action": "HOLD",
+    "notional_usd": null,
+    "instrument": "USDJPY",
+    "side": null,
+    "asset_class": "options",
+    "price": null,
+    "mark_price": null,
+    "price_path": null,
+    "execution_blocked": "executable_marks.options is empty. Options prices, implied vol, and option surfaces are not present. vol-convexity may pitch options but cannot OPEN paper risk unless a mark exists. scripts/overnight/books.py cannot mark options. Do not invent a premium or fabricate a substitute spot/rates instrument just to put risk on.",
+    "funding_hurdle_rationale": "This seat borrows the full $100m and pays 5.00% per year simple ACT/365 on that full amount every day; being HOLD / flat does not stop the vig, and the paper book is an empty $100m seed with last_action HOLD and no overnight review. The options expression would be the only structure whose bounded jump payoff can be argued against that clock once a live USDJPY surface exists to compare 1M ATM implied with the packet 20d realized of 11.04. That mark is absent, so OPEN is blocked. Substituting markable USDJPY spot at 157.88830715532288 after a +2.50% 5-day jump from a 52nd-percentile 1y level would put linear risk on an unsigned event and is not an edge that clears the hurdle. Canonical funding, NAV, and rank are not authored here."
+  },
+  "macro_assumptions": {
+    "rates": "higher_for_longer",
+    "policy": "hawkish"
+  },
+  "subagent_calls": 0,
+  "subagent_model": null
+}

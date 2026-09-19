@@ -20,6 +20,118 @@
       "model": "grok-4.6",
       "purpose": "orchestrate-live-trader-room",
       "role": "acp_parent"
+    },
+    {
+      "agent": "perma-bull",
+      "bcId": "bc-5ad9ef2c-b8ed-58dd-93bd-0cdcb15333a6",
+      "model": "grok-4.6",
+      "purpose": "round1-advocate",
+      "role": "standing_advocate",
+      "round": 1
+    },
+    {
+      "agent": "perma-bear",
+      "bcId": "bc-126fbf4c-a541-56b0-beaf-1332449acb26",
+      "model": "grok-4.6",
+      "purpose": "round1-advocate",
+      "role": "standing_advocate",
+      "round": 1
+    },
+    {
+      "agent": "dollar-king",
+      "bcId": "bc-40ebfdad-7790-5280-a2af-4d00fd9acf71",
+      "model": "grok-4.6",
+      "purpose": "round1-advocate",
+      "role": "standing_advocate",
+      "round": 1
+    },
+    {
+      "agent": "cross-merchant",
+      "bcId": "bc-66af600d-d5e5-5a96-b5a5-395eb4417a5f",
+      "model": "grok-4.6",
+      "purpose": "round1-advocate",
+      "role": "standing_advocate",
+      "round": 1
+    },
+    {
+      "agent": "carry-is-king",
+      "bcId": "bc-ca106675-1925-5f86-9f71-526b4c3f7ac3",
+      "model": "grok-4.6",
+      "purpose": "round1-advocate",
+      "role": "standing_advocate",
+      "round": 1
+    },
+    {
+      "agent": "rate-hawk",
+      "bcId": "bc-941261e2-c728-55b7-8a3f-b74e807cdcbf",
+      "model": "grok-4.6",
+      "purpose": "round1-advocate",
+      "role": "standing_advocate",
+      "round": 1
+    },
+    {
+      "agent": "rate-dove",
+      "bcId": "bc-25a0bedb-f497-5ee6-baee-141d6559582c",
+      "model": "grok-4.6",
+      "purpose": "round1-advocate",
+      "role": "standing_advocate",
+      "round": 1
+    },
+    {
+      "agent": "value-guy",
+      "bcId": "bc-e9490436-2274-5bb5-9ec6-bc8130dc4dcd",
+      "model": "grok-4.6",
+      "purpose": "round1-advocate",
+      "role": "standing_advocate",
+      "round": 1
+    },
+    {
+      "agent": "trend-follower",
+      "bcId": "bc-2350d94f-a6e9-56a9-976a-b49391eb7c61",
+      "model": "grok-4.6",
+      "purpose": "round1-advocate",
+      "role": "standing_advocate",
+      "round": 1
+    },
+    {
+      "agent": "mean-reverter",
+      "bcId": "bc-fddf6039-b199-5b3b-ace8-c003fd378c6f",
+      "model": "grok-4.6",
+      "purpose": "round1-advocate",
+      "role": "standing_advocate",
+      "round": 1
+    },
+    {
+      "agent": "positioning-cynic",
+      "bcId": "bc-02317fb6-bd19-589b-9490-9cd2a0b70450",
+      "model": "grok-4.6",
+      "purpose": "round1-advocate",
+      "role": "standing_advocate",
+      "round": 1
+    },
+    {
+      "agent": "catalyst-junkie",
+      "bcId": "bc-efc6f8c1-591d-53d6-83be-10a063f83aba",
+      "model": "grok-4.6",
+      "purpose": "round1-advocate",
+      "role": "standing_advocate",
+      "round": 1
+    },
+    {
+      "agent": "vol-convexity",
+      "bcId": "bc-a9fb6b80-3e9d-5649-a325-6e6f4d3b1503",
+      "model": "grok-4.6",
+      "purpose": "round1-advocate",
+      "role": "standing_advocate",
+      "round": 1
+    },
+    {
+      "agent": "no-trade-skeptic",
+      "bcId": "bc-7a227926-f457-5406-8f89-c73f27a9c356",
+      "model": "grok-4.6",
+      "purpose": "round1-advocate",
+      "role": "standing_advocate",
+      "round": 1
     }
   ],
   "parent": {
@@ -29,11 +141,62 @@
     "role": "acp_parent"
   },
   "round1": {
-    "agents": [],
-    "bcIds": {},
+    "agents": [
+      "perma-bull",
+      "perma-bear",
+      "dollar-king",
+      "cross-merchant",
+      "carry-is-king",
+      "rate-hawk",
+      "rate-dove",
+      "value-guy",
+      "trend-follower",
+      "mean-reverter",
+      "positioning-cynic",
+      "catalyst-junkie",
+      "vol-convexity",
+      "no-trade-skeptic"
+    ],
+    "bcIds": {
+      "carry-is-king": "bc-ca106675-1925-5f86-9f71-526b4c3f7ac3",
+      "catalyst-junkie": "bc-efc6f8c1-591d-53d6-83be-10a063f83aba",
+      "cross-merchant": "bc-66af600d-d5e5-5a96-b5a5-395eb4417a5f",
+      "dollar-king": "bc-40ebfdad-7790-5280-a2af-4d00fd9acf71",
+      "mean-reverter": "bc-fddf6039-b199-5b3b-ace8-c003fd378c6f",
+      "no-trade-skeptic": "bc-7a227926-f457-5406-8f89-c73f27a9c356",
+      "perma-bear": "bc-126fbf4c-a541-56b0-beaf-1332449acb26",
+      "perma-bull": "bc-5ad9ef2c-b8ed-58dd-93bd-0cdcb15333a6",
+      "positioning-cynic": "bc-02317fb6-bd19-589b-9490-9cd2a0b70450",
+      "rate-dove": "bc-25a0bedb-f497-5ee6-baee-141d6559582c",
+      "rate-hawk": "bc-941261e2-c728-55b7-8a3f-b74e807cdcbf",
+      "trend-follower": "bc-2350d94f-a6e9-56a9-976a-b49391eb7c61",
+      "value-guy": "bc-e9490436-2274-5bb5-9ec6-bc8130dc4dcd",
+      "vol-convexity": "bc-a9fb6b80-3e9d-5649-a325-6e6f4d3b1503"
+    },
     "composer_used": 0,
+    "count": 14,
+    "model": "grok-4.6",
+    "subagent_calls": 0,
+    "validated": true
+  },
+  "round2": {
+    "agents": [
+      "catalyst-junkie",
+      "cross-merchant",
+      "dollar-king",
+      "mean-reverter",
+      "perma-bear",
+      "perma-bull",
+      "positioning-cynic",
+      "rate-dove",
+      "rate-hawk",
+      "trend-follower",
+      "value-guy"
+    ],
+    "bcIds": {},
     "count": 0,
     "model": "grok-4.6",
+    "pending": true,
     "subagent_calls": 0,
     "validated": false
   },

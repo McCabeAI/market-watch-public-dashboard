@@ -1,0 +1,120 @@
+{
+  "type": "TRADER_ROOM_CONTRIBUTION",
+  "run_id": "tr-20260919T011817Z-ondemand",
+  "round": 1,
+  "agent": "rate-hawk",
+  "archetype": "rate-hawk",
+  "stance_summary": "Canada’s front end has not priced the same higher-for-longer impulse the Fed just delivered: CA-US 2Y sits at -140bp near the cheap tail of both 1y and 5y distributions while BoC energy pass-through risk, 3% headline CPI, and above-50 Canadian activity/consumer scores argue against the priced BoC-Fed divergence. Short the CA-US 2Y spread; do not chase already 99th-percentile Australian yields.",
+  "remit": "underpriced hawkish policy, higher terminal rates, or higher-rate repricing",
+  "confidence": 59,
+  "packet_sha256": "e0da1a0c3331e88bb03e87a4b6cf567c0559de795c55fb93259aaba542e5e37c",
+  "subagent_calls": 0,
+  "subagent_model": null,
+  "macro_assumptions": {
+    "growth": "above_trend",
+    "risk": "risk_on",
+    "rates": "higher_for_longer",
+    "policy": "hawkish"
+  },
+  "trade": {
+    "instrument": "CA-US_2Y",
+    "asset_class": "rates_rv",
+    "expression_comparison": {
+      "rates_candidate": "Short CA-US_2Y (executable_marks.rates_rv.CA-US_2Y at -140.0 bps as of 2026-09-17): short Canada 2Y duration versus long US 2Y duration so the book owns a rise in the CA-US 2Y yield spread. Alternate outright: short CA_2Y at 3.27 (5y percentile 58.6) if the RV cannot be marked.",
+      "spot_candidate": "Short USDCAD at executable_marks.spot_fx.USDCAD 1.4010471204188482 (as of 2026-09-18) as the FX expression of Canadian policy catch-up / CAD rate-support.",
+      "selected": "rates",
+      "rationale": "The discrepancy is the CA-US 2Y spread at -140.0 bps (1y percentile 3.77, 5y percentile 4.31, z_1y -1.84), not USDCAD (1y percentile 74.0, 5y 87.0). Rates RV owns that gap directly. Short USDCAD would pay the still-large US-CA 2Y differential (US 2Y 4.76 versus CA 2Y 3.27) and would mix oil-supply news that the packet itself splits (Saudi workaround versus weaker shock absorbers). Outright short CA_2Y is a clean hawk but CA 2Y is already 97.8th percentile on 1y; the cross-market gap is the mispricing. Outright short US_2Y is inferior because the 25bp hike was greater-than-90% priced and US 2Y is 99.8th percentile on 1y. NZ rates are unavailable, so NZ is not executable."
+    },
+    "structure": "Short CA-US 2Y government-yield spread (short CA 2Y duration versus long US 2Y duration)",
+    "direction": "short",
+    "thesis": "FACT: The Fed raised 25bp to 3.75-4.00% after rate futures were greater-than-90% priced for that hike; August CPI is described as keeping the tightening bias intact; US core PCE was +0.2% m/m with roughly 2.4% 1m/3m annualized and roughly 3.0% 6m annualized; US unemployment 4.1% unchanged, payrolls +162k, AHE +3.1% y/y; ISM Services 55.4. US 2Y is 4.76 (as of 2026-09-18), +57bp 1m, 99.8th percentile 1y / 88.0th percentile 5y. FACT: Canada August headline CPI held at 3.0% y/y while CPI-trim 1.9% and CPI-median 2.0% stayed near target; BoC minutes flag higher energy pass-through risk; CA real GDP +0.8% q/q versus revised +0.1% in Q1; CA activity score 53.2 and consumer 52.5; CA labor weaker (unemployment 6.4% unchanged, employment -42k, average hourly wages +2.0% y/y versus +2.8%). CA 2Y is 3.27 (as of 2026-09-17), +31bp 1m, 97.8th percentile 1y but only 58.6th percentile 5y. FACT: CA-US_2Y is -140.0 bps as of 2026-09-17, 1y percentile 3.77, 5y percentile 4.31, z_1y -1.84, z_5y -1.51, 1m change -17bp. FACT: Australian 2Y/5Y/10Y yields are all ~99th percentile 1y and 5y while NSW stamp-duty receipts fell 24% y/y and Sydney/Melbourne values are down more than 7% from peak. NZ official yields are unavailable. INFERENCE: Markets have priced a large BoC-Fed divergence that Canadian headline inflation, activity, and the BoC’s own energy-pass-through warning do not justify; the hawkish US impulse is already in US 2Y, so the residual underpriced hawk is Canadian front-end catch-up, not another unpriced US 25bp. The CA 2Y 5y percentile of 58.6 shows Canada has not matched the global higher-for-longer reset on a longer window. AU is the opposite: hawkish pricing is already extreme and the housing channel is biting, so this seat does not short ACGB. UNKNOWN: the full post-hike OIS/hike-path (only the greater-than-90% 25bp probability is in the packet); CA 2Y on 2026-09-18 so the RV mark may not include the latest US 2Y +9bp day; whether energy pass-through actually shows up in Canadian CPI given the Saudi Oman workaround that reduced the extreme oil-supply tail; CME FX positioning.",
+    "mispricing": "CA-US 2Y at -140.0 bps is in the bottom ~4th percentile of both 1y and 5y history (z_1y -1.84, z_5y -1.51) after a further -17bp 1m widening. That spread prices a BoC path far easier than a Fed that just hiked with core PCE still ~3% 6m annualized. Canadian headline CPI still 3.0%, GDP +0.8% q/q, and BoC minutes on energy pass-through are not consistent with that gap. The mispricing is the cross-market 2Y differential, not the absolute US 2Y level (already 99.8th percentile 1y after a pre-priced hike).",
+    "why_now": [
+      "Fed delivered the 25bp hike to 3.75-4.00% that was already greater-than-90% priced; residual hawk risk is the path, and US 2Y has already sold off +57bp over 1m to 4.76.",
+      "CA-US 2Y widened 17bp cheaper for Canada over 1m to -140.0 bps, 3.77th percentile 1y / 4.31st percentile 5y, while CA 2Y is only 58.6th percentile on 5y.",
+      "BoC minutes flag higher energy pass-through risk in the same week energy-market shock absorbers are described as weakening, against Canadian headline CPI still at 3.0%.",
+      "Canadian activity (GDP +0.8% q/q, activity score 53.2, consumer 52.5) is not the demand collapse the 140bp US-CA 2Y gap is pricing.",
+      "Being flat does not stop the 5% ACT/365 vig on the full $100m seed book, which is still HOLD with zero open risk."
+    ],
+    "evidence_refs": [
+      "market_state",
+      "research_method",
+      "trader_competition",
+      "mw_20260916_fomc_hike_pricing",
+      "rollup:Fed raises 25bp to 3.75–4.00%",
+      "rollup:August CPI keeps the Fed tightening bias intact",
+      "rollup:BoC minutes flag higher energy pass-through risk",
+      "rollup:Canada August inflation holds at 3%, core stays near 2%",
+      "rollup:Energy-market shock absorbers weaken",
+      "mw_20260916_saudi_oman_workaround",
+      "mw_20260916_au_housing_tightening",
+      "temp:CA:inflation",
+      "temp:CA:activity",
+      "temp:CA:consumer",
+      "temp:CA:labor",
+      "temp:US:inflation",
+      "temp:US:activity",
+      "temp:US:labor",
+      "temp:US:consumer"
+    ],
+    "horizon": "2-8 weeks through the next Canadian CPI composition prints and BoC communication after the energy-pass-through warning",
+    "entry": "executable_marks.rates_rv.CA-US_2Y price -140.0 bps (path market_state.rate_rv.CA-US_2Y.bps, as_of 2026-09-17)",
+    "target": null,
+    "stop": null,
+    "invalidation": "Thesis fails if CA-US 2Y makes a new 5y cheap extreme because US 2Y keeps selling off without Canadian follow-through, and/or subsequent Canadian CPI-trim/median and labor prints confirm the BoC can ignore energy pass-through (core stays near 2% while employment/wages keep weakening and activity rolls over).",
+    "catalysts": [
+      "Canadian CPI composition versus the BoC energy-pass-through warning",
+      "Next BoC communication after the September 2 deliberations minutes",
+      "US inflation follow-through after August CPI and the 25bp hike, which would keep global front-end pressure on Canada",
+      "Energy-price pass-through if shock-absorber weakening dominates the Saudi Oman workaround"
+    ],
+    "principal_risks": [
+      "Canadian core is already at target (CPI-trim 1.9%, CPI-median 2.0%) and labor is cooling (employment -42k, wages +2.0% y/y); the dove case is that headline 3% is non-core and the BoC can still ease versus the Fed.",
+      "US 2Y can keep selling off after the hike (already +9bp on the 2026-09-18 print); the long US 2Y leg of the RV loses if US hawkishness outruns Canada.",
+      "RV as-of is 2026-09-17 versus US 2Y as-of 2026-09-18; the frozen -140.0 mark may not include the latest US 2Y move.",
+      "Saudi Oman workaround reduced the extreme oil-supply tail, which can cap the energy-pass-through catalyst.",
+      "Paper books mark rates_rv in bps units, so NAV is more sensitive than outright yield tenors; size is therefore smaller than full $100m."
+    ],
+    "confidence": 59
+  },
+  "conflict_synopsis": {
+    "seat": "rate-hawk",
+    "primary_trade": "short CA-US_2Y",
+    "core_view": "Canadian 2Y has not priced the Fed’s delivered hike and BoC energy/activity facts, so CA-US 2Y at -140bp should reprice higher.",
+    "usd_view": "lower",
+    "cad_view": "higher",
+    "aud_view": "not_relevant",
+    "nzd_view": "not_relevant",
+    "us_rates_view": "higher",
+    "ca_rates_view": "higher",
+    "au_rates_view": "lower",
+    "nz_rates_view": "higher",
+    "risk_view": "neutral",
+    "carry_view": "supports_trade",
+    "time_horizon": "2-8 weeks",
+    "key_catalyst": "Canadian CPI composition and BoC follow-through on the energy-pass-through warning after a Fed hike that was already priced.",
+    "key_invalidation": "CA-US 2Y cheapens further on a US-only selloff, or Canadian core/labor confirm the BoC can ignore energy and keep diverging easier.",
+    "confidence": 59,
+    "conflict_tags": [
+      "CA_RATES_UP",
+      "US_RATES_UP",
+      "CAD_UP",
+      "USD_DOWN",
+      "CA_US_2Y_SHORT",
+      "AU_RATES_DOWN"
+    ]
+  },
+  "paper_capital": {
+    "risk_put_on": true,
+    "action": "OPEN",
+    "notional_usd": 25000000,
+    "instrument": "CA-US_2Y",
+    "side": "short",
+    "asset_class": "rates_rv",
+    "price": -140.0,
+    "mark_price": -140.0,
+    "price_path": "market_state.rate_rv.CA-US_2Y.bps",
+    "execution_blocked": null,
+    "funding_hurdle_rationale": "This seat pays 5.00% simple ACT/365 on the full $100m every day whether deployed or not; the book is still a $100m HOLD seed with zero open risk, so remaining flat does not stop the vig. The frozen CA-US_2Y mark is -140.0 bps at the ~4th percentile of 1y and 5y history after a -17bp 1m cheapening, with a 2-8 week catalyst (Canadian CPI composition and BoC energy-pass-through follow-through). Receiving US 2Y 4.76 versus paying CA 2Y 3.27 is carry-supportive while waiting. $25m is below full allocation because rates_rv is marked in bps in the paper engine, which makes NAV more sensitive than outright yield tenors; a partial unwind of the 1.84-sigma 1y cheapness is the intended edge versus sitting in an empty book that still accrues the 5% charge. Target and stop are left null rather than invented."
+  }
+}

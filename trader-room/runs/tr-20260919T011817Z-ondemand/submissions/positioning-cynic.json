@@ -1,0 +1,112 @@
+{
+  "type": "TRADER_ROOM_CONTRIBUTION",
+  "run_id": "tr-20260919T011817Z-ondemand",
+  "round": 1,
+  "agent": "positioning-cynic",
+  "archetype": "positioning-cynic",
+  "stance_summary": "Post-FOMC long-10Y / bull-flatten is already owned in price and holdings; CAD and JPY FX crowding has either covered or already jumped, so the cleaner fade is a US 2s10s steepener against asset-manager 10Y length rather than joining duration longs or chasing spot.",
+  "trade": {
+    "instrument": "US_2s10s",
+    "asset_class": "curve",
+    "expression_comparison": {
+      "rates_candidate": "Short US_2s10s at the frozen 25.0bp mark (executable_marks.rates.US_2s10s / market_state.rates.US.curves.2s10s.bps as of 2026-09-18): a curve steepener that pays 10s versus 2s in paper-book units.",
+      "spot_candidate": "Long USDJPY at the frozen 157.88830715532288 ECB reference (executable_marks.spot_fx.USDJPY) to fade CFTC leveraged-fund JPY net length at the 1y 99th percentile.",
+      "selected": "rates",
+      "rationale": "Rates are cleaner. US 2s10s still sits at the 1y 0.198th percentile after the hike, so the crowded bull-flatten has not unwound in the rates market that asset-manager 10Y length actually owns. USDJPY already printed a +1.4106659832314294% 1d move (screen z 2.726) after the 2026-09-17 BoJ hike, while CFTC is stale as of 2026-09-15 and CME positioning is unavailable, so the FX fade is a post-event chase with unknown current ownership. Outright short US_10Y was considered and rejected as a bad entry: the 10Y yield is already at the 1y 99.603th percentile even though AM length remains crowded."
+    },
+    "structure": "Outright short US 2s10s curve (paper steepener: short 10s vs long 2s in book units).",
+    "direction": "short",
+    "thesis": "VERIFIED: Fed hiked 25bp to 3.75-4.00% on the 2026-09-16 decision after interest-rate futures had priced a greater-than-90% probability of that hike; August CPI is retained as keeping the tightening bias intact. US 2s10s is 25.0bp as of 2026-09-18, 1y percentile 0.198, z_1y -2.447, and -21.0bp over 1m. US 10Y yield is 5.01% at 1y percentile 99.603. CFTC TFF futures-only as of 2026-09-15: asset-manager UST 10Y net long 2634980 contracts (48.997% of open interest), 1y percentile 91.346 / 3y percentile 97.115; leveraged-fund UST 2Y still net short 1294575 but at 1y percentile 93.269 / 3y percentile 97.756 of net (least-short/most-long in that window) with weekly net change only -4096; leveraged-fund CAD still net short 39022 but 1y percentile 99.038 with weekly net covering +16426; leveraged-fund JPY net long 23170, 1y percentile 99.038, z_1y +3.713, weekly net +72268; AUD open interest 493141 at 1y percentile 99.038 / 3y z +5.422. CME daily FX OI is unavailable. Persistent paper books are empty $100m seeds. US temperatures: inflation 52.0, labor 50.2, activity 49.92, consumer 48.5. INFERENCE: the room-consensus post-hike trades—long 10s, bull-flatten, short CAD, long JPY—are either already owned or already covering. Holder composition matters: AM 10Y length is preferred-habitat crowding that has already been paid via the 21bp 1m flatten, so joining those longs is a bad trade; paying outright 10s at the 99.6th yield percentile is a bad entry for a right crowding call. The steepener fades the owned flatten where price is stretched and AM 2Y length is not crowded (AM UST 2Y net percentile 12.5 1y / 24.0 3y). CAD FX shorts have already covered, so USDCAD is the wrong expression of residual Canada-dove pricing. UNKNOWN: CFTC is four days stale and straddles FOMC; post-15 Sep dealer/CTA/options ownership is unobserved; no CGB futures book exists in the packet. FALSIFIER is continued bull-flatten that confirms the AM 10Y easing-path ownership rather than unwinding it.",
+    "mispricing": "Market-vs-market and ownership-vs-price: the post-hike easing/flatten path is in the 1y extreme of US 2s10s (25.0bp, 0.198th percentile) while the holder of that view—asset-manager 10Y net length—is itself at a 3y 97th percentile. That is crowded ownership sitting on an already-completed price move, not a fresh discrepancy.",
+    "why_now": [
+      "The 25bp hike is a known event that was greater-than-90% priced before the decision; known information needs a new transmission path, and the remaining path the crowd owns is bull-flatten/long 10s.",
+      "US 2s10s is still at the 1y flatten extreme (25.0bp) after the 2026-09-18 observation, so the crowded rates expression has not mean-reverted.",
+      "CFTC shows AM 10Y net length still historically elevated as of 2026-09-15 while leveraged-fund 2Y shorts have already covered to a 3y 97.8th percentile of net, exhausting the front-end squeeze bid.",
+      "Being flat does not stop the 5% ACT/365 charge on the full $100m; empty seed books make a defined-invalidation fade of the owned flatten preferable to collecting vig with no risk."
+    ],
+    "evidence_refs": [
+      "market_state",
+      "mw_20260916_fomc_hike_pricing",
+      "rollup:Fed raises 25bp to 3.75–4.00%",
+      "rollup:August CPI keeps the Fed tightening bias intact",
+      "rollup:BoJ raises its policy rate to 1.25%",
+      "rollup:BoC minutes flag higher energy pass-through risk",
+      "temp:US:inflation",
+      "temp:US:labor",
+      "temp:US:activity",
+      "temp:US:consumer",
+      "temp:CA:activity",
+      "paper_books",
+      "trader_competition",
+      "research_method"
+    ],
+    "horizon": "2-6 weeks, through the next US inflation/labor prints that can force AM 10Y length to reassess the easing-path flatten.",
+    "entry": "25.0 bps from executable_marks.rates.US_2s10s (path market_state.rates.US.curves.2s10s.bps, as_of 2026-09-18).",
+    "target": null,
+    "stop": null,
+    "invalidation": "Invalidated if the owned bull-flatten is confirmed rather than unwound: US 2s10s remains pinned at the 1y extreme while asset-manager UST 10Y net length stays historically elevated, or if incoming US data/Fed communication clearly re-opens an easing path those 10Y longs are built to own. Do not invent a stop yield or spread.",
+    "catalysts": [
+      "Follow-through from August CPI / retained Fed tightening-bias narrative into the next US inflation or labor release.",
+      "Any post-FOMC communication that keeps the terminal-rate distribution from collapsing into the crowded long-10Y / flatten book.",
+      "BoC energy pass-through minutes plus Canada activity temperature 53.2 as a reason the Canada-dove/CAD-short complex should not be used as a substitute expression."
+    ],
+    "principal_risks": [
+      "CFTC TFF is age_days 4 and dated 2026-09-15, so FOMC-week repositioning is unobserved; CME volume/OI is unavailable.",
+      "Asset-manager 10Y length is preferred-habitat and can remain sticky, capping a bear-steepener even if the idea is crowded.",
+      "Residual leveraged-fund 10Y shorts are still large in contracts (-1868126, -34.74% of OI) and could squeeze, producing more flatten.",
+      "A genuine growth-break (US activity 49.92, consumer 48.5) would validate the crowded easing-path longs.",
+      "Paper curve P&L uses simplified yield/spread units; this is not a DV01-neutral listed butterfly."
+    ],
+    "confidence": 58
+  },
+  "confidence": 58,
+  "remit": "attack crowded ideas; prefer better ownership asymmetry",
+  "conflict_synopsis": {
+    "seat": "positioning-cynic",
+    "primary_trade": "short US_2s10s",
+    "core_view": "Fade the already-owned post-hike bull-flatten/long-10Y complex with a US 2s10s steepener; do not join duration longs or chase CAD/JPY FX after covering and a 1d USDJPY jump.",
+    "usd_view": "higher",
+    "cad_view": "higher",
+    "aud_view": "lower",
+    "nzd_view": "not_relevant",
+    "us_rates_view": "higher",
+    "ca_rates_view": "higher",
+    "au_rates_view": "higher",
+    "nz_rates_view": "not_relevant",
+    "risk_view": "neutral",
+    "carry_view": "opposes_trade",
+    "time_horizon": "2-6 weeks",
+    "key_catalyst": "Next US inflation/labor print that forces crowded AM 10Y flattening longs to reassess the post-hike easing path.",
+    "key_invalidation": "Bull-flatten remains pinned at the 1y extreme while AM 10Y net length stays historically elevated, or data re-open an easing path those longs own.",
+    "confidence": 58,
+    "conflict_tags": [
+      "US_CURVE_STEEPEN",
+      "US_RATES_HIGHER",
+      "USD_HIGHER",
+      "CAD_HIGHER",
+      "AUD_LOWER",
+      "FADE_AM_10Y_LONGS"
+    ]
+  },
+  "packet_sha256": "e0da1a0c3331e88bb03e87a4b6cf567c0559de795c55fb93259aaba542e5e37c",
+  "paper_capital": {
+    "risk_put_on": true,
+    "action": "OPEN",
+    "notional_usd": 20000000,
+    "instrument": "US_2s10s",
+    "side": "short",
+    "asset_class": "curve",
+    "price": 25.0,
+    "mark_price": 25.0,
+    "price_path": "market_state.rates.US.curves.2s10s.bps",
+    "execution_blocked": null,
+    "funding_hurdle_rationale": "The seat pays 5.00% ACT/365 on the full $100m whether flat or not; empty seed books mean HOLD still burns vig. $20m short US_2s10s is sized to make a partial unwind of the sourced -21.0bp 1m flatten matter versus that clock without using the whole allocation on one curve. Joining crowded long-10Y/flatten has the worse expected payoff because that move is already in the 1y 0.198th percentile. This rationale does not author canonical P&L, funding, NAV, or rank."
+  },
+  "macro_assumptions": {
+    "growth": "below_trend",
+    "rates": "higher_for_longer",
+    "policy": "hawkish"
+  },
+  "subagent_calls": 0,
+  "subagent_model": null
+}
