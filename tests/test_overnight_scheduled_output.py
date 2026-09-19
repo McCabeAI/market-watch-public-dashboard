@@ -80,6 +80,7 @@ class ScheduledOutputTests(unittest.TestCase):
                 run_id=self.run_id,
                 when=AS_OF,
                 dry_run=True,
+                market_state_path=ROOT / "data" / "overnight" / "fixtures" / "market_state.json",
             )
         self.store = OvernightStore(root=ROOT, state_root=self.state_root)
         self.base = self.store.read_artifact(self.run_id, "evidence_snapshot.json")
