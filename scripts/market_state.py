@@ -30,7 +30,12 @@ from scripts.cross_asset_data import collect_cross_assets
 from scripts.market_opportunities import build_opportunities
 from scripts.official_curve_data import collect_official_curves, validate_official_curves
 from scripts.positioning_data import build_positioning, validate_positioning
-from scripts.policy_path_data import collect_policy_paths, validate_policy_paths
+from scripts.policy_path_data import (
+    build_tradable_rate_curves,
+    collect_policy_paths,
+    validate_policy_paths,
+    validate_tradable_rate_curves,
+)
 
 USER_AGENT = (
     "MarketWatch-MarketState/1.0 "
@@ -850,6 +855,12 @@ def build_snapshot(
             },
         }
     )
+    tradable_rate_curves = build_tradable_rate_curves(policy_paths)
+    if include_policy_paths and tradable_rate_curves.get("status") != "ok":
+        for curve_id, block in (tradable_rate_curves.get("curves") or {}).items():
+            if (block or {}).get("status") != "ok":
+                unavailable_sources.append(f"{curve_id}_tradable_curve")
+
     if include_official_curves is None:
         include_official_curves = include_cross_assets
     official_curves = (
@@ -911,6 +922,7 @@ def build_snapshot(
         nz_source["observation_date"] = None
     return {
         "policy_paths": policy_paths,
+        "tradable_rate_curves": tradable_rate_curves,
         "official_curves": official_curves,
         "cross_assets": {"series": cross_meta, "status": "partial" if any(m["status"] != "ok" for m in cross_meta.values()) else "ok"},
         "opportunities": opportunities,
@@ -992,8 +1004,9 @@ def build_snapshot(
                 "US, Canada, Australia and ECB FX are required; a blocked official RBNZ source "
                 "marks NZ rates and NZ-dependent RV spreads unavailable without fabricating data. "
                 "Cross-country spreads use exact common observation dates only. "
-                "Policy-path context uses official overnight benchmarks plus public CORRA/SOFR/AONIA-linked futures and RBA money-market data. "
-                "Official US/Canada/Australia government zero/forward curves provide deterministic paper proxies for derived curve and fwd-fwd expressions. "
+                "Policy-path context uses official overnight benchmarks plus public money-market data. "
+                "The tradable paper rates universe is explicitly SOFR via CME SR3, CORRA via MX CRA, and AONIA via ASX IB; a position stays on its entry curve family until close. "
+                "Official government zero/forward curves are supplemental bond-curve inputs and are not required to manufacture a swap curve. "
                 "CFTC TFF supplies trader-class ownership/crowding context and CME's public volume/open-interest service supplies daily FX futures and aggregate options OI history. "
                 "No historical warehouse is written to GitHub or Supabase."
             ),
@@ -1020,6 +1033,10 @@ def validate_snapshot(s: Mapping) -> None:
         validate_policy_paths(s.get("policy_paths") or {})
     except Exception as exc:
         raise MarketStateError(f"invalid policy_paths block: {exc}") from exc
+    try:
+        validate_tradable_rate_curves(s.get("tradable_rate_curves") or {})
+    except Exception as exc:
+        raise MarketStateError(f"invalid tradable_rate_curves block: {exc}") from exc
     try:
         validate_official_curves(s.get("official_curves") or {})
     except Exception as exc:
