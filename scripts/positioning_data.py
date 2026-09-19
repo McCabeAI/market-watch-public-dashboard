@@ -405,7 +405,7 @@ def fetch_cme_fx_positioning(*, today: date, fetch_bytes: Callable[..., bytes]) 
 
     def one(item: tuple[str, str]) -> tuple[str, dict | None, str | None]:
         ccy, product_id = item
-        url = CME_LAST_TOTALS.format(product_id=product_id)
+        url = CME_LAST_TOTALS.format(product_id=product_id) + "&isProtected"
         try:
             payload = json.loads(
                 fetch_bytes(
@@ -413,6 +413,7 @@ def fetch_cme_fx_positioning(*, today: date, fetch_bytes: Callable[..., bytes]) 
                     timeout=15,
                     retries=2,
                     user_agent=CME_BROWSER_USER_AGENT,
+                    referer=CME_VOLUME_PAGE,
                 ).decode("utf-8")
             )
             return ccy, parse_cme_last_totals(payload, ccy=ccy, today=today), None
@@ -429,7 +430,10 @@ def fetch_cme_fx_positioning(*, today: date, fetch_bytes: Callable[..., bytes]) 
         d = date.fromisoformat(metrics["trade_date"])
         latest = d if latest is None or d > latest else latest
     if not instruments:
-        raise PositioningError("CME LastTotals returned no mapped G10 FX products")
+        raise PositioningError(
+            "CME LastTotals returned no mapped G10 FX products; "
+            f"errors={errors}"
+        )
     status = "partial" if errors else (
         "stale" if any(v["status"] == "stale" for v in instruments.values()) else "ok"
     )
