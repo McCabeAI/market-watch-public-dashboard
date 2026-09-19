@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import Any
 
 from scripts.overnight.clock import isoformat, now_ny
+from scripts.overnight.store import sha256_json
 from scripts.pm.books import apply_decision, empty_books, validate_books
 from scripts.pm.constants import (
     CHATGPT_PM_ID,
@@ -23,9 +24,12 @@ from scripts.pm.constants import (
 )
 from scripts.pm.data_requests import apply_requests, empty_registry
 from scripts.pm.errors import FreshnessError, SchemaError
-from scripts.pm.review_packets import build_all_packets, market_state_from_run
+from scripts.pm.review_packets import (
+    build_all_packets,
+    market_state_from_source,
+    select_daily_pm_source,
+)
 from scripts.pm.store import PMStore
-from scripts.trader_room_public import select_newest_complete_run
 
 DECISION_TYPE = "PM_DECISION"
 
@@ -45,6 +49,22 @@ def _walk_forbidden(value: Any, *, path: str = "$", allow_action_prices: bool = 
         for idx, item in enumerate(value):
             found.extend(_walk_forbidden(item, path=f"{path}[{idx}]", allow_action_prices=allow_action_prices))
     return found
+
+
+def decision_fingerprint(payload: dict[str, Any]) -> str:
+    cleaned = {k: v for k, v in payload.items() if k not in FORBIDDEN_MODEL_STATE_KEYS}
+    return sha256_json(cleaned)
+
+
+def receipt_path(store: PMStore, review_packet_id: str) -> Path:
+    return store.decisions_dir() / f"{review_packet_id}.json"
+
+
+def load_receipt(store: PMStore, review_packet_id: str) -> dict[str, Any] | None:
+    path = receipt_path(store, review_packet_id)
+    if not path.is_file():
+        return None
+    return store.read_json(path)
 
 
 def validate_chatgpt_decision(
@@ -87,10 +107,15 @@ def validate_chatgpt_decision(
     return payload
 
 
-def load_or_empty_books(store: PMStore, *, trader_room_run_id: str | None) -> dict[str, Any]:
+def load_or_empty_books(
+    store: PMStore,
+    *,
+    trader_room_run_id: str | None,
+    overnight_run_id: str | None = None,
+) -> dict[str, Any]:
     if store.books_path().is_file():
         return validate_books(store.read_books())
-    return empty_books(trader_room_run_id=trader_room_run_id)
+    return empty_books(trader_room_run_id=trader_room_run_id, overnight_run_id=overnight_run_id)
 
 
 def load_or_empty_registry(store: PMStore) -> dict[str, Any]:
@@ -99,27 +124,71 @@ def load_or_empty_registry(store: PMStore) -> dict[str, Any]:
     return empty_registry()
 
 
+def _matching_receipt(store: PMStore, payload: dict[str, Any]) -> dict[str, Any] | None:
+    packet_id = payload.get("review_packet_id")
+    if not isinstance(packet_id, str) or not packet_id:
+        return None
+    stored = load_receipt(store, packet_id)
+    if not stored:
+        return None
+    receipt = stored.get("receipt") if isinstance(stored, dict) else None
+    if not isinstance(receipt, dict):
+        return None
+    if receipt.get("review_packet_id") != packet_id:
+        return None
+    if receipt.get("review_packet_sha256") != payload.get("review_packet_sha256"):
+        return None
+    if receipt.get("decision_fingerprint") != decision_fingerprint(payload):
+        raise SchemaError(
+            "a different ChatGPT decision was already applied for this review packet; refusing to mutate again"
+        )
+    return stored
+
+
 def apply_chatgpt_decision(
     store: PMStore,
     payload: dict[str, Any],
     *,
     write: bool = True,
 ) -> dict[str, Any]:
-    run_dir = select_newest_complete_run(store.root)
-    if run_dir is None:
-        raise SchemaError("no complete valid Trader Room run for ChatGPT ingest")
-    books = load_or_empty_books(store, trader_room_run_id=run_dir.name)
+    existing = _matching_receipt(store, payload)
+    if existing is not None:
+        books = store.read_books() if store.books_path().is_file() else existing.get("books")
+        registry = store.read_requests() if store.requests_path().is_file() else existing.get("registry")
+        receipt = dict(existing["receipt"])
+        receipt["already_applied"] = True
+        return {
+            "books": books,
+            "registry": registry,
+            "packets": {},
+            "receipt": receipt,
+            "already_applied": True,
+        }
+
+    source = select_daily_pm_source(store.root, store.state_root, allow_trader_room_fallback=True)
+    books = load_or_empty_books(
+        store,
+        trader_room_run_id=source.trader_room_run_id,
+        overnight_run_id=source.overnight_run_id,
+    )
     registry = load_or_empty_registry(store)
-    packets = build_all_packets(root=store.root, books=books, registry=registry, run_dir=run_dir)
+    packets = build_all_packets(
+        root=store.root,
+        state_root=store.state_root,
+        books=books,
+        registry=registry,
+        source=source,
+    )
     packet = packets[CHATGPT_PM_ID]
     payload = validate_chatgpt_decision(payload, packet=packet)
-    market_state = market_state_from_run(run_dir)
+    market_state = market_state_from_source(source)
+    run_id = source.overnight_run_id or source.trader_room_run_id
     updated = apply_decision(
         books,
         payload,
         pm_id=CHATGPT_PM_ID,
         market_state=market_state,
-        run_id=run_dir.name,
+        run_id=run_id,
         evidence_cutoff=packet.get("evidence_cutoff"),
         review_packet_id=packet.get("review_packet_id"),
         review_packet_sha256=packet.get("review_packet_sha256"),
@@ -129,18 +198,35 @@ def apply_chatgpt_decision(
         payload.get("future_data_requests") or [],
         pm_id=CHATGPT_PM_ID,
     )
-    packets = build_all_packets(root=store.root, books=updated, registry=registry, run_dir=run_dir)
+    packets = build_all_packets(
+        root=store.root,
+        state_root=store.state_root,
+        books=updated,
+        registry=registry,
+        source=source,
+    )
     updated = _attach_packet_pointers(updated, packets)
+    if source.overnight_run_id:
+        updated["overnight_run_id"] = source.overnight_run_id
     receipt = {
         "schema_version": SCHEMA_VERSION,
         "type": "PM_CHATGPT_APPLY_RECEIPT",
         "pm_id": CHATGPT_PM_ID,
         "as_of": isoformat(now_ny()),
-        "trader_room_run_id": run_dir.name,
+        "source": source.kind,
+        "overnight_run_id": source.overnight_run_id,
+        "trader_room_run_id": source.trader_room_run_id,
         "review_packet_id": packet["review_packet_id"],
         "review_packet_sha256": packet["review_packet_sha256"],
+        "evidence_cutoff": packet.get("evidence_cutoff"),
+        "decision_fingerprint": decision_fingerprint(payload),
         "decision_status": updated["pms"][CHATGPT_PM_ID]["decision_status"],
         "gross_utilization_usd": updated["pms"][CHATGPT_PM_ID]["gross_utilization_usd"],
+        "already_applied": False,
+    }
+    record = {
+        "decision": {k: v for k, v in payload.items() if k not in FORBIDDEN_MODEL_STATE_KEYS},
+        "receipt": receipt,
     }
     if write:
         store.write_books(updated)
@@ -150,18 +236,13 @@ def apply_chatgpt_decision(
         from scripts.pm.public import write_public_state
 
         write_public_state(store, updated, registry)
-        store.write_json(
-            store.decisions_dir() / f"{run_dir.name}-chatgpt.json",
-            {
-                "decision": {k: v for k, v in payload.items() if k not in FORBIDDEN_MODEL_STATE_KEYS},
-                "receipt": receipt,
-            },
-        )
+        store.write_json(receipt_path(store, packet["review_packet_id"]), record)
     return {
         "books": updated,
         "registry": registry,
         "packets": packets,
         "receipt": receipt,
+        "already_applied": False,
     }
 
 
@@ -192,14 +273,45 @@ def main(argv: list[str] | None = None) -> int:
     payload = json.loads(args.input.read_text(encoding="utf-8"))
     store = PMStore(root=args.root, state_root=args.state_root)
     if args.command == "validate":
-        run_dir = select_newest_complete_run(store.root)
-        if run_dir is None:
-            raise SchemaError("no complete valid Trader Room run")
-        books = load_or_empty_books(store, trader_room_run_id=run_dir.name)
+        existing = _matching_receipt(store, payload)
+        if existing is not None:
+            print(
+                json.dumps(
+                    {
+                        "status": "already_applied",
+                        "pm_id": CHATGPT_PM_ID,
+                        "review_packet_id": payload.get("review_packet_id"),
+                        "already_applied": True,
+                    }
+                )
+            )
+            return 0
+        source = select_daily_pm_source(store.root, store.state_root, allow_trader_room_fallback=True)
+        books = load_or_empty_books(
+            store,
+            trader_room_run_id=source.trader_room_run_id,
+            overnight_run_id=source.overnight_run_id,
+        )
         registry = load_or_empty_registry(store)
-        packets = build_all_packets(root=store.root, books=books, registry=registry, run_dir=run_dir)
+        packets = build_all_packets(
+            root=store.root,
+            state_root=store.state_root,
+            books=books,
+            registry=registry,
+            source=source,
+        )
         validate_chatgpt_decision(payload, packet=packets[CHATGPT_PM_ID])
-        print(json.dumps({"status": "valid", "pm_id": CHATGPT_PM_ID, "review_packet_id": packets[CHATGPT_PM_ID]["review_packet_id"]}))
+        print(
+            json.dumps(
+                {
+                    "status": "valid",
+                    "pm_id": CHATGPT_PM_ID,
+                    "review_packet_id": packets[CHATGPT_PM_ID]["review_packet_id"],
+                    "source": source.kind,
+                    "overnight_run_id": source.overnight_run_id,
+                }
+            )
+        )
         return 0
     result = apply_chatgpt_decision(store, payload, write=True)
     print(json.dumps(result["receipt"], sort_keys=True))

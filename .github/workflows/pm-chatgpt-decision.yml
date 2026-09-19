@@ -1,4 +1,4 @@
-name: Validate ChatGPT PM Decision
+name: Apply ChatGPT PM Decision
 
 on:
   pull_request:
@@ -7,12 +7,18 @@ on:
       - "scripts/pm/**"
       - "docs/CHATGPT_PM_DECISION_INGEST.md"
       - "data/pm/schema/chatgpt_decision.v1.json"
+      - ".github/workflows/pm-chatgpt-decision.yml"
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+    paths:
+      - "data/pm/inbox/chatgpt_decision.json"
 
 permissions:
   contents: read
 
 jobs:
   validate:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -20,12 +26,99 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
-      - name: Validate inbox decision when present
+      - name: Validate contracts and inbox decision when present
         run: |
           set -euo pipefail
-          PYTHONPATH=. python -m unittest tests.test_pm_ingest tests.test_pm_books -v
+          PYTHONPATH=. python -m unittest tests.test_pm_ingest tests.test_pm_books tests.test_pm_overnight_packets -v
           if [ -f data/pm/inbox/chatgpt_decision.json ]; then
             PYTHONPATH=. python scripts/pm/chatgpt_ingest.py validate --input data/pm/inbox/chatgpt_decision.json
           else
             echo "No ChatGPT decision in the inbox; schema/tests only."
           fi
+
+  apply:
+    if: github.event_name == 'pull_request_target'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout trusted base
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Verify data-only ChatGPT decision PR
+        id: inspect
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          BASE_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          [ "$HEAD_REPO" = "$BASE_REPO" ] || { echo "::error::ChatGPT decision must originate in the target repository"; exit 1; }
+          mapfile -t FILES < <(gh api "repos/$REPO/pulls/$PR_NUMBER/files?per_page=100" --paginate --jq '.[].filename')
+          INBOX="data/pm/inbox/chatgpt_decision.json"
+          ALLOW_RE='^data/pm/(inbox/chatgpt_decision\.json|books/|review_packets/|public/|data_requests/|decisions/)'
+          for FILE in "${FILES[@]}"; do
+            [[ "$FILE" =~ $ALLOW_RE ]] || { echo "::error::Unexpected ChatGPT decision path: $FILE"; exit 1; }
+          done
+          printf '%s\n' "${FILES[@]}" | grep -Fxq "$INBOX" || {
+            echo "::error::ChatGPT decision PR must include $INBOX"; exit 1;
+          }
+          FILE="$INBOX"
+          mkdir -p /tmp/mw-chatgpt
+          gh api "repos/$REPO/contents/$FILE?ref=$HEAD_SHA" --jq '.content' \
+            | tr -d '\n' | base64 -d > /tmp/mw-chatgpt/chatgpt_decision.json
+          echo "file=$FILE" >> "$GITHUB_OUTPUT"
+
+      - name: Validate against current trusted packet
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -m unittest tests.test_pm_ingest tests.test_pm_books tests.test_pm_overnight_packets -v
+          PYTHONPATH=. python scripts/pm/chatgpt_ingest.py validate --input /tmp/mw-chatgpt/chatgpt_decision.json
+
+      - name: Apply trusted ingest and persist generated state
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python scripts/pm/chatgpt_ingest.py apply --input /tmp/mw-chatgpt/chatgpt_decision.json
+          mkdir -p /tmp/mw-chatgpt-generated/pm
+          for name in books review_packets public data_requests decisions; do
+            if [ -e "data/pm/$name" ]; then
+              cp -a "data/pm/$name" "/tmp/mw-chatgpt-generated/pm/$name"
+            fi
+          done
+
+      - name: Commit trusted generated state to the decision branch
+        env:
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        run: |
+          set -euo pipefail
+          git reset --hard
+          git fetch origin "$HEAD_REF"
+          git checkout -B "$HEAD_REF" "origin/$HEAD_REF"
+          mkdir -p data/pm
+          for name in books review_packets public data_requests decisions; do
+            if [ -e "/tmp/mw-chatgpt-generated/pm/$name" ]; then
+              rm -rf "data/pm/$name"
+              cp -a "/tmp/mw-chatgpt-generated/pm/$name" "data/pm/$name"
+            fi
+          done
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/pm/books data/pm/review_packets data/pm/public data/pm/data_requests data/pm/decisions
+          if git diff --cached --quiet; then
+            echo "ChatGPT apply is idempotent; generated state already present."
+            exit 0
+          fi
+          git commit -m "chore: apply trusted ChatGPT PM decision"
+          git push origin "HEAD:$HEAD_REF"

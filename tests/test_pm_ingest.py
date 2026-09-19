@@ -56,15 +56,20 @@ class ChatGPTIngestTests(unittest.TestCase):
             "review_packet_sha256",
             "evidence_cutoff",
             "market_state",
-            "trader_room",
             "prior_book",
             "allowable_actions",
             "unresolved_future_data_requests",
+            "source",
         ):
             self.assertIn(required, self.packet)
         self.assertEqual(self.packet["pm_id"], "chatgpt")
         self.assertEqual(self.packet["prior_book"]["pm_id"], "chatgpt")
         self.assertFalse(self.packet["independence"]["sees_other_current_pm_decisions"])
+        self.assertIn(self.packet["source"], {"overnight_scheduled_review", "on_demand_trader_room_fallback"})
+        if self.packet["source"] == "on_demand_trader_room_fallback":
+            self.assertIn("trader_room", self.packet)
+        else:
+            self.assertIn("overnight_review", self.packet)
 
     def tearDown(self) -> None:
         self.tmp.cleanup()
@@ -89,6 +94,59 @@ class ChatGPTIngestTests(unittest.TestCase):
         with self.assertRaises(FreshnessError):
             validate_chatgpt_decision(_decision(self.packet, review_packet_id="prp-old"), packet=self.packet)
 
+    def test_stale_apply_does_not_mutate_state(self) -> None:
+        books_before = json.dumps(self.store.read_books(), sort_keys=True)
+        requests_before = json.dumps(self.store.read_requests(), sort_keys=True)
+        public_before = json.dumps(self.store.read_json(self.store.public_path()), sort_keys=True)
+        with self.assertRaises(FreshnessError):
+            apply_chatgpt_decision(
+                self.store,
+                _decision(self.packet, review_packet_sha256="deadbeef"),
+                write=True,
+            )
+        self.assertEqual(json.dumps(self.store.read_books(), sort_keys=True), books_before)
+        self.assertEqual(json.dumps(self.store.read_requests(), sort_keys=True), requests_before)
+        self.assertEqual(json.dumps(self.store.read_json(self.store.public_path()), sort_keys=True), public_before)
+        if self.store.decisions_dir().is_dir():
+            self.assertEqual(list(self.store.decisions_dir().glob("*.json")), [])
+
+    def test_valid_decision_applies_exactly_once_and_replay_is_idempotent(self) -> None:
+        first = apply_chatgpt_decision(
+            self.store,
+            _decision(
+                self.packet,
+                actions=[{"action": "OPEN", "instrument": "USDCAD", "side": "long", "notional_usd": 10_000_000, "asset_class": "spot_fx"}],
+            ),
+            write=True,
+        )
+        self.assertFalse(first["already_applied"])
+        book = first["books"]["pms"]["chatgpt"]
+        self.assertEqual(len(book["positions"]), 1)
+        self.assertEqual(book["positions"][0]["instrument"], "USDCAD")
+        self.assertEqual(book["positions"][0]["entry_price"], book["positions"][0]["mark_price"])
+        self.assertNotEqual(book["positions"][0]["entry_price"], 9.99)
+        opens = [row for row in book["history"] if row.get("action") == "OPEN"]
+        self.assertEqual(len(opens), 1)
+        self.assertEqual(len(first["registry"]["requests"]), 1)
+        self.assertEqual(first["registry"]["requests"][0]["repeat_count"], 1)
+        public = self.store.read_json(self.store.public_path())
+        self.assertEqual(public["pms"][0]["decision_status"], book["decision_status"])
+
+        replay = apply_chatgpt_decision(
+            self.store,
+            _decision(
+                self.packet,
+                actions=[{"action": "OPEN", "instrument": "USDCAD", "side": "long", "notional_usd": 10_000_000, "asset_class": "spot_fx"}],
+            ),
+            write=True,
+        )
+        self.assertTrue(replay["already_applied"])
+        replayed = replay["books"]["pms"]["chatgpt"]
+        self.assertEqual(len(replayed["positions"]), 1)
+        self.assertEqual(len([row for row in replayed["history"] if row.get("action") == "OPEN"]), 1)
+        self.assertEqual(len(replay["registry"]["requests"]), 1)
+        self.assertEqual(replay["registry"]["requests"][0]["repeat_count"], 1)
+
     def test_malformed_and_model_authored_state_rejected(self) -> None:
         with self.assertRaises(SchemaError):
             validate_chatgpt_decision({"pm_id": "chatgpt"}, packet=self.packet)
@@ -108,6 +166,18 @@ class ChatGPTIngestTests(unittest.TestCase):
         self.assertEqual(len(registry["requests"]), 1)
         self.assertEqual(registry["requests"][0]["repeat_count"], 2)
         self.assertEqual(len(registry["requests"][0]["attributions"]), 2)
+
+
+    def test_chatgpt_workflow_is_trusted_apply_not_validate_only(self) -> None:
+        workflow = (REPO / ".github" / "workflows" / "pm-chatgpt-decision.yml").read_text(encoding="utf-8")
+        self.assertIn("pull_request_target", workflow)
+        self.assertIn("chatgpt_ingest.py apply", workflow)
+        self.assertIn("chatgpt_ingest.py validate", workflow)
+        self.assertIn("github.event.pull_request.base.sha", workflow)
+        self.assertIn("data/pm/inbox/chatgpt_decision.json", workflow)
+        self.assertIn("chore: apply trusted ChatGPT PM decision", workflow)
+        self.assertNotIn("CURSOR_API_KEY", workflow)
+        self.assertNotIn("agent -p", workflow)
 
 
 if __name__ == "__main__":

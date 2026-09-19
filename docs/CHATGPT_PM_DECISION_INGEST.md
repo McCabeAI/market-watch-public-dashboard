@@ -56,10 +56,15 @@ Stale packet hash, wrong packet id, malformed JSON, or model-authored canonical 
 
 ## Apply path
 
-1. Select the newest complete valid Trader Room run.
+`.github/workflows/pm-chatgpt-decision.yml` is the unattended Git-native path. It runs trusted code from the PR base, downloads only `data/pm/inbox/chatgpt_decision.json`, and never executes model-authored code.
+
+1. Select the current daily PM source (newest successful overnight 14-seat review; explicit Trader Room fallback only when no overnight review exists).
 2. Rebuild/read the current ChatGPT review packet.
-3. Validate id/hash/cutoff/freshness.
+3. Validate id/hash/cutoff/freshness against that packet.
 4. Hydrate OPEN/ADD/REDUCE/HEDGE/CLOSE at packet mids.
 5. Enforce supported instruments, $1bn gross cap, curve-family lock, swinger-inapplicable HEDGE rule (N/A here).
 6. Mutate only `pms.chatgpt`.
-7. Persist provenance, history, refreshed marks, public JSON, and any future data requests.
+7. Persist canonical PM books, decision receipt/history, review packet refresh, public JSON, and any future data requests.
+8. Commit those trusted generated files to the decision branch and leave the PR mergeable.
+
+A receipt keyed by `review_packet_id` + `review_packet_sha256` + decision fingerprint makes apply idempotent. Workflow reruns do not double-apply OPEN/ADD or increment a data request. Stale or wrong packet hash fails closed with no state mutation. Model-authored P&L, canonical marks, and book state are rejected.
