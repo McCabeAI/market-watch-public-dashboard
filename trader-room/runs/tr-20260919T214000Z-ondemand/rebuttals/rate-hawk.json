@@ -1,0 +1,41 @@
+{
+  "type": "TRADER_ROOM_REBUTTAL",
+  "run_id": "tr-20260919T214000Z-ondemand",
+  "round": 2,
+  "agent": "rate-hawk",
+  "opponents": [
+    "carry-is-king",
+    "dollar-king",
+    "mean-reverter",
+    "perma-bear",
+    "rate-dove",
+    "trend-follower",
+    "perma-bull",
+    "value-guy"
+  ],
+  "own_original_ref": "submissions/rate-hawk.json",
+  "holes_in_opposing_case": [
+    "perma-bull’s USD-lower / CAD-higher case is a NZDUSD percentile-plus-narrative trade with no NZ policy path. FACT: NZ rates are unavailable; NZ Inflation is 80 versus US 72; Q2 GDP is 0.2% q/q, a slow beat not a boom. A 5y-cheap NZDUSD cannot fade a delivered Fed hike into US Labor 75 / Inflation 72 / Activity 69 / Consumer 74, and an India FTA does not reprice CORRA 2.29 versus SOFR 3.85 into a CAD bid.",
+    "value-guy’s CAD-higher close is the same CA-US_2Y left-tail screen plus an explicit us_rates_view of lower. Receiving US 2Y after SOFR has already jumped to 3.85 and SR3 still peaks at 4.755 fights the live US path. The 3.8th/4.3rd percentile of CA-US_2Y is a discovery flag, not a closing mechanism. CAD strength would need either US easing the strip does not first-print, or a CORRA overnight catch-up that Labor 38 and core-near-2% have not started (Dec 1m CORRA still 2.58).",
+    "carry-is-king agrees USD higher / CAD lower but finances it by receiving US 2Y. A 149bp yield gap is not permission to fade the hiking center. Dec CORRA 2.58 versus SR3Z6 4.32 is the policy gap; harvesting US carry is the opposite of paying the 4.755 terminal I own.",
+    "rate-dove and perma-bear correctly note Canada’s slack, which supports CAD lower versus the US, not CAD higher. Their receive-CORRA trades do not falsify USD higher. rate-dove’s us_rates_view of neutral after a hike into 72/75/69/74 is the hole: the residual is the US terminal and 2028 fade, not a Canadian easing cycle that would lift CAD.",
+    "dollar-king’s long USDCAD restates the same policy gap in spot. EURUSD/USDCHF having ‘already moved’ and USDCAD at the 74th percentile are not the mispricing. The priced object is SR3U7 4.755 then 2028 easing. Spot mixes oil and the BoJ hike to 1.25%; it does not isolate underpriced US restraint.",
+    "mean-reverter’s AONIA fade, if right, is an Australia housing-channel story. It does not make USD lower and does not neutralize US rates after the delivered hike. us_rates_view of neutral is the leak versus still-hot US gauges.",
+    "trend-follower pays the same SOFR_2027-09 contract. That is not an opposing USD/CAD case. I do not treat 99th-percentile UST yields as the thesis; the thesis remains the SOFR path."
+  ],
+  "trade_change": "unchanged",
+  "revised_trade": null,
+  "attack": [
+    "Strongest opposing USD claim is perma-bull long NZDUSD. It converts a missing NZ rates book, a 0.2% q/q GDP beat, an FTA headline, and a cheap NZDUSD percentile into USD down. That skips the mandatory policy-path step. NZ Inflation 80 is hawkish local heat, not a reason to fade SOFR 3.85 / SR3U7 4.755. Reduced oil-supply tail via the Saudi Oman workaround also does not cap a US hiking residual.",
+    "Strongest opposing CAD claim is value-guy (with perma-bull) that CAD should rise as CA-US_2Y mean-reverts. Convergence via receiving US 2Y is the wrong leg: US 2Y 4.76 already sits on the SR3 terminal while overnight SOFR has only just printed 3.85 and 2028 still eases. BoC energy pass-through is weaker, not stronger, after extra Saudi crude via Oman. Labor 38 versus US 75 is the structural gap they themselves flag as a possible new regime; that is an argument for CAD staying cheaper, not for buying CAD.",
+    "Seats that share USD-up / CAD-down still leak on the rates mechanism. carry-is-king and value-guy receive US duration. rate-dove leaves US rates neutral. Those positions need the US hiking residual to be finished. The locked strip is not finished: 90.5bp remaining to 4.755 and a 2028 fade to 4.62."
+  ],
+  "defense": [
+    "The primary trade remains long implied-rate SOFR_2027-09 at the packet 4.755 mid. Direct conflicts are currency views, not that contract. USD higher and CAD lower are residuals of a still-hot US reaction function versus CORRA 2.29 / CA Labor 38 / core near 2%. They are not a spot-FX mandate; expression comparison already rejected USDJPY because of the BoJ hike and the 1.41% one-day jump.",
+    "FACT: Fed hiked to 3.75-4.00%; SOFR 3.85 on 2026-09-17; US gauges 72/75/69/74; SR3 peaks at 4.755 then eases. INFERENCE: inflation persistence keeps terminal and restraint higher than that strip. UNKNOWN: positioning. I will not switch into USDCAD, NZDUSD, or CA-US_2Y to ‘win’ a currency tag.",
+    "Uncertainty preserved: Canada activity 66 and headline CPI 3% plus BoC energy language mean CA rates could still grind higher along the already-priced CRA path. That would not flip CAD above USD while SOFR remains 156bp over CORRA and US labor stays 75 versus 38. If CRA is later pulled, CAD goes weaker, which is not a loss for the USD-higher / CAD-lower residual.",
+    "Concession: the USD-higher / CAD-lower tags, and the SOFR_2027-09 pay, would be wrong if SR3U7 implied rate locks back through the packet 6m SR3H7 mid of 4.58, or if retained US Labor and Inflation gauges both roll over and validate the 2028 fade. A NZDUSD bounce after a GDP beat does not concede the USD view while NZ policy path is missing. A CA-US_2Y percentile bounce does not concede CAD higher while overnight CORRA is 2.29 and the US strip is still hiking."
+  ],
+  "packet_sha256": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
+  "subagent_calls": 0
+}

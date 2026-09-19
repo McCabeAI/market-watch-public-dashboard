@@ -1,5 +1,447 @@
 {
-  "events": [],
+  "events": [
+    {
+      "actions": [
+        {
+          "action": "PROPOSE",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "NZDUSD",
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": null,
+          "result": null,
+          "side": null
+        }
+      ],
+      "at": "2026-09-19T18:00:04.403075-04:00",
+      "conviction": 58,
+      "decision_fingerprint": null,
+      "event_id": "jde-4222623837464d1c",
+      "funding_view": null,
+      "invalidation": "Thesis is wrong if subsequent NZ activity confirms the labor/consumer recession (activity gauge moving deeper through 47 toward the labor 32 reading) and the GDP beat is revised away or treated as a one-off, or if AUDNZD keeps making new extremes because NZD is the global risk-off residual rather than an idiosyncratic cheap cyclical. Also invalid if the oil-supply tail re-opens and dominates the Saudi workaround, producing a broad USD bid that takes AUDUSD and NZDUSD down together.",
+      "kind": "TRADER_ROOM_PROPOSAL",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "de029e25656f54c1546c74d96a76b0e292377deecf61bed3ec66d1557775b1aa",
+      "outcome_links": [],
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "payload": {
+        "conflict_synopsis": {
+          "au_rates_view": "neutral",
+          "aud_view": "neutral",
+          "ca_rates_view": "higher",
+          "cad_view": "higher",
+          "carry_view": "neutral",
+          "confidence": 58,
+          "conflict_tags": [
+            "NZD_UP",
+            "USD_DOWN",
+            "RISK_ON",
+            "CAD_UP"
+          ],
+          "core_view": "NZDUSD is still pricing an NZ recession after a GDP beat and India FTA, so the cheapest cyclical is the cleanest pro-growth expression.",
+          "key_catalyst": "NZ GDP beat plus India FTA transmission against a still-offered NZDUSD.",
+          "key_invalidation": "NZ activity confirms the labor recession or NZD sells off with AUD in a renewed oil/USD shock.",
+          "nz_rates_view": "not_relevant",
+          "nzd_view": "higher",
+          "primary_trade": "long NZDUSD",
+          "risk_view": "risk_on",
+          "seat": "perma-bull",
+          "time_horizon": "4-12 weeks",
+          "us_rates_view": "higher",
+          "usd_view": "lower"
+        },
+        "contribution": {
+          "agent": "perma-bull",
+          "archetype": "global macro growth and risk-on optimist",
+          "confidence": 58,
+          "conflict_synopsis": {
+            "au_rates_view": "neutral",
+            "aud_view": "neutral",
+            "ca_rates_view": "higher",
+            "cad_view": "higher",
+            "carry_view": "neutral",
+            "confidence": 58,
+            "conflict_tags": [
+              "NZD_UP",
+              "USD_DOWN",
+              "RISK_ON",
+              "CAD_UP"
+            ],
+            "core_view": "NZDUSD is still pricing an NZ recession after a GDP beat and India FTA, so the cheapest cyclical is the cleanest pro-growth expression.",
+            "key_catalyst": "NZ GDP beat plus India FTA transmission against a still-offered NZDUSD.",
+            "key_invalidation": "NZ activity confirms the labor recession or NZD sells off with AUD in a renewed oil/USD shock.",
+            "nz_rates_view": "not_relevant",
+            "nzd_view": "higher",
+            "primary_trade": "long NZDUSD",
+            "risk_view": "risk_on",
+            "seat": "perma-bull",
+            "time_horizon": "4-12 weeks",
+            "us_rates_view": "higher",
+            "usd_view": "lower"
+          },
+          "packet_sha256": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
+          "remit": "strongest pro-growth, risk-on or cyclical macro expression",
+          "round": 1,
+          "run_id": "tr-20260919T214000Z-ondemand",
+          "stance_summary": "Verified: New Zealand Q2 GDP printed 0.2% q/q and beat forecasts, parliament passed an India FTA covering about 95% of NZ exports, and NZDUSD sits at a 1y 12.9th / 5y 8.6th percentile after -3.90% 1m and -1.90% 5d while AUDUSD is only +0.20% 1m and AUDNZD is at a 5y 99.96th percentile. Inference: the market is still pricing an NZ labor/consumer recession (gauges 32/38) that the activity print and trade catalyst have already started to falsify, so the cleanest pro-cyclical expression is long the beaten-up NZD rather than paying already-hawkish US or CA STIR. Unknown: NZ policy path and CFTC/CME positioning are missing; temperature gauges are dashboard_v8 retained.",
+          "trade": {
+            "asset_class": "spot_fx",
+            "catalysts": [
+              "Follow-through on the NZ Q2 GDP beat versus the labor/consumer recession narrative.",
+              "India FTA implementation reducing tariffs on about 95% of NZ exports.",
+              "Stabilization of the oil-supply tail after the Saudi Oman STS workaround, allowing cyclical FX to reprice higher.",
+              "US activity/labor remaining hot so global demand does not validate NZD recession pricing."
+            ],
+            "confidence": 58,
+            "context_build": {
+              "causal_mechanism": "Test whether New Zealand activity and external demand are troughing while the FX market still prices a labor/consumer recession. Mechanism: a GDP beat plus a legally passed India FTA that cuts tariffs on about 95% of NZ exports should lift NZ growth, export receipts and risk appetite for NZD; with NZ rates unobservable, that repricing has to occur in NZDUSD. A secondary global support is the Saudi ship-to-ship crude workaround that reduced the extreme oil-supply tail, which should ease the risk-off bid in USD versus cyclicals rather than validate a growth break.",
+              "flow_and_positioning_check": "CFTC trader-class nets and CME positioning overlays are unavailable this freeze (pos:cftc / known gap). A crowded NZD short cannot be verified and must not be assumed. The still-negative 1d (-0.56%) and 5d (-1.90%) returns are consistent with ongoing flow or momentum selling after the news, which is a timing risk rather than proof of a squeeze setup. Paper books are empty $100m seeds, so there is no seat-level crowding information.",
+              "historical_reference": {
+                "analogs": [
+                  "No packet NZDUSD historical_move_analogs exist; the closest markable analog is AUDNZD's 1m +4.27% to a 5y 99.96th percentile, which identifies NZD-specific underperformance versus a regional cyclical (AUDUSD only +0.20% 1m) rather than a uniform USD rally.",
+                  "As a separate rates-market analog for cheap cyclical then mean-reverts, CA-US_2Y after a similar 1m cheapening of about -17bp on 2025-01-30 (level then about -145bp, near today's -140bp) subsequently moved -5bp over 1m and +25bp over 3m. That analog is Canada-US yields, not NZD, and is used only as a forward-outcome reference for over-discounted cyclical cheapness, not as a statistical trigger."
+                ],
+                "distribution": "NZDUSD as_of 2026-09-18: 1y percentile 12.90, 5y percentile 8.61, z_1y -1.12, z_5y -1.15, ret_1m -3.90%, ret_5d -1.90%, ret_3m +0.58%. AUDNZD: 1y percentile 99.80, 5y percentile 99.96, z_1y 1.94, z_5y 3.12. Packet does not supply NZDUSD historical_move_analogs with forward 1m/3m outcomes at the pair level.",
+                "regime_differences": "Today differs from a generic 2022-2024 hiking analog because the Fed has just delivered a 25bp hike into already-hot US gauges (activity 69, labor 75, inflation 72, consumer 74) with SR3 still hiking to 4.755 rather than cutting. NZ inflation gauge 80 is still hot, so this is not a clean disinflation-easing regime for NZ either. AU housing is in a documented downturn (NSW stamp duty -24% y/y, transaction volumes -18%, Sydney/Melbourne values more than 7% off peak), which is why AUD is the control and not the long. NZ rates are missing, so any analog that used NZ-US yield spreads cannot be replicated. Energy: Saudi STS workaround reduces the extreme oil-supply tail even as a separate rollup warns that energy shock absorbers are weakening."
+              },
+              "independent_checks": [
+                "Hard activity/trade: NZ Q2 GDP 0.2% q/q beat forecasts (rollup 16 Sep) and parliament passed an India FTA eliminating or cutting tariffs on about 95% of NZ exports (mw_20260916_nz_india_trade).",
+                "Cross-market FX: NZDUSD 1y/5y cheap versus AUDUSD 1y 76th / 5y 84th and AUDNZD 5y 99.96th, plus NZDCAD 1y 20.4th, so the dump is NZD-specific rather than a uniform USD or anti-cyclical move.",
+                "US growth triangulation: US temperature gauges 72/75/69/74, August CPI kept the Fed tightening bias intact, and the Fed delivered 25bp to 3.75-4.00% with SR3 still hiking \u2014 global demand is not the recession the NZD price is implying.",
+                "Oil/risk: Saudi additional crude via Oman STS transfers reduced the extreme oil-supply tail (mw_20260916_saudi_oman_workaround), a risk-on check, against the opposing rollup that energy-market shock absorbers are weakening."
+              ],
+              "known_vs_new_information": "Known before this freeze: NZ labor 32 and consumer 38 were already weak, NZ inflation gauge 80 was already hot, and US activity/labor/inflation/consumer 69/75/72/74 already described a hot US. New in the 16 Sep cluster: NZ Q2 GDP 0.2% q/q beat forecasts; NZ parliament passed the India FTA; Saudi additional crude via Oman STS transfers; Fed delivered the widely priced 25bp hike; August US CPI had already kept the tightening bias intact. The known weak NZ labor/consumer gauges cannot by themselves explain a fresh 1m -3.90% NZDUSD dump that continues after the GDP beat and FTA; the new information is growth-positive for NZ and risk-positive for cyclicals, so the still-offered NZD is a lagged or over-discounted response.",
+              "market_assumption_disagreed_with": "Disagree that NZ is in a self-reinforcing downturn that justifies 5y-cheap NZD versus both USD and AUD. The GDP beat and FTA are the start of a positive revision cycle; US growth remaining hot is a global demand support, not a reason to keep NZD at the 8.6th 5y percentile after a month of idiosyncratic underperformance.",
+              "market_implied_assumption": "NZDUSD at 1y 12.9th / 5y 8.6th percentile with AUDNZD at a 5y extreme implies the market requires NZ to remain the weak cyclical: labor/consumer recession continues, the GDP beat is a one-off, and the India FTA does not lift receipts enough to matter versus a firm USD. On the USD leg, SR3 already requires further US tightening to a 4.755 Sep-27 implied peak and only about 24bp of subsequent easing by 2030, so the USD rate backdrop is high-for-long rather than a pending US easing cycle that would automatically rescue NZD.",
+              "path_to_current_price": "Multi-horizon NZDUSD (as_of 2026-09-18): spot 0.5710584014351205; ret_1d -0.56%; ret_5d -1.90%; ret_1m -3.90%; ret_3m still +0.58%. The damage is concentrated in the last month, not a three-month collapse. Cross-market path: AUDUSD +0.20% 1m at 1y 76th percentile, so this is not a generic USD bull against all cyclicals; AUDNZD +4.27% 1m / +2.05% 3m at 1y 99.80th and 5y 99.96th percentiles isolates NZD underperformance versus the regional cyclical. NZDCAD -2.22% 1m at 1y 20.4th percentile shows NZD lost to CAD as well. USDCHF +3.34% 1m and EURUSD -1.89% 1m show some USD strength, but AUD holding up means the NZD leg is the residual. US policy path over the same window: Fed hiked 25bp to 3.75-4.00% on 16 Sep after >90% priced odds; official SOFR jumped from 3.62 on 16 Sep to 3.85 on 17 Sep; SR3 then prices 4.32 (Dec-26), 4.58 (Mar-27) and 4.755 (Sep-27 peak).",
+              "policy_path_check": {
+                "pricing_summary": "US: overnight SOFR 3.85 (NY Fed, 2026-09-17); SR3U6 4.00, SR3Z6 4.32, SR3H7 4.58, SR3M7 4.72, SR3U7 4.755 peak, then a shallow decline (SR3M0 4.51 in 2030-06). CA: overnight CORRA 2.29 (2026-09-17); 3m CORRA CRAH27 3.13, CRAM27 3.365, CRAU27 3.51, CRAZ27 3.595, peak CRAU28 3.655 (+136.5bp). AU AONIA 4.35 with a ~60bp hike path to about 4.945 by mid-2027 is context only. NZ policy path and NZ sovereign curve are unavailable (RBNZ B2 403).",
+                "rationale": "NZDUSD is a USD-funded cyclical. The US SOFR/SR3 path is required to know what the USD rate leg already prices (further hikes, not cuts). The CA CORRA path is required because the rates-first alternative is paying 2027 CORRA as a Canada growth-catch-up trade. NZ's own path is a known gap, which is exactly why the selected expression is spot NZDUSD rather than a NZ rates instrument.",
+                "relevant_countries": [
+                  "US",
+                  "CA",
+                  "NZ"
+                ],
+                "status": "available"
+              },
+              "price_decomposition": "Level versus change: NZDUSD is cheap on 1y and 5y distributions (percentiles 12.9 / 8.6, z_1y -1.12, z_5y -1.15) but the 3m return is still +0.58%, so the stretch is a 1m/5d dump, not a completed multi-quarter collapse. Component: versus AUD (AUDNZD 1.2468, +4.27% 1m, 5y z 3.12) the move is NZD-specific; versus CAD (NZDCAD 0.8001, -2.22% 1m) it is also NZD-specific; versus a simple USD bid, AUDUSD's +0.20% 1m is the control. USD policy component: SOFR 3.85 and SR3U7 4.755 are the USD-rate leg; they explain some USD firmness but not why AUD held and NZD did not. Volatility: NZDUSD rv_20d 6.31 and rv_60d 7.21, so the 1m move is large relative to recent realized vol but not an untradeable blow-off. Percentiles are discovery flags only; the thesis is the GDP/FTA versus priced-recession gap."
+            },
+            "direction": "long",
+            "entry": "Frozen packet mid NZDUSD 0.5710584014351205 as_of 2026-09-18 from market_state.fx.pairs",
+            "evidence_refs": [
+              "fx:NZDUSD",
+              "fx:AUDNZD",
+              "fx:AUDUSD",
+              "fx:NZDCAD",
+              "market_state",
+              "policy_paths",
+              "policy:US",
+              "policy:CA",
+              "tradable_rate_curves",
+              "funding_context",
+              "rates:NZ",
+              "temp:NZ:activity",
+              "temp:NZ:labor",
+              "temp:NZ:consumer",
+              "temp:NZ:inflation",
+              "temp:US:activity",
+              "temp:US:labor",
+              "temp:US:inflation",
+              "temp:US:consumer",
+              "temp:CA:activity",
+              "temp:CA:labor",
+              "rollup:New Zealand Q2 GDP slows to 0.2% q/q but beats forecasts",
+              "mw_20260916_nz_india_trade",
+              "mw_20260916_saudi_oman_workaround",
+              "mw_20260916_fomc_hike_pricing",
+              "rollup:Fed raises 25bp to 3.75\u20134.00%",
+              "rollup:August CPI keeps the Fed tightening bias intact",
+              "rollup:Canada August inflation holds at 3%, core stays near 2%",
+              "rollup:Energy-market shock absorbers weaken",
+              "mw_20260916_au_housing_tightening",
+              "pos:cftc",
+              "research_method"
+            ],
+            "expression_comparison": {
+              "rates_candidate": "Pay CORRA 2027 strip {\"type\":\"futures_strip_average\",\"curve_id\":\"CORRA\",\"expiries\":[\"2027-03\",\"2027-06\",\"2027-09\",\"2027-12\"]} marked at implied 3.13/3.365/3.51/3.595 (strip average 3.40) versus overnight CORRA 2.29; this is the Canada growth-catch-up / pay-rates alternative if activity 66 and energy pass-through dominate labor 38.",
+              "rationale": "Rates are the default when comparably clean; they are not comparably clean here. The discrepancy is NZ-specific (GDP beat plus India FTA versus NZDUSD at 1y 12.9th / 5y 8.6th percentile and AUDNZD at 5y 99.96th). NZ sovereign rates and NZ-US/AU-NZ RV are unavailable in this freeze, so the natural pay-NZ-rates expression cannot be marked. The substitute CA 2027 CORRA strip already prices about 111bp of additional tightening versus overnight 2.29 (and the full 3m CORRA curve peaks at 3.655, +136.5bp), while Canada August core inflation remaining near 2% is a live obstacle to paying more CA rates. The US substitute is worse: SOFR overnight 3.85, SR3U7 4.755 (+90.5bp), US 2Y 4.76 at a 1y 99.8th percentile after a delivered 25bp hike, so US growth strength is not the underpriced object. Spot NZDUSD is therefore the only markable instrument that owns the over-discounted NZ pessimism.",
+              "selected": "spot",
+              "spot_candidate": "Long NZDUSD at frozen packet mid 0.5710584014351205 as_of 2026-09-18."
+            },
+            "horizon": "4-12 weeks",
+            "instrument": "NZDUSD",
+            "invalidation": "Thesis is wrong if subsequent NZ activity confirms the labor/consumer recession (activity gauge moving deeper through 47 toward the labor 32 reading) and the GDP beat is revised away or treated as a one-off, or if AUDNZD keeps making new extremes because NZD is the global risk-off residual rather than an idiosyncratic cheap cyclical. Also invalid if the oil-supply tail re-opens and dominates the Saudi workaround, producing a broad USD bid that takes AUDUSD and NZDUSD down together.",
+            "mispricing": "Market prices NZ-specific stagnation (NZDUSD 5y 8.6th percentile, AUDNZD 5y 99.96th) as if labor 32 / consumer 38 dominate. That assumption is inconsistent with a GDP beat, an FTA covering about 95% of NZ exports, US gauges still 69-75, and a reduced oil-supply tail. The mispricing lives in NZDUSD because NZ rates cannot be marked.",
+            "principal_risks": [
+              "NZ labor 32 and consumer 38 are verified weak; the GDP beat may not be a trough.",
+              "NZ inflation gauge 80 with an unobservable RBNZ path: unknown whether policy stays restrictive enough to cap NZD or to crush growth.",
+              "CFTC/CME positioning unavailable; this may not be a crowded short and may keep trending lower.",
+              "1d and 5d momentum remain negative; right thesis / wrong timing.",
+              "USD strength versus EUR and CHF can overwhelm NZ-specific positives.",
+              "Energy shock-absorber warning can reverse the Saudi workaround's risk-on impulse.",
+              "Temperature gauges are dashboard_v8 retained and market_state is marked stale because NZ rates are missing."
+            ],
+            "stop": null,
+            "structure": "Long NZDUSD spot versus USD at the frozen packet mid; unhedged to AUD or CAD so the NZ-specific residual versus AUDNZD/NZDCAD is retained.",
+            "target": null,
+            "thesis": "NZDUSD is pricing a New Zealand recession that the 16 Sep GDP beat and India FTA have already started to contradict, while US activity remains hot and the extreme oil-supply tail has been reduced. Growth, trade, and risk appetite are more resilient than a 5y-cheap NZD implies. The trade is long the cyclical that was sold, not mechanically long every high-beta currency: AUD is not cheap and Australia's housing channel is biting, and paying US or CA STIR fights curves that already embed large additional hikes.",
+            "why_now": [
+              "16 Sep cluster is live in this freeze: NZ GDP beat, India FTA passage, Saudi STS crude workaround, and the Fed's delivered 25bp hike.",
+              "NZDUSD is still offered after those positives (-0.56% 1d, -1.90% 5d, -3.90% 1m), so the news is not in the price.",
+              "AUDNZD at a 5y 99.96th percentile after +4.27% 1m flags that the residual is NZD, not USD.",
+              "Funded seats pay official SOFR 3.85% ACT/360 on the full $100m even while flat; an empty book with a defined invalidation should take the cyclical that is actually cheap."
+            ]
+          },
+          "type": "TRADER_ROOM_CONTRIBUTION"
+        },
+        "funding_view": null,
+        "trade": {
+          "asset_class": "spot_fx",
+          "catalysts": [
+            "Follow-through on the NZ Q2 GDP beat versus the labor/consumer recession narrative.",
+            "India FTA implementation reducing tariffs on about 95% of NZ exports.",
+            "Stabilization of the oil-supply tail after the Saudi Oman STS workaround, allowing cyclical FX to reprice higher.",
+            "US activity/labor remaining hot so global demand does not validate NZD recession pricing."
+          ],
+          "confidence": 58,
+          "context_build": {
+            "causal_mechanism": "Test whether New Zealand activity and external demand are troughing while the FX market still prices a labor/consumer recession. Mechanism: a GDP beat plus a legally passed India FTA that cuts tariffs on about 95% of NZ exports should lift NZ growth, export receipts and risk appetite for NZD; with NZ rates unobservable, that repricing has to occur in NZDUSD. A secondary global support is the Saudi ship-to-ship crude workaround that reduced the extreme oil-supply tail, which should ease the risk-off bid in USD versus cyclicals rather than validate a growth break.",
+            "flow_and_positioning_check": "CFTC trader-class nets and CME positioning overlays are unavailable this freeze (pos:cftc / known gap). A crowded NZD short cannot be verified and must not be assumed. The still-negative 1d (-0.56%) and 5d (-1.90%) returns are consistent with ongoing flow or momentum selling after the news, which is a timing risk rather than proof of a squeeze setup. Paper books are empty $100m seeds, so there is no seat-level crowding information.",
+            "historical_reference": {
+              "analogs": [
+                "No packet NZDUSD historical_move_analogs exist; the closest markable analog is AUDNZD's 1m +4.27% to a 5y 99.96th percentile, which identifies NZD-specific underperformance versus a regional cyclical (AUDUSD only +0.20% 1m) rather than a uniform USD rally.",
+                "As a separate rates-market analog for cheap cyclical then mean-reverts, CA-US_2Y after a similar 1m cheapening of about -17bp on 2025-01-30 (level then about -145bp, near today's -140bp) subsequently moved -5bp over 1m and +25bp over 3m. That analog is Canada-US yields, not NZD, and is used only as a forward-outcome reference for over-discounted cyclical cheapness, not as a statistical trigger."
+              ],
+              "distribution": "NZDUSD as_of 2026-09-18: 1y percentile 12.90, 5y percentile 8.61, z_1y -1.12, z_5y -1.15, ret_1m -3.90%, ret_5d -1.90%, ret_3m +0.58%. AUDNZD: 1y percentile 99.80, 5y percentile 99.96, z_1y 1.94, z_5y 3.12. Packet does not supply NZDUSD historical_move_analogs with forward 1m/3m outcomes at the pair level.",
+              "regime_differences": "Today differs from a generic 2022-2024 hiking analog because the Fed has just delivered a 25bp hike into already-hot US gauges (activity 69, labor 75, inflation 72, consumer 74) with SR3 still hiking to 4.755 rather than cutting. NZ inflation gauge 80 is still hot, so this is not a clean disinflation-easing regime for NZ either. AU housing is in a documented downturn (NSW stamp duty -24% y/y, transaction volumes -18%, Sydney/Melbourne values more than 7% off peak), which is why AUD is the control and not the long. NZ rates are missing, so any analog that used NZ-US yield spreads cannot be replicated. Energy: Saudi STS workaround reduces the extreme oil-supply tail even as a separate rollup warns that energy shock absorbers are weakening."
+            },
+            "independent_checks": [
+              "Hard activity/trade: NZ Q2 GDP 0.2% q/q beat forecasts (rollup 16 Sep) and parliament passed an India FTA eliminating or cutting tariffs on about 95% of NZ exports (mw_20260916_nz_india_trade).",
+              "Cross-market FX: NZDUSD 1y/5y cheap versus AUDUSD 1y 76th / 5y 84th and AUDNZD 5y 99.96th, plus NZDCAD 1y 20.4th, so the dump is NZD-specific rather than a uniform USD or anti-cyclical move.",
+              "US growth triangulation: US temperature gauges 72/75/69/74, August CPI kept the Fed tightening bias intact, and the Fed delivered 25bp to 3.75-4.00% with SR3 still hiking \u2014 global demand is not the recession the NZD price is implying.",
+              "Oil/risk: Saudi additional crude via Oman STS transfers reduced the extreme oil-supply tail (mw_20260916_saudi_oman_workaround), a risk-on check, against the opposing rollup that energy-market shock absorbers are weakening."
+            ],
+            "known_vs_new_information": "Known before this freeze: NZ labor 32 and consumer 38 were already weak, NZ inflation gauge 80 was already hot, and US activity/labor/inflation/consumer 69/75/72/74 already described a hot US. New in the 16 Sep cluster: NZ Q2 GDP 0.2% q/q beat forecasts; NZ parliament passed the India FTA; Saudi additional crude via Oman STS transfers; Fed delivered the widely priced 25bp hike; August US CPI had already kept the tightening bias intact. The known weak NZ labor/consumer gauges cannot by themselves explain a fresh 1m -3.90% NZDUSD dump that continues after the GDP beat and FTA; the new information is growth-positive for NZ and risk-positive for cyclicals, so the still-offered NZD is a lagged or over-discounted response.",
+            "market_assumption_disagreed_with": "Disagree that NZ is in a self-reinforcing downturn that justifies 5y-cheap NZD versus both USD and AUD. The GDP beat and FTA are the start of a positive revision cycle; US growth remaining hot is a global demand support, not a reason to keep NZD at the 8.6th 5y percentile after a month of idiosyncratic underperformance.",
+            "market_implied_assumption": "NZDUSD at 1y 12.9th / 5y 8.6th percentile with AUDNZD at a 5y extreme implies the market requires NZ to remain the weak cyclical: labor/consumer recession continues, the GDP beat is a one-off, and the India FTA does not lift receipts enough to matter versus a firm USD. On the USD leg, SR3 already requires further US tightening to a 4.755 Sep-27 implied peak and only about 24bp of subsequent easing by 2030, so the USD rate backdrop is high-for-long rather than a pending US easing cycle that would automatically rescue NZD.",
+            "path_to_current_price": "Multi-horizon NZDUSD (as_of 2026-09-18): spot 0.5710584014351205; ret_1d -0.56%; ret_5d -1.90%; ret_1m -3.90%; ret_3m still +0.58%. The damage is concentrated in the last month, not a three-month collapse. Cross-market path: AUDUSD +0.20% 1m at 1y 76th percentile, so this is not a generic USD bull against all cyclicals; AUDNZD +4.27% 1m / +2.05% 3m at 1y 99.80th and 5y 99.96th percentiles isolates NZD underperformance versus the regional cyclical. NZDCAD -2.22% 1m at 1y 20.4th percentile shows NZD lost to CAD as well. USDCHF +3.34% 1m and EURUSD -1.89% 1m show some USD strength, but AUD holding up means the NZD leg is the residual. US policy path over the same window: Fed hiked 25bp to 3.75-4.00% on 16 Sep after >90% priced odds; official SOFR jumped from 3.62 on 16 Sep to 3.85 on 17 Sep; SR3 then prices 4.32 (Dec-26), 4.58 (Mar-27) and 4.755 (Sep-27 peak).",
+            "policy_path_check": {
+              "pricing_summary": "US: overnight SOFR 3.85 (NY Fed, 2026-09-17); SR3U6 4.00, SR3Z6 4.32, SR3H7 4.58, SR3M7 4.72, SR3U7 4.755 peak, then a shallow decline (SR3M0 4.51 in 2030-06). CA: overnight CORRA 2.29 (2026-09-17); 3m CORRA CRAH27 3.13, CRAM27 3.365, CRAU27 3.51, CRAZ27 3.595, peak CRAU28 3.655 (+136.5bp). AU AONIA 4.35 with a ~60bp hike path to about 4.945 by mid-2027 is context only. NZ policy path and NZ sovereign curve are unavailable (RBNZ B2 403).",
+              "rationale": "NZDUSD is a USD-funded cyclical. The US SOFR/SR3 path is required to know what the USD rate leg already prices (further hikes, not cuts). The CA CORRA path is required because the rates-first alternative is paying 2027 CORRA as a Canada growth-catch-up trade. NZ's own path is a known gap, which is exactly why the selected expression is spot NZDUSD rather than a NZ rates instrument.",
+              "relevant_countries": [
+                "US",
+                "CA",
+                "NZ"
+              ],
+              "status": "available"
+            },
+            "price_decomposition": "Level versus change: NZDUSD is cheap on 1y and 5y distributions (percentiles 12.9 / 8.6, z_1y -1.12, z_5y -1.15) but the 3m return is still +0.58%, so the stretch is a 1m/5d dump, not a completed multi-quarter collapse. Component: versus AUD (AUDNZD 1.2468, +4.27% 1m, 5y z 3.12) the move is NZD-specific; versus CAD (NZDCAD 0.8001, -2.22% 1m) it is also NZD-specific; versus a simple USD bid, AUDUSD's +0.20% 1m is the control. USD policy component: SOFR 3.85 and SR3U7 4.755 are the USD-rate leg; they explain some USD firmness but not why AUD held and NZD did not. Volatility: NZDUSD rv_20d 6.31 and rv_60d 7.21, so the 1m move is large relative to recent realized vol but not an untradeable blow-off. Percentiles are discovery flags only; the thesis is the GDP/FTA versus priced-recession gap."
+          },
+          "direction": "long",
+          "entry": "Frozen packet mid NZDUSD 0.5710584014351205 as_of 2026-09-18 from market_state.fx.pairs",
+          "evidence_refs": [
+            "fx:NZDUSD",
+            "fx:AUDNZD",
+            "fx:AUDUSD",
+            "fx:NZDCAD",
+            "market_state",
+            "policy_paths",
+            "policy:US",
+            "policy:CA",
+            "tradable_rate_curves",
+            "funding_context",
+            "rates:NZ",
+            "temp:NZ:activity",
+            "temp:NZ:labor",
+            "temp:NZ:consumer",
+            "temp:NZ:inflation",
+            "temp:US:activity",
+            "temp:US:labor",
+            "temp:US:inflation",
+            "temp:US:consumer",
+            "temp:CA:activity",
+            "temp:CA:labor",
+            "rollup:New Zealand Q2 GDP slows to 0.2% q/q but beats forecasts",
+            "mw_20260916_nz_india_trade",
+            "mw_20260916_saudi_oman_workaround",
+            "mw_20260916_fomc_hike_pricing",
+            "rollup:Fed raises 25bp to 3.75\u20134.00%",
+            "rollup:August CPI keeps the Fed tightening bias intact",
+            "rollup:Canada August inflation holds at 3%, core stays near 2%",
+            "rollup:Energy-market shock absorbers weaken",
+            "mw_20260916_au_housing_tightening",
+            "pos:cftc",
+            "research_method"
+          ],
+          "expression_comparison": {
+            "rates_candidate": "Pay CORRA 2027 strip {\"type\":\"futures_strip_average\",\"curve_id\":\"CORRA\",\"expiries\":[\"2027-03\",\"2027-06\",\"2027-09\",\"2027-12\"]} marked at implied 3.13/3.365/3.51/3.595 (strip average 3.40) versus overnight CORRA 2.29; this is the Canada growth-catch-up / pay-rates alternative if activity 66 and energy pass-through dominate labor 38.",
+            "rationale": "Rates are the default when comparably clean; they are not comparably clean here. The discrepancy is NZ-specific (GDP beat plus India FTA versus NZDUSD at 1y 12.9th / 5y 8.6th percentile and AUDNZD at 5y 99.96th). NZ sovereign rates and NZ-US/AU-NZ RV are unavailable in this freeze, so the natural pay-NZ-rates expression cannot be marked. The substitute CA 2027 CORRA strip already prices about 111bp of additional tightening versus overnight 2.29 (and the full 3m CORRA curve peaks at 3.655, +136.5bp), while Canada August core inflation remaining near 2% is a live obstacle to paying more CA rates. The US substitute is worse: SOFR overnight 3.85, SR3U7 4.755 (+90.5bp), US 2Y 4.76 at a 1y 99.8th percentile after a delivered 25bp hike, so US growth strength is not the underpriced object. Spot NZDUSD is therefore the only markable instrument that owns the over-discounted NZ pessimism.",
+            "selected": "spot",
+            "spot_candidate": "Long NZDUSD at frozen packet mid 0.5710584014351205 as_of 2026-09-18."
+          },
+          "horizon": "4-12 weeks",
+          "instrument": "NZDUSD",
+          "invalidation": "Thesis is wrong if subsequent NZ activity confirms the labor/consumer recession (activity gauge moving deeper through 47 toward the labor 32 reading) and the GDP beat is revised away or treated as a one-off, or if AUDNZD keeps making new extremes because NZD is the global risk-off residual rather than an idiosyncratic cheap cyclical. Also invalid if the oil-supply tail re-opens and dominates the Saudi workaround, producing a broad USD bid that takes AUDUSD and NZDUSD down together.",
+          "mispricing": "Market prices NZ-specific stagnation (NZDUSD 5y 8.6th percentile, AUDNZD 5y 99.96th) as if labor 32 / consumer 38 dominate. That assumption is inconsistent with a GDP beat, an FTA covering about 95% of NZ exports, US gauges still 69-75, and a reduced oil-supply tail. The mispricing lives in NZDUSD because NZ rates cannot be marked.",
+          "principal_risks": [
+            "NZ labor 32 and consumer 38 are verified weak; the GDP beat may not be a trough.",
+            "NZ inflation gauge 80 with an unobservable RBNZ path: unknown whether policy stays restrictive enough to cap NZD or to crush growth.",
+            "CFTC/CME positioning unavailable; this may not be a crowded short and may keep trending lower.",
+            "1d and 5d momentum remain negative; right thesis / wrong timing.",
+            "USD strength versus EUR and CHF can overwhelm NZ-specific positives.",
+            "Energy shock-absorber warning can reverse the Saudi workaround's risk-on impulse.",
+            "Temperature gauges are dashboard_v8 retained and market_state is marked stale because NZ rates are missing."
+          ],
+          "stop": null,
+          "structure": "Long NZDUSD spot versus USD at the frozen packet mid; unhedged to AUD or CAD so the NZ-specific residual versus AUDNZD/NZDCAD is retained.",
+          "target": null,
+          "thesis": "NZDUSD is pricing a New Zealand recession that the 16 Sep GDP beat and India FTA have already started to contradict, while US activity remains hot and the extreme oil-supply tail has been reduced. Growth, trade, and risk appetite are more resilient than a 5y-cheap NZD implies. The trade is long the cyclical that was sold, not mechanically long every high-beta currency: AUD is not cheap and Australia's housing channel is biting, and paying US or CA STIR fights curves that already embed large additional hikes.",
+          "why_now": [
+            "16 Sep cluster is live in this freeze: NZ GDP beat, India FTA passage, Saudi STS crude workaround, and the Fed's delivered 25bp hike.",
+            "NZDUSD is still offered after those positives (-0.56% 1d, -1.90% 5d, -3.90% 1m), so the news is not in the price.",
+            "AUDNZD at a 5y 99.96th percentile after +4.27% 1m flags that the residual is NZD, not USD.",
+            "Funded seats pay official SOFR 3.85% ACT/360 on the full $100m even while flat; an empty book with a defined invalidation should take the cyclical that is actually cheap."
+          ]
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-19T21:40:00Z",
+        "evidence_hash": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
+        "overnight_run_id": null,
+        "review_packet_id": null,
+        "source_ref": "trader-room/runs/tr-20260919T214000Z-ondemand/submissions/perma-bull.json",
+        "trader_room_run_id": "tr-20260919T214000Z-ondemand"
+      },
+      "rationale": "Verified: New Zealand Q2 GDP printed 0.2% q/q and beat forecasts, parliament passed an India FTA covering about 95% of NZ exports, and NZDUSD sits at a 1y 12.9th / 5y 8.6th percentile after -3.90% 1m and -1.90% 5d while AUDUSD is only +0.20% 1m and AUDNZD is at a 5y 99.96th percentile. Inference: the market is still pricing an NZ labor/consumer recession (gauges 32/38) that the activity print and trade catalyst have already started to falsify, so the cleanest pro-cyclical expression is long the beaten-up NZD rather than paying already-hawkish US or CA STIR. Unknown: NZ policy path and CFTC/CME positioning are missing; temperature gauges are dashboard_v8 retained.",
+      "run_id": "tr-20260919T214000Z-ondemand",
+      "schema_version": 1,
+      "thesis": "NZDUSD is pricing a New Zealand recession that the 16 Sep GDP beat and India FTA have already started to contradict, while US activity remains hot and the extreme oil-supply tail has been reduced. Growth, trade, and risk appetite are more resilient than a 5y-cheap NZD implies. The trade is long the cyclical that was sold, not mechanically long every high-beta currency: AUD is not cheap and Australia's housing channel is biting, and paying US or CA STIR fights curves that already embed large additional hikes."
+    },
+    {
+      "actions": [
+        {
+          "action": "REBUT",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": null,
+          "result": null,
+          "side": null
+        }
+      ],
+      "at": "2026-09-19T18:00:04.489009-04:00",
+      "conviction": null,
+      "decision_fingerprint": null,
+      "event_id": "jde-44b255c6138e4e39",
+      "funding_view": null,
+      "invalidation": null,
+      "kind": "TRADER_ROOM_REBUTTAL",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "de029e25656f54c1546c74d96a76b0e292377deecf61bed3ec66d1557775b1aa",
+      "outcome_links": [],
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "payload": {
+        "holes_in_opposing_case": [
+          "The USD-up camp treats a delivered, >90%-priced Fed hike and hot US gauges as a reason NZDUSD must fall. That skips the packet residual: AUDUSD is only +0.20% 1m at a 1y 76th percentile while NZDUSD is -3.90% 1m at a 5y 8.6th percentile and AUDNZD is at a 5y 99.96th. A uniform USD bid does not produce that split.",
+          "Dollar-king's own path evidence undercuts a broad USD-up/NZD-down call: EURUSD and USDCHF have already done more of the dollar work, and USDCAD 3m is still -1.25% log. Incomplete CAD catch-up is not a mechanism for keeping NZD at a 5y extreme after a GDP beat and India FTA that dollar-king never engages.",
+          "Dollar-king, carry-is-king, perma-bear, rate-dove, rate-hawk and trend-follower all mark CAD lower on labor 38 and core near 2%, while value-guy marks CAD higher on the same freeze using activity 66, headline CPI 3%, BoC energy pass-through and CA-US_2Y at -140bp. That is an internal split, not a settled CAD-down fact. CAD-down therefore cannot be imported as a reason to stay short NZD.",
+          "Perma-bear and rate-dove map Canada slack onto NZD lower. Canada has no GDP beat and no FTA in this packet; New Zealand does. Receiving CRAU27/CRAM27 is a CA policy-path claim. It does not price NZDUSD, and it does not explain why NZD lost to both USD and AUD after NZ-positive 16 Sep news.",
+          "Rate-hawk and trend-follower are right that US heat can keep SR3U7 from being a receive. Paying SOFR_2027-09 is a US-rates expression. It is not a USD-spot expression, and global demand that stays hot is a support for a cheap cyclical, not a mandate to sell NZDUSD.",
+          "Carry-is-king receives US 2Y while tagging USD higher. Receiving the high yielder is a US-rates-down construction. A 149bp carry gap between US 2Y 4.76 and CA 2Y 3.27 does not decide NZDUSD, and their own Saudi-workaround point (oil-hike catalyst weaker) is risk-on for cyclicals, not USD-up.",
+          "Mean-reverter's USD-higher tag is a side view on an AONIA receive. AU housing biting is already in the original pitch as the reason AUD is not the long. Fading remaining RBA hike premium does not falsify NZ-specific cheapness versus USD.",
+          "Cross-merchant is not an NZD-down opponent. Short AUDNZD uses the same 16 Sep sign error. The hole in using the cross instead of NZDUSD is that AUDUSD is not stretched; if AUD does not fall, the NZ residual versus USD is still the object, and that object is NZDUSD."
+        ],
+        "opponents": [
+          "carry-is-king",
+          "dollar-king",
+          "mean-reverter",
+          "perma-bear",
+          "rate-dove",
+          "rate-hawk",
+          "trend-follower",
+          "value-guy",
+          "cross-merchant"
+        ],
+        "rebuttal": {
+          "agent": "perma-bull",
+          "attack": [
+            "Strongest opposing claim: dollar-king's policy-gap USD (SOFR 3.85 / SR3 still hiking / US gauges hot versus CORRA 2.29, CA labor 38, core near 2%) plus perma-bear/rate-dove's claim that Canada cannot deliver 107-122bp of 2027 CORRA hikes, so USD stays bid and cyclicals including NZD stay offered.",
+            "That claim is a Canada-US rates/spot story. It is weakest where my trade lives: NZDUSD's 1m dump continued after NZ Q2 GDP 0.2% q/q beat forecasts and an India FTA covering about 95% of NZ exports, while AUD held. None of the USD-up pitches reconstruct that NZ path or the AUDNZD extreme.",
+            "Perma-bear/rate-dove use the Saudi Oman STS workaround to argue the energy-hike excuse for paying CORRA is weaker, then still tag NZD and CAD lower. If the extreme oil-supply tail is reduced, the risk-off residual in NZDUSD is the thing that should fade, not the thing to press.",
+            "Rate-hawk/trend-follower treat 99-100th percentile US yields as continuation. Agreed as a US-rates statement. Continuation of US heat after a pre-priced hike does not require NZDUSD to remain a 5y-cheap recession price, and treating percentiles as the trend is the same discovery-as-thesis error they reject when fading US 2Y.",
+            "Carry-is-king and dollar-king disagree on instrument but share CAD-down. Value-guy, routed on the same CAD conflict, takes the opposite CAD side from the same CA-US_2Y print. CAD-down is therefore contested inside the opponent set and cannot veto long NZDUSD.",
+            "Mean-reverter does not own a USD or NZD mechanism; receiving AONIA_2026-10 is an AU housing-channel trade already treated as AUD-neutral in the original pitch."
+          ],
+          "defense": [
+            "Long NZDUSD stands. The discrepancy is NZ-specific growth/trade news versus a still-offered NZD, not a bet that US rates fall or that every cyclical rallies. AUD housing pain and already-hawkish SOFR/CORRA paths were why the original pitch rejected paying US/CA STIR and rejected long AUDUSD.",
+            "USD lower in the synopsis is USD versus NZD, not a forecast that EURUSD/USDCHF reverse. Dollar-king's admission that those pairs have already moved more is consistent with buying the cyclical that has not.",
+            "CAD higher remains a cyclical overlay from CA activity 66 versus labor 38, not the expression. It is not required for the NZDUSD P&L. Value-guy's CAD-up rates-RV is compatible; dollar-king's CAD-down USDCAD is a different pair with a different residual.",
+            "NZ rates remain unavailable, so the rates-first alternative (pay 2027 CORRA) is still a different causal claim impaired by core-near-2% and 111-136bp already priced. Spot NZDUSD still owns the over-discounted NZ pessimism.",
+            "Uncertainty preserved: NZ labor 32 / consumer 38 are real; 1d and 5d NZDUSD momentum is still negative; CFTC is missing; gauges are dashboard_v8; a renewed oil tail or a pure USD bid that takes AUDUSD down with NZDUSD would be a different regime.",
+            "Would concede the NZD-up/USD-down argument if NZ activity confirms the labor recession and the GDP beat is treated as a one-off, or if AUDNZD keeps making new extremes because NZD is the global risk-off residual rather than an idiosyncratic cheap cyclical, or if AUDUSD and NZDUSD sell together on a re-opened oil-supply tail."
+          ],
+          "holes_in_opposing_case": [
+            "The USD-up camp treats a delivered, >90%-priced Fed hike and hot US gauges as a reason NZDUSD must fall. That skips the packet residual: AUDUSD is only +0.20% 1m at a 1y 76th percentile while NZDUSD is -3.90% 1m at a 5y 8.6th percentile and AUDNZD is at a 5y 99.96th. A uniform USD bid does not produce that split.",
+            "Dollar-king's own path evidence undercuts a broad USD-up/NZD-down call: EURUSD and USDCHF have already done more of the dollar work, and USDCAD 3m is still -1.25% log. Incomplete CAD catch-up is not a mechanism for keeping NZD at a 5y extreme after a GDP beat and India FTA that dollar-king never engages.",
+            "Dollar-king, carry-is-king, perma-bear, rate-dove, rate-hawk and trend-follower all mark CAD lower on labor 38 and core near 2%, while value-guy marks CAD higher on the same freeze using activity 66, headline CPI 3%, BoC energy pass-through and CA-US_2Y at -140bp. That is an internal split, not a settled CAD-down fact. CAD-down therefore cannot be imported as a reason to stay short NZD.",
+            "Perma-bear and rate-dove map Canada slack onto NZD lower. Canada has no GDP beat and no FTA in this packet; New Zealand does. Receiving CRAU27/CRAM27 is a CA policy-path claim. It does not price NZDUSD, and it does not explain why NZD lost to both USD and AUD after NZ-positive 16 Sep news.",
+            "Rate-hawk and trend-follower are right that US heat can keep SR3U7 from being a receive. Paying SOFR_2027-09 is a US-rates expression. It is not a USD-spot expression, and global demand that stays hot is a support for a cheap cyclical, not a mandate to sell NZDUSD.",
+            "Carry-is-king receives US 2Y while tagging USD higher. Receiving the high yielder is a US-rates-down construction. A 149bp carry gap between US 2Y 4.76 and CA 2Y 3.27 does not decide NZDUSD, and their own Saudi-workaround point (oil-hike catalyst weaker) is risk-on for cyclicals, not USD-up.",
+            "Mean-reverter's USD-higher tag is a side view on an AONIA receive. AU housing biting is already in the original pitch as the reason AUD is not the long. Fading remaining RBA hike premium does not falsify NZ-specific cheapness versus USD.",
+            "Cross-merchant is not an NZD-down opponent. Short AUDNZD uses the same 16 Sep sign error. The hole in using the cross instead of NZDUSD is that AUDUSD is not stretched; if AUD does not fall, the NZ residual versus USD is still the object, and that object is NZDUSD."
+          ],
+          "opponents": [
+            "carry-is-king",
+            "dollar-king",
+            "mean-reverter",
+            "perma-bear",
+            "rate-dove",
+            "rate-hawk",
+            "trend-follower",
+            "value-guy",
+            "cross-merchant"
+          ],
+          "own_original_ref": "submissions/perma-bull.json",
+          "packet_sha256": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
+          "revised_trade": null,
+          "round": 2,
+          "run_id": "tr-20260919T214000Z-ondemand",
+          "subagent_calls": 0,
+          "trade_change": "unchanged",
+          "type": "TRADER_ROOM_REBUTTAL"
+        },
+        "revised_trade": null,
+        "trade_change": "unchanged"
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-19T21:40:00Z",
+        "evidence_hash": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
+        "overnight_run_id": null,
+        "review_packet_id": null,
+        "source_ref": "trader-room/runs/tr-20260919T214000Z-ondemand/rebuttals/perma-bull.json",
+        "trader_room_run_id": "tr-20260919T214000Z-ondemand"
+      },
+      "rationale": "Long NZDUSD stands. The discrepancy is NZ-specific growth/trade news versus a still-offered NZD, not a bet that US rates fall or that every cyclical rallies. AUD housing pain and already-hawkish SOFR/CORRA paths were why the original pitch rejected paying US/CA STIR and rejected long AUDUSD.; USD lower in the synopsis is USD versus NZD, not a forecast that EURUSD/USDCHF reverse. Dollar-king's admission that those pairs have already moved more is consistent with buying the cyclical that has not.; CAD higher remains a cyclical overlay from CA activity 66 versus labor 38, not the expression. It is not required for the NZDUSD P&L. Value-guy's CAD-up rates-RV is compatible; dollar-king's CAD-down USDCAD is a different pair with a different residual.; NZ rates remain unavailable, so the rates-first alternative (pay 2027 CORRA) is still a different causal claim impaired by core-near-2% and 111-136bp already priced. Spot NZDUSD still owns the over-discounted NZ pessimism.; Uncertainty preserved: NZ labor 32 / consumer 38 are real; 1d and 5d NZDUSD momentum is still negative; CFTC is missing; gauges are dashboard_v8; a renewed oil tail or a pure USD bid that takes AUDUSD down with NZDUSD would be a different regime.; Would concede the NZD-up/USD-down argument if NZ activity confirms the labor recession and the GDP beat is treated as a one-off, or if AUDNZD keeps making new extremes because NZD is the global risk-off residual rather than an idiosyncratic cheap cyclical, or if AUDUSD and NZDUSD sell together on a re-opened oil-supply tail.",
+      "run_id": "tr-20260919T214000Z-ondemand",
+      "schema_version": 1,
+      "thesis": null
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_DECISION_JOURNAL"
 }

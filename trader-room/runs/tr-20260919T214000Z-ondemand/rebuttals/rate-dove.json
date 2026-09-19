@@ -1,0 +1,42 @@
+{
+  "type": "TRADER_ROOM_REBUTTAL",
+  "run_id": "tr-20260919T214000Z-ondemand",
+  "round": 2,
+  "agent": "rate-dove",
+  "opponents": [
+    "carry-is-king",
+    "dollar-king",
+    "mean-reverter",
+    "perma-bear",
+    "rate-hawk",
+    "trend-follower",
+    "perma-bull",
+    "value-guy",
+    "cross-merchant"
+  ],
+  "own_original_ref": "submissions/rate-dove.json",
+  "holes_in_opposing_case": [
+    "Strongest opposing claim is value-guy plus carry-is-king: CA-US_2Y at -140bp is 'too cheap' so Canada must hike, CAD must rise, and the CORRA path should be received as convergence rather than faded. That closes the gap from the wrong side. Frozen CORRA overnight is still 2.29 with CRA 2027-06 at 3.365 (+107.5bp) and a 2028-09 peak at 3.655 (+136.5bp) against Canada core near 2% and labor 38. A 1y/5y spread percentile is a discovery flag, not proof BoC can deliver that cycle.",
+    "value-guy's own unknown concedes the hole: CA labor 38 versus US 75 'may justify a structurally wider gap.' If that regime is live, short CA-US_2Y has no closing mechanism. The packet analog 2025-01-30 at -145bp then +25bp over 3m is a sovereign-spread outcome, not a CORRA overnight-to-2027 delivery. The same analog's 1m forward was only -5bp. It does not license paying Canadian hikes into slack.",
+    "carry-is-king wants to pay CA 2Y / receive US 2Y because 149bp of yield gap is 'carry.' Carry from an already-wide gap is not evidence the BoC will hike. Paying the low-yielder is a bet that overnight 2.29 is the wrong 2Y anchor. Core near 2% says it can stay the anchor. Their invalidation (Canada re-prices more than the US from the Canada side) is exactly the hike-delivery path this seat fades.",
+    "rate-hawk and trend-follower pay SOFR_2027-09 off US gauges 72/75/69/74 and a delivered 25bp hike. That US heat is stipulated; this seat left us_rates_view neutral. The hole is the unargued CA_RATES_UP spillover. Hot US data does not make Canadian core-near-2% and labor 38 into a 100bp-plus BoC cycle. CORRA still prices more overnight-to-2027 hike premium (+107.5bp) than SR3 does from already-hiked SOFR 3.85 (+87bp to 2027-06). Importing US heat into CRA is the mispricing.",
+    "dollar-king's USDCAD long agrees CAD weaker, then tags ca_rates_view higher while arguing Canada core/labor 'cap CORRA catch-up.' Those two cannot both be the mechanism. If catch-up is capped, implied CORRA is too high, which is receive 2027 CORRA, not pay Canada. Spot USDCAD also mixes WTI/energy and the Fed overlay this seat already rejected as inferior.",
+    "perma-bull's long NZDUSD treats a 0.2% q/q GDP print that merely beat forecasts, plus an India FTA, as falsifying labor 32 and consumer 38. A slowdown that beats a forecast is still a slowdown. NZ policy path and NZ 2Y are unavailable, so the seat cannot show NZD is cheap versus a rates path. USD lower fights the delivered Fed hike, SOFR 3.85, and still-hot US gauges. CAD higher fights the same Canadian slack that caps CORRA.",
+    "cross-merchant's NZD-up via short AUDNZD does not touch CORRA_2027-06. NZ labor 32 / consumer 38 remain the binding NZ facts in the packet; GDP/FTA do not overwrite them. AU housing pain is already this seat's independent tightening-channel check and supports au_rates lower, not a reason to long NZD.",
+    "mean-reverter's AONIA_2026-10 fade is not a CAD/USD contradiction of receive-CORRA; it is a smaller (+21.5bp Oct / +51bp Mar) version of the same 'priced hikes versus a biting channel' claim. Routing here is the USD-higher cluster against perma-bull, not a hole in Canadian easing. perma-bear is long CORRA_2027-09 on the same labor-38/core-near-2% mechanism; that is a tenor choice, not an opposing case against receiving 2027 CORRA."
+  ],
+  "trade_change": "unchanged",
+  "revised_trade": null,
+  "attack": [
+    "The CAD-up / CA-rates-up camp (value-guy, and carry-is-king on rates) needs energy pass-through to become generalized inflation. Frozen facts still split the other way: headline 3% with core near 2%, Saudi Oman workaround reducing the extreme oil-supply tail, labor 38, consumer 45. BoC minutes flag the risk; they do not show it has arrived in core.",
+    "The USD-down / NZD-up / CAD-up camp (perma-bull, and cross-merchant on NZD) needs activity news to dominate labor and a missing NZ policy path. Packet NZ GDP is 0.2% q/q, gauges 32/38/47/80, and NZ rates are a known gap. That is not a cyclical long. USD-down also ignores the just-delivered 25bp hike and SR3 still at 4.32/4.58/4.755.",
+    "Paying US or CA STIR because percentiles are high is the screen this room forbids as a thesis. US 2Y at a 1y extreme sits on a live SR3 path with hot gauges; CA 2Y at a 1y extreme sits on a live CORRA path with cold labor. Only the second is a hike cycle the domestic data cannot support."
+  ],
+  "defense": [
+    "Primary trade remains long duration CORRA_2027-06 at the packet implied 3.365. The discrepancy is still the Canadian policy path, not USDCAD, CA-US_2Y, NZDUSD, or AUDNZD. FX views (USD higher, CAD lower, NZD lower) are implications of a BoC path that is not delivered and of NZ slack with no markable NZ curve; they are not a second trade.",
+    "FACT: CORRA 2.29 versus 2027-06 3.365 and 2028-09 3.655. FACT: Canada core near 2%, labor 38, consumer 45. INFERENCE: MX rebuilt a hiking cycle off the Fed delivery and energy language. That is the priced assumption this seat still disagrees with.",
+    "UNKNOWN unchanged: energy pass-through can still generalize; activity 66 is not a collapse; dashboard_v8 gauges may be stale; CFTC/CME positioning is missing; US SR3 can drag CRA even if BoC should not hike. Concede if CORRA_2027-06 revisits or holds above the frozen 2028-09 peak of 3.655, if Nov-26/Dec-26 1m CORRA keep adding hike premium from 2.43/2.58 as BoC delivers, or if Canadian core leaves the near-2% hold and labor leaves 38 in a way that validates generalized overheating."
+  ],
+  "packet_sha256": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
+  "subagent_calls": 0
+}

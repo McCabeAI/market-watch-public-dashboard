@@ -1,0 +1,41 @@
+{
+  "type": "TRADER_ROOM_REBUTTAL",
+  "run_id": "tr-20260919T214000Z-ondemand",
+  "round": 2,
+  "agent": "value-guy",
+  "opponents": [
+    "perma-bull",
+    "carry-is-king",
+    "dollar-king",
+    "perma-bear",
+    "rate-dove",
+    "rate-hawk",
+    "trend-follower"
+  ],
+  "own_original_ref": "submissions/value-guy.json",
+  "holes_in_opposing_case": [
+    "The CAD-down bloc is not one mechanism. Dollar-king, rate-hawk and trend-follower want CAD lower because the US stays tighter; perma-bear and rate-dove want CAD lower because Canada cannot deliver the already-priced CRA hiking cycle. Those two stories cannot both be the reason USDCAD should rise, and only the second one actually falsifies short CA-US_2Y.",
+    "Dollar-king's long USDCAD treats a 74th-percentile pair as the home of a 4th-percentile CA-US 2Y gap. The packet USDCAD~CA-US_2Y residual is weak (r-squared 0.022). Incomplete FX catch-up is not a fair-value gap; it is a noisy residual. Their own invalidation says Canada hiking along the already-priced CRA path does not kill long USDCAD, which concedes they are betting the rate gap stays wide. That is the opposite of a valuation close.",
+    "Carry-is-king runs the same short CA-US_2Y I do, then tags CAD lower. If the holding-period engine is Canada catching up along CRA while you receive US 4.76 versus pay CA 3.27, relative policy is CAD-supportive, not CAD-destructive. Their CAD_DOWN is an unneeded USD overlay on a rates RV that does not own USDCAD.",
+    "Perma-bear and rate-dove overweight overnight CORRA 2.29 and labor 38 versus the object that is actually priced: CRAU27 3.51 and CRAM27 3.365. Headline CPI is still 3%, BoC minutes flag energy pass-through, and CA activity is 66. Calling a 122bp path a policy error does not make the 5y-tail CA-US 2Y discount fair value; if they are right and CRA is pulled, that is my stated invalidation, not a reason to prefer long USDCAD.",
+    "Rate-hawk and trend-follower pay SOFR_2027-09 and then stamp CAD lower as if USD spot were the expression. Their disagreed object is the 4.755 peak and 2028 fade, not CAD. US 2Y is already 99.8th percentile of 1y at 4.76; paying more US duration does not prove the CA-US spread should stay at -140bp, and it fights the US-rates-down leg that helps a short CA-US_2Y close.",
+    "Perma-bull is routed on this CAD tag but is not an opposing CAD case: they also have cad_view higher. Their NZDUSD pitch does not discipline CA-US 2Y or USDCAD."
+  ],
+  "trade_change": "unchanged",
+  "revised_trade": null,
+  "attack": [
+    "Strongest opposing claim: rate-dove/perma-bear that labor 38 and core near 2% mean Canada cannot deliver the 100bp-plus CRA hiking cycle, so CA rates fall, the CA-US discount is a new regime, and CAD stays offered. That is a real risk I already capped at 61, not a CAD-spot proof.",
+    "It still fails as a CAD-down mandate. If CRA is too hawkish, the clean expression is receive CORRA, which those seats already own. Translating that into CAD lower assumes FX, not STIR, is where the policy error pays. The packet does not show USDCAD stretched, and the FX-rates link is weak.",
+    "Dollar-king's claim that USDCAD has not 'made' the policy/labor gap is the discovery flag I rejected in Round 1. Spot is the inferior expression of the same discrepancy. Betting CAD lower because the spread is historically cheap is fading the valuation object instead of owning it.",
+    "Carry-is-king's Saudi-workaround point cuts the oil tail; it does not erase BoC pass-through language or 3% headline CPI. Reduced extreme-oil odds are not a reason to attach CAD_DOWN to a short CA-US_2Y that profits if Canada rates rise relative to the US.",
+    "Rate-hawk/trend CAD_DOWN is a USD-policy stamp, not a CAD valuation. A still-hot US (gauges 72/75/69/74) can keep SOFR bid without forcing CA-US 2Y to remain a 5y left tail if CRA's already-priced catch-up is the relative move."
+  ],
+  "defense": [
+    "CAD higher on my card is a rates-parity implication of the closing mechanism, not a USDCAD short. The locked trade remains short CA-US_2Y. I already constructed long USDCAD and discarded it because the mispricing lives in the 1y/5y left-tail spread, not in a 74th-percentile pair.",
+    "Verified still: CA-US_2Y -140bp as of 2026-09-17; CORRA 2.29 versus SOFR 3.85; CRA prices 84-130bp of 2027 hikes; Fed hike delivered; Canada CPI 3% / core near 2%; BoC energy pass-through flagged. The market's own CORRA path is the convergence engine. Jan-2025 analog at -145bp then +25bp over 3m remains the working template; Dec-2024 -20bp extension remains the failure analog.",
+    "Uncertainty preserved: CA labor 38 versus US 75 can justify a structurally wider discount; CFTC/CME positioning is missing; gauges are dashboard_v8; Saudi workaround reduced the extreme oil tail. Those cap size. They do not flip the expression into long USDCAD.",
+    "I concede the CAD-higher implication, and the rates RV, if CRA 2027 implieds collapse toward overnight 2.29 or if Canadian headline/core disinflate without the flagged energy pass-through, leaving the 5y-tail spread as the new peer regime. I do not concede because USDCAD failed to trend to a new high after a known Fed hike."
+  ],
+  "packet_sha256": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
+  "subagent_calls": 0
+}

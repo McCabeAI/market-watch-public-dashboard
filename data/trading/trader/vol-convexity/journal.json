@@ -1,5 +1,314 @@
 {
-  "events": [],
+  "events": [
+    {
+      "actions": [
+        {
+          "action": "PROPOSE",
+          "asset_class": "options",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDUSD 1-month ATM straddle",
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": null,
+          "result": null,
+          "side": null
+        }
+      ],
+      "at": "2026-09-19T18:00:04.453907-04:00",
+      "conviction": 49,
+      "decision_fingerprint": null,
+      "event_id": "jde-611416c589c14f97",
+      "funding_view": null,
+      "invalidation": "Stand down if checked 1m ATM AUDUSD IV already fully prices a two-way RBA event, or if the RBA path collapses to one tail (housing clearly forces a pause/cut that AONIA fully prices, or inflation clearly validates the +51bp hike path) before any premium is paid. Do not invent a stop in vol points or AUDUSD spots; those marks are not in the packet.",
+      "kind": "TRADER_ROOM_PROPOSAL",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "66f4434e9a4815e09a06be01d9e247a02f247f5b6ae723ce392f35d3908d7d1a",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "payload": {
+        "conflict_synopsis": {
+          "au_rates_view": "not_relevant",
+          "aud_view": "not_relevant",
+          "ca_rates_view": "not_relevant",
+          "cad_view": "not_relevant",
+          "carry_view": "opposes_trade",
+          "confidence": 49,
+          "conflict_tags": [
+            "VOL_LONG",
+            "AUDUSD_STRADDLE",
+            "OPTIONS",
+            "TWO_WAY_RBA"
+          ],
+          "core_view": "RBA housing-versus-inflation is two-way and AUDUSD spot is USD-suppressed; own both tails with a 1-month ATM straddle, marks null until IV exists.",
+          "key_catalyst": "Australian housing/CPI/RBA information that forces a choice between the priced AONIA hike path and the housing contraction tail.",
+          "key_invalidation": "Checked 1m ATM IV already prices the two-way event, or the RBA path becomes one-way before any premium is paid.",
+          "nz_rates_view": "not_relevant",
+          "nzd_view": "not_relevant",
+          "primary_trade": "long 1-month ATM AUDUSD straddle",
+          "risk_view": "neutral",
+          "seat": "vol-convexity",
+          "time_horizon": "2-6 weeks",
+          "us_rates_view": "higher",
+          "usd_view": "not_relevant"
+        },
+        "contribution": {
+          "agent": "vol-convexity",
+          "archetype": "vol-convexity",
+          "confidence": 49,
+          "conflict_synopsis": {
+            "au_rates_view": "not_relevant",
+            "aud_view": "not_relevant",
+            "ca_rates_view": "not_relevant",
+            "cad_view": "not_relevant",
+            "carry_view": "opposes_trade",
+            "confidence": 49,
+            "conflict_tags": [
+              "VOL_LONG",
+              "AUDUSD_STRADDLE",
+              "OPTIONS",
+              "TWO_WAY_RBA"
+            ],
+            "core_view": "RBA housing-versus-inflation is two-way and AUDUSD spot is USD-suppressed; own both tails with a 1-month ATM straddle, marks null until IV exists.",
+            "key_catalyst": "Australian housing/CPI/RBA information that forces a choice between the priced AONIA hike path and the housing contraction tail.",
+            "key_invalidation": "Checked 1m ATM IV already prices the two-way event, or the RBA path becomes one-way before any premium is paid.",
+            "nz_rates_view": "not_relevant",
+            "nzd_view": "not_relevant",
+            "primary_trade": "long 1-month ATM AUDUSD straddle",
+            "risk_view": "neutral",
+            "seat": "vol-convexity",
+            "time_horizon": "2-6 weeks",
+            "us_rates_view": "higher",
+            "usd_view": "not_relevant"
+          },
+          "packet_sha256": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
+          "remit": "asymmetric optionality; challenge spot expressions",
+          "round": 1,
+          "run_id": "tr-20260919T214000Z-ondemand",
+          "stance_summary": "AUDUSD spot is the wrong instrument: RBA reaction function is bimodal (housing contraction versus inflation 82 and an AONIA path still +51bp by Mar-2027) while the USD factor is suppressing AUDUSD realized even as AUD crosses already print extremes. Long a 1-month ATM AUDUSD straddle owns both tails with bounded premium. Premium, IV and strikes are absent from the freeze; numeric levels stay null and execution is blocked until those marks exist.",
+          "trade": {
+            "asset_class": "options",
+            "catalysts": [
+              "Next Australian housing, CPI or RBA communication that forces a choice between the housing tail and the inflation/AONIA-hike tail.",
+              "US labor/inflation prints that either extend the USD bid (keep suppressing AUDUSD realized) or fade it and unmask the AUD-specific distribution already visible in AUDNZD/AUDCAD.",
+              "AONIA strip repricing versus overnight 4.35 if Oct-Nov contracts stop confirming the +21.5 to +33.5bp hike path."
+            ],
+            "confidence": 49,
+            "context_build": {
+              "causal_mechanism": "Test whether the RBA is in a bimodal reaction function: the housing-credit channel is already contracting activity (NSW stamp-duty receipts -24 percent y/y, volumes -18 percent, Sydney/Melbourne values more than 7 percent off peak) while inflation remains the hottest AU temperature (82) and the AONIA curve still prices +21.5bp by Oct-2026 and +51bp by Mar-2027. If housing dominates, the hike path is wrong and AUD gaps lower. If inflation dominates, the RBA keeps tightening and AUD can gap higher versus a USD that has already hiked. Spot AUDUSD averages those states; the option owns the gap.",
+              "flow_and_positioning_check": "CFTC trader-class nets and CME FX futures/options open-interest overlays are unavailable this freeze (HTTP 503/403). Flow cannot be used to confirm or deny crowding in AUDUSD options or spot. The quiet AUDUSD / extreme AUD-cross pattern is consistent with a USD factor and possible systematic USD demand after the hike, but that is inference, not a positioning fact. Do not treat the 20d AUDUSD realized of 4.71 as proof that dealers are long or short gamma.",
+              "historical_reference": {
+                "analogs": [
+                  "AU-US 2Y packet analog 2022-02-07: same prior 1m move of -11.5bp, then forward 1m -11.7bp and forward 3m +38.9bp \u2014 subsequent path flipped from more compression to a large widening.",
+                  "AU-US 2Y packet analog 2026-04-23: same prior 1m move, then forward 1m -41.3bp and forward 3m -54.7bp \u2014 housing/easing tail continued.",
+                  "AU-US 2Y packet analog 2025-07-30: same prior 1m move, then forward 1m +32.7bp and forward 3m +58.6bp \u2014 inflation/tightening tail reasserted.",
+                  "Contemporaneous analog: BoJ hike to 1.25 percent on 17 Sep was followed by USDJPY +1.41 percent (1d z 2.73) rather than JPY strength, showing G10 policy events in this freeze are producing gaps against the textbook spot reaction."
+                ],
+                "distribution": "AUDUSD 1y percentile 76.4, 5y percentile 84.3, 20d realized 4.71 versus 60d 5.29 (compressed). AU 2Y 1y percentile 99.2 with 1m +39.1bp. AU-US 2Y spread 25.9bp, 1y percentile 25.6, 1m change -11.5bp. Packet analogs for that same prior 1m AU-US 2Y move are two-way, not mean-reverting.",
+                "regime_differences": "2022 analogs were early in a global hiking cycle with much lower starting policy rates. Today SOFR is already 3.85 percent with SR3 still pricing more hikes, AONIA is already 4.35 percent, and Australian housing is already more than 7 percent off peak \u2014 so the housing tail is live, not prospective. NZ official rates are missing, CFTC/CME positioning is unavailable, and temperature gauges are dashboard_v8 retained. Those gaps make analog forward outcomes a distributional warning, not a sized forecast."
+              },
+              "independent_checks": [
+                "Policy-path versus housing: AONIA still prices +51bp to Mar-2027 while NSW stamp duty/volumes and dwelling values document a tightening channel that is already biting; AU inflation temperature 82 versus labor/activity/consumer 50/54/48 is the same split in a second dataset.",
+                "Cross-market AUD versus AUDUSD: AUDNZD 1y percentile 99.8 (1m +4.27 percent) and AUDCAD 1y percentile 99.8 while AUDUSD 1m is +0.20 percent \u2014 the AUD-specific distribution is already moving in crosses; quiet AUDUSD is a USD-factor residual, not proof of low event risk.",
+                "Global event-vol check: VIX 15.44 at the 14.7th percentile, 1d -2.27 points, after Fed, BoJ and energy headlines in the same week. Equity vol is being faded into a multi-CB event window; that does not price AUDUSD IV (unknown) but it does show the market is compressing event risk just as two-way policy gaps are printing (USDJPY 1d +1.41 percent)."
+              ],
+              "known_vs_new_information": "Known: Fed hike was pre-priced above 90 percent; AONIA hike path and hot AU inflation were already on the screen. New in this freeze: housing-channel evidence that tightening is biting now (16 Sep Reuters), the SOFR 23bp overnight jump as the hike transmitted into the funding benchmark, the 1d AU 2Y reversal of -5.5bp against a still-hawkish AONIA strip, and VIX 15.44 at the 14.7th percentile after a multi-central-bank event week. Known information (housing weakness, inflation heat) needs that new transmission\u2014housing receipts collapsing while the curve still prices hikes\u2014to explain why AUDUSD has not chosen a tail.",
+              "market_assumption_disagreed_with": "Disagree that the RBA path is a single +51bp hike sequence that AUDUSD can sit through. The priced assumption is that housing stress and inflation 82 can be averaged into a modest, already-discounted tightening. The disagreement is that those states are mutually exclusive over a 1-month event window, so the next information (housing, CPI, RBA) produces a gap, not a drift.",
+              "market_implied_assumption": "AONIA implies the cash rate rises from 4.35 to about 4.86 by Mar-2027 (+51bp) and stays near 4.94 through mid-2027. SR3 implies US policy keeps tightening from SOFR 3.85 toward 4.32 by Dec-2026 and 4.58 by Mar-2027. AUDUSD at 0.7120 with only +0.20 percent 1m and 20d realized 4.71 (below 60d 5.29) prices a quiet, one-way coexistence of those paths: US hikes, Australia hikes a bit, AUDUSD does not gap.",
+              "path_to_current_price": "Verified path: Fed delivered a 25bp hike to 3.75-4.00 percent on 16 Sep after futures were greater-than-90 percent priced for it; official SOFR jumped to 3.85 percent effective 17 Sep from 3.62 percent on 16 Sep; SR3 still prices 4.32 (Dec-2026), 4.58 (Mar-2027) and 4.755 (Sep-2027). Same window: BoJ hiked to 1.25 percent; USDJPY printed +1.41 percent on 18 Sep with 20d realized 11.04 versus 60d 9.26. AUDUSD itself barely moved (1d +0.09 percent, 1m +0.20 percent, 5d -0.73 percent) at 0.7120, 1y percentile 76.4. AU 2Y is 4.999, 99.2nd percentile, +39.1bp over 1m then -5.5bp on the latest day. AUDNZD 1m +4.27 percent at the 1y 99.8th percentile shows AUD-specific volatility already occurring in crosses, not in AUDUSD.",
+              "policy_path_check": {
+                "pricing_summary": "AU: AONIA 4.35 (17-Sep-2026); ASX 30-day prices 4.565 Oct, 4.685 Nov, 4.725 Dec, terminal 4.86 Mar-2027 (+51bp). US: SOFR 3.85 (17-Sep-2026); SR3Z6 4.32, SR3H7 4.58, SR3U7 4.755; policy-path terminal 4.6025 at 2028-08 (+75.25bp). Fed funds now 3.75-4.00 percent after the 16 Sep 25bp hike.",
+                "rationale": "The options expression is on AUDUSD because the AU policy path and the US policy path jointly set the two-way gap: Australia may not deliver the priced +51bp if housing dominates, while the US hike has already printed and SR3 still prices more. Policy paths are available for both legs; they are used as the priced assumption, not as a directional rates trade.",
+                "relevant_countries": [
+                  "AU",
+                  "US"
+                ],
+                "status": "available"
+              },
+              "price_decomposition": "Level: AUDUSD 0.7120 is only a 1y z of +0.88, so this is not a stretch fade. Change: 5d -0.73 percent as housing news hit, while 3m is still +2.65 percent. AUD factor versus USD factor: AUDNZD and AUDCAD at 1y 99.8th percentiles show the AUD leg is already moving; USDJPY +1.41 percent 1d and VIX crush show the USD/event-vol leg is dominating G10. Rates: AU 2Y high level (99.2nd percentile) with a 1d reversal, versus AONIA still hiking. Marginal driver of quiet AUDUSD is the USD bid after the Fed hike, not resolution of the RBA distribution."
+            },
+            "direction": "long volatility",
+            "entry": null,
+            "evidence_refs": [
+              "market_state",
+              "policy_paths",
+              "policy:AU",
+              "policy:US",
+              "tradable_rate_curves",
+              "fx:AUDUSD",
+              "fx:AUDNZD",
+              "fx:AUDCAD",
+              "fx:USDJPY",
+              "rates:AU",
+              "rates:US",
+              "temp:AU:inflation",
+              "temp:AU:labor",
+              "temp:AU:activity",
+              "temp:AU:consumer",
+              "temp:US:inflation",
+              "temp:US:labor",
+              "mw_20260916_au_housing_tightening",
+              "mw_20260916_fomc_hike_pricing",
+              "rollup:Fed raises 25bp to 3.75\u20134.00%",
+              "rollup:Australian housing downturn deepens under higher rates",
+              "rollup:August CPI keeps the Fed tightening bias intact",
+              "rollup:BoJ raises its policy rate to 1.25%",
+              "funding_context",
+              "pos:cftc",
+              "research_method"
+            ],
+            "expression_comparison": {
+              "rates_candidate": "AONIA strip 2026-11 through 2027-03 (implied 4.685 to 4.86 versus overnight AONIA 4.35, packet terminal +51bp) as a one-way housing-wins long-duration or inflation-wins pay-fixed; AU 2Y 4.999 at the 99.2nd percentile is the sovereign alternative. Both force a single RBA tail.",
+              "rationale": "Dedicated vol seat. Timing of which RBA tail prints is unknown, AUDUSD realized is compressed by a USD factor after the Fed hike, and AU-US 2Y analogs with the same prior 1m move produced both large further tightening and large easing. A long ATM straddle is bounded-risk ownership of that distribution. Spot and rates expressions are each a one-tail bet. Premium/IV/strike mids are missing, so this is a specified options structure with null marks, not a paper fill.",
+              "selected": "options",
+              "spot_candidate": "Directional long or short AUDUSD at ECB 0.712022367194781 (2026-09-18). Spot 1m return is only +0.20 percent while AUDNZD sits at the 1y 99.8th percentile; a linear AUDUSD book cannot own both the housing-dovish and inflation-hawkish gaps."
+            },
+            "horizon": "2-6 weeks",
+            "instrument": "AUDUSD 1-month ATM straddle",
+            "invalidation": "Stand down if checked 1m ATM AUDUSD IV already fully prices a two-way RBA event, or if the RBA path collapses to one tail (housing clearly forces a pause/cut that AONIA fully prices, or inflation clearly validates the +51bp hike path) before any premium is paid. Do not invent a stop in vol points or AUDUSD spots; those marks are not in the packet.",
+            "mispricing": "The mispricing is in the expression, not a quoted IV. Market prices a quiet AUDUSD coexistence of a still-hawkish AONIA path and a housing slump. Packet analogs of the same AU-US 2Y 1m move produced forward 3m outcomes of +38.9bp, -54.7bp and +58.6bp \u2014 a wide distribution. Linear spot or rates cannot own that. Whether implied vol is actually cheap versus that distribution is unknown until option mids exist.",
+            "principal_risks": [
+              "Implied vol, skew and premium are unknown; the straddle can be expensive versus the two-way event. Execution is blocked until those mids exist.",
+              "Theta plus official SOFR 3.85 percent ACT/360 funding on the 100m allocation if AUDUSD stays compressed inside the 1-month window.",
+              "One-way resolution that is already in the curve (AONIA delivers the hike path smoothly, or housing is ignored) so realized never pays the straddle.",
+              "Paper options are unmarkable without premium/IV/strike mids; this structure cannot be booked at a packet mid today.",
+              "Positioning unknown (CFTC/CME unavailable); temperature gauges are dashboard_v8 retained; NZ rates missing so AUDNZD cannot be rates-checked."
+            ],
+            "stop": null,
+            "structure": "Long 1-month ATM AUDUSD straddle (equal notional call and put). Premium, implied volatility, forward, and exact strikes are not in the frozen packet \u2014 all numeric option levels remain null. Do not fill until 1m ATM IV, 25-delta risk-reversal, and 1m realized can be compared with the housing-versus-inflation event distribution. If the checked 25d RR already fully prices one tail, switch to buying the cheaper tail via that risk-reversal rather than inventing a skew; if 1m ATM IV already fully prices a two-way RBA gap, stand down. Paper books cannot mark this structure without option mids.",
+            "target": null,
+            "thesis": "Verified fact: AU housing is contracting under higher rates while AONIA still prices +51bp of hikes and AU inflation temperature is 82; AUDUSD 1m is only +0.20 percent with 20d realized 4.71, even as AUDNZD sits at a 1y extreme. Inference: the RBA reaction function is two-way over a 1-month window and the USD bid after the Fed hike is masking that distribution in AUDUSD spot. Unknown: AUDUSD implied vol, skew, and premium \u2014 so this is not a claim that IV is cheap. Spot and AONIA duration are each a one-tail expression of a two-tail problem. Buy the straddle to own the gap; size and execute only after IV/premium exist.",
+            "why_now": [
+              "Housing-channel evidence printed 16 Sep while the AONIA strip still prices +21.5bp by October and +51bp by March 2027 \u2014 the conflict is live, not retrospective.",
+              "Fed hike transmitted into SOFR 3.85 percent on 17 Sep; the USD factor is holding AUDUSD calm (1m +0.20 percent) even as AUD crosses are already at 1y extremes.",
+              "AU 2Y at the 99.2nd percentile just reversed 5.5bp in one day against an unchanged hike-priced AONIA strip \u2014 the rates path is already two-way.",
+              "VIX 15.44 at the 14.7th percentile after a Fed/BoJ/energy week shows event risk is being faded globally; USDJPY 1d +1.41 percent shows G10 policy events in this freeze still gap.",
+              "Funded seats pay official SOFR 3.85 percent ACT/360 on the full 100m even if flat; a bounded long-vol structure is the way this seat spends the vig on a live two-way discrepancy rather than sitting cash."
+            ]
+          },
+          "type": "TRADER_ROOM_CONTRIBUTION"
+        },
+        "funding_view": null,
+        "trade": {
+          "asset_class": "options",
+          "catalysts": [
+            "Next Australian housing, CPI or RBA communication that forces a choice between the housing tail and the inflation/AONIA-hike tail.",
+            "US labor/inflation prints that either extend the USD bid (keep suppressing AUDUSD realized) or fade it and unmask the AUD-specific distribution already visible in AUDNZD/AUDCAD.",
+            "AONIA strip repricing versus overnight 4.35 if Oct-Nov contracts stop confirming the +21.5 to +33.5bp hike path."
+          ],
+          "confidence": 49,
+          "context_build": {
+            "causal_mechanism": "Test whether the RBA is in a bimodal reaction function: the housing-credit channel is already contracting activity (NSW stamp-duty receipts -24 percent y/y, volumes -18 percent, Sydney/Melbourne values more than 7 percent off peak) while inflation remains the hottest AU temperature (82) and the AONIA curve still prices +21.5bp by Oct-2026 and +51bp by Mar-2027. If housing dominates, the hike path is wrong and AUD gaps lower. If inflation dominates, the RBA keeps tightening and AUD can gap higher versus a USD that has already hiked. Spot AUDUSD averages those states; the option owns the gap.",
+            "flow_and_positioning_check": "CFTC trader-class nets and CME FX futures/options open-interest overlays are unavailable this freeze (HTTP 503/403). Flow cannot be used to confirm or deny crowding in AUDUSD options or spot. The quiet AUDUSD / extreme AUD-cross pattern is consistent with a USD factor and possible systematic USD demand after the hike, but that is inference, not a positioning fact. Do not treat the 20d AUDUSD realized of 4.71 as proof that dealers are long or short gamma.",
+            "historical_reference": {
+              "analogs": [
+                "AU-US 2Y packet analog 2022-02-07: same prior 1m move of -11.5bp, then forward 1m -11.7bp and forward 3m +38.9bp \u2014 subsequent path flipped from more compression to a large widening.",
+                "AU-US 2Y packet analog 2026-04-23: same prior 1m move, then forward 1m -41.3bp and forward 3m -54.7bp \u2014 housing/easing tail continued.",
+                "AU-US 2Y packet analog 2025-07-30: same prior 1m move, then forward 1m +32.7bp and forward 3m +58.6bp \u2014 inflation/tightening tail reasserted.",
+                "Contemporaneous analog: BoJ hike to 1.25 percent on 17 Sep was followed by USDJPY +1.41 percent (1d z 2.73) rather than JPY strength, showing G10 policy events in this freeze are producing gaps against the textbook spot reaction."
+              ],
+              "distribution": "AUDUSD 1y percentile 76.4, 5y percentile 84.3, 20d realized 4.71 versus 60d 5.29 (compressed). AU 2Y 1y percentile 99.2 with 1m +39.1bp. AU-US 2Y spread 25.9bp, 1y percentile 25.6, 1m change -11.5bp. Packet analogs for that same prior 1m AU-US 2Y move are two-way, not mean-reverting.",
+              "regime_differences": "2022 analogs were early in a global hiking cycle with much lower starting policy rates. Today SOFR is already 3.85 percent with SR3 still pricing more hikes, AONIA is already 4.35 percent, and Australian housing is already more than 7 percent off peak \u2014 so the housing tail is live, not prospective. NZ official rates are missing, CFTC/CME positioning is unavailable, and temperature gauges are dashboard_v8 retained. Those gaps make analog forward outcomes a distributional warning, not a sized forecast."
+            },
+            "independent_checks": [
+              "Policy-path versus housing: AONIA still prices +51bp to Mar-2027 while NSW stamp duty/volumes and dwelling values document a tightening channel that is already biting; AU inflation temperature 82 versus labor/activity/consumer 50/54/48 is the same split in a second dataset.",
+              "Cross-market AUD versus AUDUSD: AUDNZD 1y percentile 99.8 (1m +4.27 percent) and AUDCAD 1y percentile 99.8 while AUDUSD 1m is +0.20 percent \u2014 the AUD-specific distribution is already moving in crosses; quiet AUDUSD is a USD-factor residual, not proof of low event risk.",
+              "Global event-vol check: VIX 15.44 at the 14.7th percentile, 1d -2.27 points, after Fed, BoJ and energy headlines in the same week. Equity vol is being faded into a multi-CB event window; that does not price AUDUSD IV (unknown) but it does show the market is compressing event risk just as two-way policy gaps are printing (USDJPY 1d +1.41 percent)."
+            ],
+            "known_vs_new_information": "Known: Fed hike was pre-priced above 90 percent; AONIA hike path and hot AU inflation were already on the screen. New in this freeze: housing-channel evidence that tightening is biting now (16 Sep Reuters), the SOFR 23bp overnight jump as the hike transmitted into the funding benchmark, the 1d AU 2Y reversal of -5.5bp against a still-hawkish AONIA strip, and VIX 15.44 at the 14.7th percentile after a multi-central-bank event week. Known information (housing weakness, inflation heat) needs that new transmission\u2014housing receipts collapsing while the curve still prices hikes\u2014to explain why AUDUSD has not chosen a tail.",
+            "market_assumption_disagreed_with": "Disagree that the RBA path is a single +51bp hike sequence that AUDUSD can sit through. The priced assumption is that housing stress and inflation 82 can be averaged into a modest, already-discounted tightening. The disagreement is that those states are mutually exclusive over a 1-month event window, so the next information (housing, CPI, RBA) produces a gap, not a drift.",
+            "market_implied_assumption": "AONIA implies the cash rate rises from 4.35 to about 4.86 by Mar-2027 (+51bp) and stays near 4.94 through mid-2027. SR3 implies US policy keeps tightening from SOFR 3.85 toward 4.32 by Dec-2026 and 4.58 by Mar-2027. AUDUSD at 0.7120 with only +0.20 percent 1m and 20d realized 4.71 (below 60d 5.29) prices a quiet, one-way coexistence of those paths: US hikes, Australia hikes a bit, AUDUSD does not gap.",
+            "path_to_current_price": "Verified path: Fed delivered a 25bp hike to 3.75-4.00 percent on 16 Sep after futures were greater-than-90 percent priced for it; official SOFR jumped to 3.85 percent effective 17 Sep from 3.62 percent on 16 Sep; SR3 still prices 4.32 (Dec-2026), 4.58 (Mar-2027) and 4.755 (Sep-2027). Same window: BoJ hiked to 1.25 percent; USDJPY printed +1.41 percent on 18 Sep with 20d realized 11.04 versus 60d 9.26. AUDUSD itself barely moved (1d +0.09 percent, 1m +0.20 percent, 5d -0.73 percent) at 0.7120, 1y percentile 76.4. AU 2Y is 4.999, 99.2nd percentile, +39.1bp over 1m then -5.5bp on the latest day. AUDNZD 1m +4.27 percent at the 1y 99.8th percentile shows AUD-specific volatility already occurring in crosses, not in AUDUSD.",
+            "policy_path_check": {
+              "pricing_summary": "AU: AONIA 4.35 (17-Sep-2026); ASX 30-day prices 4.565 Oct, 4.685 Nov, 4.725 Dec, terminal 4.86 Mar-2027 (+51bp). US: SOFR 3.85 (17-Sep-2026); SR3Z6 4.32, SR3H7 4.58, SR3U7 4.755; policy-path terminal 4.6025 at 2028-08 (+75.25bp). Fed funds now 3.75-4.00 percent after the 16 Sep 25bp hike.",
+              "rationale": "The options expression is on AUDUSD because the AU policy path and the US policy path jointly set the two-way gap: Australia may not deliver the priced +51bp if housing dominates, while the US hike has already printed and SR3 still prices more. Policy paths are available for both legs; they are used as the priced assumption, not as a directional rates trade.",
+              "relevant_countries": [
+                "AU",
+                "US"
+              ],
+              "status": "available"
+            },
+            "price_decomposition": "Level: AUDUSD 0.7120 is only a 1y z of +0.88, so this is not a stretch fade. Change: 5d -0.73 percent as housing news hit, while 3m is still +2.65 percent. AUD factor versus USD factor: AUDNZD and AUDCAD at 1y 99.8th percentiles show the AUD leg is already moving; USDJPY +1.41 percent 1d and VIX crush show the USD/event-vol leg is dominating G10. Rates: AU 2Y high level (99.2nd percentile) with a 1d reversal, versus AONIA still hiking. Marginal driver of quiet AUDUSD is the USD bid after the Fed hike, not resolution of the RBA distribution."
+          },
+          "direction": "long volatility",
+          "entry": null,
+          "evidence_refs": [
+            "market_state",
+            "policy_paths",
+            "policy:AU",
+            "policy:US",
+            "tradable_rate_curves",
+            "fx:AUDUSD",
+            "fx:AUDNZD",
+            "fx:AUDCAD",
+            "fx:USDJPY",
+            "rates:AU",
+            "rates:US",
+            "temp:AU:inflation",
+            "temp:AU:labor",
+            "temp:AU:activity",
+            "temp:AU:consumer",
+            "temp:US:inflation",
+            "temp:US:labor",
+            "mw_20260916_au_housing_tightening",
+            "mw_20260916_fomc_hike_pricing",
+            "rollup:Fed raises 25bp to 3.75\u20134.00%",
+            "rollup:Australian housing downturn deepens under higher rates",
+            "rollup:August CPI keeps the Fed tightening bias intact",
+            "rollup:BoJ raises its policy rate to 1.25%",
+            "funding_context",
+            "pos:cftc",
+            "research_method"
+          ],
+          "expression_comparison": {
+            "rates_candidate": "AONIA strip 2026-11 through 2027-03 (implied 4.685 to 4.86 versus overnight AONIA 4.35, packet terminal +51bp) as a one-way housing-wins long-duration or inflation-wins pay-fixed; AU 2Y 4.999 at the 99.2nd percentile is the sovereign alternative. Both force a single RBA tail.",
+            "rationale": "Dedicated vol seat. Timing of which RBA tail prints is unknown, AUDUSD realized is compressed by a USD factor after the Fed hike, and AU-US 2Y analogs with the same prior 1m move produced both large further tightening and large easing. A long ATM straddle is bounded-risk ownership of that distribution. Spot and rates expressions are each a one-tail bet. Premium/IV/strike mids are missing, so this is a specified options structure with null marks, not a paper fill.",
+            "selected": "options",
+            "spot_candidate": "Directional long or short AUDUSD at ECB 0.712022367194781 (2026-09-18). Spot 1m return is only +0.20 percent while AUDNZD sits at the 1y 99.8th percentile; a linear AUDUSD book cannot own both the housing-dovish and inflation-hawkish gaps."
+          },
+          "horizon": "2-6 weeks",
+          "instrument": "AUDUSD 1-month ATM straddle",
+          "invalidation": "Stand down if checked 1m ATM AUDUSD IV already fully prices a two-way RBA event, or if the RBA path collapses to one tail (housing clearly forces a pause/cut that AONIA fully prices, or inflation clearly validates the +51bp hike path) before any premium is paid. Do not invent a stop in vol points or AUDUSD spots; those marks are not in the packet.",
+          "mispricing": "The mispricing is in the expression, not a quoted IV. Market prices a quiet AUDUSD coexistence of a still-hawkish AONIA path and a housing slump. Packet analogs of the same AU-US 2Y 1m move produced forward 3m outcomes of +38.9bp, -54.7bp and +58.6bp \u2014 a wide distribution. Linear spot or rates cannot own that. Whether implied vol is actually cheap versus that distribution is unknown until option mids exist.",
+          "principal_risks": [
+            "Implied vol, skew and premium are unknown; the straddle can be expensive versus the two-way event. Execution is blocked until those mids exist.",
+            "Theta plus official SOFR 3.85 percent ACT/360 funding on the 100m allocation if AUDUSD stays compressed inside the 1-month window.",
+            "One-way resolution that is already in the curve (AONIA delivers the hike path smoothly, or housing is ignored) so realized never pays the straddle.",
+            "Paper options are unmarkable without premium/IV/strike mids; this structure cannot be booked at a packet mid today.",
+            "Positioning unknown (CFTC/CME unavailable); temperature gauges are dashboard_v8 retained; NZ rates missing so AUDNZD cannot be rates-checked."
+          ],
+          "stop": null,
+          "structure": "Long 1-month ATM AUDUSD straddle (equal notional call and put). Premium, implied volatility, forward, and exact strikes are not in the frozen packet \u2014 all numeric option levels remain null. Do not fill until 1m ATM IV, 25-delta risk-reversal, and 1m realized can be compared with the housing-versus-inflation event distribution. If the checked 25d RR already fully prices one tail, switch to buying the cheaper tail via that risk-reversal rather than inventing a skew; if 1m ATM IV already fully prices a two-way RBA gap, stand down. Paper books cannot mark this structure without option mids.",
+          "target": null,
+          "thesis": "Verified fact: AU housing is contracting under higher rates while AONIA still prices +51bp of hikes and AU inflation temperature is 82; AUDUSD 1m is only +0.20 percent with 20d realized 4.71, even as AUDNZD sits at a 1y extreme. Inference: the RBA reaction function is two-way over a 1-month window and the USD bid after the Fed hike is masking that distribution in AUDUSD spot. Unknown: AUDUSD implied vol, skew, and premium \u2014 so this is not a claim that IV is cheap. Spot and AONIA duration are each a one-tail expression of a two-tail problem. Buy the straddle to own the gap; size and execute only after IV/premium exist.",
+          "why_now": [
+            "Housing-channel evidence printed 16 Sep while the AONIA strip still prices +21.5bp by October and +51bp by March 2027 \u2014 the conflict is live, not retrospective.",
+            "Fed hike transmitted into SOFR 3.85 percent on 17 Sep; the USD factor is holding AUDUSD calm (1m +0.20 percent) even as AUD crosses are already at 1y extremes.",
+            "AU 2Y at the 99.2nd percentile just reversed 5.5bp in one day against an unchanged hike-priced AONIA strip \u2014 the rates path is already two-way.",
+            "VIX 15.44 at the 14.7th percentile after a Fed/BoJ/energy week shows event risk is being faded globally; USDJPY 1d +1.41 percent shows G10 policy events in this freeze still gap.",
+            "Funded seats pay official SOFR 3.85 percent ACT/360 on the full 100m even if flat; a bounded long-vol structure is the way this seat spends the vig on a live two-way discrepancy rather than sitting cash."
+          ]
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-19T21:40:00Z",
+        "evidence_hash": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
+        "overnight_run_id": null,
+        "review_packet_id": null,
+        "source_ref": "trader-room/runs/tr-20260919T214000Z-ondemand/submissions/vol-convexity.json",
+        "trader_room_run_id": "tr-20260919T214000Z-ondemand"
+      },
+      "rationale": "AUDUSD spot is the wrong instrument: RBA reaction function is bimodal (housing contraction versus inflation 82 and an AONIA path still +51bp by Mar-2027) while the USD factor is suppressing AUDUSD realized even as AUD crosses already print extremes. Long a 1-month ATM AUDUSD straddle owns both tails with bounded premium. Premium, IV and strikes are absent from the freeze; numeric levels stay null and execution is blocked until those marks exist.",
+      "run_id": "tr-20260919T214000Z-ondemand",
+      "schema_version": 1,
+      "thesis": "Verified fact: AU housing is contracting under higher rates while AONIA still prices +51bp of hikes and AU inflation temperature is 82; AUDUSD 1m is only +0.20 percent with 20d realized 4.71, even as AUDNZD sits at a 1y extreme. Inference: the RBA reaction function is two-way over a 1-month window and the USD bid after the Fed hike is masking that distribution in AUDUSD spot. Unknown: AUDUSD implied vol, skew, and premium \u2014 so this is not a claim that IV is cheap. Spot and AONIA duration are each a one-tail expression of a two-tail problem. Buy the straddle to own the gap; size and execute only after IV/premium exist."
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_DECISION_JOURNAL"
 }
