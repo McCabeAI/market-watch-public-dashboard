@@ -346,17 +346,22 @@ def collect_official_curves(*, today: date, fetch_bytes: FetchBytes) -> dict[str
 
 
 def validate_official_curves(payload: Mapping[str, Any]) -> None:
+    """Validate supplemental government curves without making them a trading gate."""
     if payload.get("method", {}).get("model_calls") != 0:
         raise ValueError("official curve collector must use zero model calls")
-    if payload.get("status") == "unavailable":
-        return
+    if payload.get("status") not in {"ok", "partial", "unavailable"}:
+        raise ValueError("official curves invalid status")
     countries = payload.get("countries")
     if not isinstance(countries, Mapping) or set(countries) != {"US", "CA", "AU"}:
         raise ValueError("official curves must contain exactly US, CA and AU")
     for country in ("US", "CA", "AU"):
         block = countries[country]
+        if block.get("status") == "unavailable":
+            if not block.get("error"):
+                raise ValueError(f"{country} official curve unavailable without error provenance")
+            continue
         if block.get("status") != "ok":
-            raise ValueError(f"{country} official curve unavailable: {block.get('error')}")
+            raise ValueError(f"{country} official curve invalid status: {block.get('status')}")
         dfs = block.get("discount_factors")
         if not isinstance(dfs, Mapping):
             raise ValueError(f"{country} official curve missing discount_factors")
