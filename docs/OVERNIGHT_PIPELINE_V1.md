@@ -161,7 +161,7 @@ Paper-mid convention:
 - existing positions are re-marked from the newest deterministic market-state packet before P&L is calculated;
 - spot FX uses the same-fixing ECB cross; outright sovereign rates use the official yield observation; cross-market RV/curve trades use deterministic spread mids; SOFR/CORRA/AONIA-linked futures use the packet's implied-rate mid;
 - derived curve expressions are allowed when every source leg is present in the frozen packet. The position stores the expression definition and trusted code recomputes the derived mid on every review;
-- supported derived math includes linear curve/spread combinations and forward swaps from deterministic discount factors. For a forward swap, trusted code uses `(P_start - P_end) / sum(alpha_i * P_i)`. A 2y2y therefore requires the packet's actual 2y-to-4y discount-curve inputs; par-yield interpolation is not silently substituted;
+- supported derived math includes linear curve/spread combinations and forward swaps/fwd-fwds from `official_curves`. US/Canada/Australia official government zero curves are accepted as the close-enough paper proxy for the corresponding swap/OIS curve. For a forward swap, trusted code uses `(P_start - P_end) / sum(alpha_i * P_i)`; compact expressions such as US 2y2y are resolved and re-marked from the frozen official curve;
 - an advocate may use its permitted research/subagent capacity to analyze curve construction, but canonical entry/exit/P&L math is always replayed deterministically from frozen source legs;
 - if a required source leg is missing, that expression is not paper-tradeable. Options likewise remain blocked until the packet contains the premium/IV/strike data needed to mark them.
 

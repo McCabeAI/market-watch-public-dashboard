@@ -24,7 +24,11 @@ The existing Market Watch feed is the first place to look. Fresh web research ma
 
 Load the freshest valid deterministic market-state snapshot produced under `docs/MARKET_STATE_FEED_V1.md` / `scripts/market_state.py`. Include sovereign rates, curve measures, cross-market relative-value spreads, G10 FX crosses, returns, realized volatility/distribution context, provenance and staleness that are relevant to the run.
 
-The market-state packet must also carry the observable **policy-path layer** for the United States, Canada and Australia: current SOFR/CORRA/AONIA benchmarks and public futures/OIS-implied paths. Australia additionally carries official RBA 1M/3M/6M OIS, bank-bill rates and bill-minus-OIS basis context. Sovereign 2Y/5Y levels do not satisfy this requirement. The packet should also include deterministic historical move analogs with prior episode dates and forward outcomes so advocates can test comparable states rather than merely quote percentiles.
+The market-state packet must also carry the observable **policy-path layer** for the United States, Canada and Australia: current SOFR/CORRA/AONIA benchmarks and public futures/OIS-implied paths. Australia additionally carries official RBA 1M/3M/6M OIS, bank-bill rates and bill-minus-OIS basis context. Sovereign 2Y/5Y levels do not satisfy this requirement.
+
+The same packet carries `official_curves` for US/Canada/Australia. These are official government zero/forward curves accepted as the paper-book proxy for derived rates structures. They allow advocates to express fwd-fwds such as 2y2y without requiring executable swap quotes. The proxy distinction and source vintage remain explicit. A missing official curve blocks that derived expression, not unrelated spot/outright trades.
+
+The packet should also include deterministic historical move analogs with prior episode dates and forward outcomes so advocates can test comparable states rather than merely quote percentiles.
 
 Do not invent missing values. A source explicitly marked unavailable or stale remains unavailable/stale in the common packet.
 

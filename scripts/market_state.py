@@ -28,6 +28,7 @@ from typing import Mapping, Sequence
 
 from scripts.cross_asset_data import collect_cross_assets
 from scripts.market_opportunities import build_opportunities
+from scripts.official_curve_data import collect_official_curves, validate_official_curves
 from scripts.positioning_data import build_positioning, validate_positioning
 from scripts.policy_path_data import collect_policy_paths, validate_policy_paths
 
@@ -756,6 +757,7 @@ def build_snapshot(
     include_cross_assets: bool = True,
     include_positioning: bool | None = None,
     include_policy_paths: bool | None = None,
+    include_official_curves: bool | None = None,
 ) -> dict:
     today = today or datetime.now(timezone.utc).date()
     start = today - timedelta(days=366 * 5 + 15)
@@ -848,6 +850,30 @@ def build_snapshot(
             },
         }
     )
+    if include_official_curves is None:
+        include_official_curves = include_cross_assets
+    official_curves = (
+        collect_official_curves(today=today, fetch_bytes=fetch_bytes)
+        if include_official_curves
+        else {
+            "status": "unavailable",
+            "countries": {
+                c: {"status": "unavailable", "error": "official curve collection disabled for this invocation"}
+                for c in ("US", "CA", "AU")
+            },
+            "errors": {},
+            "method": {
+                "model_calls": 0,
+                "credentials_required": [],
+                "purpose": "official government zero/forward curve proxy for deterministic paper fwd-fwd and curve marks",
+                "ois_equivalence": "proxy_only",
+            },
+        }
+    )
+    if include_official_curves and official_curves.get("status") != "ok":
+        for country in ("US", "CA", "AU"):
+            if (official_curves.get("countries", {}).get(country) or {}).get("status") != "ok":
+                unavailable_sources.append(f"{country}_official_curve")
     if include_positioning is None:
         include_positioning = include_cross_assets
     positioning_start = today - timedelta(days=366 * 3 + 30)
@@ -885,6 +911,7 @@ def build_snapshot(
         nz_source["observation_date"] = None
     return {
         "policy_paths": policy_paths,
+        "official_curves": official_curves,
         "cross_assets": {"series": cross_meta, "status": "partial" if any(m["status"] != "ok" for m in cross_meta.values()) else "ok"},
         "opportunities": opportunities,
         "positioning": positioning,
@@ -966,6 +993,7 @@ def build_snapshot(
                 "marks NZ rates and NZ-dependent RV spreads unavailable without fabricating data. "
                 "Cross-country spreads use exact common observation dates only. "
                 "Policy-path context uses official overnight benchmarks plus public CORRA/SOFR/AONIA-linked futures and RBA money-market data. "
+                "Official US/Canada/Australia government zero/forward curves provide deterministic paper proxies for derived curve and fwd-fwd expressions. "
                 "CFTC TFF supplies trader-class ownership/crowding context and CME's public volume/open-interest service supplies daily FX futures and aggregate options OI history. "
                 "No historical warehouse is written to GitHub or Supabase."
             ),
@@ -992,6 +1020,10 @@ def validate_snapshot(s: Mapping) -> None:
         validate_policy_paths(s.get("policy_paths") or {})
     except Exception as exc:
         raise MarketStateError(f"invalid policy_paths block: {exc}") from exc
+    try:
+        validate_official_curves(s.get("official_curves") or {})
+    except Exception as exc:
+        raise MarketStateError(f"invalid official_curves block: {exc}") from exc
     if set(s.get("rates", {})) != set(RATE_COUNTRIES):
         raise MarketStateError("rates block must contain US, CA, AU and NZ")
     for c in RATE_COUNTRIES:
