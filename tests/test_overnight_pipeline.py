@@ -15,12 +15,13 @@ import sys
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from scripts.overnight.books import apply_action, empty_books, empty_seat, mark_to_market, position_pnl, public_books_view, realized_increment
+from scripts.overnight.books import apply_action, apply_review, empty_books, empty_seat, mark_to_market, position_pnl, public_books_view, realized_increment
 from scripts.overnight.clock import overnight_run_id, stage_for_time, stage_window
 from scripts.overnight.constants import FUNDING_RATE_ANNUAL, LOCAL_CRON, SPOT_SEATS, STAGES, STANDING_SEATS, STARTING_NAV_USD
 from scripts.overnight.errors import EvidenceBoundaryError, FreshnessError, PublicationError, SchemaError
 from scripts.overnight.expression import expression_rule, validate_expression_memo
 from scripts.overnight.freshness import assert_action_allowed, publication_decision
+from scripts.overnight.paper_marks import PaperMarkError, resolve_paper_mid
 from scripts.overnight.pipeline import dry_run, run_stage
 from scripts.overnight.publish import publication_gate
 from scripts.overnight.review import dry_run_reviews
@@ -320,6 +321,129 @@ class BookTransitionTests(unittest.TestCase):
         pnl = position_pnl(pos)
         self.assertTrue(pnl["pnl_unavailable"])
         self.assertIsNone(pnl["unrealized_pnl_usd"])
+
+
+
+class PaperMarkTests(unittest.TestCase):
+    def test_direct_mid_overrides_model_price_in_paper_book(self):
+        books = empty_books(overnight_run_id="overnight-20260918", when=AS_OF)
+        reviews = {
+            seat: {
+                "seat": seat,
+                "actions": [{"action": "HOLD", "expression_memo": (
+                    _spot_memo() if seat in {"dollar-king", "cross-merchant"} else
+                    {
+                        "rates_candidate": None,
+                        "spot_candidate": None,
+                        "options_candidate": None,
+                        "selected": "none",
+                        "rationale": "hold",
+                    }
+                )}],
+            }
+            for seat in STANDING_SEATS
+        }
+        reviews["dollar-king"] = {
+            "seat": "dollar-king",
+            "conviction": 60,
+            "thesis": "test",
+            "expression_memo": _spot_memo("USDCAD"),
+            "actions": [{
+                "action": "OPEN",
+                "instrument": "USDCAD",
+                "side": "long",
+                "notional_usd": 10_000_000,
+                "price": 9.99,
+                "asset_class": "spot_fx",
+                "expression_memo": _spot_memo("USDCAD"),
+            }],
+        }
+        market_state = {"fx": {"USDCAD": {"spot": 1.36, "as_of": "2026-09-18"}}}
+        updated = apply_review(
+            books,
+            reviews,
+            families=_fresh_families(),
+            run_id="overnight-20260918",
+            evidence_cutoff="2026-09-18T12:00:00-04:00",
+            when=AS_OF,
+            market_state=market_state,
+        )
+        pos = updated["seats"]["dollar-king"]["positions"][0]
+        self.assertEqual(pos["entry_price"], 1.36)
+        self.assertEqual(pos["mark_price"], 1.36)
+        self.assertIn("market_state.fx.USDCAD.spot", pos["entry_price_source"])
+
+    def test_linear_curve_expression_is_recomputed_from_source_legs(self):
+        state = {
+            "rates": {
+                "US": {
+                    "tenors": {
+                        "2Y": {"value": 4.50, "as_of": "2026-09-18"},
+                        "10Y": {"value": 5.00, "as_of": "2026-09-18"},
+                    }
+                }
+            }
+        }
+        mark = resolve_paper_mid(
+            state,
+            "US_2s10s_custom",
+            asset_class="curve",
+            expression={
+                "type": "linear_combo",
+                "output_unit": "bps",
+                "legs": [
+                    {"instrument": "US_10Y", "asset_class": "rates", "weight": 1},
+                    {"instrument": "US_2Y", "asset_class": "rates", "weight": -1},
+                ],
+            },
+        )
+        self.assertEqual(mark["value"], 50.0)
+        self.assertEqual(mark["quote_unit"], "bps")
+        self.assertEqual(mark["kind"], "derived")
+
+    def test_2y2y_forward_swap_math_uses_discount_factors(self):
+        state = {
+            "discount_factors": {
+                "US": {
+                    "2Y": {"discount_factor": 0.93, "as_of": "2026-09-18"},
+                    "3Y": {"discount_factor": 0.88, "as_of": "2026-09-18"},
+                    "4Y": {"discount_factor": 0.83, "as_of": "2026-09-18"},
+                }
+            }
+        }
+        mark = resolve_paper_mid(
+            state,
+            "US_2y2y",
+            asset_class="rates",
+            expression={
+                "type": "forward_swap",
+                "start_discount_ref": "discount_factors.US.2Y",
+                "end_discount_ref": "discount_factors.US.4Y",
+                "payment_discount_refs": [
+                    {"ref": "discount_factors.US.3Y", "accrual": 1.0},
+                    {"ref": "discount_factors.US.4Y", "accrual": 1.0},
+                ],
+            },
+        )
+        expected = 100.0 * (0.93 - 0.83) / (0.88 + 0.83)
+        self.assertAlmostEqual(mark["value"], expected, places=8)
+
+    def test_forward_swap_refuses_to_fake_missing_curve_inputs(self):
+        with self.assertRaises(PaperMarkError):
+            resolve_paper_mid(
+                {"rates": {"US": {"tenors": {"2Y": {"value": 4.5}, "5Y": {"value": 4.9}}}}},
+                "US_2y2y",
+                asset_class="rates",
+                expression={
+                    "type": "forward_swap",
+                    "start_discount_ref": "discount_factors.US.2Y",
+                    "end_discount_ref": "discount_factors.US.4Y",
+                    "payment_discount_refs": [
+                        {"ref": "discount_factors.US.3Y", "accrual": 1.0},
+                        {"ref": "discount_factors.US.4Y", "accrual": 1.0},
+                    ],
+                },
+            )
 
 
 class FreshnessMatrixTests(unittest.TestCase):
