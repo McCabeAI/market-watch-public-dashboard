@@ -8,6 +8,7 @@ from scripts.policy_path_data import (
     parse_boc_corra_html,
     parse_boc_corra_json,
     parse_cme_sofr_html,
+    parse_cme_sofr_settlements_json,
     parse_mx_expectations_html,
     parse_nyfed_sofr_json,
     parse_rba_f1_csv,
@@ -53,6 +54,19 @@ class PolicyPathParserTests(unittest.TestCase):
         result = parse_nyfed_sofr_json(payload)
         self.assertEqual(result["rate"], 3.75)
         self.assertEqual(result["as_of"], "2026-09-18")
+
+    def test_cme_one_month_sofr_settlement_api(self):
+        payload = (
+            '{"settlements":['
+            '{"month":"SEP 26","settle":"96.2475","volume":"50,352","openInterest":"290,746"},'
+            '{"month":"DEC 26","settle":"95.8100","volume":"21,399","openInterest":"150,095"}'
+            ']}'
+        )
+        rows = parse_cme_sofr_settlements_json(payload, benchmark=3.75)
+        self.assertEqual(rows[0]["expiry"], "2026-09")
+        self.assertEqual(rows[1]["implied_rate"], 4.19)
+        self.assertEqual(rows[1]["change_from_overnight_bps"], 44.0)
+        self.assertEqual(rows[0]["open_interest"], 290746.0)
 
     def test_cme_one_month_sofr(self):
         html = """
