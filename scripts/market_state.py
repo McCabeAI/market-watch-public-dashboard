@@ -757,6 +757,7 @@ def build_snapshot(
     include_cross_assets: bool = True,
     include_positioning: bool | None = None,
     include_policy_paths: bool | None = None,
+    include_forward_curves: bool | None = None,
 ) -> dict:
     today = today or datetime.now(timezone.utc).date()
     start = today - timedelta(days=366 * 5 + 15)
@@ -832,7 +833,26 @@ def build_snapshot(
     opportunities = build_opportunities(rates_raw, fx_raw, cross_raw, cross_meta, today)
     if include_policy_paths is None:
         include_policy_paths = include_cross_assets
-    forward_curves = collect_forward_curves(today=today, fetch_bytes=fetch_bytes)
+    if include_forward_curves is None:
+        include_forward_curves = include_cross_assets
+    forward_curves = (
+        collect_forward_curves(today=today, fetch_bytes=fetch_bytes)
+        if include_forward_curves
+        else {
+            "status": "unavailable",
+            "countries": {
+                c: {"status": "unavailable", "error": "forward curve collection disabled for this invocation"}
+                for c in ("US", "CA", "AU")
+            },
+            "sources": {},
+            "method": {
+                "model_calls": 0,
+                "credentials_required": [],
+                "paper_mid_proxy": True,
+                "note": "official government zero/forward curve collection disabled for this invocation",
+            },
+        }
+    )
     policy_paths = (
         collect_policy_paths(today=today, fetch_bytes=fetch_bytes)
         if include_policy_paths
