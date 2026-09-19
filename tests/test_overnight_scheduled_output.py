@@ -144,6 +144,31 @@ class ScheduledOutputTests(unittest.TestCase):
         self.assertEqual(run["stages"]["trader_review"]["status"], "succeeded")
         self.assertEqual(self.store.read_books()["last_successful_review_run_id"], self.run_id)
 
+    def test_scheduled_open_uses_frozen_mid_not_model_price(self) -> None:
+        memo = {
+            "rates_candidate": None,
+            "spot_candidate": {"instrument": "USDCAD", "asset_class": "spot_fx", "rationale": "spot"},
+            "options_candidate": None,
+            "selected": "spot",
+            "rationale": "Dedicated USD spot seat.",
+        }
+        decision = self.payload["decisions"]["dollar-king"]
+        decision["expression_memo"] = memo
+        decision["actions"] = [{
+            "action": "OPEN",
+            "instrument": "USDCAD",
+            "side": "long",
+            "notional_usd": 10_000_000,
+            "price": 9.99,
+            "asset_class": "spot_fx",
+            "expression_memo": memo,
+        }]
+        review = simulate_output(self.store, self.payload)
+        pos = review["books"]["seats"]["dollar-king"]["positions"][0]
+        self.assertEqual(pos["entry_price"], 1.36)
+        self.assertEqual(pos["mark_price"], 1.36)
+        self.assertIn("market_state.fx.USDCAD.spot", pos["entry_price_source"])
+
     def test_rejects_model_calculated_book_state(self) -> None:
         self.payload["books"] = {"nav_usd": 999}
         with self.assertRaises(Exception):
