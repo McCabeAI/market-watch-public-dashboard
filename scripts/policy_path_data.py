@@ -27,13 +27,20 @@ MX_EXPECTATIONS_URL = "https://www.m-x.ca/en/trading/tools/canadian-interest-rat
 NYFED_SOFR_URL = "https://markets.newyorkfed.org/api/rates/secured/sofr/last/10.json"
 NYFED_SOFR_PAGE = "https://www.newyorkfed.org/markets/reference-rates/sofr"
 CME_SOFR_URL = "https://www.cmegroup.com/markets/interest-rates/stirs/one-month-sofr.quotes.html"
+CME_SR3_URL = "https://www.cmegroup.com/markets/interest-rates/stirs/three-month-sofr.quotes.html"
 CME_SOFR_BULLETIN_URL = "https://www.cmegroup.com/daily_bulletin/current/Section10_Interest_Rate_Futures_Continued.pdf"
 ESIGNAL_SOFR_CHAIN_URL = "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR1"
 ESIGNAL_SR3_CHAIN_URL = "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3"
 CME_SOFR_PRODUCT_ID = "8463"
+CME_SR3_PRODUCT_ID = "8462"
 CME_SOFR_SETTLEMENTS_TEMPLATE = (
     "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/"
     + CME_SOFR_PRODUCT_ID
+    + "/FUT?tradeDate={trade_date}&strategy=DEFAULT&pageSize=500"
+)
+CME_SR3_SETTLEMENTS_TEMPLATE = (
+    "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/"
+    + CME_SR3_PRODUCT_ID
     + "/FUT?tradeDate={trade_date}&strategy=DEFAULT&pageSize=500"
 )
 RBA_F1_URL = "https://www.rba.gov.au/statistics/tables/csv/f1-data.csv"
@@ -347,6 +354,99 @@ def parse_cme_sr3_bulletin_pdf(data: bytes, *, benchmark: float) -> list[dict[st
     reader = PdfReader(io.BytesIO(data))
     text = "\n".join(page.extract_text() or "" for page in reader.pages)
     return parse_cme_sr3_bulletin_text(text, benchmark=benchmark)
+
+
+def parse_cme_sr3_html(text: str, *, benchmark: float) -> list[dict[str, Any]]:
+    """Parse quarterly SR3 delayed quotes directly from CME's public quote table."""
+    parser = _TableParser()
+    parser.feed(text)
+    rows: list[dict[str, Any]] = []
+    for table in parser.tables:
+        for row in table:
+            if not row:
+                continue
+            first = row[0].upper()
+            code_match = re.search(r"\b(SR3[HMUZ]\d)\b", first)
+            expiry = _parse_expiry(first)
+            if not code_match or not expiry:
+                continue
+            # CME quote table: Month, Options, Chart, Last, Change, PriorSettle,
+            # Open, High, Low, Volume, Updated. Use delayed Last as the paper reference.
+            price = _num(row[3]) if len(row) > 3 else None
+            if price is None or not 90.0 < price < 100.5:
+                continue
+            volume = _num(row[9]) if len(row) > 9 else None
+            rows.append(
+                _contract_row(
+                    expiry=expiry,
+                    code=code_match.group(1),
+                    price=price,
+                    benchmark=benchmark,
+                    source="CME_SR3_DELAYED_QUOTE",
+                    volume=volume,
+                )
+            )
+    rows = sorted({row["expiry"]: row for row in rows}.values(), key=lambda row: row["expiry"])
+    if not rows:
+        raise ValueError("CME Three-Month SOFR quote page exposed no usable quarterly contracts")
+    return rows
+
+
+def parse_cme_sr3_settlements_json(text: str, *, benchmark: float) -> list[dict[str, Any]]:
+    """Parse official CME settlement API rows for product 8462 (Three-Month SOFR)."""
+    payload = json.loads(text)
+    month_codes = {"MAR": "H", "JUN": "M", "SEP": "U", "DEC": "Z"}
+    rows: list[dict[str, Any]] = []
+    for item in payload.get("settlements") or []:
+        label = str(item.get("month") or "")
+        expiry = _parse_cme_month(label)
+        price = _num(item.get("settle"))
+        m = re.fullmatch(r"([A-Z]{3})\s+(\d{2})", _clean(label).upper())
+        if not expiry or not m or m.group(1) not in month_codes:
+            continue
+        if price is None or not 90.0 < price < 100.5:
+            continue
+        rows.append(
+            _contract_row(
+                expiry=expiry,
+                code=f"SR3{month_codes[m.group(1)]}{m.group(2)[-1]}",
+                price=price,
+                benchmark=benchmark,
+                source="CME_SR3_SETTLEMENT",
+                volume=_num(item.get("volume")),
+                open_interest=_num(item.get("openInterest")),
+            )
+        )
+    rows.sort(key=lambda row: row["expiry"])
+    if not rows:
+        raise ValueError("CME Three-Month SOFR settlement response contained no usable quarterly contracts")
+    return rows
+
+
+def _fetch_recent_cme_sr3_settlements(
+    *,
+    today: date,
+    fetch_bytes: FetchBytes,
+    benchmark: float,
+) -> tuple[list[dict[str, Any]], str]:
+    last_error: Exception | None = None
+    for offset in range(0, 8):
+        d = today - timedelta(days=offset)
+        trade_date = d.strftime("%m/%d/%Y")
+        url = CME_SR3_SETTLEMENTS_TEMPLATE.format(trade_date=trade_date)
+        try:
+            body = fetch_bytes(
+                url,
+                user_agent=(
+                    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+                    "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+                ),
+                referer=CME_SR3_URL,
+            ).decode("utf-8", errors="replace")
+            return parse_cme_sr3_settlements_json(body, benchmark=benchmark), url
+        except Exception as exc:
+            last_error = exc
+    raise ValueError(f"no usable CME SR3 settlement response in 8-day lookback: {last_error}")
 
 
 def parse_esignal_sofr_html(text: str, *, benchmark: float) -> list[dict[str, Any]]:
@@ -687,29 +787,54 @@ def collect_policy_paths(
             us_curve_source = ESIGNAL_SOFR_CHAIN_URL
             us_curve_method = "delayed ICE One-Month SOFR futures chain via eSignal fallback because CME blocks hosted runners"
         # Tradable USD curve: quarterly Three-Month SOFR futures (SR3).
+        # Prefer CME's own delayed quote table, then its settlement endpoint,
+        # then the Daily Bulletin. Do not substitute a third-party curve.
+        sr3_errors: list[str] = []
+        contracts_3m: list[dict[str, Any]] | None = None
+        sr3_source = CME_SR3_URL
+        sr3_method = "CME delayed SR3 quotes"
         try:
-            sr3_bulletin = fetch_bytes(
-                CME_SOFR_BULLETIN_URL,
+            sr3_html = fetch_bytes(
+                CME_SR3_URL,
                 user_agent=(
                     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
                     "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
                 ),
-                referer="https://www.cmegroup.com/market-data/daily-bulletin.html",
-            )
-            contracts_3m = parse_cme_sr3_bulletin_pdf(sr3_bulletin, benchmark=float(sofr["rate"]))
-            sr3_source = CME_SOFR_BULLETIN_URL
-            sr3_method = "CME Daily Bulletin SR3 settlements"
-        except Exception:
-            sr3_fallback = fetch_bytes(
-                ESIGNAL_SR3_CHAIN_URL,
-                user_agent=(
-                    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-                    "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
-                ),
+                referer="https://www.cmegroup.com/",
             ).decode("utf-8", errors="replace")
-            contracts_3m = parse_esignal_sr3_html(sr3_fallback, benchmark=float(sofr["rate"]))
-            sr3_source = ESIGNAL_SR3_CHAIN_URL
-            sr3_method = "delayed Three-Month SOFR futures chain via eSignal fallback"
+            contracts_3m = parse_cme_sr3_html(sr3_html, benchmark=float(sofr["rate"]))
+        except Exception as exc:
+            sr3_errors.append(f"quotes: {exc}")
+
+        if not contracts_3m:
+            try:
+                contracts_3m, sr3_source = _fetch_recent_cme_sr3_settlements(
+                    today=today,
+                    fetch_bytes=fetch_bytes,
+                    benchmark=float(sofr["rate"]),
+                )
+                sr3_method = "CME SR3 settlements"
+            except Exception as exc:
+                sr3_errors.append(f"settlements: {exc}")
+
+        if not contracts_3m:
+            try:
+                sr3_bulletin = fetch_bytes(
+                    CME_SOFR_BULLETIN_URL,
+                    user_agent=(
+                        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+                        "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+                    ),
+                    referer="https://www.cmegroup.com/market-data/daily-bulletin.html",
+                )
+                contracts_3m = parse_cme_sr3_bulletin_pdf(sr3_bulletin, benchmark=float(sofr["rate"]))
+                sr3_source = CME_SOFR_BULLETIN_URL
+                sr3_method = "CME Daily Bulletin SR3 settlements"
+            except Exception as exc:
+                sr3_errors.append(f"bulletin: {exc}")
+
+        if not contracts_3m:
+            raise ValueError("CME SR3 unavailable across official quote/settlement/bulletin paths: " + " | ".join(sr3_errors))
 
         countries["US"] = {
             "status": "ok",
