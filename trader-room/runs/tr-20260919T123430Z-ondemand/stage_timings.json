@@ -30,8 +30,12 @@
       "status": "succeeded"
     },
     {
+      "composer_calls": 0,
+      "ended_at": "2026-09-19T12:56:47Z",
       "model": "grok-4.6",
+      "model_calls": 12,
       "model_calls_planned": 12,
+      "notes": "12 direct-conflict grok-4.6 rebuttals; all unchanged; zero subagents.",
       "seats": [
         "carry-is-king",
         "catalyst-junkie",
@@ -47,18 +51,27 @@
         "value-guy"
       ],
       "stage": "rebuttals",
-      "status": "pending"
+      "started_at": "2026-09-19T12:56:47Z",
+      "status": "succeeded"
     },
     {
+      "ended_at": "2026-09-19T12:56:47Z",
+      "model_calls": 0,
       "model_calls_planned": 0,
+      "notes": "scripts/trader_room_finalize.py; zero model calls.",
       "stage": "deterministic_finalize",
-      "status": "pending"
+      "started_at": "2026-09-19T12:56:47Z",
+      "status": "succeeded"
     },
     {
+      "ended_at": "2026-09-19T12:56:47Z",
+      "model_calls": 0,
       "model_calls_planned": 0,
+      "notes": "Funding accrued first via apply_review. All requested OPENs recorded execution_blocked/HOLD because no executable marks were in the packet.",
       "stage": "paper_books",
-      "status": "pending"
+      "started_at": "2026-09-19T12:56:47Z",
+      "status": "succeeded"
     }
   ],
-  "updated_at": "2026-09-19T12:50:40Z"
+  "updated_at": "2026-09-19T12:56:47Z"
 }

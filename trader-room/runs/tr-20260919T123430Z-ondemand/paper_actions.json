@@ -1,0 +1,810 @@
+{
+  "decisions": {
+    "carry-is-king": {
+      "applied": "HOLD",
+      "execution_blocked": true,
+      "paper_capital": {
+        "asset_class": "rates_rv",
+        "decision": "OPEN",
+        "instrument": "CA-US_2Y",
+        "notional_usd": 20000000,
+        "rationale": "The seat already pays 5.00% ACT/365 on the full $100m whether flat or not, so a positive-carry discrepancy that survives policy-path inspection should be opened rather than left as a guaranteed vig bleed. Deploy $20m (20% of the seed book) long CA-US_2Y. Verified CA-US_2Y is -140bp as of 2026-09-17 and SOFR-CORRA is 156bp (3.85 vs 2.29 as of 2026-09-17). Unlevered par carry on $20m is below 5% of deployed notional, so size relies on the duration-RV holding-period return: running 140bp differential plus any spread normalization. The closest level analog (2025-01-30, -145bp, forward 3m +25bp) would clear the 5% hurdle on deployed capital if repeated; mixed analogs and null executable marks cap size at 20% rather than a full-book swing. Parent may mark execution_blocked/HOLD if the book engine cannot represent this RV from the frozen packet.",
+        "side": "long"
+      },
+      "reason": "Book engine cannot safely mark the selected expression: the sourced CA-US_2Y -140bp print is a research/reference yield, not an executable broker mark. HOLD rather than inventing a substitute price. Requested long CA-US_2Y notional=20000000.",
+      "requested": "OPEN"
+    },
+    "catalyst-junkie": {
+      "applied": "HOLD",
+      "execution_blocked": true,
+      "paper_capital": {
+        "asset_class": "rates",
+        "decision": "OPEN",
+        "instrument": "COAZ26",
+        "notional_usd": 10000000,
+        "rationale": "The 5.00% ACT/365 vig is charged on the full $100m whether flat or not, so idle cash cannot clear the hurdle. A $10m sleeve on the lagging CORRA Dec path deploys into a dated 14-18 Sep repricing with explicit invalidation; size stays fractional because marks are research/reference only, CA labor/core are live offsets, and MX CORRA OI/volume are null.",
+        "side": "short"
+      },
+      "reason": "Book engine cannot safely mark the selected expression: trade.entry is null and the frozen packet has no executable broker mark. HOLD rather than inventing a price. Requested short COAZ26 notional=10000000.",
+      "requested": "OPEN"
+    },
+    "cross-merchant": {
+      "applied": "HOLD",
+      "execution_blocked": true,
+      "paper_capital": {
+        "asset_class": "spot_fx",
+        "decision": "OPEN",
+        "instrument": "AUDCAD",
+        "notional_usd": 40000000,
+        "rationale": "This funded seat pays 5.00% ACT/365 on the full $100m whether flat or not, so a defined AU-CA discrepancy must be expressed. $40m notionals a 1-3m 3% AUDCAD reversal at about $1.2m, comparable to ~90 days of vig, using only the packet 20d RV of 4.38 and the already-printed +1.95% 1m as scale context; no broker mark is invented.",
+        "side": "short"
+      },
+      "reason": "Book engine cannot safely mark the selected expression: trade.entry is null and the frozen packet has no executable broker mark. HOLD rather than inventing a price. Requested short AUDCAD notional=40000000.",
+      "requested": "OPEN"
+    },
+    "dollar-king": {
+      "applied": "HOLD",
+      "execution_blocked": true,
+      "paper_capital": {
+        "asset_class": "spot_fx",
+        "decision": "OPEN",
+        "instrument": "USDCAD",
+        "notional_usd": 25000000,
+        "rationale": "The seat already pays 5% ACT/365 on the full 100m even while flat; the book is an empty seed with no overnight position. Long USDCAD is carry-positive (SOFR 3.85 versus CORRA 2.29) and the 4-8 week edge is the incomplete spot transmission of a 156bp overnight / 140bp 2Y gap, a 1-2% extension beyond the already-printed 1.74% 1m rebound is inside 20d RV 5.17. 25m (25% of allocation) is large enough to matter versus a ~1.25m three-month vig if the move extends, but is not full-book because stops/targets are null, TFF nets are unknown, and WTI 107 remains a real CAD residual. No invented mark: parent may record execution_blocked if the book engine cannot represent ECB-reference USDCAD.",
+        "side": "long"
+      },
+      "reason": "Book engine cannot safely mark the selected expression: trade.entry is null and the frozen packet has no executable broker mark. HOLD rather than inventing a price. Requested long USDCAD notional=25000000.",
+      "requested": "OPEN"
+    },
+    "mean-reverter": {
+      "applied": "HOLD",
+      "execution_blocked": true,
+      "paper_capital": {
+        "asset_class": "rates",
+        "decision": "OPEN",
+        "instrument": "AU 2Y",
+        "notional_usd": 25000000,
+        "rationale": "Funded seats pay 5.00% ACT/365 on the full $100m whether flat or not, so cash is not a free alternative. Empty seed book, no open risk. 2Y duration is short, so $25m is a moderate slice of the $100m allocation intended to monetize a giveback toward the live AONIA Mar-2027 implied 4.86 from the 4.999 AU 2Y print over 4-8 weeks. No executable broker mark is in the packet; if the book engine cannot represent AU 2Y, the parent should record execution_blocked/HOLD rather than invent a price.",
+        "side": "long"
+      },
+      "reason": "Book engine cannot safely mark the selected expression: trade.entry is null and the frozen packet has no executable broker mark. HOLD rather than inventing a price. Requested long AU 2Y notional=25000000.",
+      "requested": "OPEN"
+    },
+    "no-trade-skeptic": {
+      "applied": "HOLD",
+      "execution_blocked": false,
+      "paper_capital": {
+        "asset_class": null,
+        "decision": "HOLD",
+        "instrument": null,
+        "notional_usd": 0,
+        "rationale": "Skeptic earns 5.00% ACT/365 on undeployed $100m (~$13,699/day). Frozen packet has no executable broker prices (levels must stay null), SOFR already prices ~+35bp into Dec-26 and ~+75bp by Aug-28, CORRA ~+29bp into Dec-26, AONIA cash-futures ~+51bp by Mar-27, CFTC nets are null, NZ yields/policy path unavailable, AU OIS is 01-Dec-2022 vintage, and same-move analogs for CA-US 2Y/10Y and US 2Y hike episodes are two-way. Expected edge after those gaps does not beat cash, so deploy 0.",
+        "side": null
+      },
+      "reason": "Seat submitted no trade or an explicit HOLD.",
+      "requested": "HOLD"
+    },
+    "perma-bear": {
+      "applied": "HOLD",
+      "execution_blocked": true,
+      "paper_capital": {
+        "asset_class": "rates",
+        "decision": "OPEN",
+        "instrument": "AU_2Y",
+        "notional_usd": 12000000,
+        "rationale": "The seat already pays 5% ACT/365 on the full $100m whether flat or not, so a defined-invalidation duration long is required whenever the packet shows a path-versus-housing discrepancy. $12m is 12% of allocation: enough for a 20-40bp AONIA/2Y unwind to matter, small enough that the 2022-01 / 2025-12 continuation analogs (further yield selloff) do not dominate NAV. AU 2Y yield 4.999 roughly matches the 5% vig, so the edge is path-repricing, not carry. No mark is invented; if the book engine cannot represent AU_2Y from this packet the parent should record execution_blocked and HOLD.",
+        "side": "long"
+      },
+      "reason": "Book engine cannot safely mark the selected expression: trade.entry is null and the frozen packet has no executable broker mark. HOLD rather than inventing a price. Requested long AU_2Y notional=12000000.",
+      "requested": "OPEN"
+    },
+    "perma-bull": {
+      "applied": "HOLD",
+      "execution_blocked": true,
+      "paper_capital": {
+        "asset_class": "rates",
+        "decision": "OPEN",
+        "instrument": "CA_2Y",
+        "notional_usd": 100000000,
+        "rationale": "Funded seats pay 5% ACT/365 on the full 100m whether flat or not, so a token sleeve cannot beat the vig and remaining flat is a certain negative. Full 100m short CA_2Y is about 19k USD DV01 at ~1.9-year duration. Packet 3m analogs after a similar +31bp 1m CA 2Y move are +66bp, +83bp, -6bp and +50bp; a 4-8 week slice of that distribution around 25-40bp is roughly 475k-760k, which can match several weeks of vig if the catch-up prints, versus zero gross if undeployed. No executable mark is claimed; parent may HOLD if the book engine cannot represent CA_2Y.",
+        "side": "short"
+      },
+      "reason": "Book engine cannot safely mark the selected expression: trade.entry is null and the frozen packet has no executable broker mark. HOLD rather than inventing a price. Requested short CA_2Y notional=100000000.",
+      "requested": "OPEN"
+    },
+    "positioning-cynic": {
+      "applied": "HOLD",
+      "execution_blocked": true,
+      "paper_capital": {
+        "asset_class": "rates_rv",
+        "decision": "OPEN",
+        "instrument": "CA-AU_2Y",
+        "notional_usd": 10000000,
+        "rationale": "Receive AU 2Y 4.999 versus pay CA 2Y 3.27 from frozen official yields, so the RV carries a large positive yield pickup against a 5.00% ACT/365 vig that is charged on the full $100m whether deployed or not. $10m is 10% of the empty seed book: enough to clear the hurdle if the crowded RBA-hawk/BoC-dove gap compresses, small enough given null TFF nets, null executable broker prices, and mixed analogs.",
+        "side": "long"
+      },
+      "reason": "Book engine cannot safely mark the selected expression: trade.entry is null and the frozen packet has no executable broker mark. HOLD rather than inventing a price. Requested long CA-AU_2Y notional=10000000.",
+      "requested": "OPEN"
+    },
+    "rate-dove": {
+      "applied": "HOLD",
+      "execution_blocked": true,
+      "paper_capital": {
+        "asset_class": "rates",
+        "decision": "OPEN",
+        "instrument": "AU_2Y",
+        "notional_usd": 40000000,
+        "rationale": "The 5% ACT/365 vig is charged on the full $100m even if flat, so remaining idle cannot beat the hurdle. Packet analog 2022-09-28 shows a 37.4bp 1m rally in AU 2Y after a similar +39bp 1m sell-off; that is the edge, not a mark. $40m is 40% of the seed, leaving room for the 2025-12 continuation analog and the inflation-82 risk. No executable broker price is in the packet, so this is paper risk appetite rather than a quoted DV01; parent may record execution_blocked.",
+        "side": "long"
+      },
+      "reason": "Book engine cannot safely mark the selected expression: trade.entry is null and the frozen packet has no executable broker mark. HOLD rather than inventing a price. Requested long AU_2Y notional=40000000.",
+      "requested": "OPEN"
+    },
+    "rate-hawk": {
+      "applied": "HOLD",
+      "execution_blocked": true,
+      "paper_capital": {
+        "asset_class": "rates",
+        "decision": "OPEN",
+        "instrument": "SR1Z26",
+        "notional_usd": 10000000,
+        "rationale": "The seat already pays 5.00% ACT/365 on the full $100m allocation while flat, so a validated policy-path discrepancy should be opened. $10m is 10% of the empty $100m seed: large enough that a 15\u201325bp Dec-26 SOFR repricing can clear the daily vig in expected-value terms, small enough given null executable marks, delayed eSignal SOFR, and no overnight review. No mark is invented; if the book cannot represent ICE 1M SOFR from the frozen packet, the parent should record execution_blocked/HOLD.",
+        "side": "short"
+      },
+      "reason": "Book engine cannot safely mark the selected expression: trade.entry is null and the frozen packet has no executable broker mark. HOLD rather than inventing a price. Requested short SR1Z26 notional=10000000.",
+      "requested": "OPEN"
+    },
+    "trend-follower": {
+      "applied": "HOLD",
+      "execution_blocked": true,
+      "paper_capital": {
+        "asset_class": "rates",
+        "decision": "OPEN",
+        "instrument": "US 2Y",
+        "notional_usd": 10000000,
+        "rationale": "Funded seats pay 5% ACT/365 on the full $100m whether flat or not, so HOLD has no cash yield and only the vig. A $10m short US 2Y starter OPEN is the risk unit that can harvest hike-cycle analog continuation (2022-03-23 +59bp 1m / +88bp 3m; 2022-09-16 +58bp / +40bp) without pretending the packet supplies executable marks. Expected rates PnL is positive versus being flat; the parent should execution-block rather than this seat inventing a broker price. $10m is intentionally smaller than the $100m allocation because delayed SOFR and null stops cap sizing, not because the trend is faded.",
+        "side": "short"
+      },
+      "reason": "Book engine cannot safely mark the selected expression: trade.entry is null and the frozen packet has no executable broker mark. HOLD rather than inventing a price. Requested short US 2Y notional=10000000.",
+      "requested": "OPEN"
+    },
+    "value-guy": {
+      "applied": "HOLD",
+      "execution_blocked": true,
+      "paper_capital": {
+        "asset_class": "rates_rv",
+        "decision": "OPEN",
+        "instrument": "CA-US_2Y",
+        "notional_usd": 10000000,
+        "rationale": "Funded seat pays 5.00% ACT/365 on the full $100m whether flat or not, so remaining in cash still burns vig. $10m (10% of allocation) on a positive-carry RV \u2014 receive US 2Y 4.76 versus pay CA 2Y 3.27, about 149bp of yield advantage \u2014 plus expected spread convergence from a 5y 4th-percentile gap is the size that can beat staying flat without using a fabricated mark. No executable broker prices in the packet; if the book engine cannot represent CA-US 2Y, the parent should record execution_blocked/HOLD rather than invent a fill.",
+        "side": "long"
+      },
+      "reason": "Book engine cannot safely mark the selected expression: trade.entry is null and the frozen packet has no executable broker mark. HOLD rather than inventing a price. Requested long CA-US_2Y notional=10000000.",
+      "requested": "OPEN"
+    },
+    "vol-convexity": {
+      "applied": "HOLD",
+      "execution_blocked": false,
+      "paper_capital": {
+        "asset_class": "options",
+        "decision": "HOLD",
+        "instrument": "AUDUSD 1-month straddle",
+        "notional_usd": 10000000,
+        "rationale": "The 5 percent ACT/365 vig on the $100m allocation is real, but the frozen packet has no implied vol, skew, premium or executable broker option prices, so the book engine cannot safely mark this straddle. HOLD until live IV versus 4.71 20d realized, 25-delta risk reversal and premium can be checked; do not invent a mark or OPEN an unmarkable options book.",
+        "side": null
+      },
+      "reason": "Seat submitted no trade or an explicit HOLD.",
+      "requested": "HOLD"
+    }
+  },
+  "funding_accrued_first": true,
+  "invented_marks": false,
+  "method": "deterministic_persistent_books_v1",
+  "official_trade_decision": false,
+  "public_view": {
+    "as_of": "2026-09-19T08:56:47.759489-04:00",
+    "competition_metric": "net_pnl_after_funding",
+    "evidence_cutoff": "2026-09-19T12:34:30Z",
+    "funding_rate_annual": 0.05,
+    "last_successful_review_run_id": "tr-20260919T123430Z-ondemand",
+    "leaderboard": [
+      {
+        "cash_yield_usd": 6867.03,
+        "funding_cost_usd": 0.0,
+        "gross_pnl_usd": 0.0,
+        "net_pnl_usd": 6867.03,
+        "pnl_unavailable": false,
+        "rank": 1,
+        "seat": "no-trade-skeptic"
+      },
+      {
+        "cash_yield_usd": 0.0,
+        "funding_cost_usd": 6867.03,
+        "gross_pnl_usd": 0.0,
+        "net_pnl_usd": -6867.03,
+        "pnl_unavailable": false,
+        "rank": 2,
+        "seat": "carry-is-king"
+      },
+      {
+        "cash_yield_usd": 0.0,
+        "funding_cost_usd": 6867.03,
+        "gross_pnl_usd": 0.0,
+        "net_pnl_usd": -6867.03,
+        "pnl_unavailable": false,
+        "rank": 2,
+        "seat": "catalyst-junkie"
+      },
+      {
+        "cash_yield_usd": 0.0,
+        "funding_cost_usd": 6867.03,
+        "gross_pnl_usd": 0.0,
+        "net_pnl_usd": -6867.03,
+        "pnl_unavailable": false,
+        "rank": 2,
+        "seat": "cross-merchant"
+      },
+      {
+        "cash_yield_usd": 0.0,
+        "funding_cost_usd": 6867.03,
+        "gross_pnl_usd": 0.0,
+        "net_pnl_usd": -6867.03,
+        "pnl_unavailable": false,
+        "rank": 2,
+        "seat": "dollar-king"
+      },
+      {
+        "cash_yield_usd": 0.0,
+        "funding_cost_usd": 6867.03,
+        "gross_pnl_usd": 0.0,
+        "net_pnl_usd": -6867.03,
+        "pnl_unavailable": false,
+        "rank": 2,
+        "seat": "mean-reverter"
+      },
+      {
+        "cash_yield_usd": 0.0,
+        "funding_cost_usd": 6867.03,
+        "gross_pnl_usd": 0.0,
+        "net_pnl_usd": -6867.03,
+        "pnl_unavailable": false,
+        "rank": 2,
+        "seat": "perma-bear"
+      },
+      {
+        "cash_yield_usd": 0.0,
+        "funding_cost_usd": 6867.03,
+        "gross_pnl_usd": 0.0,
+        "net_pnl_usd": -6867.03,
+        "pnl_unavailable": false,
+        "rank": 2,
+        "seat": "perma-bull"
+      },
+      {
+        "cash_yield_usd": 0.0,
+        "funding_cost_usd": 6867.03,
+        "gross_pnl_usd": 0.0,
+        "net_pnl_usd": -6867.03,
+        "pnl_unavailable": false,
+        "rank": 2,
+        "seat": "positioning-cynic"
+      },
+      {
+        "cash_yield_usd": 0.0,
+        "funding_cost_usd": 6867.03,
+        "gross_pnl_usd": 0.0,
+        "net_pnl_usd": -6867.03,
+        "pnl_unavailable": false,
+        "rank": 2,
+        "seat": "rate-dove"
+      },
+      {
+        "cash_yield_usd": 0.0,
+        "funding_cost_usd": 6867.03,
+        "gross_pnl_usd": 0.0,
+        "net_pnl_usd": -6867.03,
+        "pnl_unavailable": false,
+        "rank": 2,
+        "seat": "rate-hawk"
+      },
+      {
+        "cash_yield_usd": 0.0,
+        "funding_cost_usd": 6867.03,
+        "gross_pnl_usd": 0.0,
+        "net_pnl_usd": -6867.03,
+        "pnl_unavailable": false,
+        "rank": 2,
+        "seat": "trend-follower"
+      },
+      {
+        "cash_yield_usd": 0.0,
+        "funding_cost_usd": 6867.03,
+        "gross_pnl_usd": 0.0,
+        "net_pnl_usd": -6867.03,
+        "pnl_unavailable": false,
+        "rank": 2,
+        "seat": "value-guy"
+      },
+      {
+        "cash_yield_usd": 0.0,
+        "funding_cost_usd": 6867.03,
+        "gross_pnl_usd": 0.0,
+        "net_pnl_usd": -6867.03,
+        "pnl_unavailable": false,
+        "rank": 2,
+        "seat": "vol-convexity"
+      }
+    ],
+    "overnight_changes": [],
+    "overnight_run_id": "tr-20260919T123430Z-ondemand",
+    "review_status": "fresh",
+    "schema_version": 1,
+    "seat_count": 14,
+    "seats": [
+      {
+        "alerts": [
+          "Book engine cannot safely mark the selected expression: trade.entry is null and the frozen packet has no executable broker mark. HOLD rather than inventing a price. Requested short CA_2Y notional=100000000."
+        ],
+        "cash_yield_usd": 0.0,
+        "competition_rank": 2,
+        "conviction": 60,
+        "expression_rule": "rates_first",
+        "funding_cost_usd": 6867.03,
+        "funding_rate_annual": 0.05,
+        "gross_pnl_usd": 0.0,
+        "invalidation": "Thesis fails if the live CORRA path through Dec-26 stops repricing higher and instead prices a cut, or if subsequent Canada activity/inflation evidence confirms a labor-led demand collapse with energy pass-through fading and core remaining the binding BoC constraint. A US growth break that also collapses Canadian activity would invalidate the cyclical-resilience mechanism rather than just the timing.",
+        "last_action": "HOLD",
+        "nav_usd": 99993132.97,
+        "net_pnl_usd": -6867.03,
+        "pnl_unavailable": false,
+        "positions": [],
+        "prior_action": "HOLD",
+        "realized_pnl_usd": 0,
+        "remit": "strongest pro-growth, risk-on or cyclical macro expression",
+        "required_pitch": {
+          "applied_action": "HOLD",
+          "asset_class": "rates",
+          "direction": "short",
+          "execution_blocked": true,
+          "instrument": "CA_2Y",
+          "requested_action": "OPEN"
+        },
+        "risk_put_on": null,
+        "seat": "perma-bull",
+        "thesis": "Verified fact: CORRA prices only +29bp to Dec-26 while the Fed has hiked, SOFR still prices more hikes, US growth gauges are hot, Canada activity is 66, headline CPI is 3%, and BoC minutes flag energy pass-through with WTI at 107. Inference: markets have over-discounted a Canada demand collapse from labor 38 and are treating core-near-2% as permission to stay easy through year-end; a resilient global cycle plus energy pass-through forces Canadian front-end rates higher. That is the pro-growth, cyclical expression: not mechanically long AUD, which already sits at 99.8th percentile on AUDCAD/AUDNZD with housing biting, and not long NZD despite a GDP beat because NZ yields are unavailable. Unknown: BoC meeting odds, CFTC nets, and executable entry.",
+        "unrealized_pnl_usd": 0.0
+      },
+      {
+        "alerts": [
+          "Book engine cannot safely mark the selected expression: trade.entry is null and the frozen packet has no executable broker mark. HOLD rather than inventing a price. Requested long AU_2Y notional=12000000."
+        ],
+        "cash_yield_usd": 0.0,
+        "competition_rank": 2,
+        "conviction": 56,
+        "expression_rule": "rates_first",
+        "funding_cost_usd": 6867.03,
+        "funding_rate_annual": 0.05,
+        "gross_pnl_usd": 0.0,
+        "invalidation": "Thesis is wrong if the live AONIA path re-steepens or holds the packet Oct-26 4.565 and Mar-27 4.86 prints while AU housing/labor stop deteriorating (stamp-duty/volumes/employment stabilize) and/or trimmed-mean CPI re-accelerates from 3.6%. A delivered October hike with hawkish RBA guidance that lifts the Dec-26 4.725 and Mar-27 4.86 contracts would also invalidate. Do not invent a yield stop; executable marks are absent.",
+        "last_action": "HOLD",
+        "nav_usd": 99993132.97,
+        "net_pnl_usd": -6867.03,
+        "pnl_unavailable": false,
+        "positions": [],
+        "prior_action": "HOLD",
+        "realized_pnl_usd": 0,
+        "remit": "strongest defensive, slowdown, stress or risk-off macro expression",
+        "required_pitch": {
+          "applied_action": "HOLD",
+          "asset_class": "rates",
+          "direction": "long",
+          "execution_blocked": true,
+          "instrument": "AU_2Y",
+          "requested_action": "OPEN"
+        },
+        "risk_put_on": null,
+        "seat": "perma-bear",
+        "thesis": "FACT: housing turnover and values are already falling under higher Australian rates, labor is loosening, and September consumer sentiment has cracked, yet AONIA still prices 51-60bp of additional tightening into 2027. INFERENCE: that residual path is a late-cycle policy error; when it is marked down, AU 2Y rallies. This is defensive duration owned where the slowdown is visible, not a mechanical short of AUD. UNKNOWN: whether energy pass-through and trimmed-mean 3.6% keep the RBA hiking through the housing break.",
+        "unrealized_pnl_usd": 0.0
+      },
+      {
+        "alerts": [
+          "Book engine cannot safely mark the selected expression: trade.entry is null and the frozen packet has no executable broker mark. HOLD rather than inventing a price. Requested long USDCAD notional=25000000."
+        ],
+        "cash_yield_usd": 0.0,
+        "competition_rank": 2,
+        "conviction": 60,
+        "expression_rule": "spot_only",
+        "funding_cost_usd": 6867.03,
+        "funding_rate_annual": 0.05,
+        "gross_pnl_usd": 0.0,
+        "invalidation": "Qualitative, sourced from the frozen policy path rather than an invented USDCAD print: the long-USDCAD thesis is invalid if the US SOFR path rolls over so that December implied 4.1975 and the 3.85 overnight benchmark are no longer a rising year-end path, or if MX CORRA Dec 2.58 is replaced by a much larger BoC energy-pass-through repricing that closes the 156bp overnight gap without CAD labor/core deteriorating further. WTI remaining high is not by itself invalidation because the packet\u2019s USDCAD-WTI link is weak; a renewed unconstrained oil-supply tail that reverses the Saudi-workaround reduction would be. No executable stop exists in the packet.",
+        "last_action": "HOLD",
+        "nav_usd": 99993132.97,
+        "net_pnl_usd": -6867.03,
+        "pnl_unavailable": false,
+        "positions": [],
+        "prior_action": "HOLD",
+        "realized_pnl_usd": 0,
+        "remit": "express macro views through USD spot whenever a defensible USD pair exists",
+        "required_pitch": {
+          "applied_action": "HOLD",
+          "asset_class": "spot_fx",
+          "direction": "long",
+          "execution_blocked": true,
+          "instrument": "USDCAD",
+          "requested_action": "OPEN"
+        },
+        "risk_put_on": null,
+        "seat": "dollar-king",
+        "thesis": "FACT: USD has a 156bp overnight yield advantage versus CAD, a still-rising SOFR path through 4.20% in December, and a much hotter labor/inflation/consumer mix. CAD\u2019s core is at target, employment fell 42k, and BoC is only priced +29bp by December. Spot USDCAD at 1.4010 has recovered 1.74% over one month after a 3m USD dip, but sits far short of the extremity of the rate gap. INFERENCE: long USDCAD owns the incomplete transmission of US re-tightening and Canada labor softness into CAD, with carry from the rate gap, without the second-order AUD housing/RBA mix, NZ-rates hole, BoJ residual, or already-stretched EUR/CHF/NZD USD legs. UNKNOWN: signed positioning and executable entry. A cross is a worse expression of the same USD view.",
+        "unrealized_pnl_usd": 0.0
+      },
+      {
+        "alerts": [
+          "Book engine cannot safely mark the selected expression: trade.entry is null and the frozen packet has no executable broker mark. HOLD rather than inventing a price. Requested short AUDCAD notional=40000000."
+        ],
+        "cash_yield_usd": 0.0,
+        "competition_rank": 2,
+        "conviction": 58,
+        "expression_rule": "spot_only",
+        "funding_cost_usd": 6867.03,
+        "funding_rate_annual": 0.05,
+        "gross_pnl_usd": 0.0,
+        "invalidation": "Thesis invalid if AUDCAD extends to a new extreme after the ASX AONIA path steepens further versus MX CORRA, Australian housing/labor prints stop deteriorating, and WTI/energy pass-through fades so CAD loses the ToT/policy catch-up case. No numeric broker stop is in the packet.",
+        "last_action": "HOLD",
+        "nav_usd": 99993132.97,
+        "net_pnl_usd": -6867.03,
+        "pnl_unavailable": false,
+        "positions": [],
+        "prior_action": "HOLD",
+        "realized_pnl_usd": 0,
+        "remit": "cleaner relative-value expressions outside USD",
+        "required_pitch": {
+          "applied_action": "HOLD",
+          "asset_class": "spot_fx",
+          "direction": "short",
+          "execution_blocked": true,
+          "instrument": "AUDCAD",
+          "requested_action": "OPEN"
+        },
+        "risk_put_on": null,
+        "seat": "cross-merchant",
+        "thesis": "VERIFIED FACT: AUDCAD ECB reference 0.9976 on 2026-09-18 sits at the top of its 1y and 5y distributions while CA-AU 2Y is a 1y-median -165bp and both AU and CA policy paths are observable. INFERENCE: short AUDCAD is the clean non-USD expression of (1) Australian housing/labor transmission against an already-steep ASX hike path and (2) under-owned CAD energy pass-through versus a USD-contaminated USDCAD. Carry of AONIA versus CORRA opposes the short. UNKNOWN: net speculative positioning, NZ yields, executable entry.",
+        "unrealized_pnl_usd": 0.0
+      },
+      {
+        "alerts": [
+          "Pre-arbitration Cursor must not persist an official trade decision; funding is accrued and the requested OPEN is recorded as execution_blocked."
+        ],
+        "cash_yield_usd": 0.0,
+        "competition_rank": 2,
+        "conviction": 60,
+        "expression_rule": "rates_first",
+        "funding_cost_usd": 6867.03,
+        "funding_rate_annual": 0.05,
+        "gross_pnl_usd": 0.0,
+        "invalidation": "Thesis is invalid if the CORRA path re-prices more tightening than the SOFR path such that the sourced Dec implied gap (4.1975 vs 2.58) and the sourced 140bp CA-US_2Y differential compress from the Canada side because energy pass-through overwhelms Canada's core-near-2% and labor-38 setup; or if the Fed tightening bias evidenced by the 16 Sep hike and August CPI is reversed while Canada remains the low-yielder only because US yields collapse. A further analog-style cheapening without path compression is timing noise, not automatic invalidation, because carry is the holding-period engine. No numeric stop is sourced in the packet.",
+        "last_action": "HOLD",
+        "nav_usd": 99993132.97,
+        "net_pnl_usd": -6867.03,
+        "pnl_unavailable": false,
+        "positions": [],
+        "prior_action": "HOLD",
+        "realized_pnl_usd": 0,
+        "remit": "positive carry and patient expressions across rates and FX unless a catalyst overwhelms it",
+        "required_pitch": {
+          "applied_action": "HOLD",
+          "asset_class": "rates_rv",
+          "direction": "long",
+          "execution_blocked": true,
+          "instrument": "CA-US_2Y",
+          "requested_action": "OPEN"
+        },
+        "risk_put_on": null,
+        "seat": "carry-is-king",
+        "thesis": "VERIFIED: SOFR 3.85 vs CORRA 2.29 (156bp), CA-US_2Y -140bp as of 2026-09-17, US 2Y 4.76 vs CA 2Y 3.27, Fed delivered +25bp to 3.75-4.00%, US CPI kept the tightening bias, Canada CPI 3%/core near 2%, CORRA prices only +29bp by Dec while SOFR prices +35bp by Dec and +75bp by Aug-2028. INFERENCE: the energy-pass-through / long-CAD / receive-Canada story is the exciting low-carry narrative. It requires paying about 140bp per year to own a Canada that the live path barely hikes and whose labor gauge is 38. Carry is harvested by receiving the US 2Y and paying CA 2Y and sitting unless CORRA actually re-prices above the US path. The 3.8th percentile is supporting context, not the thesis. UNKNOWN: CFTC net positioning, executable marks, and whether future Canadian energy CPI pass-through overwhelms core-near-2%. AU was inspected (AONIA 4.35, AU 2Y 4.999, housing downturn) and is not the selected receive leg.",
+        "unrealized_pnl_usd": 0.0
+      },
+      {
+        "alerts": [
+          "Book engine cannot safely mark the selected expression: trade.entry is null and the frozen packet has no executable broker mark. HOLD rather than inventing a price. Requested short SR1Z26 notional=10000000."
+        ],
+        "cash_yield_usd": 0.0,
+        "competition_rank": 2,
+        "conviction": 64,
+        "expression_rule": "rates_first",
+        "funding_cost_usd": 6867.03,
+        "funding_rate_annual": 0.05,
+        "gross_pnl_usd": 0.0,
+        "invalidation": "Thesis is wrong if subsequent US inflation/labor data and FOMC communication drop the tightening bias, or if the 1M SOFR strip reprices SR1Z26 implied SOFR down toward unchanged policy at the 3.85 SOFR benchmark rather than higher. Delayed eSignal versus live ICE basis is a mark risk, not an invalidation of the macro claim.",
+        "last_action": "HOLD",
+        "nav_usd": 99993132.97,
+        "net_pnl_usd": -6867.03,
+        "pnl_unavailable": false,
+        "positions": [],
+        "prior_action": "HOLD",
+        "realized_pnl_usd": 0,
+        "remit": "underpriced hawkish policy, higher terminal rates, or higher-rate repricing",
+        "required_pitch": {
+          "applied_action": "HOLD",
+          "asset_class": "rates",
+          "direction": "short",
+          "execution_blocked": true,
+          "instrument": "SR1Z26",
+          "requested_action": "OPEN"
+        },
+        "risk_put_on": null,
+        "seat": "rate-hawk",
+        "thesis": "Verified fact: Fed hiked 25bp to 3.75\u20134.00%; August CPI kept tightening bias intact; SOFR 3.85; SR1Z26 implies 4.1975 (+34.75bp); US gauges Inflation 72 / Labor 75 / Activity 69 / Consumer 74; BoJ hiked to 1.25%; BoE 6\u20133 with three hike votes. Inference: that configuration is not consistent with a 2026 path that only prices one extra hike and a 4.7225 peak. Paying Dec-26 SOFR owns the near-term hike underpricing that cash 2Y at 4.76 does not isolate. Unknown: next US CPI composition, unobserved SOFR meeting-implied probabilities, and whether delayed eSignal is off the live ICE mark.",
+        "unrealized_pnl_usd": 0.0
+      },
+      {
+        "alerts": [
+          "Book engine cannot safely mark the selected expression: trade.entry is null and the frozen packet has no executable broker mark. HOLD rather than inventing a price. Requested long AU_2Y notional=40000000."
+        ],
+        "cash_yield_usd": 0.0,
+        "competition_rank": 2,
+        "conviction": 61,
+        "expression_rule": "rates_first",
+        "funding_cost_usd": 6867.03,
+        "funding_rate_annual": 0.05,
+        "gross_pnl_usd": 0.0,
+        "invalidation": "Thesis invalid if ASX AONIA-implied rates keep rising along the priced +51bp (Mar-2027) to +59.5bp (mid-2027) hike path without offsetting housing/labour deterioration, or if AU trimmed-mean CPI re-accelerates from the July 3.6% y/y print.",
+        "last_action": "HOLD",
+        "nav_usd": 99993132.97,
+        "net_pnl_usd": -6867.03,
+        "pnl_unavailable": false,
+        "positions": [],
+        "prior_action": "HOLD",
+        "realized_pnl_usd": 0,
+        "remit": "underpriced easing, lower-rate repricing, or growth weakness",
+        "required_pitch": {
+          "applied_action": "HOLD",
+          "asset_class": "rates",
+          "direction": "long",
+          "execution_blocked": true,
+          "instrument": "AU_2Y",
+          "requested_action": "OPEN"
+        },
+        "risk_put_on": null,
+        "seat": "rate-dove",
+        "thesis": "FACT: AONIA 4.35 and the ASX 30-day strip price zero cuts through Feb-2028 and +21.5bp of hikes by October, +51bp by March 2027 and a peak +59.5bp, while NSW housing transactions and stamp duty have already collapsed and AU labour/sentiment are softening. FACT: AU 2Y 4.999 is at the 99th percentile 1y and 5y. INFERENCE: restrictive policy is biting through the housing channel faster than hawks and the global-tightening desk narrative admit, so the next AU front-end impulse is lower-rate repricing rather than delivery of the priced hikes. INFERENCE: receiving AU 2Y owns that path discrepancy more cleanly than short AUDUSD. UNKNOWN: executable entry, RBA meeting dates/odds, and whether 3.6% trimmed-mean inflation plus the energy shock keep the RBA hiking into the slump.",
+        "unrealized_pnl_usd": 0.0
+      },
+      {
+        "alerts": [
+          "Book engine cannot safely mark the selected expression: trade.entry is null and the frozen packet has no executable broker mark. HOLD rather than inventing a price. Requested long CA-US_2Y notional=10000000."
+        ],
+        "cash_yield_usd": 0.0,
+        "competition_rank": 2,
+        "conviction": 62,
+        "expression_rule": "rates_first",
+        "funding_cost_usd": 6867.03,
+        "funding_rate_annual": 0.05,
+        "gross_pnl_usd": 0.0,
+        "invalidation": "Thesis is wrong if CORRA Dec stays near 2.58 and CA-US 2Y cheapens through the 2025-01-30 analog level of -145bp without a BoC-path reprice, or if Canada core remaining near 2% plus labor-gauge weakness (38) dominate energy pass-through and the US 2Y selloff simply continues as in early-cycle 2022 analogs. Right-thesis/wrong-timing if the 2024-12-18 analog path (-3bp 1m / -20bp 3m) repeats; then hold the 3m horizon rather than stop on noise. Saudi STS crude workaround reducing the oil-supply tail is a live softener of the energy catalyst.",
+        "last_action": "HOLD",
+        "nav_usd": 99993132.97,
+        "net_pnl_usd": -6867.03,
+        "pnl_unavailable": false,
+        "positions": [],
+        "prior_action": "HOLD",
+        "realized_pnl_usd": 0,
+        "remit": "historical or fundamental dislocations and convergence trades",
+        "required_pitch": {
+          "applied_action": "HOLD",
+          "asset_class": "rates_rv",
+          "direction": "long",
+          "execution_blocked": true,
+          "instrument": "CA-US_2Y",
+          "requested_action": "OPEN"
+        },
+        "risk_put_on": null,
+        "seat": "value-guy",
+        "thesis": "FACT: CA-US 2Y = -140bp (2026-09-17), 1y percentile 3.77, 5y percentile 4.31, 5d -15bp (z -2.17); CA 2Y 3.27, US 2Y 4.76; CORRA 2.29 with Dec 2.58; SOFR 3.85 with Dec 4.1975 and Aug-2028 4.6025; Fed hiked 25bp to 3.75\u20134.00% after >90% pricing; Canada CPI 3%/core ~2%; BoC minutes flag energy pass-through; BoJ hiked to 1.25%. INFERENCE: the 140bp gap is a lagging two-speed residual after a US-led, already-priced hike, not fair value once energy pass-through and broader tightening are the live transmission. Long CA-US 2Y (pay CA / receive US) owns convergence toward less-negative spreads, with carry from receiving 4.76 versus paying 3.27. UNKNOWN: CORRA beyond Dec-2026; executable marks; Canadian cash-bond positioning. This is not a screen-only fade of a cheap percentile: the analog at -145bp (2025-01-30) subsequently converged +25bp over 3m, and today\u2019s policy-path/energy tape is why that convergence should start now rather than wait for US easing.",
+        "unrealized_pnl_usd": 0.0
+      },
+      {
+        "alerts": [
+          "Book engine cannot safely mark the selected expression: trade.entry is null and the frozen packet has no executable broker mark. HOLD rather than inventing a price. Requested short US 2Y notional=10000000."
+        ],
+        "cash_yield_usd": 0.0,
+        "competition_rank": 2,
+        "conviction": 65,
+        "expression_rule": "rates_first",
+        "funding_cost_usd": 6867.03,
+        "funding_rate_annual": 0.05,
+        "gross_pnl_usd": 0.0,
+        "invalidation": "SOFR Oct\u2013Dec strip losing its additional-tightening slope back toward overnight 3.85, or a 2023-02-style financial-stress reversal without a new hike catalyst; no executable stop in the packet",
+        "last_action": "HOLD",
+        "nav_usd": 99993132.97,
+        "net_pnl_usd": -6867.03,
+        "pnl_unavailable": false,
+        "positions": [],
+        "prior_action": "HOLD",
+        "realized_pnl_usd": 0,
+        "remit": "persistent price, rates and macro trends; reject premature fades",
+        "required_pitch": {
+          "applied_action": "HOLD",
+          "asset_class": "rates",
+          "direction": "short (pay rates)",
+          "execution_blocked": true,
+          "instrument": "US 2Y",
+          "requested_action": "OPEN"
+        },
+        "risk_put_on": null,
+        "seat": "trend-follower",
+        "thesis": "FACT: Fed hiked 25bp to 3.75\u20134.00%, SOFR is 3.85, Dec 1M SOFR still implies only 4.1975, US 2Y is 4.76 at the 99.8th 1y percentile, and the 18 Sep desk says global tightening is broadening (BoJ 1.25%, BoE 6\u20133). INFERENCE: strong policy-and-price trends persist; 2022 hike-cycle analogs with a ~57bp 2Y impulse continued +40 to +88bp over the next 1\u20133 months, while the only large reversal analog (2023-02) required a banking-stress regime the packet does not show. Mean-reverters will fade the percentile; that fade lacks a concrete reversal signal. The trade is to stay short US 2Y / pay the SOFR path until the strip loses its additional-tightening slope or a stress analog appears. UNKNOWN: executable entry and whether the next inflation print confirms the retained CPI/PCE impulse.",
+        "unrealized_pnl_usd": 0.0
+      },
+      {
+        "alerts": [
+          "Book engine cannot safely mark the selected expression: trade.entry is null and the frozen packet has no executable broker mark. HOLD rather than inventing a price. Requested long AU 2Y notional=25000000."
+        ],
+        "cash_yield_usd": 0.0,
+        "competition_rank": 2,
+        "conviction": 57,
+        "expression_rule": "rates_first",
+        "funding_cost_usd": 6867.03,
+        "funding_rate_annual": 0.05,
+        "gross_pnl_usd": 0.0,
+        "invalidation": "Thesis is wrong if the live AONIA/ASX path lifts the Mar-2027 implied rate through the packet AU 2Y print of 4.999, or if subsequent housing/activity evidence stops confirming that the tightening channel is biting while AU 2Y fails to give back toward that path. Do not treat a further percentile extreme alone as invalidation.",
+        "last_action": "HOLD",
+        "nav_usd": 99993132.97,
+        "net_pnl_usd": -6867.03,
+        "pnl_unavailable": false,
+        "positions": [],
+        "prior_action": "HOLD",
+        "realized_pnl_usd": 0,
+        "remit": "fade statistically or fundamentally stretched market moves when reversal conditions exist",
+        "required_pitch": {
+          "applied_action": "HOLD",
+          "asset_class": "rates",
+          "direction": "long",
+          "execution_blocked": true,
+          "instrument": "AU 2Y",
+          "requested_action": "OPEN"
+        },
+        "risk_put_on": null,
+        "seat": "mean-reverter",
+        "thesis": "FACT: AU 2Y 4.999 (16 Sep) sits through live AONIA Mar-2027 implied 4.86 and 27bp through Dec implied 4.725, while NSW stamp duty, volumes and dwelling prices show the RBA housing channel already biting. INFERENCE: global-tightening extrapolation after the Fed/BoJ events is holding AU 2Y too far through a cash-futures path that already prices +51bp of extra tightness. Mean-reversion is toward the AONIA strip, not to a statistical mean. UNKNOWN: executable ACGB/ASX levels, RBA meeting specifics, and whether 16 Sep yields already digested the housing copy. Separate from this trade, CA-US 2Y at -140bp is not a fade: it is still consistent with the overnight policy gap.",
+        "unrealized_pnl_usd": 0.0
+      },
+      {
+        "alerts": [
+          "Book engine cannot safely mark the selected expression: trade.entry is null and the frozen packet has no executable broker mark. HOLD rather than inventing a price. Requested long CA-AU_2Y notional=10000000."
+        ],
+        "cash_yield_usd": 0.0,
+        "competition_rank": 2,
+        "conviction": 57,
+        "expression_rule": "rates_first",
+        "funding_cost_usd": 6867.03,
+        "funding_rate_annual": 0.05,
+        "gross_pnl_usd": 0.0,
+        "invalidation": "Thesis is wrong if ASX October-December AONIA implied rates keep rising while Australian housing/activity stops deteriorating, or if the CORRA path flattens/cuts while Canada headline/energy pass-through fades. Separate bad entry from bad thesis: a further AUDCAD squeeze higher with unchanged CA-AU 2Y would confirm the crowding was in spot, not that the rates RV is invalidated. Unsigned TFF nets remaining null is not an invalidation.",
+        "last_action": "HOLD",
+        "nav_usd": 99993132.97,
+        "net_pnl_usd": -6867.03,
+        "pnl_unavailable": false,
+        "positions": [],
+        "prior_action": "HOLD",
+        "realized_pnl_usd": 0,
+        "remit": "attack crowded ideas; prefer better ownership asymmetry",
+        "required_pitch": {
+          "applied_action": "HOLD",
+          "asset_class": "rates_rv",
+          "direction": "long CA-AU 2Y (receive AU 2Y, pay CA 2Y)",
+          "execution_blocked": true,
+          "instrument": "CA-AU_2Y",
+          "requested_action": "OPEN"
+        },
+        "risk_put_on": null,
+        "seat": "positioning-cynic",
+        "thesis": "Fact: the crowded surface is AUD-cross spot plus 99th-percentile CFTC AUD/JPY/CHF open interest with null nets and no CME OI. Fact: ASX October AONIA still prices 4.565 versus overnight 4.35 with the largest cash-futures OI on the strip, while housing receipts and volumes have already broken. Fact: CORRA prices only +29bp through December. Inference: the room\u2019s obvious fade\u2014short AUDCAD/AUDNZD\u2014is a bad entry because unsigned 99th OI is squeeze risk, not an edge. The ownership-asymmetric expression is to receive the expensive, housing-constrained AU 2Y against paying the lightly pathed CA 2Y, letting CA-AU 2Y rise as that relative hawk/dove gap compresses. Unknown: who is long the AUD pit.",
+        "unrealized_pnl_usd": 0.0
+      },
+      {
+        "alerts": [
+          "Book engine cannot safely mark the selected expression: trade.entry is null and the frozen packet has no executable broker mark. HOLD rather than inventing a price. Requested short COAZ26 notional=10000000."
+        ],
+        "cash_yield_usd": 0.0,
+        "competition_rank": 2,
+        "conviction": 58,
+        "expression_rule": "rates_first",
+        "funding_cost_usd": 6867.03,
+        "funding_rate_annual": 0.05,
+        "gross_pnl_usd": 0.0,
+        "invalidation": "Thesis is wrong if Dec CORRA implied 2.58% moves back toward overnight CORRA 2.29% because core-near-2% and labor 38 dominate the minutes, or if the Saudi Oman workaround (not the shock-absorber warning) is the binding energy fact and CA-US 2Y stays near -140bp without any CORRA-path backup.",
+        "last_action": "HOLD",
+        "nav_usd": 99993132.97,
+        "net_pnl_usd": -6867.03,
+        "pnl_unavailable": false,
+        "positions": [],
+        "prior_action": "HOLD",
+        "realized_pnl_usd": 0,
+        "remit": "credible path from mispricing to repricing",
+        "required_pitch": {
+          "applied_action": "HOLD",
+          "asset_class": "rates",
+          "direction": "short",
+          "execution_blocked": true,
+          "instrument": "COAZ26",
+          "requested_action": "OPEN"
+        },
+        "risk_put_on": null,
+        "seat": "catalyst-junkie",
+        "thesis": "FACT: after a week of dated G10 tightening and BoC energy/CPI communication, Dec CORRA still implies only 2.58% versus overnight 2.29%. INFERENCE: the overnight path is the mispriced leg; paying COAZ26 is the mechanism that reprices if markets stop treating the minutes as a costless risk flag. UNKNOWN: whether core-near-2% and labor 38 will keep BoC on hold, and whether the Saudi workaround caps the energy tail before pass-through hits the strip. Reject receive AONIA: housing is biting (NSW stamp duty -24% y/y, volumes -18%, Sydney/Melbourne values >7% off peak) but Oct AONIA has already added +21.5bp, so that catalyst is not unpriced. Reject long USDCAD: that trades gap persistence, not repricing.",
+        "unrealized_pnl_usd": 0.0
+      },
+      {
+        "alerts": [
+          "Seat submitted no trade or an explicit HOLD."
+        ],
+        "cash_yield_usd": 0.0,
+        "competition_rank": 2,
+        "conviction": 52,
+        "expression_rule": "rates_first",
+        "funding_cost_usd": 6867.03,
+        "funding_rate_annual": 0.05,
+        "gross_pnl_usd": 0.0,
+        "invalidation": "Thesis is invalid if live implied vol, 25-delta risk reversal and premium \u2014 all null in this packet \u2014 already embed a larger two-way AUDUSD range than AONIA-versus-SOFR delivery risk, or if both the AONIA strip through Mar-2027 4.86 and the SOFR strip through Dec 4.1975 print as a smooth delivered path with no housing or inflation surprise.",
+        "last_action": "HOLD",
+        "nav_usd": 99993132.97,
+        "net_pnl_usd": -6867.03,
+        "pnl_unavailable": false,
+        "positions": [],
+        "prior_action": "HOLD",
+        "realized_pnl_usd": 0,
+        "remit": "asymmetric optionality; challenge spot expressions",
+        "required_pitch": {
+          "applied_action": "HOLD",
+          "asset_class": "options",
+          "direction": "buy volatility",
+          "execution_blocked": false,
+          "instrument": "AUDUSD 1-month straddle",
+          "requested_action": "HOLD"
+        },
+        "risk_put_on": null,
+        "seat": "vol-convexity",
+        "thesis": "AONIA still prices roughly 51bp of extra RBA tightening into a housing downturn while SOFR still prices residual Fed hikes after a delivered 25bp move. AUDUSD 1m spot is almost unchanged and 20d realized vol is only 4.71, so the market is behaving as if those paths can print smoothly. Spot and AU-US 2Y both require a signed winner. A 1-month ATM straddle is the bounded-risk owner of the delivery error. Implied vol is not in the packet, so this is an expression choice; live IV, 25-delta risk reversal and premium must be checked before any OPEN, and paper capital stays HOLD until the book can mark it.",
+        "unrealized_pnl_usd": 0.0
+      },
+      {
+        "alerts": [
+          "Seat submitted no trade or an explicit HOLD."
+        ],
+        "cash_yield_usd": 6867.03,
+        "competition_rank": 1,
+        "conviction": 74,
+        "expression_rule": "rates_first",
+        "funding_cost_usd": 0.0,
+        "funding_rate_annual": 0.05,
+        "gross_pnl_usd": 0.0,
+        "invalidation": null,
+        "last_action": "HOLD",
+        "nav_usd": 100006867.03,
+        "net_pnl_usd": 6867.03,
+        "pnl_unavailable": false,
+        "positions": [],
+        "prior_action": "HOLD",
+        "realized_pnl_usd": 0,
+        "remit": "apparent edges are priced, too noisy, too crowded or poorly timed; may submit no-trade",
+        "required_pitch": {
+          "applied_action": "HOLD",
+          "asset_class": null,
+          "direction": null,
+          "execution_blocked": false,
+          "instrument": null,
+          "requested_action": "HOLD"
+        },
+        "risk_put_on": null,
+        "seat": "no-trade-skeptic",
+        "thesis": "NO TRADE. Verified: the Sep 16 Fed 25bp hike to 3.75-4.00% was already >90% priced; BoJ 25bp to 1.25% and BoE 6-3 hold are spent; SOFR 3.85% with ICE 1M path to 4.1975 by Dec-26 and 4.6025 by Aug-28, CORRA 2.29% with MX path only to 2.58 by Dec-26, AONIA 4.35% with ASX cash-futures +21.5bp by Oct and +51bp by Mar-27; US 2Y 4.76 / 10Y 5.01 at 99.8/99.6 1y percentiles with 2s10s +25bp at the 0.2 1y percentile but 54th 5y; CA-US 2Y -140bp (3.8th 1y / 4.3rd 5y) and CA-US 10Y -111bp (0.2 1y) sit next to policy-path divergence of ~+35bp US vs +29bp CA into year-end; AU 2Y/10Y 4.999/5.348 at 99th 1y with housing already down >7% from peak; CFTC 2026-09-15 trader-class nets are all null while AUD/JPY/CHF OI sit at ~99th percentile; NZ B2 yields, NZ policy path, live AU OIS, CME volume, and executable broker marks are missing. Inference: percentile extremes and CA-US cheapness are discovery signals of a priced global-tightening/energy regime, not a residual mispricing; same-move analogs for CA-US 2Y/10Y and US 2Y hike-month episodes are two-way; AUDNZD/AUDCAD/USDCHF 99.8th 1y FX stretches cannot be sized without nets or executable spots. Unknown: next dated unspent catalyst, meeting probabilities (packet methods are monthly-average SOFR/CORRA/AONIA, not FOMC odds), NZ rates, CFTC direction, live AU OIS. Cash 5% ACT/365 on undeployed $100m (~$13,699/day) beats any unlevelled, post-event, analog-noisy expression. Actionable only if live marks plus a policy-path residual not already in SOFR/CORRA/AONIA, signed CFTC nets, restored NZ B2, current-vintage AU OIS, and a dated unspent catalyst whose analogs resolve one way after regime differences.",
+        "unrealized_pnl_usd": 0.0
+      }
+    ],
+    "starting_nav_usd": 100000000
+  },
+  "run_id": "tr-20260919T123430Z-ondemand"
+}

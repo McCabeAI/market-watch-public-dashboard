@@ -1,36 +1,13 @@
 {
-  "counts": {
-    "acp_parent_inclusive_grok_cap": 29,
-    "acp_parent_inclusive_total_cap": 57,
-    "composer_cap": 28,
-    "conflict_model_calls": 0,
-    "finalize_model_calls": 0,
-    "paper_book_model_calls": 0,
-    "parent_grok": 1,
-    "rebuttal_grok": 12,
-    "round1_composer": 0,
-    "round1_grok": 14,
-    "total_composer": 0,
-    "total_grok": 27,
-    "total_model_calls": 27
+  "ceilings": {
+    "acp_grok_including_parent": 29,
+    "acp_total": 57,
+    "composer": 28,
+    "repository_grok": 28
   },
-  "freeze": {
-    "advocates_launched_after_freeze": true,
-    "evidence_cutoff": "2026-09-19T12:34:30Z",
-    "families": {
-      "central_bank_research": "available",
-      "market_state": "stale",
-      "research_method": "available",
-      "temperature_gauges": "available"
-    },
-    "packet_sha256": "8903f3edceded5a5d9866d84bd422940ebc0c93106b761fbcb6267449e9504f9",
-    "policy_paths": {
-      "AU": "ok",
-      "CA": "ok",
-      "US": "ok",
-      "status": "ok"
-    }
-  },
+  "composer": 0,
+  "composer_by_agent": {},
+  "grok": 27,
   "invocations": [
     {
       "agent": null,
@@ -261,12 +238,9 @@
       "subagent_calls": 0
     }
   ],
-  "parent": {
-    "bcId": "bc-34da0a98-7beb-4099-83f9-bcb915003577",
-    "counted": true,
-    "model": "grok-4.6",
-    "role": "acp_parent"
-  },
+  "parent_counted": true,
+  "parent_model": "grok-4.6",
+  "rebuttals": 12,
   "run_id": "tr-20260919T123430Z-ondemand",
-  "run_policy": "MW_TRADER_ROOM_RUN_POLICY={\"version\":1,\"run_type\":\"trader-room-ondemand\",\"total_model_cap\":57,\"grok_cap\":29,\"composer_cap\":28,\"parent_model\":\"grok-4.6\",\"parent_total\":1,\"parent_grok\":1}"
+  "within_ceilings": true
 }
