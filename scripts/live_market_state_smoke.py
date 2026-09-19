@@ -83,7 +83,10 @@ def main() -> int:
     cme_keys = set((positioning["cme"].get("instruments") or {}).keys())
     required_cme = {"EUR", "GBP", "JPY", "CHF", "CAD", "AUD", "NZD", "NOK", "SEK"}
     if not required_cme.issubset(cme_keys):
-        raise MarketStateError(f"live CME OI missing {sorted(required_cme - cme_keys)}")
+        raise MarketStateError(
+            f"live CME OI missing {sorted(required_cme - cme_keys)}; "
+            f"errors={positioning['cme'].get('errors') or positioning['cme'].get('error')}"
+        )
 
     try:
         nz = fetch_nz_rates(start, today)
