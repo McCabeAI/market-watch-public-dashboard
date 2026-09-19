@@ -22,6 +22,7 @@ from typing import Any, Callable
 FetchBytes = Callable[..., bytes]
 
 BOC_CORRA_PAGE = "https://www.bankofcanada.ca/rates/interest-rates/corra/"
+BOC_CORRA_JSON = "https://www.bankofcanada.ca/valet/observations/group/CORRA/json?recent=10"
 MX_EXPECTATIONS_URL = "https://www.m-x.ca/en/trading/tools/canadian-interest-rate-expectations"
 NYFED_SOFR_URL = "https://markets.newyorkfed.org/api/rates/secured/sofr/last/10.json"
 NYFED_SOFR_PAGE = "https://www.newyorkfed.org/markets/reference-rates/sofr"
@@ -135,23 +136,33 @@ def _contract_row(
     }
 
 
+def parse_boc_corra_json(text: str) -> dict[str, Any]:
+    payload = json.loads(text)
+    observations = payload.get("observations") or []
+    for row in observations:
+        cell = row.get("AVG.INTWO")
+        rate = _num(cell.get("v") if isinstance(cell, dict) else cell)
+        if rate is not None:
+            return {"rate": rate, "as_of": row.get("d")}
+    raise ValueError("BoC CORRA group did not expose AVG.INTWO")
+
+
 def parse_boc_corra_html(text: str) -> dict[str, Any]:
+    """Compatibility parser for page fixtures; live collection uses Valet JSON."""
     parser = _TableParser()
     parser.feed(text)
-    blob = " ".join(parser.text)
-    # Prefer a date/value row from the recent CORRA table.
-    values = re.findall(r"Canadian Overnight Repo Rate Average \(CORRA\) \(%\)\s+((?:\d+\.\d+\s+){1,10})", blob)
-    if values:
-        nums = [_num(x) for x in values[0].split()]
-        nums = [x for x in nums if x is not None]
-        if nums:
-            return {"rate": nums[-1], "as_of": None}
-    # Fallback to page text that may render the latest value beside the label.
-    m = re.search(r"CORRA[^0-9]{0,120}(\d+\.\d{2,4})", blob, re.I)
-    if not m:
-        raise ValueError("BoC CORRA page did not expose a current rate")
-    return {"rate": float(m.group(1)), "as_of": None}
-
+    for table in parser.tables:
+        header_dates: list[str] = []
+        for row in table:
+            if not row:
+                continue
+            if not header_dates:
+                header_dates = [cell for cell in row if re.fullmatch(r"20\d{2}-\d{2}-\d{2}", cell)]
+            if row and "Canadian Overnight Repo Rate Average (CORRA)" in row[0]:
+                values = [x for x in (_num(cell) for cell in row[1:]) if x is not None]
+                if values:
+                    return {"rate": values[-1], "as_of": header_dates[-1] if header_dates else None}
+    raise ValueError("BoC CORRA page did not expose a current rate")
 
 def parse_mx_expectations_html(text: str, *, benchmark: float) -> dict[str, Any]:
     parser = _TableParser()
@@ -395,8 +406,8 @@ def collect_policy_paths(
 
     # Canada
     try:
-        corra_html = fetch_bytes(BOC_CORRA_PAGE).decode("utf-8", errors="replace")
-        corra = parse_boc_corra_html(corra_html)
+        corra_json = fetch_bytes(BOC_CORRA_JSON).decode("utf-8", errors="replace")
+        corra = parse_boc_corra_json(corra_json)
         mx_html = fetch_bytes(MX_EXPECTATIONS_URL).decode("utf-8", errors="replace")
         mx = parse_mx_expectations_html(mx_html, benchmark=float(corra["rate"]))
         preferred = mx["1m"] if mx["1m"] else mx["3m"]
