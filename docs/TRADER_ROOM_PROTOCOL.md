@@ -42,6 +42,18 @@ The room has a strong preference for rates expressions when the same macro discr
 
 Every non-null trade carries `asset_class` and `expression_comparison`. The comparison records a rates candidate, a spot candidate, the selected expression family, and the rationale. Deterministic validation rejects a rates-first submission that skips either candidate.
 
+## Competition and risk incentive
+
+The standing seats are paper portfolio managers competing for **highest cumulative net P&L** across the persistent Trader Book. Analysis is a means to that outcome, not the score.
+
+- The 13 seats other than `no-trade-skeptic` each borrow their full **$100m** paper allocation and pay **5.00% per year, simple ACT/365**, on that full amount every day. Being flat does not stop the vig.
+- `no-trade-skeptic` is the benchmark cash manager. It pays no funding charge and earns **5.00% per year ACT/365** on the undeployed portion of its original $100m allocation. Any capital it deploys stops earning that yield while deployed.
+- Leaderboard P&L is gross realized + unrealized trading P&L, **minus funding for the 13 funded traders or plus undeployed-cash yield for the skeptic**.
+- `NO TRADE` remains legitimate. For the 13 funded traders it carries a real opportunity/funding cost; for the skeptic it is the positive cash benchmark.
+- Traders should not optimize for avoiding mistakes. If the frozen packet shows a tradeable discrepancy whose expected edge clears the funding hurdle and has a defined invalidation, the seat should be willing to risk paper capital.
+- Do not force low-quality trades or invent executable levels. The incentive is to make profitable decisions under uncertainty, not to maximize trade count.
+- Funding and leaderboard accounting are deterministic book mechanics. Advocates may reason about the 5% hurdle but may not author or alter canonical P&L, funding charges, NAV, or rank.
+
 ## Evidence contract
 
 Every run uses one common frozen evidence packet. All 14 advocates receive the exact same packet and cutoff. After freeze, advocates, rebuttals and the final aggregator may not browse, search, fetch, or acquire new evidence.

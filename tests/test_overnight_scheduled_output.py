@@ -96,6 +96,7 @@ class ScheduledOutputTests(unittest.TestCase):
             "base_packet_sha256": self.base["packet_sha256"],
             "base_evidence_cutoff": self.base["as_of"],
             "evidence_cutoff": "2026-09-18T02:20:00-04:00",
+            "competition": self.base["competition"],
             "research_supplement": {
                 "summary": "No material new research after the deterministic cutoff.",
                 "news": [],
@@ -145,6 +146,14 @@ class ScheduledOutputTests(unittest.TestCase):
 
     def test_rejects_model_calculated_book_state(self) -> None:
         self.payload["books"] = {"nav_usd": 999}
+        with self.assertRaises(Exception):
+            validate_output(self.store, self.payload)
+
+    def test_rejects_changed_competition_contract(self) -> None:
+        self.payload["agent_packet"]["competition"]["funding_rate_annual"] = 0.0
+        self.payload["agent_packet"]["packet_sha256"] = sha256_json(
+            {k: v for k, v in self.payload["agent_packet"].items() if k != "packet_sha256"}
+        )
         with self.assertRaises(Exception):
             validate_output(self.store, self.payload)
 

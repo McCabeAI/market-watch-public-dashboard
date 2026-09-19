@@ -50,6 +50,9 @@
     const nav = seats.reduce(function (sum, seat) { return sum + (finite(seat.nav_usd) ? seat.nav_usd : 0); }, 0);
     const realized = seats.reduce(function (sum, seat) { return sum + (finite(seat.realized_pnl_usd) ? seat.realized_pnl_usd : 0); }, 0);
     const unrealized = seats.reduce(function (sum, seat) { return sum + (finite(seat.unrealized_pnl_usd) ? seat.unrealized_pnl_usd : 0); }, 0);
+    const funding = seats.reduce(function (sum, seat) { return sum + (finite(seat.funding_cost_usd) ? seat.funding_cost_usd : 0); }, 0);
+    const cashYield = seats.reduce(function (sum, seat) { return sum + (finite(seat.cash_yield_usd) ? seat.cash_yield_usd : 0); }, 0);
+    const netPnl = seats.reduce(function (sum, seat) { return sum + (finite(seat.net_pnl_usd) ? seat.net_pnl_usd : 0); }, 0);
     const openCount = seats.reduce(function (sum, seat) { return sum + ((seat.positions || []).length); }, 0);
     const changes = packet.overnight_changes || [];
     const research = packet.overnight_research || null;
@@ -73,12 +76,17 @@
       const pitch = seat.required_pitch ? '<div class="tb-pitch"><b>Required pitch (not necessarily risked):</b> ' +
         esc(typeof seat.required_pitch === "string" ? seat.required_pitch : JSON.stringify(seat.required_pitch)) + "</div>" : "";
       return '<article class="tb-seat"><div class="tb-seat-top"><div class="tb-seat-name">' +
-        esc(seat.seat) + '</div><div class="tb-action">' + esc(seat.last_action || "HOLD") +
+        (seat.competition_rank ? "#" + esc(seat.competition_rank) + " · " : "") + esc(seat.seat) +
+        '</div><div class="tb-action">' + esc(seat.last_action || "HOLD") +
         "</div></div><p class=\"tb-remit\">" + esc(seat.remit || "") + "</p>" +
         '<div class="tb-metrics"><div><span>NAV</span><b>' + money(seat.nav_usd) +
-        "</b></div><div><span>Realized</span><b class=\"" + cls(seat.realized_pnl_usd) + "\">" +
-        money(seat.realized_pnl_usd) + "</b></div><div><span>Unrealized</span><b class=\"" +
-        cls(seat.unrealized_pnl_usd) + "\">" + money(seat.unrealized_pnl_usd) +
+        "</b></div><div><span>Net P&amp;L</span><b class=\"" + cls(seat.net_pnl_usd) + "\">" +
+        money(seat.net_pnl_usd) + "</b></div><div><span>" +
+        (seat.seat === "no-trade-skeptic" ? "Cash yield" : "Funding") + "</span><b class=\"" +
+        (seat.seat === "no-trade-skeptic" ? "tb-pos" : "tb-neg") + "\">" +
+        (seat.seat === "no-trade-skeptic"
+          ? money(seat.cash_yield_usd)
+          : (finite(seat.funding_cost_usd) && seat.funding_cost_usd !== 0 ? "-" + money(seat.funding_cost_usd).replace("-", "") : money(seat.funding_cost_usd))) +
         "</b></div></div><div class=\"tb-positions\">" + posHtml + "</div>" +
         (seat.thesis ? '<p class="tb-thesis">' + esc(seat.thesis) + "</p>" : "") + pitch + "</article>";
     }).join("");
@@ -87,6 +95,14 @@
       return '<div class="tb-change"><b>' + esc(row.seat) + "</b><span>" + esc(row.action) +
         "</span><span>" + esc(row.instrument || "") + "</span><span>" + money(row.notional_usd) + "</span></div>";
     }).join("") : '<div class="tb-empty">No overnight position changes</div>';
+
+    const leaderboard = packet.leaderboard || [];
+    const leaderboardHtml = leaderboard.length ? leaderboard.map(function (row) {
+      const rank = row.rank ? "#" + row.rank : "—";
+      return '<div class="tb-change"><b>' + esc(rank + " " + row.seat) + '</b><span>Net ' +
+        '<span class="' + cls(row.net_pnl_usd) + '">' + money(row.net_pnl_usd) + '</span></span><span>Funding ' +
+        money(row.funding_cost_usd) + '</span></div>';
+    }).join("") : '<div class="tb-empty">Leaderboard unavailable</div>';
 
     let researchHtml = "";
     if (research) {
@@ -110,12 +126,16 @@
       esc(packet.as_of || "") + " · evidence cutoff " + esc(packet.evidence_cutoff || "n/a") +
       '</p></div><div class="tb-kpis"><div class="tb-kpi"><span>Seats</span><b>' +
       esc(packet.seat_count || seats.length) + '</b></div><div class="tb-kpi"><span>Combined NAV</span><b>' +
-      money(nav) + '</b></div><div class="tb-kpi"><span>Realized P&amp;L</span><b class="' +
-      cls(realized) + '">' + money(realized) + '</b></div><div class="tb-kpi"><span>Open sleeves</span><b>' +
+      money(nav) + '</b></div><div class="tb-kpi"><span>Net P&amp;L</span><b class="' +
+      cls(netPnl) + '">' + money(netPnl) + '</b></div><div class="tb-kpi"><span>Funding costs</span><b>-' +
+      money(funding).replace("-", "") + '</b></div><div class="tb-kpi"><span>Cash yield</span><b class="tb-pos">' +
+      money(cashYield) + '</b></div><div class="tb-kpi"><span>Open sleeves</span><b>' +
       openCount + "</b></div></div></section>" +
       '<section class="tb-panel"><div class="tb-panel-head"><h3>Overnight position changes</h3><p>OPEN / ADD / REDUCE / HEDGE / CLOSE applied in the latest review</p></div><div class="tb-changes">' +
       changeHtml + "</div></section>" +
-      '<section class="tb-panel"><div class="tb-panel-head"><h3>Seat books</h3><p>Unrealized P&amp;L uses the frozen mark when a price exists; otherwise it is shown as unavailable.</p></div><div class="tb-seat-grid">' +
+      '<section class="tb-panel"><div class="tb-panel-head"><h3>P&amp;L leaderboard</h3><p>Thirteen seats pay 5% on the full $100m every day; the No-Trade Skeptic earns 5% on undeployed cash.</p></div><div class="tb-changes">' +
+      leaderboardHtml + "</div></section>" +
+      '<section class="tb-panel"><div class="tb-panel-head"><h3>Seat books</h3><p>Net P&amp;L includes the standing financing hurdle: funding cost for the 13 trading seats, cash yield for the skeptic.</p></div><div class="tb-seat-grid">' +
       seatHtml + "</div></section>";
   }
 

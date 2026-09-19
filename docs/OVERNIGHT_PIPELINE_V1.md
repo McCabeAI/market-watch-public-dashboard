@@ -70,7 +70,7 @@ The JSON contains:
 - exactly 14 structured seat decisions;
 - declared model-usage/cap fields.
 
-It must not contain canonical books, NAV, cash, realized P&L, or unrealized P&L.
+It must not contain canonical books, NAV, cash, realized/unrealized P&L, funding charges, net P&L, or competition rank.
 
 ## 5. Model policy and hard budget
 
@@ -122,6 +122,15 @@ Each seat returns structured decisions only:
 
 `OPEN / ADD / HOLD / REDUCE / HEDGE / CLOSE`
 
+The 14 seats are competing portfolio managers. Their standing objective is **highest cumulative net paper P&L**, not highest conviction score, most cautious commentary, or most persuasive prose. Every child receives the same frozen competition contract:
+- ranking metric: net paper P&L after financing economics;
+- the 13 seats other than `no-trade-skeptic` each borrow the full **$100m** allocation and pay **5.00% per year, simple ACT/365** on that full amount every day, whether deployed or flat;
+- `no-trade-skeptic` is the cash hurdle: it pays no borrowing charge and earns **5.00% per year ACT/365** on the undeployed portion of its original $100m allocation;
+- when the skeptic deploys $X of notional, that $X stops earning the cash yield for as long as it remains deployed;
+- therefore a flat active trader has negative carry while a flat skeptic earns the risk-free hurdle;
+- no-trade remains valid for every seat, but inactivity is economically costly for the 13 funded traders;
+- a trader should put on risk when expected edge clears the hurdle and has a defined invalidation. It must not manufacture a trade merely to avoid being flat.
+
 The dedicated spot seats remain spot-only. Rates-capable seats compare a rates candidate and a spot candidate before adding risk. Options remain last-resort.
 
 ## 7. Deterministic acceptance gate
@@ -152,7 +161,10 @@ Canonical mechanics are implemented only by `scripts/overnight/books.py`:
 - position creation/resizing/closing;
 - freshness blocks;
 - marks;
-- realized/unrealized P&L;
+- realized/unrealized gross P&L;
+- 5% annual funding accrual on the full $100m allocation for the 13 funded trading seats;
+- 5% annual cash yield on the skeptic's undeployed allocation;
+- net P&L after funding/cash yield and competition rank;
 - NAV;
 - history;
 - overnight changes.

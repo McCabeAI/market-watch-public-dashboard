@@ -10,7 +10,13 @@ from typing import Any
 
 from scripts.overnight.books import empty_books, validate_books
 from scripts.overnight.clock import isoformat, now_ny
-from scripts.overnight.constants import FORBIDDEN_ACQUISITION, SCHEMA_VERSION
+from scripts.overnight.constants import (
+    COMPETITION_METRIC,
+    FORBIDDEN_ACQUISITION,
+    FUNDING_DAY_COUNT,
+    FUNDING_RATE_ANNUAL,
+    SCHEMA_VERSION,
+)
 from scripts.overnight.errors import EvidenceBoundaryError, SchemaError
 from scripts.overnight.store import OvernightStore, sha256_json
 from scripts.trader_room.evidence import load_research_method
@@ -41,6 +47,16 @@ def freeze_snapshot(
         "pre_trader_delta": None if delta is None else {"as_of": delta.get("as_of"), "changes": delta.get("changes")},
         "temperature_scores": collect.get("temperature_scores"),
         "research_method": load_research_method(store.root),
+        "competition": {
+            "objective": "Finish with the highest cumulative net paper P&L across the 14 standing seats.",
+            "metric": COMPETITION_METRIC,
+            "funding_rate_annual": FUNDING_RATE_ANNUAL,
+            "funding_day_count": FUNDING_DAY_COUNT,
+            "funding_basis": "Every seat except no-trade-skeptic borrows its full $100m allocation and pays 5% ACT/365 on that full allocation every day, deployed or not. The no-trade-skeptic is the cash hurdle: it pays no borrowing cost and earns 5% ACT/365 on the undeployed portion of its original $100m allocation; deployed notional stops earning that cash yield.",
+            "flat_book_pnl": "Active trading seats lose the daily funding charge while flat. No-trade-skeptic earns the cash yield while flat.",
+            "no_trade_allowed": True,
+            "instruction": "Do not optimize for sounding prudent. The active seats have a real carry clock even when risk-off; take paper risk when expected edge clears the hurdle and invalidation is defined. The no-trade-skeptic must beat traders by preserving cash yield or by deploying only when expected trade return beats that yield.",
+        },
         "prior_books": prior_books,
         "known_gaps": [
             note

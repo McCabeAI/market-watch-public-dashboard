@@ -5,7 +5,7 @@ import json
 import shutil
 import tempfile
 import unittest
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -17,7 +17,7 @@ if str(ROOT) not in sys.path:
 
 from scripts.overnight.books import apply_action, empty_books, empty_seat, mark_to_market, position_pnl, public_books_view
 from scripts.overnight.clock import overnight_run_id, stage_for_time, stage_window
-from scripts.overnight.constants import LOCAL_CRON, SPOT_SEATS, STAGES, STANDING_SEATS, STARTING_NAV_USD
+from scripts.overnight.constants import FUNDING_RATE_ANNUAL, LOCAL_CRON, SPOT_SEATS, STAGES, STANDING_SEATS, STARTING_NAV_USD
 from scripts.overnight.errors import EvidenceBoundaryError, FreshnessError, PublicationError, SchemaError
 from scripts.overnight.expression import expression_rule, validate_expression_memo
 from scripts.overnight.freshness import assert_action_allowed, publication_decision
@@ -204,6 +204,77 @@ class BookTransitionTests(unittest.TestCase):
         self.assertFalse(any(p["position_id"] == pos["position_id"] for p in self.seat["positions"]))
         self.assertEqual({row["action"] for row in self.seat["history"]}, {"OPEN", "ADD", "HOLD", "HEDGE", "REDUCE", "CLOSE"})
 
+    def test_active_trader_pays_full_100m_funding_even_when_flat(self):
+        apply_action(
+            self.seat,
+            {"action": "HOLD", "expression_memo": _spot_memo()},
+            families=self.families,
+            run_id="overnight-20260918-dryrun-funding",
+            when=AS_OF,
+        )
+        next_day = AS_OF + timedelta(days=1)
+        apply_action(
+            self.seat,
+            {"action": "HOLD", "expression_memo": _spot_memo()},
+            families=self.families,
+            run_id="overnight-20260919-dryrun-funding",
+            when=next_day,
+        )
+        expected = round(STARTING_NAV_USD * FUNDING_RATE_ANNUAL / 365, 2)
+        self.assertEqual(self.seat["funding_cost_usd"], expected)
+        self.assertEqual(self.seat["cash_yield_usd"], 0.0)
+        self.assertEqual(self.seat["gross_pnl_usd"], 0.0)
+        self.assertEqual(self.seat["net_pnl_usd"], -expected)
+        self.assertEqual(self.seat["nav_usd"], STARTING_NAV_USD - expected)
+
+    def test_no_trade_skeptic_earns_cash_hurdle_and_deployment_reduces_it(self):
+        skeptic = empty_seat("no-trade-skeptic")
+        memo = _rates_memo("rates")
+        apply_action(
+            skeptic,
+            {"action": "HOLD", "expression_memo": {
+                "rates_candidate": None,
+                "spot_candidate": None,
+                "options_candidate": None,
+                "selected": "none",
+                "rationale": "Stay in cash.",
+            }},
+            families=self.families,
+            run_id="overnight-20260918-dryrun-cash",
+            when=AS_OF,
+        )
+        day_one = AS_OF + timedelta(days=1)
+        apply_action(
+            skeptic,
+            {
+                "action": "OPEN",
+                "instrument": "US 10Y",
+                "side": "long",
+                "notional_usd": 40_000_000,
+                "price": 4.20,
+                "asset_class": "rates",
+                "expression_memo": memo,
+            },
+            families=self.families,
+            run_id="overnight-20260919-dryrun-cash",
+            when=day_one,
+        )
+        full_cash_yield = round(STARTING_NAV_USD * FUNDING_RATE_ANNUAL / 365, 2)
+        self.assertEqual(skeptic["cash_yield_usd"], full_cash_yield)
+        day_two = AS_OF + timedelta(days=2)
+        apply_action(
+            skeptic,
+            {"action": "HOLD", "expression_memo": memo},
+            families=self.families,
+            run_id="overnight-20260920-dryrun-cash",
+            when=day_two,
+        )
+        reduced_cash_yield = round(60_000_000 * FUNDING_RATE_ANNUAL / 365, 2)
+        self.assertEqual(skeptic["funding_cost_usd"], 0.0)
+        expected_total = round(full_cash_yield + reduced_cash_yield, 2)
+        self.assertEqual(skeptic["cash_yield_usd"], expected_total)
+        self.assertEqual(skeptic["net_pnl_usd"], expected_total)
+
     def test_missing_mark_does_not_invent_pnl(self):
         pos = {
             "side": "long",
@@ -294,6 +365,9 @@ class PipelineDryRunTests(unittest.TestCase):
         self.assertTrue(dataset["preservation"]["sep18_news_fixes"])
         view = public_books_view(books)
         self.assertIn("overnight_changes", view)
+        self.assertEqual(view["funding_rate_annual"], FUNDING_RATE_ANNUAL)
+        self.assertEqual(view["competition_metric"], "net_pnl_after_funding")
+        self.assertEqual(len(view["leaderboard"]), 14)
 
     def test_failed_review_still_publishes_stale(self):
         run_id = "overnight-20260918-dryrun-fail"

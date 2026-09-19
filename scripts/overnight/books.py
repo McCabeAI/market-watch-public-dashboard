@@ -12,6 +12,8 @@ from scripts.overnight.constants import (
     ACTIONS,
     ASSET_CLASSES,
     EXPANDING_ACTIONS,
+    FUNDING_DAY_COUNT,
+    FUNDING_RATE_ANNUAL,
     SCHEMA_VERSION,
     SIDES,
     STANDING_SEATS,
@@ -36,6 +38,98 @@ def _side_sign(side: str) -> int:
     if side not in SIDES:
         raise SchemaError(f"side must be long or short, got {side}")
     return 1 if side == "long" else -1
+
+
+def _deployed_notional(seat_book: dict[str, Any]) -> float:
+    return round(
+        sum(float(position.get("notional_usd") or 0.0) for position in seat_book.get("positions") or []),
+        2,
+    )
+
+
+def accrue_funding(
+    seat_book: dict[str, Any],
+    *,
+    when: datetime,
+    run_id: str | None = None,
+) -> dict[str, float]:
+    """Accrue the standing hedge-fund hurdle between book reviews.
+
+    The 13 risk-taking seats borrow their full $100m allocation and pay 5% ACT/365
+    regardless of whether they deploy it. The no-trade skeptic is the cash hurdle:
+    it pays no borrowing cost and earns 5% ACT/365 on the undeployed portion of its
+    original $100m allocation.
+    """
+    last_raw = seat_book.get("funding_last_accrual_at")
+    if not last_raw:
+        seat_book["funding_last_accrual_at"] = isoformat(when)
+        seat_book.setdefault("funding_cost_usd", 0.0)
+        seat_book.setdefault("cash_yield_usd", 0.0)
+        seat_book["funding_rate_annual"] = FUNDING_RATE_ANNUAL
+        return {"funding_cost_usd": 0.0, "cash_yield_usd": 0.0}
+    try:
+        last = datetime.fromisoformat(str(last_raw))
+    except ValueError as exc:
+        raise SchemaError(f"invalid funding accrual timestamp {last_raw}") from exc
+    elapsed = (when - last).total_seconds()
+    if elapsed <= 0:
+        return {"funding_cost_usd": 0.0, "cash_yield_usd": 0.0}
+
+    year_seconds = FUNDING_DAY_COUNT * 86400.0
+    funding_increment = 0.0
+    cash_yield_increment = 0.0
+    if seat_book["seat"] == "no-trade-skeptic":
+        undeployed = max(0.0, STARTING_NAV_USD - _deployed_notional(seat_book))
+        cash_yield_increment = round(
+            undeployed * FUNDING_RATE_ANNUAL * elapsed / year_seconds,
+            2,
+        )
+        seat_book["cash_yield_usd"] = round(
+            float(seat_book.get("cash_yield_usd") or 0.0) + cash_yield_increment,
+            2,
+        )
+        seat_book["cash_usd"] = round(
+            float(seat_book.get("cash_usd", STARTING_NAV_USD)) + cash_yield_increment,
+            2,
+        )
+    else:
+        funding_increment = round(
+            STARTING_NAV_USD * FUNDING_RATE_ANNUAL * elapsed / year_seconds,
+            2,
+        )
+        seat_book["funding_cost_usd"] = round(
+            float(seat_book.get("funding_cost_usd") or 0.0) + funding_increment,
+            2,
+        )
+        seat_book["cash_usd"] = round(
+            float(seat_book.get("cash_usd", STARTING_NAV_USD)) - funding_increment,
+            2,
+        )
+
+    seat_book["funding_last_accrual_at"] = isoformat(when)
+    seat_book["funding_rate_annual"] = FUNDING_RATE_ANNUAL
+    if funding_increment or cash_yield_increment:
+        seat_book.setdefault("history", []).append(
+            {
+                "at": isoformat(when),
+                "overnight_run_id": run_id,
+                "action": "FUNDING",
+                "result": "applied",
+                "funding_rate_annual": FUNDING_RATE_ANNUAL,
+                "funding_base_usd": 0.0 if seat_book["seat"] == "no-trade-skeptic" else STARTING_NAV_USD,
+                "cash_yield_base_usd": (
+                    max(0.0, STARTING_NAV_USD - _deployed_notional(seat_book))
+                    if seat_book["seat"] == "no-trade-skeptic"
+                    else 0.0
+                ),
+                "funding_cost_usd": funding_increment,
+                "cash_yield_usd": cash_yield_increment,
+            }
+        )
+    return {
+        "funding_cost_usd": funding_increment,
+        "cash_yield_usd": cash_yield_increment,
+    }
 
 
 def position_pnl(position: dict[str, Any]) -> dict[str, Any]:
@@ -96,6 +190,12 @@ def empty_seat(seat: str) -> dict[str, Any]:
         "history": [],
         "realized_pnl_usd": 0.0,
         "unrealized_pnl_usd": 0.0,
+        "gross_pnl_usd": 0.0,
+        "funding_cost_usd": 0.0,
+        "cash_yield_usd": 0.0,
+        "funding_rate_annual": FUNDING_RATE_ANNUAL,
+        "funding_last_accrual_at": None,
+        "net_pnl_usd": 0.0,
         "pnl_unavailable": False,
         "conviction": 0,
         "thesis": None,
@@ -137,8 +237,16 @@ def mark_to_market(seat_book: dict[str, Any]) -> dict[str, Any]:
             unrealized += float(pnl["unrealized_pnl_usd"])
     seat_book["unrealized_pnl_usd"] = round(unrealized, 2)
     seat_book["pnl_unavailable"] = missing
+    gross = round(float(seat_book.get("realized_pnl_usd") or 0.0) + unrealized, 2)
+    funding = round(float(seat_book.get("funding_cost_usd") or 0.0), 2)
+    cash_yield = round(float(seat_book.get("cash_yield_usd") or 0.0), 2)
+    seat_book["gross_pnl_usd"] = None if missing else gross
+    seat_book["funding_cost_usd"] = funding
+    seat_book["cash_yield_usd"] = cash_yield
+    seat_book["funding_rate_annual"] = FUNDING_RATE_ANNUAL
+    seat_book["net_pnl_usd"] = None if missing else round(gross - funding + cash_yield, 2)
     seat_book["nav_usd"] = round(
-        float(seat_book["starting_nav_usd"]) + float(seat_book["realized_pnl_usd"]) + unrealized,
+        float(seat_book["starting_nav_usd"]) + gross - funding + cash_yield,
         2,
     )
     return seat_book
@@ -177,6 +285,7 @@ def apply_action(
     when: datetime | None = None,
 ) -> dict[str, Any]:
     stamp = now_ny(when)
+    accrue_funding(seat_book, when=stamp, run_id=run_id)
     kind = action.get("action")
     if kind not in ACTIONS:
         raise SchemaError(f"unknown action {kind}")
@@ -417,6 +526,10 @@ def validate_books(books: dict[str, Any]) -> dict[str, Any]:
             raise SchemaError(f"{seat} expression_rule drifted")
         if item.get("remit") != remit(seat):
             raise SchemaError(f"{seat} remit drifted from the standing roster")
+        item.setdefault("funding_cost_usd", 0.0)
+        item.setdefault("cash_yield_usd", 0.0)
+        item.setdefault("funding_last_accrual_at", None)
+        item["funding_rate_annual"] = FUNDING_RATE_ANNUAL
         mark_to_market(item)
     return books
 
@@ -436,6 +549,11 @@ def public_books_view(books: dict[str, Any]) -> dict[str, Any]:
                 "nav_usd": item["nav_usd"],
                 "realized_pnl_usd": item["realized_pnl_usd"],
                 "unrealized_pnl_usd": item["unrealized_pnl_usd"],
+                "gross_pnl_usd": item.get("gross_pnl_usd"),
+                "funding_cost_usd": item.get("funding_cost_usd", 0.0),
+                "cash_yield_usd": item.get("cash_yield_usd", 0.0),
+                "funding_rate_annual": FUNDING_RATE_ANNUAL,
+                "net_pnl_usd": item.get("net_pnl_usd"),
                 "pnl_unavailable": item["pnl_unavailable"],
                 "conviction": item["conviction"],
                 "thesis": item.get("thesis"),
@@ -464,6 +582,39 @@ def public_books_view(books: dict[str, Any]) -> dict[str, Any]:
         for row in item.get("history") or []:
             if row.get("result") == "applied" and row.get("action") in {"OPEN", "ADD", "REDUCE", "HEDGE", "CLOSE"}:
                 changes.append({"seat": seat, **{k: row.get(k) for k in ("action", "instrument", "notional_usd", "at", "result")}})
+    ranked = sorted(
+        (row for row in seats if not row["pnl_unavailable"] and row["net_pnl_usd"] is not None),
+        key=lambda row: (-float(row["net_pnl_usd"]), row["seat"]),
+    )
+    prior_score: float | None = None
+    prior_rank = 0
+    for idx, row in enumerate(ranked, start=1):
+        score = float(row["net_pnl_usd"])
+        rank = prior_rank if prior_score is not None and score == prior_score else idx
+        row["competition_rank"] = rank
+        prior_score = score
+        prior_rank = rank
+    for row in seats:
+        row.setdefault("competition_rank", None)
+    leaderboard = [
+        {
+            "rank": row["competition_rank"],
+            "seat": row["seat"],
+            "net_pnl_usd": row["net_pnl_usd"],
+            "gross_pnl_usd": row["gross_pnl_usd"],
+            "funding_cost_usd": row["funding_cost_usd"],
+            "cash_yield_usd": row["cash_yield_usd"],
+            "pnl_unavailable": row["pnl_unavailable"],
+        }
+        for row in sorted(
+            seats,
+            key=lambda row: (
+                row["competition_rank"] is None,
+                row["competition_rank"] if row["competition_rank"] is not None else 10_000,
+                row["seat"],
+            ),
+        )
+    ]
     return {
         "schema_version": SCHEMA_VERSION,
         "overnight_run_id": books.get("overnight_run_id"),
@@ -472,7 +623,10 @@ def public_books_view(books: dict[str, Any]) -> dict[str, Any]:
         "review_status": books.get("review_status"),
         "last_successful_review_run_id": books.get("last_successful_review_run_id"),
         "starting_nav_usd": STARTING_NAV_USD,
+        "funding_rate_annual": FUNDING_RATE_ANNUAL,
+        "competition_metric": "net_pnl_after_funding",
         "seat_count": len(seats),
+        "leaderboard": leaderboard,
         "seats": seats,
         "overnight_changes": changes,
     }
