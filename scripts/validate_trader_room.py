@@ -79,6 +79,8 @@ def main() -> None:
     assert "scripts/trader_room_go.py" in protocol
     assert "deterministic" in protocol.lower() and "conflict_synopsis" in protocol
     assert "scripts/trader_room_finalize.py" in protocol
+    assert "## Context gate" in protocol
+    assert "context_build" in protocol
     assert "final-aggregator" in protocol  # compatibility/reference only
     assert "trader-room/outbox" not in protocol
 
@@ -90,6 +92,7 @@ def main() -> None:
     assert "Composer ceiling = 28" in on_demand
     assert "Total model-invocation ceiling = 57" in on_demand
     assert "scripts/trader_room_finalize.py" in on_demand
+    assert "context_build" in on_demand
     assert "zero model calls" in on_demand
     assert "MW_TRADER_ROOM_RUN_POLICY=" in on_demand
     assert "trader-room/runs/<run_id>/" in on_demand
@@ -102,12 +105,17 @@ def main() -> None:
     assert "central-bank" in evidence_contract
     assert "MARKET_STATE_FEED_V1.md" in evidence_contract
     assert "TRADER_RESEARCH_METHOD.md" in evidence_contract
+    assert "policy-path" in evidence_contract
+    assert "SOFR/CORRA/AONIA" in evidence_contract
+    assert "historical move analogs" in evidence_contract
     assert "Bob Elliott" in evidence_contract and "David Cervantes" in evidence_contract
     assert "available`, `partial`, `stale`, or `unavailable`" in evidence_contract
     assert "Start with a causal question" in method
     assert "Make market expectations explicit" in method
     assert "Build a discrepancy map" in method
     assert "Mean reversion is a yardstick, not a signal" in method
+    assert "Context-before-screen rule" in method
+    assert "context -> what changed -> what is priced -> historical comparison" in method
 
     command = (ROOT / ".cursor" / "commands" / "trader-room.md").read_text(encoding="utf-8")
     assert "all 14 standing advocates concurrently" in command
@@ -124,6 +132,8 @@ def main() -> None:
     assert "exact same frozen common evidence packet" in command
     assert "composer-2.5" in command
     assert "deterministic" in command.lower() and "conflict_synopsis" in command
+    assert "context_build" in command
+    assert "SOFR/CORRA/AONIA" in command
     assert "Do **not** launch `final-aggregator`" in command
     assert "scripts/trader_room_finalize.py" in command
     assert "total Grok ceiling 29" in command

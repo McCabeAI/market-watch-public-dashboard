@@ -48,6 +48,21 @@ SYNOPSIS_FIELDS = (
     "conflict_tags",
 )
 
+CONTEXT_BUILD_FIELDS = (
+    "causal_mechanism",
+    "path_to_current_price",
+    "known_vs_new_information",
+    "market_implied_assumption",
+    "market_assumption_disagreed_with",
+    "price_decomposition",
+    "historical_reference",
+    "independent_checks",
+    "flow_and_positioning_check",
+    "policy_path_check",
+)
+HISTORICAL_REFERENCE_FIELDS = ("distribution", "analogs", "regime_differences")
+POLICY_PATH_STATUSES = {"available", "not_applicable"}
+
 FORBIDDEN_ACQUISITION = (
     "web_search",
     "web_fetch",
@@ -116,6 +131,64 @@ def validate_conflict_synopsis(
     _list_of_text(synopsis["conflict_tags"], f"{agent}.conflict_synopsis.conflict_tags")
 
 
+def validate_context_build(context: dict[str, Any], *, agent: str, trade: dict[str, Any], packet: dict[str, Any]) -> None:
+    if not isinstance(context, dict):
+        raise SchemaError(f"{agent}.trade.context_build must be an object")
+    _require_keys(context, CONTEXT_BUILD_FIELDS, f"{agent}.trade.context_build")
+    for field in (
+        "causal_mechanism",
+        "path_to_current_price",
+        "known_vs_new_information",
+        "market_implied_assumption",
+        "market_assumption_disagreed_with",
+        "price_decomposition",
+        "flow_and_positioning_check",
+    ):
+        _non_empty_text(context[field], f"{agent}.trade.context_build.{field}")
+
+    checks = context["independent_checks"]
+    if not isinstance(checks, list) or len(checks) < 2 or any(not isinstance(x, str) or not x.strip() for x in checks):
+        raise SchemaError(f"{agent}.trade.context_build.independent_checks must contain at least two non-empty checks")
+
+    history = context["historical_reference"]
+    if not isinstance(history, dict):
+        raise SchemaError(f"{agent}.trade.context_build.historical_reference must be an object")
+    _require_keys(history, HISTORICAL_REFERENCE_FIELDS, f"{agent}.trade.context_build.historical_reference")
+    _non_empty_text(history["distribution"], f"{agent}.trade.context_build.historical_reference.distribution")
+    _non_empty_text(history["regime_differences"], f"{agent}.trade.context_build.historical_reference.regime_differences")
+    analogs = history["analogs"]
+    if not isinstance(analogs, list) or not analogs or any(not isinstance(x, str) or not x.strip() for x in analogs):
+        raise SchemaError(
+            f"{agent}.trade.context_build.historical_reference.analogs must contain at least one comparable episode "
+            "or an explicit statement that no credible analog exists"
+        )
+
+    policy = context["policy_path_check"]
+    if not isinstance(policy, dict):
+        raise SchemaError(f"{agent}.trade.context_build.policy_path_check must be an object")
+    _require_keys(policy, ("status", "relevant_countries", "pricing_summary", "rationale"), f"{agent}.trade.context_build.policy_path_check")
+    if policy["status"] not in POLICY_PATH_STATUSES:
+        raise SchemaError(f"{agent}.trade.context_build.policy_path_check.status invalid")
+    _non_empty_text(policy["pricing_summary"], f"{agent}.trade.context_build.policy_path_check.pricing_summary")
+    _non_empty_text(policy["rationale"], f"{agent}.trade.context_build.policy_path_check.rationale")
+    countries = policy["relevant_countries"]
+    if not isinstance(countries, list) or any(c not in {"US", "CA", "AU", "NZ", "EA", "UK", "JP"} for c in countries):
+        raise SchemaError(f"{agent}.trade.context_build.policy_path_check.relevant_countries invalid")
+
+    rates_trade = trade.get("asset_class") in {"rates", "curve", "rates_rv"}
+    short_policy_tenor = bool(re.search(r"(?:^|[_\s-])2Y\b|\b2s", str(trade.get("instrument") or ""), re.I))
+    if rates_trade and short_policy_tenor and any(c in {"US", "CA", "AU"} for c in countries):
+        if policy["status"] != "available":
+            raise SchemaError(
+                f"{agent} short-end rates trade requires available US/CA/AU policy-path pricing; "
+                "a sovereign yield percentile is not a substitute"
+            )
+        market_paths = ((packet.get("market_state") or {}).get("policy_paths") or {}).get("countries") or {}
+        missing = [c for c in countries if c in {"US", "CA", "AU"} and (market_paths.get(c) or {}).get("status") != "ok"]
+        if missing:
+            raise SchemaError(f"{agent} policy_path_check says available but packet lacks live paths for {missing}")
+
+
 def _validate_expression_comparison(trade: dict[str, Any], *, agent: str) -> None:
     asset_class = trade["asset_class"]
     if asset_class not in ASSET_CLASSES:
@@ -174,6 +247,7 @@ def validate_trade(
         raise SchemaError(f"{agent} trade must be an object or null")
     _require_keys(trade, REQUIRED_TRADE_FIELDS, f"{agent} trade")
     _validate_expression_comparison(trade, agent=agent)
+    validate_context_build(trade["context_build"], agent=agent, trade=trade, packet=packet)
     for field in ("instrument", "direction", "thesis", "mispricing", "horizon"):
         _non_empty_text(trade[field], f"{agent}.trade.{field}")
     for field in ("why_now", "evidence_refs", "catalysts", "principal_risks"):

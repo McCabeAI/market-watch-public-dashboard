@@ -33,6 +33,8 @@ Expression selection is mandatory before submission:
 - every other seat is rates-first when it submits a trade: construct a concrete rates candidate and a spot candidate, prefer rates when comparably clean, and select spot only with an explicit reason rates is inferior or unavailable;
 - `no-trade-skeptic` may still return no trade.
 
+Each initial advocate must build the idea in this order: context -> what changed -> what is priced -> historical comparison -> discrepancy -> expression -> sizing. A percentile/z-score is a discovery flag, not a thesis. Complete the validated `context_build` before selecting risk. For rates, inspect the frozen SOFR/CORRA/AONIA-linked policy path before sovereign curves or RV. Use the packet's historical move analogs and explicitly state both similarities and regime differences.
+
 Each initial advocate:
 - may use at most two `composer-2.5` subagents;
 - must remain on the frozen packet;
@@ -44,7 +46,7 @@ Do not show Round 1 outputs to other advocates.
 
 ## 3. Validate
 
-Validate roster/remit, schema, evidence refs, packet hash, null levels, confidence, `asset_class`, `expression_comparison`, and `conflict_synopsis`. Reject malformed work; do not silently guess missing fields.
+Validate roster/remit, schema, evidence refs, packet hash, null levels, confidence, `asset_class`, `expression_comparison`, `context_build`, and `conflict_synopsis`. Reject malformed work; do not silently guess missing fields.
 
 ## 4. Deterministic conflict stage
 

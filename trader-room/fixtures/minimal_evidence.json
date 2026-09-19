@@ -8,9 +8,14 @@
       "id": "temp:US:inflation",
       "country": "US",
       "dimension": "Inflation",
-      "score": 72.0,
+      "score": 72,
       "as_of": "2026-09-17",
-      "hard_inputs": [{"name": "Core PCE", "value": "+0.2% m/m"}],
+      "hard_inputs": [
+        {
+          "name": "Core PCE",
+          "value": "+0.2% m/m"
+        }
+      ],
       "context": [],
       "source": "fixture",
       "staleness": "synthetic"
@@ -24,7 +29,9 @@
       "published_at": "2026-09-16T18:00:00Z",
       "source_name": "Federal Reserve",
       "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm",
-      "country_codes": ["US"],
+      "country_codes": [
+        "US"
+      ],
       "verification_status": "synthetic"
     }
   ],
@@ -36,7 +43,10 @@
       "published_at": "2026-09-16T12:00:00Z",
       "source_name": "fixture",
       "url": null,
-      "country_codes": ["US", "CA"],
+      "country_codes": [
+        "US",
+        "CA"
+      ],
       "verification_status": "synthetic"
     }
   ],
@@ -44,8 +54,79 @@
     "schema_version": 1,
     "status": "available",
     "generated_at": "2026-09-17T21:00:00Z",
-    "fx": {"AUDUSD": {"spot": 0.66}, "USDJPY": {"spot": 148.0}, "USDCAD": {"spot": 1.36}, "AUDNZD": {"spot": 1.09}},
-    "rates": {"US": {"10Y": 4.2}, "AU": {"10Y": 4.4}}
+    "fx": {
+      "AUDUSD": {
+        "spot": 0.66
+      },
+      "USDJPY": {
+        "spot": 148
+      },
+      "USDCAD": {
+        "spot": 1.36
+      },
+      "AUDNZD": {
+        "spot": 1.09
+      }
+    },
+    "rates": {
+      "US": {
+        "10Y": 4.2
+      },
+      "AU": {
+        "10Y": 4.4
+      }
+    },
+    "policy_paths": {
+      "status": "ok",
+      "countries": {
+        "US": {
+          "status": "ok",
+          "benchmark": {
+            "name": "SOFR",
+            "rate": 3.75
+          },
+          "contracts_1m": [
+            {
+              "expiry": "2026-10",
+              "implied_rate": 3.9,
+              "change_from_overnight_bps": 15
+            }
+          ]
+        },
+        "CA": {
+          "status": "ok",
+          "benchmark": {
+            "name": "CORRA",
+            "rate": 2.29
+          },
+          "contracts_1m": [
+            {
+              "expiry": "2026-10",
+              "implied_rate": 2.31,
+              "change_from_overnight_bps": 2
+            }
+          ]
+        },
+        "AU": {
+          "status": "ok",
+          "benchmark": {
+            "name": "AONIA",
+            "rate": 4.35
+          },
+          "contracts_1m": [
+            {
+              "expiry": "2026-10",
+              "implied_rate": 4.4,
+              "change_from_overnight_bps": 5
+            }
+          ]
+        }
+      },
+      "method": {
+        "model_calls": 0,
+        "credentials_required": []
+      }
+    }
   },
   "research_method": {
     "document": "docs/TRADER_RESEARCH_METHOD.md",
@@ -54,13 +135,45 @@
     "status": "available"
   },
   "source_index": [
-    {"id": "temp:US:inflation", "name": "US Inflation", "url": null, "as_of": "2026-09-17", "family": "temperature_gauges"},
-    {"id": "cb:fed:2026-09-16", "name": "FOMC hike", "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm", "as_of": "2026-09-16T18:00:00Z", "family": "central_bank_research"},
-    {"id": "news:energy:2026-09-16", "name": "Energy shock", "url": null, "as_of": "2026-09-16T12:00:00Z", "family": "news_and_research"},
-    {"id": "market_state", "name": "market-state snapshot", "url": null, "as_of": "2026-09-17T21:00:00Z", "family": "market_state"},
-    {"id": "research_method", "name": "docs/TRADER_RESEARCH_METHOD.md", "url": null, "as_of": "standing", "family": "research_method"}
+    {
+      "id": "temp:US:inflation",
+      "name": "US Inflation",
+      "url": null,
+      "as_of": "2026-09-17",
+      "family": "temperature_gauges"
+    },
+    {
+      "id": "cb:fed:2026-09-16",
+      "name": "FOMC hike",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm",
+      "as_of": "2026-09-16T18:00:00Z",
+      "family": "central_bank_research"
+    },
+    {
+      "id": "news:energy:2026-09-16",
+      "name": "Energy shock",
+      "url": null,
+      "as_of": "2026-09-16T12:00:00Z",
+      "family": "news_and_research"
+    },
+    {
+      "id": "market_state",
+      "name": "market-state snapshot",
+      "url": null,
+      "as_of": "2026-09-17T21:00:00Z",
+      "family": "market_state"
+    },
+    {
+      "id": "research_method",
+      "name": "docs/TRADER_RESEARCH_METHOD.md",
+      "url": null,
+      "as_of": "standing",
+      "family": "research_method"
+    }
   ],
-  "known_gaps": ["Synthetic fixture; not a live market packet."],
+  "known_gaps": [
+    "Synthetic fixture; not a live market packet."
+  ],
   "family_status": {
     "temperature_gauges": "available",
     "central_bank_research": "available",

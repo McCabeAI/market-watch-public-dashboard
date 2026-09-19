@@ -22,6 +22,7 @@ from scripts.market_state import (
     validate_snapshot,
 )
 from scripts.positioning_data import build_positioning, validate_positioning
+from scripts.policy_path_data import collect_policy_paths, validate_policy_paths
 
 
 def _latest(series: dict[date, float]) -> tuple[date, float]:
@@ -58,6 +59,22 @@ def main() -> int:
         "pairs": 45,
         "EURUSD": [eurusd_date.isoformat(), eurusd],
         "AUDNZD": [audnzd_date.isoformat(), audnzd],
+    }
+
+    policy_paths = collect_policy_paths(today=today, fetch_bytes=fetch_bytes)
+    validate_policy_paths(policy_paths)
+    missing_policy = [
+        country for country in ("US", "CA", "AU")
+        if (policy_paths.get("countries", {}).get(country) or {}).get("status") != "ok"
+    ]
+    if missing_policy:
+        raise MarketStateError(f"live policy paths unavailable for {missing_policy}: {policy_paths}")
+    report["policy_paths"] = {
+        country: {
+            "benchmark": policy_paths["countries"][country].get("benchmark"),
+            "terminal": policy_paths["countries"][country].get("terminal"),
+        }
+        for country in ("US", "CA", "AU")
     }
 
     positioning = build_positioning(

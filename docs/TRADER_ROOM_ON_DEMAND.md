@@ -132,7 +132,9 @@ The repository `subagentStart` hook enforces these ceilings. Only initial advoca
 
 ## Required trade schema
 
-Every advocate except `no-trade-skeptic` must produce one actionable trade with: `instrument`, `asset_class`, `expression_comparison`, `structure`, `direction`, `thesis`, `mispricing`, `why_now`, `evidence_refs`, `horizon`, `entry`, `target`, `stop`, `invalidation`, `catalysts`, `principal_risks`, and `confidence`. Unsupported levels are JSON `null`.
+Every advocate except `no-trade-skeptic` must produce one actionable trade with: `instrument`, `asset_class`, `expression_comparison`, `context_build`, `structure`, `direction`, `thesis`, `mispricing`, `why_now`, `evidence_refs`, `horizon`, `entry`, `target`, `stop`, `invalidation`, `catalysts`, `principal_risks`, and `confidence`. Unsupported levels are JSON `null`.
+
+`context_build` is a hard gate, not optional prose. It must state the causal mechanism, path to current price, known-vs-new information, market-implied assumption, exact assumption disagreed with, price decomposition, historical reference/analogs and regime differences, at least two independent checks, flow/positioning check, and policy-path check. Statistics may support that context but may not replace it.
 
 ## Artifact sequence
 
