@@ -2,7 +2,7 @@
 
 This module keeps the policy benchmark separate from the sovereign curve:
 - Canada: BoC CORRA + Montréal Exchange 1M/3M CORRA futures.
-- United States: NY Fed SOFR + CME 1M SOFR futures.
+- United States: NY Fed SOFR + 1M SOFR futures (CME preferred; delayed ICE/eSignal hosted-runner fallback).
 - Australia: RBA F1 AONIA/OIS/BAB data + ASX 30-day cash-rate futures.
 
 Exchange/web prices are delayed research/reference data, never executable marks.
