@@ -123,12 +123,13 @@ Each seat returns structured decisions only:
 `OPEN / ADD / HOLD / REDUCE / HEDGE / CLOSE`
 
 The 14 seats are competing portfolio managers. Their standing objective is **highest cumulative net paper P&L**, not highest conviction score, most cautious commentary, or most persuasive prose. Every child receives the same frozen competition contract:
-- ranking metric: net paper P&L after funding;
-- every open position's stored `notional_usd` is treated as borrowed paper notional;
-- funding rate: **5.00% per year, simple ACT/365**, accrued on outstanding notional until it is reduced or closed;
-- a flat book pays no funding and earns zero P&L;
-- no-trade remains valid, but repeated flat decisions compete directly against profitable books;
-- a trader should put on risk when the expected edge clears the funding drag and has a defined invalidation. It must not manufacture a trade merely to avoid being flat.
+- ranking metric: net paper P&L after financing economics;
+- the 13 seats other than `no-trade-skeptic` each borrow the full **$100m** allocation and pay **5.00% per year, simple ACT/365** on that full amount every day, whether deployed or flat;
+- `no-trade-skeptic` is the cash hurdle: it pays no borrowing charge and earns **5.00% per year ACT/365** on the undeployed portion of its original $100m allocation;
+- when the skeptic deploys $X of notional, that $X stops earning the cash yield for as long as it remains deployed;
+- therefore a flat active trader has negative carry while a flat skeptic earns the risk-free hurdle;
+- no-trade remains valid for every seat, but inactivity is economically costly for the 13 funded traders;
+- a trader should put on risk when expected edge clears the hurdle and has a defined invalidation. It must not manufacture a trade merely to avoid being flat.
 
 The dedicated spot seats remain spot-only. Rates-capable seats compare a rates candidate and a spot candidate before adding risk. Options remain last-resort.
 
@@ -161,8 +162,9 @@ Canonical mechanics are implemented only by `scripts/overnight/books.py`:
 - freshness blocks;
 - marks;
 - realized/unrealized gross P&L;
-- 5% annual funding accrual on borrowed paper notional;
-- net P&L after funding and competition rank;
+- 5% annual funding accrual on the full $100m allocation for the 13 funded trading seats;
+- 5% annual cash yield on the skeptic's undeployed allocation;
+- net P&L after funding/cash yield and competition rank;
 - NAV;
 - history;
 - overnight changes.
