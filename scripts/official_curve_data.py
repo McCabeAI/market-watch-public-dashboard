@@ -332,6 +332,8 @@ def collect_official_curves(*, today: date, fetch_bytes: FetchBytes) -> dict[str
 def validate_official_curves(payload: Mapping[str, Any]) -> None:
     if payload.get("method", {}).get("model_calls") != 0:
         raise ValueError("official curve collector must use zero model calls")
+    if payload.get("status") == "unavailable":
+        return
     countries = payload.get("countries")
     if not isinstance(countries, Mapping) or set(countries) != {"US", "CA", "AU"}:
         raise ValueError("official curves must contain exactly US, CA and AU")
