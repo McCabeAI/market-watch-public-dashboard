@@ -91,6 +91,14 @@
               "implied_rate": 3.9,
               "change_from_overnight_bps": 15
             }
+          ],
+          "contracts_3m": [
+            {
+              "expiry": "2026-12",
+              "code": "SR3Z6",
+              "implied_rate": 3.8,
+              "change_from_overnight_bps": 5
+            }
           ]
         },
         "CA": {
@@ -104,6 +112,14 @@
               "expiry": "2026-10",
               "implied_rate": 2.31,
               "change_from_overnight_bps": 2
+            }
+          ],
+          "contracts_3m": [
+            {
+              "expiry": "2026-12",
+              "code": "CRAZ26",
+              "implied_rate": 2.75,
+              "change_from_overnight_bps": 46
             }
           ]
         },
@@ -125,6 +141,75 @@
       "method": {
         "model_calls": 0,
         "credentials_required": []
+      }
+    },
+    "tradable_rate_curves": {
+      "status": "ok",
+      "curves": {
+        "SOFR": {
+          "status": "ok",
+          "country": "US",
+          "benchmark": {
+            "name": "SOFR",
+            "rate": 3.75
+          },
+          "instrument": "CME Three-Month SOFR futures",
+          "product_code": "SR3",
+          "contract_period_months": 3,
+          "contracts": [
+            {
+              "expiry": "2026-12",
+              "code": "SR3Z6",
+              "implied_rate": 3.8,
+              "change_from_overnight_bps": 5
+            }
+          ],
+          "mark_convention": "implied_rate = 100 - futures price"
+        },
+        "CORRA": {
+          "status": "ok",
+          "country": "CA",
+          "benchmark": {
+            "name": "CORRA",
+            "rate": 2.29
+          },
+          "instrument": "Montréal Exchange Three-Month CORRA futures",
+          "product_code": "CRA",
+          "contract_period_months": 3,
+          "contracts": [
+            {
+              "expiry": "2026-12",
+              "code": "CRAZ26",
+              "implied_rate": 2.75,
+              "change_from_overnight_bps": 46
+            }
+          ],
+          "mark_convention": "implied_rate = 100 - futures price"
+        },
+        "AONIA": {
+          "status": "ok",
+          "country": "AU",
+          "benchmark": {
+            "name": "AONIA",
+            "rate": 4.35
+          },
+          "instrument": "ASX 30-Day Interbank Cash Rate futures",
+          "product_code": "IB",
+          "contract_period_months": 1,
+          "contracts": [
+            {
+              "expiry": "2026-10",
+              "implied_rate": 4.4,
+              "change_from_overnight_bps": 5
+            }
+          ],
+          "mark_convention": "implied_rate = 100 - futures price"
+        }
+      },
+      "method": {
+        "model_calls": 0,
+        "credentials_required": [],
+        "purpose": "synthetic tradable rates curves"
       }
     }
   },
