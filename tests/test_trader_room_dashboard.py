@@ -45,7 +45,7 @@ class TraderRoomDashboardTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             packet = build_public_packet(Path(tmp))
             self.assertFalse(packet["available"])
-            self.assertEqual(packet["status"], "no_published_run")
+            self.assertEqual(packet["status"], "no_complete_run")
             self.assertEqual(packet["trades"], [])
 
     def test_public_packet_includes_trade_entry_reason(self):

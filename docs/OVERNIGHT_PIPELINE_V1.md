@@ -72,6 +72,8 @@ The JSON contains:
 
 It must not contain canonical books, NAV, cash, realized/unrealized P&L, funding charges, net P&L, or competition rank.
 
+Optional Phase-1 field `pm_decisions` may be omitted. Legacy 14-seat-only output remains valid. When supplied it must contain exactly `swinger`, `pragmatist`, and `grinder` (never ChatGPT) with `principal_model`, `subagent_count` 0–3, and `subagent_models` in `{grok-4.6, composer-2.5}`. Absence does not fabricate automated PM trades. The ACP schedule id, clock, caps, and provider contract are unchanged.
+
 ## 5. Model policy and hard budget
 
 Approved runtime models:
@@ -136,6 +138,8 @@ The dedicated spot seats remain spot-only. Rates-capable seats compare a rates c
 ## 7. Deterministic acceptance gate
 
 `.github/workflows/overnight-scheduled-output.yml` uses `pull_request_target` so the gate runs trusted code from `main`, not provider-authored code.
+
+After a successful 14-seat apply, trusted code also refreshes the four daily PM review packets from that overnight run's frozen agent packet, accepted trader decisions, research supplement, market state, and canonical books. This is not a second model clock and does not require an on-demand Trader Room run.
 
 The gate:
 

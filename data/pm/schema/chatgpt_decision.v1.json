@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mccabeai.github.io/market-watch-public-dashboard/pm/chatgpt_decision.v1.json",
+  "title": "ChatGPT PM decision",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "pm_id",
+    "review_packet_id",
+    "review_packet_sha256",
+    "evidence_cutoff",
+    "actions"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "schema_version": { "const": 1 },
+    "type": { "const": "PM_DECISION" },
+    "pm_id": { "const": "chatgpt" },
+    "review_packet_id": { "type": "string", "minLength": 1 },
+    "review_packet_sha256": { "type": "string", "minLength": 32 },
+    "evidence_cutoff": { "type": "string", "minLength": 1 },
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["action"],
+        "properties": {
+          "action": {
+            "enum": ["OPEN", "ADD", "HOLD", "REDUCE", "HEDGE", "CLOSE", "NO_TRADE"]
+          },
+          "instrument": { "type": ["string", "null"] },
+          "side": { "enum": ["long", "short"] },
+          "notional_usd": { "type": ["number", "null"] },
+          "asset_class": {
+            "enum": ["spot_fx", "rates", "curve", "rates_rv", "options"]
+          },
+          "position_id": { "type": ["string", "null"] },
+          "hedge_of": { "type": ["string", "null"] },
+          "paper_expression": { "type": ["object", "null"] },
+          "thesis": { "type": ["string", "null"] },
+          "invalidation": { "type": ["string", "null"] },
+          "conviction": { "type": ["integer", "null"], "minimum": 0, "maximum": 100 },
+          "note": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "thesis": { "type": ["string", "null"] },
+    "invalidation": { "type": ["string", "null"] },
+    "conviction": { "type": ["integer", "null"], "minimum": 0, "maximum": 100 },
+    "rationale": { "type": ["string", "null"] },
+    "synthesis": { "type": ["string", "null"] },
+    "alerts": { "type": "array", "items": { "type": "string" } },
+    "future_data_requests": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["request", "reason", "decision_impact", "priority"],
+        "properties": {
+          "request": { "type": "string", "minLength": 1 },
+          "reason": { "type": "string", "minLength": 1 },
+          "decision_impact": { "type": "string", "minLength": 1 },
+          "priority": { "enum": ["low", "medium", "high"] },
+          "suggested_source": { "type": ["string", "null"] }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,1558 @@
+{
+  "allowable_actions": [
+    "OPEN",
+    "HOLD",
+    "NO_TRADE"
+  ],
+  "base_packet_sha256": null,
+  "conflicts": {
+    "challenges": [
+      {
+        "agents": [
+          "no-trade-skeptic"
+        ],
+        "description": "no-trade-skeptic challenge whether any of the 13 actionable pitches clears the hurdle.",
+        "id": "trade-vs-no-trade",
+        "kind": "skeptic_challenge",
+        "targets": [
+          "carry-is-king",
+          "catalyst-junkie",
+          "cross-merchant",
+          "dollar-king",
+          "mean-reverter",
+          "perma-bear",
+          "perma-bull",
+          "positioning-cynic",
+          "rate-dove",
+          "rate-hawk",
+          "trend-follower",
+          "value-guy",
+          "vol-convexity"
+        ]
+      }
+    ],
+    "conflicts": [
+      {
+        "agents": [
+          "carry-is-king",
+          "dollar-king",
+          "perma-bear",
+          "rate-hawk",
+          "trend-follower",
+          "catalyst-junkie",
+          "perma-bull",
+          "value-guy"
+        ],
+        "description": "carry-is-king, dollar-king, perma-bear, rate-hawk, trend-follower expect USD higher while catalyst-junkie, perma-bull, value-guy expect USD lower",
+        "id": "opp-view:USD",
+        "kind": "opposite_currency_view"
+      },
+      {
+        "agents": [
+          "catalyst-junkie",
+          "cross-merchant",
+          "perma-bull",
+          "positioning-cynic",
+          "value-guy",
+          "carry-is-king",
+          "dollar-king",
+          "perma-bear",
+          "rate-dove",
+          "rate-hawk",
+          "trend-follower"
+        ],
+        "description": "catalyst-junkie, cross-merchant, perma-bull, positioning-cynic, value-guy expect CAD higher while carry-is-king, dollar-king, perma-bear, rate-dove, rate-hawk, trend-follower expect CAD lower",
+        "id": "opp-view:CAD",
+        "kind": "opposite_currency_view"
+      },
+      {
+        "agents": [
+          "rate-hawk",
+          "cross-merchant",
+          "dollar-king",
+          "mean-reverter",
+          "perma-bear",
+          "positioning-cynic",
+          "rate-dove"
+        ],
+        "description": "rate-hawk expect AUD higher while cross-merchant, dollar-king, mean-reverter, perma-bear, positioning-cynic, rate-dove expect AUD lower",
+        "id": "opp-view:AUD",
+        "kind": "opposite_currency_view"
+      }
+    ],
+    "context_tensions": [
+      {
+        "agents": [
+          "perma-bear",
+          "perma-bull",
+          "rate-dove",
+          "rate-hawk",
+          "vol-convexity"
+        ],
+        "description": "Opposing risk regime assumptions: risk_on versus risk_off.",
+        "id": "context:risk_view",
+        "kind": "context_tension",
+        "side_a": [
+          "perma-bull"
+        ],
+        "side_b": [
+          "perma-bear",
+          "rate-dove",
+          "rate-hawk",
+          "vol-convexity"
+        ]
+      },
+      {
+        "agents": [
+          "carry-is-king",
+          "catalyst-junkie",
+          "cross-merchant",
+          "dollar-king",
+          "perma-bull",
+          "positioning-cynic",
+          "rate-dove",
+          "rate-hawk",
+          "trend-follower",
+          "value-guy",
+          "vol-convexity"
+        ],
+        "description": "Opposing carry assumptions: supports_trade versus opposes_trade.",
+        "id": "context:carry_view",
+        "kind": "context_tension",
+        "side_a": [
+          "carry-is-king",
+          "dollar-king",
+          "positioning-cynic",
+          "value-guy"
+        ],
+        "side_b": [
+          "catalyst-junkie",
+          "cross-merchant",
+          "perma-bull",
+          "rate-dove",
+          "rate-hawk",
+          "trend-follower",
+          "vol-convexity"
+        ]
+      }
+    ],
+    "excluded_from_rebuttal": [
+      "no-trade-skeptic",
+      "vol-convexity"
+    ],
+    "method": "deterministic_conflict_synopsis_v1",
+    "rebuttal_seats": [
+      "carry-is-king",
+      "catalyst-junkie",
+      "cross-merchant",
+      "dollar-king",
+      "mean-reverter",
+      "perma-bear",
+      "perma-bull",
+      "positioning-cynic",
+      "rate-dove",
+      "rate-hawk",
+      "trend-follower",
+      "value-guy"
+    ],
+    "run_id": "tr-20260919T123430Z-ondemand",
+    "theoretical_tensions": [
+      {
+        "agents": [
+          "carry-is-king",
+          "dollar-king",
+          "perma-bear",
+          "rate-dove",
+          "rate-hawk",
+          "trend-follower",
+          "value-guy"
+        ],
+        "description": "USD higher views coexist with USD rates-lower views; that is a theoretical policy/FX tension, not an automatic contradiction.",
+        "id": "theory:USD:ccy-up-rates-down",
+        "kind": "currency_rates_tension"
+      },
+      {
+        "agents": [
+          "catalyst-junkie",
+          "dollar-king",
+          "perma-bull",
+          "rate-hawk",
+          "trend-follower",
+          "value-guy"
+        ],
+        "description": "USD lower views coexist with USD rates-higher views; that is a theoretical policy/FX tension, not an automatic contradiction.",
+        "id": "theory:USD:ccy-down-rates-up",
+        "kind": "currency_rates_tension"
+      },
+      {
+        "agents": [
+          "catalyst-junkie",
+          "cross-merchant",
+          "perma-bear",
+          "perma-bull",
+          "positioning-cynic",
+          "rate-dove",
+          "value-guy"
+        ],
+        "description": "CAD higher views coexist with CAD rates-lower views; that is a theoretical policy/FX tension, not an automatic contradiction.",
+        "id": "theory:CAD:ccy-up-rates-down",
+        "kind": "currency_rates_tension"
+      },
+      {
+        "agents": [
+          "carry-is-king",
+          "catalyst-junkie",
+          "cross-merchant",
+          "dollar-king",
+          "perma-bear",
+          "perma-bull",
+          "positioning-cynic",
+          "rate-dove",
+          "rate-hawk",
+          "trend-follower",
+          "value-guy"
+        ],
+        "description": "CAD lower views coexist with CAD rates-higher views; that is a theoretical policy/FX tension, not an automatic contradiction.",
+        "id": "theory:CAD:ccy-down-rates-up",
+        "kind": "currency_rates_tension"
+      },
+      {
+        "agents": [
+          "mean-reverter",
+          "perma-bear",
+          "positioning-cynic",
+          "rate-dove",
+          "rate-hawk"
+        ],
+        "description": "AUD higher views coexist with AUD rates-lower views; that is a theoretical policy/FX tension, not an automatic contradiction.",
+        "id": "theory:AUD:ccy-up-rates-down",
+        "kind": "currency_rates_tension"
+      },
+      {
+        "agents": [
+          "cross-merchant",
+          "dollar-king",
+          "mean-reverter",
+          "perma-bear",
+          "perma-bull",
+          "positioning-cynic",
+          "rate-dove",
+          "rate-hawk",
+          "trend-follower"
+        ],
+        "description": "AUD lower views coexist with AUD rates-higher views; that is a theoretical policy/FX tension, not an automatic contradiction.",
+        "id": "theory:AUD:ccy-down-rates-up",
+        "kind": "currency_rates_tension"
+      }
+    ]
+  },
+  "evidence": {
+    "as_of": "2026-09-19T12:34:30Z",
+    "known_gaps": [
+      "Official RBNZ B2 workbook is blocked/unavailable. NZ sovereign yields and NZ-involved rate RV are unavailable; no third-party substitute was used.",
+      "Market-state snapshot status is stale solely because NZ_rates is unavailable. US/CA/AU yields, policy paths, and the 45 ECB G10 FX crosses are present.",
+      "CME public volume/open-interest overlay is unavailable (HTTP 403). CFTC TFF trader-class positioning is available and is the ownership/crowding source.",
+      "Temperature gauge headline scores are from retained dashboard_v8 HTML; hard-input events overlay data/temperature_scores.json (last_refresh_date 2026-09-17). Supabase MCP is not connected in this execution.",
+      "Persistent paper books are empty $100m seed accounts with no open positions (data/overnight/books/latest.json). No overnight review has completed.",
+      "Executable broker prices are not in the packet. ECB FX, official yields, SOFR/CORRA/AONIA-linked futures and RBA F1 are research/reference only. Unsupported trade levels must remain JSON null.",
+      "Australia official RBA F1 OIS prints in the live file are an older vintage than current AONIA/bank-bill/ASX cash-futures. Bill-minus-OIS is marked unavailable_cross_vintage. Advocates must use the live AONIA benchmark plus ASX cash-futures path and must not invent a current OIS level.",
+      "Observed AU OIS vintages in frozen packet: 01-Dec-2022."
+    ],
+    "macro_state": {},
+    "news_headlines": [],
+    "packet_sha256": "8903f3edceded5a5d9866d84bd422940ebc0c93106b761fbcb6267449e9504f9",
+    "run_id": "tr-20260919T123430Z-ondemand",
+    "temperature_gauges_present": true
+  },
+  "evidence_changes": {
+    "known_gaps": [
+      "Official RBNZ B2 workbook is blocked/unavailable. NZ sovereign yields and NZ-involved rate RV are unavailable; no third-party substitute was used.",
+      "Market-state snapshot status is stale solely because NZ_rates is unavailable. US/CA/AU yields, policy paths, and the 45 ECB G10 FX crosses are present.",
+      "CME public volume/open-interest overlay is unavailable (HTTP 403). CFTC TFF trader-class positioning is available and is the ownership/crowding source.",
+      "Temperature gauge headline scores are from retained dashboard_v8 HTML; hard-input events overlay data/temperature_scores.json (last_refresh_date 2026-09-17). Supabase MCP is not connected in this execution.",
+      "Persistent paper books are empty $100m seed accounts with no open positions (data/overnight/books/latest.json). No overnight review has completed.",
+      "Executable broker prices are not in the packet. ECB FX, official yields, SOFR/CORRA/AONIA-linked futures and RBA F1 are research/reference only. Unsupported trade levels must remain JSON null.",
+      "Australia official RBA F1 OIS prints in the live file are an older vintage than current AONIA/bank-bill/ASX cash-futures. Bill-minus-OIS is marked unavailable_cross_vintage. Advocates must use the live AONIA benchmark plus ASX cash-futures path and must not invent a current OIS level.",
+      "Observed AU OIS vintages in frozen packet: 01-Dec-2022."
+    ],
+    "note": "Use evidence_cutoff and evidence_packet_sha256. Future data requests never mutate this freeze."
+  },
+  "evidence_cutoff": "2026-09-19T12:34:30Z",
+  "evidence_packet_sha256": "8903f3edceded5a5d9866d84bd422940ebc0c93106b761fbcb6267449e9504f9",
+  "gross_notional_limit_usd": 1000000000,
+  "gross_utilization_usd": 0,
+  "independence": {
+    "chatgpt_ingest": false,
+    "sees_other_current_pm_decisions": false,
+    "sees_own_prior_book_only": true
+  },
+  "mandate": {
+    "awaiting_status": "awaiting_automated_pm_review",
+    "hedge_allowed": false,
+    "label": "Swinger",
+    "shorthand": "Very aggressive/concentrated when the thesis is valid. HEDGE prohibited; reduce or close instead.",
+    "style": "aggressive"
+  },
+  "market_state": {
+    "fx": {
+      "pairs": {
+        "AUDCAD": {
+          "as_of": "2026-09-18",
+          "spot": 0.9975768872320596
+        },
+        "AUDCHF": {
+          "as_of": "2026-09-18",
+          "spot": 0.5878844361602983
+        },
+        "AUDJPY": {
+          "as_of": "2026-09-18",
+          "spot": 112.42000621310966
+        },
+        "AUDNOK": {
+          "as_of": "2026-09-18",
+          "spot": 6.716060888474682
+        },
+        "AUDNZD": {
+          "as_of": "2026-09-18",
+          "spot": 1.246846846846847
+        },
+        "AUDSEK": {
+          "as_of": "2026-09-18",
+          "spot": 7.015532774153463
+        },
+        "AUDUSD": {
+          "as_of": "2026-09-18",
+          "spot": 0.712022367194781
+        },
+        "CADCHF": {
+          "as_of": "2026-09-18",
+          "spot": 0.5893124065769806
+        },
+        "CADJPY": {
+          "as_of": "2026-09-18",
+          "spot": 112.69307424015945
+        },
+        "CADNOK": {
+          "as_of": "2026-09-18",
+          "spot": 6.732374190333831
+        },
+        "CADSEK": {
+          "as_of": "2026-09-18",
+          "spot": 7.0325734927752865
+        },
+        "CHFJPY": {
+          "as_of": "2026-09-18",
+          "spot": 191.22807017543857
+        },
+        "CHFNOK": {
+          "as_of": "2026-09-18",
+          "spot": 11.424117522722469
+        },
+        "CHFSEK": {
+          "as_of": "2026-09-18",
+          "spot": 11.933523567956033
+        },
+        "EURAUD": {
+          "as_of": "2026-09-18",
+          "spot": 1.6095
+        },
+        "EURCAD": {
+          "as_of": "2026-09-18",
+          "spot": 1.6056
+        },
+        "EURCHF": {
+          "as_of": "2026-09-18",
+          "spot": 0.9462
+        },
+        "EURGBP": {
+          "as_of": "2026-09-18",
+          "spot": 0.8588
+        },
+        "EURJPY": {
+          "as_of": "2026-09-18",
+          "spot": 180.94
+        },
+        "EURNOK": {
+          "as_of": "2026-09-18",
+          "spot": 10.8095
+        },
+        "EURNZD": {
+          "as_of": "2026-09-18",
+          "spot": 2.0068
+        },
+        "EURSEK": {
+          "as_of": "2026-09-18",
+          "spot": 11.2915
+        },
+        "EURUSD": {
+          "as_of": "2026-09-18",
+          "spot": 1.146
+        },
+        "GBPAUD": {
+          "as_of": "2026-09-18",
+          "spot": 1.874126688402422
+        },
+        "GBPCAD": {
+          "as_of": "2026-09-18",
+          "spot": 1.8695854680950161
+        },
+        "GBPCHF": {
+          "as_of": "2026-09-18",
+          "spot": 1.1017699115044248
+        },
+        "GBPJPY": {
+          "as_of": "2026-09-18",
+          "spot": 210.6893339543549
+        },
+        "GBPNOK": {
+          "as_of": "2026-09-18",
+          "spot": 12.586748952026083
+        },
+        "GBPNZD": {
+          "as_of": "2026-09-18",
+          "spot": 2.336748952026083
+        },
+        "GBPSEK": {
+          "as_of": "2026-09-18",
+          "spot": 13.147997205402886
+        },
+        "GBPUSD": {
+          "as_of": "2026-09-18",
+          "spot": 1.3344201210992082
+        },
+        "NOKJPY": {
+          "as_of": "2026-09-18",
+          "spot": 16.738979601276654
+        },
+        "NOKSEK": {
+          "as_of": "2026-09-18",
+          "spot": 1.0445904065867986
+        },
+        "NZDCAD": {
+          "as_of": "2026-09-18",
+          "spot": 0.8000797289216662
+        },
+        "NZDCHF": {
+          "as_of": "2026-09-18",
+          "spot": 0.47149691050428544
+        },
+        "NZDJPY": {
+          "as_of": "2026-09-18",
+          "spot": 90.16344428941598
+        },
+        "NZDNOK": {
+          "as_of": "2026-09-18",
+          "spot": 5.386436117201514
+        },
+        "NZDSEK": {
+          "as_of": "2026-09-18",
+          "spot": 5.626619493721346
+        },
+        "NZDUSD": {
+          "as_of": "2026-09-18",
+          "spot": 0.5710584014351205
+        },
+        "SEKJPY": {
+          "as_of": "2026-09-18",
+          "spot": 16.024443165212773
+        },
+        "USDCAD": {
+          "as_of": "2026-09-18",
+          "spot": 1.4010471204188482
+        },
+        "USDCHF": {
+          "as_of": "2026-09-18",
+          "spot": 0.8256544502617802
+        },
+        "USDJPY": {
+          "as_of": "2026-09-18",
+          "spot": 157.88830715532288
+        },
+        "USDNOK": {
+          "as_of": "2026-09-18",
+          "spot": 9.43237347294939
+        },
+        "USDSEK": {
+          "as_of": "2026-09-18",
+          "spot": 9.852966841186737
+        }
+      },
+      "source_observation": "2026-09-18",
+      "status": "ok"
+    },
+    "generated_at": "2026-09-19T12:33:16Z",
+    "official_curves": {
+      "status": "missing",
+      "warning": "official sovereign curves are not in the frozen packet; those expressions are not paper-tradeable this cycle."
+    },
+    "policy_paths": {
+      "countries": {
+        "AU": {
+          "contracts_1m": [
+            {
+              "code": null,
+              "expiry": "2026-09",
+              "implied_rate": 4.355
+            },
+            {
+              "code": null,
+              "expiry": "2026-10",
+              "implied_rate": 4.565
+            },
+            {
+              "code": null,
+              "expiry": "2026-11",
+              "implied_rate": 4.685
+            },
+            {
+              "code": null,
+              "expiry": "2026-12",
+              "implied_rate": 4.725
+            },
+            {
+              "code": null,
+              "expiry": "2027-01",
+              "implied_rate": 4.735
+            },
+            {
+              "code": null,
+              "expiry": "2027-02",
+              "implied_rate": 4.805
+            },
+            {
+              "code": null,
+              "expiry": "2027-03",
+              "implied_rate": 4.86
+            },
+            {
+              "code": null,
+              "expiry": "2027-04",
+              "implied_rate": 4.895
+            }
+          ],
+          "contracts_3m": [],
+          "status": "ok"
+        },
+        "CA": {
+          "contracts_1m": [
+            {
+              "code": "COAU26",
+              "expiry": "2026-09",
+              "implied_rate": 2.2875
+            },
+            {
+              "code": "COAV26",
+              "expiry": "2026-10",
+              "implied_rate": 2.305
+            },
+            {
+              "code": "COAX26",
+              "expiry": "2026-11",
+              "implied_rate": 2.43
+            },
+            {
+              "code": "COAZ26",
+              "expiry": "2026-12",
+              "implied_rate": 2.58
+            }
+          ],
+          "contracts_3m": [
+            {
+              "code": "CRAU26",
+              "expiry": "2026-09",
+              "implied_rate": 2.385
+            },
+            {
+              "code": "CRAZ26",
+              "expiry": "2026-12",
+              "implied_rate": 2.775
+            },
+            {
+              "code": "CRAH27",
+              "expiry": "2027-03",
+              "implied_rate": 3.13
+            },
+            {
+              "code": "CRAM27",
+              "expiry": "2027-06",
+              "implied_rate": 3.365
+            },
+            {
+              "code": "CRAU27",
+              "expiry": "2027-09",
+              "implied_rate": 3.51
+            },
+            {
+              "code": "CRAZ27",
+              "expiry": "2027-12",
+              "implied_rate": 3.595
+            },
+            {
+              "code": "CRAH28",
+              "expiry": "2028-03",
+              "implied_rate": 3.635
+            },
+            {
+              "code": "CRAM28",
+              "expiry": "2028-06",
+              "implied_rate": 3.65
+            }
+          ],
+          "status": "ok"
+        },
+        "US": {
+          "contracts_1m": [
+            {
+              "code": "SR1U26",
+              "expiry": "2026-09",
+              "implied_rate": 3.75
+            },
+            {
+              "code": "SR1V26",
+              "expiry": "2026-10",
+              "implied_rate": 3.91
+            },
+            {
+              "code": "SR1X26",
+              "expiry": "2026-11",
+              "implied_rate": 4.045
+            },
+            {
+              "code": "SR1Z26",
+              "expiry": "2026-12",
+              "implied_rate": 4.1975
+            },
+            {
+              "code": "SR1F27",
+              "expiry": "2027-01",
+              "implied_rate": 4.2625
+            },
+            {
+              "code": "SR1G27",
+              "expiry": "2027-02",
+              "implied_rate": 4.3375
+            },
+            {
+              "code": "SR1H27",
+              "expiry": "2027-03",
+              "implied_rate": 4.4275
+            },
+            {
+              "code": "SR1J27",
+              "expiry": "2027-04",
+              "implied_rate": 4.525
+            }
+          ],
+          "contracts_3m": [],
+          "status": "ok"
+        }
+      },
+      "status": "ok"
+    },
+    "rate_rv": {
+      "AU-NZ_10Y": {
+        "as_of": null,
+        "bps": null,
+        "chg_1d_bps": null,
+        "chg_1m_bps": null,
+        "chg_3m_bps": null,
+        "chg_5d_bps": null,
+        "pctile_1y": null,
+        "pctile_5y": null,
+        "reason": "RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.",
+        "status": "unavailable",
+        "z_1y": null,
+        "z_5y": null
+      },
+      "AU-NZ_2Y": {
+        "as_of": null,
+        "bps": null,
+        "chg_1d_bps": null,
+        "chg_1m_bps": null,
+        "chg_3m_bps": null,
+        "chg_5d_bps": null,
+        "pctile_1y": null,
+        "pctile_5y": null,
+        "reason": "RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.",
+        "status": "unavailable",
+        "z_1y": null,
+        "z_5y": null
+      },
+      "AU-NZ_5Y": {
+        "as_of": null,
+        "bps": null,
+        "chg_1d_bps": null,
+        "chg_1m_bps": null,
+        "chg_3m_bps": null,
+        "chg_5d_bps": null,
+        "pctile_1y": null,
+        "pctile_5y": null,
+        "reason": "RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.",
+        "status": "unavailable",
+        "z_1y": null,
+        "z_5y": null
+      },
+      "AU-US_10Y": {
+        "as_of": "2026-09-16",
+        "bps": 33.80000000000001,
+        "chg_1d_bps": -7.299999999999947,
+        "chg_1m_bps": 2.700000000000017,
+        "chg_1y_bps": 14.799999999999972,
+        "chg_3m_bps": -6.700000000000017,
+        "chg_5d_bps": -3.3999999999999773,
+        "chg_6m_bps": -33.09999999999995,
+        "historical_move_analogs": [
+          {
+            "as_of": "2025-10-22",
+            "distance_from_current_move": 0.0,
+            "forward_1m_move": 26.2,
+            "forward_3m_move": 41.1,
+            "level": 13.599999999999968,
+            "prior_1m_move": 2.7
+          },
+          {
+            "as_of": "2026-02-05",
+            "distance_from_current_move": 0.1,
+            "forward_1m_move": 17.6,
+            "forward_3m_move": -2.7,
+            "level": 63.79999999999999,
+            "prior_1m_move": 2.8
+          },
+          {
+            "as_of": "2022-01-21",
+            "distance_from_current_move": 0.1,
+            "forward_1m_move": 11.8,
+            "forward_3m_move": 7.8,
+            "level": 15.500000000000004,
+            "prior_1m_move": 2.6
+          },
+          {
+            "as_of": "2022-03-21",
+            "distance_from_current_move": 0.1,
+            "forward_1m_move": -7.7,
+            "forward_3m_move": 33.5,
+            "level": 25.600000000000023,
+            "prior_1m_move": 2.6
+          }
+        ],
+        "pctile_1y": 31.944444444444443,
+        "pctile_5y": 77.44698205546493,
+        "z_1y": -0.5659273415345912,
+        "z_5y": 0.765626846920572
+      },
+      "AU-US_2Y": {
+        "as_of": "2026-09-16",
+        "bps": 25.899999999999945,
+        "chg_1d_bps": -12.500000000000089,
+        "chg_1m_bps": -11.500000000000018,
+        "chg_1y_bps": 44.899999999999935,
+        "chg_3m_bps": -16.300000000000114,
+        "chg_5d_bps": -14.600000000000083,
+        "chg_6m_bps": -53.50000000000006,
+        "historical_move_analogs": [
+          {
+            "as_of": "2022-02-07",
+            "distance_from_current_move": 0.0,
+            "forward_1m_move": -11.7,
+            "forward_3m_move": 38.9,
+            "level": -37.0,
+            "prior_1m_move": -11.5
+          },
+          {
+            "as_of": "2024-12-30",
+            "distance_from_current_move": 0.0,
+            "forward_1m_move": -8.7,
+            "forward_3m_move": 11.8,
+            "level": -33.90000000000004,
+            "prior_1m_move": -11.5
+          },
+          {
+            "as_of": "2026-04-23",
+            "distance_from_current_move": 0.1,
+            "forward_1m_move": -41.3,
+            "forward_3m_move": -54.7,
+            "level": 86.20000000000002,
+            "prior_1m_move": -11.6
+          },
+          {
+            "as_of": "2025-07-30",
+            "distance_from_current_move": 0.1,
+            "forward_1m_move": 32.7,
+            "forward_3m_move": 58.6,
+            "level": -62.40000000000001,
+            "prior_1m_move": -11.6
+          }
+        ],
+        "pctile_1y": 25.595238095238095,
+        "pctile_5y": 84.7063621533442,
+        "z_1y": -0.5185268004122016,
+        "z_5y": 1.1573853964505716
+      },
+      "AU-US_5Y": {
+        "as_of": "2026-09-16",
+        "bps": 18.100000000000005,
+        "chg_1d_bps": -8.699999999999974,
+        "chg_1m_bps": -6.200000000000028,
+        "chg_1y_bps": 15.600000000000014,
+        "chg_3m_bps": -13.999999999999968,
+        "chg_5d_bps": -7.599999999999962,
+        "chg_6m_bps": -57.69999999999999,
+        "historical_move_analogs": [
+          {
+            "as_of": "2022-02-02",
+            "distance_from_current_move": 0.0,
+            "forward_1m_move": 21.8,
+            "forward_3m_move": 17.7,
+            "level": -2.100000000000013,
+            "prior_1m_move": -6.2
+          },
+          {
+            "as_of": "2024-04-24",
+            "distance_from_current_move": 0.1,
+            "forward_1m_move": 3.5,
+            "forward_3m_move": 49.1,
+            "level": -55.09999999999992,
+            "prior_1m_move": -6.3
+          },
+          {
+            "as_of": "2025-02-18",
+            "distance_from_current_move": 0.1,
+            "forward_1m_move": 23.9,
+            "forward_3m_move": -10.3,
+            "level": -33.80000000000001,
+            "prior_1m_move": -6.3
+          },
+          {
+            "as_of": "2023-05-22",
+            "distance_from_current_move": 0.1,
+            "forward_1m_move": 39.3,
+            "forward_3m_move": 1.9,
+            "level": -46.30000000000001,
+            "prior_1m_move": -6.3
+          }
+        ],
+        "pctile_1y": 21.626984126984127,
+        "pctile_5y": 78.91517128874388,
+        "z_1y": -0.8010715170792576,
+        "z_5y": 0.7661924289190873
+      },
+      "CA-AU_10Y": {
+        "as_of": "2026-09-16",
+        "bps": -142.79999999999998,
+        "chg_1d_bps": 3.2999999999999545,
+        "chg_1m_bps": -11.700000000000045,
+        "chg_1y_bps": -35.30000000000001,
+        "chg_3m_bps": 2.700000000000017,
+        "chg_5d_bps": -6.599999999999966,
+        "chg_6m_bps": 1.1000000000000227,
+        "historical_move_analogs": [
+          {
+            "as_of": "2022-01-10",
+            "distance_from_current_move": 0.0,
+            "forward_1m_move": -5.9,
+            "forward_3m_move": -11.9,
+            "level": -18.500000000000007,
+            "prior_1m_move": -11.7
+          },
+          {
+            "as_of": "2026-02-25",
+            "distance_from_current_move": 0.0,
+            "forward_1m_move": 7.5,
+            "forward_3m_move": 5.1,
+            "level": -151.49999999999997,
+            "prior_1m_move": -11.7
+          },
+          {
+            "as_of": "2024-07-10",
+            "distance_from_current_move": 0.1,
+            "forward_1m_move": -7.7,
+            "forward_3m_move": -13.2,
+            "level": -87.79999999999997,
+            "prior_1m_move": -11.8
+          },
+          {
+            "as_of": "2023-06-08",
+            "distance_from_current_move": 0.1,
+            "forward_1m_move": -3.4,
+            "forward_3m_move": 15.0,
+            "level": -61.400000000000034,
+            "prior_1m_move": -11.6
+          }
+        ],
+        "pctile_1y": 30.555555555555557,
+        "pctile_5y": 6.89935064935065,
+        "z_1y": -0.575878925310328,
+        "z_5y": -1.4802111574055181
+      },
+      "CA-AU_2Y": {
+        "as_of": "2026-09-16",
+        "bps": -164.89999999999995,
+        "chg_1d_bps": 5.500000000000057,
+        "chg_1m_bps": -5.499999999999972,
+        "chg_1y_bps": -79.29999999999995,
+        "chg_3m_bps": 7.300000000000097,
+        "chg_5d_bps": 2.6000000000000227,
+        "chg_6m_bps": 8.500000000000057,
+        "historical_move_analogs": [
+          {
+            "as_of": "2023-09-05",
+            "distance_from_current_move": 0.0,
+            "forward_1m_move": -7.9,
+            "forward_3m_move": -71.3,
+            "level": 80.90000000000002,
+            "prior_1m_move": -5.5
+          },
+          {
+            "as_of": "2025-05-28",
+            "distance_from_current_move": 0.0,
+            "forward_1m_move": 14.6,
+            "forward_3m_move": 10.9,
+            "level": -74.2,
+            "prior_1m_move": -5.5
+          },
+          {
+            "as_of": "2023-12-21",
+            "distance_from_current_move": 0.1,
+            "forward_1m_move": -4.7,
+            "forward_3m_move": 24.9,
+            "level": 19.399999999999995,
+            "prior_1m_move": -5.4
+          },
+          {
+            "as_of": "2022-06-16",
+            "distance_from_current_move": 0.1,
+            "forward_1m_move": 46.0,
+            "forward_3m_move": 48.9,
+            "level": 0.6000000000000227,
+            "prior_1m_move": -5.4
+          }
+        ],
+        "pctile_1y": 51.388888888888886,
+        "pctile_5y": 10.511363636363637,
+        "z_1y": -0.40082008755744697,
+        "z_5y": -1.6342620546239537
+      },
+      "CA-AU_5Y": {
+        "as_of": "2026-09-16",
+        "bps": -140.10000000000002,
+        "chg_1d_bps": 4.69999999999996,
+        "chg_1m_bps": -8.800000000000011,
+        "chg_1y_bps": -55.40000000000002,
+        "chg_3m_bps": 4.999999999999972,
+        "chg_5d_bps": -1.400000000000034,
+        "chg_6m_bps": 15.700000000000017,
+        "historical_move_analogs": [
+          {
+            "as_of": "2022-03-18",
+            "distance_from_current_move": 0.0,
+            "forward_1m_move": 15.7,
+            "forward_3m_move": -17.4,
+            "level": -21.4,
+            "prior_1m_move": -8.8
+          },
+          {
+            "as_of": "2021-12-13",
+            "distance_from_current_move": 0.0,
+            "forward_1m_move": 14.6,
+            "forward_3m_move": -8.6,
+            "level": -7.600000000000007,
+            "prior_1m_move": -8.8
+          },
+          {
+            "as_of": "2024-03-01",
+            "distance_from_current_move": 0.0,
+            "forward_1m_move": 12.9,
+            "forward_3m_move": -23.7,
+            "level": -28.200000000000003,
+            "prior_1m_move": -8.8
+          },
+          {
+            "as_of": "2023-12-04",
+            "distance_from_current_move": 0.0,
+            "forward_1m_move": 10.5,
+            "forward_3m_move": 30.9,
+            "level": -55.99999999999996,
+            "prior_1m_move": -8.8
+          }
+        ],
+        "pctile_1y": 46.03174603174603,
+        "pctile_5y": 9.415584415584416,
+        "z_1y": -0.24231530213989966,
+        "z_5y": -1.553353281137119
+      },
+      "CA-US_10Y": {
+        "as_of": "2026-09-17",
+        "bps": -111.00000000000003,
+        "chg_1d_bps": -2.0000000000000426,
+        "chg_1m_bps": -10.000000000000057,
+        "chg_1y_bps": -28.00000000000007,
+        "chg_3m_bps": -5.000000000000071,
+        "chg_5d_bps": -10.0,
+        "chg_6m_bps": -33.999999999999986,
+        "historical_move_analogs": [
+          {
+            "as_of": "2023-11-15",
+            "distance_from_current_move": 0.0,
+            "forward_1m_move": -2.0,
+            "forward_3m_move": 1.0,
+            "level": -78.00000000000003,
+            "prior_1m_move": -10.0
+          },
+          {
+            "as_of": "2024-04-19",
+            "distance_from_current_move": 0.0,
+            "forward_1m_move": 5.0,
+            "forward_3m_move": 0.0,
+            "level": -89.00000000000001,
+            "prior_1m_move": -10.0
+          },
+          {
+            "as_of": "2024-07-30",
+            "distance_from_current_move": 0.0,
+            "forward_1m_move": 18.0,
+            "forward_3m_move": -14.0,
+            "level": -92.00000000000004,
+            "prior_1m_move": -10.0
+          },
+          {
+            "as_of": "2024-12-17",
+            "distance_from_current_move": 0.0,
+            "forward_1m_move": -6.0,
+            "forward_3m_move": 1.0,
+            "level": -126.00000000000003,
+            "prior_1m_move": -10.0
+          }
+        ],
+        "pctile_1y": 0.1984126984126984,
+        "pctile_5y": 10.601137286758732,
+        "z_1y": -1.9104058517615377,
+        "z_5y": -1.0994794521681615
+      },
+      "CA-US_2Y": {
+        "as_of": "2026-09-17",
+        "bps": -140.0,
+        "chg_1d_bps": -1.0,
+        "chg_1m_bps": -16.999999999999957,
+        "chg_1y_bps": -43.00000000000003,
+        "chg_3m_bps": -8.999999999999943,
+        "chg_5d_bps": -15.000000000000043,
+        "chg_6m_bps": -46.0,
+        "historical_move_analogs": [
+          {
+            "as_of": "2022-11-15",
+            "distance_from_current_move": 0.0,
+            "forward_1m_move": -4.0,
+            "forward_3m_move": 6.0,
+            "level": -51.00000000000002,
+            "prior_1m_move": -17.0
+          },
+          {
+            "as_of": "2025-01-30",
+            "distance_from_current_move": 0.0,
+            "forward_1m_move": -5.0,
+            "forward_3m_move": 25.0,
+            "level": -144.99999999999997,
+            "prior_1m_move": -17.0
+          },
+          {
+            "as_of": "2024-05-02",
+            "distance_from_current_move": 0.0,
+            "forward_1m_move": -9.0,
+            "forward_3m_move": -6.0,
+            "level": -62.999999999999986,
+            "prior_1m_move": -17.0
+          },
+          {
+            "as_of": "2024-12-18",
+            "distance_from_current_move": 0.0,
+            "forward_1m_move": -3.0,
+            "forward_3m_move": -20.0,
+            "level": -129.99999999999997,
+            "prior_1m_move": -17.0
+          }
+        ],
+        "pctile_1y": 3.7698412698412698,
+        "pctile_5y": 4.305442729488221,
+        "z_1y": -1.8400695277520684,
+        "z_5y": -1.5128434402521205
+      },
+      "CA-US_5Y": {
+        "as_of": "2026-09-17",
+        "bps": -124.00000000000003,
+        "chg_1d_bps": -2.000000000000014,
+        "chg_1m_bps": -16.00000000000003,
+        "chg_1y_bps": -47.00000000000003,
+        "chg_3m_bps": -10.000000000000057,
+        "chg_5d_bps": -12.000000000000014,
+        "chg_6m_bps": -44.0,
+        "historical_move_analogs": [
+          {
+            "as_of": "2024-03-06",
+            "distance_from_current_move": 0.0,
+            "forward_1m_move": -7.0,
+            "forward_3m_move": -17.0,
+            "level": -69.0,
+            "prior_1m_move": -16.0
+          },
+          {
+            "as_of": "2023-03-03",
+            "distance_from_current_move": 0.0,
+            "forward_1m_move": 13.0,
+            "forward_3m_move": 41.0,
+            "level": -71.0,
+            "prior_1m_move": -16.0
+          },
+          {
+            "as_of": "2024-04-11",
+            "distance_from_current_move": 0.0,
+            "forward_1m_move": 9.0,
+            "forward_3m_move": 7.0,
+            "level": -84.00000000000003,
+            "prior_1m_move": -16.0
+          },
+          {
+            "as_of": "2023-08-25",
+            "distance_from_current_move": 0.0,
+            "forward_1m_move": 6.0,
+            "forward_3m_move": -22.0,
+            "level": -40.000000000000036,
+            "prior_1m_move": -16.0
+          }
+        ],
+        "pctile_1y": 0.1984126984126984,
+        "pctile_5y": 6.94557270511779,
+        "z_1y": -2.0274953324424287,
+        "z_5y": -1.3607278397983058
+      },
+      "NZ-US_10Y": {
+        "as_of": null,
+        "bps": null,
+        "chg_1d_bps": null,
+        "chg_1m_bps": null,
+        "chg_3m_bps": null,
+        "chg_5d_bps": null,
+        "pctile_1y": null,
+        "pctile_5y": null,
+        "reason": "RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.",
+        "status": "unavailable",
+        "z_1y": null,
+        "z_5y": null
+      },
+      "NZ-US_2Y": {
+        "as_of": null,
+        "bps": null,
+        "chg_1d_bps": null,
+        "chg_1m_bps": null,
+        "chg_3m_bps": null,
+        "chg_5d_bps": null,
+        "pctile_1y": null,
+        "pctile_5y": null,
+        "reason": "RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.",
+        "status": "unavailable",
+        "z_1y": null,
+        "z_5y": null
+      },
+      "NZ-US_5Y": {
+        "as_of": null,
+        "bps": null,
+        "chg_1d_bps": null,
+        "chg_1m_bps": null,
+        "chg_3m_bps": null,
+        "chg_5d_bps": null,
+        "pctile_1y": null,
+        "pctile_5y": null,
+        "reason": "RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.",
+        "status": "unavailable",
+        "z_1y": null,
+        "z_5y": null
+      }
+    },
+    "rates": {
+      "AU": {
+        "curves": {
+          "2s10s": 34.90000000000002,
+          "5s10s": 30.69999999999995
+        },
+        "latest_observation": "2026-09-16",
+        "tenors": {
+          "10Y": 5.348,
+          "2Y": 4.999,
+          "5Y": 5.041
+        }
+      },
+      "CA": {
+        "curves": {
+          "2s10s": 56.00000000000001,
+          "5s10s": 29.000000000000004
+        },
+        "latest_observation": "2026-09-17",
+        "tenors": {
+          "10Y": 3.83,
+          "2Y": 3.27,
+          "5Y": 3.54,
+          "LONG": 4.17
+        }
+      },
+      "NZ": {
+        "curves": {},
+        "latest_observation": null,
+        "tenors": {
+          "10Y": null,
+          "2Y": null,
+          "5Y": null
+        }
+      },
+      "US": {
+        "curves": {
+          "2s10s": 25.0,
+          "5s10s": 14.999999999999947
+        },
+        "latest_observation": "2026-09-18",
+        "tenors": {
+          "10Y": 5.01,
+          "2Y": 4.76,
+          "30Y": 5.34,
+          "5Y": 4.86
+        }
+      }
+    },
+    "status": "stale",
+    "tradable_rate_curves": {
+      "status": "missing",
+      "warning": "SOFR/CORRA/AONIA curves are not in the frozen packet; those expressions are not paper-tradeable this cycle."
+    },
+    "warnings": [
+      "SOFR/CORRA/AONIA tradable futures curves are missing from this frozen packet.",
+      "Official sovereign zero/forward curves are missing from this frozen packet."
+    ]
+  },
+  "overnight_books": null,
+  "overnight_review": null,
+  "overnight_run_id": null,
+  "pm_id": "swinger",
+  "prior_book": {
+    "alerts": [],
+    "conviction": 0,
+    "decision_status": "awaiting_automated_pm_review",
+    "gross_notional_limit_usd": 1000000000,
+    "gross_remaining_usd": 1000000000.0,
+    "gross_utilization_usd": 0,
+    "invalidation": null,
+    "last_action": null,
+    "pm_id": "swinger",
+    "pnl_unavailable": false,
+    "positions": [],
+    "realized_pnl_usd": 0.0,
+    "review_status": "awaiting",
+    "thesis": null,
+    "total_pnl_usd": 0.0,
+    "unrealized_pnl_usd": 0.0
+  },
+  "research_supplement": null,
+  "review_packet_id": "prp-swinger-tr-20260919T123430Z-ondemand",
+  "review_packet_sha256": "8369a028ab0709bf4a1d8237ab19dcae0c5facdb543c5f77c275d5b663df9281",
+  "schema_version": 1,
+  "source": "on_demand_trader_room_fallback",
+  "stale_or_missing_warnings": [
+    "SOFR/CORRA/AONIA tradable futures curves are missing from this frozen packet.",
+    "Official sovereign zero/forward curves are missing from this frozen packet.",
+    "PM packet source is the on-demand Trader Room fallback, not a successful overnight 14-seat review."
+  ],
+  "trader_room": {
+    "as_of": "2026-09-19T12:34:30Z",
+    "available": true,
+    "conflict_count": 3,
+    "run_id": "tr-20260919T123430Z-ondemand",
+    "seat_count": 14,
+    "selection": {
+      "manual_pointer": false,
+      "mode": "newest_complete_valid",
+      "source": "trader-room/runs"
+    },
+    "status": "STATUS: AWAITING_CHATGPT_ARBITRATION",
+    "trade_count": 13,
+    "trades": [
+      {
+        "agent": "carry-is-king",
+        "confidence": 60,
+        "entry_reason": "Fed hike has been delivered (16 Sep 2026) rather than merely >90% priced, while the SOFR path still rises through Dec and into 2028. CA-US_2Y just printed -140bp on 17 Sep after a -17bp 1m cheapening; CORRA Dec still only 2.58, so the path has not caught up. Saudi STS workaround reduced the extreme oil-supply tail that would have been the catalyst capable of overwhelming carry via a BoC energy hike. Empty $100m seed\u2026",
+        "mispricing": "The market prices a durable 140bp Canada cheapness versus the US 2Y and only +29bp of CORRA hikes by December despite a delivered Fed hike and still-rising SOFR path. That gap pays the holder of US versus Canada. Fading it (long CA / short US) is negative carry and is the mispricing I will not own.",
+        "rebuttal": {
+          "strongest_opponent_point": "",
+          "trade_change": "unchanged"
+        },
+        "stance_summary": "Traders are overpaying for an energy-pass-through BoC-hike narrative and underpaying the compounding US-over-Canada carry. After inspecting SOFR then CORRA then AONIA, the clean patient expression is to receive US 2Y ve\u2026",
+        "trade": {
+          "direction": "long",
+          "entry": "CA-US_2Y -140bp as of 2026-09-17 (packet rates RV / market_state research reference, not an executable broker mark)",
+          "expression": null,
+          "horizon": "3 months (patient carry; analogs report 1m and 3m forward outcomes)",
+          "instrument": "CA-US_2Y",
+          "invalidation": "Thesis is invalid if the CORRA path re-prices more tightening than the SOFR path such that the sourced Dec implied gap (4.1975 vs 2.58) and the sourced 140bp CA-US_2Y differential compress from the Canada side because energy pass-through overwhelms Canada's core-near-2% and labor-38 setup; or if the Fed tightening bias evidenced by the 16 Sep hike and August CPI is reversed while Canada remains the low-yielder only because US yields collapse. A further analog-style cheapening without path compression is timing noise, not automatic invalidation, because carry is the holding-period engine. No numeric stop is sourced in the packet.",
+          "structure": "Receive US 2Y duration versus pay CA 2Y duration; book as long CA-US_2Y (CA minus US 2Y). Research/reference yields and SOFR/CORRA/AONIA futures only; not a broker structure.",
+          "target": null
+        }
+      },
+      {
+        "agent": "catalyst-junkie",
+        "confidence": 58,
+        "entry_reason": "BoC minutes retained 16 Sep flag higher energy pass-through on the 2 Sep FAD, and CORRA Oct is still only +1.5bp. Canada August CPI held at 3% on 14 Sep while core stays near 2%, so the inflation print is live, not stale. Fed hike 16 Sep and BoJ hike 17 Sep, plus the 18 Sep desk thesis that energy is blocking global easing, are the same-week transmission into a still-dovish CA strip. AONIA and SOFR have already adde\u2026",
+        "mispricing": "MX CORRA prices +1.5bp by October and +29bp by December after BoC minutes named energy pass-through, headline CPI held at 3%, and G10 tightening broadened. CA 2Y at 3.27% already sits about 69bp above Dec implied 2.58%, so the strip \u2014 not the 2Y percentile \u2014 is the lagging price.",
+        "rebuttal": {
+          "strongest_opponent_point": "",
+          "trade_change": "unchanged"
+        },
+        "stance_summary": "Valuation without a dated transmission can stay wrong; the 14-18 Sep cluster (BoC energy-pass-through minutes, Canada CPI still at 3%, Fed hike, BoJ hike, desk thesis that the energy shock constrains easing) is already\u2026",
+        "trade": {
+          "direction": "short",
+          "entry": null,
+          "expression": null,
+          "horizon": "Into Dec-26 CORRA expiry, as the packet terminal; digestion of the already-released 14-18 Sep cluster, not an invented meeting date.",
+          "instrument": "COAZ26",
+          "invalidation": "Thesis is wrong if Dec CORRA implied 2.58% moves back toward overnight CORRA 2.29% because core-near-2% and labor 38 dominate the minutes, or if the Saudi Oman workaround (not the shock-absorber warning) is the binding energy fact and CA-US 2Y stays near -140bp without any CORRA-path backup.",
+          "structure": "Short MX CORRA Dec-26 future COAZ26 (packet price 97.42, implied 2.58%); pay Canadian overnight versus CORRA 2.29%. Research/reference path, not executable broker pricing.",
+          "target": null
+        }
+      },
+      {
+        "agent": "cross-merchant",
+        "confidence": 58,
+        "entry_reason": "16 Sep Fed hike is already in USD pairs; remaining AUDCAD extreme is peer-relative. 16 Sep AU housing evidence shows the RBA channel biting (stamp duty -24% y/y, volumes -18%, values >7% off peak) alongside employment -15.8k and sentiment 84.4. BoC minutes plus Canada 3.0% headline versus ~2% core and WTI 96.4th percentile are a CAD-side catalyst the cross has not paid. AUD futures OI at 99th percentile 1y with +376\u2026",
+        "mispricing": "FX has priced an AU-versus-CA premium that the 1y CA-AU 2Y gap does not show as newly extreme. USD legs do not show an equivalently rich AUD or equivalently cheap CAD; the richness is in the cross. CAD has not been allowed to express WTI/energy ToT versus AUD because USDCAD is dominated by the Fed/USD bid.",
+        "rebuttal": {
+          "strongest_opponent_point": "",
+          "trade_change": "unchanged"
+        },
+        "stance_summary": "USD pairs hide the intended AU-versus-CA differential. AUDUSD is only a 76th-percentile 1y print while USDCAD is a 74th-percentile USD-bid residual after the Fed hike; the product AUDCAD is a 99.8th-percentile 1y and 99\u2026",
+        "trade": {
+          "direction": "short",
+          "entry": null,
+          "expression": null,
+          "horizon": "1-3 months",
+          "instrument": "AUDCAD",
+          "invalidation": "Thesis invalid if AUDCAD extends to a new extreme after the ASX AONIA path steepens further versus MX CORRA, Australian housing/labor prints stop deteriorating, and WTI/energy pass-through fades so CAD loses the ToT/policy catch-up case. No numeric broker stop is in the packet.",
+          "structure": null,
+          "target": null
+        }
+      },
+      {
+        "agent": "dollar-king",
+        "confidence": 60,
+        "entry_reason": "Fed 25bp hike is now realized (16 Sep) while SOFR still prices +35bp into December rather than a one-and-done peak at the 3.75% September contract. Last-24 desk thesis (18 Sep) is new confirmation that global tightening broadened (BoJ 1.25%, BoE 6-3 hold), constraining the easing impulse that had been CAD-supportive. Saudi workaround (16 Sep) reduced the extreme oil-supply tail that was the main CAD terms-of-trade o\u2026",
+        "mispricing": "FACT: CA-US 2Y -140bp is a 4th-percentile 5y gap while USDCAD is only 74th 1y / 87th 5y on the ECB fix; USDCAD versus CA-US 2Y residual z is 1.38 but r-squared is only 0.022 (weak). INFERENCE: CAD still prices energy resilience and a contained BoC path that the labor data and the reduced oil-supply tail no longer full\u2026",
+        "rebuttal": {
+          "strongest_opponent_point": "",
+          "trade_change": "unchanged"
+        },
+        "stance_summary": "FACT: the Fed has delivered 25bp to 3.75\u20134.00%, SOFR still prices a rising path through December, US labor/inflation/consumer gauges remain hot versus Canada, and CA-US 2Y sits at an extreme -140bp while USDCAD is only\u2026",
+        "trade": {
+          "direction": "long",
+          "entry": null,
+          "expression": null,
+          "horizon": "4-8 weeks",
+          "instrument": "USDCAD",
+          "invalidation": "Qualitative, sourced from the frozen policy path rather than an invented USDCAD print: the long-USDCAD thesis is invalid if the US SOFR path rolls over so that December implied 4.1975 and the 3.85 overnight benchmark are no longer a rising year-end path, or if MX CORRA Dec 2.58 is replaced by a much larger BoC energy-pass-through repricing that closes the 156bp overnight gap without CAD labor/core deteriorating further. WTI remaining high is not by itself invalidation because the packet\u2019s USDCAD-WTI link is weak; a renewed unconstrained oil-supply tail that reverses the Saudi-workaround reduction would be. No executable stop exists in the packet.",
+          "structure": null,
+          "target": null
+        }
+      },
+      {
+        "agent": "mean-reverter",
+        "confidence": 57,
+        "entry_reason": "Housing evidence on 2026-09-16 documents the tightening channel biting (stamp duty -24% YoY, volumes -18%, prices >7% off peak) while AU 2Y as of the same date prints through the live AONIA terminal. Fed 25bp hike to 3.75-4.00% was >90% priced into 16 Sep and has now been delivered; BoJ to 1.25% on 17 Sep is additional known global duration supply. That is when local housing should start to dominate AU 2Y, not when\u2026",
+        "mispricing": "AU 2Y is 13.9bp through the live Mar-2027 AONIA terminal and 64.9bp over AONIA 4.35 after housing volumes and prices have already broken. The percentile (99th 1y / 99.8th 5y) only flags the stretch; the mispricing is 2Y versus the observable policy path given a working tightening channel.",
+        "rebuttal": {
+          "strongest_opponent_point": "",
+          "trade_change": "unchanged"
+        },
+        "stance_summary": "Crowded post-hike extrapolation has pushed AU 2Y through the live AONIA path even as the housing channel is already biting. Fade that sovereign overshoot in duration, not because the percentile is extreme, but because t\u2026",
+        "trade": {
+          "direction": "long",
+          "entry": null,
+          "expression": null,
+          "horizon": "4-8 weeks",
+          "instrument": "AU 2Y",
+          "invalidation": "Thesis is wrong if the live AONIA/ASX path lifts the Mar-2027 implied rate through the packet AU 2Y print of 4.999, or if subsequent housing/activity evidence stops confirming that the tightening channel is biting while AU 2Y fails to give back toward that path. Do not treat a further percentile extreme alone as invalidation.",
+          "structure": "outright long AU 2Y duration (receive 2Y)",
+          "target": null
+        }
+      },
+      {
+        "agent": "no-trade-skeptic",
+        "confidence": 74,
+        "entry_reason": "NO TRADE. Verified: the Sep 16 Fed 25bp hike to 3.75-4.00% was already >90% priced; BoJ 25bp to 1.25% and BoE 6-3 hold are spent; SOFR 3.85% with ICE 1M path to 4.1975 by Dec-26 and 4.6025 by Aug-28, CORRA 2.29% with MX path only to 2.58 by Dec-26, AONIA 4.35% with ASX cash-futures +21.5bp by Oct and +51bp by Mar-27; US 2Y 4.76 / 10Y 5.01 at 99.8/99.6 1y percentiles with 2s10s +25bp at the 0.2 1y percentile but 54th\u2026",
+        "rebuttal": null,
+        "stance_summary": "NO TRADE. Verified: the Sep 16 Fed 25bp hike to 3.75-4.00% was already >90% priced; BoJ 25bp to 1.25% and BoE 6-3 hold are spent; SOFR 3.85% with ICE 1M path to 4.1975 by Dec-26 and 4.6025 by Aug-28, CORRA 2.29% with MX\u2026",
+        "trade": null
+      },
+      {
+        "agent": "perma-bear",
+        "confidence": 56,
+        "entry_reason": "16 Sep 2026 housing evidence is the new transmission of an already-known RBA tightening cycle. 18 Sep desk thesis that global tightening is broadening (Fed hike + BoJ to 1.25%) raises the policy-error odds into that housing downturn rather than validating more AU hikes. September Westpac-MI sentiment -5.2% to 84.4 is a fresh clearly-weaker consumer impulse against July spending that was still +1.1% m/m. AU-US 2Y alr\u2026",
+        "mispricing": "Markets price Oct-26 AONIA 4.565 and Mar-27 4.86 as if the RBA can keep tightening after NSW stamp-duty -24% y/y and employment -15.8k. AU 2Y 4.999 (99th percentile 1y) embeds that path. The mispricing is the sustainability of those extra 51-60bp, not the existence of a still-restrictive 4.35 AONIA.",
+        "rebuttal": {
+          "strongest_opponent_point": "",
+          "trade_change": "unchanged"
+        },
+        "stance_summary": "FACT: Australian housing is already contracting (NSW stamp-duty receipts -24% y/y, volumes -18%, Sydney/Melbourne values more than 7% below peak) while AONIA still prices +21.5bp by Oct-26, +37.5bp by Dec-26, +51bp by M\u2026",
+        "trade": {
+          "direction": "long",
+          "entry": null,
+          "expression": null,
+          "horizon": "1-3 months, through the Oct-Nov AONIA strip and the next AU housing/labor prints",
+          "instrument": "AU_2Y",
+          "invalidation": "Thesis is wrong if the live AONIA path re-steepens or holds the packet Oct-26 4.565 and Mar-27 4.86 prints while AU housing/labor stop deteriorating (stamp-duty/volumes/employment stabilize) and/or trimmed-mean CPI re-accelerates from 3.6%. A delivered October hike with hawkish RBA guidance that lifts the Dec-26 4.725 and Mar-27 4.86 contracts would also invalidate. Do not invent a yield stop; executable marks are absent.",
+          "structure": "Receive Australian front-end: long AU 2Y sovereign as the bookable proxy for the ASX 30-day AONIA Oct-26/Dec-26/Mar-27 strip. Research/reference only; no executable broker ticket in the packet. Do not use stale 01-Dec-2022 RBA F1 OIS.",
+          "target": null
+        }
+      },
+      {
+        "agent": "perma-bull",
+        "confidence": 60,
+        "entry_reason": "Fed hike to 3.75-4.00% is delivered (2026-09-16) and the 18 Sep desk thesis says global tightening is broadening (BoJ to 1.25%, BoE 6-3 hold), so Canada\u2019s near-flat CORRA path is now the outlier rather than a consensus easing world. BoC minutes on 2026-09-16 flag higher energy pass-through just as WTI\u2019s last print is 107.02 with 1m log +24% and shock absorbers weakening; that is a new transmission into a still-easy\u2026",
+        "mispricing": "Dec-26 CORRA at 2.58 against overnight 2.29 prices a BoC that stays largely on hold into year-end. CA 2Y at 3.27 versus US 2Y at 4.76 (CA-US 2Y -140bp) prices a deep relative Canada slowdown. Those assumptions conflict with US activity/labor/consumer still in the 69-75 range, global tightening broadening, and an energ\u2026",
+        "rebuttal": {
+          "strongest_opponent_point": "",
+          "trade_change": "unchanged"
+        },
+        "stance_summary": "Growth, liquidity and risk appetite are more resilient than Canada\u2019s policy path implies. US activity/labor/consumer gauges remain hot after a delivered Fed hike, risk assets are not in stress, and energy is a live infl\u2026",
+        "trade": {
+          "direction": "short",
+          "entry": null,
+          "expression": null,
+          "horizon": "4-8 weeks",
+          "instrument": "CA_2Y",
+          "invalidation": "Thesis fails if the live CORRA path through Dec-26 stops repricing higher and instead prices a cut, or if subsequent Canada activity/inflation evidence confirms a labor-led demand collapse with energy pass-through fading and core remaining the binding BoC constraint. A US growth break that also collapses Canadian activity would invalidate the cyclical-resilience mechanism rather than just the timing.",
+          "structure": "Short 2-year Canada sovereign duration (pay CA_2Y). Research/reference official yields and MX CORRA futures only; no executable broker ticket in the packet.",
+          "target": null
+        }
+      },
+      {
+        "agent": "positioning-cynic",
+        "confidence": 57,
+        "entry_reason": "Fed 25bp to 3.75-4.00% is delivered and was >90% priced; the new information is the desk extending that into a global-tightening AUD-cross bid. CFTC 15 Sep TFF: AUD OI +37673 to 99th percentile with all nets null; CME OI unavailable\u2014this is the first ownership print after the hike week. 16 Sep housing evidence (stamp duty -24% y/y, volumes -18%) arrives while 18 Sep ASX still concentrates hike OI in October (21752 v\u2026",
+        "mispricing": "Market prices a still-widening RBA-versus-BoC policy gap in 99.8th-percentile AUDCAD/AUDNZD and in October AONIA +21.5bp. The 2Y sovereign gap at -164.9bp is only 51st 1y, so this is not a 'spread extreme therefore fade' trade. The mispricing is ownership plus policy-path: hike odds are concentrated in a high-OI Octob\u2026",
+        "rebuttal": {
+          "strongest_opponent_point": "",
+          "trade_change": "unchanged"
+        },
+        "stance_summary": "Verified CFTC TFF nets are all null and CME OI is unavailable, so 99th-percentile AUD/JPY/CHF open interest is a crowded pit, not a signed long. The consensus post-Fed package\u2014global tightening, long AUD versus CAD/NZD,\u2026",
+        "trade": {
+          "direction": "long CA-AU 2Y (receive AU 2Y, pay CA 2Y)",
+          "entry": null,
+          "expression": null,
+          "horizon": "1-3 months, through the October-December AONIA/CORRA window",
+          "instrument": "CA-AU_2Y",
+          "invalidation": "Thesis is wrong if ASX October-December AONIA implied rates keep rising while Australian housing/activity stops deteriorating, or if the CORRA path flattens/cuts while Canada headline/energy pass-through fades. Separate bad entry from bad thesis: a further AUDCAD squeeze higher with unchanged CA-AU 2Y would confirm the crowding was in spot, not that the rates RV is invalidated. Unsigned TFF nets remaining null is not an invalidation.",
+          "structure": null,
+          "target": null
+        }
+      },
+      {
+        "agent": "rate-dove",
+        "confidence": 61,
+        "entry_reason": "16 Sep housing evidence is now in the frozen packet while the 18 Sep desk thesis still treats global tightening as dominant even where domestic growth is softer. ASX October AONIA already implies 4.565 versus 4.35 with 4450 contracts of volume and 21752 open interest \u2014 the near-term hike is live, not a distant terminal debate. September Westpac-MI sentiment fell 5.2% to 84.4, a fresh demand-side impulse after July e\u2026",
+        "mispricing": "ASX AONIA prices a continued hiking cycle (no cuts, +21.5bp by Oct, +51bp by Mar-2027) as if the housing channel had not already produced a pandemic-sized revenue and price hole. That is overpriced tightening / underpriced easing in the Australian front end. AU 2Y 4.999 embeds that path plus term premium; a 2022-09-28\u2026",
+        "rebuttal": {
+          "strongest_opponent_point": "",
+          "trade_change": "unchanged"
+        },
+        "stance_summary": "Verified frozen SOFR/CORRA/AONIA paths price no easing anywhere in the US/CA/AU set: SOFR 3.85 with +34.75bp by Dec-2026 and +75.25bp by Aug-2028; CORRA 2.29 with +29bp on the 1m strip by Dec-2026 and +136.5bp on the 3m\u2026",
+        "trade": {
+          "direction": "long",
+          "entry": null,
+          "expression": null,
+          "horizon": "6-12 weeks",
+          "instrument": "AU_2Y",
+          "invalidation": "Thesis invalid if ASX AONIA-implied rates keep rising along the priced +51bp (Mar-2027) to +59.5bp (mid-2027) hike path without offsetting housing/labour deterioration, or if AU trimmed-mean CPI re-accelerates from the July 3.6% y/y print.",
+          "structure": "Outright long Australian 2-year government duration (receive AU 2Y). Alternate implementation: long ASX 30-day AONIA 2026-10 and 2026-11 cash-rate futures. Research/reference only; no executable broker structure in the packet.",
+          "target": null
+        }
+      },
+      {
+        "agent": "rate-hawk",
+        "confidence": 64,
+        "entry_reason": "Sep-16 hike is now delivered, so residual information is the reaction function not the meeting itself. 18 Sep desk thesis: global tightening is broadening after the Fed move (BoJ 1.25%, BoE three hike votes), while the 1M SOFR strip is still +34.75bp by Dec. Energy-market shock absorbers weaken even after a Saudi workaround reduced the extreme oil-supply tail, keeping an inflation-persistence tail in the US reaction\u2026",
+        "mispricing": "SR1Z26 at 4.1975 versus SOFR 3.85 prices only about one additional 25bp-scale move by December after a hike that was already >90% priced. The hawkish residual \u2014 another 2026 hike and/or a higher 2027 peak \u2014 is not in the 2026 1M contract. US 2Y 4.76 is a different tenor and is already near the 2027 peak; it is not thi\u2026",
+        "rebuttal": {
+          "strongest_opponent_point": "",
+          "trade_change": "unchanged"
+        },
+        "stance_summary": "Inflation persistence and still-hot US demand/labor mean the Fed\u2019s just-delivered hike is not the end of the tightening impulse. The live 1M SOFR path only prices about one extra hike by December 2026 and then a shallow\u2026",
+        "trade": {
+          "direction": "short",
+          "entry": null,
+          "expression": null,
+          "horizon": "1-3 months",
+          "instrument": "SR1Z26",
+          "invalidation": "Thesis is wrong if subsequent US inflation/labor data and FOMC communication drop the tightening bias, or if the 1M SOFR strip reprices SR1Z26 implied SOFR down toward unchanged policy at the 3.85 SOFR benchmark rather than higher. Delayed eSignal versus live ICE basis is a mark risk, not an invalidation of the macro claim.",
+          "structure": "Short/pay ICE 1-month SOFR future SR1Z26. Packet research/reference: implied_rate 4.1975, price 95.8025, source ESIGNAL_ICE_1M_SOFR_DELAYED. Not an executable broker ticket.",
+          "target": null
+        }
+      },
+      {
+        "agent": "trend-follower",
+        "confidence": 65,
+        "entry_reason": "Fed hike delivered 16 Sep 2026 after >90% odds, so the event is now a path-persistence question rather than a binary call. 18 Sep desk thesis: global tightening is broadening (BoJ 1.25% 31-year high; BoE 6\u20133 with three hike votes) and energy shock is constraining easing. August CPI rollup keeps the Fed tightening bias intact; US temps remain 72/75/69/74. SOFR Oct still only +6bp versus overnight 3.85 \u2014 light if anot\u2026",
+        "mispricing": "The mispricing is not \u20182Y is cheap\u2019 \u2014 it is already above Dec SOFR and slightly above the Aug-2028 SOFR terminal. The mispricing is the market\u2019s implicit terminal/fade assumption: that a delivered 25bp hike and 99th-percentile yields cap the cycle, so Oct SOFR at +6bp and Dec at +34.75bp are enough. That assumption is\u2026",
+        "rebuttal": {
+          "strongest_opponent_point": "",
+          "trade_change": "unchanged"
+        },
+        "stance_summary": "Ride the delivered US hike and still-rising SOFR path: hot US temps, broadening global tightening, and hike-cycle analogs all say the yield uptrend persists; fading 99th-percentile US yields or a one-and-done SOFR strip\u2026",
+        "trade": {
+          "direction": "short (pay rates)",
+          "entry": null,
+          "expression": null,
+          "horizon": "1-3 months, through the Dec 2026 SOFR window",
+          "instrument": "US 2Y",
+          "invalidation": "SOFR Oct\u2013Dec strip losing its additional-tightening slope back toward overnight 3.85, or a 2023-02-style financial-stress reversal without a new hike catalyst; no executable stop in the packet",
+          "structure": "short US 2Y outright duration (pay rates); policy-path-consistent with paying ICE 1M SOFR Dec-2026 SR1Z26; research/reference yields and delayed SOFR only \u2014 frozen packet has no executable broker marks",
+          "target": null
+        }
+      },
+      {
+        "agent": "value-guy",
+        "confidence": 62,
+        "entry_reason": "CA-US 2Y cheapened 15bp in 5d (z -2.17) after a Fed hike that was already >90% priced \u2014 known information, new residual. 18 Sep desk thesis: global tightening broadened (BoJ 1.25%, BoE 6\u20133 hawkish split) into an energy shock that constrains easing where growth is softer, including Canada. BoC minutes flag energy pass-through while CORRA still prices only +29bp through December \u2014 the Canada path has not caught up. Cl\u2026",
+        "mispricing": "Markets price a durable BoC near-2.3\u20132.6% path versus a US 2Y that already sits next to 2028 SOFR. That leaves CA-US 2Y at a 5y 4th-percentile level. The mispricing is the cross-market 2Y gap versus a policy-path-and-energy-normalized fair gap, not CAD spot and not an outright US duration call.",
+        "rebuttal": {
+          "strongest_opponent_point": "",
+          "trade_change": "unchanged"
+        },
+        "stance_summary": "Narratives that Canada is a durable low-rate peer versus a hiking Fed are cheap. The tradeable object is the CA-US 2Y yield spread at -140bp, a 1y and 5y historical left-tail, after a post-FOMC cheapening that a >90% pr\u2026",
+        "trade": {
+          "direction": "long",
+          "entry": null,
+          "expression": null,
+          "horizon": "1-3 months",
+          "instrument": "CA-US_2Y",
+          "invalidation": "Thesis is wrong if CORRA Dec stays near 2.58 and CA-US 2Y cheapens through the 2025-01-30 analog level of -145bp without a BoC-path reprice, or if Canada core remaining near 2% plus labor-gauge weakness (38) dominate energy pass-through and the US 2Y selloff simply continues as in early-cycle 2022 analogs. Right-thesis/wrong-timing if the 2024-12-18 analog path (-3bp 1m / -20bp 3m) repeats; then hold the 3m horizon rather than stop on noise. Saudi STS crude workaround reducing the oil-supply tail is a live softener of the energy catalyst.",
+          "structure": "Pay Canada 2Y vs receive US 2Y duration (long the CA minus US 2Y yield spread). Research/reference official yields and SOFR/CORRA paths only; no executable broker prices in the frozen packet.",
+          "target": null
+        }
+      },
+      {
+        "agent": "vol-convexity",
+        "confidence": 52,
+        "entry_reason": "Fed delivered 25bp to 3.75-4.00 percent on 16 Sep after >90 percent pre-pricing, but the SOFR strip still prices 4.1975 by Dec and 4.6025 by Aug 2028. AONIA still prices Oct 4.565 and Mar-2027 4.86 while NSW stamp duty is -24 percent y/y and home values are more than 7 percent from peak. AUDUSD 20d RV is only 4.71 with a +0.20 percent 1m change, while AUDNZD's 1m log z is 2.84 at a 99.8th percentile \u2014 quiet USD pair\u2026",
+        "mispricing": "The mispricing is one-sided path certainty in linear AUDUSD and in AU 2Y / AU-US 2Y, not a documented cheap implied-vol number. AU-US 2Y at +25.9bp is only the 25th 1y percentile and the AUDUSD-to-2Y residual is weak, so rates RV does not own the discrepancy. AUDUSD is not a 99th-percentile spot fade; the 99th-percent\u2026",
+        "rebuttal": null,
+        "stance_summary": "Spot AUDUSD is the wrong instrument for a two-way policy-path residual. Frozen AONIA still prices about 51bp of extra RBA tightening into a housing channel that is already contracting, while SOFR still prices residual F\u2026",
+        "trade": {
+          "direction": "buy volatility",
+          "entry": null,
+          "expression": null,
+          "horizon": "2-5 weeks, through the October AONIA contract",
+          "instrument": "AUDUSD 1-month straddle",
+          "invalidation": "Thesis is invalid if live implied vol, 25-delta risk reversal and premium \u2014 all null in this packet \u2014 already embed a larger two-way AUDUSD range than AONIA-versus-SOFR delivery risk, or if both the AONIA strip through Mar-2027 4.86 and the SOFR strip through Dec 4.1975 print as a smooth delivered path with no housing or inflation surprise.",
+          "structure": "long 1-month ATM AUDUSD straddle; premium, strikes, implied vol and skew are unsourced in the frozen packet and remain null",
+          "target": null
+        }
+      }
+    ]
+  },
+  "trader_room_run_id": "tr-20260919T123430Z-ondemand",
+  "type": "PM_REVIEW_PACKET",
+  "unresolved_future_data_requests": []
+}

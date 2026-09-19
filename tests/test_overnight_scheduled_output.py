@@ -198,6 +198,9 @@ class ScheduledOutputTests(unittest.TestCase):
         self.assertIn("pull_request_target", gate)
         self.assertIn("scheduled_output.py validate", gate)
         self.assertIn("scheduled_output.py apply", gate)
+        for cron in ('"7 0 * * 1-5"', '"40 1 * * 1-5"', '"50 1 * * 1-5"', '"35 3 * * 1-5"', '"50 3 * * 1-5"', '"7 4 * * 1-5"'):
+            self.assertIn(cron, overnight)
+        self.assertIn("market-watch-weekday-0205", (ROOT / "docs" / "OVERNIGHT_PIPELINE_V1.md").read_text(encoding="utf-8"))
 
 
 class BudgetHookTests(unittest.TestCase):

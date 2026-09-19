@@ -45,8 +45,14 @@ on:
       - "patch_v14/**"
       - "scripts/apply_trader_room_tab.py"
       - "scripts/trader_room_public.py"
+      - "scripts/pm/**"
+      - "scripts/pm_layer.py"
       - "data/trader-room/public/**"
+      - "data/pm/**"
+      - "trader-room/runs/**"
       - "tests/test_trader_room_dashboard.py"
+      - "tests/test_trader_room_publish.py"
+      - "tests/test_pm_*.py"
       - "data/overnight/**"
       - "tests/test_overnight_pipeline.py"
       - "tests/test_overnight_scheduled_output.py"
@@ -266,15 +272,51 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          PYTHONPATH=. python -m unittest tests.test_trader_room_dashboard -v
+          PYTHONPATH=. python -m unittest tests.test_trader_room_dashboard tests.test_trader_room_publish -v
           python scripts/apply_trader_room_tab.py _site/index.html
           PYTHONPATH=. python scripts/trader_room_public.py --output _site/trader-room.json
           test -s _site/trader-room.js
           test -s _site/trader-room.json
+          PYTHONPATH=. python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from scripts.trader_room_public import build_public_packet, select_newest_complete_run
+          packet = json.loads(Path("_site/trader-room.json").read_text())
+          selected = select_newest_complete_run()
+          expected = build_public_packet()
+          assert selected is not None, "no complete valid canonical Trader Room run"
+          assert packet.get("available") is True
+          assert packet.get("run_id") == selected.name
+          assert packet.get("run_id") == expected.get("run_id")
+          assert packet.get("run_id") == packet.get("selection", {}).get("selected_run_id")
+          assert packet.get("seat_count") == 14
+          assert packet.get("selection", {}).get("manual_pointer") is False
+          assert packet.get("selection", {}).get("mode") == "newest_complete_valid"
+          PY
           grep -Fq 'for="p-traderroom"' _site/index.html
           grep -Fq 'Trader Room · adversarial ideas' _site/index.html
           grep -Fq 'Trader Book · paper P&L' _site/index.html
           grep -Fq 'Market Data · official snapshot' _site/index.html
+
+      - name: Add Portfolio Manager public JSON
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -m unittest tests.test_pm_books tests.test_pm_ingest tests.test_pm_scheduled_output tests.test_pm_dashboard tests.test_pm_overnight_packets -v
+          PYTHONPATH=. python scripts/pm_layer.py publish --site-dir _site
+          test -s _site/pm-books.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          packet = json.loads(Path("_site/pm-books.json").read_text())
+          assert packet.get("pm_count") == 4
+          statuses = {row["pm_id"]: row["decision_status"] for row in packet["pms"]}
+          assert statuses["chatgpt"] == "awaiting_chatgpt_decision"
+          assert statuses["swinger"] == "awaiting_automated_pm_review"
+          PY
+          grep -Fq 'Portfolio Managers' _site/trader-book.js
+          grep -Fq 'Trader Book · paper P&L' _site/index.html
+          grep -Fq 'Last 24 Hours · Desk Summary' _site/index.html
 
       - name: Configure Pages
         uses: actions/configure-pages@v5

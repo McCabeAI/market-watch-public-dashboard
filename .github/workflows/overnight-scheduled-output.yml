@@ -58,7 +58,7 @@ jobs:
         run: |
           set -euo pipefail
           PYTHONPATH=. python3 scripts/overnight/scheduled_output.py validate             --input /tmp/mw-output/scheduled_output.json
-          PYTHONPATH=. python3 -m unittest             tests.test_overnight_pipeline             tests.test_overnight_scheduled_output -v
+          PYTHONPATH=. python3 -m unittest             tests.test_overnight_pipeline             tests.test_overnight_scheduled_output             tests.test_pm_scheduled_output             tests.test_pm_overnight_packets -v
 
       - name: Generate canonical deterministic state from trusted main
         env:
@@ -72,6 +72,14 @@ jobs:
           for name in run.json agent_evidence_packet.json scheduled_output.json trader_review.json; do
             cp "data/overnight/runs/$RUN_ID/$name" "/tmp/mw-generated/runs/$RUN_ID/$name"
           done
+          if [ -d data/pm ]; then
+            mkdir -p /tmp/mw-generated/pm
+            for name in books review_packets public data_requests; do
+              if [ -e "data/pm/$name" ]; then
+                cp -a "data/pm/$name" "/tmp/mw-generated/pm/$name"
+              fi
+            done
+          fi
 
       - name: Append deterministic state to the scheduled-output branch
         env:
@@ -86,9 +94,21 @@ jobs:
           cp -a /tmp/mw-generated/books data/overnight/books
           mkdir -p "data/overnight/runs/$RUN_ID"
           cp -a "/tmp/mw-generated/runs/$RUN_ID/." "data/overnight/runs/$RUN_ID/"
+          if [ -d /tmp/mw-generated/pm ]; then
+            mkdir -p data/pm
+            for name in books review_packets public data_requests; do
+              if [ -e "/tmp/mw-generated/pm/$name" ]; then
+                rm -rf "data/pm/$name"
+                cp -a "/tmp/mw-generated/pm/$name" "data/pm/$name"
+              fi
+            done
+          fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/overnight/books "data/overnight/runs/$RUN_ID"
+          if [ -d /tmp/mw-generated/pm ]; then
+            git add data/pm/books data/pm/review_packets data/pm/public data/pm/data_requests
+          fi
           if ! git diff --cached --quiet; then
             git commit -m "chore: apply overnight decisions $RUN_ID"
             git push origin "HEAD:$HEAD_REF"
