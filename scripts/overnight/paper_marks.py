@@ -125,6 +125,36 @@ def _rv_mark(state: Mapping[str, Any], instrument: str) -> dict[str, Any]:
     }
 
 
+def _tradable_curve_contract_mark(
+    state: Mapping[str, Any],
+    curve_id: str,
+    contract_key: str,
+) -> dict[str, Any]:
+    curves = state.get("tradable_rate_curves")
+    curve_map = curves.get("curves") if isinstance(curves, Mapping) else None
+    block = curve_map.get(curve_id.upper()) if isinstance(curve_map, Mapping) else None
+    if not isinstance(block, Mapping) or block.get("status") != "ok":
+        raise PaperMarkError(f"tradable {curve_id} curve unavailable")
+    target = contract_key.upper()
+    for row in block.get("contracts") or []:
+        if not isinstance(row, Mapping):
+            continue
+        code = str(row.get("code") or "").upper()
+        expiry = str(row.get("expiry") or "").upper()
+        if target not in {code, expiry}:
+            continue
+        if row.get("implied_rate") is None:
+            raise PaperMarkError(f"{curve_id} contract {contract_key} missing implied rate")
+        return {
+            "value": _number(row["implied_rate"], f"{curve_id} {contract_key}"),
+            "quote_unit": "percent",
+            "source": f"market_state.tradable_rate_curves.{curve_id.upper()}.{expiry}.implied_rate",
+            "as_of": state.get("generated_at") or row.get("as_of") or row.get("expiry"),
+            "kind": "direct",
+        }
+    raise PaperMarkError(f"{curve_id} contract {contract_key} unavailable")
+
+
 def _policy_contract_mark(state: Mapping[str, Any], code: str) -> dict[str, Any]:
     policy = state.get("policy_paths")
     countries = policy.get("countries") if isinstance(policy, Mapping) else None
@@ -182,7 +212,13 @@ def _resolve_direct(state: Mapping[str, Any], instrument: str, asset_class: str 
         if exact:
             return _rv_mark(state, exact)
 
-    # Exchange contract codes (SR1Z26, COAZ26, CRA..., etc.) are marked in
+    # Stable aliases for the three paper-tradable futures curves.
+    # Examples: SOFR_2027-03, CORRA_2027-06, AONIA_2026-11.
+    m = re.fullmatch(r"(SOFR|CORRA|AONIA)_(20\d{2}-\d{2})", upper)
+    if m:
+        return _tradable_curve_contract_mark(state, m.group(1), m.group(2))
+
+    # Exchange contract codes (SR1/SR3, COA/CRA, etc.) are marked in
     # implied-rate space so the rates P&L sign convention remains consistent.
     if re.fullmatch(r"[A-Z0-9]{4,12}", upper):
         try:
@@ -231,6 +267,48 @@ def _linear_combo(state: Mapping[str, Any], expression: Mapping[str, Any]) -> di
         "quote_unit": output_unit,
         "source": "derived:linear_combo[" + ",".join(sources) + "]",
         "as_of": min(dates) if dates else None,
+        "kind": "derived",
+        "expression": deepcopy(dict(expression)),
+    }
+
+
+def _futures_strip_average(state: Mapping[str, Any], expression: Mapping[str, Any]) -> dict[str, Any]:
+    """Average implied rate across explicit contracts from one locked curve family.
+
+    This is intentionally simple paper math. A trader/subagent chooses the exact
+    contracts defining the forward window; trusted code recomputes the same
+    weighted average from that curve on every mark.
+    """
+    curve_id = str(expression.get("curve_id") or "").upper()
+    if curve_id not in {"SOFR", "CORRA", "AONIA"}:
+        raise PaperMarkError("futures_strip_average curve_id must be SOFR, CORRA or AONIA")
+    expiries = expression.get("expiries")
+    if not isinstance(expiries, list) or not expiries:
+        raise PaperMarkError("futures_strip_average requires non-empty expiries")
+    weights = expression.get("weights")
+    if weights is None:
+        weights = [1.0] * len(expiries)
+    if not isinstance(weights, list) or len(weights) != len(expiries):
+        raise PaperMarkError("futures_strip_average weights must match expiries")
+    total_weight = 0.0
+    weighted_rate = 0.0
+    sources: list[str] = []
+    dates: list[str] = []
+    for expiry, raw_weight in zip(expiries, weights):
+        weight = _number(raw_weight, "futures_strip_average weight")
+        if weight <= 0:
+            raise PaperMarkError("futures_strip_average weights must be positive")
+        mark = _tradable_curve_contract_mark(state, curve_id, str(expiry))
+        weighted_rate += weight * float(mark["value"])
+        total_weight += weight
+        sources.append(mark["source"])
+        if mark.get("as_of"):
+            dates.append(str(mark["as_of"]))
+    return {
+        "value": round(weighted_rate / total_weight, 8),
+        "quote_unit": "percent",
+        "source": f"derived:futures_strip_average:{curve_id}[" + ",".join(sources) + "]",
+        "as_of": min(dates) if dates else state.get("generated_at"),
         "kind": "derived",
         "expression": deepcopy(dict(expression)),
     }
@@ -393,6 +471,8 @@ def resolve_paper_mid(
             return _linear_combo(market_state, expression)
         if kind == "forward_swap":
             return _forward_swap(market_state, expression)
+        if kind == "futures_strip_average":
+            return _futures_strip_average(market_state, expression)
         raise PaperMarkError(f"unsupported paper expression type {kind!r}")
     if not instrument:
         raise PaperMarkError("instrument is required for a paper mid")
