@@ -13,6 +13,7 @@ import json
 import math
 import statistics
 import urllib.parse
+from concurrent.futures import ThreadPoolExecutor
 from datetime import date
 from typing import Callable, Mapping, Sequence
 
@@ -397,13 +398,21 @@ def fetch_cme_fx_positioning(*, today: date, fetch_bytes: Callable[..., bytes]) 
     instruments: dict[str, dict] = {}
     errors: dict[str, str] = {}
     latest: date | None = None
-    for ccy, product_id in CME_FX_PRODUCTS.items():
+
+    def one(item: tuple[str, str]) -> tuple[str, dict | None, str | None]:
+        ccy, product_id = item
         url = CME_LAST_TOTALS.format(product_id=product_id)
         try:
-            payload = json.loads(fetch_bytes(url, timeout=45, retries=3).decode("utf-8"))
-            metrics = parse_cme_last_totals(payload, ccy=ccy, today=today)
+            payload = json.loads(fetch_bytes(url, timeout=15, retries=2).decode("utf-8"))
+            return ccy, parse_cme_last_totals(payload, ccy=ccy, today=today), None
         except Exception as exc:
-            errors[ccy] = str(exc)
+            return ccy, None, str(exc)
+
+    with ThreadPoolExecutor(max_workers=5) as pool:
+        results = list(pool.map(one, CME_FX_PRODUCTS.items()))
+    for ccy, metrics, error in results:
+        if error or metrics is None:
+            errors[ccy] = error or "unknown CME collection failure"
             continue
         instruments[ccy] = metrics
         d = date.fromisoformat(metrics["trade_date"])
