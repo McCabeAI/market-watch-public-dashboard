@@ -139,7 +139,7 @@ Null lookbacks stay null. A missing US, Canada, Australia, or ECB FX source, ten
 | --- | --- | --- |
 | US rates | U.S. Treasury daily par yield curve | Daily official bond curve |
 | US policy context | New York Fed SOFR + One-Month SOFR (`SR1`) | Overnight benchmark and near-term policy context |
-| US tradable curve | CME Three-Month SOFR (`SR3`) | Quarterly SOFR futures strip; CME delayed quote table preferred, official settlement endpoint and Daily Bulletin as fallbacks |
+| US tradable curve | CME Three-Month SOFR (`SR3`) | Quarterly CME SR3 strip carried on eSignal's public delayed quote board because CME rejects GitHub-hosted runners |
 | US government zero/forward | Federal Reserve nominal Treasury Svensson curve | Supplemental bond-curve analytics |
 | CA rates | Bank of Canada Valet benchmark bonds | Official 2Y/5Y/10Y/LONG bond yields |
 | CA policy context | Bank of Canada CORRA + MX COA/CRA | Overnight benchmark and policy context |
