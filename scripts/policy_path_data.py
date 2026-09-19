@@ -27,12 +27,20 @@ MX_EXPECTATIONS_URL = "https://www.m-x.ca/en/trading/tools/canadian-interest-rat
 NYFED_SOFR_URL = "https://markets.newyorkfed.org/api/rates/secured/sofr/last/10.json"
 NYFED_SOFR_PAGE = "https://www.newyorkfed.org/markets/reference-rates/sofr"
 CME_SOFR_URL = "https://www.cmegroup.com/markets/interest-rates/stirs/one-month-sofr.quotes.html"
+CME_SR3_URL = "https://www.cmegroup.com/markets/interest-rates/stirs/three-month-sofr.quotes.html"
 CME_SOFR_BULLETIN_URL = "https://www.cmegroup.com/daily_bulletin/current/Section10_Interest_Rate_Futures_Continued.pdf"
 ESIGNAL_SOFR_CHAIN_URL = "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR1"
+ESIGNAL_SR3_CHAIN_URL = "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME"
 CME_SOFR_PRODUCT_ID = "8463"
+CME_SR3_PRODUCT_ID = "8462"
 CME_SOFR_SETTLEMENTS_TEMPLATE = (
     "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/"
     + CME_SOFR_PRODUCT_ID
+    + "/FUT?tradeDate={trade_date}&strategy=DEFAULT&pageSize=500"
+)
+CME_SR3_SETTLEMENTS_TEMPLATE = (
+    "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/"
+    + CME_SR3_PRODUCT_ID
     + "/FUT?tradeDate={trade_date}&strategy=DEFAULT&pageSize=500"
 )
 RBA_F1_URL = "https://www.rba.gov.au/statistics/tables/csv/f1-data.csv"
@@ -302,6 +310,145 @@ def parse_cme_sofr_bulletin_pdf(data: bytes, *, benchmark: float) -> list[dict[s
     return parse_cme_sofr_bulletin_text(text, benchmark=benchmark)
 
 
+def parse_cme_sr3_bulletin_text(text: str, *, benchmark: float) -> list[dict[str, Any]]:
+    """Parse CME Three-Month SOFR futures (SR3) from the official Daily Bulletin."""
+    lines = [re.sub(r"\s+", " ", line).strip() for line in text.splitlines()]
+    try:
+        start = next(i for i, line in enumerate(lines) if line == "SR3 FUT")
+    except StopIteration as exc:
+        raise ValueError("CME Daily Bulletin did not contain SR3 FUT") from exc
+    month_codes = {"MAR": "H", "JUN": "M", "SEP": "U", "DEC": "Z"}
+    rows: list[dict[str, Any]] = []
+    for line in lines[start + 1 :]:
+        if line.startswith("TOTAL SR3 FUT"):
+            break
+        m = re.match(
+            r"^(MAR|JUN|SEP|DEC)(\d{2})\s+"
+            r"(?:----\s+){0,3}.*?\s(9\d\.\d{3,4})\s+\(\s*([0-9.]+)\)",
+            line,
+        )
+        if not m:
+            continue
+        month = MONTHS[m.group(1)]
+        year = 2000 + int(m.group(2))
+        price = float(m.group(3))
+        rows.append(
+            _contract_row(
+                expiry=f"{year:04d}-{month:02d}",
+                code=f"SR3{month_codes[m.group(1)]}{m.group(2)[-1]}",
+                price=price,
+                benchmark=benchmark,
+                source="CME_DAILY_BULLETIN_SR3",
+            )
+        )
+    if not rows:
+        raise ValueError("CME Daily Bulletin SR3 block contained no usable contracts")
+    return rows
+
+
+def parse_cme_sr3_bulletin_pdf(data: bytes, *, benchmark: float) -> list[dict[str, Any]]:
+    try:
+        from pypdf import PdfReader
+    except ImportError as exc:
+        raise ValueError("pypdf required for CME Daily Bulletin") from exc
+    reader = PdfReader(io.BytesIO(data))
+    text = "\n".join(page.extract_text() or "" for page in reader.pages)
+    return parse_cme_sr3_bulletin_text(text, benchmark=benchmark)
+
+
+def parse_cme_sr3_html(text: str, *, benchmark: float) -> list[dict[str, Any]]:
+    """Parse quarterly SR3 delayed quotes directly from CME's public quote table."""
+    parser = _TableParser()
+    parser.feed(text)
+    rows: list[dict[str, Any]] = []
+    for table in parser.tables:
+        for row in table:
+            if not row:
+                continue
+            first = row[0].upper()
+            code_match = re.search(r"\b(SR3[HMUZ]\d)\b", first)
+            expiry = _parse_expiry(first)
+            if not code_match or not expiry:
+                continue
+            # CME quote table: Month, Options, Chart, Last, Change, PriorSettle,
+            # Open, High, Low, Volume, Updated. Use delayed Last as the paper reference.
+            price = _num(row[3]) if len(row) > 3 else None
+            if price is None or not 90.0 < price < 100.5:
+                continue
+            volume = _num(row[9]) if len(row) > 9 else None
+            rows.append(
+                _contract_row(
+                    expiry=expiry,
+                    code=code_match.group(1),
+                    price=price,
+                    benchmark=benchmark,
+                    source="CME_SR3_DELAYED_QUOTE",
+                    volume=volume,
+                )
+            )
+    rows = sorted({row["expiry"]: row for row in rows}.values(), key=lambda row: row["expiry"])
+    if not rows:
+        raise ValueError("CME Three-Month SOFR quote page exposed no usable quarterly contracts")
+    return rows
+
+
+def parse_cme_sr3_settlements_json(text: str, *, benchmark: float) -> list[dict[str, Any]]:
+    """Parse official CME settlement API rows for product 8462 (Three-Month SOFR)."""
+    payload = json.loads(text)
+    month_codes = {"MAR": "H", "JUN": "M", "SEP": "U", "DEC": "Z"}
+    rows: list[dict[str, Any]] = []
+    for item in payload.get("settlements") or []:
+        label = str(item.get("month") or "")
+        expiry = _parse_cme_month(label)
+        price = _num(item.get("settle"))
+        m = re.fullmatch(r"([A-Z]{3})\s+(\d{2})", _clean(label).upper())
+        if not expiry or not m or m.group(1) not in month_codes:
+            continue
+        if price is None or not 90.0 < price < 100.5:
+            continue
+        rows.append(
+            _contract_row(
+                expiry=expiry,
+                code=f"SR3{month_codes[m.group(1)]}{m.group(2)[-1]}",
+                price=price,
+                benchmark=benchmark,
+                source="CME_SR3_SETTLEMENT",
+                volume=_num(item.get("volume")),
+                open_interest=_num(item.get("openInterest")),
+            )
+        )
+    rows.sort(key=lambda row: row["expiry"])
+    if not rows:
+        raise ValueError("CME Three-Month SOFR settlement response contained no usable quarterly contracts")
+    return rows
+
+
+def _fetch_recent_cme_sr3_settlements(
+    *,
+    today: date,
+    fetch_bytes: FetchBytes,
+    benchmark: float,
+) -> tuple[list[dict[str, Any]], str]:
+    last_error: Exception | None = None
+    for offset in range(0, 8):
+        d = today - timedelta(days=offset)
+        trade_date = d.strftime("%m/%d/%Y")
+        url = CME_SR3_SETTLEMENTS_TEMPLATE.format(trade_date=trade_date)
+        try:
+            body = fetch_bytes(
+                url,
+                user_agent=(
+                    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+                    "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+                ),
+                referer=CME_SR3_URL,
+            ).decode("utf-8", errors="replace")
+            return parse_cme_sr3_settlements_json(body, benchmark=benchmark), url
+        except Exception as exc:
+            last_error = exc
+    raise ValueError(f"no usable CME SR3 settlement response in 8-day lookback: {last_error}")
+
+
 def parse_esignal_sofr_html(text: str, *, benchmark: float) -> list[dict[str, Any]]:
     """Parse delayed ICE One-Month SOFR index futures chain from eSignal."""
     parser = _TableParser()
@@ -350,6 +497,63 @@ def parse_esignal_sofr_html(text: str, *, benchmark: float) -> list[dict[str, An
     rows = sorted({row["expiry"]: row for row in rows}.values(), key=lambda row: row["expiry"])
     if not rows:
         raise ValueError("eSignal delayed SOFR quote board exposed no usable contracts")
+    return rows
+
+
+def parse_esignal_sr3_html(text: str, *, benchmark: float) -> list[dict[str, Any]]:
+    """Parse delayed CME Three-Month SOFR futures chain from eSignal."""
+    parser = _TableParser()
+    parser.feed(text)
+    rows: list[dict[str, Any]] = []
+    month_codes = {"H":3,"M":6,"U":9,"Z":12}
+
+    def quote(cell: str) -> float | None:
+        m = re.fullmatch(r"\s*(9\d(?:\.\d+)?)\s*[sey]?\s*", cell, re.I)
+        return float(m.group(1)) if m else None
+
+    for table in parser.tables:
+        for row in table:
+            joined = " ".join(row)
+            m = re.search(r"SR3\s+([HMUZ])(\d{2})-CME\b", joined, re.I)
+            if not m:
+                continue
+            price = next((x for x in (quote(cell) for cell in row[1:]) if x is not None), None)
+            if price is None:
+                continue
+            year = 2000 + int(m.group(2))
+            expiry = f"{year:04d}-{month_codes[m.group(1).upper()]:02d}"
+            rows.append(
+                _contract_row(
+                    expiry=expiry,
+                    code=f"SR3{m.group(1).upper()}{m.group(2)[-1]}",
+                    price=price,
+                    benchmark=benchmark,
+                    source="ESIGNAL_CME_SR3_DELAYED",
+                )
+            )
+
+    if not rows:
+        # eSignal occasionally flattens the quote board into layout text.
+        blob = " ".join(parser.text)
+        pattern = re.compile(
+            r"SR3\s+([HMUZ])(\d{2})-CME.{0,120}?(9\d(?:\.\d+)?)\s*[sey]?",
+            re.I,
+        )
+        for m in pattern.finditer(blob):
+            year = 2000 + int(m.group(2))
+            rows.append(
+                _contract_row(
+                    expiry=f"{year:04d}-{month_codes[m.group(1).upper()]:02d}",
+                    code=f"SR3{m.group(1).upper()}{m.group(2)[-1]}",
+                    price=float(m.group(3)),
+                    benchmark=benchmark,
+                    source="ESIGNAL_CME_SR3_DELAYED",
+                )
+            )
+
+    rows = sorted({row["expiry"]: row for row in rows}.values(), key=lambda row: row["expiry"])
+    if not rows:
+        raise ValueError("eSignal delayed CME SR3 quote board exposed no usable contracts")
     return rows
 
 
@@ -605,17 +809,33 @@ def collect_policy_paths(
             contracts = parse_esignal_sofr_html(fallback, benchmark=float(sofr["rate"]))
             us_curve_source = ESIGNAL_SOFR_CHAIN_URL
             us_curve_method = "delayed ICE One-Month SOFR futures chain via eSignal fallback because CME blocks hosted runners"
+        # Tradable USD curve: quarterly CME Three-Month SOFR futures (SR3).
+        # CME rejects GitHub-hosted runners with HTTP 403, so use eSignal's
+        # public delayed CME quote board as the deterministic hosted-runner feed.
+        sr3_html = fetch_bytes(
+            ESIGNAL_SR3_CHAIN_URL,
+            user_agent=(
+                "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+            ),
+        ).decode("utf-8", errors="replace")
+        contracts_3m = parse_esignal_sr3_html(sr3_html, benchmark=float(sofr["rate"]))
+        sr3_source = ESIGNAL_SR3_CHAIN_URL
+        sr3_method = "delayed CME SR3 futures chain via eSignal"
+
         countries["US"] = {
             "status": "ok",
             "benchmark": {"name": "SOFR", **sofr},
             "contracts_1m": contracts,
+            "contracts_3m": contracts_3m,
             "terminal": _terminal_summary(contracts),
-            "method": f"100 minus {us_curve_method}; monthly average SOFR, not FOMC target probabilities",
+            "method": f"Policy context: 100 minus {us_curve_method}. Tradable curve: 100 minus {sr3_method}.",
         }
         sources["US_policy"] = {
             "status": "ok",
             "benchmark_url": NYFED_SOFR_PAGE,
             "path_url": us_curve_source,
+            "tradable_curve_url": sr3_source,
         }
     except Exception as exc:
         countries["US"] = {"status": "unavailable", "error": str(exc)}
@@ -683,6 +903,76 @@ def collect_policy_paths(
             "purpose": "policy expectations context before sovereign-curve/RV trade construction",
         },
     }
+
+
+def build_tradable_rate_curves(policy_paths: dict[str, Any]) -> dict[str, Any]:
+    """Select the three curve families the paper traders can actually trade.
+
+    Policy-path instruments remain context. This block is the rates trading universe:
+    USD = CME SR3, CAD = MX CRA, AUD = ASX IB.
+    """
+    countries = policy_paths.get("countries") or {}
+    sources = policy_paths.get("sources") or {}
+    specs = {
+        "SOFR": ("US", "contracts_3m", "CME Three-Month SOFR futures", "SR3", 3, sources.get("US_policy", {}).get("tradable_curve_url")),
+        "CORRA": ("CA", "contracts_3m", "Montréal Exchange Three-Month CORRA futures", "CRA", 3, sources.get("CA_policy", {}).get("path_url")),
+        "AONIA": ("AU", "contracts_1m", "ASX 30-Day Interbank Cash Rate futures", "IB", 1, sources.get("AU_policy", {}).get("path_url")),
+    }
+    curves: dict[str, Any] = {}
+    for curve_id, (country, family, instrument, product_code, period_months, source_url) in specs.items():
+        block = countries.get(country) or {}
+        rows = block.get(family) if block.get("status") == "ok" else None
+        if not isinstance(rows, list) or not rows:
+            curves[curve_id] = {
+                "status": "unavailable",
+                "country": country,
+                "error": f"{curve_id} tradable futures strip unavailable",
+            }
+            continue
+        curves[curve_id] = {
+            "status": "ok",
+            "country": country,
+            "benchmark": block.get("benchmark"),
+            "instrument": instrument,
+            "product_code": product_code,
+            "contract_period_months": period_months,
+            "contracts": rows,
+            "source_url": source_url,
+            "mark_convention": "implied_rate = 100 - futures price",
+        }
+    statuses = [row.get("status") for row in curves.values()]
+    status = "ok" if all(x == "ok" for x in statuses) else "partial" if any(x == "ok" for x in statuses) else "unavailable"
+    return {
+        "status": status,
+        "curves": curves,
+        "method": {
+            "model_calls": 0,
+            "credentials_required": [],
+            "purpose": "tradable paper rates curves; curve family is locked at trade entry and used until close",
+        },
+    }
+
+
+def validate_tradable_rate_curves(payload: dict[str, Any]) -> None:
+    if payload.get("status") not in {"ok", "partial", "unavailable"}:
+        raise ValueError("tradable_rate_curves invalid status")
+    if payload.get("method", {}).get("model_calls") != 0:
+        raise ValueError("tradable_rate_curves must use zero model calls")
+    curves = payload.get("curves") or {}
+    if set(curves) != {"SOFR", "CORRA", "AONIA"}:
+        raise ValueError("tradable_rate_curves must contain SOFR, CORRA and AONIA")
+    for curve_id, block in curves.items():
+        if block.get("status") == "unavailable":
+            if not block.get("error"):
+                raise ValueError(f"{curve_id} unavailable without error")
+            continue
+        rows = block.get("contracts")
+        if not isinstance(rows, list) or not rows:
+            raise ValueError(f"{curve_id} has no contracts")
+        for row in rows:
+            implied = _num(row.get("implied_rate"))
+            if implied is None or not -2.0 < implied < 25.0:
+                raise ValueError(f"{curve_id} implausible implied rate {implied}")
 
 
 def validate_policy_paths(payload: dict[str, Any]) -> None:

@@ -140,14 +140,14 @@ Every advocate except `no-trade-skeptic` must produce one actionable trade with:
 
 Paper execution uses **mid/reference marks**, not executable broker quotes.
 
-- If the frozen packet exposes a deterministic level for the selected instrument, an OPEN/ADD/REDUCE/CLOSE is transacted at that packet mid. Do not block a paper trade merely because the source is an official fixing, settlement, assessed yield or research/reference rate rather than an executable bid/offer.
-- The deterministic book layer records the source and as-of date and owns all entry, exit, mark and P&L arithmetic. A model-authored numeric price is not canonical.
-- Direct supported examples include G10 ECB spot crosses, official sovereign yields, deterministic country curves/RV spreads, and SOFR/CORRA/AONIA-linked contract implied rates.
-- Advocates may propose derived curve structures. A derived trade must include a structured `paper_expression` containing the source legs/formula so trusted code can recompute the same mid at entry and on every subsequent review.
-- Linear spreads/flies may be built from packet rate legs. Forward swaps/fwd-fwds use the `official_curves` government zero-curve proxy with `(P_start - P_end) / sum(alpha_i * P_i)`. For this paper competition, that proxy is deliberately close enough to stand in for the corresponding swap/OIS curve; do not describe it as an executable swap quote.
-- Prefer compact structured syntax for fwd-fwds, e.g. `{"type":"forward_swap","curve_country":"US","start_years":2,"tenor_years":2,"payment_frequency":1}`. Trusted code resolves the official curve and recomputes the mark each review. Intermediate coupon nodes may be log-linearly interpolated from official discount factors.
-- If the relevant official curve itself is unavailable, choose another expression or leave that proposed structure untradeable.
-- Initial advocates may use their already-permitted Composer subagent calls to analyze curve construction. The subagent may recommend the structure, but deterministic code must replay the formula from frozen inputs.
+- If the frozen packet exposes a deterministic level for the selected instrument, an OPEN/ADD/REDUCE/CLOSE is transacted at that packet mid. The deterministic book layer owns entry, exit, mark and P&L arithmetic; a model-authored numeric price is not canonical.
+- Policy pricing and tradable curves are separate. `policy_paths` provides context about what central banks are priced to do. `tradable_rate_curves` is the primary paper rates universe: **SOFR = CME SR3**, **CORRA = MX CRA**, **AONIA = ASX IB**.
+- Sovereign bonds remain a separate valid rates family. An advocate may choose a bond expression instead of the futures curve when that is the cleaner/liquid representation of the view.
+- The curve family is locked when the position opens. Every subsequent ADD/REDUCE/CLOSE and daily re-mark must use the same family and construction. Never migrate an open bond position onto SOFR/CORRA/AONIA or vice versa because a different source later looks better.
+- Direct futures contracts may be referenced by exchange code or normalized alias such as `SOFR_2027-03`, `CORRA_2027-06`, or `AONIA_2026-11`; trusted code marks them in implied-rate space.
+- Linear spreads and flies may be built from deterministic rate legs. Forward windows/fwd-fwds on SOFR/CORRA/AONIA use an explicit locked strip, for example `{"type":"futures_strip_average","curve_id":"CORRA","expiries":["2028-03","2028-06","2028-09","2028-12"]}`. Optional positive weights are allowed. The advocate or its permitted Composer subagent chooses the exact contracts; deterministic code computes and replays the mark.
+- `official_curves` remains supplemental government zero/forward data and can support an explicitly selected **bond-curve** forward expression. It is not required to manufacture a swap/OIS curve for the paper competition.
+- Swap-spread trades are out of scope until both the bond and swap legs are deliberately supported as separate markable instruments.
 - Options remain untradeable when premium/IV/strike mids are absent.
 
 ## Artifact sequence
