@@ -1,8 +1,10 @@
-"""Official NY Fed SOFR history and simple ACT/360 calendar-day accrual.
+"""Official NY Fed SOFR history and simple ACT/360 paper-funding accrual.
 
-Realized funding uses only official New York Fed SOFR fixings. There is no
-media/vendor fallback and no hard-coded numeric rate. Missing history fails
-closed: callers must preserve prior canonical balances.
+Realized paper funding uses the latest official NY Fed SOFR fixing already
+published in the frozen packet, constrained to a prior-day effective date.
+That one rate is applied to every newly accrued calendar day in the run; there
+is deliberately no later true-up. There is no media/vendor fallback and no
+hard-coded numeric rate. Missing history fails closed.
 """
 
 from __future__ import annotations
@@ -241,17 +243,28 @@ def accrue_act_360(
     history: list[dict[str, Any]] | None = None,
     market_state: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Day-accurate simple ACT/360 using the applicable published fixing each day.
+    """Accrue simple ACT/360 using the latest published prior-day SOFR fixing.
 
-    Weekends and holidays deterministically carry the last applicable official
-    fixing. If any required day has no official fixing on or before it, raise
-    FundingHistoryError. Callers must not invent a rate or mutate balances.
+    This is intentionally a pragmatic paper-P&L convention: the latest
+    official NY Fed fixing available in the frozen packet, with effective date
+    no later than the calendar day before the run end, is applied to every
+    calendar day newly accrued in this run. We do not later true-up those days
+    when a newer fixing publishes.
     """
     rows = list(history or [])
     if market_state is not None:
-        rows = extract_sofr_history(market_state, {"sofr_history": rows, "source": FUNDING_SOURCE})
-    rows = [row for row in rows if _normalize_fixing(row, inherited_source=FUNDING_SOURCE)]
-    rows.sort(key=lambda row: row["effective_date"])
+        rows = extract_sofr_history(
+            market_state,
+            {"sofr_history": rows, "source": FUNDING_SOURCE},
+        )
+
+    normalized: list[dict[str, Any]] = []
+    for row in rows:
+        item = _normalize_fixing(row, inherited_source=FUNDING_SOURCE)
+        if item is not None:
+            normalized.append(item)
+    rows = sorted(normalized, key=lambda row: row["effective_date"])
+
     days = calendar_accrual_days(start, end)
     if not days:
         latest = rows[-1] if rows else None
@@ -270,43 +283,48 @@ def accrue_act_360(
     if not rows:
         raise FundingHistoryError("official NY Fed SOFR history is missing; funding accrual failed closed")
 
-    breakdown: list[dict[str, Any]] = []
-    raw_total = 0.0
-    for day in days:
-        fixing = applicable_fixing(rows, day)
-        if fixing is None:
-            raise FundingHistoryError(
-                f"no official NY Fed SOFR fixing is applicable for {day.isoformat()}; "
-                "funding accrual failed closed"
-            )
-        daily = float(principal) * (float(fixing["percent_rate"]) / 100.0) / FUNDING_DAY_COUNT
-        raw_total += daily
-        breakdown.append(
-            {
-                "calendar_date": day.isoformat(),
-                "percent_rate": fixing["percent_rate"],
-                "effective_date": fixing["effective_date"],
-                "fixing_date": fixing["effective_date"],
-                "source": FUNDING_SOURCE,
-                "source_url": FUNDING_SOURCE_URL,
-                "day_count": FUNDING_DAY_COUNT,
-                "convention": FUNDING_CONVENTION,
-                "base_usd": round(float(principal), 2),
-                "amount_usd": round(daily, 8),
-            }
+    prior_day = _ny_date(end) - timedelta(days=1)
+    eligible = []
+    for row in rows:
+        effective = _as_date(row.get("effective_date"))
+        if effective is not None and effective <= prior_day:
+            eligible.append(row)
+    if not eligible:
+        raise FundingHistoryError(
+            f"no official NY Fed SOFR fixing is available on or before {prior_day.isoformat()}; "
+            "funding accrual failed closed"
         )
-    latest = breakdown[-1]
+
+    fixing = eligible[-1]
+    percent_rate = float(fixing["percent_rate"])
+    daily = float(principal) * (percent_rate / 100.0) / FUNDING_DAY_COUNT
+    breakdown = [
+        {
+            "calendar_date": day.isoformat(),
+            "percent_rate": percent_rate,
+            "effective_date": fixing["effective_date"],
+            "fixing_date": fixing["effective_date"],
+            "source": FUNDING_SOURCE,
+            "source_url": FUNDING_SOURCE_URL,
+            "day_count": FUNDING_DAY_COUNT,
+            "convention": FUNDING_CONVENTION,
+            "base_usd": round(float(principal), 2),
+            "amount_usd": round(daily, 8),
+        }
+        for day in days
+    ]
+    raw_total = daily * len(days)
     return {
         "amount": round(raw_total, 2),
-        "accrual_days": len(breakdown),
+        "accrual_days": len(days),
         "day_count": FUNDING_DAY_COUNT,
         "convention": FUNDING_CONVENTION,
         "source": FUNDING_SOURCE,
         "source_url": FUNDING_SOURCE_URL,
         "breakdown": breakdown,
-        "latest_percent_rate": latest["percent_rate"],
-        "latest_effective_date": latest["effective_date"],
-        "funding_rate_annual": round(latest["percent_rate"] / 100.0, 8),
+        "latest_percent_rate": percent_rate,
+        "latest_effective_date": fixing["effective_date"],
+        "funding_rate_annual": round(percent_rate / 100.0, 8),
     }
 
 

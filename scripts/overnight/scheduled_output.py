@@ -178,10 +178,17 @@ def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str,
         if not isinstance(decision.get("actions"), list) or not decision["actions"]:
             raise SchemaError(f"{seat} must return at least one structured action")
         if seat == "no-trade-skeptic":
-            from scripts.funding.view import assert_no_trade_funding_view
+            from scripts.funding.view import validate_funding_view
 
             try:
-                assert_no_trade_funding_view(decision, packet=base)
+                # Every fresh scheduled No-Trade opinion must carry a forward
+                # financing view, including a simple HOLD.
+                validate_funding_view(
+                    decision.get("funding_view"),
+                    packet=base,
+                    agent=seat,
+                    required=True,
+                )
             except Exception as exc:
                 raise SchemaError(str(exc)) from exc
         for forbidden_key in ("tools_used", "web_search", "web_fetch", "fetched_new_evidence"):

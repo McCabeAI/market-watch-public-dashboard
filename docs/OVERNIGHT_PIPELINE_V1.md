@@ -130,8 +130,8 @@ Each accepted decision should include the `memory_context_sha256` it used. Risk-
 
 The 14 seats are competing portfolio managers. Their standing objective is **highest cumulative net paper P&L**, not highest conviction score, most cautious commentary, or most persuasive prose. Every child receives the same frozen competition contract:
 - ranking metric: net paper P&L after financing economics;
-- the 13 seats other than `no-trade-skeptic` each borrow the full **$100m** allocation and pay **official NY Fed SOFR, simple ACT/360** on that full amount every calendar day, whether deployed or flat;
-- `no-trade-skeptic` is the cash hurdle: it pays no borrowing charge and earns the same official daily SOFR ACT/360 on the undeployed portion of its original $100m allocation; every new skeptic risk or NO_TRADE thesis must include a structured `funding_view`;
+- the 13 seats other than `no-trade-skeptic` each borrow the full **$100m** allocation and pay the **latest published prior-day official NY Fed SOFR, simple ACT/360** on that full amount for every newly accrued calendar day in that run, whether deployed or flat; there is no later true-up;
+- `no-trade-skeptic` is the cash hurdle: it pays no borrowing charge and earns the same prior-day SOFR ACT/360 on the undeployed portion of its original $100m allocation; every fresh scheduled daily skeptic decision, including `HOLD`, must include a structured `funding_view`;
 - when the skeptic deploys $X of notional, that $X stops earning the cash yield for as long as it remains deployed;
 - therefore a flat active trader has negative carry while a flat skeptic earns the risk-free hurdle;
 - no-trade remains valid for every seat, but inactivity is economically costly for the 13 funded traders;

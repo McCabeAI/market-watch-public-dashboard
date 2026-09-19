@@ -100,18 +100,18 @@ def _spot_memo() -> dict:
 
 
 class SofrEngineTests(unittest.TestCase):
-    def test_two_fixings_applied_day_by_day(self) -> None:
+    def test_latest_published_prior_day_fixing_applies_to_whole_new_interval(self) -> None:
         result = accrue_act_360(
             100_000_000,
             start=datetime(2026, 9, 17, 12, 0, tzinfo=NY),
             end=datetime(2026, 9, 19, 12, 0, tzinfo=NY),
             history=HISTORY,
         )
-        expected = round(100_000_000 * (0.035 + 0.040) / 360, 2)
+        expected = round(100_000_000 * 0.040 * 2 / 360, 2)
         self.assertEqual(result["amount"], expected)
         self.assertEqual(result["accrual_days"], 2)
-        self.assertEqual(result["breakdown"][0]["percent_rate"], 3.50)
-        self.assertEqual(result["breakdown"][1]["percent_rate"], 4.00)
+        self.assertEqual([row["percent_rate"] for row in result["breakdown"]], [4.00, 4.00])
+        self.assertEqual(result["latest_effective_date"], "2026-09-18")
         self.assertEqual(result["convention"], "ACT/360")
         self.assertEqual(result["source"], "NY_FED")
 

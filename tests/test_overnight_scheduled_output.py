@@ -155,6 +155,11 @@ class ScheduledOutputTests(unittest.TestCase):
         self.assertEqual(run["stages"]["trader_review"]["status"], "succeeded")
         self.assertEqual(self.store.read_books()["last_successful_review_run_id"], self.run_id)
 
+    def test_no_trade_hold_requires_daily_funding_view(self) -> None:
+        del self.payload["decisions"]["no-trade-skeptic"]["funding_view"]
+        with self.assertRaises(Exception):
+            validate_output(self.store, self.payload)
+
     def test_scheduled_open_uses_frozen_mid_not_model_price(self) -> None:
         memo = {
             "rates_candidate": None,
