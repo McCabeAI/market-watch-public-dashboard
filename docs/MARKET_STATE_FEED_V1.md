@@ -56,6 +56,7 @@ The JSON object always contains:
 | `rates` | `US`, `CA`, `AU`, `NZ` blocks |
 | `rate_rv` | 15 matching-tenor spreads |
 | `fx` | 45 G10 crosses from one ECB fixing |
+| `positioning` | CFTC trader-class positioning plus CME daily futures/options open-interest context |
 | `sources` | Name, public URL, download URL, observation date, status |
 | `method` | Provenance of the calculation, including `credentials_required: []` |
 
@@ -76,6 +77,10 @@ Required tenors:
 
 Each FX pair includes spot, 1D/5D/1M/3M percent returns, 20D/60D annualized realized vol, and 1Y/5Y percentile or z-score when history supports it. Positive return means the base currency appreciated against the quote under the displayed pair key.
 
+The `positioning` block is deterministic and credential-free. CFTC TFF futures-only data is the ownership/crowding anchor for standard G10 FX futures and key US Treasury futures. For each mapped contract it records total open interest plus Dealer, Asset Manager, Leveraged Funds, Other Reportable and Non-Reportable long/short/net positions. Net positions are normalized as percent of open interest and contextualized with weekly change plus 1Y/3Y percentile and z-score. The selected CFTC market name and contract code are retained in the packet for auditability.
+
+CME's public Volume & Open Interest service is a higher-frequency overlay. It records daily open interest and volume for standard CME G10 FX futures plus aggregate options open interest/volume on each product. The collector keeps a rolling 30-observation OI history, daily OI change, 30-day percentile/z-score, and options-to-futures OI ratio. CME data does not identify trader class and is not substituted for CFTC ownership data. The CME collector is best-effort: CME currently returns HTTP 403 to GitHub-hosted runners even when the request matches CME's public page XHR, so the production packet may mark CME OI `unavailable` with the exact error while retaining the complete CFTC positioning block. No proxy or third-party mirror is used.
+
 The 10 G10 currencies are `EUR, GBP, AUD, NZD, USD, CAD, CHF, NOK, SEK, JPY`. Pair keys are `BASEQUOTE` in that order, so the matrix is exactly 45 unique crosses (`EURUSD`, `USDJPY`, `AUDNZD`, `NOKSEK`, ...).
 
 `method.fx_source` is always `ecb_euro_reference_crosses`. `method.model_calls` is always `0`.
@@ -91,6 +96,8 @@ Null lookbacks stay null. A missing US, Canada, Australia, or ECB FX source, ten
 | AU rates | RBA F2 government-bond yields | Assessed closing yields; research context; typically weekly with a two-business-day lag |
 | NZ rates | RBNZ B2 wholesale interest rates | Official `hb2-daily-close.xlsx`; indicative government-bond closes; one-day publication lag. A Cloudflare block marks NZ unavailable in the packet; no vendor mirror. |
 | FX | ECB euro foreign-exchange reference rates | Official Data Portal SDMX daily `EXR` series; same-fixing EUR legs only; not executable prices. Combined G10 query first; per-currency SDMX fallback on 5xx/timeout. No vendor substitute. |
+| Positioning ownership | CFTC Traders in Financial Futures (TFF), Futures Only | Weekly trader-class positions. Core crowding source for the Positioning Cynic; official public API dataset `gpe5-46if`. |
+| Positioning OI overlay | CME Group public Volume & Open Interest service | Daily product-level futures and aggregate options OI/volume via the same public JSON service used by CME's Volume & OI pages. Supplemental to CFTC trader identity. |
 
 Expected publication lag before `status=stale`: US/CA/NZ/FX 4 calendar days; AU 12 calendar days. Observations older than 21 calendar days fail the run.
 
@@ -100,7 +107,7 @@ Expected publication lag before `status=stale`: US/CA/NZ/FX 4 calendar days; AU 
 
 1. runs the deterministic unit tests
 2. runs `python scripts/live_market_state_smoke.py` against live Treasury, BoC, RBA and ECB sources
-3. runs the generator and uploads `/tmp/market-state/market-state.json` as artifact `market-state` with 5-day retention (NZ may be `unavailable` when RBNZ is blocked)
+3. runs the generator, including the CFTC and CME positioning collectors, and uploads `/tmp/market-state/market-state.json` as artifact `market-state` with 5-day retention (NZ or a supplemental positioning source may be `unavailable` with explicit provenance)
 
 GitHub-hosted runners often receive HTTP 403 from `rbnz.govt.nz` (Cloudflare). The workflow does not substitute a vendor or media feed; NZ rates and NZ-dependent RV spreads are emitted as `unavailable` while US/CA/AU/ECB remain required.
 
@@ -108,7 +115,7 @@ The GitHub Pages deploy workflow also runs the same generator into `_site/market
 
 ## Trader Room use
 
-Immediately before a debate, run the command above and attach the JSON as research/reference `market_levels` / `rates_and_policy` evidence. Preserve source names, URLs, observation dates, `generated_at`, and `stale_sources`. Do not treat ECB crosses or official yields as tradable quotes. If the generator exits `2`, record the hard failure as a known gap and do not fabricate replacements.
+Immediately before a debate, run the command above and attach the JSON as research/reference `market_levels` / `rates_and_policy` evidence. The complete `positioning` block travels with the same frozen packet, so Positioning Cynic and other seats can use CFTC crowding and CME OI context without private web fetches. Preserve source names, URLs, observation dates, `generated_at`, and `stale_sources`. Do not treat ECB crosses or official yields as tradable quotes. If the generator exits `2`, record the hard failure as a known gap and do not fabricate replacements.
 
 ## Opportunity monitor extension (2026-09-18)
 

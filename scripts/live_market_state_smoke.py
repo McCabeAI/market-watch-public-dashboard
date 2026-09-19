@@ -18,8 +18,10 @@ from scripts.market_state import (
     fetch_fx,
     fetch_nz_rates,
     fetch_us_rates,
+    fetch_bytes,
     validate_snapshot,
 )
+from scripts.positioning_data import build_positioning, validate_positioning
 
 
 def _latest(series: dict[date, float]) -> tuple[date, float]:
@@ -57,6 +59,38 @@ def main() -> int:
         "EURUSD": [eurusd_date.isoformat(), eurusd],
         "AUDNZD": [audnzd_date.isoformat(), audnzd],
     }
+
+    positioning = build_positioning(
+        today=today,
+        start=today - timedelta(days=366 * 3 + 30),
+        fetch_bytes=fetch_bytes,
+    )
+    validate_positioning(positioning)
+    report["positioning"] = {
+        "status": positioning["status"],
+        "cftc": positioning["cftc_tff"].get("status"),
+        "cftc_as_of": positioning["cftc_tff"].get("report_date"),
+        "cme": positioning["cme"].get("status"),
+        "cme_as_of": positioning["cme"].get("trade_date"),
+        "mapped_cftc_instruments": sorted((positioning["cftc_tff"].get("instruments") or {}).keys()),
+        "mapped_cme_instruments": sorted((positioning["cme"].get("instruments") or {}).keys()),
+    }
+
+    cftc_keys = set((positioning["cftc_tff"].get("instruments") or {}).keys())
+    required_cftc = {"EUR", "GBP", "JPY", "CHF", "CAD", "AUD", "NZD", "US2Y", "US5Y", "US10Y", "US30Y"}
+    if not required_cftc.issubset(cftc_keys):
+        raise MarketStateError(f"live CFTC positioning missing {sorted(required_cftc - cftc_keys)}")
+    cme_keys = set((positioning["cme"].get("instruments") or {}).keys())
+    required_cme = {"EUR", "GBP", "JPY", "CHF", "CAD", "AUD", "NZD", "NOK", "SEK"}
+    if not required_cme.issubset(cme_keys):
+        report["CME_status"] = "supplemental_unavailable"
+        report["CME_missing"] = sorted(required_cme - cme_keys)
+        report["CME_error"] = positioning["cme"].get("errors") or positioning["cme"].get("error")
+        print(
+            "CME supplemental OI unavailable: "
+            f"{report['CME_missing']} {report['CME_error']}",
+            file=sys.stderr,
+        )
 
     try:
         nz = fetch_nz_rates(start, today)
