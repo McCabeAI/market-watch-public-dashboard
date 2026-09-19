@@ -68,6 +68,9 @@ jobs:
           PYTHONPATH=. python3 scripts/overnight/scheduled_output.py apply             --input /tmp/mw-output/scheduled_output.json
           mkdir -p /tmp/mw-generated
           cp -a "data/overnight/books" /tmp/mw-generated/
+          if [ -d "data/pm/books" ]; then
+            cp -a "data/pm/books" /tmp/mw-generated/pm-books
+          fi
           mkdir -p "/tmp/mw-generated/runs/$RUN_ID"
           for name in run.json agent_evidence_packet.json scheduled_output.json trader_review.json; do
             cp "data/overnight/runs/$RUN_ID/$name" "/tmp/mw-generated/runs/$RUN_ID/$name"
@@ -84,11 +87,17 @@ jobs:
           git checkout -B "$HEAD_REF" "origin/$HEAD_REF"
           rm -rf data/overnight/books
           cp -a /tmp/mw-generated/books data/overnight/books
+          if [ -d /tmp/mw-generated/pm-books ]; then
+            rm -rf data/pm/books
+            mkdir -p data/pm
+            cp -a /tmp/mw-generated/pm-books data/pm/books
+          fi
           mkdir -p "data/overnight/runs/$RUN_ID"
           cp -a "/tmp/mw-generated/runs/$RUN_ID/." "data/overnight/runs/$RUN_ID/"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/overnight/books "data/overnight/runs/$RUN_ID"
+          if [ -d data/pm/books ]; then git add data/pm/books; fi
           if ! git diff --cached --quiet; then
             git commit -m "chore: apply overnight decisions $RUN_ID"
             git push origin "HEAD:$HEAD_REF"
