@@ -40,27 +40,11 @@ def _side_sign(side: str) -> int:
     return 1 if side == "long" else -1
 
 
-def _position_funding(position: dict[str, Any], *, when: datetime) -> float:
-    """Accrue simple ACT/365 funding on the outstanding paper notional."""
-    notional = _money(position.get("notional_usd"), "notional_usd")
-    last_raw = position.get("funding_last_accrual_at") or position.get("opened_at")
-    if not last_raw:
-        position["funding_last_accrual_at"] = isoformat(when)
-        position.setdefault("funding_cost_usd", 0.0)
-        return 0.0
-    try:
-        last = datetime.fromisoformat(str(last_raw))
-    except ValueError as exc:
-        raise SchemaError(f"invalid funding accrual timestamp {last_raw}") from exc
-    elapsed = (when - last).total_seconds()
-    if elapsed <= 0:
-        position.setdefault("funding_cost_usd", 0.0)
-        return 0.0
-    increment = notional * FUNDING_RATE_ANNUAL * elapsed / (FUNDING_DAY_COUNT * 86400.0)
-    increment = round(increment, 2)
-    position["funding_cost_usd"] = round(float(position.get("funding_cost_usd") or 0.0) + increment, 2)
-    position["funding_last_accrual_at"] = isoformat(when)
-    return increment
+def _deployed_notional(seat_book: dict[str, Any]) -> float:
+    return round(
+        sum(float(position.get("notional_usd") or 0.0) for position in seat_book.get("positions") or []),
+        2,
+    )
 
 
 def accrue_funding(
@@ -68,15 +52,63 @@ def accrue_funding(
     *,
     when: datetime,
     run_id: str | None = None,
-) -> float:
-    """Charge funding before any action changes the outstanding notional."""
-    total = 0.0
-    for position in seat_book.get("positions") or []:
-        total += _position_funding(position, when=when)
-    total = round(total, 2)
-    if total:
-        seat_book["funding_cost_usd"] = round(float(seat_book.get("funding_cost_usd") or 0.0) + total, 2)
-        seat_book["cash_usd"] = round(float(seat_book.get("cash_usd", STARTING_NAV_USD)) - total, 2)
+) -> dict[str, float]:
+    """Accrue the standing hedge-fund hurdle between book reviews.
+
+    The 13 risk-taking seats borrow their full $100m allocation and pay 5% ACT/365
+    regardless of whether they deploy it. The no-trade skeptic is the cash hurdle:
+    it pays no borrowing cost and earns 5% ACT/365 on the undeployed portion of its
+    original $100m allocation.
+    """
+    last_raw = seat_book.get("funding_last_accrual_at")
+    if not last_raw:
+        seat_book["funding_last_accrual_at"] = isoformat(when)
+        seat_book.setdefault("funding_cost_usd", 0.0)
+        seat_book.setdefault("cash_yield_usd", 0.0)
+        seat_book["funding_rate_annual"] = FUNDING_RATE_ANNUAL
+        return {"funding_cost_usd": 0.0, "cash_yield_usd": 0.0}
+    try:
+        last = datetime.fromisoformat(str(last_raw))
+    except ValueError as exc:
+        raise SchemaError(f"invalid funding accrual timestamp {last_raw}") from exc
+    elapsed = (when - last).total_seconds()
+    if elapsed <= 0:
+        return {"funding_cost_usd": 0.0, "cash_yield_usd": 0.0}
+
+    year_seconds = FUNDING_DAY_COUNT * 86400.0
+    funding_increment = 0.0
+    cash_yield_increment = 0.0
+    if seat_book["seat"] == "no-trade-skeptic":
+        undeployed = max(0.0, STARTING_NAV_USD - _deployed_notional(seat_book))
+        cash_yield_increment = round(
+            undeployed * FUNDING_RATE_ANNUAL * elapsed / year_seconds,
+            2,
+        )
+        seat_book["cash_yield_usd"] = round(
+            float(seat_book.get("cash_yield_usd") or 0.0) + cash_yield_increment,
+            2,
+        )
+        seat_book["cash_usd"] = round(
+            float(seat_book.get("cash_usd", STARTING_NAV_USD)) + cash_yield_increment,
+            2,
+        )
+    else:
+        funding_increment = round(
+            STARTING_NAV_USD * FUNDING_RATE_ANNUAL * elapsed / year_seconds,
+            2,
+        )
+        seat_book["funding_cost_usd"] = round(
+            float(seat_book.get("funding_cost_usd") or 0.0) + funding_increment,
+            2,
+        )
+        seat_book["cash_usd"] = round(
+            float(seat_book.get("cash_usd", STARTING_NAV_USD)) - funding_increment,
+            2,
+        )
+
+    seat_book["funding_last_accrual_at"] = isoformat(when)
+    seat_book["funding_rate_annual"] = FUNDING_RATE_ANNUAL
+    if funding_increment or cash_yield_increment:
         seat_book.setdefault("history", []).append(
             {
                 "at": isoformat(when),
@@ -84,13 +116,20 @@ def accrue_funding(
                 "action": "FUNDING",
                 "result": "applied",
                 "funding_rate_annual": FUNDING_RATE_ANNUAL,
-                "funding_cost_usd": total,
+                "funding_base_usd": 0.0 if seat_book["seat"] == "no-trade-skeptic" else STARTING_NAV_USD,
+                "cash_yield_base_usd": (
+                    max(0.0, STARTING_NAV_USD - _deployed_notional(seat_book))
+                    if seat_book["seat"] == "no-trade-skeptic"
+                    else 0.0
+                ),
+                "funding_cost_usd": funding_increment,
+                "cash_yield_usd": cash_yield_increment,
             }
         )
-    else:
-        seat_book.setdefault("funding_cost_usd", 0.0)
-    seat_book["funding_rate_annual"] = FUNDING_RATE_ANNUAL
-    return total
+    return {
+        "funding_cost_usd": funding_increment,
+        "cash_yield_usd": cash_yield_increment,
+    }
 
 
 def position_pnl(position: dict[str, Any]) -> dict[str, Any]:
@@ -153,7 +192,9 @@ def empty_seat(seat: str) -> dict[str, Any]:
         "unrealized_pnl_usd": 0.0,
         "gross_pnl_usd": 0.0,
         "funding_cost_usd": 0.0,
+        "cash_yield_usd": 0.0,
         "funding_rate_annual": FUNDING_RATE_ANNUAL,
+        "funding_last_accrual_at": None,
         "net_pnl_usd": 0.0,
         "pnl_unavailable": False,
         "conviction": 0,
@@ -198,12 +239,14 @@ def mark_to_market(seat_book: dict[str, Any]) -> dict[str, Any]:
     seat_book["pnl_unavailable"] = missing
     gross = round(float(seat_book.get("realized_pnl_usd") or 0.0) + unrealized, 2)
     funding = round(float(seat_book.get("funding_cost_usd") or 0.0), 2)
+    cash_yield = round(float(seat_book.get("cash_yield_usd") or 0.0), 2)
     seat_book["gross_pnl_usd"] = None if missing else gross
     seat_book["funding_cost_usd"] = funding
+    seat_book["cash_yield_usd"] = cash_yield
     seat_book["funding_rate_annual"] = FUNDING_RATE_ANNUAL
-    seat_book["net_pnl_usd"] = None if missing else round(gross - funding, 2)
+    seat_book["net_pnl_usd"] = None if missing else round(gross - funding + cash_yield, 2)
     seat_book["nav_usd"] = round(
-        float(seat_book["starting_nav_usd"]) + gross - funding,
+        float(seat_book["starting_nav_usd"]) + gross - funding + cash_yield,
         2,
     )
     return seat_book
@@ -341,9 +384,6 @@ def _open_position(
         "mark_price": action.get("mark_price", action.get("price")),
         "opened_at": isoformat(when),
         "opened_run_id": run_id,
-        "funding_rate_annual": FUNDING_RATE_ANNUAL,
-        "funding_cost_usd": 0.0,
-        "funding_last_accrual_at": isoformat(when),
         "thesis": action.get("thesis"),
         "invalidation": action.get("invalidation"),
         "hedge_of": action.get("hedge_of"),
@@ -487,11 +527,9 @@ def validate_books(books: dict[str, Any]) -> dict[str, Any]:
         if item.get("remit") != remit(seat):
             raise SchemaError(f"{seat} remit drifted from the standing roster")
         item.setdefault("funding_cost_usd", 0.0)
+        item.setdefault("cash_yield_usd", 0.0)
+        item.setdefault("funding_last_accrual_at", None)
         item["funding_rate_annual"] = FUNDING_RATE_ANNUAL
-        for position in item.get("positions") or []:
-            position.setdefault("funding_rate_annual", FUNDING_RATE_ANNUAL)
-            position.setdefault("funding_cost_usd", 0.0)
-            position.setdefault("funding_last_accrual_at", position.get("opened_at"))
         mark_to_market(item)
     return books
 
@@ -513,6 +551,7 @@ def public_books_view(books: dict[str, Any]) -> dict[str, Any]:
                 "unrealized_pnl_usd": item["unrealized_pnl_usd"],
                 "gross_pnl_usd": item.get("gross_pnl_usd"),
                 "funding_cost_usd": item.get("funding_cost_usd", 0.0),
+                "cash_yield_usd": item.get("cash_yield_usd", 0.0),
                 "funding_rate_annual": FUNDING_RATE_ANNUAL,
                 "net_pnl_usd": item.get("net_pnl_usd"),
                 "pnl_unavailable": item["pnl_unavailable"],
@@ -532,8 +571,6 @@ def public_books_view(books: dict[str, Any]) -> dict[str, Any]:
                         "entry_price": p.get("entry_price"),
                         "mark_price": p.get("mark_price"),
                         "unrealized_pnl_usd": p.get("unrealized_pnl_usd"),
-                        "funding_cost_usd": p.get("funding_cost_usd", 0.0),
-                        "funding_rate_annual": FUNDING_RATE_ANNUAL,
                         "hedge_of": p.get("hedge_of"),
                     }
                     for p in item["positions"]
@@ -566,6 +603,7 @@ def public_books_view(books: dict[str, Any]) -> dict[str, Any]:
             "net_pnl_usd": row["net_pnl_usd"],
             "gross_pnl_usd": row["gross_pnl_usd"],
             "funding_cost_usd": row["funding_cost_usd"],
+            "cash_yield_usd": row["cash_yield_usd"],
             "pnl_unavailable": row["pnl_unavailable"],
         }
         for row in sorted(
