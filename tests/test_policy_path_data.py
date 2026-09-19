@@ -1,7 +1,7 @@
-import json
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import json
 import unittest
 
 from scripts.policy_path_data import (
