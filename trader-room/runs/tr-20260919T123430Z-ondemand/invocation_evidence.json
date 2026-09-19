@@ -1,0 +1,35 @@
+{
+  "run_id": "tr-20260919T123430Z-ondemand",
+  "run_policy": "MW_TRADER_ROOM_RUN_POLICY={\"version\":1,\"run_type\":\"trader-room-ondemand\",\"total_model_cap\":57,\"grok_cap\":29,\"composer_cap\":28,\"parent_model\":\"grok-4.6\",\"parent_total\":1,\"parent_grok\":1}",
+  "parent": {
+    "role": "acp_parent",
+    "model": "grok-4.6",
+    "bcId": "bc-34da0a98-7beb-4099-83f9-bcb915003577",
+    "counted": true
+  },
+  "freeze": {
+    "evidence_cutoff": "2026-09-19T12:34:30Z",
+    "packet_sha256": "8903f3edceded5a5d9866d84bd422940ebc0c93106b761fbcb6267449e9504f9",
+    "families": {
+      "temperature_gauges": "available",
+      "central_bank_research": "available",
+      "market_state": "stale",
+      "research_method": "available"
+    },
+    "policy_paths": {
+      "status": "ok",
+      "US": "ok",
+      "CA": "ok",
+      "AU": "ok"
+    },
+    "advocates_launched_after_freeze": false
+  },
+  "invocations": [
+    {
+      "role": "acp_parent",
+      "model": "grok-4.6",
+      "agent": null,
+      "purpose": "orchestrate-live-trader-room"
+    }
+  ]
+}

@@ -1,0 +1,1703 @@
+{
+  "as_of": "2026-09-19T12:34:30Z",
+  "cb_headlines": [
+    "Fed decision arrives with markets heavily priced for a 25bp hike",
+    "Australian housing downturn shows the RBA tightening channel biting",
+    "BoE holds 3.75% with three votes for a hike",
+    "Fed raises 25bp to 3.75\u20134.00%",
+    "BoC minutes flag higher energy pass-through risk",
+    "New Zealand Q2 GDP slows to 0.2% q/q but beats forecasts",
+    "Canada August inflation holds at 3%, core stays near 2%",
+    "August CPI keeps the Fed tightening bias intact",
+    "Global tightening broadens after the Fed move",
+    "BoJ raises its policy rate to 1.25%"
+  ],
+  "cftc": [
+    {
+      "cme_error": "CME LastTotals returned no mapped G10 FX products; errors={'EUR': 'failed to fetch https://www.cmegroup.com/CmeWS/mvc/Volume/LastTotals/58?days=30&isProtected: HTTP Error 403: Forbidden', 'GBP': 'failed to fetch https://www.cmegroup.com/CmeWS/mvc/Volume/LastTotals/42?days=30&isProtected: HTTP Error 403: Forbidden', 'JPY': 'failed to fetch https://www.cmegroup.com/CmeWS/mvc/Volume/LastTotals/69?days=30&isProtected: HTTP Error 403: Forbidden', 'CHF': 'failed to fetch https://www.cmegroup.com/CmeWS/mvc/Volume/LastTotals/86?days=30&isProtected: HTTP Error 403: Forbidden', 'CAD': 'failed to fetch https://www.cmegroup.com/CmeWS/mvc/Volume/LastTotals/48?days=30&isProtected: HTTP Error 403: Forbidden', 'AUD': 'failed to fetch https://www.cmegroup.com/CmeWS/mvc/Volume/LastTotals/37?days=30&isProtected: HTTP Error 403: Forbidden', 'NZD': 'failed to fetch https://www.cmegroup.com/CmeWS/mvc/Volume/LastTotals/78?days=30&isProtected: HTTP Error 403: Forbidden', 'NOK': 'failed to fetch https://www.cmegroup.com/CmeWS/mvc/Volume/LastTotals/825?days=30&isProtected: HTTP Error 403: Forbidden', 'SEK': 'failed to fetch https://www.cmegroup.com/CmeWS/mvc/Volume/LastTotals/826?days=30&isProtected: HTTP Error 403: Forbidden'}",
+      "cme_status": "unavailable",
+      "id": "pos:cftc",
+      "instruments": {
+        "AUD": {
+          "asset_manager_net": null,
+          "chg_1w_net": null,
+          "dealer_net": null,
+          "leveraged_net": null,
+          "leveraged_net_pct_oi": null,
+          "market_name": null,
+          "open_interest": {
+            "contracts": 493141.0,
+            "pctile_1y": 99.03846153846153,
+            "pctile_3y": 99.67948717948718,
+            "sample_weeks_1y": 52,
+            "sample_weeks_3y": 156,
+            "weekly_change": 37673.0,
+            "z_1y": 3.611130317696891,
+            "z_3y": 5.4218388391532555
+          },
+          "pctile_1y_net": null,
+          "report_date": "2026-09-15"
+        },
+        "CAD": {
+          "asset_manager_net": null,
+          "chg_1w_net": null,
+          "dealer_net": null,
+          "leveraged_net": null,
+          "leveraged_net_pct_oi": null,
+          "market_name": null,
+          "open_interest": {
+            "contracts": 358186.0,
+            "pctile_1y": 81.73076923076923,
+            "pctile_3y": 92.62820512820512,
+            "sample_weeks_1y": 52,
+            "sample_weeks_3y": 156,
+            "weekly_change": 23325.0,
+            "z_1y": 1.2178729808181683,
+            "z_3y": 1.4309212465127008
+          },
+          "pctile_1y_net": null,
+          "report_date": "2026-09-15"
+        },
+        "CHF": {
+          "asset_manager_net": null,
+          "chg_1w_net": null,
+          "dealer_net": null,
+          "leveraged_net": null,
+          "leveraged_net_pct_oi": null,
+          "market_name": null,
+          "open_interest": {
+            "contracts": 171313.0,
+            "pctile_1y": 99.03846153846153,
+            "pctile_3y": 99.67948717948718,
+            "sample_weeks_1y": 52,
+            "sample_weeks_3y": 156,
+            "weekly_change": 17630.0,
+            "z_1y": 3.562495512639687,
+            "z_3y": 4.35071448703772
+          },
+          "pctile_1y_net": null,
+          "report_date": "2026-09-15"
+        },
+        "EUR": {
+          "asset_manager_net": null,
+          "chg_1w_net": null,
+          "dealer_net": null,
+          "leveraged_net": null,
+          "leveraged_net_pct_oi": null,
+          "market_name": null,
+          "open_interest": {
+            "contracts": 920035.0,
+            "pctile_1y": 89.42307692307692,
+            "pctile_3y": 96.47435897435898,
+            "sample_weeks_1y": 52,
+            "sample_weeks_3y": 156,
+            "weekly_change": -22429.0,
+            "z_1y": 1.308501991927741,
+            "z_3y": 1.8374076450610668
+          },
+          "pctile_1y_net": null,
+          "report_date": "2026-09-15"
+        },
+        "GBP": {
+          "asset_manager_net": null,
+          "chg_1w_net": null,
+          "dealer_net": null,
+          "leveraged_net": null,
+          "leveraged_net_pct_oi": null,
+          "market_name": null,
+          "open_interest": {
+            "contracts": 314293.0,
+            "pctile_1y": 85.57692307692308,
+            "pctile_3y": 94.55128205128206,
+            "sample_weeks_1y": 52,
+            "sample_weeks_3y": 156,
+            "weekly_change": -4315.0,
+            "z_1y": 1.2701197899624848,
+            "z_3y": 1.9882910753066423
+          },
+          "pctile_1y_net": null,
+          "report_date": "2026-09-15"
+        },
+        "JPY": {
+          "asset_manager_net": null,
+          "chg_1w_net": null,
+          "dealer_net": null,
+          "leveraged_net": null,
+          "leveraged_net_pct_oi": null,
+          "market_name": null,
+          "open_interest": {
+            "contracts": 542802.0,
+            "pctile_1y": 99.03846153846153,
+            "pctile_3y": 99.67948717948718,
+            "sample_weeks_1y": 52,
+            "sample_weeks_3y": 156,
+            "weekly_change": 43167.0,
+            "z_1y": 2.570473756167966,
+            "z_3y": 3.137717511671137
+          },
+          "pctile_1y_net": null,
+          "report_date": "2026-09-15"
+        },
+        "NZD": {
+          "asset_manager_net": null,
+          "chg_1w_net": null,
+          "dealer_net": null,
+          "leveraged_net": null,
+          "leveraged_net_pct_oi": null,
+          "market_name": null,
+          "open_interest": {
+            "contracts": 135122.0,
+            "pctile_1y": 93.26923076923077,
+            "pctile_3y": 97.75641025641026,
+            "sample_weeks_1y": 52,
+            "sample_weeks_3y": 156,
+            "weekly_change": 9144.0,
+            "z_1y": 2.088234558824051,
+            "z_3y": 2.7255774251800156
+          },
+          "pctile_1y_net": null,
+          "report_date": "2026-09-15"
+        },
+        "US10Y": {
+          "asset_manager_net": null,
+          "chg_1w_net": null,
+          "dealer_net": null,
+          "leveraged_net": null,
+          "leveraged_net_pct_oi": null,
+          "market_name": null,
+          "open_interest": {
+            "contracts": 5377777.0,
+            "pctile_1y": 41.34615384615385,
+            "pctile_3y": 78.52564102564102,
+            "sample_weeks_1y": 52,
+            "sample_weeks_3y": 156,
+            "weekly_change": 152482.0,
+            "z_1y": -0.42478768885883766,
+            "z_3y": 0.8522020344032664
+          },
+          "pctile_1y_net": null,
+          "report_date": "2026-09-15"
+        },
+        "US2Y": {
+          "asset_manager_net": null,
+          "chg_1w_net": null,
+          "dealer_net": null,
+          "leveraged_net": null,
+          "leveraged_net_pct_oi": null,
+          "market_name": null,
+          "open_interest": {
+            "contracts": 4433736.0,
+            "pctile_1y": 24.03846153846154,
+            "pctile_3y": 63.14102564102564,
+            "sample_weeks_1y": 52,
+            "sample_weeks_3y": 156,
+            "weekly_change": 87422.0,
+            "z_1y": -0.8531609930573465,
+            "z_3y": 0.48164874312713846
+          },
+          "pctile_1y_net": null,
+          "report_date": "2026-09-15"
+        },
+        "US30Y": {
+          "asset_manager_net": null,
+          "chg_1w_net": null,
+          "dealer_net": null,
+          "leveraged_net": null,
+          "leveraged_net_pct_oi": null,
+          "market_name": null,
+          "open_interest": {
+            "contracts": 1867442.0,
+            "pctile_1y": 58.65384615384615,
+            "pctile_3y": 75.96153846153847,
+            "sample_weeks_1y": 52,
+            "sample_weeks_3y": 156,
+            "weekly_change": 65134.0,
+            "z_1y": 0.09821254988835222,
+            "z_3y": 0.6018256271146349
+          },
+          "pctile_1y_net": null,
+          "report_date": "2026-09-15"
+        },
+        "US5Y": {
+          "asset_manager_net": null,
+          "chg_1w_net": null,
+          "dealer_net": null,
+          "leveraged_net": null,
+          "leveraged_net_pct_oi": null,
+          "market_name": null,
+          "open_interest": {
+            "contracts": 6364260.0,
+            "pctile_1y": 22.115384615384617,
+            "pctile_3y": 45.833333333333336,
+            "sample_weeks_1y": 52,
+            "sample_weeks_3y": 156,
+            "weekly_change": 54450.0,
+            "z_1y": -0.9412489720135112,
+            "z_3y": -0.21861764667593436
+          },
+          "pctile_1y_net": null,
+          "report_date": "2026-09-15"
+        }
+      },
+      "report_date": "2026-09-15",
+      "status": "ok"
+    }
+  ],
+  "fx": {
+    "AUDCAD": {
+      "as_of": "2026-09-18",
+      "pctile_1y": 99.8015873015873,
+      "pctile_5y": 99.96031746031746,
+      "ret_1d": 0.19849006122858448,
+      "ret_1m": 1.9469622152352706,
+      "ret_3m": 1.368674786611268,
+      "ret_5d": 0.36006022508290325,
+      "rv_20d": 4.382519054754998,
+      "spot": 0.9975768872320596,
+      "z_1y": 1.2933048597758614
+    },
+    "AUDNZD": {
+      "as_of": "2026-09-18",
+      "pctile_1y": 99.8015873015873,
+      "pctile_5y": 99.96031746031746,
+      "ret_1d": 0.6495336430813792,
+      "ret_1m": 4.266513040995412,
+      "ret_3m": 2.0531560715961517,
+      "ret_5d": 1.1865616746605134,
+      "rv_20d": 5.09230743331807,
+      "spot": 1.246846846846847,
+      "z_1y": 1.9432678929429137
+    },
+    "AUDUSD": {
+      "as_of": "2026-09-18",
+      "pctile_1y": 76.38888888888889,
+      "pctile_5y": 84.32539682539682,
+      "ret_1d": 0.08996589283660761,
+      "ret_1m": 0.19881578587286342,
+      "ret_3m": 2.646974512288347,
+      "ret_5d": -0.7333205983880653,
+      "rv_20d": 4.714212639621865,
+      "spot": 0.712022367194781,
+      "z_1y": 0.8759750941971846
+    },
+    "EURJPY": {
+      "as_of": "2026-09-18",
+      "pctile_1y": 22.817460317460316,
+      "pctile_5y": 84.56349206349206,
+      "ret_1d": 1.225174825174813,
+      "ret_1m": -2.4319223510380072,
+      "ret_3m": -1.6737311161830304,
+      "ret_5d": 1.3328853046594924,
+      "rv_20d": 9.26950071751291,
+      "spot": 180.94,
+      "z_1y": -0.5519990972477391
+    },
+    "EURUSD": {
+      "as_of": "2026-09-18",
+      "pctile_1y": 10.912698412698413,
+      "pctile_5y": 74.84126984126983,
+      "ret_1d": -0.18291089626338852,
+      "ret_1m": -1.891961304682821,
+      "ret_3m": 0.5969101123595388,
+      "ret_5d": -1.1387163561076719,
+      "rv_20d": 3.296938042675636,
+      "spot": 1.146,
+      "z_1y": -1.3123462414653986
+    },
+    "GBPUSD": {
+      "as_of": "2026-09-18",
+      "pctile_1y": 27.182539682539684,
+      "pctile_5y": 71.62698412698413,
+      "ret_1d": -0.24102517729723827,
+      "ret_1m": -2.0690310065665463,
+      "ret_3m": 0.9717472250278636,
+      "ret_5d": -1.21354150092432,
+      "rv_20d": 3.179558948777529,
+      "spot": 1.3344201210992082,
+      "z_1y": -0.48225159259094386
+    },
+    "NZDUSD": {
+      "as_of": "2026-09-18",
+      "pctile_1y": 12.896825396825397,
+      "pctile_5y": 8.61111111111111,
+      "ret_1d": -0.555956624924947,
+      "ret_1m": -3.9012499185843263,
+      "ret_3m": 0.5818717064228762,
+      "ret_5d": -1.8973688217823415,
+      "rv_20d": 6.313284602821049,
+      "spot": 0.5710584014351205,
+      "z_1y": -1.1164955243947978
+    },
+    "USDCAD": {
+      "as_of": "2026-09-18",
+      "pctile_1y": 74.0079365079365,
+      "pctile_5y": 87.02380952380952,
+      "ret_1d": 0.10842662141394843,
+      "ret_1m": 1.7446777346133757,
+      "ret_3m": -1.245335999186259,
+      "ret_5d": 1.1014580421768505,
+      "rv_20d": 5.16743604950073,
+      "spot": 1.4010471204188482,
+      "z_1y": 0.798421817548333
+    },
+    "USDCHF": {
+      "as_of": "2026-09-18",
+      "pctile_1y": 99.8015873015873,
+      "pctile_5y": 27.817460317460316,
+      "ret_1d": 0.140912142990679,
+      "ret_1m": 3.3372938337924873,
+      "ret_3m": 1.960493196555002,
+      "ret_5d": 1.269562876251773,
+      "rv_20d": 5.199501196938118,
+      "spot": 0.8256544502617802,
+      "z_1y": 2.332631620468176
+    },
+    "USDJPY": {
+      "as_of": "2026-09-18",
+      "pctile_1y": 52.182539682539684,
+      "pctile_5y": 88.61111111111111,
+      "ret_1d": 1.4106659832314294,
+      "ret_1m": -0.5503739077203251,
+      "ret_3m": -2.2571679647082843,
+      "ret_5d": 2.5000703709958882,
+      "rv_20d": 11.037965324753946,
+      "spot": 157.88830715532288,
+      "z_1y": 0.19380023998291335
+    }
+  },
+  "known_gaps": [
+    "Official RBNZ B2 workbook is blocked/unavailable. NZ sovereign yields and NZ-involved rate RV are unavailable; no third-party substitute was used.",
+    "Market-state snapshot status is stale solely because NZ_rates is unavailable. US/CA/AU yields, policy paths, and the 45 ECB G10 FX crosses are present.",
+    "CME public volume/open-interest overlay is unavailable (HTTP 403). CFTC TFF trader-class positioning is available and is the ownership/crowding source.",
+    "Temperature gauge headline scores are from retained dashboard_v8 HTML; hard-input events overlay data/temperature_scores.json (last_refresh_date 2026-09-17). Supabase MCP is not connected in this execution.",
+    "Persistent paper books are empty $100m seed accounts with no open positions (data/overnight/books/latest.json). No overnight review has completed.",
+    "Executable broker prices are not in the packet. ECB FX, official yields, SOFR/CORRA/AONIA-linked futures and RBA F1 are research/reference only. Unsupported trade levels must remain JSON null.",
+    "Australia official RBA F1 OIS prints in the live file are an older vintage than current AONIA/bank-bill/ASX cash-futures. Bill-minus-OIS is marked unavailable_cross_vintage. Advocates must use the live AONIA benchmark plus ASX cash-futures path and must not invent a current OIS level.",
+    "Observed AU OIS vintages in frozen packet: 01-Dec-2022."
+  ],
+  "news_headlines": [
+    "Saudi workaround reduces the extreme oil-supply tail",
+    "New Zealand passes India trade agreement",
+    "BoJ raises its policy rate to 1.25%",
+    "Energy-market shock absorbers weaken",
+    "Australian housing downturn deepens under higher rates"
+  ],
+  "packet_sha256": "8903f3edceded5a5d9866d84bd422940ebc0c93106b761fbcb6267449e9504f9",
+  "policy_paths": {
+    "countries": {
+      "AU": {
+        "bank_bill_minus_ois": {
+          "1m": {
+            "bank_bill_as_of": "17-Sep-2026",
+            "bank_bill_minus_ois_bps": null,
+            "ois_as_of": "01-Dec-2022",
+            "status": "unavailable_cross_vintage"
+          },
+          "3m": {
+            "bank_bill_as_of": "17-Sep-2026",
+            "bank_bill_minus_ois_bps": null,
+            "ois_as_of": "01-Dec-2022",
+            "status": "unavailable_cross_vintage"
+          },
+          "6m": {
+            "bank_bill_as_of": "17-Sep-2026",
+            "bank_bill_minus_ois_bps": null,
+            "ois_as_of": "01-Dec-2022",
+            "status": "unavailable_cross_vintage"
+          }
+        },
+        "bank_bills": {
+          "1m": {
+            "as_of": "17-Sep-2026",
+            "rate": 4.41
+          },
+          "3m": {
+            "as_of": "17-Sep-2026",
+            "rate": 4.68
+          },
+          "6m": {
+            "as_of": "17-Sep-2026",
+            "rate": 5.07
+          }
+        },
+        "benchmark": {
+          "as_of": "17-Sep-2026",
+          "name": "AONIA",
+          "rate": 4.35
+        },
+        "contract_count": 18,
+        "front_contracts": [
+          {
+            "change_from_overnight_bps": 0.5,
+            "code": null,
+            "expiry": "2026-09",
+            "implied_rate": 4.355,
+            "open_interest": 11896.0,
+            "price": 95.645,
+            "source": "ASX_30D_AONIA",
+            "volume": 161.0
+          },
+          {
+            "change_from_overnight_bps": 21.5,
+            "code": null,
+            "expiry": "2026-10",
+            "implied_rate": 4.565,
+            "open_interest": 21752.0,
+            "price": 95.435,
+            "source": "ASX_30D_AONIA",
+            "volume": 4450.0
+          },
+          {
+            "change_from_overnight_bps": 33.5,
+            "code": null,
+            "expiry": "2026-11",
+            "implied_rate": 4.685,
+            "open_interest": 2619.0,
+            "price": 95.315,
+            "source": "ASX_30D_AONIA",
+            "volume": 1157.0
+          },
+          {
+            "change_from_overnight_bps": 37.5,
+            "code": null,
+            "expiry": "2026-12",
+            "implied_rate": 4.725,
+            "open_interest": 1131.0,
+            "price": 95.275,
+            "source": "ASX_30D_AONIA",
+            "volume": 2.0
+          }
+        ],
+        "method": "RBA F1 official AONIA/OIS/BAB context plus 100 minus ASX 30-day interbank cash-rate futures settlement; bank-bill-minus-OIS is a credit/basis proxy, not exact FRA-OIS",
+        "ois": {
+          "1m": {
+            "as_of": "01-Dec-2022",
+            "rate": 2.97
+          },
+          "3m": {
+            "as_of": "01-Dec-2022",
+            "rate": 3.04
+          },
+          "6m": {
+            "as_of": "01-Dec-2022",
+            "rate": 3.22
+          }
+        },
+        "status": "ok",
+        "terminal": {
+          "change_from_overnight_bps": 51.0,
+          "expiry": "2027-03",
+          "implied_rate": 4.86
+        }
+      },
+      "CA": {
+        "bank_bill_minus_ois": null,
+        "bank_bills": null,
+        "benchmark": {
+          "as_of": "2026-09-17",
+          "name": "CORRA",
+          "rate": 2.29
+        },
+        "contract_count": 4,
+        "front_contracts": [
+          {
+            "change_from_overnight_bps": -0.25,
+            "code": "COAU26",
+            "expiry": "2026-09",
+            "implied_rate": 2.2875,
+            "open_interest": null,
+            "price": 97.7125,
+            "source": "MX_CORRA_FUTURES",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 1.5,
+            "code": "COAV26",
+            "expiry": "2026-10",
+            "implied_rate": 2.305,
+            "open_interest": null,
+            "price": 97.695,
+            "source": "MX_CORRA_FUTURES",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 14.0,
+            "code": "COAX26",
+            "expiry": "2026-11",
+            "implied_rate": 2.43,
+            "open_interest": null,
+            "price": 97.57,
+            "source": "MX_CORRA_FUTURES",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 29.0,
+            "code": "COAZ26",
+            "expiry": "2026-12",
+            "implied_rate": 2.58,
+            "open_interest": null,
+            "price": 97.42,
+            "source": "MX_CORRA_FUTURES",
+            "volume": null
+          }
+        ],
+        "method": "100 minus public MX CORRA futures price; research/reference path, not meeting probabilities",
+        "ois": null,
+        "status": "ok",
+        "terminal": {
+          "change_from_overnight_bps": 29.0,
+          "expiry": "2026-12",
+          "implied_rate": 2.58
+        }
+      },
+      "US": {
+        "bank_bill_minus_ois": null,
+        "bank_bills": null,
+        "benchmark": {
+          "as_of": "2026-09-17",
+          "name": "SOFR",
+          "rate": 3.85
+        },
+        "contract_count": 24,
+        "front_contracts": [
+          {
+            "change_from_overnight_bps": -10.0,
+            "code": "SR1U26",
+            "expiry": "2026-09",
+            "implied_rate": 3.75,
+            "open_interest": null,
+            "price": 96.25,
+            "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 6.0,
+            "code": "SR1V26",
+            "expiry": "2026-10",
+            "implied_rate": 3.91,
+            "open_interest": null,
+            "price": 96.09,
+            "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 19.5,
+            "code": "SR1X26",
+            "expiry": "2026-11",
+            "implied_rate": 4.045,
+            "open_interest": null,
+            "price": 95.955,
+            "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 34.75,
+            "code": "SR1Z26",
+            "expiry": "2026-12",
+            "implied_rate": 4.1975,
+            "open_interest": null,
+            "price": 95.8025,
+            "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+            "volume": null
+          }
+        ],
+        "method": "100 minus delayed ICE One-Month SOFR futures chain via eSignal fallback because CME blocks hosted runners; monthly average SOFR, not FOMC target probabilities",
+        "ois": null,
+        "status": "ok",
+        "terminal": {
+          "change_from_overnight_bps": 75.25,
+          "expiry": "2028-08",
+          "implied_rate": 4.6025
+        }
+      }
+    },
+    "sources": {
+      "AU_policy": {
+        "benchmark_url": "https://www.rba.gov.au/statistics/tables/",
+        "path_url": "https://www.asx.com.au/data/futures/reports/EODWebMarketSummary260918SFD.htm",
+        "settlement_history_url": "https://www.asx.com.au/markets/trade-our-derivatives-market/overview/interest-rate-derivatives/interest-rate-derivatives-settlement-history",
+        "status": "ok"
+      },
+      "CA_policy": {
+        "benchmark_url": "https://www.bankofcanada.ca/rates/interest-rates/corra/",
+        "path_url": "https://www.m-x.ca/en/trading/tools/canadian-interest-rate-expectations",
+        "status": "ok"
+      },
+      "US_policy": {
+        "benchmark_url": "https://www.newyorkfed.org/markets/reference-rates/sofr",
+        "path_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR1",
+        "status": "ok"
+      }
+    },
+    "status": "ok"
+  },
+  "rate_rv": {
+    "AU-NZ_2Y": {
+      "as_of": null,
+      "bps": null,
+      "chg_1d_bps": null,
+      "chg_1m_bps": null,
+      "chg_3m_bps": null,
+      "chg_5d_bps": null,
+      "pctile_1y": null,
+      "pctile_5y": null,
+      "reason": "RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.",
+      "status": "unavailable",
+      "z_1y": null,
+      "z_5y": null
+    },
+    "AU-US_10Y": {
+      "as_of": "2026-09-16",
+      "bps": 33.80000000000001,
+      "chg_1d_bps": -7.299999999999947,
+      "chg_1m_bps": 2.700000000000017,
+      "chg_1y_bps": 14.799999999999972,
+      "chg_3m_bps": -6.700000000000017,
+      "chg_5d_bps": -3.3999999999999773,
+      "chg_6m_bps": -33.09999999999995,
+      "historical_move_analogs": [
+        {
+          "as_of": "2025-10-22",
+          "distance_from_current_move": 0.0,
+          "forward_1m_move": 26.2,
+          "forward_3m_move": 41.1,
+          "level": 13.599999999999968,
+          "prior_1m_move": 2.7
+        },
+        {
+          "as_of": "2026-02-05",
+          "distance_from_current_move": 0.1,
+          "forward_1m_move": 17.6,
+          "forward_3m_move": -2.7,
+          "level": 63.79999999999999,
+          "prior_1m_move": 2.8
+        },
+        {
+          "as_of": "2022-01-21",
+          "distance_from_current_move": 0.1,
+          "forward_1m_move": 11.8,
+          "forward_3m_move": 7.8,
+          "level": 15.500000000000004,
+          "prior_1m_move": 2.6
+        },
+        {
+          "as_of": "2022-03-21",
+          "distance_from_current_move": 0.1,
+          "forward_1m_move": -7.7,
+          "forward_3m_move": 33.5,
+          "level": 25.600000000000023,
+          "prior_1m_move": 2.6
+        }
+      ],
+      "pctile_1y": 31.944444444444443,
+      "pctile_5y": 77.44698205546493,
+      "z_1y": -0.5659273415345912,
+      "z_5y": 0.765626846920572
+    },
+    "AU-US_2Y": {
+      "as_of": "2026-09-16",
+      "bps": 25.899999999999945,
+      "chg_1d_bps": -12.500000000000089,
+      "chg_1m_bps": -11.500000000000018,
+      "chg_1y_bps": 44.899999999999935,
+      "chg_3m_bps": -16.300000000000114,
+      "chg_5d_bps": -14.600000000000083,
+      "chg_6m_bps": -53.50000000000006,
+      "historical_move_analogs": [
+        {
+          "as_of": "2022-02-07",
+          "distance_from_current_move": 0.0,
+          "forward_1m_move": -11.7,
+          "forward_3m_move": 38.9,
+          "level": -37.0,
+          "prior_1m_move": -11.5
+        },
+        {
+          "as_of": "2024-12-30",
+          "distance_from_current_move": 0.0,
+          "forward_1m_move": -8.7,
+          "forward_3m_move": 11.8,
+          "level": -33.90000000000004,
+          "prior_1m_move": -11.5
+        },
+        {
+          "as_of": "2026-04-23",
+          "distance_from_current_move": 0.1,
+          "forward_1m_move": -41.3,
+          "forward_3m_move": -54.7,
+          "level": 86.20000000000002,
+          "prior_1m_move": -11.6
+        },
+        {
+          "as_of": "2025-07-30",
+          "distance_from_current_move": 0.1,
+          "forward_1m_move": 32.7,
+          "forward_3m_move": 58.6,
+          "level": -62.40000000000001,
+          "prior_1m_move": -11.6
+        }
+      ],
+      "pctile_1y": 25.595238095238095,
+      "pctile_5y": 84.7063621533442,
+      "z_1y": -0.5185268004122016,
+      "z_5y": 1.1573853964505716
+    },
+    "CA-AU_2Y": {
+      "as_of": "2026-09-16",
+      "bps": -164.89999999999995,
+      "chg_1d_bps": 5.500000000000057,
+      "chg_1m_bps": -5.499999999999972,
+      "chg_1y_bps": -79.29999999999995,
+      "chg_3m_bps": 7.300000000000097,
+      "chg_5d_bps": 2.6000000000000227,
+      "chg_6m_bps": 8.500000000000057,
+      "historical_move_analogs": [
+        {
+          "as_of": "2023-09-05",
+          "distance_from_current_move": 0.0,
+          "forward_1m_move": -7.9,
+          "forward_3m_move": -71.3,
+          "level": 80.90000000000002,
+          "prior_1m_move": -5.5
+        },
+        {
+          "as_of": "2025-05-28",
+          "distance_from_current_move": 0.0,
+          "forward_1m_move": 14.6,
+          "forward_3m_move": 10.9,
+          "level": -74.2,
+          "prior_1m_move": -5.5
+        },
+        {
+          "as_of": "2023-12-21",
+          "distance_from_current_move": 0.1,
+          "forward_1m_move": -4.7,
+          "forward_3m_move": 24.9,
+          "level": 19.399999999999995,
+          "prior_1m_move": -5.4
+        },
+        {
+          "as_of": "2022-06-16",
+          "distance_from_current_move": 0.1,
+          "forward_1m_move": 46.0,
+          "forward_3m_move": 48.9,
+          "level": 0.6000000000000227,
+          "prior_1m_move": -5.4
+        }
+      ],
+      "pctile_1y": 51.388888888888886,
+      "pctile_5y": 10.511363636363637,
+      "z_1y": -0.40082008755744697,
+      "z_5y": -1.6342620546239537
+    },
+    "CA-US_10Y": {
+      "as_of": "2026-09-17",
+      "bps": -111.00000000000003,
+      "chg_1d_bps": -2.0000000000000426,
+      "chg_1m_bps": -10.000000000000057,
+      "chg_1y_bps": -28.00000000000007,
+      "chg_3m_bps": -5.000000000000071,
+      "chg_5d_bps": -10.0,
+      "chg_6m_bps": -33.999999999999986,
+      "historical_move_analogs": [
+        {
+          "as_of": "2023-11-15",
+          "distance_from_current_move": 0.0,
+          "forward_1m_move": -2.0,
+          "forward_3m_move": 1.0,
+          "level": -78.00000000000003,
+          "prior_1m_move": -10.0
+        },
+        {
+          "as_of": "2024-04-19",
+          "distance_from_current_move": 0.0,
+          "forward_1m_move": 5.0,
+          "forward_3m_move": 0.0,
+          "level": -89.00000000000001,
+          "prior_1m_move": -10.0
+        },
+        {
+          "as_of": "2024-07-30",
+          "distance_from_current_move": 0.0,
+          "forward_1m_move": 18.0,
+          "forward_3m_move": -14.0,
+          "level": -92.00000000000004,
+          "prior_1m_move": -10.0
+        },
+        {
+          "as_of": "2024-12-17",
+          "distance_from_current_move": 0.0,
+          "forward_1m_move": -6.0,
+          "forward_3m_move": 1.0,
+          "level": -126.00000000000003,
+          "prior_1m_move": -10.0
+        }
+      ],
+      "pctile_1y": 0.1984126984126984,
+      "pctile_5y": 10.601137286758732,
+      "z_1y": -1.9104058517615377,
+      "z_5y": -1.0994794521681615
+    },
+    "CA-US_2Y": {
+      "as_of": "2026-09-17",
+      "bps": -140.0,
+      "chg_1d_bps": -1.0,
+      "chg_1m_bps": -16.999999999999957,
+      "chg_1y_bps": -43.00000000000003,
+      "chg_3m_bps": -8.999999999999943,
+      "chg_5d_bps": -15.000000000000043,
+      "chg_6m_bps": -46.0,
+      "historical_move_analogs": [
+        {
+          "as_of": "2022-11-15",
+          "distance_from_current_move": 0.0,
+          "forward_1m_move": -4.0,
+          "forward_3m_move": 6.0,
+          "level": -51.00000000000002,
+          "prior_1m_move": -17.0
+        },
+        {
+          "as_of": "2025-01-30",
+          "distance_from_current_move": 0.0,
+          "forward_1m_move": -5.0,
+          "forward_3m_move": 25.0,
+          "level": -144.99999999999997,
+          "prior_1m_move": -17.0
+        },
+        {
+          "as_of": "2024-05-02",
+          "distance_from_current_move": 0.0,
+          "forward_1m_move": -9.0,
+          "forward_3m_move": -6.0,
+          "level": -62.999999999999986,
+          "prior_1m_move": -17.0
+        },
+        {
+          "as_of": "2024-12-18",
+          "distance_from_current_move": 0.0,
+          "forward_1m_move": -3.0,
+          "forward_3m_move": -20.0,
+          "level": -129.99999999999997,
+          "prior_1m_move": -17.0
+        }
+      ],
+      "pctile_1y": 3.7698412698412698,
+      "pctile_5y": 4.305442729488221,
+      "z_1y": -1.8400695277520684,
+      "z_5y": -1.5128434402521205
+    },
+    "NZ-US_2Y": {
+      "as_of": null,
+      "bps": null,
+      "chg_1d_bps": null,
+      "chg_1m_bps": null,
+      "chg_3m_bps": null,
+      "chg_5d_bps": null,
+      "pctile_1y": null,
+      "pctile_5y": null,
+      "reason": "RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.",
+      "status": "unavailable",
+      "z_1y": null,
+      "z_5y": null
+    }
+  },
+  "rates": {
+    "AU": {
+      "curves": {
+        "2s10s": {
+          "analogs": [
+            {
+              "as_of": "2025-10-03",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": -9.6,
+              "forward_3m_move": -11.3,
+              "level": 83.00000000000006,
+              "prior_1m_move": -13.0
+            },
+            {
+              "as_of": "2022-11-09",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": -20.1,
+              "forward_3m_move": -22.2,
+              "level": 56.49999999999999,
+              "prior_1m_move": -13.0
+            },
+            {
+              "as_of": "2024-12-06",
+              "distance_from_current_move": 0.1,
+              "forward_1m_move": 23.2,
+              "forward_3m_move": 27.1,
+              "level": 38.299999999999955,
+              "prior_1m_move": -12.9
+            },
+            {
+              "as_of": "2023-07-07",
+              "distance_from_current_move": 0.1,
+              "forward_1m_move": 33.4,
+              "forward_3m_move": 60.4,
+              "level": -10.200000000000031,
+              "prior_1m_move": -12.9
+            }
+          ],
+          "as_of": "2026-09-16",
+          "chg_1m": null,
+          "pctile_1y": 24.404761904761905,
+          "value": 34.90000000000002
+        },
+        "5s10s": {
+          "analogs": [
+            {
+              "as_of": "2022-11-28",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": 13.8,
+              "forward_3m_move": 1.5,
+              "level": 19.399999999999995,
+              "prior_1m_move": -11.0
+            },
+            {
+              "as_of": "2023-07-07",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": 21.5,
+              "forward_3m_move": 35.7,
+              "level": 7.600000000000051,
+              "prior_1m_move": -11.0
+            },
+            {
+              "as_of": "2023-11-21",
+              "distance_from_current_move": 0.1,
+              "forward_1m_move": 0.3,
+              "forward_3m_move": 5.2,
+              "level": 30.49999999999997,
+              "prior_1m_move": -11.1
+            },
+            {
+              "as_of": "2022-08-01",
+              "distance_from_current_move": 0.1,
+              "forward_1m_move": -3.0,
+              "forward_3m_move": 5.6,
+              "level": 25.4,
+              "prior_1m_move": -10.9
+            }
+          ],
+          "as_of": "2026-09-16",
+          "chg_1m": null,
+          "pctile_1y": 15.277777777777779,
+          "value": 30.69999999999995
+        }
+      },
+      "error": null,
+      "latest_observation": "2026-09-16",
+      "status": "ok",
+      "tenors": {
+        "10Y": {
+          "analogs": [
+            {
+              "as_of": "2023-04-20",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": 9.2,
+              "forward_3m_move": 44.9,
+              "level": 3.495,
+              "prior_1m_move": 26.1
+            },
+            {
+              "as_of": "2025-12-01",
+              "distance_from_current_move": 0.1,
+              "forward_1m_move": 26.8,
+              "forward_3m_move": 19.1,
+              "level": 4.552,
+              "prior_1m_move": 26.2
+            },
+            {
+              "as_of": "2022-01-11",
+              "distance_from_current_move": 0.1,
+              "forward_1m_move": 21.6,
+              "forward_3m_move": 112.3,
+              "level": 1.881,
+              "prior_1m_move": 26.0
+            },
+            {
+              "as_of": "2023-09-26",
+              "distance_from_current_move": 0.1,
+              "forward_1m_move": 47.5,
+              "forward_3m_move": -42.1,
+              "level": 4.394,
+              "prior_1m_move": 26.2
+            }
+          ],
+          "as_of": "2026-09-16",
+          "chg_1d": null,
+          "chg_1m": null,
+          "chg_3m": null,
+          "pctile_1y": 99.0079365079365,
+          "value": 5.348,
+          "z_1y": 2.061105419938145
+        },
+        "2Y": {
+          "analogs": [
+            {
+              "as_of": "2022-09-28",
+              "distance_from_current_move": 0.1,
+              "forward_1m_move": -37.4,
+              "forward_3m_move": -15.0,
+              "level": 3.572,
+              "prior_1m_move": 39.2
+            },
+            {
+              "as_of": "2025-12-22",
+              "distance_from_current_move": 0.1,
+              "forward_1m_move": 8.8,
+              "forward_3m_move": 54.7,
+              "level": 4.078,
+              "prior_1m_move": 39.0
+            },
+            {
+              "as_of": "2022-01-28",
+              "distance_from_current_move": 0.2,
+              "forward_1m_move": 14.6,
+              "forward_3m_move": 168.4,
+              "level": 0.876,
+              "prior_1m_move": 38.9
+            },
+            {
+              "as_of": "2023-05-10",
+              "distance_from_current_move": 0.3,
+              "forward_1m_move": 83.0,
+              "forward_3m_move": 68.0,
+              "level": 3.129,
+              "prior_1m_move": 38.8
+            }
+          ],
+          "as_of": "2026-09-16",
+          "chg_1d": null,
+          "chg_1m": null,
+          "chg_3m": null,
+          "pctile_1y": 99.0079365079365,
+          "value": 4.999,
+          "z_1y": 1.6668784352122055
+        },
+        "5Y": {
+          "analogs": [
+            {
+              "as_of": "2021-10-13",
+              "distance_from_current_move": 0.1,
+              "forward_1m_move": 40.2,
+              "forward_3m_move": 45.3,
+              "level": 1.016,
+              "prior_1m_move": 37.2
+            },
+            {
+              "as_of": "2024-11-15",
+              "distance_from_current_move": 0.3,
+              "forward_1m_move": -31.0,
+              "forward_3m_move": -20.0,
+              "level": 4.262,
+              "prior_1m_move": 37.4
+            },
+            {
+              "as_of": "2022-02-14",
+              "distance_from_current_move": 0.3,
+              "forward_1m_move": 33.4,
+              "forward_3m_move": 124.6,
+              "level": 1.843,
+              "prior_1m_move": 37.4
+            },
+            {
+              "as_of": "2022-12-29",
+              "distance_from_current_move": 0.3,
+              "forward_1m_move": -40.2,
+              "forward_3m_move": -60.4,
+              "level": 3.672,
+              "prior_1m_move": 37.4
+            }
+          ],
+          "as_of": "2026-09-16",
+          "chg_1d": null,
+          "chg_1m": null,
+          "chg_3m": null,
+          "pctile_1y": 99.0079365079365,
+          "value": 5.041,
+          "z_1y": 1.8286744132816273
+        }
+      }
+    },
+    "CA": {
+      "curves": {
+        "2s10s": {
+          "analogs": [
+            {
+              "as_of": "2024-02-26",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": 4.0,
+              "forward_3m_move": 7.0,
+              "level": -71.0,
+              "prior_1m_move": -18.0
+            },
+            {
+              "as_of": "2022-04-08",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": 13.0,
+              "forward_3m_move": -21.0,
+              "level": 19.99999999999997,
+              "prior_1m_move": -18.0
+            },
+            {
+              "as_of": "2022-12-14",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": 20.0,
+              "forward_3m_move": 14.0,
+              "level": -91.00000000000001,
+              "prior_1m_move": -18.0
+            },
+            {
+              "as_of": "2023-05-30",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": -31.0,
+              "forward_3m_move": -11.0,
+              "level": -99.00000000000003,
+              "prior_1m_move": -18.0
+            }
+          ],
+          "as_of": "2026-09-17",
+          "chg_1m": null,
+          "pctile_1y": 0.5952380952380952,
+          "value": 56.00000000000001
+        },
+        "5s10s": {
+          "analogs": [
+            {
+              "as_of": "2021-11-12",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": -6.0,
+              "forward_3m_move": -9.0,
+              "level": 21.999999999999996,
+              "prior_1m_move": -12.0
+            },
+            {
+              "as_of": "2022-09-22",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": 11.0,
+              "forward_3m_move": 21.0,
+              "level": -29.000000000000004,
+              "prior_1m_move": -12.0
+            },
+            {
+              "as_of": "2023-03-08",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": 14.0,
+              "forward_3m_move": -4.0,
+              "level": -25.0,
+              "prior_1m_move": -12.0
+            },
+            {
+              "as_of": "2023-05-29",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": -12.0,
+              "forward_3m_move": -9.0,
+              "level": -25.99999999999998,
+              "prior_1m_move": -12.0
+            }
+          ],
+          "as_of": "2026-09-17",
+          "chg_1m": null,
+          "pctile_1y": 0.7936507936507936,
+          "value": 29.000000000000004
+        }
+      },
+      "error": null,
+      "latest_observation": "2026-09-17",
+      "status": "ok",
+      "tenors": {
+        "10Y": {
+          "analogs": [
+            {
+              "as_of": "2022-02-22",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": 41.0,
+              "forward_3m_move": 89.0,
+              "level": 1.91,
+              "prior_1m_move": 13.0
+            },
+            {
+              "as_of": "2022-05-18",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": 45.0,
+              "forward_3m_move": -12.0,
+              "level": 2.96,
+              "prior_1m_move": 13.0
+            },
+            {
+              "as_of": "2023-10-23",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": -36.0,
+              "forward_3m_move": -52.0,
+              "level": 4.01,
+              "prior_1m_move": 13.0
+            },
+            {
+              "as_of": "2025-03-26",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": 5.0,
+              "forward_3m_move": 20.0,
+              "level": 3.12,
+              "prior_1m_move": 13.0
+            }
+          ],
+          "as_of": "2026-09-17",
+          "chg_1d": null,
+          "chg_1m": null,
+          "chg_3m": null,
+          "pctile_1y": 97.42063492063492,
+          "value": 3.83,
+          "z_1y": 2.121982164561663
+        },
+        "2Y": {
+          "analogs": [
+            {
+              "as_of": "2022-06-30",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": 0.0,
+              "forward_3m_move": 66.0,
+              "level": 3.1,
+              "prior_1m_move": 31.0
+            },
+            {
+              "as_of": "2023-04-14",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": -1.0,
+              "forward_3m_move": 83.0,
+              "level": 3.81,
+              "prior_1m_move": 31.0
+            },
+            {
+              "as_of": "2026-04-01",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": 12.0,
+              "forward_3m_move": -6.0,
+              "level": 2.82,
+              "prior_1m_move": 31.0
+            },
+            {
+              "as_of": "2021-10-14",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": 28.0,
+              "forward_3m_move": 50.0,
+              "level": 0.72,
+              "prior_1m_move": 31.0
+            }
+          ],
+          "as_of": "2026-09-17",
+          "chg_1d": null,
+          "chg_1m": null,
+          "chg_3m": null,
+          "pctile_1y": 97.81746031746032,
+          "value": 3.27,
+          "z_1y": 2.4628832525179494
+        },
+        "5Y": {
+          "analogs": [
+            {
+              "as_of": "2022-03-15",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": 54.0,
+              "forward_3m_move": 159.0,
+              "level": 1.97,
+              "prior_1m_move": 25.0
+            },
+            {
+              "as_of": "2022-05-09",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": 42.0,
+              "forward_3m_move": 15.0,
+              "level": 2.76,
+              "prior_1m_move": 25.0
+            },
+            {
+              "as_of": "2022-10-07",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": 12.0,
+              "forward_3m_move": -42.0,
+              "level": 3.55,
+              "prior_1m_move": 25.0
+            },
+            {
+              "as_of": "2023-07-04",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": 23.0,
+              "forward_3m_move": 59.0,
+              "level": 3.74,
+              "prior_1m_move": 25.0
+            }
+          ],
+          "as_of": "2026-09-17",
+          "chg_1d": null,
+          "chg_1m": null,
+          "chg_3m": null,
+          "pctile_1y": 97.81746031746032,
+          "value": 3.54,
+          "z_1y": 2.3590400147039268
+        },
+        "LONG": {
+          "analogs": [
+            {
+              "as_of": "2021-10-28",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": -1.0,
+              "forward_3m_move": 10.0,
+              "level": 1.95,
+              "prior_1m_move": 4.0
+            },
+            {
+              "as_of": "2022-05-31",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": 36.0,
+              "forward_3m_move": 13.0,
+              "level": 2.85,
+              "prior_1m_move": 4.0
+            },
+            {
+              "as_of": "2023-05-01",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": 7.0,
+              "forward_3m_move": 22.0,
+              "level": 3.07,
+              "prior_1m_move": 4.0
+            },
+            {
+              "as_of": "2023-06-20",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": 13.0,
+              "forward_3m_move": 44.0,
+              "level": 3.19,
+              "prior_1m_move": 4.0
+            }
+          ],
+          "as_of": "2026-09-17",
+          "chg_1d": null,
+          "chg_1m": null,
+          "chg_3m": null,
+          "pctile_1y": 96.42857142857143,
+          "value": 4.17,
+          "z_1y": 1.9910881489321834
+        }
+      }
+    },
+    "NZ": {
+      "curves": {},
+      "error": "RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.",
+      "latest_observation": null,
+      "status": "unavailable",
+      "tenors": {
+        "10Y": {
+          "analogs": [],
+          "as_of": null,
+          "chg_1d": null,
+          "chg_1m": null,
+          "chg_3m": null,
+          "pctile_1y": null,
+          "value": null,
+          "z_1y": null
+        },
+        "2Y": {
+          "analogs": [],
+          "as_of": null,
+          "chg_1d": null,
+          "chg_1m": null,
+          "chg_3m": null,
+          "pctile_1y": null,
+          "value": null,
+          "z_1y": null
+        },
+        "5Y": {
+          "analogs": [],
+          "as_of": null,
+          "chg_1d": null,
+          "chg_1m": null,
+          "chg_3m": null,
+          "pctile_1y": null,
+          "value": null,
+          "z_1y": null
+        }
+      }
+    },
+    "US": {
+      "curves": {
+        "2s10s": {
+          "analogs": [
+            {
+              "as_of": "2021-12-29",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": -17.0,
+              "forward_3m_move": -76.0,
+              "level": 80.0,
+              "prior_1m_move": -21.0
+            },
+            {
+              "as_of": "2024-05-24",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": 8.0,
+              "forward_3m_move": 38.0,
+              "level": -46.99999999999997,
+              "prior_1m_move": -21.0
+            },
+            {
+              "as_of": "2022-08-15",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": 4.0,
+              "forward_3m_move": -16.0,
+              "level": -41.000000000000014,
+              "prior_1m_move": -21.0
+            },
+            {
+              "as_of": "2023-05-31",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": -30.0,
+              "forward_3m_move": -2.0,
+              "level": -76.00000000000003,
+              "prior_1m_move": -21.0
+            }
+          ],
+          "as_of": "2026-09-18",
+          "chg_1m": null,
+          "pctile_1y": 0.1984126984126984,
+          "value": 25.0
+        },
+        "5s10s": {
+          "analogs": [
+            {
+              "as_of": "2022-04-06",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": 15.0,
+              "forward_3m_move": 5.0,
+              "level": -9.00000000000003,
+              "prior_1m_move": -15.0
+            },
+            {
+              "as_of": "2022-08-26",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": -8.0,
+              "forward_3m_move": -1.0,
+              "level": -16.000000000000014,
+              "prior_1m_move": -15.0
+            },
+            {
+              "as_of": "2021-12-02",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": 3.0,
+              "forward_3m_move": -14.0,
+              "level": 23.0,
+              "prior_1m_move": -15.0
+            },
+            {
+              "as_of": "2022-02-14",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": -7.0,
+              "forward_3m_move": -3.0,
+              "level": 8.000000000000007,
+              "prior_1m_move": -15.0
+            }
+          ],
+          "as_of": "2026-09-18",
+          "chg_1m": null,
+          "pctile_1y": 0.3968253968253968,
+          "value": 14.999999999999947
+        }
+      },
+      "error": null,
+      "latest_observation": "2026-09-18",
+      "status": "ok",
+      "tenors": {
+        "10Y": {
+          "analogs": [
+            {
+              "as_of": "2023-07-07",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": 3.0,
+              "forward_3m_move": 66.0,
+              "level": 4.06,
+              "prior_1m_move": 36.0
+            },
+            {
+              "as_of": "2026-03-24",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": -9.0,
+              "forward_3m_move": 11.0,
+              "level": 4.39,
+              "prior_1m_move": 36.0
+            },
+            {
+              "as_of": "2022-04-27",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": -7.0,
+              "forward_3m_move": -14.0,
+              "level": 2.82,
+              "prior_1m_move": 36.0
+            },
+            {
+              "as_of": "2022-06-17",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": -21.0,
+              "forward_3m_move": 24.0,
+              "level": 3.25,
+              "prior_1m_move": 36.0
+            }
+          ],
+          "as_of": "2026-09-18",
+          "chg_1d": null,
+          "chg_1m": null,
+          "chg_3m": null,
+          "pctile_1y": 99.60317460317461,
+          "value": 5.01,
+          "z_1y": 2.7229048573956622
+        },
+        "2Y": {
+          "analogs": [
+            {
+              "as_of": "2022-03-23",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": 59.0,
+              "forward_3m_move": 88.0,
+              "level": 2.13,
+              "prior_1m_move": 57.0
+            },
+            {
+              "as_of": "2022-09-16",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": 58.0,
+              "forward_3m_move": 40.0,
+              "level": 3.85,
+              "prior_1m_move": 57.0
+            },
+            {
+              "as_of": "2023-02-16",
+              "distance_from_current_move": 1.0,
+              "forward_1m_move": -70.0,
+              "forward_3m_move": -50.0,
+              "level": 4.62,
+              "prior_1m_move": 56.0
+            },
+            {
+              "as_of": "2023-06-15",
+              "distance_from_current_move": 1.0,
+              "forward_1m_move": 12.0,
+              "forward_3m_move": 40.0,
+              "level": 4.62,
+              "prior_1m_move": 56.0
+            }
+          ],
+          "as_of": "2026-09-18",
+          "chg_1d": null,
+          "chg_1m": null,
+          "chg_3m": null,
+          "pctile_1y": 99.8015873015873,
+          "value": 4.76,
+          "z_1y": 2.837131124906408
+        },
+        "30Y": {
+          "analogs": [
+            {
+              "as_of": "2023-08-09",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": 15.0,
+              "forward_3m_move": 46.0,
+              "level": 4.18,
+              "prior_1m_move": 15.0
+            },
+            {
+              "as_of": "2024-04-03",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": 21.0,
+              "forward_3m_move": 2.0,
+              "level": 4.51,
+              "prior_1m_move": 15.0
+            },
+            {
+              "as_of": "2025-01-21",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": -6.0,
+              "forward_3m_move": 8.0,
+              "level": 4.8,
+              "prior_1m_move": 15.0
+            },
+            {
+              "as_of": "2025-05-16",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": -1.0,
+              "forward_3m_move": 5.0,
+              "level": 4.89,
+              "prior_1m_move": 15.0
+            }
+          ],
+          "as_of": "2026-09-18",
+          "chg_1d": null,
+          "chg_1m": null,
+          "chg_3m": null,
+          "pctile_1y": 98.01587301587301,
+          "value": 5.34,
+          "z_1y": 2.2124065921584504
+        },
+        "5Y": {
+          "analogs": [
+            {
+              "as_of": "2022-08-26",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": 101.0,
+              "forward_3m_move": 72.0,
+              "level": 3.2,
+              "prior_1m_move": 51.0
+            },
+            {
+              "as_of": "2022-10-03",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": 40.0,
+              "forward_3m_move": 0.0,
+              "level": 3.9,
+              "prior_1m_move": 51.0
+            },
+            {
+              "as_of": "2023-02-23",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": -68.0,
+              "forward_3m_move": -33.0,
+              "level": 4.09,
+              "prior_1m_move": 51.0
+            },
+            {
+              "as_of": "2023-10-03",
+              "distance_from_current_move": 0.0,
+              "forward_1m_move": -15.0,
+              "forward_3m_move": -83.0,
+              "level": 4.8,
+              "prior_1m_move": 51.0
+            }
+          ],
+          "as_of": "2026-09-18",
+          "chg_1d": null,
+          "chg_1m": null,
+          "chg_3m": null,
+          "pctile_1y": 99.60317460317461,
+          "value": 4.86,
+          "z_1y": 2.796505762205156
+        }
+      }
+    }
+  },
+  "run_id": "tr-20260919T123430Z-ondemand",
+  "temperature_gauges": {
+    "AU_Activity": 54.0,
+    "AU_Consumer": 48.0,
+    "AU_Inflation": 82.0,
+    "AU_Labor": 50.0,
+    "CA_Activity": 66.0,
+    "CA_Consumer": 45.0,
+    "CA_Inflation": 55.0,
+    "CA_Labor": 38.0,
+    "NZ_Activity": 47.0,
+    "NZ_Consumer": 38.0,
+    "NZ_Inflation": 80.0,
+    "NZ_Labor": 32.0,
+    "US_Activity": 69.0,
+    "US_Consumer": 74.0,
+    "US_Inflation": 72.0,
+    "US_Labor": 75.0
+  }
+}

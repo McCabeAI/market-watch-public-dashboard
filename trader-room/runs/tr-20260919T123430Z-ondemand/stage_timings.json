@@ -1,0 +1,39 @@
+{
+  "run_id": "tr-20260919T123430Z-ondemand",
+  "stages": [
+    {
+      "stage": "preflight_and_freeze",
+      "status": "succeeded",
+      "started_at": "2026-09-19T12:31:00Z",
+      "ended_at": "2026-09-19T12:34:30Z",
+      "model_calls": 0,
+      "notes": "Live market_state.py plus repo evidence families; policy_paths US/CA/AU ok before any advocate spend."
+    },
+    {
+      "stage": "round1_advocates",
+      "status": "pending",
+      "model_calls_planned": 14,
+      "model": "grok-4.6"
+    },
+    {
+      "stage": "deterministic_conflict_map",
+      "status": "pending",
+      "model_calls_planned": 0
+    },
+    {
+      "stage": "rebuttals",
+      "status": "pending",
+      "model": "grok-4.6"
+    },
+    {
+      "stage": "deterministic_finalize",
+      "status": "pending",
+      "model_calls_planned": 0
+    },
+    {
+      "stage": "paper_books",
+      "status": "pending",
+      "model_calls_planned": 0
+    }
+  ]
+}
