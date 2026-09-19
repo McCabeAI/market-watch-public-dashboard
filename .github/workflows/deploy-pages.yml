@@ -277,14 +277,21 @@ jobs:
           PYTHONPATH=. python scripts/trader_room_public.py --output _site/trader-room.json
           test -s _site/trader-room.js
           test -s _site/trader-room.json
-          python3 - <<'PY'
+          PYTHONPATH=. python3 - <<'PY'
           import json
           from pathlib import Path
+          from scripts.trader_room_public import build_public_packet, select_newest_complete_run
           packet = json.loads(Path("_site/trader-room.json").read_text())
+          selected = select_newest_complete_run()
+          expected = build_public_packet()
+          assert selected is not None, "no complete valid canonical Trader Room run"
           assert packet.get("available") is True
-          assert packet.get("run_id") == "tr-20260919T123430Z-ondemand"
+          assert packet.get("run_id") == selected.name
+          assert packet.get("run_id") == expected.get("run_id")
+          assert packet.get("run_id") == packet.get("selection", {}).get("selected_run_id")
           assert packet.get("seat_count") == 14
           assert packet.get("selection", {}).get("manual_pointer") is False
+          assert packet.get("selection", {}).get("mode") == "newest_complete_valid"
           PY
           grep -Fq 'for="p-traderroom"' _site/index.html
           grep -Fq 'Trader Room · adversarial ideas' _site/index.html
@@ -295,7 +302,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          PYTHONPATH=. python -m unittest tests.test_pm_books tests.test_pm_ingest tests.test_pm_scheduled_output tests.test_pm_dashboard -v
+          PYTHONPATH=. python -m unittest tests.test_pm_books tests.test_pm_ingest tests.test_pm_scheduled_output tests.test_pm_dashboard tests.test_pm_overnight_packets -v
           PYTHONPATH=. python scripts/pm_layer.py publish --site-dir _site
           test -s _site/pm-books.json
           python3 - <<'PY'
