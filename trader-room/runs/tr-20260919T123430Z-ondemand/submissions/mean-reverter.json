@@ -1,0 +1,144 @@
+{
+  "agent": "mean-reverter",
+  "archetype": "mean-reverter",
+  "confidence": 57,
+  "conflict_synopsis": {
+    "au_rates_view": "lower",
+    "aud_view": "lower",
+    "ca_rates_view": "not_relevant",
+    "cad_view": "not_relevant",
+    "carry_view": "neutral",
+    "confidence": 57,
+    "conflict_tags": [
+      "AU_RATES_DOWN",
+      "AUD_DOWN",
+      "RECEIVE_AU_2Y"
+    ],
+    "core_view": "AU 2Y has overshot the live AONIA path after the housing channel already started to bite; fade that local rates overshoot, not CA-US 2Y and not AUDNZD.",
+    "key_catalyst": "Australian housing transmission versus a 2Y print through the live AONIA Mar-2027 terminal of 4.86.",
+    "key_invalidation": "Live AONIA Mar-2027 implied rate through 4.999, or housing/activity evidence that the tightening channel is no longer biting.",
+    "nz_rates_view": "not_relevant",
+    "nzd_view": "not_relevant",
+    "primary_trade": "long AU 2Y",
+    "risk_view": "neutral",
+    "seat": "mean-reverter",
+    "time_horizon": "4-8 weeks",
+    "us_rates_view": "not_relevant",
+    "usd_view": "neutral"
+  },
+  "packet_sha256": "8903f3edceded5a5d9866d84bd422940ebc0c93106b761fbcb6267449e9504f9",
+  "paper_capital": {
+    "asset_class": "rates",
+    "decision": "OPEN",
+    "instrument": "AU 2Y",
+    "notional_usd": 25000000,
+    "rationale": "Funded seats pay 5.00% ACT/365 on the full $100m whether flat or not, so cash is not a free alternative. Empty seed book, no open risk. 2Y duration is short, so $25m is a moderate slice of the $100m allocation intended to monetize a giveback toward the live AONIA Mar-2027 implied 4.86 from the 4.999 AU 2Y print over 4-8 weeks. No executable broker mark is in the packet; if the book engine cannot represent AU 2Y, the parent should record execution_blocked/HOLD rather than invent a price.",
+    "side": "long"
+  },
+  "remit": "fade statistically or fundamentally stretched market moves when reversal conditions exist",
+  "round": 1,
+  "run_id": "tr-20260919T123430Z-ondemand",
+  "stance_summary": "Crowded post-hike extrapolation has pushed AU 2Y through the live AONIA path even as the housing channel is already biting. Fade that sovereign overshoot in duration, not because the percentile is extreme, but because the policy-path anchor and a weakening transmission mechanism now disagree with the priced extra tightness. Do not fade CA-US 2Y: that historical extreme is still anchored to the overnight policy gap. Do not fade AUDNZD without NZ yields.",
+  "subagent_calls": 0,
+  "subagent_model": null,
+  "trade": {
+    "asset_class": "rates",
+    "catalysts": [
+      "Oct/Nov AONIA cash-futures window (Oct implied 4.565 with OI 21752 / volume 4450) versus a 2Y still through Mar-2027 4.86.",
+      "Further Australian housing/transaction/stamp-duty evidence that transmission is still tightening financial conditions.",
+      "Any cooling in the AU inflation gauge from 82 toward activity/consumer/labor (54/48/50) that lets 2Y close the gap to the cash-futures strip."
+    ],
+    "confidence": 57,
+    "context_build": {
+      "causal_mechanism": "FACT: RBA tightening is already hitting the housing stock-flow channel (NSW stamp-duty receipts -24% YoY in August, transaction volumes -18%, Sydney and Melbourne home values more than 7% below peak). INFERENCE: once that channel is biting, additional 2Y cheapening that prices through the live AONIA terminal is late-cycle extrapolation of global tightening, not required local policy. The trade tests whether AU 2Y mean-reverts toward the AONIA/ASX cash-futures path as housing/activity confirm transmission. UNKNOWN: the next RBA decision date and any unpublished RBA reaction function beyond the futures path.",
+      "flow_and_positioning_check": "FACT: CME volume/OI overlay is unavailable (HTTP 403). CFTC TFF net asset-manager/dealer/leveraged positions are null across G10 and Treasuries; only open interest is usable. AUD OI is at a 1y/3y extreme with a large weekly build; US 2Y OI is only 24.0th percentile 1y (4,433,736 contracts). Paper books are empty $100m seeds with no overnight positions. INFERENCE: elevated AUD futures intensity can amplify an AUD-side reversal if housing bites, but it is not a signed crowding map and is not the AU 2Y thesis. UNKNOWN: dealer/leveraged net on ACGB or ASX cash futures beyond the listed ASX OI/volume on front AONIA contracts.",
+      "historical_reference": {
+        "analogs": [
+          "AU 2Y 2022-09-28: after a ~39bp 1m rise to 3.572, forward 1m -37.4bp and 3m -15.0bp (giveback analog).",
+          "AU 2Y 2025-12-22: after ~39bp 1m to 4.078, forward 1m +8.8bp and 3m +54.7bp (continuation analog; closer in yield than 2022-09).",
+          "AU 2Y 2022-01-28: after ~39bp 1m to 0.876, forward 1m +14.6bp and 3m +168.4bp (early-cycle hiking analog).",
+          "AU 2Y 2023-05-10: after ~39bp 1m to 3.129, forward 1m +83.0bp and 3m +68.0bp (continuation into inflation)."
+        ],
+        "distribution": "FACT: AU 2Y 4.999 is 99.01st percentile 1y (z 1.67) and 99.80th percentile 5y (z 1.50). AU 5Y/10Y share that 99th/99.8th 5y extreme. Discovery signal only.",
+        "regime_differences": "FACT: current 2Y level 4.999 is above all four analog levels, and live AONIA still prices +51bp to Mar-2027. 2022-01 and 2023-05 were early/mid hiking into rising inflation with no packet housing-collapse analog. 2025-12-22 is the most dangerous analog because it continued from a closer yield and a similar 1m move. INFERENCE: 2022-09-28 is the closest mechanism analog (tightening already in the market, subsequent giveback) but the yield level was 142bp lower and today's energy-shock/global-tightening overlay (desk 18 Sep, BoJ 1.25%) was not that regime. Do not pool 2022 start-of-cycle analogs with a housing-transmission fade."
+      },
+      "independent_checks": [
+        "Policy-path check (live): AONIA 4.35 and ASX cash futures to Mar-2027 at 4.86 versus AU 2Y 4.999. Oct futures are actively traded (OI 21752, volume 4450); Dec volume 2, so back-end conviction on the strip is thin relative to the 2Y print.",
+        "Housing micro versus inflation gauge: stamp duty -24% YoY, volumes -18%, dwelling values >7% off peak versus AU inflation temperature 82 and activity/consumer/labor 54/48/50. Real-side gauges do not confirm the inflation-led 2Y overshoot.",
+        "Cross-market: AUDUSD 76.4th percentile 1y is not the stretch; AUDCAD and AUDNZD at 99.8th 1y and 5y are the FX extreme. NZ yields unavailable, so AUDNZD is not a rates-confirmed fade. CFTC AUD futures OI 493141 on 2026-09-15 is 99.0th percentile 1y / 99.7th 3y (z 3.61 / 5.42) with +37673 weekly contracts; net trader-class direction is null, so this is intensity not a signed long-AUD count.",
+        "Rejected RV fade: CA-US 2Y at -140bp is 3.8th percentile 1y / 4.3rd 5y, but Fed 3.75-4.00 versus CORRA 2.29 is a 146-171bp overnight gap, so the 2Y spread is anchored to policy not historically orphaned. US 2Y 4.76 versus delayed SOFR Dec 4.1975 / Aug-2028 terminal 4.6025 looks stretched, but the SOFR chain is eSignal-delayed and is inferior as an AU-local catalyst to live AONIA plus housing."
+      ],
+      "known_vs_new_information": "KNOWN: AU inflation temperature 82, AONIA path already prices about +51bp by Mar-2027, Fed hike was >90% priced into 16 Sep, August US CPI had already kept the tightening bias intact. NEW/LOCAL: 16 Sep housing evidence that the tightening channel is biting in volumes, stamp duty and prices. NEW/GLOBAL: hike delivery itself, BoJ 1.25%, and the 18 Sep desk claim that tightening is broadening. INFERENCE: the known hawkish facts can explain why AONIA prices +21.5bp by October; they do not by themselves explain why the 2Y sovereign prints 14bp through the Mar-2027 AONIA terminal after housing has already rolled over. UNKNOWN: whether 16 Sep AU yields already fully incorporated that day's housing article (yield as_of and article date coincide).",
+      "market_assumption_disagreed_with": "INFERENCE: the market is treating 'global tightening broadens' plus AU inflation gauge 82 as permission to hold 2Y through the live AONIA terminal. Disagree: the priced extra tightness is the overshoot. Housing volumes/prices/stamp duty are the weakening mechanism; activity 54, consumer 48 and labor 50 are the independent real-side check that inflation 82 is not being validated by demand. Anchor is AONIA/ASX cash futures, not the 99th percentile.",
+      "market_implied_assumption": "FACT: AU 2Y at 4.999 is 64.9bp over live AONIA 4.35, 27.4bp over Dec-2026 implied 4.725, and 13.9bp through Mar-2027 implied 4.86. INFERENCE: the 2Y requires either more hikes than the live cash-futures strip, a persistent term/credit premium over AONIA, or a refusal to treat housing as a binding constraint. 6m bank bills at 5.07 (17-Sep-2026) sit above the 2Y; official bill-minus-OIS is unavailable_cross_vintage and must not be used as a current OIS substitute.",
+      "path_to_current_price": "FACT: AU 2Y 4.999, AU 5Y 5.041, AU 10Y 5.348 as of 2026-09-16; all three tenors sit at the 99.0th 1y / 99.8th 5y percentiles. AU 2s10s is +34.9bp (24.4th percentile 1y), so this is a parallel cheapening of the curve, not a 10Y-only term-premium event. Live AONIA 4.35 (17-Sep-2026); ASX 30-day cash-rate futures (EOD 2026-09-18) imply Sep 4.355, Oct 4.565 (+21.5bp vs overnight), Nov 4.685 (+33.5bp), Dec 4.725 (+37.5bp), Mar-2027 terminal 4.86 (+51.0bp). Oct contract open interest 21752 and volume 4450; Dec volume only 2. Global overlay FACT: Fed hiked 25bp to 3.75-4.00% on 16 Sep after >90% hike pricing; BoJ hiked to 1.25% on 17 Sep; last24 desk thesis 18 Sep says global tightening is broadening and energy is keeping term-rate pressure elevated. INFERENCE: AU 2Y was dragged by the global duration selloff after events that were already largely known, then held through a local cash-futures terminal that does not require 4.999.",
+      "policy_path_check": {
+        "pricing_summary": "FACT: AONIA 4.35 as of 17-Sep-2026. ASX 30-day AONIA futures EOD 2026-09-18: 2026-09 implied 4.355 (0.5bp vs overnight), 2026-10 4.565 (+21.5bp, OI 21752, volume 4450), 2026-11 4.685 (+33.5bp), 2026-12 4.725 (+37.5bp, volume 2), terminal 2027-03 4.86 (+51.0bp). Bank bills 1m/3m/6m 4.41/4.68/5.07 as of 17-Sep-2026. Official RBA F1 OIS prints in the packet are 01-Dec-2022 vintage (1m 2.97, 3m 3.04, 6m 3.22); bill-minus-OIS is unavailable_cross_vintage and is not used. AU 2Y 4.999 as of 2026-09-16 is 13.9bp through the Mar-2027 implied 4.86. Cross-check only: SOFR 3.85 with delayed Dec 4.1975 and Aug-2028 4.6025 versus US 2Y 4.76; CORRA 2.29 with Dec 2.58 versus CA 2Y 3.27. NZ policy path/yields unavailable.",
+        "rationale": "Short-end AU 2Y fade requires the live AONIA benchmark plus ASX cash-futures path, which the frozen packet supplies with status ok. That path is the anchor. The 99th-percentile AU 2Y print is the discovery flag, not the thesis. Housing transmission is the reversal condition. Stale 2022 OIS is ignored. US SOFR is delayed eSignal, so it is not used as the traded expression.",
+        "relevant_countries": [
+          "AU"
+        ],
+        "status": "available"
+      },
+      "price_decomposition": "FACT: level is 4.999 on 2Y, 5.041 on 5Y, 5.348 on 10Y; 2s10s +34.9bp; 5s10s +30.7bp (15.3rd percentile 1y). Packet 1d/1m/5d yield changes are null; analog matching uses a prior 1m move near +39bp on AU 2Y (distance 0.0-0.3). INFERENCE: the marginal driver is front-to-belly policy tightness and global duration, not a long-end fiscal/term-premium spike. Versus overnight, AU 2Y-AONIA = +65bp is less stretched than US 2Y 4.76 minus SOFR 3.85 = +91bp or CA 2Y 3.27 minus CORRA 2.29 = +98bp, but AU 2Y is the one that is through its own near-dated terminal on a live path. UNKNOWN: exact 1m AU 2Y change in bp because chg_1m is null."
+    },
+    "direction": "long",
+    "entry": null,
+    "evidence_refs": [
+      "rates:AU",
+      "policy:AU",
+      "policy_paths",
+      "market_state",
+      "mw_20260916_au_housing_tightening",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "temp:AU:inflation",
+      "temp:AU:activity",
+      "temp:AU:consumer",
+      "temp:AU:labor",
+      "last24:2026-09-18:desk-thesis",
+      "macro:desk-18sep",
+      "pos:cftc",
+      "fx:AUDCAD",
+      "fx:AUDUSD",
+      "fx:AUDNZD",
+      "rates:US",
+      "policy:US",
+      "policy:CA",
+      "rates:CA",
+      "rollup:Fed raises 25bp to 3.75\u20134.00%",
+      "mw_20260916_fomc_hike_pricing",
+      "last24:BoJ raises its policy rate to 1.25%",
+      "xa:energy-retained",
+      "mw_20260916_saudi_oman_workaround",
+      "paper_books",
+      "research_method"
+    ],
+    "expression_comparison": {
+      "rates_candidate": "Long AU 2Y outright duration (receive 2Y): fade the 2026-09-16 print of 4.999, which sits through the live AONIA Mar-2027 cash-futures terminal of 4.86 and 27bp through Dec-2026 implied 4.725.",
+      "rationale": "The discrepancy is a sovereign 2Y versus a live AONIA/ASX cash-futures path plus a housing-transmission catalyst; that is a rates mispricing. AUDUSD is only 76.4th percentile 1y (spot 0.7120) so the USD pair is not the stretch. AUDCAD and AUDNZD are 99.8th percentile, but AUDCAD can still be carry-justified by CA-AU 2Y at -164.9bp and AONIA 4.35 versus CORRA 2.29, and AUDNZD cannot be rates-anchored because NZ B2 yields are unavailable. Rates is the default when both expressions are usable; here rates is also cleaner.",
+      "selected": "rates",
+      "spot_candidate": "Short AUDCAD: ECB same-fixing research/reference spot 0.9975768872320596 as of 2026-09-18, 99.80th percentile over both 1y and 5y, as the FX expression of the same AU housing/AONIA-overshoot view."
+    },
+    "horizon": "4-8 weeks",
+    "instrument": "AU 2Y",
+    "invalidation": "Thesis is wrong if the live AONIA/ASX path lifts the Mar-2027 implied rate through the packet AU 2Y print of 4.999, or if subsequent housing/activity evidence stops confirming that the tightening channel is biting while AU 2Y fails to give back toward that path. Do not treat a further percentile extreme alone as invalidation.",
+    "mispricing": "AU 2Y is 13.9bp through the live Mar-2027 AONIA terminal and 64.9bp over AONIA 4.35 after housing volumes and prices have already broken. The percentile (99th 1y / 99.8th 5y) only flags the stretch; the mispricing is 2Y versus the observable policy path given a working tightening channel.",
+    "principal_risks": [
+      "AU inflation temperature 82 is the highest of US/CA/AU/NZ; RBA can still deliver the +51bp already in AONIA and more, taking 2Y with it (2025-12-22 analog continued +54.7bp over 3m).",
+      "6m bank bills at 5.07 sit above AU 2Y 4.999; credit/liquidity could pull the sovereign up rather than bills down. Bill-minus-OIS is unavailable_cross_vintage.",
+      "Desk thesis that energy shock constrains global easing and keeps term-rate pressure elevated; energy shock-absorbers-weaken sits alongside a Saudi Oman workaround that only modestly eases the oil tail.",
+      "AU 2Y as_of 2026-09-16 may already include the housing article; no 1d/1m yield change is in the packet.",
+      "No executable broker prices; SOFR chain is delayed if used as a cross-check; NZ yields unavailable so any AUDNZD overlay is incomplete."
+    ],
+    "stop": null,
+    "structure": "outright long AU 2Y duration (receive 2Y)",
+    "target": null,
+    "thesis": "FACT: AU 2Y 4.999 (16 Sep) sits through live AONIA Mar-2027 implied 4.86 and 27bp through Dec implied 4.725, while NSW stamp duty, volumes and dwelling prices show the RBA housing channel already biting. INFERENCE: global-tightening extrapolation after the Fed/BoJ events is holding AU 2Y too far through a cash-futures path that already prices +51bp of extra tightness. Mean-reversion is toward the AONIA strip, not to a statistical mean. UNKNOWN: executable ACGB/ASX levels, RBA meeting specifics, and whether 16 Sep yields already digested the housing copy. Separate from this trade, CA-US 2Y at -140bp is not a fade: it is still consistent with the overnight policy gap.",
+    "why_now": [
+      "Housing evidence on 2026-09-16 documents the tightening channel biting (stamp duty -24% YoY, volumes -18%, prices >7% off peak) while AU 2Y as of the same date prints through the live AONIA terminal.",
+      "Fed 25bp hike to 3.75-4.00% was >90% priced into 16 Sep and has now been delivered; BoJ to 1.25% on 17 Sep is additional known global duration supply. That is when local housing should start to dominate AU 2Y, not when 2Y should push further through AONIA.",
+      "Paper book is an empty $100m seed paying 5% vig; no existing AU duration to hold. Oct AONIA (implied 4.565, heavy OI/volume) is the near catalyst window."
+    ]
+  },
+  "type": "TRADER_ROOM_CONTRIBUTION"
+}

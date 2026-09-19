@@ -1,0 +1,153 @@
+{
+  "agent": "dollar-king",
+  "archetype": "USD-centric FX advocate",
+  "confidence": 60,
+  "conflict_synopsis": {
+    "au_rates_view": "higher",
+    "aud_view": "lower",
+    "ca_rates_view": "neutral",
+    "cad_view": "lower",
+    "carry_view": "supports_trade",
+    "confidence": 60,
+    "conflict_tags": [
+      "USD_UP",
+      "CAD_DOWN",
+      "US_RATES_UP",
+      "CARRY_SUPPORTS"
+    ],
+    "core_view": "US re-tightening and a still-rising SOFR path versus Canada\u2019s on-target core and weak labor are not fully in USDCAD, so the cleanest USD expression is long USD versus CAD rather than a cross or an already-moved EUR/CHF/NZD leg.",
+    "key_catalyst": "SOFR Oct-Dec path holds or firms versus lagging CORRA while the CAD energy offset stays capped by the reduced oil-supply tail.",
+    "key_invalidation": "US SOFR path rolls over from the 3.85/4.20 overnight-to-December strip, or BoC energy pass-through reprices CORRA well beyond Dec 2.58 and closes the 156bp gap.",
+    "nz_rates_view": "not_relevant",
+    "nzd_view": "lower",
+    "primary_trade": "long USDCAD",
+    "risk_view": "neutral",
+    "seat": "dollar-king",
+    "time_horizon": "4-8 weeks",
+    "us_rates_view": "higher",
+    "usd_view": "higher"
+  },
+  "packet_sha256": "8903f3edceded5a5d9866d84bd422940ebc0c93106b761fbcb6267449e9504f9",
+  "paper_capital": {
+    "asset_class": "spot_fx",
+    "decision": "OPEN",
+    "instrument": "USDCAD",
+    "notional_usd": 25000000,
+    "rationale": "The seat already pays 5% ACT/365 on the full 100m even while flat; the book is an empty seed with no overnight position. Long USDCAD is carry-positive (SOFR 3.85 versus CORRA 2.29) and the 4-8 week edge is the incomplete spot transmission of a 156bp overnight / 140bp 2Y gap, a 1-2% extension beyond the already-printed 1.74% 1m rebound is inside 20d RV 5.17. 25m (25% of allocation) is large enough to matter versus a ~1.25m three-month vig if the move extends, but is not full-book because stops/targets are null, TFF nets are unknown, and WTI 107 remains a real CAD residual. No invented mark: parent may record execution_blocked if the book engine cannot represent ECB-reference USDCAD.",
+    "side": "long"
+  },
+  "remit": "express macro views through USD spot whenever a defensible USD pair exists",
+  "round": 1,
+  "run_id": "tr-20260919T123430Z-ondemand",
+  "stance_summary": "FACT: the Fed has delivered 25bp to 3.75\u20134.00%, SOFR still prices a rising path through December, US labor/inflation/consumer gauges remain hot versus Canada, and CA-US 2Y sits at an extreme -140bp while USDCAD is only a 74th-percentile 1y / 87th-percentile 5y reference fix. INFERENCE: the incomplete transmission of that US-Canada policy and labor gap into CAD is the cleanest USD-spot discrepancy; EURUSD, USDCHF and NZDUSD have already moved, AUDUSD is contaminated by an RBA hiking/housing mix, and USDJPY is a BoJ event residual. UNKNOWN: CFTC nets, executable prices, and whether BoC energy pass-through outruns the modest CORRA path. Express USD higher via long USDCAD, not a cross.",
+  "trade": {
+    "asset_class": "spot_fx",
+    "catalysts": [
+      "Further firming of ICE 1M SOFR Oct-Dec implied rates versus a still-lagging MX CORRA path.",
+      "US labor or inflation data that keep the Fed tightening bias intact versus Canada employment/wage softness.",
+      "Fade in CAD energy premium if the Saudi workaround continues to cap the oil-supply tail, even with WTI still elevated.",
+      "Global-tightening follow-through after BoJ 1.25% and the BoE split, keeping USD term premia bid versus CAD."
+    ],
+    "confidence": 60,
+    "context_build": {
+      "causal_mechanism": "FACT: After August CPI kept a Fed tightening bias intact and the 16 Sep FOMC hiked 25bp to 3.75\u20134.00% (pre-meeting futures >90% priced for that hike), ICE 1M SOFR still implies 3.91% in Oct, 4.045% in Nov and 4.1975% in Dec versus SOFR overnight 3.85%, with a 4.6025% implied print by Aug 2028. Canada\u2019s CORRA is 2.29% with MX futures only 2.58% by Dec (+29bp). US temperature gauges remain hot (inflation 72, labor 75, consumer 74, activity 69) versus Canada (inflation 55 with CPI-trim 1.9%/median 2.0% and headline 3.0%; labor 38 with unemployment 6.4%, employment -42k, wages +2.0% y/y cooler; consumer 45). INFERENCE: USD should keep a policy and labor premium versus CAD because the US re-tightening path is still rising into year-end while Canada\u2019s core is at target and the labor channel is already cooling. Energy is the CAD offset (WTI 107.02, 96.4th percentile, +24.2% 1m log; BoC minutes flag energy pass-through; retained energy-shock-absorber research), but the 16 Sep Saudi Oman ship-to-ship workaround reduced the extreme oil-supply tail and the packet\u2019s USDCAD-WTI residual is statistically weak (r-squared 0.017). UNKNOWN: whether BoC pass-through forces a larger hike path than Dec 2.58, and the sign of CAD speculative positioning because TFF nets are null.",
+      "flow_and_positioning_check": "FACT: CFTC TFF as of 2026-09-15 has CAD open interest 358186 (1y percentile 81.7, 3y 92.6, weekly change +23325) but asset_manager_net, leveraged_net, dealer_net and 1w net change are all null. CME G10 volume/OI overlay is HTTP 403 unavailable. Paper books are empty $100m seeds with no overnight review. INFERENCE: elevated CAD OI is activity, not a signed crowding signal; it cannot explain the 5d USDCAD rise as a liquidation. UNKNOWN: whether leveraged accounts are long or short CAD. Do not treat OI percentiles as a fade signal.",
+      "historical_reference": {
+        "analogs": [
+          "FACT: CA-US 2Y analogs matched to the current ~-17bp 1m spread move: 2022-11-15 (level -51, forward 1m -4bp / 3m +6bp); 2025-01-30 (level -145, nearest level analog, forward 1m -5bp / 3m +25bp); 2024-05-02 (level -63, forward 1m -9bp / 3m -6bp); 2024-12-18 (level -130, forward 1m -3bp / 3m -20bp). Near-term the gap stayed extreme rather than snapping closed.",
+          "FACT: US 2Y analogs matched to a ~+57bp prior 1m yield rise: 2022-03-23 (level 2.13, forward 1m +59bp / 3m +88bp); 2022-09-16 (level 3.85, forward 1m +58bp / 3m +40bp); 2023-02-16 (level 4.62, forward 1m -70bp / 3m -50bp); 2023-06-15 (level 4.62, forward 1m +12bp / 3m +40bp). Continuation of higher front-end yields was the dominant hiking-cycle outcome except the 2023-02 bank-stress fade.",
+          "FACT: No dedicated USDCAD historical_move_analogs table is in the frozen packet; FX analogs are therefore taken from the CA-US 2Y and US 2Y official-yield analog sets plus the USDCAD percentile/move distribution."
+        ],
+        "distribution": "FACT: USDCAD 1y percentile 74.0079, 5y percentile 87.0238, 1y z 0.798, 20d RV 5.167. CA-US 2Y -140bp is 3.77th 1y / 4.31st 5y, z_1y -1.84. US 2Y 4.76 is 99.80th 1y / 88.02nd 5y; CA 2Y 3.27 is 97.82nd 1y / 58.55th 5y. Broad USD 11.90th percentile (stale). Percentiles are discovery context, not the thesis.",
+        "regime_differences": "FACT/INFERENCE: 2022 analogs started from much lower yield levels (US 2Y 2.13 in Mar-2022 versus 4.76 now) in a first hiking cycle from easy policy; today is a re-tightening from a 3.75\u20134.00% funds band with SOFR already 3.85%. The 2023-02 analog featured regional-bank stress; current VIX 15.44 and S&P 90th percentile show no analog of that plumbing shock. Energy is again an inflation impulse, but the 16 Sep Saudi workaround is a structural difference versus an unconstrained oil-supply tail. Canada core is near 2% with a weak labor print, unlike a synchronized 2022 G10 inflation breakout. UNKNOWN: NZ yields are unavailable so ANZ rate-gap analogs cannot be used as a third check."
+      },
+      "independent_checks": [
+        "Policy-path check (SOFR vs CORRA): overnight 3.85 versus 2.29; Dec implied 4.1975 versus 2.58; US terminal 4.6025 by Aug 2028 versus CA terminal 2.58 by Dec 2026. Same direction as long USDCAD.",
+        "Hard-data temperature gauges: US labor 75 / inflation 72 / consumer 74 versus CA labor 38 (employment -42k, wages +2.0% y/y) / inflation 55 (trim 1.9%, median 2.0%) / consumer 45. Growth-and-inflation relative heat supports USD over CAD.",
+        "Official sovereign 2Y gap: CA-US 2Y -140bp at 3.8th 1y / 4.3rd 5y percentile, still widening over 1m/5d, while USDCAD is only 74th 1y \u2014 market-versus-market discrepancy.",
+        "Cross-pair screen: EURUSD 10.9th 1y, USDCHF 99.8th 1y, NZDUSD 12.9th 1y already show USD strength; AUDUSD 76.4th 1y is the opposite but AU is hiking AONIA toward 4.86 by Mar 2027 with inflation gauge 82, so it is not a clean USD-weakness pair. Broad USD 11.9th percentile (stale) says the TWI has not rerated, so USDCAD still has room as a USD expression."
+      ],
+      "known_vs_new_information": "KNOWN: the 25bp hike was heavily pre-priced; August CPI had already preserved a Fed tightening bias; Canada August CPI 3% with core near 2%; energy-shock-absorber research was already a live CAD/inflation tail. NEW relative to that known stock: the hike is now delivered and last-24 desk thesis (18 Sep) says global tightening has broadened via BoJ 1.25% (31-year high, 7-2) and a BoE 6-3 hold at 3.75% with three hike votes; SOFR still climbs Oct-Dec after the meeting rather than peaking at the 3.75% Sep contract; Saudi workaround news reduced the extreme oil-supply tail that had been CAD\u2019s strongest terms-of-trade support; USDCAD\u2019s 5d log move (z 1.61) is the fresh transmission. Known facts explain a new move now because the global-tightening confirmation and the reduced oil tail change the CAD offset, not because the hike itself was a surprise.",
+      "market_assumption_disagreed_with": "INFERENCE: the priced CAD-resilience assumption is wrong at the margin. US labor (payrolls +162k, unemployment 4.1%, wages +3.1% y/y) versus Canada (-42k employment, wages slowing to +2.0% y/y) plus a still-rising SOFR path through 4.20% in December should force more USD/CAD upside than WTI at 107 can prevent, especially after the Saudi workaround reduced the extreme oil tail. The 140bp 2Y gap staying wide in near-term analogs is consistent with keeping USD versus CAD, not with CAD holding the 3m gains.",
+      "market_implied_assumption": "FACT: USDCAD at 1.4010 (74th 1y) coexist with CA-US 2Y at -140bp, SOFR-CORRA 156bp, and CORRA Dec only 2.58%. INFERENCE: spot is assuming CAD can stay relatively resilient because energy terms of trade plus a modest BoC hike option fully offset the US policy premium, so the 2Y gap does not need further CAD depreciation. The 3m USDCAD decline (USD down versus CAD) is the priced residue of that CAD-resilience assumption.",
+      "path_to_current_price": "FACT: ECB USDCAD reference 1.4010471204188482 as of 2026-09-18. Multi-horizon: 1d +0.108%, 5d +1.101% (log-move z 1.61), 1m +1.745% (log-move z 1.23), 3m -1.245% (log-move z -0.92); 1y percentile 74.0, 5y percentile 87.0, 1y z 0.80, 20d RV 5.17. Broad trade-weighted USD is 118.2126, 11.9th percentile, 1m -0.76%, 3m -1.60% (series marked stale). EURUSD 1.146 is 10.9th 1y / 74.8th 5y and -1.89% 1m; USDCHF 0.8257 is 99.8th 1y / 27.8th 5y; NZDUSD 0.5711 is 12.9th 1y / 8.6th 5y and -3.90% 1m; AUDUSD 0.7120 is 76.4th 1y / 84.3th 5y and only +0.20% 1m; USDJPY 157.89 is 52.2nd 1y after a +1.41% 1d / +2.50% 5d bounce post-BoJ. CA-US 2Y -140bp has widened 17bp over 1m and 15bp over 5d. INFERENCE: USDCAD\u2019s 1m/5d rise is a rebound from 3m USD-versus-CAD softness after the Fed event, not a completed USD TWI rerating. UNKNOWN: broker executable path versus the ECB fix.",
+      "policy_path_check": {
+        "pricing_summary": "US: SOFR 3.85% as of 2026-09-17; SR1U26 implied 3.75% (Sep, -10bp vs overnight), SR1V26 3.91% (Oct, +6bp), SR1X26 4.045% (Nov, +19.5bp), SR1Z26 4.1975% (Dec, +34.75bp); terminal 4.6025% in 2028-08 (+75.25bp). Method is 100 minus delayed ICE 1M SOFR, monthly-average SOFR not FOMC probabilities. CA: CORRA 2.29% as of 2026-09-17; COAU26 2.2875%, COAV26 2.305%, COAX26 2.43%, COAZ26 2.58% (Dec, +29bp). Method is 100 minus public MX CORRA futures. AU path is available but not the trade\u2019s pricing: AONIA 4.35% with ASX cash futures 4.565% Oct / 4.725% Dec / 4.86% Mar 2027. NZ path unavailable.",
+        "rationale": "Spot USDCAD is a relative-policy expression, so the frozen SOFR and CORRA paths are the required benchmark before reading US 2Y 4.76 or CA 2Y 3.27. Those sovereign percentiles confirm a wide gap but are not a substitute for the live overnight-linked path, which still shows US tightening into year-end versus only +29bp in Canada.",
+        "relevant_countries": [
+          "US",
+          "CA"
+        ],
+        "status": "available"
+      },
+      "price_decomposition": "FACT: Level versus change: the 1.4010 fix is only a 74th 1y percentile (not a 99th blow-off); the 3m change is still USD-negative versus CAD while the 5d/1m change is USD-positive. Rate component: CA-US 2Y -140bp, 1m change -17bp, overnight 156bp SOFR over CORRA. Energy component: WTI 107.02 (96.4th percentile) but USDCAD~WTI r-squared 0.017, residual z 0.66, status weak. Policy-path component: US Dec implied 4.1975 versus CA Dec 2.58. Risk component: VIX 15.44 (14.7th percentile), S&P 500 7637.76 (90.1st percentile) so this is not a stress-USD move. INFERENCE: the marginal driver of the last five sessions is US policy-path confirmation after 16 Sep, not a CAD collapse and not an oil spike. UNKNOWN: no packet fair-value residual that is strong enough to convert into a numerical gap versus 1.4010."
+    },
+    "direction": "long",
+    "entry": null,
+    "evidence_refs": [
+      "fx:USDCAD",
+      "fx:EURUSD",
+      "fx:AUDUSD",
+      "fx:NZDUSD",
+      "fx:USDJPY",
+      "fx:USDCHF",
+      "policy:US",
+      "policy:CA",
+      "policy_paths",
+      "rates:US",
+      "rates:CA",
+      "market_state",
+      "pos:cftc",
+      "temp:US:inflation",
+      "temp:US:labor",
+      "temp:US:consumer",
+      "temp:US:activity",
+      "temp:CA:inflation",
+      "temp:CA:labor",
+      "temp:CA:consumer",
+      "temp:CA:activity",
+      "last24:2026-09-18:desk-thesis",
+      "macro:desk-18sep",
+      "mw_20260916_fomc_hike_pricing",
+      "rollup:Fed raises 25bp to 3.75\u20134.00%",
+      "rollup:August CPI keeps the Fed tightening bias intact",
+      "rollup:Canada August inflation holds at 3%, core stays near 2%",
+      "rollup:BoC minutes flag higher energy pass-through risk",
+      "xa:energy-retained",
+      "mw_20260916_saudi_oman_workaround",
+      "last24:BoJ raises its policy rate to 1.25%",
+      "research_method",
+      "paper_books"
+    ],
+    "expression_comparison": {
+      "rates_candidate": null,
+      "rationale": "Dedicated dollar-king remit is spot-only. The mispricing lives in spot, not in the already-extreme CA-US 2Y of -140bp (1y percentile 3.8, 5y percentile 4.3): USDCAD at a 74th 1y / 87th 5y ECB reference fix has not fully transmitted the 156bp SOFR-CORRA overnight gap. A rates RV on that 2Y spread would be fading a 5y extreme rather than owning the incomplete FX transmission. Crosses (AUDCAD/AUDNZD at 99.8th 1y) add AUD/NZD second-order risk; EURUSD/USDCHF/NZDUSD already embed more USD strength; USDJPY is a BoJ residual. Long USDCAD is the first-order USD pair with both US and CA policy paths available and positive carry.",
+      "selected": "spot",
+      "spot_candidate": "long USDCAD"
+    },
+    "horizon": "4-8 weeks",
+    "instrument": "USDCAD",
+    "invalidation": "Qualitative, sourced from the frozen policy path rather than an invented USDCAD print: the long-USDCAD thesis is invalid if the US SOFR path rolls over so that December implied 4.1975 and the 3.85 overnight benchmark are no longer a rising year-end path, or if MX CORRA Dec 2.58 is replaced by a much larger BoC energy-pass-through repricing that closes the 156bp overnight gap without CAD labor/core deteriorating further. WTI remaining high is not by itself invalidation because the packet\u2019s USDCAD-WTI link is weak; a renewed unconstrained oil-supply tail that reverses the Saudi-workaround reduction would be. No executable stop exists in the packet.",
+    "mispricing": "FACT: CA-US 2Y -140bp is a 4th-percentile 5y gap while USDCAD is only 74th 1y / 87th 5y on the ECB fix; USDCAD versus CA-US 2Y residual z is 1.38 but r-squared is only 0.022 (weak). INFERENCE: CAD still prices energy resilience and a contained BoC path that the labor data and the reduced oil-supply tail no longer fully justify. The discrepancy is spot lagging policy and labor, not a claim that 2Y yields themselves must mean-revert. UNKNOWN: no robust packet regression converts that residual into a fair-value pip gap.",
+    "principal_risks": [
+      "CAD terms-of-trade: WTI 107.02 at the 96.4th percentile can still support CAD regardless of the weak USDCAD-WTI r-squared.",
+      "BoC energy pass-through: minutes already flag it; a faster hike path than Dec 2.58 would compress the yield gap.",
+      "US data/Fed path disappointment: analog 2023-02-16 showed US 2Y reversing 70bp in 1m after a similar-sized prior rise, though that episode had bank stress the current VIX/SPX tape does not.",
+      "Positioning unknown: null TFF nets and CME 403 mean the 5d move could already be crowded.",
+      "No executable broker prices: entry/target/stop remain null, so gap risk around the 1.4010 research fix cannot be contractually bounded.",
+      "AU/NZ/JPY crosses can dominate USD TWI even if USDCAD works; broad USD series is stale."
+    ],
+    "stop": null,
+    "structure": null,
+    "target": null,
+    "thesis": "FACT: USD has a 156bp overnight yield advantage versus CAD, a still-rising SOFR path through 4.20% in December, and a much hotter labor/inflation/consumer mix. CAD\u2019s core is at target, employment fell 42k, and BoC is only priced +29bp by December. Spot USDCAD at 1.4010 has recovered 1.74% over one month after a 3m USD dip, but sits far short of the extremity of the rate gap. INFERENCE: long USDCAD owns the incomplete transmission of US re-tightening and Canada labor softness into CAD, with carry from the rate gap, without the second-order AUD housing/RBA mix, NZ-rates hole, BoJ residual, or already-stretched EUR/CHF/NZD USD legs. UNKNOWN: signed positioning and executable entry. A cross is a worse expression of the same USD view.",
+    "why_now": [
+      "Fed 25bp hike is now realized (16 Sep) while SOFR still prices +35bp into December rather than a one-and-done peak at the 3.75% September contract.",
+      "Last-24 desk thesis (18 Sep) is new confirmation that global tightening broadened (BoJ 1.25%, BoE 6-3 hold), constraining the easing impulse that had been CAD-supportive.",
+      "Saudi workaround (16 Sep) reduced the extreme oil-supply tail that was the main CAD terms-of-trade offset, even as WTI remains high.",
+      "USDCAD 5d log z 1.61 shows transmission starting after the 3m USD-versus-CAD dip; waiting for a 99th-percentile print would be fading a completed move that the distribution does not show.",
+      "Empty 100m paper book is already paying 5% ACT/365 vig with no overnight position; the carry-positive USD-CAD gap is the seat\u2019s way to put that capital to work."
+    ]
+  },
+  "type": "TRADER_ROOM_CONTRIBUTION"
+}

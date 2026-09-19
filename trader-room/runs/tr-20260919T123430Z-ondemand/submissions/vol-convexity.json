@@ -1,0 +1,148 @@
+{
+  "agent": "vol-convexity",
+  "archetype": "vol-convexity / asymmetric optionality",
+  "confidence": 52,
+  "conflict_synopsis": {
+    "au_rates_view": "neutral",
+    "aud_view": "neutral",
+    "ca_rates_view": "not_relevant",
+    "cad_view": "not_relevant",
+    "carry_view": "opposes_trade",
+    "confidence": 52,
+    "conflict_tags": [
+      "AUDUSD_VOL",
+      "TWO_WAY_POLICY",
+      "OPTIONS_OVER_SPOT",
+      "AU_HOUSING_VS_AONIA"
+    ],
+    "core_view": "AONIA still prices about 51bp of extra RBA tightening into a housing downturn while SOFR still prices residual Fed hikes after a delivered 25bp, so AUDUSD path-error is two-sided and a 1-month straddle dominates spot.",
+    "key_catalyst": "October AONIA versus overnight 4.35 colliding with residual SOFR hikes after the delivered Fed 25bp.",
+    "key_invalidation": "Live implied vol already prices a larger two-way AUDUSD range than AONIA-versus-SOFR delivery risk, or both cash-rate strips print smoothly.",
+    "nz_rates_view": "not_relevant",
+    "nzd_view": "not_relevant",
+    "primary_trade": "buy volatility AUDUSD 1-month straddle",
+    "risk_view": "risk_off",
+    "seat": "vol-convexity",
+    "time_horizon": "2-5 weeks through October AONIA",
+    "us_rates_view": "neutral",
+    "usd_view": "neutral"
+  },
+  "packet_sha256": "8903f3edceded5a5d9866d84bd422940ebc0c93106b761fbcb6267449e9504f9",
+  "paper_capital": {
+    "asset_class": "options",
+    "decision": "HOLD",
+    "instrument": "AUDUSD 1-month straddle",
+    "notional_usd": 10000000,
+    "rationale": "The 5 percent ACT/365 vig on the $100m allocation is real, but the frozen packet has no implied vol, skew, premium or executable broker option prices, so the book engine cannot safely mark this straddle. HOLD until live IV versus 4.71 20d realized, 25-delta risk reversal and premium can be checked; do not invent a mark or OPEN an unmarkable options book.",
+    "side": null
+  },
+  "remit": "asymmetric optionality; challenge spot expressions",
+  "round": 1,
+  "run_id": "tr-20260919T123430Z-ondemand",
+  "stance_summary": "Spot AUDUSD is the wrong instrument for a two-way policy-path residual. Frozen AONIA still prices about 51bp of extra RBA tightening into a housing channel that is already contracting, while SOFR still prices residual Fed hikes after a delivered 25bp move; AUDUSD 20d realized vol is only 4.71 and the 1m spot change is just +0.20 percent. Linear rates (AU-US 2Y is only the 25th 1y percentile) and linear spot both require a signed winner and an arrival time. A 1-month ATM AUDUSD straddle owns the delivery error with bounded debit. Implied-vol marks are absent, so paper capital is HOLD.",
+  "trade": {
+    "asset_class": "options",
+    "catalysts": [
+      "October AONIA contract versus overnight 4.35 (already +21.5bp in the frozen strip).",
+      "US inflation/Fed follow-through versus residual SOFR to Dec 4.1975.",
+      "Further Australian housing/transaction prints confirming or reversing the tightening channel.",
+      "BoC energy pass-through versus a smaller CORRA +29bp path, as a cross-check on global inflation tails.",
+      "BoJ residual and global duration from the 1.25 percent 7-2 hike, per the packet's duration-not-JPY-FX market read."
+    ],
+    "confidence": 52,
+    "context_build": {
+      "causal_mechanism": "The economic test is two-way policy-path error in AUDUSD. The RBA cash-rate path implied by ASX 30-day AONIA still embeds substantial extra tightening into a housing-credit channel that is already contracting, while the Fed has just hiked 25bp and ICE 1-month SOFR still embeds residual hikes. AUDUSD is the FX residual of which path is delivered, not a one-way AUD level bet. Energy-shock inflation tails and a just-delivered BoJ hike to 1.25 percent keep global term-rate pressure two-sided rather than a settled easing impulse.",
+      "flow_and_positioning_check": "CFTC TFF futures-only AUD open interest is at a 1y/3y extreme with a large weekly increase; NZD OI is 93rd 1y percentile. Asset-manager, leveraged and dealer nets are null, so this is crowding in open interest, not a signed speculative long or short. CME FX volume/open-interest overlay is HTTP 403 unavailable. High AUD OI into the hike cluster is consistent with event hedging, which is an argument to express the view in options rather than adding to the futures pile. Persistent paper books are empty $100m seeds with no overnight review, so there is no existing vol inventory to roll.",
+      "historical_reference": {
+        "analogs": [
+          "AU 2Y analog 2022-09-28: prior 1m move about +39bp, level 3.572; forward 1m -37.4bp and 3m -15.0bp (path reversed after stretch).",
+          "AU 2Y analog 2025-12-22: prior 1m about +39bp, level 4.078; forward 1m +8.8bp and 3m +54.7bp (hiking continued).",
+          "AU 2Y analog 2022-01-28: prior 1m about +39bp, level 0.876; forward 1m +14.6bp and 3m +168.4bp (early-cycle, not a current-level analog).",
+          "AU-US 2Y analogs after a prior 1m move near -11.5bp disagree on forwards: 2022-02-07 forward 1m -11.7 / 3m +38.9; 2024-12-30 -8.7 / +11.8; 2026-04-23 -41.3 / -54.7; 2025-07-30 +32.7 / +58.6. Same-move analogs do not agree on the next 1-3 months, which is why a straddle dominates a signed rates or spot expression."
+        ],
+        "distribution": "AUDUSD 1y percentile 76.4, 5y 84.3, z_1y 0.88, 20d RV 4.71 on 2026-09-18 ECB reference. AU 2Y 4.999 at 99.0 1y / 99.8 5y percentile; US 2Y 4.76 at 99.8 1y. AONIA +51bp to Mar 2027 versus SOFR +35bp to Dec and +75bp to Aug 2028. AUDNZD is the 100th percentile in the 252-observation FX window and 99.8th over 1y and 5y. These percentiles are discovery signals, not the thesis.",
+        "regime_differences": "2022 AU 2Y analogs were early-cycle from sub-4 percent yields before the current housing drawdown. Today AU 2Y is 4.999 at a 5y 99.8th percentile, AONIA is already 4.35, and housing values are already more than 7 percent from peak with stamp-duty and turnover collapsing. The Fed has already delivered this week's 25bp hike, so the US analog is residual-path risk not a first hike. Energy shock absorbers are weakening while a Saudi Oman workaround reduced the extreme oil-supply tail, so the inflation impulse is two-way rather than a one-sided 2022 oil shock. NZ sovereign yields are unavailable, so AUDNZD cannot be rates-matched. Do not pool 2022 and 2025-26 as a mean-reversion ticket."
+      },
+      "independent_checks": [
+        "Policy-path triangulation: live AONIA 4.35 with Oct 4.565 / Mar-2027 4.86 versus live SOFR 3.85 with Dec 4.1975 / Aug-2028 4.6025; CORRA 2.29 with Dec 2.58 is a third two-way path (only +29bp) against BoC energy pass-through risk and core near 2 percent.",
+        "Macro temperature versus housing: AU inflation 82 versus consumer 48 / activity 54 / labor 50, against US inflation 72 / labor 75 / activity 69 / consumer 74; NSW stamp duty -24 percent y/y, transactions -18 percent, home values more than 7 percent from peak.",
+        "Cross-market FX: AUDUSD only 76th 1y percentile while AUDNZD and AUDCAD are 99.8th 1y and 5y, so the AUD extreme is versus NZD/CAD not USD; NZDUSD 1y percentile 12.9 with 20d RV 6.31.",
+        "Positioning: CFTC TFF AUD open interest 493141 on 2026-09-15, 99.0 1y / 99.7 3y percentile, weekly change +37673, z_1y 3.61; trader-class nets are null so the crowd cannot be signed."
+      ],
+      "known_vs_new_information": "Known before this window: August CPI had already kept a Fed tightening bias, and the 16 Sep hike was heavily pre-priced. New/marginal now: the hike was actually delivered; BoJ joined at a 31-year high into the energy shock; Australian housing is printing a live tightening channel (NSW stamp-duty receipts -24 percent y/y, transactions -18 percent, Sydney/Melbourne values more than 7 percent from peak) while AONIA still prices +51bp of extra tightening to Mar 2027. The joint of delivered global hikes plus evidence the AU channel is biting, with the cash-rate path still hiking, is what makes a previously known housing story able to move AUDUSD now.",
+      "market_assumption_disagreed_with": "That AONIA-versus-SOFR delivery risk is small enough, and timed well enough, to be owned as linear AUDUSD or as AU 2Y / AU-US 2Y. The priced assumption that is wrong is one-sided path certainty: either the RBA delivers the extra ~51bp through a housing downturn, or the Fed's residual SOFR hikes print smoothly, and AUDUSD realized vol near 4.71 is an adequate description of the next 2-5 weeks.",
+      "market_implied_assumption": "ASX 30-day AONIA (research/reference): Sep 4.355, Oct 4.565 (+21.5bp vs AONIA 4.35), Nov 4.685, Dec 4.725, Mar-2027 terminal 4.86 (+51.0bp). ICE 1-month SOFR: Sep 3.75, Oct 3.91, Nov 4.045, Dec 4.1975 (+34.75bp vs SOFR 3.85), Aug-2028 terminal 4.6025 (+75.25bp). AUDUSD at the 76th 1y percentile with 20d RV 4.71 assumes those two hike paths can coexist without a large near-term FX jump. Linear spot and AU-US 2Y both assume a signed winner and a known arrival time.",
+      "path_to_current_price": "AUDUSD ECB reference 0.712022367194781 on 2026-09-18: 1y percentile 76.4, 5y 84.3, z_1y 0.88, 1d +0.09 percent, 5d -0.73 percent, 1m +0.20 percent, 20d RV 4.71. The quiet 1m USD pair contrasts with AUDNZD 1.2468, 1m +4.27 percent, 1m log z 2.84, 1y/5y 99.8th percentile. Sequence: pre-decision futures >90 percent priced a Fed 25bp hike; Fed delivered to 3.75-4.00 percent on 16 Sep; BoJ hiked 25bp to 1.25 percent (31-year high, 7-2) on 17 Sep; 18 Sep desk thesis is global tightening plus energy constraining easing. AU 2Y 4.999 and AU 10Y 5.348 sit at 99th 1y percentiles as of 16 Sep. AONIA overnight 4.35 with the strip already +21.5bp by Oct and +51bp by Mar 2027.",
+      "policy_path_check": {
+        "pricing_summary": "US: SOFR 3.85 as of 2026-09-17; SR1U26 3.75, SR1V26 3.91, SR1X26 4.045, SR1Z26 4.1975 (+34.75bp), terminal 2028-08 4.6025 (+75.25bp). Method is 100 minus delayed ICE 1M SOFR, monthly-average SOFR not FOMC probabilities. AU: AONIA 4.35 as of 17-Sep-2026; Sep 4.355, Oct 4.565 (+21.5bp), Nov 4.685, Dec 4.725, terminal 2027-03 4.86 (+51.0bp). Official RBA F1 OIS prints are 01-Dec-2022 vintage and unused; bank-bill-minus-OIS is unavailable_cross_vintage. CA: CORRA 2.29 as of 2026-09-17; COAU26 2.2875, COAV26 2.305, COAX26 2.43, COAZ26 2.58 (+29.0bp by Dec). NZ policy path and NZ sovereign yields are unavailable (RBNZ B2 HTTP 403).",
+        "rationale": "The trade is the two-way delivery risk inside these frozen paths, not a 2Y percentile. US still prices residual hikes after a delivered 25bp. AU prices about 50bp more tightening into documented housing stress. CA prices a smaller +29bp path against energy pass-through and core near 2 percent and is used as an independent check, not the expression. Linear rates or spot must pick which path is wrong; the AUDUSD straddle owns the error. JP is not in this policy-path layer; the packet's BoJ market read is global duration, not a Japan FX view, so USDJPY is the rejected event-vol alternative.",
+        "relevant_countries": [
+          "US",
+          "AU",
+          "CA"
+        ],
+        "status": "available"
+      },
+      "price_decomposition": "Level versus change: AUDUSD's 1m change is only +0.20 percent; the 76th 1y percentile is a moderate level, not a 1m blow-off. The violent change is AUDNZD (+4.27 percent 1m), so AUD strength is NZ-relative rather than USD-relative. Rates residual: AU-US 2Y +25.9bp is only the 25th 1y percentile and AUDUSD~AU-US_2Y is weak (r-squared 0.007, residual z 0.05), so the 2Y spread is not the marginal driver of the USD pair. Policy-path components: AU extra tightening is front-loaded into Oct-Mar AONIA; US extra tightening is a residual after a delivered hike. 20d RV 4.71 versus USDJPY 11.04 shows AUDUSD realized is still quiet relative to the two-way policy discrepancy. Implied vol, risk reversal and premium: null, not in packet."
+    },
+    "direction": "buy volatility",
+    "entry": null,
+    "evidence_refs": [
+      "policy_paths",
+      "policy:AU",
+      "policy:US",
+      "policy:CA",
+      "fx:AUDUSD",
+      "fx:AUDNZD",
+      "fx:AUDCAD",
+      "rates:AU",
+      "rates:US",
+      "mw_20260916_au_housing_tightening",
+      "mw_20260916_fomc_hike_pricing",
+      "rollup:Fed raises 25bp to 3.75\u20134.00%",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "rollup:August CPI keeps the Fed tightening bias intact",
+      "last24:2026-09-18:desk-thesis",
+      "last24:BoJ raises its policy rate to 1.25%",
+      "pos:cftc",
+      "temp:AU:inflation",
+      "temp:AU:consumer",
+      "temp:AU:activity",
+      "temp:US:inflation",
+      "temp:US:labor",
+      "xa:energy-retained",
+      "market_state",
+      "research_method"
+    ],
+    "expression_comparison": {
+      "rates_candidate": "Receive AU 2Y outright (4.999 as of 2026-09-16, 99th 1y/5y percentile) to fade the ASX 30-day AONIA path from Oct implied 4.565 toward Mar-2027 4.86; fallback AU-US 2Y RV at +25.9bp (25th 1y percentile as of 2026-09-16). AU official OIS is 01-Dec-2022 vintage and must not be used.",
+      "rationale": "Rates force a signed call on which policy path is wrong: AU-US 2Y is not the stretched object (25th 1y percentile, weak AUDUSD~AU-US_2Y residual r-squared 0.007), and receiving AU 2Y only owns the housing-wins tail. Spot short AUDUSD is not a 99th-percentile fade, and short AUDNZD is unbounded if the AONIA +51bp path is delivered. A 1-month ATM straddle is the cleaner owner of two-way US/AU delivery risk with capped debit. Implied vol, skew and premium are not in the frozen packet, so this is a structure choice not a claim that vol is cheap.",
+      "selected": "options",
+      "spot_candidate": "Short AUDUSD from the 2026-09-18 ECB reference 0.712022367194781 (76th 1y percentile), or short AUDNZD from 1.246846846846847 (1y and 5y 99.8th percentile) as a linear fade of AUD outperformance."
+    },
+    "horizon": "2-5 weeks, through the October AONIA contract",
+    "instrument": "AUDUSD 1-month straddle",
+    "invalidation": "Thesis is invalid if live implied vol, 25-delta risk reversal and premium \u2014 all null in this packet \u2014 already embed a larger two-way AUDUSD range than AONIA-versus-SOFR delivery risk, or if both the AONIA strip through Mar-2027 4.86 and the SOFR strip through Dec 4.1975 print as a smooth delivered path with no housing or inflation surprise.",
+    "mispricing": "The mispricing is one-sided path certainty in linear AUDUSD and in AU 2Y / AU-US 2Y, not a documented cheap implied-vol number. AU-US 2Y at +25.9bp is only the 25th 1y percentile and the AUDUSD-to-2Y residual is weak, so rates RV does not own the discrepancy. AUDUSD is not a 99th-percentile spot fade; the 99th-percentile AUD extremes are AUDNZD and AUDCAD, which would be even worse as unbounded shorts if AONIA is delivered. Implied vol, skew and premium: null.",
+    "principal_risks": [
+      "Implied vol, skew and premium are unobserved; the straddle may already be rich versus 4.71 20d realized.",
+      "Theta and 5 percent ACT/365 funding on $100m if the book later OPENs an unmarkable options book.",
+      "Both AONIA and SOFR paths delivered as priced, realized AUDUSD stays quiet.",
+      "CFTC AUD open-interest extreme can pin or squeeze linear overlays; trader-class nets are null.",
+      "Energy re-acceleration or a one-way RBA hawkish surprise that makes a quiet long-AUD spot path the winner and wastes the put leg.",
+      "NZ rates gap: AUDNZD cannot be rates-hedged, so using the 99.8th-percentile cross as a proxy overlay is unsafe."
+    ],
+    "stop": null,
+    "structure": "long 1-month ATM AUDUSD straddle; premium, strikes, implied vol and skew are unsourced in the frozen packet and remain null",
+    "target": null,
+    "thesis": "AONIA still prices roughly 51bp of extra RBA tightening into a housing downturn while SOFR still prices residual Fed hikes after a delivered 25bp move. AUDUSD 1m spot is almost unchanged and 20d realized vol is only 4.71, so the market is behaving as if those paths can print smoothly. Spot and AU-US 2Y both require a signed winner. A 1-month ATM straddle is the bounded-risk owner of the delivery error. Implied vol is not in the packet, so this is an expression choice; live IV, 25-delta risk reversal and premium must be checked before any OPEN, and paper capital stays HOLD until the book can mark it.",
+    "why_now": [
+      "Fed delivered 25bp to 3.75-4.00 percent on 16 Sep after >90 percent pre-pricing, but the SOFR strip still prices 4.1975 by Dec and 4.6025 by Aug 2028.",
+      "AONIA still prices Oct 4.565 and Mar-2027 4.86 while NSW stamp duty is -24 percent y/y and home values are more than 7 percent from peak.",
+      "AUDUSD 20d RV is only 4.71 with a +0.20 percent 1m change, while AUDNZD's 1m log z is 2.84 at a 99.8th percentile \u2014 quiet USD pair, violent AUD cross.",
+      "18 Sep desk thesis is global tightening after Fed, BoJ and a split BoE, with energy constraining the easing impulse.",
+      "Empty $100m paper book pays 5 percent ACT/365 vig, but options cannot be marked from this packet so the correct book action is HOLD not a forced OPEN."
+    ]
+  },
+  "type": "TRADER_ROOM_CONTRIBUTION"
+}

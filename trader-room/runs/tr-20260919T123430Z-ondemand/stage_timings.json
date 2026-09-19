@@ -2,38 +2,44 @@
   "run_id": "tr-20260919T123430Z-ondemand",
   "stages": [
     {
-      "stage": "preflight_and_freeze",
-      "status": "succeeded",
-      "started_at": "2026-09-19T12:31:00Z",
       "ended_at": "2026-09-19T12:34:30Z",
       "model_calls": 0,
-      "notes": "Live market_state.py plus repo evidence families; policy_paths US/CA/AU ok before any advocate spend."
+      "notes": "Live market_state.py plus repo evidence families; policy_paths US/CA/AU ok before any advocate spend.",
+      "stage": "preflight_and_freeze",
+      "started_at": "2026-09-19T12:31:00Z",
+      "status": "succeeded"
     },
     {
-      "stage": "round1_advocates",
-      "status": "pending",
+      "composer_calls": 0,
+      "ended_at": "2026-09-19T12:49:56Z",
+      "model": "grok-4.6",
+      "model_calls": 14,
       "model_calls_planned": 14,
-      "model": "grok-4.6"
+      "notes": "14 independent grok-4.6 advocates on frozen packet 8903f3ed...; zero composer children.",
+      "stage": "round1_advocates",
+      "started_at": "2026-09-19T12:37:20Z",
+      "status": "succeeded"
     },
     {
+      "model_calls_planned": 0,
       "stage": "deterministic_conflict_map",
-      "status": "pending",
-      "model_calls_planned": 0
+      "status": "pending"
     },
     {
+      "model": "grok-4.6",
       "stage": "rebuttals",
-      "status": "pending",
-      "model": "grok-4.6"
+      "status": "pending"
     },
     {
+      "model_calls_planned": 0,
       "stage": "deterministic_finalize",
-      "status": "pending",
-      "model_calls_planned": 0
+      "status": "pending"
     },
     {
+      "model_calls_planned": 0,
       "stage": "paper_books",
-      "status": "pending",
-      "model_calls_planned": 0
+      "status": "pending"
     }
-  ]
+  ],
+  "updated_at": "2026-09-19T12:49:56Z"
 }

@@ -1,35 +1,172 @@
 {
-  "run_id": "tr-20260919T123430Z-ondemand",
-  "run_policy": "MW_TRADER_ROOM_RUN_POLICY={\"version\":1,\"run_type\":\"trader-room-ondemand\",\"total_model_cap\":57,\"grok_cap\":29,\"composer_cap\":28,\"parent_model\":\"grok-4.6\",\"parent_total\":1,\"parent_grok\":1}",
-  "parent": {
-    "role": "acp_parent",
-    "model": "grok-4.6",
-    "bcId": "bc-34da0a98-7beb-4099-83f9-bcb915003577",
-    "counted": true
+  "counts": {
+    "conflict_model_calls": 0,
+    "finalize_model_calls": 0,
+    "parent_grok": 1,
+    "rebuttal_grok": 0,
+    "round1_composer": 0,
+    "round1_grok": 14,
+    "total_composer": 0,
+    "total_grok": 15,
+    "total_model_calls": 15
   },
   "freeze": {
+    "advocates_launched_after_freeze": true,
     "evidence_cutoff": "2026-09-19T12:34:30Z",
-    "packet_sha256": "8903f3edceded5a5d9866d84bd422940ebc0c93106b761fbcb6267449e9504f9",
     "families": {
-      "temperature_gauges": "available",
       "central_bank_research": "available",
       "market_state": "stale",
-      "research_method": "available"
+      "research_method": "available",
+      "temperature_gauges": "available"
     },
+    "packet_sha256": "8903f3edceded5a5d9866d84bd422940ebc0c93106b761fbcb6267449e9504f9",
     "policy_paths": {
-      "status": "ok",
-      "US": "ok",
+      "AU": "ok",
       "CA": "ok",
-      "AU": "ok"
-    },
-    "advocates_launched_after_freeze": false
+      "US": "ok",
+      "status": "ok"
+    }
   },
   "invocations": [
     {
-      "role": "acp_parent",
-      "model": "grok-4.6",
       "agent": null,
-      "purpose": "orchestrate-live-trader-room"
+      "model": "grok-4.6",
+      "purpose": "orchestrate-live-trader-room",
+      "role": "acp_parent"
+    },
+    {
+      "agent": "perma-bull",
+      "bcId": "bc-0bcd9176-d169-59e1-b82b-ba985f5a5c1d",
+      "model": "grok-4.6",
+      "purpose": "round1-contribution",
+      "role": "advocate_round1",
+      "subagent_calls": 0,
+      "subagent_model": null
+    },
+    {
+      "agent": "perma-bear",
+      "bcId": "bc-f29b3808-9b25-5f7d-b539-5a95f1b1c39a",
+      "model": "grok-4.6",
+      "purpose": "round1-contribution",
+      "role": "advocate_round1",
+      "subagent_calls": 0,
+      "subagent_model": null
+    },
+    {
+      "agent": "dollar-king",
+      "bcId": "bc-1d8ea5a7-c7c8-56b4-9546-d54c7db1b2b7",
+      "model": "grok-4.6",
+      "purpose": "round1-contribution",
+      "role": "advocate_round1",
+      "subagent_calls": 0,
+      "subagent_model": null
+    },
+    {
+      "agent": "cross-merchant",
+      "bcId": "bc-79fd15cd-26c1-5cab-94b3-3846ed4936a9",
+      "model": "grok-4.6",
+      "purpose": "round1-contribution",
+      "role": "advocate_round1",
+      "subagent_calls": 0,
+      "subagent_model": null
+    },
+    {
+      "agent": "carry-is-king",
+      "bcId": "bc-501600a1-a632-5996-97a2-52d85a4a31f9",
+      "model": "grok-4.6",
+      "purpose": "round1-contribution",
+      "role": "advocate_round1",
+      "subagent_calls": 0,
+      "subagent_model": null
+    },
+    {
+      "agent": "rate-hawk",
+      "bcId": "bc-73a7b20f-24b0-55e7-99bc-50022834011f",
+      "model": "grok-4.6",
+      "purpose": "round1-contribution",
+      "role": "advocate_round1",
+      "subagent_calls": 0,
+      "subagent_model": null
+    },
+    {
+      "agent": "rate-dove",
+      "bcId": "bc-4ee94aad-3017-5a6d-8b69-09e0fd789edc",
+      "model": "grok-4.6",
+      "purpose": "round1-contribution",
+      "role": "advocate_round1",
+      "subagent_calls": 0,
+      "subagent_model": null
+    },
+    {
+      "agent": "value-guy",
+      "bcId": "bc-5466c7fa-c9e6-5935-8b61-095bf668f365",
+      "model": "grok-4.6",
+      "purpose": "round1-contribution",
+      "role": "advocate_round1",
+      "subagent_calls": 0,
+      "subagent_model": null
+    },
+    {
+      "agent": "trend-follower",
+      "bcId": "bc-655ad546-b6db-56de-9da9-5defeb018ead",
+      "model": "grok-4.6",
+      "purpose": "round1-contribution",
+      "role": "advocate_round1",
+      "subagent_calls": 0,
+      "subagent_model": null
+    },
+    {
+      "agent": "mean-reverter",
+      "bcId": "bc-8eaa48f7-0e21-5d48-aa26-5e49d91e3fb2",
+      "model": "grok-4.6",
+      "purpose": "round1-contribution",
+      "role": "advocate_round1",
+      "subagent_calls": 0,
+      "subagent_model": null
+    },
+    {
+      "agent": "positioning-cynic",
+      "bcId": "bc-9c4dc776-e7ef-5c87-972b-ee58e6972804",
+      "model": "grok-4.6",
+      "purpose": "round1-contribution",
+      "role": "advocate_round1",
+      "subagent_calls": 0,
+      "subagent_model": null
+    },
+    {
+      "agent": "catalyst-junkie",
+      "bcId": "bc-43f18956-c892-5ea4-9114-02146965fa37",
+      "model": "grok-4.6",
+      "purpose": "round1-contribution",
+      "role": "advocate_round1",
+      "subagent_calls": 0,
+      "subagent_model": null
+    },
+    {
+      "agent": "vol-convexity",
+      "bcId": "bc-f692ea48-9d27-5803-a2b8-a45e54b8d553",
+      "model": "grok-4.6",
+      "purpose": "round1-contribution",
+      "role": "advocate_round1",
+      "subagent_calls": 0,
+      "subagent_model": null
+    },
+    {
+      "agent": "no-trade-skeptic",
+      "bcId": "bc-b1112275-4fe7-56fe-b77b-581610541d8c",
+      "model": "grok-4.6",
+      "purpose": "round1-contribution",
+      "role": "advocate_round1",
+      "subagent_calls": 0,
+      "subagent_model": null
     }
-  ]
+  ],
+  "parent": {
+    "bcId": "bc-34da0a98-7beb-4099-83f9-bcb915003577",
+    "counted": true,
+    "model": "grok-4.6",
+    "role": "acp_parent"
+  },
+  "run_id": "tr-20260919T123430Z-ondemand",
+  "run_policy": "MW_TRADER_ROOM_RUN_POLICY={\"version\":1,\"run_type\":\"trader-room-ondemand\",\"total_model_cap\":57,\"grok_cap\":29,\"composer_cap\":28,\"parent_model\":\"grok-4.6\",\"parent_total\":1,\"parent_grok\":1}"
 }

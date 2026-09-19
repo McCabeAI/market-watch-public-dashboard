@@ -1,0 +1,155 @@
+{
+  "agent": "rate-hawk",
+  "archetype": "rate-hawk",
+  "confidence": 64,
+  "conflict_synopsis": {
+    "au_rates_view": "higher",
+    "aud_view": "higher",
+    "ca_rates_view": "higher",
+    "cad_view": "lower",
+    "carry_view": "opposes_trade",
+    "confidence": 64,
+    "conflict_tags": [
+      "USD_UP",
+      "CAD_DOWN",
+      "AUD_UP",
+      "US_RATES_UP",
+      "CA_RATES_UP",
+      "AU_RATES_UP",
+      "RISK_OFF"
+    ],
+    "core_view": "Hot US demand/labor plus a confirmed tightening bias leave December 2026 SOFR too low versus a shallow +34.75bp path.",
+    "key_catalyst": "Next US inflation/labor print or FOMC communication that forces more than one extra 2026 hike into SR1Z26.",
+    "key_invalidation": "Fed tightening bias dropped and Dec-26 implied SOFR falls back toward unchanged 3.85 SOFR policy.",
+    "nz_rates_view": "not_relevant",
+    "nzd_view": "not_relevant",
+    "primary_trade": "short/pay SR1Z26 ICE 1M SOFR Dec-26",
+    "risk_view": "risk_off",
+    "seat": "rate-hawk",
+    "time_horizon": "1-3 months",
+    "us_rates_view": "higher",
+    "usd_view": "higher"
+  },
+  "packet_sha256": "8903f3edceded5a5d9866d84bd422940ebc0c93106b761fbcb6267449e9504f9",
+  "paper_capital": {
+    "asset_class": "rates",
+    "decision": "OPEN",
+    "instrument": "SR1Z26",
+    "notional_usd": 10000000,
+    "rationale": "The seat already pays 5.00% ACT/365 on the full $100m allocation while flat, so a validated policy-path discrepancy should be opened. $10m is 10% of the empty $100m seed: large enough that a 15\u201325bp Dec-26 SOFR repricing can clear the daily vig in expected-value terms, small enough given null executable marks, delayed eSignal SOFR, and no overnight review. No mark is invented; if the book cannot represent ICE 1M SOFR from the frozen packet, the parent should record execution_blocked/HOLD.",
+    "side": "short"
+  },
+  "remit": "underpriced hawkish policy, higher terminal rates, or higher-rate repricing",
+  "round": 1,
+  "run_id": "tr-20260919T123430Z-ondemand",
+  "stance_summary": "Inflation persistence and still-hot US demand/labor mean the Fed\u2019s just-delivered hike is not the end of the tightening impulse. The live 1M SOFR path only prices about one extra hike by December 2026 and then a shallow peak near 4.72% with 2028 easing, which underprices the reaction function. Express that as paying December 2026 SOFR, not as a USD-spot default.",
+  "subagent_calls": 0,
+  "subagent_model": null,
+  "trade": {
+    "asset_class": "rates",
+    "catalysts": [
+      "Next US CPI/labor prints testing whether the August tightening-bias signal persists.",
+      "Subsequent FOMC communication versus a path that only prices SR1Z26 4.1975.",
+      "Energy-pass-through and shock-absorber headlines versus the Saudi workaround that cut the extreme oil tail.",
+      "Global confirmation: further BoJ/BoE hawkish residuals that keep term-rate pressure elevated."
+    ],
+    "confidence": 64,
+    "context_build": {
+      "causal_mechanism": "Verified: Fed raised 25bp to 3.75\u20134.00% on the Sep-16 decision after August CPI kept a tightening bias intact; US temperature gauges remain hot (Inflation 72, Labor 75, Activity 69, Consumer 74). Inference: with demand and labor still firm and an energy-inflation tail still live, the reaction function stays hiked/hold-high rather than one-and-done. The closing mechanism is additional 2026 hike pricing and a higher 2027 peak/delayed 2028 easing in the 1M SOFR strip. Unknown: the next FOMC dissent count, unobserved core CPI components beyond the rollup headline, and any executable SOFR/FOMC probability surface.",
+      "flow_and_positioning_check": "CFTC TFF as_of 2026-09-15 has status ok but trader-class nets (asset_manager_net, leveraged_net, dealer_net, pctile_1y_net) are null for US2Y/US5Y/US10Y and G10 FX; only open-interest is usable. US2Y OI 4433736 contracts, 1y pctile 24.03846153846154, z_1y -0.8531609930573465, weekly_change +87422; US5Y OI 1y pctile 22.115384615384617. Front-end Treasury futures OI is light, not a crowded short-rate overlay. CME public volume/OI overlay is HTTP 403 unavailable. Paper books are empty $100m seeds with no open positions (as_of 2026-09-18T07:39:31.391259-04:00). Inference: the SOFR path cannot be attributed to a visible leveraged crowding print. Unknown: ICE/CME SOFR open interest and options skew.",
+      "historical_reference": {
+        "analogs": [
+          "US 2Y analog 2022-03-23: level 2.13, prior_1m_move +57bp, forward_1m_move +59bp, forward_3m_move +88bp \u2014 hiking continued after CPI/policy confirmation.",
+          "US 2Y analog 2022-09-16: level 3.85, prior_1m_move +57bp, forward_1m_move +58bp, forward_3m_move +40bp \u2014 another hiking-regime continuation from a SOFR-like 3.85 starting yield.",
+          "US 2Y analog 2023-02-16: level 4.62, prior_1m_move +56bp, forward_1m_move -70bp, forward_3m_move -50bp \u2014 the same-size 1m rise reversed, a counter-analog.",
+          "US 2Y analog 2023-06-15: level 4.62, prior_1m_move +56bp, forward_1m_move +12bp, forward_3m_move +40bp \u2014 post-pause residual tightening rather than a full unwind."
+        ],
+        "distribution": "US 2Y 4.76 is at the 99.8015873015873 1y percentile and z_1y 2.837131124906408 as_of 2026-09-18; US 10Y 5.01 at 99.60317460317461 1y percentile. Those cash extremes are discovery signals that the hiking cycle is already in the price of Treasuries; they are not the policy-path thesis. The tradeable distribution is the SOFR strip: Dec-26 only +34.75bp, peak +87.25bp, terminal/last +75.25bp.",
+        "regime_differences": "2022 analogs started from much lower yield levels (2.13 then 3.85) in a first-ascent inflation shock with policy still far behind; today the funds target is already 3.75\u20134.00% and cash 2Y is 4.76, so remaining hike convexity is smaller. The 2023-02 analog included a US banking-stress unwind that is not in this packet; the current overlay is an energy shock plus BoJ/BoE hawkish confirmation. Packet SOFR method is delayed ICE 1M averages, not 2022 FOMC-probability screens. Do not pool those episodes as a mechanical +40\u201388bp 3m forecast."
+      },
+      "independent_checks": [
+        "US temperature gauges as_of dashboard_v8_retained: Inflation 72, Labor 75, Activity 69, Consumer 74 \u2014 demand/labor heat still broad, not an inflation-only residual.",
+        "Cross-market policy: BoJ 7\u20132 hike to 1.25% (31-year high); BoE hold at 3.75% with three hike votes; AU inflation gauge 82 with ASX 30D cash futures still climbing to a 4.945 peak in 2027-07/09; BoC minutes flag energy pass-through while Canada headline CPI holds at 3%. Desk 18 Sep: energy shock constrains the global easing impulse.",
+        "Market-versus-market: US 2Y 4.76 already near SOFR peak 4.7225, while SR1Z26 at 4.1975 still embeds only ~one extra 2026 hike \u2014 cash Treasuries and the 2026 1M strip disagree. CA 1M CORRA terminal is Dec-26 2.58 (+29bp) but CA 3M CORRA CRAU28 2028-09 implied 3.655 (+136.5bp), so Canada\u2019s 1M \u2018terminal\u2019 is a four-contract coverage artifact, not proof BoC prices only one hike. AU AONIA 4.35 versus Oct 4.565 / Dec 4.725 / packet terminal Mar-27 4.86, with 6m bank bills 5.07; AU OIS is 01-Dec-2022 vintage and must not be used as live OIS."
+      ],
+      "known_vs_new_information": "Known before the cutoff: August CPI kept Fed tightening bias intact (rollup 11 Sep); markets entered 16 Sep with >90% odds of a 25bp hike; the hike to 3.75\u20134.00% was then delivered. New after that known hike: BoJ to 1.25% on 17 Sep; BoE held 3.75% but with three votes for a hike; desk thesis 18 Sep that the energy shock is constraining the global easing impulse; energy-market shock absorbers weaken, even as a Saudi Oman ship-to-ship workaround reduced the extreme oil-supply tail. The 1M SOFR strip still only prices +34.75bp by Dec-26. Inference: the new information is global confirmation of tightening breadth, not the existence of the Fed hike.",
+      "market_assumption_disagreed_with": "Disagreement: that the Sep-16 hike plus one more 2026 move and a sub-4.75% 2027 peak is enough given still-hot US labor/consumer/activity and a live energy-inflation tail. The hawk case is more 2026 hikes and a higher/later terminal, so Dec-26 implied SOFR and the 2027 peak are too low and the 2028 dip is premature.",
+      "market_implied_assumption": "The 1M SOFR strip requires roughly one additional 25bp-scale move by December 2026 (Dec implied 4.1975 versus SOFR 3.85 and a 3.75\u20134.00% target range) and a cycle peak only 4.7225 in Dec-27, then slight easing toward 4.6025 by Aug-28. That is a shallow extra ~87bp over 15 months, then a modest 2028 downshift. Method caveat verified: these are 100 minus delayed ICE 1M SOFR prices, monthly-average SOFR, not meeting probabilities.",
+      "path_to_current_price": "Verified policy path (delayed ICE 1M SOFR via eSignal, monthly-average SOFR, not FOMC target probabilities): SOFR 3.85 as_of 2026-09-17; SR1U26 Sep implied 3.75 (price 96.25, -10.0bp from overnight); SR1V26 Oct 3.91 (+6.0bp); SR1X26 Nov 4.045 (+19.5bp); SR1Z26 Dec 4.1975 (price 95.8025, +34.75bp); then a grind to SR1Z27 Dec-27 4.7225 (+87.25bp) before SR1U28 Aug-28 4.6025, which the packet labels terminal. Pre-decision, interest-rate futures priced greater-than-90% probability of the 25bp hike, so the Sep-16 move itself was largely known. After the decision, BoJ hiked 25bp to 1.25% (7\u20132) and the last24 desk (18 Sep) framed global tightening as broadening, while US 2Y stands at 4.76 and 10Y at 5.01 as_of 2026-09-18 (1y pctiles 99.8015873015873 and 99.60317460317461). Unknown: tick-level path of SR1Z26 on 16\u201318 Sep and whether delayed eSignal prints lag the live ICE/CME surface.",
+      "policy_path_check": {
+        "pricing_summary": "US: SOFR 3.85 (2026-09-17); 1M strip SR1U26 3.75, SR1V26 3.91, SR1X26 4.045, SR1Z26 4.1975, peak SR1Z27 4.7225, last/terminal SR1U28 4.6025 (+75.25bp). Method: 100 minus delayed ICE 1M SOFR via eSignal; not FOMC probabilities. CA: CORRA 2.29 (2026-09-17); 1M COAU26 2.2875, COAV26 2.305, COAX26 2.43, COAZ26 2.58 (packet 1M terminal +29bp); 3M strip continues to CRAU28 3.655 then slight easing to CRAM29 3.62. AU: AONIA 4.35 (17-Sep-2026); ASX 30D Sep 4.355, Oct 4.565 (+21.5bp, OI 21752, volume 4450), Nov 4.685, Dec 4.725 (volume 2), packet terminal Mar-27 4.86, chain peak 4.945 in Jul\u2013Sep 2027. Live AU OIS is unavailable_cross_vintage versus 01-Dec-2022 prints 2.97/3.04/3.22; bank bills 1m/3m/6m 4.41/4.68/5.07. NZ policy path unavailable (RBNZ B2 HTTP 403).",
+        "rationale": "Inspected US SOFR-linked, CA CORRA-linked, and AU AONIA/ASX cash-futures paths before sovereign 2Y/5Y or CA-US/AU-US RV. Selected US 1M SOFR because US demand/labor heat plus a just-confirmed tightening bias is the cleanest hawkish reaction-function gap: Dec-26 only +34.75bp. Rejected CA 1M-only +29bp as the headline underpricing because the 3M CORRA strip already prices ~136bp of hikes and CA labor 38 / core near 2% cap the near-term BoC case. Rejected paying AU cash futures as primary despite Inflation 82 because NSW stamp-duty receipts -24% y/y, transactions -18%, and Sydney/Melbourne values >7% from peak show the tightening channel already biting, and Dec AU futures liquidity is 2 contracts of volume. Did not substitute US 2Y 99.8th percentile for the SOFR path.",
+        "relevant_countries": [
+          "US",
+          "CA",
+          "AU"
+        ],
+        "status": "available"
+      },
+      "price_decomposition": "Level versus change on the policy path, not the US 2Y percentile. Overnight benchmark SOFR 3.85. Near-dated Sep contract 3.75 is a month-end monthly-average residual around a mid-month hike, not a dovish signal. The marginal priced tightening is concentrated in Nov\u2013Dec 2026 (+19.5bp then +34.75bp versus overnight). Belly/peak is Dec-27 4.7225. Packet terminal is the last listed contract Aug-28 4.6025, which is below the peak, i.e. a small easing tail. Sovereign 2Y 4.76 already sits near that 2027 peak, so cash 2Y is not a substitute for the underpriced 2026 1M strip. 2s10s is 25.0bp as_of 2026-09-18 (1y pctile 0.1984126984126984), a flat curve consistent with front-end tightness already in cash yields, not with a fully priced 2026 SOFR path."
+    },
+    "direction": "short",
+    "entry": null,
+    "evidence_refs": [
+      "policy_paths",
+      "policy:US",
+      "policy:CA",
+      "policy:AU",
+      "rates:US",
+      "rates:CA",
+      "rates:AU",
+      "market_state",
+      "temp:US:inflation",
+      "temp:US:labor",
+      "temp:US:activity",
+      "temp:US:consumer",
+      "temp:CA:inflation",
+      "temp:CA:labor",
+      "temp:AU:inflation",
+      "mw_20260916_fomc_hike_pricing",
+      "rollup:Fed raises 25bp to 3.75\u20134.00%",
+      "rollup:August CPI keeps the Fed tightening bias intact",
+      "last24:2026-09-18:desk-thesis",
+      "macro:desk-18sep",
+      "last24:BoJ raises its policy rate to 1.25%",
+      "rollup:BoE holds 3.75% with three votes for a hike",
+      "rollup:BoC minutes flag higher energy pass-through risk",
+      "rollup:Canada August inflation holds at 3%, core stays near 2%",
+      "mw_20260916_au_housing_tightening",
+      "xa:energy-retained",
+      "rollup:Energy-market shock absorbers weaken",
+      "mw_20260916_saudi_oman_workaround",
+      "pos:cftc",
+      "paper_books",
+      "research_method"
+    ],
+    "expression_comparison": {
+      "rates_candidate": "Pay/short ICE 1-month SOFR future SR1Z26 (Dec-26): packet research/reference implied_rate 4.1975 versus SOFR benchmark 3.85, i.e. only +34.75bp by December after the Sep-16 hike.",
+      "rationale": "The discrepancy is the US policy path versus the Fed reaction function, not a USD-spot valuation gap. SR1Z26 owns that strip directly. USDCAD mixes CAD terms-of-trade/energy, a 1M versus 3M CORRA coverage difference (3M CORRA already grinds toward 3.655 by 2028-09), and a 1m USDCAD gain of 1.7446777346133757% that can be flow rather than policy. Rates are comparably clean and are the default; spot is the hedge/alternative, not the primary.",
+      "selected": "rates",
+      "spot_candidate": "Long USDCAD spot (USD higher versus CAD): Fed tightening bias and hot US labor/consumer/activity versus MX 1M CORRA only +29bp by Dec-26 (COAZ26 implied 2.58 versus CORRA 2.29) while Canada August CPI holds at 3% with core near 2% and CA labor gauge 38. Packet USDCAD spot 1.4010471204188482 as_of 2026-09-18, 1y pctile 74.0079365079365."
+    },
+    "horizon": "1-3 months",
+    "instrument": "SR1Z26",
+    "invalidation": "Thesis is wrong if subsequent US inflation/labor data and FOMC communication drop the tightening bias, or if the 1M SOFR strip reprices SR1Z26 implied SOFR down toward unchanged policy at the 3.85 SOFR benchmark rather than higher. Delayed eSignal versus live ICE basis is a mark risk, not an invalidation of the macro claim.",
+    "mispricing": "SR1Z26 at 4.1975 versus SOFR 3.85 prices only about one additional 25bp-scale move by December after a hike that was already >90% priced. The hawkish residual \u2014 another 2026 hike and/or a higher 2027 peak \u2014 is not in the 2026 1M contract. US 2Y 4.76 is a different tenor and is already near the 2027 peak; it is not this mispricing.",
+    "principal_risks": [
+      "The Sep-16 hike was >90% priced; remaining 2026 SOFR convexity may be only 10\u201320bp if the Fed hikes once more and stops.",
+      "Saudi workaround and any further oil-supply relief can fade the energy-inflation tail.",
+      "US 2Y already 4.76 / 99.8th 1y percentile: cash duration has already moved; a growth scare can rally the strip without invalidating long-run inflation (2023-02 analog).",
+      "Packet SOFR path is delayed eSignal ICE 1M, not CME/FOMC probabilities; AU OIS is stale; NZ rates unavailable; CFTC trader-class nets null; no executable broker prices.",
+      "CA 3M CORRA already prices a long hiking grind, so a US-versus-Canada rates RV is not this trade and can go the other way if BoC catches up."
+    ],
+    "stop": null,
+    "structure": "Short/pay ICE 1-month SOFR future SR1Z26. Packet research/reference: implied_rate 4.1975, price 95.8025, source ESIGNAL_ICE_1M_SOFR_DELAYED. Not an executable broker ticket.",
+    "target": null,
+    "thesis": "Verified fact: Fed hiked 25bp to 3.75\u20134.00%; August CPI kept tightening bias intact; SOFR 3.85; SR1Z26 implies 4.1975 (+34.75bp); US gauges Inflation 72 / Labor 75 / Activity 69 / Consumer 74; BoJ hiked to 1.25%; BoE 6\u20133 with three hike votes. Inference: that configuration is not consistent with a 2026 path that only prices one extra hike and a 4.7225 peak. Paying Dec-26 SOFR owns the near-term hike underpricing that cash 2Y at 4.76 does not isolate. Unknown: next US CPI composition, unobserved SOFR meeting-implied probabilities, and whether delayed eSignal is off the live ICE mark.",
+    "why_now": [
+      "Sep-16 hike is now delivered, so residual information is the reaction function not the meeting itself.",
+      "18 Sep desk thesis: global tightening is broadening after the Fed move (BoJ 1.25%, BoE three hike votes), while the 1M SOFR strip is still +34.75bp by Dec.",
+      "Energy-market shock absorbers weaken even after a Saudi workaround reduced the extreme oil-supply tail, keeping an inflation-persistence tail in the US reaction function.",
+      "Empty $100m paper book pays 5% ACT/365 vig while flat; the policy-path discrepancy is live at cutoff 2026-09-19T12:34:30Z."
+    ]
+  },
+  "type": "TRADER_ROOM_CONTRIBUTION"
+}
