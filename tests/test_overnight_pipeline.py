@@ -498,13 +498,31 @@ class TraderBookTabTests(unittest.TestCase):
 
 
 class SeedBooksTests(unittest.TestCase):
-    def test_repo_seed_has_fourteen_empty_books(self):
+    def test_repo_books_have_fourteen_standing_seats(self):
         books = json.loads((ROOT / "data" / "overnight" / "books" / "latest.json").read_text())
         self.assertEqual(set(books["seats"]), set(STANDING_SEATS))
         self.assertEqual(books["starting_nav_usd"], STARTING_NAV_USD)
-        for seat in books["seats"].values():
-            self.assertEqual(seat["positions"], [])
-            self.assertEqual(seat["nav_usd"], STARTING_NAV_USD)
+        self.assertEqual(books.get("schema_version"), 1)
+        review = books.get("review_status") or "missing"
+        for seat, item in books["seats"].items():
+            self.assertEqual(item["seat"], seat)
+            self.assertEqual(item["starting_nav_usd"], STARTING_NAV_USD)
+            self.assertEqual(item.get("funding_rate_annual"), FUNDING_RATE_ANNUAL)
+            self.assertIn("funding_cost_usd", item)
+            self.assertIn("cash_yield_usd", item)
+            self.assertIn("net_pnl_usd", item)
+            if review == "missing":
+                self.assertEqual(item["positions"], [])
+                self.assertEqual(item["nav_usd"], STARTING_NAV_USD)
+            for position in item.get("positions") or []:
+                self.assertIn(position.get("side"), {"long", "short"})
+                self.assertGreaterEqual(float(position["notional_usd"]), 1)
+                self.assertLessEqual(float(position["notional_usd"]), STARTING_NAV_USD)
+                self.assertIsNotNone(position.get("entry_price"))
+                self.assertIsNotNone(position.get("mark_price"))
+        if review == "fresh":
+            self.assertTrue(books.get("last_successful_review_run_id"))
+            self.assertTrue(books.get("overnight_run_id"))
 
 
 if __name__ == "__main__":

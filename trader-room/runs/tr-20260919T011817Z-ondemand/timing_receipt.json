@@ -1,6 +1,11 @@
 {
+  "book_application_model_calls": 0,
   "comparison_run_id": "tr-20260918T223926Z-ondemand",
+  "conflict_mapping_model_calls": 0,
   "ended_at": "2026-09-19T01:54:45.676639+00:00",
+  "final_handoff_model_calls": 0,
+  "no_FINAL_INPUT_bundle": true,
+  "no_final_aggregator": true,
   "run_id": "tr-20260919T011817Z-ondemand",
   "stages": {
     "book_application": {
@@ -10,24 +15,9 @@
       "started_at": "2026-09-19T01:54:45.557240+00:00"
     },
     "conflict_mapping": {
-      "direct_conflicts": 3,
       "elapsed_seconds": 2.0,
       "ended_at": "2026-09-19T01:33:26.536859+00:00",
-      "method": "deterministic_conflict_synopsis_v1",
       "model_calls": 0,
-      "rebuttal_seats": [
-        "catalyst-junkie",
-        "cross-merchant",
-        "dollar-king",
-        "mean-reverter",
-        "perma-bear",
-        "perma-bull",
-        "positioning-cynic",
-        "rate-dove",
-        "rate-hawk",
-        "trend-follower",
-        "value-guy"
-      ],
       "started_at": "2026-09-19T01:33:24.536859+00:00"
     },
     "deterministic_final_handoff": {
@@ -45,35 +35,14 @@
     "rebuttals": {
       "elapsed_seconds": 942.854,
       "ended_at": "2026-09-19T01:54:35.300851+00:00",
-      "model": "grok-4.6",
       "model_calls": 11,
-      "seats": [
-        "catalyst-junkie",
-        "cross-merchant",
-        "dollar-king",
-        "mean-reverter",
-        "perma-bear",
-        "perma-bull",
-        "positioning-cynic",
-        "rate-dove",
-        "rate-hawk",
-        "trend-follower",
-        "value-guy"
-      ],
-      "started_at": "2026-09-19T01:38:52.447295+00:00",
-      "subagent_calls": 0,
-      "validated": true
+      "started_at": "2026-09-19T01:38:52.447295+00:00"
     },
     "round1": {
       "elapsed_seconds": 651.926,
       "ended_at": "2026-09-19T01:29:47.322000+00:00",
-      "model": "grok-4.6",
       "model_calls": 14,
-      "seats": 14,
-      "started_at": "2026-09-19T01:18:55.395947+00:00",
-      "started_unix": 1789780735.3959613,
-      "subagent_calls": 0,
-      "validated": true
+      "started_at": "2026-09-19T01:18:55.395947+00:00"
     }
   },
   "started_at": "2026-09-19T01:14:58.671923+00:00",
