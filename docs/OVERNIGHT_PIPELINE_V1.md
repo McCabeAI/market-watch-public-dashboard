@@ -70,7 +70,7 @@ The JSON contains:
 - exactly 14 structured seat decisions;
 - declared model-usage/cap fields.
 
-It must not contain canonical books, NAV, cash, realized P&L, or unrealized P&L.
+It must not contain canonical books, NAV, cash, realized/unrealized P&L, funding charges, net P&L, or competition rank.
 
 ## 5. Model policy and hard budget
 
@@ -122,6 +122,14 @@ Each seat returns structured decisions only:
 
 `OPEN / ADD / HOLD / REDUCE / HEDGE / CLOSE`
 
+The 14 seats are competing portfolio managers. Their standing objective is **highest cumulative net paper P&L**, not highest conviction score, most cautious commentary, or most persuasive prose. Every child receives the same frozen competition contract:
+- ranking metric: net paper P&L after funding;
+- every open position's stored `notional_usd` is treated as borrowed paper notional;
+- funding rate: **5.00% per year, simple ACT/365**, accrued on outstanding notional until it is reduced or closed;
+- a flat book pays no funding and earns zero P&L;
+- no-trade remains valid, but repeated flat decisions compete directly against profitable books;
+- a trader should put on risk when the expected edge clears the funding drag and has a defined invalidation. It must not manufacture a trade merely to avoid being flat.
+
 The dedicated spot seats remain spot-only. Rates-capable seats compare a rates candidate and a spot candidate before adding risk. Options remain last-resort.
 
 ## 7. Deterministic acceptance gate
@@ -152,7 +160,9 @@ Canonical mechanics are implemented only by `scripts/overnight/books.py`:
 - position creation/resizing/closing;
 - freshness blocks;
 - marks;
-- realized/unrealized P&L;
+- realized/unrealized gross P&L;
+- 5% annual funding accrual on borrowed paper notional;
+- net P&L after funding and competition rank;
 - NAV;
 - history;
 - overnight changes.
