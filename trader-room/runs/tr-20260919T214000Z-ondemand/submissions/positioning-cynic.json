@@ -1,0 +1,128 @@
+{
+  "type": "TRADER_ROOM_CONTRIBUTION",
+  "run_id": "tr-20260919T214000Z-ondemand",
+  "round": 1,
+  "agent": "positioning-cynic",
+  "archetype": "positioning-cynic",
+  "remit": "attack crowded ideas; prefer better ownership asymmetry",
+  "packet_sha256": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
+  "stance_summary": "Verified: CFTC/CME nets are unavailable this freeze and must stay null; the owned post-FOMC idea is more Fed tightening after a >90% priced 25bp hike that was delivered. Inference: that consensus is already in US 2Y at a 99.8th 1y percentile and a 0.2nd-percentile 2s10s, so joining short US duration or long USDCAD is a bad entry even if the US mechanism is intact. Prefer receiving the 2027 CORRA strip, where +84 to +130bp of catch-up hikes sit on labor 38 / core-near-2% data the Fed crowd is not focused on.",
+  "confidence": 50,
+  "trade": {
+    "instrument": "{\"type\":\"futures_strip_average\",\"curve_id\":\"CORRA\",\"expiries\":[\"2027-03\",\"2027-06\",\"2027-09\",\"2027-12\"]}",
+    "asset_class": "rates",
+    "expression_comparison": {
+      "rates_candidate": "Receive/long equal-weight MX CRA strip CORRA_2027-03/2027-06/2027-09/2027-12 at packet mids (implied 3.13/3.365/3.51/3.595 versus overnight CORRA 2.29).",
+      "spot_candidate": "Long USDCAD at the ECB packet mid 1.4010471204188482 (as_of 2026-09-18), the spot expression of leftover Fed-BoC divergence.",
+      "selected": "rates",
+      "rationale": "Rates owns the overpriced Canada 2027 hike path directly. Long USDCAD is the crowded post-FOMC USD-up expression of the same split: USDCAD is already +1.74% 1m at the 74th 1y percentile, and the frozen USDCAD~CA-US_2Y link is weak (r-squared 0.022). The CA-US 2Y sovereign spread at -140bp / 3.8th 1y percentile is itself the owned RV of 'Fed hikes, BoC does not'; adding more of that spread or the spot pair is worse ownership than outright receiving Canada. Rates is cleaner and markable from tradable_rate_curves."
+    },
+    "context_build": {
+      "causal_mechanism": "Test whether leftover global-hike consensus after the delivered September 16 Fed 25bp move is being imported into Canada policy-path pricing that Canada's own labor, consumer, and core-inflation evidence cannot support. Mechanism: a one-way US tightening narrative plus BoC energy-pass-through language keeps 2027 CORRA implied rates 84-130bp above overnight CORRA 2.29 even though Canada inflation held at 3% with core near 2%. If that imported hawkishness fades, the 2027 CORRA window is the tenor that must reprice lower.",
+      "path_to_current_price": "Known path: Reuters recorded greater-than-90% odds of a 25bp Fed hike into the September 16 FOMC; August CPI had already kept a tightening bias intact; the Fed then raised the target range to 3.75-4.00%. Official SOFR jumped from 3.62% on 2026-09-16 to 3.85% on 2026-09-17. SR3 still prices 4.32 by Dec-2026, 4.58 by Mar-2027, and 4.755 by Sep-2027 (+47/+73/+90.5bp versus overnight SOFR). Canada: CORRA overnight 2.29; 3m CRA strip prices 2.775 Dec-2026, 3.13 Mar-2027, 3.365 Jun-2027, 3.51 Sep-2027, 3.595 Dec-2027, peaking near 3.655 by Sep-2028. CA 2Y is 3.27 and CA-US 2Y printed -140bp on 2026-09-17 after a -17bp 1m move. USDCAD is 1.401, +1.74% 1m. Unknown: trader-class nets on CAD, SOFR, or CRA.",
+      "known_vs_new_information": "Known before this freeze: hike odds above 90%, August US CPI, Canada August CPI at 3% / core near 2%, BoC minutes energy-pass-through language, AU housing slump. New in the path: the hike was delivered, SOFR printed 3.85, and both SR3 and CORRA still ask for a full extra hiking cycle. The Saudi-Oman workaround reducing the extreme oil-supply tail is also in the packet and weakens the energy channel the BoC minutes flagged. Temperature gauges are repo-retained dashboard_v8, not a fresh live print.",
+      "market_implied_assumption": "The 2027 CORRA strip assumes Canada delivers roughly +84bp by Mar-2027 and +130bp by Dec-2027 from 2.29 overnight, a larger basis-point hiking cycle than SR3 asks of the US from 3.85 (+73bp by Mar-2027, +90.5bp by Sep-2027). That prices a BoC catch-up cycle despite cooler Canada gauges (inflation 55 / labor 38 / activity 66 / consumer 45) versus hot US gauges (72 / 75 / 69 / 74).",
+      "market_assumption_disagreed_with": "Disagree that Canada must deliver that 2027 catch-up path. The priced assumption is that Fed-led tightening plus energy pass-through forces BoC hikes of about 84-130bp through 2027. Canada core-near-2% and labor 38 do not require that path; energy-tail risk is reduced in the same packet. Do not disagree that US data can still support more Fed hikes — that is the crowded object I refuse to join.",
+      "price_decomposition": "Level versus change: overnight CORRA 2.29 is the state; the 2027 strip is the change (catch-up). CA 2Y 3.27 sits between overnight and the 2027 implieds, so the forward hike is in the STIR path more than in a 5y-extreme 2Y (CA 2Y is only 58.6th percentile on 5y). CA-US 2Y -140bp is the cross-market residual of the same story and is already a 1y/5y extreme; US 2s10s at 25bp / 0.2nd 1y percentile shows the crowded US front-end tightness. Marginal driver of Canada 2027 implieds is imported Fed-hike consensus plus BoC energy language, not a domestic labor/core impulse.",
+      "historical_reference": {
+        "distribution": "CA 2Y 3.27: 97.8th 1y percentile / 58.6th 5y percentile (z 2.46 / 0.15). CA-US 2Y -140bp: 3.8th 1y / 4.3rd 5y (z -1.84 / -1.51), 1m change -17bp. CA 2s10s 56bp: 0.6th 1y percentile. US 2Y 4.76: 99.8th 1y. US 2s10s 25bp: 0.2nd 1y. These percentiles are discovery flags only.",
+        "analogs": [
+          "CA-US 2Y 1m-move analogs at prior_1m_move -17bp: 2022-11-15 (level -51; fwd 1m -4 / 3m +6), 2025-01-30 (level -145; fwd 1m -5 / 3m +25), 2024-05-02 (level -63; fwd 1m -9 / 3m -6), 2024-12-18 (level -130; fwd 1m -3 / 3m -20). Forward outcomes are mixed; this is not a mean-reversion signal.",
+          "CA-US 10Y 1m-move analogs at prior_1m_move -10bp: 2023-11-15, 2024-04-19, 2024-07-30, 2024-12-17 also mixed (fwd 3m +1 / 0 / -14 / +1)."
+        ],
+        "regime_differences": "Today is immediately after a delivered Fed hike with SOFR 3.85 and SR3 still +90bp, not a mid-cycle drift analog. Energy shock-absorbers are described as weakening while a Saudi workaround reduces the extreme oil-supply tail — a split energy regime none of the 2022-2025 CA-US analogs jointly encode. NZ rates are missing and CFTC/CME nets are unavailable, so holder-composition comparison to those episodes cannot be made."
+      },
+      "independent_checks": [
+        "Policy-path triangulation: overnight CORRA 2.29 versus MX CRA 2027 implieds 3.13/3.365/3.51/3.595, set against Canada August CPI 3% / core near 2% and temps labor 38 / consumer 45 / inflation 55.",
+        "Cross-market triangulation: SR3 still prices +90.5bp of US hikes from a hot US gauge set, while CORRA prices a larger +130bp Canada cycle from a cooler set; CA-US 2Y -140bp already embeds the 'Fed over BoC' story.",
+        "Narrative versus physical energy: BoC minutes flag higher energy pass-through, but the Saudi-Oman workaround is in the packet as reducing the extreme oil-supply tail — the hawkish Canada hook is not independently confirmed by the energy news family."
+      ],
+      "flow_and_positioning_check": "Verified unknown: CFTC trader-class nets and CME positioning overlays are unavailable this freeze (pos:cftc status unavailable; instruments empty). Do not invent nets. Available ownership proxies only: (1) consensus pricing — Reuters greater-than-90% Fed hike odds into a delivered decision, leftover SR3 +90bp and CORRA +84 to +130bp; (2) the only non-null futures open interest in the packet is ASX AONIA, concentrated in 2026-10 (21752) and 2026-09 (11896), i.e. the front AU hike is the owned contract; every CORRA and SR3 open_interest field is null. Inference: the Fed-hike idea is the crowded narrative; Canada 2027 catch-up is the less-owned expression of that same narrative. The CA-US 2Y extreme is the owned RV, so fading it via more CA-US widening or long USDCAD is worse ownership than outright receiving CORRA. CTA/skew/dealer-gamma: not in the packet.",
+      "policy_path_check": {
+        "status": "available",
+        "relevant_countries": [
+          "CA",
+          "US"
+        ],
+        "pricing_summary": "CA: overnight CORRA 2.29 (2026-09-17); CRA 2027-03 3.13 / 2027-06 3.365 / 2027-09 3.51 / 2027-12 3.595; path peaks near 3.655 by 2028-09. US: overnight SOFR 3.85 (2026-09-17, NY_FED); SR3Z6 4.32, SR3H7 4.58, SR3U7 4.755. AU path is present but not the selected trade (AONIA 4.35, front +21.5 to +37.5bp with Oct OI 21752). NZ policy path is unavailable.",
+        "rationale": "Short-end Canada duration cannot be read from the CA 2Y percentile alone. The tradable CORRA path is live and is the object being received. US SR3 is the imported-consensus benchmark, not the trade."
+      }
+    },
+    "structure": "Long/receive equal-weight MX CRA strip {\"type\":\"futures_strip_average\",\"curve_id\":\"CORRA\",\"expiries\":[\"2027-03\",\"2027-06\",\"2027-09\",\"2027-12\"]} at frozen packet mids; paper-mark in implied-rate space; do not migrate onto CA 2Y.",
+    "direction": "long",
+    "thesis": "The good-looking macro idea — more Fed tightening after CPI and a delivered hike — is already the consensus trade. US 2Y and US 2s10s show that ownership. I will not join short US duration or long USDCAD. The mis-owned object is Canada's 2027 policy path, which still prices an 84-130bp hiking cycle from 2.29 despite labor 38 and core near 2%. Receive the 2027 CORRA strip and let the imported hawkishness unwind there.",
+    "mispricing": "CORRA 2027-03/06/09/12 implieds 3.13/3.365/3.51/3.595 require Canada to deliver a larger hiking cycle than SR3 asks of the US, even though Canada data are cooler and the BoC energy hook is weakened by the Saudi workaround. That is a pricing-versus-fundamentals gap, not a CA-US percentile fade. The CA-US 2Y at -140bp already owns the 'Fed over BoC' RV; outright Canada receive does not need that spread to mean-revert.",
+    "why_now": [
+      "The September 16 hike the market had priced at greater-than-90% odds has been delivered; leftover consensus is now the extra US and Canada hiking cycles still in SR3 and CORRA.",
+      "Official SOFR printed 3.85% on 2026-09-17, so the funded book pays that ACT/360 vig even if flat; receiving an overpriced 2027 Canada path is the clean edge that can clear the observed hurdle.",
+      "The Saudi-Oman workaround in the same freeze reduces the oil-supply tail that BoC minutes used as the hawkish Canada add-on.",
+      "CFTC/CME nets are missing, so this is a consensus-pricing fade, not a documented liquidation setup — the window is the post-FOMC leftover path, not a fabricated positioning squeeze."
+    ],
+    "evidence_refs": [
+      "policy:CA",
+      "policy:US",
+      "policy_paths",
+      "tradable_rate_curves",
+      "funding_context",
+      "pos:cftc",
+      "rates:CA",
+      "rates:US",
+      "temp:CA:labor",
+      "temp:CA:inflation",
+      "temp:CA:consumer",
+      "temp:US:inflation",
+      "temp:US:labor",
+      "rollup:Canada August inflation holds at 3%, core stays near 2%",
+      "rollup:BoC minutes flag higher energy pass-through risk",
+      "mw_20260916_fomc_hike_pricing",
+      "rollup:Fed raises 25bp to 3.75–4.00%",
+      "rollup:August CPI keeps the Fed tightening bias intact",
+      "mw_20260916_saudi_oman_workaround",
+      "fx:USDCAD",
+      "market_state",
+      "research_method"
+    ],
+    "horizon": "3-6 months through the 2027 CORRA window",
+    "entry": "Packet mids on MX CRA 2027-03/06/09/12: implied 3.13/3.365/3.51/3.595 (prices 96.87/96.635/96.49/96.405) from tradable_rate_curves / policy:CA",
+    "target": null,
+    "stop": null,
+    "invalidation": "Invalid if Canada labor/core re-accelerate or realized energy pass-through appears in CPI such that the 2027 CORRA strip re-prices higher along the priced hike path. Wrong-thesis versus late: if the US hike cycle remains crowded but Canada data stay soft, hold the receive. Do not invent a yield stop; CFTC/CME nets remain unknown and cannot be used as a manufactured level.",
+    "catalysts": [
+      "Next Canada CPI/labor prints that keep core near 2% and labor soft, forcing CORRA 2027 implieds lower.",
+      "Fading of BoC energy-pass-through language if the reduced oil-supply tail persists.",
+      "Post-FOMC digestion in which leftover global-hike consensus is unwound first in the less-owned Canada path rather than in already-extreme US 2Y."
+    ],
+    "principal_risks": [
+      "CFTC/CME positioning is unavailable; the crowding call is inferred from consensus odds, yield percentiles, and AONIA open interest only.",
+      "BoC minutes energy pass-through can still show up in headline CPI and justify the priced 2027 hikes.",
+      "Hot US data can keep importing hawkishness into CORRA even if Canada domestic data stay cool.",
+      "Temperature gauges are repo-retained dashboard_v8 and may be stale versus a live Supabase score.",
+      "Receiving 2027 CORRA while official SOFR funding is 3.85% can fail to clear the cash hurdle if the strip only cheapens slowly."
+    ],
+    "confidence": 50
+  },
+  "conflict_synopsis": {
+    "seat": "positioning-cynic",
+    "primary_trade": "long CORRA 2027-03/06/09/12 strip",
+    "core_view": "Fade imported post-FOMC hike consensus in the overpriced 2027 CORRA path rather than joining crowded short US duration or long USDCAD.",
+    "usd_view": "neutral",
+    "cad_view": "neutral",
+    "aud_view": "not_relevant",
+    "nzd_view": "not_relevant",
+    "us_rates_view": "neutral",
+    "ca_rates_view": "lower",
+    "au_rates_view": "not_relevant",
+    "nz_rates_view": "not_relevant",
+    "risk_view": "neutral",
+    "carry_view": "supports_trade",
+    "time_horizon": "3-6 months",
+    "key_catalyst": "Soft Canada labor/core or fading BoC energy-pass-through language that pulls 2027 CORRA implieds down.",
+    "key_invalidation": "Canada labor/core re-acceleration or realized energy pass-through that re-prices the 2027 CORRA strip higher.",
+    "confidence": 50,
+    "conflict_tags": [
+      "CA_RATES_DOWN",
+      "USD_NEUTRAL",
+      "CROWDED_FED_HIKE_REFUSED"
+    ]
+  }
+}
