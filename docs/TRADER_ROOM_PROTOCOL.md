@@ -56,7 +56,7 @@ The standing seats are paper portfolio managers competing for **highest cumulati
 
 ## Evidence contract
 
-Every run uses one common frozen evidence packet. All 14 advocates receive the exact same packet and cutoff. After freeze, advocates, rebuttals and the final aggregator may not browse, search, fetch, or acquire new evidence.
+Every run uses one common frozen evidence packet. All 14 advocates receive the exact same packet and cutoff. After freeze, advocates and rebuttals may not browse, search, fetch, or acquire new evidence; the deterministic finalizer only reads the saved structured artifacts.
 
 The packet follows `docs/TRADER_ROOM_EVIDENCE_CONTRACT.md` and includes current temperature gauges/hard inputs, central-bank and news research, deterministic market state, durable research method, provenance and known gaps. Missing essential evidence must fail closed before the expensive debate.
 
@@ -91,7 +91,7 @@ The deterministic stage:
 - produces `conflict_map.json` and `rebuttal_assignments.json`;
 - consumes zero model calls.
 
-Only **direct conflicts** route an advocate into Round 2. Theoretical/context tensions remain visible to the final aggregator without automatically spending rebuttal calls.
+Only **direct conflicts** route an advocate into Round 2. Theoretical/context tensions remain visible in the deterministic final handoff without automatically spending rebuttal calls.
 
 No voting, ranking, confidence weighting, winner selection, or house view.
 
