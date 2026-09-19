@@ -236,46 +236,141 @@ def _linear_combo(state: Mapping[str, Any], expression: Mapping[str, Any]) -> di
     }
 
 
-def _forward_swap(state: Mapping[str, Any], expression: Mapping[str, Any]) -> dict[str, Any]:
-    """Forward par swap from deterministic discount factors.
+def _official_curve_df(
+    state: Mapping[str, Any],
+    country: str,
+    years: float,
+) -> tuple[float, str | None, str]:
+    curves = state.get("official_curves")
+    countries = curves.get("countries") if isinstance(curves, Mapping) else None
+    block = countries.get(country) if isinstance(countries, Mapping) else None
+    if not isinstance(block, Mapping) or block.get("status") != "ok":
+        raise PaperMarkError(f"official curve unavailable for {country}")
+    raw = block.get("discount_factors")
+    if not isinstance(raw, Mapping):
+        raise PaperMarkError(f"official curve discount factors unavailable for {country}")
 
-    For a 2y2y annual-pay forward swap:
+    points: list[tuple[float, float, str | None, str]] = []
+    for label, row in raw.items():
+        if not isinstance(row, Mapping):
+            continue
+        maturity = row.get("maturity_years")
+        value = row.get("value")
+        if maturity is None or value is None:
+            continue
+        t = _number(maturity, f"{country} curve maturity")
+        df = _number(value, f"{country} {label} discount factor")
+        if t < 0 or df <= 0:
+            continue
+        points.append((t, df, row.get("as_of") or block.get("as_of"), str(row.get("source") or label)))
+    if not points:
+        raise PaperMarkError(f"official curve contains no discount factors for {country}")
+    points.sort(key=lambda item: item[0])
+    target = float(years)
+    for t, df, as_of, source in points:
+        if abs(t - target) < 1e-9:
+            return df, str(as_of) if as_of else None, f"official_curves.{country}.{source}@{t:g}Y"
+
+    lower = next((p for p in reversed(points) if p[0] < target), None)
+    upper = next((p for p in points if p[0] > target), None)
+    if lower is None or upper is None:
+        raise PaperMarkError(
+            f"{country} official curve cannot interpolate {target:g}Y outside "
+            f"{points[0][0]:g}Y..{points[-1][0]:g}Y"
+        )
+    t0, df0, d0, s0 = lower
+    t1, df1, d1, s1 = upper
+    # Log-linear interpolation preserves positive discount factors and corresponds
+    # to a constant continuously-compounded forward between the source nodes.
+    w = (target - t0) / (t1 - t0)
+    log_df = math.log(df0) + w * (math.log(df1) - math.log(df0))
+    df = math.exp(log_df)
+    dates = [str(d) for d in (d0, d1) if d]
+    as_of = min(dates) if dates else str(block.get("as_of") or "") or None
+    source = f"official_curves.{country}.loglinear[{s0}@{t0:g}Y,{s1}@{t1:g}Y]"
+    return df, as_of, source
+
+
+def _forward_swap(state: Mapping[str, Any], expression: Mapping[str, Any]) -> dict[str, Any]:
+    """Forward par-swap proxy from deterministic discount factors.
+
+    Compact paper syntax:
+      {"type":"forward_swap","curve_country":"US","start_years":2,
+       "tenor_years":2,"payment_frequency":1}
+
+    For an annual-pay 2y2y:
       rate = (P(0,2) - P(0,4)) / (P(0,3) + P(0,4))
 
-    More generally the denominator is sum(alpha_i * P(0,t_i)).
+    Explicit source refs remain supported for fixtures and bespoke curves.
     """
-    start_ref = expression.get("start_discount_ref")
-    end_ref = expression.get("end_discount_ref")
-    payments = expression.get("payment_discount_refs")
-    if not isinstance(start_ref, str) or not isinstance(end_ref, str):
-        raise PaperMarkError("forward_swap requires start_discount_ref and end_discount_ref")
-    if not isinstance(payments, list) or not payments:
-        raise PaperMarkError("forward_swap requires payment_discount_refs")
-    start_df, start_asof = _path_get(state, start_ref)
-    end_df, end_asof = _path_get(state, end_ref)
-    if not (0 < end_df <= start_df <= 1.5):
+    country = expression.get("curve_country")
+    if isinstance(country, str):
+        country = country.upper()
+        if country not in {"US", "CA", "AU"}:
+            raise PaperMarkError("forward_swap curve_country must be US, CA or AU")
+        start_years = _number(expression.get("start_years"), "forward_swap start_years")
+        tenor_years = _number(expression.get("tenor_years"), "forward_swap tenor_years")
+        frequency = int(_number(expression.get("payment_frequency", 1), "forward_swap payment_frequency"))
+        if start_years < 0 or tenor_years <= 0:
+            raise PaperMarkError("forward_swap start_years must be >=0 and tenor_years >0")
+        if frequency not in {1, 2, 4}:
+            raise PaperMarkError("forward_swap payment_frequency must be 1, 2 or 4")
+        end_years = start_years + tenor_years
+        periods_float = tenor_years * frequency
+        periods = int(round(periods_float))
+        if periods <= 0 or abs(periods_float - periods) > 1e-8:
+            raise PaperMarkError("forward_swap tenor_years must align to payment_frequency")
+
+        start_df, start_asof, start_source = _official_curve_df(state, country, start_years)
+        end_df, end_asof, end_source = _official_curve_df(state, country, end_years)
+        accrual = 1.0 / frequency
+        denom = 0.0
+        dates = [d for d in (start_asof, end_asof) if d]
+        refs = [start_source, end_source]
+        for i in range(1, periods + 1):
+            payment_t = start_years + i * accrual
+            df, as_of, source = _official_curve_df(state, country, payment_t)
+            denom += accrual * df
+            refs.append(source)
+            if as_of:
+                dates.append(as_of)
+    else:
+        start_ref = expression.get("start_discount_ref")
+        end_ref = expression.get("end_discount_ref")
+        payments = expression.get("payment_discount_refs")
+        if not isinstance(start_ref, str) or not isinstance(end_ref, str):
+            raise PaperMarkError(
+                "forward_swap requires curve_country/start_years/tenor_years "
+                "or explicit start_discount_ref/end_discount_ref"
+            )
+        if not isinstance(payments, list) or not payments:
+            raise PaperMarkError("forward_swap requires payment_discount_refs")
+        start_df, start_asof = _path_get(state, start_ref)
+        end_df, end_asof = _path_get(state, end_ref)
+        denom = 0.0
+        dates = [d for d in (start_asof, end_asof) if d]
+        refs = [start_ref, end_ref]
+        for payment in payments:
+            if not isinstance(payment, Mapping) or not isinstance(payment.get("ref"), str):
+                raise PaperMarkError("forward_swap payment requires ref")
+            df, as_of = _path_get(state, payment["ref"])
+            accrual = _number(payment.get("accrual", 1.0), "forward_swap accrual")
+            if df <= 0 or accrual <= 0:
+                raise PaperMarkError("forward_swap payment inputs must be positive")
+            denom += accrual * df
+            refs.append(payment["ref"])
+            if as_of:
+                dates.append(as_of)
+
+    if not (0 < start_df < 1.5 and 0 < end_df < 1.5):
         raise PaperMarkError("forward_swap discount factors are implausible")
-    denom = 0.0
-    dates = [d for d in (start_asof, end_asof) if d]
-    refs = [start_ref, end_ref]
-    for payment in payments:
-        if not isinstance(payment, Mapping) or not isinstance(payment.get("ref"), str):
-            raise PaperMarkError("forward_swap payment requires ref")
-        df, as_of = _path_get(state, payment["ref"])
-        accrual = _number(payment.get("accrual", 1.0), "forward_swap accrual")
-        if df <= 0 or accrual <= 0:
-            raise PaperMarkError("forward_swap payment inputs must be positive")
-        denom += accrual * df
-        refs.append(payment["ref"])
-        if as_of:
-            dates.append(as_of)
     if denom <= 0:
         raise PaperMarkError("forward_swap annuity is non-positive")
     rate_percent = 100.0 * (start_df - end_df) / denom
     return {
         "value": round(rate_percent, 8),
         "quote_unit": "percent",
-        "source": "derived:forward_swap[" + ",".join(refs) + "]",
+        "source": "derived:forward_swap_proxy[" + ",".join(refs) + "]",
         "as_of": min(dates) if dates else None,
         "kind": "derived",
         "expression": deepcopy(dict(expression)),
