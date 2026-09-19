@@ -43,7 +43,7 @@ Deterministic per-PM artifact:
 data/pm/review_packets/<pm_id>/latest.json
 ```
 
-Daily packets are generated from the latest **successful overnight 14-seat scheduled review**, not from the newest on-demand Trader Room run. Each packet records `source=overnight_scheduled_review`, the overnight run id, the final agent-packet cutoff/hash, compact frozen evidence and market state, SOFR/CORRA/AONIA and sovereign-curve availability, the accepted 14 trader decisions, overnight research supplement/canonical books when present, **only that PM's prior book**, allowable actions, gross limit/utilization, and unresolved future data requests.
+Daily packets are generated from the latest **successful overnight 14-seat scheduled review**, not from the newest on-demand Trader Room run. Each packet records `source=overnight_scheduled_review`, the overnight run id, the final agent-packet cutoff/hash, compact frozen evidence and market state, SOFR/CORRA/AONIA and sovereign-curve availability, the accepted 14 trader decisions, overnight research supplement/canonical books when present, **only that PM's prior book**, that PM's compact learning-memory context / calibration / `postmortems_due`, allowable actions, gross limit/utilization, and unresolved future data requests. See `docs/TRADING_LEDGER_MEMORY_V1.md`.
 
 All four PMs share the same overnight evidence boundary and 14-seat output. On-demand Trader Room publication stays independent. If no overnight review exists yet, `init` / `refresh-packets --allow-trader-room-fallback` may use `source=on_demand_trader_room_fallback`. That fallback is labeled and never treated as a fresher overnight packet.
 
@@ -63,7 +63,7 @@ PYTHONPATH=. python scripts/pm/chatgpt_ingest.py validate --input data/pm/inbox/
 PYTHONPATH=. python scripts/pm/chatgpt_ingest.py apply --input data/pm/inbox/chatgpt_decision.json
 ```
 
-Trusted code hydrates marks, checks packet id/hash/freshness, enforces instruments/cap/curve lock, mutates only the ChatGPT book, persists provenance/history, refreshes marks, and updates public state.
+Trusted code hydrates marks, checks packet id/hash/freshness, enforces instruments/cap/curve lock and the learning/rationale gate, mutates only the ChatGPT book, applies ledger/journal/memory updates, persists provenance/history, refreshes marks, and updates public state.
 
 ## Future data requests
 

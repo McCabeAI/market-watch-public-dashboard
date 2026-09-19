@@ -25,7 +25,7 @@ The locked standing advocates are:
 13. `vol-convexity`
 14. `no-trade-skeptic`
 
-All standing advocates use exact model `grok-4.6`. Initial advocates alone may use up to two `composer-2.5` subagents on the same frozen packet.
+All standing advocates use exact model `grok-4.6`. Initial advocates alone may use up to two `composer-2.5` subagents on the same frozen packet. Each advocate receives only its own frozen learning-memory sidecar; the common evidence hash stays identical. See `docs/TRADING_LEDGER_MEMORY_V1.md`.
 
 The production conflict stage and final PM handoff are deterministic. The historical `conflict-aggregator` and `final-aggregator` agent files may remain for compatibility/reference, but neither is launched in the production path. ChatGPT remains the only actual arbiter.
 

@@ -21,7 +21,7 @@ Attempt and status all four required evidence families. Build one packet contain
 - `source_index`
 - `known_gaps`
 
-Freeze the packet and SHA-256. Every downstream model receives the exact same frozen common evidence packet. No browse/search/new evidence after freeze.
+Freeze the packet and SHA-256. Every downstream model receives the exact same frozen common evidence packet. Snapshot each advocate's own learning-memory sidecar separately; do not put another seat's private memory into the common packet. No browse/search/new evidence after freeze.
 
 ## 2. Round 1
 

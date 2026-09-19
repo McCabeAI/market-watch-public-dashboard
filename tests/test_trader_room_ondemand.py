@@ -351,15 +351,16 @@ class OrchestratorDryRunTests(unittest.TestCase):
             )
 
     def test_live_run_is_blocked(self):
-        with self.assertRaises(LiveRunBlocked):
-            go(topic="go", live=True, synthetic=True)
+        with tempfile.TemporaryDirectory() as tmp:
+            with self.assertRaises(LiveRunBlocked):
+                go(topic="go", live=True, synthetic=True, artifact_root=Path(tmp))
         with mock.patch.dict(os.environ, {"TRADER_ROOM_LIVE": "1", "CI": "true"}):
             with self.assertRaises(LiveRunBlocked):
                 LiveRunner()
 
     def test_prepare_then_debate_uses_same_hash(self):
-        packet, preflight = prepare_evidence(topic="go", synthetic=True)
         with tempfile.TemporaryDirectory() as tmp:
+            packet, preflight = prepare_evidence(topic="go", synthetic=True, artifact_root=Path(tmp))
             result = run_debate(packet, preflight, runner=DryRunRunner(), artifact_root=Path(tmp))
         hashes = {item["packet_sha256"] for item in result["originals"].values()}
         self.assertEqual(hashes, {packet["packet_sha256"]})

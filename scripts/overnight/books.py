@@ -413,6 +413,7 @@ def _open_position(
         "unrealized_pnl_usd": None,
         "pnl_unavailable": action.get("price") in (None, ""),
     }
+    action["position_id"] = position["position_id"]
     seat_book["positions"].append(position)
     seat_book["cash_usd"] = round(float(seat_book["cash_usd"]) - notional, 2)
     return position

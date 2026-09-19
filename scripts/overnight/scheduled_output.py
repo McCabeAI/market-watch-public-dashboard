@@ -15,7 +15,7 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Any
 
-from scripts.overnight.books import apply_review, validate_books
+from scripts.overnight.books import validate_books
 from scripts.overnight.clock import isoformat, now_ny, parse_iso
 from scripts.overnight.constants import SCHEMA_VERSION, STANDING_SEATS
 from scripts.overnight.errors import EvidenceBoundaryError, SchemaError
@@ -45,6 +45,13 @@ FORBIDDEN_MODEL_STATE_KEYS = {
     "funding_last_accrual_at",
     "net_pnl_usd",
     "competition_rank",
+    "canonical_ledger",
+    "trade_ledger",
+    "trades",
+    "mfe_usd",
+    "mae_usd",
+    "holding_duration_seconds",
+    "realized_pnl_increment_usd",
 }
 
 
@@ -170,6 +177,16 @@ def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str,
         for forbidden_key in ("tools_used", "web_search", "web_fetch", "fetched_new_evidence"):
             if decision.get(forbidden_key):
                 raise EvidenceBoundaryError(f"{seat} recorded forbidden post-freeze acquisition: {forbidden_key}")
+        expanding = [
+            row for row in decision["actions"] if isinstance(row, dict) and row.get("action") in {"OPEN", "ADD", "HEDGE"}
+        ]
+        frozen_hash = ((base.get("seat_memory") or {}).get("hashes") or {}).get(seat)
+        supplied_hash = decision.get("memory_context_sha256")
+        if expanding:
+            if not supplied_hash:
+                raise EvidenceBoundaryError(f"{seat} learning_gate: missing_memory_context_sha256")
+            if supplied_hash != frozen_hash:
+                raise EvidenceBoundaryError(f"{seat} referenced a memory snapshot that is not this seat/run freeze")
 
     validate_execution(payload.get("execution") or {})
     if payload.get("pm_decisions") is not None:
@@ -197,12 +214,19 @@ def _apply_validated(
     prior_books = validate_books(deepcopy(base["prior_books"]))
     decisions = deepcopy(payload["decisions"])
 
-    updated = apply_review(
+    from scripts.trading.apply import apply_trader_review_with_memory
+    from scripts.trading.store import TradingStore
+
+    trading = TradingStore(root=store.root, state_root=store.state_root)
+    updated = apply_trader_review_with_memory(
         prior_books,
         decisions,
         families=base["families"],
         run_id=run_id,
         evidence_cutoff=payload["agent_packet"]["evidence_cutoff"],
+        store=trading,
+        memory_hashes=(base.get("seat_memory") or {}).get("hashes") or {},
+        evidence_hash=payload["agent_packet"]["packet_sha256"],
         when=parse_iso(payload["agent_packet"]["evidence_cutoff"]),
         market_state=(base.get("families", {}).get("market_state", {}) or {}).get("data"),
     )
@@ -269,6 +293,7 @@ def _refresh_pm_after_overnight(
     from scripts.pm.cli import refresh_packets
     from scripts.pm.review_packets import market_state_from_source, source_from_overnight_run
     from scripts.pm.store import PMStore
+    from scripts.trading.store import TradingStore
 
     pm_store = PMStore(root=store.root, state_root=store.state_root)
     source = source_from_overnight_run(store.run_dir(run_id), review=review)
@@ -291,6 +316,7 @@ def _refresh_pm_after_overnight(
             run_id=run_id,
             evidence_cutoff=payload["agent_packet"]["evidence_cutoff"],
             packets=packets,
+            trading_store=TradingStore(root=store.root, state_root=store.state_root),
         )
         review["pm_books"] = pm_books
         pm_store.write_books(pm_books)
@@ -310,6 +336,9 @@ def simulate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str,
         source_state = store.state_dir()
         if source_state.is_dir():
             shutil.copytree(source_state, tmp_root / "data" / "overnight", dirs_exist_ok=True)
+        source_trading = store.state_root / "data" / "trading"
+        if source_trading.is_dir():
+            shutil.copytree(source_trading, tmp_root / "data" / "trading", dirs_exist_ok=True)
         temp_store = OvernightStore(root=store.root, state_root=tmp_root)
         return _apply_validated(temp_store, payload, write=True)
 

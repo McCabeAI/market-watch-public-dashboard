@@ -65,6 +65,22 @@ def freeze_snapshot(
         ],
         "acquisition_allowed": False,
     }
+    from scripts.trading.snapshot import snapshot_overnight_traders
+    from scripts.trading.store import TradingStore
+
+    trading = TradingStore(root=store.root, state_root=store.state_root)
+    memory_index = snapshot_overnight_traders(
+        trading,
+        run_dir=store.run_dir(run_id),
+        run_id=run_id,
+        trader_books=prior_books,
+        when=when,
+    )
+    packet["seat_memory"] = {
+        "isolation": "per_seat_sidecar",
+        "index": "memory/index.json",
+        "hashes": memory_index.get("hashes") or {},
+    }
     digest = sha256_json({k: v for k, v in packet.items() if k != "packet_sha256"})
     packet["packet_sha256"] = digest
     store.write_artifact(run_id, "evidence_snapshot.json", packet)

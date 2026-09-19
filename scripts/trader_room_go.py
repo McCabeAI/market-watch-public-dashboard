@@ -55,6 +55,7 @@ def main(argv: list[str] | None = None) -> int:
                 synthetic=not args.repo_evidence,
                 fixture=args.fixture,
                 market_state_path=args.market_state,
+                artifact_root=args.artifact_root,
             )
             _print(
                 {
@@ -62,7 +63,7 @@ def main(argv: list[str] | None = None) -> int:
                     "evidence_cutoff": packet["as_of"],
                     "packet_sha256": packet["packet_sha256"],
                     "preflight": preflight,
-                    "launch_plan": build_launch_plan(packet),
+                    "launch_plan": build_launch_plan(packet, memory_index=preflight.get("seat_memory")),
                     "status": "EVIDENCE_FROZEN",
                 }
             )

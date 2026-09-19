@@ -50,6 +50,40 @@
     "conviction": { "type": ["integer", "null"], "minimum": 0, "maximum": 100 },
     "rationale": { "type": ["string", "null"] },
     "synthesis": { "type": ["string", "null"] },
+    "memory_context_sha256": { "type": ["string", "null"], "minLength": 32 },
+    "postmortems": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["trade_id"],
+        "properties": {
+          "trade_id": { "type": "string", "minLength": 1 },
+          "what_worked": { "type": ["string", "null"] },
+          "what_failed": { "type": ["string", "null"] },
+          "thesis_assessment": { "type": ["string", "null"] },
+          "expression_assessment": { "type": ["string", "null"] },
+          "timing_assessment": { "type": ["string", "null"] },
+          "sizing_assessment": { "type": ["string", "null"] },
+          "lesson": { "type": ["string", "null"] },
+          "future_rule": { "type": ["string", "null"] },
+          "tags": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "memory_updates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["op"],
+        "properties": {
+          "op": { "enum": ["add", "reinforce", "retire"] },
+          "lesson_id": { "type": ["string", "null"] },
+          "text": { "type": ["string", "null"] },
+          "trade_ids": { "type": "array", "items": { "type": "string" } },
+          "postmortem_ids": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
     "alerts": { "type": "array", "items": { "type": "string" } },
     "future_data_requests": {
       "type": "array",
