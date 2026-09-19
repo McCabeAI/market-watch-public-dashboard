@@ -149,6 +149,11 @@ class PMLayerTests(unittest.TestCase):
         self.assertEqual(pos["paper_expression"], expression)
         self.assertAlmostEqual(pos["entry_price"], 3.65)
 
+    def test_trader_book_bundle_contains_four_pm_panel(self) -> None:
+        js = (ROOT / "patch_v13" / "trader-book.js").read_text(encoding="utf-8")
+        self.assertIn("Portfolio managers · $1bn each", js)
+        self.assertIn("ChatGPT PM, Swinger, Pragmatist, Grinder", js)
+
     def test_pm_review_packet_is_targeted_and_full_context(self) -> None:
         packet = build_review_packet(ROOT, pm_id="chatgpt-pm", source_type="trader_room")
         self.assertEqual(packet["pm_id"], "chatgpt-pm")
