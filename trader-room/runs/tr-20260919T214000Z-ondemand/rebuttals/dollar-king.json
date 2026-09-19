@@ -1,0 +1,45 @@
+{
+  "type": "TRADER_ROOM_REBUTTAL",
+  "run_id": "tr-20260919T214000Z-ondemand",
+  "round": 2,
+  "agent": "dollar-king",
+  "opponents": [
+    "carry-is-king",
+    "mean-reverter",
+    "perma-bear",
+    "rate-dove",
+    "rate-hawk",
+    "trend-follower",
+    "perma-bull",
+    "value-guy",
+    "cross-merchant"
+  ],
+  "own_original_ref": "submissions/dollar-king.json",
+  "holes_in_opposing_case": [
+    "perma-bull's long NZDUSD is the only routed USD-down expression, and it does not close. NZ policy/2Y are unavailable, so the seat cannot show an NZ overnight path that beats SOFR 3.85 or SR3Z6 4.32. Q2 GDP 0.2% q/q is a slowdown that beat a forecast, not a boom; labor 32 and consumer 38 remain recessionary. An India FTA covering ~95% of exports is slow trade transmission, not a 4-12 week USD-pair catalyst. Long NZDUSD after -3.90% 1m / 12.9th 1y percentile into a delivered Fed hike is fighting the USD factor already identified by EURGBP ~flat 1m while EURUSD and GBPUSD both sold. CAD_UP is unearned from an NZDUSD book.",
+    "value-guy maps short CA-US_2Y (CA rates up / US rates down) onto CAD higher. That is a non sequitur in spot. Even the 2025-01-30 analog they use (+25bp over 3m from -145bp) leaves a large overnight gap if SOFR stays 3.85-4.75 versus CORRA 2.29-3.65. USDCAD 3M is still -1.25% log: CAD already outperformed while CA-US_2Y cheapened another 15bp in five days. Their closing mechanism needs us_rates_view lower, which fights the delivered 25bp hike, hot US gauges 72/75/69/74, and SR3 still pricing 4.755. CA rates rising along an already-priced CRA path does not require CAD higher versus USD.",
+    "cross-merchant's NZD_UP is NZD versus AUD, not versus USD. AUDUSD 76.6th percentile and +2.61% 3M versus NZDUSD 12.9th percentile and -3.98% 1M already is the AUDNZD extreme. Short AUDNZD can coexist with USD higher versus both. Missing NZ rates and unknown AUDNZD carry mean the cross adds a second-order NZ policy leg this packet cannot mark. A pure USD bid moving both USD legs equally is their own invalidation, and that is the post-FOMC tape.",
+    "carry-is-king agrees USD higher / CAD lower and even lists long USDCAD as the spot alternative. Their claim that rates own the discrepancy more cleanly is a remit argument, not a hole in USDCAD: this seat is spot-only. Their us_rates_view lower while USD higher is internally tense after SOFR 3.85 and SR3U7 4.755.",
+    "rate-dove and perma-bear receive 2027 CORRA because labor 38 and core near 2% cannot support +107 to +122bp of priced hikes. If that is right, Canada rate support is weaker than CRA prices, which is CAD-negative and supports long USDCAD rather than opposing it. Their rates expression does not falsify USD higher versus CAD.",
+    "rate-hawk and trend-follower pay SR3U7 and tag USD_UP. They concede USDCHF/EURUSD already confirm the dollar bid, then call spot inferior without answering why USDCAD at the 74th percentile with a still-negative 3M is the stretched object. Paying the peak is a rates view; it does not require fading USDCAD.",
+    "mean-reverter fades remaining AONIA hike premium and tags USD_UP with CAD not_relevant. That is not a USD/CAD counter-thesis. Housing-biting Australia is a reason not to express USD via AUDUSD, which this seat already rejected."
+  ],
+  "trade_change": "unchanged",
+  "revised_trade": null,
+  "attack": [
+    "Strongest opposing claim: perma-bull that NZDUSD is the cleanest cyclical long and therefore USD lower, with value-guy adding CAD higher as CA-US_2Y mean-reverts. Both convert a non-USD or rates object into a USD/CAD view the packet does not support.",
+    "perma-bull treats a 5y-cheap NZD as pro-growth after a 0.2% q/q beat while omitting that the USD factor is already live across EUR, GBP, CAD, and JPY. Without an NZ policy path, long NZDUSD is an incomplete pair versus a complete US overnight/STIR path.",
+    "value-guy's Jan-2025 analog is a rates-spread outcome, not a CAD-spot outcome. Packet USDCAD~CA-US_2Y r-squared is 0.022 (weak): daily spread cheapness does not price CAD. CAD_UP from a 2Y RV is second-order FX risk this remit refuses.",
+    "cross-merchant attacks USD pairs as contamination. The opposite is true: AUDNZD is the contaminated object. The macro discrepancy is US policy versus the rest of G10; expressing it in a non-USD cross adds AU housing and unmarkable NZ rates for no extra USD edge.",
+    "Rates-first allies (hawk, trend, dove, bear, carry) are not USD-down. Using them as USD or CAD conflicts overstates disagreement. Where they differ is expression family, which this dedicated spot seat is not permitted to follow."
+  ],
+  "defense": [
+    "Long USDCAD still owns the incomplete USD pair: overnight SOFR 3.85 versus CORRA 2.29, CA-US 2Y -140bp at a 1y extreme, USDCAD only 74th percentile and still negative over 3M after a 5D post-FOMC catch-up. EURUSD 10.7th and USDCHF 99.8th are more complete; NZDUSD 12.9th is already offered; AUDUSD still has a 2Y pickup.",
+    "USD higher versus NZD is a broad-dollar inference, not a NZDUSD short. It stands while NZ rates are missing and US STIR is hiking. It would be conceded if a markable NZ path showed RBNZ tightening through USD, which this freeze does not contain.",
+    "CAD lower is relative, not a Canada-easing call. Canada rates can print higher along CRA without invalidating USD/CAD as long as the gap stays wide. That is why value-guy's CA_RATES_UP does not force CAD_UP, and why dove/bear CA_RATES_DOWN would, if anything, add to the spot bid.",
+    "Carry still supports: long USDCAD earns 3.85 versus pays 2.29. Positioning remains unknown (CFTC/CME unavailable). Energy remains the principal two-way (BoC pass-through versus Saudi Oman workaround; USDCAD~WTI r-squared 0.017).",
+    "Concede the argument if USDCAD prints back through the 2026-09-15 ECB fix 1.3919750411647458 and SR3Z6 is no longer above overnight SOFR 3.85, or if CA-US 2Y closes because US 2Y collapses rather than because CAD catch-up fails to lift CAD. Until then the original long USDCAD stands."
+  ],
+  "packet_sha256": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
+  "subagent_calls": 0
+}

@@ -1,0 +1,35 @@
+{
+  "type": "TRADER_ROOM_REBUTTAL",
+  "run_id": "tr-20260919T214000Z-ondemand",
+  "round": 2,
+  "agent": "catalyst-junkie",
+  "opponents": [
+    "mean-reverter"
+  ],
+  "own_original_ref": "submissions/catalyst-junkie.json",
+  "holes_in_opposing_case": [
+    "The booked direction contradicts the stated thesis. Packet futures are marked in implied-rate space. Short AONIA_2026-10 profits if implied AONIA rises (pay / AU rates up). Mean-reverter's structure and thesis say short implied / receive / fade remaining hikes (AU rates down). Those are opposite P&L signs on the same contract. The opposite-direction conflict is a sign error, not a second dated mechanism.",
+    "Taken literally as pay, the trade has no catalyst path and the wrong skew. October implied 4.565 versus overnight 4.35 already maps to about 21.5bp of a 25bp hike. Paying that residual wins only the leftover ~3.5bp if the RBA delivers and loses the 21.5bp if they hold. Housing evidence dated 16 Sep (stamp-duty -24% YoY, volumes -18%, Sydney/Melbourne >7% off peak) is new transmission that attacks delivery, not a reason to buy more hike premium. Inflation gauge 82 is known, not new, and cannot by itself reprice a near-fully-priced hike higher.",
+    "Taken as the intended receive, the extra apparatus is not a closer. AU 2Y 4.999 sitting 13.9bp through Mar-27 AONIA 4.86 is a sovereign-versus-path residual, not a dated event. The 99th-percentile AU 2Y rank is explicitly a discovery flag in their own writeup, then reused as 'through the path' residual to justify a 1-3 month strip. Valuation without a meeting date can stay wrong. October IB is the event; Mar-27 AONIA (OI 201, volume 1) is not a mean-reversion instrument.",
+    "Carry_view supports_trade is false for a receive on an upward AONIA curve (Oct 4.565 vs overnight 4.35). A delayed-not-cancelled hike bleeds via roll. That is an event payoff, not positive carry.",
+    "'Crowded extrapolation' is asserted while CFTC/CME overlays are unavailable. Absence of positioning is not evidence of crowding and cannot support a fade-the-crowd overlay on IB."
+  ],
+  "trade_change": "unchanged",
+  "revised_trade": null,
+  "attack": [
+    "Strongest opposing claim: remaining Oct-Mar AONIA hike premium is stretched because housing is already binding and AU 2Y prints through the live path, so the extra 21-51bp should be faded over 1-3 months.",
+    "That claim does not support short AONIA_2026-10. If they want implied AONIA down, the paper book requires long the implied-rate mark, which is the original long. If they keep direction short, they are paying an 86%-priced October hike into fresh housing contraction — the opposite of their causal mechanism.",
+    "The 13.9bp AU 2Y-versus-Mar-27 AONIA gap can be read either way: 2Y rich to path, or path cheap to 2Y. Using it to justify both 'fade hikes in AONIA' and a short implied-rate booking is incoherent. A path-cheap reading would be a pay thesis; housing 16 Sep evidence rejects that reading for October.",
+    "Catalysts listed as 'housing/labor prints and RBA communication' are open-ended. Communication without a dated decision is not a closer. The October contract expires around the first meeting window; that is the mechanism. Extending into Nov/Mar without locking a separate markable strip on the conflicted instrument smuggles illiquid back-end duration into an event trade.",
+    "Inflation 82 is the real hawkish risk, already in the original invalidation. It is a reason to size down or to define the hold-versus-hike binary, not a reason to flip to pay or to wait 1-3 months for a percentile to mean-revert."
+  ],
+  "defense": [
+    "Original stands: long AONIA_2026-10, receive, AU rates down, through the October RBA window. Packet mid remains implied 4.565 / price 95.435. Stop stays null. No new levels.",
+    "Fact versus inference versus unknown is unchanged. Fact: Oct implied 4.565 vs AONIA 4.35 after 16 Sep housing prints. Inference: the next meeting cannot deliver that near-full hike without ignoring a contracting housing channel and cooling activity/labor/consumer gauges (54/50/48). Unknown: exact meeting date inside the contract, and whether inflation 82 still dominates.",
+    "Expression remains rates-first. The mispricing is the October policy residual. Short AUDUSD is still the inferior alternative (76th percentile, Fed/SR3 contamination). Mean-reverter agrees AUDUSD is not stretched; that does not create an opposite rates view.",
+    "Would concede the argument if the RBA delivers the priced 25bp and ratifies 4.565, or if subsequent AU inflation keeps the gauge at 82 while housing volumes and stamp-duty stabilize. Mixed AU-US 2Y analog 3m outcomes (2025-07-30 reverse higher; 2026-04-23 continue cheaper) are not a concession: they are why the meeting, not the percentile, is the trade.",
+    "Uncertainty preserved: inflation 82 can still produce a hike-through-housing outcome; CFTC is missing; October timing inside the contract is not in the packet. None of that converts a receive event into a short implied-rate mean-reversion."
+  ],
+  "packet_sha256": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
+  "subagent_calls": 0
+}

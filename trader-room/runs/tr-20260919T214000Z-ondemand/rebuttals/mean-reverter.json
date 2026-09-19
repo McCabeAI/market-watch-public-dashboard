@@ -1,0 +1,41 @@
+{
+  "type": "TRADER_ROOM_REBUTTAL",
+  "run_id": "tr-20260919T214000Z-ondemand",
+  "round": 2,
+  "agent": "mean-reverter",
+  "opponents": [
+    "catalyst-junkie",
+    "carry-is-king",
+    "dollar-king",
+    "perma-bear",
+    "rate-dove",
+    "rate-hawk",
+    "trend-follower",
+    "perma-bull"
+  ],
+  "own_original_ref": "submissions/mean-reverter.json",
+  "holes_in_opposing_case": [
+    "catalyst-junkie is the only same-contract opponent, and the opposite-direction flag is a paper-sign error, not an opposite thesis. Packet futures are marked in implied-rate space. Long AONIA_2026-10 is long implied 4.565 (pay the remaining +21.5bp). Their own prose wants that contract to reprice lower after housing (stamp-duty -24% y/y, volumes -18%, values >7% off peak) and labels the trade long/receive. Those cannot both be true on this mark. If the book follows their direction field, they are paying the last near-full October hike after the transmission channel has already broken. If they meant receive, they are same-side as short implied AONIA and there is no economic fade to answer.",
+    "Even granting their meeting-catalyst frame, it does not create a reason to pay October. Inflation gauge 82 is already in AONIA 4.35 and in AU 2Y 4.999; it does not independently validate +21.5bp more by Oct-26 once activity/labor/consumer are 54/50/48. A dated RBA window is a timing device for the same housing residual I already own in AONIA_2026-10. It is not a new discrepancy, and their carry_view opposes_trade is the cost of sitting in the vig, not evidence the hike must print.",
+    "rate-hawk and trend-follower smuggle AU rates higher off a US continuation that I already refused to fade. US 2Y 4.76 matches SR3U7 4.755 after a >90% pre-priced hike into gauges 72/75/69/74; that is path-consistent, not through-the-path. AU 2Y 4.999 is 13.9bp through Mar-27 AONIA 4.86. Trend-follower even writes AU housing as the anti-analog and says this seat does not pay AONIA, which guts their own au_rates_view:higher tag. Paying SOFR_2027-09 does not require paying AONIA_2026-10.",
+    "perma-bull’s USD-lower NZDUSD call does not own the AONIA residual. They concede AUD is not cheap and that the Australian housing channel is biting, which is my AUD-lower / AU-rates-lower mechanism. NZ rates are unavailable, so they cannot show NZD is cheap versus a policy path. Q2 GDP 0.2% q/q that slows and beats is not a USD-down regime and does not put the remaining 21-51bp of RBA hikes back on the table.",
+    "carry-is-king’s short CA-US_2Y (pay CA 3.27 / receive US 4.76) treats a 5y 4th-percentile spread as a hold while the spread sits next to overnight CORRA 2.29 minus SOFR 3.85 = -156bp. That is the policy differential, not an independent cheapness. Paying Canada also fights labor 38 and core near 2%. I rejected that RV in round 1 for this reason; it is not a reason to pay AONIA either.",
+    "dollar-king long USDCAD is a different pair and the same USD-higher side as my AUD residual. Percentile 74 on USDCAD is their own admission the pair is not stretched. It supplies no housing-versus-AONIA evidence.",
+    "perma-bear and rate-dove receive 2027 CORRA, which agrees with my AU-rates-down direction and does not reverse AONIA_2026-10. Their Canada 100bp-plus hike-path objection is the trade I already declined: CA 2Y 5y percentile 58.6 and CA-US 2Y are overnight-anchored. That is not an AONIA pay case."
+  ],
+  "trade_change": "unchanged",
+  "revised_trade": null,
+  "attack": [
+    "Strongest opposing claim on the direct conflict: that AONIA_2026-10 should be long. On the frozen implied-rate mark that is a pay-rates trade. Paying +21.5bp of October tightening after NSW stamp-duty -24% y/y, volumes -18%, and Sydney/Melbourne >7% off peak is the crowded inflation-82 extrapolation. Independent checks still fail it: AU activity/labor/consumer 54/50/48, AU 2Y already through Mar-27 AONIA 4.86, AUDUSD 1y percentile 76.4 not stretched.",
+    "Strongest genuine macro pushback is rate-hawk/trend-follower global-tightening continuation. It attacks the wrong market. I do not fade path-consistent US 2Y. I fade remaining RBA hike premium where the housing channel is already binding. Their own AU housing notes support that split.",
+    "perma-bull USD_DOWN is an NZD residual with no NZ policy path. It cannot falsify short implied AONIA. USD_UP on my synopsis is the AUD-pair implication of AU rates down, not a USDCAD or NZDUSD mandate."
+  ],
+  "defense": [
+    "Original stands: short AONIA_2026-10 in implied-rate space equals receive / AU rates down. Lead contract implied 4.565, +21.5bp vs overnight 4.35, OI 21752, volume 4450. Same locked strip 2026-10/2026-11/2027-03. Family stays AONIA; do not migrate onto AU_2Y.",
+    "Thesis is housing transmission versus remaining hike premium, not a 99th-percentile AU 2Y rank and not a US 2Y fade. Known inflation 82 explains restrictive AONIA 4.35; it does not justify the extra Oct-Mar 21-51bp after the 16 Sep housing print.",
+    "Uncertainty preserved: inflation 82 can still force a delivered October hike; Fed/SR3 spillover can delay the fade; AU 2Y as_of 2026-09-16 is stale versus the cutoff; CFTC/CME positioning is missing; AU 2Y analog list is empty. Those are already principal risks, not reasons to flip sign.",
+    "What would concede: RBA delivers the priced October 25bp, or AONIA holds/lifts packet Oct-26 4.565 and Mar-27 4.86 while housing/labor stop confirming the channel is biting, or Mar-27 AONIA rises through packet AU 2Y 4.999. A catalyst-junkie direction-field long that still wants implied rates down is not a concession."
+  ],
+  "packet_sha256": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
+  "subagent_calls": 0
+}

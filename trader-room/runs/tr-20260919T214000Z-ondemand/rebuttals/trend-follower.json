@@ -1,0 +1,41 @@
+{
+  "type": "TRADER_ROOM_REBUTTAL",
+  "run_id": "tr-20260919T214000Z-ondemand",
+  "round": 2,
+  "agent": "trend-follower",
+  "opponents": [
+    "carry-is-king",
+    "dollar-king",
+    "mean-reverter",
+    "perma-bear",
+    "rate-dove",
+    "rate-hawk",
+    "perma-bull",
+    "value-guy",
+    "cross-merchant"
+  ],
+  "own_original_ref": "submissions/trend-follower.json",
+  "holes_in_opposing_case": [
+    "Strongest opposing claim is perma-bull long NZDUSD (USD lower, CAD higher, NZD higher). That is a fade of a live price trend: NZDUSD 0.571, -3.90% 1m, 1y 12.9th percentile; AUDNZD +4.27% 1m to a 5y extreme. Q2 GDP 0.2% q/q is still a slowdown even if it beat, and labor 32 / consumer 38 remain recessionary. An India FTA is slow structural news, not a reversal signal. One activity beat plus a trade deal does not falsify a delivered Fed hike, SOFR 3.85, or US gauges 72/75/69/74.",
+    "value-guy short CA-US_2Y (CAD higher, US rates lower) treats the 1y 3.77th / 5y 4.3rd percentile as a closing dislocation. The PRICE path is the other way: CA-US_2Y -140bp, -17bp 1m, -15bp 5d after a known Fed hike. If CORRA already prices 84-130bp of 2027 hikes, that path is not new information; the gap still WIDENED. The Jan-2025 analog at -145bp then +25bp 3m is cherry-picked against 2024-12-18 at -130bp then -3bp 1m / -20bp 3m. Receiving US 2Y is a premature fade of US 2Y 4.76 still making highs (+9bp on 18 Sep).",
+    "cross-merchant short AUDNZD (NZD higher) is the same premature fade in the cross. AUDNZD printed +0.65% on 18 Sep AFTER AU housing and NZ GDP/FTA items, so the market already saw that 'sign error' and extended the squeeze. NZ rates are unavailable, so the seat cannot show an NZ policy turn. Labor 32 still binds.",
+    "carry-is-king is with me on USD up / CAD down but the expression receives US 2Y (us_rates_view lower). A 149bp yield-gap LEVEL is not a reason the US hiking path has peaked. Positive carry on receive-US fights the live US 2Y / SR3 uptrend this seat is paid to ride.",
+    "perma-bear and rate-dove receive 2027 CORRA (CA rates lower) while tagging USD up / CAD down. Canada activity 66, headline CPI 3%, and BoC energy-pass-through minutes are not a completed reversal of a curve that still prices +107.5bp to 2027-06 and +136.5bp to 2028-09. Fading that path is their remit; it does not create a USD-down or CAD-up case, and it is not my trade.",
+    "dollar-king long USDCAD and rate-hawk pay SOFR_2027-09 do not falsify USD higher. dollar-king's 'USDCAD incomplete versus EURUSD/USDCHF' is a spot-timing argument, not a CAD-up thesis. mean-reverter correctly refuses to fade US 2Y on percentile, then parks us_rates_view at neutral; that stall is weaker than paying the still-hot US path."
+  ],
+  "trade_change": "unchanged",
+  "revised_trade": null,
+  "attack": [
+    "The USD/CAD/NZD conflicts are FX-view conflicts. My trade is pay SOFR_2027-09. The only routed pitches that actually need USD down or NZD up to work are perma-bull long NZDUSD and cross-merchant short AUDNZD. Both fade persistent price after the 16 Sep news cluster rather than waiting for a reversal in labor, policy path, or the 1m spot trend.",
+    "value-guy and carry-is-king short the same CA-US_2Y spread. value-guy needs CAD higher and US rates lower; carry-is-king needs CAD lower while still receiving US. They cannot both be the closing mechanism. The frozen path of the spread (more negative after the hike) fits neither convergence story in the 1m window the analogs actually support.",
+    "Percentiles cited by value-guy (CA-US_2Y left tail) and cross-merchant (AUDNZD 5y extreme) are discovery flags, not theses. The theses require a weakening mechanism. Packet shows the opposite: US heat intact, NZD still offered, AUDNZD still squeezing, CA-US still widening.",
+    "Receiving US duration (value-guy, carry-is-king) or leaving US rates neutral (mean-reverter, rate-dove) is the premature fade this remit exists to reject. US 2Y 4.76, SR3 peak 4.755 then ease, gauges 72/75/69/74 after a delivered hike: price, policy and macro remain aligned for higher US short-end rates."
+  ],
+  "defense": [
+    "Original stands: pay/short SOFR_2027-09 at packet implied 4.755. USD higher / CAD lower / NZD lower are synopsis tags of that same tightening impulse, not a second trade. I already declined stretched USDCHF as the expression; I do not need to switch into USDCAD, NZDUSD, AUDNZD, or CA-US_2Y to win these view conflicts.",
+    "What would concede: SR3U7 implied re-prices toward overnight SOFR 3.85 with US inflation AND labor gauges rolling over, or NZDUSD reversing the 1m -3.90% dump on something stronger than a 0.2% GDP beat plus FTA headline, or CA-US_2Y tightening because CA labor re-accelerates rather than because a 4th-percentile rank looks cheap.",
+    "Uncertainty preserved: CFTC/CME positioning missing; NZ rates missing; temperature gauges dashboard_v8; ~90bp of further US hikes already mapped into 4.755, so P&L still needs peak revision or delayed ease, not mere delivery of the strip. Those gaps cut confidence, they do not authorize fading the live US rates/USD/NZD-down trends."
+  ],
+  "packet_sha256": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
+  "subagent_calls": 0
+}
