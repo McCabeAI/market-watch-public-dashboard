@@ -175,9 +175,15 @@ def parse_boc_zero_curve_bytes(data: bytes) -> dict[str, Any]:
         vals = [_num(cell) for cell in row[1:]]
         if len(vals) < 100:
             continue
-        candidates.append((d, vals[:120]))
+        vals = vals[:120]
+        # 2Y/3Y/4Y are columns 8,12,16 in the 0.25Y grid. Missing-data
+        # calendar rows are published as "na"; skip them rather than treating
+        # a holiday/data-gap row as the latest usable curve.
+        if any(vals[idx - 1] is None for idx in (8, 12, 16)):
+            continue
+        candidates.append((d, vals))
     if not candidates:
-        raise ValueError("BoC zero curve download contains no 120-point dated curves")
+        raise ValueError("BoC zero curve download contains no usable 120-point dated curves")
     d, vals = max(candidates, key=lambda item: item[0])
     zero: dict[str, Any] = {}
     discount: dict[str, Any] = {}
