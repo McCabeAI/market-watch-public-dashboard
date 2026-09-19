@@ -1,0 +1,41 @@
+{
+  "type": "TRADER_ROOM_REBUTTAL",
+  "run_id": "tr-20260919T214000Z-ondemand",
+  "round": 2,
+  "agent": "carry-is-king",
+  "opponents": [
+    "dollar-king",
+    "mean-reverter",
+    "perma-bear",
+    "rate-dove",
+    "rate-hawk",
+    "trend-follower",
+    "perma-bull",
+    "value-guy"
+  ],
+  "own_original_ref": "submissions/carry-is-king.json",
+  "holes_in_opposing_case": [
+    "perma-bull is the only USD-down pitch in this bundle and it does not own a markable NZ policy path. NZ rates are a frozen known gap, so long NZDUSD cannot show whether the seat is paid to wait against SOFR 3.85 after a delivered Fed hike. A 0.2% q/q GDP beat and an India FTA covering ~95% of NZ exports are not a new overnight-funding transmission; labor 32 and consumer 38 remain the packet's NZ cyclical state. CAD higher is a sidecar tag with no CAD instrument.",
+    "value-guy shares short CA-US_2Y but converts the same 4th-percentile 2Y gap into CAD higher. That FX leap is not in the rates mark: 2027-09 STIR still leaves SOFR 4.755 versus CORRA 3.51 (124.5bp), and overnight remains 3.85 versus 2.29. A 3m analog of +25bp from -145bp still leaves a triple-digit gap. Energy pass-through is their closer; the 16 Sep Saudi STS workaround reduced that oil-supply tail. Percentile is their discovery flag being asked to do FX work it cannot do.",
+    "rate-dove and perma-bear receive 2027 CORRA (3.365 / 3.51 implied versus overnight 2.29). That is the negative-carry fade this seat refuses: long the low-yielder after the Fed has already reset SOFR to 3.85 while Dec 1m CORRA is only 2.58. Labor 38 and core-near-2% cap how far Canada can hike; they do not justify receiving CA duration against a 149bp 2Y pickup the other way. perma-bear even tags carry as opposing its own trade.",
+    "rate-hawk and trend-follower pay SR3U7 4.755. That is the exciting low-carry US-hike narrative: known heat (72/75/69/74) plus a hike that was already >90% priced. Known information needs a new transmission to justify paying the peak. Carry of paying 4.755 versus overnight 3.85 is negative if the extra 90.5bp is not delivered. Their US-rates-up risk is already my principal risk on the receive-US leg; it is not a reason to switch into paying SOFR.",
+    "dollar-king's long USDCAD agrees on USD up / CAD down but locates the edge in a 74th-percentile pair that I already rejected as the stretched object. Oil ToT (Saudi workaround versus weakened shock absorbers) contaminates CAD spot. EURUSD/USDCHF having 'already moved' is not a closing mechanism for USDCAD. The 2Y gap is the discrepancy; spot is the residual.",
+    "mean-reverter's USD-up tag has no USD expression and CAD is not_relevant, so it does not rebut my CAD view. Receiving AONIA_2026-10 fades 21.5bp of priced RBA hikes after housing evidence I already inspected and declined as a primary because AU inflation 82 versus a housing catalyst is two-sided."
+  ],
+  "trade_change": "unchanged",
+  "revised_trade": null,
+  "attack": [
+    "Strongest opposing claim on the routed USD/CAD conflicts: perma-bull that NZDUSD is the cheap cyclical and therefore USD should be lower and CAD higher. That claim has no NZ carry or NZ policy path in the freeze, fights a just-delivered US hike and hot US gauges, and treats a 5y-cheap NZD after -3.90% 1m as a pro-growth entry. Carry will not fund that.",
+    "Second opposing claim: value-guy that short CA-US_2Y implies CAD higher via BoC catch-up. Same rates direction, wrong FX mapping. CA rates can rise relative to US without CAD outrunning the 156bp overnight gap. Their closer is the energy-hike catalyst my original invalidation already names, and the packet's Saudi workaround made that catalyst weaker, not stronger.",
+    "The CORRA-receive camp (rate-dove, perma-bear) is the economic opposite of paying CA 2Y. They ask the book to own more Canada cheapness after SOFR has already jumped to 3.85 and CA-US_2Y has already printed -140bp. That is the fade I will not pay 3.27% to own.",
+    "The SOFR-pay camp (rate-hawk, trend-follower) overpays for a terminal debate the strip already has at 4.755. I receive US 2Y at 4.76 because that is where the holding-period return lives, not because I need US yields to collapse."
+  ],
+  "defense": [
+    "Original stands: short CA-US_2Y, pay CA 2Y 3.27 / receive US 2Y 4.76, packet mid -140bp as of 2026-09-17. USD higher and CAD lower remain the FX implication of that rate differential until a Canada-side energy re-pricing overwhelms it. I do not amend into long NZDUSD, long CAD, receive CORRA, or pay SOFR.",
+    "Rates still beat spot. Dollar-king's USDCAD case is my already-constructed spot candidate; oil residual and a non-extreme 74th-percentile print keep the edge in the 2Y RV.",
+    "Uncertainty preserved: CFTC/CME positioning is unavailable; temperature gauges are dashboard_v8; NZ rates are missing; paper MTM on rates_rv does not mechanically credit coupon. Mixed 3m analogs (2025-01-30 +25bp versus 2024-12-18 -20bp) cap confidence at 58.",
+    "What would concede: CORRA/CA 2Y re-prices more tightening than SOFR/US 2Y from the Canada side because energy pass-through overwhelms core-near-2% and labor 38, or the Fed tightening bias reverses and US yields collapse while Canada stays the low-yielder only as a US rally. A further analog-style cheapening without that path compression is timing noise, not a flip to receive CA."
+  ],
+  "packet_sha256": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
+  "subagent_calls": 0
+}

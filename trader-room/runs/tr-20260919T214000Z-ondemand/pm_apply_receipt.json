@@ -1,0 +1,60 @@
+{
+  "applied": {
+    "grinder": {
+      "actions": [
+        "NO_TRADE"
+      ],
+      "decision_status": "no_trade",
+      "funded_draw_usd": 0.0,
+      "gross_utilization_usd": 0,
+      "instruments": [],
+      "journal_event_id": "jde-f91cc2fdbbc94fc9",
+      "review_packet_id": "prp-grinder-tr-20260919T214000Z-ondemand",
+      "unused_cash_usd": 1000000000.0
+    },
+    "pragmatist": {
+      "actions": [
+        "OPEN"
+      ],
+      "decision_status": "active",
+      "funded_draw_usd": 0.0,
+      "gross_utilization_usd": 250000000.0,
+      "instruments": [
+        "CORRA_2027-06"
+      ],
+      "journal_event_id": "jde-f513fc7e0fab4caa",
+      "review_packet_id": "prp-pragmatist-tr-20260919T214000Z-ondemand",
+      "unused_cash_usd": 1000000000.0
+    },
+    "swinger": {
+      "actions": [
+        "OPEN"
+      ],
+      "decision_status": "active",
+      "funded_draw_usd": 0.0,
+      "gross_utilization_usd": 900000000.0,
+      "instruments": [
+        "SOFR_2027-09"
+      ],
+      "journal_event_id": "jde-87074650b4154118",
+      "review_packet_id": "prp-swinger-tr-20260919T214000Z-ondemand",
+      "unused_cash_usd": 1000000000.0
+    }
+  },
+  "chatgpt_decision": "pending",
+  "evidence_cutoff": "2026-09-19T21:40:00Z",
+  "evidence_packet_sha256": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
+  "funding_v1": {
+    "convention": "ACT/360",
+    "futures_not_charged_full_notional": true,
+    "grinder_unused_cash_usd": 1000000000.0,
+    "observation_date": "2026-09-17",
+    "pragmatist_funded_draw_usd": 0.0,
+    "sofr_percent": 3.85,
+    "source": "NY_FED",
+    "swinger_funded_draw_usd": 0.0
+  },
+  "idempotent_replay": true,
+  "run_id": "tr-20260919T214000Z-ondemand",
+  "type": "AUTOMATED_PM_APPLY_RECEIPT"
+}

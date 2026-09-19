@@ -1,5 +1,54 @@
 {
-  "events": [],
+  "events": [
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-06",
+          "notional_usd": 250000000,
+          "position_id": null,
+          "rationale": "Receive 2027-06 CORRA: overnight CORRA remains low versus a priced 2027 hiking cycle that post-FOMC CAD STIR catch-up has overbuilt relative to Canadian labor 38 and core near 2%.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-09-19T18:06:55.614896-04:00",
+      "conviction": 59,
+      "decision_fingerprint": "112c9e0c3e500fcd2285a4caae6a453376a8e38d5c35170f77e520e63dcc730a",
+      "event_id": "jde-f513fc7e0fab4caa",
+      "funding_view": null,
+      "invalidation": "Canada labor/core re-accelerate or energy pass-through lifts 2027 CORRA implieds back toward the packet 2028 peak; Nov/Dec CORRA front contracts keep adding hike premium as BoC delivers the priced path.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-pragmatist-6d3af389b80e"
+      ],
+      "linked_trade_ids": [
+        "trd-pm-pragmatist-pm-pragmatist-6d3af389b80e"
+      ],
+      "memory_context_sha256": "5d5a8b8b769da2c8a56d51b5c185934dac8f616142b15afae6aedea2e2383365",
+      "outcome_links": [],
+      "owner_id": "pragmatist",
+      "owner_type": "pm",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-19T21:40:00Z",
+        "evidence_hash": "6e565bee1ba31af668ed53eb907119a84f02306bc41e402f968cfccf496ed2be",
+        "overnight_run_id": null,
+        "review_packet_id": "prp-pragmatist-tr-20260919T214000Z-ondemand",
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260919T214000Z-ondemand"
+      },
+      "rationale": "Empty book earns official SOFR 3.85% ACT/360 (2026-09-17) on unused cash; deploying modest rates risk is justified where the priced Canada path overshoots fundamentals and multiple handoff seats (rate-dove, perma-bear, positioning-cynic) align on receive CORRA rather than fighting the split AONIA camp or NZ FX with missing NZ rates. Reject no-trade-skeptic flat-only on hurdle grounds because the Canada policy-path gap is a defined macro expression, not a re-trade of the >90% priced Fed hike. Reject vol-convexity (options unavailable), catalyst-junkie vs mean-reverter AONIA conflict, and hawk SOFR pay as the primary leg to avoid doubling US duration risk without a single locked US-CA STIR combo. Accept rate-dove CORRA_2027-06 as the cleanest paper-markable rates-first ticket; dollar-king USDCAD is consistent FX color but secondary to the STIR edge. On-demand fallback and CFTC gaps cap conviction, not direction.",
+      "run_id": "tr-20260919T214000Z-ondemand",
+      "schema_version": 1,
+      "thesis": "Grind a singles/doubles Canada STIR receive: post-delivered Fed hike, MX CORRA still embeds a full BoC hiking cycle against soft labor and core-near-2% while SR3 forward context (4.32/4.58/4.755) is only the US leg reference, not cash accounting."
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_DECISION_JOURNAL"
 }

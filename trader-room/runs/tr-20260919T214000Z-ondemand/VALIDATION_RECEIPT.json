@@ -1,0 +1,323 @@
+{
+  "artifact_paths": {
+    "artifact_index": "trader-room/runs/tr-20260919T214000Z-ondemand/artifact_index.json",
+    "books": "data/pm/books/latest.json",
+    "chatgpt_packet": "data/pm/review_packets/chatgpt/latest.json",
+    "chatgpt_pending": "trader-room/runs/tr-20260919T214000Z-ondemand/CHATGPT_DECISION_PENDING.json",
+    "conflict_map": "trader-room/runs/tr-20260919T214000Z-ondemand/conflict_map.json",
+    "evidence_packet": "trader-room/runs/tr-20260919T214000Z-ondemand/evidence_packet.json",
+    "pm_decisions": "trader-room/runs/tr-20260919T214000Z-ondemand/pm_decisions/",
+    "pm_handoff": "trader-room/runs/tr-20260919T214000Z-ondemand/pm_handoff.json",
+    "public": "data/pm/public/latest.json",
+    "rebuttal_assignments": "trader-room/runs/tr-20260919T214000Z-ondemand/rebuttal_assignments.json",
+    "rebuttals": "trader-room/runs/tr-20260919T214000Z-ondemand/rebuttals/",
+    "run_dir": "trader-room/runs/tr-20260919T214000Z-ondemand/",
+    "submissions": "trader-room/runs/tr-20260919T214000Z-ondemand/submissions/"
+  },
+  "branch": "cursor/market-watch-full-18-stack-validation-4343",
+  "chatgpt_decision": "pending",
+  "direct_conflicts": [
+    "opp-dir:AONIA_2026-10",
+    "opp-view:USD",
+    "opp-view:CAD",
+    "opp-view:NZD"
+  ],
+  "evidence_cutoff": "2026-09-19T21:40:00Z",
+  "fail_closed": [
+    {
+      "item": "pm_principal_model_routing",
+      "reason": "Task inherit/locked types emit cursor-grok-4.6-* slugs rejected by repo hook; Task rejects slug grok-4.6. ACP allowlist permitted composer-2.5 fallback.",
+      "requested": "grok-4.6",
+      "used": "composer-2.5"
+    }
+  ],
+  "funding_context": {
+    "convention": "ACT/360",
+    "sofr_observation_date": "2026-09-17",
+    "sofr_percent": 3.85,
+    "sofr_source": "NY_FED",
+    "sr3_12m": {
+      "code": "SR3U7",
+      "expiry": "2027-09",
+      "implied_rate": 4.755
+    },
+    "sr3_3m": {
+      "code": "SR3Z6",
+      "expiry": "2026-12",
+      "implied_rate": 4.32
+    },
+    "sr3_6m": {
+      "code": "SR3H7",
+      "expiry": "2027-03",
+      "implied_rate": 4.58
+    }
+  },
+  "handoff_status": "STATUS: AWAITING_CHATGPT_ARBITRATION",
+  "journal": {
+    "idempotent_replay": true,
+    "pitches": {
+      "carry-is-king": "jde-83f3b2a40c9e4b95",
+      "catalyst-junkie": "jde-78e53b9f08554171",
+      "cross-merchant": "jde-f63550c2d7794401",
+      "dollar-king": "jde-5bbd59e54eb14b5a",
+      "mean-reverter": "jde-9b35713c03fa46a5",
+      "no-trade-skeptic": "jde-d940d0919de44131",
+      "perma-bear": "jde-d50c79913e144df8",
+      "perma-bull": "jde-4222623837464d1c",
+      "positioning-cynic": "jde-acc1cd77be4b4247",
+      "rate-dove": "jde-8d33c2cbfecc4e16",
+      "rate-hawk": "jde-494a2ba70cbb43b9",
+      "trend-follower": "jde-3df0d11964514ff2",
+      "value-guy": "jde-02c1c714f62d4787",
+      "vol-convexity": "jde-611416c589c14f97"
+    },
+    "rebuttals": {
+      "carry-is-king": "jde-36e8980442584f95",
+      "catalyst-junkie": "jde-bbc6807e75ae4495",
+      "cross-merchant": "jde-6b99ef89d17d4377",
+      "dollar-king": "jde-96661080b8ff4c90",
+      "mean-reverter": "jde-f19f80c4a01e4ded",
+      "perma-bear": "jde-4aef47b036ac4ca7",
+      "perma-bull": "jde-44b255c6138e4e39",
+      "rate-dove": "jde-a3e7e5b93560421e",
+      "rate-hawk": "jde-769122a481f744b7",
+      "trend-follower": "jde-38aa3204f2664daa",
+      "value-guy": "jde-97efdfdf51a948d1"
+    }
+  },
+  "model_calls": {
+    "advocates_grok": 14,
+    "ceilings": {
+      "composer": 37,
+      "grok": 32,
+      "total": 69
+    },
+    "composer_children": 0,
+    "json_recovery_resumes_grok": 3,
+    "parent_grok": 1,
+    "pm_children": 0,
+    "pm_principals_composer": 3,
+    "pm_principals_grok": 0,
+    "rebuttals_grok": 11,
+    "totals": {
+      "composer": 3,
+      "grok": 29,
+      "note": "Parent+14 advocates+11 rebuttals=26 grok required. Three JSON-recovery resumes of dollar-king/positioning-cynic/carry-is-king may count as +3 grok (29). If those resumes count, still <=32. PM principals used composer-2.5 after grok-4.6 Task/hook slug conflict.",
+      "total": 32
+    }
+  },
+  "no_rebuttal_seats": [
+    "no-trade-skeptic",
+    "positioning-cynic",
+    "vol-convexity"
+  ],
+  "notes": [
+    "All 14 Round 1 submissions schema-validated on the frozen packet.",
+    "Deterministic conflict map routed 11 direct-conflict seats; no-trade-skeptic, positioning-cynic, and vol-convexity are not directly conflicted.",
+    "Four PM review packets bound to this exact freeze via source_from_trader_room_run.",
+    "ChatGPT packet persisted; current-cycle ChatGPT decision not generated or applied.",
+    "Swinger, Pragmatist, and Grinder applied independently by apply_automated_pm_decisions. Replay idempotent.",
+    "Futures OPEN used packet mids (SOFR_2027-09 4.755, CORRA_2027-06 3.365). V1 does not charge full derivative notional as funded_draw."
+  ],
+  "packet_sha256": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
+  "pm_apply": {
+    "applied": {
+      "grinder": {
+        "actions": [
+          "NO_TRADE"
+        ],
+        "decision_status": "no_trade",
+        "funded_draw_usd": 0.0,
+        "gross_utilization_usd": 0,
+        "instruments": [],
+        "journal_event_id": "jde-f91cc2fdbbc94fc9",
+        "review_packet_id": "prp-grinder-tr-20260919T214000Z-ondemand",
+        "unused_cash_usd": 1000000000.0
+      },
+      "pragmatist": {
+        "actions": [
+          "OPEN"
+        ],
+        "decision_status": "active",
+        "funded_draw_usd": 0.0,
+        "gross_utilization_usd": 250000000.0,
+        "instruments": [
+          "CORRA_2027-06"
+        ],
+        "journal_event_id": "jde-f513fc7e0fab4caa",
+        "review_packet_id": "prp-pragmatist-tr-20260919T214000Z-ondemand",
+        "unused_cash_usd": 1000000000.0
+      },
+      "swinger": {
+        "actions": [
+          "OPEN"
+        ],
+        "decision_status": "active",
+        "funded_draw_usd": 0.0,
+        "gross_utilization_usd": 900000000.0,
+        "instruments": [
+          "SOFR_2027-09"
+        ],
+        "journal_event_id": "jde-87074650b4154118",
+        "review_packet_id": "prp-swinger-tr-20260919T214000Z-ondemand",
+        "unused_cash_usd": 1000000000.0
+      }
+    },
+    "chatgpt_decision": "pending",
+    "evidence_cutoff": "2026-09-19T21:40:00Z",
+    "evidence_packet_sha256": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
+    "funding_v1": {
+      "convention": "ACT/360",
+      "futures_not_charged_full_notional": true,
+      "grinder_unused_cash_usd": 1000000000.0,
+      "observation_date": "2026-09-17",
+      "pragmatist_funded_draw_usd": 0.0,
+      "sofr_percent": 3.85,
+      "source": "NY_FED",
+      "swinger_funded_draw_usd": 0.0
+    },
+    "idempotent_replay": true,
+    "run_id": "tr-20260919T214000Z-ondemand",
+    "type": "AUTOMATED_PM_APPLY_RECEIPT"
+  },
+  "pm_launch": {
+    "agents": {
+      "grinder": "bc-c7b021e5-3d6c-572b-8e9a-250e836f2f87",
+      "pragmatist": "bc-da5384e2-dc2a-5ba6-a220-96bbcc02b5bd",
+      "swinger": "bc-97ece35c-26f9-5b4b-a53b-7d511abe771a"
+    },
+    "chatgpt": "packet sealed; decision not launched",
+    "children": 0,
+    "evidence_cutoff": "2026-09-19T21:40:00Z",
+    "evidence_packet_sha256": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
+    "fail_closed": [
+      {
+        "item": "pm_principal_model_routing",
+        "reason": "Task inherit emits cursor-grok-4.6-high-fast; locked aggregator type emits cursor-grok-4.6-high; Task rejects slug grok-4.6; repo hook allowlist is composer-2.5/grok-4.6/grok-4.5. ACP_SUBAGENT_POLICY allowed continuing with composer-2.5.",
+        "requested": "grok-4.6"
+      }
+    ],
+    "independence": "each PM reads only its own packet + memory; no mutual current-cycle visibility",
+    "launched_principal": "composer-2.5",
+    "requested_principal": "grok-4.6",
+    "run_id": "tr-20260919T214000Z-ondemand",
+    "type": "AUTOMATED_PM_LAUNCH"
+  },
+  "pm_packets": {
+    "automated_pm_decisions": "not_yet_applied",
+    "bound_run_id": "tr-20260919T214000Z-ondemand",
+    "chatgpt_decision": "pending",
+    "evidence_cutoff": "2026-09-19T21:40:00Z",
+    "evidence_packet_sha256": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
+    "ids": {
+      "chatgpt": {
+        "memory_context_sha256": "b084ea54ea29e0918d176c23e4af3bef467d21eb557c3b4567d8f3cbb3810998",
+        "review_packet_id": "prp-chatgpt-tr-20260919T214000Z-ondemand",
+        "review_packet_sha256": "4ca2069d14e6653e90c97a23ffb4375917054c436dc994356ca61993a8939c25"
+      },
+      "grinder": {
+        "memory_context_sha256": "6e680d1701c4ff8f93e5f97dfcc1569475ab94ca917bf27857b9dcbb7ff94dcc",
+        "review_packet_id": "prp-grinder-tr-20260919T214000Z-ondemand",
+        "review_packet_sha256": "0de321d26e74c55e952af09a57e79691411804c556be95fc9aeabdcddc5ecb50"
+      },
+      "pragmatist": {
+        "memory_context_sha256": "5d5a8b8b769da2c8a56d51b5c185934dac8f616142b15afae6aedea2e2383365",
+        "review_packet_id": "prp-pragmatist-tr-20260919T214000Z-ondemand",
+        "review_packet_sha256": "6e565bee1ba31af668ed53eb907119a84f02306bc41e402f968cfccf496ed2be"
+      },
+      "swinger": {
+        "memory_context_sha256": "a53c50cb2e4dcdc41caa161e72e758d4f6958eb45e62f1a0ab60469cc1d6f82b",
+        "review_packet_id": "prp-swinger-tr-20260919T214000Z-ondemand",
+        "review_packet_sha256": "2f35671c98572322678daca923fc8ef6de535c4e89e7fd1970f551731a90310a"
+      }
+    },
+    "source": "on_demand_trader_room_fallback"
+  },
+  "pr_url": "https://github.com/McCabeAI/market-watch-public-dashboard/pull/47",
+  "preflight": {
+    "central_bank_research": "available",
+    "known_gaps": [
+      "NZ sovereign rates unavailable",
+      "CFTC/CME positioning unavailable",
+      "temperature gauges are repo-retained dashboard_v8"
+    ],
+    "market_state": "stale",
+    "ok": true,
+    "research_method": "available",
+    "temperature_gauges": "available"
+  },
+  "quality_checks": {
+    "chatgpt_packet_complete_no_decision": true,
+    "conflict_map_deterministic": true,
+    "context_build_present_on_all_trades": true,
+    "each_pm_below_1bn_gross": true,
+    "each_pm_considers_funding": true,
+    "fourteen_archetypes_once": true,
+    "funding_prior_day_sofr_act360": true,
+    "memory_journal_identity_isolated": true,
+    "no_model_authored_canonical_pnl": true,
+    "no_trade_skeptic_forward_financing": true,
+    "pms_differ_by_mandate": {
+      "grinder": "NO_TRADE stay in SOFR cash",
+      "pragmatist": "OPEN CORRA_2027-06 250m singles/doubles receive",
+      "swinger": "OPEN SOFR_2027-09 900m concentrated pay"
+    },
+    "rates_use_policy_curve_context": true,
+    "required_rebuttals_11": true,
+    "spot_fx_v1_unused_this_cycle": true,
+    "swinger_never_hedge": true,
+    "unique_memory_context_shas": 18,
+    "unnecessary_rebuttals": 0
+  },
+  "rebuttal_seats": [
+    "carry-is-king",
+    "catalyst-junkie",
+    "cross-merchant",
+    "dollar-king",
+    "mean-reverter",
+    "perma-bear",
+    "perma-bull",
+    "rate-dove",
+    "rate-hawk",
+    "trend-follower",
+    "value-guy"
+  ],
+  "rebuttals_count": 11,
+  "rebuttals_missing": [],
+  "rebuttals_persisted": [
+    "carry-is-king",
+    "catalyst-junkie",
+    "cross-merchant",
+    "dollar-king",
+    "mean-reverter",
+    "perma-bear",
+    "perma-bull",
+    "rate-dove",
+    "rate-hawk",
+    "trend-follower",
+    "value-guy"
+  ],
+  "round1_missing": [],
+  "round1_submissions_count": 14,
+  "round1_submissions_persisted": [
+    "carry-is-king",
+    "catalyst-junkie",
+    "cross-merchant",
+    "dollar-king",
+    "mean-reverter",
+    "no-trade-skeptic",
+    "perma-bear",
+    "perma-bull",
+    "positioning-cynic",
+    "rate-dove",
+    "rate-hawk",
+    "trend-follower",
+    "value-guy",
+    "vol-convexity"
+  ],
+  "run_id": "tr-20260919T214000Z-ondemand",
+  "stage": "COMPLETE_18_STACK_VALIDATION",
+  "starting_ref": "1d8d83a46d3a80bd2c1e73709b1239819b37d804",
+  "status": "STATUS: AWAITING_CHATGPT_ARBITRATION",
+  "type": "MARKET_WATCH_18_STACK_VALIDATION_RECEIPT"
+}

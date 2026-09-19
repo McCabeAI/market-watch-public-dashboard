@@ -16,6 +16,7 @@ from scripts.pm.review_packets import (
     select_daily_pm_source,
     select_newest_successful_overnight_review,
 )
+from scripts.trader_room_public import select_newest_complete_run
 from scripts.pm.store import PMStore
 from tests.test_overnight_scheduled_output import ScheduledOutputTests
 
@@ -138,8 +139,11 @@ class OvernightPMPacketTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as empty_tmp:
             empty = Path(empty_tmp)
             fallback = select_daily_pm_source(REPO, empty, allow_trader_room_fallback=True)
+            newest = select_newest_complete_run(REPO)
+            self.assertIsNotNone(newest)
+            assert newest is not None
             self.assertEqual(fallback.kind, SOURCE_TRADER_ROOM_FALLBACK)
-            self.assertEqual(fallback.trader_room_run_id, "tr-20260919T123430Z-ondemand")
+            self.assertEqual(fallback.trader_room_run_id, newest.name)
             self.assertIsNone(fallback.overnight_run_id)
             packets = build_all_packets(
                 root=REPO,
@@ -161,8 +165,11 @@ class RepoInitFallbackTests(unittest.TestCase):
             self.assertTrue(summary["fallback"])
             self.assertEqual(summary["source"], SOURCE_TRADER_ROOM_FALLBACK)
             packet = store.read_json(store.packet_path("chatgpt"))
+            newest = select_newest_complete_run(REPO)
+            self.assertIsNotNone(newest)
+            assert newest is not None
             self.assertEqual(packet["source"], SOURCE_TRADER_ROOM_FALLBACK)
-            self.assertEqual(packet["trader_room_run_id"], "tr-20260919T123430Z-ondemand")
+            self.assertEqual(packet["trader_room_run_id"], newest.name)
             self.assertIsNone(packet["overnight_run_id"])
 
 

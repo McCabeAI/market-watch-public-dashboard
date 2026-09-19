@@ -1,0 +1,328 @@
+{
+  "run_id": "tr-20260919T214000Z-ondemand",
+  "evidence_cutoff": "2026-09-19T21:40:00Z",
+  "evidence_packet_sha256": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
+  "source": "on_demand_trader_room_fallback",
+  "handoff_status": "STATUS: AWAITING_CHATGPT_ARBITRATION",
+  "funding": {
+    "sofr_percent": 3.85,
+    "sofr_observation_date": "2026-09-17",
+    "sofr_source": "NY_FED",
+    "convention": "ACT/360",
+    "sr3": {
+      "SR3Z6": 4.32,
+      "SR3H7": 4.58,
+      "SR3U7": 4.755
+    },
+    "corra_overnight": 2.29,
+    "aonia_overnight": 4.35,
+    "notes": [
+      "$1bn is a gross-notional risk limit, not automatically borrowed.",
+      "Unused cash earns official prior-day SOFR ACT/360; no later true-up.",
+      "Spot FX V1: dollarized notional counts as funded capital.",
+      "Futures/forwards/options are not charged full derivative notional merely because gross notional exists.",
+      "Do not author canonical P&L, marks, books, or funding arithmetic."
+    ]
+  },
+  "markable_examples": [
+    "SOFR_2027-09 rates 4.755",
+    "CORRA_2027-09 rates 3.51",
+    "CORRA_2027-06 rates 3.365",
+    "AONIA_2026-10 rates 4.565",
+    "CA-US_2Y rates_rv -140bp",
+    "USDCAD / NZDUSD / AUDNZD / AUDUSD spot",
+    "CORRA strip via paper_expression futures_strip_average"
+  ],
+  "unmarkable": [
+    "options / AUDUSD 1m ATM straddle \u2014 fail closed"
+  ],
+  "fourteen_seat": [
+    {
+      "agent": "carry-is-king",
+      "stance": "Verified: SOFR 3.85% (2026-09-17), CORRA 2.29%, AONIA 4.35%; Fed hiked 25bp to 3.75-4.00% on 16 Sep after >90% futures odds; CA-US 2Y is -140bp as of 17 Sep. Inference: the 149bp US-over-Canada 2Y yield gap is the holding-period engine, not a fade. Unknown: CFTC/CME positioning a",
+      "confidence": 58,
+      "trade": {
+        "instrument": "CA-US_2Y",
+        "asset_class": "rates_rv",
+        "direction": "short",
+        "structure": "Pay CA 2Y versus receive US 2Y; book as short CA-US_2Y (CA minus US). Paper family is sovereign 2Y RV marked from market_state.rate_rv.CA-US_2Y, not SOFR/CORRA futures. Research/reference mids only; not a broker structure."
+      },
+      "views": {
+        "usd_view": "higher",
+        "cad_view": "lower",
+        "aud_view": "not_relevant",
+        "nzd_view": "not_relevant",
+        "us_rates_view": "lower",
+        "ca_rates_view": "higher",
+        "au_rates_view": "not_relevant"
+      }
+    },
+    {
+      "agent": "catalyst-junkie",
+      "stance": "Verified: AONIA 4.35 overnight with October ASX IB implied 4.565 (+21.5bp) and November 4.685 (+33.5bp); NSW stamp-duty receipts -24% YoY and transactions -18% with Sydney/Melbourne values more than 7% below peak; AU gauges inflation 82 / activity 54 / labor 50 / consumer 48; AU ",
+      "confidence": 58,
+      "trade": {
+        "instrument": "AONIA_2026-10",
+        "asset_class": "rates",
+        "direction": "long",
+        "structure": "Long/receive ASX 30-day AONIA October 2026 (normalized AONIA_2026-10) at the frozen tradable_rate_curves mid: implied 4.565, futures price 95.435, change_from_overnight +21.5bp, OI 21752, volume 4450. Paper mark in implied-rate space. Do not migrate onto AU_2Y or an AONIA strip unless the book later locks an explicit futures_strip_average of the same family."
+      },
+      "views": {
+        "usd_view": "not_relevant",
+        "cad_view": "not_relevant",
+        "aud_view": "lower",
+        "nzd_view": "not_relevant",
+        "us_rates_view": "not_relevant",
+        "ca_rates_view": "not_relevant",
+        "au_rates_view": "lower"
+      }
+    },
+    {
+      "agent": "cross-merchant",
+      "stance": "Short AUDNZD. The intended Australia-versus-New Zealand differential is contaminated in USD pairs: AUDUSD is not stretched while NZDUSD mixes a delivered Fed hike into NZ weakness. Packet facts put AUDNZD at a 5y extreme after a 4.3% 1m squeeze that extended on 18 Sep after AU-ne",
+      "confidence": 61,
+      "trade": {
+        "instrument": "AUDNZD",
+        "asset_class": "spot_fx",
+        "direction": "short",
+        "structure": null
+      },
+      "views": {
+        "usd_view": "not_relevant",
+        "cad_view": "not_relevant",
+        "aud_view": "lower",
+        "nzd_view": "higher",
+        "us_rates_view": "not_relevant",
+        "ca_rates_view": "not_relevant",
+        "au_rates_view": "lower"
+      }
+    },
+    {
+      "agent": "dollar-king",
+      "stance": "Verified: Fed delivered 25bp to 3.75-4.00%, SOFR jumped to 3.85, SR3 still prices more tightening, and US gauges are hot versus a much easier CORRA 2.29 Canada with core near 2% and labor 38. Inference: the post-FOMC USD bid is a policy-gap story that is already more complete in ",
+      "confidence": 61,
+      "trade": {
+        "instrument": "USDCAD",
+        "asset_class": "spot_fx",
+        "direction": "long",
+        "structure": "outright long USDCAD spot; paper mark at frozen ECB packet mid"
+      },
+      "views": {
+        "usd_view": "higher",
+        "cad_view": "lower",
+        "aud_view": "lower",
+        "nzd_view": "lower",
+        "us_rates_view": "higher",
+        "ca_rates_view": "higher",
+        "au_rates_view": "higher"
+      }
+    },
+    {
+      "agent": "mean-reverter",
+      "stance": "Do not fade US 2Y just because it prints a 252-day high: it sits on the live SR3 path after a delivered, pre-priced hike with still-hot US gauges. The stretched object with a reversal condition is Australia: AU 2Y 4.999 as of 2026-09-16 sits through live AONIA (overnight 4.35; Oc",
+      "confidence": 59,
+      "trade": {
+        "instrument": "AONIA_2026-10",
+        "asset_class": "rates",
+        "direction": "short",
+        "structure": "Short implied-rate / receive AONIA hike-delivery window. Lead markable contract AONIA_2026-10 (packet implied_rate 4.565, price 95.435, source ASX_30D_AONIA). Locked strip for the same view: {\"type\":\"futures_strip_average\",\"curve_id\":\"AONIA\",\"expiries\":[\"2026-10\",\"2026-11\",\"2027-03\"]}. Paper futures are marked in implied-rate space, so direction is short the implied rate. Not an executable broker ticket. Family locked to AONIA until close; do not migrate onto AU_2Y."
+      },
+      "views": {
+        "usd_view": "higher",
+        "cad_view": "not_relevant",
+        "aud_view": "lower",
+        "nzd_view": "not_relevant",
+        "us_rates_view": "neutral",
+        "ca_rates_view": "not_relevant",
+        "au_rates_view": "lower"
+      }
+    },
+    {
+      "agent": "no-trade-skeptic",
+      "stance": "NO TRADE. Verified: official NY Fed SOFR is 3.85% effective 2026-09-17 ACT/360 after a 23bp jump from 3.62% on 2026-09-16; the Fed delivered a 25bp hike to 3.75-4.00% that futures had already assigned a greater-than-90% probability; SR3 exact-horizon implieds are SR3Z6 4.32 / SR3",
+      "confidence": 72,
+      "trade": "NO_TRADE",
+      "funding_view": {
+        "current_sofr": {
+          "convention": "ACT/360",
+          "day_count": 360,
+          "effective_date": "2026-09-17",
+          "observation_date": "2026-09-17",
+          "percent_rate": 3.85,
+          "rate": 3.85,
+          "source": "NY_FED"
+        },
+        "forward_funding_assessment": "higher",
+        "implication": "Undeployed $100m earns 3.85% ACT/360, about $10,694 per calendar day. Because I expect subsequent official fixings to grind higher toward the SR3Z6 4.32 / SR3H7 4.58 / SR3U7 4.755 path as the new 3.75-4.00 funds band beds in and US inflation/labor gauges stay hot (72/75), cash income itself is rising (about $12,000/day at 4.32, $12,722 at 4.58, $13,208 at 4.755). Opening duration, curve, or FX risk stops that compounding on deployed notional. Apparent edges do not beat a rising overnight hurdle: US 2Y 4.76 is only ~91bp over cash after a fully priced hike, with empty analogs and null yield-change paths; shorting the SR3 strip after the meeting is chasing a known event; fading AONIA's 37-51bp hike path on a 16-Sep housing story is timed after the news; NZDUSD at the 12.9th 1y percentile cannot be triangulated without NZ rates; CFTC/CME positioning is missing so crowding cannot be verified. Stay in cash until a discrepancy is expected to out-earn that rising SOFR stream with a dated invalidation.",
+        "sr3_forward_view": "The relevant paper-funding path is the exact-horizon SR3 strip, not a 5% assumption: SR3Z6 2026-12 implied 4.32 (+47bp vs 3.85 overnight), SR3H7 2027-03 implied 4.58 (+73bp), SR3U7 2027-09 implied 4.755 (+90.5bp). Front SR3U6 is 4.00; the delayed Sep 1m SOFR future SR1U26 still implies 3.75, which is already 10bp below the official 3.85 fixing. Realized accounting remains the NY Fed print only."
+      }
+    },
+    {
+      "agent": "perma-bear",
+      "stance": "Canada labor and core inflation cannot support the 122bp of additional tightening priced into CORRA_2027-09. The Fed hike and energy-pass-through narrative have built a full BoC hiking cycle onto an overnight CORRA still at 2.29 while CA labor is 38 and core is near 2%. Long dura",
+      "confidence": 58,
+      "trade": {
+        "instrument": "CORRA_2027-09",
+        "asset_class": "rates",
+        "direction": "long",
+        "structure": "Long duration CORRA_2027-09 / CRAU27 in the CORRA futures family; packet marks in implied-rate space with inverted rates P&L so a long profits if implied CORRA falls. Do not migrate onto CA sovereigns or SOFR."
+      },
+      "views": {
+        "usd_view": "higher",
+        "cad_view": "lower",
+        "aud_view": "lower",
+        "nzd_view": "lower",
+        "us_rates_view": "higher",
+        "ca_rates_view": "lower",
+        "au_rates_view": "lower"
+      }
+    },
+    {
+      "agent": "perma-bull",
+      "stance": "Verified: New Zealand Q2 GDP printed 0.2% q/q and beat forecasts, parliament passed an India FTA covering about 95% of NZ exports, and NZDUSD sits at a 1y 12.9th / 5y 8.6th percentile after -3.90% 1m and -1.90% 5d while AUDUSD is only +0.20% 1m and AUDNZD is at a 5y 99.96th perce",
+      "confidence": 58,
+      "trade": {
+        "instrument": "NZDUSD",
+        "asset_class": "spot_fx",
+        "direction": "long",
+        "structure": "Long NZDUSD spot versus USD at the frozen packet mid; unhedged to AUD or CAD so the NZ-specific residual versus AUDNZD/NZDCAD is retained."
+      },
+      "views": {
+        "usd_view": "lower",
+        "cad_view": "higher",
+        "aud_view": "neutral",
+        "nzd_view": "higher",
+        "us_rates_view": "higher",
+        "ca_rates_view": "higher",
+        "au_rates_view": "neutral"
+      }
+    },
+    {
+      "agent": "positioning-cynic",
+      "stance": "Verified: CFTC/CME nets are unavailable this freeze and must stay null; the owned post-FOMC idea is more Fed tightening after a >90% priced 25bp hike that was delivered. Inference: that consensus is already in US 2Y at a 99.8th 1y percentile and a 0.2nd-percentile 2s10s, so joini",
+      "confidence": 50,
+      "trade": {
+        "instrument": "{\"type\":\"futures_strip_average\",\"curve_id\":\"CORRA\",\"expiries\":[\"2027-03\",\"2027-06\",\"2027-09\",\"2027-12\"]}",
+        "asset_class": "rates",
+        "direction": "long",
+        "structure": "Long/receive equal-weight MX CRA strip {\"type\":\"futures_strip_average\",\"curve_id\":\"CORRA\",\"expiries\":[\"2027-03\",\"2027-06\",\"2027-09\",\"2027-12\"]} at frozen packet mids; paper-mark in implied-rate space; do not migrate onto CA 2Y."
+      },
+      "views": {
+        "usd_view": "neutral",
+        "cad_view": "neutral",
+        "aud_view": "not_relevant",
+        "nzd_view": "not_relevant",
+        "us_rates_view": "neutral",
+        "ca_rates_view": "lower",
+        "au_rates_view": "not_relevant"
+      }
+    },
+    {
+      "agent": "rate-dove",
+      "stance": "Restrictive policy is already biting in Canada\u2019s labor and core inflation, yet MX CORRA still prices a full hiking cycle. Receive 2027 CORRA rather than fade CAD in spot.",
+      "confidence": 62,
+      "trade": {
+        "instrument": "CORRA_2027-06",
+        "asset_class": "rates",
+        "direction": "long",
+        "structure": "Outright long duration in MX three-month CORRA futures CRAM27, aliased CORRA_2027-06. Paper mark is the frozen implied rate 3.365 (futures price 96.635) from tradable_rate_curves.CORRA. Long rates in this book profits if implied rates fall."
+      },
+      "views": {
+        "usd_view": "higher",
+        "cad_view": "lower",
+        "aud_view": "lower",
+        "nzd_view": "lower",
+        "us_rates_view": "neutral",
+        "ca_rates_view": "lower",
+        "au_rates_view": "lower"
+      }
+    },
+    {
+      "agent": "rate-hawk",
+      "stance": "US inflation, labor, activity and consumer heat are still inconsistent with a SOFR path that peaks at 4.755 in 2027-09 and then eases through 2028. Pay SOFR_2027-09 (long implied rate at the packet 4.755 mid) rather than USD spot, because the mispricing is the policy path itself.",
+      "confidence": 64,
+      "trade": {
+        "instrument": "SOFR_2027-09",
+        "asset_class": "rates",
+        "direction": "long",
+        "structure": "Pay 3-month SOFR / long implied rate in SOFR_2027-09 (SR3U7). Paper mark is the packet tradable-curve implied rate 4.755, not the 95.245 futures price. No strip weights: single locked contract."
+      },
+      "views": {
+        "usd_view": "higher",
+        "cad_view": "lower",
+        "aud_view": "neutral",
+        "nzd_view": "not_relevant",
+        "us_rates_view": "higher",
+        "ca_rates_view": "higher",
+        "au_rates_view": "higher"
+      }
+    },
+    {
+      "agent": "trend-follower",
+      "stance": "Verified: Fed hiked 25bp to 3.75-4.00% on 16 Sep, SOFR printed 3.85% on 17 Sep, August CPI kept the tightening bias, and US 2Y is still making highs at 4.76 (packet 100th percentile, +57bp 1m, +9bp on 18 Sep). Inference: the hiking cycle and higher-yield trend persist; fading 99t",
+      "confidence": 63,
+      "trade": {
+        "instrument": "SOFR_2027-09",
+        "asset_class": "rates",
+        "direction": "pay",
+        "structure": "Pay/short packet-markable SOFR_2027-09 (exchange code SR3U7) in implied-rate space. Book marks at tradable_rate_curves / funding_context implied 4.755, price 95.245. Direction profits if implied SOFR for Sep-2027 rises (futures price falls). Same-direction add in SOFR_2027-12 / SOFR_2028-03 only if those contracts remain the easing-dip expression of the same thesis; do not migrate the open onto a bond (US_2Y) family."
+      },
+      "views": {
+        "usd_view": "higher",
+        "cad_view": "lower",
+        "aud_view": "neutral",
+        "nzd_view": "lower",
+        "us_rates_view": "higher",
+        "ca_rates_view": "higher",
+        "au_rates_view": "higher"
+      }
+    },
+    {
+      "agent": "value-guy",
+      "stance": "Verified: CA-US 2Y is -140bp as of 2026-09-17, 1y percentile 3.77 and 5y percentile 4.31, while CORRA 2.29 versus SOFR 3.85 and CRA 2027 contracts already imply 84-130bp of Canadian hikes. Inference: that left-tail spread is a peer-normalized dislocation, not a cheap-because-it-f",
+      "confidence": 61,
+      "trade": {
+        "instrument": "CA-US_2Y",
+        "asset_class": "rates_rv",
+        "direction": "short",
+        "structure": "Short CA-US 2Y sovereign spread, paper-marked from market_state.rate_rv.CA-US_2Y (CA yield minus US yield). Implementation: short CA_2Y versus long US_2Y, duration-neutral in spread space. Do not migrate the open onto SOFR/CORRA; family stays bond. STIR equivalent (pay 2027 CORRA strip / receive 2027 SOFR strip) is the policy-path cross-check only, not the locked expression, because mixed-curve linear_combo is not a single locked family."
+      },
+      "views": {
+        "usd_view": "not_relevant",
+        "cad_view": "higher",
+        "aud_view": "not_relevant",
+        "nzd_view": "not_relevant",
+        "us_rates_view": "lower",
+        "ca_rates_view": "higher",
+        "au_rates_view": "not_relevant"
+      }
+    },
+    {
+      "agent": "vol-convexity",
+      "stance": "AUDUSD spot is the wrong instrument: RBA reaction function is bimodal (housing contraction versus inflation 82 and an AONIA path still +51bp by Mar-2027) while the USD factor is suppressing AUDUSD realized even as AUD crosses already print extremes. Long a 1-month ATM AUDUSD stra",
+      "confidence": 49,
+      "trade": {
+        "instrument": "AUDUSD 1-month ATM straddle",
+        "asset_class": "options",
+        "direction": "long volatility",
+        "structure": "Long 1-month ATM AUDUSD straddle (equal notional call and put). Premium, implied volatility, forward, and exact strikes are not in the frozen packet \u2014 all numeric option levels remain null. Do not fill until 1m ATM IV, 25-delta risk-reversal, and 1m realized can be compared with the housing-versus-inflation event distribution. If the checked 25d RR already fully prices one tail, switch to buying the cheaper tail via that risk-reversal rather than inventing a skew; if 1m ATM IV already fully prices a two-way RBA gap, stand down. Paper books cannot mark this structure without option mids."
+      },
+      "views": {
+        "usd_view": "not_relevant",
+        "cad_view": "not_relevant",
+        "aud_view": "not_relevant",
+        "nzd_view": "not_relevant",
+        "us_rates_view": "higher",
+        "ca_rates_view": "not_relevant",
+        "au_rates_view": "not_relevant"
+      }
+    }
+  ],
+  "conflicts": [
+    "opp-dir:AONIA_2026-10",
+    "opp-view:USD",
+    "opp-view:CAD",
+    "opp-view:NZD"
+  ],
+  "rebuttals": "11 routed; all trade_change=unchanged"
+}

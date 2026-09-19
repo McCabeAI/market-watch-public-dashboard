@@ -1,0 +1,131 @@
+{
+  "type": "TRADER_ROOM_CONTRIBUTION",
+  "run_id": "tr-20260919T214000Z-ondemand",
+  "round": 1,
+  "agent": "trend-follower",
+  "archetype": "trend-follower",
+  "remit": "persistent price, rates and macro trends; reject premature fades",
+  "packet_sha256": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
+  "stance_summary": "Verified: Fed hiked 25bp to 3.75-4.00% on 16 Sep, SOFR printed 3.85% on 17 Sep, August CPI kept the tightening bias, and US 2Y is still making highs at 4.76 (packet 100th percentile, +57bp 1m, +9bp on 18 Sep). Inference: the hiking cycle and higher-yield trend persist; fading 99th-percentile UST yields or the modest post-peak easing in SR3 is premature while US inflation/labor/consumer/activity gauges remain 72/75/69/74. Expression: pay SOFR_2027-09 rather than chase already-stretched USDCHF. Unknown: CFTC/CME positioning and live (non-dashboard_v8) gauges.",
+  "confidence": 63,
+  "trade": {
+    "instrument": "SOFR_2027-09",
+    "asset_class": "rates",
+    "expression_comparison": {
+      "rates_candidate": "Pay/short SOFR_2027-09 (SR3U7) at packet implied 4.755; owns persistence of the post-hike US tightening path and rejects the modest easing priced after the Sep-2027 peak.",
+      "spot_candidate": "Long USDCHF at packet ECB spot 0.8256544502617802 (1y percentile 99.80, +3.337% 1m); alternative G10 USD-up expression is short EURUSD at 1.146 (1y percentile 10.91, -1.892% 1m).",
+      "selected": "rates",
+      "rationale": "Rates and spot both continue the same Fed-hike/USD-premium impulse, so rates is the default. SOFR_2027-09 is the cleaner owner: it is markable from tradable_rate_curves, sits on an observed policy path (overnight SOFR 3.85 vs SR3U7 4.755 then easing to 4.59 by Dec-2028), and is the exact tenor where a premature fade would show up. USDCHF is the stronger spot trend but is already a 99.8th-percentile statistical extreme without adding policy-path information and mixes CHF-idiosyncratic residual. Do not default to options: packet has no premium/IV/strike mids."
+    },
+    "context_build": {
+      "causal_mechanism": "Test whether the US tightening cycle continues after a delivered 25bp hike while inflation, labor, consumer and activity remain hot. Mechanism: restricted financial conditions need to stay restrictive, or tighten further, until those gauges cool; a 100th-percentile 2Y yield is the price of that restriction, not a fade signal. Mean-reversion of UST yields or of the SR3 post-peak dip would require a concrete reversal in the policy path or in US inflation/labor, which the freeze does not show.",
+      "path_to_current_price": "Multi-horizon US front-end: US 2Y at 4.76 as of 2026-09-18, +13bp 5d, +57bp 1m and 3m, +9bp on 18 Sep after the meeting (market_state US_2Y). US 2s10s collapsed to 25bp (1y percentile 0.20; -21bp 1m; 33bp on 11 Sep to 27bp on 16 Sep to 25bp on 18 Sep), a hiking-cycle flatten as the front end led. Policy path: overnight SOFR 3.62% on 16 Sep then 3.85% on 17 Sep, matching the 25bp funds hike to 3.75-4.00%. SR3 strip: 2026-09 4.00, 2026-12 4.32, 2027-03 4.58, 2027-06 4.72, 2027-09 4.755 peak, then 2027-12 4.73 / 2028-03 4.695 / 2028-09 4.62 / 2028-12 4.59. FX confirmation: EURUSD 1.1652 on 9 Sep to 1.1537 on 16 Sep to 1.146 on 18 Sep; USDCHF +3.337% 1m to a 99.80 1y percentile. CA-US 2Y widened to -140bp (-17bp 1m, 3.8th 1y percentile): US continues to outyield Canada rather than the gap mean-reverting.",
+      "known_vs_new_information": "Known before the meeting: futures implied greater-than-90% odds of a 25bp hike (mw_20260916_fomc_hike_pricing, published 16 Sep 03:01Z). Known: August CPI had already kept the tightening bias intact (rollup 11 Sep). New at this freeze: the hike was delivered (rollup Fed raises 25bp to 3.75-4.00%); official SOFR jumped to 3.85% effective 17 Sep; US 2Y still rallied in yield on 18 Sep rather than giving back the event; BoJ hiked to 1.25% and BoE held 3.75% with three hike votes, so the global rates impulse is not a one-country event. A fully priced hike that is followed by still-higher front-end yields is new information about the PATH, not about the meeting itself.",
+      "market_implied_assumption": "The SOFR curve requires about +90.5bp of tightening from overnight 3.85% into a Sep-2027 peak of 4.755%, then a modest ease (about 16.5bp from that peak to 4.59% by Dec-2028). US 2Y at 4.76 is already aligned with that peak. The priced assumption is that this hiking sequence is nearly fully mapped, that 4.75% is close to terminal, and that yields at 1y 99-100th percentiles should start mean-reverting once the meeting is out of the way.",
+      "market_assumption_disagreed_with": "Disagree that the cycle is done being priced just because the September hike was >90% discounted and because US 2Y/10Y sit at the top of their 1y distributions. While US inflation/labor/consumer/activity gauges remain 72/75/69/74 after the hike, fading the yield uptrend or leaning on the post-Sep-2027 SR3 dip is a premature fade. The 4.755 peak is too low and/or the subsequent ease is too early.",
+      "price_decomposition": "Level vs change: US 2Y 4.76 is a 100th 1y percentile LEVEL; the TRADEABLE change is the still-positive 1m/+57bp and post-hike +9bp impulse, not the percentile. Tenor: the policy component lives in SOFR/SR3, not in the 10Y/30Y (10Y 5.01, 30Y 5.34) which add term-premium residual. Marginal driver of the last week is the delivered hike plus the still-hot CPI/labor complex, visible as SOFR 3.62->3.85, 2s10s 33->25bp, and EURUSD 1.1537->1.146. Cross-market: CA CORRA overnight 2.29 with +136.5bp priced to a 2028-09 3.655 peak is a catch-up path, not a reason to fade US; CA labor 38 and core CPI near 2% argue that catch-up can disappoint, which would keep CA-US 2Y wide. AU is the anti-analog: AONIA 4.35 with ~60bp more priced but housing already biting (stamp-duty receipts -24% y/y, home values >7% off peak).",
+      "historical_reference": {
+        "distribution": "US 2Y 4.76: 1y percentile 99.80 / 1y z 2.84 / 5y percentile 88.02 (PACKET_FACTS rates.US). US 10Y 5.01: 1y percentile 99.60 / 5y percentile 99.92. US 2s10s 25bp: 1y percentile 0.20, 1m change -21bp. USDCHF 1y percentile 99.80, z 2.33. EURUSD 1y percentile 10.91, z -1.31. These percentiles are discovery flags that a fade camp will cite; they are not the thesis. Packet US tenor analog arrays are empty.",
+        "analogs": [
+          "Packet-internal process analog, not a distant regime: 16 Sep FOMC was >90% priced for +25bp, then delivered. US 2Y still rose 9bp on 18 Sep (474 on 16 Sep -> 467 on 17 Sep -> 476 on 18 Sep) and EURUSD continued lower (1.1537 -> 1.1481 -> 1.146). The meeting being priced did not end the rates-up trend.",
+          "CA-US 2Y historical_move_analogs after a similar prior 1m widening of about -17bp: 2022-11-15 (level -51bp) forward 1m -4bp / 3m +6bp; 2025-01-30 (level -145bp) forward 1m -5bp / 3m +25bp; 2024-05-02 (level -63bp) forward 1m -9bp / 3m -6bp; 2024-12-18 (level -130bp) forward 1m -3bp / 3m -20bp. Near-term (1m) the US-outyield trend usually persisted; 3m outcomes mixed. That is a reason not to fade the differential in the first month, not a guarantee of 3m continuation.",
+          "No credible packet analog exists for a mechanical fade of US 2Y/10Y from 1y 99-100th percentiles: those tenor analog lists are empty in rates.US. AU housing (NSW stamp duty -24% y/y, volumes -18%, Sydney/Melbourne >7% off peak) is an analog of a tightening channel that IS biting, which is why this seat does not pay AONIA as the continuation trade."
+        ],
+        "regime_differences": "Unlike early-2022 hiking analogs, this freeze already has overnight SOFR at 3.85% and ~90bp of additional hikes mapped into Sep-2027, so the remaining edge is path extension/peak revision rather than the first hike. Unlike Australia, the packet does not show a US housing-tax/activity collapse; US activity 69 and consumer 74 remain firm. Gauges are repo-retained dashboard_v8 (stale if Supabase live scores are absent). NZ rates and CFTC/CME positioning are unavailable, so analog completeness is lower than a full 2022-style panel."
+      },
+      "independent_checks": [
+        "Policy/tradable-curve check: overnight SOFR 3.85 (NY Fed, 17 Sep) versus SR3 2026-12 4.32 / 2027-03 4.58 / 2027-09 4.755 peak then ease; funds target 3.75-4.00% after the delivered hike.",
+        "Macro-gauge check: US inflation 72, labor 75, activity 69, consumer 74 (all still hot after the hike); contrast CA labor 38 and AU inflation 82 with housing already contracting.",
+        "Price-path check: US 2Y +57bp 1m and +9bp on 18 Sep; US 2s10s -21bp 1m to 25bp; EURUSD -1.89% 1m and USDCHF +3.34% 1m as cross-asset confirmation of the USD/rates impulse.",
+        "News/policy triangulation: August CPI kept tightening bias; FOMC hike delivered; BoJ hike to 1.25% and BoE three votes for a hike keep global tightening from being a US-only story."
+      ],
+      "flow_and_positioning_check": "Verified unknown: CFTC trader-class nets and CME positioning overlays are unavailable this freeze (pos:cftc; known_gaps). Paper books are empty $100m seeds, so there is no house-positioning residue. Cannot distinguish fundamental persistence from CTA/systematic chase of the yield uptrend, nor a crowded short-duration base that would squeeze on a fade. Do not infer crowding from 99-100th percentiles. Absence of flow data lowers confidence; it is not permission to fade the price trend.",
+      "policy_path_check": {
+        "status": "available",
+        "relevant_countries": [
+          "US"
+        ],
+        "pricing_summary": "US overnight SOFR 3.85% effective 2026-09-17 (Fed funds 3.75-4.00% after the 16 Sep +25bp hike). SR3 implied: 2026-09 4.00 (+15bp vs overnight), 2026-12 4.32 (+47bp), 2027-03 4.58 (+73bp), 2027-06 4.72 (+87bp), 2027-09 4.755 (+90.5bp, curve peak), then 2027-12 4.73 / 2028-03 4.695 / 2028-06 4.66 / 2028-09 4.62 / 2028-12 4.59. Exact-horizon funding forwards: 3m SR3Z6 4.32, 6m SR3H7 4.58, 12m SR3U7 4.755. CA and AU paths exist but are not the selected trade: CORRA 2.29 with +136.5bp to 3.655 by 2028-09; AONIA 4.35 with +59.5bp to 4.945 by 2027-07/09.",
+        "rationale": "Selected instrument is SOFR_2027-09 on the tradable SOFR curve, so the US policy path is the required context. A 2Y sovereign percentile is not the substitute: the 4.76 US 2Y is used only as a confirming price trend after the SOFR/SR3 path is stated. Status is available in market_state.policy_paths.countries.US."
+      }
+    },
+    "structure": "Pay/short packet-markable SOFR_2027-09 (exchange code SR3U7) in implied-rate space. Book marks at tradable_rate_curves / funding_context implied 4.755, price 95.245. Direction profits if implied SOFR for Sep-2027 rises (futures price falls). Same-direction add in SOFR_2027-12 / SOFR_2028-03 only if those contracts remain the easing-dip expression of the same thesis; do not migrate the open onto a bond (US_2Y) family.",
+    "direction": "pay",
+    "thesis": "FACT: The Fed delivered a 25bp hike to 3.75-4.00%, official SOFR is 3.85%, August CPI kept the tightening bias, US gauges are 72/75/69/74, US 2Y is 4.76 with a +57bp 1m impulse and a further +9bp on 18 Sep, and SR3 peaks at 4.755 in Sep-2027 then eases. INFERENCE: Price, policy and macro are aligned for continuation of higher US short-end rates; a fade of 100th-percentile yields right after a hike with still-hot gauges is the classic premature mean-reversion this seat rejects. The mispricing is the assumption that 4.755 is close enough to terminal that one should receive the peak or buy the post-peak dip. UNKNOWN: positioning, live (non-v8) gauges, NZ rates. Primary expression is pay SOFR_2027-09. Spot USDCHF/EURUSD confirms but is inferior.",
+    "mispricing": "Market implies a ~90bp hiking remainder to 4.755% by Sep-2027 and then a small ease. That prices a nearly complete cycle just as realized overnight has only moved to 3.85% and as US inflation/labor/consumer have not rolled over. The fade camp treats 99-100th percentile UST yields as the opportunity. This seat treats those percentiles as the trend. Edge is further cheapening of SR3U7 (higher implied) if the peak is revised up or the ease is delayed, not carry from merely delivering the already-priced path.",
+    "why_now": [
+      "The September hike that was >90% priced has been delivered; residual information is the PATH, visible in US 2Y still rising on 18 Sep and SOFR printing 3.85% on 17 Sep.",
+      "August CPI kept the Fed tightening bias intact and US inflation/labor/consumer/activity gauges remain 72/75/69/74, so there is no reversal catalyst for a fade.",
+      "Funded seats pay official SOFR 3.85% ACT/360 on the full $100m even if flat; a defined continuation trade with invalidation is required to clear that hurdle rather than sitting out a live hiking trend.",
+      "Global policy impulse is still one-way this freeze (Fed hike, BoJ to 1.25%, BoE three votes for a hike), which argues against treating the US yield spike as a one-and-done event."
+    ],
+    "evidence_refs": [
+      "market_state",
+      "tradable_rate_curves",
+      "policy_paths",
+      "policy:US",
+      "funding_context",
+      "rates:US",
+      "rates:CA",
+      "temp:US:inflation",
+      "temp:US:labor",
+      "temp:US:activity",
+      "temp:US:consumer",
+      "temp:CA:labor",
+      "mw_20260916_fomc_hike_pricing",
+      "mw_20260916_au_housing_tightening",
+      "rollup:Fed raises 25bp to 3.75–4.00%",
+      "rollup:August CPI keeps the Fed tightening bias intact",
+      "rollup:BoJ raises its policy rate to 1.25%",
+      "rollup:BoE holds 3.75% with three votes for a hike",
+      "fx:USDCHF",
+      "fx:EURUSD",
+      "pos:cftc",
+      "paper_books",
+      "research_method"
+    ],
+    "horizon": "1-3 months, through subsequent US CPI and the next FOMC path revision",
+    "entry": "packet mid implied 4.755 / price 95.245 on SOFR_2027-09 (SR3U7) from tradable_rate_curves and funding_context.forward_summaries.12m; paper execution at that mid, not a broker quote",
+    "target": null,
+    "stop": null,
+    "invalidation": "Thesis is wrong if the US policy path re-prices the Sep-2027 implied back toward overnight SOFR 3.85 rather than holding or raising the packet 4.755 peak, or if packet-equivalent evidence shows the Fed tightening bias reversed and US inflation and labor gauges both roll over. A 100th-percentile US 2Y/10Y print is not invalidation. Do not invent a price stop.",
+    "catalysts": [
+      "Next US CPI/labor prints that keep inflation and labor gauges elevated would force an upward revision of the 4.755 SR3 peak.",
+      "The next FOMC communication after a hike that was already >90% priced is about the PATH; another 25bp or a higher dots/terminal signal would reprice SOFR_2027-09 directly.",
+      "Global confirmation already in packet (BoJ 1.25%, BoE three hike votes) reduces the odds that the US move is an isolated event to fade."
+    ],
+    "principal_risks": [
+      "The 4.755 peak already maps ~90bp of further hikes; if that path is merely delivered with no peak revision, expected P&L may not clear the 3.85% SOFR funding vig.",
+      "Positioning is unavailable; a crowded short-duration base could squeeze on any growth scare even if the medium-term trend is intact.",
+      "Temperature gauges are dashboard_v8 retained and marked stale if Supabase live scores are absent; a true labor break that is not in this freeze would flip the seat.",
+      "Australia already shows the tightening channel biting in housing; a US analog that is not in this packet would be a late-cycle fade the seat currently rejects.",
+      "Energy shock-absorber weakness and the Saudi workaround cut both ways: they can keep inflation sticky (supports pay) or hit growth (supports a fade)."
+    ],
+    "confidence": 63
+  },
+  "conflict_synopsis": {
+    "seat": "trend-follower",
+    "primary_trade": "pay SOFR_2027-09 (SR3U7)",
+    "core_view": "Post-hike US tightening and the UST yield uptrend persist; fading 100th-percentile yields or the modest SR3 post-peak ease is premature while US gauges stay hot.",
+    "usd_view": "higher",
+    "cad_view": "lower",
+    "aud_view": "neutral",
+    "nzd_view": "lower",
+    "us_rates_view": "higher",
+    "ca_rates_view": "higher",
+    "au_rates_view": "higher",
+    "nz_rates_view": "not_relevant",
+    "risk_view": "neutral",
+    "carry_view": "opposes_trade",
+    "time_horizon": "1-3 months",
+    "key_catalyst": "Next US CPI/labor or FOMC path revision that lifts the SR3 Sep-2027 peak above the packet 4.755 implied.",
+    "key_invalidation": "US policy path re-prices Sep-2027 implied back toward overnight SOFR 3.85, or inflation and labor gauges both roll over with the tightening bias reversed.",
+    "confidence": 63,
+    "conflict_tags": [
+      "US_RATES_UP",
+      "USD_UP",
+      "CAD_DOWN",
+      "NZD_DOWN"
+    ]
+  }
+}

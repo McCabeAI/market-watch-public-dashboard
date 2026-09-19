@@ -1,0 +1,4457 @@
+{
+  "allowed_evidence_refs": [
+    "funding_context",
+    "fx:AUDCAD",
+    "fx:AUDCHF",
+    "fx:AUDJPY",
+    "fx:AUDNOK",
+    "fx:AUDNZD",
+    "fx:AUDSEK",
+    "fx:AUDUSD",
+    "fx:CADCHF",
+    "fx:CADJPY",
+    "fx:CADNOK",
+    "fx:CADSEK",
+    "fx:CHFJPY",
+    "fx:CHFNOK",
+    "fx:CHFSEK",
+    "fx:EURAUD",
+    "fx:EURCAD",
+    "fx:EURCHF",
+    "fx:EURGBP",
+    "fx:EURJPY",
+    "fx:EURNOK",
+    "fx:EURNZD",
+    "fx:EURSEK",
+    "fx:EURUSD",
+    "fx:GBPAUD",
+    "fx:GBPCAD",
+    "fx:GBPCHF",
+    "fx:GBPJPY",
+    "fx:GBPNOK",
+    "fx:GBPNZD",
+    "fx:GBPSEK",
+    "fx:GBPUSD",
+    "fx:NOKJPY",
+    "fx:NOKSEK",
+    "fx:NZDCAD",
+    "fx:NZDCHF",
+    "fx:NZDJPY",
+    "fx:NZDNOK",
+    "fx:NZDSEK",
+    "fx:NZDUSD",
+    "fx:SEKJPY",
+    "fx:USDCAD",
+    "fx:USDCHF",
+    "fx:USDJPY",
+    "fx:USDNOK",
+    "fx:USDSEK",
+    "market_state",
+    "mw_20260916_au_housing_tightening",
+    "mw_20260916_fomc_hike_pricing",
+    "mw_20260916_nz_india_trade",
+    "mw_20260916_saudi_oman_workaround",
+    "official_curves",
+    "paper_books",
+    "policy:AU",
+    "policy:CA",
+    "policy:US",
+    "policy_paths",
+    "pos:cftc",
+    "rates:AU",
+    "rates:CA",
+    "rates:NZ",
+    "rates:US",
+    "research_method",
+    "rollup:August CPI keeps the Fed tightening bias intact",
+    "rollup:Australian housing downturn deepens under higher rates",
+    "rollup:BoC minutes flag higher energy pass-through risk",
+    "rollup:BoE holds 3.75% with three votes for a hike",
+    "rollup:BoJ raises its policy rate to 1.25%",
+    "rollup:Canada August inflation holds at 3%, core stays near 2%",
+    "rollup:Energy-market shock absorbers weaken",
+    "rollup:Fed raises 25bp to 3.75\u20134.00%",
+    "rollup:New Zealand Q2 GDP slows to 0.2% q/q but beats forecasts",
+    "temp:AU:activity",
+    "temp:AU:consumer",
+    "temp:AU:inflation",
+    "temp:AU:labor",
+    "temp:CA:activity",
+    "temp:CA:consumer",
+    "temp:CA:inflation",
+    "temp:CA:labor",
+    "temp:NZ:activity",
+    "temp:NZ:consumer",
+    "temp:NZ:inflation",
+    "temp:NZ:labor",
+    "temp:US:activity",
+    "temp:US:consumer",
+    "temp:US:inflation",
+    "temp:US:labor",
+    "tradable_rate_curves"
+  ],
+  "as_of": "2026-09-19T21:40:00Z",
+  "cb_headlines": [
+    {
+      "headline": "Fed decision arrives with markets heavily priced for a 25bp hike",
+      "id": "mw_20260916_fomc_hike_pricing",
+      "institution": "Federal Reserve",
+      "published_at": "2026-09-16T03:01:14Z"
+    },
+    {
+      "headline": "Australian housing downturn shows the RBA tightening channel biting",
+      "id": "mw_20260916_au_housing_tightening",
+      "institution": null,
+      "published_at": "2026-09-16T03:34:50Z"
+    },
+    {
+      "headline": "BoE holds 3.75% with three votes for a hike",
+      "id": "rollup:BoE holds 3.75% with three votes for a hike",
+      "institution": null,
+      "published_at": null
+    },
+    {
+      "headline": "Fed raises 25bp to 3.75\u20134.00%",
+      "id": "rollup:Fed raises 25bp to 3.75\u20134.00%",
+      "institution": null,
+      "published_at": null
+    },
+    {
+      "headline": "BoC minutes flag higher energy pass-through risk",
+      "id": "rollup:BoC minutes flag higher energy pass-through risk",
+      "institution": null,
+      "published_at": null
+    },
+    {
+      "headline": "New Zealand Q2 GDP slows to 0.2% q/q but beats forecasts",
+      "id": "rollup:New Zealand Q2 GDP slows to 0.2% q/q but beats forecasts",
+      "institution": null,
+      "published_at": null
+    },
+    {
+      "headline": "Canada August inflation holds at 3%, core stays near 2%",
+      "id": "rollup:Canada August inflation holds at 3%, core stays near 2%",
+      "institution": null,
+      "published_at": null
+    },
+    {
+      "headline": "August CPI keeps the Fed tightening bias intact",
+      "id": "rollup:August CPI keeps the Fed tightening bias intact",
+      "institution": null,
+      "published_at": null
+    }
+  ],
+  "funding_context": {
+    "authority": "Official NY Fed SOFR is the realized funding-rate authority. SR3 is forward context only.",
+    "forward_summaries": {
+      "12m": {
+        "code": "SR3U7",
+        "expiry": "2027-09",
+        "horizon_months": 12,
+        "implied_rate": 4.755,
+        "method": "exact_sr3_expiry_month"
+      },
+      "1m": null,
+      "3m": {
+        "code": "SR3Z6",
+        "expiry": "2026-12",
+        "horizon_months": 3,
+        "implied_rate": 4.32,
+        "method": "exact_sr3_expiry_month"
+      },
+      "6m": {
+        "code": "SR3H7",
+        "expiry": "2027-03",
+        "horizon_months": 6,
+        "implied_rate": 4.58,
+        "method": "exact_sr3_expiry_month"
+      }
+    },
+    "notes": [
+      "Forward summaries are exact SR3 expiry-month matches only; unsupported horizons stay null.",
+      "Realized accounting never uses SR3 or a model funding forecast."
+    ],
+    "sofr": {
+      "convention": "ACT/360",
+      "day_count": 360,
+      "effective_date": "2026-09-17",
+      "history": [
+        {
+          "effective_date": "2026-05-11",
+          "percent_rate": 3.6,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-05-12",
+          "percent_rate": 3.6,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-05-13",
+          "percent_rate": 3.59,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-05-14",
+          "percent_rate": 3.56,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-05-15",
+          "percent_rate": 3.55,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-05-18",
+          "percent_rate": 3.53,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-05-19",
+          "percent_rate": 3.51,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-05-20",
+          "percent_rate": 3.5,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-05-21",
+          "percent_rate": 3.51,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-05-22",
+          "percent_rate": 3.55,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-05-26",
+          "percent_rate": 3.63,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-05-27",
+          "percent_rate": 3.63,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-05-28",
+          "percent_rate": 3.62,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-05-29",
+          "percent_rate": 3.63,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-06-01",
+          "percent_rate": 3.65,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-06-02",
+          "percent_rate": 3.63,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-06-03",
+          "percent_rate": 3.61,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-06-04",
+          "percent_rate": 3.62,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-06-05",
+          "percent_rate": 3.63,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-06-08",
+          "percent_rate": 3.63,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-06-09",
+          "percent_rate": 3.6,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-06-10",
+          "percent_rate": 3.59,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-06-11",
+          "percent_rate": 3.6,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-06-12",
+          "percent_rate": 3.65,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-06-15",
+          "percent_rate": 3.69,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-06-16",
+          "percent_rate": 3.63,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-06-17",
+          "percent_rate": 3.63,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-06-18",
+          "percent_rate": 3.62,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-06-22",
+          "percent_rate": 3.61,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-06-23",
+          "percent_rate": 3.62,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-06-24",
+          "percent_rate": 3.62,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-06-25",
+          "percent_rate": 3.64,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-06-26",
+          "percent_rate": 3.62,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-06-29",
+          "percent_rate": 3.62,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-06-30",
+          "percent_rate": 3.68,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-07-01",
+          "percent_rate": 3.66,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-07-02",
+          "percent_rate": 3.64,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-07-06",
+          "percent_rate": 3.63,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-07-07",
+          "percent_rate": 3.62,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-07-08",
+          "percent_rate": 3.58,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-07-09",
+          "percent_rate": 3.53,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-07-10",
+          "percent_rate": 3.55,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-07-13",
+          "percent_rate": 3.6,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-07-14",
+          "percent_rate": 3.63,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-07-15",
+          "percent_rate": 3.64,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-07-16",
+          "percent_rate": 3.62,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-07-17",
+          "percent_rate": 3.59,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-07-20",
+          "percent_rate": 3.57,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-07-21",
+          "percent_rate": 3.61,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-07-22",
+          "percent_rate": 3.62,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-07-23",
+          "percent_rate": 3.64,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-07-24",
+          "percent_rate": 3.64,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-07-27",
+          "percent_rate": 3.64,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-07-28",
+          "percent_rate": 3.65,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-07-29",
+          "percent_rate": 3.65,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-07-30",
+          "percent_rate": 3.65,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-07-31",
+          "percent_rate": 3.66,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-08-03",
+          "percent_rate": 3.65,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-08-04",
+          "percent_rate": 3.66,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-08-05",
+          "percent_rate": 3.64,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-08-06",
+          "percent_rate": 3.65,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-08-07",
+          "percent_rate": 3.62,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-08-10",
+          "percent_rate": 3.63,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-08-11",
+          "percent_rate": 3.64,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-08-12",
+          "percent_rate": 3.62,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-08-13",
+          "percent_rate": 3.62,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-08-14",
+          "percent_rate": 3.62,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-08-17",
+          "percent_rate": 3.66,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-08-18",
+          "percent_rate": 3.65,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-08-19",
+          "percent_rate": 3.62,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-08-20",
+          "percent_rate": 3.63,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-08-21",
+          "percent_rate": 3.65,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-08-24",
+          "percent_rate": 3.65,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-08-25",
+          "percent_rate": 3.66,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-08-26",
+          "percent_rate": 3.64,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-08-27",
+          "percent_rate": 3.64,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-08-28",
+          "percent_rate": 3.65,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-08-31",
+          "percent_rate": 3.68,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-09-01",
+          "percent_rate": 3.66,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-09-02",
+          "percent_rate": 3.65,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-09-03",
+          "percent_rate": 3.66,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-09-04",
+          "percent_rate": 3.65,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-09-08",
+          "percent_rate": 3.64,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-09-09",
+          "percent_rate": 3.64,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-09-10",
+          "percent_rate": 3.62,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-09-11",
+          "percent_rate": 3.62,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-09-14",
+          "percent_rate": 3.62,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-09-15",
+          "percent_rate": 3.64,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-09-16",
+          "percent_rate": 3.62,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        {
+          "effective_date": "2026-09-17",
+          "percent_rate": 3.85,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        }
+      ],
+      "name": "SOFR",
+      "observation_date": "2026-09-17",
+      "percent_rate": 3.85,
+      "rate": 3.85,
+      "source": "NY_FED",
+      "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+    },
+    "sr3": {
+      "contracts": [
+        {
+          "change_from_overnight_bps": 15.0,
+          "code": "SR3U6",
+          "expiry": "2026-09",
+          "implied_rate": 4.0,
+          "price": 96.0
+        },
+        {
+          "change_from_overnight_bps": 47.0,
+          "code": "SR3Z6",
+          "expiry": "2026-12",
+          "implied_rate": 4.32,
+          "price": 95.68
+        },
+        {
+          "change_from_overnight_bps": 73.0,
+          "code": "SR3H7",
+          "expiry": "2027-03",
+          "implied_rate": 4.58,
+          "price": 95.42
+        },
+        {
+          "change_from_overnight_bps": 87.0,
+          "code": "SR3M7",
+          "expiry": "2027-06",
+          "implied_rate": 4.72,
+          "price": 95.28
+        },
+        {
+          "change_from_overnight_bps": 90.5,
+          "code": "SR3U7",
+          "expiry": "2027-09",
+          "implied_rate": 4.755,
+          "price": 95.245
+        },
+        {
+          "change_from_overnight_bps": 88.0,
+          "code": "SR3Z7",
+          "expiry": "2027-12",
+          "implied_rate": 4.73,
+          "price": 95.27
+        },
+        {
+          "change_from_overnight_bps": 84.5,
+          "code": "SR3H8",
+          "expiry": "2028-03",
+          "implied_rate": 4.695,
+          "price": 95.305
+        },
+        {
+          "change_from_overnight_bps": 81.0,
+          "code": "SR3M8",
+          "expiry": "2028-06",
+          "implied_rate": 4.66,
+          "price": 95.34
+        },
+        {
+          "change_from_overnight_bps": 77.0,
+          "code": "SR3U8",
+          "expiry": "2028-09",
+          "implied_rate": 4.62,
+          "price": 95.38
+        },
+        {
+          "change_from_overnight_bps": 74.0,
+          "code": "SR3Z8",
+          "expiry": "2028-12",
+          "implied_rate": 4.59,
+          "price": 95.41
+        },
+        {
+          "change_from_overnight_bps": 71.5,
+          "code": "SR3H9",
+          "expiry": "2029-03",
+          "implied_rate": 4.565,
+          "price": 95.435
+        },
+        {
+          "change_from_overnight_bps": 69.5,
+          "code": "SR3M9",
+          "expiry": "2029-06",
+          "implied_rate": 4.545,
+          "price": 95.455
+        },
+        {
+          "change_from_overnight_bps": 68.0,
+          "code": "SR3U9",
+          "expiry": "2029-09",
+          "implied_rate": 4.53,
+          "price": 95.47
+        },
+        {
+          "change_from_overnight_bps": 67.0,
+          "code": "SR3Z9",
+          "expiry": "2029-12",
+          "implied_rate": 4.52,
+          "price": 95.48
+        },
+        {
+          "change_from_overnight_bps": 66.5,
+          "code": "SR3H0",
+          "expiry": "2030-03",
+          "implied_rate": 4.515,
+          "price": 95.485
+        },
+        {
+          "change_from_overnight_bps": 66.0,
+          "code": "SR3M0",
+          "expiry": "2030-06",
+          "implied_rate": 4.51,
+          "price": 95.49
+        },
+        {
+          "change_from_overnight_bps": 66.5,
+          "code": "SR3U0",
+          "expiry": "2030-09",
+          "implied_rate": 4.515,
+          "price": 95.485
+        },
+        {
+          "change_from_overnight_bps": 68.0,
+          "code": "SR3Z0",
+          "expiry": "2030-12",
+          "implied_rate": 4.53,
+          "price": 95.47
+        },
+        {
+          "change_from_overnight_bps": 69.5,
+          "code": "SR3H1",
+          "expiry": "2031-03",
+          "implied_rate": 4.545,
+          "price": 95.455
+        },
+        {
+          "change_from_overnight_bps": 71.5,
+          "code": "SR3M1",
+          "expiry": "2031-06",
+          "implied_rate": 4.565,
+          "price": 95.435
+        },
+        {
+          "change_from_overnight_bps": 73.5,
+          "code": "SR3U1",
+          "expiry": "2031-09",
+          "implied_rate": 4.585,
+          "price": 95.415
+        },
+        {
+          "change_from_overnight_bps": 77.5,
+          "code": "SR3Z1",
+          "expiry": "2031-12",
+          "implied_rate": 4.625,
+          "price": 95.375
+        },
+        {
+          "change_from_overnight_bps": 78.5,
+          "code": "SR3H2",
+          "expiry": "2032-03",
+          "implied_rate": 4.635,
+          "price": 95.365
+        },
+        {
+          "change_from_overnight_bps": 81.0,
+          "code": "SR3M2",
+          "expiry": "2032-06",
+          "implied_rate": 4.66,
+          "price": 95.34
+        },
+        {
+          "change_from_overnight_bps": 83.5,
+          "code": "SR3U2",
+          "expiry": "2032-09",
+          "implied_rate": 4.685,
+          "price": 95.315
+        },
+        {
+          "change_from_overnight_bps": 86.0,
+          "code": "SR3Z2",
+          "expiry": "2032-12",
+          "implied_rate": 4.71,
+          "price": 95.29
+        },
+        {
+          "change_from_overnight_bps": 88.0,
+          "code": "SR3H3",
+          "expiry": "2033-03",
+          "implied_rate": 4.73,
+          "price": 95.27
+        },
+        {
+          "change_from_overnight_bps": 91.0,
+          "code": "SR3M3",
+          "expiry": "2033-06",
+          "implied_rate": 4.76,
+          "price": 95.24
+        },
+        {
+          "change_from_overnight_bps": 93.5,
+          "code": "SR3U3",
+          "expiry": "2033-09",
+          "implied_rate": 4.785,
+          "price": 95.215
+        },
+        {
+          "change_from_overnight_bps": 96.0,
+          "code": "SR3Z3",
+          "expiry": "2033-12",
+          "implied_rate": 4.81,
+          "price": 95.19
+        },
+        {
+          "change_from_overnight_bps": 97.5,
+          "code": "SR3H4",
+          "expiry": "2034-03",
+          "implied_rate": 4.825,
+          "price": 95.175
+        },
+        {
+          "change_from_overnight_bps": 100.5,
+          "code": "SR3M4",
+          "expiry": "2034-06",
+          "implied_rate": 4.855,
+          "price": 95.145
+        },
+        {
+          "change_from_overnight_bps": 101.0,
+          "code": "SR3U4",
+          "expiry": "2034-09",
+          "implied_rate": 4.86,
+          "price": 95.14
+        },
+        {
+          "change_from_overnight_bps": 105.5,
+          "code": "SR3Z4",
+          "expiry": "2034-12",
+          "implied_rate": 4.905,
+          "price": 95.095
+        },
+        {
+          "change_from_overnight_bps": 106.5,
+          "code": "SR3H5",
+          "expiry": "2035-03",
+          "implied_rate": 4.915,
+          "price": 95.085
+        },
+        {
+          "change_from_overnight_bps": 109.0,
+          "code": "SR3M5",
+          "expiry": "2035-06",
+          "implied_rate": 4.94,
+          "price": 95.06
+        },
+        {
+          "change_from_overnight_bps": 111.5,
+          "code": "SR3U5",
+          "expiry": "2035-09",
+          "implied_rate": 4.965,
+          "price": 95.035
+        },
+        {
+          "change_from_overnight_bps": 116.0,
+          "code": "SR3Z5",
+          "expiry": "2035-12",
+          "implied_rate": 5.01,
+          "price": 94.99
+        },
+        {
+          "change_from_overnight_bps": 117.0,
+          "code": "SR3H6",
+          "expiry": "2036-03",
+          "implied_rate": 5.02,
+          "price": 94.98
+        }
+      ],
+      "instrument": "CME Three-Month SOFR futures",
+      "product_code": "SR3"
+    },
+    "status": "ok"
+  },
+  "fx": {
+    "AUDCAD": {
+      "as_of": "2026-09-18",
+      "chg_1d_pct": 0.19849006122858448,
+      "chg_1m_pct": 1.9469622152352706,
+      "pctile_1y": 99.8015873015873,
+      "spot": 0.9975768872320596,
+      "z_1y": 1.2933048597758614
+    },
+    "AUDNZD": {
+      "as_of": "2026-09-18",
+      "chg_1d_pct": 0.6495336430813792,
+      "chg_1m_pct": 4.266513040995412,
+      "pctile_1y": 99.8015873015873,
+      "spot": 1.246846846846847,
+      "z_1y": 1.9432678929429137
+    },
+    "AUDUSD": {
+      "as_of": "2026-09-18",
+      "chg_1d_pct": 0.08996589283660761,
+      "chg_1m_pct": 0.19881578587286342,
+      "pctile_1y": 76.38888888888889,
+      "spot": 0.712022367194781,
+      "z_1y": 0.8759750941971846
+    },
+    "EURJPY": {
+      "as_of": "2026-09-18",
+      "chg_1d_pct": 1.225174825174813,
+      "chg_1m_pct": -2.4319223510380072,
+      "pctile_1y": 22.817460317460316,
+      "spot": 180.94,
+      "z_1y": -0.5519990972477391
+    },
+    "EURUSD": {
+      "as_of": "2026-09-18",
+      "chg_1d_pct": -0.18291089626338852,
+      "chg_1m_pct": -1.891961304682821,
+      "pctile_1y": 10.912698412698413,
+      "spot": 1.146,
+      "z_1y": -1.3123462414653986
+    },
+    "GBPJPY": {
+      "as_of": "2026-09-18",
+      "chg_1d_pct": 1.166240745747027,
+      "chg_1m_pct": -2.608017507484095,
+      "pctile_1y": 37.8968253968254,
+      "spot": 210.6893339543549,
+      "z_1y": -0.04287685352547792
+    },
+    "GBPUSD": {
+      "as_of": "2026-09-18",
+      "chg_1d_pct": -0.24102517729723827,
+      "chg_1m_pct": -2.0690310065665463,
+      "pctile_1y": 27.182539682539684,
+      "spot": 1.3344201210992082,
+      "z_1y": -0.48225159259094386
+    },
+    "NOKSEK": {
+      "as_of": "2026-09-18",
+      "chg_1d_pct": 0.32108549263270003,
+      "chg_1m_pct": 2.71609386978644,
+      "pctile_1y": 98.61111111111111,
+      "spot": 1.0445904065867986,
+      "z_1y": 2.0655200377543483
+    },
+    "NZDCAD": {
+      "as_of": "2026-09-18",
+      "chg_1d_pct": -0.44813280849592685,
+      "chg_1m_pct": -2.2246364226720994,
+      "pctile_1y": 20.436507936507937,
+      "spot": 0.8000797289216662,
+      "z_1y": -0.8701346299187867
+    },
+    "NZDUSD": {
+      "as_of": "2026-09-18",
+      "chg_1d_pct": -0.555956624924947,
+      "chg_1m_pct": -3.9012499185843263,
+      "pctile_1y": 12.896825396825397,
+      "spot": 0.5710584014351205,
+      "z_1y": -1.1164955243947978
+    },
+    "USDCAD": {
+      "as_of": "2026-09-18",
+      "chg_1d_pct": 0.10842662141394843,
+      "chg_1m_pct": 1.7446777346133757,
+      "pctile_1y": 74.0079365079365,
+      "spot": 1.4010471204188482,
+      "z_1y": 0.798421817548333
+    },
+    "USDCHF": {
+      "as_of": "2026-09-18",
+      "chg_1d_pct": 0.140912142990679,
+      "chg_1m_pct": 3.3372938337924873,
+      "pctile_1y": 99.8015873015873,
+      "spot": 0.8256544502617802,
+      "z_1y": 2.332631620468176
+    },
+    "USDJPY": {
+      "as_of": "2026-09-18",
+      "chg_1d_pct": 1.4106659832314294,
+      "chg_1m_pct": -0.5503739077203251,
+      "pctile_1y": 52.182539682539684,
+      "spot": 157.88830715532288,
+      "z_1y": 0.19380023998291335
+    }
+  },
+  "known_gaps": [
+    "NZ sovereign rates were unavailable in the live market-state snapshot (RBNZ B2).",
+    "CFTC trader-class nets and CME positioning overlays are unavailable this freeze.",
+    "Temperature gauges are the current repo-retained dashboard_v8 scores; treat as stale if Supabase live scores are not independently present.",
+    "Market-state status is stale solely because NZ_rates is missing; US/CA/AU policy paths and SOFR/CORRA/AONIA tradable curves are present."
+  ],
+  "news_headlines": [
+    {
+      "headline": "Saudi workaround reduces the extreme oil-supply tail",
+      "id": "mw_20260916_saudi_oman_workaround",
+      "published_at": "2026-09-16T00:41:06Z"
+    },
+    {
+      "headline": "New Zealand passes India trade agreement",
+      "id": "mw_20260916_nz_india_trade",
+      "published_at": "2026-09-16T00:14:05Z"
+    },
+    {
+      "headline": "BoJ raises its policy rate to 1.25%",
+      "id": "rollup:BoJ raises its policy rate to 1.25%",
+      "published_at": null
+    },
+    {
+      "headline": "Energy-market shock absorbers weaken",
+      "id": "rollup:Energy-market shock absorbers weaken",
+      "published_at": null
+    },
+    {
+      "headline": "Australian housing downturn deepens under higher rates",
+      "id": "rollup:Australian housing downturn deepens under higher rates",
+      "published_at": null
+    }
+  ],
+  "official_curves": {
+    "countries": {
+      "AU": {
+        "as_of": "2026-08-31",
+        "source": null,
+        "status": "ok",
+        "tenors_present": [
+          "as_of",
+          "component_urls",
+          "compounding",
+          "curve_type",
+          "discount_factors",
+          "forward_rates",
+          "source_page",
+          "source_url",
+          "status",
+          "zero_yields"
+        ]
+      },
+      "CA": {
+        "as_of": "2026-09-02",
+        "source": null,
+        "status": "ok",
+        "tenors_present": [
+          "as_of",
+          "compounding",
+          "curve_type",
+          "discount_factors",
+          "forward_rates",
+          "source_page",
+          "source_url",
+          "status",
+          "zero_yields"
+        ]
+      },
+      "US": {
+        "as_of": "2026-09-11",
+        "source": null,
+        "status": "ok",
+        "tenors_present": [
+          "as_of",
+          "compounding",
+          "curve_type",
+          "discount_factors",
+          "forward_rates",
+          "source_page",
+          "source_url",
+          "status",
+          "zero_yields"
+        ]
+      }
+    },
+    "status": "ok"
+  },
+  "packet_sha256": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
+  "policy_paths": {
+    "countries": {
+      "AU": {
+        "benchmark": {
+          "as_of": "17-Sep-2026",
+          "name": "AONIA",
+          "rate": 4.35
+        },
+        "contracts_1m": [
+          {
+            "change_from_overnight_bps": 0.5,
+            "code": null,
+            "expiry": "2026-09",
+            "implied_rate": 4.355,
+            "open_interest": 11896.0,
+            "price": 95.645,
+            "source": "ASX_30D_AONIA",
+            "volume": 161.0
+          },
+          {
+            "change_from_overnight_bps": 21.5,
+            "code": null,
+            "expiry": "2026-10",
+            "implied_rate": 4.565,
+            "open_interest": 21752.0,
+            "price": 95.435,
+            "source": "ASX_30D_AONIA",
+            "volume": 4450.0
+          },
+          {
+            "change_from_overnight_bps": 33.5,
+            "code": null,
+            "expiry": "2026-11",
+            "implied_rate": 4.685,
+            "open_interest": 2619.0,
+            "price": 95.315,
+            "source": "ASX_30D_AONIA",
+            "volume": 1157.0
+          },
+          {
+            "change_from_overnight_bps": 37.5,
+            "code": null,
+            "expiry": "2026-12",
+            "implied_rate": 4.725,
+            "open_interest": 1131.0,
+            "price": 95.275,
+            "source": "ASX_30D_AONIA",
+            "volume": 2.0
+          },
+          {
+            "change_from_overnight_bps": 38.5,
+            "code": null,
+            "expiry": "2027-01",
+            "implied_rate": 4.735,
+            "open_interest": 279.0,
+            "price": 95.265,
+            "source": "ASX_30D_AONIA",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 45.5,
+            "code": null,
+            "expiry": "2027-02",
+            "implied_rate": 4.805,
+            "open_interest": 600.0,
+            "price": 95.195,
+            "source": "ASX_30D_AONIA",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 51.0,
+            "code": null,
+            "expiry": "2027-03",
+            "implied_rate": 4.86,
+            "open_interest": 201.0,
+            "price": 95.14,
+            "source": "ASX_30D_AONIA",
+            "volume": 1.0
+          },
+          {
+            "change_from_overnight_bps": 54.5,
+            "code": null,
+            "expiry": "2027-04",
+            "implied_rate": 4.895,
+            "open_interest": 400.0,
+            "price": 95.105,
+            "source": "ASX_30D_AONIA",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 58.5,
+            "code": null,
+            "expiry": "2027-05",
+            "implied_rate": 4.935,
+            "open_interest": 375.0,
+            "price": 95.065,
+            "source": "ASX_30D_AONIA",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 59.0,
+            "code": null,
+            "expiry": "2027-06",
+            "implied_rate": 4.94,
+            "open_interest": null,
+            "price": 95.06,
+            "source": "ASX_30D_AONIA",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 59.5,
+            "code": null,
+            "expiry": "2027-07",
+            "implied_rate": 4.945,
+            "open_interest": null,
+            "price": 95.055,
+            "source": "ASX_30D_AONIA",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 59.5,
+            "code": null,
+            "expiry": "2027-08",
+            "implied_rate": 4.945,
+            "open_interest": null,
+            "price": 95.055,
+            "source": "ASX_30D_AONIA",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 59.5,
+            "code": null,
+            "expiry": "2027-09",
+            "implied_rate": 4.945,
+            "open_interest": null,
+            "price": 95.055,
+            "source": "ASX_30D_AONIA",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 59.0,
+            "code": null,
+            "expiry": "2027-10",
+            "implied_rate": 4.94,
+            "open_interest": null,
+            "price": 95.06,
+            "source": "ASX_30D_AONIA",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 57.0,
+            "code": null,
+            "expiry": "2027-11",
+            "implied_rate": 4.92,
+            "open_interest": null,
+            "price": 95.08,
+            "source": "ASX_30D_AONIA",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 55.0,
+            "code": null,
+            "expiry": "2027-12",
+            "implied_rate": 4.9,
+            "open_interest": null,
+            "price": 95.1,
+            "source": "ASX_30D_AONIA",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 53.0,
+            "code": null,
+            "expiry": "2028-01",
+            "implied_rate": 4.88,
+            "open_interest": null,
+            "price": 95.12,
+            "source": "ASX_30D_AONIA",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 49.0,
+            "code": null,
+            "expiry": "2028-02",
+            "implied_rate": 4.84,
+            "open_interest": null,
+            "price": 95.16,
+            "source": "ASX_30D_AONIA",
+            "volume": null
+          }
+        ],
+        "contracts_3m": [],
+        "source": null,
+        "status": "ok"
+      },
+      "CA": {
+        "benchmark": {
+          "as_of": "2026-09-17",
+          "name": "CORRA",
+          "rate": 2.29
+        },
+        "contracts_1m": [
+          {
+            "change_from_overnight_bps": -0.25,
+            "code": "COAU26",
+            "expiry": "2026-09",
+            "implied_rate": 2.2875,
+            "open_interest": null,
+            "price": 97.7125,
+            "source": "MX_CORRA_FUTURES",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 1.5,
+            "code": "COAV26",
+            "expiry": "2026-10",
+            "implied_rate": 2.305,
+            "open_interest": null,
+            "price": 97.695,
+            "source": "MX_CORRA_FUTURES",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 14.0,
+            "code": "COAX26",
+            "expiry": "2026-11",
+            "implied_rate": 2.43,
+            "open_interest": null,
+            "price": 97.57,
+            "source": "MX_CORRA_FUTURES",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 29.0,
+            "code": "COAZ26",
+            "expiry": "2026-12",
+            "implied_rate": 2.58,
+            "open_interest": null,
+            "price": 97.42,
+            "source": "MX_CORRA_FUTURES",
+            "volume": null
+          }
+        ],
+        "contracts_3m": [
+          {
+            "change_from_overnight_bps": 9.5,
+            "code": "CRAU26",
+            "expiry": "2026-09",
+            "implied_rate": 2.385,
+            "open_interest": null,
+            "price": 97.615,
+            "source": "MX_CORRA_FUTURES",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 48.5,
+            "code": "CRAZ26",
+            "expiry": "2026-12",
+            "implied_rate": 2.775,
+            "open_interest": null,
+            "price": 97.225,
+            "source": "MX_CORRA_FUTURES",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 84.0,
+            "code": "CRAH27",
+            "expiry": "2027-03",
+            "implied_rate": 3.13,
+            "open_interest": null,
+            "price": 96.87,
+            "source": "MX_CORRA_FUTURES",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 107.5,
+            "code": "CRAM27",
+            "expiry": "2027-06",
+            "implied_rate": 3.365,
+            "open_interest": null,
+            "price": 96.635,
+            "source": "MX_CORRA_FUTURES",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 122.0,
+            "code": "CRAU27",
+            "expiry": "2027-09",
+            "implied_rate": 3.51,
+            "open_interest": null,
+            "price": 96.49,
+            "source": "MX_CORRA_FUTURES",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 130.5,
+            "code": "CRAZ27",
+            "expiry": "2027-12",
+            "implied_rate": 3.595,
+            "open_interest": null,
+            "price": 96.405,
+            "source": "MX_CORRA_FUTURES",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 134.5,
+            "code": "CRAH28",
+            "expiry": "2028-03",
+            "implied_rate": 3.635,
+            "open_interest": null,
+            "price": 96.365,
+            "source": "MX_CORRA_FUTURES",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 136.0,
+            "code": "CRAM28",
+            "expiry": "2028-06",
+            "implied_rate": 3.65,
+            "open_interest": null,
+            "price": 96.35,
+            "source": "MX_CORRA_FUTURES",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 136.5,
+            "code": "CRAU28",
+            "expiry": "2028-09",
+            "implied_rate": 3.655,
+            "open_interest": null,
+            "price": 96.345,
+            "source": "MX_CORRA_FUTURES",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 135.5,
+            "code": "CRAZ28",
+            "expiry": "2028-12",
+            "implied_rate": 3.645,
+            "open_interest": null,
+            "price": 96.355,
+            "source": "MX_CORRA_FUTURES",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 134.0,
+            "code": "CRAH29",
+            "expiry": "2029-03",
+            "implied_rate": 3.63,
+            "open_interest": null,
+            "price": 96.37,
+            "source": "MX_CORRA_FUTURES",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 133.0,
+            "code": "CRAM29",
+            "expiry": "2029-06",
+            "implied_rate": 3.62,
+            "open_interest": null,
+            "price": 96.38,
+            "source": "MX_CORRA_FUTURES",
+            "volume": null
+          }
+        ],
+        "source": null,
+        "status": "ok"
+      },
+      "US": {
+        "benchmark": {
+          "as_of": "2026-09-17",
+          "history": [
+            {
+              "effective_date": "2026-05-11",
+              "percent_rate": 3.6,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-05-12",
+              "percent_rate": 3.6,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-05-13",
+              "percent_rate": 3.59,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-05-14",
+              "percent_rate": 3.56,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-05-15",
+              "percent_rate": 3.55,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-05-18",
+              "percent_rate": 3.53,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-05-19",
+              "percent_rate": 3.51,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-05-20",
+              "percent_rate": 3.5,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-05-21",
+              "percent_rate": 3.51,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-05-22",
+              "percent_rate": 3.55,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-05-26",
+              "percent_rate": 3.63,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-05-27",
+              "percent_rate": 3.63,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-05-28",
+              "percent_rate": 3.62,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-05-29",
+              "percent_rate": 3.63,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-01",
+              "percent_rate": 3.65,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-02",
+              "percent_rate": 3.63,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-03",
+              "percent_rate": 3.61,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-04",
+              "percent_rate": 3.62,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-05",
+              "percent_rate": 3.63,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-08",
+              "percent_rate": 3.63,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-09",
+              "percent_rate": 3.6,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-10",
+              "percent_rate": 3.59,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-11",
+              "percent_rate": 3.6,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-12",
+              "percent_rate": 3.65,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-15",
+              "percent_rate": 3.69,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-16",
+              "percent_rate": 3.63,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-17",
+              "percent_rate": 3.63,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-18",
+              "percent_rate": 3.62,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-22",
+              "percent_rate": 3.61,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-23",
+              "percent_rate": 3.62,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-24",
+              "percent_rate": 3.62,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-25",
+              "percent_rate": 3.64,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-26",
+              "percent_rate": 3.62,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-29",
+              "percent_rate": 3.62,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-30",
+              "percent_rate": 3.68,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-01",
+              "percent_rate": 3.66,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-02",
+              "percent_rate": 3.64,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-06",
+              "percent_rate": 3.63,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-07",
+              "percent_rate": 3.62,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-08",
+              "percent_rate": 3.58,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-09",
+              "percent_rate": 3.53,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-10",
+              "percent_rate": 3.55,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-13",
+              "percent_rate": 3.6,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-14",
+              "percent_rate": 3.63,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-15",
+              "percent_rate": 3.64,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-16",
+              "percent_rate": 3.62,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-17",
+              "percent_rate": 3.59,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-20",
+              "percent_rate": 3.57,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-21",
+              "percent_rate": 3.61,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-22",
+              "percent_rate": 3.62,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-23",
+              "percent_rate": 3.64,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-24",
+              "percent_rate": 3.64,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-27",
+              "percent_rate": 3.64,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-28",
+              "percent_rate": 3.65,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-29",
+              "percent_rate": 3.65,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-30",
+              "percent_rate": 3.65,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-31",
+              "percent_rate": 3.66,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-03",
+              "percent_rate": 3.65,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-04",
+              "percent_rate": 3.66,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-05",
+              "percent_rate": 3.64,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-06",
+              "percent_rate": 3.65,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-07",
+              "percent_rate": 3.62,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-10",
+              "percent_rate": 3.63,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-11",
+              "percent_rate": 3.64,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-12",
+              "percent_rate": 3.62,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-13",
+              "percent_rate": 3.62,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-14",
+              "percent_rate": 3.62,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-17",
+              "percent_rate": 3.66,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-18",
+              "percent_rate": 3.65,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-19",
+              "percent_rate": 3.62,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-20",
+              "percent_rate": 3.63,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-21",
+              "percent_rate": 3.65,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-24",
+              "percent_rate": 3.65,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-25",
+              "percent_rate": 3.66,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-26",
+              "percent_rate": 3.64,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-27",
+              "percent_rate": 3.64,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-28",
+              "percent_rate": 3.65,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-31",
+              "percent_rate": 3.68,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-09-01",
+              "percent_rate": 3.66,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-09-02",
+              "percent_rate": 3.65,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-09-03",
+              "percent_rate": 3.66,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-09-04",
+              "percent_rate": 3.65,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-09-08",
+              "percent_rate": 3.64,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-09-09",
+              "percent_rate": 3.64,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-09-10",
+              "percent_rate": 3.62,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-09-11",
+              "percent_rate": 3.62,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-09-14",
+              "percent_rate": 3.62,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-09-15",
+              "percent_rate": 3.64,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-09-16",
+              "percent_rate": 3.62,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-09-17",
+              "percent_rate": 3.85,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            }
+          ],
+          "name": "SOFR",
+          "rate": 3.85,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        "contracts_1m": [
+          {
+            "change_from_overnight_bps": -10.0,
+            "code": "SR1U26",
+            "expiry": "2026-09",
+            "implied_rate": 3.75,
+            "open_interest": null,
+            "price": 96.25,
+            "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 6.0,
+            "code": "SR1V26",
+            "expiry": "2026-10",
+            "implied_rate": 3.91,
+            "open_interest": null,
+            "price": 96.09,
+            "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 19.5,
+            "code": "SR1X26",
+            "expiry": "2026-11",
+            "implied_rate": 4.045,
+            "open_interest": null,
+            "price": 95.955,
+            "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 34.75,
+            "code": "SR1Z26",
+            "expiry": "2026-12",
+            "implied_rate": 4.1975,
+            "open_interest": null,
+            "price": 95.8025,
+            "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 41.25,
+            "code": "SR1F27",
+            "expiry": "2027-01",
+            "implied_rate": 4.2625,
+            "open_interest": null,
+            "price": 95.7375,
+            "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 48.75,
+            "code": "SR1G27",
+            "expiry": "2027-02",
+            "implied_rate": 4.3375,
+            "open_interest": null,
+            "price": 95.6625,
+            "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 57.75,
+            "code": "SR1H27",
+            "expiry": "2027-03",
+            "implied_rate": 4.4275,
+            "open_interest": null,
+            "price": 95.5725,
+            "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 67.5,
+            "code": "SR1J27",
+            "expiry": "2027-04",
+            "implied_rate": 4.525,
+            "open_interest": null,
+            "price": 95.475,
+            "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 75.75,
+            "code": "SR1K27",
+            "expiry": "2027-05",
+            "implied_rate": 4.6075,
+            "open_interest": null,
+            "price": 95.3925,
+            "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 81.5,
+            "code": "SR1M27",
+            "expiry": "2027-06",
+            "implied_rate": 4.665,
+            "open_interest": null,
+            "price": 95.335,
+            "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 83.5,
+            "code": "SR1N27",
+            "expiry": "2027-07",
+            "implied_rate": 4.685,
+            "open_interest": null,
+            "price": 95.315,
+            "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 84.5,
+            "code": "SR1Q27",
+            "expiry": "2027-08",
+            "implied_rate": 4.695,
+            "open_interest": null,
+            "price": 95.305,
+            "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 85.5,
+            "code": "SR1U27",
+            "expiry": "2027-09",
+            "implied_rate": 4.705,
+            "open_interest": null,
+            "price": 95.295,
+            "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 85.75,
+            "code": "SR1V27",
+            "expiry": "2027-10",
+            "implied_rate": 4.7075,
+            "open_interest": null,
+            "price": 95.2925,
+            "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 86.75,
+            "code": "SR1X27",
+            "expiry": "2027-11",
+            "implied_rate": 4.7175,
+            "open_interest": null,
+            "price": 95.2825,
+            "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 87.25,
+            "code": "SR1Z27",
+            "expiry": "2027-12",
+            "implied_rate": 4.7225,
+            "open_interest": null,
+            "price": 95.2775,
+            "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 84.75,
+            "code": "SR1F28",
+            "expiry": "2028-01",
+            "implied_rate": 4.6975,
+            "open_interest": null,
+            "price": 95.3025,
+            "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 81.25,
+            "code": "SR1G28",
+            "expiry": "2028-02",
+            "implied_rate": 4.6625,
+            "open_interest": null,
+            "price": 95.3375,
+            "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 79.5,
+            "code": "SR1H28",
+            "expiry": "2028-03",
+            "implied_rate": 4.645,
+            "open_interest": null,
+            "price": 95.355,
+            "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 79.5,
+            "code": "SR1J28",
+            "expiry": "2028-04",
+            "implied_rate": 4.645,
+            "open_interest": null,
+            "price": 95.355,
+            "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 79.25,
+            "code": "SR1K28",
+            "expiry": "2028-05",
+            "implied_rate": 4.6425,
+            "open_interest": null,
+            "price": 95.3575,
+            "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 78.5,
+            "code": "SR1M28",
+            "expiry": "2028-06",
+            "implied_rate": 4.635,
+            "open_interest": null,
+            "price": 95.365,
+            "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 76.75,
+            "code": "SR1N28",
+            "expiry": "2028-07",
+            "implied_rate": 4.6175,
+            "open_interest": null,
+            "price": 95.3825,
+            "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 75.25,
+            "code": "SR1Q28",
+            "expiry": "2028-08",
+            "implied_rate": 4.6025,
+            "open_interest": null,
+            "price": 95.3975,
+            "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+            "volume": null
+          }
+        ],
+        "contracts_3m": [
+          {
+            "change_from_overnight_bps": 15.0,
+            "code": "SR3U6",
+            "expiry": "2026-09",
+            "implied_rate": 4.0,
+            "open_interest": null,
+            "price": 96.0,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 47.0,
+            "code": "SR3Z6",
+            "expiry": "2026-12",
+            "implied_rate": 4.32,
+            "open_interest": null,
+            "price": 95.68,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 73.0,
+            "code": "SR3H7",
+            "expiry": "2027-03",
+            "implied_rate": 4.58,
+            "open_interest": null,
+            "price": 95.42,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 87.0,
+            "code": "SR3M7",
+            "expiry": "2027-06",
+            "implied_rate": 4.72,
+            "open_interest": null,
+            "price": 95.28,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 90.5,
+            "code": "SR3U7",
+            "expiry": "2027-09",
+            "implied_rate": 4.755,
+            "open_interest": null,
+            "price": 95.245,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 88.0,
+            "code": "SR3Z7",
+            "expiry": "2027-12",
+            "implied_rate": 4.73,
+            "open_interest": null,
+            "price": 95.27,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 84.5,
+            "code": "SR3H8",
+            "expiry": "2028-03",
+            "implied_rate": 4.695,
+            "open_interest": null,
+            "price": 95.305,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 81.0,
+            "code": "SR3M8",
+            "expiry": "2028-06",
+            "implied_rate": 4.66,
+            "open_interest": null,
+            "price": 95.34,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 77.0,
+            "code": "SR3U8",
+            "expiry": "2028-09",
+            "implied_rate": 4.62,
+            "open_interest": null,
+            "price": 95.38,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 74.0,
+            "code": "SR3Z8",
+            "expiry": "2028-12",
+            "implied_rate": 4.59,
+            "open_interest": null,
+            "price": 95.41,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 71.5,
+            "code": "SR3H9",
+            "expiry": "2029-03",
+            "implied_rate": 4.565,
+            "open_interest": null,
+            "price": 95.435,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 69.5,
+            "code": "SR3M9",
+            "expiry": "2029-06",
+            "implied_rate": 4.545,
+            "open_interest": null,
+            "price": 95.455,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 68.0,
+            "code": "SR3U9",
+            "expiry": "2029-09",
+            "implied_rate": 4.53,
+            "open_interest": null,
+            "price": 95.47,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 67.0,
+            "code": "SR3Z9",
+            "expiry": "2029-12",
+            "implied_rate": 4.52,
+            "open_interest": null,
+            "price": 95.48,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 66.5,
+            "code": "SR3H0",
+            "expiry": "2030-03",
+            "implied_rate": 4.515,
+            "open_interest": null,
+            "price": 95.485,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 66.0,
+            "code": "SR3M0",
+            "expiry": "2030-06",
+            "implied_rate": 4.51,
+            "open_interest": null,
+            "price": 95.49,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 66.5,
+            "code": "SR3U0",
+            "expiry": "2030-09",
+            "implied_rate": 4.515,
+            "open_interest": null,
+            "price": 95.485,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 68.0,
+            "code": "SR3Z0",
+            "expiry": "2030-12",
+            "implied_rate": 4.53,
+            "open_interest": null,
+            "price": 95.47,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 69.5,
+            "code": "SR3H1",
+            "expiry": "2031-03",
+            "implied_rate": 4.545,
+            "open_interest": null,
+            "price": 95.455,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 71.5,
+            "code": "SR3M1",
+            "expiry": "2031-06",
+            "implied_rate": 4.565,
+            "open_interest": null,
+            "price": 95.435,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 73.5,
+            "code": "SR3U1",
+            "expiry": "2031-09",
+            "implied_rate": 4.585,
+            "open_interest": null,
+            "price": 95.415,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 77.5,
+            "code": "SR3Z1",
+            "expiry": "2031-12",
+            "implied_rate": 4.625,
+            "open_interest": null,
+            "price": 95.375,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 78.5,
+            "code": "SR3H2",
+            "expiry": "2032-03",
+            "implied_rate": 4.635,
+            "open_interest": null,
+            "price": 95.365,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 81.0,
+            "code": "SR3M2",
+            "expiry": "2032-06",
+            "implied_rate": 4.66,
+            "open_interest": null,
+            "price": 95.34,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 83.5,
+            "code": "SR3U2",
+            "expiry": "2032-09",
+            "implied_rate": 4.685,
+            "open_interest": null,
+            "price": 95.315,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 86.0,
+            "code": "SR3Z2",
+            "expiry": "2032-12",
+            "implied_rate": 4.71,
+            "open_interest": null,
+            "price": 95.29,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 88.0,
+            "code": "SR3H3",
+            "expiry": "2033-03",
+            "implied_rate": 4.73,
+            "open_interest": null,
+            "price": 95.27,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 91.0,
+            "code": "SR3M3",
+            "expiry": "2033-06",
+            "implied_rate": 4.76,
+            "open_interest": null,
+            "price": 95.24,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 93.5,
+            "code": "SR3U3",
+            "expiry": "2033-09",
+            "implied_rate": 4.785,
+            "open_interest": null,
+            "price": 95.215,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 96.0,
+            "code": "SR3Z3",
+            "expiry": "2033-12",
+            "implied_rate": 4.81,
+            "open_interest": null,
+            "price": 95.19,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 97.5,
+            "code": "SR3H4",
+            "expiry": "2034-03",
+            "implied_rate": 4.825,
+            "open_interest": null,
+            "price": 95.175,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 100.5,
+            "code": "SR3M4",
+            "expiry": "2034-06",
+            "implied_rate": 4.855,
+            "open_interest": null,
+            "price": 95.145,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 101.0,
+            "code": "SR3U4",
+            "expiry": "2034-09",
+            "implied_rate": 4.86,
+            "open_interest": null,
+            "price": 95.14,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 105.5,
+            "code": "SR3Z4",
+            "expiry": "2034-12",
+            "implied_rate": 4.905,
+            "open_interest": null,
+            "price": 95.095,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 106.5,
+            "code": "SR3H5",
+            "expiry": "2035-03",
+            "implied_rate": 4.915,
+            "open_interest": null,
+            "price": 95.085,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 109.0,
+            "code": "SR3M5",
+            "expiry": "2035-06",
+            "implied_rate": 4.94,
+            "open_interest": null,
+            "price": 95.06,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 111.5,
+            "code": "SR3U5",
+            "expiry": "2035-09",
+            "implied_rate": 4.965,
+            "open_interest": null,
+            "price": 95.035,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 116.0,
+            "code": "SR3Z5",
+            "expiry": "2035-12",
+            "implied_rate": 5.01,
+            "open_interest": null,
+            "price": 94.99,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 117.0,
+            "code": "SR3H6",
+            "expiry": "2036-03",
+            "implied_rate": 5.02,
+            "open_interest": null,
+            "price": 94.98,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          }
+        ],
+        "source": null,
+        "status": "ok"
+      }
+    },
+    "status": "ok"
+  },
+  "positioning": "unavailable",
+  "rate_rv": {
+    "AU-NZ_10Y": {
+      "as_of": null,
+      "bps": null,
+      "chg_1d_bps": null,
+      "chg_1m_bps": null,
+      "chg_3m_bps": null,
+      "chg_5d_bps": null,
+      "pctile_1y": null,
+      "pctile_5y": null,
+      "reason": "RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.",
+      "status": "unavailable",
+      "z_1y": null,
+      "z_5y": null
+    },
+    "AU-NZ_2Y": {
+      "as_of": null,
+      "bps": null,
+      "chg_1d_bps": null,
+      "chg_1m_bps": null,
+      "chg_3m_bps": null,
+      "chg_5d_bps": null,
+      "pctile_1y": null,
+      "pctile_5y": null,
+      "reason": "RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.",
+      "status": "unavailable",
+      "z_1y": null,
+      "z_5y": null
+    },
+    "AU-NZ_5Y": {
+      "as_of": null,
+      "bps": null,
+      "chg_1d_bps": null,
+      "chg_1m_bps": null,
+      "chg_3m_bps": null,
+      "chg_5d_bps": null,
+      "pctile_1y": null,
+      "pctile_5y": null,
+      "reason": "RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.",
+      "status": "unavailable",
+      "z_1y": null,
+      "z_5y": null
+    },
+    "AU-US_10Y": {
+      "as_of": "2026-09-16",
+      "bps": 33.80000000000001,
+      "chg_1d_bps": -7.299999999999947,
+      "chg_1m_bps": 2.700000000000017,
+      "chg_1y_bps": 14.799999999999972,
+      "chg_3m_bps": -6.700000000000017,
+      "chg_5d_bps": -3.3999999999999773,
+      "chg_6m_bps": -33.09999999999995,
+      "historical_move_analogs": [
+        {
+          "as_of": "2025-10-22",
+          "distance_from_current_move": 0.0,
+          "forward_1m_move": 26.2,
+          "forward_3m_move": 41.1,
+          "level": 13.599999999999968,
+          "prior_1m_move": 2.7
+        },
+        {
+          "as_of": "2026-02-05",
+          "distance_from_current_move": 0.1,
+          "forward_1m_move": 17.6,
+          "forward_3m_move": -2.7,
+          "level": 63.79999999999999,
+          "prior_1m_move": 2.8
+        },
+        {
+          "as_of": "2022-01-21",
+          "distance_from_current_move": 0.1,
+          "forward_1m_move": 11.8,
+          "forward_3m_move": 7.8,
+          "level": 15.500000000000004,
+          "prior_1m_move": 2.6
+        },
+        {
+          "as_of": "2022-03-21",
+          "distance_from_current_move": 0.1,
+          "forward_1m_move": -7.7,
+          "forward_3m_move": 33.5,
+          "level": 25.600000000000023,
+          "prior_1m_move": 2.6
+        }
+      ],
+      "pctile_1y": 31.944444444444443,
+      "pctile_5y": 77.44698205546493,
+      "z_1y": -0.5659273415345912,
+      "z_5y": 0.765626846920572
+    },
+    "AU-US_2Y": {
+      "as_of": "2026-09-16",
+      "bps": 25.899999999999945,
+      "chg_1d_bps": -12.500000000000089,
+      "chg_1m_bps": -11.500000000000018,
+      "chg_1y_bps": 44.899999999999935,
+      "chg_3m_bps": -16.300000000000114,
+      "chg_5d_bps": -14.600000000000083,
+      "chg_6m_bps": -53.50000000000006,
+      "historical_move_analogs": [
+        {
+          "as_of": "2022-02-07",
+          "distance_from_current_move": 0.0,
+          "forward_1m_move": -11.7,
+          "forward_3m_move": 38.9,
+          "level": -37.0,
+          "prior_1m_move": -11.5
+        },
+        {
+          "as_of": "2024-12-30",
+          "distance_from_current_move": 0.0,
+          "forward_1m_move": -8.7,
+          "forward_3m_move": 11.8,
+          "level": -33.90000000000004,
+          "prior_1m_move": -11.5
+        },
+        {
+          "as_of": "2026-04-23",
+          "distance_from_current_move": 0.1,
+          "forward_1m_move": -41.3,
+          "forward_3m_move": -54.7,
+          "level": 86.20000000000002,
+          "prior_1m_move": -11.6
+        },
+        {
+          "as_of": "2025-07-30",
+          "distance_from_current_move": 0.1,
+          "forward_1m_move": 32.7,
+          "forward_3m_move": 58.6,
+          "level": -62.40000000000001,
+          "prior_1m_move": -11.6
+        }
+      ],
+      "pctile_1y": 25.595238095238095,
+      "pctile_5y": 84.7063621533442,
+      "z_1y": -0.5185268004122016,
+      "z_5y": 1.1573853964505716
+    },
+    "AU-US_5Y": {
+      "as_of": "2026-09-16",
+      "bps": 18.100000000000005,
+      "chg_1d_bps": -8.699999999999974,
+      "chg_1m_bps": -6.200000000000028,
+      "chg_1y_bps": 15.600000000000014,
+      "chg_3m_bps": -13.999999999999968,
+      "chg_5d_bps": -7.599999999999962,
+      "chg_6m_bps": -57.69999999999999,
+      "historical_move_analogs": [
+        {
+          "as_of": "2022-02-02",
+          "distance_from_current_move": 0.0,
+          "forward_1m_move": 21.8,
+          "forward_3m_move": 17.7,
+          "level": -2.100000000000013,
+          "prior_1m_move": -6.2
+        },
+        {
+          "as_of": "2024-04-24",
+          "distance_from_current_move": 0.1,
+          "forward_1m_move": 3.5,
+          "forward_3m_move": 49.1,
+          "level": -55.09999999999992,
+          "prior_1m_move": -6.3
+        },
+        {
+          "as_of": "2025-02-18",
+          "distance_from_current_move": 0.1,
+          "forward_1m_move": 23.9,
+          "forward_3m_move": -10.3,
+          "level": -33.80000000000001,
+          "prior_1m_move": -6.3
+        },
+        {
+          "as_of": "2023-05-22",
+          "distance_from_current_move": 0.1,
+          "forward_1m_move": 39.3,
+          "forward_3m_move": 1.9,
+          "level": -46.30000000000001,
+          "prior_1m_move": -6.3
+        }
+      ],
+      "pctile_1y": 21.626984126984127,
+      "pctile_5y": 78.91517128874388,
+      "z_1y": -0.8010715170792576,
+      "z_5y": 0.7661924289190873
+    },
+    "CA-AU_10Y": {
+      "as_of": "2026-09-16",
+      "bps": -142.79999999999998,
+      "chg_1d_bps": 3.2999999999999545,
+      "chg_1m_bps": -11.700000000000045,
+      "chg_1y_bps": -35.30000000000001,
+      "chg_3m_bps": 2.700000000000017,
+      "chg_5d_bps": -6.599999999999966,
+      "chg_6m_bps": 1.1000000000000227,
+      "historical_move_analogs": [
+        {
+          "as_of": "2022-01-10",
+          "distance_from_current_move": 0.0,
+          "forward_1m_move": -5.9,
+          "forward_3m_move": -11.9,
+          "level": -18.500000000000007,
+          "prior_1m_move": -11.7
+        },
+        {
+          "as_of": "2026-02-25",
+          "distance_from_current_move": 0.0,
+          "forward_1m_move": 7.5,
+          "forward_3m_move": 5.1,
+          "level": -151.49999999999997,
+          "prior_1m_move": -11.7
+        },
+        {
+          "as_of": "2024-07-10",
+          "distance_from_current_move": 0.1,
+          "forward_1m_move": -7.7,
+          "forward_3m_move": -13.2,
+          "level": -87.79999999999997,
+          "prior_1m_move": -11.8
+        },
+        {
+          "as_of": "2023-06-08",
+          "distance_from_current_move": 0.1,
+          "forward_1m_move": -3.4,
+          "forward_3m_move": 15.0,
+          "level": -61.400000000000034,
+          "prior_1m_move": -11.6
+        }
+      ],
+      "pctile_1y": 30.555555555555557,
+      "pctile_5y": 6.89935064935065,
+      "z_1y": -0.575878925310328,
+      "z_5y": -1.4802111574055181
+    },
+    "CA-AU_2Y": {
+      "as_of": "2026-09-16",
+      "bps": -164.89999999999995,
+      "chg_1d_bps": 5.500000000000057,
+      "chg_1m_bps": -5.499999999999972,
+      "chg_1y_bps": -79.29999999999995,
+      "chg_3m_bps": 7.300000000000097,
+      "chg_5d_bps": 2.6000000000000227,
+      "chg_6m_bps": 8.500000000000057,
+      "historical_move_analogs": [
+        {
+          "as_of": "2023-09-05",
+          "distance_from_current_move": 0.0,
+          "forward_1m_move": -7.9,
+          "forward_3m_move": -71.3,
+          "level": 80.90000000000002,
+          "prior_1m_move": -5.5
+        },
+        {
+          "as_of": "2025-05-28",
+          "distance_from_current_move": 0.0,
+          "forward_1m_move": 14.6,
+          "forward_3m_move": 10.9,
+          "level": -74.2,
+          "prior_1m_move": -5.5
+        },
+        {
+          "as_of": "2023-12-21",
+          "distance_from_current_move": 0.1,
+          "forward_1m_move": -4.7,
+          "forward_3m_move": 24.9,
+          "level": 19.399999999999995,
+          "prior_1m_move": -5.4
+        },
+        {
+          "as_of": "2022-06-16",
+          "distance_from_current_move": 0.1,
+          "forward_1m_move": 46.0,
+          "forward_3m_move": 48.9,
+          "level": 0.6000000000000227,
+          "prior_1m_move": -5.4
+        }
+      ],
+      "pctile_1y": 51.388888888888886,
+      "pctile_5y": 10.511363636363637,
+      "z_1y": -0.40082008755744697,
+      "z_5y": -1.6342620546239537
+    },
+    "CA-AU_5Y": {
+      "as_of": "2026-09-16",
+      "bps": -140.10000000000002,
+      "chg_1d_bps": 4.69999999999996,
+      "chg_1m_bps": -8.800000000000011,
+      "chg_1y_bps": -55.40000000000002,
+      "chg_3m_bps": 4.999999999999972,
+      "chg_5d_bps": -1.400000000000034,
+      "chg_6m_bps": 15.700000000000017,
+      "historical_move_analogs": [
+        {
+          "as_of": "2022-03-18",
+          "distance_from_current_move": 0.0,
+          "forward_1m_move": 15.7,
+          "forward_3m_move": -17.4,
+          "level": -21.4,
+          "prior_1m_move": -8.8
+        },
+        {
+          "as_of": "2021-12-13",
+          "distance_from_current_move": 0.0,
+          "forward_1m_move": 14.6,
+          "forward_3m_move": -8.6,
+          "level": -7.600000000000007,
+          "prior_1m_move": -8.8
+        },
+        {
+          "as_of": "2024-03-01",
+          "distance_from_current_move": 0.0,
+          "forward_1m_move": 12.9,
+          "forward_3m_move": -23.7,
+          "level": -28.200000000000003,
+          "prior_1m_move": -8.8
+        },
+        {
+          "as_of": "2023-12-04",
+          "distance_from_current_move": 0.0,
+          "forward_1m_move": 10.5,
+          "forward_3m_move": 30.9,
+          "level": -55.99999999999996,
+          "prior_1m_move": -8.8
+        }
+      ],
+      "pctile_1y": 46.03174603174603,
+      "pctile_5y": 9.415584415584416,
+      "z_1y": -0.24231530213989966,
+      "z_5y": -1.553353281137119
+    },
+    "CA-US_10Y": {
+      "as_of": "2026-09-17",
+      "bps": -111.00000000000003,
+      "chg_1d_bps": -2.0000000000000426,
+      "chg_1m_bps": -10.000000000000057,
+      "chg_1y_bps": -28.00000000000007,
+      "chg_3m_bps": -5.000000000000071,
+      "chg_5d_bps": -10.0,
+      "chg_6m_bps": -33.999999999999986,
+      "historical_move_analogs": [
+        {
+          "as_of": "2023-11-15",
+          "distance_from_current_move": 0.0,
+          "forward_1m_move": -2.0,
+          "forward_3m_move": 1.0,
+          "level": -78.00000000000003,
+          "prior_1m_move": -10.0
+        },
+        {
+          "as_of": "2024-04-19",
+          "distance_from_current_move": 0.0,
+          "forward_1m_move": 5.0,
+          "forward_3m_move": 0.0,
+          "level": -89.00000000000001,
+          "prior_1m_move": -10.0
+        },
+        {
+          "as_of": "2024-07-30",
+          "distance_from_current_move": 0.0,
+          "forward_1m_move": 18.0,
+          "forward_3m_move": -14.0,
+          "level": -92.00000000000004,
+          "prior_1m_move": -10.0
+        },
+        {
+          "as_of": "2024-12-17",
+          "distance_from_current_move": 0.0,
+          "forward_1m_move": -6.0,
+          "forward_3m_move": 1.0,
+          "level": -126.00000000000003,
+          "prior_1m_move": -10.0
+        }
+      ],
+      "pctile_1y": 0.1984126984126984,
+      "pctile_5y": 10.601137286758732,
+      "z_1y": -1.9104058517615377,
+      "z_5y": -1.0994794521681615
+    },
+    "CA-US_2Y": {
+      "as_of": "2026-09-17",
+      "bps": -140.0,
+      "chg_1d_bps": -1.0,
+      "chg_1m_bps": -16.999999999999957,
+      "chg_1y_bps": -43.00000000000003,
+      "chg_3m_bps": -8.999999999999943,
+      "chg_5d_bps": -15.000000000000043,
+      "chg_6m_bps": -46.0,
+      "historical_move_analogs": [
+        {
+          "as_of": "2022-11-15",
+          "distance_from_current_move": 0.0,
+          "forward_1m_move": -4.0,
+          "forward_3m_move": 6.0,
+          "level": -51.00000000000002,
+          "prior_1m_move": -17.0
+        },
+        {
+          "as_of": "2025-01-30",
+          "distance_from_current_move": 0.0,
+          "forward_1m_move": -5.0,
+          "forward_3m_move": 25.0,
+          "level": -144.99999999999997,
+          "prior_1m_move": -17.0
+        },
+        {
+          "as_of": "2024-05-02",
+          "distance_from_current_move": 0.0,
+          "forward_1m_move": -9.0,
+          "forward_3m_move": -6.0,
+          "level": -62.999999999999986,
+          "prior_1m_move": -17.0
+        },
+        {
+          "as_of": "2024-12-18",
+          "distance_from_current_move": 0.0,
+          "forward_1m_move": -3.0,
+          "forward_3m_move": -20.0,
+          "level": -129.99999999999997,
+          "prior_1m_move": -17.0
+        }
+      ],
+      "pctile_1y": 3.7698412698412698,
+      "pctile_5y": 4.305442729488221,
+      "z_1y": -1.8400695277520684,
+      "z_5y": -1.5128434402521205
+    },
+    "CA-US_5Y": {
+      "as_of": "2026-09-17",
+      "bps": -124.00000000000003,
+      "chg_1d_bps": -2.000000000000014,
+      "chg_1m_bps": -16.00000000000003,
+      "chg_1y_bps": -47.00000000000003,
+      "chg_3m_bps": -10.000000000000057,
+      "chg_5d_bps": -12.000000000000014,
+      "chg_6m_bps": -44.0,
+      "historical_move_analogs": [
+        {
+          "as_of": "2024-03-06",
+          "distance_from_current_move": 0.0,
+          "forward_1m_move": -7.0,
+          "forward_3m_move": -17.0,
+          "level": -69.0,
+          "prior_1m_move": -16.0
+        },
+        {
+          "as_of": "2023-03-03",
+          "distance_from_current_move": 0.0,
+          "forward_1m_move": 13.0,
+          "forward_3m_move": 41.0,
+          "level": -71.0,
+          "prior_1m_move": -16.0
+        },
+        {
+          "as_of": "2024-04-11",
+          "distance_from_current_move": 0.0,
+          "forward_1m_move": 9.0,
+          "forward_3m_move": 7.0,
+          "level": -84.00000000000003,
+          "prior_1m_move": -16.0
+        },
+        {
+          "as_of": "2023-08-25",
+          "distance_from_current_move": 0.0,
+          "forward_1m_move": 6.0,
+          "forward_3m_move": -22.0,
+          "level": -40.000000000000036,
+          "prior_1m_move": -16.0
+        }
+      ],
+      "pctile_1y": 0.1984126984126984,
+      "pctile_5y": 6.94557270511779,
+      "z_1y": -2.0274953324424287,
+      "z_5y": -1.3607278397983058
+    },
+    "NZ-US_10Y": {
+      "as_of": null,
+      "bps": null,
+      "chg_1d_bps": null,
+      "chg_1m_bps": null,
+      "chg_3m_bps": null,
+      "chg_5d_bps": null,
+      "pctile_1y": null,
+      "pctile_5y": null,
+      "reason": "RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.",
+      "status": "unavailable",
+      "z_1y": null,
+      "z_5y": null
+    },
+    "NZ-US_2Y": {
+      "as_of": null,
+      "bps": null,
+      "chg_1d_bps": null,
+      "chg_1m_bps": null,
+      "chg_3m_bps": null,
+      "chg_5d_bps": null,
+      "pctile_1y": null,
+      "pctile_5y": null,
+      "reason": "RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.",
+      "status": "unavailable",
+      "z_1y": null,
+      "z_5y": null
+    },
+    "NZ-US_5Y": {
+      "as_of": null,
+      "bps": null,
+      "chg_1d_bps": null,
+      "chg_1m_bps": null,
+      "chg_3m_bps": null,
+      "chg_5d_bps": null,
+      "pctile_1y": null,
+      "pctile_5y": null,
+      "reason": "RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.",
+      "status": "unavailable",
+      "z_1y": null,
+      "z_5y": null
+    }
+  },
+  "rates": {
+    "AU": {
+      "age_days": 3,
+      "curves": {
+        "2s10s": {
+          "bps": 34.90000000000002,
+          "chg_1m_bps": -12.999999999999986,
+          "pctile_1y": 24.404761904761905
+        },
+        "5s10s": {
+          "bps": 30.69999999999995,
+          "chg_1m_bps": -11.000000000000032,
+          "pctile_1y": 15.277777777777779
+        }
+      },
+      "latest_observation": "2026-09-16",
+      "status": "ok",
+      "tenors": {
+        "10Y": {
+          "analogs": [],
+          "as_of": "2026-09-16",
+          "chg_1d_bps": null,
+          "chg_1m_bps": null,
+          "chg_3m_bps": null,
+          "chg_5d_bps": null,
+          "pctile_1y": 99.0079365079365,
+          "pctile_5y": 99.8015873015873,
+          "value": 5.348,
+          "z_1y": 2.061105419938145,
+          "z_5y": 1.6330801449989936
+        },
+        "2Y": {
+          "analogs": [],
+          "as_of": "2026-09-16",
+          "chg_1d_bps": null,
+          "chg_1m_bps": null,
+          "chg_3m_bps": null,
+          "chg_5d_bps": null,
+          "pctile_1y": 99.0079365079365,
+          "pctile_5y": 99.8015873015873,
+          "value": 4.999,
+          "z_1y": 1.6668784352122055,
+          "z_5y": 1.4977578009574009
+        },
+        "5Y": {
+          "analogs": [],
+          "as_of": "2026-09-16",
+          "chg_1d_bps": null,
+          "chg_1m_bps": null,
+          "chg_3m_bps": null,
+          "chg_5d_bps": null,
+          "pctile_1y": 99.0079365079365,
+          "pctile_5y": 99.8015873015873,
+          "value": 5.041,
+          "z_1y": 1.8286744132816273,
+          "z_5y": 1.7121684049982664
+        }
+      }
+    },
+    "CA": {
+      "age_days": 2,
+      "curves": {
+        "2s10s": {
+          "bps": 56.00000000000001,
+          "chg_1m_bps": -18.00000000000002,
+          "pctile_1y": 0.5952380952380952
+        },
+        "5s10s": {
+          "bps": 29.000000000000004,
+          "chg_1m_bps": -12.00000000000001,
+          "pctile_1y": 0.7936507936507936
+        }
+      },
+      "latest_observation": "2026-09-17",
+      "status": "ok",
+      "tenors": {
+        "10Y": {
+          "analogs": [],
+          "as_of": "2026-09-17",
+          "chg_1d_bps": null,
+          "chg_1m_bps": null,
+          "chg_3m_bps": null,
+          "chg_5d_bps": null,
+          "pctile_1y": 97.42063492063492,
+          "pctile_5y": 96.81782020684169,
+          "value": 3.83,
+          "z_1y": 2.121982164561663,
+          "z_5y": 1.207360160988524
+        },
+        "2Y": {
+          "analogs": [],
+          "as_of": "2026-09-17",
+          "chg_1d_bps": null,
+          "chg_1m_bps": null,
+          "chg_3m_bps": null,
+          "chg_5d_bps": null,
+          "pctile_1y": 97.81746031746032,
+          "pctile_5y": 58.55210819411297,
+          "value": 3.27,
+          "z_1y": 2.4628832525179494,
+          "z_5y": 0.15372652771286371
+        },
+        "5Y": {
+          "analogs": [],
+          "as_of": "2026-09-17",
+          "chg_1d_bps": null,
+          "chg_1m_bps": null,
+          "chg_3m_bps": null,
+          "chg_5d_bps": null,
+          "pctile_1y": 97.81746031746032,
+          "pctile_5y": 81.78202068416866,
+          "value": 3.54,
+          "z_1y": 2.3590400147039268,
+          "z_5y": 0.8067136685265159
+        },
+        "LONG": {
+          "analogs": [],
+          "as_of": "2026-09-17",
+          "chg_1d_bps": null,
+          "chg_1m_bps": null,
+          "chg_3m_bps": null,
+          "chg_5d_bps": null,
+          "pctile_1y": 96.42857142857143,
+          "pctile_5y": 99.28400954653938,
+          "value": 4.17,
+          "z_1y": 1.9910881489321834,
+          "z_5y": 1.6386470789009713
+        }
+      }
+    },
+    "NZ": {
+      "age_days": null,
+      "curves": {},
+      "latest_observation": null,
+      "status": "unavailable",
+      "tenors": {
+        "10Y": {
+          "analogs": [],
+          "as_of": null,
+          "chg_1d_bps": null,
+          "chg_1m_bps": null,
+          "chg_3m_bps": null,
+          "chg_5d_bps": null,
+          "pctile_1y": null,
+          "pctile_5y": null,
+          "value": null,
+          "z_1y": null,
+          "z_5y": null
+        },
+        "2Y": {
+          "analogs": [],
+          "as_of": null,
+          "chg_1d_bps": null,
+          "chg_1m_bps": null,
+          "chg_3m_bps": null,
+          "chg_5d_bps": null,
+          "pctile_1y": null,
+          "pctile_5y": null,
+          "value": null,
+          "z_1y": null,
+          "z_5y": null
+        },
+        "5Y": {
+          "analogs": [],
+          "as_of": null,
+          "chg_1d_bps": null,
+          "chg_1m_bps": null,
+          "chg_3m_bps": null,
+          "chg_5d_bps": null,
+          "pctile_1y": null,
+          "pctile_5y": null,
+          "value": null,
+          "z_1y": null,
+          "z_5y": null
+        }
+      }
+    },
+    "US": {
+      "age_days": 1,
+      "curves": {
+        "2s10s": {
+          "bps": 25.0,
+          "chg_1m_bps": -21.0,
+          "pctile_1y": 0.1984126984126984
+        },
+        "5s10s": {
+          "bps": 14.999999999999947,
+          "chg_1m_bps": -15.000000000000124,
+          "pctile_1y": 0.3968253968253968
+        }
+      },
+      "latest_observation": "2026-09-18",
+      "status": "ok",
+      "tenors": {
+        "10Y": {
+          "analogs": [],
+          "as_of": "2026-09-18",
+          "chg_1d_bps": null,
+          "chg_1m_bps": null,
+          "chg_3m_bps": null,
+          "chg_5d_bps": null,
+          "pctile_1y": 99.60317460317461,
+          "pctile_5y": 99.92063492063492,
+          "value": 5.01,
+          "z_1y": 2.7229048573956622,
+          "z_5y": 1.3766557893039064
+        },
+        "2Y": {
+          "analogs": [],
+          "as_of": "2026-09-18",
+          "chg_1d_bps": null,
+          "chg_1m_bps": null,
+          "chg_3m_bps": null,
+          "chg_5d_bps": null,
+          "pctile_1y": 99.8015873015873,
+          "pctile_5y": 88.01587301587301,
+          "value": 4.76,
+          "z_1y": 2.837131124906408,
+          "z_5y": 0.8948625146528716
+        },
+        "30Y": {
+          "analogs": [],
+          "as_of": "2026-09-18",
+          "chg_1d_bps": null,
+          "chg_1m_bps": null,
+          "chg_3m_bps": null,
+          "chg_5d_bps": null,
+          "pctile_1y": 98.01587301587301,
+          "pctile_5y": 99.60317460317461,
+          "value": 5.34,
+          "z_1y": 2.2124065921584504,
+          "z_5y": 1.3672784848588548
+        },
+        "5Y": {
+          "analogs": [],
+          "as_of": "2026-09-18",
+          "chg_1d_bps": null,
+          "chg_1m_bps": null,
+          "chg_3m_bps": null,
+          "chg_5d_bps": null,
+          "pctile_1y": 99.60317460317461,
+          "pctile_5y": 99.60317460317461,
+          "value": 4.86,
+          "z_1y": 2.796505762205156,
+          "z_5y": 1.3222359194106963
+        }
+      }
+    }
+  },
+  "run_id": "tr-20260919T214000Z-ondemand",
+  "temperature_gauges": {
+    "AU": {
+      "Activity": 54.0,
+      "Consumer": 48.0,
+      "Inflation": 82.0,
+      "Labor": 50.0
+    },
+    "CA": {
+      "Activity": 66.0,
+      "Consumer": 45.0,
+      "Inflation": 55.0,
+      "Labor": 38.0
+    },
+    "NZ": {
+      "Activity": 47.0,
+      "Consumer": 38.0,
+      "Inflation": 80.0,
+      "Labor": 32.0
+    },
+    "US": {
+      "Activity": 69.0,
+      "Consumer": 74.0,
+      "Inflation": 72.0,
+      "Labor": 75.0
+    }
+  },
+  "tradable_rate_curves": {
+    "curves": {
+      "AONIA": {
+        "contracts": [
+          {
+            "change_from_overnight_bps": 0.5,
+            "code": null,
+            "expiry": "2026-09",
+            "implied_rate": 4.355,
+            "open_interest": 11896.0,
+            "price": 95.645,
+            "source": "ASX_30D_AONIA",
+            "volume": 161.0
+          },
+          {
+            "change_from_overnight_bps": 21.5,
+            "code": null,
+            "expiry": "2026-10",
+            "implied_rate": 4.565,
+            "open_interest": 21752.0,
+            "price": 95.435,
+            "source": "ASX_30D_AONIA",
+            "volume": 4450.0
+          },
+          {
+            "change_from_overnight_bps": 33.5,
+            "code": null,
+            "expiry": "2026-11",
+            "implied_rate": 4.685,
+            "open_interest": 2619.0,
+            "price": 95.315,
+            "source": "ASX_30D_AONIA",
+            "volume": 1157.0
+          },
+          {
+            "change_from_overnight_bps": 37.5,
+            "code": null,
+            "expiry": "2026-12",
+            "implied_rate": 4.725,
+            "open_interest": 1131.0,
+            "price": 95.275,
+            "source": "ASX_30D_AONIA",
+            "volume": 2.0
+          },
+          {
+            "change_from_overnight_bps": 38.5,
+            "code": null,
+            "expiry": "2027-01",
+            "implied_rate": 4.735,
+            "open_interest": 279.0,
+            "price": 95.265,
+            "source": "ASX_30D_AONIA",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 45.5,
+            "code": null,
+            "expiry": "2027-02",
+            "implied_rate": 4.805,
+            "open_interest": 600.0,
+            "price": 95.195,
+            "source": "ASX_30D_AONIA",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 51.0,
+            "code": null,
+            "expiry": "2027-03",
+            "implied_rate": 4.86,
+            "open_interest": 201.0,
+            "price": 95.14,
+            "source": "ASX_30D_AONIA",
+            "volume": 1.0
+          },
+          {
+            "change_from_overnight_bps": 54.5,
+            "code": null,
+            "expiry": "2027-04",
+            "implied_rate": 4.895,
+            "open_interest": 400.0,
+            "price": 95.105,
+            "source": "ASX_30D_AONIA",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 58.5,
+            "code": null,
+            "expiry": "2027-05",
+            "implied_rate": 4.935,
+            "open_interest": 375.0,
+            "price": 95.065,
+            "source": "ASX_30D_AONIA",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 59.0,
+            "code": null,
+            "expiry": "2027-06",
+            "implied_rate": 4.94,
+            "open_interest": null,
+            "price": 95.06,
+            "source": "ASX_30D_AONIA",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 59.5,
+            "code": null,
+            "expiry": "2027-07",
+            "implied_rate": 4.945,
+            "open_interest": null,
+            "price": 95.055,
+            "source": "ASX_30D_AONIA",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 59.5,
+            "code": null,
+            "expiry": "2027-08",
+            "implied_rate": 4.945,
+            "open_interest": null,
+            "price": 95.055,
+            "source": "ASX_30D_AONIA",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 59.5,
+            "code": null,
+            "expiry": "2027-09",
+            "implied_rate": 4.945,
+            "open_interest": null,
+            "price": 95.055,
+            "source": "ASX_30D_AONIA",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 59.0,
+            "code": null,
+            "expiry": "2027-10",
+            "implied_rate": 4.94,
+            "open_interest": null,
+            "price": 95.06,
+            "source": "ASX_30D_AONIA",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 57.0,
+            "code": null,
+            "expiry": "2027-11",
+            "implied_rate": 4.92,
+            "open_interest": null,
+            "price": 95.08,
+            "source": "ASX_30D_AONIA",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 55.0,
+            "code": null,
+            "expiry": "2027-12",
+            "implied_rate": 4.9,
+            "open_interest": null,
+            "price": 95.1,
+            "source": "ASX_30D_AONIA",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 53.0,
+            "code": null,
+            "expiry": "2028-01",
+            "implied_rate": 4.88,
+            "open_interest": null,
+            "price": 95.12,
+            "source": "ASX_30D_AONIA",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 49.0,
+            "code": null,
+            "expiry": "2028-02",
+            "implied_rate": 4.84,
+            "open_interest": null,
+            "price": 95.16,
+            "source": "ASX_30D_AONIA",
+            "volume": null
+          }
+        ],
+        "product_code": "IB",
+        "status": "ok"
+      },
+      "CORRA": {
+        "contracts": [
+          {
+            "change_from_overnight_bps": 9.5,
+            "code": "CRAU26",
+            "expiry": "2026-09",
+            "implied_rate": 2.385,
+            "open_interest": null,
+            "price": 97.615,
+            "source": "MX_CORRA_FUTURES",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 48.5,
+            "code": "CRAZ26",
+            "expiry": "2026-12",
+            "implied_rate": 2.775,
+            "open_interest": null,
+            "price": 97.225,
+            "source": "MX_CORRA_FUTURES",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 84.0,
+            "code": "CRAH27",
+            "expiry": "2027-03",
+            "implied_rate": 3.13,
+            "open_interest": null,
+            "price": 96.87,
+            "source": "MX_CORRA_FUTURES",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 107.5,
+            "code": "CRAM27",
+            "expiry": "2027-06",
+            "implied_rate": 3.365,
+            "open_interest": null,
+            "price": 96.635,
+            "source": "MX_CORRA_FUTURES",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 122.0,
+            "code": "CRAU27",
+            "expiry": "2027-09",
+            "implied_rate": 3.51,
+            "open_interest": null,
+            "price": 96.49,
+            "source": "MX_CORRA_FUTURES",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 130.5,
+            "code": "CRAZ27",
+            "expiry": "2027-12",
+            "implied_rate": 3.595,
+            "open_interest": null,
+            "price": 96.405,
+            "source": "MX_CORRA_FUTURES",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 134.5,
+            "code": "CRAH28",
+            "expiry": "2028-03",
+            "implied_rate": 3.635,
+            "open_interest": null,
+            "price": 96.365,
+            "source": "MX_CORRA_FUTURES",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 136.0,
+            "code": "CRAM28",
+            "expiry": "2028-06",
+            "implied_rate": 3.65,
+            "open_interest": null,
+            "price": 96.35,
+            "source": "MX_CORRA_FUTURES",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 136.5,
+            "code": "CRAU28",
+            "expiry": "2028-09",
+            "implied_rate": 3.655,
+            "open_interest": null,
+            "price": 96.345,
+            "source": "MX_CORRA_FUTURES",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 135.5,
+            "code": "CRAZ28",
+            "expiry": "2028-12",
+            "implied_rate": 3.645,
+            "open_interest": null,
+            "price": 96.355,
+            "source": "MX_CORRA_FUTURES",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 134.0,
+            "code": "CRAH29",
+            "expiry": "2029-03",
+            "implied_rate": 3.63,
+            "open_interest": null,
+            "price": 96.37,
+            "source": "MX_CORRA_FUTURES",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 133.0,
+            "code": "CRAM29",
+            "expiry": "2029-06",
+            "implied_rate": 3.62,
+            "open_interest": null,
+            "price": 96.38,
+            "source": "MX_CORRA_FUTURES",
+            "volume": null
+          }
+        ],
+        "product_code": "CRA",
+        "status": "ok"
+      },
+      "SOFR": {
+        "contracts": [
+          {
+            "change_from_overnight_bps": 15.0,
+            "code": "SR3U6",
+            "expiry": "2026-09",
+            "implied_rate": 4.0,
+            "open_interest": null,
+            "price": 96.0,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 47.0,
+            "code": "SR3Z6",
+            "expiry": "2026-12",
+            "implied_rate": 4.32,
+            "open_interest": null,
+            "price": 95.68,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 73.0,
+            "code": "SR3H7",
+            "expiry": "2027-03",
+            "implied_rate": 4.58,
+            "open_interest": null,
+            "price": 95.42,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 87.0,
+            "code": "SR3M7",
+            "expiry": "2027-06",
+            "implied_rate": 4.72,
+            "open_interest": null,
+            "price": 95.28,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 90.5,
+            "code": "SR3U7",
+            "expiry": "2027-09",
+            "implied_rate": 4.755,
+            "open_interest": null,
+            "price": 95.245,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 88.0,
+            "code": "SR3Z7",
+            "expiry": "2027-12",
+            "implied_rate": 4.73,
+            "open_interest": null,
+            "price": 95.27,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 84.5,
+            "code": "SR3H8",
+            "expiry": "2028-03",
+            "implied_rate": 4.695,
+            "open_interest": null,
+            "price": 95.305,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 81.0,
+            "code": "SR3M8",
+            "expiry": "2028-06",
+            "implied_rate": 4.66,
+            "open_interest": null,
+            "price": 95.34,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 77.0,
+            "code": "SR3U8",
+            "expiry": "2028-09",
+            "implied_rate": 4.62,
+            "open_interest": null,
+            "price": 95.38,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 74.0,
+            "code": "SR3Z8",
+            "expiry": "2028-12",
+            "implied_rate": 4.59,
+            "open_interest": null,
+            "price": 95.41,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 71.5,
+            "code": "SR3H9",
+            "expiry": "2029-03",
+            "implied_rate": 4.565,
+            "open_interest": null,
+            "price": 95.435,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 69.5,
+            "code": "SR3M9",
+            "expiry": "2029-06",
+            "implied_rate": 4.545,
+            "open_interest": null,
+            "price": 95.455,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 68.0,
+            "code": "SR3U9",
+            "expiry": "2029-09",
+            "implied_rate": 4.53,
+            "open_interest": null,
+            "price": 95.47,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 67.0,
+            "code": "SR3Z9",
+            "expiry": "2029-12",
+            "implied_rate": 4.52,
+            "open_interest": null,
+            "price": 95.48,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 66.5,
+            "code": "SR3H0",
+            "expiry": "2030-03",
+            "implied_rate": 4.515,
+            "open_interest": null,
+            "price": 95.485,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 66.0,
+            "code": "SR3M0",
+            "expiry": "2030-06",
+            "implied_rate": 4.51,
+            "open_interest": null,
+            "price": 95.49,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 66.5,
+            "code": "SR3U0",
+            "expiry": "2030-09",
+            "implied_rate": 4.515,
+            "open_interest": null,
+            "price": 95.485,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 68.0,
+            "code": "SR3Z0",
+            "expiry": "2030-12",
+            "implied_rate": 4.53,
+            "open_interest": null,
+            "price": 95.47,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 69.5,
+            "code": "SR3H1",
+            "expiry": "2031-03",
+            "implied_rate": 4.545,
+            "open_interest": null,
+            "price": 95.455,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 71.5,
+            "code": "SR3M1",
+            "expiry": "2031-06",
+            "implied_rate": 4.565,
+            "open_interest": null,
+            "price": 95.435,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 73.5,
+            "code": "SR3U1",
+            "expiry": "2031-09",
+            "implied_rate": 4.585,
+            "open_interest": null,
+            "price": 95.415,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 77.5,
+            "code": "SR3Z1",
+            "expiry": "2031-12",
+            "implied_rate": 4.625,
+            "open_interest": null,
+            "price": 95.375,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 78.5,
+            "code": "SR3H2",
+            "expiry": "2032-03",
+            "implied_rate": 4.635,
+            "open_interest": null,
+            "price": 95.365,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 81.0,
+            "code": "SR3M2",
+            "expiry": "2032-06",
+            "implied_rate": 4.66,
+            "open_interest": null,
+            "price": 95.34,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 83.5,
+            "code": "SR3U2",
+            "expiry": "2032-09",
+            "implied_rate": 4.685,
+            "open_interest": null,
+            "price": 95.315,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 86.0,
+            "code": "SR3Z2",
+            "expiry": "2032-12",
+            "implied_rate": 4.71,
+            "open_interest": null,
+            "price": 95.29,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 88.0,
+            "code": "SR3H3",
+            "expiry": "2033-03",
+            "implied_rate": 4.73,
+            "open_interest": null,
+            "price": 95.27,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 91.0,
+            "code": "SR3M3",
+            "expiry": "2033-06",
+            "implied_rate": 4.76,
+            "open_interest": null,
+            "price": 95.24,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 93.5,
+            "code": "SR3U3",
+            "expiry": "2033-09",
+            "implied_rate": 4.785,
+            "open_interest": null,
+            "price": 95.215,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 96.0,
+            "code": "SR3Z3",
+            "expiry": "2033-12",
+            "implied_rate": 4.81,
+            "open_interest": null,
+            "price": 95.19,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 97.5,
+            "code": "SR3H4",
+            "expiry": "2034-03",
+            "implied_rate": 4.825,
+            "open_interest": null,
+            "price": 95.175,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 100.5,
+            "code": "SR3M4",
+            "expiry": "2034-06",
+            "implied_rate": 4.855,
+            "open_interest": null,
+            "price": 95.145,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 101.0,
+            "code": "SR3U4",
+            "expiry": "2034-09",
+            "implied_rate": 4.86,
+            "open_interest": null,
+            "price": 95.14,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 105.5,
+            "code": "SR3Z4",
+            "expiry": "2034-12",
+            "implied_rate": 4.905,
+            "open_interest": null,
+            "price": 95.095,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 106.5,
+            "code": "SR3H5",
+            "expiry": "2035-03",
+            "implied_rate": 4.915,
+            "open_interest": null,
+            "price": 95.085,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 109.0,
+            "code": "SR3M5",
+            "expiry": "2035-06",
+            "implied_rate": 4.94,
+            "open_interest": null,
+            "price": 95.06,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 111.5,
+            "code": "SR3U5",
+            "expiry": "2035-09",
+            "implied_rate": 4.965,
+            "open_interest": null,
+            "price": 95.035,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 116.0,
+            "code": "SR3Z5",
+            "expiry": "2035-12",
+            "implied_rate": 5.01,
+            "open_interest": null,
+            "price": 94.99,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          },
+          {
+            "change_from_overnight_bps": 117.0,
+            "code": "SR3H6",
+            "expiry": "2036-03",
+            "implied_rate": 5.02,
+            "open_interest": null,
+            "price": 94.98,
+            "source": "ESIGNAL_CME_SR3_DELAYED",
+            "volume": null
+          }
+        ],
+        "product_code": "SR3",
+        "status": "ok"
+      }
+    },
+    "status": "ok"
+  },
+  "trader_competition": {
+    "as_of": "2026-09-18T07:39:31.391259-04:00",
+    "contract": {
+      "flat_book_pnl": "Active trading seats lose the daily official SOFR charge while flat. No-trade-skeptic earns official SOFR cash yield while flat.",
+      "funding_basis": "Every seat except no-trade-skeptic borrows its full $100m allocation and pays official NY Fed SOFR on that full allocation every calendar day, deployed or not, using SOFR's ACT/360 money-market convention. The no-trade-skeptic is the cash hurdle: it pays no borrowing cost and earns the same official daily SOFR ACT/360 on the undeployed portion of its original $100m allocation; deployed notional stops earning that cash yield. Weekends and holidays carry the last applicable published fixing until the next fixing. There is no fixed 5% assumption. If official fixing history cannot be established, new funding accrual fails closed and prior canonical balances are preserved.",
+      "funding_convention": "ACT/360",
+      "funding_day_count": 360,
+      "funding_observation_date": "2026-09-17",
+      "funding_rate_annual": 0.0385,
+      "funding_source": "NY_FED",
+      "funding_source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr",
+      "instruction": "Do not optimize for sounding prudent. The active seats have a real carry clock even when risk-off; take paper risk when expected edge clears the observed SOFR hurdle and invalidation is defined. The no-trade-skeptic must include a structured funding_view on every new risk or NO_TRADE thesis: the frozen official SOFR fixing, the relevant SR3 forward-curve view, its own assessment of whether realized funding will print higher, lower, or about the same as the curve, and the implication for holding cash versus taking risk.",
+      "metric": "net_pnl_after_funding",
+      "no_trade_allowed": true,
+      "objective": "Finish with the highest cumulative net paper P&L across the 14 standing seats."
+    },
+    "overnight_run_id": null,
+    "review_status": "missing",
+    "seats": {
+      "carry-is-king": {
+        "cash_usd": 100000000,
+        "cash_yield_usd": 0,
+        "funding_cost_usd": 0,
+        "funding_rate_annual": 0.05,
+        "last_action": "HOLD",
+        "nav_usd": 100000000,
+        "net_pnl_usd": 0,
+        "positions": [],
+        "seat": "carry-is-king",
+        "thesis": null
+      },
+      "catalyst-junkie": {
+        "cash_usd": 100000000,
+        "cash_yield_usd": 0,
+        "funding_cost_usd": 0,
+        "funding_rate_annual": 0.05,
+        "last_action": "HOLD",
+        "nav_usd": 100000000,
+        "net_pnl_usd": 0,
+        "positions": [],
+        "seat": "catalyst-junkie",
+        "thesis": null
+      },
+      "cross-merchant": {
+        "cash_usd": 100000000,
+        "cash_yield_usd": 0,
+        "funding_cost_usd": 0,
+        "funding_rate_annual": 0.05,
+        "last_action": "HOLD",
+        "nav_usd": 100000000,
+        "net_pnl_usd": 0,
+        "positions": [],
+        "seat": "cross-merchant",
+        "thesis": null
+      },
+      "dollar-king": {
+        "cash_usd": 100000000,
+        "cash_yield_usd": 0,
+        "funding_cost_usd": 0,
+        "funding_rate_annual": 0.05,
+        "last_action": "HOLD",
+        "nav_usd": 100000000,
+        "net_pnl_usd": 0,
+        "positions": [],
+        "seat": "dollar-king",
+        "thesis": null
+      },
+      "mean-reverter": {
+        "cash_usd": 100000000,
+        "cash_yield_usd": 0,
+        "funding_cost_usd": 0,
+        "funding_rate_annual": 0.05,
+        "last_action": "HOLD",
+        "nav_usd": 100000000,
+        "net_pnl_usd": 0,
+        "positions": [],
+        "seat": "mean-reverter",
+        "thesis": null
+      },
+      "no-trade-skeptic": {
+        "cash_usd": 100000000,
+        "cash_yield_usd": 0,
+        "funding_cost_usd": 0,
+        "funding_rate_annual": 0.05,
+        "last_action": "HOLD",
+        "nav_usd": 100000000,
+        "net_pnl_usd": 0,
+        "positions": [],
+        "seat": "no-trade-skeptic",
+        "thesis": null
+      },
+      "perma-bear": {
+        "cash_usd": 100000000,
+        "cash_yield_usd": 0,
+        "funding_cost_usd": 0,
+        "funding_rate_annual": 0.05,
+        "last_action": "HOLD",
+        "nav_usd": 100000000,
+        "net_pnl_usd": 0,
+        "positions": [],
+        "seat": "perma-bear",
+        "thesis": null
+      },
+      "perma-bull": {
+        "cash_usd": 100000000,
+        "cash_yield_usd": 0,
+        "funding_cost_usd": 0,
+        "funding_rate_annual": 0.05,
+        "last_action": "HOLD",
+        "nav_usd": 100000000,
+        "net_pnl_usd": 0,
+        "positions": [],
+        "seat": "perma-bull",
+        "thesis": null
+      },
+      "positioning-cynic": {
+        "cash_usd": 100000000,
+        "cash_yield_usd": 0,
+        "funding_cost_usd": 0,
+        "funding_rate_annual": 0.05,
+        "last_action": "HOLD",
+        "nav_usd": 100000000,
+        "net_pnl_usd": 0,
+        "positions": [],
+        "seat": "positioning-cynic",
+        "thesis": null
+      },
+      "rate-dove": {
+        "cash_usd": 100000000,
+        "cash_yield_usd": 0,
+        "funding_cost_usd": 0,
+        "funding_rate_annual": 0.05,
+        "last_action": "HOLD",
+        "nav_usd": 100000000,
+        "net_pnl_usd": 0,
+        "positions": [],
+        "seat": "rate-dove",
+        "thesis": null
+      },
+      "rate-hawk": {
+        "cash_usd": 100000000,
+        "cash_yield_usd": 0,
+        "funding_cost_usd": 0,
+        "funding_rate_annual": 0.05,
+        "last_action": "HOLD",
+        "nav_usd": 100000000,
+        "net_pnl_usd": 0,
+        "positions": [],
+        "seat": "rate-hawk",
+        "thesis": null
+      },
+      "trend-follower": {
+        "cash_usd": 100000000,
+        "cash_yield_usd": 0,
+        "funding_cost_usd": 0,
+        "funding_rate_annual": 0.05,
+        "last_action": "HOLD",
+        "nav_usd": 100000000,
+        "net_pnl_usd": 0,
+        "positions": [],
+        "seat": "trend-follower",
+        "thesis": null
+      },
+      "value-guy": {
+        "cash_usd": 100000000,
+        "cash_yield_usd": 0,
+        "funding_cost_usd": 0,
+        "funding_rate_annual": 0.05,
+        "last_action": "HOLD",
+        "nav_usd": 100000000,
+        "net_pnl_usd": 0,
+        "positions": [],
+        "seat": "value-guy",
+        "thesis": null
+      },
+      "vol-convexity": {
+        "cash_usd": 100000000,
+        "cash_yield_usd": 0,
+        "funding_cost_usd": 0,
+        "funding_rate_annual": 0.05,
+        "last_action": "HOLD",
+        "nav_usd": 100000000,
+        "net_pnl_usd": 0,
+        "positions": [],
+        "seat": "vol-convexity",
+        "thesis": null
+      }
+    },
+    "source": "data/overnight/books/latest.json"
+  }
+}

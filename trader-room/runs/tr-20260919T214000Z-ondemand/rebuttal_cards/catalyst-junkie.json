@@ -1,0 +1,99 @@
+{
+  "run_id": "tr-20260919T214000Z-ondemand",
+  "round": 2,
+  "agent": "catalyst-junkie",
+  "packet_sha256": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
+  "own_original_ref": "submissions/catalyst-junkie.json",
+  "conflict_ids": [
+    "opp-dir:AONIA_2026-10"
+  ],
+  "conflicts": [
+    {
+      "kind": "opposite_direction",
+      "description": "catalyst-junkie are long AONIA_2026-10 while mean-reverter are short",
+      "agents": [
+        "catalyst-junkie",
+        "mean-reverter"
+      ]
+    }
+  ],
+  "opponents": [
+    "mean-reverter"
+  ],
+  "own_pitch": {
+    "agent": "catalyst-junkie",
+    "confidence": 58,
+    "stance_summary": "Verified: AONIA 4.35 overnight with October ASX IB implied 4.565 (+21.5bp) and November 4.685 (+33.5bp); NSW stamp-duty receipts -24% YoY and transactions -18% with Sydney/Melbourne values more than 7% below peak; AU gauges inflation 82 / activity 54 / labor 50 / consumer 48; AU 2Y 4.999 after a 1m +39.1bp selloff and a 1d -5.5bp dip. Inference: the dated October RBA window is still priced as a near-full hike even though the housing channel the RBA uses is already contracting, so the first liquid AONIA contract should reprice lower if the Board cannot deliver that hike. Unknown: the exact RBA calendar date inside the October contract and whether inflation 82 dominates housing in the reaction function. Express as long AONIA_2026-10 (receive), not AUDUSD.",
+    "instrument": "AONIA_2026-10",
+    "direction": "long",
+    "asset_class": "rates",
+    "thesis": "Fact: the October AONIA contract still implies 4.565 against a 4.35 overnight after a 16 Sep housing print that shows the RBA tightening channel already biting. Inference: that is too much hike for a Board staring at falling turnover, a stamp-duty collapse and cooling activity/labor/consumer gauges, so the dated October decision is the mechanism that should reprice the contract lower if they hold. Unknown: whether inflation 82 is sufficient for them to hike through the housing evidence. Valuation without that meeting can stay wrong; the meeting is why this is a trade rather than a 99th-percentile AU 2Y fade.",
+    "mispricing": "October IB prices about 21.5bp of tightening, i.e. a near-full 25bp hike, after new housing-volume and stamp-duty evidence that the transmission channel is already contracting. The market is assuming housing pain is compatible with another hike; the disagreement is that the next meeting cannot both acknowledge that channel and still deliver the priced 25bp.",
+    "conflict_synopsis": {
+      "seat": "catalyst-junkie",
+      "primary_trade": "long AONIA_2026-10",
+      "core_view": "October AONIA still prices a near-full RBA hike after housing transmission has already broken, so the meeting should reprice that contract lower.",
+      "usd_view": "not_relevant",
+      "cad_view": "not_relevant",
+      "aud_view": "lower",
+      "nzd_view": "not_relevant",
+      "us_rates_view": "not_relevant",
+      "ca_rates_view": "not_relevant",
+      "au_rates_view": "lower",
+      "nz_rates_view": "not_relevant",
+      "risk_view": "neutral",
+      "carry_view": "opposes_trade",
+      "time_horizon": "through October RBA / AONIA_2026-10",
+      "key_catalyst": "October RBA decision against AONIA_2026-10 implied 4.565 after the 16 Sep housing print.",
+      "key_invalidation": "RBA delivers the priced 25bp hike or inflation stays at gauge 82 while housing stabilizes.",
+      "confidence": 58,
+      "conflict_tags": [
+        "AU_RATES_DOWN",
+        "AUD_DOWN"
+      ]
+    }
+  },
+  "opposing_pitches": [
+    {
+      "agent": "mean-reverter",
+      "confidence": 59,
+      "stance_summary": "Do not fade US 2Y just because it prints a 252-day high: it sits on the live SR3 path after a delivered, pre-priced hike with still-hot US gauges. The stretched object with a reversal condition is Australia: AU 2Y 4.999 as of 2026-09-16 sits through live AONIA (overnight 4.35; Oct-26 4.565; Mar-27 4.86; path peak 4.945) after 16 Sep housing evidence that the tightening channel is already biting. Fade the remaining 21-51bp of priced RBA hikes in the AONIA strip, not AUDUSD.",
+      "instrument": "AONIA_2026-10",
+      "direction": "short",
+      "asset_class": "rates",
+      "thesis": "FACT: 16 Sep housing evidence shows NSW stamp-duty -24 percent y/y, volumes -18 percent, Sydney/Melbourne >7 percent off peak while AONIA still prices Oct-26 4.565 and Mar-27 4.86 from overnight 4.35, and AU 2Y 4.999 sits through that path. INFERENCE: crowded extrapolation of inflation-gauge 82 plus the delivered Fed hike has overshot the RBA's remaining hike capacity now that the housing channel is binding; the extra 21-51bp should be faded. UNKNOWN: positioning and the next CPI vintage. This is not a US 2Y fade and not an AONIA-easing call.",
+      "mispricing": "The market prices another +21.5bp by Oct-26 and +51bp by Mar-27 in AONIA, and AU 2Y 4.999 is 13.9bp through Mar-27 AONIA 4.86, after housing volumes and prices have already broken. The 99th-percentile AU 2Y rank is the discovery flag, not the thesis. The mispricing is remaining hike premium versus a working tightening channel, versus the live AONIA path.",
+      "conflict_synopsis": {
+        "seat": "mean-reverter",
+        "primary_trade": "short AONIA_2026-10 (receive AONIA Oct-Nov-Mar strip / AU rates down)",
+        "core_view": "Fade remaining RBA hike premium in AONIA because housing is already biting and AU 2Y sits through the live path; do not fade path-consistent US 2Y on percentile alone.",
+        "usd_view": "higher",
+        "cad_view": "not_relevant",
+        "aud_view": "lower",
+        "nzd_view": "not_relevant",
+        "us_rates_view": "neutral",
+        "ca_rates_view": "not_relevant",
+        "au_rates_view": "lower",
+        "nz_rates_view": "not_relevant",
+        "risk_view": "risk_off",
+        "carry_view": "supports_trade",
+        "time_horizon": "1-3 months",
+        "key_catalyst": "Australian housing/labor prints and RBA communication that the tightening channel is binding, so Oct-Mar AONIA hikes are not delivered.",
+        "key_invalidation": "AONIA Oct-26 4.565 and Mar-27 4.86 hold or rise while housing/labor stop deteriorating, or a delivered October RBA hike reprices the strip higher.",
+        "confidence": 59,
+        "conflict_tags": [
+          "AUD_DOWN",
+          "AU_RATES_DOWN",
+          "USD_UP"
+        ]
+      }
+    }
+  ],
+  "rules": {
+    "no_new_evidence": true,
+    "no_subagents": true,
+    "paste_json_only": true,
+    "trade_change": "unchanged|amended|withdrawn",
+    "unchanged_revised_trade": null
+  }
+}

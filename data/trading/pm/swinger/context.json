@@ -1,6 +1,6 @@
 {
   "active_lessons": [],
-  "as_of": "2026-09-19T15:18:49.882968-04:00",
+  "as_of": "2026-09-19T18:06:55.600313-04:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -29,12 +29,25 @@
     "total_realized_pnl_usd": 0.0,
     "wins": 0
   },
-  "memory_context_sha256": "952fa661887360fcabb623af68f88fce335e45f4bd46e53bf547854d91fe31b6",
-  "open_positions": [],
+  "memory_context_sha256": "f0606b67e52472ecb10b70bd9fa484a3906786529c680f61220038f8173aea89",
+  "open_positions": [
+    {
+      "asset_class": "rates",
+      "conviction": 63,
+      "current_notional_usd": 900000000.0,
+      "entry_mark": 4.75,
+      "instrument": "SOFR_2027-09",
+      "opened_at": "2026-09-19T18:06:55.600313-04:00",
+      "position_id": "pm-swinger-e68143f262a5",
+      "side": "long",
+      "trade_id": "trd-pm-swinger-pm-swinger-e68143f262a5"
+    }
+  ],
   "owner_id": "swinger",
   "owner_type": "pm",
   "postmortems_due": [],
   "recent_closed_trades": [],
+  "recent_funding_views": [],
   "schema_version": 1,
   "type": "IDENTITY_MEMORY_CONTEXT"
 }

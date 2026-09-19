@@ -1,0 +1,137 @@
+{
+  "type": "TRADER_ROOM_CONTRIBUTION",
+  "run_id": "tr-20260919T214000Z-ondemand",
+  "round": 1,
+  "agent": "carry-is-king",
+  "archetype": "carry-is-king",
+  "remit": "positive carry and patient expressions across rates and FX unless a catalyst overwhelms it",
+  "packet_sha256": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
+  "memory_context_sha256": "345fdc8bc129dca77372f73d48d579848de216d51a111ad9809d478c6c608034",
+  "stance_summary": "Verified: SOFR 3.85% (2026-09-17), CORRA 2.29%, AONIA 4.35%; Fed hiked 25bp to 3.75-4.00% on 16 Sep after >90% futures odds; CA-US 2Y is -140bp as of 17 Sep. Inference: the 149bp US-over-Canada 2Y yield gap is the holding-period engine, not a fade. Unknown: CFTC/CME positioning and NZ rates. Patient expression is pay CA 2Y / receive US 2Y (short CA-US_2Y). Long USDCAD is the spot alternative; rates own the discrepancy more cleanly.",
+  "confidence": 58,
+  "trade": {
+    "instrument": "CA-US_2Y",
+    "asset_class": "rates_rv",
+    "expression_comparison": {
+      "rates_candidate": "Short CA-US_2Y (pay CA 2Y at 3.27% versus receive US 2Y at 4.76%; packet spread -140bp as of 2026-09-17). Same view on policy futures is pay CORRA versus receive SOFR around the 2027-09 window (CRAU27 implied 3.51 versus SR3U7 implied 4.755).",
+      "spot_candidate": "Long USDCAD at packet ECB as_of mid 1.4010471204188482 on 2026-09-18; overnight differential SOFR 3.85 versus CORRA 2.29.",
+      "selected": "rates",
+      "rationale": "Rates are the default when both expressions are clean. The discrepancy lives in the 2Y yield gap (-140bp, 1y percentile 3.77, 5y percentile 4.31), not in USDCAD (1y percentile 74.0, z 0.80). Oil/energy cross-currents (Saudi STS workaround versus weakened shock absorbers and BoC energy pass-through minutes) contaminate CAD spot. US and CA policy paths are both status ok, so the short-end RV is executable from the frozen packet. Long USDCAD has similar carry but extra ToT/oil residual and is not the stretched object."
+    },
+    "context_build": {
+      "causal_mechanism": "After a delivered Fed hike, US overnight and 2Y yields sit well above Canada. The economic mechanism being tested is that traders fade that gap (buy CA duration / sell US duration) because CA-US 2Y looks statistically cheap, paying negative carry to do so. Carry compounding plus still-hot US inflation/labor versus weak Canadian labor and core-near-2% inflation support remaining long the high-yielder and short the low-yielder: receive US 2Y, pay CA 2Y. Canada can catch up some through the already-steeper CORRA path; that would also profit a short CA-US_2Y. The energy-pass-through BoC-hike narrative is the catalyst that would overwhelm carry; the 16 Sep Saudi Oman workaround reduced that oil-supply tail.",
+      "path_to_current_price": "Verified packet path for CA-US_2Y (CA minus US): around -125 to -128bp on 8-14 Sep, -132bp on 15 Sep, -139bp on 16 Sep (Fed hike day), -140bp on 17 Sep. 1m change -17bp, 5d -15bp, 6m -46bp. US 2Y is 4.76% as of 18 Sep; CA 2Y is 3.27% as of 17 Sep. SOFR history sat near 3.62-3.64 into 16 Sep then printed 3.85% effective 17 Sep, transmitting the 16 Sep 25bp hike into overnight. SR3 then prices further tightening: SR3Z6 2026-12 implied 4.32 (+47bp vs overnight), SR3H7 2027-03 implied 4.58, SR3U7 2027-09 implied 4.755. CORRA overnight remains 2.29 with COAZ26 Dec implied 2.58 (+29bp) and CRAU27 2027-09 implied 3.51. USDCAD is 1.401047, +1.74% 1m, only a 74th-percentile 1y print. Inference: the marginal move in the 2Y gap is the Fed hike landing in US yields and SOFR, not a Canada easing surprise.",
+      "known_vs_new_information": "Known before the cutoff: August US CPI kept a Fed tightening bias (11 Sep); futures entered the 16 Sep FOMC with >90% odds of a 25bp hike; Canada August CPI held at 3% with core near 2% (14 Sep); BoC minutes flagged energy pass-through (16 Sep). New in the freeze: the hike was delivered (Fed to 3.75-4.00%), SOFR jumped to 3.85% on 17 Sep rather than remaining a futures probability, CA-US_2Y printed -140bp on 17 Sep after the -139bp 16 Sep step, and Saudi STS transfers off Oman reduced the extreme oil-supply tail the same week. The known inflation/labor gap now has a new transmission: overnight US funding actually reset higher while CORRA did not.",
+      "market_implied_assumption": "The market prices a durable ~140bp Canada cheapness versus US 2Y, a still-rising SOFR path through 4.755% by 2027-09, and a CORRA path that hikes more in basis points from a much lower overnight (2.29 to about 3.65 by 2028-06, +136bp) but never closes the level gap (2027-09 SOFR 4.755 versus CORRA 3.51, 124.5bp). Near-term, Dec 1m CORRA is only +29bp versus Dec SR3 +47bp. USDCAD at 1.401 implies the FX market has not fully expressed that 2Y gap (74th percentile versus 3.8th-percentile 1y on CA-US_2Y).",
+      "market_assumption_disagreed_with": "The priced assumption I will not own is that the 140bp 2Y gap is a fade: that one should receive CA 3.27% and pay US 4.76% because the spread is a 5y 4th-percentile extreme. That fade is negative carry of about 149bp and needs a catalyst that overwhelms the US-over-Canada holding-period return. I disagree that BoC energy pass-through, with core near 2% and labor gauge 38, is that catalyst after the Saudi workaround reduced the oil tail. I also disagree that the CORRA Dec 2.58% print already matches the delivered Fed hike; the relative policy path still pays the holder of US versus Canada.",
+      "price_decomposition": "Level versus change: CA-US_2Y level -140bp is the 1y 3.77th percentile and 5y 4.31st percentile; the 1m change is -17bp. Tenor: 2Y is the policy tenor (US 2Y 4.76 sits on SR3U7 4.755; CA 2Y 3.27 sits 24bp below CRAU27 3.51). Components: overnight differential 156bp (3.85-2.29); 2027-09 STIR differential 124.5bp (4.755-3.51); sovereign 2Y differential 149bp (4.76-3.27). Marginal driver of the latest cheapening is the US overnight/hike leg, not a Canada yield collapse. Curve context: US 2s10s 25bp at the 0.20th 1y percentile (flattening) is a separate discovery flag, not this thesis. Paper marks are mid/reference; no broker executable is claimed.",
+      "historical_reference": {
+        "distribution": "CA-US_2Y as of 2026-09-17: -140bp, 1y percentile 3.77, 5y percentile 4.31, 1y z -1.84, 5y z -1.51. Same-move 1m analog window is a -17bp cheapening. US 2Y 4.76% is 99.8th 1y percentile; CA 2Y 3.27% is 97.8th 1y but only 58.6th 5y, so Canada's cheapness is relative to the US, not an absolute low yield. Carry quantification from packet yields: receive 4.76 versus pay 3.27 is about +149bp if the spread is unchanged; overnight FX carry on long USDCAD is 3.85 versus 2.29, about +156bp. Official SOFR 3.85% ACT/360 is the paper funding hurdle, not a 5% assumption.",
+        "analogs": [
+          "CA-US_2Y analog 2025-01-30: prior 1m move -17bp, level already -145bp, forward 1m -5bp and forward 3m +25bp (spread cheapened a bit more then reversed). Similar extreme level; 3m outcome would have paid a short CA-US_2Y.",
+          "CA-US_2Y analog 2024-12-18: prior 1m -17bp, level -130bp, forward 1m -3bp and forward 3m -20bp (further cheapening). Similar move, less extreme level; 3m outcome would have hurt a short.",
+          "CA-US_2Y analog 2022-11-15: prior 1m -17bp, level only -51bp, forward 1m -4bp and forward 3m +6bp. Move-matched but not level-matched; 3m outcome small and mixed.",
+          "CA-US_2Y analog 2024-05-02: prior 1m -17bp, level -63bp, forward 1m -9bp and forward 3m -6bp. Move-matched, not level-matched; modest further cheapening."
+        ],
+        "regime_differences": "No analog is a regime clone. 2022-11 and 2024-05/12 levels were far less cheap than today's -140bp, so pooling 1m-move analogs without the level is misleading. 2025-01-30 is the closest level analog (-145bp) and then reversed +25bp over 3m. Today's regime differs because the Fed hike is already delivered rather than only priced, SOFR has reset to 3.85%, US temperature gauges are hot (inflation 72, labor 75, activity 69, consumer 74) versus Canada labor 38 and inflation 55, and an energy-supply tail was reduced by Saudi STS transfers rather than left open. NZ rates are unavailable so G10 rate-spread history is US/CA/AU only. CFTC positioning is unavailable, so analog episodes cannot be conditioned on holder composition."
+      },
+      "independent_checks": [
+        "Policy-path check: tradable SOFR versus CORRA. Overnight 3.85 versus 2.29; Dec SR3Z6 4.32 versus Dec 1m CORRA 2.58; 2027-09 SR3U7 4.755 versus CRAU27 3.51. The STIR level gap remains 124.5-156bp, consistent with sovereign 2Y 149bp, so the RV is not a term-premium artifact of one 2Y percentile.",
+        "Macro/temperature triangulation: US inflation/labor/activity/consumer 72/75/69/74 versus Canada 55/38/66/45. Hard news: August US CPI kept tightening bias; Canada August CPI 3% with core near 2%; BoC minutes named energy pass-through but did not reprice CORRA Oct beyond +1.5bp (2.305). Labor 38 and core-near-2% argue against treating Canada as a catch-up hiker that overwhelms carry.",
+        "Cross-market FX check: USDCAD 1.401047, 1y percentile 74.0, z 0.80, +1.74% 1m. The currency has not stretched with the 2Y gap, which is why the rates RV owns the discrepancy more cleanly than spot. AUD was inspected (AONIA 4.35, AU 2Y 4.999, housing stamp-duty -24% y/y) and rejected as the primary because inflation gauge 82 versus a housing catalyst is two-sided and AUDCAD is already a 99.8th-percentile 1y print."
+      ],
+      "flow_and_positioning_check": "Verified gap: CFTC trader-class nets and CME positioning overlays are unavailable this freeze (pos:cftc / packet known_gaps). Paper books are empty $100m seeds, so there is no house position to lean on. Inference: the 16-17 Sep cheapening of CA-US_2Y coinciding with the Fed hike and SOFR reset looks like policy-path transmission rather than an observable liquidation. Unknown: whether leveraged holders are already short CAD rates or long USDCAD. Do not treat the 3.8th-percentile spread as proof of a crowded fade.",
+      "policy_path_check": {
+        "status": "available",
+        "relevant_countries": [
+          "US",
+          "CA"
+        ],
+        "pricing_summary": "US: SOFR overnight 3.85% effective 2026-09-17; SR3U6 2026-09 implied 4.00; SR3Z6 2026-12 implied 4.32; SR3H7 2027-03 implied 4.58; SR3M7 2027-06 implied 4.72; SR3U7 2027-09 implied 4.755 (peak near-dated, +90.5bp vs overnight). CA: CORRA overnight 2.29% as of 2026-09-17; COAU26 2026-09 implied 2.2875; COAV26 2026-10 implied 2.305 (+1.5bp); COAZ26 2026-12 implied 2.58 (+29bp); CRAZ26 2026-12 implied 2.775; CRAH27 2027-03 implied 3.13; CRAM27 2027-06 implied 3.365; CRAU27 2027-09 implied 3.51; CRAM28 2028-06 implied 3.65 (peak +136bp vs overnight). AU inspected, not in the trade: AONIA 4.35, 2026-10 implied 4.565 (+21.5bp), 2027-07/08/09 implied 4.945 (+59.5bp). NZ policy path unavailable.",
+        "rationale": "This is a short-end US/Canada 2Y RV. Protocol requires live SOFR and CORRA paths rather than sovereign percentiles. Both country blocks are status ok in the frozen packet. The trade is pay CA / receive US because the overnight and 2027-09 STIR gaps still pay the US holder, while Dec CORRA at +29bp has not caught the delivered Fed hike. AONIA was inspected and left unused: Australian housing is a genuine tightening-channel fact, but AU inflation gauge 82 and a 99.8th-percentile AUDCAD make that a catalyst-overwhelmed carry, not this seat's clean patient expression."
+      }
+    },
+    "structure": "Pay CA 2Y versus receive US 2Y; book as short CA-US_2Y (CA minus US). Paper family is sovereign 2Y RV marked from market_state.rate_rv.CA-US_2Y, not SOFR/CORRA futures. Research/reference mids only; not a broker structure.",
+    "direction": "short",
+    "thesis": "Verified fact: US 2Y 4.76% versus CA 2Y 3.27% is a -140bp CA-US_2Y print after a delivered Fed hike and SOFR 3.85% reset, while CORRA overnight is still 2.29% and Dec 1m CORRA is only 2.58%. Inference: the market is inviting a negative-carry fade of Canada cheapness. Carry-is-king will not pay 3.27% to short 4.76%. Short CA-US_2Y receives the high yielder, pays the low yielder, and still has room for Canada to catch up along its own CORRA path. The energy-hike catalyst that would overwhelm this is weaker after the Saudi Oman workaround, not stronger. Unknowns: NZ rates, CFTC, live temperature-gauge vintages. Patient 3-month hold; paper books pay SOFR on the full $100m whether flat or not, so a 149bp yield gap that can also mean-revert from -140bp is a better use of the allocation than sitting flat.",
+    "mispricing": "The fade of CA-US_2Y at -140bp is the mispricing: it treats a 5y 4th-percentile yield gap as a long-Canada duration signal while the policy path still pays ~149bp to receive US versus pay CA, and while Dec CORRA at 2.58% has not caught a delivered US hike that lifted SOFR to 3.85% and SR3 Dec to 4.32%. Statistical cheapness of CA versus US is the discovery flag, not a reason to own negative carry.",
+    "why_now": [
+      "Fed hike delivered 16 Sep 2026 to 3.75-4.00% after >90% pricing; SOFR effective 17 Sep is 3.85% rather than the 3.62% 16 Sep print, so the overnight hurdle and the US leg have actually reset.",
+      "CA-US_2Y printed -140bp on 17 Sep after -139bp on hike day, a fresh 1m -17bp cheapening, while CORRA Oct is still only +1.5bp and Dec 1m only +29bp.",
+      "Saudi STS workaround 16 Sep reduced the extreme oil-supply tail that would have been the catalyst capable of overwhelming carry via a BoC energy hike; empty $100m seed pays official SOFR ACT/360 every calendar day even if flat."
+    ],
+    "evidence_refs": [
+      "funding_context",
+      "market_state",
+      "policy_paths",
+      "policy:US",
+      "policy:CA",
+      "tradable_rate_curves",
+      "rates:US",
+      "rates:CA",
+      "fx:USDCAD",
+      "temp:US:inflation",
+      "temp:US:labor",
+      "temp:US:activity",
+      "temp:US:consumer",
+      "temp:CA:inflation",
+      "temp:CA:labor",
+      "temp:CA:activity",
+      "temp:CA:consumer",
+      "mw_20260916_fomc_hike_pricing",
+      "rollup:Fed raises 25bp to 3.75–4.00%",
+      "rollup:August CPI keeps the Fed tightening bias intact",
+      "rollup:Canada August inflation holds at 3%, core stays near 2%",
+      "rollup:BoC minutes flag higher energy pass-through risk",
+      "mw_20260916_saudi_oman_workaround",
+      "rollup:Energy-market shock absorbers weaken",
+      "mw_20260916_au_housing_tightening",
+      "policy:AU",
+      "pos:cftc",
+      "research_method",
+      "paper_books"
+    ],
+    "horizon": "3 months (patient carry; packet analogs report 1m and 3m forward outcomes)",
+    "entry": "CA-US_2Y -140bp as of 2026-09-17 (packet rate_rv / market_state research reference, not an executable broker mark)",
+    "target": null,
+    "stop": null,
+    "invalidation": "Thesis is invalid if the CORRA path re-prices more tightening than the SOFR path such that the sourced Dec implied gap (SR3Z6 4.32 versus COAZ26 2.58) and the sourced 140bp CA-US_2Y differential compress from the Canada side because energy pass-through overwhelms Canada's core-near-2% and labor-38 setup; or if the Fed tightening bias evidenced by the 16 Sep hike and August CPI is reversed while Canada remains the low-yielder only because US yields collapse. A further analog-style cheapening without path compression is timing noise, not automatic invalidation, because carry is the holding-period engine. No numeric stop is sourced in the packet.",
+    "catalysts": [
+      "Digestion of the already-delivered 16 Sep Fed hike and 17 Sep SOFR 3.85% reset versus a still-dovish near CORRA strip (Oct +1.5bp, Dec 1m +29bp).",
+      "Canada inflation/labor prints that keep core near 2% and labor weak, so BoC energy-pass-through minutes do not become a hiking sequence that closes the 140bp 2Y gap from the CA side.",
+      "Oil-supply tail remaining reduced after the 16 Sep Saudi Oman STS workaround rather than re-opening into a CAD-rates squeeze."
+    ],
+    "principal_risks": [
+      "US inflation/labor gauges stay hot and US 2Y rises further versus a capped CA 2Y, driving CA-US_2Y more negative and marking a short RV against the holder; US 2Y is already at the 99.8th 1y percentile.",
+      "BoC energy pass-through becomes the binding catalyst (headline 3% plus a renewed oil shock) and CORRA/CA 2Y catch up faster than US carry can cushion.",
+      "Positioning is unknown (CFTC/CME unavailable); a crowded short-CAD-rates or long-USDCAD book could amplify a squeeze. Temperature gauges are repo-retained dashboard_v8. NZ rates missing. Paper MTM on rates_rv is duration-1 spread change and does not mechanically credit coupon carry."
+    ],
+    "confidence": 58
+  },
+  "conflict_synopsis": {
+    "seat": "carry-is-king",
+    "primary_trade": "short CA-US_2Y (pay CA 2Y / receive US 2Y)",
+    "core_view": "The 149bp US-over-Canada 2Y yield gap is a patient positive-carry hold after a delivered Fed hike, not a negative-carry fade of a 4th-percentile spread.",
+    "usd_view": "higher",
+    "cad_view": "lower",
+    "aud_view": "not_relevant",
+    "nzd_view": "not_relevant",
+    "us_rates_view": "lower",
+    "ca_rates_view": "higher",
+    "au_rates_view": "not_relevant",
+    "nz_rates_view": "not_relevant",
+    "risk_view": "neutral",
+    "carry_view": "supports_trade",
+    "time_horizon": "3 months",
+    "key_catalyst": "Delivered 16 Sep Fed hike and 17 Sep SOFR 3.85% reset versus a still-lagging CORRA strip, with the Saudi workaround reducing the oil-hike catalyst.",
+    "key_invalidation": "CORRA/CA 2Y re-prices more than SOFR/US 2Y from the Canada side on energy pass-through, or US yields collapse while Canada stays the low-yielder.",
+    "confidence": 58,
+    "conflict_tags": [
+      "USD_UP",
+      "CAD_DOWN",
+      "US_RATES_DOWN",
+      "CA_RATES_UP",
+      "CARRY_SUPPORTS"
+    ]
+  }
+}

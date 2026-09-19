@@ -1,0 +1,35 @@
+{
+  "type": "TRADER_ROOM_REBUTTAL",
+  "run_id": "tr-20260919T214000Z-ondemand",
+  "round": 2,
+  "agent": "cross-merchant",
+  "opponents": [
+    "perma-bull",
+    "dollar-king",
+    "perma-bear",
+    "rate-dove",
+    "trend-follower"
+  ],
+  "own_original_ref": "submissions/cross-merchant.json",
+  "holes_in_opposing_case": [
+    "The NZD-lower camp (dollar-king, perma-bear, rate-dove, trend-follower) never reconstructs an NZ mechanism. Their primary trades are USDCAD, CORRA_2027-09, CORRA_2027-06, and SOFR_2027-09. NZD_DOWN is a USD-up/risk-off tag, not a priced NZ assumption they test. Packet NZ facts they ignore: Q2 GDP 0.2% q/q beat, India FTA, inflation gauge 80 versus AU 82, and AUDUSD +0.20% 1m versus NZDUSD -3.90% 1m.",
+    "dollar-king and trend-follower's strongest claim is a continuing post-FOMC USD bid (Fed 3.75-4.00, SOFR 3.85, SR3Z6 4.32 / SR3U7 4.755). That is a USD-leg claim. On 18 Sep USDJPY was +1.41% while AUDUSD was still +0.09% and NZDUSD -0.56%; the AU-NZ residual printed in AUDNZD, not in USDCAD or SR3U7. A USD-higher view can be true and still leave AUDNZD too high.",
+    "perma-bear and rate-dove own Canada: CORRA 2.29 versus 107-122bp of 2027 hike premium against labor 38 and core near 2%. Receiving CRAU27/CRAM27 does not imply NZD lower versus AUD. Mapping a BoC overpricing into Oceania spot is a non sequitur, and NZ rates are unavailable so they cannot even claim an NZ policy-error analog.",
+    "perma-bull shares the NZ-higher reading but puts it in NZDUSD. That expression loads the exact Fed path dollar-king and trend-follower are selling: delivered 25bp plus SR3 still tightening. If their USD bid is even partly right, long NZDUSD dies while short AUDNZD can still work. perma-bull's own path_to_current_price already admits AUDUSD +0.20% 1m is the control that the dump is NZ-not-USD; the cleaner instrument for that residual is AUDNZD, which they cite as a flag then refuse to trade.",
+    "trend-follower tags aud_view neutral and nzd_view lower, which is an implicit long-AUDNZD. They give no AU housing versus NZ GDP/FTA comparison to justify that residual. Neutral AUD plus lower NZD is the priced 1m path (+4.27% AUDNZD) that 16 Sep news already argued against."
+  ],
+  "trade_change": "unchanged",
+  "revised_trade": null,
+  "attack": [
+    "Strongest opposing claim: post-hike USD stays bid, so NZD as a high-beta stays lower (dollar-king/trend-follower). Weakness: they do not decompose AUD versus NZD. Packet control is AUDUSD not stretched (1y 76th, +0.20% 1m) while NZDUSD was dumped and AUDNZD extended after AU-negative/NZ-positive news. USD-up days already happened (18 Sep USDJPY +1.41%) without stopping the idiosyncratic NZ underperformance versus AUD.",
+    "Canada-receive seats (perma-bear, rate-dove) are fighting CORRA hike premium, not NZD. CAD_DOWN plus NZD_DOWN is regime coloring. It does not identify a closing mechanism for AUDNZD 1.2468.",
+    "perma-bull's NZDUSD long is the USD-contaminated twin of this seat's view. Same catalysts, worse denominator. Unhedged to AUD, as they state, is a choice to own Fed residual they already documented as not the driver."
+  ],
+  "defense": [
+    "Original remains short AUDNZD. Intended differential is AU housing channel biting (stamp-duty -24% y/y, volumes -18%, Sydney/Melbourne >7% off peak) plus still-priced AONIA hikes (4.35, Oct 4.565, Dec 4.725) versus NZ GDP beat and India FTA with inflation gauges nearly identical (82 vs 80). That lives in the cross.",
+    "NZD higher here is versus AUD, not versus USD. usd_view stays not_relevant. Concession to a USD bid would kill perma-bull's NZDUSD, not this trade, unless AUDUSD and NZDUSD fall together and leave AUDNZD unchanged or higher — that is already the stated invalidation.",
+    "Uncertainty preserved: NZ OCR/2Y missing, AUDNZD carry unknown, CFTC/CME positioning unavailable, NZ labor 32 / activity 47 remain a known level risk. Those gaps cut against long NZDUSD more than against an AU-NZ relative. Concede if post-18-Sep AUDNZD makes new highs because NZ activity confirms the labor recession and FTA/GDP do not reprice NZD, or if a pure USD bid moves both USD legs equally."
+  ],
+  "packet_sha256": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
+  "subagent_calls": 0
+}
