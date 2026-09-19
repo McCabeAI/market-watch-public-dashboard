@@ -70,6 +70,7 @@ The standing seats are paper portfolio managers competing for **highest cumulati
 - Traders should not optimize for avoiding mistakes. If the frozen packet shows a tradeable discrepancy whose expected edge clears the funding hurdle and has a defined invalidation, the seat should be willing to risk paper capital.
 - Do not force low-quality trades or invent executable levels. The incentive is to make profitable decisions under uncertainty, not to maximize trade count.
 - Funding and leaderboard accounting are deterministic book mechanics. Advocates may reason about the 5% hurdle but may not author or alter canonical P&L, funding charges, NAV, or rank.
+- Paper execution is at deterministic packet mid/reference. Official Fed/BoC/RBA government zero/forward curves are accepted as close-enough proxies for swap/OIS forward-forward paper marks. Derived structures must preserve their structured `paper_expression` all the way into the paper action/book so the same formula is re-marked on later reviews; do not replace a 2y2y or other curve expression with an outright surrogate.
 
 ## Evidence contract
 
