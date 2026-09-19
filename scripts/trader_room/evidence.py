@@ -247,6 +247,25 @@ def validate_preflight(
             "essential evidence family missing; refusing to spend the 14-agent run: "
             + ", ".join(failed)
         )
+
+    # Policy-path context is not optional for a full live Trader Room. Sovereign
+    # yields can flag an extreme, but they cannot tell the room what central-bank
+    # path is already discounted. US/CA/AU must all be present before the 14-seat
+    # debate spends model budget.
+    market = packet.get("market_state") or {}
+    if market.get("status") != "unavailable":
+        policy = market.get("policy_paths") or {}
+        countries = policy.get("countries") or {}
+        missing_paths = [
+            c for c in ("US", "CA", "AU")
+            if (countries.get(c) or {}).get("status") != "ok"
+        ]
+        if missing_paths:
+            raise EvidencePreflightError(
+                "policy-path context missing for "
+                + ", ".join(missing_paths)
+                + "; refusing to build short-rate/rates-RV ideas from sovereign yields alone"
+            )
     return {
         "families": statuses,
         "essential_families": list(essential_families),
