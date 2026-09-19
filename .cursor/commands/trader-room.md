@@ -82,15 +82,17 @@ Give each advocate only:
 
 The advocate may defend, amend, or withdraw and must shoot holes in the opposing case.
 
-## 6. Final aggregation
+## 6. Deterministic final handoff
 
-Launch `final-aggregator` on exact `grok-4.6` with:
-- all 14 originals;
-- deterministic conflict map including theoretical/context tensions;
-- all rebuttals;
-- known gaps.
+Do **not** launch `final-aggregator`. After all routed rebuttals validate, build the PM handoff directly from the saved structured artifacts:
 
-The final aggregator organizes the PM handoff only. No winner, ranking, house view, or official decision.
+```bash
+PYTHONPATH=. python scripts/trader_room_finalize.py --run-dir trader-room/runs/<run_id>
+```
+
+This finalizer reads the already-validated 14 originals, deterministic conflict map and routed rebuttals, then writes `pm_handoff.json` and `artifact_index.json`. It consumes zero model calls and must not reread or summarize the full evidence packet beyond its frozen metadata/known gaps.
+
+No winner, ranking, house view, or official decision.
 
 Persist the complete run under `trader-room/runs/<run_id>/` and end with exactly:
 
@@ -102,11 +104,11 @@ Optional private Markdown copy may use Google Drive folder `1NS6Qb6vNGKM18_PW0zP
 
 Full run policy:
 
-`MW_TRADER_ROOM_RUN_POLICY={"version":1,"run_type":"trader-room-ondemand","total_model_cap":58,"grok_cap":30,"composer_cap":28,"parent_model":"grok-4.6","parent_total":1,"parent_grok":1}`
+`MW_TRADER_ROOM_RUN_POLICY={"version":1,"run_type":"trader-room-ondemand","total_model_cap":57,"grok_cap":29,"composer_cap":28,"parent_model":"grok-4.6","parent_total":1,"parent_grok":1}`
 
-- total Grok ceiling 30 including ACP parent;
+- total Grok ceiling 29 including ACP parent;
 - Composer ceiling 28;
-- total model ceiling 58;
+- total model ceiling 57;
 - Auto and Other Models prohibited;
 - no silent retries or reroutes.
 
