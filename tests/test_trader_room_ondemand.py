@@ -345,6 +345,37 @@ class CliTests(unittest.TestCase):
             self.assertEqual(payload["status"], HANDOFF_MARKER)
             self.assertTrue(payload["run_id"])
 
+    def test_finalize_cli_regenerates_handoff_without_model_call(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            artifact_root = Path(tmp)
+            result = go(topic="go", synthetic=True, artifact_root=artifact_root)
+            run_dir = artifact_root / "trader-room" / "runs" / result["run_id"]
+            (run_dir / "pm_handoff.json").unlink()
+            (run_dir / "artifact_index.json").unlink()
+            proc = subprocess.run(
+                [
+                    sys.executable,
+                    "scripts/trader_room_finalize.py",
+                    "--run-dir",
+                    str(run_dir),
+                    "--root",
+                    str(artifact_root),
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                check=False,
+                env={**os.environ, "PYTHONPATH": str(ROOT)},
+            )
+            self.assertEqual(proc.returncode, 0, proc.stderr)
+            payload = json.loads(proc.stdout)
+            self.assertEqual(payload["final_handoff_model_calls"], 0)
+            handoff = json.loads((run_dir / "pm_handoff.json").read_text())
+            self.assertEqual(handoff["status"], HANDOFF_MARKER)
+            receipt = json.loads((run_dir / "receipt.json").read_text())
+            self.assertEqual(receipt["final_handoff_method"], "deterministic_pm_handoff_v1")
+            self.assertEqual(receipt["final_handoff_model_calls"], 0)
+
     def test_cli_live_flag_is_blocked(self):
         proc = subprocess.run(
             [sys.executable, "scripts/trader_room_go.py", "go", "--live", "--synthetic"],
