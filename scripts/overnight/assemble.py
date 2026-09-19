@@ -23,7 +23,7 @@ def _load_books(store: OvernightStore, run: dict[str, Any]) -> dict[str, Any]:
 
 
 def _load_pm_books(store: OvernightStore, families: dict[str, Any]) -> dict[str, Any]:
-    path = store.root / "data" / "pm" / "books" / "latest.json"
+    path = store.state_root / "data" / "pm" / "books" / "latest.json"
     if path.is_file():
         books = validate_pm_books(json.loads(path.read_text(encoding="utf-8")))
     else:
