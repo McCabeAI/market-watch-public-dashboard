@@ -6,6 +6,13 @@ This is the path-of-least-resistance daily market-data feed for Market Watch. It
 
 The generator produces a compact JSON research snapshot. It is not executable pricing.
 
+The snapshot includes a `forward_curves` block for US/CA/AU. For paper trading, official government zero/forward curves are accepted as close-enough proxies for swap/OIS forward-forward marks:
+- US: Federal Reserve staff nominal zero-coupon curve (continuously compounded zero yields);
+- Canada: Bank of Canada Government of Canada zero-coupon curve;
+- Australia: RBA F17 zero-coupon analytical series, using published discount factors directly.
+
+The block preserves curve vintage and proxy provenance and precomputes common annual-pay forward swaps including `2y2y`. These are deterministic paper/reference mids, not executable swap/OIS quotes.
+
 ## Command
 
 Trader Room agents and the weekday workflow use the same command:
