@@ -4,16 +4,19 @@ from __future__ import annotations
 import unittest
 
 from scripts.policy_path_data import (
+    build_tradable_rate_curves,
     parse_asx_cash_futures_html,
     parse_boc_corra_html,
     parse_boc_corra_json,
     parse_cme_sofr_bulletin_text,
+    parse_cme_sr3_bulletin_text,
     parse_cme_sofr_html,
     parse_cme_sofr_settlements_json,
     parse_esignal_sofr_html,
     parse_mx_expectations_html,
     parse_nyfed_sofr_json,
     parse_rba_f1_csv,
+    validate_tradable_rate_curves,
 )
 
 
@@ -82,6 +85,39 @@ TOTAL SR1 FUT 0 127818 1302349 + 11967
         self.assertEqual(rows[0]["expiry"], "2026-09")
         self.assertEqual(rows[1]["implied_rate"], 3.91)
         self.assertEqual(rows[2]["change_from_overnight_bps"], 35.0)
+
+    def test_cme_daily_bulletin_sr3(self):
+        text = """
+SR3 FUT
+DEC26 96.780 96.790 96.770 96.780 ( 3.22) + 0.0050 ---- 250000 1800000 + 1000 97.100 95.900
+MAR27 96.650 96.660 96.640 96.650 ( 3.35) UNCH ---- 210000 1700000 - 500 97.000 95.800
+TOTAL SR3 FUT 0 460000 3500000 + 500
+"""
+        rows = parse_cme_sr3_bulletin_text(text, benchmark=3.85)
+        self.assertEqual(rows[0]["code"], "SR3Z6")
+        self.assertEqual(rows[0]["expiry"], "2026-12")
+        self.assertEqual(rows[0]["implied_rate"], 3.22)
+        self.assertEqual(rows[1]["change_from_overnight_bps"], -50.0)
+
+    def test_tradable_rate_curve_selection(self):
+        policy = {
+            "countries": {
+                "US": {"status": "ok", "benchmark": {"name": "SOFR", "rate": 3.85}, "contracts_3m": [{"expiry": "2026-12", "code": "SR3Z6", "implied_rate": 3.22}]},
+                "CA": {"status": "ok", "benchmark": {"name": "CORRA", "rate": 2.29}, "contracts_3m": [{"expiry": "2026-12", "code": "CRAZ26", "implied_rate": 2.78}]},
+                "AU": {"status": "ok", "benchmark": {"name": "AONIA", "rate": 4.35}, "contracts_1m": [{"expiry": "2026-10", "code": None, "implied_rate": 4.40}]},
+            },
+            "sources": {
+                "US_policy": {"tradable_curve_url": "https://example.test/sr3"},
+                "CA_policy": {"path_url": "https://example.test/cra"},
+                "AU_policy": {"path_url": "https://example.test/ib"},
+            },
+        }
+        curves = build_tradable_rate_curves(policy)
+        validate_tradable_rate_curves(curves)
+        self.assertEqual(curves["status"], "ok")
+        self.assertEqual(curves["curves"]["SOFR"]["product_code"], "SR3")
+        self.assertEqual(curves["curves"]["CORRA"]["product_code"], "CRA")
+        self.assertEqual(curves["curves"]["AONIA"]["product_code"], "IB")
 
     def test_esignal_sofr_chain(self):
         html = """
