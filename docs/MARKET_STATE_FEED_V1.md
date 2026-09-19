@@ -55,6 +55,7 @@ The JSON object always contains:
 | `unavailable_sources` | Official sources that could not be fetched (currently NZ-only), else `[]` |
 | `rates` | `US`, `CA`, `AU`, `NZ` blocks |
 | `rate_rv` | 15 matching-tenor spreads |
+| `policy_paths` | US/Canada/Australia overnight benchmarks plus public money-market/futures-implied policy paths |
 | `fx` | 45 G10 crosses from one ECB fixing |
 | `positioning` | CFTC trader-class positioning plus CME daily futures/options open-interest context |
 | `sources` | Name, public URL, download URL, observation date, status |
@@ -63,8 +64,8 @@ The JSON object always contains:
 Each country rates block includes:
 
 - `latest_observation`, `age_days`, `status`
-- `tenors`: latest yield; 1D/5D/1M/3M basis-point changes; 1Y percentile/z-score; 5Y percentile/z-score when the fetched sample is long enough
-- `curves`: `2s10s` and `5s10s` in basis points, with the same change/percentile/z-score fields
+- `tenors`: latest yield; 1D/5D/1M/3M/6M/1Y basis-point changes; 1Y percentile/z-score; 5Y percentile/z-score when the fetched sample is long enough; and mechanically selected prior 1-month move analogs with subsequent 1M/3M outcomes
+- `curves`: `2s10s` and `5s10s` in basis points, with the same change/distribution fields plus prior-move analogs
 
 Required tenors:
 
@@ -76,6 +77,19 @@ Required tenors:
 `rate_rv` keys are `{A}-{B}_{tenor}` for `CA-US`, `AU-US`, `NZ-US`, `AU-NZ`, `CA-AU` at 2Y, 5Y and 10Y. Spreads use the latest exact common observation date. One country is never forward-filled to match another.
 
 Each FX pair includes spot, 1D/5D/1M/3M percent returns, 20D/60D annualized realized vol, and 1Y/5Y percentile or z-score when history supports it. Positive return means the base currency appreciated against the quote under the displayed pair key.
+
+
+### Policy-path block
+
+`policy_paths` is the monetary-policy context layer that must be read **before** sovereign 2Y/5Y yields or cross-country RV are treated as trade signals.
+
+- **Canada:** Bank of Canada CORRA benchmark plus Montréal Exchange 1M/3M CORRA futures. Futures are converted as `100 - price` to an implied average CORRA rate and shown versus current CORRA in basis points.
+- **United States:** New York Fed SOFR plus CME One-Month SOFR futures, also converted as `100 - price`. These are monthly average SOFR expectations, not exact FOMC target probabilities.
+- **Australia:** RBA F1 AONIA, 1M/3M/6M OIS, 1M/3M/6M bank bills, bank-bill-minus-OIS basis, plus ASX 30-day interbank cash-rate futures for the longer path. The bill-minus-OIS field is a money-market credit/basis proxy, not an exact FRA-OIS construction.
+
+Exchange futures/settlement values are delayed public research/reference data, not executable prices. A normal full Trader Room requires all three policy-path country blocks to be available. A sovereign yield percentile is not an acceptable substitute.
+
+`historical_move_analogs` are mechanical nearest prior 1-month moves from the retained history, with subsequent 1M/3M changes. They provide candidate episodes and math; advocates still must explain event/regime similarities and differences before calling an episode comparable.
 
 The `positioning` block is deterministic and credential-free. CFTC TFF futures-only data is the ownership/crowding anchor for standard G10 FX futures and key US Treasury futures. For each mapped contract it records total open interest plus Dealer, Asset Manager, Leveraged Funds, Other Reportable and Non-Reportable long/short/net positions. Net positions are normalized as percent of open interest and contextualized with weekly change plus 1Y/3Y percentile and z-score. The selected CFTC market name and contract code are retained in the packet for auditability.
 
@@ -92,8 +106,11 @@ Null lookbacks stay null. A missing US, Canada, Australia, or ECB FX source, ten
 | Block | Authority | Notes |
 | --- | --- | --- |
 | US rates | U.S. Treasury daily par yield curve | Daily official CSV |
+| US policy path | New York Fed SOFR + CME One-Month SOFR futures | Official overnight benchmark plus delayed public exchange futures; implied rate = 100 - futures price |
 | CA rates | Bank of Canada Valet benchmark bonds | Official `bond_yields_benchmark` group (`BD.CDN.2YR/5YR/10YR/LONG.DQ.YLD`) |
+| CA policy path | Bank of Canada CORRA + Montréal Exchange CORRA futures | Official overnight benchmark plus public 1M/3M CORRA futures |
 | AU rates | RBA F2 government-bond yields | Assessed closing yields; research context; typically weekly with a two-business-day lag |
+| AU policy / money market | RBA F1 + ASX 30-day cash-rate futures | AONIA, OIS, bank bills and bill-minus-OIS from RBA; public ASX cash-rate futures extend the path |
 | NZ rates | RBNZ B2 wholesale interest rates | Official `hb2-daily-close.xlsx`; indicative government-bond closes; one-day publication lag. A Cloudflare block marks NZ unavailable in the packet; no vendor mirror. |
 | FX | ECB euro foreign-exchange reference rates | Official Data Portal SDMX daily `EXR` series; same-fixing EUR legs only; not executable prices. Combined G10 query first; per-currency SDMX fallback on 5xx/timeout. No vendor substitute. |
 | Positioning ownership | CFTC Traders in Financial Futures (TFF), Futures Only | Weekly trader-class positions. Core crowding source for the Positioning Cynic; official public API dataset `gpe5-46if`. |
@@ -115,7 +132,7 @@ The GitHub Pages deploy workflow also runs the same generator into `_site/market
 
 ## Trader Room use
 
-Immediately before a debate, run the command above and attach the JSON as research/reference `market_levels` / `rates_and_policy` evidence. The complete `positioning` block travels with the same frozen packet, so Positioning Cynic and other seats can use CFTC crowding and CME OI context without private web fetches. Preserve source names, URLs, observation dates, `generated_at`, and `stale_sources`. Do not treat ECB crosses or official yields as tradable quotes. If the generator exits `2`, record the hard failure as a known gap and do not fabricate replacements.
+Immediately before a debate, run the command above and attach the JSON as research/reference `market_levels` / `rates_and_policy` evidence. Advocates must read `policy_paths` before interpreting short-end sovereign yields and must use the historical move analogs as candidate comparisons rather than treating percentile/z-score extremes as self-sufficient theses. The complete `positioning` block travels with the same frozen packet, so Positioning Cynic and other seats can use CFTC crowding and CME OI context without private web fetches. Preserve source names, URLs, observation dates, `generated_at`, and `stale_sources`. Do not treat ECB crosses or official yields as tradable quotes. If the generator exits `2`, record the hard failure as a known gap and do not fabricate replacements.
 
 ## Opportunity monitor extension (2026-09-18)
 
