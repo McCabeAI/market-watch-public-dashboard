@@ -44,7 +44,7 @@ def _load(path: Path) -> Any:
 
 
 def _load_books(root: Path) -> dict[str, Any]:
-    path = root / BOOKS_RELPATH
+    path = root / PM_BOOKS_RELPATH
     if path.is_file():
         return validate_pm_books(_load(path))
     return empty_pm_books()
