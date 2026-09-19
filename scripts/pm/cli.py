@@ -10,6 +10,7 @@ from pathlib import Path
 from scripts.pm.books import empty_books, mark_stale_if_packet_changed, validate_books
 from scripts.pm.chatgpt_ingest import load_or_empty_books, load_or_empty_registry
 from scripts.pm.data_requests import empty_registry
+from scripts.pm.launch import build_pm_launch_plan
 from scripts.pm.public import emit_pm_json, write_public_state
 from scripts.pm.review_packets import (
     SOURCE_TRADER_ROOM_FALLBACK,
@@ -127,10 +128,15 @@ def init_layer(store: PMStore, *, write_trader_pointer: bool = False) -> dict[st
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
-    for name in ("init", "refresh-packets", "publish"):
+    for name in ("init", "refresh-packets", "publish", "launch-plan"):
         item = sub.add_parser(name)
         item.add_argument("--root", type=Path, default=None)
         item.add_argument("--state-root", type=Path, default=None)
+        if name == "launch-plan":
+            item.add_argument("--run-id", required=True)
+            item.add_argument("--evidence-cutoff", default=None)
+            item.add_argument("--evidence-packet-sha256", default=None)
+            item.add_argument("--trader-room-run-id", default=None)
         if name == "refresh-packets":
             item.add_argument(
                 "--allow-trader-room-fallback",
@@ -142,6 +148,26 @@ def main(argv: list[str] | None = None) -> int:
             item.add_argument("--site-dir", type=Path, required=True)
     args = ap.parse_args(argv)
     store = PMStore(root=args.root, state_root=args.state_root)
+    if args.cmd == "launch-plan":
+        cutoff = args.evidence_cutoff
+        packet_hash = args.evidence_packet_sha256
+        if cutoff is None or packet_hash is None:
+            packets_dir = store.packets_dir()
+            sample = store.read_json(store.packet_path("swinger")) if store.packet_path("swinger").is_file() else {}
+            cutoff = cutoff or sample.get("evidence_cutoff") or sample.get("evidence", {}).get("as_of")
+            packet_hash = packet_hash or sample.get("evidence_packet_sha256") or sample.get("evidence", {}).get(
+                "packet_sha256"
+            )
+        if not cutoff or not packet_hash:
+            raise SystemExit("launch-plan requires --evidence-cutoff and --evidence-packet-sha256 (or seeded packets)")
+        plan = build_pm_launch_plan(
+            run_id=args.run_id,
+            evidence_cutoff=cutoff,
+            evidence_packet_sha256=packet_hash,
+            trader_room_run_id=args.trader_room_run_id,
+        )
+        print(json.dumps(plan, indent=2, sort_keys=True))
+        return 0
     if args.cmd == "init":
         print(json.dumps(init_layer(store, write_trader_pointer=True), sort_keys=True))
         return 0

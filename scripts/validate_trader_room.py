@@ -14,6 +14,7 @@ EXPECTED_ADVOCATES = {
     "catalyst-junkie", "vol-convexity", "no-trade-skeptic",
 }
 EXPECTED_AGGREGATORS = {"conflict-aggregator", "final-aggregator"}
+EXPECTED_PM_AGENTS = {"swinger", "pragmatist", "grinder"}
 REQUIRED_FIELDS = {"name", "description", "model", "readonly", "is_background"}
 MANDATORY_PACKET_SECTIONS = {
     "temperature_gauges", "central_bank_research", "news_and_research",
@@ -51,12 +52,18 @@ def assert_agent_file(name: str, path: Path) -> None:
 def main() -> None:
     assert AGENT_DIR.is_dir(), "missing .cursor/agents"
     agent_files = {p.stem: p for p in AGENT_DIR.glob("*.md")}
-    expected = EXPECTED_ADVOCATES | EXPECTED_AGGREGATORS
-    assert set(agent_files) == expected, (
-        f"agent roster mismatch: expected={sorted(expected)} actual={sorted(agent_files)}"
+    expected_trader = EXPECTED_ADVOCATES | EXPECTED_AGGREGATORS
+    assert EXPECTED_PM_AGENTS <= set(agent_files), (
+        f"missing PM custom agents: {sorted(EXPECTED_PM_AGENTS - set(agent_files))}"
     )
-    for name, path in sorted(agent_files.items()):
+    trader_files = {name: path for name, path in agent_files.items() if name not in EXPECTED_PM_AGENTS}
+    assert set(trader_files) == expected_trader, (
+        f"trader agent roster mismatch: expected={sorted(expected_trader)} actual={sorted(trader_files)}"
+    )
+    for name, path in sorted(trader_files.items()):
         assert_agent_file(name, path)
+    for name in sorted(EXPECTED_PM_AGENTS):
+        assert_agent_file(name, agent_files[name])
         body = path.read_text(encoding="utf-8")
         if name in EXPECTED_ADVOCATES:
             assert "composer-2.5" in body, f"{name}: missing composer-2.5 subagent bound"

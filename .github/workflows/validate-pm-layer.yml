@@ -1,0 +1,42 @@
+name: Validate PM Layer
+
+on:
+  push:
+    paths:
+      - ".cursor/agents/swinger.md"
+      - ".cursor/agents/pragmatist.md"
+      - ".cursor/agents/grinder.md"
+      - ".cursor/commands/portfolio-managers.md"
+      - ".cursor/hooks/enforce-subagent-models.sh"
+      - "scripts/pm/**"
+      - "scripts/pm_layer.py"
+      - "scripts/validate_pm_layer.py"
+      - "scripts/trader_room/model_registry.json"
+      - "tests/test_pm_launch.py"
+      - "tests/test_pm_dashboard.py"
+      - ".github/workflows/validate-pm-layer.yml"
+  pull_request:
+    paths:
+      - ".cursor/agents/swinger.md"
+      - ".cursor/agents/pragmatist.md"
+      - ".cursor/agents/grinder.md"
+      - ".cursor/commands/portfolio-managers.md"
+      - ".cursor/hooks/enforce-subagent-models.sh"
+      - "scripts/pm/**"
+      - "scripts/pm_layer.py"
+      - "scripts/validate_pm_layer.py"
+      - "scripts/trader_room/model_registry.json"
+      - "tests/test_pm_launch.py"
+      - "tests/test_pm_dashboard.py"
+      - ".github/workflows/validate-pm-layer.yml"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: PYTHONPATH=. python scripts/validate_pm_layer.py
+      - run: PYTHONPATH=. python -m unittest tests.test_pm_launch tests.test_pm_dashboard -v
