@@ -1,16 +1,22 @@
 {
-  "type": "MARKET_WATCH_18_STACK_VALIDATION_RECEIPT",
-  "stage": "AWAITING_CHATGPT_ARBITRATION",
-  "run_id": "tr-20260919T214000Z-ondemand",
-  "evidence_cutoff": "2026-09-19T21:40:00Z",
-  "packet_sha256": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
-  "starting_ref": "1d8d83a46d3a80bd2c1e73709b1239819b37d804",
   "branch": "cursor/market-watch-full-18-stack-validation-4343",
+  "direct_conflicts": [
+    "opp-dir:AONIA_2026-10",
+    "opp-view:USD",
+    "opp-view:CAD",
+    "opp-view:NZD"
+  ],
+  "evidence_cutoff": "2026-09-19T21:40:00Z",
   "funding_context": {
-    "sofr_percent": 3.85,
-    "sofr_observation_date": "2026-09-17",
-    "sofr_source": "NY_FED",
     "convention": "ACT/360",
+    "sofr_observation_date": "2026-09-17",
+    "sofr_percent": 3.85,
+    "sofr_source": "NY_FED",
+    "sr3_12m": {
+      "code": "SR3U7",
+      "expiry": "2027-09",
+      "implied_rate": 4.755
+    },
     "sr3_3m": {
       "code": "SR3Z6",
       "expiry": "2026-12",
@@ -20,41 +26,140 @@
       "code": "SR3H7",
       "expiry": "2027-03",
       "implied_rate": 4.58
-    },
-    "sr3_12m": {
-      "code": "SR3U7",
-      "expiry": "2027-09",
-      "implied_rate": 4.755
     }
   },
+  "handoff_status": "STATUS: AWAITING_CHATGPT_ARBITRATION",
+  "journal": {
+    "idempotent_replay": true,
+    "pitches": {
+      "carry-is-king": "jde-83f3b2a40c9e4b95",
+      "catalyst-junkie": "jde-78e53b9f08554171",
+      "cross-merchant": "jde-f63550c2d7794401",
+      "dollar-king": "jde-5bbd59e54eb14b5a",
+      "mean-reverter": "jde-9b35713c03fa46a5",
+      "no-trade-skeptic": "jde-d940d0919de44131",
+      "perma-bear": "jde-d50c79913e144df8",
+      "perma-bull": "jde-4222623837464d1c",
+      "positioning-cynic": "jde-acc1cd77be4b4247",
+      "rate-dove": "jde-8d33c2cbfecc4e16",
+      "rate-hawk": "jde-494a2ba70cbb43b9",
+      "trend-follower": "jde-3df0d11964514ff2",
+      "value-guy": "jde-02c1c714f62d4787",
+      "vol-convexity": "jde-611416c589c14f97"
+    },
+    "rebuttals": {
+      "carry-is-king": "jde-36e8980442584f95",
+      "catalyst-junkie": "jde-bbc6807e75ae4495",
+      "cross-merchant": "jde-6b99ef89d17d4377",
+      "dollar-king": "jde-96661080b8ff4c90",
+      "mean-reverter": "jde-f19f80c4a01e4ded",
+      "perma-bear": "jde-4aef47b036ac4ca7",
+      "perma-bull": "jde-44b255c6138e4e39",
+      "rate-dove": "jde-a3e7e5b93560421e",
+      "rate-hawk": "jde-769122a481f744b7",
+      "trend-follower": "jde-38aa3204f2664daa",
+      "value-guy": "jde-97efdfdf51a948d1"
+    }
+  },
+  "model_calls": {
+    "advocates_grok": 14,
+    "ceilings": {
+      "composer": 37,
+      "grok": 32,
+      "total": 69
+    },
+    "composer_children": 0,
+    "parent_grok": 1,
+    "pm_children": 0,
+    "pm_principals_grok": 0,
+    "rebuttals_grok": 11,
+    "rebuttals_grok_planned": 11
+  },
+  "no_rebuttal_seats": [
+    "no-trade-skeptic",
+    "positioning-cynic",
+    "vol-convexity"
+  ],
+  "notes": [
+    "All 14 Round 1 submissions schema-validated on the frozen packet.",
+    "Deterministic conflict map routed 11 direct-conflict seats; no-trade-skeptic, positioning-cynic, and vol-convexity are not directly conflicted.",
+    "Four PM review packets bound to this exact freeze via source_from_trader_room_run.",
+    "ChatGPT packet persisted; current-cycle ChatGPT decision not generated or applied."
+  ],
+  "packet_sha256": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
+  "pm_packets": {
+    "automated_pm_decisions": "not_yet_applied",
+    "bound_run_id": "tr-20260919T214000Z-ondemand",
+    "chatgpt_decision": "pending",
+    "evidence_cutoff": "2026-09-19T21:40:00Z",
+    "evidence_packet_sha256": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
+    "ids": {
+      "chatgpt": {
+        "memory_context_sha256": "b084ea54ea29e0918d176c23e4af3bef467d21eb557c3b4567d8f3cbb3810998",
+        "review_packet_id": "prp-chatgpt-tr-20260919T214000Z-ondemand",
+        "review_packet_sha256": "4ca2069d14e6653e90c97a23ffb4375917054c436dc994356ca61993a8939c25"
+      },
+      "grinder": {
+        "memory_context_sha256": "6e680d1701c4ff8f93e5f97dfcc1569475ab94ca917bf27857b9dcbb7ff94dcc",
+        "review_packet_id": "prp-grinder-tr-20260919T214000Z-ondemand",
+        "review_packet_sha256": "0de321d26e74c55e952af09a57e79691411804c556be95fc9aeabdcddc5ecb50"
+      },
+      "pragmatist": {
+        "memory_context_sha256": "5d5a8b8b769da2c8a56d51b5c185934dac8f616142b15afae6aedea2e2383365",
+        "review_packet_id": "prp-pragmatist-tr-20260919T214000Z-ondemand",
+        "review_packet_sha256": "6e565bee1ba31af668ed53eb907119a84f02306bc41e402f968cfccf496ed2be"
+      },
+      "swinger": {
+        "memory_context_sha256": "a53c50cb2e4dcdc41caa161e72e758d4f6958eb45e62f1a0ab60469cc1d6f82b",
+        "review_packet_id": "prp-swinger-tr-20260919T214000Z-ondemand",
+        "review_packet_sha256": "2f35671c98572322678daca923fc8ef6de535c4e89e7fd1970f551731a90310a"
+      }
+    },
+    "source": "on_demand_trader_room_fallback"
+  },
+  "pr_url": "https://github.com/McCabeAI/market-watch-public-dashboard/pull/47",
   "preflight": {
-    "temperature_gauges": "available",
     "central_bank_research": "available",
-    "market_state": "stale",
-    "research_method": "available",
-    "ok": true,
     "known_gaps": [
       "NZ sovereign rates unavailable",
       "CFTC/CME positioning unavailable",
       "temperature gauges are repo-retained dashboard_v8"
-    ]
+    ],
+    "market_state": "stale",
+    "ok": true,
+    "research_method": "available",
+    "temperature_gauges": "available"
   },
-  "model_calls": {
-    "parent_grok": 1,
-    "advocates_grok": 14,
-    "composer_children": 0,
-    "rebuttals_grok": 11,
-    "pm_principals_grok": 0,
-    "pm_children": 0,
-    "ceilings": {
-      "total": 69,
-      "grok": 32,
-      "composer": 37
-    },
-    "rebuttals_grok_planned": 11
-  },
-  "pr_url": "https://github.com/McCabeAI/market-watch-public-dashboard/pull/47",
-  "status": "STATUS: AWAITING_CHATGPT_ARBITRATION",
+  "rebuttal_seats": [
+    "carry-is-king",
+    "catalyst-junkie",
+    "cross-merchant",
+    "dollar-king",
+    "mean-reverter",
+    "perma-bear",
+    "perma-bull",
+    "rate-dove",
+    "rate-hawk",
+    "trend-follower",
+    "value-guy"
+  ],
+  "rebuttals_count": 11,
+  "rebuttals_missing": [],
+  "rebuttals_persisted": [
+    "carry-is-king",
+    "catalyst-junkie",
+    "cross-merchant",
+    "dollar-king",
+    "mean-reverter",
+    "perma-bear",
+    "perma-bull",
+    "rate-dove",
+    "rate-hawk",
+    "trend-follower",
+    "value-guy"
+  ],
+  "round1_missing": [],
+  "round1_submissions_count": 14,
   "round1_submissions_persisted": [
     "carry-is-king",
     "catalyst-junkie",
@@ -71,82 +176,9 @@
     "value-guy",
     "vol-convexity"
   ],
-  "round1_submissions_count": 14,
-  "round1_missing": [],
-  "notes": [
-    "All 14 Round 1 submissions schema-validated on the frozen packet.",
-    "Deterministic conflict map routed 11 direct-conflict seats; no-trade-skeptic, positioning-cynic, and vol-convexity are not directly conflicted."
-  ],
-  "rebuttal_seats": [
-    "carry-is-king",
-    "catalyst-junkie",
-    "cross-merchant",
-    "dollar-king",
-    "mean-reverter",
-    "perma-bear",
-    "perma-bull",
-    "rate-dove",
-    "rate-hawk",
-    "trend-follower",
-    "value-guy"
-  ],
-  "no_rebuttal_seats": [
-    "no-trade-skeptic",
-    "positioning-cynic",
-    "vol-convexity"
-  ],
-  "direct_conflicts": [
-    "opp-dir:AONIA_2026-10",
-    "opp-view:USD",
-    "opp-view:CAD",
-    "opp-view:NZD"
-  ],
-  "rebuttals_persisted": [
-    "carry-is-king",
-    "catalyst-junkie",
-    "cross-merchant",
-    "dollar-king",
-    "mean-reverter",
-    "perma-bear",
-    "perma-bull",
-    "rate-dove",
-    "rate-hawk",
-    "trend-follower",
-    "value-guy"
-  ],
-  "rebuttals_count": 11,
-  "rebuttals_missing": [],
-  "handoff_status": "STATUS: AWAITING_CHATGPT_ARBITRATION",
-  "journal": {
-    "pitches": {
-      "perma-bull": "jde-4222623837464d1c",
-      "perma-bear": "jde-d50c79913e144df8",
-      "dollar-king": "jde-5bbd59e54eb14b5a",
-      "cross-merchant": "jde-f63550c2d7794401",
-      "carry-is-king": "jde-83f3b2a40c9e4b95",
-      "rate-hawk": "jde-494a2ba70cbb43b9",
-      "rate-dove": "jde-8d33c2cbfecc4e16",
-      "value-guy": "jde-02c1c714f62d4787",
-      "trend-follower": "jde-3df0d11964514ff2",
-      "mean-reverter": "jde-9b35713c03fa46a5",
-      "positioning-cynic": "jde-acc1cd77be4b4247",
-      "catalyst-junkie": "jde-78e53b9f08554171",
-      "vol-convexity": "jde-611416c589c14f97",
-      "no-trade-skeptic": "jde-d940d0919de44131"
-    },
-    "rebuttals": {
-      "carry-is-king": "jde-36e8980442584f95",
-      "catalyst-junkie": "jde-bbc6807e75ae4495",
-      "cross-merchant": "jde-6b99ef89d17d4377",
-      "dollar-king": "jde-96661080b8ff4c90",
-      "mean-reverter": "jde-f19f80c4a01e4ded",
-      "perma-bear": "jde-4aef47b036ac4ca7",
-      "perma-bull": "jde-44b255c6138e4e39",
-      "rate-dove": "jde-a3e7e5b93560421e",
-      "rate-hawk": "jde-769122a481f744b7",
-      "trend-follower": "jde-38aa3204f2664daa",
-      "value-guy": "jde-97efdfdf51a948d1"
-    },
-    "idempotent_replay": true
-  }
+  "run_id": "tr-20260919T214000Z-ondemand",
+  "stage": "PM_PACKETS_BOUND_CHATGPT_PENDING",
+  "starting_ref": "1d8d83a46d3a80bd2c1e73709b1239819b37d804",
+  "status": "STATUS: AWAITING_CHATGPT_ARBITRATION",
+  "type": "MARKET_WATCH_18_STACK_VALIDATION_RECEIPT"
 }

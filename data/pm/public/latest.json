@@ -1,45 +1,58 @@
 {
   "as_of": "2026-09-19T13:17:39.847185-04:00",
+  "cash_capital_usd": 1000000000,
   "comparison": [
     {
       "decision_status": "awaiting_chatgpt_decision",
+      "funded_draw_usd": 0.0,
       "gross_utilization_usd": 0,
       "label": "ChatGPT",
+      "net_after_funding_pnl_usd": 0.0,
       "pm_id": "chatgpt",
       "realized_pnl_usd": 0.0,
       "review_status": "awaiting",
       "total_pnl_usd": 0.0,
-      "unrealized_pnl_usd": 0.0
+      "unrealized_pnl_usd": 0.0,
+      "unused_cash_usd": 1000000000.0
     },
     {
       "decision_status": "awaiting_automated_pm_review",
+      "funded_draw_usd": 0.0,
       "gross_utilization_usd": 0,
       "label": "Swinger",
+      "net_after_funding_pnl_usd": 0.0,
       "pm_id": "swinger",
       "realized_pnl_usd": 0.0,
       "review_status": "awaiting",
       "total_pnl_usd": 0.0,
-      "unrealized_pnl_usd": 0.0
+      "unrealized_pnl_usd": 0.0,
+      "unused_cash_usd": 1000000000.0
     },
     {
       "decision_status": "awaiting_automated_pm_review",
+      "funded_draw_usd": 0.0,
       "gross_utilization_usd": 0,
       "label": "Pragmatist",
+      "net_after_funding_pnl_usd": 0.0,
       "pm_id": "pragmatist",
       "realized_pnl_usd": 0.0,
       "review_status": "awaiting",
       "total_pnl_usd": 0.0,
-      "unrealized_pnl_usd": 0.0
+      "unrealized_pnl_usd": 0.0,
+      "unused_cash_usd": 1000000000.0
     },
     {
       "decision_status": "awaiting_automated_pm_review",
+      "funded_draw_usd": 0.0,
       "gross_utilization_usd": 0,
       "label": "Grinder",
+      "net_after_funding_pnl_usd": 0.0,
       "pm_id": "grinder",
       "realized_pnl_usd": 0.0,
       "review_status": "awaiting",
       "total_pnl_usd": 0.0,
-      "unrealized_pnl_usd": 0.0
+      "unrealized_pnl_usd": 0.0,
+      "unused_cash_usd": 1000000000.0
     }
   ],
   "data_requests": {
@@ -50,15 +63,25 @@
     "schema_version": 1,
     "type": "PM_PUBLIC_DATA_REQUESTS"
   },
-  "evidence_cutoff": "2026-09-19T12:34:30Z",
+  "evidence_cutoff": "2026-09-19T21:40:00Z",
+  "funding_convention": "ACT/360",
+  "funding_source": "NY_FED",
   "gross_notional_limit_usd": 1000000000,
   "overnight_run_id": null,
   "pm_count": 4,
   "pms": [
     {
       "alerts": [],
+      "cash_capital_usd": 1000000000.0,
+      "cash_yield_usd": 0.0,
       "conviction": 0,
       "decision_status": "awaiting_chatgpt_decision",
+      "funded_draw_usd": 0.0,
+      "funding_basis_status": "none",
+      "funding_convention": "ACT/360",
+      "funding_cost_usd": 0.0,
+      "funding_rate_annual": null,
+      "funding_source": "NY_FED",
       "gross_notional_limit_usd": 1000000000,
       "gross_remaining_usd": 1000000000.0,
       "gross_utilization_usd": 0,
@@ -66,6 +89,7 @@
       "label": "ChatGPT",
       "last_action": null,
       "mandate": "Final synthesis; may trade or choose no-trade. No forced style.",
+      "net_after_funding_pnl_usd": 0.0,
       "pm_id": "chatgpt",
       "pnl_unavailable": false,
       "positions": [],
@@ -73,12 +97,22 @@
       "review_status": "awaiting",
       "thesis": null,
       "total_pnl_usd": 0.0,
-      "unrealized_pnl_usd": 0.0
+      "unrealized_pnl_usd": 0.0,
+      "unresolved_funding_positions": [],
+      "unused_cash_usd": 1000000000.0
     },
     {
       "alerts": [],
+      "cash_capital_usd": 1000000000.0,
+      "cash_yield_usd": 0.0,
       "conviction": 0,
       "decision_status": "awaiting_automated_pm_review",
+      "funded_draw_usd": 0.0,
+      "funding_basis_status": "none",
+      "funding_convention": "ACT/360",
+      "funding_cost_usd": 0.0,
+      "funding_rate_annual": null,
+      "funding_source": "NY_FED",
       "gross_notional_limit_usd": 1000000000,
       "gross_remaining_usd": 1000000000.0,
       "gross_utilization_usd": 0,
@@ -86,6 +120,7 @@
       "label": "Swinger",
       "last_action": null,
       "mandate": "Very aggressive/concentrated when the thesis is valid. HEDGE prohibited; reduce or close instead.",
+      "net_after_funding_pnl_usd": 0.0,
       "pm_id": "swinger",
       "pnl_unavailable": false,
       "positions": [],
@@ -93,12 +128,22 @@
       "review_status": "awaiting",
       "thesis": null,
       "total_pnl_usd": 0.0,
-      "unrealized_pnl_usd": 0.0
+      "unrealized_pnl_usd": 0.0,
+      "unresolved_funding_positions": [],
+      "unused_cash_usd": 1000000000.0
     },
     {
       "alerts": [],
+      "cash_capital_usd": 1000000000.0,
+      "cash_yield_usd": 0.0,
       "conviction": 0,
       "decision_status": "awaiting_automated_pm_review",
+      "funded_draw_usd": 0.0,
+      "funding_basis_status": "none",
+      "funding_convention": "ACT/360",
+      "funding_cost_usd": 0.0,
+      "funding_rate_annual": null,
+      "funding_source": "NY_FED",
       "gross_notional_limit_usd": 1000000000,
       "gross_remaining_usd": 1000000000.0,
       "gross_utilization_usd": 0,
@@ -106,6 +151,7 @@
       "label": "Pragmatist",
       "last_action": null,
       "mandate": "Opportunistic macro. Can swing big or grind singles/doubles. May hedge.",
+      "net_after_funding_pnl_usd": 0.0,
       "pm_id": "pragmatist",
       "pnl_unavailable": false,
       "positions": [],
@@ -113,12 +159,22 @@
       "review_status": "awaiting",
       "thesis": null,
       "total_pnl_usd": 0.0,
-      "unrealized_pnl_usd": 0.0
+      "unrealized_pnl_usd": 0.0,
+      "unresolved_funding_positions": [],
+      "unused_cash_usd": 1000000000.0
     },
     {
       "alerts": [],
+      "cash_capital_usd": 1000000000.0,
+      "cash_yield_usd": 0.0,
       "conviction": 0,
       "decision_status": "awaiting_automated_pm_review",
+      "funded_draw_usd": 0.0,
+      "funding_basis_status": "none",
+      "funding_convention": "ACT/360",
+      "funding_cost_usd": 0.0,
+      "funding_rate_annual": null,
+      "funding_source": "NY_FED",
       "gross_notional_limit_usd": 1000000000,
       "gross_remaining_usd": 1000000000.0,
       "gross_utilization_usd": 0,
@@ -126,6 +182,7 @@
       "label": "Grinder",
       "last_action": null,
       "mandate": "Preservation and consistency first. Smaller sizes, high hurdles, quick de-risking. No-trade is valid.",
+      "net_after_funding_pnl_usd": 0.0,
       "pm_id": "grinder",
       "pnl_unavailable": false,
       "positions": [],
@@ -133,10 +190,12 @@
       "review_status": "awaiting",
       "thesis": null,
       "total_pnl_usd": 0.0,
-      "unrealized_pnl_usd": 0.0
+      "unrealized_pnl_usd": 0.0,
+      "unresolved_funding_positions": [],
+      "unused_cash_usd": 1000000000.0
     }
   ],
   "schema_version": 1,
-  "trader_room_run_id": "tr-20260919T123430Z-ondemand",
+  "trader_room_run_id": "tr-20260919T214000Z-ondemand",
   "type": "PM_PUBLIC_BOOKS"
 }
