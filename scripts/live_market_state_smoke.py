@@ -83,9 +83,13 @@ def main() -> int:
     cme_keys = set((positioning["cme"].get("instruments") or {}).keys())
     required_cme = {"EUR", "GBP", "JPY", "CHF", "CAD", "AUD", "NZD", "NOK", "SEK"}
     if not required_cme.issubset(cme_keys):
-        raise MarketStateError(
-            f"live CME OI missing {sorted(required_cme - cme_keys)}; "
-            f"errors={positioning['cme'].get('errors') or positioning['cme'].get('error')}"
+        report["CME_status"] = "supplemental_unavailable"
+        report["CME_missing"] = sorted(required_cme - cme_keys)
+        report["CME_error"] = positioning["cme"].get("errors") or positioning["cme"].get("error")
+        print(
+            "CME supplemental OI unavailable: "
+            f"{report['CME_missing']} {report['CME_error']}",
+            file=sys.stderr,
         )
 
     try:
