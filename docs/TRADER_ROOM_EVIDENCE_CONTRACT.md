@@ -24,6 +24,8 @@ The existing Market Watch feed is the first place to look. Fresh web research ma
 
 Load the freshest valid deterministic market-state snapshot produced under `docs/MARKET_STATE_FEED_V1.md` / `scripts/market_state.py`. Include sovereign rates, curve measures, cross-market relative-value spreads, G10 FX crosses, returns, realized volatility/distribution context, provenance and staleness that are relevant to the run.
 
+The market-state packet must also carry the observable **policy-path layer** for the United States, Canada and Australia: current SOFR/CORRA/AONIA benchmarks and public futures/OIS-implied paths. Australia additionally carries official RBA 1M/3M/6M OIS, bank-bill rates and bill-minus-OIS basis context. Sovereign 2Y/5Y levels do not satisfy this requirement. The packet should also include deterministic historical move analogs with prior episode dates and forward outcomes so advocates can test comparable states rather than merely quote percentiles.
+
 Do not invent missing values. A source explicitly marked unavailable or stale remains unavailable/stale in the common packet.
 
 ### 4. Durable empirical research method
@@ -61,6 +63,6 @@ Before launching any of the 14 advocates, the parent must validate that all four
 
 A full debate may proceed with partial/unavailable evidence only when the missing family is not essential to the user question. The gap must be copied into `known_gaps`, and advocate confidence must reflect it. If a missing family is essential to the question, fail before spending the 14-agent run.
 
-The on-demand orchestrator (`scripts/trader_room_go.py`) treats all four families as essential by default and fails loud on `unavailable` before any advocate is charged. After freeze, no advocate may use web/search or otherwise leave the packet.
+The on-demand orchestrator (`scripts/trader_room_go.py`) treats all four families as essential by default and fails loud on `unavailable` before any advocate is charged. It also fails before model spend if any US/CA/AU policy path is unavailable; a full Trader Room may not construct short-end rates or policy-RV ideas from sovereign yields alone. After freeze, no advocate may use web/search or otherwise leave the packet.
 
 Every advocate receives the exact same common packet. No advocate may privately replace a missing mandatory input with an unsupported assumption.
