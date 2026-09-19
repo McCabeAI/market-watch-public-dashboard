@@ -22,7 +22,12 @@ from scripts.market_state import (
     validate_snapshot,
 )
 from scripts.positioning_data import build_positioning, validate_positioning
-from scripts.policy_path_data import collect_policy_paths, validate_policy_paths
+from scripts.policy_path_data import (
+    build_tradable_rate_curves,
+    collect_policy_paths,
+    validate_policy_paths,
+    validate_tradable_rate_curves,
+)
 
 
 def _latest(series: dict[date, float]) -> tuple[date, float]:
@@ -75,6 +80,20 @@ def main() -> int:
             "terminal": policy_paths["countries"][country].get("terminal"),
         }
         for country in ("US", "CA", "AU")
+    }
+
+    tradable = build_tradable_rate_curves(policy_paths)
+    validate_tradable_rate_curves(tradable)
+    if tradable.get("status") != "ok":
+        raise MarketStateError(f"live tradable rate curves unavailable: {tradable}")
+    report["tradable_rate_curves"] = {
+        curve_id: {
+            "product_code": tradable["curves"][curve_id].get("product_code"),
+            "contracts": len(tradable["curves"][curve_id].get("contracts") or []),
+            "first": (tradable["curves"][curve_id].get("contracts") or [None])[0],
+            "last": (tradable["curves"][curve_id].get("contracts") or [None])[-1],
+        }
+        for curve_id in ("SOFR", "CORRA", "AONIA")
     }
 
     positioning = build_positioning(
