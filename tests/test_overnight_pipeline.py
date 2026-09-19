@@ -401,6 +401,54 @@ class PaperMarkTests(unittest.TestCase):
         self.assertEqual(mark["quote_unit"], "bps")
         self.assertEqual(mark["kind"], "derived")
 
+    def test_tradable_curve_contract_alias_marks_from_locked_curve(self):
+        state = {
+            "generated_at": "2026-09-19T14:00:00Z",
+            "tradable_rate_curves": {
+                "curves": {
+                    "SOFR": {
+                        "status": "ok",
+                        "contracts": [
+                            {"expiry": "2027-03", "code": "SR3H7", "implied_rate": 3.35}
+                        ],
+                    }
+                }
+            },
+        }
+        mark = resolve_paper_mid(state, "SOFR_2027-03", asset_class="rates")
+        self.assertEqual(mark["value"], 3.35)
+        self.assertIn("tradable_rate_curves.SOFR", mark["source"])
+
+    def test_futures_strip_average_recomputes_locked_forward_window(self):
+        state = {
+            "generated_at": "2026-09-19T14:00:00Z",
+            "tradable_rate_curves": {
+                "curves": {
+                    "CORRA": {
+                        "status": "ok",
+                        "contracts": [
+                            {"expiry": "2028-03", "code": "CRAH28", "implied_rate": 3.50},
+                            {"expiry": "2028-06", "code": "CRAM28", "implied_rate": 3.60},
+                            {"expiry": "2028-09", "code": "CRAU28", "implied_rate": 3.70},
+                            {"expiry": "2028-12", "code": "CRAZ28", "implied_rate": 3.80},
+                        ],
+                    }
+                }
+            },
+        }
+        mark = resolve_paper_mid(
+            state,
+            "CA_forward_window",
+            asset_class="rates",
+            expression={
+                "type": "futures_strip_average",
+                "curve_id": "CORRA",
+                "expiries": ["2028-03", "2028-06", "2028-09", "2028-12"],
+            },
+        )
+        self.assertAlmostEqual(mark["value"], 3.65)
+        self.assertIn("futures_strip_average:CORRA", mark["source"])
+
     def test_2y2y_forward_swap_math_uses_discount_factors(self):
         state = {
             "discount_factors": {
