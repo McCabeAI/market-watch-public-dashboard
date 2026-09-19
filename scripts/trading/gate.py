@@ -68,13 +68,96 @@ def rationale_status_for(action: dict[str, Any], decision: dict[str, Any] | None
     return "present" if present else "not_required"
 
 
+def expansion_rationale_reason(action: dict[str, Any], decision: dict[str, Any] | None, *, owner_id: str) -> str | None:
+    if action.get("action") not in EXPANDING_ACTIONS:
+        return None
+    if action_rationale(action, decision):
+        return None
+    return f"{owner_id} {action.get('action')} failed closed: missing required expansion rationale"
+
+
+def learning_gate_reason(
+    store: TradingStore,
+    *,
+    owner_type: str,
+    owner_id: str,
+    decision: dict[str, Any],
+    run_id: str | None,
+    expected_memory_sha256: str | None,
+) -> str | None:
+    """Return a deterministic expansion-block reason, or None if expansion may proceed."""
+    assert_identity(owner_type, owner_id)
+    supplied = _text(decision.get("memory_context_sha256"))
+    if not supplied:
+        return f"{owner_id} learning_gate: missing_memory_context_sha256"
+    if not expected_memory_sha256:
+        return f"{owner_id} learning_gate: stale_memory_context"
+    if supplied != expected_memory_sha256:
+        return f"{owner_id} learning_gate: stale_memory_context"
+    due = outstanding_due(store, owner_type, owner_id, exclude_run_id=run_id)
+    if due:
+        trade_ids = [row.get("trade_id") for row in due]
+        return f"{owner_id} learning_gate: postmortems_due {trade_ids}"
+    return None
+
+
+def evaluate_decision_actions(
+    store: TradingStore,
+    *,
+    owner_type: str,
+    owner_id: str,
+    decision: dict[str, Any],
+    run_id: str | None,
+    expected_memory_sha256: str | None,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Split a decision into executable actions and explicitly blocked expansions.
+
+    HOLD / NO_TRADE / REDUCE / CLOSE always remain in the executable set.
+    OPEN / ADD / HEDGE fail closed independently when rationale or memory
+    obligations are not met. Same-run postmortems are excluded so a CLOSE
+    in this decision cannot retroactively block a already-valid sibling action.
+    """
+    allowed: list[dict[str, Any]] = []
+    blocked: list[dict[str, Any]] = []
+    memory_reason = None
+    if expanding_actions(decision):
+        memory_reason = learning_gate_reason(
+            store,
+            owner_type=owner_type,
+            owner_id=owner_id,
+            decision=decision,
+            run_id=run_id,
+            expected_memory_sha256=expected_memory_sha256,
+        )
+    for action in decision_actions(decision):
+        kind = action.get("action")
+        if kind in EXPANDING_ACTIONS:
+            rationale_reason = expansion_rationale_reason(action, decision, owner_id=owner_id)
+            if rationale_reason:
+                blocked.append({"action": action, "reason": rationale_reason, "result": "blocked"})
+                continue
+            if memory_reason:
+                blocked.append({"action": action, "reason": memory_reason, "result": "blocked"})
+                continue
+        allowed.append(action)
+    return allowed, blocked
+
+
+def raise_if_unexecutable(blocked: list[dict[str, Any]], allowed: list[dict[str, Any]]) -> None:
+    """Pure invalid expansion fails closed. Mixed decisions keep executable de-risk."""
+    if not blocked or allowed:
+        return
+    reason = str(blocked[0].get("reason") or "expansion blocked")
+    if "missing required expansion rationale" in reason:
+        raise RationaleError(reason)
+    raise LearningGateError(reason)
+
+
 def assert_expansion_rationale(decision: dict[str, Any], *, owner_id: str) -> None:
     for action in expanding_actions(decision):
-        if action_rationale(action, decision):
-            continue
-        raise RationaleError(
-            f"{owner_id} {action.get('action')} failed closed: missing required expansion rationale"
-        )
+        reason = expansion_rationale_reason(action, decision, owner_id=owner_id)
+        if reason:
+            raise RationaleError(reason)
 
 
 def assert_learning_gate(
@@ -89,14 +172,13 @@ def assert_learning_gate(
     assert_identity(owner_type, owner_id)
     if is_derisk_only(decision):
         return
-    supplied = _text(decision.get("memory_context_sha256"))
-    if not supplied:
-        raise LearningGateError(f"{owner_id} learning_gate: missing_memory_context_sha256")
-    if not expected_memory_sha256:
-        raise LearningGateError(f"{owner_id} learning_gate: stale_memory_context")
-    if supplied != expected_memory_sha256:
-        raise LearningGateError(f"{owner_id} learning_gate: stale_memory_context")
-    due = outstanding_due(store, owner_type, owner_id, exclude_run_id=run_id)
-    if due:
-        trade_ids = [row.get("trade_id") for row in due]
-        raise LearningGateError(f"{owner_id} learning_gate: postmortems_due {trade_ids}")
+    reason = learning_gate_reason(
+        store,
+        owner_type=owner_type,
+        owner_id=owner_id,
+        decision=decision,
+        run_id=run_id,
+        expected_memory_sha256=expected_memory_sha256,
+    )
+    if reason:
+        raise LearningGateError(reason)

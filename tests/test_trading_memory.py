@@ -18,7 +18,12 @@ from scripts.overnight.scheduled_output import AGENT_PACKET_TYPE, SCHEDULE_ID, a
 from scripts.overnight.store import OvernightStore, sha256_json
 from scripts.pm.books import empty_books as empty_pm_books
 from scripts.pm.constants import PM_IDS
-from scripts.trading.apply import apply_pm_decision_with_memory, apply_trader_review_with_memory
+from scripts.trading.apply import (
+    apply_pm_decision_with_memory,
+    apply_trader_review_with_memory,
+    journal_trader_room_pitch,
+    journal_trader_room_rebuttal,
+)
 from scripts.trading.constants import ALL_IDENTITIES, LESSON_CAP
 from scripts.trading.errors import LearningGateError, OwnershipError, RationaleError
 from scripts.trading.gate import action_rationale
@@ -440,6 +445,394 @@ class TradingMemoryTests(unittest.TestCase):
         self.assertEqual(action_rationale({"action": "OPEN"}, {"thesis": "Because."}), "Because.")
         self.assertIsNone(action_rationale({"action": "OPEN"}, {}))
 
+    def test_mixed_trader_reduce_executes_when_add_rationale_missing(self) -> None:
+        books = self._trader_open(empty_trader_books(overnight_run_id="overnight-20260919", when=AS_OF))
+        pos_id = books["seats"]["dollar-king"]["positions"][0]["position_id"]
+        prior_notional = books["seats"]["dollar-king"]["positions"][0]["notional_usd"]
+        self.hashes["dollar-king"] = build_memory_context(self.store, "trader", "dollar-king")["memory_context_sha256"]
+        mixed = _hold_reviews(self.hashes)
+        mixed["dollar-king"] = {
+            "seat": "dollar-king",
+            "conviction": 55,
+            "memory_context_sha256": self.hashes["dollar-king"],
+            "actions": [
+                {
+                    "action": "REDUCE",
+                    "position_id": pos_id,
+                    "notional_usd": 4_000_000,
+                    "price": 1.36,
+                    "rationale": "Cut risk.",
+                    "expression_memo": _spot_memo(),
+                },
+                {
+                    "action": "ADD",
+                    "position_id": pos_id,
+                    "notional_usd": 2_000_000,
+                    "price": 1.36,
+                    "asset_class": "spot_fx",
+                    "expression_memo": {
+                        "rates_candidate": None,
+                        "spot_candidate": {"instrument": "USDCAD", "asset_class": "spot_fx"},
+                        "options_candidate": None,
+                        "selected": "spot",
+                    },
+                },
+            ],
+        }
+        updated = apply_trader_review_with_memory(
+            books, mixed, families=_fresh_families(), run_id="overnight-20260920",
+            evidence_cutoff="2026-09-20T12:00:00-04:00", store=self.store,
+            memory_hashes=self.hashes, when=AS_OF, market_state=MARKET,
+        )
+        remaining = updated["seats"]["dollar-king"]["positions"][0]["notional_usd"]
+        self.assertAlmostEqual(remaining, prior_notional - 4_000_000, places=2)
+        hist = updated["seats"]["dollar-king"]["history"]
+        self.assertTrue(any(row.get("action") == "REDUCE" and row.get("result") == "applied" for row in hist))
+        blocked = [row for row in hist if row.get("action") == "ADD" and row.get("result") == "blocked"]
+        self.assertEqual(len(blocked), 1)
+        self.assertIn("missing required expansion rationale", blocked[0]["blocked_reason"])
+        trade = find_trade_by_position(self.store, owner_type="trader", owner_id="dollar-king", position_id=pos_id)
+        assert trade is not None
+        self.assertEqual([event["kind"] for event in trade["events"]], ["OPEN", "REDUCE"])
+        event = self.store.read_journal("trader", "dollar-king")["events"][-1]
+        results = {row["action"]: row for row in event["actions"]}
+        self.assertEqual(results["REDUCE"]["result"], "applied")
+        self.assertEqual(results["ADD"]["result"], "blocked")
+        self.assertIn("missing required expansion rationale", results["ADD"]["blocked_reason"])
+
+    def test_mixed_pm_close_executes_when_open_memory_is_stale(self) -> None:
+        books = empty_pm_books()
+        opened = apply_pm_decision_with_memory(
+            books,
+            {
+                "pm_id": "chatgpt",
+                "thesis": "CAD cheap vs the packet mid.",
+                "rationale": "Open USDCAD from the frozen mid.",
+                "memory_context_sha256": self.hashes["chatgpt"],
+                "actions": [{"action": "OPEN", "instrument": "USDCAD", "side": "long", "notional_usd": 25_000_000, "asset_class": "spot_fx"}],
+            },
+            pm_id="chatgpt",
+            store=self.store,
+            market_state=MARKET,
+            run_id="overnight-20260919",
+            evidence_cutoff="2026-09-19T12:00:00-04:00",
+            review_packet_id="prp-chatgpt-open",
+            review_packet_sha256="hash-open",
+            expected_memory_sha256=self.hashes["chatgpt"],
+            when=AS_OF,
+        )
+        pos_id = opened["pms"]["chatgpt"]["positions"][0]["position_id"]
+        mixed = apply_pm_decision_with_memory(
+            opened,
+            {
+                "pm_id": "chatgpt",
+                "thesis": "Exit the old risk; skip the stale re-entry.",
+                "memory_context_sha256": "stale-not-the-frozen-hash",
+                "actions": [
+                    {"action": "CLOSE", "position_id": pos_id, "price": 1.40, "rationale": "Cut the risk."},
+                    {
+                        "action": "OPEN",
+                        "instrument": "AUDUSD",
+                        "side": "long",
+                        "notional_usd": 10_000_000,
+                        "asset_class": "spot_fx",
+                        "rationale": "Would re-enter if memory were current.",
+                    },
+                ],
+            },
+            pm_id="chatgpt",
+            store=self.store,
+            market_state={**MARKET, "fx": {"pairs": {**MARKET["fx"]["pairs"], "AUDUSD": {"spot": 0.66}}}},
+            run_id="overnight-20260920",
+            evidence_cutoff="c",
+            review_packet_id="prp-chatgpt-mixed",
+            review_packet_sha256="hash-mixed",
+            expected_memory_sha256=self.hashes["chatgpt"],
+            when=AS_OF,
+        )
+        self.assertEqual(mixed["pms"]["chatgpt"]["positions"], [])
+        hist = mixed["pms"]["chatgpt"]["history"]
+        self.assertTrue(any(row.get("action") == "CLOSE" and row.get("result") == "applied" for row in hist))
+        blocked = [row for row in hist if row.get("action") == "OPEN" and row.get("result") == "blocked"]
+        self.assertEqual(len(blocked), 1)
+        self.assertIn("stale_memory_context", blocked[0]["blocked_reason"])
+        trade = find_trade_by_position(self.store, owner_type="pm", owner_id="chatgpt", position_id=pos_id)
+        assert trade is not None
+        self.assertEqual(trade["status"], "closed")
+        self.assertGreater(trade["realized_pnl_usd"], 0)
+        close_event = next(event for event in trade["events"] if event["kind"] == "CLOSE")
+        journal = self.store.read_journal("pm", "chatgpt")["events"][-1]
+        self.assertEqual(journal["kind"], "PM_DECISION")
+        self.assertEqual(close_event["source_journal_event_id"], journal["event_id"])
+        self.assertIn(trade["trade_id"], journal["linked_trade_ids"])
+        self.assertIn(pos_id, journal["linked_position_ids"])
+        results = {row["action"]: row for row in journal["actions"]}
+        self.assertEqual(results["CLOSE"]["result"], "applied")
+        self.assertEqual(results["OPEN"]["result"], "blocked")
+        due = build_memory_context(self.store, "pm", "chatgpt")["postmortems_due"]
+        self.assertEqual(due[0]["trade_id"], trade["trade_id"])
+        self.assertEqual(self.store.list_trade_ids("pm", "chatgpt"), [trade["trade_id"]])
+
+    def test_pure_invalid_expansion_cannot_mutate_risk(self) -> None:
+        books = empty_trader_books(overnight_run_id="overnight-20260919", when=AS_OF)
+        for kind, extra in (
+            ("OPEN", {"instrument": "USDCAD", "side": "long", "notional_usd": 1_000_000, "asset_class": "spot_fx", "price": 1.36}),
+            ("ADD", {"position_id": "missing", "notional_usd": 1_000_000, "price": 1.36}),
+            ("HEDGE", {"hedge_of": "missing", "instrument": "USDCAD", "side": "short", "notional_usd": 1_000_000, "asset_class": "spot_fx", "price": 1.36}),
+        ):
+            bad = _hold_reviews(self.hashes)
+            bad["dollar-king"] = {
+                "seat": "dollar-king",
+                "memory_context_sha256": self.hashes["dollar-king"],
+                "actions": [{"action": kind, **extra}],
+            }
+            with self.assertRaises(RationaleError):
+                apply_trader_review_with_memory(
+                    books, bad, families=_fresh_families(), run_id="overnight-20260919",
+                    evidence_cutoff="c", store=self.store, memory_hashes=self.hashes, when=AS_OF, market_state=MARKET,
+                )
+            self.assertEqual(books["seats"]["dollar-king"]["positions"], [])
+            self.assertEqual(self.store.list_trade_ids("trader", "dollar-king"), [])
+
+    def test_derisk_actions_remain_possible_under_stale_or_missing_memory(self) -> None:
+        books = self._trader_open(empty_trader_books(overnight_run_id="overnight-20260919", when=AS_OF))
+        pos_id = books["seats"]["dollar-king"]["positions"][0]["position_id"]
+        hold = _hold_reviews(self.hashes)
+        hold["dollar-king"] = {
+            "seat": "dollar-king",
+            "actions": [{"action": "HOLD", "expression_memo": _spot_memo()}],
+        }
+        books = apply_trader_review_with_memory(
+            books, hold, families=_fresh_families(), run_id="overnight-20260920",
+            evidence_cutoff="c", store=self.store, memory_hashes=self.hashes, when=AS_OF, market_state=MARKET,
+        )
+        self.assertEqual(books["seats"]["dollar-king"]["last_action"], "HOLD")
+        reduce = _hold_reviews(self.hashes)
+        reduce["dollar-king"] = {
+            "seat": "dollar-king",
+            "memory_context_sha256": "stale",
+            "actions": [{
+                "action": "REDUCE", "position_id": pos_id, "notional_usd": 1_000_000,
+                "price": 1.36, "rationale": "De-risk without current memory.", "expression_memo": _spot_memo(),
+            }],
+        }
+        books = apply_trader_review_with_memory(
+            books, reduce, families=_fresh_families(), run_id="overnight-20260921",
+            evidence_cutoff="c", store=self.store, memory_hashes=self.hashes, when=AS_OF, market_state=MARKET,
+        )
+        close = _hold_reviews(self.hashes)
+        close["dollar-king"] = {
+            "seat": "dollar-king",
+            "actions": [{
+                "action": "CLOSE", "position_id": pos_id, "price": 1.36,
+                "rationale": "Exit under missing memory.", "expression_memo": _spot_memo(),
+            }],
+        }
+        books = apply_trader_review_with_memory(
+            books, close, families=_fresh_families(), run_id="overnight-20260922",
+            evidence_cutoff="c", store=self.store, memory_hashes=self.hashes, when=AS_OF, market_state=MARKET,
+        )
+        self.assertFalse(any(p["position_id"] == pos_id for p in books["seats"]["dollar-king"]["positions"]))
+        trade = find_trade_by_position(self.store, owner_type="trader", owner_id="dollar-king", position_id=pos_id)
+        assert trade is not None
+        self.assertEqual(trade["status"], "closed")
+
+    def test_trader_and_pm_lifecycle_events_cross_link_journal(self) -> None:
+        trader_books = self._trader_open(empty_trader_books(overnight_run_id="overnight-20260919", when=AS_OF))
+        pos_id = trader_books["seats"]["dollar-king"]["positions"][0]["position_id"]
+        open_journal = self.store.read_journal("trader", "dollar-king")["events"][0]
+        trade = find_trade_by_position(self.store, owner_type="trader", owner_id="dollar-king", position_id=pos_id)
+        assert trade is not None
+        self.assertEqual(trade["source_journal_event_id"], open_journal["event_id"])
+        self.assertEqual(trade["events"][0]["source_journal_event_id"], open_journal["event_id"])
+        self.assertEqual(open_journal["linked_trade_ids"], [trade["trade_id"]])
+        self.assertEqual(open_journal["linked_position_ids"], [pos_id])
+        close = _hold_reviews(self.hashes)
+        close["dollar-king"] = {
+            "seat": "dollar-king",
+            "thesis": "Exit.",
+            "memory_context_sha256": self.hashes["dollar-king"],
+            "actions": [{"action": "CLOSE", "position_id": pos_id, "price": 1.36, "rationale": "Done.", "expression_memo": _spot_memo()}],
+        }
+        apply_trader_review_with_memory(
+            trader_books, close, families=_fresh_families(), run_id="overnight-20260920",
+            evidence_cutoff="c", store=self.store, memory_hashes=self.hashes, when=AS_OF, market_state=MARKET,
+        )
+        trade = self.store.read_trade(trade["trade_id"])
+        close_journal = self.store.read_journal("trader", "dollar-king")["events"][-1]
+        close_event = next(event for event in trade["events"] if event["kind"] == "CLOSE")
+        self.assertEqual(close_event["source_journal_event_id"], close_journal["event_id"])
+        self.assertEqual(close_journal["linked_trade_ids"], [trade["trade_id"]])
+        self.assertIn(pos_id, close_journal["linked_position_ids"])
+
+        pm_books = apply_pm_decision_with_memory(
+            empty_pm_books(),
+            {
+                "pm_id": "swinger",
+                "thesis": "Open from the packet.",
+                "rationale": "Swinger takes the CAD discrepancy.",
+                "memory_context_sha256": self.hashes["swinger"],
+                "actions": [{"action": "OPEN", "instrument": "USDCAD", "side": "long", "notional_usd": 20_000_000, "asset_class": "spot_fx"}],
+            },
+            pm_id="swinger",
+            store=self.store,
+            market_state=MARKET,
+            run_id="overnight-20260919",
+            evidence_cutoff="c",
+            review_packet_id="prp-swinger-open",
+            review_packet_sha256="hash-s",
+            expected_memory_sha256=self.hashes["swinger"],
+            when=AS_OF,
+        )
+        pm_pos = pm_books["pms"]["swinger"]["positions"][0]["position_id"]
+        pm_trade = find_trade_by_position(self.store, owner_type="pm", owner_id="swinger", position_id=pm_pos)
+        pm_journal = self.store.read_journal("pm", "swinger")["events"][0]
+        assert pm_trade is not None
+        self.assertEqual(pm_trade["source_journal_event_id"], pm_journal["event_id"])
+        self.assertEqual(pm_trade["events"][0]["source_journal_event_id"], pm_journal["event_id"])
+        self.assertEqual(pm_journal["linked_trade_ids"], [pm_trade["trade_id"]])
+        closed = apply_pm_decision_with_memory(
+            pm_books,
+            {
+                "pm_id": "swinger",
+                "memory_context_sha256": self.hashes["swinger"],
+                "actions": [{"action": "CLOSE", "position_id": pm_pos, "price": 1.40, "rationale": "Take it off."}],
+            },
+            pm_id="swinger",
+            store=self.store,
+            market_state={**MARKET, "fx": {"pairs": {"USDCAD": {"spot": 1.40}}}},
+            run_id="overnight-20260920",
+            evidence_cutoff="c",
+            review_packet_id="prp-swinger-close",
+            review_packet_sha256="hash-s2",
+            expected_memory_sha256=self.hashes["swinger"],
+            when=AS_OF,
+        )
+        self.assertEqual(closed["pms"]["swinger"]["positions"], [])
+        pm_trade = self.store.read_trade(pm_trade["trade_id"])
+        pm_close_journal = self.store.read_journal("pm", "swinger")["events"][-1]
+        pm_close_event = next(event for event in pm_trade["events"] if event["kind"] == "CLOSE")
+        self.assertEqual(pm_close_event["source_journal_event_id"], pm_close_journal["event_id"])
+        self.assertEqual(pm_close_journal["linked_trade_ids"], [pm_trade["trade_id"]])
+
+    def test_replay_does_not_duplicate_journal_or_ledger(self) -> None:
+        books = empty_trader_books(overnight_run_id="overnight-20260919", when=AS_OF)
+        first = self._trader_open(books)
+        second = self._trader_open(first)
+        journal = self.store.read_journal("trader", "dollar-king")
+        self.assertEqual(len(journal["events"]), 1)
+        self.assertEqual(len(second["seats"]["dollar-king"]["positions"]), 1)
+        trade_ids = self.store.list_trade_ids("trader", "dollar-king")
+        self.assertEqual(len(trade_ids), 1)
+        trade = self.store.read_trade(trade_ids[0])
+        self.assertEqual([event["kind"] for event in trade["events"]], ["OPEN"])
+        pm_books = apply_pm_decision_with_memory(
+            empty_pm_books(),
+            {
+                "pm_id": "chatgpt",
+                "thesis": "Open once.",
+                "rationale": "Idempotent apply.",
+                "memory_context_sha256": self.hashes["chatgpt"],
+                "actions": [{"action": "OPEN", "instrument": "USDCAD", "side": "long", "notional_usd": 15_000_000, "asset_class": "spot_fx"}],
+            },
+            pm_id="chatgpt",
+            store=self.store,
+            market_state=MARKET,
+            run_id="overnight-20260919",
+            evidence_cutoff="c",
+            review_packet_id="prp-chatgpt-once",
+            review_packet_sha256="hash-once",
+            expected_memory_sha256=self.hashes["chatgpt"],
+            when=AS_OF,
+        )
+        replayed = apply_pm_decision_with_memory(
+            pm_books,
+            {
+                "pm_id": "chatgpt",
+                "thesis": "Open once.",
+                "rationale": "Idempotent apply.",
+                "memory_context_sha256": self.hashes["chatgpt"],
+                "actions": [{"action": "OPEN", "instrument": "USDCAD", "side": "long", "notional_usd": 15_000_000, "asset_class": "spot_fx"}],
+            },
+            pm_id="chatgpt",
+            store=self.store,
+            market_state=MARKET,
+            run_id="overnight-20260919",
+            evidence_cutoff="c",
+            review_packet_id="prp-chatgpt-once",
+            review_packet_sha256="hash-once",
+            expected_memory_sha256=self.hashes["chatgpt"],
+            when=AS_OF,
+        )
+        self.assertEqual(len(self.store.read_journal("pm", "chatgpt")["events"]), 1)
+        self.assertEqual(len(replayed["pms"]["chatgpt"]["positions"]), 1)
+        self.assertEqual(len([row for row in replayed["pms"]["chatgpt"]["history"] if row.get("action") == "OPEN"]), 1)
+
+    def test_migration_does_not_fabricate_journal_links(self) -> None:
+        books = empty_trader_books(overnight_run_id="overnight-20260919", when=AS_OF)
+        books["seats"]["dollar-king"]["positions"] = [{
+            "position_id": "legacy-open-1",
+            "instrument": "USDCAD",
+            "asset_class": "spot_fx",
+            "side": "long",
+            "notional_usd": 5_000_000,
+            "entry_price": 1.36,
+            "mark_price": 1.36,
+            "opened_at": "2026-09-18T12:00:00-04:00",
+            "opened_run_id": "overnight-20260918",
+            "thesis": "Legacy live position.",
+        }]
+        backfill_from_books(self.store, trader_books=books, when=AS_OF)
+        trade = find_trade_by_position(
+            self.store, owner_type="trader", owner_id="dollar-king", position_id="legacy-open-1"
+        )
+        assert trade is not None
+        self.assertIsNone(trade["source_journal_event_id"])
+        self.assertIsNone(trade["events"][0]["source_journal_event_id"])
+        self.assertEqual(self.store.read_journal("trader", "dollar-king")["events"], [])
+
+    def test_same_decision_close_does_not_block_sibling_derisk(self) -> None:
+        books = self._trader_open(empty_trader_books(overnight_run_id="overnight-20260919", when=AS_OF))
+        first = books["seats"]["dollar-king"]["positions"][0]["position_id"]
+        second_open = _hold_reviews(self.hashes)
+        second_open["dollar-king"] = {
+            "seat": "dollar-king",
+            "conviction": 70,
+            "thesis": "Second USD expression.",
+            "memory_context_sha256": self.hashes["dollar-king"],
+            "expression_memo": _spot_memo(),
+            "actions": [{
+                "action": "OPEN", "instrument": "USDCAD", "side": "long", "notional_usd": 3_000_000,
+                "price": 1.36, "asset_class": "spot_fx", "expression_memo": _spot_memo(),
+                "rationale": "Second open.",
+            }],
+        }
+        books = apply_trader_review_with_memory(
+            books, second_open, families=_fresh_families(), run_id="overnight-20260920",
+            evidence_cutoff="c", store=self.store, memory_hashes=self.hashes, when=AS_OF,
+            market_state=MARKET,
+        )
+        second = next(p["position_id"] for p in books["seats"]["dollar-king"]["positions"] if p["position_id"] != first)
+        both_close = _hold_reviews(self.hashes)
+        both_close["dollar-king"] = {
+            "seat": "dollar-king",
+            "memory_context_sha256": "stale",
+            "actions": [
+                {"action": "CLOSE", "position_id": first, "price": 1.36, "rationale": "Cut first.", "expression_memo": _spot_memo()},
+                {"action": "CLOSE", "position_id": second, "price": 1.36, "rationale": "Cut second.", "expression_memo": _spot_memo()},
+            ],
+        }
+        books = apply_trader_review_with_memory(
+            books, both_close, families=_fresh_families(), run_id="overnight-20260921",
+            evidence_cutoff="c", store=self.store, memory_hashes=self.hashes, when=AS_OF,
+            market_state=MARKET,
+        )
+        self.assertEqual(books["seats"]["dollar-king"]["positions"], [])
+        for pos_id in (first, second):
+            trade = find_trade_by_position(self.store, owner_type="trader", owner_id="dollar-king", position_id=pos_id)
+            assert trade is not None
+            self.assertEqual(trade["status"], "closed")
+
 
 class OvernightAndTraderRoomMemoryTests(unittest.TestCase):
     def test_overnight_dry_run_snapshots_per_seat_memory(self) -> None:
@@ -554,6 +947,101 @@ class OvernightAndTraderRoomMemoryTests(unittest.TestCase):
             self.assertEqual(trading.list_trade_ids("trader", "dollar-king"), [])
             other = json.dumps(trading.read_context("trader", "dollar-king") or {})
             self.assertNotIn("trd-pm-chatgpt", other)
+            proposal = next(event for event in dollar["events"] if event["kind"] == "TRADER_ROOM_PROPOSAL")
+            rebuttal = next(event for event in dollar["events"] if event["kind"] == "TRADER_ROOM_REBUTTAL")
+            contribution = proposal["payload"]["contribution"]
+            original = result["originals"]["dollar-king"]
+            self.assertEqual(contribution["type"], "TRADER_ROOM_CONTRIBUTION")
+            self.assertEqual(contribution["stance_summary"], original["stance_summary"])
+            self.assertEqual(contribution["conflict_synopsis"], original["conflict_synopsis"])
+            self.assertEqual(contribution["trade"]["context_build"], original["trade"]["context_build"])
+            self.assertEqual(contribution["macro_assumptions"], original["macro_assumptions"])
+            self.assertNotIn("reasoning", contribution)
+            self.assertNotIn("evidence_packet", contribution)
+            self.assertTrue(proposal["provenance"]["source_ref"].endswith("submissions/dollar-king.json"))
+            stored_rebuttal = rebuttal["payload"]["rebuttal"]
+            original_rebuttal = result["rebuttals"]["dollar-king"]
+            self.assertEqual(stored_rebuttal["type"], "TRADER_ROOM_REBUTTAL")
+            self.assertEqual(stored_rebuttal["holes_in_opposing_case"], original_rebuttal["holes_in_opposing_case"])
+            self.assertEqual(stored_rebuttal["attack"], original_rebuttal["attack"])
+            self.assertEqual(stored_rebuttal["defense"], original_rebuttal["defense"])
+            self.assertEqual(stored_rebuttal["revised_trade"], original_rebuttal["revised_trade"])
+            self.assertTrue(rebuttal["provenance"]["source_ref"].endswith("rebuttals/dollar-king.json"))
+            on_disk = json.loads((artifact_root / "data" / "trading" / "trader" / "dollar-king" / "journal.json").read_text(encoding="utf-8"))
+            self.assertEqual(on_disk["events"][0]["payload"]["contribution"]["trade"]["thesis"], original["trade"]["thesis"])
+            self.assertEqual(trading.list_trade_ids("trader", "dollar-king"), [])
+
+    def test_ondemand_journal_helpers_keep_source_ref_and_drop_hidden_fields(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            store = TradingStore(root=root, state_root=root)
+            store.ensure_initialized()
+            contribution = {
+                "type": "TRADER_ROOM_CONTRIBUTION",
+                "run_id": "tr-test-1",
+                "round": 1,
+                "agent": "dollar-king",
+                "archetype": "dollar-king",
+                "stance_summary": "USD premium remains the cleanest expression.",
+                "trade": {"instrument": "USDCAD", "direction": "long", "thesis": "USD still pays.", "context_build": {"causal_mechanism": "policy premium"}},
+                "confidence": 61,
+                "remit": "USD-centric",
+                "conflict_synopsis": {"seat": "dollar-king", "core_view": "USD firm"},
+                "macro_assumptions": {"policy": "hawkish"},
+                "reasoning": "hidden private chain of thought",
+                "evidence_packet": {"do_not_store": True},
+            }
+            event = journal_trader_room_pitch(
+                store,
+                contribution,
+                run_id="tr-test-1",
+                evidence_cutoff="2026-09-19T12:00:00-04:00",
+                evidence_hash="pkt",
+                memory_context_sha256="mem",
+                source_ref="trader-room/runs/tr-test-1/submissions/dollar-king.json",
+            )
+            replay = journal_trader_room_pitch(
+                store,
+                contribution,
+                run_id="tr-test-1",
+                evidence_cutoff="2026-09-19T12:00:00-04:00",
+                evidence_hash="pkt",
+                memory_context_sha256="mem",
+                source_ref="trader-room/runs/tr-test-1/submissions/dollar-king.json",
+            )
+            self.assertEqual(event["event_id"], replay["event_id"])
+            self.assertEqual(len(store.read_journal("trader", "dollar-king")["events"]), 1)
+            payload = event["payload"]["contribution"]
+            self.assertEqual(payload["stance_summary"], contribution["stance_summary"])
+            self.assertEqual(payload["trade"]["context_build"], contribution["trade"]["context_build"])
+            self.assertNotIn("reasoning", payload)
+            self.assertNotIn("evidence_packet", payload)
+            self.assertEqual(event["provenance"]["source_ref"], "trader-room/runs/tr-test-1/submissions/dollar-king.json")
+            rebuttal = journal_trader_room_rebuttal(
+                store,
+                {
+                    "type": "TRADER_ROOM_REBUTTAL",
+                    "run_id": "tr-test-1",
+                    "round": 2,
+                    "agent": "dollar-king",
+                    "opponents": ["perma-bull"],
+                    "own_original_ref": "submissions/dollar-king.json",
+                    "holes_in_opposing_case": ["The opposing AUD case does not own the USD premium."],
+                    "attack": ["Cross risk is less clean."],
+                    "defense": ["USD spot remains the remit."],
+                    "trade_change": "unchanged",
+                    "revised_trade": contribution["trade"],
+                    "thinking": "runtime only",
+                },
+                run_id="tr-test-1",
+                evidence_cutoff="2026-09-19T12:00:00-04:00",
+                evidence_hash="pkt",
+                memory_context_sha256="mem",
+                source_ref="trader-room/runs/tr-test-1/rebuttals/dollar-king.json",
+            )
+            self.assertEqual(rebuttal["payload"]["rebuttal"]["holes_in_opposing_case"], ["The opposing AUD case does not own the USD premium."])
+            self.assertNotIn("thinking", rebuttal["payload"]["rebuttal"])
+            self.assertEqual(store.list_trade_ids("trader", "dollar-king"), [])
 
     def test_pm_review_packet_includes_own_memory_only(self) -> None:
         from scripts.pm.cli import init_layer

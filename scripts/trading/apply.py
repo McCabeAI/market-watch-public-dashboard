@@ -7,16 +7,21 @@ from datetime import datetime
 from typing import Any
 
 from scripts.overnight.books import apply_review, validate_books
-from scripts.overnight.clock import now_ny
+from scripts.overnight.clock import isoformat, now_ny
 from scripts.overnight.constants import STANDING_SEATS
 from scripts.pm.books import apply_decision as apply_pm_book_decision
 from scripts.trading.gate import (
     action_rationale,
-    assert_expansion_rationale,
-    assert_learning_gate,
+    evaluate_decision_actions,
+    raise_if_unexecutable,
     rationale_status_for,
 )
-from scripts.trading.journal import record_event
+from scripts.trading.journal import (
+    durable_structured_payload,
+    find_event,
+    new_event_id,
+    record_event,
+)
 from scripts.trading.ledger import find_trade_by_position, observe_open_mark, record_lifecycle_event
 from scripts.trading.memory import apply_reflections, build_memory_context, create_postmortem_due
 from scripts.trading.store import TradingStore
@@ -50,6 +55,76 @@ def _priced(action: dict[str, Any], decision: dict[str, Any]) -> str | None:
         if isinstance(value, str) and value.strip():
             return value.strip()
     return None
+
+
+def _blocked_history_row(
+    action: dict[str, Any],
+    *,
+    when: datetime,
+    run_id: str | None,
+    reason: str,
+) -> dict[str, Any]:
+    return {
+        "at": isoformat(when),
+        "overnight_run_id": run_id,
+        "run_id": run_id,
+        "action": action.get("action"),
+        "result": "blocked",
+        "instrument": action.get("instrument"),
+        "notional_usd": action.get("notional_usd"),
+        "price": action.get("price"),
+        "position_id": action.get("position_id"),
+        "hedge_of": action.get("hedge_of"),
+        "note": action.get("note"),
+        "blocked_reason": reason,
+    }
+
+
+def _journal_action_rows(
+    original_actions: list[dict[str, Any]],
+    blocked: list[dict[str, Any]],
+    decision: dict[str, Any],
+) -> list[dict[str, Any]]:
+    blocked_by_id = {id(row["action"]): row for row in blocked}
+    rows: list[dict[str, Any]] = []
+    for action in original_actions:
+        item = dict(action)
+        blocked_row = blocked_by_id.get(id(action))
+        if blocked_row:
+            item["result"] = "blocked"
+            item["blocked_reason"] = blocked_row.get("reason")
+            item["rationale_status"] = rationale_status_for(action, decision)
+        else:
+            item["result"] = "applied"
+            item["rationale_status"] = rationale_status_for(action, decision)
+        rows.append(item)
+    for row in blocked:
+        if id(row["action"]) in {id(action) for action in original_actions}:
+            continue
+        extra = dict(row["action"])
+        extra["result"] = "blocked"
+        extra["blocked_reason"] = row.get("reason")
+        extra["rationale_status"] = rationale_status_for(row["action"], decision)
+        rows.append(extra)
+    return rows
+
+
+def _append_blocked(
+    book: dict[str, Any],
+    blocked: list[dict[str, Any]],
+    *,
+    when: datetime,
+    run_id: str | None,
+) -> None:
+    if not blocked:
+        return
+    history = book.setdefault("history", [])
+    alerts = book.setdefault("alerts", [])
+    for row in blocked:
+        action = row["action"]
+        reason = str(row.get("reason") or "expansion blocked")
+        history.append(_blocked_history_row(action, when=when, run_id=run_id, reason=reason))
+        alerts.append(f"{action.get('action')} blocked: {reason}")
 
 
 def _sync_history_row(
@@ -257,10 +332,10 @@ def _prepare_identity(
     run_id: str | None,
     expected_memory_sha256: str | None,
     when: datetime | None,
-) -> None:
+) -> list[dict[str, Any]]:
     apply_reflections(store, decision, owner_type=owner_type, owner_id=owner_id, run_id=run_id, when=when)
-    assert_expansion_rationale(decision, owner_id=owner_id)
-    assert_learning_gate(
+    original = [row for row in (decision.get("actions") or []) if isinstance(row, dict)]
+    allowed, blocked = evaluate_decision_actions(
         store,
         owner_type=owner_type,
         owner_id=owner_id,
@@ -268,6 +343,10 @@ def _prepare_identity(
         run_id=run_id,
         expected_memory_sha256=expected_memory_sha256,
     )
+    raise_if_unexecutable(blocked, allowed)
+    decision["actions"] = allowed
+    decision["_original_actions"] = original
+    return blocked
 
 
 def apply_trader_review_with_memory(
@@ -286,10 +365,23 @@ def apply_trader_review_with_memory(
     store.ensure_initialized()
     stamp = now_ny(when)
     hashes = memory_hashes or {}
+    existing = {
+        seat: find_event(store, owner_type="trader", owner_id=seat, kind="OVERNIGHT_DECISION", run_id=run_id)
+        for seat in STANDING_SEATS
+    }
+    if all(existing.values()):
+        return books
+
     prepared = deepcopy(reviews)
+    blocked_by_seat: dict[str, list[dict[str, Any]]] = {}
+    reserved_ids: dict[str, str] = {}
     for seat in STANDING_SEATS:
+        reserved_ids[seat] = (existing[seat] or {}).get("event_id") or new_event_id()
+        if existing[seat]:
+            blocked_by_seat[seat] = []
+            continue
         payload = prepared[seat]
-        _prepare_identity(
+        blocked_by_seat[seat] = _prepare_identity(
             store,
             payload,
             owner_type="trader",
@@ -303,24 +395,33 @@ def apply_trader_review_with_memory(
         seat: {p["position_id"]: deepcopy(p) for p in books["seats"][seat].get("positions") or []}
         for seat in STANDING_SEATS
     }
-    updated = apply_review(
-        books,
-        prepared,
-        families=families,
-        run_id=run_id,
-        evidence_cutoff=evidence_cutoff,
-        when=stamp,
-        market_state=market_state,
-    )
+    if any(existing.values()):
+        updated = books
+    else:
+        updated = apply_review(
+            books,
+            prepared,
+            families=families,
+            run_id=run_id,
+            evidence_cutoff=evidence_cutoff,
+            when=stamp,
+            market_state=market_state,
+        )
     overnight_run_id, trader_room_run_id = _run_ids(run_id)
     for seat in STANDING_SEATS:
         decision = prepared[seat]
         seat_book = updated["seats"][seat]
+        if not existing[seat]:
+            _append_blocked(seat_book, blocked_by_seat.get(seat) or [], when=stamp, run_id=run_id)
         new_hist = (seat_book.get("history") or [])[hist_lens[seat] :]
         current_positions = {p["position_id"]: p for p in seat_book.get("positions") or []}
         linked: list[str] = []
         linked_positions: list[str] = []
         missing_exit = False
+        if existing[seat]:
+            event = existing[seat]
+            decision["journal_event_id"] = event["event_id"]
+            continue
         for row in new_hist:
             if row.get("action") in {"REDUCE", "CLOSE"} and rationale_status_for(
                 next(
@@ -350,10 +451,10 @@ def apply_trader_review_with_memory(
                     evidence_packet_id=None,
                     review_packet_id=None,
                     review_packet_sha256=None,
-                    journal_event_id=None,
+                    journal_event_id=reserved_ids[seat],
                 )
             )
-            if row.get("position_id"):
+            if row.get("result") == "applied" and row.get("position_id"):
                 linked_positions.append(row["position_id"])
         if missing_exit:
             seat_book.setdefault("alerts", []).append(
@@ -366,7 +467,11 @@ def apply_trader_review_with_memory(
             kind="OVERNIGHT_DECISION",
             when=stamp,
             run_id=run_id,
-            actions=decision.get("actions"),
+            actions=_journal_action_rows(
+                list(decision.get("_original_actions") or decision.get("actions") or []),
+                blocked_by_seat.get(seat) or [],
+                decision,
+            ),
             rationale=decision.get("rationale") or decision.get("thesis"),
             thesis=decision.get("thesis"),
             invalidation=decision.get("invalidation"),
@@ -378,6 +483,7 @@ def apply_trader_review_with_memory(
             evidence_hash=evidence_hash,
             overnight_run_id=overnight_run_id,
             trader_room_run_id=trader_room_run_id,
+            event_id=reserved_ids[seat],
         )
         _observe_marks(store, "trader", seat, list(seat_book.get("positions") or []))
         build_memory_context(store, "trader", seat, when=stamp)
@@ -407,7 +513,20 @@ def apply_pm_decision_with_memory(
     expected = expected_memory_sha256 or decision.get("memory_context_sha256")
     if expected and not decision.get("memory_context_sha256"):
         decision["memory_context_sha256"] = expected
-    _prepare_identity(
+    existing = find_event(
+        store,
+        owner_type="pm",
+        owner_id=pm_id,
+        kind="PM_DECISION",
+        run_id=run_id,
+        review_packet_id=review_packet_id,
+    )
+    if existing:
+        decision["journal_event_id"] = existing["event_id"]
+        return books
+
+    journal_event_id = new_event_id()
+    blocked = _prepare_identity(
         store,
         decision,
         owner_type="pm",
@@ -430,6 +549,7 @@ def apply_pm_decision_with_memory(
         when=stamp,
     )
     book = updated["pms"][pm_id]
+    _append_blocked(book, blocked, when=stamp, run_id=run_id)
     current = {p["position_id"]: p for p in book.get("positions") or []}
     linked: list[str] = []
     linked_positions: list[str] = []
@@ -464,23 +584,27 @@ def apply_pm_decision_with_memory(
                 evidence_packet_id=review_packet_id,
                 review_packet_id=review_packet_id,
                 review_packet_sha256=review_packet_sha256,
-                journal_event_id=None,
+                journal_event_id=journal_event_id,
             )
         )
-        if row.get("position_id"):
+        if row.get("result") == "applied" and row.get("position_id"):
             linked_positions.append(row["position_id"])
     if missing_exit:
         book.setdefault("alerts", []).append(
             "rationale_status=missing_required; postmortem_due flagged for missing exit rationale"
         )
-    record_event(
+    event = record_event(
         store,
         owner_type="pm",
         owner_id=pm_id,
         kind="PM_DECISION",
         when=stamp,
         run_id=run_id,
-        actions=decision.get("actions"),
+        actions=_journal_action_rows(
+            list(decision.get("_original_actions") or decision.get("actions") or []),
+            blocked,
+            decision,
+        ),
         rationale=decision.get("rationale") or decision.get("thesis"),
         thesis=decision.get("thesis"),
         invalidation=decision.get("invalidation"),
@@ -493,9 +617,11 @@ def apply_pm_decision_with_memory(
         overnight_run_id=overnight_run_id,
         trader_room_run_id=trader_room_run_id,
         review_packet_id=review_packet_id,
+        event_id=journal_event_id,
     )
     _observe_marks(store, "pm", pm_id, list(book.get("positions") or []))
     build_memory_context(store, "pm", pm_id, when=stamp)
+    decision["journal_event_id"] = event["event_id"]
     return updated
 
 
@@ -511,7 +637,17 @@ def journal_trader_room_pitch(
     when: datetime | None = None,
 ) -> dict[str, Any]:
     agent = contribution.get("agent")
+    existing = find_event(
+        store,
+        owner_type="trader",
+        owner_id=agent,
+        kind="TRADER_ROOM_PROPOSAL",
+        run_id=run_id,
+    )
+    if existing:
+        return existing
     trade = contribution.get("trade") or {}
+    durable = durable_structured_payload(contribution)
     return record_event(
         store,
         owner_type="trader",
@@ -530,8 +666,9 @@ def journal_trader_room_pitch(
         trader_room_run_id=run_id,
         source_ref=source_ref,
         extra={
-            "trade": trade or None,
-            "conflict_synopsis": contribution.get("conflict_synopsis"),
+            "contribution": durable,
+            "trade": durable.get("trade") if isinstance(durable.get("trade"), dict) else (trade or None),
+            "conflict_synopsis": durable.get("conflict_synopsis"),
         },
     )
 
@@ -548,6 +685,16 @@ def journal_trader_room_rebuttal(
     when: datetime | None = None,
 ) -> dict[str, Any]:
     agent = rebuttal.get("agent")
+    existing = find_event(
+        store,
+        owner_type="trader",
+        owner_id=agent,
+        kind="TRADER_ROOM_REBUTTAL",
+        run_id=run_id,
+    )
+    if existing:
+        return existing
+    durable = durable_structured_payload(rebuttal)
     return record_event(
         store,
         owner_type="trader",
@@ -563,9 +710,10 @@ def journal_trader_room_rebuttal(
         trader_room_run_id=run_id,
         source_ref=source_ref,
         extra={
-            "opponents": rebuttal.get("opponents"),
-            "trade_change": rebuttal.get("trade_change"),
-            "revised_trade": rebuttal.get("revised_trade"),
-            "holes_in_opposing_case": rebuttal.get("holes_in_opposing_case"),
+            "rebuttal": durable,
+            "opponents": durable.get("opponents"),
+            "trade_change": durable.get("trade_change"),
+            "revised_trade": durable.get("revised_trade"),
+            "holes_in_opposing_case": durable.get("holes_in_opposing_case"),
         },
     )

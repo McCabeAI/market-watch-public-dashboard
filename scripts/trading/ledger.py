@@ -208,6 +208,7 @@ def record_lifecycle_event(
         "rationale": _text(rationale),
         "rationale_status": rationale_status,
         "exit_reason_category": exit_reason_category,
+        "source_journal_event_id": source_journal_event_id,
     }
     trade["events"].append(event)
 

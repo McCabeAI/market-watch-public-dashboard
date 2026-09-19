@@ -68,7 +68,9 @@ Recorded:
 - every applied ChatGPT PM decision
 - full on-demand Trader Room original pitches and rebuttals as `TRADER_ROOM_PROPOSAL` / `TRADER_ROOM_REBUTTAL`
 
-On-demand pitches and rebuttals do not become executed ledger trades.
+On-demand pitches and rebuttals store the complete validated contribution or rebuttal payload as structured journal data, keep `source_ref`, and do not become executed ledger trades. Hidden chain-of-thought and runtime-only fields are excluded.
+
+Every newly executed trader or PM ledger lifecycle event stores `source_journal_event_id` for the exact durable journal event that caused it. The journal event stores `linked_trade_ids` / `linked_position_ids`. Replay updates that same journal event rather than minting a second one to acquire an ID. Migrated historical ledger rows stay `null` when no source journal event existed.
 
 ## 6. Rationale contract
 
@@ -80,12 +82,15 @@ On-demand pitches and rebuttals do not become executed ledger trades.
 
 Memory mechanics must not block `HOLD` / `NO_TRADE` / `REDUCE` / `CLOSE`.
 
-Risk-expanding `OPEN` / `ADD` / `HEDGE` fail closed when:
+The contract is enforced action-by-action. In a mixed decision, deterministic de-risk actions still execute and persist even if one or more expansion actions are rejected. Rejected expansions are recorded as `blocked` with a deterministic reason; they are not silently dropped.
+
+Risk-expanding `OPEN` / `ADD` / `HEDGE` fail closed independently when:
 
 - `memory_context_sha256` is missing or does not match the frozen own-identity snapshot for that seat/run; or
-- the identity has outstanding `postmortems_due` created on a prior run.
+- the identity has outstanding `postmortems_due` created on a prior run; or
+- required expansion rationale is missing.
 
-A trade closed in the current run becomes `postmortem_due` for a later decision opportunity. Same-run hindsight is not required.
+A trade closed in the current run becomes `postmortem_due` for a later decision opportunity. Same-run hindsight is not required and must not retroactively block other already-valid de-risk actions in that decision.
 
 Trusted code accepts a postmortem only for a closed trade owned by that identity. Reflection cannot change entry/exit marks or P&L. Durable lessons must cite owned `trade_id`s or `postmortem_id`s. Active lessons are capped at 12.
 
