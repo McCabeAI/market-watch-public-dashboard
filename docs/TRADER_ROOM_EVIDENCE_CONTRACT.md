@@ -40,7 +40,7 @@ Do not use current Bob/David trade calls, forecasts or positions as authoritativ
 
 ## Persistent competition state
 
-Load the current canonical paper books from `data/overnight/books/latest.json` and give every advocate the same competition context: current seat net P&L/rank when available, open risk, and the standing funding contract. The competition metric is cumulative **net paper P&L after financing economics**. Every seat except `no-trade-skeptic` pays 5.00% annual ACT/365 on the full $100m allocation every day whether invested or flat. The skeptic instead earns 5.00% ACT/365 on the undeployed portion of its original $100m and loses that yield on capital it deploys. This is context and incentive, not evidence for a macro thesis. A model must never calculate or overwrite canonical P&L, funding, NAV, or rank.
+Load the current canonical paper books from `data/overnight/books/latest.json` and give every advocate the same competition context plus the compact deterministic `funding_context`: latest official NY Fed SOFR, tradable SR3 contracts, and exact-horizon forward summaries when an SR3 expiry month matches. The competition metric is cumulative **net paper P&L after financing economics**. Every seat except `no-trade-skeptic` pays official NY Fed SOFR ACT/360 on the full $100m allocation every calendar day whether invested or flat. The skeptic instead earns the same official daily SOFR on the undeployed portion of its original $100m and loses that yield on capital it deploys. There is no fixed 5% assumption. This is context and incentive, not evidence for a macro thesis. A model must never calculate or overwrite canonical P&L, funding, NAV, or rank.
 
 ## Required packet shape
 
@@ -53,6 +53,7 @@ In addition to the existing protocol fields, the common packet must contain thes
   "news_and_research": [],
   "market_state": {},
   "research_method": {},
+  "funding_context": {},
   "trader_competition": {},
   "source_index": [],
   "known_gaps": []

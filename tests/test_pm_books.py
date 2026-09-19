@@ -55,7 +55,10 @@ class PMBookTests(unittest.TestCase):
             self.assertEqual(book["positions"], [])
             self.assertEqual(book["gross_utilization_usd"], 0)
             self.assertIn("awaiting", book["decision_status"])
-            self.assertNotIn("funding_cost_usd", book)
+            self.assertIn("funding_cost_usd", book)
+            self.assertEqual(book["funding_cost_usd"], 0.0)
+            self.assertEqual(book["funded_draw_usd"], 0.0)
+            self.assertNotEqual(book["funded_draw_usd"], book["gross_notional_limit_usd"])
             self.assertNotEqual(book["decision_status"], books["pms"]["chatgpt"]["decision_status"] if pm_id != "chatgpt" else "x")
 
     def test_chatgpt_and_automated_awaiting_statuses_differ(self) -> None:
@@ -243,11 +246,14 @@ class PMBookTests(unittest.TestCase):
                 review_packet_sha256="h",
             )
 
-    def test_no_funding_hurdle_on_pm_books(self) -> None:
+    def test_pm_books_have_funding_fields_without_borrowing_the_gross_limit(self) -> None:
         book = empty_pm_book("grinder")
         marked = mark_pm_book(book)
-        self.assertNotIn("funding_cost_usd", marked)
-        self.assertNotIn("cash_yield_usd", marked)
+        self.assertEqual(marked["funding_cost_usd"], 0.0)
+        self.assertEqual(marked["cash_yield_usd"], 0.0)
+        self.assertEqual(marked["funded_draw_usd"], 0.0)
+        self.assertEqual(marked["unused_cash_usd"], marked["cash_capital_usd"])
+        self.assertNotEqual(marked["gross_utilization_usd"], marked["cash_capital_usd"])
         self.assertEqual(marked["total_pnl_usd"], 0)
 
 

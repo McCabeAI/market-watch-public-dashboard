@@ -33,6 +33,15 @@ POLICY = {
 }
 
 
+def _skeptic_funding_view() -> dict:
+    return {
+        "current_sofr": "Frozen official NY Fed SOFR fixing in funding_context.",
+        "sr3_forward_view": "Frozen SR3 contracts are the relevant forward-funding path.",
+        "forward_funding_assessment": "about_the_same",
+        "implication": "Prefer cash earning official SOFR unless a packet-supported trade beats that hurdle.",
+    }
+
+
 def _hold_decision(seat: str, run_id: str, packet_hash: str, cutoff: str) -> dict:
     return {
         "seat": seat,
@@ -64,6 +73,7 @@ def _hold_decision(seat: str, run_id: str, packet_hash: str, cutoff: str) -> dic
             }
         ],
         "alerts": [],
+        **({"funding_view": _skeptic_funding_view()} if seat == "no-trade-skeptic" else {}),
     }
 
 

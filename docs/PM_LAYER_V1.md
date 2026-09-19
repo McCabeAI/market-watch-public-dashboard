@@ -13,7 +13,7 @@ This is the four-PM layer above the locked 14-seat Trader Room. It does not chan
 | `pragmatist` | Opportunistic macro. Can swing big or grind singles/doubles. | $1bn gross notional | allowed |
 | `grinder` | Preservation/consistency first. Smaller sizes, high hurdles, quick de-risking. No-trade is valid. | $1bn gross notional | allowed |
 
-`$1bn` is a **gross notional limit**, not borrowed NAV. The 5% trader-seat funding/cash hurdle is not applied. After every action:
+`$1bn` is a **gross notional limit**, not automatically borrowed NAV. Gross-notional utilization and funded-capital draw are separate fields. PMs earn official NY Fed SOFR ACT/360 on genuinely unused cash capital and pay it only on deterministically funded/drawn capital. Futures/forwards/options (including SR3/CORRA/AONIA) are not charged full-notional funding. If a position's funding basis cannot be proven from canonical instrument/expression fields, `funding_basis_status=unresolved` and no charge is invented. Official NY Fed SOFR is the realized funding authority; SR3 is forward context; a model funding forecast cannot mutate realized accounting. After every action:
 
 ```
 sum(abs(open position notional)) <= 1_000_000_000
@@ -43,7 +43,7 @@ Deterministic per-PM artifact:
 data/pm/review_packets/<pm_id>/latest.json
 ```
 
-Daily packets are generated from the latest **successful overnight 14-seat scheduled review**, not from the newest on-demand Trader Room run. Each packet records `source=overnight_scheduled_review`, the overnight run id, the final agent-packet cutoff/hash, compact frozen evidence and market state, SOFR/CORRA/AONIA and sovereign-curve availability, the accepted 14 trader decisions, overnight research supplement/canonical books when present, **only that PM's prior book**, that PM's compact learning-memory context / calibration / `postmortems_due`, allowable actions, gross limit/utilization, and unresolved future data requests. See `docs/TRADING_LEDGER_MEMORY_V1.md`.
+Daily packets are generated from the latest **successful overnight 14-seat scheduled review**, not from the newest on-demand Trader Room run. Each packet records `source=overnight_scheduled_review`, the overnight run id, the final agent-packet cutoff/hash, compact frozen evidence and market state, the same deterministic `funding_context` traders receive, SOFR/CORRA/AONIA and sovereign-curve availability, the accepted 14 trader decisions, overnight research supplement/canonical books when present, **only that PM's prior book**, that PM's compact learning-memory context / calibration / `postmortems_due`, allowable actions, gross limit/utilization versus funded-capital draw, and unresolved future data requests. See `docs/TRADING_LEDGER_MEMORY_V1.md`.
 
 All four PMs share the same overnight evidence boundary and 14-seat output. On-demand Trader Room publication stays independent. If no overnight review exists yet, `init` / `refresh-packets --allow-trader-room-fallback` may use `source=on_demand_trader_room_fallback`. That fallback is labeled and never treated as a fresher overnight packet.
 

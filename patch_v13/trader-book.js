@@ -133,7 +133,7 @@
       openCount + "</b></div></div></section>" +
       '<section class="tb-panel"><div class="tb-panel-head"><h3>Overnight position changes</h3><p>OPEN / ADD / REDUCE / HEDGE / CLOSE applied in the latest review</p></div><div class="tb-changes">' +
       changeHtml + "</div></section>" +
-      '<section class="tb-panel"><div class="tb-panel-head"><h3>P&amp;L leaderboard</h3><p>Thirteen seats pay 5% on the full $100m every day; the No-Trade Skeptic earns 5% on undeployed cash.</p></div><div class="tb-changes">' +
+      '<section class="tb-panel"><div class="tb-panel-head"><h3>P&amp;L leaderboard</h3><p>Thirteen seats pay official NY Fed SOFR ACT/360 on the full $100m every day; the No-Trade Skeptic earns the same official SOFR on undeployed cash.</p></div><div class="tb-changes">' +
       leaderboardHtml + "</div></section>" +
       '<section class="tb-panel"><div class="tb-panel-head"><h3>Seat books</h3><p>Net P&amp;L includes the standing financing hurdle: funding cost for the 13 trading seats, cash yield for the skeptic.</p></div><div class="tb-seat-grid">' +
       seatHtml + "</div></section>" +
@@ -200,7 +200,7 @@
 
     mount.innerHTML =
       '<section class="tb-panel"><div class="tb-panel-head"><h3>Portfolio Managers</h3><p>' +
-      "Separate $1bn gross-notional books for ChatGPT, Swinger, Pragmatist and Grinder. Not extra trader seats. No 5% funding hurdle.</p></div>" +
+      "Separate $1bn gross-notional books for ChatGPT, Swinger, Pragmatist and Grinder. Not extra trader seats. Gross notional is a risk limit; funded-capital draw is separate and uses official SOFR only where the cash basis is known.</p></div>" +
       '<div class="tb-pm-grid">' + cards + "</div></section>" +
       '<section class="tb-panel"><div class="tb-panel-head"><h3>Four-PM P&amp;L comparison</h3><p>Paper P&amp;L after deterministic packet marks. Comparison is allowed only after decisions are committed.</p></div><div class="tb-changes">' +
       comparison + "</div></section>" +

@@ -83,7 +83,15 @@
           "status": "ok",
           "benchmark": {
             "name": "SOFR",
-            "rate": 3.75
+            "rate": 3.75,
+            "as_of": "2026-09-17",
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr",
+            "history": [
+              {"effective_date": "2026-09-15", "percent_rate": 3.73, "source": "NY_FED"},
+              {"effective_date": "2026-09-16", "percent_rate": 3.74, "source": "NY_FED"},
+              {"effective_date": "2026-09-17", "percent_rate": 3.75, "source": "NY_FED"}
+            ]
           },
           "contracts_1m": [
             {
@@ -98,6 +106,18 @@
               "code": "SR3Z6",
               "implied_rate": 3.8,
               "change_from_overnight_bps": 5
+            },
+            {
+              "expiry": "2027-03",
+              "code": "SR3H7",
+              "implied_rate": 3.7,
+              "change_from_overnight_bps": -5
+            },
+            {
+              "expiry": "2027-09",
+              "code": "SR3U7",
+              "implied_rate": 3.55,
+              "change_from_overnight_bps": -20
             }
           ]
         },
@@ -162,6 +182,18 @@
               "code": "SR3Z6",
               "implied_rate": 3.8,
               "change_from_overnight_bps": 5
+            },
+            {
+              "expiry": "2027-03",
+              "code": "SR3H7",
+              "implied_rate": 3.7,
+              "change_from_overnight_bps": -5
+            },
+            {
+              "expiry": "2027-09",
+              "code": "SR3U7",
+              "implied_rate": 3.55,
+              "change_from_overnight_bps": -20
             }
           ],
           "mark_convention": "implied_rate = 100 - futures price"

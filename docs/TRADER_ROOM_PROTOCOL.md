@@ -63,13 +63,13 @@ A statistical extreme is a discovery signal, never sufficient evidence. For a sh
 
 The standing seats are paper portfolio managers competing for **highest cumulative net P&L** across the persistent Trader Book. Analysis is a means to that outcome, not the score.
 
-- The 13 seats other than `no-trade-skeptic` each borrow their full **$100m** paper allocation and pay **5.00% per year, simple ACT/365**, on that full amount every day. Being flat does not stop the vig.
-- `no-trade-skeptic` is the benchmark cash manager. It pays no funding charge and earns **5.00% per year ACT/365** on the undeployed portion of its original $100m allocation. Any capital it deploys stops earning that yield while deployed.
+- The 13 seats other than `no-trade-skeptic` each borrow their full **$100m** paper allocation and pay **official NY Fed SOFR, simple ACT/360**, on that full amount every calendar day. Being flat does not stop the vig. Weekends and holidays carry the last applicable published fixing.
+- `no-trade-skeptic` is the benchmark cash manager. It pays no funding charge and earns the same official daily SOFR ACT/360 on the undeployed portion of its original $100m allocation. Any capital it deploys stops earning that yield while deployed.
 - Leaderboard P&L is gross realized + unrealized trading P&L, **minus funding for the 13 funded traders or plus undeployed-cash yield for the skeptic**.
-- `NO TRADE` remains legitimate. For the 13 funded traders it carries a real opportunity/funding cost; for the skeptic it is the positive cash benchmark.
-- Traders should not optimize for avoiding mistakes. If the frozen packet shows a tradeable discrepancy whose expected edge clears the funding hurdle and has a defined invalidation, the seat should be willing to risk paper capital.
+- `NO TRADE` remains legitimate. For the 13 funded traders it carries a real opportunity/funding cost; for the skeptic it is the positive cash benchmark. Every new no-trade-skeptic risk or NO_TRADE thesis must include a structured `funding_view` (frozen official SOFR, relevant SR3 forward-curve view, whether realized funding is expected higher/lower/about the same, and the cash-versus-risk implication).
+- Traders should not optimize for avoiding mistakes. If the frozen packet shows a tradeable discrepancy whose expected edge clears the observed SOFR hurdle and has a defined invalidation, the seat should be willing to risk paper capital.
 - Do not force low-quality trades or invent executable levels. The incentive is to make profitable decisions under uncertainty, not to maximize trade count.
-- Funding and leaderboard accounting are deterministic book mechanics. Advocates may reason about the 5% hurdle but may not author or alter canonical P&L, funding charges, NAV, or rank.
+- Funding and leaderboard accounting are deterministic book mechanics. Official NY Fed SOFR is the realized funding authority; SR3 is forward context only. There is no fixed 5% assumption. Advocates may reason about the observed hurdle but may not author or alter canonical P&L, funding charges, NAV, or rank.
 
 ## Evidence contract
 

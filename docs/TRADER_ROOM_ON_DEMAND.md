@@ -29,7 +29,7 @@ Rates are preferred when the comparison is close. Spot is allowed only with an e
 Dedicated exceptions:
 - `dollar-king`, `cross-merchant`: spot only;
 - `vol-convexity`: options/convexity remit unchanged;
-- `no-trade-skeptic`: may return no trade; if it endorses one, use the rates-first comparison.
+- `no-trade-skeptic`: may return no trade; if it endorses one, use the rates-first comparison. Every new no-trade decision must include a structured `funding_view` that uses the frozen `funding_context` (official NY Fed SOFR + SR3 forward context) and states whether realized funding is expected higher, lower, or about the same as the curve, plus the cash-versus-risk implication. HOLD/de-risk on legacy data is not blocked solely because that prose is absent.
 
 Every non-null trade adds:
 

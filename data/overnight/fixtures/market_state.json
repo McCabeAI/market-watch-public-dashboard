@@ -12,8 +12,53 @@
     "US": {"2Y": 3.7, "10Y": 4.2},
     "AU": {"10Y": 4.4}
   },
+  "policy_paths": {
+    "status": "ok",
+    "countries": {
+      "US": {
+        "status": "ok",
+        "benchmark": {
+          "name": "SOFR",
+          "rate": 3.75,
+          "as_of": "2026-09-17",
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr",
+          "history": [
+            {"effective_date": "2026-09-11", "percent_rate": 3.70, "source": "NY_FED"},
+            {"effective_date": "2026-09-12", "percent_rate": 3.71, "source": "NY_FED"},
+            {"effective_date": "2026-09-15", "percent_rate": 3.73, "source": "NY_FED"},
+            {"effective_date": "2026-09-16", "percent_rate": 3.74, "source": "NY_FED"},
+            {"effective_date": "2026-09-17", "percent_rate": 3.75, "source": "NY_FED"}
+          ]
+        },
+        "contracts_3m": [
+          {"expiry": "2026-12", "code": "SR3Z6", "implied_rate": 3.80},
+          {"expiry": "2027-03", "code": "SR3H7", "implied_rate": 3.70},
+          {"expiry": "2027-09", "code": "SR3U7", "implied_rate": 3.55}
+        ]
+      },
+      "CA": {"status": "ok", "benchmark": {"name": "CORRA", "rate": 2.29}},
+      "AU": {"status": "ok", "benchmark": {"name": "AONIA", "rate": 4.35}}
+    }
+  },
+  "tradable_rate_curves": {
+    "status": "ok",
+    "curves": {
+      "SOFR": {
+        "status": "ok",
+        "product_code": "SR3",
+        "contracts": [
+          {"expiry": "2026-12", "code": "SR3Z6", "implied_rate": 3.80},
+          {"expiry": "2027-03", "code": "SR3H7", "implied_rate": 3.70},
+          {"expiry": "2027-09", "code": "SR3U7", "implied_rate": 3.55}
+        ]
+      },
+      "CORRA": {"status": "ok", "product_code": "CRA", "contracts": [{"expiry": "2026-12", "code": "CRAZ26", "implied_rate": 2.75}]},
+      "AONIA": {"status": "ok", "product_code": "IB", "contracts": [{"expiry": "2026-10", "implied_rate": 4.40}]}
+    }
+  },
   "method": {
     "model_calls": 0,
-    "note": "Offline overnight fixture; not executable pricing."
+    "note": "Offline overnight fixture; not executable pricing. Official NY Fed SOFR history is retained for funding accrual."
   }
 }
