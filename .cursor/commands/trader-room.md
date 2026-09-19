@@ -90,7 +90,9 @@ Do **not** launch `final-aggregator`. After all routed rebuttals validate, build
 PYTHONPATH=. python scripts/trader_room_finalize.py --run-dir trader-room/runs/<run_id>
 ```
 
-This finalizer reads the already-validated 14 originals, deterministic conflict map and routed rebuttals, then writes `pm_handoff.json` and `artifact_index.json`. It consumes zero model calls and must not reread or summarize the full evidence packet beyond its frozen metadata/known gaps.
+This finalizer reads the already-validated 14 originals, deterministic conflict map and routed rebuttals, then writes `pm_handoff.json`, `artifact_index.json`, and the final receipt. It consumes zero model calls and must not reread or summarize the full evidence packet beyond its frozen metadata/known gaps.
+
+Do not create `FINAL_INPUT.json`, `FINAL_INPUT.compact.json`, or `FINAL_INSTRUCTIONS.md`; those were recovery artifacts from the old model-based final aggregator and are no longer part of production.
 
 No winner, ranking, house view, or official decision.
 
