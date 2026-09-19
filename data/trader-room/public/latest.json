@@ -1,287 +1,294 @@
 {
-  "as_of": "2026-09-18T18:29:33Z",
+  "as_of": "2026-09-19T12:34:30Z",
   "available": true,
-  "conflict_count": 4,
-  "run_id": "tr-20260918T182933Z-ondemand",
+  "conflict_count": 3,
+  "run_id": "tr-20260919T123430Z-ondemand",
   "seat_count": 14,
+  "selection": {
+    "ignored_incomplete": [],
+    "manual_pointer": false,
+    "mode": "newest_complete_valid",
+    "selected_run_id": "tr-20260919T123430Z-ondemand",
+    "source": "trader-room/runs"
+  },
   "status": "STATUS: AWAITING_CHATGPT_ARBITRATION",
   "trade_count": 13,
   "trades": [
     {
       "agent": "carry-is-king",
-      "confidence": 50,
-      "entry_reason": "Fed hike to 3.75\u20134.00% is in the rear-view and August CPI keeps the tightening bias intact. CA\u2013US 2Y is -140bp on 2026-09-17, 1y percentile 3.77 and 5y percentile 4.30, after further widening. Canada August inflation holds at 3% with core near 2%, so BoC energy-pass-through risk is a tail, not a delivered hike. Saudi workaround reduced the extreme oil-supply tail that could overwhelm USD\u2013CAD carry.",
-      "mispricing": "Market pricing already embeds a historically wide USD yield premium over CAD, but USDCAD spot has not matched that 5y-percentile extremity. The implied assumption in fading USDCAD is that CAD energy pass-through or a Fed pivot will close the 140bp gap fast enough to beat carry.",
+      "confidence": 60,
+      "entry_reason": "Fed hike has been delivered (16 Sep 2026) rather than merely >90% priced, while the SOFR path still rises through Dec and into 2028. CA-US_2Y just printed -140bp on 17 Sep after a -17bp 1m cheapening; CORRA Dec still only 2.58, so the path has not caught up. Saudi STS workaround reduced the extreme oil-supply tail that would have been the catalyst capable of overwhelming carry via a BoC energy hike. Empty $100m seed\u2026",
+      "mispricing": "The market prices a durable 140bp Canada cheapness versus the US 2Y and only +29bp of CORRA hikes by December despite a delivered Fed hike and still-rising SOFR path. That gap pays the holder of US versus Canada. Fading it (long CA / short US) is negative carry and is the mispricing I will not own.",
       "rebuttal": {
-        "strongest_opponent_point": "Canada's Q2 activity/consumer lead, crude still near $110, and BoC energy-pass-through minutes could force a Canadian policy reprice that compresses the historically extreme 140bp CA-US 2Y discount after a fully priced Fed hike.",
+        "strongest_opponent_point": "",
         "trade_change": "unchanged"
       },
-      "stance_summary": "Own the verified US\u2013CA 2Y carry in patient long USDCAD; reject long-CAD energy narratives that require paying 140bp and reject stretched AUD crosses whose housing/energy catalysts overwhelm the extra carry.",
+      "stance_summary": "Traders are overpaying for an energy-pass-through BoC-hike narrative and underpaying the compounding US-over-Canada carry. After inspecting SOFR then CORRA then AONIA, the clean patient expression is to receive US 2Y ve\u2026",
       "trade": {
         "direction": "long",
-        "entry": null,
+        "entry": "CA-US_2Y -140bp as of 2026-09-17 (packet rates RV / market_state research reference, not an executable broker mark)",
         "expression": null,
-        "horizon": "2-4 months patient hold, collecting the 2Y differential unless energy/BoC pass-through overwhelms",
-        "instrument": "USDCAD",
-        "invalidation": "Thesis is wrong if the CA\u2013US 2Y carry proxy compresses because BoC hikes on energy pass-through or the Fed enters an easing cycle, or if an energy-supply shock reopens an extreme oil tail.",
-        "structure": "spot FX; official 2Y yield differential is the carry proxy because forward points and OIS are not in the packet",
+        "horizon": "3 months (patient carry; analogs report 1m and 3m forward outcomes)",
+        "instrument": "CA-US_2Y",
+        "invalidation": "Thesis is invalid if the CORRA path re-prices more tightening than the SOFR path such that the sourced Dec implied gap (4.1975 vs 2.58) and the sourced 140bp CA-US_2Y differential compress from the Canada side because energy pass-through overwhelms Canada's core-near-2% and labor-38 setup; or if the Fed tightening bias evidenced by the 16 Sep hike and August CPI is reversed while Canada remains the low-yielder only because US yields collapse. A further analog-style cheapening without path compression is timing noise, not automatic invalidation, because carry is the holding-period engine. No numeric stop is sourced in the packet.",
+        "structure": "Receive US 2Y duration versus pay CA 2Y duration; book as long CA-US_2Y (CA minus US 2Y). Research/reference yields and SOFR/CORRA/AONIA futures only; not a broker structure.",
         "target": null
       }
     },
     {
       "agent": "catalyst-junkie",
-      "confidence": 49,
-      "entry_reason": "The hike itself is known information; the new transmission is BoJ +25bp to 1.25% on 17 Sep and a non-dovish BoE 6-3 hold the same day. Canada-specific overlay is dated 14-16 Sep: August CPI held at 3% with core near 2%, BoC minutes flagged energy pass-through as a risk rather than a delivered hike, and the Saudi workaround reduced the extreme oil-supply tail. Reject fading 5y-extreme AUDNZD/AUDCAD as the trade: NZ s\u2026",
-      "mispricing": "CA-US 2Y at -140bp (1y percentile 3.8, 5y percentile 4.3) prices a durable BoC easing/hold gap versus a Fed that has just hiked; USDCAD at ECB reference 1.4010 is only 74th percentile on 1y, so FX has not fully treated that policy gap as a completed CAD-weakness event.",
+      "confidence": 58,
+      "entry_reason": "BoC minutes retained 16 Sep flag higher energy pass-through on the 2 Sep FAD, and CORRA Oct is still only +1.5bp. Canada August CPI held at 3% on 14 Sep while core stays near 2%, so the inflation print is live, not stale. Fed hike 16 Sep and BoJ hike 17 Sep, plus the 18 Sep desk thesis that energy is blocking global easing, are the same-week transmission into a still-dovish CA strip. AONIA and SOFR have already adde\u2026",
+      "mispricing": "MX CORRA prices +1.5bp by October and +29bp by December after BoC minutes named energy pass-through, headline CPI held at 3%, and G10 tightening broadened. CA 2Y at 3.27% already sits about 69bp above Dec implied 2.58%, so the strip \u2014 not the 2Y percentile \u2014 is the lagging price.",
       "rebuttal": {
-        "strongest_opponent_point": "Rate-hawk is right that the next Canadian CPI or BoC communication could convert the minutes' energy pass-through warning, 3% headline, and retained crude-near-$110 into a less-easy CA path that compresses CA-US 2Y and reverses USDCAD.",
+        "strongest_opponent_point": "",
         "trade_change": "unchanged"
       },
-      "stance_summary": "This week's broadening G10 tightening plus a reduced CAD oil-supply tail is the live path for CAD to keep cheapening versus USD while the extreme CA-US rate gap persists; housing-stretched AUDNZD is a valuation fade wit\u2026",
+      "stance_summary": "Valuation without a dated transmission can stay wrong; the 14-18 Sep cluster (BoC energy-pass-through minutes, Canada CPI still at 3%, Fed hike, BoJ hike, desk thesis that the energy shock constrains easing) is already\u2026",
       "trade": {
-        "direction": "long",
+        "direction": "short",
         "entry": null,
         "expression": null,
-        "horizon": "event-driven, 1-4 weeks through the next Canadian CPI/BoC communication window after this G10 decision week",
-        "instrument": "USDCAD",
-        "invalidation": "Thesis is wrong if Canadian core reaccelerates via the energy pass-through named in BoC minutes, or if the energy shock-absorber warning reasserts and CAD yields close the CA-US 2Y gap.",
-        "structure": "outright spot USDCAD as the FX expression of persistent CA-US 2Y cheapness of CAD rates",
+        "horizon": "Into Dec-26 CORRA expiry, as the packet terminal; digestion of the already-released 14-18 Sep cluster, not an invented meeting date.",
+        "instrument": "COAZ26",
+        "invalidation": "Thesis is wrong if Dec CORRA implied 2.58% moves back toward overnight CORRA 2.29% because core-near-2% and labor 38 dominate the minutes, or if the Saudi Oman workaround (not the shock-absorber warning) is the binding energy fact and CA-US 2Y stays near -140bp without any CORRA-path backup.",
+        "structure": "Short MX CORRA Dec-26 future COAZ26 (packet price 97.42, implied 2.58%); pay Canadian overnight versus CORRA 2.29%. Research/reference path, not executable broker pricing.",
         "target": null
       }
     },
     {
       "agent": "cross-merchant",
-      "confidence": 47,
-      "entry_reason": "Post-Fed global-tightening desk thesis is keeping USD bid; USDCAD +1.75% over 1m is polluting CAD and stretching AUDCAD. Australian housing transmission is in the latest retained prints plus the 16 Sep Westpac-MI confidence drop. BoC minutes flag energy pass-through while Canadian core stays near 2% and activity/GDP are firmer than Australia's. AUDNZD is more statistically stretched but NZ official yields are a hard\u2026",
-      "mispricing": "AUDCAD prices a near-record Australian premium versus CAD while the CA-AU 2Y differential is only around its 1y median; the 1m AUDCAD rally is mechanically USD-CAD weakness after the Fed hike, not a clean AU-CA re-rating of housing versus energy.",
+      "confidence": 58,
+      "entry_reason": "16 Sep Fed hike is already in USD pairs; remaining AUDCAD extreme is peer-relative. 16 Sep AU housing evidence shows the RBA channel biting (stamp duty -24% y/y, volumes -18%, values >7% off peak) alongside employment -15.8k and sentiment 84.4. BoC minutes plus Canada 3.0% headline versus ~2% core and WTI 96.4th percentile are a CAD-side catalyst the cross has not paid. AUD futures OI at 99th percentile 1y with +376\u2026",
+      "mispricing": "FX has priced an AU-versus-CA premium that the 1y CA-AU 2Y gap does not show as newly extreme. USD legs do not show an equivalently rich AUD or equivalently cheap CAD; the richness is in the cross. CAD has not been allowed to express WTI/energy ToT versus AUD because USDCAD is dominated by the Fed/USD bid.",
       "rebuttal": {
-        "strongest_opponent_point": "CAD-up should be expressed as short USDCAD because that is where CAD cheapened +1.74% over 1m against a 4th-percentile CA-US 2Y, while short AUDCAD pays more AU-CA carry into a 5y extreme that already embeds the USD squeeze\u2014or, if that squeeze persists, long\u2026",
+        "strongest_opponent_point": "",
         "trade_change": "unchanged"
       },
-      "stance_summary": "Short AUDCAD isolates Australian housing/RBA-channel stress versus Canadian energy pass-through and firmer activity; USD pairs contaminate both legs.",
+      "stance_summary": "USD pairs hide the intended AU-versus-CA differential. AUDUSD is only a 76th-percentile 1y print while USDCAD is a 74th-percentile USD-bid residual after the Fed hike; the product AUDCAD is a 99.8th-percentile 1y and 99\u2026",
       "trade": {
         "direction": "short",
         "entry": null,
         "expression": null,
-        "horizon": "2-8 weeks through subsequent Australian housing/labor/sentiment prints and Canadian inflation/BoC communication",
+        "horizon": "1-3 months",
         "instrument": "AUDCAD",
-        "invalidation": "Falsified if Australian housing, labor, and sentiment stabilize or rebound while Canadian activity and energy pass-through fade and the CA-AU 2Y spread leaves its 1y-median neighborhood for a new Australian-premium extreme.",
-        "structure": "spot",
+        "invalidation": "Thesis invalid if AUDCAD extends to a new extreme after the ASX AONIA path steepens further versus MX CORRA, Australian housing/labor prints stop deteriorating, and WTI/energy pass-through fades so CAD loses the ToT/policy catch-up case. No numeric broker stop is in the packet.",
+        "structure": null,
         "target": null
       }
     },
     {
       "agent": "dollar-king",
-      "confidence": 53,
-      "entry_reason": "The September 16 Fed hike is now realized, not just a >90% priced event. The CA-US 2Y spread widened 15bp over five days and 17bp over one month. The last24 desk thesis dated 2026-09-18 states BoJ tightening and a hawkish BoE hold broadened global tightening after the Fed. Saudi ship-to-ship crude via Oman reduced the extreme oil-supply tail that had been CAD\u2019s best fundamental offset.",
-      "mispricing": "Markets have started to mark USD higher versus CAD but still treat CAD as energy-supported. That is inconsistent with a CA-US 2Y gap at the 4th percentile of the 1y distribution while USDCAD itself is only around the 74th 1y percentile.",
+      "confidence": 60,
+      "entry_reason": "Fed 25bp hike is now realized (16 Sep) while SOFR still prices +35bp into December rather than a one-and-done peak at the 3.75% September contract. Last-24 desk thesis (18 Sep) is new confirmation that global tightening broadened (BoJ 1.25%, BoE 6-3 hold), constraining the easing impulse that had been CAD-supportive. Saudi workaround (16 Sep) reduced the extreme oil-supply tail that was the main CAD terms-of-trade o\u2026",
+      "mispricing": "FACT: CA-US 2Y -140bp is a 4th-percentile 5y gap while USDCAD is only 74th 1y / 87th 5y on the ECB fix; USDCAD versus CA-US 2Y residual z is 1.38 but r-squared is only 0.022 (weak). INFERENCE: CAD still prices energy resilience and a contained BoC path that the labor data and the reduced oil-supply tail no longer full\u2026",
       "rebuttal": {
-        "strongest_opponent_point": "Canada still leads the packet on activity and consumer gauges while BoC minutes flag energy pass-through after a fully priced Fed hike, so the historically cheap CA-US yield gap should close through CAD strength rather than more USD.",
+        "strongest_opponent_point": "",
         "trade_change": "unchanged"
       },
-      "stance_summary": "Own the US-Canada policy and front-end gap in USDCAD spot; crosses and AUD/NZD USD pairs add second-order risk or fight carry.",
+      "stance_summary": "FACT: the Fed has delivered 25bp to 3.75\u20134.00%, SOFR still prices a rising path through December, US labor/inflation/consumer gauges remain hot versus Canada, and CA-US 2Y sits at an extreme -140bp while USDCAD is only\u2026",
       "trade": {
         "direction": "long",
         "entry": null,
         "expression": null,
-        "horizon": "Tactical 2-8 weeks; keep the USD-over-CAD stance while the CA-US 2Y gap remains historically wide versus USDCAD\u2019s more moderate percentile.",
+        "horizon": "4-8 weeks",
         "instrument": "USDCAD",
-        "invalidation": "The causal mechanism fails if the CA-US 2Y gap compresses because the BoC hikes on energy pass-through or US front-end yields fall as the Fed\u2019s tightening bias breaks, or if CAD terms of trade re-dominate via a renewed oil-supply tail.",
-        "structure": "spot",
+        "invalidation": "Qualitative, sourced from the frozen policy path rather than an invented USDCAD print: the long-USDCAD thesis is invalid if the US SOFR path rolls over so that December implied 4.1975 and the 3.85 overnight benchmark are no longer a rising year-end path, or if MX CORRA Dec 2.58 is replaced by a much larger BoC energy-pass-through repricing that closes the 156bp overnight gap without CAD labor/core deteriorating further. WTI remaining high is not by itself invalidation because the packet\u2019s USDCAD-WTI link is weak; a renewed unconstrained oil-supply tail that reverses the Saudi-workaround reduction would be. No executable stop exists in the packet.",
+        "structure": null,
         "target": null
       }
     },
     {
       "agent": "mean-reverter",
-      "confidence": 46,
-      "entry_reason": "AUDNZD printed a further +0.65% 1d and +1.19% 5d extension into a 5y extreme after AU housing evidence and the NZ GDP beat were already in the packet. The preferred rates-first AU-NZ RV expression cannot be built because official NZ yields are unavailable. The energy-tail bid that can keep AUD bid versus NZD is the live mechanism to fade after the Saudi workaround.",
-      "mispricing": "Market pricing treats NZD as the clear Australasian underperformer versus AUD at a 5y 99.96th percentile / z +3.12, even though AU labor and housing are already softening and NZ inflation is the hotter of the two.",
+      "confidence": 57,
+      "entry_reason": "Housing evidence on 2026-09-16 documents the tightening channel biting (stamp duty -24% YoY, volumes -18%, prices >7% off peak) while AU 2Y as of the same date prints through the live AONIA terminal. Fed 25bp hike to 3.75-4.00% was >90% priced into 16 Sep and has now been delivered; BoJ to 1.25% on 17 Sep is additional known global duration supply. That is when local housing should start to dominate AU 2Y, not when\u2026",
+      "mispricing": "AU 2Y is 13.9bp through the live Mar-2027 AONIA terminal and 64.9bp over AONIA 4.35 after housing volumes and prices have already broken. The percentile (99th 1y / 99.8th 5y) only flags the stretch; the mispricing is 2Y versus the observable policy path given a working tightening channel.",
       "rebuttal": {
-        "strongest_opponent_point": "NZDUSD has already dropped 3.90% to the 13th 1y percentile while AUDUSD still sits in the upper quartile, so if Australian housing and labor are the live tightening tax, the unpaid residual looks like short AUD versus USD rather than buying the already-dumped\u2026",
+        "strongest_opponent_point": "",
         "trade_change": "unchanged"
       },
-      "stance_summary": "Fade AUDNZD: the 5y extreme is an NZD-leg overshoot, not a justified AU-NZ fundamental re-rating, and AU housing bite plus a clipped oil tail are the reversal conditions.",
+      "stance_summary": "Crowded post-hike extrapolation has pushed AU 2Y through the live AONIA path even as the housing channel is already biting. Fade that sovereign overshoot in duration, not because the percentile is extreme, but because t\u2026",
       "trade": {
-        "direction": "short",
-        "entry": "ECB same-fixing research/reference AUDNZD 1.246846846846847 as of 2026-09-18; not executable broker pricing",
+        "direction": "long",
+        "entry": null,
         "expression": null,
-        "horizon": "tactical 2-6 weeks against the latest extension; strategic 1-3 months to mean-revert the 5y extreme",
-        "instrument": "AUDNZD",
-        "invalidation": "AUDNZD makes a new high versus the 2026-09-18 ECB research/reference fixing after NZ activity or labor deteriorates relative to Australia, or after AU housing evidence stops showing the tightening channel biting",
-        "structure": "spot FX short AUD / long NZD",
+        "horizon": "4-8 weeks",
+        "instrument": "AU 2Y",
+        "invalidation": "Thesis is wrong if the live AONIA/ASX path lifts the Mar-2027 implied rate through the packet AU 2Y print of 4.999, or if subsequent housing/activity evidence stops confirming that the tightening channel is biting while AU 2Y fails to give back toward that path. Do not treat a further percentile extreme alone as invalidation.",
+        "structure": "outright long AU 2Y duration (receive 2Y)",
         "target": null
       }
     },
     {
       "agent": "no-trade-skeptic",
-      "confidence": 69,
-      "entry_reason": "The live policy cluster is already printed: Fed hike 16 Sep, BoJ hike 17 Sep, hawkish BoE hold 17 Sep. Standing down now is the timing call; chasing the narrative after the events fails the why-now test. Market-state FX is an 18 Sep ECB same-fixing research tape, not a live executable book, while US/AU yields are 16-17 Sep and the snapshot is marked stale solely because NZ_rates is blocked. Empty $100m seed books wi\u2026",
+      "confidence": 74,
+      "entry_reason": "NO TRADE. Verified: the Sep 16 Fed 25bp hike to 3.75-4.00% was already >90% priced; BoJ 25bp to 1.25% and BoE 6-3 hold are spent; SOFR 3.85% with ICE 1M path to 4.1975 by Dec-26 and 4.6025 by Aug-28, CORRA 2.29% with MX path only to 2.58 by Dec-26, AONIA 4.35% with ASX cash-futures +21.5bp by Oct and +51bp by Mar-27; US 2Y 4.76 / 10Y 5.01 at 99.8/99.6 1y percentiles with 2s10s +25bp at the 0.2 1y percentile but 54th\u2026",
       "rebuttal": null,
-      "stance_summary": "No G10 FX edge in this packet survives the research-method test: the policy catalysts are already in the tape, temperatures are near-neutral, implieds/positioning/NZ yields/executable prices are missing, and statistical\u2026",
+      "stance_summary": "NO TRADE. Verified: the Sep 16 Fed 25bp hike to 3.75-4.00% was already >90% priced; BoJ 25bp to 1.25% and BoE 6-3 hold are spent; SOFR 3.85% with ICE 1M path to 4.1975 by Dec-26 and 4.6025 by Aug-28, CORRA 2.29% with MX\u2026",
       "trade": null
     },
     {
       "agent": "perma-bear",
-      "confidence": 47,
-      "entry_reason": "Verified new information after the already >90% priced Fed hike is the broadening of global tightening: BoJ hiked 25bp to 1.25% and BoE held 6-3 with three hike votes. Australian housing is a live transmission channel: stamp-duty and turnover collapsing while home values are already down more than 7% from peak. AUDUSD has not paid that tax, unlike NZDUSD (1m -3.90%). AU-US 2Y compressed 12.5bp on the latest common o\u2026",
-      "mispricing": "AUDUSD remains resilient (ECB 18 Sep 2026 research/reference 0.7120, 1m +0.20%, 1y percentile 76.4) despite NSW stamp-duty receipts -24% y/y, housing turnover -18%, AU labor 47.8, and AU-US 2Y only +25.9bp after compression.",
+      "confidence": 56,
+      "entry_reason": "16 Sep 2026 housing evidence is the new transmission of an already-known RBA tightening cycle. 18 Sep desk thesis that global tightening is broadening (Fed hike + BoJ to 1.25%) raises the policy-error odds into that housing downturn rather than validating more AU hikes. September Westpac-MI sentiment -5.2% to 84.4 is a fresh clearly-weaker consumer impulse against July spending that was still +1.1% m/m. AU-US 2Y alr\u2026",
+      "mispricing": "Markets price Oct-26 AONIA 4.565 and Mar-27 4.86 as if the RBA can keep tightening after NSW stamp-duty -24% y/y and employment -15.8k. AU 2Y 4.999 (99th percentile 1y) embeds that path. The mispricing is the sustainability of those extra 51-60bp, not the existence of a still-restrictive 4.35 AONIA.",
       "rebuttal": {
-        "strongest_opponent_point": "Long USDCAD is paid about 140bp on the CA-US 2Y while short AUDUSD still fights a residual +26bp AU-US premium after USDCAD has already ground higher on 1d/5d/1m.",
+        "strongest_opponent_point": "",
         "trade_change": "unchanged"
       },
-      "stance_summary": "Global tightening is still broadening into a housing-and-labor slowdown that AUDUSD has not paid for, so the cleanest remaining risk-off asymmetry is short AUD versus defensive USD.",
+      "stance_summary": "FACT: Australian housing is already contracting (NSW stamp-duty receipts -24% y/y, volumes -18%, Sydney/Melbourne values more than 7% below peak) while AONIA still prices +21.5bp by Oct-26, +37.5bp by Dec-26, +51bp by M\u2026",
       "trade": {
-        "direction": "short",
+        "direction": "long",
         "entry": null,
         "expression": null,
-        "horizon": "4-8 weeks",
-        "instrument": "AUDUSD",
-        "invalidation": "Mechanism fails if Australian labor/housing stabilize or re-accelerate, AU-US front-end re-widens in AUD's favor, and global policy reopens a credible easing path while AUDUSD stays bid versus other high-beta FX.",
-        "structure": "spot",
+        "horizon": "1-3 months, through the Oct-Nov AONIA strip and the next AU housing/labor prints",
+        "instrument": "AU_2Y",
+        "invalidation": "Thesis is wrong if the live AONIA path re-steepens or holds the packet Oct-26 4.565 and Mar-27 4.86 prints while AU housing/labor stop deteriorating (stamp-duty/volumes/employment stabilize) and/or trimmed-mean CPI re-accelerates from 3.6%. A delivered October hike with hawkish RBA guidance that lifts the Dec-26 4.725 and Mar-27 4.86 contracts would also invalidate. Do not invent a yield stop; executable marks are absent.",
+        "structure": "Receive Australian front-end: long AU 2Y sovereign as the bookable proxy for the ASX 30-day AONIA Oct-26/Dec-26/Mar-27 strip. Research/reference only; no executable broker ticket in the packet. Do not use stale 01-Dec-2022 RBA F1 OIS.",
         "target": null
       }
     },
     {
       "agent": "perma-bull",
-      "confidence": 52,
-      "entry_reason": "The 16 Sep Fed hike to 3.75-4.00% was already >90% priced; the live impulse is the subsequent 5d/1m USDCAD squeeze as the last24 desk framed broader G10 tightening, not new Canadian weakness. Saudi ship-to-ship crude via Oman cut the extreme oil-supply tail while retained energy research still has crude near $110, which is CAD terms-of-trade support. CA-US 2Y cheapened 17bp over 1m to -140bp even after Canada\u2019s stro\u2026",
-      "mispricing": "USDCAD\u2019s 1m/5d USD bid and a historically cheap CA-US 2Y (-140bp, ~4th percentile 1y/5y) price Canada as the soft cyclical that must ease versus a hawkish Fed. Packet growth gauges say the opposite on activity and consumer: CA activity 53.2 and consumer 52.5 versus US 49.92 and 48.5.",
+      "confidence": 60,
+      "entry_reason": "Fed hike to 3.75-4.00% is delivered (2026-09-16) and the 18 Sep desk thesis says global tightening is broadening (BoJ to 1.25%, BoE 6-3 hold), so Canada\u2019s near-flat CORRA path is now the outlier rather than a consensus easing world. BoC minutes on 2026-09-16 flag higher energy pass-through just as WTI\u2019s last print is 107.02 with 1m log +24% and shock absorbers weakening; that is a new transmission into a still-easy\u2026",
+      "mispricing": "Dec-26 CORRA at 2.58 against overnight 2.29 prices a BoC that stays largely on hold into year-end. CA 2Y at 3.27 versus US 2Y at 4.76 (CA-US 2Y -140bp) prices a deep relative Canada slowdown. Those assumptions conflict with US activity/labor/consumer still in the 69-75 range, global tightening broadening, and an energ\u2026",
       "rebuttal": {
-        "strongest_opponent_point": "The CA-US 2Y of -140bp at about the 4th percentile is a real holding-cost and percentile gap versus only 74th-percentile USDCAD, so patient long USDCAD can be paid while waiting if BoC never closes the policy gap.",
+        "strongest_opponent_point": "",
         "trade_change": "unchanged"
       },
-      "stance_summary": "Fade the post-Fed defensive USD bid in USDCAD: Canada still has the strongest growth/consumer gauges in the emphasis set, energy terms-of-trade remain a CAD tailwind, and the 1m CAD selloff prices more fragility than th\u2026",
+      "stance_summary": "Growth, liquidity and risk appetite are more resilient than Canada\u2019s policy path implies. US activity/labor/consumer gauges remain hot after a delivered Fed hike, risk assets are not in stress, and energy is a live infl\u2026",
       "trade": {
         "direction": "short",
-        "entry": "ECB same-fixing research/reference USDCAD 1.4010471204188482 as of 2026-09-18; not executable broker pricing",
+        "entry": null,
         "expression": null,
-        "horizon": "4-8 weeks tactical fade of the post-FOMC USD/CAD squeeze",
-        "instrument": "USDCAD",
-        "invalidation": "Thesis fails if Canada loses its activity/consumer lead versus the US, if oil demand destruction removes CAD terms-of-trade support, or if additional G10 tightening extends the USD squeeze without a Canadian growth confirmation.",
-        "structure": "spot short USDCAD (long CAD versus USD)",
+        "horizon": "4-8 weeks",
+        "instrument": "CA_2Y",
+        "invalidation": "Thesis fails if the live CORRA path through Dec-26 stops repricing higher and instead prices a cut, or if subsequent Canada activity/inflation evidence confirms a labor-led demand collapse with energy pass-through fading and core remaining the binding BoC constraint. A US growth break that also collapses Canadian activity would invalidate the cyclical-resilience mechanism rather than just the timing.",
+        "structure": "Short 2-year Canada sovereign duration (pay CA_2Y). Research/reference official yields and MX CORRA futures only; no executable broker ticket in the packet.",
         "target": null
       }
     },
     {
       "agent": "positioning-cynic",
-      "confidence": 37,
-      "entry_reason": "AUDNZD is still being added after the information is old: +0.65% on 1d and +1.19% on 5d on top of +4.27% over 1m. The Fed 25bp hike arrived with >90% futures probability already in the price. AU-US 2Y fell 12.5bp on 2026-09-16, shrinking the rate cushion under AUD while AUDNZD continued higher. NZ Q2 GDP 0.2% q/q beat forecasts and the India FTA passed; those incremental NZ prints have not been bid in NZDUSD.",
-      "mispricing": "AUDNZD prices a large, still-extending AU-over-NZ divergence as if NZ were uniquely broken. Price is the only positioning proxy in the packet. CFTC/skew/CTA holdings are unavailable, so this is inferred crowding, not measured open interest.",
+      "confidence": 57,
+      "entry_reason": "Fed 25bp to 3.75-4.00% is delivered and was >90% priced; the new information is the desk extending that into a global-tightening AUD-cross bid. CFTC 15 Sep TFF: AUD OI +37673 to 99th percentile with all nets null; CME OI unavailable\u2014this is the first ownership print after the hike week. 16 Sep housing evidence (stamp duty -24% y/y, volumes -18%) arrives while 18 Sep ASX still concentrates hike OI in October (21752 v\u2026",
+      "mispricing": "Market prices a still-widening RBA-versus-BoC policy gap in 99.8th-percentile AUDCAD/AUDNZD and in October AONIA +21.5bp. The 2Y sovereign gap at -164.9bp is only 51st 1y, so this is not a 'spread extreme therefore fade' trade. The mispricing is ownership plus policy-path: hike odds are concentrated in a high-OI Octob\u2026",
       "rebuttal": {
-        "strongest_opponent_point": "If global tightening keeps USD bid, NZD can remain the high-beta funding dump even after a 3.90% one-month decline because NZ labor at 47.0 is the packet's weakest labor gauge.",
-        "trade_change": "amended"
+        "strongest_opponent_point": "",
+        "trade_change": "unchanged"
       },
-      "stance_summary": "Fade the packet's most extended, momentum-owned expression\u2014long AUD versus dumped NZD\u2014rather than chase post-hike USD or pile into NZDUSD shorts after a fully priced Fed event.",
+      "stance_summary": "Verified CFTC TFF nets are all null and CME OI is unavailable, so 99th-percentile AUD/JPY/CHF open interest is a crowded pit, not a signed long. The consensus post-Fed package\u2014global tightening, long AUD versus CAD/NZD,\u2026",
       "trade": {
-        "direction": "short",
+        "direction": "long CA-AU 2Y (receive AU 2Y, pay CA 2Y)",
         "entry": null,
         "expression": null,
-        "horizon": "2-6 weeks",
-        "instrument": "AUDNZD",
-        "invalidation": "The fade is wrong if NZ-specific activity/labor keeps deteriorating versus Australia, if official NZ yields once available confirm a persistent AU 2Y premium, or if AUDNZD's 1m outperformance re-accelerates after AU housing/activity stabilize.",
+        "horizon": "1-3 months, through the October-December AONIA/CORRA window",
+        "instrument": "CA-AU_2Y",
+        "invalidation": "Thesis is wrong if ASX October-December AONIA implied rates keep rising while Australian housing/activity stops deteriorating, or if the CORRA path flattens/cuts while Canada headline/energy pass-through fades. Separate bad entry from bad thesis: a further AUDCAD squeeze higher with unchanged CA-AU 2Y would confirm the crowding was in spot, not that the rates RV is invalidated. Unsigned TFF nets remaining null is not an invalidation.",
         "structure": null,
         "target": null
       }
     },
     {
       "agent": "rate-dove",
-      "confidence": 52,
-      "entry_reason": "The 16 Sep housing and Westpac-sentiment prints are new transmission evidence that arrived as the Fed delivered a fully priced 25bp hike. AU 2Y still printed +39bp over one month and remains at a 99th-percentile level; AUDUSD\u2019s 1m return is still +0.20% versus NZDUSD \u22123.90%. Housing volumes and sentiment move first, labor next, then the RBA path. That sequence is live in AU now.",
-      "mispricing": "Market-implied assumption backsolved from AU 2Y/10Y at ~99th 1y percentiles plus AUDUSD in the upper quartile is that RBA policy can stay restrictive and AUD can keep its high-yield bid even as the housing channel is already contracting.",
+      "confidence": 61,
+      "entry_reason": "16 Sep housing evidence is now in the frozen packet while the 18 Sep desk thesis still treats global tightening as dominant even where domestic growth is softer. ASX October AONIA already implies 4.565 versus 4.35 with 4450 contracts of volume and 21752 open interest \u2014 the near-term hike is live, not a distant terminal debate. September Westpac-MI sentiment fell 5.2% to 84.4, a fresh demand-side impulse after July e\u2026",
+      "mispricing": "ASX AONIA prices a continued hiking cycle (no cuts, +21.5bp by Oct, +51bp by Mar-2027) as if the housing channel had not already produced a pandemic-sized revenue and price hole. That is overpriced tightening / underpriced easing in the Australian front end. AU 2Y 4.999 embeds that path plus term premium; a 2022-09-28\u2026",
       "rebuttal": {
-        "strongest_opponent_point": "Dollar-king and carry-is-king's long USDCAD is the strongest opposing USD-up case because a CA-US 2Y gap of about -140bp near the 4th one-year percentile versus USDCAD only around the 74th percentile, with the 2Y differential paying long USD, looks like a cle\u2026",
+        "strongest_opponent_point": "",
         "trade_change": "unchanged"
       },
-      "stance_summary": "Restrictive policy is already chewing through Australian housing, labor and sentiment while AU front-end yields sit at a one-year extreme and AUDUSD still trades like a supported high-yielder, so AUD easing and growth w\u2026",
+      "stance_summary": "Verified frozen SOFR/CORRA/AONIA paths price no easing anywhere in the US/CA/AU set: SOFR 3.85 with +34.75bp by Dec-2026 and +75.25bp by Aug-2028; CORRA 2.29 with +29bp on the 1m strip by Dec-2026 and +136.5bp on the 3m\u2026",
       "trade": {
-        "direction": "short",
+        "direction": "long",
         "entry": null,
         "expression": null,
-        "horizon": "1-3 months",
-        "instrument": "AUDUSD",
-        "invalidation": "Thesis fails if Australian labor re-tightens and housing turnover/prices stabilize while the RBA delivers another hike or AU 2Y holds its 99th-percentile regime, or if US activity/labor break first.",
-        "structure": "spot FX short AUD versus USD",
+        "horizon": "6-12 weeks",
+        "instrument": "AU_2Y",
+        "invalidation": "Thesis invalid if ASX AONIA-implied rates keep rising along the priced +51bp (Mar-2027) to +59.5bp (mid-2027) hike path without offsetting housing/labour deterioration, or if AU trimmed-mean CPI re-accelerates from the July 3.6% y/y print.",
+        "structure": "Outright long Australian 2-year government duration (receive AU 2Y). Alternate implementation: long ASX 30-day AONIA 2026-10 and 2026-11 cash-rate futures. Research/reference only; no executable broker structure in the packet.",
         "target": null
       }
     },
     {
       "agent": "rate-hawk",
-      "confidence": 55,
-      "entry_reason": "Fed 25bp hike to 3.75-4.00% was greater-than-90% priced and is now known; residual hawk risk has migrated to currencies still priced for easier policy. BoC minutes already flag higher energy pass-through while August CPI held at 3% and CA-US spreads cheapened further over the month. Energy shock absorbers remain weak and the last24 desk says the shock is constraining the global easing impulse.",
-      "mispricing": "CA-US 2Y at -140bp (3.8th one-year percentile) and CA-US 10Y at -111bp (0.20th one-year percentile) assume BoC can stay far easier than the Fed because core is near 2%; that ignores stuck 3% headline CPI, BoC minutes flagging energy pass-through, Canadian activity/consumer still above 52, and crude near $110.",
+      "confidence": 64,
+      "entry_reason": "Sep-16 hike is now delivered, so residual information is the reaction function not the meeting itself. 18 Sep desk thesis: global tightening is broadening after the Fed move (BoJ 1.25%, BoE three hike votes), while the 1M SOFR strip is still +34.75bp by Dec. Energy-market shock absorbers weaken even after a Saudi workaround reduced the extreme oil-supply tail, keeping an inflation-persistence tail in the US reaction\u2026",
+      "mispricing": "SR1Z26 at 4.1975 versus SOFR 3.85 prices only about one additional 25bp-scale move by December after a hike that was already >90% priced. The hawkish residual \u2014 another 2026 hike and/or a higher 2027 peak \u2014 is not in the 2026 1M contract. US 2Y 4.76 is a different tenor and is already near the 2027 peak; it is not thi\u2026",
       "rebuttal": {
-        "strongest_opponent_point": "The verified CA-US 2Y of about 140bp is paid to long USDCAD while Canadian core near 2% and cooling labor give opponents a coherent case that BoC will not catch the Fed fast enough to beat carry.",
+        "strongest_opponent_point": "",
         "trade_change": "unchanged"
       },
-      "stance_summary": "CAD inflation and BoC restraint are underpriced versus a historically extreme CA-US yield discount after a fully anticipated Fed hike.",
+      "stance_summary": "Inflation persistence and still-hot US demand/labor mean the Fed\u2019s just-delivered hike is not the end of the tightening impulse. The live 1M SOFR path only prices about one extra hike by December 2026 and then a shallow\u2026",
       "trade": {
         "direction": "short",
         "entry": null,
         "expression": null,
         "horizon": "1-3 months",
-        "instrument": "USDCAD",
-        "invalidation": "BoC communication or incoming Canadian CPI shows energy failing to lift headline/core while labor deterioration continues, so the CA-US discount is revealed as warranted easier policy rather than underpriced inflation risk.",
-        "structure": "spot",
+        "instrument": "SR1Z26",
+        "invalidation": "Thesis is wrong if subsequent US inflation/labor data and FOMC communication drop the tightening bias, or if the 1M SOFR strip reprices SR1Z26 implied SOFR down toward unchanged policy at the 3.85 SOFR benchmark rather than higher. Delayed eSignal versus live ICE basis is a mark risk, not an invalidation of the macro claim.",
+        "structure": "Short/pay ICE 1-month SOFR future SR1Z26. Packet research/reference: implied_rate 4.1975, price 95.8025, source ESIGNAL_ICE_1M_SOFR_DELAYED. Not an executable broker ticket.",
         "target": null
       }
     },
     {
       "agent": "trend-follower",
-      "confidence": 59,
-      "entry_reason": "Fed hike is delivered and the Sep 18 desk thesis says global tightening broadened via BoJ hike and a hawkish BoE hold. CA-US 2Y widened a further ~15bp against CAD over 5d and ~17bp over 1m, matching USDCAD +1.10% 5d and +1.74% 1m. Canada August core is near target and labor is cooling, so a BoC catch-up hike is not the live catalyst.",
-      "mispricing": "Market pricing still treats CAD energy support and the 3m CAD outperformance as enough to fade USDCAD, even though the live 5d/1m price path, CA-US 2Y/5Y/10Y spread trend, and Fed-versus-BoC policy gap remain USD-positive.",
+      "confidence": 65,
+      "entry_reason": "Fed hike delivered 16 Sep 2026 after >90% odds, so the event is now a path-persistence question rather than a binary call. 18 Sep desk thesis: global tightening is broadening (BoJ 1.25% 31-year high; BoE 6\u20133 with three hike votes) and energy shock is constraining easing. August CPI rollup keeps the Fed tightening bias intact; US temps remain 72/75/69/74. SOFR Oct still only +6bp versus overnight 3.85 \u2014 light if anot\u2026",
+      "mispricing": "The mispricing is not \u20182Y is cheap\u2019 \u2014 it is already above Dec SOFR and slightly above the Aug-2028 SOFR terminal. The mispricing is the market\u2019s implicit terminal/fade assumption: that a delivered 25bp hike and 99th-percentile yields cap the cycle, so Oct SOFR at +6bp and Dec at +34.75bp are enough. That assumption is\u2026",
       "rebuttal": {
-        "strongest_opponent_point": "The strongest opposing case is that a fully priced Fed hike plus Canada's firmer activity and energy ToT and a BoC energy-pass-through warning make the 5d/1m USDCAD squeeze a known-information overshoot that should reverse as the extreme CA-US yield discount\u2026",
+        "strongest_opponent_point": "",
         "trade_change": "unchanged"
       },
-      "stance_summary": "Do not fade the USDCAD grind: 1d/5d/1m spot, the still-widening CA-US front-end spread, and post-FOMC global tightening are aligned, and energy ToT is not a reversal signal.",
+      "stance_summary": "Ride the delivered US hike and still-rising SOFR path: hot US temps, broadening global tightening, and hike-cycle analogs all say the yield uptrend persists; fading 99th-percentile US yields or a one-and-done SOFR strip\u2026",
       "trade": {
-        "direction": "long",
+        "direction": "short (pay rates)",
         "entry": null,
         "expression": null,
-        "horizon": "2-6 weeks",
-        "instrument": "USDCAD",
-        "invalidation": "USDCAD 5d and 1m returns both turn negative while the CA-US 2Y spread stops moving against CAD, or Canadian core inflation/BoC policy closes the hawkish US-CA gap.",
-        "structure": "spot",
+        "horizon": "1-3 months, through the Dec 2026 SOFR window",
+        "instrument": "US 2Y",
+        "invalidation": "SOFR Oct\u2013Dec strip losing its additional-tightening slope back toward overnight 3.85, or a 2023-02-style financial-stress reversal without a new hike catalyst; no executable stop in the packet",
+        "structure": "short US 2Y outright duration (pay rates); policy-path-consistent with paying ICE 1M SOFR Dec-2026 SR1Z26; research/reference yields and delayed SOFR only \u2014 frozen packet has no executable broker marks",
         "target": null
       }
     },
     {
       "agent": "value-guy",
-      "confidence": 53,
-      "entry_reason": "AUDCAD is at a 5y historical extreme after +1.95% in one month. The CA-AU 2Y discount of -165bp is already in the curve; leftover mispricing lives in spot. Australian housing evidence from 16 Sep is the new transmission. The 18 Sep desk thesis that global tightening is broadening keeps Australian term rates elevated.",
-      "mispricing": "AUDCAD prices Australia as the structurally superior commodity currency after the rate market has already paid a historically large AU-over-CA 2Y premium. The residual discrepancy is in the cross.",
+      "confidence": 62,
+      "entry_reason": "CA-US 2Y cheapened 15bp in 5d (z -2.17) after a Fed hike that was already >90% priced \u2014 known information, new residual. 18 Sep desk thesis: global tightening broadened (BoJ 1.25%, BoE 6\u20133 hawkish split) into an energy shock that constrains easing where growth is softer, including Canada. BoC minutes flag energy pass-through while CORRA still prices only +29bp through December \u2014 the Canada path has not caught up. Cl\u2026",
+      "mispricing": "Markets price a durable BoC near-2.3\u20132.6% path versus a US 2Y that already sits next to 2028 SOFR. That leaves CA-US 2Y at a 5y 4th-percentile level. The mispricing is the cross-market 2Y gap versus a policy-path-and-energy-normalized fair gap, not CAD spot and not an outright US duration call.",
       "rebuttal": {
-        "strongest_opponent_point": "Dollar-king's case that CA-US 2Y at about -140bp (roughly 4th 1y/5y percentile) has not been matched by USDCAD's only-74th 1y percentile is the strongest CAD-lower claim, because it uses a historical spread-versus-spot discrepancy rather than mere post-Fed mo\u2026",
+        "strongest_opponent_point": "",
         "trade_change": "unchanged"
       },
-      "stance_summary": "AUDCAD is the clean G10 valuation dislocation: a 5y-extreme AUD/CAD spot after the curve has already paid Australia a large 2Y premium, while the new information is Australian housing transmission and CAD energy terms-o\u2026",
+      "stance_summary": "Narratives that Canada is a durable low-rate peer versus a hiking Fed are cheap. The tradeable object is the CA-US 2Y yield spread at -140bp, a 1y and 5y historical left-tail, after a post-FOMC cheapening that a >90% pr\u2026",
       "trade": {
-        "direction": "short",
+        "direction": "long",
         "entry": null,
         "expression": null,
-        "horizon": "2-4 months",
-        "instrument": "AUDCAD",
-        "invalidation": "Thesis is falsified if Australian housing and activity re-accelerate while Canadian energy terms-of-trade support fades and the CA-AU 2Y discount reverses without AUDCAD leaving the 5y extreme.",
-        "structure": null,
+        "horizon": "1-3 months",
+        "instrument": "CA-US_2Y",
+        "invalidation": "Thesis is wrong if CORRA Dec stays near 2.58 and CA-US 2Y cheapens through the 2025-01-30 analog level of -145bp without a BoC-path reprice, or if Canada core remaining near 2% plus labor-gauge weakness (38) dominate energy pass-through and the US 2Y selloff simply continues as in early-cycle 2022 analogs. Right-thesis/wrong-timing if the 2024-12-18 analog path (-3bp 1m / -20bp 3m) repeats; then hold the 3m horizon rather than stop on noise. Saudi STS crude workaround reducing the oil-supply tail is a live softener of the energy catalyst.",
+        "structure": "Pay Canada 2Y vs receive US 2Y duration (long the CA minus US 2Y yield spread). Research/reference official yields and SOFR/CORRA paths only; no executable broker prices in the frozen packet.",
         "target": null
       }
     },
     {
       "agent": "vol-convexity",
-      "confidence": 41,
-      "entry_reason": "The 16 Sep Fed 25bp hike was already greater-than-90% priced, so residual AUD risk is path and event distribution. Verified AU housing transmission is live while AU 2Y/5Y/10Y yields remain at the 99th 1y percentile. Global tightening broadened after the Fed via the BoJ hike and a hawkish BoE hold. AUDUSD 20d realized vol 4.71 is below 60d realized vol 5.29 and far below USDJPY 20d realized vol 11.04.",
-      "mispricing": "Packet AUDUSD is only +0.20% over 1m with 20d realized vol 4.71 versus 60d 5.29, while AU 2Y is 4.999 at the 99th 1y percentile. That is a rates-versus-FX and event-versus-realized-vol discrepancy, not a verified cheap implied-vol print.",
+      "confidence": 52,
+      "entry_reason": "Fed delivered 25bp to 3.75-4.00 percent on 16 Sep after >90 percent pre-pricing, but the SOFR strip still prices 4.1975 by Dec and 4.6025 by Aug 2028. AONIA still prices Oct 4.565 and Mar-2027 4.86 while NSW stamp duty is -24 percent y/y and home values are more than 7 percent from peak. AUDUSD 20d RV is only 4.71 with a +0.20 percent 1m change, while AUDNZD's 1m log z is 2.84 at a 99.8th percentile \u2014 quiet USD pair\u2026",
+      "mispricing": "The mispricing is one-sided path certainty in linear AUDUSD and in AU 2Y / AU-US 2Y, not a documented cheap implied-vol number. AU-US 2Y at +25.9bp is only the 25th 1y percentile and the AUDUSD-to-2Y residual is weak, so rates RV does not own the discrepancy. AUDUSD is not a 99th-percentile spot fade; the 99th-percent\u2026",
       "rebuttal": null,
-      "stance_summary": "AUDUSD spot cannot own the unresolved housing-versus-global-tightening fork; a 1-month ATM straddle is the expression, with all executable levels null until implied vol is checked against packet realized vol.",
+      "stance_summary": "Spot AUDUSD is the wrong instrument for a two-way policy-path residual. Frozen AONIA still prices about 51bp of extra RBA tightening into a housing channel that is already contracting, while SOFR still prices residual F\u2026",
       "trade": {
-        "direction": "long volatility",
+        "direction": "buy volatility",
         "entry": null,
         "expression": null,
-        "horizon": "2-5 weeks, through the next RBA and Australian inflation prints",
-        "instrument": "AUDUSD 1-month ATM straddle",
-        "invalidation": "Do not execute if 1-month AUDUSD ATM implied vol is already rich to packet 20d realized vol 4.71 and 60d realized vol 5.29. Thesis is false if AU housing and global tightening resolve as a one-way AUD path.",
-        "structure": "long 1-month ATM AUDUSD straddle, delta-hedged; stand aside if 1m implied vol is already rich to packet 20d/60d realized vol",
+        "horizon": "2-5 weeks, through the October AONIA contract",
+        "instrument": "AUDUSD 1-month straddle",
+        "invalidation": "Thesis is invalid if live implied vol, 25-delta risk reversal and premium \u2014 all null in this packet \u2014 already embed a larger two-way AUDUSD range than AONIA-versus-SOFR delivery risk, or if both the AONIA strip through Mar-2027 4.86 and the SOFR strip through Dec 4.1975 print as a smooth delivered path with no housing or inflation surprise.",
+        "structure": "long 1-month ATM AUDUSD straddle; premium, strikes, implied vol and skew are unsourced in the frozen packet and remain null",
         "target": null
       }
     }
