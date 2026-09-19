@@ -7,6 +7,13 @@
     "opp-view:NZD"
   ],
   "evidence_cutoff": "2026-09-19T21:40:00Z",
+  "fail_closed": [
+    {
+      "item": "pm_principal_model_routing",
+      "reason": "Task inherit emits cursor-grok-4.6-high-fast; locked aggregator type emits cursor-grok-4.6-high; Task rejects slug grok-4.6; repo hook allowlist is composer-2.5/grok-4.6/grok-4.5. ACP_SUBAGENT_POLICY allowed continuing with composer-2.5.",
+      "requested": "grok-4.6"
+    }
+  ],
   "funding_context": {
     "convention": "ACT/360",
     "sofr_observation_date": "2026-09-17",
@@ -69,8 +76,10 @@
       "total": 69
     },
     "composer_children": 0,
+    "notes": "PM principals launched as composer-2.5 after grok-4.6 Task/hook slug conflict.",
     "parent_grok": 1,
     "pm_children": 0,
+    "pm_principals_composer": 3,
     "pm_principals_grok": 0,
     "rebuttals_grok": 11,
     "rebuttals_grok_planned": 11
@@ -87,6 +96,29 @@
     "ChatGPT packet persisted; current-cycle ChatGPT decision not generated or applied."
   ],
   "packet_sha256": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
+  "pm_launch": {
+    "agents": {
+      "grinder": "bc-c7b021e5-3d6c-572b-8e9a-250e836f2f87",
+      "pragmatist": "bc-da5384e2-dc2a-5ba6-a220-96bbcc02b5bd",
+      "swinger": "bc-97ece35c-26f9-5b4b-a53b-7d511abe771a"
+    },
+    "chatgpt": "packet sealed; decision not launched",
+    "children": 0,
+    "evidence_cutoff": "2026-09-19T21:40:00Z",
+    "evidence_packet_sha256": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
+    "fail_closed": [
+      {
+        "item": "pm_principal_model_routing",
+        "reason": "Task inherit emits cursor-grok-4.6-high-fast; locked aggregator type emits cursor-grok-4.6-high; Task rejects slug grok-4.6; repo hook allowlist is composer-2.5/grok-4.6/grok-4.5. ACP_SUBAGENT_POLICY allowed continuing with composer-2.5.",
+        "requested": "grok-4.6"
+      }
+    ],
+    "independence": "each PM reads only its own packet + memory; no mutual current-cycle visibility",
+    "launched_principal": "composer-2.5",
+    "requested_principal": "grok-4.6",
+    "run_id": "tr-20260919T214000Z-ondemand",
+    "type": "AUTOMATED_PM_LAUNCH"
+  },
   "pm_packets": {
     "automated_pm_decisions": "not_yet_applied",
     "bound_run_id": "tr-20260919T214000Z-ondemand",
@@ -177,7 +209,7 @@
     "vol-convexity"
   ],
   "run_id": "tr-20260919T214000Z-ondemand",
-  "stage": "PM_PACKETS_BOUND_CHATGPT_PENDING",
+  "stage": "AUTOMATED_PMS_LAUNCHED_CHATGPT_PENDING",
   "starting_ref": "1d8d83a46d3a80bd2c1e73709b1239819b37d804",
   "status": "STATUS: AWAITING_CHATGPT_ARBITRATION",
   "type": "MARKET_WATCH_18_STACK_VALIDATION_RECEIPT"
