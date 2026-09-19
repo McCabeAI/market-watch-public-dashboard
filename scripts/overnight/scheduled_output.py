@@ -54,6 +54,12 @@ FORBIDDEN_MODEL_STATE_KEYS = {
     "funding_last_accrual_at",
     "net_pnl_usd",
     "competition_rank",
+    "gross_notional_usd",
+    "total_pnl_usd",
+    "entry_price",
+    "mark_price",
+    "entry_price_source",
+    "mark_price_source",
 }
 
 
