@@ -52,10 +52,10 @@ def freeze_snapshot(
             "metric": COMPETITION_METRIC,
             "funding_rate_annual": FUNDING_RATE_ANNUAL,
             "funding_day_count": FUNDING_DAY_COUNT,
-            "funding_basis": "Each open position's stored notional_usd is treated as borrowed paper notional. Funding accrues ACT/365 on outstanding notional and reduces net P&L/NAV.",
-            "flat_book_pnl": 0.0,
+            "funding_basis": "Every seat except no-trade-skeptic borrows its full $100m allocation and pays 5% ACT/365 on that full allocation every day, deployed or not. The no-trade-skeptic is the cash hurdle: it pays no borrowing cost and earns 5% ACT/365 on the undeployed portion of its original $100m allocation; deployed notional stops earning that cash yield.",
+            "flat_book_pnl": "Active trading seats lose the daily funding charge while flat. No-trade-skeptic earns the cash yield while flat.",
             "no_trade_allowed": True,
-            "instruction": "Do not optimize for sounding prudent. Take paper risk when the expected edge clears funding and the invalidation is defined; otherwise staying flat is allowed but earns zero and competes against profitable books.",
+            "instruction": "Do not optimize for sounding prudent. The active seats have a real carry clock even when risk-off; take paper risk when expected edge clears the hurdle and invalidation is defined. The no-trade-skeptic must beat traders by preserving cash yield or by deploying only when expected trade return beats that yield.",
         },
         "prior_books": prior_books,
         "known_gaps": [
