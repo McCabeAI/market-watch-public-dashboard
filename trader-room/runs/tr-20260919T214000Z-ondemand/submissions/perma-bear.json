@@ -1,0 +1,145 @@
+{
+  "agent": "perma-bear",
+  "archetype": "perma-bear",
+  "confidence": 58,
+  "conflict_synopsis": {
+    "au_rates_view": "lower",
+    "aud_view": "lower",
+    "ca_rates_view": "lower",
+    "cad_view": "lower",
+    "carry_view": "opposes_trade",
+    "confidence": 58,
+    "conflict_tags": [
+      "CA_RATES_DOWN",
+      "CAD_DOWN",
+      "AUD_DOWN",
+      "NZD_DOWN",
+      "USD_UP",
+      "US_RATES_UP",
+      "AU_RATES_DOWN",
+      "RISK_OFF"
+    ],
+    "core_view": "Canada cannot deliver the 122bp of 2027 hikes priced into CRAU27 given labor 38 and core near 2%.",
+    "key_catalyst": "CA labor/CPI or BoC communications that refuse to validate a 100bp-plus 2027 hiking cycle.",
+    "key_invalidation": "CRAU27 implied rate through the packet 2028 peak near 3.655, or CA labor/activity re-accelerating with core moving well above 2%.",
+    "nz_rates_view": "not_relevant",
+    "nzd_view": "lower",
+    "primary_trade": "long duration CORRA_2027-09 (CRAU27 implied-rate down)",
+    "risk_view": "risk_off",
+    "seat": "perma-bear",
+    "time_horizon": "6-12 weeks",
+    "us_rates_view": "higher",
+    "usd_view": "higher"
+  },
+  "packet_sha256": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
+  "remit": "strongest defensive, slowdown, stress or risk-off macro expression",
+  "round": 1,
+  "run_id": "tr-20260919T214000Z-ondemand",
+  "stance_summary": "Canada labor and core inflation cannot support the 122bp of additional tightening priced into CORRA_2027-09. The Fed hike and energy-pass-through narrative have built a full BoC hiking cycle onto an overnight CORRA still at 2.29 while CA labor is 38 and core is near 2%. Long duration on CRAU27 is the cleanest slowdown expression; short AUDUSD is the fallback stress expression if housing/inflation stagflation is preferred in spot.",
+  "trade": {
+    "asset_class": "rates",
+    "catalysts": [
+      "Next Canadian labor and CPI prints that keep slack visible versus core near 2%.",
+      "BoC communications that refuse to validate a 100bp-plus hiking path after the energy-pass-through minutes.",
+      "Softening energy impulse if the Saudi/Oman crude workaround continues to cap the supply tail.",
+      "Further evidence that housing/FCI channels are biting (AU housing analog; CA consumer 45)."
+    ],
+    "confidence": 58,
+    "context_build": {
+      "causal_mechanism": "Test whether Canadian domestic demand (labor 38, consumer 45, core near 2%) can validate a BoC hiking cycle of about 122bp by Sep 2027. Mechanism: imported energy and a just-delivered Fed hike have been used to price a catch-up tightening path; if the labor/consumption channel is already slack, that path is a policy-error/overtightening price that should unwind as realized CA data refuse to confirm pass-through. Transmission is fewer delivered hikes and a lower CRAU27 implied rate, not a required CAD spot crash.",
+      "flow_and_positioning_check": "CFTC trader-class nets and CME positioning overlays are unavailable this freeze (pos:cftc). CORRA futures open interest and volume are null on the MX CRA strip, so crowding, dealer hedging, and liquidation cannot be verified. Paper books are empty $100m seeds, so there is no legacy perma-bear inventory. Cannot reject a flow-only explanation; cannot confirm one either. Treat ownership as unknown and keep size modest.",
+      "historical_reference": {
+        "analogs": [
+          "CA-US_2Y analog 2024-12-18: prior 1m move -17bp, level -130bp versus today's -140bp; subsequent 1m -3bp and 3m -20bp, so the spread stayed or went more negative as US restriction outran Canada.",
+          "CA-US_2Y analog 2025-01-30: prior 1m -17bp, level -145bp, nearly identical to today's -140bp; subsequent 1m -5bp then 3m +25bp, a later partial mean-reversion once the growth/policy impulse faded.",
+          "CA-US_2Y analog 2024-05-02: prior 1m -17bp, level -63bp; subsequent 1m -9bp and 3m -6bp. Directionally similar near-term follow-through, at a much less extreme level than today.",
+          "AU housing under higher rates (NSW stamp duty -24% y/y, volumes -18%, dwelling values more than 7% from peak) is a contemporaneous peer analog that the tightening channel is already biting in a high-rate housing market."
+        ],
+        "distribution": "CA 2Y 3.27 is 97.8th percentile of 1y (z 2.46) but only 58.6th percentile of 5y, so the stretch is a one-year re-pricing not a five-year extreme. CA-US 2Y at -140bp is 3.8th percentile of 1y and 4.3rd of 5y (z_1y -1.84). CA 2s10s 56bp is 0.6th percentile of 1y. CRAU27 +122bp from overnight is a large policy-path gap relative to a 2.29 benchmark. These percentiles are discovery flags, not the thesis.",
+        "regime_differences": "Unlike 2023-03 banking-stress hike-path unwinds, this packet has no documented CA banking shock. Unlike 2022 energy-spike hiking, CA core is near 2% and the inflation gauge is only 55; the hawkish residual is energy pass-through and Fed spillover, not a domestic overheat. US gauges remain hot (labor 75, inflation 72, activity 69, consumer 74), so this is a Canada-specific demand/policy-path discrepancy, not a synchronized G10 recession print. Temperature gauges are repo-retained dashboard_v8 and may be stale versus live Supabase scores."
+      },
+      "independent_checks": [
+        "Policy-path versus overnight: CORRA 2.29 versus CRAU27 3.51 (+122bp) and a 2028 peak of 3.655, a fully specified MX CRA hiking cycle.",
+        "Demand versus inflation gauges: CA labor 38 and consumer 45 versus inflation 55 and activity 66; hard CPI holds at 3% with core near 2%.",
+        "Cross-market: CA-US 2Y already -140bp (near 1y/5y lows) while US SOFR path still rises to SR3U7 4.755; Canada is being asked to catch a hotter US cycle it is not running.",
+        "Peer tightening channel: AU housing downturn under higher rates with AONIA still pricing about 60bp of hikes (peak 4.945 versus AONIA 4.35) shows the same late-cycle FCI bite the BoC path would intensify."
+      ],
+      "known_vs_new_information": "Known: Fed hike bias, August US CPI keeping that bias intact, CA August CPI at 3% with core near 2%, BoC energy-pass-through minutes, and AU housing already weakening under higher rates. Marginal now: the live CORRA 2027 strip still embeds a full hiking cycle after those facts; SOFR 3.85 is a realized FCI impulse; Saudi ship-to-ship crude via Oman reduced the extreme oil-supply tail even as a separate rollup says energy shock absorbers are weakening. Labor 38 is a state, not a new print in this packet; what is new is using that known slack against a still-hawkish 2027 CORRA path.",
+      "market_assumption_disagreed_with": "Disagree that Canada can or should deliver that 122bp path. Core near 2% and labor 38 imply the energy/Fed impulse is being over-weighted; the priced hike cycle is the fragile assumption.",
+      "market_implied_assumption": "CRAU27 at 3.51 versus CORRA 2.29 requires the BoC to deliver roughly 122bp of tightening by Sep 2027, i.e. a multi-hike catch-up toward US restriction, justified by energy pass-through rather than by current core inflation or labor tightness.",
+      "path_to_current_price": "Overnight CORRA is 2.29 as of 2026-09-17. The 3m strip then prices Dec-26 2.775 (+48.5bp), Mar-27 3.13 (+84bp), Jun-27 3.365 (+107.5bp), Sep-27 3.51 (+122bp), and a 2028 peak near 3.655. CA 2Y is already 3.27 (97.8th percentile of 1y, z 2.46) and CA 2s10s has flattened 18bp over 1m to 56bp (0.6th percentile of 1y). CA-US 2Y is -140bp (3.8th percentile of 1y, -17bp over 1m). That path was built after the Sep-16 FOMC (futures had >90% odds of a 25bp hike, subsequently delivered to 3.75-4.00%) and after BoC minutes flagged energy pass-through, while official SOFR jumped to 3.85 on 2026-09-17 from 3.62 the prior day.",
+      "policy_path_check": {
+        "pricing_summary": "CA: CORRA 2.29; CRAZ26 2.775; CRAH27 3.13; CRAM27 3.365; CRAU27 3.51; 2028 peak about 3.655. US: SOFR 3.85; SR3Z6 4.32; SR3H7 4.58; SR3U7 4.755; Fed funds 3.75-4.00% after the 25bp hike. AU: AONIA 4.35; Oct-26 4.565; Dec-26 4.725; 2027 peak about 4.945. NZ policy path unavailable.",
+        "rationale": "The trade is a 2027 CORRA implied-rate duration position, so the live CA CRA strip is the required policy-path input. US SOFR/SR3 explains the spillover that helped build the CA hike path. AU AONIA plus housing evidence is the peer independent check, not a second risk leg.",
+        "relevant_countries": [
+          "CA",
+          "US",
+          "AU"
+        ],
+        "status": "available"
+      },
+      "price_decomposition": "Level: CRAU27 implied 3.51 / price 96.49. Change versus overnight: +122bp, with most of the path loaded between Dec-26 and Sep-27 rather than in the front COA months (Sep-26 COA 2.2875, Oct-26 2.305). Tenor: 2027 3m CORRA, not CA 10Y (3.83) and not CA-US spread as the primary owner. Marginal driver: imported energy and Fed tightening, not a domestic core-inflation impulse (CA inflation gauge 55 versus labor 38)."
+    },
+    "direction": "long",
+    "entry": "packet mid CORRA_2027-09 implied_rate 3.51 (CRAU27 price 96.49 from tradable_rate_curves)",
+    "evidence_refs": [
+      "policy:CA",
+      "policy:US",
+      "policy:AU",
+      "policy_paths",
+      "tradable_rate_curves",
+      "funding_context",
+      "rates:CA",
+      "rates:US",
+      "rates:AU",
+      "temp:CA:labor",
+      "temp:CA:consumer",
+      "temp:CA:inflation",
+      "temp:CA:activity",
+      "temp:US:labor",
+      "temp:US:inflation",
+      "temp:AU:inflation",
+      "rollup:Canada August inflation holds at 3%, core stays near 2%",
+      "rollup:BoC minutes flag higher energy pass-through risk",
+      "rollup:Fed raises 25bp to 3.75\u20134.00%",
+      "mw_20260916_fomc_hike_pricing",
+      "mw_20260916_au_housing_tightening",
+      "mw_20260916_saudi_oman_workaround",
+      "rollup:Energy-market shock absorbers weaken",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "fx:AUDUSD",
+      "pos:cftc",
+      "market_state",
+      "research_method"
+    ],
+    "expression_comparison": {
+      "rates_candidate": "Long duration CORRA_2027-09 (CRAU27): receive the 2027 CAD policy path so P&L profits if implied CORRA falls from the packet mid of 3.51 versus overnight CORRA 2.29.",
+      "rationale": "The mispricing is the CAD policy path itself: 122bp of 2027 hikes versus weak domestic demand and near-target core. Spot AUDUSD is a credible housing-stress alternative, but AU inflation 82 can keep AUD bid via the rate differential (AU 2Y 4.999 vs US 2Y 4.76), and USD/copper overlays blur the housing channel. USDCAD is inferior because energy (BoC minutes plus mixed oil-supply news) contaminates CAD even if CORRA hikes are not delivered. Rates are the cleaner, markable expression of the same slowdown view.",
+      "selected": "rates",
+      "spot_candidate": "Short AUDUSD: Australian housing is already contracting (NSW stamp duty -24% y/y, transactions -18%, Sydney/Melbourne values more than 7% from peak) while AUDUSD still sits at 0.712, 76th percentile of the 1y range."
+    },
+    "horizon": "6-12 weeks, into late-2026 / early-2027 CA labor, CPI, and BoC communications that can break the 2027 hike path",
+    "instrument": "CORRA_2027-09",
+    "invalidation": "packet 2028 CORRA peak implied_rate 3.655 (CRAU28); a CRAU27 print through that 3.65 area would mean the 2027 hike path is being extended, not faded",
+    "mispricing": "CRAU27 implies 3.51 versus overnight CORRA 2.29 (+122bp). That gap prices a BoC hiking cycle the labor, consumer, and core-CPI evidence do not support. Energy pass-through is the priced excuse; Saudi extra crude via Oman already reduced the extreme oil-supply tail.",
+    "principal_risks": [
+      "Energy pass-through is the explicit BoC hawkish residual; a renewed oil shock can keep CRAU27 bid even with labor 38.",
+      "CA activity 66 is not recessionary; the demand break may be too incomplete to unwind 122bp.",
+      "US remains hot (labor 75, inflation 72) and SR3 still prices higher, so CAD spillover hikes can be imported rather than domestic.",
+      "Temperature gauges are dashboard_v8 retained and may be stale; NZ rates and CFTC/CME positioning are missing.",
+      "CORRA OI/volume are null, so the paper mid may be a thin mark.",
+      "Seat memory has zero closed trades; 58 confidence is uncalibrated."
+    ],
+    "stop": null,
+    "structure": "Long duration CORRA_2027-09 / CRAU27 in the CORRA futures family; packet marks in implied-rate space with inverted rates P&L so a long profits if implied CORRA falls. Do not migrate onto CA sovereigns or SOFR.",
+    "target": null,
+    "thesis": "The 2027 CAD policy path is a late-cycle policy-error price: 122bp of hikes onto labor 38 and core near 2%. Receive CRAU27. If domestic demand stays slack, implied CORRA 3.51 is too high even if the Fed stays restrictive and even if CAD spot is mixed by energy.",
+    "why_now": [
+      "Fed delivered 25bp to 3.75-4.00% and official SOFR printed 3.85 on 2026-09-17, a realized FCI impulse that can be over-copied into CAD hikes.",
+      "BoC energy-pass-through minutes and CA CPI 3%/core ~2% are already in the tape, yet CRAU27 still prices 122bp of tightening.",
+      "AU housing hard data show the tightening channel biting in a peer market while AUDUSD has not sold off, confirming stress is under-expressed; the cleaner owner of the CA version is the CORRA path.",
+      "Empty $100m book pays SOFR 3.85% ACT/360 even if flat; the observed edge is an overpriced CA hike path with a defined invalidation, not a reason to sit in cash."
+    ]
+  },
+  "type": "TRADER_ROOM_CONTRIBUTION"
+}
