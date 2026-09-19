@@ -15,7 +15,7 @@ import sys
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from scripts.overnight.books import apply_action, empty_books, empty_seat, mark_to_market, position_pnl, public_books_view
+from scripts.overnight.books import apply_action, empty_books, empty_seat, mark_to_market, position_pnl, public_books_view, realized_increment
 from scripts.overnight.clock import overnight_run_id, stage_for_time, stage_window
 from scripts.overnight.constants import FUNDING_RATE_ANNUAL, LOCAL_CRON, SPOT_SEATS, STAGES, STANDING_SEATS, STARTING_NAV_USD
 from scripts.overnight.errors import EvidenceBoundaryError, FreshnessError, PublicationError, SchemaError
@@ -203,6 +203,40 @@ class BookTransitionTests(unittest.TestCase):
         )
         self.assertFalse(any(p["position_id"] == pos["position_id"] for p in self.seat["positions"]))
         self.assertEqual({row["action"] for row in self.seat["history"]}, {"OPEN", "ADD", "HOLD", "HEDGE", "REDUCE", "CLOSE"})
+
+    def test_rates_quote_units_convert_one_bp_consistently(self):
+        outright = {
+            "side": "long",
+            "asset_class": "rates",
+            "notional_usd": 100_000_000,
+            "entry_price": 4.76,
+            "mark_price": 4.75,
+        }
+        curve = {
+            "side": "long",
+            "asset_class": "curve",
+            "notional_usd": 100_000_000,
+            "entry_price": 25.0,
+            "mark_price": 24.0,
+        }
+        rv = {
+            "side": "long",
+            "asset_class": "rates_rv",
+            "notional_usd": 100_000_000,
+            "entry_price": -140.0,
+            "mark_price": -141.0,
+        }
+        self.assertEqual(position_pnl(outright)["unrealized_pnl_usd"], 10_000.0)
+        self.assertEqual(position_pnl(curve)["unrealized_pnl_usd"], 10_000.0)
+        self.assertEqual(position_pnl(rv)["unrealized_pnl_usd"], 10_000.0)
+        self.assertEqual(
+            realized_increment(curve, exit_price=24.0, closed_notional=100_000_000),
+            10_000.0,
+        )
+        self.assertEqual(
+            realized_increment(rv, exit_price=-141.0, closed_notional=100_000_000),
+            10_000.0,
+        )
 
     def test_active_trader_pays_full_100m_funding_even_when_flat(self):
         apply_action(
