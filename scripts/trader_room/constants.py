@@ -86,6 +86,7 @@ REQUIRED_TRADE_FIELDS = (
     "instrument",
     "asset_class",
     "expression_comparison",
+    "context_build",
     "structure",
     "direction",
     "thesis",
