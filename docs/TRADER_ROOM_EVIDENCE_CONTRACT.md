@@ -32,6 +32,10 @@ Load `docs/TRADER_RESEARCH_METHOD.md` in full and place its method in the common
 
 Do not use current Bob/David trade calls, forecasts or positions as authoritative inputs unless they independently enter the evidence packet as properly sourced current research. Method and current view are separate objects.
 
+## Persistent competition state
+
+Load the current canonical paper books from `data/overnight/books/latest.json` and give every advocate the same competition context: current seat net P&L/rank when available, open risk, and the standing funding contract. The competition metric is cumulative **net paper P&L after 5.00% annual ACT/365 funding on each open position's stored `notional_usd`**. This is context and incentive, not evidence for a macro thesis. A model must never calculate or overwrite canonical P&L, funding, NAV, or rank.
+
 ## Required packet shape
 
 In addition to the existing protocol fields, the common packet must contain these named sections:
@@ -43,6 +47,7 @@ In addition to the existing protocol fields, the common packet must contain thes
   "news_and_research": [],
   "market_state": {},
   "research_method": {},
+  "trader_competition": {},
   "source_index": [],
   "known_gaps": []
 }
