@@ -1,0 +1,122 @@
+{
+  "type": "TRADER_ROOM_REBUTTAL",
+  "run_id": "tr-20260919T011817Z-ondemand",
+  "round": 2,
+  "agent": "perma-bull",
+  "opponents": [
+    "dollar-king",
+    "perma-bear",
+    "positioning-cynic",
+    "rate-dove",
+    "trend-follower",
+    "catalyst-junkie",
+    "mean-reverter",
+    "rate-hawk",
+    "value-guy",
+    "cross-merchant"
+  ],
+  "own_original_ref": "submissions/perma-bull.json",
+  "strongest_opponent_point": "Trend-follower owns the only seat that is opposite on both USD and CAD, and the only attack that actually hits a live leg of short CA-US_2Y: US 2Y is higher on every frozen horizon (+9bp 1d, +13bp 5d, +57bp 1m and 3m, 99.8th percentile 1y as of 2026-09-18) after a delivered 25bp hike that was already >90% priced, so receiving the US 2Y leg is a premature fade of a still-rising front end; they also read the 1m USDCAD bounce (+1.74% to 1.401047) as CAD lower. That is the claim that can cheapen CA-US through the US side without any Canada confirmation.",
+  "holes_in_opposing_case": [
+    "FACT: the USD-higher coalition is not a CAD/USD argument. Dollar-king marks cad_view neutral and explicitly refuses long USDCAD because WTI 107.02 (96.4th percentile, +24.2% 1m) and CA activity 53.2 / consumer 52.5 support CAD; their USD higher is short AUDUSD on AU housing/labor. Perma-bear and rate-dove also map AU stamp-duty -24% y/y, volumes -18%, AU labor 47.8 and AU 2Y at a 99th-percentile 4.999 into USD higher with CAD not_relevant. An Australian housing break does not justify a 140bp Canada policy discount versus the US.",
+    "FACT: trend-follower’s CAD-lower tag is not their trade. They rejected long USDCAD because the 3m return is still -1.25% with 1y z 0.80 / ~74th percentile. Inferring CAD lower from a 1m-only +1.74% bounce against a still-negative 3m print is the premature trend they accuse others of running. USDCAD (1y 74.0th / 5y 87.0th) is not remotely as stretched as CA-US_2Y at -140.0bp (1y 3.77th / 5y 4.31st, z_1y -1.84).",
+    "FACT/INFERENCE: treating the already-extreme CA-US gap as ‘secondary confirmation’ that it should cheapen further is trend-chasing a tail. CA 2Y itself is 3.27 at a 97.8th percentile 1y after +31bp 1m — Canada has not been easing in absolute terms; it has merely lagged a US 2Y that packed +57bp into a hike that was already priced. The 17 Sep CA 2Y -8bp dip is one session, not a BoC path.",
+    "FACT: broad USD is stale as of 2026-09-11 at 118.21, 11.9th percentile, z -1.33, 3m -1.60%. Pair-wise USD higher versus AUD does not generalize to a USD-higher regime versus CAD.",
+    "FACT: positioning-cynic is routed as USD-higher but agrees CAD higher and documents leveraged-fund CAD still net short only 39022 after +16426 weekly covering, a 1y 99.0th percentile of net (least-short). Their USD-higher is a US 2s10s steepener versus crowded AM 10Y length, not a USDCAD bid. Catalyst-junkie, rate-hawk, value-guy and cross-merchant are also routed here while already owning CAD higher / Canada re-rate; conflict count overstates disagreement on the Canada expression.",
+    "FACT: risk internals contradict mapping the Fed hike into USD higher / CAD lower. HY OAS 270bp is a 13.7th percentile; VIX 15.44 is a 14.7th percentile; copper futures closed 6.7155 at a 99.2nd percentile. Dollar-king even concedes VIX at the 15th percentile is a risk-on tape. That is cyclical adaptation, not a flight-to-USD that should keep Canada 140bp cheap."
+  ],
+  "attack": [
+    "USD higher as a blanket tag is an Australia story wearing a dollar label. The dedicated USD seat will not express it in USDCAD, and the AU duration seats leave CAD unpriced. That coalition cannot be used to veto a Canada-versus-US 2Y that sits at a dual-horizon cheap tail.",
+    "CAD lower is a one-seat inference from a 1-month USDCAD bounce that the same seat would not trade. Three-month USDCAD is still down, CFTC CAD shorts are covering, WTI is at a 96th percentile, and BoC minutes flag energy pass-through against headline CPI still 3.0% with core near 2%. That is not a CAD-down tape.",
+    "Paying US 2Y at a 1y extreme after a pre-priced hike is not required to keep Canada 140bp easier. US activity 49.92 and consumer 48.5 (Michigan preliminary September 47.8) versus Canada activity 53.2, consumer 52.5 and Q2 GDP +0.8% q/q is the cyclical ranking in the packet. If US 2Y keeps rising, the RV still works if CA 2Y catches up; outright short US 2Y needs the continuation and fights coupon. Short CA-US_2Y receives 4.76 versus pays 3.27.",
+    "Spot long CAD is the inferior cousin the USD-higher camp wants to debate. USDCAD carry of 140bp opposes long CAD; the same 140bp supports short CA-US_2Y. Rates-first and the frozen stretch both keep the trade in the spread, not in the FX print."
+  ],
+  "defense": [
+    "FACT: CA-US_2Y remains the cleanest pro-cyclical expression in the packet. Canada leads activity and consumer gauges; the spread is a 1y 3.77th / 5y 4.31st percentile after cheapening about 17bp over one month; HY, VIX and copper say the growth regime is adapting through the hike and the energy shock. INFERENCE: markets are still pricing Canada as if it needs ~140bp easier policy than a Fed that has already delivered. UNKNOWN: the frozen RV mark is 2026-09-17 while US 2Y printed +9bp on 2026-09-18, so the live spread may already be a few basis points more negative; NZ official yields and CME FX positioning are unavailable.",
+    "The receive-US leg is not a z-score fade of US 2Y in isolation. It is the other side of a relative Canada cheapness that CA 2Y at a 97.8th percentile 1y has not closed. Mean-reverter’s outright receive-US_2Y is the same US overshoot without the Canada catch-up; rate-hawk’s short CA-US_2Y is the same RV with both legs higher. Neither refutes paying CA versus receiving US.",
+    "Paper capital stays OPEN $20m short CA-US_2Y at executable_marks.rates_rv.CA-US_2Y price -140.0 (path market_state.rate_rv.CA-US_2Y.bps). That size was already cut for empty books and the 17-versus-18 Sep tenor-date gap. HOLD still pays 5% ACT/365 on the full $100m; the 140bp running differential works with that clock, unlike sitting flat or buying CAD spot.",
+    "Canada labor remains the live local risk and is already in invalidation: unemployment 6.4% unchanged, employment -42k, wages +2.0% y/y, labor score 48.8. That can keep the BoC easier than activity gauges imply. It is not a reason to rewrite CAD lower or USD higher off an AU housing print or a 1m USDCAD bounce."
+  ],
+  "trade_change": "unchanged",
+  "revised_trade": {
+    "instrument": "CA-US_2Y",
+    "asset_class": "rates_rv",
+    "expression_comparison": {
+      "rates_candidate": "Short CA-US_2Y (pay CA 2Y at 3.27 versus receive US 2Y at 4.76): own Canada cyclical/energy re-rating versus an already-hawkish US front end. Frozen mark -140.0 bps as of 2026-09-17 at market_state.rate_rv.CA-US_2Y.bps.",
+      "spot_candidate": "Short USDCAD (long CAD versus USD) at frozen ECB-cross spot 1.4010471204188482 on 2026-09-18, the FX analogue of Canada outperformance.",
+      "selected": "rates",
+      "rationale": "The mispricing lives in the policy differential, not in the FX print. CA-US 2Y is -140.0 bps at a 1y 3.77th percentile and 5y 4.31st percentile after cheapening about 17bp over one month; USDCAD is only a 1y 74th percentile and a 5y 87th percentile, so CAD weakness versus USD is not comparably extreme. Packet carry ranks USDCAD as long-USD/short-CAD on a 140bp 2Y differential, so spot long-CAD fights carry, whereas short CA-US_2Y receives the higher US 2Y and pays the lower CA 2Y. Rates-first mandate prefers this when both expressions are executable; both marks exist. Round 2 does not change the comparison: the USD-higher camp will not own USDCAD, and the CAD-lower seat rejected it as a weaker, 1-month-only trend versus a still-negative 3m USDCAD print."
+    },
+    "structure": "Pay Canada 2Y versus receive US 2Y; paper instrument CA-US_2Y, side short.",
+    "direction": "short",
+    "thesis": "FACT: Canada activity temperature is 53.2 and consumer 52.5, the highest of the four countries; Q2 real GDP was +0.8% q/q versus a revised +0.1% in Q1; August headline CPI held at 3.0% with CPI-trim 1.9% and CPI-median 2.0%; BoC minutes flag higher energy pass-through risk. FACT: The Fed raised 25bp to 3.75-4.00% after futures entered the decision with >90% hike odds; US 2Y is 4.76 (1y 99.8th percentile, +57bp over one month) and US 10Y is 5.01. FACT: CA 2Y is 3.27 versus US 2Y 4.76; CA-US_2Y is -140.0 bps (1y percentile 3.77, 5y percentile 4.31, z_1y -1.84, z_5y -1.51), cheaper by about 17bp over one month. FACT: HY OAS is 270bp (1y 13.7th percentile), VIX is 15.44 (1y 14.7th percentile), copper futures closed 6.7155 (1y 99.2nd percentile), and Saudi ship-to-ship crude via Oman reduced the extreme oil-supply tail. INFERENCE: Markets are pricing Canada as if it needs ~140bp easier policy than the US despite Canada being the cyclical leader and carrying an explicit energy-inflation risk; that is defensive Canada pricing, not a growth-break. Risk-on internals (tight credit, low vol, high copper) say the global expansion is adapting through the hike and the energy shock. The cleanest pro-cyclical expression is therefore relative Canada rate cheapness versus the US, not a crowded AUD (housing slump; AUDCAD 1y/5y ~99.8th percentile) and not long CAD spot, which pays the same 140bp the wrong way. UNKNOWN: NZ official yields are unavailable so NZ rate RV cannot confirm a broader commodity-bloc catch-up; CME FX positioning is unavailable; CA-US_2Y is dated 2026-09-17 while US 2Y printed +9bp on 2026-09-18, so the live spread may already be a few basis points more negative than the frozen mark.",
+    "mispricing": "Canada 2Y trades 140bp through US 2Y at a 1y 3.77th / 5y 4.31st percentile even though Canada has the strongest activity and consumer gauges and the BoC has flagged energy pass-through. The closing mechanism is Canada yields rising relative to the US (BoC forced to respect growth plus energy) and/or the US front end, already at a 1y extreme after a delivered hike, failing to cheapen as much as the 140bp Canada discount implies.",
+    "why_now": [
+      "Fed just delivered the already-priced 25bp hike to 3.75-4.00% and US 2Y is at a 1y 99.8th percentile, so the receive-US side of the pair is not waiting on a hawkish surprise.",
+      "CA-US 2Y cheapened about 17bp over one month to a 1y extreme of -140.0 bps while Canada still leads on activity 53.2 and consumer 52.5.",
+      "BoC energy pass-through risk is live against Brent 130.8 on 2026-09-15; the Saudi Oman workaround cut the tail but did not erase Canadian inflation risk.",
+      "HY OAS 270bp and VIX 15.44 show financial stress is not the binding constraint; copper at a 99th percentile close supports a cyclical, not recession, regime.",
+      "The 13 funded seats pay 5% ACT/365 on the full $100m whether deployed or not; receiving 4.76% versus paying 3.27% is a 140bp running differential that works with the clock, unlike sitting flat or buying CAD spot."
+    ],
+    "evidence_refs": [
+      "market_state",
+      "temp:CA:activity",
+      "temp:CA:consumer",
+      "temp:CA:inflation",
+      "temp:CA:labor",
+      "temp:US:activity",
+      "temp:US:consumer",
+      "temp:US:inflation",
+      "rollup:Fed raises 25bp to 3.75–4.00%",
+      "mw_20260916_fomc_hike_pricing",
+      "rollup:August CPI keeps the Fed tightening bias intact",
+      "rollup:BoC minutes flag higher energy pass-through risk",
+      "rollup:Canada August inflation holds at 3%, core stays near 2%",
+      "mw_20260916_saudi_oman_workaround",
+      "rollup:Energy-market shock absorbers weaken",
+      "mw_20260916_au_housing_tightening",
+      "research_method",
+      "trader_competition"
+    ],
+    "horizon": "4-8 weeks",
+    "entry": "Short CA-US_2Y at frozen executable_marks.rates_rv.CA-US_2Y price -140.0 (path market_state.rate_rv.CA-US_2Y.bps, as of 2026-09-17).",
+    "target": null,
+    "stop": null,
+    "invalidation": "The cyclical catch-up thesis fails if Canada activity and consumer gauges lose their lead versus the US, or if CA-US_2Y prints a new 1-year low (more negative than the frozen -140.0 bps / 3.77th percentile) because Canada labor weakness (August employment -42k, wages +2.0% y/y) dominates the BoC while US yields keep cheapening Canada relatively without a Canada growth or energy confirmation.",
+    "catalysts": [
+      "Canadian data that treat the August employment drop as noise against Q2-style domestic demand and still-firm Ivey/activity readings.",
+      "BoC follow-through on energy pass-through after headline CPI held at 3.0% and core stayed near 2%.",
+      "US post-hike data that keep growth resilient (ISM services already 55.4; August retail +1.2% m/m), so a 140bp Canada policy discount cannot be justified as a US hard-landing hedge."
+    ],
+    "principal_risks": [
+      "Canada labor is already cooler (unemployment 6.4% unchanged, employment -42k, wages +2.0% y/y) and can keep the BoC easier than activity gauges imply.",
+      "US 2Y at a 1y 99.8th percentile can keep rising after the hike, cheapening CA-US further if the Fed tightening bias intensifies more than Canada.",
+      "Energy-market shock absorbers weakening plus Brent at 130.8 can morph from a Canada inflation impulse into a global growth scare; HY and VIX would then be the first falsifiers.",
+      "Frozen CA-US_2Y is as of 2026-09-17 while US 2Y as of 2026-09-18 rose about 9bp, so the executable mark may already be stale versus a more negative live spread.",
+      "NZ official yields and CME positioning are unavailable; temperature scores are repo-ledger rather than a live Supabase query."
+    ],
+    "confidence": 61
+  },
+  "paper_capital": {
+    "risk_put_on": true,
+    "action": "OPEN",
+    "notional_usd": 20000000,
+    "instrument": "CA-US_2Y",
+    "side": "short",
+    "asset_class": "rates_rv",
+    "price": -140.0,
+    "mark_price": -140.0,
+    "price_path": "market_state.rate_rv.CA-US_2Y.bps",
+    "execution_blocked": null,
+    "funding_hurdle_rationale": "The 13 funded seats pay 5% ACT/365 on the full $100m whether risk is on or not, so HOLD still loses to the clock. Short CA-US_2Y receives US 2Y 4.76 versus pays CA 2Y 3.27, a 140bp running differential in the same direction as the cyclical re-rating, at a frozen executable mark of -140.0 bps. $20m is 20% of the seed book: large enough that a modest 1y-extreme mean-reversion in the spread can outrun days of vig, small enough versus empty books and the 2026-09-17 versus 2026-09-18 tenor-date gap. Long CAD spot is inferior on the same 140bp because USDCAD carry opposes the bull CAD view. Round 2 leaves this unchanged: the USD/CAD conflict is a currency-tag fight, not a reason to cut a still-marked RV that already sized for the date gap."
+  },
+  "concession_condition": "Concede the USD/CAD conflict, and the trade, if CA-US_2Y prints a new 1-year low more negative than the frozen -140.0 bps / 3.77th percentile because Canada labor (-42k, wages +2.0% y/y) dominates the BoC while US 2Y keeps cheapening Canada with no Canada growth or energy confirmation; or if Canada activity 53.2 and consumer 52.5 lose their lead versus the US (49.92 / 48.5); or if HY OAS 270bp and VIX 15.44 break higher as the energy shock turns from a Canada inflation impulse into a global growth scare. A 1m USDCAD bounce or an AU housing print alone is not concession.",
+  "macro_assumptions": {
+    "growth": "above_trend",
+    "risk": "risk_on",
+    "rates": "higher_for_longer",
+    "policy": "hawkish"
+  },
+  "packet_sha256": "e0da1a0c3331e88bb03e87a4b6cf567c0559de795c55fb93259aaba542e5e37c",
+  "subagent_calls": 0
+}

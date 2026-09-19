@@ -1,0 +1,116 @@
+{
+  "type": "TRADER_ROOM_REBUTTAL",
+  "run_id": "tr-20260919T011817Z-ondemand",
+  "round": 2,
+  "agent": "rate-dove",
+  "opponents": [
+    "dollar-king",
+    "perma-bear",
+    "positioning-cynic",
+    "trend-follower",
+    "catalyst-junkie",
+    "mean-reverter",
+    "perma-bull",
+    "rate-hawk",
+    "value-guy"
+  ],
+  "own_original_ref": "submissions/rate-dove.json",
+  "strongest_opponent_point": "The strongest USD-lower claim is that the 16 Sep 25bp hike to 3.75-4.00% was already greater-than-90% priced, so leftover USD bid is spent, while CA-US_2Y at -140.0bp (1y 3.77th / 5y 4.31st percentile) with Canada activity 53.2 and consumer 52.5 as the four-country leaders is the packet's actual USD-down relative via CAD/Canada-rate catch-up. Mean-reverter's add-on is US 2Y +57bp / screen z 3.29 sitting roughly 76-101bp above the new funds band with US temperature gauges near 50.",
+  "holes_in_opposing_case": [
+    "VERIFIED: short CA-US_2Y (catalyst-junkie, perma-bull, rate-hawk) receives US 2Y at 4.76 versus pays CA 2Y at 3.27; short CA-US_5Y (value-guy) is the same US-duration-long / Canada-duration-short shape. INFERENCE: that book is Canada-versus-US rates catch-up, not a USD-spot short. CAD-relative re-rating can print with AUDUSD still rich versus AU housing. Mapping those RVs to usd_view lower is a synopsis leap, not a dollar-index thesis. UNKNOWN: live CA-US_2Y after the 2026-09-18 US 2Y +9bp print, because the RV mark is as_of 2026-09-17.",
+    "VERIFIED: rate-hawk's own synopsis is au_rates_view lower and the hawk stance_summary says do not chase already 99th-percentile Australian yields; AU 2Y is 4.999 as of 2026-09-16 at the 99.0th percentile 1y and 99.8th percentile 5y. INFERENCE: the USD-lower camp does not falsify long AU_2Y. Canada RV and Australian duration can coexist. The routed fight is a compressed USD tag, not an opposite AU_2Y direction.",
+    "VERIFIED: US 2Y 5y percentile is 88.0 / z_5y 0.89 while AU 2Y 5y percentile is 99.8; NSW stamp-duty receipts fell 24% y/y, transaction volumes 18%, Sydney and Melbourne values more than 7% off peak, unemployment 4.5% from 4.4%, employment -15.8k. INFERENCE: mean-reverter is fading a 1-month US MOVE overshoot, not a dual-horizon AU yield extreme with realized tightening-channel damage. Receiving US 2Y is a different object and a noisier dove expression than receiving AU 2Y.",
+    "VERIFIED: Canada CPI-trim 1.9% and CPI-median 2.0% are near target, employment -42k, wages +2.0% y/y versus +2.8%; the Saudi STS-off-Oman workaround reduced the extreme oil-supply tail. INFERENCE: the Canada-hawk catch-up that is supposed to drive USD lower has a live look-through: BoC can treat headline 3.0% as energy and keep the 140bp discount. Activity 53.2 does not erase that labor/core facts set.",
+    "VERIFIED: AUDUSD 0.712022367194781 is only about the 76th percentile 1y / 84th 5y / z_5y 1.23; copper 6.7155 is 99th percentile; VIX 15.44 is about the 15th percentile; dollar-king records broad USD 118.21 stale as_of 2026-09-11 at the 12th percentile. INFERENCE: USD-lower seats treat a cheap/stale DXY residual plus a priced FOMC as if that is the trade. The still-rich AUD versus a 99th-percentile AU 2Y and a housing break is the USD-relevant gap, and it is owned in duration not in DXY."
+  ],
+  "trade_change": "unchanged",
+  "revised_trade": {
+    "instrument": "AU_2Y",
+    "asset_class": "rates",
+    "expression_comparison": {
+      "rates_candidate": "Long AU_2Y duration / receive the Australian 2-year government yield at executable_marks 4.999 (market_state.rates.AU.tenors.2Y.value, as of 2026-09-16). Cross-market alternative considered: long AU-US_2Y (spread +25.9bp as of 2026-09-16) to express AU outperforming the US on the easing path.",
+      "spot_candidate": "Short AUDUSD at executable_marks 0.712022367194781 (market_state.fx.pairs.AUDUSD.spot, as of 2026-09-18).",
+      "selected": "rates",
+      "rationale": "The discrepancy lives in AU front-end yields, which are at the 99th percentile of both 1y and 5y distributions while the housing and labor tightening channel is already contracting. AUDUSD is only about the 76th percentile 1y and 84th percentile 5y, so spot is a noisier, USD- and carry-contaminated expression of the same RBA view. AU-US 2Y RV mixes a 2026-09-16 AU print with a later US 2Y backup and dilutes a local Australian housing mechanism. Rates is the cleaner, mandated-default expression."
+    },
+    "structure": "Outright long duration: receive AU 2Y government yield (paper side long AU_2Y).",
+    "direction": "long",
+    "thesis": "Causal question: is RBA easing underpriced because the tightening channel is already biting while the 2Y still prices a restrictive path? VERIFIED FACT: NSW stamp-duty receipts fell 24% y/y in August with transaction volumes down 18%, and Sydney and Melbourne home values are down more than 7% from peak (mw_20260916_au_housing_tightening). AU labor score is 47.8: unemployment 4.5% from 4.4%, employment -15.8k m/m, WPI +3.2% y/y versus +3.4% a year earlier. AU activity 49.2 with RBA business conditions down and confidence below its long-run average. Headline CPI eased to 3.5% from 3.8% while trimmed mean was unchanged at 3.6%. Westpac-MI sentiment fell 5.2% to 84.4 on 2026-09-16. AU 2Y is 4.999 as of 2026-09-16, 99.0th percentile 1y and 99.8th percentile 5y, +39.1bp over 1m and +49.8bp over 3m. INFERENCE: housing volumes, prices, labor loosening and collapsing sentiment are the transmission of restrictive policy, not a contemporaneous reason to price more tightening; a 2Y at the top of its 1y/5y range therefore overstates the RBA path and should reprice lower as that bite shows up in the reaction function. Spot AUDUSD at 0.7120 is not analogously stretched, so the mispricing is owned in duration. UNKNOWN: no official NZ yields, so trans-Tasman RV cannot confirm; AU 2Y mark is three days before cutoff; options/implied RBA path are absent; paper books credit no coupon, so the 5% ACT/365 vig on the full $100m is not offset unless yields fall.",
+    "mispricing": "AU 2Y at 4.999 is at the 99th percentile of both 1y and 5y histories after a +39.1bp 1m backup, while realized housing, labor and sentiment already show the tightening channel biting. Markets are still priced as if more restriction is required; the dove gap is that bite versus that percentile, not versus a made-up terminal rate.",
+    "why_now": [
+      "AU 2Y sits at executable 4.999 / 99th percentile 1y and 5y after +39.1bp in 1m, even as NSW stamp duty -24% y/y, housing volumes -18%, and dwelling values more than 7% off peak.",
+      "AU labor is already loose (unemployment 4.5%, employment -15.8k) and Westpac-MI sentiment fell 5.2% to 84.4 on 2026-09-16, the same window as the housing print.",
+      "The Sep 16 Fed 25bp hike to 3.75-4.00% was greater-than-90% priced into the decision; that global hawkish impulse is already in the AU 2Y backup and is a poor reason to keep receiving Australian housing stress at a 99th-percentile yield.",
+      "Empty $100m seed book still pays 5% ACT/365 on the full allocation every day; being flat does not stop the vig, and AU 2Y is the packet's cleanest marked easing discrepancy."
+    ],
+    "evidence_refs": [
+      "market_state",
+      "mw_20260916_au_housing_tightening",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "temp:AU:labor",
+      "temp:AU:inflation",
+      "temp:AU:activity",
+      "temp:AU:consumer",
+      "mw_20260916_fomc_hike_pricing",
+      "rollup:Fed raises 25bp to 3.75–4.00%",
+      "temp:US:consumer",
+      "temp:US:activity",
+      "research_method",
+      "paper_books",
+      "trader_competition"
+    ],
+    "horizon": "1-3 months, through the next Australian labor, housing and RBA communications cycle",
+    "entry": "4.999 from executable_marks.rates.AU_2Y (market_state.rates.AU.tenors.2Y.value as of 2026-09-16)",
+    "target": null,
+    "stop": null,
+    "invalidation": "Thesis fails if AU labor re-tightens (unemployment reversing the 4.5% uptick and employment recovering) or if trimmed-mean CPI reaccelerates above the current 3.6% y/y while AU 2Y holds or prints a new tightening-led high. No sourced numeric stop exists in the frozen packet.",
+    "catalysts": [
+      "Further AU housing and labor prints confirming the tightening channel, forcing RBA communications off the 99th-percentile 2Y.",
+      "AU underlying inflation cooling from trimmed mean 3.6% y/y, validating that the housing bite is disinflationary rather than a reason to hike more.",
+      "US consumer softness (Michigan preliminary September 47.8) reducing imported hawkish pressure on AUD rates after the already-delivered Fed hike."
+    ],
+    "principal_risks": [
+      "AU trimmed mean still 3.6% y/y; RBA can treat housing weakness as the intended channel and keep policy restrictive.",
+      "Energy pass-through and weaker shock absorbers (BoC minutes; energy rollup) can re-open a global inflation scare that lifts AU yields with US yields.",
+      "AU 2Y as_of is 2026-09-16 versus a 2026-09-19 cutoff; the mark is lagged and already printed -5.5bp that day.",
+      "Housing evidence is single-source Reuters; NZ official yields are unavailable, so trans-Tasman rates triangulation is impossible.",
+      "Paper P&L uses duration=1, so a large yield decline is required to outrun the 5% full-$100m ACT/365 clock if the move is slow.",
+      "CFTC leveraged funds are net long AUD; if the room instead faded AUDUSD, that positioning could squeeze, which is one more reason the rates expression is cleaner."
+    ],
+    "confidence": 63
+  },
+  "attack": [
+    "USD-lower is mostly a Canada RV tag. Catalyst-junkie, perma-bull, rate-hawk and value-guy want CAD rates up versus US rates; they do not show AUDUSD, DXY, or EURUSD as the stretched object. USDCAD itself is only the 74th percentile 1y / 87th 5y, which those seats already treated as an inferior expression. A moderate USDCAD print cannot drag this seat off a 99th-percentile AU 2Y.",
+    "A priced 25bp hike is not a USD-down catalyst. VERIFIED: August CPI is retained as keeping the tightening bias intact, and US 2Y still cheapened +9bp on 2026-09-18 after the decision. INFERENCE: known information that needed a new transmission did get one — residual front-end backup, not a dollar dump. Treating greater-than-90% pricing as leftover USD bid spent ignores that residual.",
+    "Trend-follower's pay-US_2Y / USD-up is the wrong rates expression of a compatible dollar view. US consumer 48.5 and Michigan preliminary September 47.8 already show demand bite; paying a 99.8th-percentile 1y US 2Y fades the tightening channel this remit is built to own. USD higher versus AUD does not require paying US duration.",
+    "Dollar-king's short AUDUSD is the spot analog of USD-up versus AUD, but AUDUSD is not analogously stretched and fights copper at the 99th percentile plus leveraged-fund AUD net length still adding. Rates remains cleaner. Positioning-cynic's US 2s10s steepener is an AM-10Y crowding fade; it does not speak to RBA housing transmission. Perma-bear is same-side on long AU_2Y and is not an opposing instrument."
+  ],
+  "defense": [
+    "USD_view higher is AUD-relative, not a DXY-richness claim. VERIFIED FACT: AU housing, labor and sentiment are already contracting while AU 2Y sits at 4.999 / 99th percentile of both 1y and 5y histories; AUDUSD is only about the 76th/84th. INFERENCE: the closing mechanism is RBA path repricing and AUD cheapening versus a still-restrictive USD policy leg after a delivered hike. That is USD higher versus AUD. UNKNOWN: RBA OIS path and post-16 Sep AU yield print (AU 2Y age_days=3).",
+    "The trade remains outright long AU_2Y. The discrepancy lives in Australian front-end yields versus realized tightening-channel damage, which is the mandated rates-first expression. Spot short AUDUSD is constructed and rejected as noisier. Switching into CA-US RV would abandon the AU housing mechanism for a Canada-energy debate this remit does not own.",
+    "US rates can be lower without flipping USD versus AUD. VERIFIED: US activity 49.92, consumer 48.5, Michigan 47.8. INFERENCE: that is why us_rates_view stays lower — restrictive policy is biting in the US too — but AU 2Y is the more extreme, more fundamental object (99.8th 5y with stamp duty -24% and employment -15.8k). Theoretical USD-up versus US-rates-down tension is acknowledged; it is not a reason to receive US 2Y instead or to mark USD lower.",
+    "Paper capital stays OPEN 100000000 long AU_2Y at executable_marks 4.999. Being flat still pays 5% ACT/365 on the full allocation; duration=1 paper P&L needs a yield decline to clear the clock; HOLD has zero chance of covering it. The USD-view fight does not change that hurdle math."
+  ],
+  "concession_condition": "Concede the USD-higher-versus-AUD synopsis if AUDUSD holds or rises while AU labor and housing stop deteriorating (unemployment reversing 4.5% and employment recovering) and copper remains at a 99th-percentile bid. Concede the AU_2Y long if trimmed-mean CPI reaccelerates above 3.6% y/y while AU 2Y holds or prints a new tightening-led high. Concede both if CA-US_2Y mean-reverts from -140.0bp on confirmed BoC energy pass-through AND AU housing/labor stabilize, showing the packet's live discrepancy was Canada catch-up rather than RBA easing.",
+  "macro_assumptions": {
+    "growth": "below_trend",
+    "risk": "risk_off",
+    "rates": "easing_cycle",
+    "policy": "dovish"
+  },
+  "paper_capital": {
+    "risk_put_on": true,
+    "action": "OPEN",
+    "notional_usd": 100000000,
+    "instrument": "AU_2Y",
+    "side": "long",
+    "asset_class": "rates",
+    "price": 4.999,
+    "mark_price": 4.999,
+    "price_path": "market_state.rates.AU.tenors.2Y.value",
+    "execution_blocked": null,
+    "funding_hurdle_rationale": "The seat pays 5.00% ACT/365 on the full $100m every day even if flat (~$13,699/day; ~$410,959 per 30 days). Paper rates P&L is duration=1, so 41bp of yield decline on $100m notional is needed to cover 30 days of vig and ~123bp to cover 90 days; AU 2Y already moved +39.1bp in 1m and sits at the 99th percentile while housing, labor and sentiment are contracting, so a 40-80bp easing repricing over 1-3 months is the plausible offset. HOLD has zero chance of covering the clock. OPEN the full $100m long AU_2Y at the frozen 4.999 mark because that is the only executable price and the only way this seat can outrun the vig if the dove discrepancy closes."
+  },
+  "packet_sha256": "e0da1a0c3331e88bb03e87a4b6cf567c0559de795c55fb93259aaba542e5e37c",
+  "subagent_calls": 0
+}

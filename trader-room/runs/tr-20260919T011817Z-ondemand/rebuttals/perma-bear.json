@@ -1,0 +1,122 @@
+{
+  "type": "TRADER_ROOM_REBUTTAL",
+  "run_id": "tr-20260919T011817Z-ondemand",
+  "round": 2,
+  "agent": "perma-bear",
+  "opponents": [
+    "dollar-king",
+    "positioning-cynic",
+    "rate-dove",
+    "trend-follower",
+    "catalyst-junkie",
+    "mean-reverter",
+    "perma-bull",
+    "rate-hawk",
+    "value-guy"
+  ],
+  "own_original_ref": "submissions/perma-bear.json",
+  "holes_in_opposing_case": [
+    "USD-lower is inferred, not owned. catalyst-junkie, perma-bull and rate-hawk short CA-US_2Y at -140.0bp; value-guy shorts CA-US_5Y at -124.00000000000003bp; mean-reverter receives US_2Y at 4.76. None of the five shorts USD. USDCAD is only 74.0th pctile 1y / 87.0th 5y (spot 1.4010471204188482). Packet carry on the 140bp US-CA 2Y gap favors long USD / short CAD, so the USD-down tag is a leap from Canada RV, not a stretched dollar.",
+    "Canada cyclical catch-up cherry-picks activity 53.2, consumer 52.5 and Q2 GDP +0.8% q/q and ignores the BoC-binding channel: labor 48.8, employment -42k, wages +2.0% y/y versus +2.8%, unemployment 6.4% versus US 4.1% / payrolls +162k / AHE +3.1%. CPI-trim 1.9% and CPI-median 2.0% are already at target against US core PCE still ~3.0% 6m annualized. The 140bp / 124bp cheapness is that labor-and-core gap, not a missing hike cycle.",
+    "Energy pass-through is minutes language against a reduced tail. rollup:BoC minutes flag higher energy pass-through risk sits next to mw_20260916_saudi_oman_workaround and headline CPI held at 3.0% with core near 2%. catalyst-junkie admits the next Canadian CPI and BoC dates are unknown, so the seat that demands dated transmission for AU housing fails its own test. CA-US_2Y is as-of 2026-09-17 while US 2Y printed +9.0bp on 2026-09-18, so the frozen -140.0 mark is already stale more negative.",
+    "CA 2Y is not asleep: 3.27, 97.8th pctile 1y, +31bp 1m. Spread cheapness is US 2Y at 4.76 after +57bp 1m to the 99.8th pctile 1y, not Canada waiting to catch up. rate-hawk admits this, then still shorts CA-US_2Y and tags USD_DOWN while also wanting US rates higher — if the long-US 2Y RV leg is right, USD typically stays bid, not lower.",
+    "value-guy's CA-US_5Y 0.20th 1y / 6.95th 5y tail is a US-overshoot percentile. CA 5Y is 3.54 (81.8th pctile 5y) versus US 5Y 4.86 (99.6th 1y and 5y). Convergence via US yields down is compatible with my US-rates-lower view and does not imply USD lower.",
+    "perma-bull reads HY OAS 270bp (13.7th pctile), VIX 15.44 (14.7th) and copper 6.7155 (99.2nd pctile) as the expansion adapting. That is complacent risk pricing after a delivered 25bp hike to 3.75–4.00% and a verified AU housing break (NSW stamp duty -24% y/y, volumes -18%, Sydney/Melbourne values more than 7% below peak). Copper at a 99th-percentile close is the same terms-of-trade illusion that keeps AUDUSD only 76.4th/84.3rd while AU 2Y sits at the 99.8th 5y percentile.",
+    "mean-reverter correctly wants US 2Y lower (I agree on the rates direction) but USD_DOWN does not follow. rollup:August CPI keeps the Fed tightening bias intact is still in the packet; US 2Y 5y z is only 0.89, so 4.76 is not a secular blow-off. Residual +9bp on 2026-09-18 after a >90% priced hike is continuation of that bias, not a completed fade trigger. Risk-off after a delivered hike is USD higher and yields lower, which is my pairing.",
+    "Canada RV does not falsify long AU_2Y. AU 2Y is 4.999 as of 2026-09-16 (pctile_1y 99.01, pctile_5y 99.80, +39.1bp 1m) against unemployment 4.5% from 4.4%, employment -15.8k, labor score 47.8 and Westpac-MI 84.4. Even rate-hawk says do not chase already-extreme AU yields. dollar-king / rate-dove sit on the same USD-higher / AUD-lower side; they are not a USD-lower hole."
+  ],
+  "trade_change": "unchanged",
+  "revised_trade": {
+    "instrument": "AU_2Y",
+    "asset_class": "rates",
+    "expression_comparison": {
+      "rates_candidate": "Long AU_2Y outright duration (executable_marks.rates.AU_2Y at 4.999 as of 2026-09-16; path market_state.rates.AU.tenors.2Y.value). Alternative inferior rates expressions considered: long AU_10Y (same 99.8th 5y percentile but less of the 1m hawkish overshoot) and long AU-US_2Y RV (spread only 25.9bp / 26th pctile 1y, so the discrepancy is the local yield extreme, not the cross-market spread).",
+      "spot_candidate": "Short AUDUSD (executable_marks.spot_fx.AUDUSD at 0.712022367194781 as of 2026-09-18). Housing stress plus the post-hike USD tightening impulse. AUDUSD is only 76.4th pctile 1y / 84.3rd 5y, and the 2Y yield differential is just 25.9bp, so spot is a weaker owner of the yield-vs-housing gap than duration.",
+      "selected": "rates",
+      "rationale": "The discrepancy lives in AU yields versus realized housing/labor damage, not in a stretched AUDUSD print. AU 2Y is at the 99.0th 1y and 99.8th 5y percentile after +39.1bp in 1m, while NSW stamp-duty receipts are -24% y/y, transaction volumes -18%, and Sydney/Melbourne home values more than 7% below peak. Rates is the default when expressions are comparably clean; here duration is cleaner, not merely default. Spot is inferior because AUDUSD is not at a comparable extreme, short AUDNZD would mostly fade already-weak NZD (NZDUSD 12.9th pctile 1y, Q2 GDP beat, India trade deal) rather than own AU housing, and NZ rates are unavailable so an AU/NZ rates-matched FX trade cannot be constructed. AU_2Y has a frozen executable mark, so paper risk can be opened."
+    },
+    "structure": "Outright long AU 2Y government-bond yield / long duration. Paper side=long so P&L is positive if the quoted yield falls (books.py inverts rates marks). Not a curve or RV structure.",
+    "direction": "long duration",
+    "thesis": "FACT: As of 2026-09-16, AU 2Y yields 4.999% (pctile_1y 99.01, pctile_5y 99.80, z_1y 1.67) after +39.1bp 1m and +49.8bp 3m; AU 10Y is 5.348% on the same extreme percentiles. NSW residential stamp-duty receipts fell 24% y/y in August with transaction volumes -18%; Sydney and Melbourne home values are down more than 7% from peak. AU unemployment rose to 4.5% from 4.4%, employment -15.8k m/m, Wage Price Index +3.2% y/y versus +3.4% a year earlier. Headline CPI eased to 3.5% y/y from 3.8%; trimmed mean held at 3.6%. Westpac-Melbourne Institute sentiment fell 5.2% to 84.4 on 2026-09-16. RBA business conditions declined modestly; Q2 GDP was +0.4% q/q / domestic final demand +0.3%. The Fed raised 25bp to 3.75–4.00% on 16 Sep after futures priced a greater-than-90% hike probability; US 2Y is 4.76% as of 18 Sep (+57bp 1m, 99.8th pctile 1y) and US 2s10s is 25bp (0.2nd pctile 1y). AUDUSD is 0.7120 (76.4th/84.3rd pctile). Paper books are empty $100m seeds paying 5% ACT/365 on the full allocation whether risk is on or not. INFERENCE: The RBA tightening channel is already breaking housing, and labor/sentiment confirm the slowdown, but local yields still sit at five-year extremes as if policy can keep tightening. That is a policy-error/slowdown mispricing owned most directly by front-end duration: if housing and labor keep deteriorating, 2Y policy pricing has to reverse first. The fresh Fed hike tightens global financial conditions further into that AU housing break, which is why the trade is timely rather than a stale housing narrative. US duration is the global alternative but US activity is mixed (GDP +1.5% SAAR decelerating, yet ISM Services 55.4 and August retail +1.2%), so the realized damage is cleaner in Australia. UNKNOWN: no RBA OIS path, no post-16 Sep AU yield print (AU rates age_days=3), no options surface, no CME positioning, no broker executable. CONTRARY FACTS that remain in the packet: monthly household spending +1.1% m/m (third consecutive rise), trimmed mean still 3.6%, AU consumer temperature 51.0, and US services/payrolls not in recession.",
+    "mispricing": "AU 2Y at 4.999% is a 99th-percentile 1y and 99.8th-percentile 5y yield after a 39bp 1m selloff, while the housing market is already in a transaction and price downturn and labor is loosening. Market pricing still requires an RBA that can sustain restrictive settings. The gap is fundamentals (housing/labor/cooling headline CPI) versus local yield extremes, not AUDUSD stretch (only 76th pctile 1y) and not AU-US 2Y (25.9bp, 26th pctile 1y).",
+    "why_now": [
+      "16 Sep housing evidence is new transmission, not a known level: NSW stamp-duty receipts -24% y/y and volumes -18% with Sydney/Melbourne values more than 7% below peak, published the same window as Westpac-MI sentiment -5.2% to 84.4.",
+      "The Fed has now actually hiked 25bp to 3.75–4.00% after >90% priced odds, adding a global financial-conditions impulse into an already-breaking AU housing channel.",
+      "AU 2Y remains at the 99.8th 5y percentile even after a -5.5bp 1d dip; the 1m +39.1bp overshoot has not been unwound.",
+      "Empty $100m books start accruing 5% ACT/365 on the full allocation immediately; being flat does not stop the vig, so a defined housing-vs-yield discrepancy should be expressed now rather than waited out."
+    ],
+    "evidence_refs": [
+      "market_state",
+      "mw_20260916_au_housing_tightening",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "temp:AU:labor",
+      "temp:AU:inflation",
+      "temp:AU:consumer",
+      "temp:AU:activity",
+      "rollup:Fed raises 25bp to 3.75–4.00%",
+      "mw_20260916_fomc_hike_pricing",
+      "rollup:August CPI keeps the Fed tightening bias intact",
+      "temp:US:consumer",
+      "temp:US:activity",
+      "research_method",
+      "trader_competition",
+      "paper_books"
+    ],
+    "horizon": "4-8 weeks",
+    "entry": "4.999 from executable_marks.rates.AU_2Y / market_state.rates.AU.tenors.2Y.value as of 2026-09-16",
+    "target": null,
+    "stop": null,
+    "invalidation": "Thesis is wrong if AU housing transactions and prices stabilize while labor stops loosening and trimmed-mean inflation reaccelerates, or if RBA communication/data force another hawkish repricing that takes AU 2Y to a new high alongside a risk-on AUD bid. Timing is wrong, not the mechanism, if US yields keep selling off and drag AU 2Y higher for a few sessions without any improvement in AU housing/labor. Packet has no sourced stop; do not invent one.",
+    "catalysts": [
+      "Further AU housing finance, prices or stamp-duty weakness confirming the 16 Sep downturn.",
+      "AU labor continuing to loosen from unemployment 4.5% and employment -15.8k.",
+      "RBA communications forced to acknowledge the housing/financial-conditions channel after the Fed hike.",
+      "US growth/confidence deterioration (Michigan 47.8 already weak) pulling global duration with AU 2Y."
+    ],
+    "principal_risks": [
+      "Trimmed-mean CPI still 3.6% y/y can keep the RBA hawkish even as housing falls; yields can stay high or rise while the real economy takes the pain.",
+      "AU sovereign yields are as-of 2026-09-16 (age_days=3) versus US yields and FX as-of 2026-09-18; post-FOMC global selloff (US 2Y +9bp 1d, +57bp 1m) may not be in the AU mark, so near-term duration long has stale-entry risk.",
+      "Household spending +1.1% m/m and Q2 GDP +0.4% q/q mean the slowdown is not yet a broad activity collapse.",
+      "Paper rates P&L is simplified (~$10k per bp per $100m) so a 4-8 week hold must deliver a large yield decline to clear the 5% full-allocation clock; if yields only chop, the vig wins.",
+      "NZ official yields unavailable; CME positioning unavailable; no vol surface; no broker executable."
+    ],
+    "confidence": 60
+  },
+  "paper_capital": {
+    "risk_put_on": true,
+    "action": "OPEN",
+    "notional_usd": 100000000,
+    "instrument": "AU_2Y",
+    "side": "long",
+    "asset_class": "rates",
+    "price": 4.999,
+    "mark_price": 4.999,
+    "price_path": "market_state.rates.AU.tenors.2Y.value",
+    "execution_blocked": null,
+    "funding_hurdle_rationale": "The 13 funded seats pay 5.00% simple ACT/365 on the full $100m every day whether flat or deployed, so HOLD still burns vig. Paper rates P&L is inverted yield-point MTM (about $10k per 1bp on $100m), and the book does not credit coupon, so only a yield decline clears the clock. Partial size cannot help because funding is on the full allocation. Full $100m long AU_2Y at the frozen 4.999 mark is therefore required: a 45-80bp 2Y rally over 4-8 weeks, which is inside the 1m/3m move already printed the other way (+39bp/+50bp) from a 99th-percentile starting yield, is the hurdle math for this housing-break thesis. If yields only chop, the 5% clock wins and the seat should not have been flat anyway."
+  },
+  "attack": [
+    "The strongest USD-lower claim is perma-bull / catalyst-junkie cyclical catch-up: Canada as the warmest activity/consumer pulse, CA-US_2Y at a 1y 3.77th / 5y 4.31st extreme of -140.0bp after a pre-priced Fed hike, plus BoC energy-pass-through minutes. That case treats Q2 GDP +0.8% and activity 53.2 as the policy input and treats labor 48.8 / employment -42k / wages +2.0% and core already at 1.9–2.0% as residual. BoC reaction functions bind on labor and core, not on a lagged GDP print.",
+    "USD_DOWN is a tagging error on a Canada-versus-US rates RV. Tightening CA-US via US yields falling is my US-rates-lower view; it does not require CAD up / USD down. Spot USDCAD is not at a comparable tail, and the 140bp 2Y carry still pays the dollar. A delivered hike to 3.75–4.00% with August CPI described as keeping the tightening bias intact is a USD-supportive impulse, not a USD-lower catalyst.",
+    "Complacent HY/VIX/copper is the fragility, not the confirmation. Tight 270bp HY OAS, VIX 15.44 and copper at the 99th percentile after the hike and the AU housing print is why defensive duration is still cheap in Australia: markets are priced as if tightening does not transmit. That is the opposite of a reason to fade USD or pay Canada.",
+    "mean-reverter's receive-US_2Y overshoot is the closest rates ally and the weakest USD-lower argument. I already want US yields lower as the risk-off companion. Their own 5y z 0.89 and the retained tightening-bias rollup undercut treating 4.76 as a completed fade that must sink the dollar.",
+    "Same-side USD-higher seats in this bundle (dollar-king, rate-dove, positioning-cynic, trend-follower) do not repair the USD-lower case. rate-dove is the same AU_2Y expression. trend-follower's pay-US_2Y continuation is a timing risk I already listed (stale AU mark versus US 2Y +9bp on 18 Sep), not proof that AU housing has stopped breaking."
+  ],
+  "defense": [
+    "Long AU_2Y at executable_marks.rates.AU_2Y 4.999 remains the cleanest defensive expression: five-year-extreme local yields versus verified housing, labor and sentiment damage. Canada RV is a different object. Winning or losing opp-view:USD does not mark AU_2Y.",
+    "USD higher is a risk-off companion after a delivered Fed hike into an AU housing break, not a claim that US yields must rise. US rates lower plus USD higher is internally consistent in a tightening-transmission / flight-to-dollar regime. That is why I did not short AUDUSD: AUDUSD is only 76.4th/84.3rd and AU-US_2Y is only 25.9bp.",
+    "Paper capital stays OPEN $100m long AU_2Y at 4.999. Funding is charged on the full allocation whether flat or not; partial size cannot dodge the 5% ACT/365 clock. The entry price is the frozen executable mark, not an invented post-FOMC AU print.",
+    "Uncertainty is preserved. AU rates age_days=3 versus US 2Y as-of 2026-09-18; trimmed mean still 3.6%; household spending +1.1% m/m; no RBA OIS path; no CME positioning; no broker executable. Those are reasons for the already-stated invalidation, not reasons to withdraw a 99.8th-percentile yield against a housing downturn.",
+    "I concede the USD-higher companion tag, not the AU_2Y trade, if subsequent Canada labor re-tightens and CPI-trim/median leave the 1.9–2.0% area while USDCAD actually falls as CAD catch-up with energy pass-through in the prints. I withdraw long AU_2Y only if AU housing transactions and prices stabilize, labor stops loosening, and trimmed-mean inflation reaccelerates, or if AU 2Y makes a new high with a risk-on AUD bid."
+  ],
+  "strongest_opponent_point": "perma-bull / catalyst-junkie: Canada has the strongest activity (53.2) and consumer (52.5) gauges and Q2 GDP +0.8% q/q, yet CA-US_2Y sits at -140.0bp (1y 3.77th / 5y 4.31st) after a Fed hike that was already >90% priced, with BoC minutes flagging energy pass-through — so Canada should re-rate higher versus the US and USD should be lower.",
+  "concession_condition": "Concede USD-higher (keep AU_2Y) if Canada labor re-tightens from employment -42k / wages +2.0% / unemployment 6.4% and CPI-trim/median leave ~2% while USDCAD falls as CAD catch-up with energy pass-through in subsequent prints. Withdraw AU_2Y only if housing volumes/prices stabilize, AU labor stops loosening from 4.5% / -15.8k, and trimmed mean reaccelerates above 3.6%, or AU 2Y prints a new high with a risk-on AUD bid.",
+  "macro_assumptions": {
+    "growth": "below_trend",
+    "risk": "risk_off",
+    "rates": "easing_cycle",
+    "policy": "dovish"
+  },
+  "packet_sha256": "e0da1a0c3331e88bb03e87a4b6cf567c0559de795c55fb93259aaba542e5e37c",
+  "subagent_calls": 0
+}

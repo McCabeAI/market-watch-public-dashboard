@@ -1,0 +1,123 @@
+{
+  "type": "TRADER_ROOM_REBUTTAL",
+  "run_id": "tr-20260919T011817Z-ondemand",
+  "round": 2,
+  "agent": "dollar-king",
+  "opponents": [
+    "perma-bear",
+    "positioning-cynic",
+    "rate-dove",
+    "trend-follower",
+    "catalyst-junkie",
+    "mean-reverter",
+    "perma-bull",
+    "rate-hawk",
+    "value-guy"
+  ],
+  "own_original_ref": "submissions/dollar-king.json",
+  "strongest_opponent_point": "FACT: the 16 Sep 25bp hike to 3.75-4.00% entered the meeting with >90% futures odds, US 2Y is 4.76 as of 18 Sep after +57bp / z_1y 2.84 over one month, and US temperature gauges sit near 50. INFERENCE from mean-reverter, and the receive-US legs of catalyst-junkie / perma-bull / rate-hawk / value-guy: residual hawkish USD bid is spent, so USD should fade lower while Canada catch-up or a funds-to-2Y giveback does the work. UNKNOWN: whether August CPI's retained tightening-bias item still opens another hike.",
+  "holes_in_opposing_case": [
+    "FACT: catalyst-junkie, perma-bull, rate-hawk and value-guy tag usd_view lower while selecting CA-US rates RV, not USD spot. Their own expression_comparisons reject short USDCAD because USDCAD is only 1y 74.0 / 5y 87.0 percentile at 1.4010471204188482 and the carry screen is +140bp long USD / short CAD. INFERENCE: USD_DOWN is a CAD-relative rates tag, not a dollar-spot thesis. A seat that refuses the USD pair cannot be treated as having shown USD cash is the weak leg.",
+    "FACT: rate-hawk keeps us_rates_view higher and usd_view lower in the same synopsis; value-guy is economically long US 5Y versus short CA 5Y while still tagging USD_DOWN. INFERENCE: that is CAD outperformance smuggled as a USD view. If US yields stay high and CA yields catch up, the spread can tighten without USD falling versus AUD. UNKNOWN: CA 2Y as_of 17 Sep versus US 2Y as_of 18 Sep (+9bp), so even the frozen -140bp CA-US_2Y mark is stale versus the latest US backup.",
+    "FACT: mean-reverter's 5y US 2Y z is only 0.89 / 88th percentile; the 99.8th-percentile claim is a 1y window. FACT: US 2Y still cheapened +9bp on 18 Sep, two sessions after the priced hike, and the packet still retains 'August CPI keeps the Fed tightening bias intact.' INFERENCE: a delivered, pre-priced 25bp step does not uniquely imply USD lower. Mapping a possible 2Y giveback into a USD-cash fade invents a transmission the packet does not show in spot.",
+    "FACT: catalyst-junkie and mean-reverter tag both usd_view lower and aud_view lower. INFERENCE: dual-leg-down is not an AUDUSD long and does not identify which residual wins. Short AUDUSD is the pair that makes AUD_DOWN versus USD_UP explicit. Their USD_DOWN tags therefore do not oppose this instrument.",
+    "FACT: perma-bear, rate-dove, positioning-cynic and trend-follower are USD_UP like this seat. They chose AU_2Y, US_2s10s or US_2Y. INFERENCE: they are not USD-spot opponents. Receiving AU 2Y owns the housing channel in duration; it discards AUDUSD at 5y 84th percentile / z_5y 1.23 with only +25.9bp of AU-US 2Y carry. That is an expression preference, not a hole in the USD leg.",
+    "FACT: broad USD is stale as of 2026-09-11. FACT: after the hike, EURUSD is -1.89% 1m / -1.14% 5d (1y 10.9th percentile), GBPUSD is -2.07% 1m / -1.21% 5d, USDCHF is +3.34% 1m, USDSEK is +3.80% 1m. INFERENCE: live G10 USD crosses after 16 Sep are a residual USD bid, not a USD fade. Using a stale 12th-percentile broad-USD print as USD_DOWN evidence violates the packet's own as_of gap."
+  ],
+  "attack": [
+    "The USD_DOWN camp is arguing a second-order mapping: Canada 2Y 140bp cheap, or US 2Y 76-101bp above the new funds band, therefore USD cash lower. FACT: they themselves say the mispricing lives in the yield gap, not in FX. INFERENCE: converting that into a dollar view adds oil, CA labor, and as_of mismatch without owning a USD pair. Dollar-king will not import WTI 107.02 (96.4th percentile, +24% 1m) and CA employment -42k as hidden legs in a USD-AUD trade.",
+    "If the CA-US catch-up were a clean USD-down spot, the expression would be short USDCAD. FACT: USDCAD 3m is still -1.25% even as US 2Y is up on every horizon; the 140bp 2Y differential / 60d vol ratio 0.32 ranks long USD versus CAD. INFERENCE: fighting that carry to express 'USD lower' is worse than short AUDUSD, where AU-US 2Y is only +25.9bp (ratio 0.049). The CAD energy bid is why this seat stayed neutral CAD and refused USDCAD.",
+    "Mean-reverter's priced-hike fade is the only direct attack on the USD leg. It fails the spot test. FACT: EURUSD, GBPUSD, USDCHF and USDSEK already show post-hike USD strength; AUDUSD is still +2.65% over 3m and only -0.73% over 5d at a 5y z of 1.23. INFERENCE: the residual that has not cheapened is AUD versus USD, not USD versus Europe. Fading US 2Y does not close an 84th-percentile AUDUSD gap.",
+    "Cross or CA-US expressions add unnecessary second-order risk. FACT: copper 6.7155 is 99.2nd percentile; WTI 107.02 is 96.4th; VIX 15.44 is ~15th percentile. INFERENCE: a risk-on / commodity tape can keep CAD bid and AUD bid at the same time. Short AUDUSD isolates the AU housing/labor deterioration (stamp duty -24% y/y, volumes -18%, labor 47.8) against a just-re-tightened USD. Paying CA versus receiving US mixes a stronger CA activity 53.2 / consumer 52.5 pulse into the USD view and then labels that USD_DOWN. That is not a dollar expression.",
+    "UNKNOWN that the USD_DOWN camp treats as settled: next BoC/CPI dates, whether energy pass-through survives the Saudi Oman workaround, CME daily FX positioning, and broker-executable FX. FACT: those are listed packet gaps. INFERENCE: they cannot carry a USD-lower call that this seat must vacate AUDUSD to honor."
+  ],
+  "defense": [
+    "FACT: Fed hiked 25bp to 3.75-4.00% on 16 Sep and the packet still retains an August CPI tightening bias; US 2Y 4.76 and US 10Y 5.01 remain 99th-percentile 1y prints, with US 2Y still +9bp on 18 Sep. INFERENCE: the USD policy leg is live, not a spent lottery. Dedicated dollar-king remit stays in USD spot.",
+    "FACT: AUDUSD 0.712022367194781 as of 18 Sep is 1y 76th / 5y 84th, z_5y 1.23, +2.65% 3m, against AU housing already cutting volumes 18% and stamp duty 24%, AU labor 47.8, and only +25.9bp of AU-US 2Y carry. INFERENCE: the pair is still pricing copper 99th-percentile terms of trade, not the domestic tightening channel. That gap is owned in USD space, not in AU 2Y and not in CA-US RV.",
+    "FACT: AUD futures open interest 493141 is 99th percentile 1y (z_1y 3.61) with leveraged funds still net long +61135 as of 15 Sep. INFERENCE: the rich AUD is still owned. A 5d -0.73% dip is not a completed unwind. Paper $35m short at the frozen executable_marks.spot_fx.AUDUSD mark 0.712022367194781 is already haircut for the copper residual; it is not a full-book chase.",
+    "USDCAD remains the next-best USD pair and remains inferior: 140bp carry helps a USD long, but WTI 107.02 / 96th percentile and CA activity 53.2 / consumer 52.5 support CAD. EURUSD already cheapened 1.89% over 1m into a 1y 11th-percentile print, so fading EURUSD now chases a move that has printed. AUDUSD is the USD pair that is still rich versus a deteriorating local fundamental.",
+    "FACT: funded seats pay 5.00% ACT/365 on the full $100m whether flat or not. INFERENCE: withdrawing to HOLD donates vig without closing the AUDUSD discrepancy. UNKNOWN: RBA path, whether copper can keep AUD rich, CME FX positioning, broker mids. Those unknowns were already in the original invalidation and size cap; they do not flip USD_DOWN.",
+    "Trade remains unchanged: short AUDUSD, paper OPEN 35000000, side short, price and mark_price copied from executable_marks.spot_fx.AUDUSD / market_state.fx.pairs.AUDUSD.spot 0.712022367194781. No invented stop or target."
+  ],
+  "concession_condition": "Concede the USD-higher AUDUSD short if subsequent retained evidence withdraws the Fed tightening-bias narrative and US 2Y reverses the 1-month +57bp backup, AND AUDUSD holds or rises while AU labor/housing stop deteriorating or copper at the 99th percentile continues to dominate with no offsetting AU domestic softening. A CA-US spread tightening alone, or a US 2Y giveback that leaves AUDUSD rich, is not a concession.",
+  "trade_change": "unchanged",
+  "revised_trade": {
+    "instrument": "AUDUSD",
+    "asset_class": "spot_fx",
+    "expression_comparison": {
+      "rates_candidate": null,
+      "spot_candidate": "short AUDUSD (USD long vs AUD) at executable_marks.spot_fx.AUDUSD 0.712022367194781",
+      "selected": "spot",
+      "rationale": "Dedicated dollar-king remit is spot-only. The discrepancy lives in AUDUSD: AU housing/labor deterioration versus a still-rich AUD that is pricing copper/commodity resilience, against a USD that has just re-tightened. USDCAD is the next-best USD pair but is inferior because the 140bp 2Y gap is already large while WTI 107.02 (96th percentile, +24% 1m) and CA activity 53.2 / consumer 52.5 support CAD. AUDCAD or other crosses discard the USD/Fed leg and add CAD energy risk."
+    },
+    "structure": "spot short AUDUSD",
+    "direction": "short",
+    "thesis": "FACT: Fed raised 25bp to 3.75–4.00% on 16 Sep after futures were >90% priced for the hike; August CPI is cited as keeping the tightening bias intact. US 2Y 4.76 and 10Y 5.01 are at the 99th 1y percentile (+57bp / +36bp 1m). AU 2Y 4.999 / 10Y 5.348 are also 99th 1y, but AU-US 2Y is only +25.9bp. AUDUSD 0.712022367194781 as of 2026-09-18: 1y 76th / 5y 84th, z_5y 1.23, +2.65% 3m, -0.73% 5d. NSW stamp-duty receipts -24% y/y, transaction volumes -18%, Sydney/Melbourne values >7% off peak. AU labor 47.8 (U-rate 4.5% from 4.4%, employment -15.8k); AU activity 49.2 (GDP +0.4% q/q, business conditions softer); trimmed CPI 3.6% unchanged, headline 3.5% from 3.8%; Sep Westpac sentiment -5.2% to 84.4. AUD futures OI 493141, 99th 1y, z 3.61; leveraged funds net long +61135 (+11356 weekly). Copper 6.7155, 99th percentile; WTI 107.02, 96th; VIX 15.44, 15th; broad USD 118.21 stale (as_of 2026-09-11, 12th percentile). Carry screen long AUD / short USD = 26bp / 5.26 vol, ratio 0.049. Paper books are empty $100m seeds paying 5% ACT/365 on the full allocation whether flat or not. INFERENCE: AUDUSD is pricing the copper/commodity state, not the housing-labor change; the Fed path still supports the USD leg even though the 25bp decision was known. The closing mechanism is further AU housing/labor transmission and/or RBA hold-to-ease versus US higher-for-longer, which should cheapen AUD versus USD without needing a CAD or JPY second leg. UNKNOWN: RBA next decision and policy rate path; whether copper at the 99th percentile can keep AUD rich; NZ yields (unavailable); CME daily FX positioning (unavailable); broker-executable prices (ECB reference only).",
+    "mispricing": "AUDUSD at 5y 84th percentile / z 1.23 and +2.65% over 3m is inconsistent with a housing channel that is already cutting volumes 18% and stamp duty 24%, a 47.8 labor score, and only 26bp of AU-US 2Y carry. The market is paying for copper 99th-percentile terms-of-trade as if that dominates domestic tightening; dollar-king owns that gap in USD space.",
+    "why_now": [
+      "Fed has already delivered the 25bp hike to 3.75–4.00% and the retained August CPI item still flags a tightening bias, so the USD policy leg is live rather than a pre-meeting lottery.",
+      "AU housing evidence (stamp duty -24% y/y, volumes -18%, prices >7% off peak) is the new transmission of existing high AU yields, not a restatement of the rate level.",
+      "AUDUSD remains rich (5y 84th, z 1.23) after only a -0.73% 5d dip, while AUD futures open interest is at a 99th-percentile 1y extreme with leveraged funds still adding longs.",
+      "The 5% full-$100m ACT/365 clock runs whether flat or not; an empty seed book with a defined AUDUSD discrepancy should put risk on rather than donate vig with zero edge."
+    ],
+    "evidence_refs": [
+      "market_state",
+      "research_method",
+      "trader_competition",
+      "paper_books",
+      "mw_20260916_fomc_hike_pricing",
+      "mw_20260916_au_housing_tightening",
+      "rollup:Fed raises 25bp to 3.75–4.00%",
+      "rollup:August CPI keeps the Fed tightening bias intact",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "temp:US:inflation",
+      "temp:US:activity",
+      "temp:US:labor",
+      "temp:AU:labor",
+      "temp:AU:activity",
+      "temp:AU:inflation",
+      "temp:AU:consumer",
+      "temp:CA:activity",
+      "temp:CA:consumer"
+    ],
+    "horizon": "4-8 weeks",
+    "entry": "AUDUSD 0.712022367194781 from executable_marks.spot_fx.AUDUSD / market_state.fx.pairs.AUDUSD.spot as of 2026-09-18",
+    "target": null,
+    "stop": null,
+    "invalidation": "Thesis is wrong if AUDUSD holds or rises while AU labor/housing stop deteriorating, or if copper/commodity strength continues to dominate without any offsetting AU domestic softening. Do not invent a numeric stop; reassess if AU unemployment reverses lower or if the Fed tightening-bias narrative is withdrawn in subsequent retained evidence.",
+    "catalysts": [
+      "Further Australian housing, employment, or consumer-sentiment prints confirming the RBA tightening channel.",
+      "US inflation/labor follow-through that keeps the Fed tightening bias intact after the 16 Sep hike.",
+      "Any RBA communication that treats housing stress as a reason to stop leaning hawkish versus a still-restrictive Fed."
+    ],
+    "principal_risks": [
+      "Copper at 6.7155 (99th percentile, +3.5% 1m) can keep AUD bid via terms of trade even if housing stays weak.",
+      "AUD-USD 2Y carry of +26bp slightly opposes a short; a patient squeeze can bleed if the housing catalyst is slow.",
+      "VIX 15.44 (15th percentile) is a complacent/risk-on tape that typically supports AUD.",
+      "The 16 Sep hike was >90% priced; if the residual USD bid is already in EURUSD (-1.89% 1m) and AUDUSD 5d (-0.73%), leftover edge may be small versus 5% book vig.",
+      "ECB FX marks are reference, not broker-executable; CME positioning is unavailable; broad USD is stale as of 2026-09-11."
+    ],
+    "confidence": 59
+  },
+  "paper_capital": {
+    "risk_put_on": true,
+    "action": "OPEN",
+    "notional_usd": 35000000,
+    "instrument": "AUDUSD",
+    "side": "short",
+    "asset_class": "spot_fx",
+    "price": 0.712022367194781,
+    "mark_price": 0.712022367194781,
+    "price_path": "market_state.fx.pairs.AUDUSD.spot",
+    "execution_blocked": null,
+    "funding_hurdle_rationale": "The 13 funded seats pay 5.00% simple ACT/365 on the full $100m every day whether invested or flat, about $13,699 per day / about $575k over a 6-week horizon. Flat therefore donates vig with zero edge. $35m short AUDUSD at the frozen 0.712022367194781 mark needs roughly a 1.6% AUDUSD decline over six weeks to cover that book-level clock; 20d realized vol is 4.71% and the 5y z is +1.23, so a partial unwind of the richness/housing gap can clear the hurdle without using the full $100m. Carry of only +26bp to AUD slightly opposes the short but is too small to justify staying flat. Notional is capped at $35m because copper at the 99th percentile is a real residual AUD bid."
+  },
+  "macro_assumptions": {
+    "growth": "below_trend",
+    "risk": "risk_on",
+    "rates": "higher_for_longer",
+    "policy": "hawkish"
+  },
+  "packet_sha256": "e0da1a0c3331e88bb03e87a4b6cf567c0559de795c55fb93259aaba542e5e37c",
+  "subagent_calls": 0
+}

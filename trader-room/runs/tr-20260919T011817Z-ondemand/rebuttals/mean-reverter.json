@@ -1,0 +1,117 @@
+{
+  "type": "TRADER_ROOM_REBUTTAL",
+  "run_id": "tr-20260919T011817Z-ondemand",
+  "round": 2,
+  "agent": "mean-reverter",
+  "opponents": [
+    "trend-follower",
+    "dollar-king",
+    "perma-bear",
+    "positioning-cynic",
+    "rate-dove",
+    "catalyst-junkie",
+    "perma-bull",
+    "rate-hawk",
+    "value-guy"
+  ],
+  "own_original_ref": "submissions/mean-reverter.json",
+  "packet_sha256": "e0da1a0c3331e88bb03e87a4b6cf567c0559de795c55fb93259aaba542e5e37c",
+  "subagent_calls": 0,
+  "strongest_opponent_point": "Trend-follower’s instrument-true case: US_2Y is higher on the frozen 1d/5d/1m/3m windows (bp_1d +9, bp_5d +13, bp_1m +57, bp_3m +57; pctile_1y 99.80; z_1y 2.84) after a delivered 16 Sep 25bp hike to 3.75-4.00% that was already >90% priced, with the retained August CPI tightening-bias item still in the packet, so fading the 1y extreme is a premature reversal rather than a completed post-event digestion.",
+  "holes_in_opposing_case": [
+    "FACT: market_state.rates.US.tenors.2Y bp_1m and bp_3m are both +57.0bp as of 2026-09-18. INFERENCE: the prior two months of the 3m window contributed ~0bp; this is one 1-month spike, not four independent trends. FACT: opportunities/screen 1M z is 3.29 while 5D z is 1.23 and 3M z is 1.53. Calling +9/+13/+57/+57 an ‘unambiguous’ continuation treats a single 3.3σ month as a multi-horizon regime.",
+    "FACT: the frozen US 2Y screen history prints 474.0 on 2026-09-16, 467.0 on 2026-09-17, and 476.0 on 2026-09-18. The session after the hike was a 7bp yield rally, not a backup. The +9bp 1d move is a bounce from 4.67, not a two-day follow-through from the hike print. Net from hike-day 4.74 to the executable 4.76 mark is +2bp. Trend-follower’s ‘yet 2Y still sold off 9bp by 18 Sep’ cherry-picks the 1d window and ignores the intervening giveback.",
+    "FACT: trend-follower’s own conflict_synopsis.carry_view is opposes_trade. Paying 4.76 after a delivered, >90% priced 25bp step fights a 76-101bp funds-to-2Y gap versus the new 3.75-4.00% band. Their own principal_risks already admit additional backup ‘requires the bias to stay open, which the packet does not guarantee’ and that Michigan preliminary September 47.8 / US consumer 48.5 / Q2 GDP +1.5% SAAR ‘could re-anchor a one-and-done narrative.’ That is their mechanism, not a new transmission.",
+    "Trend-follower invalidation is circular for this debate: the 1-month +57bp uptrend must reverse before they will concede. That is trend confirmation. It is not a test of whether 4.76 versus a just-set 3.75-4.00% funds band is an overshoot of already-known CPI-plus-hike information. A fade that is only ‘wrong’ until it has already worked is not an opposing valuation.",
+    "USD-higher is not a US_2Y pay. FACT: dollar-king’s trade is short AUDUSD at 0.712022367194781; AUDUSD ret_1m is only +0.20% and z_5y 1.23 / pctile_5y 84.3 — not analogously stretched to US 2Y’s 1M z 3.29. Perma-bear and rate-dove receive AU_2Y and tag us_rates_view lower; their USD-higher tag is an AUD residual, not a reason to pay UST 2s. Positioning-cynic shorts US_2s10s as a paper steepener (long 2s vs short 10s) against AM UST 10Y crowding, not against 2Y cheapness.",
+    "FACT: CFTC TFF as of 2026-09-15 shows asset-manager UST 2Y net at pctile_1y 12.5 / pctile_3y 24.0, while leveraged-fund UST 2Y net shorts sit at pctile_1y 93.3 / pctile_3y 97.8 of net (least-short in that window). UNKNOWN: that print is pre-FOMC. INFERENCE even so: receiving 2Y is not joining a crowded AM 2Y long, and paying 2Y is closer to joining already-covered leveraged-fund shorts than to owning a fresh trend. AM crowding in this packet is the 10Y book, which is positioning-cynic’s object, not mine.",
+    "Catalyst-junkie, perma-bull, rate-hawk and value-guy are in the USD-view bundle but are not opposite on US_2Y: their CA-US shorts are economically receive-US versus pay-Canada (or receive-US 5Y). Rate-hawk even states outright short US_2Y is inferior because the hike was >90% priced and US 2Y is already 99.8th percentile 1y. Listing them as USD-lower alongside this seat does not rescue trend-follower’s pay-2Y."
+  ],
+  "attack": [
+    "The live discrepancy is residual extrapolation of known information, not an unpriced tightening cycle. Futures entered 16 Sep with >90% odds of the 25bp hike; US temps sit Inflation 52.0, Labor 50.2, Activity 49.92, Consumer 48.5. ISM Services 55.4 and August retail +1.2% m/m, which trend-follower uses as ‘no growth-collapse,’ are not a new hike transmission when the consumer gauge is 48.5 and Michigan preliminary September is 47.8. Known CPI-plus-hike needs a new mechanism to justify treating 4.76 as a launch pad.",
+    "A 1y 99.80th percentile / z_1y 2.84 print after a 1-month +57bp / z 3.29 cheapening is the definition of a move stretch. FACT: pctile_5y is only 88.02 and z_5y is 0.89. Trend-follower converts the 1y window into a regime and then refuses to fade it. That is crowded extrapolation. This seat never claimed a 5y valuation blow-off; the policy-rate anchor is the 3.75-4.00% funds band, 76-101bp below the marked 2Y.",
+    "Dollar-king’s USD-higher via short AUDUSD can be true as an AU housing/labor versus copper story without paying US 2Y. AUDUSD 1m +0.20% and a 26bp AU-US 2Y cushion are not the same object as a 3.3σ US front-end month. Switching this seat into AUDUSD would abandon the funds-to-2Y overshoot for a weaker 5y FX z.",
+    "Positioning-cynic’s steepener is a 10s-crowd fade that is long the 2s leg this seat already wants. Using their USD-higher synopsis as a vote to pay 2Y mixes a curve-ownership call with an outright duration call. If AM 10Y length is the crowded easing/flatten book, joining pay-2Y as ‘USD higher’ is the wrong side of their own 2s positioning.",
+    "Perma-bear and rate-dove own Australian housing damage in AU_2Y, which this original already treated as independent evidence that tightening channels bite — supporting a broader front-end giveback, not a US 2Y short. Their USD-higher tags do not convert AU duration longs into a Fed-continuation trade."
+  ],
+  "defense": [
+    "FACT: executable_marks.rates.US_2Y is 4.76 (market_state.rates.US.tenors.2Y.value, as_of 2026-09-18). FACT: funds moved to 3.75-4.00% on 16 Sep after >90% priced odds. The economically relevant anchor remains that policy band, not the 1y percentile. INFERENCE: 76-101bp of extra tightening after a single pre-priced 25bp step is the overshoot; the reversal condition is post-event digestion of already-known information, not a completed price-reversal print that a trend seat would demand before covering.",
+    "Rates-first still holds and is cleaner than the USD-higher spot alternatives. The mispricing lives in US 2Y. AUDNZD remains the larger 5y level stretch (z_5y 3.12) but NZ official yields are unavailable, so the cross cannot be risk-matched. AUDUSD is not analogously stretched (z_5y 1.23, 1m +0.20%). USD-lower in the synopsis is a residual of US front-end giveback, not a mandate to short a USD pair.",
+    "Paper capital stays OPEN long US_2Y 80000000 at the frozen 4.76 mark. The 13 funded seats pay 5% ACT/365 on the full $100m whether flat or not; sitting out donates the vig. Inverted-yield paper P&L on a percent-quoted 2Y is small per bp, which is why size stays $80m rather than shrinking into a token. A 20-35bp giveback of the 57bp spike remains the path that can clear the clock inside 2-6 weeks. Carry of receiving 4.76 versus 3.75-4.00% supports waiting; trend-follower’s short fights that carry.",
+    "UNKNOWN that is preserved, not waved away: whether additional hikes remain in the unobserved SEP path; CME FX positioning unavailable; CFTC 2Y books are as_of 2026-09-15 so post-hike ownership is unobserved; 1y screen n=252 is not a full-cycle distribution. Those gaps cut both ways and do not convert a 1M 3.3σ post-priced-hike spike into a pay-2Y."
+  ],
+  "concession_condition": "Concede the receive and would HOLD or reverse if a new hawkish US inflation or labor transmission after the already-delivered 16 Sep hike re-opens additional hike odds, or if US 2Y extends to a fresh 1y extreme that adds to the 1-month +57bp spike without giving any of it back. A 1-day dip is not concession. If 4.76 simply chops as a higher-for-longer normal while the funds-to-2Y gap stays wide and 5y z remains mid-range (currently 0.89), that is right-thesis/wrong-timing: reassess horizon rather than flip to trend-follower’s pay-2Y. Do not treat dollar-king’s AUDUSD housing story or a CA-US catch-up as invalidation of the US 2Y overshoot.",
+  "trade_change": "unchanged",
+  "revised_trade": {
+    "instrument": "US_2Y",
+    "asset_class": "rates",
+    "expression_comparison": {
+      "rates_candidate": "Receive/long US_2Y at executable_marks.rates.US_2Y 4.76 (market_state.rates.US.tenors.2Y.value as of 2026-09-18). Fade the 1M +57bp / z 3.29 cheapening and 1y 99.8th percentile print after a delivered, >90% priced 25bp hike, using the 3.75-4.00% funds band as the policy-rate anchor.",
+      "spot_candidate": "Short AUDNZD at executable_marks.spot_fx.AUDNZD 1.246846846846847 (market_state.fx.pairs.AUDNZD.spot as of 2026-09-18). 1y percentile 99.80 / 5y percentile 99.96 / z_5y 3.12 with 1m +4.27%, against AU housing (NSW stamp duty -24% y/y, volumes -18%, Sydney/Melbourne values >7% off peak) and a NZ Q2 GDP 0.2% q/q beat.",
+      "selected": "rates",
+      "rationale": "Rates are selected because the discrepancy being faded is the US front-end MOVE overshoot after a priced FOMC hike, which lives in US 2Y, has a frozen executable mark, and has a policy-rate anchor (funds 3.75-4.00 vs 2Y 4.76). AUDNZD is the cleaner 5y LEVEL stretch (z_5y 3.12 vs US 2Y z_5y only 0.89) but is inferior here: NZ sovereign yields are unavailable so the cross cannot be risk-matched to a rate differential; AUDUSD is not analogously stretched (z_5y 1.23, 1m +0.20%); and 1d AUDNZD is still +0.65% with no completed reversal print. When the identified mispricing is a US rates overshoot and both expressions are otherwise usable, the rates-first default holds."
+    },
+    "structure": "Outright receive US 2Y duration. Paper side long so the books engine's inverted yield P&L profits if the marked yield falls from 4.76.",
+    "direction": "long",
+    "thesis": "FACT: On 2026-09-16 the Fed raised 25bp to 3.75-4.00%; futures had entered that decision with >90% odds of the hike. FACT: US 2Y is 4.76 as of 2026-09-18 (executable_marks.rates.US_2Y / market_state.rates.US.tenors.2Y.value), 1y percentile 99.80, z_1y 2.84, 5y percentile 88.0, z_5y 0.89, with bp_1d +9.0 (screen 1D z 1.90), bp_1m +57.0 (screen 1M z 3.29), bp_5d +13.0. FACT: US 5s10s is 15.0bp, z_1y -2.77 / 5y z +0.07; US 2s10s is 25.0bp, 1y percentile 0.20, z_1y -2.45 / 5y z +0.33 — the flatten is a 1y-window symptom of the same front-end cheapening, not a 5y curve extreme. FACT: US temperature gauges are Inflation 52.0 (core PCE +0.2% m/m, ~2.4% 1m/3m ann., ~3.0% 6m), Labor 50.2, Activity 49.92, Consumer 48.5. FACT: VIX 15.44 (14.7th percentile) and SPX 7637.76 (90.1st) are not a stress regime. INFERENCE: The 1-month 3.3σ US 2Y cheapening is crowded extrapolation of already-known CPI-plus-hike information; known information needs a new transmission mechanism to justify another 9bp cheapening two sessions after the decision. The economically relevant anchor is the policy rate, not the 5y yield percentile: 4.76 sits ~76-101bp above the new funds band after a single 25bp step. Receiving 2Y owns that overshoot; a 5s10s steepener would only own the relative symptom and is a 1y-only extreme. UNKNOWN: whether additional hikes remain in the (unobserved here) SEP path; CME FX positioning is unavailable; 1y screen n=252 is not a full-cycle distribution. Do not treat 4.76 as a 5y statistical blow-off (z_5y 0.89).",
+    "mispricing": "US 2Y prices roughly 76-101bp of extra tightening above the just-set 3.75-4.00% funds band after a hike that was already >90% priced, and has just printed a 1-month +57bp / z 3.29 cheapening. That gap is the overshoot. The 5y z of 0.89 is explicit null-as-extreme: this is not a secular richness claim.",
+    "why_now": [
+      "The Sep 16 hike has already printed and was >90% priced into the decision; residual +9bp on Sep 18 is post-event extrapolation, not new information.",
+      "US 2Y 1M +57bp at screen z 3.29 is the sharpest rates MOVE stretch in the frozen screens; US temps near 50 do not corroborate a fresh tightening impulse.",
+      "Empty $100m seed book pays 5% ACT/365 on the full allocation whether flat or deployed; a 20-35bp giveback of the 57bp spike is the only path this seat has to outrun that clock."
+    ],
+    "evidence_refs": [
+      "market_state",
+      "mw_20260916_fomc_hike_pricing",
+      "rollup:Fed raises 25bp to 3.75–4.00%",
+      "rollup:August CPI keeps the Fed tightening bias intact",
+      "temp:US:inflation",
+      "temp:US:labor",
+      "temp:US:activity",
+      "temp:US:consumer",
+      "mw_20260916_au_housing_tightening",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "rollup:New Zealand Q2 GDP slows to 0.2% q/q but beats forecasts",
+      "rollup:Energy-market shock absorbers weaken",
+      "rollup:BoC minutes flag higher energy pass-through risk",
+      "research_method",
+      "trader_competition",
+      "paper_books"
+    ],
+    "horizon": "2-6 weeks (post-hike digestion of the 1-month front-end overshoot)",
+    "entry": "4.76 from executable_marks.rates.US_2Y (market_state.rates.US.tenors.2Y.value as of 2026-09-18)",
+    "target": null,
+    "stop": null,
+    "invalidation": "Thesis is wrong if a new hawkish transmission arrives after the already-delivered hike: another upside US inflation surprise that re-opens additional hike odds, or US 2Y continuing to cheapen to fresh 1y extremes without a giveback of the 1-month +57bp spike. Right-thesis/wrong-timing if yields chop around 4.76 while the funds-to-2Y gap stays wide; reassess horizon rather than invent a stop. 5y z_5y 0.89 remaining mid-range is not itself invalidation.",
+    "catalysts": [
+      "Post-FOMC digestion: fade of residual hike/CPI extrapolation now that the 25bp step is delivered.",
+      "US data that fails to validate further tightening beyond temps already near 50.",
+      "AU housing downturn as independent evidence that tightening channels bite, supporting a broader front-end giveback without being the traded expression."
+    ],
+    "principal_risks": [
+      "Retained 'August CPI keeps the Fed tightening bias intact' can extend the cheapening if the hike is the start of a sequence rather than the overshoot.",
+      "Energy-market shock absorbers weakening and BoC energy pass-through are upside-yield risks that can leak into US 2Y.",
+      "US 2Y 5y percentile is only 88.0 / z 0.89 — a higher-for-longer regime can keep 4.76 as a new normal.",
+      "CME FX positioning is unavailable; ownership of the 2Y cheapening is not independently triangulated from futures positioning in allowed evidence_refs.",
+      "Paper P&L on percent-quoted yields is small per bp even at $80m, so a slow giveback can lose to the 5% ACT/365 clock."
+    ],
+    "confidence": 56
+  },
+  "paper_capital": {
+    "risk_put_on": true,
+    "action": "OPEN",
+    "notional_usd": 80000000,
+    "instrument": "US_2Y",
+    "side": "long",
+    "asset_class": "rates",
+    "price": 4.76,
+    "mark_price": 4.76,
+    "price_path": "market_state.rates.US.tenors.2Y.value",
+    "execution_blocked": null,
+    "funding_hurdle_rationale": "The seat pays 5.00% ACT/365 on the full $100m every day whether flat or deployed (~$13.7k/day). Being flat has zero expected trading P&L against that vig. Long US_2Y at the frozen 4.76 mark: books P&L is inverted yield, so a 25bp giveback on $80m is 0.25/100*80m=$200k (~15 days of funding) and a 35bp giveback is $280k (~20 days). The 1-month +57bp / z 3.29 cheapening after a priced hike is large enough that a partial mean-reversion inside 2-6 weeks can clear the clock; $80m is sized up because percent-quoted 2Y P&L per bp is small. Carry of receiving 4.76 versus the 3.75-4.00% funds band supports the position while waiting. If the 5y z of 0.89 is the true regime and yields do not give back, the trade fails the hurdle and is invalidated by a fresh hawkish print rather than by sitting flat."
+  },
+  "macro_assumptions": {
+    "growth": "below_trend",
+    "risk": "risk_on"
+  }
+}
