@@ -62,6 +62,22 @@ def main() -> int:
         "AUDNZD": [audnzd_date.isoformat(), audnzd],
     }
 
+    official_curves = collect_official_curves(today=today, fetch_bytes=fetch_bytes)
+    validate_official_curves(official_curves)
+    if official_curves.get("status") != "ok":
+        raise MarketStateError(f"live official zero curves unavailable: {official_curves}")
+    report["official_curves"] = {
+        country: {
+            "as_of": official_curves["countries"][country].get("as_of"),
+            "curve_type": official_curves["countries"][country].get("curve_type"),
+            "df_2y": official_curves["countries"][country]["discount_factors"]["2Y"]["value"],
+            "df_3y": official_curves["countries"][country]["discount_factors"]["3Y"]["value"],
+            "df_4y": official_curves["countries"][country]["discount_factors"]["4Y"]["value"],
+        }
+        for country in ("US", "CA", "AU")
+    }
+
+
     policy_paths = collect_policy_paths(today=today, fetch_bytes=fetch_bytes)
     validate_policy_paths(policy_paths)
     missing_policy = [
@@ -74,21 +90,6 @@ def main() -> int:
         country: {
             "benchmark": policy_paths["countries"][country].get("benchmark"),
             "terminal": policy_paths["countries"][country].get("terminal"),
-        }
-        for country in ("US", "CA", "AU")
-    }
-
-    official_curves = collect_official_curves(today=today, fetch_bytes=fetch_bytes)
-    validate_official_curves(official_curves)
-    if official_curves.get("status") != "ok":
-        raise MarketStateError(f"live official zero curves unavailable: {official_curves}")
-    report["official_curves"] = {
-        country: {
-            "as_of": official_curves["countries"][country].get("as_of"),
-            "curve_type": official_curves["countries"][country].get("curve_type"),
-            "df_2y": official_curves["countries"][country]["discount_factors"]["2Y"]["value"],
-            "df_3y": official_curves["countries"][country]["discount_factors"]["3Y"]["value"],
-            "df_4y": official_curves["countries"][country]["discount_factors"]["4Y"]["value"],
         }
         for country in ("US", "CA", "AU")
     }
