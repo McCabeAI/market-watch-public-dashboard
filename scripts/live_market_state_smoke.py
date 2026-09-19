@@ -23,6 +23,7 @@ from scripts.market_state import (
 )
 from scripts.positioning_data import build_positioning, validate_positioning
 from scripts.policy_path_data import collect_policy_paths, validate_policy_paths
+from scripts.official_forward_curves import collect_forward_curves, validate_forward_curves
 
 
 def _latest(series: dict[date, float]) -> tuple[date, float]:
@@ -73,6 +74,25 @@ def main() -> int:
         country: {
             "benchmark": policy_paths["countries"][country].get("benchmark"),
             "terminal": policy_paths["countries"][country].get("terminal"),
+        }
+        for country in ("US", "CA", "AU")
+    }
+
+    forward_curves = collect_forward_curves(today=today, fetch_bytes=fetch_bytes)
+    validate_forward_curves(forward_curves)
+    missing_curves = [
+        country for country in ("US", "CA", "AU")
+        if (forward_curves.get("countries", {}).get(country) or {}).get("status") not in {"ok", "stale"}
+    ]
+    if missing_curves:
+        raise MarketStateError(
+            f"live official forward-curve proxies unavailable for {missing_curves}: {forward_curves}"
+        )
+    report["forward_curves"] = {
+        country: {
+            "status": forward_curves["countries"][country].get("status"),
+            "as_of": forward_curves["countries"][country].get("as_of"),
+            "2y2y": (forward_curves["countries"][country].get("common_forward_swaps") or {}).get("2y2y"),
         }
         for country in ("US", "CA", "AU")
     }
