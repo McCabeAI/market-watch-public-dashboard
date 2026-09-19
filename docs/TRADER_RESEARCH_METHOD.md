@@ -6,6 +6,14 @@ This is the durable research discipline every Trader Room advocate must apply be
 
 ## Required method
 
+## Context-before-screen rule
+
+The idea-building order is mandatory: **context -> what changed -> what is priced -> historical comparison -> discrepancy -> expression -> sizing**. A percentile, z-score, historical spread extreme or correlation break is a discovery signal, never the trade thesis.
+
+Before using a statistical screen, reconstruct how the market got to the current price. Identify the major price move over multiple horizons, the events/information/flows that drove it, and what was already known versus genuinely new. For rates, begin with the observable policy path (OIS/STIR/overnight benchmark) before interpreting sovereign yields or cross-country spreads.
+
+Bob Elliott / Nonconsensus-style idea construction is the default empirical sequence: state the causal mechanism, identify the priced assumption, locate comparable historical episodes, quantify what happened next, then explain why today's regime is similar **and** structurally different. David Cervantes / Pinebrook-style math is then used to test the narrative: decomposition, distributions, cross-market consistency, holder/flow context and forward outcomes. Statistics refine conviction, entry and size after the context survives.
+
 1. **Start with a causal question.** State the mechanism being tested and convert the narrative into measurable claims. Separate state from change, level from marginal move, and known information from genuinely new information.
 2. **Normalize correctly.** Use the economically relevant denominator, ratio, spread, growth rate, risk adjustment, tenor, benchmark, or comparison set. Compare like with like.
 3. **Establish the historical reference distribution.** Where data permits, use mean/median, range, percentiles, standard deviations or z-scores, rolling windows, and forward outcomes after comparable states. Use multiple horizons and identify regime breaks rather than blindly pooling history.
