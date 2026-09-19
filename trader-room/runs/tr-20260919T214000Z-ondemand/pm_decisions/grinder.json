@@ -1,0 +1,36 @@
+{
+  "actions": [
+    {
+      "action": "NO_TRADE",
+      "conviction": 68,
+      "invalidation": "Same as decision-level invalidation: material reduction in cross-seat conflict count on the intended instrument, or a forward move in SR3/SOFR spread that makes a defined small SOFR or CORRA expression clearly superior to 3.85% ACT/360 cash on a risk-adjusted basis.",
+      "thesis": "Hold the full mandate in SOFR-accruing unused cash rather than deploy gross into contested Canada/Australia/US STIR and FX expressions immediately after the Sep-16 hike transmission."
+    }
+  ],
+  "conviction": 68,
+  "evidence_cutoff": "2026-09-19T21:40:00Z",
+  "execution": {
+    "principal_model": "composer-2.5",
+    "subagent_count": 0,
+    "subagent_models": []
+  },
+  "execution_metadata": {
+    "agent_id": "bc-c7b021e5-3d6c-572b-8e9a-250e836f2f87",
+    "launched_principal": "composer-2.5",
+    "requested_principal": "grok-4.6",
+    "subagent_count": 0
+  },
+  "future_data_requests": [],
+  "invalidation": "Re-open when the trader-room run reaches a resolved arbitration status (not AWAITING_CHATGPT_ARBITRATION), NZ_rates stale gap is repaired, and at least one rates-first theme (e.g., CORRA receive versus US pay-SOFR, or a single-sided AONIA catalyst) shows seat alignment without opposite-direction conflicts on the same instrument family.",
+  "memory_context_sha256": "6e680d1701c4ff8f93e5f97dfcc1569475ab94ca917bf27857b9dcbb7ff94dcc",
+  "overnight_run_id": null,
+  "packet_sha256": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
+  "pm_id": "grinder",
+  "rationale": "Empty book with zero calibration history and a preservation mandate favors earning SOFR on unused cash rather than forcing risk after a greater-than-90%-priced hike has already printed into US front ends at extreme percentiles. SR3 path context (4.32 / 4.58 / 4.755) informs forward policy disagreement only; realized funding remains SOFR 3.85%, so any new gross must clear that carry plus friction without relying on unstated marks. Actionable seats collide on AONIA direction, USD/CAD/NZD/AUD crosses, and simultaneous Canada STIR receive versus CA-US sovereign RV and US pay-SOFR views, while vol-convexity requires options that are unavailable this freeze. no-trade-skeptic (highest seat confidence) argues none of the thirteen pitches clears the hurdle versus cash; I accept that for grinder sizing until conflicts compress or a single rates-first expression dominates with a small, de-riskable line.",
+  "review_packet_id": "prp-grinder-tr-20260919T214000Z-ondemand",
+  "review_packet_sha256": "0de321d26e74c55e952af09a57e79691411804c556be95fc9aeabdcddc5ecb50",
+  "schema_version": 1,
+  "thesis": "Stay fully in unused cash: the post-delivered-FOMC reset pays official NY Fed SOFR 3.85% ACT/360 on the entire book, which is a credible baseline while the 14-seat handoff is internally split and the packet is an on-demand fallback awaiting arbitration.",
+  "trader_room_run_id": "tr-20260919T214000Z-ondemand",
+  "type": "PM_DECISION"
+}

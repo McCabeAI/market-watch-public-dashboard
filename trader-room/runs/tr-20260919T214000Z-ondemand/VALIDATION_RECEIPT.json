@@ -1,5 +1,21 @@
 {
+  "artifact_paths": {
+    "artifact_index": "trader-room/runs/tr-20260919T214000Z-ondemand/artifact_index.json",
+    "books": "data/pm/books/latest.json",
+    "chatgpt_packet": "data/pm/review_packets/chatgpt/latest.json",
+    "chatgpt_pending": "trader-room/runs/tr-20260919T214000Z-ondemand/CHATGPT_DECISION_PENDING.json",
+    "conflict_map": "trader-room/runs/tr-20260919T214000Z-ondemand/conflict_map.json",
+    "evidence_packet": "trader-room/runs/tr-20260919T214000Z-ondemand/evidence_packet.json",
+    "pm_decisions": "trader-room/runs/tr-20260919T214000Z-ondemand/pm_decisions/",
+    "pm_handoff": "trader-room/runs/tr-20260919T214000Z-ondemand/pm_handoff.json",
+    "public": "data/pm/public/latest.json",
+    "rebuttal_assignments": "trader-room/runs/tr-20260919T214000Z-ondemand/rebuttal_assignments.json",
+    "rebuttals": "trader-room/runs/tr-20260919T214000Z-ondemand/rebuttals/",
+    "run_dir": "trader-room/runs/tr-20260919T214000Z-ondemand/",
+    "submissions": "trader-room/runs/tr-20260919T214000Z-ondemand/submissions/"
+  },
   "branch": "cursor/market-watch-full-18-stack-validation-4343",
+  "chatgpt_decision": "pending",
   "direct_conflicts": [
     "opp-dir:AONIA_2026-10",
     "opp-view:USD",
@@ -10,8 +26,9 @@
   "fail_closed": [
     {
       "item": "pm_principal_model_routing",
-      "reason": "Task inherit emits cursor-grok-4.6-high-fast; locked aggregator type emits cursor-grok-4.6-high; Task rejects slug grok-4.6; repo hook allowlist is composer-2.5/grok-4.6/grok-4.5. ACP_SUBAGENT_POLICY allowed continuing with composer-2.5.",
-      "requested": "grok-4.6"
+      "reason": "Task inherit/locked types emit cursor-grok-4.6-* slugs rejected by repo hook; Task rejects slug grok-4.6. ACP allowlist permitted composer-2.5 fallback.",
+      "requested": "grok-4.6",
+      "used": "composer-2.5"
     }
   ],
   "funding_context": {
@@ -76,13 +93,18 @@
       "total": 69
     },
     "composer_children": 0,
-    "notes": "PM principals launched as composer-2.5 after grok-4.6 Task/hook slug conflict.",
+    "json_recovery_resumes_grok": 3,
     "parent_grok": 1,
     "pm_children": 0,
     "pm_principals_composer": 3,
     "pm_principals_grok": 0,
     "rebuttals_grok": 11,
-    "rebuttals_grok_planned": 11
+    "totals": {
+      "composer": 3,
+      "grok": 29,
+      "note": "Parent+14 advocates+11 rebuttals=26 grok required. Three JSON-recovery resumes of dollar-king/positioning-cynic/carry-is-king may count as +3 grok (29). If those resumes count, still <=32. PM principals used composer-2.5 after grok-4.6 Task/hook slug conflict.",
+      "total": 32
+    }
   },
   "no_rebuttal_seats": [
     "no-trade-skeptic",
@@ -93,9 +115,71 @@
     "All 14 Round 1 submissions schema-validated on the frozen packet.",
     "Deterministic conflict map routed 11 direct-conflict seats; no-trade-skeptic, positioning-cynic, and vol-convexity are not directly conflicted.",
     "Four PM review packets bound to this exact freeze via source_from_trader_room_run.",
-    "ChatGPT packet persisted; current-cycle ChatGPT decision not generated or applied."
+    "ChatGPT packet persisted; current-cycle ChatGPT decision not generated or applied.",
+    "Swinger, Pragmatist, and Grinder applied independently by apply_automated_pm_decisions. Replay idempotent.",
+    "Futures OPEN used packet mids (SOFR_2027-09 4.755, CORRA_2027-06 3.365). V1 does not charge full derivative notional as funded_draw."
   ],
   "packet_sha256": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
+  "pm_apply": {
+    "applied": {
+      "grinder": {
+        "actions": [
+          "NO_TRADE"
+        ],
+        "decision_status": "no_trade",
+        "funded_draw_usd": 0.0,
+        "gross_utilization_usd": 0,
+        "instruments": [],
+        "journal_event_id": "jde-f91cc2fdbbc94fc9",
+        "review_packet_id": "prp-grinder-tr-20260919T214000Z-ondemand",
+        "unused_cash_usd": 1000000000.0
+      },
+      "pragmatist": {
+        "actions": [
+          "OPEN"
+        ],
+        "decision_status": "active",
+        "funded_draw_usd": 0.0,
+        "gross_utilization_usd": 250000000.0,
+        "instruments": [
+          "CORRA_2027-06"
+        ],
+        "journal_event_id": "jde-f513fc7e0fab4caa",
+        "review_packet_id": "prp-pragmatist-tr-20260919T214000Z-ondemand",
+        "unused_cash_usd": 1000000000.0
+      },
+      "swinger": {
+        "actions": [
+          "OPEN"
+        ],
+        "decision_status": "active",
+        "funded_draw_usd": 0.0,
+        "gross_utilization_usd": 900000000.0,
+        "instruments": [
+          "SOFR_2027-09"
+        ],
+        "journal_event_id": "jde-87074650b4154118",
+        "review_packet_id": "prp-swinger-tr-20260919T214000Z-ondemand",
+        "unused_cash_usd": 1000000000.0
+      }
+    },
+    "chatgpt_decision": "pending",
+    "evidence_cutoff": "2026-09-19T21:40:00Z",
+    "evidence_packet_sha256": "f8424b8ac50590dd4d26c54f91e2558b648d2dfe97372081e8f0f7479e69183d",
+    "funding_v1": {
+      "convention": "ACT/360",
+      "futures_not_charged_full_notional": true,
+      "grinder_unused_cash_usd": 1000000000.0,
+      "observation_date": "2026-09-17",
+      "pragmatist_funded_draw_usd": 0.0,
+      "sofr_percent": 3.85,
+      "source": "NY_FED",
+      "swinger_funded_draw_usd": 0.0
+    },
+    "idempotent_replay": true,
+    "run_id": "tr-20260919T214000Z-ondemand",
+    "type": "AUTOMATED_PM_APPLY_RECEIPT"
+  },
   "pm_launch": {
     "agents": {
       "grinder": "bc-c7b021e5-3d6c-572b-8e9a-250e836f2f87",
@@ -162,6 +246,29 @@
     "research_method": "available",
     "temperature_gauges": "available"
   },
+  "quality_checks": {
+    "chatgpt_packet_complete_no_decision": true,
+    "conflict_map_deterministic": true,
+    "context_build_present_on_all_trades": true,
+    "each_pm_below_1bn_gross": true,
+    "each_pm_considers_funding": true,
+    "fourteen_archetypes_once": true,
+    "funding_prior_day_sofr_act360": true,
+    "memory_journal_identity_isolated": true,
+    "no_model_authored_canonical_pnl": true,
+    "no_trade_skeptic_forward_financing": true,
+    "pms_differ_by_mandate": {
+      "grinder": "NO_TRADE stay in SOFR cash",
+      "pragmatist": "OPEN CORRA_2027-06 250m singles/doubles receive",
+      "swinger": "OPEN SOFR_2027-09 900m concentrated pay"
+    },
+    "rates_use_policy_curve_context": true,
+    "required_rebuttals_11": true,
+    "spot_fx_v1_unused_this_cycle": true,
+    "swinger_never_hedge": true,
+    "unique_memory_context_shas": 18,
+    "unnecessary_rebuttals": 0
+  },
   "rebuttal_seats": [
     "carry-is-king",
     "catalyst-junkie",
@@ -209,7 +316,7 @@
     "vol-convexity"
   ],
   "run_id": "tr-20260919T214000Z-ondemand",
-  "stage": "AUTOMATED_PMS_LAUNCHED_CHATGPT_PENDING",
+  "stage": "COMPLETE_18_STACK_VALIDATION",
   "starting_ref": "1d8d83a46d3a80bd2c1e73709b1239819b37d804",
   "status": "STATUS: AWAITING_CHATGPT_ARBITRATION",
   "type": "MARKET_WATCH_18_STACK_VALIDATION_RECEIPT"

@@ -1,5 +1,54 @@
 {
-  "events": [],
+  "events": [
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-09",
+          "notional_usd": 900000000,
+          "position_id": null,
+          "rationale": "Pay Sep-2027 SOFR futures: post-hike overnight at 3.85% leaves the SR3U7 terminal underpriced relative to still-hot US policy gauges.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-09-19T18:06:55.600313-04:00",
+      "conviction": 63,
+      "decision_fingerprint": "c92209860250c3e01b7c64417a17e67bed9f9d9baabe24587ccad790d4f86c36",
+      "event_id": "jde-87074650b4154118",
+      "funding_view": null,
+      "invalidation": "Lock of SOFR_2027-09 implied rate back through the packet 6m SR3H7 forward context (~4.58) or concurrent US labor/inflation gauge cooldown that validates the priced 2028 easing fade; a 100th-percentile US 2Y print alone is not exit.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-swinger-e68143f262a5"
+      ],
+      "linked_trade_ids": [
+        "trd-pm-swinger-pm-swinger-e68143f262a5"
+      ],
+      "memory_context_sha256": "a53c50cb2e4dcdc41caa161e72e758d4f6958eb45e62f1a0ab60469cc1d6f82b",
+      "outcome_links": [],
+      "owner_id": "swinger",
+      "owner_type": "pm",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-19T21:40:00Z",
+        "evidence_hash": "2f35671c98572322678daca923fc8ef6de535c4e89e7fd1970f551731a90310a",
+        "overnight_run_id": null,
+        "review_packet_id": "prp-swinger-tr-20260919T214000Z-ondemand",
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260919T214000Z-ondemand"
+      },
+      "rationale": "Empty book with full $1bn unused cash earns official NY Fed SOFR 3.85% ACT/360 (2026-09-17); SR3 4.32/4.58/4.755 is forward context only and shows the market still embedding additional US tightening versus that cash hurdle. rate-hawk and trend-follower handoffs align on SOFR_2027-09 as the clean rates-first expression after the hike; no-trade-skeptic and cross-seat AONIA/NZD conflicts argue for selectivity, not diffusion. Deploying ~90% gross into a single SR3U7 pay accepts mark-to-market risk versus ~385bp annualized cash, but path repricing toward a higher terminal over a 1\u20136 month horizon is the only clustered edge that clears the post-hike funding reset without options, without NZ-rate gaps, and without opposing Canada/Australia STIR bets.",
+      "run_id": "tr-20260919T214000Z-ondemand",
+      "schema_version": 1,
+      "thesis": "After the delivered Sep-16 Fed hike, realized SOFR reset to 3.85% while the exact 12m SR3U7 terminal still prices only modest further tightening before a 2028 fade; US inflation, labor, activity, and consumer gauges remain hot, so the residual path\u2014not the already-priced first cut of the cycle\u2014is the mispriced object. Concentrate in pay SOFR_2027-09 rather than split across conflicting AU AONIA, NZ FX, or CA bond/STIR expressions."
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_DECISION_JOURNAL"
 }
