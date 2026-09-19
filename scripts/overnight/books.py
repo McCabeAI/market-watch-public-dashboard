@@ -132,6 +132,21 @@ def accrue_funding(
     }
 
 
+def _rate_delta_fraction(asset_class: str | None, delta: float) -> float:
+    """Convert a stored rates mark change into decimal-rate units.
+
+    Outright yields are stored in percentage points (e.g. 4.76%), so 1bp is
+    a 0.01 mark change and delta/100 converts percentage points to decimal.
+    Curve and rates-RV marks are stored directly in basis points, so 1bp is
+    a 1.00 mark change and delta/10_000 converts basis points to decimal.
+    """
+    if asset_class == "rates":
+        return delta / 100.0
+    if asset_class in {"curve", "rates_rv"}:
+        return delta / 10_000.0
+    raise SchemaError(f"unsupported rates asset_class {asset_class!r}")
+
+
 def position_pnl(position: dict[str, Any]) -> dict[str, Any]:
     entry = position.get("entry_price")
     mark = position.get("mark_price")
@@ -153,9 +168,9 @@ def position_pnl(position: dict[str, Any]) -> dict[str, Any]:
     sign = _side_sign(position["side"])
     asset = position.get("asset_class")
     if asset in {"rates", "curve", "rates_rv"}:
-        # Simplified paper P&L: 1.00 yield point on 100 notional ≈ 1.00 notional,
-        # inverted because higher yield lowers the long-duration mark.
-        raw = -sign * (mark_px - entry_px) / 100.0 * notional
+        # Simplified duration-1 paper P&L, inverted because higher yields/spreads
+        # lower the value of a long-duration / long-spread position.
+        raw = -sign * _rate_delta_fraction(asset, mark_px - entry_px) * notional
     else:
         raw = sign * (mark_px - entry_px) / entry_px * notional
     return {
@@ -174,7 +189,7 @@ def realized_increment(position: dict[str, Any], *, exit_price: float, closed_no
     sign = _side_sign(position["side"])
     asset = position.get("asset_class")
     if asset in {"rates", "curve", "rates_rv"}:
-        return round(-sign * (exit_price - entry_px) / 100.0 * closed_notional, 2)
+        return round(-sign * _rate_delta_fraction(asset, exit_price - entry_px) * closed_notional, 2)
     return round(sign * (exit_price - entry_px) / entry_px * closed_notional, 2)
 
 
