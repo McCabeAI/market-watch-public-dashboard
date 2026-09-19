@@ -48,6 +48,38 @@ class TraderRoomDashboardTests(unittest.TestCase):
             self.assertEqual(packet["status"], "no_published_run")
             self.assertEqual(packet["trades"], [])
 
+    def test_public_packet_uses_newest_complete_run_not_stale_pointer(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            published = root / "data" / "trader-room" / "public"
+            published.mkdir(parents=True)
+            (published / "latest.json").write_text(
+                json.dumps({"available": True, "run_id": "old-static", "trades": []}),
+                encoding="utf-8",
+            )
+            for stamp in ("2026-09-18T12:00:00Z", "2026-09-19T12:00:00Z"):
+                run_id = "tr-" + stamp[:10].replace("-", "")
+                run = root / "trader-room" / "runs" / run_id
+                (run / "submissions").mkdir(parents=True)
+                (run / "rebuttals").mkdir()
+                (run / "pm_handoff.json").write_text(
+                    json.dumps({"run_id": run_id, "status": "STATUS: AWAITING_CHATGPT_ARBITRATION"}),
+                    encoding="utf-8",
+                )
+                (run / "evidence_packet.json").write_text(
+                    json.dumps({"run_id": run_id, "as_of": stamp, "packet_sha256": stamp}),
+                    encoding="utf-8",
+                )
+                (run / "conflict_map.json").write_text(json.dumps({"conflicts": []}), encoding="utf-8")
+                for i in range(14):
+                    (run / "submissions" / f"seat-{i}.json").write_text(
+                        json.dumps({"agent": f"seat-{i}", "stance_summary": "hold", "confidence": 1, "trade": None}),
+                        encoding="utf-8",
+                    )
+            packet = build_public_packet(root)
+            self.assertEqual(packet["run_id"], "tr-20260919")
+            self.assertEqual(packet["seat_count"], 14)
+
     def test_public_packet_includes_trade_entry_reason(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
