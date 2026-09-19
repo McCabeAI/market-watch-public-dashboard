@@ -76,9 +76,9 @@ SUBAGENT_MODEL = "composer-2.5"
 ALLOWED_GROK_MODELS = (ADVOCATE_MODEL, AGGREGATOR_MODEL)
 ALLOWED_SUBAGENT_MODELS = (SUBAGENT_MODEL,)
 
-GROK_BASELINE = 15  # 14 advocates + final aggregator; conflict mapping is deterministic
+GROK_BASELINE = 14  # 14 advocates; conflict mapping and final handoff are deterministic
 GROK_REBUTTAL_MAX = 14
-GROK_CEILING = 29
+GROK_CEILING = 28
 COMPOSER_PER_ADVOCATE = 2
 COMPOSER_CEILING = 28
 

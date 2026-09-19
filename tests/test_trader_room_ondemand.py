@@ -47,6 +47,7 @@ from scripts.trader_room.evidence import (
     load_synthetic_packet,
     validate_preflight,
 )
+from scripts.trader_room.handoff import build_pm_handoff
 from scripts.trader_room.models import (
     assert_advocate_model,
     assert_subagent_model,
@@ -198,7 +199,6 @@ class BudgetTests(unittest.TestCase):
                 budget.charge("subagent", SUBAGENT_MODEL, agent, f"{agent}-3")
         for agent in STANDING_ADVOCATES:
             budget.charge("rebuttal", ADVOCATE_MODEL, agent, f"reb-{agent}")
-        budget.charge("final-aggregator", ADVOCATE_MODEL, "final-aggregator", "agg2")
         self.assertEqual(budget.grok, GROK_CEILING)
         self.assertEqual(budget.composer, COMPOSER_CEILING)
         with self.assertRaises(BudgetError):
@@ -254,7 +254,7 @@ class OrchestratorDryRunTests(unittest.TestCase):
             self.assertLessEqual(result["budget"]["grok"], GROK_CEILING)
             self.assertLessEqual(result["budget"]["composer"], COMPOSER_CEILING)
             self.assertEqual(result["budget"]["composer"], 28)
-            self.assertEqual(result["budget"]["grok"], 15 + result["budget"]["rebuttals"])
+            self.assertEqual(result["budget"]["grok"], 14 + result["budget"]["rebuttals"])
             self.assertLessEqual(result["budget"]["rebuttals"], 14)
             retrieved = retrieve(artifact_root, result["run_id"], "submission", "dollar-king")
             self.assertEqual(retrieved["agent"], "dollar-king")
@@ -292,6 +292,34 @@ class OrchestratorDryRunTests(unittest.TestCase):
             self.assertEqual(rebuttal["packet_sha256"], packet["packet_sha256"])
 
 
+class DeterministicHandoffTests(unittest.TestCase):
+    def test_final_handoff_requires_zero_model_calls(self):
+        packet = _packet()
+        runner = DryRunRunner()
+        budget = BudgetLedger()
+        originals = {
+            agent: runner.run_advocate(agent, packet, budget) for agent in STANDING_ADVOCATES
+        }
+        conflict_map = detect_conflicts(originals)
+        assignments = rebuttal_assignments(conflict_map)
+        rebuttals = {
+            agent: runner.run_rebuttal(agent, packet, originals[agent], assignment, budget)
+            for agent, assignment in assignments.items()
+        }
+        before = budget.snapshot()
+        handoff = build_pm_handoff(
+            packet=packet,
+            originals=originals,
+            conflict_map=conflict_map,
+            rebuttals=rebuttals,
+        )
+        after = budget.snapshot()
+        self.assertEqual(before["grok"], after["grok"])
+        self.assertEqual(before["composer"], after["composer"])
+        self.assertEqual(handoff["status"], HANDOFF_MARKER)
+        self.assertEqual(set(handoff["rebuttals"]), set(rebuttals))
+
+
 class CliTests(unittest.TestCase):
     def test_cli_dry_run(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -316,6 +344,37 @@ class CliTests(unittest.TestCase):
             payload = json.loads(proc.stdout)
             self.assertEqual(payload["status"], HANDOFF_MARKER)
             self.assertTrue(payload["run_id"])
+
+    def test_finalize_cli_regenerates_handoff_without_model_call(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            artifact_root = Path(tmp)
+            result = go(topic="go", synthetic=True, artifact_root=artifact_root)
+            run_dir = artifact_root / "trader-room" / "runs" / result["run_id"]
+            (run_dir / "pm_handoff.json").unlink()
+            (run_dir / "artifact_index.json").unlink()
+            proc = subprocess.run(
+                [
+                    sys.executable,
+                    "scripts/trader_room_finalize.py",
+                    "--run-dir",
+                    str(run_dir),
+                    "--root",
+                    str(artifact_root),
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                check=False,
+                env={**os.environ, "PYTHONPATH": str(ROOT)},
+            )
+            self.assertEqual(proc.returncode, 0, proc.stderr)
+            payload = json.loads(proc.stdout)
+            self.assertEqual(payload["final_handoff_model_calls"], 0)
+            handoff = json.loads((run_dir / "pm_handoff.json").read_text())
+            self.assertEqual(handoff["status"], HANDOFF_MARKER)
+            receipt = json.loads((run_dir / "receipt.json").read_text())
+            self.assertEqual(receipt["final_handoff_method"], "deterministic_pm_handoff_v1")
+            self.assertEqual(receipt["final_handoff_model_calls"], 0)
 
     def test_cli_live_flag_is_blocked(self):
         proc = subprocess.run(
