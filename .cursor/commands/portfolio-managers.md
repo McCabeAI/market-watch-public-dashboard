@@ -30,6 +30,8 @@ Each custom agent frontmatter pins exact **`grok-4.6[]`**, which routes to runti
 
 Run all three automated PM principals concurrently when packets are ready.
 
+For every PM rates/curve/rates-RV action, use the same canonical book-side convention as Trader Room: `side: "long"` = long duration / receive / profits when the canonical mark falls; `side: "short"` = short duration / pay / profits when the canonical mark rises. Never use `long` to mean "long implied rate." For a new rates `OPEN`, include `expected_mark_direction: "lower"|"higher"` and keep it consistent with the side (`lower -> long`, `higher -> short`).
+
 ## Subagents
 
 Each PM principal may use **0–3** children total. Allowed child models: **`composer-2.5`** and **`grok-4.6`** only.
