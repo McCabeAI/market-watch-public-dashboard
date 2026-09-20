@@ -195,7 +195,7 @@ def accrue_funding(
         return {"funding_cost_usd": 0.0, "cash_yield_usd": 0.0}
 
     history = extract_sofr_history(market_state or {}, seat_book.get("funding_context") or {})
-    principal = 0.0 if seat_book["seat"] == "no-trade-skeptic" else float(seat_book.get("risk_capital_usd") or 0.0)
+    principal = float(seat_book.get("risk_capital_usd") or 0.0)
     try:
         funding_accrual = accrue_act_360(principal, start=last, end=when, history=history, market_state=market_state)
         cash_accrual = accrue_act_360(STARTING_NAV_USD, start=last, end=when, history=history, market_state=market_state)
