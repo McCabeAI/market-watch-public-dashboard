@@ -12,7 +12,16 @@ from scripts.funding.context import build_funding_context
 from scripts.overnight.constants import STANDING_SEATS
 from scripts.overnight.store import sha256_json
 from scripts.pm.books import mandate, mark_pm_book
-from scripts.pm.constants import ACTIONS, CASH_CAPITAL_USD, CHATGPT_PM_ID, GROSS_NOTIONAL_LIMIT_USD, PM_IDS, SCHEMA_VERSION
+from scripts.pm.constants import (
+    ACTIONS,
+    CASH_CAPITAL_USD,
+    CHATGPT_PM_ID,
+    GROSS_NOTIONAL_LIMIT_USD,
+    RISK_CAPITAL_LIMIT_USD,
+    MAX_DRAWDOWN_USD,
+    PM_IDS,
+    SCHEMA_VERSION,
+)
 from scripts.pm.data_requests import unresolved_for_pm
 from scripts.pm.errors import SchemaError
 from scripts.trader_room_public import build_from_run, completeness_errors, select_newest_complete_run
@@ -172,6 +181,8 @@ def compact_evidence(evidence: dict[str, Any]) -> dict[str, Any]:
 
 def allowable_actions(pm_id: str, book: dict[str, Any], *, market_warnings: list[str]) -> list[str]:
     allowed = [action for action in ACTIONS if action != "HEDGE" or mandate(pm_id)["hedge_allowed"]]
+    if book.get("risk_stopped"):
+        allowed = [action for action in allowed if action in {"HOLD", "REDUCE", "CLOSE", "NO_TRADE"}]
     if not book.get("positions"):
         allowed = [a for a in allowed if a not in {"ADD", "REDUCE", "CLOSE", "HEDGE"}]
     if market_warnings and "SOFR/CORRA/AONIA" in " ".join(market_warnings):
@@ -535,6 +546,14 @@ def build_review_packet(
             "gross_notional_limit_usd": prior.get("gross_notional_limit_usd"),
             "gross_utilization_usd": prior.get("gross_utilization_usd"),
             "gross_remaining_usd": prior.get("gross_remaining_usd"),
+            "risk_capital_limit_usd": prior.get("risk_capital_limit_usd", RISK_CAPITAL_LIMIT_USD),
+            "risk_capital_usd": prior.get("risk_capital_usd", 0.0),
+            "risk_capital_remaining_usd": prior.get("risk_capital_remaining_usd"),
+            "max_drawdown_usd": prior.get("max_drawdown_usd", MAX_DRAWDOWN_USD),
+            "high_water_nav_usd": prior.get("high_water_nav_usd"),
+            "drawdown_usd": prior.get("drawdown_usd", 0.0),
+            "risk_stopped": prior.get("risk_stopped", False),
+            "risk_stop_pending": prior.get("risk_stop_pending", False),
             "cash_capital_usd": prior.get("cash_capital_usd", CASH_CAPITAL_USD),
             "funded_draw_usd": prior.get("funded_draw_usd", 0.0),
             "unused_cash_usd": prior.get("unused_cash_usd"),
@@ -561,6 +580,18 @@ def build_review_packet(
         "allowable_actions": allowable_actions(pm_id, prior, market_warnings=stale_warnings),
         "gross_notional_limit_usd": GROSS_NOTIONAL_LIMIT_USD,
         "cash_capital_usd": CASH_CAPITAL_USD,
+        "risk_capital_limit_usd": prior.get("risk_capital_limit_usd", RISK_CAPITAL_LIMIT_USD),
+        "risk_capital_usd": prior.get("risk_capital_usd", 0.0),
+        "risk_capital_remaining_usd": prior.get("risk_capital_remaining_usd"),
+        "max_drawdown_usd": prior.get("max_drawdown_usd", MAX_DRAWDOWN_USD),
+        "drawdown_usd": prior.get("drawdown_usd", 0.0),
+        "risk_stopped": prior.get("risk_stopped", False),
+        "risk_stop_pending": prior.get("risk_stop_pending", False),
+        "sizing_instruction": (
+            "Size from plausible adverse paths and historical excursions. Notional is descriptive. "
+            "Do not mechanically fill remaining shocked-risk capacity. OPEN/ADD/HEDGE fail closed "
+            "while risk_stopped; there is no reset policy in this packet."
+        ),
         "gross_utilization_usd": prior.get("gross_utilization_usd"),
         "funded_draw_usd": prior.get("funded_draw_usd", 0.0),
         "unresolved_future_data_requests": unresolved_for_pm(registry, pm_id),

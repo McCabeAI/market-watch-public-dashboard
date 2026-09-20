@@ -1,8 +1,7 @@
-"""Four independent $1bn-gross PM books. Not trader seats.
+"""Four independent $1bn paper-NAV PM books. Not trader seats.
 
-$1bn is a gross-notional risk limit, not automatically borrowed capital.
-Realized cash yield / funding uses official NY Fed SOFR ACT/360 only where a
-position's funded-capital draw can be proven from canonical fields.
+Notional is descriptive. Trusted sizing is capped by standard-shock risk capital,
+and official NY Fed SOFR ACT/360 is charged on that shocked risk capital.
 """
 
 from __future__ import annotations
@@ -23,7 +22,13 @@ from scripts.funding.sofr import (
     extract_sofr_history,
     observed_rate_fields,
 )
-from scripts.overnight.books import position_pnl, realized_increment
+from scripts.overnight.books import PENDING_FORCE_FLATTEN_REASON, position_pnl, realized_increment
+from scripts.risk_capital import (
+    already_force_flattened_ids,
+    attach_position_risk,
+    book_risk_capital,
+    partition_force_exit_positions,
+)
 from scripts.overnight.clock import isoformat, now_ny
 from scripts.overnight.paper_marks import (
     PaperMarkError,
@@ -37,6 +42,8 @@ from scripts.pm.constants import (
     DECISION_STATUSES,
     CASH_CAPITAL_USD,
     GROSS_NOTIONAL_LIMIT_USD,
+    RISK_CAPITAL_LIMIT_USD,
+    MAX_DRAWDOWN_USD,
     MANDATES,
     MARK_REQUIRED_ACTIONS,
     PM_IDS,
@@ -45,6 +52,7 @@ from scripts.pm.constants import (
 )
 from scripts.pm.curve_lock import assert_family_locked, locked_fields
 from scripts.pm.errors import CapError, IndependenceError, MarkError, SchemaError
+from scripts.risk_capital import attach_position_risk, book_risk_capital
 
 
 def _money(value: Any, field: str) -> float:
@@ -76,11 +84,15 @@ def gross_utilization(book: dict[str, Any]) -> float:
 
 
 def assert_cap(book: dict[str, Any]) -> float:
-    used = gross_utilization(book)
-    limit = float(book.get("gross_notional_limit_usd") or GROSS_NOTIONAL_LIMIT_USD)
+    metrics = book_risk_capital(book)
+    unavailable = metrics["risk_capital_unavailable_positions"]
+    if unavailable:
+        raise CapError(f"{book.get('pm_id')} risk capital unavailable for {unavailable}")
+    used = float(metrics["risk_capital_usd"])
+    limit = float(book.get("risk_capital_limit_usd") or RISK_CAPITAL_LIMIT_USD)
     if used - limit > 1e-6:
         raise CapError(
-            f"{book.get('pm_id')} gross notional {used} exceeds limit {limit}"
+            f"{book.get('pm_id')} shocked risk capital {used} exceeds limit {limit}"
         )
     return used
 
@@ -94,8 +106,20 @@ def empty_pm_book(pm_id: str) -> dict[str, Any]:
         "style": spec["style"],
         "hedge_allowed": spec["hedge_allowed"],
         "gross_notional_limit_usd": GROSS_NOTIONAL_LIMIT_USD,
+        "gross_notional_limit_enforced": False,
         "gross_utilization_usd": 0.0,
         "gross_remaining_usd": float(GROSS_NOTIONAL_LIMIT_USD),
+        "risk_capital_limit_usd": RISK_CAPITAL_LIMIT_USD,
+        "risk_capital_usd": 0.0,
+        "risk_capital_remaining_usd": RISK_CAPITAL_LIMIT_USD,
+        "risk_capital_status": "ok",
+        "risk_capital_unavailable_positions": [],
+        "max_drawdown_usd": MAX_DRAWDOWN_USD,
+        "high_water_nav_usd": CASH_CAPITAL_USD,
+        "drawdown_usd": 0.0,
+        "risk_stopped": False,
+        "risk_stop_pending": False,
+        "risk_stop_at": None,
         "cash_capital_usd": CASH_CAPITAL_USD,
         "funded_draw_usd": 0.0,
         "unused_cash_usd": float(CASH_CAPITAL_USD),
@@ -147,6 +171,8 @@ def empty_books(
         "schema_version": SCHEMA_VERSION,
         "type": "PM_BOOKS",
         "gross_notional_limit_usd": GROSS_NOTIONAL_LIMIT_USD,
+        "gross_notional_limit_enforced": False,
+        "risk_capital_limit_usd": RISK_CAPITAL_LIMIT_USD,
         "cash_capital_usd": CASH_CAPITAL_USD,
         "as_of": stamp,
         "overnight_run_id": overnight_run_id,
@@ -156,13 +182,94 @@ def empty_books(
     }
 
 
-def mark_pm_book(book: dict[str, Any]) -> dict[str, Any]:
+def _force_pm_drawdown_flatten(
+    book: dict[str, Any],
+    *,
+    when: datetime | None = None,
+    run_id: str | None = None,
+) -> bool:
+    positions = list(book.get("positions") or [])
+    if not positions:
+        book["risk_stopped"] = True
+        book["risk_stop_pending"] = False
+        book["decision_status"] = "risk_stopped"
+        return True
+
+    already = already_force_flattened_ids(book)
+    markable, blocked = partition_force_exit_positions(positions)
+    markable = [position for position in markable if str(position.get("position_id") or "") not in already]
+
+    realized = 0.0
+    flattened_ids: list[str] = []
+    if markable:
+        for position in markable:
+            realized += realized_increment(
+                position,
+                exit_price=float(position["mark_price"]),
+                closed_notional=float(position["notional_usd"]),
+            )
+            if position.get("position_id"):
+                flattened_ids.append(str(position["position_id"]))
+        realized = round(realized, 2)
+        book["realized_pnl_usd"] = round(float(book.get("realized_pnl_usd") or 0.0) + realized, 2)
+        remaining_ids = {id(position) for position in blocked}
+        book["positions"] = [position for position in positions if id(position) in remaining_ids]
+
+    book["risk_stopped"] = True
+    pending = bool(book.get("positions"))
+    book["risk_stop_pending"] = pending
+    book["decision_status"] = "risk_stopped"
+    stamp = isoformat(now_ny(when))
+    if flattened_ids or not book.get("risk_stop_at"):
+        book["risk_stop_at"] = stamp
+    book["prior_action"] = book.get("last_action")
+    book["last_action"] = "RISK_STOP"
+    history = book.setdefault("history", [])
+    result = "pending_forced_flatten" if pending else "forced_flat"
+    if flattened_ids or (
+        pending
+        and not any(row.get("action") == "RISK_STOP" and row.get("result") == "pending_forced_flatten" for row in history)
+    ):
+        history.append(
+            {
+                "at": stamp,
+                "run_id": run_id,
+                "action": "RISK_STOP",
+                "result": result,
+                "realized_pnl_usd": round(realized, 2),
+                "flattened_position_ids": flattened_ids,
+                "drawdown_usd": book.get("drawdown_usd"),
+                "max_drawdown_usd": book.get("max_drawdown_usd", MAX_DRAWDOWN_USD),
+            }
+        )
+    alerts = book.setdefault("alerts", [])
+    if pending:
+        if PENDING_FORCE_FLATTEN_REASON not in alerts:
+            alerts.append(PENDING_FORCE_FLATTEN_REASON)
+    else:
+        msg = (
+            "RISK_STOP: book forcibly flattened after drawdown reached "
+            f"{float(book.get('drawdown_usd') or 0.0):,.2f}"
+        )
+        if msg not in alerts:
+            alerts.append(msg)
+    return not pending
+
+
+def mark_pm_book(
+    book: dict[str, Any],
+    *,
+    when: datetime | None = None,
+    run_id: str | None = None,
+    enforce_stop: bool = True,
+) -> dict[str, Any]:
     unrealized = 0.0
     missing = False
     for position in book.get("positions") or []:
         pnl = position_pnl(position)
         position["unrealized_pnl_usd"] = pnl["unrealized_pnl_usd"]
         position["pnl_unavailable"] = pnl["pnl_unavailable"]
+        attach_position_risk(position)
         if pnl["pnl_unavailable"]:
             missing = True
         else:
@@ -172,19 +279,49 @@ def mark_pm_book(book: dict[str, Any]) -> dict[str, Any]:
     realized = round(float(book.get("realized_pnl_usd") or 0.0), 2)
     book["realized_pnl_usd"] = realized
     book["total_pnl_usd"] = None if missing else round(realized + unrealized, 2)
-    used = assert_cap(book)
-    book["gross_utilization_usd"] = used
-    book["gross_remaining_usd"] = round(float(book["gross_notional_limit_usd"]) - used, 2)
+
+    gross = gross_utilization(book)
+    book["gross_utilization_usd"] = gross
+    book["gross_remaining_usd"] = round(float(book.get("gross_notional_limit_usd") or GROSS_NOTIONAL_LIMIT_USD) - gross, 2)
+    book["gross_notional_limit_enforced"] = False
     book.setdefault("cash_capital_usd", CASH_CAPITAL_USD)
+
     draws = funded_draw_for_book(book)
     book.update(draws)
+    risk_used = float(book.get("risk_capital_usd") or 0.0)
+    book.setdefault("risk_capital_limit_usd", RISK_CAPITAL_LIMIT_USD)
+    book["risk_capital_remaining_usd"] = round(max(0.0, float(book["risk_capital_limit_usd"]) - risk_used), 2)
+
     funding = round(float(book.get("funding_cost_usd") or 0.0), 2)
     cash_yield = round(float(book.get("cash_yield_usd") or 0.0), 2)
     book["funding_cost_usd"] = funding
     book["cash_yield_usd"] = cash_yield
-    book["net_after_funding_pnl_usd"] = None if missing else round(realized + unrealized - funding + cash_yield, 2)
-    return book
+    available_net = round(realized + unrealized - funding + cash_yield, 2)
+    book["net_after_funding_pnl_usd"] = None if missing else available_net
+    nav = float(book.get("cash_capital_usd") or CASH_CAPITAL_USD) + available_net
+    book["nav_usd"] = round(nav, 2)
 
+    book.setdefault("max_drawdown_usd", MAX_DRAWDOWN_USD)
+    book.setdefault("high_water_nav_usd", float(book.get("cash_capital_usd") or CASH_CAPITAL_USD))
+    book.setdefault("risk_stopped", False)
+    book.setdefault("risk_stop_pending", False)
+    if not missing:
+        high_water = max(float(book["high_water_nav_usd"]), float(book["nav_usd"]))
+        book["high_water_nav_usd"] = round(high_water, 2)
+    book["drawdown_usd"] = round(max(0.0, float(book["high_water_nav_usd"]) - float(book["nav_usd"])), 2)
+    if book.get("risk_stopped") and not book.get("positions"):
+        book["risk_stop_pending"] = False
+
+    pending_open = bool(book.get("risk_stop_pending") and book.get("positions"))
+    drawdown_breach = float(book["drawdown_usd"]) >= float(book["max_drawdown_usd"])
+    needs_stop = drawdown_breach and (book.get("positions") or not book.get("risk_stopped"))
+    if enforce_stop and (pending_open or needs_stop):
+        _force_pm_drawdown_flatten(book, when=when, run_id=run_id)
+        return mark_pm_book(book, when=when, run_id=run_id, enforce_stop=False)
+
+    if not book.get("risk_stopped"):
+        assert_cap(book)
+    return book
 
 def refresh_pm_book(book: dict[str, Any], market_state: dict[str, Any] | None) -> dict[str, Any]:
     if market_state is not None:
@@ -258,6 +395,8 @@ def _set_decision_fields(book: dict[str, Any], action: dict[str, Any], decision:
 
 
 def _derive_status(book: dict[str, Any], *, kind: str, had_prior_decision: bool) -> str:
+    if book.get("risk_stopped"):
+        return "risk_stopped"
     if kind == "NO_TRADE":
         return "no_trade"
     if book.get("positions"):
@@ -280,7 +419,7 @@ def accrue_pm_funding(
     market_state: dict[str, Any] | None = None,
     model_forecast: Any = None,
 ) -> dict[str, float]:
-    """Accrue official SOFR on proven unused cash / funded draw only.
+    """Accrue official SOFR on standard-shock risk capital plus the common cash hurdle.
 
     model_forecast is ignored for realized accounting.
     """
@@ -318,7 +457,7 @@ def accrue_pm_funding(
             market_state=market_state,
         )
         yield_ = accrue_act_360(
-            float(book.get("unused_cash_usd") or 0.0),
+            float(book.get("cash_capital_usd") or CASH_CAPITAL_USD),
             start=last,
             end=when,
             history=history,
@@ -351,7 +490,7 @@ def accrue_pm_funding(
                 "funding_convention": FUNDING_CONVENTION,
                 "accrual_days": max(cost["accrual_days"], yield_["accrual_days"]),
                 "funding_base_usd": book.get("funded_draw_usd"),
-                "cash_yield_base_usd": book.get("unused_cash_usd"),
+                "cash_yield_base_usd": book.get("cash_capital_usd"),
                 "funding_cost_usd": cost["amount"],
                 "cash_yield_usd": yield_["amount"],
                 "gross_utilization_usd": book.get("gross_utilization_usd"),
@@ -382,6 +521,8 @@ def apply_action(
     if kind not in ACTIONS:
         raise SchemaError(f"unknown action {kind}")
     pm_id = book["pm_id"]
+    if book.get("risk_stopped") and kind in {"OPEN", "ADD", "HEDGE"}:
+        raise CapError(f"{pm_id} is RISK_STOPPED after breaching the hard drawdown limit")
     if kind == "HEDGE" and not hedge_allowed(pm_id):
         raise SchemaError(f"{pm_id} mandate prohibits HEDGE; reduce or close instead")
 
@@ -404,7 +545,7 @@ def apply_action(
     _set_decision_fields(book, action, decision)
     book["decision_status"] = _derive_status(book, kind=kind, had_prior_decision=had_prior)
     book["history"].append(_history_entry(action, when=stamp, run_id=run_id, result="applied"))
-    return mark_pm_book(book)
+    return mark_pm_book(book, when=stamp, run_id=run_id)
 
 
 def _open_position(book: dict[str, Any], action: dict[str, Any], *, run_id: str | None, when: datetime) -> dict[str, Any]:
@@ -608,6 +749,9 @@ def apply_decision(
         refresh_pm_book(book, market_state)
     actions = prepare_actions(book, decision, market_state=market_state)
     stamp = now_ny(when)
+    expanding = {"OPEN", "ADD", "HEDGE"}
+    applied = False
+    first_cap_error: CapError | None = None
     for action in actions:
         if not action.get("thesis") and decision.get("thesis"):
             action["thesis"] = decision["thesis"]
@@ -615,14 +759,29 @@ def apply_decision(
             action["invalidation"] = decision["invalidation"]
         if action.get("conviction") is None and decision.get("conviction") is not None:
             action["conviction"] = decision["conviction"]
-        apply_action(
-            book,
-            action,
-            run_id=run_id,
-            when=stamp,
-            decision=decision,
-            market_state=market_state,
-        )
+        try:
+            apply_action(
+                book,
+                action,
+                run_id=run_id,
+                when=stamp,
+                decision=decision,
+                market_state=market_state,
+            )
+            applied = True
+        except CapError as exc:
+            kind = str(action.get("action") or "")
+            if kind not in expanding:
+                raise
+            result = "blocked_risk_stop" if book.get("risk_stopped") else "blocked_risk_capital"
+            book.setdefault("alerts", []).append(str(exc))
+            book.setdefault("history", []).append(
+                _history_entry(action, when=stamp, run_id=run_id, result=result)
+            )
+            if first_cap_error is None:
+                first_cap_error = exc
+    if first_cap_error is not None and not applied:
+        raise first_cap_error
     book["last_decision_at"] = isoformat(stamp)
     book["last_decision_packet_id"] = review_packet_id
     book["last_decision_packet_sha256"] = review_packet_sha256
@@ -638,7 +797,7 @@ def apply_decision(
             out["overnight_run_id"] = run_id
         else:
             out["trader_room_run_id"] = out.get("trader_room_run_id") or run_id
-    mark_pm_book(book)
+    mark_pm_book(book, when=stamp, run_id=run_id)
     return out
 
 
@@ -666,13 +825,20 @@ def validate_books(books: dict[str, Any]) -> dict[str, Any]:
         raise SchemaError("PM books type mismatch")
     if set(books.get("pms") or {}) != set(PM_IDS):
         raise SchemaError("PM books must contain exactly four PMs")
-    if books.get("gross_notional_limit_usd") != GROSS_NOTIONAL_LIMIT_USD:
-        raise SchemaError(f"gross_notional_limit_usd must be {GROSS_NOTIONAL_LIMIT_USD}")
+    books.setdefault("gross_notional_limit_usd", GROSS_NOTIONAL_LIMIT_USD)
+    books.setdefault("gross_notional_limit_enforced", False)
+    books.setdefault("risk_capital_limit_usd", RISK_CAPITAL_LIMIT_USD)
     for pm_id, book in books["pms"].items():
         if book.get("pm_id") != pm_id:
             raise SchemaError(f"pm key/name mismatch for {pm_id}")
-        if book.get("gross_notional_limit_usd") != GROSS_NOTIONAL_LIMIT_USD:
-            raise SchemaError(f"{pm_id} gross limit drifted")
+        book.setdefault("gross_notional_limit_usd", GROSS_NOTIONAL_LIMIT_USD)
+        book.setdefault("gross_notional_limit_enforced", False)
+        book.setdefault("risk_capital_limit_usd", RISK_CAPITAL_LIMIT_USD)
+        book.setdefault("max_drawdown_usd", MAX_DRAWDOWN_USD)
+        book.setdefault("high_water_nav_usd", float(book.get("cash_capital_usd") or CASH_CAPITAL_USD))
+        book.setdefault("drawdown_usd", 0.0)
+        book.setdefault("risk_stopped", False)
+        book.setdefault("risk_stop_pending", False)
         if book.get("decision_status") not in DECISION_STATUSES:
             raise SchemaError(f"{pm_id} has unknown decision_status")
         mark_pm_book(book)
@@ -693,8 +859,18 @@ def public_pm_view(books: dict[str, Any]) -> dict[str, Any]:
                 "review_status": item["review_status"],
                 "last_action": item.get("last_action"),
                 "gross_notional_limit_usd": item["gross_notional_limit_usd"],
+                "gross_notional_limit_enforced": item.get("gross_notional_limit_enforced", False),
                 "gross_utilization_usd": item["gross_utilization_usd"],
                 "gross_remaining_usd": item["gross_remaining_usd"],
+                "risk_capital_limit_usd": item.get("risk_capital_limit_usd", RISK_CAPITAL_LIMIT_USD),
+                "risk_capital_usd": item.get("risk_capital_usd", 0.0),
+                "risk_capital_remaining_usd": item.get("risk_capital_remaining_usd"),
+                "risk_capital_method": item.get("risk_capital_method"),
+                "max_drawdown_usd": item.get("max_drawdown_usd", MAX_DRAWDOWN_USD),
+                "high_water_nav_usd": item.get("high_water_nav_usd"),
+                "drawdown_usd": item.get("drawdown_usd"),
+                "risk_stopped": item.get("risk_stopped", False),
+                "risk_stop_pending": item.get("risk_stop_pending", False),
                 "cash_capital_usd": item.get("cash_capital_usd", CASH_CAPITAL_USD),
                 "funded_draw_usd": item.get("funded_draw_usd", 0.0),
                 "unused_cash_usd": item.get("unused_cash_usd", item.get("cash_capital_usd", CASH_CAPITAL_USD)),
@@ -736,6 +912,8 @@ def public_pm_view(books: dict[str, Any]) -> dict[str, Any]:
                         "funding_basis": p.get("funding_basis"),
                         "funding_basis_status": p.get("funding_basis_status"),
                         "funding_draw_usd": p.get("funding_draw_usd"),
+                        "risk_capital_usd": p.get("risk_capital_usd"),
+                        "risk_capital_method": p.get("risk_capital_method"),
                         "unrealized_pnl_usd": p.get("unrealized_pnl_usd"),
                         "hedge_of": p.get("hedge_of"),
                     }
@@ -751,6 +929,11 @@ def public_pm_view(books: dict[str, Any]) -> dict[str, Any]:
             "realized_pnl_usd": row["realized_pnl_usd"],
             "unrealized_pnl_usd": row["unrealized_pnl_usd"],
             "gross_utilization_usd": row["gross_utilization_usd"],
+            "risk_capital_usd": row["risk_capital_usd"],
+            "risk_capital_limit_usd": row["risk_capital_limit_usd"],
+            "drawdown_usd": row["drawdown_usd"],
+            "max_drawdown_usd": row["max_drawdown_usd"],
+            "risk_stopped": row["risk_stopped"],
             "funded_draw_usd": row["funded_draw_usd"],
             "unused_cash_usd": row["unused_cash_usd"],
             "net_after_funding_pnl_usd": row["net_after_funding_pnl_usd"],
@@ -767,6 +950,8 @@ def public_pm_view(books: dict[str, Any]) -> dict[str, Any]:
         "trader_room_run_id": books.get("trader_room_run_id"),
         "evidence_cutoff": books.get("evidence_cutoff"),
         "gross_notional_limit_usd": GROSS_NOTIONAL_LIMIT_USD,
+        "gross_notional_limit_enforced": False,
+        "risk_capital_limit_usd": RISK_CAPITAL_LIMIT_USD,
         "cash_capital_usd": CASH_CAPITAL_USD,
         "funding_convention": FUNDING_CONVENTION,
         "funding_source": FUNDING_SOURCE,

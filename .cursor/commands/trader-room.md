@@ -54,7 +54,7 @@ Each initial advocate:
 - must include the complete compact `conflict_synopsis` required by `docs/TRADER_ROOM_ON_DEMAND.md`;
 - must include a non-empty final `paper_actions` list for its own competition book. The list may contain zero risk changes via `[{"action":"HOLD"}]`, or any number of independent `OPEN` / `ADD` / `REDUCE` / `CLOSE` / `HEDGE` actions. There is no one-trade limit. The single `trade` field remains the primary debate pitch only;
 - must not rely on legacy `paper_capital` for a new live run. That field remains compatibility-only;
-- must manage the existing book, not re-open an already-owned position as a new trade merely because it is the primary pitch. Trusted code enforces the $100m gross deployed-notional cap, but the advocate should size the complete action set against its current book.
+- must manage the existing book, not re-open an already-owned position as a new trade merely because it is the primary pitch. Notional is descriptive, not the risk budget. Trusted code caps each $100m-paper-NAV seat at **$10m of standard-shock risk capital** and enforces a **$5m high-water-mark drawdown stop**. Size from path risk and historical adverse excursion; do not mechanically fill the risk-capital limit. Official SOFR ACT/360 is charged on shocked risk capital, so equal risk capital receives equal financing treatment across asset classes.
 
 Do not show Round 1 outputs or another seat's private sidecar to other advocates.
 

@@ -30,6 +30,10 @@ Each custom agent frontmatter pins exact **`grok-4.6[]`**, which routes to runti
 
 Run all three automated PM principals concurrently when packets are ready.
 
+## Risk sizing and hard loss limits
+
+Notional is descriptive, not the risk budget. Each PM has $1bn paper NAV, a trusted **$100m standard-shock risk-capital limit**, and a trusted **$50m high-water-mark drawdown stop**. Official SOFR ACT/360 is charged on shocked risk capital; equal risk capital receives equal financing treatment across asset classes. Size from plausible adverse paths and historical drawdowns, not as a percentage of a gross-notional cap and never merely to fill available capacity. If trusted state is `risk_stopped`, do not submit OPEN/ADD/HEDGE; the book remains flat until the stop is explicitly reset by trusted policy.
+
 For every PM rates/curve/rates-RV action, use the same canonical book-side convention as Trader Room: `side: "long"` = long duration / receive / profits when the canonical mark falls; `side: "short"` = short duration / pay / profits when the canonical mark rises. Never use `long` to mean "long implied rate." For a new rates `OPEN`, include `expected_mark_direction: "lower"|"higher"` and keep it consistent with the side (`lower -> long`, `higher -> short`).
 
 ## Subagents

@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
-from scripts.funding.context import build_funding_context
+from scripts.funding.context import build_funding_context, competition_contract
 from scripts.trader_room.constants import (
     DEFAULT_ESSENTIAL_FAMILIES,
     EVIDENCE_FAMILIES,
@@ -353,6 +353,7 @@ def assemble_packet(
         "known_gaps": list(extra_known_gaps or []),
         "funding_context": build_funding_context(market, as_of=as_of),
     }
+    packet["competition"] = competition_contract(packet["funding_context"])
     if market.get("status") == "unavailable":
         packet["known_gaps"].append("market_state snapshot was not supplied")
     packet["source_index"] = source_index_from_packet(packet)
@@ -368,4 +369,5 @@ def load_synthetic_packet(path: Path, *, topic: str | None = None) -> dict[str, 
     packet.setdefault("source_index", source_index_from_packet(packet))
     packet.setdefault("known_gaps", [])
     packet.setdefault("funding_context", build_funding_context(packet.get("market_state") or {}, as_of=packet.get("as_of")))
+    packet.setdefault("competition", competition_contract(packet.get("funding_context")))
     return packet

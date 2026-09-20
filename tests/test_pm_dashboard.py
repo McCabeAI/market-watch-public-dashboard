@@ -8,6 +8,8 @@ from pathlib import Path
 from scripts.apply_trader_book_tab import apply_trader_book_tab
 from scripts.pm.cli import init_layer
 from scripts.pm.books import apply_decision, empty_books
+from scripts.pm.constants import RISK_CAPITAL_LIMIT_USD
+from scripts.pm.errors import SchemaError
 from scripts.pm.public import build_public_state, emit_pm_json, validate_public_packet
 from scripts.pm.store import PMStore
 from tests.test_pm_books import MARKET, _open
@@ -157,6 +159,52 @@ class PMDashboardTests(unittest.TestCase):
             emit_pm_json(store, site)
             packet = json.loads((site / "pm-books.json").read_text(encoding="utf-8"))
             self.assertEqual(packet["pm_count"], 4)
+
+    def test_stale_pre_risk_capital_public_json_is_rebuilt_from_canonical_books(self) -> None:
+        from copy import deepcopy
+
+        from scripts.pm.data_requests import empty_registry
+
+        stale_repo = json.loads((REPO / "data" / "pm" / "public" / "latest.json").read_text(encoding="utf-8"))
+        self.assertNotEqual(stale_repo.get("risk_capital_limit_usd"), RISK_CAPITAL_LIMIT_USD)
+        with self.assertRaises(SchemaError):
+            validate_public_packet(stale_repo)
+
+        books_before = json.loads((REPO / "data" / "pm" / "books" / "latest.json").read_text(encoding="utf-8"))
+        with tempfile.TemporaryDirectory() as tmp:
+            store = PMStore(root=REPO, state_root=Path(tmp))
+            store.write_books(deepcopy(books_before))
+            store.write_requests(empty_registry())
+            store.write_public(stale_repo)
+            with self.assertRaises(SchemaError):
+                validate_public_packet(store.read_json(store.public_path()))
+            site = Path(tmp) / "_site"
+            emit_pm_json(store, site)
+            packet = json.loads((site / "pm-books.json").read_text(encoding="utf-8"))
+            validate_public_packet(packet)
+            self.assertEqual(packet["risk_capital_limit_usd"], RISK_CAPITAL_LIMIT_USD)
+            self.assertEqual(packet["pm_count"], 4)
+            persisted = store.read_json(store.public_path())
+            self.assertNotEqual(persisted.get("risk_capital_limit_usd"), RISK_CAPITAL_LIMIT_USD)
+            books_after = store.read_books()
+            for pm_id, item in books_after["pms"].items():
+                orig = books_before["pms"][pm_id]
+                self.assertEqual(item["realized_pnl_usd"], orig["realized_pnl_usd"])
+                self.assertEqual(len(item["positions"]), len(orig["positions"]))
+                for pos, old in zip(item["positions"], orig["positions"]):
+                    self.assertEqual(pos["position_id"], old["position_id"])
+                    self.assertEqual(pos["notional_usd"], old["notional_usd"])
+
+        site = Path(tempfile.mkdtemp())
+        try:
+            emit_pm_json(PMStore(root=REPO), site)
+            live = json.loads((site / "pm-books.json").read_text(encoding="utf-8"))
+            validate_public_packet(live)
+            self.assertEqual(live["risk_capital_limit_usd"], RISK_CAPITAL_LIMIT_USD)
+        finally:
+            import shutil
+
+            shutil.rmtree(site, ignore_errors=True)
 
 
 if __name__ == "__main__":

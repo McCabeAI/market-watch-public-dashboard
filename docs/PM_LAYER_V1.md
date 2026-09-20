@@ -6,20 +6,20 @@ This is the four-PM layer above the locked 14-seat Trader Room. It does not chan
 
 ## Roster
 
-| PM | Mandate | Gross limit | HEDGE |
+| PM | Mandate | Risk-capital limit | HEDGE |
 | --- | --- | --- | --- |
-| `chatgpt` | No forced style. Final synthesis. May trade or choose no-trade. | $1bn gross notional | allowed |
-| `swinger` | Very aggressive/concentrated when the thesis is valid. Reduce/close instead of hedging. | $1bn gross notional | **prohibited** |
-| `pragmatist` | Opportunistic macro. Can swing big or grind singles/doubles. | $1bn gross notional | allowed |
-| `grinder` | Preservation/consistency first. Smaller sizes, high hurdles, quick de-risking. No-trade is valid. | $1bn gross notional | allowed |
+| `chatgpt` | No forced style. Final synthesis. May trade or choose no-trade. | $100m shocked risk | allowed |
+| `swinger` | Very aggressive/concentrated when the thesis is valid. Reduce/close instead of hedging. | $100m shocked risk | **prohibited** |
+| `pragmatist` | Opportunistic macro. Can swing big or grind singles/doubles. | $100m shocked risk | allowed |
+| `grinder` | Preservation/consistency first. Smaller sizes, high hurdles, quick de-risking. No-trade is valid. | $100m shocked risk | allowed |
 
-`$1bn` is a **gross notional limit**, not automatically borrowed NAV. Gross-notional utilization and funded-capital draw are separate fields. PMs earn official NY Fed SOFR ACT/360 on genuinely unused cash capital and pay it only on deterministically funded/drawn capital. Futures/forwards/options (including SR3/CORRA/AONIA) are not charged full-notional funding. If a position's funding basis cannot be proven from canonical instrument/expression fields, `funding_basis_status=unresolved` and no charge is invented. Official NY Fed SOFR is the realized funding authority; SR3 is forward context; a model funding forecast cannot mutate realized accounting. After every action:
+Each PM has **$1bn paper NAV**, but notional is descriptive rather than the binding risk limit. Trusted code caps each book at **$100m of standard-shock risk capital** and enforces a **$50m drawdown from high-water NAV**. Risk capital is the absolute MTM loss from the standard adverse move: 1% in spot FX, 100bp in outright rates, or 100bp in curve/RV spreads. PMs earn official NY Fed SOFR ACT/360 on the full paper cash hurdle and pay the same SOFR on shocked risk capital; equal risk capital receives equal financing treatment across asset classes. If deterministic marks are insufficient to compute risk capital, expansion fails closed. Official NY Fed SOFR is the realized funding authority; SR3 is forward context; a model funding forecast cannot mutate realized accounting. After every action, trusted code requires:
 
 ```
-sum(abs(open position notional)) <= 1_000_000_000
+sum(position shocked-risk capital) <= 100_000_000
 ```
 
-Cap breach or a missing required paper mark fails closed. Options remain unavailable when premium/IV/strike marks are insufficient.
+A risk-cap breach or missing deterministic risk mark fails closed. Descriptive gross notional may exceed $1bn. Options remain unavailable when premium/IV/strike marks are insufficient.
 
 ## Independence
 
@@ -29,7 +29,7 @@ All four PMs receive the same frozen/current Market Watch evidence and the same 
 
 `data/pm/books/latest.json` is trusted-code state. Models may not author it.
 
-Each book stores positions, gross utilization, realized/unrealized/total paper P&L, mark provenance, locked expression/curve family, thesis, invalidation, conviction, action history, review status/freshness, and alerts.
+Each book stores positions, descriptive gross notional, shocked risk-capital utilization/remaining capacity, high-water NAV/drawdown/risk-stop state, realized/unrealized/total paper P&L, mark provenance, locked expression/curve family, thesis, invalidation, conviction, action history, review status/freshness, and alerts.
 
 Paper marks reuse `scripts/overnight/paper_marks.py`. Packet mids override model-authored prices. SOFR/CORRA/AONIA/bond expression family is locked from OPEN through CLOSE.
 
@@ -43,7 +43,7 @@ Deterministic per-PM artifact:
 data/pm/review_packets/<pm_id>/latest.json
 ```
 
-Daily packets are generated from the latest **successful overnight 14-seat scheduled review**, not from the newest on-demand Trader Room run. Each packet records `source=overnight_scheduled_review`, the overnight run id, the final agent-packet cutoff/hash, compact frozen evidence and market state, the same deterministic `funding_context` traders receive, SOFR/CORRA/AONIA and sovereign-curve availability, the accepted 14 trader decisions, overnight research supplement/canonical books when present, **only that PM's prior book**, that PM's compact learning-memory context / calibration / `postmortems_due`, allowable actions, gross limit/utilization versus funded-capital draw, and unresolved future data requests. See `docs/TRADING_LEDGER_MEMORY_V1.md`.
+Daily packets are generated from the latest **successful overnight 14-seat scheduled review**, not from the newest on-demand Trader Room run. Each packet records `source=overnight_scheduled_review`, the overnight run id, the final agent-packet cutoff/hash, compact frozen evidence and market state, the same deterministic `funding_context` traders receive, SOFR/CORRA/AONIA and sovereign-curve availability, the accepted 14 trader decisions, overnight research supplement/canonical books when present, **only that PM's prior book**, that PM's compact learning-memory context / calibration / `postmortems_due`, allowable actions, descriptive notional plus risk-capital utilization/drawdown state, and unresolved future data requests. See `docs/TRADING_LEDGER_MEMORY_V1.md`.
 
 All four PMs share the same overnight evidence boundary and 14-seat output. On-demand Trader Room publication stays independent. If no overnight review exists yet, `init` / `refresh-packets --allow-trader-room-fallback` may use `source=on_demand_trader_room_fallback`. That fallback is labeled and never treated as a fresher overnight packet.
 
@@ -81,4 +81,4 @@ Overnight `scheduled_output.json` may include `pm_decisions` for exactly `swinge
 
 ## Initial state
 
-All four books start with $1bn capacity and zero positions. ChatGPT is `awaiting_chatgpt_decision`. Swinger/Pragmatist/Grinder are `awaiting_automated_pm_review`. Review packets and the data-request registry exist. No PM trades are invented.
+All four books start with $1bn paper NAV, $100m shocked-risk capacity, a $50m hard drawdown limit, and zero positions. ChatGPT is `awaiting_chatgpt_decision`. Swinger/Pragmatist/Grinder are `awaiting_automated_pm_review`. Review packets and the data-request registry exist. No PM trades are invented.

@@ -170,27 +170,32 @@ def competition_contract(funding_context: dict[str, Any] | None = None) -> dict[
         "funding_source_url": FUNDING_SOURCE_URL,
         "funding_observation_date": None if not isinstance(latest, dict) else latest.get("observation_date"),
         "funding_basis": (
-            "Every seat except no-trade-skeptic borrows its full $100m allocation and pays official "
-            "NY Fed SOFR on that full allocation every calendar day, deployed or not, using SOFR's "
-            "ACT/360 money-market convention. The no-trade-skeptic is the cash hurdle: it pays no "
-            "borrowing cost and earns the same official daily SOFR ACT/360 on the undeployed portion "
-            "of its original $100m allocation; deployed notional stops earning that cash yield. "
-            "Weekends and holidays carry the last applicable published fixing until the next fixing. "
-            "There is no fixed 5% assumption. If official fixing history cannot be established, new "
-            "funding accrual fails closed and prior canonical balances are preserved."
+            "Every seat has $100m paper NAV and earns the common official NY Fed SOFR ACT/360 "
+            "cash hurdle on that NAV. Any open risk pays the same official SOFR on trusted "
+            "standard-shock risk capital: the absolute MTM loss from a 1% adverse spot move, a "
+            "100bp (1 percentage point) adverse outright rate move, or a 100bp adverse curve/RV "
+            "spread move under the trusted duration-1 P&L convention. Equal risk capital receives "
+            "equal financing treatment across asset classes. Notional is descriptive, not the "
+            "funding base. The no-trade-skeptic has no special subsidy: when flat its risk capital "
+            "is zero; if it takes risk it pays the same financing rule. Weekends and holidays carry "
+            "the last applicable published fixing until the next fixing. If official fixing history "
+            "cannot be established, new funding accrual fails closed and prior canonical balances "
+            "are preserved."
         ),
-        "flat_book_pnl": (
-            "Active trading seats lose the daily official SOFR charge while flat. "
-            "No-trade-skeptic earns official SOFR cash yield while flat."
-        ),
+        "flat_book_pnl": "A flat seat earns the common official-SOFR cash hurdle and has zero risk-capital financing charge.",
+        "risk_limits": {
+            "paper_nav_usd": 100_000_000,
+            "risk_capital_limit_usd": 10_000_000,
+            "max_drawdown_usd": 5_000_000,
+            "risk_capital_method": "mtm_standard_1pct_move",
+        },
         "no_trade_allowed": True,
         "instruction": (
-            "Do not optimize for sounding prudent. The active seats have a real carry clock even when "
-            "risk-off; take paper risk when expected edge clears the observed SOFR hurdle and "
-            "invalidation is defined. The no-trade-skeptic must include a structured funding_view "
-            "on every new risk or NO_TRADE thesis: the frozen official SOFR fixing, the relevant SR3 "
+            "Do not optimize for gross notional or fill available capacity. Size risk from plausible "
+            "adverse paths and historical excursions while staying inside the trusted risk-capital "
+            "and drawdown limits. The no-trade-skeptic must include a structured funding_view on "
+            "every new risk or NO_TRADE thesis: the frozen official SOFR fixing, the relevant SR3 "
             "forward-curve view, its own assessment of whether realized funding will print higher, "
-            "lower, or about the same as the curve, and the implication for holding cash versus "
-            "taking risk."
+            "lower, or about the same as the curve, and the implication for holding cash versus taking risk."
         ),
     }

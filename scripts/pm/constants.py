@@ -7,8 +7,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 
 SCHEMA_VERSION = 1
-GROSS_NOTIONAL_LIMIT_USD = 1_000_000_000
+GROSS_NOTIONAL_LIMIT_USD = 1_000_000_000  # legacy/display only; not enforced
 CASH_CAPITAL_USD = 1_000_000_000
+RISK_CAPITAL_LIMIT_USD = 100_000_000
+MAX_DRAWDOWN_USD = 50_000_000
 PM_IDS = ("chatgpt", "swinger", "pragmatist", "grinder")
 AUTOMATED_PM_IDS = ("swinger", "pragmatist", "grinder")
 CHATGPT_PM_ID = "chatgpt"
@@ -30,6 +32,7 @@ DECISION_STATUSES = (
     "no_trade",
     "hold",
     "active",
+    "risk_stopped",
 )
 REVIEW_STATUSES = ("awaiting", "fresh", "stale")
 
@@ -76,6 +79,13 @@ FORBIDDEN_MODEL_STATE_KEYS = {
     "gross_pnl_usd",
     "gross_utilization_usd",
     "gross_remaining_usd",
+    "risk_capital_usd",
+    "risk_capital_limit_usd",
+    "risk_capital_remaining_usd",
+    "max_drawdown_usd",
+    "drawdown_usd",
+    "high_water_nav_usd",
+    "risk_stopped",
     "funding_cost_usd",
     "cash_yield_usd",
     "funding_last_accrual_at",

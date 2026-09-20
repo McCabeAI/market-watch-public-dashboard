@@ -26,10 +26,19 @@ from scripts.overnight.constants import (
     SIDES,
     STANDING_SEATS,
     STARTING_NAV_USD,
+    RISK_CAPITAL_LIMIT_USD,
+    MAX_DRAWDOWN_USD,
 )
 from scripts.overnight.errors import FreshnessError, SchemaError
 from scripts.overnight.expression import expression_rule, remit, selected_asset_class, validate_expression_memo
 from scripts.overnight.freshness import assert_action_allowed
+from scripts.risk_capital import (
+    already_force_flattened_ids,
+    attach_position_risk,
+    book_risk_capital,
+    partition_force_exit_positions,
+    position_risk_capital,
+)
 
 
 def _money(value: Any, field: str) -> float:
@@ -48,11 +57,16 @@ def _side_sign(side: str) -> int:
     return 1 if side == "long" else -1
 
 
-ALLOCATION_LIMIT_USD = STARTING_NAV_USD
+ALLOCATION_LIMIT_USD = RISK_CAPITAL_LIMIT_USD
 
 
 def allocation_limit_usd() -> float:
-    return STARTING_NAV_USD
+    """Compatibility alias: the enforced allocation is shocked risk capital, not notional."""
+    return RISK_CAPITAL_LIMIT_USD
+
+
+def risk_capital_limit_usd() -> float:
+    return RISK_CAPITAL_LIMIT_USD
 
 
 def deployed_notional(seat_book: dict[str, Any]) -> float:
@@ -63,11 +77,19 @@ def deployed_notional(seat_book: dict[str, Any]) -> float:
 
 
 def _attach_allocation_fields(seat_book: dict[str, Any]) -> None:
-    limit = allocation_limit_usd()
-    deployed = deployed_notional(seat_book)
+    metrics = book_risk_capital(seat_book)
+    for position in seat_book.get("positions") or []:
+        attach_position_risk(position)
+    used = float(metrics["risk_capital_usd"])
+    limit = risk_capital_limit_usd()
+    seat_book.update(metrics)
+    seat_book["risk_capital_limit_usd"] = limit
+    seat_book["risk_capital_remaining_usd"] = round(max(0.0, limit - used), 2)
+    # Legacy allocation fields now mirror the enforced risk-capital budget.
     seat_book["allocation_limit_usd"] = limit
-    seat_book["deployed_notional_usd"] = deployed
-    seat_book["allocation_remaining_usd"] = round(max(0.0, limit - deployed), 2)
+    seat_book["allocation_used_usd"] = used
+    seat_book["allocation_remaining_usd"] = seat_book["risk_capital_remaining_usd"]
+    seat_book["deployed_notional_usd"] = deployed_notional(seat_book)
 
 
 def projected_deployed_notional(seat_book: dict[str, Any], action: dict[str, Any]) -> float:
@@ -81,9 +103,53 @@ def projected_deployed_notional(seat_book: dict[str, Any], action: dict[str, Any
     return current
 
 
+def _projected_risk_capital(seat_book: dict[str, Any], action: dict[str, Any]) -> float | None:
+    metrics = book_risk_capital(seat_book)
+    if metrics["risk_capital_unavailable_positions"]:
+        return None
+    current = float(metrics["risk_capital_usd"])
+    kind = action.get("action")
+    if kind not in {"OPEN", "ADD", "HEDGE"}:
+        return current
+
+    if kind == "ADD":
+        position = _find_position(seat_book, action.get("position_id") or "")
+        prior = position_risk_capital(position)
+        projected = deepcopy(position)
+        projected["notional_usd"] = float(position["notional_usd"]) + _money(action.get("notional_usd"), "notional_usd")
+        if action.get("price") not in (None, ""):
+            projected["mark_price"] = action.get("mark_price", action.get("price"))
+        new = position_risk_capital(projected)
+        return None if prior is None or new is None else round(current - prior + new, 2)
+
+    source = action
+    if kind == "HEDGE":
+        target_id = action.get("hedge_of") or action.get("position_id")
+        target = _find_position(seat_book, target_id or "")
+        source = dict(target)
+        source.update({k: v for k, v in action.items() if v not in (None, "")})
+        source["notional_usd"] = action.get("notional_usd")
+        source.setdefault("asset_class", target.get("asset_class"))
+        source.setdefault("side", target.get("side"))
+    position = {
+        "instrument": source.get("instrument"),
+        "asset_class": source.get("asset_class") or "spot_fx",
+        "side": source.get("side") or "long",
+        "notional_usd": source.get("notional_usd"),
+        "entry_price": source.get("price"),
+        "mark_price": source.get("mark_price", source.get("price")),
+    }
+    added = position_risk_capital(position)
+    return None if added is None else round(current + added, 2)
+
+
 def assert_allocation(seat_book: dict[str, Any], *, extra_notional: float = 0) -> None:
-    if deployed_notional(seat_book) + extra_notional - allocation_limit_usd() > 1e-6:
-        raise SchemaError("seat allocation cap exceeded")
+    del extra_notional
+    metrics = book_risk_capital(seat_book)
+    if metrics["risk_capital_unavailable_positions"]:
+        raise SchemaError("seat risk capital unavailable")
+    if float(metrics["risk_capital_usd"]) - risk_capital_limit_usd() > 1e-6:
+        raise SchemaError("seat shocked-risk capital cap exceeded")
 
 
 def _attach_observed_rate(target: dict[str, Any], market_state: dict[str, Any] | None = None) -> None:
@@ -111,20 +177,21 @@ def accrue_funding(
     run_id: str | None = None,
     market_state: dict[str, Any] | None = None,
 ) -> dict[str, float]:
-    """Accrue official NY Fed SOFR ACT/360 between book timestamps.
+    """Accrue official NY Fed SOFR ACT/360 on shocked risk capital.
 
-    The 13 risk-taking seats borrow their full $100m allocation and pay the
-    applicable published SOFR fixing each calendar day. The no-trade skeptic
-    pays no borrowing cost and earns the same official daily SOFR on undeployed
-    original $100m cash. Historical 5% totals are never restated.
+    Every seat earns the common cash hurdle on its starting paper NAV. Risk-taking
+    books additionally pay SOFR on current standard-shock risk capital; notional itself
+    is never treated as borrowed principal. The no-trade skeptic has zero risk
+    capital while flat and therefore pays no financing charge.
     """
     seat_book.setdefault("funding_cost_usd", 0.0)
     seat_book.setdefault("cash_yield_usd", 0.0)
     _attach_observed_rate(seat_book, market_state)
+    _attach_allocation_fields(seat_book)
     last_raw = seat_book.get("funding_last_accrual_at")
     if not last_raw:
         seat_book["funding_last_accrual_at"] = isoformat(when)
-        seat_book["funding_regime"] = "sofr_act_360"
+        seat_book["funding_regime"] = "sofr_risk_capital_1pct"
         return {"funding_cost_usd": 0.0, "cash_yield_usd": 0.0}
     try:
         last = datetime.fromisoformat(str(last_raw))
@@ -134,47 +201,30 @@ def accrue_funding(
         return {"funding_cost_usd": 0.0, "cash_yield_usd": 0.0}
 
     history = extract_sofr_history(market_state or {}, seat_book.get("funding_context") or {})
-    principal = (
-        max(0.0, STARTING_NAV_USD - deployed_notional(seat_book))
-        if seat_book["seat"] == "no-trade-skeptic"
-        else STARTING_NAV_USD
-    )
+    principal = float(seat_book.get("risk_capital_usd") or 0.0)
     try:
-        accrual = accrue_act_360(principal, start=last, end=when, history=history, market_state=market_state)
+        funding_accrual = accrue_act_360(principal, start=last, end=when, history=history, market_state=market_state)
+        cash_accrual = accrue_act_360(STARTING_NAV_USD, start=last, end=when, history=history, market_state=market_state)
     except FundingHistoryError as exc:
         seat_book.setdefault("alerts", []).append(f"funding_accrual_failed_closed: {exc}")
         seat_book["funding_accrual_status"] = "failed_closed"
         return {"funding_cost_usd": 0.0, "cash_yield_usd": 0.0, "failed_closed": True}
 
-    funding_increment = 0.0
-    cash_yield_increment = 0.0
-    if seat_book["seat"] == "no-trade-skeptic":
-        cash_yield_increment = accrual["amount"]
-        seat_book["cash_yield_usd"] = round(
-            float(seat_book.get("cash_yield_usd") or 0.0) + cash_yield_increment,
-            2,
-        )
-        seat_book["cash_usd"] = round(
-            float(seat_book.get("cash_usd", STARTING_NAV_USD)) + cash_yield_increment,
-            2,
-        )
-    else:
-        funding_increment = accrual["amount"]
-        seat_book["funding_cost_usd"] = round(
-            float(seat_book.get("funding_cost_usd") or 0.0) + funding_increment,
-            2,
-        )
-        seat_book["cash_usd"] = round(
-            float(seat_book.get("cash_usd", STARTING_NAV_USD)) - funding_increment,
-            2,
-        )
+    funding_increment = funding_accrual["amount"]
+    cash_yield_increment = cash_accrual["amount"]
+    seat_book["funding_cost_usd"] = round(float(seat_book.get("funding_cost_usd") or 0.0) + funding_increment, 2)
+    seat_book["cash_yield_usd"] = round(float(seat_book.get("cash_yield_usd") or 0.0) + cash_yield_increment, 2)
+    seat_book["cash_usd"] = round(
+        float(seat_book.get("cash_usd", STARTING_NAV_USD)) + cash_yield_increment - funding_increment,
+        2,
+    )
 
     seat_book["funding_last_accrual_at"] = isoformat(when)
-    seat_book["funding_regime"] = "sofr_act_360"
+    seat_book["funding_regime"] = "sofr_risk_capital_1pct"
     seat_book["funding_accrual_status"] = "applied"
-    seat_book["funding_rate_annual"] = accrual["funding_rate_annual"]
-    seat_book["funding_percent_rate"] = accrual["latest_percent_rate"]
-    seat_book["funding_effective_date"] = accrual["latest_effective_date"]
+    seat_book["funding_rate_annual"] = cash_accrual["funding_rate_annual"] or funding_accrual["funding_rate_annual"]
+    seat_book["funding_percent_rate"] = cash_accrual["latest_percent_rate"] or funding_accrual["latest_percent_rate"]
+    seat_book["funding_effective_date"] = cash_accrual["latest_effective_date"] or funding_accrual["latest_effective_date"]
     seat_book["funding_day_count"] = FUNDING_DAY_COUNT
     seat_book["funding_convention"] = FUNDING_CONVENTION
     seat_book["funding_source"] = FUNDING_SOURCE
@@ -185,30 +235,22 @@ def accrue_funding(
                 "overnight_run_id": run_id,
                 "action": "FUNDING",
                 "result": "applied",
-                "funding_rate_annual": accrual["funding_rate_annual"],
-                "funding_percent_rate": accrual["latest_percent_rate"],
-                "funding_effective_date": accrual["latest_effective_date"],
+                "funding_rate_annual": seat_book["funding_rate_annual"],
+                "funding_percent_rate": seat_book["funding_percent_rate"],
+                "funding_effective_date": seat_book["funding_effective_date"],
                 "funding_source": FUNDING_SOURCE,
                 "funding_source_url": FUNDING_SOURCE_URL,
                 "funding_day_count": FUNDING_DAY_COUNT,
                 "funding_convention": FUNDING_CONVENTION,
-                "accrual_days": accrual["accrual_days"],
-                "fixings": accrual["breakdown"],
-                "funding_base_usd": 0.0 if seat_book["seat"] == "no-trade-skeptic" else STARTING_NAV_USD,
-                "cash_yield_base_usd": (
-                    max(0.0, STARTING_NAV_USD - deployed_notional(seat_book))
-                    if seat_book["seat"] == "no-trade-skeptic"
-                    else 0.0
-                ),
+                "accrual_days": max(funding_accrual["accrual_days"], cash_accrual["accrual_days"]),
+                "funding_base_usd": principal,
+                "risk_capital_usd": principal,
+                "cash_yield_base_usd": STARTING_NAV_USD,
                 "funding_cost_usd": funding_increment,
                 "cash_yield_usd": cash_yield_increment,
             }
         )
-    return {
-        "funding_cost_usd": funding_increment,
-        "cash_yield_usd": cash_yield_increment,
-    }
-
+    return {"funding_cost_usd": funding_increment, "cash_yield_usd": cash_yield_increment}
 
 def _rate_delta_fraction(asset_class: str | None, delta: float) -> float:
     """Convert a stored rates mark change into decimal-rate units.
@@ -292,8 +334,19 @@ def empty_seat(seat: str) -> dict[str, Any]:
         "funding_day_count": FUNDING_DAY_COUNT,
         "funding_convention": FUNDING_CONVENTION,
         "funding_source": FUNDING_SOURCE,
-        "funding_regime": "sofr_act_360",
+        "funding_regime": "sofr_risk_capital_1pct",
         "funding_last_accrual_at": None,
+        "risk_capital_usd": 0.0,
+        "risk_capital_limit_usd": RISK_CAPITAL_LIMIT_USD,
+        "risk_capital_remaining_usd": RISK_CAPITAL_LIMIT_USD,
+        "risk_capital_status": "ok",
+        "risk_capital_unavailable_positions": [],
+        "max_drawdown_usd": MAX_DRAWDOWN_USD,
+        "high_water_nav_usd": STARTING_NAV_USD,
+        "drawdown_usd": 0.0,
+        "risk_stopped": False,
+        "risk_stop_pending": False,
+        "risk_stop_at": None,
         "net_pnl_usd": 0.0,
         "pnl_unavailable": False,
         "conviction": 0,
@@ -306,9 +359,10 @@ def empty_seat(seat: str) -> dict[str, Any]:
         "risk_put_on": None,
         "evidence_cutoff": None,
         "blocked_opens": [],
-        "allocation_limit_usd": STARTING_NAV_USD,
+        "allocation_limit_usd": RISK_CAPITAL_LIMIT_USD,
+        "allocation_used_usd": 0.0,
         "deployed_notional_usd": 0.0,
-        "allocation_remaining_usd": STARTING_NAV_USD,
+        "allocation_remaining_usd": RISK_CAPITAL_LIMIT_USD,
     }
 
 
@@ -326,13 +380,99 @@ def empty_books(*, overnight_run_id: str | None = None, when: datetime | None = 
     }
 
 
-def mark_to_market(seat_book: dict[str, Any]) -> dict[str, Any]:
+PENDING_FORCE_FLATTEN_REASON = (
+    "max drawdown breached but one or more positions lack a deterministic exit mark; "
+    "expansion is blocked pending forced flatten"
+)
+
+
+def _force_drawdown_flatten(
+    seat_book: dict[str, Any],
+    *,
+    when: datetime | None = None,
+    run_id: str | None = None,
+) -> bool:
+    positions = list(seat_book.get("positions") or [])
+    if not positions:
+        seat_book["risk_stopped"] = True
+        seat_book["risk_stop_pending"] = False
+        return True
+
+    already = already_force_flattened_ids(seat_book)
+    markable, blocked = partition_force_exit_positions(positions)
+    markable = [position for position in markable if str(position.get("position_id") or "") not in already]
+
+    realized = 0.0
+    flattened_ids: list[str] = []
+    if markable:
+        for position in markable:
+            realized += realized_increment(
+                position,
+                exit_price=float(position["mark_price"]),
+                closed_notional=float(position["notional_usd"]),
+            )
+            if position.get("position_id"):
+                flattened_ids.append(str(position["position_id"]))
+        realized = round(realized, 2)
+        seat_book["realized_pnl_usd"] = round(float(seat_book.get("realized_pnl_usd") or 0.0) + realized, 2)
+        seat_book["cash_usd"] = round(float(seat_book.get("cash_usd", STARTING_NAV_USD)) + realized, 2)
+        remaining_ids = {id(position) for position in blocked}
+        seat_book["positions"] = [position for position in positions if id(position) in remaining_ids]
+
+    seat_book["risk_stopped"] = True
+    pending = bool(seat_book.get("positions"))
+    seat_book["risk_stop_pending"] = pending
+    stamp = isoformat(now_ny(when))
+    if flattened_ids or not seat_book.get("risk_stop_at"):
+        seat_book["risk_stop_at"] = stamp
+    seat_book["prior_action"] = seat_book.get("last_action")
+    seat_book["last_action"] = "RISK_STOP"
+    history = seat_book.setdefault("history", [])
+    result = "pending_forced_flatten" if pending else "forced_flat"
+    if flattened_ids or (
+        pending
+        and not any(row.get("action") == "RISK_STOP" and row.get("result") == "pending_forced_flatten" for row in history)
+    ):
+        history.append(
+            {
+                "at": stamp,
+                "overnight_run_id": run_id,
+                "action": "RISK_STOP",
+                "result": result,
+                "realized_pnl_usd": round(realized, 2),
+                "flattened_position_ids": flattened_ids,
+                "drawdown_usd": seat_book.get("drawdown_usd"),
+                "max_drawdown_usd": seat_book.get("max_drawdown_usd", MAX_DRAWDOWN_USD),
+            }
+        )
+    alerts = seat_book.setdefault("alerts", [])
+    if pending:
+        if PENDING_FORCE_FLATTEN_REASON not in alerts:
+            alerts.append(PENDING_FORCE_FLATTEN_REASON)
+    else:
+        msg = (
+            "RISK_STOP: book forcibly flattened after drawdown reached "
+            f"{float(seat_book.get('drawdown_usd') or 0.0):,.2f}"
+        )
+        if msg not in alerts:
+            alerts.append(msg)
+    return not pending
+
+
+def mark_to_market(
+    seat_book: dict[str, Any],
+    *,
+    when: datetime | None = None,
+    run_id: str | None = None,
+    enforce_stop: bool = True,
+) -> dict[str, Any]:
     unrealized = 0.0
     missing = False
     for position in seat_book["positions"]:
         pnl = position_pnl(position)
         position["unrealized_pnl_usd"] = pnl["unrealized_pnl_usd"]
         position["pnl_unavailable"] = pnl["pnl_unavailable"]
+        attach_position_risk(position)
         if pnl["pnl_unavailable"]:
             missing = True
         else:
@@ -347,13 +487,34 @@ def mark_to_market(seat_book: dict[str, Any]) -> dict[str, Any]:
     seat_book["cash_yield_usd"] = cash_yield
     _attach_observed_rate(seat_book)
     seat_book["net_pnl_usd"] = None if missing else round(gross - funding + cash_yield, 2)
-    seat_book["nav_usd"] = round(
-        float(seat_book["starting_nav_usd"]) + gross - funding + cash_yield,
+    seat_book["cash_usd"] = round(
+        float(seat_book["starting_nav_usd"]) + float(seat_book.get("realized_pnl_usd") or 0.0) - funding + cash_yield,
         2,
     )
+    seat_book["nav_usd"] = round(float(seat_book["starting_nav_usd"]) + gross - funding + cash_yield, 2)
     _attach_allocation_fields(seat_book)
-    return seat_book
 
+    seat_book.setdefault("max_drawdown_usd", MAX_DRAWDOWN_USD)
+    seat_book.setdefault("high_water_nav_usd", float(seat_book["starting_nav_usd"]))
+    seat_book.setdefault("risk_stopped", False)
+    seat_book.setdefault("risk_stop_pending", False)
+    if not missing:
+        high_water = max(float(seat_book["high_water_nav_usd"]), float(seat_book["nav_usd"]))
+        seat_book["high_water_nav_usd"] = round(high_water, 2)
+    seat_book["drawdown_usd"] = round(
+        max(0.0, float(seat_book["high_water_nav_usd"]) - float(seat_book["nav_usd"])),
+        2,
+    )
+    if seat_book.get("risk_stopped") and not seat_book.get("positions"):
+        seat_book["risk_stop_pending"] = False
+
+    pending_open = bool(seat_book.get("risk_stop_pending") and seat_book.get("positions"))
+    drawdown_breach = float(seat_book["drawdown_usd"]) >= float(seat_book["max_drawdown_usd"])
+    needs_stop = drawdown_breach and (seat_book.get("positions") or not seat_book.get("risk_stopped"))
+    if enforce_stop and (pending_open or needs_stop):
+        _force_drawdown_flatten(seat_book, when=when, run_id=run_id)
+        return mark_to_market(seat_book, when=when, run_id=run_id, enforce_stop=False)
+    return seat_book
 
 def _find_position(seat_book: dict[str, Any], position_id: str) -> dict[str, Any]:
     for position in seat_book["positions"]:
@@ -406,7 +567,7 @@ def _block_expansion(
     seat_book["alerts"].append(reason)
     seat_book["prior_action"] = seat_book.get("last_action")
     seat_book["last_action"] = kind
-    return mark_to_market(seat_book)
+    return mark_to_market(seat_book, when=when, run_id=run_id)
 
 
 def apply_action(
@@ -443,10 +604,19 @@ def apply_action(
             seat_book["alerts"].append(str(exc))
             seat_book["prior_action"] = seat_book.get("last_action")
             seat_book["last_action"] = kind
-            return mark_to_market(seat_book)
+            return mark_to_market(seat_book, when=stamp, run_id=run_id)
         raise
 
     if kind in {"OPEN", "ADD", "HEDGE"}:
+        if seat_book.get("risk_stopped"):
+            return _block_expansion(
+                seat_book,
+                action,
+                when=stamp,
+                run_id=run_id,
+                result="blocked_risk_stop",
+                reason=f"{seat} is RISK_STOPPED after breaching the hard drawdown limit",
+            )
         if action.get("_paper_mark_error"):
             return _block_expansion(
                 seat_book,
@@ -456,18 +626,27 @@ def apply_action(
                 result="blocked_mark",
                 reason=str(action["_paper_mark_error"]),
             )
-        projected = projected_deployed_notional(seat_book, action)
-        if projected - allocation_limit_usd() > 1e-6:
+        projected = _projected_risk_capital(seat_book, action)
+        if projected is None:
+            return _block_expansion(
+                seat_book,
+                action,
+                when=stamp,
+                run_id=run_id,
+                result="blocked_risk_capital",
+                reason=f"{seat} {kind} blocked: standard-shock risk capital cannot be computed from deterministic marks",
+            )
+        if projected - risk_capital_limit_usd() > 1e-6:
             reason = (
-                f"{seat} {kind} blocked: projected deployed notional {projected:,.2f} exceeds "
-                f"{allocation_limit_usd():,.0f} seat allocation cap"
+                f"{seat} {kind} blocked: projected shocked risk capital {projected:,.2f} exceeds "
+                f"{risk_capital_limit_usd():,.0f} seat risk-capital cap"
             )
             return _block_expansion(
                 seat_book,
                 action,
                 when=stamp,
                 run_id=run_id,
-                result="blocked_allocation",
+                result="blocked_risk_capital",
                 reason=reason,
             )
 
@@ -503,7 +682,7 @@ def apply_action(
     seat_book["history"].append(
         _history_entry(action, when=stamp, run_id=run_id, result="applied", extra={"blocked_families": blocked})
     )
-    return mark_to_market(seat_book)
+    return mark_to_market(seat_book, when=stamp, run_id=run_id)
 
 
 def _require_notional(action: dict[str, Any]) -> float:
@@ -556,7 +735,6 @@ def _open_position(
     }
     action["position_id"] = position["position_id"]
     seat_book["positions"].append(position)
-    seat_book["cash_usd"] = round(float(seat_book["cash_usd"]) - notional, 2)
     return position
 
 
@@ -574,7 +752,7 @@ def _resize(seat_book: dict[str, Any], action: dict[str, Any], *, factor: int, r
             realized = realized_increment(position, exit_price=float(exit_price), closed_notional=delta)
         position["notional_usd"] = round(float(position["notional_usd"]) - delta, 2)
         seat_book["realized_pnl_usd"] = round(float(seat_book["realized_pnl_usd"]) + realized, 2)
-        seat_book["cash_usd"] = round(float(seat_book["cash_usd"]) + delta + realized, 2)
+        seat_book["cash_usd"] = round(float(seat_book["cash_usd"]) + realized, 2)
         action["realized_pnl_usd"] = realized
         if position["notional_usd"] <= 1e-9:
             seat_book["positions"] = [p for p in seat_book["positions"] if p["position_id"] != position["position_id"]]
@@ -590,7 +768,6 @@ def _resize(seat_book: dict[str, Any], action: dict[str, Any], *, factor: int, r
             position["mark_price_source"] = action.get("paper_mid_source")
             position["mark_price_as_of"] = action.get("paper_mid_as_of")
         position["notional_usd"] = round(old_n + delta, 2)
-        seat_book["cash_usd"] = round(float(seat_book["cash_usd"]) - delta, 2)
     action["overnight_run_id"] = run_id
     action["at"] = isoformat(when)
 
@@ -643,6 +820,8 @@ def apply_review(
         from scripts.overnight.paper_marks import hydrate_review_mids, refresh_book_marks
 
         refresh_book_marks(out, market_state)
+        for seat_book in out["seats"].values():
+            mark_to_market(seat_book, when=when, run_id=run_id)
         prepared_reviews = hydrate_review_mids(out, prepared_reviews, market_state)
     out["overnight_run_id"] = run_id
     out["evidence_cutoff"] = evidence_cutoff
@@ -673,7 +852,7 @@ def apply_review(
             )
         if payload.get("alerts"):
             seat_book["alerts"].extend(list(payload["alerts"]))
-        mark_to_market(seat_book)
+        mark_to_market(seat_book, when=when, run_id=run_id)
     return out
 
 
@@ -712,7 +891,13 @@ def validate_books(books: dict[str, Any]) -> dict[str, Any]:
         item.setdefault("funding_cost_usd", 0.0)
         item.setdefault("cash_yield_usd", 0.0)
         item.setdefault("funding_last_accrual_at", None)
-        item.setdefault("funding_regime", "legacy_pending_sofr" if item.get("funding_last_accrual_at") else "sofr_act_360")
+        item.setdefault("funding_regime", "legacy_pending_sofr" if item.get("funding_last_accrual_at") else "sofr_risk_capital_1pct")
+        item.setdefault("risk_capital_limit_usd", RISK_CAPITAL_LIMIT_USD)
+        item.setdefault("max_drawdown_usd", MAX_DRAWDOWN_USD)
+        item.setdefault("high_water_nav_usd", float(item.get("starting_nav_usd") or STARTING_NAV_USD))
+        item.setdefault("drawdown_usd", 0.0)
+        item.setdefault("risk_stopped", False)
+        item.setdefault("risk_stop_pending", False)
         if item.get("funding_rate_annual") == 0.05:
             item["funding_rate_annual"] = None
         _attach_observed_rate(item)
@@ -753,8 +938,18 @@ def public_books_view(books: dict[str, Any]) -> dict[str, Any]:
                 "prior_action": item.get("prior_action"),
                 "alerts": item.get("alerts") or [],
                 "allocation_limit_usd": item.get("allocation_limit_usd", allocation_limit_usd()),
-                "deployed_notional_usd": item.get("deployed_notional_usd", deployed_notional(item)),
+                "allocation_used_usd": item.get("allocation_used_usd"),
                 "allocation_remaining_usd": item.get("allocation_remaining_usd"),
+                "deployed_notional_usd": item.get("deployed_notional_usd", deployed_notional(item)),
+                "risk_capital_usd": item.get("risk_capital_usd"),
+                "risk_capital_limit_usd": item.get("risk_capital_limit_usd", RISK_CAPITAL_LIMIT_USD),
+                "risk_capital_remaining_usd": item.get("risk_capital_remaining_usd"),
+                "risk_capital_method": item.get("risk_capital_method"),
+                "max_drawdown_usd": item.get("max_drawdown_usd", MAX_DRAWDOWN_USD),
+                "high_water_nav_usd": item.get("high_water_nav_usd"),
+                "drawdown_usd": item.get("drawdown_usd"),
+                "risk_stopped": item.get("risk_stopped", False),
+                "risk_stop_pending": item.get("risk_stop_pending", False),
                 "positions": [
                     {
                         "position_id": p["position_id"],
@@ -774,6 +969,8 @@ def public_books_view(books: dict[str, Any]) -> dict[str, Any]:
                         "thesis": p.get("thesis"),
                         "invalidation": p.get("invalidation"),
                         "unrealized_pnl_usd": p.get("unrealized_pnl_usd"),
+                        "risk_capital_usd": p.get("risk_capital_usd"),
+                        "risk_capital_method": p.get("risk_capital_method"),
                         "hedge_of": p.get("hedge_of"),
                     }
                     for p in item["positions"]

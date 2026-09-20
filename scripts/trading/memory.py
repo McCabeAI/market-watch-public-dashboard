@@ -8,6 +8,7 @@ from uuid import uuid4
 
 from scripts.overnight.clock import isoformat, now_ny
 from scripts.overnight.store import sha256_json
+from scripts.risk_capital import position_risk_capital
 from scripts.trading.constants import (
     CALIBRATION_SAMPLE_NOTE,
     CONVICTION_BUCKETS,
@@ -125,20 +126,31 @@ def recent_closed(trades: list[dict[str, Any]], *, limit: int = RECENT_CLOSED_CA
 
 def open_position_context(trades: list[dict[str, Any]]) -> list[dict[str, Any]]:
     open_rows = [row for row in trades if row.get("status") == "open"]
-    return [
-        {
-            "trade_id": row.get("trade_id"),
-            "position_id": row.get("position_id"),
-            "instrument": row.get("instrument"),
-            "side": row.get("side"),
-            "asset_class": row.get("asset_class"),
-            "current_notional_usd": row.get("current_notional_usd"),
-            "entry_mark": row.get("entry_mark"),
-            "opened_at": row.get("opened_at"),
-            "conviction": row.get("conviction"),
-        }
-        for row in open_rows
-    ]
+    out = []
+    for row in open_rows:
+        capital = position_risk_capital(
+            {
+                "asset_class": row.get("asset_class"),
+                "notional_usd": row.get("current_notional_usd"),
+                "entry_price": row.get("entry_mark"),
+                "mark_price": row.get("last_mark") or row.get("entry_mark"),
+            }
+        )
+        out.append(
+            {
+                "trade_id": row.get("trade_id"),
+                "position_id": row.get("position_id"),
+                "instrument": row.get("instrument"),
+                "side": row.get("side"),
+                "asset_class": row.get("asset_class"),
+                "current_notional_usd": row.get("current_notional_usd"),
+                "risk_capital_usd": capital,
+                "entry_mark": row.get("entry_mark"),
+                "opened_at": row.get("opened_at"),
+                "conviction": row.get("conviction"),
+            }
+        )
+    return out
 
 
 def active_lessons(store: TradingStore, owner_type: str, owner_id: str, *, cap: int = LESSON_CAP) -> list[dict[str, Any]]:

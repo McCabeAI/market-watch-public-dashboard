@@ -27,7 +27,7 @@ from scripts.funding.view import requires_funding_view, validate_funding_view
 from scripts.overnight.books import apply_action, empty_seat, public_books_view, validate_books
 from scripts.overnight.constants import STARTING_NAV_USD
 from scripts.pm.books import apply_decision, empty_books, empty_pm_book, mark_pm_book, public_pm_view
-from scripts.pm.constants import CASH_CAPITAL_USD, GROSS_NOTIONAL_LIMIT_USD
+from scripts.pm.constants import CASH_CAPITAL_USD, GROSS_NOTIONAL_LIMIT_USD, RISK_CAPITAL_LIMIT_USD
 from scripts.trader_room.evidence import freeze_packet, load_synthetic_packet
 from scripts.trader_room.schema import validate_contribution
 
@@ -173,7 +173,7 @@ class SofrEngineTests(unittest.TestCase):
 
 
 class TraderFundingTests(unittest.TestCase):
-    def test_risk_taker_pays_sofr_on_full_100m(self) -> None:
+    def test_flat_trader_has_cash_hurdle_and_zero_risk_funding(self) -> None:
         seat = empty_seat("dollar-king")
         apply_action(seat, {"action": "HOLD", "expression_memo": _spot_memo()}, families=_families(), run_id="r1", when=AS_OF, market_state=MARKET)
         apply_action(
@@ -184,16 +184,17 @@ class TraderFundingTests(unittest.TestCase):
             when=AS_OF + timedelta(days=1),
             market_state=MARKET,
         )
-        expected = round(STARTING_NAV_USD * 0.04 / 360, 2)
-        self.assertEqual(seat["funding_cost_usd"], expected)
-        self.assertEqual(seat["cash_yield_usd"], 0.0)
+        hurdle = round(STARTING_NAV_USD * 0.04 / 360, 2)
+        self.assertEqual(seat["funding_cost_usd"], 0.0)
+        self.assertEqual(seat["cash_yield_usd"], hurdle)
         event = next(row for row in seat["history"] if row.get("action") == "FUNDING")
         self.assertEqual(event["funding_source"], FUNDING_SOURCE)
         self.assertEqual(event["funding_day_count"], FUNDING_DAY_COUNT)
         self.assertEqual(event["accrual_days"], 1)
-        self.assertEqual(event["funding_base_usd"], STARTING_NAV_USD)
+        self.assertEqual(event["funding_base_usd"], 0.0)
+        self.assertEqual(event["cash_yield_base_usd"], STARTING_NAV_USD)
 
-    def test_no_trade_earns_sofr_on_undeployed_cash(self) -> None:
+    def test_same_risk_capital_gets_same_sofr_charge_for_skeptic(self) -> None:
         seat = empty_seat("no-trade-skeptic")
         memo = {
             "rates_candidate": {"instrument": "US 10Y", "asset_class": "rates", "rationale": "duration"},
@@ -226,7 +227,9 @@ class TraderFundingTests(unittest.TestCase):
             when=AS_OF + timedelta(days=1),
             market_state=MARKET,
         )
-        self.assertEqual(seat["cash_yield_usd"], round(STARTING_NAV_USD * 0.04 / 360, 2))
+        hurdle = round(STARTING_NAV_USD * 0.04 / 360, 2)
+        self.assertEqual(seat["cash_yield_usd"], hurdle)
+        self.assertEqual(seat["risk_capital_usd"], 400_000.0)
         apply_action(
             seat,
             {"action": "HOLD", "expression_memo": memo},
@@ -235,8 +238,8 @@ class TraderFundingTests(unittest.TestCase):
             when=AS_OF + timedelta(days=2),
             market_state=MARKET,
         )
-        self.assertEqual(seat["funding_cost_usd"], 0.0)
-        self.assertEqual(seat["cash_yield_usd"], round(STARTING_NAV_USD * 0.04 / 360 + 60_000_000 * 0.04 / 360, 2))
+        self.assertEqual(seat["funding_cost_usd"], round(400_000 * 0.04 / 360, 2))
+        self.assertEqual(seat["cash_yield_usd"], round(hurdle * 2, 2))
 
     def test_missing_fixing_preserves_prior_canonical_state(self) -> None:
         seat = empty_seat("rate-hawk")
@@ -257,6 +260,7 @@ class TraderFundingTests(unittest.TestCase):
 
     def test_no_active_five_percent_in_public_output(self) -> None:
         from scripts.overnight.books import empty_books
+        from scripts.funding.context import competition_contract
 
         books = validate_books(empty_books(when=AS_OF))
         view = public_books_view(books)
@@ -265,8 +269,12 @@ class TraderFundingTests(unittest.TestCase):
         self.assertEqual(view["funding_source"], FUNDING_SOURCE)
         blob = str(view)
         self.assertNotIn("0.05", blob)
+        contract = competition_contract()
+        self.assertNotIn("1bp minimum", contract["funding_basis"])
+        self.assertIn("100bp", contract["funding_basis"])
+        self.assertIn("1 percentage point", contract["funding_basis"])
 
-    def test_migration_preserves_historical_funding_and_starts_sofr(self) -> None:
+    def test_migration_preserves_historical_funding_and_starts_risk_capital_sofr(self) -> None:
         seat = empty_seat("carry-is-king")
         seat["funding_cost_usd"] = 1234.56
         seat["funding_rate_annual"] = 0.05
@@ -279,8 +287,9 @@ class TraderFundingTests(unittest.TestCase):
             when=AS_OF + timedelta(days=1),
             market_state=MARKET,
         )
-        self.assertEqual(round(seat["funding_cost_usd"] - 1234.56, 2), round(STARTING_NAV_USD * 0.04 / 360, 2))
-        self.assertEqual(seat["funding_regime"], "sofr_act_360")
+        self.assertEqual(round(seat["funding_cost_usd"] - 1234.56, 2), 0.0)
+        self.assertEqual(seat["cash_yield_usd"], round(STARTING_NAV_USD * 0.04 / 360, 2))
+        self.assertEqual(seat["funding_regime"], "sofr_risk_capital_1pct")
         self.assertNotEqual(seat["funding_rate_annual"], 0.05)
 
 
@@ -390,18 +399,19 @@ class PMFundingTests(unittest.TestCase):
         )
         book = books["pms"]["chatgpt"]
         self.assertEqual(book["gross_utilization_usd"], 200_000_000)
-        self.assertEqual(book["funded_draw_usd"], 0.0)
+        self.assertEqual(book["funded_draw_usd"], 2_000_000.0)
+        self.assertEqual(book["risk_capital_usd"], 2_000_000.0)
         self.assertEqual(book["unused_cash_usd"], CASH_CAPITAL_USD)
         self.assertNotEqual(book["gross_utilization_usd"], book["funded_draw_usd"])
         self.assertEqual(book["gross_notional_limit_usd"], GROSS_NOTIONAL_LIMIT_USD)
 
-    def test_futures_sr3_corra_aonia_are_not_full_notional_funded(self) -> None:
+    def test_rates_futures_fund_standard_shocked_risk_not_full_notional(self) -> None:
         for instrument, asset in (("SOFR_2027-03", "rates"), ("CORRA_2027-03", "rates"), ("AONIA_2026-10", "rates")):
             basis = classify_funding_basis({"instrument": instrument, "asset_class": asset, "notional_usd": 50_000_000})
-            self.assertEqual(basis["funding_basis_status"], "unfunded_derivative")
-            self.assertEqual(basis["funding_draw_usd"], 0.0)
+            self.assertEqual(basis["funding_basis_status"], "risk_capital_1pct_shock")
+            self.assertEqual(basis["funding_draw_usd"], 500_000.0)
 
-    def test_cash_spot_consumes_funded_capital_and_unused_cash_earns_sofr(self) -> None:
+    def test_spot_funds_one_percent_shocked_risk_and_common_cash_hurdle(self) -> None:
         books = apply_decision(
             empty_books(),
             {"pm_id": "pragmatist", "actions": [{
@@ -431,26 +441,77 @@ class PMFundingTests(unittest.TestCase):
             when=AS_OF + timedelta(days=1),
         )
         book = later["pms"]["pragmatist"]
-        self.assertEqual(book["funded_draw_usd"], 100_000_000)
-        self.assertEqual(book["unused_cash_usd"], 900_000_000)
-        self.assertEqual(book["funding_cost_usd"], round(100_000_000 * 0.04 / 360, 2))
-        self.assertEqual(book["cash_yield_usd"], round(900_000_000 * 0.04 / 360, 2))
+        self.assertEqual(book["funded_draw_usd"], 1_000_000)
+        self.assertEqual(book["risk_capital_usd"], 1_000_000)
+        self.assertEqual(book["unused_cash_usd"], CASH_CAPITAL_USD)
+        self.assertEqual(book["funding_cost_usd"], round(1_000_000 * 0.04 / 360, 2))
+        self.assertEqual(book["cash_yield_usd"], round(CASH_CAPITAL_USD * 0.04 / 360, 2))
         self.assertIsNotNone(book["net_after_funding_pnl_usd"])
-        self.assertEqual(book["positions"][0]["funding_basis_status"], "cash_funded")
+        self.assertEqual(book["positions"][0]["funding_basis_status"], "risk_capital_1pct_shock")
+
+    def test_equal_risk_capital_gets_equal_sofr_across_asset_classes(self) -> None:
+        from scripts.overnight.books import empty_seat, apply_action
+        from scripts.overnight.constants import STARTING_NAV_USD as TRADER_NAV
+
+        families = {
+            "macro_hard": {"status": "fresh"},
+            "news": {"status": "fresh"},
+            "central_bank_research": {"status": "fresh"},
+            "market_state": {"status": "fresh", "data": MARKET},
+        }
+        rates_memo = {
+            "rates_candidate": {"instrument": "US 10Y", "asset_class": "rates", "rationale": "duration"},
+            "spot_candidate": {"instrument": "USDJPY", "asset_class": "spot_fx", "rationale": "spot alt"},
+            "options_candidate": None,
+            "selected": "rates",
+            "rationale": "Rates-first comparison complete.",
+        }
+        specs = [
+            ("dollar-king", "USDCAD", "spot_fx", 1.36, _spot_memo()),
+            ("rate-hawk", "US 10Y", "rates", 4.20, rates_memo),
+            ("value-guy", "SOFR-CORRA_2Y", "rates_rv", 35.0, {**rates_memo, "rates_candidate": {"instrument": "SOFR-CORRA_2Y", "asset_class": "rates_rv", "rationale": "spread"}}),
+        ]
+        charges = []
+        for seat_id, instrument, asset, price, memo in specs:
+            seat = empty_seat(seat_id)
+            apply_action(seat, {"action": "HOLD", "expression_memo": memo}, families=families, run_id="eq-1", when=AS_OF, market_state=MARKET)
+            apply_action(
+                seat,
+                {
+                    "action": "OPEN",
+                    "instrument": instrument,
+                    "side": "long",
+                    "notional_usd": 100_000_000,
+                    "price": price,
+                    "asset_class": asset,
+                    "expression_memo": memo,
+                },
+                families=families,
+                run_id="eq-2",
+                when=AS_OF + timedelta(days=1),
+                market_state=MARKET,
+            )
+            apply_action(seat, {"action": "HOLD", "expression_memo": memo}, families=families, run_id="eq-3", when=AS_OF + timedelta(days=2), market_state=MARKET)
+            self.assertEqual(seat["risk_capital_usd"], 1_000_000.0)
+            charges.append(seat["funding_cost_usd"])
+            self.assertEqual(seat["cash_yield_usd"], round(TRADER_NAV * 0.04 / 360, 2) * 2)
+        self.assertEqual(charges[0], round(1_000_000 * 0.04 / 360, 2))
+        self.assertEqual(charges[0], charges[1])
+        self.assertEqual(charges[1], charges[2])
 
     def test_unresolved_basis_is_flagged_and_not_charged(self) -> None:
         book = empty_pm_book("grinder")
         book["positions"] = [{
-            "position_id": "bond-1",
-            "instrument": "US 10Y",
-            "asset_class": "rates",
+            "position_id": "option-1",
+            "instrument": "USDCAD_PUT",
+            "asset_class": "options",
             "notional_usd": 75_000_000,
-            "locked_expression_family": "bond",
+            "locked_expression_family": "options",
         }]
         draws = funded_draw_for_book(book)
         self.assertEqual(draws["funded_draw_usd"], 0.0)
         self.assertEqual(draws["funding_basis_status"], "unresolved")
-        self.assertEqual(draws["unresolved_funding_positions"], ["bond-1"])
+        self.assertEqual(draws["unresolved_funding_positions"], ["option-1"])
         self.assertEqual(book["positions"][0]["funding_basis_status"], "unresolved")
 
     def test_model_forecast_cannot_mutate_realized_funding(self) -> None:
@@ -487,9 +548,10 @@ class PMFundingTests(unittest.TestCase):
         book = second["pms"]["swinger"]
         self.assertEqual(book["funding_percent_rate"], 4.00)
         self.assertNotEqual(book["funding_percent_rate"], 99.0)
-        self.assertEqual(book["funding_cost_usd"], round(50_000_000 * 0.04 / 360, 2))
+        self.assertEqual(book["funding_cost_usd"], round(500_000 * 0.04 / 360, 2))
         view = public_pm_view(second)
         self.assertIn("funded_draw_usd", view["pms"][0])
+        self.assertEqual(view["pms"][0]["risk_capital_limit_usd"], RISK_CAPITAL_LIMIT_USD)
         self.assertIn("unused_cash_usd", view["pms"][0])
 
 

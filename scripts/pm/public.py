@@ -4,8 +4,9 @@ from __future__ import annotations
 
 from typing import Any
 
+from scripts.overnight.errors import SchemaError as OvernightSchemaError
 from scripts.pm.books import public_pm_view, validate_books
-from scripts.pm.constants import DECISION_STATUSES, GROSS_NOTIONAL_LIMIT_USD, PM_IDS, SCHEMA_VERSION
+from scripts.pm.constants import DECISION_STATUSES, RISK_CAPITAL_LIMIT_USD, PM_IDS, SCHEMA_VERSION
 from scripts.pm.data_requests import public_requests_view
 from scripts.pm.errors import SchemaError
 from scripts.pm.store import PMStore
@@ -19,8 +20,8 @@ def validate_public_packet(packet: dict[str, Any]) -> dict[str, Any]:
         raise SchemaError("PM public packet type mismatch")
     if packet.get("pm_count") != len(PM_IDS):
         raise SchemaError(f"pm_count must be {len(PM_IDS)}")
-    if packet.get("gross_notional_limit_usd") != GROSS_NOTIONAL_LIMIT_USD:
-        raise SchemaError("PM public gross_notional_limit_usd mismatch")
+    if packet.get("risk_capital_limit_usd") != RISK_CAPITAL_LIMIT_USD:
+        raise SchemaError("PM public risk_capital_limit_usd mismatch")
     rows = packet.get("pms")
     if not isinstance(rows, list) or len(rows) != len(PM_IDS):
         raise SchemaError("PM public pms must list exactly four PMs")
@@ -50,6 +51,30 @@ def write_public_state(store: PMStore, books: dict[str, Any], registry: dict[str
     return payload
 
 
+def _rebuild_public_from_canonical(store: PMStore) -> dict[str, Any]:
+    """Projection from canonical books + request registry. Does not rewrite trades."""
+    from scripts.pm.books import empty_books
+
+    books = store.read_books() if store.books_path().is_file() else empty_books()
+    registry = store.read_requests() if store.requests_path().is_file() else {"requests": []}
+    return build_public_state(books, registry)
+
+
+def public_payload_for_publication(store: PMStore) -> dict[str, Any]:
+    """Trusted Pages/public payload.
+
+    Fresh persisted public JSON is used when it still passes the current
+    contract. Stale pre-migration public files are ignored and rebuilt from
+    canonical PM books. validate_public_packet remains strict either way.
+    """
+    if store.public_path().is_file():
+        try:
+            return validate_public_packet(store.read_json(store.public_path()))
+        except (SchemaError, OvernightSchemaError):
+            pass
+    return validate_public_packet(_rebuild_public_from_canonical(store))
+
+
 def emit_pm_json(store: PMStore, site_dir, *, filename: str = "pm-books.json") -> Any:
     from pathlib import Path
 
@@ -57,15 +82,5 @@ def emit_pm_json(store: PMStore, site_dir, *, filename: str = "pm-books.json") -
 
     site_dir = Path(site_dir)
     site_dir.mkdir(parents=True, exist_ok=True)
-    if store.public_path().is_file():
-        payload = store.read_json(store.public_path())
-    else:
-        books = store.read_books() if store.books_path().is_file() else None
-        registry = store.read_requests() if store.requests_path().is_file() else {"requests": []}
-        if books is None:
-            from scripts.pm.books import empty_books
-
-            books = empty_books()
-        payload = build_public_state(books, registry)
-    validate_public_packet(payload)
+    payload = public_payload_for_publication(store)
     return write_json(site_dir / filename, payload)
