@@ -7,8 +7,9 @@ from pathlib import Path
 from typing import Any
 
 from scripts.overnight.clock import isoformat, now_ny
+from scripts.overnight.books import validate_books
 from scripts.overnight.constants import STANDING_SEATS
-from scripts.overnight.store import write_json
+from scripts.overnight.store import OvernightStore, write_json
 from scripts.pm.constants import PM_IDS
 from scripts.trading.constants import SCHEMA_VERSION
 from scripts.trading.memory import build_memory_context
@@ -80,7 +81,13 @@ def snapshot_trader_room(
     common_evidence_sha256: str | None = None,
     when: datetime | None = None,
 ) -> dict[str, Any]:
-    backfill_from_books(store, when=when)
+    overnight = OvernightStore(root=store.root, state_root=store.state_root)
+    trader_books = (
+        validate_books(overnight.read_books())
+        if overnight.books_path().is_file()
+        else None
+    )
+    backfill_from_books(store, trader_books=trader_books, when=when)
     return snapshot_identities(
         store,
         owner_type="trader",
