@@ -222,7 +222,7 @@ At 03:50 Market Watch assembles one canonical dataset containing:
 - publication decision;
 - run ledger.
 
-The existing front page is preserved. The additive Trader Book tab shows paper books, P&L, overnight position changes and accepted overnight research.
+The existing front page is preserved. The additive Trader Book tab shows paper books, P&L, overnight position changes and accepted overnight research. Public `trader-books.json` seats and positions always come from the newest canonical `data/overnight/books/latest.json` when present; the assembled morning dataset may overlay `overnight_research` and publication metadata but must not hide newer on-demand book state.
 
 ## 11. Dry-run
 

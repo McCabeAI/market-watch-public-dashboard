@@ -901,6 +901,13 @@ class OvernightAndTraderRoomMemoryTests(unittest.TestCase):
                     "memory_context_sha256": base["seat_memory"]["hashes"][seat],
                     "actions": [{"action": "HOLD", "expression_memo": {"selected": "none", "rationale": "Hold.", "rates_candidate": None, "spot_candidate": None, "options_candidate": None}}],
                 }
+                if seat == "no-trade-skeptic":
+                    decisions[seat]["funding_view"] = {
+                        "current_sofr": "Frozen official NY Fed SOFR fixing in funding_context.",
+                        "sr3_forward_view": "Frozen SR3 contracts are the relevant forward-funding path.",
+                        "forward_funding_assessment": "about_the_same",
+                        "implication": "Prefer cash earning official SOFR unless a packet-supported trade beats that hurdle.",
+                    }
             payload = {
                 "schema_version": 1,
                 "type": "OVERNIGHT_SCHEDULED_OUTPUT",

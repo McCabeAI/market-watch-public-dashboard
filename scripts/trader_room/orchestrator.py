@@ -160,6 +160,17 @@ def run_debate(
         conflict_map=conflict_map,
         rebuttals=rebuttals,
     )
+    from scripts.trader_room.paper_book import persist_ondemand_trader_books
+
+    run_dir = persist_root / "trader-room" / "runs" / packet["run_id"]
+    paper_books = persist_ondemand_trader_books(
+        root=persist_root,
+        run_dir=run_dir,
+        packet=packet,
+        originals=originals,
+        rebuttals=rebuttals,
+        memory_hashes=hashes,
+    )
     return {
         "run_id": packet["run_id"],
         "evidence_cutoff": packet["as_of"],
@@ -172,6 +183,7 @@ def run_debate(
         "budget": budget.snapshot(),
         "launch_plan": launch_plan,
         "artifact_index": index,
+        "paper_books": paper_books,
     }
 
 

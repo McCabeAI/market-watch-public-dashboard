@@ -64,6 +64,47 @@ CONTEXT_BUILD_FIELDS = (
 HISTORICAL_REFERENCE_FIELDS = ("distribution", "analogs", "regime_differences")
 POLICY_PATH_STATUSES = {"available", "not_applicable"}
 
+PAPER_BOOK_ACTIONS = frozenset({"OPEN", "ADD", "HOLD", "REDUCE", "HEDGE", "CLOSE"})
+
+
+def _validate_paper_action_row(row: Any, *, label: str) -> None:
+    if not isinstance(row, dict):
+        raise SchemaError(f"{label} paper_actions entries must be objects")
+    kind = row.get("action")
+    if kind not in PAPER_BOOK_ACTIONS:
+        raise SchemaError(f"{label} paper_actions action must be one of {sorted(PAPER_BOOK_ACTIONS)}")
+
+
+def _validate_paper_actions_list(value: Any, *, label: str) -> None:
+    if value is None:
+        return
+    if not isinstance(value, list):
+        raise SchemaError(f"{label} paper_actions must be a list")
+    for row in value:
+        _validate_paper_action_row(row, label=label)
+
+
+def _validate_paper_capital(value: Any, *, label: str) -> None:
+    if value is None:
+        return
+    if not isinstance(value, dict):
+        raise SchemaError(f"{label} paper_capital must be an object")
+    kind = value.get("decision") or value.get("action")
+    if kind is None:
+        raise SchemaError(f"{label} paper_capital requires decision or action")
+    if kind == "NO_TRADE":
+        kind = "HOLD"
+    if kind not in PAPER_BOOK_ACTIONS:
+        raise SchemaError(f"{label} paper_capital decision/action invalid: {kind!r}")
+    if kind == "HOLD":
+        return
+    if value.get("notional_usd") is not None:
+        try:
+            float(value["notional_usd"])
+        except (TypeError, ValueError) as exc:
+            raise SchemaError(f"{label} paper_capital.notional_usd must be numeric") from exc
+
+
 FORBIDDEN_ACQUISITION = (
     "web_search",
     "web_fetch",
@@ -329,6 +370,8 @@ def validate_contribution(
             assert_no_trade_funding_view(contribution, packet=packet)
         except FundingViewError as exc:
             raise SchemaError(str(exc)) from exc
+    _validate_paper_actions_list(contribution.get("paper_actions"), label=agent)
+    _validate_paper_capital(contribution.get("paper_capital"), label=agent)
     assert_data_only_boundary(contribution, packet, agent)
     return contribution
 
@@ -384,6 +427,8 @@ def validate_rebuttal(
             assert_no_trade_funding_view({**rebuttal, "agent": expected_agent, "thesis": " ".join(rebuttal.get("defense") or [])}, packet=packet)
         except FundingViewError as exc:
             raise SchemaError(str(exc)) from exc
+    _validate_paper_actions_list(rebuttal.get("paper_actions"), label=f"{expected_agent} rebuttal")
+    _validate_paper_capital(rebuttal.get("paper_capital"), label=f"{expected_agent} rebuttal")
     assert_data_only_boundary(rebuttal, packet, f"{expected_agent} rebuttal")
     return rebuttal
 
