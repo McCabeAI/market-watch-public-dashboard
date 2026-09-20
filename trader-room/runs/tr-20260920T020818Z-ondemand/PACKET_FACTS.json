@@ -1,0 +1,725 @@
+{
+  "as_of": "2026-09-20T02:08:18Z",
+  "cb_headlines": [
+    "Fed decision arrives with markets heavily priced for a 25bp hike",
+    "Australian housing downturn shows the RBA tightening channel biting",
+    "BoE holds 3.75% with three votes for a hike",
+    "Fed raises 25bp to 3.75\u20134.00%",
+    "BoC minutes flag higher energy pass-through risk",
+    "New Zealand Q2 GDP slows to 0.2% q/q but beats forecasts",
+    "Canada August inflation holds at 3%, core stays near 2%",
+    "August CPI keeps the Fed tightening bias intact",
+    "BoJ raises its policy rate to 1.25%",
+    "Last 24 Hours desk thesis"
+  ],
+  "families": {
+    "central_bank_research": "available",
+    "market_state": "stale",
+    "research_method": "available",
+    "temperature_gauges": "available"
+  },
+  "funding_sofr": {
+    "observation_date": "2026-09-17",
+    "rate": 3.85
+  },
+  "fx_as_of": "2026-09-18",
+  "gauges": [
+    {
+      "country": "US",
+      "dimension": "Inflation",
+      "id": "temp:US:inflation",
+      "score": 72.0
+    },
+    {
+      "country": "US",
+      "dimension": "Labor",
+      "id": "temp:US:labor",
+      "score": 75.0
+    },
+    {
+      "country": "US",
+      "dimension": "Activity",
+      "id": "temp:US:activity",
+      "score": 69.0
+    },
+    {
+      "country": "US",
+      "dimension": "Consumer",
+      "id": "temp:US:consumer",
+      "score": 74.0
+    },
+    {
+      "country": "CA",
+      "dimension": "Inflation",
+      "id": "temp:CA:inflation",
+      "score": 55.0
+    },
+    {
+      "country": "CA",
+      "dimension": "Labor",
+      "id": "temp:CA:labor",
+      "score": 38.0
+    },
+    {
+      "country": "CA",
+      "dimension": "Activity",
+      "id": "temp:CA:activity",
+      "score": 66.0
+    },
+    {
+      "country": "CA",
+      "dimension": "Consumer",
+      "id": "temp:CA:consumer",
+      "score": 45.0
+    },
+    {
+      "country": "AU",
+      "dimension": "Inflation",
+      "id": "temp:AU:inflation",
+      "score": 82.0
+    },
+    {
+      "country": "AU",
+      "dimension": "Labor",
+      "id": "temp:AU:labor",
+      "score": 50.0
+    },
+    {
+      "country": "AU",
+      "dimension": "Activity",
+      "id": "temp:AU:activity",
+      "score": 54.0
+    },
+    {
+      "country": "AU",
+      "dimension": "Consumer",
+      "id": "temp:AU:consumer",
+      "score": 48.0
+    },
+    {
+      "country": "NZ",
+      "dimension": "Inflation",
+      "id": "temp:NZ:inflation",
+      "score": 80.0
+    },
+    {
+      "country": "NZ",
+      "dimension": "Labor",
+      "id": "temp:NZ:labor",
+      "score": 32.0
+    },
+    {
+      "country": "NZ",
+      "dimension": "Activity",
+      "id": "temp:NZ:activity",
+      "score": 47.0
+    },
+    {
+      "country": "NZ",
+      "dimension": "Consumer",
+      "id": "temp:NZ:consumer",
+      "score": 38.0
+    }
+  ],
+  "known_gaps": [
+    "Market-state snapshot status is stale because ['NZ_rates'].",
+    "Unavailable market-state sources: ['NZ_rates', 'CA_official_curve', 'CME_positioning']. No third-party substitute was used.",
+    "Positioning status is partial: see market_state.positioning.",
+    "Temperature gauge headline scores are from retained dashboard_v8 HTML; hard-input events overlay data/temperature_scores.json (last_refresh_date 2026-09-17). Supabase MCP is not connected in this execution.",
+    "Persistent paper books are empty $100m seed accounts with no open positions (data/overnight/books/latest.json). No overnight review has completed.",
+    "Executable broker prices are not in the packet. ECB FX, official yields, SOFR/CORRA/AONIA-linked futures and sovereign curves are research/reference only. Unsupported trade levels must remain JSON null."
+  ],
+  "news_headlines": [
+    "Saudi workaround reduces the extreme oil-supply tail",
+    "New Zealand passes India trade agreement",
+    "BoJ raises its policy rate to 1.25%",
+    "Energy-market shock absorbers weaken",
+    "Australian housing downturn deepens under higher rates",
+    "BoE holds 3.75%, but three members vote to hike"
+  ],
+  "packet_sha256": "349a16aeeda7f4a89e10ba16c22c90311da76536984e943cf04249588d954e1e",
+  "policy_paths": {
+    "AU": {
+      "benchmark": {
+        "as_of": "17-Sep-2026",
+        "name": "AONIA",
+        "rate": 4.35
+      },
+      "status": "ok"
+    },
+    "CA": {
+      "benchmark": {
+        "as_of": "2026-09-17",
+        "name": "CORRA",
+        "rate": 2.29
+      },
+      "status": "ok"
+    },
+    "US": {
+      "benchmark": {
+        "as_of": "2026-09-17",
+        "history": [
+          {
+            "effective_date": "2026-05-11",
+            "percent_rate": 3.6,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-05-12",
+            "percent_rate": 3.6,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-05-13",
+            "percent_rate": 3.59,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-05-14",
+            "percent_rate": 3.56,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-05-15",
+            "percent_rate": 3.55,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-05-18",
+            "percent_rate": 3.53,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-05-19",
+            "percent_rate": 3.51,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-05-20",
+            "percent_rate": 3.5,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-05-21",
+            "percent_rate": 3.51,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-05-22",
+            "percent_rate": 3.55,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-05-26",
+            "percent_rate": 3.63,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-05-27",
+            "percent_rate": 3.63,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-05-28",
+            "percent_rate": 3.62,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-05-29",
+            "percent_rate": 3.63,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-01",
+            "percent_rate": 3.65,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-02",
+            "percent_rate": 3.63,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-03",
+            "percent_rate": 3.61,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-04",
+            "percent_rate": 3.62,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-05",
+            "percent_rate": 3.63,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-08",
+            "percent_rate": 3.63,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-09",
+            "percent_rate": 3.6,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-10",
+            "percent_rate": 3.59,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-11",
+            "percent_rate": 3.6,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-12",
+            "percent_rate": 3.65,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-15",
+            "percent_rate": 3.69,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-16",
+            "percent_rate": 3.63,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-17",
+            "percent_rate": 3.63,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-18",
+            "percent_rate": 3.62,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-22",
+            "percent_rate": 3.61,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-23",
+            "percent_rate": 3.62,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-24",
+            "percent_rate": 3.62,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-25",
+            "percent_rate": 3.64,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-26",
+            "percent_rate": 3.62,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-29",
+            "percent_rate": 3.62,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-30",
+            "percent_rate": 3.68,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-01",
+            "percent_rate": 3.66,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-02",
+            "percent_rate": 3.64,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-06",
+            "percent_rate": 3.63,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-07",
+            "percent_rate": 3.62,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-08",
+            "percent_rate": 3.58,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-09",
+            "percent_rate": 3.53,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-10",
+            "percent_rate": 3.55,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-13",
+            "percent_rate": 3.6,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-14",
+            "percent_rate": 3.63,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-15",
+            "percent_rate": 3.64,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-16",
+            "percent_rate": 3.62,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-17",
+            "percent_rate": 3.59,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-20",
+            "percent_rate": 3.57,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-21",
+            "percent_rate": 3.61,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-22",
+            "percent_rate": 3.62,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-23",
+            "percent_rate": 3.64,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-24",
+            "percent_rate": 3.64,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-27",
+            "percent_rate": 3.64,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-28",
+            "percent_rate": 3.65,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-29",
+            "percent_rate": 3.65,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-30",
+            "percent_rate": 3.65,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-31",
+            "percent_rate": 3.66,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-03",
+            "percent_rate": 3.65,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-04",
+            "percent_rate": 3.66,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-05",
+            "percent_rate": 3.64,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-06",
+            "percent_rate": 3.65,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-07",
+            "percent_rate": 3.62,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-10",
+            "percent_rate": 3.63,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-11",
+            "percent_rate": 3.64,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-12",
+            "percent_rate": 3.62,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-13",
+            "percent_rate": 3.62,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-14",
+            "percent_rate": 3.62,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-17",
+            "percent_rate": 3.66,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-18",
+            "percent_rate": 3.65,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-19",
+            "percent_rate": 3.62,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-20",
+            "percent_rate": 3.63,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-21",
+            "percent_rate": 3.65,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-24",
+            "percent_rate": 3.65,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-25",
+            "percent_rate": 3.66,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-26",
+            "percent_rate": 3.64,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-27",
+            "percent_rate": 3.64,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-28",
+            "percent_rate": 3.65,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-31",
+            "percent_rate": 3.68,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-09-01",
+            "percent_rate": 3.66,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-09-02",
+            "percent_rate": 3.65,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-09-03",
+            "percent_rate": 3.66,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-09-04",
+            "percent_rate": 3.65,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-09-08",
+            "percent_rate": 3.64,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-09-09",
+            "percent_rate": 3.64,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-09-10",
+            "percent_rate": 3.62,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-09-11",
+            "percent_rate": 3.62,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-09-14",
+            "percent_rate": 3.62,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-09-15",
+            "percent_rate": 3.64,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-09-16",
+            "percent_rate": 3.62,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-09-17",
+            "percent_rate": 3.85,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          }
+        ],
+        "name": "SOFR",
+        "rate": 3.85,
+        "source": "NY_FED",
+        "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+      },
+      "status": "ok"
+    }
+  },
+  "run_id": "tr-20260920T020818Z-ondemand",
+  "stale_sources": [
+    "NZ_rates"
+  ],
+  "tradable_counts": {
+    "AONIA": 18,
+    "CORRA": 12,
+    "SOFR": 39
+  },
+  "unavailable_sources": [
+    "NZ_rates",
+    "CA_official_curve",
+    "CME_positioning"
+  ]
+}
