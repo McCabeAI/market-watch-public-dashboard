@@ -29,7 +29,7 @@
               "instrument": "CORRA_2027-03",
               "rationale": "Long MX CRA 2027 H-Z strip (CORRA_2027-03/06/09/12 average; receive implied CAD rates / long duration). Packet implieds: Mar-27 3.13% (+84bp vs CORRA 2.29), Jun-27 3.365% (+107.5), Sep-27 3.51% (+122), Dec-27 3.595% (+130.5); strip average 3.40%."
             },
-            "rationale": "The discrepancy is the CORRA 2027 hiking path, not a USD spot hero trade. Policy_paths and tradable_rate_curves make the 84\u2013130bp of 2027 tightening observable; a 2Y percentile is not the thesis. Long USDCAD is the carry analog (140bp 2Y) but mixes Fed repricing, oil, and CAD short-covering (CFTC CAD leveraged-fund net \u221239022 with weekly +16426). AUDCAD carry is already at a 5y extreme and AU housing is a catalyst that can overwhelm FX. Rates is comparably clean and is the default: it owns the overpriced BoC path directly, stays patient, and does not require buying stretched CAD-crosses.",
+            "rationale": "The discrepancy is the CORRA 2027 hiking path, not a USD spot hero trade. Policy_paths and tradable_rate_curves make the 84–130bp of 2027 tightening observable; a 2Y percentile is not the thesis. Long USDCAD is the carry analog (140bp 2Y) but mixes Fed repricing, oil, and CAD short-covering (CFTC CAD leveraged-fund net −39022 with weekly +16426). AUDCAD carry is already at a 5y extreme and AU housing is a catalyst that can overwhelm FX. Rates is comparably clean and is the default: it owns the overpriced BoC path directly, stays patient, and does not require buying stretched CAD-crosses.",
             "selected": "rates",
             "spot_candidate": {
               "asset_class": "spot_fx",
@@ -62,7 +62,7 @@
           "instrument": "CORRA_2027-03",
           "rationale": "Long MX CRA 2027 H-Z strip (CORRA_2027-03/06/09/12 average; receive implied CAD rates / long duration). Packet implieds: Mar-27 3.13% (+84bp vs CORRA 2.29), Jun-27 3.365% (+107.5), Sep-27 3.51% (+122), Dec-27 3.595% (+130.5); strip average 3.40%."
         },
-        "rationale": "The discrepancy is the CORRA 2027 hiking path, not a USD spot hero trade. Policy_paths and tradable_rate_curves make the 84\u2013130bp of 2027 tightening observable; a 2Y percentile is not the thesis. Long USDCAD is the carry analog (140bp 2Y) but mixes Fed repricing, oil, and CAD short-covering (CFTC CAD leveraged-fund net \u221239022 with weekly +16426). AUDCAD carry is already at a 5y extreme and AU housing is a catalyst that can overwhelm FX. Rates is comparably clean and is the default: it owns the overpriced BoC path directly, stays patient, and does not require buying stretched CAD-crosses.",
+        "rationale": "The discrepancy is the CORRA 2027 hiking path, not a USD spot hero trade. Policy_paths and tradable_rate_curves make the 84–130bp of 2027 tightening observable; a 2Y percentile is not the thesis. Long USDCAD is the carry analog (140bp 2Y) but mixes Fed repricing, oil, and CAD short-covering (CFTC CAD leveraged-fund net −39022 with weekly +16426). AUDCAD carry is already at a 5y extreme and AU housing is a catalyst that can overwhelm FX. Rates is comparably clean and is the default: it owns the overpriced BoC path directly, stays patient, and does not require buying stretched CAD-crosses.",
         "selected": "rates",
         "spot_candidate": {
           "asset_class": "spot_fx",
@@ -71,10 +71,10 @@
         }
       },
       "funding_view": null,
-      "invalidation": "Trim/median leave 1.9\u20132.0% higher and CORRA 2027 implieds hold at or above the 3.40% strip / 3.13% Mar-27 entry because BoC delivers the priced catch-up.",
+      "invalidation": "Trim/median leave 1.9–2.0% higher and CORRA 2027 implieds hold at or above the 3.40% strip / 3.13% Mar-27 entry because BoC delivers the priced catch-up.",
       "memory_context_sha256": "345fdc8bc129dca77372f73d48d579848de216d51a111ad9809d478c6c608034",
       "seat": "carry-is-king",
-      "thesis": "VERIFIED FACT: CORRA is 2.29% (2026-09-17); CRA 2027 contracts imply 3.13\u20133.595% (strip avg 3.40%); Canada August CPI-trim 1.9%, CPI-median 2.0%, headline 3.0%; employment \u221242k, wages +2.0% y/y, unemployment 6.4%; Fed hiked 25bp to 3.75\u20134.00% and SOFR printed 3.85% ACT/360; US 2Y 4.76% vs CA 2Y 3.27% = \u2212140bp; Saudi STS workaround modestly eased oil. INFERENCE: the 84\u2013130bp of 2027 BoC tightening is the market paying up for an energy-pass-through/Fed-catch-up narrative that labor and core have not validated; implied-minus-realized on a patient 2027 receiver is the carry. The same view in spot is long USDCAD (140bp 2Y), but AUDCAD is already a 5y extreme and CAD shorts are covering, so rates is cleaner. UNKNOWN: whether headline energy pass-through lifts trim/median enough to force the priced hikes; CA official curve and executable mids are absent. Reject paying CAD or buying stretched AUDCAD; those theses do not pay their carry."
+      "thesis": "VERIFIED FACT: CORRA is 2.29% (2026-09-17); CRA 2027 contracts imply 3.13–3.595% (strip avg 3.40%); Canada August CPI-trim 1.9%, CPI-median 2.0%, headline 3.0%; employment −42k, wages +2.0% y/y, unemployment 6.4%; Fed hiked 25bp to 3.75–4.00% and SOFR printed 3.85% ACT/360; US 2Y 4.76% vs CA 2Y 3.27% = −140bp; Saudi STS workaround modestly eased oil. INFERENCE: the 84–130bp of 2027 BoC tightening is the market paying up for an energy-pass-through/Fed-catch-up narrative that labor and core have not validated; implied-minus-realized on a patient 2027 receiver is the carry. The same view in spot is long USDCAD (140bp 2Y), but AUDCAD is already a 5y extreme and CAD shorts are covering, so rates is cleaner. UNKNOWN: whether headline energy pass-through lifts trim/median enough to force the priced hikes; CA official curve and executable mids are absent. Reject paying CAD or buying stretched AUDCAD; those theses do not pay their carry."
     },
     "catalyst-junkie": {
       "actions": [
@@ -173,7 +173,7 @@
       "invalidation": "Housing channel reverses, BoC energy risk is withdrawn and CORRA hikes are priced out while AUDCAD holds the packet 5y extreme.",
       "memory_context_sha256": "059606296131af3b844bfd8f0d0883ea85aa9393642e24e071d1f15181cd3bf3",
       "seat": "cross-merchant",
-      "thesis": "VERIFIED FACT: AUDCAD 0.9975768872320596 as of 2026-09-18 sits at 5y percentile 99.96 / z 2.76 while AONIA 4.35 already exceeds CORRA 2.29 by 206bp, AU 2Y is 4.999% versus CA 2Y 3.35% on 2026-09-16 (-164.9bp CA-AU), Australian housing is contracting on stamp-duty, volumes and prices, Canada\u2019s core is near 2% with headline at 3%, and CORRA 3m still prices +84bp by Mar-2027 versus AONIA +51bp to 4.86. INFERENCE: USD expressions (short AUDUSD or long USDCAD) own Fed/USD/oil beta that both commodity currencies share; the residual that is actually extreme is AUD versus CAD. Spot is mapping a known carry advantage into a 5-year high after the RBA tightening channel has started to bite and while Canada still has the larger remaining implied hike path plus energy pass-through risk. UNKNOWN: NZ official yields, CA official zero curve, CME positioning, broker executables, and whether Saudi STS supply fully offsets BoC energy-pass-through. Fade AUDCAD, do not own USD."
+      "thesis": "VERIFIED FACT: AUDCAD 0.9975768872320596 as of 2026-09-18 sits at 5y percentile 99.96 / z 2.76 while AONIA 4.35 already exceeds CORRA 2.29 by 206bp, AU 2Y is 4.999% versus CA 2Y 3.35% on 2026-09-16 (-164.9bp CA-AU), Australian housing is contracting on stamp-duty, volumes and prices, Canada’s core is near 2% with headline at 3%, and CORRA 3m still prices +84bp by Mar-2027 versus AONIA +51bp to 4.86. INFERENCE: USD expressions (short AUDUSD or long USDCAD) own Fed/USD/oil beta that both commodity currencies share; the residual that is actually extreme is AUD versus CAD. Spot is mapping a known carry advantage into a 5-year high after the RBA tightening channel has started to bite and while Canada still has the larger remaining implied hike path plus energy pass-through risk. UNKNOWN: NZ official yields, CA official zero curve, CME positioning, broker executables, and whether Saudi STS supply fully offsets BoC energy-pass-through. Fade AUDCAD, do not own USD."
     },
     "dollar-king": {
       "actions": [
@@ -263,7 +263,7 @@
       "invalidation": "Another clearly delivered 25bp into the Dec-26 window with SR3H7 implied holding at or above the packet Jun-27 4.72 mid, or hotter US labor/inflation with a re-widening oil tail.",
       "memory_context_sha256": "7d0a4609dcb077f4da4170c65d352cb62218cc6d756b84e24f6da8bca3e83a7b",
       "seat": "mean-reverter",
-      "thesis": "VERIFIED: Sep-16 FOMC hike 25bp to 3.75\u20134.00% was >90% priced into the decision; SOFR printed 3.85 on 2026-09-17 versus 3.62 the prior session; US 2Y 476bp is the 100th percentile 1y after a +57bp 1m change (z 3.29); SR3H7 implies 4.58, +73bp over SOFR; Saudi STS workaround reduced the extreme oil-supply tail; US inflation/labor gauges remain 72/75 with Aug unemployment 4.1% and payrolls +162k. INFERENCE: the residual Mar-27 hike premium is the crowded energy-hawk overlay described by the last-24h desk thesis, not the minimum path required by the delivered 25bp. A plausible normalization is a partial giveback of that overlay toward the already-priced Dec-26 implied 4.32, not a collapse to 3.85. UNKNOWN: CME SR3/UST positioning; whether August CPI's tightening bias plus still-hot gauges deliver the next 25bp inside the Dec-26 window. Sidecar open_positions is empty, so this is a new OPEN versus the $100m gross cap."
+      "thesis": "VERIFIED: Sep-16 FOMC hike 25bp to 3.75–4.00% was >90% priced into the decision; SOFR printed 3.85 on 2026-09-17 versus 3.62 the prior session; US 2Y 476bp is the 100th percentile 1y after a +57bp 1m change (z 3.29); SR3H7 implies 4.58, +73bp over SOFR; Saudi STS workaround reduced the extreme oil-supply tail; US inflation/labor gauges remain 72/75 with Aug unemployment 4.1% and payrolls +162k. INFERENCE: the residual Mar-27 hike premium is the crowded energy-hawk overlay described by the last-24h desk thesis, not the minimum path required by the delivered 25bp. A plausible normalization is a partial giveback of that overlay toward the already-priced Dec-26 implied 4.32, not a collapse to 3.85. UNKNOWN: CME SR3/UST positioning; whether August CPI's tightening bias plus still-hot gauges deliver the next 25bp inside the Dec-26 window. Sidecar open_positions is empty, so this is a new OPEN versus the $100m gross cap."
     },
     "no-trade-skeptic": {
       "actions": [
@@ -390,8 +390,9 @@
           "instrument": "CORRA_2027-03",
           "notional_usd": 50000000,
           "rationale": "Sidecar open_positions is empty so OPEN is allowed. Size $50m of the $100m gross cap: enough to clear the 3.85% SOFR funding vig if Mar-27 CORRA catch-up of ~25-38bp toward Jun/Sep 2027 CRA mids arrives, while leaving room because CA labor 38, core-near-2%, and +84bp already in CRAH27 cut conviction. Deterministic paper mid only.",
-          "side": "long",
-          "thesis": "Pay Mar-27 CORRA as the cleanest pro-cyclical expression of underpriced BoC catch-up into a resilient growth/energy regime."
+          "side": "short",
+          "thesis": "Pay Mar-27 CORRA as the cleanest pro-cyclical expression of underpriced BoC catch-up into a resilient growth/energy regime.",
+          "expected_mark_direction": "higher"
         }
       ],
       "conviction": 63,
@@ -557,8 +558,9 @@
           "instrument": "SOFR_2027-09",
           "notional_usd": 50000000,
           "rationale": "Sidecar has zero open positions. Deploy $50m of the $100m gross cap into the primary hawkish expression: long implied-rate SOFR_2027-09 at the packet mid of 4.755%. Size is half the book because the 25bp hike was already >90% priced, 2Y has already backed up 57bp in 1m, and SR3 positioning is unknown; still large enough that expected terminal repricing can clear the 3.85% SOFR funding vig that is charged whether flat or deployed.",
-          "side": "long",
-          "thesis": "Underpriced US terminal: SR3U7 at 4.755% prices a finished-enough hiking cycle; inflation persistence and a live global tightening impulse should push 2027 implied rates higher."
+          "side": "short",
+          "thesis": "Underpriced US terminal: SR3U7 at 4.755% prices a finished-enough hiking cycle; inflation persistence and a live global tightening impulse should push 2027 implied rates higher.",
+          "expected_mark_direction": "higher"
         }
       ],
       "conviction": 60,
@@ -630,7 +632,7 @@
       "invalidation": "A US inflation or labor break that turns the SOFR strip and the US 2Y uptrend lower; housing-pain headlines alone do not count.",
       "memory_context_sha256": "6badd8ae7e3bd3f25f57288207b021126f68de59f668399506731cb79d66b211",
       "seat": "trend-follower",
-      "thesis": "FACT: FOMC hiked 25bp to 3.75\u20134.00%; SOFR 3.85; US 2Y 4.76 with +57bp 1m and +9bp 1d; SR3H7 implied 4.58; US gauges 69\u201375; August CPI kept the tightening bias; BoJ hiked to 1.25% and BoE held 6\u20133 with three hike votes. INFERENCE: when price, policy and revisions are this aligned, the higher-rate trend persists and the SR3 2027 peak near 4.755 is a premature fade, not a terminal. UNKNOWN: the next official US inflation/labor print and any non-linear credit accident (the 2023-02 analog). Ride continuation in SOFR, do not fade USDCAD or AU housing as if they were reversal signals."
+      "thesis": "FACT: FOMC hiked 25bp to 3.75–4.00%; SOFR 3.85; US 2Y 4.76 with +57bp 1m and +9bp 1d; SR3H7 implied 4.58; US gauges 69–75; August CPI kept the tightening bias; BoJ hiked to 1.25% and BoE held 6–3 with three hike votes. INFERENCE: when price, policy and revisions are this aligned, the higher-rate trend persists and the SR3 2027 peak near 4.755 is a premature fade, not a terminal. UNKNOWN: the next official US inflation/labor print and any non-linear credit accident (the 2023-02 analog). Ride continuation in SOFR, do not fade USDCAD or AU housing as if they were reversal signals."
     },
     "value-guy": {
       "actions": [
@@ -711,7 +713,7 @@
       "invalidation": "CA-US cheapness follows the 2024-12-18 analog and widens, or BoC drops energy pass-through after soft core/labor.",
       "memory_context_sha256": "697861c8058c1a83648c2d67f41d29f6ba663f67cf133d774e5de802b8f024e0",
       "seat": "value-guy",
-      "thesis": "Verified fact: CA-US 2Y is -140bp (4th percentile 1y and 5y); 2027 H1 SR3 minus CRA is about 140bp; overnight SOFR-CORRA is 156bp; Fed has hiked 25bp to 3.75\u20134.00% with SOFR at 3.85; BoC minutes flag energy pass-through; Canada CPI 3%/core near 2%; US 2Y 4.76 is 99.8th percentile 1y while CA 2Y 3.27 is only 58th percentile 5y. Inference: that 140bp Canada discount is a peer-policy dislocation, not a fair labor-gap price, because activity gauges are close, energy pass-through is now in BoC deliberations, and the US front end has already done the post-hike rerating. Closest analog (2025-01-30 at -145bp) compressed 25bp over 3m. Unknown: whether Saudi Oman workaround fully caps the energy tail; CME positioning; Canada official curve. Trade is long SOFR-CORRA 2027 H1 to own compression of Canada cheapness."
+      "thesis": "Verified fact: CA-US 2Y is -140bp (4th percentile 1y and 5y); 2027 H1 SR3 minus CRA is about 140bp; overnight SOFR-CORRA is 156bp; Fed has hiked 25bp to 3.75–4.00% with SOFR at 3.85; BoC minutes flag energy pass-through; Canada CPI 3%/core near 2%; US 2Y 4.76 is 99.8th percentile 1y while CA 2Y 3.27 is only 58th percentile 5y. Inference: that 140bp Canada discount is a peer-policy dislocation, not a fair labor-gap price, because activity gauges are close, energy pass-through is now in BoC deliberations, and the US front end has already done the post-hike rerating. Closest analog (2025-01-30 at -145bp) compressed 25bp over 3m. Unknown: whether Saudi Oman workaround fully caps the energy tail; CME positioning; Canada official curve. Trade is long SOFR-CORRA 2027 H1 to own compression of Canada cheapness."
     },
     "vol-convexity": {
       "actions": [
@@ -738,7 +740,7 @@
       "invalidation": "AUDNZD holds/makes new highs as RBA-hike pricing stays dominant, or live 3M put implied already prices the reversal.",
       "memory_context_sha256": "66f4434e9a4815e09a06be01d9e247a02f247f5b6ae723ce392f35d3908d7d1a",
       "seat": "vol-convexity",
-      "thesis": "FACT: AUDNZD is at a 5-year extreme because NZDUSD collapsed, not because AUDUSD broke out; AU housing is showing the tightening channel; AONIA still prices ~50bp more hikes; NZ GDP beat and an India FTA have not reversed NZD; VIX crushed after FOMC; WTI is 96th percentile with a two-way energy narrative; NZ yields are missing; no FX option marks exist. INFERENCE: the market is pricing a one-way RBA-over-RBNZ regime that is already internally inconsistent, so the next move is a distribution with both a delayed mean-reversion tail and a squeeze tail. Spot is dominated because timing is uncertain and event risk (housing prints, energy, next RBA/RBNZ, residual global hike path) is two-sided after realized FX vol stayed ~5%. UNKNOWN: 3M ATMF IV, 25d risk-reversal, quoted premium, and the RBNZ curve \u2014 all must be checked before any OPEN. The paper book therefore HOLDs; the debate trade is still the put."
+      "thesis": "FACT: AUDNZD is at a 5-year extreme because NZDUSD collapsed, not because AUDUSD broke out; AU housing is showing the tightening channel; AONIA still prices ~50bp more hikes; NZ GDP beat and an India FTA have not reversed NZD; VIX crushed after FOMC; WTI is 96th percentile with a two-way energy narrative; NZ yields are missing; no FX option marks exist. INFERENCE: the market is pricing a one-way RBA-over-RBNZ regime that is already internally inconsistent, so the next move is a distribution with both a delayed mean-reversion tail and a squeeze tail. Spot is dominated because timing is uncertain and event risk (housing prints, energy, next RBA/RBNZ, residual global hike path) is two-sided after realized FX vol stayed ~5%. UNKNOWN: 3M ATMF IV, 25d risk-reversal, quoted premium, and the RBNZ curve — all must be checked before any OPEN. The paper book therefore HOLDs; the debate trade is still the put."
     }
   },
   "run_id": "tr-20260920T020818Z-ondemand"
