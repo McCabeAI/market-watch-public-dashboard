@@ -81,7 +81,9 @@ The packet follows `docs/TRADER_ROOM_EVIDENCE_CONTRACT.md` and includes current 
 
 Launch all 14 standing advocates concurrently and independently. Do not show them one another's work.
 
-Every advocate except `no-trade-skeptic` must return one actionable trade. The skeptic may return `trade: null`.
+Every advocate except `no-trade-skeptic` must return one actionable primary debate trade. The skeptic may return `trade: null`. That single debate trade is not a one-position limit.
+
+Before submitting, each advocate must read only its own frozen memory sidecar/current `open_positions`. Every submission must include a non-empty final `paper_actions` list for its competition book. The list may manage any number of simultaneous positions within the $100m gross deployed-notional cap. Existing positions are managed by `position_id`; the advocate should `ADD`, `REDUCE`, `CLOSE`, `HEDGE`, or explicitly `HOLD` rather than opening a duplicate position by default.
 
 Every submission must include the full validated trade schema and a compact `conflict_synopsis` containing:
 - one-sentence core view;
@@ -122,7 +124,7 @@ Each directly conflicted advocate gets exactly one `grok-4.6` rebuttal pass. Giv
 
 No subagents and no new evidence.
 
-A rebuttal may defend, amend, or withdraw. It must identify the strongest opposing claim, attack weaknesses, state its defense, preserve uncertainty, and say what would concede the argument.
+A rebuttal may defend, amend, or withdraw. It must identify the strongest opposing claim, attack weaknesses, state its defense, preserve uncertainty, and say what would concede the argument. For new live runs the rebuttal also returns the final `paper_actions` list. If it amends the trade, that list replaces the Round-1 book intent. If it withdraws, it may not retain an expanding `OPEN`, `ADD`, or `HEDGE` for the withdrawn idea. Trusted validation fails closed on an amended/withdrawn rebuttal whose final book intent is omitted or contradictory.
 
 ## Final handoff
 
