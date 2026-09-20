@@ -56,6 +56,64 @@
     return value.toFixed(4);
   }
 
+  function displayName(id) {
+    return String(id || "")
+      .split("-")
+      .filter(Boolean)
+      .map(function (part) {
+        return part.charAt(0).toUpperCase() + part.slice(1);
+      })
+      .join(" ");
+  }
+
+  function directionClass(side) {
+    const dir = String(side || "").toLowerCase();
+    if (dir === "long") return "long";
+    if (dir === "short") return "short";
+    return "";
+  }
+
+  function sumKnownPnl(rows, pick) {
+    let found = false;
+    let total = 0;
+    (rows || []).forEach(function (row) {
+      const value = pick(row);
+      if (finite(value)) {
+        found = true;
+        total += value;
+      }
+    });
+    return found ? total : null;
+  }
+
+  function pmNetPnl(pm) {
+    return finite(pm.net_after_funding_pnl_usd) ? pm.net_after_funding_pnl_usd : pm.total_pnl_usd;
+  }
+
+  function emptyTradeLabel(status) {
+    const kind = String(status || "").toLowerCase();
+    if (kind === "no_trade") return "NO TRADE";
+    if (kind === "hold") return "FLAT";
+    if (kind.indexOf("awaiting") === 0) return "NO OPEN RISK";
+    return "FLAT";
+  }
+
+  function renderTradeScan(positions, emptyLabel) {
+    if (!positions.length) {
+      return '<div class="tb-trade-scan tb-trade-scan-empty"><span class="tb-flat-label">' +
+        esc(emptyLabel) + "</span></div>";
+    }
+    return '<div class="tb-trade-scan">' + positions.map(function (pos) {
+      const direction = String(pos.side || "").toUpperCase();
+      const kind = directionClass(pos.side);
+      const dirHtml = direction
+        ? '<span class="tb-direction ' + kind + '">' + esc(direction) + "</span>"
+        : "";
+      return '<div class="tb-trade-line">' + dirHtml +
+        '<b class="tb-instrument">' + esc(pos.instrument) + "</b></div>";
+    }).join("") + "</div>";
+  }
+
   function renderPosition(pos) {
     const markLine = (finite(pos.entry_price) || finite(pos.mark_price))
       ? '<div class="tb-position-marks"><span>Entry <b>' + level(pos.entry_price) +
@@ -71,8 +129,13 @@
       ? '<div class="tb-position-link">Hedge of ' + esc(pos.hedge_of) + "</div>"
       : "";
     const direction = String(pos.side || "").toUpperCase();
-    return '<div class="tb-position-card"><div class="tb-position-head"><div class="tb-position-trade">' +
-      '<span class="tb-direction">' + esc(direction) + '</span><b>' + esc(pos.instrument) +
+    const kind = directionClass(pos.side);
+    const dirHtml = direction
+      ? '<span class="tb-direction ' + kind + '">' + esc(direction) + "</span>"
+      : "";
+    return '<div class="tb-position-card' + (kind ? " tb-side-" + kind : "") +
+      '"><div class="tb-position-head"><div class="tb-position-trade">' +
+      dirHtml + '<b class="tb-instrument">' + esc(pos.instrument) +
       '</b><span class="tb-asset">' + esc(pos.asset_class) + '</span></div><div class="tb-position-risk">' +
       '<b>' + money(pos.notional_usd) + '</b><span>Notional</span><span>Risk ' +
       money(pos.risk_capital_usd) + '</span><span class="' + cls(pos.unrealized_pnl_usd) + '">' +
@@ -100,7 +163,7 @@
     const unrealized = seats.reduce(function (sum, seat) { return sum + (finite(seat.unrealized_pnl_usd) ? seat.unrealized_pnl_usd : 0); }, 0);
     const funding = seats.reduce(function (sum, seat) { return sum + (finite(seat.funding_cost_usd) ? seat.funding_cost_usd : 0); }, 0);
     const cashYield = seats.reduce(function (sum, seat) { return sum + (finite(seat.cash_yield_usd) ? seat.cash_yield_usd : 0); }, 0);
-    const netPnl = seats.reduce(function (sum, seat) { return sum + (finite(seat.net_pnl_usd) ? seat.net_pnl_usd : 0); }, 0);
+    const netPnl = sumKnownPnl(seats, function (seat) { return seat.net_pnl_usd; });
     traderTotalPnl = netPnl;
     renderSystemSummary();
     const openCount = seats.reduce(function (sum, seat) { return sum + ((seat.positions || []).length); }, 0);
@@ -120,11 +183,14 @@
       const posHtml = positions.length ? positions.map(renderPosition).join("") : '<div class="tb-empty">No open risk</div>';
       const pitch = seat.required_pitch ? '<div class="tb-pitch"><b>Required pitch (not necessarily risked):</b> ' +
         esc(typeof seat.required_pitch === "string" ? seat.required_pitch : JSON.stringify(seat.required_pitch)) + "</div>" : "";
+      const seatLabel = displayName(seat.seat);
+      const emptyLabel = seat.risk_stopped ? "FLAT" : emptyTradeLabel(seat.last_action);
       return '<article class="tb-seat"><div class="tb-seat-top"><div class="tb-seat-name">' +
-        (seat.competition_rank ? "#" + esc(seat.competition_rank) + " · " : "") + esc(seat.seat) +
+        (seat.competition_rank ? "#" + esc(seat.competition_rank) + " · " : "") + esc(seatLabel) +
         '</div><div class="tb-action">' + esc(seat.last_action || "HOLD") +
         (seat.risk_stopped ? (seat.risk_stop_pending ? " · STOP PENDING" : " · RISK STOPPED") : "") +
-        "</div></div><p class=\"tb-remit\">" + esc(seat.remit || "") + "</p>" +
+        "</div></div>" + renderTradeScan(positions, emptyLabel) +
+        "<p class=\"tb-remit\">" + esc(seat.remit || "") + "</p>" +
         '<div class="tb-positions">' + posHtml + "</div>" +
         '<div class="tb-metrics"><div><span>Risk limit</span><b>' + money(seat.risk_capital_limit_usd) +
         " / 1% move</b></div><div><span>Net P&amp;L</span><b class=\"" + cls(seat.net_pnl_usd) + "\">" +
@@ -215,19 +281,18 @@
     const mount = document.getElementById("tb-pm-root");
     if (!mount) return;
     const pms = packet.pms || [];
-    pmTotalPnl = pms.reduce(function (sum, pm) {
-      const pnl = finite(pm.net_after_funding_pnl_usd) ? pm.net_after_funding_pnl_usd : pm.total_pnl_usd;
-      return sum + (finite(pnl) ? pnl : 0);
-    }, 0);
+    pmTotalPnl = sumKnownPnl(pms, pmNetPnl);
     renderSystemSummary();
     const cards = pms.map(function (pm) {
       const positions = pm.positions || [];
       const posHtml = positions.length ? positions.map(renderPosition).join("") : '<div class="tb-empty">No open risk</div>';
+      const emptyLabel = pm.risk_stopped ? "FLAT" : emptyTradeLabel(pm.decision_status || pm.last_action);
       return '<article class="tb-pm"><div class="tb-seat-top"><div class="tb-seat-name">' +
-        esc(pm.label || pm.pm_id) + '</div><div class="tb-pm-status ' +
+        esc(pm.label || displayName(pm.pm_id)) + '</div><div class="tb-pm-status ' +
         statusClass(pm.decision_status, pm.review_status) + '">' +
         esc(statusLabel(pm.decision_status, pm.review_status)) +
-        "</div></div><p class=\"tb-remit\">" + esc(pm.mandate || "") + "</p>" +
+        "</div></div>" + renderTradeScan(positions, emptyLabel) +
+        "<p class=\"tb-remit\">" + esc(pm.mandate || "") + "</p>" +
         '<div class="tb-positions">' + posHtml + "</div>" +
         '<div class="tb-metrics"><div><span>Risk limit</span><b>' + money(pm.risk_capital_limit_usd) +
         " / 1% move</b></div><div><span>Risk used</span><b>" + money(pm.risk_capital_usd) +
