@@ -216,7 +216,8 @@
     if (!mount) return;
     const pms = packet.pms || [];
     pmTotalPnl = pms.reduce(function (sum, pm) {
-      return sum + (finite(pm.total_pnl_usd) ? pm.total_pnl_usd : 0);
+      const pnl = finite(pm.net_after_funding_pnl_usd) ? pm.net_after_funding_pnl_usd : pm.total_pnl_usd;
+      return sum + (finite(pnl) ? pnl : 0);
     }, 0);
     renderSystemSummary();
     const cards = pms.map(function (pm) {
@@ -234,7 +235,7 @@
         (pm.risk_stopped ? "tb-neg" : "") + "\">" + money(pm.drawdown_usd) + " / " + money(pm.max_drawdown_usd) +
         "</b></div><div><span>Paper P&amp;L</span><b class=\"" + cls(pm.total_pnl_usd) + "\">" +
         money(pm.total_pnl_usd) + "</b></div><div><span>Last action</span><b>" +
-        esc(pm.last_action || "—") + "</b></div></div><div class=\"tb-positions\">" + posHtml + "</div>" +
+        esc(pm.last_action || "—") + "</b></div></div>" +
         (pm.thesis ? '<p class="tb-thesis"><b>Current book view:</b> ' + esc(pm.thesis) + "</p>" : "") +
         (pm.invalidation ? '<p class="tb-thesis"><b>Book invalidation:</b> ' + esc(pm.invalidation) + "</p>" : "") +
         "</article>";
