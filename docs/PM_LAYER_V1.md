@@ -13,7 +13,7 @@ This is the four-PM layer above the locked 14-seat Trader Room. It does not chan
 | `pragmatist` | Opportunistic macro. Can swing big or grind singles/doubles. | $1bn gross notional | allowed |
 | `grinder` | Preservation/consistency first. Smaller sizes, high hurdles, quick de-risking. No-trade is valid. | $1bn gross notional | allowed |
 
-Each PM has **$1bn paper NAV**, but notional is descriptive rather than the binding risk limit. Trusted code caps each book at **$10m of 1%-shock risk capital** and enforces a **$50m drawdown from high-water NAV**. Risk capital is the absolute MTM loss from a 1% adverse move in the quoted risk factor, with a 1bp minimum shock for rates/spreads. PMs earn official NY Fed SOFR ACT/360 on the full paper cash hurdle and pay the same SOFR on shocked risk capital; equal risk capital receives equal financing treatment across asset classes. If deterministic marks are insufficient to compute risk capital, expansion fails closed. Official NY Fed SOFR is the realized funding authority; SR3 is forward context; a model funding forecast cannot mutate realized accounting. After every action:
+Each PM has **$1bn paper NAV**, but notional is descriptive rather than the binding risk limit. Trusted code caps each book at **$100m of standard-shock risk capital** and enforces a **$50m drawdown from high-water NAV**. Risk capital is the absolute MTM loss from the standard adverse move: 1% in spot FX, 100bp in outright rates, or 100bp in curve/RV spreads. PMs earn official NY Fed SOFR ACT/360 on the full paper cash hurdle and pay the same SOFR on shocked risk capital; equal risk capital receives equal financing treatment across asset classes. If deterministic marks are insufficient to compute risk capital, expansion fails closed. Official NY Fed SOFR is the realized funding authority; SR3 is forward context; a model funding forecast cannot mutate realized accounting. After every action:
 
 ```
 sum(abs(open position notional)) <= 1_000_000_000
@@ -81,4 +81,4 @@ Overnight `scheduled_output.json` may include `pm_decisions` for exactly `swinge
 
 ## Initial state
 
-All four books start with $1bn paper NAV, $10m shocked-risk capacity, a $50m hard drawdown limit, and zero positions. ChatGPT is `awaiting_chatgpt_decision`. Swinger/Pragmatist/Grinder are `awaiting_automated_pm_review`. Review packets and the data-request registry exist. No PM trades are invented.
+All four books start with $1bn paper NAV, $100m shocked-risk capacity, a $50m hard drawdown limit, and zero positions. ChatGPT is `awaiting_chatgpt_decision`. Swinger/Pragmatist/Grinder are `awaiting_automated_pm_review`. Review packets and the data-request registry exist. No PM trades are invented.
