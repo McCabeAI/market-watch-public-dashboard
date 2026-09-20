@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "type": "TRUSTED_RUN_REPAIR",
+  "run_id": "tr-20260920T020818Z-ondemand",
+  "reason": "Rates paper-action side semantics were ambiguous in two model outputs. Trusted P&L defines rates side=long as receive/long-duration (profits when mark falls) and side=short as pay/short-duration (profits when mark rises).",
+  "model_evidence_mutated": false,
+  "repaired_positions": [
+    {
+      "seat": "perma-bull",
+      "position_id": "pos-dd6fdaf39119",
+      "instrument": "CORRA_2027-03",
+      "original_applied_side": "long",
+      "repaired_side": "short",
+      "expected_mark_direction": "higher",
+      "evidence": "The model thesis/structure explicitly says pay Mar-27 CORRA and expects implied CORRA to rise toward later 2027 contracts."
+    },
+    {
+      "seat": "rate-hawk",
+      "position_id": "pos-c9184707c12b",
+      "instrument": "SOFR_2027-09",
+      "original_applied_side": "long",
+      "repaired_side": "short",
+      "expected_mark_direction": "higher",
+      "evidence": "The model thesis explicitly says the 2027 terminal is underpriced and implied SOFR rates should rise."
+    }
+  ],
+  "unchanged_model_artifacts": [
+    "trader-room/runs/tr-20260920T020818Z-ondemand/submissions/perma-bull.json",
+    "trader-room/runs/tr-20260920T020818Z-ondemand/rebuttals/perma-bull.json",
+    "trader-room/runs/tr-20260920T020818Z-ondemand/submissions/rate-hawk.json",
+    "trader-room/runs/tr-20260920T020818Z-ondemand/rebuttals/rate-hawk.json"
+  ],
+  "pnl_effect_at_repair": 0,
+  "preventive_change": "Future Trader Room rates OPEN actions require expected_mark_direction lower|higher and must satisfy lower->long, higher->short."
+}
