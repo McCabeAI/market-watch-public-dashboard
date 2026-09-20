@@ -3,7 +3,23 @@
 
   const root = document.getElementById("trader-book-root");
   const meta = document.getElementById("tb-meta");
+  const traderTotalEl = document.getElementById("tb-trader-total");
+  const pmTotalEl = document.getElementById("tb-pm-total");
   if (!root || !meta) return;
+
+  let traderTotalPnl = null;
+  let pmTotalPnl = null;
+
+  function renderSystemSummary() {
+    if (traderTotalEl) {
+      traderTotalEl.textContent = money(traderTotalPnl);
+      traderTotalEl.className = cls(traderTotalPnl);
+    }
+    if (pmTotalEl) {
+      pmTotalEl.textContent = money(pmTotalPnl);
+      pmTotalEl.className = cls(pmTotalPnl);
+    }
+  }
 
   function esc(value) {
     return String(value === null || value === undefined ? "" : value)
@@ -40,6 +56,64 @@
     return value.toFixed(4);
   }
 
+  function displayName(id) {
+    return String(id || "")
+      .split("-")
+      .filter(Boolean)
+      .map(function (part) {
+        return part.charAt(0).toUpperCase() + part.slice(1);
+      })
+      .join(" ");
+  }
+
+  function directionClass(side) {
+    const dir = String(side || "").toLowerCase();
+    if (dir === "long") return "long";
+    if (dir === "short") return "short";
+    return "";
+  }
+
+  function sumKnownPnl(rows, pick) {
+    let found = false;
+    let total = 0;
+    (rows || []).forEach(function (row) {
+      const value = pick(row);
+      if (finite(value)) {
+        found = true;
+        total += value;
+      }
+    });
+    return found ? total : null;
+  }
+
+  function pmNetPnl(pm) {
+    return finite(pm.net_after_funding_pnl_usd) ? pm.net_after_funding_pnl_usd : pm.total_pnl_usd;
+  }
+
+  function emptyTradeLabel(status) {
+    const kind = String(status || "").toLowerCase();
+    if (kind === "no_trade") return "NO TRADE";
+    if (kind === "hold") return "FLAT";
+    if (kind.indexOf("awaiting") === 0) return "NO OPEN RISK";
+    return "FLAT";
+  }
+
+  function renderTradeScan(positions, emptyLabel) {
+    if (!positions.length) {
+      return '<div class="tb-trade-scan tb-trade-scan-empty"><span class="tb-flat-label">' +
+        esc(emptyLabel) + "</span></div>";
+    }
+    return '<div class="tb-trade-scan">' + positions.map(function (pos) {
+      const direction = String(pos.side || "").toUpperCase();
+      const kind = directionClass(pos.side);
+      const dirHtml = direction
+        ? '<span class="tb-direction ' + kind + '">' + esc(direction) + "</span>"
+        : "";
+      return '<div class="tb-trade-line">' + dirHtml +
+        '<b class="tb-instrument">' + esc(pos.instrument) + "</b></div>";
+    }).join("") + "</div>";
+  }
+
   function renderPosition(pos) {
     const markLine = (finite(pos.entry_price) || finite(pos.mark_price))
       ? '<div class="tb-position-marks"><span>Entry <b>' + level(pos.entry_price) +
@@ -54,11 +128,18 @@
     const hedge = pos.hedge_of
       ? '<div class="tb-position-link">Hedge of ' + esc(pos.hedge_of) + "</div>"
       : "";
-    return '<div class="tb-position-card"><div class="tb-position-head"><div><b>' +
-      esc(pos.instrument) + '</b><span>' + esc(pos.side) + " · " + esc(pos.asset_class) +
-      '</span></div><div class="tb-position-risk"><b>' + money(pos.notional_usd) +
-      '</b><span>Risk ' + money(pos.risk_capital_usd) + '</span><span class="' + cls(pos.unrealized_pnl_usd) + '">' +
-      money(pos.unrealized_pnl_usd) + "</span></div></div>" +
+    const direction = String(pos.side || "").toUpperCase();
+    const kind = directionClass(pos.side);
+    const dirHtml = direction
+      ? '<span class="tb-direction ' + kind + '">' + esc(direction) + "</span>"
+      : "";
+    return '<div class="tb-position-card' + (kind ? " tb-side-" + kind : "") +
+      '"><div class="tb-position-head"><div class="tb-position-trade">' +
+      dirHtml + '<b class="tb-instrument">' + esc(pos.instrument) +
+      '</b><span class="tb-asset">' + esc(pos.asset_class) + '</span></div><div class="tb-position-risk">' +
+      '<b>' + money(pos.notional_usd) + '</b><span>Notional</span><span>Risk ' +
+      money(pos.risk_capital_usd) + '</span><span class="' + cls(pos.unrealized_pnl_usd) + '">' +
+      money(pos.unrealized_pnl_usd) + " P&amp;L</span></div></div>" +
       markLine + thesis + invalidation + hedge + "</div>";
   }
 
@@ -82,7 +163,9 @@
     const unrealized = seats.reduce(function (sum, seat) { return sum + (finite(seat.unrealized_pnl_usd) ? seat.unrealized_pnl_usd : 0); }, 0);
     const funding = seats.reduce(function (sum, seat) { return sum + (finite(seat.funding_cost_usd) ? seat.funding_cost_usd : 0); }, 0);
     const cashYield = seats.reduce(function (sum, seat) { return sum + (finite(seat.cash_yield_usd) ? seat.cash_yield_usd : 0); }, 0);
-    const netPnl = seats.reduce(function (sum, seat) { return sum + (finite(seat.net_pnl_usd) ? seat.net_pnl_usd : 0); }, 0);
+    const netPnl = sumKnownPnl(seats, function (seat) { return seat.net_pnl_usd; });
+    traderTotalPnl = netPnl;
+    renderSystemSummary();
     const openCount = seats.reduce(function (sum, seat) { return sum + ((seat.positions || []).length); }, 0);
     const changes = packet.overnight_changes || [];
     const research = packet.overnight_research || null;
@@ -100,20 +183,24 @@
       const posHtml = positions.length ? positions.map(renderPosition).join("") : '<div class="tb-empty">No open risk</div>';
       const pitch = seat.required_pitch ? '<div class="tb-pitch"><b>Required pitch (not necessarily risked):</b> ' +
         esc(typeof seat.required_pitch === "string" ? seat.required_pitch : JSON.stringify(seat.required_pitch)) + "</div>" : "";
+      const seatLabel = displayName(seat.seat);
+      const emptyLabel = seat.risk_stopped ? "FLAT" : emptyTradeLabel(seat.last_action);
       return '<article class="tb-seat"><div class="tb-seat-top"><div class="tb-seat-name">' +
-        (seat.competition_rank ? "#" + esc(seat.competition_rank) + " · " : "") + esc(seat.seat) +
+        (seat.competition_rank ? "#" + esc(seat.competition_rank) + " · " : "") + esc(seatLabel) +
         '</div><div class="tb-action">' + esc(seat.last_action || "HOLD") +
         (seat.risk_stopped ? (seat.risk_stop_pending ? " · STOP PENDING" : " · RISK STOPPED") : "") +
-        "</div></div><p class=\"tb-remit\">" + esc(seat.remit || "") + "</p>" +
-        '<div class="tb-metrics"><div><span>NAV</span><b>' + money(seat.nav_usd) +
-        "</b></div><div><span>Net P&amp;L</span><b class=\"" + cls(seat.net_pnl_usd) + "\">" +
-        money(seat.net_pnl_usd) + "</b></div><div><span>Risk capital</span><b>" +
-        money(seat.risk_capital_usd) + " / " + money(seat.risk_capital_limit_usd) +
+        "</div></div>" + renderTradeScan(positions, emptyLabel) +
+        "<p class=\"tb-remit\">" + esc(seat.remit || "") + "</p>" +
+        '<div class="tb-positions">' + posHtml + "</div>" +
+        '<div class="tb-metrics"><div><span>Risk limit</span><b>' + money(seat.risk_capital_limit_usd) +
+        " / 1% move</b></div><div><span>Net P&amp;L</span><b class=\"" + cls(seat.net_pnl_usd) + "\">" +
+        money(seat.net_pnl_usd) + "</b></div><div><span>Risk used</span><b>" +
+        money(seat.risk_capital_usd) +
         "</b></div><div><span>Drawdown</span><b class=\"" + (seat.risk_stopped ? "tb-neg" : "") + "\">" +
         money(seat.drawdown_usd) + " / " + money(seat.max_drawdown_usd) +
         "</b></div><div><span>Risk funding</span><b class=\"tb-neg\">" +
         (finite(seat.funding_cost_usd) && seat.funding_cost_usd !== 0 ? "-" + money(seat.funding_cost_usd).replace("-", "") : money(seat.funding_cost_usd)) +
-        "</b></div></div><div class=\"tb-positions\">" + posHtml + "</div>" +
+        "</b></div></div>" +
         (seat.thesis ? '<p class="tb-thesis"><b>Current book view:</b> ' + esc(seat.thesis) + "</p>" : "") +
         (seat.invalidation ? '<p class="tb-thesis"><b>Book invalidation:</b> ' + esc(seat.invalidation) + "</p>" : "") +
         pitch + "</article>";
@@ -150,7 +237,7 @@
 
     root.innerHTML = stale +
       researchHtml +
-      '<section class="tb-panel"><div class="tb-panel-head"><h3>Book snapshot</h3><p>' +
+      '<section class="tb-panel"><div class="tb-panel-head"><h3>Trader snapshot</h3><p>' +
       esc(packet.as_of || "") + " · evidence cutoff " + esc(packet.evidence_cutoff || "n/a") +
       '</p></div><div class="tb-kpis"><div class="tb-kpi"><span>Seats</span><b>' +
       esc(packet.seat_count || seats.length) + '</b></div><div class="tb-kpi"><span>Combined NAV</span><b>' +
@@ -163,7 +250,7 @@
       changeHtml + "</div></section>" +
       '<section class="tb-panel"><div class="tb-panel-head"><h3>P&amp;L leaderboard</h3><p>All seats use the same financing rule: official SOFR on standard-shock risk capital. Notional is descriptive; the hard drawdown stop is separate.</p></div><div class="tb-changes">' +
       leaderboardHtml + "</div></section>" +
-      '<section class="tb-panel"><div class="tb-panel-head"><h3>Seat books</h3><p>Each $100m paper-NAV seat has a $10m shocked-risk ceiling and a $5m high-water drawdown stop. A breached book is forcibly flattened and marked RISK_STOPPED.</p></div><div class="tb-seat-grid">' +
+      '<section class="tb-panel"><div class="tb-panel-head"><h3>Seat books</h3><p>Each trader has a $10m risk limit per 1% standard move and a $5m max drawdown. A breached book is forcibly flattened and marked RISK_STOPPED.</p></div><div class="tb-seat-grid">' +
       seatHtml + "</div></section>" +
       '<div id="tb-pm-root"></div>';
     loadPMs();
@@ -194,20 +281,26 @@
     const mount = document.getElementById("tb-pm-root");
     if (!mount) return;
     const pms = packet.pms || [];
+    pmTotalPnl = sumKnownPnl(pms, pmNetPnl);
+    renderSystemSummary();
     const cards = pms.map(function (pm) {
       const positions = pm.positions || [];
       const posHtml = positions.length ? positions.map(renderPosition).join("") : '<div class="tb-empty">No open risk</div>';
+      const emptyLabel = pm.risk_stopped ? "FLAT" : emptyTradeLabel(pm.decision_status || pm.last_action);
       return '<article class="tb-pm"><div class="tb-seat-top"><div class="tb-seat-name">' +
-        esc(pm.label || pm.pm_id) + '</div><div class="tb-pm-status ' +
+        esc(pm.label || displayName(pm.pm_id)) + '</div><div class="tb-pm-status ' +
         statusClass(pm.decision_status, pm.review_status) + '">' +
         esc(statusLabel(pm.decision_status, pm.review_status)) +
-        "</div></div><p class=\"tb-remit\">" + esc(pm.mandate || "") + "</p>" +
-        '<div class="tb-metrics"><div><span>Risk capital</span><b>' + money(pm.risk_capital_usd) +
-        " / " + money(pm.risk_capital_limit_usd) + "</b></div><div><span>Drawdown</span><b class=\"" +
+        "</div></div>" + renderTradeScan(positions, emptyLabel) +
+        "<p class=\"tb-remit\">" + esc(pm.mandate || "") + "</p>" +
+        '<div class="tb-positions">' + posHtml + "</div>" +
+        '<div class="tb-metrics"><div><span>Risk limit</span><b>' + money(pm.risk_capital_limit_usd) +
+        " / 1% move</b></div><div><span>Risk used</span><b>" + money(pm.risk_capital_usd) +
+        "</b></div><div><span>Drawdown</span><b class=\"" +
         (pm.risk_stopped ? "tb-neg" : "") + "\">" + money(pm.drawdown_usd) + " / " + money(pm.max_drawdown_usd) +
         "</b></div><div><span>Paper P&amp;L</span><b class=\"" + cls(pm.total_pnl_usd) + "\">" +
         money(pm.total_pnl_usd) + "</b></div><div><span>Last action</span><b>" +
-        esc(pm.last_action || "—") + "</b></div></div><div class=\"tb-positions\">" + posHtml + "</div>" +
+        esc(pm.last_action || "—") + "</b></div></div>" +
         (pm.thesis ? '<p class="tb-thesis"><b>Current book view:</b> ' + esc(pm.thesis) + "</p>" : "") +
         (pm.invalidation ? '<p class="tb-thesis"><b>Book invalidation:</b> ' + esc(pm.invalidation) + "</p>" : "") +
         "</article>";
@@ -227,7 +320,7 @@
 
     mount.innerHTML =
       '<section class="tb-panel"><div class="tb-panel-head"><h3>Portfolio Managers</h3><p>' +
-      "Separate $1bn paper-NAV books for ChatGPT, Swinger, Pragmatist and Grinder. Not extra trader seats. Each has a $100m standard-shock risk-capital ceiling and a $50m high-water drawdown stop; gross notional is descriptive.</p></div>" +
+      "ChatGPT, Swinger, Pragmatist and Grinder each have a $100m risk limit per 1% standard move and a $50m max drawdown. Gross notional is descriptive.</p></div>" +
       '<div class="tb-pm-grid">' + cards + "</div></section>" +
       '<section class="tb-panel"><div class="tb-panel-head"><h3>Four-PM P&amp;L comparison</h3><p>Paper P&amp;L after deterministic packet marks. Comparison is allowed only after decisions are committed.</p></div><div class="tb-changes">' +
       comparison + "</div></section>" +
@@ -244,6 +337,8 @@
       })
       .then(renderPMs)
       .catch(function () {
+        pmTotalPnl = null;
+        renderSystemSummary();
         const mount = document.getElementById("tb-pm-root");
         if (!mount) return;
         mount.innerHTML = '<section class="tb-panel"><div class="tb-panel-head"><h3>Portfolio Managers</h3><p>PM public state is not on this build yet.</p></div></section>';

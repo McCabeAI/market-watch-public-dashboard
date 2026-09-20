@@ -3,6 +3,10 @@
 .traderbook .tb-header h2{font-size:27px;line-height:1.05;margin:2px 0 5px;color:var(--tb-deep);letter-spacing:-.45px}
 .traderbook .tb-subtitle{margin:0;max-width:760px;color:#607585;font-size:11px;line-height:1.45}
 .traderbook .tb-banner{display:flex;justify-content:flex-end;gap:6px;flex-wrap:wrap;max-width:560px}
+.traderbook .tb-system-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0 0 12px}
+.traderbook .tb-summary-card{background:#fff;border:1px solid #d6e0e7;border-radius:10px;box-shadow:var(--shadow);padding:10px 12px}
+.traderbook .tb-summary-card span{display:block;font-size:8px;font-weight:900;letter-spacing:.45px;text-transform:uppercase;color:#718493}
+.traderbook .tb-summary-card b{display:block;margin-top:3px;font-size:20px;line-height:1.05;color:#18364b;font-variant-numeric:tabular-nums}
 .traderbook .tb-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border:1px solid #d6e0e7;border-radius:999px;background:#fff;color:#4e6576;font-size:9px;font-weight:800;white-space:nowrap}
 .traderbook .tb-chip.ok:before,.traderbook .tb-chip.warn:before,.traderbook .tb-chip.bad:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--tb-green)}
 .traderbook .tb-chip.warn{color:#7a5208;background:#fff9ed;border-color:#ead7ad}.traderbook .tb-chip.warn:before{background:#c28b27}
@@ -22,8 +26,15 @@
 .traderbook .tb-seat-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .traderbook .tb-seat{border:1px solid #d6e0e7;border-radius:9px;padding:10px;background:#fff}
 .traderbook .tb-seat-top{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
-.traderbook .tb-seat-name{font-size:12px;font-weight:900;color:#203e53}
+.traderbook .tb-seat-name{font-size:13px;font-weight:900;color:#203e53}
 .traderbook .tb-action{font-size:9px;font-weight:850;letter-spacing:.3px;text-transform:uppercase;color:#5f849d}
+.traderbook .tb-trade-scan{display:grid;gap:2px;margin:6px 0 8px}
+.traderbook .tb-trade-line{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;min-width:0;line-height:1.05}
+.traderbook .tb-trade-line .tb-direction,.traderbook .tb-position-trade .tb-direction{display:inline-flex;align-items:baseline;padding:0;border-radius:0;background:transparent;color:var(--tb-deep);font-size:20px;font-weight:950;letter-spacing:.7px;line-height:1}
+.traderbook .tb-direction.long{color:var(--tb-green)!important}
+.traderbook .tb-direction.short{color:var(--tb-red)!important}
+.traderbook .tb-trade-line .tb-instrument,.traderbook .tb-position-trade .tb-instrument{font-size:24px;line-height:1.05;color:#10283a;letter-spacing:-.45px;font-weight:900}
+.traderbook .tb-trade-scan-empty .tb-flat-label{display:inline-block;font-size:16px;font-weight:900;letter-spacing:.45px;text-transform:uppercase;color:#6b7f8d}
 .traderbook .tb-remit{margin:4px 0 8px;font-size:9px;color:#718493;line-height:1.4}
 .traderbook .tb-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px}
 .traderbook .tb-metrics div{background:#f7f9fb;border-radius:6px;padding:6px}
@@ -31,11 +42,12 @@
 .traderbook .tb-metrics b{display:block;margin-top:2px;font-size:11px;color:#29485e;font-variant-numeric:tabular-nums}
 .traderbook .tb-pos{color:var(--tb-green)!important}.traderbook .tb-neg{color:var(--tb-red)!important}
 .traderbook .tb-positions{display:grid;gap:7px}
-.traderbook .tb-position-card{border-top:1px solid #edf1f3;padding:8px 0 2px}
-.traderbook .tb-position-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
-.traderbook .tb-position-head>div:first-child{display:grid;gap:2px}
-.traderbook .tb-position-head b{font-size:10px;color:#203e53}
-.traderbook .tb-position-head span{font-size:8px;color:#718493}
+.traderbook .tb-position-card{border:1px solid #dce5eb;border-left:4px solid var(--tb-blue);border-radius:8px;background:#f9fbfc;padding:9px 10px;margin-bottom:7px}
+.traderbook .tb-position-card.tb-side-long{border-left-color:var(--tb-green)}
+.traderbook .tb-position-card.tb-side-short{border-left-color:var(--tb-red)}
+.traderbook .tb-position-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.traderbook .tb-position-trade{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;min-width:0}
+.traderbook .tb-position-trade .tb-asset{width:100%;font-size:8px;color:#718493;text-transform:uppercase;letter-spacing:.25px}
 .traderbook .tb-position-risk{display:grid;gap:2px;text-align:right;white-space:nowrap}
 .traderbook .tb-position-risk b{font-size:10px;color:#29485e}
 .traderbook .tb-position-risk span{font-size:9px;font-weight:800}
@@ -61,6 +73,6 @@
 .traderbook .tb-req-row{display:grid;grid-template-columns:72px 1fr 70px;gap:8px;align-items:start;padding:6px 0;border-bottom:1px solid #edf1f3;font-size:10px}
 .traderbook .tb-req-row:last-child{border-bottom:0}
 @media(max-width:980px){.traderbook .tb-kpis,.traderbook .tb-seat-grid,.traderbook .tb-pm-grid{grid-template-columns:1fr 1fr}.traderbook .tb-header{flex-direction:column;align-items:flex-start}}
-@media(max-width:640px){.traderbook .tb-kpis,.traderbook .tb-seat-grid,.traderbook .tb-pm-grid{grid-template-columns:1fr}.traderbook .tb-change{grid-template-columns:1fr 1fr}.traderbook .tb-header h2{font-size:23px}}
+@media(max-width:640px){.traderbook .tb-system-summary,.traderbook .tb-kpis,.traderbook .tb-seat-grid,.traderbook .tb-pm-grid{grid-template-columns:1fr}.traderbook .tb-change{grid-template-columns:1fr 1fr}.traderbook .tb-header h2{font-size:23px}.traderbook .tb-trade-line .tb-instrument,.traderbook .tb-position-trade .tb-instrument{font-size:22px}.traderbook .tb-trade-line .tb-direction,.traderbook .tb-position-trade .tb-direction{font-size:18px}.traderbook .tb-position-head{flex-direction:column;align-items:flex-start}.traderbook .tb-position-risk{text-align:left}}
 #p-traderbook:checked~.app .nav label[for=p-traderbook]{color:var(--ink);border-bottom-color:var(--navy);font-weight:800}
 #p-traderbook:checked~.app .traderbook{display:block}
