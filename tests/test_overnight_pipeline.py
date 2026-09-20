@@ -1301,6 +1301,8 @@ class TraderBookTabTests(unittest.TestCase):
         out = target.read_text()
         self.assertIn('id="p-traderbook"', out)
         self.assertIn("Trader Book · paper P&L", out)
+        self.assertIn("14 Traders + 4 Portfolio Managers", out)
+        self.assertIn("14 Traders · Total P&amp;L", out)
         self.assertIn("Last 24 Hours · Desk Summary", out)
         self.assertIn("Live 1–100 Score Board", out)
         self.assertIn("Market Data · official snapshot", out)

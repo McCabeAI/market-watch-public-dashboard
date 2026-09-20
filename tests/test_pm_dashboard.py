@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
@@ -120,14 +121,43 @@ class PMDashboardTests(unittest.TestCase):
         self.assertIn("awaiting_chatgpt_decision", js)
         self.assertIn("function renderPosition", js)
         self.assertEqual(js.count("positions.map(renderPosition)"), 2)
+        css = (REPO / "patch_v13" / "trader_book.css").read_text(encoding="utf-8")
         self.assertIn("14 Traders + 4 Portfolio Managers", html)
         self.assertIn("14 Traders · Total P&amp;L", html)
         self.assertIn("4 PMs · Total P&amp;L", html)
+        self.assertIn("$10m risk limit per 1% standard move", html)
+        self.assertIn("$100m risk limit per 1% standard move", html)
+        self.assertNotIn("Overnight 14-seat books", html)
         self.assertIn("tb-trader-total", js)
         self.assertIn("tb-pm-total", js)
         self.assertIn("tb-position-trade", js)
         self.assertIn("tb-direction", js)
+        self.assertIn("tb-trade-scan", js)
+        self.assertIn("tb-instrument", js)
+        self.assertIn("function displayName", js)
+        self.assertIn("function sumKnownPnl", js)
+        self.assertIn("function renderTradeScan", js)
+        self.assertIn("NO TRADE", js)
+        self.assertIn("FLAT", js)
         self.assertIn("Risk limit", js)
+        self.assertIn("$10m risk limit per 1% standard move", js)
+        self.assertIn("$100m risk limit per 1% standard move", js)
+        self.assertIn("seat.net_pnl_usd", js)
+        self.assertIn("pm.net_after_funding_pnl_usd", js)
+        self.assertNotIn("traderTotalPnl + pmTotalPnl", js)
+        self.assertIn("tb-trade-scan", css)
+        self.assertIn("tb-instrument", css)
+        self.assertIn(".tb-direction.long", css)
+        self.assertIn(".tb-direction.short", css)
+        self.assertRegex(css, r"tb-instrument\{font-size:24px")
+
+    def test_trader_book_ui_render_smoke_separates_books_and_positions(self) -> None:
+        smoke = REPO / "tests" / "trader_book_ui_smoke.js"
+        syntax = subprocess.run(["node", "--check", str(REPO / "patch_v13" / "trader-book.js")], capture_output=True, text=True)
+        self.assertEqual(syntax.returncode, 0, syntax.stderr)
+        result = subprocess.run(["node", str(smoke)], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("trader_book_ui_smoke ok", result.stdout)
 
     def test_emit_and_tab_stay_additive(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -159,6 +189,7 @@ class PMDashboardTests(unittest.TestCase):
             apply_trader_book_tab(target, repo_root=root)
             out = target.read_text(encoding="utf-8")
             self.assertIn("Trader Book · paper P&L", out)
+            self.assertIn("14 Traders + 4 Portfolio Managers", out)
             self.assertIn("Last 24 Hours · Desk Summary", out)
             store = PMStore(root=REPO, state_root=root)
             init_layer(store)
