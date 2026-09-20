@@ -56,7 +56,7 @@ from scripts.trader_room.models import (
 )
 from scripts.trader_room.orchestrator import go, prepare_evidence, run_debate
 from scripts.trader_room.runners import DryRunRunner, LiveRunner
-from scripts.trader_room.schema import validate_contribution, validate_pm_handoff, validate_trade
+from scripts.trader_room.schema import validate_contribution, validate_pm_handoff, validate_rebuttal, validate_trade
 
 
 def _packet() -> dict:
@@ -261,6 +261,69 @@ class SchemaAndBoundaryTests(unittest.TestCase):
         contribution["web_search"] = ["https://example.com"]
         with self.assertRaises(DataBoundaryError):
             validate_contribution(contribution, packet=packet, expected_agent="perma-bull")
+
+    def test_contribution_requires_explicit_book_decision(self):
+        packet = _packet()
+        contribution = DryRunRunner().run_advocate("perma-bull", packet, BudgetLedger())
+        contribution.pop("paper_actions")
+        with self.assertRaises(SchemaError):
+            validate_contribution(contribution, packet=packet, expected_agent="perma-bull")
+
+        empty = DryRunRunner().run_advocate("perma-bull", packet, BudgetLedger())
+        empty["paper_actions"] = []
+        with self.assertRaises(SchemaError):
+            validate_contribution(empty, packet=packet, expected_agent="perma-bull")
+
+    def test_rebuttal_trade_change_requires_final_book_actions(self):
+        packet = _packet()
+        original = DryRunRunner().run_advocate("perma-bull", packet, BudgetLedger())
+        base = {
+            "type": "TRADER_ROOM_REBUTTAL",
+            "run_id": packet["run_id"],
+            "round": 2,
+            "agent": "perma-bull",
+            "opponents": ["perma-bear"],
+            "own_original_ref": "submissions/perma-bull.json",
+            "holes_in_opposing_case": ["Opposing thesis misses the relevant policy-path asymmetry."],
+            "attack": ["The opposing expression is less direct."],
+            "defense": ["The revised view remains remit-consistent."],
+            "trade_change": "withdrawn",
+            "revised_trade": None,
+            "packet_sha256": packet["packet_sha256"],
+            "subagent_calls": 0,
+        }
+        with self.assertRaises(SchemaError):
+            validate_rebuttal(
+                base,
+                packet=packet,
+                expected_agent="perma-bull",
+                allowed_opponents={"perma-bear"},
+            )
+
+        bad_open = deepcopy(base)
+        bad_open["paper_actions"] = [{
+            "action": "OPEN",
+            "instrument": original["trade"]["instrument"],
+            "asset_class": original["trade"]["asset_class"],
+            "side": "long",
+            "notional_usd": 1_000_000,
+        }]
+        with self.assertRaises(SchemaError):
+            validate_rebuttal(
+                bad_open,
+                packet=packet,
+                expected_agent="perma-bull",
+                allowed_opponents={"perma-bear"},
+            )
+
+        hold = deepcopy(base)
+        hold["paper_actions"] = [{"action": "HOLD"}]
+        validate_rebuttal(
+            hold,
+            packet=packet,
+            expected_agent="perma-bull",
+            allowed_opponents={"perma-bear"},
+        )
 
 
 class BudgetTests(unittest.TestCase):
