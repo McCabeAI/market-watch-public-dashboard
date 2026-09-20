@@ -120,8 +120,14 @@ class PMDashboardTests(unittest.TestCase):
         self.assertIn("awaiting_chatgpt_decision", js)
         self.assertIn("function renderPosition", js)
         self.assertEqual(js.count("positions.map(renderPosition)"), 2)
-        self.assertIn("Overnight 14-seat books", html)
-        self.assertIn("Fourteen paper traders compete", html)
+        self.assertIn("14 Traders + 4 Portfolio Managers", html)
+        self.assertIn("14 Traders · Total P&amp;L", html)
+        self.assertIn("4 PMs · Total P&amp;L", html)
+        self.assertIn("tb-trader-total", js)
+        self.assertIn("tb-pm-total", js)
+        self.assertIn("tb-position-trade", js)
+        self.assertIn("tb-direction", js)
+        self.assertIn("Risk limit", js)
 
     def test_emit_and_tab_stay_additive(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
