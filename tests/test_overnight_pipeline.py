@@ -15,7 +15,18 @@ import sys
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from scripts.overnight.books import apply_action, apply_review, empty_books, empty_seat, mark_to_market, position_pnl, public_books_view, realized_increment
+from scripts.overnight.books import (
+    allocation_limit_usd,
+    apply_action,
+    apply_review,
+    deployed_notional,
+    empty_books,
+    empty_seat,
+    mark_to_market,
+    position_pnl,
+    public_books_view,
+    realized_increment,
+)
 from scripts.overnight.clock import overnight_run_id, stage_for_time, stage_window
 from scripts.funding.sofr import FUNDING_CONVENTION, FUNDING_DAY_COUNT, FUNDING_SOURCE
 from scripts.overnight.constants import LOCAL_CRON, SPOT_SEATS, STAGES, STANDING_SEATS, STARTING_NAV_USD
@@ -355,6 +366,178 @@ class BookTransitionTests(unittest.TestCase):
         expected_total = round(full_cash_yield + reduced_cash_yield, 2)
         self.assertEqual(skeptic["cash_yield_usd"], expected_total)
         self.assertEqual(skeptic["net_pnl_usd"], expected_total)
+
+    def test_exactly_100m_deployed_open_succeeds(self):
+        apply_action(
+            self.seat,
+            {
+                "action": "OPEN",
+                "instrument": "USDCAD",
+                "side": "long",
+                "notional_usd": 60_000_000,
+                "price": 1.36,
+                "asset_class": "spot_fx",
+                "expression_memo": _spot_memo(),
+                "thesis": "First leg.",
+            },
+            families=self.families,
+            run_id="overnight-cap-1",
+            when=AS_OF,
+        )
+        apply_action(
+            self.seat,
+            {
+                "action": "OPEN",
+                "instrument": "USDJPY",
+                "side": "long",
+                "notional_usd": 40_000_000,
+                "price": 148.0,
+                "asset_class": "spot_fx",
+                "expression_memo": _spot_memo("USDJPY"),
+                "thesis": "Second leg.",
+            },
+            families=self.families,
+            run_id="overnight-cap-1",
+            when=AS_OF,
+        )
+        self.assertEqual(deployed_notional(self.seat), allocation_limit_usd())
+        self.assertEqual(len(self.seat["positions"]), 2)
+
+    def test_over_cap_open_blocked_without_corruption(self):
+        cash_before = self.seat["cash_usd"]
+        positions_before = len(self.seat["positions"])
+        apply_action(
+            self.seat,
+            {
+                "action": "OPEN",
+                "instrument": "USDCAD",
+                "side": "long",
+                "notional_usd": 100_000_001,
+                "price": 1.36,
+                "asset_class": "spot_fx",
+                "expression_memo": _spot_memo(),
+                "thesis": "Too large.",
+            },
+            families=self.families,
+            run_id="overnight-cap-block",
+            when=AS_OF,
+        )
+        self.assertEqual(len(self.seat["positions"]), positions_before)
+        self.assertEqual(self.seat["cash_usd"], cash_before)
+        self.assertTrue(any(row.get("result") == "blocked_allocation" for row in self.seat["history"]))
+
+    def test_mixed_derisk_and_over_cap_open(self):
+        apply_action(
+            self.seat,
+            {
+                "action": "OPEN",
+                "instrument": "USDCAD",
+                "side": "long",
+                "notional_usd": 80_000_000,
+                "price": 1.36,
+                "asset_class": "spot_fx",
+                "expression_memo": _spot_memo(),
+                "thesis": "Base risk.",
+            },
+            families=self.families,
+            run_id="overnight-mixed-base",
+            when=AS_OF,
+        )
+        pos_id = self.seat["positions"][0]["position_id"]
+        books = empty_books(overnight_run_id="overnight-mixed", when=AS_OF)
+        books["seats"]["dollar-king"] = self.seat
+        reviews = {
+            seat: {"seat": seat, "actions": [{"action": "HOLD", "expression_memo": _spot_memo()}]}
+            for seat in STANDING_SEATS
+        }
+        reviews["dollar-king"] = {
+            "seat": "dollar-king",
+            "actions": [
+                {
+                    "action": "REDUCE",
+                    "position_id": pos_id,
+                    "notional_usd": 10_000_000,
+                    "price": 1.36,
+                    "expression_memo": _spot_memo(),
+                },
+                {
+                    "action": "OPEN",
+                    "instrument": "USDJPY",
+                    "side": "long",
+                    "notional_usd": 31_000_000,
+                    "price": 148.0,
+                    "asset_class": "spot_fx",
+                    "expression_memo": _spot_memo("USDJPY"),
+                    "thesis": "Would exceed cap.",
+                },
+            ],
+        }
+        updated = apply_review(
+            books,
+            reviews,
+            families=self.families,
+            run_id="overnight-mixed",
+            evidence_cutoff="2026-09-18T12:00:00-04:00",
+            when=AS_OF,
+        )
+        seat = updated["seats"]["dollar-king"]
+        self.assertEqual(deployed_notional(seat), 70_000_000)
+        self.assertEqual(len(seat["positions"]), 1)
+        self.assertTrue(any(row.get("result") == "blocked_allocation" for row in seat["history"]))
+
+    def test_over_cap_add_and_hedge_blocked(self):
+        apply_action(
+            self.seat,
+            {
+                "action": "OPEN",
+                "instrument": "USDCAD",
+                "side": "long",
+                "notional_usd": 90_000_000,
+                "price": 1.36,
+                "asset_class": "spot_fx",
+                "expression_memo": _spot_memo(),
+                "thesis": "Near cap.",
+            },
+            families=self.families,
+            run_id="overnight-cap-add",
+            when=AS_OF,
+        )
+        pos_id = self.seat["positions"][0]["position_id"]
+        cash_before = self.seat["cash_usd"]
+        apply_action(
+            self.seat,
+            {
+                "action": "ADD",
+                "position_id": pos_id,
+                "notional_usd": 20_000_000,
+                "price": 1.36,
+                "expression_memo": _spot_memo(),
+                "thesis": "Add would exceed cap.",
+            },
+            families=self.families,
+            run_id="overnight-cap-add",
+            when=AS_OF,
+        )
+        self.assertEqual(self.seat["positions"][0]["notional_usd"], 90_000_000)
+        self.assertEqual(self.seat["cash_usd"], cash_before)
+        apply_action(
+            self.seat,
+            {
+                "action": "HEDGE",
+                "hedge_of": pos_id,
+                "notional_usd": 15_000_000,
+                "price": 1.36,
+                "expression_memo": _spot_memo(),
+                "thesis": "Hedge would exceed cap.",
+            },
+            families=self.families,
+            run_id="overnight-cap-hedge",
+            when=AS_OF,
+        )
+        self.assertEqual(len(self.seat["positions"]), 1)
+        self.assertEqual(deployed_notional(self.seat), 90_000_000)
+        blocked = {row.get("action") for row in self.seat["history"] if row.get("result") == "blocked_allocation"}
+        self.assertEqual(blocked, {"ADD", "HEDGE"})
 
     def test_missing_mark_does_not_invent_pnl(self):
         pos = {

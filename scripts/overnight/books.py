@@ -48,11 +48,42 @@ def _side_sign(side: str) -> int:
     return 1 if side == "long" else -1
 
 
-def _deployed_notional(seat_book: dict[str, Any]) -> float:
+ALLOCATION_LIMIT_USD = STARTING_NAV_USD
+
+
+def allocation_limit_usd() -> float:
+    return STARTING_NAV_USD
+
+
+def deployed_notional(seat_book: dict[str, Any]) -> float:
     return round(
         sum(float(position.get("notional_usd") or 0.0) for position in seat_book.get("positions") or []),
         2,
     )
+
+
+def _attach_allocation_fields(seat_book: dict[str, Any]) -> None:
+    limit = allocation_limit_usd()
+    deployed = deployed_notional(seat_book)
+    seat_book["allocation_limit_usd"] = limit
+    seat_book["deployed_notional_usd"] = deployed
+    seat_book["allocation_remaining_usd"] = round(max(0.0, limit - deployed), 2)
+
+
+def projected_deployed_notional(seat_book: dict[str, Any], action: dict[str, Any]) -> float:
+    current = deployed_notional(seat_book)
+    kind = action.get("action")
+    if kind in {"OPEN", "ADD", "HEDGE"}:
+        notional = action.get("notional_usd")
+        if notional in (None, ""):
+            return current
+        return round(current + _money(notional, "notional_usd"), 2)
+    return current
+
+
+def assert_allocation(seat_book: dict[str, Any], *, extra_notional: float = 0) -> None:
+    if deployed_notional(seat_book) + extra_notional - allocation_limit_usd() > 1e-6:
+        raise SchemaError("seat allocation cap exceeded")
 
 
 def _attach_observed_rate(target: dict[str, Any], market_state: dict[str, Any] | None = None) -> None:
@@ -104,7 +135,7 @@ def accrue_funding(
 
     history = extract_sofr_history(market_state or {}, seat_book.get("funding_context") or {})
     principal = (
-        max(0.0, STARTING_NAV_USD - _deployed_notional(seat_book))
+        max(0.0, STARTING_NAV_USD - deployed_notional(seat_book))
         if seat_book["seat"] == "no-trade-skeptic"
         else STARTING_NAV_USD
     )
@@ -165,7 +196,7 @@ def accrue_funding(
                 "fixings": accrual["breakdown"],
                 "funding_base_usd": 0.0 if seat_book["seat"] == "no-trade-skeptic" else STARTING_NAV_USD,
                 "cash_yield_base_usd": (
-                    max(0.0, STARTING_NAV_USD - _deployed_notional(seat_book))
+                    max(0.0, STARTING_NAV_USD - deployed_notional(seat_book))
                     if seat_book["seat"] == "no-trade-skeptic"
                     else 0.0
                 ),
@@ -275,6 +306,9 @@ def empty_seat(seat: str) -> dict[str, Any]:
         "risk_put_on": None,
         "evidence_cutoff": None,
         "blocked_opens": [],
+        "allocation_limit_usd": STARTING_NAV_USD,
+        "deployed_notional_usd": 0.0,
+        "allocation_remaining_usd": STARTING_NAV_USD,
     }
 
 
@@ -317,6 +351,7 @@ def mark_to_market(seat_book: dict[str, Any]) -> dict[str, Any]:
         float(seat_book["starting_nav_usd"]) + gross - funding + cash_yield,
         2,
     )
+    _attach_allocation_fields(seat_book)
     return seat_book
 
 
@@ -346,6 +381,32 @@ def _history_entry(action: dict[str, Any], *, when: datetime, run_id: str, resul
     if extra:
         row.update(extra)
     return row
+
+
+def _block_expansion(
+    seat_book: dict[str, Any],
+    action: dict[str, Any],
+    *,
+    when: datetime,
+    run_id: str,
+    result: str,
+    reason: str,
+) -> dict[str, Any]:
+    kind = action.get("action")
+    seat_book["blocked_opens"].append(
+        {
+            "action": kind,
+            "instrument": action.get("instrument"),
+            "reason": reason,
+            "at": isoformat(when),
+            "overnight_run_id": run_id,
+        }
+    )
+    seat_book["history"].append(_history_entry(action, when=when, run_id=run_id, result=result))
+    seat_book["alerts"].append(reason)
+    seat_book["prior_action"] = seat_book.get("last_action")
+    seat_book["last_action"] = kind
+    return mark_to_market(seat_book)
 
 
 def apply_action(
@@ -384,6 +445,31 @@ def apply_action(
             seat_book["last_action"] = kind
             return mark_to_market(seat_book)
         raise
+
+    if kind in {"OPEN", "ADD", "HEDGE"}:
+        if action.get("_paper_mark_error"):
+            return _block_expansion(
+                seat_book,
+                action,
+                when=stamp,
+                run_id=run_id,
+                result="blocked_mark",
+                reason=str(action["_paper_mark_error"]),
+            )
+        projected = projected_deployed_notional(seat_book, action)
+        if projected - allocation_limit_usd() > 1e-6:
+            reason = (
+                f"{seat} {kind} blocked: projected deployed notional {projected:,.2f} exceeds "
+                f"{allocation_limit_usd():,.0f} seat allocation cap"
+            )
+            return _block_expansion(
+                seat_book,
+                action,
+                when=stamp,
+                run_id=run_id,
+                result="blocked_allocation",
+                reason=reason,
+            )
 
     if kind == "OPEN":
         _open_position(seat_book, action, memo=memo, run_id=run_id, when=stamp)
@@ -666,6 +752,9 @@ def public_books_view(books: dict[str, Any]) -> dict[str, Any]:
                 "last_action": item.get("last_action"),
                 "prior_action": item.get("prior_action"),
                 "alerts": item.get("alerts") or [],
+                "allocation_limit_usd": item.get("allocation_limit_usd", allocation_limit_usd()),
+                "deployed_notional_usd": item.get("deployed_notional_usd", deployed_notional(item)),
+                "allocation_remaining_usd": item.get("allocation_remaining_usd"),
                 "positions": [
                     {
                         "position_id": p["position_id"],

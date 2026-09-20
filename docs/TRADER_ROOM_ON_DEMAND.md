@@ -130,6 +130,17 @@ Every full live run carries:
 
 The repository `subagentStart` hook enforces these ceilings. Only initial advocates tagged `TRADER_ROOM_ADVOCATE=1` may create Composer children.
 
+## Paper book actions (trader-owned execution)
+
+Debate `trade` and `conflict_synopsis.primary_trade` remain the single primary pitch for conflict routing. Separately, contributions and rebuttals may include:
+
+- `paper_actions`: a list of book actions (`OPEN`, `ADD`, `HOLD`, `REDUCE`, `HEDGE`, `CLOSE`) with no arbitrary position-count cap;
+- legacy `paper_capital`: one object with `decision` or `action` in the same set (mapped to a single action).
+
+Trusted overnight code owns deterministic paper mids, the gross **$100m** deployed-notional ceiling per seat (sum of open notionals, long and short, unnetted), ledger linkage, and persistence to `data/overnight/books/latest.json`. A debate trade without `paper_actions` / `paper_capital` does **not** execute. Mixed lists may combine de-risk actions with blocked expansions; valid `REDUCE` / `CLOSE` still apply when an over-cap `OPEN` / `ADD` / `HEDGE` is blocked.
+
+Run-local `paper_actions.json` / `paper_books.json` under `trader-room/runs/<run_id>/` are audit copies only.
+
 ## Required trade schema
 
 Every advocate except `no-trade-skeptic` must produce one actionable trade with: `instrument`, `asset_class`, `expression_comparison`, `context_build`, `structure`, `direction`, `thesis`, `mispricing`, `why_now`, `evidence_refs`, `horizon`, `entry`, `target`, `stop`, `invalidation`, `catalysts`, `principal_risks`, and `confidence`. Unsupported levels are JSON `null`.

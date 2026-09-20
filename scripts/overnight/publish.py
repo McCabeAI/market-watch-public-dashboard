@@ -56,7 +56,39 @@ def emit_trader_books_json(store: OvernightStore, site_dir: Path, *, run_id: str
     site_dir = Path(site_dir)
     site_dir.mkdir(parents=True, exist_ok=True)
     dataset = load_assembled(store, run_id)
-    if dataset is not None:
+    canonical_payload: dict[str, Any] | None = None
+    if store.books_path().is_file():
+        from scripts.overnight.books import public_books_view, validate_books
+
+        canonical_payload = public_books_view(validate_books(store.read_books()))
+
+    if canonical_payload is not None:
+        payload = dict(canonical_payload)
+        if dataset is not None:
+            pub = dataset["publication"]
+            payload["overnight_research"] = dataset.get("agent_research")
+            payload["publication"] = {
+                "core_status": pub["core_status"],
+                "trader_books_status": pub["trader_books_status"],
+                "may_publish": pub["may_publish"],
+                "reason": pub["reason"],
+                "last_successful_review_run_id": pub.get("last_successful_review_run_id"),
+                "overnight_run_id": dataset["overnight_run_id"],
+                "as_of": dataset["as_of"],
+            }
+            payload["books_as_of"] = canonical_payload.get("as_of")
+            payload["books_run_id"] = canonical_payload.get("overnight_run_id")
+        else:
+            payload["publication"] = {
+                "core_status": "ok",
+                "trader_books_status": payload.get("review_status") or "stale",
+                "may_publish": True,
+                "reason": "publishing last persisted books; no assembled overnight dataset",
+                "last_successful_review_run_id": payload.get("last_successful_review_run_id"),
+                "overnight_run_id": payload.get("overnight_run_id"),
+                "as_of": payload.get("as_of"),
+            }
+    elif dataset is not None:
         payload = dataset["trader_books"]
         payload = {
             **payload,
@@ -70,18 +102,6 @@ def emit_trader_books_json(store: OvernightStore, site_dir: Path, *, run_id: str
                 "overnight_run_id": dataset["overnight_run_id"],
                 "as_of": dataset["as_of"],
             },
-        }
-    elif store.books_path().is_file():
-        from scripts.overnight.books import public_books_view, validate_books
-
-        payload = public_books_view(validate_books(store.read_books()))
-        payload["publication"] = {
-            "core_status": "ok",
-            "trader_books_status": payload.get("review_status") or "stale",
-            "reason": "publishing last persisted books; no assembled overnight dataset",
-            "last_successful_review_run_id": payload.get("last_successful_review_run_id"),
-            "overnight_run_id": payload.get("overnight_run_id"),
-            "as_of": payload.get("as_of"),
         }
     else:
         raise SchemaError("no trader books available to emit")

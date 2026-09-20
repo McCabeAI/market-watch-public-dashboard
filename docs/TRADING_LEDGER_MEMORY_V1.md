@@ -68,7 +68,7 @@ Recorded:
 - every applied ChatGPT PM decision
 - full on-demand Trader Room original pitches and rebuttals as `TRADER_ROOM_PROPOSAL` / `TRADER_ROOM_REBUTTAL`
 
-On-demand pitches and rebuttals store the complete validated contribution or rebuttal payload as structured journal data, keep `source_ref`, and do not become executed ledger trades. Hidden chain-of-thought and runtime-only fields are excluded.
+On-demand pitches and rebuttals store the complete validated contribution or rebuttal payload as structured journal data as `TRADER_ROOM_PROPOSAL` / `TRADER_ROOM_REBUTTAL`, keep `source_ref`, and remain debate artifacts. Separately, validated `paper_actions` / `paper_capital` on those contributions mutate canonical trader books and the executed ledger through trusted overnight apply code without PM or ChatGPT arbitration. Hidden chain-of-thought and runtime-only fields are excluded.
 
 Every newly executed trader or PM ledger lifecycle event stores `source_journal_event_id` for the exact durable journal event that caused it. The journal event stores `linked_trade_ids` / `linked_position_ids`. Replay updates that same journal event rather than minting a second one to acquire an ID. Migrated historical ledger rows stay `null` when no source journal event existed.
 
@@ -109,7 +109,7 @@ Do not edit the ACP schedule to implement this. `docs/OVERNIGHT_PIPELINE_V1.md` 
 
 ## 9. Full Trader Room consumption
 
-At run freeze, each of the 14 advocates gets an own-memory sidecar. The common evidence hash remains identical. `launch_plan.json` carries per-advocate `memory_sidecar_path` and `memory_context_sha256`. After validation/finalization, pitches and rebuttals are journaled. Locked remits, context-first gate, conflict flow, and the ChatGPT-arbiter boundary are unchanged.
+At run freeze, each of the 14 advocates gets an own-memory sidecar. The common evidence hash remains identical. `launch_plan.json` carries per-advocate `memory_sidecar_path` and `memory_context_sha256`. After validation/finalization, pitches and rebuttals are journaled as proposals. Validated `paper_actions` / `paper_capital` on those artifacts are applied by trusted overnight book code into `data/overnight/books/latest.json` and the executed ledger without PM arbitration. Locked remits, context-first gate, conflict flow, and the ChatGPT-arbiter boundary for house decisions are unchanged.
 
 ## 10. PM consumption
 

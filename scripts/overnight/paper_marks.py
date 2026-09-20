@@ -567,12 +567,17 @@ def hydrate_action_mids(
             instrument = pos.get("instrument")
             asset_class = pos.get("asset_class")
             expression = action.get("paper_expression") or pos.get("paper_expression")
-        mark = resolve_paper_mid(
-            market_state,
-            str(instrument or ""),
-            asset_class=asset_class,
-            expression=expression,
-        )
+        try:
+            mark = resolve_paper_mid(
+                market_state,
+                str(instrument or ""),
+                asset_class=asset_class,
+                expression=expression,
+            )
+        except PaperMarkError as exc:
+            if kind in {"OPEN", "ADD", "HEDGE"}:
+                action["_paper_mark_error"] = str(exc)
+            continue
         action["instrument"] = instrument
         if asset_class:
             action["asset_class"] = asset_class

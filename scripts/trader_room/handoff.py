@@ -237,4 +237,19 @@ def finalize_run_dir(*, root: Path, run_dir: Path) -> dict[str, Any]:
         }
     )
     write_json(receipt_path, receipt)
+    from scripts.trader_room.paper_book import persist_ondemand_trader_books
+
+    hashes = None
+    preflight_path = run_dir / "preflight.json"
+    if preflight_path.is_file():
+        preflight = json.loads(preflight_path.read_text(encoding="utf-8"))
+        hashes = (preflight.get("seat_memory") or {}).get("hashes")
+    persist_ondemand_trader_books(
+        root=root,
+        run_dir=run_dir,
+        packet=packet,
+        originals=originals,
+        rebuttals=rebuttals,
+        memory_hashes=hashes,
+    )
     return handoff
