@@ -769,6 +769,10 @@ def public_books_view(books: dict[str, Any]) -> dict[str, Any]:
                         "mark_price_source": p.get("mark_price_source"),
                         "mark_price_as_of": p.get("mark_price_as_of"),
                         "paper_expression": p.get("paper_expression"),
+                        "opened_at": p.get("opened_at"),
+                        "opened_run_id": p.get("opened_run_id"),
+                        "thesis": p.get("thesis"),
+                        "invalidation": p.get("invalidation"),
                         "unrealized_pnl_usd": p.get("unrealized_pnl_usd"),
                         "hedge_of": p.get("hedge_of"),
                     }

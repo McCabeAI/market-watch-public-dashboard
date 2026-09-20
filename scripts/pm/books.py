@@ -598,6 +598,12 @@ def apply_decision(
     actions = prepare_actions(book, decision, market_state=market_state)
     stamp = now_ny(when)
     for action in actions:
+        if not action.get("thesis") and decision.get("thesis"):
+            action["thesis"] = decision["thesis"]
+        if not action.get("invalidation") and decision.get("invalidation"):
+            action["invalidation"] = decision["invalidation"]
+        if action.get("conviction") is None and decision.get("conviction") is not None:
+            action["conviction"] = decision["conviction"]
         apply_action(
             book,
             action,
@@ -707,8 +713,15 @@ def public_pm_view(books: dict[str, Any]) -> dict[str, Any]:
                         "entry_price": p.get("entry_price"),
                         "mark_price": p.get("mark_price"),
                         "entry_price_source": p.get("entry_price_source"),
+                        "entry_price_as_of": p.get("entry_price_as_of"),
                         "mark_price_source": p.get("mark_price_source"),
+                        "mark_price_as_of": p.get("mark_price_as_of"),
+                        "paper_expression": p.get("paper_expression"),
                         "locked_expression_family": p.get("locked_expression_family"),
+                        "opened_at": p.get("opened_at"),
+                        "opened_run_id": p.get("opened_run_id"),
+                        "thesis": p.get("thesis"),
+                        "invalidation": p.get("invalidation"),
                         "funding_basis": p.get("funding_basis"),
                         "funding_basis_status": p.get("funding_basis_status"),
                         "funding_draw_usd": p.get("funding_draw_usd"),

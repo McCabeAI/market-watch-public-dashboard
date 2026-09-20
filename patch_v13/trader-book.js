@@ -32,6 +32,36 @@
     return value > 0 ? "tb-pos" : "tb-neg";
   }
 
+  function level(value) {
+    if (!finite(value)) return "—";
+    const abs = Math.abs(value);
+    if (abs >= 100) return value.toFixed(2);
+    if (abs >= 10) return value.toFixed(3);
+    return value.toFixed(4);
+  }
+
+  function renderPosition(pos) {
+    const markLine = (finite(pos.entry_price) || finite(pos.mark_price))
+      ? '<div class="tb-position-marks"><span>Entry <b>' + level(pos.entry_price) +
+        '</b></span><span>Mark <b>' + level(pos.mark_price) + '</b></span></div>'
+      : "";
+    const thesis = pos.thesis
+      ? '<div class="tb-position-reason"><b>Why:</b> ' + esc(pos.thesis) + "</div>"
+      : '<div class="tb-position-reason tb-muted"><b>Why:</b> No position-specific thesis recorded.</div>';
+    const invalidation = pos.invalidation
+      ? '<div class="tb-position-invalidation"><b>Invalidation:</b> ' + esc(pos.invalidation) + "</div>"
+      : "";
+    const hedge = pos.hedge_of
+      ? '<div class="tb-position-link">Hedge of ' + esc(pos.hedge_of) + "</div>"
+      : "";
+    return '<div class="tb-position-card"><div class="tb-position-head"><div><b>' +
+      esc(pos.instrument) + '</b><span>' + esc(pos.side) + " · " + esc(pos.asset_class) +
+      '</span></div><div class="tb-position-risk"><b>' + money(pos.notional_usd) +
+      '</b><span class="' + cls(pos.unrealized_pnl_usd) + '">' +
+      money(pos.unrealized_pnl_usd) + "</span></div></div>" +
+      markLine + thesis + invalidation + hedge + "</div>";
+  }
+
   function chip(status, label) {
     const kind = status === "fresh" || status === "ok" ? "ok" : status === "failed" || status === "bad" ? "bad" : "warn";
     return '<span class="tb-chip ' + kind + '">' + esc(label) + "</span>";
@@ -67,12 +97,7 @@
 
     const seatHtml = seats.map(function (seat) {
       const positions = seat.positions || [];
-      const posHtml = positions.length ? positions.map(function (pos) {
-        return '<div class="tb-position"><b>' + esc(pos.instrument) + "</b><span>" +
-          esc(pos.side) + " · " + esc(pos.asset_class) + "</span><span>" +
-          money(pos.notional_usd) + '</span><span class="' + cls(pos.unrealized_pnl_usd) + '">' +
-          money(pos.unrealized_pnl_usd) + "</span></div>";
-      }).join("") : '<div class="tb-empty">No open risk</div>';
+      const posHtml = positions.length ? positions.map(renderPosition).join("") : '<div class="tb-empty">No open risk</div>';
       const pitch = seat.required_pitch ? '<div class="tb-pitch"><b>Required pitch (not necessarily risked):</b> ' +
         esc(typeof seat.required_pitch === "string" ? seat.required_pitch : JSON.stringify(seat.required_pitch)) + "</div>" : "";
       return '<article class="tb-seat"><div class="tb-seat-top"><div class="tb-seat-name">' +
@@ -88,7 +113,9 @@
           ? money(seat.cash_yield_usd)
           : (finite(seat.funding_cost_usd) && seat.funding_cost_usd !== 0 ? "-" + money(seat.funding_cost_usd).replace("-", "") : money(seat.funding_cost_usd))) +
         "</b></div></div><div class=\"tb-positions\">" + posHtml + "</div>" +
-        (seat.thesis ? '<p class="tb-thesis">' + esc(seat.thesis) + "</p>" : "") + pitch + "</article>";
+        (seat.thesis ? '<p class="tb-thesis"><b>Current book view:</b> ' + esc(seat.thesis) + "</p>" : "") +
+        (seat.invalidation ? '<p class="tb-thesis"><b>Book invalidation:</b> ' + esc(seat.invalidation) + "</p>" : "") +
+        pitch + "</article>";
     }).join("");
 
     const changeHtml = changes.length ? changes.map(function (row) {
@@ -166,12 +193,7 @@
     const pms = packet.pms || [];
     const cards = pms.map(function (pm) {
       const positions = pm.positions || [];
-      const posHtml = positions.length ? positions.map(function (pos) {
-        return '<div class="tb-position"><b>' + esc(pos.instrument) + "</b><span>" +
-          esc(pos.side) + " · " + esc(pos.asset_class) + "</span><span>" +
-          money(pos.notional_usd) + '</span><span class="' + cls(pos.unrealized_pnl_usd) + '">' +
-          money(pos.unrealized_pnl_usd) + "</span></div>";
-      }).join("") : '<div class="tb-empty">No open risk</div>';
+      const posHtml = positions.length ? positions.map(renderPosition).join("") : '<div class="tb-empty">No open risk</div>';
       return '<article class="tb-pm"><div class="tb-seat-top"><div class="tb-seat-name">' +
         esc(pm.label || pm.pm_id) + '</div><div class="tb-pm-status ' +
         statusClass(pm.decision_status, pm.review_status) + '">' +
@@ -181,8 +203,8 @@
         "</b></div><div><span>Paper P&amp;L</span><b class=\"" + cls(pm.total_pnl_usd) + "\">" +
         money(pm.total_pnl_usd) + "</b></div><div><span>Last action</span><b>" +
         esc(pm.last_action || "—") + "</b></div></div><div class=\"tb-positions\">" + posHtml + "</div>" +
-        (pm.thesis ? '<p class="tb-thesis"><b>Thesis:</b> ' + esc(pm.thesis) + "</p>" : "") +
-        (pm.invalidation ? '<p class="tb-thesis"><b>Invalidation:</b> ' + esc(pm.invalidation) + "</p>" : "") +
+        (pm.thesis ? '<p class="tb-thesis"><b>Current book view:</b> ' + esc(pm.thesis) + "</p>" : "") +
+        (pm.invalidation ? '<p class="tb-thesis"><b>Book invalidation:</b> ' + esc(pm.invalidation) + "</p>" : "") +
         "</article>";
     }).join("");
     const comparison = (packet.comparison || []).map(function (row) {

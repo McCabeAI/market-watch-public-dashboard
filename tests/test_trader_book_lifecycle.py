@@ -96,6 +96,7 @@ def _two_open_actions() -> list[dict]:
             "asset_class": "spot_fx",
             "expression_memo": _spot_memo("USDCAD"),
             "thesis": "CAD leg.",
+            "invalidation": "Canada growth reprices materially stronger.",
         },
         {
             "action": "OPEN",
@@ -105,6 +106,7 @@ def _two_open_actions() -> list[dict]:
             "asset_class": "spot_fx",
             "expression_memo": _spot_memo("USDJPY"),
             "thesis": "JPY leg.",
+            "invalidation": "BoJ reprices materially more hawkish.",
         },
     ]
 
@@ -156,6 +158,12 @@ class TraderBookLifecycleTests(unittest.TestCase):
         self.assertEqual(len(dk["positions"]), 2)
         instruments = {p["instrument"] for p in dk["positions"]}
         self.assertEqual(instruments, {"USDCAD", "USDJPY"})
+        by_instrument = {p["instrument"]: p for p in dk["positions"]}
+        self.assertEqual(by_instrument["USDCAD"]["thesis"], "CAD leg.")
+        self.assertEqual(by_instrument["USDCAD"]["invalidation"], "Canada growth reprices materially stronger.")
+        self.assertEqual(by_instrument["USDJPY"]["thesis"], "JPY leg.")
+        self.assertEqual(by_instrument["USDJPY"]["invalidation"], "BoJ reprices materially more hawkish.")
+        self.assertTrue(by_instrument["USDCAD"]["opened_at"])
 
     def test_successive_runs_preserve_independent_positions(self) -> None:
         books = self._apply_multi_open(empty_books(overnight_run_id="tr-multi-1", when=AS_OF), "tr-multi-1")
@@ -371,7 +379,10 @@ class TraderBookLifecycleTests(unittest.TestCase):
     def test_trader_book_js_maps_all_positions_without_slice(self) -> None:
         js = (ROOT / "patch_v13" / "trader-book.js").read_text(encoding="utf-8")
         self.assertIn("(seat.positions || [])", js)
-        self.assertIn("positions.map", js)
+        self.assertIn("function renderPosition", js)
+        self.assertEqual(js.count("positions.map(renderPosition)"), 2)
+        self.assertIn("<b>Why:</b>", js)
+        self.assertIn("<b>Invalidation:</b>", js)
         self.assertNotRegex(js, r"positions\.slice")
 
     def test_debate_only_does_not_invent_open(self) -> None:
