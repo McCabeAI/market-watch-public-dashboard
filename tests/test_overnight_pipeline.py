@@ -38,6 +38,7 @@ from scripts.overnight.pipeline import dry_run, run_stage
 from scripts.overnight.publish import publication_gate
 from scripts.overnight.review import dry_run_reviews
 from scripts.overnight.store import OvernightStore
+from scripts.trader_room_public import select_newest_complete_run
 
 NY = ZoneInfo("America/New_York")
 AS_OF = datetime(2026, 9, 18, 12, 0, tzinfo=NY)
@@ -1002,7 +1003,10 @@ class SeedBooksTests(unittest.TestCase):
         books = json.loads((ROOT / "data" / "overnight" / "books" / "latest.json").read_text())
         self.assertEqual(set(books["seats"]), set(STANDING_SEATS))
         self.assertEqual(books["starting_nav_usd"], STARTING_NAV_USD)
-        self.assertEqual(books.get("last_successful_review_run_id"), "tr-20260920T020818Z-ondemand")
+        newest = select_newest_complete_run(ROOT)
+        self.assertIsNotNone(newest)
+        assert newest is not None
+        self.assertEqual(books.get("last_successful_review_run_id"), newest.name)
         for seat in books["seats"].values():
             self.assertIsInstance(seat.get("positions"), list)
             self.assertIn("nav_usd", seat)
