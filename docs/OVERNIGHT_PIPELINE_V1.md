@@ -130,10 +130,11 @@ Each accepted decision should include the `memory_context_sha256` it used. Risk-
 
 The 14 seats are competing portfolio managers. Their standing objective is **highest cumulative net paper P&L**, not highest conviction score, most cautious commentary, or most persuasive prose. Every child receives the same frozen competition contract:
 - ranking metric: net paper P&L after financing economics;
-- the 13 seats other than `no-trade-skeptic` each borrow the full **$100m** allocation and pay the **latest published prior-day official NY Fed SOFR, simple ACT/360** on that full amount for every newly accrued calendar day in that run, whether deployed or flat; there is no later true-up;
-- `no-trade-skeptic` is the cash hurdle: it pays no borrowing charge and earns the same prior-day SOFR ACT/360 on the undeployed portion of its original $100m allocation; every fresh scheduled daily skeptic decision, including `HOLD`, must include a structured `funding_view`;
-- when the skeptic deploys $X of notional, that $X stops earning the cash yield for as long as it remains deployed;
-- therefore a flat active trader has negative carry while a flat skeptic earns the risk-free hurdle;
+- every seat starts with **$100m paper NAV** and earns the same latest-published prior-day official NY Fed SOFR, simple ACT/360, cash hurdle on that NAV;
+- every open position consumes trusted **1%-shock risk capital** equal to the absolute MTM loss from a 1% adverse move in its quoted risk factor, with a 1bp minimum shock for rates/spreads; equal risk capital is financed identically across asset classes;
+- official SOFR ACT/360 is charged on shocked risk capital, not notional. Flat books therefore have zero risk financing while retaining the common cash hurdle;
+- each seat has a **$1m shocked-risk-capital ceiling** and a **$5m high-water-mark drawdown stop**. A breach triggers trusted-code forced flattening and blocks new OPEN/ADD/HEDGE while risk-stopped;
+- `no-trade-skeptic` has no special financing subsidy; when flat its shocked risk capital is simply zero. Every fresh scheduled skeptic decision, including `HOLD`, still includes a structured `funding_view`;
 - no-trade remains valid for every seat, but inactivity is economically costly for the 13 funded traders;
 - a trader should put on risk when expected edge clears the hurdle and has a defined invalidation. It must not manufacture a trade merely to avoid being flat.
 
@@ -188,9 +189,10 @@ Canonical mechanics are implemented only by `scripts/overnight/books.py`:
 - freshness blocks;
 - marks;
 - realized/unrealized gross P&L;
-- official NY Fed SOFR ACT/360 funding accrual on the full $100m allocation for the 13 funded trading seats;
-- official NY Fed SOFR ACT/360 cash yield on the skeptic's undeployed allocation;
-- net P&L after funding/cash yield and competition rank;
+- official NY Fed SOFR ACT/360 financing accrual on current 1%-shock risk capital for every seat;
+- the common official NY Fed SOFR ACT/360 cash hurdle on each seat's $100m paper NAV;
+- trusted $1m risk-capital cap, $5m high-water drawdown stop and risk-stop state;
+- net P&L after financing/cash yield and competition rank;
 - NAV;
 - history;
 - overnight changes.
