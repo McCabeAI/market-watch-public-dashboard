@@ -15,6 +15,9 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from scripts.overnight.books import apply_review as apply_trader_book_review, empty_books as empty_trader_books
+from scripts.overnight.constants import STANDING_SEATS as BOOK_SEATS
+from scripts.overnight.store import OvernightStore
 from scripts.trader_room.artifacts import retrieve
 from scripts.trader_room.budget import BudgetLedger
 from scripts.trader_room.conflict import currency_exposure, detect_conflicts, rebuttal_assignments
@@ -412,6 +415,67 @@ class OrchestratorDryRunTests(unittest.TestCase):
                 conflict_map=result["conflict_map"],
                 rebuttals=result["rebuttals"],
             )
+
+    def test_prepare_sidecar_reflects_canonical_open_positions(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            books = empty_trader_books(overnight_run_id="tr-prior")
+            reviews = {
+                seat: {"seat": seat, "actions": [{"action": "HOLD"}]}
+                for seat in BOOK_SEATS
+            }
+            reviews["dollar-king"] = {
+                "seat": "dollar-king",
+                "thesis": "Existing position should be visible to the next advocate.",
+                "actions": [{
+                    "action": "OPEN",
+                    "instrument": "USDCAD",
+                    "side": "long",
+                    "notional_usd": 10_000_000,
+                    "asset_class": "spot_fx",
+                    "expression_memo": {
+                        "rates_candidate": None,
+                        "spot_candidate": {
+                            "instrument": "USDCAD",
+                            "asset_class": "spot_fx",
+                            "rationale": "Dedicated USD spot seat.",
+                        },
+                        "options_candidate": None,
+                        "selected": "spot",
+                        "rationale": "Dedicated USD spot seat.",
+                    },
+                    "thesis": "Existing position should be visible to the next advocate.",
+                }],
+            }
+            books = apply_trader_book_review(
+                books,
+                reviews,
+                families={
+                    "macro_hard": {"status": "fresh"},
+                    "news": {"status": "fresh"},
+                    "central_bank_research": {"status": "fresh"},
+                    "market_state": {
+                        "status": "fresh",
+                        "data": {"fx": {"pairs": {"USDCAD": {"spot": 1.36, "as_of": "2026-09-19"}}}},
+                    },
+                },
+                run_id="tr-prior",
+                evidence_cutoff="2026-09-19T12:00:00Z",
+                market_state={"fx": {"pairs": {"USDCAD": {"spot": 1.36, "as_of": "2026-09-19"}}}},
+            )
+            OvernightStore(root=root, state_root=root).write_books(books)
+
+            packet, preflight = prepare_evidence(
+                topic="go",
+                synthetic=True,
+                artifact_root=root,
+            )
+            rel = preflight["seat_memory"]["paths"]["dollar-king"]
+            sidecar = root / "trader-room" / "runs" / packet["run_id"] / rel
+            context = json.loads(sidecar.read_text(encoding="utf-8"))
+            self.assertEqual(len(context["open_positions"]), 1)
+            self.assertEqual(context["open_positions"][0]["instrument"], "USDCAD")
+            self.assertEqual(context["open_positions"][0]["notional_usd"], 10_000_000)
 
     def test_live_run_is_blocked(self):
         with tempfile.TemporaryDirectory() as tmp:
