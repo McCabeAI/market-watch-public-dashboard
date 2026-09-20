@@ -1,6 +1,6 @@
 {
   "active_lessons": [],
-  "as_of": "2026-09-19T22:08:18.969943-04:00",
+  "as_of": "2026-09-19T22:36:50.082404-04:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -29,8 +29,20 @@
     "total_realized_pnl_usd": 0.0,
     "wins": 0
   },
-  "memory_context_sha256": "6badd8ae7e3bd3f25f57288207b021126f68de59f668399506731cb79d66b211",
-  "open_positions": [],
+  "memory_context_sha256": "666be8fd8dc5f06d0d06593d81d1279763d73d71f36857ebec7850b35d2f64d6",
+  "open_positions": [
+    {
+      "asset_class": "rates",
+      "conviction": 63,
+      "current_notional_usd": 50000000.0,
+      "entry_mark": 4.58,
+      "instrument": "SOFR_2027-03",
+      "opened_at": "2026-09-19T22:36:50.082404-04:00",
+      "position_id": "pos-662bff0986be",
+      "side": "short",
+      "trade_id": "trd-trader-trend-follower-pos-662bff0986be"
+    }
+  ],
   "owner_id": "trend-follower",
   "owner_type": "trader",
   "postmortems_due": [],

@@ -1,0 +1,155 @@
+{
+  "type": "TRADER_ROOM_REBUTTAL",
+  "run_id": "tr-20260920T020818Z-ondemand",
+  "round": 2,
+  "agent": "mean-reverter",
+  "opponents": [
+    "trend-follower",
+    "carry-is-king",
+    "catalyst-junkie",
+    "dollar-king",
+    "perma-bear",
+    "positioning-cynic",
+    "rate-dove",
+    "rate-hawk",
+    "value-guy",
+    "cross-merchant",
+    "perma-bull"
+  ],
+  "own_original_ref": "submissions/mean-reverter.json",
+  "holes_in_opposing_case": [
+    "Direct instrument hole vs trend-follower short SOFR_2027-03: they merge two different objects into one 'aligned continuation.' FACT: Sep-16 hike 25bp to 3.75-4.00% was >90% priced; NY Fed SOFR jumped from 3.62 on 2026-09-16 to 3.85 on 2026-09-17; that overnight jump IS the known event settling into the benchmark. FACT: SR3H7 still implies 4.58, +73bp over the new fixing, with Dec-26 already at 4.32. INFERENCE: paying Mar-27 at 4.58 is a second bet that ~three extra 25bp steps remain required after the priced hike printed. Continuation of a delivered, pre-priced 25bp is not evidence that leftover 1H27 premium is too small. UNKNOWN: CME SR3/UST positioning is unavailable, so they cannot claim the trend is under-owned or that a squeeze must extend.",
+    "trend-follower mispricing is internally contradictory. They say the strip peaking near SR3U7 4.755 then easing 'requires a cooling that gauges have not shown.' That sentence admits ~90.5bp of extra tightening is already in the path (4.755 vs SOFR 3.85). Shorting SOFR_2027-03 at 4.58 therefore argues that a 1m US 2Y +57bp (z 3.29) to a 1y 100th-percentile 4.76 still underprices the cycle. That is extrapolation of a post-event overshoot, not riding an unpriced hiking trend. The 2Y +9bp 1d after a known hike is the overshoot screen, not independent confirmation of more hikes.",
+    "Their invalidation is a one-way bar: only a US inflation/labor BREAK counts; housing-pain or 'the hike was priced' 'alone' do not. Event-premium decay after a fully priced FOMC does not need a growth break. FACT: August CPI already kept a tightening bias and US gauges 72/75/69/74 were known into the decision. Known information cannot explain a NEW 1m 3.3-sigma 2Y squeeze unless an energy/global-hawk overlay is still being added on top of the 25bp. Requiring a data break before fading leftover SR3H7 premium lets that overlay run until it is already in overnight SOFR again.",
+    "trend-follower ignores the packet's same-week catalyst that weakens the overlay: Saudi STS crude via Oman reduced the extreme oil-supply tail, while a separate rollup still warns shock absorbers are weakening. Tail-reduced plus residual energy risk is not a mandate to pay duration. They also skip supplied 2s10s analogs for the -18bp 1m flattening (US 2s10s +56bp, 0.6th percentile 1y): 2024-02-26 and 2022-12-14 steepened in the next month; 2022-04-08 steepened 1m then re-flattened; 2023-05-30 kept flattening. Mixed forward outcomes plus inverted 2022-23 starting levels are not a license to add to a 1y front-end extreme. Regime difference: today's 2s10s is positively sloped after a pre-priced hike, not an early-cycle inversion.",
+    "rate-hawk long implied-rate SOFR_2027-09 is the same crowded overlay one contract later. They admit the 25bp was >90% priced and US 2Y already +57bp 1m, then want the 2027 terminal ABOVE packet SR3U7 4.755. That is not 'underpriced restraint'; it is asking the 1y 2Y extreme to go further. Their invalidation (SR3U7 retracing the entire 17-Sep SOFR jump AND Dec-26 4.32 pricing less than one 25bp vs overnight 3.85) would already have destroyed a Mar-27 receiver first. The additive mispricing is Mar-27 4.58 versus already-priced Dec-26 4.32 (~26bp of extra 1H27 steps), not a claim that Sep-27 cannot print a higher peak if data re-accelerate.",
+    "dollar-king long USDCAD does not identify a stretched USD or a cheap CAD that forces paying US 2027. FACT: ECB mid 1.401047 as of 2026-09-18 is only 74th percentile 1y / 87th 5y, still -1.25% 3m, +1.74% 1m. CA-US 2Y at -140bp (3.8th/4.3rd percentile 1y/5y) matches overnight CORRA 2.29 versus SOFR 3.85 (~156bp): that is a policy ANCHOR, not incomplete FX translation. They themselves cite USDCAD versus CA-US 2Y r^2 0.022. CFTC CAD leveraged funds are still net short -39022 contracts but that net is the 99th percentile 1y after +16426 weekly cover, so long USDCAD fights residual covering. 140bp 2Y USD-over-CAD carry is exactly why we rejected short USDCAD as the expression; carry support for long USDCAD is not a reason to pay leftover SR3H7 hikes.",
+    "value-guy receive-SOFR / pay-CORRA 2027 H1 contaminates a valid Mar-27 SOFR receive with a Canada-cheapness fade this seat already rejected. The 156bp overnight gap is the economic anchor, not an overshoot. Paying CRA 3.13/3.365 into Canada labor 38, August employment -42k, wages +2.0% y/y, and CPI-trim/median 1.9%/2.0% is the energy-pass-through crowd, not peer-policy 'fair value.' Analogs are mixed by their own citation: 2025-01-30 at -145bp compressed 25bp over 3m; 2024-12-18 at -130bp cheapened another 20bp over 3m. Do not pay Canada to express a US event-premium fade. Their CAD_UP/USD_DOWN tags can be the FX echo of fading US front-end premium; the CRA pay leg is the hole.",
+    "perma-bull pay CORRA_2027-03 (implied 3.13 vs cash 2.29) is the Canada version of the same energy-hawk overlay. Activity 66 and WTI/Brent at the top of the 1y distribution do not override core-near-2% and labor 38. The 17-Sep CA 2Y/10Y rally after the Fed hike is consistent with a US-led squeeze, not with Canada being wrongly priced as on-hold. CAD_UP via paying CRA is not this seat's CAD_higher: ours is the FX echo of leftover US hike premium decaying, with ca_rates_view explicitly neutral. Saudi STS reduced the oil-supply tail their catch-up needs.",
+    "carry-is-king, rate-dove, and positioning-cynic receive 2027 CORRA — a different instrument. The hole is the USD_UP/CAD_DOWN leap: 'BoC will not deliver 84-130bp' does not require USD higher, CAD lower, or short SOFR_2027-03. USDCAD is not a 1y extreme and CAD shorts are already covering. Receiving leftover US hike premium can coexist with a Canada path-premium harvest; it does not require joining their FX tags or switching our book into CRA. We stay off CORRA because the overnight US-CA gap is the anchor, not the discrepancy.",
+    "catalyst-junkie long AONIA_2026-10, perma-bear long AONIA 2027 H1, and cross-merchant short AUDCAD (5y percentile 99.96 / z 2.76) are a different stretch: AU housing transmission versus already-restrictive AONIA 4.35. We set aud_view not_relevant because that is not the SOFR leftover-hike discrepancy. USD_UP hitchhiking on the delivered Fed hike does not own Mar-27 leftover US premium. Cross-merchant CAD_UP via BoC catch-up/energy pass-through is the same overlay we fade in US rates, and short AUDCAD fights 164.9bp 2Y / 206bp overnight carry. None of those expressions falsify long SOFR_2027-03."
+  ],
+  "attack": [
+    "Strongest opposing claim is trend-follower: price, policy and US gauges are aligned, so fading on 'priced in' is premature. Alignment of still-hot gauges with a hike that was already >90% priced is exactly what a fully priced meeting looks like. The new objects are (i) SOFR already at 3.85 and (ii) SR3H7 still +73bp, after (iii) the extreme oil-supply tail was reduced. Paying 4.58 is not riding that alignment; it is adding the energy-hawk overlay that the last-24h desk thesis already describes as keeping term-rate pressure elevated.",
+    "trend-follower and rate-hawk both need a data break or a higher-than-4.755 terminal before they will admit the front end overshot. That is trend-following a 1y 100th-percentile 2Y and a 0.6th-percentile 1y 2s10s flattening after the event is in the overnight fixing. Mean reversion here is not 'the Fed is done' and not a collapse to 3.85; it is partial giveback of additive 1H27 steps toward already-priced Dec-26 4.32. Their expression (pay Mar-27 or pay Sep-27 implied) owns the opposite of that residual.",
+    "USD_UP/CAD_DOWN seats (dollar-king, trend-follower, rate-hawk, plus CORRA receivers' FX tags) treat a 156bp overnight policy gap and a 140bp 2Y differential as if USDCAD were still cheap. Spot is only 74th/87th percentile and still negative over 3m. That is not a reversal-grade USD extreme, and it is a noisier, carry-supported expression of US-rate persistence. Rates remain cleaner; the fight is direction of leftover US 2027 hikes, not whether to mix in CAD labor 38 or oil beta.",
+    "value-guy and perma-bull attack Canada cheapness from opposite CRA sides. Both miss that CORRA 2.29 versus SOFR 3.85 is the level that makes CA-US 2Y look historically cheap. Fading that spread or paying Mar-27 CORRA is not a cleaner statement of post-FOMC US event-premium decay. Keep the book on SR3H7, not on a CA-US RV and not on paying CRA."
+  ],
+  "defense": [
+    "VERIFIED ANCHOR: overnight SOFR 3.85 after a delivered, >90% priced 25bp hike; SR3H7 implied 4.58 still prices ~73bp of extra tightening; Dec-26 already 4.32; US 2Y 4.76 is the 100th percentile 1y after +57bp 1m; Saudi STS reduced the extreme oil-supply tail; US gauges remain 72/75 so this is not a growth-break dove call. INFERENCE: residual Mar-27 premium is the crowded energy-hawk overlay, not the minimum path required by the printed 25bp. Plausible normalization is partial giveback toward packet Dec-26 4.32, not a collapse to 3.85. UNKNOWN: CME SR3/UST positioning and whether the next CPI/labor print re-arms a Dec-26 hike. That unknown is why size stays 40m of 100m, not a reason to pay the squeeze.",
+    "Do not fade merely because the 2Y printed a z-score. The reversal condition is the event now sitting in the overnight benchmark plus a reduced oil-supply tail against leftover 1H27 steps. Independent checks remain SOFR/SR3 path, US 2Y, 2s10s front-end flattening, still-hot gauges (which CAP size), and the oil-news split (tail reduced, residual energy risk preserved). Flow cannot be invoked as the squeeze's cause: CME_positioning is missing.",
+    "Rates stay selected versus short USDCAD: the discrepancy lives in the US policy path; USDCAD is only modestly rich and is carry-opposed as a fade. Alternative rates RV (pay CORRA vs receive SOFR to fade CA-US 2Y at -140bp) remains inferior because the 156bp overnight gap is the anchor. Sidecar open_positions is still [].",
+    "Concession, not withdrawal today: thesis is wrong if the next 25bp is clearly re-armed and delivered into the Dec-26 SR3 window while SR3H7 implied holds at or above the packet Jun-27 mid 4.72, or if US labor/inflation hard inputs re-accelerate from the retained Aug-26/Jul-26 prints and the oil-supply tail re-widens. Chop around 4.58 without a new hike signal is wrong-timing: extend horizon rather than add, rather than flip to trend-follower's pay. Book intent unchanged: OPEN 40m long duration SOFR_2027-03 at packet mid only."
+  ],
+  "trade_change": "unchanged",
+  "revised_trade": {
+    "instrument": "SOFR_2027-03",
+    "asset_class": "rates",
+    "expression_comparison": {
+      "rates_candidate": "Long duration / receive SOFR_2027-03 (CME SR3H7): packet implied_rate 4.58, price 95.42, +73bp versus NY Fed SOFR 3.85 as of 2026-09-17. This owns the leftover 1H27 hike premium after the delivered Sep FOMC. Alternative rates construction considered and rejected as inferior: pay CORRA vs receive SOFR to fade CA-US 2Y at -140bp (4th percentile 1y/5y), because the 156bp overnight CORRA-SOFR gap is an economic anchor, not an overshoot.",
+      "spot_candidate": "Short USDCAD (ECB cross spot 1.4010471204188482 as of 2026-09-18; 74th percentile 1y, 87th percentile 5y, +1.74% 1m). This is the FX expression of a fading US front-end premium versus CAD.",
+      "selected": "rates",
+      "rationale": "Rates is cleaner. The discrepancy lives in the US policy path and US 2Y event overshoot, which SR3 marks directly. USDCAD is only modestly rich (5y z 0.99, 1m move z 1.23) and embeds 140bp of 2Y USD-over-CAD carry plus oil/BoC residuals, so it is a noisier, carry-opposed expression of the same US-rate view. AUDCAD at a 5y 99.96th percentile is a different stretch (AU housing vs CAD) and is not the same discrepancy."
+    },
+    "context_build": {
+      "causal_mechanism": "After a fully priced 25bp hike, remaining front-end yield squeeze is the market still converting a known FOMC outcome plus an energy-shock narrative into extra 2027 hikes. Mean reversion requires that additive premium to fade once (i) the overnight benchmark has already jumped with the hike and (ii) the extreme oil-supply tail that justified more tightening is reduced. The trade tests whether Mar-27 SOFR implied (4.58) still needs ~three extra 25bp steps beyond the new 3.85 SOFR fixing, or whether that path was an overshoot around a known event.",
+      "path_to_current_price": "Verified path: Reuters recorded >90% probability of a 25bp hike into the Sep-16 FOMC; the Fed delivered 25bp to 3.75–4.00%; NY Fed SOFR was 3.62 on 2026-09-16 and 3.85 on 2026-09-17; US 2Y as of 2026-09-18 is 476bp, 100th percentile of the 1y sample, +9bp 1d (z 1.90) and +57bp 1m (z 3.29); SR3 strip as of the funding/tradable layer is 4.00 (2026-09), 4.32 (2026-12), 4.58 (2027-03), 4.72 (2027-06), peaking at 4.755 (2027-09). US 2s10s as of 2026-09-17 is +56bp, 0.6th percentile 1y, -18bp over 1m—the curve footprint of the same front-end selloff. Desk last-24h thesis: energy shock is keeping term-rate pressure elevated even where domestic growth is softer, reinforced by BoJ +25bp to 1.25% and a 6–3 BoE hold with three hike votes.",
+      "known_vs_new_information": "Known before the cutoff: August CPI had already kept a Fed tightening bias; the Sep-16 hike itself was >90% priced. New or newly transmitted: the hike actually printed and SOFR jumped 23bp into 3.85; Saudi ship-to-ship crude via Oman reduced the extreme oil-supply tail; US 2Y continued to 476bp / 100th percentile after the decision rather than giving back the event premium. A known hike cannot explain a new 1m 3.3-sigma 2Y squeeze unless the market is still adding an energy/global-tightening overlay on top of the already-priced 25bp.",
+      "market_implied_assumption": "SR3H7 at 4.58 versus SOFR 3.85 prices about 73bp of additional tightening by Mar-27 (roughly three more 25bp steps). SR3M7 at 4.72 and SR3U7 at 4.755 extend that to ~87–90.5bp by mid/late 2027. The sovereign 2Y at 4.76 is consistent with that 12m implied peak. Price therefore requires that US inflation/labor stay hot enough, and the energy shock persist enough, to deliver a multi-hike cycle after Sep-16—not a one-and-done.",
+      "market_assumption_disagreed_with": "Disagree that the residual 73bp of Mar-27 hike premium is still required now that the Sep hike is in the overnight fixing and the extreme oil-supply tail has been reduced. The disagreement is not that the Fed has become dovish, nor that US gauges are weak; it is that the post-decision front end overshot a known 25bp by converting a fading oil tail and global hawkish headlines into extra 2027 hikes.",
+      "price_decomposition": "Level versus change: overnight SOFR 3.85 is the new policy floor (level); the 1m +57bp in US 2Y and the +73bp SR3H7-over-SOFR spread are the change/premium. Tenor: the mispricing is in 1H27 SOFR (Dec-26 4.32 already contains the next hike; Mar-27 4.58 and Jun-27 4.72 are the additive steps). Curve: 2s10s flattened 18bp over 1m to a 1y extreme, so the marginal driver is the front end, not a parallel long-end term-premium shock. Cross-market: CA 2Y 327bp (98th percentile 1y) fell 8bp on the latest CA observation while US 2Y rose 9bp, so the squeeze is US-led rather than a uniform G10 hike. AU 2Y 499.9bp (99th percentile) is a separate housing/inflation story, not this trade.",
+      "historical_reference": {
+        "distribution": "US 2Y 476bp sits at the 100th percentile of the packet 1y (n=252) distribution with z 2.89; the 1m change of +57bp has z 3.29 on that same 1y change distribution. US 2s10s +56bp is the 0.6th percentile 1y (z -2.00) after a -18bp 1m flattening, but only the 65.5th percentile over 5y—so the curve extreme is a 1y-window fact, not a 5y inversion. CA-US 2Y at -140bp is the 3.8th/4.3rd percentile (1y/5y) and is cited as a discovery contrast: Canada is historically cheap versus the US because overnight CORRA 2.29 versus SOFR 3.85 already anchors a ~156bp policy gap, so that spread extreme is not this fade.",
+        "analogs": [
+          "Closest supplied analog set is US 2s10s 1m flattening of -18bp (2026-09-17). 2024-02-26: level -71bp, prior 1m -18, forward 1m +4bp / 3m +7bp (modest subsequent steepening from a deeply inverted starting point). 2022-04-08: level +20bp, prior 1m -18, forward 1m +13bp / 3m -21bp (1m steepening then 3m re-flattening). 2022-12-14: level -91bp, prior 1m -18, forward 1m +20bp / 3m +14bp (steepened). 2023-05-30: level -99bp, prior 1m -18, forward 1m -31bp / 3m -11bp (kept flattening). Two of four same-pace flattenings steepened in the next month; one kept flattening hard. The packet does not attach named historical_move_analogs directly to the US_2Y +57bp 1m level series; that absence is explicit.",
+          "Secondary analog on the related CA-US 2Y 1m move of -17bp: 2025-01-30 at almost the same spread level (-145bp) then forward 1m -5bp / 3m +25bp (spread mean-reverted over a quarter). 2024-12-18 at -130bp then 1m -3 / 3m -20 (spread cheapened further). Mixed, so the CA-US screen is not used as the trade."
+        ],
+        "regime_differences": "The 2022–23 2s10s analogs were often already inverted (levels -71 to -99bp) during a still-early hiking cycle with inflation far above target; today's 2s10s is positively sloped at +56bp after a 25bp hike that was >90% priced and with Core PCE described in the retained US inflation gauge as only modestly hotter than policy-neutral (Jul-26 +0.2% m/m). Aug-26 unemployment 4.1% unchanged, AHE +0.3% m/m / +3.1% y/y, payrolls +162k. BoJ has just hiked to a 31-year high 1.25% and BoE split 6–3, a more globally hawkish overlay than several 2024 analog dates. Energy-shock plumbing (pipeline attack then Saudi STS workaround) has no clean one-for-one match in those 2s10s episodes. Therefore analogs support only a partial front-end giveback, not a full unwind to pre-hike SOFR 3.62."
+      },
+      "independent_checks": [
+        "Policy path (SOFR/SR3): overnight 3.85; Dec-26 4.32 (+47bp); Mar-27 4.58 (+73bp); Jun-27 4.72 (+87bp); Sep-27 4.755 (+90.5bp). The Mar-27 contract is the cleanest single mark of leftover hikes after Sep.",
+        "Sovereign US 2Y: 476bp, 100th percentile 1y, 1m +57bp z 3.29, as of 2026-09-18—same direction as SR3, different dataset (Treasury vs futures).",
+        "US 2s10s: +56bp, 0.6th percentile 1y, 1m -18bp, as of 2026-09-17—curve confirmation that the selloff is front-end led.",
+        "Temperature gauges (retained dashboard_v8 plus hard inputs as of 2026-09-17): US inflation 72, labor 75, activity 69, consumer 74. This check argues AGAINST an aggressive dove fade and caps size/confidence: data are still hot, so the thesis is event-premium mean reversion, not a growth-break.",
+        "Oil/news: Saudi STS workaround off Oman reduced the extreme supply tail (2026-09-16), while a separate rollup still warns that energy-market shock absorbers are weakening. That disagreement is preserved: tail reduced, residual energy risk remains.",
+        "Cross-market: CA labor 38 / consumer 45 / inflation 55 with core near 2% and CORRA only 2.29, yet CORRA still prices ~84bp by Mar-27 and ~136bp to a ~3.65 terminal. That is the same energy-hawk overlay in Canada, but the overnight gap versus SOFR is an anchor, so Canada is triangulation not the expression."
+      ],
+      "flow_and_positioning_check": "CME_positioning is unavailable in the frozen packet; no SR3/Treasury futures ownership print exists. CFTC TFF as of 2026-09-15 is FX-only and partial. CAD leveraged funds are net short CAD (-39,022 contracts, -10.9% of OI) but that net is the 99th percentile 1y / z 1y +2.12 with a +16,426 weekly cover, so CAD shorts are not a crowded extreme. AUD open interest is a 99th percentile 1y/3y fact and is relevant to an AUD fade, not to SOFR. Inference: the US 2Y spike cannot be attributed to documented CTA/levered rates liquidation. Unknown: dealer SR3 or UST futures positioning. Do not treat plumbing as the explanation; also do not claim the front end is proven crowded in futures.",
+      "policy_path_check": {
+        "status": "available",
+        "relevant_countries": [
+          "US"
+        ],
+        "pricing_summary": "US: NY Fed SOFR 3.85 as of 2026-09-17 after a 23bp jump from 3.62 on 2026-09-16, consistent with the delivered 25bp hike to 3.75–4.00%. CME SR3 implieds: 2026-09 4.00 (+15bp), 2026-12 4.32 (+47bp), 2027-03 4.58 (+73bp), 2027-06 4.72 (+87bp), 2027-09 4.755 (+90.5bp), then a gentle decline through 2028. Funding_context maps those 3m/6m/12m points to SR3Z6/SR3H7/SR3U7. Canada and Australia paths are available but are not the selected expression: CORRA 2.29 with +84bp by Mar-27; AONIA 4.35 with +51bp by Mar-27. NZ policy path/rates are unavailable (RBNZ B2 HTTP 403).",
+        "rationale": "A short-dated US rates idea must be anchored in the live SOFR/SR3 path, not in the US 2Y percentile. The 2Y at 476bp is the discovery screen; SR3H7 at 4.58 is the tradable statement of leftover hikes. Policy-path status is ok for US in the frozen packet, so the expression is SOFR_2027-03 rather than a sovereign 2Y substitute."
+      }
+    },
+    "structure": "Long CME SR3H7, paper alias SOFR_2027-03, marked in implied-rate space (100 minus futures price). Packet mid implied_rate 4.58 / price 95.42 from funding_context.sr3 and tradable_rate_curves. Side long is long duration (P&L inverted in implied-rate space). Single-contract family locked to SOFR; no migration onto CORRA/AONIA or Treasuries.",
+    "direction": "long",
+    "thesis": "VERIFIED: Sep-16 FOMC hike 25bp to 3.75–4.00% was >90% priced into the decision; SOFR printed 3.85 on 2026-09-17 versus 3.62 the prior session; US 2Y 476bp is the 100th percentile 1y after a +57bp 1m change (z 3.29); SR3H7 implies 4.58, +73bp over SOFR; Saudi STS workaround reduced the extreme oil-supply tail; US inflation/labor gauges remain 72/75 with Aug unemployment 4.1% and payrolls +162k. INFERENCE: the residual Mar-27 hike premium is the crowded energy-hawk overlay described by the last-24h desk thesis, not the minimum path required by the delivered 25bp. A plausible normalization is a partial giveback of that overlay toward the already-priced Dec-26 implied 4.32, not a collapse to 3.85. UNKNOWN: CME SR3/UST positioning; whether August CPI's tightening bias plus still-hot gauges deliver the next 25bp inside the Dec-26 window. Sidecar open_positions is empty, so this is a new OPEN versus the $100m gross cap.",
+    "mispricing": "Mar-27 SOFR implied 4.58 still prices ~73bp of extra tightening after a hike that was already in the futures strip and is now in the overnight fixing, while the oil-supply tail that justified adding more hikes has been reduced. The 1m 3.3-sigma US 2Y squeeze is the screen; the mispricing is the leftover SR3 path, not the percentile itself.",
+    "why_now": [
+      "The Sep-16 25bp hike has printed and SOFR has jumped to 3.85, so the known event is in the overnight benchmark rather than still ahead.",
+      "US 2Y continued to a 1y high (476bp, 100th percentile) after that known event instead of giving back event premium.",
+      "Saudi STS crude via Oman is a same-week reduction in the extreme oil-supply tail that was feeding the additive hawkish overlay.",
+      "SR3H7 remains +73bp over the new SOFR fixing, so the tradable path still embeds two-to-three extra hikes that the mean-reversion case says were over-extrapolated.",
+      "Paper book is flat (sidecar open_positions []) while the seat pays official SOFR 3.85 ACT/360 on the full $100m anyway; deploying 40m is a sized expression of a live, post-event discrepancy."
+    ],
+    "evidence_refs": [
+      "mw_20260916_fomc_hike_pricing",
+      "rollup:Fed raises 25bp to 3.75–4.00%",
+      "rollup:August CPI keeps the Fed tightening bias intact",
+      "mw_20260916_saudi_oman_workaround",
+      "rollup:Energy-market shock absorbers weaken",
+      "last24:desk-thesis",
+      "last24:BoJ raises its policy rate to 1.25%",
+      "funding_context",
+      "policy_paths",
+      "policy:US",
+      "tradable_rate_curves",
+      "rates:US",
+      "market_state",
+      "temp:US:inflation",
+      "temp:US:labor",
+      "temp:US:activity",
+      "temp:US:consumer",
+      "fx:USDCAD",
+      "pos:cftc",
+      "research_method",
+      "paper_books"
+    ],
+    "horizon": "4–8 weeks, through the Dec-26 SR3 window and the next US inflation/labor prints that can validate or kill leftover 1H27 hike premium",
+    "entry": "Packet mid only: SOFR_2027-03 / SR3H7 implied_rate 4.58 (price 95.42) from frozen funding_context.sr3 and tradable_rate_curves; as_of aligned to the 2026-09-17 SOFR/SR3 layer. No broker quote.",
+    "target": "Partial mean reversion of Mar-27 implied toward the packet Dec-26 SR3Z6 implied 4.32, fading the extra ~26bp of 1H27 premium after the delivered Sep hike. Not a target of overnight SOFR 3.85.",
+    "stop": null,
+    "invalidation": "Thesis is wrong if the next 25bp is clearly re-armed and delivered into the Dec-26 SR3 window while SR3H7 implied holds at or above the packet Jun-27 mid 4.72, or if US labor/inflation hard inputs re-accelerate from the retained Aug-26/Jul-26 prints and the oil-supply tail re-widens. Wrong-timing, not wrong-thesis, if implied rates chop around 4.58 without a new hike signal; then extend horizon rather than add.",
+    "catalysts": [
+      "Post-FOMC event-premium decay now that SOFR has printed 3.85.",
+      "Follow-through of the Saudi STS workaround into a softer energy-pass-through narrative versus the BoC/Fed energy-shock overlay.",
+      "US 2s10s mean-reverting some of the 1y-extreme 18bp 1m flattening as the front end cheapens versus 10s.",
+      "Next US inflation/labor prints that fail to escalate beyond the already-known modest-hot Core PCE and +162k payrolls."
+    ],
+    "principal_risks": [
+      "US gauges are still hot (inflation 72, labor 75, consumer 74); August CPI already kept a tightening bias, so another 25bp can be delivered and SR3H7 can rally in yield.",
+      "Energy-market shock absorbers may still be weakening even if the extreme Saudi supply tail was reduced; a renewed oil spike re-justifies the hike path.",
+      "BoJ 1.25% and BoE 6–3 with three hike votes can keep a global hawkish term-rate bid that does not mean-revert on a US-only event fade.",
+      "CME positioning is missing; a still-under-positioned shorts-covering squeeze in UST/SR3 can extend the 2Y overshoot.",
+      "1-day as-of gap: US 2Y is 2026-09-18 versus SOFR/SR3 2026-09-17.",
+      "AUDCAD 5y extreme and AU housing are a separate stretch; not being in that trade is a missed-opportunity risk, not this book's risk."
+    ],
+    "confidence": 56
+  },
+  "paper_actions": [
+    {
+      "action": "OPEN",
+      "instrument": "SOFR_2027-03",
+      "side": "long",
+      "notional_usd": 40000000,
+      "asset_class": "rates",
+      "thesis": "Empty sidecar. Receive Mar-27 SOFR to fade leftover hike premium after a fully priced Sep-16 25bp hike, with SOFR already at 3.85 and SR3H7 still +73bp over that fixing.",
+      "rationale": "open_positions is []. Open $40m of the $100m gross cap in SOFR_2027-03 long duration (receive implied rate). Medium size because US inflation/labor gauges remain hot (72/75) and CME positioning is missing; not 100m because this is event-premium mean reversion, not a call that the Fed is done."
+    }
+  ],
+  "packet_sha256": "349a16aeeda7f4a89e10ba16c22c90311da76536984e943cf04249588d954e1e",
+  "subagent_calls": 0
+}

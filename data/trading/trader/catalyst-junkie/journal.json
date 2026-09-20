@@ -1,5 +1,54 @@
 {
-  "events": [],
+  "events": [
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2026-10",
+          "notional_usd": 55000000,
+          "position_id": null,
+          "rationale": "Sidecar open_positions is empty so this is not an ADD. Size 55m of the 100m gross cap so a ~20bp meeting repricing can clear weeks of 3.85% SOFR vig without maxing the book against inflation/oil two-way risk.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-09-19T22:36:50.082404-04:00",
+      "conviction": 59,
+      "decision_fingerprint": "de1caf88c3be1a9e07d49be97be94a987eb16909ef1dc04e524cbb492a68595d",
+      "event_id": "jde-1aa5b939973f4ce2",
+      "funding_view": null,
+      "invalidation": "RBA hikes or AONIA_2026-10 implied backs up through packet Nov 4.685.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-deddf5aa0c83"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-catalyst-junkie-pos-deddf5aa0c83"
+      ],
+      "memory_context_sha256": "2fb11cb4fb46321efb7f532237f2c2115dbf3b02c9bd9ce96b3de339559d1af1",
+      "outcome_links": [],
+      "owner_id": "catalyst-junkie",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-20T02:08:18Z",
+        "evidence_hash": "349a16aeeda7f4a89e10ba16c22c90311da76536984e943cf04249588d954e1e",
+        "overnight_run_id": null,
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260920T020818Z-ondemand"
+      },
+      "rationale": "FACT: Housing is already contracting on 16-Sep-2026 data while AONIA_2026-10 still prices 4.565 versus overnight 4.35. FACT: AU inflation gauge is 82 and oil is at a 1y extreme, which is the reason that hike is in the strip. INFERENCE: The next RBA decision is the dated repricing event for that 21.5bp; a hold or a housing-weighted statement should collapse Oct toward overnight rather than toward Nov 4.685. INFERENCE: 2022-09-28 is the comparable AU 2Y backup that subsequently rallied 37.4bp in 1m, but 2023-05-10 and 2025-12-22 show same-size backups that continued. UNKNOWN: meeting date, next CPI, and whether energy keeps the RBA on the 4.86 Mar-2027 terminal. This seat rejects waiting for AU 2Y mean reversion without that meeting/data path.",
+      "run_id": "tr-20260920T020818Z-ondemand",
+      "schema_version": 1,
+      "thesis": "FACT: Housing is already contracting on 16-Sep-2026 data while AONIA_2026-10 still prices 4.565 versus overnight 4.35. FACT: AU inflation gauge is 82 and oil is at a 1y extreme, which is the reason that hike is in the strip. INFERENCE: The next RBA decision is the dated repricing event for that 21.5bp; a hold or a housing-weighted statement should collapse Oct toward overnight rather than toward Nov 4.685. INFERENCE: 2022-09-28 is the comparable AU 2Y backup that subsequently rallied 37.4bp in 1m, but 2023-05-10 and 2025-12-22 show same-size backups that continued. UNKNOWN: meeting date, next CPI, and whether energy keeps the RBA on the 4.86 Mar-2027 terminal. This seat rejects waiting for AU 2Y mean reversion without that meeting/data path."
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_DECISION_JOURNAL"
 }

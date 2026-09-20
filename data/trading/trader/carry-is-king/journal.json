@@ -1,5 +1,54 @@
 {
-  "events": [],
+  "events": [
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 75000000,
+          "position_id": null,
+          "rationale": "Sidecar open_positions is empty so this is a new OPEN, not an ADD. 75m of 100m gross cap: enough that duration-1 implied-rate P&L can matter versus 3.85% SOFR vig, with 25m unspent because energy pass-through and CA 2Y continuation analogs can overwhelm. Locked CORRA/CRA family via 2027 H-Z strip average.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-09-19T22:36:50.082404-04:00",
+      "conviction": 62,
+      "decision_fingerprint": "b73ebaad73a8403a540289c9204082c155ce6ad343925782210a567bc3ed317c",
+      "event_id": "jde-195d30f45c544c16",
+      "funding_view": null,
+      "invalidation": "Trim/median leave 1.9\u20132.0% higher and CORRA 2027 implieds hold at or above the 3.40% strip / 3.13% Mar-27 entry because BoC delivers the priced catch-up.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-b97bddbdbd2d"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-carry-is-king-pos-b97bddbdbd2d"
+      ],
+      "memory_context_sha256": "345fdc8bc129dca77372f73d48d579848de216d51a111ad9809d478c6c608034",
+      "outcome_links": [],
+      "owner_id": "carry-is-king",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-20T02:08:18Z",
+        "evidence_hash": "349a16aeeda7f4a89e10ba16c22c90311da76536984e943cf04249588d954e1e",
+        "overnight_run_id": null,
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260920T020818Z-ondemand"
+      },
+      "rationale": "VERIFIED FACT: CORRA is 2.29% (2026-09-17); CRA 2027 contracts imply 3.13\u20133.595% (strip avg 3.40%); Canada August CPI-trim 1.9%, CPI-median 2.0%, headline 3.0%; employment \u221242k, wages +2.0% y/y, unemployment 6.4%; Fed hiked 25bp to 3.75\u20134.00% and SOFR printed 3.85% ACT/360; US 2Y 4.76% vs CA 2Y 3.27% = \u2212140bp; Saudi STS workaround modestly eased oil. INFERENCE: the 84\u2013130bp of 2027 BoC tightening is the market paying up for an energy-pass-through/Fed-catch-up narrative that labor and core have not validated; implied-minus-realized on a patient 2027 receiver is the carry. The same view in spot is long USDCAD (140bp 2Y), but AUDCAD is already a 5y extreme and CAD shorts are covering, so rates is cleaner. UNKNOWN: whether headline energy pass-through lifts trim/median enough to force the priced hikes; CA official curve and executable mids are absent. Reject paying CAD or buying stretched AUDCAD; those theses do not pay their carry.",
+      "run_id": "tr-20260920T020818Z-ondemand",
+      "schema_version": 1,
+      "thesis": "VERIFIED FACT: CORRA is 2.29% (2026-09-17); CRA 2027 contracts imply 3.13\u20133.595% (strip avg 3.40%); Canada August CPI-trim 1.9%, CPI-median 2.0%, headline 3.0%; employment \u221242k, wages +2.0% y/y, unemployment 6.4%; Fed hiked 25bp to 3.75\u20134.00% and SOFR printed 3.85% ACT/360; US 2Y 4.76% vs CA 2Y 3.27% = \u2212140bp; Saudi STS workaround modestly eased oil. INFERENCE: the 84\u2013130bp of 2027 BoC tightening is the market paying up for an energy-pass-through/Fed-catch-up narrative that labor and core have not validated; implied-minus-realized on a patient 2027 receiver is the carry. The same view in spot is long USDCAD (140bp 2Y), but AUDCAD is already a 5y extreme and CAD shorts are covering, so rates is cleaner. UNKNOWN: whether headline energy pass-through lifts trim/median enough to force the priced hikes; CA official curve and executable mids are absent. Reject paying CAD or buying stretched AUDCAD; those theses do not pay their carry."
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_DECISION_JOURNAL"
 }

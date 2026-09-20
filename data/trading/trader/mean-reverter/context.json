@@ -1,6 +1,6 @@
 {
   "active_lessons": [],
-  "as_of": "2026-09-19T22:08:18.974282-04:00",
+  "as_of": "2026-09-19T22:36:50.082404-04:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -29,8 +29,20 @@
     "total_realized_pnl_usd": 0.0,
     "wins": 0
   },
-  "memory_context_sha256": "7d0a4609dcb077f4da4170c65d352cb62218cc6d756b84e24f6da8bca3e83a7b",
-  "open_positions": [],
+  "memory_context_sha256": "3c0cf68f8bc5d0124e2da4b5b7b2f8789a7e0d52bf2b9978f4b6767f3fde037d",
+  "open_positions": [
+    {
+      "asset_class": "rates",
+      "conviction": 56,
+      "current_notional_usd": 40000000.0,
+      "entry_mark": 4.58,
+      "instrument": "SOFR_2027-03",
+      "opened_at": "2026-09-19T22:36:50.082404-04:00",
+      "position_id": "pos-1477172adb86",
+      "side": "long",
+      "trade_id": "trd-trader-mean-reverter-pos-1477172adb86"
+    }
+  ],
   "owner_id": "mean-reverter",
   "owner_type": "trader",
   "postmortems_due": [],

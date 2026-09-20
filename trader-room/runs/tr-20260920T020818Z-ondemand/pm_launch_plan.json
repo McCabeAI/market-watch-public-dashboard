@@ -1,0 +1,99 @@
+{
+  "agents": {
+    "grinder": {
+      "allowed_subagent_models": [
+        "grok-4.6",
+        "composer-2.5"
+      ],
+      "custom_agent": "grinder",
+      "custom_agent_path": ".cursor/agents/grinder.md",
+      "forbidden_principal_launch": {
+        "reason": "Task/subagent_type with model grok-4.6 or inherit emits cursor-grok-4.6-* runtime slugs rejected by enforce-subagent-models.sh",
+        "task_model_parameter": [
+          "grok-4.6",
+          "inherit",
+          "cursor-grok-4.6-high",
+          "cursor-grok-4.6-high-fast",
+          "cursor-grok-4.6-low",
+          "cursor-grok-4.6-low-fast",
+          "cursor-grok-4.6-medium",
+          "cursor-grok-4.6-medium-fast",
+          "cursor-grok-4.6-xhigh",
+          "cursor-grok-4.6-xhigh-fast"
+        ]
+      },
+      "frontmatter_model": "grok-4.6[]",
+      "launch_mechanism": "cursor_custom_agent",
+      "max_subagents": 3,
+      "model": "grok-4.6",
+      "pm_id": "grinder"
+    },
+    "pragmatist": {
+      "allowed_subagent_models": [
+        "grok-4.6",
+        "composer-2.5"
+      ],
+      "custom_agent": "pragmatist",
+      "custom_agent_path": ".cursor/agents/pragmatist.md",
+      "forbidden_principal_launch": {
+        "reason": "Task/subagent_type with model grok-4.6 or inherit emits cursor-grok-4.6-* runtime slugs rejected by enforce-subagent-models.sh",
+        "task_model_parameter": [
+          "grok-4.6",
+          "inherit",
+          "cursor-grok-4.6-high",
+          "cursor-grok-4.6-high-fast",
+          "cursor-grok-4.6-low",
+          "cursor-grok-4.6-low-fast",
+          "cursor-grok-4.6-medium",
+          "cursor-grok-4.6-medium-fast",
+          "cursor-grok-4.6-xhigh",
+          "cursor-grok-4.6-xhigh-fast"
+        ]
+      },
+      "frontmatter_model": "grok-4.6[]",
+      "launch_mechanism": "cursor_custom_agent",
+      "max_subagents": 3,
+      "model": "grok-4.6",
+      "pm_id": "pragmatist"
+    },
+    "swinger": {
+      "allowed_subagent_models": [
+        "grok-4.6",
+        "composer-2.5"
+      ],
+      "custom_agent": "swinger",
+      "custom_agent_path": ".cursor/agents/swinger.md",
+      "forbidden_principal_launch": {
+        "reason": "Task/subagent_type with model grok-4.6 or inherit emits cursor-grok-4.6-* runtime slugs rejected by enforce-subagent-models.sh",
+        "task_model_parameter": [
+          "grok-4.6",
+          "inherit",
+          "cursor-grok-4.6-high",
+          "cursor-grok-4.6-high-fast",
+          "cursor-grok-4.6-low",
+          "cursor-grok-4.6-low-fast",
+          "cursor-grok-4.6-medium",
+          "cursor-grok-4.6-medium-fast",
+          "cursor-grok-4.6-xhigh",
+          "cursor-grok-4.6-xhigh-fast"
+        ]
+      },
+      "frontmatter_model": "grok-4.6[]",
+      "launch_mechanism": "cursor_custom_agent",
+      "max_subagents": 3,
+      "model": "grok-4.6",
+      "pm_id": "swinger"
+    }
+  },
+  "chatgpt": "ingest-only; do not launch ChatGPT as a Cursor PM principal",
+  "evidence_cutoff": "2026-09-20T02:08:18Z",
+  "evidence_packet_sha256": "349a16aeeda7f4a89e10ba16c22c90311da76536984e943cf04249588d954e1e",
+  "hook_policy_line": "PM_MODEL_POLICY={\"version\":1,\"principal_model\":\"grok-4.6\",\"principal_launch\":\"cursor_custom_agent\",\"subagent_models\":[\"grok-4.6\", \"composer-2.5\"],\"max_subagents_per_pm\":3}",
+  "independence": "each PM reads only its own packet + memory; no mutual current-cycle visibility",
+  "launch_mechanism": "cursor_custom_agent",
+  "requested_principal": "grok-4.6",
+  "run_id": "tr-20260920T020818Z-ondemand",
+  "schema_version": 1,
+  "trader_room_run_id": "tr-20260920T020818Z-ondemand",
+  "type": "AUTOMATED_PM_LAUNCH"
+}

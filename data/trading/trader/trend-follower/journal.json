@@ -1,5 +1,54 @@
 {
-  "events": [],
+  "events": [
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 50000000,
+          "position_id": null,
+          "rationale": "Empty trend-follower book; deploy half the $100m gross cap in the cleanest aligned rates continuation. Funding vig is paid on the full $100m either way.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-09-19T22:36:50.082404-04:00",
+      "conviction": 63,
+      "decision_fingerprint": "62f302c04f31da47e1a58ccd0339289a34e9b570dc1850810fffbb35475475d9",
+      "event_id": "jde-68a6a8cc333f4fa8",
+      "funding_view": null,
+      "invalidation": "A US inflation or labor break that turns the SOFR strip and the US 2Y uptrend lower; housing-pain headlines alone do not count.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-662bff0986be"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-trend-follower-pos-662bff0986be"
+      ],
+      "memory_context_sha256": "6badd8ae7e3bd3f25f57288207b021126f68de59f668399506731cb79d66b211",
+      "outcome_links": [],
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-20T02:08:18Z",
+        "evidence_hash": "349a16aeeda7f4a89e10ba16c22c90311da76536984e943cf04249588d954e1e",
+        "overnight_run_id": null,
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260920T020818Z-ondemand"
+      },
+      "rationale": "FACT: FOMC hiked 25bp to 3.75\u20134.00%; SOFR 3.85; US 2Y 4.76 with +57bp 1m and +9bp 1d; SR3H7 implied 4.58; US gauges 69\u201375; August CPI kept the tightening bias; BoJ hiked to 1.25% and BoE held 6\u20133 with three hike votes. INFERENCE: when price, policy and revisions are this aligned, the higher-rate trend persists and the SR3 2027 peak near 4.755 is a premature fade, not a terminal. UNKNOWN: the next official US inflation/labor print and any non-linear credit accident (the 2023-02 analog). Ride continuation in SOFR, do not fade USDCAD or AU housing as if they were reversal signals.",
+      "run_id": "tr-20260920T020818Z-ondemand",
+      "schema_version": 1,
+      "thesis": "FACT: FOMC hiked 25bp to 3.75\u20134.00%; SOFR 3.85; US 2Y 4.76 with +57bp 1m and +9bp 1d; SR3H7 implied 4.58; US gauges 69\u201375; August CPI kept the tightening bias; BoJ hiked to 1.25% and BoE held 6\u20133 with three hike votes. INFERENCE: when price, policy and revisions are this aligned, the higher-rate trend persists and the SR3 2027 peak near 4.755 is a premature fade, not a terminal. UNKNOWN: the next official US inflation/labor print and any non-linear credit accident (the 2023-02 analog). Ride continuation in SOFR, do not fade USDCAD or AU housing as if they were reversal signals."
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_DECISION_JOURNAL"
 }

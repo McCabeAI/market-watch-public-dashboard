@@ -1,6 +1,6 @@
 {
   "active_lessons": [],
-  "as_of": "2026-09-19T22:08:18.955139-04:00",
+  "as_of": "2026-09-19T22:36:50.082404-04:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -29,8 +29,20 @@
     "total_realized_pnl_usd": 0.0,
     "wins": 0
   },
-  "memory_context_sha256": "a442f87bad2659798e1bd19b6411a7012b0474fbb7ab66017f362b006a0c4f51",
-  "open_positions": [],
+  "memory_context_sha256": "a09a24e16ba29fe483fdad3354bb292653f14fce3c23c1362d86fca851a2b845",
+  "open_positions": [
+    {
+      "asset_class": "rates",
+      "conviction": 60,
+      "current_notional_usd": 50000000.0,
+      "entry_mark": 4.75,
+      "instrument": "SOFR_2027-09",
+      "opened_at": "2026-09-19T22:36:50.082404-04:00",
+      "position_id": "pos-c9184707c12b",
+      "side": "long",
+      "trade_id": "trd-trader-rate-hawk-pos-c9184707c12b"
+    }
+  ],
   "owner_id": "rate-hawk",
   "owner_type": "trader",
   "postmortems_due": [],

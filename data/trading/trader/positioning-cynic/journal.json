@@ -1,5 +1,54 @@
 {
-  "events": [],
+  "events": [
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 40000000,
+          "position_id": null,
+          "rationale": "Ownership asymmetry is in the priced CA hiking cycle, not in USDCAD. Size $40m of the $100m gross cap so unknown CRA open interest and analog hike-continuation risk are not a full-allocation bet; remaining $60m stays undeployed versus the cap. Do not match carry 75m or dove 85m.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-09-19T22:36:50.082404-04:00",
+      "conviction": 56,
+      "decision_fingerprint": "8e4a60eddde9c327952a860149cb1bca650c15d1f5912a912e41870fd28d3441",
+      "event_id": "jde-abefeea2bf2848c5",
+      "funding_view": null,
+      "invalidation": "BoC delivers the priced 2027 hiking cycle or Canada core leaves the near-2% zone.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-142ad113f303"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-positioning-cynic-pos-142ad113f303"
+      ],
+      "memory_context_sha256": "2b98205f3cfb755ee9ae411a92fbdc096956d4c882fc76d57254bf53deef4e81",
+      "outcome_links": [],
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-20T02:08:18Z",
+        "evidence_hash": "349a16aeeda7f4a89e10ba16c22c90311da76536984e943cf04249588d954e1e",
+        "overnight_run_id": null,
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260920T020818Z-ondemand"
+      },
+      "rationale": "Fade the crowded energy-hawk / BoC-must-hike book by shorting 2027 implied CORRA (receiving Canada 2027). Verified: CRA prices +84bp by Mar-27 and +130.5bp by Dec-27 from 2.29 while Canada labor is 38 and core is near 2%; CAD specs have already covered to a 99th-percentile 1y net; the desk thesis says energy blocks easing even where growth is softer. Inference: that narrative is owned, so the better asymmetry is against further CA-rate upside, not with it. Unknown: CRA open interest and CME positioning, so this is not a claim the futures pit is empty. Explicitly not the trade: long AUDCAD at a 5y extreme, long JPY after a 99th-percentile leveraged-fund pile-in, or joining residual US duration shorts.",
+      "run_id": "tr-20260920T020818Z-ondemand",
+      "schema_version": 1,
+      "thesis": "Fade the crowded energy-hawk / BoC-must-hike book by shorting 2027 implied CORRA (receiving Canada 2027). Verified: CRA prices +84bp by Mar-27 and +130.5bp by Dec-27 from 2.29 while Canada labor is 38 and core is near 2%; CAD specs have already covered to a 99th-percentile 1y net; the desk thesis says energy blocks easing even where growth is softer. Inference: that narrative is owned, so the better asymmetry is against further CA-rate upside, not with it. Unknown: CRA open interest and CME positioning, so this is not a claim the futures pit is empty. Explicitly not the trade: long AUDCAD at a 5y extreme, long JPY after a 99th-percentile leveraged-fund pile-in, or joining residual US duration shorts."
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_DECISION_JOURNAL"
 }

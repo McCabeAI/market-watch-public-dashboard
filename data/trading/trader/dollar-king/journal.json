@@ -1,5 +1,54 @@
 {
-  "events": [],
+  "events": [
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDCAD",
+          "notional_usd": 55000000,
+          "position_id": null,
+          "rationale": "Empty sidecar. Deploy $55m of the $100m gross cap in the single cleanest USD spot: long USDCAD. Size is below cap to leave room if energy/CAD covering volatility rises, but large enough versus 3.85% SOFR vig if spot continues the incomplete 3m reversal. Trusted code must transact at the packet mid; no authored mark.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-09-19T22:36:50.082404-04:00",
+      "conviction": 64,
+      "decision_fingerprint": "03a2b624a6044869439952f52ce3de6b5a48f133afdfbfa5cc2f1778766cfb7e",
+      "event_id": "jde-03647384fee74622",
+      "funding_view": null,
+      "invalidation": "Fed path recast as one-and-done and/or BoC/energy re-tightens CAD enough to close the policy gap.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-5317bc96d4eb"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-dollar-king-pos-5317bc96d4eb"
+      ],
+      "memory_context_sha256": "37389b0cd840af40492de3bd98030bbe8ae60cf896ebe367db3648da24cb9123",
+      "outcome_links": [],
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-20T02:08:18Z",
+        "evidence_hash": "349a16aeeda7f4a89e10ba16c22c90311da76536984e943cf04249588d954e1e",
+        "overnight_run_id": null,
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260920T020818Z-ondemand"
+      },
+      "rationale": "FACT: Fed hiked 25bp to 3.75-4.00%; SOFR 3.85; US 2Y 4.76; SR3 still prices 4.32/4.58 at 3m/6m. FACT: CORRA 2.29; CA 2Y 3.27; CA-US 2Y -140bp; Canada labor gauge 38 versus US 75; Canada core near 2%. FACT: USDCAD 1.40105 is +1.74% 1m but still -1.25% 3m. INFERENCE: the USD-versus-CAD policy and labor gap is cleaner in spot than in rates because the sovereign/OIS differential is already extreme, while EURUSD/GBPUSD have already sold 1.9-2.1% 1m and AUDUSD still has AONIA/AU 2Y carry against a short. UNKNOWN: whether energy pass-through forces a faster BoC catch-up, and whether CAD short-covering completes without further USD upside.",
+      "run_id": "tr-20260920T020818Z-ondemand",
+      "schema_version": 1,
+      "thesis": "FACT: Fed hiked 25bp to 3.75-4.00%; SOFR 3.85; US 2Y 4.76; SR3 still prices 4.32/4.58 at 3m/6m. FACT: CORRA 2.29; CA 2Y 3.27; CA-US 2Y -140bp; Canada labor gauge 38 versus US 75; Canada core near 2%. FACT: USDCAD 1.40105 is +1.74% 1m but still -1.25% 3m. INFERENCE: the USD-versus-CAD policy and labor gap is cleaner in spot than in rates because the sovereign/OIS differential is already extreme, while EURUSD/GBPUSD have already sold 1.9-2.1% 1m and AUDUSD still has AONIA/AU 2Y carry against a short. UNKNOWN: whether energy pass-through forces a faster BoC catch-up, and whether CAD short-covering completes without further USD upside."
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_DECISION_JOURNAL"
 }

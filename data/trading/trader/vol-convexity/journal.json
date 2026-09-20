@@ -1,5 +1,50 @@
 {
-  "events": [],
+  "events": [
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-19T22:36:50.082404-04:00",
+      "conviction": 46,
+      "decision_fingerprint": "37b2b0dabaeb52242614558373be6fdc14d2a4d9623d6accec12aa307515fec1",
+      "event_id": "jde-9ea8bfa814af4104",
+      "funding_view": null,
+      "invalidation": "AUDNZD holds/makes new highs as RBA-hike pricing stays dominant, or live 3M put implied already prices the reversal.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "66f4434e9a4815e09a06be01d9e247a02f247f5b6ae723ce392f35d3908d7d1a",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-20T02:08:18Z",
+        "evidence_hash": "349a16aeeda7f4a89e10ba16c22c90311da76536984e943cf04249588d954e1e",
+        "overnight_run_id": null,
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260920T020818Z-ondemand"
+      },
+      "rationale": "FACT: AUDNZD is at a 5-year extreme because NZDUSD collapsed, not because AUDUSD broke out; AU housing is showing the tightening channel; AONIA still prices ~50bp more hikes; NZ GDP beat and an India FTA have not reversed NZD; VIX crushed after FOMC; WTI is 96th percentile with a two-way energy narrative; NZ yields are missing; no FX option marks exist. INFERENCE: the market is pricing a one-way RBA-over-RBNZ regime that is already internally inconsistent, so the next move is a distribution with both a delayed mean-reversion tail and a squeeze tail. Spot is dominated because timing is uncertain and event risk (housing prints, energy, next RBA/RBNZ, residual global hike path) is two-sided after realized FX vol stayed ~5%. UNKNOWN: 3M ATMF IV, 25d risk-reversal, quoted premium, and the RBNZ curve \u2014 all must be checked before any OPEN. The paper book therefore HOLDs; the debate trade is still the put.",
+      "run_id": "tr-20260920T020818Z-ondemand",
+      "schema_version": 1,
+      "thesis": "FACT: AUDNZD is at a 5-year extreme because NZDUSD collapsed, not because AUDUSD broke out; AU housing is showing the tightening channel; AONIA still prices ~50bp more hikes; NZ GDP beat and an India FTA have not reversed NZD; VIX crushed after FOMC; WTI is 96th percentile with a two-way energy narrative; NZ yields are missing; no FX option marks exist. INFERENCE: the market is pricing a one-way RBA-over-RBNZ regime that is already internally inconsistent, so the next move is a distribution with both a delayed mean-reversion tail and a squeeze tail. Spot is dominated because timing is uncertain and event risk (housing prints, energy, next RBA/RBNZ, residual global hike path) is two-sided after realized FX vol stayed ~5%. UNKNOWN: 3M ATMF IV, 25d risk-reversal, quoted premium, and the RBNZ curve \u2014 all must be checked before any OPEN. The paper book therefore HOLDs; the debate trade is still the put."
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_DECISION_JOURNAL"
 }

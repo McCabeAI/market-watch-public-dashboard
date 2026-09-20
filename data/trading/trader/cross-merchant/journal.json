@@ -1,5 +1,54 @@
 {
-  "events": [],
+  "events": [
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDCAD",
+          "notional_usd": 50000000,
+          "position_id": null,
+          "rationale": "Flat sidecar; deploy half of the $100m gross cap in the isolated AU-versus-CA spot cross. Size is capped below full allocation because carry opposes (164.9bp 2Y / 206bp overnight) and CA labor is weak, but SOFR 3.85% vig on the undeployed remainder still favors putting on a defined-invalidation expression rather than staying 100% cash.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-09-19T22:36:50.082404-04:00",
+      "conviction": 60,
+      "decision_fingerprint": "d9a000713d7f9c6c933f360be2a1ffe7e9e982cc855bc73bd244352af04e4d03",
+      "event_id": "jde-4853df355f6c4f45",
+      "funding_view": null,
+      "invalidation": "Housing channel reverses, BoC energy risk is withdrawn and CORRA hikes are priced out while AUDCAD holds the packet 5y extreme.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-00661cabb94a"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-cross-merchant-pos-00661cabb94a"
+      ],
+      "memory_context_sha256": "059606296131af3b844bfd8f0d0883ea85aa9393642e24e071d1f15181cd3bf3",
+      "outcome_links": [],
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-20T02:08:18Z",
+        "evidence_hash": "349a16aeeda7f4a89e10ba16c22c90311da76536984e943cf04249588d954e1e",
+        "overnight_run_id": null,
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260920T020818Z-ondemand"
+      },
+      "rationale": "VERIFIED FACT: AUDCAD 0.9975768872320596 as of 2026-09-18 sits at 5y percentile 99.96 / z 2.76 while AONIA 4.35 already exceeds CORRA 2.29 by 206bp, AU 2Y is 4.999% versus CA 2Y 3.35% on 2026-09-16 (-164.9bp CA-AU), Australian housing is contracting on stamp-duty, volumes and prices, Canada\u2019s core is near 2% with headline at 3%, and CORRA 3m still prices +84bp by Mar-2027 versus AONIA +51bp to 4.86. INFERENCE: USD expressions (short AUDUSD or long USDCAD) own Fed/USD/oil beta that both commodity currencies share; the residual that is actually extreme is AUD versus CAD. Spot is mapping a known carry advantage into a 5-year high after the RBA tightening channel has started to bite and while Canada still has the larger remaining implied hike path plus energy pass-through risk. UNKNOWN: NZ official yields, CA official zero curve, CME positioning, broker executables, and whether Saudi STS supply fully offsets BoC energy-pass-through. Fade AUDCAD, do not own USD.",
+      "run_id": "tr-20260920T020818Z-ondemand",
+      "schema_version": 1,
+      "thesis": "VERIFIED FACT: AUDCAD 0.9975768872320596 as of 2026-09-18 sits at 5y percentile 99.96 / z 2.76 while AONIA 4.35 already exceeds CORRA 2.29 by 206bp, AU 2Y is 4.999% versus CA 2Y 3.35% on 2026-09-16 (-164.9bp CA-AU), Australian housing is contracting on stamp-duty, volumes and prices, Canada\u2019s core is near 2% with headline at 3%, and CORRA 3m still prices +84bp by Mar-2027 versus AONIA +51bp to 4.86. INFERENCE: USD expressions (short AUDUSD or long USDCAD) own Fed/USD/oil beta that both commodity currencies share; the residual that is actually extreme is AUD versus CAD. Spot is mapping a known carry advantage into a 5-year high after the RBA tightening channel has started to bite and while Canada still has the larger remaining implied hike path plus energy pass-through risk. UNKNOWN: NZ official yields, CA official zero curve, CME positioning, broker executables, and whether Saudi STS supply fully offsets BoC energy-pass-through. Fade AUDCAD, do not own USD."
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_DECISION_JOURNAL"
 }

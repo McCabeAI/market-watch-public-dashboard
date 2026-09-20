@@ -1,0 +1,158 @@
+{
+  "type": "TRADER_ROOM_REBUTTAL",
+  "run_id": "tr-20260920T020818Z-ondemand",
+  "round": 2,
+  "agent": "vol-convexity",
+  "opponents": [
+    "trend-follower",
+    "catalyst-junkie",
+    "cross-merchant",
+    "perma-bear",
+    "rate-dove",
+    "perma-bull",
+    "dollar-king",
+    "rate-hawk"
+  ],
+  "own_original_ref": "submissions/vol-convexity.json",
+  "holes_in_opposing_case": [
+    "FACT: AUDUSD as-of 2026-09-18 is 0.7120, +0.20% 1m, 76.4th 1y / 84.3rd 5y; NZDUSD is 0.5711, -3.90% 1m, 12.9th 1y / 8.6th 5y; AUDNZD is 1.2468, +4.27% 1m, 99.80th 1y / 99.96th 5y, 20d/60d RV 5.09/5.28. INFERENCE: trend-follower’s AUD_UP / NZD_DOWN tags are not implied by paying SOFR_2027-03 (SR3H7 4.58 vs SOFR 3.85). A US hiking-continuation rates trade does not identify Australia as the high-beta winner or New Zealand as the residual loser. UNKNOWN: NZ official yields (packet 403). Mapping SOFR persistence onto AUDNZD continuation after a one-month cross jump, not a three-month trend (3m only +2.05%, z -0.19), is a currency-contamination hole.",
+    "FACT: rate-hawk’s instrument is SOFR_2027-09 at packet 4.755% then a slight 2028 decline; they state the disagreement is the US terminal, not the USD level, and call USDCAD polluted by oil and BoC. INFERENCE: NZD_DOWN and AUD_NEUTRAL are then still bolted on with no NZ policy path, no NZDUSD-versus-rates residual, and no AUDNZD analog table. A higher 2027 SOFR peak can print with NZD bouncing off 8.6th 5y after a GDP beat and India FTA. UNKNOWN: SR3 trader-class positioning (CME OI unavailable). The hawkish-US case does not close the AUDNZD distribution.",
+    "FACT: dollar-king longs USDCAD 1.40105 after +1.74% 1m but still -1.25% 3m, with CA-US 2Y at -140bp (1y 3.8th) and USDCAD~CA-US_2Y r^2 0.022. INFERENCE: that path discrepancy is a USD-versus-CAD rates-to-spot lag; it does not require NZD_DOWN, and AUD_NEUTRAL while AUDNZD sits at a 5y extreme is an expression dodge. They reject AUDCAD because it adds RBA/housing second-order risk — which is exactly the AUD-down tail they then refuse to bound. UNKNOWN: CA official curve, CME futures positioning, NZ rates, energy pass-through. Spot USDCAD does not own two-sided AU housing versus AONIA-hike event risk.",
+    "FACT: cross-merchant shorts AUDCAD 0.9976 at 1y/5y 99.80/99.96 while AONIA 4.35 vs CORRA 2.29 is +206bp overnight and CA-AU 2Y is -164.9bp, with carry explicitly opposing. AUDCAD 1m is only +1.95% versus AUDNZD 1m +4.27%; both crosses are 5y-extreme on percentile. INFERENCE: a linear short of a 5y high-beta cross with opposing carry, CA labor 38, AU inflation 82, and WTI 107.02 (96.4th, +24% 1m) versus a Saudi STS workaround is the textbook unbounded-squeeze expression. Dismissing AUDNZD because NZ yields and AUDNZD carry are unavailable is an argument against linear AU-NZ rates RV, not against bounded-premium AUD downside. Rate-dove’s own packet (2027 CORRA may not be delivered) is the CAD-leg failure mode of short AUDCAD. UNKNOWN: NZ official rates, CA official curve, CME positioning, executable broker mids, and any AUDCAD implied vol/skew/premium — also packet-null, so they cannot claim the spot short is cheaper than the put.",
+    "FACT: catalyst-junkie receives AONIA_2026-10 at 4.565 vs overnight 4.35 (+21.5bp, OI 21752) on 16-Sep housing (NSW stamp duty -24% y/y, volumes -18%, Sydney/Melbourne values more than 7% off peak) while AU inflation gauge is 82. INFERENCE: that is a dated meeting binary, not a distribution. Their own analog set is mixed (2022-09-28 then rallied; 2023-05-10 and 2025-12-22 continued). Their own expression note says AUDUSD can stay bid on copper/energy and CFTC leveraged-fund AUD longs even if the RBA holds — so a correct Oct hold can still fail to deliver AUD down, especially versus NZD if NZD remains the residual high-beta loser. nzd_view not_relevant ignores the actual stretched FX mapping. UNKNOWN: exact next RBA date, next CPI, whether energy keeps the Mar-27 4.86 terminal. Linear receive-Oct owns housing only if it wins the next meeting on schedule; 3M 25d AUD puts own delayed housing plus NZD-positive catalysts with max loss equal to premium once marks exist.",
+    "FACT: perma-bear receives the 2027-03/06 AONIA strip (4.86 to 4.94, ~51-59bp over cash 4.35) and tags AUD_DOWN, while stating AUDUSD 0.712 has not priced a housing recession (76th 1y, leveraged funds still adding). INFERENCE: receive-AU-rates is not AUD lower. Housing can reprice the 2027 H1 strip while energy/CFTC AUD bid and residual AONIA hikes keep the cross squeezed. Stretching the same housing view into 1-4 months of linear duration into inflation 82 and WTI 96th percentile is the left tail the put is designed to cap. No NZD bounce is owned. UNKNOWN: whether trimmed-mean 3.6% / energy forces one near hike.",
+    "FACT: rate-dove receives CORRA 2027-03/06/09/12 (3.13 to 3.595 vs CORRA 2.29) from CA labor 38, employment -42k, trim/median 1.9%/2.0%, then tags AUD_DOWN and NZD_DOWN. INFERENCE: a Canada energy-pass-through versus labor discrepancy does not identify AUD versus NZD. NZD_DOWN against NZ labor 32, Q2 GDP 0.2% q/q beat, India FTA covering ~95% of NZ exports, and NZDUSD already 12.9th/8.6th is unsupported; NZ policy path is unavailable. Currency spray from a CORRA strip is the hole. UNKNOWN: whether WTI 107.02 still forces BoC to validate 2027 CRA.",
+    "FACT: perma-bull pays CORRA_2027-03 at 3.13, tags NZD_HIGHER, then writes not to go long NZD with labor 32 and no NZ rates, and keeps AUD_NEUTRAL after the 16-Sep housing prints. INFERENCE: NZD_HIGHER is a conflict-tag convenience, not an expressed view. If their energy/risk-on channel lifts NZD with AUD still bid on copper/WTI, they have no AUDNZD expression and my puts need the relative leg. Paying Mar-27 CORRA does not resolve a 5y AUDNZD extreme built from NZD collapse. UNKNOWN: next BoC decision; whether Saudi workaround and core-near-2% let BoC wait.",
+    "FACT: none of the eight opposing packets contains 3M ATMF IV, 25-delta risk-reversal, strike, or premium mids for AUDNZD, AUDCAD, AUDUSD, or NZDUSD (no option surface in the frozen packet). INFERENCE: they cannot claim the reversal is already in skew, that theta is too expensive versus 20d/60d RV 5.09/5.28, or that linear spot/rates dominate on a premium-versus-carry basis. UNKNOWN: live implied versus realized. That check remains mandatory and null; it is not permission to OPEN spot as a substitute."
+  ],
+  "attack": [
+    "Strongest opposing AUD_UP/NZD_DOWN claim is trend-follower/rate-hawk/dollar-king: delivered Fed hike, hot US gauges, rising SR3 path, therefore fade-AUD-housing is premature and NZD stays the high-beta loser. That is a rates-to-FX mapping error. The packet’s pair split is NZD-driven, not an AUD breakout; AU housing (stamp duty -24%, values >7% off peak) is new information versus a still-hiking AONIA strip (Oct 4.565 / Mar-27 4.86), not a US-rates anecdote; NZ-positive news has not reversed NZDUSD. Paying SOFR does not require short NZD or long AUD.",
+    "Strongest opposing AUD_DOWN expression is cross-merchant short AUDCAD plus catalyst-junkie/perma-bear receive AONIA. Both are linear. Short AUDCAD at a 5y extreme with opposing 165bp 2Y / 206bp overnight carry, CA labor 38 versus AU inflation 82, and two-way energy is open-ended squeeze risk into the exact analog disagreement (2022-09-28 reverse vs 2023-05-10 continue). Receive AONIA_2026-10 / 2027 H1 is the same housing mechanism with a worse left tail if inflation 82 and WTI 96th keep the RBA hiking through Nov 4.685 / 4.94. Catalyst-junkie already admits AUDUSD can stay bid if the RBA holds. Linear AUD-down therefore fails on timing, on the NZD residual, or on the inflation tail — the three states a 3M 25d AUD put is built to own with capped premium.",
+    "NZD_DOWN tags from dollar-king, rate-hawk, and rate-dove are unearned. NZ yields are missing, AUDNZD carry is unavailable, NZDUSD is already 8.6th 5y, leveraged NZD shorts covered +15584 contracts on the week to only -1766 while price kept falling — a flow/price divergence, not a clean liquidation to chase. Spot-only and rates-first seats are treating NZD as a USD or CAD residual.",
+    "Post-FOMC VIX 15.44 (14.7th percentile, -2.27 points on 17 Sep) with AUDNZD realized still ~5% after a 4.27% 1m jump is cheap-looking event vol in equities, not proof that the next RBA/housing/energy/RBNZ window is a grind. Linear spot and duration assume a timetable. Options assume a distribution. Opponents never tested implied versus realized because implied is absent — then they still OPEN unbounded notionals."
+  ],
+  "defense": [
+    "FACT: sidecar open_positions is empty; packet has no FX implied-vol, 25d risk-reversal, strike, or premium mids; options remain untradeable at a paper mid. INFERENCE: the debate trade stays buy AUDNZD 3M 25-delta puts (long AUD downside / NZD upside convexity) because the discrepancy is path-and-timing, not a one-way fair-value gap. The paper book stays HOLD. Substituting an OPEN in AUDCAD, AUDNZD spot, or AONIA would abandon the remit and invent an expression the frozen marks do not support for this seat. UNKNOWN: 3M ATMF IV, 25d RR, quoted premium, RBNZ curve — still must be checked before any OPEN.",
+    "Strongest opposing claim conceded in part: AU inflation 82 and AONIA still pricing ~50bp extra tightening make a naked AUDNZD spot short dangerous in the near term. That is why Round-1 rejected the spot_candidate, not why AUD_UP is right. Mixed AU 2Y analogs (2022-09-28 then -37.4bp 1m; 2023-05-10 then +83.0bp 1m) plus energy two-way (WTI 96th versus Saudi STS workaround) are why bounded-premium 3M 25d puts dominate both a fade and a chase.",
+    "What would concede: (1) live 3M 25d put implied/premium already prices a larger AUDNZD reversal than 20d/60d realized 5.09/5.28 would justify; (2) AU housing stabilization plus hotter AU inflation keep AONIA hiking and AUDNZD makes a sustained new high with NZD-positive news still ignored; (3) NZDUSD extends lows as leveraged covering reverses. No numeric FX or vol stop is in the packet. Receive AONIA_2026-10 is the cleaner linear housing-path instrument if the arbiter wants a markable book this run; it is still inferior as a distribution expression and is not this seat’s selected family.",
+    "Funding vig is official SOFR 3.85 ACT/360 on the full $100m whether flat or deployed. That is not permission to OPEN an unmarkable option or a linear spot short this remit exists to challenge. Empty-book HOLD is the fail-closed competition action until premium/IV/strike mids exist."
+  ],
+  "trade_change": "unchanged",
+  "revised_trade": {
+    "instrument": "AUDNZD 3M 25D PUT",
+    "asset_class": "options",
+    "expression_comparison": {
+      "rates_candidate": "Receive AONIA / short AU 2Y (packet AU 2Y 4.999 on 2026-09-16, 99.2nd 1y / 99.8th 5y; AONIA 4.35 pricing Oct 4.565, Nov 4.685, Mar-27 4.86) as a housing-transmission fade of remaining RBA hikes. Inferior: the same 1m +39bp analog set is mixed (2022-09-28 then sold off; 2023-05-10 and 2022-01-28 then kept selling bonds), AU inflation gauge is 82, and NZ rates are unavailable so the relative-rate RV cannot be marked.",
+      "spot_candidate": "Short AUDNZD spot versus 2026-09-18 ECB fix 1.2468 (1y/5y percentile 99.8/99.96, 1m +4.27%, 20d RV 5.09). Inferior: continuation risk if RBA stays the tighter G10 high-beta bank, carry vs NZ cannot be observed, and timing of housing versus inflation is unresolved.",
+      "selected": "options",
+      "rationale": "The discrepancy is path-and-timing, not a one-way fair-value gap. Spot short of AUDNZD has linear losses if AU inflation and the AONIA strip keep AUD bid through a 5y high; directional long AUDNZD ignores housing, NZ GDP beat, India FTA and NZ labor 32. A 3M 25-delta AUD put (NZD call) caps loss at premium, owns delayed AU housing plus NZD-positive catalysts, and still pays if the next move is a jump rather than a grind. Rates receive-AU is the same housing view with worse left-tail if inflation keeps the RBA hiking. No implied-vol or premium mids exist, so options dominate as the debate expression and remain untradeable in the paper book until marks appear."
+    },
+    "context_build": {
+      "causal_mechanism": "Verified: the RBA tightening channel is already hitting Australian housing (NSW stamp-duty receipts -24% y/y, transactions -18%, Sydney/Melbourne values more than 7% from peak) while AU inflation temperature remains 82 and AONIA still prices roughly 50bp of extra tightening by March 2027. NZ inflation is also hot (gauge 80) but labor is 32, Q2 GDP slowed to 0.2% q/q yet beat forecasts, and parliament passed an India FTA covering about 95% of NZ exports. Inference: AUDNZD’s extreme is the market treating Australia as the cleaner high-beta tightener and New Zealand as the weaker high-beta, even though the new AU information is housing damage and the new NZ information is a growth beat plus a trade catalyst. Unknown: RBNZ path (official NZ yields 403). Options own the two-way transmission: either housing/NZ news reprice the cross lower, or residual RBA hawkishness and energy keep squeezing it higher.",
+      "path_to_current_price": "Verified as of 2026-09-18 FX / 2026-09-16 AU rates. AUDNZD spot 1.2468, 1d +0.65% (z 1.99), 5d +1.19%, 1m +4.27% (log 4.18%, z 2.84), 3m only +2.05% (z -0.19) — the stretch is a one-month jump, not a three-month trend. AUDUSD 0.7120 is only 76th percentile 1y / 84th 5y and +0.20% 1m. NZDUSD 0.5711 is 13th percentile 1y / 8.6th 5y, -3.90% 1m, -0.56% 1d. So the cross high is NZD-weakness, not an AUD melt-up. AU 2Y rose to 4.999 (99.2nd 1y) with +39bp 1m then eased 5.5bp on 16 Sep. Fed hiked 25bp to 3.75-4.00 on 16 Sep after >90% pricing; SOFR jumped to 3.85 on 17 Sep; US 2Y 4.76 (100th percentile) and US 10Y 5.01 (99.8th). BoJ hiked to 1.25%. VIX fell 2.27 points to 15.44 (14.7th percentile) on 17 Sep — equity vol crushed after the Fed event. WTI 107.02 on 15 Sep (96th percentile, +24% 1m log). Inference: AUDNZD squeezed while global term rates repriced higher and then equity vol was sold; the cross did not get a vol-event premium in realized FX (20d RV only 5.09).",
+      "known_vs_new_information": "Known: global tightening bias, energy shock, AU and NZ inflation gauges already hot, Fed hike was >90% priced into 16 Sep. New now: realized Fed hike to 3.75-4.00 and SOFR 3.85; documented AU housing tax/price break; NZ Q2 GDP 0.2% beat; NZ-India FTA passage; Saudi STS workaround that reduces the extreme oil-supply tail while a separate rollup says energy shock absorbers are weakening; BoJ 25bp to a 31-year high; BoE hold with 3 hike votes; VIX crush after FOMC. The AUDNZD 1m jump continued through the NZ-positive headlines and the housing evidence, which is why the move is not just old inflation news.",
+      "market_implied_assumption": "Price requires that RBA tightening still dominates AUD versus NZD even after housing is breaking: AONIA 4.35 to 4.86 by Mar-27, AU 2Y at 4.999, AUDNZD at a 5y extreme. It also requires NZD to stay the residual high-beta loser despite a GDP beat, an India FTA, and CFTC leveraged-fund covering (NZD leveraged net weekly +15584 contracts to only -1766). Global pricing after the Fed event is more hikes (SR3 Dec-26 4.32, Mar-27 4.58, Sep-27 4.755) with cheap-looking equity vol (VIX 15.44). Implied FX vol, 25d risk-reversal and option premia are not in the packet — unknown whether the cross already pays for a reversal.",
+      "market_assumption_disagreed_with": "Disagree that the next AUDNZD move is a one-direction grind that spot should own. The priced assumption — Australia remains the unambiguously tighter, cleaner high-beta and NZD has no bounce catalyst — is already in conflict with housing transmission, NZ labor 32, a GDP beat and an FTA. The opposite spot long (more AUDNZD upside) assumes inflation/energy keep dominating without a vol event. Both linear expressions are wrong when the mechanism can resolve either as a delayed AUD down-leg or a further RBA-led squeeze.",
+      "price_decomposition": "Level versus change: AUDNZD level is 100th percentile on the 252-observation screen (z 1.96) because of a 1m +4.18% log move (z 2.84), while the 3m log move is only +2.03% (z -0.19). Pair components: AUDUSD almost unchanged on the month (+0.20%, 76th %ile); NZDUSD -3.90% (13th %ile). Rates component: AU-US 2Y only +26bp (25th %ile 1y) and AUDUSD vs AU-US 2Y residual is weak (r^2 0.007); AUDNZD vs AU-NZ 2Y is insufficient because NZ yields are missing. Vol component: AUDNZD 20d RV 5.09 / 60d 5.28 versus a 4.27% 1m spot move — jumpy relative to recent realized, not a high-vol regime. Carry screen for AUDNZD is unavailable. Energy: WTI 107 is a 96th-percentile inflator that can still support AUD on the commodity side. Marginal driver of the cross high is NZD underperformance plus residual RBA-hike pricing, not an AUDUSD breakout.",
+      "historical_reference": {
+        "distribution": "AUDNZD 1y percentile 99.80, 5y percentile 99.96, z_1y 1.94, z_5y 3.12, 20d RV 5.09. AUDUSD 1y 76.4 / 5y 84.3. NZDUSD 1y 12.9 / 5y 8.6. AU 2Y 4.999, 1y percentile 99.21, 5y 99.80, 1m +39.1bp (z 1.53). VIX 15.44, percentile 14.7. WTI 107.02, percentile 96.4. These are discovery locations, not the thesis.",
+        "analogs": [
+          "AU 2Y analog 2022-09-28: prior 1m +39.2bp from 3.572, then forward 1m -37.4bp and 3m -15.0bp — a post-spike yield reversal while housing/tightening was biting in that cycle.",
+          "AU 2Y analog 2023-05-10: prior 1m +38.8bp from 3.129, then forward 1m +83.0bp and 3m +68.0bp — continuation higher in yields, i.e. the hike impulse was not finished.",
+          "AU 2Y analog 2022-01-28: prior 1m +38.9bp from 0.876, then +14.6bp / +168.4bp — early-cycle continuation.",
+          "AU 2s10s analog 2022-11-09: prior 1m -13.0bp, then further flattening -20.1bp / -22.2bp. No packet analog table exists for AUDNZD 1-month FX moves themselves; the rates analogs are the closest named episodes and they disagree on the forward sign."
+        ],
+        "regime_differences": "Today’s AU 2Y is already 4.999, not 0.88-3.57. Housing damage is already in the news tape, not just a forecast. Inflation gauges remain 82 AU / 80 NZ. Energy is a live 96th-percentile WTI shock with a Saudi workaround that cuts the extreme tail. Fed, BoJ and a split BoE have just printed. NZ official yields and therefore AU-NZ 2Y and AUDNZD-rate beta are missing, so 2022-style relative-rate analogs cannot be completed. Equity vol has already been crushed (VIX 15.44) after FOMC, which is a different vol regime than a 2022 hiking-vol expansion. Mixed analog outcomes plus those breaks are why bounded-premium options dominate a spot fade or a spot chase."
+      },
+      "independent_checks": [
+        "FX decomposition: AUDUSD not extreme (76th 1y, +0.2% 1m) versus NZDUSD weak (13th 1y, -3.9% 1m) identifies the AUDNZD high as NZD-driven.",
+        "Policy versus housing: AONIA still prices ~50bp of extra hikes into Mar-27 while NSW stamp duty -24% y/y and home values more than 7% off peak — the transmission is on, the path is still hawkish.",
+        "Temperature split: AU inflation 82 versus activity 54 / consumer 48; NZ inflation 80 versus labor 32 / activity 47 / consumer 38 — both countries are hot prices versus cooler real-side gauges, a two-way CB setup.",
+        "Positioning versus price: AUD leveraged funds net +61135 and adding +11356 week with OI at 99th 1y; NZD leveraged funds covering +15584 week to a small net short while asset managers are net long NZD at 97th 1y — not a clean one-way speculative pile into AUDNZD, and NZD covering has not yet shown up in NZDUSD.",
+        "Energy tape is two-way: WTI 107.02 (96th %ile, +24% 1m) versus Saudi Oman STS workaround reducing the extreme supply tail and a rollup that shock absorbers are weakening."
+      ],
+      "flow_and_positioning_check": "CFTC TFF as of 2026-09-15 (age 5 days). AUD open interest 493141, 99.0th 1y / 99.7th 3y, +37673 week. Leveraged funds net long AUD 61135 (12.4% of OI), not an extreme 1y percentile (31.7) but adding. Asset managers net short AUD -46396. NZD OI 135122, 93rd 1y / 98th 3y; leveraged funds only -1766 net after covering 15584 on the week; asset managers net long NZD +10170 (97th 1y). CME positioning is unavailable. Inference: flow can explain some AUD bid and some NZD squeeze risk if covering stops, but it does not uniquely explain a 5y AUDNZD extreme, and NZD covering alongside still-falling NZDUSD is a price/flow divergence. Non-fundamental plumbing is a risk to a spot short, which is another reason to prefer long puts over short cash.",
+      "policy_path_check": {
+        "status": "available",
+        "relevant_countries": [
+          "AU",
+          "NZ",
+          "US",
+          "CA"
+        ],
+        "pricing_summary": "AU: AONIA 4.35 (17-Sep-2026); 30d strip Sep 4.355, Oct 4.565 (+21.5bp chg), Nov 4.685, Dec 4.725, Mar-27 4.86, then ~4.94 into mid-2027. Bank bills 1m/3m/6m 4.41/4.68/5.07. US: SOFR 3.85 after the 16 Sep hike to 3.75-4.00; SR3 Dec-26 4.32, Mar-27 4.58, Sep-27 4.755; US 2Y 4.76, 10Y 5.01. CA: CORRA 2.29; MX strip Oct 2.305, Nov 2.43, Dec 2.58; 3m CRA Mar-27 3.13, Jun-27 3.365. NZ: policy path and sovereign yields unavailable (RBNZ B2 HTTP 403); NZ-US and AU-NZ spreads null.",
+        "rationale": "AU and US paths are live and still price additional tightening after last week’s events; that is what keeps a spot short of AUDNZD dangerous in the near term. NZ cannot be used as a rates-RV leg. The options expression does not require a short-end NZ mark; it requires that the unresolved AU housing-versus-hikes and NZ growth-versus-inflation paths can move the cross discontinuously. A 2Y AU percentile is not treated as a substitute for the AONIA strip, which was inspected first."
+      }
+    },
+    "structure": "Buy 3-month AUDNZD 25-delta puts (long AUD downside / NZD upside convexity). Preferred live construction once marks exist: compare outright 25d put versus 25d/10d put spread versus 25d risk-reversal (buy AUD puts, sell AUD calls) versus a 3M strangle if 25d skew already prices the downside. Do not sell the 25d call unless 25-delta risk-reversal, ATMF implied, and 20d/60d realized (5.09/5.28) are all observed. Strike, premium, implied vol and barrier levels are packet-null and must stay null.",
+    "direction": "buy_puts",
+    "thesis": "FACT: AUDNZD is at a 5-year extreme because NZDUSD collapsed, not because AUDUSD broke out; AU housing is showing the tightening channel; AONIA still prices ~50bp more hikes; NZ GDP beat and an India FTA have not reversed NZD; VIX crushed after FOMC; WTI is 96th percentile with a two-way energy narrative; NZ yields are missing; no FX option marks exist. INFERENCE: the market is pricing a one-way RBA-over-RBNZ regime that is already internally inconsistent, so the next move is a distribution with both a delayed mean-reversion tail and a squeeze tail. Spot is dominated because timing is uncertain and event risk (housing prints, energy, next RBA/RBNZ, residual global hike path) is two-sided after realized FX vol stayed ~5%. UNKNOWN: 3M ATMF IV, 25d risk-reversal, quoted premium, and the RBNZ curve — all must be checked before any OPEN. The paper book therefore HOLDs; the debate trade is still the put.",
+    "mispricing": "Not a claimed IV-versus-RV number (IV is absent). The mispricing is expression and distribution: linear AUDNZD short assumes the housing/NZ catalysts win on a timetable the analog set does not support; linear long assumes AU inflation 82 and energy keep paying after a 5y extreme. Bounded-premium 3M 25d puts own both the delayed AUD down-leg and jump risk, with max loss equal to premium rather than an open-ended squeeze. If live 3M implied already embeds a large AUDNZD reversal or rich 25d put skew versus 5% realized, the edge is gone — that check is mandatory and currently null.",
+    "why_now": [
+      "AUDNZD just printed a 1m +4.27% jump to 5y 99.96th percentile while 3m is not stretched, so the location is fresh rather than a year-long grind.",
+      "AU housing evidence and NZ GDP/FTA are new relative to the still-hawkish AONIA strip and have not yet shown up in the cross.",
+      "Post-FOMC/BoJ event vol was sold in equities (VIX 15.44) while AUDNZD realized stayed ~5% despite a 4% monthly move — next catalysts are path-dependent, not the just-expired meetings.",
+      "CFTC NZD leveraged covering has not lifted NZDUSD, leaving a flow/price gap a put can own if the next impulse is a NZD bounce rather than another liquidation."
+    ],
+    "evidence_refs": [
+      "fx:AUDNZD",
+      "fx:AUDUSD",
+      "fx:NZDUSD",
+      "market_state",
+      "policy:AU",
+      "policy:US",
+      "policy:CA",
+      "policy:NZ",
+      "policy_paths",
+      "tradable_rate_curves",
+      "rates:AU",
+      "rates:NZ",
+      "rates:US",
+      "pos:cftc",
+      "temp:AU:inflation",
+      "temp:AU:activity",
+      "temp:AU:consumer",
+      "temp:NZ:inflation",
+      "temp:NZ:labor",
+      "temp:NZ:activity",
+      "mw_20260916_au_housing_tightening",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "rollup:New Zealand Q2 GDP slows to 0.2% q/q but beats forecasts",
+      "mw_20260916_nz_india_trade",
+      "last24:desk-thesis",
+      "mw_20260916_fomc_hike_pricing",
+      "rollup:Fed raises 25bp to 3.75–4.00%",
+      "mw_20260916_saudi_oman_workaround",
+      "rollup:Energy-market shock absorbers weaken",
+      "last24:BoJ raises its policy rate to 1.25%",
+      "research_method"
+    ],
+    "horizon": "1-3 months (through the next RBA/RBNZ and housing/CPI window; 3M option tenor)",
+    "entry": null,
+    "target": null,
+    "stop": null,
+    "invalidation": "Thesis invalid if AU housing stabilization plus hotter AU inflation keep AONIA hiking and AUDNZD makes a sustained new high with NZD-positive news still ignored; or if live 3M 25d put implied/premium already prices a larger reversal than 20d/60d realized 5.09/5.28 would justify. No numeric FX or vol stop is sourced in the packet.",
+    "catalysts": [
+      "Further AU housing/credit evidence that the RBA channel is biting versus an AONIA strip still at 4.86 by Mar-27.",
+      "NZ data follow-through after the 0.2% q/q GDP beat and India FTA, or any RBNZ communication once official NZ yields are available.",
+      "Energy path: WTI already 107; Saudi workaround versus weakening shock absorbers can jump both AUD and inflation tails.",
+      "Next RBA/Fed/BoC prints against strips that still price hikes (AONIA +50bp, SR3 Dec 4.32, CORRA Mar-27 3.13)."
+    ],
+    "principal_risks": [
+      "No FX implied-vol, skew or premium in the packet — the structure is untradeable at a mid until those marks exist; theta could already be expensive.",
+      "RBA remains the tighter high-beta bank (AU inflation 82, AONIA hiking) and AUDNZD squeezes through the 5y high; puts expire.",
+      "NZD liquidation resumes (leveraged covering can reverse) and NZ-positive news stays ignored.",
+      "Energy/commodity bid keeps AUD supported versus NZD even if housing is weak.",
+      "NZ rates gap and stale NZ_rates market-state status mean the relative-rate engine of the cross is not observable.",
+      "SOFR funding vig of 3.85% ACT/360 on undeployed $100m argues against waiting forever, but inventing an options OPEN without a premium mid is worse than HOLD."
+    ],
+    "confidence": 46
+  },
+  "paper_actions": [
+    {
+      "action": "HOLD"
+    }
+  ],
+  "packet_sha256": "349a16aeeda7f4a89e10ba16c22c90311da76536984e943cf04249588d954e1e",
+  "subagent_calls": 0
+}

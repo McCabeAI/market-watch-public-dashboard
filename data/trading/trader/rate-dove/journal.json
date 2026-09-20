@@ -1,5 +1,54 @@
 {
-  "events": [],
+  "events": [
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027H-Z",
+          "notional_usd": 85000000,
+          "position_id": null,
+          "rationale": "Sidecar open_positions is empty, so OPEN rather than ADD. Long duration on the locked 2027 CRA strip expresses underpriced Canadian easing versus a 2.29 CORRA benchmark and 38 labor score. $85m of the $100m gross cap leaves $15m unused against energy-pass-through risk while still paying the 3.85% SOFR vig on the full allocation.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-09-19T22:36:50.082404-04:00",
+      "conviction": 59,
+      "decision_fingerprint": "84574547459f84f60067a263dc1b9d0ade8a5c8f876758bf83b7bdfa1494bd4b",
+      "event_id": "jde-ea6c43e8b72d4ae6",
+      "funding_view": null,
+      "invalidation": "BoC delivers or signals the priced 2027 mid-3s path, or trim/median leave ~2% while jobs stop contracting.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-9849cf751c27"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-rate-dove-pos-9849cf751c27"
+      ],
+      "memory_context_sha256": "7ed0215d4ac8de01d1c52738c92f4ace0c0311d878a7ba68f7c39c4495a54efa",
+      "outcome_links": [],
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-20T02:08:18Z",
+        "evidence_hash": "349a16aeeda7f4a89e10ba16c22c90311da76536984e943cf04249588d954e1e",
+        "overnight_run_id": null,
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260920T020818Z-ondemand"
+      },
+      "rationale": "FACT: overnight CORRA is 2.29 and the 2027 3m strip implies 3.13-3.595 while 1m CORRA is only 2.58 by December; August employment was -42k, wages +2.0% y/y, CPI-trim/median 1.9%/2.0%. INFERENCE: 2027 CRA is pricing an energy-pass-through hiking cycle that domestic labor and core do not require, so receiving that window is the underpriced-easing trade. UNKNOWN: whether WTI 107.02, weaker energy shock-absorbers, and Q2 GDP +0.8% still force BoC to validate the strip. Expression is rates-first; spot USDCAD long is the alternative and is inferior because oil and CAD-short covering can hold CAD up even if CRA 2027 reprices lower.",
+      "run_id": "tr-20260920T020818Z-ondemand",
+      "schema_version": 1,
+      "thesis": "FACT: overnight CORRA is 2.29 and the 2027 3m strip implies 3.13-3.595 while 1m CORRA is only 2.58 by December; August employment was -42k, wages +2.0% y/y, CPI-trim/median 1.9%/2.0%. INFERENCE: 2027 CRA is pricing an energy-pass-through hiking cycle that domestic labor and core do not require, so receiving that window is the underpriced-easing trade. UNKNOWN: whether WTI 107.02, weaker energy shock-absorbers, and Q2 GDP +0.8% still force BoC to validate the strip. Expression is rates-first; spot USDCAD long is the alternative and is inferior because oil and CAD-short covering can hold CAD up even if CRA 2027 reprices lower."
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_DECISION_JOURNAL"
 }

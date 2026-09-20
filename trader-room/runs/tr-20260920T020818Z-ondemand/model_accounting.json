@@ -1,76 +1,27 @@
 {
-  "run_id": "tr-20260920T020818Z-ondemand",
-  "parent": {
-    "model": "grok-4.6",
-    "calls": 1,
-    "role": "acp_orchestrator"
-  },
-  "round1": {
-    "model": "grok-4.6",
-    "calls": 14,
-    "composer_2_5_children": 0,
-    "seats": [
-      {
-        "seat": "perma-bull",
-        "bcId": "bc-dcacebb6-2ffd-524a-8538-62b7877e7f8d"
-      },
-      {
-        "seat": "perma-bear",
-        "bcId": "bc-b5275bae-c70a-5561-81d4-21694ea33541"
-      },
-      {
-        "seat": "dollar-king",
-        "bcId": "bc-bafe5443-89cc-512c-9b40-0b9ca0123e88"
-      },
-      {
-        "seat": "cross-merchant",
-        "bcId": "bc-fd373416-bb6b-5f77-8f1d-a6dbf7e79de9"
-      },
-      {
-        "seat": "carry-is-king",
-        "bcId": "bc-a95ddafd-d9f6-5780-a7c8-25c612b858f5"
-      },
-      {
-        "seat": "rate-hawk",
-        "bcId": "bc-b54ba999-f39f-556a-b4bf-1d590fdf1d71"
-      },
-      {
-        "seat": "rate-dove",
-        "bcId": "bc-6a37bb07-6474-5c9f-8949-67198e795f24"
-      },
-      {
-        "seat": "value-guy",
-        "bcId": "bc-4eaeb6ab-93ac-5984-83de-2375e71e6b0c"
-      },
-      {
-        "seat": "trend-follower",
-        "bcId": "bc-ef8567e2-a89d-5520-87ab-892d867f1816"
-      },
-      {
-        "seat": "mean-reverter",
-        "bcId": "bc-4fd155f9-ba2f-5812-827b-c3dfc33796ab"
-      },
-      {
-        "seat": "positioning-cynic",
-        "bcId": "bc-58522476-f6e8-5e62-8e4d-ca6d91f26b2c"
-      },
-      {
-        "seat": "catalyst-junkie",
-        "bcId": "bc-e281b3b0-80ba-5be2-b6ee-33d02e758158"
-      },
-      {
-        "seat": "vol-convexity",
-        "bcId": "bc-fb17d345-54e1-5b24-bdf0-0b80cbeb0adf"
-      },
-      {
-        "seat": "no-trade-skeptic",
-        "bcId": "bc-a319b921-645a-58bb-91fd-b73e45db01ab"
-      }
-    ]
+  "ceilings": {
+    "job_composer": 37,
+    "job_grok": 32,
+    "job_total": 69,
+    "projected_if_plan_holds": {
+      "composer": 0,
+      "grok": 31,
+      "total": 31
+    },
+    "used_after_finalize": {
+      "composer": 0,
+      "grok": 28,
+      "total": 28
+    },
+    "used_after_round1": {
+      "composer": 0,
+      "grok": 15,
+      "total": 15
+    }
   },
   "conflict_stage": {
-    "model_calls": 0,
     "direct_conflicts": 6,
+    "model_calls": 0,
     "rebuttal_seats": [
       "carry-is-king",
       "catalyst-junkie",
@@ -87,29 +38,94 @@
       "vol-convexity"
     ]
   },
-  "planned_rebuttals": {
+  "parent": {
+    "calls": 1,
     "model": "grok-4.6",
-    "calls": 13,
-    "composer": 0
+    "role": "acp_orchestrator"
   },
   "planned_pms": {
-    "model": "grok-4.6",
     "calls": 3,
-    "composer_cap_each": 3
+    "composer_cap_each": 3,
+    "model": "grok-4.6"
   },
-  "ceilings": {
-    "job_total": 69,
-    "job_grok": 32,
-    "job_composer": 37,
-    "used_after_round1": {
-      "grok": 15,
-      "composer": 0,
-      "total": 15
-    },
-    "projected_if_plan_holds": {
-      "grok": 31,
-      "composer": 0,
-      "total": 31
-    }
-  }
+  "planned_rebuttals": {
+    "calls": 13,
+    "composer": 0,
+    "model": "grok-4.6"
+  },
+  "pm_packets": {
+    "chatgpt_decision": "pending_ingest_only",
+    "count": 4,
+    "source": "on_demand_trader_room_fallback"
+  },
+  "round1": {
+    "calls": 14,
+    "composer_2_5_children": 0,
+    "model": "grok-4.6",
+    "seats": [
+      {
+        "bcId": "bc-dcacebb6-2ffd-524a-8538-62b7877e7f8d",
+        "seat": "perma-bull"
+      },
+      {
+        "bcId": "bc-b5275bae-c70a-5561-81d4-21694ea33541",
+        "seat": "perma-bear"
+      },
+      {
+        "bcId": "bc-bafe5443-89cc-512c-9b40-0b9ca0123e88",
+        "seat": "dollar-king"
+      },
+      {
+        "bcId": "bc-fd373416-bb6b-5f77-8f1d-a6dbf7e79de9",
+        "seat": "cross-merchant"
+      },
+      {
+        "bcId": "bc-a95ddafd-d9f6-5780-a7c8-25c612b858f5",
+        "seat": "carry-is-king"
+      },
+      {
+        "bcId": "bc-b54ba999-f39f-556a-b4bf-1d590fdf1d71",
+        "seat": "rate-hawk"
+      },
+      {
+        "bcId": "bc-6a37bb07-6474-5c9f-8949-67198e795f24",
+        "seat": "rate-dove"
+      },
+      {
+        "bcId": "bc-4eaeb6ab-93ac-5984-83de-2375e71e6b0c",
+        "seat": "value-guy"
+      },
+      {
+        "bcId": "bc-ef8567e2-a89d-5520-87ab-892d867f1816",
+        "seat": "trend-follower"
+      },
+      {
+        "bcId": "bc-4fd155f9-ba2f-5812-827b-c3dfc33796ab",
+        "seat": "mean-reverter"
+      },
+      {
+        "bcId": "bc-58522476-f6e8-5e62-8e4d-ca6d91f26b2c",
+        "seat": "positioning-cynic"
+      },
+      {
+        "bcId": "bc-e281b3b0-80ba-5be2-b6ee-33d02e758158",
+        "seat": "catalyst-junkie"
+      },
+      {
+        "bcId": "bc-fb17d345-54e1-5b24-bdf0-0b80cbeb0adf",
+        "seat": "vol-convexity"
+      },
+      {
+        "bcId": "bc-a319b921-645a-58bb-91fd-b73e45db01ab",
+        "seat": "no-trade-skeptic"
+      }
+    ]
+  },
+  "round2": {
+    "calls": 13,
+    "composer_2_5_children": 0,
+    "final_handoff_model_calls": 0,
+    "model": "grok-4.6"
+  },
+  "run_id": "tr-20260920T020818Z-ondemand"
 }

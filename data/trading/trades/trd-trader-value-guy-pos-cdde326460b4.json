@@ -1,0 +1,100 @@
+{
+  "asset_class": "rates_rv",
+  "catalysts": [],
+  "closed_at": null,
+  "closed_run_id": null,
+  "conviction": 58,
+  "current_notional_usd": 70000000.0,
+  "entry_mark": 140.25,
+  "entry_mark_as_of": "2026-09-20T02:06:32Z",
+  "entry_mark_source": "derived:linear_combo[derived:futures_strip_average:SOFR[market_state.tradable_rate_curves.SOFR.2027-03.implied_rate,market_state.tradable_rate_curves.SOFR.2027-06.implied_rate],derived:futures_strip_average:CORRA[market_state.tradable_rate_curves.CORRA.2027-03.implied_rate,market_state.tradable_rate_curves.CORRA.2027-06.implied_rate]]",
+  "entry_rationale": "Empty book; this is a new OPEN of the debate expression, not a duplicate add. Size 70m leaves 30m unused versus the 100m unnetted gross cap.",
+  "entry_thesis": "Sidecar has zero open positions. Open 70m of 100m gross cap long the locked SOFR 2027-03/06 versus CORRA 2027-03/06 implied-rate differential to own compression of the 4th-percentile CA-US 140bp policy/2Y dislocation after the delivered Fed hike.",
+  "events": [
+    {
+      "at": "2026-09-19T22:36:50.082404-04:00",
+      "event_id": "tle-1b9c32cc604f",
+      "exit_reason_category": null,
+      "kind": "OPEN",
+      "mark": 140.25,
+      "mark_as_of": "2026-09-20T02:06:32Z",
+      "mark_source": "derived:linear_combo[derived:futures_strip_average:SOFR[market_state.tradable_rate_curves.SOFR.2027-03.implied_rate,market_state.tradable_rate_curves.SOFR.2027-06.implied_rate],derived:futures_strip_average:CORRA[market_state.tradable_rate_curves.CORRA.2027-03.implied_rate,market_state.tradable_rate_curves.CORRA.2027-06.implied_rate]]",
+      "notional_change_usd": 70000000.0,
+      "rationale": "Empty book; this is a new OPEN of the debate expression, not a duplicate add. Size 70m leaves 30m unused versus the 100m unnetted gross cap.",
+      "rationale_status": "present",
+      "realized_pnl_increment_usd": 0.0,
+      "run_id": "tr-20260920T020818Z-ondemand",
+      "source_journal_event_id": "jde-abc4d5110a134889"
+    }
+  ],
+  "evidence_cutoff": "2026-09-20T02:08:18Z",
+  "evidence_hash": "349a16aeeda7f4a89e10ba16c22c90311da76536984e943cf04249588d954e1e",
+  "evidence_packet_id": null,
+  "exit_mark": null,
+  "exit_mark_as_of": null,
+  "exit_mark_source": null,
+  "exit_rationale": null,
+  "exit_reason_category": null,
+  "hedge_of_position_id": null,
+  "hedge_trade_id": null,
+  "holding_duration_seconds": null,
+  "initial_notional_usd": 70000000.0,
+  "instrument": "SOFR-CORRA_2Y_2027H1",
+  "invalidation": "CA-US cheapness follows the 2024-12-18 analog and widens, or BoC drops energy pass-through after soft core/labor.",
+  "locked_expression_family": null,
+  "mae_usd": -0.0,
+  "mfe_usd": -0.0,
+  "opened_at": "2026-09-19T22:36:50.082404-04:00",
+  "opened_run_id": "tr-20260920T020818Z-ondemand",
+  "owner_id": "value-guy",
+  "owner_type": "trader",
+  "paper_expression": {
+    "legs": [
+      {
+        "asset_class": "rates",
+        "expression": {
+          "curve_id": "SOFR",
+          "expiries": [
+            "2027-03",
+            "2027-06"
+          ],
+          "type": "futures_strip_average"
+        },
+        "instrument": "SOFR_2027H1",
+        "weight": 1
+      },
+      {
+        "asset_class": "rates",
+        "expression": {
+          "curve_id": "CORRA",
+          "expiries": [
+            "2027-03",
+            "2027-06"
+          ],
+          "type": "futures_strip_average"
+        },
+        "instrument": "CORRA_2027H1",
+        "weight": -1
+      }
+    ],
+    "output_unit": "bps",
+    "type": "linear_combo"
+  },
+  "peak_notional_usd": 70000000.0,
+  "position_id": "pos-cdde326460b4",
+  "priced_or_disagreed": null,
+  "provenance": {
+    "evidence_hash": "349a16aeeda7f4a89e10ba16c22c90311da76536984e943cf04249588d954e1e",
+    "overnight_run_id": null,
+    "review_packet_id": null,
+    "review_packet_sha256": null,
+    "trader_room_run_id": "tr-20260920T020818Z-ondemand"
+  },
+  "realized_pnl_usd": 0.0,
+  "schema_version": 1,
+  "side": "long",
+  "source_decision_id": null,
+  "source_journal_event_id": "jde-abc4d5110a134889",
+  "status": "open",
+  "trade_id": "trd-trader-value-guy-pos-cdde326460b4"
+}
