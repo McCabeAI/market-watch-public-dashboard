@@ -202,7 +202,9 @@ class PMDashboardTests(unittest.TestCase):
 
         from scripts.pm.data_requests import empty_registry
 
-        stale_repo = json.loads((REPO / "data" / "pm" / "public" / "latest.json").read_text(encoding="utf-8"))
+        live_repo = json.loads((REPO / "data" / "pm" / "public" / "latest.json").read_text(encoding="utf-8"))
+        stale_repo = deepcopy(live_repo)
+        stale_repo.pop("risk_capital_limit_usd", None)
         self.assertNotEqual(stale_repo.get("risk_capital_limit_usd"), RISK_CAPITAL_LIMIT_USD)
         with self.assertRaises(SchemaError):
             validate_public_packet(stale_repo)

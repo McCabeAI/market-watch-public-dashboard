@@ -1,0 +1,51 @@
+{
+  "automated_pm_applied": {
+    "grinder": "NO_TRADE flat",
+    "pragmatist": "HOLD pm-pragmatist-4e0cbc4e0b05 CORRA_2027-03 long 450m / 4.5m shock",
+    "swinger": "HOLD pm-swinger-2070479ca321 CORRA_2027-03 long 850m / 8.5m shock"
+  },
+  "branch": "cursor/fresh-full-trader-room-and-pm-cycle-a1e7",
+  "chatgpt_current_cycle_decision": "not_generated_not_applied",
+  "chatgpt_review_packet_id": "prp-chatgpt-tr-20260920T193935Z-ondemand",
+  "conflict_map_method": "deterministic_conflict_synopsis_v1",
+  "control_plane_issue": "https://github.com/McCabeAI/agent-control-plane/issues/102",
+  "evidence_cutoff": "2026-09-20T19:39:35Z",
+  "evidence_packet_sha256": "02d6976dd0d2606bae7efa7c3f2cc41aeac6ccfbf50d5251260f71390ba24d5b",
+  "fail_closed_or_documented_gaps": [
+    "market_state family status=stale because NZ_rates (RBNZ B2 HTTP 403; no third-party substitute)",
+    "CME positioning unavailable",
+    "options remain unmarkable without premium/IV/strike mids",
+    "PM packets labeled on_demand_trader_room_fallback because no successful overnight 14-seat review exists",
+    "ChatGPT current-cycle PM decision intentionally not generated or applied; independent review packet persisted only"
+  ],
+  "families": {
+    "central_bank_research": "available",
+    "market_state": "stale",
+    "research_method": "available",
+    "temperature_gauges": "available"
+  },
+  "final_handoff_method": "deterministic_pm_handoff_v1",
+  "final_handoff_model_calls": 0,
+  "model_accounting": {
+    "composer_2_5": 0,
+    "grok_4_6": 31,
+    "job_composer_ceiling": 37,
+    "job_grok_ceiling_including_parent": 32,
+    "job_total_ceiling": 69,
+    "total_model_invocations": 31
+  },
+  "pm_binding_limit": {
+    "drawdown_stop_usd": 50000000,
+    "shocked_risk_usd": 100000000
+  },
+  "pm_packet_source": "on_demand_trader_room_fallback",
+  "run_id": "tr-20260920T193935Z-ondemand",
+  "schema_version": 1,
+  "starting_ref": "c7ebf61778aea90c0f6dcc2e57efd24dee0cf582",
+  "status": "STATUS: AWAITING_CHATGPT_ARBITRATION",
+  "trader_binding_limit": {
+    "drawdown_stop_usd": 5000000,
+    "shocked_risk_usd": 10000000
+  },
+  "type": "ON_DEMAND_TRADER_ROOM_PM_CYCLE_RECEIPT"
+}

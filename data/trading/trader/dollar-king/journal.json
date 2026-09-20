@@ -47,6 +47,52 @@
       "run_id": "tr-20260920T020818Z-ondemand",
       "schema_version": 1,
       "thesis": "FACT: Fed hiked 25bp to 3.75-4.00%; SOFR 3.85; US 2Y 4.76; SR3 still prices 4.32/4.58 at 3m/6m. FACT: CORRA 2.29; CA 2Y 3.27; CA-US 2Y -140bp; Canada labor gauge 38 versus US 75; Canada core near 2%. FACT: USDCAD 1.40105 is +1.74% 1m but still -1.25% 3m. INFERENCE: the USD-versus-CAD policy and labor gap is cleaner in spot than in rates because the sovereign/OIS differential is already extreme, while EURUSD/GBPUSD have already sold 1.9-2.1% 1m and AUDUSD still has AONIA/AU 2Y carry against a short. UNKNOWN: whether energy pass-through forces a faster BoC catch-up, and whether CAD short-covering completes without further USD upside."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDCAD",
+          "notional_usd": 55000000,
+          "position_id": "pos-5317bc96d4eb",
+          "rationale": "Manage existing LONG USDCAD pos-5317bc96d4eb. Do not OPEN a duplicate. Packet mid equals the open mark, so ADD would raise 1% shock risk without a new entry edge. 55m notional / 550k standard-shock risk capital remains inside the 10m ceiling and is sized from 20d RV ~5 rather than filling the cap. Thesis intact after CAD_UP/USD_DOWN/NZD_UP rebuttal; HOLD.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-09-20T16:06:28.069463-04:00",
+      "conviction": 63,
+      "decision_fingerprint": "43947b17e68358143cd5d22190d2a7c103e2870eabdf6db35784844154857ee2",
+      "event_id": "jde-01089dc3612d47f9",
+      "funding_view": null,
+      "invalidation": "US-Canada policy gap compresses via Fed pause or BoC matching US, or USDCAD reverses the 5d/1m bid while the rates gap stays wide.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-5317bc96d4eb"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "1f892fdf12ee3eaaf17a93c5c4b272abce05937a978ac33f6c5467fa1301a9cc",
+      "outcome_links": [],
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-20T19:39:35Z",
+        "evidence_hash": "02d6976dd0d2606bae7efa7c3f2cc41aeac6ccfbf50d5251260f71390ba24d5b",
+        "overnight_run_id": null,
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260920T193935Z-ondemand"
+      },
+      "rationale": "FACT: Fed delivered 25bp to 3.75-4.00, SOFR 3.85, US gauges 69-75, SR3 still prices up to 4.755 by Sep-27; Canada overnight 2.29, headline CPI 3%/core near 2%, labor 38 with -42k jobs, CA-US 2Y -140bp (3.8th 1y percentile); USDCAD 1.401 at 74th 1y percentile after +1.10% in five days. INFERENCE: USD policy exceptionalism versus a Canada labor/core constraint is still under-expressed in the dollar pair, so the existing long USDCAD remains the clean spot. Crosses (AUDCAD at 99.8 1y percentile, NZDCAD) add AU housing or residual NZD risk; USDJPY is BoJ event vol. UNKNOWN: positioning, post-Sep-18 FX path, and whether energy pass-through lets BoC outrun labor weakness. Book action is HOLD of pos-5317bc96d4eb, not a second OPEN.",
+      "run_id": "tr-20260920T193935Z-ondemand",
+      "schema_version": 1,
+      "thesis": "FACT: Fed delivered 25bp to 3.75-4.00, SOFR 3.85, US gauges 69-75, SR3 still prices up to 4.755 by Sep-27; Canada overnight 2.29, headline CPI 3%/core near 2%, labor 38 with -42k jobs, CA-US 2Y -140bp (3.8th 1y percentile); USDCAD 1.401 at 74th 1y percentile after +1.10% in five days. INFERENCE: USD policy exceptionalism versus a Canada labor/core constraint is still under-expressed in the dollar pair, so the existing long USDCAD remains the clean spot. Crosses (AUDCAD at 99.8 1y percentile, NZDCAD) add AU housing or residual NZD risk; USDJPY is BoJ event vol. UNKNOWN: positioning, post-Sep-18 FX path, and whether energy pass-through lets BoC outrun labor weakness. Book action is HOLD of pos-5317bc96d4eb, not a second OPEN."
     }
   ],
   "schema_version": 1,

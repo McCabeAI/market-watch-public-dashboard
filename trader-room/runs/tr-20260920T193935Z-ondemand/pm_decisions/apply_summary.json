@@ -1,0 +1,49 @@
+{
+  "automated": {
+    "grinder": {
+      "decision_status": "no_trade",
+      "drawdown_usd": 0.0,
+      "last_action": "NO_TRADE",
+      "positions": [],
+      "review_status": "fresh",
+      "risk_capital_usd": 0.0
+    },
+    "pragmatist": {
+      "decision_status": "active",
+      "drawdown_usd": 0.0,
+      "last_action": "HOLD",
+      "positions": [
+        {
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 450000000.0,
+          "position_id": "pm-pragmatist-4e0cbc4e0b05",
+          "risk_capital_usd": 4500000.0,
+          "side": "long"
+        }
+      ],
+      "review_status": "fresh",
+      "risk_capital_usd": 4500000.0
+    },
+    "swinger": {
+      "decision_status": "active",
+      "drawdown_usd": 0.0,
+      "last_action": "HOLD",
+      "positions": [
+        {
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 850000000.0,
+          "position_id": "pm-swinger-2070479ca321",
+          "risk_capital_usd": 8500000.0,
+          "side": "long"
+        }
+      ],
+      "review_status": "fresh",
+      "risk_capital_usd": 8500000.0
+    }
+  },
+  "chatgpt_current_cycle_decision": "not_generated_not_applied",
+  "evidence_cutoff": "2026-09-20T19:39:35Z",
+  "evidence_packet_sha256": "02d6976dd0d2606bae7efa7c3f2cc41aeac6ccfbf50d5251260f71390ba24d5b",
+  "public_pm_count": 4,
+  "run_id": "tr-20260920T193935Z-ondemand"
+}

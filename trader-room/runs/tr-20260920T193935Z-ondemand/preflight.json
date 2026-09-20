@@ -1,0 +1,66 @@
+{
+  "essential_families": [
+    "temperature_gauges",
+    "central_bank_research",
+    "market_state",
+    "research_method"
+  ],
+  "evidence_cutoff": "2026-09-20T19:39:35Z",
+  "families": {
+    "central_bank_research": "available",
+    "market_state": "stale",
+    "research_method": "available",
+    "temperature_gauges": "available"
+  },
+  "hook_policy": {
+    "MW_TRADER_ROOM_RUN_POLICY": {
+      "composer_cap": 28,
+      "grok_cap": 29,
+      "parent_grok": 1,
+      "parent_model": "grok-4.6",
+      "parent_total": 1,
+      "run_type": "trader-room-ondemand",
+      "total_model_cap": 57,
+      "version": 1
+    }
+  },
+  "ok": true,
+  "packet_sha256": "02d6976dd0d2606bae7efa7c3f2cc41aeac6ccfbf50d5251260f71390ba24d5b",
+  "run_id": "tr-20260920T193935Z-ondemand",
+  "seat_memory": {
+    "common_evidence_sha256": "02d6976dd0d2606bae7efa7c3f2cc41aeac6ccfbf50d5251260f71390ba24d5b",
+    "hashes": {
+      "carry-is-king": "eaff24be69bfda0c95bb3ed942afacee0924249048a9cf49239c880e70cd4e6b",
+      "catalyst-junkie": "d900989b23e1a2e714024f888e78fa6cabace425111693cc621494ccab3a1882",
+      "cross-merchant": "86d57ab12d1c7b2d9038cc1be39ca72e8f77b17789c763f74d5d5129580129eb",
+      "dollar-king": "1f892fdf12ee3eaaf17a93c5c4b272abce05937a978ac33f6c5467fa1301a9cc",
+      "mean-reverter": "21bbc64e3590c8f24d8468d6dffdaf53acbe326f71a3185e9a78077efdc71539",
+      "no-trade-skeptic": "44af65b40463659d0b31977acdb44304372300518cfb70765244928cc54923db",
+      "perma-bear": "c9cd8f8c48fe6524a880415ec14ee572253badbb25ff366507331fce35979b6a",
+      "perma-bull": "adaf18ba8a4691d9381772bfe287761cdfca490ac76910ac8a738bd3f367a751",
+      "positioning-cynic": "fb5f1437c899016aeb4d082a7fb5b691332aab5f7f7c503ff336ddf5393f2740",
+      "rate-dove": "fc401d7e127022f2088e61a07cbbddb58f60674810281bf6dd4c7c4359c4ac79",
+      "rate-hawk": "eb55a16e620b15883b40211258e66517389508384c4ee76f549fb7fc9158686b",
+      "trend-follower": "113718cbe277c2a7cb6e2692464a4099c572019c3103ccf9a01d4d79593a417d",
+      "value-guy": "b551ea4043404dcd604de5845cebaed4f5bd1b97796be84de9cf539c28385180",
+      "vol-convexity": "66f4434e9a4815e09a06be01d9e247a02f247f5b6ae723ce392f35d3908d7d1a"
+    },
+    "isolation": "own_sidecar_only",
+    "paths": {
+      "carry-is-king": "memory/carry-is-king.json",
+      "catalyst-junkie": "memory/catalyst-junkie.json",
+      "cross-merchant": "memory/cross-merchant.json",
+      "dollar-king": "memory/dollar-king.json",
+      "mean-reverter": "memory/mean-reverter.json",
+      "no-trade-skeptic": "memory/no-trade-skeptic.json",
+      "perma-bear": "memory/perma-bear.json",
+      "perma-bull": "memory/perma-bull.json",
+      "positioning-cynic": "memory/positioning-cynic.json",
+      "rate-dove": "memory/rate-dove.json",
+      "rate-hawk": "memory/rate-hawk.json",
+      "trend-follower": "memory/trend-follower.json",
+      "value-guy": "memory/value-guy.json",
+      "vol-convexity": "memory/vol-convexity.json"
+    }
+  }
+}

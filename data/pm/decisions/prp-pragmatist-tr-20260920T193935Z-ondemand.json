@@ -1,0 +1,57 @@
+{
+  "decision": {
+    "actions": [
+      {
+        "action": "HOLD",
+        "asset_class": "rates",
+        "expected_mark_direction": "lower",
+        "instrument": "CORRA_2027-03",
+        "notional_usd": 450000000,
+        "position_id": "pm-pragmatist-4e0cbc4e0b05",
+        "side": "long"
+      }
+    ],
+    "conviction": 56,
+    "evidence_cutoff": "2026-09-20T19:39:35Z",
+    "evidence_packet_sha256": "02d6976dd0d2606bae7efa7c3f2cc41aeac6ccfbf50d5251260f71390ba24d5b",
+    "execution": {
+      "principal_model": "grok-4.6",
+      "subagent_count": 0,
+      "subagent_models": []
+    },
+    "invalidation": "Thesis fails if BoC hikes or the 1m CORRA strip through Dec-2026 reprices toward the 2027 CRA mid-3s; if CPI-trim/median leave the 1.9/2.0 zone higher while employment stops contracting and wages re-accelerate; or if CORRA_2027-03 implied holds at or above the 3.13 entry because catch-up is actually being delivered. A US-only or energy-headline move that leaves CRAH27 unchanged is not invalidation. Wrong timing, not wrong thesis, if implieds chop around 3.13 without a new BoC hike signal.",
+    "memory_context_sha256": "ad0fc97f559059f0e741f6f2fe94e2187e50891b567539cd863cd392fa9dfdf7",
+    "pm_id": "pragmatist",
+    "principal_model": "grok-4.6",
+    "rationale": "FACT: Marks for the owned contract are unchanged versus entry (CRAH27 3.13). Near-term 1m Dec-2026 remains 2.58 and CRAZ26 remains 2.775; neither has migrated toward 2027 mid-3s. Core remains near 2% and CA labor gauge 38. Used shocked risk is 4.5m of a 100m cap; NAV drawdown is 0; calibration is empty. Trader Room is two-way on this exact contract and unarbitrated. INFERENCE: This is still a clean opportunistic receive of an undelivered 2027 hike path, sized as a single/double rather than a capacity-fill. Adding would be filling remaining 95.5m because capacity exists, not because the adverse path or the discrepancy improved. Reducing or closing would treat energy minutes and a delivered Fed hike as invalidation even though CRAH27 did not move, which the locked rule forbids. Hedging via AONIA, SOFR, or USDCAD would mix a second thesis; hedging inside CORRA/CRA is forbidden as a duplicate family OPEN. NO_TRADE is the empty-book stance; HOLD is the explicit keep on pm-pragmatist-4e0cbc4e0b05. Conviction 56 is a small haircut from 58 for two-way room plus energy-pass-through as a watch item, not a de-risk. UNKNOWN: Next Canadian labor/CPI cluster and whether an overnight scheduled review would change the evidence boundary. Trusted code hydrates mids; no invented levels.",
+    "review_packet_id": "prp-pragmatist-tr-20260920T193935Z-ondemand",
+    "review_packet_sha256": "43441a949bc80b233580d774bb32717b6d78f567b9649511f47419aaf503d87c",
+    "schema_version": 1,
+    "subagent_count": 0,
+    "subagent_models": [],
+    "thesis": "FACT: Prior book is long CORRA_2027-03 (MX CRAH27), position_id pm-pragmatist-4e0cbc4e0b05, side long (receive / duration-long; profits if the implied mark falls), notional_usd 450000000, risk_capital_usd 4500000, entry and packet mark 3.13 / price 96.87, opened_run_id tr-20260920T020818Z-ondemand, last_action OPEN, prior conviction 58, unrealized_pnl 0. CORRA overnight 2.29 as_of 2026-09-17. 1m path: COAZ26 / Dec-2026 implied 2.58 (+29bp). 3m: CRAU26 2.385, CRAZ26 2.775, CRAH27 3.13 (+84bp vs overnight), CRAM27 3.365, CRAU27 3.51, CRAZ27 3.595. Canada August CPI headline 3% with core near 2%; BoC minutes flag energy pass-through. CA gauges inflation 55, labor 38, activity 66, consumer 45. CA 2Y 3.27 / 10Y 3.83 as_of 2026-09-17. Fed hiked 25bp to 3.75-4.00%; SOFR overnight 3.85; SR3Z6 4.32; SR3H7 4.58. USDCAD 1.4010 as_of 2026-09-18 (5y percentile about 87). Book is not risk_stopped; used shocked risk 4.5m / remaining 95.5m; drawdown 0. Official SOFR 3.85% ACT/360 effective 2026-09-17 is charged on shocked risk capital. Packet source is on_demand_trader_room_fallback. Trader Room status STATUS: AWAITING_CHATGPT_ARBITRATION, 14 seats, 5 unarbitrated conflicts; this PM is not chair. carry-is-king HOLD long CORRA_2027-03; perma-bull HOLD short CORRA_2027-03; rate-dove HOLD long CORRA_2027H-Z; positioning-cynic CLOSED a prior CORRA_2027-03 receive. NZ rates unavailable (market_state stale); CME positioning unavailable; options unmarkable. Calibration closed_trade_count 0. INFERENCE: The Mar-27 contract still prices a Canadian hiking cycle that the live 1m strip through Dec-2026 (2.58) and still-soft core/labor have not started delivering. Energy-pass-through minutes and a delivered Fed hike are spillover risks, but they have not lifted CRAH27 off 3.13 or repriced the 1m path toward the 2027 CRA mid-3s, so the locked invalidation is not met. HOLD the existing receive; do not OPEN a duplicate CORRA/CRA family contract; do not ADD into unused 95.5m risk capacity on an unchanged mark and empty calibration. UNKNOWN: Whether BoC actually hikes; whether energy pass-through appears in subsequent core/trim/median; whether the CA-US policy gap compresses via Fed or BoC; live CME positioning; a successful overnight 14-seat review (this freeze is fallback).",
+    "trader_room_run_id": "tr-20260920T193935Z-ondemand",
+    "type": "PM_DECISION"
+  },
+  "receipt": {
+    "chatgpt_current_cycle_decision": "not_generated_not_applied",
+    "decision_fingerprint": "59eddcb738adf1d86231993b2c852864a9255a8938ffb0d986c2a38ce3e741c7",
+    "decision_status": "active",
+    "drawdown_usd": 0.0,
+    "evidence_cutoff": "2026-09-20T19:39:35Z",
+    "evidence_packet_sha256": "02d6976dd0d2606bae7efa7c3f2cc41aeac6ccfbf50d5251260f71390ba24d5b",
+    "gross_utilization_usd": 450000000.0,
+    "pm_id": "pragmatist",
+    "position_count": 1,
+    "principal_model": "grok-4.6",
+    "review_packet_id": "prp-pragmatist-tr-20260920T193935Z-ondemand",
+    "review_packet_sha256": "43441a949bc80b233580d774bb32717b6d78f567b9649511f47419aaf503d87c",
+    "review_status": "fresh",
+    "risk_capital_remaining_usd": 95500000.0,
+    "risk_capital_usd": 4500000.0,
+    "schema_version": 1,
+    "subagent_count": 0,
+    "trader_room_run_id": "tr-20260920T193935Z-ondemand",
+    "type": "PM_AUTOMATED_APPLY_RECEIPT"
+  }
+}

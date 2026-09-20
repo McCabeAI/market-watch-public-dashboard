@@ -47,6 +47,52 @@
       "run_id": "tr-20260920T020818Z-ondemand",
       "schema_version": 1,
       "thesis": "Verified fact: CA-US 2Y is -140bp (4th percentile 1y and 5y); 2027 H1 SR3 minus CRA is about 140bp; overnight SOFR-CORRA is 156bp; Fed has hiked 25bp to 3.75\u20134.00% with SOFR at 3.85; BoC minutes flag energy pass-through; Canada CPI 3%/core near 2%; US 2Y 4.76 is 99.8th percentile 1y while CA 2Y 3.27 is only 58th percentile 5y. Inference: that 140bp Canada discount is a peer-policy dislocation, not a fair labor-gap price, because activity gauges are close, energy pass-through is now in BoC deliberations, and the US front end has already done the post-hike rerating. Closest analog (2025-01-30 at -145bp) compressed 25bp over 3m. Unknown: whether Saudi Oman workaround fully caps the energy tail; CME positioning; Canada official curve. Trade is long SOFR-CORRA 2027 H1 to own compression of Canada cheapness."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates_rv",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR-CORRA_2Y_2027H1",
+          "notional_usd": 70000000,
+          "position_id": "pos-cdde326460b4",
+          "rationale": "Sidecar already owns this locked RV at 140.25 with 70m notional and 700k standard-shock risk capital versus the 10m shock / 5m drawdown limits. Round-2 CAD-lower attacks do not close the 4th-percentile CA-US / 2027 H1 SOFR-CORRA dislocation; packet mid still equals the entry mark so there is no new entry edge to ADD. Do not OPEN a duplicate of SOFR-CORRA_2Y_2027H1. HOLD pos-cdde326460b4.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-09-20T16:06:28.069463-04:00",
+      "conviction": 60,
+      "decision_fingerprint": "bc84560e3aa6de683d3c8cb0119475cb56a0039ca9e856dbb31ba6aa2ecf2abc",
+      "event_id": "jde-0f4ed1dd1dd54fe3",
+      "funding_view": null,
+      "invalidation": "CA-US cheapness follows the 2024-12-18 analog and widens, or BoC drops energy pass-through after soft core/labor.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-cdde326460b4"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "b551ea4043404dcd604de5845cebaed4f5bd1b97796be84de9cf539c28385180",
+      "outcome_links": [],
+      "owner_id": "value-guy",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-20T19:39:35Z",
+        "evidence_hash": "02d6976dd0d2606bae7efa7c3f2cc41aeac6ccfbf50d5251260f71390ba24d5b",
+        "overnight_run_id": null,
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260920T193935Z-ondemand"
+      },
+      "rationale": "Verified fact: CA-US 2Y is -140bp on 2026-09-17 (1y percentile about 3.8, 5y about 4.3); SOFR-CORRA_2Y_2027H1 marks 140.25 from SR3 4.58/4.72 versus CRA 3.13/3.365; overnight SOFR-CORRA is 156bp; Fed has hiked 25bp to 3.75-4.00% with SOFR at 3.85; Canada August CPI is 3% with core/trim/median near 2%; BoC minutes flag energy pass-through; US 2Y 4.76 is the 99.8th 1y percentile while CA 2Y 3.27 is only the 58.5th 5y percentile. Inference: that 140bp Canada discount is a peer-policy dislocation, not a fair labor-gap price, because activity gauges are close, Canada Q2 GDP re-accelerated, energy pass-through is now in BoC deliberations, and the US front end has already done the post-hike rerating. Closest level analog (2025-01-30 at -145bp) compressed 25bp over 3m. Unknown: Saudi Oman workaround versus the still-weak energy-shock-absorber channel; CFTC/CME positioning; whether the 2024-12-18 analog (further widening) dominates. Trade is long SOFR-CORRA_2Y_2027H1 to own compression of Canada cheapness. Book already holds pos-cdde326460b4 at this mid.",
+      "run_id": "tr-20260920T193935Z-ondemand",
+      "schema_version": 1,
+      "thesis": "Verified fact: CA-US 2Y is -140bp on 2026-09-17 (1y percentile about 3.8, 5y about 4.3); SOFR-CORRA_2Y_2027H1 marks 140.25 from SR3 4.58/4.72 versus CRA 3.13/3.365; overnight SOFR-CORRA is 156bp; Fed has hiked 25bp to 3.75-4.00% with SOFR at 3.85; Canada August CPI is 3% with core/trim/median near 2%; BoC minutes flag energy pass-through; US 2Y 4.76 is the 99.8th 1y percentile while CA 2Y 3.27 is only the 58.5th 5y percentile. Inference: that 140bp Canada discount is a peer-policy dislocation, not a fair labor-gap price, because activity gauges are close, Canada Q2 GDP re-accelerated, energy pass-through is now in BoC deliberations, and the US front end has already done the post-hike rerating. Closest level analog (2025-01-30 at -145bp) compressed 25bp over 3m. Unknown: Saudi Oman workaround versus the still-weak energy-shock-absorber channel; CFTC/CME positioning; whether the 2024-12-18 analog (further widening) dominates. Trade is long SOFR-CORRA_2Y_2027H1 to own compression of Canada cheapness. Book already holds pos-cdde326460b4 at this mid."
     }
   ],
   "schema_version": 1,

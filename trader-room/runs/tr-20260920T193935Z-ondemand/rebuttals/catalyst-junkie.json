@@ -1,0 +1,158 @@
+{
+  "type": "TRADER_ROOM_REBUTTAL",
+  "run_id": "tr-20260920T193935Z-ondemand",
+  "round": 2,
+  "agent": "catalyst-junkie",
+  "opponents": [
+    "carry-is-king",
+    "dollar-king",
+    "perma-bear",
+    "perma-bull",
+    "positioning-cynic",
+    "rate-dove",
+    "rate-hawk",
+    "trend-follower",
+    "mean-reverter"
+  ],
+  "own_original_ref": "submissions/catalyst-junkie.json",
+  "packet_sha256": "02d6976dd0d2606bae7efa7c3f2cc41aeac6ccfbf50d5251260f71390ba24d5b",
+  "subagent_calls": 0,
+  "trade_change": "unchanged",
+  "holes_in_opposing_case": [
+    "FACT: the only opposite USD view in this bundle is mean-reverter (usd_view lower). The other eight listed seats also tag USD higher. INFERENCE: treating the whole roster as an opposing USD case is a routing artifact; the live USD disagreement is one seat exporting a SOFR receive into a dollar tag. UNKNOWN: whether ChatGPT treats synopsis USD tags as trades; this seat does not.",
+    "FACT: mean-reverter's primary expression is long/receive SOFR_2027-03 at packet implied 4.58 versus overnight SOFR 3.85 (+73bp); their expression_comparison selected rates because 'the mispricing lives in the US policy path' and rejected AUDCAD as noisier. INFERENCE: usd_view lower is a mechanical rates-to-FX leak, not a dated USD catalyst. A 99th-percentile UST complex can stay wrong indefinitely without a calendar event that forces USD to reprice. UNKNOWN: speculative USD positioning (CFTC TFF null; CME positioning unavailable).",
+    "FACT: after the 16-Sep Fed hike and the same-day Saudi STS workaround, packet FX as of 2026-09-18 still prints a USD bid: EURUSD 1.146 (1y pctile 10.9, 1m -1.89%, 5d -1.14%); GBPUSD 1m -2.07%; USDCHF 0.826 (1y pctile 99.8, 1m +3.34%, 5d +1.27%); USDCAD 1.401 (1y pctile 74.0, 1m +1.74%, 5d +1.10%); USDJPY 5d +2.50%. INFERENCE: 'post-hike digestion' and 'energy-tail fade' are already-known 16-Sep facts; they have not produced USD lower on the frozen path. Using a 3m USDCAD drawdown (-1.25%) as a reversal while 1m/5d are USD-up is selecting the stale window. UNKNOWN: any FX path after 2026-09-18 versus cutoff 2026-09-20T19:39:35Z.",
+    "FACT: US 2Y is 4.76 as of 2026-09-18, +57bp over 1m, +9bp on the day, 99.8th 1y percentile; 2s10s is 25bp at the 0.20th 1y percentile; SR3 still peaks at SOFR_2027-09 4.755 (+90.5bp vs 3.85). INFERENCE: a statistical extreme plus a fully priced meeting is a discovery signal, not a USD-lower trigger. The 1d continuation after the hike is the opposite of digestion. Mean-reverter attaches no dated CPI/FOMC timestamp as the FX reversal event. UNKNOWN: the next US print date is not in the packet as a USD calendar.",
+    "FACT: US gauges remain inflation 72, labor 75, activity 69, consumer 74; August CPI kept tightening bias intact. Mean-reverter's own invalidation admits those gauges can keep the fade early. INFERENCE: USD-lower requires those to break together; they have not. Carry also opposes their receive while the strip still prices hikes through Sep-27. UNKNOWN: whether the next inflation print validates a 4.75% 2027 terminal.",
+    "FACT: dollar-king, rate-hawk, trend-follower, carry-is-king, rate-dove, perma-bear, perma-bull and positioning-cynic all tag USD higher while expressing different instruments (USDCAD, SOFR_2027-09, SOFR_2027-03, CORRA, AONIA_2027-06, AONIA_2027-03). INFERENCE: none of those expressions owns the October AONIA averaging window or the next RBA decision. Agreement on a USD residual is not a reason to OPEN USD, migrate off AONIA_2026-10, or treat 2027 SOFR/CORRA as a substitute catalyst. UNKNOWN: paper crowding in those other books is visible in packet paper_books but CFTC side-of-market is not.",
+    "FACT: positioning-cynic pays empty-OI AONIA_2027-03 (OI 201, volume 1) while October IB has OI 21752 and volume 4450 and still prices +21.5bp versus overnight AONIA 4.35. INFERENCE: that is an AU-rates tenor fight, not the routed USD conflict. Empty back-month OI is not a dated October catalyst; the next RBA vote settles in the liquid October average. Paying Mar-27 because housing is 'consensus' still needs inflation 82 to force a higher terminal before that empty contract reprices. UNKNOWN: side of October open interest."
+  ],
+  "attack": [
+    "Strongest opposing claim: mean-reverter's USD-lower tag, justified as fade of extra 73bp in SR3H7 after a >90%-priced 25bp hike, a 99th-percentile US yield complex, and a reduced oil-supply tail.",
+    "FACT: they selected receive SOFR_2027-03 as the cleaner owner of that discrepancy and did not submit a short-USD trade. INFERENCE: the USD-lower synopsis is not independently identified; it is inferred from a rates percentile. Catalyst-junkie rejects that leap. A known hike already in overnight SOFR 3.85 plus a 16-Sep Saudi workaround that did not reverse EURUSD/GBPUSD/USDCAD/USDCHF on the 5d/1m window is not a dated path for USD to reprice lower. Percentile extremes can persist until a print or meeting forces the assumption. UNKNOWN: post-18-Sep FX and CFTC.",
+    "Even if their SOFR receive were right, that would reduce Fed-spillover that is currently keeping October IB rich at 4.565. INFERENCE: a successful US extra-path fade is a tailwind for receive AONIA_2026-10, not a reason to flip USD or to abandon the RBA/averaging catalyst. The opposing USD case therefore fails both as a USD trade (no dated FX event, packet path still USD-bid) and as a veto of the AU skip (it would help the skip if it worked in rates).",
+    "Co-aligned USD-higher seats do not repair that hole: long USDCAD at the 74th 1y percentile, or pay-SOFR continuation, still do not settle October realized AONIA. They can be residual USD-higher without being this seat's expression."
+  ],
+  "defense": [
+    "FACT: sidecar open_positions still holds long AONIA_2026-10 pos-deddf5aa0c83, 55m notional, sidecar entry_mark 4.57, paper_books entry/mark 4.565, risk_capital 550k versus the 10m shock cap; drawdown in packet paper_books is funding 10694.44, not a 5m stop. Packet October implied remains 4.565 versus overnight AONIA 4.35 (+21.5bp); September IB 4.355 is already at cash. INFERENCE: the dated mispricing is unchanged. HOLD, do not OPEN a duplicate, do not ADD. UNKNOWN: exact next RBA calendar date and whether October CPI prints first.",
+    "FACT: USD-higher on this seat is a residual of a delivered Fed hike to 3.75-4.00% (SOFR 3.85 on 2026-09-17), SR3 still pricing extra tightening to 4.755 by Sep-27, US gauges 69-75, BoJ to 1.25%, and the 5d/1m USD bid versus EUR/GBP/CAD/CHF. INFERENCE: that residual explains why October IB can stay rich on global spillover until the RBA has to vote on local housing, jobs and sentiment. It is not a USD position and has no packet-sourced USD entry. Spot alternative remains short AUDUSD at 0.712 (1y pctile 76.4), which mixes Fed/energy/USD noise; rates still owns the hike-odds object directly.",
+    "FACT: housing-channel evidence from 16 Sep (NSW stamp-duty -24% y/y, volumes -18%, Sydney/Melbourne values more than 7% below peak) arrived after a September hold and has not cheapened October IB. Labor (employment -15.8k, U 4.5%) and September Westpac-MI -5.2% to 84.4 remain the local demand break. INFERENCE: the path to repricing is still the next RBA decision / October AONIA average. A skip collapses the +21.5bp component toward 4.35; a hike delivered as priced is largely in the contract (asymmetric). UNKNOWN: RBA weight on inflation gauge 82 / trimmed mean 3.6% versus housing.",
+    "Concession: the AONIA trade is wrong if the next RBA decision is a hike or if AONIA_2026-10 implied trades through packet November 4.685. The USD residual would be amended only if EURUSD/GBPUSD reversed the 1m USD bid while US inflation AND labor gauges broke lower together AND Dec-26 SR3 (packet 4.32) priced less than one extra 25bp versus overnight 3.85 — and even then that would not close pos-deddf5aa0c83 unless the October skip catalyst itself failed. Inflation 82 remaining binding is the live local risk, not mean-reverter's USD tag."
+  ],
+  "revised_trade": {
+    "instrument": "AONIA_2026-10",
+    "asset_class": "rates",
+    "direction": "long",
+    "structure": "outright receive / long duration in ASX 30-day AONIA 2026-10 (IB family locked)",
+    "expression_comparison": {
+      "rates_candidate": "Receive AONIA_2026-10 (long duration): packet implied 4.565 versus overnight AONIA 4.35, i.e. +21.5bp, the liquid contract that owns the next RBA decision and October averaging window.",
+      "spot_candidate": "Short AUDUSD: packet spot 0.712022367194781 as of 2026-09-18, 1y percentile 76.4 and 5y percentile 84.3, as the FX expression of an RBA skip into housing stress.",
+      "selected": "rates",
+      "rationale": "The mispricing is a dated policy-path probability in one IB contract, not an FX level. AONIA_2026-10 is the instrument that settles to October realized AONIA, so the next RBA decision/averaging window reprices it directly. AUDUSD is only a 76th-percentile 1y residual with Fed, energy and USD noise; AUDNZD is a 5y extreme but NZ rates are unavailable so the cross cannot be risk-matched. Round-2 USD conflict does not change that: the only opposite USD view is a SOFR-receive synopsis leak with no dated FX catalyst, while packet 5d/1m USD path is still bid. Rates remains cleaner and executable from the frozen AONIA strip."
+    },
+    "context_build": {
+      "causal_mechanism": "FACT: overnight AONIA is 4.35 as of 17-Sep-2026; September IB is 4.355 (+0.5bp) so a September hike was not delivered; October IB is 4.565 (+21.5bp) with open interest 21752 and volume 4450. INFERENCE: the RBA cash-rate reaction function is being asked to hike in the October window despite an already-open housing-credit channel (NSW stamp-duty receipts -24% y/y in August, transaction volumes -18%, Sydney and Melbourne values more than 7% below peak). A hold/skip in that window lowers realized October AONIA toward the current overnight fixing and forces the 2026-10 contract to reprice lower. UNKNOWN: the packet does not print the exact next RBA calendar date.",
+      "path_to_current_price": "FACT: AU 2Y 4.999 and 10Y 5.348 as of 2026-09-16 sit at the 99th percentile of both 1y and 5y samples, with 2Y +39.1bp over 1m and -5.5bp on the last day; the AONIA strip then rises from 4.355 (Sep) to 4.565 (Oct), 4.685 (Nov), 4.725 (Dec) and about 4.94 by mid-2027. Fed funds were raised 25bp to 3.75-4.00% on the 16 Sep decision after >90% hike odds, and the BoJ raised 25bp to 1.25%. INFERENCE: AU front-end richness is a mix of sticky local inflation levels plus global hike spillover after those decisions, not a fresh local activity boom. The 1d AU yield dip did not cheapen October IB, which remains +21.5bp versus overnight.",
+      "known_vs_new_information": "KNOWN: inflation is still hot in level terms (AU inflation gauge 82; July trimmed mean 3.6% y/y unchanged; headline 3.5% after 3.8%). NEW relative to a September hold: 16 Sep Reuters housing evidence that the tightening channel is already cutting transactions and state tax take; July employment -15.8k and unemployment 4.5% after 4.4%; August RBA business conditions/confidence softer; September Westpac-MI sentiment -5.2% to 84.4. ALSO NEW as spillover: the Fed hike and BoJ hike, which the desk thesis says keep term-rate pressure elevated even where domestic growth is softer. INFERENCE: October IB has not decayed because markets are looking through housing via global tightening and the inflation level, which is exactly the priced assumption the October event can break. Round-2 addition: packet FX as of 18-Sep still shows a 5d/1m USD bid, so the spillover story has not been unwound by the Saudi workaround either.",
+      "market_implied_assumption": "FACT: October IB at 4.565 versus overnight 4.35 is +21.5bp, about 86% of a 25bp hike inside the October averaging window; November at 4.685 is +33.5bp. INFERENCE: the market requires the RBA to deliver a 25bp October hike with high probability and to keep a residual additional tightening into November, treating housing and labor softening as non-binding for the next meeting.",
+      "market_assumption_disagreed_with": "The assumption that the RBA can still look through an already-open housing channel and validate nearly a full October hike. The disagreement is not that inflation is low — it is not — but that the dated next decision cannot ignore stamp-duty/volume/price destruction, weaker jobs, and a September sentiment collapse once September itself was a hold. Separately, mean-reverter's assumption that 99th-percentile US yields plus a known hike imply USD lower is not this trade's assumption and is not required for the skip.",
+      "price_decomposition": "FACT: the 2026-10 contract is a 30-day AONIA average, not a 2Y bond; overnight 4.35 is the starting point; September IB 4.355 shows no in-month hike; the entire +21.5bp of October is therefore the marginal hike-odds component. Further strip steepening (Nov +33.5bp, Dec +37.5bp, 2027-06 +59bp) is extra-cycle, not required for this expression. AU 2Y 4.999 is a blended policy-plus-term-premium level at a statistical extreme and is not a substitute for the IB path. Spot AUDUSD 0.712 is mid-high versus 1y history and is a residual, not the hike-odds object. USD-higher in the synopsis is likewise a residual of the US path (SOFR 3.85, SR3 peak 4.755) and the 5d/1m USD bid, not a second position.",
+      "historical_reference": {
+        "distribution": "FACT: AU 2Y/5Y/10Y are all at the 99th percentile of 1y and 5y samples; AU 2s10s is 34.9bp (24th percentile 1y). The AONIA 2026-10 contract is 21.5bp above the official overnight benchmark with the strip's highest listed volume (4450) and open interest 21752. US 2Y 4.76 is 99.8th 1y with +9bp 1d after the hike; EURUSD sits at the 10.9th 1y percentile. INFERENCE: the sovereign curve is already pricing a restrictive regime; the live discrepancy is concentrated in near-dated hike odds, not in a cheap 10Y and not in a USD-lower mean-reversion from a 99th-percentile yield print.",
+        "analogs": [
+          "The frozen packet does not contain a compiled event-study of prior RBA holds versus fully priced 30-day IB contracts, so no quantitative analog with forward outcomes is available. The qualitative comparison is a hiking/holding central bank that has already opened the housing-credit channel while inflation remains above comfort, with the structural twist that this October contract already embeds almost a full hike so a skip — not a hike — is the surprise."
+        ],
+        "regime_differences": "Inflation gauge 82 and trimmed mean 3.6% mean the RBA can still justify a hike in a way a clear disinflation analog would not. Global policy is tightening (Fed 3.75-4.00%, BoJ 1.25%, BoE 6-3 hold with three hike votes), so spillover can keep AU front-end rich even if local housing is the binding constraint. Energy-shock narratives remain two-way (Saudi workaround versus weaker shock absorbers). NZ rates are missing, so AU-NZ policy RV cannot be used as a confirming analog."
+      },
+      "independent_checks": [
+        "Policy-path check: ASX 30-day AONIA strip (Sep 4.355, Oct 4.565, Nov 4.685) versus overnight 4.35 — the October contract is the hike-odds object.",
+        "Housing micro: NSW stamp-duty -24% y/y, volumes -18%, Sydney/Melbourne values more than 7% below peak (mw_20260916_au_housing_tightening / housing rollup).",
+        "Temperature split: inflation 82 versus labor 50 (employment -15.8k, U 4.5%), activity 54 (Q2 GDP +0.4%, softer business conditions), consumer 48 (July spending still +1.1% but September sentiment -5.2% to 84.4).",
+        "Cross-market: Fed and BoJ hikes plus desk thesis of elevated term-rate pressure can explain why October IB stayed rich after the housing print; packet 5d/1m USD bid versus EUR/GBP/CAD/CHF is the same spillover residual, not a USD-lower reversal after the Saudi workaround."
+      ],
+      "flow_and_positioning_check": "FACT: CFTC TFF is null and positioning status is partial; CME positioning is unavailable. ASX 2026-10 open interest 21752 and volume 4450 are the largest listed activity on the 1m AONIA strip besides September OI, so the hike is owned in a live, liquid contract rather than a stale back month. UNKNOWN: speculative versus hedging split. INFERENCE: flow/plumbing is not shown as the driver; the price is policy-odds. Do not treat missing CFTC as evidence of crowding or of emptiness, and do not treat mean-reverter's USD-lower as a positioning unwind.",
+      "policy_path_check": {
+        "status": "available",
+        "relevant_countries": [
+          "AU",
+          "US"
+        ],
+        "pricing_summary": "AU: overnight AONIA 4.35; Sep IB 4.355 (+0.5bp); Oct 4.565 (+21.5bp); Nov 4.685 (+33.5bp); Dec 4.725 (+37.5bp); 2027-06 4.94 (+59bp). US: official SOFR 3.85 on 2026-09-17 after the 16 Sep 25bp hike to 3.75-4.00%; SR3 Sep 4.00, Dec 4.32, Mar-27 4.58, Sep-27 4.755.",
+        "rationale": "A short-dated AU rates expression must start from the live AONIA path, not from the AU 2Y percentile. US path is included only as the documented global-spillover that can keep October IB rich until the local RBA/averaging event forces a domestic decision. NZ path is unavailable and is not used. Round-2 USD conflict does not substitute a SOFR percentile fade for that AU policy path."
+      }
+    },
+    "thesis": "FACT: the book already receives AONIA_2026-10 at paper_books mark 4.565 (sidecar entry_mark 4.57), with September IB at overnight. Housing-channel evidence from 16 Sep shows stamp-duty and prices already contracting; labor and September sentiment have softened while inflation remains a high level. INFERENCE: the dated path to repricing is the next RBA decision and the October AONIA average — a skip/hold collapses the +21.5bp hike-odds component toward 4.35, while a hike delivered as priced is largely in the contract (asymmetric). Global Fed/BoJ tightening is the reason that component can stay rich until that event; packet 5d/1m USD still bid is the residual, not a USD trade. UNKNOWN: exact meeting date, whether October CPI prints first, and RBA weight on inflation 82 versus housing. Do not open a second AONIA_2026-10; hold pos-deddf5aa0c83.",
+    "mispricing": "October IB prices +21.5bp versus overnight AONIA 4.35 (~86% of 25bp) after a September hold and after documented housing-channel damage. That is too much October hike for a cash-rate decision that must confront an already-open tightening channel.",
+    "why_now": [
+      "September IB is already at the overnight fixing, so the live fight is the October averaging window and the next RBA decision — a dated mechanism, not a valuation slogan.",
+      "The 16 Sep housing print arrived after that hold and has not cheapened October IB, which still marks 4.565, equal to the paper_books entry.",
+      "Fed and BoJ hikes since then are a plausible spillover keeping AU hike odds rich; that spillover is unwound when the RBA has to vote on local housing, jobs and sentiment.",
+      "The routed USD-lower case is a SOFR-percentile fade with no dated FX event and a still-bid 5d/1m USD path; it does not reprice October IB and, if it worked in US rates, would reduce the spillover keeping October rich.",
+      "Funded-seat SOFR vig accrues whether flat or invested; the existing receive is the only packet-supported path that can beat that vig if the skip hits."
+    ],
+    "evidence_refs": [
+      "policy:AU",
+      "policy_paths",
+      "tradable_rate_curves",
+      "mw_20260916_au_housing_tightening",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "temp:AU:inflation",
+      "temp:AU:labor",
+      "temp:AU:activity",
+      "temp:AU:consumer",
+      "rates:AU",
+      "fx:AUDUSD",
+      "fx:EURUSD",
+      "fx:GBPUSD",
+      "fx:USDCHF",
+      "fx:USDCAD",
+      "fx:USDJPY",
+      "policy:US",
+      "rates:US",
+      "temp:US:inflation",
+      "temp:US:labor",
+      "rollup:Fed raises 25bp to 3.75–4.00%",
+      "last24:BoJ raises its policy rate to 1.25%",
+      "last24:desk-thesis",
+      "mw_20260916_saudi_oman_workaround",
+      "pos:cftc",
+      "funding_context",
+      "paper_books",
+      "market_state",
+      "research_method"
+    ],
+    "horizon": "through the October AONIA averaging window and the next RBA decision",
+    "entry": null,
+    "target": null,
+    "stop": null,
+    "invalidation": "Next RBA hike or AONIA_2026-10 implied through packet Nov 4.685.",
+    "catalysts": [
+      "Next RBA decision / October AONIA realized average settling the 2026-10 contract.",
+      "Further housing, credit or labor prints that make a look-through hike untenable before that window.",
+      "Fade of Fed/BoJ spillover in AU front-end if US path stops adding to local hike odds."
+    ],
+    "principal_risks": [
+      "RBA looks through housing because trimmed-mean 3.6% and inflation gauge 82 still dominate the reaction function.",
+      "Global tightening (Fed hike, BoJ hike, BoE hawkish dissent) validates rather than inflates October odds.",
+      "A 50bp October surprise, or an earlier-than-window hike, would push realized AONIA through the long.",
+      "Housing evidence is single-source Reuters; July household spending was still +1.1% m/m, so the consumer channel is not uniformly closed.",
+      "If the skip is delayed into November, Oct averaging can still realize a hike while the seat pays SOFR vig; Nov remains +33.5bp.",
+      "Packet market-state is stale on NZ_rates; CFTC is missing.",
+      "FX as_of 2026-09-18 versus cutoff 2026-09-20T19:39:35Z; USD residual could have moved off-packet."
+    ],
+    "confidence": 58
+  },
+  "paper_actions": [
+    {
+      "action": "HOLD",
+      "position_id": "pos-deddf5aa0c83",
+      "instrument": "AONIA_2026-10",
+      "asset_class": "rates",
+      "side": "long",
+      "notional_usd": 55000000,
+      "rationale": "FACT: sidecar already owns long AONIA_2026-10 pos-deddf5aa0c83 (55m, sidecar entry_mark 4.57, paper_books mark 4.565, risk capital 550k). The dated October RBA/AONIA-average catalyst is intact and the packet mid is still 4.565. The routed opp-view:USD conflict is a mean-reverter USD-lower synopsis leak, not a veto of this receive. Do not OPEN a duplicate AONIA_2026-10. Do not ADD: inflation gauge 82, trimmed mean 3.6%, and Fed/BoJ spillover keep a delivered hike live; housing is single-source; no new AU print has arrived since the prior OPEN. Shocked risk 550k remains inside the 10m cap.",
+      "thesis": "Receive AONIA_2026-10: housing channel already biting while Oct still prices +21.5bp versus overnight AONIA 4.35. Catalyst is the next RBA decision/October averaging window. HOLD existing position_id pos-deddf5aa0c83.",
+      "invalidation": "Next RBA hike or AONIA_2026-10 implied through packet Nov 4.685."
+    }
+  ]
+}

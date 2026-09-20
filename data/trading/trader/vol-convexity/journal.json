@@ -43,6 +43,50 @@
       "run_id": "tr-20260920T020818Z-ondemand",
       "schema_version": 1,
       "thesis": "FACT: AUDNZD is at a 5-year extreme because NZDUSD collapsed, not because AUDUSD broke out; AU housing is showing the tightening channel; AONIA still prices ~50bp more hikes; NZ GDP beat and an India FTA have not reversed NZD; VIX crushed after FOMC; WTI is 96th percentile with a two-way energy narrative; NZ yields are missing; no FX option marks exist. INFERENCE: the market is pricing a one-way RBA-over-RBNZ regime that is already internally inconsistent, so the next move is a distribution with both a delayed mean-reversion tail and a squeeze tail. Spot is dominated because timing is uncertain and event risk (housing prints, energy, next RBA/RBNZ, residual global hike path) is two-sided after realized FX vol stayed ~5%. UNKNOWN: 3M ATMF IV, 25d risk-reversal, quoted premium, and the RBNZ curve \u2014 all must be checked before any OPEN. The paper book therefore HOLDs; the debate trade is still the put."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Own sidecar is FLAT with no position_id. Debate trade remains the 3M OTM AUDNZD put. Frozen packet still has no premium, IV, or strike mids, so options stay unmarkable. Do not substitute a spot AUDNZD short or a USD-pair NZD expression to settle opp-view:NZD. Remain HOLD.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-20T16:06:28.069463-04:00",
+      "conviction": 47,
+      "decision_fingerprint": "08631f599d17b3332dc9f5559d01b7ec6dd3da4ed50c18eb160060d6892c1377",
+      "event_id": "jde-43d8ffcc558f4f83",
+      "funding_view": null,
+      "invalidation": "Live 3M put IV already prices the reversal, or AUDNZD makes new 5-year highs while AONIA hike pricing stays dominant.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "66f4434e9a4815e09a06be01d9e247a02f247f5b6ae723ce392f35d3908d7d1a",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-20T19:39:35Z",
+        "evidence_hash": "02d6976dd0d2606bae7efa7c3f2cc41aeac6ccfbf50d5251260f71390ba24d5b",
+        "overnight_run_id": null,
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260920T193935Z-ondemand"
+      },
+      "rationale": "FACT: AUDNZD is at a 5-year extreme because NZDUSD collapsed, not because AUDUSD broke out; AU housing is showing the tightening channel while AONIA still prices about +21.5bp by October and about +59.5bp by August 2027; NZ GDP beat and an India FTA have not reversed NZD; NZ yields are missing; Fed and BoJ hikes are delivered; USDJPY 20-day RV is 11.04 versus AUDNZD 5.09; VIX crushed to 15.44 on 17 Sep; no FX option marks exist. INFERENCE: the market is pricing a one-way RBA-over-RBNZ regime that is internally inconsistent, so the next move is a distribution with a delayed mean-reversion tail and a squeeze tail. Spot is dominated because timing is uncertain and event risk (housing prints, residual RBA path, NZ data, energy, global hike follow-through) is two-sided after realized FX vol on this cross stayed near 5%. Buying USDJPY vol after a +1.41% BoJ day is not the same trade: that realized has already printed. UNKNOWN: 3M ATMF IV, 25-delta risk-reversal, quoted premium, and the RBNZ curve \u2014 all must be checked before any OPEN. The paper book therefore HOLDs; the debate trade is still the put.",
+      "run_id": "tr-20260920T193935Z-ondemand",
+      "schema_version": 1,
+      "thesis": "FACT: AUDNZD is at a 5-year extreme because NZDUSD collapsed, not because AUDUSD broke out; AU housing is showing the tightening channel while AONIA still prices about +21.5bp by October and about +59.5bp by August 2027; NZ GDP beat and an India FTA have not reversed NZD; NZ yields are missing; Fed and BoJ hikes are delivered; USDJPY 20-day RV is 11.04 versus AUDNZD 5.09; VIX crushed to 15.44 on 17 Sep; no FX option marks exist. INFERENCE: the market is pricing a one-way RBA-over-RBNZ regime that is internally inconsistent, so the next move is a distribution with a delayed mean-reversion tail and a squeeze tail. Spot is dominated because timing is uncertain and event risk (housing prints, residual RBA path, NZ data, energy, global hike follow-through) is two-sided after realized FX vol on this cross stayed near 5%. Buying USDJPY vol after a +1.41% BoJ day is not the same trade: that realized has already printed. UNKNOWN: 3M ATMF IV, 25-delta risk-reversal, quoted premium, and the RBNZ curve \u2014 all must be checked before any OPEN. The paper book therefore HOLDs; the debate trade is still the put."
     }
   ],
   "schema_version": 1,

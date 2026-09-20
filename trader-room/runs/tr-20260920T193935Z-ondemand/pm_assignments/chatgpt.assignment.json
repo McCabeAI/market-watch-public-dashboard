@@ -1,0 +1,136 @@
+{
+  "allowable_actions": [
+    "OPEN",
+    "ADD",
+    "HOLD",
+    "REDUCE",
+    "HEDGE",
+    "CLOSE",
+    "NO_TRADE"
+  ],
+  "evidence_cutoff": "2026-09-20T19:39:35Z",
+  "evidence_packet_sha256": "02d6976dd0d2606bae7efa7c3f2cc41aeac6ccfbf50d5251260f71390ba24d5b",
+  "independence": "Read only this PM's packet/memory/assignment. Do not read other PMs' packets, memory, books, or current-cycle decisions.",
+  "mandate": {
+    "awaiting_status": "awaiting_chatgpt_decision",
+    "hedge_allowed": true,
+    "label": "ChatGPT",
+    "shorthand": "Final synthesis; may trade or choose no-trade. No forced style.",
+    "style": "none"
+  },
+  "memory": {
+    "active_lessons": [],
+    "calibration": {
+      "average_holding_seconds": null,
+      "average_realized_pnl_usd": null,
+      "breakeven": 0,
+      "by_asset_class": {},
+      "closed_trade_count": 0,
+      "conviction_buckets": {
+        "high": {
+          "average_pnl_usd": null,
+          "count": 0,
+          "hit_rate": null
+        },
+        "low": {
+          "average_pnl_usd": null,
+          "count": 0,
+          "hit_rate": null
+        },
+        "medium": {
+          "average_pnl_usd": null,
+          "count": 0,
+          "hit_rate": null
+        }
+      },
+      "losses": 0,
+      "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
+      "total_realized_pnl_usd": 0.0,
+      "wins": 0
+    },
+    "memory_context_sha256": "1efc206fe34062d2531ae68c782af7e7eb320033d065428a1547fcb7dfbbbaf0",
+    "open_positions": [
+      {
+        "asset_class": "rates",
+        "conviction": 68,
+        "current_notional_usd": 500000000.0,
+        "entry_mark": 3.4,
+        "instrument": "CORRA_2027H-Z",
+        "opened_at": "2026-09-19T23:10:54.130509-04:00",
+        "position_id": "pm-chatgpt-595561a1b90f",
+        "risk_capital_usd": 5000000.0,
+        "side": "long",
+        "trade_id": "trd-pm-chatgpt-pm-chatgpt-595561a1b90f"
+      }
+    ],
+    "postmortems_due": [],
+    "recent_closed_trades": []
+  },
+  "memory_context_sha256": "1efc206fe34062d2531ae68c782af7e7eb320033d065428a1547fcb7dfbbbaf0",
+  "paths": {
+    "assignment": "trader-room/runs/tr-20260920T193935Z-ondemand/pm_assignments/chatgpt.assignment.json",
+    "memory": "trader-room/runs/tr-20260920T193935Z-ondemand/pm_memory/chatgpt.json",
+    "named_packet": "data/pm/review_packets/chatgpt/prp-chatgpt-tr-20260920T193935Z-ondemand.json",
+    "packet_facts": "trader-room/runs/tr-20260920T193935Z-ondemand/PACKET_FACTS.json",
+    "review_packet": "data/pm/review_packets/chatgpt/latest.json",
+    "shared_facts": "trader-room/runs/tr-20260920T193935Z-ondemand/pm_shared_facts.json"
+  },
+  "pm_id": "chatgpt",
+  "prior_book": {
+    "conviction": 68,
+    "decision_status": "active",
+    "high_water_nav_usd": 1000000000.0,
+    "invalidation": "Reduce or close if Canadian core inflation moves decisively above the current near-2% zone while employment and wage growth reaccelerate, or if BoC communication/delivered hikes validate a 2027 path in the mid-3% area. A headline-energy spike without confirmation in core inflation and labor is not sufficient invalidation.",
+    "last_action": "OPEN",
+    "nav_usd": 1000000000.0,
+    "pm_id": "chatgpt",
+    "positions": [
+      {
+        "asset_class": "rates",
+        "instrument": "CORRA_2027H-Z",
+        "invalidation": "Reduce or close if Canadian core inflation moves decisively above the current near-2% zone while employment and wage growth reaccelerate, or if BoC communication/delivered hikes validate a 2027 path in the mid-3% area. A headline-energy spike without confirmation in core inflation and labor is not sufficient invalidation.",
+        "locked_expression_family": "corra",
+        "notional_usd": 500000000.0,
+        "opened_run_id": "tr-20260920T020818Z-ondemand",
+        "paper_expression": {
+          "curve_id": "CORRA",
+          "expiries": [
+            "2027-03",
+            "2027-06",
+            "2027-09",
+            "2027-12"
+          ],
+          "type": "futures_strip_average"
+        },
+        "position_id": "pm-chatgpt-595561a1b90f",
+        "risk_capital_usd": 5000000.0,
+        "side": "long",
+        "thesis": "Receive the 2027 CORRA H/M/U/Z strip. The market prices roughly 84 to 130.5 bp of BoC tightening from a 2.29% overnight rate even though Canadian labor is weak and core inflation is near 2%; the 2027 hike cycle is too aggressive relative to the domestic reaction function.",
+        "unrealized_pnl_usd": -0.0
+      }
+    ],
+    "review_status": "stale",
+    "thesis": "Receive the 2027 CORRA H/M/U/Z strip. The market prices roughly 84 to 130.5 bp of BoC tightening from a 2.29% overnight rate even though Canadian labor is weak and core inflation is near 2%; the 2027 hike cycle is too aggressive relative to the domestic reaction function."
+  },
+  "review_packet_id": "prp-chatgpt-tr-20260920T193935Z-ondemand",
+  "review_packet_sha256": "4596196909b16d718ed21c853b2423b9d78279e13ed120e792dc0ff73eaa5058",
+  "risk": {
+    "cash_capital_usd": 1000000000,
+    "drawdown_usd": 0.0,
+    "gross_utilization_usd": 500000000.0,
+    "max_drawdown_usd": 50000000,
+    "risk_capital_limit_usd": 100000000,
+    "risk_capital_remaining_usd": 95000000.0,
+    "risk_capital_usd": 5000000.0,
+    "risk_stop_pending": false,
+    "risk_stopped": false
+  },
+  "run_id": "tr-20260920T193935Z-ondemand",
+  "sizing_instruction": "Size from plausible adverse paths and historical excursions. Notional is descriptive. Do not mechanically fill remaining shocked-risk capacity. OPEN/ADD/HEDGE fail closed while risk_stopped; there is no reset policy in this packet.",
+  "source": "on_demand_trader_room_fallback",
+  "stale_or_missing_warnings": [
+    "PM packet source is the on-demand Trader Room fallback, not a successful overnight 14-seat review."
+  ],
+  "trader_room_run_id": "tr-20260920T193935Z-ondemand",
+  "type": "PM_ASSIGNMENT"
+}
