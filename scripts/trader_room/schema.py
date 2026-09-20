@@ -88,6 +88,32 @@ def _validate_paper_action_row(row: Any, *, label: str) -> None:
             )
 
 
+def _validate_primary_trade_action_alignment(
+    trade: dict[str, Any] | None,
+    actions: Any,
+    *,
+    label: str,
+) -> None:
+    if not isinstance(trade, dict) or trade.get("asset_class") not in {"rates", "curve", "rates_rv"}:
+        return
+    if not isinstance(actions, list):
+        return
+    instrument = trade.get("instrument")
+    for row in actions:
+        if (
+            isinstance(row, dict)
+            and row.get("action") == "OPEN"
+            and row.get("instrument") == instrument
+            and row.get("asset_class") in {"rates", "curve", "rates_rv"}
+        ):
+            if trade.get("direction") != row.get("side"):
+                raise SchemaError(
+                    f"{label} primary rates trade direction must match the canonical paper-book side "
+                    f"when both refer to {instrument}: trade.direction={trade.get('direction')} "
+                    f"paper side={row.get('side')}"
+                )
+
+
 def _validate_paper_actions_list(value: Any, *, label: str) -> None:
     if value is None:
         return
@@ -386,6 +412,11 @@ def validate_contribution(
         except FundingViewError as exc:
             raise SchemaError(str(exc)) from exc
     _validate_paper_actions_list(contribution.get("paper_actions"), label=agent)
+    _validate_primary_trade_action_alignment(
+        contribution.get("trade"),
+        contribution.get("paper_actions"),
+        label=agent,
+    )
     _validate_paper_capital(contribution.get("paper_capital"), label=agent)
     if contribution.get("paper_actions") is None and contribution.get("paper_capital") is None:
         raise SchemaError(
@@ -447,6 +478,11 @@ def validate_rebuttal(
         except FundingViewError as exc:
             raise SchemaError(str(exc)) from exc
     _validate_paper_actions_list(rebuttal.get("paper_actions"), label=f"{expected_agent} rebuttal")
+    _validate_primary_trade_action_alignment(
+        rebuttal.get("revised_trade"),
+        rebuttal.get("paper_actions"),
+        label=f"{expected_agent} rebuttal",
+    )
     _validate_paper_capital(rebuttal.get("paper_capital"), label=f"{expected_agent} rebuttal")
     if rebuttal["trade_change"] in {"amended", "withdrawn"}:
         if rebuttal.get("paper_actions") is None and rebuttal.get("paper_capital") is None:
