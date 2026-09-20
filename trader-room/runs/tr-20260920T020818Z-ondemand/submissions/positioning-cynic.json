@@ -1,0 +1,162 @@
+{
+  "type": "TRADER_ROOM_CONTRIBUTION",
+  "run_id": "tr-20260920T020818Z-ondemand",
+  "round": 1,
+  "agent": "positioning-cynic",
+  "archetype": "positioning-cynic",
+  "remit": "attack crowded ideas; prefer better ownership asymmetry",
+  "packet_sha256": "349a16aeeda7f4a89e10ba16c22c90311da76536984e943cf04249588d954e1e",
+  "confidence": 56,
+  "stance_summary": "Verified: the crowded book is the energy-constrained global-hawk narrative, not a missing Canada hiking cycle. CORRA still prices +84bp by 2027-03 and +130.5bp by 2027-12 from a 2.29 overnight while Canada labor is 38, core is near 2%, CAD leveraged-fund shorts have already covered to the 99th one-year percentile of their net, and a Saudi STS workaround has reduced the oil-supply tail. Inference: that is a bad ownership entry into paying Canada. Unknown: CORRA futures open interest is null and CME positioning is unavailable, so this is not a claim that CRA specs are empty. Trade is short the implied-rate CORRA 2027 strip (receive Canada 2027) versus joining long AUDCAD, long JPY, or residual US 2Y/10Y spec shorts.",
+  "trade": {
+    "instrument": "CORRA_2027-03",
+    "asset_class": "rates",
+    "expression_comparison": {
+      "rates_candidate": "Short implied-rate equal-weight CORRA 2027-03/06/09/12 strip (CRAH27 3.13, CRAM27 3.365, CRAU27 3.51, CRAZ27 3.595 versus CORRA overnight 2.29) to fade the priced BoC hiking cycle.",
+      "spot_candidate": "Long USDCAD as the CAD-lower expression of a faded BoC hike path (spot 1.4010471204188482 as of 2026-09-18).",
+      "selected": "rates",
+      "rationale": "The mispricing is the CORRA path, not a USD/CAD extreme. USDCAD is only 74.0th percentile 1y / 87.0th 5y, and CFTC CAD leveraged funds are still net short 39022 contracts, so a spot CAD-lower fade has to fight a remaining short-covering squeeze. Rates do not require CAD to sell versus USD; they require 2027 implied CORRA to reprice. Paying CORRA versus receiving AONIA to fade 5y-extreme AUDCAD is inferior because that RV is the crowded BoC-hike/housing-dove consensus and CA-AU 2Y is already -164.9bp at the 10.5th 5y percentile. Do not default to options: no premium/IV/strike mids."
+    },
+    "context_build": {
+      "causal_mechanism": "Bank of Canada policy is being priced as an energy-pass-through hiking cycle even though the domestic labor and core-inflation channel does not look like a mid-cycle tightening economy. If that energy-hawk story is the consensus everyone already owns, 2027 implied CORRA is the object that has to cheapen when labor/core dominate and the oil tail shrinks.",
+      "path_to_current_price": "Verified path: CORRA overnight is 2.29 as of 2026-09-17. MX CRA 3m implied rates are 2.385 (2026-09), 2.775 (2026-12, +48.5bp), 3.13 (2027-03, +84bp), 3.365 (2027-06, +107.5bp), 3.51 (2027-09, +122bp) and 3.595 (2027-12, +130.5bp), with the 2028-09 contract at 3.655 (+136.5bp). Canada 2Y yield is 3.27 as of 2026-09-17 after a +31bp 1m move, then -8bp on 2026-09-17 and -4bp over five days. US SOFR jumped to 3.85 on 2026-09-17 from 3.62 the prior day after the Fed raised 25bp to 3.75-4.00%, and SR3 still prices 4.32 by 2026-12, 4.58 by 2027-03 and 4.755 by 2027-09. CAD leveraged funds covered 16426 contracts in the week to 2026-09-15 to a net of -39022, the 99.04th percentile of that net over one year. AUDCAD printed 0.9975768872320596 on 2026-09-18 at the 99.80th 1y and 99.96th 5y percentiles while the packet carry screen still ranks long AUD/short CAD first on a 164.9bp 2Y differential.",
+      "known_vs_new_information": "Known: Canada headline inflation at 3% with core near 2%; weak Canada labor (gauge 38) versus US labor 75; Fed hike was already >90% priced into the 2026-09-16 FOMC. New enough to re-open the ownership question now: BoC minutes flagging energy pass-through, the last-24h desk thesis that the energy shock constrains easing even where growth is softer, the 2026-09-17 SOFR step-up after the delivered Fed hike, CAD spec covering into that hawkish narrative, and the Saudi ship-to-ship workaround that reduces the extreme oil-supply tail. The energy-hawk story is no longer a secret; it is the position.",
+      "market_implied_assumption": "CORRA 2027 prices a full tightening cycle from 2.29 toward about 3.40 on the 2027 H/M/U/Z average and about 3.65 by 2028, i.e. the BoC must hike through soft labor and near-2% core because energy pass-through and the global hawk keep the easing impulse shut.",
+      "market_assumption_disagreed_with": "The priced assumption that is wrong is that Canada still needs ~80-136bp of additional hikes. Inference, not fact: once energy-pass-through is the owned narrative, residual oil-tail shrinkage and a 38 labor gauge make that path too much, not too little.",
+      "price_decomposition": "Level versus change: Canada 2Y at 3.27 is 97.8th percentile on 1y but only 58.5th on 5y, so this is not a 5y cash-yield extreme. The marginal object is the 2027 implied-rate strip, where most of the +84 to +130.5bp of tightening versus overnight lives. Canada 2s10s is 56bp at the 0.60th 1y percentile, i.e. the front end has already sold off versus 10s. CA-US 2Y at -140bp is the 3.57th 1y percentile because the US 2Y (4.76, 100th 1y after a delivered hike) sold off more than Canada, not because CORRA 2027 is empty of hikes. Do not treat the 2Y percentile as a substitute for the CRA path.",
+      "historical_reference": {
+        "distribution": "Canada 2Y 3.27: 1y percentile 97.82, 5y percentile 58.52, 1m change +31bp (z 1.62), 1d -8bp. CORRA 2027-03 implied 3.13 is +84bp versus overnight 2.29; 2027-12 implied 3.595 is +130.5bp. AUDCAD spot 0.9976 sits at the top of its 1y and 5y distributions; USDCAD does not.",
+        "analogs": [
+          "Canada 2Y +31bp 1m analog on 2022-06-30, prior_1m_move +31bp, level 3.10, forward_1m 0.0bp and forward_3m +66bp: hiking continued after a similar 1m selloff.",
+          "Canada 2Y analog on 2023-04-14, prior_1m_move +31bp, level 3.81, forward_1m -1bp and forward_3m +83bp: the 1m pause failed and hikes resumed.",
+          "Canada 2Y analog on 2026-04-01, prior_1m_move +31bp, level 2.82, forward_1m +12bp and forward_3m -6bp: a closer overnight-rate regime, mixed follow-through.",
+          "CA-AU 2Y analog on 2023-09-05 after a -5.5bp 1m move, level +80.9bp then, forward_3m -71.3bp: a reminder that FX-carry and rates-RV analogs do not share this packet's 2026 energy-hawk overlay."
+        ],
+        "regime_differences": "The 2022-06-30 and 2023-04-14 +31bp analogs occurred while inflation was still clearly above a near-2% core and hiking cycles were live; those forward outcomes (+66bp and +83bp over 3m) are the crowded inference, not a base case. Current packet regime differences: CORRA overnight is still 2.29 (no delivered BoC hike comparable to the Fed's 25bp), Canada core is near 2%, labor gauge is 38 versus US 75, and the energy tail has a documented STS workaround. 5y Canada 2Y percentile 58.5 also differs from those mid-cycle highs. No analog in the packet maps 136bp of priced CORRA hikes onto a 38 labor gauge; that gap is stated rather than invented."
+      },
+      "independent_checks": [
+        "Policy-path versus domestic gauges: CRA 2027 strip prices +84 to +130.5bp of tightening from 2.29 while temp:CA:labor is 38, temp:CA:consumer 45, temp:CA:inflation 55 versus temp:US:labor 75 and temp:US:inflation 72; Canada August CPI holds 3% with core near 2%.",
+        "Flow versus narrative: CFTC TFF CAD leveraged-fund net -39022 is the 99.04th 1y percentile of that net with +16426 weekly covering, while the desk thesis and BoC minutes supply the energy-hawk story those covers are aligned with; Saudi STS workaround is a second, non-gauge check that the oil tail used to justify that story is shrinking. CME LastTotals and all CRA open_interest fields are unavailable/null, so they are not used as a third confirmation."
+      ],
+      "flow_and_positioning_check": "Verified CFTC TFF as of 2026-09-15, age 5 days, futures only. CAD: leveraged funds net -39022 (-10.89% of OI), pctile_1y 99.04, z_1y 2.12, weekly_change_net +16426; CAD OI 358186, pctile_1y 81.73. That is covering toward the least-short net of the past year, not a fresh short. Do not invent a CFTC net for CORRA or CRA: those fields are null and CME_positioning is unavailable. Other crowded books this seat refuses to join: AUD OI 493141 at 99.04th 1y / 99.68th 3y with leveraged-fund net +61135 but only 31.7th 1y net percentile; JPY leveraged-fund net +23170 at 99.04th 1y, z_1y 3.71, weekly_change_net +72268 after the BoJ hike to 1.25%, while USDJPY is only 52.2nd 1y so a JPY-long fade is a bad entry; US 10Y asset-manager net +2.635m at 97.1th 3y against leveraged-fund still net short 1.868m, i.e. two-sided and not an uncrowded pay-US; US 2Y leveraged-fund net -1.295m at 97.8th 3y percentile of that net, i.e. front-end spec shorts are already relatively covered. Inference: ownership asymmetry favors fading the BoC-hike/energy-hawk consensus in CORRA, not paying it, and not using USDCAD or USDJPY as the expression.",
+      "policy_path_check": {
+        "status": "available",
+        "relevant_countries": [
+          "CA",
+          "US"
+        ],
+        "pricing_summary": "CA: CORRA overnight 2.29 on 2026-09-17; 1m COAZ26 2.58 (+29bp) is the packet terminal marker; 3m CRA strip 2026-12 2.775, 2027-03 3.13, 2027-06 3.365, 2027-12 3.595, 2028-09 3.655. Method is 100 minus MX CORRA futures, research/reference, not meeting probabilities. US: SOFR overnight 3.85 on 2026-09-17 after 3.62 on 2026-09-16; SR3Z6 4.32, SR3H7 4.58, SR3U7 4.755. AONIA 4.35 with +51bp to 2027-03 is context only and is not the trade.",
+        "rationale": "This is a short-end Canada policy-path trade. A Canada 2Y percentile cannot substitute for the CRA curve; the frozen policy_paths.countries.CA and tradable_rate_curves.CORRA blocks are both status ok. US SOFR/SR3 is the comparison path for why paying US or long USDCAD is the inferior expression, not the traded leg."
+      }
+    },
+    "structure": "Equal-weight short implied-rate strip of MX three-month CORRA contracts 2027-03, 2027-06, 2027-09 and 2027-12 (CRAH27/CRAM27/CRAU27/CRAZ27). Paper family locked to CORRA; marks in implied-rate space (implied_rate = 100 minus futures price). Sidecar has zero open positions so this is a new OPEN, not an ADD.",
+    "direction": "short",
+    "thesis": "Fade the crowded energy-hawk / BoC-must-hike book by shorting 2027 implied CORRA (receiving Canada 2027). Verified: CRA prices +84bp by Mar-27 and +130.5bp by Dec-27 from 2.29 while Canada labor is 38 and core is near 2%; CAD specs have already covered to a 99th-percentile 1y net; the desk thesis says energy blocks easing even where growth is softer. Inference: that narrative is owned, so the better asymmetry is against further CA-rate upside, not with it. Unknown: CRA open interest and CME positioning, so this is not a claim the futures pit is empty. Explicitly not the trade: long AUDCAD at a 5y extreme, long JPY after a 99th-percentile leveraged-fund pile-in, or joining residual US duration shorts.",
+    "mispricing": "The market implies a Canada hiking cycle of roughly 80-136bp through 2027-28 that treats energy pass-through as binding. Packet facts (core near 2%, labor 38, CAD covering already extended, oil-tail workaround) say that cycle is the consensus overlay, not an unowned forecast.",
+    "why_now": [
+      "CAD leveraged-fund covering of +16426 contracts to a 99.04th 1y net percentile as of 2026-09-15 shows the hawk/CAD-higher idea is already the flow.",
+      "BoC minutes on energy pass-through plus the last-24h desk thesis made that hawk the common G10 overlay, while SOFR's 2026-09-17 jump to 3.85 confirmed the Fed hike was delivered and is no longer the Canada-specific catalyst.",
+      "Saudi STS workaround the same week reduces the oil-supply tail used to justify pricing +130.5bp of CORRA hikes from 2.29.",
+      "Canada 2Y's -8bp on 2026-09-17 is the first sign the cash front end is no longer one-way, while 2027 CRA still holds the cycle."
+    ],
+    "evidence_refs": [
+      "policy_paths",
+      "tradable_rate_curves",
+      "pos:cftc",
+      "rates:CA",
+      "policy:CA",
+      "temp:CA:labor",
+      "temp:CA:inflation",
+      "temp:CA:consumer",
+      "rollup:BoC minutes flag higher energy pass-through risk",
+      "rollup:Canada August inflation holds at 3%, core stays near 2%",
+      "last24:desk-thesis",
+      "mw_20260916_saudi_oman_workaround",
+      "fx:USDCAD",
+      "fx:AUDCAD",
+      "funding_context",
+      "market_state",
+      "research_method",
+      "rollup:Fed raises 25bp to 3.75–4.00%"
+    ],
+    "horizon": "1-3 months, through the next BoC communications and Canada inflation prints that can cheapen 2027 implied CORRA",
+    "entry": "Paper mid only: equal-weight CORRA implied-rate strip 2027-03 3.13 / 2027-06 3.365 / 2027-09 3.51 / 2027-12 3.595 from tradable_rate_curves.CORRA as of the frozen packet. Trusted code transacts at that deterministic mid; no broker executable.",
+    "target": null,
+    "stop": null,
+    "invalidation": "Thesis is wrong if Canada core leaves the near-2% zone or BoC delivers the priced 2027 hiking cycle so the CRA 2027 strip implied rate rises rather than cheapens. No executable numeric stop is in the packet.",
+    "catalysts": [
+      "Canada inflation/labor prints that keep core near 2% and labor soft versus a 3.13-3.60 2027 CORRA path.",
+      "BoC communications that walk back energy-pass-through as a hiking trigger after the Saudi workaround.",
+      "Failure of remaining CAD shorts to squeeze 2027 implied CORRA even if USDCAD covering continues."
+    ],
+    "principal_risks": [
+      "Packet analogs of a +31bp Canada 2Y month (2022-06-30 and 2023-04-14) saw +66bp and +83bp over the next 3m when hiking cycles were live; that is the main fundamental risk.",
+      "CORRA contract open_interest and volume are null and CME positioning is unavailable, so futures crowding is unknown.",
+      "A renewed oil shock that restores the energy-pass-through overlay.",
+      "Seat still pays official SOFR 3.85 ACT/360 on the full $100m allocation; a slow CORRA reprice can lose to funding.",
+      "CAD FX covering can continue even if this rates view is right, so do not size as if USDCAD must confirm immediately."
+    ],
+    "confidence": 56
+  },
+  "conflict_synopsis": {
+    "seat": "positioning-cynic",
+    "primary_trade": "short CORRA_2027-03 (receive 2027 CRA strip)",
+    "core_view": "The energy-hawk BoC hiking cycle is the crowded book; fade it in 2027 implied CORRA rather than joining AUDCAD, JPY, or residual US duration specs.",
+    "usd_view": "higher",
+    "cad_view": "lower",
+    "aud_view": "neutral",
+    "nzd_view": "not_relevant",
+    "us_rates_view": "neutral",
+    "ca_rates_view": "lower",
+    "au_rates_view": "not_relevant",
+    "nz_rates_view": "not_relevant",
+    "risk_view": "neutral",
+    "carry_view": "opposes_trade",
+    "time_horizon": "1-3 months",
+    "key_catalyst": "Canada data or BoC language that core/labor dominate energy pass-through, cheapening 2027 CRA.",
+    "key_invalidation": "BoC delivers the priced 2027 hiking cycle or Canada core leaves the near-2% zone.",
+    "confidence": 56,
+    "conflict_tags": [
+      "CAD_DOWN",
+      "CA_RATES_DOWN",
+      "USD_UP",
+      "FADE_CROWD"
+    ]
+  },
+  "paper_actions": [
+    {
+      "action": "OPEN",
+      "instrument": "CORRA_2027-03",
+      "side": "short",
+      "notional_usd": 40000000,
+      "asset_class": "rates",
+      "paper_expression": {
+        "type": "futures_strip_average",
+        "curve_id": "CORRA",
+        "expiries": [
+          "2027-03",
+          "2027-06",
+          "2027-09",
+          "2027-12"
+        ]
+      },
+      "thesis": "Short implied-rate CORRA 2027 H/M/U/Z strip to fade the crowded BoC energy-hawk hiking path from overnight 2.29. Sidecar open_positions is empty.",
+      "rationale": "Ownership asymmetry is in the priced CA hiking cycle, not in USDCAD. Size $40m of the $100m gross cap so unknown CRA open interest and analog hike-continuation risk are not a full-allocation bet; remaining $60m stays undeployed versus the cap.",
+      "expression_memo": {
+        "rates_candidate": {
+          "instrument": "CORRA 2027-03/06/09/12 implied-rate strip",
+          "asset_class": "rates",
+          "rationale": "Direct fade of the priced BoC 2027 hiking cycle in tradable CRA."
+        },
+        "spot_candidate": {
+          "instrument": "USDCAD",
+          "asset_class": "spot_fx",
+          "rationale": "CAD-lower expression of a faded BoC hike path; inferior because CAD leveraged funds remain net short and USDCAD is not a 1y extreme."
+        },
+        "options_candidate": null,
+        "selected": "rates",
+        "rationale": "Rates are cleaner than spot because the discrepancy is the CORRA path; USDCAD still has a covering-squeeze headwind from residual CAD shorts."
+      }
+    }
+  ]
+}

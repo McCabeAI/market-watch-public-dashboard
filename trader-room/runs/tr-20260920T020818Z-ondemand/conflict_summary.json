@@ -1,0 +1,500 @@
+{
+  "run_id": "tr-20260920T020818Z-ondemand",
+  "method": "deterministic_conflict_synopsis_v1",
+  "type": "TRADER_ROOM_CONFLICT_MAP",
+  "direct_conflicts": [
+    {
+      "id": "opp-dir:CORRA_2027-03",
+      "kind": "opposite_direction",
+      "agents": [
+        "carry-is-king",
+        "perma-bull",
+        "positioning-cynic"
+      ],
+      "description": "carry-is-king, perma-bull are long CORRA_2027-03 while positioning-cynic are short"
+    },
+    {
+      "id": "opp-dir:SOFR_2027-03",
+      "kind": "opposite_direction",
+      "agents": [
+        "mean-reverter",
+        "trend-follower"
+      ],
+      "description": "mean-reverter are long SOFR_2027-03 while trend-follower are short"
+    },
+    {
+      "id": "opp-view:USD",
+      "kind": "opposite_currency_view",
+      "agents": [
+        "carry-is-king",
+        "catalyst-junkie",
+        "dollar-king",
+        "perma-bear",
+        "positioning-cynic",
+        "rate-dove",
+        "rate-hawk",
+        "trend-follower",
+        "mean-reverter",
+        "value-guy"
+      ],
+      "description": "carry-is-king, catalyst-junkie, dollar-king, perma-bear, positioning-cynic, rate-dove, rate-hawk, trend-follower expect USD higher while mean-reverter, value-guy expect USD lower"
+    },
+    {
+      "id": "opp-view:CAD",
+      "kind": "opposite_currency_view",
+      "agents": [
+        "cross-merchant",
+        "mean-reverter",
+        "perma-bull",
+        "value-guy",
+        "carry-is-king",
+        "dollar-king",
+        "positioning-cynic",
+        "rate-dove",
+        "rate-hawk",
+        "trend-follower"
+      ],
+      "description": "cross-merchant, mean-reverter, perma-bull, value-guy expect CAD higher while carry-is-king, dollar-king, positioning-cynic, rate-dove, rate-hawk, trend-follower expect CAD lower"
+    },
+    {
+      "id": "opp-view:AUD",
+      "kind": "opposite_currency_view",
+      "agents": [
+        "trend-follower",
+        "catalyst-junkie",
+        "cross-merchant",
+        "perma-bear",
+        "rate-dove",
+        "vol-convexity"
+      ],
+      "description": "trend-follower expect AUD higher while catalyst-junkie, cross-merchant, perma-bear, rate-dove, vol-convexity expect AUD lower"
+    },
+    {
+      "id": "opp-view:NZD",
+      "kind": "opposite_currency_view",
+      "agents": [
+        "perma-bull",
+        "vol-convexity",
+        "dollar-king",
+        "rate-dove",
+        "rate-hawk",
+        "trend-follower"
+      ],
+      "description": "perma-bull, vol-convexity expect NZD higher while dollar-king, rate-dove, rate-hawk, trend-follower expect NZD lower"
+    }
+  ],
+  "theoretical_tensions": [
+    {
+      "id": "theory:USD:ccy-up-rates-down",
+      "kind": "currency_rates_tension",
+      "agents": [
+        "carry-is-king",
+        "catalyst-junkie",
+        "dollar-king",
+        "mean-reverter",
+        "perma-bear",
+        "positioning-cynic",
+        "rate-dove",
+        "rate-hawk",
+        "trend-follower",
+        "value-guy"
+      ],
+      "description": "USD higher views coexist with USD rates-lower views; that is a theoretical policy/FX tension, not an automatic contradiction."
+    },
+    {
+      "id": "theory:USD:ccy-down-rates-up",
+      "kind": "currency_rates_tension",
+      "agents": [
+        "catalyst-junkie",
+        "dollar-king",
+        "mean-reverter",
+        "perma-bear",
+        "perma-bull",
+        "rate-hawk",
+        "trend-follower",
+        "value-guy",
+        "vol-convexity"
+      ],
+      "description": "USD lower views coexist with USD rates-higher views; that is a theoretical policy/FX tension, not an automatic contradiction."
+    },
+    {
+      "id": "theory:CAD:ccy-up-rates-down",
+      "kind": "currency_rates_tension",
+      "agents": [
+        "carry-is-king",
+        "cross-merchant",
+        "mean-reverter",
+        "perma-bull",
+        "positioning-cynic",
+        "rate-dove",
+        "value-guy"
+      ],
+      "description": "CAD higher views coexist with CAD rates-lower views; that is a theoretical policy/FX tension, not an automatic contradiction."
+    },
+    {
+      "id": "theory:CAD:ccy-down-rates-up",
+      "kind": "currency_rates_tension",
+      "agents": [
+        "carry-is-king",
+        "cross-merchant",
+        "dollar-king",
+        "perma-bull",
+        "positioning-cynic",
+        "rate-dove",
+        "rate-hawk",
+        "trend-follower",
+        "value-guy",
+        "vol-convexity"
+      ],
+      "description": "CAD lower views coexist with CAD rates-higher views; that is a theoretical policy/FX tension, not an automatic contradiction."
+    },
+    {
+      "id": "theory:AUD:ccy-up-rates-down",
+      "kind": "currency_rates_tension",
+      "agents": [
+        "catalyst-junkie",
+        "cross-merchant",
+        "perma-bear",
+        "rate-dove",
+        "trend-follower"
+      ],
+      "description": "AUD higher views coexist with AUD rates-lower views; that is a theoretical policy/FX tension, not an automatic contradiction."
+    },
+    {
+      "id": "theory:AUD:ccy-down-rates-up",
+      "kind": "currency_rates_tension",
+      "agents": [
+        "catalyst-junkie",
+        "cross-merchant",
+        "dollar-king",
+        "perma-bear",
+        "rate-dove",
+        "rate-hawk",
+        "trend-follower",
+        "vol-convexity"
+      ],
+      "description": "AUD lower views coexist with AUD rates-higher views; that is a theoretical policy/FX tension, not an automatic contradiction."
+    }
+  ],
+  "context_tensions": [
+    {
+      "id": "context:risk_view",
+      "kind": "context_tension",
+      "agents": [
+        "catalyst-junkie",
+        "perma-bear",
+        "perma-bull",
+        "rate-dove",
+        "rate-hawk",
+        "trend-follower"
+      ],
+      "description": "Opposing risk regime assumptions: risk_on versus risk_off."
+    },
+    {
+      "id": "context:carry_view",
+      "kind": "context_tension",
+      "agents": [
+        "carry-is-king",
+        "catalyst-junkie",
+        "cross-merchant",
+        "dollar-king",
+        "mean-reverter",
+        "no-trade-skeptic",
+        "perma-bear",
+        "perma-bull",
+        "positioning-cynic",
+        "rate-dove",
+        "rate-hawk",
+        "trend-follower",
+        "value-guy"
+      ],
+      "description": "Opposing carry assumptions: supports_trade versus opposes_trade."
+    }
+  ],
+  "challenges": [
+    {
+      "agents": [
+        "no-trade-skeptic"
+      ],
+      "description": "no-trade-skeptic challenge whether any of the 13 actionable pitches clears the hurdle.",
+      "id": "trade-vs-no-trade",
+      "kind": "skeptic_challenge",
+      "targets": [
+        "carry-is-king",
+        "catalyst-junkie",
+        "cross-merchant",
+        "dollar-king",
+        "mean-reverter",
+        "perma-bear",
+        "perma-bull",
+        "positioning-cynic",
+        "rate-dove",
+        "rate-hawk",
+        "trend-follower",
+        "value-guy",
+        "vol-convexity"
+      ]
+    }
+  ],
+  "rebuttal_routing": {
+    "carry-is-king": {
+      "conflict_ids": [
+        "opp-dir:CORRA_2027-03",
+        "opp-view:USD",
+        "opp-view:CAD"
+      ],
+      "opponents": [
+        "perma-bull",
+        "positioning-cynic",
+        "catalyst-junkie",
+        "dollar-king",
+        "perma-bear",
+        "rate-dove",
+        "rate-hawk",
+        "trend-follower",
+        "mean-reverter",
+        "value-guy",
+        "cross-merchant"
+      ]
+    },
+    "catalyst-junkie": {
+      "conflict_ids": [
+        "opp-view:USD",
+        "opp-view:AUD"
+      ],
+      "opponents": [
+        "carry-is-king",
+        "dollar-king",
+        "perma-bear",
+        "positioning-cynic",
+        "rate-dove",
+        "rate-hawk",
+        "trend-follower",
+        "mean-reverter",
+        "value-guy",
+        "cross-merchant",
+        "vol-convexity"
+      ]
+    },
+    "cross-merchant": {
+      "conflict_ids": [
+        "opp-view:CAD",
+        "opp-view:AUD"
+      ],
+      "opponents": [
+        "mean-reverter",
+        "perma-bull",
+        "value-guy",
+        "carry-is-king",
+        "dollar-king",
+        "positioning-cynic",
+        "rate-dove",
+        "rate-hawk",
+        "trend-follower",
+        "catalyst-junkie",
+        "perma-bear",
+        "vol-convexity"
+      ]
+    },
+    "dollar-king": {
+      "conflict_ids": [
+        "opp-view:USD",
+        "opp-view:CAD",
+        "opp-view:NZD"
+      ],
+      "opponents": [
+        "carry-is-king",
+        "catalyst-junkie",
+        "perma-bear",
+        "positioning-cynic",
+        "rate-dove",
+        "rate-hawk",
+        "trend-follower",
+        "mean-reverter",
+        "value-guy",
+        "cross-merchant",
+        "perma-bull",
+        "vol-convexity"
+      ]
+    },
+    "mean-reverter": {
+      "conflict_ids": [
+        "opp-dir:SOFR_2027-03",
+        "opp-view:USD",
+        "opp-view:CAD"
+      ],
+      "opponents": [
+        "trend-follower",
+        "carry-is-king",
+        "catalyst-junkie",
+        "dollar-king",
+        "perma-bear",
+        "positioning-cynic",
+        "rate-dove",
+        "rate-hawk",
+        "value-guy",
+        "cross-merchant",
+        "perma-bull"
+      ]
+    },
+    "perma-bear": {
+      "conflict_ids": [
+        "opp-view:USD",
+        "opp-view:AUD"
+      ],
+      "opponents": [
+        "carry-is-king",
+        "catalyst-junkie",
+        "dollar-king",
+        "positioning-cynic",
+        "rate-dove",
+        "rate-hawk",
+        "trend-follower",
+        "mean-reverter",
+        "value-guy",
+        "cross-merchant",
+        "vol-convexity"
+      ]
+    },
+    "perma-bull": {
+      "conflict_ids": [
+        "opp-dir:CORRA_2027-03",
+        "opp-view:CAD",
+        "opp-view:NZD"
+      ],
+      "opponents": [
+        "carry-is-king",
+        "positioning-cynic",
+        "cross-merchant",
+        "mean-reverter",
+        "value-guy",
+        "dollar-king",
+        "rate-dove",
+        "rate-hawk",
+        "trend-follower",
+        "vol-convexity"
+      ]
+    },
+    "positioning-cynic": {
+      "conflict_ids": [
+        "opp-dir:CORRA_2027-03",
+        "opp-view:USD",
+        "opp-view:CAD"
+      ],
+      "opponents": [
+        "carry-is-king",
+        "perma-bull",
+        "catalyst-junkie",
+        "dollar-king",
+        "perma-bear",
+        "rate-dove",
+        "rate-hawk",
+        "trend-follower",
+        "mean-reverter",
+        "value-guy",
+        "cross-merchant"
+      ]
+    },
+    "rate-dove": {
+      "conflict_ids": [
+        "opp-view:USD",
+        "opp-view:CAD",
+        "opp-view:AUD",
+        "opp-view:NZD"
+      ],
+      "opponents": [
+        "carry-is-king",
+        "catalyst-junkie",
+        "dollar-king",
+        "perma-bear",
+        "positioning-cynic",
+        "rate-hawk",
+        "trend-follower",
+        "mean-reverter",
+        "value-guy",
+        "cross-merchant",
+        "perma-bull",
+        "vol-convexity"
+      ]
+    },
+    "rate-hawk": {
+      "conflict_ids": [
+        "opp-view:USD",
+        "opp-view:CAD",
+        "opp-view:NZD"
+      ],
+      "opponents": [
+        "carry-is-king",
+        "catalyst-junkie",
+        "dollar-king",
+        "perma-bear",
+        "positioning-cynic",
+        "rate-dove",
+        "trend-follower",
+        "mean-reverter",
+        "value-guy",
+        "cross-merchant",
+        "perma-bull",
+        "vol-convexity"
+      ]
+    },
+    "trend-follower": {
+      "conflict_ids": [
+        "opp-dir:SOFR_2027-03",
+        "opp-view:USD",
+        "opp-view:CAD",
+        "opp-view:AUD",
+        "opp-view:NZD"
+      ],
+      "opponents": [
+        "mean-reverter",
+        "carry-is-king",
+        "catalyst-junkie",
+        "dollar-king",
+        "perma-bear",
+        "positioning-cynic",
+        "rate-dove",
+        "rate-hawk",
+        "value-guy",
+        "cross-merchant",
+        "perma-bull",
+        "vol-convexity"
+      ]
+    },
+    "value-guy": {
+      "conflict_ids": [
+        "opp-view:USD",
+        "opp-view:CAD"
+      ],
+      "opponents": [
+        "carry-is-king",
+        "catalyst-junkie",
+        "dollar-king",
+        "perma-bear",
+        "positioning-cynic",
+        "rate-dove",
+        "rate-hawk",
+        "trend-follower",
+        "mean-reverter",
+        "cross-merchant",
+        "perma-bull"
+      ]
+    },
+    "vol-convexity": {
+      "conflict_ids": [
+        "opp-view:AUD",
+        "opp-view:NZD"
+      ],
+      "opponents": [
+        "trend-follower",
+        "catalyst-junkie",
+        "cross-merchant",
+        "perma-bear",
+        "rate-dove",
+        "perma-bull",
+        "dollar-king",
+        "rate-hawk"
+      ]
+    }
+  }
+}
