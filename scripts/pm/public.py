@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from scripts.pm.books import public_pm_view, validate_books
-from scripts.pm.constants import DECISION_STATUSES, GROSS_NOTIONAL_LIMIT_USD, PM_IDS, SCHEMA_VERSION
+from scripts.pm.constants import DECISION_STATUSES, RISK_CAPITAL_LIMIT_USD, PM_IDS, SCHEMA_VERSION
 from scripts.pm.data_requests import public_requests_view
 from scripts.pm.errors import SchemaError
 from scripts.pm.store import PMStore
@@ -19,8 +19,8 @@ def validate_public_packet(packet: dict[str, Any]) -> dict[str, Any]:
         raise SchemaError("PM public packet type mismatch")
     if packet.get("pm_count") != len(PM_IDS):
         raise SchemaError(f"pm_count must be {len(PM_IDS)}")
-    if packet.get("gross_notional_limit_usd") != GROSS_NOTIONAL_LIMIT_USD:
-        raise SchemaError("PM public gross_notional_limit_usd mismatch")
+    if packet.get("risk_capital_limit_usd") != RISK_CAPITAL_LIMIT_USD:
+        raise SchemaError("PM public risk_capital_limit_usd mismatch")
     rows = packet.get("pms")
     if not isinstance(rows, list) or len(rows) != len(PM_IDS):
         raise SchemaError("PM public pms must list exactly four PMs")
