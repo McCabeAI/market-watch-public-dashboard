@@ -196,7 +196,7 @@ class TradingMemoryTests(unittest.TestCase):
         context = json.loads((run_dir / "memory" / "dollar-king.json").read_text(encoding="utf-8"))
         self.assertEqual(len(context["open_positions"]), 1)
         self.assertEqual(context["open_positions"][0]["instrument"], "USDCAD")
-        self.assertEqual(context["open_positions"][0]["notional_usd"], 10_000_000)
+        self.assertEqual(context["open_positions"][0]["current_notional_usd"], 10_000_000)
 
     def test_trader_open_creates_ledger_and_journal(self) -> None:
         books = empty_trader_books(overnight_run_id="overnight-20260919", when=AS_OF)
