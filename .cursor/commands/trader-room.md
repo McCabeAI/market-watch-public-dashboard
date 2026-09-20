@@ -21,7 +21,7 @@ Attempt and status all four required evidence families. Build one packet contain
 - `source_index`
 - `known_gaps`
 
-Freeze the packet and SHA-256. Every downstream model receives the exact same frozen common evidence packet. Snapshot each advocate's own learning-memory sidecar separately; do not put another seat's private memory into the common packet. No browse/search/new evidence after freeze.
+Freeze the packet and SHA-256. Every downstream model receives the exact same frozen common evidence packet. Snapshot each advocate's own learning-memory sidecar separately; do not put another seat's private memory into the common packet. Each sidecar is mandatory private state for that seat and contains its current open positions / durable learning context. No browse/search/new evidence after freeze.
 
 ## 2. Round 1
 
@@ -40,15 +40,20 @@ Paper execution is at deterministic packet mid. A broker-executable quote is not
 Each initial advocate:
 - may use at most two `composer-2.5` subagents;
 - must remain on the frozen packet;
+- must read exactly its own immutable sidecar at the path recorded for that seat in the frozen launch plan (normally `trader-room/runs/<run_id>/memory/<seat>.json`) before making any book decision;
+- must treat `open_positions` in that sidecar as its current book and use the existing `position_id` for `ADD`, `REDUCE`, or `CLOSE`;
 - must return one validated `TRADER_ROOM_CONTRIBUTION`;
-- except `no-trade-skeptic`, must return one actionable trade;
-- must include the complete compact `conflict_synopsis` required by `docs/TRADER_ROOM_ON_DEMAND.md`.
+- except `no-trade-skeptic`, must return one actionable debate trade;
+- must include the complete compact `conflict_synopsis` required by `docs/TRADER_ROOM_ON_DEMAND.md`;
+- must include a non-empty final `paper_actions` list for its own competition book. The list may contain zero risk changes via `[{"action":"HOLD"}]`, or any number of independent `OPEN` / `ADD` / `REDUCE` / `CLOSE` / `HEDGE` actions. There is no one-trade limit. The single `trade` field remains the primary debate pitch only;
+- must not rely on legacy `paper_capital` for a new live run. That field remains compatibility-only;
+- must manage the existing book, not re-open an already-owned position as a new trade merely because it is the primary pitch. Trusted code enforces the $100m gross deployed-notional cap, but the advocate should size the complete action set against its current book.
 
-Do not show Round 1 outputs to other advocates.
+Do not show Round 1 outputs or another seat's private sidecar to other advocates.
 
 ## 3. Validate
 
-Validate roster/remit, schema, evidence refs, packet hash, null levels, confidence, `asset_class`, `expression_comparison`, `context_build`, and `conflict_synopsis`. Reject malformed work; do not silently guess missing fields.
+Validate roster/remit, schema, evidence refs, packet hash, null levels, confidence, `asset_class`, `expression_comparison`, `context_build`, `conflict_synopsis`, and the explicit non-empty `paper_actions` book decision. Reject malformed work; do not silently guess missing fields or substitute an implicit HOLD.
 
 ## 4. Deterministic conflict stage
 
@@ -80,11 +85,12 @@ Each directly conflicted advocate gets exactly one `grok-4.6` rebuttal pass. No 
 
 Give each advocate only:
 - frozen packet;
-- its own original;
+- its own original, including its Round-1 `paper_actions`;
+- its own private memory sidecar/current positions;
 - its deterministic assignment;
 - the relevant opposing original trades.
 
-The advocate may defend, amend, or withdraw and must shoot holes in the opposing case.
+The advocate may defend, amend, or withdraw and must shoot holes in the opposing case. Every rebuttal must state the final book action set explicitly in `paper_actions`. If the trade is unchanged, it may repeat the Round-1 actions. If the trade is amended, the list must replace the Round-1 intent with the amended final actions. If the trade is withdrawn, the final actions must contain no `OPEN`, `ADD`, or `HEDGE` for that withdrawn idea; use `HOLD` and/or valid de-risk actions for existing positions. Deterministic validation must reject an amended/withdrawn rebuttal that leaves the Round-1 book intent ambiguous.
 
 ## 6. Deterministic final handoff
 
