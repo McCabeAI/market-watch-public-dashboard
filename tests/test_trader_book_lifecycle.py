@@ -271,7 +271,7 @@ class TraderBookLifecycleTests(unittest.TestCase):
                 "action": "OPEN",
                 "instrument": "US 10Y",
                 "side": "long",
-                "notional_usd": STARTING_NAV_USD,
+                "notional_usd": 1_000_000_000,
                 "price": 4.2,
                 "asset_class": "rates",
                 "expression_memo": {
@@ -287,7 +287,8 @@ class TraderBookLifecycleTests(unittest.TestCase):
             run_id="tr-skeptic-ok",
             when=AS_OF,
         )
-        self.assertEqual(deployed_notional(skeptic), allocation_limit_usd())
+        self.assertEqual(deployed_notional(skeptic), 1_000_000_000)
+        self.assertEqual(skeptic["risk_capital_usd"], allocation_limit_usd())
         apply_action(
             skeptic,
             {
@@ -311,7 +312,7 @@ class TraderBookLifecycleTests(unittest.TestCase):
             when=AS_OF,
         )
         self.assertEqual(len(skeptic["positions"]), 1)
-        self.assertTrue(any(row.get("result") == "blocked_allocation" for row in skeptic["history"]))
+        self.assertTrue(any(row.get("result") == "blocked_risk_capital" for row in skeptic["history"]))
 
     def test_canonical_books_win_over_stale_assembled_dataset(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
