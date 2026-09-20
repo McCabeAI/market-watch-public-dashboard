@@ -2,7 +2,7 @@
 
 Canonical Git artifacts for the ChatGPT / Swinger / Pragmatist / Grinder layer.
 
-- `books/latest.json` — trusted $1bn-gross books. Models never author this file.
+- `books/latest.json` — trusted $1bn-paper-NAV risk-capital books. Models never author this file.
 - `public/latest.json` — dashboard-safe projection
 - `review_packets/<pm_id>/latest.json` — deterministic daily review packet for that PM only (overnight 14-seat source; Trader Room is explicit fallback only)
 - `data_requests/latest.json` — consolidated future-data-request registry
