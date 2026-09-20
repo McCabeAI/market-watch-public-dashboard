@@ -252,7 +252,7 @@ class BookTransitionTests(unittest.TestCase):
             10_000.0,
         )
 
-    def test_active_trader_pays_full_100m_funding_even_when_flat(self):
+    def test_flat_trader_has_cash_hurdle_and_zero_risk_funding(self):
         market = {
             "policy_paths": {
                 "countries": {
@@ -289,16 +289,16 @@ class BookTransitionTests(unittest.TestCase):
             market_state=market,
         )
         expected = round(STARTING_NAV_USD * 0.036 / FUNDING_DAY_COUNT, 2)
-        self.assertEqual(self.seat["funding_cost_usd"], expected)
-        self.assertEqual(self.seat["cash_yield_usd"], 0.0)
+        self.assertEqual(self.seat["funding_cost_usd"], 0.0)
+        self.assertEqual(self.seat["cash_yield_usd"], expected)
         self.assertEqual(self.seat["gross_pnl_usd"], 0.0)
-        self.assertEqual(self.seat["net_pnl_usd"], -expected)
-        self.assertEqual(self.seat["nav_usd"], STARTING_NAV_USD - expected)
+        self.assertEqual(self.seat["net_pnl_usd"], expected)
+        self.assertEqual(self.seat["nav_usd"], STARTING_NAV_USD + expected)
         self.assertNotEqual(self.seat["funding_rate_annual"], 0.05)
         self.assertEqual(self.seat["funding_convention"], FUNDING_CONVENTION)
         self.assertEqual(self.seat["funding_source"], FUNDING_SOURCE)
 
-    def test_no_trade_skeptic_earns_cash_hurdle_and_deployment_reduces_it(self):
+    def test_skeptic_pays_same_sofr_on_same_shocked_risk(self):
         skeptic = empty_seat("no-trade-skeptic")
         memo = _rates_memo("rates")
         market = {
@@ -362,20 +362,21 @@ class BookTransitionTests(unittest.TestCase):
             when=day_two,
             market_state=market,
         )
-        reduced_cash_yield = round(60_000_000 * 0.036 / FUNDING_DAY_COUNT, 2)
-        self.assertEqual(skeptic["funding_cost_usd"], 0.0)
-        expected_total = round(full_cash_yield + reduced_cash_yield, 2)
-        self.assertEqual(skeptic["cash_yield_usd"], expected_total)
-        self.assertEqual(skeptic["net_pnl_usd"], expected_total)
+        risk_funding = round(400_000 * 0.036 / FUNDING_DAY_COUNT, 2)
+        self.assertEqual(skeptic["risk_capital_usd"], 400_000.0)
+        self.assertEqual(skeptic["funding_cost_usd"], risk_funding)
+        expected_cash = round(full_cash_yield * 2, 2)
+        self.assertEqual(skeptic["cash_yield_usd"], expected_cash)
+        self.assertEqual(skeptic["net_pnl_usd"], round(expected_cash - risk_funding, 2))
 
-    def test_exactly_100m_deployed_open_succeeds(self):
+    def test_exactly_10m_shocked_risk_cap_succeeds(self):
         apply_action(
             self.seat,
             {
                 "action": "OPEN",
                 "instrument": "USDCAD",
                 "side": "long",
-                "notional_usd": 60_000_000,
+                "notional_usd": 600_000_000,
                 "price": 1.36,
                 "asset_class": "spot_fx",
                 "expression_memo": _spot_memo(),
@@ -391,7 +392,7 @@ class BookTransitionTests(unittest.TestCase):
                 "action": "OPEN",
                 "instrument": "USDJPY",
                 "side": "long",
-                "notional_usd": 40_000_000,
+                "notional_usd": 400_000_000,
                 "price": 148.0,
                 "asset_class": "spot_fx",
                 "expression_memo": _spot_memo("USDJPY"),
@@ -401,7 +402,8 @@ class BookTransitionTests(unittest.TestCase):
             run_id="overnight-cap-1",
             when=AS_OF,
         )
-        self.assertEqual(deployed_notional(self.seat), allocation_limit_usd())
+        self.assertEqual(deployed_notional(self.seat), 1_000_000_000)
+        self.assertEqual(self.seat["risk_capital_usd"], allocation_limit_usd())
         self.assertEqual(len(self.seat["positions"]), 2)
 
     def test_over_cap_open_blocked_without_corruption(self):
@@ -413,7 +415,7 @@ class BookTransitionTests(unittest.TestCase):
                 "action": "OPEN",
                 "instrument": "USDCAD",
                 "side": "long",
-                "notional_usd": 100_000_001,
+                "notional_usd": 1_000_000_001,
                 "price": 1.36,
                 "asset_class": "spot_fx",
                 "expression_memo": _spot_memo(),
@@ -425,7 +427,7 @@ class BookTransitionTests(unittest.TestCase):
         )
         self.assertEqual(len(self.seat["positions"]), positions_before)
         self.assertEqual(self.seat["cash_usd"], cash_before)
-        self.assertTrue(any(row.get("result") == "blocked_allocation" for row in self.seat["history"]))
+        self.assertTrue(any(row.get("result") == "blocked_risk_capital" for row in self.seat["history"]))
 
     def test_mixed_derisk_and_over_cap_open(self):
         apply_action(
@@ -434,7 +436,7 @@ class BookTransitionTests(unittest.TestCase):
                 "action": "OPEN",
                 "instrument": "USDCAD",
                 "side": "long",
-                "notional_usd": 80_000_000,
+                "notional_usd": 800_000_000,
                 "price": 1.36,
                 "asset_class": "spot_fx",
                 "expression_memo": _spot_memo(),
@@ -457,7 +459,7 @@ class BookTransitionTests(unittest.TestCase):
                 {
                     "action": "REDUCE",
                     "position_id": pos_id,
-                    "notional_usd": 10_000_000,
+                    "notional_usd": 100_000_000,
                     "price": 1.36,
                     "expression_memo": _spot_memo(),
                 },
@@ -465,7 +467,7 @@ class BookTransitionTests(unittest.TestCase):
                     "action": "OPEN",
                     "instrument": "USDJPY",
                     "side": "long",
-                    "notional_usd": 31_000_000,
+                    "notional_usd": 310_000_000,
                     "price": 148.0,
                     "asset_class": "spot_fx",
                     "expression_memo": _spot_memo("USDJPY"),
@@ -482,9 +484,9 @@ class BookTransitionTests(unittest.TestCase):
             when=AS_OF,
         )
         seat = updated["seats"]["dollar-king"]
-        self.assertEqual(deployed_notional(seat), 70_000_000)
+        self.assertEqual(deployed_notional(seat), 700_000_000)
         self.assertEqual(len(seat["positions"]), 1)
-        self.assertTrue(any(row.get("result") == "blocked_allocation" for row in seat["history"]))
+        self.assertTrue(any(row.get("result") == "blocked_risk_capital" for row in seat["history"]))
 
     def test_over_cap_add_and_hedge_blocked(self):
         apply_action(
@@ -493,7 +495,7 @@ class BookTransitionTests(unittest.TestCase):
                 "action": "OPEN",
                 "instrument": "USDCAD",
                 "side": "long",
-                "notional_usd": 90_000_000,
+                "notional_usd": 900_000_000,
                 "price": 1.36,
                 "asset_class": "spot_fx",
                 "expression_memo": _spot_memo(),
@@ -510,7 +512,7 @@ class BookTransitionTests(unittest.TestCase):
             {
                 "action": "ADD",
                 "position_id": pos_id,
-                "notional_usd": 20_000_000,
+                "notional_usd": 200_000_000,
                 "price": 1.36,
                 "expression_memo": _spot_memo(),
                 "thesis": "Add would exceed cap.",
@@ -519,14 +521,14 @@ class BookTransitionTests(unittest.TestCase):
             run_id="overnight-cap-add",
             when=AS_OF,
         )
-        self.assertEqual(self.seat["positions"][0]["notional_usd"], 90_000_000)
+        self.assertEqual(self.seat["positions"][0]["notional_usd"], 900_000_000)
         self.assertEqual(self.seat["cash_usd"], cash_before)
         apply_action(
             self.seat,
             {
                 "action": "HEDGE",
                 "hedge_of": pos_id,
-                "notional_usd": 15_000_000,
+                "notional_usd": 150_000_000,
                 "price": 1.36,
                 "expression_memo": _spot_memo(),
                 "thesis": "Hedge would exceed cap.",
@@ -536,9 +538,51 @@ class BookTransitionTests(unittest.TestCase):
             when=AS_OF,
         )
         self.assertEqual(len(self.seat["positions"]), 1)
-        self.assertEqual(deployed_notional(self.seat), 90_000_000)
-        blocked = {row.get("action") for row in self.seat["history"] if row.get("result") == "blocked_allocation"}
+        self.assertEqual(deployed_notional(self.seat), 900_000_000)
+        blocked = {row.get("action") for row in self.seat["history"] if row.get("result") == "blocked_risk_capital"}
         self.assertEqual(blocked, {"ADD", "HEDGE"})
+
+    def test_hard_drawdown_forces_flat_and_blocks_reentry(self):
+        apply_action(
+            self.seat,
+            {
+                "action": "OPEN",
+                "instrument": "USDCAD",
+                "side": "long",
+                "notional_usd": 1_000_000_000,
+                "price": 1.0,
+                "asset_class": "spot_fx",
+                "expression_memo": _spot_memo(),
+                "thesis": "Max shocked-risk book.",
+            },
+            families=self.families,
+            run_id="risk-stop-open",
+            when=AS_OF,
+        )
+        self.seat["positions"][0]["mark_price"] = 0.994
+        mark_to_market(self.seat, when=AS_OF, run_id="risk-stop-mark")
+        self.assertTrue(self.seat["risk_stopped"])
+        self.assertEqual(self.seat["positions"], [])
+        self.assertEqual(self.seat["realized_pnl_usd"], -6_000_000.0)
+        self.assertGreaterEqual(self.seat["drawdown_usd"], 5_000_000.0)
+        apply_action(
+            self.seat,
+            {
+                "action": "OPEN",
+                "instrument": "USDJPY",
+                "side": "long",
+                "notional_usd": 10_000_000,
+                "price": 148.0,
+                "asset_class": "spot_fx",
+                "expression_memo": _spot_memo("USDJPY"),
+                "thesis": "Must remain blocked.",
+            },
+            families=self.families,
+            run_id="risk-stop-reentry",
+            when=AS_OF,
+        )
+        self.assertEqual(self.seat["positions"], [])
+        self.assertTrue(any(row.get("result") == "blocked_risk_stop" for row in self.seat["history"]))
 
     def test_missing_mark_does_not_invent_pnl(self):
         pos = {
