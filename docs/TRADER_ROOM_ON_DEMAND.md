@@ -6,9 +6,9 @@ This is the production contract for the full adversarial Trader Room. It supplem
 
 1. Preflight the four required evidence families.
 2. Freeze one common evidence packet and SHA-256. No new evidence after freeze.
-3. Snapshot each advocate's own compact memory sidecar. Common evidence stays identical; seat memory is a separate immutable sidecar. Launch the locked 14 standing advocates independently on exact `grok-4.6`. Each advocate receives only its own memory sidecar/hash. See `docs/TRADING_LEDGER_MEMORY_V1.md`.
+3. Snapshot each advocate's own compact memory sidecar. Common evidence stays identical; seat memory is a separate immutable sidecar. Launch the locked 14 standing advocates independently on exact `grok-4.6`. Each advocate receives only its own memory sidecar/hash and must read its `open_positions` before deciding book actions. See `docs/TRADING_LEDGER_MEMORY_V1.md`.
 4. Each initial advocate may use at most two `composer-2.5` subagents on the same frozen packet.
-5. Every advocate returns its full trade pitch plus a compact `conflict_synopsis`.
+5. Every advocate returns its full trade pitch plus a compact `conflict_synopsis` and an explicit non-empty final `paper_actions` list for its own competition book.
 6. **Deterministic conflict stage:** code reads only the 14 synopses and structured trades. It identifies direct instrument/currency conflicts, theoretical currency-vs-rates tensions, contextual regime tensions, and the no-trade challenge. This stage consumes zero model calls.
 7. Only advocates involved in **direct conflicts** receive one Grok rebuttal pass. Theoretical/context tensions remain visible in the handoff but do not automatically spend rebuttal calls.
 8. **Deterministic final handoff:** `scripts/trader_room_finalize.py` reads the already-validated originals, conflict map and rebuttals and writes the PM handoff. It consumes zero model calls. No model-based final aggregator is launched.
@@ -132,12 +132,18 @@ The repository `subagentStart` hook enforces these ceilings. Only initial advoca
 
 ## Paper book actions (trader-owned execution)
 
-Debate `trade` and `conflict_synopsis.primary_trade` remain the single primary pitch for conflict routing. Separately, contributions and rebuttals may include:
+Debate `trade` and `conflict_synopsis.primary_trade` remain the single primary pitch for conflict routing. The competition book is a separate portfolio decision:
 
-- `paper_actions`: a list of book actions (`OPEN`, `ADD`, `HOLD`, `REDUCE`, `HEDGE`, `CLOSE`) with no arbitrary position-count cap;
-- legacy `paper_capital`: one object with `decision` or `action` in the same set (mapped to a single action).
+- every new live Round-1 contribution must include a non-empty `paper_actions` list;
+- `paper_actions` may contain any number of book actions (`OPEN`, `ADD`, `HOLD`, `REDUCE`, `HEDGE`, `CLOSE`) with no arbitrary position-count cap;
+- `[{"action":"HOLD"}]` is the explicit no-change decision;
+- before choosing actions, the advocate must inspect only its own frozen memory sidecar and treat `open_positions` / their `position_id` values as the current book;
+- `ADD`, `REDUCE`, and `CLOSE` must target the existing `position_id`; an advocate must not duplicate an owned position merely because the same expression is still its primary pitch;
+- legacy `paper_capital` remains compatibility-only for old artifacts and is mapped to one action. New live runs must use `paper_actions`.
 
-Trusted overnight code owns deterministic paper mids, the gross **$100m** deployed-notional ceiling per seat (sum of open notionals, long and short, unnetted), ledger linkage, and persistence to `data/overnight/books/latest.json`. A debate trade without `paper_actions` / `paper_capital` does **not** execute. Mixed lists may combine de-risk actions with blocked expansions; valid `REDUCE` / `CLOSE` still apply when an over-cap `OPEN` / `ADD` / `HEDGE` is blocked.
+Trusted overnight code owns deterministic paper mids, the gross **$100m** deployed-notional ceiling per seat (sum of open notionals, long and short, unnetted), ledger linkage, and persistence to `data/overnight/books/latest.json`. Mixed lists may combine de-risk actions with blocked expansions; valid `REDUCE` / `CLOSE` still apply when an over-cap `OPEN` / `ADD` / `HEDGE` is blocked.
+
+Round-2 rebuttals are final for trader-owned book intent. Every new live rebuttal should emit the final `paper_actions` list. An amended trade must replace the Round-1 book intent with an explicit amended action set. A withdrawn trade may not leave an expanding `OPEN` / `ADD` / `HEDGE` action behind. Deterministic schema validation fails closed if an amended/withdrawn rebuttal omits its final book decision or contradicts withdrawal with an expanding action.
 
 Run-local `paper_actions.json` / `paper_books.json` under `trader-room/runs/<run_id>/` are audit copies only.
 
