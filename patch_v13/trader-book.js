@@ -57,7 +57,7 @@
     return '<div class="tb-position-card"><div class="tb-position-head"><div><b>' +
       esc(pos.instrument) + '</b><span>' + esc(pos.side) + " · " + esc(pos.asset_class) +
       '</span></div><div class="tb-position-risk"><b>' + money(pos.notional_usd) +
-      '</b><span class="' + cls(pos.unrealized_pnl_usd) + '">' +
+      '</b><span>Risk ' + money(pos.risk_capital_usd) + '</span><span class="' + cls(pos.unrealized_pnl_usd) + '">' +
       money(pos.unrealized_pnl_usd) + "</span></div></div>" +
       markLine + thesis + invalidation + hedge + "</div>";
   }
@@ -106,12 +106,12 @@
         "</div></div><p class=\"tb-remit\">" + esc(seat.remit || "") + "</p>" +
         '<div class="tb-metrics"><div><span>NAV</span><b>' + money(seat.nav_usd) +
         "</b></div><div><span>Net P&amp;L</span><b class=\"" + cls(seat.net_pnl_usd) + "\">" +
-        money(seat.net_pnl_usd) + "</b></div><div><span>" +
-        (seat.seat === "no-trade-skeptic" ? "Cash yield" : "Funding") + "</span><b class=\"" +
-        (seat.seat === "no-trade-skeptic" ? "tb-pos" : "tb-neg") + "\">" +
-        (seat.seat === "no-trade-skeptic"
-          ? money(seat.cash_yield_usd)
-          : (finite(seat.funding_cost_usd) && seat.funding_cost_usd !== 0 ? "-" + money(seat.funding_cost_usd).replace("-", "") : money(seat.funding_cost_usd))) +
+        money(seat.net_pnl_usd) + "</b></div><div><span>Risk capital</span><b>" +
+        money(seat.risk_capital_usd) + " / " + money(seat.risk_capital_limit_usd) +
+        "</b></div><div><span>Drawdown</span><b class=\"" + (seat.risk_stopped ? "tb-neg" : "") + "\">" +
+        money(seat.drawdown_usd) + " / " + money(seat.max_drawdown_usd) +
+        "</b></div><div><span>Risk funding</span><b class=\"tb-neg\">" +
+        (finite(seat.funding_cost_usd) && seat.funding_cost_usd !== 0 ? "-" + money(seat.funding_cost_usd).replace("-", "") : money(seat.funding_cost_usd)) +
         "</b></div></div><div class=\"tb-positions\">" + posHtml + "</div>" +
         (seat.thesis ? '<p class="tb-thesis"><b>Current book view:</b> ' + esc(seat.thesis) + "</p>" : "") +
         (seat.invalidation ? '<p class="tb-thesis"><b>Book invalidation:</b> ' + esc(seat.invalidation) + "</p>" : "") +
@@ -160,9 +160,9 @@
       openCount + "</b></div></div></section>" +
       '<section class="tb-panel"><div class="tb-panel-head"><h3>Overnight position changes</h3><p>OPEN / ADD / REDUCE / HEDGE / CLOSE applied in the latest review</p></div><div class="tb-changes">' +
       changeHtml + "</div></section>" +
-      '<section class="tb-panel"><div class="tb-panel-head"><h3>P&amp;L leaderboard</h3><p>Thirteen seats pay official NY Fed SOFR ACT/360 on the full $100m every day; the No-Trade Skeptic earns the same official SOFR on undeployed cash.</p></div><div class="tb-changes">' +
+      '<section class="tb-panel"><div class="tb-panel-head"><h3>P&amp;L leaderboard</h3><p>All seats use the same financing rule: official SOFR on standard-shock risk capital. Notional is descriptive; the hard drawdown stop is separate.</p></div><div class="tb-changes">' +
       leaderboardHtml + "</div></section>" +
-      '<section class="tb-panel"><div class="tb-panel-head"><h3>Seat books</h3><p>Net P&amp;L includes the standing financing hurdle: funding cost for the 13 trading seats, cash yield for the skeptic.</p></div><div class="tb-seat-grid">' +
+      '<section class="tb-panel"><div class="tb-panel-head"><h3>Seat books</h3><p>Each $100m paper-NAV seat has a $10m shocked-risk ceiling and a $5m high-water drawdown stop. A breached book is forcibly flattened and marked RISK_STOPPED.</p></div><div class="tb-seat-grid">' +
       seatHtml + "</div></section>" +
       '<div id="tb-pm-root"></div>';
     loadPMs();
@@ -175,7 +175,8 @@
       awaiting_automated_pm_review: "awaiting automated PM review",
       no_trade: "explicit NO TRADE",
       hold: "explicit HOLD",
-      active: "active"
+      active: "active",
+      risk_stopped: "RISK STOPPED"
     };
     return map[status] || status || "awaiting";
   }
@@ -183,6 +184,7 @@
   function statusClass(status, review) {
     if (review === "stale") return "stale";
     if (status === "active") return "active";
+    if (status === "risk_stopped") return "stale";
     if (status === "no_trade" || status === "hold") return "";
     return "awaiting";
   }
@@ -199,7 +201,9 @@
         statusClass(pm.decision_status, pm.review_status) + '">' +
         esc(statusLabel(pm.decision_status, pm.review_status)) +
         "</div></div><p class=\"tb-remit\">" + esc(pm.mandate || "") + "</p>" +
-        '<div class="tb-metrics"><div><span>Gross util</span><b>' + money(pm.gross_utilization_usd) +
+        '<div class="tb-metrics"><div><span>Risk capital</span><b>' + money(pm.risk_capital_usd) +
+        " / " + money(pm.risk_capital_limit_usd) + "</b></div><div><span>Drawdown</span><b class=\"" +
+        (pm.risk_stopped ? "tb-neg" : "") + "\">" + money(pm.drawdown_usd) + " / " + money(pm.max_drawdown_usd) +
         "</b></div><div><span>Paper P&amp;L</span><b class=\"" + cls(pm.total_pnl_usd) + "\">" +
         money(pm.total_pnl_usd) + "</b></div><div><span>Last action</span><b>" +
         esc(pm.last_action || "—") + "</b></div></div><div class=\"tb-positions\">" + posHtml + "</div>" +
@@ -211,7 +215,7 @@
       return '<div class="tb-change"><b>' + esc(row.label || row.pm_id) + '</b><span class="' +
         cls(row.total_pnl_usd) + '">' + money(row.total_pnl_usd) + "</span><span>" +
         esc(statusLabel(row.decision_status, row.review_status)) + "</span><span>" +
-        money(row.gross_utilization_usd) + "</span></div>";
+        "Risk " + money(row.risk_capital_usd) + " / " + money(row.risk_capital_limit_usd) + "</span></div>";
     }).join("") || '<div class="tb-empty">No PM comparison yet</div>';
     const requests = ((packet.data_requests || {}).requests) || [];
     const reqHtml = requests.length ? requests.map(function (row) {
@@ -222,7 +226,7 @@
 
     mount.innerHTML =
       '<section class="tb-panel"><div class="tb-panel-head"><h3>Portfolio Managers</h3><p>' +
-      "Separate $1bn gross-notional books for ChatGPT, Swinger, Pragmatist and Grinder. Not extra trader seats. Gross notional is a risk limit; funded-capital draw is separate and uses official SOFR only where the cash basis is known.</p></div>" +
+      "Separate $1bn paper-NAV books for ChatGPT, Swinger, Pragmatist and Grinder. Not extra trader seats. Each has a $100m standard-shock risk-capital ceiling and a $50m high-water drawdown stop; gross notional is descriptive.</p></div>" +
       '<div class="tb-pm-grid">' + cards + "</div></section>" +
       '<section class="tb-panel"><div class="tb-panel-head"><h3>Four-PM P&amp;L comparison</h3><p>Paper P&amp;L after deterministic packet marks. Comparison is allowed only after decisions are committed.</p></div><div class="tb-changes">' +
       comparison + "</div></section>" +
