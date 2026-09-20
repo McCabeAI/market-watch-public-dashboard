@@ -474,6 +474,7 @@ class OrchestratorDryRunTests(unittest.TestCase):
             sidecar = root / "trader-room" / "runs" / packet["run_id"] / rel
             context = json.loads(sidecar.read_text(encoding="utf-8"))
             self.assertEqual(len(context["open_positions"]), 1)
+            self.assertTrue(context["open_positions"][0]["position_id"])
             self.assertEqual(context["open_positions"][0]["instrument"], "USDCAD")
             self.assertEqual(context["open_positions"][0]["current_notional_usd"], 10_000_000)
 
