@@ -13,6 +13,12 @@
       "grok": 28,
       "total": 28
     },
+    "used_after_pms": {
+      "composer": 0,
+      "grok": 31,
+      "note": "parent 1 + round1 14 + rebuttals 13 + successful PMs 3. One additional Swinger launch failed with provider connection error before usable output; not silently rerouted.",
+      "total": 31
+    },
     "used_after_round1": {
       "composer": 0,
       "grok": 15,
@@ -38,6 +44,10 @@
       "vol-convexity"
     ]
   },
+  "final_handoff": {
+    "model_calls": 0,
+    "status": "STATUS: AWAITING_CHATGPT_ARBITRATION"
+  },
   "parent": {
     "calls": 1,
     "model": "grok-4.6",
@@ -57,6 +67,28 @@
     "chatgpt_decision": "pending_ingest_only",
     "count": 4,
     "source": "on_demand_trader_room_fallback"
+  },
+  "pms": {
+    "agents": {
+      "grinder": {
+        "bcId": "bc-da4f9210-cdeb-53b8-8d04-4728bdff730a",
+        "subagent_count": 0
+      },
+      "pragmatist": {
+        "bcId": "bc-e0d04ffd-6805-59ce-9e7b-1fcb08a6aa01",
+        "subagent_count": 0
+      },
+      "swinger": {
+        "bcId": "bc-4f4ad358-8235-5959-ac58-8179b63dc0d2",
+        "first_launch": "provider_connection_error",
+        "subagent_count": 0
+      }
+    },
+    "chatgpt_current_cycle_decision": "not_generated_not_applied",
+    "composer_2_5_children": 0,
+    "launch_mechanism": "cursor_custom_agent",
+    "model": "grok-4.6",
+    "successful_calls": 3
   },
   "round1": {
     "calls": 14,
