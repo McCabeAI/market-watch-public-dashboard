@@ -10,7 +10,7 @@ from scripts.pm.books import (
     mark_pm_book,
     validate_books,
 )
-from scripts.pm.constants import AUTOMATED_PM_IDS, GROSS_NOTIONAL_LIMIT_USD, PM_IDS
+from scripts.pm.constants import AUTOMATED_PM_IDS, GROSS_NOTIONAL_LIMIT_USD, RISK_CAPITAL_LIMIT_USD, MAX_DRAWDOWN_USD, PM_IDS
 from scripts.pm.errors import CapError, CurveLockError, MarkError, SchemaError
 
 
@@ -52,6 +52,9 @@ class PMBookTests(unittest.TestCase):
         self.assertEqual(set(books["pms"]), set(PM_IDS))
         for pm_id, book in books["pms"].items():
             self.assertEqual(book["gross_notional_limit_usd"], GROSS_NOTIONAL_LIMIT_USD)
+            self.assertFalse(book["gross_notional_limit_enforced"])
+            self.assertEqual(book["risk_capital_limit_usd"], RISK_CAPITAL_LIMIT_USD)
+            self.assertEqual(book["max_drawdown_usd"], MAX_DRAWDOWN_USD)
             self.assertEqual(book["positions"], [])
             self.assertEqual(book["gross_utilization_usd"], 0)
             self.assertIn("awaiting", book["decision_status"])
@@ -72,7 +75,7 @@ class PMBookTests(unittest.TestCase):
         with self.assertRaises(CapError):
             apply_decision(
                 books,
-                {"pm_id": "chatgpt", "actions": [_open(notional=1_000_000_001)]},
+                {"pm_id": "chatgpt", "actions": [_open(notional=10_000_000_001)]},
                 pm_id="chatgpt",
                 market_state=MARKET,
                 run_id="r1",
@@ -80,6 +83,22 @@ class PMBookTests(unittest.TestCase):
                 review_packet_id="p",
                 review_packet_sha256="h",
             )
+
+    def test_gross_notional_can_exceed_legacy_one_billion_when_risk_is_inside_cap(self) -> None:
+        books = apply_decision(
+            empty_books(),
+            {"pm_id": "chatgpt", "actions": [_open(notional=2_000_000_000)]},
+            pm_id="chatgpt",
+            market_state=MARKET,
+            run_id="r-notional",
+            evidence_cutoff="c",
+            review_packet_id="p",
+            review_packet_sha256="h",
+        )
+        book = books["pms"]["chatgpt"]
+        self.assertEqual(book["gross_utilization_usd"], 2_000_000_000)
+        self.assertEqual(book["risk_capital_usd"], 20_000_000)
+        self.assertLess(book["risk_capital_usd"], book["risk_capital_limit_usd"])
 
     def test_independence_each_pm_sees_only_own_book(self) -> None:
         books = empty_books()
@@ -279,7 +298,7 @@ class PMBookTests(unittest.TestCase):
                 review_packet_sha256="h",
             )
 
-    def test_pm_books_have_funding_fields_without_borrowing_the_gross_limit(self) -> None:
+    def test_pm_books_have_zero_risk_funding_when_flat(self) -> None:
         book = empty_pm_book("grinder")
         marked = mark_pm_book(book)
         self.assertEqual(marked["funding_cost_usd"], 0.0)
@@ -287,7 +306,41 @@ class PMBookTests(unittest.TestCase):
         self.assertEqual(marked["funded_draw_usd"], 0.0)
         self.assertEqual(marked["unused_cash_usd"], marked["cash_capital_usd"])
         self.assertNotEqual(marked["gross_utilization_usd"], marked["cash_capital_usd"])
+        self.assertEqual(marked["risk_capital_usd"], 0.0)
+        self.assertEqual(marked["risk_capital_limit_usd"], RISK_CAPITAL_LIMIT_USD)
         self.assertEqual(marked["total_pnl_usd"], 0)
+    def test_pm_hard_drawdown_forces_flat_and_blocks_reentry(self) -> None:
+        books = apply_decision(
+            empty_books(),
+            {"pm_id": "chatgpt", "actions": [_open(notional=10_000_000_000)]},
+            pm_id="chatgpt",
+            market_state=MARKET,
+            run_id="r-stop-open",
+            evidence_cutoff="c",
+            review_packet_id="p",
+            review_packet_sha256="h",
+        )
+        book = books["pms"]["chatgpt"]
+        self.assertEqual(book["risk_capital_usd"], RISK_CAPITAL_LIMIT_USD)
+        book["positions"][0]["mark_price"] = 1.36 * 0.994
+        mark_pm_book(book, run_id="r-stop-mark")
+        self.assertTrue(book["risk_stopped"])
+        self.assertEqual(book["decision_status"], "risk_stopped")
+        self.assertEqual(book["positions"], [])
+        self.assertAlmostEqual(book["realized_pnl_usd"], -60_000_000.0, places=2)
+        self.assertGreaterEqual(book["drawdown_usd"], MAX_DRAWDOWN_USD)
+        with self.assertRaises(CapError):
+            apply_decision(
+                books,
+                {"pm_id": "chatgpt", "actions": [_open(notional=10_000_000)]},
+                pm_id="chatgpt",
+                market_state=MARKET,
+                run_id="r-stop-reentry",
+                evidence_cutoff="c2",
+                review_packet_id="p2",
+                review_packet_sha256="h2",
+            )
+
 
 
 if __name__ == "__main__":
