@@ -268,6 +268,9 @@ class SchemaAndBoundaryTests(unittest.TestCase):
     def test_rates_open_requires_unambiguous_mark_direction(self):
         packet = _packet()
         contribution = DryRunRunner().run_advocate("rate-hawk", packet, BudgetLedger())
+        contribution["trade"]["instrument"] = "SOFR_2027-09"
+        contribution["trade"]["asset_class"] = "rates"
+        contribution["trade"]["expression_comparison"]["selected"] = "rates"
         contribution["paper_actions"] = [{
             "action": "OPEN",
             "instrument": "SOFR_2027-09",
