@@ -73,6 +73,19 @@ def _validate_paper_action_row(row: Any, *, label: str) -> None:
     kind = row.get("action")
     if kind not in PAPER_BOOK_ACTIONS:
         raise SchemaError(f"{label} paper_actions action must be one of {sorted(PAPER_BOOK_ACTIONS)}")
+    asset_class = row.get("asset_class")
+    if kind == "OPEN" and asset_class in {"rates", "curve", "rates_rv"}:
+        expected = row.get("expected_mark_direction")
+        if expected not in {"lower", "higher"}:
+            raise SchemaError(
+                f"{label} rates OPEN requires expected_mark_direction lower|higher"
+            )
+        required_side = "long" if expected == "lower" else "short"
+        if row.get("side") != required_side:
+            raise SchemaError(
+                f"{label} rates OPEN side mismatch: expected_mark_direction={expected} "
+                f"requires side={required_side} under the trusted P&L convention"
+            )
 
 
 def _validate_paper_actions_list(value: Any, *, label: str) -> None:
