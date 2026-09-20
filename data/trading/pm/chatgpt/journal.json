@@ -1,5 +1,54 @@
 {
-  "events": [],
+  "events": [
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027H-Z",
+          "notional_usd": 500000000,
+          "position_id": null,
+          "rationale": "Use trusted deterministic packet mids for the equal-weight 2027-03/06/09/12 CORRA strip. $500m gross leaves $500m capacity for future adds or independent risk; do not migrate this position to sovereign bonds or another curve family.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-09-19T23:10:54.130509-04:00",
+      "conviction": 68,
+      "decision_fingerprint": "edff311990788ae20c7f57a04c86993c7cdfde2aa81a57a2528af6776e573438",
+      "event_id": "jde-bae95770371d4083",
+      "funding_view": null,
+      "invalidation": "The thesis fails if the BoC actually validates the priced hiking cycle through stronger core inflation, labor/wage reacceleration, or delivered/explicitly signaled tightening consistent with mid-3% 2027 CORRA.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-chatgpt-595561a1b90f"
+      ],
+      "linked_trade_ids": [
+        "trd-pm-chatgpt-pm-chatgpt-595561a1b90f"
+      ],
+      "memory_context_sha256": "b084ea54ea29e0918d176c23e4af3bef467d21eb557c3b4567d8f3cbb3810998",
+      "outcome_links": [],
+      "owner_id": "chatgpt",
+      "owner_type": "pm",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-20T02:08:18Z",
+        "evidence_hash": "54fbbd5924b758a7b5abf139aa6e400b5a7ad608459b173ca7fca9f0d1fa56d1",
+        "overnight_run_id": null,
+        "review_packet_id": "prp-chatgpt-tr-20260920T020818Z-ondemand",
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260920T020818Z-ondemand"
+      },
+      "rationale": "I prefer direct CORRA duration to CAD FX or a broader G10 basket. The rates expression isolates the disputed BoC reaction function and has deterministic marks. The main opposing case is energy pass-through and a global tightening regime, so I am using half the $1bn gross limit rather than full deployment.",
+      "run_id": "tr-20260920T020818Z-ondemand",
+      "schema_version": 1,
+      "thesis": "The cleanest mispricing in the frozen packet is the Canadian policy path: 2027 CORRA embeds a substantial hiking cycle that is difficult to reconcile with weak labor and near-target core inflation."
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_DECISION_JOURNAL"
 }
