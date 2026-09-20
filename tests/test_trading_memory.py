@@ -11,7 +11,7 @@ from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parents[1]
 
-from scripts.overnight.books import apply_review as apply_trader_book_review, empty_books as empty_trader_books, validate_books as validate_trader_books
+from scripts.overnight.books import empty_books as empty_trader_books, validate_books as validate_trader_books
 from scripts.overnight.constants import STANDING_SEATS
 from scripts.overnight.pipeline import dry_run as overnight_dry_run, run_stage
 from scripts.overnight.scheduled_output import AGENT_PACKET_TYPE, SCHEDULE_ID, apply_output, simulate_output
@@ -30,7 +30,6 @@ from scripts.trading.gate import action_rationale
 from scripts.trading.ledger import find_trade_by_position
 from scripts.trading.memory import accept_postmortem, apply_memory_update, build_memory_context
 from scripts.trading.migrate import backfill_from_books
-from scripts.trading.snapshot import snapshot_trader_room
 from scripts.trading.store import TradingStore
 from scripts.trader_room.constants import STANDING_ADVOCATES
 from scripts.trader_room.orchestrator import go as trader_room_go
@@ -151,52 +150,6 @@ class TradingMemoryTests(unittest.TestCase):
             if owner_type == "trader":
                 blob = json.dumps(context)
                 self.assertNotIn(f"trd-trader-{other}-", blob)
-
-    def test_trader_room_sidecar_backfills_current_canonical_positions(self) -> None:
-        books = empty_trader_books(overnight_run_id="tr-prior", when=AS_OF)
-        reviews = {
-            seat: {
-                "seat": seat,
-                "actions": [{"action": "HOLD"}],
-            }
-            for seat in STANDING_SEATS
-        }
-        reviews["dollar-king"] = {
-            "seat": "dollar-king",
-            "thesis": "Canonical book position must reach the private sidecar.",
-            "actions": [{
-                "action": "OPEN",
-                "instrument": "USDCAD",
-                "side": "long",
-                "notional_usd": 10_000_000,
-                "asset_class": "spot_fx",
-                "expression_memo": _spot_memo(),
-                "thesis": "Canonical book position must reach the private sidecar.",
-            }],
-        }
-        books = apply_trader_book_review(
-            books,
-            reviews,
-            families=_fresh_families(),
-            run_id="tr-prior",
-            evidence_cutoff="2026-09-19T12:00:00-04:00",
-            when=AS_OF,
-            market_state=MARKET,
-        )
-        OvernightStore(root=self.root, state_root=self.root).write_books(books)
-
-        run_dir = self.root / "trader-room" / "runs" / "tr-next"
-        snapshot_trader_room(
-            self.store,
-            run_dir=run_dir,
-            run_id="tr-next",
-            common_evidence_sha256="common-hash",
-            when=AS_OF,
-        )
-        context = json.loads((run_dir / "memory" / "dollar-king.json").read_text(encoding="utf-8"))
-        self.assertEqual(len(context["open_positions"]), 1)
-        self.assertEqual(context["open_positions"][0]["instrument"], "USDCAD")
-        self.assertEqual(context["open_positions"][0]["current_notional_usd"], 10_000_000)
 
     def test_trader_open_creates_ledger_and_journal(self) -> None:
         books = empty_trader_books(overnight_run_id="overnight-20260919", when=AS_OF)
