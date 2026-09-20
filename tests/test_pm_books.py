@@ -4,13 +4,14 @@ import unittest
 from copy import deepcopy
 
 from scripts.pm.books import (
+    apply_action,
     apply_decision,
     empty_books,
     empty_pm_book,
     mark_pm_book,
     validate_books,
 )
-from scripts.pm.constants import AUTOMATED_PM_IDS, GROSS_NOTIONAL_LIMIT_USD, RISK_CAPITAL_LIMIT_USD, MAX_DRAWDOWN_USD, PM_IDS
+from scripts.pm.constants import AUTOMATED_PM_IDS, CASH_CAPITAL_USD, GROSS_NOTIONAL_LIMIT_USD, RISK_CAPITAL_LIMIT_USD, MAX_DRAWDOWN_USD, PM_IDS
 from scripts.pm.errors import CapError, CurveLockError, MarkError, SchemaError
 
 
@@ -340,7 +341,153 @@ class PMBookTests(unittest.TestCase):
                 review_packet_id="p2",
                 review_packet_sha256="h2",
             )
+        hold = apply_decision(
+            books,
+            {"pm_id": "chatgpt", "actions": [{"action": "HOLD"}], "thesis": "research continues"},
+            pm_id="chatgpt",
+            market_state=MARKET,
+            run_id="r-stop-hold",
+            evidence_cutoff="c3",
+            review_packet_id="p3",
+            review_packet_sha256="h3",
+        )
+        held = hold["pms"]["chatgpt"]
+        self.assertTrue(held["risk_stopped"])
+        self.assertEqual(held["decision_status"], "risk_stopped")
+        self.assertEqual(held["positions"], [])
+        realized = held["realized_pnl_usd"]
+        mark_pm_book(held, run_id="r-stop-repeat")
+        mark_pm_book(held, run_id="r-stop-repeat-2")
+        self.assertEqual(held["realized_pnl_usd"], realized)
+        self.assertEqual(len([row for row in held["history"] if row.get("action") == "RISK_STOP"]), 1)
 
+    def test_pm_exact_risk_cap_and_over_cap(self) -> None:
+        ok = apply_decision(
+            empty_books(),
+            {"pm_id": "chatgpt", "actions": [_open(notional=10_000_000_000)]},
+            pm_id="chatgpt",
+            market_state=MARKET,
+            run_id="r-cap-ok",
+            evidence_cutoff="c",
+            review_packet_id="p",
+            review_packet_sha256="h",
+        )
+        self.assertEqual(ok["pms"]["chatgpt"]["risk_capital_usd"], RISK_CAPITAL_LIMIT_USD)
+        with self.assertRaises(CapError):
+            apply_decision(
+                ok,
+                {"pm_id": "chatgpt", "actions": [_open(instrument="AUDUSD", notional=1)]},
+                pm_id="chatgpt",
+                market_state=MARKET,
+                run_id="r-cap-over",
+                evidence_cutoff="c",
+                review_packet_id="p",
+                review_packet_sha256="h",
+            )
+
+    def test_pm_high_water_ratchets_then_stops_from_peak(self) -> None:
+        books = apply_decision(
+            empty_books(),
+            {"pm_id": "swinger", "actions": [_open(notional=1_000_000_000)]},
+            pm_id="swinger",
+            market_state=MARKET,
+            run_id="r-hw-open",
+            evidence_cutoff="c",
+            review_packet_id="p",
+            review_packet_sha256="h",
+        )
+        book = books["pms"]["swinger"]
+        book["positions"][0]["mark_price"] = 1.36 * 1.06
+        mark_pm_book(book, run_id="r-hw-gain")
+        peak = book["high_water_nav_usd"]
+        self.assertGreater(peak, CASH_CAPITAL_USD)
+        self.assertEqual(book["drawdown_usd"], 0.0)
+        book["positions"][0]["mark_price"] = 1.36 * 1.06 * (1 - 0.055)
+        mark_pm_book(book, run_id="r-hw-dd")
+        self.assertEqual(book["high_water_nav_usd"], peak)
+        self.assertGreaterEqual(book["drawdown_usd"], MAX_DRAWDOWN_USD)
+        self.assertTrue(book["risk_stopped"])
+        self.assertEqual(book["positions"], [])
+
+    def test_pm_missing_exit_mark_pending_stop(self) -> None:
+        books = apply_decision(
+            empty_books(),
+            {"pm_id": "pragmatist", "actions": [_open(notional=5_000_000_000), _open(instrument="AUDUSD", notional=100_000_000)]},
+            pm_id="pragmatist",
+            market_state=MARKET,
+            run_id="r-pend-open",
+            evidence_cutoff="c",
+            review_packet_id="p",
+            review_packet_sha256="h",
+        )
+        book = books["pms"]["pragmatist"]
+        cad = next(p for p in book["positions"] if p["instrument"] == "USDCAD")
+        aud = next(p for p in book["positions"] if p["instrument"] == "AUDUSD")
+        cad["mark_price"] = 1.36 * 0.989
+        aud["mark_price"] = None
+        mark_pm_book(book, run_id="r-pend-stop")
+        self.assertTrue(book["risk_stopped"])
+        self.assertTrue(book["risk_stop_pending"])
+        self.assertEqual(book["decision_status"], "risk_stopped")
+        self.assertEqual(len(book["positions"]), 1)
+        self.assertEqual(book["positions"][0]["instrument"], "AUDUSD")
+        self.assertIsNone(book["positions"][0]["mark_price"])
+        remaining = book["positions"][0]["position_id"]
+        apply_action(
+            book,
+            {"action": "CLOSE", "position_id": remaining, "price": 0.66},
+            run_id="r-pend-close",
+        )
+        self.assertEqual(book["positions"], [])
+        self.assertTrue(book["risk_stopped"])
+        after = apply_decision(
+            books,
+            {
+                "pm_id": "pragmatist",
+                "actions": [
+                    {"action": "HOLD"},
+                    _open(instrument="AUDUSD", notional=10_000_000),
+                ],
+            },
+            pm_id="pragmatist",
+            market_state=MARKET,
+            run_id="r-pend-mixed",
+            evidence_cutoff="c2",
+            review_packet_id="p2",
+            review_packet_sha256="h2",
+        )
+        mixed = after["pms"]["pragmatist"]
+        self.assertTrue(mixed["risk_stopped"])
+        self.assertEqual(mixed["decision_status"], "risk_stopped")
+        self.assertEqual(mixed["positions"], [])
+        self.assertTrue(any(row.get("result") == "blocked_risk_stop" for row in mixed["history"]))
+
+    def test_canonical_pm_books_migrate_without_rewriting_trades(self) -> None:
+        import json
+        from pathlib import Path
+        from scripts.pm.books import public_pm_view
+
+        raw = json.loads((Path(__file__).resolve().parents[1] / "data" / "pm" / "books" / "latest.json").read_text())
+        before = deepcopy(raw)
+        validated = validate_books(deepcopy(raw))
+        view = public_pm_view(deepcopy(raw))
+        for pm_id, item in validated["pms"].items():
+            orig = before["pms"][pm_id]
+            self.assertEqual(item["risk_capital_limit_usd"], RISK_CAPITAL_LIMIT_USD)
+            self.assertEqual(item["max_drawdown_usd"], MAX_DRAWDOWN_USD)
+            self.assertEqual(item["realized_pnl_usd"], orig["realized_pnl_usd"])
+            self.assertEqual(len(item["positions"]), len(orig["positions"]))
+            self.assertLessEqual(item["risk_capital_usd"], item["risk_capital_limit_usd"])
+            for pos, old in zip(item["positions"], orig["positions"]):
+                self.assertEqual(pos["position_id"], old["position_id"])
+                self.assertEqual(pos["notional_usd"], old["notional_usd"])
+                self.assertIsNotNone(pos["risk_capital_usd"])
+        self.assertIn("risk_capital_usd", view["pms"][0])
+        self.assertIn("drawdown_usd", view["pms"][0])
+        self.assertIn("risk_stopped", view["pms"][0])
+        self.assertFalse(view["gross_notional_limit_enforced"])
+        public_with_pos = next(row for row in view["pms"] if row["positions"])
+        self.assertIn("risk_capital_usd", public_with_pos["positions"][0])
 
 
 if __name__ == "__main__":

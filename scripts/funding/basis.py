@@ -63,7 +63,7 @@ def classify_funding_basis(
             "risk_capital_method": RISK_CAPITAL_METHOD,
             "consumes_funded_capital": False,
             "expression_family": family,
-            "reason": "deterministic mark/risk fields are insufficient to compute 1% shocked MTM",
+            "reason": "deterministic mark/risk fields are insufficient to compute standard-shock MTM",
         }
     return {
         "funding_basis": RISK_CAPITAL_FUNDED,
@@ -73,7 +73,10 @@ def classify_funding_basis(
         "risk_capital_method": RISK_CAPITAL_METHOD,
         "consumes_funded_capital": capital > 0,
         "expression_family": family,
-        "reason": "official SOFR is charged on absolute MTM loss from a 1% adverse risk-factor shock",
+        "reason": (
+            "official SOFR is charged on absolute MTM loss from the standard shock "
+            "(1% spot, 100bp outright rates, 100bp curve/RV)"
+        ),
     }
 
 

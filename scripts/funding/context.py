@@ -171,14 +171,16 @@ def competition_contract(funding_context: dict[str, Any] | None = None) -> dict[
         "funding_observation_date": None if not isinstance(latest, dict) else latest.get("observation_date"),
         "funding_basis": (
             "Every seat has $100m paper NAV and earns the common official NY Fed SOFR ACT/360 "
-            "cash hurdle on that NAV. Any open risk pays the same official SOFR on trusted 1%-shock "
-            "risk capital: the absolute MTM loss from a 1% adverse move in the quoted risk factor, "
-            "with a 1bp minimum shock for rates/spreads. Equal risk capital receives equal financing "
-            "treatment across asset classes. Notional is descriptive, not the funding base. "
-            "The no-trade-skeptic has no special subsidy: when flat its risk capital is zero; if it "
-            "takes risk it pays the same financing rule. Weekends and holidays carry the last "
-            "applicable published fixing until the next fixing. If official fixing history cannot be "
-            "established, new funding accrual fails closed and prior canonical balances are preserved."
+            "cash hurdle on that NAV. Any open risk pays the same official SOFR on trusted "
+            "standard-shock risk capital: the absolute MTM loss from a 1% adverse spot move, a "
+            "100bp (1 percentage point) adverse outright rate move, or a 100bp adverse curve/RV "
+            "spread move under the trusted duration-1 P&L convention. Equal risk capital receives "
+            "equal financing treatment across asset classes. Notional is descriptive, not the "
+            "funding base. The no-trade-skeptic has no special subsidy: when flat its risk capital "
+            "is zero; if it takes risk it pays the same financing rule. Weekends and holidays carry "
+            "the last applicable published fixing until the next fixing. If official fixing history "
+            "cannot be established, new funding accrual fails closed and prior canonical balances "
+            "are preserved."
         ),
         "flat_book_pnl": "A flat seat earns the common official-SOFR cash hurdle and has zero risk-capital financing charge.",
         "risk_limits": {

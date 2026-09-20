@@ -1,6 +1,6 @@
 """Four independent $1bn paper-NAV PM books. Not trader seats.
 
-Notional is descriptive. Trusted sizing is capped by 1%-shock risk capital,
+Notional is descriptive. Trusted sizing is capped by standard-shock risk capital,
 and official NY Fed SOFR ACT/360 is charged on that shocked risk capital.
 """
 
@@ -22,7 +22,13 @@ from scripts.funding.sofr import (
     extract_sofr_history,
     observed_rate_fields,
 )
-from scripts.overnight.books import position_pnl, realized_increment
+from scripts.overnight.books import PENDING_FORCE_FLATTEN_REASON, position_pnl, realized_increment
+from scripts.risk_capital import (
+    already_force_flattened_ids,
+    attach_position_risk,
+    book_risk_capital,
+    partition_force_exit_positions,
+)
 from scripts.overnight.clock import isoformat, now_ny
 from scripts.overnight.paper_marks import (
     PaperMarkError,
@@ -185,47 +191,69 @@ def _force_pm_drawdown_flatten(
     positions = list(book.get("positions") or [])
     if not positions:
         book["risk_stopped"] = True
+        book["risk_stop_pending"] = False
         book["decision_status"] = "risk_stopped"
         return True
-    if any(position.get("mark_price") in (None, "") for position in positions):
-        book["risk_stopped"] = True
-        book["risk_stop_pending"] = True
-        book["decision_status"] = "risk_stopped"
-        reason = "max drawdown breached but one or more positions lack a deterministic exit mark; expansion is blocked pending forced flatten"
-        if reason not in book.setdefault("alerts", []):
-            book["alerts"].append(reason)
-        return False
+
+    already = already_force_flattened_ids(book)
+    markable, blocked = partition_force_exit_positions(positions)
+    markable = [position for position in markable if str(position.get("position_id") or "") not in already]
 
     realized = 0.0
-    for position in positions:
-        realized += realized_increment(
-            position,
-            exit_price=float(position["mark_price"]),
-            closed_notional=float(position["notional_usd"]),
-        )
-    book["realized_pnl_usd"] = round(float(book.get("realized_pnl_usd") or 0.0) + realized, 2)
-    book["positions"] = []
+    flattened_ids: list[str] = []
+    if markable:
+        for position in markable:
+            realized += realized_increment(
+                position,
+                exit_price=float(position["mark_price"]),
+                closed_notional=float(position["notional_usd"]),
+            )
+            if position.get("position_id"):
+                flattened_ids.append(str(position["position_id"]))
+        realized = round(realized, 2)
+        book["realized_pnl_usd"] = round(float(book.get("realized_pnl_usd") or 0.0) + realized, 2)
+        remaining_ids = {id(position) for position in blocked}
+        book["positions"] = [position for position in positions if id(position) in remaining_ids]
+
     book["risk_stopped"] = True
-    book["risk_stop_pending"] = False
+    pending = bool(book.get("positions"))
+    book["risk_stop_pending"] = pending
     book["decision_status"] = "risk_stopped"
-    book["risk_stop_at"] = isoformat(now_ny(when))
+    stamp = isoformat(now_ny(when))
+    if flattened_ids or not book.get("risk_stop_at"):
+        book["risk_stop_at"] = stamp
     book["prior_action"] = book.get("last_action")
     book["last_action"] = "RISK_STOP"
-    book.setdefault("history", []).append(
-        {
-            "at": book["risk_stop_at"],
-            "run_id": run_id,
-            "action": "RISK_STOP",
-            "result": "forced_flat",
-            "realized_pnl_usd": round(realized, 2),
-            "drawdown_usd": book.get("drawdown_usd"),
-            "max_drawdown_usd": book.get("max_drawdown_usd", MAX_DRAWDOWN_USD),
-        }
-    )
-    book.setdefault("alerts", []).append(
-        f"RISK_STOP: book forcibly flattened after drawdown reached {float(book.get('drawdown_usd') or 0.0):,.2f}"
-    )
-    return True
+    history = book.setdefault("history", [])
+    result = "pending_forced_flatten" if pending else "forced_flat"
+    if flattened_ids or (
+        pending
+        and not any(row.get("action") == "RISK_STOP" and row.get("result") == "pending_forced_flatten" for row in history)
+    ):
+        history.append(
+            {
+                "at": stamp,
+                "run_id": run_id,
+                "action": "RISK_STOP",
+                "result": result,
+                "realized_pnl_usd": round(realized, 2),
+                "flattened_position_ids": flattened_ids,
+                "drawdown_usd": book.get("drawdown_usd"),
+                "max_drawdown_usd": book.get("max_drawdown_usd", MAX_DRAWDOWN_USD),
+            }
+        )
+    alerts = book.setdefault("alerts", [])
+    if pending:
+        if PENDING_FORCE_FLATTEN_REASON not in alerts:
+            alerts.append(PENDING_FORCE_FLATTEN_REASON)
+    else:
+        msg = (
+            "RISK_STOP: book forcibly flattened after drawdown reached "
+            f"{float(book.get('drawdown_usd') or 0.0):,.2f}"
+        )
+        if msg not in alerts:
+            alerts.append(msg)
+    return not pending
 
 
 def mark_pm_book(
@@ -268,28 +296,31 @@ def mark_pm_book(
     cash_yield = round(float(book.get("cash_yield_usd") or 0.0), 2)
     book["funding_cost_usd"] = funding
     book["cash_yield_usd"] = cash_yield
-    book["net_after_funding_pnl_usd"] = None if missing else round(realized + unrealized - funding + cash_yield, 2)
-    nav = float(book.get("cash_capital_usd") or CASH_CAPITAL_USD) + (0.0 if book["net_after_funding_pnl_usd"] is None else float(book["net_after_funding_pnl_usd"]))
+    available_net = round(realized + unrealized - funding + cash_yield, 2)
+    book["net_after_funding_pnl_usd"] = None if missing else available_net
+    nav = float(book.get("cash_capital_usd") or CASH_CAPITAL_USD) + available_net
     book["nav_usd"] = round(nav, 2)
 
     book.setdefault("max_drawdown_usd", MAX_DRAWDOWN_USD)
     book.setdefault("high_water_nav_usd", float(book.get("cash_capital_usd") or CASH_CAPITAL_USD))
     book.setdefault("risk_stopped", False)
     book.setdefault("risk_stop_pending", False)
-    high_water = max(float(book["high_water_nav_usd"]), float(book["nav_usd"]))
-    book["high_water_nav_usd"] = round(high_water, 2)
-    book["drawdown_usd"] = round(max(0.0, high_water - float(book["nav_usd"])), 2)
+    if not missing:
+        high_water = max(float(book["high_water_nav_usd"]), float(book["nav_usd"]))
+        book["high_water_nav_usd"] = round(high_water, 2)
+    book["drawdown_usd"] = round(max(0.0, float(book["high_water_nav_usd"]) - float(book["nav_usd"])), 2)
+    if book.get("risk_stopped") and not book.get("positions"):
+        book["risk_stop_pending"] = False
 
-    if (
-        enforce_stop
-        and not missing
-        and float(book["drawdown_usd"]) >= float(book["max_drawdown_usd"])
-        and book.get("positions")
-    ):
+    pending_open = bool(book.get("risk_stop_pending") and book.get("positions"))
+    drawdown_breach = float(book["drawdown_usd"]) >= float(book["max_drawdown_usd"])
+    needs_stop = drawdown_breach and (book.get("positions") or not book.get("risk_stopped"))
+    if enforce_stop and (pending_open or needs_stop):
         _force_pm_drawdown_flatten(book, when=when, run_id=run_id)
         return mark_pm_book(book, when=when, run_id=run_id, enforce_stop=False)
 
-    assert_cap(book)
+    if not book.get("risk_stopped"):
+        assert_cap(book)
     return book
 
 def refresh_pm_book(book: dict[str, Any], market_state: dict[str, Any] | None) -> dict[str, Any]:
@@ -364,6 +395,8 @@ def _set_decision_fields(book: dict[str, Any], action: dict[str, Any], decision:
 
 
 def _derive_status(book: dict[str, Any], *, kind: str, had_prior_decision: bool) -> str:
+    if book.get("risk_stopped"):
+        return "risk_stopped"
     if kind == "NO_TRADE":
         return "no_trade"
     if book.get("positions"):
@@ -386,7 +419,7 @@ def accrue_pm_funding(
     market_state: dict[str, Any] | None = None,
     model_forecast: Any = None,
 ) -> dict[str, float]:
-    """Accrue official SOFR on 1%-shock risk capital plus the common cash hurdle.
+    """Accrue official SOFR on standard-shock risk capital plus the common cash hurdle.
 
     model_forecast is ignored for realized accounting.
     """
@@ -716,6 +749,9 @@ def apply_decision(
         refresh_pm_book(book, market_state)
     actions = prepare_actions(book, decision, market_state=market_state)
     stamp = now_ny(when)
+    expanding = {"OPEN", "ADD", "HEDGE"}
+    applied = False
+    first_cap_error: CapError | None = None
     for action in actions:
         if not action.get("thesis") and decision.get("thesis"):
             action["thesis"] = decision["thesis"]
@@ -723,14 +759,29 @@ def apply_decision(
             action["invalidation"] = decision["invalidation"]
         if action.get("conviction") is None and decision.get("conviction") is not None:
             action["conviction"] = decision["conviction"]
-        apply_action(
-            book,
-            action,
-            run_id=run_id,
-            when=stamp,
-            decision=decision,
-            market_state=market_state,
-        )
+        try:
+            apply_action(
+                book,
+                action,
+                run_id=run_id,
+                when=stamp,
+                decision=decision,
+                market_state=market_state,
+            )
+            applied = True
+        except CapError as exc:
+            kind = str(action.get("action") or "")
+            if kind not in expanding:
+                raise
+            result = "blocked_risk_stop" if book.get("risk_stopped") else "blocked_risk_capital"
+            book.setdefault("alerts", []).append(str(exc))
+            book.setdefault("history", []).append(
+                _history_entry(action, when=stamp, run_id=run_id, result=result)
+            )
+            if first_cap_error is None:
+                first_cap_error = exc
+    if first_cap_error is not None and not applied:
+        raise first_cap_error
     book["last_decision_at"] = isoformat(stamp)
     book["last_decision_packet_id"] = review_packet_id
     book["last_decision_packet_sha256"] = review_packet_sha256

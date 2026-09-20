@@ -542,6 +542,147 @@ class BookTransitionTests(unittest.TestCase):
         blocked = {row.get("action") for row in self.seat["history"] if row.get("result") == "blocked_risk_capital"}
         self.assertEqual(blocked, {"ADD", "HEDGE"})
 
+    def test_rates_notional_may_exceed_100m_inside_risk_cap(self):
+        hawk = empty_seat("rate-hawk")
+        apply_action(
+            hawk,
+            {
+                "action": "OPEN",
+                "instrument": "US 10Y",
+                "side": "long",
+                "notional_usd": 500_000_000,
+                "price": 4.20,
+                "asset_class": "rates",
+                "expression_memo": _rates_memo("rates"),
+                "thesis": "Risk-equivalent rates size.",
+            },
+            families=self.families,
+            run_id="rates-over-notional",
+            when=AS_OF,
+        )
+        self.assertEqual(deployed_notional(hawk), 500_000_000)
+        self.assertEqual(hawk["risk_capital_usd"], 5_000_000.0)
+        self.assertLess(hawk["risk_capital_usd"], hawk["risk_capital_limit_usd"])
+        apply_action(
+            hawk,
+            {
+                "action": "OPEN",
+                "instrument": "US 2Y",
+                "side": "long",
+                "notional_usd": 600_000_000,
+                "price": 4.00,
+                "asset_class": "rates",
+                "expression_memo": _rates_memo("rates"),
+                "thesis": "Would exceed $10m shocked risk.",
+            },
+            families=self.families,
+            run_id="rates-over-risk",
+            when=AS_OF,
+        )
+        self.assertEqual(len(hawk["positions"]), 1)
+        self.assertTrue(any(row.get("result") == "blocked_risk_capital" for row in hawk["history"]))
+
+    def test_risk_capital_updates_on_add_reduce_close_and_hedge(self):
+        apply_action(
+            self.seat,
+            {
+                "action": "OPEN",
+                "instrument": "USDCAD",
+                "side": "long",
+                "notional_usd": 100_000_000,
+                "price": 1.36,
+                "asset_class": "spot_fx",
+                "expression_memo": _spot_memo(),
+            },
+            families=self.families,
+            run_id="rc-open",
+            when=AS_OF,
+        )
+        self.assertEqual(self.seat["risk_capital_usd"], 1_000_000.0)
+        pos_id = self.seat["positions"][0]["position_id"]
+        apply_action(
+            self.seat,
+            {
+                "action": "ADD",
+                "position_id": pos_id,
+                "notional_usd": 50_000_000,
+                "price": 1.36,
+                "expression_memo": _spot_memo(),
+            },
+            families=self.families,
+            run_id="rc-add",
+            when=AS_OF,
+        )
+        self.assertEqual(self.seat["risk_capital_usd"], 1_500_000.0)
+        apply_action(
+            self.seat,
+            {
+                "action": "REDUCE",
+                "position_id": pos_id,
+                "notional_usd": 25_000_000,
+                "price": 1.36,
+                "expression_memo": _spot_memo(),
+            },
+            families=self.families,
+            run_id="rc-reduce",
+            when=AS_OF,
+        )
+        self.assertEqual(self.seat["risk_capital_usd"], 1_250_000.0)
+        apply_action(
+            self.seat,
+            {
+                "action": "HEDGE",
+                "hedge_of": pos_id,
+                "notional_usd": 10_000_000,
+                "price": 1.36,
+                "expression_memo": _spot_memo(),
+            },
+            families=self.families,
+            run_id="rc-hedge",
+            when=AS_OF,
+        )
+        self.assertEqual(self.seat["risk_capital_usd"], 1_350_000.0)
+        apply_action(
+            self.seat,
+            {
+                "action": "CLOSE",
+                "position_id": pos_id,
+                "price": 1.36,
+                "expression_memo": _spot_memo(),
+            },
+            families=self.families,
+            run_id="rc-close",
+            when=AS_OF,
+        )
+        self.assertEqual(self.seat["risk_capital_usd"], 100_000.0)
+
+    def test_high_water_ratchets_and_drawdown_is_from_peak(self):
+        apply_action(
+            self.seat,
+            {
+                "action": "OPEN",
+                "instrument": "USDCAD",
+                "side": "long",
+                "notional_usd": 100_000_000,
+                "price": 1.0,
+                "asset_class": "spot_fx",
+                "expression_memo": _spot_memo(),
+            },
+            families=self.families,
+            run_id="hw-open",
+            when=AS_OF,
+        )
+        self.seat["positions"][0]["mark_price"] = 1.10
+        mark_to_market(self.seat, when=AS_OF, run_id="hw-gain")
+        self.assertEqual(self.seat["high_water_nav_usd"], 110_000_000.0)
+        self.assertEqual(self.seat["drawdown_usd"], 0.0)
+        self.seat["positions"][0]["mark_price"] = 1.04
+        mark_to_market(self.seat, when=AS_OF, run_id="hw-giveback")
+        self.assertEqual(self.seat["high_water_nav_usd"], 110_000_000.0)
+        self.assertEqual(self.seat["drawdown_usd"], 6_000_000.0)
+        self.assertTrue(self.seat["risk_stopped"])
+        self.assertEqual(self.seat["positions"], [])
+
     def test_hard_drawdown_forces_flat_and_blocks_reentry(self):
         apply_action(
             self.seat,
@@ -583,6 +724,131 @@ class BookTransitionTests(unittest.TestCase):
         )
         self.assertEqual(self.seat["positions"], [])
         self.assertTrue(any(row.get("result") == "blocked_risk_stop" for row in self.seat["history"]))
+        realized = self.seat["realized_pnl_usd"]
+        stops = [row for row in self.seat["history"] if row.get("action") == "RISK_STOP"]
+        mark_to_market(self.seat, when=AS_OF, run_id="risk-stop-mark-2")
+        from scripts.overnight.books import validate_books, empty_books
+
+        books = empty_books(when=AS_OF)
+        books["seats"]["dollar-king"] = self.seat
+        validate_books(books)
+        self.assertEqual(self.seat["realized_pnl_usd"], realized)
+        self.assertEqual(len([row for row in self.seat["history"] if row.get("action") == "RISK_STOP"]), len(stops))
+        apply_action(
+            self.seat,
+            {"action": "HOLD", "expression_memo": _spot_memo()},
+            families=self.families,
+            run_id="risk-stop-hold",
+            when=AS_OF,
+        )
+        self.assertTrue(self.seat["risk_stopped"])
+        self.assertEqual(self.seat["positions"], [])
+
+    def test_missing_exit_mark_pending_stop_does_not_invent_price(self):
+        apply_action(
+            self.seat,
+            {
+                "action": "OPEN",
+                "instrument": "USDCAD",
+                "side": "long",
+                "notional_usd": 600_000_000,
+                "price": 1.0,
+                "asset_class": "spot_fx",
+                "expression_memo": _spot_memo(),
+            },
+            families=self.families,
+            run_id="pending-open-1",
+            when=AS_OF,
+        )
+        apply_action(
+            self.seat,
+            {
+                "action": "OPEN",
+                "instrument": "USDJPY",
+                "side": "long",
+                "notional_usd": 100_000_000,
+                "price": 148.0,
+                "asset_class": "spot_fx",
+                "expression_memo": _spot_memo("USDJPY"),
+            },
+            families=self.families,
+            run_id="pending-open-2",
+            when=AS_OF,
+        )
+        cad = next(p for p in self.seat["positions"] if p["instrument"] == "USDCAD")
+        yen = next(p for p in self.seat["positions"] if p["instrument"] == "USDJPY")
+        cad["mark_price"] = 0.99
+        yen["mark_price"] = None
+        mark_to_market(self.seat, when=AS_OF, run_id="pending-stop")
+        self.assertTrue(self.seat["risk_stopped"])
+        self.assertTrue(self.seat["risk_stop_pending"])
+        self.assertEqual(len(self.seat["positions"]), 1)
+        self.assertEqual(self.seat["positions"][0]["instrument"], "USDJPY")
+        self.assertEqual(self.seat["positions"][0]["mark_price"], None)
+        self.assertEqual(self.seat["realized_pnl_usd"], -6_000_000.0)
+        apply_action(
+            self.seat,
+            {
+                "action": "OPEN",
+                "instrument": "AUDUSD",
+                "side": "long",
+                "notional_usd": 10_000_000,
+                "price": 0.66,
+                "asset_class": "spot_fx",
+                "expression_memo": _spot_memo("AUDUSD"),
+            },
+            families=self.families,
+            run_id="pending-block",
+            when=AS_OF,
+        )
+        self.assertTrue(any(row.get("result") == "blocked_risk_stop" for row in self.seat["history"]))
+        remaining_id = self.seat["positions"][0]["position_id"]
+        apply_action(
+            self.seat,
+            {
+                "action": "CLOSE",
+                "position_id": remaining_id,
+                "price": 148.0,
+                "expression_memo": _spot_memo("USDJPY"),
+            },
+            families=self.families,
+            run_id="pending-close",
+            when=AS_OF,
+        )
+        self.assertEqual(self.seat["positions"], [])
+        self.assertTrue(self.seat["risk_stopped"])
+        realized = self.seat["realized_pnl_usd"]
+        mark_to_market(self.seat, when=AS_OF, run_id="pending-repeat")
+        mark_to_market(self.seat, when=AS_OF, run_id="pending-repeat-2")
+        self.assertEqual(self.seat["realized_pnl_usd"], realized)
+
+    def test_canonical_trader_books_migrate_without_rewriting_trades(self):
+        from copy import deepcopy
+        from pathlib import Path
+        from scripts.overnight.books import validate_books, public_books_view
+
+        raw = json.loads((Path(__file__).resolve().parents[1] / "data" / "overnight" / "books" / "latest.json").read_text())
+        before = deepcopy(raw)
+        validated = validate_books(deepcopy(raw))
+        view = public_books_view(deepcopy(raw))
+        self.assertEqual(len(validated["seats"]), 14)
+        for seat, item in validated["seats"].items():
+            orig = before["seats"][seat]
+            self.assertEqual(item["risk_capital_limit_usd"], 10_000_000)
+            self.assertEqual(item["max_drawdown_usd"], 5_000_000)
+            self.assertEqual(item["realized_pnl_usd"], orig["realized_pnl_usd"])
+            self.assertEqual(len(item["positions"]), len(orig["positions"]))
+            self.assertLessEqual(item["risk_capital_usd"], item["risk_capital_limit_usd"])
+            for pos, old in zip(item["positions"], orig["positions"]):
+                self.assertEqual(pos["position_id"], old["position_id"])
+                self.assertEqual(pos["notional_usd"], old["notional_usd"])
+                self.assertEqual(pos["entry_price"], old["entry_price"])
+                self.assertIsNotNone(pos["risk_capital_usd"])
+        public_with_pos = next(row for row in view["seats"] if row["positions"])
+        self.assertIn("risk_capital_usd", public_with_pos)
+        self.assertIn("drawdown_usd", public_with_pos)
+        self.assertIn("risk_stopped", public_with_pos)
+        self.assertIn("risk_capital_usd", public_with_pos["positions"][0])
 
     def test_missing_mark_does_not_invent_pnl(self):
         pos = {

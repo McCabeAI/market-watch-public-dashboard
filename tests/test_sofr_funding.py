@@ -260,6 +260,7 @@ class TraderFundingTests(unittest.TestCase):
 
     def test_no_active_five_percent_in_public_output(self) -> None:
         from scripts.overnight.books import empty_books
+        from scripts.funding.context import competition_contract
 
         books = validate_books(empty_books(when=AS_OF))
         view = public_books_view(books)
@@ -268,6 +269,10 @@ class TraderFundingTests(unittest.TestCase):
         self.assertEqual(view["funding_source"], FUNDING_SOURCE)
         blob = str(view)
         self.assertNotIn("0.05", blob)
+        contract = competition_contract()
+        self.assertNotIn("1bp minimum", contract["funding_basis"])
+        self.assertIn("100bp", contract["funding_basis"])
+        self.assertIn("1 percentage point", contract["funding_basis"])
 
     def test_migration_preserves_historical_funding_and_starts_risk_capital_sofr(self) -> None:
         seat = empty_seat("carry-is-king")
@@ -443,6 +448,56 @@ class PMFundingTests(unittest.TestCase):
         self.assertEqual(book["cash_yield_usd"], round(CASH_CAPITAL_USD * 0.04 / 360, 2))
         self.assertIsNotNone(book["net_after_funding_pnl_usd"])
         self.assertEqual(book["positions"][0]["funding_basis_status"], "risk_capital_1pct_shock")
+
+    def test_equal_risk_capital_gets_equal_sofr_across_asset_classes(self) -> None:
+        from scripts.overnight.books import empty_seat, apply_action
+        from scripts.overnight.constants import STARTING_NAV_USD as TRADER_NAV
+
+        families = {
+            "macro_hard": {"status": "fresh"},
+            "news": {"status": "fresh"},
+            "central_bank_research": {"status": "fresh"},
+            "market_state": {"status": "fresh", "data": MARKET},
+        }
+        rates_memo = {
+            "rates_candidate": {"instrument": "US 10Y", "asset_class": "rates", "rationale": "duration"},
+            "spot_candidate": {"instrument": "USDJPY", "asset_class": "spot_fx", "rationale": "spot alt"},
+            "options_candidate": None,
+            "selected": "rates",
+            "rationale": "Rates-first comparison complete.",
+        }
+        specs = [
+            ("dollar-king", "USDCAD", "spot_fx", 1.36, _spot_memo()),
+            ("rate-hawk", "US 10Y", "rates", 4.20, rates_memo),
+            ("value-guy", "SOFR-CORRA_2Y", "rates_rv", 35.0, {**rates_memo, "rates_candidate": {"instrument": "SOFR-CORRA_2Y", "asset_class": "rates_rv", "rationale": "spread"}}),
+        ]
+        charges = []
+        for seat_id, instrument, asset, price, memo in specs:
+            seat = empty_seat(seat_id)
+            apply_action(seat, {"action": "HOLD", "expression_memo": memo}, families=families, run_id="eq-1", when=AS_OF, market_state=MARKET)
+            apply_action(
+                seat,
+                {
+                    "action": "OPEN",
+                    "instrument": instrument,
+                    "side": "long",
+                    "notional_usd": 100_000_000,
+                    "price": price,
+                    "asset_class": asset,
+                    "expression_memo": memo,
+                },
+                families=families,
+                run_id="eq-2",
+                when=AS_OF + timedelta(days=1),
+                market_state=MARKET,
+            )
+            apply_action(seat, {"action": "HOLD", "expression_memo": memo}, families=families, run_id="eq-3", when=AS_OF + timedelta(days=2), market_state=MARKET)
+            self.assertEqual(seat["risk_capital_usd"], 1_000_000.0)
+            charges.append(seat["funding_cost_usd"])
+            self.assertEqual(seat["cash_yield_usd"], round(TRADER_NAV * 0.04 / 360, 2) * 2)
+        self.assertEqual(charges[0], round(1_000_000 * 0.04 / 360, 2))
+        self.assertEqual(charges[0], charges[1])
+        self.assertEqual(charges[1], charges[2])
 
     def test_unresolved_basis_is_flagged_and_not_charged(self) -> None:
         book = empty_pm_book("grinder")

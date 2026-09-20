@@ -32,7 +32,13 @@ from scripts.overnight.constants import (
 from scripts.overnight.errors import FreshnessError, SchemaError
 from scripts.overnight.expression import expression_rule, remit, selected_asset_class, validate_expression_memo
 from scripts.overnight.freshness import assert_action_allowed
-from scripts.risk_capital import attach_position_risk, book_risk_capital, position_risk_capital
+from scripts.risk_capital import (
+    already_force_flattened_ids,
+    attach_position_risk,
+    book_risk_capital,
+    partition_force_exit_positions,
+    position_risk_capital,
+)
 
 
 def _money(value: Any, field: str) -> float:
@@ -174,7 +180,7 @@ def accrue_funding(
     """Accrue official NY Fed SOFR ACT/360 on shocked risk capital.
 
     Every seat earns the common cash hurdle on its starting paper NAV. Risk-taking
-    books additionally pay SOFR on current 1%-shock risk capital; notional itself
+    books additionally pay SOFR on current standard-shock risk capital; notional itself
     is never treated as borrowed principal. The no-trade skeptic has zero risk
     capital while flat and therefore pays no financing charge.
     """
@@ -374,6 +380,12 @@ def empty_books(*, overnight_run_id: str | None = None, when: datetime | None = 
     }
 
 
+PENDING_FORCE_FLATTEN_REASON = (
+    "max drawdown breached but one or more positions lack a deterministic exit mark; "
+    "expansion is blocked pending forced flatten"
+)
+
+
 def _force_drawdown_flatten(
     seat_book: dict[str, Any],
     *,
@@ -383,45 +395,68 @@ def _force_drawdown_flatten(
     positions = list(seat_book.get("positions") or [])
     if not positions:
         seat_book["risk_stopped"] = True
+        seat_book["risk_stop_pending"] = False
         return True
-    if any(position.get("mark_price") in (None, "") for position in positions):
-        seat_book["risk_stopped"] = True
-        seat_book["risk_stop_pending"] = True
-        reason = "max drawdown breached but one or more positions lack a deterministic exit mark; expansion is blocked pending forced flatten"
-        if reason not in seat_book.setdefault("alerts", []):
-            seat_book["alerts"].append(reason)
-        return False
+
+    already = already_force_flattened_ids(seat_book)
+    markable, blocked = partition_force_exit_positions(positions)
+    markable = [position for position in markable if str(position.get("position_id") or "") not in already]
 
     realized = 0.0
-    for position in positions:
-        realized += realized_increment(
-            position,
-            exit_price=float(position["mark_price"]),
-            closed_notional=float(position["notional_usd"]),
-        )
-    seat_book["realized_pnl_usd"] = round(float(seat_book.get("realized_pnl_usd") or 0.0) + realized, 2)
-    seat_book["cash_usd"] = round(float(seat_book.get("cash_usd", STARTING_NAV_USD)) + realized, 2)
-    seat_book["positions"] = []
+    flattened_ids: list[str] = []
+    if markable:
+        for position in markable:
+            realized += realized_increment(
+                position,
+                exit_price=float(position["mark_price"]),
+                closed_notional=float(position["notional_usd"]),
+            )
+            if position.get("position_id"):
+                flattened_ids.append(str(position["position_id"]))
+        realized = round(realized, 2)
+        seat_book["realized_pnl_usd"] = round(float(seat_book.get("realized_pnl_usd") or 0.0) + realized, 2)
+        seat_book["cash_usd"] = round(float(seat_book.get("cash_usd", STARTING_NAV_USD)) + realized, 2)
+        remaining_ids = {id(position) for position in blocked}
+        seat_book["positions"] = [position for position in positions if id(position) in remaining_ids]
+
     seat_book["risk_stopped"] = True
-    seat_book["risk_stop_pending"] = False
-    seat_book["risk_stop_at"] = isoformat(now_ny(when))
+    pending = bool(seat_book.get("positions"))
+    seat_book["risk_stop_pending"] = pending
+    stamp = isoformat(now_ny(when))
+    if flattened_ids or not seat_book.get("risk_stop_at"):
+        seat_book["risk_stop_at"] = stamp
     seat_book["prior_action"] = seat_book.get("last_action")
     seat_book["last_action"] = "RISK_STOP"
-    seat_book.setdefault("history", []).append(
-        {
-            "at": seat_book["risk_stop_at"],
-            "overnight_run_id": run_id,
-            "action": "RISK_STOP",
-            "result": "forced_flat",
-            "realized_pnl_usd": round(realized, 2),
-            "drawdown_usd": seat_book.get("drawdown_usd"),
-            "max_drawdown_usd": seat_book.get("max_drawdown_usd", MAX_DRAWDOWN_USD),
-        }
-    )
-    seat_book.setdefault("alerts", []).append(
-        f"RISK_STOP: book forcibly flattened after drawdown reached {float(seat_book.get('drawdown_usd') or 0.0):,.2f}"
-    )
-    return True
+    history = seat_book.setdefault("history", [])
+    result = "pending_forced_flatten" if pending else "forced_flat"
+    if flattened_ids or (
+        pending
+        and not any(row.get("action") == "RISK_STOP" and row.get("result") == "pending_forced_flatten" for row in history)
+    ):
+        history.append(
+            {
+                "at": stamp,
+                "overnight_run_id": run_id,
+                "action": "RISK_STOP",
+                "result": result,
+                "realized_pnl_usd": round(realized, 2),
+                "flattened_position_ids": flattened_ids,
+                "drawdown_usd": seat_book.get("drawdown_usd"),
+                "max_drawdown_usd": seat_book.get("max_drawdown_usd", MAX_DRAWDOWN_USD),
+            }
+        )
+    alerts = seat_book.setdefault("alerts", [])
+    if pending:
+        if PENDING_FORCE_FLATTEN_REASON not in alerts:
+            alerts.append(PENDING_FORCE_FLATTEN_REASON)
+    else:
+        msg = (
+            "RISK_STOP: book forcibly flattened after drawdown reached "
+            f"{float(seat_book.get('drawdown_usd') or 0.0):,.2f}"
+        )
+        if msg not in alerts:
+            alerts.append(msg)
+    return not pending
 
 
 def mark_to_market(
@@ -463,16 +498,20 @@ def mark_to_market(
     seat_book.setdefault("high_water_nav_usd", float(seat_book["starting_nav_usd"]))
     seat_book.setdefault("risk_stopped", False)
     seat_book.setdefault("risk_stop_pending", False)
-    high_water = max(float(seat_book["high_water_nav_usd"]), float(seat_book["nav_usd"]))
-    seat_book["high_water_nav_usd"] = round(high_water, 2)
-    seat_book["drawdown_usd"] = round(max(0.0, high_water - float(seat_book["nav_usd"])), 2)
+    if not missing:
+        high_water = max(float(seat_book["high_water_nav_usd"]), float(seat_book["nav_usd"]))
+        seat_book["high_water_nav_usd"] = round(high_water, 2)
+    seat_book["drawdown_usd"] = round(
+        max(0.0, float(seat_book["high_water_nav_usd"]) - float(seat_book["nav_usd"])),
+        2,
+    )
+    if seat_book.get("risk_stopped") and not seat_book.get("positions"):
+        seat_book["risk_stop_pending"] = False
 
-    if (
-        enforce_stop
-        and not missing
-        and float(seat_book["drawdown_usd"]) >= float(seat_book["max_drawdown_usd"])
-        and seat_book.get("positions")
-    ):
+    pending_open = bool(seat_book.get("risk_stop_pending") and seat_book.get("positions"))
+    drawdown_breach = float(seat_book["drawdown_usd"]) >= float(seat_book["max_drawdown_usd"])
+    needs_stop = drawdown_breach and (seat_book.get("positions") or not seat_book.get("risk_stopped"))
+    if enforce_stop and (pending_open or needs_stop):
         _force_drawdown_flatten(seat_book, when=when, run_id=run_id)
         return mark_to_market(seat_book, when=when, run_id=run_id, enforce_stop=False)
     return seat_book
@@ -595,7 +634,7 @@ def apply_action(
                 when=stamp,
                 run_id=run_id,
                 result="blocked_risk_capital",
-                reason=f"{seat} {kind} blocked: 1% shocked risk capital cannot be computed from deterministic marks",
+                reason=f"{seat} {kind} blocked: standard-shock risk capital cannot be computed from deterministic marks",
             )
         if projected - risk_capital_limit_usd() > 1e-6:
             reason = (

@@ -61,6 +61,36 @@ def position_risk_capital(position: Mapping[str, Any]) -> float | None:
     return None
 
 
+def position_can_force_exit(position: Mapping[str, Any]) -> bool:
+    """True when trusted code can flatten without inventing a price."""
+    return _number(position.get("mark_price")) is not None and _number(position.get("entry_price")) is not None
+
+
+def partition_force_exit_positions(
+    positions: list[Mapping[str, Any]] | None,
+) -> tuple[list[Mapping[str, Any]], list[Mapping[str, Any]]]:
+    markable: list[Mapping[str, Any]] = []
+    blocked: list[Mapping[str, Any]] = []
+    for position in positions or []:
+        if position_can_force_exit(position):
+            markable.append(position)
+        else:
+            blocked.append(position)
+    return markable, blocked
+
+
+def already_force_flattened_ids(book: Mapping[str, Any]) -> set[str]:
+    """Position ids recorded on prior RISK_STOP flatten events."""
+    ids: set[str] = set()
+    for row in book.get("history") or []:
+        if row.get("action") != "RISK_STOP":
+            continue
+        for position_id in row.get("flattened_position_ids") or []:
+            if position_id:
+                ids.add(str(position_id))
+    return ids
+
+
 def attach_position_risk(position: dict[str, Any]) -> dict[str, Any]:
     capital = position_risk_capital(position)
     position["risk_capital_usd"] = capital

@@ -189,7 +189,7 @@ Canonical mechanics are implemented only by `scripts/overnight/books.py`:
 - freshness blocks;
 - marks;
 - realized/unrealized gross P&L;
-- official NY Fed SOFR ACT/360 financing accrual on current 1%-shock risk capital for every seat;
+- official NY Fed SOFR ACT/360 financing accrual on current standard-shock risk capital for every seat;
 - the common official NY Fed SOFR ACT/360 cash hurdle on each seat's $100m paper NAV;
 - trusted $10m risk-capital cap, $5m high-water drawdown stop and risk-stop state;
 - net P&L after financing/cash yield and competition rank;

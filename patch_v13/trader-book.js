@@ -103,6 +103,7 @@
       return '<article class="tb-seat"><div class="tb-seat-top"><div class="tb-seat-name">' +
         (seat.competition_rank ? "#" + esc(seat.competition_rank) + " · " : "") + esc(seat.seat) +
         '</div><div class="tb-action">' + esc(seat.last_action || "HOLD") +
+        (seat.risk_stopped ? (seat.risk_stop_pending ? " · STOP PENDING" : " · RISK STOPPED") : "") +
         "</div></div><p class=\"tb-remit\">" + esc(seat.remit || "") + "</p>" +
         '<div class="tb-metrics"><div><span>NAV</span><b>' + money(seat.nav_usd) +
         "</b></div><div><span>Net P&amp;L</span><b class=\"" + cls(seat.net_pnl_usd) + "\">" +
