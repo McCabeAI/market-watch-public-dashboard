@@ -475,7 +475,7 @@ class OrchestratorDryRunTests(unittest.TestCase):
             context = json.loads(sidecar.read_text(encoding="utf-8"))
             self.assertEqual(len(context["open_positions"]), 1)
             self.assertEqual(context["open_positions"][0]["instrument"], "USDCAD")
-            self.assertEqual(context["open_positions"][0]["notional_usd"], 10_000_000)
+            self.assertEqual(context["open_positions"][0]["current_notional_usd"], 10_000_000)
 
     def test_live_run_is_blocked(self):
         with tempfile.TemporaryDirectory() as tmp:
