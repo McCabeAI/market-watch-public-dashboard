@@ -40,6 +40,7 @@ class PMDashboardTests(unittest.TestCase):
                 "pm_id": "swinger",
                 "actions": [_open(notional=200_000_000)],
                 "thesis": "swing",
+                "invalidation": "swing invalidated",
             },
             pm_id="swinger",
             market_state=MARKET,
@@ -54,6 +55,7 @@ class PMDashboardTests(unittest.TestCase):
                 "pm_id": "pragmatist",
                 "actions": [_open(instrument="AUDUSD", notional=50_000_000)],
                 "thesis": "grind",
+                "invalidation": "grind invalidated",
             },
             pm_id="pragmatist",
             market_state=MARKET,
@@ -84,6 +86,11 @@ class PMDashboardTests(unittest.TestCase):
         self.assertEqual(statuses["swinger"], "active")
         self.assertEqual(statuses["pragmatist"], "active")
         self.assertEqual(statuses["grinder"], "no_trade")
+        swinger = next(row for row in public["pms"] if row["pm_id"] == "swinger")
+        self.assertEqual(len(swinger["positions"]), 1)
+        self.assertEqual(swinger["positions"][0]["thesis"], "swing")
+        self.assertEqual(swinger["positions"][0]["invalidation"], "swing invalidated")
+        self.assertTrue(swinger["positions"][0]["opened_at"])
         validate_public_packet(public)
 
     def test_publication_emit_succeeds_for_mixed_state(self) -> None:
@@ -109,6 +116,8 @@ class PMDashboardTests(unittest.TestCase):
         self.assertIn("pm-books.json", js)
         self.assertIn("PM Data Requests", js)
         self.assertIn("awaiting_chatgpt_decision", js)
+        self.assertIn("function renderPosition", js)
+        self.assertEqual(js.count("positions.map(renderPosition)"), 2)
         self.assertIn("Overnight 14-seat books", html)
         self.assertIn("Fourteen paper traders compete", html)
 
