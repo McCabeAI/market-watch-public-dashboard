@@ -135,7 +135,7 @@ The 14 seats are competing portfolio managers. Their standing objective is **hig
 - official SOFR ACT/360 is charged on shocked risk capital, not notional. Flat books therefore have zero risk financing while retaining the common cash hurdle;
 - each seat has a **$10m shocked-risk-capital ceiling** and a **$5m high-water-mark drawdown stop**. A breach triggers trusted-code forced flattening and blocks new OPEN/ADD/HEDGE while risk-stopped;
 - `no-trade-skeptic` has no special financing subsidy; when flat its shocked risk capital is simply zero. Every fresh scheduled skeptic decision, including `HOLD`, still includes a structured `funding_view`;
-- no-trade remains valid for every seat, but inactivity is economically costly for the 13 funded traders;
+- no-trade remains valid for every seat; a flat book has no shocked-risk financing charge, while open risk must clear its financing hurdle;
 - a trader should put on risk when expected edge clears the hurdle and has a defined invalidation. It must not manufacture a trade merely to avoid being flat.
 
 The dedicated spot seats remain spot-only. Rates-capable seats compare a rates candidate and a spot candidate before adding risk. Options remain last-resort.
