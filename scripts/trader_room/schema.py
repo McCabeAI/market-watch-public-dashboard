@@ -80,6 +80,8 @@ def _validate_paper_actions_list(value: Any, *, label: str) -> None:
         return
     if not isinstance(value, list):
         raise SchemaError(f"{label} paper_actions must be a list")
+    if not value:
+        raise SchemaError(f"{label} paper_actions must contain at least one final book action")
     for row in value:
         _validate_paper_action_row(row, label=label)
 
@@ -372,6 +374,10 @@ def validate_contribution(
             raise SchemaError(str(exc)) from exc
     _validate_paper_actions_list(contribution.get("paper_actions"), label=agent)
     _validate_paper_capital(contribution.get("paper_capital"), label=agent)
+    if contribution.get("paper_actions") is None and contribution.get("paper_capital") is None:
+        raise SchemaError(
+            f"{agent} must declare an explicit paper_actions list or legacy paper_capital decision"
+        )
     assert_data_only_boundary(contribution, packet, agent)
     return contribution
 
@@ -429,6 +435,27 @@ def validate_rebuttal(
             raise SchemaError(str(exc)) from exc
     _validate_paper_actions_list(rebuttal.get("paper_actions"), label=f"{expected_agent} rebuttal")
     _validate_paper_capital(rebuttal.get("paper_capital"), label=f"{expected_agent} rebuttal")
+    if rebuttal["trade_change"] in {"amended", "withdrawn"}:
+        if rebuttal.get("paper_actions") is None and rebuttal.get("paper_capital") is None:
+            raise SchemaError(
+                f"{expected_agent} {rebuttal['trade_change']} rebuttal must declare the final paper book action set"
+            )
+        final_actions = list(rebuttal.get("paper_actions") or [])
+        if rebuttal.get("paper_capital"):
+            legacy_kind = rebuttal["paper_capital"].get("decision") or rebuttal["paper_capital"].get("action")
+            if legacy_kind == "NO_TRADE":
+                legacy_kind = "HOLD"
+            final_actions.append({"action": legacy_kind})
+        if rebuttal["trade_change"] == "withdrawn":
+            expanding = [
+                row.get("action")
+                for row in final_actions
+                if row.get("action") in {"OPEN", "ADD", "HEDGE"}
+            ]
+            if expanding:
+                raise SchemaError(
+                    f"{expected_agent} withdrawn rebuttal cannot leave expanding paper actions: {expanding}"
+                )
     assert_data_only_boundary(rebuttal, packet, f"{expected_agent} rebuttal")
     return rebuttal
 

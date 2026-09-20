@@ -162,13 +162,20 @@ def paper_actions_from_contribution(
     contribution: dict[str, Any],
     rebuttal: dict[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
-    if rebuttal and rebuttal.get("paper_actions"):
-        return [deepcopy(row) for row in rebuttal["paper_actions"]]
+    if rebuttal is not None:
+        if "paper_actions" in rebuttal and rebuttal.get("paper_actions") is not None:
+            return [deepcopy(row) for row in rebuttal["paper_actions"]]
+        if rebuttal.get("paper_capital"):
+            return [action_from_paper_capital(rebuttal["paper_capital"], contribution)]
+        if rebuttal.get("trade_change") in {"amended", "withdrawn"}:
+            raise TraderSchemaError(
+                f"{rebuttal.get('agent') or contribution.get('agent')} "
+                f"{rebuttal.get('trade_change')} rebuttal omitted the final paper book decision"
+            )
     if contribution.get("paper_actions"):
         return [deepcopy(row) for row in contribution["paper_actions"]]
-    for source in (rebuttal, contribution):
-        if source and source.get("paper_capital"):
-            return [action_from_paper_capital(source["paper_capital"], contribution)]
+    if contribution.get("paper_capital"):
+        return [action_from_paper_capital(contribution["paper_capital"], contribution)]
     return [{"action": "HOLD"}]
 
 

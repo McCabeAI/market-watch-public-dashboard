@@ -291,6 +291,7 @@ class DryRunRunner:
             "confidence": confidence,
             "conflict_synopsis": _synopsis_from_spec(agent, trade, confidence),
             "packet_sha256": packet["packet_sha256"],
+            "paper_actions": [{"action": "HOLD"}],
             "macro_assumptions": MOCK_SPECS.get(agent, {}).get("assumptions", {}),
             "subagent_calls": self.composer_calls_per_advocate,
             "subagent_model": SUBAGENT_MODEL if self.composer_calls_per_advocate else None,
@@ -347,6 +348,7 @@ class DryRunRunner:
             "defense": ["The original trade remains the remit-consistent expression of the same packet."],
             "trade_change": "unchanged",
             "revised_trade": original.get("trade"),
+            "paper_actions": [dict(row) for row in (original.get("paper_actions") or [{"action": "HOLD"}])],
             "packet_sha256": packet["packet_sha256"],
             "subagent_calls": 0,
         }
