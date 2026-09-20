@@ -105,10 +105,10 @@
         '</div><div class="tb-action">' + esc(seat.last_action || "HOLD") +
         (seat.risk_stopped ? (seat.risk_stop_pending ? " · STOP PENDING" : " · RISK STOPPED") : "") +
         "</div></div><p class=\"tb-remit\">" + esc(seat.remit || "") + "</p>" +
-        '<div class="tb-metrics"><div><span>NAV</span><b>' + money(seat.nav_usd) +
-        "</b></div><div><span>Net P&amp;L</span><b class=\"" + cls(seat.net_pnl_usd) + "\">" +
-        money(seat.net_pnl_usd) + "</b></div><div><span>Risk capital</span><b>" +
-        money(seat.risk_capital_usd) + " / " + money(seat.risk_capital_limit_usd) +
+        '<div class="tb-metrics"><div><span>Risk limit</span><b>' + money(seat.risk_capital_limit_usd) +
+        " / 1% move</b></div><div><span>Net P&amp;L</span><b class=\"" + cls(seat.net_pnl_usd) + "\">" +
+        money(seat.net_pnl_usd) + "</b></div><div><span>Risk used</span><b>" +
+        money(seat.risk_capital_usd) +
         "</b></div><div><span>Drawdown</span><b class=\"" + (seat.risk_stopped ? "tb-neg" : "") + "\">" +
         money(seat.drawdown_usd) + " / " + money(seat.max_drawdown_usd) +
         "</b></div><div><span>Risk funding</span><b class=\"tb-neg\">" +
@@ -163,7 +163,7 @@
       changeHtml + "</div></section>" +
       '<section class="tb-panel"><div class="tb-panel-head"><h3>P&amp;L leaderboard</h3><p>All seats use the same financing rule: official SOFR on standard-shock risk capital. Notional is descriptive; the hard drawdown stop is separate.</p></div><div class="tb-changes">' +
       leaderboardHtml + "</div></section>" +
-      '<section class="tb-panel"><div class="tb-panel-head"><h3>Seat books</h3><p>Each $100m paper-NAV seat has a $10m shocked-risk ceiling and a $5m high-water drawdown stop. A breached book is forcibly flattened and marked RISK_STOPPED.</p></div><div class="tb-seat-grid">' +
+      '<section class="tb-panel"><div class="tb-panel-head"><h3>Seat books</h3><p>Each trader has a $10m risk limit per 1% standard move and a $5m max drawdown. A breached book is forcibly flattened and marked RISK_STOPPED.</p></div><div class="tb-seat-grid">' +
       seatHtml + "</div></section>" +
       '<div id="tb-pm-root"></div>';
     loadPMs();
@@ -202,8 +202,9 @@
         statusClass(pm.decision_status, pm.review_status) + '">' +
         esc(statusLabel(pm.decision_status, pm.review_status)) +
         "</div></div><p class=\"tb-remit\">" + esc(pm.mandate || "") + "</p>" +
-        '<div class="tb-metrics"><div><span>Risk capital</span><b>' + money(pm.risk_capital_usd) +
-        " / " + money(pm.risk_capital_limit_usd) + "</b></div><div><span>Drawdown</span><b class=\"" +
+        '<div class="tb-metrics"><div><span>Risk limit</span><b>' + money(pm.risk_capital_limit_usd) +
+        " / 1% move</b></div><div><span>Risk used</span><b>" + money(pm.risk_capital_usd) +
+        "</b></div><div><span>Drawdown</span><b class=\"" +
         (pm.risk_stopped ? "tb-neg" : "") + "\">" + money(pm.drawdown_usd) + " / " + money(pm.max_drawdown_usd) +
         "</b></div><div><span>Paper P&amp;L</span><b class=\"" + cls(pm.total_pnl_usd) + "\">" +
         money(pm.total_pnl_usd) + "</b></div><div><span>Last action</span><b>" +
@@ -227,7 +228,7 @@
 
     mount.innerHTML =
       '<section class="tb-panel"><div class="tb-panel-head"><h3>Portfolio Managers</h3><p>' +
-      "Separate $1bn paper-NAV books for ChatGPT, Swinger, Pragmatist and Grinder. Not extra trader seats. Each has a $100m standard-shock risk-capital ceiling and a $50m high-water drawdown stop; gross notional is descriptive.</p></div>" +
+      "ChatGPT, Swinger, Pragmatist and Grinder each have a $100m risk limit per 1% standard move and a $50m max drawdown. Gross notional is descriptive.</p></div>" +
       '<div class="tb-pm-grid">' + cards + "</div></section>" +
       '<section class="tb-panel"><div class="tb-panel-head"><h3>Four-PM P&amp;L comparison</h3><p>Paper P&amp;L after deterministic packet marks. Comparison is allowed only after decisions are committed.</p></div><div class="tb-changes">' +
       comparison + "</div></section>" +
