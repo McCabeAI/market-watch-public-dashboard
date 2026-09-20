@@ -7,7 +7,6 @@ from typing import Any, Mapping
 from scripts.pm.curve_lock import expression_family
 from scripts.risk_capital import (
     RISK_CAPITAL_METHOD,
-    SHOCK_FRACTION,
     attach_position_risk,
     book_risk_capital,
     position_risk_capital,
@@ -62,7 +61,6 @@ def classify_funding_basis(
             "funding_draw_usd": 0.0,
             "risk_capital_usd": None,
             "risk_capital_method": RISK_CAPITAL_METHOD,
-            "risk_shock_fraction": SHOCK_FRACTION,
             "consumes_funded_capital": False,
             "expression_family": family,
             "reason": "deterministic mark/risk fields are insufficient to compute 1% shocked MTM",
@@ -73,7 +71,6 @@ def classify_funding_basis(
         "funding_draw_usd": capital,
         "risk_capital_usd": capital,
         "risk_capital_method": RISK_CAPITAL_METHOD,
-        "risk_shock_fraction": SHOCK_FRACTION,
         "consumes_funded_capital": capital > 0,
         "expression_family": family,
         "reason": "official SOFR is charged on absolute MTM loss from a 1% adverse risk-factor shock",
@@ -104,7 +101,7 @@ def funded_draw_for_book(book: dict[str, Any]) -> dict[str, Any]:
         "funded_draw_usd": risk_capital,  # compatibility alias: funding base is shocked risk capital.
         "risk_capital_usd": risk_capital,
         "risk_capital_method": metrics["risk_capital_method"],
-        "risk_shock_fraction": metrics["risk_shock_fraction"],
+        "risk_shock": metrics["risk_shock"],
         "risk_capital_status": metrics["risk_capital_status"],
         "risk_capital_unavailable_positions": metrics["risk_capital_unavailable_positions"],
         # Risk capital is a financing hurdle, not a cash purchase; paper NAV cash remains available.
