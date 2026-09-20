@@ -1,20 +1,22 @@
 """Trusted shocked-risk capital used for sizing and funding.
 
-Risk capital is the absolute paper MTM loss from a 1% adverse move in the
-quoted risk factor.  Rates marks are quoted in percentage points, curves/RV in
-basis points, and spot/options in relative price terms.  A one-basis-point
-minimum shock prevents a near-zero rate/spread mark from manufacturing zero
-risk capital.
+Risk capital is the absolute paper MTM loss from the agreed standard shock:
+- spot FX: 1% adverse price move;
+- outright rates: 1 percentage-point / 100bp adverse rate move;
+- curve and rates-RV: 100bp adverse spread move.
+
+That is deliberately a common risk unit. Equal shocked P&L receives equal SOFR
+funding treatment regardless of asset class. Notional itself is descriptive.
 """
 
 from __future__ import annotations
 
 from typing import Any, Mapping
 
-SHOCK_FRACTION = 0.01
-RATE_MIN_SHOCK_MARK = 0.01  # 1bp when rates are stored in percentage points.
-CURVE_MIN_SHOCK_BP = 1.0    # 1bp when curve/RV marks are stored in basis points.
-RISK_CAPITAL_METHOD = "mtm_1pct_relative_shock"
+SPOT_SHOCK_FRACTION = 0.01
+RATE_SHOCK_PERCENTAGE_POINTS = 1.0
+CURVE_SHOCK_BPS = 100.0
+RISK_CAPITAL_METHOD = "mtm_standard_1pct_move"
 
 
 def _number(value: Any) -> float | None:
@@ -30,7 +32,6 @@ def _number(value: Any) -> float | None:
 
 
 def risk_factor_mark(position: Mapping[str, Any]) -> float | None:
-    """Use the current deterministic mark, falling back to entry only if needed."""
     mark = _number(position.get("mark_price"))
     if mark is not None:
         return mark
@@ -38,7 +39,7 @@ def risk_factor_mark(position: Mapping[str, Any]) -> float | None:
 
 
 def position_risk_capital(position: Mapping[str, Any]) -> float | None:
-    """Absolute P&L from a 1% adverse move in the position's quoted risk factor."""
+    """Absolute P&L from the standard 1%/100bp adverse move."""
     notional = _number(position.get("notional_usd"))
     if notional is None:
         return None
@@ -47,21 +48,16 @@ def position_risk_capital(position: Mapping[str, Any]) -> float | None:
         return 0.0
 
     asset = str(position.get("asset_class") or "")
-    if asset in {"spot_fx", "options"}:
-        return round(notional * SHOCK_FRACTION, 2)
-
-    mark = risk_factor_mark(position)
-    if mark is None:
-        return None
-
+    if asset == "spot_fx":
+        return round(notional * SPOT_SHOCK_FRACTION, 2)
     if asset == "rates":
-        shock_mark = max(abs(mark) * SHOCK_FRACTION, RATE_MIN_SHOCK_MARK)
-        return round(notional * shock_mark / 100.0, 2)
-
+        return round(notional * RATE_SHOCK_PERCENTAGE_POINTS / 100.0, 2)
     if asset in {"curve", "rates_rv"}:
-        shock_bp = max(abs(mark) * SHOCK_FRACTION, CURVE_MIN_SHOCK_BP)
-        return round(notional * shock_bp / 10_000.0, 2)
-
+        return round(notional * CURVE_SHOCK_BPS / 10_000.0, 2)
+    if asset == "options":
+        # Options need an actual deterministic shocked MTM rather than a notional proxy.
+        explicit = _number(position.get("shock_1pct_pnl_usd"))
+        return None if explicit is None else round(abs(explicit), 2)
     return None
 
 
@@ -69,7 +65,11 @@ def attach_position_risk(position: dict[str, Any]) -> dict[str, Any]:
     capital = position_risk_capital(position)
     position["risk_capital_usd"] = capital
     position["risk_capital_method"] = RISK_CAPITAL_METHOD
-    position["risk_shock_fraction"] = SHOCK_FRACTION
+    position["risk_shock"] = {
+        "spot_fraction": SPOT_SHOCK_FRACTION,
+        "rates_percentage_points": RATE_SHOCK_PERCENTAGE_POINTS,
+        "curve_bps": CURVE_SHOCK_BPS,
+    }
     position["risk_capital_unavailable"] = capital is None
     return position
 
@@ -86,7 +86,11 @@ def book_risk_capital(book: Mapping[str, Any]) -> dict[str, Any]:
     return {
         "risk_capital_usd": round(total, 2),
         "risk_capital_method": RISK_CAPITAL_METHOD,
-        "risk_shock_fraction": SHOCK_FRACTION,
+        "risk_shock": {
+            "spot_fraction": SPOT_SHOCK_FRACTION,
+            "rates_percentage_points": RATE_SHOCK_PERCENTAGE_POINTS,
+            "curve_bps": CURVE_SHOCK_BPS,
+        },
         "risk_capital_unavailable_positions": unavailable,
         "risk_capital_status": "unavailable" if unavailable else "ok",
     }
