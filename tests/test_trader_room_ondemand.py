@@ -280,6 +280,13 @@ class SchemaAndBoundaryTests(unittest.TestCase):
             validate_contribution(contribution, packet=packet, expected_agent="rate-hawk")
 
         contribution["paper_actions"][0]["side"] = "short"
+        # The primary debate direction must describe the same canonical risk when
+        # the debate trade and paper OPEN use the same instrument.
+        contribution["paper_actions"][0]["instrument"] = contribution["trade"]["instrument"]
+        contribution["trade"]["direction"] = "long"
+        with self.assertRaises(SchemaError):
+            validate_contribution(contribution, packet=packet, expected_agent="rate-hawk")
+        contribution["trade"]["direction"] = "short"
         validate_contribution(contribution, packet=packet, expected_agent="rate-hawk")
 
         contribution["paper_actions"][0].pop("expected_mark_direction")
