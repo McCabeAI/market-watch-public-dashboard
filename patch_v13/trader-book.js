@@ -3,7 +3,23 @@
 
   const root = document.getElementById("trader-book-root");
   const meta = document.getElementById("tb-meta");
+  const traderTotalEl = document.getElementById("tb-trader-total");
+  const pmTotalEl = document.getElementById("tb-pm-total");
   if (!root || !meta) return;
+
+  let traderTotalPnl = null;
+  let pmTotalPnl = null;
+
+  function renderSystemSummary() {
+    if (traderTotalEl) {
+      traderTotalEl.textContent = money(traderTotalPnl);
+      traderTotalEl.className = cls(traderTotalPnl);
+    }
+    if (pmTotalEl) {
+      pmTotalEl.textContent = money(pmTotalPnl);
+      pmTotalEl.className = cls(pmTotalPnl);
+    }
+  }
 
   function esc(value) {
     return String(value === null || value === undefined ? "" : value)
@@ -54,11 +70,13 @@
     const hedge = pos.hedge_of
       ? '<div class="tb-position-link">Hedge of ' + esc(pos.hedge_of) + "</div>"
       : "";
-    return '<div class="tb-position-card"><div class="tb-position-head"><div><b>' +
-      esc(pos.instrument) + '</b><span>' + esc(pos.side) + " · " + esc(pos.asset_class) +
-      '</span></div><div class="tb-position-risk"><b>' + money(pos.notional_usd) +
-      '</b><span>Risk ' + money(pos.risk_capital_usd) + '</span><span class="' + cls(pos.unrealized_pnl_usd) + '">' +
-      money(pos.unrealized_pnl_usd) + "</span></div></div>" +
+    const direction = String(pos.side || "").toUpperCase();
+    return '<div class="tb-position-card"><div class="tb-position-head"><div class="tb-position-trade">' +
+      '<span class="tb-direction">' + esc(direction) + '</span><b>' + esc(pos.instrument) +
+      '</b><span class="tb-asset">' + esc(pos.asset_class) + '</span></div><div class="tb-position-risk">' +
+      '<b>' + money(pos.notional_usd) + '</b><span>Notional</span><span>Risk ' +
+      money(pos.risk_capital_usd) + '</span><span class="' + cls(pos.unrealized_pnl_usd) + '">' +
+      money(pos.unrealized_pnl_usd) + " P&amp;L</span></div></div>" +
       markLine + thesis + invalidation + hedge + "</div>";
   }
 
@@ -83,6 +101,8 @@
     const funding = seats.reduce(function (sum, seat) { return sum + (finite(seat.funding_cost_usd) ? seat.funding_cost_usd : 0); }, 0);
     const cashYield = seats.reduce(function (sum, seat) { return sum + (finite(seat.cash_yield_usd) ? seat.cash_yield_usd : 0); }, 0);
     const netPnl = seats.reduce(function (sum, seat) { return sum + (finite(seat.net_pnl_usd) ? seat.net_pnl_usd : 0); }, 0);
+    traderTotalPnl = netPnl;
+    renderSystemSummary();
     const openCount = seats.reduce(function (sum, seat) { return sum + ((seat.positions || []).length); }, 0);
     const changes = packet.overnight_changes || [];
     const research = packet.overnight_research || null;
@@ -105,6 +125,7 @@
         '</div><div class="tb-action">' + esc(seat.last_action || "HOLD") +
         (seat.risk_stopped ? (seat.risk_stop_pending ? " · STOP PENDING" : " · RISK STOPPED") : "") +
         "</div></div><p class=\"tb-remit\">" + esc(seat.remit || "") + "</p>" +
+        '<div class="tb-positions">' + posHtml + "</div>" +
         '<div class="tb-metrics"><div><span>Risk limit</span><b>' + money(seat.risk_capital_limit_usd) +
         " / 1% move</b></div><div><span>Net P&amp;L</span><b class=\"" + cls(seat.net_pnl_usd) + "\">" +
         money(seat.net_pnl_usd) + "</b></div><div><span>Risk used</span><b>" +
@@ -113,7 +134,7 @@
         money(seat.drawdown_usd) + " / " + money(seat.max_drawdown_usd) +
         "</b></div><div><span>Risk funding</span><b class=\"tb-neg\">" +
         (finite(seat.funding_cost_usd) && seat.funding_cost_usd !== 0 ? "-" + money(seat.funding_cost_usd).replace("-", "") : money(seat.funding_cost_usd)) +
-        "</b></div></div><div class=\"tb-positions\">" + posHtml + "</div>" +
+        "</b></div></div>" +
         (seat.thesis ? '<p class="tb-thesis"><b>Current book view:</b> ' + esc(seat.thesis) + "</p>" : "") +
         (seat.invalidation ? '<p class="tb-thesis"><b>Book invalidation:</b> ' + esc(seat.invalidation) + "</p>" : "") +
         pitch + "</article>";
@@ -150,7 +171,7 @@
 
     root.innerHTML = stale +
       researchHtml +
-      '<section class="tb-panel"><div class="tb-panel-head"><h3>Book snapshot</h3><p>' +
+      '<section class="tb-panel"><div class="tb-panel-head"><h3>Trader snapshot</h3><p>' +
       esc(packet.as_of || "") + " · evidence cutoff " + esc(packet.evidence_cutoff || "n/a") +
       '</p></div><div class="tb-kpis"><div class="tb-kpi"><span>Seats</span><b>' +
       esc(packet.seat_count || seats.length) + '</b></div><div class="tb-kpi"><span>Combined NAV</span><b>' +
@@ -194,6 +215,10 @@
     const mount = document.getElementById("tb-pm-root");
     if (!mount) return;
     const pms = packet.pms || [];
+    pmTotalPnl = pms.reduce(function (sum, pm) {
+      return sum + (finite(pm.total_pnl_usd) ? pm.total_pnl_usd : 0);
+    }, 0);
+    renderSystemSummary();
     const cards = pms.map(function (pm) {
       const positions = pm.positions || [];
       const posHtml = positions.length ? positions.map(renderPosition).join("") : '<div class="tb-empty">No open risk</div>';
@@ -202,6 +227,7 @@
         statusClass(pm.decision_status, pm.review_status) + '">' +
         esc(statusLabel(pm.decision_status, pm.review_status)) +
         "</div></div><p class=\"tb-remit\">" + esc(pm.mandate || "") + "</p>" +
+        '<div class="tb-positions">' + posHtml + "</div>" +
         '<div class="tb-metrics"><div><span>Risk limit</span><b>' + money(pm.risk_capital_limit_usd) +
         " / 1% move</b></div><div><span>Risk used</span><b>" + money(pm.risk_capital_usd) +
         "</b></div><div><span>Drawdown</span><b class=\"" +
@@ -245,6 +271,8 @@
       })
       .then(renderPMs)
       .catch(function () {
+        pmTotalPnl = null;
+        renderSystemSummary();
         const mount = document.getElementById("tb-pm-root");
         if (!mount) return;
         mount.innerHTML = '<section class="tb-panel"><div class="tb-panel-head"><h3>Portfolio Managers</h3><p>PM public state is not on this build yet.</p></div></section>';
