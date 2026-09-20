@@ -452,6 +452,10 @@ def mark_to_market(
     seat_book["cash_yield_usd"] = cash_yield
     _attach_observed_rate(seat_book)
     seat_book["net_pnl_usd"] = None if missing else round(gross - funding + cash_yield, 2)
+    seat_book["cash_usd"] = round(
+        float(seat_book["starting_nav_usd"]) + float(seat_book.get("realized_pnl_usd") or 0.0) - funding + cash_yield,
+        2,
+    )
     seat_book["nav_usd"] = round(float(seat_book["starting_nav_usd"]) + gross - funding + cash_yield, 2)
     _attach_allocation_fields(seat_book)
 
@@ -777,6 +781,8 @@ def apply_review(
         from scripts.overnight.paper_marks import hydrate_review_mids, refresh_book_marks
 
         refresh_book_marks(out, market_state)
+        for seat_book in out["seats"].values():
+            mark_to_market(seat_book, when=when, run_id=run_id)
         prepared_reviews = hydrate_review_mids(out, prepared_reviews, market_state)
     out["overnight_run_id"] = run_id
     out["evidence_cutoff"] = evidence_cutoff
