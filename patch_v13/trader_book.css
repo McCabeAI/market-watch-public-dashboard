@@ -30,8 +30,21 @@
 .traderbook .tb-metrics span{display:block;font-size:8px;color:#7d8e9a;text-transform:uppercase}
 .traderbook .tb-metrics b{display:block;margin-top:2px;font-size:11px;color:#29485e;font-variant-numeric:tabular-nums}
 .traderbook .tb-pos{color:var(--tb-green)!important}.traderbook .tb-neg{color:var(--tb-red)!important}
-.traderbook .tb-positions{display:grid;gap:5px}
-.traderbook .tb-position{display:grid;grid-template-columns:72px 1fr 70px 70px;gap:6px;align-items:center;font-size:9px;padding:5px 0;border-top:1px solid #edf1f3}
+.traderbook .tb-positions{display:grid;gap:7px}
+.traderbook .tb-position-card{border-top:1px solid #edf1f3;padding:8px 0 2px}
+.traderbook .tb-position-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.traderbook .tb-position-head>div:first-child{display:grid;gap:2px}
+.traderbook .tb-position-head b{font-size:10px;color:#203e53}
+.traderbook .tb-position-head span{font-size:8px;color:#718493}
+.traderbook .tb-position-risk{display:grid;gap:2px;text-align:right;white-space:nowrap}
+.traderbook .tb-position-risk b{font-size:10px;color:#29485e}
+.traderbook .tb-position-risk span{font-size:9px;font-weight:800}
+.traderbook .tb-position-marks{display:flex;gap:12px;margin-top:5px;font-size:8px;color:#718493}
+.traderbook .tb-position-marks b{color:#405868;font-variant-numeric:tabular-nums}
+.traderbook .tb-position-reason,.traderbook .tb-position-invalidation{margin-top:5px;font-size:9px;line-height:1.4;color:#405868}
+.traderbook .tb-position-invalidation{color:#765347}
+.traderbook .tb-position-link{margin-top:4px;font-size:8px;color:#6b7f8d}
+.traderbook .tb-muted{color:#8a9aa8}
 .traderbook .tb-empty{font-size:10px;color:#8a9aa8;font-style:italic}
 .traderbook .tb-thesis{margin:8px 0 0;font-size:10px;color:#405868;line-height:1.4}
 .traderbook .tb-changes{display:grid;gap:0}
@@ -48,6 +61,6 @@
 .traderbook .tb-req-row{display:grid;grid-template-columns:72px 1fr 70px;gap:8px;align-items:start;padding:6px 0;border-bottom:1px solid #edf1f3;font-size:10px}
 .traderbook .tb-req-row:last-child{border-bottom:0}
 @media(max-width:980px){.traderbook .tb-kpis,.traderbook .tb-seat-grid,.traderbook .tb-pm-grid{grid-template-columns:1fr 1fr}.traderbook .tb-header{flex-direction:column;align-items:flex-start}}
-@media(max-width:640px){.traderbook .tb-kpis,.traderbook .tb-seat-grid,.traderbook .tb-pm-grid{grid-template-columns:1fr}.traderbook .tb-position,.traderbook .tb-change{grid-template-columns:1fr 1fr}.traderbook .tb-header h2{font-size:23px}}
+@media(max-width:640px){.traderbook .tb-kpis,.traderbook .tb-seat-grid,.traderbook .tb-pm-grid{grid-template-columns:1fr}.traderbook .tb-change{grid-template-columns:1fr 1fr}.traderbook .tb-header h2{font-size:23px}}
 #p-traderbook:checked~.app .nav label[for=p-traderbook]{color:var(--ink);border-bottom-color:var(--navy);font-weight:800}
 #p-traderbook:checked~.app .traderbook{display:block}
