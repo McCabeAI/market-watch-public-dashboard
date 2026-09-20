@@ -183,9 +183,9 @@ def competition_contract(funding_context: dict[str, Any] | None = None) -> dict[
         "flat_book_pnl": "A flat seat earns the common official-SOFR cash hurdle and has zero risk-capital financing charge.",
         "risk_limits": {
             "paper_nav_usd": 100_000_000,
-            "risk_capital_limit_usd": 1_000_000,
+            "risk_capital_limit_usd": 10_000_000,
             "max_drawdown_usd": 5_000_000,
-            "risk_capital_method": "mtm_1pct_relative_shock",
+            "risk_capital_method": "mtm_standard_1pct_move",
         },
         "no_trade_allowed": True,
         "instruction": (
