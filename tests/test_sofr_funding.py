@@ -336,6 +336,7 @@ class FundingContextAndViewTests(unittest.TestCase):
                 "implication": "Hold cash earning official SOFR.",
             },
             "packet_sha256": packet["packet_sha256"],
+            "paper_actions": [{"action": "HOLD"}],
         }
         validate_contribution(contribution, packet=packet, expected_agent="no-trade-skeptic")
         missing = deepcopy(contribution)
