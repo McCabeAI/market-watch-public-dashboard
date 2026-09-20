@@ -110,6 +110,39 @@ class PMBookTests(unittest.TestCase):
         self.assertEqual(after_both["pms"]["chatgpt"]["positions"], [])
         self.assertEqual(after_both["pms"]["grinder"]["positions"], [])
 
+    def test_rates_expected_mark_direction_rejects_wrong_side(self) -> None:
+        bad = _open(
+            instrument="SOFR_2027-03",
+            asset_class="rates",
+            notional=50_000_000,
+            expected_mark_direction="higher",
+        )
+        with self.assertRaises(SchemaError):
+            apply_decision(
+                empty_books(),
+                {"pm_id": "pragmatist", "actions": [bad]},
+                pm_id="pragmatist",
+                market_state=MARKET,
+                run_id="r1",
+                evidence_cutoff="c",
+                review_packet_id="p",
+                review_packet_sha256="h",
+            )
+
+        good = deepcopy(bad)
+        good["side"] = "short"
+        books = apply_decision(
+            empty_books(),
+            {"pm_id": "pragmatist", "actions": [good]},
+            pm_id="pragmatist",
+            market_state=MARKET,
+            run_id="r1",
+            evidence_cutoff="c",
+            review_packet_id="p",
+            review_packet_sha256="h",
+        )
+        self.assertEqual(books["pms"]["pragmatist"]["positions"][0]["side"], "short")
+
     def test_swinger_hedge_fails(self) -> None:
         books = apply_decision(
             empty_books(),

@@ -547,6 +547,17 @@ def prepare_actions(
     actions = _normalize_actions(decision)
     for action in actions:
         kind = action.get("action")
+        if kind == "OPEN" and action.get("asset_class") in {"rates", "curve", "rates_rv"}:
+            expected = action.get("expected_mark_direction")
+            if expected is not None:
+                if expected not in {"lower", "higher"}:
+                    raise SchemaError("rates OPEN expected_mark_direction must be lower|higher")
+                required_side = "long" if expected == "lower" else "short"
+                if action.get("side") != required_side:
+                    raise SchemaError(
+                        f"rates OPEN side mismatch: expected_mark_direction={expected} "
+                        f"requires side={required_side} under the trusted P&L convention"
+                    )
         if kind in {"ADD", "REDUCE", "CLOSE", "HEDGE"} and action.get("paper_expression"):
             target_id = str(action.get("position_id") or action.get("hedge_of") or "")
             pos = find_position(list(book.get("positions") or []), target_id, owner=book["pm_id"])

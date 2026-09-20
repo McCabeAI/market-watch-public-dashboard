@@ -1,0 +1,157 @@
+{
+  "type": "TRADER_ROOM_CONTRIBUTION",
+  "run_id": "tr-20260920T020818Z-ondemand",
+  "round": 1,
+  "agent": "rate-dove",
+  "archetype": "rate-dove",
+  "packet_sha256": "349a16aeeda7f4a89e10ba16c22c90311da76536984e943cf04249588d954e1e",
+  "remit": "underpriced easing, lower-rate repricing, or growth weakness",
+  "confidence": 59,
+  "stance_summary": "FACT: CORRA is 2.29 while the tradable 3m CRA 2027H-Z strip implies 3.13/3.365/3.51/3.595, about +84 to +130.5bp from overnight, even as 1m CORRA only reaches 2.58 by Dec-2026. CA labor is 38 with August employment -42k and wages +2.0% y/y, while CPI-trim/median are 1.9%/2.0% and headline is 3.0%. INFERENCE: the 2027 hiking cycle is the energy-pass-through assumption, not the labor/core state, and is the cleanest underpriced-easing discrepancy in the packet. UNKNOWN: whether WTI at 107.02 and BoC minutes force that path anyway. Sidecar is flat. Book OPEN is long-duration the locked CORRA 2027-03/06/09/12 strip, $85m of the $100m cap.",
+  "trade": {
+    "instrument": "CORRA_2027H-Z",
+    "asset_class": "rates",
+    "expression_comparison": {
+      "rates_candidate": "Long duration / receive MX CRA 2027-03, 2027-06, 2027-09, 2027-12 strip (CRAH27 3.13, CRAM27 3.365, CRAU27 3.51, CRAZ27 3.595 vs CORRA 2.29). Paper mark is futures_strip_average on tradable_rate_curves.CORRA.",
+      "spot_candidate": "Long USDCAD (CAD lower) at packet mid 1.4010471204188482 as of 2026-09-18, expressing fewer BoC hikes and softer Canadian demand.",
+      "selected": "rates",
+      "rationale": "The mispricing is the 2027 CORRA implied path, not the FX residual. Spot CAD is contaminated by WTI 107.02 (96.4th percentile, +24.23% 1m), a weak USDCAD vs CA-US 2Y link (r-squared 0.022), and CFTC leveraged-fund CAD shorts covering. CA official curve is unavailable so a bond fwd-fwd is blocked. Rates owns the policy-path gap directly."
+    },
+    "context_build": {
+      "causal_mechanism": "Restrictive and/or previously eased-but-still-above-neutral Canadian policy is already showing up in the labor channel (employment -42k, wage growth cooling to +2.0% y/y, unemployment 6.4%). Core/trim/median near 2% means the BoC does not need a 2027 hiking cycle unless energy pass-through lifts underlying inflation. If that pass-through fails to enter core, the 2027 CRA strip must reprice lower, not higher.",
+      "path_to_current_price": "FACT: overnight CORRA 2.29 as of 2026-09-17. 1m MX contracts: Sep 2.2875, Oct 2.305 (+1.5bp), Nov 2.43 (+14bp), Dec 2.58 (+29bp). 3m CRA then jumps: Sep-26 2.385, Dec-26 2.775 (+48.5bp), Mar-27 3.13 (+84bp), Jun-27 3.365 (+107.5bp), Sep-27 3.51 (+122bp), Dec-27 3.595 (+130.5bp), peaking near 3.655 in 2028. CA 2Y is 3.27 as of 2026-09-17, +31bp 1m, 97.8th percentile 1y, after a -8bp 1d dip. CA 2s10s is 56bp, 0.6th percentile 1y, -18bp 1m, i.e. the front has sold off relative to 10s. This path was built during the post-FOMC global-tightening tape: Fed hike to 3.75-4.00% on Sep 16, SOFR jump to 3.85 on Sep 17, August US CPI keeping a Fed tightening bias, BoC minutes on energy pass-through, WTI +24% 1m, and the desk thesis that the energy shock is constraining easing.",
+      "known_vs_new_information": "KNOWN: BoC has already taken CORRA to 2.29, well below SOFR 3.85; energy prices are elevated; Fed just hiked and SR3 still prices more (SR3Z6 4.32, SR3H7 4.58, SR3U7 4.755). NEW enough to explain the 2027 CORRA hike premium: August Canadian employment -42k and wages +2.0% vs +2.8%; August CPI-trim 1.9% and CPI-median 2.0% with headline stuck at 3.0%; Saudi ship-to-ship crude via Oman reducing the extreme oil-supply tail; CA 2Y +31bp over 1m as the global hike narrative was imported into a soft labor market. The 1m strip still only prices +29bp by Dec-2026, so the new information has been loaded into 2027, not the near-term meeting path.",
+      "market_implied_assumption": "The tradable 3m CORRA curve requires a delayed but large BoC hiking cycle: roughly +84bp by Mar-2027 and +107 to +130bp through 2027, taking implied CORRA from 2.29 to the mid-3s, on the view that energy pass-through (BoC minutes) and global tightening (Fed/BoJ/BoE split) dominate soft labor and at-target core.",
+      "market_assumption_disagreed_with": "Disagree that Canada needs ~100bp+ of 2027 hikes. Labor is already contracting and wages are cooling while trim/median sit on 2%. Energy can keep headline at 3% without forcing a reverse of the entire easing cycle. The 1m path through Dec-2026 (+29bp) is closer to a hold-with-option than the 3m 2027 strip.",
+      "price_decomposition": "Level: CORRA 2.29 vs 2027 3m implied 3.13-3.595. Change: CA 2Y +31bp 1m / +45bp 3m / -8bp 1d; 2s10s -18bp 1m as 2s led the selloff. Near-term 1m vs 2027 3m is the tenor split: front prices little hiking, 2027 prices a full cycle. Cross-market: CA-US 2Y is -140bp (3.6th percentile), already pricing Canada cheap vs the US in bonds, while Sep-2027 CRA-SR3 is 3.51 vs 4.755 (-124.5bp vs overnight -156bp), i.e. the strip still prices relative Canadian tightening. Marginal driver of the 2027 window is imported energy/Fed-hike beta, not domestic core or labor.",
+      "historical_reference": {
+        "distribution": "CA 2Y 3.27 is 97.8th percentile 1y and only 58.5th percentile 5y (z-1y 2.46, z-5y 0.15): rich on a 1y lookback after the +31bp 1m squeeze, not a 5y extreme. CA 2s10s 56bp is 0.6th percentile 1y (z-1y -2.00) after -18bp 1m. CA-US 2Y -140bp is 3.6th percentile (z -1.86). These are discovery screens, not the thesis.",
+        "analogs": [
+          "CA 2Y +31bp 1m analogs: 2022-06-30 (level 3.10) next 1m 0bp / 3m +66bp; 2023-04-14 (3.81) next 1m -1bp / 3m +83bp; 2026-04-01 (2.82) next 1m +12bp / 3m -6bp; 2021-10-14 (0.72) next 1m +28bp / 3m +50bp. CA 10Y +13bp 1m analog 2023-10-23 (4.01) next 1m -36bp / 3m -52bp is the closest easing-repricing episode after an inflation/energy scare. AU housing analog is parallel restriction-biting evidence (NSW stamp duty -24% y/y, transactions -18%, Sydney/Melbourne values >7% off peak) with AONIA still pricing +51bp to Mar-2027 4.86, but AU inflation gauge 82 makes that the worse primary."
+        ],
+        "regime_differences": "2022-06 and 2023-04 hiking follow-through occurred with high inflation and tighter labor; today CA CPI-trim/median are 1.9%/2.0%, unemployment is 6.4%, employment fell 42k, and wages cooled. 2023-10 yield rally followed a US/global disinflation scare, not a Canadian energy-pass-through debate with WTI at 107. Q2 Canadian GDP +0.8% q/q is a stronger activity backdrop than a classic recession analog. 1m CORRA only extends to Dec-2026 so the policy_paths CA terminal print of 2.58 is a 1m-contract artifact, not the tradable 3m peak."
+      },
+      "independent_checks": [
+        "Policy path vs tradable curve: 1m CORRA +29bp by Dec-2026 versus 3m CRA +84 to +130.5bp through 2027 (policy_paths.CA and tradable_rate_curves.CORRA).",
+        "Hard labor/inflation vs gauges: employment -42k, wages +2.0% y/y, unemployment 6.4%, CPI-trim 1.9%, CPI-median 2.0%, headline 3.0%; labor score 38, inflation 55, activity 66, consumer 45.",
+        "Sovereign confirmation: CA 2Y 3.27 is 98bp over CORRA 2.29 after +31bp 1m; CA-US 2Y already -140bp so the remaining fat is the 2027 CRA hike cycle, not a cheap CA-US 2Y RV.",
+        "Cross-country policy comparison: US labor 75 / inflation 72 with SOFR 3.85 and SR3U7 4.755 (+90.5bp) versus CA labor 38 pricing more additional hikes (+122bp to CRAU27 3.51). AU housing shows the tightening channel biting but AONIA only prices +51bp with inflation 82, so CA is the larger path-vs-data gap."
+      ],
+      "flow_and_positioning_check": "CME_positioning is unavailable. CORRA futures open interest/volume in the packet are null, so a STIR squeeze cannot be verified. CFTC TFF CAD as of 2026-09-15: leveraged funds net short CAD (-39022, -10.9% of OI) but weekly_change_net +16426 and net at the 99th 1y percentile, i.e. covering; dealers net long CAD (+48614). That FX covering would support CAD, opposite the spot alternative, and does not explain 2027 CRA hike pricing. Paper books are empty seed accounts. Flow is not the 2027 CORRA bid.",
+      "policy_path_check": {
+        "status": "available",
+        "relevant_countries": [
+          "CA",
+          "US",
+          "AU"
+        ],
+        "pricing_summary": "CA: CORRA 2.29; 1m Dec-2026 2.58 (+29bp); 3m Mar-2027 3.13 (+84bp), Jun-2027 3.365 (+107.5bp), Sep-2027 3.51 (+122bp), Dec-2027 3.595 (+130.5bp). US: SOFR 3.85 after the Sep-16 hike; SR3Z6 4.32, SR3H7 4.58, SR3U7 4.755. AU: AONIA 4.35; Oct 4.565 (+21.5bp), Mar-2027 terminal 4.86 (+51bp), mid-2027 peak 4.945 (+59.5bp). NZ policy path unavailable.",
+        "rationale": "Short-end Canadian trade must use the live CORRA path, not the CA 2Y percentile. The 1m CA terminal of 2.58 is not the tradable 3m peak; paper expression is locked to MX CRA 2027H-Z. US and AU paths are independent checks that CA is pricing more additional hikes than the US despite much weaker labor, and more hiking than Australia's housing-constrained path despite cooler Canadian core."
+      }
+    },
+    "structure": "Locked MX CRA strip average, curve_id CORRA, expiries 2027-03/2027-06/2027-09/2027-12 (CRAH27/CRAM27/CRAU27/CRAZ27). Mark in implied-rate space from tradable_rate_curves; long side is long duration under paper P&L (profits if implied rates fall).",
+    "direction": "long",
+    "thesis": "FACT: overnight CORRA is 2.29 and the 2027 3m strip implies 3.13-3.595 while 1m CORRA is only 2.58 by December; August employment was -42k, wages +2.0% y/y, CPI-trim/median 1.9%/2.0%. INFERENCE: 2027 CRA is pricing an energy-pass-through hiking cycle that domestic labor and core do not require, so receiving that window is the underpriced-easing trade. UNKNOWN: whether WTI 107.02, weaker energy shock-absorbers, and Q2 GDP +0.8% still force BoC to validate the strip. Expression is rates-first; spot USDCAD long is the alternative and is inferior because oil and CAD-short covering can hold CAD up even if CRA 2027 reprices lower.",
+    "mispricing": "Market prices ~+84 to +130.5bp of CORRA hikes into 2027 versus a 2.29 benchmark, a 38 labor score, contracting employment, and core/trim/median at 2%. The 1m path (+29bp by Dec) does not agree with that 2027 cycle. CA-US 2Y is already -140bp so bond RV is not the residual; the residual is the CRA 2027 hike premium.",
+    "why_now": [
+      "Fed hike to 3.75-4.00% and SOFR 3.85 imported a global tightening beta into CA 2Y (+31bp 1m) and 2027 CRA just as Canadian August labor deteriorated.",
+      "BoC minutes flag energy pass-through while Saudi STS workaround and still-at-target trim/median argue that pass-through need not become a hike cycle.",
+      "1m CORRA still only +29bp by Dec, so the overpricing is concentrated in the liquid 2027 CRA window the paper book can lock.",
+      "Empty sidecar: this is a fresh OPEN, not a duplicate add. Official SOFR vig is 3.85% ACT/360 on the full $100m, so a documented path discrepancy should be funded."
+    ],
+    "evidence_refs": [
+      "market_state",
+      "policy_paths",
+      "tradable_rate_curves",
+      "policy:CA",
+      "policy:US",
+      "policy:AU",
+      "rates:CA",
+      "rates:US",
+      "temp:CA:labor",
+      "temp:CA:inflation",
+      "temp:CA:activity",
+      "temp:CA:consumer",
+      "temp:US:labor",
+      "temp:US:inflation",
+      "rollup:Canada August inflation holds at 3%, core stays near 2%",
+      "rollup:BoC minutes flag higher energy pass-through risk",
+      "mw_20260916_saudi_oman_workaround",
+      "rollup:Energy-market shock absorbers weaken",
+      "rollup:Fed raises 25bp to 3.75–4.00%",
+      "last24:desk-thesis",
+      "mw_20260916_au_housing_tightening",
+      "pos:cftc",
+      "fx:USDCAD",
+      "funding_context",
+      "research_method"
+    ],
+    "horizon": "6-10 weeks through Canadian labor and CPI prints and BoC communication; tactical window is the 2027 CRA hike premium, not a multi-year bond rally.",
+    "entry": "Packet implied-rate mids on tradable_rate_curves.CORRA: CRAH27 3.13, CRAM27 3.365, CRAU27 3.51, CRAZ27 3.595 versus CORRA overnight 2.29 (2026-09-17). Trusted code marks the locked strip average; not a broker quote.",
+    "target": "Repricing of the 2027 window toward the still-alive near-term path: CRAZ26 2.775 and 1m Dec-2026 2.58 (policy_paths.CA / tradable_rate_curves.CORRA), i.e. fade the 2027 hike cycle rather than a return all the way to 2.29.",
+    "stop": null,
+    "invalidation": "BoC hikes or explicitly endorses a 2027 path consistent with the CRA strip (mid-3s), or CPI-trim/median leave the 1.9/2.0 area higher while employment stops contracting and wages re-accelerate. A further WTI-driven headline-only spike without core/labor confirmation is not by itself invalidation.",
+    "catalysts": [
+      "Next Canadian employment and wage prints continuing the August contraction/cooling.",
+      "Canadian CPI trim/median staying near 2% despite headline 3% and energy.",
+      "BoC communications that treat energy as a relative-price shock rather than a 2027 hiking cycle.",
+      "Oil-supply tail remaining capped by the Saudi Oman STS workaround."
+    ],
+    "principal_risks": [
+      "Energy pass-through from WTI 107.02 and weaker shock-absorbers validates BoC minutes and the 2027 CRA strip.",
+      "Q2 GDP +0.8% q/q and activity score 66 mean demand is not collapsing; Ivey PMI was stronger.",
+      "Global tightening beta (Fed, BoJ 1.25%, BoE 6-3 hike dissent) keeps term rates bid even if Canadian labor is soft.",
+      "CA official curve unavailable and CORRA OI null: no independent swap or positioning cross-check. Temperature gauges are dashboard_v8 retained with hard-input overlay. Market-state is stale on NZ_rates."
+    ],
+    "confidence": 59
+  },
+  "conflict_synopsis": {
+    "seat": "rate-dove",
+    "primary_trade": "long CORRA_2027H-Z",
+    "core_view": "2027 CORRA prices a 100bp-plus hiking cycle that Canadian labor (employment -42k, labor 38) and core/trim near 2% do not require.",
+    "usd_view": "higher",
+    "cad_view": "lower",
+    "aud_view": "lower",
+    "nzd_view": "lower",
+    "us_rates_view": "lower",
+    "ca_rates_view": "lower",
+    "au_rates_view": "lower",
+    "nz_rates_view": "not_relevant",
+    "risk_view": "risk_off",
+    "carry_view": "opposes_trade",
+    "time_horizon": "6-10 weeks",
+    "key_catalyst": "Canadian labor/CPI staying soft and BoC refusing to validate the 2027 CRA hiking path.",
+    "key_invalidation": "BoC delivers or signals the priced 2027 mid-3s path, or trim/median leave ~2% while jobs stop contracting.",
+    "confidence": 59,
+    "conflict_tags": [
+      "CA_RATES_DOWN",
+      "CAD_DOWN",
+      "USD_UP",
+      "AUD_DOWN",
+      "AU_RATES_DOWN",
+      "NZD_DOWN",
+      "US_RATES_DOWN"
+    ]
+  },
+  "paper_actions": [
+    {
+      "action": "OPEN",
+      "instrument": "CORRA_2027H-Z",
+      "side": "long",
+      "notional_usd": 85000000,
+      "asset_class": "rates",
+      "paper_expression": {
+        "type": "futures_strip_average",
+        "curve_id": "CORRA",
+        "expiries": [
+          "2027-03",
+          "2027-06",
+          "2027-09",
+          "2027-12"
+        ]
+      },
+      "rationale": "Sidecar open_positions is empty, so OPEN rather than ADD. Long duration on the locked 2027 CRA strip expresses underpriced Canadian easing versus a 2.29 CORRA benchmark and 38 labor score. $85m of the $100m gross cap leaves $15m unused against energy-pass-through risk while still paying the 3.85% SOFR vig on the full allocation.",
+      "thesis": "Receive 2027 CORRA; the 3m strip's +84 to +130.5bp hike cycle is the energy-pass-through assumption, not the labor/core state."
+    }
+  ]
+}

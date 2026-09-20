@@ -1,5 +1,50 @@
 {
-  "events": [],
+  "events": [
+    {
+      "actions": [
+        {
+          "action": "NO_TRADE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Keep the empty book in unused cash earning official NY Fed SOFR 3.85% ACT/360. Packet discrepancies are post-event, two-sided, and conflicted across markable SOFR/CORRA/AONIA expressions; none clear a preservation hurdle on this on-demand fallback freeze.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-19T22:52:44.463149-04:00",
+      "conviction": 68,
+      "decision_fingerprint": "7a7811e7723ef3f791d468f6949f82e191bf332b9a14045090a315c719a14e18",
+      "event_id": "jde-7616297de57e4d2d",
+      "funding_view": null,
+      "invalidation": "A subsequent packet with a successful overnight review, complete NZ/CA-curve/positioning marks, and a single un-conflicted rates discrepancy versus cash and the near-term path would lift the no-trade. Binary next-meeting AONIA odds or FX extremes without a cleaner rates expression would not.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "6e680d1701c4ff8f93e5f97dfcc1569475ab94ca917bf27857b9dcbb7ff94dcc",
+      "outcome_links": [],
+      "owner_id": "grinder",
+      "owner_type": "pm",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-20T02:08:18Z",
+        "evidence_hash": "4cbb8c8659bde1743f6235b7e8aaaf93e015a3b414492bdd5557f89e27f2bf9f",
+        "overnight_run_id": null,
+        "review_packet_id": "prp-grinder-tr-20260920T020818Z-ondemand",
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260920T020818Z-ondemand"
+      },
+      "rationale": "Prior Grinder book is empty. Packet source is on_demand_trader_room_fallback. Seats conflict on CORRA_2027-03 and SOFR_2027-03; AONIA Oct is event risk; options fail closed. Explicit NO_TRADE versus 3.85% unused-cash SOFR.",
+      "run_id": "tr-20260920T020818Z-ondemand",
+      "schema_version": 1,
+      "thesis": "Preservation first on an empty book: do not convert unused cash at official SOFR 3.85% ACT/360 into duration or FX risk while the freeze is a labeled on-demand Trader Room fallback, market-state is stale, and the 14 seats remain unarbitrated with opposite directions in the two cleanest contracts (CORRA_2027-03 and SOFR_2027-03)."
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_DECISION_JOURNAL"
 }

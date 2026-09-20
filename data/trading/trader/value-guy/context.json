@@ -1,6 +1,6 @@
 {
   "active_lessons": [],
-  "as_of": "2026-09-19T15:18:49.882968-04:00",
+  "as_of": "2026-09-19T22:36:50.082404-04:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -29,12 +29,25 @@
     "total_realized_pnl_usd": 0.0,
     "wins": 0
   },
-  "memory_context_sha256": "a05508bb0f45e076e98bde9f02d11b01a73deed72e918e60202bdc7532fa80c9",
-  "open_positions": [],
+  "memory_context_sha256": "0c4db0730ced1a1b05199d39894ae18dd244b440782270715627284b3c70789f",
+  "open_positions": [
+    {
+      "asset_class": "rates_rv",
+      "conviction": 58,
+      "current_notional_usd": 70000000.0,
+      "entry_mark": 140.25,
+      "instrument": "SOFR-CORRA_2Y_2027H1",
+      "opened_at": "2026-09-19T22:36:50.082404-04:00",
+      "position_id": "pos-cdde326460b4",
+      "side": "long",
+      "trade_id": "trd-trader-value-guy-pos-cdde326460b4"
+    }
+  ],
   "owner_id": "value-guy",
   "owner_type": "trader",
   "postmortems_due": [],
   "recent_closed_trades": [],
+  "recent_funding_views": [],
   "schema_version": 1,
   "type": "IDENTITY_MEMORY_CONTEXT"
 }

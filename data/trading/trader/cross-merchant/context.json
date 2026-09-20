@@ -1,6 +1,6 @@
 {
   "active_lessons": [],
-  "as_of": "2026-09-19T15:18:49.882968-04:00",
+  "as_of": "2026-09-19T22:36:50.082404-04:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -29,12 +29,25 @@
     "total_realized_pnl_usd": 0.0,
     "wins": 0
   },
-  "memory_context_sha256": "e862fa16424a4d83feca5acbf8a6412903f618e25e5fee146d611efaf074d96a",
-  "open_positions": [],
+  "memory_context_sha256": "cb8955982bd32877d3675043400ecf19772c274de4e0119f214948c102e96c1e",
+  "open_positions": [
+    {
+      "asset_class": "spot_fx",
+      "conviction": 60,
+      "current_notional_usd": 50000000.0,
+      "entry_mark": 1.0,
+      "instrument": "AUDCAD",
+      "opened_at": "2026-09-19T22:36:50.082404-04:00",
+      "position_id": "pos-00661cabb94a",
+      "side": "short",
+      "trade_id": "trd-trader-cross-merchant-pos-00661cabb94a"
+    }
+  ],
   "owner_id": "cross-merchant",
   "owner_type": "trader",
   "postmortems_due": [],
   "recent_closed_trades": [],
+  "recent_funding_views": [],
   "schema_version": 1,
   "type": "IDENTITY_MEMORY_CONTEXT"
 }

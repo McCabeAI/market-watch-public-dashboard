@@ -1,0 +1,62 @@
+{
+  "decision": {
+    "actions": [
+      {
+        "action": "OPEN",
+        "asset_class": "rates",
+        "conviction": 68,
+        "instrument": "CORRA_2027H-Z",
+        "invalidation": "Reduce or close if Canadian core inflation moves decisively above the current near-2% zone while employment and wage growth reaccelerate, or if BoC communication/delivered hikes validate a 2027 path in the mid-3% area. A headline-energy spike without confirmation in core inflation and labor is not sufficient invalidation.",
+        "note": "Use trusted deterministic packet mids for the equal-weight 2027-03/06/09/12 CORRA strip. $500m gross leaves $500m capacity for future adds or independent risk; do not migrate this position to sovereign bonds or another curve family.",
+        "notional_usd": 500000000,
+        "paper_expression": {
+          "curve_id": "CORRA",
+          "expiries": [
+            "2027-03",
+            "2027-06",
+            "2027-09",
+            "2027-12"
+          ],
+          "type": "futures_strip_average"
+        },
+        "side": "long",
+        "thesis": "Receive the 2027 CORRA H/M/U/Z strip. The market prices roughly 84 to 130.5 bp of BoC tightening from a 2.29% overnight rate even though Canadian labor is weak and core inflation is near 2%; the 2027 hike cycle is too aggressive relative to the domestic reaction function."
+      }
+    ],
+    "alerts": [
+      "The frozen market-state packet is stale only because NZ_rates; that gap does not drive this Canada position.",
+      "Canada official curve is unavailable, so the position stays locked to the tradable CORRA/CRA futures family."
+    ],
+    "conviction": 68,
+    "evidence_cutoff": "2026-09-20T02:08:18Z",
+    "future_data_requests": [],
+    "invalidation": "The thesis fails if the BoC actually validates the priced hiking cycle through stronger core inflation, labor/wage reacceleration, or delivered/explicitly signaled tightening consistent with mid-3% 2027 CORRA.",
+    "memory_context_sha256": "b084ea54ea29e0918d176c23e4af3bef467d21eb557c3b4567d8f3cbb3810998",
+    "memory_updates": [],
+    "pm_id": "chatgpt",
+    "postmortems": [],
+    "rationale": "I prefer direct CORRA duration to CAD FX or a broader G10 basket. The rates expression isolates the disputed BoC reaction function and has deterministic marks. The main opposing case is energy pass-through and a global tightening regime, so I am using half the $1bn gross limit rather than full deployment.",
+    "review_packet_id": "prp-chatgpt-tr-20260920T020818Z-ondemand",
+    "review_packet_sha256": "54fbbd5924b758a7b5abf139aa6e400b5a7ad608459b173ca7fca9f0d1fa56d1",
+    "schema_version": 1,
+    "synthesis": "Open one material but not max-size Canada rates position: receive the equal-weight 2027 CORRA H/M/U/Z strip at trusted packet mids. Keep the remaining gross capacity unused until either the domestic slowdown evidence strengthens enough to add or the energy/BoC hawkish case becomes dominant.",
+    "thesis": "The cleanest mispricing in the frozen packet is the Canadian policy path: 2027 CORRA embeds a substantial hiking cycle that is difficult to reconcile with weak labor and near-target core inflation.",
+    "type": "PM_DECISION"
+  },
+  "receipt": {
+    "already_applied": false,
+    "as_of": "2026-09-19T23:10:54.216615-04:00",
+    "decision_fingerprint": "54c63ffee96c7598d81c1c8c439b88ec8f1596d72e4171eeccff6831a25b4ef3",
+    "decision_status": "active",
+    "evidence_cutoff": "2026-09-20T02:08:18Z",
+    "gross_utilization_usd": 500000000.0,
+    "overnight_run_id": null,
+    "pm_id": "chatgpt",
+    "review_packet_id": "prp-chatgpt-tr-20260920T020818Z-ondemand",
+    "review_packet_sha256": "54fbbd5924b758a7b5abf139aa6e400b5a7ad608459b173ca7fca9f0d1fa56d1",
+    "schema_version": 1,
+    "source": "on_demand_trader_room_fallback",
+    "trader_room_run_id": "tr-20260920T020818Z-ondemand",
+    "type": "PM_CHATGPT_APPLY_RECEIPT"
+  }
+}

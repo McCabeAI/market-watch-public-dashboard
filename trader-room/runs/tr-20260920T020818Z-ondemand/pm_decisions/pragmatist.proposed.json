@@ -1,0 +1,35 @@
+{
+  "actions": [
+    {
+      "action": "OPEN",
+      "asset_class": "rates",
+      "conviction": 58,
+      "instrument": "CORRA_2027-03",
+      "invalidation": "Thesis fails if BoC hikes or the 1m CORRA strip through Dec-2026 reprices toward the 2027 CRA mid-3s; if CPI-trim/median leave the 1.9/2.0 zone higher while employment stops contracting and wages re-accelerate; or if CORRA_2027-03 implied holds at or above the 3.13 entry because catch-up is actually being delivered. A US-only or energy-headline move that leaves CRAH27 unchanged is not invalidation. Wrong timing, not wrong thesis, if implieds chop around 3.13 without a new BoC hike signal.",
+      "notional_usd": 450000000,
+      "side": "long",
+      "thesis": "Receive MX CRAH27 / CORRA_2027-03 at the packet implied 3.13. That is the first 2027 three-month contract that prices a Canadian hiking cycle (+84bp vs CORRA cash 2.29) after 1m CORRA still only reaches 2.58 by Dec-2026 and Dec-26 3m CRAZ26 is 2.775. August labor (-42k, wages +2.0%) and CPI-trim/median 1.9/2.0 do not support delivering that 2027 path. Side long is duration-long in implied-rate space (profits if the 3.13 implied falls toward the still-alive near-term path)."
+    }
+  ],
+  "conviction": 58,
+  "evidence_cutoff": "2026-09-20T02:08:18Z",
+  "evidence_packet_sha256": "349a16aeeda7f4a89e10ba16c22c90311da76536984e943cf04249588d954e1e",
+  "execution": {
+    "principal_model": "grok-4.6",
+    "subagent_count": 0,
+    "subagent_models": []
+  },
+  "invalidation": "BoC delivers or endorses the priced 2027 CRA path, Canadian core/labor reheat, or CORRA_2027-03 implied stays at/above 3.13 as catch-up is realized. Energy headlines without core/labor confirmation do not kill the trade.",
+  "memory_context_sha256": "5d5a8b8b769da2c8a56d51b5c185934dac8f616142b15afae6aedea2e2383365",
+  "pm_id": "pragmatist",
+  "principal_model": "grok-4.6",
+  "rationale": "Context: empty prior book, $1bn gross unused, packet source is on-demand Trader Room fallback not a completed overnight 14-seat review. Market-state is stale (NZ_rates; CA official curve and CME positioning unavailable). Official NY Fed SOFR is 3.85 ACT/360 as of 2026-09-17. Unused cash earns that SOFR; futures are not full-notional funded. Calibration is empty so size is a first-cycle swing, not a max book. OPEN long CORRA_2027-03 450mm; no SOFR/AONIA/FX overlay; no hedge.",
+  "review_packet_id": "prp-pragmatist-tr-20260920T020818Z-ondemand",
+  "review_packet_sha256": "425938ff827909dfc0fdb6c56d225bd8cca735d800d791bb5d0f9aaad118d6d0",
+  "schema_version": 1,
+  "subagent_count": 0,
+  "subagent_models": [],
+  "thesis": "Fade the 2027 CORRA hiking cycle. Markets price 84-130.5bp of Canadian hikes into 2027 while the tradable 1m path is still nearly on hold and Canadian core/labor already argue against catch-up. Express that as long-duration CORRA_2027-03. Do not take conflicted US SR3, AONIA meeting-binary, or FX overlays on this freeze.",
+  "trader_room_run_id": "tr-20260920T020818Z-ondemand",
+  "type": "PM_DECISION"
+}

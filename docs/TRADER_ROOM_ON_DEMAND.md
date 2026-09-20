@@ -136,6 +136,7 @@ Debate `trade` and `conflict_synopsis.primary_trade` remain the single primary p
 
 - every new live Round-1 contribution must include a non-empty `paper_actions` list;
 - `paper_actions` may contain any number of book actions (`OPEN`, `ADD`, `HOLD`, `REDUCE`, `HEDGE`, `CLOSE`) with no arbitrary position-count cap;
+- rates/curve/rates-RV book sides use the trusted P&L convention, not trader shorthand: `long` = receive / long duration / profits when the canonical mark falls; `short` = pay / short duration / profits when the canonical mark rises. Every new rates `OPEN` declares `expected_mark_direction: lower|higher`, and validation requires `lower -> long`, `higher -> short`;
 - `[{"action":"HOLD"}]` is the explicit no-change decision;
 - before choosing actions, the advocate must inspect only its own frozen memory sidecar and treat `open_positions` / their `position_id` values as the current book;
 - `ADD`, `REDUCE`, and `CLOSE` must target the existing `position_id`; an advocate must not duplicate an owned position merely because the same expression is still its primary pitch;

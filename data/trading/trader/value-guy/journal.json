@@ -1,5 +1,54 @@
 {
-  "events": [],
+  "events": [
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "rates_rv",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR-CORRA_2Y_2027H1",
+          "notional_usd": 70000000,
+          "position_id": null,
+          "rationale": "Empty book; this is a new OPEN of the debate expression, not a duplicate add. Size 70m leaves 30m unused versus the 100m unnetted gross cap.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-09-19T22:36:50.082404-04:00",
+      "conviction": 58,
+      "decision_fingerprint": "fe00945aa759074ea1ed18c5dae6d662c059a7ce010ac9f7679f2152a16af205",
+      "event_id": "jde-abc4d5110a134889",
+      "funding_view": null,
+      "invalidation": "CA-US cheapness follows the 2024-12-18 analog and widens, or BoC drops energy pass-through after soft core/labor.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-cdde326460b4"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-value-guy-pos-cdde326460b4"
+      ],
+      "memory_context_sha256": "697861c8058c1a83648c2d67f41d29f6ba663f67cf133d774e5de802b8f024e0",
+      "outcome_links": [],
+      "owner_id": "value-guy",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-20T02:08:18Z",
+        "evidence_hash": "349a16aeeda7f4a89e10ba16c22c90311da76536984e943cf04249588d954e1e",
+        "overnight_run_id": null,
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260920T020818Z-ondemand"
+      },
+      "rationale": "Verified fact: CA-US 2Y is -140bp (4th percentile 1y and 5y); 2027 H1 SR3 minus CRA is about 140bp; overnight SOFR-CORRA is 156bp; Fed has hiked 25bp to 3.75\u20134.00% with SOFR at 3.85; BoC minutes flag energy pass-through; Canada CPI 3%/core near 2%; US 2Y 4.76 is 99.8th percentile 1y while CA 2Y 3.27 is only 58th percentile 5y. Inference: that 140bp Canada discount is a peer-policy dislocation, not a fair labor-gap price, because activity gauges are close, energy pass-through is now in BoC deliberations, and the US front end has already done the post-hike rerating. Closest analog (2025-01-30 at -145bp) compressed 25bp over 3m. Unknown: whether Saudi Oman workaround fully caps the energy tail; CME positioning; Canada official curve. Trade is long SOFR-CORRA 2027 H1 to own compression of Canada cheapness.",
+      "run_id": "tr-20260920T020818Z-ondemand",
+      "schema_version": 1,
+      "thesis": "Verified fact: CA-US 2Y is -140bp (4th percentile 1y and 5y); 2027 H1 SR3 minus CRA is about 140bp; overnight SOFR-CORRA is 156bp; Fed has hiked 25bp to 3.75\u20134.00% with SOFR at 3.85; BoC minutes flag energy pass-through; Canada CPI 3%/core near 2%; US 2Y 4.76 is 99.8th percentile 1y while CA 2Y 3.27 is only 58th percentile 5y. Inference: that 140bp Canada discount is a peer-policy dislocation, not a fair labor-gap price, because activity gauges are close, energy pass-through is now in BoC deliberations, and the US front end has already done the post-hike rerating. Closest analog (2025-01-30 at -145bp) compressed 25bp over 3m. Unknown: whether Saudi Oman workaround fully caps the energy tail; CME positioning; Canada official curve. Trade is long SOFR-CORRA 2027 H1 to own compression of Canada cheapness."
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_DECISION_JOURNAL"
 }

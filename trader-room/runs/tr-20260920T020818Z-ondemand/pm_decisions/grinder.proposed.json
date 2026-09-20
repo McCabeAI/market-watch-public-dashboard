@@ -1,0 +1,29 @@
+{
+  "actions": [
+    {
+      "action": "NO_TRADE",
+      "invalidation": "Revisit only if a later freeze shows a one-way, markable rates path: Canada core/labor confirming no 2027 CRA catch-up while the 2027 strip still holds mid-3s against a still-on-hold 1m CORRA path, or the reverse with delivered BoC tightening, without relying on missing NZ/CA-curve/CME-positioning or unmarkable options.",
+      "thesis": "Keep the empty book in unused cash earning official NY Fed SOFR 3.85% ACT/360. Packet discrepancies are post-event, two-sided, and conflicted across markable SOFR/CORRA/AONIA expressions; none clear a preservation hurdle on this on-demand fallback freeze."
+    }
+  ],
+  "conviction": 68,
+  "evidence_cutoff": "2026-09-20T02:08:18Z",
+  "execution": {
+    "principal_model": "grok-4.6",
+    "subagent_count": 0,
+    "subagent_models": []
+  },
+  "invalidation": "A subsequent packet with a successful overnight review, complete NZ/CA-curve/positioning marks, and a single un-conflicted rates discrepancy versus cash and the near-term path would lift the no-trade. Binary next-meeting AONIA odds or FX extremes without a cleaner rates expression would not.",
+  "memory_context_sha256": "6e680d1701c4ff8f93e5f97dfcc1569475ab94ca917bf27857b9dcbb7ff94dcc",
+  "pm_id": "grinder",
+  "principal_model": "grok-4.6",
+  "rationale": "Prior Grinder book is empty. Packet source is on_demand_trader_room_fallback. Seats conflict on CORRA_2027-03 and SOFR_2027-03; AONIA Oct is event risk; options fail closed. Explicit NO_TRADE versus 3.85% unused-cash SOFR.",
+  "review_packet_id": "prp-grinder-tr-20260920T020818Z-ondemand",
+  "review_packet_sha256": "4cbb8c8659bde1743f6235b7e8aaaf93e015a3b414492bdd5557f89e27f2bf9f",
+  "schema_version": 1,
+  "subagent_count": 0,
+  "subagent_models": [],
+  "thesis": "Preservation first on an empty book: do not convert unused cash at official SOFR 3.85% ACT/360 into duration or FX risk while the freeze is a labeled on-demand Trader Room fallback, market-state is stale, and the 14 seats remain unarbitrated with opposite directions in the two cleanest contracts (CORRA_2027-03 and SOFR_2027-03).",
+  "trader_room_run_id": "tr-20260920T020818Z-ondemand",
+  "type": "PM_DECISION"
+}

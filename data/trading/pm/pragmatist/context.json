@@ -1,6 +1,6 @@
 {
   "active_lessons": [],
-  "as_of": "2026-09-19T15:18:49.882968-04:00",
+  "as_of": "2026-09-19T23:10:54.193786-04:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -29,12 +29,25 @@
     "total_realized_pnl_usd": 0.0,
     "wins": 0
   },
-  "memory_context_sha256": "4a5bc7e21659d5be061d7d8343ca3b0584586031b9bc4623f64a0d312d4fafbb",
-  "open_positions": [],
+  "memory_context_sha256": "a74effb515c26a245ef1f1d08caa88249e16faa222ab442dbef531a6337d046f",
+  "open_positions": [
+    {
+      "asset_class": "rates",
+      "conviction": 58,
+      "current_notional_usd": 450000000.0,
+      "entry_mark": 3.13,
+      "instrument": "CORRA_2027-03",
+      "opened_at": "2026-09-19T22:52:44.447221-04:00",
+      "position_id": "pm-pragmatist-4e0cbc4e0b05",
+      "side": "long",
+      "trade_id": "trd-pm-pragmatist-pm-pragmatist-4e0cbc4e0b05"
+    }
+  ],
   "owner_id": "pragmatist",
   "owner_type": "pm",
   "postmortems_due": [],
   "recent_closed_trades": [],
+  "recent_funding_views": [],
   "schema_version": 1,
   "type": "IDENTITY_MEMORY_CONTEXT"
 }

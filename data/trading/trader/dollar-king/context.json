@@ -1,6 +1,6 @@
 {
   "active_lessons": [],
-  "as_of": "2026-09-19T15:18:49.882968-04:00",
+  "as_of": "2026-09-19T22:36:50.082404-04:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -29,12 +29,25 @@
     "total_realized_pnl_usd": 0.0,
     "wins": 0
   },
-  "memory_context_sha256": "e31f1849b6776f6ec42c04adf6e81c645330ba18d4bb992e047cb726edfdeab2",
-  "open_positions": [],
+  "memory_context_sha256": "df6733a62243d36ddbd354b96a6f307664a8db7911491615018a7f1f6abead54",
+  "open_positions": [
+    {
+      "asset_class": "spot_fx",
+      "conviction": 64,
+      "current_notional_usd": 55000000.0,
+      "entry_mark": 1.4,
+      "instrument": "USDCAD",
+      "opened_at": "2026-09-19T22:36:50.082404-04:00",
+      "position_id": "pos-5317bc96d4eb",
+      "side": "long",
+      "trade_id": "trd-trader-dollar-king-pos-5317bc96d4eb"
+    }
+  ],
   "owner_id": "dollar-king",
   "owner_type": "trader",
   "postmortems_due": [],
   "recent_closed_trades": [],
+  "recent_funding_views": [],
   "schema_version": 1,
   "type": "IDENTITY_MEMORY_CONTEXT"
 }

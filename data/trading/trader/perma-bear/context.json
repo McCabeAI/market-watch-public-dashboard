@@ -1,6 +1,6 @@
 {
   "active_lessons": [],
-  "as_of": "2026-09-19T15:18:49.882968-04:00",
+  "as_of": "2026-09-19T22:36:50.082404-04:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -29,12 +29,25 @@
     "total_realized_pnl_usd": 0.0,
     "wins": 0
   },
-  "memory_context_sha256": "3d65fb80b207363fac2b0f86c18a82dbd90facd4a95bb81d6827897f7fcdc81f",
-  "open_positions": [],
+  "memory_context_sha256": "443eb1fb9e5c8cd858c99cb16869a657daebfd85f332de55bcd76cb3ee10ec7f",
+  "open_positions": [
+    {
+      "asset_class": "rates",
+      "conviction": 64,
+      "current_notional_usd": 55000000.0,
+      "entry_mark": 4.91,
+      "instrument": "AONIA_2027-06",
+      "opened_at": "2026-09-19T22:36:50.082404-04:00",
+      "position_id": "pos-3b40ade3da2c",
+      "side": "long",
+      "trade_id": "trd-trader-perma-bear-pos-3b40ade3da2c"
+    }
+  ],
   "owner_id": "perma-bear",
   "owner_type": "trader",
   "postmortems_due": [],
   "recent_closed_trades": [],
+  "recent_funding_views": [],
   "schema_version": 1,
   "type": "IDENTITY_MEMORY_CONTEXT"
 }

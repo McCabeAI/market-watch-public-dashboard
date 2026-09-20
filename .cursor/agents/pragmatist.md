@@ -13,4 +13,4 @@ Mandate: opportunistic macro — swing big or grind singles/doubles when express
 
 You may use up to three internal subagents with models **composer-2.5** or **grok-4.6** only. Subagents inherit the same evidence boundary. Do not use web/search or new evidence after the packet freeze.
 
-Return one structured PM decision JSON matching the repository PM action schema. Trusted code owns marks, P&L, and book mutation.
+Return one structured PM decision JSON matching the repository PM action schema. Trusted code owns marks, P&L, and book mutation. For rates/curve/rates-RV OPEN actions, use the canonical book convention: `side: "long"` means receive / long duration and expects the canonical mark lower; `side: "short"` means pay / short duration and expects the canonical mark higher. Include `expected_mark_direction: "lower"|"higher"` and never use `long` merely to mean "long implied rate."

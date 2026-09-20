@@ -1,6 +1,6 @@
 {
   "active_lessons": [],
-  "as_of": "2026-09-19T15:18:49.882968-04:00",
+  "as_of": "2026-09-19T22:36:50.082404-04:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -29,12 +29,25 @@
     "total_realized_pnl_usd": 0.0,
     "wins": 0
   },
-  "memory_context_sha256": "dfec5fd555d24dffcf0e5682d4998d07212fbf9826f80a1760653870045b5a5a",
-  "open_positions": [],
+  "memory_context_sha256": "27e519daf8cefcf603f2ef999e158ffbcbeeecd095e8c08928a535880325d23a",
+  "open_positions": [
+    {
+      "asset_class": "rates",
+      "conviction": 59,
+      "current_notional_usd": 55000000.0,
+      "entry_mark": 4.57,
+      "instrument": "AONIA_2026-10",
+      "opened_at": "2026-09-19T22:36:50.082404-04:00",
+      "position_id": "pos-deddf5aa0c83",
+      "side": "long",
+      "trade_id": "trd-trader-catalyst-junkie-pos-deddf5aa0c83"
+    }
+  ],
   "owner_id": "catalyst-junkie",
   "owner_type": "trader",
   "postmortems_due": [],
   "recent_closed_trades": [],
+  "recent_funding_views": [],
   "schema_version": 1,
   "type": "IDENTITY_MEMORY_CONTEXT"
 }

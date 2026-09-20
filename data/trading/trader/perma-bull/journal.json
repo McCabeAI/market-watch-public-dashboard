@@ -1,5 +1,54 @@
 {
-  "events": [],
+  "events": [
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 50000000,
+          "position_id": null,
+          "rationale": "Sidecar open_positions is empty so OPEN is allowed. Size $50m of the $100m gross cap: enough to clear the 3.85% SOFR funding vig if Mar-27 CORRA catch-up of ~25-38bp toward Jun/Sep 2027 CRA mids arrives, while leaving room because CA labor 38, core-near-2%, and +84bp already in CRAH27 cut conviction. Deterministic paper mid only.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-09-19T22:36:50.082404-04:00",
+      "conviction": 63,
+      "decision_fingerprint": "5aae6fdec968219bb9305cd3dfc5a3696cb7ae7b9795231f873c5ad6d4fdf25e",
+      "event_id": "jde-ee7a2d29b099421a",
+      "funding_view": null,
+      "invalidation": "CORRA_2027-03 back to the 2.775 Dec-26 3m mid or confirmed on-hold with core near 2% and fading oil.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-dd6fdaf39119"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-perma-bull-pos-dd6fdaf39119"
+      ],
+      "memory_context_sha256": "de029e25656f54c1546c74d96a76b0e292377deecf61bed3ec66d1557775b1aa",
+      "outcome_links": [],
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-20T02:08:18Z",
+        "evidence_hash": "349a16aeeda7f4a89e10ba16c22c90311da76536984e943cf04249588d954e1e",
+        "overnight_run_id": null,
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260920T020818Z-ondemand"
+      },
+      "rationale": "FACT: Global tightening is live (Fed +25bp, BoJ to 1.25%, BoE 6-3 with three hike votes) while US growth gauges and cyclical assets (copper, SPX, tight HY, low VIX) are not in recession. Canada is priced as the exception: CORRA 2.29, 1m path +29bp by year-end, and a 17 Sep sovereign rally. INFERENCE: energy pass-through plus activity 66 make that exception too large; Mar-27 CORRA should move toward the already-higher Jun/Sep 2027 CRA mids as BoC catch-up is pulled forward. That is the pro-growth/cyclical expression: the laggard cyclical central bank, not long AUD after a housing slump or long NZD with labor 32 and no NZ rates. UNKNOWN: whether Saudi supply workaround and core-near-2% CPI let BoC wait through Q1.",
+      "run_id": "tr-20260920T020818Z-ondemand",
+      "schema_version": 1,
+      "thesis": "FACT: Global tightening is live (Fed +25bp, BoJ to 1.25%, BoE 6-3 with three hike votes) while US growth gauges and cyclical assets (copper, SPX, tight HY, low VIX) are not in recession. Canada is priced as the exception: CORRA 2.29, 1m path +29bp by year-end, and a 17 Sep sovereign rally. INFERENCE: energy pass-through plus activity 66 make that exception too large; Mar-27 CORRA should move toward the already-higher Jun/Sep 2027 CRA mids as BoC catch-up is pulled forward. That is the pro-growth/cyclical expression: the laggard cyclical central bank, not long AUD after a housing slump or long NZD with labor 32 and no NZ rates. UNKNOWN: whether Saudi supply workaround and core-near-2% CPI let BoC wait through Q1."
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_DECISION_JOURNAL"
 }

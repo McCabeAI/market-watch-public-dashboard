@@ -1,5 +1,54 @@
 {
-  "events": [],
+  "events": [
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 40000000,
+          "position_id": null,
+          "rationale": "open_positions is []. Open $40m of the $100m gross cap in SOFR_2027-03 long duration (receive implied rate). Medium size because US inflation/labor gauges remain hot (72/75) and CME positioning is missing; not 100m because this is event-premium mean reversion, not a call that the Fed is done.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-09-19T22:36:50.082404-04:00",
+      "conviction": 56,
+      "decision_fingerprint": "dba3f20e4ee959ff20c20c74c5d63344384856346cd70f0eb2e8a66e1d5f3e72",
+      "event_id": "jde-71f6358ba6e243d9",
+      "funding_view": null,
+      "invalidation": "Another clearly delivered 25bp into the Dec-26 window with SR3H7 implied holding at or above the packet Jun-27 4.72 mid, or hotter US labor/inflation with a re-widening oil tail.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-1477172adb86"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-mean-reverter-pos-1477172adb86"
+      ],
+      "memory_context_sha256": "7d0a4609dcb077f4da4170c65d352cb62218cc6d756b84e24f6da8bca3e83a7b",
+      "outcome_links": [],
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-20T02:08:18Z",
+        "evidence_hash": "349a16aeeda7f4a89e10ba16c22c90311da76536984e943cf04249588d954e1e",
+        "overnight_run_id": null,
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260920T020818Z-ondemand"
+      },
+      "rationale": "VERIFIED: Sep-16 FOMC hike 25bp to 3.75\u20134.00% was >90% priced into the decision; SOFR printed 3.85 on 2026-09-17 versus 3.62 the prior session; US 2Y 476bp is the 100th percentile 1y after a +57bp 1m change (z 3.29); SR3H7 implies 4.58, +73bp over SOFR; Saudi STS workaround reduced the extreme oil-supply tail; US inflation/labor gauges remain 72/75 with Aug unemployment 4.1% and payrolls +162k. INFERENCE: the residual Mar-27 hike premium is the crowded energy-hawk overlay described by the last-24h desk thesis, not the minimum path required by the delivered 25bp. A plausible normalization is a partial giveback of that overlay toward the already-priced Dec-26 implied 4.32, not a collapse to 3.85. UNKNOWN: CME SR3/UST positioning; whether August CPI's tightening bias plus still-hot gauges deliver the next 25bp inside the Dec-26 window. Sidecar open_positions is empty, so this is a new OPEN versus the $100m gross cap.",
+      "run_id": "tr-20260920T020818Z-ondemand",
+      "schema_version": 1,
+      "thesis": "VERIFIED: Sep-16 FOMC hike 25bp to 3.75\u20134.00% was >90% priced into the decision; SOFR printed 3.85 on 2026-09-17 versus 3.62 the prior session; US 2Y 476bp is the 100th percentile 1y after a +57bp 1m change (z 3.29); SR3H7 implies 4.58, +73bp over SOFR; Saudi STS workaround reduced the extreme oil-supply tail; US inflation/labor gauges remain 72/75 with Aug unemployment 4.1% and payrolls +162k. INFERENCE: the residual Mar-27 hike premium is the crowded energy-hawk overlay described by the last-24h desk thesis, not the minimum path required by the delivered 25bp. A plausible normalization is a partial giveback of that overlay toward the already-priced Dec-26 implied 4.32, not a collapse to 3.85. UNKNOWN: CME SR3/UST positioning; whether August CPI's tightening bias plus still-hot gauges deliver the next 25bp inside the Dec-26 window. Sidecar open_positions is empty, so this is a new OPEN versus the $100m gross cap."
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_DECISION_JOURNAL"
 }

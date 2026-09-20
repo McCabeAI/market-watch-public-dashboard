@@ -265,6 +265,37 @@ class SchemaAndBoundaryTests(unittest.TestCase):
         with self.assertRaises(DataBoundaryError):
             validate_contribution(contribution, packet=packet, expected_agent="perma-bull")
 
+    def test_rates_open_requires_unambiguous_mark_direction(self):
+        packet = _packet()
+        contribution = DryRunRunner().run_advocate("rate-hawk", packet, BudgetLedger())
+        contribution["trade"]["instrument"] = "SOFR_2027-09"
+        contribution["trade"]["asset_class"] = "rates"
+        contribution["trade"]["expression_comparison"]["selected"] = "rates"
+        contribution["paper_actions"] = [{
+            "action": "OPEN",
+            "instrument": "SOFR_2027-09",
+            "asset_class": "rates",
+            "side": "long",
+            "notional_usd": 10_000_000,
+            "expected_mark_direction": "higher",
+        }]
+        with self.assertRaises(SchemaError):
+            validate_contribution(contribution, packet=packet, expected_agent="rate-hawk")
+
+        contribution["paper_actions"][0]["side"] = "short"
+        # The primary debate direction must describe the same canonical risk when
+        # the debate trade and paper OPEN use the same instrument.
+        contribution["paper_actions"][0]["instrument"] = contribution["trade"]["instrument"]
+        contribution["trade"]["direction"] = "long"
+        with self.assertRaises(SchemaError):
+            validate_contribution(contribution, packet=packet, expected_agent="rate-hawk")
+        contribution["trade"]["direction"] = "short"
+        validate_contribution(contribution, packet=packet, expected_agent="rate-hawk")
+
+        contribution["paper_actions"][0].pop("expected_mark_direction")
+        with self.assertRaises(SchemaError):
+            validate_contribution(contribution, packet=packet, expected_agent="rate-hawk")
+
     def test_contribution_requires_explicit_book_decision(self):
         packet = _packet()
         contribution = DryRunRunner().run_advocate("perma-bull", packet, BudgetLedger())

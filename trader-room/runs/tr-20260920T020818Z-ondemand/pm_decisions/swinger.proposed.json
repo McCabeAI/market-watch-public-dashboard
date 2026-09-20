@@ -1,0 +1,34 @@
+{
+  "actions": [
+    {
+      "action": "OPEN",
+      "asset_class": "rates",
+      "instrument": "CORRA_2027-03",
+      "invalidation": "Close if BoC delivers or explicitly endorses a 2027 path consistent with CRAH27 holding at or above the 3.13 entry, or if Canada CPI-trim/median leave the packet 1.9/2.0 zone higher while employment/wages reverse the August -42k / +2.0% cooling. Close if CRAH27 implied rises toward CRAM27 3.365 rather than cheapening. A US-only SOFR selloff that leaves CORRA_2027-03 unchanged is not invalidation. Energy headlines without a core/labor break are not invalidation. No hedge: if the thesis fails, close.",
+      "notional_usd": 850000000,
+      "side": "long",
+      "thesis": "Duration-long / receive MX CRAH27 (paper alias CORRA_2027-03, family locked to CORRA/CRA). Packet mid implied_rate 3.13 / price 96.87. Long in this book is long duration with P&L inverted in implied-rate space: profits if Mar-27 implied CORRA falls from 3.13 toward the still-alive near-term path (1m Dec-2026 2.58, 3m Dec-2026 CRAZ26 2.775), not if Canada catches up to SOFR. The 2027 contract is where the unwarranted hiking cycle is concentrated; do not migrate onto SOFR, AONIA, CA-US 2Y, or USDCAD."
+    }
+  ],
+  "conviction": 72,
+  "evidence_cutoff": "2026-09-20T02:08:18Z",
+  "evidence_packet_sha256": "349a16aeeda7f4a89e10ba16c22c90311da76536984e943cf04249588d954e1e",
+  "execution": {
+    "principal_model": "grok-4.6",
+    "subagent_count": 0,
+    "subagent_models": []
+  },
+  "invalidation": "BoC hike/endorsement of a mid-3s 2027 path, CRAH27 implied \u22653.13 and rising toward 3.365, or Canada trim/median and labor reheating from the August packet prints. Energy-only noise is not invalidation. Fail closed on options and on any unmarkable structure.",
+  "memory_context_sha256": "a53c50cb2e4dcdc41caa161e72e758d4f6958eb45e62f1a0ab60469cc1d6f82b",
+  "pm_id": "swinger",
+  "principal_model": "grok-4.6",
+  "rationale": "Single OPEN long CORRA_2027-03, $850m (85% gross). Side long = receive / duration long. No hedge. Trusted code hydrates the 3.13 mid.",
+  "review_packet_id": "prp-swinger-tr-20260920T020818Z-ondemand",
+  "review_packet_sha256": "3dab54f19395b9e2f7eeecd3ba3132715750b3343909477e00f34fafa451d4bf",
+  "schema_version": 1,
+  "subagent_count": 0,
+  "subagent_models": [],
+  "thesis": "Concentrated duration-long CORRA_2027-03: fade the 2027 BoC hiking cycle that 3m CRA prices and that 1m CORRA plus Canadian core/labor do not. Empty prior book; 85% of the $1bn gross cap in one markable rates contract; unused cash stays undeployed and earns official NY Fed SOFR ACT/360. No hedge leg.",
+  "trader_room_run_id": "tr-20260920T020818Z-ondemand",
+  "type": "PM_DECISION"
+}

@@ -1,0 +1,163 @@
+{
+  "ceilings": {
+    "job_composer": 37,
+    "job_grok": 32,
+    "job_total": 69,
+    "projected_if_plan_holds": {
+      "composer": 0,
+      "grok": 31,
+      "total": 31
+    },
+    "used_after_finalize": {
+      "composer": 0,
+      "grok": 28,
+      "total": 28
+    },
+    "used_after_pms": {
+      "composer": 0,
+      "grok": 31,
+      "note": "parent 1 + round1 14 + rebuttals 13 + successful PMs 3. One additional Swinger launch failed with provider connection error before usable output; not silently rerouted.",
+      "total": 31
+    },
+    "used_after_round1": {
+      "composer": 0,
+      "grok": 15,
+      "total": 15
+    }
+  },
+  "conflict_stage": {
+    "direct_conflicts": 6,
+    "model_calls": 0,
+    "rebuttal_seats": [
+      "carry-is-king",
+      "catalyst-junkie",
+      "cross-merchant",
+      "dollar-king",
+      "mean-reverter",
+      "perma-bear",
+      "perma-bull",
+      "positioning-cynic",
+      "rate-dove",
+      "rate-hawk",
+      "trend-follower",
+      "value-guy",
+      "vol-convexity"
+    ]
+  },
+  "final_handoff": {
+    "model_calls": 0,
+    "status": "STATUS: AWAITING_CHATGPT_ARBITRATION"
+  },
+  "parent": {
+    "calls": 1,
+    "model": "grok-4.6",
+    "role": "acp_orchestrator"
+  },
+  "planned_pms": {
+    "calls": 3,
+    "composer_cap_each": 3,
+    "model": "grok-4.6"
+  },
+  "planned_rebuttals": {
+    "calls": 13,
+    "composer": 0,
+    "model": "grok-4.6"
+  },
+  "pm_packets": {
+    "chatgpt_decision": "pending_ingest_only",
+    "count": 4,
+    "source": "on_demand_trader_room_fallback"
+  },
+  "pms": {
+    "agents": {
+      "grinder": {
+        "bcId": "bc-da4f9210-cdeb-53b8-8d04-4728bdff730a",
+        "subagent_count": 0
+      },
+      "pragmatist": {
+        "bcId": "bc-e0d04ffd-6805-59ce-9e7b-1fcb08a6aa01",
+        "subagent_count": 0
+      },
+      "swinger": {
+        "bcId": "bc-4f4ad358-8235-5959-ac58-8179b63dc0d2",
+        "first_launch": "provider_connection_error",
+        "subagent_count": 0
+      }
+    },
+    "chatgpt_current_cycle_decision": "not_generated_not_applied",
+    "composer_2_5_children": 0,
+    "launch_mechanism": "cursor_custom_agent",
+    "model": "grok-4.6",
+    "successful_calls": 3
+  },
+  "round1": {
+    "calls": 14,
+    "composer_2_5_children": 0,
+    "model": "grok-4.6",
+    "seats": [
+      {
+        "bcId": "bc-dcacebb6-2ffd-524a-8538-62b7877e7f8d",
+        "seat": "perma-bull"
+      },
+      {
+        "bcId": "bc-b5275bae-c70a-5561-81d4-21694ea33541",
+        "seat": "perma-bear"
+      },
+      {
+        "bcId": "bc-bafe5443-89cc-512c-9b40-0b9ca0123e88",
+        "seat": "dollar-king"
+      },
+      {
+        "bcId": "bc-fd373416-bb6b-5f77-8f1d-a6dbf7e79de9",
+        "seat": "cross-merchant"
+      },
+      {
+        "bcId": "bc-a95ddafd-d9f6-5780-a7c8-25c612b858f5",
+        "seat": "carry-is-king"
+      },
+      {
+        "bcId": "bc-b54ba999-f39f-556a-b4bf-1d590fdf1d71",
+        "seat": "rate-hawk"
+      },
+      {
+        "bcId": "bc-6a37bb07-6474-5c9f-8949-67198e795f24",
+        "seat": "rate-dove"
+      },
+      {
+        "bcId": "bc-4eaeb6ab-93ac-5984-83de-2375e71e6b0c",
+        "seat": "value-guy"
+      },
+      {
+        "bcId": "bc-ef8567e2-a89d-5520-87ab-892d867f1816",
+        "seat": "trend-follower"
+      },
+      {
+        "bcId": "bc-4fd155f9-ba2f-5812-827b-c3dfc33796ab",
+        "seat": "mean-reverter"
+      },
+      {
+        "bcId": "bc-58522476-f6e8-5e62-8e4d-ca6d91f26b2c",
+        "seat": "positioning-cynic"
+      },
+      {
+        "bcId": "bc-e281b3b0-80ba-5be2-b6ee-33d02e758158",
+        "seat": "catalyst-junkie"
+      },
+      {
+        "bcId": "bc-fb17d345-54e1-5b24-bdf0-0b80cbeb0adf",
+        "seat": "vol-convexity"
+      },
+      {
+        "bcId": "bc-a319b921-645a-58bb-91fd-b73e45db01ab",
+        "seat": "no-trade-skeptic"
+      }
+    ]
+  },
+  "round2": {
+    "calls": 13,
+    "composer_2_5_children": 0,
+    "final_handoff_model_calls": 0,
+    "model": "grok-4.6"
+  },
+  "run_id": "tr-20260920T020818Z-ondemand"
+}

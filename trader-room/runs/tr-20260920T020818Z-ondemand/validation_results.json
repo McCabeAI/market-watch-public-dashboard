@@ -1,0 +1,67 @@
+{
+  "chatgpt_current_cycle": "pending_not_generated_not_applied",
+  "completeness_errors": [],
+  "evidence_cutoff": "2026-09-20T02:08:18Z",
+  "evidence_packet_sha256": "349a16aeeda7f4a89e10ba16c22c90311da76536984e943cf04249588d954e1e",
+  "fail_closed": [
+    "Market-state family status=stale because NZ_rates; freeze proceeded because all four families were attempted and essential contract was satisfied (available/stale/available/available).",
+    "No successful overnight 14-seat review exists; PM packets used labeled on_demand_trader_room_fallback.",
+    "Swinger custom-agent first launch failed with provider connection error; one relaunch of the same locked grok-4.6[] custom agent succeeded. Not rerouted to another model.",
+    "Repository trader-room budget hook grok_cap=29 including parent would theoretically block the 3 PM grok principals after 14+13 rebuttals (28 used). Combined ACP job ceiling is 32. Hook was not patched. PM_MODEL_POLICY used for PM phase; /tmp trader-room budget state was absent after context compaction."
+  ],
+  "handoff_status": "STATUS: AWAITING_CHATGPT_ARBITRATION",
+  "model_accounting": {
+    "ceilings": {
+      "composer": 37,
+      "grok": 32,
+      "total": 69
+    },
+    "composer_2_5": 0,
+    "grok_4_6": 31,
+    "parent": 1,
+    "pms_successful": 3,
+    "rebuttals": 13,
+    "round1": 14,
+    "swinger_first_launch": "provider_connection_error_then_success",
+    "total": 31
+  },
+  "newest_complete_run": "tr-20260920T020818Z-ondemand",
+  "pm_decision_status": {
+    "chatgpt": "awaiting_chatgpt_decision",
+    "grinder": "no_trade",
+    "pragmatist": "active",
+    "swinger": "active"
+  },
+  "pm_position_counts": {
+    "chatgpt": 0,
+    "grinder": 0,
+    "pragmatist": 1,
+    "swinger": 1
+  },
+  "public_pm_validated": true,
+  "run_id": "tr-20260920T020818Z-ondemand",
+  "tests": {
+    "command": "PYTHONPATH=. python3 -m unittest tests.test_trader_room_dashboard tests.test_trader_room_publish tests.test_trader_room_ondemand tests.test_trader_room_budget tests.test_pm_books tests.test_pm_ingest tests.test_pm_scheduled_output tests.test_pm_dashboard tests.test_pm_overnight_packets tests.test_pm_launch tests.test_trading_memory tests.test_trader_book_lifecycle tests.test_sofr_funding tests.test_overnight_scheduled_output tests.test_overnight_pipeline",
+    "result": "195 tests OK"
+  },
+  "trader_position_counts": {
+    "carry-is-king": 1,
+    "catalyst-junkie": 1,
+    "cross-merchant": 1,
+    "dollar-king": 1,
+    "mean-reverter": 1,
+    "no-trade-skeptic": 0,
+    "perma-bear": 1,
+    "perma-bull": 1,
+    "positioning-cynic": 1,
+    "rate-dove": 1,
+    "rate-hawk": 1,
+    "trend-follower": 1,
+    "value-guy": 1,
+    "vol-convexity": 0
+  },
+  "ui": {
+    "positions_slice_truncation": false,
+    "trader_book_js_maps_all_positions": true
+  }
+}

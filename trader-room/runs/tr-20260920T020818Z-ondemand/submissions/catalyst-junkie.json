@@ -1,0 +1,146 @@
+{
+  "type": "TRADER_ROOM_CONTRIBUTION",
+  "run_id": "tr-20260920T020818Z-ondemand",
+  "round": 1,
+  "agent": "catalyst-junkie",
+  "archetype": "catalyst-junkie",
+  "stance_summary": "The dated mechanism is Australian housing transmission, not a valuation that AONIA is 'too high'. Verified: overnight AONIA 4.35 on 17-Sep-2026; ASX 30-day AONIA_2026-10 implied 4.565 (+21.5bp) with 21752 open interest; Nov 4.685 / Dec 4.725; Mar-2027 terminal 4.86 (+51bp); NSW stamp-duty receipts -24% YoY and transaction volumes -18% with Sydney/Melbourne values more than 7% below peak (16-Sep-2026); AU inflation gauge 82 vs labor 50 / consumer 48 / activity 54; AU 2Y 4.999, 99.0th 1y percentile, +39.1bp 1m. Inference: the next RBA decision must confront a working housing channel, so the discrete October hike premium should reprice lower even if inflation stays hot. Unknown: exact next RBA date is not in the packet; whether the next CPI confirms the 82-gauge; whether WTI 107.02 / Brent 130.80 (96th/99.6th percentiles, as-of 15-Sep-2026) overwhelm housing. Rates beat spot because AONIA_2026-10 is the meeting contract; AUDUSD 0.712 can stay bid on commodities.",
+  "trade": {
+    "instrument": "AONIA_2026-10",
+    "asset_class": "rates",
+    "expression_comparison": {
+      "rates_candidate": "Long AONIA_2026-10 (receive Oct-26 ASX 30-day AONIA / short implied cash rate) at packet implied 4.565 versus overnight AONIA 4.35; Nov 4.685 and Dec 4.725 are the adjacent hike-path contracts.",
+      "spot_candidate": "Short AUDUSD from packet mid 0.712022 (as-of 2026-09-18; 1y percentile 76.4, 5y percentile 84.3).",
+      "selected": "rates",
+      "rationale": "The mispricing is a discrete next-meeting hike already in AONIA_2026-10 (+21.5bp, most liquid AONIA contract). That contract is the settlement mechanism for the RBA hold-vs-hike event. AUDUSD can remain bid on copper/energy and CFTC leveraged-fund AUD longs even if the RBA holds, so spot is a noisier expression of the same housing-to-policy path. Rates are comparably clean and are the default."
+    },
+    "context_build": {
+      "causal_mechanism": "RBA cash-rate tightening is now reducing housing turnover and collateral values. That transmission constraint should cap further near-term hikes even while the inflation gauge remains hot, so the October AONIA contract that already prices a 21.5bp move from overnight AONIA should reprice lower at the next RBA decision and housing/CPI prints.",
+      "path_to_current_price": "Overnight AONIA is 4.35 (17-Sep-2026). The Sep-26 30-day contract is 4.355 (+0.5bp). The Oct-26 contract jumps to 4.565 (+21.5bp) with 4450 volume, then Nov 4.685 (+33.5bp) and Dec 4.725 (+37.5bp); policy-path terminal is Mar-2027 at 4.86 (+51bp). AU 2Y is 4.999 as-of 16-Sep-2026 after a +39.1bp 1-month rise (1y percentile 99.0, 5y percentile 99.8). AU 2s10s is +34.9bp and flattened 13.0bp over 1m. AUDUSD is 0.712 after +2.65% over 3m. Desk thesis on the same cutoff: energy shock is constraining the global easing impulse; the AU-specific overlay is that housing has already broken.",
+      "known_vs_new_information": "Known: AU inflation gauge 82 and a global energy shock (WTI 107.02, Brent 130.80, 15-Sep-2026) that already justify some additional RBA tightening, which is why Oct-Dec AONIA prices 21.5-37.5bp of hikes. New as-of 16-Sep-2026: NSW stamp-duty receipts down 24% YoY, volumes down 18%, Sydney and Melbourne values more than 7% below peak — evidence the tightening channel is biting now, not in prospect. That housing print is the information that should change the next meeting, not a restatement of the 82 inflation score.",
+      "market_implied_assumption": "AONIA_2026-10 at 4.565 assumes the RBA delivers about 21.5bp of additional tightening in the October window versus overnight AONIA 4.35, with another ~16bp into year-end (Dec 4.725) and a Mar-2027 terminal of 4.86. That path treats inflation/energy as still dominant over housing transmission.",
+      "market_assumption_disagreed_with": "The October hike is not the base case once housing turnover and prices are already contracting at pandemic-scale stamp-duty rates. Inflation 82 can stay high without the RBA delivering the first 21.5bp already in AONIA_2026-10.",
+      "price_decomposition": "Level: AONIA 4.35 overnight versus Oct implied 4.565, Nov 4.685, Dec 4.725, Mar-2027 4.86; AU 2Y 4.999. Change: the entire near-term hike is in the Sep-to-Oct AONIA step (+21.0bp contract-to-contract) rather than a slow grind; AU 2Y +16.4bp 5d and +39.1bp 1m, with a -5.5bp 1d fade on 16-Sep-2026. Marginal driver of the rates expression is the next-meeting cash-rate assumption in the Oct 30-day contract, not term premium in 10s (AU 10Y analog lives on a 12-day-stale max-age gauge).",
+      "historical_reference": {
+        "distribution": "AU 2Y 4.999 sits at the 99.0th 1y / 99.8th 5y percentile with 1m change +39.1bp (z 1.53 on the 252-day gauge sample). AONIA Oct is +21.5bp versus overnight, the largest single front-month step on the live 30-day strip. AU 2s10s 34.9bp is 24.4th 1y percentile after a 13.0bp 1m flattening. AUDUSD 1y percentile 76.4 is elevated, not a 1y extreme; AUDNZD is a 99.8th 1y/5y extreme.",
+        "analogs": [
+          "AU 2Y 1m +39.1bp analog 2022-09-28 (prior 1m +39.2bp, level 3.572): forward 1m -37.4bp and forward 3m -15.0bp after a similar backup during RBA tightening.",
+          "AU 2Y analog 2025-12-22 (prior 1m +39.0bp, level 4.078): forward 1m +8.8bp and forward 3m +54.7bp, i.e. the backup continued.",
+          "AU 2s10s 1m -13.0bp analog 2022-11-09 (level 56.5bp): forward 1m -20.1bp and forward 3m -22.2bp, further flattening after housing/tightening stress.",
+          "Competing analog 2023-05-10 AU 2Y (prior 1m +38.8bp, level 3.129): forward 1m +83.0bp and forward 3m +68.0bp, so a same-size backup can be mid-cycle, not a peak."
+        ],
+        "regime_differences": "2022-09-28 occurred as pandemic inflation was rolling over and oil was off the war spike; 2026 still has AU inflation gauge 82, WTI/Brent at 96th/99.6th percentiles, and a desk thesis that the energy shock is blocking global easing. Housing has already fallen more than 7% from peak, which is later in the transmission sequence than early-2022. Packet does not date the next RBA meeting, so analog calendars cannot be matched 1:1."
+      },
+      "independent_checks": [
+        "Policy path versus tradable AONIA strip: overnight 4.35 versus Oct 4.565 / Nov 4.685 / Dec 4.725 / Mar-2027 terminal 4.86 (policy_paths AU status ok).",
+        "Sovereign AU 2Y 4.999 (16-Sep-2026) at 99.0th 1y percentile with +39.1bp 1m, independent of the futures strip and consistent with an already-delivered front-end tightening, not a still-unpriced hike.",
+        "Temperature split: inflation 82 versus labor 50, consumer 48, activity 54 — activity/labor are not confirming an inflation-only hike case.",
+        "CFTC TFF AUD as-of 15-Sep-2026: open interest 493141 at 99.0th 1y percentile; leveraged funds net long 61135 (12.4% of OI). That is an FX crowding check, not a substitute for AONIA positioning (CME positioning unavailable)."
+      ],
+      "flow_and_positioning_check": "AONIA_2026-10 carries the strip's peak open interest (21752) and volume (4450), so the hike is held in a liquid meeting contract rather than an illiquid back month (Jan OI 279; several 2027 months have null OI). CFTC leveraged funds are net long AUD, which can slow an AUDUSD selloff but does not warehouse the RBA path; CME trader-class rates positioning is unavailable. Paper books are empty $100m seeds, so there is no seat-level inventory to unwind.",
+      "policy_path_check": {
+        "status": "available",
+        "relevant_countries": [
+          "AU"
+        ],
+        "pricing_summary": "AONIA overnight 4.35 (17-Sep-2026). 30-day strip: 2026-09 4.355 (+0.5bp), 2026-10 4.565 (+21.5bp), 2026-11 4.685 (+33.5bp), 2026-12 4.725 (+37.5bp), 2027-03 4.86 (+51.0bp terminal in policy_paths). Bank bills 1m/3m/6m 4.41/4.68/5.07; bank-bill-minus-OIS is unavailable_cross_vintage because OIS quotes are 01-Dec-2022.",
+        "rationale": "Short-end AU expression uses the live AONIA/ASX IB path first. The Oct contract is the tradable mapping of the next ~25bp hike versus overnight; AU 2Y percentile is supporting context only and is not the policy path."
+      }
+    },
+    "structure": "Long AONIA_2026-10 in implied-rate space (ASX 30-day AONIA). Paper side long profits if the implied cash rate falls (receive RBA path). Trusted code marks tradable_rate_curves.AONIA 2026-10 implied_rate.",
+    "direction": "long",
+    "thesis": "FACT: Housing is already contracting on 16-Sep-2026 data while AONIA_2026-10 still prices 4.565 versus overnight 4.35. FACT: AU inflation gauge is 82 and oil is at a 1y extreme, which is the reason that hike is in the strip. INFERENCE: The next RBA decision is the dated repricing event for that 21.5bp; a hold or a housing-weighted statement should collapse Oct toward overnight rather than toward Nov 4.685. INFERENCE: 2022-09-28 is the comparable AU 2Y backup that subsequently rallied 37.4bp in 1m, but 2023-05-10 and 2025-12-22 show same-size backups that continued. UNKNOWN: meeting date, next CPI, and whether energy keeps the RBA on the 4.86 Mar-2027 terminal. This seat rejects waiting for AU 2Y mean reversion without that meeting/data path.",
+    "mispricing": "AONIA_2026-10 implied 4.565 prices a near-full extra hike in the next cash-rate window after evidence that the housing channel is already biting. That is a meeting-path error, not a claim that 4.999 2Y is rich on percentile alone.",
+    "why_now": [
+      "16-Sep-2026 housing print (stamp duty -24% YoY, volumes -18%, values more than 7% below peak) is new versus the already-known 82 inflation gauge.",
+      "AONIA_2026-10 still sits +21.5bp through the freeze at 20-Sep-2026T02:08:18Z, so the meeting premium has not been pulled.",
+      "Global energy shock is the competing catalyst; the AU-specific override has to be expressed before the next RBA statement, not after.",
+      "Sidecar open_positions is empty, so this is a fresh OPEN versus the $100m gross cap and 3.85% SOFR vig (effective 17-Sep-2026)."
+    ],
+    "evidence_refs": [
+      "mw_20260916_au_housing_tightening",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "policy:AU",
+      "policy_paths",
+      "tradable_rate_curves",
+      "rates:AU",
+      "temp:AU:inflation",
+      "temp:AU:labor",
+      "temp:AU:consumer",
+      "temp:AU:activity",
+      "fx:AUDUSD",
+      "pos:cftc",
+      "last24:desk-thesis",
+      "mw_20260916_saudi_oman_workaround",
+      "rollup:Energy-market shock absorbers weaken",
+      "funding_context",
+      "market_state",
+      "research_method"
+    ],
+    "horizon": "2-6 weeks, into the next RBA decision and the next AU housing/CPI prints",
+    "entry": "Packet mid AONIA_2026-10 implied_rate 4.565 (ASX 30-day, tradable_rate_curves; price 95.435). Do not invent a broker quote.",
+    "target": "Repricing toward overnight AONIA 4.35 (17-Sep-2026 benchmark) if the October hike is not delivered; adjacent Nov implied 4.685 is the path that should cheapen with it.",
+    "stop": null,
+    "invalidation": "Next RBA decision hikes, or AONIA_2026-10 implied rate rises through the packet Nov contract 4.685, confirming inflation/energy still dominate housing transmission.",
+    "catalysts": [
+      "Next RBA cash-rate decision and statement language on housing versus inflation.",
+      "Subsequent Australian housing turnover/prices and CPI prints that either validate the 16-Sep-2026 downturn or re-accelerate inflation from gauge 82.",
+      "Oil follow-through after the 16-Sep-2026 Saudi Oman workaround (WTI/Brent still 107.02/130.80 as-of 15-Sep-2026) if energy re-widens the hike path."
+    ],
+    "principal_risks": [
+      "Inflation gauge 82 plus WTI/Brent 96th/99.6th percentiles can force the RBA to deliver the Oct hike regardless of stamp duty.",
+      "2023-05-10 and 2025-12-22 AU 2Y analogs continued higher after a similar +39bp 1m backup.",
+      "Exact next RBA date is unknown in the packet, so the Oct contract can roll without a hold.",
+      "Bank-bill-minus-OIS is cross-vintage unavailable; 6m bank bill 5.07 sits above the AONIA strip and may already discount more tightening.",
+      "AUD leveraged-fund length does not hedge an AONIA long if the meeting hawks and AUD still holds."
+    ],
+    "confidence": 59
+  },
+  "confidence": 59,
+  "remit": "credible path from mispricing to repricing",
+  "conflict_synopsis": {
+    "seat": "catalyst-junkie",
+    "primary_trade": "Long AONIA_2026-10 (receive AU cash-rate path / short implied AONIA)",
+    "core_view": "Housing transmission is the dated reason the next RBA hike already in AONIA_2026-10 should not be delivered.",
+    "usd_view": "higher",
+    "cad_view": "neutral",
+    "aud_view": "lower",
+    "nzd_view": "not_relevant",
+    "us_rates_view": "higher",
+    "ca_rates_view": "neutral",
+    "au_rates_view": "lower",
+    "nz_rates_view": "not_relevant",
+    "risk_view": "risk_off",
+    "carry_view": "supports_trade",
+    "time_horizon": "2-6 weeks",
+    "key_catalyst": "Next RBA decision plus follow-up AU housing/CPI, using the 16-Sep-2026 stamp-duty collapse as the information already in hand.",
+    "key_invalidation": "RBA hikes or AONIA_2026-10 implied backs up through packet Nov 4.685.",
+    "confidence": 59,
+    "conflict_tags": [
+      "AUD_DOWN",
+      "AU_RATES_DOWN",
+      "USD_UP"
+    ]
+  },
+  "packet_sha256": "349a16aeeda7f4a89e10ba16c22c90311da76536984e943cf04249588d954e1e",
+  "paper_actions": [
+    {
+      "action": "OPEN",
+      "instrument": "AONIA_2026-10",
+      "side": "long",
+      "notional_usd": 55000000,
+      "asset_class": "rates",
+      "paper_expression": {
+        "type": "futures_strip_average",
+        "curve_id": "AONIA",
+        "expiries": [
+          "2026-10"
+        ]
+      },
+      "conviction": 59,
+      "thesis": "Receive AONIA_2026-10: housing channel already biting while Oct still prices +21.5bp versus overnight AONIA 4.35. Empty sidecar; fresh OPEN.",
+      "rationale": "Sidecar open_positions is empty so this is not an ADD. Size 55m of the 100m gross cap so a ~20bp meeting repricing can clear weeks of 3.85% SOFR vig without maxing the book against inflation/oil two-way risk.",
+      "invalidation": "Next RBA hike or AONIA_2026-10 implied through packet Nov 4.685."
+    }
+  ]
+}

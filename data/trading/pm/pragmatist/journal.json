@@ -1,5 +1,54 @@
 {
-  "events": [],
+  "events": [
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 450000000,
+          "position_id": null,
+          "rationale": "Receive MX CRAH27 / CORRA_2027-03 at the packet implied 3.13. That is the first 2027 three-month contract that prices a Canadian hiking cycle (+84bp vs CORRA cash 2.29) after 1m CORRA still only reaches 2.58 by Dec-2026 and Dec-26 3m CRAZ26 is 2.775. August labor (-42k, wages +2.0%) and CPI-trim/median 1.9/2.0 do not support delivering that 2027 path. Side long is duration-long in implied-rate space (profits if the 3.13 implied falls toward the still-alive near-term path).",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-09-19T22:52:44.447221-04:00",
+      "conviction": 58,
+      "decision_fingerprint": "3e3082c4c7204f1f6cae18242467a9eb4b4697a5d8e7b0d206d7b24e57415fb8",
+      "event_id": "jde-a177ccb11c324219",
+      "funding_view": null,
+      "invalidation": "BoC delivers or endorses the priced 2027 CRA path, Canadian core/labor reheat, or CORRA_2027-03 implied stays at/above 3.13 as catch-up is realized. Energy headlines without core/labor confirmation do not kill the trade.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-pragmatist-4e0cbc4e0b05"
+      ],
+      "linked_trade_ids": [
+        "trd-pm-pragmatist-pm-pragmatist-4e0cbc4e0b05"
+      ],
+      "memory_context_sha256": "5d5a8b8b769da2c8a56d51b5c185934dac8f616142b15afae6aedea2e2383365",
+      "outcome_links": [],
+      "owner_id": "pragmatist",
+      "owner_type": "pm",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-20T02:08:18Z",
+        "evidence_hash": "425938ff827909dfc0fdb6c56d225bd8cca735d800d791bb5d0f9aaad118d6d0",
+        "overnight_run_id": null,
+        "review_packet_id": "prp-pragmatist-tr-20260920T020818Z-ondemand",
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260920T020818Z-ondemand"
+      },
+      "rationale": "Context: empty prior book, $1bn gross unused, packet source is on-demand Trader Room fallback not a completed overnight 14-seat review. Market-state is stale (NZ_rates; CA official curve and CME positioning unavailable). Official NY Fed SOFR is 3.85 ACT/360 as of 2026-09-17. Unused cash earns that SOFR; futures are not full-notional funded. Calibration is empty so size is a first-cycle swing, not a max book. OPEN long CORRA_2027-03 450mm; no SOFR/AONIA/FX overlay; no hedge.",
+      "run_id": "tr-20260920T020818Z-ondemand",
+      "schema_version": 1,
+      "thesis": "Fade the 2027 CORRA hiking cycle. Markets price 84-130.5bp of Canadian hikes into 2027 while the tradable 1m path is still nearly on hold and Canadian core/labor already argue against catch-up. Express that as long-duration CORRA_2027-03. Do not take conflicted US SR3, AONIA meeting-binary, or FX overlays on this freeze."
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_DECISION_JOURNAL"
 }

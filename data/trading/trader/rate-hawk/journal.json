@@ -1,5 +1,54 @@
 {
-  "events": [],
+  "events": [
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-09",
+          "notional_usd": 50000000,
+          "position_id": null,
+          "rationale": "Sidecar has zero open positions. Deploy $50m of the $100m gross cap into the primary hawkish expression: long implied-rate SOFR_2027-09 at the packet mid of 4.755%. Size is half the book because the 25bp hike was already >90% priced, 2Y has already backed up 57bp in 1m, and SR3 positioning is unknown; still large enough that expected terminal repricing can clear the 3.85% SOFR funding vig that is charged whether flat or deployed.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-09-19T22:36:50.082404-04:00",
+      "conviction": 60,
+      "decision_fingerprint": "1d710ee59e0abafd9bb8179a851498c65fea4a6ebda94c5d46010b222efd3efe",
+      "event_id": "jde-6c5fbc32fc5c4fe1",
+      "funding_view": null,
+      "invalidation": "SR3U7 retraces the 17-Sep SOFR jump and Dec-26 SR3 prices less than one hike versus 3.85% overnight.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-c9184707c12b"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-rate-hawk-pos-c9184707c12b"
+      ],
+      "memory_context_sha256": "a442f87bad2659798e1bd19b6411a7012b0474fbb7ab66017f362b006a0c4f51",
+      "outcome_links": [],
+      "owner_id": "rate-hawk",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-20T02:08:18Z",
+        "evidence_hash": "349a16aeeda7f4a89e10ba16c22c90311da76536984e943cf04249588d954e1e",
+        "overnight_run_id": null,
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260920T020818Z-ondemand"
+      },
+      "rationale": "FACT: Fed hiked 25bp to 3.75-4.00%; SOFR 3.85%; SR3U7 implies 4.755% then the strip eases; August CPI kept a tightening bias; US labor gauge 75 with payrolls +162k and U-rate 4.1%; BoJ hiked, BoE 6-3 with three hike votes. INFERENCE: inflation persistence and a still-restrictive reaction function imply a higher 2027 terminal than 4.75% and no 2028 cut residual. The 25bp meeting was >90% priced; the mispricing is the path. Long implied-rate SOFR_2027-09 owns that. UNKNOWN: SR3 positioning; whether gauge 72 overstates July core PCE; whether an energy-tail fade (Saudi STS) caps further hikes.",
+      "run_id": "tr-20260920T020818Z-ondemand",
+      "schema_version": 1,
+      "thesis": "FACT: Fed hiked 25bp to 3.75-4.00%; SOFR 3.85%; SR3U7 implies 4.755% then the strip eases; August CPI kept a tightening bias; US labor gauge 75 with payrolls +162k and U-rate 4.1%; BoJ hiked, BoE 6-3 with three hike votes. INFERENCE: inflation persistence and a still-restrictive reaction function imply a higher 2027 terminal than 4.75% and no 2028 cut residual. The 25bp meeting was >90% priced; the mispricing is the path. Long implied-rate SOFR_2027-09 owns that. UNKNOWN: SR3 positioning; whether gauge 72 overstates July core PCE; whether an energy-tail fade (Saudi STS) caps further hikes."
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_DECISION_JOURNAL"
 }
