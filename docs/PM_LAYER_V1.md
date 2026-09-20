@@ -8,18 +8,18 @@ This is the four-PM layer above the locked 14-seat Trader Room. It does not chan
 
 | PM | Mandate | Risk-capital limit | HEDGE |
 | --- | --- | --- | --- |
-| `chatgpt` | No forced style. Final synthesis. May trade or choose no-trade. | $1bn gross notional | allowed |
-| `swinger` | Very aggressive/concentrated when the thesis is valid. Reduce/close instead of hedging. | $1bn gross notional | **prohibited** |
-| `pragmatist` | Opportunistic macro. Can swing big or grind singles/doubles. | $1bn gross notional | allowed |
-| `grinder` | Preservation/consistency first. Smaller sizes, high hurdles, quick de-risking. No-trade is valid. | $1bn gross notional | allowed |
+| `chatgpt` | No forced style. Final synthesis. May trade or choose no-trade. | $100m shocked risk | allowed |
+| `swinger` | Very aggressive/concentrated when the thesis is valid. Reduce/close instead of hedging. | $100m shocked risk | **prohibited** |
+| `pragmatist` | Opportunistic macro. Can swing big or grind singles/doubles. | $100m shocked risk | allowed |
+| `grinder` | Preservation/consistency first. Smaller sizes, high hurdles, quick de-risking. No-trade is valid. | $100m shocked risk | allowed |
 
-Each PM has **$1bn paper NAV**, but notional is descriptive rather than the binding risk limit. Trusted code caps each book at **$100m of standard-shock risk capital** and enforces a **$50m drawdown from high-water NAV**. Risk capital is the absolute MTM loss from the standard adverse move: 1% in spot FX, 100bp in outright rates, or 100bp in curve/RV spreads. PMs earn official NY Fed SOFR ACT/360 on the full paper cash hurdle and pay the same SOFR on shocked risk capital; equal risk capital receives equal financing treatment across asset classes. If deterministic marks are insufficient to compute risk capital, expansion fails closed. Official NY Fed SOFR is the realized funding authority; SR3 is forward context; a model funding forecast cannot mutate realized accounting. After every action:
+Each PM has **$1bn paper NAV**, but notional is descriptive rather than the binding risk limit. Trusted code caps each book at **$100m of standard-shock risk capital** and enforces a **$50m drawdown from high-water NAV**. Risk capital is the absolute MTM loss from the standard adverse move: 1% in spot FX, 100bp in outright rates, or 100bp in curve/RV spreads. PMs earn official NY Fed SOFR ACT/360 on the full paper cash hurdle and pay the same SOFR on shocked risk capital; equal risk capital receives equal financing treatment across asset classes. If deterministic marks are insufficient to compute risk capital, expansion fails closed. Official NY Fed SOFR is the realized funding authority; SR3 is forward context; a model funding forecast cannot mutate realized accounting. After every action, trusted code requires:
 
 ```
-sum(abs(open position notional)) <= 1_000_000_000
+sum(position shocked-risk capital) <= 100_000_000
 ```
 
-Cap breach or a missing required paper mark fails closed. Options remain unavailable when premium/IV/strike marks are insufficient.
+A risk-cap breach or missing deterministic risk mark fails closed. Descriptive gross notional may exceed $1bn. Options remain unavailable when premium/IV/strike marks are insufficient.
 
 ## Independence
 
