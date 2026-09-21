@@ -1,0 +1,257 @@
+{
+  "run_id": "tr-20260921T023610Z-ondemand",
+  "round": 2,
+  "agent": "positioning-cynic",
+  "remit": "attack crowded ideas; prefer better ownership asymmetry",
+  "packet_sha256": "cfb65337a1cdff3a17c8ffaab151fe220bf6640ba67547f1cda1ab5beac6a341",
+  "evidence_cutoff": "2026-09-21T02:36:10Z",
+  "conflict_ids": [
+    "opp-dir:AONIA_2027-03"
+  ],
+  "conflict_descriptions": {
+    "opp-dir:AONIA_2027-03": {
+      "id": "opp-dir:AONIA_2027-03",
+      "kind": "opposite_direction",
+      "agents": [
+        "mean-reverter",
+        "positioning-cynic"
+      ],
+      "description": "mean-reverter are long AONIA_2027-03 while positioning-cynic are short"
+    }
+  },
+  "opponents": [
+    "mean-reverter"
+  ],
+  "own_original_ref": "submissions/positioning-cynic.json",
+  "own_memory_ref": "memory/positioning-cynic.json",
+  "own_round1_paper_actions": [
+    {
+      "action": "HOLD",
+      "position_id": "pos-f18c10895ae3",
+      "instrument": "AONIA_2027-03",
+      "asset_class": "rates",
+      "side": "short",
+      "notional_usd": 45000000,
+      "rationale": "Inspected sidecar open_positions: already short AONIA_2027-03 pos-f18c10895ae3 at 45m notionals and 450k shocked risk versus a 10m cap and 5m HWM stop. CFTC now in-packet strengthens the crowding diagnosis but does not change the instrument. Do not OPEN a duplicate, do not migrate onto AU 2Y or AUDCAD, and do not ADD into 201-lot Mar-27 OI. Official SOFR 3.85 ACT/360 is already charged on the 450k; extra risk would pay more funding for no new ownership edge. HOLD.",
+      "thesis": "Housing-capped two-hike AONIA terminal remains the owned idea; Mar-27 implied 4.86 versus cash 4.35 is still the cleaner squeeze if global tightening forces more RBA."
+    }
+  ],
+  "own_round1_trade": {
+    "instrument": "AONIA_2027-03",
+    "asset_class": "rates",
+    "direction": "short",
+    "structure": "Pay/short ASX 30-day AONIA Mar-27 implied rate (AONIA_2027-03). Canonical side is short duration: profits if the implied-rate mark rises.",
+    "thesis": "FACT: Sidecar already owns short AONIA_2027-03 pos-f18c10895ae3 at implied 4.86 versus overnight AONIA 4.35 (+51bp), with ASX open interest 201 and volume 1. FACT: Oct-26 AONIA implies 4.565 (+21.5bp) on 21752 open interest and 4450 volume; Jun-27 implies 4.94 (+59bp). FACT: AU 2Y/5Y/10Y are 4.999/5.041/5.348, each the 99th 1y and 99th 5y percentile. FACT: NSW stamp-duty receipts fell 24% y/y in August, transactions -18%, Sydney/Melbourne values more than 7% below peak; AU gauges are inflation 82, labor 50, activity 54, consumer 48. FACT: CFTC TFF 2026-09-15 shows AUD futures OI at the 99th 1y/3y percentile (z 3.61/5.42) after +37673 contracts, but leveraged-fund AUD net is only the 31.7th 1y percentile; AUDCAD/AUDNZD sit at the 99.8th 1y and 99.96th 5y percentiles while AUDUSD is only the 76th 1y. FACT: Paper book already has long AONIA_2026-10 (catalyst-junkie) and long AONIA_2027-06 (perma-bear) versus this seat's short Mar-27; cross-merchant is already short AUDCAD. FACT: Fed delivered 25bp to 3.75-4.00 with SOFR 3.85; SR3H7 implies 4.565 (+71.5bp); BoJ hiked to 1.25%; desk thesis says the energy shock is constraining global easing. INFERENCE: The crowded trade is 'housing caps the RBA, receive front AONIA and/or fade AUDCAD from a 5y extreme.' That ownership is in Oct OI, in 99th-percentile AU bonds, and in the obvious cross fade. Mar-27 AONIA at 4.86 still prices only about two hikes and is almost unowned, even though the 2Y is already 4.999. Paying that empty terminal owns the squeeze if inflation 82 plus delivered global tightening force the RBA through the housing constraint, without joining crowded AUD-longs (OI extreme, net not extreme) or the crowded AUDCAD short. UNKNOWN: post-15 Sep CFTC, CME daily OI (403), live ASX depth, and the next RBA decision. Do not OPEN a second AONIA_2027-03.",
+    "mispricing": "FACT: Mar-27 AONIA 4.86 is 14bp below AU 2Y 4.999 and only +51bp over cash, with 201 open interest versus 21752 in Oct. INFERENCE: The housing-cap story is fully owned in front STIR and in bonds; the terminal that would have to reprice if that story is wrong is not owned.",
+    "horizon": "1-3 months through the next RBA decisions and the Oct-26 to Mar-27 AONIA averaging windows",
+    "invalidation": "Packet evidence that the housing channel has forced the RBA off the priced path: AONIA_2027-03 implied-rate mark falling toward AONIA_2026-10 4.565 or cash 4.35, and/or AU inflation/labor gauges breaking lower without further global tightening. A CFTC update that leveraged funds become extreme net-long AUD would argue for a spot fade instead, not for adding this pay.",
+    "confidence": 58,
+    "expression_comparison": {
+      "rates_candidate": {
+        "instrument": "AONIA_2027-03",
+        "asset_class": "rates",
+        "rationale": "Pay the empty Mar-27 AONIA implied rate. Same instrument as the selected stir_policy_path bucket and as the existing sidecar short. Canonical direction is short: expected implied-rate mark higher."
+      },
+      "spot_candidate": "short AUDCAD (packet mid 0.9976, 99.8th 1y / 99.96th 5y percentile)",
+      "selected": "rates",
+      "rationale": "Rates is cleaner. Short AUDCAD is the crowded fade of a 5y extreme that cross-merchant already owns, and CFTC leveraged AUD net is only the 31.7th 1y percentile so there is no speculative-long squeeze to harvest in spot. Paying unowned Mar-27 AONIA owns the same macro (RBA not housing-capped) where ownership is actually empty. Expressions are not comparably clean; spot is inferior on positioning, not unavailable.",
+      "selected_bucket": "stir_policy_path",
+      "selection_rationale": "The discrepancy is an unowned RBA terminal versus a crowded housing-capped receive. Mar-27 AONIA is the only scan bucket that sits in the ownership vacuum (201 OI) while still being a live, packet-markable policy-path contract. Bonds, US duration, the US curve, and SOFR-CORRA are either already extreme or already owned."
+    },
+    "why_now": [
+      "CFTC TFF as of 2026-09-15 is now in the frozen packet and was previously an explicit unknown: AUD OI is a 99th-percentile crowding flag, but leveraged net is not, so the clean fade is not short AUDCAD.",
+      "Delivered Fed hike, BoJ 1.25%, and BoE 6-3 with three hike votes refresh the global-tightening transmission into an RBA path still capped at about two hikes.",
+      "The paper book is two-way on the housing receive (long Oct, long Jun-27) against this seat's already-open short Mar-27; adding a duplicate or migrating to the crowded cross would worsen ownership.",
+      "Carry and roll-down oppose a pay of 4.86 toward 4.35, so this is a positioning/catalyst expression, not a carry expression; size stays at the existing 45m rather than filling the cap."
+    ],
+    "catalysts": [
+      "Next RBA decision and Oct-26 AONIA averaging window versus still-hot inflation gauge 82",
+      "Follow-through from delivered Fed/BoJ tightening and BoE hawkish dissent into AUD rates",
+      "Squeeze of the housing-capped receive if stamp-duty/housing prints stabilize while CPI stays high"
+    ],
+    "principal_risks": [
+      "Housing downturn intensifies and the RBA skips, so Mar-27 implied rolls down toward cash; carry opposes the pay.",
+      "Mar-27 ASX contract is thin (OI 201, volume 1); paper marks exist but live liquidity is an unknown.",
+      "AU 2Y already at a 5y extreme: paying STIR can still lose if the whole AU curve mean-reverts from 99th-percentile yields.",
+      "Market-state snapshot is stale on NZ rates; CME positioning is unavailable; CFTC is six days old."
+    ],
+    "evidence_refs": [
+      "pos:cftc",
+      "market_state",
+      "tradable_rate_curves",
+      "policy_paths",
+      "policy:AU",
+      "rates:AU",
+      "rates:US",
+      "fx:AUDCAD",
+      "fx:AUDUSD",
+      "temp:AU:inflation",
+      "temp:AU:labor",
+      "temp:AU:activity",
+      "temp:AU:consumer",
+      "mw_20260916_au_housing_tightening",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "last24:desk-thesis",
+      "last24:BoJ raises its policy rate to 1.25%",
+      "rollup:Fed raises 25bp to 3.75–4.00%",
+      "paper_books",
+      "funding_context",
+      "research_method"
+    ],
+    "entry": null,
+    "target": null,
+    "stop": null
+  },
+  "own_conflict_synopsis": {
+    "seat": "positioning-cynic",
+    "primary_trade": "short AONIA_2027-03 (pay implied rate)",
+    "core_view": "The housing-capped RBA receive and the AUDCAD fade are the crowded ideas; keep paying empty Mar-27 AONIA so the book owns the terminal squeeze if inflation and peer tightening dominate housing.",
+    "usd_view": "neutral",
+    "cad_view": "not_relevant",
+    "aud_view": "neutral",
+    "nzd_view": "not_relevant",
+    "us_rates_view": "neutral",
+    "ca_rates_view": "not_relevant",
+    "au_rates_view": "higher",
+    "nz_rates_view": "not_relevant",
+    "risk_view": "neutral",
+    "carry_view": "opposes_trade",
+    "time_horizon": "1-3 months",
+    "key_catalyst": "Next RBA decision and Oct-26 AONIA window against inflation gauge 82 plus delivered Fed/BoJ tightening.",
+    "key_invalidation": "Mar-27 AONIA implied falling toward Oct 4.565 or cash 4.35 as housing forces a skip, without offsetting global tightening.",
+    "confidence": 58,
+    "conflict_tags": [
+      "AU_RATES_UP",
+      "AONIA_PAY",
+      "FADE_HOUSING_RECEIVE",
+      "AVOID_CROWDED_AUDCAD"
+    ]
+  },
+  "opposing_compact": {
+    "mean-reverter": {
+      "agent": "mean-reverter",
+      "stance_summary": "FACT: AU 2Y/5Y/10Y sit at the 99th percentile of both 1y and 5y samples while AONIA still prices about +51bp by Mar-27 and about +59.5bp at the 2027 H2 peak versus overnight 4.35, and AUDCAD/AUDNZD are at 5y extremes. INFERENCE: that is crowded RBA-hike extrapolation after the housing channel is already open (NSW stamp duty -24% y/y, transactions -18%, Sydney/Melbourne values more than 7% below peak). Fade the extra tightening in AONIA_2027-03 (receive). Close the legacy SOFR_2027-03 receive: US 10Y is statistically high, but US gauges remain hot and the September hike already printed, so the US fade lacks a reversal condition.",
+      "confidence": 58,
+      "conflict_synopsis": {
+        "seat": "mean-reverter",
+        "primary_trade": "long AONIA_2027-03 (receive)",
+        "core_view": "Fade the RBA's still-priced second hike and 99th-percentile AU yields because housing is already the reversal condition.",
+        "usd_view": "neutral",
+        "cad_view": "higher",
+        "aud_view": "lower",
+        "nzd_view": "higher",
+        "us_rates_view": "neutral",
+        "ca_rates_view": "lower",
+        "au_rates_view": "lower",
+        "nz_rates_view": "not_relevant",
+        "risk_view": "risk_off",
+        "carry_view": "opposes_trade",
+        "time_horizon": "6-12 weeks",
+        "key_catalyst": "Housing/labor/sentiment keep deteriorating so AONIA cannot sustain the second hike into Mar-27.",
+        "key_invalidation": "Housing stabilizes and inflation/labor re-accelerate, locking in AONIA_2027-03 at or above the packet 4.86 implied.",
+        "confidence": 58,
+        "conflict_tags": [
+          "AU_RATES_DOWN",
+          "AUD_DOWN",
+          "CAD_UP",
+          "NZD_UP",
+          "AONIA_RECEIVE",
+          "AUDCAD_FADE",
+          "HOUSING_REVERSAL"
+        ]
+      },
+      "paper_actions": [
+        {
+          "action": "CLOSE",
+          "position_id": "pos-1477172adb86",
+          "instrument": "SOFR_2027-03",
+          "asset_class": "rates",
+          "side": "long",
+          "rationale": "FACT: sidecar open_positions still holds receive SOFR_2027-03, position_id pos-1477172adb86, entry mark 4.58, notional 40m, shocked risk 400k. Packet SR3H7 implied is now 4.565. US 10Y 5.01 remains 99.9th percentile 5y, but US inflation/labor/activity/consumer gauges are 72/75/69/74, August CPI kept the tightening bias, and the 25bp hike to 3.75-4.00 is delivered with SOFR 3.85. INFERENCE: that is a statistical extreme without a reversal condition, which this remit is not allowed to fade. Closing frees risk for the AU housing-anchored receive and avoids duplicating a US-duration long beside AONIA. Paper at deterministic packet mid; no authored price."
+        },
+        {
+          "action": "OPEN",
+          "instrument": "AONIA_2027-03",
+          "asset_class": "rates",
+          "side": "long",
+          "expected_mark_direction": "lower",
+          "notional_usd": 50000000,
+          "rationale": "New expression, not a duplicate of an owned instrument. Receive Mar-27 AONIA (trusted side long because expected implied-rate mark is lower). 50m notional is 500k of 100bp standard-shock risk capital versus the 10m cap, leaving ample headroom after the SOFR close. Size is kept well inside the cap because inflation 82 can still deliver October and Mar-27 IB OI is only 201. Official SOFR 3.85 ACT/360 on ~500k shocked risk is the hurdle; a 10bp implied-rate mean-reversion is 50k under duration-1, which clears that funding cost if the second hike starts to be unpriced. Entry at packet mid 4.86 / price 95.14; no invented broker level.",
+          "thesis": "Fade the leftover AONIA tightening into an already-open Australian housing channel."
+        }
+      ],
+      "trade": {
+        "instrument": "AONIA_2027-03",
+        "asset_class": "rates",
+        "direction": "long",
+        "structure": "outright receive AONIA_2027-03 (long duration; profits if the canonical implied-rate mark falls)",
+        "thesis": "FACT: AU 2Y/5Y/10Y are at the 99th percentile of 1y and 5y history, AONIA Mar-27 still prices 4.86 versus cash 4.35, and the housing channel is already contracting (stamp duty, transactions, prices). INFERENCE: crowded extrapolation of a second RBA hike into a breaking housing market is the overshoot; the normalization catalyst is further housing/labor/sentiment deterioration capping the RBA after at most one more 25bp. Expression is receive AONIA_2027-03 (direction long, expected implied-rate mark lower). UNKNOWN: whether October still prints; CFTC; NZ yields; executable bid/ask. The legacy long SOFR_2027-03 is closed rather than added to: US 10Y is 99.9th percentile 5y, but inflation 72 / labor 75 / a delivered hike are not reversal conditions.",
+        "mispricing": "FACT: Mar-27 AONIA 4.86 embeds about +51bp versus overnight and AU 2Y 4.999 sits above that implied. INFERENCE: the market is pricing a two-hike RBA path as if housing were not already the binding constraint. The closing mechanism is a failure of the second hike, not an immediate easing cycle. Spot AUDCAD at a 5y extreme is the same crowded AU-hawkish narrative but is a noisier product of two USD legs.",
+        "horizon": "6-12 weeks, through the next RBA windows and Q4 housing/labor prints into the Mar-27 AONIA averaging period",
+        "invalidation": "Thesis is wrong if AU housing quantities/prices stabilize or reverse while inflation/labor re-accelerate enough for the RBA to validate the leftover tightening, leaving AONIA_2027-03 implied at or above the current packet mark of 4.86 as the second hike is locked in. Wrong-timing, not wrong-thesis, if October prints (~4.565) but Mar-27 still bleeds the second hike. US gauges staying hot are not this trade's invalidation; they are why SOFR receive is closed.",
+        "confidence": 58,
+        "expression_comparison": {
+          "rates_candidate": {
+            "instrument": "AONIA_2027-03",
+            "asset_class": "rates",
+            "rationale": "Receive Mar-27 AONIA at packet implied 4.86 versus overnight 4.35. The contract owns the second hike that housing should prevent; paper marks exist on the ASX IB family. Direction long under the trusted convention (expected implied-rate mark lower)."
+          },
+          "spot_candidate": "short AUDCAD (packet spot 0.9976, 1y percentile 99.80, 5y percentile 99.96) as the FX reflection of crowded AU-hawkish versus CA-cheap extrapolation",
+          "selected": "rates",
+          "rationale": "Rates are preferred because the mispricing lives in the RBA path and 99th-percentile AU yields, not in a USD pair. AUDCAD is a genuine 5y extreme, but FACT it is the product of two moderate USD legs (AUDUSD 76.4/84.3 1y/5y, USDCAD 74.0/87.0); CAD can reprice on BoC energy-pass-through without unwinding the AONIA second-hike residual. AONIA_2027-03 is executable from tradable_rate_curves and is not inferior to spot.",
+          "selected_bucket": "stir_policy_path",
+          "selection_rationale": "AONIA_2027-03 is the only scan bucket that simultaneously (i) sits on a live AU policy path, (ii) owns the extra ~51bp of tightening still priced into 2027 H1, and (iii) is the rates expression of a 99th-percentile AU yield complex whose reversal condition is already visible in housing, labor, activity and September consumer sentiment. AU 2Y is the statistical co-extreme but mixes global beta; CA-US RV is a 5y stretch whose fair-value legs fight each other."
+        },
+        "why_now": [
+          "Housing facts are known but AU yields remain 99th percentile 5y and AONIA still prices the second hike — the missing move is the path cap, which is why now rather than after the next print.",
+          "September Westpac-MI sentiment fell 5.2% to 84.4, unemployment is 4.5%, employment -15.8k, and RBA business conditions/confidence are below average — the real-side sequence that usually follows a housing quantity collapse is in motion.",
+          "Global hawkish impulse (Fed delivered, BoJ 1.25%, BoE 6-3) is the extrapolation engine; fading the local extra hike is cleaner than fading the Fed while US gauges stay hot.",
+          "Book already owns receive SOFR_2027-03 without a US reversal condition; rotate that risk into the AU contract that has both stretch and catalyst."
+        ],
+        "catalysts": [
+          "Further NSW/national housing volume, price or stamp-duty deterioration confirming the tightening channel.",
+          "RBA communications or an IB strip that drops the second hike while inflation 82 is still the dissenting gauge.",
+          "Labor/activity/sentiment follow-through from unemployment 4.5%, employment -15.8k, and September consumer sentiment 84.4."
+        ],
+        "principal_risks": [
+          "Inflation gauge 82 and July trimmed mean 3.6% y/y can force both priced hikes regardless of housing.",
+          "Global energy/tightening impulse (desk thesis; BoC energy pass-through; BoJ/Fed/BoE) keeps term rates bid and drags AONIA with UST 10Y at 5.01.",
+          "Thin Mar-27 IB open interest (201) versus Oct; paper marks exist but the contract can gap relative to the liquid front.",
+          "CFTC/CME positioning unknown; crowding cannot be verified.",
+          "Market-state is stale because NZ_rates is unavailable; AU-NZ RV cannot be used as a cross-check."
+        ],
+        "evidence_refs": [
+          "mw_20260916_au_housing_tightening",
+          "rollup:Australian housing downturn deepens under higher rates",
+          "policy:AU",
+          "rates:AU",
+          "tradable_rate_curves",
+          "policy_paths",
+          "fx:AUDCAD",
+          "fx:AUDNZD",
+          "fx:AUDUSD",
+          "fx:USDCAD",
+          "temp:AU:inflation",
+          "temp:AU:labor",
+          "temp:AU:activity",
+          "temp:AU:consumer",
+          "last24:desk-thesis",
+          "policy:US",
+          "rates:US",
+          "policy:CA",
+          "rates:CA",
+          "pos:cftc",
+          "market_state",
+          "research_method",
+          "rollup:Fed raises 25bp to 3.75–4.00%",
+          "mw_20260916_fomc_hike_pricing"
+        ],
+        "entry": null,
+        "target": null,
+        "stop": null
+      }
+    }
+  },
+  "no_subagents": true,
+  "no_new_evidence": true
+}

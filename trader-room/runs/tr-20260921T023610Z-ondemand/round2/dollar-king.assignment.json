@@ -1,0 +1,1416 @@
+{
+  "run_id": "tr-20260921T023610Z-ondemand",
+  "round": 2,
+  "agent": "dollar-king",
+  "remit": "express macro views through USD spot whenever a defensible USD pair exists",
+  "packet_sha256": "cfb65337a1cdff3a17c8ffaab151fe220bf6640ba67547f1cda1ab5beac6a341",
+  "evidence_cutoff": "2026-09-21T02:36:10Z",
+  "conflict_ids": [
+    "opp-view:USD",
+    "opp-view:CAD",
+    "opp-view:NZD"
+  ],
+  "conflict_descriptions": {
+    "opp-view:USD": {
+      "id": "opp-view:USD",
+      "kind": "opposite_currency_view",
+      "agents": [
+        "carry-is-king",
+        "catalyst-junkie",
+        "dollar-king",
+        "perma-bear",
+        "rate-dove",
+        "rate-hawk",
+        "trend-follower",
+        "perma-bull",
+        "value-guy"
+      ],
+      "description": "carry-is-king, catalyst-junkie, dollar-king, perma-bear, rate-dove, rate-hawk, trend-follower expect USD higher while perma-bull, value-guy expect USD lower"
+    },
+    "opp-view:CAD": {
+      "id": "opp-view:CAD",
+      "kind": "opposite_currency_view",
+      "agents": [
+        "cross-merchant",
+        "mean-reverter",
+        "perma-bull",
+        "value-guy",
+        "carry-is-king",
+        "dollar-king",
+        "rate-dove",
+        "rate-hawk",
+        "trend-follower"
+      ],
+      "description": "cross-merchant, mean-reverter, perma-bull, value-guy expect CAD higher while carry-is-king, dollar-king, rate-dove, rate-hawk, trend-follower expect CAD lower"
+    },
+    "opp-view:NZD": {
+      "id": "opp-view:NZD",
+      "kind": "opposite_currency_view",
+      "agents": [
+        "mean-reverter",
+        "perma-bull",
+        "value-guy",
+        "vol-convexity",
+        "catalyst-junkie",
+        "dollar-king",
+        "perma-bear",
+        "rate-dove",
+        "trend-follower"
+      ],
+      "description": "mean-reverter, perma-bull, value-guy, vol-convexity expect NZD higher while catalyst-junkie, dollar-king, perma-bear, rate-dove, trend-follower expect NZD lower"
+    }
+  },
+  "opponents": [
+    "carry-is-king",
+    "catalyst-junkie",
+    "perma-bear",
+    "rate-dove",
+    "rate-hawk",
+    "trend-follower",
+    "perma-bull",
+    "value-guy",
+    "cross-merchant",
+    "mean-reverter",
+    "vol-convexity"
+  ],
+  "own_original_ref": "submissions/dollar-king.json",
+  "own_memory_ref": "memory/dollar-king.json",
+  "own_round1_paper_actions": [
+    {
+      "action": "HOLD",
+      "position_id": "pos-5317bc96d4eb",
+      "instrument": "USDCAD",
+      "asset_class": "spot_fx",
+      "side": "long",
+      "conviction": 62,
+      "rationale": "FACT: sidecar already owns long USDCAD pos-5317bc96d4eb, notional 55000000, shocked risk 550000, remaining cap 9450000, mark 1.401047, HWM drawdown only funding. Do not OPEN a duplicate. INFERENCE: the US-CA discrepancy still clears the 3.85% SOFR ACT/360 hurdle on 550k risk, but FX is 3 days stale and USDCAD is already a 5y 87th percentile, so path risk says HOLD not ADD. UNKNOWN: live USDCAD after 2026-09-18.",
+      "thesis": "Keep the existing long USDCAD as the USD-spot expression of the US-Canada policy/labor gap.",
+      "invalidation": "Close or reduce if Canada delivers the priced CORRA catch-up into core or if US data force SR3 to reprice cuts while USDCAD reverses the latest grind."
+    }
+  ],
+  "own_round1_trade": {
+    "instrument": "USDCAD",
+    "asset_class": "spot_fx",
+    "direction": "long",
+    "structure": "long USDCAD spot",
+    "thesis": "FACT: USD overnight and 2Y yields sit far above CAD, US gauges are hotter, and the Fed has just hiked, while USDCAD is only a 1y 74th-percentile rate. INFERENCE: long USDCAD owns a USD-versus-CAD policy/labor gap that crosses would contaminate with RBA housing or NZ-rates holes. Carry supports holding the existing long. UNKNOWN: whether BoC energy pass-through or CAD oil beta caps further upside before the rates gap closes in FX.",
+    "mispricing": "FACT: CA-US 2Y is -140bp at a 1y 3.8th percentile while USDCAD z_1y is only 0.80. INFERENCE: spot still prices a BoC/oil catch-up that labor, core, and the post-hike SOFR/SR3 path do not justify. The mispricing lives in USD-CAD spot, not in a cross and not in chasing USDCHF at a 1y 99.8th percentile.",
+    "horizon": "1-3 months",
+    "invalidation": "Thesis is wrong if Canada delivers the priced CORRA catch-up with energy pass-through into core while US labor/inflation cool enough to cap further Fed tightening, and USDCAD gives back the latest 5-day/1-month grind without the CA-US 2Y gap staying extreme. Right-thesis/wrong-timing if the rates gap holds but CAD oil-beta or short-covering delays spot.",
+    "confidence": 62,
+    "expression_comparison": {
+      "rates_candidate": null,
+      "spot_candidate": "long USDCAD",
+      "selected": "spot",
+      "rationale": "Dedicated USD-spot seat. FACT: both US and CA policy paths are available, the 2Y CA-US spread is -140bp at a 1y 3.8th percentile, and USDCAD is a liquid USD pair. INFERENCE: a CORRA or SOFR-CORRA rates expression would own the path gap, but the FX discrepancy is that spot has not matched that extreme rates gap; USD spot versus CAD is the remit expression. Crosses (AUDCAD, NZDCAD) add a second commodity/RBA/RBNZ leg the packet does not require. USDJPY is a weaker USD pair after the BoJ hike because 20d realized vol is 11.0 and the 1y percentile is only 52. EURUSD already sits at a 1y 10.9th percentile so residual USD-versus-EUR edge is smaller. AUDUSD fights a positive AU-US 2Y differential. NZDUSD is already at a 1y 12.9th/5y 8.6th percentile with NZ rates unavailable."
+    },
+    "why_now": [
+      "SOFR printed 3.85 on 2026-09-17 after the 25bp hike, converting a pre-priced FOMC call into a higher overnight USD funding benchmark versus CORRA 2.29.",
+      "BoJ hike to 1.25% and BoE 6-3 hold confirm a global tightening impulse; USDJPY still rose 1.41% 1d, a USD-spot check that foreign hawks are not automatically USD-negative.",
+      "Saudi workaround reduced CAD's extreme oil-tail support while BoC minutes still only flag pass-through risk rather than a delivered core break.",
+      "Existing book already expresses this view in pos-5317bc96d4eb; the 3m USDCAD dip versus an extreme rates gap is still the discrepancy, so the seat holds rather than chasing a duplicate open."
+    ],
+    "catalysts": [
+      "Canadian labor and CPI versus whether CORRA's 84-107bp 2027H1 catch-up is delivered.",
+      "US inflation/labor follow-through that keeps SR3 from re-pricing a cut versus SOFR 3.85.",
+      "Energy: Saudi workaround versus BoC pass-through into core.",
+      "Global CB confirmation already in last-24h (BoJ 1.25%, BoE 6-3) if it continues to support USD as the benchmark."
+    ],
+    "principal_risks": [
+      "BoC energy pass-through into core forces faster CAD hikes than labor implies and compresses CA-US spreads via the CAD leg.",
+      "CAD oil beta reasserts if the energy shock tail returns despite the Saudi workaround.",
+      "US activity/consumer already mixed (Q2 GDP +1.5% SAAR; July retail -0.6%; Michigan September 47.8) and could cap USD if labor breaks.",
+      "FX as_of 2026-09-18 is stale versus cutoff 2026-09-21T02:36:10Z; live USDCAD is UNKNOWN.",
+      "CFTC is as_of 2026-09-15 and PACKET_FACTS top-level positioning is null; a later crowded long-USD/CAD book is UNKNOWN.",
+      "Official SOFR 3.85 ACT/360 is charged on shocked-risk capital, so a stagnant USDCAD still has a small negative carry versus the zero flat benchmark."
+    ],
+    "evidence_refs": [
+      "fx:USDCAD",
+      "fx:USDJPY",
+      "fx:EURUSD",
+      "fx:AUDUSD",
+      "fx:NZDUSD",
+      "fx:USDCHF",
+      "policy:US",
+      "policy:CA",
+      "policy_paths",
+      "rates:US",
+      "rates:CA",
+      "temp:US:inflation",
+      "temp:US:labor",
+      "temp:US:activity",
+      "temp:US:consumer",
+      "temp:CA:inflation",
+      "temp:CA:labor",
+      "temp:CA:activity",
+      "rollup:Fed raises 25bp to 3.75–4.00%",
+      "rollup:August CPI keeps the Fed tightening bias intact",
+      "rollup:Canada August inflation holds at 3%, core stays near 2%",
+      "rollup:BoC minutes flag higher energy pass-through risk",
+      "last24:desk-thesis",
+      "last24:BoJ raises its policy rate to 1.25%",
+      "last24:BoE holds 3.75%, but three members vote to hike",
+      "mw_20260916_fomc_hike_pricing",
+      "mw_20260916_saudi_oman_workaround",
+      "market_state",
+      "pos:cftc",
+      "funding_context",
+      "tradable_rate_curves"
+    ],
+    "entry": null,
+    "target": null,
+    "stop": null
+  },
+  "own_conflict_synopsis": {
+    "seat": "dollar-king",
+    "primary_trade": "long USDCAD",
+    "core_view": "The US-Canada policy and labor gap is historically extreme in rates and only partly in USDCAD, so the clean USD expression is to stay long USDCAD.",
+    "usd_view": "higher",
+    "cad_view": "lower",
+    "aud_view": "neutral",
+    "nzd_view": "lower",
+    "us_rates_view": "higher",
+    "ca_rates_view": "lower",
+    "au_rates_view": "higher",
+    "nz_rates_view": "not_relevant",
+    "risk_view": "risk_off",
+    "carry_view": "supports_trade",
+    "time_horizon": "1-3 months",
+    "key_catalyst": "Canadian labor/CPI versus a still-higher US SOFR/SR3 path, with energy pass-through the main CAD-hawkish threat.",
+    "key_invalidation": "BoC delivers priced catch-up with core break while US data cap further tightening and USDCAD reverses the 5d/1m grind.",
+    "confidence": 62,
+    "conflict_tags": [
+      "USD_UP",
+      "CAD_DOWN"
+    ]
+  },
+  "opposing_compact": {
+    "carry-is-king": {
+      "agent": "carry-is-king",
+      "stance_summary": "FACT: CORRA overnight is 2.29 while MX CRAH27 / CORRA_2027-03 implies 3.13 (+84bp) and the 3m strip still climbs toward 3.51-3.65 into 2027-28. FACT: Canada August CPI held 3.0% y/y with CPI-trim 1.9 and CPI-median 2.0, employment -42k, wages +2.0% y/y, labor gauge 38. INFERENCE: the Mar-27 contract is still paying 84bp of tightening for an energy-pass-through/Fed-catch-up story that domestic core and labor have not validated; a patient receiver earns implied-minus-realized if that path is not delivered. The same macro in spot is long USDCAD to collect SOFR 3.85 versus CORRA 2.29, but that pair is already an 87th-percentile 5y level with an energy-supported CAD tail, so rates is cleaner. Sidecar already owns long CORRA_2027-03 pos-b97bddbdbd2d at 75m / 750k shock; HOLD, do not duplicate. UNKNOWN: whether pass-through lifts core enough to force the priced hikes; CORRA open interest/volume and executable broker mids are absent.",
+      "confidence": 62,
+      "conflict_synopsis": {
+        "seat": "carry-is-king",
+        "primary_trade": "long CORRA_2027-03 (receive CRAH27)",
+        "core_view": "Canada still prices 84bp of hikes into Mar-27 while core is at target and jobs contracted; a patient receiver harvests that premium unless energy pass-through forces delivery.",
+        "usd_view": "higher",
+        "cad_view": "lower",
+        "aud_view": "not_relevant",
+        "nzd_view": "not_relevant",
+        "us_rates_view": "higher",
+        "ca_rates_view": "lower",
+        "au_rates_view": "not_relevant",
+        "nz_rates_view": "not_relevant",
+        "risk_view": "neutral",
+        "carry_view": "supports_trade",
+        "time_horizon": "2-4 months through Mar-27",
+        "key_catalyst": "Canada labor/core staying at-target while the post-Fed global-tightening narrative is what is keeping 84bp in CRAH27.",
+        "key_invalidation": "Trim/median leave 1.9/2.0 higher and jobs stop contracting as BoC delivers the priced 2027 mid-3s path.",
+        "confidence": 62,
+        "conflict_tags": [
+          "CA_RATES_DOWN",
+          "USD_UP",
+          "CAD_DOWN",
+          "US_RATES_UP",
+          "CARRY_SUPPORTS"
+        ]
+      },
+      "paper_actions": [
+        {
+          "action": "HOLD",
+          "position_id": "pos-b97bddbdbd2d",
+          "instrument": "CORRA_2027-03",
+          "asset_class": "rates",
+          "side": "long",
+          "rationale": "FACT: Sidecar already owns long CORRA_2027-03 pos-b97bddbdbd2d, 75m notional, 750k standard-shock risk, entry_mark 3.4, inside the 10m cap and 5m HWM. FACT: Packet mid is CRAH27 3.13. INFERENCE: thesis intact — 84bp of hike premium remains versus overnight 2.29 and at-target core — so do not CLOSE/REDUCE; do not OPEN a duplicate CRA family. Patient size: 750k risk versus 10m cap is enough for the remaining premium without chasing ADD after the recorded 3.4-to-3.13 mark gap. Official SOFR 3.85% ACT/360 on 750k is the funding hurdle; expected implied-minus-realized on even a fraction of the 84bp clears it. Paper at packet mid; no authored P&L."
+        }
+      ],
+      "trade": {
+        "instrument": "CORRA_2027-03",
+        "asset_class": "rates",
+        "direction": "long",
+        "structure": "long CORRA_2027-03 (MX CRAH27 receive / long duration; canonical mark is implied rate; profits if that mark falls)",
+        "thesis": "FACT: Overnight CORRA is 2.29 as of 2026-09-17; CRAH27 implies 3.13 (+84.0bp) and the strip still prices CRAM27 3.365, CRAU27 3.51, and a 2028-09 high of 3.655. FACT: Headline CPI held at 3.0% y/y; CPI-trim 1.9 and CPI-median 2.0 are near target; employment fell 42k in August; average hourly wages cooled to +2.0% y/y from +2.8%; unemployment 6.4% unchanged; labor gauge 38, inflation 55, consumer 45, activity 66 on Q2 GDP +0.8% q/q and a stronger Ivey PMI. FACT: Fed delivered 25bp to 3.75-4.00% with SOFR 3.85 and SR3H7 at 4.565 (+71.5bp); desk thesis says the energy shock is constraining the global easing impulse. INFERENCE: Mar-27 is being used as a Fed-catch-up/energy-pass-through contract while Canadian core and labor remain a hold/ease profile. Receiving 3.13 against 2.29 overnight is the patient carry: if the priced hikes are not realized, implied-minus-overnight accrues without needing a dramatic catalyst. UNKNOWN: live CORRA positioning and whether BoC energy-pass-through risk in the 2 Sep minutes becomes realized core.",
+        "mispricing": "FACT: CRAH27 prices 84bp of hikes over CORRA 2.29 and the 2027-28 strip still goes to the mid-3s. FACT: Canadian underlying inflation is at target and the labor print is clearly weaker. INFERENCE: the market is overpaying a tightening sequence Canada has not earned on core/labor, importing a global hawkish narrative into a low-carry-for-payers Canadian front end. The receiver is paid if even part of that 84-136bp of priced tightening is not delivered.",
+        "horizon": "2-4 months, through the March 2027 contract window",
+        "invalidation": "BoC delivers or credibly signals the priced 2027 mid-3s path (CRAU27 3.51 through CRAU28 3.655), or CPI-trim/median leave 1.9/2.0 higher while August-style job losses reverse.",
+        "confidence": 62,
+        "expression_comparison": {
+          "rates_candidate": {
+            "instrument": "CORRA_2027-03",
+            "asset_class": "rates",
+            "rationale": "Receive MX CRAH27. Canonical implied-rate mark 3.13 versus CORRA 2.29. Long duration / expected mark lower. This is the selected stir_policy_path bucket and the existing book instrument."
+          },
+          "spot_candidate": "long USDCAD (collect official SOFR 3.85 versus CORRA 2.29 overnight differential; packet mid 1.4010471204188482 as of 2026-09-18)",
+          "selected": "rates",
+          "rationale": "Rates is the default when both expressions are usable. Receiving CORRA_2027-03 owns the overpriced Canadian hike path and earns implied-minus-realized if hikes are not delivered. Long USDCAD would collect the 156bp overnight differential, but FACT the pair is already 74th 1y / 87th 5y after +1.74% 1m and +1.10% 5d, and energy/Saudi-workaround news can support CAD against that carry. CFTC CAD leveraged-fund net is -10.9% of OI at the 99th 1y percentile of signed net with a +16426 weekly change, so the spot book is not a clean uncrowded carry harvest. The selected rates candidate is not inferior; it is cleaner.",
+          "selected_bucket": "stir_policy_path",
+          "selection_rationale": "CORRA_2027-03 is the only tenor that directly owns the 84bp overnight-to-Mar-27 hike premium on a tradable MX CRA contract, matches the locked sidecar family, and does not require paying US hike premium or mixing CA 10Y global duration. CA 2Y is the next-best rates expression but is a sovereign mix of path plus term premium with the official CA zero curve unavailable."
+        },
+        "why_now": [
+          "FACT: The 16 Sep FOMC hike to 3.75-4.00% was >90% priced into the decision, and last-24h desk thesis plus BoJ 1.25% and a 6-3 BoE hold keep a global-tightening narrative that can pin Canadian hike premium without Canadian core moving.",
+          "FACT: Canada August CPI held 3.0% with trim/median 1.9/2.0; employment -42k; wages +2.0% y/y. Those prints are known, but they now sit against a still-upward CORRA strip after the Fed event.",
+          "FACT: Sidecar already owns the locked CRA family at pos-b97bddbdbd2d; the edge still clears official SOFR 3.85% ACT/360 charged on 750k shocked risk if even a slice of the 84bp Mar-27 premium is not delivered. Patient HOLD, not a second OPEN."
+        ],
+        "catalysts": [
+          "Canada labor and CPI that keep trim/median near 2% and employment weak, allowing the 84bp Mar-27 premium to decay without a hike.",
+          "Saudi STS-off-Oman workaround continuing to reduce the extreme oil-supply tail that BoC minutes flagged as pass-through risk.",
+          "BoC communications that refuse a Fed-catch-up hiking sequence while core stays near target."
+        ],
+        "principal_risks": [
+          "BoC energy-pass-through risk in the 2 Sep minutes becomes realized core inflation and forces the priced 2027 hikes.",
+          "Synchronized global tightening (Fed hike, BoJ to 1.25%, BoE 3-hike votes) imports into Canadian term rates even if domestic labor stays soft.",
+          "CA Q2 GDP +0.8% q/q, household consumption +0.8% q/q, and Ivey PMI strength re-accelerate activity into 2027 and validate catch-up hikes.",
+          "CA 2Y +31bp 1m analogs from 2022-06-30 and 2023-04-14 continued higher over 3m in hiking-cycle regimes; that path can repeat if this is 2022 not 2026-04.",
+          "UNKNOWN: MX CORRA open interest/volume null in the packet; CFTC TFF is CAD FX not CORRA; executable broker mids absent; market_state family is stale because NZ_rates is unavailable."
+        ],
+        "evidence_refs": [
+          "policy:CA",
+          "policy:US",
+          "policy_paths",
+          "tradable_rate_curves",
+          "rates:CA",
+          "rates:US",
+          "temp:CA:inflation",
+          "temp:CA:labor",
+          "temp:CA:activity",
+          "temp:CA:consumer",
+          "temp:US:inflation",
+          "temp:US:labor",
+          "temp:US:activity",
+          "fx:USDCAD",
+          "funding_context",
+          "pos:cftc",
+          "market_state",
+          "research_method",
+          "rollup:Canada August inflation holds at 3%, core stays near 2%",
+          "rollup:BoC minutes flag higher energy pass-through risk",
+          "rollup:Fed raises 25bp to 3.75–4.00%",
+          "mw_20260916_fomc_hike_pricing",
+          "last24:desk-thesis",
+          "mw_20260916_saudi_oman_workaround",
+          "paper_books"
+        ],
+        "entry": null,
+        "target": null,
+        "stop": null
+      }
+    },
+    "catalyst-junkie": {
+      "agent": "catalyst-junkie",
+      "stance_summary": "FACT: September AONIA sits at 4.355 versus 4.35 cash while October AONIA implies 4.565, 21.5bp of tightening, with the October contract the most liquid point on the ASX strip. FACT: NSW stamp-duty receipts fell 24% y/y in August, transactions fell 18%, Sydney and Melbourne values are more than 7% off peak, July employment fell 15.8k, and September Westpac-MI sentiment dropped 5.2% to 84.4. INFERENCE: the next RBA decision is the dated mechanism that must reconcile a housing/labor/sentiment tightening channel with a cash-rate hike that October already nearly fully prices; a hold/skip reprices October toward cash, while a standard 25bp hike is largely in the implied rate. UNKNOWN: the exact RBA calendar date and whether global energy/Fed/BoJ hawkish clustering forces an Australian hike anyway. Book already owns long AONIA_2026-10; HOLD, do not duplicate.",
+      "confidence": 58,
+      "conflict_synopsis": {
+        "seat": "catalyst-junkie",
+        "primary_trade": "long AONIA_2026-10 (receive / implied-rate lower)",
+        "core_view": "October AONIA prices a near-certain RBA hike that the housing/labor/sentiment channel and the next Board decision can still cancel, repricing implied rates lower.",
+        "usd_view": "higher",
+        "cad_view": "neutral",
+        "aud_view": "lower",
+        "nzd_view": "lower",
+        "us_rates_view": "higher",
+        "ca_rates_view": "higher",
+        "au_rates_view": "lower",
+        "nz_rates_view": "not_relevant",
+        "risk_view": "risk_off",
+        "carry_view": "supports_trade",
+        "time_horizon": "next RBA decision / October AONIA window",
+        "key_catalyst": "The next RBA cash-rate decision, informed by the Sep-16 housing evidence and the September sentiment drop, is the dated event that confirms or cancels the 21.5bp October hike premium.",
+        "key_invalidation": "RBA hikes enough that October AONIA stays at or above the 4.565 packet mid, or housing/inflation data reverse and the Board pre-commits to an imminent hike.",
+        "confidence": 58,
+        "conflict_tags": [
+          "AU_RATES_DOWN",
+          "AUD_DOWN",
+          "USD_UP",
+          "US_RATES_UP"
+        ]
+      },
+      "paper_actions": [
+        {
+          "action": "HOLD",
+          "position_id": "pos-deddf5aa0c83",
+          "instrument": "AONIA_2026-10",
+          "asset_class": "rates",
+          "side": "long",
+          "rationale": "FACT: sidecar already owns long AONIA_2026-10 (position_id pos-deddf5aa0c83), 55m notional, 550k shocked risk versus a 10m cap and 5m HWM stop, mark 4.565 versus sidecar entry 4.57. INFERENCE: the dated October RBA/housing catalyst is intact, so the existing receive is the right expression; Fed/BoJ/BoE hawkish clustering since the last hold is a reason not to ADD. Do not OPEN a duplicate. Official SOFR 3.85% ACT/360 on 550k shocked risk is a small hurdle versus a 21.5bp skip-October edge. Thesis remains implied-rate lower (canonical long)."
+        }
+      ],
+      "trade": {
+        "instrument": "AONIA_2026-10",
+        "asset_class": "rates",
+        "direction": "long",
+        "structure": "outright ASX 30-day AONIA October 2026 future; long = receive / profits if implied rate falls",
+        "thesis": "FACT: AONIA cash is 4.35 as of 18-Sep-2026; the September 30-day contract implies 4.355 (+0.5bp) while October implies 4.565 (+21.5bp) with open interest 21752 and volume 4450, the most active point on the strip. FACT: AU 3m bank bills are 4.68 and 6m bills 5.08, so the front STIR/bill complex is pricing a hike that has not printed in overnight cash. FACT: Reuters/NSW evidence dated 2026-09-16 shows stamp-duty receipts -24% y/y, volumes -18%, and Sydney/Melbourne values more than 7% below peak; ABS July employment -15.8k and unemployment 4.5%; September Westpac-MI sentiment 84.4, down 5.2% from 88.9. INFERENCE: September cash already reveals the RBA did not lift in the current month, so October is the first live month that can embed a 25bp cash move; pricing 21.5bp of that move is a near-certain October hike. The housing/labor/sentiment cluster is the transmission channel the next RBA statement has to address, so a hold or delay is a dated repricing path for October implied rates lower. UNKNOWN: whether trimmed-mean CPI still at 3.6% y/y plus an 82 inflation-gauge score and the post-FOMC/BoJ/BoE hawkish cluster dominate housing and force delivery. Sidecar already holds this exact long; paper action is HOLD.",
+        "mispricing": "FACT: October AONIA 4.565 versus cash 4.35 is 21.5bp of tightening packed into the first contract that can fully reflect a hike after a September contract that is pinned to cash. INFERENCE: that is too much certainty of an imminent cash-rate increase given the housing downturn, weaker labor impulse, and the September sentiment drop, all of which are information the next RBA decision must process. UNKNOWN: the precise day-count mapping of any hike inside the October averaging window, which the packet does not specify.",
+        "horizon": "into the next RBA decision and the October AONIA averaging window",
+        "invalidation": "The thesis is invalidated if the RBA delivers a cash-rate increase that keeps October realized/implied AONIA at or above the current 4.565 packet mid, or if incoming Australian inflation/housing data reverse the downturn evidence and the Board signals an imminent hike the strip has not yet fully priced.",
+        "confidence": 58,
+        "expression_comparison": {
+          "rates_candidate": {
+            "instrument": "AONIA_2026-10",
+            "asset_class": "rates",
+            "rationale": "Long October AONIA (receive / implied-rate lower) owns the skip-or-delay versus a 21.5bp priced October hike; it is the selected stir_policy_path bucket."
+          },
+          "spot_candidate": "short AUDUSD (AUD lower if the RBA skips the hike already in October AONIA; packet mid 0.7120, 76th percentile 1y)",
+          "selected": "rates",
+          "rationale": "Rates are cleaner: October AONIA isolates the RBA cash decision and the 21.5bp hike premium. AUDUSD adds commodity, China, and USD-beta that the packet does not date to the same RBA event, so spot is the fallback not the primary.",
+          "selected_bucket": "stir_policy_path",
+          "selection_rationale": "October AONIA is the only scanned rates expression that maps a packet-dated housing/sentiment/labor cluster onto a single, liquid, first-live policy contract whose implied rate already embeds nearly a full hike versus unchanged cash."
+        },
+        "why_now": [
+          "October AONIA is the first live, liquid contract that embeds 21.5bp of tightening versus unchanged 4.35 cash after September AONIA printed only +0.5bp.",
+          "The 2026-09-16 housing evidence and the September Westpac-MI sentiment drop are dated inputs the next RBA decision cannot ignore, creating a defined repricing window rather than a valuation-only fade.",
+          "Global Fed/BoJ/BoE hawkish clustering can keep term premia bid, but it is not a substitute for an Australian cash hike in October once the housing channel is already biting."
+        ],
+        "catalysts": [
+          "Next RBA cash-rate decision, which is the event that either confirms or cancels the 21.5bp October AONIA hike premium.",
+          "Further Australian housing, labor, CPI, or sentiment prints that force the Board to acknowledge the tightening channel before that decision.",
+          "A hold or smaller-than-priced October cash outcome that pulls October implied AONIA back toward the 4.35 cash/September strip."
+        ],
+        "principal_risks": [
+          "AU inflation-gauge score 82 and trimmed-mean CPI 3.6% y/y still give the Board cover to hike despite housing.",
+          "Fed hike to 3.75-4.00%, BoJ hike to 1.25%, BoE 6-3 with three hike votes, and the desk energy-shock thesis can keep a global tightening impulse that spills into the RBA reaction function.",
+          "A larger-than-25bp Australian hike, or an early-October hike that prints a high October AONIA average, would move the mark higher against the long.",
+          "CFTC positioning is null and market-state is stale on NZ, so ownership/flow confirmation is missing."
+        ],
+        "evidence_refs": [
+          "policy_paths",
+          "tradable_rate_curves",
+          "policy:AU",
+          "rates:AU",
+          "mw_20260916_au_housing_tightening",
+          "rollup:Australian housing downturn deepens under higher rates",
+          "temp:AU:inflation",
+          "temp:AU:labor",
+          "temp:AU:activity",
+          "temp:AU:consumer",
+          "policy:US",
+          "rollup:Fed raises 25bp to 3.75–4.00%",
+          "last24:desk-thesis",
+          "last24:BoJ raises its policy rate to 1.25%",
+          "pos:cftc",
+          "fx:AUDUSD",
+          "market_state",
+          "research_method",
+          "funding_context"
+        ],
+        "entry": null,
+        "target": null,
+        "stop": null
+      }
+    },
+    "perma-bear": {
+      "agent": "perma-bear",
+      "stance_summary": "FACT: overnight AONIA is 4.35 and the locked IB 2027-03/04/05/06 strip still marks at 4.9075 (Mar 4.86 / Apr 4.895 / May 4.935 / Jun 4.94), so about 51-59bp of extra tightening remains priced into a housing downturn, July employment -15.8k, unemployment 4.5%, and a 5.2-point September sentiment drop to 84.4. INFERENCE: that residual hike path is a late-cycle policy error; receiving the already-owned AONIA_2027-06 strip is the cleanest slowdown expression. UNKNOWN: whether inflation score 82 plus the delivered Fed/BoJ/BoE hawkish impulse lets the RBA still deliver the strip.",
+      "confidence": 61,
+      "conflict_synopsis": {
+        "seat": "perma-bear",
+        "primary_trade": "long AONIA_2027-06 (receive locked 2027-03/06 IB strip)",
+        "core_view": "IB still prices 51-59bp of extra RBA hikes into an already-open housing, labor and sentiment downturn, so the leftover 2027 H1 path is a policy error to receive.",
+        "usd_view": "higher",
+        "cad_view": "neutral",
+        "aud_view": "lower",
+        "nzd_view": "lower",
+        "us_rates_view": "neutral",
+        "ca_rates_view": "neutral",
+        "au_rates_view": "lower",
+        "nz_rates_view": "not_relevant",
+        "risk_view": "risk_off",
+        "carry_view": "supports_trade",
+        "time_horizon": "1-4 RBA meetings / 2027 H1",
+        "key_catalyst": "Next RBA decision and 2026-10/11 IB windows versus further housing/labor/sentiment deterioration.",
+        "key_invalidation": "IB 2027-03/06 holds or rises through 4.86-4.94 while housing and labor stop deteriorating and inflation stays hot enough to deliver the extra hikes.",
+        "confidence": 61,
+        "conflict_tags": [
+          "AU_RATES_DOWN",
+          "AUD_DOWN",
+          "USD_UP",
+          "RISK_OFF",
+          "AONIA_2027-06_LONG"
+        ]
+      },
+      "paper_actions": [
+        {
+          "action": "HOLD",
+          "position_id": "pos-3b40ade3da2c",
+          "instrument": "AONIA_2027-06",
+          "asset_class": "rates",
+          "side": "long",
+          "notional_usd": 55000000,
+          "rationale": "FACT: sidecar open_positions already owns long AONIA_2027-06 position_id pos-3b40ade3da2c, 55m notional, 550k shocked risk, entry/mark 4.91 / 4.9075 on the locked 2027-03/06 IB strip; risk_stopped is false and remaining shock room is 9.45m versus the 10m cap. INFERENCE: the housing/labor/sentiment discrepancy is intact so this is not a CLOSE, but inflation 82 plus the delivered Fed/BoJ/BoE hawkish impulse is two-sided enough that this is not an ADD. Official SOFR 3.85 ACT/360 on 550k is a small hurdle versus a 25bp IB reprice, and the existing size already clears it without filling the cap. Do not OPEN a duplicate AONIA_2027-06."
+        }
+      ],
+      "trade": {
+        "instrument": "AONIA_2027-06",
+        "asset_class": "rates",
+        "direction": "long",
+        "structure": "Locked paper family is ASX 30-day AONIA (IB) futures_strip_average of 2027-03/2027-04/2027-05/2027-06; receive/long duration so profit is a lower canonical implied-rate mark. Sidecar already owns this as position_id pos-3b40ade3da2c at 55m notional / 550k shocked risk.",
+        "thesis": "FACT: AONIA cash is 4.35 as of 18-Sep-2026. Tradable IB contracts price Oct-26 4.565 (+21.5bp), Mar-27 4.86 (+51bp), Jun-27 4.94 (+59bp) and Jul/Aug-27 4.945 (+59.5bp). The owned AONIA_2027-06 paper mark is the 2027-03/06 strip average 4.9075. NSW stamp-duty receipts fell 24% y/y in August with transactions -18% and Sydney/Melbourne values more than 7% below peak. AU labor: unemployment 4.5% from 4.4%, employment -15.8k, WPI +3.2% y/y vs +3.4%. Activity: Q2 GDP +0.4% q/q, August business conditions/confidence softer. Consumer: Westpac-MI sentiment fell 5.2% to 84.4 on 16 Sep after a still-strong July spending print. Inflation score is 82, but July headline CPI eased to 3.5% from 3.8% while trimmed mean stayed 3.6%. AU 2Y/5Y/10Y sit at 4.999/5.041/5.348, all ~99th 1y percentile after a +26 to +39bp one-month sell-off. Desk thesis: energy shock is constraining the global easing impulse after Fed 25bp to 3.75-4.00, BoJ to 1.25%, and BoE 6-3 hold. Sidecar open_positions already holds long AONIA_2027-06 pos-3b40ade3da2c. INFERENCE: the market is still pricing almost two extra RBA hikes into 2027 H1 after the housing/labor/sentiment channel is already open; that is a policy-error slowdown discrepancy, and receiving the locked strip owns it more cleanly than short AUD. UNKNOWN: CFTC/CME positioning (packet status partial/null), post-cutoff RBA communication, executable IB depth on the thin H1-27 contracts, and whether global term-rate pressure plus inflation 82 forces the residual 50-60bp to be delivered anyway.",
+        "mispricing": "FACT: IB still embeds about +51bp by Mar-27 and +59bp by Jun-27 versus overnight AONIA 4.35, and the owned strip marks 4.9075. INFERENCE: that residual tightening assumes the RBA can keep leaning on inflation score 82 after the housing, employment and sentiment evidence is already showing the tightening channel biting. The priced assumption is that the remaining two-hike 2027 H1 path is still the base case. UNKNOWN: the exact next RBA decision date and any unpublished housing/CPI vintage after the packet cutoff.",
+        "horizon": "1-4 RBA meetings / through 2027 H1 averaging windows",
+        "invalidation": "RBA delivers, or the locked IB 2027-03/06 strip holds/reprices through the packet residual (Mar-27 4.86 / Jun-27 4.94 versus cash 4.35) while housing transactions/values and labor stop deteriorating and AU inflation stays hot enough to validate the extra hikes.",
+        "confidence": 61,
+        "expression_comparison": {
+          "rates_candidate": {
+            "instrument": "AONIA_2027-06",
+            "asset_class": "rates",
+            "rationale": "Receive the locked IB 2027-03/06 strip (instrument AONIA_2027-06, paper mark 4.9075 versus cash 4.35). Expected mark direction is lower, so the canonical side is long duration. This is the selected stir_policy_path bucket."
+          },
+          "spot_candidate": "short AUDUSD (spot 0.712022367194781 as of 2026-09-18; 76.4 1y / 84.3 5y percentile). Stretched alternative short AUDCAD at 0.9975768872320596, 99.80 1y / 99.96 5y percentile.",
+          "selected": "rates",
+          "rationale": "Rates are preferred when comparable. The mispricing is the leftover IB hike path, not AUD spot. AUDUSD is only a 76th/84th percentile and is still supported by the same 51-59bp of priced tightening; short AUD would require those hikes to fail and would add China/commodity/USD residual that the packet does not isolate. AUDCAD is a 5y extreme discovery flag, but Canada labor -42k and energy pass-through make the cross a two-sided relative-value bet. The owned AONIA strip is already the cleaner, markable expression of the housing/policy-error view, so spot is inferior rather than unavailable.",
+          "selected_bucket": "stir_policy_path",
+          "selection_rationale": "The discrepancy is the residual 51-59bp of IB tightening still priced into 2027 H1 after the housing, labor and sentiment channel is already open. AONIA_2027-06 is the locked, markable receive of that path. Sovereign 2Y/5Y/10Y only confirm the hike is in the bond market; AU 2s10s and AU-US 2Y do not own the extra-hike assumption as cleanly."
+        },
+        "why_now": [
+          "FACT: NSW stamp-duty -24% y/y, transactions -18%, Sydney/Melbourne values more than 7% below peak — the RBA tightening channel is already open, not prospective.",
+          "FACT: 16 Sep Westpac-MI sentiment fell 5.2% to 84.4, July employment was -15.8k, and unemployment rose to 4.5%, while IB still prices Mar-27 4.86 and Jun-27 4.94.",
+          "FACT: the book already owns the locked 2027-03/06 AONIA strip at 4.9075; this is a HOLD of pos-3b40ade3da2c, not a duplicate OPEN.",
+          "INFERENCE: global hawkish reinforcement (Fed delivered, BoJ 1.25%, BoE three hike votes) is a reason not to add, not a reason to abandon the local housing/policy-error discrepancy."
+        ],
+        "catalysts": [
+          "Next RBA decision and 2026-10/11 AONIA averaging windows that must start converting the +21.5 to +33.5bp near-term path into cash.",
+          "Further Australian housing, employment or Westpac-MI prints that either confirm the downturn or reverse it.",
+          "Whether the energy/global-tightening overlay (desk thesis, Fed/BoJ/BoE) keeps term-rate pressure on IB or local housing dominates."
+        ],
+        "principal_risks": [
+          "AU inflation score 82 and unchanged July trimmed mean 3.6% can still justify delivering the residual 50-60bp.",
+          "Desk-thesis global tightening impulse (Fed 3.75-4.00 / SOFR 3.85, BoJ 1.25%, BoE 6-3) can lift the whole AONIA strip even if housing stays weak.",
+          "July household spending +1.1% m/m and Q2 GDP +0.4% mean this is not yet a collapse; the RBA can look through housing.",
+          "H1-27 IB open interest is thin (Mar 201, Apr 400, May 375, Jun null) versus Oct 21752, so the markable strip can gap.",
+          "Official SOFR 3.85 ACT/360 is charged on shocked risk capital; a long-held unchanged mark still pays the funding vig.",
+          "UNKNOWN: positioning; a crowded receive would weaken ownership asymmetry."
+        ],
+        "evidence_refs": [
+          "policy_paths",
+          "tradable_rate_curves",
+          "policy:AU",
+          "rates:AU",
+          "temp:AU:inflation",
+          "temp:AU:labor",
+          "temp:AU:activity",
+          "temp:AU:consumer",
+          "mw_20260916_au_housing_tightening",
+          "rollup:Australian housing downturn deepens under higher rates",
+          "last24:desk-thesis",
+          "fx:AUDUSD",
+          "fx:AUDCAD",
+          "rates:US",
+          "policy:US",
+          "funding_context",
+          "pos:cftc",
+          "market_state",
+          "paper_books",
+          "research_method"
+        ],
+        "entry": null,
+        "target": null,
+        "stop": null
+      }
+    },
+    "rate-dove": {
+      "agent": "rate-dove",
+      "stance_summary": "Restrictive policy is already biting Canada harder than the 2027 CORRA strip admits. Overnight CORRA is 2.29 while the locked 2027 H-Z CRA average is 3.40, a +111bp re-hike cycle, even as August employment fell 42k, wages slowed to +2.0% y/y, and CPI-trim/median sit at 1.9/2.0 with headline only 3.0. The Fed's delivered 25bp hike and 3.85 SOFR raise the lag on Canadian demand; they do not create a domestic mandate for mid-3s CORRA. Receive the already-owned 2027 strip and HOLD it rather than open a duplicate.",
+      "confidence": 62,
+      "conflict_synopsis": {
+        "seat": "rate-dove",
+        "primary_trade": "long CORRA_2027H-Z (receive 2027 CRA strip)",
+        "core_view": "Canada's 2027 CORRA strip still prices a +111bp re-hike cycle that August labor and 1.9/2.0 trim/median will not deliver, so implied 2027 CORRA falls.",
+        "usd_view": "higher",
+        "cad_view": "lower",
+        "aud_view": "lower",
+        "nzd_view": "lower",
+        "us_rates_view": "lower",
+        "ca_rates_view": "lower",
+        "au_rates_view": "lower",
+        "nz_rates_view": "not_relevant",
+        "risk_view": "neutral",
+        "carry_view": "supports_trade",
+        "time_horizon": "3-9 months",
+        "key_catalyst": "Canadian labor/CPI and BoC communication that refuses to validate mid-3s 2027 CRA.",
+        "key_invalidation": "BoC delivers the priced 2027 mid-3s path, or trim/median leave 1.9/2.0 while jobs stop contracting.",
+        "confidence": 62,
+        "conflict_tags": [
+          "CA_RATES_DOWN",
+          "CAD_DOWN",
+          "USD_UP",
+          "US_RATES_DOWN",
+          "AUD_DOWN"
+        ]
+      },
+      "paper_actions": [
+        {
+          "action": "HOLD",
+          "position_id": "pos-9849cf751c27",
+          "instrument": "CORRA_2027H-Z",
+          "asset_class": "rates",
+          "side": "long",
+          "notional_usd": 85000000,
+          "rationale": "FACT: Sidecar already owns LONG CORRA_2027H-Z pos-9849cf751c27 at entry/mark 3.4, 85m notional, 850k standard-shock risk capital, remaining 9.15m, drawdown 90.9, not risk_stopped. Do not OPEN a duplicate strip. Do not ADD: energy pass-through remains the live hawk risk, market-state is stale, and 850k versus the 10m cap is enough to own the +111bp path error without filling the limit. Official SOFR 3.85 ACT/360 is already charged on that shocked risk. HOLD is the book decision; the debate trade stays receive 2027 CRA."
+        }
+      ],
+      "trade": {
+        "instrument": "CORRA_2027H-Z",
+        "asset_class": "rates",
+        "direction": "long",
+        "structure": "Receive MX CRA 2027 H-Z as the locked CORRA family futures_strip_average of 2027-03/06/09/12 (CRAH27/CRAM27/CRAU27/CRAZ27). Canonical long duration: profits when the implied-rate mark falls. Packet strip mid 3.40 versus overnight CORRA 2.29.",
+        "thesis": "FACT: As of 2026-09-17 overnight CORRA is 2.29. Tradable CRA 3m implieds are 2.385 (2026-09), 2.775 (2026-12), 3.13 (2027-03, +84bp), 3.365 (2027-06, +107.5bp), 3.51 (2027-09, +122bp) and 3.595 (2027-12, +130.5bp); the equal-weight 2027 H-Z strip marks 3.40 (+111bp). FACT: August CPI headline is 3.0% y/y with CPI-trim 1.9 and CPI-median 2.0; employment -42k, unemployment 6.4% unchanged, average hourly wages +2.0% y/y versus +2.8% in July; CA gauges labor 38, consumer 45, inflation 55, activity 66. FACT: Fed hiked 25bp to 3.75-4.00; official SOFR jumped to 3.85 on 2026-09-17; SR3 prices 4.315 (2026-12), 4.565 (2027-03), 4.735 (2027-09). FACT: CA 2Y is 3.27 (1y percentile 97.8; 5y 58.5) and CA-US 2Y is -140bp (1y percentile 3.8). INFERENCE: The 2027 CRA strip is pricing an energy-pass-through catch-up hiking cycle that domestic labor and underlying CPI do not require. Restrictive US policy and the already-low 2.29 CORRA overnight should slow Canada further, so 2027 implied CORRA falls rather than being delivered into the mid-3s. UNKNOWN: whether BoC minutes' energy pass-through, Q2 GDP +0.8% q/q, and the two-sided oil news (shock absorbers weaker versus a Saudi/Oman workaround) can still force validation of the strip. CFTC/CME positioning is null/unavailable.",
+        "mispricing": "Market-implied 2027 CORRA of 3.13-3.595 (strip 3.40) requires roughly 3-5 additional 25bp BoC hikes from a 2.29 overnight while trim/median are already at target and jobs contracted. That hike cycle is the priced assumption; labor and underlying inflation say it is not delivered.",
+        "horizon": "3-9 months, through 2027 H1-H2 BoC meetings and the next Canadian labor/CPI sequence",
+        "invalidation": "BoC delivers or credibly signals the priced 2027 mid-3s CORRA path (strip remaining near 3.40 / CRAH27 near 3.13 as hikes print), or CPI-trim/median leave 1.9/2.0 while employment stops contracting.",
+        "confidence": 62,
+        "expression_comparison": {
+          "rates_candidate": {
+            "instrument": "CORRA_2027H-Z",
+            "asset_class": "rates",
+            "rationale": "Receive the locked MX CRA 2027 H-Z strip (2027-03/06/09/12 average, packet mid 3.40). Long duration / expected implied-rate mark lower. This is the selected stir_policy_path bucket and the already-owned book instrument."
+          },
+          "spot_candidate": "long USDCAD (USD higher / CAD lower if BoC fails to deliver the priced 2027 hike cycle); packet mid 1.4010471204188482 as of 2026-09-18",
+          "selected": "rates",
+          "rationale": "Rates are the default when both expressions are clean, and here they are not even close: the mispricing lives in 2027 implied CORRA, not in CAD spot. USDCAD is already at the 87th 5y percentile after +1.74% in 1m, so CAD-weakness is partly paid. Energy can support CAD even if CRA 2027 reprices lower. The sidecar already owns the strip; opening USDCAD would add FX oil beta without owning more of the path error.",
+          "selected_bucket": "stir_policy_path",
+          "selection_rationale": "The discrepancy is a 2027 BoC hike cycle that labor and trim/median do not support. The locked CORRA 2027 H-Z strip is the packet-marked average of that cycle (+111bp vs 2.29 overnight). CA_2Y and CA-US_2Y are valid but less direct; 5Y/10Y/2s10s add term-premium and curve-data gaps."
+        },
+        "why_now": [
+          "FACT: The Fed has already delivered 25bp and SOFR printed 3.85 on 2026-09-17, so extra US restriction is in the overnight rate now; that raises the lag on Canadian labor rather than authorizing a +111bp 2027 CRA catch-up.",
+          "FACT: August Canadian CPI still holds headline at 3.0 with trim/median 1.9/2.0, and employment -42k with wages +2.0% y/y; the domestic mandate for mid-3s CORRA has not improved in this freeze.",
+          "FACT: CA 2Y is down 4bp over 5d while US 2Y is up 13bp, and CA-US 2Y is -140bp at the 3.8th 1y percentile; the front-end has started to diverge easier even as the 2027 strip still embeds +111bp.",
+          "Sidecar already owns LONG CORRA_2027H-Z pos-9849cf751c27 at packet mid 3.40; the discrepancy is live, so the debate trade stays the strip and the book action is HOLD, not a duplicate OPEN."
+        ],
+        "catalysts": [
+          "Next Canadian labor report confirming further job losses or wage cooling versus a reversal of the -42k / +2.0% wage print.",
+          "Next CPI print that keeps trim/median near 1.9/2.0 rather than validating energy pass-through into core.",
+          "BoC communication that refuses to endorse the priced 2027 mid-3s CRA path despite the September minutes' energy language.",
+          "Lagged bite from the Fed's delivered 25bp hike and 3.85 SOFR on Canadian demand and CAD financial conditions."
+        ],
+        "principal_risks": [
+          "BoC treats energy pass-through as sufficient to re-tighten into the mid-3s even with jobs contracting.",
+          "Q2 GDP +0.8% q/q and firmer Ivey PMI persist into Q3, rewriting the labor-softening story.",
+          "Oil tail re-widens (shock absorbers weaker) and headline 3.0% pulls trim/median off 1.9/2.0.",
+          "US hike cycle exports into CAD financial conditions in a way that forces BoC to follow rather than stay at 2.29.",
+          "Packet market-state is stale (NZ_rates) and CFTC/CME positioning is missing, so a flow-driven squeeze higher in 2027 CRA cannot be ruled out."
+        ],
+        "evidence_refs": [
+          "policy:CA",
+          "policy:US",
+          "policy_paths",
+          "tradable_rate_curves",
+          "rates:CA",
+          "rates:US",
+          "temp:CA:labor",
+          "temp:CA:inflation",
+          "temp:CA:activity",
+          "temp:CA:consumer",
+          "rollup:Canada August inflation holds at 3%, core stays near 2%",
+          "rollup:BoC minutes flag higher energy pass-through risk",
+          "rollup:Fed raises 25bp to 3.75–4.00%",
+          "fx:USDCAD",
+          "funding_context",
+          "market_state",
+          "pos:cftc",
+          "research_method"
+        ],
+        "entry": null,
+        "target": null,
+        "stop": null
+      }
+    },
+    "rate-hawk": {
+      "agent": "rate-hawk",
+      "stance_summary": "FACT: the Fed has delivered 25bp to 3.75-4.00% with official SOFR at 3.85, SR3 peaks at 4.735 in 2027-09 then eases, and US labor/services remain expansionary while energy shock-absorbers weaken and BoJ/BoE stay in a tightening-or-split regime. INFERENCE: the strip still prices a completed hike cycle and a shallow post-peak ease that understates inflation persistence. The owned short SOFR_2027-09 remains the clean pay-terminal expression; HOLD rather than add after the already-large 1m front-end rerating.",
+      "confidence": 58,
+      "conflict_synopsis": {
+        "seat": "rate-hawk",
+        "primary_trade": "short SOFR_2027-09",
+        "core_view": "After a delivered 25bp hike, SR3 still peaks at 4.735 and then eases; inflation persistence, non-breaking labor/services, and a global energy/tightening overlay leave that terminal and easing tail too low.",
+        "usd_view": "higher",
+        "cad_view": "lower",
+        "aud_view": "lower",
+        "nzd_view": "not_relevant",
+        "us_rates_view": "higher",
+        "ca_rates_view": "higher",
+        "au_rates_view": "higher",
+        "nz_rates_view": "not_relevant",
+        "risk_view": "risk_off",
+        "carry_view": "opposes_trade",
+        "time_horizon": "3-6 months",
+        "key_catalyst": "Post-hike US inflation/labor/services prints and energy/global-tightening spillovers that force a higher SR3 peak.",
+        "key_invalidation": "SR3 2027-09 implied rate falls as the strip prices a peak below 4.735 while US labor and services break.",
+        "confidence": 58,
+        "conflict_tags": [
+          "US_RATES_UP",
+          "USD_UP",
+          "CAD_DOWN",
+          "AUD_DOWN",
+          "HIGHER_FOR_LONGER",
+          "SOFR_2027-09_SHORT"
+        ]
+      },
+      "paper_actions": [
+        {
+          "action": "HOLD",
+          "position_id": "pos-c9184707c12b",
+          "instrument": "SOFR_2027-09",
+          "asset_class": "rates",
+          "side": "short",
+          "notional_usd": 50000000,
+          "rationale": "Inspected sidecar open_positions: already short SOFR_2027-09 (pos-c9184707c12b, $50m notional, $500k shocked risk, entry_mark 4.75; paper_books mark 4.755). Do not OPEN a duplicate. Thesis unchanged after the delivered hike, but US 2Y/5Y already rerated ~50-57bp in 1m to 99th-percentile levels and hard data are mixed (GDP 1.5% SAAR, Michigan 47.8), so do not ADD. HOLD keeps ~$500k of the $10m shock cap at work versus official SOFR 3.85 ACT/360; expected edge is extra terminal/delayed easing, not filling the cap."
+        }
+      ],
+      "trade": {
+        "instrument": "SOFR_2027-09",
+        "asset_class": "rates",
+        "direction": "short",
+        "structure": "outright short SOFR_2027-09 (pay implied rate / short duration under the trusted mark convention)",
+        "thesis": "FACT: policy_paths US overnight SOFR is 3.85 as of 2026-09-17 after jumping from 3.62 on 2026-09-16; the Fed raised 25bp to 3.75-4.00%; SR3 2027-09 implied 4.735 is the strip peak (+88.5bp vs overnight) before 2028-03 4.675 and 2029-06 4.52. FACT: temp:US:inflation 72 with July core PCE +0.2% m/m, ~2.4% 1m/3m and ~3.0% 6m annualized; labor 75 with unemployment 4.1% unchanged, AHE +3.1% y/y, payrolls +162k; activity 69 with ISM services 55.4 and business activity/new orders above 60, GDP +1.5% SAAR in Q2. FACT: August CPI kept the Fed tightening bias intact; BoJ hiked to 1.25%; BoE held 3.75% 6-3 with three votes for 4.00%; energy-market shock absorbers weaken. INFERENCE: a reaction function that still cares about above-target 6m PCE, a non-breaking labor market, and a global energy/tightening overlay will not treat 4.735 as a durable terminal or validate the ~21bp post-peak ease. Paying the peak SR3 contract owns extra hikes and delayed easing in one liquid mark. UNKNOWN: the next FOMC statement path beyond the delivered hike, full August CPI components, and CFTC crowding.",
+        "mispricing": "FACT: SR3 prices ~88.5bp of additional tightening from SOFR 3.85 to a 4.735 peak, then a gentle fade. INFERENCE: that path assumes the September hike plus about three more 25bp steps completes the cycle and that inflation/labor cool enough to allow modest easing into 2028-29. The hawk disagreement is that persistence, services strength, and the energy/global-tightening overlay keep the terminal higher and keep the easing tail from being earned. UNKNOWN: whether the residual 21bp of post-peak ease is the larger error than the level of the peak itself.",
+        "horizon": "3-6 months, through the 2027 peak of the SR3 strip",
+        "invalidation": "Thesis is wrong if SR3 2027-09 implied rate moves lower because the strip prices a peak below the current 4.735 while US labor breaks from unemployment 4.1% and ISM services/new orders lose expansion, or if post-hike Fed communication treats 3.75-4.00% as terminal while 6m core PCE cools through the observed ~2.4% 1m/3m pace.",
+        "confidence": 58,
+        "expression_comparison": {
+          "rates_candidate": {
+            "instrument": "SOFR_2027-09",
+            "asset_class": "rates",
+            "rationale": "Pay the SR3 2027-09 peak (short duration / profits if implied rate rises). This is the selected stir_policy_path bucket and matches the owned book instrument."
+          },
+          "spot_candidate": "USDCAD long (USD higher versus CAD)",
+          "selected": "rates",
+          "rationale": "Rates are cleaner: the mispricing is the US terminal/easing tail, which SR3 owns directly. USDCAD would mix a 140bp CA-US 2Y gap, a BoC hiking cycle already priced at ~136bp, and energy terms-of-trade for CAD. USDCHF is already 99.8th 1y. Prefer rates when both expressions are usable; here rates are strictly cleaner and the seat already owns the SR3 contract.",
+          "selected_bucket": "stir_policy_path",
+          "selection_rationale": "The discrepancy is the US policy-path peak and the unearned easing tail after a delivered hike. SOFR_2027-09 is the liquid SR3 contract at that peak. 2Y/5Y are valid but already 99th-percentile sovereigns and are not substitutes for the strip. Curve and CA-US RV fight already-extreme levels and mixed country residuals."
+        },
+        "why_now": [
+          "FACT: the 25bp hike is now realized (SOFR 3.85 on 2026-09-17) after >90% pre-decision pricing, so the live debate has shifted from the September meeting to the terminal and pause.",
+          "FACT: August CPI was already in the tape as keeping the tightening bias, and last-24h BoJ 1.25% plus BoE 6-3 hike dissent keep global easing constrained.",
+          "INFERENCE: that is when underpriced extra restriction shows up in the 2027 peak contract rather than in the front 1m SOFR, which already embeds the delivered hike."
+        ],
+        "catalysts": [
+          "Further US inflation prints that keep the tightening bias after the delivered hike",
+          "Labor/services data that refuse to break (payrolls, unemployment, ISM services/new orders)",
+          "Energy pass-through and weaker shock-absorbers spilling into US and global reaction functions",
+          "BoJ/BoE-style tightening or hawkish splits reinforcing that global easing is constrained"
+        ],
+        "principal_risks": [
+          "FACT: US 2Y 4.76 / 5Y 4.86 / 10Y 5.01 already sit at ~99th 1y percentiles after +57bp/+51bp/+36bp over 1m, so a large hawkish rerating is already in the price.",
+          "FACT: Q2 GDP decelerated to +1.5% SAAR and Michigan preliminary September sentiment fell to 47.8; a demand break would validate the priced easing tail.",
+          "UNKNOWN: CFTC positioning is null, so crowding of the pay-terminal view cannot be measured.",
+          "INFERENCE: if the September hike was the last step markets needed, paying 4.735 is negative carry versus overnight SOFR 3.85."
+        ],
+        "evidence_refs": [
+          "policy:US",
+          "policy_paths",
+          "tradable_rate_curves",
+          "rates:US",
+          "temp:US:inflation",
+          "temp:US:labor",
+          "temp:US:activity",
+          "temp:US:consumer",
+          "rollup:Fed raises 25bp to 3.75–4.00%",
+          "rollup:August CPI keeps the Fed tightening bias intact",
+          "mw_20260916_fomc_hike_pricing",
+          "last24:BoJ raises its policy rate to 1.25%",
+          "last24:BoE holds 3.75%, but three members vote to hike",
+          "last24:desk-thesis",
+          "rollup:Energy-market shock absorbers weaken",
+          "policy:CA",
+          "policy:AU",
+          "rates:CA",
+          "rates:AU",
+          "temp:CA:inflation",
+          "temp:CA:labor",
+          "temp:AU:inflation",
+          "fx:USDCAD",
+          "pos:cftc",
+          "funding_context",
+          "paper_books",
+          "market_state"
+        ],
+        "entry": null,
+        "target": null,
+        "stop": null
+      }
+    },
+    "trend-follower": {
+      "agent": "trend-follower",
+      "stance_summary": "FACT: the Fed has already hiked 25bp to 3.75–4.00%, official SOFR jumped from 3.62 to 3.85, US 2Y/5Y/10Y sit at 1y extremes and are still rising, and the SR3 strip still prices a hiking path that peaks at 4.735 in Sep-2027. INFERENCE: price, policy and US gauges are aligned, so the higher-rate trend persists; fading 99th-percentile yields without a reversal signal is premature. UNKNOWN: CFTC positioning and NZ rates. Keep and modestly add the existing short-duration SOFR_2027-03 book.",
+      "confidence": 66,
+      "conflict_synopsis": {
+        "seat": "trend-follower",
+        "primary_trade": "short SOFR_2027-03 (pay/short duration; implied-rate mark higher)",
+        "core_view": "The US hiking trend is aligned across overnight SOFR, SR3, sovereign 2Y and hot gauges; fading 99th-percentile yields without a reversal signal is premature.",
+        "usd_view": "higher",
+        "cad_view": "lower",
+        "aud_view": "higher",
+        "nzd_view": "lower",
+        "us_rates_view": "higher",
+        "ca_rates_view": "higher",
+        "au_rates_view": "higher",
+        "nz_rates_view": "not_relevant",
+        "risk_view": "risk_off",
+        "carry_view": "opposes_trade",
+        "time_horizon": "1-3 months",
+        "key_catalyst": "Remaining FOMC path while US inflation/labor stay hot, reinforced by BoJ/BoE hawkish confirmation.",
+        "key_invalidation": "A dovish Fed pivot or a clear cooling in US inflation/labor gauges that takes the SR3 strip off a hiking path.",
+        "confidence": 66,
+        "conflict_tags": [
+          "US_RATES_UP",
+          "USD_UP",
+          "CAD_DOWN",
+          "AUD_UP",
+          "NZD_DOWN",
+          "RISK_OFF",
+          "CARRY_OPPOSES",
+          "REJECT_FADE"
+        ]
+      },
+      "paper_actions": [
+        {
+          "action": "ADD",
+          "position_id": "pos-662bff0986be",
+          "instrument": "SOFR_2027-03",
+          "asset_class": "rates",
+          "side": "short",
+          "expected_mark_direction": "higher",
+          "notional_usd": 25000000,
+          "rationale": "FACT: sidecar already owns short SOFR_2027-03 (pos-662bff0986be, 50m notional, 500k shocked risk, entry/mark 4.58, risk_stopped false, 9.5m risk remaining). Do not OPEN a duplicate. INFERENCE: BoJ hike, BoE hawkish split, and post-event US 2Y +9bp are confirmation, not a fade; add 25m notional (about 250k additional 100bp risk) at packet mid rather than filling the 10m cap. Carry opposes so size stays modest versus SOFR ACT/360 on shocked risk.",
+          "thesis": "Continuation of the US hiking cycle via the existing short-duration SR3 Mar-27; expected implied-rate mark higher."
+        }
+      ],
+      "trade": {
+        "instrument": "SOFR_2027-03",
+        "asset_class": "rates",
+        "direction": "short",
+        "structure": "outright SR3 Mar-27 implied-rate short (pay / short duration); profits if the canonical implied-rate mark rises",
+        "thesis": "FACT: Overnight SOFR printed 3.85 on 2026-09-17 after 3.62 on 2026-09-16; the Fed raised 25bp to 3.75–4.00%; CME SR3 Mar-27 (SR3H7) is 4.565 implied, +71.5bp versus overnight, and the strip peaks at SR3 Sep-27 4.735 (+88.5bp) before easing toward 4.49 by Dec-2029. US 2Y is 4.76 (+9bp 1d, +57bp 1m) at the 99.8th 1y percentile; 5Y 4.86 and 10Y 5.01 are also 1y extremes and still rising. US temperature gauges remain hot (inflation 72, labor 75, activity 69, consumer 74). August CPI kept the Fed tightening bias intact; futures entered the decision with greater-than-90% odds of the 25bp hike. BoJ hiked to 1.25%; BoE held 3.75% but split 6-3 with three hike votes. The desk thesis is that the Fed hawkish turn is being reinforced by broader global tightening. This seat already owns short SOFR_2027-03 (position_id pos-662bff0986be, paper entry/mark 4.58, 50m notional). INFERENCE: a fully priced hike that is followed by still-rising 2Y yields, hot gauges, and confirming global hikes is continuation, not a peak. Mean-reversion at a 99th-percentile print is not a reversal signal. The strip’s modest remaining +88.5bp peak and subsequent fade assume the cycle ends inside four more 25bp steps; aligned price/policy/macro argue that trend persists and the fade is early. Canonical side is short because expected_mark_direction is higher. UNKNOWN: holder/CFTC positioning is partial/null; NZ official rates are unavailable; market-state is stale on NZ_rates.",
+        "mispricing": "FACT: the tradable SR3 strip prices only +88.5bp of additional tightening from overnight 3.85 to a 4.735 Sep-2027 peak, then a gentle decline. INFERENCE: that path treats the delivered hike plus still-hot US inflation/labor/consumer gauges as enough to stop soon. The discrepancy is not the 99th-percentile yield level; it is the market’s assumption that the hiking trend is nearly complete. UNKNOWN: the exact terminal rate; packet has no numeric target.",
+        "horizon": "1-3 months, through the remaining 2026-27 hiking path",
+        "invalidation": "A concrete US policy-path reversal — dovish Fed communication or a clear cooling in US inflation/labor gauges that reprices the SR3 strip off a hiking path — not a 99th-percentile print alone. Packet supplies no numeric stop.",
+        "confidence": 66,
+        "expression_comparison": {
+          "rates_candidate": {
+            "instrument": "SOFR_2027-03",
+            "asset_class": "rates",
+            "rationale": "Pay / short-duration SR3 Mar-27 (canonical side short; expected implied-rate mark higher). Packet mid 4.565 on tradable_rate_curves; existing paper book marks 4.58."
+          },
+          "spot_candidate": "Long USDCHF (USD higher vs CHF): packet 2026-09-18 spot 0.8256544502617802, 1y percentile 99.80, 5y percentile 27.82, 1m return +3.337%, 5d +1.270%. Strongest G10 USD price trend in the packet; USDCAD 1m +1.745% is the more rates-linked alternative.",
+          "selected": "rates",
+          "rationale": "Rates and spot are both continuation expressions of the same hawkish US regime. They are comparably clean on price trend (US 2Y/STIR still rising; USDCHF at a 1y extreme and still rising). Protocol default is rates when comparable: SOFR_2027-03 owns the causal policy-path discrepancy, is already the open book, and does not require fading or chasing a 99th-percentile FX print. USDCHF is inferior because it is a consequence of the rate trend, mixes CHF-specific 5y mean-reversion (27th 5y percentile), and does not express the remaining SR3 hike path.",
+          "selected_bucket": "stir_policy_path",
+          "selection_rationale": "The aligned trend is the US hiking cycle. SR3 Mar-27 is the markable policy-path contract in the steep remaining segment, already the seat’s open position, and cleaner than cash 2Y, 5Y/10Y duration, 2s10s residual flattening, or US-CA RV."
+        },
+        "why_now": [
+          "FACT: the hike is now in overnight SOFR (3.62 to 3.85) and US 2Y still printed +9bp on 2026-09-18 after a decision that was already greater-than-90% priced — the trend did not fade the event.",
+          "FACT: BoJ 1.25% and BoE 6-3 with three hike votes arrived as global confirmation that the easing impulse remains constrained.",
+          "INFERENCE: this is the window where discretionary traders fade 99th-percentile yields; the aligned trend says hold and add, not reverse."
+        ],
+        "catalysts": [
+          "FACT: remaining FOMC meetings along the SR3 2026-27 strip while US CPI/labor stay hot.",
+          "FACT: global tightening confirmation already in the packet (BoJ hike; BoE hawkish split; energy shock absorbers weakening).",
+          "INFERENCE: further upside surprises in US inflation or activity would extend hike pricing through Mar-27 and the Sep-27 peak."
+        ],
+        "principal_risks": [
+          "FACT: the September hike was greater-than-90% priced, so much of the near-term event is behind the tape.",
+          "FACT: an upward-sloping SR3 curve (Mar-27 4.565 versus Sep-26 4.00) means unchanged-curve roll-down works against a short-duration position; carry opposes.",
+          "INFERENCE: a genuine US growth/labor break would invalidate continuation even if percentiles stay high.",
+          "FACT: CFTC positioning is unavailable; a crowded short-duration book cannot be ruled out.",
+          "FACT: AU housing is already showing the tightening channel biting, a possible later global-cycle brake.",
+          "FACT: official SOFR ACT/360 (3.85) is charged on shocked-risk capital."
+        ],
+        "evidence_refs": [
+          "policy_paths",
+          "tradable_rate_curves",
+          "policy:US",
+          "rates:US",
+          "temp:US:inflation",
+          "temp:US:labor",
+          "temp:US:activity",
+          "temp:US:consumer",
+          "rollup:Fed raises 25bp to 3.75–4.00%",
+          "rollup:August CPI keeps the Fed tightening bias intact",
+          "mw_20260916_fomc_hike_pricing",
+          "last24:desk-thesis",
+          "last24:BoJ raises its policy rate to 1.25%",
+          "last24:BoE holds 3.75%, but three members vote to hike",
+          "funding_context",
+          "market_state",
+          "research_method",
+          "pos:cftc",
+          "fx:USDCHF",
+          "paper_books"
+        ],
+        "entry": null,
+        "target": null,
+        "stop": null
+      }
+    },
+    "perma-bull": {
+      "agent": "perma-bull",
+      "stance_summary": "FACT: Canada still runs CORRA overnight at 2.29 while US SOFR is 3.85 after a delivered Fed hike, AONIA is 4.35, and MX CRAH27 (CORRA_2027-03) is only 3.13. INFERENCE: global growth and the energy-inflation constraint are more resilient than a 2.29 BoC setting, so Canada has to catch the hike cycle rather than stay on labor-insurance hold. The cleanest pro-cyclical expression is to stay short CORRA_2027-03 (pay implied CORRA). UNKNOWN: CFTC nets and CORRA open interest.",
+      "confidence": 61,
+      "conflict_synopsis": {
+        "seat": "perma-bull",
+        "primary_trade": "short CORRA_2027-03 (pay implied CORRA)",
+        "core_view": "Canada’s 2.29 CORRA setting still over-discounts resilient activity and a global tightening/energy-constraint regime, so Mar-27 implied CORRA at 3.13 has to reprice higher.",
+        "usd_view": "lower",
+        "cad_view": "higher",
+        "aud_view": "neutral",
+        "nzd_view": "higher",
+        "us_rates_view": "higher",
+        "ca_rates_view": "higher",
+        "au_rates_view": "neutral",
+        "nz_rates_view": "not_relevant",
+        "risk_view": "risk_on",
+        "carry_view": "opposes_trade",
+        "time_horizon": "1-4 months through the 2027-03 CORRA window",
+        "key_catalyst": "BoC energy-pass-through follow-through and still-positive Canada activity forcing catch-up hikes after the Fed/BoJ/BoE cluster.",
+        "key_invalidation": "CORRA_2027-03 back to the packet Dec-26 3m mid 2.775, or a confirmed Canada demand break with core near 2% and fading energy pass-through.",
+        "confidence": 61,
+        "conflict_tags": [
+          "CA_RATES_UP",
+          "CAD_UP",
+          "USD_DOWN",
+          "US_RATES_UP",
+          "NZD_UP",
+          "RISK_ON"
+        ]
+      },
+      "paper_actions": [
+        {
+          "action": "HOLD",
+          "position_id": "pos-dd6fdaf39119",
+          "instrument": "CORRA_2027-03",
+          "asset_class": "rates",
+          "side": "short",
+          "notional_usd": 50000000,
+          "rationale": "FACT: sidecar already owns short CORRA_2027-03 (position_id pos-dd6fdaf39119, 50m notional, 500k shocked-risk capital, entry/mark 3.13, risk_stopped false, remaining shock-risk capacity 9.5m). Do not OPEN a duplicate. Thesis is intact after the BoJ/BoE/desk tightening cluster and unchanged 3.13 mid, but Canada labor 38, core-near-2%, and +84bp already in CRAH27 argue against ADD. Official SOFR 3.85 ACT/360 is charged on the 500k; size already clears that vig if even a modest further catch-up toward the packet Jun-27 3.365 / Sep-27 3.51 mids arrives. HOLD."
+        }
+      ],
+      "trade": {
+        "instrument": "CORRA_2027-03",
+        "asset_class": "rates",
+        "direction": "short",
+        "structure": "Outright short MX CRAH27 / CORRA_2027-03 in implied-rate space (pay CORRA, short duration). Canonical side short profits if the packet implied-rate mark rises from 3.13. Paper at the frozen tradable-curve mid only.",
+        "thesis": "FACT: CORRA overnight is 2.29 as of 2026-09-17; the 3m strip prices 2.775 by Dec-26, 3.13 by Mar-27 (+84.0bp vs overnight), 3.365 by Jun-27 and a 2028 peak near 3.655. US SOFR jumped to 3.85 after the Fed delivered 25bp to 3.75-4.00%; SR3H7 is 4.565 and SR3U7 peaks at 4.735. Canada Q2 GDP was +0.8% q/q after +0.1% in Q1, Ivey PMI accelerated, household consumption +0.8% q/q and disposable income +2.1% q/q. Headline CPI held at 3.0% y/y with CPI-trim 1.9% and CPI-median 2.0%. BoC minutes flag higher energy pass-through; the last-24 desk thesis says the energy shock is constraining the global easing impulse after the Fed hike, BoJ 25bp to 1.25%, and a BoE 6-3 hold with three hike votes. INFERENCE: 2.29 is an over-insurance setting against the August jobs print, not an equilibrium compatible with still-positive activity and a global tightening regime. Mar-27 at 3.13 still prices a shallow catch-up versus US 4.565 and versus Canada's own 2028 CRA peak near 3.65, so paying Mar-27 owns the residual hike impulse without needing a new 10Y term-premium story. UNKNOWN: whether energy pass-through actually shows up in subsequent CPI, and whether August employment -42k is the start of a demand break.",
+        "mispricing": "FACT: CA-US 2Y is -140bp (1y percentile 3.77, 5y percentile 4.31, 1m change -17bp) and CA 2Y is 3.27 versus US 2Y 4.76. CORRA_2027-03 at 3.13 versus SOFR_2027-03 at 4.565 is a 143.5bp policy-path gap. INFERENCE: the market still prices a deep relative Canada slowdown and a BoC that only partially converges. That assumption is too pessimistic relative to Canada activity 66, Q2 GDP +0.8% q/q, and a global hike impulse that has already been delivered in the US and Japan. The edge is not 'percentiles must mean-revert'; it is that overnight 2.29 plus a 3.13 Mar-27 contract understates the catch-up required if activity and energy pass-through dominate labor.",
+        "horizon": "1-4 months through the 2027-03 CORRA window and the next BoC energy/activity prints",
+        "invalidation": "Thesis fails if CORRA_2027-03 implied rate retraces to the packet Dec-26 3m mid of 2.775 (CRAZ26) without a BoC hike impulse, or if subsequent Canada activity/GDP confirm the August employment -42k break while CPI-trim/median stay near 2% and energy pass-through fades. A US growth break that also collapses Canadian activity invalidates the cyclical-resilience mechanism, not just timing.",
+        "confidence": 61,
+        "expression_comparison": {
+          "rates_candidate": {
+            "instrument": "CORRA_2027-03",
+            "asset_class": "rates",
+            "rationale": "Pay Mar-27 CORRA as the unused BoC catch-up into resilient North American activity and a global tightening/energy-constraint regime. Packet mid 3.13."
+          },
+          "spot_candidate": "short USDCAD",
+          "selected": "rates",
+          "rationale": "USDCAD 1.4010 already cheapened CAD (74th 1y / 87th 5y, +1.74% over 1m), so spot has partially expressed Canada lag plus the Fed hike. The remaining discrepancy is the 2.29 overnight / 3.13 Mar-27 CORRA path versus US 4.565. Rates are at least as clean as spot and are preferred. Long NZDUSD is a genuine risk-on alternative (5y percentile 8.61, Q2 GDP 0.2% q/q beat, India trade deal) but NZ policy/yields are unavailable, NZ labor 32 / consumer 38, and the desk thesis says energy keeps term-rate pressure elevated even where growth is softer — so NZD is not a cleaner owner of this packet's growth-versus-policy gap.",
+          "selected_bucket": "stir_policy_path",
+          "selection_rationale": "CORRA_2027-03 is the best rates expression after scanning STIR, 2Y, 5Y, 10Y, curve, and CA-US RV: it is the markable MX CRA contract that still prices only +84bp of catch-up from 2.29, matching this seat's already-open book family, without receiving US duration."
+        },
+        "why_now": [
+          "FACT: the Fed hike to 3.75-4.00% is delivered and SOFR printed 3.85 on 2026-09-17; last-24 adds BoJ 1.25% and a BoE 6-3 split with three hike votes, so the tightening impulse is no longer a US-only story.",
+          "FACT: BoC minutes flag higher energy pass-through while Saudi ship-to-ship crude off Oman only reduces the extreme oil-supply tail rather than removing the shock; desk thesis says energy is constraining easing even where domestic growth is softer.",
+          "FACT: Canada activity (GDP +0.8% q/q, Ivey PMI up) still disagrees with labor 38 and overnight 2.29; CORRA_2027-03 remains 3.13, unchanged from this seat's entry mark, so the catch-up is not yet in the Mar-27 contract.",
+          "INFERENCE: holding the existing pay-Mar-27 position is the timely expression because the new global-tightening cluster arrived without a CORRA repricing."
+        ],
+        "catalysts": [
+          "BoC communication or a hike that validates energy pass-through over core-near-2%.",
+          "Canada activity/GDP/Ivey remaining expansionary despite the August jobs print.",
+          "Global tightening follow-through after Fed/BoJ hikes and the BoE 6-3 split keeping the easing impulse shut."
+        ],
+        "principal_risks": [
+          "FACT: August employment -42k and wages +2.0% y/y (from +2.8%) may be the true demand break, in which case 2.29 is appropriate and Mar-27 3.13 is too high.",
+          "FACT: CPI-trim 1.9% and CPI-median 2.0% can remain the binding BoC constraint even if headline stays at 3%.",
+          "FACT: the Saudi Oman workaround reduced the extreme oil-supply tail; pass-through risk can fade.",
+          "INFERENCE: paying 3.13 versus overnight 2.29 has adverse roll if the priced H1-2027 catch-up is delayed.",
+          "UNKNOWN: CFTC TFF is null and CORRA contract open interest/volume are null, so crowding cannot be measured.",
+          "FACT: market-state is stale because NZ_rates are unavailable."
+        ],
+        "evidence_refs": [
+          "policy_paths",
+          "policy:CA",
+          "policy:US",
+          "tradable_rate_curves",
+          "rates:CA",
+          "rates:US",
+          "temp:CA:activity",
+          "temp:CA:labor",
+          "temp:CA:inflation",
+          "temp:CA:consumer",
+          "temp:US:activity",
+          "temp:US:labor",
+          "temp:US:inflation",
+          "rollup:BoC minutes flag higher energy pass-through risk",
+          "rollup:Canada August inflation holds at 3%, core stays near 2%",
+          "rollup:Fed raises 25bp to 3.75–4.00%",
+          "last24:desk-thesis",
+          "last24:BoJ raises its policy rate to 1.25%",
+          "last24:BoE holds 3.75%, but three members vote to hike",
+          "mw_20260916_saudi_oman_workaround",
+          "mw_20260916_fomc_hike_pricing",
+          "fx:USDCAD",
+          "fx:NZDUSD",
+          "pos:cftc",
+          "funding_context",
+          "research_method",
+          "market_state"
+        ],
+        "entry": null,
+        "target": null,
+        "stop": null
+      }
+    },
+    "value-guy": {
+      "agent": "value-guy",
+      "stance_summary": "Canada remains a peer-policy cheap outlier versus the United States: the 140bp CA-US 2Y / 2027H1 SOFR-CORRA gap is a 5-year historical dislocation that overnight, 2028 strip, activity gauges, and the delivered Fed hike all say should start compressing. Own that convergence in the locked long SOFR-CORRA_2Y_2027H1 rather than in USDCAD, which is only an 87th-percentile 5y FX stretch.",
+      "confidence": 58,
+      "conflict_synopsis": {
+        "seat": "value-guy",
+        "primary_trade": "long SOFR-CORRA_2Y_2027H1",
+        "core_view": "Canada is a 4th-percentile 5y cheap outlier versus the US at 2027H1; own compression of that policy gap, not USDCAD.",
+        "usd_view": "lower",
+        "cad_view": "higher",
+        "aud_view": "lower",
+        "nzd_view": "higher",
+        "us_rates_view": "lower",
+        "ca_rates_view": "higher",
+        "au_rates_view": "not_relevant",
+        "nz_rates_view": "not_relevant",
+        "risk_view": "neutral",
+        "carry_view": "supports_trade",
+        "time_horizon": "1-3 months",
+        "key_catalyst": "BoC energy pass-through showing up in core/trim while US 2Y holds the post-hike rerating.",
+        "key_invalidation": "CA-US 2Y follows the 2024-12-18 widening analog or BoC drops pass-through after soft labor/core.",
+        "confidence": 58,
+        "conflict_tags": [
+          "USD_DOWN",
+          "CAD_UP",
+          "AUD_DOWN",
+          "NZD_UP",
+          "US_RATES_DOWN",
+          "CA_RATES_UP",
+          "US_CA_2Y_COMPRESS"
+        ]
+      },
+      "paper_actions": [
+        {
+          "action": "HOLD",
+          "position_id": "pos-cdde326460b4",
+          "instrument": "SOFR-CORRA_2Y_2027H1",
+          "asset_class": "rates_rv",
+          "side": "long",
+          "notional_usd": 70000000,
+          "rationale": "Sidecar already owns pos-cdde326460b4 long SOFR-CORRA_2Y_2027H1 at 70m / 700k shocked risk, 140.25 entry/mark, 74.86 drawdown versus a 5m stop, 9.3m risk remaining. Thesis is unchanged and market-state is stale; do not OPEN a duplicate and do not ADD on a 1-day-old mark with null CFTC. HOLD the locked SR3-versus-CRA 2027-03/06 family. Official SOFR 3.85 ACT/360 on 700k is a small hurdle if the 2025-01-30 25bp 3m compression analog repeats; it is not a reason to flatten."
+        }
+      ],
+      "trade": {
+        "instrument": "SOFR-CORRA_2Y_2027H1",
+        "asset_class": "rates_rv",
+        "direction": "long",
+        "structure": "Locked linear_combo in implied-rate bp: +1 * futures_strip_average SOFR 2027-03/2027-06 minus 1 * futures_strip_average CORRA 2027-03/2027-06. Canonical long profits when that SOFR-CORRA mark falls. Do not migrate the open bond/STIR family.",
+        "thesis": "FACT: CA-US 2Y is -140bp on 2026-09-17 (1y percentile 3.77, 5y 4.31). FACT: overnight SOFR 3.85 minus CORRA 2.29 is 156bp; packet SR3 2027-03/06 are 4.565/4.70 and CRA 2027-03/06 are 3.13/3.365; the owned paper combo last-marks 140.25. FACT: Fed hiked 25bp to 3.75-4.00%; US 2Y 4.76 is the 99.8th 1y percentile; CA 2Y 3.27 is only the 58.5th 5y percentile; Canada CPI 3.0% with trim 1.9 and median 2.0; BoC minutes flag energy pass-through; CA activity 66 versus US 69, but CA labor 38 with employment -42k. INFERENCE: 140bp is a peer-policy dislocation, not a fair labor-gap price, because activity is close, Q2 Canadian GDP re-accelerated to +0.8% q/q, the US front end has already done the post-hike rerating, and 2028 implieds already price a ~100bp gap. Closest level analog (2025-01-30, -145bp) compressed 25bp over 3m. UNKNOWN: whether the 2024-12-18 analog (further widening) dominates; CFTC/CME positioning; Saudi/Oman workaround versus weakening energy shock-absorbers. Trade remains long SOFR-CORRA_2Y_2027H1 (canonical long: profits if the spread mark falls). Book already holds pos-cdde326460b4; HOLD, do not OPEN a duplicate.",
+        "mispricing": "Canada is historically cheap versus the US at the 2Y/2027H1 policy horizon (4th percentile of the 5y CA-US 2Y distribution) while 2028 STIR already prices substantial compression and Canada activity/core do not match a 156bp cash-rate discount. Valuation anchor is the 5y CA-US 2Y distribution plus the path from cash to 2028, not the fact that the spread fell.",
+        "horizon": "1-3 months",
+        "invalidation": "CA-US 2Y follows the 2024-12-18 analog and widens further, or Canada activity follows labor lower and BoC drops energy pass-through so the 156bp overnight gap is re-accepted as 2027H1 equilibrium.",
+        "confidence": 58,
+        "expression_comparison": {
+          "rates_candidate": {
+            "instrument": "SOFR-CORRA_2Y_2027H1",
+            "asset_class": "rates_rv",
+            "rationale": "Long the locked 2027H1 SOFR minus CORRA implied-rate differential to own compression of the historically extreme Canada discount versus the US after the delivered Fed hike."
+          },
+          "spot_candidate": "short USDCAD",
+          "selected": "rates",
+          "rationale": "Rates is cleaner. FACT: USDCAD is 1.40105 (1y percentile 74.01, 5y 87.02, +1.10% 5d). That is only a moderate USD/CAD stretch. FACT: CA-US 2Y is a 4th-percentile 5y / 3.8th-percentile 1y peer-rate gap, and overnight SOFR minus CORRA is 156bp. The mispricing lives in the policy-rate relationship, not in 1.40 USDCAD. Short AUDCAD is a larger FX percentile extreme (5y 99.96) but that pair is AU-CA housing/RBA, not the US-CA policy gap. Prefer the rates RV when both expressions are executable.",
+          "selected_bucket": "cross_market_rv",
+          "selection_rationale": "The valuation object is Canada too cheap versus the US at the policy/2Y horizon, not an outright hike, a 10Y term-premium gap, or a 2s10s screen. SOFR-CORRA_2Y_2027H1 is the packet-markable STIR expression of that 4th-percentile 5y CA-US 2Y dislocation, with live US and CA policy paths."
+        },
+        "why_now": [
+          "Fed hike is delivered and in SOFR 3.85 / US 2Y 4.76; the US-expensive leg of the gap has already re-rated.",
+          "CA-US 2Y cheapened another 15bp in five days (z -2.17) into the 4th percentile 5y tail rather than bouncing, so the dislocation is still being marked, not resolved.",
+          "BoC minutes now flag energy pass-through while trim/median sit at 1.9/2.0, giving a reaction-function reason for Canada catch-up to start in the 2027H1 window the 2028 strip already concedes."
+        ],
+        "catalysts": [
+          "BoC communication or data that validates energy pass-through into Canadian core/trim/median.",
+          "US 2Y/SR3 holding the post-hike rerating while CORRA 2027H1 implieds catch up from 3.13-3.365.",
+          "Activity confirmation that Canadian Q2 GDP / Ivey strength is not reversed by the August jobs hole."
+        ],
+        "principal_risks": [
+          "Labor-gap risk: CA unemployment 6.4% and -42k August employment can keep BoC far below the Fed, matching the 2024-12-18 widening analog.",
+          "Energy two-way: Saudi/Oman workaround versus weakening shock-absorbers; pass-through may never lift Canadian core.",
+          "Stale market-state / null CFTC: the 140.25 book mark and 4.565/4.70 packet SR3 mids can disagree, and flow could be the 5d driver.",
+          "Official SOFR 3.85 ACT/360 is charged on 700k shocked risk; a non-compressing spread bleeds funding with no edge."
+        ],
+        "evidence_refs": [
+          "market_state",
+          "policy_paths",
+          "tradable_rate_curves",
+          "rates:US",
+          "rates:CA",
+          "policy:US",
+          "policy:CA",
+          "temp:US:inflation",
+          "temp:US:labor",
+          "temp:US:activity",
+          "temp:CA:inflation",
+          "temp:CA:labor",
+          "temp:CA:activity",
+          "rollup:Fed raises 25bp to 3.75–4.00%",
+          "rollup:Canada August inflation holds at 3%, core stays near 2%",
+          "rollup:BoC minutes flag higher energy pass-through risk",
+          "rollup:August CPI keeps the Fed tightening bias intact",
+          "last24:desk-thesis",
+          "fx:USDCAD",
+          "fx:AUDCAD",
+          "pos:cftc",
+          "funding_context",
+          "research_method"
+        ],
+        "entry": null,
+        "target": null,
+        "stop": null
+      }
+    },
+    "cross-merchant": {
+      "agent": "cross-merchant",
+      "stance_summary": "USD legs are contaminating an AU-versus-CA relative-value view. Short AUDCAD isolates housing-constrained Australia against a Canada that is already pricing more incremental tightening; the existing sidecar short is held, not duplicated.",
+      "confidence": 58,
+      "conflict_synopsis": {
+        "seat": "cross-merchant",
+        "primary_trade": "short AUDCAD",
+        "core_view": "AUDCAD’s 5y extreme is USD-contaminated CAD weakness plus an over-translated AU carry premium; the clean RV is short AUD versus CAD while housing bites and Canada prices more incremental hikes.",
+        "usd_view": "not_relevant",
+        "cad_view": "higher",
+        "aud_view": "lower",
+        "nzd_view": "not_relevant",
+        "us_rates_view": "not_relevant",
+        "ca_rates_view": "higher",
+        "au_rates_view": "lower",
+        "nz_rates_view": "not_relevant",
+        "risk_view": "neutral",
+        "carry_view": "opposes_trade",
+        "time_horizon": "1-3 months",
+        "key_catalyst": "AU housing/activity deterioration versus BoC energy pass-through and a fade of USD-driven CAD weakness.",
+        "key_invalidation": "AU housing/activity re-accelerates versus Canada and AONIA incremental tightening again outpaces CORRA, proving a durable carry regime rather than USD-leg contamination.",
+        "confidence": 58,
+        "conflict_tags": [
+          "AUD_DOWN",
+          "CAD_UP",
+          "AUDCAD_SHORT",
+          "CROSS_NONUSD"
+        ]
+      },
+      "paper_actions": [
+        {
+          "action": "HOLD",
+          "position_id": "pos-00661cabb94a",
+          "instrument": "AUDCAD",
+          "asset_class": "spot_fx",
+          "side": "short",
+          "rationale": "Sidecar already owns short AUDCAD pos-00661cabb94a at 50m notional and 500k shocked risk (1% of notional), inside the 10m shock-risk cap and 5m HWM stop. Thesis unchanged at packet mid 0.9975768872320596. Do not OPEN a duplicate. Carry headwind (AONIA 4.35 vs CORRA 2.29), stale Sep-18 FX, null CFTC, and the unfinished Aug-27 retest argue against ADD."
+        }
+      ],
+      "trade": {
+        "instrument": "AUDCAD",
+        "asset_class": "spot_fx",
+        "direction": "short",
+        "structure": null,
+        "thesis": "FACT: As of 2026-09-18 AUDCAD is 0.9975768872320596 at the 99.80 1y / 99.96 5y percentile after +1.95% 1m. AUDUSD is only the 76.4th 1y percentile and USDCAD the 74.0th; the 1m cross gain is almost entirely USDCAD +1.74%, not AUDUSD. AONIA is 4.35 with +51bp to Mar-27; CORRA is 2.29 with +84bp to 3.13. CA-AU 2Y is -164.9bp at only the 51st 1y percentile. AU housing is contracting (stamp duty -24% y/y, transactions -18%) while CA Q2 GDP re-accelerated +0.8% q/q. The sidecar already owns short AUDCAD pos-00661cabb94a at 50m notional / 500k shocked risk. INFERENCE: USD is contaminating an otherwise clean AU-versus-CA relative-value view. Short AUDCAD isolates housing-constrained Australia against a Canada that is pricing more incremental tightening and has the stronger activity gauge. Long USDCAD would own Fed exceptionalism; short AUDUSD would fade a non-extreme dollar pair; short AUDNZD would pick a statistically hotter Oceania cross without an NZ policy path. UNKNOWN: CFTC/CME positioning, the FX path after 2026-09-18, and whether energy pass-through or CA labor weakness dominates CAD. Book action is HOLD, not a second OPEN and not an ADD into negative carry.",
+        "mispricing": "FACT: Spot AUDCAD is a 1y and 5y extreme while the 1y CA-AU 2Y spread is only mid-range (51st percentile) and the 1m AUDCAD move is the USD-CAD leg. INFERENCE: the cross is pricing Australian outperformance and a widening carry advantage that neither the housing/activity gap nor the AONIA-versus-CORRA incremental path supports.",
+        "horizon": "1-3 months",
+        "invalidation": "Thesis is wrong if Australian housing and activity re-accelerate versus Canada while AONIA’s incremental path starts to outpace CORRA again, or if the AUDCAD extreme is shown to be a durable carry regime rather than USD-leg contamination. Packet FX after 2026-09-18 is unobserved.",
+        "confidence": 58,
+        "expression_comparison": {
+          "rates_candidate": null,
+          "spot_candidate": "short AUDCAD",
+          "selected": "spot",
+          "rationale": "Dedicated non-USD spot seat. The 5y AUDCAD extreme is the product of two moderate USD legs (AUDUSD 76th 1y / USDCAD 74th 1y), so long USDCAD or short AUDUSD owns Fed/USD exceptionalism rather than the AU-CA differential. CA-AU 2Y is only the 51st 1y percentile while spot is the 99.8th, so the discrepancy lives in the cross, not in a 1y rates-RV screen. AUDNZD is also a 99.8/99.96 extreme and a hotter 1m move, but NZ rates and the NZ policy path are unavailable, so it cannot isolate a priced policy differential."
+        },
+        "why_now": [
+          "The 2026-09-16 housing notes convert known RBA tightness into a documented activity channel (NSW stamp duty -24% y/y, transactions -18%, values more than 7% below peak).",
+          "The delivered Fed hike pushed USDCAD +1.10% in five days and +1.74% in one month, manufacturing a 5y AUDCAD extreme from two moderate USD legs.",
+          "BoC minutes now put energy pass-through inside the Canadian reaction function while CORRA already prices more incremental hikes than AONIA.",
+          "The existing short still owns the discrepancy at packet mid; carry and stale FX argue for holding that risk rather than scaling it."
+        ],
+        "catalysts": [
+          "Further evidence that the RBA tightening channel is biting through housing and business conditions.",
+          "BoC energy pass-through into core or into a higher CORRA path relative to AONIA.",
+          "Fade of USD-driven CAD weakness that is not matched by genuine Australian outperformance."
+        ],
+        "principal_risks": [
+          "Carry opposes: short AUD / long CAD pays the AONIA 4.35 versus CORRA 2.29 overnight gap, and official SOFR 3.85 ACT/360 is charged on shocked risk capital.",
+          "Canada labor is genuinely weak (employment -42k, unemployment 6.4%, wage impulse -4), which can keep CAD soft.",
+          "AU inflation score 82 and trimmed mean 3.6% can keep the RBA hawkish enough to support AUD.",
+          "Saudi STS workaround reduces the oil-supply tail that would otherwise support CAD; energy-absorber weakness cuts the other way.",
+          "FX marks are as of 2026-09-18 (stale versus cutoff) and CFTC/CME positioning is null."
+        ],
+        "evidence_refs": [
+          "fx:AUDCAD",
+          "fx:AUDUSD",
+          "fx:USDCAD",
+          "fx:AUDNZD",
+          "fx:NZDCAD",
+          "policy:AU",
+          "policy:CA",
+          "policy_paths",
+          "rates:AU",
+          "rates:CA",
+          "temp:AU:inflation",
+          "temp:AU:labor",
+          "temp:AU:activity",
+          "temp:AU:consumer",
+          "temp:CA:inflation",
+          "temp:CA:labor",
+          "temp:CA:activity",
+          "temp:CA:consumer",
+          "mw_20260916_au_housing_tightening",
+          "rollup:Australian housing downturn deepens under higher rates",
+          "rollup:BoC minutes flag higher energy pass-through risk",
+          "rollup:Canada August inflation holds at 3%, core stays near 2%",
+          "last24:desk-thesis",
+          "pos:cftc",
+          "market_state",
+          "research_method",
+          "paper_books",
+          "funding_context"
+        ],
+        "entry": null,
+        "target": null,
+        "stop": null
+      }
+    },
+    "mean-reverter": {
+      "agent": "mean-reverter",
+      "stance_summary": "FACT: AU 2Y/5Y/10Y sit at the 99th percentile of both 1y and 5y samples while AONIA still prices about +51bp by Mar-27 and about +59.5bp at the 2027 H2 peak versus overnight 4.35, and AUDCAD/AUDNZD are at 5y extremes. INFERENCE: that is crowded RBA-hike extrapolation after the housing channel is already open (NSW stamp duty -24% y/y, transactions -18%, Sydney/Melbourne values more than 7% below peak). Fade the extra tightening in AONIA_2027-03 (receive). Close the legacy SOFR_2027-03 receive: US 10Y is statistically high, but US gauges remain hot and the September hike already printed, so the US fade lacks a reversal condition.",
+      "confidence": 58,
+      "conflict_synopsis": {
+        "seat": "mean-reverter",
+        "primary_trade": "long AONIA_2027-03 (receive)",
+        "core_view": "Fade the RBA's still-priced second hike and 99th-percentile AU yields because housing is already the reversal condition.",
+        "usd_view": "neutral",
+        "cad_view": "higher",
+        "aud_view": "lower",
+        "nzd_view": "higher",
+        "us_rates_view": "neutral",
+        "ca_rates_view": "lower",
+        "au_rates_view": "lower",
+        "nz_rates_view": "not_relevant",
+        "risk_view": "risk_off",
+        "carry_view": "opposes_trade",
+        "time_horizon": "6-12 weeks",
+        "key_catalyst": "Housing/labor/sentiment keep deteriorating so AONIA cannot sustain the second hike into Mar-27.",
+        "key_invalidation": "Housing stabilizes and inflation/labor re-accelerate, locking in AONIA_2027-03 at or above the packet 4.86 implied.",
+        "confidence": 58,
+        "conflict_tags": [
+          "AU_RATES_DOWN",
+          "AUD_DOWN",
+          "CAD_UP",
+          "NZD_UP",
+          "AONIA_RECEIVE",
+          "AUDCAD_FADE",
+          "HOUSING_REVERSAL"
+        ]
+      },
+      "paper_actions": [
+        {
+          "action": "CLOSE",
+          "position_id": "pos-1477172adb86",
+          "instrument": "SOFR_2027-03",
+          "asset_class": "rates",
+          "side": "long",
+          "rationale": "FACT: sidecar open_positions still holds receive SOFR_2027-03, position_id pos-1477172adb86, entry mark 4.58, notional 40m, shocked risk 400k. Packet SR3H7 implied is now 4.565. US 10Y 5.01 remains 99.9th percentile 5y, but US inflation/labor/activity/consumer gauges are 72/75/69/74, August CPI kept the tightening bias, and the 25bp hike to 3.75-4.00 is delivered with SOFR 3.85. INFERENCE: that is a statistical extreme without a reversal condition, which this remit is not allowed to fade. Closing frees risk for the AU housing-anchored receive and avoids duplicating a US-duration long beside AONIA. Paper at deterministic packet mid; no authored price."
+        },
+        {
+          "action": "OPEN",
+          "instrument": "AONIA_2027-03",
+          "asset_class": "rates",
+          "side": "long",
+          "expected_mark_direction": "lower",
+          "notional_usd": 50000000,
+          "rationale": "New expression, not a duplicate of an owned instrument. Receive Mar-27 AONIA (trusted side long because expected implied-rate mark is lower). 50m notional is 500k of 100bp standard-shock risk capital versus the 10m cap, leaving ample headroom after the SOFR close. Size is kept well inside the cap because inflation 82 can still deliver October and Mar-27 IB OI is only 201. Official SOFR 3.85 ACT/360 on ~500k shocked risk is the hurdle; a 10bp implied-rate mean-reversion is 50k under duration-1, which clears that funding cost if the second hike starts to be unpriced. Entry at packet mid 4.86 / price 95.14; no invented broker level.",
+          "thesis": "Fade the leftover AONIA tightening into an already-open Australian housing channel."
+        }
+      ],
+      "trade": {
+        "instrument": "AONIA_2027-03",
+        "asset_class": "rates",
+        "direction": "long",
+        "structure": "outright receive AONIA_2027-03 (long duration; profits if the canonical implied-rate mark falls)",
+        "thesis": "FACT: AU 2Y/5Y/10Y are at the 99th percentile of 1y and 5y history, AONIA Mar-27 still prices 4.86 versus cash 4.35, and the housing channel is already contracting (stamp duty, transactions, prices). INFERENCE: crowded extrapolation of a second RBA hike into a breaking housing market is the overshoot; the normalization catalyst is further housing/labor/sentiment deterioration capping the RBA after at most one more 25bp. Expression is receive AONIA_2027-03 (direction long, expected implied-rate mark lower). UNKNOWN: whether October still prints; CFTC; NZ yields; executable bid/ask. The legacy long SOFR_2027-03 is closed rather than added to: US 10Y is 99.9th percentile 5y, but inflation 72 / labor 75 / a delivered hike are not reversal conditions.",
+        "mispricing": "FACT: Mar-27 AONIA 4.86 embeds about +51bp versus overnight and AU 2Y 4.999 sits above that implied. INFERENCE: the market is pricing a two-hike RBA path as if housing were not already the binding constraint. The closing mechanism is a failure of the second hike, not an immediate easing cycle. Spot AUDCAD at a 5y extreme is the same crowded AU-hawkish narrative but is a noisier product of two USD legs.",
+        "horizon": "6-12 weeks, through the next RBA windows and Q4 housing/labor prints into the Mar-27 AONIA averaging period",
+        "invalidation": "Thesis is wrong if AU housing quantities/prices stabilize or reverse while inflation/labor re-accelerate enough for the RBA to validate the leftover tightening, leaving AONIA_2027-03 implied at or above the current packet mark of 4.86 as the second hike is locked in. Wrong-timing, not wrong-thesis, if October prints (~4.565) but Mar-27 still bleeds the second hike. US gauges staying hot are not this trade's invalidation; they are why SOFR receive is closed.",
+        "confidence": 58,
+        "expression_comparison": {
+          "rates_candidate": {
+            "instrument": "AONIA_2027-03",
+            "asset_class": "rates",
+            "rationale": "Receive Mar-27 AONIA at packet implied 4.86 versus overnight 4.35. The contract owns the second hike that housing should prevent; paper marks exist on the ASX IB family. Direction long under the trusted convention (expected implied-rate mark lower)."
+          },
+          "spot_candidate": "short AUDCAD (packet spot 0.9976, 1y percentile 99.80, 5y percentile 99.96) as the FX reflection of crowded AU-hawkish versus CA-cheap extrapolation",
+          "selected": "rates",
+          "rationale": "Rates are preferred because the mispricing lives in the RBA path and 99th-percentile AU yields, not in a USD pair. AUDCAD is a genuine 5y extreme, but FACT it is the product of two moderate USD legs (AUDUSD 76.4/84.3 1y/5y, USDCAD 74.0/87.0); CAD can reprice on BoC energy-pass-through without unwinding the AONIA second-hike residual. AONIA_2027-03 is executable from tradable_rate_curves and is not inferior to spot.",
+          "selected_bucket": "stir_policy_path",
+          "selection_rationale": "AONIA_2027-03 is the only scan bucket that simultaneously (i) sits on a live AU policy path, (ii) owns the extra ~51bp of tightening still priced into 2027 H1, and (iii) is the rates expression of a 99th-percentile AU yield complex whose reversal condition is already visible in housing, labor, activity and September consumer sentiment. AU 2Y is the statistical co-extreme but mixes global beta; CA-US RV is a 5y stretch whose fair-value legs fight each other."
+        },
+        "why_now": [
+          "Housing facts are known but AU yields remain 99th percentile 5y and AONIA still prices the second hike — the missing move is the path cap, which is why now rather than after the next print.",
+          "September Westpac-MI sentiment fell 5.2% to 84.4, unemployment is 4.5%, employment -15.8k, and RBA business conditions/confidence are below average — the real-side sequence that usually follows a housing quantity collapse is in motion.",
+          "Global hawkish impulse (Fed delivered, BoJ 1.25%, BoE 6-3) is the extrapolation engine; fading the local extra hike is cleaner than fading the Fed while US gauges stay hot.",
+          "Book already owns receive SOFR_2027-03 without a US reversal condition; rotate that risk into the AU contract that has both stretch and catalyst."
+        ],
+        "catalysts": [
+          "Further NSW/national housing volume, price or stamp-duty deterioration confirming the tightening channel.",
+          "RBA communications or an IB strip that drops the second hike while inflation 82 is still the dissenting gauge.",
+          "Labor/activity/sentiment follow-through from unemployment 4.5%, employment -15.8k, and September consumer sentiment 84.4."
+        ],
+        "principal_risks": [
+          "Inflation gauge 82 and July trimmed mean 3.6% y/y can force both priced hikes regardless of housing.",
+          "Global energy/tightening impulse (desk thesis; BoC energy pass-through; BoJ/Fed/BoE) keeps term rates bid and drags AONIA with UST 10Y at 5.01.",
+          "Thin Mar-27 IB open interest (201) versus Oct; paper marks exist but the contract can gap relative to the liquid front.",
+          "CFTC/CME positioning unknown; crowding cannot be verified.",
+          "Market-state is stale because NZ_rates is unavailable; AU-NZ RV cannot be used as a cross-check."
+        ],
+        "evidence_refs": [
+          "mw_20260916_au_housing_tightening",
+          "rollup:Australian housing downturn deepens under higher rates",
+          "policy:AU",
+          "rates:AU",
+          "tradable_rate_curves",
+          "policy_paths",
+          "fx:AUDCAD",
+          "fx:AUDNZD",
+          "fx:AUDUSD",
+          "fx:USDCAD",
+          "temp:AU:inflation",
+          "temp:AU:labor",
+          "temp:AU:activity",
+          "temp:AU:consumer",
+          "last24:desk-thesis",
+          "policy:US",
+          "rates:US",
+          "policy:CA",
+          "rates:CA",
+          "pos:cftc",
+          "market_state",
+          "research_method",
+          "rollup:Fed raises 25bp to 3.75–4.00%",
+          "mw_20260916_fomc_hike_pricing"
+        ],
+        "entry": null,
+        "target": null,
+        "stop": null
+      }
+    },
+    "vol-convexity": {
+      "agent": "vol-convexity",
+      "stance_summary": "AUDNZD is a 5-year extreme built from NZDUSD collapse while AONIA still prices residual RBA hikes against a housing channel that is already biting and while 20-day realized vol on the cross remains near 5 percent; that is a two-sided event distribution, not a spot short. Long 3-month AUDNZD downside optionality is the debate trade. Premium, IV and strike are absent so the paper book HOLDs a flat sidecar rather than manufacturing an unmarkable OPEN that would pay official SOFR 3.85 ACT/360 on shocked risk.",
+      "confidence": 49,
+      "conflict_synopsis": {
+        "seat": "vol-convexity",
+        "primary_trade": "Long AUDNZD 3M 25-delta puts",
+        "core_view": "AUDNZD is a 5-year extreme from NZD collapse against still-priced RBA hikes and a biting housing channel, so long 3M downside optionality dominates a spot short while IV remains unchecked.",
+        "usd_view": "neutral",
+        "cad_view": "not_relevant",
+        "aud_view": "lower",
+        "nzd_view": "higher",
+        "us_rates_view": "not_relevant",
+        "ca_rates_view": "not_relevant",
+        "au_rates_view": "lower",
+        "nz_rates_view": "not_relevant",
+        "risk_view": "neutral",
+        "carry_view": "not_relevant",
+        "time_horizon": "1-3 months",
+        "key_catalyst": "Australian housing/activity versus residual AONIA hike pricing, with NZ curve restoration as the other-leg catalyst.",
+        "key_invalidation": "Live 3M put IV or 25d RR already prices the distribution, or AUDNZD makes a new 5-year high while AONIA hikes stay dominant.",
+        "confidence": 49,
+        "conflict_tags": [
+          "AUD_DOWN",
+          "NZD_UP",
+          "LONG_FX_VOL",
+          "CHALLENGE_SPOT"
+        ]
+      },
+      "paper_actions": [
+        {
+          "action": "HOLD",
+          "rationale": "Inspected sidecar open_positions: empty, no position_id to ADD/REDUCE/CLOSE, risk_capital_usd 0, risk_stopped false. FX options have no premium/IV/strike mids so they are untradeable in the paper book. An OPEN would invent a mark and pay official NY Fed SOFR 3.85 ACT/360 on shocked risk against a 10m cap and 5m HWM stop. Debate long AUDNZD_3M_25D_PUT; keep the competition book flat until the packet can mark the option."
+        }
+      ],
+      "trade": {
+        "instrument": "AUDNZD_3M_25D_PUT",
+        "asset_class": "options",
+        "direction": "long",
+        "structure": "Long 3-month 25-delta AUDNZD puts. If live 25-delta risk-reversal already expensive, switch to a put spread; if live 3M ATMF IV already prices the reversal/squeeze distribution, do not buy. Premium, IV and strike are not in the frozen packet, so entry/target/stop remain null and the paper book does not OPEN.",
+        "thesis": "FACT: AUDNZD is at a 5-year extreme because NZDUSD collapsed, not because AUDUSD broke out. AU housing is showing the tightening channel while AONIA still prices about +21.5bp by October and about +59.5bp by August 2027. NZ Q2 GDP 0.2 percent q/q beat and an India FTA have not reversed NZD. NZ yields are missing. Fed hike to 3.75-4.00 percent and BoJ hike to 1.25 percent are delivered. USDJPY 20-day RV is 11.04 versus AUDNZD 5.09. VIX crushed to 15.44 on 17 Sep (14.7th percentile). No FX option marks exist. CFTC 15 Sep does not show a crowded leveraged-fund AUD long. Official SOFR is 3.85 ACT/360. Sidecar open_positions is empty. INFERENCE: the market is pricing a one-way RBA-over-RBNZ regime that is internally inconsistent with housing and with NZ data, so the next move is a distribution with a delayed mean-reversion tail and a squeeze tail. Spot is dominated because timing is uncertain and event risk is two-sided after realized FX vol on this cross stayed near 5 percent. Buying USDJPY vol after a +1.41 percent BoJ day is not the same trade: that realized has already printed. UNKNOWN: 3M ATMF IV, 25-delta risk-reversal, quoted premium, strike grid, and the RBNZ curve. All must be checked before any OPEN. The paper book therefore HOLDs; the debate trade is still the put.",
+        "mispricing": "Priced: residual RBA hikes and a permanently weak NZD can be owned linearly in AUDNZD at ~5 percent realized vol. Disagreed: housing versus still-priced AONIA hikes plus a missing NZ curve makes the next 1-3 months a two-tailed event distribution. The edge, if any, is in cheap downside optionality versus that distribution, not in a spot short. Implied vol is UNKNOWN, so this is a debate mispricing until IV/RR are marked.",
+        "horizon": "1-3 months",
+        "invalidation": "Live 3M AUDNZD put IV or 25-delta risk-reversal already prices the reversal/squeeze distribution, or AUDNZD makes a new 5-year high while AONIA hike pricing stays dominant versus the housing channel. Missing IV is not permission to assume the put is cheap.",
+        "confidence": 49,
+        "expression_comparison": {
+          "rates_candidate": null,
+          "spot_candidate": null,
+          "selected": "options",
+          "rationale": "FACT: the discrepancy is a compressed-realized, two-sided event distribution around a 5-year AUDNZD extreme, not a one-way spot path. Short AUDNZD spot is the obvious alternative and is inferior: AONIA still prices about +21.5bp by October and about +59.5bp by August 2027, so a linear short can be run over if residual RBA tightening keeps the cross bid; NZ yields and AUDNZD 2Y carry are unavailable, so the spot short's carry cost is unquantified; housing prints, NZ data, energy headlines and global hike follow-through can reprice either tail. Long 3M 25-delta AUD puts (or a 25d risk-reversal only if live RR does not already own the downside) bounds that timing risk. AONIA outright or AU-US 2Y RV would own the RBA-housing rates gap but would not own the NZD-collapse tail that created the cross extreme. USDJPY vol after the +1.41 percent BoJ day is the wrong event: that realized has already printed at 20-day RV 11.04."
+        },
+        "why_now": [
+          "AUDNZD printed a 5-year extreme on 18 Sep after a +0.65 percent day and a +4.27 percent month while 20-day RV remained 5.09.",
+          "Housing-channel evidence and NZ GDP/FTA landed in the same week as delivered Fed and BoJ hikes, and the cross still went out at a 5y high rather than mean-reverting.",
+          "VIX crushed to 15.44 after those events; if FX IV followed realized, AUDNZD downside may be underpriced, but that is an UNKNOWN to check, not a license to invent IV.",
+          "Empty sidecar and unmarkable options mean the competition-correct book action is HOLD; the room still needs the options challenge to spot before other seats linearize the cross."
+        ],
+        "catalysts": [
+          "Next Australian housing/activity prints versus residual AONIA October-November hike pricing.",
+          "Any restoration of the NZ official curve or RBNZ communication that re-anchors NZDUSD after the GDP beat and India FTA.",
+          "Energy headlines that either revive the supply tail or confirm the Saudi Oman workaround, repricing AUD and NZD through global hike/ease impulse.",
+          "Global follow-through after delivered Fed and BoJ hikes and the split BoE hold."
+        ],
+        "principal_risks": [
+          "Implied vol, skew and premium are unobserved; the put may already be expensive and the debate trade would then be wrong even if the macro discrepancy is real.",
+          "AONIA hike pricing can be validated if inflation 82 keeps the RBA hiking through housing weakness, extending the AUDNZD high and decaying long puts.",
+          "NZ rates remain unavailable; a hawkish true NZ path could justify NZDUSD weakness and keep the cross bid.",
+          "VIX crush and post-event vol decay can bleed long optionality even if spot later mean-reverts after expiry.",
+          "Opening an unmarkable options ticket would pay official SOFR 3.85 ACT/360 on shocked risk with no packet mid."
+        ],
+        "evidence_refs": [
+          "fx:AUDNZD",
+          "fx:NZDUSD",
+          "fx:AUDUSD",
+          "fx:AUDCAD",
+          "fx:USDJPY",
+          "policy:AU",
+          "policy:US",
+          "policy:NZ",
+          "policy_paths",
+          "tradable_rate_curves",
+          "rates:AU",
+          "rates:US",
+          "pos:cftc",
+          "mw_20260916_au_housing_tightening",
+          "rollup:Australian housing downturn deepens under higher rates",
+          "rollup:New Zealand Q2 GDP slows to 0.2% q/q but beats forecasts",
+          "mw_20260916_nz_india_trade",
+          "last24:BoJ raises its policy rate to 1.25%",
+          "rollup:Fed raises 25bp to 3.75–4.00%",
+          "last24:desk-thesis",
+          "mw_20260916_saudi_oman_workaround",
+          "rollup:Energy-market shock absorbers weaken",
+          "temp:AU:inflation",
+          "temp:AU:activity",
+          "temp:AU:consumer",
+          "temp:NZ:inflation",
+          "temp:NZ:labor",
+          "temp:NZ:activity",
+          "temp:NZ:consumer",
+          "market_state",
+          "funding_context"
+        ],
+        "entry": null,
+        "target": null,
+        "stop": null
+      }
+    }
+  },
+  "no_subagents": true,
+  "no_new_evidence": true
+}
