@@ -58,6 +58,19 @@ Every non-null trade adds:
 
 For rates-capable seats, `rates_tenor_scan` is mandatory and both `rates_candidate` and `spot_candidate` are mandatory even when one says it is unavailable and explains why. When `selected_bucket` is not `none`, `rates_candidate` must be an object whose `instrument` and `asset_class` equal that selected bucket; free-text cannot prove the linkage. A non-empty string is accepted for `rates_candidate` only when `selected_bucket` is `none`. The selected family must match `asset_class`. Validators fail closed when the scan is omitted or malformed, or when the selected bucket does not bind to the rates candidate used in the comparison.
 
+## Human-facing desk presentation
+
+Every actionable trade must include a `presentation` object with:
+- `market_expression`: practitioner shorthand such as `Receive H7 CORRA`, `Pay U7 SOFR`, or `Short AUDCAD`;
+- `punchline`: one or two short sentences stating the position and the core mispricing;
+- `support`: 1–6 short bullets containing the causal/data support, not an exhaustive packet dump;
+- `take_profit.objective`: where the trader expects to exit;
+- `take_profit.basis`: how that objective was established (historical norm/analog, standard-deviation move, policy-path convergence, or explicit P&L objective);
+- optional `take_profit.pnl_target_usd`;
+- `invalidation`: concise falsifier, aligned with the canonical trade invalidation.
+
+The presentation is a human read model only. Canonical execution fields keep normalized identifiers. Human-facing prose must not expose normalized contract IDs, position IDs, packet hashes, or internal bookkeeping jargon, and must not use `FACT:` / `INFERENCE:` / `UNKNOWN:` labels. Rates are discussed as receive/pay; spot as long/short or buy/sell. The validator rejects machine IDs and robotic epistemic labels in the presentation.
+
 ## Round 1 conflict synopsis
 
 Every `TRADER_ROOM_CONTRIBUTION` must include:
@@ -161,7 +174,7 @@ Run-local `paper_actions.json` / `paper_books.json` under `trader-room/runs/<run
 
 ## Required trade schema
 
-Every advocate except `no-trade-skeptic` must produce one actionable trade with: `instrument`, `asset_class`, `expression_comparison`, `context_build`, `structure`, `direction`, `thesis`, `mispricing`, `why_now`, `evidence_refs`, `horizon`, `entry`, `target`, `stop`, `invalidation`, `catalysts`, `principal_risks`, and `confidence`. Unsupported levels are JSON `null`.
+Every advocate except `no-trade-skeptic` must produce one actionable trade with: `instrument`, `asset_class`, `expression_comparison`, `context_build`, `structure`, `direction`, `thesis`, `mispricing`, `why_now`, `evidence_refs`, `horizon`, `entry`, `target`, `stop`, `invalidation`, `catalysts`, `principal_risks`, `confidence`, and `presentation`. Unsupported levels are JSON `null`.
 
 `context_build` is a hard gate, not optional prose. It must state the causal mechanism, path to current price, known-vs-new information, market-implied assumption, exact assumption disagreed with, price decomposition, historical reference/analogs and regime differences, at least two independent checks, flow/positioning check, and policy-path check. Statistics may support that context but may not replace it.
 
