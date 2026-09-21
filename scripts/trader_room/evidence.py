@@ -18,6 +18,7 @@ from scripts.trader_room.constants import (
     MANDATORY_PACKET_SECTIONS,
     ROOT,
 )
+from scripts.temperature_level import period_sort_key
 from scripts.trader_room.errors import EvidenceImmutabilityError, EvidencePreflightError
 
 TEMPERATURE_DIMENSIONS = ("Inflation", "Labor", "Activity", "Consumer")
@@ -114,7 +115,7 @@ def _dimension_staleness_as_of(spec: dict[str, Any], state: dict[str, Any]) -> s
         if comp.get("observed") and comp.get("as_of")
     ]
     if observed_as_ofs:
-        return min(observed_as_ofs)
+        return min(observed_as_ofs, key=period_sort_key)
     return spec.get("as_of") or state.get("as_of")
 
 

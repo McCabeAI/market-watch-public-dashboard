@@ -103,6 +103,13 @@ class TemperatureScoresTest(unittest.TestCase):
         )
         self.assertNotEqual(us_inf["staleness"], "as_of:2026-09")
 
+    def test_trader_room_staleness_uses_period_order_not_lexicographic(self) -> None:
+        from scripts.trader_room.evidence import load_temperature_gauges
+
+        gauges = load_temperature_gauges(ROOT)
+        nz_con = next(g for g in gauges if g["id"] == "temp:NZ:consumer")
+        self.assertEqual(nz_con["staleness"], "as_of:2026-Q1")
+
     def test_load_state_requires_v3_on_disk(self) -> None:
         try:
             load_state()

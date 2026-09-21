@@ -68,8 +68,11 @@ No boundary compression (≥3 months at 1 or 100). No monotonic calendar drift w
 
 ## Outputs
 
-- `data/temperature_scores.json` — version 3 state, structural `baseline_meaning`, per-dimension `lineage`, `component_state`, frozen `components` weights.
-- `data/temperature_history/score_paths.json` — monthly LEVEL paths 2025-09 … 2026-09.
+After changing history or calibration, regenerate committed state with:
+
+`PYTHONPATH=. python scripts/temperature_level.py --write-state --write-paths`
+
+CI `cmp`s those files byte-for-byte against the engine output.
 
 ## Tests
 
