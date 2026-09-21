@@ -273,6 +273,28 @@ class BudgetHookTests(unittest.TestCase):
         marker = "MW_OVERNIGHT_RUN_POLICY=" + json.dumps(POLICY, separators=(",", ":"))
         self.transcript.write_text(marker + "\n", encoding="utf-8")
         self.script = ROOT / ".cursor" / "hooks" / "enforce-overnight-budget.py"
+        self.repo = Path(self.tmp.name) / "repo"
+        self.repo.mkdir()
+        subprocess.run(["git", "init", "-q"], cwd=self.repo, check=True)
+        subprocess.run(["git", "config", "user.email", "test@example.com"], cwd=self.repo, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=self.repo, check=True)
+        today = datetime.now(ZoneInfo("America/New_York")).strftime("%Y%m%d")
+        run_id = f"overnight-{today}"
+        run_dir = self.repo / "data" / "overnight" / "runs" / run_id
+        run_dir.mkdir(parents=True)
+        run = {"stages": {"freeze_evidence": {"status": "succeeded"}}}
+        snapshot = {
+            "schema_version": 1,
+            "type": "OVERNIGHT_EVIDENCE_SNAPSHOT",
+            "overnight_run_id": run_id,
+            "as_of": datetime.now(ZoneInfo("America/New_York")).isoformat(),
+        }
+        unsigned = json.dumps(snapshot, indent=2, sort_keys=True) + "\n"
+        snapshot["packet_sha256"] = hashlib.sha256(unsigned.encode("utf-8")).hexdigest()
+        (run_dir / "run.json").write_text(json.dumps(run, indent=2, sort_keys=True) + "\n")
+        (run_dir / "evidence_snapshot.json").write_text(json.dumps(snapshot, indent=2, sort_keys=True) + "\n")
+        subprocess.run(["git", "add", "."], cwd=self.repo, check=True)
+        subprocess.run(["git", "commit", "-qm", "seed trusted freeze"], cwd=self.repo, check=True)
 
     def tearDown(self) -> None:
         self.active.unlink(missing_ok=True)
@@ -295,7 +317,7 @@ class BudgetHookTests(unittest.TestCase):
             input=json.dumps(event),
             text=True,
             capture_output=True,
-            cwd=ROOT,
+            cwd=self.repo,
             check=False,
         )
 
