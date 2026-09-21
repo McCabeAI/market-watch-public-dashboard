@@ -23,7 +23,7 @@ from scripts.trader_room.constants import (
 )
 from scripts.trader_room.errors import DataBoundaryError, SchemaError
 from scripts.trader_room.evidence import assert_same_frozen_packet
-from scripts.trading.presentation import validate_trade_presentation
+from scripts.trading.presentation import PresentationError, validate_trade_presentation
 from scripts.trader_room.rates_scan import (
     bind_selected_bucket_to_rates_candidate,
     rates_candidate_identity,
@@ -364,7 +364,10 @@ def validate_trade(
     _require_keys(trade, REQUIRED_TRADE_FIELDS, f"{agent} trade")
     _validate_expression_comparison(trade, agent=agent)
     validate_context_build(trade["context_build"], agent=agent, trade=trade, packet=packet)
-    validate_trade_presentation(trade.get("presentation"), label=f"{agent}.trade", required=False)
+    try:
+        validate_trade_presentation(trade.get("presentation"), label=f"{agent}.trade", required=False)
+    except PresentationError as exc:
+        raise SchemaError(str(exc)) from exc
     for field in ("instrument", "direction", "thesis", "mispricing", "horizon"):
         _non_empty_text(trade[field], f"{agent}.trade.{field}")
     for field in ("why_now", "evidence_refs", "catalysts", "principal_risks"):
@@ -439,7 +442,10 @@ def validate_contribution(
     )
     validate_trade(contribution["trade"], agent=agent, packet=packet)
     if contribution["trade"] is not None:
-        validate_trade_presentation(contribution["trade"].get("presentation"), label=f"{agent}.trade", required=True)
+        try:
+            validate_trade_presentation(contribution["trade"].get("presentation"), label=f"{agent}.trade", required=True)
+        except PresentationError as exc:
+            raise SchemaError(str(exc)) from exc
     if agent in TRADE_REQUIRED_AGENTS and contribution["trade"] is None:
         raise SchemaError(f"{agent} must end with one cogent actionable trade")
     if agent == NO_TRADE_AGENT:
@@ -508,7 +514,10 @@ def validate_rebuttal(
             raise SchemaError("withdrawn trade must be null")
     elif rebuttal["revised_trade"] is not None:
         validate_trade(rebuttal["revised_trade"], agent=expected_agent, packet=packet)
-        validate_trade_presentation(rebuttal["revised_trade"].get("presentation"), label=f"{expected_agent}.revised_trade", required=True)
+        try:
+            validate_trade_presentation(rebuttal["revised_trade"].get("presentation"), label=f"{expected_agent}.revised_trade", required=True)
+        except PresentationError as exc:
+            raise SchemaError(str(exc)) from exc
     if expected_agent == NO_TRADE_AGENT and rebuttal.get("trade_change") in {"amended", "withdrawn"}:
         try:
             assert_no_trade_funding_view({**rebuttal, "agent": expected_agent, "thesis": " ".join(rebuttal.get("defense") or [])}, packet=packet)
