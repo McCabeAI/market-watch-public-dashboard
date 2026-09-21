@@ -4,6 +4,12 @@ import re
 import sys
 from pathlib import Path
 
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from scripts.country_registry import expected_temperature_gauge_count
+
 path = Path(sys.argv[1] if len(sys.argv) > 1 else "_site/index.html")
 html = path.read_text()
 
@@ -160,7 +166,8 @@ for required in (
 for stale in ('<b>Sep 10</b>US PPI', '<b>Sep 11</b>US CPI', '@ReserveBankofNZ', '@MarkJCarney', 'Bloomberg @business'):
     if stale in html:
         raise SystemExit(f"stale v11 content remains: {stale}")
-if html.count('class="temp-dimension score-detail"') != 16 or html.count('/100') != 16:
+expected = expected_temperature_gauge_count()
+if html.count('class="temp-dimension score-detail"') != expected or html.count('/100') != expected:
     raise SystemExit("score drawer count changed")
 if 'August CPI bridge:' not in html:
     raise SystemExit("US CPI bridge lineage note lost")

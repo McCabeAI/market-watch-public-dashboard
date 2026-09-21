@@ -32,6 +32,12 @@ on:
       - "scripts/harvest_nz_pci.py"
       - "scripts/harvest_ca_pmi.py"
       - "scripts/harvest_au_pmi.py"
+      - "scripts/harvest_ea_pmi.py"
+      - "scripts/harvest_jp_pmi.py"
+      - "scripts/country_registry.py"
+      - "scripts/apply_six_economy_dashboard.py"
+      - "data/country_registry.json"
+      - "scripts/harvest_au_pmi.py"
       - "tests/test_sync_news_summary.py"
       - "tests/test_temperature_scores.py"
       - "tests/test_temperature_level.py"
@@ -39,6 +45,10 @@ on:
       - "tests/test_activity_survey_freshness.py"
       - "tests/test_harvest_nz_pci.py"
       - "tests/test_harvest_ca_pmi.py"
+      - "tests/test_harvest_au_pmi.py"
+      - "tests/test_harvest_ea_pmi.py"
+      - "tests/test_harvest_jp_pmi.py"
+      - "tests/test_country_registry.py"
       - "tests/test_harvest_au_pmi.py"
       - "tests/fixtures/nz_pci/**"
       - "tests/fixtures/ca_pmi/**"
@@ -165,6 +175,18 @@ jobs:
           test "$story_count" -le 12
           grep -Fq '7-Day Quick Digest' _site/index.html
 
+      - name: Extend dashboard to six economies
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python scripts/apply_six_economy_dashboard.py _site/index.html
+          grep -Fq 'id="c-ea"' _site/index.html
+          grep -Fq 'id="c-jp"' _site/index.html
+          grep -Fq '<h3>EURO AREA</h3>' _site/index.html
+          grep -Fq '<h3>JAPAN</h3>' _site/index.html
+          grep -Fq 'class="cdetail ea"' _site/index.html
+          grep -Fq 'class="cdetail jp"' _site/index.html
+
       - name: Restore 1-100 temperature input scores
         shell: bash
         run: |
@@ -174,8 +196,22 @@ jobs:
           path = Path('_site/index.html')
           base = path.read_text()
           css = Path('patch_v8/temp_scores.css').read_text()
-          blocks = {'us': Path('patch_v8/us.html').read_text(), 'ca': Path('patch_v8/ca.html').read_text(), 'au': Path('patch_v8/au.html').read_text(), 'nz': Path('patch_v8/nz.html').read_text()}
-          anchors = {'us': '<div class="cdetail us">', 'ca': '<div class="cdetail ca">', 'au': '<div class="cdetail au">', 'nz': '<div class="cdetail nz">'}
+          blocks = {
+              'us': Path('patch_v8/us.html').read_text(),
+              'ca': Path('patch_v8/ca.html').read_text(),
+              'au': Path('patch_v8/au.html').read_text(),
+              'nz': Path('patch_v8/nz.html').read_text(),
+              'ea': Path('patch_v8/ea.html').read_text(),
+              'jp': Path('patch_v8/jp.html').read_text(),
+          }
+          anchors = {
+              'us': '<div class="cdetail us">',
+              'ca': '<div class="cdetail ca">',
+              'au': '<div class="cdetail au">',
+              'nz': '<div class="cdetail nz">',
+              'ea': '<div class="cdetail ea">',
+              'jp': '<div class="cdetail jp">',
+          }
           if '.temp-inputs{' in base or 'class="temp-dimension"' in base:
               raise SystemExit('temperature score patch already present')
           if base.count('</style>') < 1:
@@ -187,9 +223,9 @@ jobs:
               out = out.replace(anchor, anchor + '\n' + blocks[key], 1)
           Path('_site/index.html').write_text(out)
           PY
-          test "$(grep -o 'class="temp-dimension' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
-          test "$(grep -o 'Hard score inputs' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
-          test "$(grep -o 'class="evidence-block context"' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
+          test "$(grep -o 'class="temp-dimension' _site/index.html | wc -l | tr -d '[:space:]')" -eq 24
+          test "$(grep -o 'Hard score inputs' _site/index.html | wc -l | tr -d '[:space:]')" -eq 24
+          test "$(grep -o 'class="evidence-block context"' _site/index.html | wc -l | tr -d '[:space:]')" -eq 24
 
       - name: Add August CPI context to US inflation evidence
         shell: bash
@@ -222,7 +258,7 @@ jobs:
           set -euo pipefail
           PYTHONPATH=. python scripts/validate_score_sources.py
           python -m pip install --disable-pip-version-check -r requirements-market-state.txt
-          PYTHONPATH=. python -m unittest tests.test_temperature_history_audit tests.test_temperature_level tests.test_temperature_scores tests.test_activity_survey_freshness tests.test_harvest_nz_pci tests.test_harvest_ca_pmi tests.test_harvest_au_pmi
+          PYTHONPATH=. python -m unittest tests.test_temperature_history_audit tests.test_temperature_level tests.test_temperature_scores tests.test_activity_survey_freshness tests.test_harvest_nz_pci tests.test_harvest_ca_pmi tests.test_harvest_au_pmi tests.test_harvest_ea_pmi tests.test_harvest_jp_pmi tests.test_country_registry tests.test_euro_area_macro_data tests.test_japan_macro_data
           TMPDIR="$(mktemp -d)"
           PYTHONPATH=. python - <<PY
           from pathlib import Path
@@ -234,8 +270,8 @@ jobs:
           cmp data/temperature_history/score_paths.json "${TMPDIR}/score_paths.json"
           PYTHONPATH=. python scripts/temperature_level.py --print-levels
           PYTHONPATH=. python scripts/apply_temperature_scores.py _site/index.html --print-scores
-          test "$(grep -o 'class="temp-dimension score-detail"' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
-          test "$(grep -o '50 = structural/policy neutral anchor' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
+          test "$(grep -o 'class="temp-dimension score-detail"' _site/index.html | wc -l | tr -d '[:space:]')" -eq 24
+          test "$(grep -o '50 = structural/policy neutral anchor' _site/index.html | wc -l | tr -d '[:space:]')" -eq 24
           test "$(grep -o 'data-score-overview="live"' _site/index.html | wc -l | tr -d '[:space:]')" -eq 1
           grep -Fq 'Live 1–100 Score Board' _site/index.html
           if grep -Fq '>Temperature Board<' _site/index.html; then echo "stale top-level Temperature Board label remains"; exit 1; fi
