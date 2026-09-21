@@ -373,6 +373,7 @@ def empty_seat(seat: str) -> dict[str, Any]:
         "conviction": 0,
         "thesis": None,
         "invalidation": None,
+        "presentation": None,
         "alerts": [],
         "prior_action": None,
         "last_action": "HOLD",
@@ -692,7 +693,16 @@ def apply_action(
     elif kind == "HEDGE":
         _hedge(seat_book, action, memo=memo, run_id=run_id, when=stamp)
     elif kind == "HOLD":
-        pass
+        position_id = action.get("position_id")
+        if position_id:
+            try:
+                held = _find_position(seat_book, position_id)
+            except SchemaError:
+                held = None
+            if held is not None:
+                for field in ("thesis", "invalidation", "presentation"):
+                    if action.get(field) is not None:
+                        held[field] = deepcopy(action[field])
 
     seat_book["prior_action"] = seat_book.get("last_action")
     seat_book["last_action"] = kind
@@ -705,6 +715,8 @@ def apply_action(
         seat_book["thesis"] = action["thesis"]
     if action.get("invalidation"):
         seat_book["invalidation"] = action["invalidation"]
+    if action.get("presentation"):
+        seat_book["presentation"] = deepcopy(action["presentation"])
     if action.get("alerts"):
         seat_book["alerts"].extend(list(action["alerts"]))
     seat_book["required_pitch"] = action.get("required_pitch")
@@ -760,6 +772,7 @@ def _open_position(
         "opened_run_id": run_id,
         "thesis": action.get("thesis"),
         "invalidation": action.get("invalidation"),
+        "presentation": deepcopy(action.get("presentation")),
         "hedge_of": action.get("hedge_of"),
         "unrealized_pnl_usd": None,
         "pnl_unavailable": action.get("price") in (None, ""),
@@ -869,6 +882,7 @@ def apply_review(
             action.setdefault("expression_memo", payload.get("expression_memo") or _hold_memo(seat))
             action.setdefault("thesis", payload.get("thesis"))
             action.setdefault("invalidation", payload.get("invalidation"))
+            action.setdefault("presentation", deepcopy(payload.get("presentation")))
             action.setdefault("conviction", payload.get("conviction", seat_book.get("conviction")))
             action.setdefault("required_pitch", payload.get("required_pitch"))
             action.setdefault("risk_put_on", payload.get("risk_put_on"))
@@ -966,6 +980,7 @@ def public_books_view(books: dict[str, Any]) -> dict[str, Any]:
                 "conviction": item["conviction"],
                 "thesis": item.get("thesis"),
                 "invalidation": item.get("invalidation"),
+                "presentation": deepcopy(item.get("presentation")),
                 "last_action": item.get("last_action"),
                 "prior_action": item.get("prior_action"),
                 "alerts": item.get("alerts") or [],
@@ -1000,6 +1015,7 @@ def public_books_view(books: dict[str, Any]) -> dict[str, Any]:
                         "opened_run_id": p.get("opened_run_id"),
                         "thesis": p.get("thesis"),
                         "invalidation": p.get("invalidation"),
+                        "presentation": deepcopy(p.get("presentation")),
                         "unrealized_pnl_usd": p.get("unrealized_pnl_usd"),
                         "risk_capital_usd": p.get("risk_capital_usd"),
                         "risk_capital_method": p.get("risk_capital_method"),
