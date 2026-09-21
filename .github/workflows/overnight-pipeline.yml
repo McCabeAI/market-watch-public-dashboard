@@ -2,17 +2,34 @@ name: Overnight Deterministic Pipeline
 
 on:
   schedule:
+    # Keep the six logical stage clocks, but treat every scheduled event as a
+    # reconciliation wake-up. Additional wake-ups provide catch-up capacity
+    # when GitHub delays or drops one exact cron delivery.
     - cron: "7 0 * * 1-5"
+      timezone: "America/New_York"
+    - cron: "27,47 0 * * 1-5"
+      timezone: "America/New_York"
+    - cron: "7,27 1 * * 1-5"
       timezone: "America/New_York"
     - cron: "40 1 * * 1-5"
       timezone: "America/New_York"
     - cron: "50 1 * * 1-5"
       timezone: "America/New_York"
+    - cron: "55 1 * * 1-5"
+      timezone: "America/New_York"
+    - cron: "0 2 * * 1-5"
+      timezone: "America/New_York"
     - cron: "35 3 * * 1-5"
+      timezone: "America/New_York"
+    - cron: "45 3 * * 1-5"
       timezone: "America/New_York"
     - cron: "50 3 * * 1-5"
       timezone: "America/New_York"
+    - cron: "55 3 * * 1-5"
+      timezone: "America/New_York"
     - cron: "7 4 * * 1-5"
+      timezone: "America/New_York"
+    - cron: "17 4 * * 1-5"
       timezone: "America/New_York"
   workflow_dispatch:
     inputs:
@@ -70,6 +87,7 @@ concurrency:
 
 jobs:
   validate:
+    if: github.event_name != 'schedule'
     name: Overnight contracts and dry-run
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -90,8 +108,41 @@ jobs:
           test -s /tmp/overnight-site/trader-books.json
           test -s /tmp/overnight-site/pm-books.json
 
-  resolve:
-    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'live-stage')
+  scheduled-reconcile:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout current main
+        uses: actions/checkout@v6
+        with:
+          ref: main
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Install market-state dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-market-state.txt
+      - name: Reconcile all due deterministic stages
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python3 scripts/overnight_pipeline.py reconcile --live-market-state
+      - name: Persist reconciled deterministic state to main
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/overnight
+          git add data/pm/books data/pm/review_packets data/pm/public data/pm/data_requests 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "No deterministic overnight state changes"
+            exit 0
+          fi
+          git commit -m "chore: reconcile overnight deterministic stages"
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+  resolve-manual:
+    if: github.event_name == 'workflow_dispatch' && inputs.mode == 'live-stage'
     needs: validate
     runs-on: ubuntu-latest
     outputs:
@@ -104,25 +155,10 @@ jobs:
           python-version: "3.12"
       - id: resolve
         env:
-          EVENT_NAME: ${{ github.event_name }}
-          SCHEDULE: ${{ github.event.schedule }}
-          MANUAL_STAGE: ${{ inputs.stage }}
+          STAGE: ${{ inputs.stage }}
           AS_OF: ${{ inputs.as_of }}
         run: |
           set -euo pipefail
-          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
-            STAGE="$MANUAL_STAGE"
-          else
-            case "$SCHEDULE" in
-              "7 0 * * 1-5") STAGE="collect" ;;
-              "40 1 * * 1-5") STAGE="pre_trader_delta" ;;
-              "50 1 * * 1-5") STAGE="freeze_evidence" ;;
-              "35 3 * * 1-5") STAGE="final_delta" ;;
-              "50 3 * * 1-5") STAGE="assemble" ;;
-              "7 4 * * 1-5") STAGE="publish" ;;
-              *) echo "::error::Unknown scheduled cron: $SCHEDULE"; exit 1 ;;
-            esac
-          fi
           if [ -n "$AS_OF" ]; then
             RUN_ID="$(PYTHONPATH=. python3 scripts/overnight_pipeline.py run-id --as-of "$AS_OF")"
           else
@@ -131,9 +167,9 @@ jobs:
           echo "stage=$STAGE" >> "$GITHUB_OUTPUT"
           echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
 
-  run-stage:
-    if: needs.resolve.result == 'success'
-    needs: [validate, resolve]
+  run-manual-stage:
+    if: needs.resolve-manual.result == 'success'
+    needs: [validate, resolve-manual]
     runs-on: ubuntu-latest
     timeout-minutes: 35
     steps:
@@ -145,12 +181,12 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install market-state dependencies
-        if: contains(fromJSON('["collect","pre_trader_delta","final_delta"]'), needs.resolve.outputs.stage)
+        if: contains(fromJSON('["collect","pre_trader_delta","final_delta"]'), needs.resolve-manual.outputs.stage)
         run: python -m pip install --disable-pip-version-check -r requirements-market-state.txt
       - name: Run deterministic stage
         env:
-          STAGE: ${{ needs.resolve.outputs.stage }}
-          RUN_ID: ${{ needs.resolve.outputs.run_id }}
+          STAGE: ${{ needs.resolve-manual.outputs.stage }}
+          RUN_ID: ${{ needs.resolve-manual.outputs.run_id }}
           AS_OF: ${{ inputs.as_of }}
         run: |
           set -euo pipefail
@@ -158,19 +194,22 @@ jobs:
           if [ -n "$AS_OF" ]; then AS_OF_ARGS=(--as-of "$AS_OF"); fi
           case "$STAGE" in
             collect|pre_trader_delta|final_delta)
-              PYTHONPATH=. python3 scripts/overnight_pipeline.py stage "$STAGE"                 --run-id "$RUN_ID" --live-market-state "${AS_OF_ARGS[@]}"
+              PYTHONPATH=. python3 scripts/overnight_pipeline.py stage "$STAGE" \
+                --run-id "$RUN_ID" --live-market-state "${AS_OF_ARGS[@]}"
               ;;
             publish)
-              PYTHONPATH=. python3 scripts/overnight_pipeline.py stage publish                 --run-id "$RUN_ID" --require-dataset "${AS_OF_ARGS[@]}"
+              PYTHONPATH=. python3 scripts/overnight_pipeline.py stage publish \
+                --run-id "$RUN_ID" --require-dataset "${AS_OF_ARGS[@]}"
               ;;
             *)
-              PYTHONPATH=. python3 scripts/overnight_pipeline.py stage "$STAGE"                 --run-id "$RUN_ID" "${AS_OF_ARGS[@]}"
+              PYTHONPATH=. python3 scripts/overnight_pipeline.py stage "$STAGE" \
+                --run-id "$RUN_ID" "${AS_OF_ARGS[@]}"
               ;;
           esac
       - name: Persist deterministic state to main
         env:
-          STAGE: ${{ needs.resolve.outputs.stage }}
-          RUN_ID: ${{ needs.resolve.outputs.run_id }}
+          STAGE: ${{ needs.resolve-manual.outputs.stage }}
+          RUN_ID: ${{ needs.resolve-manual.outputs.run_id }}
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"

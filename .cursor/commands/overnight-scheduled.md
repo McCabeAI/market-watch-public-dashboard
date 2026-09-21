@@ -12,6 +12,22 @@ MW_OVERNIGHT_RUN_POLICY={"version":1,"schedule_id":"market-watch-weekday-0205","
 
 ACP must emit a matching policy marker. `.cursor/hooks/enforce-overnight-budget.py` enforces these caps atomically on every child spawn.
 
+## 0. Trusted-freeze preflight — before any child subagent spend
+
+The ACP parent is already running at this point. Before launching the Composer research child or any trader/PM child:
+
+1. Resolve the current New York run ID as `overnight-YYYYMMDD`.
+2. Read the **committed starting-ref** files:
+   - `data/overnight/runs/<run_id>/run.json`
+   - `data/overnight/runs/<run_id>/evidence_snapshot.json`
+3. Require `freeze_evidence.status == "succeeded"`, snapshot `type == "OVERNIGHT_EVIDENCE_SNAPSHOT"`, matching `overnight_run_id`, and a valid committed `packet_sha256`.
+4. Never create, regenerate, or repair the trusted base freeze inside the provider run. Market Watch deterministic automation owns that state.
+5. If the committed trusted freeze is absent or invalid, stop **before launching any child** and return:
+   `STATUS: BLOCKED_MISSING_TRUSTED_FREEZE`
+   Do not open an overnight-output PR.
+
+The runtime budget hook independently enforces this committed-freeze requirement on the first overnight child spawn, so a locally synthesized snapshot cannot substitute for persisted trusted state.
+
 ## Approved graph (19 / 18 / 2)
 
 | Role | Count | Model |

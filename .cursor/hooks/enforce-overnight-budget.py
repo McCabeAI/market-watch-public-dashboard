@@ -9,8 +9,11 @@ import json
 import os
 import re
 import sys
+import subprocess
+from datetime import datetime
 from pathlib import Path
 from typing import Any
+from zoneinfo import ZoneInfo
 
 POLICIES = {
     "overnight": {
@@ -117,6 +120,48 @@ def load_active(path: Path) -> dict[str, Any] | None:
         respond("deny", f"Existing budget state {path} is unreadable.")
 
 
+
+def _git_json(path: str) -> dict[str, Any]:
+    try:
+        raw = subprocess.check_output(
+            ["git", "show", f"HEAD:{path}"],
+            stderr=subprocess.DEVNULL,
+            text=True,
+        )
+    except (OSError, subprocess.CalledProcessError):
+        respond("deny", f"Overnight trusted freeze is not committed at {path}.")
+    try:
+        payload = json.loads(raw)
+    except json.JSONDecodeError:
+        respond("deny", f"Committed overnight artifact {path} is invalid JSON.")
+    if not isinstance(payload, dict):
+        respond("deny", f"Committed overnight artifact {path} must be an object.")
+    return payload
+
+
+def verify_trusted_overnight_freeze() -> None:
+    """Require the current NY run's trusted freeze to exist in committed HEAD."""
+    session = datetime.now(ZoneInfo("America/New_York")).strftime("%Y%m%d")
+    run_id = f"overnight-{session}"
+    base = f"data/overnight/runs/{run_id}"
+    run = _git_json(f"{base}/run.json")
+    snapshot = _git_json(f"{base}/evidence_snapshot.json")
+
+    freeze = ((run.get("stages") or {}).get("freeze_evidence") or {})
+    if freeze.get("status") != "succeeded":
+        respond("deny", f"{run_id} trusted freeze_evidence stage is not succeeded in committed HEAD.")
+    if snapshot.get("type") != "OVERNIGHT_EVIDENCE_SNAPSHOT":
+        respond("deny", f"{run_id} committed evidence snapshot type is invalid.")
+    if snapshot.get("overnight_run_id") != run_id:
+        respond("deny", f"{run_id} committed evidence snapshot run ID mismatch.")
+
+    supplied = snapshot.get("packet_sha256")
+    unsigned = {k: v for k, v in snapshot.items() if k != "packet_sha256"}
+    canonical = json.dumps(unsigned, indent=2, sort_keys=True) + "\n"
+    expected = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+    if supplied != expected:
+        respond("deny", f"{run_id} committed evidence snapshot hash is invalid.")
+
 def main() -> None:
     try:
         event = json.load(sys.stdin)
@@ -138,6 +183,8 @@ def main() -> None:
 
     kind, policy, spec = parsed
     validate_policy(kind, policy, spec)
+    if kind == "overnight":
+        verify_trusted_overnight_freeze()
 
     lock_path: Path = spec["lock"]
     active_path: Path = spec["active"]

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import subprocess
@@ -7,6 +8,7 @@ import tempfile
 import unittest
 from datetime import datetime
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 from scripts.overnight.clock import isoformat, now_ny
 from scripts.overnight.constants import ROOT, STANDING_SEATS
@@ -273,6 +275,28 @@ class BudgetHookTests(unittest.TestCase):
         marker = "MW_OVERNIGHT_RUN_POLICY=" + json.dumps(POLICY, separators=(",", ":"))
         self.transcript.write_text(marker + "\n", encoding="utf-8")
         self.script = ROOT / ".cursor" / "hooks" / "enforce-overnight-budget.py"
+        self.repo = Path(self.tmp.name) / "repo"
+        self.repo.mkdir()
+        subprocess.run(["git", "init", "-q"], cwd=self.repo, check=True)
+        subprocess.run(["git", "config", "user.email", "test@example.com"], cwd=self.repo, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=self.repo, check=True)
+        today = datetime.now(ZoneInfo("America/New_York")).strftime("%Y%m%d")
+        run_id = f"overnight-{today}"
+        run_dir = self.repo / "data" / "overnight" / "runs" / run_id
+        run_dir.mkdir(parents=True)
+        run = {"stages": {"freeze_evidence": {"status": "succeeded"}}}
+        snapshot = {
+            "schema_version": 1,
+            "type": "OVERNIGHT_EVIDENCE_SNAPSHOT",
+            "overnight_run_id": run_id,
+            "as_of": datetime.now(ZoneInfo("America/New_York")).isoformat(),
+        }
+        unsigned = json.dumps(snapshot, indent=2, sort_keys=True) + "\n"
+        snapshot["packet_sha256"] = hashlib.sha256(unsigned.encode("utf-8")).hexdigest()
+        (run_dir / "run.json").write_text(json.dumps(run, indent=2, sort_keys=True) + "\n")
+        (run_dir / "evidence_snapshot.json").write_text(json.dumps(snapshot, indent=2, sort_keys=True) + "\n")
+        subprocess.run(["git", "add", "."], cwd=self.repo, check=True)
+        subprocess.run(["git", "commit", "-qm", "seed trusted freeze"], cwd=self.repo, check=True)
 
     def tearDown(self) -> None:
         self.active.unlink(missing_ok=True)
@@ -295,7 +319,7 @@ class BudgetHookTests(unittest.TestCase):
             input=json.dumps(event),
             text=True,
             capture_output=True,
-            cwd=ROOT,
+            cwd=self.repo,
             check=False,
         )
 
@@ -312,6 +336,15 @@ class BudgetHookTests(unittest.TestCase):
         blocked_composer = self._call("root", "composer-2.5")
         self.assertNotEqual(blocked_composer.returncode, 0)
         self.assertIn("cap", blocked_composer.stdout.lower())
+
+    def test_missing_committed_freeze_blocks_first_child(self) -> None:
+        today = datetime.now(ZoneInfo("America/New_York")).strftime("%Y%m%d")
+        snapshot = self.repo / "data" / "overnight" / "runs" / f"overnight-{today}" / "evidence_snapshot.json"
+        subprocess.run(["git", "rm", "-q", str(snapshot.relative_to(self.repo))], cwd=self.repo, check=True)
+        subprocess.run(["git", "commit", "-qm", "remove freeze"], cwd=self.repo, check=True)
+        blocked = self._call("root", "composer-2.5")
+        self.assertNotEqual(blocked.returncode, 0)
+        self.assertIn("trusted freeze", blocked.stdout.lower())
 
     def test_nested_child_is_denied(self) -> None:
         self.assertEqual(self._call("root", "composer-2.5").returncode, 0)
