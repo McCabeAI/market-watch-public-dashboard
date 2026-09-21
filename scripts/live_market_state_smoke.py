@@ -11,6 +11,8 @@ import json
 import sys
 from datetime import date, timedelta
 
+from scripts.canada_housing_data import collect_canada_housing, validate_canada_housing
+from scripts.us_housing_data import collect_us_housing, validate_us_housing
 from scripts.market_state import (
     MarketStateError,
     fetch_au_rates,
@@ -64,6 +66,28 @@ def main() -> int:
         "pairs": 45,
         "EURUSD": [eurusd_date.isoformat(), eurusd],
         "AUDNZD": [audnzd_date.isoformat(), audnzd],
+    }
+
+    housing_fetch = lambda url: fetch_bytes(url, timeout=20, retries=2)
+    us_housing = collect_us_housing(today=today, fetch_bytes=housing_fetch)
+    validate_us_housing(us_housing)
+    if us_housing.get("status") not in {"ok", "partial"}:
+        raise MarketStateError(f"live US housing unavailable: {us_housing}")
+    report["US_housing"] = {
+        "status": us_housing["status"],
+        "feeds": {k: v.get("status") for k, v in us_housing["feeds"].items()},
+    }
+
+    ca_housing = collect_canada_housing(today=today, fetch_bytes=housing_fetch)
+    validate_canada_housing(ca_housing)
+    if ca_housing.get("status") not in {"ok", "partial"}:
+        raise MarketStateError(f"live Canada housing unavailable: {ca_housing}")
+    ca_usable = sum(v.get("status") in {"ok", "stale"} for v in ca_housing["feeds"].values())
+    if ca_usable < 5:
+        raise MarketStateError(f"too few live Canadian housing feeds usable ({ca_usable}/7): {ca_housing}")
+    report["CA_housing"] = {
+        "status": ca_housing["status"],
+        "feeds": {k: v.get("status") for k, v in ca_housing["feeds"].items()},
     }
 
     policy_paths = collect_policy_paths(today=today, fetch_bytes=fetch_bytes)
