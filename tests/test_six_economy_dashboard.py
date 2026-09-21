@@ -133,6 +133,7 @@ class SixEconomyDashboardTest(unittest.TestCase):
         html = _pipeline_html()
         state = json.loads(FIXTURE_V3.read_text(encoding="utf-8"))
         html = apply_scores(html, state)
+        self.assertEqual(html.count('class="temp-dimension score-detail"'), 24)
         for key in ("us", "ca", "au", "nz", "ea", "jp"):
             anchor = f'<div class="cdetail {key}">'
             start = html.index(anchor)
