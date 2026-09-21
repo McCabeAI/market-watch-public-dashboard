@@ -255,6 +255,20 @@ def _trade_from_spec(agent: str, packet: dict[str, Any]) -> dict[str, Any] | Non
         "catalysts": ["Retained Market Watch policy/news evidence already inside the packet."],
         "principal_risks": ["Packet gaps or a regime shift opposite this remit."],
         "confidence": 58,
+        "presentation": {
+            "market_expression": f"{spec['direction'].title()} {spec['instrument']}",
+            "punchline": f"{spec['direction'].title()} {spec['instrument']}. {spec['mispricing']}",
+            "support": [
+                spec["thesis"],
+                "Synthetic fixture support; a live trader must cite the strongest frozen-packet facts without dumping the packet.",
+            ],
+            "take_profit": {
+                "objective": "Exit when the modeled discrepancy normalizes.",
+                "basis": "Synthetic fixture; a live trader must anchor this to a historical range, standard-deviation move, policy path, or explicit P&L objective.",
+                "pnl_target_usd": None,
+            },
+            "invalidation": "Exit if the opposite regime becomes visible in the frozen evidence or price action.",
+        },
         "macro_assumptions": spec["assumptions"],
     }
 
