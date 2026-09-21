@@ -115,19 +115,30 @@ def default_fetch_bytes(url: str, *, timeout: int = 60) -> bytes:
 
 
 def parse_bundesbank_csv(text: str) -> dict[date, float]:
-    """Parse a single-series Bundesbank BBSSY CSV (semicolon-separated, comma decimals)."""
+    """Parse a single-series Bundesbank BBSSY CSV.
+
+    The REST CSV dialect follows Accept-Language: German locale uses semicolons
+    and comma decimals (``2,45``); English locale uses commas and period decimals
+    (``2.45``). Missing values are ``.``.
+    """
     out: dict[date, float] = {}
-    for line in text.splitlines():
-        line = line.strip()
-        if not line or line.startswith('"Stand vom'):
+    for raw in text.lstrip("\ufeff").splitlines():
+        line = raw.strip().lstrip("\ufeff")
+        if not line:
             continue
-        parts = line.split(";")
+        lowered = line.lower()
+        if lowered.startswith('"stand vom') or lowered.startswith("stand vom"):
+            continue
+        if lowered.startswith("last update"):
+            continue
+        delimiter = ";" if ";" in line else ","
+        parts = [p.strip().strip('"') for p in line.split(delimiter)]
         if len(parts) < 2:
             continue
-        d = _parse_iso_date(parts[0].strip('"'))
+        d = _parse_iso_date(parts[0])
         if d is None:
             continue
-        v = _num(parts[1].strip('"'))
+        v = _num(parts[1])
         if v is not None:
             out[d] = v
     if not out:

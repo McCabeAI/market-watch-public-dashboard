@@ -40,6 +40,8 @@ https://api.statistiken.bundesbank.de/rest/data/BBSSY/D.REN.EUR.A610.000000WT020
 
 **Parser:** `parse_bundesbank_csv` → `{date: yield_percent}`; missing/`.` rows skipped.
 
+The REST CSV dialect follows `Accept-Language`. German locale is semicolon-separated with comma decimals (`2,45`). English locale (including `scripts/market_state.py` `fetch_bytes`, which sends `Accept-Language: en-US`) is comma-separated with period decimals (`2.45`). The parser accepts both.
+
 **Freshness:** `STALE_AFTER_DAYS = 4` (aligned with US Bund-equivalent daily cadence).
 
 **Failure:** Missing 2Y/5Y/10Y/30Y after fetch → `EuroAreaRatesError`.

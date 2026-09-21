@@ -29,6 +29,16 @@ class EuroAreaRatesParserTests(unittest.TestCase):
         self.assertEqual(parsed[date(2024, 1, 2)], 2.45)
         self.assertEqual(parsed[date(2024, 1, 5)], 2.57)
         self.assertNotIn(date(2024, 1, 1), parsed)
+        self.assertNotIn(date(2024, 1, 6), parsed)
+
+    def test_bundesbank_csv_english_comma_dialect(self):
+        text = (FIXTURES / "bundesbank_2y_en_sample.csv").read_text(encoding="utf-8")
+        parsed = parse_bundesbank_csv(text)
+        self.assertEqual(parsed[date(2024, 1, 2)], 2.45)
+        self.assertEqual(parsed[date(2024, 1, 5)], 2.57)
+        self.assertEqual(parsed[date(2024, 1, 10)], 2.60)
+        self.assertNotIn(date(2024, 1, 6), parsed)
+        self.assertNotIn(date(2026, 9, 21), parsed)
 
     def test_ecb_estr_csv(self):
         text = (FIXTURES / "ecb_estr_sample.csv").read_text(encoding="utf-8")
