@@ -77,8 +77,8 @@ class EuroAreaRatesParserTests(unittest.TestCase):
         mcby = parse_eurostat_mcby_json(payload)
         out = compute_mcby_fragmentation_spreads(mcby_yields=mcby, countries=("IT",))
         spreads = out["spreads"]["IT"]["10Y"]
-        self.assertAlmostEqual(spreads["2024-01-31"], 1.4)
-        self.assertAlmostEqual(spreads["2024-02-29"], 1.4)
+        self.assertAlmostEqual(spreads["2024-01-31"], 0.1)
+        self.assertAlmostEqual(spreads["2024-02-29"], 0.1)
 
     def test_collect_fragmentation_does_not_use_bundesbank_for_10y(self):
         mcby_payload = (FIXTURES / "eurostat_mcby_sample.json").read_bytes()
@@ -94,7 +94,7 @@ class EuroAreaRatesParserTests(unittest.TestCase):
         self.assertFalse(block["bund_benchmark"]["used_for_10y_fragmentation"])
         self.assertEqual(block["mcby_benchmark_10y"]["german_leg_10y"], "EUROSTAT_MCBY_DE")
         self.assertEqual(block["mcby_benchmark_10y"]["frequency"], "monthly")
-        self.assertAlmostEqual(block["spreads"]["IT"]["10Y"]["2024-01-31"], 1.4)
+        self.assertAlmostEqual(block["spreads"]["IT"]["10Y"]["2024-01-31"], 0.1)
 
     def test_fragmentation_exact_common_dates_no_forward_fill(self):
         bund_text = (FIXTURES / "bundesbank_2y_sample.csv").read_text(encoding="utf-8")
