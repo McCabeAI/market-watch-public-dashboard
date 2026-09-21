@@ -24,7 +24,7 @@ from scripts.overnight.ledger import load_or_create, mark_finished, mark_running
 from scripts.overnight.paper_marks import market_state_from_families
 from scripts.overnight.store import OvernightStore, sha256_json
 from scripts.pm.automated import validate_pm_decisions
-from scripts.trading.presentation import PresentationError, validate_trade_presentation
+from scripts.trade_presentation import PresentationError, validate_trade_presentation
 from scripts.pm.review_packets import compact_overnight_decisions
 
 SCHEDULE_ID = "market-watch-weekday-0205"
