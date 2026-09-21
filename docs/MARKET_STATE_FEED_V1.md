@@ -59,6 +59,8 @@ The JSON object always contains:
 | `tradable_rate_curves` | Paper-tradable SOFR (`SR3`), CORRA (`CRA`) and AONIA (`IB`) futures strips |
 | `official_curves` | Supplemental US/Canada/Australia government zero/forward curves for bond-curve expressions |
 | `australia_housing` | Official ABS/RBA housing prices/turnover, approvals, lending, credit, mortgage rates and household housing-loan cash-flow data |
+| `us_housing` | FHFA/Census/Fed/Freddie Mac housing prices, new-home sales/inventory, construction, mortgage credit, mortgage rates and mortgage debt-service burden, distributed through FRED |
+| `canada_housing` | Statistics Canada/CMHC/Bank of Canada new-home prices, construction, permits, mortgage lending/balances/rates and mortgage debt-service burden |
 | `fx` | 45 G10 crosses from one ECB fixing |
 | `positioning` | CFTC trader-class positioning plus CME daily futures/options open-interest context |
 | `sources` | Name, public URL, download URL, observation date, status |
@@ -81,6 +83,14 @@ Required tenors:
 
 Each FX pair includes spot, 1D/5D/1M/3M percent returns, 20D/60D annualized realized vol, and 1Y/5Y percentile or z-score when history supports it. Positive return means the base currency appreciated against the quote under the displayed pair key.
 
+
+### U.S. and Canadian housing blocks
+
+`us_housing` carries six maintained feeds: FHFA purchase-only home prices; Census/HUD new-home sales and inventory; permits/starts/completions; Federal Reserve household 1–4 family mortgage liabilities; Freddie Mac 30-year mortgage rates; and the Federal Reserve mortgage debt-service ratio. FRED is the automation distributor, with original publisher provenance retained.
+
+`canada_housing` carries seven maintained feeds: Statistics Canada NHPI new-home prices and building permits; CMHC housing starts/construction; Bank of Canada mortgage funds advanced, outstanding balances and mortgage rates; and Statistics Canada mortgage debt-service ratio. NHPI is explicitly a new-home index, not a resale-home index.
+
+Both blocks are common Trader Room evidence through canonical market-state passthrough. Individual source failures remain explicit rather than being replaced with paid/private proxies.
 
 ### Australian housing block
 

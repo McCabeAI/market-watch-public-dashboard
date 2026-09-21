@@ -66,6 +66,9 @@ def main() -> int:
         "AUDNZD": [audnzd_date.isoformat(), audnzd],
     }
 
+    # Housing is intentionally validated in the full market-state generation job below.
+    # Do not pre-fetch the same FRED/StatCan/BoC series here; duplicate live pulls in one
+    # workflow can trigger transient source throttling and make the end-to-end artifact fail.
     policy_paths = collect_policy_paths(today=today, fetch_bytes=fetch_bytes)
     validate_policy_paths(policy_paths)
     missing_policy = [
