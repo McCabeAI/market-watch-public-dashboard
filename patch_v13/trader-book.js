@@ -122,8 +122,14 @@
     return (verb ? verb + " " : "") + instrument;
   }
 
+  function stripDeskLabels(value) {
+    return String(value || "")
+      .replace(/^\s*(FACT|INFERENCE|UNKNOWN)\s*:\s*/gi, "")
+      .replace(/([.!?]\s+)(FACT|INFERENCE|UNKNOWN)\s*:\s*/gi, "$1");
+  }
+
   function humanizeText(value) {
-    let text = String(value || "");
+    let text = stripDeskLabels(value);
     text = text.replace(/\s*\(paper alias [^)]+\)/gi, "");
     text = text.replace(/\b(CORRA|SOFR|AONIA)_(\d{4})-(\d{2})\b/gi, function (_m, curve, year, month) {
       return futuresCode(year, month) + " " + String(curve).toUpperCase();
@@ -140,8 +146,16 @@
     text = text.replace(/\bSR3([FGHJKMNQUVXZ])(\d)\b/g, function (_m, month, year) {
       return String(month).toUpperCase() + String(year) + " SOFR";
     });
-    text = text.replace(/\bpos-[a-z0-9]+\b/gi, "the position");
-    text = text.replace(/\bpm-[a-z0-9-]+\b/gi, "the position");
+    text = text.replace(/\b(?:pos|pm)-[a-z0-9-]+\b/gi, "the position");
+    text = text.replace(/\bposition_id\b/gi, "position");
+    text = text.replace(/\bopened_run_id\b/gi, "opening run");
+    text = text.replace(/\b(?:tr|overnight)-[a-z0-9-]+\b/gi, "prior run");
+    text = text.replace(/\b[A-Fa-f0-9]{64}\b/g, "packet hash");
+    text = text.replace(/\b(?:CRAH|CRAM|CRAU|CRAZ)([FGHJKMNQUVXZ])(\d{1,2})\b/g,
+      function (_m, month, year) {
+        const y = String(year).length === 1 ? year : String(year).slice(-1);
+        return String(month).toUpperCase() + y + " CORRA";
+      });
     text = text.replace(/\bpacket mid\b/gi, "current mark");
     text = text.replace(/\bcanonical mark\b/gi, "mark");
     text = text.replace(/\bimplied_rate\b/gi, "implied rate");
@@ -149,48 +163,87 @@
     return text.trim();
   }
 
-  function legacySupport(value) {
+  const MECHANICAL_SENTENCE = /opened_run_id|opening run|packet source|trader room status|awaiting_chatgpt|unarbitrated|risk[_ -]?capital|risk_stopped|unrealized|p&l inverted|side long|side short|do not migrate|family locked|canonical mark|current mark implied|entry_mark|notional_usd|shocked-risk|calibration closed|packet hash|on_demand|on-demand fallback|duration-long \/ receive|family locked to|position_id|opened_run|do not open|do not hedge|remaining \d/i;
+
+  function thesisSentences(value) {
     const text = humanizeText(value);
     if (!text) return [];
-    const mechanical = /opened_run_id|packet source|trader room status|risk[_ -]?capital|risk_stopped|unrealized|p&l inverted|side long|side short|do not migrate|family locked|current mark implied rate|entry_mark/i;
-    const pieces = text.split(/(?<=[.!?])\s+/).map(function (item) { return item.trim(); }).filter(Boolean);
-    const useful = pieces.filter(function (item) { return !mechanical.test(item); });
-    return (useful.length ? useful : pieces).slice(0, 4);
+    return text.split(/(?<=[.!?])\s+/).map(function (item) { return item.trim(); }).filter(Boolean);
   }
 
-  function firstSentence(value) {
-    const text = humanizeText(value);
-    if (!text) return "";
-    const match = text.match(/^(.+?[.!?])(?:\s|$)/);
-    return match ? match[1] : text;
+  function isUsefulSentence(item) {
+    return item && !MECHANICAL_SENTENCE.test(item);
+  }
+
+  function capPunchline(text) {
+    const trimmed = String(text || "").trim();
+    if (trimmed.length <= 320) return trimmed;
+    return trimmed.slice(0, 317).replace(/\s+\S*$/, "") + "…";
+  }
+
+  function legacyStoryFromThesis(pos, expression) {
+    const sentences = thesisSentences(pos.thesis);
+    const useful = sentences.filter(isUsefulSentence);
+    const pool = useful.length ? useful : sentences.slice(0, 1);
+    let why = pool[0] || "";
+    const prefix = expression + " — ";
+    const maxWhy = Math.max(40, 320 - prefix.length);
+    if (why.length > maxWhy) {
+      why = why.slice(0, maxWhy - 1).replace(/\s+\S*$/, "") + "…";
+    }
+    const punchline = capPunchline(pool.length ? prefix + why : expression + ".");
+    const support = pool.slice(1, 5).filter(isUsefulSentence);
+    return { punchline: punchline, support: support };
+  }
+
+  function hasRealTradeStory(presentation) {
+    if (!presentation || typeof presentation !== "object") return false;
+    const headline = String(
+      presentation.market_expression || presentation.punchline || ""
+    ).toLowerCase();
+    if (/stay flat|no trade|no incremental|n\/a while flat/.test(headline)) return false;
+    return Boolean(presentation.punchline || (presentation.support && presentation.support.length));
+  }
+
+  function pickPresentation(pos, owner) {
+    const posP = pos.presentation || {};
+    const ownerP = (owner || {}).presentation || {};
+    if (hasRealTradeStory(posP)) return posP;
+    if (hasRealTradeStory(ownerP)) return ownerP;
+    if (posP.punchline || (posP.support && posP.support.length)) return posP;
+    if (ownerP.punchline || (ownerP.support && ownerP.support.length)) return ownerP;
+    return {};
   }
 
   function storyForPosition(pos, owner) {
-    const presentation = ((owner || {}).presentation) || pos.presentation || {};
+    const presentation = pickPresentation(pos, owner);
     const expression = marketExpression(pos);
     let punchline = humanizeText(presentation.punchline || "");
+    let support;
     if (!punchline) {
-      const candidate = firstSentence(pos.thesis);
-      const mechanical = /paper alias|family locked|p&l inverted|side long|side short|duration-long \/ receive mx/i.test(candidate);
-      punchline = expression + (candidate && !mechanical ? " — " + candidate : ".");
+      const legacy = legacyStoryFromThesis(pos, expression);
+      punchline = legacy.punchline;
+      support = legacy.support;
     }
-    let support = presentation.support;
-    if (!Array.isArray(support) || !support.length) {
-      support = legacySupport(pos.thesis);
-    } else {
-      support = support.map(humanizeText).filter(Boolean);
+    if (!Array.isArray(support)) {
+      if (Array.isArray(presentation.support) && presentation.support.length) {
+        support = presentation.support.map(humanizeText).filter(Boolean);
+      } else if (!support) {
+        support = legacyStoryFromThesis(pos, expression).support;
+      }
     }
     const tp = presentation.take_profit || {};
-    const objective = humanizeText(tp.objective || pos.target || "");
+    const objective = humanizeText(tp.objective || "");
     const basis = humanizeText(tp.basis || "");
     const takeProfit = objective
       ? objective + (basis ? " — " + basis : "")
       : "Legacy position: no explicit take-profit was stored.";
+    const invalidation = humanizeText(presentation.invalidation || pos.invalidation || "");
     return {
-      punchline: punchline,
+      punchline: capPunchline(punchline),
       support: support,
       takeProfit: takeProfit,
-      invalidation: humanizeText(presentation.invalidation || pos.invalidation || "")
+      invalidation: invalidation
     };
   }
 
@@ -206,6 +259,10 @@
       '<div class="tb-story-row"><b>Take profit</b><div>' + esc(story.takeProfit || "—") + "</div></div>" +
       '<div class="tb-story-row tb-story-invalidation"><b>Invalidation</b><div>' +
       esc(story.invalidation || "No explicit invalidation recorded.") + "</div></div></div>";
+  }
+
+  function legacySupport(value) {
+    return legacyStoryFromThesis({ thesis: value }, "").support;
   }
 
   function renderFlatStory(owner, label) {
