@@ -3,13 +3,34 @@ from __future__ import annotations
 import argparse
 import json
 import re
+from collections import Counter
 from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_STATE = ROOT / "data" / "temperature_scores.json"
 COUNTRY_KEYS = {"US": "us", "CA": "ca", "AU": "au", "NZ": "nz"}
+COUNTRY_HEADINGS = {
+    "US": "UNITED STATES",
+    "CA": "CANADA",
+    "AU": "AUSTRALIA",
+    "NZ": "NEW ZEALAND",
+}
 DIMENSIONS = ("Inflation", "Labor", "Activity", "Consumer")
+PILL_LABELS = {
+    "cold": "COLD",
+    "cool": "COOL",
+    "neutral": "NEUTRAL",
+    "warm": "WARM",
+    "hot": "HOT",
+}
+DIR_LABELS = {"cooling": "COOLING", "static": "STATIC", "warming": "WARMING"}
+STALE_NARRATIVE_MARKERS = (
+    "lineage-pinned",
+    "contributing −",
+    "contributing -1.0 point",
+    "must not be guessed merely to move the score",
+)
 LINEAGE_ANCHOR_PHRASE = "50 = structural/policy neutral anchor"
 SCORE_KEY_TEXT = (
     "50 = structural/policy anchor · LEVEL from latest hard data · "
@@ -53,6 +74,198 @@ def _impulse_html(spec: dict[str, Any]) -> str:
         '<div class="score-impulse" style="font-size:7px;margin-top:2px;color:var(--muted);">'
         f"{label} · impulse {impulse_bit}</div>"
     )
+
+
+def _component_label(name: str) -> str:
+    label = name.replace("_", " ")
+    parts = []
+    for word in label.split():
+        upper = word.upper()
+        if upper in {"GDP", "PCE", "CPI", "ISM"}:
+            parts.append(upper)
+        else:
+            parts.append(word.capitalize())
+    return " ".join(parts)
+
+
+def _format_as_of_display(as_of: str | None) -> str:
+    if not as_of:
+        return "n/a"
+    text = str(as_of)
+    if re.fullmatch(r"\d{4}-Q[1-4]", text):
+        return text.upper()
+    if len(text) == 7 and text[4] == "-":
+        year, month = text.split("-")
+        months = "JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC".split()
+        return f"{months[int(month) - 1]} {year}"
+    return text.upper()
+
+
+def _format_transform_value(value: float | None) -> str:
+    if value is None:
+        return "n/a"
+    rounded = round(float(value), 4)
+    text = f"{rounded:.4f}".rstrip("0").rstrip(".")
+    return text
+
+
+def _format_weight_pct(weight: float | None) -> str:
+    if weight is None:
+        return "n/a"
+    pct = round(float(weight) * 100)
+    return f"{pct}%"
+
+
+def _hard_input_row(
+    name: str,
+    component: dict[str, Any],
+    weight: float | None,
+) -> str:
+    label = _component_label(name)
+    as_of = _format_as_of_display(component.get("as_of"))
+    weight_pct = _format_weight_pct(weight)
+    transform = _format_transform_value(component.get("transform_value"))
+    level = component.get("level")
+    level_text = display_score(float(level)) if level is not None else "n/a"
+    impulse = _format_impulse(component.get("impulse") if "impulse" in component else None)
+    note = (
+        f"V1 LEVEL {level_text} from transform {transform} "
+        f"(registry weight {weight_pct}; coverage contribution "
+        f"{_format_weight_pct(component.get('coverage_contribution'))}). "
+        f"Component impulse {impulse} vs prior print."
+    )
+    return (
+        '<div class="evidence-row"><div class="evidence-meta">'
+        f'<span class="evidence-role">DIRECT · {weight_pct}</span><span>{as_of}</span></div>'
+        f'<div class="evidence-main"><strong>{label}</strong>'
+        f'<span class="evidence-value">{transform}</span></div>'
+        f'<div class="evidence-note">{note}</div></div>'
+    )
+
+
+def _us_inflation_runrate_strip(component: dict[str, Any]) -> str:
+    transform = component.get("transform_value")
+    if transform is None:
+        return ""
+    text = _format_transform_value(transform)
+    return (
+        '<div class="runrate-strip"><div class="runrate-cell">'
+        "<span>V1 scoring transform (3m ann.)</span>"
+        f"<b>{text}%</b></div></div>"
+    )
+
+
+def _hard_inputs_html(
+    country: str,
+    dimension: str,
+    spec: dict[str, Any],
+) -> str:
+    weights = spec.get("components") or {}
+    component_state = spec.get("component_state") or {}
+    rows: list[str] = []
+    for name, weight in weights.items():
+        component = component_state.get(name) or {}
+        if not component.get("observed"):
+            continue
+        rows.append(_hard_input_row(name, component, float(weight)))
+
+    runrate = ""
+    if country == "US" and dimension == "Inflation":
+        core = component_state.get("core_pce") or {}
+        if core.get("observed"):
+            runrate = _us_inflation_runrate_strip(core)
+
+    grid = '<div class="evidence-grid">' + "".join(rows) + "</div>"
+    return '<div class="evidence-title">Hard score inputs</div>' + runrate + grid
+
+
+def _country_pill_spans(state: dict[str, Any], country: str) -> tuple[str, str]:
+    levels: list[float] = []
+    directions: list[str] = []
+    for dimension in DIMENSIONS:
+        spec = _dimension_spec(state, country, dimension)
+        level = spec.get("level")
+        if level is not None:
+            levels.append(float(level))
+        directions.append(str(spec.get("direction") or "static").lower())
+
+    mean_level = sum(levels) / len(levels) if levels else 50.0
+    pill_class = temperature_class(mean_level)
+    pill_span = (
+        f'<span class="pill {pill_class}">{PILL_LABELS[pill_class]}</span>'
+    )
+
+    counts = Counter(directions)
+    ordered = counts.most_common()
+    majority = ordered[0][0]
+    if len(ordered) > 1 and ordered[0][1] == ordered[1][1]:
+        majority = "static"
+    dir_span = f'<span class="dir {majority}">{DIR_LABELS[majority]}</span>'
+    return pill_span, dir_span
+
+
+def _patch_country_pills(html: str, state: dict[str, Any]) -> str:
+    for country, heading in COUNTRY_HEADINGS.items():
+        pill_span, dir_span = _country_pill_spans(state, country)
+        html, macro_count = re.subn(
+            rf'(<h3>{heading}</h3>.*?<div class="pills">).*?(</div>)',
+            rf"\1{pill_span}{dir_span}\2",
+            html,
+            count=1,
+            flags=re.S,
+        )
+        key = COUNTRY_KEYS[country]
+        if f'<div class="cdetail {key}">' in html:
+            start, end = _country_slice(html, key)
+            block = html[start:end]
+            if '<div class="big">' in block:
+                block, hero_count = re.subn(
+                    r'<div class="big"><span class="pill [^"]+">[^<]+</span></div>\s*'
+                    r'<span class="dir [^"]+">[^<]+</span>',
+                    f'<div class="big">{pill_span}</div>{dir_span}',
+                    block,
+                    count=1,
+                )
+                if hero_count != 1:
+                    raise ValueError(f"could not patch hero pills for {country}")
+                html = html[:start] + block + html[end:]
+        elif macro_count != 1:
+            raise ValueError(f"could not patch macro snapshot pills for {country}")
+    return html
+
+
+def _scrub_stale_narrative(html: str) -> str:
+    html = re.sub(
+        r'<div class="evidence-row context-row"><div class="evidence-meta">'
+        r'<span class="evidence-role">CONFIDENCE EVIDENCE · SCORED</span><span>SEP 2026 PRELIM</span></div>'
+        r'<div class="evidence-main"><strong>Michigan sentiment</strong>'
+        r'<span class="evidence-value">47\.8</span></div>.*?</a></div>',
+        "",
+        html,
+        flags=re.S,
+    )
+    html = re.sub(
+        r'<div class="evidence-note">[^<]*contributing [^<]*</div>',
+        '<div class="evidence-note">V1 corroboration only; retired classified bucket impulses are not shown.</div>',
+        html,
+        flags=re.I,
+    )
+    html = re.sub(
+        r'<div class="evidence-note">[^<]*(?:lineage-pinned|must not be guessed merely to move the score)[^<]*</div>',
+        '<div class="evidence-note">See live V1 hard score inputs above.</div>',
+        html,
+        flags=re.I,
+    )
+    for marker in STALE_NARRATIVE_MARKERS:
+        if marker in html:
+            raise ValueError(f"stale narrative marker remains after patch: {marker}")
+    if re.search(
+        r"CONFIDENCE EVIDENCE · SCORED</span>.*?Michigan sentiment.*?47\.8",
+        html,
+        flags=re.S | re.I,
+    ):
+        raise ValueError("stale Michigan 47.8 SCORED narrative remains after patch")
+    return html
 
 
 def _lineage_html(spec: dict[str, Any], state: dict[str, Any]) -> str:
@@ -122,6 +335,7 @@ def _patch_top_board(html: str, levels: dict[str, dict[str, float | None]], stat
 
 def _patch_dimension(
     block: str,
+    country: str,
     dimension: str,
     level: float | None,
     spec: dict[str, Any],
@@ -161,6 +375,17 @@ def _patch_dimension(
     if count != 1:
         raise ValueError(f"could not patch {dimension} impulse row")
 
+    hard_pattern = re.compile(
+        rf'(<details class="temp-dimension score-detail">.*?<b>{re.escape(dimension)}</b>.*?)'
+        rf'<div class="evidence-title">Hard score inputs</div>'
+        rf'.*?(?=<div class="lineage-note|<div class="evidence-block context")',
+        re.S,
+    )
+    hard_html = _hard_inputs_html(country=country, dimension=dimension, spec=spec)
+    block, count = hard_pattern.subn(rf"\1{hard_html}", block, count=1)
+    if count != 1:
+        raise ValueError(f"could not patch {dimension} hard score inputs")
+
     details_pattern = re.compile(
         rf'(<details class="temp-dimension score-detail">.*?<b>{re.escape(dimension)}</b>.*?)(<div class="lineage-note(?: lineage-gap)?">.*?</div>)',
         re.S,
@@ -187,12 +412,17 @@ def apply_scores(html: str, state: dict[str, Any]) -> str:
             spec = _dimension_spec(state, country, dimension)
             block = _patch_dimension(
                 block,
+                country,
                 dimension,
                 levels[country][dimension],
                 spec,
                 state,
             )
         html = html[:start] + block + html[end:]
+
+    if any(f"<h3>{heading}</h3>" in html for heading in COUNTRY_HEADINGS.values()):
+        html = _patch_country_pills(html, state)
+    html = _scrub_stale_narrative(html)
 
     if html.count('class="temp-dimension score-detail"') != 16:
         raise ValueError("expected 16 temperature score drawers")

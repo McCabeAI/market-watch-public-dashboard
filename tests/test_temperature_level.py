@@ -7,8 +7,10 @@ import unittest
 from pathlib import Path
 
 from scripts.temperature_level import (
+    PATHS_PATH,
     all_levels,
     build_paths,
+    build_score_state,
     component_level,
     compute_state,
     load_calibration,
@@ -22,6 +24,36 @@ from scripts.temperature_level import (
 from scripts.validate_score_sources import validate_registry
 
 REPO = Path(__file__).resolve().parents[1]
+
+_COMPONENT_STATE_KEYS = ("observed", "as_of", "transform_value", "level", "impulse")
+_DIMENSION_SCORE_KEYS = (
+    "level",
+    "impulse",
+    "direction",
+    "coverage",
+    "temperature_class",
+    "component_state",
+)
+
+
+def _component_state_slice(component_state: dict) -> dict:
+    return {
+        name: {k: comp.get(k) for k in _COMPONENT_STATE_KEYS}
+        for name, comp in component_state.items()
+    }
+
+
+def _dimension_scores_from_state(state: dict) -> dict:
+    out: dict = {}
+    for country in ("US", "CA", "AU", "NZ"):
+        out[country] = {}
+        for dim in ("Inflation", "Labor", "Activity", "Consumer"):
+            spec = state["countries"][country][dim]
+            out[country][dim] = {
+                k: spec[k] if k != "component_state" else _component_state_slice(spec["component_state"])
+                for k in _DIMENSION_SCORE_KEYS
+            }
+    return out
 
 
 class TemperatureLevelEngineTest(unittest.TestCase):
@@ -47,11 +79,30 @@ class TemperatureLevelEngineTest(unittest.TestCase):
         self.assertEqual(errors, [])
 
     def test_us_inflation_uses_three_month_core_pce_annualized(self) -> None:
-        spec = self.cal["components"]["US.Inflation.core_pce"]
-        res = score_component(self.histories["US"], spec, self.cal, "2026-09", 1.0)
-        self.assertTrue(res.observed)
-        self.assertAlmostEqual(res.transform_value or 0, 3.047776, places=3)
-        self.assertAlmostEqual(res.level or 0, 63.1, places=1)
+        """Smoke: live history produces a scored US Inflation dimension (not pinned to a BEA vintage)."""
+        state = load_state()
+        inf = state["countries"]["US"]["Inflation"]
+        self.assertAlmostEqual(inf["coverage"], 1.0)
+        self.assertIsNotNone(inf["level"])
+        self.assertGreaterEqual(float(inf["level"]), 1.0)
+        self.assertLessEqual(float(inf["level"]), 100.0)
+        core = inf["component_state"]["core_pce"]
+        self.assertTrue(core["observed"])
+        self.assertIsNotNone(core["transform_value"])
+        self.assertIsNotNone(core["level"])
+
+    def test_state_on_disk_matches_engine(self) -> None:
+        computed = compute_state(self.cal, self.histories, cutoff="2026-09")
+        engine_doc = build_score_state(self.cal, computed)
+        disk = load_state()
+        self.assertEqual(
+            _dimension_scores_from_state(engine_doc),
+            _dimension_scores_from_state(disk),
+        )
+        engine_paths = build_paths(self.cal, self.histories)
+        disk_paths = json.loads(PATHS_PATH.read_text(encoding="utf-8"))
+        self.assertEqual(engine_paths["paths"], disk_paths["paths"])
+        self.assertEqual(engine_paths["pathology"], disk_paths["pathology"])
 
     def test_ca_underlying_equal_mean_trim_median(self) -> None:
         spec = self.cal["components"]["CA.Inflation.underlying"]
@@ -170,10 +221,12 @@ class TemperatureLevelFixtureTest(unittest.TestCase):
             },
         }
         spec = cal["components"]["US.Inflation.core_pce"]
-        a = score_component(history, spec, cal, "2026-07", 1.0)
-        b = score_component(history, spec, cal, "2026-07", 1.0)
-        self.assertEqual(a.level, b.level)
-        self.assertIsNotNone(a.level)
+        res = score_component(history, spec, cal, "2026-07", 1.0)
+        self.assertTrue(res.observed)
+        self.assertAlmostEqual(res.transform_value or 0, 2.426, places=2)
+        self.assertAlmostEqual(res.level or 0, 55.33, places=1)
+        second = score_component(history, spec, cal, "2026-07", 1.0)
+        self.assertEqual(res.level, second.level)
 
 
 if __name__ == "__main__":

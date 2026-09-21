@@ -106,6 +106,18 @@ def _temperature_staleness(as_of: str | None) -> str:
     return f"as_of:{as_of}"
 
 
+def _dimension_staleness_as_of(spec: dict[str, Any], state: dict[str, Any]) -> str | None:
+    # Staleness uses the oldest observed component as_of (most conservative lag).
+    observed_as_ofs = [
+        comp.get("as_of")
+        for comp in (spec.get("component_state") or {}).values()
+        if comp.get("observed") and comp.get("as_of")
+    ]
+    if observed_as_ofs:
+        return min(observed_as_ofs)
+    return spec.get("as_of") or state.get("as_of")
+
+
 def load_temperature_gauges(root: Path = ROOT) -> list[dict[str, Any]]:
     path = root / "data" / "temperature_scores.json"
     if not path.is_file():
@@ -136,10 +148,11 @@ def load_temperature_gauges(root: Path = ROOT) -> list[dict[str, Any]]:
                         "transform_value": component.get("transform_value"),
                         "impulse": component.get("impulse"),
                         "as_of": component.get("as_of"),
-                        "weight_contribution": component.get("weight_contribution"),
+                        "weight": component.get("weight"),
+                        "coverage_contribution": component.get("coverage_contribution"),
                     }
                 )
-            dim_as_of = spec.get("as_of") or state.get("as_of")
+            dim_as_of = _dimension_staleness_as_of(spec, state)
             level = spec.get("level")
             gauges.append(
                 {

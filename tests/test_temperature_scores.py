@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 import shutil
 import tempfile
 import unittest
@@ -58,7 +59,7 @@ class TemperatureScoresTest(unittest.TestCase):
         block = (ROOT / "patch_v8" / "us.html").read_text(encoding="utf-8")
         for dimension in ("Inflation", "Labor", "Activity", "Consumer"):
             spec = state["countries"]["US"][dimension]
-            block = _patch_dimension(block, dimension, spec["level"], spec, state)
+            block = _patch_dimension(block, "US", dimension, spec["level"], spec, state)
         self.assertIn("63/100", block)
         self.assertIn("Warming · impulse +2", block)
         self.assertIn("Cooling · impulse -1.2", block)
@@ -72,6 +73,35 @@ class TemperatureScoresTest(unittest.TestCase):
         self.assertEqual(out.count(LINEAGE_ANCHOR_PHRASE), 16)
         self.assertEqual(out.count(SCORE_KEY_TEXT), 4)
         self.assertNotIn("Reindexed to 50 on 2026-09-17", out)
+        self.assertNotIn("lineage-pinned", out)
+        self.assertNotIn("contributing −", out)
+        self.assertNotIn("contributing -1.0 point", out)
+        self.assertIsNone(
+            re.search(
+                r"CONFIDENCE EVIDENCE · SCORED</span>.*?Michigan sentiment.*?47\.8",
+                out,
+                flags=re.S | re.I,
+            )
+        )
+        self.assertIn("3.05", out)
+        self.assertNotIn("≈2.4%", out)
+
+    def test_apply_scores_real_state_us_inflation_hard_inputs(self) -> None:
+        from scripts.trader_room.evidence import load_temperature_gauges
+
+        state = load_state()
+        out = apply_scores(_mini_dashboard_html(), state)
+        self.assertNotIn("lineage-pinned", out)
+        self.assertIn("3.0478", out)
+        gauges = load_temperature_gauges(ROOT)
+        us_inf = next(g for g in gauges if g["id"] == "temp:US:inflation")
+        self.assertTrue(
+            any(
+                hi.get("coverage_contribution") is not None or hi.get("weight") is not None
+                for hi in us_inf["hard_inputs"]
+            )
+        )
+        self.assertNotEqual(us_inf["staleness"], "as_of:2026-09")
 
     def test_load_state_requires_v3_on_disk(self) -> None:
         try:
@@ -104,6 +134,8 @@ class TemperatureScoresTest(unittest.TestCase):
         self.assertEqual(us_inf["impulse"], 2.0)
         self.assertEqual(us_inf["source"], "data/temperature_scores.json")
         self.assertEqual(us_inf["hard_inputs"][0]["name"], "core_pce")
+        self.assertEqual(us_inf["hard_inputs"][0]["coverage_contribution"], 1.0)
+        self.assertEqual(us_inf["hard_inputs"][0]["weight"], 1.0)
 
 
 if __name__ == "__main__":
