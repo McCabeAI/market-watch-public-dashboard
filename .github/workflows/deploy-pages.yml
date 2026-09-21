@@ -20,13 +20,29 @@ on:
       - "patch_v9/**"
       - "patch_v12/**"
       - "data/temperature_scores.json"
+      - "data/temperature_calibration.json"
+      - "data/temperature_history/**"
       - "data/score_source_registry.json"
+      - "scripts/temperature_level.py"
       - "scripts/apply_temperature_scores.py"
       - "scripts/apply_daily_refresh.py"
       - "scripts/sync_news_summary.py"
       - "scripts/validate_score_sources.py"
+      - "scripts/activity_survey_freshness.py"
+      - "scripts/harvest_nz_pci.py"
+      - "scripts/harvest_ca_pmi.py"
+      - "scripts/harvest_au_pmi.py"
       - "tests/test_sync_news_summary.py"
       - "tests/test_temperature_scores.py"
+      - "tests/test_temperature_level.py"
+      - "tests/test_temperature_history_audit.py"
+      - "tests/test_activity_survey_freshness.py"
+      - "tests/test_harvest_nz_pci.py"
+      - "tests/test_harvest_ca_pmi.py"
+      - "tests/test_harvest_au_pmi.py"
+      - "tests/fixtures/nz_pci/**"
+      - "tests/fixtures/ca_pmi/**"
+      - "tests/fixtures/au_pmi/**"
       - "docs/*SCORE*.md"
       - "docs/DAILY_REFRESH_V0.md"
       - "scripts/apply_market_data_tab.py"
@@ -205,13 +221,28 @@ jobs:
         run: |
           set -euo pipefail
           PYTHONPATH=. python scripts/validate_score_sources.py
-          PYTHONPATH=. python -m unittest tests.test_temperature_scores
+          python -m pip install --disable-pip-version-check -r requirements-market-state.txt
+          PYTHONPATH=. python -m unittest tests.test_temperature_history_audit tests.test_temperature_level tests.test_temperature_scores tests.test_activity_survey_freshness tests.test_harvest_nz_pci tests.test_harvest_ca_pmi tests.test_harvest_au_pmi
+          TMPDIR="$(mktemp -d)"
+          PYTHONPATH=. python - <<PY
+          from pathlib import Path
+          from scripts.temperature_level import write_state, write_paths
+          write_state(Path("${TMPDIR}") / "temperature_scores.json")
+          write_paths(Path("${TMPDIR}") / "score_paths.json")
+          PY
+          cmp data/temperature_scores.json "${TMPDIR}/temperature_scores.json"
+          cmp data/temperature_history/score_paths.json "${TMPDIR}/score_paths.json"
+          PYTHONPATH=. python scripts/temperature_level.py --print-levels
           PYTHONPATH=. python scripts/apply_temperature_scores.py _site/index.html --print-scores
-          test "$(grep -o 'Reindexed to 50 on 2026-09-17' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
+          test "$(grep -o 'class="temp-dimension score-detail"' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
+          test "$(grep -o '50 = structural/policy neutral anchor' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
           test "$(grep -o 'data-score-overview="live"' _site/index.html | wc -l | tr -d '[:space:]')" -eq 1
           grep -Fq 'Live 1–100 Score Board' _site/index.html
           if grep -Fq '>Temperature Board<' _site/index.html; then echo "stale top-level Temperature Board label remains"; exit 1; fi
           if grep -Fq 'transition anchor' _site/index.html; then echo "stale transition-anchor language remains in built dashboard"; exit 1; fi
+          if grep -Fq 'lineage-pinned' _site/index.html; then echo "stale lineage-pinned drawer language remains"; exit 1; fi
+          if grep -Fq 'contributing −' _site/index.html; then echo "stale classified impulse contributing language remains"; exit 1; fi
+          if grep -Eiq 'SCORED.*47\.8|47\.8.*SCORED' _site/index.html; then echo "stale Michigan 47.8 SCORED narrative remains"; exit 1; fi
 
       - name: Set up Python for market-state packet
         uses: actions/setup-python@v6

@@ -13,7 +13,7 @@ Activity has two hard components:
 
 Do not renormalize these weights because of release timing, stale data or missing inputs.
 
-Activity was reindexed to **50.0 on 2026-09-17**. The activation ledger applies current available hard evidence at the fixed weights above; future qualifying releases append weighted impulses prospectively. Missing inputs add zero rather than freezing the dimension.
+Activity **LEVEL** is governed by `docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md`. **50** maps to documented potential real GDP growth (SAAR) and diffusion expansion thresholds. `data/temperature_scores.json` (v3) stores LEVEL, coverage-weighted IMPULSE, and direction at the fixed weights above. Missing survey or GDP inputs reduce coverage; they are omitted from the LEVEL average rather than imputed as 50.
 
 ## 2. United States business-survey weighting
 

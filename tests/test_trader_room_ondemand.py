@@ -119,6 +119,8 @@ class EvidenceTests(unittest.TestCase):
             validate_preflight(packet, omitted)
 
     def test_repo_assembly_has_mandatory_sections(self):
+        scores_version = json.loads((ROOT / "data" / "temperature_scores.json").read_text()).get("version")
+        self.assertEqual(scores_version, 3)
         packet = assemble_packet(topic="go", root=ROOT)
         statuses = assess_families(packet)
         self.assertEqual(statuses["temperature_gauges"], "available")

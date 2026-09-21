@@ -1,0 +1,720 @@
+{
+  "version": 1,
+  "as_of": "2026-09-21",
+  "methodology": "docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md",
+  "history_dir": "data/temperature_history",
+  "score_min": 1.0,
+  "score_max": 100.0,
+  "neutral_score": 50.0,
+  "impulse_warming_threshold": 1.0,
+  "impulse_cooling_threshold": -1.0,
+  "display_bands": {
+    "cold": [
+      1,
+      20
+    ],
+    "cool": [
+      21,
+      40
+    ],
+    "neutral": [
+      41,
+      60
+    ],
+    "warm": [
+      61,
+      80
+    ],
+    "hot": [
+      81,
+      100
+    ]
+  },
+  "coverage_rule": "dimension_level is the coverage-weighted mean of observed component levels using the frozen weights; missing components are omitted and coverage equals the sum of available weights; never impute 50 for missing inputs; if coverage is 0 the dimension level is null",
+  "weights_changed": false,
+  "weights": {
+    "US": {
+      "Inflation": {
+        "core_pce": 1.0
+      },
+      "Labor": {
+        "unemployment": 0.7,
+        "wages": 0.2,
+        "payrolls": 0.1
+      },
+      "Activity": {
+        "gdp_domestic_demand": 0.6,
+        "services_surveys": 0.28,
+        "manufacturing_surveys": 0.12
+      },
+      "Consumer": {
+        "retail": 0.25,
+        "income": 0.25,
+        "spending": 0.25,
+        "confidence": 0.25
+      }
+    },
+    "CA": {
+      "Inflation": {
+        "underlying": 0.6,
+        "headline": 0.4
+      },
+      "Labor": {
+        "unemployment": 0.7,
+        "wages": 0.2,
+        "employment": 0.1
+      },
+      "Activity": {
+        "gdp_domestic_demand": 0.6,
+        "business_surveys": 0.4
+      },
+      "Consumer": {
+        "retail": 0.25,
+        "income": 0.25,
+        "spending": 0.25,
+        "confidence": 0.25
+      }
+    },
+    "AU": {
+      "Inflation": {
+        "underlying": 0.6,
+        "headline": 0.4
+      },
+      "Labor": {
+        "unemployment": 0.7,
+        "wages": 0.2,
+        "employment": 0.1
+      },
+      "Activity": {
+        "gdp_domestic_demand": 0.6,
+        "business_surveys": 0.4
+      },
+      "Consumer": {
+        "retail": 0.25,
+        "income": 0.25,
+        "spending": 0.25,
+        "confidence": 0.25
+      }
+    },
+    "NZ": {
+      "Inflation": {
+        "underlying": 0.6,
+        "headline": 0.4
+      },
+      "Labor": {
+        "unemployment": 0.7,
+        "wages": 0.2,
+        "employment": 0.1
+      },
+      "Activity": {
+        "gdp_domestic_demand": 0.6,
+        "business_surveys": 0.4
+      },
+      "Consumer": {
+        "retail": 0.25,
+        "income": 0.25,
+        "spending": 0.25,
+        "confidence": 0.25
+      }
+    }
+  },
+  "unscored_components": {
+    "US": {
+      "Inflation": {
+        "mapped_bridge": {
+          "enters_level": false,
+          "role": "provisional_impulse_metadata_only",
+          "note": "Core PCE remains the 100% LEVEL target. The Jul-Aug 2026 PPI-mapped snapshot does not move LEVEL."
+        }
+      }
+    }
+  },
+  "components": {
+    "US.Inflation.core_pce": {
+      "history_key": "Inflation.core_pce",
+      "series_id": "PCEPILFE",
+      "source_transformation": "mom_sa_pct",
+      "scoring_transform": "mom_sa_compound_annualized_n3",
+      "n_periods": 3,
+      "periods_per_year": 12,
+      "anchor": 2.0,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "Federal Reserve 2 percent PCE inflation objective, applied to the 3-month annualized Core PCE run rate",
+      "hot_direction": 1,
+      "scale_per_unit": 12.5
+    },
+    "US.Labor.unemployment": {
+      "history_key": "Labor.unemployment",
+      "series_id": "UNRATE",
+      "source_transformation": "percent",
+      "scoring_transform": "identity",
+      "anchor": 4.2,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "US longer-run / full-employment unemployment ballpark (FOMC u-star neighbourhood)",
+      "hot_direction": -1,
+      "scale_per_unit": 20.0
+    },
+    "US.Labor.wages": {
+      "history_key": "Labor.wages",
+      "series_id": "CES0500000003",
+      "source_transformation": "yoy_pct",
+      "scoring_transform": "identity",
+      "anchor": 3.0,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "2 percent inflation objective plus 1 percentage point trend productivity",
+      "hot_direction": 1,
+      "scale_per_unit": 10.0
+    },
+    "US.Labor.payrolls": {
+      "history_key": "Labor.payrolls",
+      "series_id": "PAYEMS",
+      "source_transformation": "mm_change_thousands_sa",
+      "scoring_transform": "trailing_mean_n3",
+      "n_periods": 3,
+      "anchor": 10.0,
+      "anchor_kind": "structural_trend",
+      "anchor_meaning": "2026 breakeven employment growth (thousands of jobs per month, 3-month average of PAYEMS m/m) consistent with potential labor-force growth holding unemployment steady",
+      "hot_direction": 1,
+      "scale_per_unit": 0.2,
+      "replaced_anchor": 150.0,
+      "source_url": "https://www.federalreserve.gov/econres/notes/feds-notes/labor-force-growth-breakeven-employment-and-potential-gdp-growth-20260402.html",
+      "source_title": "Labor force growth, breakeven employment, and potential GDP growth",
+      "source_authors": "Seth Murray and Ivan Vidangos",
+      "source_date": "2026-04-02",
+      "source_publisher": "Board of Governors of the Federal Reserve System (FEDS Notes)",
+      "point_convention": "Board FEDS Note (Apr 2026) states 2026 breakeven employment growth could be near-zero, requiring less than 10,000 new jobs per month. Anchor 10.0 (thousands/month) is the documented upper bound of that less-than-10k statement\u2014a conservative point vs 0, not a mid-range from sensitivity blogs.",
+      "economic_interpretation": "Monthly nonfarm payroll growth (3-month average) scored vs the pace of job creation needed to keep the unemployment rate steady given potential labor-force growth; faster payrolls than breakeven imply labor-market tightening relative to demographics.",
+      "refresh_cadence": "Review when the Board publishes an updated FEDS Note on breakeven employment or labor-force demographics, or after material BLS population-control / CBO potential-LFPR revisions.",
+      "expires_after": "2027-04-02",
+      "sensitivity_context_urls": [
+        "https://www.stlouisfed.org/on-the-economy/2026/mar/breakeven-employment-growth-estimate-range-widens-2026",
+        "https://www.dallasfed.org/research/economics/2026/0331",
+        "https://www.chicagofed.org/-/media/publications/working-papers/2026/wp2026-10.pdf"
+      ],
+      "sensitivity": {
+        "computed_as_of_cutoff": "2026-09",
+        "payroll_transform": "trailing_mean_n3",
+        "payroll_3m_avg_thousands": 71.33,
+        "unemployment_level_held": 52.0,
+        "wages_level_held": 50.86,
+        "anchors_thousands_per_month": {
+          "0": {
+            "payroll_component_level": 64.27,
+            "us_labor_level": 53.0
+          },
+          "10": {
+            "payroll_component_level": 62.27,
+            "us_labor_level": 52.8
+          },
+          "15": {
+            "payroll_component_level": 61.27,
+            "us_labor_level": 52.7
+          },
+          "50": {
+            "payroll_component_level": 54.27,
+            "us_labor_level": 52.0
+          },
+          "87": {
+            "payroll_component_level": 46.87,
+            "us_labor_level": 51.26
+          },
+          "100": {
+            "payroll_component_level": 44.27,
+            "us_labor_level": 51.0
+          },
+          "150": {
+            "payroll_component_level": 34.27,
+            "us_labor_level": 50.0
+          }
+        }
+      }
+    },
+    "US.Activity.gdp_domestic_demand": {
+      "history_key": "Activity.gdp_domestic_demand",
+      "series_id": "A191RL1Q225SBEA",
+      "source_transformation": "saar_pct",
+      "scoring_transform": "identity",
+      "level_scoring_transform": "trailing_mean_n2",
+      "impulse_scoring_transform": "identity",
+      "anchor": 2.0,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "US potential real GDP growth near 2 percent SAAR",
+      "hot_direction": 1,
+      "scale_per_unit": 10.0
+    },
+    "US.Activity.services_surveys": {
+      "history_key": "Activity.services_surveys",
+      "series_id": null,
+      "source_transformation": "diffusion_index",
+      "scoring_transform": "identity",
+      "level_scoring_transform": "trailing_mean_n3",
+      "impulse_scoring_transform": "identity",
+      "n_periods": 3,
+      "anchor": 50.0,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "ISM-style expansion/contraction threshold",
+      "hot_direction": 1,
+      "scale_per_unit": 1.0
+    },
+    "US.Activity.manufacturing_surveys": {
+      "history_key": "Activity.manufacturing_surveys",
+      "series_id": null,
+      "source_transformation": "diffusion_index",
+      "scoring_transform": "identity",
+      "level_scoring_transform": "trailing_mean_n3",
+      "impulse_scoring_transform": "identity",
+      "n_periods": 3,
+      "anchor": 50.0,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "ISM-style expansion/contraction threshold",
+      "hot_direction": 1,
+      "scale_per_unit": 1.0
+    },
+    "US.Consumer.retail": {
+      "history_key": "Consumer.retail",
+      "series_id": "RSAFS",
+      "source_transformation": "mom_sa_pct",
+      "scoring_transform": "mom_mean_n3",
+      "n_periods": 3,
+      "anchor": 0.333333,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "Nominal retail m/m consistent with 2 percent real plus 2 percent inflation, i.e. 4 percent SAAR / 12",
+      "hot_direction": 1,
+      "scale_per_unit": 40.0
+    },
+    "US.Consumer.income": {
+      "history_key": "Consumer.income",
+      "series_id": "DSPI",
+      "source_transformation": "mom_sa_pct",
+      "scoring_transform": "mom_mean_n3",
+      "n_periods": 3,
+      "anchor": 0.333333,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "Nominal disposable income m/m consistent with 4 percent SAAR / 12",
+      "hot_direction": 1,
+      "scale_per_unit": 40.0
+    },
+    "US.Consumer.spending": {
+      "history_key": "Consumer.spending",
+      "series_id": "PCEC96",
+      "source_transformation": "mom_sa_pct",
+      "scoring_transform": "mom_mean_n3",
+      "n_periods": 3,
+      "anchor": 0.166667,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "Real PCE m/m consistent with 2 percent SAAR / 12",
+      "hot_direction": 1,
+      "scale_per_unit": 40.0
+    },
+    "US.Consumer.confidence": {
+      "history_key": "Consumer.confidence",
+      "series_id": "UMCSENT",
+      "source_transformation": "index_level",
+      "scoring_transform": "identity",
+      "anchor": 80.0,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "Approximate long-run / normal University of Michigan sentiment (not the 12-month median)",
+      "hot_direction": 1,
+      "scale_per_unit": 1.0
+    },
+    "CA.Inflation.underlying": {
+      "history_key": "Inflation.underlying",
+      "series_ids": [
+        "CPI_trim_yoy_v108785715",
+        "CPI_median_yoy_v108785714"
+      ],
+      "collapse": "equal_mean_same_period",
+      "source_transformation": "yoy_pct",
+      "scoring_transform": "identity",
+      "anchor": 2.0,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "Bank of Canada 2 percent inflation target",
+      "hot_direction": 1,
+      "scale_per_unit": 12.5
+    },
+    "CA.Inflation.headline": {
+      "history_key": "Inflation.headline",
+      "series_id": "CPI_all_items_index_v41690973",
+      "source_transformation": "yoy_pct",
+      "scoring_transform": "identity",
+      "anchor": 2.0,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "Bank of Canada 2 percent inflation target",
+      "hot_direction": 1,
+      "scale_per_unit": 12.5
+    },
+    "CA.Labor.unemployment": {
+      "history_key": "Labor.unemployment",
+      "series_id": "LFS_unemployment_rate_v2062815",
+      "source_transformation": "percent",
+      "scoring_transform": "identity",
+      "anchor": 6.0,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "Canadian NAIRU / full-employment neighbourhood near 6 percent",
+      "hot_direction": -1,
+      "scale_per_unit": 20.0
+    },
+    "CA.Labor.wages": {
+      "history_key": "Labor.wages",
+      "series_id": "LFS_avg_hourly_wage_v105812645",
+      "source_transformation": "yoy_pct",
+      "scoring_transform": "identity",
+      "anchor": 3.0,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "2 percent target plus 1 percentage point trend productivity",
+      "hot_direction": 1,
+      "scale_per_unit": 10.0
+    },
+    "CA.Labor.employment": {
+      "history_key": "Labor.employment",
+      "series_id": "LFS_employment_level_v2062811",
+      "source_transformation": "mom_sa_change_thousands",
+      "scoring_transform": "trailing_mean_n3",
+      "n_periods": 3,
+      "anchor": 25.0,
+      "anchor_kind": "structural_trend",
+      "anchor_meaning": "Approximate monthly employment trend consistent with working-age growth",
+      "hot_direction": 1,
+      "scale_per_unit": 0.2
+    },
+    "CA.Activity.gdp_domestic_demand": {
+      "history_key": "Activity.gdp_domestic_demand",
+      "series_id": "GDP_real_market_prices_qq_v1594571783",
+      "source_transformation": "qoq_sa_pct",
+      "scoring_transform": "qoq_to_saar",
+      "level_scoring_transform": "mean_qoq_to_saar_n2",
+      "impulse_scoring_transform": "qoq_to_saar",
+      "anchor": 1.8,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "Canadian potential real growth near 1.8 percent SAAR",
+      "hot_direction": 1,
+      "scale_per_unit": 10.0
+    },
+    "CA.Activity.business_surveys": {
+      "history_key": "Activity.business_surveys",
+      "series_id": "SP_GLOBAL_CA_COMPOSITE",
+      "source_transformation": "diffusion_index",
+      "scoring_transform": "identity",
+      "level_scoring_transform": "trailing_mean_n3",
+      "impulse_scoring_transform": "identity",
+      "n_periods": 3,
+      "anchor": 50.0,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "S&P Global Canada Composite PMI expansion/contraction threshold of 50",
+      "hot_direction": 1,
+      "scale_per_unit": 1.0,
+      "note": "Scored series is S&P Global Canada Composite PMI Output Index from primary monthly Services PMI PDFs through 2026-08. Ivey PMI is retained as conflict/corroboration (series_id Ivey_PMI_conflict, not scored). CFIB Business Barometer is not scored (outlook index, not a contemporaneous composite PMI)."
+    },
+    "CA.Consumer.retail": {
+      "history_key": "Consumer.retail",
+      "series_id": "retail_total_sa_v1446859483",
+      "source_transformation": "mom_sa_pct",
+      "scoring_transform": "mom_mean_n3",
+      "n_periods": 3,
+      "anchor": 0.333333,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "Nominal retail m/m consistent with 4 percent SAAR / 12",
+      "hot_direction": 1,
+      "scale_per_unit": 40.0
+    },
+    "CA.Consumer.income": {
+      "history_key": "Consumer.income",
+      "series_id": "household_disposable_income_v62305981",
+      "source_transformation": "qoq_sa_pct",
+      "scoring_transform": "identity",
+      "anchor": 1.0,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "Nominal disposable income q/q consistent with 4 percent SAAR / 4",
+      "hot_direction": 1,
+      "scale_per_unit": 15.0
+    },
+    "CA.Consumer.spending": {
+      "history_key": "Consumer.spending",
+      "series_id": "household_final_consumption_qq_v1594571755",
+      "source_transformation": "qoq_sa_pct",
+      "scoring_transform": "identity",
+      "anchor": 0.5,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "Real consumption q/q consistent with 2 percent SAAR / 4",
+      "hot_direction": 1,
+      "scale_per_unit": 15.0
+    },
+    "CA.Consumer.confidence": {
+      "history_key": "Consumer.confidence",
+      "observed": false,
+      "note": "BoC CSCE has no free numeric history; omit from LEVEL and reduce coverage"
+    },
+    "AU.Inflation.underlying": {
+      "history_key": "Inflation.underlying",
+      "series_id": "A130400382R",
+      "source_transformation": "yoy_pct",
+      "scoring_transform": "identity",
+      "anchor": 2.5,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "RBA 2-3 percent target midpoint",
+      "hot_direction": 1,
+      "scale_per_unit": 12.5
+    },
+    "AU.Inflation.headline": {
+      "history_key": "Inflation.headline",
+      "series_id": "A130393721F",
+      "source_transformation": "yoy_pct",
+      "scoring_transform": "identity",
+      "anchor": 2.5,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "RBA 2-3 percent target midpoint",
+      "hot_direction": 1,
+      "scale_per_unit": 12.5
+    },
+    "AU.Labor.unemployment": {
+      "history_key": "Labor.unemployment",
+      "series_id": "A84423050A",
+      "source_transformation": "percent",
+      "scoring_transform": "identity",
+      "anchor": 4.5,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "RBA full-employment / NAIRU neighbourhood near 4.5 percent",
+      "hot_direction": -1,
+      "scale_per_unit": 20.0
+    },
+    "AU.Labor.wages": {
+      "history_key": "Labor.wages",
+      "series_id": "A83895396W",
+      "source_transformation": "yoy_pct",
+      "scoring_transform": "identity",
+      "anchor": 3.5,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "2.5 percent target midpoint plus 1 percentage point trend productivity",
+      "hot_direction": 1,
+      "scale_per_unit": 10.0
+    },
+    "AU.Labor.employment": {
+      "history_key": "Labor.employment",
+      "series_id": "A84423043C",
+      "source_transformation": "mom_change_thousands_sa",
+      "scoring_transform": "trailing_mean_n3",
+      "n_periods": 3,
+      "anchor": 25.0,
+      "anchor_kind": "structural_trend",
+      "anchor_meaning": "Approximate monthly employment trend consistent with working-age growth",
+      "hot_direction": 1,
+      "scale_per_unit": 0.2
+    },
+    "AU.Activity.gdp_domestic_demand": {
+      "history_key": "Activity.gdp_domestic_demand",
+      "series_id": "A2304370T",
+      "source_transformation": "qoq_pct",
+      "scoring_transform": "qoq_to_saar",
+      "level_scoring_transform": "mean_qoq_to_saar_n2",
+      "impulse_scoring_transform": "qoq_to_saar",
+      "anchor": 2.25,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "Australian potential real growth near 2.25 percent SAAR; DFD series A2304183K is context only",
+      "hot_direction": 1,
+      "scale_per_unit": 10.0
+    },
+    "AU.Activity.business_surveys": {
+      "history_key": "Activity.business_surveys",
+      "note": "Headline Composite PMI from primary S&P Global / Judo Bank press-release PDFs. Prefer final prints; July 2026 final 53.2 restated in the August 2026 final PDF. Months without a retrieved primary PDF are gapped.",
+      "series_id": "SP_GLOBAL_AU_COMPOSITE_PMI",
+      "source_transformation": "diffusion_index",
+      "level_scoring_transform": "trailing_mean_n3",
+      "impulse_scoring_transform": "identity",
+      "n_periods": 3,
+      "anchor": 50.0,
+      "hot_direction": 1,
+      "scale_per_unit": 1.0,
+      "scoring_transform": "identity",
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "S&P Global / Judo Bank Australia Composite PMI expansion threshold of 50"
+    },
+    "AU.Consumer.retail": {
+      "history_key": "Consumer.retail",
+      "observed": false,
+      "note": "ABS monthly retail trade ceased after 2025-06; omit from LEVEL and reduce coverage"
+    },
+    "AU.Consumer.income": {
+      "history_key": "Consumer.income",
+      "series_id": "A2302939L",
+      "source_transformation": "qoq_pct",
+      "scoring_transform": "identity",
+      "anchor": 1.125,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "Nominal household disposable income q/q consistent with 4.5 percent SAAR / 4",
+      "hot_direction": 1,
+      "scale_per_unit": 15.0
+    },
+    "AU.Consumer.spending": {
+      "history_key": "Consumer.spending",
+      "series_id": "A130200586W",
+      "source_transformation": "mom_pct",
+      "scoring_transform": "mom_mean_n3",
+      "n_periods": 3,
+      "anchor": 0.375,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "Nominal MHSI m/m consistent with 4.5 percent SAAR / 12 (series is current-price)",
+      "hot_direction": 1,
+      "scale_per_unit": 40.0
+    },
+    "AU.Consumer.confidence": {
+      "history_key": "Consumer.confidence",
+      "series_id": null,
+      "source_transformation": "index_level",
+      "scoring_transform": "identity",
+      "anchor": 100.0,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "Westpac-Melbourne Institute long-run average / par of 100",
+      "hot_direction": 1,
+      "scale_per_unit": 1.0
+    },
+    "NZ.Inflation.underlying": {
+      "history_key": "Inflation.underlying",
+      "series_id": "CPIQ.SE9NS1450",
+      "source_transformation": "yoy_pct",
+      "scoring_transform": "identity",
+      "anchor": 2.0,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "RBNZ 1-3 percent target midpoint of 2 percent",
+      "hot_direction": 1,
+      "scale_per_unit": 12.5
+    },
+    "NZ.Inflation.headline": {
+      "history_key": "Inflation.headline",
+      "series_id": "CPIQ.SE9A",
+      "source_transformation": "yoy_pct",
+      "scoring_transform": "identity",
+      "anchor": 2.0,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "RBNZ 2 percent target midpoint",
+      "hot_direction": 1,
+      "scale_per_unit": 12.5
+    },
+    "NZ.Labor.unemployment": {
+      "history_key": "Labor.unemployment",
+      "series_id": "HLFQ.S1F3S",
+      "source_transformation": "percent",
+      "scoring_transform": "identity",
+      "anchor": 4.75,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "New Zealand NAIRU neighbourhood near 4.75 percent",
+      "hot_direction": -1,
+      "scale_per_unit": 20.0
+    },
+    "NZ.Labor.wages": {
+      "history_key": "Labor.wages",
+      "series_id": "LCIQ.SD53Z9",
+      "source_transformation": "yoy_pct",
+      "scoring_transform": "identity",
+      "anchor": 3.0,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "2 percent target plus 1 percentage point trend productivity",
+      "hot_direction": 1,
+      "scale_per_unit": 10.0
+    },
+    "NZ.Labor.employment": {
+      "history_key": "Labor.employment",
+      "series_id": "HLFQ.S1A3S",
+      "source_transformation": "qoq_change_thousands_sa",
+      "scoring_transform": "identity",
+      "anchor": 8.0,
+      "anchor_kind": "structural_trend",
+      "anchor_meaning": "Approximate quarterly employment trend consistent with working-age growth",
+      "hot_direction": 1,
+      "scale_per_unit": 1.0
+    },
+    "NZ.Activity.gdp_domestic_demand": {
+      "history_key": "Activity.gdp_domestic_demand",
+      "series_id": "SNEQ.SG01RSC01B01PC",
+      "source_transformation": "qoq_pct",
+      "scoring_transform": "qoq_to_saar",
+      "level_scoring_transform": "mean_qoq_to_saar_n2",
+      "impulse_scoring_transform": "qoq_to_saar",
+      "anchor": 2.0,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "NZ potential real growth near 2 percent SAAR; ignore expenditure-GDP rows including 2025-Q2 lookback",
+      "hot_direction": 1,
+      "scale_per_unit": 10.0
+    },
+    "NZ.Activity.business_surveys": {
+      "history_key": "Activity.business_surveys",
+      "note": "Scored series is the seasonally adjusted GDP-weighted Performance of Composite Index (PMI+PSI) from BNZ-BusinessNZ primary PDFs through 2026-08. ANZ Business Outlook is context only. BusinessNZ HTML is Cloudflare-blocked; BNZ publications index + direct PSI PDF assets are the canonical public files.",
+      "series_id": "BUSINESSNZ_PCI_GDP_WEIGHTED",
+      "source_transformation": "diffusion_index",
+      "level_scoring_transform": "trailing_mean_n3",
+      "impulse_scoring_transform": "identity",
+      "n_periods": 3,
+      "anchor": 50.0,
+      "hot_direction": 1,
+      "scale_per_unit": 1.0,
+      "scoring_transform": "identity",
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "BNZ-BusinessNZ PCI GDP-weighted expansion threshold of 50"
+    },
+    "NZ.Consumer.retail": {
+      "history_key": "Consumer.retail",
+      "series_id": "SF91KS",
+      "source_transformation": "qoq_pct",
+      "scoring_transform": "identity",
+      "anchor": 0.5,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "Real retail volume q/q consistent with 2 percent SAAR / 4",
+      "hot_direction": 1,
+      "scale_per_unit": 15.0
+    },
+    "NZ.Consumer.income": {
+      "history_key": "Consumer.income",
+      "series_id": "household_net_disposable_income_sa",
+      "source_transformation": "qoq_pct",
+      "scoring_transform": "identity",
+      "anchor": 1.0,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "Nominal household income q/q consistent with 4 percent SAAR / 4",
+      "hot_direction": 1,
+      "scale_per_unit": 15.0
+    },
+    "NZ.Consumer.spending": {
+      "history_key": "Consumer.spending",
+      "series_id": "SG02RSC30P30E",
+      "source_transformation": "qoq_pct",
+      "scoring_transform": "identity",
+      "anchor": 0.5,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "Household consumption q/q consistent with 2 percent SAAR / 4",
+      "hot_direction": 1,
+      "scale_per_unit": 15.0
+    },
+    "NZ.Consumer.confidence": {
+      "history_key": "Consumer.confidence",
+      "series_id": null,
+      "source_transformation": "index_level",
+      "scoring_transform": "identity",
+      "anchor": 100.0,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "ANZ-Roy Morgan par of 100",
+      "hot_direction": 1,
+      "scale_per_unit": 1.0
+    }
+  },
+  "state_schema": {
+    "version": 3,
+    "required_dimension_fields": [
+      "level",
+      "impulse",
+      "direction",
+      "coverage",
+      "temperature_class",
+      "as_of",
+      "components",
+      "component_state"
+    ],
+    "components_field": "frozen weight map summing to 1.0, still used by scripts/validate_score_sources.py",
+    "component_state_field": "per-component observed flag, transform value, level, impulse, as_of, coverage contribution",
+    "do_not_compute_level_from_events_sum": true,
+    "events_field": "optional latest-release notes only; never the LEVEL formula"
+  },
+  "pathology_checks": {
+    "max_abs_month_jump_without_input_jump": 15.0,
+    "max_consecutive_boundary_months": 2,
+    "forbid_calendar_drift_with_unchanged_inputs": true
+  }
+}

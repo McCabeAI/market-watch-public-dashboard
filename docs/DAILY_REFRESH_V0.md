@@ -243,13 +243,11 @@ Use these statistics to answer an economic question, not to decorate the page. P
 
 The V0 score is a compact operational interface for the current quick-data set. It is DERIVED evidence. It is not the canonical Country Expert temperature model and must not be represented as one.
 
-All four dimensions for all four economies were reindexed to a neutral **50.0 baseline on 2026-09-17**. The recovered prototype scores are no longer authoritative starting anchors.
+The live 1–100 gauges are **calibrated LEVEL + IMPULSE** under `docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md`. **50** is a documented structural / policy neutral anchor (inflation target, u\*, potential growth, diffusion thresholds, etc.) — not a 2026-09-17 reindex date and not a trailing-year median.
 
-Current score state is deterministic and versioned in `data/temperature_scores.json`. The dashboard score is:
+Current score state is deterministic and versioned in `data/temperature_scores.json` (version 3). The dashboard **LEVEL** is reproducible from the latest verified observations, frozen anchors/scales in `data/temperature_calibration.json`, and `scripts/temperature_level.py`. **IMPULSE** is the print-to-print change in component LEVELs (coverage-weighted); it is not accumulated into LEVEL.
 
-`current score = 50.0 + cumulative fixed-weight qualifying release impulses since activation`
-
-The activation ledger contains a one-time bootstrap classification of the current hard evidence already present in the dashboard. This is deliberately not a historical backfill. If the scale later proves poorly centered, reindex explicitly rather than freezing current scores while waiting for a perfect historical calibration.
+The recovered v8 prototype scores and the retired cumulative-impulse index remain in git history for comparison only.
 
 Display mapping:
 
@@ -261,7 +259,7 @@ Display mapping:
 
 ### Update principle
 
-Do not rebuild the score from a large historical distribution. V0 is an incremental release-update model indexed to the 50.0 activation baseline.
+Do not rebuild LEVEL from an ad hoc historical distribution. Refresh updates observations and optional release notes; LEVEL/IMPULSE are recomputed by the calibration engine. One-year history in `data/temperature_history/` supports path checks, not anchoring 50.
 
 ### Scored-source checklist
 
@@ -274,9 +272,9 @@ If a registry source is inaccessible, keep the prior verified observation, recor
 The top-level dashboard score board is derived from the same `data/temperature_scores.json` ledger as the country drawers. The older contextual country cards are a macro snapshot, not an independent score source, and must not display a competing set of 1–100 scores.
 
 
-A dimension score changes when one of its defined hard inputs changes or is materially revised. Record that release as a new event in `data/temperature_scores.json` using the fixed component weight and the temperature impulse below. Missing or unresolved inputs contribute zero; they do not freeze the whole dimension and their weights are not redistributed.
+A dimension **LEVEL** changes when a scored component’s latest transform value changes or is materially revised. Update sourced observations (and optional `events` release notes) in the governed inputs; `scripts/temperature_level.py` recomputes LEVEL, coverage, and IMPULSE. Missing components are omitted from the LEVEL average (coverage &lt; 1.0); weights are not redistributed and missing inputs are not imputed as 50.
 
-For each new observation, classify its **temperature impulse** relative to the immediately prior verified observation, the direction of the series, and a reliable consensus / policy-neutral reference only when such a reference is actually available.
+**IMPULSE** is the change in each component’s LEVEL versus its own prior print, aggregated with the same fixed weights. Direction (`Cooling` / `Static` / `Warming`) follows the calibrated thresholds in `data/temperature_calibration.json`.
 
 Orientation:
 
@@ -288,7 +286,9 @@ Orientation:
 - stronger retail / consumption / household income / confidence = hotter Consumer
 - higher delinquencies / defaults / financial stress = colder Consumer
 
-Base release adjustment:
+The classified release buckets below are **legacy V0 bookkeeping** for human release notes. Dashboard **LEVEL** and **IMPULSE** are computed only by `docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md` / `scripts/temperature_level.py`.
+
+Base release adjustment (legacy note-taking):
 
 - clearly hotter / stronger: `+4`
 - modestly hotter / stronger: `+2`

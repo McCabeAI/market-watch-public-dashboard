@@ -18,18 +18,10 @@ from scripts.trader_room.constants import (
     MANDATORY_PACKET_SECTIONS,
     ROOT,
 )
+from scripts.temperature_level import period_sort_key
 from scripts.trader_room.errors import EvidenceImmutabilityError, EvidencePreflightError
 
-COUNTRY_FILES = {
-    "US": ROOT / "patch_v8" / "us.html",
-    "CA": ROOT / "patch_v8" / "ca.html",
-    "AU": ROOT / "patch_v8" / "au.html",
-    "NZ": ROOT / "patch_v8" / "nz.html",
-}
-SCORE_RE = re.compile(
-    r"<b>(Inflation|Labor|Activity|Consumer)</b>"
-    r'<span class="score-num">([0-9.]+)/100</span>',
-)
+TEMPERATURE_DIMENSIONS = ("Inflation", "Labor", "Activity", "Consumer")
 STORY_RE = re.compile(
     r'<span class="story-title">(?P<title>[^<]+)</span>'
     r'.*?<span class="story-kicker">(?P<kicker>[^<]+)</span>'
@@ -109,27 +101,78 @@ def load_research_method(root: Path = ROOT) -> dict[str, Any]:
     }
 
 
+def _temperature_staleness(as_of: str | None) -> str:
+    if not as_of:
+        return "unknown"
+    return f"as_of:{as_of}"
+
+
+def _dimension_staleness_as_of(spec: dict[str, Any], state: dict[str, Any]) -> str | None:
+    # Staleness uses the oldest observed component as_of (most conservative lag).
+    observed_as_ofs = [
+        comp.get("as_of")
+        for comp in (spec.get("component_state") or {}).values()
+        if comp.get("observed") and comp.get("as_of")
+    ]
+    if observed_as_ofs:
+        return min(observed_as_ofs, key=period_sort_key)
+    return spec.get("as_of") or state.get("as_of")
+
+
 def load_temperature_gauges(root: Path = ROOT) -> list[dict[str, Any]]:
+    path = root / "data" / "temperature_scores.json"
+    if not path.is_file():
+        raise EvidencePreflightError("data/temperature_scores.json is missing")
+    state = json.loads(path.read_text(encoding="utf-8"))
+    if state.get("version") != 3:
+        raise EvidencePreflightError(
+            "data/temperature_scores.json must be version 3 (calibrated LEVEL + IMPULSE)"
+        )
+    countries = state.get("countries") or {}
     gauges: list[dict[str, Any]] = []
-    for country, path in COUNTRY_FILES.items():
-        html = path.read_text(encoding="utf-8")
-        matches = SCORE_RE.findall(html)
-        if len(matches) != 4:
-            raise EvidencePreflightError(f"{path.name} did not yield 4 temperature scores")
-        for dimension, score in matches:
+    for country in ("US", "CA", "AU", "NZ"):
+        dimensions = countries.get(country)
+        if not dimensions:
+            raise EvidencePreflightError(f"temperature state missing country {country}")
+        for dimension in TEMPERATURE_DIMENSIONS:
+            spec = dimensions.get(dimension)
+            if not spec:
+                raise EvidencePreflightError(f"temperature state missing {country} {dimension}")
+            hard_inputs: list[dict[str, Any]] = []
+            for name, component in (spec.get("component_state") or {}).items():
+                if not component.get("observed"):
+                    continue
+                hard_inputs.append(
+                    {
+                        "name": name,
+                        "level": component.get("level"),
+                        "transform_value": component.get("transform_value"),
+                        "impulse": component.get("impulse"),
+                        "as_of": component.get("as_of"),
+                        "weight": component.get("weight"),
+                        "coverage_contribution": component.get("coverage_contribution"),
+                    }
+                )
+            dim_as_of = _dimension_staleness_as_of(spec, state)
+            level = spec.get("level")
             gauges.append(
                 {
                     "id": f"temp:{country}:{dimension.lower()}",
                     "country": country,
                     "dimension": dimension,
-                    "score": float(score),
-                    "as_of": "dashboard_v8_retained",
-                    "hard_inputs": [],
+                    "score": float(level) if level is not None else None,
+                    "impulse": spec.get("impulse"),
+                    "direction": spec.get("direction"),
+                    "coverage": spec.get("coverage"),
+                    "as_of": dim_as_of,
+                    "hard_inputs": hard_inputs,
                     "context": [],
-                    "source": str(path.relative_to(root)),
-                    "staleness": "stale_if_not_current_supabase",
+                    "source": "data/temperature_scores.json",
+                    "staleness": _temperature_staleness(dim_as_of),
                 }
             )
+    if len(gauges) != 16:
+        raise EvidencePreflightError(f"expected 16 temperature gauges, got {len(gauges)}")
     return gauges
 
 

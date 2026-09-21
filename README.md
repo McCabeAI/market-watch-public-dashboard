@@ -5,7 +5,7 @@ Public dashboard and operational data layer for Market Watch.
 - Live dashboard: https://mccabeai.github.io/market-watch-public-dashboard/
 - Canonical technical runbook: [`docs/OPERATING_ARCHITECTURE.md`](docs/OPERATING_ARCHITECTURE.md)
 - Active light daily refresh specification: [`docs/DAILY_REFRESH_V0.md`](docs/DAILY_REFRESH_V0.md)
-- Live 1–100 score state: [`data/temperature_scores.json`](data/temperature_scores.json), applied by [`scripts/apply_temperature_scores.py`](scripts/apply_temperature_scores.py)
+- Live 1–100 score state: [`data/temperature_scores.json`](data/temperature_scores.json) (calibrated LEVEL + separate IMPULSE), computed by [`scripts/temperature_level.py`](scripts/temperature_level.py) from [`data/temperature_calibration.json`](data/temperature_calibration.json) and applied by [`scripts/apply_temperature_scores.py`](scripts/apply_temperature_scores.py)
 - Standalone daily rates/FX research snapshot: [`docs/MARKET_STATE_FEED_V1.md`](docs/MARKET_STATE_FEED_V1.md)
 - Supabase schema migrations: [`supabase/migrations/`](supabase/migrations/)
 - GitHub Pages build/deploy gate: [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml)

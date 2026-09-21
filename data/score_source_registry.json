@@ -190,15 +190,15 @@
           ]
         },
         "business_surveys": {
-          "cadence": "monthly-or-quarterly",
+          "cadence": "monthly",
           "sources": [
             {
-              "publisher": "Ivey PMI",
-              "url": "https://www.iveypmi.ca/"
+              "publisher": "S&P Global Canada Composite PMI",
+              "url": "https://www.pmi.spglobal.com/Public/Release/PressReleases"
             },
             {
-              "publisher": "Bank of Canada Business Outlook Survey",
-              "url": "https://www.bankofcanada.ca/publications/bos/"
+              "publisher": "Ivey PMI (conflict / corroboration only)",
+              "url": "https://iveypmi.uwo.ca/"
             }
           ]
         }
@@ -303,11 +303,11 @@
           ]
         },
         "business_surveys": {
-          "cadence": "monthly-or-quarterly",
+          "cadence": "monthly",
           "sources": [
             {
-              "publisher": "Reserve Bank of Australia",
-              "url": "https://www.rba.gov.au/publications/smp/"
+              "publisher": "S&P Global / Judo Bank Australia Composite PMI",
+              "url": "https://www.pmi.spglobal.com/Public/Release/PressReleases"
             }
           ]
         }
@@ -415,12 +415,12 @@
           "cadence": "monthly",
           "sources": [
             {
-              "publisher": "BusinessNZ PMI",
-              "url": "https://businessnz.org.nz/pmi/"
+              "publisher": "BNZ-BusinessNZ PCI (GDP-weighted)",
+              "url": "https://www.bnz.co.nz/assets/markets/research/"
             },
             {
-              "publisher": "ANZ Business Outlook",
-              "url": "https://www.anz.co.nz/about-us/economic-markets-research/business-outlook/"
+              "publisher": "BusinessNZ PMI/PSI/PCI",
+              "url": "https://businessnz.org.nz/pmi/"
             }
           ]
         }

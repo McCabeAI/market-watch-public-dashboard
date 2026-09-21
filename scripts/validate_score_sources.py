@@ -79,6 +79,9 @@ def main() -> None:
     state = load(STATE)
     registry = load(REGISTRY)
     errors = validate_registry(state, registry)
+    from scripts.activity_survey_freshness import freshness_errors
+
+    errors.extend(freshness_errors())
     if errors:
         raise SystemExit("\n".join(errors))
 

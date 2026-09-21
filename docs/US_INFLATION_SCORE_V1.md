@@ -27,11 +27,9 @@ The current anchor is the most recently verified Core PCE release.
 
 ### V1 score baseline
 
-The US Inflation score was reindexed to **50.0 on 2026-09-17**. The recovered `72.0` prototype score is retired.
+US Inflation **LEVEL** is governed by `docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md`. **50** on the 1–100 scale is the Federal Reserve **2% PCE objective** applied to the 3-month annualized Core PCE run rate (structural/policy anchor), not a 2026-09-17 reindex. The recovered `72.0` prototype score is retired.
 
-The activation ledger classifies the latest verified Core PCE evidence under the normal impulse scale and applies it from the 50.0 baseline. From activation onward, actual Core PCE releases move the score at 100% weight. Eligible mapped CPI/PPI bridge inputs may move it provisionally at their documented Core PCE expenditure-share weight.
-
-This is an operational index, not a claim that the full 1–100 history has been backtested. Reindex explicitly later if calibration warrants it.
+Actual Core PCE determines LEVEL at 100% weight. Eligible mapped CPI/PPI bridge inputs remain provisional metadata between releases and do not enter LEVEL. **IMPULSE** is the print-to-print change in the Core PCE component LEVEL versus the prior verified print.
 
 ## 3. Core PCE trend lens
 
@@ -112,14 +110,14 @@ The US country page must make the score auditable under `docs/COUNTRY_SCORE_EVID
 - Core PCE anchor period and actual m/m value;
 - 1m / 3m / 6m annualized Core PCE trend where available;
 - year-over-year Core PCE as secondary context;
-- 50.0 activation baseline and cumulative Core PCE impulses;
+- structural/policy 50 anchor, transform, latest Core PCE run rate, coverage, and separate IMPULSE;
 - current CPI/PPI bridge adjustment;
 - provisional score after the bridge;
 - bridge coverage / unresolved mappings when relevant.
 
 Example score lineage:
 
-`50.0 activation baseline + cumulative Core PCE impulses + interim CPI/PPI bridge = current score`
+`LEVEL from latest Core PCE observation vs 2% anchor; IMPULSE from prior print; CPI/PPI bridge is provisional context only`
 
 Do not imply precision when bridge coverage is incomplete.
 

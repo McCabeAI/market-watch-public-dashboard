@@ -1,0 +1,122 @@
+{
+  "country": "NZ",
+  "cutoff": "2026-09-21",
+  "series_id": "BUSINESSNZ_PCI_GDP_WEIGHTED",
+  "retrieval_path": "Fetch BNZ institutional research publications HTML; extract /assets/markets/research/*PSI*.pdf links; download PDFs (directory listing 403-safe); parse PCI time-series tables for GDP-Weighted Index.",
+  "recovered_months": [
+    {
+      "units": "diffusion_index",
+      "transformation": "diffusion_index",
+      "vintage": "latest_available",
+      "reference_period": "2026-05",
+      "value": 48.5,
+      "publisher": "BNZ / BusinessNZ",
+      "source_url": "https://www.bnz.co.nz/assets/markets/research/BNZ-BusinessNZ-PSI-Release_August-2026_web.pdf",
+      "release_date": "2026-09",
+      "revision_status": "revised",
+      "series_id": "BUSINESSNZ_PCI_GDP_WEIGHTED",
+      "notes": "GDP-weighted PCI 48.5 for May 2026 from latest BNZ-BusinessNZ PSI PDF PCI table; May 2026 standalone PSI PDF is not listed on BNZ publications (BusinessNZ HTML/wp-content blocked by Cloudflare 403 in harvest environment).",
+      "retrieved_at": "2026-09-21T17:07:27Z"
+    },
+    {
+      "units": "diffusion_index",
+      "transformation": "diffusion_index",
+      "vintage": "latest_available",
+      "reference_period": "2026-06",
+      "value": 51.2,
+      "publisher": "BNZ / BusinessNZ",
+      "source_url": "https://www.bnz.co.nz/assets/markets/research/BNZ-BusinessNZ-PSI-Release-June-2026_web.pdf",
+      "release_date": "2026-07",
+      "revision_status": "final",
+      "series_id": "BUSINESSNZ_PCI_GDP_WEIGHTED",
+      "notes": "GDP-weighted PCI 51.2 for 2026-06 from contemporaneous BNZ-BusinessNZ PSI release PDF.",
+      "retrieved_at": "2026-09-21T17:07:27Z"
+    },
+    {
+      "units": "diffusion_index",
+      "transformation": "diffusion_index",
+      "vintage": "latest_available",
+      "reference_period": "2026-07",
+      "value": 51.1,
+      "publisher": "BNZ / BusinessNZ",
+      "source_url": "https://www.bnz.co.nz/assets/markets/research/BNZ-BusinessNZ-PSI-Release_July-2026_web.pdf",
+      "release_date": "2026-08",
+      "revision_status": "final",
+      "series_id": "BUSINESSNZ_PCI_GDP_WEIGHTED",
+      "notes": "GDP-weighted PCI 51.1 for 2026-07 from contemporaneous BNZ-BusinessNZ PSI release PDF.",
+      "retrieved_at": "2026-09-21T17:07:27Z"
+    },
+    {
+      "units": "diffusion_index",
+      "transformation": "diffusion_index",
+      "vintage": "latest_available",
+      "reference_period": "2026-08",
+      "value": 51.6,
+      "publisher": "BNZ / BusinessNZ",
+      "source_url": "https://www.bnz.co.nz/assets/markets/research/BNZ-BusinessNZ-PSI-Release_August-2026_web.pdf",
+      "release_date": "2026-09",
+      "revision_status": "final",
+      "series_id": "BUSINESSNZ_PCI_GDP_WEIGHTED",
+      "notes": "GDP-weighted PCI 51.6 for 2026-08 from contemporaneous BNZ-BusinessNZ PSI release PDF.",
+      "retrieved_at": "2026-09-21T17:07:27Z"
+    }
+  ],
+  "genuine_gaps": [
+    {
+      "expected_period": "2026-09",
+      "reason": "not yet released",
+      "attempted_sources": [
+        "https://www.bnz.co.nz/institutional-banking/research/publications",
+        "https://businessnz.org.nz/psi/"
+      ],
+      "failure_mode": "not_published_as_of_cutoff",
+      "notes": "September 2026 PCI not published as of 2026-09-21."
+    }
+  ],
+  "attempted_urls": [
+    {
+      "url": "https://www.bnz.co.nz/institutional-banking/research/publications",
+      "http_status": 200,
+      "failure_mode": null,
+      "notes": "Listed 3 PSI PDF asset URL(s)."
+    },
+    {
+      "url": "https://businessnz.org.nz/psi/",
+      "http_status": 403,
+      "failure_mode": "failed to fetch https://businessnz.org.nz/psi/: HTTP Error 403: Forbidden",
+      "notes": "BusinessNZ PSI HTML (Cloudflare); PDF discovery fallback via BNZ publications."
+    },
+    {
+      "url": "https://www.bnz.co.nz/assets/markets/research/",
+      "http_status": 403,
+      "failure_mode": "failed to fetch https://www.bnz.co.nz/assets/markets/research/: HTTP Error 403: Forbidden",
+      "notes": "Directory listing often 403; direct PDF asset URLs still work."
+    },
+    {
+      "url": "https://www.bnz.co.nz/assets/markets/research/BNZ-BusinessNZ-PSI-Release-June-2026_web.pdf",
+      "http_status": 200,
+      "failure_mode": null,
+      "notes": null
+    },
+    {
+      "url": "https://www.bnz.co.nz/assets/markets/research/BNZ-BusinessNZ-PSI-Release_August-2026_web.pdf",
+      "http_status": 200,
+      "failure_mode": null,
+      "notes": null
+    },
+    {
+      "url": "https://www.bnz.co.nz/assets/markets/research/BNZ-BusinessNZ-PSI-Release_July-2026_web.pdf",
+      "http_status": 200,
+      "failure_mode": null,
+      "notes": null
+    },
+    {
+      "url": "https://www.bnz.co.nz/assets/markets/research/BNZ_BusinessNZ_PSI_Release_April-2026_o.pdf",
+      "http_status": 200,
+      "failure_mode": null,
+      "notes": null
+    }
+  ],
+  "parser_notes": "PCI parsed from 'National Indicies' header row plus following 'GDP-Weighted Index' numeric row.",
+  "do_not_score": []
+}

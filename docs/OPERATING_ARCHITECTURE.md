@@ -16,7 +16,7 @@ The public dashboard is live on GitHub Pages. As of this document:
 - v9 replaces the rolling Top Market Drivers and 7-Day Quick Digest with the current V0 trader-feed rollup.
 - v10 adds August 2026 CPI context and the explicit unresolved CPI-to-Core-PCE bridge lineage warning to the US Inflation drawer.
 - the Sep 14 completeness transform in `scripts/apply_v11_refresh.py` rolls the central-bank research window, refreshes X status and catalysts, updates the US Core CPI quick/feed state, and moves realized CPI/PPI releases into release history.
-- `data/temperature_scores.json` is the versioned live score ledger. All 16 V0 scores were reindexed to 50.0 on 2026-09-17; `scripts/apply_temperature_scores.py` deterministically applies cumulative fixed-weight release impulses and overwrites the recovered v8 placeholder values on every build.
+- `data/temperature_scores.json` (version 3) is the calibrated LEVEL + IMPULSE state. **50** is a structural/policy anchor per `docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md`; `scripts/apply_temperature_scores.py` writes LEVEL, impulse/direction, and V1 lineage into the built dashboard from that state on every build.
 - the light V0 refresh remains the news/score authoring path; the repository now also has a native overnight production pipeline (`docs/OVERNIGHT_PIPELINE_V1.md`) that snapshots those inputs, freezes a common evidence packet, runs a lightweight 14-seat paper-book review, and lets GitHub Actions publish Pages at 04:07 ET.
 - the Supabase pilot is active in project `market-watch-dev`, private schema `market_watch`.
 - Supabase stores normalized operational feed state and provenance when persistence succeeds; it is not the canonical raw-evidence archive or canonical macro time-series warehouse.
@@ -55,7 +55,7 @@ Current deploy path:
 6. It restores the v8 country score drawers from `patch_v8/`, including deterministic checks for all 16 score controls and hard/context evidence blocks.
 7. It applies the v10 August CPI context patch to the US Inflation drawer.
 8. It runs `scripts/apply_v11_refresh.py` as a fail-closed completeness transform. The Sep 14 version asserts the strict 30-day central-bank research count/window, removes aged research and stale X/catalyst state, updates current US Core CPI quick/feed presentation, inserts realized August CPI/PPI rows, and verifies that all 16 expandable score controls and the US CPI bridge lineage warning remain present.
-9. It validates `data/temperature_scores.json`, runs the score unit tests, and applies `scripts/apply_temperature_scores.py` to overwrite all 16 legacy placeholder scores/bars from the 50.0 activation baseline plus cumulative weighted release impulses.
+9. It validates `data/temperature_scores.json`, runs the score unit tests, and applies `scripts/apply_temperature_scores.py` to overwrite all 16 legacy placeholder scores/bars with calibrated LEVEL plus separate impulse/direction from version 3 state.
 10. It runs `scripts/market_state.py` to emit `_site/market-state.json` (no API keys; NZ may be `unavailable` when RBNZ is blocked).
 11. It applies the v12 **Market Data** opportunity monitor (ranked screens, curve diagnostics, cross-asset regressions, carry proxies and drilldowns; see `docs/MARKET_OPPORTUNITIES.md`) from `patch_v12/` via `scripts/apply_market_data_tab.py`, which serves `market-data.js` and loads the same-origin JSON packet in the browser.
 12. It applies the additive v13 **Trader Book** tab from `patch_v13/` via `scripts/apply_trader_book_tab.py`, validates the overnight publication gate, and emits `_site/trader-books.json` from the newest canonical `data/overnight/books/latest.json` when present (assembled morning research/publication metadata may overlay, but must not hide newer on-demand book state).
@@ -297,7 +297,7 @@ The ACP-scheduled overnight research run and any explicitly authorized manual ca
 7. Write a concise factual summary and a separate market read.
 8. Preserve canonical URLs/provenance.
 9. Populate/update only the affected dashboard sections.
-10. For every qualifying hard-data release or material revision, append its classified impulse to `data/temperature_scores.json` at the governing fixed weight. Missing inputs contribute zero; do not renormalize or freeze the dimension.
+10. For every qualifying hard-data release or material revision, update governed observations (and optional release notes) so `scripts/temperature_level.py` can refresh version 3 LEVEL/IMPULSE in `data/temperature_scores.json`. Missing inputs reduce coverage; do not renormalize or impute 50.
 11. Write normalized operational rows to Supabase for the adopted feed workflow. A required write failure makes the run partial and must be reported; it does not authorize silently skipping persistence.
 12. Run deterministic validation before deployment.
 13. Deploy through GitHub Actions only after all content/count/anchor gates pass.
@@ -398,8 +398,8 @@ Supabase:
 - `payload_v6/` — known-good compressed/base64 v6 dashboard base
 - `patch_v7/` — Last 24 Hours patch
 - `patch_v8/` — expandable 1–100 country score drawers and evidence panels; embedded recovered values are legacy placeholders
-- `data/temperature_scores.json` — live 50-baseline score ledger and weighted release impulses
-- `scripts/apply_temperature_scores.py` — validates/calculates the ledger and writes live score values/bars into the built dashboard
+- `data/temperature_scores.json` — version 3 calibrated LEVEL + IMPULSE state
+- `scripts/apply_temperature_scores.py` — applies version 3 LEVEL, impulse/direction, and lineage into the built dashboard
 - `patch_v9/` — rolling Top Market Drivers and 7-Day Quick Digest
 - `patch_v10/` — August CPI context / bridge-lineage patch for US Inflation
 - `patch_v12/` — Market Data tab (rates, RV spreads, G10 FX from `market-state.json`)
