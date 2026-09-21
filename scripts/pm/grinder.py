@@ -142,6 +142,11 @@ def validate_grinder_hurdle(
             row,
             field=f"grinder.deployment_hurdle.candidate_assessments[{idx}]",
         )
-    if packet is not None:
+    actions = payload.get("actions") or []
+    is_no_trade = any(
+        isinstance(row, dict) and row.get("action") == "NO_TRADE"
+        for row in actions
+    )
+    if packet is not None and is_no_trade:
         _assert_packet_coverage(candidates, packet=packet)
     return section
