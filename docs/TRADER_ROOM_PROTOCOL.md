@@ -40,7 +40,7 @@ The room has a strong preference for rates expressions when the same macro discr
 - A rates-first seat may choose options only when unusually compelling versus both rates and spot and must say why.
 - `no-trade-skeptic` may still submit no trade without manufacturing the tenor scan. If it endorses a trade, the same tenor scan and rates-first comparison apply.
 
-Every non-null trade carries `asset_class` and `expression_comparison`. For rates-capable seats the comparison records a complete `rates_tenor_scan`, a rates candidate, a spot candidate, the selected expression family, and the rationale. Deterministic validation fails closed when a rates-capable submission omits or malforms the tenor scan or skips either candidate.
+Every non-null trade carries `asset_class` and `expression_comparison`. For rates-capable seats the comparison records a complete `rates_tenor_scan`, a rates candidate, a spot candidate, the selected expression family, and the rationale. When `selected_bucket` is not `none`, `rates_candidate` must be an object whose `instrument` and `asset_class` equal that bucket; free-text cannot prove the linkage. Deterministic validation fails closed when a rates-capable submission omits or malforms the tenor scan, skips either candidate, or carries a rates candidate that does not bind to the selected bucket.
 
 ## Context gate
 

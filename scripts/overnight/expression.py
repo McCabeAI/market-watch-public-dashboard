@@ -18,6 +18,7 @@ from scripts.overnight.errors import SchemaError
 from scripts.trader_room.errors import SchemaError as TraderSchemaError
 from scripts.trader_room.rates_scan import (
     EXPANDING_TENOR_SCAN_ACTIONS,
+    bind_selected_bucket_to_rates_candidate,
     requires_rates_tenor_scan,
     validate_rates_tenor_scan,
 )
@@ -94,7 +95,13 @@ def validate_expression_memo(memo: dict[str, Any] | None, *, seat: str, action: 
             raise SchemaError(f"{seat} rates_candidate.asset_class must be rates, curve, or rates_rv")
         if requires_rates_tenor_scan(seat) and action in EXPANDING_TENOR_SCAN_ACTIONS:
             try:
-                validate_rates_tenor_scan(memo.get("rates_tenor_scan"), agent=seat, required=True)
+                scan = validate_rates_tenor_scan(memo.get("rates_tenor_scan"), agent=seat, required=True)
+                bind_selected_bucket_to_rates_candidate(
+                    scan,
+                    memo.get("rates_candidate"),
+                    agent=seat,
+                    field=f"{seat}.rates_candidate",
+                )
             except TraderSchemaError as exc:
                 raise SchemaError(str(exc)) from exc
     if selected == "options":

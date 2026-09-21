@@ -125,6 +125,18 @@ class ExpressionRuleTests(unittest.TestCase):
                 action="OPEN",
             )
         validate_expression_memo(_rates_memo("rates"), seat="rate-hawk", action="OPEN")
+        mismatched = _rates_memo("rates")
+        mismatched["rates_candidate"] = {
+            "instrument": "US 2Y",
+            "asset_class": "rates",
+            "rationale": "A different tenor than the selected scan bucket.",
+        }
+        with self.assertRaises(SchemaError):
+            validate_expression_memo(mismatched, seat="rate-hawk", action="OPEN")
+        free_text = _rates_memo("rates")
+        free_text["rates_candidate"] = "US 10Y duration"
+        with self.assertRaises(SchemaError):
+            validate_expression_memo(free_text, seat="rate-hawk", action="OPEN")
         missing_scan = {
             "rates_candidate": {"instrument": "US 10Y", "asset_class": "rates", "rationale": "duration"},
             "spot_candidate": {"instrument": "AUDUSD", "asset_class": "spot_fx", "rationale": "x"},

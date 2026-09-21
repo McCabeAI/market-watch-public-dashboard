@@ -104,6 +104,57 @@ def validate_rates_tenor_scan(
     return scan
 
 
+def rates_candidate_identity(value: Any) -> tuple[str, str] | None:
+    """Canonical (instrument, asset_class) for a rates candidate.
+
+    Free-text strings are ambiguous and do not prove identity.
+    """
+    if not isinstance(value, dict):
+        return None
+    instrument = value.get("instrument")
+    asset_class = value.get("asset_class")
+    if not isinstance(instrument, str) or not instrument.strip():
+        return None
+    if asset_class not in RATES_ASSET_CLASSES:
+        return None
+    return instrument.strip(), asset_class
+
+
+def bind_selected_bucket_to_rates_candidate(
+    scan: Any,
+    rates_candidate: Any,
+    *,
+    agent: str,
+    field: str | None = None,
+) -> None:
+    """Fail closed unless the selected tenor-scan bucket is the comparison rates candidate."""
+    if not isinstance(scan, dict):
+        return
+    selected = scan.get("selected_bucket")
+    if selected in (None, "none"):
+        return
+    label = field or f"{agent}.expression_comparison.rates_candidate"
+    bucket = scan.get(selected)
+    if not isinstance(bucket, dict):
+        raise SchemaError(f"{agent}.rates_tenor_scan.{selected} must be an object")
+    expected_instrument = str(bucket.get("instrument") or "").strip()
+    expected_asset = bucket.get("asset_class")
+    identity = rates_candidate_identity(rates_candidate)
+    if identity is None:
+        raise SchemaError(
+            f"{label} must canonically identify selected_bucket {selected} "
+            f"({expected_instrument!r}/{expected_asset!r}) with instrument and "
+            "asset_class; free-text linkage is not accepted"
+        )
+    got_instrument, got_asset = identity
+    if got_instrument != expected_instrument or got_asset != expected_asset:
+        raise SchemaError(
+            f"{agent} selected_bucket {selected} instrument/asset_class "
+            f"({expected_instrument!r}/{expected_asset!r}) must match the rates "
+            f"candidate used for expression comparison ({got_instrument!r}/{got_asset!r})"
+        )
+
+
 def synthetic_rates_tenor_scan(
     *,
     selected_bucket: str = "ten_year",

@@ -89,6 +89,7 @@ def main() -> None:
     assert "## Context gate" in protocol
     assert "context_build" in protocol
     assert "rates_tenor_scan" in protocol
+    assert "instrument` and `asset_class`" in protocol or "instrument and asset_class" in protocol
     assert "final-aggregator" in protocol  # compatibility/reference only
     assert "trader-room/outbox" not in protocol
 
@@ -101,6 +102,7 @@ def main() -> None:
     assert "Total model-invocation ceiling = 57" in on_demand
     assert "scripts/trader_room_finalize.py" in on_demand
     assert "rates_tenor_scan" in on_demand
+    assert "free-text cannot prove the linkage" in on_demand
     assert "context_build" in on_demand
     assert "zero model calls" in on_demand
     assert "MW_TRADER_ROOM_RUN_POLICY=" in on_demand

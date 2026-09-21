@@ -192,7 +192,11 @@ def _expression_comparison(agent: str, spec: dict[str, Any]) -> tuple[str, dict[
         }
     if agent in RATES_FIRST_SEATS:
         return "spot_fx", {
-            "rates_candidate": "Synthetic dry-run rates candidate: outright, curve, or cross-market RV aligned to this remit.",
+            "rates_candidate": {
+                "instrument": "US 10Y",
+                "asset_class": "rates",
+                "rationale": "Synthetic dry-run rates candidate: outright, curve, or cross-market RV aligned to this remit.",
+            },
             "spot_candidate": spot,
             "selected": "spot",
             "rationale": "Synthetic dry-run preserves deterministic FX conflict fixtures after explicitly considering rates; production seats must choose the genuinely cleaner expression and prefer rates when comparable.",

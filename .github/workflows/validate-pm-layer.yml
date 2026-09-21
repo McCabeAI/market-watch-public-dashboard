@@ -14,6 +14,7 @@ on:
       - "scripts/trader_room/model_registry.json"
       - "tests/test_pm_launch.py"
       - "tests/test_pm_dashboard.py"
+      - "tests/test_pm_portfolio.py"
       - ".github/workflows/validate-pm-layer.yml"
   pull_request:
     paths:
@@ -28,6 +29,7 @@ on:
       - "scripts/trader_room/model_registry.json"
       - "tests/test_pm_launch.py"
       - "tests/test_pm_dashboard.py"
+      - "tests/test_pm_portfolio.py"
       - ".github/workflows/validate-pm-layer.yml"
 
 jobs:
@@ -39,4 +41,4 @@ jobs:
         with:
           python-version: "3.12"
       - run: PYTHONPATH=. python scripts/validate_pm_layer.py
-      - run: PYTHONPATH=. python -m unittest tests.test_pm_launch tests.test_pm_dashboard -v
+      - run: PYTHONPATH=. python -m unittest tests.test_pm_launch tests.test_pm_dashboard tests.test_pm_portfolio -v

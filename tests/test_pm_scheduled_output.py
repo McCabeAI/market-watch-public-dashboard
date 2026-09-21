@@ -112,6 +112,67 @@ class OptionalAutomatedPMDecisionTests(ScheduledOutputTests):
                 evidence_cutoff=packet["evidence_cutoff"],
             )
 
+    def test_pragmatist_empty_opportunity_list_rejected_when_handoff_is_markable(self) -> None:
+        hashes = self.base["seat_memory"]["hashes"]
+        usd_memo = {
+            "rates_candidate": None,
+            "spot_candidate": {"instrument": "USDCAD", "asset_class": "spot_fx", "rationale": "spot"},
+            "options_candidate": None,
+            "selected": "spot",
+            "rationale": "Dedicated USD spot seat.",
+        }
+        aud_memo = {
+            "rates_candidate": None,
+            "spot_candidate": {"instrument": "AUDUSD", "asset_class": "spot_fx", "rationale": "spot"},
+            "options_candidate": None,
+            "selected": "spot",
+            "rationale": "Dedicated non-USD spot seat.",
+        }
+        dollar = self.payload["decisions"]["dollar-king"]
+        dollar["expression_memo"] = usd_memo
+        dollar["memory_context_sha256"] = hashes["dollar-king"]
+        dollar["actions"] = [{
+            "action": "OPEN",
+            "instrument": "USDCAD",
+            "side": "long",
+            "notional_usd": 10_000_000,
+            "asset_class": "spot_fx",
+            "expression_memo": usd_memo,
+        }]
+        cross = self.payload["decisions"]["cross-merchant"]
+        cross["expression_memo"] = aud_memo
+        cross["memory_context_sha256"] = hashes["cross-merchant"]
+        cross["actions"] = [{
+            "action": "OPEN",
+            "instrument": "AUDUSD",
+            "side": "long",
+            "notional_usd": 10_000_000,
+            "asset_class": "spot_fx",
+            "expression_memo": aud_memo,
+        }]
+        packet = self.payload["agent_packet"]
+        block = _pm_block(self.run_id, packet["packet_sha256"], packet["evidence_cutoff"])
+        self.payload["pm_decisions"] = block
+        with self.assertRaises(Exception):
+            validate_output(self.store, self.payload)
+        block["pragmatist"]["portfolio_construction"] = synthetic_portfolio_construction(
+            opportunities=[
+                {
+                    "instrument": "USDCAD",
+                    "rationale": "Independent markable USD-CAD handoff; does not improve the opportunistic book.",
+                    "markable": True,
+                },
+                {
+                    "instrument": "AUDUSD",
+                    "rationale": "Independent markable AUD-USD handoff; rejected after the adverse-scenario check.",
+                    "markable": True,
+                },
+            ],
+            existing_book="Pragmatist book is flat in this scheduled-output fixture.",
+            rationale="Both independent markable handoffs were evaluated; HOLD remains valid.",
+        )
+        validate_output(self.store, self.payload)
+
     def test_more_than_three_subagents_or_unsupported_model_rejected(self) -> None:
         packet = self.payload["agent_packet"]
         block = _pm_block(self.run_id, packet["packet_sha256"], packet["evidence_cutoff"])

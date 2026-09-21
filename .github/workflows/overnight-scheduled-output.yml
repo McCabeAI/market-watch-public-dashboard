@@ -58,7 +58,7 @@ jobs:
         run: |
           set -euo pipefail
           PYTHONPATH=. python3 scripts/overnight/scheduled_output.py validate             --input /tmp/mw-output/scheduled_output.json
-          PYTHONPATH=. python3 -m unittest             tests.test_overnight_pipeline             tests.test_overnight_scheduled_output             tests.test_pm_scheduled_output             tests.test_pm_overnight_packets -v
+          PYTHONPATH=. python3 -m unittest             tests.test_overnight_pipeline             tests.test_overnight_scheduled_output             tests.test_pm_scheduled_output             tests.test_pm_overnight_packets             tests.test_pm_portfolio -v
 
       - name: Generate canonical deterministic state from trusted main
         env:

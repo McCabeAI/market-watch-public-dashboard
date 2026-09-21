@@ -23,7 +23,12 @@ from scripts.trader_room.constants import (
 )
 from scripts.trader_room.errors import DataBoundaryError, SchemaError
 from scripts.trader_room.evidence import assert_same_frozen_packet
-from scripts.trader_room.rates_scan import requires_rates_tenor_scan, validate_rates_tenor_scan
+from scripts.trader_room.rates_scan import (
+    bind_selected_bucket_to_rates_candidate,
+    rates_candidate_identity,
+    requires_rates_tenor_scan,
+    validate_rates_tenor_scan,
+)
 
 LEVEL_RE = re.compile(r"[-+]?\d+(?:\.\d+)?")
 SYNOPSIS_DIRECTION_VALUES = {"higher", "lower", "neutral", "not_relevant"}
@@ -273,6 +278,20 @@ def validate_context_build(context: dict[str, Any], *, agent: str, trade: dict[s
             raise SchemaError(f"{agent} policy_path_check says available but packet lacks live paths for {missing}")
 
 
+def _validate_rates_candidate(value: Any, *, agent: str) -> None:
+    field = f"{agent}.trade.expression_comparison.rates_candidate"
+    if rates_candidate_identity(value) is not None:
+        rationale = value.get("rationale") or value.get("description")
+        _non_empty_text(rationale, f"{field}.rationale")
+        return
+    if isinstance(value, dict):
+        raise SchemaError(
+            f"{field} object must include instrument and asset_class in "
+            f"{list(('rates', 'curve', 'rates_rv'))}"
+        )
+    _non_empty_text(value, field)
+
+
 def _validate_expression_comparison(trade: dict[str, Any], *, agent: str) -> None:
     asset_class = trade["asset_class"]
     if asset_class not in ASSET_CLASSES:
@@ -313,13 +332,19 @@ def _validate_expression_comparison(trade: dict[str, Any], *, agent: str) -> Non
         return
 
     if agent in RATES_FIRST_SEATS:
-        _non_empty_text(comparison["rates_candidate"], f"{agent}.trade.expression_comparison.rates_candidate")
+        _validate_rates_candidate(comparison["rates_candidate"], agent=agent)
         _non_empty_text(comparison["spot_candidate"], f"{agent}.trade.expression_comparison.spot_candidate")
         if requires_rates_tenor_scan(agent):
-            validate_rates_tenor_scan(
+            scan = validate_rates_tenor_scan(
                 comparison.get("rates_tenor_scan"),
                 agent=agent,
                 required=True,
+            )
+            bind_selected_bucket_to_rates_candidate(
+                scan,
+                comparison["rates_candidate"],
+                agent=agent,
+                field=f"{agent}.trade.expression_comparison.rates_candidate",
             )
 
 

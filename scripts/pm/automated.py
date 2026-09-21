@@ -38,7 +38,14 @@ def validate_pm_execution(execution: dict[str, Any] | None, *, pm_id: str) -> di
     return payload
 
 
-def validate_pm_decisions(block: Any, *, overnight_run_id: str, packet_sha256: str, evidence_cutoff: str) -> dict[str, Any]:
+def validate_pm_decisions(
+    block: Any,
+    *,
+    overnight_run_id: str,
+    packet_sha256: str,
+    evidence_cutoff: str,
+    packet: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     if block is None:
         return {}
     if not isinstance(block, dict):
@@ -63,7 +70,7 @@ def validate_pm_decisions(block: Any, *, overnight_run_id: str, packet_sha256: s
         if not isinstance(decision.get("actions"), list) or not decision["actions"]:
             raise SchemaError(f"{pm_id} must return at least one structured action")
         validate_pm_execution(decision.get("execution") or decision, pm_id=pm_id)
-        validate_portfolio_construction(decision, pm_id=pm_id, required=True)
+        validate_portfolio_construction(decision, pm_id=pm_id, required=True, packet=packet)
     return block
 
 
