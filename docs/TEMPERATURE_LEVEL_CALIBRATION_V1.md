@@ -224,3 +224,5 @@ I2 (dashboard + Trader Room) must:
 - US `mapped_bridge` is a two-month PPI-mapped snapshot, not a 12-month micro history; it does not move LEVEL.
 - NZ production GDP must be pinned; the history file also contains expenditure-GDP rows (including a 2025-Q2 lookback) that must not be used as “latest”.
 - Potential growth / u\* / productivity add-on are judgement-documented constants, frozen in the calibration JSON, not estimated from the one-year sample.
+- **GDP LEVEL uses the latest single quarter converted to SAAR.** With business surveys unobserved, that print is 100% of CA/AU/NZ Activity. A one-quarter swing therefore moves Activity by tens of points (CA Q1→Q2 Impulse +28; NZ −28). A 2-quarter average or y/y window can change the warm/cool sign. Impulse still describes the latest quarter; a future V1.1 may score LEVEL on a two-quarter SAAR while keeping 1Q as impulse.
+- **No automatic staleness decay.** A component that stops updating keeps its last LEVEL and full weight until it is marked unobserved. NZ Consumer income is 2026-Q1 while peers are 2026-Q2; CA retail is 2026-06. Coverage does not currently fall with age.
