@@ -20,6 +20,7 @@ from scripts.trader_room.constants import (
 )
 from scripts.trader_room.errors import LiveRunBlocked, ModelPolicyError
 from scripts.trader_room.models import assert_advocate_model, assert_aggregator_model, assert_subagent_model
+from scripts.trader_room.rates_scan import synthetic_rates_tenor_scan
 
 MOCK_SPECS: dict[str, dict[str, Any]] = {
     "perma-bull": {
@@ -195,6 +196,12 @@ def _expression_comparison(agent: str, spec: dict[str, Any]) -> tuple[str, dict[
             "spot_candidate": spot,
             "selected": "spot",
             "rationale": "Synthetic dry-run preserves deterministic FX conflict fixtures after explicitly considering rates; production seats must choose the genuinely cleaner expression and prefer rates when comparable.",
+            "rates_tenor_scan": synthetic_rates_tenor_scan(
+                selected_bucket="ten_year",
+                selected_instrument="US 10Y",
+                selected_asset_class="rates",
+                selected_rationale="Synthetic dry-run scanned STIR/2Y/5Y/10Y/curve/RV; US 10Y is the recorded rates candidate before selecting spot.",
+            ),
         }
     raise ModelPolicyError(f"no expression policy for {agent}")
 

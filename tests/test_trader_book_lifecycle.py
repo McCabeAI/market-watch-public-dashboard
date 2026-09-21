@@ -28,6 +28,7 @@ from scripts.trader_room.paper_book import (
     persist_ondemand_trader_books,
     reviews_from_run,
 )
+from scripts.trader_room.rates_scan import with_tenor_scan
 from scripts.trading.apply import apply_trader_review_with_memory
 from scripts.trading.constants import ALL_IDENTITIES
 from scripts.trading.ledger import find_trade_by_position
@@ -274,13 +275,13 @@ class TraderBookLifecycleTests(unittest.TestCase):
                 "notional_usd": 1_000_000_000,
                 "price": 4.2,
                 "asset_class": "rates",
-                "expression_memo": {
+                "expression_memo": with_tenor_scan({
                     "rates_candidate": {"instrument": "US 10Y", "asset_class": "rates", "rationale": "r"},
                     "spot_candidate": {"instrument": "USDCAD", "asset_class": "spot_fx", "rationale": "s"},
                     "options_candidate": None,
                     "selected": "rates",
                     "rationale": "Full deploy.",
-                },
+                }),
                 "thesis": "Full book.",
             },
             families=families,
@@ -298,13 +299,13 @@ class TraderBookLifecycleTests(unittest.TestCase):
                 "notional_usd": 1,
                 "price": 4.0,
                 "asset_class": "rates",
-                "expression_memo": {
+                "expression_memo": with_tenor_scan({
                     "rates_candidate": {"instrument": "US 2Y", "asset_class": "rates", "rationale": "r"},
                     "spot_candidate": {"instrument": "USDCAD", "asset_class": "spot_fx", "rationale": "s"},
                     "options_candidate": None,
                     "selected": "rates",
                     "rationale": "Too much.",
-                },
+                }),
                 "thesis": "Blocked.",
             },
             families=families,

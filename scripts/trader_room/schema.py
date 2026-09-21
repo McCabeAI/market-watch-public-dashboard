@@ -23,6 +23,7 @@ from scripts.trader_room.constants import (
 )
 from scripts.trader_room.errors import DataBoundaryError, SchemaError
 from scripts.trader_room.evidence import assert_same_frozen_packet
+from scripts.trader_room.rates_scan import requires_rates_tenor_scan, validate_rates_tenor_scan
 
 LEVEL_RE = re.compile(r"[-+]?\d+(?:\.\d+)?")
 SYNOPSIS_DIRECTION_VALUES = {"higher", "lower", "neutral", "not_relevant"}
@@ -314,6 +315,12 @@ def _validate_expression_comparison(trade: dict[str, Any], *, agent: str) -> Non
     if agent in RATES_FIRST_SEATS:
         _non_empty_text(comparison["rates_candidate"], f"{agent}.trade.expression_comparison.rates_candidate")
         _non_empty_text(comparison["spot_candidate"], f"{agent}.trade.expression_comparison.spot_candidate")
+        if requires_rates_tenor_scan(agent):
+            validate_rates_tenor_scan(
+                comparison.get("rates_tenor_scan"),
+                agent=agent,
+                required=True,
+            )
 
 
 def validate_trade(

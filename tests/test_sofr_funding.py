@@ -29,6 +29,7 @@ from scripts.overnight.constants import STARTING_NAV_USD
 from scripts.pm.books import apply_decision, empty_books, empty_pm_book, mark_pm_book, public_pm_view
 from scripts.pm.constants import CASH_CAPITAL_USD, GROSS_NOTIONAL_LIMIT_USD, RISK_CAPITAL_LIMIT_USD
 from scripts.trader_room.evidence import freeze_packet, load_synthetic_packet
+from scripts.trader_room.rates_scan import with_tenor_scan
 from scripts.trader_room.schema import validate_contribution
 
 NY = ZoneInfo("America/New_York")
@@ -187,6 +188,9 @@ class TraderFundingTests(unittest.TestCase):
         hurdle = round(STARTING_NAV_USD * 0.04 / 360, 2)
         self.assertEqual(seat["funding_cost_usd"], 0.0)
         self.assertEqual(seat["cash_yield_usd"], hurdle)
+        self.assertEqual(seat["benchmark_cost_usd"], hurdle)
+        self.assertEqual(seat["net_pnl_usd"], 0.0)
+        self.assertEqual(seat["net_financing_pnl_usd"], 0.0)
         event = next(row for row in seat["history"] if row.get("action") == "FUNDING")
         self.assertEqual(event["funding_source"], FUNDING_SOURCE)
         self.assertEqual(event["funding_day_count"], FUNDING_DAY_COUNT)
@@ -196,13 +200,13 @@ class TraderFundingTests(unittest.TestCase):
 
     def test_same_risk_capital_gets_same_sofr_charge_for_skeptic(self) -> None:
         seat = empty_seat("no-trade-skeptic")
-        memo = {
+        memo = with_tenor_scan({
             "rates_candidate": {"instrument": "US 10Y", "asset_class": "rates", "rationale": "duration"},
             "spot_candidate": {"instrument": "USDJPY", "asset_class": "spot_fx", "rationale": "spot alt"},
             "options_candidate": None,
             "selected": "rates",
             "rationale": "Rates-first comparison complete.",
-        }
+        })
         hold = {
             "rates_candidate": None,
             "spot_candidate": None,
@@ -240,6 +244,8 @@ class TraderFundingTests(unittest.TestCase):
         )
         self.assertEqual(seat["funding_cost_usd"], round(400_000 * 0.04 / 360, 2))
         self.assertEqual(seat["cash_yield_usd"], round(hurdle * 2, 2))
+        self.assertEqual(seat["benchmark_cost_usd"], seat["cash_yield_usd"])
+        self.assertEqual(seat["net_pnl_usd"], round(-seat["funding_cost_usd"], 2))
 
     def test_missing_fixing_preserves_prior_canonical_state(self) -> None:
         seat = empty_seat("rate-hawk")
@@ -289,8 +295,10 @@ class TraderFundingTests(unittest.TestCase):
         )
         self.assertEqual(round(seat["funding_cost_usd"] - 1234.56, 2), 0.0)
         self.assertEqual(seat["cash_yield_usd"], round(STARTING_NAV_USD * 0.04 / 360, 2))
-        self.assertEqual(seat["funding_regime"], "sofr_risk_capital_1pct")
+        self.assertEqual(seat["benchmark_cost_usd"], seat["cash_yield_usd"])
+        self.assertEqual(seat["funding_regime"], "sofr_zero_benchmark")
         self.assertNotEqual(seat["funding_rate_annual"], 0.05)
+        self.assertEqual(seat["net_pnl_usd"], round(-1234.56, 2))
 
 
 class FundingContextAndViewTests(unittest.TestCase):
@@ -315,7 +323,7 @@ class FundingContextAndViewTests(unittest.TestCase):
             "agent": "no-trade-skeptic",
             "archetype": "no-trade-skeptic",
             "remit": "apparent edges are priced, too noisy, too crowded or poorly timed; may submit no-trade",
-            "stance_summary": "No trade clears the official SOFR cash hurdle.",
+            "stance_summary": "No trade clears the official SOFR risk-capital hurdle versus the zero cash benchmark.",
             "trade": None,
             "confidence": 40,
             "conflict_synopsis": {
@@ -342,7 +350,7 @@ class FundingContextAndViewTests(unittest.TestCase):
                 "current_sofr": {"rate": packet["funding_context"]["sofr"]["rate"], "observation_date": packet["funding_context"]["sofr"]["observation_date"]},
                 "sr3_forward_view": "Front SR3 is the relevant 3m funding path.",
                 "forward_funding_assessment": "about_the_same",
-                "implication": "Hold cash earning official SOFR.",
+                "implication": "Remain at the zero official-SOFR benchmark; deploying pays SOFR on shocked-risk capital.",
             },
             "packet_sha256": packet["packet_sha256"],
             "paper_actions": [{"action": "HOLD"}],
@@ -446,7 +454,9 @@ class PMFundingTests(unittest.TestCase):
         self.assertEqual(book["unused_cash_usd"], CASH_CAPITAL_USD)
         self.assertEqual(book["funding_cost_usd"], round(1_000_000 * 0.04 / 360, 2))
         self.assertEqual(book["cash_yield_usd"], round(CASH_CAPITAL_USD * 0.04 / 360, 2))
+        self.assertEqual(book["benchmark_cost_usd"], book["cash_yield_usd"])
         self.assertIsNotNone(book["net_after_funding_pnl_usd"])
+        self.assertEqual(book["net_after_funding_pnl_usd"], round(-book["funding_cost_usd"], 2))
         self.assertEqual(book["positions"][0]["funding_basis_status"], "risk_capital_1pct_shock")
 
     def test_equal_risk_capital_gets_equal_sofr_across_asset_classes(self) -> None:
@@ -459,13 +469,13 @@ class PMFundingTests(unittest.TestCase):
             "central_bank_research": {"status": "fresh"},
             "market_state": {"status": "fresh", "data": MARKET},
         }
-        rates_memo = {
+        rates_memo = with_tenor_scan({
             "rates_candidate": {"instrument": "US 10Y", "asset_class": "rates", "rationale": "duration"},
             "spot_candidate": {"instrument": "USDJPY", "asset_class": "spot_fx", "rationale": "spot alt"},
             "options_candidate": None,
             "selected": "rates",
             "rationale": "Rates-first comparison complete.",
-        }
+        })
         specs = [
             ("dollar-king", "USDCAD", "spot_fx", 1.36, _spot_memo()),
             ("rate-hawk", "US 10Y", "rates", 4.20, rates_memo),
@@ -495,6 +505,8 @@ class PMFundingTests(unittest.TestCase):
             self.assertEqual(seat["risk_capital_usd"], 1_000_000.0)
             charges.append(seat["funding_cost_usd"])
             self.assertEqual(seat["cash_yield_usd"], round(TRADER_NAV * 0.04 / 360, 2) * 2)
+            self.assertEqual(seat["benchmark_cost_usd"], seat["cash_yield_usd"])
+            self.assertEqual(seat["net_pnl_usd"], round(-seat["funding_cost_usd"], 2))
         self.assertEqual(charges[0], round(1_000_000 * 0.04 / 360, 2))
         self.assertEqual(charges[0], charges[1])
         self.assertEqual(charges[1], charges[2])
@@ -553,6 +565,49 @@ class PMFundingTests(unittest.TestCase):
         self.assertIn("funded_draw_usd", view["pms"][0])
         self.assertEqual(view["pms"][0]["risk_capital_limit_usd"], RISK_CAPITAL_LIMIT_USD)
         self.assertIn("unused_cash_usd", view["pms"][0])
+
+
+class CanonicalZeroBenchmarkMigrationTests(unittest.TestCase):
+    def test_live_trader_books_neutralize_baseline_sofr_without_rewriting_marks(self) -> None:
+        import json
+
+        raw = json.loads((ROOT / "data" / "overnight" / "books" / "latest.json").read_text())
+        before = deepcopy(raw)
+        validated = validate_books(deepcopy(raw))
+        skeptic = validated["seats"]["no-trade-skeptic"]
+        self.assertEqual(skeptic["net_pnl_usd"], 0.0)
+        self.assertEqual(skeptic["net_financing_pnl_usd"], 0.0)
+        self.assertEqual(skeptic["funding_regime"], "sofr_zero_benchmark")
+        self.assertEqual(skeptic["benchmark_cost_usd"], skeptic["cash_yield_usd"])
+        self.assertEqual(skeptic["realized_pnl_usd"], before["seats"]["no-trade-skeptic"]["realized_pnl_usd"])
+        self.assertEqual(skeptic["unrealized_pnl_usd"], before["seats"]["no-trade-skeptic"]["unrealized_pnl_usd"])
+        for seat, item in validated["seats"].items():
+            orig = before["seats"][seat]
+            self.assertEqual(item["gross_pnl_usd"], orig["gross_pnl_usd"])
+            for pos, old in zip(item["positions"], orig["positions"]):
+                self.assertEqual(pos["entry_price"], old["entry_price"])
+                self.assertEqual(pos["mark_price"], old["mark_price"])
+            if not item["positions"]:
+                self.assertEqual(item["net_pnl_usd"], 0.0, seat)
+
+    def test_live_pm_books_neutralize_grinder_cash_yield_alpha(self) -> None:
+        import json
+        from scripts.pm.books import validate_books as validate_pm_books
+
+        raw = json.loads((ROOT / "data" / "pm" / "books" / "latest.json").read_text())
+        before = deepcopy(raw)
+        validated = validate_pm_books(deepcopy(raw))
+        grinder = validated["pms"]["grinder"]
+        self.assertEqual(grinder["net_after_funding_pnl_usd"], 0.0)
+        self.assertEqual(grinder["net_financing_pnl_usd"], 0.0)
+        self.assertEqual(grinder["funding_regime"], "sofr_zero_benchmark")
+        self.assertEqual(grinder["total_pnl_usd"], before["pms"]["grinder"]["total_pnl_usd"])
+        for pm_id, item in validated["pms"].items():
+            orig = before["pms"][pm_id]
+            self.assertEqual(item["realized_pnl_usd"], orig["realized_pnl_usd"])
+            self.assertEqual(item["unrealized_pnl_usd"], orig["unrealized_pnl_usd"])
+            if not item["positions"]:
+                self.assertEqual(item["net_after_funding_pnl_usd"], 0.0, pm_id)
 
 
 if __name__ == "__main__":

@@ -488,6 +488,20 @@ class PMBookTests(unittest.TestCase):
         self.assertFalse(view["gross_notional_limit_enforced"])
         public_with_pos = next(row for row in view["pms"] if row["positions"])
         self.assertIn("risk_capital_usd", public_with_pos["positions"][0])
+        self.assertEqual(validated["pms"]["grinder"]["net_after_funding_pnl_usd"], 0.0)
+        self.assertEqual(validated["pms"]["grinder"]["net_financing_pnl_usd"], 0.0)
+        self.assertEqual(validated["pms"]["grinder"]["funding_regime"], "sofr_zero_benchmark")
+        self.assertEqual(validated["pms"]["grinder"]["realized_pnl_usd"], before["pms"]["grinder"]["realized_pnl_usd"])
+        self.assertEqual(validated["pms"]["grinder"]["unrealized_pnl_usd"], before["pms"]["grinder"]["unrealized_pnl_usd"])
+        self.assertEqual(validated["pms"]["grinder"]["total_pnl_usd"], before["pms"]["grinder"]["total_pnl_usd"])
+        for pm_id, item in validated["pms"].items():
+            orig = before["pms"][pm_id]
+            self.assertEqual(item["realized_pnl_usd"], orig["realized_pnl_usd"])
+            self.assertEqual(item["unrealized_pnl_usd"], orig["unrealized_pnl_usd"])
+            self.assertEqual(item["total_pnl_usd"], orig["total_pnl_usd"])
+            for pos, old in zip(item["positions"], orig["positions"]):
+                self.assertEqual(pos["entry_price"], old["entry_price"])
+                self.assertEqual(pos["mark_price"], old["mark_price"])
 
 
 if __name__ == "__main__":

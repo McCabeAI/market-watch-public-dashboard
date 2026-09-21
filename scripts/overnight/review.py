@@ -13,6 +13,7 @@ from scripts.overnight.errors import EvidenceBoundaryError, LiveReviewBlocked, S
 from scripts.overnight.evidence import assert_frozen_only, require_snapshot
 from scripts.overnight.expression import expression_rule
 from scripts.overnight.store import OvernightStore
+from scripts.trader_room.rates_scan import synthetic_rates_tenor_scan
 
 
 def _spot_memo(instrument: str, rationale: str) -> dict[str, Any]:
@@ -30,10 +31,22 @@ def _spot_memo(instrument: str, rationale: str) -> dict[str, Any]:
 
 
 def _rates_memo(rates_instrument: str, spot_instrument: str, selected: str, rationale: str) -> dict[str, Any]:
+    selected_bucket = "ten_year"
+    selected_asset = "rates"
+    if "2Y" in rates_instrument or "2y" in rates_instrument:
+        selected_bucket = "two_year"
+    elif "5Y" in rates_instrument:
+        selected_bucket = "five_year"
+    elif any(token in rates_instrument for token in ("CORRA", "SOFR-", "AONIA", "RV")):
+        selected_bucket = "cross_market_rv"
+        selected_asset = "rates_rv"
+    elif "2s" in rates_instrument or "curve" in rates_instrument.lower():
+        selected_bucket = "curve"
+        selected_asset = "curve"
     return {
         "rates_candidate": {
             "instrument": rates_instrument,
-            "asset_class": "rates",
+            "asset_class": "rates" if selected_asset == "rates" else selected_asset,
             "rationale": f"Rates expression {rates_instrument}",
         },
         "spot_candidate": {
@@ -44,6 +57,12 @@ def _rates_memo(rates_instrument: str, spot_instrument: str, selected: str, rati
         "options_candidate": None,
         "selected": selected,
         "rationale": rationale,
+        "rates_tenor_scan": synthetic_rates_tenor_scan(
+            selected_bucket=selected_bucket,
+            selected_instrument=rates_instrument,
+            selected_asset_class=selected_asset,
+            selected_rationale=rationale,
+        ),
     }
 
 
@@ -52,7 +71,7 @@ def _skeptic_funding_view() -> dict[str, Any]:
         "current_sofr": "Frozen official NY Fed SOFR fixing in funding_context.",
         "sr3_forward_view": "SR3 contracts in the frozen packet are the relevant forward-funding path over the decision horizon; no interpolation is assumed.",
         "forward_funding_assessment": "about_the_same",
-        "implication": "Prefer undeployed cash earning official SOFR unless a packet-supported trade is expected to beat that realized overnight rate.",
+        "implication": "Remain at the zero official-SOFR benchmark unless a packet-supported trade is expected to beat SOFR charged on shocked-risk capital. Flat cash is not alpha.",
     }
 
 

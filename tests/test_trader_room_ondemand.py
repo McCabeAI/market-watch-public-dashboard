@@ -60,6 +60,7 @@ from scripts.trader_room.models import (
 from scripts.trader_room.orchestrator import go, prepare_evidence, run_debate
 from scripts.trader_room.runners import DryRunRunner, LiveRunner
 from scripts.trader_room.schema import validate_contribution, validate_pm_handoff, validate_rebuttal, validate_trade
+from scripts.trader_room.rates_scan import synthetic_rates_tenor_scan
 
 
 def _packet() -> dict:
@@ -136,6 +137,11 @@ class SchemaAndBoundaryTests(unittest.TestCase):
                 "spot_candidate": "Long AUDUSD.",
                 "selected": "spot",
                 "rationale": "Spot is cleaner in this synthetic fixture after explicit rates comparison.",
+                "rates_tenor_scan": synthetic_rates_tenor_scan(
+                    selected_bucket="two_year",
+                    selected_instrument="AU 2Y vs US 2Y",
+                    selected_asset_class="rates_rv",
+                ),
             },
             "context_build": {
                 "causal_mechanism": "Growth resilience should support AUD through relative expected returns.",
@@ -211,6 +217,12 @@ class SchemaAndBoundaryTests(unittest.TestCase):
                 "spot_candidate": "Short USDCAD.",
                 "selected": "rates",
                 "rationale": "Rates own the discrepancy directly.",
+                "rates_tenor_scan": synthetic_rates_tenor_scan(
+                    selected_bucket="two_year",
+                    selected_instrument="CA-US_2Y",
+                    selected_asset_class="rates_rv",
+                    selected_rationale="2Y policy RV is the cleanest rates expression after scanning STIR, 5Y, 10Y, curve, and cross-market buckets.",
+                ),
             },
             "context_build": {
                 "causal_mechanism": "Relative policy repricing closes the spread.",
@@ -249,6 +261,36 @@ class SchemaAndBoundaryTests(unittest.TestCase):
             "confidence": 55,
         }
         validate_trade(trade, agent="rate-hawk", packet=packet)
+        missing_scan = deepcopy(trade)
+        del missing_scan["expression_comparison"]["rates_tenor_scan"]
+        with self.assertRaises(SchemaError):
+            validate_trade(missing_scan, agent="rate-hawk", packet=packet)
+        dollar = deepcopy(trade)
+        dollar["expression_comparison"] = {
+            "rates_candidate": None,
+            "spot_candidate": "Long USDJPY.",
+            "selected": "spot",
+            "rationale": "Dedicated spot-FX specialist seat.",
+        }
+        validate_trade(dollar, agent="dollar-king", packet=packet)
+        vol = deepcopy(trade)
+        vol["asset_class"] = "options"
+        vol["instrument"] = "USDCAD_25D_RR"
+        vol["expression_comparison"] = {
+            "rates_candidate": None,
+            "spot_candidate": None,
+            "selected": "options",
+            "rationale": "Dedicated vol specialist.",
+        }
+        validate_trade(vol, agent="vol-convexity", packet=packet)
+        malformed = deepcopy(trade)
+        del malformed["expression_comparison"]["rates_tenor_scan"]["five_year"]
+        with self.assertRaises(SchemaError):
+            validate_trade(malformed, agent="rate-hawk", packet=packet)
+        broken_status = deepcopy(trade)
+        broken_status["expression_comparison"]["rates_tenor_scan"]["stir_policy_path"]["status"] = "skipped"
+        with self.assertRaises(SchemaError):
+            validate_trade(broken_status, agent="rate-hawk", packet=packet)
         broken = deepcopy(packet)
         broken["market_state"]["policy_paths"]["countries"]["CA"]["status"] = "unavailable"
         broken["market_state"]["policy_paths"]["countries"]["CA"]["error"] = "blocked"
@@ -420,8 +462,18 @@ class OrchestratorDryRunTests(unittest.TestCase):
                 if trade is not None:
                     self.assertTrue(trade["expression_comparison"]["rates_candidate"])
                     self.assertTrue(trade["expression_comparison"]["spot_candidate"])
+                    scan = trade["expression_comparison"]["rates_tenor_scan"]
+                    self.assertEqual(
+                        set(scan) >= {"stir_policy_path", "two_year", "five_year", "ten_year", "curve", "cross_market_rv", "selected_bucket", "selection_rationale"},
+                        True,
+                    )
             for agent in SPOT_ONLY_SEATS:
                 self.assertEqual(result["originals"][agent]["trade"]["asset_class"], "spot_fx")
+                self.assertNotIn("rates_tenor_scan", result["originals"][agent]["trade"]["expression_comparison"])
+            self.assertNotIn(
+                "rates_tenor_scan",
+                result["originals"]["vol-convexity"]["trade"]["expression_comparison"],
+            )
             self.assertIsNone(result["originals"][NO_TRADE_AGENT]["trade"])
             self.assertLessEqual(result["budget"]["grok"], GROK_CEILING)
             self.assertLessEqual(result["budget"]["composer"], COMPOSER_CEILING)

@@ -28,6 +28,7 @@ def main() -> None:
     assert "cursor_custom_agent" in command or "custom agent" in command.lower()
     assert "Do not" in command and "Task" in command
     assert "grok-4.6[]" in command
+    assert "portfolio_construction" in command
     assert pm_hook_policy() in command
 
     for pm_id in AUTOMATED_PM_IDS:
@@ -39,6 +40,8 @@ def main() -> None:
         assert "PM_LAYER_V1" in body
         if pm_id == "swinger":
             assert "HEDGE is prohibited" in body or "HEDGE prohibited" in body
+        if pm_id == "pragmatist":
+            assert "portfolio_construction" in body
 
     registry = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
     assert registry.get("pm_principal_model") == PM_PRINCIPAL_MODEL

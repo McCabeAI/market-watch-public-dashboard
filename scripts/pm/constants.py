@@ -88,6 +88,8 @@ FORBIDDEN_MODEL_STATE_KEYS = {
     "risk_stopped",
     "funding_cost_usd",
     "cash_yield_usd",
+    "benchmark_cost_usd",
+    "net_financing_pnl_usd",
     "funding_last_accrual_at",
     "funded_draw_usd",
     "unused_cash_usd",

@@ -130,15 +130,15 @@ Each accepted decision should include the `memory_context_sha256` it used. Risk-
 
 The 14 seats are competing portfolio managers. Their standing objective is **highest cumulative net paper P&L**, not highest conviction score, most cautious commentary, or most persuasive prose. Every child receives the same frozen competition contract:
 - ranking metric: net paper P&L after financing economics;
-- every seat starts with **$100m paper NAV** and earns the same latest-published prior-day official NY Fed SOFR, simple ACT/360, cash hurdle on that NAV;
+- every seat starts with **$100m paper NAV**. Official NY Fed SOFR ACT/360 is the zero-return benchmark: paper NAV may be described as earning SOFR, but it is equally funded/benchmarked at SOFR so those flows cancel;
 - every open position consumes trusted **standard-shock risk capital** equal to the absolute MTM loss from the standard adverse move: 1% spot, 100bp outright rates, or 100bp curve/RV; equal risk capital is financed identically across asset classes;
-- official SOFR ACT/360 is charged on shocked risk capital, not notional. Flat books therefore have zero risk financing while retaining the common cash hurdle;
+- official SOFR ACT/360 is charged on shocked risk capital, not notional. A completely flat book therefore has zero net financing/competition P&L;
 - each seat has a **$10m shocked-risk-capital ceiling** and a **$5m high-water-mark drawdown stop**. A breach triggers trusted-code forced flattening and blocks new OPEN/ADD/HEDGE while risk-stopped;
-- `no-trade-skeptic` has no special financing subsidy; when flat its shocked risk capital is simply zero. Every fresh scheduled skeptic decision, including `HOLD`, still includes a structured `funding_view`;
-- no-trade remains valid for every seat; a flat book has no shocked-risk financing charge, while open risk must clear its financing hurdle;
+- `no-trade-skeptic` has no special cash-manager subsidy; when flat its shocked risk capital is simply zero and its competition P&L from financing is zero. Every fresh scheduled skeptic decision, including `HOLD`, still includes a structured `funding_view`;
+- no-trade remains valid for every seat; a flat book has no net SOFR alpha, while open risk pays the SOFR hurdle on shocked-risk capital;
 - a trader should put on risk when expected edge clears the hurdle and has a defined invalidation. It must not manufacture a trade merely to avoid being flat.
 
-The dedicated spot seats remain spot-only. Rates-capable seats compare a rates candidate and a spot candidate before adding risk. Options remain last-resort.
+The dedicated spot seats remain spot-only and are not forced through a rates tenor scan. `vol-convexity` retains its options remit. Every other rates-capable seat must complete a STIR/2Y/5Y/10Y/curve/cross-market-RV scan before selecting its best rates candidate and comparing that candidate with spot. Options remain last-resort.
 
 ## 7. Deterministic acceptance gate
 
@@ -190,9 +190,9 @@ Canonical mechanics are implemented only by `scripts/overnight/books.py`:
 - marks;
 - realized/unrealized gross P&L;
 - official NY Fed SOFR ACT/360 financing accrual on current standard-shock risk capital for every seat;
-- the common official NY Fed SOFR ACT/360 cash hurdle on each seat's $100m paper NAV;
+- baseline paper-NAV SOFR cash yield matched by an equal SOFR benchmark cost so those flows cancel;
 - trusted $10m risk-capital cap, $5m high-water drawdown stop and risk-stop state;
-- net P&L after financing/cash yield and competition rank;
+- net P&L after the zero-return SOFR benchmark (trading P&L minus risk-capital financing) and competition rank;
 - NAV;
 - history;
 - overnight changes.

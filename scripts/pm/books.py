@@ -11,6 +11,11 @@ from datetime import datetime
 from typing import Any
 from uuid import uuid4
 
+from scripts.funding.accounting import (
+    FUNDING_REGIME_ZERO_BENCHMARK,
+    apply_zero_return_sofr_migration,
+    attach_financing_fields,
+)
 from scripts.funding.basis import apply_basis_to_position, funded_draw_for_book
 from scripts.funding.sofr import (
     FUNDING_CONVENTION,
@@ -125,6 +130,8 @@ def empty_pm_book(pm_id: str) -> dict[str, Any]:
         "unused_cash_usd": float(CASH_CAPITAL_USD),
         "funding_cost_usd": 0.0,
         "cash_yield_usd": 0.0,
+        "benchmark_cost_usd": 0.0,
+        "net_financing_pnl_usd": 0.0,
         "net_after_funding_pnl_usd": 0.0,
         "funding_rate_annual": None,
         "funding_percent_rate": None,
@@ -132,6 +139,7 @@ def empty_pm_book(pm_id: str) -> dict[str, Any]:
         "funding_day_count": FUNDING_DAY_COUNT,
         "funding_convention": FUNDING_CONVENTION,
         "funding_source": FUNDING_SOURCE,
+        "funding_regime": FUNDING_REGIME_ZERO_BENCHMARK,
         "funding_last_accrual_at": None,
         "funding_basis_status": "none",
         "unresolved_funding_positions": [],
@@ -292,13 +300,14 @@ def mark_pm_book(
     book.setdefault("risk_capital_limit_usd", RISK_CAPITAL_LIMIT_USD)
     book["risk_capital_remaining_usd"] = round(max(0.0, float(book["risk_capital_limit_usd"]) - risk_used), 2)
 
-    funding = round(float(book.get("funding_cost_usd") or 0.0), 2)
-    cash_yield = round(float(book.get("cash_yield_usd") or 0.0), 2)
-    book["funding_cost_usd"] = funding
-    book["cash_yield_usd"] = cash_yield
-    available_net = round(realized + unrealized - funding + cash_yield, 2)
-    book["net_after_funding_pnl_usd"] = None if missing else available_net
-    nav = float(book.get("cash_capital_usd") or CASH_CAPITAL_USD) + available_net
+    apply_zero_return_sofr_migration(book, paper_nav=float(book.get("cash_capital_usd") or CASH_CAPITAL_USD))
+    attach_financing_fields(
+        book,
+        gross=None if missing else round(realized + unrealized, 2),
+        missing=missing,
+    )
+    available_net = book.get("net_after_funding_pnl_usd")
+    nav = float(book.get("cash_capital_usd") or CASH_CAPITAL_USD) + float(available_net or 0.0)
     book["nav_usd"] = round(nav, 2)
 
     book.setdefault("max_drawdown_usd", MAX_DRAWDOWN_USD)
@@ -419,13 +428,17 @@ def accrue_pm_funding(
     market_state: dict[str, Any] | None = None,
     model_forecast: Any = None,
 ) -> dict[str, float]:
-    """Accrue official SOFR on standard-shock risk capital plus the common cash hurdle.
+    """Accrue official SOFR on standard-shock risk capital.
 
-    model_forecast is ignored for realized accounting.
+    Paper cash capital may be described as earning SOFR, but it is equally
+    benchmarked at SOFR so those flows cancel. Net financing is minus SOFR on
+    current shocked-risk capital only. model_forecast is ignored.
     """
     del model_forecast
+    apply_zero_return_sofr_migration(book, paper_nav=float(book.get("cash_capital_usd") or CASH_CAPITAL_USD))
     book.setdefault("funding_cost_usd", 0.0)
     book.setdefault("cash_yield_usd", 0.0)
+    book.setdefault("benchmark_cost_usd", 0.0)
     book.setdefault("cash_capital_usd", CASH_CAPITAL_USD)
     draws = funded_draw_for_book(book)
     book.update(draws)
@@ -440,13 +453,14 @@ def accrue_pm_funding(
     last_raw = book.get("funding_last_accrual_at")
     if not last_raw:
         book["funding_last_accrual_at"] = isoformat(when)
-        return {"funding_cost_usd": 0.0, "cash_yield_usd": 0.0}
+        book["funding_regime"] = FUNDING_REGIME_ZERO_BENCHMARK
+        return {"funding_cost_usd": 0.0, "cash_yield_usd": 0.0, "benchmark_cost_usd": 0.0}
     try:
         last = datetime.fromisoformat(str(last_raw))
     except ValueError as exc:
         raise SchemaError(f"invalid PM funding accrual timestamp {last_raw}") from exc
     if (when - last).total_seconds() <= 0:
-        return {"funding_cost_usd": 0.0, "cash_yield_usd": 0.0}
+        return {"funding_cost_usd": 0.0, "cash_yield_usd": 0.0, "benchmark_cost_usd": 0.0}
     history = extract_sofr_history(market_state or {})
     try:
         cost = accrue_act_360(
@@ -466,11 +480,13 @@ def accrue_pm_funding(
     except FundingHistoryError as exc:
         book.setdefault("alerts", []).append(f"funding_accrual_failed_closed: {exc}")
         book["funding_accrual_status"] = "failed_closed"
-        return {"funding_cost_usd": 0.0, "cash_yield_usd": 0.0, "failed_closed": True}
+        return {"funding_cost_usd": 0.0, "cash_yield_usd": 0.0, "benchmark_cost_usd": 0.0, "failed_closed": True}
     book["funding_cost_usd"] = round(float(book.get("funding_cost_usd") or 0.0) + cost["amount"], 2)
     book["cash_yield_usd"] = round(float(book.get("cash_yield_usd") or 0.0) + yield_["amount"], 2)
+    book["benchmark_cost_usd"] = round(float(book.get("benchmark_cost_usd") or 0.0) + yield_["amount"], 2)
     book["funding_last_accrual_at"] = isoformat(when)
     book["funding_accrual_status"] = "applied"
+    book["funding_regime"] = FUNDING_REGIME_ZERO_BENCHMARK
     book["funding_rate_annual"] = yield_["funding_rate_annual"] or cost["funding_rate_annual"]
     book["funding_percent_rate"] = yield_["latest_percent_rate"] or cost["latest_percent_rate"]
     book["funding_effective_date"] = yield_["latest_effective_date"] or cost["latest_effective_date"]
@@ -491,13 +507,15 @@ def accrue_pm_funding(
                 "accrual_days": max(cost["accrual_days"], yield_["accrual_days"]),
                 "funding_base_usd": book.get("funded_draw_usd"),
                 "cash_yield_base_usd": book.get("cash_capital_usd"),
+                "benchmark_cost_base_usd": book.get("cash_capital_usd"),
                 "funding_cost_usd": cost["amount"],
                 "cash_yield_usd": yield_["amount"],
+                "benchmark_cost_usd": yield_["amount"],
                 "gross_utilization_usd": book.get("gross_utilization_usd"),
                 "funded_draw_usd": book.get("funded_draw_usd"),
             }
         )
-    return {"funding_cost_usd": cost["amount"], "cash_yield_usd": yield_["amount"]}
+    return {"funding_cost_usd": cost["amount"], "cash_yield_usd": yield_["amount"], "benchmark_cost_usd": yield_["amount"]}
 
 
 def apply_action(
@@ -876,6 +894,8 @@ def public_pm_view(books: dict[str, Any]) -> dict[str, Any]:
                 "unused_cash_usd": item.get("unused_cash_usd", item.get("cash_capital_usd", CASH_CAPITAL_USD)),
                 "funding_cost_usd": item.get("funding_cost_usd", 0.0),
                 "cash_yield_usd": item.get("cash_yield_usd", 0.0),
+                "benchmark_cost_usd": item.get("benchmark_cost_usd", 0.0),
+                "net_financing_pnl_usd": item.get("net_financing_pnl_usd"),
                 "net_after_funding_pnl_usd": item.get("net_after_funding_pnl_usd"),
                 "funding_rate_annual": item.get("funding_rate_annual"),
                 "funding_convention": item.get("funding_convention", FUNDING_CONVENTION),
@@ -937,6 +957,7 @@ def public_pm_view(books: dict[str, Any]) -> dict[str, Any]:
             "funded_draw_usd": row["funded_draw_usd"],
             "unused_cash_usd": row["unused_cash_usd"],
             "net_after_funding_pnl_usd": row["net_after_funding_pnl_usd"],
+            "net_financing_pnl_usd": row.get("net_financing_pnl_usd"),
             "decision_status": row["decision_status"],
             "review_status": row["review_status"],
         }

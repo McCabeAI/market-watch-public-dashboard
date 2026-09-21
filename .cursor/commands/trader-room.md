@@ -29,9 +29,9 @@ Launch all 14 standing advocates concurrently on exact `grok-4.6`. Keep the stan
 
 Expression selection is mandatory before submission:
 - `dollar-king` and `cross-merchant` remain spot-only;
-- `vol-convexity` remains the options specialist;
-- every other seat is rates-first when it submits a trade: construct a concrete rates candidate and a spot candidate, prefer rates when comparably clean, and select spot only with an explicit reason rates is inferior or unavailable;
-- `no-trade-skeptic` may still return no trade.
+- `vol-convexity` remains the options specialist and is not forced through a rates tenor scan;
+- every other seat is rates-first when it submits a trade: first complete `rates_tenor_scan` across STIR/policy path, 2Y, 5Y, 10Y, curve, and cross-market rates RV (each bucket a concrete candidate or an explicit unavailable/not-compelling reason), then choose the best rates expression and compare it with a spot candidate. Prefer rates when comparably clean, and select spot only with an explicit reason the selected rates candidate is inferior or unavailable. Do not force a tenor and do not force rates over spot;
+- `no-trade-skeptic` may still return no trade without manufacturing the scan.
 
 Each initial advocate must build the idea in this order: context -> what changed -> what is priced -> historical comparison -> discrepancy -> expression -> sizing. A percentile/z-score is a discovery flag, not a thesis. Complete the validated `context_build` before selecting risk. For rates, use `policy_paths` to understand what is priced, then choose the actual expression from `tradable_rate_curves` (SOFR=`SR3`, CORRA=`CRA`, AONIA=`IB`) or from the sovereign bond curve when that is cleaner. Use the packet's historical move analogs and explicitly state both similarities and regime differences.
 
@@ -54,7 +54,7 @@ Each initial advocate:
 - must include the complete compact `conflict_synopsis` required by `docs/TRADER_ROOM_ON_DEMAND.md`;
 - must include a non-empty final `paper_actions` list for its own competition book. The list may contain zero risk changes via `[{"action":"HOLD"}]`, or any number of independent `OPEN` / `ADD` / `REDUCE` / `CLOSE` / `HEDGE` actions. There is no one-trade limit. The single `trade` field remains the primary debate pitch only;
 - must not rely on legacy `paper_capital` for a new live run. That field remains compatibility-only;
-- must manage the existing book, not re-open an already-owned position as a new trade merely because it is the primary pitch. Notional is descriptive, not the risk budget. Trusted code caps each $100m-paper-NAV seat at **$10m of standard-shock risk capital** and enforces a **$5m high-water-mark drawdown stop**. Size from path risk and historical adverse excursion; do not mechanically fill the risk-capital limit. Official SOFR ACT/360 is charged on shocked risk capital, so equal risk capital receives equal financing treatment across asset classes.
+- must manage the existing book, not re-open an already-owned position as a new trade merely because it is the primary pitch. Notional is descriptive, not the risk budget. Trusted code caps each $100m-paper-NAV seat at **$10m of standard-shock risk capital** and enforces a **$5m high-water-mark drawdown stop**. Size from path risk and historical adverse excursion; do not mechanically fill the risk-capital limit. Official SOFR ACT/360 is the zero-return benchmark and is charged on shocked risk capital, so a flat book has zero net financing P&L and equal risk capital receives equal financing treatment across asset classes.
 
 Do not show Round 1 outputs or another seat's private sidecar to other advocates.
 

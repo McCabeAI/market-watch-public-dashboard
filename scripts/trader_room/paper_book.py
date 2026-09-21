@@ -128,6 +128,11 @@ def overnight_memo_for_action(
         "options_candidate": options_cand,
         "selected": selected,
         "rationale": rationale,
+        **(
+            {"rates_tenor_scan": merged["rates_tenor_scan"]}
+            if merged.get("rates_tenor_scan") is not None
+            else {}
+        ),
     }
 
 

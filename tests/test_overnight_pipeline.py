@@ -32,6 +32,7 @@ from scripts.funding.sofr import FUNDING_CONVENTION, FUNDING_DAY_COUNT, FUNDING_
 from scripts.overnight.constants import LOCAL_CRON, SPOT_SEATS, STAGES, STANDING_SEATS, STARTING_NAV_USD
 from scripts.overnight.errors import EvidenceBoundaryError, FreshnessError, PublicationError, SchemaError
 from scripts.overnight.expression import expression_rule, validate_expression_memo
+from scripts.trader_room.rates_scan import synthetic_rates_tenor_scan, with_tenor_scan
 from scripts.overnight.freshness import assert_action_allowed, publication_decision
 from scripts.overnight.paper_marks import PaperMarkError, resolve_paper_mid
 from scripts.overnight.pipeline import dry_run, run_stage
@@ -64,13 +65,13 @@ def _spot_memo(instrument: str = "USDCAD") -> dict:
 
 
 def _rates_memo(selected: str = "rates") -> dict:
-    return {
+    return with_tenor_scan({
         "rates_candidate": {"instrument": "US 10Y", "asset_class": "rates", "rationale": "duration"},
         "spot_candidate": {"instrument": "USDJPY", "asset_class": "spot_fx", "rationale": "spot alt"},
         "options_candidate": None,
         "selected": selected,
-        "rationale": "Rates-first comparison complete.",
-    }
+        "rationale": "Rates-first comparison complete after scanning STIR, 2Y, 5Y, 10Y, curve, and cross-market RV.",
+    })
 
 
 class ClockAndScheduleTests(unittest.TestCase):
@@ -124,6 +125,33 @@ class ExpressionRuleTests(unittest.TestCase):
                 action="OPEN",
             )
         validate_expression_memo(_rates_memo("rates"), seat="rate-hawk", action="OPEN")
+        missing_scan = {
+            "rates_candidate": {"instrument": "US 10Y", "asset_class": "rates", "rationale": "duration"},
+            "spot_candidate": {"instrument": "AUDUSD", "asset_class": "spot_fx", "rationale": "x"},
+            "options_candidate": None,
+            "selected": "rates",
+            "rationale": "Rates-first comparison without a tenor scan.",
+        }
+        with self.assertRaises(SchemaError):
+            validate_expression_memo(missing_scan, seat="rate-hawk", action="OPEN")
+        malformed = with_tenor_scan(missing_scan)
+        del malformed["rates_tenor_scan"]["two_year"]
+        with self.assertRaises(SchemaError):
+            validate_expression_memo(malformed, seat="rate-hawk", action="OPEN")
+        validate_expression_memo(_rates_memo("rates"), seat="vol-convexity", action="OPEN")
+        vol_no_scan = {
+            "rates_candidate": {"instrument": "US 10Y", "asset_class": "rates", "rationale": "duration"},
+            "spot_candidate": {"instrument": "AUDUSD", "asset_class": "spot_fx", "rationale": "spot alt"},
+            "options_candidate": {
+                "instrument": "USDCAD_25D_RR",
+                "asset_class": "options",
+                "rationale": "Bounded-risk options last resort versus rates and spot.",
+            },
+            "selected": "options",
+            "rationale": "Options used as last resort versus rates and spot.",
+        }
+        validate_expression_memo(vol_no_scan, seat="vol-convexity", action="OPEN")
+        validate_expression_memo(_spot_memo(), seat="dollar-king", action="OPEN")
 
 
 class BookTransitionTests(unittest.TestCase):
@@ -291,9 +319,11 @@ class BookTransitionTests(unittest.TestCase):
         expected = round(STARTING_NAV_USD * 0.036 / FUNDING_DAY_COUNT, 2)
         self.assertEqual(self.seat["funding_cost_usd"], 0.0)
         self.assertEqual(self.seat["cash_yield_usd"], expected)
+        self.assertEqual(self.seat["benchmark_cost_usd"], expected)
         self.assertEqual(self.seat["gross_pnl_usd"], 0.0)
-        self.assertEqual(self.seat["net_pnl_usd"], expected)
-        self.assertEqual(self.seat["nav_usd"], STARTING_NAV_USD + expected)
+        self.assertEqual(self.seat["net_pnl_usd"], 0.0)
+        self.assertEqual(self.seat["net_financing_pnl_usd"], 0.0)
+        self.assertEqual(self.seat["nav_usd"], STARTING_NAV_USD)
         self.assertNotEqual(self.seat["funding_rate_annual"], 0.05)
         self.assertEqual(self.seat["funding_convention"], FUNDING_CONVENTION)
         self.assertEqual(self.seat["funding_source"], FUNDING_SOURCE)
@@ -367,7 +397,9 @@ class BookTransitionTests(unittest.TestCase):
         self.assertEqual(skeptic["funding_cost_usd"], risk_funding)
         expected_cash = round(full_cash_yield * 2, 2)
         self.assertEqual(skeptic["cash_yield_usd"], expected_cash)
-        self.assertEqual(skeptic["net_pnl_usd"], round(expected_cash - risk_funding, 2))
+        self.assertEqual(skeptic["benchmark_cost_usd"], expected_cash)
+        self.assertEqual(skeptic["net_pnl_usd"], round(-risk_funding, 2))
+        self.assertEqual(skeptic["net_financing_pnl_usd"], round(-risk_funding, 2))
 
     def test_exactly_10m_shocked_risk_cap_succeeds(self):
         apply_action(
@@ -847,6 +879,25 @@ class BookTransitionTests(unittest.TestCase):
         public_with_pos = next(row for row in view["seats"] if row["positions"])
         self.assertIn("risk_capital_usd", public_with_pos)
         self.assertIn("drawdown_usd", public_with_pos)
+        for seat, item in validated["seats"].items():
+            if not item["positions"]:
+                self.assertEqual(item["net_pnl_usd"], 0.0, seat)
+                self.assertEqual(item["net_financing_pnl_usd"], 0.0, seat)
+        self.assertEqual(validated["seats"]["no-trade-skeptic"]["net_pnl_usd"], 0.0)
+        self.assertEqual(validated["seats"]["no-trade-skeptic"]["net_financing_pnl_usd"], 0.0)
+        self.assertEqual(validated["seats"]["no-trade-skeptic"]["funding_regime"], "sofr_zero_benchmark")
+        self.assertEqual(
+            validated["seats"]["no-trade-skeptic"]["realized_pnl_usd"],
+            before["seats"]["no-trade-skeptic"]["realized_pnl_usd"],
+        )
+        self.assertEqual(
+            validated["seats"]["no-trade-skeptic"]["unrealized_pnl_usd"],
+            before["seats"]["no-trade-skeptic"]["unrealized_pnl_usd"],
+        )
+        self.assertEqual(
+            validated["seats"]["no-trade-skeptic"]["gross_pnl_usd"],
+            before["seats"]["no-trade-skeptic"]["gross_pnl_usd"],
+        )
         self.assertIn("risk_stopped", public_with_pos)
         self.assertIn("risk_capital_usd", public_with_pos["positions"][0])
 

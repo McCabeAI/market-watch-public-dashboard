@@ -8,6 +8,7 @@ from scripts.trading.apply import apply_pm_decision_with_memory
 from scripts.trading.store import TradingStore
 from scripts.pm.constants import ALLOWED_SUBAGENT_MODELS, AUTOMATED_PM_IDS, MAX_SUBAGENTS_PER_PM
 from scripts.pm.errors import IndependenceError, SchemaError
+from scripts.pm.portfolio import validate_portfolio_construction
 
 
 def validate_pm_execution(execution: dict[str, Any] | None, *, pm_id: str) -> dict[str, Any]:
@@ -62,6 +63,7 @@ def validate_pm_decisions(block: Any, *, overnight_run_id: str, packet_sha256: s
         if not isinstance(decision.get("actions"), list) or not decision["actions"]:
             raise SchemaError(f"{pm_id} must return at least one structured action")
         validate_pm_execution(decision.get("execution") or decision, pm_id=pm_id)
+        validate_portfolio_construction(decision, pm_id=pm_id, required=True)
     return block
 
 

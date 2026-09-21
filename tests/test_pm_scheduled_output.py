@@ -5,6 +5,7 @@ import unittest
 from scripts.overnight.scheduled_output import apply_output, validate_output
 from scripts.pm.automated import validate_pm_decisions
 from scripts.pm.errors import SchemaError
+from scripts.pm.portfolio import synthetic_portfolio_construction
 from tests.test_overnight_scheduled_output import ScheduledOutputTests
 
 
@@ -24,6 +25,11 @@ def _pm_block(run_id: str, packet_hash: str, cutoff: str) -> dict:
             "invalidation": None,
             "conviction": 20,
         }
+        if pm_id == "pragmatist":
+            out[pm_id]["portfolio_construction"] = synthetic_portfolio_construction(
+                existing_book="Pragmatist book is flat in this scheduled-output fixture.",
+                rationale="No independent markable complementary trade improves the opportunistic book; HOLD is explicit.",
+            )
     return out
 
 
@@ -71,6 +77,36 @@ class OptionalAutomatedPMDecisionTests(ScheduledOutputTests):
         with self.assertRaises(Exception):
             validate_pm_decisions(
                 block,
+                overnight_run_id=self.run_id,
+                packet_sha256=packet["packet_sha256"],
+                evidence_cutoff=packet["evidence_cutoff"],
+            )
+
+    def test_pragmatist_requires_portfolio_construction(self) -> None:
+        packet = self.payload["agent_packet"]
+        block = _pm_block(self.run_id, packet["packet_sha256"], packet["evidence_cutoff"])
+        del block["pragmatist"]["portfolio_construction"]
+        with self.assertRaises(SchemaError):
+            validate_pm_decisions(
+                block,
+                overnight_run_id=self.run_id,
+                packet_sha256=packet["packet_sha256"],
+                evidence_cutoff=packet["evidence_cutoff"],
+            )
+        swinger_only = _pm_block(self.run_id, packet["packet_sha256"], packet["evidence_cutoff"])
+        self.assertNotIn("portfolio_construction", swinger_only["swinger"])
+        self.assertNotIn("portfolio_construction", swinger_only["grinder"])
+        validate_pm_decisions(
+            swinger_only,
+            overnight_run_id=self.run_id,
+            packet_sha256=packet["packet_sha256"],
+            evidence_cutoff=packet["evidence_cutoff"],
+        )
+        incomplete = _pm_block(self.run_id, packet["packet_sha256"], packet["evidence_cutoff"])
+        incomplete["pragmatist"]["portfolio_construction"]["adverse_scenario"] = " "
+        with self.assertRaises(SchemaError):
+            validate_pm_decisions(
+                incomplete,
                 overnight_run_id=self.run_id,
                 packet_sha256=packet["packet_sha256"],
                 evidence_cutoff=packet["evidence_cutoff"],
