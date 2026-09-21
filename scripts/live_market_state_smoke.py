@@ -87,7 +87,13 @@ def main() -> int:
         raise MarketStateError(f"too few live Canadian housing feeds usable ({ca_usable}/7): {ca_housing}")
     report["CA_housing"] = {
         "status": ca_housing["status"],
-        "feeds": {k: v.get("status") for k, v in ca_housing["feeds"].items()},
+        "feeds": {
+            k: {
+                "status": v.get("status"),
+                **({"error": v.get("error")} if v.get("error") else {}),
+            }
+            for k, v in ca_housing["feeds"].items()
+        },
     }
 
     policy_paths = collect_policy_paths(today=today, fetch_bytes=fetch_bytes)
