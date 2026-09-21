@@ -116,6 +116,48 @@
         "spending": 0.25,
         "confidence": 0.25
       }
+    },
+    "EA": {
+      "Inflation": {
+        "underlying": 0.6,
+        "headline": 0.4
+      },
+      "Labor": {
+        "unemployment": 0.7,
+        "wages": 0.2,
+        "employment": 0.1
+      },
+      "Activity": {
+        "gdp_domestic_demand": 0.6,
+        "business_surveys": 0.4
+      },
+      "Consumer": {
+        "retail": 0.25,
+        "income": 0.25,
+        "spending": 0.25,
+        "confidence": 0.25
+      }
+    },
+    "JP": {
+      "Inflation": {
+        "underlying": 0.6,
+        "headline": 0.4
+      },
+      "Labor": {
+        "unemployment": 0.7,
+        "wages": 0.2,
+        "employment": 0.1
+      },
+      "Activity": {
+        "gdp_domestic_demand": 0.6,
+        "business_surveys": 0.4
+      },
+      "Consumer": {
+        "retail": 0.25,
+        "income": 0.25,
+        "spending": 0.25,
+        "confidence": 0.25
+      }
     }
   },
   "unscored_components": {
@@ -182,7 +224,7 @@
       "source_authors": "Seth Murray and Ivan Vidangos",
       "source_date": "2026-04-02",
       "source_publisher": "Board of Governors of the Federal Reserve System (FEDS Notes)",
-      "point_convention": "Board FEDS Note (Apr 2026) states 2026 breakeven employment growth could be near-zero, requiring less than 10,000 new jobs per month. Anchor 10.0 (thousands/month) is the documented upper bound of that less-than-10k statement\u2014a conservative point vs 0, not a mid-range from sensitivity blogs.",
+      "point_convention": "Board FEDS Note (Apr 2026) states 2026 breakeven employment growth could be near-zero, requiring less than 10,000 new jobs per month. Anchor 10.0 (thousands/month) is the documented upper bound of that less-than-10k statement—a conservative point vs 0, not a mid-range from sensitivity blogs.",
       "economic_interpretation": "Monthly nonfarm payroll growth (3-month average) scored vs the pace of job creation needed to keep the unemployment rate steady given potential labor-force growth; faster payrolls than breakeven imply labor-market tightening relative to demographics.",
       "refresh_cadence": "Review when the Board publishes an updated FEDS Note on breakeven employment or labor-force demographics, or after material BLS population-control / CBO potential-LFPR revisions.",
       "expires_after": "2027-04-02",
@@ -691,6 +733,264 @@
       "anchor": 100.0,
       "anchor_kind": "structural_policy",
       "anchor_meaning": "ANZ-Roy Morgan par of 100",
+      "hot_direction": 1,
+      "scale_per_unit": 1.0
+    },
+    "EA.Inflation.underlying": {
+      "history_key": "Inflation.underlying",
+      "series_id": "PRC_HICP_MINR.M.RCH_A.TOT_X_NRG_FOOD.EA21",
+      "source_transformation": "yoy_pct",
+      "scoring_transform": "identity",
+      "anchor": 2.0,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "ECB 2 percent HICP inflation target, applied to HICP excluding energy, food, alcohol and tobacco (ECOICOP v2 TOT_X_NRG_FOOD, geo EA21)",
+      "hot_direction": 1,
+      "scale_per_unit": 12.5,
+      "source_url": "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table"
+    },
+    "EA.Inflation.headline": {
+      "history_key": "Inflation.headline",
+      "series_id": "PRC_HICP_MINR.M.RCH_A.TOTAL.EA21",
+      "source_transformation": "yoy_pct",
+      "scoring_transform": "identity",
+      "anchor": 2.0,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "ECB 2 percent HICP inflation target, applied to all-items HICP (ECOICOP v2 TOTAL, geo EA21)",
+      "hot_direction": 1,
+      "scale_per_unit": 12.5,
+      "source_url": "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table"
+    },
+    "EA.Labor.unemployment": {
+      "history_key": "Labor.unemployment",
+      "series_id": "UNE_RT_M.M.SA.TOTAL.PC_ACT.T.EA21",
+      "source_transformation": "percent",
+      "scoring_transform": "identity",
+      "anchor": 6.5,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "Euro-area NAIRU / full-employment unemployment neighbourhood near 6.5 percent (Commission/ECB longer-run slack ballpark; not the trailing-year median)",
+      "hot_direction": -1,
+      "scale_per_unit": 20.0
+    },
+    "EA.Labor.wages": {
+      "history_key": "Labor.wages",
+      "series_id": "INW.Q.I10.N.INWR.000000.4F0.GY.IX",
+      "source_transformation": "yoy_pct",
+      "scoring_transform": "identity",
+      "anchor": 3.0,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "2 percent HICP target plus 1 percentage point trend productivity, applied to ECB negotiated wages y/y",
+      "hot_direction": 1,
+      "scale_per_unit": 10.0
+    },
+    "EA.Labor.employment": {
+      "history_key": "Labor.employment",
+      "series_id": "LFSI_EMP_Q.Q.SA.EMP_LFS.T.Y15-74.THS_PER.EA21_derived_qq_thousands",
+      "source_transformation": "qq_change_thousands",
+      "scoring_transform": "identity",
+      "anchor": 150.0,
+      "anchor_kind": "structural_trend",
+      "anchor_meaning": "Approximate quarterly euro-area employment trend (~50k/month working-age growth) in thousands of persons, q/q SA LFS change",
+      "hot_direction": 1,
+      "scale_per_unit": 0.1
+    },
+    "EA.Activity.gdp_domestic_demand": {
+      "history_key": "Activity.gdp_domestic_demand",
+      "series_id": "NAMQ_10_GDP.Q.CLV_PCH_PRE.SCA.B1GQ.EA21",
+      "source_transformation": "qoq_sa_pct",
+      "scoring_transform": "qoq_to_saar",
+      "level_scoring_transform": "mean_qoq_to_saar_n2",
+      "impulse_scoring_transform": "qoq_to_saar",
+      "anchor": 1.4,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "Euro-area potential real growth neighbourhood near 1.4 percent SAAR (ECB September 2026 staff medium-term growth as operational potential proxy)",
+      "hot_direction": 1,
+      "scale_per_unit": 10.0
+    },
+    "EA.Activity.business_surveys": {
+      "history_key": "Activity.business_surveys",
+      "note": "S&P Global Eurozone Composite PMI Output Index from public primary press-release PDFs. Final prints control over flash. Months without a retrieved primary PDF are gapped. EC ESI/BCS is context only.",
+      "series_id": "SP_GLOBAL_EA_COMPOSITE_PMI",
+      "source_transformation": "diffusion_index",
+      "level_scoring_transform": "trailing_mean_n3",
+      "impulse_scoring_transform": "identity",
+      "n_periods": 3,
+      "anchor": 50.0,
+      "hot_direction": 1,
+      "scale_per_unit": 1.0,
+      "scoring_transform": "identity",
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "S&P Global Eurozone Composite PMI expansion/contraction threshold of 50"
+    },
+    "EA.Consumer.retail": {
+      "history_key": "Consumer.retail",
+      "series_id": "STS_TRTU_M.M.SCA.VOL_SLS.G47.PCH_PRE.EA21",
+      "source_transformation": "mom_sa_pct",
+      "scoring_transform": "mom_mean_n3",
+      "n_periods": 3,
+      "anchor": 0.166667,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "Real retail-volume m/m consistent with 2 percent SAAR / 12",
+      "hot_direction": 1,
+      "scale_per_unit": 40.0
+    },
+    "EA.Consumer.income": {
+      "history_key": "Consumer.income",
+      "series_id": "NASQ_10_KI.Q.PC.SCA.S14_S15.B7G_R_HAB_GR.EA21",
+      "source_transformation": "qoq_sa_pct",
+      "scoring_transform": "identity",
+      "anchor": 0.5,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "Real household disposable income per capita q/q consistent with 2 percent SAAR / 4",
+      "hot_direction": 1,
+      "scale_per_unit": 15.0
+    },
+    "EA.Consumer.spending": {
+      "history_key": "Consumer.spending",
+      "series_id": "NAMQ_10_GDP.Q.CLV_PCH_PRE.SCA.P31_S15.EA21",
+      "source_transformation": "qoq_sa_pct",
+      "scoring_transform": "identity",
+      "anchor": 0.5,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "Real household consumption q/q consistent with 2 percent SAAR / 4",
+      "hot_direction": 1,
+      "scale_per_unit": 15.0
+    },
+    "EA.Consumer.confidence": {
+      "history_key": "Consumer.confidence",
+      "series_id": "EI_BSCO_M.M.SA.BS-CSMCI.BAL.EA21",
+      "source_transformation": "index_level",
+      "scoring_transform": "identity",
+      "anchor": -10.0,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "European Commission BCS consumer-confidence indicator long-run average neighbourhood of -10 (balance statistic; not a 50-threshold PMI and not a trailing-year median)",
+      "hot_direction": 1,
+      "scale_per_unit": 1.0
+    },
+    "JP.Inflation.underlying": {
+      "history_key": "Inflation.underlying",
+      "series_id": "CPI_2025BASE_LESS_FRESH_FOOD_ENERGY_YOY",
+      "source_transformation": "yoy_pct",
+      "scoring_transform": "identity",
+      "anchor": 2.0,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "BOJ 2 percent CPI target, applied to CPI less fresh food and energy (core-core, 2025-base)",
+      "hot_direction": 1,
+      "scale_per_unit": 12.5
+    },
+    "JP.Inflation.headline": {
+      "history_key": "Inflation.headline",
+      "series_id": "CPI_2025BASE_ALL_ITEMS_YOY",
+      "source_transformation": "yoy_pct",
+      "scoring_transform": "identity",
+      "anchor": 2.0,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "BOJ 2 percent CPI target, applied to all-items CPI y/y (2025-base)",
+      "hot_direction": 1,
+      "scale_per_unit": 12.5
+    },
+    "JP.Labor.unemployment": {
+      "history_key": "Labor.unemployment",
+      "series_id": "LFS_1A1_UNEMPLOYMENT_RATE_SA",
+      "source_transformation": "rate_pct",
+      "scoring_transform": "identity",
+      "anchor": 2.5,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "Japan full-employment / NAIRU neighbourhood near 2.5 percent (BOJ longer-run slack ballpark; not the trailing-year median)",
+      "hot_direction": -1,
+      "scale_per_unit": 20.0
+    },
+    "JP.Labor.wages": {
+      "history_key": "Labor.wages",
+      "series_id": "MLS_TOTAL_CASH_EARNINGS_YOY_5PLUS",
+      "source_transformation": "yoy_pct",
+      "scoring_transform": "identity",
+      "anchor": 3.0,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "2 percent CPI target plus 1 percentage point trend productivity, applied to MHLW total cash earnings y/y (establishments with 5+ employees; overtime-sensitive)",
+      "hot_direction": 1,
+      "scale_per_unit": 10.0
+    },
+    "JP.Labor.employment": {
+      "history_key": "Labor.employment",
+      "series_id": "LFS_1A1_EMPLOYED_PERSONS_SA",
+      "source_transformation": "mom_change_thousands_sa",
+      "scoring_transform": "trailing_mean_n3",
+      "n_periods": 3,
+      "anchor": 15.0,
+      "anchor_kind": "structural_trend",
+      "anchor_meaning": "Approximate monthly employment trend consistent with modest participation gains against declining working-age population (thousands, 3-month average)",
+      "hot_direction": 1,
+      "scale_per_unit": 0.1
+    },
+    "JP.Activity.gdp_domestic_demand": {
+      "history_key": "Activity.gdp_domestic_demand",
+      "series_id": "ESRI_REAL_GDP_QOQ_SAAR",
+      "source_transformation": "qoq_pct_saar",
+      "scoring_transform": "identity",
+      "level_scoring_transform": "trailing_mean_n2",
+      "impulse_scoring_transform": "identity",
+      "anchor": 0.6,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "Japan potential real growth neighbourhood near 0.6 percent SAAR (BOJ potential-growth ballpark); ESRI table is already q/q annualized",
+      "hot_direction": 1,
+      "scale_per_unit": 10.0
+    },
+    "JP.Activity.business_surveys": {
+      "history_key": "Activity.business_surveys",
+      "note": "au Jibun Bank / S&P Global Japan Composite PMI from public primary press-release PDFs. Final prints control over flash. Tankan is context only.",
+      "series_id": "SP_GLOBAL_JP_COMPOSITE_PMI",
+      "source_transformation": "diffusion_index",
+      "level_scoring_transform": "trailing_mean_n3",
+      "impulse_scoring_transform": "identity",
+      "n_periods": 3,
+      "anchor": 50.0,
+      "hot_direction": 1,
+      "scale_per_unit": 1.0,
+      "scoring_transform": "identity",
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "S&P Global Japan Composite PMI expansion/contraction threshold of 50"
+    },
+    "JP.Consumer.retail": {
+      "history_key": "Consumer.retail",
+      "series_id": "METI_CSC_RETAIL_SALES_YOY",
+      "source_transformation": "yoy_pct",
+      "scoring_transform": "identity",
+      "anchor": 4.0,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "Nominal retail y/y consistent with 2 percent inflation target plus 2 percent real potential",
+      "hot_direction": 1,
+      "scale_per_unit": 12.5
+    },
+    "JP.Consumer.income": {
+      "history_key": "Consumer.income",
+      "series_id": "FIES_WORKER_HH_REAL_INCOME_NOMINAL_YOY",
+      "source_transformation": "yoy_pct",
+      "scoring_transform": "identity",
+      "anchor": 4.0,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "Nominal worker-household income y/y consistent with 2 percent inflation plus 2 percent real potential (FIES worker-household proxy)",
+      "hot_direction": 1,
+      "scale_per_unit": 12.5
+    },
+    "JP.Consumer.spending": {
+      "history_key": "Consumer.spending",
+      "series_id": "FIES_TWO_PLUS_HH_CONSUMPTION_NOMINAL_YOY",
+      "source_transformation": "yoy_pct",
+      "scoring_transform": "identity",
+      "anchor": 4.0,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "Nominal two-or-more-person household consumption y/y consistent with 2 percent inflation plus 2 percent real potential",
+      "hot_direction": 1,
+      "scale_per_unit": 12.5
+    },
+    "JP.Consumer.confidence": {
+      "history_key": "Consumer.confidence",
+      "series_id": "CO_CONSUMER_SENTIMENT_INDEX_SA",
+      "source_transformation": "diffusion_index",
+      "scoring_transform": "identity",
+      "anchor": 50.0,
+      "anchor_kind": "structural_policy",
+      "anchor_meaning": "Cabinet Office Consumer Confidence Index par of 50",
       "hot_direction": 1,
       "scale_per_unit": 1.0
     }

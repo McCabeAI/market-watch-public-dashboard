@@ -18,6 +18,12 @@ from scripts.trader_room.constants import (
     MANDATORY_PACKET_SECTIONS,
     ROOT,
 )
+from scripts.country_registry import (
+    expected_temperature_gauge_count,
+    required_preflight_countries,
+    required_tradable_curve_ids,
+    temperature_countries,
+)
 from scripts.temperature_level import period_sort_key
 from scripts.trader_room.errors import EvidenceImmutabilityError, EvidencePreflightError
 
@@ -130,7 +136,7 @@ def load_temperature_gauges(root: Path = ROOT) -> list[dict[str, Any]]:
         )
     countries = state.get("countries") or {}
     gauges: list[dict[str, Any]] = []
-    for country in ("US", "CA", "AU", "NZ"):
+    for country in temperature_countries():
         dimensions = countries.get(country)
         if not dimensions:
             raise EvidencePreflightError(f"temperature state missing country {country}")
@@ -171,8 +177,11 @@ def load_temperature_gauges(root: Path = ROOT) -> list[dict[str, Any]]:
                     "staleness": _temperature_staleness(dim_as_of),
                 }
             )
-    if len(gauges) != 16:
-        raise EvidencePreflightError(f"expected 16 temperature gauges, got {len(gauges)}")
+    expected = expected_temperature_gauge_count()
+    if len(gauges) != expected:
+        raise EvidencePreflightError(
+            f"expected {expected} temperature gauges, got {len(gauges)}"
+        )
     return gauges
 
 
@@ -300,7 +309,8 @@ def validate_preflight(
         policy = market.get("policy_paths") or {}
         countries = policy.get("countries") or {}
         missing_paths = [
-            c for c in ("US", "CA", "AU")
+            c
+            for c in required_preflight_countries()
             if (countries.get(c) or {}).get("status") != "ok"
         ]
         if missing_paths:
@@ -312,7 +322,8 @@ def validate_preflight(
         tradable = market.get("tradable_rate_curves") or {}
         curves = tradable.get("curves") or {}
         missing_curves = [
-            curve_id for curve_id in ("SOFR", "CORRA", "AONIA")
+            curve_id
+            for curve_id in required_tradable_curve_ids()
             if (curves.get(curve_id) or {}).get("status") != "ok"
             or not (curves.get(curve_id) or {}).get("contracts")
         ]

@@ -8,14 +8,16 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from scripts.country_registry import history_files, temperature_countries
+
 ROOT = Path(__file__).resolve().parents[1]
 CALIBRATION_PATH = ROOT / "data" / "temperature_calibration.json"
 HISTORY_DIR = ROOT / "data" / "temperature_history"
 STATE_PATH = ROOT / "data" / "temperature_scores.json"
 PATHS_PATH = HISTORY_DIR / "score_paths.json"
 
-COUNTRY_CODES = ("US", "CA", "AU", "NZ")
-HISTORY_FILES = {"US": "us.json", "CA": "ca.json", "AU": "au.json", "NZ": "nz.json"}
+COUNTRY_CODES = temperature_countries()
+HISTORY_FILES = history_files()
 DIMENSIONS = ("Inflation", "Labor", "Activity", "Consumer")
 
 QUARTER_RE = re.compile(r"^(\d{4})-Q([1-4])$")
@@ -476,7 +478,7 @@ def validate_state(state: dict[str, Any]) -> None:
     if state.get("version") != 3:
         raise ValueError("temperature_scores.json must be version 3")
     if set(state.get("countries", {})) != set(COUNTRY_CODES):
-        raise ValueError("countries must be US/CA/AU/NZ")
+        raise ValueError(f"countries must be {'/'.join(COUNTRY_CODES)}")
     for country in COUNTRY_CODES:
         dims = state["countries"][country]
         if set(dims) != set(DIMENSIONS):

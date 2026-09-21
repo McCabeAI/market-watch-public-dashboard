@@ -86,8 +86,22 @@ def main() -> None:
         raise SystemExit("\n".join(errors))
 
     rows = checklist(registry)
-    if len(rows) != 45:
-        raise SystemExit(f"expected 45 scored-source checklist rows including US bridge, found {len(rows)}")
+    scored_components = 0
+    for country, dimensions in (state.get("countries") or {}).items():
+        for spec in dimensions.values():
+            scored_components += len(spec.get("components") or {})
+    bridge = (
+        (registry.get("countries") or {})
+        .get("US", {})
+        .get("Inflation", {})
+        .get("mapped_bridge")
+    )
+    expected = scored_components + (1 if bridge else 0)
+    if len(rows) != expected:
+        raise SystemExit(
+            f"expected {expected} scored-source checklist rows "
+            f"(scored components + US mapped_bridge exception), found {len(rows)}"
+        )
 
     if args.print_checklist:
         print(json.dumps(rows, indent=2))

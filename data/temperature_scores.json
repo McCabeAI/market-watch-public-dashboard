@@ -706,6 +706,356 @@
         },
         "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print."
       }
+    },
+    "EA": {
+      "Inflation": {
+        "level": 59.0,
+        "impulse": 0.25,
+        "direction": "static",
+        "coverage": 1.0,
+        "temperature_class": "neutral",
+        "as_of": "2026-09",
+        "components": {
+          "underlying": 0.6,
+          "headline": 0.4
+        },
+        "component_state": {
+          "underlying": {
+            "observed": true,
+            "as_of": "2026-08",
+            "transform_value": 2.4,
+            "level": 55.0,
+            "impulse": -1.25,
+            "weight": 0.6,
+            "coverage_contribution": 0.6,
+            "short_window": false
+          },
+          "headline": {
+            "observed": true,
+            "as_of": "2026-08",
+            "transform_value": 3.2,
+            "level": 65.0,
+            "impulse": 2.5,
+            "weight": 0.4,
+            "coverage_contribution": 0.4,
+            "short_window": false
+          }
+        },
+        "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print."
+      },
+      "Labor": {
+        "level": 50.4,
+        "impulse": 0.14,
+        "direction": "static",
+        "coverage": 1.0,
+        "temperature_class": "neutral",
+        "as_of": "2026-09",
+        "components": {
+          "unemployment": 0.7,
+          "wages": 0.2,
+          "employment": 0.1
+        },
+        "component_state": {
+          "unemployment": {
+            "observed": true,
+            "as_of": "2026-07",
+            "transform_value": 6.4,
+            "level": 52.0,
+            "impulse": 0.0,
+            "weight": 0.7,
+            "coverage_contribution": 0.7,
+            "short_window": false
+          },
+          "wages": {
+            "observed": true,
+            "as_of": "2026-Q2",
+            "transform_value": 2.44,
+            "level": 44.4,
+            "impulse": -1.2,
+            "weight": 0.2,
+            "coverage_contribution": 0.2,
+            "short_window": false
+          },
+          "employment": {
+            "observed": true,
+            "as_of": "2026-Q2",
+            "transform_value": 162.0,
+            "level": 51.2,
+            "impulse": 3.8,
+            "weight": 0.1,
+            "coverage_contribution": 0.1,
+            "short_window": false
+          }
+        },
+        "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print."
+      },
+      "Activity": {
+        "level": 49.61,
+        "impulse": 14.65,
+        "direction": "warming",
+        "coverage": 1.0,
+        "temperature_class": "neutral",
+        "as_of": "2026-09",
+        "components": {
+          "gdp_domestic_demand": 0.6,
+          "business_surveys": 0.4
+        },
+        "component_state": {
+          "gdp_domestic_demand": {
+            "observed": true,
+            "as_of": "2026-Q2",
+            "transform_value": 1.2108,
+            "level": 48.11,
+            "impulse": 24.22,
+            "weight": 0.6,
+            "coverage_contribution": 0.6,
+            "short_window": false
+          },
+          "business_surveys": {
+            "observed": true,
+            "as_of": "2026-08",
+            "transform_value": 51.85,
+            "level": 51.85,
+            "impulse": 0.3,
+            "weight": 0.4,
+            "coverage_contribution": 0.4,
+            "short_window": true
+          }
+        },
+        "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print."
+      },
+      "Consumer": {
+        "level": 44.0,
+        "impulse": -2.1,
+        "direction": "cooling",
+        "coverage": 1.0,
+        "temperature_class": "neutral",
+        "as_of": "2026-09",
+        "components": {
+          "retail": 0.25,
+          "income": 0.25,
+          "spending": 0.25,
+          "confidence": 0.25
+        },
+        "component_state": {
+          "retail": {
+            "observed": true,
+            "as_of": "2026-07",
+            "transform_value": -0.0333,
+            "level": 42.0,
+            "impulse": -2.67,
+            "weight": 0.25,
+            "coverage_contribution": 0.25,
+            "short_window": false
+          },
+          "income": {
+            "observed": true,
+            "as_of": "2026-Q1",
+            "transform_value": 0.0,
+            "level": 42.5,
+            "impulse": -3.15,
+            "weight": 0.25,
+            "coverage_contribution": 0.25,
+            "short_window": false
+          },
+          "spending": {
+            "observed": true,
+            "as_of": "2026-Q2",
+            "transform_value": 0.3,
+            "level": 47.0,
+            "impulse": -3.0,
+            "weight": 0.25,
+            "coverage_contribution": 0.25,
+            "short_window": false
+          },
+          "confidence": {
+            "observed": true,
+            "as_of": "2026-08",
+            "transform_value": -15.5,
+            "level": 44.5,
+            "impulse": 0.4,
+            "weight": 0.25,
+            "coverage_contribution": 0.25,
+            "short_window": false
+          }
+        },
+        "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print."
+      }
+    },
+    "JP": {
+      "Inflation": {
+        "level": 47.75,
+        "impulse": 2.25,
+        "direction": "warming",
+        "coverage": 1.0,
+        "temperature_class": "neutral",
+        "as_of": "2026-09",
+        "components": {
+          "underlying": 0.6,
+          "headline": 0.4
+        },
+        "component_state": {
+          "underlying": {
+            "observed": true,
+            "as_of": "2026-08",
+            "transform_value": 1.7,
+            "level": 46.25,
+            "impulse": 3.75,
+            "weight": 0.6,
+            "coverage_contribution": 0.6,
+            "short_window": false
+          },
+          "headline": {
+            "observed": true,
+            "as_of": "2026-08",
+            "transform_value": 2.0,
+            "level": 50.0,
+            "impulse": 0.0,
+            "weight": 0.4,
+            "coverage_contribution": 0.4,
+            "short_window": false
+          }
+        },
+        "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print."
+      },
+      "Labor": {
+        "level": 51.75,
+        "impulse": 0.27,
+        "direction": "static",
+        "coverage": 1.0,
+        "temperature_class": "neutral",
+        "as_of": "2026-09",
+        "components": {
+          "unemployment": 0.7,
+          "wages": 0.2,
+          "employment": 0.1
+        },
+        "component_state": {
+          "unemployment": {
+            "observed": true,
+            "as_of": "2026-07",
+            "transform_value": 2.4,
+            "level": 52.0,
+            "impulse": 2.0,
+            "weight": 0.7,
+            "coverage_contribution": 0.7,
+            "short_window": false
+          },
+          "wages": {
+            "observed": true,
+            "as_of": "2026-06",
+            "transform_value": 4.0,
+            "level": 60.0,
+            "impulse": 7.0,
+            "weight": 0.2,
+            "coverage_contribution": 0.2,
+            "short_window": false
+          },
+          "employment": {
+            "observed": true,
+            "as_of": "2026-07",
+            "transform_value": -150.0,
+            "level": 33.5,
+            "impulse": -25.33,
+            "weight": 0.1,
+            "coverage_contribution": 0.1,
+            "short_window": false
+          }
+        },
+        "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print."
+      },
+      "Activity": {
+        "level": 57.46,
+        "impulse": -2.68,
+        "direction": "cooling",
+        "coverage": 1.0,
+        "temperature_class": "neutral",
+        "as_of": "2026-09",
+        "components": {
+          "gdp_domestic_demand": 0.6,
+          "business_surveys": 0.4
+        },
+        "component_state": {
+          "gdp_domestic_demand": {
+            "observed": true,
+            "as_of": "2026-Q2",
+            "transform_value": 1.65,
+            "level": 60.5,
+            "impulse": -5.0,
+            "weight": 0.6,
+            "coverage_contribution": 0.6,
+            "short_window": false
+          },
+          "business_surveys": {
+            "observed": true,
+            "as_of": "2026-08",
+            "transform_value": 52.9,
+            "level": 52.9,
+            "impulse": 0.8,
+            "weight": 0.4,
+            "coverage_contribution": 0.4,
+            "short_window": false
+          }
+        },
+        "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print."
+      },
+      "Consumer": {
+        "level": 21.05,
+        "impulse": -1.59,
+        "direction": "cooling",
+        "coverage": 1.0,
+        "temperature_class": "cool",
+        "as_of": "2026-09",
+        "components": {
+          "retail": 0.25,
+          "income": 0.25,
+          "spending": 0.25,
+          "confidence": 0.25
+        },
+        "component_state": {
+          "retail": {
+            "observed": true,
+            "as_of": "2026-07",
+            "transform_value": 4.0,
+            "level": 50.0,
+            "impulse": 42.5,
+            "weight": 0.25,
+            "coverage_contribution": 0.25,
+            "short_window": false
+          },
+          "income": {
+            "observed": true,
+            "as_of": "2026-07",
+            "transform_value": -1.7,
+            "level": 1.0,
+            "impulse": -47.75,
+            "weight": 0.25,
+            "coverage_contribution": 0.25,
+            "short_window": false
+          },
+          "spending": {
+            "observed": true,
+            "as_of": "2026-07",
+            "transform_value": -1.5,
+            "level": 1.0,
+            "impulse": 0.0,
+            "weight": 0.25,
+            "coverage_contribution": 0.25,
+            "short_window": false
+          },
+          "confidence": {
+            "observed": true,
+            "as_of": "2026-04",
+            "transform_value": 32.2,
+            "level": 32.2,
+            "impulse": -1.1,
+            "weight": 0.25,
+            "coverage_contribution": 0.25,
+            "short_window": false
+          }
+        },
+        "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print."
+      }
     }
   }
 }

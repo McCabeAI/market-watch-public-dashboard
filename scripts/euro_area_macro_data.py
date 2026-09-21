@@ -281,7 +281,7 @@ def collect_macro(
     notes_parts = [
         "Euro-area (EA) official macro via Eurostat statistics/SDMX APIs and ECB Data Portal; "
         "no vendor substitution on missing required series.",
-        "HICP uses geo=EA (Eurostat euro-area aggregate); EA21 HICP y/y not populated in API at collect time.",
+        "HICP uses Eurostat PRC_HICP_MINR (ECOICOP ver.2 monthly indices and rates) with geo=EA21, coicop18=TOTAL / TOT_X_NRG_FOOD, unit=RCH_A. PRC_HICP_MANR is the discontinued 1997-2025 predecessor.",
         "GDP and several national-accounts flows use Eurostat SCA (seasonally and calendar adjusted) q/q %.",
         "Employment growth derived as q/q change in thousands from LFSI_EMP_Q EMP_LFS (no monthly EA print).",
     ]
@@ -391,21 +391,31 @@ def collect_macro(
 def _build_inflation_headline(
     retrieved_at: str, window_start: str, window_end: str, fetcher: Callable[..., bytes] | None
 ) -> dict[str, Any]:
-    series_id = "PRC_HICP_MANR.M.RCH_A.CP00.EA"
+    series_id = "PRC_HICP_MINR.M.RCH_A.TOTAL.EA21"
     url = eurostat_stats_url(
-        "PRC_HICP_MANR",
-        {"geo": "EA", "coicop": "CP00", "sinceTimePeriod": window_start[:7]},
+        "PRC_HICP_MINR",
+        {
+            "geo": "EA21",
+            "unit": "RCH_A",
+            "coicop18": "TOTAL",
+            "sinceTimePeriod": "2024-01",
+        },
     )
     rows = fetch_eurostat_stats(
-        "PRC_HICP_MANR",
-        {"geo": "EA", "coicop": "CP00", "sinceTimePeriod": "2024-01"},
+        "PRC_HICP_MINR",
+        {
+            "geo": "EA21",
+            "unit": "RCH_A",
+            "coicop18": "TOTAL",
+            "sinceTimePeriod": "2024-01",
+        },
         series_id=series_id,
         fetcher=fetcher,
     )
     comp = _component_shell(
         "Inflation",
         "headline",
-        canonical_name="HICP all-items, 12-month rate of change",
+        canonical_name="HICP all-items, 12-month rate of change (ECOICOP v2 TOTAL)",
         publisher="Eurostat",
         distributor="Eurostat",
         series_id=series_id,
@@ -413,13 +423,13 @@ def _build_inflation_headline(
         units="percent",
         transformation="yoy_pct",
         sa=False,
-        source_urls=[url, eurostat_sdmx_url("prc_hicp_manr", "M.RCH_A.CP00.EA", start="2024-01")],
-        authority_url="https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_manr/default/table",
+        source_urls=[url],
+        authority_url="https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table",
         retrieval_method="eurostat_statistics_api",
         methodology_breaks=[
             {
                 "period": "2026-01",
-                "note": "ECOICOP 2018 v2 special aggregates; contract pins CP00 + TOT_X_NRG_FOOD on geo EA.",
+                "note": "Eurostat moved monthly HICP annual rates to PRC_HICP_MINR (ECOICOP ver.2). Headline code is coicop18=TOTAL, geo=EA21. PRC_HICP_MANR/CP00 ends 2025-12.",
             }
         ],
     )
@@ -444,21 +454,31 @@ def _build_inflation_underlying(
     retrieved_at: str, window_start: str, window_end: str, fetcher: Callable[..., bytes] | None
 ) -> dict[str, Any]:
     coicop = "TOT_X_NRG_FOOD"
-    series_id = f"PRC_HICP_MANR.M.RCH_A.{coicop}.EA"
+    series_id = f"PRC_HICP_MINR.M.RCH_A.{coicop}.EA21"
     url = eurostat_stats_url(
-        "PRC_HICP_MANR",
-        {"geo": "EA", "coicop": coicop, "sinceTimePeriod": window_start[:7]},
+        "PRC_HICP_MINR",
+        {
+            "geo": "EA21",
+            "unit": "RCH_A",
+            "coicop18": coicop,
+            "sinceTimePeriod": "2024-01",
+        },
     )
     rows = fetch_eurostat_stats(
-        "PRC_HICP_MANR",
-        {"geo": "EA", "coicop": coicop, "sinceTimePeriod": "2024-01"},
+        "PRC_HICP_MINR",
+        {
+            "geo": "EA21",
+            "unit": "RCH_A",
+            "coicop18": coicop,
+            "sinceTimePeriod": "2024-01",
+        },
         series_id=series_id,
         fetcher=fetcher,
     )
     comp = _component_shell(
         "Inflation",
         "underlying",
-        canonical_name="HICP excluding energy, food, alcohol and tobacco, 12-month rate of change",
+        canonical_name="HICP excluding energy, food, alcohol and tobacco, 12-month rate of change (ECOICOP v2)",
         publisher="Eurostat",
         distributor="Eurostat",
         series_id=series_id,
@@ -467,7 +487,7 @@ def _build_inflation_underlying(
         transformation="yoy_pct",
         sa=False,
         source_urls=[url],
-        authority_url="https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_manr/default/table",
+        authority_url="https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table",
         retrieval_method="eurostat_statistics_api",
     )
     comp["observations"] = [

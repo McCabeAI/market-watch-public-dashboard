@@ -28,7 +28,7 @@ def _load_fixture() -> dict:
 
 def _mini_dashboard_html() -> str:
     parts = ['<div class="stitle">Temperature Board</div>']
-    for key in ("us", "ca", "au", "nz"):
+    for key in ("us", "ca", "au", "nz", "ea", "jp"):
         block = (ROOT / "patch_v8" / f"{key}.html").read_text(encoding="utf-8")
         parts.append(f'<div class="cdetail {key}">\n{block}\n</div>')
     return "\n".join(parts)
@@ -40,7 +40,7 @@ class TemperatureScoresTest(unittest.TestCase):
         levels = all_levels(state)
         self.assertAlmostEqual(levels["US"]["Inflation"], 63.0)
         self.assertAlmostEqual(levels["CA"]["Activity"], 64.0)
-        self.assertEqual(len(levels), 4)
+        self.assertEqual(len(levels), 6)
 
     def test_top_board_shows_level_and_direction_arrows(self) -> None:
         state = _load_fixture()
@@ -69,9 +69,9 @@ class TemperatureScoresTest(unittest.TestCase):
     def test_apply_scores_full_dashboard(self) -> None:
         state = _load_fixture()
         out = apply_scores(_mini_dashboard_html(), state)
-        self.assertEqual(out.count('class="temp-dimension score-detail"'), 16)
-        self.assertEqual(out.count(LINEAGE_ANCHOR_PHRASE), 16)
-        self.assertEqual(out.count(SCORE_KEY_TEXT), 4)
+        self.assertEqual(out.count('class="temp-dimension score-detail"'), 24)
+        self.assertEqual(out.count(LINEAGE_ANCHOR_PHRASE), 24)
+        self.assertEqual(out.count(SCORE_KEY_TEXT), 6)
         self.assertNotIn("Reindexed to 50 on 2026-09-17", out)
         self.assertNotIn("lineage-pinned", out)
         self.assertNotIn("contributing −", out)
@@ -134,7 +134,7 @@ class TemperatureScoresTest(unittest.TestCase):
             (root / "data").mkdir()
             shutil.copy(FIXTURE_V3, root / "data" / "temperature_scores.json")
             gauges = load_temperature_gauges(root)
-        self.assertEqual(len(gauges), 16)
+        self.assertEqual(len(gauges), 24)
         us_inf = next(g for g in gauges if g["id"] == "temp:US:inflation")
         self.assertEqual(us_inf["score"], 63.0)
         self.assertEqual(us_inf["direction"], "warming")

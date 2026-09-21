@@ -303,10 +303,12 @@ def parse_esri_real_gdp_qoq_saar_csv(text: str) -> list[dict[str, Any]]:
         if not parts:
             continue
         head = parts[0]
-        ym = re.match(r"(\d{4})/\s*(\d)-\s*(\d)\.", head)
+        ym = re.match(r"(\d{4})/\s*(\d{1,2})-\s*(\d{1,2})\.", head)
         if ym:
             year_carry = int(ym.group(1))
             q_label = f"{ym.group(2)}- {ym.group(3)}."
+            if q_label == "10- 12.":
+                q_label = "10-12."
             q = quarter_map.get(q_label)
             if q and len(parts) > 1 and parts[1]:
                 try:
@@ -317,9 +319,11 @@ def parse_esri_real_gdp_qoq_saar_csv(text: str) -> list[dict[str, Any]]:
                 if period_in_window_quarter(period):
                     out.append({"reference_period": period, "value": gdp})
             continue
-        qm = re.match(r"(\d)-\s*(\d)\.", head)
+        qm = re.match(r"(\d{1,2})-\s*(\d{1,2})\.", head)
         if qm and year_carry:
             q_label = f"{qm.group(1)}- {qm.group(2)}."
+            if q_label == "10- 12.":
+                q_label = "10-12."
             q = quarter_map.get(q_label)
             if q and len(parts) > 1 and parts[1]:
                 try:

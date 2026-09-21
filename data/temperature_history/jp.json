@@ -635,7 +635,7 @@
         }
       ],
       "gaps": [],
-      "notes": "Employed persons level is published in 万人 (ten-thousand persons); mom_change_thousands_sa = (level_t - level_t-1) * 10."
+      "notes": "Employed persons level is published in \u4e07\u4eba (ten-thousand persons); mom_change_thousands_sa = (level_t - level_t-1) * 10."
     },
     "Labor.wages": {
       "dimension": "Labor",
@@ -899,7 +899,7 @@
         }
       ],
       "gaps": [],
-      "notes": "Nominal total cash earnings (現金給与総額), includes scheduled and non-scheduled pay; overtime-sensitive versus contractual/scheduled-only series also published in the same table set."
+      "notes": "Nominal total cash earnings (\u73fe\u91d1\u7d66\u4e0e\u7dcf\u984d), includes scheduled and non-scheduled pay; overtime-sensitive versus contractual/scheduled-only series also published in the same table set."
     },
     "Activity.gdp_domestic_demand": {
       "dimension": "Activity",
@@ -926,39 +926,48 @@
           "value": -1.5,
           "units": "percent",
           "transformation": "qoq_pct_saar",
-          "vintage": "latest_available",
-          "retrieved_at": "2026-09-21T20:36:19Z",
-          "publisher": "Cabinet Office (ESRI)",
+          "publisher": "Cabinet Office ESRI",
           "source_url": "https://www.esri.cao.go.jp/jp/sna/data/data_list/sokuhou/files/2026/qe262_2/tables/nritu-jk2622.csv",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
           "series_id": "ESRI_REAL_GDP_QOQ_SAAR",
-          "release_date": "",
-          "sa": true
+          "notes": "Real GDP expenditure-side SA q/q annualized from nritu-jk table; Q4 rows use 10-12. year-carry."
+        },
+        {
+          "reference_period": "2025-Q4",
+          "value": 1.1,
+          "units": "percent",
+          "transformation": "qoq_pct_saar",
+          "publisher": "Cabinet Office ESRI",
+          "source_url": "https://www.esri.cao.go.jp/jp/sna/data/data_list/sokuhou/files/2026/qe262_2/tables/nritu-jk2622.csv",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "ESRI_REAL_GDP_QOQ_SAAR",
+          "notes": "Real GDP expenditure-side SA q/q annualized from nritu-jk table; Q4 rows use 10-12. year-carry."
         },
         {
           "reference_period": "2026-Q1",
           "value": 1.9,
           "units": "percent",
           "transformation": "qoq_pct_saar",
-          "vintage": "latest_available",
-          "retrieved_at": "2026-09-21T20:36:19Z",
-          "publisher": "Cabinet Office (ESRI)",
+          "publisher": "Cabinet Office ESRI",
           "source_url": "https://www.esri.cao.go.jp/jp/sna/data/data_list/sokuhou/files/2026/qe262_2/tables/nritu-jk2622.csv",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
           "series_id": "ESRI_REAL_GDP_QOQ_SAAR",
-          "release_date": "",
-          "sa": true
+          "notes": "Real GDP expenditure-side SA q/q annualized from nritu-jk table; Q4 rows use 10-12. year-carry."
         },
         {
           "reference_period": "2026-Q2",
           "value": 1.4,
           "units": "percent",
           "transformation": "qoq_pct_saar",
-          "vintage": "latest_available",
-          "retrieved_at": "2026-09-21T20:36:19Z",
-          "publisher": "Cabinet Office (ESRI)",
+          "publisher": "Cabinet Office ESRI",
           "source_url": "https://www.esri.cao.go.jp/jp/sna/data/data_list/sokuhou/files/2026/qe262_2/tables/nritu-jk2622.csv",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
           "series_id": "ESRI_REAL_GDP_QOQ_SAAR",
-          "release_date": "",
-          "sa": true
+          "notes": "Real GDP expenditure-side SA q/q annualized from nritu-jk table; Q4 rows use 10-12. year-carry."
         }
       ],
       "gaps": [],
@@ -1284,7 +1293,7 @@
         }
       ],
       "gaps": [],
-      "notes": "FIES Table 2 long-term series (e-Stat statInfId=000040270658): worker households among two-or-more-person households; 実収入 nominal y/y."
+      "notes": "FIES Table 2 long-term series (e-Stat statInfId=000040270658): worker households among two-or-more-person households; \u5b9f\u53ce\u5165 nominal y/y."
     },
     "Consumer.spending": {
       "dimension": "Consumer",
@@ -1707,7 +1716,8 @@
           "attempted_sources": [
             "scripts/harvest_jp_pmi.py"
           ],
-          "notes": "Run harvest_jp_pmi.py --write-jp-json to populate."
+          "notes": "Run harvest_jp_pmi.py --write-jp-json to populate.",
+          "as_of": "2026-09-21"
         },
         {
           "expected_period": "2025-10",

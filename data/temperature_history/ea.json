@@ -4,7 +4,7 @@
     "start": "2025-09-21",
     "end": "2026-09-21"
   },
-  "retrieved_at": "2026-09-21T20:24:59Z",
+  "retrieved_at": "2026-09-21T20:51:07Z",
   "notes": "Euro-area (EA) official macro via Eurostat statistics/SDMX APIs and ECB Data Portal; no vendor substitution on missing required series. HICP uses geo=EA (Eurostat euro-area aggregate); EA21 HICP y/y not populated in API at collect time. GDP and several national-accounts flows use Eurostat SCA (seasonally and calendar adjusted) q/q %. Employment growth derived as q/q change in thousands from LFSI_EMP_Q EMP_LFS (no monthly EA print).",
   "context": {
     "economic_sentiment_indicator": {
@@ -78,24 +78,23 @@
     "Inflation.headline": {
       "dimension": "Inflation",
       "component": "headline",
-      "canonical_name": "HICP all-items, 12-month rate of change",
+      "canonical_name": "HICP all-items, 12-month rate of change (ECOICOP v2 TOTAL)",
       "publisher": "Eurostat",
       "distributor": "Eurostat",
-      "series_id": "PRC_HICP_MANR.M.RCH_A.CP00.EA",
+      "series_id": "PRC_HICP_MINR.M.RCH_A.TOTAL.EA21",
       "cadence": "monthly",
       "units": "percent",
       "preferred_scoring_transformation": "yoy_pct",
       "sa": false,
       "source_urls": [
-        "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MANR?geo=EA&coicop=CP00&sinceTimePeriod=2025-09",
-        "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/prc_hicp_manr/M.RCH_A.CP00.EA?format=JSON&startPeriod=2024-01"
+        "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOTAL&sinceTimePeriod=2024-01"
       ],
-      "original_authority_url": "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_manr/default/table",
+      "original_authority_url": "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table",
       "retrieval_method": "eurostat_statistics_api",
       "methodology_breaks": [
         {
           "period": "2026-01",
-          "note": "ECOICOP 2018 v2 special aggregates; contract pins CP00 + TOT_X_NRG_FOOD on geo EA."
+          "note": "Eurostat moved monthly HICP annual rates to PRC_HICP_MINR (ECOICOP ver.2). Headline code is coicop18=TOTAL, geo=EA21. PRC_HICP_MANR/CP00 ends 2025-12."
         }
       ],
       "observations": [
@@ -105,10 +104,10 @@
           "units": "percent",
           "transformation": "yoy_pct",
           "publisher": "Eurostat",
-          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MANR?geo=EA&coicop=CP00&sinceTimePeriod=2025-09",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOTAL&sinceTimePeriod=2024-01",
           "vintage": "latest_available",
-          "retrieved_at": "2026-09-21T20:24:59Z",
-          "series_id": "PRC_HICP_MANR.M.RCH_A.CP00.EA"
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOTAL.EA21"
         },
         {
           "reference_period": "2025-10",
@@ -116,10 +115,10 @@
           "units": "percent",
           "transformation": "yoy_pct",
           "publisher": "Eurostat",
-          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MANR?geo=EA&coicop=CP00&sinceTimePeriod=2025-09",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOTAL&sinceTimePeriod=2024-01",
           "vintage": "latest_available",
-          "retrieved_at": "2026-09-21T20:24:59Z",
-          "series_id": "PRC_HICP_MANR.M.RCH_A.CP00.EA"
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOTAL.EA21"
         },
         {
           "reference_period": "2025-11",
@@ -127,10 +126,10 @@
           "units": "percent",
           "transformation": "yoy_pct",
           "publisher": "Eurostat",
-          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MANR?geo=EA&coicop=CP00&sinceTimePeriod=2025-09",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOTAL&sinceTimePeriod=2024-01",
           "vintage": "latest_available",
-          "retrieved_at": "2026-09-21T20:24:59Z",
-          "series_id": "PRC_HICP_MANR.M.RCH_A.CP00.EA"
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOTAL.EA21"
         },
         {
           "reference_period": "2025-12",
@@ -138,28 +137,116 @@
           "units": "percent",
           "transformation": "yoy_pct",
           "publisher": "Eurostat",
-          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MANR?geo=EA&coicop=CP00&sinceTimePeriod=2025-09",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOTAL&sinceTimePeriod=2024-01",
           "vintage": "latest_available",
-          "retrieved_at": "2026-09-21T20:24:59Z",
-          "series_id": "PRC_HICP_MANR.M.RCH_A.CP00.EA"
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOTAL.EA21"
+        },
+        {
+          "reference_period": "2026-01",
+          "value": 1.7,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOTAL&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOTAL.EA21"
+        },
+        {
+          "reference_period": "2026-02",
+          "value": 1.9,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOTAL&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOTAL.EA21"
+        },
+        {
+          "reference_period": "2026-03",
+          "value": 2.6,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOTAL&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOTAL.EA21"
+        },
+        {
+          "reference_period": "2026-04",
+          "value": 3.0,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOTAL&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOTAL.EA21"
+        },
+        {
+          "reference_period": "2026-05",
+          "value": 3.2,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOTAL&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOTAL.EA21"
+        },
+        {
+          "reference_period": "2026-06",
+          "value": 2.8,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOTAL&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOTAL.EA21"
+        },
+        {
+          "reference_period": "2026-07",
+          "value": 3.0,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOTAL&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOTAL.EA21"
+        },
+        {
+          "reference_period": "2026-08",
+          "value": 3.2,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOTAL&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOTAL.EA21"
         }
       ]
     },
     "Inflation.underlying": {
       "dimension": "Inflation",
       "component": "underlying",
-      "canonical_name": "HICP excluding energy, food, alcohol and tobacco, 12-month rate of change",
+      "canonical_name": "HICP excluding energy, food, alcohol and tobacco, 12-month rate of change (ECOICOP v2)",
       "publisher": "Eurostat",
       "distributor": "Eurostat",
-      "series_id": "PRC_HICP_MANR.M.RCH_A.TOT_X_NRG_FOOD.EA",
+      "series_id": "PRC_HICP_MINR.M.RCH_A.TOT_X_NRG_FOOD.EA21",
       "cadence": "monthly",
       "units": "percent",
       "preferred_scoring_transformation": "yoy_pct",
       "sa": false,
       "source_urls": [
-        "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MANR?geo=EA&coicop=TOT_X_NRG_FOOD&sinceTimePeriod=2025-09"
+        "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOT_X_NRG_FOOD&sinceTimePeriod=2024-01"
       ],
-      "original_authority_url": "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_manr/default/table",
+      "original_authority_url": "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table",
       "retrieval_method": "eurostat_statistics_api",
       "methodology_breaks": [],
       "observations": [
@@ -169,10 +256,10 @@
           "units": "percent",
           "transformation": "yoy_pct",
           "publisher": "Eurostat",
-          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MANR?geo=EA&coicop=TOT_X_NRG_FOOD&sinceTimePeriod=2025-09",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOT_X_NRG_FOOD&sinceTimePeriod=2024-01",
           "vintage": "latest_available",
-          "retrieved_at": "2026-09-21T20:24:59Z",
-          "series_id": "PRC_HICP_MANR.M.RCH_A.TOT_X_NRG_FOOD.EA"
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOT_X_NRG_FOOD.EA21"
         },
         {
           "reference_period": "2025-10",
@@ -180,10 +267,10 @@
           "units": "percent",
           "transformation": "yoy_pct",
           "publisher": "Eurostat",
-          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MANR?geo=EA&coicop=TOT_X_NRG_FOOD&sinceTimePeriod=2025-09",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOT_X_NRG_FOOD&sinceTimePeriod=2024-01",
           "vintage": "latest_available",
-          "retrieved_at": "2026-09-21T20:24:59Z",
-          "series_id": "PRC_HICP_MANR.M.RCH_A.TOT_X_NRG_FOOD.EA"
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOT_X_NRG_FOOD.EA21"
         },
         {
           "reference_period": "2025-11",
@@ -191,10 +278,10 @@
           "units": "percent",
           "transformation": "yoy_pct",
           "publisher": "Eurostat",
-          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MANR?geo=EA&coicop=TOT_X_NRG_FOOD&sinceTimePeriod=2025-09",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOT_X_NRG_FOOD&sinceTimePeriod=2024-01",
           "vintage": "latest_available",
-          "retrieved_at": "2026-09-21T20:24:59Z",
-          "series_id": "PRC_HICP_MANR.M.RCH_A.TOT_X_NRG_FOOD.EA"
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOT_X_NRG_FOOD.EA21"
         },
         {
           "reference_period": "2025-12",
@@ -202,10 +289,98 @@
           "units": "percent",
           "transformation": "yoy_pct",
           "publisher": "Eurostat",
-          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MANR?geo=EA&coicop=TOT_X_NRG_FOOD&sinceTimePeriod=2025-09",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOT_X_NRG_FOOD&sinceTimePeriod=2024-01",
           "vintage": "latest_available",
-          "retrieved_at": "2026-09-21T20:24:59Z",
-          "series_id": "PRC_HICP_MANR.M.RCH_A.TOT_X_NRG_FOOD.EA"
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOT_X_NRG_FOOD.EA21"
+        },
+        {
+          "reference_period": "2026-01",
+          "value": 2.2,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOT_X_NRG_FOOD&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOT_X_NRG_FOOD.EA21"
+        },
+        {
+          "reference_period": "2026-02",
+          "value": 2.4,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOT_X_NRG_FOOD&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOT_X_NRG_FOOD.EA21"
+        },
+        {
+          "reference_period": "2026-03",
+          "value": 2.3,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOT_X_NRG_FOOD&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOT_X_NRG_FOOD.EA21"
+        },
+        {
+          "reference_period": "2026-04",
+          "value": 2.2,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOT_X_NRG_FOOD&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOT_X_NRG_FOOD.EA21"
+        },
+        {
+          "reference_period": "2026-05",
+          "value": 2.6,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOT_X_NRG_FOOD&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOT_X_NRG_FOOD.EA21"
+        },
+        {
+          "reference_period": "2026-06",
+          "value": 2.4,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOT_X_NRG_FOOD&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOT_X_NRG_FOOD.EA21"
+        },
+        {
+          "reference_period": "2026-07",
+          "value": 2.5,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOT_X_NRG_FOOD&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOT_X_NRG_FOOD.EA21"
+        },
+        {
+          "reference_period": "2026-08",
+          "value": 2.4,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOT_X_NRG_FOOD&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOT_X_NRG_FOOD.EA21"
         }
       ]
     },
@@ -1038,7 +1213,8 @@
             "https://www.pmi.spglobal.com/Public/Home/PressRelease/0a3fb112708046bba18d27b555ce7ecb"
           ],
           "failure_mode": "listing_single_month_only",
-          "notes": "S&P listing exposes only the latest Eurozone Composite PMI; historical months require committed PDFs or Wayback snapshots."
+          "notes": "S&P listing exposes only the latest Eurozone Composite PMI; historical months require committed PDFs or Wayback snapshots.",
+          "as_of": "2026-09-21"
         },
         {
           "expected_period": "2025-10",
@@ -1047,7 +1223,8 @@
             "https://www.pmi.spglobal.com/Public/Home/PressRelease/0a3fb112708046bba18d27b555ce7ecb"
           ],
           "failure_mode": "listing_single_month_only",
-          "notes": "S&P listing exposes only the latest Eurozone Composite PMI; historical months require committed PDFs or Wayback snapshots."
+          "notes": "S&P listing exposes only the latest Eurozone Composite PMI; historical months require committed PDFs or Wayback snapshots.",
+          "as_of": "2026-09-21"
         },
         {
           "expected_period": "2025-11",
@@ -1056,7 +1233,8 @@
             "https://www.pmi.spglobal.com/Public/Home/PressRelease/0a3fb112708046bba18d27b555ce7ecb"
           ],
           "failure_mode": "listing_single_month_only",
-          "notes": "S&P listing exposes only the latest Eurozone Composite PMI; historical months require committed PDFs or Wayback snapshots."
+          "notes": "S&P listing exposes only the latest Eurozone Composite PMI; historical months require committed PDFs or Wayback snapshots.",
+          "as_of": "2026-09-21"
         },
         {
           "expected_period": "2025-12",
@@ -1065,7 +1243,8 @@
             "https://www.pmi.spglobal.com/Public/Home/PressRelease/0a3fb112708046bba18d27b555ce7ecb"
           ],
           "failure_mode": "listing_single_month_only",
-          "notes": "S&P listing exposes only the latest Eurozone Composite PMI; historical months require committed PDFs or Wayback snapshots."
+          "notes": "S&P listing exposes only the latest Eurozone Composite PMI; historical months require committed PDFs or Wayback snapshots.",
+          "as_of": "2026-09-21"
         },
         {
           "expected_period": "2026-01",
@@ -1074,7 +1253,8 @@
             "https://www.pmi.spglobal.com/Public/Home/PressRelease/0a3fb112708046bba18d27b555ce7ecb"
           ],
           "failure_mode": "listing_single_month_only",
-          "notes": "S&P listing exposes only the latest Eurozone Composite PMI; historical months require committed PDFs or Wayback snapshots."
+          "notes": "S&P listing exposes only the latest Eurozone Composite PMI; historical months require committed PDFs or Wayback snapshots.",
+          "as_of": "2026-09-21"
         },
         {
           "expected_period": "2026-02",
@@ -1083,7 +1263,8 @@
             "https://www.pmi.spglobal.com/Public/Home/PressRelease/0a3fb112708046bba18d27b555ce7ecb"
           ],
           "failure_mode": "listing_single_month_only",
-          "notes": "S&P listing exposes only the latest Eurozone Composite PMI; historical months require committed PDFs or Wayback snapshots."
+          "notes": "S&P listing exposes only the latest Eurozone Composite PMI; historical months require committed PDFs or Wayback snapshots.",
+          "as_of": "2026-09-21"
         },
         {
           "expected_period": "2026-03",
@@ -1092,7 +1273,8 @@
             "https://www.pmi.spglobal.com/Public/Home/PressRelease/0a3fb112708046bba18d27b555ce7ecb"
           ],
           "failure_mode": "listing_single_month_only",
-          "notes": "S&P listing exposes only the latest Eurozone Composite PMI; historical months require committed PDFs or Wayback snapshots."
+          "notes": "S&P listing exposes only the latest Eurozone Composite PMI; historical months require committed PDFs or Wayback snapshots.",
+          "as_of": "2026-09-21"
         },
         {
           "expected_period": "2026-04",
@@ -1101,7 +1283,8 @@
             "https://www.pmi.spglobal.com/Public/Home/PressRelease/0a3fb112708046bba18d27b555ce7ecb"
           ],
           "failure_mode": "listing_single_month_only",
-          "notes": "S&P listing exposes only the latest Eurozone Composite PMI; historical months require committed PDFs or Wayback snapshots."
+          "notes": "S&P listing exposes only the latest Eurozone Composite PMI; historical months require committed PDFs or Wayback snapshots.",
+          "as_of": "2026-09-21"
         },
         {
           "expected_period": "2026-05",
@@ -1110,7 +1293,8 @@
             "https://www.pmi.spglobal.com/Public/Home/PressRelease/0a3fb112708046bba18d27b555ce7ecb"
           ],
           "failure_mode": "listing_single_month_only",
-          "notes": "S&P listing exposes only the latest Eurozone Composite PMI; historical months require committed PDFs or Wayback snapshots."
+          "notes": "S&P listing exposes only the latest Eurozone Composite PMI; historical months require committed PDFs or Wayback snapshots.",
+          "as_of": "2026-09-21"
         },
         {
           "expected_period": "2026-06",
@@ -1119,7 +1303,8 @@
             "https://www.pmi.spglobal.com/Public/Home/PressRelease/0a3fb112708046bba18d27b555ce7ecb"
           ],
           "failure_mode": "listing_single_month_only",
-          "notes": "S&P listing exposes only the latest Eurozone Composite PMI; historical months require committed PDFs or Wayback snapshots."
+          "notes": "S&P listing exposes only the latest Eurozone Composite PMI; historical months require committed PDFs or Wayback snapshots.",
+          "as_of": "2026-09-21"
         },
         {
           "expected_period": "2026-09",
@@ -1128,7 +1313,8 @@
             "https://www.pmi.spglobal.com/Public/Release/PressReleases"
           ],
           "failure_mode": "future_release",
-          "notes": "Reference month not published as of cutoff."
+          "notes": "Reference month not published as of cutoff.",
+          "as_of": "2026-09-21"
         }
       ]
     }

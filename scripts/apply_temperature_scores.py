@@ -7,15 +7,16 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
+from scripts.country_registry import (
+    dashboard_headings,
+    dashboard_keys,
+    expected_temperature_gauge_count,
+)
+
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_STATE = ROOT / "data" / "temperature_scores.json"
-COUNTRY_KEYS = {"US": "us", "CA": "ca", "AU": "au", "NZ": "nz"}
-COUNTRY_HEADINGS = {
-    "US": "UNITED STATES",
-    "CA": "CANADA",
-    "AU": "AUSTRALIA",
-    "NZ": "NEW ZEALAND",
-}
+COUNTRY_KEYS = dashboard_keys()
+COUNTRY_HEADINGS = dashboard_headings()
 DIMENSIONS = ("Inflation", "Labor", "Activity", "Consumer")
 PILL_LABELS = {
     "cold": "COLD",
@@ -424,10 +425,11 @@ def apply_scores(html: str, state: dict[str, Any]) -> str:
         html = _patch_country_pills(html, state)
     html = _scrub_stale_narrative(html)
 
-    if html.count('class="temp-dimension score-detail"') != 16:
-        raise ValueError("expected 16 temperature score drawers")
-    if html.count(LINEAGE_ANCHOR_PHRASE) != 16:
-        raise ValueError("expected 16 V1 structural-anchor lineage notes")
+    expected = expected_temperature_gauge_count()
+    if html.count('class="temp-dimension score-detail"') != expected:
+        raise ValueError(f"expected {expected} temperature score drawers")
+    if html.count(LINEAGE_ANCHOR_PHRASE) != expected:
+        raise ValueError(f"expected {expected} V1 structural-anchor lineage notes")
     if "Reindexed to 50 on 2026-09-17" in html:
         raise ValueError("stale reindex lineage remains")
     if html.count('data-score-overview="live"') != 1:

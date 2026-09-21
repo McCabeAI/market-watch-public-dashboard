@@ -8,7 +8,7 @@ User-Agent: `MarketWatch-MarketState/1.0 (+https://github.com/McCabeAI/market-wa
 
 | API | Example (fetched 2026-09-21) |
 |---|---|
-| Eurostat statistics JSON | `https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MANR?geo=EA&coicop=CP00&sinceTimePeriod=2025-09` |
+| Eurostat statistics JSON | `https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&coicop18=TOTAL&unit=RCH_A&sinceTimePeriod=2025-09` |
 | Eurostat SDMX 2.1 JSON | `https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/une_rt_m/M.SA.TOTAL.PC_ACT.T.EA21?format=JSON&startPeriod=2025-09` |
 | Eurostat SDMX CSV | `https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/prc_hicp_manr/M.RCH_A.CP00.EA?format=SDMX-CSV&startPeriod=2025-09` |
 | ECB Data Portal SDMX CSV | `https://data-api.ecb.europa.eu/service/data/INW/Q.I10.N.INWR.000000.4F0.GY.IX?format=csvdata&startPeriod=2024-Q1` |
@@ -23,11 +23,11 @@ User-Agent: `MarketWatch-MarketState/1.0 (+https://github.com/McCabeAI/market-wa
 
 | Field | Value |
 |---|---|
-| series_id | `PRC_HICP_MANR.M.RCH_A.CP00.EA` |
-| dataset | `prc_hicp_manr` |
-| SDMX key | `M.RCH_A.CP00.EA` |
-| statistics URL | `.../statistics/1.0/data/PRC_HICP_MANR?geo=EA&coicop=CP00&sinceTimePeriod=2025-09` |
-| geo | **EA** (Eurostat euro-area aggregate). **EA21** returned empty for HICP y/y at collect time. |
+| series_id | `PRC_HICP_MINR.M.RCH_A.TOTAL.EA21` |
+| dataset | `prc_hicp_minr` (ECOICOP v2 successor to discontinued `prc_hicp_manr`) |
+| SDMX key | `M.RCH_A.TOTAL.EA21` |
+| statistics URL | `.../statistics/1.0/data/PRC_HICP_MINR?geo=EA21&coicop18=TOTAL&unit=RCH_A&sinceTimePeriod=2025-09` |
+| geo | **EA21** (Euro area – 21 countries from 2026). `prc_hicp_manr` stopped at 2025-12. |
 | unit | `RCH_A` (annual rate of change) |
 | SA | No (y/y rate) |
 | frequency | Monthly |
@@ -42,11 +42,11 @@ User-Agent: `MarketWatch-MarketState/1.0 (+https://github.com/McCabeAI/market-wa
 
 | Field | Value |
 |---|---|
-| series_id | `PRC_HICP_MANR.M.RCH_A.TOT_X_NRG_FOOD.EA` |
-| dataset | `prc_hicp_manr` |
+| series_id | `PRC_HICP_MINR.M.RCH_A.TOT_X_NRG_FOOD.EA21` |
+| dataset | `prc_hicp_minr` |
 | COICOP (ECOICOP 2018 v2) | `TOT_X_NRG_FOOD` — "Overall index excluding energy, food, alcohol and tobacco" |
-| statistics URL | `.../PRC_HICP_MANR?geo=EA&coicop=TOT_X_NRG_FOOD&sinceTimePeriod=2025-09` |
-| geo | **EA** |
+| statistics URL | `.../PRC_HICP_MINR?geo=EA21&coicop18=TOT_X_NRG_FOOD&unit=RCH_A&sinceTimePeriod=2025-09` |
+| geo | **EA21** |
 | unit | `RCH_A` |
 | SA | No |
 | frequency | Monthly |

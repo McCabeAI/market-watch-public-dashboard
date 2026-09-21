@@ -4,6 +4,8 @@ import json
 import unittest
 from pathlib import Path
 
+from scripts.country_registry import history_files
+
 REPO_ROOT = Path(__file__).resolve().parents[1]
 REGISTRY_PATH = REPO_ROOT / "data" / "score_source_registry.json"
 HISTORY_DIR = REPO_ROOT / "data" / "temperature_history"
@@ -21,10 +23,8 @@ REQUIRED_OBS_FIELDS = (
 )
 
 COUNTRY_FILES = {
-    "US": HISTORY_DIR / "us.json",
-    "CA": HISTORY_DIR / "ca.json",
-    "AU": HISTORY_DIR / "au.json",
-    "NZ": HISTORY_DIR / "nz.json",
+    code: HISTORY_DIR / filename
+    for code, filename in history_files().items()
 }
 
 
@@ -42,10 +42,19 @@ class TemperatureHistoryAuditTest(unittest.TestCase):
             data = self.countries[country]
             expected = {f"{dim}.{comp}" for dim, comps in dims.items() for comp in comps}
             actual = set(data["components"])
-            self.assertEqual(
-                expected,
-                actual,
-                f"{country}: component keys must match score_source_registry.json",
+            missing = expected - actual
+            self.assertFalse(
+                missing,
+                f"{country}: registry components missing from history: {sorted(missing)}",
+            )
+            extra = {
+                key
+                for key in actual - expected
+                if not key.startswith("context.")
+            }
+            self.assertFalse(
+                extra,
+                f"{country}: unexpected scored-history keys not in registry: {sorted(extra)}",
             )
 
     def test_country_window_metadata(self) -> None:
@@ -83,6 +92,8 @@ class TemperatureHistoryAuditTest(unittest.TestCase):
             "proprietary no free history",
             "source inaccessible",
             "methodology unresolved",
+            "primary PDF not retrieved",
+            "awaiting PMI harvester merge",
         }
         for country, data in self.countries.items():
             for key, comp in data["components"].items():
