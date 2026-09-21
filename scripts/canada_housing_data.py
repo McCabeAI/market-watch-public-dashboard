@@ -164,7 +164,10 @@ def parse_statcan_permits(rows: list[Mapping[str, str]]) -> dict[str, Any]:
 
 
 def parse_statcan_mortgage_dsr(rows: list[Mapping[str, str]]) -> dict[str, Any]:
-    rows_match = _latest_matching(rows, vector="v99451480")
+    rows_match = _latest_matching(
+        rows,
+        exact_values=("Canada", "Seasonally adjusted at annual rates", "Mortgage debt service ratio"),
+    )
     row = rows_match[0]
     ref = str(row["REF_DATE"])
     return {
@@ -174,7 +177,7 @@ def parse_statcan_mortgage_dsr(rows: list[Mapping[str, str]]) -> dict[str, Any]:
             "mortgage_debt_service_ratio_pct": {
                 "value": _num(row["VALUE"]),
                 "unit": row.get("UOM") or "percent",
-                "vector": "v99451480",
+                "estimate": "Mortgage debt service ratio",
             }
         },
     }
