@@ -133,7 +133,11 @@ class SchemaAndBoundaryTests(unittest.TestCase):
             "instrument": "AUDUSD",
             "asset_class": "spot_fx",
             "expression_comparison": {
-                "rates_candidate": "Long AU 2Y vs US 2Y as the rates-first alternative.",
+                "rates_candidate": {
+                    "instrument": "AU 2Y vs US 2Y",
+                    "asset_class": "rates_rv",
+                    "rationale": "Long AU 2Y vs US 2Y as the rates-first alternative.",
+                },
                 "spot_candidate": "Long AUDUSD.",
                 "selected": "spot",
                 "rationale": "Spot is cleaner in this synthetic fixture after explicit rates comparison.",
@@ -213,7 +217,11 @@ class SchemaAndBoundaryTests(unittest.TestCase):
             "instrument": "CA-US_2Y",
             "asset_class": "rates_rv",
             "expression_comparison": {
-                "rates_candidate": "Pay CA 2Y versus receive US 2Y.",
+                "rates_candidate": {
+                    "instrument": "CA-US_2Y",
+                    "asset_class": "rates_rv",
+                    "rationale": "Pay CA 2Y versus receive US 2Y.",
+                },
                 "spot_candidate": "Short USDCAD.",
                 "selected": "rates",
                 "rationale": "Rates own the discrepancy directly.",
@@ -298,6 +306,118 @@ class SchemaAndBoundaryTests(unittest.TestCase):
         broken["market_state"]["policy_paths"]["countries"]["CA"]["error"] = "blocked"
         with self.assertRaises(SchemaError):
             validate_trade(trade, agent="rate-hawk", packet=broken)
+
+    def test_selected_tenor_bucket_must_bind_to_rates_candidate(self):
+        packet = _packet()
+        trade = {
+            "instrument": "CA-US_2Y",
+            "asset_class": "rates_rv",
+            "expression_comparison": {
+                "rates_candidate": {
+                    "instrument": "CA-US_2Y",
+                    "asset_class": "rates_rv",
+                    "rationale": "Pay CA 2Y versus receive US 2Y.",
+                },
+                "spot_candidate": "Short USDCAD.",
+                "selected": "rates",
+                "rationale": "Rates own the discrepancy directly.",
+                "rates_tenor_scan": synthetic_rates_tenor_scan(
+                    selected_bucket="two_year",
+                    selected_instrument="CA-US_2Y",
+                    selected_asset_class="rates_rv",
+                    selected_rationale="2Y policy RV is the cleanest rates expression after scanning STIR, 5Y, 10Y, curve, and cross-market buckets.",
+                ),
+            },
+            "context_build": {
+                "causal_mechanism": "Relative policy repricing closes the spread.",
+                "path_to_current_price": "The spread moved sharply as US and Canada policy expectations diverged.",
+                "known_vs_new_information": "New policy information must explain the marginal move.",
+                "market_implied_assumption": "Current CORRA and SOFR futures paths are explicitly considered.",
+                "market_assumption_disagreed_with": "The trade disagrees with the relative path embedded in futures.",
+                "price_decomposition": "Short-end policy expectations are separated from sovereign term premium.",
+                "historical_reference": {
+                    "distribution": "Current spread is compared with its historical distribution.",
+                    "analogs": ["A prior comparable spread move and its forward outcome."],
+                    "regime_differences": "Differences in inflation and trade-policy regime are stated.",
+                },
+                "independent_checks": ["Policy futures.", "Macro hard data."],
+                "flow_and_positioning_check": "Positioning is checked separately from fundamentals.",
+                "policy_path_check": {
+                    "status": "available",
+                    "relevant_countries": ["CA", "US"],
+                    "pricing_summary": "Frozen CORRA and SOFR futures paths are available.",
+                    "rationale": "This is a 2Y policy-RV trade, so the path is essential.",
+                },
+            },
+            "structure": "Pay CA 2Y versus receive US 2Y.",
+            "direction": "short",
+            "thesis": "Canada policy is underpriced versus the US.",
+            "mispricing": "The relative policy path is wrong.",
+            "why_now": ["New information changed the relative path."],
+            "evidence_refs": ["market_state"],
+            "horizon": "1-3 months",
+            "entry": None,
+            "target": None,
+            "stop": None,
+            "invalidation": None,
+            "catalysts": ["Policy repricing."],
+            "principal_risks": ["The priced path is correct."],
+            "confidence": 55,
+        }
+        validate_trade(trade, agent="rate-hawk", packet=packet)
+
+        mismatch = deepcopy(trade)
+        mismatch["expression_comparison"]["rates_candidate"] = {
+            "instrument": "US 10Y",
+            "asset_class": "rates",
+            "rationale": "A different rates expression than the selected tenor-scan bucket.",
+        }
+        with self.assertRaises(SchemaError):
+            validate_trade(mismatch, agent="rate-hawk", packet=packet)
+
+        free_text = deepcopy(trade)
+        free_text["expression_comparison"]["rates_candidate"] = "Pay CA 2Y versus receive US 2Y."
+        with self.assertRaises(SchemaError):
+            validate_trade(free_text, agent="rate-hawk", packet=packet)
+
+        none_selected = deepcopy(trade)
+        none_selected["instrument"] = "AUDUSD"
+        none_selected["asset_class"] = "spot_fx"
+        none_selected["expression_comparison"]["selected"] = "spot"
+        none_selected["expression_comparison"]["rates_candidate"] = (
+            "No tenor is a compelling rates expression versus spot in this packet."
+        )
+        none_selected["expression_comparison"]["rates_tenor_scan"] = synthetic_rates_tenor_scan(
+            selected_bucket="none",
+        )
+        none_selected["context_build"]["policy_path_check"] = {
+            "status": "not_applicable",
+            "relevant_countries": [],
+            "pricing_summary": "Spot selection does not rely on a short-end policy trade.",
+            "rationale": "The rates alternative was considered but none was compelling.",
+        }
+        validate_trade(none_selected, agent="rate-hawk", packet=packet)
+
+        dollar = deepcopy(trade)
+        dollar["asset_class"] = "spot_fx"
+        dollar["instrument"] = "USDJPY"
+        dollar["expression_comparison"] = {
+            "rates_candidate": None,
+            "spot_candidate": "Long USDJPY.",
+            "selected": "spot",
+            "rationale": "Dedicated spot-FX specialist seat.",
+        }
+        validate_trade(dollar, agent="dollar-king", packet=packet)
+        vol = deepcopy(trade)
+        vol["asset_class"] = "options"
+        vol["instrument"] = "USDCAD_25D_RR"
+        vol["expression_comparison"] = {
+            "rates_candidate": None,
+            "spot_candidate": None,
+            "selected": "options",
+            "rationale": "Dedicated vol specialist.",
+        }
+        validate_trade(vol, agent="vol-convexity", packet=packet)
 
     def test_data_only_boundary_rejects_web_fields(self):
         packet = _packet()

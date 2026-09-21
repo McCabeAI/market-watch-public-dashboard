@@ -48,7 +48,7 @@ Every non-null trade adds:
       "selected_bucket": "stir_policy_path|two_year|five_year|ten_year|curve|cross_market_rv|none",
       "selection_rationale": "why this is the best rates expression from the scan"
     },
-    "rates_candidate": "concrete rates expression or null for a dedicated specialist",
+    "rates_candidate": {"instrument": "...", "asset_class": "rates|curve|rates_rv", "rationale": "..."} | null,
     "spot_candidate": "concrete spot expression or null for the vol specialist",
     "selected": "rates | spot | options",
     "rationale": "why this expression is cleaner"
@@ -56,7 +56,7 @@ Every non-null trade adds:
 }
 ```
 
-For rates-capable seats, `rates_tenor_scan` is mandatory and both `rates_candidate` and `spot_candidate` are mandatory non-empty strings even when one says it is unavailable and explains why. The selected family must match `asset_class`. Validators fail closed when the scan is omitted or malformed.
+For rates-capable seats, `rates_tenor_scan` is mandatory and both `rates_candidate` and `spot_candidate` are mandatory even when one says it is unavailable and explains why. When `selected_bucket` is not `none`, `rates_candidate` must be an object whose `instrument` and `asset_class` equal that selected bucket; free-text cannot prove the linkage. A non-empty string is accepted for `rates_candidate` only when `selected_bucket` is `none`. The selected family must match `asset_class`. Validators fail closed when the scan is omitted or malformed, or when the selected bucket does not bind to the rates candidate used in the comparison.
 
 ## Round 1 conflict synopsis
 

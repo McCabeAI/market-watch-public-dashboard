@@ -21,8 +21,10 @@ from scripts.overnight.constants import SCHEMA_VERSION, STANDING_SEATS
 from scripts.overnight.errors import EvidenceBoundaryError, SchemaError
 from scripts.overnight.evidence import require_snapshot
 from scripts.overnight.ledger import load_or_create, mark_finished, mark_running, persist_run
+from scripts.overnight.paper_marks import market_state_from_families
 from scripts.overnight.store import OvernightStore, sha256_json
 from scripts.pm.automated import validate_pm_decisions
+from scripts.pm.review_packets import compact_overnight_decisions
 
 SCHEDULE_ID = "market-watch-weekday-0205"
 OUTPUT_TYPE = "OVERNIGHT_SCHEDULED_OUTPUT"
@@ -215,6 +217,19 @@ def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str,
                 overnight_run_id=run_id,
                 packet_sha256=agent_packet["packet_sha256"],
                 evidence_cutoff=agent_packet["evidence_cutoff"],
+                packet={
+                    "overnight_review": compact_overnight_decisions(
+                        {
+                            "reviews": decisions,
+                            "overnight_run_id": run_id,
+                            "status": "scheduled_output",
+                            "evidence_cutoff": agent_packet["evidence_cutoff"],
+                            "packet_sha256": agent_packet["packet_sha256"],
+                        }
+                    ),
+                    "market_state": market_state_from_families(base.get("families") or {}) or {},
+                    "decisions": decisions,
+                },
             )
         except Exception as exc:
             raise SchemaError(str(exc)) from exc
