@@ -12,9 +12,9 @@ MW_OVERNIGHT_RUN_POLICY={"version":1,"schedule_id":"market-watch-weekday-0205","
 
 ACP must emit a matching policy marker. `.cursor/hooks/enforce-overnight-budget.py` enforces these caps atomically on every child spawn.
 
-## 0. Trusted-freeze preflight — before any child/model spend
+## 0. Trusted-freeze preflight — before any child subagent spend
 
-Before launching the Composer research child or any trader/PM child:
+The ACP parent is already running at this point. Before launching the Composer research child or any trader/PM child:
 
 1. Resolve the current New York run ID as `overnight-YYYYMMDD`.
 2. Read the **committed starting-ref** files:
