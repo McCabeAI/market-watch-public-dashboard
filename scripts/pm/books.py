@@ -15,6 +15,7 @@ from scripts.funding.accounting import (
     FUNDING_REGIME_ZERO_BENCHMARK,
     apply_zero_return_sofr_migration,
     attach_financing_fields,
+    competition_net_pnl,
 )
 from scripts.funding.basis import apply_basis_to_position, funded_draw_for_book
 from scripts.funding.sofr import (
@@ -301,13 +302,19 @@ def mark_pm_book(
     book["risk_capital_remaining_usd"] = round(max(0.0, float(book["risk_capital_limit_usd"]) - risk_used), 2)
 
     apply_zero_return_sofr_migration(book, paper_nav=float(book.get("cash_capital_usd") or CASH_CAPITAL_USD))
+    trading_gross = round(realized + unrealized, 2)
     attach_financing_fields(
         book,
-        gross=None if missing else round(realized + unrealized, 2),
+        gross=None if missing else trading_gross,
         missing=missing,
     )
-    available_net = book.get("net_after_funding_pnl_usd")
-    nav = float(book.get("cash_capital_usd") or CASH_CAPITAL_USD) + float(available_net or 0.0)
+    available_net = competition_net_pnl(
+        trading_gross,
+        funding_cost_usd=float(book.get("funding_cost_usd") or 0.0),
+        cash_yield_usd=float(book.get("cash_yield_usd") or 0.0),
+        benchmark_cost_usd=float(book.get("benchmark_cost_usd") or 0.0),
+    )
+    nav = float(book.get("cash_capital_usd") or CASH_CAPITAL_USD) + available_net
     book["nav_usd"] = round(nav, 2)
 
     book.setdefault("max_drawdown_usd", MAX_DRAWDOWN_USD)

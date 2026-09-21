@@ -266,6 +266,8 @@ class SchemaAndBoundaryTests(unittest.TestCase):
         with self.assertRaises(SchemaError):
             validate_trade(missing_scan, agent="rate-hawk", packet=packet)
         dollar = deepcopy(trade)
+        dollar["asset_class"] = "spot_fx"
+        dollar["instrument"] = "USDJPY"
         dollar["expression_comparison"] = {
             "rates_candidate": None,
             "spot_candidate": "Long USDJPY.",

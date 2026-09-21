@@ -145,8 +145,11 @@ def attach_financing_fields(book: dict[str, Any], *, gross: float | None, missin
         cash_yield_usd=cash_yield,
         benchmark_cost_usd=benchmark,
     )
-    book["net_financing_pnl_usd"] = None if missing else financing
+    book["net_financing_pnl_usd"] = financing
     if missing or gross is None:
+        if "net_pnl_usd" in book or book.get("seat"):
+            book["net_pnl_usd"] = None
+        book["net_after_funding_pnl_usd"] = None
         return
     net = competition_net_pnl(
         float(gross),

@@ -11,7 +11,7 @@ from scripts.funding.accounting import (
     FUNDING_REGIME_ZERO_BENCHMARK,
     apply_zero_return_sofr_migration,
     attach_financing_fields,
-    paper_nav_principal,
+    competition_net_pnl,
 )
 from scripts.funding.sofr import (
     FUNDING_CONVENTION,
@@ -516,11 +516,13 @@ def mark_to_market(
         - benchmark,
         2,
     )
-    net = seat_book.get("net_pnl_usd")
-    seat_book["nav_usd"] = round(
-        float(seat_book["starting_nav_usd"]) + (0.0 if missing or net is None else float(net)),
-        2,
+    known_net = competition_net_pnl(
+        gross,
+        funding_cost_usd=funding,
+        cash_yield_usd=cash_yield,
+        benchmark_cost_usd=benchmark,
     )
+    seat_book["nav_usd"] = round(float(seat_book["starting_nav_usd"]) + known_net, 2)
     _attach_allocation_fields(seat_book)
 
     seat_book.setdefault("max_drawdown_usd", MAX_DRAWDOWN_USD)
