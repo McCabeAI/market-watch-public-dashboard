@@ -27,6 +27,8 @@ from pathlib import Path
 from typing import Mapping, Sequence
 
 from scripts.australia_housing_data import collect_australia_housing, validate_australia_housing
+from scripts.canada_housing_data import collect_canada_housing, validate_canada_housing
+from scripts.us_housing_data import collect_us_housing, validate_us_housing
 from scripts.cross_asset_data import collect_cross_assets
 from scripts.market_opportunities import build_opportunities
 from scripts.official_curve_data import collect_official_curves, validate_official_curves
@@ -765,6 +767,8 @@ def build_snapshot(
     include_policy_paths: bool | None = None,
     include_official_curves: bool | None = None,
     include_australia_housing: bool | None = None,
+    include_us_housing: bool | None = None,
+    include_canada_housing: bool | None = None,
 ) -> dict:
     today = today or datetime.now(timezone.utc).date()
     start = today - timedelta(days=366 * 5 + 15)
@@ -872,6 +876,44 @@ def build_snapshot(
         }
     )
 
+    if include_us_housing is None:
+        include_us_housing = include_cross_assets
+    us_housing = (
+        collect_us_housing(
+            today=today,
+            fetch_bytes=lambda url: fetch_bytes(url, timeout=20, retries=2, user_agent=BROWSER_USER_AGENT),
+        )
+        if include_us_housing
+        else {
+            "country": "US",
+            "status": "unavailable",
+            "feeds": {
+                name: {"status": "unavailable", "url": "disabled", "as_of": None, "error": "U.S. housing collection disabled for this invocation"}
+                for name in ("prices", "sales_inventory", "construction", "mortgage_credit", "mortgage_rates", "mortgage_burden")
+            },
+            "method": {"model_calls": 0, "credentials_required": [], "trader_packet_delivery": "market_state_passthrough"},
+        }
+    )
+
+    if include_canada_housing is None:
+        include_canada_housing = include_cross_assets
+    canada_housing = (
+        collect_canada_housing(
+            today=today,
+            fetch_bytes=lambda url: fetch_bytes(url, timeout=20, retries=2, user_agent=BROWSER_USER_AGENT),
+        )
+        if include_canada_housing
+        else {
+            "country": "CA",
+            "status": "unavailable",
+            "feeds": {
+                name: {"status": "unavailable", "url": "disabled", "as_of": None, "error": "Canadian housing collection disabled for this invocation"}
+                for name in ("new_home_prices", "construction", "building_permits", "mortgage_lending", "mortgage_balances", "mortgage_rates", "mortgage_burden")
+            },
+            "method": {"model_calls": 0, "credentials_required": [], "trader_packet_delivery": "market_state_passthrough"},
+        }
+    )
+
     cross_raw, cross_meta = collect_cross_assets(start, today, fetch_bytes) if include_cross_assets else ({}, {})
     opportunities = build_opportunities(rates_raw, fx_raw, cross_raw, cross_meta, today)
     if include_policy_paths is None:
@@ -963,6 +1005,8 @@ def build_snapshot(
         "tradable_rate_curves": tradable_rate_curves,
         "official_curves": official_curves,
         "australia_housing": australia_housing,
+        "us_housing": us_housing,
+        "canada_housing": canada_housing,
         "cross_assets": {"series": cross_meta, "status": "partial" if any(m["status"] != "ok" for m in cross_meta.values()) else "ok"},
         "opportunities": opportunities,
         "positioning": positioning,
@@ -1046,7 +1090,7 @@ def build_snapshot(
                 "Policy-path context uses official overnight benchmarks plus public money-market data. "
                 "The tradable paper rates universe is explicitly SOFR via CME SR3, CORRA via MX CRA, and AONIA via ASX IB; a position stays on its entry curve family until close. "
                 "Official government zero/forward curves are supplemental bond-curve inputs and are not required to manufacture a swap curve. "
-                "Australian housing context is collected from ABS dwelling prices/transfers, building approvals and lending indicators plus RBA housing credit, mortgage rates and household housing-loan payment data. "
+                "Housing context is collected for the US, Canada and Australia from free maintained public sources: FHFA/Census/Fed/Freddie Mac via FRED for the US, Statistics Canada/CMHC/Bank of Canada for Canada, and ABS/RBA for Australia. "
                 "CFTC TFF supplies trader-class ownership/crowding context and CME's public volume/open-interest service supplies daily FX futures and aggregate options OI history. "
                 "No historical warehouse is written to GitHub or Supabase."
             ),
@@ -1085,6 +1129,14 @@ def validate_snapshot(s: Mapping) -> None:
         validate_australia_housing(s.get("australia_housing") or {})
     except Exception as exc:
         raise MarketStateError(f"invalid australia_housing block: {exc}") from exc
+    try:
+        validate_us_housing(s.get("us_housing") or {})
+    except Exception as exc:
+        raise MarketStateError(f"invalid us_housing block: {exc}") from exc
+    try:
+        validate_canada_housing(s.get("canada_housing") or {})
+    except Exception as exc:
+        raise MarketStateError(f"invalid canada_housing block: {exc}") from exc
     if set(s.get("rates", {})) != set(RATE_COUNTRIES):
         raise MarketStateError("rates block must contain US, CA, AU and NZ")
     for c in RATE_COUNTRIES:
