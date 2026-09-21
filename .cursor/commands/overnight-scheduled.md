@@ -65,6 +65,18 @@ Nested subagents are **prohibited** for both traders and PMs on overnight runs (
    ```
    including `decisions` (14 seats) and **`pm_decisions`** (swinger, pragmatist, grinder). ChatGPT is excluded from automated overnight output.
 
+## Desk-language output contract
+
+Every one of the 14 trader decisions and all three automated PM decisions must include the same `presentation` object used by the on-demand Trader Room:
+- `market_expression` in real desk shorthand (`Receive H7 CORRA`, `Pay U7 SOFR`, `Short AUDCAD`);
+- a one- or two-sentence `punchline`;
+- 1–6 concise `support` bullets;
+- `take_profit.objective` plus `take_profit.basis` explaining where the risk comes off and how that target was established;
+- optional positive `take_profit.pnl_target_usd`;
+- concise `invalidation`.
+
+Keep machine identifiers only in machine fields. Never put `CORRA_2027-03`, position IDs, packet hashes, file paths, “canonical mark,” “family locked,” or `FACT:/INFERENCE:/UNKNOWN:` labels in the human-facing presentation. Use receive/pay for rates and normal trader shorthand. HOLD/NO_TRADE decisions still need a presentation: state what is being held or that the book is flat, what evidence keeps it there, and what would change the decision; Take profit may say `N/A while flat` only when there is genuinely no position.
+
 ## Evidence-closed children
 
 `.cursor/hooks/enforce-overnight-runtime.py` blocks all tools when `MW_TRADER_FROZEN=1` or `MW_PM_FROZEN=1` is present in the child transcript.
