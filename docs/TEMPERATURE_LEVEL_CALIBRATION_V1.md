@@ -81,7 +81,9 @@ Transforms are applied to the **pinned series_id** in `data/temperature_calibrat
 | `yoy_pct` | Stored official or derived 12-month percent change |
 | `mom_sa_compound_annualized_n3` | Last 3 consecutive m/m percent changes, compounded: `((Π(1+m_i/100))^(12/3)−1)×100` |
 | `trailing_mean_n3` | Mean of the last 3 period-over-period values (payrolls/employment) |
-| `qoq_to_saar` | `((1+q/100)^4−1)×100` |
+| `qoq_to_saar` | `((1+q/100)^4−1)×100` on the **latest single quarter** (Activity GDP impulse) |
+| `mean_qoq_to_saar_n2` | Mean of SAAR equivalents of the last 2 q/q percent prints: per quarter `((1+q/100)^4−1)×100`, then average (Activity GDP LEVEL for q/q-stored series) |
+| `trailing_mean_n2` | Mean of the last 2 published values (Activity GDP LEVEL when storage is already SAAR, e.g. US BEA SAAR) |
 | `mom_mean_n3` | Mean of last 3 m/m percent changes (consumer monthly flows) |
 | `diffusion_index` | PMI / diffusion level as published |
 | `index_level` | Survey index as published |
@@ -119,14 +121,16 @@ Wage scale: **10 per percentage point**, `hot_direction = +1`.
 
 ### Activity
 
-| Country | GDP series | Transform | Potential SAAR | Scale |
-|---|---|---|---:|---:|
-| US | `A191RL1Q225SBEA` | published SAAR | 2.0 | 10 |
-| CA | `GDP_real_market_prices_qq_v1594571783` | `qoq_to_saar` | 1.8 | 10 |
-| AU | `A2304370T` (GDP; DFD is context) | `qoq_to_saar` | 2.25 | 10 |
-| NZ | **`SNEQ.SG01RSC01B01PC` production GDP only** | `qoq_to_saar` | 2.0 | 10 |
+| Country | GDP series | LEVEL transform | IMPULSE transform | Potential SAAR | Scale |
+|---|---|---|---|---:|---:|
+| US | `A191RL1Q225SBEA` | 2Q mean published SAAR (`trailing_mean_n2`) | latest single-quarter SAAR (`identity`) | 2.0 | 10 |
+| CA | `GDP_real_market_prices_qq_v1594571783` | 2Q mean q/q→SAAR (`mean_qoq_to_saar_n2`) | latest q/q→SAAR (`qoq_to_saar`) | 1.8 | 10 |
+| AU | `A2304370T` (GDP; DFD is context) | `mean_qoq_to_saar_n2` | `qoq_to_saar` | 2.25 | 10 |
+| NZ | **`SNEQ.SG01RSC01B01PC` production GDP only** | `mean_qoq_to_saar_n2` | `qoq_to_saar` | 2.0 | 10 |
 
-US ISM services 55.4 and manufacturing 54.6 map **1:1** (50 = expansion threshold). CA/AU/NZ business surveys are **unavailable** → Activity `coverage = 0.60` and LEVEL uses GDP only.
+**Surveys (when observed):** LEVEL = 3-month mean of headline diffusion index (`trailing_mean_n3`); IMPULSE = latest month minus prior month (`identity` on each print). Anchor 50, scale 1.0.
+
+US ISM services/manufacturing: 12 months of official press releases (PR Newswire distribution) through 2026-08; weights 28% / 12%. CA/AU/NZ business surveys remain **unobserved** in history → Activity `coverage = 0.60` until scored.
 
 ### Consumer
 
@@ -154,7 +158,10 @@ AU retail: ABS monthly retail **ceased** after Jun 2025 → component unobserved
 Impulse is **not** the old {−6,−4,−2,0,+2,+4,+6} classified scale and is **not** added to LEVEL.
 
 ```
-component_impulse = component_level(latest) − component_level(previous print of the same scoring series)
+component_level_value = transform at latest print using level_scoring_transform (fallback: scoring_transform)
+component_impulse_value_latest = transform at latest using impulse_scoring_transform
+component_impulse_value_prev   = transform at previous print using impulse_scoring_transform
+component_impulse = component_level(impulse_latest) − component_level(impulse_prev)
 dimension_impulse = coverage-weighted mean of component impulses that can be computed
 direction = warming if dimension_impulse ≥ +1.0
             cooling if dimension_impulse ≤ −1.0
@@ -184,10 +191,10 @@ G1 expected ballpark:
 
 | | Inflation | Labor | Activity | Consumer |
 |---|---:|---:|---:|---:|
-| US | ~63 (3m core PCE ~3.05% vs 2%) | ~50 | ~49 (GDP 1.5% SAAR + ISM ~55) | ~46 (Michigan 55 vs 80) |
-| CA | ~55 | ~42 (u 6.4 vs 6.0; wages 2.0 vs 3.0) | ~64 (Q2 0.8% q/q; surveys missing, coverage 0.60) | mid-50s, coverage 0.75 |
-| AU | ~63 (trim 3.6 / head 3.5 vs 2.5) | ~50 | ~44 (GDP 0.4% q/q; coverage 0.60) | mixed; retail missing; Westpac 84 |
-| NZ | ~64 (head 4.1 / und 2.5 vs 2) | ~36 (u 5.6 vs 4.75) | ~38 (GDP +0.2% q/q; coverage 0.60) | ~40s; confidence 98 |
+| US | ~63 (3m core PCE ~3.05% vs 2%) | ~50 | ~low-50s (GDP 2Q-mean SAAR ~1.8% + ISM 3m LEVELs; parent regenerates) | ~46 (Michigan 55 vs 80) |
+| CA | ~55 | ~42 (u 6.4 vs 6.0; wages 2.0 vs 3.0) | ~low-50s (GDP 2Q-mean SAAR ~1.8%; surveys missing, coverage 0.60) | mid-50s, coverage 0.75 |
+| AU | ~63 (trim 3.6 / head 3.5 vs 2.5) | ~50 | ~low-40s (GDP 2Q-mean; coverage 0.60) | mixed; retail missing; Westpac 84 |
+| NZ | ~64 (head 4.1 / und 2.5 vs 2) | ~36 (u 5.6 vs 4.75) | ~low-50s (GDP 2Q-mean ~2.2% SAAR; large 1Q impulse; coverage 0.60) | ~40s; confidence 98 |
 
 US Inflation **rising** from 52 to ~63 is the intended economic correction: a ~3% Core PCE run rate is above the 2% objective, not “slightly above an arbitrary 50”.
 
@@ -224,5 +231,5 @@ I2 (dashboard + Trader Room) must:
 - US `mapped_bridge` is a two-month PPI-mapped snapshot, not a 12-month micro history; it does not move LEVEL.
 - NZ production GDP must be pinned; the history file also contains expenditure-GDP rows (including a 2025-Q2 lookback) that must not be used as “latest”.
 - Potential growth / u\* / productivity add-on are judgement-documented constants, frozen in the calibration JSON, not estimated from the one-year sample.
-- **GDP LEVEL uses the latest single quarter converted to SAAR.** With business surveys unobserved, that print is 100% of CA/AU/NZ Activity. A one-quarter swing therefore moves Activity by tens of points (CA Q1→Q2 Impulse +28; NZ −28). A 2-quarter average or y/y window can change the warm/cool sign. Impulse still describes the latest quarter; a future V1.1 may score LEVEL on a two-quarter SAAR while keeping 1Q as impulse.
+- **Activity GDP LEVEL uses a two-quarter mean SAAR** (per-quarter SAAR then average). **GDP IMPULSE** remains the latest single-quarter SAAR mapped to LEVEL minus the prior quarter’s single-quarter SAAR (release shocks stay visible: e.g. CA ~+28, NZ ~−28 on the GDP component). With business surveys unobserved, GDP still drives 60% of CA/AU/NZ Activity coverage.
 - **No automatic staleness decay.** A component that stops updating keeps its last LEVEL and full weight until it is marked unobserved. NZ Consumer income is 2026-Q1 while peers are 2026-Q2; CA retail is 2026-06. Coverage does not currently fall with age.

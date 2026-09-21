@@ -112,18 +112,27 @@ def consecutive_tail(values_by_period: dict[str, float], end_period: str, want: 
     return chain
 
 
+def qoq_pct_to_saar(q: float) -> float:
+    return ((1.0 + q / 100.0) ** 4 - 1.0) * 100.0
+
+
 def apply_scoring_transform(name: str, window: list[float], spec: dict[str, Any]) -> float | None:
     if not window:
         return None
     if name == "identity":
         return window[-1]
+    if name == "trailing_mean_n2":
+        return sum(window) / len(window)
     if name == "trailing_mean_n3":
         return sum(window) / len(window)
+    if name == "mean_qoq_to_saar_n2":
+        saars = [qoq_pct_to_saar(v) for v in window]
+        return sum(saars) / len(saars)
     if name == "mom_mean_n3":
         return sum(window) / len(window)
     if name == "qoq_to_saar":
         q = window[-1]
-        return ((1.0 + q / 100.0) ** 4 - 1.0) * 100.0
+        return qoq_pct_to_saar(q)
     if name == "mom_sa_compound_annualized_n3":
         n = len(window)
         prod = 1.0
@@ -201,15 +210,37 @@ def raw_values_by_period(
     return out
 
 
+def _transform_name(spec: dict[str, Any], role: str) -> str:
+    key = f"{role}_scoring_transform"
+    if key in spec:
+        return str(spec[key])
+    return str(spec["scoring_transform"])
+
+
+def _n_periods_for_transform(tf: str, spec: dict[str, Any]) -> int:
+    if tf in ("trailing_mean_n2", "mean_qoq_to_saar_n2"):
+        return 2
+    if tf in ("trailing_mean_n3", "mom_mean_n3", "mom_sa_compound_annualized_n3"):
+        return int(spec.get("n_periods", 3))
+    if tf == "identity":
+        return 1
+    if tf == "qoq_to_saar":
+        return 1
+    return int(spec.get("n_periods", 3))
+
+
 def transform_at_period(
-    values_by_period: dict[str, float], period: str, spec: dict[str, Any]
+    values_by_period: dict[str, float],
+    period: str,
+    spec: dict[str, Any],
+    role: str = "level",
 ) -> float | None:
     if period not in values_by_period:
         return None
-    tf = spec["scoring_transform"]
+    tf = _transform_name(spec, role)
     if tf == "identity":
         return values_by_period[period]
-    n = int(spec.get("n_periods", 3))
+    n = _n_periods_for_transform(tf, spec)
     window_vals = [v for _, v in consecutive_tail(values_by_period, period, n)]
     if not window_vals:
         return None
@@ -243,22 +274,25 @@ def score_component(
 
     periods = sorted(values.keys(), key=period_sort_key)
     latest = periods[-1]
-    x_latest = transform_at_period(values, latest, spec)
+    level_tf = _transform_name(spec, "level")
+    x_latest = transform_at_period(values, latest, spec, role="level")
     if x_latest is None:
         return ComponentResult(False, None, None, None, None, weight=weight)
 
     level_latest = component_level(x_latest, spec, cal)
-    n = int(spec.get("n_periods", 3))
-    tail = consecutive_tail(values, latest, n)
-    short_window = len(tail) < n and spec["scoring_transform"] != "identity"
+    n_level = _n_periods_for_transform(level_tf, spec)
+    tail = consecutive_tail(values, latest, n_level)
+    short_window = len(tail) < n_level and level_tf != "identity"
 
     impulse: float | None = None
     if len(periods) >= 2:
         prev = periods[-2]
-        x_prev = transform_at_period(values, prev, spec)
-        if x_prev is not None:
-            level_prev = component_level(x_prev, spec, cal)
-            impulse = level_latest - level_prev
+        x_imp_latest = transform_at_period(values, latest, spec, role="impulse")
+        x_imp_prev = transform_at_period(values, prev, spec, role="impulse")
+        if x_imp_latest is not None and x_imp_prev is not None:
+            impulse = component_level(x_imp_latest, spec, cal) - component_level(
+                x_imp_prev, spec, cal
+            )
 
     return ComponentResult(
         True,

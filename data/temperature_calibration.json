@@ -107,6 +107,8 @@
       "series_id": "A191RL1Q225SBEA",
       "source_transformation": "saar_pct",
       "scoring_transform": "identity",
+      "level_scoring_transform": "trailing_mean_n2",
+      "impulse_scoring_transform": "identity",
       "anchor": 2.0,
       "anchor_kind": "structural_policy",
       "anchor_meaning": "US potential real GDP growth near 2 percent SAAR",
@@ -118,6 +120,9 @@
       "series_id": null,
       "source_transformation": "diffusion_index",
       "scoring_transform": "identity",
+      "level_scoring_transform": "trailing_mean_n3",
+      "impulse_scoring_transform": "identity",
+      "n_periods": 3,
       "anchor": 50.0,
       "anchor_kind": "structural_policy",
       "anchor_meaning": "ISM-style expansion/contraction threshold",
@@ -129,6 +134,9 @@
       "series_id": null,
       "source_transformation": "diffusion_index",
       "scoring_transform": "identity",
+      "level_scoring_transform": "trailing_mean_n3",
+      "impulse_scoring_transform": "identity",
+      "n_periods": 3,
       "anchor": 50.0,
       "anchor_kind": "structural_policy",
       "anchor_meaning": "ISM-style expansion/contraction threshold",
@@ -244,6 +252,8 @@
       "series_id": "GDP_real_market_prices_qq_v1594571783",
       "source_transformation": "qoq_sa_pct",
       "scoring_transform": "qoq_to_saar",
+      "level_scoring_transform": "mean_qoq_to_saar_n2",
+      "impulse_scoring_transform": "qoq_to_saar",
       "anchor": 1.8,
       "anchor_kind": "structural_policy",
       "anchor_meaning": "Canadian potential real growth near 1.8 percent SAAR",
@@ -253,7 +263,14 @@
     "CA.Activity.business_surveys": {
       "history_key": "Activity.business_surveys",
       "observed": false,
-      "note": "Ivey PMI and BoC BOS have no free numeric history; omit from LEVEL and reduce coverage"
+      "note": "Canonical scored series is CFIB Monthly Business Barometer (primary public monthly index; 50=neutral per CFIB). S&P Canada Composite PMI history not reproducible from primary S&P portal in batch; Ivey PMI stored as conflict only (not scored).",
+      "level_scoring_transform": "trailing_mean_n3",
+      "impulse_scoring_transform": "identity",
+      "n_periods": 3,
+      "anchor": 50.0,
+      "hot_direction": 1,
+      "scale_per_unit": 1.0,
+      "source_transformation": "diffusion_index"
     },
     "CA.Consumer.retail": {
       "history_key": "Consumer.retail",
@@ -355,6 +372,8 @@
       "series_id": "A2304370T",
       "source_transformation": "qoq_pct",
       "scoring_transform": "qoq_to_saar",
+      "level_scoring_transform": "mean_qoq_to_saar_n2",
+      "impulse_scoring_transform": "qoq_to_saar",
       "anchor": 2.25,
       "anchor_kind": "structural_policy",
       "anchor_meaning": "Australian potential real growth near 2.25 percent SAAR; DFD series A2304183K is context only",
@@ -364,7 +383,15 @@
     "AU.Activity.business_surveys": {
       "history_key": "Activity.business_surveys",
       "observed": false,
-      "note": "No free numeric RBA/NAB business-conditions history; omit from LEVEL and reduce coverage"
+      "note": "Canonical scored series is Judo Bank / S&P Global Australia Composite PMI headline from primary press releases; batch harvest blocked (JS portal).",
+      "series_id": "SP_GLOBAL_AU_COMPOSITE_PMI",
+      "source_transformation": "diffusion_index",
+      "level_scoring_transform": "trailing_mean_n3",
+      "impulse_scoring_transform": "identity",
+      "n_periods": 3,
+      "anchor": 50.0,
+      "hot_direction": 1,
+      "scale_per_unit": 1.0
     },
     "AU.Consumer.retail": {
       "history_key": "Consumer.retail",
@@ -465,6 +492,8 @@
       "series_id": "SNEQ.SG01RSC01B01PC",
       "source_transformation": "qoq_pct",
       "scoring_transform": "qoq_to_saar",
+      "level_scoring_transform": "mean_qoq_to_saar_n2",
+      "impulse_scoring_transform": "qoq_to_saar",
       "anchor": 2.0,
       "anchor_kind": "structural_policy",
       "anchor_meaning": "NZ potential real growth near 2 percent SAAR; ignore expenditure-GDP rows including 2025-Q2 lookback",
@@ -474,7 +503,15 @@
     "NZ.Activity.business_surveys": {
       "history_key": "Activity.business_surveys",
       "observed": false,
-      "note": "BusinessNZ PMI and ANZ Business Outlook have no free numeric history; omit from LEVEL and reduce coverage"
+      "note": "Canonical scored series is BusinessNZ PCI GDP-weighted composite from BusinessNZ primary releases; site behind bot protection in batch harvest.",
+      "series_id": "BUSINESSNZ_PCI_GDP_WEIGHTED",
+      "source_transformation": "diffusion_index",
+      "level_scoring_transform": "trailing_mean_n3",
+      "impulse_scoring_transform": "identity",
+      "n_periods": 3,
+      "anchor": 50.0,
+      "hot_direction": 1,
+      "scale_per_unit": 1.0
     },
     "NZ.Consumer.retail": {
       "history_key": "Consumer.retail",

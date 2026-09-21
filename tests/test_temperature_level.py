@@ -187,6 +187,69 @@ class TemperatureLevelEngineTest(unittest.TestCase):
             validate_state(loaded)
 
 
+class ActivityTransformTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.cal = load_calibration()
+        cls.histories = load_history()
+
+    def test_gdp_level_two_quarter_mean_saar_and_impulse_one_quarter(self) -> None:
+        for cc in ("US", "CA", "AU", "NZ"):
+            spec = self.cal["components"][f"{cc}.Activity.gdp_domestic_demand"]
+            res = score_component(self.histories[cc], spec, self.cal, "2026-09", 0.6)
+            self.assertTrue(res.observed, cc)
+            self.assertIsNotNone(res.level)
+            if cc == "CA":
+                self.assertAlmostEqual(res.level, 50.2, delta=0.3)
+                self.assertAlmostEqual(res.impulse or 0, 28.4, delta=0.5)
+            if cc == "NZ":
+                self.assertAlmostEqual(res.level, 52.2, delta=0.3)
+                self.assertAlmostEqual(res.impulse or 0, -28.5, delta=0.5)
+
+    def test_us_survey_three_month_level_and_month_impulse(self) -> None:
+        for comp in ("services_surveys", "manufacturing_surveys"):
+            spec = self.cal["components"][f"US.Activity.{comp}"]
+            res = score_component(self.histories["US"], spec, self.cal, "2026-08", 0.28)
+            self.assertTrue(res.observed)
+            # Jun-Jul-Aug 2026 services: 54.0, 54.1, 55.4 -> mean 54.5
+            if comp == "services_surveys":
+                self.assertAlmostEqual(res.transform_value or 0, 54.5, delta=0.05)
+                self.assertAlmostEqual(res.impulse or 0, 1.3, delta=0.05)
+
+    def test_us_activity_weights_unchanged(self) -> None:
+        weights = self.cal["weights"]["US"]["Activity"]
+        self.assertAlmostEqual(weights["gdp_domestic_demand"], 0.6)
+        self.assertAlmostEqual(weights["services_surveys"], 0.28)
+        self.assertAlmostEqual(weights["manufacturing_surveys"], 0.12)
+
+    def test_ivey_not_scored_when_conflict_series_only(self) -> None:
+        spec = self.cal["components"]["CA.Activity.business_surveys"]
+        history = copy.deepcopy(self.histories["CA"])
+        comp = history["components"]["Activity.business_surveys"]
+        comp["observations"] = [
+            {
+                "reference_period": "2026-08",
+                "value": 60.0,
+                "units": "diffusion_index",
+                "transformation": "diffusion_index",
+                "publisher": "Ivey",
+                "source_url": "https://www.iveypmi.ca/",
+                "vintage": "test",
+                "retrieved_at": "2026-09-21",
+                "series_id": "Ivey_PMI_conflict",
+            }
+        ]
+        res = score_component(history, spec, self.cal, "2026-09", 0.4)
+        self.assertFalse(res.observed)
+
+    def test_gapped_survey_reduces_coverage_not_fifty(self) -> None:
+        computed = compute_state(self.cal, self.histories, cutoff="2026-09")
+        ca = computed["countries"]["CA"]["Activity"]
+        self.assertAlmostEqual(ca["coverage"], 0.6, places=3)
+        bs = ca["component_state"]["business_surveys"]
+        self.assertFalse(bs["observed"])
+
+
 class TemperatureLevelFixtureTest(unittest.TestCase):
     """Inline minimal fixture for reproducibility without external files."""
 

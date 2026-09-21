@@ -1372,7 +1372,7 @@
     "Activity.business_surveys": {
       "dimension": "Activity",
       "component": "business_surveys",
-      "canonical_name": "Ivey PMI and Bank of Canada Business Outlook Survey composite",
+      "canonical_name": "CFIB Monthly Business Barometer (scored when harvested); Ivey PMI conflict only",
       "publisher": "Ivey Business School / Bank of Canada",
       "distributor": null,
       "series_id": null,
@@ -1516,7 +1516,8 @@
         "latest_reference_period": null,
         "status": "unavailable",
         "gap_count": 12
-      }
+      },
+      "notes": "Scored target: CFIB national barometer (50=neutral). Ivey PMI is not scored; add under series_id Ivey_PMI_conflict if harvested."
     },
     "Consumer.retail": {
       "dimension": "Consumer",
