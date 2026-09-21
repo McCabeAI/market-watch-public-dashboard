@@ -35,7 +35,7 @@ from scripts.overnight.expression import expression_rule, validate_expression_me
 from scripts.trader_room.rates_scan import synthetic_rates_tenor_scan, with_tenor_scan
 from scripts.overnight.freshness import assert_action_allowed, publication_decision
 from scripts.overnight.paper_marks import PaperMarkError, resolve_paper_mid
-from scripts.overnight.pipeline import dry_run, run_stage
+from scripts.overnight.pipeline import dry_run, reconcile_due_stages, run_stage
 from scripts.overnight.publish import publication_gate
 from scripts.overnight.review import dry_run_reviews
 from scripts.overnight.store import OvernightStore
@@ -95,6 +95,58 @@ class ClockAndScheduleTests(unittest.TestCase):
             self.assertFalse(window["et_time"].endswith(":00"), stage)
         self.assertEqual(len(LOCAL_CRON), 6)
         self.assertNotIn("trader_review", LOCAL_CRON)
+
+
+
+class ReconcileScheduleTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.tmp = Path(tempfile.mkdtemp(prefix="overnight-reconcile-"))
+        self.addCleanup(shutil.rmtree, self.tmp)
+
+    def test_reconcile_catches_up_missing_pre_freeze_stages(self):
+        when = datetime(2026, 9, 21, 1, 55, tzinfo=NY)
+        result = reconcile_due_stages(
+            root=ROOT,
+            state_root=self.tmp,
+            when=when,
+            live_market_state=False,
+        )
+        self.assertEqual(
+            result["completed"],
+            ["collect", "pre_trader_delta", "freeze_evidence"],
+        )
+        self.assertEqual(result["model_calls"], 0)
+        store = OvernightStore(root=ROOT, state_root=self.tmp)
+        run_id = "overnight-20260921"
+        self.assertTrue(store.has_artifact(run_id, "evidence_snapshot.json"))
+        run = store.read_artifact(run_id, "run.json")
+        self.assertEqual(run["stages"]["collect"]["status"], "succeeded")
+        self.assertEqual(run["stages"]["pre_trader_delta"]["status"], "succeeded")
+        self.assertEqual(run["stages"]["freeze_evidence"]["status"], "succeeded")
+        self.assertEqual(run["stages"]["trader_review"]["status"], "pending")
+
+        second = reconcile_due_stages(
+            root=ROOT,
+            state_root=self.tmp,
+            when=when,
+            live_market_state=False,
+        )
+        self.assertEqual(second["completed"], [])
+        self.assertEqual(
+            second["skipped_succeeded"],
+            ["collect", "pre_trader_delta", "freeze_evidence"],
+        )
+
+    def test_reconcile_does_not_run_future_stages(self):
+        when = datetime(2026, 9, 21, 0, 5, tzinfo=NY)
+        result = reconcile_due_stages(
+            root=ROOT,
+            state_root=self.tmp,
+            when=when,
+            live_market_state=False,
+        )
+        self.assertEqual(result["completed"], [])
+        self.assertIn("collect", result["not_due"])
 
 
 class ExpressionRuleTests(unittest.TestCase):
