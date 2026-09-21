@@ -83,13 +83,13 @@ class CanadaHousingTests(unittest.TestCase):
             {
                 "REF_DATE": "2026Q1", "GEO": "Canada",
                 "Seasonal adjustment": "Seasonally adjusted at annual rates",
-                "Debt service indicators": "Mortgage debt service ratio",
+                "Estimates": "Mortgage debt service ratio",
                 "UOM": "Percent", "VECTOR": "v99451480", "VALUE": "8.1",
             },
             {
                 "REF_DATE": "2026Q2", "GEO": "Canada",
                 "Seasonal adjustment": "Seasonally adjusted at annual rates",
-                "Debt service indicators": "Mortgage debt service ratio",
+                "Estimates": "Mortgage debt service ratio",
                 "UOM": "Percent", "VECTOR": "v99451480", "VALUE": "8.0",
             },
         ]
