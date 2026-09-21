@@ -76,6 +76,83 @@
       "run_id": "tr-20260920T020818Z-ondemand",
       "schema_version": 1,
       "thesis": "Post-FOMC/BoJ delivered events and SR3/AONIA/CORRA strips already price the hawkish energy-constrained path, while NZ rates are missing and broker mids are absent, so cash at official 3.85% SOFR dominates manufactured risk."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-20T16:06:28.069463-04:00",
+      "conviction": 73,
+      "decision_fingerprint": "23608367451c403ecd35e9fe5fa9f474a51491f33cbb6502f185d2fa73ca981d",
+      "event_id": "jde-caa0f00d01d740df",
+      "funding_view": {
+        "current_sofr": {
+          "authority": "Official NY Fed SOFR is the realized funding-rate authority. SR3 is forward context only.",
+          "convention": "ACT/360",
+          "day_count": 360,
+          "effective_date": "2026-09-17",
+          "name": "SOFR",
+          "observation_date": "2026-09-17",
+          "percent_rate": 3.85,
+          "rate": 3.85,
+          "source": "NY_FED"
+        },
+        "forward_funding_assessment": "lower",
+        "implication": "Hold the full undeployed $100m in cash. Official SOFR 3.85% ACT/360 is about $10,694 per calendar day on $100m and is the realized funding authority; deploying stops that yield. Realized overnight SOFR should stay near the new 3.75-4.00 band (just printed 3.85) and therefore print lower than the 3m-12m SR3 strip (4.32/4.58/4.755), which already embeds subsequent hike odds. That overnight-versus-term gap is not a packet-supported SR3 receive: US inflation 72, labor 75, and a delivered Sep-16 hike make receiving poorly timed, while paying the same strip after +15 to +90.5bp versus overnight is priced. Cash compounds at the official fixing without buying or fading a post-event curve.",
+        "sr3_forward_view": "Frozen funding_context forward_summaries only: 1m is null (unsupported). 3m SR3Z6 expiry 2026-12 implied 4.32; 6m SR3H7 expiry 2027-03 implied 4.58; 12m SR3U7 expiry 2027-09 implied 4.755. Adjacent SR3U6 2026-09 implied 4.00 versus official overnight SOFR 3.85. These are term futures, not the cash fixing."
+      },
+      "invalidation": "A packet-supported rates discrepancy whose expected edge clears official 3.85% ACT/360 cash, with live post-event positioning and an uncrowded expression that is not already two-way in the paper book.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "44af65b40463659d0b31977acdb44304372300518cfb70765244928cc54923db",
+      "outcome_links": [],
+      "owner_id": "no-trade-skeptic",
+      "owner_type": "trader",
+      "payload": {
+        "funding_view": {
+          "current_sofr": {
+            "authority": "Official NY Fed SOFR is the realized funding-rate authority. SR3 is forward context only.",
+            "convention": "ACT/360",
+            "day_count": 360,
+            "effective_date": "2026-09-17",
+            "name": "SOFR",
+            "observation_date": "2026-09-17",
+            "percent_rate": 3.85,
+            "rate": 3.85,
+            "source": "NY_FED"
+          },
+          "forward_funding_assessment": "lower",
+          "implication": "Hold the full undeployed $100m in cash. Official SOFR 3.85% ACT/360 is about $10,694 per calendar day on $100m and is the realized funding authority; deploying stops that yield. Realized overnight SOFR should stay near the new 3.75-4.00 band (just printed 3.85) and therefore print lower than the 3m-12m SR3 strip (4.32/4.58/4.755), which already embeds subsequent hike odds. That overnight-versus-term gap is not a packet-supported SR3 receive: US inflation 72, labor 75, and a delivered Sep-16 hike make receiving poorly timed, while paying the same strip after +15 to +90.5bp versus overnight is priced. Cash compounds at the official fixing without buying or fading a post-event curve.",
+          "sr3_forward_view": "Frozen funding_context forward_summaries only: 1m is null (unsupported). 3m SR3Z6 expiry 2026-12 implied 4.32; 6m SR3H7 expiry 2027-03 implied 4.58; 12m SR3U7 expiry 2027-09 implied 4.755. Adjacent SR3U6 2026-09 implied 4.00 versus official overnight SOFR 3.85. These are term futures, not the cash fixing."
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-20T19:39:35Z",
+        "evidence_hash": "02d6976dd0d2606bae7efa7c3f2cc41aeac6ccfbf50d5251260f71390ba24d5b",
+        "overnight_run_id": null,
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260920T193935Z-ondemand"
+      },
+      "rationale": "Delivered Sep-16 hike and SOFR 3.85 leave US/CA/AU policy paths priced, FX extremes unexplained as trades, and official cash the only expression that clears the hurdle.",
+      "run_id": "tr-20260920T193935Z-ondemand",
+      "schema_version": 1,
+      "thesis": "Delivered Sep-16 hike and SOFR 3.85 leave US/CA/AU policy paths priced, FX extremes unexplained as trades, and official cash the only expression that clears the hurdle."
     }
   ],
   "schema_version": 1,

@@ -1,0 +1,53 @@
+{
+  "decision": {
+    "actions": [
+      {
+        "action": "NO_TRADE",
+        "invalidation": "A later successful overnight freeze with restored NZ_rates and CME positioning and a single un-conflicted markable rates discrepancy versus 3.85% cash and the still-on-hold 1m CORRA path, or delivered BoC tightening that makes the 2027 CRA catch-up one-way.",
+        "thesis": "FACT: Empty book; unused cash already earns official SOFR 3.85% ACT/360. FACT: This freeze is a labeled on-demand Trader Room fallback with stale NZ_rates, unavailable CME positioning, unmarkable options, and unarbitrated opposite-direction books in CORRA_2027-03 and SOFR_2027-03. INFERENCE: Stay flat. UNKNOWN: overnight review and missing NZ/positioning/option marks."
+      }
+    ],
+    "conviction": 70,
+    "evidence_cutoff": "2026-09-20T19:39:35Z",
+    "evidence_packet_sha256": "02d6976dd0d2606bae7efa7c3f2cc41aeac6ccfbf50d5251260f71390ba24d5b",
+    "execution": {
+      "principal_model": "grok-4.6",
+      "subagent_count": 0,
+      "subagent_models": []
+    },
+    "invalidation": "Lift NO_TRADE only if a later freeze is a successful overnight 14-seat review rather than an on-demand fallback, restores NZ_rates and CME positioning, and shows a single un-conflicted markable rates path versus official 3.85% cash and the 1m strip: Canada core and labor confirming no 2027 CRA catch-up while the 2027 strip still holds mid-3s against a still-on-hold 1m CORRA path, or the reverse with delivered BoC tightening. Binary next-meeting AONIA odds, FX extremes such as USDCAD 1.4010 as of 2026-09-18, remaining two-way seat conflicts, or unmarkable options would not lift the no-trade.",
+    "memory_context_sha256": "6e680d1701c4ff8f93e5f97dfcc1569475ab94ca917bf27857b9dcbb7ff94dcc",
+    "pm_id": "grinder",
+    "principal_model": "grok-4.6",
+    "rationale": "FACT: Prior Grinder last_action is NO_TRADE at conviction 68 on the same fallback-source problem; decision_status is no_trade; positions are empty; shocked risk used is 0 with 100m remaining; drawdown is 0; the book is not risk_stopped; calibration has 0 closed trades. FACT: Packet allowable_actions are OPEN, HOLD, and NO_TRADE; ADD, REDUCE, CLOSE, and HEDGE are not allowable until a position exists. FACT: Most seats HOLD existing books; positioning-cynic closed prior CORRA_2027-03 and opened short AONIA_2027-03; vol-convexity HOLDs because options are unmarkable; no-trade-skeptic HOLDs with a funding_view. FACT: Grinder is not chair. INFERENCE: Last-cycle invalidation is unmet: overnight_review is null, NZ_rates remain unavailable, CME positioning remains unavailable, and the two cleanest contracts remain opposite-direction. Explicit NO_TRADE is the cleaner empty-book choice versus HOLD. OPEN would charge the same 3.85% ACT/360 on shocked risk that unused cash already earns, while a 100bp rates or 1% FX adverse path is not compensated by a one-way edge. UNKNOWN: how ChatGPT arbitration will resolve the five conflicts.",
+    "review_packet_id": "prp-grinder-tr-20260920T193935Z-ondemand",
+    "review_packet_sha256": "0fdbdc494a747c0a6501b3e5f2dccbc2e3630633a8851c339eabf9db9ab8b929",
+    "schema_version": 1,
+    "subagent_count": 0,
+    "subagent_models": [],
+    "thesis": "FACT: The Grinder book is empty; unused cash earns official NY Fed SOFR 3.85% ACT/360 effective 2026-09-17. FACT: Packet source is on_demand_trader_room_fallback, not a successful overnight 14-seat review; market_state is stale because NZ_rates; CME positioning is unavailable; options are unmarkable. FACT: Trader Room status is AWAITING_CHATGPT_ARBITRATION with 14 seats and 5 unarbitrated conflicts, including opposite directions on CORRA_2027-03 (carry-is-king long versus perma-bull short) and SOFR_2027-03 (mean-reverter long versus trend-follower short). FACT: CORRA overnight is 2.29 as of 2026-09-17; CRAH27 is 3.13 (+84bp) while 1m CORRA remains near overnight into October; Canada August CPI is 3% with core near 2%; BoC minutes flag energy pass-through. FACT: The Fed hiked 25bp to 3.75-4.00%; SOFR overnight is 3.85; SR3Z6 is 4.32 and SR3H7 is 4.58. FACT: AONIA overnight is 4.35 with October 4.565 (+21.5bp). INFERENCE: The markable SOFR, CORRA, and AONIA discrepancies are still post-event, two-sided, and seat-conflicted; none is a one-way path versus cash and the near-term strip, so converting unused SOFR cash into shocked risk fails the preservation hurdle on this fallback freeze. UNKNOWN: a successful overnight review, NZ official yields, live CME positioning, and option premium/IV/strike mids.",
+    "trader_room_run_id": "tr-20260920T193935Z-ondemand",
+    "type": "PM_DECISION"
+  },
+  "receipt": {
+    "chatgpt_current_cycle_decision": "not_generated_not_applied",
+    "decision_fingerprint": "273a3d272b659872a3e7d4f444e09cafdbbaa40f5f3beff9cf35a953150ddf3a",
+    "decision_status": "no_trade",
+    "drawdown_usd": 0.0,
+    "evidence_cutoff": "2026-09-20T19:39:35Z",
+    "evidence_packet_sha256": "02d6976dd0d2606bae7efa7c3f2cc41aeac6ccfbf50d5251260f71390ba24d5b",
+    "gross_utilization_usd": 0,
+    "pm_id": "grinder",
+    "position_count": 0,
+    "principal_model": "grok-4.6",
+    "review_packet_id": "prp-grinder-tr-20260920T193935Z-ondemand",
+    "review_packet_sha256": "0fdbdc494a747c0a6501b3e5f2dccbc2e3630633a8851c339eabf9db9ab8b929",
+    "review_status": "fresh",
+    "risk_capital_remaining_usd": 100000000.0,
+    "risk_capital_usd": 0.0,
+    "schema_version": 1,
+    "subagent_count": 0,
+    "trader_room_run_id": "tr-20260920T193935Z-ondemand",
+    "type": "PM_AUTOMATED_APPLY_RECEIPT"
+  }
+}

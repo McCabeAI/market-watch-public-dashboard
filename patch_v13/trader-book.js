@@ -162,7 +162,10 @@
     const realized = seats.reduce(function (sum, seat) { return sum + (finite(seat.realized_pnl_usd) ? seat.realized_pnl_usd : 0); }, 0);
     const unrealized = seats.reduce(function (sum, seat) { return sum + (finite(seat.unrealized_pnl_usd) ? seat.unrealized_pnl_usd : 0); }, 0);
     const funding = seats.reduce(function (sum, seat) { return sum + (finite(seat.funding_cost_usd) ? seat.funding_cost_usd : 0); }, 0);
-    const cashYield = seats.reduce(function (sum, seat) { return sum + (finite(seat.cash_yield_usd) ? seat.cash_yield_usd : 0); }, 0);
+    const netFinancing = seats.reduce(function (sum, seat) {
+      if (finite(seat.net_financing_pnl_usd)) return sum + seat.net_financing_pnl_usd;
+      return sum - (finite(seat.funding_cost_usd) ? seat.funding_cost_usd : 0);
+    }, 0);
     const netPnl = sumKnownPnl(seats, function (seat) { return seat.net_pnl_usd; });
     traderTotalPnl = netPnl;
     renderSystemSummary();
@@ -243,12 +246,12 @@
       esc(packet.seat_count || seats.length) + '</b></div><div class="tb-kpi"><span>Combined NAV</span><b>' +
       money(nav) + '</b></div><div class="tb-kpi"><span>Net P&amp;L</span><b class="' +
       cls(netPnl) + '">' + money(netPnl) + '</b></div><div class="tb-kpi"><span>Funding costs</span><b>-' +
-      money(funding).replace("-", "") + '</b></div><div class="tb-kpi"><span>Cash yield</span><b class="tb-pos">' +
-      money(cashYield) + '</b></div><div class="tb-kpi"><span>Open sleeves</span><b>' +
+      money(funding).replace("-", "") + '</b></div><div class="tb-kpi"><span>Net financing</span><b class="' +
+      cls(netFinancing) + '">' + money(netFinancing) + '</b></div><div class="tb-kpi"><span>Open sleeves</span><b>' +
       openCount + "</b></div></div></section>" +
       '<section class="tb-panel"><div class="tb-panel-head"><h3>Overnight position changes</h3><p>OPEN / ADD / REDUCE / HEDGE / CLOSE applied in the latest review</p></div><div class="tb-changes">' +
       changeHtml + "</div></section>" +
-      '<section class="tb-panel"><div class="tb-panel-head"><h3>P&amp;L leaderboard</h3><p>All seats use the same financing rule: official SOFR on standard-shock risk capital. Notional is descriptive; the hard drawdown stop is separate.</p></div><div class="tb-changes">' +
+      '<section class="tb-panel"><div class="tb-panel-head"><h3>P&amp;L leaderboard</h3><p>Official SOFR is the zero-return benchmark. Competition P&amp;L subtracts SOFR only on standard-shock risk capital; flat books earn zero financing P&amp;L. Notional is descriptive; the hard drawdown stop is separate.</p></div><div class="tb-changes">' +
       leaderboardHtml + "</div></section>" +
       '<section class="tb-panel"><div class="tb-panel-head"><h3>Seat books</h3><p>Each trader has a $10m risk limit per 1% standard move and a $5m max drawdown. A breached book is forcibly flattened and marked RISK_STOPPED.</p></div><div class="tb-seat-grid">' +
       seatHtml + "</div></section>" +

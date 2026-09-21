@@ -13,7 +13,7 @@ This is the four-PM layer above the locked 14-seat Trader Room. It does not chan
 | `pragmatist` | Opportunistic macro. Can swing big or grind singles/doubles. | $100m shocked risk | allowed |
 | `grinder` | Preservation/consistency first. Smaller sizes, high hurdles, quick de-risking. No-trade is valid. | $100m shocked risk | allowed |
 
-Each PM has **$1bn paper NAV**, but notional is descriptive rather than the binding risk limit. Trusted code caps each book at **$100m of standard-shock risk capital** and enforces a **$50m drawdown from high-water NAV**. Risk capital is the absolute MTM loss from the standard adverse move: 1% in spot FX, 100bp in outright rates, or 100bp in curve/RV spreads. PMs earn official NY Fed SOFR ACT/360 on the full paper cash hurdle and pay the same SOFR on shocked risk capital; equal risk capital receives equal financing treatment across asset classes. If deterministic marks are insufficient to compute risk capital, expansion fails closed. Official NY Fed SOFR is the realized funding authority; SR3 is forward context; a model funding forecast cannot mutate realized accounting. After every action, trusted code requires:
+Each PM has **$1bn paper NAV**, but notional is descriptive rather than the binding risk limit. Trusted code caps each book at **$100m of standard-shock risk capital** and enforces a **$50m drawdown from high-water NAV**. Risk capital is the absolute MTM loss from the standard adverse move: 1% in spot FX, 100bp in outright rates, or 100bp in curve/RV spreads. Official NY Fed SOFR ACT/360 is the zero-return benchmark: paper cash may be described as earning SOFR, but it is equally funded/benchmarked at SOFR so those flows cancel. Deployed shocked-risk capital pays the same SOFR; equal risk capital receives equal financing treatment across asset classes. A completely flat PM book, including Grinder, has zero net financing/competition P&L. Positive financing/carry alpha requires an explicit markable strategy that earns above SOFR or funds below SOFR. If deterministic marks are insufficient to compute risk capital, expansion fails closed. Official NY Fed SOFR is the realized funding authority; SR3 is forward context; a model funding forecast cannot mutate realized accounting. After every action, trusted code requires:
 
 ```
 sum(position shocked-risk capital) <= 100_000_000
@@ -72,6 +72,8 @@ Trusted code hydrates marks, checks packet id/hash/freshness, enforces instrumen
 ## Optional automated PM decisions
 
 Overnight `scheduled_output.json` may include `pm_decisions` for exactly `swinger`, `pragmatist`, and `grinder`. Absence remains valid; automated PM state stays awaiting/stale rather than fabricated. If present, each decision is applied independently and must declare `principal_model`, `subagent_count` (0–3), and `subagent_models` in `{grok-4.6, composer-2.5}`. This repository does not invoke those models.
+
+Pragmatist keeps its opportunistic mandate, but every automated Pragmatist decision must include a validated `portfolio_construction` section before final actions: the existing book, independent markable Trader Room handoff opportunities when available, the main adverse scenario for the current book, whether candidates complement/diversify/offset or merely duplicate beta, and reasons for adding or rejecting complementary trades. One-position and flat outcomes remain valid; diversification is not forced and no named pair is mandatory. Swinger may still concentrate. Grinder may still stay flat. ChatGPT remains unconstrained.
 
 ## Public dashboard
 

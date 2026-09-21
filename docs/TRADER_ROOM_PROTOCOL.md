@@ -33,14 +33,14 @@ The production conflict stage and final PM handoff are deterministic. The histor
 
 The room has a strong preference for rates expressions when the same macro discrepancy can be traded cleanly in rates. This is an expression preference, not a quota and not permission to manufacture a rates trade.
 
-- `dollar-king` and `cross-merchant` are dedicated spot-FX specialists and remain spot-only.
-- `vol-convexity` remains the dedicated options/convexity specialist.
-- Every other seat is rates-first whenever it submits a trade. It must first construct a concrete interest-rate candidate using outright duration, curve, or cross-market rates RV, then construct the best spot-FX alternative, then compare them.
-- Rates are the default choice when the two expressions are comparably clean. A rates-first seat may choose spot only when spot is genuinely the cleaner expression and it explicitly states why the rates candidate is inferior or not executable from the frozen packet.
+- `dollar-king` and `cross-merchant` are dedicated spot-FX specialists and remain spot-only. They are not forced through a rates tenor scan.
+- `vol-convexity` remains the dedicated options/convexity specialist and is not forced through a rates tenor scan.
+- Every other seat is rates-first whenever it submits a trade. Before selecting its final rates candidate it must complete `rates_tenor_scan` across STIR/policy path, 2Y, 5Y, 10Y, curve, and cross-market rates RV. Each bucket is a concrete candidate or an explicit unavailable/not-compelling reason. It then chooses the best rates expression from that scan and compares it with the best spot-FX alternative. This does not force a tenor and does not force rates over spot.
+- Rates are the default choice when the two expressions are comparably clean. A rates-first seat may choose spot only when spot is genuinely the cleaner expression and it explicitly states why the selected rates candidate is inferior or not executable from the frozen packet.
 - A rates-first seat may choose options only when unusually compelling versus both rates and spot and must say why.
-- `no-trade-skeptic` may still submit no trade. If it endorses a trade, the same rates-first comparison applies.
+- `no-trade-skeptic` may still submit no trade without manufacturing the tenor scan. If it endorses a trade, the same tenor scan and rates-first comparison apply.
 
-Every non-null trade carries `asset_class` and `expression_comparison`. The comparison records a rates candidate, a spot candidate, the selected expression family, and the rationale. Deterministic validation rejects a rates-first submission that skips either candidate.
+Every non-null trade carries `asset_class` and `expression_comparison`. For rates-capable seats the comparison records a complete `rates_tenor_scan`, a rates candidate, a spot candidate, the selected expression family, and the rationale. Deterministic validation fails closed when a rates-capable submission omits or malforms the tenor scan or skips either candidate.
 
 ## Context gate
 
@@ -63,11 +63,12 @@ A statistical extreme is a discovery signal, never sufficient evidence. For a sh
 
 The standing seats are paper portfolio managers competing for **highest cumulative net P&L** across the persistent Trader Book. Analysis is a means to that outcome, not the score.
 
-- The 13 seats other than `no-trade-skeptic` each borrow their full **$100m** paper allocation and pay the **latest published prior-day official NY Fed SOFR, simple ACT/360**, on that full amount for every newly accrued calendar day in that run. Being flat does not stop the vig. The frozen prior-day fixing is used for the run with no later true-up.
-- `no-trade-skeptic` is the benchmark cash manager. It pays no funding charge and earns the same official daily SOFR ACT/360 on the undeployed portion of its original $100m allocation. Any capital it deploys stops earning that yield while deployed.
-- Leaderboard P&L is gross realized + unrealized trading P&L, **minus funding for the 13 funded traders or plus undeployed-cash yield for the skeptic**.
-- `NO TRADE` remains legitimate. For the 13 funded traders it carries a real opportunity/funding cost; for the skeptic it is the positive cash benchmark. Every fresh scheduled daily no-trade-skeptic decision, including `HOLD`, must include a structured `funding_view` (frozen official SOFR, relevant SR3 forward-curve view, whether realized funding is expected higher/lower/about the same, and the cash-versus-risk implication).
-- Traders should not optimize for avoiding mistakes. If the frozen packet shows a tradeable discrepancy whose expected edge clears the observed SOFR hurdle and has a defined invalidation, the seat should be willing to risk paper capital.
+- Official NY Fed SOFR, simple ACT/360, is the **zero-return competition benchmark**, not free alpha. Every seat has **$100m** paper NAV that may be described as earning SOFR, but that capital is equally funded/benchmarked at SOFR so those flows cancel. The frozen prior-day fixing is used for the run with no later true-up.
+- Any deployed shocked-risk capital pays the same official SOFR on trusted standard-shock risk capital (1% spot, 100bp outright rates, 100bp curve/RV). Equal shocked risk receives equal financing treatment across asset classes. Face notional is not the funding basis.
+- A completely flat book — including `no-trade-skeptic` — has **zero net financing/competition P&L** from SOFR cash or funding economics. There is no special cash-manager subsidy. Positive financing/carry alpha requires an explicit markable strategy that genuinely earns above SOFR or funds below SOFR.
+- Leaderboard P&L is gross realized + unrealized trading P&L **minus official SOFR on current shocked-risk capital**. Baseline cash yield and the matching SOFR benchmark cancel.
+- `NO TRADE` remains legitimate. It is the zero SOFR benchmark, not a positive cash yield. Every fresh scheduled daily no-trade-skeptic decision, including `HOLD`, must include a structured `funding_view` (frozen official SOFR, relevant SR3 forward-curve view, whether realized funding is expected higher/lower/about the same, and the implication for remaining at the zero benchmark versus paying SOFR on shocked-risk capital).
+- Traders should not optimize for avoiding mistakes. If the frozen packet shows a tradeable discrepancy whose expected edge clears the observed SOFR hurdle on shocked-risk capital and has a defined invalidation, the seat should be willing to risk paper capital.
 - Do not force low-quality trades or invent executable levels. The incentive is to make profitable decisions under uncertainty, not to maximize trade count.
 - Funding and leaderboard accounting are deterministic book mechanics. Official NY Fed SOFR is the realized funding authority; SR3 is forward context only. There is no fixed 5% assumption. Advocates may reason about the observed hurdle but may not author or alter canonical P&L, funding charges, NAV, or rank.
 

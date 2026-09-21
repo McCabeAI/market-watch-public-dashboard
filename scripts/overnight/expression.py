@@ -15,6 +15,12 @@ from scripts.overnight.constants import (
     VOL_LAST_RESORT_SEAT,
 )
 from scripts.overnight.errors import SchemaError
+from scripts.trader_room.errors import SchemaError as TraderSchemaError
+from scripts.trader_room.rates_scan import (
+    EXPANDING_TENOR_SCAN_ACTIONS,
+    requires_rates_tenor_scan,
+    validate_rates_tenor_scan,
+)
 
 
 def expression_rule(seat: str) -> str:
@@ -86,6 +92,11 @@ def validate_expression_memo(memo: dict[str, Any] | None, *, seat: str, action: 
             raise SchemaError(f"{seat} must compare a spot candidate before selecting {selected}")
         if memo["rates_candidate"]["asset_class"] not in {"rates", "curve", "rates_rv"}:
             raise SchemaError(f"{seat} rates_candidate.asset_class must be rates, curve, or rates_rv")
+        if requires_rates_tenor_scan(seat) and action in EXPANDING_TENOR_SCAN_ACTIONS:
+            try:
+                validate_rates_tenor_scan(memo.get("rates_tenor_scan"), agent=seat, required=True)
+            except TraderSchemaError as exc:
+                raise SchemaError(str(exc)) from exc
     if selected == "options":
         if seat != VOL_LAST_RESORT_SEAT and action in {"OPEN", "ADD"}:
             raise SchemaError(f"{seat} may use options only as an explicit last resort; default seats must not OPEN options")

@@ -47,6 +47,52 @@
       "run_id": "tr-20260920T020818Z-ondemand",
       "schema_version": 1,
       "thesis": "FACT: Housing turnover and prices are already contracting under current AONIA 4.35, AU employment fell 15.8k, unemployment rose to 4.5%, September consumer sentiment fell 5.2% to 84.4, and IB still prices a 4.94 area 2027 H1 terminal (~59bp over cash). INFERENCE: that residual hike path is a policy error into a housing bust and will be cut as labor/housing data stay weak; receiving the 2027 H1 AONIA strip is the cleanest slowdown expression. UNKNOWN: whether trimmed-mean 3.6%, the energy shock, or one more RBA hike lands before the housing channel dominates. Sidecar open_positions is empty, so this is a new OPEN versus the $100m cap, not an add to an existing IB position."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-06",
+          "notional_usd": 55000000,
+          "position_id": "pos-3b40ade3da2c",
+          "rationale": "Sidecar already has LONG AONIA_2027-06 pos-3b40ade3da2c at 4.9075 / 55m; do not OPEN a duplicate. Housing/labor evidence still supports receive-duration, but inflation score 82, energy overlay and thin back-IB liquidity argue against ADD. Shocked risk remains 0.55m versus the 10m cap. Routed conflicts were USD/CAD/NZD views, not a same-instrument opposite of this receive.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-09-20T16:06:28.069463-04:00",
+      "conviction": 62,
+      "decision_fingerprint": "86f568ecfb9be91dec60ef5a0867505ff2cbb48e9806f712f3d61f6de461a0d8",
+      "event_id": "jde-b621829f77cd457c",
+      "funding_view": null,
+      "invalidation": "RBA delivers or IB prices the remaining 50-60bp while housing and labor stop deteriorating.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-3b40ade3da2c"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "c9cd8f8c48fe6524a880415ec14ee572253badbb25ff366507331fce35979b6a",
+      "outcome_links": [],
+      "owner_id": "perma-bear",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-20T19:39:35Z",
+        "evidence_hash": "02d6976dd0d2606bae7efa7c3f2cc41aeac6ccfbf50d5251260f71390ba24d5b",
+        "overnight_run_id": null,
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260920T193935Z-ondemand"
+      },
+      "rationale": "FACT: Australian housing is already contracting under higher rates, labor is loosening, and September consumer sentiment reversed lower, while IB still prices AONIA 4.94 in 2027-06 versus overnight 4.35. INFERENCE: that remaining hike cycle is a policy-error / slowdown tail. Receiving the locked AONIA 2027 H1 strip is the defensive expression: it pays if housing transmission forces the RBA off the extra ~50\u201360bp, without needing a global crash. UNKNOWN: whether one more delivered hike still prints before the Board reacts.",
+      "run_id": "tr-20260920T193935Z-ondemand",
+      "schema_version": 1,
+      "thesis": "FACT: Australian housing is already contracting under higher rates, labor is loosening, and September consumer sentiment reversed lower, while IB still prices AONIA 4.94 in 2027-06 versus overnight 4.35. INFERENCE: that remaining hike cycle is a policy-error / slowdown tail. Receiving the locked AONIA 2027 H1 strip is the defensive expression: it pays if housing transmission forces the RBA off the extra ~50\u201360bp, without needing a global crash. UNKNOWN: whether one more delivered hike still prints before the Board reacts."
     }
   ],
   "schema_version": 1,

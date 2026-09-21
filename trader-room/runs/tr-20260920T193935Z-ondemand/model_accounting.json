@@ -1,0 +1,85 @@
+{
+  "allowed_models": [
+    "composer-2.5",
+    "grok-4.6"
+  ],
+  "automated_pms": {
+    "agent_ids": {
+      "grinder": "bc-a45b9dcf-41bb-522f-9fac-980e93e9b6f9",
+      "pragmatist": "bc-35fdc9ed-b190-5b70-9c26-b0ca0e7aedef",
+      "swinger": "bc-4b6e51c8-33d6-560d-b040-0df7ef9580d6"
+    },
+    "chatgpt_current_cycle_decision": "not_generated_not_applied",
+    "composer": 0,
+    "composer_children": 0,
+    "grok": 3,
+    "principal_launch": "cursor_custom_agent",
+    "principal_launches": 3,
+    "principal_model": "grok-4.6",
+    "principals": [
+      "swinger",
+      "pragmatist",
+      "grinder"
+    ],
+    "total": 3
+  },
+  "parent_grok": 1,
+  "parent_model": "grok-4.6",
+  "parent_total": 1,
+  "rebuttal_agent_ids": {
+    "carry-is-king": "bc-6cac05e3-067a-5c72-9c5e-5acd66e5ca33",
+    "catalyst-junkie": "bc-5fe7f953-b4b5-5811-bd88-538dd25401d3",
+    "cross-merchant": "bc-8e5166b9-8a97-57cf-a85b-2a3d449f512d",
+    "dollar-king": "bc-be5ded83-2fcb-5f0b-899c-5f4ed7d53a6c",
+    "mean-reverter": "bc-8808788f-ef8c-5318-ad15-7acfbc4c1deb",
+    "perma-bear": "bc-477a3239-5a9a-55c0-be39-4f301bdaafd4",
+    "perma-bull": "bc-a1d4d611-bc39-5ca1-ab65-3a0323deb41f",
+    "positioning-cynic": "bc-8abd2d32-9b2f-5d77-aa8f-162be1a429e0",
+    "rate-dove": "bc-c078b8eb-1e69-5976-a634-d9e2ad141c2d",
+    "rate-hawk": "bc-9a3bbc79-88dc-5605-97de-418aafeb3881",
+    "trend-follower": "bc-81ec3b6f-0bb8-51c2-a277-cedbb291608e",
+    "value-guy": "bc-2b173ba2-0d93-57fe-a3b7-651c1efe02d6",
+    "vol-convexity": "bc-4de11df1-2298-5f18-9b81-a0a478b3709d"
+  },
+  "run_id": "tr-20260920T193935Z-ondemand",
+  "schema_version": 1,
+  "totals": {
+    "composer_2_5": 0,
+    "grok_4_6": 31,
+    "job_composer_ceiling": 37,
+    "job_grok_ceiling_including_parent": 32,
+    "job_total_ceiling": 69,
+    "total_model_invocations": 31
+  },
+  "trader_room": {
+    "advocate_composer_children": 0,
+    "advocate_launches": 14,
+    "advocate_model": "grok-4.6",
+    "composer": 0,
+    "conflict_map_model_calls": 0,
+    "final_handoff_model_calls": 0,
+    "grok": 27,
+    "rebuttal_launches": 13,
+    "rebuttal_model": "grok-4.6",
+    "rebuttal_seats": [
+      "carry-is-king",
+      "catalyst-junkie",
+      "cross-merchant",
+      "dollar-king",
+      "mean-reverter",
+      "perma-bear",
+      "perma-bull",
+      "positioning-cynic",
+      "rate-dove",
+      "rate-hawk",
+      "trend-follower",
+      "value-guy",
+      "vol-convexity"
+    ],
+    "rebuttal_skipped": [
+      "no-trade-skeptic"
+    ],
+    "total": 27
+  },
+  "type": "MODEL_CALL_ACCOUNTING"
+}

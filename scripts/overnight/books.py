@@ -7,6 +7,12 @@ from datetime import datetime
 from typing import Any
 from uuid import uuid4
 
+from scripts.funding.accounting import (
+    FUNDING_REGIME_ZERO_BENCHMARK,
+    apply_zero_return_sofr_migration,
+    attach_financing_fields,
+    competition_net_pnl,
+)
 from scripts.funding.sofr import (
     FUNDING_CONVENTION,
     FUNDING_DAY_COUNT,
@@ -179,26 +185,28 @@ def accrue_funding(
 ) -> dict[str, float]:
     """Accrue official NY Fed SOFR ACT/360 on shocked risk capital.
 
-    Every seat earns the common cash hurdle on its starting paper NAV. Risk-taking
-    books additionally pay SOFR on current standard-shock risk capital; notional itself
-    is never treated as borrowed principal. The no-trade skeptic has zero risk
-    capital while flat and therefore pays no financing charge.
+    Paper NAV may be described as earning SOFR, but the same principal is
+    benchmarked at SOFR so those flows cancel in competition P&L. Deployed
+    shocked-risk capital pays official SOFR; notional is never borrowed
+    principal. A flat book, including no-trade-skeptic, has zero net financing.
     """
+    apply_zero_return_sofr_migration(seat_book, paper_nav=STARTING_NAV_USD)
     seat_book.setdefault("funding_cost_usd", 0.0)
     seat_book.setdefault("cash_yield_usd", 0.0)
+    seat_book.setdefault("benchmark_cost_usd", 0.0)
     _attach_observed_rate(seat_book, market_state)
     _attach_allocation_fields(seat_book)
     last_raw = seat_book.get("funding_last_accrual_at")
     if not last_raw:
         seat_book["funding_last_accrual_at"] = isoformat(when)
-        seat_book["funding_regime"] = "sofr_risk_capital_1pct"
-        return {"funding_cost_usd": 0.0, "cash_yield_usd": 0.0}
+        seat_book["funding_regime"] = FUNDING_REGIME_ZERO_BENCHMARK
+        return {"funding_cost_usd": 0.0, "cash_yield_usd": 0.0, "benchmark_cost_usd": 0.0}
     try:
         last = datetime.fromisoformat(str(last_raw))
     except ValueError as exc:
         raise SchemaError(f"invalid funding accrual timestamp {last_raw}") from exc
     if (when - last).total_seconds() <= 0:
-        return {"funding_cost_usd": 0.0, "cash_yield_usd": 0.0}
+        return {"funding_cost_usd": 0.0, "cash_yield_usd": 0.0, "benchmark_cost_usd": 0.0}
 
     history = extract_sofr_history(market_state or {}, seat_book.get("funding_context") or {})
     principal = float(seat_book.get("risk_capital_usd") or 0.0)
@@ -208,19 +216,24 @@ def accrue_funding(
     except FundingHistoryError as exc:
         seat_book.setdefault("alerts", []).append(f"funding_accrual_failed_closed: {exc}")
         seat_book["funding_accrual_status"] = "failed_closed"
-        return {"funding_cost_usd": 0.0, "cash_yield_usd": 0.0, "failed_closed": True}
+        return {"funding_cost_usd": 0.0, "cash_yield_usd": 0.0, "benchmark_cost_usd": 0.0, "failed_closed": True}
 
     funding_increment = funding_accrual["amount"]
     cash_yield_increment = cash_accrual["amount"]
+    benchmark_increment = cash_yield_increment
     seat_book["funding_cost_usd"] = round(float(seat_book.get("funding_cost_usd") or 0.0) + funding_increment, 2)
     seat_book["cash_yield_usd"] = round(float(seat_book.get("cash_yield_usd") or 0.0) + cash_yield_increment, 2)
+    seat_book["benchmark_cost_usd"] = round(float(seat_book.get("benchmark_cost_usd") or 0.0) + benchmark_increment, 2)
     seat_book["cash_usd"] = round(
-        float(seat_book.get("cash_usd", STARTING_NAV_USD)) + cash_yield_increment - funding_increment,
+        float(seat_book.get("cash_usd", STARTING_NAV_USD))
+        + cash_yield_increment
+        - benchmark_increment
+        - funding_increment,
         2,
     )
 
     seat_book["funding_last_accrual_at"] = isoformat(when)
-    seat_book["funding_regime"] = "sofr_risk_capital_1pct"
+    seat_book["funding_regime"] = FUNDING_REGIME_ZERO_BENCHMARK
     seat_book["funding_accrual_status"] = "applied"
     seat_book["funding_rate_annual"] = cash_accrual["funding_rate_annual"] or funding_accrual["funding_rate_annual"]
     seat_book["funding_percent_rate"] = cash_accrual["latest_percent_rate"] or funding_accrual["latest_percent_rate"]
@@ -246,11 +259,17 @@ def accrue_funding(
                 "funding_base_usd": principal,
                 "risk_capital_usd": principal,
                 "cash_yield_base_usd": STARTING_NAV_USD,
+                "benchmark_cost_base_usd": STARTING_NAV_USD,
                 "funding_cost_usd": funding_increment,
                 "cash_yield_usd": cash_yield_increment,
+                "benchmark_cost_usd": benchmark_increment,
             }
         )
-    return {"funding_cost_usd": funding_increment, "cash_yield_usd": cash_yield_increment}
+    return {
+        "funding_cost_usd": funding_increment,
+        "cash_yield_usd": cash_yield_increment,
+        "benchmark_cost_usd": benchmark_increment,
+    }
 
 def _rate_delta_fraction(asset_class: str | None, delta: float) -> float:
     """Convert a stored rates mark change into decimal-rate units.
@@ -328,13 +347,15 @@ def empty_seat(seat: str) -> dict[str, Any]:
         "gross_pnl_usd": 0.0,
         "funding_cost_usd": 0.0,
         "cash_yield_usd": 0.0,
+        "benchmark_cost_usd": 0.0,
+        "net_financing_pnl_usd": 0.0,
         "funding_rate_annual": None,
         "funding_percent_rate": None,
         "funding_effective_date": None,
         "funding_day_count": FUNDING_DAY_COUNT,
         "funding_convention": FUNDING_CONVENTION,
         "funding_source": FUNDING_SOURCE,
-        "funding_regime": "sofr_risk_capital_1pct",
+        "funding_regime": FUNDING_REGIME_ZERO_BENCHMARK,
         "funding_last_accrual_at": None,
         "risk_capital_usd": 0.0,
         "risk_capital_limit_usd": RISK_CAPITAL_LIMIT_USD,
@@ -480,18 +501,28 @@ def mark_to_market(
     seat_book["unrealized_pnl_usd"] = round(unrealized, 2)
     seat_book["pnl_unavailable"] = missing
     gross = round(float(seat_book.get("realized_pnl_usd") or 0.0) + unrealized, 2)
-    funding = round(float(seat_book.get("funding_cost_usd") or 0.0), 2)
-    cash_yield = round(float(seat_book.get("cash_yield_usd") or 0.0), 2)
+    apply_zero_return_sofr_migration(seat_book, paper_nav=float(seat_book.get("starting_nav_usd") or STARTING_NAV_USD))
+    attach_financing_fields(seat_book, gross=None if missing else gross, missing=missing)
     seat_book["gross_pnl_usd"] = None if missing else gross
-    seat_book["funding_cost_usd"] = funding
-    seat_book["cash_yield_usd"] = cash_yield
     _attach_observed_rate(seat_book)
-    seat_book["net_pnl_usd"] = None if missing else round(gross - funding + cash_yield, 2)
+    cash_yield = round(float(seat_book.get("cash_yield_usd") or 0.0), 2)
+    benchmark = round(float(seat_book.get("benchmark_cost_usd") or 0.0), 2)
+    funding = round(float(seat_book.get("funding_cost_usd") or 0.0), 2)
     seat_book["cash_usd"] = round(
-        float(seat_book["starting_nav_usd"]) + float(seat_book.get("realized_pnl_usd") or 0.0) - funding + cash_yield,
+        float(seat_book["starting_nav_usd"])
+        + float(seat_book.get("realized_pnl_usd") or 0.0)
+        - funding
+        + cash_yield
+        - benchmark,
         2,
     )
-    seat_book["nav_usd"] = round(float(seat_book["starting_nav_usd"]) + gross - funding + cash_yield, 2)
+    known_net = competition_net_pnl(
+        gross,
+        funding_cost_usd=funding,
+        cash_yield_usd=cash_yield,
+        benchmark_cost_usd=benchmark,
+    )
+    seat_book["nav_usd"] = round(float(seat_book["starting_nav_usd"]) + known_net, 2)
     _attach_allocation_fields(seat_book)
 
     seat_book.setdefault("max_drawdown_usd", MAX_DRAWDOWN_USD)
@@ -891,7 +922,6 @@ def validate_books(books: dict[str, Any]) -> dict[str, Any]:
         item.setdefault("funding_cost_usd", 0.0)
         item.setdefault("cash_yield_usd", 0.0)
         item.setdefault("funding_last_accrual_at", None)
-        item.setdefault("funding_regime", "legacy_pending_sofr" if item.get("funding_last_accrual_at") else "sofr_risk_capital_1pct")
         item.setdefault("risk_capital_limit_usd", RISK_CAPITAL_LIMIT_USD)
         item.setdefault("max_drawdown_usd", MAX_DRAWDOWN_USD)
         item.setdefault("high_water_nav_usd", float(item.get("starting_nav_usd") or STARTING_NAV_USD))
@@ -923,6 +953,8 @@ def public_books_view(books: dict[str, Any]) -> dict[str, Any]:
                 "gross_pnl_usd": item.get("gross_pnl_usd"),
                 "funding_cost_usd": item.get("funding_cost_usd", 0.0),
                 "cash_yield_usd": item.get("cash_yield_usd", 0.0),
+                "benchmark_cost_usd": item.get("benchmark_cost_usd", 0.0),
+                "net_financing_pnl_usd": item.get("net_financing_pnl_usd"),
                 "funding_rate_annual": item.get("funding_rate_annual"),
                 "funding_percent_rate": item.get("funding_percent_rate"),
                 "funding_effective_date": item.get("funding_effective_date"),
@@ -1004,6 +1036,8 @@ def public_books_view(books: dict[str, Any]) -> dict[str, Any]:
             "gross_pnl_usd": row["gross_pnl_usd"],
             "funding_cost_usd": row["funding_cost_usd"],
             "cash_yield_usd": row["cash_yield_usd"],
+            "benchmark_cost_usd": row.get("benchmark_cost_usd", 0.0),
+            "net_financing_pnl_usd": row.get("net_financing_pnl_usd"),
             "pnl_unavailable": row["pnl_unavailable"],
         }
         for row in sorted(

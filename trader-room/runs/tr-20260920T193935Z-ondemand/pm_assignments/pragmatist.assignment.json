@@ -1,0 +1,126 @@
+{
+  "allowable_actions": [
+    "OPEN",
+    "ADD",
+    "HOLD",
+    "REDUCE",
+    "HEDGE",
+    "CLOSE",
+    "NO_TRADE"
+  ],
+  "evidence_cutoff": "2026-09-20T19:39:35Z",
+  "evidence_packet_sha256": "02d6976dd0d2606bae7efa7c3f2cc41aeac6ccfbf50d5251260f71390ba24d5b",
+  "independence": "Read only this PM's packet/memory/assignment. Do not read other PMs' packets, memory, books, or current-cycle decisions.",
+  "mandate": {
+    "awaiting_status": "awaiting_automated_pm_review",
+    "hedge_allowed": true,
+    "label": "Pragmatist",
+    "shorthand": "Opportunistic macro. Can swing big or grind singles/doubles. May hedge.",
+    "style": "opportunistic"
+  },
+  "memory": {
+    "active_lessons": [],
+    "calibration": {
+      "average_holding_seconds": null,
+      "average_realized_pnl_usd": null,
+      "breakeven": 0,
+      "by_asset_class": {},
+      "closed_trade_count": 0,
+      "conviction_buckets": {
+        "high": {
+          "average_pnl_usd": null,
+          "count": 0,
+          "hit_rate": null
+        },
+        "low": {
+          "average_pnl_usd": null,
+          "count": 0,
+          "hit_rate": null
+        },
+        "medium": {
+          "average_pnl_usd": null,
+          "count": 0,
+          "hit_rate": null
+        }
+      },
+      "losses": 0,
+      "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
+      "total_realized_pnl_usd": 0.0,
+      "wins": 0
+    },
+    "memory_context_sha256": "ad0fc97f559059f0e741f6f2fe94e2187e50891b567539cd863cd392fa9dfdf7",
+    "open_positions": [
+      {
+        "asset_class": "rates",
+        "conviction": 58,
+        "current_notional_usd": 450000000.0,
+        "entry_mark": 3.13,
+        "instrument": "CORRA_2027-03",
+        "opened_at": "2026-09-19T22:52:44.447221-04:00",
+        "position_id": "pm-pragmatist-4e0cbc4e0b05",
+        "risk_capital_usd": 4500000.0,
+        "side": "long",
+        "trade_id": "trd-pm-pragmatist-pm-pragmatist-4e0cbc4e0b05"
+      }
+    ],
+    "postmortems_due": [],
+    "recent_closed_trades": []
+  },
+  "memory_context_sha256": "ad0fc97f559059f0e741f6f2fe94e2187e50891b567539cd863cd392fa9dfdf7",
+  "paths": {
+    "assignment": "trader-room/runs/tr-20260920T193935Z-ondemand/pm_assignments/pragmatist.assignment.json",
+    "memory": "trader-room/runs/tr-20260920T193935Z-ondemand/pm_memory/pragmatist.json",
+    "named_packet": "data/pm/review_packets/pragmatist/prp-pragmatist-tr-20260920T193935Z-ondemand.json",
+    "packet_facts": "trader-room/runs/tr-20260920T193935Z-ondemand/PACKET_FACTS.json",
+    "review_packet": "data/pm/review_packets/pragmatist/latest.json",
+    "shared_facts": "trader-room/runs/tr-20260920T193935Z-ondemand/pm_shared_facts.json"
+  },
+  "pm_id": "pragmatist",
+  "prior_book": {
+    "conviction": 58,
+    "decision_status": "active",
+    "high_water_nav_usd": 1000000000.0,
+    "invalidation": "Thesis fails if BoC hikes or the 1m CORRA strip through Dec-2026 reprices toward the 2027 CRA mid-3s; if CPI-trim/median leave the 1.9/2.0 zone higher while employment stops contracting and wages re-accelerate; or if CORRA_2027-03 implied holds at or above the 3.13 entry because catch-up is actually being delivered. A US-only or energy-headline move that leaves CRAH27 unchanged is not invalidation. Wrong timing, not wrong thesis, if implieds chop around 3.13 without a new BoC hike signal.",
+    "last_action": "OPEN",
+    "nav_usd": 1000000000.0,
+    "pm_id": "pragmatist",
+    "positions": [
+      {
+        "asset_class": "rates",
+        "instrument": "CORRA_2027-03",
+        "invalidation": "Thesis fails if BoC hikes or the 1m CORRA strip through Dec-2026 reprices toward the 2027 CRA mid-3s; if CPI-trim/median leave the 1.9/2.0 zone higher while employment stops contracting and wages re-accelerate; or if CORRA_2027-03 implied holds at or above the 3.13 entry because catch-up is actually being delivered. A US-only or energy-headline move that leaves CRAH27 unchanged is not invalidation. Wrong timing, not wrong thesis, if implieds chop around 3.13 without a new BoC hike signal.",
+        "locked_expression_family": "corra",
+        "notional_usd": 450000000.0,
+        "opened_run_id": "tr-20260920T020818Z-ondemand",
+        "position_id": "pm-pragmatist-4e0cbc4e0b05",
+        "risk_capital_usd": 4500000.0,
+        "side": "long",
+        "thesis": "Receive MX CRAH27 / CORRA_2027-03 at the packet implied 3.13. That is the first 2027 three-month contract that prices a Canadian hiking cycle (+84bp vs CORRA cash 2.29) after 1m CORRA still only reaches 2.58 by Dec-2026 and Dec-26 3m CRAZ26 is 2.775. August labor (-42k, wages +2.0%) and CPI-trim/median 1.9/2.0 do not support delivering that 2027 path. Side long is duration-long in implied-rate space (profits if the 3.13 implied falls toward the still-alive near-term path).",
+        "unrealized_pnl_usd": -0.0
+      }
+    ],
+    "review_status": "stale",
+    "thesis": "Receive MX CRAH27 / CORRA_2027-03 at the packet implied 3.13. That is the first 2027 three-month contract that prices a Canadian hiking cycle (+84bp vs CORRA cash 2.29) after 1m CORRA still only reaches 2.58 by Dec-2026 and Dec-26 3m CRAZ26 is 2.775. August labor (-42k, wages +2.0%) and CPI-trim/median 1.9/2.0 do not support delivering that 2027 path. Side long is duration-long in implied-rate space (profits if the 3.13 implied falls toward the still-alive near-term path)."
+  },
+  "review_packet_id": "prp-pragmatist-tr-20260920T193935Z-ondemand",
+  "review_packet_sha256": "43441a949bc80b233580d774bb32717b6d78f567b9649511f47419aaf503d87c",
+  "risk": {
+    "cash_capital_usd": 1000000000,
+    "drawdown_usd": 0.0,
+    "gross_utilization_usd": 450000000.0,
+    "max_drawdown_usd": 50000000,
+    "risk_capital_limit_usd": 100000000,
+    "risk_capital_remaining_usd": 95500000.0,
+    "risk_capital_usd": 4500000.0,
+    "risk_stop_pending": false,
+    "risk_stopped": false
+  },
+  "run_id": "tr-20260920T193935Z-ondemand",
+  "sizing_instruction": "Size from plausible adverse paths and historical excursions. Notional is descriptive. Do not mechanically fill remaining shocked-risk capacity. OPEN/ADD/HEDGE fail closed while risk_stopped; there is no reset policy in this packet.",
+  "source": "on_demand_trader_room_fallback",
+  "stale_or_missing_warnings": [
+    "PM packet source is the on-demand Trader Room fallback, not a successful overnight 14-seat review."
+  ],
+  "trader_room_run_id": "tr-20260920T193935Z-ondemand",
+  "type": "PM_ASSIGNMENT"
+}

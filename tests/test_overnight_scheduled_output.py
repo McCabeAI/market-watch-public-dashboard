@@ -38,7 +38,7 @@ def _skeptic_funding_view() -> dict:
         "current_sofr": "Frozen official NY Fed SOFR fixing in funding_context.",
         "sr3_forward_view": "Frozen SR3 contracts are the relevant forward-funding path.",
         "forward_funding_assessment": "about_the_same",
-        "implication": "Prefer cash earning official SOFR unless a packet-supported trade beats that hurdle.",
+        "implication": "Remain at the zero official-SOFR benchmark unless a packet-supported trade beats SOFR charged on shocked-risk capital. Flat cash is not alpha.",
     }
 
 

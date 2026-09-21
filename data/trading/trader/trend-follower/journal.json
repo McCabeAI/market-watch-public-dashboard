@@ -47,6 +47,52 @@
       "run_id": "tr-20260920T020818Z-ondemand",
       "schema_version": 1,
       "thesis": "FACT: FOMC hiked 25bp to 3.75\u20134.00%; SOFR 3.85; US 2Y 4.76 with +57bp 1m and +9bp 1d; SR3H7 implied 4.58; US gauges 69\u201375; August CPI kept the tightening bias; BoJ hiked to 1.25% and BoE held 6\u20133 with three hike votes. INFERENCE: when price, policy and revisions are this aligned, the higher-rate trend persists and the SR3 2027 peak near 4.755 is a premature fade, not a terminal. UNKNOWN: the next official US inflation/labor print and any non-linear credit accident (the 2023-02 analog). Ride continuation in SOFR, do not fade USDCAD or AU housing as if they were reversal signals."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 50000000,
+          "position_id": "pos-662bff0986be",
+          "rationale": "Manage the existing short only. Path, policy and US gauges remain aligned higher and there is no reversal signal, but the 4.58 mark is unchanged versus entry so this is not an ADD. Do not OPEN a duplicate SOFR_2027-03. Keep 50m / 500k standard-shock risk capital inside the 10m cap.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-09-20T16:06:28.069463-04:00",
+      "conviction": 64,
+      "decision_fingerprint": "112180b8aaa339a67344d3e854eea4cd1c18c2da856650bb951809bbcf1ff0a9",
+      "event_id": "jde-84a96a8eeb00430e",
+      "funding_view": null,
+      "invalidation": "A US inflation or labor break that turns the SR3 strip and the US 2Y uptrend lower.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-662bff0986be"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "113718cbe277c2a7cb6e2692464a4099c572019c3103ccf9a01d4d79593a417d",
+      "outcome_links": [],
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-20T19:39:35Z",
+        "evidence_hash": "02d6976dd0d2606bae7efa7c3f2cc41aeac6ccfbf50d5251260f71390ba24d5b",
+        "overnight_run_id": null,
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260920T193935Z-ondemand"
+      },
+      "rationale": "FACT: Fed hiked 25bp to 3.75-4.00%; official SOFR is 3.85; SR3H7 / SOFR_2027-03 implied is 4.58, +73bp versus overnight; the strip still peaks at 4.755 in Sep-27; US 2Y 4.76 is +57bp 1m and +9bp 1d; US gauges remain 69-75; BoJ hiked to 1.25% and the desk thesis says the energy shock is constraining global easing. INFERENCE: price, the rate strip, and macro revisions are still aligned with a hiking trend; 99th-percentile yields are what a continuing trend looks like, not a reversal. The clean continuation is to stay short duration in SOFR_2027-03 rather than fade it or migrate to spot. UNKNOWN: live CME positioning, post-18 Sep SR3 ticks, and whether the next CPI/labor print breaks the hot-gauge regime. Book action is HOLD of pos-662bff0986be at 50m; do not OPEN a second SOFR_2027-03.",
+      "run_id": "tr-20260920T193935Z-ondemand",
+      "schema_version": 1,
+      "thesis": "FACT: Fed hiked 25bp to 3.75-4.00%; official SOFR is 3.85; SR3H7 / SOFR_2027-03 implied is 4.58, +73bp versus overnight; the strip still peaks at 4.755 in Sep-27; US 2Y 4.76 is +57bp 1m and +9bp 1d; US gauges remain 69-75; BoJ hiked to 1.25% and the desk thesis says the energy shock is constraining global easing. INFERENCE: price, the rate strip, and macro revisions are still aligned with a hiking trend; 99th-percentile yields are what a continuing trend looks like, not a reversal. The clean continuation is to stay short duration in SOFR_2027-03 rather than fade it or migrate to spot. UNKNOWN: live CME positioning, post-18 Sep SR3 ticks, and whether the next CPI/labor print breaks the hot-gauge regime. Book action is HOLD of pos-662bff0986be at 50m; do not OPEN a second SOFR_2027-03."
     }
   ],
   "schema_version": 1,

@@ -1,12 +1,17 @@
 {
   "active_lessons": [],
-  "as_of": "2026-09-19T22:36:50.082404-04:00",
+  "as_of": "2026-09-20T16:06:28.069463-04:00",
   "calibration": {
-    "average_holding_seconds": null,
-    "average_realized_pnl_usd": null,
-    "breakeven": 0,
-    "by_asset_class": {},
-    "closed_trade_count": 0,
+    "average_holding_seconds": 62977,
+    "average_realized_pnl_usd": 0.0,
+    "breakeven": 1,
+    "by_asset_class": {
+      "rates": {
+        "count": 1,
+        "total_realized_pnl_usd": 0.0
+      }
+    },
+    "closed_trade_count": 1,
     "conviction_buckets": {
       "high": {
         "average_pnl_usd": null,
@@ -19,8 +24,8 @@
         "hit_rate": null
       },
       "medium": {
-        "average_pnl_usd": null,
-        "count": 0,
+        "average_pnl_usd": 0.0,
+        "count": 1,
         "hit_rate": null
       }
     },
@@ -29,24 +34,57 @@
     "total_realized_pnl_usd": 0.0,
     "wins": 0
   },
-  "memory_context_sha256": "4d45477cbfebd331e766ea082e901d6fa94263304f1cf9ce6fc6075b0882c316",
+  "memory_context_sha256": "e6f0151a54eabc626741def16de4c1dfb638118929eede3034dc4d970d2d7cdd",
   "open_positions": [
     {
       "asset_class": "rates",
-      "conviction": 56,
-      "current_notional_usd": 40000000.0,
-      "entry_mark": 3.4,
-      "instrument": "CORRA_2027-03",
-      "opened_at": "2026-09-19T22:36:50.082404-04:00",
-      "position_id": "pos-142ad113f303",
-      "side": "long",
-      "trade_id": "trd-trader-positioning-cynic-pos-142ad113f303"
+      "conviction": 57,
+      "current_notional_usd": 45000000.0,
+      "entry_mark": 4.86,
+      "instrument": "AONIA_2027-03",
+      "opened_at": "2026-09-20T16:06:28.069463-04:00",
+      "position_id": "pos-f18c10895ae3",
+      "risk_capital_usd": 450000.0,
+      "side": "short",
+      "trade_id": "trd-trader-positioning-cynic-pos-f18c10895ae3"
     }
   ],
   "owner_id": "positioning-cynic",
   "owner_type": "trader",
-  "postmortems_due": [],
-  "recent_closed_trades": [],
+  "postmortems_due": [
+    {
+      "created_at": "2026-09-20T16:06:28.069463-04:00",
+      "created_run_id": "tr-20260920T193935Z-ondemand",
+      "facts": {
+        "asset_class": "rates",
+        "closed_at": "2026-09-20T16:06:28.069463-04:00",
+        "conviction": 56,
+        "entry_mark": 3.4,
+        "exit_mark": 3.4,
+        "holding_duration_seconds": 62977,
+        "instrument": "CORRA_2027-03",
+        "opened_at": "2026-09-19T22:36:50.082404-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 0.0,
+        "side": "long"
+      },
+      "postmortem_id": "pmd-86d9c87862a0",
+      "trade_id": "trd-trader-positioning-cynic-pos-142ad113f303"
+    }
+  ],
+  "recent_closed_trades": [
+    {
+      "asset_class": "rates",
+      "closed_at": "2026-09-20T16:06:28.069463-04:00",
+      "conviction": 56,
+      "holding_duration_seconds": 62977,
+      "instrument": "CORRA_2027-03",
+      "opened_at": "2026-09-19T22:36:50.082404-04:00",
+      "realized_pnl_usd": 0.0,
+      "side": "long",
+      "trade_id": "trd-trader-positioning-cynic-pos-142ad113f303"
+    }
+  ],
   "recent_funding_views": [],
   "schema_version": 1,
   "type": "IDENTITY_MEMORY_CONTEXT"

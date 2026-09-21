@@ -47,6 +47,70 @@
       "run_id": "tr-20260920T020818Z-ondemand",
       "schema_version": 1,
       "thesis": "Fade the crowded energy-hawk / BoC-must-hike book by shorting 2027 implied CORRA (receiving Canada 2027). Verified: CRA prices +84bp by Mar-27 and +130.5bp by Dec-27 from 2.29 while Canada labor is 38 and core is near 2%; CAD specs have already covered to a 99th-percentile 1y net; the desk thesis says energy blocks easing even where growth is softer. Inference: that narrative is owned, so the better asymmetry is against further CA-rate upside, not with it. Unknown: CRA open interest and CME positioning, so this is not a claim the futures pit is empty. Explicitly not the trade: long AUDCAD at a 5y extreme, long JPY after a 99th-percentile leveraged-fund pile-in, or joining residual US duration shorts."
+    },
+    {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-142ad113f303",
+          "rationale": "FACT: this seat is already long CORRA_2027-03 at 40m (position_id pos-142ad113f303). CA-US 2Y/5Y/10Y are 1y extremes and other paper seats receive CORRA or the 2027 H-Z strip. INFERENCE: the Canada-dove receive is the value-screen crowd, now also exposed to BoC energy-pass-through minutes. Do not OPEN a duplicate CORRA. Close the crowded ownership rather than add.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        },
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-03",
+          "notional_usd": 45000000,
+          "position_id": null,
+          "rationale": "Pay empty-OI AONIA_2027-03 against housing-consensus receivers and crowded AUD longs. Notional 45m is descriptive; 100bp standard shock is 450k risk capital, well inside the 10m cap. Paper transacts at the deterministic packet mid; no authored level.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-09-20T16:06:28.069463-04:00",
+      "conviction": 57,
+      "decision_fingerprint": "3331fa894c2163195f1a0ad55666f8ca5514924e1ab833cfcaf5a11062585815",
+      "event_id": "jde-b3871b144f1947b7",
+      "funding_view": null,
+      "invalidation": "AONIA Mar-27 loses the second hike as housing/activity confirm the cap, without a higher back-end reprice.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-142ad113f303",
+        "pos-f18c10895ae3"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-positioning-cynic-pos-142ad113f303",
+        "trd-trader-positioning-cynic-pos-f18c10895ae3"
+      ],
+      "memory_context_sha256": "fb5f1437c899016aeb4d082a7fb5b691332aab5f7f7c503ff336ddf5393f2740",
+      "outcome_links": [],
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-20T19:39:35Z",
+        "evidence_hash": "02d6976dd0d2606bae7efa7c3f2cc41aeac6ccfbf50d5251260f71390ba24d5b",
+        "overnight_run_id": null,
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260920T193935Z-ondemand"
+      },
+      "rationale": "FACT: AONIA prices ~51bp of tightening by Mar-27 and ~59bp by Jun-27 against overnight 4.35, with open interest 21752 in Oct-26 versus 201 in Mar-27; AU inflation gauge 82; housing-downturn headlines are already in the packet; CFTC AUD futures OI is a 1y/3y extreme with leveraged funds still net long AUD; paper books already receive AONIA and CORRA. INFERENCE: the tradeable discrepancy is not 'Australia is hawkish' as a fresh macro call \u2014 bonds already show that \u2014 it is that housing-consensus receivers and crowded AUD longs own the fade of further RBA tightening, leaving Mar-27 AONIA as the cleaner squeeze if global tightening (Fed delivered, BoJ 1.25%, energy still a constraint) forces a higher Australian terminal. UNKNOWN: side of AONIA October open interest, MX CORRA specs, CME SR3 specs, and any post-2026-09-15 CFTC change. This seat therefore pays AONIA_2027-03 and closes the crowded CORRA receive rather than adding to CA-US value.",
+      "run_id": "tr-20260920T193935Z-ondemand",
+      "schema_version": 1,
+      "thesis": "FACT: AONIA prices ~51bp of tightening by Mar-27 and ~59bp by Jun-27 against overnight 4.35, with open interest 21752 in Oct-26 versus 201 in Mar-27; AU inflation gauge 82; housing-downturn headlines are already in the packet; CFTC AUD futures OI is a 1y/3y extreme with leveraged funds still net long AUD; paper books already receive AONIA and CORRA. INFERENCE: the tradeable discrepancy is not 'Australia is hawkish' as a fresh macro call \u2014 bonds already show that \u2014 it is that housing-consensus receivers and crowded AUD longs own the fade of further RBA tightening, leaving Mar-27 AONIA as the cleaner squeeze if global tightening (Fed delivered, BoJ 1.25%, energy still a constraint) forces a higher Australian terminal. UNKNOWN: side of AONIA October open interest, MX CORRA specs, CME SR3 specs, and any post-2026-09-15 CFTC change. This seat therefore pays AONIA_2027-03 and closes the crowded CORRA receive rather than adding to CA-US value."
     }
   ],
   "schema_version": 1,

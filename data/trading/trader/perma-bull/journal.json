@@ -47,6 +47,52 @@
       "run_id": "tr-20260920T020818Z-ondemand",
       "schema_version": 1,
       "thesis": "FACT: Global tightening is live (Fed +25bp, BoJ to 1.25%, BoE 6-3 with three hike votes) while US growth gauges and cyclical assets (copper, SPX, tight HY, low VIX) are not in recession. Canada is priced as the exception: CORRA 2.29, 1m path +29bp by year-end, and a 17 Sep sovereign rally. INFERENCE: energy pass-through plus activity 66 make that exception too large; Mar-27 CORRA should move toward the already-higher Jun/Sep 2027 CRA mids as BoC catch-up is pulled forward. That is the pro-growth/cyclical expression: the laggard cyclical central bank, not long AUD after a housing slump or long NZD with labor 32 and no NZ rates. UNKNOWN: whether Saudi supply workaround and core-near-2% CPI let BoC wait through Q1."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-dd6fdaf39119",
+          "rationale": "Sidecar already owns short CORRA_2027-03 at entry 3.13 and 50m notional (risk capital 500k). Packet mid is still 3.13, so the discrepancy has not closed and a duplicate OPEN is forbidden. HOLD keeps the existing id; no ADD because labor 38 and near-target core keep residual risk two-sided and 50m already expresses the view inside the 10m shock budget.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-09-20T16:06:28.069463-04:00",
+      "conviction": 64,
+      "decision_fingerprint": "676d6c9e65981e75584284e8b649361fb1cff8e4ed0c0c751772993e71cd8c05",
+      "event_id": "jde-d611200638c94329",
+      "funding_view": null,
+      "invalidation": "Canadian activity follows labor lower or core/headline ease enough for BoC to keep overnight near 2.29 and reprice March 2027 CORRA down.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-dd6fdaf39119"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "adaf18ba8a4691d9381772bfe287761cdfca490ac76910ac8a738bd3f367a751",
+      "outcome_links": [],
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-20T19:39:35Z",
+        "evidence_hash": "02d6976dd0d2606bae7efa7c3f2cc41aeac6ccfbf50d5251260f71390ba24d5b",
+        "overnight_run_id": null,
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260920T193935Z-ondemand"
+      },
+      "rationale": "FACT: Canada is still running overnight CORRA at 2.29 with headline inflation at 3.0%, while CRAH27 prices only 3.13 and the Fed has already hiked to 3.75-4.00% with SOFR at 3.85. FACT: CA activity is 66 on a Q2 GDP rebound and stronger Ivey PMI; US activity/labor/inflation gauges are 69/75/72. INFERENCE: pessimism about Canadian labor (score 38, employment -42k) is over-discounted as a reason to keep the 2027H1 path capped; a resilient global cycle plus BoC energy-pass-through risk should lift the March 2027 implied rate. UNKNOWN: CFTC/CME positioning and any post-cutoff BoC communication. The pro-growth expression is to pay that still-limited Canada path, not to buy already-high AUD or fade USD.",
+      "run_id": "tr-20260920T193935Z-ondemand",
+      "schema_version": 1,
+      "thesis": "FACT: Canada is still running overnight CORRA at 2.29 with headline inflation at 3.0%, while CRAH27 prices only 3.13 and the Fed has already hiked to 3.75-4.00% with SOFR at 3.85. FACT: CA activity is 66 on a Q2 GDP rebound and stronger Ivey PMI; US activity/labor/inflation gauges are 69/75/72. INFERENCE: pessimism about Canadian labor (score 38, employment -42k) is over-discounted as a reason to keep the 2027H1 path capped; a resilient global cycle plus BoC energy-pass-through risk should lift the March 2027 implied rate. UNKNOWN: CFTC/CME positioning and any post-cutoff BoC communication. The pro-growth expression is to pay that still-limited Canada path, not to buy already-high AUD or fade USD."
     }
   ],
   "schema_version": 1,

@@ -77,12 +77,14 @@ const traderPacket = {
       competition_rank: 1,
       last_action: "HOLD",
       remit: "may submit no-trade",
-      net_pnl_usd: 5000,
+      net_pnl_usd: 0,
       realized_pnl_usd: 0,
       unrealized_pnl_usd: 0,
       funding_cost_usd: 0,
       cash_yield_usd: 5000,
-      nav_usd: 100005000,
+      benchmark_cost_usd: 5000,
+      net_financing_pnl_usd: 0,
+      nav_usd: 100000000,
       risk_capital_limit_usd: 10000000,
       risk_capital_usd: 0,
       drawdown_usd: 0,
@@ -179,7 +181,7 @@ flush().then(function () {
   const pmTotal = els["tb-pm-total"].textContent;
 
   check(root.indexOf("id=\"tb-pm-root\"") !== -1, "PM mount is rendered after trader books");
-  check(traderTotal === "-$5.0k", "trader total is seat net P&L only, got " + traderTotal);
+  check(traderTotal === "-$10.0k", "trader total is seat net P&L only, got " + traderTotal);
   check(pmTotal === "$2.0k", "PM total uses net-after-funding, not paper total or position P&L, got " + pmTotal);
   check(traderTotal !== pmTotal, "trader and PM totals stay separate");
 
@@ -202,7 +204,9 @@ flush().then(function () {
   check(Boolean(grinder) && grinder.indexOf("NO TRADE") !== -1, "no-trade PM card is labeled NO TRADE");
   check(grinder.indexOf("LONG") === -1 && grinder.indexOf("SHORT") === -1, "no-trade PM card has no fake LONG/SHORT");
 
-  check(root.indexOf("$10m risk limit per 1% standard move") !== -1, "trader risk-limit wording is preserved");
+  check(root.indexOf("Net financing") !== -1, "trader KPI uses net financing, not cash-yield alpha");
+  check(root.indexOf("zero-return") !== -1, "leaderboard copy states SOFR is the zero-return benchmark");
+  check(root.indexOf("Cash yield") === -1, "flat-book cash yield is not shown as alpha");
   check(pms.indexOf("$100m risk limit per 1% standard move") !== -1, "PM risk-limit wording is preserved");
   check(root.indexOf("999999") === -1 && pms.indexOf("888888") === -1, "position P&L is not used as the book total");
   console.log("trader_book_ui_smoke ok");

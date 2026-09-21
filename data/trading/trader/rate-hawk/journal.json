@@ -47,6 +47,52 @@
       "run_id": "tr-20260920T020818Z-ondemand",
       "schema_version": 1,
       "thesis": "FACT: Fed hiked 25bp to 3.75-4.00%; SOFR 3.85%; SR3U7 implies 4.755% then the strip eases; August CPI kept a tightening bias; US labor gauge 75 with payrolls +162k and U-rate 4.1%; BoJ hiked, BoE 6-3 with three hike votes. INFERENCE: inflation persistence and a still-restrictive reaction function imply a higher 2027 terminal than 4.75% and no 2028 cut residual. The 25bp meeting was >90% priced; the mispricing is the path. Long implied-rate SOFR_2027-09 owns that. UNKNOWN: SR3 positioning; whether gauge 72 overstates July core PCE; whether an energy-tail fade (Saudi STS) caps further hikes."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-09",
+          "notional_usd": 50000000,
+          "position_id": "pos-c9184707c12b",
+          "rationale": "FACT: sidecar already owns short SOFR_2027-09 pos-c9184707c12b at 50m / 500k shocked capital, entry_mark 4.75 versus packet mid 4.755. INFERENCE: mean-reverter's 99th-percentile fade and the CAD-up camp do not invalidate the peak-then-ease thesis; do not OPEN a duplicate, do not ADD, do not rotate into USDCAD. UNKNOWN: spec positioning. Funding vig is already on; 500k path risk stays inside the 10m shock cap and 5m drawdown stop.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-09-20T16:06:28.069463-04:00",
+      "conviction": 61,
+      "decision_fingerprint": "166253b208c86c899df2cbe8525694f22bbe01d1426d65951d9c93033fb8ad7b",
+      "event_id": "jde-45485e0a80264dc1",
+      "funding_view": null,
+      "invalidation": "Dec-26 SR3 prices less than one extra hike versus 3.85% overnight, or US inflation and labor gauges break lower together.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-c9184707c12b"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "eb55a16e620b15883b40211258e66517389508384c4ee76f549fb7fc9158686b",
+      "outcome_links": [],
+      "owner_id": "rate-hawk",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-20T19:39:35Z",
+        "evidence_hash": "02d6976dd0d2606bae7efa7c3f2cc41aeac6ccfbf50d5251260f71390ba24d5b",
+        "overnight_run_id": null,
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260920T193935Z-ondemand"
+      },
+      "rationale": "FACT: Fed delivered 25bp to 3.75-4.00% on 16-Sep; official SOFR is 3.85%; SR3U7 implied 4.755% is the 3m peak then the strip eases; 6m core PCE still ~3.0%; labor and services demand remain firm; BoJ hiked to 1.25% and BoE had three hike votes. INFERENCE: that peak-then-ease shape is a 'cycle finished enough by late 2027' assumption that underprices inflation persistence and the post-hike reaction function. UNKNOWN: spec positioning and NZ rates. Expression: stay short duration / pay SOFR_2027-09 so the mark rising in implied-rate space is the P&L. This is a HOLD of pos-c9184707c12b, not a second OPEN.",
+      "run_id": "tr-20260920T193935Z-ondemand",
+      "schema_version": 1,
+      "thesis": "FACT: Fed delivered 25bp to 3.75-4.00% on 16-Sep; official SOFR is 3.85%; SR3U7 implied 4.755% is the 3m peak then the strip eases; 6m core PCE still ~3.0%; labor and services demand remain firm; BoJ hiked to 1.25% and BoE had three hike votes. INFERENCE: that peak-then-ease shape is a 'cycle finished enough by late 2027' assumption that underprices inflation persistence and the post-hike reaction function. UNKNOWN: spec positioning and NZ rates. Expression: stay short duration / pay SOFR_2027-09 so the mark rising in implied-rate space is the P&L. This is a HOLD of pos-c9184707c12b, not a second OPEN."
     }
   ],
   "schema_version": 1,

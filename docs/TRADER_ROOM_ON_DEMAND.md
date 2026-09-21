@@ -18,18 +18,19 @@ The old model-based conflict-aggregator and final-aggregator agent files remain 
 
 ## Expression selection contract
 
-Before a rates-first advocate can submit its Round 1 trade, it must compare expressions from the frozen packet:
+Before a rates-capable advocate can submit its Round 1 trade, it must scan the frozen packet and then compare expressions:
 
-1. one concrete rates candidate: outright duration, curve, or cross-market rates RV;
-2. one concrete spot-FX candidate;
-3. the selected expression family and why it is cleaner.
+1. a complete `rates_tenor_scan` covering STIR/policy path, 2Y, 5Y, 10Y, curve, and cross-market rates RV. Each bucket is a concrete candidate or an explicit unavailable/not-compelling reason;
+2. the selected best rates expression from that scan;
+3. one concrete spot-FX candidate;
+4. the selected expression family and why it is cleaner.
 
-Rates are preferred when the comparison is close. Spot is allowed only with an explicit reason the rates candidate is inferior or unavailable. This is not a forced-rates quota.
+Rates are preferred when the comparison is close. Spot is allowed only with an explicit reason the selected rates candidate is inferior or unavailable. This is not a forced-rates quota and does not force a tenor.
 
 Dedicated exceptions:
-- `dollar-king`, `cross-merchant`: spot only;
-- `vol-convexity`: options/convexity remit unchanged;
-- `no-trade-skeptic`: may return no trade; if it endorses one, use the rates-first comparison. Every new no-trade decision must include a structured `funding_view` that uses the frozen `funding_context` (official NY Fed SOFR + SR3 forward context) and states whether realized funding is expected higher, lower, or about the same as the curve, plus the cash-versus-risk implication. HOLD/de-risk on legacy data is not blocked solely because that prose is absent.
+- `dollar-king`, `cross-merchant`: spot only; no rates tenor scan;
+- `vol-convexity`: options/convexity remit unchanged; no rates tenor scan;
+- `no-trade-skeptic`: may return no trade without manufacturing the scan; if it endorses one, use the full rates tenor scan plus rates-first comparison. Every new no-trade decision must include a structured `funding_view` that uses the frozen `funding_context` (official NY Fed SOFR + SR3 forward context) and states whether realized funding is expected higher, lower, or about the same as the curve, plus the implication for remaining at the zero SOFR benchmark versus paying SOFR on shocked-risk capital. HOLD/de-risk on legacy data is not blocked solely because that prose is absent.
 
 Every non-null trade adds:
 
@@ -37,6 +38,16 @@ Every non-null trade adds:
 {
   "asset_class": "spot_fx | rates | curve | rates_rv | options",
   "expression_comparison": {
+    "rates_tenor_scan": {
+      "stir_policy_path": {"status": "candidate|unavailable|not_compelling", "rationale": "..."},
+      "two_year": {"status": "candidate|unavailable|not_compelling", "rationale": "..."},
+      "five_year": {"status": "candidate|unavailable|not_compelling", "rationale": "..."},
+      "ten_year": {"status": "candidate|unavailable|not_compelling", "rationale": "..."},
+      "curve": {"status": "candidate|unavailable|not_compelling", "rationale": "..."},
+      "cross_market_rv": {"status": "candidate|unavailable|not_compelling", "rationale": "..."},
+      "selected_bucket": "stir_policy_path|two_year|five_year|ten_year|curve|cross_market_rv|none",
+      "selection_rationale": "why this is the best rates expression from the scan"
+    },
     "rates_candidate": "concrete rates expression or null for a dedicated specialist",
     "spot_candidate": "concrete spot expression or null for the vol specialist",
     "selected": "rates | spot | options",
@@ -45,7 +56,7 @@ Every non-null trade adds:
 }
 ```
 
-For rates-first seats, both `rates_candidate` and `spot_candidate` are mandatory non-empty strings even when one says it is unavailable and explains why. The selected family must match `asset_class`.
+For rates-capable seats, `rates_tenor_scan` is mandatory and both `rates_candidate` and `spot_candidate` are mandatory non-empty strings even when one says it is unavailable and explains why. The selected family must match `asset_class`. Validators fail closed when the scan is omitted or malformed.
 
 ## Round 1 conflict synopsis
 

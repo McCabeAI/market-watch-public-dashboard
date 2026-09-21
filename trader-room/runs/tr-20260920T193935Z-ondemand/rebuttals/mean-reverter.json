@@ -1,0 +1,189 @@
+{
+  "type": "TRADER_ROOM_REBUTTAL",
+  "run_id": "tr-20260920T193935Z-ondemand",
+  "round": 2,
+  "agent": "mean-reverter",
+  "opponents": [
+    "trend-follower",
+    "rate-hawk",
+    "dollar-king",
+    "positioning-cynic",
+    "perma-bear",
+    "carry-is-king",
+    "rate-dove",
+    "catalyst-junkie",
+    "perma-bull"
+  ],
+  "own_original_ref": "submissions/mean-reverter.json",
+  "subagent_calls": 0,
+  "packet_sha256": "02d6976dd0d2606bae7efa7c3f2cc41aeac6ccfbf50d5251260f71390ba24d5b",
+  "trade_change": "unchanged",
+  "strongest_opposing_claim": "trend-follower: a 99th-percentile US yield complex plus still-hot gauges and a 1d higher 2Y/5Y/10Y print after the delivered hike mean the hiking trend is live, so SOFR_2027-03 should be paid toward later-strip implieds 4.72-4.755 rather than received.",
+  "holes_in_opposing_case": [
+    "FACT vs trend-follower: their packet-sourced continuation target is later-strip SOFR 2027-06 4.72 and 2027-09 4.755, only +14bp / +17.5bp from SR3H7 4.58. The same packet already shows the 3m strip peaking at 4.755 then easing to 4.73 / 4.695 / 4.66. Paying H7 'toward the peak' is collecting a skinny, already-visible 14-17.5bp of later contracts, not a new hiking cycle. Our residual is the extra +73bp versus overnight SOFR 3.85 after a hike that was >90% priced.",
+    "INFERENCE vs trend-follower: calling 99th-percentile 1y yields 'what a continuing trend looks like' is circular. Protocol: a statistical extreme is a discovery signal, never sufficient evidence. They treat the stretch as confirmation to keep paying. The reversal conditions are independent of the percentile: overnight SOFR has already printed the known 25bp (3.85 vs 3.62), 2s10s is at the 0.20th 1y percentile after that priced event, and the Saudi STS workaround reduced the extreme oil-supply tail that justified extra hikes.",
+    "FACT vs trend-follower: US 2Y +9bp 1d / +13bp 5d / +57bp 1m on 2026-09-18 is residual momentum after a meeting that futures entered at >90% hike odds. That is known-news follow-through, not a new information shock. An unchanged 4.58 mark versus both books' entry is also not continuation evidence; neither pay nor receive has been paid yet.",
+    "FACT vs trend-follower's own risks: they concede the hike was >90% priced, roll-down on an upward-sloping strip works against paying if the path is unchanged, Q2 GDP decelerated to +1.5% SAAR, and Michigan/Conference Board consumer readings weakened. Those are the lagging-tightening channels the extra 73bp still ignores. Carry_view opposes both books; it does not decide direction.",
+    "FACT vs rate-hawk: they pay SOFR_2027-09 at the already-visible 4.755 peak (+90.5bp vs 3.85), then need the peak itself to rise. That is a different contract and a higher-terminal claim, not a hole in receiving H7. Their own principal risks note 1m/3m core PCE nearer target than 6m and a large hawkish move already in UST 2Y. Underpriced-terminal is an inference from still-warm gauges (inflation 72, labor 75, activity 69), not a missing 2027H1 hike in H7.",
+    "FACT vs dollar-king / USD-up cluster: USDCAD is only the 74.0th 1y percentile (5y 87.0) with a still-negative 3m return (-1.25%) after +1.10% in five days. That is not a USD-rich extreme. The USD-rich overlay in the packet is EURUSD 10.9th 1y and USDCHF 99.8th 1y. Long USDCAD at a mid-high 1y percentile does not prove the extra 73bp in SR3H7 must be delivered.",
+    "INFERENCE vs carry-is-king, rate-dove, catalyst-junkie, perma-bear: their USD_UP tags are mostly Canada/Australia expressions (receive CORRA/AONIA, CAD/AUD lower). Those books do not require a higher USD if the US extra path fades. Mapping a Canadian labor/core constraint or an Australian housing channel onto 'USD higher' smuggles a US-rate-premium overlay that is exactly the stretch being faded in SOFR_2027-03.",
+    "FACT vs perma-bull: us_rates_view higher is not owned by their primary (short CORRA_2027-03). Their NZD_UP tag agrees with this seat. USD_UP plus CAD_UP is an internal USDCAD tension they already rejected by staying in rates; it is not a reason to pay SR3H7.",
+    "FACT vs positioning-cynic NZD_DOWN / AUD crowding: CFTC TFF as_of 2026-09-15 shows AUD futures open interest at a 1y/3y extreme, but leveraged-funds net is only the 31.7th 1y percentile (net +61135, +12.4% of OI) while asset managers are net short AUD. Extreme OI is not a crowded AUD-long distribution. CME SR3 specs remain unavailable, so SOFR ownership is still unmeasured. Paying empty-OI AONIA_2027-03 does not validate paying already-stretched US 2027H1 SOFR.",
+    "FACT vs NZD_DOWN (dollar-king, perma-bear, positioning-cynic, trend-follower): NZDUSD is 12.9th 1y / 8.6th 5y after -3.90% 1m; AUDNZD is 99.80th 1y / 99.96th 5y because NZD collapsed, not because AUDUSD broke out (AUDUSD only 76.4th 1y). NZ Q2 GDP beat (0.2% q/q) and the India FTA did not reverse NZD. NZ official yields are unavailable (RBNZ B2 403). Extrapolating crushed NZD without a NZ policy path is the crowded move; this seat's NZD_UP is an overlay tag, not an OPEN.",
+    "UNKNOWN shared by both sides: CFTC/CME speculative positioning in SR3, post-18 Sep ticks, and whether the energy workaround fully offsets the Shell/Equinor shock-absorber warning. Continuation seats treat that unknown as permission to keep paying; it is not."
+  ],
+  "attack": [
+    "Strongest claim (trend-follower): the hiking-cycle price, policy path and hot gauges are still aligned, so fading 99th-percentile yields is premature and SOFR_2027-03 should stay short. Attack: alignment of a fully priced hike with still-warm levels is what a completed event plus overshoot looks like, not what a new cycle requires. Overnight SOFR 3.85 already contains the 16 Sep 25bp. SR3H7 4.58 still asks for three extra 25bp-equivalents by 2027H1. Their own target (4.72/4.755) is the later strip that already exists; using it as a destination is the extrapolation.",
+    "1d continuation is not a catalyst. US 2Y/5Y/10Y printed +9/+8/+7bp on 18 Sep after a meeting that was >90% priced and after official SOFR had already jumped 3.62 to 3.85. Known-versus-new: the hike and August CPI bias were known; the residual 73-90.5bp extra path is the same hawkish claim being re-asserted without a new inflation print in the freeze.",
+    "Strip shape contradicts perpetual-hike continuation. Peak then ease (4.755 in Sep-27, then 4.73/4.695/4.66) is the market already pricing a finished-enough cycle by late 2027. Paying H7 because U7 is higher is curve-chasing inside that priced peak, not evidence the peak will rise. Invalidation for this seat remains a reprice of extra tightening beyond 4.755 on confirmed inflation re-acceleration or an energy shock that overwhelms the Saudi workaround — not a 1d sovereign uptick.",
+    "USD_UP majority is not a USD extreme and is not this instrument. EURUSD 10.9th 1y / USDCHF 99.8th 1y are the USD-rich overlay of the same US rate-premium stretch. USDCAD 74th 1y after a negative 3m return is a policy-gap pair, not proof USD must go higher. If SR3H7 mean-reverts lower, that USD rate-premium bid is the thing that should unwind. This seat is not opening a USD short; USD_DOWN is the overlay of receiving the extra US path.",
+    "NZD_DOWN is the AUDNZD/NZDUSD collapse being extrapolated. AUDNZD 5y extreme with ~5% 20d RV and NZDUSD at 8.6th 5y after a GDP beat and FTA is a stretched soft-NZD regime. NZ rates are missing, so a rates-matched NZD short is not executable. This seat does not OPEN NZD. The tag is the crushed-leg overlay of the same mean-reversion lens.",
+    "rate-hawk's U7 pay and trend-follower's H7 pay are not the same trade. U7 already is the 4.755 peak. Wanting that peak higher is a terminal inference from gauges 69-75. H7 at 4.58 already embeds 73 of those 90.5bp. Continuation from 4.58 toward 4.755 is a 17.5bp already-visible move; fading 4.58 versus 3.85 is a 73bp extra-path residual. Asymmetric packet R/R favors the receive unless the peak itself is lifted."
+  ],
+  "defense": [
+    "FACT: own book already receives SOFR_2027-03 as pos-1477172adb86, entry_mark 4.58, packet mark 4.58, 40m notional / 400k standard-shock risk capital, risk_stopped false, 9.6m risk capital remaining. The discrepancy has not closed. HOLD, do not OPEN a duplicate, do not ADD.",
+    "INFERENCE: the priced assumption that is wrong remains the extra path, not the hike that printed. Warm US gauges (inflation 72, labor 75, activity 69, consumer 74) support a restrictive setting more than they validate three more tightenings after a fully priced 25bp. Hard inputs in the original context_build (core PCE +0.2% m/m, unemployment 4.1%, payrolls +162k) are firm, not an acceleration impulse that requires 4.58 to cheapen toward 4.755.",
+    "Anchor and reversal condition, not a large-move fade: (1) known hike now in cash SOFR 3.85; (2) US 2s10s 25bp at 0.20th percentile 1y after that event; (3) 99th-percentile 1y 2Y/5Y/10Y as the distributional signature of the same squeeze; (4) Saudi STS workaround as a documented offset to the energy-CPI tail, with the shock-absorber warning kept as the live contrary fact. That is the remit: fade a stretched path when a normalization catalyst exists.",
+    "Expression still rates-first. Rates candidate: receive SOFR_2027-03 at 4.58 versus overnight 3.85. Spot candidate: short AUDCAD at 0.9976, 99.80th 1y / 99.96th 5y. Selected remains rates because the mispricing is the US policy path, US/CA/AU paths are available, and the book already owns SR3H7. USD and NZD tags are overlays, not substitute expressions. Opponents who are long USDCAD or short NZD are not trading the same discrepancy more cleanly.",
+    "Carry and positioning are already in the original risks. Carry opposes receiving while the strip still prices hikes through Sep-27; official SOFR 3.85% ACT/360 vig accrues on 400k risk capital. That is why this is HOLD not ADD. CME SR3 specs are unavailable; CFTC TFF does not replace that gap for this contract. Size stays 40m / 400k inside the 10m shock cap and 5m drawdown stop.",
+    "What would concede: SR3 strip reprices extra tightening beyond the current peak SR3U7 4.755 on confirmed inflation re-acceleration, or a broader energy shock that overwhelms the Saudi workaround; alternatively, another delivered US hike that lifts overnight SOFR so the 73bp extra path becomes cash. Right-thesis/wrong-timing if 4.58 merely chops while labor 75 and inflation 72 stay firm — that is not yet concession, and it is why size is not increased. An unchanged 4.58 mark, 99th-percentile yield levels, housing headlines, or a 1d sovereign uptick after a priced meeting do not concede. USD overlay would be independent noise if EURUSD/USDCHF 1y extremes mean-reverted while H7 stayed at 4.58; that still would not kill the rates trade. NZD overlay would be early if NZDUSD made new 5y lows after the GDP beat/FTA with NZ rates still missing; that still would not OPEN or CLOSE this SOFR line.",
+    "UNKNOWN preserved: speculative SR3 positioning, post-cutoff FOMC/SEP/CPI, and whether the Oman STS workaround fully offsets weakened energy-market shock absorbers. Those unknowns cap confidence at 57 and forbid ADD; they do not convert a 73bp extra-path residual into a pay."
+  ],
+  "verified_facts": [
+    "Fed hiked 25bp to 3.75-4.00% on 16 Sep 2026; futures had >90% probability into that decision; official NY Fed SOFR printed 3.85% on 2026-09-17 after 3.62% on 2026-09-16.",
+    "SR3H7 / SOFR_2027-03 implied 4.58 (+73.0bp vs overnight 3.85); SR3M7 4.72 (+87.0bp); SR3U7 4.755 peak (+90.5bp) then SR3Z7 4.73 / SR3H8 4.695 / SR3M8 4.66.",
+    "US 2Y 4.76 is 99.80th percentile 1y / 88.02nd 5y, +57bp 1m / +13bp 5d / +9bp 1d as of 2026-09-18; 2s10s 25bp is 0.20th percentile 1y.",
+    "US gauges: inflation 72, labor 75, activity 69, consumer 74. Saudi STS workaround reduced the extreme oil-supply tail; a separate rollup warns energy-market shock absorbers are weakening.",
+    "EURUSD 10.9th 1y; USDCHF 99.8th 1y; USDCAD 74.0th 1y / 87.0th 5y with 3m return -1.25%; NZDUSD 12.9th 1y / 8.6th 5y; AUDNZD 99.80th 1y / 99.96th 5y.",
+    "Own sidecar: LONG SOFR_2027-03 pos-1477172adb86, entry 4.58, mark 4.58, notional 40m, risk_capital 400k, risk_stopped false. NZ rates unavailable. CME_positioning unavailable."
+  ],
+  "inferences": [
+    "The September hike is in cash; the live discrepancy is the extra 73bp to Mar-27 and 90.5bp to the Sep-27 peak, not the 25bp that was already priced.",
+    "trend-follower's 14-17.5bp later-strip target is the overshoot being used as a destination; that is crowded extrapolation, not a reversal test.",
+    "USD_DOWN and NZD_UP remain overlay views of fading a stretched US rate premium and a crushed NZD at a 5y AUDNZD extreme; they are not competing primary expressions and do not require book changes.",
+    "Warm gauges and unknown SR3 positioning make the fade early-risk, which is already why the book is HOLD at 400k not ADD."
+  ],
+  "unknowns": [
+    "CME SR3 speculative positioning remains unavailable; CFTC TFF does not identify SOFR ownership.",
+    "Post-cutoff FOMC dots/SEP, subsequent US CPI/labor, and post-18 Sep SR3 ticks are outside the freeze.",
+    "Whether the Saudi workaround fully offsets the Shell/Equinor shock-absorber warning is unresolved.",
+    "NZ official yields remain unavailable (RBNZ B2 HTTP 403), so NZ rates view stays not_relevant."
+  ],
+  "revised_trade": {
+    "instrument": "SOFR_2027-03",
+    "asset_class": "rates",
+    "direction": "long",
+    "structure": "outright receive / long duration in CME SR3H7 (SOFR_2027-03); canonical mark is implied rate; profits if the implied rate falls",
+    "expression_comparison": {
+      "rates_candidate": "Receive/long duration SOFR_2027-03 (SR3H7) at packet implied 4.58, fading the extra +73bp from overnight SOFR 3.85 after a fully priced 25bp hike; already owned as pos-1477172adb86.",
+      "spot_candidate": "Short AUDCAD at packet spot 0.9976, 99.80th percentile 1y / 99.96th 5y, fading AUD richness versus CAD after the documented Australian housing downturn.",
+      "selected": "rates",
+      "rationale": "Rates is the cleaner expression of the same discrepancy: the mispricing lives in the US policy path (overnight 3.85 versus SR3H7 4.58 and a 99th-percentile sovereign complex), the US/CA/AU policy paths are available, and the existing book already owns SR3H7. AUDCAD is the more extreme FX percentile but mixes AU housing, CAD energy, and an 82 AU inflation gauge; NZ rates needed to risk-match AUD crosses are unavailable. Rates and spot are both executable from the packet; rates is preferred when comparably clean, and here it is strictly cleaner because it owns the policy-path assumption directly. USD and NZD conflict tags are overlays of that rates fade and of a crushed NZD at an AUDNZD 5y extreme; they are not substitute spot expressions."
+    },
+    "context_build": {
+      "causal_mechanism": "Test whether a fully priced 25bp Fed hike plus an energy-CPI scare has been over-extrapolated into 2027H1 SOFR. Mechanism: once the hike is in overnight SOFR, additional implied tightening requires a persistent inflation impulse. If energy-tail risk fades and lagging tightening (housing, financial conditions) bites, the extra 73bp to SR3H7 mean-reverts via lower implied rates (bull-steepener), not via more hikes.",
+      "path_to_current_price": "Multi-horizon US rates: 2Y +57bp 1m / +13bp 5d / +9bp 1d to 4.76; 5Y +51bp 1m to 4.86; 10Y +36bp 1m to 5.01. 2s10s flattened 21bp over 1m to 25bp. Policy path: overnight SOFR 3.85 after the 16 Sep hike; 1m SOFR builds from Oct 3.91 through Apr 4.525; 3m SR3 goes 4.00 (Sep) / 4.32 (Dec) / 4.58 (Mar 27) / 4.72 (Jun) / 4.755 (Sep 27 peak) then eases to 4.73 / 4.695 / 4.66. Pre-meeting futures had >90% probability of the 25bp hike. August CPI kept the tightening bias intact; BoJ then hiked to 1.25%. Desk thesis: energy shock is constraining global easing and keeping term-rate pressure elevated.",
+      "known_vs_new_information": "Known before/at the meeting: >90% hike odds, August CPI bias, energy-shock narrative. Now realized: the 25bp hike and the 23bp official-SOFR jump 3.62 to 3.85. Genuinely newer offsets: Saudi STS workaround reducing the extreme oil-supply tail with modest oil easing. What is not new is another 73-90bp of extra tightening still in SR3 — that is the same hawkish path being re-asserted after known news, which requires a new transmission mechanism the packet does not supply beyond continued energy/CPI worry. A 1d +9bp 2Y print on 18 Sep after that priced hike is residual momentum of known news, not a new shock.",
+      "market_implied_assumption": "SR3H7 at 4.58 and the strip peak at 4.755 assume roughly three additional 25bp-equivalent tightenings from overnight 3.85 by 2027H1-H3, with US 2Y/5Y/10Y remaining at 1y extremes and 2s10s staying near its 1y floor. That path treats the Sep hike as the start of a renewed cycle, not as a largely priced adjustment. Continuation seats further assume H7 should cheapen toward the already-visible 4.72-4.755 later contracts.",
+      "market_assumption_disagreed_with": "Disagree that the residual energy-CPI impulse plus still-warm US gauges (inflation 72, labor 75) justify another ~73bp of tightening by Mar 2027 after a hike that was already >90% priced. The priced assumption that is wrong is the extra path, not the hike that already printed. Also disagree that the 14-17.5bp gap from 4.58 to later-strip 4.72/4.755 is a continuation destination rather than the overshoot itself.",
+      "price_decomposition": "Level: US 2Y 4.76 sits ~91bp above overnight SOFR 3.85; SR3H7 4.58 is the 3m 2027H1 window (+73bp). Change: the 1m 57bp 2Y rally and 21bp 2s10s flattening are the marginal hawkish squeeze. Tenor: the 3m strip, not 30Y (30Y +15bp 1m, less of the squeeze). Driver: policy-path repricing around the hike/CPI/energy cluster rather than a long-end term-premium shock; 1m SOFR already shows the near-dated averaging of the hike (Sep 3.75, Oct 3.91) while 2027 contracts keep stacking extra hikes. Later-strip 4.72/4.755 is already in the curve, so using it as a pay target is not additional information.",
+      "historical_reference": {
+        "distribution": "US 2Y 99.80th percentile 1y and 88.02nd 5y; 5Y/10Y ~99.6th 1y and 99.6-99.9th 5y; 2s10s 0.20th percentile 1y and 54th 5y. The 1y distribution is an extreme; the 5y 2Y percentile is elevated but not unprecedented. SR3H7 +73bp vs overnight is a large residual after one 25bp hike. Continuation payoff from 4.58 toward 4.755 is only +17.5bp of already-visible later contracts.",
+        "analogs": [
+          "Late-2018 after a fully anticipated December hike: front-end had priced additional 2019 tightenings while 2s10s was extremely flat; subsequent inflation/activity cooling faded the extra path via a bull steepener rather than more hikes.",
+          "2023 US STIR after the hiking cycle neared terminal: additional hikes remained in the reds/greens and were later faded as the inflation impulse cooled, even while labor stayed firm for a time."
+        ],
+        "regime_differences": "This cycle still has an active energy-shock overlay (shock-absorber warning versus Saudi workaround), BoJ hiking to a 31-year high, US unemployment 4.1% with +162k payrolls, and core PCE still modestly above policy-neutral. Unlike a clear post-terminal 2023 setup, the 2026 strip still prices a 4.755 peak — the analog is the fade of extra hikes, not a claim that easing is already priced."
+      },
+      "independent_checks": [
+        "Policy-path check: overnight SOFR 3.85 versus SR3H7 4.58 and SR3U7 4.755 from tradable_rate_curves / policy:US, independent of sovereign yield percentiles.",
+        "Sovereign distribution check: US 2Y/5Y/10Y 1y percentiles and 2s10s 0.20th percentile from rates:US, confirming the same hawkish squeeze in a different instrument family.",
+        "Cross-market FX check: EURUSD 10.9th 1y and USDCHF 99.8th 1y show a 1y USD-rich overlay consistent with rate-premium extrapolation, while USDCAD at only the 74th 1y percentile is not a confirming USD extreme and AUDCAD 99.96th 5y is a separate local stretch.",
+        "Macro-gauge check: US inflation 72 / labor 75 / activity 69 remain warm but are not an acceleration impulse in the hard inputs (core PCE +0.2% m/m; unemployment unchanged at 4.1%), so they support a restrictive setting more than they validate three more hikes."
+      ],
+      "flow_and_positioning_check": "Positioning status is partial. CME_positioning is unavailable so SR3 speculative ownership cannot be measured. CFTC TFF as_of 2026-09-15 exists for FX: AUD futures open interest is a 1y/3y extreme, but leveraged-funds net is only the 31.7th 1y percentile and asset managers are net short AUD — that is not a reason to pay US SOFR and does not fill the SR3 gap. Paper-book context shows this seat already long SR3H7 and trend-follower short the same contract, which is competition-book coincidence not CFTC proof. Treat the move as macro-path extrapolation until SR3 positioning appears; do not size up on an unmeasured crowding story.",
+      "policy_path_check": {
+        "status": "available",
+        "relevant_countries": [
+          "US",
+          "CA",
+          "AU"
+        ],
+        "pricing_summary": "US: overnight SOFR 3.85 (2026-09-17); SR3H7 4.58 (+73bp); strip peak SR3U7 4.755 (+90.5bp) then eases. CA: overnight CORRA 2.29; CRAH27 3.13 (+84bp). AU: overnight AONIA 4.35; 2027-03 4.86 (+51bp), 2027-06 4.94 (+59bp). NZ policy path unavailable.",
+        "rationale": "A short-dated US SOFR expression must start from the live SOFR/SR3 path, not from the 2Y yield percentile. The US path is complete and is the object of the fade. CA and AU paths are used only as triangulation: Canada prices a similarly large hike stack from a much lower overnight with weaker labor (38) and core near 2%; Australia prices less extra tightening than US despite hotter inflation (82) and a housing channel that is already biting."
+      }
+    },
+    "thesis": "FACTS: SR3H7 implied 4.58 is 73bp above overnight SOFR 3.85 after a 25bp hike that futures had >90% priced; US 2Y/5Y/10Y sit at 1y extremes and 2s10s at the 0.2nd 1y percentile; Saudi STS workaround reduced the extreme oil-supply tail. INFERENCE: the market is extrapolating a known hike and an energy scare into a ~4.75% 2027 terminal that does not need three more tightenings if the energy tail fades and lagging tightening bites. Continuation toward already-visible later-strip 4.72-4.755 is only 14-17.5bp of that same overshoot. UNKNOWN: speculative SR3 positioning. Expression: stay long duration in already-owned SOFR_2027-03 (receive; profits if implied rate falls).",
+    "mispricing": "The extra 73bp in SOFR_2027-03 versus overnight 3.85 is the overshoot. The 25bp hike is already in the overnight benchmark; the residual path treats a priced meeting as the start of a new hiking cycle. 99th-percentile yields and a 0.2nd-percentile 2s10s are the distributional signature of that extrapolation, not independent proof. Using later-strip 4.72/4.755 as a pay target recycles the same extra path as a destination.",
+    "why_now": [
+      "Overnight SOFR has printed the hike (3.85); the residual SR3H7 premium is now a pure extra-path claim rather than event risk into 16 Sep.",
+      "Saudi workaround is a documented offset to the energy tail that justified extra hikes, even as shock-absorber warnings remain.",
+      "US 2s10s at 0.20th percentile 1y after a fully priced hike is a reversal condition, not merely a large price move.",
+      "Existing position still marks at entry 4.58; the discrepancy has not been corrected, so the debate trade remains the same receive.",
+      "Opposing continuation target of 4.72-4.755 is already in the packet strip and is only +14 to +17.5bp from 4.58, so the fade is not racing a large unmarked cheapening."
+    ],
+    "evidence_refs": [
+      "tradable_rate_curves",
+      "policy_paths",
+      "policy:US",
+      "rates:US",
+      "funding_context",
+      "mw_20260916_fomc_hike_pricing",
+      "rollup:Fed raises 25bp to 3.75–4.00%",
+      "rollup:August CPI keeps the Fed tightening bias intact",
+      "mw_20260916_saudi_oman_workaround",
+      "rollup:Energy-market shock absorbers weaken",
+      "last24:desk-thesis",
+      "last24:BoJ raises its policy rate to 1.25%",
+      "temp:US:inflation",
+      "temp:US:labor",
+      "temp:US:activity",
+      "temp:US:consumer",
+      "fx:AUDCAD",
+      "fx:AUDNZD",
+      "fx:USDCHF",
+      "fx:EURUSD",
+      "fx:USDCAD",
+      "fx:NZDUSD",
+      "pos:cftc",
+      "market_state",
+      "research_method",
+      "rates:AU",
+      "policy:AU",
+      "policy:CA",
+      "mw_20260916_au_housing_tightening",
+      "paper_books"
+    ],
+    "horizon": "1-3 months",
+    "entry": "packet mid: tradable_rate_curves SOFR SR3H7 implied_rate 4.58 (price 95.42); existing book entry_mark 4.58",
+    "target": null,
+    "stop": null,
+    "invalidation": "Thesis is wrong if the SR3 strip continues to reprice extra tightening beyond the current peak (SR3U7 implied 4.755) on confirmed inflation re-acceleration or a broader energy shock that overwhelms the Saudi workaround; right-thesis/wrong-timing if implied 4.58 merely chops while labor 75 and inflation 72 stay firm. A 1d sovereign uptick or an unchanged 4.58 mark after a priced meeting does not count. Do not invent a numeric stop.",
+    "catalysts": [
+      "Energy-tail fade if the Oman STS workaround holds and oil remains easier than the pre-workaround scare.",
+      "Post-hike digestion: a meeting that was >90% priced should not keep adding 2027 hikes without new inflation data.",
+      "Incoming US inflation that fails to validate a 4.75% 2027 terminal.",
+      "Bull-steepener mean-reversion in 2s10s from the 0.20th 1y percentile via lower front-end implied rates."
+    ],
+    "principal_risks": [
+      "US inflation 72 and labor 75 remain warm; August CPI already kept the Fed tightening bias intact.",
+      "Energy-market shock absorbers weaken (Shell/Equinor warning) and BoC minutes flag energy pass-through; the oil tail can re-open.",
+      "BoJ hike to 1.25% and the desk thesis of constrained global easing can keep term-rate pressure elevated.",
+      "Carry/roll opposes receiving while the strip still prices hikes through Sep 2027; official SOFR 3.85% vig accrues on risk capital.",
+      "Positioning unknown in SR3; the fade can be early against an unmeasured trend.",
+      "Market-state stale on NZ_rates; cross-checks that need NZ are missing."
+    ],
+    "confidence": 57
+  },
+  "paper_actions": [
+    {
+      "action": "HOLD",
+      "position_id": "pos-1477172adb86",
+      "instrument": "SOFR_2027-03",
+      "asset_class": "rates",
+      "side": "long",
+      "notional_usd": 40000000,
+      "rationale": "FACT: sidecar and packet books already own LONG SOFR_2027-03 pos-1477172adb86 at entry 4.58 / mark 4.58 / 40m / 400k shock risk, inside the 10m cap, not risk_stopped. INFERENCE: trend-follower's opposite short does not close the extra +73bp versus overnight 3.85; their 4.72-4.755 target is already in the later strip. Do not OPEN a duplicate. Do not ADD: SR3 positioning is unmeasured, carry opposes, and US gauges remain warm. Do not CLOSE: the extra-path discrepancy is uncorrected. Manage pos-1477172adb86 only. USD_DOWN / NZD_UP remain overlay tags, not new spot OPENs."
+    }
+  ]
+}

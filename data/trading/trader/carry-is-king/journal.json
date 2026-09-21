@@ -47,6 +47,52 @@
       "run_id": "tr-20260920T020818Z-ondemand",
       "schema_version": 1,
       "thesis": "VERIFIED FACT: CORRA is 2.29% (2026-09-17); CRA 2027 contracts imply 3.13\u20133.595% (strip avg 3.40%); Canada August CPI-trim 1.9%, CPI-median 2.0%, headline 3.0%; employment \u221242k, wages +2.0% y/y, unemployment 6.4%; Fed hiked 25bp to 3.75\u20134.00% and SOFR printed 3.85% ACT/360; US 2Y 4.76% vs CA 2Y 3.27% = \u2212140bp; Saudi STS workaround modestly eased oil. INFERENCE: the 84\u2013130bp of 2027 BoC tightening is the market paying up for an energy-pass-through/Fed-catch-up narrative that labor and core have not validated; implied-minus-realized on a patient 2027 receiver is the carry. The same view in spot is long USDCAD (140bp 2Y), but AUDCAD is already a 5y extreme and CAD shorts are covering, so rates is cleaner. UNKNOWN: whether headline energy pass-through lifts trim/median enough to force the priced hikes; CA official curve and executable mids are absent. Reject paying CAD or buying stretched AUDCAD; those theses do not pay their carry."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 75000000,
+          "position_id": "pos-b97bddbdbd2d",
+          "rationale": "FACT: sidecar already owns long CORRA_2027-03 pos-b97bddbdbd2d (75m, entry mark 3.4, risk capital 750k). The primary debate trade is the same locked CORRA/CRA family, so this is HOLD not a duplicate OPEN. Packet CRAH27 implied is 3.13 versus the sidecar 3.4 entry; ADD would chase a lower receive rate after the implied-rate decline. Thesis intact after rebuttal: 84bp of Mar-27 tightening still overpays versus overnight 2.29% and core near 2%; perma-bull's pay needs more than that 84bp and admits carry opposes. Do not migrate the open contract onto a 2027 H-Z strip. Size stays inside the 10m shock cap.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-09-20T16:06:28.069463-04:00",
+      "conviction": 61,
+      "decision_fingerprint": "bb3daa8b62fd501ae3d361bd754542665d1c3bc87b527f57ee7b33e339181e0c",
+      "event_id": "jde-9baf781ce41a4da3",
+      "funding_view": null,
+      "invalidation": "Energy pass-through lifts core or Canada starts delivering the priced hike path, overwhelming the receive.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-b97bddbdbd2d"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "eaff24be69bfda0c95bb3ed942afacee0924249048a9cf49239c880e70cd4e6b",
+      "outcome_links": [],
+      "owner_id": "carry-is-king",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-20T19:39:35Z",
+        "evidence_hash": "02d6976dd0d2606bae7efa7c3f2cc41aeac6ccfbf50d5251260f71390ba24d5b",
+        "overnight_run_id": null,
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260920T193935Z-ondemand"
+      },
+      "rationale": "FACT: CORRA overnight is 2.29% and CRAH27 implies 3.13% (+84bp), with the curve still rising toward 3.51-3.65% into 2027-28. August inflation holds at 3% with core near 2%; CA labor 38 and consumer 45. Fed hiked to 3.75-4.00% and SOFR is 3.85%. INFERENCE: Mar-27 is paying 84bp of tightening for an energy-pass-through/Fed-catch-up story that domestic core and labor have not validated. A patient 2027-03 receiver earns implied-minus-realized if that path is not delivered. The same macro in spot is long USDCAD, but that pair is already an 87th-percentile 5y level with an energy-supported CAD tail, so rates is cleaner. UNKNOWN: whether pass-through lifts core enough to force the priced hikes; executable mids and CFTC positioning are absent. HOLD the locked long; do not duplicate the CORRA family.",
+      "run_id": "tr-20260920T193935Z-ondemand",
+      "schema_version": 1,
+      "thesis": "FACT: CORRA overnight is 2.29% and CRAH27 implies 3.13% (+84bp), with the curve still rising toward 3.51-3.65% into 2027-28. August inflation holds at 3% with core near 2%; CA labor 38 and consumer 45. Fed hiked to 3.75-4.00% and SOFR is 3.85%. INFERENCE: Mar-27 is paying 84bp of tightening for an energy-pass-through/Fed-catch-up story that domestic core and labor have not validated. A patient 2027-03 receiver earns implied-minus-realized if that path is not delivered. The same macro in spot is long USDCAD, but that pair is already an 87th-percentile 5y level with an energy-supported CAD tail, so rates is cleaner. UNKNOWN: whether pass-through lifts core enough to force the priced hikes; executable mids and CFTC positioning are absent. HOLD the locked long; do not duplicate the CORRA family."
     }
   ],
   "schema_version": 1,

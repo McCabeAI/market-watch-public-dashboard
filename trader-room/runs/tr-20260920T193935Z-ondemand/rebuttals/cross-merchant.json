@@ -1,0 +1,156 @@
+{
+  "type": "TRADER_ROOM_REBUTTAL",
+  "run_id": "tr-20260920T193935Z-ondemand",
+  "round": 2,
+  "agent": "cross-merchant",
+  "opponents": [
+    "perma-bull",
+    "positioning-cynic",
+    "value-guy",
+    "carry-is-king",
+    "dollar-king",
+    "perma-bear",
+    "rate-dove",
+    "rate-hawk",
+    "trend-follower"
+  ],
+  "own_original_ref": "submissions/cross-merchant.json",
+  "packet_sha256": "02d6976dd0d2606bae7efa7c3f2cc41aeac6ccfbf50d5251260f71390ba24d5b",
+  "subagent_calls": 0,
+  "trade_change": "unchanged",
+  "holes_in_opposing_case": [
+    "FACT: Direct CAD conflict is CAD higher (this seat, perma-bull, positioning-cynic, value-guy) versus CAD lower (carry-is-king, dollar-king, perma-bear, rate-dove, rate-hawk, trend-follower). Only dollar-king actually expresses CAD-down in spot (long USDCAD pos-5317bc96d4eb). The other CAD-lower seats tag CAD_DOWN while selecting SOFR or CORRA, then discard USDCAD in their own expression_comparison.",
+    "FACT: Packet FX as of 2026-09-18: AUDCAD 0.9975768872320596 at 99.80 1y / 99.96 5y (+1.95% 1m, +1.37% 3m). USDCAD 1.4010471204188482 at 74.0 1y / 87.0 5y (+1.74% 1m, -1.25% 3m). AUDUSD 76.4 1y / 84.3 5y (+0.20% 1m, +2.65% 3m). NZDCAD 20.4 1y / 9.2 5y. The 5y extreme is AUD versus CAD, not USD versus CAD. Over 3m CAD strengthened versus USD while AUDCAD still rose. dollar-king treats a 1m USDCAD bid after a delivered Fed 25bp hike (SOFR 3.85) as if it were CAD-idiosyncratic cheapness.",
+    "FACT hole in dollar-king: their own mispricing admits USDCAD at only the 74th 1y percentile 'has not fully paid' a CA-US 2Y -140bp premium. That is an argument that the dollar pair is not stretched, not that long USDCAD is the clean CAD expression. value-guy's original (same CAD_UP side) states the packet USDCAD~CA-US_2Y association is weak (r-squared 0.022103177994568436, status weak). INFERENCE: mapping CA-US 2Y cheapness into long USDCAD is the contamination this remit rejects. UNKNOWN: I did not independently re-extract that r-squared from PACKET_FACTS; it is cited from the opposing original.",
+    "FACT hole in carry-is-king and rate-dove: both tag CAD_DOWN while their selected trades are receive CORRA, and both reject CAD-weak spot. carry-is-king: USDCAD already 87th 5y percentile, energy/CAD beta can overwhelm FX carry, and 'AUDCAD is a 5y extreme so CAD-cross carry is exhausted.' rate-dove: USDCAD 74th 1y / 87th 5y after +1.74% 1m 'mixes a rich USD/Fed-hike premium' so rates is cleaner. INFERENCE: CAD_DOWN is a rates-to-FX smuggle of an easy-Canada receive, not a packet-supported CAD-weak price. They concede the only stretched CAD-cross is already too rich to sell CAD in.",
+    "FACT hole in rate-hawk and trend-follower: both select pay-SOFR over long USDCAD because USDCAD mixes oil tails, BoC energy pass-through, a still-hiking CORRA strip, and CAD labor 38. trend-follower: 'The causal discrepancy is the US policy-path trend, not a CAD-idiosyncratic FX story.' INFERENCE: their CAD_DOWN is a USD residual, which they themselves discarded as a dirtier expression. A live SR3 hiking trend can lift USDCAD without making AUDCAD's 5y extreme a fair AU-CA price.",
+    "FACT hole in perma-bear: primary trade is receive AONIA_2027-06 (AUD_DOWN / AU_RATES_DOWN, which agrees with this seat on Australia). CAD_DOWN is imported from USD_UP / risk-off with no Canada-specific CAD-weak mechanism. Their own reason for rejecting short AUDUSD is that it mixes a Fed-hike USD bid — the same hole as tagging CAD_DOWN.",
+    "Same-side CAD_UP seats do not hole short AUDCAD. perma-bull rejects USDCAD for a post-hike USD residual and keeps CAD_UP via short CORRA. positioning-cynic lists short AUDCAD as the spot candidate, concedes AUDCAD is the 5y extreme with CFTC AUD OI at a 1y/3y extreme, and only pays AONIA because the rates-first rule prefers empty Mar-27 OI. value-guy's CAD_UP is SOFR-CORRA compression with aud_view not_relevant, so they miss that the stretched CAD expression is versus AUD. INFERENCE: CAD higher is the clustered FX conclusion; the dispute is whether to own it in USD, in Canada rates, or in the 5y-extreme cross."
+  ],
+  "attack": [
+    "Strongest opposing CAD-lower claim is dollar-king long USDCAD: USD policy exceptionalism versus Canada labor 38 / core near 2% still under-expressed in the dollar pair. FACT: Fed 25bp to 3.75-4.00% is delivered and SOFR is 3.85; USDCAD 1m +1.74% / 5d +1.10% is exactly that residual. FACT: AUDUSD 5d is -0.73% while AUDCAD 5d is +0.36% and 1m +1.95%, so the 1m cross stretch is CAD weakness versus USD plus a non-extreme AUDUSD, compounding two mid-70s 1y legs into a 99.96 5y cross. INFERENCE: long USDCAD owns the Fed residual this remit exists to strip out. It does not own AU housing (NSW stamp duty -24% y/y, transactions -18%, Sydney/Melbourne >7% off peak) versus leftover AONIA ~50bp (overnight 4.35, Mar-27 4.86) against leftover CORRA +84bp from 2.29 (Mar-27 3.13) plus BoC energy-pass-through minutes. UNKNOWN: post-2026-09-18 FX path versus cutoff 2026-09-20T19:39:35Z; CFTC/CME cross ownership.",
+    "carry-is-king / rate-dove: FACT overnight CORRA 2.29, Mar-27 3.13 (+84bp), 2027H-Z average 3.40, CA labor 38, CPI-trim 1.9 / median 2.0, headline 3.0. INFERENCE: that can justify a patient Canada receive versus overnight. It does not justify CAD_DOWN in FX. Remaining unused CA hike room and energy pass-through are CAD-supportive versus AUD even if Canada stays easy versus SOFR 3.85. The CA-US 2Y can stay near -140bp (value-guy) while AUDCAD compresses because the AU housing channel is already open and AONIA has less unused room. Their own copy says CAD-cross carry is exhausted at the 5y AUDCAD extreme.",
+    "rate-hawk / trend-follower: FACT US 2Y 4.76 at the 99.8th 1y percentile, SR3 Mar-27 4.58 / Sep-27 4.755. INFERENCE: a US hiking trend is a USD story. Tagging CAD_LOWER converts that into a CAD view the packet FX distribution does not support: USDCAD is not a 5y extreme; AUDCAD is. Short AUDCAD is the USD-neutral way to keep CAD higher versus the rich AUD leg without needing their SOFR terminal to be right.",
+    "perma-bear CAD_DOWN is not a Canada trade. If housing forces AONIA off the remaining ~50-60bp, that is AUD-negative versus CAD and supports this short, not CAD-down versus USD."
+  ],
+  "defense": [
+    "FACT: Sidecar and paper_books already own short AUDCAD pos-00661cabb94a, 50m notional, 500k standard-shock risk versus a 10m cap; packet/book mark 0.9975768872320596 equals the frozen mid; drawdown in paper_books is 10694.44 versus the 5m stop; risk_stopped is false. Carry opposes the short (AONIA 4.35 versus CORRA 2.29). Book action remains HOLD that id; no duplicate OPEN and no ADD.",
+    "FACT: CAD_UP here is CAD higher versus AUD in a 5y-extreme cross, not a claim that CAD must rally versus USD. usd_view stays not_relevant. A Fed residual that lifts USDCAD can coexist with AUD still too rich versus CAD. That is why USD expressions fail the intended differential.",
+    "FACT: Independent checks still line up. Policy path: AONIA leftover ~51bp into an open housing channel versus CORRA leftover ~84bp from 2.29 with energy pass-through. Temperature: AU inflation 82 / labor 50 / activity 54 versus CA inflation 55 / labor 38 / activity 66. Cross-market: NZDCAD already cheap (20.4/9.2), so the rich leg in the AUD-CAD-NZ triangle is AUD. CFTC is USD-referenced: AUD OI 99th percentile with leveraged funds still net long AUD; CAD leveraged funds covered shorts last week — not a documented AUDCAD squeeze that explains the 5y extreme.",
+    "INFERENCE: CAD-lower opponents either (a) own USD, (b) receive Canada and then tag CAD_DOWN they themselves will not trade in spot, or (c) import risk-off. None of them produce a cleaner non-USD owner of the AU-CA remaining-path gap. Same-side CAD_UP seats corroborate CAD higher and then park it in CORRA/SOFR-CORRA/AONIA because they are rates-first; that does not make USDCAD cleaner.",
+    "Concede if: Australian housing reverses while AONIA delivers the remaining ~50bp, BoC withdraws energy-pass-through risk and CORRA hikes are priced out, and AUDCAD holds the packet 5y extreme instead of mean-reverting. A fresh USD-only shock that moves AUDUSD and USDCAD together without compressing the cross is not the intended falsifier. UNKNOWN: NZ official yields/policy path, CME FX futures positioning, broker executable quotes, labeled analog with quantified forward outcomes, and whether Saudi STS workaround kills the oil tail faster than weaker energy shock absorbers rebuild it."
+  ],
+  "revised_trade": {
+    "instrument": "AUDCAD",
+    "asset_class": "spot_fx",
+    "direction": "short",
+    "structure": "outright spot",
+    "horizon": "1-3 months through the next RBA/BoC and housing/energy prints",
+    "entry": null,
+    "target": null,
+    "stop": null,
+    "invalidation": "The Australian housing channel reverses while AONIA keeps delivering the remaining ~50bp, BoC energy-pass-through risk is withdrawn and CORRA hikes are priced out, and AUDCAD holds the packet 5y extreme instead of mean-reverting. A fresh USD-only shock that moves AUDUSD and USDCAD together without compressing the cross is not the intended falsifier.",
+    "confidence": 61,
+    "thesis": "FACT: As of 2026-09-18 AUDCAD spot is 0.9975768872320596, 1y percentile 99.80 and 5y percentile 99.96, with +1.95% 1m and +1.37% 3m; 20d realized vol is 4.38. AUDUSD is only 76.4 1y / 84.3 5y and USDCAD 74.0 1y / 87.0 5y, so the extreme lives in the product of two moderate USD legs, not in either dollar pair. Overnight AONIA is 4.35 with Oct +21.5bp and Mar-27 +51bp (implied 4.86); CORRA is 2.29 with Dec 1m +29bp and Mar-27 +84bp (implied 3.13). AU 2Y is 4.999 at the 99th percentile 1y/5y; CA 2Y is 3.27 at 97.8 1y but only 58.5 5y; CA-AU 2Y is -164.9bp at the 10.5th 5y percentile. AU temperature: inflation 82, labor 50, activity 54, consumer 48. CA: inflation 55, labor 38, activity 66, consumer 45. NSW stamp-duty receipts fell 24% y/y in August with transactions -18% and Sydney/Melbourne values more than 7% below peak. Canada August CPI held at 3% with core near 2%; BoC minutes flag energy pass-through. The book already owns short AUDCAD pos-00661cabb94a, 50m notional, 500k standard-shock risk, mark equal to packet mid. INFERENCE: the market is pricing an RBA-over-BoC currency premium as if Australia can keep tightening from 4.35 into an already-open housing channel while Canada remains a cheap overnight and a cheap CAD in the cross. That is backwards on the remaining path: AONIA has less unused hike room into deteriorating housing, CORRA still prices a catch-up cycle, and energy pass-through is a CAD-specific catalyst. Short AUDCAD owns that differential without a Fed/USD residual. USD expressions (short AUDUSD or long USDCAD) contaminate a clean AU-versus-CA view with the just-delivered Fed 25bp hike to 3.75-4.00% and with SOFR 3.85. AUDNZD is also a 5y extreme but NZ official yields and the NZ policy path are unavailable in this packet, so it is not a cleaner cross. Carry opposes the short (AONIA 4.35 versus CORRA 2.29), which is why the book HOLDs 50m rather than ADDs. UNKNOWN: NZ rates, CME FX futures positioning, broker executable quotes, and any labeled historical analog with quantified forward outcomes.",
+    "mispricing": "AUDCAD at a packet 5y extreme prices a durable Australian yield/policy premium versus Canada even as the AU housing channel is already biting and AONIA still has ~50bp of extra tightening in the strip, while CORRA from 2.29 still prices +84bp by Mar-27 and BoC minutes keep energy pass-through on the table. The USD legs are not similarly extreme, so the mispricing is the cross, not AUDUSD or USDCAD.",
+    "why_now": [
+      "VERIFIED: Australian housing transmission is now in the prints (NSW stamp duty -24% y/y, volumes -18%, Sydney/Melbourne >7% off peak) while AONIA still prices +21.5bp by October and +51bp by March 2027 — known tightness with a new channel.",
+      "VERIFIED: Canada CPI 3%/core near 2% plus BoC minutes on energy pass-through leave a remaining CORRA hike path (+84bp by Mar-27 from 2.29) that USD-pair trades mix with the Fed's already-delivered 25bp hike.",
+      "VERIFIED: AUDCAD sits at 99.80/99.96 1y/5y percentiles after +1.95% in one month; AUDUSD and USDCAD do not, so waiting for a USD expression delays the only stretched AU-CA price.",
+      "The seat already owns short pos-00661cabb94a at the same packet mid; the discrepancy has not closed, so the actionable book decision is HOLD that id rather than a duplicate OPEN."
+    ],
+    "evidence_refs": [
+      "fx:AUDCAD",
+      "fx:AUDUSD",
+      "fx:USDCAD",
+      "fx:AUDNZD",
+      "fx:NZDCAD",
+      "policy:AU",
+      "policy:CA",
+      "policy_paths",
+      "tradable_rate_curves",
+      "rates:AU",
+      "rates:CA",
+      "temp:AU:inflation",
+      "temp:AU:labor",
+      "temp:AU:activity",
+      "temp:AU:consumer",
+      "temp:CA:inflation",
+      "temp:CA:labor",
+      "temp:CA:activity",
+      "temp:CA:consumer",
+      "mw_20260916_au_housing_tightening",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "rollup:BoC minutes flag higher energy pass-through risk",
+      "rollup:Canada August inflation holds at 3%, core stays near 2%",
+      "rollup:Fed raises 25bp to 3.75–4.00%",
+      "mw_20260916_saudi_oman_workaround",
+      "rollup:Energy-market shock absorbers weaken",
+      "last24:desk-thesis",
+      "pos:cftc",
+      "paper_books",
+      "market_state",
+      "research_method",
+      "funding_context"
+    ],
+    "catalysts": [
+      "Further Australian housing/tax-receipt or labor deterioration that forces the AONIA strip to fade the remaining ~50bp.",
+      "BoC follow-through on energy pass-through or a firmer Canadian inflation mix that keeps CORRA's +84bp Mar-27 path intact or extends it.",
+      "Mean-reversion of AUDCAD from the packet 5y extreme once the AU-CA remaining-path gap is recognized without a USD impulse."
+    ],
+    "principal_risks": [
+      "AU inflation gauge 82 keeps the RBA delivering the priced AONIA hikes, validating the AUD premium in the cross.",
+      "Saudi ship-to-ship workaround and softer oil remove BoC energy-pass-through risk and let CORRA reprice lower, weakening CAD.",
+      "Negative carry: short AUDCAD pays the AONIA 4.35 versus CORRA 2.29 overnight gap.",
+      "CFTC is USD-referenced and partial (CME positioning unavailable): AUD open interest is 99th percentile and CAD leveraged funds covered shorts last week, so a squeeze higher in the cross cannot be ruled out from flow.",
+      "Global-tightening desk thesis (Fed, BoJ, BoE split) can keep high-yielding AUD bid as a carry currency even if the housing channel is open."
+    ],
+    "expression_comparison": {
+      "rates_candidate": "Receive AONIA_2027-03 (implied 4.86, +51bp vs overnight 4.35) versus pay CORRA_2027-03 (implied 3.13, +84bp vs overnight 2.29), i.e. long AU duration / short CA duration as a rates expression of AU overtightening versus CA catch-up. Packet CA-AU 2Y is already -164.9bp.",
+      "spot_candidate": "Short AUDCAD spot (existing pos-00661cabb94a); rejected USD alternatives short AUDUSD or long USDCAD, and rejected AUDNZD because NZ rates are unavailable.",
+      "selected": "spot",
+      "rationale": "Dedicated spot-FX seat. The intended discrepancy is an AU-versus-CA remaining-policy and growth-channel gap. AUDCAD isolates that gap: both AONIA and CORRA paths are live in the packet, both sovereign curves are live, and the 5y FX percentile is 99.96. AUDUSD and USDCAD only mid-70s 1y percentiles, so a USD expression mixes in the already-delivered Fed 25bp hike and SOFR 3.85. The rates RV (receive AONIA / pay CORRA) points the same way but lives in two policy strips that are already pricing the catch-up (CA) and residual hikes (AU); the stretched tradable price is the cross, not a new 2Y CA-AU extreme that still needs a USD residual to mark. AUDNZD is equally extreme but NZ official yields and NZ policy path are unavailable, so it fails closed as a cleaner cross."
+    },
+    "context_build": {
+      "causal_mechanism": "Test whether Australia can sustain a near-parity AUDCAD premium when the RBA's tightening channel is already open in housing while the remaining AONIA hike path is still ~50bp, versus Canada still operating from CORRA 2.29 with +84bp priced by Mar-27 and BoC minutes flagging energy pass-through into a 3% headline / ~2% core CPI mix. If AU housing deterioration caps further RBA delivery and CA still has unused tightening plus an energy tail, AUD should cheapen versus CAD. That is an AU-CA relative-policy and relative-growth mechanism, not a USD dollar-bloc mechanism.",
+      "path_to_current_price": "Multi-horizon packet path for AUDCAD as of 2026-09-18: +0.20% 1d, +0.36% 5d, +1.95% 1m, +1.37% 3m, into 99.80 1y / 99.96 5y percentiles at 0.99758. The USD legs that compose it did not make the same trip: AUDUSD is +0.09% 1d, -0.73% 5d, +0.20% 1m, +2.65% 3m at 76.4/84.3 percentiles; USDCAD is +0.11% 1d, +1.10% 5d, +1.74% 1m, -1.25% 3m at 74.0/87.0. Information over the same window: Fed 25bp hike to 3.75-4.00% and August US CPI keeping a tightening bias; RBA channel showing up as NSW stamp-duty and home-value declines; BoC minutes on energy pass-through and Canada August CPI 3%; two-way oil (Saudi Oman STS workaround versus weakening energy shock absorbers); last-24 desk thesis that energy is constraining global easing. The cross drifted to a 5y extreme while USD pairs stayed only moderately high.",
+      "known_vs_new_information": "Known: RBA and BoC have been in a global tightening/energy regime; AU yields were already high; Fed hike was >90% priced into 16 Sep. New enough to move the cross now: the housing channel is in hard receipts (stamp duty -24%, volumes -18%, values >7% off peak), which is transmission of known tightness rather than a new RBA decision; BoC energy-pass-through minutes plus a still-low CORRA overnight versus a still-rich AUDCAD level. Known information explains a new move only if the market had not yet treated the housing print as a cap on remaining AONIA hikes relative to Canada's unused path. The cross at a 5y high says it has not.",
+      "market_implied_assumption": "Current AUDCAD requires that Australia keep a policy and yield premium over Canada that justifies near-parity in the cross: AONIA can still add ~50bp from 4.35 without the housing channel stopping the RBA, and CAD does not need to reprice the leftover CORRA catch-up or energy pass-through. It also requires that compounding two mid-70s USD-leg percentiles into a 5y-extreme cross is a fair AU-CA relative price rather than USD contamination.",
+      "market_assumption_disagreed_with": "Disagree that the remaining RBA path is more currency-supportive than the remaining BoC path. The housing channel is already biting in Australia while Canada still has the larger unused hike stack from a 2.29 overnight and an explicit energy-pass-through risk. The priced assumption that AUD should sit at a 5y extreme versus CAD is the exact error.",
+      "price_decomposition": "Level: AUDCAD 0.99758 is a 5y extreme; change: the 1m +1.95% is the marginal stretch. Decomposition of the cross into packet legs: AUDUSD (not extreme, 5d actually down) times USDCAD (1m up 1.75% but only 74th 1y). The 1m AUDCAD rally is therefore mostly CAD weakness versus USD plus a stable-to-firm AUD versus USD, not an AUD breakout. Rates decomposition: AU 2Y 4.999 versus CA 2Y 3.27 (spread -165bp, 10.5th 5y percentile of CA-AU) already encodes a huge AU yield premium; policy-path decomposition is the better marginal driver — AONIA Mar-27 +51bp versus CORRA Mar-27 +84bp from a 206bp overnight gap (4.35 vs 2.29). The FX has not cheapened AUD for the housing-open / CA-catch-up mix; it has done the opposite.",
+      "historical_reference": {
+        "distribution": "Packet FX distribution as of 2026-09-18: AUDCAD 1y percentile 99.80 and 5y percentile 99.96 with 20d RV 4.38 and 60d RV 4.91. Contrast AUDUSD 76.4/84.3 and USDCAD 74.0/87.0 on the same windows. Sovereign: AU 2Y/5Y/10Y all ~99th 1y and 5y; CA 2Y 97.8 1y but only 58.5 5y; CA-AU 2Y -164.9bp at 10.5th 5y percentile. Carry distribution is against the short: AONIA 4.35 minus CORRA 2.29.",
+        "analogs": [
+          "No labeled historical episode with quantified forward outcomes is in this frozen packet. The live comparable is the current split itself: Australian housing-channel tightening versus a still-incomplete Canadian hike path plus energy pass-through, observed in a cross that is more extreme than either USD leg."
+        ],
+        "regime_differences": "This is not a pooled 2010s commodity-cross sample. Overnight policy starting points differ (AONIA 4.35 versus CORRA 2.29), AU inflation gauge 82 versus CA 55, CA labor 38 versus AU 50, and energy is two-way in the same packet (Saudi STS workaround versus weakening shock absorbers). NZ cannot be used as a third analog because NZ rates are unavailable. Executable broker levels are absent; paper marks are packet mids."
+      },
+      "independent_checks": [
+        "Policy-path check: AONIA strip (overnight 4.35, Oct 4.565 / +21.5bp, Mar-27 4.86 / +51bp) versus CORRA strip (overnight 2.29, Dec 1m 2.58 / +29bp, Mar-27 3.13 / +84bp) — remaining hike room is larger in Canada from a much lower starting overnight.",
+        "Temperature-plus-news check: AU inflation 82 with housing receipts collapsing versus CA inflation 55, CPI 3%/core ~2%, activity 66 and labor 38, plus BoC energy-pass-through minutes — growth/channel pain is Australian, residual inflation/energy risk is more Canadian.",
+        "Cross-market FX check: AUDCAD 5y extreme versus non-extreme AUDUSD and USDCAD on the same ECB-ratio snapshot; AUDNZD is also 5y extreme but fails as an expression because NZ yields and NZ policy path are missing. NZDCAD is 20.4 1y / 9.2 5y, i.e. NZD already cheap versus CAD, so the rich leg in the AUD-CAD-NZ triangle is AUD, not a cheap CAD."
+      ],
+      "flow_and_positioning_check": "CFTC TFF as of 2026-09-15 is USD-referenced, not AUDCAD. AUD futures open interest 493141 is 99.0 1y / 99.7 3y percentile (weekly +37673). AUD leveraged funds are net long +61135 (12.4% of OI) but only 31.7 1y percentile; asset managers are net short AUD. CAD leveraged funds are net short CAD -39022 (-10.9% of OI) at 99.0 1y percentile of that net with a weekly +16426 cover. CME FX futures positioning is unavailable. Inference: USD-pair specs do not show a one-sided crowded long-AUD / short-CAD book that fully explains a 5y AUDCAD extreme; the stretch is more a cross-construction from two moderate USD legs than a documented AUDCAD positioning squeeze. Unknown: true cross ownership and CTA/dealer AUDCAD books.",
+      "policy_path_check": {
+        "status": "available",
+        "relevant_countries": [
+          "AU",
+          "CA"
+        ],
+        "pricing_summary": "AU: AONIA overnight 4.35 as of 17-Sep-2026; 1m strip Oct implied 4.565 (+21.5bp), Nov 4.685 (+33.5bp), Dec 4.725 (+37.5bp), Mar-27 4.86 (+51.0bp). CA: CORRA overnight 2.29 as of 2026-09-17; 1m strip Oct 2.305 (+1.5bp), Nov 2.43 (+14bp), Dec 2.58 (+29bp); 3m Mar-27 3.13 (+84bp), Jun-27 3.365 (+107.5bp). US path is live (SOFR 3.85, SR3 Mar-27 4.58 / +73bp) but is the contaminant to exclude, not the differential. NZ policy path and NZ yields are unavailable.",
+        "rationale": "Spot AUDCAD is the expression of a remaining-path gap that is directly observable in AONIA versus CORRA. AU still has ~50bp priced into a housing downturn; CA still has ~84bp priced from 2.29 with energy-pass-through risk. That is the policy-path content of the short. US SOFR is available but using it would reintroduce the Fed residual the remit rejects. NZ cannot be used until official NZ rates return."
+      }
+    }
+  },
+  "paper_actions": [
+    {
+      "action": "HOLD",
+      "position_id": "pos-00661cabb94a",
+      "instrument": "AUDCAD",
+      "asset_class": "spot_fx",
+      "side": "short",
+      "notional_usd": 50000000,
+      "rationale": "Existing short pos-00661cabb94a already owns the AU-housing versus CA-remaining-hike cross at the packet mid (0.99758). Do not OPEN a duplicate AUDCAD. Carry (AONIA 4.35 vs CORRA 2.29) opposes adding size; standard-shock risk is 500k versus a 10m cap. CAD-lower opponents own USD or receive CORRA and then tag CAD_DOWN they will not trade in the 5y-extreme cross. HOLD until the 5y extreme compresses or the housing/BoC invalidation hits."
+    }
+  ]
+}

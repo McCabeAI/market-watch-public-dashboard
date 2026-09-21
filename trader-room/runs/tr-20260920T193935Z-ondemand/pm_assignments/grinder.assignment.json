@@ -1,0 +1,95 @@
+{
+  "allowable_actions": [
+    "OPEN",
+    "HOLD",
+    "NO_TRADE"
+  ],
+  "evidence_cutoff": "2026-09-20T19:39:35Z",
+  "evidence_packet_sha256": "02d6976dd0d2606bae7efa7c3f2cc41aeac6ccfbf50d5251260f71390ba24d5b",
+  "independence": "Read only this PM's packet/memory/assignment. Do not read other PMs' packets, memory, books, or current-cycle decisions.",
+  "mandate": {
+    "awaiting_status": "awaiting_automated_pm_review",
+    "hedge_allowed": true,
+    "label": "Grinder",
+    "shorthand": "Preservation and consistency first. Smaller sizes, high hurdles, quick de-risking. No-trade is valid.",
+    "style": "preservation"
+  },
+  "memory": {
+    "active_lessons": [],
+    "calibration": {
+      "average_holding_seconds": null,
+      "average_realized_pnl_usd": null,
+      "breakeven": 0,
+      "by_asset_class": {},
+      "closed_trade_count": 0,
+      "conviction_buckets": {
+        "high": {
+          "average_pnl_usd": null,
+          "count": 0,
+          "hit_rate": null
+        },
+        "low": {
+          "average_pnl_usd": null,
+          "count": 0,
+          "hit_rate": null
+        },
+        "medium": {
+          "average_pnl_usd": null,
+          "count": 0,
+          "hit_rate": null
+        }
+      },
+      "losses": 0,
+      "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
+      "total_realized_pnl_usd": 0.0,
+      "wins": 0
+    },
+    "memory_context_sha256": "6e680d1701c4ff8f93e5f97dfcc1569475ab94ca917bf27857b9dcbb7ff94dcc",
+    "open_positions": [],
+    "postmortems_due": [],
+    "recent_closed_trades": []
+  },
+  "memory_context_sha256": "6e680d1701c4ff8f93e5f97dfcc1569475ab94ca917bf27857b9dcbb7ff94dcc",
+  "paths": {
+    "assignment": "trader-room/runs/tr-20260920T193935Z-ondemand/pm_assignments/grinder.assignment.json",
+    "memory": "trader-room/runs/tr-20260920T193935Z-ondemand/pm_memory/grinder.json",
+    "named_packet": "data/pm/review_packets/grinder/prp-grinder-tr-20260920T193935Z-ondemand.json",
+    "packet_facts": "trader-room/runs/tr-20260920T193935Z-ondemand/PACKET_FACTS.json",
+    "review_packet": "data/pm/review_packets/grinder/latest.json",
+    "shared_facts": "trader-room/runs/tr-20260920T193935Z-ondemand/pm_shared_facts.json"
+  },
+  "pm_id": "grinder",
+  "prior_book": {
+    "conviction": 68,
+    "decision_status": "no_trade",
+    "high_water_nav_usd": 1000000000.0,
+    "invalidation": "Revisit only if a later freeze shows a one-way, markable rates path: Canada core/labor confirming no 2027 CRA catch-up while the 2027 strip still holds mid-3s against a still-on-hold 1m CORRA path, or the reverse with delivered BoC tightening, without relying on missing NZ/CA-curve/CME-positioning or unmarkable options.",
+    "last_action": "NO_TRADE",
+    "nav_usd": 1000000000.0,
+    "pm_id": "grinder",
+    "positions": [],
+    "review_status": "stale",
+    "thesis": "Keep the empty book in unused cash earning official NY Fed SOFR 3.85% ACT/360. Packet discrepancies are post-event, two-sided, and conflicted across markable SOFR/CORRA/AONIA expressions; none clear a preservation hurdle on this on-demand fallback freeze."
+  },
+  "review_packet_id": "prp-grinder-tr-20260920T193935Z-ondemand",
+  "review_packet_sha256": "0fdbdc494a747c0a6501b3e5f2dccbc2e3630633a8851c339eabf9db9ab8b929",
+  "risk": {
+    "cash_capital_usd": 1000000000,
+    "drawdown_usd": 0.0,
+    "gross_utilization_usd": 0,
+    "max_drawdown_usd": 50000000,
+    "risk_capital_limit_usd": 100000000,
+    "risk_capital_remaining_usd": 100000000.0,
+    "risk_capital_usd": 0.0,
+    "risk_stop_pending": false,
+    "risk_stopped": false
+  },
+  "run_id": "tr-20260920T193935Z-ondemand",
+  "sizing_instruction": "Size from plausible adverse paths and historical excursions. Notional is descriptive. Do not mechanically fill remaining shocked-risk capacity. OPEN/ADD/HEDGE fail closed while risk_stopped; there is no reset policy in this packet.",
+  "source": "on_demand_trader_room_fallback",
+  "stale_or_missing_warnings": [
+    "PM packet source is the on-demand Trader Room fallback, not a successful overnight 14-seat review."
+  ],
+  "trader_room_run_id": "tr-20260920T193935Z-ondemand",
+  "type": "PM_ASSIGNMENT"
+}

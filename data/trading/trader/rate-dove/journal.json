@@ -47,6 +47,52 @@
       "run_id": "tr-20260920T020818Z-ondemand",
       "schema_version": 1,
       "thesis": "FACT: overnight CORRA is 2.29 and the 2027 3m strip implies 3.13-3.595 while 1m CORRA is only 2.58 by December; August employment was -42k, wages +2.0% y/y, CPI-trim/median 1.9%/2.0%. INFERENCE: 2027 CRA is pricing an energy-pass-through hiking cycle that domestic labor and core do not require, so receiving that window is the underpriced-easing trade. UNKNOWN: whether WTI 107.02, weaker energy shock-absorbers, and Q2 GDP +0.8% still force BoC to validate the strip. Expression is rates-first; spot USDCAD long is the alternative and is inferior because oil and CAD-short covering can hold CAD up even if CRA 2027 reprices lower."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027H-Z",
+          "notional_usd": 85000000,
+          "position_id": "pos-9849cf751c27",
+          "rationale": "Sidecar already owns LONG CORRA_2027H-Z pos-9849cf751c27 at entry 3.4, 85m notional, 850k standard-shock risk capital. Round-2 CAD-higher / USD-lower tags do not invalidate the 2027 hike-cycle fade at the same packet mark 3.40. Do not OPEN a duplicate strip. Do not ADD: energy pass-through remains the live hawk risk and 9.15m unused risk capital is the buffer. Funded-seat SOFR vig accrues either way, so HOLD is the final book decision.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-09-20T16:06:28.069463-04:00",
+      "conviction": 61,
+      "decision_fingerprint": "6bae8e9c0ae6adec49bc3d881f08325889285fc0b0e9def289e07f817e8a7048",
+      "event_id": "jde-430be481d56641d6",
+      "funding_view": null,
+      "invalidation": "BoC delivers or signals the priced 2027 mid-3s path, or core/trim leave ~2 percent while jobs stop contracting.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-9849cf751c27"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "fc401d7e127022f2088e61a07cbbddb58f60674810281bf6dd4c7c4359c4ac79",
+      "outcome_links": [],
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-20T19:39:35Z",
+        "evidence_hash": "02d6976dd0d2606bae7efa7c3f2cc41aeac6ccfbf50d5251260f71390ba24d5b",
+        "overnight_run_id": null,
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260920T193935Z-ondemand"
+      },
+      "rationale": "FACT: Canada is pricing a 2027 hike cycle (CORRA 2.29 to 2027H-Z 3.40, +111bp) while August core/trim-median sit at 1.9-2.0 percent, employment contracted 42k, and wages slowed to 2.0 percent. INFERENCE: hawks are treating energy pass-through and Fed/BoJ tightening as sufficient to re-tighten Canada into the mid-3s; labor and underlying CPI say that cycle will not be delivered, so 2027 implied CORRA falls. UNKNOWN: whether a renewed oil spike or a strong Q3 GDP follow-through on the +0.8 percent Q2 print can keep the BoC on a hiking path despite jobs. Actionable expression: stay long the existing 2027H-Z strip.",
+      "run_id": "tr-20260920T193935Z-ondemand",
+      "schema_version": 1,
+      "thesis": "FACT: Canada is pricing a 2027 hike cycle (CORRA 2.29 to 2027H-Z 3.40, +111bp) while August core/trim-median sit at 1.9-2.0 percent, employment contracted 42k, and wages slowed to 2.0 percent. INFERENCE: hawks are treating energy pass-through and Fed/BoJ tightening as sufficient to re-tighten Canada into the mid-3s; labor and underlying CPI say that cycle will not be delivered, so 2027 implied CORRA falls. UNKNOWN: whether a renewed oil spike or a strong Q3 GDP follow-through on the +0.8 percent Q2 print can keep the BoC on a hiking path despite jobs. Actionable expression: stay long the existing 2027H-Z strip."
     }
   ],
   "schema_version": 1,

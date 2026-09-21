@@ -88,6 +88,7 @@ def main() -> None:
     assert "scripts/trader_room_finalize.py" in protocol
     assert "## Context gate" in protocol
     assert "context_build" in protocol
+    assert "rates_tenor_scan" in protocol
     assert "final-aggregator" in protocol  # compatibility/reference only
     assert "trader-room/outbox" not in protocol
 
@@ -99,6 +100,7 @@ def main() -> None:
     assert "Composer ceiling = 28" in on_demand
     assert "Total model-invocation ceiling = 57" in on_demand
     assert "scripts/trader_room_finalize.py" in on_demand
+    assert "rates_tenor_scan" in on_demand
     assert "context_build" in on_demand
     assert "zero model calls" in on_demand
     assert "MW_TRADER_ROOM_RUN_POLICY=" in on_demand
@@ -140,6 +142,7 @@ def main() -> None:
     assert "composer-2.5" in command
     assert "deterministic" in command.lower() and "conflict_synopsis" in command
     assert "context_build" in command
+    assert "rates_tenor_scan" in command
     assert "SOFR/CORRA/AONIA" in command
     assert "Do **not** launch `final-aggregator`" in command
     assert "scripts/trader_room_finalize.py" in command
