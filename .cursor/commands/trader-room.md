@@ -44,6 +44,29 @@ Paper-action direction is canonical and must never use trader shorthand ambiguou
 
 Paper execution is at deterministic packet mid. A broker-executable quote is not required for the paper book. The core tradable rates curves are SOFR via CME `SR3`, CORRA via MX `CRA`, and AONIA via ASX `IB`; sovereign bond curves remain a separate valid expression family. The curve family chosen at OPEN is locked for that position and must be used for every subsequent ADD/REDUCE/CLOSE/re-mark. Do not silently switch a bond trade to SOFR/CORRA/AONIA or vice versa. Direct contracts use the frozen implied-rate/yield mid. Linear spreads/flies and forward windows are valid. For a futures-curve forward/fwd-fwd, prefer `{"type":"futures_strip_average","curve_id":"CORRA","expiries":["2028-03","2028-06","2028-09","2028-12"]}` (with optional explicit weights); the advocate or permitted Composer subagent chooses the exact contracts, and trusted code owns the arithmetic and replay. `official_curves` may still support an explicitly selected government-bond forward expression, but they are supplemental bond curves, not a manufactured swap/OIS curve. Swap-spread trades are out of scope until both legs are deliberately supported.
 
+## Desk-language presentation contract
+
+Every trade must also include a human-facing `presentation` object:
+
+```json
+{
+  "market_expression": "Receive H7 CORRA",
+  "punchline": "I'm receiving H7 CORRA because the 2027 BoC path is too aggressive for the Canadian core/labor data.",
+  "support": [
+    "The market is pricing materially more tightening than the near-term path.",
+    "Core inflation and labor are not validating that delivery path."
+  ],
+  "take_profit": {
+    "objective": "The level or repricing where I take the trade off.",
+    "basis": "Why that exit is reasonable: historical range/analog, standard-deviation move, policy-path convergence, or explicit P&L objective.",
+    "pnl_target_usd": null
+  },
+  "invalidation": "The specific evidence or price action that proves the trade wrong."
+}
+```
+
+Write this like a G10 rates/FX trader speaking to another trader, not like software describing a database. Use market shorthand: **receive/pay H7 CORRA, pay U7 SOFR, long/short AUDCAD**. Machine fields may retain normalized IDs such as `CORRA_2027-03`, but the presentation must not expose normalized IDs, position IDs, packet hashes, file paths, or bookkeeping language such as “canonical mark,” “family locked,” or “side long in implied-rate space.” Do not use `FACT:`, `INFERENCE:`, or `UNKNOWN:` labels in user-facing prose. Keep the punchline to one or two short sentences. Put the detailed reasoning in Support. Take profit is mandatory and must say both **where** the trader exits and **how that objective was established**. Do not invent a target merely to fill the field; derive it from frozen evidence, historical distribution/analogs, policy-path convergence, or a stated P&L objective.
+
 Each initial advocate:
 - may use at most two `composer-2.5` subagents;
 - must remain on the frozen packet;

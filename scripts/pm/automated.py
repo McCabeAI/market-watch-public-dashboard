@@ -7,6 +7,7 @@ from typing import Any
 
 from scripts.overnight.errors import EvidenceBoundaryError
 from scripts.trading.apply import apply_pm_decision_with_memory
+from scripts.trade_presentation import PresentationError, validate_trade_presentation
 from scripts.trading.store import TradingStore
 from scripts.pm.constants import ALLOWED_SUBAGENT_MODELS, AUTOMATED_PM_IDS, MAX_SUBAGENTS_PER_PM
 from scripts.pm.errors import IndependenceError, SchemaError
@@ -79,6 +80,10 @@ def validate_pm_decisions(
             raise SchemaError(f"{pm_id} evidence_cutoff mismatch")
         if not isinstance(decision.get("actions"), list) or not decision["actions"]:
             raise SchemaError(f"{pm_id} must return at least one structured action")
+        try:
+            validate_trade_presentation(decision.get("presentation"), label=f"{pm_id}.decision", required=True)
+        except PresentationError as exc:
+            raise SchemaError(str(exc)) from exc
         for forbidden_key in ("tools_used", "web_search", "web_fetch", "fetched_new_evidence"):
             if decision.get(forbidden_key):
                 raise EvidenceBoundaryError(
@@ -172,6 +177,17 @@ def dry_run_pm_decisions(
             "actions": [{"action": "HOLD"}],
             "thesis": "Dry-run hold; no live model invocation.",
             "invalidation": None,
+            "presentation": {
+                "market_expression": "Stay flat",
+                "punchline": "Stay flat. This is a deterministic dry-run, not a live investment decision.",
+                "support": ["No live model was invoked and no incremental risk is being proposed."],
+                "take_profit": {
+                    "objective": "N/A while flat",
+                    "basis": "No position is being opened in a dry-run.",
+                    "pnl_target_usd": None,
+                },
+                "invalidation": "A live, validated overnight decision replaces this dry-run placeholder.",
+            },
             "conviction": 0,
         }
         if memory_hashes and pm_id in memory_hashes:

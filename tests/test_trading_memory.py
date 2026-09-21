@@ -898,6 +898,9 @@ class OvernightAndTraderRoomMemoryTests(unittest.TestCase):
                 "research_supplement": {"summary": "none", "news": [], "central_bank_research": [], "sources": []},
             }
             packet["packet_sha256"] = sha256_json(packet)
+            from tests.test_overnight_scheduled_output import _presentation
+            from tests.test_pm_scheduled_output import _pm_block
+
             decisions = {}
             for seat in STANDING_SEATS:
                 decisions[seat] = {
@@ -909,6 +912,7 @@ class OvernightAndTraderRoomMemoryTests(unittest.TestCase):
                     "thesis": "No incremental edge.",
                     "memory_context_sha256": base["seat_memory"]["hashes"][seat],
                     "actions": [{"action": "HOLD", "expression_memo": {"selected": "none", "rationale": "Hold.", "rates_candidate": None, "spot_candidate": None, "options_candidate": None}}],
+                    "presentation": _presentation(),
                 }
                 if seat == "no-trade-skeptic":
                     decisions[seat]["funding_view"] = {
@@ -938,8 +942,6 @@ class OvernightAndTraderRoomMemoryTests(unittest.TestCase):
                     "auto_used": False,
                 },
             }
-            from tests.test_pm_scheduled_output import _pm_block
-
             packet = payload["agent_packet"]
             payload["pm_decisions"] = _pm_block(run_id, packet["packet_sha256"], packet["evidence_cutoff"])
             apply_output(store, payload)

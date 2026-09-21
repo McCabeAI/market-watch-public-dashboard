@@ -155,11 +155,13 @@ def action_from_paper_capital(paper_capital: dict[str, Any], contribution: dict[
             action["side"] = side
     if action.get("asset_class") is None:
         action["asset_class"] = trade.get("asset_class") or "spot_fx"
-    for note_key in ("thesis", "rationale", "note"):
+    for note_key in ("thesis", "rationale", "note", "presentation"):
         if paper_capital.get(note_key):
-            action[note_key] = paper_capital[note_key]
+            action[note_key] = deepcopy(paper_capital[note_key])
     if not action.get("thesis") and trade.get("thesis"):
         action["thesis"] = trade["thesis"]
+    if not action.get("presentation") and trade.get("presentation"):
+        action["presentation"] = deepcopy(trade["presentation"])
     return action
 
 
@@ -208,17 +210,22 @@ def reviews_from_run(
         contribution = originals[seat]
         rebuttal = rebuttals.get(seat)
         trade = contribution.get("trade") or {}
+        final_trade = trade
+        if rebuttal is not None and isinstance(rebuttal.get("revised_trade"), dict):
+            final_trade = rebuttal["revised_trade"]
         actions = paper_actions_from_contribution(contribution, rebuttal)
         for action in actions:
-            action["expression_memo"] = overnight_memo_for_action(seat, action, trade)
+            action["expression_memo"] = overnight_memo_for_action(seat, action, final_trade)
+            action.setdefault("presentation", deepcopy(final_trade.get("presentation")))
         synopsis = contribution.get("conflict_synopsis") or {}
         reviews[seat] = {
             "seat": seat,
             "actions": actions,
             "memory_context_sha256": hashes.get(seat),
             "conviction": contribution.get("confidence"),
-            "thesis": trade.get("thesis") or synopsis.get("core_view"),
-            "invalidation": synopsis.get("key_invalidation"),
+            "thesis": final_trade.get("thesis") or synopsis.get("core_view"),
+            "invalidation": final_trade.get("invalidation") or synopsis.get("key_invalidation"),
+            "presentation": deepcopy(final_trade.get("presentation")),
             "funding_view": contribution.get("funding_view"),
             "expression_memo": actions[0].get("expression_memo") or _hold_memo(seat),
         }

@@ -154,6 +154,7 @@ def empty_pm_book(pm_id: str) -> dict[str, Any]:
         "conviction": 0,
         "thesis": None,
         "invalidation": None,
+        "presentation": None,
         "alerts": [],
         "prior_action": None,
         "last_action": None,
@@ -401,6 +402,8 @@ def _set_decision_fields(book: dict[str, Any], action: dict[str, Any], decision:
         book["thesis"] = action.get("thesis") or payload.get("thesis")
     if action.get("invalidation") or payload.get("invalidation"):
         book["invalidation"] = action.get("invalidation") or payload.get("invalidation")
+    if action.get("presentation") or payload.get("presentation"):
+        book["presentation"] = deepcopy(action.get("presentation") or payload.get("presentation"))
     if payload.get("rationale"):
         book["rationale"] = payload["rationale"]
     if payload.get("synthesis"):
@@ -564,7 +567,19 @@ def apply_action(
     elif kind == "HEDGE":
         _hedge(book, action, run_id=run_id, when=stamp)
     elif kind in {"HOLD", "NO_TRADE"}:
-        pass
+        position_id = action.get("position_id")
+        if position_id:
+            try:
+                held = _find_position(book, position_id)
+            except SchemaError:
+                held = None
+            if held is not None:
+                for field in ("thesis", "invalidation", "presentation"):
+                    value = action.get(field)
+                    if value is None and decision is not None:
+                        value = decision.get(field)
+                    if value is not None:
+                        held[field] = deepcopy(value)
 
     book["prior_action"] = book.get("last_action")
     book["last_action"] = kind
@@ -608,6 +623,7 @@ def _open_position(book: dict[str, Any], action: dict[str, Any], *, run_id: str 
         "opened_run_id": run_id,
         "thesis": action.get("thesis"),
         "invalidation": action.get("invalidation"),
+        "presentation": deepcopy(action.get("presentation")),
         "hedge_of": action.get("hedge_of"),
         "unrealized_pnl_usd": None,
         "pnl_unavailable": False,
@@ -783,6 +799,8 @@ def apply_decision(
             action["thesis"] = decision["thesis"]
         if not action.get("invalidation") and decision.get("invalidation"):
             action["invalidation"] = decision["invalidation"]
+        if not action.get("presentation") and decision.get("presentation"):
+            action["presentation"] = deepcopy(decision["presentation"])
         if action.get("conviction") is None and decision.get("conviction") is not None:
             action["conviction"] = decision["conviction"]
         try:
@@ -961,6 +979,7 @@ def public_pm_view(books: dict[str, Any]) -> dict[str, Any]:
                 "conviction": item["conviction"],
                 "thesis": item.get("thesis"),
                 "invalidation": item.get("invalidation"),
+                "presentation": deepcopy(item.get("presentation")),
                 "alerts": item.get("alerts") or [],
                 "positions": [
                     {
@@ -981,6 +1000,7 @@ def public_pm_view(books: dict[str, Any]) -> dict[str, Any]:
                         "opened_run_id": p.get("opened_run_id"),
                         "thesis": p.get("thesis"),
                         "invalidation": p.get("invalidation"),
+                        "presentation": deepcopy(p.get("presentation")),
                         "funding_basis": p.get("funding_basis"),
                         "funding_basis_status": p.get("funding_basis_status"),
                         "funding_draw_usd": p.get("funding_draw_usd"),

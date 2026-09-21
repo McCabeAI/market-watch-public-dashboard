@@ -21,6 +21,7 @@ from scripts.overnight.scheduled_output import (
     validate_output,
 )
 from scripts.overnight.store import OvernightStore, sha256_json
+from scripts.trade_presentation import PresentationError, validate_trade_presentation
 from scripts.pm.portfolio import synthetic_portfolio_construction
 
 AS_OF = datetime.fromisoformat("2026-09-18T01:55:00-04:00")
@@ -34,6 +35,20 @@ POLICY = {
     "parent_total": 1,
     "parent_grok": 1,
 }
+
+
+def _presentation(expression: str = "Stay flat") -> dict:
+    return {
+        "market_expression": expression,
+        "punchline": f"{expression}. No incremental edge in this fixture.",
+        "support": ["The fixture is testing workflow mechanics, not a live investment view."],
+        "take_profit": {
+            "objective": "N/A while flat",
+            "basis": "No position is being opened in this fixture.",
+            "pnl_target_usd": None,
+        },
+        "invalidation": "A live validated decision replaces this fixture.",
+    }
 
 
 def _pm_block(run_id: str, packet_hash: str, cutoff: str) -> dict:
@@ -50,6 +65,7 @@ def _pm_block(run_id: str, packet_hash: str, cutoff: str) -> dict:
             "actions": [{"action": "HOLD"}],
             "thesis": "Await cleaner setup.",
             "invalidation": None,
+            "presentation": _presentation(),
             "conviction": 20,
         }
         if pm_id == "pragmatist":
@@ -78,6 +94,7 @@ def _hold_decision(seat: str, run_id: str, packet_hash: str, cutoff: str) -> dic
         "conviction": 25,
         "thesis": "No incremental edge.",
         "invalidation": None,
+        "presentation": _presentation(),
         "required_pitch": None,
         "risk_put_on": None,
         "expression_memo": {
@@ -400,6 +417,44 @@ class OvernightRuntimeHookTests(unittest.TestCase):
         proc = self._call("MW_TRADER_FROZEN=1\nMW_PM_FROZEN=1")
         self.assertNotEqual(proc.returncode, 0)
         self.assertIn("conflict", proc.stdout.lower())
+
+
+class TradePresentationValidationTests(unittest.TestCase):
+    def _valid(self, **overrides):
+        base = {
+            "market_expression": "Receive H7 CORRA",
+            "punchline": "Receive H7 CORRA — Mar-27 still prices too much hiking.",
+            "support": ["Core and labor have not validated the priced 2027 path."],
+            "take_profit": {
+                "objective": "Take profit if implied cheapens toward Z6 CORRA.",
+                "basis": "Historical analog when front-end cuts arrive before the belly.",
+                "pnl_target_usd": None,
+            },
+            "invalidation": "Close if BoC endorses the priced 2027 path.",
+        }
+        base.update(overrides)
+        return base
+
+    def test_accepts_desk_shorthand(self) -> None:
+        out = validate_trade_presentation(self._valid(), label="fixture", required=True)
+        self.assertEqual(out["market_expression"], "Receive H7 CORRA")
+
+    def test_rejects_normalized_ids_and_robot_labels(self) -> None:
+        with self.assertRaises(PresentationError):
+            validate_trade_presentation(
+                self._valid(punchline="Hold CORRA_2027-03 receive."),
+                label="fixture",
+                required=True,
+            )
+        with self.assertRaises(PresentationError):
+            validate_trade_presentation(
+                self._valid(punchline="FACT: still receive H7 CORRA."),
+                label="fixture",
+                required=True,
+            )
+
+    def test_optional_when_not_required(self) -> None:
+        self.assertIsNone(validate_trade_presentation(None, label="fixture", required=False))
 
 
 if __name__ == "__main__":

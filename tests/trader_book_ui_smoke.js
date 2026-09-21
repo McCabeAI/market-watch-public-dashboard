@@ -35,6 +35,12 @@ const document = {
   },
 };
 
+const LEGACY_CORRA_THESIS =
+  "FACT: This book is already duration-long / receive CORRA_2027-03 (MX CRAH27, family locked to CORRA/CRA) in position_id pm-swinger-2070479ca321, notional_usd 850000000, entry_mark 3.13 from opened_run_id tr-20260920T020818Z-ondemand. " +
+  "INFERENCE: The Mar-27 premium is still a 2027 hiking cycle that near-term CORRA and Canadian core/labor have not validated. Long in this book means receive and profits if the mark falls from 3.13 toward CRAZ26 2.775. " +
+  "INFERENCE: Energy pass-through is a minutes risk, not a delivered path. Do not migrate onto SOFR or USDCAD. " +
+  "UNKNOWN: CME positioning unavailable.";
+
 const traderPacket = {
   as_of: "2026-09-20T00:00:00Z",
   evidence_cutoff: "2026-09-20T02:08:18Z",
@@ -69,6 +75,19 @@ const traderPacket = {
           entry_price: 1.4,
           mark_price: 1.4,
           thesis: "USD vs CAD",
+          presentation: {
+            market_expression: "Long USDCAD",
+            punchline: "Long USDCAD — CAD looks stretched after the oil move.",
+            support: [
+              "USDCAD sits in the upper part of the five-year range.",
+              "Risk is sized to the 1% shock.",
+            ],
+            take_profit: {
+              objective: "Take profit near 1.45 spot.",
+              basis: "Five-year range resistance and prior swing high.",
+            },
+            invalidation: "Exit if CAD data forces a squeeze below 1.38.",
+          },
         },
       ],
     },
@@ -118,6 +137,8 @@ const pmPacket = {
           notional_usd: 500000000,
           risk_capital_usd: 50000000,
           unrealized_pnl_usd: 888888,
+          thesis: LEGACY_CORRA_THESIS,
+          invalidation: "Close if H7 CORRA implied rises toward M7 CORRA 3.365 rather than cheapening.",
         },
       ],
     },
@@ -158,6 +179,15 @@ function check(cond, message) {
   if (!cond) fail(message);
 }
 
+function storyOrder(card) {
+  const punch = card.indexOf("tb-story-punchline");
+  const support = card.indexOf(">Support<");
+  const tp = card.indexOf(">Take profit<");
+  const inv = card.indexOf("tb-story-invalidation");
+  check(punch !== -1 && support !== -1 && tp !== -1 && inv !== -1, "card missing a story row");
+  check(punch < support && support < tp && tp < inv, "story rows must be Punchline → Support → Take profit → Invalidation");
+}
+
 vm.runInNewContext(js, {
   document: document,
   fetch: fetch,
@@ -177,6 +207,12 @@ async function flush() {
 flush().then(function () {
   const root = els["trader-book-root"].innerHTML;
   const pms = els["tb-pm-root"].innerHTML;
+  fs.writeFileSync(
+    "/tmp/trader-book-smoke.html",
+    "<!doctype html><meta charset=utf-8><title>trader book smoke</title>" +
+      "<h1>Trader</h1>" + root + "<h1>PM</h1>" + pms
+  );
+
   const traderTotal = els["tb-trader-total"].textContent;
   const pmTotal = els["tb-pm-total"].textContent;
 
@@ -189,9 +225,14 @@ flush().then(function () {
   const dollar = seatCards.find(function (card) { return card.indexOf("Dollar King") !== -1; });
   const skeptic = seatCards.find(function (card) { return card.indexOf("No Trade Skeptic") !== -1; });
   check(Boolean(dollar), "Dollar King card is titled from the seat id");
-  check(dollar.indexOf("LONG") !== -1 && dollar.indexOf("USDCAD") !== -1, "Dollar King LONG USDCAD is on the card");
+  check(dollar.indexOf("Long USDCAD") !== -1, "Dollar King Long USDCAD is on the card");
   check(dollar.indexOf('tb-trade-line') !== -1, "active trader card has a scan-line trade");
-  check(dollar.indexOf("tb-direction long") !== -1, "LONG uses the long direction class");
+  storyOrder(dollar);
+  check(dollar.indexOf("CAD looks stretched after the oil move") !== -1, "structured punchline text renders");
+  check(dollar.indexOf("upper part of the five-year range") !== -1, "structured support text renders");
+  check(dollar.indexOf("Take profit near 1.45 spot") !== -1, "structured take-profit objective renders");
+  check(dollar.indexOf("squeeze below 1.38") !== -1, "structured invalidation renders");
+
   check(Boolean(skeptic), "No Trade Skeptic card is titled from the seat id");
   check(skeptic.indexOf("FLAT") !== -1, "flat trader card is labeled FLAT");
   check(skeptic.indexOf("LONG") === -1 && skeptic.indexOf("SHORT") === -1, "flat trader card has no fake LONG/SHORT");
@@ -200,7 +241,25 @@ flush().then(function () {
   const pmCards = pms.split('<article class="tb-pm">').slice(1);
   const chatgpt = pmCards.find(function (card) { return card.indexOf("ChatGPT") !== -1; });
   const grinder = pmCards.find(function (card) { return card.indexOf("Grinder") !== -1; });
-  check(Boolean(chatgpt) && chatgpt.indexOf("LONG") !== -1 && chatgpt.indexOf("CORRA_2027-03") !== -1, "active PM card shows LONG and instrument");
+  check(Boolean(chatgpt) && chatgpt.indexOf("Receive H7 CORRA") !== -1, "active PM card uses receive/pay market shorthand");
+  check(chatgpt.indexOf("CORRA_2027-03") === -1, "active PM card hides normalized internal contract IDs");
+  check(chatgpt.indexOf("CRAH27") === -1, "active PM card hides CRA ticker dumps");
+  check(chatgpt.indexOf("pm-swinger") === -1 && chatgpt.indexOf("pos-") === -1, "active PM card hides internal position ids");
+  check(chatgpt.indexOf("FACT:") === -1 && chatgpt.indexOf("INFERENCE:") === -1, "active PM card hides robot labels");
+  check(
+    chatgpt.indexOf("Legacy position: no explicit take-profit was stored.") !== -1,
+    "legacy PM card uses missing take-profit label"
+  );
+  check(
+    chatgpt.indexOf("notional_usd 850000000") === -1 &&
+      chatgpt.indexOf("opened_run_id") === -1 &&
+      chatgpt.indexOf("family locked") === -1,
+    "legacy support is not the full bookkeeping wall"
+  );
+  storyOrder(chatgpt);
+  check(chatgpt.indexOf("Mar-27 premium") !== -1 || chatgpt.indexOf("2027 hiking cycle") !== -1,
+    "legacy card keeps a readable support or punchline fragment");
+
   check(Boolean(grinder) && grinder.indexOf("NO TRADE") !== -1, "no-trade PM card is labeled NO TRADE");
   check(grinder.indexOf("LONG") === -1 && grinder.indexOf("SHORT") === -1, "no-trade PM card has no fake LONG/SHORT");
 

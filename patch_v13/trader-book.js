@@ -73,6 +73,214 @@
     return "";
   }
 
+  const MONTH_CODE = {
+    "01": "F", "02": "G", "03": "H", "04": "J", "05": "K", "06": "M",
+    "07": "N", "08": "Q", "09": "U", "10": "V", "11": "X", "12": "Z"
+  };
+
+  function futuresCode(year, month) {
+    const code = MONTH_CODE[String(month || "").padStart(2, "0")];
+    return code ? code + String(year || "").slice(-1) : "";
+  }
+
+  function humanInstrument(instrument, paperExpression) {
+    const raw = String(instrument || "");
+    if (paperExpression && paperExpression.type === "futures_strip_average" &&
+        paperExpression.curve_id && Array.isArray(paperExpression.expiries)) {
+      const legs = paperExpression.expiries.map(function (expiry) {
+        const m = String(expiry).match(/^(\d{4})-(\d{2})$/);
+        return m ? futuresCode(m[1], m[2]) : String(expiry);
+      });
+      if (legs.length) return legs.join("/") + " " + String(paperExpression.curve_id).toUpperCase();
+    }
+    let m = raw.match(/^(CORRA|SOFR|AONIA)_(\d{4})-(\d{2})$/i);
+    if (m) return futuresCode(m[2], m[3]) + " " + m[1].toUpperCase();
+    m = raw.match(/^(CORRA|SOFR|AONIA)_(\d{4})([FGHJKMNQUVXZ])-([FGHJKMNQUVXZ])$/i);
+    if (m) return m[3].toUpperCase() + String(m[2]).slice(-1) + "–" + m[4].toUpperCase() +
+      String(m[2]).slice(-1) + " " + m[1].toUpperCase() + " strip";
+    return raw;
+  }
+
+  function actionWord(pos) {
+    const asset = String((pos || {}).asset_class || "");
+    const side = String((pos || {}).side || "").toLowerCase();
+    if (asset === "rates" || asset === "curve" || asset === "rates_rv") {
+      if (side === "long") return "Receive";
+      if (side === "short") return "Pay";
+    }
+    if (side === "long") return "Long";
+    if (side === "short") return "Short";
+    return "";
+  }
+
+  function marketExpression(pos) {
+    if (!pos) return "";
+    const presentation = pos.presentation || {};
+    if (presentation.market_expression) return String(presentation.market_expression);
+    const verb = actionWord(pos);
+    const instrument = humanInstrument(pos.instrument, pos.paper_expression);
+    return (verb ? verb + " " : "") + instrument;
+  }
+
+  function stripDeskLabels(value) {
+    return String(value || "")
+      .replace(/^\s*(FACT|INFERENCE|UNKNOWN)\s*:\s*/gi, "")
+      .replace(/([.!?]\s+)(FACT|INFERENCE|UNKNOWN)\s*:\s*/gi, "$1");
+  }
+
+  function humanizeText(value) {
+    let text = stripDeskLabels(value);
+    text = text.replace(/\s*\(paper alias [^)]+\)/gi, "");
+    text = text.replace(/\b(CORRA|SOFR|AONIA)_(\d{4})-(\d{2})\b/gi, function (_m, curve, year, month) {
+      return futuresCode(year, month) + " " + String(curve).toUpperCase();
+    });
+    text = text.replace(/\b(CORRA|SOFR|AONIA)_(\d{4})([FGHJKMNQUVXZ])-([FGHJKMNQUVXZ])\b/gi,
+      function (_m, curve, year, start, end) {
+        const y = String(year).slice(-1);
+        return String(start).toUpperCase() + y + "–" + String(end).toUpperCase() + y + " " +
+          String(curve).toUpperCase() + " strip";
+      });
+    text = text.replace(/\bCRA([FGHJKMNQUVXZ])(\d{2})\b/g, function (_m, month, year) {
+      return String(month).toUpperCase() + String(year).slice(-1) + " CORRA";
+    });
+    text = text.replace(/\bSR3([FGHJKMNQUVXZ])(\d)\b/g, function (_m, month, year) {
+      return String(month).toUpperCase() + String(year) + " SOFR";
+    });
+    text = text.replace(/\b(?:pos|pm)-[a-z0-9-]+\b/gi, "the position");
+    text = text.replace(/\bposition_id\b/gi, "position");
+    text = text.replace(/\bopened_run_id\b/gi, "opening run");
+    text = text.replace(/\b(?:tr|overnight)-[a-z0-9-]+\b/gi, "prior run");
+    text = text.replace(/\b[A-Fa-f0-9]{64}\b/g, "packet hash");
+    text = text.replace(/\b(?:CRAH|CRAM|CRAU|CRAZ)([FGHJKMNQUVXZ])(\d{1,2})\b/g,
+      function (_m, month, year) {
+        const y = String(year).length === 1 ? year : String(year).slice(-1);
+        return String(month).toUpperCase() + y + " CORRA";
+      });
+    text = text.replace(/\bpacket mid\b/gi, "current mark");
+    text = text.replace(/\bcanonical mark\b/gi, "mark");
+    text = text.replace(/\bimplied_rate\b/gi, "implied rate");
+    text = text.replace(/\bMX\s+(?=[FGHJKMNQUVXZ]\d\s+CORRA\b)/g, "");
+    return text.trim();
+  }
+
+  const MECHANICAL_SENTENCE = /opened_run_id|opening run|packet source|trader room status|awaiting_chatgpt|unarbitrated|risk[_ -]?capital|risk_stopped|unrealized|p&l inverted|side long|side short|do not migrate|family locked|canonical mark|current mark implied|entry_mark|notional_usd|shocked-risk|calibration closed|packet hash|on_demand|on-demand fallback|duration-long \/ receive|family locked to|position_id|opened_run|do not open|do not hedge|remaining \d/i;
+
+  function thesisSentences(value) {
+    const text = humanizeText(value);
+    if (!text) return [];
+    return text.split(/(?<=[.!?])\s+/).map(function (item) { return item.trim(); }).filter(Boolean);
+  }
+
+  function isUsefulSentence(item) {
+    return item && !MECHANICAL_SENTENCE.test(item);
+  }
+
+  function capPunchline(text) {
+    const trimmed = String(text || "").trim();
+    if (trimmed.length <= 320) return trimmed;
+    return trimmed.slice(0, 317).replace(/\s+\S*$/, "") + "…";
+  }
+
+  function legacyStoryFromThesis(pos, expression) {
+    const sentences = thesisSentences(pos.thesis);
+    const useful = sentences.filter(isUsefulSentence);
+    const pool = useful.length ? useful : sentences.slice(0, 1);
+    let why = pool[0] || "";
+    const prefix = expression + " — ";
+    const maxWhy = Math.max(40, 320 - prefix.length);
+    if (why.length > maxWhy) {
+      why = why.slice(0, maxWhy - 1).replace(/\s+\S*$/, "") + "…";
+    }
+    const punchline = capPunchline(pool.length ? prefix + why : expression + ".");
+    const support = pool.slice(1, 5).filter(isUsefulSentence);
+    return { punchline: punchline, support: support };
+  }
+
+  function hasRealTradeStory(presentation) {
+    if (!presentation || typeof presentation !== "object") return false;
+    const headline = String(
+      presentation.market_expression || presentation.punchline || ""
+    ).toLowerCase();
+    if (/stay flat|no trade|no incremental|n\/a while flat/.test(headline)) return false;
+    return Boolean(presentation.punchline || (presentation.support && presentation.support.length));
+  }
+
+  function pickPresentation(pos, owner) {
+    const posP = pos.presentation || {};
+    const ownerP = (owner || {}).presentation || {};
+    if (hasRealTradeStory(posP)) return posP;
+    if (hasRealTradeStory(ownerP)) return ownerP;
+    if (posP.punchline || (posP.support && posP.support.length)) return posP;
+    if (ownerP.punchline || (ownerP.support && ownerP.support.length)) return ownerP;
+    return {};
+  }
+
+  function storyForPosition(pos, owner) {
+    const presentation = pickPresentation(pos, owner);
+    const expression = marketExpression(pos);
+    let punchline = humanizeText(presentation.punchline || "");
+    let support;
+    if (!punchline) {
+      const legacy = legacyStoryFromThesis(pos, expression);
+      punchline = legacy.punchline;
+      support = legacy.support;
+    }
+    if (!Array.isArray(support)) {
+      if (Array.isArray(presentation.support) && presentation.support.length) {
+        support = presentation.support.map(humanizeText).filter(Boolean);
+      } else if (!support) {
+        support = legacyStoryFromThesis(pos, expression).support;
+      }
+    }
+    const tp = presentation.take_profit || {};
+    const objective = humanizeText(tp.objective || "");
+    const basis = humanizeText(tp.basis || "");
+    const takeProfit = objective
+      ? objective + (basis ? " — " + basis : "")
+      : "Legacy position: no explicit take-profit was stored.";
+    const invalidation = humanizeText(presentation.invalidation || pos.invalidation || "");
+    return {
+      punchline: capPunchline(punchline),
+      support: support,
+      takeProfit: takeProfit,
+      invalidation: invalidation
+    };
+  }
+
+  function renderStory(story) {
+    const support = (story.support || []).length
+      ? '<ul class="tb-story-support">' + story.support.map(function (item) {
+          return "<li>" + esc(item) + "</li>";
+        }).join("") + "</ul>"
+      : '<span class="tb-story-muted">No support note recorded.</span>';
+    return '<div class="tb-trade-story">' +
+      '<div class="tb-story-row tb-story-punchline"><b>Punchline</b><div>' + esc(story.punchline || "—") + "</div></div>" +
+      '<div class="tb-story-row"><b>Support</b><div>' + support + "</div></div>" +
+      '<div class="tb-story-row"><b>Take profit</b><div>' + esc(story.takeProfit || "—") + "</div></div>" +
+      '<div class="tb-story-row tb-story-invalidation"><b>Invalidation</b><div>' +
+      esc(story.invalidation || "No explicit invalidation recorded.") + "</div></div></div>";
+  }
+
+  function legacySupport(value) {
+    return legacyStoryFromThesis({ thesis: value }, "").support;
+  }
+
+  function renderFlatStory(owner, label) {
+    const presentation = (owner || {}).presentation || {};
+    const punchline = humanizeText(presentation.punchline || label || "Stay flat.");
+    let support = presentation.support;
+    if (!Array.isArray(support) || !support.length) support = owner && owner.thesis ? legacySupport(owner.thesis) : [];
+    const tp = presentation.take_profit || {};
+    const takeProfit = humanizeText(tp.objective || "N/A while flat") +
+      (tp.basis ? " — " + humanizeText(tp.basis) : "");
+    return renderStory({
+      punchline: punchline,
+      support: support,
+      takeProfit: takeProfit,
+      invalidation: humanizeText(presentation.invalidation || (owner || {}).invalidation || "")
+    });
+  }
+
   function sumKnownPnl(rows, pick) {
     let found = false;
     let total = 0;
@@ -104,43 +312,30 @@
         esc(emptyLabel) + "</span></div>";
     }
     return '<div class="tb-trade-scan">' + positions.map(function (pos) {
-      const direction = String(pos.side || "").toUpperCase();
       const kind = directionClass(pos.side);
-      const dirHtml = direction
-        ? '<span class="tb-direction ' + kind + '">' + esc(direction) + "</span>"
-        : "";
-      return '<div class="tb-trade-line">' + dirHtml +
-        '<b class="tb-instrument">' + esc(pos.instrument) + "</b></div>";
+      return '<div class="tb-trade-line"><b class="tb-instrument ' + kind + '">' +
+        esc(marketExpression(pos)) + "</b></div>";
     }).join("") + "</div>";
   }
 
-  function renderPosition(pos) {
+  function renderPosition(pos, owner) {
     const markLine = (finite(pos.entry_price) || finite(pos.mark_price))
       ? '<div class="tb-position-marks"><span>Entry <b>' + level(pos.entry_price) +
         '</b></span><span>Mark <b>' + level(pos.mark_price) + '</b></span></div>'
       : "";
-    const thesis = pos.thesis
-      ? '<div class="tb-position-reason"><b>Why:</b> ' + esc(pos.thesis) + "</div>"
-      : '<div class="tb-position-reason tb-muted"><b>Why:</b> No position-specific thesis recorded.</div>';
-    const invalidation = pos.invalidation
-      ? '<div class="tb-position-invalidation"><b>Invalidation:</b> ' + esc(pos.invalidation) + "</div>"
-      : "";
     const hedge = pos.hedge_of
       ? '<div class="tb-position-link">Hedge of ' + esc(pos.hedge_of) + "</div>"
       : "";
-    const direction = String(pos.side || "").toUpperCase();
     const kind = directionClass(pos.side);
-    const dirHtml = direction
-      ? '<span class="tb-direction ' + kind + '">' + esc(direction) + "</span>"
-      : "";
+    const story = storyForPosition(pos, owner);
     return '<div class="tb-position-card' + (kind ? " tb-side-" + kind : "") +
       '"><div class="tb-position-head"><div class="tb-position-trade">' +
-      dirHtml + '<b class="tb-instrument">' + esc(pos.instrument) +
+      '<b class="tb-instrument">' + esc(marketExpression(pos)) +
       '</b><span class="tb-asset">' + esc(pos.asset_class) + '</span></div><div class="tb-position-risk">' +
       '<b>' + money(pos.notional_usd) + '</b><span>Notional</span><span>Risk ' +
       money(pos.risk_capital_usd) + '</span><span class="' + cls(pos.unrealized_pnl_usd) + '">' +
       money(pos.unrealized_pnl_usd) + " P&amp;L</span></div></div>" +
-      markLine + thesis + invalidation + hedge + "</div>";
+      markLine + renderStory(story) + hedge + "</div>";
   }
 
   function chip(status, label) {
@@ -183,7 +378,7 @@
 
     const seatHtml = seats.map(function (seat) {
       const positions = seat.positions || [];
-      const posHtml = positions.length ? positions.map(renderPosition).join("") : '<div class="tb-empty">No open risk</div>';
+      const posHtml = positions.length ? positions.map(function (pos) { return renderPosition(pos, seat); }).join("") : '<div class="tb-empty">No open risk</div>';
       const pitch = seat.required_pitch ? '<div class="tb-pitch"><b>Required pitch (not necessarily risked):</b> ' +
         esc(typeof seat.required_pitch === "string" ? seat.required_pitch : JSON.stringify(seat.required_pitch)) + "</div>" : "";
       const seatLabel = displayName(seat.seat);
@@ -204,8 +399,7 @@
         "</b></div><div><span>Risk funding</span><b class=\"tb-neg\">" +
         (finite(seat.funding_cost_usd) && seat.funding_cost_usd !== 0 ? "-" + money(seat.funding_cost_usd).replace("-", "") : money(seat.funding_cost_usd)) +
         "</b></div></div>" +
-        (seat.thesis ? '<p class="tb-thesis"><b>Current book view:</b> ' + esc(seat.thesis) + "</p>" : "") +
-        (seat.invalidation ? '<p class="tb-thesis"><b>Book invalidation:</b> ' + esc(seat.invalidation) + "</p>" : "") +
+        (!positions.length ? renderFlatStory(seat, emptyLabel) : "") +
         pitch + "</article>";
     }).join("");
 
@@ -288,7 +482,7 @@
     renderSystemSummary();
     const cards = pms.map(function (pm) {
       const positions = pm.positions || [];
-      const posHtml = positions.length ? positions.map(renderPosition).join("") : '<div class="tb-empty">No open risk</div>';
+      const posHtml = positions.length ? positions.map(function (pos) { return renderPosition(pos, pm); }).join("") : '<div class="tb-empty">No open risk</div>';
       const emptyLabel = pm.risk_stopped ? "FLAT" : emptyTradeLabel(pm.decision_status || pm.last_action);
       return '<article class="tb-pm"><div class="tb-seat-top"><div class="tb-seat-name">' +
         esc(pm.label || displayName(pm.pm_id)) + '</div><div class="tb-pm-status ' +
@@ -304,8 +498,7 @@
         "</b></div><div><span>Paper P&amp;L</span><b class=\"" + cls(pm.total_pnl_usd) + "\">" +
         money(pm.total_pnl_usd) + "</b></div><div><span>Last action</span><b>" +
         esc(pm.last_action || "—") + "</b></div></div>" +
-        (pm.thesis ? '<p class="tb-thesis"><b>Current book view:</b> ' + esc(pm.thesis) + "</p>" : "") +
-        (pm.invalidation ? '<p class="tb-thesis"><b>Book invalidation:</b> ' + esc(pm.invalidation) + "</p>" : "") +
+        (!positions.length ? renderFlatStory(pm, emptyLabel) : "") +
         "</article>";
     }).join("");
     const comparison = (packet.comparison || []).map(function (row) {

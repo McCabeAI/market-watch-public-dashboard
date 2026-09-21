@@ -24,6 +24,7 @@ from scripts.overnight.ledger import load_or_create, mark_finished, mark_running
 from scripts.overnight.paper_marks import market_state_from_families
 from scripts.overnight.store import OvernightStore, sha256_json
 from scripts.pm.automated import validate_pm_decisions
+from scripts.trade_presentation import PresentationError, validate_trade_presentation
 from scripts.pm.review_packets import compact_overnight_decisions
 
 SCHEDULE_ID = "market-watch-weekday-0205"
@@ -181,6 +182,10 @@ def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str,
             raise EvidenceBoundaryError(f"{seat} evidence cutoff mismatch")
         if not isinstance(decision.get("actions"), list) or not decision["actions"]:
             raise SchemaError(f"{seat} must return at least one structured action")
+        try:
+            validate_trade_presentation(decision.get("presentation"), label=f"{seat}.decision", required=True)
+        except PresentationError as exc:
+            raise SchemaError(str(exc)) from exc
         if seat == "no-trade-skeptic":
             from scripts.funding.view import validate_funding_view
 
