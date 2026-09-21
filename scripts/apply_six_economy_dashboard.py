@@ -7,6 +7,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
+from scripts.dashboard_mini_cards import ea_jp_mini_shell_html
+
+NZ_CDETAIL_CLOSE = "</div>\n"
+COUNTRY_PAGE_END = "</div>\n</section>\n<section class=\"page feed\">"
+
 
 def apply_six_economy_dashboard(html: str) -> str:
     if 'id="c-ea"' in html and 'id="c-jp"' in html and '<div class="cdetail ea">' in html:
@@ -76,35 +81,37 @@ def apply_six_economy_dashboard(html: str) -> str:
         1,
     )
 
+    ea_mini = ea_jp_mini_shell_html("EA")
+    jp_mini = ea_jp_mini_shell_html("JP")
     nz_jump = '<label class="jump" for="c-nz">Open NZ detail</label>\n</div>\n</div>'
     if html.count(nz_jump) != 1:
         raise SystemExit("NZ snapshot card anchor changed")
     html = html.replace(
         nz_jump,
         nz_jump
-        + """
+        + f"""
 <div class="card"><div class="chead"><h3>EURO AREA</h3><span class="policy">ECB</span></div><div class="pills"><span class="pill neutral">NEUTRAL</span><span class="dir static">STATIC</span></div>
 <div class="engine"><b>Euro area:</b> scored euro-area macro/policy. German Bunds are the EUR cash-rates benchmark only; peripheral spreads are fragmentation context.</div>
-<div class="mini"><div class="mrow"><span>HICP / core</span><b>—</b></div><div class="mrow"><span>Unemployment</span><b>—</b></div><div class="mrow"><span>Deposit facility</span><b>context</b></div></div>
+{ea_mini}
 <label class="jump" for="c-ea">Open EA detail</label>
 </div>
 <div class="card"><div class="chead"><h3>JAPAN</h3><span class="policy">BOJ</span></div><div class="pills"><span class="pill neutral">NEUTRAL</span><span class="dir static">STATIC</span></div>
 <div class="engine"><b>Japan:</b> scored Japan macro/policy with MOF JGB cash yields and TONA policy context.</div>
-<div class="mini"><div class="mrow"><span>CPI / core</span><b>—</b></div><div class="mrow"><span>Unemployment</span><b>—</b></div><div class="mrow"><span>Policy rate</span><b>context</b></div></div>
+{jp_mini}
 <label class="jump" for="c-jp">Open JP detail</label>
 </div>
 """,
         1,
     )
 
-    country_end = '</div>\n</section>\n<section class="page feed">'
     marker = '<div class="cdetail nz">'
     if html.count(marker) != 1:
         raise SystemExit("NZ country-detail anchor changed")
     idx = html.find(marker)
-    end = html.find(country_end, idx)
+    end = html.find(COUNTRY_PAGE_END, idx)
     if end == -1:
         raise SystemExit("country page end anchor changed")
+    insert_at = end + len(NZ_CDETAIL_CLOSE)
     shells = """
 <div class="cdetail ea">
 <div class="panel hero"><div class="thermo"><div class="stitle">Temperature</div><b>EURO AREA</b><div class="big"><span class="pill neutral">NEUTRAL</span></div><span class="dir static">STATIC</span></div></div>
@@ -113,7 +120,7 @@ def apply_six_economy_dashboard(html: str) -> str:
 <div class="panel hero"><div class="thermo"><div class="stitle">Temperature</div><b>JAPAN</b><div class="big"><span class="pill neutral">NEUTRAL</span></div><span class="dir static">STATIC</span></div></div>
 </div>
 """
-    html = html[:end] + shells + html[end:]
+    html = html[:insert_at] + shells + html[insert_at:]
     return html
 
 

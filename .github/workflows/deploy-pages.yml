@@ -49,6 +49,7 @@ on:
       - "tests/test_harvest_ea_pmi.py"
       - "tests/test_harvest_jp_pmi.py"
       - "tests/test_country_registry.py"
+      - "tests/test_six_economy_dashboard.py"
       - "tests/test_harvest_au_pmi.py"
       - "tests/fixtures/nz_pci/**"
       - "tests/fixtures/ca_pmi/**"
@@ -258,7 +259,7 @@ jobs:
           set -euo pipefail
           PYTHONPATH=. python scripts/validate_score_sources.py
           python -m pip install --disable-pip-version-check -r requirements-market-state.txt
-          PYTHONPATH=. python -m unittest tests.test_temperature_history_audit tests.test_temperature_level tests.test_temperature_scores tests.test_activity_survey_freshness tests.test_harvest_nz_pci tests.test_harvest_ca_pmi tests.test_harvest_au_pmi tests.test_harvest_ea_pmi tests.test_harvest_jp_pmi tests.test_country_registry tests.test_euro_area_macro_data tests.test_japan_macro_data
+          PYTHONPATH=. python -m unittest tests.test_temperature_history_audit tests.test_temperature_level tests.test_temperature_scores tests.test_six_economy_dashboard tests.test_activity_survey_freshness tests.test_harvest_nz_pci tests.test_harvest_ca_pmi tests.test_harvest_au_pmi tests.test_harvest_ea_pmi tests.test_harvest_jp_pmi tests.test_country_registry tests.test_euro_area_macro_data tests.test_japan_macro_data
           TMPDIR="$(mktemp -d)"
           PYTHONPATH=. python - <<PY
           from pathlib import Path
