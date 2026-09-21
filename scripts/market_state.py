@@ -881,7 +881,7 @@ def build_snapshot(
     us_housing = (
         collect_us_housing(
             today=today,
-            fetch_bytes=lambda url: fetch_bytes(url, timeout=20, retries=2, user_agent=BROWSER_USER_AGENT),
+            fetch_bytes=lambda url: fetch_bytes(url, timeout=20, retries=2),
         )
         if include_us_housing
         else {
@@ -900,7 +900,7 @@ def build_snapshot(
     canada_housing = (
         collect_canada_housing(
             today=today,
-            fetch_bytes=lambda url: fetch_bytes(url, timeout=20, retries=2, user_agent=BROWSER_USER_AGENT),
+            fetch_bytes=lambda url: fetch_bytes(url, timeout=20, retries=2),
         )
         if include_canada_housing
         else {
