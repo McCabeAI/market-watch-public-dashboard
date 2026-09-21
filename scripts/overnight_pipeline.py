@@ -16,7 +16,7 @@ from pathlib import Path
 from scripts.overnight.books import empty_books
 from scripts.overnight.clock import overnight_run_id, schedule_catalog, stage_for_time
 from scripts.overnight.constants import ROOT, STAGES
-from scripts.overnight.pipeline import dry_run, run_stage
+from scripts.overnight.pipeline import dry_run, reconcile_due_stages, run_stage
 from scripts.overnight.store import OvernightStore
 
 
@@ -52,6 +52,13 @@ def main(argv: list[str] | None = None) -> int:
     stage.add_argument("--reviews", type=Path, default=None)
     stage.add_argument("--require-dataset", action="store_true")
 
+    reconcile = sub.add_parser("reconcile", help="Catch up all due deterministic stages for the current NY session")
+    reconcile.add_argument("--root", type=Path, default=ROOT)
+    reconcile.add_argument("--state-root", type=Path, default=None)
+    reconcile.add_argument("--as-of", dest="as_of")
+    reconcile.add_argument("--live-market-state", action="store_true")
+    reconcile.add_argument("--site-dir", type=Path, default=None)
+
     which = sub.add_parser("which-stage", help="Print the ET stage window for now (or --as-of)")
     which.add_argument("--as-of", dest="as_of")
 
@@ -77,6 +84,16 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     if args.cmd == "run-id":
         print(overnight_run_id(_parse_when(args.as_of)))
+        return 0
+    if args.cmd == "reconcile":
+        result = reconcile_due_stages(
+            root=args.root,
+            state_root=args.state_root,
+            when=_parse_when(args.as_of),
+            live_market_state=args.live_market_state,
+            site_dir=args.site_dir,
+        )
+        print(json.dumps(result, indent=2))
         return 0
     if args.cmd == "which-stage":
         when = _parse_when(args.as_of)
