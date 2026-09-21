@@ -124,6 +124,7 @@
 
   function humanizeText(value) {
     let text = String(value || "");
+    text = text.replace(/\s*\(paper alias [^)]+\)/gi, "");
     text = text.replace(/\b(CORRA|SOFR|AONIA)_(\d{4})-(\d{2})\b/gi, function (_m, curve, year, month) {
       return futuresCode(year, month) + " " + String(curve).toUpperCase();
     });
@@ -144,7 +145,17 @@
     text = text.replace(/\bpacket mid\b/gi, "current mark");
     text = text.replace(/\bcanonical mark\b/gi, "mark");
     text = text.replace(/\bimplied_rate\b/gi, "implied rate");
+    text = text.replace(/\bMX\s+(?=[FGHJKMNQUVXZ]\d\s+CORRA\b)/g, "");
     return text.trim();
+  }
+
+  function legacySupport(value) {
+    const text = humanizeText(value);
+    if (!text) return [];
+    const mechanical = /opened_run_id|packet source|trader room status|risk[_ -]?capital|risk_stopped|unrealized|p&l inverted|side long|side short|do not migrate|family locked|current mark implied rate|entry_mark/i;
+    const pieces = text.split(/(?<=[.!?])\s+/).map(function (item) { return item.trim(); }).filter(Boolean);
+    const useful = pieces.filter(function (item) { return !mechanical.test(item); });
+    return (useful.length ? useful : pieces).slice(0, 4);
   }
 
   function firstSentence(value) {
@@ -165,7 +176,7 @@
     }
     let support = presentation.support;
     if (!Array.isArray(support) || !support.length) {
-      support = pos.thesis ? [humanizeText(pos.thesis)] : [];
+      support = legacySupport(pos.thesis);
     } else {
       support = support.map(humanizeText).filter(Boolean);
     }
@@ -201,7 +212,7 @@
     const presentation = (owner || {}).presentation || {};
     const punchline = humanizeText(presentation.punchline || label || "Stay flat.");
     let support = presentation.support;
-    if (!Array.isArray(support) || !support.length) support = owner && owner.thesis ? [humanizeText(owner.thesis)] : [];
+    if (!Array.isArray(support) || !support.length) support = owner && owner.thesis ? legacySupport(owner.thesis) : [];
     const tp = presentation.take_profit || {};
     const takeProfit = humanizeText(tp.objective || "N/A while flat") +
       (tp.basis ? " — " + humanizeText(tp.basis) : "");
