@@ -1,6 +1,6 @@
 {
   "active_lessons": [],
-  "as_of": "2026-09-20T22:36:10.960759-04:00",
+  "as_of": "2026-09-20T23:10:16.011895-04:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -29,13 +29,29 @@
     "total_realized_pnl_usd": 0.0,
     "wins": 0
   },
-  "memory_context_sha256": "165b84eb1126ba2ceedeb1cc98f78c89894da4a1aeb7b4717096011235c0492c",
+  "memory_context_sha256": "a3d0646b434ad97acc96a0e98e03c6ef25994daf3c5833397f6f5ce3be18d672",
   "open_positions": [],
   "owner_id": "no-trade-skeptic",
   "owner_type": "trader",
   "postmortems_due": [],
   "recent_closed_trades": [],
   "recent_funding_views": [
+    {
+      "current_sofr": {
+        "authority": "Official NY Fed SOFR is the realized funding-rate authority. SR3 is forward context only.",
+        "convention": "ACT/360",
+        "day_count": 360,
+        "effective_date": "2026-09-17",
+        "name": "SOFR",
+        "observation_date": "2026-09-17",
+        "percent_rate": 3.85,
+        "rate": 3.85,
+        "source": "NY_FED"
+      },
+      "forward_funding_assessment": "lower",
+      "implication": "HOLD the empty book and remain at the zero official-SOFR benchmark. Official NY Fed SOFR 3.85 percent ACT/360 is the realized funding authority; any deployed shocked-risk capital pays that rate and is not financed by the cancelling $100m cash-versus-benchmark SOFR flows. Realized overnight SOFR should stay near the new 3.75-4.00 band (just printed 3.85) and therefore print lower than the 3m-12m SR3 strip (4.315/4.565/4.735), which already embeds subsequent hike odds. That overnight-versus-term gap is not a packet-supported SR3 receive: US inflation 72, labor 75, and a delivered Sep-16 hike make receiving poorly timed, while paying the same strip after +15.0 to +88.5bp versus overnight is priced. Flat cash is the zero benchmark, not alpha.",
+      "sr3_forward_view": "Frozen funding_context forward_summaries only: 1m is null (unsupported). 3m SR3Z6 expiry 2026-12 implied 4.315; 6m SR3H7 expiry 2027-03 implied 4.565; 12m SR3U7 expiry 2027-09 implied 4.735. Adjacent policy_paths SR3U6 2026-09 implied 4.00 versus official overnight SOFR 3.85 (+15.0bp). These are term futures, not the cash fixing."
+    },
     {
       "current_sofr": {
         "authority": "Official NY Fed SOFR is the realized funding-rate authority. SR3 is forward context only.",

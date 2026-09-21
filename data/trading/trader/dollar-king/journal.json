@@ -93,6 +93,52 @@
       "run_id": "tr-20260920T193935Z-ondemand",
       "schema_version": 1,
       "thesis": "FACT: Fed delivered 25bp to 3.75-4.00, SOFR 3.85, US gauges 69-75, SR3 still prices up to 4.755 by Sep-27; Canada overnight 2.29, headline CPI 3%/core near 2%, labor 38 with -42k jobs, CA-US 2Y -140bp (3.8th 1y percentile); USDCAD 1.401 at 74th 1y percentile after +1.10% in five days. INFERENCE: USD policy exceptionalism versus a Canada labor/core constraint is still under-expressed in the dollar pair, so the existing long USDCAD remains the clean spot. Crosses (AUDCAD at 99.8 1y percentile, NZDCAD) add AU housing or residual NZD risk; USDJPY is BoJ event vol. UNKNOWN: positioning, post-Sep-18 FX path, and whether energy pass-through lets BoC outrun labor weakness. Book action is HOLD of pos-5317bc96d4eb, not a second OPEN."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDCAD",
+          "notional_usd": null,
+          "position_id": "pos-5317bc96d4eb",
+          "rationale": "FACT: sidecar already owns long USDCAD pos-5317bc96d4eb. Direct conflicts did not invalidate the US-CA policy/labor gap versus a only-moderate USDCAD percentile. INFERENCE: HOLD, do not OPEN a duplicate, do not ADD into stale Sep-18 FX. UNKNOWN: live USDCAD after 2026-09-18.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-09-20T23:10:16.011895-04:00",
+      "conviction": 62,
+      "decision_fingerprint": "fb0a9562b38b0caf14e920e693fda80c43d5d74d51c85cb351badf6b464095a6",
+      "event_id": "jde-acde444625af4bbd",
+      "funding_view": null,
+      "invalidation": "BoC delivers priced catch-up with core break while US data cap further tightening and USDCAD reverses the 5d/1m grind.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-5317bc96d4eb"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "1f892fdf12ee3eaaf17a93c5c4b272abce05937a978ac33f6c5467fa1301a9cc",
+      "outcome_links": [],
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-21T02:36:10Z",
+        "evidence_hash": "cfb65337a1cdff3a17c8ffaab151fe220bf6640ba67547f1cda1ab5beac6a341",
+        "overnight_run_id": null,
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260921T023610Z-ondemand"
+      },
+      "rationale": "FACT: USD overnight and 2Y yields sit far above CAD, US gauges are hotter, and the Fed has just hiked, while USDCAD is only a 1y 74th-percentile rate. INFERENCE: long USDCAD owns a USD-versus-CAD policy/labor gap that crosses would contaminate with RBA housing or NZ-rates holes. Carry supports holding the existing long. UNKNOWN: whether BoC energy pass-through or CAD oil beta caps further upside before the rates gap closes in FX.",
+      "run_id": "tr-20260921T023610Z-ondemand",
+      "schema_version": 1,
+      "thesis": "FACT: USD overnight and 2Y yields sit far above CAD, US gauges are hotter, and the Fed has just hiked, while USDCAD is only a 1y 74th-percentile rate. INFERENCE: long USDCAD owns a USD-versus-CAD policy/labor gap that crosses would contaminate with RBA housing or NZ-rates holes. Carry supports holding the existing long. UNKNOWN: whether BoC energy pass-through or CAD oil beta caps further upside before the rates gap closes in FX."
     }
   ],
   "schema_version": 1,
