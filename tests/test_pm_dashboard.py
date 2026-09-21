@@ -131,7 +131,9 @@ class PMDashboardTests(unittest.TestCase):
         self.assertIn("tb-trader-total", js)
         self.assertIn("tb-pm-total", js)
         self.assertIn("tb-position-trade", js)
-        self.assertIn("tb-direction", js)
+        self.assertIn("function marketExpression", js)
+        self.assertIn("Punchline", js)
+        self.assertIn("Take profit", js)
         self.assertIn("tb-trade-scan", js)
         self.assertIn("tb-instrument", js)
         self.assertIn("function displayName", js)
@@ -147,8 +149,8 @@ class PMDashboardTests(unittest.TestCase):
         self.assertNotIn("traderTotalPnl + pmTotalPnl", js)
         self.assertIn("tb-trade-scan", css)
         self.assertIn("tb-instrument", css)
-        self.assertIn(".tb-direction.long", css)
-        self.assertIn(".tb-direction.short", css)
+        self.assertIn(".tb-story-row", css)
+        self.assertIn("font-size:15px", css)
         self.assertRegex(css, r"tb-instrument\{font-size:24px")
 
     def test_trader_book_ui_render_smoke_separates_books_and_positions(self) -> None:
