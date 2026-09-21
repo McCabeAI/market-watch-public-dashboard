@@ -26,6 +26,7 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Mapping, Sequence
 
+from scripts.australia_housing_data import collect_australia_housing, validate_australia_housing
 from scripts.cross_asset_data import collect_cross_assets
 from scripts.market_opportunities import build_opportunities
 from scripts.official_curve_data import collect_official_curves, validate_official_curves
@@ -763,6 +764,7 @@ def build_snapshot(
     include_positioning: bool | None = None,
     include_policy_paths: bool | None = None,
     include_official_curves: bool | None = None,
+    include_australia_housing: bool | None = None,
 ) -> dict:
     today = today or datetime.now(timezone.utc).date()
     start = today - timedelta(days=366 * 5 + 15)
@@ -833,6 +835,42 @@ def build_snapshot(
     fx_status = _freshness(fx_age, "FX")
     if fx_status == "stale":
         stale_sources.append("FX")
+
+    if include_australia_housing is None:
+        include_australia_housing = include_cross_assets
+    australia_housing = (
+        collect_australia_housing(
+            today=today,
+            fetch_bytes=lambda url: fetch_bytes(url, timeout=20, retries=2, user_agent=BROWSER_USER_AGENT),
+        )
+        if include_australia_housing
+        else {
+            "country": "AU",
+            "status": "unavailable",
+            "feeds": {
+                name: {
+                    "status": "unavailable",
+                    "url": "disabled",
+                    "as_of": None,
+                    "error": "Australian housing collection disabled for this invocation",
+                }
+                for name in (
+                    "prices_and_turnover",
+                    "building_approvals",
+                    "housing_lending",
+                    "housing_credit",
+                    "mortgage_rates",
+                    "mortgage_cash_flow",
+                )
+            },
+            "method": {
+                "model_calls": 0,
+                "credentials_required": [],
+                "purpose": "Official Australian housing transmission data for Market Watch and Trader Room context.",
+                "trader_packet_delivery": "market_state_passthrough",
+            },
+        }
+    )
 
     cross_raw, cross_meta = collect_cross_assets(start, today, fetch_bytes) if include_cross_assets else ({}, {})
     opportunities = build_opportunities(rates_raw, fx_raw, cross_raw, cross_meta, today)
@@ -924,6 +962,7 @@ def build_snapshot(
         "policy_paths": policy_paths,
         "tradable_rate_curves": tradable_rate_curves,
         "official_curves": official_curves,
+        "australia_housing": australia_housing,
         "cross_assets": {"series": cross_meta, "status": "partial" if any(m["status"] != "ok" for m in cross_meta.values()) else "ok"},
         "opportunities": opportunities,
         "positioning": positioning,
@@ -1007,6 +1046,7 @@ def build_snapshot(
                 "Policy-path context uses official overnight benchmarks plus public money-market data. "
                 "The tradable paper rates universe is explicitly SOFR via CME SR3, CORRA via MX CRA, and AONIA via ASX IB; a position stays on its entry curve family until close. "
                 "Official government zero/forward curves are supplemental bond-curve inputs and are not required to manufacture a swap curve. "
+                "Australian housing context is collected from ABS dwelling prices/transfers, building approvals and lending indicators plus RBA housing credit, mortgage rates and household housing-loan payment data. "
                 "CFTC TFF supplies trader-class ownership/crowding context and CME's public volume/open-interest service supplies daily FX futures and aggregate options OI history. "
                 "No historical warehouse is written to GitHub or Supabase."
             ),
@@ -1041,6 +1081,10 @@ def validate_snapshot(s: Mapping) -> None:
         validate_official_curves(s.get("official_curves") or {})
     except Exception as exc:
         raise MarketStateError(f"invalid official_curves block: {exc}") from exc
+    try:
+        validate_australia_housing(s.get("australia_housing") or {})
+    except Exception as exc:
+        raise MarketStateError(f"invalid australia_housing block: {exc}") from exc
     if set(s.get("rates", {})) != set(RATE_COUNTRIES):
         raise MarketStateError("rates block must contain US, CA, AU and NZ")
     for c in RATE_COUNTRIES:

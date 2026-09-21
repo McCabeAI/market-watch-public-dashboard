@@ -58,6 +58,7 @@ The JSON object always contains:
 | `policy_paths` | US/Canada/Australia overnight benchmarks and policy-pricing context |
 | `tradable_rate_curves` | Paper-tradable SOFR (`SR3`), CORRA (`CRA`) and AONIA (`IB`) futures strips |
 | `official_curves` | Supplemental US/Canada/Australia government zero/forward curves for bond-curve expressions |
+| `australia_housing` | Official ABS/RBA housing prices/turnover, approvals, lending, credit, mortgage rates and household housing-loan cash-flow data |
 | `fx` | 45 G10 crosses from one ECB fixing |
 | `positioning` | CFTC trader-class positioning plus CME daily futures/options open-interest context |
 | `sources` | Name, public URL, download URL, observation date, status |
@@ -80,6 +81,21 @@ Required tenors:
 
 Each FX pair includes spot, 1D/5D/1M/3M percent returns, 20D/60D annualized realized vol, and 1Y/5Y percentile or z-score when history supports it. Positive return means the base currency appreciated against the quote under the displayed pair key.
 
+
+### Australian housing block
+
+`australia_housing` is the official housing-transmission context for AUD research. It is supplemental to the four temperature scores and does not move a score by itself.
+
+It carries six feeds:
+
+- ABS Total Value of Dwellings: dwelling stock value/count, mean price, plus transfer counts from the ABS transfer workbook when available
+- ABS Building Approvals: total dwellings, houses, other dwellings and residential building value
+- ABS Lending Indicators: new dwelling loan commitments by total, owner-occupier, first-home-buyer and investor, in counts and values
+- RBA D1: total, owner-occupier and investor housing-credit growth
+- RBA F6: owner-occupier and investor mortgage rates on outstanding and newly funded loans
+- RBA E13: housing-loan interest, scheduled repayments, excess payments and payment-to-income ratios
+
+Each sub-feed preserves its own observation date, age, status and source URL. A temporary housing-source failure is reported as unavailable/partial and does not fabricate a substitute or invalidate unrelated market-state families.
 
 ### Policy-path block
 
@@ -149,6 +165,12 @@ Null lookbacks stay null. A missing US, Canada, Australia, or ECB FX source, ten
 | AU policy context | RBA F1 | AONIA, short OIS and bank-bill context |
 | AU tradable curve | ASX 30-Day Interbank Cash Rate (`IB`) | AONIA-linked monthly futures strip |
 | AU government zero/forward | RBA F17 | Supplemental discount factors, forwards and zero yields |
+| AU dwelling prices / transfers | ABS Total Value of Dwellings | Quarterly official dwelling stock, mean price and transfer context |
+| AU building approvals | ABS Building Approvals | Monthly official supply/pipeline signal |
+| AU housing lending | ABS Lending Indicators | Quarterly borrower-accepted new dwelling loan commitments |
+| AU housing credit | RBA D1 | Monthly total / owner-occupier / investor credit growth |
+| AU mortgage rates | RBA F6 | Monthly rates on outstanding and newly funded housing loans |
+| AU mortgage cash flow | RBA E13 | Quarterly household housing-loan payments and payment-to-income ratios |
 | NZ rates | RBNZ B2 wholesale interest rates | Best-effort context only; blocked source is reported rather than substituted |
 | FX | ECB euro foreign-exchange reference rates | Same-fixing EUR legs; deterministic G10 crosses |
 | Positioning ownership | CFTC TFF Futures Only | Weekly trader-class positions |
@@ -172,7 +194,7 @@ The GitHub Pages deploy workflow also runs the same generator into `_site/market
 
 Immediately before a debate, generate and freeze the market-state packet. Advocates use `policy_paths` to understand what is priced, then choose an actual rates expression from `tradable_rate_curves` or the sovereign bond curves. A full Trader Room requires SOFR/SR3, CORRA/CRA and AONIA/IB to be present before model budget is spent.
 
-The selected curve family is part of the trade definition and remains the mark source until close. Historical move analogs, positioning and cross-asset evidence remain context; they do not replace the tradable mark. Preserve source names, observation dates, `generated_at`, and staleness/provenance. Never fabricate a missing curve or silently substitute another family.
+The selected curve family is part of the trade definition and remains the mark source until close. The full market-state object, including `australia_housing`, is passed into the frozen common Trader Room packet. Historical move analogs, housing data, positioning and cross-asset evidence remain context; they do not replace the tradable mark. Preserve source names, observation dates, `generated_at`, and staleness/provenance. Never fabricate a missing curve or silently substitute another family.
 
 ## Opportunity monitor extension (2026-09-18)
 
