@@ -85,9 +85,9 @@ def validate_trade_presentation(
                 f"{label}.presentation.take_profit.pnl_target_usd must be positive when supplied"
             )
 
-    invalidation = value.get("invalidation")
-    if invalidation is not None:
-        _desk_text(invalidation, f"{label}.presentation.invalidation")
+    invalidation = _desk_text(
+        value.get("invalidation"), f"{label}.presentation.invalidation"
+    )
 
     return {
         **value,
@@ -99,4 +99,5 @@ def validate_trade_presentation(
             "objective": objective,
             "basis": basis,
         },
+        "invalidation": invalidation,
     }
