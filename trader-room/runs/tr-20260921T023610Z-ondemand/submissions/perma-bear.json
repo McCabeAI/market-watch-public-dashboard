@@ -1,0 +1,185 @@
+{
+  "type": "TRADER_ROOM_CONTRIBUTION",
+  "run_id": "tr-20260921T023610Z-ondemand",
+  "round": 1,
+  "agent": "perma-bear",
+  "archetype": "perma-bear",
+  "packet_sha256": "cfb65337a1cdff3a17c8ffaab151fe220bf6640ba67547f1cda1ab5beac6a341",
+  "remit": "strongest defensive, slowdown, stress or risk-off macro expression",
+  "stance_summary": "FACT: overnight AONIA is 4.35 and the locked IB 2027-03/04/05/06 strip still marks at 4.9075 (Mar 4.86 / Apr 4.895 / May 4.935 / Jun 4.94), so about 51-59bp of extra tightening remains priced into a housing downturn, July employment -15.8k, unemployment 4.5%, and a 5.2-point September sentiment drop to 84.4. INFERENCE: that residual hike path is a late-cycle policy error; receiving the already-owned AONIA_2027-06 strip is the cleanest slowdown expression. UNKNOWN: whether inflation score 82 plus the delivered Fed/BoJ/BoE hawkish impulse lets the RBA still deliver the strip.",
+  "confidence": 61,
+  "trade": {
+    "instrument": "AONIA_2027-06",
+    "asset_class": "rates",
+    "direction": "long",
+    "structure": "Locked paper family is ASX 30-day AONIA (IB) futures_strip_average of 2027-03/2027-04/2027-05/2027-06; receive/long duration so profit is a lower canonical implied-rate mark. Sidecar already owns this as position_id pos-3b40ade3da2c at 55m notional / 550k shocked risk.",
+    "entry": null,
+    "target": null,
+    "stop": null,
+    "horizon": "1-4 RBA meetings / through 2027 H1 averaging windows",
+    "confidence": 61,
+    "thesis": "FACT: AONIA cash is 4.35 as of 18-Sep-2026. Tradable IB contracts price Oct-26 4.565 (+21.5bp), Mar-27 4.86 (+51bp), Jun-27 4.94 (+59bp) and Jul/Aug-27 4.945 (+59.5bp). The owned AONIA_2027-06 paper mark is the 2027-03/06 strip average 4.9075. NSW stamp-duty receipts fell 24% y/y in August with transactions -18% and Sydney/Melbourne values more than 7% below peak. AU labor: unemployment 4.5% from 4.4%, employment -15.8k, WPI +3.2% y/y vs +3.4%. Activity: Q2 GDP +0.4% q/q, August business conditions/confidence softer. Consumer: Westpac-MI sentiment fell 5.2% to 84.4 on 16 Sep after a still-strong July spending print. Inflation score is 82, but July headline CPI eased to 3.5% from 3.8% while trimmed mean stayed 3.6%. AU 2Y/5Y/10Y sit at 4.999/5.041/5.348, all ~99th 1y percentile after a +26 to +39bp one-month sell-off. Desk thesis: energy shock is constraining the global easing impulse after Fed 25bp to 3.75-4.00, BoJ to 1.25%, and BoE 6-3 hold. Sidecar open_positions already holds long AONIA_2027-06 pos-3b40ade3da2c. INFERENCE: the market is still pricing almost two extra RBA hikes into 2027 H1 after the housing/labor/sentiment channel is already open; that is a policy-error slowdown discrepancy, and receiving the locked strip owns it more cleanly than short AUD. UNKNOWN: CFTC/CME positioning (packet status partial/null), post-cutoff RBA communication, executable IB depth on the thin H1-27 contracts, and whether global term-rate pressure plus inflation 82 forces the residual 50-60bp to be delivered anyway.",
+    "mispricing": "FACT: IB still embeds about +51bp by Mar-27 and +59bp by Jun-27 versus overnight AONIA 4.35, and the owned strip marks 4.9075. INFERENCE: that residual tightening assumes the RBA can keep leaning on inflation score 82 after the housing, employment and sentiment evidence is already showing the tightening channel biting. The priced assumption is that the remaining two-hike 2027 H1 path is still the base case. UNKNOWN: the exact next RBA decision date and any unpublished housing/CPI vintage after the packet cutoff.",
+    "why_now": [
+      "FACT: NSW stamp-duty -24% y/y, transactions -18%, Sydney/Melbourne values more than 7% below peak — the RBA tightening channel is already open, not prospective.",
+      "FACT: 16 Sep Westpac-MI sentiment fell 5.2% to 84.4, July employment was -15.8k, and unemployment rose to 4.5%, while IB still prices Mar-27 4.86 and Jun-27 4.94.",
+      "FACT: the book already owns the locked 2027-03/06 AONIA strip at 4.9075; this is a HOLD of pos-3b40ade3da2c, not a duplicate OPEN.",
+      "INFERENCE: global hawkish reinforcement (Fed delivered, BoJ 1.25%, BoE three hike votes) is a reason not to add, not a reason to abandon the local housing/policy-error discrepancy."
+    ],
+    "invalidation": "RBA delivers, or the locked IB 2027-03/06 strip holds/reprices through the packet residual (Mar-27 4.86 / Jun-27 4.94 versus cash 4.35) while housing transactions/values and labor stop deteriorating and AU inflation stays hot enough to validate the extra hikes.",
+    "catalysts": [
+      "Next RBA decision and 2026-10/11 AONIA averaging windows that must start converting the +21.5 to +33.5bp near-term path into cash.",
+      "Further Australian housing, employment or Westpac-MI prints that either confirm the downturn or reverse it.",
+      "Whether the energy/global-tightening overlay (desk thesis, Fed/BoJ/BoE) keeps term-rate pressure on IB or local housing dominates."
+    ],
+    "principal_risks": [
+      "AU inflation score 82 and unchanged July trimmed mean 3.6% can still justify delivering the residual 50-60bp.",
+      "Desk-thesis global tightening impulse (Fed 3.75-4.00 / SOFR 3.85, BoJ 1.25%, BoE 6-3) can lift the whole AONIA strip even if housing stays weak.",
+      "July household spending +1.1% m/m and Q2 GDP +0.4% mean this is not yet a collapse; the RBA can look through housing.",
+      "H1-27 IB open interest is thin (Mar 201, Apr 400, May 375, Jun null) versus Oct 21752, so the markable strip can gap.",
+      "Official SOFR 3.85 ACT/360 is charged on shocked risk capital; a long-held unchanged mark still pays the funding vig.",
+      "UNKNOWN: positioning; a crowded receive would weaken ownership asymmetry."
+    ],
+    "evidence_refs": [
+      "policy_paths",
+      "tradable_rate_curves",
+      "policy:AU",
+      "rates:AU",
+      "temp:AU:inflation",
+      "temp:AU:labor",
+      "temp:AU:activity",
+      "temp:AU:consumer",
+      "mw_20260916_au_housing_tightening",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "last24:desk-thesis",
+      "fx:AUDUSD",
+      "fx:AUDCAD",
+      "rates:US",
+      "policy:US",
+      "funding_context",
+      "pos:cftc",
+      "market_state",
+      "paper_books",
+      "research_method"
+    ],
+    "expression_comparison": {
+      "rates_tenor_scan": {
+        "stir_policy_path": {
+          "status": "candidate",
+          "instrument": "AONIA_2027-06",
+          "asset_class": "rates",
+          "rationale": "FACT: AU policy path is live. Overnight AONIA 4.35; IB prices Oct 4.565, Mar-27 4.86, Jun-27 4.94, Jul/Aug-27 4.945. The owned AONIA_2027-06 mark is the locked 2027-03/04/05/06 strip average 4.9075, i.e. the residual 51-59bp hike cluster. That is the tenor that owns the housing/policy-error disagreement. US SR3 still prices a 4.735 Sep-27 peak from SOFR 3.85 and CORRA prices 3.13 by Mar-27 from 2.29, but those paths sit against hotter US gauges (69-75) or a mixed Canada energy/labor split; they are not the cleanest slowdown discrepancy."
+        },
+        "two_year": {
+          "status": "not_compelling",
+          "instrument": "AU 2Y",
+          "asset_class": "rates",
+          "rationale": "FACT: AU 2Y is 4.999 as of 2026-09-16, 99.0 1y/5y percentile, +39.1bp 1m and -5.5bp 1d. That percentile is a discovery flag that the hike is already in the sovereign curve. INFERENCE: a 2Y bond receive is the same directional view as IB but is a worse expression because the protocol requires the live AONIA path for short-end AU, and the owned/markable paper family is already the IB strip. UNKNOWN: post-16 Sep bond mid versus the later IB strip mark."
+        },
+        "five_year": {
+          "status": "not_compelling",
+          "instrument": "AU 5Y",
+          "asset_class": "rates",
+          "rationale": "FACT: AU 5Y is 5.041, 99th 1y/5y percentile, +37.1bp 1m. INFERENCE: five-year duration mixes term premium and global yield beta with the RBA path; it does not isolate the extra 51-59bp of 2027 H1 tightening that housing is supposed to block."
+        },
+        "ten_year": {
+          "status": "not_compelling",
+          "instrument": "AU 10Y",
+          "asset_class": "rates",
+          "rationale": "FACT: AU 10Y is 5.348, 99.0 1y / 99.8 5y percentile, +26.1bp 1m. US 10Y is 5.01 at the 99.6 1y percentile. INFERENCE: long-end AU is a global term-premium/energy-shock tape, not the local housing-versus-hike discrepancy. A 10Y receive would also fight the desk-thesis term-rate pressure."
+        },
+        "curve": {
+          "status": "not_compelling",
+          "instrument": "AU 2s10s",
+          "asset_class": "curve",
+          "rationale": "FACT: AU 2s10s is +34.9bp, 24th 1y percentile, flattened 13bp over one month. US 2s10s is +25bp at the 0.2nd 1y percentile. INFERENCE: a housing-forced RBA pause would bull-steepen AU 2s10s, but the 24th percentile is not a clean extreme and the actual priced object is the IB hike residual, not the 2s10s slope. US 2s10s is already a one-year statistical extreme and is a discovery flag, not a thesis."
+        },
+        "cross_market_rv": {
+          "status": "not_compelling",
+          "instrument": "AU-US 2Y",
+          "asset_class": "rates_rv",
+          "rationale": "FACT: AU-US 2Y is +25.9bp as of 2026-09-16, 25.6th 1y / 84.7th 5y percentile, tighter by 11.5bp over one month. CA-AU 2Y is -164.9bp (10.5th 5y percentile). NZ-US and AU-NZ RV are unavailable because NZ official yields 403. INFERENCE: AU is not rich versus US on a 1y basis, so paying US versus receiving AU dilutes the housing mechanism into a US exceptionalism trade. Canada is the cheap market, not Australia. NZ RV cannot be marked."
+        },
+        "selected_bucket": "stir_policy_path",
+        "selection_rationale": "The discrepancy is the residual 51-59bp of IB tightening still priced into 2027 H1 after the housing, labor and sentiment channel is already open. AONIA_2027-06 is the locked, markable receive of that path. Sovereign 2Y/5Y/10Y only confirm the hike is in the bond market; AU 2s10s and AU-US 2Y do not own the extra-hike assumption as cleanly."
+      },
+      "rates_candidate": {
+        "instrument": "AONIA_2027-06",
+        "asset_class": "rates",
+        "rationale": "Receive the locked IB 2027-03/06 strip (instrument AONIA_2027-06, paper mark 4.9075 versus cash 4.35). Expected mark direction is lower, so the canonical side is long duration. This is the selected stir_policy_path bucket."
+      },
+      "spot_candidate": "short AUDUSD (spot 0.712022367194781 as of 2026-09-18; 76.4 1y / 84.3 5y percentile). Stretched alternative short AUDCAD at 0.9975768872320596, 99.80 1y / 99.96 5y percentile.",
+      "selected": "rates",
+      "rationale": "Rates are preferred when comparable. The mispricing is the leftover IB hike path, not AUD spot. AUDUSD is only a 76th/84th percentile and is still supported by the same 51-59bp of priced tightening; short AUD would require those hikes to fail and would add China/commodity/USD residual that the packet does not isolate. AUDCAD is a 5y extreme discovery flag, but Canada labor -42k and energy pass-through make the cross a two-sided relative-value bet. The owned AONIA strip is already the cleaner, markable expression of the housing/policy-error view, so spot is inferior rather than unavailable."
+    },
+    "context_build": {
+      "causal_mechanism": "FACT: Australian housing activity and values are already contracting under a 4.35 AONIA cash rate while IB still prices another 51-59bp of tightening into 2027 H1. INFERENCE: the RBA tightening channel works through mortgage cash-flow, transaction volumes and confidence; once that channel is open, additional priced hikes are a late-cycle policy error that should be received, not chased. The testable claim is that realized AONIA over 2027 H1 prints below the 4.86-4.94 implied cluster unless housing and labor stop deteriorating.",
+      "path_to_current_price": "FACT: AU 2Y rose 39.1bp over one month to 4.999 (99th percentile) with a -5.5bp 1d dip on 16 Sep; AU 5Y +37.1bp 1m to 5.041; AU 10Y +26.1bp 1m to 5.348. IB builds a hike staircase from cash 4.35 to Oct 4.565, Nov 4.685, Mar-27 4.86 and a 4.94-4.945 mid-2027 peak. AUDUSD is 0.712, +2.65% 3m but -0.73% over five days. The Fed delivered 25bp to 3.75-4.00 on 16 Sep, official SOFR jumped to 3.85 on 17 Sep, and SR3 prices a 4.735 Sep-27 peak. Paper book marks the owned AONIA_2027-06 strip at 4.9075, unchanged versus entry, with only SOFR funding drag. INFERENCE: the one-month AU rate sell-off and the still-elevated IB path are the market absorbing the global hawkish impulse and AU inflation score 82, not yet absorbing the housing/labor/sentiment deterioration as a cap on further hikes.",
+      "known_vs_new_information": "FACT: the housing stamp-duty/value story and the Fed hike were already in the 16 Sep research vintage; the position was opened 19 Sep and last action was HOLD. What is still priced as if it were new is the residual IB hike path. Genuinely additive in this packet versus a pure known-housing tape: 16 Sep Westpac-MI -5.2% to 84.4, the delivered Fed/SOFR 3.85 print, BoJ 1.25%, BoE 6-3 with three hike votes, and the desk thesis that energy is constraining the global easing impulse. INFERENCE: the housing fact is known, but the transmission that should have capped 2027 H1 IB has not happened; that is why a known housing slump can still be a live rates discrepancy. UNKNOWN: any RBA speech or housing print after cutoff 2026-09-21T02:36:10Z.",
+      "market_implied_assumption": "FACT: IB’s 2027 H1 cluster at 4.86-4.94 versus cash 4.35 requires the RBA to deliver about two extra 25bp moves and hold them into mid-2027. AU 2Y at 4.999 makes the same assumption in sovereign space. AUDUSD at a 76th/84th percentile assumes that rate support still offsets housing. INFERENCE: the market is treating inflation score 82 and the global energy/tightening overlay as dominant over the already-open housing channel.",
+      "market_assumption_disagreed_with": "The assumption that the residual 51-59bp 2027 H1 IB tightening path remains the base case after NSW transactions/stamp duty have already collapsed, employment has printed -15.8k, unemployment is 4.5%, and consumer sentiment has dropped to 84.4. Perma-bear disagreement: housing and labor are the binding constraint; the extra hikes are the policy error.",
+      "price_decomposition": "FACT: the owned mark 4.9075 is the arithmetic average of IB implieds 4.86/4.895/4.935/4.94, i.e. the 2027 H1 hike cluster, not cash and not the liquid Oct 4.565 contract. From overnight, +21.5bp is in October, another ~30bp accumulates by March, and only ~8bp more by June. AU 2s10s 34.9bp (24th 1y percentile) shows the sovereign curve is not invertedly screaming recession; the marginal object is the front-to-2027 H1 policy staircase. AUDUSD’s 5d decline (-0.73%) is starting to leak the housing story, but the 3m +2.65% still embeds rate support. INFERENCE: the trade owns the last 50-60bp of that staircase, not a 10Y duration or an AUD crash.",
+      "historical_reference": {
+        "distribution": "FACT: AU 2Y/5Y/10Y are all at or above the 99th 1y percentile and the 99th 5y percentile; AU 2s10s is only 24th 1y. IB is 51-59bp through cash, not inverted. US 2s10s at +25bp is the 0.2nd 1y percentile after a 21bp one-month flatten — a statistical extreme used only as a late-cycle discovery flag, not as the thesis. The packet has no dedicated analog-return table. INFERENCE: current AU pricing is a high-rate, still-hiking distribution, not a priced-recession distribution.",
+        "analogs": [
+          "INFERENCE / qualitative only, packet has no analog library: Australia 2022-24 hiking into falling home values, when the RBA kept raising after housing turnover had already slowed and later had to own the lag. Mechanism match is housing-credit transmission; difference is that this packet’s inflation score is still 82 and a global energy shock is active.",
+          "INFERENCE / qualitative only: 2008 RBA hike-then-cut into a housing peak, when the cash-rate path reversed once the housing channel opened. Difference: 2026 cash is 4.35 with more hikes priced, not an emergency-cut regime, and BoJ/Fed/BoE are tightening in parallel.",
+          "INFERENCE / qualitative only: US 2006-07 hiking into housing stress, used as the adverse analog — the central bank can still deliver residual hikes after housing has turned, which is why this seat HOLDs rather than ADDs."
+        ],
+        "regime_differences": "FACT: this packet’s overlay is an energy shock with weaker shock absorbers, a delivered Fed hike to 3.75-4.00, BoJ at a 31-year high 1.25%, and BoE QT/gilt unwind, while AU trimmed mean is still 3.6% and the inflation gauge is 82. NZ yields are missing. CFTC is null. INFERENCE: unlike a clean 2008-style housing bust analog, 2026 keeps a live inflation/energy reason for the RBA to deliver the strip. That is the main structural difference and the reason confidence stays 61 rather than high."
+      },
+      "independent_checks": [
+        "Housing/fiscal physical: NSW stamp-duty receipts -24% y/y, transactions -18%, Sydney/Melbourne values more than 7% below peak (mw_20260916_au_housing_tightening and the housing rollup).",
+        "Labor/activity/consumer triangulation: unemployment 4.5% from 4.4%, employment -15.8k, WPI cooler at +3.2%, Q2 GDP only +0.4% q/q with softer August business conditions, and Westpac-MI sentiment -5.2% to 84.4. Cross-check: July spending +1.1% m/m and inflation 82 still argue the RBA can look through housing.",
+        "Market-versus-market: IB 2027 H1 4.86-4.94 and AU 2Y 4.999 both price residual tightening, while AUDUSD has only begun to leak (-0.73% 5d) and AUDCAD remains a 99.8 1y / 99.96 5y extreme — the rates path has not yet conceded the housing channel."
+      ],
+      "flow_and_positioning_check": "FACT: positioning status is partial; cftc is null; CME positioning is listed as an unavailable market-state source. IB open interest is concentrated in Sep/Oct 2026 (11896 / 21752) and thins to 201-400 into 2027 H1, with Jun-27 OI null. Other seats’ paper books show positioning-cynic short AONIA_2027-03 and catalyst-junkie long AONIA_2026-10; this seat already owns the long 2027 H1 strip. INFERENCE: there is no packet evidence that receive-AONIA 2027 H1 is a crowded CFTC/CTA position. The thin H1 OI is a liquidity risk, not a positioning green light. UNKNOWN: true ASX holder composition and any CTA/systematic rates flow.",
+      "policy_path_check": {
+        "status": "available",
+        "relevant_countries": [
+          "AU",
+          "US"
+        ],
+        "pricing_summary": "AU: AONIA cash 4.35 (18-Sep-2026); IB 1m contracts staircase to Oct 4.565 (+21.5bp), Nov 4.685 (+33.5), Dec 4.725, Mar-27 4.86 (+51), Jun-27 4.94 (+59), Jul/Aug-27 4.945 (+59.5). Owned strip average 4.9075. US: official SOFR 3.85 on 17 Sep after 3.62-3.64 prints; Fed funds 3.75-4.00 after the 16 Sep 25bp hike; SR3 prices Sep-26 4.00, Dec-26 4.315, Mar-27 4.565, Jun-27 4.70, Sep-27 peak 4.735, then a gentle decline to 4.52 by Jun-29. CA path is live but not the expression: CORRA 2.29 with CRAH27 3.13 and a ~3.65 2028 peak. NZ policy path is not in the frozen countries block; NZ sovereign yields are unavailable.",
+        "rationale": "Short-end AU must be read from the live AONIA/IB path before any sovereign-percentile claim. That path still prices almost two extra hikes into 2027 H1. The US path is the global overlay: more hiking is priced after a delivered hike, which is the principal risk that IB stays bid. The selected expression stays the AU IB strip, not SR3, because US gauges 69-75 do not show the same open housing-slowdown channel."
+      }
+    }
+  },
+  "conflict_synopsis": {
+    "seat": "perma-bear",
+    "primary_trade": "long AONIA_2027-06 (receive locked 2027-03/06 IB strip)",
+    "core_view": "IB still prices 51-59bp of extra RBA hikes into an already-open housing, labor and sentiment downturn, so the leftover 2027 H1 path is a policy error to receive.",
+    "usd_view": "higher",
+    "cad_view": "neutral",
+    "aud_view": "lower",
+    "nzd_view": "lower",
+    "us_rates_view": "neutral",
+    "ca_rates_view": "neutral",
+    "au_rates_view": "lower",
+    "nz_rates_view": "not_relevant",
+    "risk_view": "risk_off",
+    "carry_view": "supports_trade",
+    "time_horizon": "1-4 RBA meetings / 2027 H1",
+    "key_catalyst": "Next RBA decision and 2026-10/11 IB windows versus further housing/labor/sentiment deterioration.",
+    "key_invalidation": "IB 2027-03/06 holds or rises through 4.86-4.94 while housing and labor stop deteriorating and inflation stays hot enough to deliver the extra hikes.",
+    "confidence": 61,
+    "conflict_tags": [
+      "AU_RATES_DOWN",
+      "AUD_DOWN",
+      "USD_UP",
+      "RISK_OFF",
+      "AONIA_2027-06_LONG"
+    ]
+  },
+  "paper_actions": [
+    {
+      "action": "HOLD",
+      "position_id": "pos-3b40ade3da2c",
+      "instrument": "AONIA_2027-06",
+      "asset_class": "rates",
+      "side": "long",
+      "notional_usd": 55000000,
+      "rationale": "FACT: sidecar open_positions already owns long AONIA_2027-06 position_id pos-3b40ade3da2c, 55m notional, 550k shocked risk, entry/mark 4.91 / 4.9075 on the locked 2027-03/06 IB strip; risk_stopped is false and remaining shock room is 9.45m versus the 10m cap. INFERENCE: the housing/labor/sentiment discrepancy is intact so this is not a CLOSE, but inflation 82 plus the delivered Fed/BoJ/BoE hawkish impulse is two-sided enough that this is not an ADD. Official SOFR 3.85 ACT/360 on 550k is a small hurdle versus a 25bp IB reprice, and the existing size already clears it without filling the cap. Do not OPEN a duplicate AONIA_2027-06."
+    }
+  ]
+}
