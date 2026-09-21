@@ -337,6 +337,15 @@ class BudgetHookTests(unittest.TestCase):
         self.assertNotEqual(blocked_composer.returncode, 0)
         self.assertIn("cap", blocked_composer.stdout.lower())
 
+    def test_missing_committed_freeze_blocks_first_child(self) -> None:
+        today = datetime.now(ZoneInfo("America/New_York")).strftime("%Y%m%d")
+        snapshot = self.repo / "data" / "overnight" / "runs" / f"overnight-{today}" / "evidence_snapshot.json"
+        subprocess.run(["git", "rm", "-q", str(snapshot.relative_to(self.repo))], cwd=self.repo, check=True)
+        subprocess.run(["git", "commit", "-qm", "remove freeze"], cwd=self.repo, check=True)
+        blocked = self._call("root", "composer-2.5")
+        self.assertNotEqual(blocked.returncode, 0)
+        self.assertIn("trusted freeze", blocked.stdout.lower())
+
     def test_nested_child_is_denied(self) -> None:
         self.assertEqual(self._call("root", "composer-2.5").returncode, 0)
         blocked = self._call("child-conversation", "grok-4.6")
