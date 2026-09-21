@@ -36,6 +36,20 @@ POLICY = {
 }
 
 
+def _presentation(expression: str = "Stay flat") -> dict:
+    return {
+        "market_expression": expression,
+        "punchline": f"{expression}. No incremental edge in this fixture.",
+        "support": ["The fixture is testing workflow mechanics, not a live investment view."],
+        "take_profit": {
+            "objective": "N/A while flat",
+            "basis": "No position is being opened in this fixture.",
+            "pnl_target_usd": None,
+        },
+        "invalidation": "A live validated decision replaces this fixture.",
+    }
+
+
 def _pm_block(run_id: str, packet_hash: str, cutoff: str) -> dict:
     out = {}
     for pm_id in ("swinger", "pragmatist", "grinder"):
@@ -50,6 +64,7 @@ def _pm_block(run_id: str, packet_hash: str, cutoff: str) -> dict:
             "actions": [{"action": "HOLD"}],
             "thesis": "Await cleaner setup.",
             "invalidation": None,
+            "presentation": _presentation(),
             "conviction": 20,
         }
         if pm_id == "pragmatist":
@@ -78,6 +93,7 @@ def _hold_decision(seat: str, run_id: str, packet_hash: str, cutoff: str) -> dic
         "conviction": 25,
         "thesis": "No incremental edge.",
         "invalidation": None,
+        "presentation": _presentation(),
         "required_pitch": None,
         "risk_put_on": None,
         "expression_memo": {
