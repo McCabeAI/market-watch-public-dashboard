@@ -771,7 +771,12 @@ def merge_into_jp_json(report: dict[str, Any], *, preserve_existing: bool = True
 
     recovered_periods = {o["reference_period"] for o in report.get("recovered_months") or []}
     gaps = component.get("gaps") or []
-    component["gaps"] = [g for g in gaps if g.get("expected_period") not in recovered_periods]
+    component["gaps"] = [
+        g
+        for g in gaps
+        if g.get("expected_period") not in recovered_periods
+        and g.get("reason") != "awaiting PMI harvester merge"
+    ]
     scored_periods = {o["reference_period"] for o in component["observations"] if o.get("series_id") == SERIES_ID}
     for gap in report.get("genuine_gaps") or []:
         if gap["expected_period"] in scored_periods:

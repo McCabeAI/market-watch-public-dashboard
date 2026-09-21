@@ -1131,6 +1131,7 @@ def collect_japan_macro(
             "expected_period": "2025-09",
             "reason": "awaiting PMI harvester merge",
             "attempted_sources": ["scripts/harvest_jp_pmi.py"],
+            "as_of": WINDOW_END.isoformat(),
             "notes": "Run harvest_jp_pmi.py --write-jp-json to populate.",
         }
     ]

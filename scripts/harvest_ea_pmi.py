@@ -316,7 +316,7 @@ def discover_guids_from_wayback_listings(
     cdx = (
         "https://web.archive.org/cdx/search/cdx?"
         f"url={PMI_LISTING_URL.replace('https://', '')}&output=json"
-        f"&from={from_yyyymmdd}&to={to_yyyymmdd}&filter=statuscode:200&limit=200"
+        f"&from={from_yyyymmdd}&to={to_yyyymmdd}&filter=statuscode:200&limit=24"
     )
     rows: list[list[str]] = []
     try:
@@ -593,12 +593,15 @@ def harvest(
     guids: list[str] | None = None,
     save_pdfs: bool = True,
     fetcher: Callable[..., bytes] | None = None,
+    wayback_listings: bool = True,
 ) -> dict[str, Any]:
     retrieved_at = utc_now_iso()
     attempted: list[dict[str, Any]] = []
     listing_html = fetch_listing_html(attempted=attempted)
     discovered = discover_eurozone_composite_listing(listing_html) if listing_html else []
-    wayback_discovered = discover_guids_from_wayback_listings(attempted=attempted)
+    wayback_discovered = (
+        discover_guids_from_wayback_listings(attempted=attempted) if wayback_listings else []
+    )
 
     guid_set: list[str] = []
     for g in SEED_GUIDS:
@@ -647,6 +650,7 @@ def harvest(
                     "reason": "not yet released",
                     "attempted_sources": [PMI_LISTING_URL],
                     "failure_mode": "future_release",
+                    "as_of": cutoff,
                     "notes": "Reference month not published as of cutoff.",
                 }
             )
@@ -657,6 +661,7 @@ def harvest(
                 "reason": "primary PDF not retrieved",
                 "attempted_sources": [press_release_url(g) for g in guid_set[:8]],
                 "failure_mode": "listing_single_month_only",
+                "as_of": cutoff,
                 "notes": (
                     "S&P listing exposes only the latest Eurozone Composite PMI; "
                     "historical months require committed PDFs or Wayback snapshots."
@@ -715,8 +720,13 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Harvest S&P Global Eurozone Composite PMI.")
     parser.add_argument("--cutoff", default=WINDOW_END + "-21")
     parser.add_argument("--merge-ea-json", action="store_true")
+    parser.add_argument(
+        "--no-wayback-listings",
+        action="store_true",
+        help="Skip Wayback listing walk when seed GUIDs already cover the window.",
+    )
     args = parser.parse_args(argv)
-    report = harvest(cutoff=args.cutoff)
+    report = harvest(cutoff=args.cutoff, wayback_listings=not args.no_wayback_listings)
     if args.merge_ea_json:
         merge_into_ea_json(report)
     return 0

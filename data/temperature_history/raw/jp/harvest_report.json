@@ -8,7 +8,7 @@
       "units": "diffusion_index",
       "transformation": "diffusion_index",
       "vintage": "latest_available",
-      "retrieved_at": "2026-09-21T20:37:27Z",
+      "retrieved_at": "2026-09-21T22:23:58Z",
       "reference_period": "2026-01",
       "value": 53.1,
       "publisher": "S&P Global",
@@ -22,7 +22,7 @@
       "units": "diffusion_index",
       "transformation": "diffusion_index",
       "vintage": "latest_available",
-      "retrieved_at": "2026-09-21T20:37:27Z",
+      "retrieved_at": "2026-09-21T22:23:58Z",
       "reference_period": "2026-02",
       "value": 53.9,
       "publisher": "S&P Global",
@@ -36,7 +36,7 @@
       "units": "diffusion_index",
       "transformation": "diffusion_index",
       "vintage": "latest_available",
-      "retrieved_at": "2026-09-21T20:37:27Z",
+      "retrieved_at": "2026-09-21T22:23:58Z",
       "reference_period": "2026-03",
       "value": 53.0,
       "publisher": "S&P Global",
@@ -50,7 +50,7 @@
       "units": "diffusion_index",
       "transformation": "diffusion_index",
       "vintage": "latest_available",
-      "retrieved_at": "2026-09-21T20:37:27Z",
+      "retrieved_at": "2026-09-21T22:23:58Z",
       "reference_period": "2026-04",
       "value": 52.2,
       "publisher": "S&P Global",
@@ -64,7 +64,7 @@
       "units": "diffusion_index",
       "transformation": "diffusion_index",
       "vintage": "latest_available",
-      "retrieved_at": "2026-09-21T20:37:27Z",
+      "retrieved_at": "2026-09-21T22:23:58Z",
       "reference_period": "2026-05",
       "value": 51.1,
       "publisher": "S&P Global",
@@ -78,7 +78,7 @@
       "units": "diffusion_index",
       "transformation": "diffusion_index",
       "vintage": "latest_available",
-      "retrieved_at": "2026-09-21T20:37:27Z",
+      "retrieved_at": "2026-09-21T22:23:58Z",
       "reference_period": "2026-06",
       "value": 52.5,
       "publisher": "S&P Global",
@@ -92,7 +92,7 @@
       "units": "diffusion_index",
       "transformation": "diffusion_index",
       "vintage": "latest_available",
-      "retrieved_at": "2026-09-21T20:37:27Z",
+      "retrieved_at": "2026-09-21T22:23:58Z",
       "reference_period": "2026-07",
       "value": 52.7,
       "publisher": "S&P Global",
@@ -106,7 +106,7 @@
       "units": "diffusion_index",
       "transformation": "diffusion_index",
       "vintage": "latest_available",
-      "retrieved_at": "2026-09-21T20:37:27Z",
+      "retrieved_at": "2026-09-21T22:23:58Z",
       "reference_period": "2026-08",
       "value": 53.5,
       "publisher": "S&P Global",
@@ -226,29 +226,17 @@
       "http_status": 200,
       "failure_mode": null,
       "notes": "bytes=127914; application/pdf"
-    },
-    {
-      "url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/a6bac56fe01e4e07b2fdb451bbe1b56e",
-      "http_status": 200,
-      "failure_mode": null,
-      "notes": "bytes=121910; application/pdf"
     }
   ],
   "parser_notes": "Flash Japan Composite PMI Output Index from Flash Japan PMI PDF; final composite from Japan Services PMI prose ('Composite Output Index rose from ... to ... in Month'). Final beats flash when both exist for a month.",
-  "flash_vs_final": "Parsed 2 non-flash and 5 flash PDFs; final revision_status preferred over preliminary when both exist for a month.",
+  "flash_vs_final": "Parsed 1 non-flash and 5 flash PDFs; final revision_status preferred over preliminary when both exist for a month.",
   "discovered_listing_rows": [
     {
       "listing_release_utc": "September 03 2026 00:30 UTC",
       "title": "S&P Global Japan Services PMI",
       "guid": "55b418e617f34269b3e1b0f056317a30",
       "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/55b418e617f34269b3e1b0f056317a30"
-    },
-    {
-      "listing_release_utc": "September 01 2026 00:30 UTC",
-      "title": "S&P Global Japan Manufacturing PMI",
-      "guid": "a6bac56fe01e4e07b2fdb451bbe1b56e",
-      "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/a6bac56fe01e4e07b2fdb451bbe1b56e"
     }
   ],
-  "parsed_release_count": 7
+  "parsed_release_count": 6
 }
