@@ -2,22 +2,20 @@
 
 Single implementation: `scripts/temperature_level.py`. Calibration: `data/temperature_calibration.json` + `docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md`.
 
-## Current LEVELs (2026-09 cutoff, vintage through 2026-09-21)
+## Current LEVELs (2026-09 cutoff)
 
-| Country | Inflation | Labor | Activity | Consumer |
-|--------:|----------:|------:|---------:|---------:|
-| US | 63.1 | 50.0 | 49.1 | 46.5 |
-| CA | 54.8 | 42.2 | 64.4 | 62.1 |
-| AU | 63.2 | 50.1 | 43.6 | 54.3 |
-| NZ | 64.2 | 36.6 | 38.0 | 48.4 |
+Numeric table in `data/temperature_scores.json` is **stale until the parent regenerates** disk state after merge. Engine changes in this repair:
 
-G1 ballpark alignment: US Inf/Lab/Act/Con match within ~0.2pt. NZ Inf/Lab/Act match. CA/AU Consumer differ from G1 rough sketches (see below); no anchor retuning applied.
+- **GDP Activity LEVEL** = two-quarter mean SAAR (`level_scoring_transform`); **GDP impulse** = single-quarter SAAR step (unchanged visibility on CA +28 / NZ −28 component impulses).
+- **US ISM** surveys: 12 months of press-release history; LEVEL = 3m mean, impulse = 1m delta; Activity coverage returns to **1.00** when recomputed.
+
+Qualitative: CA/NZ Activity GDP LEVEL moves toward neutral (~50) vs the old single-quarter pathology (~64 / ~38).
 
 ## Coverage (sum of weights with observed LEVEL)
 
 | Country | Inflation | Labor | Activity | Consumer |
 |--------:|----------:|------:|---------:|---------:|
-| US | 1.00 | 1.00 | 1.00 | 1.00 |
+| US | 1.00 | 1.00 | 1.00 (GDP+ISM) | 1.00 |
 | CA | 1.00 | 1.00 | 0.60 | 0.75 |
 | AU | 1.00 | 1.00 | 0.60 | 0.75 |
 | NZ | 1.00 | 1.00 | 0.60 | 1.00 |
@@ -47,7 +45,7 @@ Thresholds: warming ≥ +1.0, cooling ≤ −1.0.
 | NZ | Activity | −28.46 | cooling |
 | NZ | Consumer | −4.50 | cooling |
 
-Large Activity impulses reflect GDP q/q SAAR step (QoQ release), not cumulative scoring.
+Large Activity **component** impulses on GDP still reflect the latest q/q→SAAR **single-quarter** step (release shock). **LEVEL** uses the 2Q-mean SAAR so dimension LEVEL no longer tracks a lone hot/cold quarter.
 
 ## G1 deltas explained (>3pt)
 
@@ -59,8 +57,8 @@ Large Activity impulses reflect GDP q/q SAAR step (QoQ release), not cumulative 
 
 Nine `large_level_jump` findings (|ΔLEVEL| > 15 month-on-month), all on **Activity** dimensions:
 
-- **US / CA / AU / NZ**: jumps cluster when **quarterly GDP** enters the window (reference_period flips at quarter-end months) while survey weights are zero (coverage 0.60). Example: CA Activity +28.4 from 2026-05→2026-06 when Q2 GDP posts; NZ Activity −28.5 on 2026-05→2026-06 when prior quarter rolls off trailing reconstruction.
-- **US Activity** also shows ISM + GDP blend shifts when monthly survey prints change (2026-02→2026-03 +16.0).
+- **CA / AU / NZ**: GDP still drives 60% coverage; 2Q-mean LEVEL dampens quarter-end GDP spikes vs the prior single-quarter LEVEL rule. Component impulses remain large on GDP releases.
+- **US Activity**: full ISM history restores survey weight (28%/12%); path jumps may still appear when ISM 3m LEVEL shifts alongside GDP.
 
 No boundary compression (≥3 months at 1 or 100). No monotonic calendar drift with unchanged inputs (LEVEL flat between releases when tested with dummy future index row).
 
