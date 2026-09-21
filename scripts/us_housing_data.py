@@ -143,7 +143,7 @@ def collect_us_housing(*, today: date, fetch_bytes: Callable[..., bytes]) -> dic
         except Exception as exc:
             return sid, [], str(exc)
 
-    with ThreadPoolExecutor(max_workers=6) as pool:
+    with ThreadPoolExecutor(max_workers=3) as pool:
         results = list(pool.map(one, SERIES))
     data = {sid: points for sid, points, _ in results}
     errors = {sid: err for sid, _, err in results if err}
