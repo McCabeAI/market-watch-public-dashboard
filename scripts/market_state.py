@@ -839,7 +839,10 @@ def build_snapshot(
     if include_australia_housing is None:
         include_australia_housing = include_cross_assets
     australia_housing = (
-        collect_australia_housing(today=today, fetch_bytes=fetch_bytes)
+        collect_australia_housing(
+            today=today,
+            fetch_bytes=lambda url: fetch_bytes(url, timeout=20, retries=2, user_agent=BROWSER_USER_AGENT),
+        )
         if include_australia_housing
         else {
             "country": "AU",
