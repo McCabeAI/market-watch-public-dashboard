@@ -10,6 +10,7 @@
         "The frozen market-state packet is stale only because NZ_rates; that gap does not drive this Canada position.",
         "Canada official curve is unavailable, so the position stays locked to the tradable CORRA/CRA futures family."
       ],
+      "benchmark_cost_usd": 0.0,
       "cash_capital_usd": 1000000000.0,
       "cash_yield_usd": 0.0,
       "conviction": 68,
@@ -25,6 +26,7 @@
       "funding_last_accrual_at": "2026-09-19T23:10:54.130509-04:00",
       "funding_percent_rate": 3.85,
       "funding_rate_annual": 0.0385,
+      "funding_regime": "sofr_zero_benchmark",
       "funding_source": "NY_FED",
       "gross_notional_limit_enforced": false,
       "gross_notional_limit_usd": 1000000000,
@@ -60,6 +62,7 @@
       "max_drawdown_usd": 50000000,
       "nav_usd": 1000000000.0,
       "net_after_funding_pnl_usd": 0.0,
+      "net_financing_pnl_usd": 0.0,
       "pm_id": "chatgpt",
       "pnl_unavailable": false,
       "positions": [
@@ -136,6 +139,7 @@
     },
     "grinder": {
       "alerts": [],
+      "benchmark_cost_usd": 106944.44,
       "cash_capital_usd": 1000000000.0,
       "cash_yield_usd": 106944.44,
       "conviction": 70,
@@ -152,13 +156,14 @@
       "funding_last_accrual_at": "2026-09-20T16:15:56.411265-04:00",
       "funding_percent_rate": 3.85,
       "funding_rate_annual": 0.0385,
+      "funding_regime": "sofr_zero_benchmark",
       "funding_source": "NY_FED",
       "gross_notional_limit_enforced": false,
       "gross_notional_limit_usd": 1000000000,
       "gross_remaining_usd": 1000000000.0,
       "gross_utilization_usd": 0,
       "hedge_allowed": true,
-      "high_water_nav_usd": 1000106944.44,
+      "high_water_nav_usd": 1000000000.0,
       "history": [
         {
           "action": "NO_TRADE",
@@ -211,6 +216,15 @@
           "realized_pnl_usd": null,
           "result": "applied",
           "run_id": "tr-20260920T193935Z-ondemand"
+        },
+        {
+          "action": "FUNDING_BENCHMARK_MIGRATION",
+          "benchmark_cost_usd": 106944.44,
+          "cash_yield_usd": 106944.44,
+          "funding_cost_usd": 0.0,
+          "note": "Official SOFR is the zero-return competition benchmark. Prior baseline paper-NAV cash yield is neutralized; realized/unrealized trading P&L and trade marks are unchanged.",
+          "reclassified_nav_funding_usd": 0.0,
+          "result": "applied"
         }
       ],
       "invalidation": "A later successful overnight freeze with restored NZ_rates and CME positioning and a single un-conflicted markable rates discrepancy versus 3.85% cash and the still-on-hold 1m CORRA path, or delivered BoC tightening that makes the 2027 CRA catch-up one-way.",
@@ -221,8 +235,9 @@
       "last_decision_packet_sha256": "0fdbdc494a747c0a6501b3e5f2dccbc2e3630633a8851c339eabf9db9ab8b929",
       "mandate": "Preservation and consistency first. Smaller sizes, high hurdles, quick de-risking. No-trade is valid.",
       "max_drawdown_usd": 50000000,
-      "nav_usd": 1000106944.44,
-      "net_after_funding_pnl_usd": 106944.44,
+      "nav_usd": 1000000000.0,
+      "net_after_funding_pnl_usd": 0.0,
+      "net_financing_pnl_usd": 0.0,
       "pm_id": "grinder",
       "pnl_unavailable": false,
       "positions": [],
@@ -255,6 +270,7 @@
     },
     "pragmatist": {
       "alerts": [],
+      "benchmark_cost_usd": 106944.44,
       "cash_capital_usd": 1000000000.0,
       "cash_yield_usd": 106944.44,
       "conviction": 56,
@@ -271,13 +287,14 @@
       "funding_last_accrual_at": "2026-09-20T16:15:56.400319-04:00",
       "funding_percent_rate": 3.85,
       "funding_rate_annual": 0.0385,
+      "funding_regime": "sofr_zero_benchmark",
       "funding_source": "NY_FED",
       "gross_notional_limit_enforced": false,
       "gross_notional_limit_usd": 1000000000,
       "gross_remaining_usd": 550000000.0,
       "gross_utilization_usd": 450000000.0,
       "hedge_allowed": true,
-      "high_water_nav_usd": 1000106463.19,
+      "high_water_nav_usd": 999999518.75,
       "history": [
         {
           "action": "OPEN",
@@ -330,6 +347,15 @@
           "realized_pnl_usd": null,
           "result": "applied",
           "run_id": "tr-20260920T193935Z-ondemand"
+        },
+        {
+          "action": "FUNDING_BENCHMARK_MIGRATION",
+          "benchmark_cost_usd": 106944.44,
+          "cash_yield_usd": 106944.44,
+          "funding_cost_usd": 481.25,
+          "note": "Official SOFR is the zero-return competition benchmark. Prior baseline paper-NAV cash yield is neutralized; realized/unrealized trading P&L and trade marks are unchanged.",
+          "reclassified_nav_funding_usd": 0.0,
+          "result": "applied"
         }
       ],
       "invalidation": "Thesis fails if BoC hikes or the 1m CORRA strip through Dec-2026 reprices toward the 2027 CRA mid-3s; if CPI-trim/median leave the 1.9/2.0 zone higher while employment stops contracting and wages re-accelerate; or if CORRA_2027-03 implied holds at or above the 3.13 entry because catch-up is actually being delivered. A US-only or energy-headline move that leaves CRAH27 unchanged is not invalidation. Wrong timing, not wrong thesis, if implieds chop around 3.13 without a new BoC hike signal.",
@@ -340,8 +366,9 @@
       "last_decision_packet_sha256": "43441a949bc80b233580d774bb32717b6d78f567b9649511f47419aaf503d87c",
       "mandate": "Opportunistic macro. Can swing big or grind singles/doubles. May hedge.",
       "max_drawdown_usd": 50000000,
-      "nav_usd": 1000106463.19,
-      "net_after_funding_pnl_usd": 106463.19,
+      "nav_usd": 999999518.75,
+      "net_after_funding_pnl_usd": -481.25,
+      "net_financing_pnl_usd": -481.25,
       "pm_id": "pragmatist",
       "pnl_unavailable": false,
       "positions": [
@@ -409,6 +436,7 @@
     },
     "swinger": {
       "alerts": [],
+      "benchmark_cost_usd": 106944.44,
       "cash_capital_usd": 1000000000.0,
       "cash_yield_usd": 106944.44,
       "conviction": 72,
@@ -425,13 +453,14 @@
       "funding_last_accrual_at": "2026-09-20T16:15:56.388803-04:00",
       "funding_percent_rate": 3.85,
       "funding_rate_annual": 0.0385,
+      "funding_regime": "sofr_zero_benchmark",
       "funding_source": "NY_FED",
       "gross_notional_limit_enforced": false,
       "gross_notional_limit_usd": 1000000000,
       "gross_remaining_usd": 150000000.0,
       "gross_utilization_usd": 850000000.0,
       "hedge_allowed": false,
-      "high_water_nav_usd": 1000106035.41,
+      "high_water_nav_usd": 999999090.97,
       "history": [
         {
           "action": "OPEN",
@@ -484,6 +513,15 @@
           "realized_pnl_usd": null,
           "result": "applied",
           "run_id": "tr-20260920T193935Z-ondemand"
+        },
+        {
+          "action": "FUNDING_BENCHMARK_MIGRATION",
+          "benchmark_cost_usd": 106944.44,
+          "cash_yield_usd": 106944.44,
+          "funding_cost_usd": 909.03,
+          "note": "Official SOFR is the zero-return competition benchmark. Prior baseline paper-NAV cash yield is neutralized; realized/unrealized trading P&L and trade marks are unchanged.",
+          "reclassified_nav_funding_usd": 0.0,
+          "result": "applied"
         }
       ],
       "invalidation": "Close pm-swinger-2070479ca321 if BoC delivers or explicitly endorses a 2027 path consistent with CRAH27 holding at or above the 3.13 entry, or if Canada CPI-trim/median leave the packet 1.9/2.0 zone higher while employment/wages reverse the August -42k / +2.0% cooling. Close if CRAH27 implied rises toward CRAM27 3.365 rather than cheapening. A US-only SOFR selloff that leaves CORRA_2027-03 unchanged is not invalidation. Energy headlines without a core/labor break are not invalidation. Unarbitrated Trader Room disagreement is not invalidation. No hedge: if the thesis fails, close.",
@@ -494,8 +532,9 @@
       "last_decision_packet_sha256": "6e55e22ac0d135981a9b9d92cf72bd788446ec04f19bfcaa6cf948d01d1a0dd9",
       "mandate": "Very aggressive/concentrated when the thesis is valid. HEDGE prohibited; reduce or close instead.",
       "max_drawdown_usd": 50000000,
-      "nav_usd": 1000106035.41,
-      "net_after_funding_pnl_usd": 106035.41,
+      "nav_usd": 999999090.97,
+      "net_after_funding_pnl_usd": -909.03,
+      "net_financing_pnl_usd": -909.03,
       "pm_id": "swinger",
       "pnl_unavailable": false,
       "positions": [
