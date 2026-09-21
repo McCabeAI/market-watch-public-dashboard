@@ -21,6 +21,7 @@ from scripts.overnight.scheduled_output import (
     validate_output,
 )
 from scripts.overnight.store import OvernightStore, sha256_json
+from scripts.pm.grinder import synthetic_grinder_hurdle
 from scripts.pm.portfolio import synthetic_portfolio_construction
 
 AS_OF = datetime.fromisoformat("2026-09-18T01:55:00-04:00")
@@ -57,6 +58,8 @@ def _pm_block(run_id: str, packet_hash: str, cutoff: str) -> dict:
                 existing_book="Pragmatist book is flat in this scheduled-output fixture.",
                 rationale="No independent markable complementary trade improves the opportunistic book; HOLD is explicit.",
             )
+        if pm_id == "grinder":
+            out[pm_id]["deployment_hurdle"] = synthetic_grinder_hurdle()
     return out
 
 

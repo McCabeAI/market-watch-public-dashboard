@@ -7,6 +7,7 @@ from unittest import mock
 from scripts.overnight.scheduled_output import apply_output, validate_output
 from scripts.pm.automated import apply_automated_pm_decisions, validate_pm_decisions
 from scripts.pm.errors import SchemaError
+from scripts.pm.grinder import validate_grinder_hurdle
 from scripts.pm.portfolio import synthetic_portfolio_construction
 from tests.test_overnight_scheduled_output import ScheduledOutputTests, _pm_block
 
@@ -236,6 +237,81 @@ class OptionalAutomatedPMDecisionTests(ScheduledOutputTests):
             rationale="Both independent markable handoffs were evaluated; HOLD remains valid.",
         )
         validate_output(self.store, self.payload)
+
+    def test_grinder_requires_deployment_hurdle(self) -> None:
+        packet = self.payload["agent_packet"]
+        block = _pm_block(self.run_id, packet["packet_sha256"], packet["evidence_cutoff"])
+        del block["grinder"]["deployment_hurdle"]
+        with self.assertRaises(SchemaError):
+            validate_pm_decisions(
+                block,
+                overnight_run_id=self.run_id,
+                packet_sha256=packet["packet_sha256"],
+                evidence_cutoff=packet["evidence_cutoff"],
+                required=True,
+            )
+
+    def test_grinder_not_evaluable_requires_trade_specific_missing_data(self) -> None:
+        decision = {
+            "actions": [{"action": "NO_TRADE"}],
+            "deployment_hurdle": {
+                "benchmark": "Official SOFR 3.85% ACT/360.",
+                "candidate_assessments": [
+                    {
+                        "instrument": "CORRA_2027-03",
+                        "markable": True,
+                        "hurdle_result": "not_evaluable",
+                        "rationale": "Cannot evaluate.",
+                        "material_missing_data": [],
+                        "ignored_unrelated_gaps": ["NZ_rates"],
+                    }
+                ],
+                "chosen_action_rationale": "Stay flat.",
+            }
+        }
+        with self.assertRaises(SchemaError):
+            validate_grinder_hurdle(decision, pm_id="grinder", packet=None)
+
+    def test_grinder_packet_coverage_ignores_unrelated_gaps(self) -> None:
+        packet = {
+            "market_state": {
+                "fx": {
+                    "pairs": {
+                        "USDCAD": {"spot": 1.36, "as_of": "2026-09-18"},
+                        "AUDUSD": {"spot": 0.71, "as_of": "2026-09-18"},
+                    }
+                }
+            },
+            "proposed_trades": [
+                {"trade": {"instrument": "USDCAD", "asset_class": "spot_fx"}},
+                {"trade": {"instrument": "AUDUSD", "asset_class": "spot_fx"}},
+            ],
+        }
+        decision = {
+            "deployment_hurdle": {
+                "benchmark": "Official SOFR 3.85% ACT/360.",
+                "candidate_assessments": [
+                    {
+                        "instrument": "USDCAD",
+                        "markable": True,
+                        "hurdle_result": "does_not_clear",
+                        "rationale": "Expected edge does not clear the funding hurdle.",
+                        "material_missing_data": [],
+                        "ignored_unrelated_gaps": ["NZ_rates", "options_iv"],
+                    },
+                    {
+                        "instrument": "AUDUSD",
+                        "markable": True,
+                        "hurdle_result": "does_not_clear",
+                        "rationale": "Expected edge does not clear the funding hurdle.",
+                        "material_missing_data": [],
+                        "ignored_unrelated_gaps": ["CA_official_curve"],
+                    },
+                ],
+                "chosen_action_rationale": "Both markable candidates fail on economics, not packet completeness.",
+            }
+        }
+        validate_grinder_hurdle(decision, pm_id="grinder", packet=packet)
 
     def test_more_than_three_subagents_or_unsupported_model_rejected(self) -> None:
         packet = self.payload["agent_packet"]
