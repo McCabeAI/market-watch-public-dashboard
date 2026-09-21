@@ -11,6 +11,7 @@ from scripts.trading.store import TradingStore
 from scripts.pm.constants import ALLOWED_SUBAGENT_MODELS, AUTOMATED_PM_IDS, MAX_SUBAGENTS_PER_PM
 from scripts.pm.errors import IndependenceError, SchemaError
 from scripts.pm.models import PM_PRINCIPAL_MODEL
+from scripts.pm.grinder import synthetic_grinder_hurdle, validate_grinder_hurdle
 from scripts.pm.portfolio import synthetic_portfolio_construction, validate_portfolio_construction
 
 
@@ -93,6 +94,7 @@ def validate_pm_decisions(
                 f"{pm_id} overnight automated principal_model must be exact {PM_PRINCIPAL_MODEL}"
             )
         validate_portfolio_construction(decision, pm_id=pm_id, required=True, packet=packet)
+        validate_grinder_hurdle(decision, pm_id=pm_id, required=True, packet=packet)
         expanding = [
             row
             for row in decision["actions"]
@@ -178,6 +180,8 @@ def dry_run_pm_decisions(
             row["memory_context_sha256"] = memory_hashes[pm_id]
         if pm_id == "pragmatist":
             row["portfolio_construction"] = synthetic_portfolio_construction()
+        if pm_id == "grinder":
+            row["deployment_hurdle"] = synthetic_grinder_hurdle()
         block[pm_id] = row
     return block
 
