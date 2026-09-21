@@ -8,6 +8,8 @@ on:
     paths:
       - "scripts/market_state.py"
       - "scripts/australia_housing_data.py"
+      - "scripts/us_housing_data.py"
+      - "scripts/canada_housing_data.py"
       - "scripts/policy_path_data.py"
       - "scripts/official_curve_data.py"
       - "scripts/positioning_data.py"
@@ -19,6 +21,7 @@ on:
       - "scripts/__init__.py"
       - "tests/test_market_state.py"
       - "tests/test_australia_housing_data.py"
+      - "tests/test_us_canada_housing_data.py"
       - "tests/test_policy_path_data.py"
       - "tests/test_official_curve_data.py"
       - "tests/test_positioning_data.py"
@@ -54,7 +57,7 @@ jobs:
         run: python -m pip install --disable-pip-version-check -r requirements-market-state.txt
 
       - name: Deterministic parser and calculation tests
-        run: PYTHONPATH=. python -m unittest tests.test_market_state tests.test_australia_housing_data tests.test_policy_path_data tests.test_official_curve_data tests.test_market_opportunities tests.test_positioning_data -v
+        run: PYTHONPATH=. python -m unittest tests.test_market_state tests.test_australia_housing_data tests.test_us_canada_housing_data tests.test_policy_path_data tests.test_official_curve_data tests.test_market_opportunities tests.test_positioning_data -v
 
       - name: Live official-source smoke test
         run: PYTHONPATH=. python scripts/live_market_state_smoke.py
@@ -109,6 +112,8 @@ jobs:
               assert curve["contracts"]
           assert packet["official_curves"]["status"] in {"ok", "partial", "unavailable"}
           assert packet["australia_housing"]["status"] in {"ok", "partial"}
+          assert packet["us_housing"]["status"] in {"ok", "partial"}
+          assert packet["canada_housing"]["status"] in {"ok", "partial"}
           assert set(packet["australia_housing"]["feeds"]) == {"prices_and_turnover", "building_approvals", "housing_lending", "housing_credit", "mortgage_rates", "mortgage_cash_flow"}
           nz = packet["rates"]["NZ"]
           if nz.get("status") == "unavailable":
