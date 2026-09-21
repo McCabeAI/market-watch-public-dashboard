@@ -102,6 +102,7 @@ REQUIRED_TRADE_FIELDS = (
     "catalysts",
     "principal_risks",
     "confidence",
+    "presentation",
 )
 NULLABLE_LEVEL_FIELDS = ("entry", "target", "stop", "invalidation", "structure")
 FORBIDDEN_RANKING_KEYS = (
