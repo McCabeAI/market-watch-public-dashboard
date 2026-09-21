@@ -476,10 +476,15 @@ def parse_eurostat_mcby_json(payload: Mapping[str, Any]) -> dict[str, dict[date,
     n_time = len(time_idx)
     values = payload.get("value") or {}
     out: dict[str, dict[date, float]] = {g: {} for g in geo_idx}
+    # JSON-stat flattens the last dimension fastest. With id
+    # [freq, int_rt, geo, time] and singleton freq/int_rt, time varies
+    # fastest and geo is the next outer dimension.
     for flat_key, value in values.items():
         idx = int(flat_key)
-        time_i = idx // n_geo
-        geo_i = idx % n_geo
+        geo_i = idx // n_time
+        time_i = idx % n_time
+        if geo_i >= n_geo or time_i >= n_time:
+            continue
         geo = next(g for g, i in geo_idx.items() if i == geo_i)
         time_key = next(t for t, i in time_idx.items() if i == time_i)
         v = _num(value)
