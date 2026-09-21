@@ -15,7 +15,7 @@ Use four equally weighted hard components:
 
 Do not renormalize these weights because of release timing, stale data or missing inputs.
 
-Consumer was reindexed to **50.0 on 2026-09-17**. The activation ledger applies current available hard evidence under these fixed weights; future qualifying releases append weighted impulses prospectively. Missing buckets add zero rather than freezing the dimension.
+Consumer **LEVEL** is governed by `docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md`. **50** maps to documented nominal/real flow anchors and index-specific confidence par values. `data/temperature_scores.json` (v3) stores LEVEL, coverage-weighted IMPULSE, and direction under the fixed 25% buckets. Missing series reduce coverage; they are omitted from the LEVEL average rather than imputed as 50.
 
 ## 2. Interpretation
 

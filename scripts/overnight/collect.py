@@ -8,7 +8,6 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from scripts.apply_temperature_scores import load_state
 from scripts.overnight.clock import isoformat, now_ny
 from scripts.overnight.constants import EVIDENCE_FAMILIES, SCHEMA_VERSION
 from scripts.overnight.errors import StageError
@@ -110,9 +109,9 @@ def collect_inputs(
     scores: dict[str, Any] | None = None
     score_registry: dict[str, Any] | None = None
     try:
-        scores = load_state(root / "data" / "temperature_scores.json")
+        scores = json.loads((root / "data" / "temperature_scores.json").read_text(encoding="utf-8"))
         score_registry = json.loads((root / "data" / "score_source_registry.json").read_text(encoding="utf-8"))
-        macro_as_of = str(scores.get("last_refresh_date") or "")
+        macro_as_of = str(scores.get("as_of") or scores.get("last_refresh_date") or "")
         if macro_as_of and "T" not in macro_as_of:
             macro_as_of = f"{macro_as_of}T04:00:00"
         age = age_status(macro_as_of, when=stamp) if macro_as_of else "missing"

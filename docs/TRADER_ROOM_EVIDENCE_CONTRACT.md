@@ -10,9 +10,9 @@ The parent must attempt all four Market Watch evidence families below. It must n
 
 Load the current United States, Canada, Australia and New Zealand 1–100 Temperature Inputs: Inflation, Labor, Activity and Consumer, together with the hard inputs that actually determine each score and the corroborating/contextual evidence shown behind the score.
 
-Use the current score contracts as governing definitions: `docs/LABOR_SCORE_V1.md`, `docs/ACTIVITY_SCORE_V1.md`, `docs/CONSUMER_SCORE_V1.md`, `docs/COUNTRY_SCORE_EVIDENCE_V1.md`, and the applicable inflation score contracts including `docs/US_INFLATION_SCORE_V1.md`. Use current Market Watch operational state/Supabase when available for values and provenance. Do not substitute an old static dashboard score for a current score without marking it stale.
+Use the current score contracts as governing definitions: `docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md`, `docs/LABOR_SCORE_V1.md`, `docs/ACTIVITY_SCORE_V1.md`, `docs/CONSUMER_SCORE_V1.md`, `docs/COUNTRY_SCORE_EVIDENCE_V1.md`, and the applicable inflation score contracts including `docs/US_INFLATION_SCORE_V1.md`. Canonical live values are `data/temperature_scores.json` version 3: **LEVEL** is the current economic state on 1–100; **impulse/direction** is a separate last-print heating/cooling signal. Do not parse unpatched `patch_v8` HTML placeholders and do not substitute the retired 2026-09-17 cumulative-impulse index.
 
-For each score include: country, dimension, score, as-of/vintage, hard inputs with values and weights/contributions where available, contextual/corroborating evidence, source/provenance, and staleness. If a hard input is unavailable, preserve the gap explicitly.
+For each score include: country, dimension, LEVEL score, impulse, direction, coverage, as-of/vintage, hard inputs with values and weights/contributions where available, contextual/corroborating evidence, source/provenance, and staleness. If a hard input is unavailable, preserve the gap explicitly.
 
 ### 2. Central-bank research and Market Watch article/news feed
 

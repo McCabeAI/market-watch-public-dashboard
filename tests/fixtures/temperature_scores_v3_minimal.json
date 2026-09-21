@@ -1,0 +1,188 @@
+{
+  "version": 3,
+  "as_of": "2026-09-21",
+  "methodology": "docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md",
+  "countries": {
+    "US": {
+      "Inflation": {
+        "level": 63.0,
+        "impulse": 2.0,
+        "direction": "warming",
+        "coverage": 1.0,
+        "temperature_class": "warm",
+        "as_of": "2026-07",
+        "components": {"core_pce": 1.0},
+        "component_state": {
+          "core_pce": {
+            "observed": true,
+            "transform_value": 3.05,
+            "level": 63.0,
+            "impulse": 2.0,
+            "as_of": "2026-07",
+            "weight_contribution": 1.0
+          }
+        }
+      },
+      "Labor": {
+        "level": 50.0,
+        "impulse": 0.2,
+        "direction": "static",
+        "coverage": 1.0,
+        "temperature_class": "neutral",
+        "as_of": "2026-08",
+        "components": {"unemployment": 0.7, "wages": 0.2, "payrolls": 0.1},
+        "component_state": {}
+      },
+      "Activity": {
+        "level": 49.0,
+        "impulse": -0.5,
+        "direction": "static",
+        "coverage": 1.0,
+        "temperature_class": "neutral",
+        "as_of": "2026-Q2",
+        "components": {
+          "gdp_domestic_demand": 0.6,
+          "services_surveys": 0.28,
+          "manufacturing_surveys": 0.12
+        },
+        "component_state": {}
+      },
+      "Consumer": {
+        "level": 46.0,
+        "impulse": -1.2,
+        "direction": "cooling",
+        "coverage": 1.0,
+        "temperature_class": "neutral",
+        "as_of": "2026-07",
+        "components": {"retail": 0.25, "income": 0.25, "spending": 0.25, "confidence": 0.25},
+        "component_state": {}
+      }
+    },
+    "CA": {
+      "Inflation": {
+        "level": 55.0,
+        "impulse": null,
+        "direction": "static",
+        "coverage": 1.0,
+        "temperature_class": "neutral",
+        "as_of": "2026-08",
+        "components": {"underlying": 0.6, "headline": 0.4},
+        "component_state": {}
+      },
+      "Labor": {
+        "level": 42.0,
+        "impulse": -1.0,
+        "direction": "cooling",
+        "coverage": 1.0,
+        "temperature_class": "cool",
+        "as_of": "2026-08",
+        "components": {"unemployment": 0.7, "wages": 0.2, "employment": 0.1},
+        "component_state": {}
+      },
+      "Activity": {
+        "level": 64.0,
+        "impulse": 1.5,
+        "direction": "warming",
+        "coverage": 0.6,
+        "temperature_class": "warm",
+        "as_of": "2026-Q2",
+        "components": {"gdp_domestic_demand": 0.6, "business_surveys": 0.4},
+        "component_state": {}
+      },
+      "Consumer": {
+        "level": 54.0,
+        "impulse": 0.0,
+        "direction": "static",
+        "coverage": 0.75,
+        "temperature_class": "neutral",
+        "as_of": "2026-Q2",
+        "components": {"retail": 0.25, "income": 0.25, "spending": 0.25, "confidence": 0.25},
+        "component_state": {}
+      }
+    },
+    "AU": {
+      "Inflation": {
+        "level": 63.0,
+        "impulse": 0.5,
+        "direction": "static",
+        "coverage": 1.0,
+        "temperature_class": "warm",
+        "as_of": "2026-07",
+        "components": {"underlying": 0.6, "headline": 0.4},
+        "component_state": {}
+      },
+      "Labor": {
+        "level": 50.0,
+        "impulse": null,
+        "direction": "static",
+        "coverage": 1.0,
+        "temperature_class": "neutral",
+        "as_of": "2026-07",
+        "components": {"unemployment": 0.7, "wages": 0.2, "employment": 0.1},
+        "component_state": {}
+      },
+      "Activity": {
+        "level": 44.0,
+        "impulse": -2.0,
+        "direction": "cooling",
+        "coverage": 0.6,
+        "temperature_class": "cool",
+        "as_of": "2026-Q2",
+        "components": {"gdp_domestic_demand": 0.6, "business_surveys": 0.4},
+        "component_state": {}
+      },
+      "Consumer": {
+        "level": 48.0,
+        "impulse": 1.0,
+        "direction": "warming",
+        "coverage": 0.75,
+        "temperature_class": "neutral",
+        "as_of": "2026-09",
+        "components": {"retail": 0.25, "income": 0.25, "spending": 0.25, "confidence": 0.25},
+        "component_state": {}
+      }
+    },
+    "NZ": {
+      "Inflation": {
+        "level": 64.0,
+        "impulse": 0.3,
+        "direction": "static",
+        "coverage": 1.0,
+        "temperature_class": "warm",
+        "as_of": "2026-Q2",
+        "components": {"underlying": 0.6, "headline": 0.4},
+        "component_state": {}
+      },
+      "Labor": {
+        "level": 36.0,
+        "impulse": -3.0,
+        "direction": "cooling",
+        "coverage": 1.0,
+        "temperature_class": "cool",
+        "as_of": "2026-Q2",
+        "components": {"unemployment": 0.7, "wages": 0.2, "employment": 0.1},
+        "component_state": {}
+      },
+      "Activity": {
+        "level": 38.0,
+        "impulse": -1.0,
+        "direction": "cooling",
+        "coverage": 0.6,
+        "temperature_class": "cool",
+        "as_of": "2026-Q2",
+        "components": {"gdp_domestic_demand": 0.6, "business_surveys": 0.4},
+        "component_state": {}
+      },
+      "Consumer": {
+        "level": 42.0,
+        "impulse": null,
+        "direction": "static",
+        "coverage": 1.0,
+        "temperature_class": "cool",
+        "as_of": "2026-Q2",
+        "components": {"retail": 0.25, "income": 0.25, "spending": 0.25, "confidence": 0.25},
+        "component_state": {}
+      }
+    }
+  }
+}

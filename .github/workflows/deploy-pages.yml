@@ -205,9 +205,11 @@ jobs:
         run: |
           set -euo pipefail
           PYTHONPATH=. python scripts/validate_score_sources.py
-          PYTHONPATH=. python -m unittest tests.test_temperature_scores
+          PYTHONPATH=. python -m unittest tests.test_temperature_history_audit tests.test_temperature_level tests.test_temperature_scores
+          PYTHONPATH=. python scripts/temperature_level.py --print-levels
           PYTHONPATH=. python scripts/apply_temperature_scores.py _site/index.html --print-scores
-          test "$(grep -o 'Reindexed to 50 on 2026-09-17' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
+          test "$(grep -o 'class="temp-dimension score-detail"' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
+          test "$(grep -o '50 = structural/policy neutral anchor' _site/index.html | wc -l | tr -d '[:space:]')" -eq 16
           test "$(grep -o 'data-score-overview="live"' _site/index.html | wc -l | tr -d '[:space:]')" -eq 1
           grep -Fq 'Live 1–100 Score Board' _site/index.html
           if grep -Fq '>Temperature Board<' _site/index.html; then echo "stale top-level Temperature Board label remains"; exit 1; fi

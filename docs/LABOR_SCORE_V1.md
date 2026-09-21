@@ -81,8 +81,8 @@ Retain these as time series and present them under the country-page data standar
 
 ## 6. Baseline and live update rule
 
-Labor was reindexed to **50.0 on 2026-09-17** for all four economies. The prior recovered scores are retired as transition anchors.
+Labor **LEVEL** for all four economies is governed by `docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md`. **50** maps to each country’s documented u\*, wage, and employment-trend anchors (structural/policy and structural/trend constants in `data/temperature_calibration.json`). Prior recovered prototype scores are retired.
 
-The activation ledger in `data/temperature_scores.json` applies the current hard evidence already available using 70% unemployment / 20% wages / 10% employment-payroll growth. Future qualifying releases append a weighted impulse to that ledger. Missing components add zero and never block a valid observed component from moving the score.
+`data/temperature_scores.json` (v3) stores the latest LEVEL, coverage-weighted IMPULSE, and direction using the fixed 70% / 20% / 10% weights. Missing components reduce coverage; they are omitted from the LEVEL average rather than imputed as 50.
 
 Preserve fractional score moves internally and show at least one decimal place when a weighted release changes the score by a fraction.

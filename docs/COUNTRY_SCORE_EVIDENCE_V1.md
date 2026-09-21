@@ -38,7 +38,7 @@ Show every input that is allowed to move the score under the governing methodolo
 - authoritative source link;
 - enough lineage to understand why the score is where it is.
 
-Show the 50.0 activation baseline, the weighted qualifying impulses recorded since activation, and the resulting current score. Do not manufacture component contributions that were never calculated.
+Show the structural/policy **50** anchor, the transform applied to each hard input, the latest observed value, coverage when below 1.0, the resulting **LEVEL**, and the separate **IMPULSE** / direction. Do not manufacture component contributions that were never calculated.
 
 ### Context / corroboration
 
@@ -108,7 +108,7 @@ When a material observation is released or revised, the refresh must:
 
 1. update the relevant hard input or context series;
 2. preserve the source, reference period and revision state;
-3. record any qualifying hard-input release in `data/temperature_scores.json` and apply its fixed-weight impulse;
+3. update governed observations and optional release notes so `data/temperature_scores.json` (v3) and `scripts/temperature_level.py` can refresh LEVEL/IMPULSE;
 4. retain material context even when its score weight is zero;
 5. remove or flag stale statements that have been superseded;
 6. validate that the deployed page still exposes both evidence layers by tap/click.
