@@ -61,7 +61,7 @@ class PayrollBreakevenAnchorTest(unittest.TestCase):
         self.assertEqual(spec["source_url"], FEDS_NOTE_URL)
         self.assertEqual(spec["source_date"], "2026-04-02")
         self.assertIn("breakeven", spec["economic_interpretation"].lower())
-        self.assertIn("refresh", spec["refresh_cadence"].lower())
+        self.assertIn("review", spec["refresh_cadence"].lower())
         self.assertEqual(spec["expires_after"], "2027-04-02")
         self.assertIn("10", spec["point_convention"])
         self.assertEqual(spec["replaced_anchor"], RETIRED_ANCHOR)
