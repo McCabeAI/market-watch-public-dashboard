@@ -111,9 +111,9 @@ jobs:
               assert curve["status"] == "ok"
               assert curve["contracts"]
           assert packet["official_curves"]["status"] in {"ok", "partial", "unavailable"}
-          assert packet["australia_housing"]["status"] in {"ok", "partial"}
-          assert packet["us_housing"]["status"] in {"ok", "partial"}
-          assert packet["canada_housing"]["status"] in {"ok", "partial"}
+          assert packet["australia_housing"]["status"] in {"ok", "partial"}, packet["australia_housing"]
+          assert packet["us_housing"]["status"] in {"ok", "partial"}, packet["us_housing"]
+          assert packet["canada_housing"]["status"] in {"ok", "partial"}, packet["canada_housing"]
           assert set(packet["australia_housing"]["feeds"]) == {"prices_and_turnover", "building_approvals", "housing_lending", "housing_credit", "mortgage_rates", "mortgage_cash_flow"}
           nz = packet["rates"]["NZ"]
           if nz.get("status") == "unavailable":
