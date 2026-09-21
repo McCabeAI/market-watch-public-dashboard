@@ -68,6 +68,8 @@ class EuroAreaRatesParserTests(unittest.TestCase):
         payload = json.loads((FIXTURES / "eurostat_mcby_sample.json").read_text(encoding="utf-8"))
         parsed = parse_eurostat_mcby_json(payload)
         self.assertEqual(parsed["DE"][date(2024, 1, 31)], 2.5)
+        self.assertEqual(parsed["DE"][date(2024, 2, 29)], 3.9)
+        self.assertEqual(parsed["IT"][date(2024, 1, 31)], 2.6)
         self.assertEqual(parsed["IT"][date(2024, 2, 29)], 4.0)
 
     def test_mcby_fragmentation_same_source_monthly(self):
