@@ -463,6 +463,224 @@
           ]
         }
       }
+    },
+    "EA": {
+      "Inflation": {
+        "underlying": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "Eurostat HICP ECOICOP v2 TOT_X_NRG_FOOD (PRC_HICP_MINR, geo EA21)",
+              "url": "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table"
+            }
+          ]
+        },
+        "headline": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "Eurostat HICP ECOICOP v2 TOTAL (PRC_HICP_MINR, geo EA21)",
+              "url": "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table"
+            }
+          ]
+        }
+      },
+      "Labor": {
+        "unemployment": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "Eurostat unemployment rate une_rt_m (geo EA21)",
+              "url": "https://ec.europa.eu/eurostat/databrowser/view/une_rt_m/default/table"
+            }
+          ]
+        },
+        "wages": {
+          "cadence": "quarterly",
+          "sources": [
+            {
+              "publisher": "ECB negotiated wages INW.Q.I10.N.INWR.000000.4F0.GY.IX",
+              "url": "https://data.ecb.europa.eu/data/datasets/INW/INW.Q.I10.N.INWR.000000.4F0.GY.IX"
+            }
+          ]
+        },
+        "employment": {
+          "cadence": "quarterly",
+          "sources": [
+            {
+              "publisher": "Eurostat LFS employment (namq_10_a10_e / LFS)",
+              "url": "https://ec.europa.eu/eurostat/databrowser/view/namq_10_a10_e/default/table"
+            }
+          ]
+        }
+      },
+      "Activity": {
+        "gdp_domestic_demand": {
+          "cadence": "quarterly",
+          "sources": [
+            {
+              "publisher": "Eurostat GDP namq_10_gdp (SCA B1GQ EA21)",
+              "url": "https://ec.europa.eu/eurostat/databrowser/view/namq_10_gdp/default/table"
+            }
+          ]
+        },
+        "business_surveys": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "S&P Global Eurozone Composite PMI",
+              "url": "https://www.pmi.spglobal.com/Public/Release/PressReleases"
+            }
+          ]
+        }
+      },
+      "Consumer": {
+        "retail": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "Eurostat retail trade turnover",
+              "url": "https://ec.europa.eu/eurostat/databrowser/view/sts_trtu_m/default/table"
+            }
+          ]
+        },
+        "income": {
+          "cadence": "quarterly",
+          "sources": [
+            {
+              "publisher": "Eurostat household income / sector accounts",
+              "url": "https://ec.europa.eu/eurostat/databrowser/view/nasq_10_nf_tr/default/table"
+            }
+          ]
+        },
+        "spending": {
+          "cadence": "quarterly",
+          "sources": [
+            {
+              "publisher": "Eurostat household consumption",
+              "url": "https://ec.europa.eu/eurostat/databrowser/view/namq_10_fcs/default/table"
+            }
+          ]
+        },
+        "confidence": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "European Commission consumer confidence (context/corroboration unless scored)",
+              "url": "https://ec.europa.eu/eurostat/databrowser/view/ei_bsco_m/default/table"
+            }
+          ]
+        }
+      }
+    },
+    "JP": {
+      "Inflation": {
+        "underlying": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "Statistics Bureau of Japan CPI (e-Stat)",
+              "url": "https://www.e-stat.go.jp/en/stat-search/files?page=1&toukei=00200573"
+            }
+          ]
+        },
+        "headline": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "Statistics Bureau of Japan CPI (e-Stat)",
+              "url": "https://www.e-stat.go.jp/en/stat-search/files?page=1&toukei=00200573"
+            }
+          ]
+        }
+      },
+      "Labor": {
+        "unemployment": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "Statistics Bureau of Japan Labour Force Survey (e-Stat)",
+              "url": "https://www.e-stat.go.jp/en/stat-search/files?page=1&toukei=00200531"
+            }
+          ]
+        },
+        "wages": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "MHLW Monthly Labour Survey",
+              "url": "https://www.mhlw.go.jp/english/database/db-l/monthly-labour.html"
+            }
+          ]
+        },
+        "employment": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "Statistics Bureau of Japan Labour Force Survey (e-Stat)",
+              "url": "https://www.e-stat.go.jp/en/stat-search/files?page=1&toukei=00200531"
+            }
+          ]
+        }
+      },
+      "Activity": {
+        "gdp_domestic_demand": {
+          "cadence": "quarterly",
+          "sources": [
+            {
+              "publisher": "Cabinet Office ESRI GDP (nritu-jk)",
+              "url": "https://www.esri.cao.go.jp/en/sna/sokuhou/sokuhou_top.html"
+            }
+          ]
+        },
+        "business_surveys": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "S&P Global / au Jibun Bank Japan Composite PMI",
+              "url": "https://www.pmi.spglobal.com/Public/Release/PressReleases"
+            }
+          ]
+        }
+      },
+      "Consumer": {
+        "retail": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "METI commercial sales / retail",
+              "url": "https://www.meti.go.jp/english/statistics/tyo/syoudou/index.html"
+            }
+          ]
+        },
+        "income": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "Statistics Bureau FIES income",
+              "url": "https://www.stat.go.jp/english/data/kakei/index.html"
+            }
+          ]
+        },
+        "spending": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "Statistics Bureau FIES expenditure",
+              "url": "https://www.stat.go.jp/english/data/kakei/index.html"
+            }
+          ]
+        },
+        "confidence": {
+          "cadence": "monthly",
+          "sources": [
+            {
+              "publisher": "Cabinet Office ESRI Consumer Confidence Survey",
+              "url": "https://www.esri.cao.go.jp/en/stat/shouhi/shouhi-e.html"
+            }
+          ]
+        }
+      }
     }
   }
 }

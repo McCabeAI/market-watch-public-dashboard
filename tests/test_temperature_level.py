@@ -6,6 +6,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from scripts.country_registry import temperature_countries
 from scripts.temperature_level import (
     PATHS_PATH,
     all_levels,
@@ -45,7 +46,7 @@ def _component_state_slice(component_state: dict) -> dict:
 
 def _dimension_scores_from_state(state: dict) -> dict:
     out: dict = {}
-    for country in ("US", "CA", "AU", "NZ"):
+    for country in temperature_countries():
         out[country] = {}
         for dim in ("Inflation", "Labor", "Activity", "Consumer"):
             spec = state["countries"][country][dim]
@@ -62,13 +63,17 @@ class TemperatureLevelEngineTest(unittest.TestCase):
         cls.cal = load_calibration()
         cls.histories = load_history()
 
-    def test_sixteen_dimensions_and_score_range(self) -> None:
+    def test_twenty_four_dimensions_and_score_range(self) -> None:
         state = load_state()
-        for country in ("US", "CA", "AU", "NZ"):
+        countries = temperature_countries()
+        self.assertEqual(len(countries) * 4, 24)
+        for country in countries:
             for dim in ("Inflation", "Labor", "Activity", "Consumer"):
                 spec = state["countries"][country][dim]
                 lvl = spec["level"]
-                self.assertIsNotNone(lvl)
+                if lvl is None:
+                    self.assertLess(float(spec["coverage"]), 1.0)
+                    continue
                 self.assertGreaterEqual(lvl, 1.0)
                 self.assertLessEqual(lvl, 100.0)
 
@@ -194,7 +199,7 @@ class ActivityTransformTest(unittest.TestCase):
         cls.histories = load_history()
 
     def test_gdp_level_two_quarter_mean_saar_and_impulse_one_quarter(self) -> None:
-        for cc in ("US", "CA", "AU", "NZ"):
+        for cc in ("US", "CA", "AU", "NZ", "EA", "JP"):
             spec = self.cal["components"][f"{cc}.Activity.gdp_domestic_demand"]
             res = score_component(self.histories[cc], spec, self.cal, "2026-09", 0.6)
             self.assertTrue(res.observed, cc)
@@ -275,6 +280,19 @@ class ActivityTransformTest(unittest.TestCase):
         ca_notes = self.histories["CA"]["components"]["Activity.business_surveys"].get("notes", "")
         self.assertIn("S&P Global Canada Composite", ca_notes)
         self.assertNotIn("Scored target: CFIB", ca_notes)
+
+        for cc, sid in (
+            ("EA", "SP_GLOBAL_EA_COMPOSITE_PMI"),
+            ("JP", "SP_GLOBAL_JP_COMPOSITE_PMI"),
+        ):
+            spec = self.cal["components"][f"{cc}.Activity.business_surveys"]
+            self.assertEqual(spec["series_id"], sid)
+            act = computed["countries"][cc]["Activity"]
+            gdp = act["component_state"]["gdp_domestic_demand"]
+            self.assertTrue(gdp["observed"], cc)
+            bs = act["component_state"]["business_surveys"]
+            if bs["observed"]:
+                self.assertIsNotNone(bs["level"])
 
     def test_gapped_survey_months_are_explicit_not_fabricated(self) -> None:
         ca_comp = self.histories["CA"]["components"]["Activity.business_surveys"]

@@ -18,8 +18,14 @@ on:
       - "tests/test_market_opportunities.py"
       - "scripts/live_market_state_smoke.py"
       - "scripts/live_official_curve_smoke.py"
+      - "scripts/euro_area_rates_data.py"
+      - "scripts/japan_rates_data.py"
+      - "scripts/country_registry.py"
+      - "data/country_registry.json"
       - "scripts/__init__.py"
       - "tests/test_market_state.py"
+      - "tests/test_euro_area_rates_data.py"
+      - "tests/test_japan_rates_data.py"
       - "tests/test_australia_housing_data.py"
       - "tests/test_us_canada_housing_data.py"
       - "tests/test_policy_path_data.py"
@@ -57,7 +63,7 @@ jobs:
         run: python -m pip install --disable-pip-version-check -r requirements-market-state.txt
 
       - name: Deterministic parser and calculation tests
-        run: PYTHONPATH=. python -m unittest tests.test_market_state tests.test_australia_housing_data tests.test_us_canada_housing_data tests.test_policy_path_data tests.test_official_curve_data tests.test_market_opportunities tests.test_positioning_data -v
+        run: PYTHONPATH=. python -m unittest tests.test_market_state tests.test_australia_housing_data tests.test_us_canada_housing_data tests.test_policy_path_data tests.test_official_curve_data tests.test_market_opportunities tests.test_positioning_data tests.test_euro_area_rates_data tests.test_japan_rates_data tests.test_country_registry -v
 
       - name: Live official-source smoke test
         run: PYTHONPATH=. python scripts/live_market_state_smoke.py
@@ -94,23 +100,28 @@ jobs:
           assert packet["method"]["credentials_required"] == []
           assert packet["method"]["fx_source"] == "ecb_euro_reference_crosses"
           assert packet["method"]["fx_pair_count"] == 45
-          assert packet["method"]["rate_rv_count"] == 15
-          assert set(packet["rates"]) == {"US", "CA", "AU", "NZ"}
+          assert packet["method"]["rate_rv_count"] == 45
+          assert set(packet["rates"]) == {"US", "CA", "AU", "NZ", "EA", "JP"}
           assert "TWELVE_DATA" not in json.dumps(packet)
           assert packet["positioning"]["status"] in {"ok", "partial", "stale", "unavailable"}
           assert packet["positioning"]["method"]["model_calls"] == 0
           assert packet["positioning"]["method"]["credentials_required"] == []
           assert packet["policy_paths"]["status"] == "ok"
-          assert set(packet["policy_paths"]["countries"]) == {"US", "CA", "AU"}
+          assert {"US", "CA", "AU"}.issubset(set(packet["policy_paths"]["countries"]))
           for country in ("US", "CA", "AU"):
               assert packet["policy_paths"]["countries"][country]["status"] == "ok"
           assert packet["tradable_rate_curves"]["status"] == "ok"
-          assert set(packet["tradable_rate_curves"]["curves"]) == {"SOFR", "CORRA", "AONIA"}
+          assert {"SOFR", "CORRA", "AONIA"}.issubset(set(packet["tradable_rate_curves"]["curves"]))
+          assert "ESTR" in packet["tradable_rate_curves"]["curves"]
+          assert "TONA" in packet["tradable_rate_curves"]["curves"]
           for curve_id in ("SOFR", "CORRA", "AONIA"):
               curve = packet["tradable_rate_curves"]["curves"][curve_id]
               assert curve["status"] == "ok"
               assert curve["contracts"]
           assert packet["official_curves"]["status"] in {"ok", "partial", "unavailable"}
+          assert packet["euro_area_fragmentation"]["status"] in {"ok", "partial", "unavailable"}
+          assert packet["euro_area_housing"]["status"] in {"ok", "partial", "unavailable"}
+          assert packet["japan_housing"]["status"] in {"ok", "partial", "unavailable"}
           assert packet["australia_housing"]["status"] in {"ok", "partial"}, packet["australia_housing"]
           assert packet["us_housing"]["status"] in {"ok", "partial"}, packet["us_housing"]
           assert packet["canada_housing"]["status"] in {"ok", "partial"}, packet["canada_housing"]

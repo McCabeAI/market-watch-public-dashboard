@@ -21,6 +21,8 @@ from scripts.market_state import (
     fetch_bytes,
     validate_snapshot,
 )
+from scripts.euro_area_rates_data import fetch_ea_bund_rates
+from scripts.japan_rates_data import fetch_jp_jgb_rates
 from scripts.positioning_data import build_positioning, validate_positioning
 from scripts.policy_path_data import (
     build_tradable_rate_curves,
@@ -54,6 +56,16 @@ def main() -> int:
     if any(not au.get(t) for t in ("2Y", "5Y", "10Y")):
         raise MarketStateError("live RBA missing required tenors")
     report["AU"] = {t: [_latest(au[t])[0].isoformat(), _latest(au[t])[1]] for t in ("2Y", "5Y", "10Y")}
+
+    ea = fetch_ea_bund_rates(start, today, fetch_bytes=fetch_bytes)
+    if any(not ea.get(t) for t in ("2Y", "5Y", "10Y", "30Y")):
+        raise MarketStateError("live Bundesbank Bund missing required tenors")
+    report["EA"] = {t: [_latest(ea[t])[0].isoformat(), _latest(ea[t])[1]] for t in ("2Y", "5Y", "10Y", "30Y")}
+
+    jp = fetch_jp_jgb_rates(start, today, fetch_bytes=fetch_bytes)
+    if any(not jp.get(t) for t in ("2Y", "5Y", "10Y", "30Y")):
+        raise MarketStateError("live MOF JGB missing required tenors")
+    report["JP"] = {t: [_latest(jp[t])[0].isoformat(), _latest(jp[t])[1]] for t in ("2Y", "5Y", "10Y", "30Y")}
 
     fx = fetch_fx(start)
     if len(fx) != 45 or any(not series for series in fx.values()):

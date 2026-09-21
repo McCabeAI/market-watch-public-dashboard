@@ -31,6 +31,41 @@ def _series(start: date, values: list[float]) -> dict[date, float]:
     return {date.fromordinal(start.toordinal() + i): v for i, v in enumerate(values)}
 
 
+def _ea_rates(start: date) -> dict[str, dict[date, float]]:
+    return {
+        "2Y": _series(start, [2.1] * 30),
+        "5Y": _series(start, [2.3] * 30),
+        "10Y": _series(start, [2.5] * 30),
+        "30Y": _series(start, [2.8] * 30),
+    }
+
+
+def _jp_rates(start: date) -> dict[str, dict[date, float]]:
+    return {
+        "2Y": _series(start, [0.8] * 30),
+        "5Y": _series(start, [1.1] * 30),
+        "10Y": _series(start, [1.6] * 30),
+        "30Y": _series(start, [2.4] * 30),
+    }
+
+
+def _rate_fx_patches(*, us, ca, au, fx, nz=None, nz_error=None, start=None):
+    start = start or date(2026, 8, 1)
+    patches = [
+        mock.patch("scripts.market_state.fetch_us_rates", return_value=us),
+        mock.patch("scripts.market_state.fetch_ca_rates", return_value=ca),
+        mock.patch("scripts.market_state.fetch_au_rates", return_value=au),
+        mock.patch("scripts.market_state.fetch_ea_bund_rates", return_value=_ea_rates(start)),
+        mock.patch("scripts.market_state.fetch_jp_jgb_rates", return_value=_jp_rates(start)),
+        mock.patch("scripts.market_state.fetch_fx", return_value=fx),
+    ]
+    if nz_error is not None:
+        patches.append(mock.patch("scripts.market_state.fetch_nz_rates", side_effect=nz_error))
+    else:
+        patches.append(mock.patch("scripts.market_state.fetch_nz_rates", return_value=nz))
+    return patches
+
+
 class MarketStateTests(unittest.TestCase):
     def test_treasury_parser(self):
         text = "Date,2 Yr,5 Yr,10 Yr,30 Yr\n09/08/2026,4.39,4.57,4.80,5.25\n"
@@ -248,7 +283,13 @@ class MarketStateTests(unittest.TestCase):
         with self.assertRaises(MarketStateError):
             fetch_nz_rates(date(2026, 9, 1), date(2026, 9, 17), workbook_bytes=b"<html>cloudflare</html>")
 
-    def test_nz_blocked_still_emits_packet(self):
+    def test_rv_leg_order_preserves_published_keys(self):
+        from scripts.market_state import _rv_leg_order
+        self.assertEqual(_rv_leg_order("US", "CA"), ("CA", "US"))
+        self.assertEqual(_rv_leg_order("CA", "US"), ("CA", "US"))
+        self.assertEqual(_rv_leg_order("US", "EA"), ("EA", "US"))
+        self.assertEqual(_rv_leg_order("EA", "JP"), ("EA", "JP"))
+        self.assertEqual(_rv_leg_order("AU", "NZ"), ("AU", "NZ"))
         start = date(2026, 8, 1)
         us = {
             "2Y": _series(start, [4.0] * 30),
@@ -277,6 +318,8 @@ class MarketStateTests(unittest.TestCase):
             "scripts.market_state.fetch_ca_rates", return_value=ca
         ), mock.patch("scripts.market_state.fetch_au_rates", return_value=au), mock.patch(
             "scripts.market_state.fetch_nz_rates", side_effect=MarketStateError("RBNZ HTTP 403")
+        ), mock.patch("scripts.market_state.fetch_ea_bund_rates", return_value=_ea_rates(start)), mock.patch(
+            "scripts.market_state.fetch_jp_jgb_rates", return_value=_jp_rates(start)
         ), mock.patch("scripts.market_state.fetch_fx", return_value=fx):
             snapshot = build_snapshot(include_cross_assets=False, today=date(2026, 8, 30))
         validate_snapshot(snapshot)
@@ -285,6 +328,9 @@ class MarketStateTests(unittest.TestCase):
         self.assertIsNone(snapshot["rate_rv"]["NZ-US_2Y"]["bps"])
         self.assertEqual(snapshot["rate_rv"]["NZ-US_2Y"]["status"], "unavailable")
         self.assertAlmostEqual(snapshot["rate_rv"]["CA-US_2Y"]["bps"], -150.0)
+        self.assertIn("EA-US_2Y", snapshot["rate_rv"])
+        self.assertIn("JP-US_2Y", snapshot["rate_rv"])
+        self.assertEqual(snapshot["euro_area_fragmentation"]["status"], "unavailable")
 
     def test_build_snapshot_contract_and_staleness(self):
         start = date(2026, 8, 1)
@@ -317,6 +363,8 @@ class MarketStateTests(unittest.TestCase):
             "scripts.market_state.fetch_ca_rates", return_value=ca
         ), mock.patch("scripts.market_state.fetch_au_rates", return_value=au), mock.patch(
             "scripts.market_state.fetch_nz_rates", return_value=nz
+        ), mock.patch("scripts.market_state.fetch_ea_bund_rates", return_value=_ea_rates(start)), mock.patch(
+            "scripts.market_state.fetch_jp_jgb_rates", return_value=_jp_rates(start)
         ), mock.patch("scripts.market_state.fetch_fx", return_value=fx):
             snapshot = build_snapshot(include_cross_assets=False, today=date(2026, 8, 30))
 
@@ -324,14 +372,18 @@ class MarketStateTests(unittest.TestCase):
         self.assertEqual(snapshot["status"], "ok")
         self.assertEqual(snapshot["stale_sources"], [])
         self.assertEqual(snapshot["method"]["fx_pair_count"], 45)
-        self.assertEqual(snapshot["method"]["rate_rv_count"], 15)
+        self.assertEqual(snapshot["method"]["rate_rv_count"], 45)
         self.assertEqual(snapshot["method"]["credentials_required"], [])
         self.assertEqual(snapshot["method"]["fx_source"], "ecb_euro_reference_crosses")
         self.assertEqual(snapshot["method"]["model_calls"], 0)
         self.assertIn("30Y", snapshot["rates"]["US"]["tenors"])
         self.assertIn("LONG", snapshot["rates"]["CA"]["tenors"])
+        self.assertIn("30Y", snapshot["rates"]["EA"]["tenors"])
+        self.assertIn("30Y", snapshot["rates"]["JP"]["tenors"])
         self.assertIn("2s10s", snapshot["rates"]["US"]["curves"])
         self.assertIn("CA-US_2Y", snapshot["rate_rv"])
+        self.assertIn("EA-US_2Y", snapshot["rate_rv"])
+        self.assertIn("EA-JP_10Y", snapshot["rate_rv"])
         self.assertEqual(snapshot["sources"]["FX"]["url"].startswith("https://www.ecb.europa.eu"), True)
         self.assertNotIn("TWELVE_DATA", str(snapshot))
 
@@ -339,6 +391,8 @@ class MarketStateTests(unittest.TestCase):
             "scripts.market_state.fetch_ca_rates", return_value=ca
         ), mock.patch("scripts.market_state.fetch_au_rates", return_value=au), mock.patch(
             "scripts.market_state.fetch_nz_rates", return_value=nz
+        ), mock.patch("scripts.market_state.fetch_ea_bund_rates", return_value=_ea_rates(start)), mock.patch(
+            "scripts.market_state.fetch_jp_jgb_rates", return_value=_jp_rates(start)
         ), mock.patch("scripts.market_state.fetch_fx", return_value=fx):
             stale = build_snapshot(include_cross_assets=False, today=date(2026, 9, 6))
         self.assertEqual(stale["status"], "stale")
@@ -349,6 +403,8 @@ class MarketStateTests(unittest.TestCase):
             "scripts.market_state.fetch_ca_rates", return_value=ca
         ), mock.patch("scripts.market_state.fetch_au_rates", return_value=au), mock.patch(
             "scripts.market_state.fetch_nz_rates", return_value=nz
+        ), mock.patch("scripts.market_state.fetch_ea_bund_rates", return_value=_ea_rates(start)), mock.patch(
+            "scripts.market_state.fetch_jp_jgb_rates", return_value=_jp_rates(start)
         ), mock.patch("scripts.market_state.fetch_fx", return_value=fx):
             with self.assertRaises(MarketStateError):
                 build_snapshot(include_cross_assets=False, today=date(2026, 8, 30) + timedelta(days=FAIL_AFTER_DAYS + 2))

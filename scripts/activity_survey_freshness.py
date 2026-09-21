@@ -10,17 +10,18 @@ import json
 from pathlib import Path
 from typing import Any
 
+from scripts.country_registry import history_files
+
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG_PATH = ROOT / "data" / "temperature_history" / "activity_survey_release_catalog.json"
+HISTORY_DIR = ROOT / "data" / "temperature_history"
 HISTORY_FILES = {
-    "CA": ROOT / "data" / "temperature_history" / "ca.json",
-    "AU": ROOT / "data" / "temperature_history" / "au.json",
-    "NZ": ROOT / "data" / "temperature_history" / "nz.json",
+    code: HISTORY_DIR / filename
+    for code, filename in history_files().items()
 }
 HARVEST_REPORTS = {
-    "CA": ROOT / "data" / "temperature_history" / "raw" / "ca" / "harvest_report.json",
-    "AU": ROOT / "data" / "temperature_history" / "raw" / "au" / "harvest_report.json",
-    "NZ": ROOT / "data" / "temperature_history" / "raw" / "nz" / "harvest_report.json",
+    code: HISTORY_DIR / "raw" / code.lower() / "harvest_report.json"
+    for code in HISTORY_FILES
 }
 
 
@@ -88,7 +89,9 @@ def freshness_errors(
         period = release["reference_period"]
         if not _period_ok_for_cutoff(period, cutoff):
             continue
-        history = histories[country]
+        history = histories.get(country)
+        if not history:
+            continue
         scored = _scored_periods(history, series_id, history_key)
         key = (country, series_id)
         latest_known[key] = max(period, latest_known.get(key, period))

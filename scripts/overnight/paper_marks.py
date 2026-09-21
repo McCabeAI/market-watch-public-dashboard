@@ -196,11 +196,11 @@ def _resolve_direct(state: Mapping[str, Any], instrument: str, asset_class: str 
         except PaperMarkError:
             pass
 
-    m = re.fullmatch(r"(US|CA|AU|NZ)_(2Y|5Y|10Y|30Y|LONG)", upper)
+    m = re.fullmatch(r"(US|CA|AU|NZ|EA|JP)_(2Y|5Y|10Y|30Y|LONG)", upper)
     if m:
         return _rate_mark(state, m.group(1), m.group(2))
 
-    m = re.fullmatch(r"(US|CA|AU|NZ)_(2S10S|5S10S)", upper)
+    m = re.fullmatch(r"(US|CA|AU|NZ|EA|JP)_(2S10S|5S10S)", upper)
     if m:
         return _curve_mark(state, m.group(1), m.group(2).lower())
 
@@ -214,7 +214,7 @@ def _resolve_direct(state: Mapping[str, Any], instrument: str, asset_class: str 
 
     # Stable aliases for the three paper-tradable futures curves.
     # Examples: SOFR_2027-03, CORRA_2027-06, AONIA_2026-11.
-    m = re.fullmatch(r"(SOFR|CORRA|AONIA)_(20\d{2}-\d{2})", upper)
+    m = re.fullmatch(r"(SOFR|CORRA|AONIA|ESTR|TONA)_(20\d{2}-\d{2})", upper)
     if m:
         return _tradable_curve_contract_mark(state, m.group(1), m.group(2))
 

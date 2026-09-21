@@ -912,8 +912,45 @@ def collect_policy_paths(
         countries["AU"] = {"status": "unavailable", "error": str(exc)}
         sources["AU_policy"] = {"status": "unavailable", "error": str(exc), "benchmark_url": RBA_F1_PAGE, "path_url": ASX_IR_HISTORY}
 
-    statuses = [row.get("status") for row in countries.values()]
-    status = "ok" if statuses and all(x == "ok" for x in statuses) else "partial" if any(x == "ok" for x in statuses) else "unavailable"
+    try:
+        from scripts.euro_area_rates_data import collect_ea_policy_path
+
+        ea = collect_ea_policy_path(today, fetch_bytes=fetch_bytes)
+        countries["EA"] = ea
+        sources["EA_policy"] = {
+            "status": ea.get("status"),
+            **(ea.get("sources") or {}),
+            **({"error": ea.get("error")} if ea.get("status") == "unavailable" else {}),
+        }
+    except Exception as exc:
+        countries["EA"] = {"status": "unavailable", "error": str(exc), "country": "EA"}
+        sources["EA_policy"] = {"status": "unavailable", "error": str(exc)}
+
+    try:
+        from scripts.japan_rates_data import collect_jp_policy_path
+
+        jp = collect_jp_policy_path(today, fetch_bytes=fetch_bytes)
+        countries["JP"] = jp
+        sources["JP_policy"] = {
+            "status": jp.get("status"),
+            **(jp.get("sources") or {}),
+            **({"error": jp.get("error")} if jp.get("status") == "unavailable" else {}),
+        }
+    except Exception as exc:
+        countries["JP"] = {"status": "unavailable", "error": str(exc), "country": "JP"}
+        sources["JP_policy"] = {"status": "unavailable", "error": str(exc)}
+
+    from scripts.country_registry import required_preflight_countries
+
+    required = required_preflight_countries()
+    req_statuses = [(countries.get(c) or {}).get("status") for c in required]
+    status = (
+        "ok"
+        if req_statuses and all(x == "ok" for x in req_statuses)
+        else "partial"
+        if any(x == "ok" for x in req_statuses)
+        else "unavailable"
+    )
     return {
         "status": status,
         "countries": countries,
@@ -961,8 +998,69 @@ def build_tradable_rate_curves(policy_paths: dict[str, Any]) -> dict[str, Any]:
             "source_url": source_url,
             "mark_convention": "implied_rate = 100 - futures price",
         }
-    statuses = [row.get("status") for row in curves.values()]
-    status = "ok" if all(x == "ok" for x in statuses) else "partial" if any(x == "ok" for x in statuses) else "unavailable"
+
+    ea = countries.get("EA") or {}
+    ea_tradable = ea.get("tradable_curve") if isinstance(ea.get("tradable_curve"), dict) else {}
+    curves["ESTR"] = {
+        "status": (ea_tradable.get("status") if ea_tradable else None) or "unavailable",
+        "country": "EA",
+        "benchmark": ea.get("benchmark"),
+        "instrument": "Eurex Three-Month €STR futures",
+        "product_code": "FST3",
+        "contract_period_months": 3,
+        "contracts": ea_tradable.get("contracts") or [],
+        "source_url": None,
+        "source_urls_tried": ea_tradable.get("source_urls_tried"),
+        "mark_convention": ea_tradable.get("mark_convention")
+        or "implied_rate = 100 - futures_price (Eurex STIR convention)",
+        "error": ea_tradable.get("error")
+        or ("ESTR tradable curve not collected" if not ea_tradable else None),
+    }
+    if curves["ESTR"]["status"] != "ok":
+        curves["ESTR"]["status"] = "unavailable"
+        if not curves["ESTR"].get("error"):
+            curves["ESTR"]["error"] = "No credential-free FST3 settlement feed"
+
+    jp = countries.get("JP") or {}
+    jp_tradable = jp.get("tradable_curve") if isinstance(jp.get("tradable_curve"), dict) else {}
+    jp_rows = jp_tradable.get("contracts") if jp_tradable.get("status") == "ok" else None
+    if isinstance(jp_rows, list) and jp_rows:
+        curves["TONA"] = {
+            "status": "ok",
+            "country": "JP",
+            "benchmark": jp.get("benchmark"),
+            "instrument": jp_tradable.get("instrument") or "OSE 3-Month TONA Futures",
+            "product_code": jp_tradable.get("product_code") or "TOA3M",
+            "contract_period_months": jp_tradable.get("contract_period_months") or 3,
+            "contracts": jp_rows,
+            "source_url": (jp.get("sources") or {}).get("futures_settlement_url"),
+            "mark_convention": jp_tradable.get("mark_convention") or "implied_rate = 100 - settlement price",
+        }
+    else:
+        curves["TONA"] = {
+            "status": "unavailable",
+            "country": "JP",
+            "error": (jp_tradable.get("error") if jp_tradable else None)
+            or "TONA tradable curve unavailable",
+            "benchmark": jp.get("benchmark"),
+            "instrument": "OSE 3-Month TONA Futures",
+            "product_code": "TOA3M",
+            "contract_period_months": 3,
+            "contracts": [],
+            "mark_convention": "implied_rate = 100 - settlement price",
+        }
+
+    from scripts.country_registry import required_tradable_curve_ids
+
+    required = required_tradable_curve_ids()
+    req_statuses = [(curves.get(curve_id) or {}).get("status") for curve_id in required]
+    status = (
+        "ok"
+        if req_statuses and all(x == "ok" for x in req_statuses)
+        else "partial"
+        if any(x == "ok" for x in req_statuses)
+        else "unavailable"
+    )
     return {
         "status": status,
         "curves": curves,
@@ -980,7 +1078,8 @@ def validate_tradable_rate_curves(payload: dict[str, Any]) -> None:
     if payload.get("method", {}).get("model_calls") != 0:
         raise ValueError("tradable_rate_curves must use zero model calls")
     curves = payload.get("curves") or {}
-    if set(curves) != {"SOFR", "CORRA", "AONIA"}:
+    required = {"SOFR", "CORRA", "AONIA"}
+    if not required.issubset(set(curves)):
         raise ValueError("tradable_rate_curves must contain SOFR, CORRA and AONIA")
     for curve_id, block in curves.items():
         if block.get("status") == "unavailable":
@@ -1004,13 +1103,15 @@ def validate_policy_paths(payload: dict[str, Any]) -> None:
     if payload.get("method", {}).get("credentials_required") not in ([], None):
         raise ValueError("policy_paths must not require credentials")
     countries = payload.get("countries") or {}
-    if set(countries) != {"US", "CA", "AU"}:
+    if not {"US", "CA", "AU"}.issubset(set(countries)):
         raise ValueError("policy_paths must contain US, CA and AU")
     for country, block in countries.items():
         if block.get("status") == "unavailable":
             if not block.get("error"):
                 raise ValueError(f"{country} unavailable policy path missing error")
             continue
+        if block.get("status") not in {"ok", "partial"}:
+            raise ValueError(f"{country} invalid policy path status")
         benchmark = block.get("benchmark") or {}
         rate = _num(benchmark.get("rate"))
         if rate is None or not -2.0 < rate < 25.0:
@@ -1023,3 +1124,11 @@ def validate_policy_paths(payload: dict[str, Any]) -> None:
                 implied = _num(row.get("implied_rate"))
                 if implied is None or not -2.0 < implied < 25.0:
                     raise ValueError(f"{country} implausible implied policy rate {implied}")
+        elif country == "JP" and block.get("status") == "ok":
+            contracts = block.get("contracts_3m") or []
+            if not contracts:
+                raise ValueError("JP available policy path has no TONA futures contracts")
+            for row in contracts:
+                implied = _num(row.get("implied_rate"))
+                if implied is None or not -2.0 < implied < 25.0:
+                    raise ValueError(f"JP implausible implied policy rate {implied}")
