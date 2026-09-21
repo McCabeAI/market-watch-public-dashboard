@@ -799,6 +799,8 @@ def apply_decision(
             action["thesis"] = decision["thesis"]
         if not action.get("invalidation") and decision.get("invalidation"):
             action["invalidation"] = decision["invalidation"]
+        if not action.get("presentation") and decision.get("presentation"):
+            action["presentation"] = deepcopy(decision["presentation"])
         if action.get("conviction") is None and decision.get("conviction") is not None:
             action["conviction"] = decision["conviction"]
         try:
