@@ -34,6 +34,10 @@ All times are America/New_York.
 | 04:07 | Market Watch | final publication gate |
 | 04:15 | Market Watch | GitHub Pages release |
 
+The deterministic times above are **logical deadlines**, not assumptions that a single GitHub cron delivery will be punctual. GitHub scheduled events are redundant wake-ups. Each wake-up runs `overnight_pipeline.py reconcile`, which catches up every due missing deterministic stage in order and never synthesizes the ACP-owned trader review. Critical pre-02:05 wake-ups include 01:50, 01:55, and 02:00 ET so a delayed earlier cron can still persist the trusted freeze before provider launch.
+
+The 02:05 provider must find the current run's `run.json` and `evidence_snapshot.json` already committed on its starting ref with `freeze_evidence.status == "succeeded"`. If that trusted freeze is absent or invalid, the provider stops before child/model spend and opens no output PR. It may never regenerate the trusted base freeze locally.
+
 There is no assumed provider completion clock. The scheduled-output PR is the completion event. If it is absent or rejected before assembly, the website may publish the last successful trader books with explicit stale status.
 
 ## 3. Run identity
@@ -95,7 +99,7 @@ Run caps (**target-repo contract** enforced by `.cursor/hooks/enforce-overnight-
 
 The ACP parent counts as total=1 / Grok=1 before any child starts.
 
-> **ACP schedule delta required (not in this repo):** committed ACP `market-watch-weekday-0205` is still **18 / 16 / 2**. That cannot fit **3** Grok-4.6 PM principals + **14** Grok traders + the Grok parent without downgrading PMs. Minimal ACP-only change: `total_model_cap` 18→**19**, `grok_cap` 16→**18**, `composer_cap` unchanged **2**; job objective/constraints must require the three PM children after the accepted 14-trader handoff; policy marker caps must match; no Sunday clock; no second schedule; ChatGPT still excluded. Nested PM subagents remain prohibited on overnight (same as traders), so we do not need +9 cap for internal PM children.
+The enabled ACP `market-watch-weekday-0205` schedule uses the matching **19 / 18 / 2** contract. No Sunday clock or second provider schedule exists. ChatGPT remains excluded from automated current-cycle PM execution.
 
 `.cursor/hooks/enforce-overnight-budget.py` atomically reserves every `subagentStart` before launch. It blocks a spawn that would exceed any cap. Once an overnight root is active, only that root conversation may spawn children; grandchildren are denied.
 
