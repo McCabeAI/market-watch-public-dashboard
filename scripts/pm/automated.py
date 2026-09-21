@@ -7,7 +7,7 @@ from typing import Any
 
 from scripts.overnight.errors import EvidenceBoundaryError
 from scripts.trading.apply import apply_pm_decision_with_memory
-from scripts.trading.presentation import PresentationError, validate_trade_presentation
+from scripts.trade_presentation import PresentationError, validate_trade_presentation
 from scripts.trading.store import TradingStore
 from scripts.pm.constants import ALLOWED_SUBAGENT_MODELS, AUTOMATED_PM_IDS, MAX_SUBAGENTS_PER_PM
 from scripts.pm.errors import IndependenceError, SchemaError
