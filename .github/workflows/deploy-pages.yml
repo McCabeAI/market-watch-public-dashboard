@@ -278,7 +278,21 @@ jobs:
           if grep -Fq 'transition anchor' _site/index.html; then echo "stale transition-anchor language remains in built dashboard"; exit 1; fi
           if grep -Fq 'lineage-pinned' _site/index.html; then echo "stale lineage-pinned drawer language remains"; exit 1; fi
           if grep -Fq 'contributing −' _site/index.html; then echo "stale classified impulse contributing language remains"; exit 1; fi
-          if grep -Eiq 'SCORED.*47\.8|47\.8.*SCORED' _site/index.html; then echo "stale Michigan 47.8 SCORED narrative remains"; exit 1; fi
+          python - <<'PY'
+          import re
+          import sys
+          from pathlib import Path
+          html = Path("_site/index.html").read_text(encoding="utf-8")
+          # JP Inflation LEVEL is 47.8 under V1 arithmetic and must not trip this
+          # check; the stale marker is the retired Michigan Sep-2026 SCORED row.
+          if re.search(
+              r"CONFIDENCE EVIDENCE · SCORED</span>.*?Michigan sentiment.*?47\.8",
+              html,
+              flags=re.S | re.I,
+          ):
+              print("stale Michigan 47.8 SCORED narrative remains")
+              sys.exit(1)
+          PY
 
       - name: Set up Python for market-state packet
         uses: actions/setup-python@v6

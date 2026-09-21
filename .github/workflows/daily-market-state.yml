@@ -18,8 +18,14 @@ on:
       - "tests/test_market_opportunities.py"
       - "scripts/live_market_state_smoke.py"
       - "scripts/live_official_curve_smoke.py"
+      - "scripts/euro_area_rates_data.py"
+      - "scripts/japan_rates_data.py"
+      - "scripts/country_registry.py"
+      - "data/country_registry.json"
       - "scripts/__init__.py"
       - "tests/test_market_state.py"
+      - "tests/test_euro_area_rates_data.py"
+      - "tests/test_japan_rates_data.py"
       - "tests/test_australia_housing_data.py"
       - "tests/test_us_canada_housing_data.py"
       - "tests/test_policy_path_data.py"
@@ -57,7 +63,7 @@ jobs:
         run: python -m pip install --disable-pip-version-check -r requirements-market-state.txt
 
       - name: Deterministic parser and calculation tests
-        run: PYTHONPATH=. python -m unittest tests.test_market_state tests.test_australia_housing_data tests.test_us_canada_housing_data tests.test_policy_path_data tests.test_official_curve_data tests.test_market_opportunities tests.test_positioning_data -v
+        run: PYTHONPATH=. python -m unittest tests.test_market_state tests.test_australia_housing_data tests.test_us_canada_housing_data tests.test_policy_path_data tests.test_official_curve_data tests.test_market_opportunities tests.test_positioning_data tests.test_euro_area_rates_data tests.test_japan_rates_data tests.test_country_registry -v
 
       - name: Live official-source smoke test
         run: PYTHONPATH=. python scripts/live_market_state_smoke.py
