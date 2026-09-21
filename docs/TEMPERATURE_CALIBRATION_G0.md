@@ -42,11 +42,11 @@ Two separate objects per country-dimension:
 
 Historical one-year LEVEL paths are reconstructed by applying the same LEVEL function to each vintage of latest observations. They are **not** a replay of cumulative +/- impulses from 50.
 
-## Known integration defects G0 (must be closed by I1/I2)
+## Known integration defects G0 (closed by I1/I2/G2)
 
-1. Dashboard live scores come from `scripts/apply_temperature_scores.py` overwriting `patch_v8` placeholders at Pages build time.
-2. Trader Room `scripts/trader_room/evidence.py` `load_temperature_gauges()` currently parses **unpatched** `patch_v8/*.html` prototype numbers (e.g. US Inflation 72) and marks them `dashboard_v8_retained`. That is a stale competing score path.
-3. Deploy workflow still asserts the string `Reindexed to 50 on 2026-09-17` sixteen times. That assertion must move with the new lineage copy.
+1. Dashboard live scores come from `scripts/apply_temperature_scores.py` overwriting `patch_v8` placeholders at Pages build time. **Closed:** patched values are V1 LEVELs from `data/temperature_scores.json` v3.
+2. Trader Room `load_temperature_gauges()` previously parsed unpatched `patch_v8/*.html` prototype numbers. **Closed:** it now reads version-3 JSON (LEVEL + impulse + coverage).
+3. Deploy workflow previously asserted `Reindexed to 50 on 2026-09-17` sixteen times. **Closed:** it now asserts `50 = structural/policy neutral anchor`.
 4. Notion country-temperature DB is retired; GitHub is canonical. Do not write Notion.
 
 ## Backfill graph
