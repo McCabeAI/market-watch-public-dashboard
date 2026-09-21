@@ -39,6 +39,8 @@ SCORE_KEY_TEXT = (
 )
 DIRECTION_LABELS = {"cooling": "Cooling", "static": "Static", "warming": "Warming"}
 
+from scripts.dashboard_mini_cards import patch_ea_jp_snapshot_minis
+
 from scripts.temperature_level import (
     all_levels,
     display_score,
@@ -423,6 +425,7 @@ def apply_scores(html: str, state: dict[str, Any]) -> str:
 
     if any(f"<h3>{heading}</h3>" in html for heading in COUNTRY_HEADINGS.values()):
         html = _patch_country_pills(html, state)
+        html = patch_ea_jp_snapshot_minis(html, state)
     html = _scrub_stale_narrative(html)
 
     expected = expected_temperature_gauge_count()
