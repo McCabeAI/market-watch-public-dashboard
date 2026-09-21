@@ -189,9 +189,9 @@ flush().then(function () {
   const dollar = seatCards.find(function (card) { return card.indexOf("Dollar King") !== -1; });
   const skeptic = seatCards.find(function (card) { return card.indexOf("No Trade Skeptic") !== -1; });
   check(Boolean(dollar), "Dollar King card is titled from the seat id");
-  check(dollar.indexOf("LONG") !== -1 && dollar.indexOf("USDCAD") !== -1, "Dollar King LONG USDCAD is on the card");
+  check(dollar.indexOf("Long USDCAD") !== -1, "Dollar King Long USDCAD is on the card");
   check(dollar.indexOf('tb-trade-line') !== -1, "active trader card has a scan-line trade");
-  check(dollar.indexOf("tb-direction long") !== -1, "LONG uses the long direction class");
+  check(dollar.indexOf("Punchline") !== -1 && dollar.indexOf("Support") !== -1 && dollar.indexOf("Take profit") !== -1 && dollar.indexOf("Invalidation") !== -1, "active trader card uses the four-part trade story");
   check(Boolean(skeptic), "No Trade Skeptic card is titled from the seat id");
   check(skeptic.indexOf("FLAT") !== -1, "flat trader card is labeled FLAT");
   check(skeptic.indexOf("LONG") === -1 && skeptic.indexOf("SHORT") === -1, "flat trader card has no fake LONG/SHORT");
@@ -200,7 +200,8 @@ flush().then(function () {
   const pmCards = pms.split('<article class="tb-pm">').slice(1);
   const chatgpt = pmCards.find(function (card) { return card.indexOf("ChatGPT") !== -1; });
   const grinder = pmCards.find(function (card) { return card.indexOf("Grinder") !== -1; });
-  check(Boolean(chatgpt) && chatgpt.indexOf("LONG") !== -1 && chatgpt.indexOf("CORRA_2027-03") !== -1, "active PM card shows LONG and instrument");
+  check(Boolean(chatgpt) && chatgpt.indexOf("Receive H7 CORRA") !== -1, "active PM card uses receive/pay market shorthand");
+  check(chatgpt.indexOf("CORRA_2027-03") === -1, "active PM card hides normalized internal contract IDs");
   check(Boolean(grinder) && grinder.indexOf("NO TRADE") !== -1, "no-trade PM card is labeled NO TRADE");
   check(grinder.indexOf("LONG") === -1 && grinder.indexOf("SHORT") === -1, "no-trade PM card has no fake LONG/SHORT");
 
