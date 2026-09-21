@@ -857,6 +857,15 @@ class OvernightAndTraderRoomMemoryTests(unittest.TestCase):
             self.assertEqual(bear["owner_id"], "perma-bear")
             self.assertNotEqual(dollar["memory_context_sha256"], "")
             self.assertNotIn("trd-trader-perma-bear", json.dumps(dollar))
+            pm_memory = snapshot.get("pm_memory") or {}
+            for pm_id in ("chatgpt", "swinger", "pragmatist", "grinder"):
+                self.assertIn(pm_id, (pm_memory.get("hashes") or {}))
+                sidecar = store.run_dir(run_id) / "pm_memory" / f"{pm_id}.json"
+                self.assertTrue(sidecar.is_file())
+            chatgpt_sidecar = json.loads(
+                (store.run_dir(run_id) / "pm_memory" / "chatgpt.json").read_text(encoding="utf-8")
+            )
+            self.assertNotIn("swinger", json.dumps(chatgpt_sidecar))
             trading = TradingStore(root=ROOT, state_root=state)
             journal = trading.read_journal("trader", "dollar-king")
             self.assertTrue(journal["events"])
@@ -919,22 +928,39 @@ class OvernightAndTraderRoomMemoryTests(unittest.TestCase):
                 "execution": {
                     "parent_model": "grok-4.6",
                     "allowed_subagent_models": ["composer-2.5", "grok-4.6"],
-                    "total_model_cap": 18,
-                    "grok_cap": 16,
+                    "total_model_cap": 19,
+                    "grok_cap": 18,
                     "composer_cap": 2,
-                    "declared_total_model_calls": 16,
-                    "declared_grok_calls": 15,
+                    "declared_total_model_calls": 19,
+                    "declared_grok_calls": 18,
                     "declared_composer_calls": 1,
                     "other_models_calls": 0,
                     "auto_used": False,
                 },
             }
+            from tests.test_pm_scheduled_output import _pm_block
+
+            packet = payload["agent_packet"]
+            payload["pm_decisions"] = _pm_block(run_id, packet["packet_sha256"], packet["evidence_cutoff"])
             apply_output(store, payload)
             trading = TradingStore(root=ROOT, state_root=state)
             event = trading.read_journal("trader", "no-trade-skeptic")["events"][0]
             self.assertEqual(event["kind"], "OVERNIGHT_DECISION")
             self.assertEqual(event["memory_context_sha256"], base["seat_memory"]["hashes"]["no-trade-skeptic"])
             self.assertTrue((state / "data" / "trading" / "index.json").is_file())
+            pm_event = trading.read_journal("pm", "swinger")["events"][-1]
+            self.assertEqual(pm_event["kind"], "PM_DECISION")
+            self.assertEqual(pm_event["run_id"], run_id)
+            self.assertEqual((pm_event.get("provenance") or {}).get("overnight_run_id"), run_id)
+            chatgpt_path = trading.identity_dir("pm", "chatgpt") / "journal.json"
+            if chatgpt_path.is_file():
+                chatgpt = trading.read_journal("pm", "chatgpt")
+                self.assertFalse(
+                    any(
+                        row.get("kind") == "PM_DECISION" and row.get("run_id") == run_id
+                        for row in chatgpt.get("events") or []
+                    )
+                )
 
     def test_trader_room_dry_run_journals_without_executing_trades(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

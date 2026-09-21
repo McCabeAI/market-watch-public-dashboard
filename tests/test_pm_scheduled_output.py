@@ -1,65 +1,124 @@
 from __future__ import annotations
 
 import unittest
+from copy import deepcopy
+from unittest import mock
 
 from scripts.overnight.scheduled_output import apply_output, validate_output
-from scripts.pm.automated import validate_pm_decisions
+from scripts.pm.automated import apply_automated_pm_decisions, validate_pm_decisions
 from scripts.pm.errors import SchemaError
 from scripts.pm.portfolio import synthetic_portfolio_construction
-from tests.test_overnight_scheduled_output import ScheduledOutputTests
-
-
-def _pm_block(run_id: str, packet_hash: str, cutoff: str) -> dict:
-    out = {}
-    for pm_id in ("swinger", "pragmatist", "grinder"):
-        out[pm_id] = {
-            "pm_id": pm_id,
-            "overnight_run_id": run_id,
-            "packet_sha256": packet_hash,
-            "evidence_cutoff": cutoff,
-            "principal_model": "grok-4.6",
-            "subagent_count": 0,
-            "subagent_models": [],
-            "actions": [{"action": "HOLD"}],
-            "thesis": "Await cleaner setup.",
-            "invalidation": None,
-            "conviction": 20,
-        }
-        if pm_id == "pragmatist":
-            out[pm_id]["portfolio_construction"] = synthetic_portfolio_construction(
-                existing_book="Pragmatist book is flat in this scheduled-output fixture.",
-                rationale="No independent markable complementary trade improves the opportunistic book; HOLD is explicit.",
-            )
-    return out
+from tests.test_overnight_scheduled_output import ScheduledOutputTests, _pm_block
 
 
 class OptionalAutomatedPMDecisionTests(ScheduledOutputTests):
-    def test_legacy_fourteen_seat_output_without_pm_decisions_remains_valid(self) -> None:
-        self.assertNotIn("pm_decisions", self.payload)
-        validate_output(self.store, self.payload)
-        review = apply_output(self.store, self.payload)
-        self.assertEqual(review["status"], "succeeded")
-        self.assertNotIn("pm_books", review)
-        self.assertEqual(review["pm_packets"]["source"], "overnight_scheduled_review")
-        self.assertEqual(review["pm_packets"]["overnight_run_id"], self.run_id)
-        from scripts.pm.store import PMStore
-
-        pm_store = PMStore(root=self.store.root, state_root=self.state_root)
-        chatgpt = pm_store.read_json(pm_store.packet_path("chatgpt"))
-        self.assertEqual(chatgpt["overnight_run_id"], self.run_id)
-        self.assertEqual(chatgpt["source"], "overnight_scheduled_review")
-        self.assertEqual(pm_store.read_books()["pms"]["chatgpt"]["decision_status"], "awaiting_chatgpt_decision")
+    def test_missing_pm_decisions_is_invalid(self) -> None:
+        del self.payload["pm_decisions"]
+        with self.assertRaises(Exception):
+            validate_output(self.store, self.payload)
 
     def test_complete_three_pm_block_is_accepted(self) -> None:
-        packet = self.payload["agent_packet"]
-        self.payload["pm_decisions"] = _pm_block(
-            self.run_id, packet["packet_sha256"], packet["evidence_cutoff"]
-        )
         validate_output(self.store, self.payload)
         review = self._simulate()
         self.assertIn("pm_books", review)
         self.assertEqual(review["pm_books"]["pms"]["swinger"]["decision_status"], "hold")
         self.assertEqual(review["pm_books"]["pms"]["chatgpt"]["decision_status"], "awaiting_chatgpt_decision")
+        self.assertNotEqual(
+            review["pm_books"]["pms"]["swinger"]["decision_status"],
+            "awaiting_automated_pm_review",
+        )
+        self.assertNotEqual(
+            review["pm_books"]["pms"]["pragmatist"]["decision_status"],
+            "awaiting_automated_pm_review",
+        )
+        self.assertNotEqual(
+            review["pm_books"]["pms"]["grinder"]["decision_status"],
+            "awaiting_automated_pm_review",
+        )
+
+    def test_chatgpt_key_in_pm_decisions_rejected(self) -> None:
+        packet = self.payload["agent_packet"]
+        block = _pm_block(self.run_id, packet["packet_sha256"], packet["evidence_cutoff"])
+        block["chatgpt"] = block.pop("grinder")
+        with self.assertRaises(Exception):
+            validate_pm_decisions(
+                block,
+                overnight_run_id=self.run_id,
+                packet_sha256=packet["packet_sha256"],
+                evidence_cutoff=packet["evidence_cutoff"],
+                required=True,
+            )
+
+    def test_wrong_principal_model_rejected_for_overnight_pm(self) -> None:
+        packet = self.payload["agent_packet"]
+        block = _pm_block(self.run_id, packet["packet_sha256"], packet["evidence_cutoff"])
+        block["swinger"]["principal_model"] = "composer-2.5"
+        with self.assertRaises(SchemaError):
+            validate_pm_decisions(
+                block,
+                overnight_run_id=self.run_id,
+                packet_sha256=packet["packet_sha256"],
+                evidence_cutoff=packet["evidence_cutoff"],
+                required=True,
+            )
+
+    def test_expanding_pm_open_requires_frozen_pm_memory_hash(self) -> None:
+        hashes = (self.base.get("pm_memory") or {}).get("hashes") or {}
+        if not hashes.get("swinger"):
+            self.skipTest("freeze snapshot has no pm_memory hashes in this fixture")
+        packet = self.payload["agent_packet"]
+        block = _pm_block(self.run_id, packet["packet_sha256"], packet["evidence_cutoff"])
+        block["swinger"]["actions"] = [
+            {
+                "action": "OPEN",
+                "instrument": "USDCAD",
+                "side": "long",
+                "notional_usd": 5_000_000,
+                "asset_class": "spot_fx",
+            }
+        ]
+        self.payload["pm_decisions"] = block
+        with self.assertRaises(Exception):
+            validate_output(self.store, self.payload)
+        block["swinger"]["memory_context_sha256"] = "not-the-freeze-hash"
+        with self.assertRaises(Exception):
+            validate_output(self.store, self.payload)
+        block["swinger"]["memory_context_sha256"] = hashes["swinger"]
+        validate_output(self.store, self.payload)
+
+    def test_apply_automated_pm_decisions_preserves_independence(self) -> None:
+        from scripts.pm.books import empty_books
+
+        books = empty_books(overnight_run_id=self.run_id)
+        packet = self.payload["agent_packet"]
+        block = _pm_block(self.run_id, packet["packet_sha256"], packet["evidence_cutoff"])
+        block["swinger"]["actions"] = [
+            {
+                "action": "OPEN",
+                "instrument": "USDCAD",
+                "side": "long",
+                "notional_usd": 5_000_000,
+                "asset_class": "spot_fx",
+            }
+        ]
+        prior_calls: list[dict] = []
+
+        def _capture_prior(books_arg, *args, **kwargs):
+            prior_calls.append(deepcopy(books_arg))
+            return books_arg
+
+        with mock.patch("scripts.pm.automated.apply_pm_decision_with_memory", side_effect=_capture_prior):
+            apply_automated_pm_decisions(
+                books,
+                block,
+                market_state=None,
+                run_id=self.run_id,
+                evidence_cutoff=packet["evidence_cutoff"],
+            )
+        self.assertGreaterEqual(len(prior_calls), 2)
+        pragmatist_prior = prior_calls[1]
+        swinger_positions = pragmatist_prior["pms"]["swinger"].get("positions") or []
+        self.assertEqual(swinger_positions, [])
 
     def test_partial_or_wrong_roster_rejected(self) -> None:
         packet = self.payload["agent_packet"]
@@ -71,6 +130,7 @@ class OptionalAutomatedPMDecisionTests(ScheduledOutputTests):
                 overnight_run_id=self.run_id,
                 packet_sha256=packet["packet_sha256"],
                 evidence_cutoff=packet["evidence_cutoff"],
+                required=True,
             )
         block = _pm_block(self.run_id, packet["packet_sha256"], packet["evidence_cutoff"])
         block["chatgpt"] = block.pop("grinder")
@@ -80,6 +140,7 @@ class OptionalAutomatedPMDecisionTests(ScheduledOutputTests):
                 overnight_run_id=self.run_id,
                 packet_sha256=packet["packet_sha256"],
                 evidence_cutoff=packet["evidence_cutoff"],
+                required=True,
             )
 
     def test_pragmatist_requires_portfolio_construction(self) -> None:
@@ -92,6 +153,7 @@ class OptionalAutomatedPMDecisionTests(ScheduledOutputTests):
                 overnight_run_id=self.run_id,
                 packet_sha256=packet["packet_sha256"],
                 evidence_cutoff=packet["evidence_cutoff"],
+                required=True,
             )
         swinger_only = _pm_block(self.run_id, packet["packet_sha256"], packet["evidence_cutoff"])
         self.assertNotIn("portfolio_construction", swinger_only["swinger"])
@@ -101,6 +163,7 @@ class OptionalAutomatedPMDecisionTests(ScheduledOutputTests):
             overnight_run_id=self.run_id,
             packet_sha256=packet["packet_sha256"],
             evidence_cutoff=packet["evidence_cutoff"],
+            required=True,
         )
         incomplete = _pm_block(self.run_id, packet["packet_sha256"], packet["evidence_cutoff"])
         incomplete["pragmatist"]["portfolio_construction"]["adverse_scenario"] = " "
@@ -110,6 +173,7 @@ class OptionalAutomatedPMDecisionTests(ScheduledOutputTests):
                 overnight_run_id=self.run_id,
                 packet_sha256=packet["packet_sha256"],
                 evidence_cutoff=packet["evidence_cutoff"],
+                required=True,
             )
 
     def test_pragmatist_empty_opportunity_list_rejected_when_handoff_is_markable(self) -> None:
@@ -184,6 +248,7 @@ class OptionalAutomatedPMDecisionTests(ScheduledOutputTests):
                 overnight_run_id=self.run_id,
                 packet_sha256=packet["packet_sha256"],
                 evidence_cutoff=packet["evidence_cutoff"],
+                required=True,
             )
         block = _pm_block(self.run_id, packet["packet_sha256"], packet["evidence_cutoff"])
         block["pragmatist"]["subagent_count"] = 1
@@ -194,6 +259,7 @@ class OptionalAutomatedPMDecisionTests(ScheduledOutputTests):
                 overnight_run_id=self.run_id,
                 packet_sha256=packet["packet_sha256"],
                 evidence_cutoff=packet["evidence_cutoff"],
+                required=True,
             )
 
     def _simulate(self):

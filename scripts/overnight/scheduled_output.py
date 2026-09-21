@@ -30,8 +30,8 @@ SCHEDULE_ID = "market-watch-weekday-0205"
 OUTPUT_TYPE = "OVERNIGHT_SCHEDULED_OUTPUT"
 AGENT_PACKET_TYPE = "OVERNIGHT_AGENT_EVIDENCE_PACKET"
 ALLOWED_MODELS = {"grok-4.6", "composer-2.5"}
-TOTAL_MODEL_CAP = 18
-GROK_CAP = 16
+TOTAL_MODEL_CAP = 19
+GROK_CAP = 18
 COMPOSER_CAP = 2
 
 FORBIDDEN_MODEL_STATE_KEYS = {
@@ -210,29 +210,30 @@ def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str,
                 raise EvidenceBoundaryError(f"{seat} referenced a memory snapshot that is not this seat/run freeze")
 
     validate_execution(payload.get("execution") or {})
-    if payload.get("pm_decisions") is not None:
-        try:
-            validate_pm_decisions(
-                payload.get("pm_decisions"),
-                overnight_run_id=run_id,
-                packet_sha256=agent_packet["packet_sha256"],
-                evidence_cutoff=agent_packet["evidence_cutoff"],
-                packet={
-                    "overnight_review": compact_overnight_decisions(
-                        {
-                            "reviews": decisions,
-                            "overnight_run_id": run_id,
-                            "status": "scheduled_output",
-                            "evidence_cutoff": agent_packet["evidence_cutoff"],
-                            "packet_sha256": agent_packet["packet_sha256"],
-                        }
-                    ),
-                    "market_state": market_state_from_families(base.get("families") or {}) or {},
-                    "decisions": decisions,
-                },
-            )
-        except Exception as exc:
-            raise SchemaError(str(exc)) from exc
+    try:
+        validate_pm_decisions(
+            payload.get("pm_decisions"),
+            overnight_run_id=run_id,
+            packet_sha256=agent_packet["packet_sha256"],
+            evidence_cutoff=agent_packet["evidence_cutoff"],
+            required=True,
+            memory_hashes=(base.get("pm_memory") or {}).get("hashes") or {},
+            packet={
+                "overnight_review": compact_overnight_decisions(
+                    {
+                        "reviews": decisions,
+                        "overnight_run_id": run_id,
+                        "status": "scheduled_output",
+                        "evidence_cutoff": agent_packet["evidence_cutoff"],
+                        "packet_sha256": agent_packet["packet_sha256"],
+                    }
+                ),
+                "market_state": market_state_from_families(base.get("families") or {}) or {},
+                "decisions": decisions,
+            },
+        )
+    except Exception as exc:
+        raise SchemaError(str(exc)) from exc
     return payload
 
 
@@ -285,6 +286,18 @@ def _apply_validated(
         "books": updated,
     }
 
+    pm_summary, pm_books = _refresh_pm_after_overnight(
+        store,
+        run_id,
+        payload,
+        review,
+        base,
+        write=write,
+    )
+    review["pm_books"] = pm_books
+    review["pm_packets"] = pm_summary
+    review["pm_source"] = pm_summary.get("source")
+
     if write:
         store.write_artifact(run_id, "agent_evidence_packet.json", payload["agent_packet"])
         store.write_artifact(run_id, "scheduled_output.json", payload)
@@ -311,7 +324,6 @@ def _apply_validated(
             },
         )
         persist_run(store, run)
-        review["pm_packets"] = _refresh_pm_after_overnight(store, run_id, payload, review)
     return review
 
 
@@ -320,48 +332,86 @@ def _refresh_pm_after_overnight(
     run_id: str,
     payload: dict[str, Any],
     review: dict[str, Any],
-) -> dict[str, Any]:
+    base: dict[str, Any],
+    *,
+    write: bool,
+) -> tuple[dict[str, Any], dict[str, Any]]:
     """Daily PM packets follow this accepted overnight 14-seat review. No Trader Room run."""
     from scripts.pm.automated import apply_automated_pm_decisions
-    from scripts.pm.books import validate_books as validate_pm_books
-    from scripts.pm.cli import refresh_packets
-    from scripts.pm.review_packets import market_state_from_source, source_from_overnight_run
+    from scripts.pm.books import mark_stale_if_packet_changed, validate_books as validate_pm_books
+    from scripts.pm.chatgpt_ingest import load_or_empty_books, load_or_empty_registry
+    from scripts.pm.constants import PM_IDS
+    from scripts.pm.public import write_public_state
+    from scripts.pm.review_packets import (
+        build_all_packets,
+        market_state_from_source,
+        source_from_overnight_run,
+    )
     from scripts.pm.store import PMStore
     from scripts.trading.store import TradingStore
 
+    store.write_artifact(run_id, "agent_evidence_packet.json", payload["agent_packet"])
+
     pm_store = PMStore(root=store.root, state_root=store.state_root)
+    trading = TradingStore(root=store.root, state_root=store.state_root)
     source = source_from_overnight_run(store.run_dir(run_id), review=review)
-    summary = refresh_packets(
+    memory_hashes = (base.get("pm_memory") or {}).get("hashes") or {}
+
+    books = load_or_empty_books(
         pm_store,
-        allow_trader_room_fallback=False,
+        trader_room_run_id=None,
         overnight_run_id=run_id,
+    )
+    registry = load_or_empty_registry(pm_store)
+    packets = build_all_packets(
+        root=store.root,
+        state_root=store.state_root,
+        books=books,
+        registry=registry,
         source=source,
     )
-    if payload.get("pm_decisions"):
-        packets = {
-            pm_id: pm_store.read_json(pm_store.packet_path(pm_id))
-            for pm_id in ("chatgpt", "swinger", "pragmatist", "grinder")
-        }
-        pm_books = validate_pm_books(pm_store.read_books())
-        pm_books = apply_automated_pm_decisions(
-            pm_books,
-            payload["pm_decisions"],
-            market_state=market_state_from_source(source),
-            run_id=run_id,
-            evidence_cutoff=payload["agent_packet"]["evidence_cutoff"],
-            packets=packets,
-            trading_store=TradingStore(root=store.root, state_root=store.state_root),
-        )
-        review["pm_books"] = pm_books
+
+    pm_books = apply_automated_pm_decisions(
+        validate_pm_books(books),
+        payload["pm_decisions"],
+        market_state=market_state_from_source(source),
+        run_id=run_id,
+        evidence_cutoff=payload["agent_packet"]["evidence_cutoff"],
+        packets=packets,
+        trading_store=trading,
+        memory_hashes=memory_hashes,
+    )
+    pm_books["last_successful_automated_pm_run_id"] = run_id
+    pm_books["overnight_run_id"] = run_id
+    if payload["agent_packet"].get("evidence_cutoff"):
+        pm_books["evidence_cutoff"] = payload["agent_packet"]["evidence_cutoff"]
+
+    packets_after = build_all_packets(
+        root=store.root,
+        state_root=store.state_root,
+        books=pm_books,
+        registry=registry,
+        source=source,
+    )
+    pm_books = mark_stale_if_packet_changed(pm_books, packets_after)
+
+    summary = {
+        "source": source.kind,
+        "overnight_run_id": run_id,
+        "trader_room_run_id": None,
+        "evidence_cutoff": source.evidence.get("as_of"),
+        "evidence_packet_sha256": source.evidence.get("packet_sha256"),
+        "packet_count": len(packets_after),
+        "fallback": False,
+    }
+
+    if write:
         pm_store.write_books(pm_books)
-        summary = refresh_packets(
-            pm_store,
-            allow_trader_room_fallback=False,
-            overnight_run_id=run_id,
-            source=source,
-        )
-    review["pm_source"] = summary.get("source")
-    return summary
+        for pm_id in PM_IDS:
+            pm_store.write_packet(pm_id, packets_after[pm_id])
+        write_public_state(pm_store, pm_books, registry)
+
+    return summary, pm_books
 
 
 def simulate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str, Any]:
@@ -373,6 +423,9 @@ def simulate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str,
         source_trading = store.state_root / "data" / "trading"
         if source_trading.is_dir():
             shutil.copytree(source_trading, tmp_root / "data" / "trading", dirs_exist_ok=True)
+        source_pm = store.state_root / "data" / "pm"
+        if source_pm.is_dir():
+            shutil.copytree(source_pm, tmp_root / "data" / "pm", dirs_exist_ok=True)
         temp_store = OvernightStore(root=store.root, state_root=tmp_root)
         return _apply_validated(temp_store, payload, write=True)
 

@@ -45,6 +45,7 @@ from scripts.overnight.paper_marks import (
 from scripts.pm.constants import (
     ACTIONS,
     ASSET_CLASSES,
+    AUTOMATED_PM_IDS,
     DECISION_STATUSES,
     CASH_CAPITAL_USD,
     GROSS_NOTIONAL_LIMIT_USD,
@@ -824,6 +825,50 @@ def apply_decision(
             out["trader_room_run_id"] = out.get("trader_room_run_id") or run_id
     mark_pm_book(book, when=stamp, run_id=run_id)
     return out
+
+
+def overlay_automated_pm_stale_for_cycle(books: dict[str, Any]) -> dict[str, Any]:
+    """Mark automated PM review freshness stale without mutating positions or P&L."""
+    out = deepcopy(books)
+    for pm_id in AUTOMATED_PM_IDS:
+        book = out["pms"][pm_id]
+        if book.get("last_decision_at"):
+            book["review_status"] = "stale"
+        else:
+            book["review_status"] = "awaiting"
+            book["decision_status"] = awaiting_status(pm_id)
+    return out
+
+
+def automated_pm_publication_status(
+    books: dict[str, Any],
+    *,
+    trader_review_status: str,
+    run_id: str,
+    evidence_cutoff: str | None,
+) -> tuple[str, str | None]:
+    """Return (pm_books_status, last_successful_pm_run_id) for morning publication."""
+    if trader_review_status != "fresh":
+        mapped = trader_review_status if trader_review_status in {"failed", "missing"} else "stale"
+        last = books.get("last_successful_automated_pm_run_id")
+        return mapped, last
+    last_success = books.get("last_successful_automated_pm_run_id")
+    if last_success == run_id:
+        return "fresh", last_success
+    all_fresh = True
+    for pm_id in AUTOMATED_PM_IDS:
+        book = books["pms"][pm_id]
+        if book.get("review_status") != "fresh":
+            all_fresh = False
+            break
+        if evidence_cutoff and book.get("evidence_cutoff") != evidence_cutoff:
+            all_fresh = False
+            break
+    if all_fresh:
+        return "fresh", last_success or run_id
+    if any(books["pms"][pm_id].get("review_status") == "awaiting" for pm_id in AUTOMATED_PM_IDS):
+        return "stale", last_success
+    return "stale", last_success
 
 
 def mark_stale_if_packet_changed(books: dict[str, Any], current_packets: dict[str, dict[str, Any]]) -> dict[str, Any]:

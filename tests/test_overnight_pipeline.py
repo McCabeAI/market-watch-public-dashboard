@@ -1242,6 +1242,26 @@ class PipelineDryRunTests(unittest.TestCase):
         self.assertEqual(view["funding_source"], FUNDING_SOURCE)
         self.assertEqual(view["competition_metric"], "net_pnl_after_funding")
         self.assertEqual(len(view["leaderboard"]), 14)
+        pm_memory = snapshot.get("pm_memory") or {}
+        pm_hashes = pm_memory.get("hashes") or {}
+        for pm_id in ("chatgpt", "swinger", "pragmatist", "grinder"):
+            self.assertIn(pm_id, pm_hashes, msg="freeze snapshot must include pm_memory hashes (sibling freeze)")
+            sidecar = store.run_dir(run_id) / "pm_memory" / f"{pm_id}.json"
+            self.assertTrue(sidecar.is_file(), msg=f"expected pm_memory sidecar for {pm_id}")
+        self.assertIn("pm_books", review)
+        self.assertIn("pm_packets", review)
+        from scripts.pm.constants import AUTOMATED_PM_IDS
+        from scripts.pm.store import PMStore
+
+        pm_store = PMStore(root=ROOT, state_root=self.tmp)
+        pm_books = pm_store.read_books()
+        for pm_id in AUTOMATED_PM_IDS:
+            self.assertNotEqual(
+                pm_books["pms"][pm_id]["decision_status"],
+                "awaiting_automated_pm_review",
+            )
+        self.assertEqual(pm_books["pms"]["chatgpt"]["decision_status"], "awaiting_chatgpt_decision")
+        self.assertIn("pm_books_status", dataset["publication"])
 
     def test_failed_review_still_publishes_stale(self):
         run_id = "overnight-20260918-dryrun-fail"

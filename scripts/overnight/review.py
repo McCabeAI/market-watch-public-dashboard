@@ -16,6 +16,182 @@ from scripts.overnight.store import OvernightStore
 from scripts.trader_room.rates_scan import synthetic_rates_tenor_scan
 
 
+def _pm_memory_hashes(packet: dict[str, Any]) -> dict[str, str]:
+    block = packet.get("pm_memory") or {}
+    return dict(block.get("hashes") or {})
+
+
+def _fallback_dry_run_pm_decisions(
+    *,
+    overnight_run_id: str,
+    packet_sha256: str,
+    evidence_cutoff: str,
+    memory_hashes: dict[str, str] | None = None,
+) -> dict[str, Any]:
+    from scripts.pm.constants import AUTOMATED_PM_IDS
+    from scripts.pm.portfolio import synthetic_portfolio_construction
+
+    memory_hashes = memory_hashes or {}
+    block: dict[str, Any] = {}
+    for pm_id in AUTOMATED_PM_IDS:
+        decision: dict[str, Any] = {
+            "pm_id": pm_id,
+            "overnight_run_id": overnight_run_id,
+            "packet_sha256": packet_sha256,
+            "evidence_cutoff": evidence_cutoff,
+            "principal_model": "grok-4.6",
+            "subagent_count": 0,
+            "subagent_models": [],
+            "actions": [{"action": "HOLD"}],
+            "thesis": "Dry-run: no incremental PM edge in the frozen packet.",
+            "invalidation": None,
+            "conviction": 20,
+        }
+        if memory_hashes.get(pm_id):
+            decision["memory_context_sha256"] = memory_hashes[pm_id]
+        if pm_id == "pragmatist":
+            decision["portfolio_construction"] = synthetic_portfolio_construction(
+                existing_book="Pragmatist book is flat in the overnight dry-run.",
+                rationale="No markable complementary trade improves the opportunistic book; HOLD is explicit.",
+            )
+        block[pm_id] = decision
+    return block
+
+
+def _resolve_dry_run_pm_decisions(
+    *,
+    overnight_run_id: str,
+    packet_sha256: str,
+    evidence_cutoff: str,
+    memory_hashes: dict[str, str] | None = None,
+) -> dict[str, Any]:
+    try:
+        from scripts.pm.automated import dry_run_pm_decisions
+    except ImportError:
+        return _fallback_dry_run_pm_decisions(
+            overnight_run_id=overnight_run_id,
+            packet_sha256=packet_sha256,
+            evidence_cutoff=evidence_cutoff,
+            memory_hashes=memory_hashes,
+        )
+    kwargs: dict[str, Any] = {
+        "overnight_run_id": overnight_run_id,
+        "packet_sha256": packet_sha256,
+        "evidence_cutoff": evidence_cutoff,
+    }
+    if memory_hashes is not None:
+        kwargs["memory_hashes"] = memory_hashes
+    return dry_run_pm_decisions(**kwargs)
+
+
+def _overlay_automated_pm_stale(store: OvernightStore) -> None:
+    from scripts.pm.books import empty_books, overlay_automated_pm_stale_for_cycle, validate_books
+    from scripts.pm.store import PMStore
+
+    pm_store = PMStore(root=store.root, state_root=store.state_root)
+    if pm_store.books_path().is_file():
+        books = overlay_automated_pm_stale_for_cycle(validate_books(pm_store.read_books()))
+    else:
+        books = overlay_automated_pm_stale_for_cycle(empty_books())
+    pm_store.write_books(books)
+
+
+def _ensure_agent_packet_for_pm(store: OvernightStore, run_id: str, packet: dict[str, Any]) -> None:
+    if store.has_artifact(run_id, "agent_evidence_packet.json"):
+        return
+    store.write_artifact(
+        run_id,
+        "agent_evidence_packet.json",
+        {
+            "schema_version": SCHEMA_VERSION,
+            "type": "OVERNIGHT_AGENT_EVIDENCE_PACKET",
+            "overnight_run_id": run_id,
+            "packet_sha256": packet["packet_sha256"],
+            "evidence_cutoff": packet["as_of"],
+            "base_packet_sha256": packet["packet_sha256"],
+            "base_evidence_cutoff": packet["as_of"],
+            "funding_context": packet.get("funding_context"),
+            "research_supplement": {
+                "summary": "Deterministic overnight dry-run; no live research supplement.",
+                "news": [],
+                "central_bank_research": [],
+                "sources": [],
+            },
+        },
+    )
+
+
+def _apply_pm_after_trader_review(
+    store: OvernightStore,
+    *,
+    run_id: str,
+    review: dict[str, Any],
+    packet: dict[str, Any],
+    dry_run: bool,
+) -> tuple[dict[str, Any] | None, dict[str, Any] | None]:
+    from scripts.pm.automated import apply_automated_pm_decisions
+    from scripts.pm.books import empty_books, validate_books as validate_pm_books
+    from scripts.pm.cli import init_layer, refresh_packets
+    from scripts.pm.review_packets import market_state_from_source, source_from_overnight_run
+    from scripts.pm.store import PMStore
+    from scripts.trading.store import TradingStore
+
+    pm_store = PMStore(root=store.root, state_root=store.state_root)
+    _ensure_agent_packet_for_pm(store, run_id, packet)
+    source = source_from_overnight_run(store.run_dir(run_id), review=review)
+    memory_hashes = _pm_memory_hashes(packet)
+    try:
+        summary = refresh_packets(
+            pm_store,
+            allow_trader_room_fallback=False,
+            overnight_run_id=run_id,
+            source=source,
+        )
+    except Exception:
+        init_layer(pm_store, write_trader_pointer=False)
+        summary = refresh_packets(
+            pm_store,
+            allow_trader_room_fallback=False,
+            overnight_run_id=run_id,
+            source=source,
+        )
+
+    pm_decisions = (
+        _resolve_dry_run_pm_decisions(
+            overnight_run_id=run_id,
+            packet_sha256=packet["packet_sha256"],
+            evidence_cutoff=packet["as_of"],
+            memory_hashes=memory_hashes or None,
+        )
+        if dry_run
+        else None
+    )
+    pm_books: dict[str, Any] | None = None
+    if pm_decisions is not None:
+        packets = {pm_id: pm_store.read_json(pm_store.packet_path(pm_id)) for pm_id in ("chatgpt", "swinger", "pragmatist", "grinder")}
+        pm_books = validate_pm_books(pm_store.read_books() if pm_store.books_path().is_file() else empty_books())
+        pm_books = apply_automated_pm_decisions(
+            pm_books,
+            pm_decisions,
+            market_state=market_state_from_source(source),
+            run_id=run_id,
+            evidence_cutoff=packet["as_of"],
+            packets=packets,
+            trading_store=TradingStore(root=store.root, state_root=store.state_root),
+        )
+        pm_books["last_successful_automated_pm_run_id"] = run_id
+        pm_store.write_books(pm_books)
+        summary = refresh_packets(
+            pm_store,
+            allow_trader_room_fallback=False,
+            overnight_run_id=run_id,
+            source=source,
+        )
+    elif pm_store.books_path().is_file():
+        pm_books = validate_pm_books(pm_store.read_books())
+    return pm_books, summary
+
+
 def _spot_memo(instrument: str, rationale: str) -> dict[str, Any]:
     return {
         "rates_candidate": None,
@@ -402,6 +578,25 @@ def run_trader_review(
         errors = [f"{type(exc).__name__}: {exc}"]
 
     store.write_books(updated)
+    pm_books = None
+    pm_packets = None
+    if status == "succeeded":
+        pm_books, pm_packets = _apply_pm_after_trader_review(
+            store,
+            run_id=run_id,
+            review={
+                "status": status,
+                "overnight_run_id": run_id,
+                "evidence_cutoff": packet["as_of"],
+                "packet_sha256": packet["packet_sha256"],
+                "reviews": reviews,
+                "books": updated,
+            },
+            packet=packet,
+            dry_run=dry_run,
+        )
+    else:
+        _overlay_automated_pm_stale(store)
     payload = {
         "schema_version": SCHEMA_VERSION,
         "type": "OVERNIGHT_TRADER_REVIEW",
@@ -417,6 +612,10 @@ def run_trader_review(
         "reviews": reviews,
         "books": updated,
     }
+    if pm_books is not None:
+        payload["pm_books"] = pm_books
+    if pm_packets is not None:
+        payload["pm_packets"] = pm_packets
     store.write_artifact(run_id, "trader_review.json", payload)
     return payload
 
@@ -437,6 +636,7 @@ def record_missing_live_review(
         books = empty_books(overnight_run_id=run_id, when=when)
     books["review_status"] = "stale"
     store.write_books(books)
+    _overlay_automated_pm_stale(store)
     payload = {
         "schema_version": SCHEMA_VERSION,
         "type": "OVERNIGHT_TRADER_REVIEW",
