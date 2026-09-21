@@ -13,6 +13,8 @@ from scripts.japan_macro_data import (  # noqa: E402
     parse_consumer_confidence_xlsx,
     parse_cpi_yoy_csv,
     parse_esri_real_gdp_qoq_saar_csv,
+    parse_esri_shouhi2_consumer_confidence_xlsx,
+    parse_mhlw_cash_earnings_yoy_xls,
 )
 
 FIXTURES = Path(__file__).parent / "fixtures" / "jp_macro"
@@ -36,7 +38,32 @@ class JapanMacroParserTest(unittest.TestCase):
         with self.assertRaises(SeriesUnavailableError):
             parse_cpi_yoy_csv("a,b\n")
 
-    def test_consumer_confidence_from_live_raw(self) -> None:
+    def test_mhlw_wages_yoy_only_from_raw_xls(self) -> None:
+        raw = ROOT / "data/temperature_history/raw/jp/estat_mhlw_total_cash_earnings_yoy.xls"
+        self.assertTrue(raw.is_file())
+        obs = parse_mhlw_cash_earnings_yoy_xls(raw.read_bytes())
+        periods = [o["reference_period"] for o in obs]
+        self.assertEqual(len(periods), len(set(periods)))
+        for o in obs:
+            self.assertGreaterEqual(o["value"], -10.0)
+            self.assertLessEqual(o["value"], 20.0)
+        by_period = {o["reference_period"]: o["value"] for o in obs}
+        if "2026-06" in by_period:
+            self.assertAlmostEqual(by_period["2026-06"], 4.0)
+        self.assertNotIn(93.5, {o["value"] for o in obs})
+        self.assertNotIn(198.6, {o["value"] for o in obs})
+
+    def test_consumer_confidence_esri_shouhi2_through_august_2026(self) -> None:
+        raw = ROOT / "data/temperature_history/raw/jp/esri_shouhi2_sa.xlsx"
+        self.assertTrue(raw.is_file())
+        obs = parse_esri_shouhi2_consumer_confidence_xlsx(raw.read_bytes())
+        periods = {o["reference_period"] for o in obs}
+        latest = max(periods)
+        self.assertGreaterEqual(latest, "2026-08")
+        by_period = {o["reference_period"]: o["value"] for o in obs}
+        self.assertAlmostEqual(by_period["2026-08"], 35.5)
+
+    def test_consumer_confidence_estat_fallback_parser(self) -> None:
         raw = ROOT / "data/temperature_history/raw/jp/estat_consumer_confidence_longterm.xlsx"
         self.assertTrue(raw.is_file())
         obs = parse_consumer_confidence_xlsx(raw.read_bytes())

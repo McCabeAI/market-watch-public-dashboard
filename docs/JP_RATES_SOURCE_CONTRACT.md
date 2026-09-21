@@ -19,6 +19,8 @@ Status: **pinned for isolated `scripts/japan_rates_data.py` collector** (parent 
 | Staleness | Treat as stale when latest observation age **> 4 calendar days** (US/CA convention) |
 | Revision | Same-day file updates; no separate vintage IDs |
 
+**History assembly:** `fetch_jp_jgb_rates` fetches **both** historical and current English CSVs, parses each with `parse_mof_jgb`, and merges with `merge_mof_jgb_series` (overlapping dates take **current** revisions). If one feed fails, the other may still satisfy the requested window.
+
 **No vendor substitute** (Investing.com, Bloomberg, etc.) for required JGB benchmarks.
 
 ## 2. BOJ overnight policy benchmark (TONA block)

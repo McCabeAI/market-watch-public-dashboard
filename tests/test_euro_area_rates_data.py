@@ -7,8 +7,11 @@ from datetime import date
 from pathlib import Path
 
 from scripts.euro_area_rates_data import (
+    BUNDESBANK_API_BASE,
     EuroAreaRatesError,
+    collect_ea_fragmentation,
     compute_fragmentation_spreads,
+    compute_mcby_fragmentation_spreads,
     fetch_ea_bund_rates,
     parse_bundesbank_csv,
     parse_ecb_estr_csv,
@@ -66,6 +69,30 @@ class EuroAreaRatesParserTests(unittest.TestCase):
         parsed = parse_eurostat_mcby_json(payload)
         self.assertEqual(parsed["DE"][date(2024, 1, 31)], 2.5)
         self.assertEqual(parsed["IT"][date(2024, 2, 29)], 4.0)
+
+    def test_mcby_fragmentation_same_source_monthly(self):
+        payload = json.loads((FIXTURES / "eurostat_mcby_sample.json").read_text(encoding="utf-8"))
+        mcby = parse_eurostat_mcby_json(payload)
+        out = compute_mcby_fragmentation_spreads(mcby_yields=mcby, countries=("IT",))
+        spreads = out["spreads"]["IT"]["10Y"]
+        self.assertAlmostEqual(spreads["2024-01-31"], 1.4)
+        self.assertAlmostEqual(spreads["2024-02-29"], 1.4)
+
+    def test_collect_fragmentation_does_not_use_bundesbank_for_10y(self):
+        mcby_payload = (FIXTURES / "eurostat_mcby_sample.json").read_bytes()
+
+        def mock_fetch(url: str, **kwargs) -> bytes:
+            if "irt_lt_mcby_m" in url:
+                return mcby_payload
+            if BUNDESBANK_API_BASE in url:
+                raise AssertionError("collect_ea_fragmentation must not fetch BBSSY for 10Y MCBY spreads")
+            raise AssertionError(f"unexpected url {url}")
+
+        block = collect_ea_fragmentation(date(2026, 9, 21), fetch_bytes=mock_fetch)
+        self.assertFalse(block["bund_benchmark"]["used_for_10y_fragmentation"])
+        self.assertEqual(block["mcby_benchmark_10y"]["german_leg_10y"], "EUROSTAT_MCBY_DE")
+        self.assertEqual(block["mcby_benchmark_10y"]["frequency"], "monthly")
+        self.assertAlmostEqual(block["spreads"]["IT"]["10Y"]["2024-01-31"], 1.4)
 
     def test_fragmentation_exact_common_dates_no_forward_fill(self):
         bund_text = (FIXTURES / "bundesbank_2y_sample.csv").read_text(encoding="utf-8")

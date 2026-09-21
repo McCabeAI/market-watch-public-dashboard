@@ -75,6 +75,7 @@ e-Stat API 3.0 requires an `app-id`; **not used** (no key in repo). Public file 
 | frequency | Monthly |
 | lag | ~1 month after survey month |
 | score_role | **scored** (20% labor); contractual/scheduled-only series exists in same MHLW table set |
+| parser note | `parse_mhlw_cash_earnings_yoy_xls` reads **only** the `前年比 (Year-on-year growth rates)` block for total cash earnings — not wage-index level rows (~90–200) in the same xls |
 | calibration note | Wage “50” often mapped to ~3% (2% inflation + 1% productivity) in V1 docs — verify against `temperature_calibration.json` separately |
 
 ### Labor.employment — LFS employed persons SA, m/m Δ thousands
@@ -155,11 +156,12 @@ e-Stat API 3.0 requires an `app-id`; **not used** (no key in repo). Public file 
 | Field | Value |
 |---|---|
 | series_id | `CO_CONSUMER_SENTIMENT_INDEX_SA` |
-| statInfId | `000040450603` |
-| fileKind | `0` |
+| primary URL | `https://www.esri.cao.go.jp/en/stat/shouhi/shouhi2.xlsx` (Table 2, SA, two-or-more-person households) |
+| fallback | e-Stat August 2026 long-term table `statInfId=000040498737`; April 2026 `000040450603` last resort |
 | units | index (diffusion-style; par ~50 TBD in calibration) |
 | SA | Yes |
 | score_role | **scored** |
+| parser | `parse_esri_shouhi2_consumer_confidence_xlsx` (preferred); `parse_consumer_confidence_xlsx` fallback |
 
 ---
 
@@ -199,6 +201,7 @@ e-Stat API 3.0 requires an `app-id`; **not used** (no key in repo). Public file 
 | GDP potential SAAR | ~0.5–1.0% q/q SAAR | ESRI long-run post-2020 mean below cyclical 2026 prints |
 | PMI survey | 50.0 | Standard diffusion neutral |
 | Confidence par | ~50 (verify) | Cabinet Office index centered below 50 in 2025–26 — confirm in calibration pass |
+| JP nominal consumer anchors (retail/income/spending) | 2.6% y/y | 2% BOJ inflation target + 0.6% real potential (consistent with `JP.Activity.gdp_domestic_demand` SAAR anchor in `temperature_calibration.json`) |
 
 ---
 

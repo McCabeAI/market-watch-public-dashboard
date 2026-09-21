@@ -517,6 +517,27 @@ def parse_peripheral_yields_csv(
     return out
 
 
+def compute_mcby_fragmentation_spreads(
+    *,
+    mcby_yields: Mapping[str, Mapping[date, float]],
+    countries: tuple[str, ...] = FRAGMENTATION_COUNTRIES,
+    tenor: str = "10Y",
+) -> dict[str, Any]:
+    """Peripheral minus Germany from same Eurostat MCBY monthly map (month-end dates)."""
+    de = mcby_yields.get("DE") or {}
+    spreads: dict[str, dict[str, dict[str, float]]] = {}
+    counts: dict[str, dict[str, int]] = {}
+    for country in countries:
+        pe = mcby_yields.get(country) or {}
+        common = sorted(set(de) & set(pe))
+        series: dict[str, float] = {}
+        for d in common:
+            series[d.isoformat()] = round(float(pe[d]) - float(de[d]), 6)
+        spreads[country] = {tenor: series}
+        counts[country] = {tenor: len(series)}
+    return {"spreads": spreads, "counts": counts}
+
+
 def compute_fragmentation_spreads(
     *,
     bund_yields: Mapping[str, Mapping[date, float]],
@@ -559,49 +580,67 @@ def collect_ea_fragmentation(
     fetch_bytes: FetchBytes = default_fetch_bytes,
 ) -> dict[str, Any]:
     start = today - timedelta(days=365 * 5)
-    bund = fetch_ea_bund_rates(start, today, fetch_bytes=fetch_bytes)
 
-    peripheral: dict[str, dict[str, dict[date, float]]] = {
-        c: {t: {} for t in FRAGMENTATION_TENORS} for c in FRAGMENTATION_COUNTRIES
-    }
     source_status: dict[str, dict[str, str]] = {
         c: {t: "unavailable" for t in FRAGMENTATION_TENORS} for c in FRAGMENTATION_COUNTRIES
+    }
+    mcby: dict[str, dict[date, float]] = {}
+    mcby_meta: dict[str, Any] = {
+        "dataset": "irt_lt_mcby_m",
+        "frequency": "monthly",
+        "page": EUROSTAT_MCBY_PAGE,
+        "german_leg_10y": "EUROSTAT_MCBY_DE",
+        "note": (
+            "10Y fragmentation uses IT/FR/ES minus DE from the same Eurostat MCBY payload "
+            "(month-end observation dates). Bundesbank BBSSY Bund yields are not mixed into 10Y spreads."
+        ),
     }
 
     try:
         mcby_url = eurostat_mcby_url(since=start.strftime("%Y-%m"))
+        mcby_meta["api_url"] = mcby_url
         payload = json.loads(fetch_bytes(mcby_url).decode("utf-8"))
         mcby = parse_eurostat_mcby_json(payload)
         for country in FRAGMENTATION_COUNTRIES:
-            series = mcby.get(country) or {}
-            if series:
-                peripheral[country]["10Y"] = series
+            if mcby.get(country):
                 source_status[country]["10Y"] = "ok"
+        if mcby.get("DE"):
+            source_status["DE"] = {"10Y": "ok"}
         source_status["_meta"] = {
             "10Y": f"Eurostat irt_lt_mcby_m ({EUROSTAT_MCBY_PAGE})",
+            **mcby_meta,
         }
     except Exception as exc:
-        source_status["_meta"] = {"10Y_error": str(exc)}
+        source_status["_meta"] = {"10Y_error": str(exc), **mcby_meta}
 
     for tenor in ("2Y", "5Y"):
         for country in FRAGMENTATION_COUNTRIES:
             source_status[country][tenor] = "unavailable"
-    source_status["_meta"]["2Y"] = (
-        "No credential-free daily official 2Y peripheral series pinned yet "
-        "(ECB per-country YC keys 404; AFT/Banca d'Italia blocked or undocumented)."
-    )
-    source_status["_meta"]["5Y"] = source_status["_meta"]["2Y"]
+    if "_meta" in source_status:
+        source_status["_meta"]["2Y"] = (
+            "No credential-free daily official 2Y peripheral series pinned yet "
+            "(ECB per-country YC keys 404; AFT/Banca d'Italia blocked or undocumented)."
+        )
+        source_status["_meta"]["5Y"] = source_status["_meta"]["2Y"]
 
-    spread_block = compute_fragmentation_spreads(bund_yields=bund, peripheral_yields=peripheral)
+    spread_block = compute_mcby_fragmentation_spreads(mcby_yields=mcby) if mcby else {
+        "spreads": {c: {t: {} for t in FRAGMENTATION_TENORS} for c in FRAGMENTATION_COUNTRIES},
+        "counts": {c: {t: 0 for t in FRAGMENTATION_TENORS} for c in FRAGMENTATION_COUNTRIES},
+    }
     return {
         "status": "partial",
         "block": "euro_area_fragmentation",
-        "method": "Peripheral minus German Bund cash yield; exact common dates only; no forward fill",
+        "method": (
+            "10Y: peripheral minus Germany from same-source Eurostat irt_lt_mcby_m (monthly, "
+            "month-end dates). 2Y/5Y unavailable without credential-free daily peripheral legs."
+        ),
         "bund_benchmark": {
             "source": "BUNDESBANK_BBSSY",
             "tenors": list(BUND_SERIES),
             "page": BUNDESBANK_PAGE,
+            "used_for_10y_fragmentation": False,
         },
+        "mcby_benchmark_10y": mcby_meta,
         "peripheral_sources": source_status,
         "spreads": spread_block["spreads"],
         "observation_counts": spread_block["counts"],

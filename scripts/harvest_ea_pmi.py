@@ -71,7 +71,18 @@ MONTH_MAP = {
 CURL_CFFI_IMPERSONATES = ("safari18_0", "chrome", "chrome131", "chrome120")
 
 SEED_GUIDS: list[str] = [
-    "0a3fb112708046bba18d27b555ce7ecb",  # 2026-08 final (listing 2026-09-03)
+    "28c3f5d8cd55496b976ee43ab2e1066f",  # 2025-09 HCOB final
+    "223ebbc5708245de8b680cd0abf17f65",  # 2025-10 HCOB final
+    "782bddb90d9a4258bb1efe5b6a46e86d",  # 2025-11 HCOB final
+    "85a7e7b2b2864290b945f2bd8d7c41eb",  # 2025-12 HCOB final
+    "96530bc528ed4c7d856ec7e770f9fbf9",  # 2026-01 HCOB final
+    "2fda0e818e2047f3b5f1bc7e982f7249",  # 2026-02 HCOB final
+    "a319e0a783f040d0b760d719f6160326",  # 2026-03 S&P final
+    "e189dc5785424a6f9dd3384266699426",  # 2026-04 S&P final
+    "e023f278ec0a499cbe1c6f97b8360695",  # 2026-05 S&P final
+    "ee04639d3fa04104b6248a31a71ebd12",  # 2026-06 S&P final
+    "6efbc02cd9b849e6aafcc6c3a9b703db",  # 2026-07 S&P final
+    "0a3fb112708046bba18d27b555ce7ecb",  # 2026-08 S&P final (listing 2026-09-03)
 ]
 
 WINDOW_START = "2025-09"
@@ -113,6 +124,17 @@ def _local_cached_pdf(guid: str) -> bytes | None:
         if guid in path.read_bytes()[:200]:
             pass
     guid_map = {
+        "28c3f5d8cd55496b976ee43ab2e1066f": RAW_DIR / "sp_eurozone_composite_2025-09.pdf",
+        "223ebbc5708245de8b680cd0abf17f65": RAW_DIR / "sp_eurozone_composite_2025-10.pdf",
+        "782bddb90d9a4258bb1efe5b6a46e86d": RAW_DIR / "sp_eurozone_composite_2025-11.pdf",
+        "85a7e7b2b2864290b945f2bd8d7c41eb": RAW_DIR / "sp_eurozone_composite_2025-12.pdf",
+        "96530bc528ed4c7d856ec7e770f9fbf9": RAW_DIR / "sp_eurozone_composite_2026-01.pdf",
+        "2fda0e818e2047f3b5f1bc7e982f7249": RAW_DIR / "sp_eurozone_composite_2026-02.pdf",
+        "a319e0a783f040d0b760d719f6160326": RAW_DIR / "sp_eurozone_composite_2026-03.pdf",
+        "e189dc5785424a6f9dd3384266699426": RAW_DIR / "sp_eurozone_composite_2026-04.pdf",
+        "e023f278ec0a499cbe1c6f97b8360695": RAW_DIR / "sp_eurozone_composite_2026-05.pdf",
+        "ee04639d3fa04104b6248a31a71ebd12": RAW_DIR / "sp_eurozone_composite_2026-06.pdf",
+        "6efbc02cd9b849e6aafcc6c3a9b703db": RAW_DIR / "sp_eurozone_composite_2026-07.pdf",
         "0a3fb112708046bba18d27b555ce7ecb": RAW_DIR / "sp_eurozone_composite_2026-08.pdf",
     }
     path = guid_map.get(guid)
@@ -244,26 +266,104 @@ def fetch_listing_html(*, attempted: list[dict[str, Any]]) -> str | None:
     return None
 
 
+_ENGLISH_EA_COMPOSITE_TITLES = frozenset(
+    {
+        "S&P Global Eurozone Composite PMI",
+        "S&P Global Flash Eurozone Composite PMI",
+        # HCOB was the S&P Eurozone composite sponsor through early 2026.
+        "HCOB Eurozone Composite PMI",
+        "HCOB Flash Eurozone PMI",
+        "HCOB Flash Eurozone Composite PMI",
+    }
+)
+
+
 def discover_eurozone_composite_listing(html: str) -> list[dict[str, str]]:
     rows: list[dict[str, str]] = []
+    seen: set[str] = set()
     for date_raw, title_raw, href in LISTING_ROW_RE.findall(html):
         title = unescape(title_raw).replace("\xa0", " ")
-        if title != "S&P Global Eurozone Composite PMI":
+        if title not in _ENGLISH_EA_COMPOSITE_TITLES:
             continue
         if "Germany" in title or "EU " in title:
             continue
         guid_match = GUID_RE.search(href)
         if not guid_match:
             continue
+        guid = guid_match.group(1)
+        if guid in seen:
+            continue
+        seen.add(guid)
         rows.append(
             {
                 "listing_release_utc": unescape(date_raw).replace("\xa0", " "),
                 "title": title,
-                "guid": guid_match.group(1),
-                "source_url": press_release_url(guid_match.group(1)),
+                "guid": guid,
+                "source_url": press_release_url(guid),
             }
         )
     return rows
+
+
+def discover_guids_from_wayback_listings(
+    *,
+    from_yyyymmdd: str = "20250901",
+    to_yyyymmdd: str = "20260921",
+    attempted: list[dict[str, Any]] | None = None,
+) -> list[dict[str, str]]:
+    """Enumerate English Eurozone composite GUIDs from archived S&P listing pages."""
+    attempted = attempted if attempted is not None else []
+    cdx = (
+        "https://web.archive.org/cdx/search/cdx?"
+        f"url={PMI_LISTING_URL.replace('https://', '')}&output=json"
+        f"&from={from_yyyymmdd}&to={to_yyyymmdd}&filter=statuscode:200&limit=200"
+    )
+    rows: list[list[str]] = []
+    try:
+        from curl_cffi import requests as cffi_requests
+
+        resp = cffi_requests.get(cdx, impersonate="chrome", timeout=120)
+        attempted.append(
+            {
+                "url": cdx,
+                "http_status": resp.status_code,
+                "failure_mode": None if resp.status_code == 200 else "cdx_http_error",
+                "notes": f"bytes={len(resp.content)}",
+            }
+        )
+        if resp.status_code == 200 and resp.text.strip().startswith("["):
+            rows = json.loads(resp.text)
+    except Exception as exc:  # noqa: BLE001
+        attempted.append(
+            {"url": cdx, "http_status": None, "failure_mode": f"cdx_error: {exc}", "notes": ""}
+        )
+    if len(rows) < 2:
+        return []
+
+    discovered: list[dict[str, str]] = []
+    seen: set[str] = set()
+    for row in rows[1:]:
+        ts = row[1]
+        wb_url = f"https://web.archive.org/web/{ts}id_/{PMI_LISTING_URL}"
+        status, body, meta = _curl_cffi_get(wb_url)
+        attempted.append(
+            {
+                "url": wb_url,
+                "http_status": status or None,
+                "failure_mode": None if body and b"releaseTitle" in body else "wayback_listing_unavailable",
+                "notes": meta,
+            }
+        )
+        if not body or b"releaseTitle" not in body:
+            continue
+        html = body.decode("utf-8", errors="replace")
+        for item in discover_eurozone_composite_listing(html):
+            if item["guid"] in seen:
+                continue
+            seen.add(item["guid"])
+            discovered.append(item)
+        time.sleep(0.1)
+    return discovered
 
 
 def pdf_to_text(data: bytes) -> str:
@@ -315,6 +415,7 @@ def is_flash_release(text: str) -> bool:
 
 def parse_headline_composite(text: str, reference_period: str | None) -> float | None:
     patterns = [
+        r"HCOB Eurozone Composite PMI Output\s*Index at\s+([\d.]+)",
         r"Eurozone Composite PMI Output\s*Index at\s+([\d.]+)",
         r"Eurozone Composite PMI Output\s*Index[^\n]{0,40}posted\s+([\d.]+)",
         r"Composite PMI Output\s*Index at\s+([\d.]+)",
@@ -497,6 +598,7 @@ def harvest(
     attempted: list[dict[str, Any]] = []
     listing_html = fetch_listing_html(attempted=attempted)
     discovered = discover_eurozone_composite_listing(listing_html) if listing_html else []
+    wayback_discovered = discover_guids_from_wayback_listings(attempted=attempted)
 
     guid_set: list[str] = []
     for g in SEED_GUIDS:
@@ -506,7 +608,7 @@ def harvest(
         for g in guids:
             if g not in guid_set:
                 guid_set.append(g)
-    for row in discovered:
+    for row in discovered + wayback_discovered:
         if row["guid"] not in guid_set:
             guid_set.append(row["guid"])
 
@@ -579,6 +681,7 @@ def harvest(
         ),
         "do_not_score": ["Trading Economics", "Markit legacy vendor tables"],
         "discovered_listing_rows": discovered,
+        "discovered_wayback_listing_rows": wayback_discovered,
         "parsed_release_count": len(parsed_releases),
     }
     RAW_DIR.mkdir(parents=True, exist_ok=True)

@@ -186,6 +186,22 @@ def _filter_rates(
     }
 
 
+def merge_mof_jgb_series(
+    historical: Mapping[str, Mapping[date, float]] | None,
+    current: Mapping[str, Mapping[date, float]] | None,
+) -> dict[str, dict[date, float]]:
+    """Merge MOF historical + current CSVs; current file wins on overlapping dates."""
+    merged: dict[str, dict[date, float]] = {t: {} for t in JGB_TENORS}
+    if historical:
+        for tenor in JGB_TENORS:
+            merged[tenor].update(dict(historical.get(tenor) or {}))
+    if current:
+        for tenor in JGB_TENORS:
+            for d, v in (current.get(tenor) or {}).items():
+                merged[tenor][d] = v
+    return merged
+
+
 def fetch_jp_jgb_rates(
     start: date,
     end: date,
@@ -194,8 +210,24 @@ def fetch_jp_jgb_rates(
     """Fetch MOF official JGB 2Y/5Y/10Y/30Y history for [start, end]."""
     if fetch_bytes is None:
         raise JapanRatesError("fetch_jp_jgb_rates requires fetch_bytes")
-    raw = fetch_bytes(MOF_JGB_HISTORICAL_EN).decode("utf-8", errors="replace")
-    parsed = parse_mof_jgb(raw)
+    historical: dict[str, dict[date, float]] | None = None
+    current: dict[str, dict[date, float]] | None = None
+    errors: list[str] = []
+    try:
+        raw = fetch_bytes(MOF_JGB_HISTORICAL_EN).decode("utf-8", errors="replace")
+        historical = parse_mof_jgb(raw)
+    except Exception as exc:
+        errors.append(f"historical: {exc}")
+    try:
+        raw = fetch_bytes(MOF_JGB_CURRENT_EN).decode("utf-8", errors="replace")
+        current = parse_mof_jgb(raw)
+    except Exception as exc:
+        errors.append(f"current: {exc}")
+    if historical is None and current is None:
+        raise JapanRatesError(
+            "MOF JGB historical and current feeds both failed: " + "; ".join(errors)
+        )
+    parsed = merge_mof_jgb_series(historical, current)
     out = _filter_rates(parsed, start, end)
     missing = [t for t in JGB_TENORS if not out[t]]
     if missing:

@@ -55,6 +55,35 @@ class HarvestEaPmiTest(unittest.TestCase):
         self.assertEqual(chosen["2026-07"]["value"], 52.0)
         self.assertEqual(chosen["2026-07"]["revision_status"], "final")
 
+    def test_parse_hcob_headline_and_prior(self) -> None:
+        text = (
+            "HCOB Eurozone Composite PMI Output Index at 51.2 (Aug: 51.0). 16-month high.\n"
+            "Data were collected 11-25 September 2025\n"
+        )
+        self.assertFalse(is_flash_release(text))
+        self.assertEqual(infer_reference_period(text, is_flash=False), "2025-09")
+        self.assertEqual(parse_headline_composite(text, "2025-09"), 51.2)
+
+    def test_discover_hcob_english_composite_title(self) -> None:
+        html = """
+        <span class="releaseDate">October 03 2025</span>
+        <span class="releaseTitle">HCOB Eurozone Composite PMI</span>
+        <span class="greenListItem"><a href="/Public/Home/PressRelease/28c3f5d8cd55496b976ee43ab2e1066f"></a></span>
+        """
+        rows = discover_eurozone_composite_listing(html)
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["guid"], "28c3f5d8cd55496b976ee43ab2e1066f")
+
+    def test_discover_flash_english_composite_title(self) -> None:
+        html = """
+        <span class="releaseDate">July 24 2026</span>
+        <span class="releaseTitle">S&amp;P Global Flash Eurozone Composite PMI</span>
+        <span class="greenListItem"><a href="/Public/Home/PressRelease/aabbccddaabbccddaabbccddaabbccdd"></a></span>
+        """
+        rows = discover_eurozone_composite_listing(html)
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["guid"], "aabbccddaabbccddaabbccddaabbccdd")
+
     def test_discover_exact_english_composite_title(self) -> None:
         html = """
         <span class="releaseDate">September 03 2026</span>

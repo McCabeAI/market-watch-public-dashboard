@@ -90,8 +90,14 @@ SOURCE_CONTRACT = {
     },
     "Consumer.confidence": {
         "series_id": "CO_CONSUMER_SENTIMENT_INDEX_SA",
-        "stat_infid": "000040450603",
+        # August 2026 two-or-more-person SA long-term table (e-Stat 8月調査).
+        "stat_infid": "000040498737",
+        # April 2026 vintage of the same table; last-resort fallback only.
+        "stat_infid_april_2026": "000040450603",
         "file_kind": 0,
+        "esri_shouhi2_sa_xlsx_en": (
+            "https://www.esri.cao.go.jp/en/stat/shouhi/shouhi2.xlsx"
+        ),
     },
     "context.Tankan_large_manufacturing_di": {
         "series_id": "BOJ_TANKAN_LARGE_MFG_BUSINESS_CONDITIONS_DI",
@@ -239,14 +245,31 @@ def parse_mhlw_cash_earnings_yoy_xls(data: bytes) -> list[dict[str, Any]]:
 
     book = xlrd.open_workbook(file_contents=data)
     sh = book.sheet_by_index(0)
-    out: list[dict[str, Any]] = []
+    section_row: int | None = None
     for r in range(sh.nrows):
+        row = sh.row_values(r)
+        joined = " ".join(str(c) for c in row if c)
+        if "Year-on-year growth rates" in joined or (
+            "前年比" in joined and "増減" in joined
+        ):
+            section_row = r
+            break
+    if section_row is None:
+        raise SeriesUnavailableError(
+            SOURCE_CONTRACT["Labor.wages"]["series_id"],
+            "Year-on-year growth rates / 現金給与総額 section not found in MHLW xls",
+        )
+
+    month_cols = tuple(range(8, 20))
+    data_start = section_row + 4
+    out: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for r in range(data_start, sh.nrows):
         row = sh.row_values(r)
         if not row or not isinstance(row[0], (int, float)) or row[0] < 1900:
             continue
         year = int(row[0])
-        for month in range(1, 13):
-            col = 7 + month
+        for month, col in enumerate(month_cols, start=1):
             if col >= len(row):
                 continue
             val = row[col]
@@ -256,9 +279,19 @@ def parse_mhlw_cash_earnings_yoy_xls(data: bytes) -> list[dict[str, Any]]:
                 yoy = float(val)
             except (TypeError, ValueError):
                 continue
+            if not (-10.0 <= yoy <= 20.0):
+                continue
             period = f"{year:04d}-{month:02d}"
+            if period in seen:
+                raise ValueError(f"Duplicate MHLW wage y/y period {period}")
             if period_in_window_monthly(period):
+                seen.add(period)
                 out.append({"reference_period": period, "value": yoy})
+    if not out:
+        raise SeriesUnavailableError(
+            SOURCE_CONTRACT["Labor.wages"]["series_id"],
+            "No plausible year-on-year wage observations parsed from MHLW xls",
+        )
     return out
 
 
@@ -461,7 +494,44 @@ def parse_fies_nominal_yoy_row_xls(data: bytes, *, row_label: str) -> list[dict[
     return out
 
 
+def parse_esri_shouhi2_consumer_confidence_xlsx(data: bytes) -> list[dict[str, Any]]:
+    """Cabinet Office ESRI shouhi2.xlsx — CCI SA, households of two or more persons."""
+    import openpyxl
+
+    wb = openpyxl.load_workbook(io.BytesIO(data), read_only=True, data_only=True)
+    ws = wb[wb.sheetnames[0]]
+    out: list[dict[str, Any]] = []
+    for row in ws.iter_rows(min_row=7, values_only=True):
+        code = row[0]
+        if not isinstance(code, (int, float)) or code < 19_000_000:
+            continue
+        code_s = f"{int(code):010d}"
+        year = int(code_s[:4])
+        month = int(code_s[6:8])
+        if month < 1 or month > 12:
+            continue
+        try:
+            index_val = float(row[4])
+        except (TypeError, ValueError, IndexError):
+            continue
+        period = f"{year:04d}-{month:02d}"
+        if period_in_window_monthly(period):
+            out.append({"reference_period": period, "value": index_val})
+    if not out:
+        raise ValueError("Could not parse ESRI shouhi2 consumer confidence observations")
+    return out
+
+
+def parse_cci_workbook(data: bytes) -> list[dict[str, Any]]:
+    """Try current ESRI shouhi2 layout, then the e-Stat long-term layout."""
+    try:
+        return parse_esri_shouhi2_consumer_confidence_xlsx(data)
+    except Exception:
+        return parse_consumer_confidence_xlsx(data)
+
+
 def parse_consumer_confidence_xlsx(data: bytes) -> list[dict[str, Any]]:
+    """Legacy e-Stat long-term consumer confidence workbook (stale vs ESRI shouhi2)."""
     import openpyxl
 
     wb = openpyxl.load_workbook(io.BytesIO(data), read_only=True, data_only=True)
@@ -960,12 +1030,57 @@ def collect_japan_macro(
     except Exception as exc:  # noqa: BLE001
         errors.append(f"Consumer.spending: {exc}")
 
-    # --- Consumer confidence ---
-    cci_url = ESTAT_FILE_DOWNLOAD.format(sid=SOURCE_CONTRACT["Consumer.confidence"]["stat_infid"], fk=0)
+    # --- Consumer confidence (ESRI shouhi2 current; e-Stat long-term fallbacks) ---
+    cci_esri_url = SOURCE_CONTRACT["Consumer.confidence"]["esri_shouhi2_sa_xlsx_en"]
+    cci_estat_url = ESTAT_FILE_DOWNLOAD.format(
+        sid=SOURCE_CONTRACT["Consumer.confidence"]["stat_infid"], fk=0
+    )
+    cci_estat_april_url = ESTAT_FILE_DOWNLOAD.format(
+        sid=SOURCE_CONTRACT["Consumer.confidence"]["stat_infid_april_2026"], fk=0
+    )
     try:
-        cci_bytes = download_estat(SOURCE_CONTRACT["Consumer.confidence"]["stat_infid"], 0, fetcher=fetcher)
-        save_raw_bytes("estat_consumer_confidence_longterm.xlsx", cci_bytes)
-        cci = parse_consumer_confidence_xlsx(cci_bytes)
+        cci_bytes: bytes
+        cci_source_url: str
+        retrieval_method: str
+        cci: list[dict[str, Any]] | None = None
+        last_exc: Exception | None = None
+        try:
+            if fetcher:
+                cci_bytes = fetcher(cci_esri_url)
+            else:
+                cci_bytes = _curl_get(cci_esri_url)
+            cci = parse_cci_workbook(cci_bytes)
+            cci_source_url = cci_esri_url
+            retrieval_method = "esri_cabinet_office_shouhi2_xlsx"
+            save_raw_bytes("esri_shouhi2_sa.xlsx", cci_bytes)
+        except Exception as exc:  # noqa: BLE001
+            last_exc = exc
+        if cci is None:
+            for sid, url, method, raw_name in (
+                (
+                    SOURCE_CONTRACT["Consumer.confidence"]["stat_infid"],
+                    cci_estat_url,
+                    "estat_file_download_xlsx_aug2026",
+                    "estat_consumer_confidence_longterm.xlsx",
+                ),
+                (
+                    SOURCE_CONTRACT["Consumer.confidence"]["stat_infid_april_2026"],
+                    cci_estat_april_url,
+                    "estat_file_download_xlsx_apr2026_fallback",
+                    "estat_consumer_confidence_longterm.xlsx",
+                ),
+            ):
+                try:
+                    cci_bytes = download_estat(sid, 0, fetcher=fetcher)
+                    cci = parse_cci_workbook(cci_bytes)
+                    cci_source_url = url
+                    retrieval_method = method
+                    save_raw_bytes(raw_name, cci_bytes)
+                    break
+                except Exception as exc:  # noqa: BLE001
+                    last_exc = exc
+        if cci is None:
+            raise last_exc or RuntimeError("consumer confidence sources unavailable")
         components["Consumer.confidence"] = component_shell(
             dimension="Consumer",
             component="confidence",
@@ -976,8 +1091,8 @@ def collect_japan_macro(
             units="index",
             transformation="diffusion_index",
             sa=True,
-            source_urls=[cci_url, "https://www.esri.cao.go.jp/jp/stat/shouhi/shouhi.html"],
-            retrieval_method="estat_file_download_xlsx",
+            source_urls=[cci_source_url, cci_estat_url, "https://www.esri.cao.go.jp/jp/stat/shouhi/shouhi.html"],
+            retrieval_method=retrieval_method,
         )
         for item in cci:
             components["Consumer.confidence"]["observations"].append(
@@ -986,7 +1101,7 @@ def collect_japan_macro(
                     value=item["value"],
                     component_key="Consumer.confidence",
                     series_id=SOURCE_CONTRACT["Consumer.confidence"]["series_id"],
-                    source_url=cci_url,
+                    source_url=cci_source_url,
                     publisher="Cabinet Office",
                     transformation="diffusion_index",
                     units="index",

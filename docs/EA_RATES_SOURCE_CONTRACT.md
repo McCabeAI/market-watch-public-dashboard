@@ -111,7 +111,9 @@ https://data-api.ecb.europa.eu/service/data/YC/B.U2.EUR.4F.G_N_C.SV_C_YM.SR_2Y?f
 
 **Spread definition:** `peripheral_yield − german_yield` on **exact common dates** only (no forward fill).
 
-**German leg:** Bundesbank BBSSY (same as `rates.EA`).
+**10Y (pinned):** **Same source, same frequency** — Eurostat `irt_lt_mcby_m` for IT, FR, ES **and** DE (~10Y EMU convergence criterion yields, monthly). Spreads are `IT/FR/ES − DE` on shared **month-end** dates from one JSON payload. **Do not** subtract daily Bundesbank BBSSY Bund yields from monthly Eurostat MCBY peripheral yields.
+
+**German leg for 10Y fragmentation:** Eurostat MCBY `DE` (not BBSSY).
 
 **Peripheral legs (pinned / status):**
 
@@ -126,6 +128,7 @@ https://data-api.ecb.europa.eu/service/data/YC/B.U2.EUR.4F.G_N_C.SV_C_YM.SR_2Y?f
 - Dataset: `irt_lt_mcby_m` — EMU convergence criterion bond yields (~10Y), monthly.
 - API: `https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/irt_lt_mcby_m?geo=IT&geo=FR&geo=ES&geo=DE&format=JSON`
 - Dates mapped to **month-end** for alignment across countries.
+- Parser/helper: `parse_eurostat_mcby_json`, `compute_mcby_fragmentation_spreads`.
 
 **2Y / 5Y:** No credential-free **daily** official series pinned (ECB per-country `YC.B.IT...` keys return 404; AFT France behind Cloudflare; Banca d'Italia SDMX not exposed). Marked `unavailable` — not vendor-filled.
 
@@ -166,7 +169,7 @@ def validate_ea_rates_bundle(payload) -> None
 - **ECB YC vs Bund:** fitted Svensson **spot** zeros vs **cash** benchmark on latest Federal security; levels differ.
 - **ECB YC compounding:** continuous (not Act/360 money-market).
 - **FST3:** price quoted as 100 − rate; settlement rate is compounded €STR over 3 months per contract specs (do not mix with €STR overnight level without contract math).
-- **Fragmentation 10Y:** Eurostat MCBY is **monthly**; Bund leg is **daily** — spreads use month-end dates where both exist.
+- **Fragmentation 10Y:** Eurostat MCBY is **monthly** for both Germany and peripherals; spreads use month-end dates on the shared MCBY calendar (no mixed-frequency BBSSY leg).
 
 ---
 

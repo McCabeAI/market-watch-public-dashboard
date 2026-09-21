@@ -9,6 +9,8 @@ from pathlib import Path
 from scripts.japan_rates_data import (
     JGB_TENORS,
     JPX_TONA_EXPECTED_CONTRACTS,
+    MOF_JGB_CURRENT_EN,
+    MOF_JGB_HISTORICAL_EN,
     JapanRatesError,
     build_jp_rates_bundle,
     collect_jp_official_curve,
@@ -37,6 +39,25 @@ class JapanRatesParserTests(unittest.TestCase):
         latest = max(parsed["10Y"])
         self.assertGreater(parsed["10Y"][latest], 0.5)
         self.assertIn(latest.year, (2026,))
+
+    def test_fetch_jp_jgb_merge_current_over_historical(self):
+        hist = _read("mof_jgbcme_historical_snippet.csv")
+        cur = _read("mof_jgbcme_current.csv")
+
+        def mock_fetch(url: str, **kwargs) -> bytes:
+            if url == MOF_JGB_HISTORICAL_EN:
+                return hist.encode("utf-8")
+            if url == MOF_JGB_CURRENT_EN:
+                return cur.encode("utf-8")
+            raise AssertionError(url)
+
+        start = date(2026, 8, 29)
+        end = date(2026, 9, 8)
+        rates = fetch_jp_jgb_rates(start, end, fetch_bytes=mock_fetch)
+        overlap = date(2026, 9, 1)
+        self.assertAlmostEqual(rates["10Y"][overlap], 2.987)
+        self.assertEqual(max(rates["10Y"]), date(2026, 9, 8))
+        self.assertAlmostEqual(rates["10Y"][date(2026, 8, 31)], 2.92)
 
     def test_parse_boj_tona_api_fixture(self):
         hist = parse_boj_tona_api_csv(_read("boj_strdclucon_202609.csv"))
