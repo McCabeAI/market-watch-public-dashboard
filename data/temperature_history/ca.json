@@ -1372,150 +1372,374 @@
     "Activity.business_surveys": {
       "dimension": "Activity",
       "component": "business_surveys",
-      "canonical_name": "CFIB Monthly Business Barometer (scored when harvested); Ivey PMI conflict only",
-      "publisher": "Ivey Business School / Bank of Canada",
-      "distributor": null,
-      "series_id": null,
-      "cadence": "monthly-or-quarterly",
+      "canonical_name": "S&P Global Canada Composite PMI Output Index (Ivey PMI conflict-only)",
+      "publisher": "S&P Global",
+      "distributor": "S&P Global PMI press releases",
+      "series_id": "SP_GLOBAL_CA_COMPOSITE",
+      "cadence": "monthly",
       "units": "diffusion_index",
-      "preferred_scoring_transformation": "survey_level_or_balance",
-      "sa": null,
+      "preferred_scoring_transformation": "diffusion_index",
+      "sa": true,
       "source_urls": [
-        "https://www.iveypmi.ca/",
-        "https://www.bankofcanada.ca/publications/bos/"
+        "https://www.pmi.spglobal.com/Public/Release/PressReleases",
+        "https://iveypmi.uwo.ca/"
       ],
-      "original_authority_url": "https://www.iveypmi.ca/",
-      "retrieval_method": "unavailable",
+      "original_authority_url": "https://www.pmi.spglobal.com/Public/Release/PressReleases",
+      "retrieval_method": "s_p_global_services_pmi_pdf_composite_section",
       "methodology_breaks": [],
-      "observations": [],
+      "observations": [
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2025-08",
+          "value": 48.4,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/c15d3233207d4d82835bad51196f33fc",
+          "release_date": "2025-09-04",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_CA_COMPOSITE",
+          "calibration_lookback": true,
+          "notes": "August 2025 Composite Output Index from S&P Global Canada Services PMI PDF (embargo 4 Sep 2025). Lookback for 3m window."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2025-09",
+          "value": 46.3,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/055b924144844211b5fcdffc528336cf",
+          "release_date": "2025-10-03",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_CA_COMPOSITE",
+          "notes": "September 2025 Composite Output Index recorded 46.3 in S&P Global Canada Services PMI PDF."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2025-10",
+          "value": 50.3,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/ef3472e1d5a140209137bb67d4364b8c",
+          "release_date": "2025-11-05",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_CA_COMPOSITE",
+          "notes": "October 2025 Composite Output Index recording 50.3 (September: 46.3) in S&P Global Canada Services PMI PDF."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2025-11",
+          "value": 44.9,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/d1f2778b7cff42108094c121637aae08",
+          "release_date": "2025-12-03",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_CA_COMPOSITE",
+          "notes": "November 2025 Composite Output Index posting 44.9 (October: 50.3)."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2025-12",
+          "value": 46.7,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/9a67c6b43a3d468ea7edacdd93926193",
+          "release_date": "2026-01-06",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_CA_COMPOSITE",
+          "notes": "December 2025 Composite Output Index recorded 46.7, up from 44.9."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2026-01",
+          "value": 46.4,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/60eb0bc7c656420d9064d008131ba914",
+          "release_date": "2026-02-04",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_CA_COMPOSITE",
+          "notes": "January 2026 Composite Output Index posting 46.4."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2026-02",
+          "value": 47.1,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/47c2f7e6881e4748a8d29f24a5396e5d",
+          "release_date": "2026-03-04",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_CA_COMPOSITE",
+          "notes": "February 2026 Composite Output Index posting 47.1, up from 46.4."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2026-03",
+          "value": 47.6,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/16a04604a5aa40f8917fd69b9021abd4",
+          "release_date": "2026-04-06",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_CA_COMPOSITE",
+          "notes": "March 2026 Composite Output Index recorded 47.6, a modest improvement on February 47.1."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2026-04",
+          "value": 49.9,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/cd323e551a804e7a823d3a44638c95bc",
+          "release_date": "2026-05-05",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_CA_COMPOSITE",
+          "notes": "April 2026 Composite PMI recorded 49.9."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2026-05",
+          "value": 50.8,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/c68d48cd27954fcc85fc4700309f7cd0",
+          "release_date": "2026-06-03",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_CA_COMPOSITE",
+          "notes": "May 2026 Composite PMI registered 50.8, up from 49.9 in April."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "ivey_sa_diffusion",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2025-09",
+          "value": 59.8,
+          "publisher": "Ivey Business School",
+          "source_url": "https://iveypmi.uwo.ca/",
+          "revision_status": "final",
+          "series_id": "Ivey_PMI_conflict",
+          "notes": "Seasonally adjusted Ivey PMI from official iveypmi.uwo.ca chart data-primary payload. Conflict/corroboration only; not scored."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "ivey_sa_diffusion",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2025-10",
+          "value": 52.4,
+          "publisher": "Ivey Business School",
+          "source_url": "https://iveypmi.uwo.ca/",
+          "revision_status": "final",
+          "series_id": "Ivey_PMI_conflict",
+          "notes": "Seasonally adjusted Ivey PMI from official iveypmi.uwo.ca chart data-primary payload. Conflict/corroboration only; not scored."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "ivey_sa_diffusion",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2025-11",
+          "value": 48.4,
+          "publisher": "Ivey Business School",
+          "source_url": "https://iveypmi.uwo.ca/",
+          "revision_status": "final",
+          "series_id": "Ivey_PMI_conflict",
+          "notes": "Seasonally adjusted Ivey PMI from official iveypmi.uwo.ca chart data-primary payload. Conflict/corroboration only; not scored."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "ivey_sa_diffusion",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2025-12",
+          "value": 51.9,
+          "publisher": "Ivey Business School",
+          "source_url": "https://iveypmi.uwo.ca/",
+          "revision_status": "final",
+          "series_id": "Ivey_PMI_conflict",
+          "notes": "Seasonally adjusted Ivey PMI from official iveypmi.uwo.ca chart data-primary payload. Conflict/corroboration only; not scored."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "ivey_sa_diffusion",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2026-01",
+          "value": 50.9,
+          "publisher": "Ivey Business School",
+          "source_url": "https://iveypmi.uwo.ca/",
+          "revision_status": "final",
+          "series_id": "Ivey_PMI_conflict",
+          "notes": "Seasonally adjusted Ivey PMI from official iveypmi.uwo.ca chart data-primary payload. Conflict/corroboration only; not scored."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "ivey_sa_diffusion",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2026-02",
+          "value": 56.6,
+          "publisher": "Ivey Business School",
+          "source_url": "https://iveypmi.uwo.ca/",
+          "revision_status": "final",
+          "series_id": "Ivey_PMI_conflict",
+          "notes": "Seasonally adjusted Ivey PMI from official iveypmi.uwo.ca chart data-primary payload. Conflict/corroboration only; not scored."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "ivey_sa_diffusion",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2026-03",
+          "value": 49.7,
+          "publisher": "Ivey Business School",
+          "source_url": "https://iveypmi.uwo.ca/",
+          "revision_status": "final",
+          "series_id": "Ivey_PMI_conflict",
+          "notes": "Seasonally adjusted Ivey PMI from official iveypmi.uwo.ca chart data-primary payload. Conflict/corroboration only; not scored."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "ivey_sa_diffusion",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2026-04",
+          "value": 57.7,
+          "publisher": "Ivey Business School",
+          "source_url": "https://iveypmi.uwo.ca/",
+          "revision_status": "final",
+          "series_id": "Ivey_PMI_conflict",
+          "notes": "Seasonally adjusted Ivey PMI from official iveypmi.uwo.ca chart data-primary payload. Conflict/corroboration only; not scored."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "ivey_sa_diffusion",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2026-05",
+          "value": 58.2,
+          "publisher": "Ivey Business School",
+          "source_url": "https://iveypmi.uwo.ca/",
+          "revision_status": "final",
+          "series_id": "Ivey_PMI_conflict",
+          "notes": "Seasonally adjusted Ivey PMI from official iveypmi.uwo.ca chart data-primary payload. Conflict/corroboration only; not scored."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "ivey_sa_diffusion",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2026-06",
+          "value": 56.2,
+          "publisher": "Ivey Business School",
+          "source_url": "https://iveypmi.uwo.ca/",
+          "revision_status": "final",
+          "series_id": "Ivey_PMI_conflict",
+          "notes": "Seasonally adjusted Ivey PMI from official iveypmi.uwo.ca chart data-primary payload. Conflict/corroboration only; not scored."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "ivey_sa_diffusion",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2026-07",
+          "value": 55.1,
+          "publisher": "Ivey Business School",
+          "source_url": "https://iveypmi.uwo.ca/",
+          "revision_status": "final",
+          "series_id": "Ivey_PMI_conflict",
+          "notes": "Seasonally adjusted Ivey PMI from official iveypmi.uwo.ca chart data-primary payload. Conflict/corroboration only; not scored."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "ivey_sa_diffusion",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2026-08",
+          "value": 64.3,
+          "publisher": "Ivey Business School",
+          "source_url": "https://iveypmi.uwo.ca/",
+          "revision_status": "final",
+          "series_id": "Ivey_PMI_conflict",
+          "notes": "Seasonally adjusted Ivey PMI from official iveypmi.uwo.ca chart data-primary payload. Conflict/corroboration only; not scored."
+        }
+      ],
       "gaps": [
         {
-          "expected_period": "2025-09",
-          "reason": "proprietary no free history",
-          "attempted_sources": [
-            "https://www.iveypmi.ca/",
-            "https://www.bankofcanada.ca/publications/bos/"
-          ],
-          "as_of": "2026-09-21",
-          "notes": "Ivey PMI SSL failure; BoC BOS lacks public numerical API."
-        },
-        {
-          "expected_period": "2025-10",
-          "reason": "proprietary no free history",
-          "attempted_sources": [
-            "https://www.iveypmi.ca/",
-            "https://www.bankofcanada.ca/publications/bos/"
-          ],
-          "as_of": "2026-09-21",
-          "notes": "Ivey PMI SSL failure; BoC BOS lacks public numerical API."
-        },
-        {
-          "expected_period": "2025-11",
-          "reason": "proprietary no free history",
-          "attempted_sources": [
-            "https://www.iveypmi.ca/",
-            "https://www.bankofcanada.ca/publications/bos/"
-          ],
-          "as_of": "2026-09-21",
-          "notes": "Ivey PMI SSL failure; BoC BOS lacks public numerical API."
-        },
-        {
-          "expected_period": "2025-12",
-          "reason": "proprietary no free history",
-          "attempted_sources": [
-            "https://www.iveypmi.ca/",
-            "https://www.bankofcanada.ca/publications/bos/"
-          ],
-          "as_of": "2026-09-21",
-          "notes": "Ivey PMI SSL failure; BoC BOS lacks public numerical API."
-        },
-        {
-          "expected_period": "2026-01",
-          "reason": "proprietary no free history",
-          "attempted_sources": [
-            "https://www.iveypmi.ca/",
-            "https://www.bankofcanada.ca/publications/bos/"
-          ],
-          "as_of": "2026-09-21",
-          "notes": "Ivey PMI SSL failure; BoC BOS lacks public numerical API."
-        },
-        {
-          "expected_period": "2026-02",
-          "reason": "proprietary no free history",
-          "attempted_sources": [
-            "https://www.iveypmi.ca/",
-            "https://www.bankofcanada.ca/publications/bos/"
-          ],
-          "as_of": "2026-09-21",
-          "notes": "Ivey PMI SSL failure; BoC BOS lacks public numerical API."
-        },
-        {
-          "expected_period": "2026-03",
-          "reason": "proprietary no free history",
-          "attempted_sources": [
-            "https://www.iveypmi.ca/",
-            "https://www.bankofcanada.ca/publications/bos/"
-          ],
-          "as_of": "2026-09-21",
-          "notes": "Ivey PMI SSL failure; BoC BOS lacks public numerical API."
-        },
-        {
-          "expected_period": "2026-04",
-          "reason": "proprietary no free history",
-          "attempted_sources": [
-            "https://www.iveypmi.ca/",
-            "https://www.bankofcanada.ca/publications/bos/"
-          ],
-          "as_of": "2026-09-21",
-          "notes": "Ivey PMI SSL failure; BoC BOS lacks public numerical API."
-        },
-        {
-          "expected_period": "2026-05",
-          "reason": "proprietary no free history",
-          "attempted_sources": [
-            "https://www.iveypmi.ca/",
-            "https://www.bankofcanada.ca/publications/bos/"
-          ],
-          "as_of": "2026-09-21",
-          "notes": "Ivey PMI SSL failure; BoC BOS lacks public numerical API."
-        },
-        {
           "expected_period": "2026-06",
-          "reason": "proprietary no free history",
+          "reason": "source inaccessible",
           "attempted_sources": [
-            "https://www.iveypmi.ca/",
-            "https://www.bankofcanada.ca/publications/bos/"
+            "https://www.pmi.spglobal.com/Public/Release/PressReleases",
+            "https://iveypmi.uwo.ca/",
+            "https://www.cfib-fcei.ca/en/research-economic-analysis/business-barometer"
           ],
           "as_of": "2026-09-21",
-          "notes": "Ivey PMI SSL failure; BoC BOS lacks public numerical API."
+          "notes": "S&P Canada Services/Composite June 2026 primary PDF not retrieved in this harvest."
         },
         {
           "expected_period": "2026-07",
-          "reason": "proprietary no free history",
+          "reason": "source inaccessible",
           "attempted_sources": [
-            "https://www.iveypmi.ca/",
-            "https://www.bankofcanada.ca/publications/bos/"
+            "https://www.pmi.spglobal.com/Public/Release/PressReleases",
+            "https://iveypmi.uwo.ca/",
+            "https://www.cfib-fcei.ca/en/research-economic-analysis/business-barometer"
           ],
           "as_of": "2026-09-21",
-          "notes": "Ivey PMI SSL failure; BoC BOS lacks public numerical API."
+          "notes": "S&P Canada Services/Composite July 2026 primary PDF not retrieved in this harvest."
         },
         {
           "expected_period": "2026-08",
-          "reason": "proprietary no free history",
+          "reason": "source inaccessible",
           "attempted_sources": [
-            "https://www.iveypmi.ca/",
-            "https://www.bankofcanada.ca/publications/bos/"
+            "https://www.pmi.spglobal.com/Public/Release/PressReleases",
+            "https://iveypmi.uwo.ca/",
+            "https://www.cfib-fcei.ca/en/research-economic-analysis/business-barometer"
           ],
           "as_of": "2026-09-21",
-          "notes": "Ivey PMI SSL failure; BoC BOS lacks public numerical API."
+          "notes": "S&P listing GUID for 3 Sep 2026 Canada Services PMI returned empty body (HTTP 202) in this environment."
+        },
+        {
+          "expected_period": "2026-09",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://www.pmi.spglobal.com/Public/Release/PressReleases",
+            "https://iveypmi.uwo.ca/",
+            "https://www.cfib-fcei.ca/en/research-economic-analysis/business-barometer"
+          ],
+          "as_of": "2026-09-21",
+          "notes": "September 2026 PMI not published as of 2026-09-21."
         }
       ],
       "coverage": {
-        "expected_periods_in_window": 12,
-        "observed_periods_in_window": 0,
-        "latest_reference_period": null,
-        "status": "unavailable",
-        "gap_count": 12
+        "expected_periods_in_window": 13,
+        "observed_periods_in_window": 9,
+        "latest_reference_period": "2026-05",
+        "latest_release_date": "2026-06-03",
+        "status": "partial",
+        "gap_count": 4,
+        "conflict_series": "Ivey_PMI_conflict"
       },
       "notes": "Scored target: CFIB national barometer (50=neutral). Ivey PMI is not scored; add under series_id Ivey_PMI_conflict if harvested."
     },

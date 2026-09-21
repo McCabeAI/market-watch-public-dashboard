@@ -1008,159 +1008,189 @@
     "Activity.business_surveys": {
       "dimension": "Activity",
       "component": "business_surveys",
-      "canonical_name": "Judo Bank / S&P Global Australia Composite PMI",
-      "publisher": "Reserve Bank of Australia",
-      "distributor": "RBA",
-      "series_id": null,
-      "cadence": "monthly-or-quarterly",
-      "units": "index",
+      "canonical_name": "S&P Global / Judo Bank Australia Composite PMI Output Index",
+      "publisher": "S&P Global / Judo Bank",
+      "distributor": "S&P Global PMI press releases",
+      "series_id": "SP_GLOBAL_AU_COMPOSITE_PMI",
+      "cadence": "monthly",
+      "units": "diffusion_index",
       "preferred_scoring_transformation": "diffusion_index",
-      "sa": null,
+      "sa": true,
       "source_urls": [
-        "https://www.rba.gov.au/publications/smp/"
+        "https://www.pmi.spglobal.com/Public/Release/PressReleases"
       ],
-      "original_authority_url": "https://www.rba.gov.au/publications/smp/",
-      "retrieval_method": "not_available",
+      "original_authority_url": "https://www.pmi.spglobal.com/Public/Release/PressReleases",
+      "retrieval_method": "s_p_global_australia_services_or_flash_pmi_pdf",
       "methodology_breaks": [],
-      "observations": [],
+      "observations": [
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2025-10",
+          "value": 52.1,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/75fd3562725941c4a3c77d176e93f929",
+          "release_date": "2025-12-03",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_AU_COMPOSITE_PMI",
+          "notes": "October 2025 Composite Output Index 52.1 restated as prior in November final S&P Global Australia Services PMI PDF."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2025-11",
+          "value": 52.6,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/75fd3562725941c4a3c77d176e93f929",
+          "release_date": "2025-12-03",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_AU_COMPOSITE_PMI",
+          "notes": "November 2025 Composite Output Index 52.6, up from 52.1 in October (final)."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2025-12",
+          "value": 51.0,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/6c26872271534430bd2556521d2fe425",
+          "release_date": "2026-01-06",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_AU_COMPOSITE_PMI",
+          "notes": "December 2025 Composite Output Index 51.0, down from 52.6 in November (final)."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2026-01",
+          "value": 55.7,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/76c27f9824f24fafaa9415a19c54ff19",
+          "release_date": "2026-02-20",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_AU_COMPOSITE_PMI",
+          "notes": "January 2026 Composite Output Index 55.7 as restated prior in February flash PDF (January flash had been 55.5)."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2026-02",
+          "value": 52.4,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/f300c58c8acc4c599c45f7ef16616b33",
+          "release_date": "2026-04-07",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_AU_COMPOSITE_PMI",
+          "notes": "February 2026 Composite Output Index 52.4 restated as prior in March final PDF."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2026-03",
+          "value": 46.6,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/f300c58c8acc4c599c45f7ef16616b33",
+          "release_date": "2026-04-07",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_AU_COMPOSITE_PMI",
+          "notes": "March 2026 Composite Output Index dropped to 46.6 from 52.4 in February (final)."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2026-07",
+          "value": 52.6,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/5e210a2556224269a36d74a5288687df",
+          "release_date": "2026-07-24",
+          "revision_status": "preliminary",
+          "series_id": "SP_GLOBAL_AU_COMPOSITE_PMI",
+          "notes": "July 2026 FLASH Composite Output Index 52.6 (Jun: 50.4). Final July PDF not retrieved; flash used with revision_status preliminary."
+        }
+      ],
       "gaps": [
         {
           "expected_period": "2025-09",
           "reason": "source inaccessible",
           "attempted_sources": [
-            "https://www.rba.gov.au/publications/smp/",
-            "https://www.rba.gov.au/statistics/tables/",
-            "https://www.westpaciq.com.au/economics"
+            "https://www.pmi.spglobal.com/Public/Release/PressReleases",
+            "https://www.pmi.spglobal.com/Public/Home/PressRelease/5e210a2556224269a36d74a5288687df"
           ],
-          "as_of": "2026-09-21"
-        },
-        {
-          "expected_period": "2025-10",
-          "reason": "source inaccessible",
-          "attempted_sources": [
-            "https://www.rba.gov.au/publications/smp/",
-            "https://www.rba.gov.au/statistics/tables/",
-            "https://www.westpaciq.com.au/economics"
-          ],
-          "as_of": "2026-09-21"
-        },
-        {
-          "expected_period": "2025-11",
-          "reason": "source inaccessible",
-          "attempted_sources": [
-            "https://www.rba.gov.au/publications/smp/",
-            "https://www.rba.gov.au/statistics/tables/",
-            "https://www.westpaciq.com.au/economics"
-          ],
-          "as_of": "2026-09-21"
-        },
-        {
-          "expected_period": "2025-12",
-          "reason": "source inaccessible",
-          "attempted_sources": [
-            "https://www.rba.gov.au/publications/smp/",
-            "https://www.rba.gov.au/statistics/tables/",
-            "https://www.westpaciq.com.au/economics"
-          ],
-          "as_of": "2026-09-21"
-        },
-        {
-          "expected_period": "2026-01",
-          "reason": "source inaccessible",
-          "attempted_sources": [
-            "https://www.rba.gov.au/publications/smp/",
-            "https://www.rba.gov.au/statistics/tables/",
-            "https://www.westpaciq.com.au/economics"
-          ],
-          "as_of": "2026-09-21"
-        },
-        {
-          "expected_period": "2026-02",
-          "reason": "source inaccessible",
-          "attempted_sources": [
-            "https://www.rba.gov.au/publications/smp/",
-            "https://www.rba.gov.au/statistics/tables/",
-            "https://www.westpaciq.com.au/economics"
-          ],
-          "as_of": "2026-09-21"
-        },
-        {
-          "expected_period": "2026-03",
-          "reason": "source inaccessible",
-          "attempted_sources": [
-            "https://www.rba.gov.au/publications/smp/",
-            "https://www.rba.gov.au/statistics/tables/",
-            "https://www.westpaciq.com.au/economics"
-          ],
-          "as_of": "2026-09-21"
+          "as_of": "2026-09-21",
+          "notes": "September 2025 final Composite PDF not retrieved."
         },
         {
           "expected_period": "2026-04",
           "reason": "source inaccessible",
           "attempted_sources": [
-            "https://www.rba.gov.au/publications/smp/",
-            "https://www.rba.gov.au/statistics/tables/",
-            "https://www.westpaciq.com.au/economics"
+            "https://www.pmi.spglobal.com/Public/Release/PressReleases",
+            "https://www.pmi.spglobal.com/Public/Home/PressRelease/5e210a2556224269a36d74a5288687df"
           ],
-          "as_of": "2026-09-21"
+          "as_of": "2026-09-21",
+          "notes": "April 2026 final Composite PDF not retrieved."
         },
         {
           "expected_period": "2026-05",
           "reason": "source inaccessible",
           "attempted_sources": [
-            "https://www.rba.gov.au/publications/smp/",
-            "https://www.rba.gov.au/statistics/tables/",
-            "https://www.westpaciq.com.au/economics"
+            "https://www.pmi.spglobal.com/Public/Release/PressReleases",
+            "https://www.pmi.spglobal.com/Public/Home/PressRelease/5e210a2556224269a36d74a5288687df"
           ],
-          "as_of": "2026-09-21"
+          "as_of": "2026-09-21",
+          "notes": "May 2026 final Composite PDF not retrieved."
         },
         {
           "expected_period": "2026-06",
           "reason": "source inaccessible",
           "attempted_sources": [
-            "https://www.rba.gov.au/publications/smp/",
-            "https://www.rba.gov.au/statistics/tables/",
-            "https://www.westpaciq.com.au/economics"
+            "https://www.pmi.spglobal.com/Public/Release/PressReleases",
+            "https://www.pmi.spglobal.com/Public/Home/PressRelease/5e210a2556224269a36d74a5288687df"
           ],
-          "as_of": "2026-09-21"
-        },
-        {
-          "expected_period": "2026-07",
-          "reason": "source inaccessible",
-          "attempted_sources": [
-            "https://www.rba.gov.au/publications/smp/",
-            "https://www.rba.gov.au/statistics/tables/",
-            "https://www.westpaciq.com.au/economics"
-          ],
-          "as_of": "2026-09-21"
+          "as_of": "2026-09-21",
+          "notes": "June 2026 final Composite PDF not retrieved. July flash cites June 50.4 but June's own primary PDF was not harvested, so June is gapped rather than inferred."
         },
         {
           "expected_period": "2026-08",
           "reason": "source inaccessible",
           "attempted_sources": [
-            "https://www.rba.gov.au/publications/smp/",
-            "https://www.rba.gov.au/statistics/tables/",
-            "https://www.westpaciq.com.au/economics"
+            "https://www.pmi.spglobal.com/Public/Release/PressReleases",
+            "https://www.pmi.spglobal.com/Public/Home/PressRelease/5e210a2556224269a36d74a5288687df"
           ],
-          "as_of": "2026-09-21"
+          "as_of": "2026-09-21",
+          "notes": "2 Sep 2026 Australia Services listing GUID returned empty body (HTTP 202)."
         },
         {
           "expected_period": "2026-09",
-          "reason": "source inaccessible",
+          "reason": "not yet released",
           "attempted_sources": [
-            "https://www.rba.gov.au/publications/smp/",
-            "https://www.rba.gov.au/statistics/tables/",
-            "https://www.westpaciq.com.au/economics"
+            "https://www.pmi.spglobal.com/Public/Release/PressReleases",
+            "https://www.pmi.spglobal.com/Public/Home/PressRelease/5e210a2556224269a36d74a5288687df"
           ],
-          "as_of": "2026-09-21"
+          "as_of": "2026-09-21",
+          "notes": "September 2026 PMI not published as of 2026-09-21."
         }
       ],
       "coverage": {
         "expected_periods_in_window": 13,
-        "observed_periods_in_window": 0,
-        "latest_reference_period": null,
-        "latest_release_date": null,
-        "status": "unavailable"
+        "observed_periods_in_window": 7,
+        "latest_reference_period": "2026-07",
+        "latest_release_date": "2026-07-24",
+        "status": "partial",
+        "gap_count": 6
       },
       "notes": "No maintained free numerical business-conditions history on rba.gov.au statistical tables identified."
     },

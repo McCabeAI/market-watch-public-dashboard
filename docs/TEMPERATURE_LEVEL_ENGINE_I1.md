@@ -2,25 +2,32 @@
 
 Single implementation: `scripts/temperature_level.py`. Calibration: `data/temperature_calibration.json` + `docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md`.
 
-## Current LEVELs (2026-09 cutoff)
+## Current LEVELs (2026-09 cutoff, vintage through 2026-09-21)
 
-Numeric table in `data/temperature_scores.json` is **stale until the parent regenerates** disk state after merge. Engine changes in this repair:
+| Country | Inflation | Labor | Activity | Consumer |
+|--------:|----------:|------:|---------:|---------:|
+| US | 63.1 | 52.8 | 50.6 | 46.5 |
+| CA | 54.8 | 42.2 | 49.9 | 62.1 |
+| AU | 63.2 | 50.1 | 46.0 | 54.3 |
+| NZ | 64.2 | 36.6 | 50.5 | 48.4 |
 
-- **GDP Activity LEVEL** = two-quarter mean SAAR (`level_scoring_transform`); **GDP impulse** = single-quarter SAAR step (unchanged visibility on CA +28 / NZ −28 component impulses).
-- **US ISM** surveys: 12 months of press-release history; LEVEL = 3m mean, impulse = 1m delta; Activity coverage returns to **1.00** when recomputed.
+Repair vs PR #66 pre-repair (single-quarter GDP LEVEL, 150k payrolls, CA/AU/NZ surveys unobserved):
 
-Qualitative: CA/NZ Activity GDP LEVEL moves toward neutral (~50) vs the old single-quarter pathology (~64 / ~38).
+| | US Act | CA Act | AU Act | NZ Act | US Labor |
+|---|---:|---:|---:|---:|---:|
+| Before | 49.1 | 64.4 | 43.6 | 38.0 | 50.0 |
+| After | 50.6 | 49.9 | 46.0 | 50.5 | 52.8 |
 
 ## Coverage (sum of weights with observed LEVEL)
 
 | Country | Inflation | Labor | Activity | Consumer |
 |--------:|----------:|------:|---------:|---------:|
-| US | 1.00 | 1.00 | 1.00 (GDP+ISM) | 1.00 |
-| CA | 1.00 | 1.00 | 0.60 | 0.75 |
-| AU | 1.00 | 1.00 | 0.60 | 0.75 |
-| NZ | 1.00 | 1.00 | 0.60 | 1.00 |
+| US | 1.00 | 1.00 | 1.00 | 1.00 |
+| CA | 1.00 | 1.00 | 1.00 | 0.75 |
+| AU | 1.00 | 1.00 | 1.00 | 0.75 |
+| NZ | 1.00 | 1.00 | 1.00 | 1.00 |
 
-Missing: CA/AU/NZ business surveys (Activity 0.40); CA BoC CSCE; AU monthly retail (post-2025-06).
+Missing: CA BoC CSCE; AU monthly retail (post-2025-06). Activity surveys are now scored with remaining month-level gaps documented in `docs/ACTIVITY_SURVEY_SOURCES.md`.
 
 ## IMPULSE + direction (latest print vs prior print)
 
@@ -30,48 +37,39 @@ Thresholds: warming ≥ +1.0, cooling ≤ −1.0.
 |--------|-----------|--------:|-----------|
 | US | Inflation | −0.81 | static |
 | US | Labor | +0.36 | static |
-| US | Activity | −6.00 | cooling |
+| US | Activity | −3.36 | cooling |
 | US | Consumer | +3.55 | warming |
 | CA | Inflation | 0.00 | static |
 | CA | Labor | −2.52 | cooling |
-| CA | Activity | +28.38 | warming |
+| CA | Activity | +17.39 | warming |
 | CA | Consumer | +4.53 | warming |
 | AU | Inflation | −1.50 | cooling |
 | AU | Labor | −0.30 | static |
-| AU | Activity | +4.04 | warming |
+| AU | Activity | +4.83 | warming |
 | AU | Consumer | +20.00 | warming |
 | NZ | Inflation | +4.25 | warming |
 | NZ | Labor | −2.10 | cooling |
-| NZ | Activity | −28.46 | cooling |
+| NZ | Activity | −16.40 | cooling |
 | NZ | Consumer | −4.50 | cooling |
 
-Large Activity **component** impulses on GDP still reflect the latest q/q→SAAR **single-quarter** step (release shock). **LEVEL** uses the 2Q-mean SAAR so dimension LEVEL no longer tracks a lone hot/cold quarter.
+GDP **component** impulses remain the latest single-quarter SAAR step (CA GDP +28.4, NZ GDP −28.5). Dimension Activity impulse is smaller because surveys now take 40% weight and GDP **LEVEL** is a two-quarter mean SAAR.
 
-## G1 deltas explained (>3pt)
-
-**CA Consumer (62.1 vs G1 “mid-50s”)** — Renormalized mean over coverage 0.75: retail 3m m/m → LEVEL 65.1 (2026-06), Q2 nominal income +2.12% q/q → 66.8, Q2 real consumption +0.8% q/q → 54.5. Weighted: `(0.25×65.1 + 0.25×66.8 + 0.25×54.5) / 0.75 = 62.1`. G1 narrative was approximate; arithmetic uses pinned anchors (4% SAAR nominal / 2% real).
-
-**AU Consumer (54.3 vs G1 “mixed ~50s”)** — Without retail (unobserved), Westpac Sep 84.4 maps to LEVEL **34.4** (anchor 100), Q2 income LEVEL 49.6, MHSI 3m mean LEVEL 79.0 → coverage-weighted composite 54.3.
+AU survey LEVEL is `short_window` (July 2026 flash only; Apr–Jun gapped), so the 3m mean collapses to the latest flash print.
 
 ## Pathology scan (`data/temperature_history/score_paths.json`)
 
-Nine `large_level_jump` findings (|ΔLEVEL| > 15 month-on-month), all on **Activity** dimensions:
+Zero `large_level_jump` findings after the 2Q GDP LEVEL window plus scored surveys. Previously nine Activity jumps at quarter boundaries when surveys were unobserved.
 
-- **CA / AU / NZ**: GDP still drives 60% coverage; 2Q-mean LEVEL dampens quarter-end GDP spikes vs the prior single-quarter LEVEL rule. Component impulses remain large on GDP releases.
-- **US Activity**: full ISM history restores survey weight (28%/12%); path jumps may still appear when ISM 3m LEVEL shifts alongside GDP.
-
-No boundary compression (≥3 months at 1 or 100). No monotonic calendar drift with unchanged inputs (LEVEL flat between releases when tested with dummy future index row).
-
-**Counterintuitive checks**: CA/NZ Labor LEVEL falls when unemployment is above u* (hot_direction −1) — consistent. Unemployment up → Labor LEVEL down.
+No boundary compression. No monotonic calendar drift.
 
 ## Outputs
 
 After changing history or calibration, regenerate committed state with:
 
-`PYTHONPATH=. python scripts/temperature_level.py --write-state --write-paths`
+`PYTHONPATH=. python3 scripts/temperature_level.py --write-state --write-paths`
 
 CI `cmp`s those files byte-for-byte against the engine output.
 
 ## Tests
 
-`tests/test_temperature_level.py` + `tests/test_temperature_history_audit.py`; `scripts/validate_score_sources.py` against v3 state.
+`tests/test_temperature_level.py`, `tests/test_temperature_history_audit.py`, `tests/test_payroll_breakeven_anchor.py`; `scripts/validate_score_sources.py` against v3 state.

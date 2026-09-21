@@ -80,7 +80,7 @@ Transforms are applied to the **pinned series_id** in `data/temperature_calibrat
 |---|---|
 | `yoy_pct` | Stored official or derived 12-month percent change |
 | `mom_sa_compound_annualized_n3` | Last 3 consecutive m/m percent changes, compounded: `((Π(1+m_i/100))^(12/3)−1)×100` |
-| `trailing_mean_n3` | Mean of the last 3 period-over-period values (payrolls/employment) |
+| `trailing_mean_n3` | Mean of the last 3 period values (payrolls/employment LEVEL; survey LEVEL) |
 | `qoq_to_saar` | `((1+q/100)^4−1)×100` on the **latest single quarter** (Activity GDP impulse) |
 | `mean_qoq_to_saar_n2` | Mean of SAAR equivalents of the last 2 q/q percent prints: per quarter `((1+q/100)^4−1)×100`, then average (Activity GDP LEVEL for q/q-stored series) |
 | `trailing_mean_n2` | Mean of the last 2 published values (Activity GDP LEVEL when storage is already SAAR, e.g. US BEA SAAR) |
@@ -130,7 +130,7 @@ Wage scale: **10 per percentage point**, `hot_direction = +1`.
 
 **Surveys (when observed):** LEVEL = 3-month mean of headline diffusion index (`trailing_mean_n3`); IMPULSE = latest month minus prior month (`identity` on each print). Anchor 50, scale 1.0.
 
-US ISM services/manufacturing: 12 months of official press releases (PR Newswire distribution) through 2026-08; weights 28% / 12%. CA/AU/NZ business surveys remain **unobserved** in history → Activity `coverage = 0.60` until scored.
+US ISM services/manufacturing: 12 months of official press releases (PR Newswire distribution) through 2026-08; weights 28% / 12%. CA scores S&P Global Canada Composite PMI (Ivey PMI is conflict-only). AU scores Judo Bank / S&P Global Australia Composite PMI. NZ scores BNZ–BusinessNZ PCI GDP-weighted. Remaining months without a retrieved primary file are explicit gaps (`docs/ACTIVITY_SURVEY_SOURCES.md`).
 
 ### Consumer
 
@@ -222,7 +222,7 @@ I2 (dashboard + Trader Room) must:
 ## 11. Known limitations
 
 - Latest-vintage history, not a real-time first-print archive.
-- ISM, Ivey, NAB, Westpac, ANZ, BoC CSCE: proprietary / ungapped history; coverage falls.
+- Ivey PMI is retained as a Canada **conflict** series and is not scored. Remaining CA/AU/NZ survey months without a retrieved primary PDF/HTML file are explicit gaps (`docs/ACTIVITY_SURVEY_SOURCES.md`). BoC CSCE remains unavailable.
 - AU monthly retail **publication ceased**; Consumer coverage drops by 0.25.
 - AU MHSI is **nominal current-price** spending; LEVEL uses a nominal monthly anchor.
 - US retail RSAFS and DSPI are nominal.
@@ -231,5 +231,5 @@ I2 (dashboard + Trader Room) must:
 - US `mapped_bridge` is a two-month PPI-mapped snapshot, not a 12-month micro history; it does not move LEVEL.
 - NZ production GDP must be pinned; the history file also contains expenditure-GDP rows (including a 2025-Q2 lookback) that must not be used as “latest”.
 - Potential growth / u\* / productivity add-on are judgement-documented constants, frozen in the calibration JSON, not estimated from the one-year sample.
-- **Activity GDP LEVEL uses a two-quarter mean SAAR** (per-quarter SAAR then average). **GDP IMPULSE** remains the latest single-quarter SAAR mapped to LEVEL minus the prior quarter’s single-quarter SAAR (release shocks stay visible: e.g. CA ~+28, NZ ~−28 on the GDP component). With business surveys unobserved, GDP still drives 60% of CA/AU/NZ Activity coverage.
+- **Activity GDP LEVEL uses a two-quarter mean SAAR** (per-quarter SAAR then average). **GDP IMPULSE** remains the latest single-quarter SAAR mapped to LEVEL minus the prior quarter’s single-quarter SAAR (release shocks stay visible: e.g. CA ~+28, NZ ~−28 on the GDP component). Survey LEVEL uses a 3-month mean; missing survey months are gapped rather than imputed.
 - **No automatic staleness decay.** A component that stops updating keeps its last LEVEL and full weight until it is marked unobserved. NZ Consumer income is 2026-Q1 while peers are 2026-Q2; CA retail is 2026-06. Coverage does not currently fall with age.

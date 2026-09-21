@@ -818,137 +818,200 @@
     "Activity.business_surveys": {
       "dimension": "Activity",
       "component": "business_surveys",
-      "canonical_name": "BNZ-BusinessNZ Performance of Composite Index (GDP-weighted)",
-      "publisher": "BusinessNZ / ANZ",
+      "canonical_name": "BNZ-BusinessNZ Performance of Composite Index, GDP-weighted",
+      "publisher": "BusinessNZ / BNZ",
       "cadence": "monthly",
-      "units": "index",
+      "units": "diffusion_index",
       "preferred_scoring_transformation": "diffusion_index",
-      "sa": null,
+      "sa": true,
       "source_urls": [
-        "https://businessnz.org.nz/pmi/",
-        "https://www.anz.co.nz/about-us/economic-markets-research/business-outlook/"
+        "https://www.bnz.co.nz/assets/markets/research/",
+        "https://businessnz.org.nz/psi/"
       ],
-      "original_authority_url": "https://businessnz.org.nz/pmi/",
-      "retrieval_method": "unavailable_proprietary",
+      "original_authority_url": "https://businessnz.org.nz/",
+      "retrieval_method": "bnz_businessnz_psi_pdf_pci_table",
       "methodology_breaks": [],
-      "observations": [],
+      "observations": [
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2025-09",
+          "value": 48.5,
+          "publisher": "BNZ / BusinessNZ",
+          "source_url": "https://www.bnz.co.nz/assets/markets/research/BNZ-BusinessNZ-PSI-Release-January-2026_dft1u.pdf",
+          "release_date": "2026-01",
+          "revision_status": "revised",
+          "series_id": "BUSINESSNZ_PCI_GDP_WEIGHTED",
+          "notes": "GDP-weighted PCI 48.5 for Sep 2025 from January 2026 BNZ-BusinessNZ PSI PDF time-series table (latest harvested PDF that includes Sep 2025)."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2025-10",
+          "value": 49.2,
+          "publisher": "BNZ / BusinessNZ",
+          "source_url": "https://www.bnz.co.nz/assets/markets/research/BNZ-BusinessNZ-PSI-Release-February-2026_Snk5.pdf",
+          "release_date": "2026-02",
+          "revision_status": "revised",
+          "series_id": "BUSINESSNZ_PCI_GDP_WEIGHTED",
+          "notes": "GDP-weighted PCI 49.2 for Oct 2025 from February 2026 BNZ-BusinessNZ PSI PDF (latest harvested PDF that includes Oct 2025)."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2025-11",
+          "value": 48.0,
+          "publisher": "BNZ / BusinessNZ",
+          "source_url": "https://www.bnz.co.nz/assets/markets/research/BNZ-BusinessNZ-PSI-Release-March-2026_MON2.pdf",
+          "release_date": "2026-03",
+          "revision_status": "revised",
+          "series_id": "BUSINESSNZ_PCI_GDP_WEIGHTED",
+          "notes": "GDP-weighted PCI 48.0 for Nov 2025 from March 2026 BNZ-BusinessNZ PSI PDF."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2025-12",
+          "value": 52.2,
+          "publisher": "BNZ / BusinessNZ",
+          "source_url": "https://www.bnz.co.nz/assets/markets/research/BNZ_BusinessNZ_PSI_Release_April-2026_o.pdf",
+          "release_date": "2026-04",
+          "revision_status": "revised",
+          "series_id": "BUSINESSNZ_PCI_GDP_WEIGHTED",
+          "notes": "GDP-weighted PCI 52.2 for Dec 2025 from April 2026 BNZ-BusinessNZ PSI PDF time-series table."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2026-01",
+          "value": 51.0,
+          "publisher": "BNZ / BusinessNZ",
+          "source_url": "https://www.bnz.co.nz/assets/markets/research/BNZ_BusinessNZ_PSI_Release_April-2026_o.pdf",
+          "release_date": "2026-04",
+          "revision_status": "revised",
+          "series_id": "BUSINESSNZ_PCI_GDP_WEIGHTED",
+          "notes": "GDP-weighted PCI 51.0 for Jan 2026 from April 2026 BNZ-BusinessNZ PSI PDF."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2026-02",
+          "value": 48.4,
+          "publisher": "BNZ / BusinessNZ",
+          "source_url": "https://www.bnz.co.nz/assets/markets/research/BNZ_BusinessNZ_PSI_Release_April-2026_o.pdf",
+          "release_date": "2026-04",
+          "revision_status": "revised",
+          "series_id": "BUSINESSNZ_PCI_GDP_WEIGHTED",
+          "notes": "GDP-weighted PCI 48.4 for Feb 2026 from April 2026 BNZ-BusinessNZ PSI PDF."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2026-03",
+          "value": 46.9,
+          "publisher": "BNZ / BusinessNZ",
+          "source_url": "https://www.bnz.co.nz/assets/markets/research/BNZ_BusinessNZ_PSI_Release_April-2026_o.pdf",
+          "release_date": "2026-04",
+          "revision_status": "revised",
+          "series_id": "BUSINESSNZ_PCI_GDP_WEIGHTED",
+          "notes": "GDP-weighted PCI 46.9 for Mar 2026 from April 2026 BNZ-BusinessNZ PSI PDF."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2026-04",
+          "value": 48.6,
+          "publisher": "BNZ / BusinessNZ",
+          "source_url": "https://www.bnz.co.nz/assets/markets/research/BNZ_BusinessNZ_PSI_Release_April-2026_o.pdf",
+          "release_date": "2026-04",
+          "revision_status": "final",
+          "series_id": "BUSINESSNZ_PCI_GDP_WEIGHTED",
+          "notes": "April 2026 GDP-weighted PCI 48.6 from contemporaneous BNZ-BusinessNZ PSI PDF."
+        }
+      ],
       "gaps": [
         {
-          "expected_period": "2025-09",
-          "reason": "proprietary no free history",
-          "attempted_sources": [
-            "https://businessnz.org.nz/pmi/",
-            "https://www.anz.co.nz/about-us/economic-markets-research/business-outlook/"
-          ],
-          "as_of": "2026-09-21"
-        },
-        {
-          "expected_period": "2025-10",
-          "reason": "proprietary no free history",
-          "attempted_sources": [
-            "https://businessnz.org.nz/pmi/",
-            "https://www.anz.co.nz/about-us/economic-markets-research/business-outlook/"
-          ],
-          "as_of": "2026-09-21"
-        },
-        {
-          "expected_period": "2025-11",
-          "reason": "proprietary no free history",
-          "attempted_sources": [
-            "https://businessnz.org.nz/pmi/",
-            "https://www.anz.co.nz/about-us/economic-markets-research/business-outlook/"
-          ],
-          "as_of": "2026-09-21"
-        },
-        {
-          "expected_period": "2025-12",
-          "reason": "proprietary no free history",
-          "attempted_sources": [
-            "https://businessnz.org.nz/pmi/",
-            "https://www.anz.co.nz/about-us/economic-markets-research/business-outlook/"
-          ],
-          "as_of": "2026-09-21"
-        },
-        {
-          "expected_period": "2026-01",
-          "reason": "proprietary no free history",
-          "attempted_sources": [
-            "https://businessnz.org.nz/pmi/",
-            "https://www.anz.co.nz/about-us/economic-markets-research/business-outlook/"
-          ],
-          "as_of": "2026-09-21"
-        },
-        {
-          "expected_period": "2026-02",
-          "reason": "proprietary no free history",
-          "attempted_sources": [
-            "https://businessnz.org.nz/pmi/",
-            "https://www.anz.co.nz/about-us/economic-markets-research/business-outlook/"
-          ],
-          "as_of": "2026-09-21"
-        },
-        {
-          "expected_period": "2026-03",
-          "reason": "proprietary no free history",
-          "attempted_sources": [
-            "https://businessnz.org.nz/pmi/",
-            "https://www.anz.co.nz/about-us/economic-markets-research/business-outlook/"
-          ],
-          "as_of": "2026-09-21"
-        },
-        {
-          "expected_period": "2026-04",
-          "reason": "proprietary no free history",
-          "attempted_sources": [
-            "https://businessnz.org.nz/pmi/",
-            "https://www.anz.co.nz/about-us/economic-markets-research/business-outlook/"
-          ],
-          "as_of": "2026-09-21"
-        },
-        {
           "expected_period": "2026-05",
-          "reason": "proprietary no free history",
+          "reason": "source inaccessible",
           "attempted_sources": [
-            "https://businessnz.org.nz/pmi/",
-            "https://www.anz.co.nz/about-us/economic-markets-research/business-outlook/"
+            "https://www.bnz.co.nz/assets/markets/research/",
+            "https://businessnz.org.nz/psi/",
+            "https://businessnz.org.nz/pmi/"
           ],
-          "as_of": "2026-09-21"
+          "as_of": "2026-09-21",
+          "notes": "May 2026 BNZ-BusinessNZ PSI/PCI PDF not retrieved; BusinessNZ HTML blocked by Cloudflare in this environment."
         },
         {
           "expected_period": "2026-06",
-          "reason": "proprietary no free history",
+          "reason": "source inaccessible",
           "attempted_sources": [
-            "https://businessnz.org.nz/pmi/",
-            "https://www.anz.co.nz/about-us/economic-markets-research/business-outlook/"
+            "https://www.bnz.co.nz/assets/markets/research/",
+            "https://businessnz.org.nz/psi/",
+            "https://businessnz.org.nz/pmi/"
           ],
-          "as_of": "2026-09-21"
+          "as_of": "2026-09-21",
+          "notes": "June 2026 PCI PDF/HTML not retrieved."
         },
         {
           "expected_period": "2026-07",
-          "reason": "proprietary no free history",
+          "reason": "source inaccessible",
           "attempted_sources": [
-            "https://businessnz.org.nz/pmi/",
-            "https://www.anz.co.nz/about-us/economic-markets-research/business-outlook/"
+            "https://www.bnz.co.nz/assets/markets/research/",
+            "https://businessnz.org.nz/psi/",
+            "https://businessnz.org.nz/pmi/"
           ],
-          "as_of": "2026-09-21"
+          "as_of": "2026-09-21",
+          "notes": "July 2026 BusinessNZ PSI page indexed by search (GDP-weighted PCI 51.1) but Cloudflare 403 prevented primary fetch; not scored."
         },
         {
           "expected_period": "2026-08",
-          "reason": "proprietary no free history",
+          "reason": "source inaccessible",
           "attempted_sources": [
-            "https://businessnz.org.nz/pmi/",
-            "https://www.anz.co.nz/about-us/economic-markets-research/business-outlook/"
+            "https://www.bnz.co.nz/assets/markets/research/",
+            "https://businessnz.org.nz/psi/",
+            "https://businessnz.org.nz/pmi/"
           ],
-          "as_of": "2026-09-21"
+          "as_of": "2026-09-21",
+          "notes": "August 2026 PCI not retrieved."
+        },
+        {
+          "expected_period": "2026-09",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://www.bnz.co.nz/assets/markets/research/",
+            "https://businessnz.org.nz/psi/",
+            "https://businessnz.org.nz/pmi/"
+          ],
+          "as_of": "2026-09-21",
+          "notes": "September 2026 PCI not published as of 2026-09-21."
         }
       ],
       "coverage": {
-        "expected_periods_in_window": 12,
-        "observed_periods_in_window": 0,
-        "latest_reference_period": null,
-        "latest_release_date": null,
-        "status": "unavailable"
-      }
+        "expected_periods_in_window": 13,
+        "observed_periods_in_window": 8,
+        "latest_reference_period": "2026-04",
+        "latest_release_date": "2026-04",
+        "status": "partial",
+        "gap_count": 5
+      },
+      "distributor": "BNZ Markets Research PDF (co-publisher with BusinessNZ)",
+      "series_id": "BUSINESSNZ_PCI_GDP_WEIGHTED"
     },
     "Consumer.retail": {
       "dimension": "Consumer",

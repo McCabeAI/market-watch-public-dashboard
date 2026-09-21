@@ -242,12 +242,45 @@ class ActivityTransformTest(unittest.TestCase):
         res = score_component(history, spec, self.cal, "2026-09", 0.4)
         self.assertFalse(res.observed)
 
-    def test_gapped_survey_reduces_coverage_not_fifty(self) -> None:
+    def test_ca_au_nz_surveys_scored_from_primary_series(self) -> None:
         computed = compute_state(self.cal, self.histories, cutoff="2026-09")
-        ca = computed["countries"]["CA"]["Activity"]
-        self.assertAlmostEqual(ca["coverage"], 0.6, places=3)
-        bs = ca["component_state"]["business_surveys"]
-        self.assertFalse(bs["observed"])
+        for cc, sid in (
+            ("CA", "SP_GLOBAL_CA_COMPOSITE"),
+            ("AU", "SP_GLOBAL_AU_COMPOSITE_PMI"),
+            ("NZ", "BUSINESSNZ_PCI_GDP_WEIGHTED"),
+        ):
+            act = computed["countries"][cc]["Activity"]
+            self.assertAlmostEqual(act["coverage"], 1.0, places=3, msg=cc)
+            bs = act["component_state"]["business_surveys"]
+            self.assertTrue(bs["observed"], cc)
+            self.assertIsNotNone(bs["level"])
+            spec = self.cal["components"][f"{cc}.Activity.business_surveys"]
+            self.assertEqual(spec["series_id"], sid)
+            self.assertNotEqual(spec.get("observed"), False)
+
+        ca_spec = self.cal["components"]["CA.Activity.business_surveys"]
+        ivey_rows = [
+            o
+            for o in self.histories["CA"]["components"]["Activity.business_surveys"]["observations"]
+            if o.get("series_id") == "Ivey_PMI_conflict"
+        ]
+        self.assertGreaterEqual(len(ivey_rows), 12)
+        scored = raw_values_by_period(self.histories["CA"], ca_spec, "2026-09")
+        self.assertNotIn("2026-08", scored)  # Ivey August is conflict-only
+        self.assertIn("2026-05", scored)
+
+    def test_gapped_survey_months_are_explicit_not_fabricated(self) -> None:
+        ca_comp = self.histories["CA"]["components"]["Activity.business_surveys"]
+        gap_periods = {g["expected_period"] for g in ca_comp["gaps"]}
+        self.assertIn("2026-09", gap_periods)
+        scored_ids = {
+            o["source_url"]
+            for o in ca_comp["observations"]
+            if o.get("series_id") == "SP_GLOBAL_CA_COMPOSITE"
+        }
+        for url in scored_ids:
+            self.assertFalse("tradingeconomics" in url.lower())
+            self.assertFalse("reddit.com" in url.lower())
 
 
 class TemperatureLevelFixtureTest(unittest.TestCase):
