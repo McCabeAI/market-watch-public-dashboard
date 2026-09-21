@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import csv
 import io
+from concurrent.futures import ThreadPoolExecutor
 from datetime import date, datetime
 from typing import Any, Callable, Mapping
 
@@ -134,26 +135,30 @@ def _feed(name: str, series_data: Mapping[str, list[tuple[date, float]]], today:
 
 
 def collect_us_housing(*, today: date, fetch_bytes: Callable[..., bytes]) -> dict[str, Any]:
-    ids = ",".join(SERIES)
-    try:
-        raw = fetch_bytes(FRED_CSV.format(series=ids)).decode("utf-8-sig", errors="replace")
-        data = parse_fred_csv(raw)
-    except Exception as exc:
-        data = {}
-        common_error = str(exc)
-    else:
-        common_error = None
+    def one(sid: str):
+        try:
+            raw = fetch_bytes(FRED_CSV.format(series=sid)).decode("utf-8-sig", errors="replace")
+            parsed = parse_fred_csv(raw)
+            return sid, parsed.get(sid) or [], None
+        except Exception as exc:
+            return sid, [], str(exc)
+
+    with ThreadPoolExecutor(max_workers=6) as pool:
+        results = list(pool.map(one, SERIES))
+    data = {sid: points for sid, points, _ in results}
+    errors = {sid: err for sid, _, err in results if err}
 
     feeds = {}
-    for name in FEEDS:
-        if common_error:
+    for name, sids in FEEDS.items():
+        missing_errors = {sid: errors[sid] for sid in sids if sid in errors}
+        if missing_errors:
             feeds[name] = {
                 "status": "unavailable",
                 "source_name": "FRED / original series publishers",
-                "url": FRED_CSV.format(series=",".join(FEEDS[name])),
+                "url": FRED_CSV.format(series=",".join(sids)),
                 "as_of": None,
                 "age_days": None,
-                "error": common_error,
+                "error": f"FRED series fetch failed: {missing_errors}",
             }
         else:
             feeds[name] = _feed(name, data, today)
