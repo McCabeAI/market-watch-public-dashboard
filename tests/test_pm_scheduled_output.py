@@ -253,6 +253,7 @@ class OptionalAutomatedPMDecisionTests(ScheduledOutputTests):
 
     def test_grinder_not_evaluable_requires_trade_specific_missing_data(self) -> None:
         decision = {
+            "actions": [{"action": "NO_TRADE"}],
             "deployment_hurdle": {
                 "benchmark": "Official SOFR 3.85% ACT/360.",
                 "candidate_assessments": [
