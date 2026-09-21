@@ -9,6 +9,7 @@ import sys
 from pathlib import Path
 
 TRADER_MARKER = "MW_TRADER_FROZEN=1"
+PM_MARKER = "MW_PM_FROZEN=1"
 
 
 def respond(permission: str, message: str | None = None) -> None:
@@ -36,10 +37,20 @@ def main() -> None:
     except Exception:
         respond("deny", "Could not parse Cursor tool event.")
 
-    if TRADER_MARKER not in transcript_text(event):
+    text = transcript_text(event)
+    trader_frozen = TRADER_MARKER in text
+    pm_frozen = PM_MARKER in text
+    if not trader_frozen and not pm_frozen:
         respond("allow")
+    if trader_frozen and pm_frozen:
+        respond("deny", "Frozen overnight run markers conflict; tool use is blocked.")
 
     tool = str(event.get("tool_name") or "")
+    if pm_frozen:
+        respond(
+            "deny",
+            f"Frozen overnight PM seat is evidence-closed; tool {tool!r} is blocked.",
+        )
     respond(
         "deny",
         f"Frozen overnight trader seat is evidence-closed; tool {tool!r} is blocked.",

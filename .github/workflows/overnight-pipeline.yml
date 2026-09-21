@@ -45,7 +45,12 @@ on:
       - ".cursor/hooks/enforce-overnight-budget.py"
       - ".cursor/hooks/enforce-overnight-runtime.py"
       - "scripts/overnight/**"
+      - "scripts/pm/**"
       - "scripts/overnight_pipeline.py"
+      - ".cursor/commands/overnight-scheduled.md"
+      - "tests/test_pm_scheduled_output.py"
+      - "tests/test_pm_overnight_packets.py"
+      - "tests/test_trading_memory.py"
       - "scripts/apply_trader_book_tab.py"
       - "patch_v13/**"
       - "data/overnight/**"
@@ -76,13 +81,14 @@ jobs:
       - name: Unit tests
         run: |
           set -euo pipefail
-          PYTHONPATH=. python3 -m unittest tests.test_overnight_pipeline tests.test_overnight_scheduled_output tests.test_trader_room_dashboard -v
+          PYTHONPATH=. python3 -m unittest tests.test_overnight_pipeline tests.test_overnight_scheduled_output tests.test_pm_scheduled_output tests.test_pm_overnight_packets tests.test_trading_memory tests.test_trader_room_dashboard -v
       - name: End-to-end zero-model dry-run
         run: |
           set -euo pipefail
           PYTHONPATH=. python3 scripts/overnight_pipeline.py schedule
           PYTHONPATH=. python3 scripts/overnight_pipeline.py dry-run --suffix ci --site-dir /tmp/overnight-site
           test -s /tmp/overnight-site/trader-books.json
+          test -s /tmp/overnight-site/pm-books.json
 
   resolve:
     if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'live-stage')

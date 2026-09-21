@@ -67,7 +67,7 @@ def emit_trader_books_json(store: OvernightStore, site_dir: Path, *, run_id: str
         if dataset is not None:
             pub = dataset["publication"]
             payload["overnight_research"] = dataset.get("agent_research")
-            payload["publication"] = {
+            publication = {
                 "core_status": pub["core_status"],
                 "trader_books_status": pub["trader_books_status"],
                 "may_publish": pub["may_publish"],
@@ -76,6 +76,11 @@ def emit_trader_books_json(store: OvernightStore, site_dir: Path, *, run_id: str
                 "overnight_run_id": dataset["overnight_run_id"],
                 "as_of": dataset["as_of"],
             }
+            if pub.get("pm_books_status") is not None:
+                publication["pm_books_status"] = pub["pm_books_status"]
+            if pub.get("last_successful_pm_run_id"):
+                publication["last_successful_pm_run_id"] = pub["last_successful_pm_run_id"]
+            payload["publication"] = publication
             payload["books_as_of"] = canonical_payload.get("as_of")
             payload["books_run_id"] = canonical_payload.get("overnight_run_id")
         else:
@@ -94,13 +99,25 @@ def emit_trader_books_json(store: OvernightStore, site_dir: Path, *, run_id: str
             **payload,
             "overnight_research": dataset.get("agent_research"),
             "publication": {
-                "core_status": dataset["publication"]["core_status"],
-                "trader_books_status": dataset["publication"]["trader_books_status"],
-                "may_publish": dataset["publication"]["may_publish"],
-                "reason": dataset["publication"]["reason"],
-                "last_successful_review_run_id": dataset["publication"].get("last_successful_review_run_id"),
-                "overnight_run_id": dataset["overnight_run_id"],
-                "as_of": dataset["as_of"],
+                **{
+                    "core_status": dataset["publication"]["core_status"],
+                    "trader_books_status": dataset["publication"]["trader_books_status"],
+                    "may_publish": dataset["publication"]["may_publish"],
+                    "reason": dataset["publication"]["reason"],
+                    "last_successful_review_run_id": dataset["publication"].get("last_successful_review_run_id"),
+                    "overnight_run_id": dataset["overnight_run_id"],
+                    "as_of": dataset["as_of"],
+                },
+                **(
+                    {"pm_books_status": dataset["publication"]["pm_books_status"]}
+                    if dataset["publication"].get("pm_books_status") is not None
+                    else {}
+                ),
+                **(
+                    {"last_successful_pm_run_id": dataset["publication"]["last_successful_pm_run_id"]}
+                    if dataset["publication"].get("last_successful_pm_run_id")
+                    else {}
+                ),
             },
         }
     else:
@@ -108,11 +125,16 @@ def emit_trader_books_json(store: OvernightStore, site_dir: Path, *, run_id: str
     return write_json(site_dir / "trader-books.json", payload)
 
 
-def emit_pm_books_json(site_dir: Path, *, root: Path | None = None) -> Path | None:
+def emit_pm_books_json(
+    site_dir: Path,
+    *,
+    root: Path | None = None,
+    state_root: Path | None = None,
+) -> Path | None:
     from scripts.pm.public import emit_pm_json
     from scripts.pm.store import PMStore
 
-    store = PMStore(root=root)
+    store = PMStore(root=root, state_root=state_root)
     if not store.books_path().is_file() and not store.public_path().is_file():
         return None
     return emit_pm_json(store, site_dir)

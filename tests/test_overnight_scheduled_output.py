@@ -19,18 +19,43 @@ from scripts.overnight.scheduled_output import (
     validate_output,
 )
 from scripts.overnight.store import OvernightStore, sha256_json
+from scripts.pm.portfolio import synthetic_portfolio_construction
 
 AS_OF = datetime.fromisoformat("2026-09-18T01:55:00-04:00")
 POLICY = {
     "version": 1,
     "schedule_id": SCHEDULE_ID,
-    "total_model_cap": 18,
-    "grok_cap": 16,
+    "total_model_cap": 19,
+    "grok_cap": 18,
     "composer_cap": 2,
     "parent_model": "grok-4.6",
     "parent_total": 1,
     "parent_grok": 1,
 }
+
+
+def _pm_block(run_id: str, packet_hash: str, cutoff: str) -> dict:
+    out = {}
+    for pm_id in ("swinger", "pragmatist", "grinder"):
+        out[pm_id] = {
+            "pm_id": pm_id,
+            "overnight_run_id": run_id,
+            "packet_sha256": packet_hash,
+            "evidence_cutoff": cutoff,
+            "principal_model": "grok-4.6",
+            "subagent_count": 0,
+            "subagent_models": [],
+            "actions": [{"action": "HOLD"}],
+            "thesis": "Await cleaner setup.",
+            "invalidation": None,
+            "conviction": 20,
+        }
+        if pm_id == "pragmatist":
+            out[pm_id]["portfolio_construction"] = synthetic_portfolio_construction(
+                existing_book="Pragmatist book is flat in this scheduled-output fixture.",
+                rationale="No independent markable complementary trade improves the opportunistic book; HOLD is explicit.",
+            )
+    return out
 
 
 def _skeptic_funding_view() -> dict:
@@ -127,14 +152,15 @@ class ScheduledOutputTests(unittest.TestCase):
                 seat: _hold_decision(seat, self.run_id, packet["packet_sha256"], packet["evidence_cutoff"])
                 for seat in STANDING_SEATS
             },
+            "pm_decisions": _pm_block(self.run_id, packet["packet_sha256"], packet["evidence_cutoff"]),
             "execution": {
                 "parent_model": "grok-4.6",
                 "allowed_subagent_models": ["composer-2.5", "grok-4.6"],
-                "total_model_cap": 18,
-                "grok_cap": 16,
+                "total_model_cap": 19,
+                "grok_cap": 18,
                 "composer_cap": 2,
-                "declared_total_model_calls": 16,
-                "declared_grok_calls": 15,
+                "declared_total_model_calls": 19,
+                "declared_grok_calls": 18,
                 "declared_composer_calls": 1,
                 "other_models_calls": 0,
                 "auto_used": False,
@@ -145,7 +171,9 @@ class ScheduledOutputTests(unittest.TestCase):
         validate_output(self.store, self.payload)
         review = simulate_output(self.store, self.payload)
         self.assertEqual(review["status"], "succeeded")
-        self.assertEqual(review["model_calls"], 16)
+        self.assertEqual(review["model_calls"], 19)
+        self.assertIn("pm_books", review)
+        self.assertIn("pm_packets", review)
         self.assertEqual(set(review["reviews"]), set(STANDING_SEATS))
 
     def test_apply_writes_books_and_marks_trader_stage(self) -> None:
@@ -181,6 +209,19 @@ class ScheduledOutputTests(unittest.TestCase):
             "asset_class": "spot_fx",
             "expression_memo": memo,
         }]
+        packet = self.payload["agent_packet"]
+        pm = self.payload["pm_decisions"]
+        pm["pragmatist"]["portfolio_construction"] = synthetic_portfolio_construction(
+            opportunities=[
+                {
+                    "instrument": "USDCAD",
+                    "rationale": "Independent markable USD-CAD handoff from the frozen overnight review.",
+                    "markable": True,
+                },
+            ],
+            existing_book="Pragmatist book is flat in this scheduled-output fixture.",
+            rationale="Evaluated the USD-CAD handoff; HOLD remains valid for the opportunistic book.",
+        )
         review = simulate_output(self.store, self.payload)
         pos = review["books"]["seats"]["dollar-king"]["positions"][0]
         self.assertEqual(pos["entry_price"], 1.36)
@@ -238,9 +279,9 @@ class BudgetHookTests(unittest.TestCase):
         self.lock.unlink(missing_ok=True)
         self.tmp.cleanup()
 
-    def _call(self, parent: str, model: str) -> subprocess.CompletedProcess:
+    def _call(self, parent: str, model: str, *, child_id: str | None = None) -> subprocess.CompletedProcess:
         event = {
-            "subagent_id": f"sub-{model}",
+            "subagent_id": child_id or f"sub-{model}-{os.urandom(4).hex()}",
             "subagent_type": "generalPurpose",
             "task": "test",
             "parent_conversation_id": parent,
@@ -259,14 +300,18 @@ class BudgetHookTests(unittest.TestCase):
         )
 
     def test_budget_enforces_total_and_per_model_caps(self) -> None:
+        # Parent already counted: total=1, grok=1
         self.assertEqual(self._call("root", "composer-2.5").returncode, 0)
         for _ in range(14):
             self.assertEqual(self._call("root", "grok-4.6").returncode, 0)
-        self.assertEqual(self._call("root", "composer-2.5").returncode, 0)
-        self.assertEqual(self._call("root", "grok-4.6").returncode, 0)
-        blocked = self._call("root", "grok-4.6")
-        self.assertNotEqual(blocked.returncode, 0)
-        self.assertIn("cap", blocked.stdout.lower())
+        for _ in range(3):
+            self.assertEqual(self._call("root", "grok-4.6").returncode, 0)
+        blocked_grok = self._call("root", "grok-4.6")
+        self.assertNotEqual(blocked_grok.returncode, 0)
+        self.assertIn("cap", blocked_grok.stdout.lower())
+        blocked_composer = self._call("root", "composer-2.5")
+        self.assertNotEqual(blocked_composer.returncode, 0)
+        self.assertIn("cap", blocked_composer.stdout.lower())
 
     def test_nested_child_is_denied(self) -> None:
         self.assertEqual(self._call("root", "composer-2.5").returncode, 0)
@@ -277,6 +322,51 @@ class BudgetHookTests(unittest.TestCase):
     def test_other_model_is_denied(self) -> None:
         blocked = self._call("root", "claude-sonnet-5")
         self.assertNotEqual(blocked.returncode, 0)
+
+
+class OvernightRuntimeHookTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.tmp = tempfile.TemporaryDirectory()
+        self.transcript = Path(self.tmp.name) / "transcript.txt"
+        self.script = ROOT / ".cursor" / "hooks" / "enforce-overnight-runtime.py"
+
+    def tearDown(self) -> None:
+        self.tmp.cleanup()
+
+    def _call(self, marker: str) -> subprocess.CompletedProcess:
+        self.transcript.write_text(marker + "\nresearch notes\n", encoding="utf-8")
+        event = {
+            "tool_name": "WebSearch",
+            "transcript_path": str(self.transcript),
+        }
+        return subprocess.run(
+            ["python3", str(self.script)],
+            input=json.dumps(event),
+            text=True,
+            capture_output=True,
+            cwd=ROOT,
+            check=False,
+        )
+
+    def test_unfrozen_parent_may_use_tools(self) -> None:
+        proc = self._call("MW_OVERNIGHT_RUN_POLICY={\"version\":1}")
+        self.assertEqual(proc.returncode, 0)
+        self.assertIn("allow", proc.stdout)
+
+    def test_frozen_trader_tools_denied(self) -> None:
+        proc = self._call("MW_TRADER_FROZEN=1")
+        self.assertNotEqual(proc.returncode, 0)
+        self.assertIn("trader", proc.stdout.lower())
+
+    def test_frozen_pm_tools_denied(self) -> None:
+        proc = self._call("MW_PM_FROZEN=1")
+        self.assertNotEqual(proc.returncode, 0)
+        self.assertIn("pm", proc.stdout.lower())
+
+    def test_conflicting_frozen_markers_denied(self) -> None:
+        proc = self._call("MW_TRADER_FROZEN=1\nMW_PM_FROZEN=1")
+        self.assertNotEqual(proc.returncode, 0)
+        self.assertIn("conflict", proc.stdout.lower())
 
 
 if __name__ == "__main__":

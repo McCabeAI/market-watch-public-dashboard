@@ -16,7 +16,7 @@ from scripts.overnight.errors import OvernightError, PublicationError, StageErro
 from scripts.overnight.evidence import freeze_snapshot
 from scripts.overnight.freshness import assert_may_publish
 from scripts.overnight.ledger import load_or_create, mark_finished, mark_running, persist_run
-from scripts.overnight.publish import emit_trader_books_json, publication_gate
+from scripts.overnight.publish import emit_pm_books_json, emit_trader_books_json, publication_gate
 from scripts.overnight.review import record_missing_live_review, run_trader_review
 from scripts.overnight.store import OvernightStore
 
@@ -132,7 +132,9 @@ def _dispatch(
     if stage == "publish":
         gate = publication_gate(store, run_id=run_id, require_dataset=require_dataset or dry_run)
         if site_dir is not None:
-            emit_trader_books_json(store, Path(site_dir), run_id=run_id)
+            site = Path(site_dir)
+            emit_trader_books_json(store, site, run_id=run_id)
+            emit_pm_books_json(site, root=store.root, state_root=store.state_root)
         return gate
     raise StageError(f"unhandled stage {stage}")
 

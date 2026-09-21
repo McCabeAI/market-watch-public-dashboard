@@ -19,6 +19,7 @@ from scripts.pm.review_packets import (
 from scripts.pm.store import PMStore
 from scripts.trader_room_public import select_newest_complete_run
 from tests.test_overnight_scheduled_output import ScheduledOutputTests
+from tests.test_pm_scheduled_output import _pm_block
 
 
 REPO = Path(__file__).resolve().parents[1]
@@ -36,6 +37,11 @@ class OvernightPMPacketTests(unittest.TestCase):
         self.state_root = self._fixture.state_root
         self.run_id = self._fixture.run_id
         self.payload = self._fixture.payload
+        if "pm_decisions" not in self.payload:
+            packet = self.payload["agent_packet"]
+            self.payload["pm_decisions"] = _pm_block(
+                self.run_id, packet["packet_sha256"], packet["evidence_cutoff"]
+            )
 
     def tearDown(self) -> None:
         self._fixture.tearDown()

@@ -69,9 +69,11 @@ Trusted code hydrates marks, checks packet id/hash/freshness, enforces instrumen
 
 `data/pm/data_requests/latest.json` is the consolidated Git artifact. Entries carry originating PM, request, reason, decision impact, priority `low|medium|high`, suggested source, first/last requested, repeat count, and `status=requested`. Repeated text is deduped with attribution preserved. Requests are for future runs only; they never break the current evidence freeze and never launch collectors. The Trader Book tab surfaces them to Kevin.
 
-## Optional automated PM decisions
+## Overnight automated PM decisions (required)
 
-Overnight `scheduled_output.json` may include `pm_decisions` for exactly `swinger`, `pragmatist`, and `grinder`. Absence remains valid; automated PM state stays awaiting/stale rather than fabricated. If present, each decision is applied independently and must declare `principal_model`, `subagent_count` (0–3), and `subagent_models` in `{grok-4.6, composer-2.5}`. This repository does not invoke those models.
+Overnight `scheduled_output.json` **must** include `pm_decisions` for exactly `swinger`, `pragmatist`, and `grinder`. Absence is invalid, not `awaiting`. ChatGPT remains ingest-only and excluded from automated current-cycle overnight output. Each overnight automated PM principal must be exact `grok-4.6` (custom agent `.cursor/agents/<pm_id>.md`). Optional internal subagents remain 0–3 in `{grok-4.6, composer-2.5}` but are prohibited on the overnight graph (no nested children). This repository does not invoke those models on the live schedule.
+
+Invalid or missing PM output is never presented as fresh. Trusted code does not fabricate automated PM trades when provider output is absent or rejected.
 
 Pragmatist keeps its opportunistic mandate, but every automated Pragmatist decision must include a validated `portfolio_construction` section before final actions: the existing book, independent markable Trader Room handoff opportunities when available, the main adverse scenario for the current book, whether candidates complement/diversify/offset or merely duplicate beta, and reasons for adding or rejecting complementary trades. Trusted validation is packet-aware: when the frozen PM packet contains independent markable handoff alternatives, Pragmatist must enumerate them (at least two when two or more exist unless the packet structure proves fewer are available). Listed opportunity instruments must be traceable to the frozen packet/handoff rather than invented. One-position and flat outcomes remain valid after that evaluation; diversification is not forced and no named pair is mandatory. Swinger may still concentrate. Grinder may still stay flat. ChatGPT remains unconstrained.
 

@@ -73,6 +73,26 @@ def freeze_snapshot(
         "index": "memory/index.json",
         "hashes": memory_index.get("hashes") or {},
     }
+    from scripts.trading.snapshot import snapshot_overnight_pms
+
+    pm_index = snapshot_overnight_pms(
+        trading,
+        run_dir=store.run_dir(run_id),
+        run_id=run_id,
+        when=when,
+    )
+    packet["pm_memory"] = {
+        "isolation": "per_pm_sidecar",
+        "index": "pm_memory/index.json",
+        "hashes": pm_index.get("hashes") or {},
+    }
+    from scripts.pm.store import PMStore
+
+    pm_store = PMStore(root=store.root, state_root=store.state_root)
+    if pm_store.books_path().is_file():
+        from scripts.pm.books import validate_books as validate_pm_books
+
+        packet["prior_pm_books"] = validate_pm_books(pm_store.read_books())
     digest = sha256_json({k: v for k, v in packet.items() if k != "packet_sha256"})
     packet["packet_sha256"] = digest
     store.write_artifact(run_id, "evidence_snapshot.json", packet)

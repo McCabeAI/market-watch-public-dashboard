@@ -94,10 +94,15 @@ def publication_decision(
     families: dict[str, Any],
     trader_review_status: str | None,
     last_successful_review_run_id: str | None = None,
+    pm_books_status: str | None = None,
+    last_successful_pm_run_id: str | None = None,
 ) -> dict[str, Any]:
     assessed = assess_families(families)
     catastrophic = [name for name, item in assessed.items() if item["catastrophic"]]
     review = review_status(trader_review_status)
+    pm_review = pm_books_status
+    if pm_review is None and review in {"stale", "failed", "missing"}:
+        pm_review = review if review != "missing" else "stale"
     if catastrophic:
         core = "catastrophic_fail"
         may_publish = False
@@ -110,9 +115,13 @@ def publication_decision(
             reason += f"; trader books {review}"
             if last_successful_review_run_id:
                 reason += f"; last successful review {last_successful_review_run_id}"
+        if pm_review in {"stale", "failed", "missing"}:
+            reason += f"; PM books {pm_review}"
+            if last_successful_pm_run_id:
+                reason += f"; last successful automated PM cycle {last_successful_pm_run_id}"
     if core not in PUBLICATION_CORE:
         raise SchemaError("invalid publication core status")
-    return {
+    out: dict[str, Any] = {
         "core_status": core,
         "trader_books_status": review if review != "missing" else "stale",
         "last_successful_review_run_id": last_successful_review_run_id,
@@ -121,6 +130,11 @@ def publication_decision(
         "families": assessed,
         "reason": reason,
     }
+    if pm_review is not None:
+        out["pm_books_status"] = pm_review
+    if last_successful_pm_run_id:
+        out["last_successful_pm_run_id"] = last_successful_pm_run_id
+    return out
 
 
 def assert_may_publish(decision: dict[str, Any]) -> dict[str, Any]:

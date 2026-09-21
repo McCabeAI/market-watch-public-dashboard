@@ -40,7 +40,10 @@ def assemble_dataset(
     families = _families_for_publication(store, run_id)
     review_status = "missing"
     last_success = None
+    review: dict[str, Any] = {}
     books = _load_books(store, run)
+    snapshot = store.read_artifact(run_id, "evidence_snapshot.json") if store.has_artifact(run_id, "evidence_snapshot.json") else {}
+    evidence_cutoff = snapshot.get("as_of")
     if store.has_artifact(run_id, "trader_review.json"):
         review = store.read_artifact(run_id, "trader_review.json")
         if review.get("status") == "succeeded":
@@ -57,13 +60,63 @@ def assemble_dataset(
         books["last_successful_review_run_id"] = last_success
     store.write_books(books)
 
+    pm_books_status: str | None = None
+    last_successful_pm_run_id: str | None = None
+    try:
+        from scripts.pm.books import (
+            automated_pm_publication_status,
+            empty_books as empty_pm_books,
+            overlay_automated_pm_stale_for_cycle,
+            validate_books as validate_pm_books,
+        )
+        from scripts.pm.cli import refresh_packets
+        from scripts.pm.store import PMStore
+
+        pm_store = PMStore(root=store.root, state_root=store.state_root)
+        if review_status == "fresh":
+            if pm_store.books_path().is_file():
+                pm_books = validate_pm_books(pm_store.read_books())
+            else:
+                pm_books = empty_pm_books(overnight_run_id=run_id)
+            if not review.get("pm_books"):
+                try:
+                    refresh_packets(
+                        pm_store,
+                        allow_trader_room_fallback=False,
+                        overnight_run_id=run_id,
+                    )
+                    pm_books = validate_pm_books(pm_store.read_books())
+                except Exception:
+                    pass
+            pm_books_status, last_successful_pm_run_id = automated_pm_publication_status(
+                pm_books,
+                trader_review_status=review_status,
+                run_id=run_id,
+                evidence_cutoff=evidence_cutoff,
+            )
+        else:
+            if pm_store.books_path().is_file():
+                pm_books = overlay_automated_pm_stale_for_cycle(validate_pm_books(pm_store.read_books()))
+                pm_store.write_books(pm_books)
+            else:
+                pm_books = overlay_automated_pm_stale_for_cycle(empty_pm_books(overnight_run_id=run_id))
+            pm_books_status, last_successful_pm_run_id = automated_pm_publication_status(
+                pm_books,
+                trader_review_status=review_status,
+                run_id=run_id,
+                evidence_cutoff=evidence_cutoff,
+            )
+    except Exception:
+        pm_books_status = review_status if review_status in {"failed", "missing"} else "stale"
+
     decision = publication_decision(
         families=families,
         trader_review_status=review_status,
         last_successful_review_run_id=last_success,
+        pm_books_status=pm_books_status,
+        last_successful_pm_run_id=last_successful_pm_run_id,
     )
     collect = store.read_artifact(run_id, "collect.json") if store.has_artifact(run_id, "collect.json") else {}
-    snapshot = store.read_artifact(run_id, "evidence_snapshot.json") if store.has_artifact(run_id, "evidence_snapshot.json") else {}
     dataset = {
         "schema_version": SCHEMA_VERSION,
         "type": "OVERNIGHT_MORNING_DATASET",
@@ -98,7 +151,7 @@ def assemble_dataset(
     }
     validate_dataset(dataset)
     store.write_artifact(run_id, "assembled_dataset.json", dataset)
-    if last_success:
+    if review_status == "fresh" and last_success == run_id:
         try:
             from scripts.pm.cli import refresh_packets
             from scripts.pm.store import PMStore
@@ -106,7 +159,7 @@ def assemble_dataset(
             refresh_packets(
                 PMStore(root=store.root, state_root=store.state_root),
                 allow_trader_room_fallback=False,
-                overnight_run_id=last_success,
+                overnight_run_id=run_id,
             )
         except Exception:
             # Morning assembly still publishes trader books if PM refresh cannot run.

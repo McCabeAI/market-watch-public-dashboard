@@ -52,6 +52,26 @@ def snapshot_identities(
     return index
 
 
+def snapshot_overnight_pms(
+    store: TradingStore,
+    *,
+    run_dir: Path,
+    run_id: str,
+    common_evidence_sha256: str | None = None,
+    when: datetime | None = None,
+) -> dict[str, Any]:
+    backfill_from_books(store, when=when)
+    return snapshot_identities(
+        store,
+        owner_type="pm",
+        owner_ids=PM_IDS,
+        dest_dir=run_dir / "pm_memory",
+        run_id=run_id,
+        common_evidence_sha256=common_evidence_sha256,
+        when=when,
+    )
+
+
 def snapshot_overnight_traders(
     store: TradingStore,
     *,

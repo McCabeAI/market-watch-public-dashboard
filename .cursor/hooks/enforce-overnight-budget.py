@@ -20,8 +20,8 @@ POLICIES = {
         "required": {
             "version": 1,
             "schedule_id": "market-watch-weekday-0205",
-            "total_model_cap": 18,
-            "grok_cap": 16,
+            "total_model_cap": 19,
+            "grok_cap": 18,
             "composer_cap": 2,
             "parent_model": "grok-4.6",
             "parent_total": 1,

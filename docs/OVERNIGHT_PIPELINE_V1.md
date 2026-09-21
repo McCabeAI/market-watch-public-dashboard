@@ -27,7 +27,7 @@ All times are America/New_York.
 | 01:40 | Market Watch | deterministic pre-trader delta |
 | 01:50 | Market Watch | freeze trusted base evidence packet + prior books |
 | 02:05 | ACP | one approved scheduled Cursor parent |
-| provider run | Cursor via ACP | bounded research -> final packet/hash -> 14 direct trader children -> one structured output PR |
+| provider run | Cursor via ACP | bounded research -> final packet/hash -> 14 direct trader children -> 3 automated PM children (swinger, pragmatist, grinder) -> one structured output PR |
 | PR event | Market Watch | validate data-only output, simulate deterministic book application, append generated state, merge |
 | 03:35 | Market Watch | final deterministic market delta |
 | 03:50 | Market Watch | assemble canonical morning dataset |
@@ -72,7 +72,7 @@ The JSON contains:
 
 It must not contain canonical books, NAV, cash, realized/unrealized P&L, funding charges, net P&L, competition rank, or model-authored ledger/P&L facts. Structured postmortems and memory updates are allowed; trusted code validates them.
 
-Optional Phase-1 field `pm_decisions` may be omitted. Legacy 14-seat-only output remains valid. When supplied it must contain exactly `swinger`, `pragmatist`, and `grinder` (never ChatGPT) with `principal_model`, `subagent_count` 0–3, and `subagent_models` in `{grok-4.6, composer-2.5}`. Absence does not fabricate automated PM trades. The ACP schedule id, clock, caps, and provider contract are unchanged.
+**`pm_decisions` is required** (not optional). It must contain exactly `swinger`, `pragmatist`, and `grinder` (never ChatGPT) with `principal_model`, `subagent_count` 0–3, and `subagent_models` in `{grok-4.6, composer-2.5}`. Absence or partial roster is invalid and rejects the scheduled-output PR. ChatGPT remains ingest-only and is excluded from automated overnight current-cycle decisions. Parent orchestration contract: `.cursor/commands/overnight-scheduled.md`.
 
 ## 5. Model policy and hard budget
 
@@ -87,24 +87,27 @@ Prohibited:
 - every model outside those two
 - Cursor Other Models usage
 
-Run caps:
+Run caps (**target-repo contract** enforced by `.cursor/hooks/enforce-overnight-budget.py`):
 
-- total model calls: 18
-- Grok 4.6 calls: 16
-- Composer 2.5 calls: 2
+- total model calls: **19**
+- Grok 4.6 calls: **18**
+- Composer 2.5 calls: **2**
 
 The ACP parent counts as total=1 / Grok=1 before any child starts.
+
+> **ACP schedule delta required (not in this repo):** committed ACP `market-watch-weekday-0205` is still **18 / 16 / 2**. That cannot fit **3** Grok-4.6 PM principals + **14** Grok traders + the Grok parent without downgrading PMs. Minimal ACP-only change: `total_model_cap` 18→**19**, `grok_cap` 16→**18**, `composer_cap` unchanged **2**; job objective/constraints must require the three PM children after the accepted 14-trader handoff; policy marker caps must match; no Sunday clock; no second schedule; ChatGPT still excluded. Nested PM subagents remain prohibited on overnight (same as traders), so we do not need +9 cap for internal PM children.
 
 `.cursor/hooks/enforce-overnight-budget.py` atomically reserves every `subagentStart` before launch. It blocks a spawn that would exceed any cap. Once an overnight root is active, only that root conversation may spawn children; grandchildren are denied.
 
 `.cursor/hooks/enforce-subagent-models.sh` separately enforces the exact per-run ACP model allowlist.
 
-The approved graph is normally:
+The approved graph is:
 
 - 1 Grok parent;
 - 1 Composer research worker;
 - 14 Grok trader seats;
-- up to one spare Grok and one spare Composer call within the hard caps.
+- 3 Grok automated PM principals (swinger, pragmatist, grinder custom agents);
+- **19 / 18 / 1** declared usage: 1 Grok parent + 14 Grok traders + 3 Grok PM principals + 1 Composer research.
 
 Caps never expand automatically.
 
@@ -121,6 +124,8 @@ MW_TRADER_FROZEN=1
 the same final common packet/hash, and **only that trader's own frozen memory sidecar / `memory_context_sha256`**. The 01:50 freeze writes per-seat hashes on `evidence_snapshot.seat_memory.hashes` and sidecar files under `data/overnight/runs/<run_id>/memory/`. Common macro evidence stays identical. One seat's private learning context is never given to another seat. See `docs/TRADING_LEDGER_MEMORY_V1.md`.
 
 `.cursor/hooks/enforce-overnight-runtime.py` blocks tool use for those children. They may not browse, read files, run shell, use MCP, or launch nested agents.
+
+Automated PM children use the same evidence-closed boundary with `MW_PM_FROZEN=1`. They receive the frozen packet, the accepted 14 trader decisions, and only their own PM memory sidecar. They may not browse, read files, run shell, use MCP, or launch nested agents.
 
 Each seat returns structured decisions only:
 
@@ -144,22 +149,22 @@ The dedicated spot seats remain spot-only and are not forced through a rates ten
 
 `.github/workflows/overnight-scheduled-output.yml` uses `pull_request_target` so the gate runs trusted code from `main`, not provider-authored code.
 
-After a successful 14-seat apply, trusted code also refreshes the four daily PM review packets from that overnight run's frozen agent packet, accepted trader decisions, research supplement, market state, and canonical books. This is not a second model clock and does not require an on-demand Trader Room run.
+After a successful 14-seat apply, trusted code applies the three automated PM decisions independently, then refreshes the four daily PM review packets from that overnight run's frozen agent packet, accepted trader decisions, research supplement, market state, and canonical books. This is not a second model clock and does not require an on-demand Trader Room run.
 
 The gate:
 
 1. requires a same-repository PR titled `[overnight-output] ...`;
 2. requires exactly one provider-authored file at the scheduled-output inbox path;
 3. downloads that JSON without checking out provider code;
-4. verifies run id, schedule id, base packet hash, final packet hash, 14 seats, evidence cutoff and model policy;
+4. verifies run id, schedule id, base packet hash, final packet hash, 14 seats, **required `pm_decisions` for swinger/pragmatist/grinder**, evidence cutoff and model policy;
 5. rejects any model-supplied book/P&L/NAV state;
-6. deterministically simulates `apply_review()`;
+6. deterministically simulates trader + automated PM `apply_review()` transactionally;
 7. runs the overnight tests;
-8. generates canonical books/P&L/run artifacts and `data/trading/**` from trusted code;
+8. generates canonical trader books, **three automated PM books**, P&L/run artifacts and `data/trading/**` from trusted code;
 9. appends only those generated files to the PR branch;
 10. squashes and merges the accepted PR.
 
-A failed gate does not mutate canonical books.
+Missing or invalid PM output rejects the PR. Last trusted canonical state is retained. Publication may still show explicit stale/failed PM status when the deterministic morning path runs without a successful provider cycle. A failed gate does not mutate canonical books.
 
 ## 8. Persistent paper books
 
@@ -231,7 +236,10 @@ The existing front page is preserved. The additive Trader Book tab shows paper b
 ```bash
 PYTHONPATH=. python3 -m unittest \
   tests.test_overnight_pipeline \
-  tests.test_overnight_scheduled_output -v
+  tests.test_overnight_scheduled_output \
+  tests.test_pm_scheduled_output \
+  tests.test_pm_overnight_packets \
+  tests.test_trading_memory -v
 
 PYTHONPATH=. python3 scripts/overnight_pipeline.py dry-run --suffix ci
 ```
@@ -257,13 +265,24 @@ ACP remains the only place where the real 02:05 schedule may be enabled. The tar
 - provider-authored target path: only `data/overnight/inbox/<run_id>/scheduled_output.json`
 - run policy marker:
 
+Target-repo ready marker (hooks/validator in this repository):
+
 ```
-MW_OVERNIGHT_RUN_POLICY={"version":1,"schedule_id":"market-watch-weekday-0205","total_model_cap":18,"grok_cap":16,"composer_cap":2,"parent_model":"grok-4.6","parent_total":1,"parent_grok":1}
+MW_OVERNIGHT_RUN_POLICY={"version":1,"schedule_id":"market-watch-weekday-0205","total_model_cap":19,"grok_cap":18,"composer_cap":2,"parent_model":"grok-4.6","parent_total":1,"parent_grok":1}
 ```
 
-The parent must perform research first, freeze the final packet, then launch the 14 direct trader children. Each child receives the common frozen packet plus only that child's own frozen memory sidecar. It must not update books/P&L and must not launch grandchildren.
+Committed ACP `market-watch-weekday-0205` is still **18 / 16 / 2** (ACP commit `f5b75df8`). That live schedule cannot launch 3 Grok-4.6 PM principals after 14 Grok traders without downgrading PM principals or independence. **This repository does not change ACP.** Minimal ACP-only delta required before the weekday job can succeed:
 
-The schedule is enabled on ACP `main` as `market-watch-weekday-0205` under Kevin's explicit 2026-09-18 approval (ACP commit `f5b75df8`). That committed definition is standing authorization for its normal weekday 02:05 America/New_York occurrences only; ad hoc runs, retries, follow-ups, model substitutions, or other material schedule changes still require fresh explicit authorization.
+- `total_model_cap` 18 → **19**
+- `grok_cap` 16 → **18**
+- `composer_cap` remains **2**
+- job objective/constraints: after the accepted 14-trader handoff, launch concurrent custom-agent PMs `swinger`, `pragmatist`, and `grinder` (`grok-4.6[]`); ChatGPT excluded; each PM sees the frozen packet + the same 14 decisions + only its own prior book/memory; no nested children
+- emit the 19/18/2 policy marker above
+- no Sunday clock and no second provider schedule
+
+The parent must perform research first, freeze the final packet, launch the 14 direct trader children, then launch the 3 automated PM children. Each child receives the common frozen packet plus only that child's own frozen memory sidecar. It must not update books/P&L and must not launch grandchildren.
+
+The schedule remains the existing Monday–Friday 02:05 America/New_York occurrence only; ad hoc runs, retries, follow-ups, model substitutions, or other material schedule changes still require fresh explicit authorization.
 
 ## 13. Persistence and the Supabase boundary
 
