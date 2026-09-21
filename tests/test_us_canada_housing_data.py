@@ -1,7 +1,4 @@
-import io
-import json
 import unittest
-import zipfile
 from datetime import date
 
 from scripts.canada_housing_data import (
@@ -113,22 +110,16 @@ class CanadaHousingTests(unittest.TestCase):
         self.assertEqual(parsed["metrics"]["standalone_monthly_starts_saar"]["value"], 229046.0)
         self.assertEqual(parsed["metrics"]["six_month_start_trend_saar"]["change_mom_pct"], -1.3)
 
-    def test_statcan_zip_reader(self):
+    def test_statcan_selected_csv_reader(self):
         csv_text = "REF_DATE,GEO,VALUE\n2026-08,Canada,1\n"
-        buf = io.BytesIO()
-        with zipfile.ZipFile(buf, "w") as zf:
-            zf.writestr("18100205.csv", csv_text)
-
         calls = []
         def fetch(url):
             calls.append(url)
-            if "getFullTableDownloadCSV" in url:
-                return json.dumps({"status": "SUCCESS", "object": "https://example.test/table.zip"}).encode()
-            return buf.getvalue()
+            return csv_text.encode()
 
-        rows = _statcan_rows("18100205", fetch)
+        rows = _statcan_rows("https://example.test/selected.csv", fetch)
         self.assertEqual(rows[0]["GEO"], "Canada")
-        self.assertEqual(len(calls), 2)
+        self.assertEqual(len(calls), 1)
 
     def test_canada_validator(self):
         names = {
