@@ -64,6 +64,8 @@ When interpreting the 10% employment / payroll component, show the broader conte
 
 These contextual measures do not receive additional score weight unless this methodology is explicitly changed.
 
+For the United States, the 10% payroll component is scored against the **2026 Federal Reserve breakeven-employment** anchor (Board FEDS Note, Apr 2026), not a round 150k/month working-age trend; see `docs/US_PAYROLL_BREAKEVEN_ANCHOR.md` and `US.Labor.payrolls` in `data/temperature_calibration.json`.
+
 ## 5. Context-only labor indicators
 
 Important labor releases still belong on country pages even when they do not move the score. Examples include:

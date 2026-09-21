@@ -111,7 +111,7 @@ Scale 12.5 → target±4pp maps to 1–100.
 
 | Country | u\* | Wage 50 | Employment-trend 50 | Employment scale |
 |---|---:|---:|---|---|
-| US | 4.2 (FOMC longer-run ballpark) | 3.0% y/y AHE | 150k m/m 3-mo avg | 0.20 per thousand |
+| US | 4.2 (FOMC longer-run ballpark) | 3.0% y/y AHE | **10k** m/m 3-mo avg (2026 Fed breakeven-employment anchor; see `docs/US_PAYROLL_BREAKEVEN_ANCHOR.md`) | 0.20 per thousand |
 | CA | 6.0 | 3.0% y/y | +25k m/m 3-mo avg | 0.20 per thousand |
 | AU | 4.5 | 3.5% y/y WPI | +25k m/m 3-mo avg | 0.20 per thousand |
 | NZ | 4.75 | 3.0% y/y LCI | +8k q/q | 1.0 per thousand |
@@ -227,7 +227,7 @@ I2 (dashboard + Trader Room) must:
 - AU MHSI is **nominal current-price** spending; LEVEL uses a nominal monthly anchor.
 - US retail RSAFS and DSPI are nominal.
 - US Michigan on FRED ends 2026-07; dashboard ledger Sep 47.8 is **not** an official FRED observation and is not scored.
-- Employment-trend anchors are round structural-trend values, not a full demographic model.
+- **US payrolls** use a documented 2026 **breakeven-employment** anchor (10k/month upper bound from Board FEDS Notes, Apr 2026), not the retired ~150k working-age trend. Alternate breakeven estimates (St. Louis Fed 15–87k, Dallas Fed near-zero, Chicago Fed WP ~25–100k) are sensitivity context in `docs/US_PAYROLL_BREAKEVEN_ANCHOR.md` and `US.Labor.payrolls.sensitivity` in the calibration JSON. CA/AU/NZ employment-trend anchors remain round structural-trend values, not full demographic models.
 - US `mapped_bridge` is a two-month PPI-mapped snapshot, not a 12-month micro history; it does not move LEVEL.
 - NZ production GDP must be pinned; the history file also contains expenditure-GDP rows (including a 2025-Q2 lookback) that must not be used as “latest”.
 - Potential growth / u\* / productivity add-on are judgement-documented constants, frozen in the calibration JSON, not estimated from the one-year sample.

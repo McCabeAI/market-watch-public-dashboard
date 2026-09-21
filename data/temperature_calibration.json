@@ -96,11 +96,42 @@
       "source_transformation": "mm_change_thousands_sa",
       "scoring_transform": "trailing_mean_n3",
       "n_periods": 3,
-      "anchor": 150.0,
+      "anchor": 10.0,
       "anchor_kind": "structural_trend",
-      "anchor_meaning": "Approximate monthly payroll trend consistent with working-age population growth",
+      "anchor_meaning": "2026 breakeven employment growth (thousands of jobs per month, 3-month average of PAYEMS m/m) consistent with potential labor-force growth holding unemployment steady",
       "hot_direction": 1,
-      "scale_per_unit": 0.2
+      "scale_per_unit": 0.2,
+      "replaced_anchor": 150.0,
+      "source_url": "https://www.federalreserve.gov/econres/notes/feds-notes/labor-force-growth-breakeven-employment-and-potential-gdp-growth-20260402.html",
+      "source_title": "Labor force growth, breakeven employment, and potential GDP growth",
+      "source_authors": "Seth Murray and Ivan Vidangos",
+      "source_date": "2026-04-02",
+      "source_publisher": "Board of Governors of the Federal Reserve System (FEDS Notes)",
+      "point_convention": "Board FEDS Note (Apr 2026) states 2026 breakeven employment growth could be near-zero, requiring less than 10,000 new jobs per month. Anchor 10.0 (thousands/month) is the documented upper bound of that less-than-10k statement—a conservative point vs 0, not a mid-range from sensitivity blogs.",
+      "economic_interpretation": "Monthly nonfarm payroll growth (3-month average) scored vs the pace of job creation needed to keep the unemployment rate steady given potential labor-force growth; faster payrolls than breakeven imply labor-market tightening relative to demographics.",
+      "refresh_cadence": "Review when the Board publishes an updated FEDS Note on breakeven employment or labor-force demographics, or after material BLS population-control / CBO potential-LFPR revisions.",
+      "expires_after": "2027-04-02",
+      "sensitivity_context_urls": [
+        "https://www.stlouisfed.org/on-the-economy/2026/mar/breakeven-employment-growth-estimate-range-widens-2026",
+        "https://www.dallasfed.org/research/economics/2026/0331",
+        "https://www.chicagofed.org/-/media/publications/working-papers/2026/wp2026-10.pdf"
+      ],
+      "sensitivity": {
+        "computed_as_of_cutoff": "2026-09",
+        "payroll_transform": "trailing_mean_n3",
+        "payroll_3m_avg_thousands": 71.33,
+        "unemployment_level_held": 52.0,
+        "wages_level_held": 50.86,
+        "anchors_thousands_per_month": {
+          "0": {"payroll_component_level": 64.27, "us_labor_level": 53.0},
+          "10": {"payroll_component_level": 62.27, "us_labor_level": 52.8},
+          "15": {"payroll_component_level": 61.27, "us_labor_level": 52.7},
+          "50": {"payroll_component_level": 54.27, "us_labor_level": 52.0},
+          "87": {"payroll_component_level": 46.87, "us_labor_level": 51.26},
+          "100": {"payroll_component_level": 44.27, "us_labor_level": 51.0},
+          "150": {"payroll_component_level": 34.27, "us_labor_level": 50.0}
+        }
+      }
     },
     "US.Activity.gdp_domestic_demand": {
       "history_key": "Activity.gdp_domestic_demand",
