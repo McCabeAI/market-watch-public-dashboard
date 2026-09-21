@@ -23,7 +23,7 @@ from scripts.trader_room.constants import (
 )
 from scripts.trader_room.errors import DataBoundaryError, SchemaError
 from scripts.trader_room.evidence import assert_same_frozen_packet
-from scripts.trading.presentation import PresentationError, validate_trade_presentation
+from scripts.trade_presentation import PresentationError, validate_trade_presentation
 from scripts.trader_room.rates_scan import (
     bind_selected_bucket_to_rates_candidate,
     rates_candidate_identity,
