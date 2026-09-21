@@ -10,7 +10,7 @@ from scripts.overnight.assemble import assemble_dataset
 from scripts.overnight.books import empty_books
 from scripts.overnight.clock import isoformat, now_ny, overnight_run_id, schedule_catalog, stage_for_time
 from scripts.overnight.collect import collect_inputs
-from scripts.overnight.constants import FIXTURE_MARKET_STATE, STAGES
+from scripts.overnight.constants import FIXTURE_MARKET_STATE, STAGES, STAGE_SCHEDULE
 from scripts.overnight.delta import compute_delta
 from scripts.overnight.errors import OvernightError, PublicationError, StageError
 from scripts.overnight.evidence import freeze_snapshot
@@ -189,8 +189,75 @@ def dry_run(
     }
 
 
+
+def reconcile_due_stages(
+    *,
+    root: Path | None = None,
+    state_root: Path | None = None,
+    when: datetime | None = None,
+    live_market_state: bool = True,
+    site_dir: Path | None = None,
+) -> dict[str, Any]:
+    """Catch up deterministic Market Watch stages that are due for the NY session.
+
+    GitHub scheduled workflows are advisory wake-ups and may be delayed.  The
+    logical stage times remain authoritative; any later wake-up may reconcile
+    due deterministic stages in order.  The ACP-owned trader_review stage is
+    never synthesized here.
+    """
+    store = OvernightStore(root=root, state_root=state_root)
+    stamp = now_ny(when)
+    run_id = overnight_run_id(stamp)
+    run = load_or_create(store, run_id=run_id, when=stamp, dry_run=False)
+
+    deterministic = tuple(
+        stage
+        for stage in STAGES
+        if STAGE_SCHEDULE[stage]["owner"] == "market-watch"
+    )
+    completed: list[str] = []
+    skipped: list[str] = []
+    not_due: list[str] = []
+
+    for stage in deterministic:
+        spec = STAGE_SCHEDULE[stage]
+        due_at = datetime.combine(stamp.date(), spec["et_time"], tzinfo=stamp.tzinfo)
+        if stamp < due_at:
+            not_due.append(stage)
+            continue
+
+        status = ((run.get("stages") or {}).get(stage) or {}).get("status")
+        if status == "succeeded":
+            skipped.append(stage)
+            continue
+
+        live_marks = stage in {"collect", "pre_trader_delta", "final_delta"}
+        result = run_stage(
+            stage,
+            root=store.root,
+            state_root=store.state_root,
+            run_id=run_id,
+            when=stamp,
+            dry_run=False,
+            offline=not (live_market_state and live_marks),
+            site_dir=site_dir,
+            require_dataset=(stage == "publish"),
+        )
+        completed.append(stage)
+        run = result["run"]
+
+    return {
+        "overnight_run_id": run_id,
+        "as_of": isoformat(stamp),
+        "completed": completed,
+        "skipped_succeeded": skipped,
+        "not_due": not_due,
+        "model_calls": 0,
+    }
+
+
 def selected_stage(when: datetime | None = None) -> str | None:
     return stage_for_time(when)
 
 
-__all__ = ["dry_run", "run_stage", "selected_stage", "OvernightError", "PublicationError"]
+__all__ = ["dry_run", "run_stage", "reconcile_due_stages", "selected_stage", "OvernightError", "PublicationError"]
