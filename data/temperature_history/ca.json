@@ -1,0 +1,1961 @@
+{
+  "country": "CA",
+  "window": {
+    "start": "2025-09-21",
+    "end": "2026-09-21"
+  },
+  "retrieved_at": "2026-09-21T14:45:36Z",
+  "notes": "Canada G0 temperature source backfill via StatCan WDS vectors; headline CPI y/y and wage y/y derived from official levels; retail via table 20-10-0056.",
+  "live_ledger_cross_check": {
+    "source": "data/temperature_scores.json",
+    "aligned": [
+      "Aug-2026 headline 3.0%, trim 1.9%, median 2.0%, unemployment 6.4%, wages +2.0% y/y, employment ~-42k, Q2 GDP +0.8% q/q, income +2.1% q/q, spending +0.8% q/q, retail +0.6% m/m (Jun 2026)"
+    ],
+    "discrepancies": []
+  },
+  "components": {
+    "Inflation.headline": {
+      "dimension": "Inflation",
+      "component": "headline",
+      "canonical_name": "Consumer Price Index, all-items, 12-month percent change",
+      "publisher": "Statistics Canada",
+      "distributor": "Statistics Canada WDS",
+      "series_id": "v41690973_derived_yoy",
+      "cadence": "monthly",
+      "units": "percent",
+      "preferred_scoring_transformation": "yoy_pct",
+      "sa": false,
+      "source_urls": [
+        "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810000401"
+      ],
+      "original_authority_url": "https://www.statcan.gc.ca/en/subjects-start/prices_and_price_indexes/consumer_price_indexes",
+      "retrieval_method": "statcan_wds_vectors",
+      "methodology_breaks": [],
+      "observations": [
+        {
+          "reference_period": "2025-09",
+          "value": 2.36,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810000401",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2025-10-21",
+          "series_id": "CPI_all_items_index_v41690973",
+          "raw_level": 164.9,
+          "notes": "y/y from all-items CPI index (18-10-0004-01, v41690973)."
+        },
+        {
+          "reference_period": "2025-10",
+          "value": 2.16,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810000401",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2025-11-17",
+          "series_id": "CPI_all_items_index_v41690973",
+          "raw_level": 165.3,
+          "notes": "y/y from all-items CPI index (18-10-0004-01, v41690973)."
+        },
+        {
+          "reference_period": "2025-11",
+          "value": 2.22,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810000401",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2025-12-15",
+          "series_id": "CPI_all_items_index_v41690973",
+          "raw_level": 165.4,
+          "notes": "y/y from all-items CPI index (18-10-0004-01, v41690973)."
+        },
+        {
+          "reference_period": "2025-12",
+          "value": 2.36,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810000401",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-01-19",
+          "series_id": "CPI_all_items_index_v41690973",
+          "raw_level": 165.0,
+          "notes": "y/y from all-items CPI index (18-10-0004-01, v41690973)."
+        },
+        {
+          "reference_period": "2026-01",
+          "value": 2.29,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810000401",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-02-17",
+          "series_id": "CPI_all_items_index_v41690973",
+          "raw_level": 165.0,
+          "notes": "y/y from all-items CPI index (18-10-0004-01, v41690973)."
+        },
+        {
+          "reference_period": "2026-02",
+          "value": 1.78,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810000401",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-03-16",
+          "series_id": "CPI_all_items_index_v41690973",
+          "raw_level": 165.9,
+          "notes": "y/y from all-items CPI index (18-10-0004-01, v41690973)."
+        },
+        {
+          "reference_period": "2026-03",
+          "value": 2.39,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810000401",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-04-20",
+          "series_id": "CPI_all_items_index_v41690973",
+          "raw_level": 167.4,
+          "notes": "y/y from all-items CPI index (18-10-0004-01, v41690973)."
+        },
+        {
+          "reference_period": "2026-04",
+          "value": 2.82,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810000401",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-05-19",
+          "series_id": "CPI_all_items_index_v41690973",
+          "raw_level": 168.0,
+          "notes": "y/y from all-items CPI index (18-10-0004-01, v41690973)."
+        },
+        {
+          "reference_period": "2026-05",
+          "value": 3.23,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810000401",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-06-22",
+          "series_id": "CPI_all_items_index_v41690973",
+          "raw_level": 169.6,
+          "notes": "y/y from all-items CPI index (18-10-0004-01, v41690973)."
+        },
+        {
+          "reference_period": "2026-06",
+          "value": 2.8,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810000401",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-07-20",
+          "series_id": "CPI_all_items_index_v41690973",
+          "raw_level": 169.0,
+          "notes": "y/y from all-items CPI index (18-10-0004-01, v41690973)."
+        },
+        {
+          "reference_period": "2026-07",
+          "value": 3.03,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810000401",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-08-17",
+          "series_id": "CPI_all_items_index_v41690973",
+          "raw_level": 169.9,
+          "notes": "y/y from all-items CPI index (18-10-0004-01, v41690973)."
+        },
+        {
+          "reference_period": "2026-08",
+          "value": 3.03,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810000401",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-14",
+          "series_id": "CPI_all_items_index_v41690973",
+          "raw_level": 169.8,
+          "notes": "y/y from all-items CPI index (18-10-0004-01, v41690973)."
+        }
+      ],
+      "gaps": [
+        {
+          "expected_period": "2026-09",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810000401"
+          ],
+          "as_of": "2026-09-21"
+        }
+      ],
+      "coverage": {
+        "expected_periods_in_window": 12,
+        "observed_periods_in_window": 12,
+        "latest_reference_period": "2026-08",
+        "status": "ok",
+        "gap_count": 1,
+        "latest_release_date": "2026-09-14"
+      }
+    },
+    "Inflation.underlying": {
+      "dimension": "Inflation",
+      "component": "underlying",
+      "canonical_name": "BoC core CPI measures (CPI-trim and CPI-median, year-over-year)",
+      "publisher": "Statistics Canada",
+      "distributor": "Statistics Canada WDS",
+      "series_id": "CPI_trim_and_median_yoy",
+      "cadence": "monthly",
+      "units": "percent",
+      "preferred_scoring_transformation": "yoy_pct",
+      "sa": false,
+      "source_urls": [
+        "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810025601"
+      ],
+      "original_authority_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810025601",
+      "retrieval_method": "statcan_wds_vectors",
+      "methodology_breaks": [],
+      "observations": [
+        {
+          "reference_period": "2025-09",
+          "value": 3.1,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810025601",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-14",
+          "series_id": "CPI_trim_yoy_v108785715"
+        },
+        {
+          "reference_period": "2025-10",
+          "value": 3.0,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810025601",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-14",
+          "series_id": "CPI_trim_yoy_v108785715"
+        },
+        {
+          "reference_period": "2025-11",
+          "value": 2.9,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810025601",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-14",
+          "series_id": "CPI_trim_yoy_v108785715"
+        },
+        {
+          "reference_period": "2025-12",
+          "value": 2.7,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810025601",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-14",
+          "series_id": "CPI_trim_yoy_v108785715"
+        },
+        {
+          "reference_period": "2026-01",
+          "value": 2.4,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810025601",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-14",
+          "series_id": "CPI_trim_yoy_v108785715"
+        },
+        {
+          "reference_period": "2026-02",
+          "value": 2.3,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810025601",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-14",
+          "series_id": "CPI_trim_yoy_v108785715"
+        },
+        {
+          "reference_period": "2026-03",
+          "value": 2.2,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810025601",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-14",
+          "series_id": "CPI_trim_yoy_v108785715"
+        },
+        {
+          "reference_period": "2026-04",
+          "value": 2.0,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810025601",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-14",
+          "series_id": "CPI_trim_yoy_v108785715"
+        },
+        {
+          "reference_period": "2026-05",
+          "value": 2.0,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810025601",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-14",
+          "series_id": "CPI_trim_yoy_v108785715"
+        },
+        {
+          "reference_period": "2026-06",
+          "value": 1.9,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810025601",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-14",
+          "series_id": "CPI_trim_yoy_v108785715"
+        },
+        {
+          "reference_period": "2026-07",
+          "value": 1.9,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810025601",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-14",
+          "series_id": "CPI_trim_yoy_v108785715"
+        },
+        {
+          "reference_period": "2026-08",
+          "value": 1.9,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810025601",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-14",
+          "series_id": "CPI_trim_yoy_v108785715"
+        },
+        {
+          "reference_period": "2025-09",
+          "value": 3.1,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810025601",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-14",
+          "series_id": "CPI_median_yoy_v108785714"
+        },
+        {
+          "reference_period": "2025-10",
+          "value": 2.9,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810025601",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-14",
+          "series_id": "CPI_median_yoy_v108785714"
+        },
+        {
+          "reference_period": "2025-11",
+          "value": 2.8,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810025601",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-14",
+          "series_id": "CPI_median_yoy_v108785714"
+        },
+        {
+          "reference_period": "2025-12",
+          "value": 2.6,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810025601",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-14",
+          "series_id": "CPI_median_yoy_v108785714"
+        },
+        {
+          "reference_period": "2026-01",
+          "value": 2.5,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810025601",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-14",
+          "series_id": "CPI_median_yoy_v108785714"
+        },
+        {
+          "reference_period": "2026-02",
+          "value": 2.3,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810025601",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-14",
+          "series_id": "CPI_median_yoy_v108785714"
+        },
+        {
+          "reference_period": "2026-03",
+          "value": 2.3,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810025601",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-14",
+          "series_id": "CPI_median_yoy_v108785714"
+        },
+        {
+          "reference_period": "2026-04",
+          "value": 2.1,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810025601",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-14",
+          "series_id": "CPI_median_yoy_v108785714"
+        },
+        {
+          "reference_period": "2026-05",
+          "value": 2.1,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810025601",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-14",
+          "series_id": "CPI_median_yoy_v108785714"
+        },
+        {
+          "reference_period": "2026-06",
+          "value": 1.9,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810025601",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-14",
+          "series_id": "CPI_median_yoy_v108785714"
+        },
+        {
+          "reference_period": "2026-07",
+          "value": 2.0,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810025601",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-14",
+          "series_id": "CPI_median_yoy_v108785714"
+        },
+        {
+          "reference_period": "2026-08",
+          "value": 2.0,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810025601",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-14",
+          "series_id": "CPI_median_yoy_v108785714"
+        }
+      ],
+      "gaps": [
+        {
+          "expected_period": "2026-09",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810025601"
+          ],
+          "as_of": "2026-09-21"
+        }
+      ],
+      "coverage": {
+        "expected_periods_in_window": 12,
+        "observed_periods_in_window": 24,
+        "latest_reference_period": "2026-08",
+        "status": "ok",
+        "gap_count": 1,
+        "latest_release_date": "2026-09-14"
+      }
+    },
+    "Labor.unemployment": {
+      "dimension": "Labor",
+      "component": "unemployment",
+      "canonical_name": "Labour force survey unemployment rate, seasonally adjusted",
+      "publisher": "Statistics Canada",
+      "distributor": "Statistics Canada WDS",
+      "series_id": "v2062815",
+      "cadence": "monthly",
+      "units": "percent",
+      "preferred_scoring_transformation": "percent",
+      "sa": true,
+      "source_urls": [
+        "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028701"
+      ],
+      "original_authority_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028701",
+      "retrieval_method": "statcan_wds_vectors",
+      "methodology_breaks": [],
+      "observations": [
+        {
+          "reference_period": "2025-09",
+          "value": 7.1,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028701",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-04-10",
+          "series_id": "LFS_unemployment_rate_v2062815"
+        },
+        {
+          "reference_period": "2025-10",
+          "value": 6.9,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028701",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-05-08",
+          "series_id": "LFS_unemployment_rate_v2062815"
+        },
+        {
+          "reference_period": "2025-11",
+          "value": 6.6,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028701",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-06-05",
+          "series_id": "LFS_unemployment_rate_v2062815"
+        },
+        {
+          "reference_period": "2025-12",
+          "value": 6.8,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028701",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-07-10",
+          "series_id": "LFS_unemployment_rate_v2062815"
+        },
+        {
+          "reference_period": "2026-01",
+          "value": 6.5,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028701",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-08-07",
+          "series_id": "LFS_unemployment_rate_v2062815"
+        },
+        {
+          "reference_period": "2026-02",
+          "value": 6.7,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028701",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-04",
+          "series_id": "LFS_unemployment_rate_v2062815"
+        },
+        {
+          "reference_period": "2026-03",
+          "value": 6.7,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028701",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-04",
+          "series_id": "LFS_unemployment_rate_v2062815"
+        },
+        {
+          "reference_period": "2026-04",
+          "value": 6.9,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028701",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-04",
+          "series_id": "LFS_unemployment_rate_v2062815"
+        },
+        {
+          "reference_period": "2026-05",
+          "value": 6.6,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028701",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-04",
+          "series_id": "LFS_unemployment_rate_v2062815"
+        },
+        {
+          "reference_period": "2026-06",
+          "value": 6.5,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028701",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-04",
+          "series_id": "LFS_unemployment_rate_v2062815"
+        },
+        {
+          "reference_period": "2026-07",
+          "value": 6.4,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028701",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-04",
+          "series_id": "LFS_unemployment_rate_v2062815"
+        },
+        {
+          "reference_period": "2026-08",
+          "value": 6.4,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028701",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-04",
+          "series_id": "LFS_unemployment_rate_v2062815"
+        }
+      ],
+      "gaps": [
+        {
+          "expected_period": "2026-09",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028701"
+          ],
+          "as_of": "2026-09-21"
+        }
+      ],
+      "coverage": {
+        "expected_periods_in_window": 12,
+        "observed_periods_in_window": 12,
+        "latest_reference_period": "2026-08",
+        "status": "ok",
+        "gap_count": 1,
+        "latest_release_date": "2026-09-04"
+      }
+    },
+    "Labor.wages": {
+      "dimension": "Labor",
+      "component": "wages",
+      "canonical_name": "Average hourly wages, employees, year-over-year change",
+      "publisher": "Statistics Canada",
+      "distributor": "Statistics Canada WDS",
+      "series_id": "v105812645_derived_yoy",
+      "cadence": "monthly",
+      "units": "percent",
+      "preferred_scoring_transformation": "yoy_pct",
+      "sa": false,
+      "source_urls": [
+        "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410032001"
+      ],
+      "original_authority_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410032001",
+      "retrieval_method": "statcan_wds_vectors",
+      "methodology_breaks": [],
+      "observations": [
+        {
+          "reference_period": "2025-09",
+          "value": 3.29,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410032001",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2025-10-10",
+          "series_id": "LFS_avg_hourly_wage_v105812645",
+          "raw_level": 36.78,
+          "notes": "y/y from avg hourly wages (14-10-0320)."
+        },
+        {
+          "reference_period": "2025-10",
+          "value": 3.55,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410032001",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2025-11-07",
+          "series_id": "LFS_avg_hourly_wage_v105812645",
+          "raw_level": 37.06,
+          "notes": "y/y from avg hourly wages (14-10-0320)."
+        },
+        {
+          "reference_period": "2025-11",
+          "value": 3.55,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410032001",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2025-12-05",
+          "series_id": "LFS_avg_hourly_wage_v105812645",
+          "raw_level": 37.0,
+          "notes": "y/y from avg hourly wages (14-10-0320)."
+        },
+        {
+          "reference_period": "2025-12",
+          "value": 3.43,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410032001",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-01-09",
+          "series_id": "LFS_avg_hourly_wage_v105812645",
+          "raw_level": 37.06,
+          "notes": "y/y from avg hourly wages (14-10-0320)."
+        },
+        {
+          "reference_period": "2026-01",
+          "value": 3.28,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410032001",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-02-06",
+          "series_id": "LFS_avg_hourly_wage_v105812645",
+          "raw_level": 37.17,
+          "notes": "y/y from avg hourly wages (14-10-0320)."
+        },
+        {
+          "reference_period": "2026-02",
+          "value": 3.93,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410032001",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-03-13",
+          "series_id": "LFS_avg_hourly_wage_v105812645",
+          "raw_level": 37.56,
+          "notes": "y/y from avg hourly wages (14-10-0320)."
+        },
+        {
+          "reference_period": "2026-03",
+          "value": 4.66,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410032001",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-04-10",
+          "series_id": "LFS_avg_hourly_wage_v105812645",
+          "raw_level": 37.73,
+          "notes": "y/y from avg hourly wages (14-10-0320)."
+        },
+        {
+          "reference_period": "2026-04",
+          "value": 4.54,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410032001",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-05-08",
+          "series_id": "LFS_avg_hourly_wage_v105812645",
+          "raw_level": 37.77,
+          "notes": "y/y from avg hourly wages (14-10-0320)."
+        },
+        {
+          "reference_period": "2026-05",
+          "value": 3.04,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410032001",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-06-05",
+          "series_id": "LFS_avg_hourly_wage_v105812645",
+          "raw_level": 37.24,
+          "notes": "y/y from avg hourly wages (14-10-0320)."
+        },
+        {
+          "reference_period": "2026-06",
+          "value": 3.3,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410032001",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-07-10",
+          "series_id": "LFS_avg_hourly_wage_v105812645",
+          "raw_level": 37.2,
+          "notes": "y/y from avg hourly wages (14-10-0320)."
+        },
+        {
+          "reference_period": "2026-07",
+          "value": 2.79,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410032001",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-08-07",
+          "series_id": "LFS_avg_hourly_wage_v105812645",
+          "raw_level": 37.17,
+          "notes": "y/y from avg hourly wages (14-10-0320)."
+        },
+        {
+          "reference_period": "2026-08",
+          "value": 1.96,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410032001",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-04",
+          "series_id": "LFS_avg_hourly_wage_v105812645",
+          "raw_level": 37.02,
+          "notes": "y/y from avg hourly wages (14-10-0320)."
+        }
+      ],
+      "gaps": [
+        {
+          "expected_period": "2026-09",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410032001"
+          ],
+          "as_of": "2026-09-21"
+        }
+      ],
+      "coverage": {
+        "expected_periods_in_window": 12,
+        "observed_periods_in_window": 12,
+        "latest_reference_period": "2026-08",
+        "status": "ok",
+        "gap_count": 1,
+        "latest_release_date": "2026-09-04"
+      }
+    },
+    "Labor.employment": {
+      "dimension": "Labor",
+      "component": "employment",
+      "canonical_name": "Employment monthly change, seasonally adjusted",
+      "publisher": "Statistics Canada",
+      "distributor": "Statistics Canada WDS",
+      "series_id": "v2062811_derived_mom_change",
+      "cadence": "monthly",
+      "units": "thousands of persons",
+      "preferred_scoring_transformation": "mom_sa_change_thousands",
+      "sa": true,
+      "source_urls": [
+        "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028701"
+      ],
+      "original_authority_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028701",
+      "retrieval_method": "statcan_wds_vectors",
+      "methodology_breaks": [],
+      "observations": [
+        {
+          "reference_period": "2025-09",
+          "value": 53.3,
+          "units": "thousands of persons, seasonally adjusted",
+          "transformation": "mom_sa_change_thousands",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028701",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-04-10",
+          "series_id": "LFS_employment_level_v2062811",
+          "raw_level": 21009.9,
+          "calibration_lookback": true
+        },
+        {
+          "reference_period": "2025-10",
+          "value": 73.7,
+          "units": "thousands of persons, seasonally adjusted",
+          "transformation": "mom_sa_change_thousands",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028701",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-05-08",
+          "series_id": "LFS_employment_level_v2062811",
+          "raw_level": 21083.6
+        },
+        {
+          "reference_period": "2025-11",
+          "value": 52.3,
+          "units": "thousands of persons, seasonally adjusted",
+          "transformation": "mom_sa_change_thousands",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028701",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-06-05",
+          "series_id": "LFS_employment_level_v2062811",
+          "raw_level": 21135.9
+        },
+        {
+          "reference_period": "2025-12",
+          "value": 10.1,
+          "units": "thousands of persons, seasonally adjusted",
+          "transformation": "mom_sa_change_thousands",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028701",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-07-10",
+          "series_id": "LFS_employment_level_v2062811",
+          "raw_level": 21146.0
+        },
+        {
+          "reference_period": "2026-01",
+          "value": -24.8,
+          "units": "thousands of persons, seasonally adjusted",
+          "transformation": "mom_sa_change_thousands",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028701",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-08-07",
+          "series_id": "LFS_employment_level_v2062811",
+          "raw_level": 21121.2
+        },
+        {
+          "reference_period": "2026-02",
+          "value": -83.9,
+          "units": "thousands of persons, seasonally adjusted",
+          "transformation": "mom_sa_change_thousands",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028701",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-04",
+          "series_id": "LFS_employment_level_v2062811",
+          "raw_level": 21037.3
+        },
+        {
+          "reference_period": "2026-03",
+          "value": 14.1,
+          "units": "thousands of persons, seasonally adjusted",
+          "transformation": "mom_sa_change_thousands",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028701",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-04",
+          "series_id": "LFS_employment_level_v2062811",
+          "raw_level": 21051.4
+        },
+        {
+          "reference_period": "2026-04",
+          "value": -17.7,
+          "units": "thousands of persons, seasonally adjusted",
+          "transformation": "mom_sa_change_thousands",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028701",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-04",
+          "series_id": "LFS_employment_level_v2062811",
+          "raw_level": 21033.7
+        },
+        {
+          "reference_period": "2026-05",
+          "value": 87.8,
+          "units": "thousands of persons, seasonally adjusted",
+          "transformation": "mom_sa_change_thousands",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028701",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-04",
+          "series_id": "LFS_employment_level_v2062811",
+          "raw_level": 21121.5
+        },
+        {
+          "reference_period": "2026-06",
+          "value": 18.2,
+          "units": "thousands of persons, seasonally adjusted",
+          "transformation": "mom_sa_change_thousands",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028701",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-04",
+          "series_id": "LFS_employment_level_v2062811",
+          "raw_level": 21139.7
+        },
+        {
+          "reference_period": "2026-07",
+          "value": 75.1,
+          "units": "thousands of persons, seasonally adjusted",
+          "transformation": "mom_sa_change_thousands",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028701",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-04",
+          "series_id": "LFS_employment_level_v2062811",
+          "raw_level": 21214.8
+        },
+        {
+          "reference_period": "2026-08",
+          "value": -41.7,
+          "units": "thousands of persons, seasonally adjusted",
+          "transformation": "mom_sa_change_thousands",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028701",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-09-04",
+          "series_id": "LFS_employment_level_v2062811",
+          "raw_level": 21173.1
+        }
+      ],
+      "gaps": [
+        {
+          "expected_period": "2026-09",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028701"
+          ],
+          "as_of": "2026-09-21"
+        }
+      ],
+      "coverage": {
+        "expected_periods_in_window": 12,
+        "observed_periods_in_window": 11,
+        "latest_reference_period": "2026-08",
+        "status": "ok",
+        "gap_count": 1,
+        "latest_release_date": "2026-09-04"
+      }
+    },
+    "Activity.gdp_domestic_demand": {
+      "dimension": "Activity",
+      "component": "gdp_domestic_demand",
+      "canonical_name": "Real GDP growth (monthly by industry and quarterly expenditure GDP)",
+      "publisher": "Statistics Canada",
+      "distributor": "Statistics Canada WDS",
+      "series_id": "monthly_v65201210;quarterly_v1594571783",
+      "cadence": "monthly-and-quarterly",
+      "units": "percent",
+      "preferred_scoring_transformation": "mom_sa_pct_and_qoq_sa_pct",
+      "sa": true,
+      "source_urls": [
+        "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3610043401",
+        "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3610010401"
+      ],
+      "original_authority_url": "https://www.statcan.gc.ca/en/subjects-start/economic_accounts",
+      "retrieval_method": "statcan_wds_vectors",
+      "methodology_breaks": [],
+      "observations": [
+        {
+          "reference_period": "2025-09",
+          "value": 0.19,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3610043401",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-08-28",
+          "series_id": "GDP_monthly_all_industries_v65201210",
+          "raw_level": 2342161.0,
+          "notes": "m/m monthly GDP all industries.",
+          "calibration_lookback": true
+        },
+        {
+          "reference_period": "2025-10",
+          "value": -0.26,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3610043401",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-08-28",
+          "series_id": "GDP_monthly_all_industries_v65201210",
+          "raw_level": 2336171.0,
+          "notes": "m/m monthly GDP all industries."
+        },
+        {
+          "reference_period": "2025-11",
+          "value": 0.08,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3610043401",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-08-28",
+          "series_id": "GDP_monthly_all_industries_v65201210",
+          "raw_level": 2338062.0,
+          "notes": "m/m monthly GDP all industries."
+        },
+        {
+          "reference_period": "2025-12",
+          "value": 0.11,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3610043401",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-08-28",
+          "series_id": "GDP_monthly_all_industries_v65201210",
+          "raw_level": 2340690.0,
+          "notes": "m/m monthly GDP all industries."
+        },
+        {
+          "reference_period": "2026-01",
+          "value": -0.02,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3610043401",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-08-28",
+          "series_id": "GDP_monthly_all_industries_v65201210",
+          "raw_level": 2340294.0,
+          "notes": "m/m monthly GDP all industries."
+        },
+        {
+          "reference_period": "2026-02",
+          "value": 0.16,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3610043401",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-08-28",
+          "series_id": "GDP_monthly_all_industries_v65201210",
+          "raw_level": 2344080.0,
+          "notes": "m/m monthly GDP all industries."
+        },
+        {
+          "reference_period": "2026-03",
+          "value": -0.15,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3610043401",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-08-28",
+          "series_id": "GDP_monthly_all_industries_v65201210",
+          "raw_level": 2340472.0,
+          "notes": "m/m monthly GDP all industries."
+        },
+        {
+          "reference_period": "2026-04",
+          "value": 0.63,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3610043401",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-08-28",
+          "series_id": "GDP_monthly_all_industries_v65201210",
+          "raw_level": 2355245.0,
+          "notes": "m/m monthly GDP all industries."
+        },
+        {
+          "reference_period": "2026-05",
+          "value": 0.33,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3610043401",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-08-28",
+          "series_id": "GDP_monthly_all_industries_v65201210",
+          "raw_level": 2363056.0,
+          "notes": "m/m monthly GDP all industries."
+        },
+        {
+          "reference_period": "2026-06",
+          "value": 0.26,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3610043401",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-08-28",
+          "series_id": "GDP_monthly_all_industries_v65201210",
+          "raw_level": 2369309.0,
+          "notes": "m/m monthly GDP all industries."
+        },
+        {
+          "reference_period": "2025-Q3",
+          "value": 0.5,
+          "units": "percent",
+          "transformation": "qoq_sa_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3610010401",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-05-29",
+          "series_id": "GDP_real_market_prices_qq_v1594571783",
+          "notes": "Official real GDP q/q SAAR."
+        },
+        {
+          "reference_period": "2025-Q4",
+          "value": -0.2,
+          "units": "percent",
+          "transformation": "qoq_sa_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3610010401",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-05-29",
+          "series_id": "GDP_real_market_prices_qq_v1594571783",
+          "notes": "Official real GDP q/q SAAR."
+        },
+        {
+          "reference_period": "2026-Q1",
+          "value": 0.1,
+          "units": "percent",
+          "transformation": "qoq_sa_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3610010401",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-08-28",
+          "series_id": "GDP_real_market_prices_qq_v1594571783",
+          "notes": "Official real GDP q/q SAAR."
+        },
+        {
+          "reference_period": "2026-Q2",
+          "value": 0.8,
+          "units": "percent",
+          "transformation": "qoq_sa_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3610010401",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-08-28",
+          "series_id": "GDP_real_market_prices_qq_v1594571783",
+          "notes": "Official real GDP q/q SAAR."
+        }
+      ],
+      "gaps": [
+        {
+          "expected_period": "2026-07",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3610043401"
+          ],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2026-08",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3610043401"
+          ],
+          "as_of": "2026-09-21"
+        }
+      ],
+      "coverage": {
+        "expected_periods_in_window": 14,
+        "observed_periods_in_window": 13,
+        "latest_reference_period": "2026-Q2",
+        "status": "ok",
+        "gap_count": 2,
+        "latest_release_date": "2026-08-28"
+      }
+    },
+    "Activity.business_surveys": {
+      "dimension": "Activity",
+      "component": "business_surveys",
+      "canonical_name": "Ivey PMI and Bank of Canada Business Outlook Survey composite",
+      "publisher": "Ivey Business School / Bank of Canada",
+      "distributor": null,
+      "series_id": null,
+      "cadence": "monthly-or-quarterly",
+      "units": "diffusion_index",
+      "preferred_scoring_transformation": "survey_level_or_balance",
+      "sa": null,
+      "source_urls": [
+        "https://www.iveypmi.ca/",
+        "https://www.bankofcanada.ca/publications/bos/"
+      ],
+      "original_authority_url": "https://www.iveypmi.ca/",
+      "retrieval_method": "unavailable",
+      "methodology_breaks": [],
+      "observations": [],
+      "gaps": [
+        {
+          "expected_period": "2025-09",
+          "reason": "proprietary no free history",
+          "attempted_sources": [
+            "https://www.iveypmi.ca/",
+            "https://www.bankofcanada.ca/publications/bos/"
+          ],
+          "as_of": "2026-09-21",
+          "notes": "Ivey PMI SSL failure; BoC BOS lacks public numerical API."
+        },
+        {
+          "expected_period": "2025-10",
+          "reason": "proprietary no free history",
+          "attempted_sources": [
+            "https://www.iveypmi.ca/",
+            "https://www.bankofcanada.ca/publications/bos/"
+          ],
+          "as_of": "2026-09-21",
+          "notes": "Ivey PMI SSL failure; BoC BOS lacks public numerical API."
+        },
+        {
+          "expected_period": "2025-11",
+          "reason": "proprietary no free history",
+          "attempted_sources": [
+            "https://www.iveypmi.ca/",
+            "https://www.bankofcanada.ca/publications/bos/"
+          ],
+          "as_of": "2026-09-21",
+          "notes": "Ivey PMI SSL failure; BoC BOS lacks public numerical API."
+        },
+        {
+          "expected_period": "2025-12",
+          "reason": "proprietary no free history",
+          "attempted_sources": [
+            "https://www.iveypmi.ca/",
+            "https://www.bankofcanada.ca/publications/bos/"
+          ],
+          "as_of": "2026-09-21",
+          "notes": "Ivey PMI SSL failure; BoC BOS lacks public numerical API."
+        },
+        {
+          "expected_period": "2026-01",
+          "reason": "proprietary no free history",
+          "attempted_sources": [
+            "https://www.iveypmi.ca/",
+            "https://www.bankofcanada.ca/publications/bos/"
+          ],
+          "as_of": "2026-09-21",
+          "notes": "Ivey PMI SSL failure; BoC BOS lacks public numerical API."
+        },
+        {
+          "expected_period": "2026-02",
+          "reason": "proprietary no free history",
+          "attempted_sources": [
+            "https://www.iveypmi.ca/",
+            "https://www.bankofcanada.ca/publications/bos/"
+          ],
+          "as_of": "2026-09-21",
+          "notes": "Ivey PMI SSL failure; BoC BOS lacks public numerical API."
+        },
+        {
+          "expected_period": "2026-03",
+          "reason": "proprietary no free history",
+          "attempted_sources": [
+            "https://www.iveypmi.ca/",
+            "https://www.bankofcanada.ca/publications/bos/"
+          ],
+          "as_of": "2026-09-21",
+          "notes": "Ivey PMI SSL failure; BoC BOS lacks public numerical API."
+        },
+        {
+          "expected_period": "2026-04",
+          "reason": "proprietary no free history",
+          "attempted_sources": [
+            "https://www.iveypmi.ca/",
+            "https://www.bankofcanada.ca/publications/bos/"
+          ],
+          "as_of": "2026-09-21",
+          "notes": "Ivey PMI SSL failure; BoC BOS lacks public numerical API."
+        },
+        {
+          "expected_period": "2026-05",
+          "reason": "proprietary no free history",
+          "attempted_sources": [
+            "https://www.iveypmi.ca/",
+            "https://www.bankofcanada.ca/publications/bos/"
+          ],
+          "as_of": "2026-09-21",
+          "notes": "Ivey PMI SSL failure; BoC BOS lacks public numerical API."
+        },
+        {
+          "expected_period": "2026-06",
+          "reason": "proprietary no free history",
+          "attempted_sources": [
+            "https://www.iveypmi.ca/",
+            "https://www.bankofcanada.ca/publications/bos/"
+          ],
+          "as_of": "2026-09-21",
+          "notes": "Ivey PMI SSL failure; BoC BOS lacks public numerical API."
+        },
+        {
+          "expected_period": "2026-07",
+          "reason": "proprietary no free history",
+          "attempted_sources": [
+            "https://www.iveypmi.ca/",
+            "https://www.bankofcanada.ca/publications/bos/"
+          ],
+          "as_of": "2026-09-21",
+          "notes": "Ivey PMI SSL failure; BoC BOS lacks public numerical API."
+        },
+        {
+          "expected_period": "2026-08",
+          "reason": "proprietary no free history",
+          "attempted_sources": [
+            "https://www.iveypmi.ca/",
+            "https://www.bankofcanada.ca/publications/bos/"
+          ],
+          "as_of": "2026-09-21",
+          "notes": "Ivey PMI SSL failure; BoC BOS lacks public numerical API."
+        }
+      ],
+      "coverage": {
+        "expected_periods_in_window": 12,
+        "observed_periods_in_window": 0,
+        "latest_reference_period": null,
+        "status": "unavailable",
+        "gap_count": 12
+      }
+    },
+    "Consumer.retail": {
+      "dimension": "Consumer",
+      "component": "retail",
+      "canonical_name": "Total retail trade sales, seasonally adjusted, month-over-month",
+      "publisher": "Statistics Canada",
+      "distributor": "Statistics Canada WDS",
+      "series_id": "v1446859483",
+      "cadence": "monthly",
+      "units": "percent",
+      "preferred_scoring_transformation": "mom_sa_pct",
+      "sa": true,
+      "source_urls": [
+        "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=2010005601"
+      ],
+      "original_authority_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=2010005601",
+      "retrieval_method": "statcan_wds_vectors",
+      "methodology_breaks": [
+        {
+          "date": "2023-03-24",
+          "note": "Table 20-10-0008-01 archived; replaced by 20-10-0056."
+        }
+      ],
+      "observations": [
+        {
+          "reference_period": "2025-09",
+          "value": -1.02,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=2010005601",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-04-24",
+          "series_id": "retail_total_sa_v1446859483",
+          "raw_level": 70059094.0,
+          "notes": "m/m SA total retail sales (20-10-0056).",
+          "calibration_lookback": true
+        },
+        {
+          "reference_period": "2025-10",
+          "value": 0.08,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=2010005601",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-04-24",
+          "series_id": "retail_total_sa_v1446859483",
+          "raw_level": 70112774.0,
+          "notes": "m/m SA total retail sales (20-10-0056)."
+        },
+        {
+          "reference_period": "2025-11",
+          "value": 1.24,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=2010005601",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-04-24",
+          "series_id": "retail_total_sa_v1446859483",
+          "raw_level": 70985144.0,
+          "notes": "m/m SA total retail sales (20-10-0056)."
+        },
+        {
+          "reference_period": "2025-12",
+          "value": -0.39,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=2010005601",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-05-22",
+          "series_id": "retail_total_sa_v1446859483",
+          "raw_level": 70708740.0,
+          "notes": "m/m SA total retail sales (20-10-0056)."
+        },
+        {
+          "reference_period": "2026-01",
+          "value": 1.33,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=2010005601",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-06-19",
+          "series_id": "retail_total_sa_v1446859483",
+          "raw_level": 71650547.0,
+          "notes": "m/m SA total retail sales (20-10-0056)."
+        },
+        {
+          "reference_period": "2026-02",
+          "value": 0.56,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=2010005601",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-07-23",
+          "series_id": "retail_total_sa_v1446859483",
+          "raw_level": 72053890.0,
+          "notes": "m/m SA total retail sales (20-10-0056)."
+        },
+        {
+          "reference_period": "2026-03",
+          "value": 0.93,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=2010005601",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-08-21",
+          "series_id": "retail_total_sa_v1446859483",
+          "raw_level": 72725905.0,
+          "notes": "m/m SA total retail sales (20-10-0056)."
+        },
+        {
+          "reference_period": "2026-04",
+          "value": 0.47,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=2010005601",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-08-21",
+          "series_id": "retail_total_sa_v1446859483",
+          "raw_level": 73065313.0,
+          "notes": "m/m SA total retail sales (20-10-0056)."
+        },
+        {
+          "reference_period": "2026-05",
+          "value": 1.06,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=2010005601",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-08-21",
+          "series_id": "retail_total_sa_v1446859483",
+          "raw_level": 73838626.0,
+          "notes": "m/m SA total retail sales (20-10-0056)."
+        },
+        {
+          "reference_period": "2026-06",
+          "value": 0.6,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=2010005601",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-08-21",
+          "series_id": "retail_total_sa_v1446859483",
+          "raw_level": 74282968.0,
+          "notes": "m/m SA total retail sales (20-10-0056)."
+        }
+      ],
+      "gaps": [
+        {
+          "expected_period": "2026-07",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=2010005601"
+          ],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2026-08",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=2010005601"
+          ],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2026-09",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=2010005601"
+          ],
+          "as_of": "2026-09-21"
+        }
+      ],
+      "coverage": {
+        "expected_periods_in_window": 10,
+        "observed_periods_in_window": 9,
+        "latest_reference_period": "2026-06",
+        "status": "ok",
+        "gap_count": 3,
+        "latest_release_date": "2026-08-21"
+      }
+    },
+    "Consumer.income": {
+      "dimension": "Consumer",
+      "component": "income",
+      "canonical_name": "Household disposable income, quarter-over-quarter percent change",
+      "publisher": "Statistics Canada",
+      "distributor": "Statistics Canada WDS",
+      "series_id": "v62305981_derived_qq",
+      "cadence": "quarterly",
+      "units": "percent",
+      "preferred_scoring_transformation": "qoq_sa_pct",
+      "sa": true,
+      "source_urls": [
+        "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3610011201"
+      ],
+      "original_authority_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3610011201",
+      "retrieval_method": "statcan_wds_vectors",
+      "methodology_breaks": [],
+      "observations": [
+        {
+          "reference_period": "2025-Q3",
+          "value": 0.81,
+          "units": "percent",
+          "transformation": "qoq_sa_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3610011201",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-05-29",
+          "series_id": "household_disposable_income_v62305981",
+          "raw_level": 1790264.0,
+          "notes": "q/q household disposable income SAAR."
+        },
+        {
+          "reference_period": "2025-Q4",
+          "value": 0.62,
+          "units": "percent",
+          "transformation": "qoq_sa_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3610011201",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-05-29",
+          "series_id": "household_disposable_income_v62305981",
+          "raw_level": 1801452.0,
+          "notes": "q/q household disposable income SAAR."
+        },
+        {
+          "reference_period": "2026-Q1",
+          "value": 1.12,
+          "units": "percent",
+          "transformation": "qoq_sa_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3610011201",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-08-28",
+          "series_id": "household_disposable_income_v62305981",
+          "raw_level": 1821552.0,
+          "notes": "q/q household disposable income SAAR."
+        },
+        {
+          "reference_period": "2026-Q2",
+          "value": 2.12,
+          "units": "percent",
+          "transformation": "qoq_sa_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3610011201",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-08-28",
+          "series_id": "household_disposable_income_v62305981",
+          "raw_level": 1860216.0,
+          "notes": "q/q household disposable income SAAR."
+        }
+      ],
+      "gaps": [],
+      "coverage": {
+        "expected_periods_in_window": 4,
+        "observed_periods_in_window": 4,
+        "latest_reference_period": "2026-Q2",
+        "status": "ok",
+        "gap_count": 0,
+        "latest_release_date": "2026-08-28"
+      }
+    },
+    "Consumer.spending": {
+      "dimension": "Consumer",
+      "component": "spending",
+      "canonical_name": "Household final consumption expenditure, real q/q percent change",
+      "publisher": "Statistics Canada",
+      "distributor": "Statistics Canada WDS",
+      "series_id": "v1594571755",
+      "cadence": "quarterly",
+      "units": "percent",
+      "preferred_scoring_transformation": "qoq_sa_pct",
+      "sa": true,
+      "source_urls": [
+        "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3610010401"
+      ],
+      "original_authority_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3610010401",
+      "retrieval_method": "statcan_wds_vectors",
+      "methodology_breaks": [],
+      "observations": [
+        {
+          "reference_period": "2025-Q3",
+          "value": -0.2,
+          "units": "percent",
+          "transformation": "qoq_sa_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3610010401",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-05-29",
+          "series_id": "household_final_consumption_qq_v1594571755",
+          "notes": "Official HH consumption q/q."
+        },
+        {
+          "reference_period": "2025-Q4",
+          "value": 0.7,
+          "units": "percent",
+          "transformation": "qoq_sa_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3610010401",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-05-29",
+          "series_id": "household_final_consumption_qq_v1594571755",
+          "notes": "Official HH consumption q/q."
+        },
+        {
+          "reference_period": "2026-Q1",
+          "value": 0.6,
+          "units": "percent",
+          "transformation": "qoq_sa_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3610010401",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-08-28",
+          "series_id": "household_final_consumption_qq_v1594571755",
+          "notes": "Official HH consumption q/q."
+        },
+        {
+          "reference_period": "2026-Q2",
+          "value": 0.8,
+          "units": "percent",
+          "transformation": "qoq_sa_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3610010401",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:45:36Z",
+          "release_date": "2026-08-28",
+          "series_id": "household_final_consumption_qq_v1594571755",
+          "notes": "Official HH consumption q/q."
+        }
+      ],
+      "gaps": [],
+      "coverage": {
+        "expected_periods_in_window": 4,
+        "observed_periods_in_window": 4,
+        "latest_reference_period": "2026-Q2",
+        "status": "ok",
+        "gap_count": 0,
+        "latest_release_date": "2026-08-28"
+      }
+    },
+    "Consumer.confidence": {
+      "dimension": "Consumer",
+      "component": "confidence",
+      "canonical_name": "Bank of Canada Canadian Survey of Consumer Expectations",
+      "publisher": "Bank of Canada",
+      "distributor": null,
+      "series_id": null,
+      "cadence": "quarterly",
+      "units": "index_or_balance",
+      "preferred_scoring_transformation": "survey_balance",
+      "sa": null,
+      "source_urls": [
+        "https://www.bankofcanada.ca/publications/canadian-survey-of-consumer-expectations/"
+      ],
+      "original_authority_url": "https://www.bankofcanada.ca/publications/canadian-survey-of-consumer-expectations/",
+      "retrieval_method": "unavailable",
+      "methodology_breaks": [],
+      "observations": [],
+      "gaps": [
+        {
+          "expected_period": "2025-Q3",
+          "reason": "source inaccessible",
+          "attempted_sources": [
+            "https://www.bankofcanada.ca/publications/canadian-survey-of-consumer-expectations/"
+          ],
+          "as_of": "2026-09-21",
+          "notes": "No maintained BoC CSCE numerical API located."
+        },
+        {
+          "expected_period": "2025-Q4",
+          "reason": "source inaccessible",
+          "attempted_sources": [
+            "https://www.bankofcanada.ca/publications/canadian-survey-of-consumer-expectations/"
+          ],
+          "as_of": "2026-09-21",
+          "notes": "No maintained BoC CSCE numerical API located."
+        },
+        {
+          "expected_period": "2026-Q1",
+          "reason": "source inaccessible",
+          "attempted_sources": [
+            "https://www.bankofcanada.ca/publications/canadian-survey-of-consumer-expectations/"
+          ],
+          "as_of": "2026-09-21",
+          "notes": "No maintained BoC CSCE numerical API located."
+        },
+        {
+          "expected_period": "2026-Q2",
+          "reason": "source inaccessible",
+          "attempted_sources": [
+            "https://www.bankofcanada.ca/publications/canadian-survey-of-consumer-expectations/"
+          ],
+          "as_of": "2026-09-21",
+          "notes": "No maintained BoC CSCE numerical API located."
+        },
+        {
+          "expected_period": "2026-Q3",
+          "reason": "source inaccessible",
+          "attempted_sources": [
+            "https://www.bankofcanada.ca/publications/canadian-survey-of-consumer-expectations/"
+          ],
+          "as_of": "2026-09-21",
+          "notes": "No maintained BoC CSCE numerical API located."
+        }
+      ],
+      "coverage": {
+        "expected_periods_in_window": 4,
+        "observed_periods_in_window": 0,
+        "latest_reference_period": null,
+        "status": "unavailable",
+        "gap_count": 5
+      }
+    }
+  }
+}
