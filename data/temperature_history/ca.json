@@ -1531,6 +1531,48 @@
         },
         {
           "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T17:15:00Z",
+          "reference_period": "2026-06",
+          "value": 47.9,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/b407c9ea0281441b9c39f5248f1fc263",
+          "release_date": "2026-07-06",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_CA_COMPOSITE",
+          "notes": "June 2026 Composite Output Index recorded 47.9 (down from 50.8 in May) in S&P Global Canada Services PMI PDF."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T17:15:00Z",
+          "reference_period": "2026-07",
+          "value": 49.7,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/b28d51a7ae54422e9e991e6ea2b06643",
+          "release_date": "2026-08-06",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_CA_COMPOSITE",
+          "notes": "July 2026 Composite Output Index recording 49.7, up from 47.9 in June, in S&P Global Canada Services PMI PDF."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T17:15:00Z",
+          "reference_period": "2026-08",
+          "value": 47.8,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/8b925a72bf154a35becc7364eb6e7e58",
+          "release_date": "2026-09-03",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_CA_COMPOSITE",
+          "notes": "August 2026 Composite Output Index registering 47.8 compared to 49.7 in July in S&P Global Canada Services PMI PDF."
+        },
+        {
+          "units": "diffusion_index",
           "transformation": "ivey_sa_diffusion",
           "vintage": "latest_available",
           "retrieved_at": "2026-09-21T18:30:00Z",
@@ -1688,57 +1730,22 @@
       ],
       "gaps": [
         {
-          "expected_period": "2026-06",
-          "reason": "source inaccessible",
-          "attempted_sources": [
-            "https://www.pmi.spglobal.com/Public/Release/PressReleases",
-            "https://iveypmi.uwo.ca/",
-            "https://www.cfib-fcei.ca/en/research-economic-analysis/business-barometer"
-          ],
-          "as_of": "2026-09-21",
-          "notes": "S&P Canada Services/Composite June 2026 primary PDF not retrieved in this harvest."
-        },
-        {
-          "expected_period": "2026-07",
-          "reason": "source inaccessible",
-          "attempted_sources": [
-            "https://www.pmi.spglobal.com/Public/Release/PressReleases",
-            "https://iveypmi.uwo.ca/",
-            "https://www.cfib-fcei.ca/en/research-economic-analysis/business-barometer"
-          ],
-          "as_of": "2026-09-21",
-          "notes": "S&P Canada Services/Composite July 2026 primary PDF not retrieved in this harvest."
-        },
-        {
-          "expected_period": "2026-08",
-          "reason": "source inaccessible",
-          "attempted_sources": [
-            "https://www.pmi.spglobal.com/Public/Release/PressReleases",
-            "https://iveypmi.uwo.ca/",
-            "https://www.cfib-fcei.ca/en/research-economic-analysis/business-barometer"
-          ],
-          "as_of": "2026-09-21",
-          "notes": "S&P listing GUID for 3 Sep 2026 Canada Services PMI returned empty body (HTTP 202) in this environment."
-        },
-        {
           "expected_period": "2026-09",
           "reason": "not yet released",
           "attempted_sources": [
-            "https://www.pmi.spglobal.com/Public/Release/PressReleases",
-            "https://iveypmi.uwo.ca/",
-            "https://www.cfib-fcei.ca/en/research-economic-analysis/business-barometer"
+            "https://www.pmi.spglobal.com/Public/Release/PressReleases"
           ],
           "as_of": "2026-09-21",
-          "notes": "September 2026 PMI not published as of 2026-09-21."
+          "notes": "September 2026 Composite PMI not published as of 2026-09-21."
         }
       ],
       "coverage": {
         "expected_periods_in_window": 13,
-        "observed_periods_in_window": 9,
-        "latest_reference_period": "2026-05",
-        "latest_release_date": "2026-06-03",
+        "observed_periods_in_window": 12,
+        "latest_reference_period": "2026-08",
+        "latest_release_date": "2026-09-03",
         "status": "partial",
-        "gap_count": 4,
+        "gap_count": 1,
         "conflict_series": "Ivey_PMI_conflict"
       },
       "notes": "Scored target: S&P Global Canada Composite PMI Output Index (50=neutral) from primary Services PMI PDFs. Ivey PMI is conflict/corroboration only (series_id Ivey_PMI_conflict, not scored). CFIB Business Barometer is not scored (outlook index, not a contemporaneous composite PMI)."

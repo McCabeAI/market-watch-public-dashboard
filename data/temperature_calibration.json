@@ -403,7 +403,7 @@
       "anchor_meaning": "S&P Global Canada Composite PMI expansion/contraction threshold of 50",
       "hot_direction": 1,
       "scale_per_unit": 1.0,
-      "note": "Scored series is S&P Global Canada Composite PMI Output Index from primary monthly Services PMI PDFs. Ivey PMI is retained as conflict/corroboration (series_id Ivey_PMI_conflict, not scored). CFIB Business Barometer is not scored (outlook index, not a contemporaneous composite PMI)."
+      "note": "Scored series is S&P Global Canada Composite PMI Output Index from primary monthly Services PMI PDFs through 2026-08. Ivey PMI is retained as conflict/corroboration (series_id Ivey_PMI_conflict, not scored). CFIB Business Barometer is not scored (outlook index, not a contemporaneous composite PMI)."
     },
     "CA.Consumer.retail": {
       "history_key": "Consumer.retail",
@@ -515,7 +515,7 @@
     },
     "AU.Activity.business_surveys": {
       "history_key": "Activity.business_surveys",
-      "note": "Headline Composite PMI from primary S&P Global / Judo Bank press-release PDFs. Prefer final prints; July 2026 is flash-only. Months without a retrieved primary PDF are gapped.",
+      "note": "Headline Composite PMI from primary S&P Global / Judo Bank press-release PDFs. Prefer final prints; July 2026 final 53.2 restated in the August 2026 final PDF. Months without a retrieved primary PDF are gapped.",
       "series_id": "SP_GLOBAL_AU_COMPOSITE_PMI",
       "source_transformation": "diffusion_index",
       "level_scoring_transform": "trailing_mean_n3",
@@ -637,7 +637,7 @@
     },
     "NZ.Activity.business_surveys": {
       "history_key": "Activity.business_surveys",
-      "note": "Scored series is the seasonally adjusted GDP-weighted Performance of Composite Index (PMI+PSI) from BNZ-BusinessNZ primary PDFs. ANZ Business Outlook is context only. BusinessNZ HTML was Cloudflare-blocked; BNZ co-publisher PDFs are the canonical public files.",
+      "note": "Scored series is the seasonally adjusted GDP-weighted Performance of Composite Index (PMI+PSI) from BNZ-BusinessNZ primary PDFs through 2026-08. ANZ Business Outlook is context only. BusinessNZ HTML is Cloudflare-blocked; BNZ publications index + direct PSI PDF assets are the canonical public files.",
       "series_id": "BUSINESSNZ_PCI_GDP_WEIGHTED",
       "source_transformation": "diffusion_index",
       "level_scoring_transform": "trailing_mean_n3",

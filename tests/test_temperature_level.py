@@ -266,7 +266,11 @@ class ActivityTransformTest(unittest.TestCase):
         ]
         self.assertGreaterEqual(len(ivey_rows), 12)
         scored = raw_values_by_period(self.histories["CA"], ca_spec, "2026-09")
-        self.assertNotIn("2026-08", scored)  # Ivey August is conflict-only
+        self.assertIn("2026-08", scored)
+        self.assertAlmostEqual(scored["2026-08"], 47.8)
+        ivey_aug = next(o for o in ivey_rows if o["reference_period"] == "2026-08")
+        self.assertEqual(ivey_aug["value"], 64.3)
+        self.assertNotEqual(scored["2026-08"], ivey_aug["value"])
         self.assertIn("2026-05", scored)
         ca_notes = self.histories["CA"]["components"]["Activity.business_surveys"].get("notes", "")
         self.assertIn("S&P Global Canada Composite", ca_notes)
@@ -284,6 +288,19 @@ class ActivityTransformTest(unittest.TestCase):
         for url in scored_ids:
             self.assertFalse("tradingeconomics" in url.lower())
             self.assertFalse("reddit.com" in url.lower())
+        for cc, sid in (
+            ("AU", "SP_GLOBAL_AU_COMPOSITE_PMI"),
+            ("NZ", "BUSINESSNZ_PCI_GDP_WEIGHTED"),
+        ):
+            urls = {
+                o["source_url"]
+                for o in self.histories[cc]["components"]["Activity.business_surveys"]["observations"]
+                if o.get("series_id") == sid
+            }
+            for url in urls:
+                self.assertFalse("tradingeconomics" in url.lower(), url)
+                self.assertFalse("reddit.com" in url.lower(), url)
+                self.assertFalse("reuters.com" in url.lower(), url)
 
 
 class TemperatureLevelFixtureTest(unittest.TestCase):

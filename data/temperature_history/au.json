@@ -4,7 +4,7 @@
     "start": "2025-09-21",
     "end": "2026-09-21"
   },
-  "retrieved_at": "2026-09-21T14:49:33Z",
+  "retrieved_at": "2026-09-21",
   "notes": "G0 observation backfill from ABS time-series workbooks (Jul 2026 CPI/LFS/spending; Jun 2026 national accounts/WPI; Jun 2025 final Retail Trade). Proprietary survey history gapped per SCHEMA.md. Unemployment rate stored at full ABS workbook precision (headline 4.5% in Jul 2026 release).",
   "components": {
     "Inflation.headline": {
@@ -1027,6 +1027,20 @@
           "units": "diffusion_index",
           "transformation": "diffusion_index",
           "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T17:20:30Z",
+          "reference_period": "2025-09",
+          "value": 52.4,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/5c5f34cfdfb1434b83f8eb4f2f9189da",
+          "release_date": "2025-11-05",
+          "revision_status": "revised",
+          "series_id": "SP_GLOBAL_AU_COMPOSITE_PMI",
+          "notes": "2025-09 Composite Output Index 52.4 restated as prior month in final PDF (release 2025-11-05)."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
           "retrieved_at": "2026-09-21T18:30:00Z",
           "reference_period": "2025-10",
           "value": 52.1,
@@ -1111,74 +1125,79 @@
           "units": "diffusion_index",
           "transformation": "diffusion_index",
           "vintage": "latest_available",
-          "retrieved_at": "2026-09-21T18:30:00Z",
-          "reference_period": "2026-07",
-          "value": 52.6,
+          "retrieved_at": "2026-09-21T17:20:30Z",
+          "reference_period": "2026-04",
+          "value": 50.4,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/3e446e09e41f474a900bdc93ce906d94",
+          "release_date": "2026-05-05",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_AU_COMPOSITE_PMI",
+          "notes": "2026-04 Composite Output Index 50.4 from final S&P Global Australia PMI PDF."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T17:20:30Z",
+          "reference_period": "2026-05",
+          "value": 48.7,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/19b01742d07c4deaa90a63e5d585b150",
+          "release_date": "2026-06-23",
+          "revision_status": "revised",
+          "series_id": "SP_GLOBAL_AU_COMPOSITE_PMI",
+          "notes": "2026-05 Composite Output Index 48.7 restated as prior month in flash PDF (release 2026-06-23)."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T17:20:30Z",
+          "reference_period": "2026-06",
+          "value": 50.4,
           "publisher": "S&P Global",
           "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/5e210a2556224269a36d74a5288687df",
           "release_date": "2026-07-24",
-          "revision_status": "preliminary",
+          "revision_status": "revised",
           "series_id": "SP_GLOBAL_AU_COMPOSITE_PMI",
-          "notes": "July 2026 FLASH Composite Output Index 52.6 (Jun: 50.4). Final July PDF not retrieved; flash used with revision_status preliminary."
+          "notes": "2026-06 Composite Output Index 50.4 restated as prior month in flash PDF (release 2026-07-24)."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T17:20:30Z",
+          "reference_period": "2026-07",
+          "value": 53.2,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/1406ace3389f4056ad742043ab5b2e92",
+          "release_date": "2026-09-03",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_AU_COMPOSITE_PMI",
+          "notes": "July 2026 Composite Output Index 53.2 (final), restated as prior in August 2026 final S&P Global Australia Services PMI PDF; replaces July flash 52.6."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T17:20:30Z",
+          "reference_period": "2026-08",
+          "value": 52.7,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/1406ace3389f4056ad742043ab5b2e92",
+          "release_date": "2026-09-03",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_AU_COMPOSITE_PMI",
+          "notes": "2026-08 Composite Output Index 52.7 from final S&P Global Australia PMI PDF."
         }
       ],
       "gaps": [
         {
-          "expected_period": "2025-09",
-          "reason": "source inaccessible",
-          "attempted_sources": [
-            "https://www.pmi.spglobal.com/Public/Release/PressReleases",
-            "https://www.pmi.spglobal.com/Public/Home/PressRelease/5e210a2556224269a36d74a5288687df"
-          ],
-          "as_of": "2026-09-21",
-          "notes": "September 2025 final Composite PDF not retrieved."
-        },
-        {
-          "expected_period": "2026-04",
-          "reason": "source inaccessible",
-          "attempted_sources": [
-            "https://www.pmi.spglobal.com/Public/Release/PressReleases",
-            "https://www.pmi.spglobal.com/Public/Home/PressRelease/5e210a2556224269a36d74a5288687df"
-          ],
-          "as_of": "2026-09-21",
-          "notes": "April 2026 final Composite PDF not retrieved."
-        },
-        {
-          "expected_period": "2026-05",
-          "reason": "source inaccessible",
-          "attempted_sources": [
-            "https://www.pmi.spglobal.com/Public/Release/PressReleases",
-            "https://www.pmi.spglobal.com/Public/Home/PressRelease/5e210a2556224269a36d74a5288687df"
-          ],
-          "as_of": "2026-09-21",
-          "notes": "May 2026 final Composite PDF not retrieved."
-        },
-        {
-          "expected_period": "2026-06",
-          "reason": "source inaccessible",
-          "attempted_sources": [
-            "https://www.pmi.spglobal.com/Public/Release/PressReleases",
-            "https://www.pmi.spglobal.com/Public/Home/PressRelease/5e210a2556224269a36d74a5288687df"
-          ],
-          "as_of": "2026-09-21",
-          "notes": "June 2026 final Composite PDF not retrieved. July flash cites June 50.4 but June's own primary PDF was not harvested, so June is gapped rather than inferred."
-        },
-        {
-          "expected_period": "2026-08",
-          "reason": "source inaccessible",
-          "attempted_sources": [
-            "https://www.pmi.spglobal.com/Public/Release/PressReleases",
-            "https://www.pmi.spglobal.com/Public/Home/PressRelease/5e210a2556224269a36d74a5288687df"
-          ],
-          "as_of": "2026-09-21",
-          "notes": "2 Sep 2026 Australia Services listing GUID returned empty body (HTTP 202)."
-        },
-        {
           "expected_period": "2026-09",
           "reason": "not yet released",
           "attempted_sources": [
-            "https://www.pmi.spglobal.com/Public/Release/PressReleases",
-            "https://www.pmi.spglobal.com/Public/Home/PressRelease/5e210a2556224269a36d74a5288687df"
+            "https://www.pmi.spglobal.com/Public/Release/PressReleases"
           ],
           "as_of": "2026-09-21",
           "notes": "September 2026 PMI not published as of 2026-09-21."
@@ -1186,11 +1205,11 @@
       ],
       "coverage": {
         "expected_periods_in_window": 13,
-        "observed_periods_in_window": 7,
-        "latest_reference_period": "2026-07",
-        "latest_release_date": "2026-07-24",
+        "observed_periods_in_window": 12,
+        "latest_reference_period": "2026-08",
+        "latest_release_date": "2026-09-03",
         "status": "partial",
-        "gap_count": 6
+        "gap_count": 1
       },
       "notes": "No maintained free numerical business-conditions history on rba.gov.au statistical tables identified."
     },

@@ -28,10 +28,21 @@ on:
       - "scripts/apply_daily_refresh.py"
       - "scripts/sync_news_summary.py"
       - "scripts/validate_score_sources.py"
+      - "scripts/activity_survey_freshness.py"
+      - "scripts/harvest_nz_pci.py"
+      - "scripts/harvest_ca_pmi.py"
+      - "scripts/harvest_au_pmi.py"
       - "tests/test_sync_news_summary.py"
       - "tests/test_temperature_scores.py"
       - "tests/test_temperature_level.py"
       - "tests/test_temperature_history_audit.py"
+      - "tests/test_activity_survey_freshness.py"
+      - "tests/test_harvest_nz_pci.py"
+      - "tests/test_harvest_ca_pmi.py"
+      - "tests/test_harvest_au_pmi.py"
+      - "tests/fixtures/nz_pci/**"
+      - "tests/fixtures/ca_pmi/**"
+      - "tests/fixtures/au_pmi/**"
       - "docs/*SCORE*.md"
       - "docs/DAILY_REFRESH_V0.md"
       - "scripts/apply_market_data_tab.py"
@@ -210,7 +221,8 @@ jobs:
         run: |
           set -euo pipefail
           PYTHONPATH=. python scripts/validate_score_sources.py
-          PYTHONPATH=. python -m unittest tests.test_temperature_history_audit tests.test_temperature_level tests.test_temperature_scores
+          python -m pip install --disable-pip-version-check -r requirements-market-state.txt
+          PYTHONPATH=. python -m unittest tests.test_temperature_history_audit tests.test_temperature_level tests.test_temperature_scores tests.test_activity_survey_freshness tests.test_harvest_nz_pci tests.test_harvest_ca_pmi tests.test_harvest_au_pmi
           TMPDIR="$(mktemp -d)"
           PYTHONPATH=. python - <<PY
           from pathlib import Path

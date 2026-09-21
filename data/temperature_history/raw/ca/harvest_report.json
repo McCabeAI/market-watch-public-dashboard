@@ -1,0 +1,84 @@
+{
+  "country": "CA",
+  "cutoff": "2026-09-21",
+  "series_id": "SP_GLOBAL_CA_COMPOSITE",
+  "retrieval_path": "S&P PMI press-release listing (Public/Release/PressReleases) + per-release PressRelease/{guid} PDF; curl_cffi safari18_0/chrome impersonation, fetch_bytes fallback, committed raw PDF cache",
+  "recovered_months": [
+    {
+      "units": "diffusion_index",
+      "transformation": "diffusion_index",
+      "vintage": "latest_available",
+      "retrieved_at": "2026-09-21T17:15:00Z",
+      "reference_period": "2026-06",
+      "value": 47.9,
+      "publisher": "S&P Global",
+      "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/b407c9ea0281441b9c39f5248f1fc263",
+      "release_date": "2026-07-06",
+      "revision_status": "final",
+      "series_id": "SP_GLOBAL_CA_COMPOSITE",
+      "notes": "June 2026 Composite Output Index recorded 47.9 (down from 50.8 in May) in S&P Global Canada Services PMI release embargoed 6 July 2026."
+    },
+    {
+      "units": "diffusion_index",
+      "transformation": "diffusion_index",
+      "vintage": "latest_available",
+      "retrieved_at": "2026-09-21T17:15:00Z",
+      "reference_period": "2026-07",
+      "value": 49.7,
+      "publisher": "S&P Global",
+      "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/b28d51a7ae54422e9e991e6ea2b06643",
+      "release_date": "2026-08-06",
+      "revision_status": "final",
+      "series_id": "SP_GLOBAL_CA_COMPOSITE",
+      "notes": "July 2026 Composite Output Index recording 49.7, up from 47.9 in June, in S&P Global Canada Services PMI release embargoed 6 August 2026."
+    },
+    {
+      "units": "diffusion_index",
+      "transformation": "diffusion_index",
+      "vintage": "latest_available",
+      "retrieved_at": "2026-09-21T17:15:00Z",
+      "reference_period": "2026-08",
+      "value": 47.8,
+      "publisher": "S&P Global",
+      "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/8b925a72bf154a35becc7364eb6e7e58",
+      "release_date": "2026-09-03",
+      "revision_status": "final",
+      "series_id": "SP_GLOBAL_CA_COMPOSITE",
+      "notes": "August 2026 Composite Output Index registering 47.8 compared to 49.7 in July in S&P Global Canada Services PMI release embargoed 3 September 2026."
+    }
+  ],
+  "genuine_gaps": [
+    {
+      "expected_period": "2026-09",
+      "reason": "not yet released",
+      "attempted_sources": [
+        "https://www.pmi.spglobal.com/Public/Release/PressReleases"
+      ],
+      "failure_mode": "not_published",
+      "notes": "September 2026 reference period not published as of cutoff 2026-09-21."
+    }
+  ],
+  "attempted_urls": [
+    {
+      "url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/b407c9ea0281441b9c39f5248f1fc263",
+      "http_status": 200,
+      "failure_mode": null,
+      "notes": "Primary PressRelease GUID; PDF persisted as data/temperature_history/raw/ca/sp_canada_composite_2026-06.pdf (curl_cffi chrome / local_cache). Intermittent CloudFront 202 HTML is not treated as source-inaccessible."
+    },
+    {
+      "url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/b28d51a7ae54422e9e991e6ea2b06643",
+      "http_status": 200,
+      "failure_mode": null,
+      "notes": "Primary PressRelease GUID; PDF persisted as data/temperature_history/raw/ca/sp_canada_composite_2026-07.pdf (curl_cffi chrome / local_cache)."
+    },
+    {
+      "url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/8b925a72bf154a35becc7364eb6e7e58",
+      "http_status": 200,
+      "failure_mode": null,
+      "notes": "Primary PressRelease GUID; PDF persisted as data/temperature_history/raw/ca/sp_canada_composite_2026-08.pdf (curl_cffi safari18_0 / local_cache)."
+    }
+  ],
+  "parser_notes": "Composite Output Index extracted from S&P Global Canada Services PMI composite section (not Services Business Activity headline). GUID b407c9ea0281441b9c39f5248f1fc263 discovered via primary portal search for July 6 2026 Canada Services embargo.",
+  "conflict_only": "Ivey_PMI_conflict not scored",
+  "do_not_score": ["CFIB", "Trading Economics", "Ivey"]
+}
