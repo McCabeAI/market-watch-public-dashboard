@@ -165,8 +165,8 @@
     return match ? match[1] : text;
   }
 
-  function storyForPosition(pos) {
-    const presentation = pos.presentation || {};
+  function storyForPosition(pos, owner) {
+    const presentation = ((owner || {}).presentation) || pos.presentation || {};
     const expression = marketExpression(pos);
     let punchline = humanizeText(presentation.punchline || "");
     if (!punchline) {
@@ -261,7 +261,7 @@
     }).join("") + "</div>";
   }
 
-  function renderPosition(pos) {
+  function renderPosition(pos, owner) {
     const markLine = (finite(pos.entry_price) || finite(pos.mark_price))
       ? '<div class="tb-position-marks"><span>Entry <b>' + level(pos.entry_price) +
         '</b></span><span>Mark <b>' + level(pos.mark_price) + '</b></span></div>'
@@ -270,7 +270,7 @@
       ? '<div class="tb-position-link">Hedge of ' + esc(pos.hedge_of) + "</div>"
       : "";
     const kind = directionClass(pos.side);
-    const story = storyForPosition(pos);
+    const story = storyForPosition(pos, owner);
     return '<div class="tb-position-card' + (kind ? " tb-side-" + kind : "") +
       '"><div class="tb-position-head"><div class="tb-position-trade">' +
       '<b class="tb-instrument">' + esc(marketExpression(pos)) +
@@ -321,7 +321,7 @@
 
     const seatHtml = seats.map(function (seat) {
       const positions = seat.positions || [];
-      const posHtml = positions.length ? positions.map(renderPosition).join("") : '<div class="tb-empty">No open risk</div>';
+      const posHtml = positions.length ? positions.map(function (pos) { return renderPosition(pos, seat); }).join("") : '<div class="tb-empty">No open risk</div>';
       const pitch = seat.required_pitch ? '<div class="tb-pitch"><b>Required pitch (not necessarily risked):</b> ' +
         esc(typeof seat.required_pitch === "string" ? seat.required_pitch : JSON.stringify(seat.required_pitch)) + "</div>" : "";
       const seatLabel = displayName(seat.seat);
@@ -425,7 +425,7 @@
     renderSystemSummary();
     const cards = pms.map(function (pm) {
       const positions = pm.positions || [];
-      const posHtml = positions.length ? positions.map(renderPosition).join("") : '<div class="tb-empty">No open risk</div>';
+      const posHtml = positions.length ? positions.map(function (pos) { return renderPosition(pos, pm); }).join("") : '<div class="tb-empty">No open risk</div>';
       const emptyLabel = pm.risk_stopped ? "FLAT" : emptyTradeLabel(pm.decision_status || pm.last_action);
       return '<article class="tb-pm"><div class="tb-seat-top"><div class="tb-seat-name">' +
         esc(pm.label || displayName(pm.pm_id)) + '</div><div class="tb-pm-status ' +
