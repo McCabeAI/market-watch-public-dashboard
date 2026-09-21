@@ -268,6 +268,9 @@ class ActivityTransformTest(unittest.TestCase):
         scored = raw_values_by_period(self.histories["CA"], ca_spec, "2026-09")
         self.assertNotIn("2026-08", scored)  # Ivey August is conflict-only
         self.assertIn("2026-05", scored)
+        ca_notes = self.histories["CA"]["components"]["Activity.business_surveys"].get("notes", "")
+        self.assertIn("S&P Global Canada Composite", ca_notes)
+        self.assertNotIn("Scored target: CFIB", ca_notes)
 
     def test_gapped_survey_months_are_explicit_not_fabricated(self) -> None:
         ca_comp = self.histories["CA"]["components"]["Activity.business_surveys"]
