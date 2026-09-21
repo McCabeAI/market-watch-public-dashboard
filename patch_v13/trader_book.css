@@ -53,12 +53,22 @@
 .traderbook .tb-position-risk span{font-size:9px;font-weight:800}
 .traderbook .tb-position-marks{display:flex;gap:12px;margin-top:5px;font-size:8px;color:#718493}
 .traderbook .tb-position-marks b{color:#405868;font-variant-numeric:tabular-nums}
-.traderbook .tb-position-reason,.traderbook .tb-position-invalidation{margin-top:5px;font-size:9px;line-height:1.4;color:#405868}
+.traderbook .tb-position-reason,.traderbook .tb-position-invalidation{margin-top:5px;font-size:12px;line-height:1.5;color:#405868}
 .traderbook .tb-position-invalidation{color:#765347}
+.traderbook .tb-trade-story{margin-top:10px;border-top:1px solid #e6edf1;padding-top:4px}
+.traderbook .tb-story-row{display:grid;grid-template-columns:86px 1fr;gap:10px;padding:7px 0;border-bottom:1px solid #edf2f4;font-size:12px;line-height:1.5;color:#344f61}
+.traderbook .tb-story-row:last-child{border-bottom:0}
+.traderbook .tb-story-row>b{font-size:10px;line-height:1.5;text-transform:uppercase;letter-spacing:.35px;color:#6b7f8d}
+.traderbook .tb-story-punchline>div{font-weight:800;color:#18364b}
+.traderbook .tb-story-invalidation>div{color:#765347}
+.traderbook .tb-story-support{margin:0;padding-left:17px}
+.traderbook .tb-story-support li{margin:0 0 5px}
+.traderbook .tb-story-support li:last-child{margin-bottom:0}
+.traderbook .tb-story-muted{color:#8495a1;font-style:italic}
 .traderbook .tb-position-link{margin-top:4px;font-size:8px;color:#6b7f8d}
 .traderbook .tb-muted{color:#8a9aa8}
 .traderbook .tb-empty{font-size:10px;color:#8a9aa8;font-style:italic}
-.traderbook .tb-thesis{margin:8px 0 0;font-size:10px;color:#405868;line-height:1.4}
+.traderbook .tb-thesis{margin:8px 0 0;font-size:12px;color:#405868;line-height:1.5}
 .traderbook .tb-changes{display:grid;gap:0}
 .traderbook .tb-change{display:grid;grid-template-columns:88px 90px 1fr 80px;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid #edf1f3;font-size:10px}
 .traderbook .tb-change:last-child{border-bottom:0}
@@ -73,6 +83,6 @@
 .traderbook .tb-req-row{display:grid;grid-template-columns:72px 1fr 70px;gap:8px;align-items:start;padding:6px 0;border-bottom:1px solid #edf1f3;font-size:10px}
 .traderbook .tb-req-row:last-child{border-bottom:0}
 @media(max-width:980px){.traderbook .tb-kpis,.traderbook .tb-seat-grid,.traderbook .tb-pm-grid{grid-template-columns:1fr 1fr}.traderbook .tb-header{flex-direction:column;align-items:flex-start}}
-@media(max-width:640px){.traderbook .tb-system-summary,.traderbook .tb-kpis,.traderbook .tb-seat-grid,.traderbook .tb-pm-grid{grid-template-columns:1fr}.traderbook .tb-change{grid-template-columns:1fr 1fr}.traderbook .tb-header h2{font-size:23px}.traderbook .tb-trade-line .tb-instrument,.traderbook .tb-position-trade .tb-instrument{font-size:22px}.traderbook .tb-trade-line .tb-direction,.traderbook .tb-position-trade .tb-direction{font-size:18px}.traderbook .tb-position-head{flex-direction:column;align-items:flex-start}.traderbook .tb-position-risk{text-align:left}}
+@media(max-width:640px){.traderbook .tb-system-summary,.traderbook .tb-kpis,.traderbook .tb-seat-grid,.traderbook .tb-pm-grid{grid-template-columns:1fr}.traderbook .tb-change{grid-template-columns:1fr 1fr}.traderbook .tb-header h2{font-size:23px}.traderbook .tb-trade-line .tb-instrument,.traderbook .tb-position-trade .tb-instrument{font-size:22px}.traderbook .tb-trade-line .tb-direction,.traderbook .tb-position-trade .tb-direction{font-size:18px}.traderbook .tb-position-head{flex-direction:column;align-items:flex-start}.traderbook .tb-position-risk{text-align:left}.traderbook .tb-remit{font-size:12px;line-height:1.5}.traderbook .tb-position-marks{font-size:11px}.traderbook .tb-position-risk b{font-size:12px}.traderbook .tb-position-risk span{font-size:11px}.traderbook .tb-story-row{grid-template-columns:1fr;gap:2px;font-size:15px;line-height:1.55;padding:10px 0}.traderbook .tb-story-row>b{font-size:11px}.traderbook .tb-story-support{padding-left:19px}.traderbook .tb-thesis{font-size:15px;line-height:1.55}.traderbook .tb-pitch{font-size:12px;line-height:1.5}}
 #p-traderbook:checked~.app .nav label[for=p-traderbook]{color:var(--ink);border-bottom-color:var(--navy);font-weight:800}
 #p-traderbook:checked~.app .traderbook{display:block}
