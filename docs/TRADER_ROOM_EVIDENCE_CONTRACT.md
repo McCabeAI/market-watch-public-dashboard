@@ -26,6 +26,8 @@ Load the freshest valid deterministic market-state snapshot produced under `docs
 
 The market-state packet must also carry the observable **policy-path layer** for the United States, Canada and Australia: current SOFR/CORRA/AONIA benchmarks and public futures/OIS-implied paths. Australia additionally carries official RBA 1M/3M/6M OIS, bank-bill rates and bill-minus-OIS basis context. Sovereign 2Y/5Y levels do not satisfy this requirement.
 
+The same market-state object carries `australia_housing`: ABS dwelling prices/transfers, building approvals and housing lending plus RBA housing-credit growth, mortgage rates and household housing-loan cash-flow burden. These are common packet evidence for every advocate, not private follow-up research. Missing/stale housing sub-feeds retain their source status and must not be silently replaced.
+
 The same packet carries `official_curves` for US/Canada/Australia. These are official government zero/forward curves accepted as the paper-book proxy for derived rates structures. They allow advocates to express fwd-fwds such as 2y2y without requiring executable swap quotes. The proxy distinction and source vintage remain explicit. A missing official curve blocks that derived expression, not unrelated spot/outright trades.
 
 The packet should also include deterministic historical move analogs with prior episode dates and forward outcomes so advocates can test comparable states rather than merely quote percentiles.
@@ -70,4 +72,4 @@ A full debate may proceed with partial/unavailable evidence only when the missin
 
 The on-demand orchestrator (`scripts/trader_room_go.py`) treats all four families as essential by default and fails loud on `unavailable` before any advocate is charged. It also fails before model spend if any US/CA/AU policy path is unavailable; a full Trader Room may not construct short-end rates or policy-RV ideas from sovereign yields alone. After freeze, no advocate may use web/search or otherwise leave the packet.
 
-Every advocate receives the exact same common packet. No advocate may privately replace a missing mandatory input with an unsupported assumption.
+Every advocate receives the exact same common packet. Market-state additions therefore propagate to every advocate when they are added to the canonical `market_state` object; UI-only or unrelated Market Watch data does not satisfy this contract. No advocate may privately replace a missing mandatory input with an unsupported assumption.
