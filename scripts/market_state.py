@@ -28,6 +28,22 @@ from typing import Mapping, Sequence
 
 from scripts.australia_housing_data import collect_australia_housing, validate_australia_housing
 from scripts.canada_housing_data import collect_canada_housing, validate_canada_housing
+from scripts.country_registry import (
+    extra_rate_tenor,
+    rate_countries,
+    rv_pairs as registry_rv_pairs,
+    stale_after_days,
+)
+from scripts.euro_area_rates_data import (
+    BUNDESBANK_PAGE,
+    collect_ea_fragmentation,
+    fetch_ea_bund_rates,
+)
+from scripts.japan_rates_data import (
+    MOF_JGB_CURRENT_EN,
+    MOF_JGB_PAGE_EN,
+    fetch_jp_jgb_rates,
+)
 from scripts.us_housing_data import collect_us_housing, validate_us_housing
 from scripts.cross_asset_data import collect_cross_assets
 from scripts.market_opportunities import build_opportunities
@@ -56,11 +72,23 @@ ECB_RETRIES = 4
 G10 = ("EUR", "GBP", "AUD", "NZD", "USD", "CAD", "CHF", "NOK", "SEK", "JPY")
 FX_ORDER = G10
 RATE_TENORS = ("2Y", "5Y", "10Y")
-RATE_COUNTRIES = ("US", "CA", "AU", "NZ")
-RV_PAIRS = (("CA", "US"), ("AU", "US"), ("NZ", "US"), ("AU", "NZ"), ("CA", "AU"))
+RATE_COUNTRIES = rate_countries()
+RV_PAIRS = registry_rv_pairs()
+CORE_RV_PAIRS = (("CA", "US"), ("AU", "US"), ("CA", "AU"))
+# Preserve published RV key order for existing pairs (CA-US, not US-CA).
+_RV_LEG_ORDER = {
+    frozenset({"CA", "US"}): ("CA", "US"),
+    frozenset({"AU", "US"}): ("AU", "US"),
+    frozenset({"NZ", "US"}): ("NZ", "US"),
+    frozenset({"AU", "NZ"}): ("AU", "NZ"),
+    frozenset({"CA", "AU"}): ("CA", "AU"),
+}
+REQUIRED_POLICY_COUNTRIES = ("US", "CA", "AU")
+REQUIRED_OFFICIAL_CURVE_COUNTRIES = ("US", "CA", "AU")
+UNAVAILABLE_OK_RATE_COUNTRIES = frozenset({"NZ"})
 
 # Daily sources may miss weekends/holidays. RBA F2 is weekly with a 2-business-day lag.
-STALE_AFTER_DAYS = {"US": 4, "CA": 4, "AU": 12, "NZ": 4, "FX": 4}
+STALE_AFTER_DAYS = stale_after_days()
 FAIL_AFTER_DAYS = 21
 
 TREASURY_URL = (
@@ -727,6 +755,32 @@ def _empty_tenor_metrics() -> dict:
     }
 
 
+def _rv_leg_order(a: str, b: str) -> tuple[str, str]:
+    pinned = _RV_LEG_ORDER.get(frozenset({a, b}))
+    if pinned:
+        return pinned
+    if a == "US":
+        return (b, "US")
+    if b == "US":
+        return (a, "US")
+    return (a, b)
+
+
+def _housing_unavailable(country: str, reason: str) -> dict:
+    return {
+        "country": country,
+        "status": "unavailable",
+        "error": reason,
+        "feeds": {},
+        "method": {
+            "model_calls": 0,
+            "credentials_required": [],
+            "purpose": f"{country} housing transmission context; non-blocking for core macro/rates.",
+            "trader_packet_delivery": "market_state_passthrough",
+        },
+    }
+
+
 def _unavailable_rate_rv(reason: str) -> dict:
     return {
         "as_of": None,
@@ -769,6 +823,7 @@ def build_snapshot(
     include_australia_housing: bool | None = None,
     include_us_housing: bool | None = None,
     include_canada_housing: bool | None = None,
+    include_fragmentation: bool | None = None,
 ) -> dict:
     today = today or datetime.now(timezone.utc).date()
     start = today - timedelta(days=366 * 5 + 15)
@@ -787,6 +842,8 @@ def build_snapshot(
         "CA": fetch_ca_rates(start, today),
         "AU": fetch_au_rates(start, today),
         "NZ": nz_raw,
+        "EA": fetch_ea_bund_rates(start, today, fetch_bytes=fetch_bytes),
+        "JP": fetch_jp_jgb_rates(start, today, fetch_bytes=fetch_bytes),
     }
     rates: dict[str, dict] = {}
     stale_sources: list[str] = []
@@ -798,7 +855,8 @@ def build_snapshot(
         if country == "NZ" and nz_block is not None:
             rates[country] = nz_block
             continue
-        required = ("2Y", "5Y", "10Y", "30Y") if country == "US" else ("2Y", "5Y", "10Y", "LONG") if country == "CA" else RATE_TENORS
+        extra = extra_rate_tenor(country)
+        required = RATE_TENORS + ((extra,) if extra else ())
         missing = [t for t in required if t not in tenors or not tenors[t]]
         if missing:
             raise MarketStateError(f"{country} missing required tenors: {missing}")
@@ -822,15 +880,30 @@ def build_snapshot(
 
     rate_rv: dict[str, dict] = {}
     nz_available = nz_error is None
+    unavailable_rate_countries = set()
+    if not nz_available:
+        unavailable_rate_countries.add("NZ")
     for a, b in RV_PAIRS:
+        left, right = _rv_leg_order(a, b)
         for tenor in RATE_TENORS:
-            if not nz_available and ("NZ" in (a, b)):
-                rate_rv[f"{a}-{b}_{tenor}"] = _unavailable_rate_rv(nz_error or "NZ rates unavailable")
+            if left in unavailable_rate_countries or right in unavailable_rate_countries:
+                rate_rv[f"{left}-{right}_{tenor}"] = _unavailable_rate_rv(
+                    nz_error or "leg rates unavailable"
+                )
                 continue
-            common = rv_spread(rates_raw[a][tenor], rates_raw[b][tenor])
+            left_series = (rates_raw.get(left) or {}).get(tenor) or {}
+            right_series = (rates_raw.get(right) or {}).get(tenor) or {}
+            common = rv_spread(left_series, right_series) if left_series and right_series else {}
             if not common:
-                raise MarketStateError(f"no overlapping {a}/{b} {tenor} observation dates; refusing to forward-fill")
-            rate_rv[f"{a}-{b}_{tenor}"] = spread_metrics_bps(common)
+                if (left, right) in CORE_RV_PAIRS or (right, left) in CORE_RV_PAIRS:
+                    raise MarketStateError(
+                        f"no overlapping {left}/{right} {tenor} observation dates; refusing to forward-fill"
+                    )
+                rate_rv[f"{left}-{right}_{tenor}"] = _unavailable_rate_rv(
+                    f"no overlapping {left}/{right} {tenor} observation dates"
+                )
+                continue
+            rate_rv[f"{left}-{right}_{tenor}"] = spread_metrics_bps(common)
 
     fx_raw = fetch_fx(start)
     fx = {pair: fx_metrics(series) for pair, series in fx_raw.items()}
@@ -925,7 +998,7 @@ def build_snapshot(
             "status": "unavailable",
             "countries": {
                 c: {"status": "unavailable", "error": "policy path collection disabled for this invocation"}
-                for c in ("US", "CA", "AU")
+                for c in REQUIRED_POLICY_COUNTRIES
             },
             "sources": {},
             "method": {
@@ -937,7 +1010,12 @@ def build_snapshot(
     )
     tradable_rate_curves = build_tradable_rate_curves(policy_paths)
     if include_policy_paths and tradable_rate_curves.get("status") != "ok":
+        from scripts.country_registry import required_tradable_curve_ids
+
+        required_curves = set(required_tradable_curve_ids())
         for curve_id, block in (tradable_rate_curves.get("curves") or {}).items():
+            if curve_id not in required_curves:
+                continue
             if (block or {}).get("status") != "ok":
                 unavailable_sources.append(f"{curve_id}_tradable_curve")
 
@@ -950,7 +1028,7 @@ def build_snapshot(
             "status": "unavailable",
             "countries": {
                 c: {"status": "unavailable", "error": "official curve collection disabled for this invocation"}
-                for c in ("US", "CA", "AU")
+                for c in REQUIRED_OFFICIAL_CURVE_COUNTRIES
             },
             "errors": {},
             "method": {
@@ -962,9 +1040,37 @@ def build_snapshot(
         }
     )
     if include_official_curves and official_curves.get("status") != "ok":
-        for country in ("US", "CA", "AU"):
+        for country in REQUIRED_OFFICIAL_CURVE_COUNTRIES:
             if (official_curves.get("countries", {}).get(country) or {}).get("status") != "ok":
                 unavailable_sources.append(f"{country}_official_curve")
+    if include_fragmentation is None:
+        include_fragmentation = include_cross_assets
+    if include_fragmentation:
+        try:
+            euro_area_fragmentation = collect_ea_fragmentation(today, fetch_bytes=fetch_bytes)
+        except Exception as exc:
+            euro_area_fragmentation = {
+                "status": "unavailable",
+                "block": "euro_area_fragmentation",
+                "error": str(exc),
+                "method": "Peripheral minus German Bund cash yield; exact common dates only; no forward fill",
+            }
+            unavailable_sources.append("EA_fragmentation")
+    else:
+        euro_area_fragmentation = {
+            "status": "unavailable",
+            "block": "euro_area_fragmentation",
+            "error": "euro-area fragmentation collection disabled for this invocation",
+            "method": "Peripheral minus German Bund cash yield; exact common dates only; no forward fill",
+        }
+    euro_area_housing = _housing_unavailable(
+        "EA",
+        "No official/free euro-area housing transmission feed met the source contract; housing is non-blocking.",
+    )
+    japan_housing = _housing_unavailable(
+        "JP",
+        "No official/free Japan housing transmission feed met the source contract; housing is non-blocking.",
+    )
     if include_positioning is None:
         include_positioning = include_cross_assets
     positioning_start = today - timedelta(days=366 * 3 + 30)
@@ -1007,6 +1113,9 @@ def build_snapshot(
         "australia_housing": australia_housing,
         "us_housing": us_housing,
         "canada_housing": canada_housing,
+        "euro_area_housing": euro_area_housing,
+        "japan_housing": japan_housing,
+        "euro_area_fragmentation": euro_area_fragmentation,
         "cross_assets": {"series": cross_meta, "status": "partial" if any(m["status"] != "ok" for m in cross_meta.values()) else "ok"},
         "opportunities": opportunities,
         "positioning": positioning,
@@ -1048,6 +1157,21 @@ def build_snapshot(
                 "note": "RBA assessed closing yields; research context only; not a financial benchmark; typically weekly with a two-business-day lag.",
             },
             "NZ_rates": nz_source,
+            "EA_rates": {
+                "name": "Deutsche Bundesbank BBSSY German Bund par yields",
+                "url": BUNDESBANK_PAGE,
+                "download_url": "https://api.statistiken.bundesbank.de/rest/data/BBSSY",
+                "observation_date": rates["EA"]["latest_observation"],
+                "status": rates["EA"]["status"],
+                "note": "Germany is the EUR cash-rates benchmark only; EA temperature is euro-area macro/policy.",
+            },
+            "JP_rates": {
+                "name": "Ministry of Finance Japan JGB benchmark par yields",
+                "url": MOF_JGB_PAGE_EN,
+                "download_url": MOF_JGB_CURRENT_EN,
+                "observation_date": rates["JP"]["latest_observation"],
+                "status": rates["JP"]["status"],
+            },
             "CFTC_positioning": {
                 "name": "CFTC Traders in Financial Futures - Futures Only",
                 "url": positioning["cftc_tff"].get("source_url", "https://publicreporting.cftc.gov/stories/s/TFF-Futures-Only/98ig-3k9y/"),
@@ -1086,11 +1210,15 @@ def build_snapshot(
                 "Live authorities remain canonical. This artifact is a compact research snapshot. "
                 "US, Canada, Australia and ECB FX are required; a blocked official RBNZ source "
                 "marks NZ rates and NZ-dependent RV spreads unavailable without fabricating data. "
+                "Euro-area Bund (Germany) and Japan JGB cash curves are required six-economy rate legs. "
                 "Cross-country spreads use exact common observation dates only. "
                 "Policy-path context uses official overnight benchmarks plus public money-market data. "
-                "The tradable paper rates universe is explicitly SOFR via CME SR3, CORRA via MX CRA, and AONIA via ASX IB; a position stays on its entry curve family until close. "
+                "The required tradable paper rates universe remains SOFR via CME SR3, CORRA via MX CRA, and AONIA via ASX IB. "
+                "TONA is included when JPX OSE 3M settlements pass identity checks; FST3/€STR stays observe_only until a public settlement feed is reliable. "
                 "Official government zero/forward curves are supplemental bond-curve inputs and are not required to manufacture a swap curve. "
+                "Euro-area sovereign fragmentation (IT/FR/ES vs Bund) is market context, never an EA temperature input. "
                 "Housing context is collected for the US, Canada and Australia from free maintained public sources: FHFA/Census/Fed/Freddie Mac via FRED for the US, Statistics Canada/CMHC/Bank of Canada for Canada, and ABS/RBA for Australia. "
+                "EA/JP housing is omitted until an official/free source meets the contract. "
                 "CFTC TFF supplies trader-class ownership/crowding context and CME's public volume/open-interest service supplies daily FX futures and aggregate options OI history. "
                 "No historical warehouse is written to GitHub or Supabase."
             ),
@@ -1138,24 +1266,35 @@ def validate_snapshot(s: Mapping) -> None:
     except Exception as exc:
         raise MarketStateError(f"invalid canada_housing block: {exc}") from exc
     if set(s.get("rates", {})) != set(RATE_COUNTRIES):
-        raise MarketStateError("rates block must contain US, CA, AU and NZ")
+        raise MarketStateError("rates block must contain every registry rate country")
     for c in RATE_COUNTRIES:
         block = s["rates"][c]
         if block.get("status") == "unavailable":
-            if c != "NZ":
-                raise MarketStateError(f"only NZ may be unavailable, not {c}")
+            if c not in UNAVAILABLE_OK_RATE_COUNTRIES:
+                raise MarketStateError(f"only {sorted(UNAVAILABLE_OK_RATE_COUNTRIES)} may be unavailable, not {c}")
             if not block.get("error"):
-                raise MarketStateError("NZ unavailable block must include error provenance")
+                raise MarketStateError(f"{c} unavailable block must include error provenance")
             continue
         for t in RATE_TENORS:
             value = block["tenors"][t]["value"]
-            if not (0 < value < 25):
+            if not (-2.0 < value < 25):
                 raise MarketStateError(f"implausible {c} {t} yield: {value}")
             if not block["tenors"][t].get("as_of"):
                 raise MarketStateError(f"{c} {t} missing observation date")
-        extra = "30Y" if c == "US" else "LONG" if c == "CA" else None
+        extra = extra_rate_tenor(c)
         if extra and extra not in block["tenors"]:
             raise MarketStateError(f"{c} missing {extra} tenor")
+    frag = s.get("euro_area_fragmentation") or {}
+    if frag.get("status") not in {"ok", "partial", "unavailable"}:
+        raise MarketStateError("euro_area_fragmentation missing or invalid status")
+    if frag.get("status") == "unavailable" and not frag.get("error"):
+        raise MarketStateError("euro_area_fragmentation unavailable without provenance")
+    for housing_key in ("euro_area_housing", "japan_housing"):
+        housing = s.get(housing_key) or {}
+        if housing.get("status") not in {"ok", "partial", "unavailable"}:
+            raise MarketStateError(f"{housing_key} missing or invalid status")
+        if housing.get("status") == "unavailable" and not housing.get("error"):
+            raise MarketStateError(f"{housing_key} unavailable without provenance")
     for _key, rv in s.get("rate_rv", {}).items():
         if rv.get("status") == "unavailable":
             if rv.get("bps") is not None:

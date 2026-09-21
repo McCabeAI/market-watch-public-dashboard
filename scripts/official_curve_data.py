@@ -327,6 +327,30 @@ def collect_official_curves(*, today: date, fetch_bytes: FetchBytes) -> dict[str
         countries["AU"] = {"status": "unavailable", "error": str(exc)}
         errors["AU"] = str(exc)
 
+    try:
+        from scripts.euro_area_rates_data import collect_ea_official_curve
+
+        countries["EA"] = collect_ea_official_curve(today, fetch_bytes=fetch_bytes)
+        if countries["EA"].get("status") != "ok":
+            countries["EA"].setdefault(
+                "error",
+                str(countries["EA"].get("error") or countries["EA"].get("errors") or "EA official curve unavailable"),
+            )
+            errors["EA"] = countries["EA"]["error"]
+    except Exception as exc:
+        countries["EA"] = {"status": "unavailable", "error": str(exc)}
+        errors["EA"] = str(exc)
+
+    try:
+        from scripts.japan_rates_data import collect_jp_official_curve
+
+        countries["JP"] = collect_jp_official_curve(today, fetch_bytes=fetch_bytes)
+        if countries["JP"].get("status") != "ok":
+            errors["JP"] = str(countries["JP"].get("error") or "JP official curve unavailable")
+    except Exception as exc:
+        countries["JP"] = {"status": "unavailable", "error": str(exc)}
+        errors["JP"] = str(exc)
+
     status = "ok" if all((countries.get(c) or {}).get("status") == "ok" for c in ("US", "CA", "AU")) else "partial"
     return {
         "status": status,
@@ -352,8 +376,8 @@ def validate_official_curves(payload: Mapping[str, Any]) -> None:
     if payload.get("status") not in {"ok", "partial", "unavailable"}:
         raise ValueError("official curves invalid status")
     countries = payload.get("countries")
-    if not isinstance(countries, Mapping) or set(countries) != {"US", "CA", "AU"}:
-        raise ValueError("official curves must contain exactly US, CA and AU")
+    if not isinstance(countries, Mapping) or not {"US", "CA", "AU"}.issubset(set(countries)):
+        raise ValueError("official curves must contain US, CA and AU")
     for country in ("US", "CA", "AU"):
         block = countries[country]
         if block.get("status") == "unavailable":
@@ -374,3 +398,13 @@ def validate_official_curves(payload: Mapping[str, Any]) -> None:
                 raise ValueError(f"{country} {tenor} discount factor implausible: {value}")
             if not row.get("as_of"):
                 raise ValueError(f"{country} {tenor} discount factor missing as_of")
+    for country in set(countries) - {"US", "CA", "AU"}:
+        block = countries[country]
+        if not isinstance(block, Mapping):
+            raise ValueError(f"{country} official curve must be an object")
+        if block.get("status") == "unavailable":
+            if not block.get("error"):
+                raise ValueError(f"{country} official curve unavailable without error provenance")
+            continue
+        if block.get("status") not in {"ok", "partial"}:
+            raise ValueError(f"{country} official curve invalid status: {block.get('status')}")
