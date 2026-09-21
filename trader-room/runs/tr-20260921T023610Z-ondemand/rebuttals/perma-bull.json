@@ -1,0 +1,189 @@
+{
+  "type": "TRADER_ROOM_REBUTTAL",
+  "run_id": "tr-20260921T023610Z-ondemand",
+  "round": 2,
+  "agent": "perma-bull",
+  "packet_sha256": "cfb65337a1cdff3a17c8ffaab151fe220bf6640ba67547f1cda1ab5beac6a341",
+  "own_original_ref": "submissions/perma-bull.json",
+  "opponents": [
+    "carry-is-king",
+    "rate-dove",
+    "dollar-king"
+  ],
+  "subagent_calls": 0,
+  "trade_change": "unchanged",
+  "holes_in_opposing_case": [
+    "Strongest opposing claim is carry-is-king: receive CORRA_2027-03 because CPI-trim/median are 1.9/2.0 and August employment was -42k, so the 84bp Mar-27 hike premium will not be delivered. That converts a KNOWN core/labor print into a completed policy conclusion while treating BoC energy-pass-through minutes, Q2 GDP +0.8% q/q, Ivey PMI up, and the Fed/BoJ/BoE tightening cluster as optional narrative. Carry lists those same activity and global-tightening facts as principal risks to its own receive — that is an admission the mechanism is two-sided, not a harvestable carry.",
+    "FACT: 84bp is CRAH27 3.13 minus overnight CORRA 2.29, not a coupon the receiver is paid for sitting. Implied-minus-realized accrues only if implied falls toward 2.29. If BoC delivers even part of the already-priced path (Jun-27 3.365, Sep-27 3.51), Mar-27 can reprice higher, not lower. Carry’s own book already marked from 3.4 to 3.13; calling the remaining overnight-to-Mar-27 gap ‘still 84bp of unused premium’ double-counts a move they have already earned.",
+    "Rate-dove’s receive of CORRA_2027H-Z (strip mid 3.40, +111bp) makes the same core/labor error at a later tenor. FACT: CA 2Y is still +31bp over 1m; a -4bp 5d print versus US 2Y +13bp is not a cycle turn. INFERENCE: ‘Fed hike lags Canadian demand’ is a second-round slowdown that has not printed while US activity/labor/inflation/consumer remain 69/75/72/74, ISM services 55.4, payrolls +162k.",
+    "Dollar-king long USDCAD uses the same CA-US policy gap (CA-US 2Y -140bp, 3.8th 1y percentile) and infers USD stays special. FACT: USDCAD already did +1.74% over 1m to a 74th 1y / 87th 5y percentile after a >90%-priced Fed hike; CORRA_2027-03 is still 3.13. Spot has expressed the delivered US hike; the unused catch-up is still in CORRA. Dollar-king’s own invalidation (BoC catch-up with a core break) is my catalyst, not a residual CAD-hawkish tail."
+  ],
+  "attack": [
+    "Identify: carry-is-king long CORRA_2027-03 is the only same-instrument opposite. Rate-dove is the same CA-rates-lower thesis in a 2027 strip. Dollar-king is the FX of that thesis (long USDCAD / CAD lower).",
+    "Core/labor is not the BoC reaction function in this freeze. FACT: headline CPI held at 3.0%; minutes flag higher energy pass-through; desk thesis says energy is constraining the global easing impulse after Fed 3.75-4.00%, BoJ 1.25%, BoE 6-3 with three hike votes. Trim/median near 2% is the known fact that already sits inside overnight 2.29. It does not prove Mar-27 3.13 is too high.",
+    "Activity disagrees with labor and the receive needs activity to lose. FACT: Canada activity gauge 66, Q2 GDP +0.8% q/q after +0.1%, household consumption +0.8% q/q, disposable income +2.1% q/q, Ivey PMI stronger. Carry and rate-dove both record those prints then overweight employment -42k. INFERENCE: 2.29 is labor-insurance, not equilibrium with still-positive activity.",
+    "Global tightening is the transmission, not a ‘pin’ on Canadian hike premium. A receiver who needs the Fed/BoJ/BoE cluster to be irrelevant to BoC is fighting the last-24 packet, not harvesting carry.",
+    "USD-higher / CAD-lower is not independent of the receive. It is the same ‘BoC stays at 2.29’ assumption. If catch-up happens, CAD should firm; USDCAD 1m already paid the Fed event. Paying CORRA owns the path that would close the CA-US rates gap from the Canada side."
+  ],
+  "defense": [
+    "FACT: sidecar already owns short CORRA_2027-03 pos-dd6fdaf39119 at 3.13, 50m notional, 500k shocked risk, not risk_stopped. Thesis unchanged: overnight 2.29 plus Mar-27 3.13 still understates catch-up versus US SR3H7 4.565 / SR3U7 4.735 and AONIA Mar-27 4.86 if activity and energy pass-through dominate labor.",
+    "The receive’s ‘patient carry’ is the wrong P&L identity for a hike-priced strip. Canonical short profits if the 3.13 implied-rate mark rises. That is the bullish growth expression: resilient North American activity plus a global tightening/energy constraint force BoC off 2.29.",
+    "I already treated labor 38, trim/median near 2%, and adverse roll as principal risks at confidence 61. Those facts do not flip the discrepancy. UNKNOWN remains whether pass-through prints in subsequent CPI and whether -42k is a demand break.",
+    "Concession: I would CLOSE pos-dd6fdaf39119 if CORRA_2027-03 retraces to the packet Dec-26 3m mid 2.775 without a BoC hike impulse, or if subsequent Canada activity/GDP confirm the labor break while CPI-trim/median stay near 2% and energy pass-through fades. A known August jobs/core print is not that concession. I do not withdraw on a receive that has already marked 3.4 to 3.13 and still needs implied to collapse toward 2.29.",
+    "NZD-higher was a secondary risk-on view, not the load-bearing trade. Direct conflict is CORRA_2027-03. Book stays HOLD; no ADD after the labor/core rebuttal, no duplicate OPEN."
+  ],
+  "revised_trade": {
+    "instrument": "CORRA_2027-03",
+    "asset_class": "rates",
+    "structure": "Outright short MX CRAH27 / CORRA_2027-03 in implied-rate space (pay CORRA, short duration). Canonical side short profits if the packet implied-rate mark rises from 3.13. Paper at the frozen tradable-curve mid only.",
+    "direction": "short",
+    "thesis": "FACT: CORRA overnight is 2.29 as of 2026-09-17; the 3m strip prices 2.775 by Dec-26, 3.13 by Mar-27 (+84.0bp vs overnight), 3.365 by Jun-27 and a 2028 peak near 3.655. US SOFR jumped to 3.85 after the Fed delivered 25bp to 3.75-4.00%; SR3H7 is 4.565 and SR3U7 peaks at 4.735. Canada Q2 GDP was +0.8% q/q after +0.1% in Q1, Ivey PMI accelerated, household consumption +0.8% q/q and disposable income +2.1% q/q. Headline CPI held at 3.0% y/y with CPI-trim 1.9% and CPI-median 2.0%. BoC minutes flag higher energy pass-through; the last-24 desk thesis says the energy shock is constraining the global easing impulse after the Fed hike, BoJ 25bp to 1.25%, and a BoE 6-3 hold with three hike votes. INFERENCE: 2.29 is an over-insurance setting against the August jobs print, not an equilibrium compatible with still-positive activity and a global tightening regime. Mar-27 at 3.13 still prices a shallow catch-up versus US 4.565 and versus Canada's own 2028 CRA peak near 3.65, so paying Mar-27 owns the residual hike impulse without needing a new 10Y term-premium story. UNKNOWN: whether energy pass-through actually shows up in subsequent CPI, and whether August employment -42k is the start of a demand break.",
+    "mispricing": "FACT: CA-US 2Y is -140bp (1y percentile 3.77, 5y percentile 4.31, 1m change -17bp) and CA 2Y is 3.27 versus US 2Y 4.76. CORRA_2027-03 at 3.13 versus SOFR_2027-03 at 4.565 is a 143.5bp policy-path gap. INFERENCE: the market still prices a deep relative Canada slowdown and a BoC that only partially converges. That assumption is too pessimistic relative to Canada activity 66, Q2 GDP +0.8% q/q, and a global hike impulse that has already been delivered in the US and Japan. The edge is not 'percentiles must mean-revert'; it is that overnight 2.29 plus a 3.13 Mar-27 contract understates the catch-up required if activity and energy pass-through dominate labor.",
+    "why_now": [
+      "FACT: the Fed hike to 3.75-4.00% is delivered and SOFR printed 3.85 on 2026-09-17; last-24 adds BoJ 1.25% and a BoE 6-3 split with three hike votes, so the tightening impulse is no longer a US-only story.",
+      "FACT: BoC minutes flag higher energy pass-through while Saudi ship-to-ship crude off Oman only reduces the extreme oil-supply tail rather than removing the shock; desk thesis says energy is constraining easing even where domestic growth is softer.",
+      "FACT: Canada activity (GDP +0.8% q/q, Ivey PMI up) still disagrees with labor 38 and overnight 2.29; CORRA_2027-03 remains 3.13, unchanged from this seat's entry mark, so the catch-up is not yet in the Mar-27 contract.",
+      "INFERENCE: holding the existing pay-Mar-27 position is the timely expression because the new global-tightening cluster arrived without a CORRA repricing, and the receive opposite has already marked 3.4 to 3.13 without invalidating the residual catch-up."
+    ],
+    "evidence_refs": [
+      "policy_paths",
+      "policy:CA",
+      "policy:US",
+      "tradable_rate_curves",
+      "rates:CA",
+      "rates:US",
+      "temp:CA:activity",
+      "temp:CA:labor",
+      "temp:CA:inflation",
+      "temp:CA:consumer",
+      "temp:US:activity",
+      "temp:US:labor",
+      "temp:US:inflation",
+      "rollup:BoC minutes flag higher energy pass-through risk",
+      "rollup:Canada August inflation holds at 3%, core stays near 2%",
+      "rollup:Fed raises 25bp to 3.75–4.00%",
+      "last24:desk-thesis",
+      "last24:BoJ raises its policy rate to 1.25%",
+      "last24:BoE holds 3.75%, but three members vote to hike",
+      "mw_20260916_saudi_oman_workaround",
+      "mw_20260916_fomc_hike_pricing",
+      "fx:USDCAD",
+      "fx:NZDUSD",
+      "pos:cftc",
+      "funding_context",
+      "research_method",
+      "market_state"
+    ],
+    "horizon": "1-4 months through the 2027-03 CORRA window and the next BoC energy/activity prints",
+    "entry": null,
+    "target": null,
+    "stop": null,
+    "invalidation": "Thesis fails if CORRA_2027-03 implied rate retraces to the packet Dec-26 3m mid of 2.775 (CRAZ26) without a BoC hike impulse, or if subsequent Canada activity/GDP confirm the August employment -42k break while CPI-trim/median stay near 2% and energy pass-through fades. A US growth break that also collapses Canadian activity invalidates the cyclical-resilience mechanism, not just timing.",
+    "catalysts": [
+      "BoC communication or a hike that validates energy pass-through over core-near-2%.",
+      "Canada activity/GDP/Ivey remaining expansionary despite the August jobs print.",
+      "Global tightening follow-through after Fed/BoJ hikes and the BoE 6-3 split keeping the easing impulse shut."
+    ],
+    "principal_risks": [
+      "FACT: August employment -42k and wages +2.0% y/y (from +2.8%) may be the true demand break, in which case 2.29 is appropriate and Mar-27 3.13 is too high.",
+      "FACT: CPI-trim 1.9% and CPI-median 2.0% can remain the binding BoC constraint even if headline stays at 3%.",
+      "FACT: the Saudi Oman workaround reduced the extreme oil-supply tail; pass-through risk can fade.",
+      "INFERENCE: paying 3.13 versus overnight 2.29 has adverse roll if the priced H1-2027 catch-up is delayed.",
+      "UNKNOWN: CFTC TFF is null and CORRA contract open interest/volume are null, so crowding cannot be measured.",
+      "FACT: market-state is stale because NZ_rates are unavailable."
+    ],
+    "confidence": 61,
+    "context_build": {
+      "causal_mechanism": "Test whether Canada’s still-positive activity and a global energy-constrained tightening regime force the BoC off a 2.29 CORRA setting. Mechanism: resilient North American growth plus energy pass-through keep Canadian inflation from settling at core-near-2%, so the policy path has to catch US/AONIA rather than stay on labor-insurance hold. The Mar-27 CORRA contract is where that catch-up is still incomplete.",
+      "path_to_current_price": "FACT: overnight CORRA 2.29; 1m strip 2.2875 in Sep-26 then 2.58 by Dec-26; 3m strip 2.385/2.775/3.13/3.365/3.51 into Sep-27 and a 2028 peak of 3.655. CA 2Y 3.27 is +31bp over 1m but -8bp on 1d; CA 10Y 3.83. US 2Y 4.76 is +57bp over 1m after the Sep-16 Fed hike (futures had >90% odds of 25bp) and SOFR’s 3.62 to 3.85 jump on 2026-09-17. USDCAD 1.4010 is a 74th 1y / 87th 5y percentile after +1.74% over 1m. INFERENCE: Canada front-end has started repricing, but the overnight setting and Mar-27 3.13 still lag the delivered US hike and the global-tightening cluster.",
+      "known_vs_new_information": "KNOWN: Canada headline CPI 3% with core/trim/median near 2%; August employment -42k; CA activity gauges already showed Q2 GDP +0.8% q/q; Fed hike was >90% priced into Sep-16. NEW in this packet’s last-24/desk cluster: BoJ +25bp to 1.25%, BoE 6-3 with three hike votes, and the desk thesis that energy is shutting the global easing impulse. ALSO NEW relative to a fully priced Fed hike: official SOFR 3.85 versus the pre-hike 3.62 print. The Saudi Oman STS workaround is new as a tail-risk reducer, not as proof that energy inflation is gone. The receive opposite treats the known core/labor prints as sufficient to fade 3.13; that is the disputed inference, not new information.",
+      "market_implied_assumption": "FACT: CORRA_2027-03 at 3.13 implies about +84bp of tightening from 2.29 by early 2027 and a terminal near 3.65, still ~90bp below the US SR3 peak of 4.735 and ~129bp below AONIA’s 2027 mid-4.9s. Combined with CA-US 2Y at -140bp, the market requires a materially softer Canadian cycle than the US and a BoC that only partially converges.",
+      "market_assumption_disagreed_with": "INFERENCE: the priced Canada slowdown/on-hold residual is wrong. Activity and income/consumption still expanded in Q2, US gauges remain hot (activity 69, labor 75, inflation 72, consumer 74), and global policy is tightening, not easing. Labor 38 is real but is already in the 2.29 setting; it is not a reason for Mar-27 to cap at 3.13 if energy pass-through and activity hold. The receive’s assumption that 84bp is unused premium to harvest requires implied CORRA to fall toward 2.29, which is the opposite of catch-up.",
+      "price_decomposition": "FACT: Canada 2s10s is 56bp, 0.60th percentile of 1y after -18bp over 1m — the 1m CA 2Y +31bp did most of the flattening. The STIR path still has a steep 2.29 to 3.13 to 3.65 climb, so the remaining discrepancy is the overnight/policy gap versus peers, not a 10Y term-premium story. US 2s10s 25bp is the 0.20th 1y percentile after a 2Y-led selloff. Marginal driver for this trade is the CORRA implied-rate strip, not USDCAD (which already cheapened CAD after the Fed hike) and not CA 10Y (97th 5y percentile).",
+      "historical_reference": {
+        "distribution": "FACT: CA-US 2Y -140bp sits at 3.77th 1y / 4.31st 5y percentile (z 1y -1.84, z 5y -1.51); CA-US 5Y is 0.20th 1y. CA 2Y 3.27 is 97.8th 1y but only 58.5th 5y, so the 1y stretch is a recent catch-up from very low policy, not a 5y extreme. CA 2s10s 56bp is 0.60th 1y / 65.6th 5y. US 2Y 4.76 is 99.8th 1y / 88.0th 5y and US 10Y 5.01 is 99.6th 1y / 99.9th 5y. Those percentiles are discovery flags that Canada remains the laggard and that paying US duration is already the crowded extreme.",
+        "analogs": [
+          "2022 energy-shock G10 tightening: central banks hiked into sticky headline inflation even as some labor/consumer gauges cooled; Canada lagged then caught the Fed. The packet does not contain a quantified forward-outcome table for that analog.",
+          "1994-style global tightening into still-positive activity, where front-end rates repriced higher as policy lagged growth. Packet does not provide a 1994 yield path; analog is qualitative only."
+        ],
+        "regime_differences": "FACT today: Canada labor is already weak (unemployment 6.4%, employment -42k, wages +2.0% y/y), CPI-trim/median are near 2%, and CORRA overnight is 2.29 versus US 3.85 and AONIA 4.35 — a larger peer gap than a garden-variety lag. Energy shock absorbers are described as weakening even as a Saudi Oman workaround reduces the extreme supply tail. NZ official yields are unavailable. Do not treat 2022 or 1994 as mechanical templates."
+      },
+      "independent_checks": [
+        "Policy-path check: CORRA overnight 2.29 versus Mar-27 3.13 versus US SOFR 3.85 / SR3H7 4.565 / SR3U7 4.735 and AONIA 4.35 with +51bp by Mar-27.",
+        "Hard-data/gauge check: Canada activity 66 with Q2 GDP +0.8% q/q and Ivey PMI up versus labor 38; US activity/labor/inflation/consumer 69/75/72/74 after payrolls +162k and ISM services 55.4.",
+        "Cross-market check: CA-US 2Y -140bp at a 1y/5y extreme while USDCAD 1.4010 is only a 74th 1y percentile after +1.74% over 1m — FX has already expressed the delivered Fed hike more than Mar-27 CORRA has."
+      ],
+      "flow_and_positioning_check": "FACT: positioning status is partial; CFTC TFF is null; CORRA futures open interest and volume in the packet are null. INFERENCE: the Mar-27 CORRA mark cannot be attributed to a measured CTA/spec squeeze or to a documented long-duration bid. UNKNOWN: holder composition of CRAH27. Treat the 3.13 mid as a research/reference mark, not a flow-explained price.",
+      "policy_path_check": {
+        "status": "available",
+        "relevant_countries": [
+          "CA",
+          "US"
+        ],
+        "pricing_summary": "CA: CORRA 2.29; 1m Dec-26 2.58 (+29bp); 3m Dec-26 2.775 (+48.5bp); Mar-27 3.13 (+84bp); Jun-27 3.365 (+107.5bp); 2028 peak 3.655 (+136.5bp). US: SOFR 3.85 after Fed 3.75-4.00%; ICE 1m Oct-26 3.91, Dec-26 4.1975; SR3 Dec-26 4.315, Mar-27 4.565, peak SR3U7 4.735 then a gentle decline toward 4.48s by 2030. AU path is used only as a peer cross-check (AONIA 4.35, Oct-26 4.565, Mar-27 4.86) and is not the trade. NZ policy path unavailable.",
+        "rationale": "Short-end Canada is a policy-path trade. The observable CORRA strip, not the CA 2Y 97th-percentile 1y print, is the priced BoC path. US SOFR/SR3 is the peer that Canada is supposed to converge toward. A sovereign 2Y percentile is not a substitute for that strip."
+      }
+    },
+    "expression_comparison": {
+      "rates_tenor_scan": {
+        "stir_policy_path": {
+          "status": "candidate",
+          "instrument": "CORRA_2027-03",
+          "asset_class": "rates",
+          "rationale": "FACT: MX CRAH27 implied 3.13 versus overnight 2.29 is the residual BoC catch-up after a delivered Fed hike and a still-positive Canada activity impulse. US SOFR_2027-03 at 4.565 is a valid pay-growth STIR but US 2Y/10Y are already 99th-percentile 1y and SR3 already prices +88.5bp to the 4.735 peak, so the unused policy gap is in Canada not the US. AONIA is hiking from 4.35 with the housing channel already biting, so it is the wrong cyclical expression."
+        },
+        "two_year": {
+          "status": "not_compelling",
+          "instrument": "CA 2Y",
+          "asset_class": "rates",
+          "rationale": "FACT: CA 2Y 3.27 is 97.8th 1y but only 58.5th 5y, +31bp over 1m and already -8bp on 1d. It echoes the same catch-up but mixes term premium with the policy path. The live BoC assumption lives in CORRA, and a 2Y percentile is not a substitute for the strip."
+        },
+        "five_year": {
+          "status": "not_compelling",
+          "instrument": "CA 5Y",
+          "asset_class": "rates",
+          "rationale": "FACT: CA 5Y 3.54 is 97.8th 1y / 81.8th 5y, closer to the 2028 CRA peak of 3.65 than to overnight 2.29. Paying 5Y owns less of the near-term hike impulse and more duration than the discrepancy requires."
+        },
+        "ten_year": {
+          "status": "not_compelling",
+          "instrument": "CA 10Y",
+          "asset_class": "rates",
+          "rationale": "FACT: CA 10Y 3.83 is 97.4th 1y / 96.8th 5y; US 10Y 5.01 is 99.9th 5y. Long-end already embeds term premium and the 1m move (+13bp CA, +36bp US) is smaller than the 2Y. This is not where the underpriced catch-up lives."
+        },
+        "curve": {
+          "status": "not_compelling",
+          "instrument": "CA 2s10s",
+          "asset_class": "curve",
+          "rationale": "FACT: CA 2s10s 56bp is 0.60th percentile of 1y after -18bp over 1m because 2Y already rallied. A growth-resilient hike catch-up is an outright pay-front-end view; a steepener would be the opposite (easing) expression, and a flattener mostly repeats a move that has already printed."
+        },
+        "cross_market_rv": {
+          "status": "candidate",
+          "instrument": "CA-US_2Y",
+          "asset_class": "rates_rv",
+          "rationale": "FACT: CA-US 2Y -140bp is 3.77th 1y / 4.31st 5y percentile and CORRA_2027-03 versus SOFR_2027-03 is 143.5bp. That is the cleanest relative statement that Canada is the laggard. It is not selected because receiving US 2Y/SOFR fights the same pro-growth global-hike regime (US gauges 69-75, Fed already hiking, SR3 still rising)."
+        },
+        "selected_bucket": "stir_policy_path",
+        "selection_rationale": "CORRA_2027-03 is the best rates expression after scanning STIR, 2Y, 5Y, 10Y, curve, and CA-US RV: it is the markable MX CRA contract that still prices only +84bp of catch-up from 2.29, matching this seat's already-open book family, without receiving US duration."
+      },
+      "rates_candidate": {
+        "instrument": "CORRA_2027-03",
+        "asset_class": "rates",
+        "rationale": "Pay Mar-27 CORRA as the unused BoC catch-up into resilient North American activity and a global tightening/energy-constraint regime. Packet mid 3.13."
+      },
+      "spot_candidate": "short USDCAD",
+      "selected": "rates",
+      "rationale": "USDCAD 1.4010 already cheapened CAD (74th 1y / 87th 5y, +1.74% over 1m), so spot has partially expressed Canada lag plus the Fed hike. The remaining discrepancy is the 2.29 overnight / 3.13 Mar-27 CORRA path versus US 4.565. Rates are at least as clean as spot and are preferred. Long NZDUSD is a genuine risk-on alternative (5y percentile 8.61, Q2 GDP 0.2% q/q beat, India trade deal) but NZ policy/yields are unavailable, NZ labor 32 / consumer 38, and the desk thesis says energy keeps term-rate pressure elevated even where growth is softer — so NZD is not a cleaner owner of this packet's growth-versus-policy gap."
+    }
+  },
+  "paper_actions": [
+    {
+      "action": "HOLD",
+      "position_id": "pos-dd6fdaf39119",
+      "instrument": "CORRA_2027-03",
+      "asset_class": "rates",
+      "side": "short",
+      "notional_usd": 50000000,
+      "rationale": "trade_change unchanged. FACT: sidecar already owns short CORRA_2027-03 pos-dd6fdaf39119, 50m notional, 500k shocked-risk capital, entry/mark 3.13, not risk_stopped. Direct opposite is carry-is-king long the same contract; that does not require CLOSE or ADD. Labor/core arguments were already in Round-1 principal risks. Official SOFR 3.85 ACT/360 remains the vig on 500k. HOLD; do not OPEN a duplicate."
+    }
+  ]
+}
