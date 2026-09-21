@@ -7,11 +7,12 @@ import html
 import io
 import json
 import re
-import zipfile
 from datetime import date, datetime
 from typing import Any, Callable, Mapping
 
-STATCAN_WDS = "https://www150.statcan.gc.ca/t1/wds/rest/getFullTableDownloadCSV/{table}/en"
+STATCAN_NHPI_CSV = "https://www150.statcan.gc.ca/t1/tbl1/en/dtl!downloadDbLoadingData-nonTraduit.action?pid=1810020501&latestN=5&startDate=&endDate=&csvLocale=en&selectedMembers=%5B%5B1%5D%2C%5B1%2C2%2C3%5D%5D&checkedLevels="
+STATCAN_PERMITS_CSV = "https://www150.statcan.gc.ca/t1/tbl1/en/dtl!downloadDbLoadingData-nonTraduit.action?pid=3410029201&latestN=5&startDate=&endDate=&csvLocale=en&selectedMembers=%5B%5B1%5D%2C%5B4%2C7%2C15%2C33%2C36%2C49%2C73%5D%2C%5B1%5D%2C%5B1%5D%2C%5B2%5D%5D&checkedLevels=1D1"
+STATCAN_DSR_CSV = "https://www150.statcan.gc.ca/t1/tbl1/en/dtl!downloadDbLoadingData-nonTraduit.action?pid=1110006501&latestN=5&startDate=&endDate=&csvLocale=en&selectedMembers=%5B%5B1%5D%2C%5B1%5D%2C%5B1%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%5D%5D&checkedLevels="
 STATCAN_NHPI_PAGE = "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810020501"
 STATCAN_PERMITS_PAGE = "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3410029201"
 STATCAN_DSR_PAGE = "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1110006501"
@@ -80,20 +81,13 @@ def _clean_html(raw: str) -> str:
     return re.sub(r"\s+", " ", html.unescape(raw)).strip()
 
 
-def _statcan_rows(table: str, fetch_bytes: Callable[..., bytes]) -> list[dict[str, str]]:
-    meta_url = STATCAN_WDS.format(table=table)
-    meta = json.loads(fetch_bytes(meta_url).decode("utf-8-sig", errors="replace"))
-    if meta.get("status") != "SUCCESS" or not meta.get("object"):
-        raise CanadaHousingError(f"Statistics Canada WDS failed for {table}: {meta}")
-    zipped = fetch_bytes(str(meta["object"]))
-    with zipfile.ZipFile(io.BytesIO(zipped)) as zf:
-        names = [n for n in zf.namelist() if n.lower().endswith(".csv") and "metadata" not in n.lower()]
-        if not names:
-            raise CanadaHousingError(f"Statistics Canada table {table} ZIP has no data CSV")
-        # The primary table CSV is the largest CSV in the archive.
-        name = max(names, key=lambda n: zf.getinfo(n).file_size)
-        text = zf.read(name).decode("utf-8-sig", errors="replace")
-    return list(csv.DictReader(io.StringIO(text)))
+def _statcan_rows(url: str, fetch_bytes: Callable[..., bytes]) -> list[dict[str, str]]:
+    """Fetch only the small displayed/selected slice, never the full national cube."""
+    text = fetch_bytes(url).decode("utf-8-sig", errors="replace")
+    rows = list(csv.DictReader(io.StringIO(text)))
+    if not rows:
+        raise CanadaHousingError("Statistics Canada selected-data CSV returned no rows")
+    return rows
 
 
 def _latest_matching(
@@ -257,9 +251,9 @@ def _boc_feed(mapping: Mapping[str, str], *, unit: str, page: str, today: date, 
     }
 
 
-def _statcan_feed(name: str, table: str, page: str, parser, *, today: date, fetch_bytes: Callable[..., bytes], quarterly: bool = False) -> dict[str, Any]:
+def _statcan_feed(name: str, csv_url: str, page: str, parser, *, today: date, fetch_bytes: Callable[..., bytes], quarterly: bool = False) -> dict[str, Any]:
     try:
-        parsed = parser(_statcan_rows(table, fetch_bytes))
+        parsed = parser(_statcan_rows(csv_url, fetch_bytes))
         d = _date(parsed.get("as_of"))
         age = max(0, (today - d).days) if d else None
         max_age = 140 if quarterly else 75
@@ -275,9 +269,9 @@ def _statcan_feed(name: str, table: str, page: str, parser, *, today: date, fetc
 
 
 def collect_canada_housing(*, today: date, fetch_bytes: Callable[..., bytes]) -> dict[str, Any]:
-    prices = _statcan_feed("18-10-0205-01", "18100205", STATCAN_NHPI_PAGE, parse_statcan_nhpi, today=today, fetch_bytes=fetch_bytes)
-    permits = _statcan_feed("34-10-0292-01", "34100292", STATCAN_PERMITS_PAGE, parse_statcan_permits, today=today, fetch_bytes=fetch_bytes)
-    burden = _statcan_feed("11-10-0065-01", "11100065", STATCAN_DSR_PAGE, parse_statcan_mortgage_dsr, today=today, fetch_bytes=fetch_bytes, quarterly=True)
+    prices = _statcan_feed("18-10-0205-01", STATCAN_NHPI_CSV, STATCAN_NHPI_PAGE, parse_statcan_nhpi, today=today, fetch_bytes=fetch_bytes)
+    permits = _statcan_feed("34-10-0292-01", STATCAN_PERMITS_CSV, STATCAN_PERMITS_PAGE, parse_statcan_permits, today=today, fetch_bytes=fetch_bytes)
+    burden = _statcan_feed("11-10-0065-01", STATCAN_DSR_CSV, STATCAN_DSR_PAGE, parse_statcan_mortgage_dsr, today=today, fetch_bytes=fetch_bytes, quarterly=True)
     try:
         parsed_starts = parse_cmhc_starts(fetch_bytes(CMHC_STARTS_PAGE).decode("utf-8-sig", errors="replace"))
         d = _date(parsed_starts["as_of"])
