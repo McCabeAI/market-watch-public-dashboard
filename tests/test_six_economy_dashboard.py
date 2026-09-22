@@ -160,6 +160,15 @@ class SixEconomyDashboardTest(unittest.TestCase):
             for value in re.findall(r"<b>([^<]*)</b>", match.group(1)):
                 self.assertNotIn(value.strip(), PLACEHOLDER_VALUES, msg=heading)
 
+    def test_jp_static_context_does_not_carry_new_zealand_prototype_evidence(self) -> None:
+        html = _pipeline_html()
+        start = html.index('<div class="cdetail jp">')
+        block = html[start:]
+        self.assertNotIn("Stats NZ", block)
+        self.assertNotIn("ANZ source", block)
+        self.assertNotIn("98.0", block)
+        self.assertIn("stale prototype evidence is intentionally suppressed", block)
+
     def test_mini_rows_mapping_fixture(self) -> None:
         state = json.loads(FIXTURE_V3.read_text(encoding="utf-8"))
         ea_rows = dict(mini_rows_for_country(state, "EA"))
