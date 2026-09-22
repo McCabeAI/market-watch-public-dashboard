@@ -363,5 +363,136 @@ class TemperatureLevelFixtureTest(unittest.TestCase):
         self.assertEqual(res.level, second.level)
 
 
+class JapanConsumerCalibrationTest(unittest.TestCase):
+    """JP Consumer: 3-month LEVEL on monthly flows; identity IMPULSE; CCI SA mean 38.1."""
+
+    FLOW_KEYS = ("JP.Consumer.retail", "JP.Consumer.income", "JP.Consumer.spending")
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.cal = load_calibration()
+        cls.histories = load_history()
+
+    def test_consumer_weights_unchanged(self) -> None:
+        weights = self.cal["weights"]["JP"]["Consumer"]
+        self.assertEqual(
+            weights,
+            {"retail": 0.25, "income": 0.25, "spending": 0.25, "confidence": 0.25},
+        )
+
+    def test_flow_level_is_trailing_mean_impulse_is_identity(self) -> None:
+        for key in self.FLOW_KEYS:
+            spec = self.cal["components"][key]
+            self.assertEqual(spec["level_scoring_transform"], "trailing_mean_n3", key)
+            self.assertEqual(spec["impulse_scoring_transform"], "identity", key)
+            self.assertEqual(spec["n_periods"], 3, key)
+            self.assertEqual(spec["anchor"], 2.6, key)
+            self.assertEqual(spec["scale_per_unit"], 12.5, key)
+
+    def test_confidence_anchor_is_current_methodology_mean_not_fifty(self) -> None:
+        spec = self.cal["components"]["JP.Consumer.confidence"]
+        self.assertEqual(spec["level_scoring_transform"], "identity")
+        self.assertEqual(spec["impulse_scoring_transform"], "identity")
+        self.assertAlmostEqual(float(spec["anchor"]), 38.1)
+        self.assertNotEqual(float(spec["anchor"]), 50.0)
+        self.assertIn("2013-04", spec["anchor_meaning"])
+        self.assertIn("38.1", spec["anchor_meaning"])
+
+    def test_live_income_level_uses_three_month_mean_not_latest_print(self) -> None:
+        spec = self.cal["components"]["JP.Consumer.income"]
+        res = score_component(self.histories["JP"], spec, self.cal, "2026-09", 0.25)
+        values = raw_values_by_period(self.histories["JP"], spec, "2026-09")
+        self.assertAlmostEqual(values["2026-07"], -1.7)
+        expected_mean = (values["2026-05"] + values["2026-06"] + values["2026-07"]) / 3.0
+        self.assertAlmostEqual(res.transform_value or 0, expected_mean, places=4)
+        self.assertNotAlmostEqual(res.transform_value or 0, -1.7, places=2)
+        identity_level = component_level(-1.7, spec, self.cal)
+        self.assertAlmostEqual(identity_level, 1.0)
+        self.assertGreater(res.level or 0, 20.0)
+        prior_level = component_level(values["2026-06"], spec, self.cal)
+        latest_identity_level = component_level(values["2026-07"], spec, self.cal)
+        self.assertAlmostEqual(res.impulse or 0, latest_identity_level - prior_level, places=2)
+
+    def test_single_weak_fies_print_does_not_floor_level(self) -> None:
+        """Regression: a one-month FIES collapse must not revert LEVEL to single-print flooring."""
+        spec = copy.deepcopy(self.cal["components"]["JP.Consumer.income"])
+        history = {
+            "country": "JP",
+            "components": {
+                "Consumer.income": {
+                    "observations": [
+                        {
+                            "reference_period": "2026-05",
+                            "value": 2.6,
+                            "transformation": "yoy_pct",
+                            "series_id": "FIES_WORKER_HH_REAL_INCOME_NOMINAL_YOY",
+                        },
+                        {
+                            "reference_period": "2026-06",
+                            "value": 2.6,
+                            "transformation": "yoy_pct",
+                            "series_id": "FIES_WORKER_HH_REAL_INCOME_NOMINAL_YOY",
+                        },
+                        {
+                            "reference_period": "2026-07",
+                            "value": -10.0,
+                            "transformation": "yoy_pct",
+                            "series_id": "FIES_WORKER_HH_REAL_INCOME_NOMINAL_YOY",
+                        },
+                    ]
+                }
+            },
+        }
+        res = score_component(history, spec, self.cal, "2026-07", 0.25)
+        self.assertAlmostEqual(res.transform_value or 0, (2.6 + 2.6 - 10.0) / 3.0, places=4)
+        self.assertGreater(res.level or 0, 1.01)
+        identity_floor = component_level(-10.0, spec, self.cal)
+        self.assertAlmostEqual(identity_floor, 1.0)
+        self.assertGreater(res.level or 0, identity_floor)
+        prior_identity = component_level(2.6, spec, self.cal)
+        self.assertAlmostEqual(res.impulse or 0, identity_floor - prior_identity, places=2)
+
+        identity_spec = copy.deepcopy(spec)
+        identity_spec.pop("level_scoring_transform")
+        identity_spec.pop("impulse_scoring_transform")
+        identity_spec["scoring_transform"] = "identity"
+        reverted = score_component(history, identity_spec, self.cal, "2026-07", 0.25)
+        self.assertAlmostEqual(reverted.level or 0, 1.0)
+        self.assertNotAlmostEqual(res.level or 0, reverted.level or 0, places=1)
+
+    def test_reconstructed_path_reduces_fies_sawtooth(self) -> None:
+        paths = build_paths(self.cal, self.histories)
+        series = paths["paths"]["JP"]["Consumer"]
+        levels = [float(row["level"]) for row in series if row["level"] is not None]
+        self.assertEqual([row["period"] for row in series], [
+            "2025-09",
+            "2025-10",
+            "2025-11",
+            "2025-12",
+            "2026-01",
+            "2026-02",
+            "2026-03",
+            "2026-04",
+            "2026-05",
+            "2026-06",
+            "2026-07",
+            "2026-08",
+            "2026-09",
+        ])
+        jumps = [abs(b - a) for a, b in zip(levels, levels[1:])]
+        self.assertTrue(jumps)
+        self.assertLess(max(jumps), 12.0, f"JP Consumer still sawtoothing: {levels}")
+        # Pre-repair path printed 26.1 / 26.25 from FIES floors; smoothed LEVEL stays off the clip.
+        self.assertGreater(min(levels), 26.5)
+        latest = series[-1]
+        self.assertAlmostEqual(float(latest["level"]), 38.0, delta=1.0)
+        jp_consumer_findings = [
+            f
+            for f in paths["pathology"]["findings"]
+            if f.get("country") == "JP" and f.get("dimension") == "Consumer"
+        ]
+        self.assertEqual(jp_consumer_findings, [])
+
+
 if __name__ == "__main__":
     unittest.main()
