@@ -216,12 +216,14 @@ The gate:
 6. deterministically simulates trader + automated PM `apply_review()` transactionally;
 7. runs the overnight tests;
 8. generates canonical trader books, **three automated PM books**, P&L/run artifacts and `data/trading/**` from trusted code;
-9. appends only those generated files to the PR branch;
-10. squashes and merges the accepted PR.
+9. appends only those generated files to the PR branch, removing untracked apply leftovers before checkout so a retry cannot collide with state already on that branch;
+10. marks a still-draft PR ready for review only after the gates above have passed;
+11. squashes and merges the accepted PR, and treats an already-merged PR as success on retry;
+12. dispatches `.github/workflows/deploy-pages.yml` on `main` only after that merge is confirmed.
 
 Acceptance for one `overnight_run_id` is a single concurrency group, shared by every scheduled-output PR in that session. Immediately before squash-merge, the workflow refetches `main` and refuses to merge when the canonical trader-book or PM-book blob no longer matches the checkout that was validated and applied.
 
-Missing or invalid PM output rejects the PR. Last trusted canonical state is retained. Publication may still show explicit stale/failed PM status when the deterministic morning path runs without a successful provider cycle. A failed gate does not mutate canonical books.
+Missing or invalid PM output rejects the PR. Last trusted canonical state is retained. Publication may still show explicit stale/failed PM status when the deterministic morning path runs without a successful provider cycle. A failed gate does not mutate canonical books and does not dispatch Pages. Re-applying the same generated trees replaces canonical books, journals, and trades; it does not append a second copy.
 
 ## 8. Persistent paper books
 
@@ -294,6 +296,7 @@ The existing front page is preserved. The additive Trader Book tab shows paper b
 PYTHONPATH=. python3 -m unittest \
   tests.test_overnight_pipeline \
   tests.test_overnight_scheduled_output \
+  tests.test_overnight_acceptance_handoff \
   tests.test_pm_scheduled_output \
   tests.test_pm_overnight_packets \
   tests.test_trading_memory -v

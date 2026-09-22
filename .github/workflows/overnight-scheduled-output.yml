@@ -9,6 +9,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  actions: write
 
 jobs:
   inspect:
@@ -90,6 +91,7 @@ jobs:
           PYTHONPATH=. python3 -m unittest \
             tests.test_overnight_pipeline \
             tests.test_overnight_scheduled_output \
+            tests.test_overnight_acceptance_handoff \
             tests.test_pm_scheduled_output \
             tests.test_pm_overnight_packets \
             tests.test_pm_portfolio \
@@ -135,42 +137,8 @@ jobs:
         env:
           HEAD_REF: ${{ github.event.pull_request.head.ref }}
           RUN_ID: ${{ needs.inspect.outputs.run_id }}
-        run: |
-          set -euo pipefail
-          git reset --hard
-          git fetch origin "$HEAD_REF"
-          git checkout -B "$HEAD_REF" "origin/$HEAD_REF"
-          rm -rf data/overnight/books
-          cp -a /tmp/mw-generated/books data/overnight/books
-          mkdir -p "data/overnight/runs/$RUN_ID"
-          cp -a "/tmp/mw-generated/runs/$RUN_ID/." "data/overnight/runs/$RUN_ID/"
-          if [ -d /tmp/mw-generated/pm ]; then
-            mkdir -p data/pm
-            for name in books review_packets public data_requests; do
-              if [ -e "/tmp/mw-generated/pm/$name" ]; then
-                rm -rf "data/pm/$name"
-                cp -a "/tmp/mw-generated/pm/$name" "data/pm/$name"
-              fi
-            done
-          fi
-          if [ -d /tmp/mw-generated/trading ]; then
-            rm -rf data/trading
-            mkdir -p data/trading
-            cp -a /tmp/mw-generated/trading/. data/trading/
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/overnight/books "data/overnight/runs/$RUN_ID"
-          if [ -d /tmp/mw-generated/pm ]; then
-            git add data/pm/books data/pm/review_packets data/pm/public data/pm/data_requests
-          fi
-          if [ -d /tmp/mw-generated/trading ]; then
-            git add data/trading
-          fi
-          if ! git diff --cached --quiet; then
-            git commit -m "chore: apply overnight decisions $RUN_ID"
-            git push origin "HEAD:$HEAD_REF"
-          fi
+          GENERATED_DIR: /tmp/mw-generated
+        run: bash scripts/overnight/append_generated_state.sh
 
       - name: Revalidate canonical book blobs before merge
         env:
@@ -190,10 +158,8 @@ jobs:
             exit 1
           fi
 
-      - name: Merge accepted scheduled output
+      - name: Merge accepted scheduled output and publish Pages
         env:
           GH_TOKEN: ${{ github.token }}
           PR_URL: ${{ github.event.pull_request.html_url }}
-        run: |
-          set -euo pipefail
-          gh pr merge "$PR_URL" --squash --delete-branch
+        run: bash scripts/overnight/merge_accepted_output.sh
