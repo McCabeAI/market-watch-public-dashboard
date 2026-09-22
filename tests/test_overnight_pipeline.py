@@ -1450,10 +1450,19 @@ class SeedBooksTests(unittest.TestCase):
         books = json.loads((ROOT / "data" / "overnight" / "books" / "latest.json").read_text())
         self.assertEqual(set(books["seats"]), set(STANDING_SEATS))
         self.assertEqual(books["starting_nav_usd"], STARTING_NAV_USD)
-        newest = select_newest_complete_run(ROOT)
-        self.assertIsNotNone(newest)
-        assert newest is not None
-        self.assertEqual(books.get("last_successful_review_run_id"), newest.name)
+        source_run_id = books.get("last_successful_review_run_id")
+        self.assertIsInstance(source_run_id, str)
+        assert isinstance(source_run_id, str)
+        if source_run_id.startswith("overnight-"):
+            run_path = ROOT / "data" / "overnight" / "runs" / source_run_id / "run.json"
+            self.assertTrue(run_path.is_file())
+            run = json.loads(run_path.read_text())
+            self.assertEqual(run["stages"]["trader_review"]["status"], "succeeded")
+        else:
+            newest = select_newest_complete_run(ROOT)
+            self.assertIsNotNone(newest)
+            assert newest is not None
+            self.assertEqual(source_run_id, newest.name)
         for seat in books["seats"].values():
             self.assertIsInstance(seat.get("positions"), list)
             self.assertIn("nav_usd", seat)
