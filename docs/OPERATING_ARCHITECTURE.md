@@ -13,7 +13,7 @@ The public dashboard is live on GitHub Pages. As of this document:
 - v6 provides the original 7-day market-news layer, X signal, and 30-day central-bank research feed.
 - v7 adds a Last 24 Hours desk summary above the weekly news layer.
 - v8 restores the four 1–100 expandable temperature-input score drawers for each of the US, Canada, Australia and New Zealand.
-- v9 replaces the rolling Top Market Drivers and 7-Day Quick Digest with the current V0 trader-feed rollup.
+- v9 supplies the recovery-safe static Top Market Drivers and 7-Day Quick Digest fallback. Normal morning Pages builds now overwrite Last 24 Hours, Top Market Drivers and the 7-Day Quick Digest from the accepted current overnight research packet; stale news fails the morning publication gate.
 - v10 adds August 2026 CPI context and the explicit unresolved CPI-to-Core-PCE bridge lineage warning to the US Inflation drawer.
 - the Sep 14 completeness transform in `scripts/apply_v11_refresh.py` rolls the central-bank research window, refreshes X status and catalysts, updates the US Core CPI quick/feed state, and moves realized CPI/PPI releases into release history.
 - `data/temperature_scores.json` (version 3) is the calibrated LEVEL + IMPULSE state. **50** is a structural/policy anchor per `docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md`; `scripts/apply_temperature_scores.py` writes LEVEL, impulse/direction, and V1 lineage into the built dashboard from that state on every build.
@@ -51,7 +51,7 @@ Current deploy path:
 2. The workflow reconstructs the known-good v6 HTML from `payload_v6/part*.b64`.
 3. It verifies the v6 base by exact byte count, gzip integrity and SHA-256.
 4. It applies the v7 Last 24 Hours CSS/HTML patch from `patch_v7/`.
-5. It applies the current v9 rolling news rollup from `patch_v9/news_rollup.html`.
+5. It applies the v9 static rolling-news fallback from `patch_v9/news_rollup.html`; after the legacy completeness transforms, `scripts/apply_overnight_news_refresh.py` replaces the visible Last 24 Hours / Top Market Drivers / 7-Day Quick Digest with the accepted current overnight research packet and fails if the live news projection cannot be built.
 6. It restores the v8 country score drawers from `patch_v8/`, including deterministic checks for all 16 score controls and hard/context evidence blocks.
 7. It applies the v10 August CPI context patch to the US Inflation drawer.
 8. It runs `scripts/apply_v11_refresh.py` as a fail-closed completeness transform. The Sep 14 version asserts the strict 30-day central-bank research count/window, removes aged research and stale X/catalyst state, updates current US Core CPI quick/feed presentation, inserts realized August CPI/PPI rows, and verifies that all 16 expandable score controls and the US CPI bridge lineage warning remain present.
