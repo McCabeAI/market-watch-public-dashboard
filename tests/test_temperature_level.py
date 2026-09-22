@@ -395,7 +395,7 @@ class JapanConsumerCalibrationTest(unittest.TestCase):
         self.assertEqual(spec["impulse_scoring_transform"], "identity")
         self.assertAlmostEqual(float(spec["anchor"]), 38.1)
         self.assertNotEqual(float(spec["anchor"]), 50.0)
-        self.assertIn("2013-04", spec["anchor_meaning"])
+        self.assertIn("April 2013", spec["anchor_meaning"])
         self.assertIn("38.1", spec["anchor_meaning"])
 
     def test_live_income_level_uses_three_month_mean_not_latest_print(self) -> None:
@@ -435,7 +435,7 @@ class JapanConsumerCalibrationTest(unittest.TestCase):
                         },
                         {
                             "reference_period": "2026-07",
-                            "value": -10.0,
+                            "value": -4.0,
                             "transformation": "yoy_pct",
                             "series_id": "FIES_WORKER_HH_REAL_INCOME_NOMINAL_YOY",
                         },
@@ -444,9 +444,9 @@ class JapanConsumerCalibrationTest(unittest.TestCase):
             },
         }
         res = score_component(history, spec, self.cal, "2026-07", 0.25)
-        self.assertAlmostEqual(res.transform_value or 0, (2.6 + 2.6 - 10.0) / 3.0, places=4)
+        self.assertAlmostEqual(res.transform_value or 0, (2.6 + 2.6 - 4.0) / 3.0, places=4)
         self.assertGreater(res.level or 0, 1.01)
-        identity_floor = component_level(-10.0, spec, self.cal)
+        identity_floor = component_level(-4.0, spec, self.cal)
         self.assertAlmostEqual(identity_floor, 1.0)
         self.assertGreater(res.level or 0, identity_floor)
         prior_identity = component_level(2.6, spec, self.cal)
