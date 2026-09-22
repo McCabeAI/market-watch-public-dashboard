@@ -101,4 +101,4 @@ jobs:
           STAGE: ${{ steps.resolve.outputs.stage }}
           RUN_ID: ${{ steps.resolve.outputs.run_id }}
         run: |
-          gh issue close "$ISSUE_NUMBER" --comment "Recovery stage `$STAGE` completed and persisted for `$RUN_ID`."
+          gh issue close "$ISSUE_NUMBER" --comment "Recovery stage $STAGE completed and persisted for $RUN_ID."
