@@ -132,6 +132,8 @@ def _latest_accepted_research(store: OvernightStore) -> dict[str, Any] | None:
         return None
     if not isinstance(supplement.get("news"), list) or not isinstance(supplement.get("central_bank_research"), list):
         return None
+    if not supplement.get("news") and not supplement.get("central_bank_research"):
+        return None
     return {"run_id": run_id, "cutoff": cutoff, "supplement": supplement}
 
 

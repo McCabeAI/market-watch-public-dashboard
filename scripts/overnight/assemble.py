@@ -164,13 +164,14 @@ def assemble_dataset(
     }
     validate_dataset(dataset)
     store.write_artifact(run_id, "assembled_dataset.json", dataset)
-    persist_accepted_public_news_from_assembly(
-        store,
-        run_id=run_id,
-        families=families,
-        agent_packet=agent_packet,
-        agent_research=dataset.get("agent_research"),
-    )
+    if not run.get("dry_run"):
+        persist_accepted_public_news_from_assembly(
+            store,
+            run_id=run_id,
+            families=families,
+            agent_packet=agent_packet,
+            agent_research=dataset.get("agent_research"),
+        )
     if review_status == "fresh" and last_success == run_id:
         try:
             from scripts.pm.cli import refresh_packets
