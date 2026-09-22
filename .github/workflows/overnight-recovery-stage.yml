@@ -38,7 +38,7 @@ jobs:
           PREFIX='[overnight-recovery-stage] '
           STAGE="${ISSUE_TITLE#"$PREFIX"}"
           case "$STAGE" in
-            collect|pre_trader_delta|freeze_evidence|final_delta|assemble|publish) ;;
+            collect|pre_trader_delta|freeze_evidence|open-review|final_delta|assemble|publish) ;;
             *)
               echo "::error::Unsupported recovery stage: $STAGE"
               exit 1
@@ -66,6 +66,10 @@ jobs:
             publish)
               PYTHONPATH=. python3 scripts/overnight_pipeline.py stage publish \
                 --run-id "$RUN_ID" --require-dataset
+              ;;
+            open-review)
+              PYTHONPATH=. python3 scripts/overnight_pipeline.py open-review \
+                --run-id "$RUN_ID"
               ;;
             *)
               PYTHONPATH=. python3 scripts/overnight_pipeline.py stage "$STAGE" \
