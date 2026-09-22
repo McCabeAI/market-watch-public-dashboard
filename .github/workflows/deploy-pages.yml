@@ -27,6 +27,7 @@ on:
       - "scripts/apply_temperature_scores.py"
       - "scripts/apply_daily_refresh.py"
       - "scripts/sync_news_summary.py"
+      - "scripts/apply_overnight_news_refresh.py"
       - "scripts/validate_score_sources.py"
       - "scripts/activity_survey_freshness.py"
       - "scripts/harvest_nz_pci.py"
@@ -39,6 +40,7 @@ on:
       - "data/country_registry.json"
       - "scripts/harvest_au_pmi.py"
       - "tests/test_sync_news_summary.py"
+      - "tests/test_overnight_news_refresh.py"
       - "tests/test_temperature_scores.py"
       - "tests/test_temperature_level.py"
       - "tests/test_temperature_history_audit.py"
@@ -240,11 +242,22 @@ jobs:
           set -euo pipefail
           python scripts/apply_v11_refresh.py _site/index.html
 
-      - name: Apply Sep 18 completeness refresh
+      - name: Apply Sep 18 legacy completeness refresh
         shell: bash
         run: |
           set -euo pipefail
           python scripts/apply_daily_refresh.py _site/index.html
+
+      - name: Apply accepted overnight news refresh
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -m unittest tests.test_overnight_news_refresh
+          PYTHONPATH=. python scripts/apply_overnight_news_refresh.py _site/index.html
+          if grep -Fq 'Last refreshed 18 Sep 2026' _site/index.html; then
+            echo "stale Sep 18 Last 24 Hours survived accepted overnight news refresh"
+            exit 1
+          fi
 
       - name: Sync news summary metadata
         shell: bash

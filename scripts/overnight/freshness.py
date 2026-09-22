@@ -99,6 +99,11 @@ def publication_decision(
 ) -> dict[str, Any]:
     assessed = assess_families(families)
     catastrophic = [name for name, item in assessed.items() if item["catastrophic"]]
+    # A morning release must never present stale news as current. The accepted
+    # current-cycle ACP research supplement can upgrade this family during
+    # assembly; without it, publication fails closed.
+    if assessed["news"]["status"] != "fresh" and "news" not in catastrophic:
+        catastrophic.append("news")
     review = review_status(trader_review_status)
     pm_review = pm_books_status
     if pm_review is None and review in {"stale", "failed", "missing"}:

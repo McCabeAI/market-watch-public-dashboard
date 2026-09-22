@@ -8,7 +8,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from scripts.overnight.clock import isoformat, now_ny
+from scripts.overnight.clock import isoformat, now_ny, parse_iso
 from scripts.overnight.constants import EVIDENCE_FAMILIES, SCHEMA_VERSION
 from scripts.overnight.errors import StageError
 from scripts.overnight.freshness import age_status
@@ -74,6 +74,23 @@ def _parse_news_as_of(root: Path) -> str | None:
     except ValueError:
         return None
     return parsed.isoformat()
+
+
+def _latest_accepted_research(store: OvernightStore) -> dict[str, Any] | None:
+    latest = store.read_latest()
+    if not latest:
+        return None
+    run_id = latest.get("overnight_run_id")
+    if not isinstance(run_id, str) or not store.has_artifact(run_id, "agent_evidence_packet.json"):
+        return None
+    packet = store.read_artifact(run_id, "agent_evidence_packet.json")
+    supplement = packet.get("research_supplement")
+    cutoff = packet.get("evidence_cutoff")
+    if not isinstance(supplement, dict) or not isinstance(cutoff, str):
+        return None
+    if not isinstance(supplement.get("news"), list) or not isinstance(supplement.get("central_bank_research"), list):
+        return None
+    return {"run_id": run_id, "cutoff": cutoff, "supplement": supplement}
 
 
 def _family(
@@ -144,6 +161,30 @@ def collect_inputs(
     else:
         news_parse_error = None
 
+    accepted = _latest_accepted_research(store)
+    accepted_source: str | None = None
+    if accepted:
+        try:
+            accepted_cutoff = parse_iso(accepted["cutoff"])
+            static_cutoff = parse_iso(news_as_of) if news_as_of else None
+        except ValueError:
+            accepted_cutoff = None
+            static_cutoff = None
+        if accepted_cutoff is not None and (static_cutoff is None or accepted_cutoff > static_cutoff):
+            supplement = accepted["supplement"]
+            news_as_of = accepted["cutoff"]
+            news_items = list(supplement.get("news") or [])
+            central_bank_items = list(supplement.get("central_bank_research") or [])
+            news_digest = sha256_json(
+                {
+                    "accepted_run_id": accepted["run_id"],
+                    "accepted_cutoff": accepted["cutoff"],
+                    "news": news_items,
+                    "static_files_digest": news_digest,
+                }
+            )
+            accepted_source = accepted["run_id"]
+
     if news_digest is None:
         news_status = "invalid"
         news_notes = ["required news refresh files missing or unreadable"]
@@ -153,6 +194,8 @@ def collect_inputs(
     else:
         news_status = age_status(news_as_of, when=stamp)
         news_notes = ["substantive normalized news items are frozen below"]
+        if accepted_source:
+            news_notes.append(f"newer accepted overnight research reused from {accepted_source}")
     if news_parse_error:
         news_notes.append(f"normalized news parse failed: {news_parse_error}")
     families["news"] = _family(

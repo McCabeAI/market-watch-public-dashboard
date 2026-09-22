@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from copy import deepcopy
 from datetime import datetime
 from typing import Any
 
@@ -9,9 +10,9 @@ from scripts.overnight.books import empty_books, public_books_view, validate_boo
 from scripts.overnight.clock import isoformat, now_ny
 from scripts.overnight.constants import SCHEMA_VERSION
 from scripts.overnight.errors import SchemaError
-from scripts.overnight.freshness import publication_decision
+from scripts.overnight.freshness import age_status, publication_decision
 from scripts.overnight.ledger import artifact_index
-from scripts.overnight.store import OvernightStore
+from scripts.overnight.store import OvernightStore, sha256_json
 
 
 def _load_books(store: OvernightStore, run: dict[str, Any]) -> dict[str, Any]:
@@ -30,6 +31,42 @@ def _families_for_publication(store: OvernightStore, run_id: str) -> dict[str, A
     raise SchemaError("cannot assemble: no collected families")
 
 
+def _overlay_agent_research(
+    store: OvernightStore,
+    run_id: str,
+    families: dict[str, Any],
+    *,
+    when: datetime | None = None,
+) -> dict[str, Any] | None:
+    if not store.has_artifact(run_id, "agent_evidence_packet.json"):
+        return None
+    packet = store.read_artifact(run_id, "agent_evidence_packet.json")
+    supplement = packet.get("research_supplement") or {}
+    cutoff = packet.get("evidence_cutoff")
+    status = age_status(cutoff, when=when) if cutoff else "missing"
+
+    news = supplement.get("news") or []
+    if news:
+        families["news"] = {
+            "status": status,
+            "as_of": cutoff,
+            "digest": sha256_json(news),
+            "notes": ["accepted current-cycle ACP research supplement"],
+            "items": news,
+        }
+
+    central_bank = supplement.get("central_bank_research") or []
+    if central_bank:
+        families["central_bank_research"] = {
+            "status": status,
+            "as_of": cutoff,
+            "digest": sha256_json(central_bank),
+            "notes": ["accepted current-cycle ACP central-bank research supplement"],
+            "items": central_bank,
+        }
+    return packet
+
+
 def assemble_dataset(
     store: OvernightStore,
     run: dict[str, Any],
@@ -37,7 +74,8 @@ def assemble_dataset(
     when: datetime | None = None,
 ) -> dict[str, Any]:
     run_id = run["overnight_run_id"]
-    families = _families_for_publication(store, run_id)
+    families = deepcopy(_families_for_publication(store, run_id))
+    agent_packet = _overlay_agent_research(store, run_id, families, when=when)
     review_status = "missing"
     last_success = None
     review: dict[str, Any] = {}
@@ -133,11 +171,8 @@ def assemble_dataset(
         },
         "evidence_cutoff": snapshot.get("as_of"),
         "packet_sha256": snapshot.get("packet_sha256"),
-        "agent_research": (
-            store.read_artifact(run_id, "agent_evidence_packet.json").get("research_supplement")
-            if store.has_artifact(run_id, "agent_evidence_packet.json")
-            else None
-        ),
+        "agent_research": (agent_packet or {}).get("research_supplement"),
+        "agent_research_cutoff": (agent_packet or {}).get("evidence_cutoff"),
         "trader_books": public_books_view(books),
         "publication": decision,
         "stage_ledger": {name: run["stages"][name]["status"] for name in run["stages"]},
