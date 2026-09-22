@@ -93,6 +93,50 @@
       "run_id": "tr-20260920T193935Z-ondemand",
       "schema_version": 1,
       "thesis": "FACT: CORRA overnight is 2.29% and CRAH27 implies 3.13% (+84bp), with the curve still rising toward 3.51-3.65% into 2027-28. August inflation holds at 3% with core near 2%; CA labor 38 and consumer 45. Fed hiked to 3.75-4.00% and SOFR is 3.85%. INFERENCE: Mar-27 is paying 84bp of tightening for an energy-pass-through/Fed-catch-up story that domestic core and labor have not validated. A patient 2027-03 receiver earns implied-minus-realized if that path is not delivered. The same macro in spot is long USDCAD, but that pair is already an 87th-percentile 5y level with an energy-supported CAD tail, so rates is cleaner. UNKNOWN: whether pass-through lifts core enough to force the priced hikes; executable mids and CFTC positioning are absent. HOLD the locked long; do not duplicate the CORRA family."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-22T06:52:19.184127-04:00",
+      "conviction": 62,
+      "decision_fingerprint": "7f7a319bdab23d83fd632cb0260c11d2138ce0d21bcaaad1b914a2178361d3b9",
+      "event_id": "jde-c3d7a241d8834fc4",
+      "funding_view": null,
+      "invalidation": "Energy pass-through that actually re-prices the 2027 BoC path higher through the strip.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "eaff24be69bfda0c95bb3ed942afacee0924249048a9cf49239c880e70cd4e6b",
+      "outcome_links": [],
+      "owner_id": "carry-is-king",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-22T06:52:19.184127-04:00",
+        "evidence_hash": "21a1ec3c722518819f9418afe972e4d7933baf6268e2983b68f3036a69dff2f1",
+        "overnight_run_id": "overnight-20260922",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold LONG/receive CORRA_2027-03 via the 2027 H-Z strip. Current strip ~3.301 and Mar-27 3.05 versus 3.40 entry already favor the receive. Cash 2.29 versus a still-rich 2027 hike path remains the patient carry. Oil/energy is a live hawkish risk but has not overwhelmed cooling CA labor and core near 2%. OPEN/ADD blocked.",
+      "run_id": "overnight-20260922",
+      "schema_version": 1,
+      "thesis": "Hold LONG/receive CORRA_2027-03 via the 2027 H-Z strip. Current strip ~3.301 and Mar-27 3.05 versus 3.40 entry already favor the receive. Cash 2.29 versus a still-rich 2027 hike path remains the patient carry. Oil/energy is a live hawkish risk but has not overwhelmed cooling CA labor and core near 2%. OPEN/ADD blocked."
     }
   ],
   "schema_version": 1,

@@ -1,6 +1,6 @@
 {
   "active_lessons": [],
-  "as_of": "2026-09-20T16:06:28.069463-04:00",
+  "as_of": "2026-09-22T06:52:19.184127-04:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -29,13 +29,19 @@
     "total_realized_pnl_usd": 0.0,
     "wins": 0
   },
-  "memory_context_sha256": "165b84eb1126ba2ceedeb1cc98f78c89894da4a1aeb7b4717096011235c0492c",
+  "memory_context_sha256": "8ad6c7ee1f05a14f9c54a614fc8b4fca24c55211552df73ea03bfbdcb6b30ab3",
   "open_positions": [],
   "owner_id": "no-trade-skeptic",
   "owner_type": "trader",
   "postmortems_due": [],
   "recent_closed_trades": [],
   "recent_funding_views": [
+    {
+      "current_sofr": "Trusted funding_context official NY Fed SOFR is missing. Latest confirmed research cite is NY Fed SOFR 3.85 percent for 2026-09-18. Do not treat 3.85 percent as a live funding_context print after 18 September.",
+      "forward_funding_assessment": "about_the_same",
+      "implication": "Remain at the zero official-SOFR benchmark. Paying SOFR on shocked-risk capital would fund a position the packet cannot price or time. Flat cash is not alpha, but inventing risk versus a 3.85 percent 18-Sep cite is worse.",
+      "sr3_forward_view": "SR3 and the SOFR tradable curve are unavailable in the frozen packet; no live forward-funding path, term premium, or implied-cut profile can be claimed."
+    },
     {
       "current_sofr": {
         "authority": "Official NY Fed SOFR is the realized funding-rate authority. SR3 is forward context only.",

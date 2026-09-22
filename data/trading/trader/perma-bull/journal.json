@@ -93,6 +93,50 @@
       "run_id": "tr-20260920T193935Z-ondemand",
       "schema_version": 1,
       "thesis": "FACT: Canada is still running overnight CORRA at 2.29 with headline inflation at 3.0%, while CRAH27 prices only 3.13 and the Fed has already hiked to 3.75-4.00% with SOFR at 3.85. FACT: CA activity is 66 on a Q2 GDP rebound and stronger Ivey PMI; US activity/labor/inflation gauges are 69/75/72. INFERENCE: pessimism about Canadian labor (score 38, employment -42k) is over-discounted as a reason to keep the 2027H1 path capped; a resilient global cycle plus BoC energy-pass-through risk should lift the March 2027 implied rate. UNKNOWN: CFTC/CME positioning and any post-cutoff BoC communication. The pro-growth expression is to pay that still-limited Canada path, not to buy already-high AUD or fade USD."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-22T06:52:19.184127-04:00",
+      "conviction": 62,
+      "decision_fingerprint": "5f03ac89e83cc511c7a52e6e691d335370f4ddaee2498a39a751956e2dd1f568",
+      "event_id": "jde-815d327a42ce4217",
+      "funding_view": null,
+      "invalidation": "Mar-27 CORRA implied collapsing toward the 2.29 cash path, or an oil reversal that kills BoC energy pass-through.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "adaf18ba8a4691d9381772bfe287761cdfca490ac76910ac8a738bd3f367a751",
+      "outcome_links": [],
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-22T06:52:19.184127-04:00",
+        "evidence_hash": "21a1ec3c722518819f9418afe972e4d7933baf6268e2983b68f3036a69dff2f1",
+        "overnight_run_id": "overnight-20260922",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold the existing SHORT/pay CORRA_2027-03. Packet implied 3.05 versus 3.13 entry is an 8bp adverse mark, not a growth-regime break. Cash CORRA 2.29 versus Mar-27 3.05 still prices a firming Canadian path; oil rebound and live BoC energy pass-through keep the pro-cyclical pay intact. OPEN/ADD blocked by stale news and market_state.",
+      "run_id": "overnight-20260922",
+      "schema_version": 1,
+      "thesis": "Hold the existing SHORT/pay CORRA_2027-03. Packet implied 3.05 versus 3.13 entry is an 8bp adverse mark, not a growth-regime break. Cash CORRA 2.29 versus Mar-27 3.05 still prices a firming Canadian path; oil rebound and live BoC energy pass-through keep the pro-cyclical pay intact. OPEN/ADD blocked by stale news and market_state."
     }
   ],
   "schema_version": 1,

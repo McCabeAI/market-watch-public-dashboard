@@ -1,13 +1,15 @@
 {
-  "as_of": "2026-09-20T16:06:28.069463-04:00",
-  "evidence_cutoff": "2026-09-20T19:39:35Z",
-  "last_successful_review_run_id": "tr-20260920T193935Z-ondemand",
-  "overnight_run_id": "tr-20260920T193935Z-ondemand",
+  "as_of": "2026-09-22T06:52:19.184127-04:00",
+  "evidence_cutoff": "2026-09-22T06:52:19.184127-04:00",
+  "last_successful_review_run_id": "overnight-20260922",
+  "overnight_run_id": "overnight-20260922",
   "review_status": "fresh",
   "schema_version": 1,
   "seats": {
     "carry-is-king": {
-      "alerts": [],
+      "alerts": [
+        "funding_accrual_failed_closed: official NY Fed SOFR history is missing; funding accrual failed closed"
+      ],
       "allocation_limit_usd": 10000000,
       "allocation_remaining_usd": 9250000.0,
       "allocation_used_usd": 750000.0,
@@ -15,12 +17,12 @@
       "blocked_opens": [],
       "cash_usd": 99999919.79,
       "cash_yield_usd": 10694.44,
-      "conviction": 61,
+      "conviction": 62,
       "deployed_notional_usd": 75000000.0,
-      "drawdown_usd": 80.21,
-      "evidence_cutoff": "2026-09-20T19:39:35Z",
+      "drawdown_usd": 0.0,
+      "evidence_cutoff": "2026-09-22T06:52:19.184127-04:00",
       "expression_rule": "rates_first",
-      "funding_accrual_status": "applied",
+      "funding_accrual_status": "failed_closed",
       "funding_convention": "ACT/360",
       "funding_cost_usd": 80.21,
       "funding_day_count": 360,
@@ -31,8 +33,8 @@
       "funding_regime": "sofr_zero_benchmark",
       "funding_source": "NY_FED",
       "funding_source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr",
-      "gross_pnl_usd": 0.0,
-      "high_water_nav_usd": 100000000.0,
+      "gross_pnl_usd": 74062.5,
+      "high_water_nav_usd": 100073982.29,
       "history": [
         {
           "accrual_days": 1,
@@ -125,15 +127,34 @@
           "note": "Official SOFR is the zero-return competition benchmark. Prior baseline paper-NAV cash yield is neutralized; realized/unrealized trading P&L and trade marks are unchanged.",
           "reclassified_nav_funding_usd": 10694.44,
           "result": "applied"
+        },
+        {
+          "action": "HOLD",
+          "at": "2026-09-22T06:52:19.184127-04:00",
+          "blocked_families": [
+            "news",
+            "market_state"
+          ],
+          "instrument": "CORRA_2027-03",
+          "note": null,
+          "notional_usd": null,
+          "overnight_run_id": "overnight-20260922",
+          "paper_mid_as_of": null,
+          "paper_mid_kind": null,
+          "paper_mid_source": null,
+          "position_id": null,
+          "price": null,
+          "realized_pnl_usd": null,
+          "result": "applied"
         }
       ],
-      "invalidation": "Energy pass-through lifts core or Canada starts delivering the priced hike path, overwhelming the receive.",
+      "invalidation": "Energy pass-through that actually re-prices the 2027 BoC path higher through the strip.",
       "last_action": "HOLD",
       "max_drawdown_usd": 5000000,
-      "nav_usd": 99999919.79,
-      "net_after_funding_pnl_usd": -80.21,
+      "nav_usd": 100073982.29,
+      "net_after_funding_pnl_usd": 73982.29,
       "net_financing_pnl_usd": -80.21,
-      "net_pnl_usd": -80.21,
+      "net_pnl_usd": 73982.29,
       "pnl_unavailable": false,
       "positions": [
         {
@@ -144,8 +165,8 @@
           "hedge_of": null,
           "instrument": "CORRA_2027-03",
           "invalidation": "Trim/median leave 1.9\u20132.0% higher and CORRA 2027 implieds hold at or above the 3.40% strip / 3.13% Mar-27 entry because BoC delivers the priced catch-up.",
-          "mark_price": 3.4,
-          "mark_price_as_of": "2026-09-20T19:38:03Z",
+          "mark_price": 3.30125,
+          "mark_price_as_of": "2026-09-22T10:41:52Z",
           "mark_price_source": "derived:futures_strip_average:CORRA[market_state.tradable_rate_curves.CORRA.2027-03.implied_rate,market_state.tradable_rate_curves.CORRA.2027-06.implied_rate,market_state.tradable_rate_curves.CORRA.2027-09.implied_rate,market_state.tradable_rate_curves.CORRA.2027-12.implied_rate]",
           "notional_usd": 75000000,
           "opened_at": "2026-09-19T22:36:50.082404-04:00",
@@ -172,10 +193,10 @@
           },
           "side": "long",
           "thesis": "Receive the overpriced 2027 BoC hiking path (strip avg implied 3.40% vs CORRA cash 2.29%) rather than buy crowded AUDCAD or pay CAD from 2.29% cash.",
-          "unrealized_pnl_usd": -0.0
+          "unrealized_pnl_usd": 74062.5
         }
       ],
-      "prior_action": "OPEN",
+      "prior_action": "HOLD",
       "realized_pnl_usd": 0,
       "remit": "positive carry and patient expressions across rates and FX unless a catalyst overwhelms it",
       "required_pitch": null,
@@ -195,11 +216,13 @@
       "risk_stopped": false,
       "seat": "carry-is-king",
       "starting_nav_usd": 100000000,
-      "thesis": "FACT: CORRA overnight is 2.29% and CRAH27 implies 3.13% (+84bp), with the curve still rising toward 3.51-3.65% into 2027-28. August inflation holds at 3% with core near 2%; CA labor 38 and consumer 45. Fed hiked to 3.75-4.00% and SOFR is 3.85%. INFERENCE: Mar-27 is paying 84bp of tightening for an energy-pass-through/Fed-catch-up story that domestic core and labor have not validated. A patient 2027-03 receiver earns implied-minus-realized if that path is not delivered. The same macro in spot is long USDCAD, but that pair is already an 87th-percentile 5y level with an energy-supported CAD tail, so rates is cleaner. UNKNOWN: whether pass-through lifts core enough to force the priced hikes; executable mids and CFTC positioning are absent. HOLD the locked long; do not duplicate the CORRA family.",
-      "unrealized_pnl_usd": 0.0
+      "thesis": "Hold LONG/receive CORRA_2027-03 via the 2027 H-Z strip. Current strip ~3.301 and Mar-27 3.05 versus 3.40 entry already favor the receive. Cash 2.29 versus a still-rich 2027 hike path remains the patient carry. Oil/energy is a live hawkish risk but has not overwhelmed cooling CA labor and core near 2%. OPEN/ADD blocked.",
+      "unrealized_pnl_usd": 74062.5
     },
     "catalyst-junkie": {
-      "alerts": [],
+      "alerts": [
+        "funding_accrual_failed_closed: official NY Fed SOFR history is missing; funding accrual failed closed"
+      ],
       "allocation_limit_usd": 10000000,
       "allocation_remaining_usd": 9450000.0,
       "allocation_used_usd": 550000.0,
@@ -207,12 +230,12 @@
       "blocked_opens": [],
       "cash_usd": 99999941.18,
       "cash_yield_usd": 10694.44,
-      "conviction": 58,
+      "conviction": 50,
       "deployed_notional_usd": 55000000.0,
-      "drawdown_usd": 58.82,
-      "evidence_cutoff": "2026-09-20T19:39:35Z",
+      "drawdown_usd": 2808.82,
+      "evidence_cutoff": "2026-09-22T06:52:19.184127-04:00",
       "expression_rule": "rates_first",
-      "funding_accrual_status": "applied",
+      "funding_accrual_status": "failed_closed",
       "funding_convention": "ACT/360",
       "funding_cost_usd": 58.82,
       "funding_day_count": 360,
@@ -223,7 +246,7 @@
       "funding_regime": "sofr_zero_benchmark",
       "funding_source": "NY_FED",
       "funding_source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr",
-      "gross_pnl_usd": 0.0,
+      "gross_pnl_usd": -2750.0,
       "high_water_nav_usd": 100000000.0,
       "history": [
         {
@@ -317,15 +340,34 @@
           "note": "Official SOFR is the zero-return competition benchmark. Prior baseline paper-NAV cash yield is neutralized; realized/unrealized trading P&L and trade marks are unchanged.",
           "reclassified_nav_funding_usd": 10694.44,
           "result": "applied"
+        },
+        {
+          "action": "HOLD",
+          "at": "2026-09-22T06:52:19.184127-04:00",
+          "blocked_families": [
+            "news",
+            "market_state"
+          ],
+          "instrument": "AONIA_2026-10",
+          "note": null,
+          "notional_usd": null,
+          "overnight_run_id": "overnight-20260922",
+          "paper_mid_as_of": null,
+          "paper_mid_kind": null,
+          "paper_mid_source": null,
+          "position_id": null,
+          "price": null,
+          "realized_pnl_usd": null,
+          "result": "applied"
         }
       ],
-      "invalidation": "Next RBA hike or AONIA_2026-10 implied through packet Nov 4.685.",
+      "invalidation": "Next RBA hike or AONIA_2026-10 implied through the packet Nov 4.695 without housing bite.",
       "last_action": "HOLD",
       "max_drawdown_usd": 5000000,
-      "nav_usd": 99999941.18,
-      "net_after_funding_pnl_usd": -58.82,
+      "nav_usd": 99997191.18,
+      "net_after_funding_pnl_usd": -2808.82,
       "net_financing_pnl_usd": -58.82,
-      "net_pnl_usd": -58.82,
+      "net_pnl_usd": -2808.82,
       "pnl_unavailable": false,
       "positions": [
         {
@@ -336,8 +378,8 @@
           "hedge_of": null,
           "instrument": "AONIA_2026-10",
           "invalidation": "Next RBA hike or AONIA_2026-10 implied through packet Nov 4.685.",
-          "mark_price": 4.565,
-          "mark_price_as_of": "2026-09-20T19:38:03Z",
+          "mark_price": 4.57,
+          "mark_price_as_of": "2026-09-22T10:41:52Z",
           "mark_price_source": "derived:futures_strip_average:AONIA[market_state.tradable_rate_curves.AONIA.2026-10.implied_rate]",
           "notional_usd": 55000000,
           "opened_at": "2026-09-19T22:36:50.082404-04:00",
@@ -361,10 +403,10 @@
           },
           "side": "long",
           "thesis": "Receive AONIA_2026-10: housing channel already biting while Oct still prices +21.5bp versus overnight AONIA 4.35. Empty sidecar; fresh OPEN.",
-          "unrealized_pnl_usd": -0.0
+          "unrealized_pnl_usd": -2750.0
         }
       ],
-      "prior_action": "OPEN",
+      "prior_action": "HOLD",
       "realized_pnl_usd": 0,
       "remit": "credible path from mispricing to repricing",
       "required_pitch": null,
@@ -384,11 +426,13 @@
       "risk_stopped": false,
       "seat": "catalyst-junkie",
       "starting_nav_usd": 100000000,
-      "thesis": "Receive AONIA_2026-10: housing channel already biting while Oct still prices +21.5bp versus overnight AONIA 4.35. Catalyst is the next RBA decision/October averaging window. HOLD existing position_id pos-deddf5aa0c83.",
-      "unrealized_pnl_usd": 0.0
+      "thesis": "Hold LONG AONIA_2026-10. Cash AONIA 4.35 versus Oct implied 4.57 still prices about +22bp; the book is flat versus 4.565 entry. The dated October housing-to-policy path remains the identifiable catalyst. Hunter 22 Sep contests uniqueness and oil is a competing inflation risk, which cuts conviction rather than killing the October window. OPEN/ADD blocked.",
+      "unrealized_pnl_usd": -2750.0
     },
     "cross-merchant": {
-      "alerts": [],
+      "alerts": [
+        "funding_accrual_failed_closed: official NY Fed SOFR history is missing; funding accrual failed closed"
+      ],
       "allocation_limit_usd": 10000000,
       "allocation_remaining_usd": 9500000.0,
       "allocation_used_usd": 500000.0,
@@ -396,12 +440,12 @@
       "blocked_opens": [],
       "cash_usd": 99999946.53,
       "cash_yield_usd": 10694.44,
-      "conviction": 61,
+      "conviction": 58,
       "deployed_notional_usd": 50000000.0,
-      "drawdown_usd": 53.47,
-      "evidence_cutoff": "2026-09-20T19:39:35Z",
+      "drawdown_usd": 99708.75,
+      "evidence_cutoff": "2026-09-22T06:52:19.184127-04:00",
       "expression_rule": "spot_only",
-      "funding_accrual_status": "applied",
+      "funding_accrual_status": "failed_closed",
       "funding_convention": "ACT/360",
       "funding_cost_usd": 53.47,
       "funding_day_count": 360,
@@ -412,7 +456,7 @@
       "funding_regime": "sofr_zero_benchmark",
       "funding_source": "NY_FED",
       "funding_source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr",
-      "gross_pnl_usd": 0.0,
+      "gross_pnl_usd": -99655.28,
       "high_water_nav_usd": 100000000.0,
       "history": [
         {
@@ -506,15 +550,34 @@
           "note": "Official SOFR is the zero-return competition benchmark. Prior baseline paper-NAV cash yield is neutralized; realized/unrealized trading P&L and trade marks are unchanged.",
           "reclassified_nav_funding_usd": 10694.44,
           "result": "applied"
+        },
+        {
+          "action": "HOLD",
+          "at": "2026-09-22T06:52:19.184127-04:00",
+          "blocked_families": [
+            "news",
+            "market_state"
+          ],
+          "instrument": "AUDCAD",
+          "note": null,
+          "notional_usd": null,
+          "overnight_run_id": "overnight-20260922",
+          "paper_mid_as_of": null,
+          "paper_mid_kind": null,
+          "paper_mid_source": null,
+          "position_id": null,
+          "price": null,
+          "realized_pnl_usd": null,
+          "result": "applied"
         }
       ],
-      "invalidation": "AU housing reverses, AONIA delivers the leftover ~50bp, and BoC energy risk plus CORRA hikes are priced out while AUDCAD holds the 5y extreme.",
+      "invalidation": "AU housing drag fades or oil/energy support for CAD reverses.",
       "last_action": "HOLD",
       "max_drawdown_usd": 5000000,
-      "nav_usd": 99999946.53,
-      "net_after_funding_pnl_usd": -53.47,
+      "nav_usd": 99900291.25,
+      "net_after_funding_pnl_usd": -99708.75,
       "net_financing_pnl_usd": -53.47,
-      "net_pnl_usd": -53.47,
+      "net_pnl_usd": -99708.75,
       "pnl_unavailable": false,
       "positions": [
         {
@@ -525,8 +588,8 @@
           "hedge_of": null,
           "instrument": "AUDCAD",
           "invalidation": "Housing channel reverses, BoC energy risk is withdrawn and CORRA hikes are priced out while AUDCAD holds the packet 5y extreme.",
-          "mark_price": 0.9975768872320596,
-          "mark_price_as_of": "2026-09-18",
+          "mark_price": 0.9995651633743322,
+          "mark_price_as_of": "2026-09-21",
           "mark_price_source": "market_state.fx.AUDCAD.spot",
           "notional_usd": 50000000,
           "opened_at": "2026-09-19T22:36:50.082404-04:00",
@@ -544,10 +607,10 @@
           },
           "side": "short",
           "thesis": "Short AUDCAD to own Australia housing/restrictive-policy risk versus Canada remaining-hike and energy-pass-through risk without USD contamination.",
-          "unrealized_pnl_usd": -0.0
+          "unrealized_pnl_usd": -99655.28
         }
       ],
-      "prior_action": "OPEN",
+      "prior_action": "HOLD",
       "realized_pnl_usd": 0,
       "remit": "cleaner relative-value expressions outside USD",
       "required_pitch": null,
@@ -567,11 +630,13 @@
       "risk_stopped": false,
       "seat": "cross-merchant",
       "starting_nav_usd": 100000000,
-      "thesis": "FACT: As of 2026-09-18 AUDCAD spot is 0.9975768872320596, 1y percentile 99.80 and 5y percentile 99.96, with +1.95% 1m and +1.37% 3m; 20d realized vol is 4.38. AUDUSD is only 76.4 1y / 84.3 5y and USDCAD 74.0 1y / 87.0 5y, so the extreme lives in the product of two moderate USD legs, not in either dollar pair. Overnight AONIA is 4.35 with Oct +21.5bp and Mar-27 +51bp (implied 4.86); CORRA is 2.29 with Dec 1m +29bp and Mar-27 +84bp (implied 3.13). AU 2Y is 4.999 at the 99th percentile 1y/5y; CA 2Y is 3.27 at 97.8 1y but only 58.5 5y; CA-AU 2Y is -164.9bp at the 10.5th 5y percentile. AU temperature: inflation 82, labor 50, activity 54, consumer 48. CA: inflation 55, labor 38, activity 66, consumer 45. NSW stamp-duty receipts fell 24% y/y in August with transactions -18% and Sydney/Melbourne values more than 7% below peak. Canada August CPI held at 3% with core near 2%; BoC minutes flag energy pass-through. The book already owns short AUDCAD pos-00661cabb94a, 50m notional, 500k standard-shock risk, mark equal to packet mid. INFERENCE: the market is pricing an RBA-over-BoC currency premium as if Australia can keep tightening from 4.35 into an already-open housing channel while Canada remains a cheap overnight and a cheap CAD in the cross. That is backwards on the remaining path: AONIA has less unused hike room into deteriorating housing, CORRA still prices a catch-up cycle, and energy pass-through is a CAD-specific catalyst. Short AUDCAD owns that differential without a Fed/USD residual. USD expressions (short AUDUSD or long USDCAD) contaminate a clean AU-versus-CA view with the just-delivered Fed 25bp hike to 3.75-4.00% and with SOFR 3.85. AUDNZD is also a 5y extreme but NZ official yields and the NZ policy path are unavailable in this packet, so it is not a cleaner cross. Carry opposes the short (AONIA 4.35 versus CORRA 2.29), which is why the book HOLDs 50m rather than ADDs. UNKNOWN: NZ rates, CME FX futures positioning, broker executable quotes, and any labeled historical analog with quantified forward outcomes.",
-      "unrealized_pnl_usd": 0.0
+      "thesis": "Hold SHORT AUDCAD. AU housing remains a domestic AUD drag while the oil rebound supports CAD energy. Paper mid 0.9996 versus 0.99758 is against the short but does not invalidate the housing-versus-energy relative-value. OPEN/ADD blocked; stay outside USD pairs.",
+      "unrealized_pnl_usd": -99655.28
     },
     "dollar-king": {
-      "alerts": [],
+      "alerts": [
+        "funding_accrual_failed_closed: official NY Fed SOFR history is missing; funding accrual failed closed"
+      ],
       "allocation_limit_usd": 10000000,
       "allocation_remaining_usd": 9450000.0,
       "allocation_used_usd": 550000.0,
@@ -579,12 +644,12 @@
       "blocked_opens": [],
       "cash_usd": 99999941.18,
       "cash_yield_usd": 10694.44,
-      "conviction": 63,
+      "conviction": 64,
       "deployed_notional_usd": 55000000.0,
-      "drawdown_usd": 58.82,
-      "evidence_cutoff": "2026-09-20T19:39:35Z",
+      "drawdown_usd": 24082.11,
+      "evidence_cutoff": "2026-09-22T06:52:19.184127-04:00",
       "expression_rule": "spot_only",
-      "funding_accrual_status": "applied",
+      "funding_accrual_status": "failed_closed",
       "funding_convention": "ACT/360",
       "funding_cost_usd": 58.82,
       "funding_day_count": 360,
@@ -595,7 +660,7 @@
       "funding_regime": "sofr_zero_benchmark",
       "funding_source": "NY_FED",
       "funding_source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr",
-      "gross_pnl_usd": 0.0,
+      "gross_pnl_usd": -24023.29,
       "high_water_nav_usd": 100000000.0,
       "history": [
         {
@@ -689,15 +754,34 @@
           "note": "Official SOFR is the zero-return competition benchmark. Prior baseline paper-NAV cash yield is neutralized; realized/unrealized trading P&L and trade marks are unchanged.",
           "reclassified_nav_funding_usd": 10694.44,
           "result": "applied"
+        },
+        {
+          "action": "HOLD",
+          "at": "2026-09-22T06:52:19.184127-04:00",
+          "blocked_families": [
+            "news",
+            "market_state"
+          ],
+          "instrument": "USDCAD",
+          "note": null,
+          "notional_usd": null,
+          "overnight_run_id": "overnight-20260922",
+          "paper_mid_as_of": null,
+          "paper_mid_kind": null,
+          "paper_mid_source": null,
+          "position_id": null,
+          "price": null,
+          "realized_pnl_usd": null,
+          "result": "applied"
         }
       ],
-      "invalidation": "US-Canada policy gap compresses via Fed pause or BoC matching US, or USDCAD reverses the 5d/1m bid while the rates gap stays wide.",
+      "invalidation": "Fed path recast as one-and-done and/or BoC/energy re-tightens CAD enough to close the policy gap.",
       "last_action": "HOLD",
       "max_drawdown_usd": 5000000,
-      "nav_usd": 99999941.18,
-      "net_after_funding_pnl_usd": -58.82,
+      "nav_usd": 99975917.89,
+      "net_after_funding_pnl_usd": -24082.11,
       "net_financing_pnl_usd": -58.82,
-      "net_pnl_usd": -58.82,
+      "net_pnl_usd": -24082.11,
       "pnl_unavailable": false,
       "positions": [
         {
@@ -708,8 +792,8 @@
           "hedge_of": null,
           "instrument": "USDCAD",
           "invalidation": "Fed path recast as one-and-done and/or BoC/energy re-tightens CAD enough to close the policy gap.",
-          "mark_price": 1.4010471204188482,
-          "mark_price_as_of": "2026-09-18",
+          "mark_price": 1.4004351610095735,
+          "mark_price_as_of": "2026-09-21",
           "mark_price_source": "market_state.fx.USDCAD.spot",
           "notional_usd": 55000000,
           "opened_at": "2026-09-19T22:36:50.082404-04:00",
@@ -727,10 +811,10 @@
           },
           "side": "long",
           "thesis": "USD policy/labor premium versus a cheap BoC is already extreme in CA-US 2Y and SOFR-CORRA; express it in USDCAD spot, not a cross and not more curve.",
-          "unrealized_pnl_usd": 0.0
+          "unrealized_pnl_usd": -24023.29
         }
       ],
-      "prior_action": "OPEN",
+      "prior_action": "HOLD",
       "realized_pnl_usd": 0,
       "remit": "express macro views through USD spot whenever a defensible USD pair exists",
       "required_pitch": null,
@@ -750,11 +834,14 @@
       "risk_stopped": false,
       "seat": "dollar-king",
       "starting_nav_usd": 100000000,
-      "thesis": "FACT: Fed delivered 25bp to 3.75-4.00, SOFR 3.85, US gauges 69-75, SR3 still prices up to 4.755 by Sep-27; Canada overnight 2.29, headline CPI 3%/core near 2%, labor 38 with -42k jobs, CA-US 2Y -140bp (3.8th 1y percentile); USDCAD 1.401 at 74th 1y percentile after +1.10% in five days. INFERENCE: USD policy exceptionalism versus a Canada labor/core constraint is still under-expressed in the dollar pair, so the existing long USDCAD remains the clean spot. Crosses (AUDCAD at 99.8 1y percentile, NZDCAD) add AU housing or residual NZD risk; USDJPY is BoJ event vol. UNKNOWN: positioning, post-Sep-18 FX path, and whether energy pass-through lets BoC outrun labor weakness. Book action is HOLD of pos-5317bc96d4eb, not a second OPEN.",
-      "unrealized_pnl_usd": 0.0
+      "thesis": "Hold LONG USDCAD. Fed 3.75-4.00 and confirmed SOFR 3.85 versus CORRA 2.29 still favor USD over CAD. Paper mid 1.4004 versus 1.40105 is noise. Oil rebound and BoC energy language are CAD-positive second-order risks, not a reason to flatten the USD-spot expression. OPEN/ADD blocked; spot-only seat stays in the existing pair.",
+      "unrealized_pnl_usd": -24023.29
     },
     "mean-reverter": {
-      "alerts": [],
+      "alerts": [
+        "Paper mark unavailable for SOFR_2027-03: tradable SOFR curve unavailable",
+        "funding_accrual_failed_closed: official NY Fed SOFR history is missing; funding accrual failed closed"
+      ],
       "allocation_limit_usd": 10000000,
       "allocation_remaining_usd": 9600000.0,
       "allocation_used_usd": 400000.0,
@@ -762,12 +849,12 @@
       "blocked_opens": [],
       "cash_usd": 99999957.22,
       "cash_yield_usd": 10694.44,
-      "conviction": 57,
+      "conviction": 52,
       "deployed_notional_usd": 40000000.0,
       "drawdown_usd": 42.78,
-      "evidence_cutoff": "2026-09-20T19:39:35Z",
+      "evidence_cutoff": "2026-09-22T06:52:19.184127-04:00",
       "expression_rule": "rates_first",
-      "funding_accrual_status": "applied",
+      "funding_accrual_status": "failed_closed",
       "funding_convention": "ACT/360",
       "funding_cost_usd": 42.78,
       "funding_day_count": 360,
@@ -778,7 +865,7 @@
       "funding_regime": "sofr_zero_benchmark",
       "funding_source": "NY_FED",
       "funding_source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr",
-      "gross_pnl_usd": 0.0,
+      "gross_pnl_usd": null,
       "high_water_nav_usd": 100000000.0,
       "history": [
         {
@@ -872,16 +959,35 @@
           "note": "Official SOFR is the zero-return competition benchmark. Prior baseline paper-NAV cash yield is neutralized; realized/unrealized trading P&L and trade marks are unchanged.",
           "reclassified_nav_funding_usd": 10694.44,
           "result": "applied"
+        },
+        {
+          "action": "HOLD",
+          "at": "2026-09-22T06:52:19.184127-04:00",
+          "blocked_families": [
+            "news",
+            "market_state"
+          ],
+          "instrument": "SOFR_2027-03",
+          "note": null,
+          "notional_usd": null,
+          "overnight_run_id": "overnight-20260922",
+          "paper_mid_as_of": null,
+          "paper_mid_kind": null,
+          "paper_mid_source": null,
+          "position_id": null,
+          "price": null,
+          "realized_pnl_usd": null,
+          "result": "applied"
         }
       ],
-      "invalidation": "SR3 strip reprices extra tightening beyond the current 4.755 peak on confirmed inflation re-acceleration or a renewed energy shock.",
+      "invalidation": "A re-justified hike path in a restored SOFR/SR3 strip, not oil/CPI color alone.",
       "last_action": "HOLD",
       "max_drawdown_usd": 5000000,
       "nav_usd": 99999957.22,
-      "net_after_funding_pnl_usd": -42.78,
+      "net_after_funding_pnl_usd": null,
       "net_financing_pnl_usd": -42.78,
-      "net_pnl_usd": -42.78,
-      "pnl_unavailable": false,
+      "net_pnl_usd": null,
+      "pnl_unavailable": true,
       "positions": [
         {
           "asset_class": "rates",
@@ -891,14 +997,14 @@
           "hedge_of": null,
           "instrument": "SOFR_2027-03",
           "invalidation": "Another clearly delivered 25bp into the Dec-26 window with SR3H7 implied holding at or above the packet Jun-27 4.72 mid, or hotter US labor/inflation with a re-widening oil tail.",
-          "mark_price": 4.58,
-          "mark_price_as_of": "2026-09-20T19:38:03Z",
-          "mark_price_source": "market_state.tradable_rate_curves.SOFR.2027-03.implied_rate",
+          "mark_price": null,
+          "mark_price_as_of": null,
+          "mark_price_source": null,
           "notional_usd": 40000000,
           "opened_at": "2026-09-19T22:36:50.082404-04:00",
           "opened_run_id": "tr-20260920T020818Z-ondemand",
           "paper_expression": null,
-          "pnl_unavailable": false,
+          "pnl_unavailable": true,
           "position_id": "pos-1477172adb86",
           "risk_capital_method": "mtm_standard_1pct_move",
           "risk_capital_unavailable": false,
@@ -910,10 +1016,10 @@
           },
           "side": "long",
           "thesis": "Empty sidecar. Receive Mar-27 SOFR to fade leftover hike premium after a fully priced Sep-16 25bp hike, with SOFR already at 3.85 and SR3H7 still +73bp over that fixing.",
-          "unrealized_pnl_usd": -0.0
+          "unrealized_pnl_usd": null
         }
       ],
-      "prior_action": "OPEN",
+      "prior_action": "HOLD",
       "realized_pnl_usd": 0,
       "remit": "fade statistically or fundamentally stretched market moves when reversal conditions exist",
       "required_pitch": null,
@@ -933,11 +1039,13 @@
       "risk_stopped": false,
       "seat": "mean-reverter",
       "starting_nav_usd": 100000000,
-      "thesis": "FACTS: SR3H7 implied 4.58 is 73bp above overnight SOFR 3.85 after a 25bp hike that futures had >90% priced; US 2Y/5Y/10Y sit at 1y extremes and 2s10s at the 0.2nd 1y percentile; Saudi STS workaround reduced the extreme oil-supply tail. INFERENCE: the market is extrapolating a known hike and an energy scare into a ~4.75% 2027 terminal that does not need three more tightenings if the energy tail fades and lagging tightening bites. UNKNOWN: speculative positioning. Expression: stay long duration in already-owned SOFR_2027-03 (receive; profits if implied rate falls).",
+      "thesis": "Hold LONG/receive SOFR_2027-03. Cash SOFR 3.85 versus the 4.58 entry still embeds leftover 2027 hike premium. Warm inflation and the oil rebound argue against pressing the fade, not that the stretch has normalized. The curve is unmarkable; HOLD rather than REDUCE without a mark. OPEN/ADD blocked.",
       "unrealized_pnl_usd": 0.0
     },
     "no-trade-skeptic": {
-      "alerts": [],
+      "alerts": [
+        "funding_accrual_failed_closed: official NY Fed SOFR history is missing; funding accrual failed closed"
+      ],
       "allocation_limit_usd": 10000000,
       "allocation_remaining_usd": 10000000.0,
       "allocation_used_usd": 0.0,
@@ -945,12 +1053,12 @@
       "blocked_opens": [],
       "cash_usd": 100000000.0,
       "cash_yield_usd": 21388.88,
-      "conviction": 73,
+      "conviction": 88,
       "deployed_notional_usd": 0,
       "drawdown_usd": 0.0,
-      "evidence_cutoff": "2026-09-20T19:39:35Z",
+      "evidence_cutoff": "2026-09-22T06:52:19.184127-04:00",
       "expression_rule": "rates_first",
-      "funding_accrual_status": "applied",
+      "funding_accrual_status": "failed_closed",
       "funding_convention": "ACT/360",
       "funding_cost_usd": 0.0,
       "funding_day_count": 360,
@@ -1055,9 +1163,28 @@
           "note": "Official SOFR is the zero-return competition benchmark. Prior baseline paper-NAV cash yield is neutralized; realized/unrealized trading P&L and trade marks are unchanged.",
           "reclassified_nav_funding_usd": 0.0,
           "result": "applied"
+        },
+        {
+          "action": "HOLD",
+          "at": "2026-09-22T06:52:19.184127-04:00",
+          "blocked_families": [
+            "news",
+            "market_state"
+          ],
+          "instrument": null,
+          "note": null,
+          "notional_usd": null,
+          "overnight_run_id": "overnight-20260922",
+          "paper_mid_as_of": null,
+          "paper_mid_kind": null,
+          "paper_mid_source": null,
+          "position_id": null,
+          "price": null,
+          "realized_pnl_usd": null,
+          "result": "applied"
         }
       ],
-      "invalidation": "A packet-supported rates discrepancy whose expected edge clears official 3.85% ACT/360 cash, with live post-event positioning and an uncrowded expression that is not already two-way in the paper book.",
+      "invalidation": "OPEN/ADD unblocked with non-stale market_state, official SOFR, and a usable SR3 path that still survives crowding and catalyst tests.",
       "last_action": "HOLD",
       "max_drawdown_usd": 5000000,
       "nav_usd": 100000000.0,
@@ -1086,11 +1213,13 @@
       "risk_stopped": false,
       "seat": "no-trade-skeptic",
       "starting_nav_usd": 100000000,
-      "thesis": "Delivered Sep-16 hike and SOFR 3.85 leave US/CA/AU policy paths priced, FX extremes unexplained as trades, and official cash the only expression that clears the hurdle.",
+      "thesis": "Remain flat. News and market_state are stale, OPEN/ADD are blocked, official funding_context SOFR is missing, and SR3/SOFR forwards are unavailable. Apparent overnight edges are unpriced, untimed, and unfalsifiable under this tape. Flat cash at the zero SOFR benchmark is not alpha, but paying SOFR on shocked-risk capital with no live curve is worse.",
       "unrealized_pnl_usd": 0.0
     },
     "perma-bear": {
-      "alerts": [],
+      "alerts": [
+        "funding_accrual_failed_closed: official NY Fed SOFR history is missing; funding accrual failed closed"
+      ],
       "allocation_limit_usd": 10000000,
       "allocation_remaining_usd": 9450000.0,
       "allocation_used_usd": 550000.0,
@@ -1098,12 +1227,12 @@
       "blocked_opens": [],
       "cash_usd": 99999941.18,
       "cash_yield_usd": 10694.44,
-      "conviction": 62,
+      "conviction": 48,
       "deployed_notional_usd": 55000000.0,
-      "drawdown_usd": 58.82,
-      "evidence_cutoff": "2026-09-20T19:39:35Z",
+      "drawdown_usd": 21371.32,
+      "evidence_cutoff": "2026-09-22T06:52:19.184127-04:00",
       "expression_rule": "rates_first",
-      "funding_accrual_status": "applied",
+      "funding_accrual_status": "failed_closed",
       "funding_convention": "ACT/360",
       "funding_cost_usd": 58.82,
       "funding_day_count": 360,
@@ -1114,7 +1243,7 @@
       "funding_regime": "sofr_zero_benchmark",
       "funding_source": "NY_FED",
       "funding_source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr",
-      "gross_pnl_usd": 0.0,
+      "gross_pnl_usd": -21312.5,
       "high_water_nav_usd": 100000000.0,
       "history": [
         {
@@ -1208,15 +1337,34 @@
           "note": "Official SOFR is the zero-return competition benchmark. Prior baseline paper-NAV cash yield is neutralized; realized/unrealized trading P&L and trade marks are unchanged.",
           "reclassified_nav_funding_usd": 10694.44,
           "result": "applied"
+        },
+        {
+          "action": "HOLD",
+          "at": "2026-09-22T06:52:19.184127-04:00",
+          "blocked_families": [
+            "news",
+            "market_state"
+          ],
+          "instrument": "AONIA_2027-06",
+          "note": null,
+          "notional_usd": null,
+          "overnight_run_id": "overnight-20260922",
+          "paper_mid_as_of": null,
+          "paper_mid_kind": null,
+          "paper_mid_source": null,
+          "position_id": null,
+          "price": null,
+          "realized_pnl_usd": null,
+          "result": "applied"
         }
       ],
-      "invalidation": "RBA delivers or IB prices the remaining 50-60bp while housing and labor stop deteriorating.",
+      "invalidation": "Housing ceases to be the AU defensive channel, or oil/inflation is treated as forcing a 2027H1 AONIA hold/hike path.",
       "last_action": "HOLD",
       "max_drawdown_usd": 5000000,
-      "nav_usd": 99999941.18,
-      "net_after_funding_pnl_usd": -58.82,
+      "nav_usd": 99978628.68,
+      "net_after_funding_pnl_usd": -21371.32,
       "net_financing_pnl_usd": -58.82,
-      "net_pnl_usd": -58.82,
+      "net_pnl_usd": -21371.32,
       "pnl_unavailable": false,
       "positions": [
         {
@@ -1227,8 +1375,8 @@
           "hedge_of": null,
           "instrument": "AONIA_2027-06",
           "invalidation": "RBA delivers or IB fully prices the remaining 50-60bp of tightening while housing/labor stop deteriorating.",
-          "mark_price": 4.9075,
-          "mark_price_as_of": "2026-09-20T19:38:03Z",
+          "mark_price": 4.94625,
+          "mark_price_as_of": "2026-09-22T10:41:52Z",
           "mark_price_source": "derived:futures_strip_average:AONIA[market_state.tradable_rate_curves.AONIA.2027-03.implied_rate,market_state.tradable_rate_curves.AONIA.2027-04.implied_rate,market_state.tradable_rate_curves.AONIA.2027-05.implied_rate,market_state.tradable_rate_curves.AONIA.2027-06.implied_rate]",
           "notional_usd": 55000000,
           "opened_at": "2026-09-19T22:36:50.082404-04:00",
@@ -1255,10 +1403,10 @@
           },
           "side": "long",
           "thesis": "Long duration in AONIA 2027 H1 as the RBA hike path is a policy error into an already-open Australian housing channel.",
-          "unrealized_pnl_usd": -0.0
+          "unrealized_pnl_usd": -21312.5
         }
       ],
-      "prior_action": "OPEN",
+      "prior_action": "HOLD",
       "realized_pnl_usd": 0,
       "remit": "strongest defensive, slowdown, stress or risk-off macro expression",
       "required_pitch": null,
@@ -1278,11 +1426,13 @@
       "risk_stopped": false,
       "seat": "perma-bear",
       "starting_nav_usd": 100000000,
-      "thesis": "Keep receiving the locked AONIA 2027 H1 strip while IB still prices extra tightening into a housing downturn.",
-      "unrealized_pnl_usd": 0.0
+      "thesis": "Hold the existing LONG/receive AONIA_2027-06. 2027H1 strip near 4.946 versus 4.9075 entry is adverse but not a thesis break. AU housing remains the defensive channel; Hunter\u2019s 22 Sep \u2018not unprecedented\u2019 line weakens a crash narrative without reversing the slowdown. Oil rebound is receive-risk, not a confirmed RBA re-hike. OPEN/ADD blocked.",
+      "unrealized_pnl_usd": -21312.5
     },
     "perma-bull": {
-      "alerts": [],
+      "alerts": [
+        "funding_accrual_failed_closed: official NY Fed SOFR history is missing; funding accrual failed closed"
+      ],
       "allocation_limit_usd": 10000000,
       "allocation_remaining_usd": 9500000.0,
       "allocation_used_usd": 500000.0,
@@ -1290,12 +1440,12 @@
       "blocked_opens": [],
       "cash_usd": 99999946.53,
       "cash_yield_usd": 10694.44,
-      "conviction": 64,
+      "conviction": 62,
       "deployed_notional_usd": 50000000.0,
-      "drawdown_usd": 53.47,
-      "evidence_cutoff": "2026-09-20T19:39:35Z",
+      "drawdown_usd": 40053.47,
+      "evidence_cutoff": "2026-09-22T06:52:19.184127-04:00",
       "expression_rule": "rates_first",
-      "funding_accrual_status": "applied",
+      "funding_accrual_status": "failed_closed",
       "funding_convention": "ACT/360",
       "funding_cost_usd": 53.47,
       "funding_day_count": 360,
@@ -1306,7 +1456,7 @@
       "funding_regime": "sofr_zero_benchmark",
       "funding_source": "NY_FED",
       "funding_source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr",
-      "gross_pnl_usd": 0.0,
+      "gross_pnl_usd": -40000.0,
       "high_water_nav_usd": 100000000.0,
       "history": [
         {
@@ -1400,15 +1550,34 @@
           "note": "Official SOFR is the zero-return competition benchmark. Prior baseline paper-NAV cash yield is neutralized; realized/unrealized trading P&L and trade marks are unchanged.",
           "reclassified_nav_funding_usd": 10694.44,
           "result": "applied"
+        },
+        {
+          "action": "HOLD",
+          "at": "2026-09-22T06:52:19.184127-04:00",
+          "blocked_families": [
+            "news",
+            "market_state"
+          ],
+          "instrument": "CORRA_2027-03",
+          "note": null,
+          "notional_usd": null,
+          "overnight_run_id": "overnight-20260922",
+          "paper_mid_as_of": null,
+          "paper_mid_kind": null,
+          "paper_mid_source": null,
+          "position_id": null,
+          "price": null,
+          "realized_pnl_usd": null,
+          "result": "applied"
         }
       ],
-      "invalidation": "Canadian activity follows labor lower or core/headline ease enough for BoC to keep overnight near 2.29 and reprice March 2027 CORRA down.",
+      "invalidation": "Mar-27 CORRA implied collapsing toward the 2.29 cash path, or an oil reversal that kills BoC energy pass-through.",
       "last_action": "HOLD",
       "max_drawdown_usd": 5000000,
-      "nav_usd": 99999946.53,
-      "net_after_funding_pnl_usd": -53.47,
+      "nav_usd": 99959946.53,
+      "net_after_funding_pnl_usd": -40053.47,
       "net_financing_pnl_usd": -53.47,
-      "net_pnl_usd": -53.47,
+      "net_pnl_usd": -40053.47,
       "pnl_unavailable": false,
       "positions": [
         {
@@ -1419,8 +1588,8 @@
           "hedge_of": null,
           "instrument": "CORRA_2027-03",
           "invalidation": "CORRA_2027-03 back to the 2.775 Dec-26 3m mid or confirmed on-hold with core near 2% and fading oil.",
-          "mark_price": 3.13,
-          "mark_price_as_of": "2026-09-20T19:38:03Z",
+          "mark_price": 3.05,
+          "mark_price_as_of": "2026-09-22T10:41:52Z",
           "mark_price_source": "market_state.tradable_rate_curves.CORRA.2027-03.implied_rate",
           "notional_usd": 50000000,
           "opened_at": "2026-09-19T22:36:50.082404-04:00",
@@ -1438,10 +1607,10 @@
           },
           "side": "short",
           "thesis": "Pay Mar-27 CORRA as the cleanest pro-cyclical expression of underpriced BoC catch-up into a resilient growth/energy regime.",
-          "unrealized_pnl_usd": 0.0
+          "unrealized_pnl_usd": -40000.0
         }
       ],
-      "prior_action": "OPEN",
+      "prior_action": "HOLD",
       "realized_pnl_usd": 0,
       "remit": "strongest pro-growth, risk-on or cyclical macro expression",
       "required_pitch": null,
@@ -1461,11 +1630,13 @@
       "risk_stopped": false,
       "seat": "perma-bull",
       "starting_nav_usd": 100000000,
-      "thesis": "FACT: Canada is still running overnight CORRA at 2.29 with headline inflation at 3.0%, while CRAH27 prices only 3.13 and the Fed has already hiked to 3.75-4.00% with SOFR at 3.85. FACT: CA activity is 66 on a Q2 GDP rebound and stronger Ivey PMI; US activity/labor/inflation gauges are 69/75/72. INFERENCE: pessimism about Canadian labor (score 38, employment -42k) is over-discounted as a reason to keep the 2027H1 path capped; a resilient global cycle plus BoC energy-pass-through risk should lift the March 2027 implied rate. UNKNOWN: CFTC/CME positioning and any post-cutoff BoC communication. The pro-growth expression is to pay that still-limited Canada path, not to buy already-high AUD or fade USD.",
-      "unrealized_pnl_usd": 0.0
+      "thesis": "Hold the existing SHORT/pay CORRA_2027-03. Packet implied 3.05 versus 3.13 entry is an 8bp adverse mark, not a growth-regime break. Cash CORRA 2.29 versus Mar-27 3.05 still prices a firming Canadian path; oil rebound and live BoC energy pass-through keep the pro-cyclical pay intact. OPEN/ADD blocked by stale news and market_state.",
+      "unrealized_pnl_usd": -40000.0
     },
     "positioning-cynic": {
-      "alerts": [],
+      "alerts": [
+        "funding_accrual_failed_closed: official NY Fed SOFR history is missing; funding accrual failed closed"
+      ],
       "allocation_limit_usd": 10000000,
       "allocation_remaining_usd": 9550000.0,
       "allocation_used_usd": 450000.0,
@@ -1473,12 +1644,12 @@
       "blocked_opens": [],
       "cash_usd": 99999957.22,
       "cash_yield_usd": 10694.44,
-      "conviction": 57,
+      "conviction": 54,
       "deployed_notional_usd": 45000000.0,
-      "drawdown_usd": 42.78,
-      "evidence_cutoff": "2026-09-20T19:39:35Z",
+      "drawdown_usd": 0.0,
+      "evidence_cutoff": "2026-09-22T06:52:19.184127-04:00",
       "expression_rule": "rates_first",
-      "funding_accrual_status": "applied",
+      "funding_accrual_status": "failed_closed",
       "funding_convention": "ACT/360",
       "funding_cost_usd": 42.78,
       "funding_day_count": 360,
@@ -1489,8 +1660,8 @@
       "funding_regime": "sofr_zero_benchmark",
       "funding_source": "NY_FED",
       "funding_source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr",
-      "gross_pnl_usd": 0.0,
-      "high_water_nav_usd": 100000000.0,
+      "gross_pnl_usd": 11250.0,
+      "high_water_nav_usd": 100011207.22,
       "history": [
         {
           "accrual_days": 1,
@@ -1599,15 +1770,34 @@
           "note": "Official SOFR is the zero-return competition benchmark. Prior baseline paper-NAV cash yield is neutralized; realized/unrealized trading P&L and trade marks are unchanged.",
           "reclassified_nav_funding_usd": 10694.44,
           "result": "applied"
+        },
+        {
+          "action": "HOLD",
+          "at": "2026-09-22T06:52:19.184127-04:00",
+          "blocked_families": [
+            "news",
+            "market_state"
+          ],
+          "instrument": "AONIA_2027-03",
+          "note": null,
+          "notional_usd": null,
+          "overnight_run_id": "overnight-20260922",
+          "paper_mid_as_of": null,
+          "paper_mid_kind": null,
+          "paper_mid_source": null,
+          "position_id": null,
+          "price": null,
+          "realized_pnl_usd": null,
+          "result": "applied"
         }
       ],
-      "invalidation": "AONIA Mar-27 loses the second hike as housing/activity confirm the cap, without a higher back-end reprice.",
-      "last_action": "OPEN",
+      "invalidation": "Housing-dove ownership flips or AONIA Mar-27 loses the second hike as housing/activity confirm the cap.",
+      "last_action": "HOLD",
       "max_drawdown_usd": 5000000,
-      "nav_usd": 99999957.22,
-      "net_after_funding_pnl_usd": -42.78,
+      "nav_usd": 100011207.22,
+      "net_after_funding_pnl_usd": 11207.22,
       "net_financing_pnl_usd": -42.78,
-      "net_pnl_usd": -42.78,
+      "net_pnl_usd": 11207.22,
       "pnl_unavailable": false,
       "positions": [
         {
@@ -1618,8 +1808,8 @@
           "hedge_of": null,
           "instrument": "AONIA_2027-03",
           "invalidation": "AONIA Mar-27 loses the second hike as housing/activity confirm the cap, without a higher back-end reprice.",
-          "mark_price": 4.86,
-          "mark_price_as_of": "2026-09-20T19:38:03Z",
+          "mark_price": 4.885,
+          "mark_price_as_of": "2026-09-22T10:41:52Z",
           "mark_price_source": "market_state.tradable_rate_curves.AONIA.2027-03.implied_rate",
           "notional_usd": 45000000.0,
           "opened_at": "2026-09-20T16:06:28.069463-04:00",
@@ -1637,10 +1827,10 @@
           },
           "side": "short",
           "thesis": "Housing-capped two-hike AONIA terminal is the owned idea; Mar-27 implied 4.86 versus cash 4.35 is the cleaner squeeze if global tightening forces more RBA.",
-          "unrealized_pnl_usd": 0.0
+          "unrealized_pnl_usd": 11250.0
         }
       ],
-      "prior_action": "CLOSE",
+      "prior_action": "OPEN",
       "realized_pnl_usd": 0.0,
       "remit": "attack crowded ideas; prefer better ownership asymmetry",
       "required_pitch": null,
@@ -1660,11 +1850,13 @@
       "risk_stopped": false,
       "seat": "positioning-cynic",
       "starting_nav_usd": 100000000,
-      "thesis": "Housing-capped two-hike AONIA terminal is the owned idea; Mar-27 implied 4.86 versus cash 4.35 is the cleaner squeeze if global tightening forces more RBA.",
-      "unrealized_pnl_usd": 0.0
+      "thesis": "Hold SHORT AONIA_2027-03. Implied 4.885 versus 4.86 is slightly in favor. The inhabited AUD-rates owner remains the housing-capped easing camp; fading that via the existing Mar-27 short still has better ownership asymmetry than flattening into a 2.5bp mark. Hunter\u2019s \u2018not unprecedented\u2019 line strips uniqueness premium without forcing a cover. OPEN/ADD blocked.",
+      "unrealized_pnl_usd": 11250.0
     },
     "rate-dove": {
-      "alerts": [],
+      "alerts": [
+        "funding_accrual_failed_closed: official NY Fed SOFR history is missing; funding accrual failed closed"
+      ],
       "allocation_limit_usd": 10000000,
       "allocation_remaining_usd": 9150000.0,
       "allocation_used_usd": 850000.0,
@@ -1672,12 +1864,12 @@
       "blocked_opens": [],
       "cash_usd": 99999909.1,
       "cash_yield_usd": 10694.44,
-      "conviction": 61,
+      "conviction": 59,
       "deployed_notional_usd": 85000000.0,
-      "drawdown_usd": 90.9,
-      "evidence_cutoff": "2026-09-20T19:39:35Z",
+      "drawdown_usd": 0.0,
+      "evidence_cutoff": "2026-09-22T06:52:19.184127-04:00",
       "expression_rule": "rates_first",
-      "funding_accrual_status": "applied",
+      "funding_accrual_status": "failed_closed",
       "funding_convention": "ACT/360",
       "funding_cost_usd": 90.9,
       "funding_day_count": 360,
@@ -1688,8 +1880,8 @@
       "funding_regime": "sofr_zero_benchmark",
       "funding_source": "NY_FED",
       "funding_source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr",
-      "gross_pnl_usd": 0.0,
-      "high_water_nav_usd": 100000000.0,
+      "gross_pnl_usd": 83937.5,
+      "high_water_nav_usd": 100083846.6,
       "history": [
         {
           "accrual_days": 1,
@@ -1782,15 +1974,34 @@
           "note": "Official SOFR is the zero-return competition benchmark. Prior baseline paper-NAV cash yield is neutralized; realized/unrealized trading P&L and trade marks are unchanged.",
           "reclassified_nav_funding_usd": 10694.44,
           "result": "applied"
+        },
+        {
+          "action": "HOLD",
+          "at": "2026-09-22T06:52:19.184127-04:00",
+          "blocked_families": [
+            "news",
+            "market_state"
+          ],
+          "instrument": "CORRA_2027H-Z",
+          "note": null,
+          "notional_usd": null,
+          "overnight_run_id": "overnight-20260922",
+          "paper_mid_as_of": null,
+          "paper_mid_kind": null,
+          "paper_mid_source": null,
+          "position_id": null,
+          "price": null,
+          "realized_pnl_usd": null,
+          "result": "applied"
         }
       ],
-      "invalidation": "BoC delivers or signals the priced 2027 mid-3s path, or core/trim leave ~2 percent while jobs stop contracting.",
+      "invalidation": "Oil rebound or BoC energy minutes that re-establish a higher 2027 path, or labor/core re-acceleration.",
       "last_action": "HOLD",
       "max_drawdown_usd": 5000000,
-      "nav_usd": 99999909.1,
-      "net_after_funding_pnl_usd": -90.9,
+      "nav_usd": 100083846.6,
+      "net_after_funding_pnl_usd": 83846.6,
       "net_financing_pnl_usd": -90.9,
-      "net_pnl_usd": -90.9,
+      "net_pnl_usd": 83846.6,
       "pnl_unavailable": false,
       "positions": [
         {
@@ -1801,8 +2012,8 @@
           "hedge_of": null,
           "instrument": "CORRA_2027H-Z",
           "invalidation": "BoC delivers or signals the priced 2027 mid-3s path, or trim/median leave ~2% while jobs stop contracting.",
-          "mark_price": 3.4,
-          "mark_price_as_of": "2026-09-20T19:38:03Z",
+          "mark_price": 3.30125,
+          "mark_price_as_of": "2026-09-22T10:41:52Z",
           "mark_price_source": "derived:futures_strip_average:CORRA[market_state.tradable_rate_curves.CORRA.2027-03.implied_rate,market_state.tradable_rate_curves.CORRA.2027-06.implied_rate,market_state.tradable_rate_curves.CORRA.2027-09.implied_rate,market_state.tradable_rate_curves.CORRA.2027-12.implied_rate]",
           "notional_usd": 85000000,
           "opened_at": "2026-09-19T22:36:50.082404-04:00",
@@ -1829,10 +2040,10 @@
           },
           "side": "long",
           "thesis": "Receive 2027 CORRA; the 3m strip's +84 to +130.5bp hike cycle is the energy-pass-through assumption, not the labor/core state.",
-          "unrealized_pnl_usd": -0.0
+          "unrealized_pnl_usd": 83937.5
         }
       ],
-      "prior_action": "OPEN",
+      "prior_action": "HOLD",
       "realized_pnl_usd": 0,
       "remit": "underpriced easing, lower-rate repricing, or growth weakness",
       "required_pitch": null,
@@ -1852,11 +2063,14 @@
       "risk_stopped": false,
       "seat": "rate-dove",
       "starting_nav_usd": 100000000,
-      "thesis": "Receive 2027 CORRA; the 3.40 H-Z average versus 2.29 overnight is the energy-pass-through hike cycle, not the labor/core state.",
-      "unrealized_pnl_usd": 0.0
+      "thesis": "Hold LONG/receive CORRA_2027H-Z. Strip ~3.301 versus 3.40 entry already favors the receive; cash CORRA 2.29 versus 2027 mid-3s remains the dove gap given cooling CA labor and core near 2%. Oil rebound and energy-colored BoC minutes are the adverse path, not a lived invalidation. OPEN/ADD blocked.",
+      "unrealized_pnl_usd": 83937.5
     },
     "rate-hawk": {
-      "alerts": [],
+      "alerts": [
+        "Paper mark unavailable for SOFR_2027-09: tradable SOFR curve unavailable",
+        "funding_accrual_failed_closed: official NY Fed SOFR history is missing; funding accrual failed closed"
+      ],
       "allocation_limit_usd": 10000000,
       "allocation_remaining_usd": 9500000.0,
       "allocation_used_usd": 500000.0,
@@ -1864,12 +2078,12 @@
       "blocked_opens": [],
       "cash_usd": 99999946.53,
       "cash_yield_usd": 10694.44,
-      "conviction": 61,
+      "conviction": 55,
       "deployed_notional_usd": 50000000.0,
       "drawdown_usd": 53.47,
-      "evidence_cutoff": "2026-09-20T19:39:35Z",
+      "evidence_cutoff": "2026-09-22T06:52:19.184127-04:00",
       "expression_rule": "rates_first",
-      "funding_accrual_status": "applied",
+      "funding_accrual_status": "failed_closed",
       "funding_convention": "ACT/360",
       "funding_cost_usd": 53.47,
       "funding_day_count": 360,
@@ -1880,7 +2094,7 @@
       "funding_regime": "sofr_zero_benchmark",
       "funding_source": "NY_FED",
       "funding_source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr",
-      "gross_pnl_usd": 0.0,
+      "gross_pnl_usd": null,
       "high_water_nav_usd": 100000000.0,
       "history": [
         {
@@ -1974,16 +2188,35 @@
           "note": "Official SOFR is the zero-return competition benchmark. Prior baseline paper-NAV cash yield is neutralized; realized/unrealized trading P&L and trade marks are unchanged.",
           "reclassified_nav_funding_usd": 10694.44,
           "result": "applied"
+        },
+        {
+          "action": "HOLD",
+          "at": "2026-09-22T06:52:19.184127-04:00",
+          "blocked_families": [
+            "news",
+            "market_state"
+          ],
+          "instrument": "SOFR_2027-09",
+          "note": null,
+          "notional_usd": null,
+          "overnight_run_id": "overnight-20260922",
+          "paper_mid_as_of": null,
+          "paper_mid_kind": null,
+          "paper_mid_source": null,
+          "position_id": null,
+          "price": null,
+          "realized_pnl_usd": null,
+          "result": "applied"
         }
       ],
-      "invalidation": "Dec-26 SR3 prices less than one extra hike versus 3.85% overnight, or US inflation and labor gauges break lower together.",
+      "invalidation": "A packeted policy pivot or a restored SOFR/SR3 path that prices a finished hiking cycle below the 4.755 entry.",
       "last_action": "HOLD",
       "max_drawdown_usd": 5000000,
       "nav_usd": 99999946.53,
-      "net_after_funding_pnl_usd": -53.47,
+      "net_after_funding_pnl_usd": null,
       "net_financing_pnl_usd": -53.47,
-      "net_pnl_usd": -53.47,
-      "pnl_unavailable": false,
+      "net_pnl_usd": null,
+      "pnl_unavailable": true,
       "positions": [
         {
           "asset_class": "rates",
@@ -1993,14 +2226,14 @@
           "hedge_of": null,
           "instrument": "SOFR_2027-09",
           "invalidation": "SR3U7 retraces the 17-Sep SOFR jump and Dec-26 SR3 prices less than one hike versus 3.85% overnight.",
-          "mark_price": 4.755,
-          "mark_price_as_of": "2026-09-20T19:38:03Z",
-          "mark_price_source": "market_state.tradable_rate_curves.SOFR.2027-09.implied_rate",
+          "mark_price": null,
+          "mark_price_as_of": null,
+          "mark_price_source": null,
           "notional_usd": 50000000,
           "opened_at": "2026-09-19T22:36:50.082404-04:00",
           "opened_run_id": "tr-20260920T020818Z-ondemand",
           "paper_expression": null,
-          "pnl_unavailable": false,
+          "pnl_unavailable": true,
           "position_id": "pos-c9184707c12b",
           "risk_capital_method": "mtm_standard_1pct_move",
           "risk_capital_unavailable": false,
@@ -2012,10 +2245,10 @@
           },
           "side": "short",
           "thesis": "Underpriced US terminal: SR3U7 at 4.755% prices a finished-enough hiking cycle; inflation persistence and a live global tightening impulse should push 2027 implied rates higher.",
-          "unrealized_pnl_usd": 0.0
+          "unrealized_pnl_usd": null
         }
       ],
-      "prior_action": "OPEN",
+      "prior_action": "HOLD",
       "realized_pnl_usd": 0,
       "remit": "underpriced hawkish policy, higher terminal rates, or higher-rate repricing",
       "required_pitch": null,
@@ -2035,11 +2268,14 @@
       "risk_stopped": false,
       "seat": "rate-hawk",
       "starting_nav_usd": 100000000,
-      "thesis": "Hold pay-side SR3U7: 4.755% peak-then-ease still too low/early versus sticky 6m core PCE and firm US labor/services.",
+      "thesis": "Hold SHORT SOFR_2027-09. Fed SEP median still includes one further 2026 hike; US inflation is warm; import prices rose 0.7%; oil rebounded. The SOFR tradable curve is unavailable, which is an operational mark-gap, not a reaction-function break. OPEN/ADD blocked; do not manufacture a replacement rates expression.",
       "unrealized_pnl_usd": 0.0
     },
     "trend-follower": {
-      "alerts": [],
+      "alerts": [
+        "Paper mark unavailable for SOFR_2027-03: tradable SOFR curve unavailable",
+        "funding_accrual_failed_closed: official NY Fed SOFR history is missing; funding accrual failed closed"
+      ],
       "allocation_limit_usd": 10000000,
       "allocation_remaining_usd": 9500000.0,
       "allocation_used_usd": 500000.0,
@@ -2047,12 +2283,12 @@
       "blocked_opens": [],
       "cash_usd": 99999946.53,
       "cash_yield_usd": 10694.44,
-      "conviction": 64,
+      "conviction": 60,
       "deployed_notional_usd": 50000000.0,
       "drawdown_usd": 53.47,
-      "evidence_cutoff": "2026-09-20T19:39:35Z",
+      "evidence_cutoff": "2026-09-22T06:52:19.184127-04:00",
       "expression_rule": "rates_first",
-      "funding_accrual_status": "applied",
+      "funding_accrual_status": "failed_closed",
       "funding_convention": "ACT/360",
       "funding_cost_usd": 53.47,
       "funding_day_count": 360,
@@ -2063,7 +2299,7 @@
       "funding_regime": "sofr_zero_benchmark",
       "funding_source": "NY_FED",
       "funding_source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr",
-      "gross_pnl_usd": 0.0,
+      "gross_pnl_usd": null,
       "high_water_nav_usd": 100000000.0,
       "history": [
         {
@@ -2157,16 +2393,35 @@
           "note": "Official SOFR is the zero-return competition benchmark. Prior baseline paper-NAV cash yield is neutralized; realized/unrealized trading P&L and trade marks are unchanged.",
           "reclassified_nav_funding_usd": 10694.44,
           "result": "applied"
+        },
+        {
+          "action": "HOLD",
+          "at": "2026-09-22T06:52:19.184127-04:00",
+          "blocked_families": [
+            "news",
+            "market_state"
+          ],
+          "instrument": "SOFR_2027-03",
+          "note": null,
+          "notional_usd": null,
+          "overnight_run_id": "overnight-20260922",
+          "paper_mid_as_of": null,
+          "paper_mid_kind": null,
+          "paper_mid_source": null,
+          "position_id": null,
+          "price": null,
+          "realized_pnl_usd": null,
+          "result": "applied"
         }
       ],
-      "invalidation": "A US inflation or labor break that turns the SR3 strip and the US 2Y uptrend lower.",
+      "invalidation": "A packeted policy pivot or a clear 2s/10s break lower; do not invent a SOFR stop while the curve is unavailable.",
       "last_action": "HOLD",
       "max_drawdown_usd": 5000000,
       "nav_usd": 99999946.53,
-      "net_after_funding_pnl_usd": -53.47,
+      "net_after_funding_pnl_usd": null,
       "net_financing_pnl_usd": -53.47,
-      "net_pnl_usd": -53.47,
-      "pnl_unavailable": false,
+      "net_pnl_usd": null,
+      "pnl_unavailable": true,
       "positions": [
         {
           "asset_class": "rates",
@@ -2176,14 +2431,14 @@
           "hedge_of": null,
           "instrument": "SOFR_2027-03",
           "invalidation": "A US inflation or labor break that turns the SOFR strip and the US 2Y uptrend lower; housing-pain headlines alone do not count.",
-          "mark_price": 4.58,
-          "mark_price_as_of": "2026-09-20T19:38:03Z",
-          "mark_price_source": "market_state.tradable_rate_curves.SOFR.2027-03.implied_rate",
+          "mark_price": null,
+          "mark_price_as_of": null,
+          "mark_price_source": null,
           "notional_usd": 50000000,
           "opened_at": "2026-09-19T22:36:50.082404-04:00",
           "opened_run_id": "tr-20260920T020818Z-ondemand",
           "paper_expression": null,
-          "pnl_unavailable": false,
+          "pnl_unavailable": true,
           "position_id": "pos-662bff0986be",
           "risk_capital_method": "mtm_standard_1pct_move",
           "risk_capital_unavailable": false,
@@ -2195,10 +2450,10 @@
           },
           "side": "short",
           "thesis": "Pay/short SOFR_2027-03 as continuation of the delivered US hiking cycle; sidecar is flat so this is a new OPEN inside the $100m gross cap.",
-          "unrealized_pnl_usd": 0.0
+          "unrealized_pnl_usd": null
         }
       ],
-      "prior_action": "OPEN",
+      "prior_action": "HOLD",
       "realized_pnl_usd": 0,
       "remit": "persistent price, rates and macro trends; reject premature fades",
       "required_pitch": null,
@@ -2218,11 +2473,14 @@
       "risk_stopped": false,
       "seat": "trend-follower",
       "starting_nav_usd": 100000000,
-      "thesis": "FACT: Fed hiked 25bp to 3.75-4.00%; official SOFR is 3.85; SR3H7 / SOFR_2027-03 implied is 4.58, +73bp versus overnight; the strip still peaks at 4.755 in Sep-27; US 2Y 4.76 is +57bp 1m and +9bp 1d; US gauges remain 69-75; BoJ hiked to 1.25% and the desk thesis says the energy shock is constraining global easing. INFERENCE: price, the rate strip, and macro revisions are still aligned with a hiking trend; 99th-percentile yields are what a continuing trend looks like, not a reversal. The clean continuation is to stay short duration in SOFR_2027-03 rather than fade it or migrate to spot. UNKNOWN: live CME positioning, post-18 Sep SR3 ticks, and whether the next CPI/labor print breaks the hot-gauge regime. Book action is HOLD of pos-662bff0986be at 50m; do not OPEN a second SOFR_2027-03.",
+      "thesis": "Hold SHORT SOFR_2027-03. Delivered Fed hike, elevated US 2s/10s at 4.76/4.96, warm inflation 63.1 and the oil rebound keep the higher-for-longer trend intact. A missing SOFR print is not a reversal and is not a reason to fade. OPEN/ADD blocked.",
       "unrealized_pnl_usd": 0.0
     },
     "value-guy": {
-      "alerts": [],
+      "alerts": [
+        "Paper mark unavailable for SOFR-CORRA_2Y_2027H1: tradable SOFR curve unavailable",
+        "funding_accrual_failed_closed: official NY Fed SOFR history is missing; funding accrual failed closed"
+      ],
       "allocation_limit_usd": 10000000,
       "allocation_remaining_usd": 9300000.0,
       "allocation_used_usd": 700000.0,
@@ -2230,12 +2488,12 @@
       "blocked_opens": [],
       "cash_usd": 99999925.14,
       "cash_yield_usd": 10694.44,
-      "conviction": 60,
+      "conviction": 58,
       "deployed_notional_usd": 70000000.0,
       "drawdown_usd": 74.86,
-      "evidence_cutoff": "2026-09-20T19:39:35Z",
+      "evidence_cutoff": "2026-09-22T06:52:19.184127-04:00",
       "expression_rule": "rates_first",
-      "funding_accrual_status": "applied",
+      "funding_accrual_status": "failed_closed",
       "funding_convention": "ACT/360",
       "funding_cost_usd": 74.86,
       "funding_day_count": 360,
@@ -2246,7 +2504,7 @@
       "funding_regime": "sofr_zero_benchmark",
       "funding_source": "NY_FED",
       "funding_source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr",
-      "gross_pnl_usd": 0.0,
+      "gross_pnl_usd": null,
       "high_water_nav_usd": 100000000.0,
       "history": [
         {
@@ -2340,16 +2598,35 @@
           "note": "Official SOFR is the zero-return competition benchmark. Prior baseline paper-NAV cash yield is neutralized; realized/unrealized trading P&L and trade marks are unchanged.",
           "reclassified_nav_funding_usd": 10694.44,
           "result": "applied"
+        },
+        {
+          "action": "HOLD",
+          "at": "2026-09-22T06:52:19.184127-04:00",
+          "blocked_families": [
+            "news",
+            "market_state"
+          ],
+          "instrument": "SOFR-CORRA_2Y_2027H1",
+          "note": null,
+          "notional_usd": null,
+          "overnight_run_id": "overnight-20260922",
+          "paper_mid_as_of": null,
+          "paper_mid_kind": null,
+          "paper_mid_source": null,
+          "position_id": null,
+          "price": null,
+          "realized_pnl_usd": null,
+          "result": "applied"
         }
       ],
-      "invalidation": "CA-US cheapness follows the 2024-12-18 analog and widens, or BoC drops energy pass-through after soft core/labor.",
+      "invalidation": "SOFR restored and the 27H1 spread no longer cheap on the CA-US 2Y post-hike anchor, or both legs unmarkable.",
       "last_action": "HOLD",
       "max_drawdown_usd": 5000000,
       "nav_usd": 99999925.14,
-      "net_after_funding_pnl_usd": -74.86,
+      "net_after_funding_pnl_usd": null,
       "net_financing_pnl_usd": -74.86,
-      "net_pnl_usd": -74.86,
-      "pnl_unavailable": false,
+      "net_pnl_usd": null,
+      "pnl_unavailable": true,
       "positions": [
         {
           "asset_class": "rates_rv",
@@ -2359,9 +2636,9 @@
           "hedge_of": null,
           "instrument": "SOFR-CORRA_2Y_2027H1",
           "invalidation": "CA-US cheapness follows the 2024-12-18 analog and widens, or BoC drops energy pass-through after soft core/labor.",
-          "mark_price": 140.25,
-          "mark_price_as_of": "2026-09-20T19:38:03Z",
-          "mark_price_source": "derived:linear_combo[derived:futures_strip_average:SOFR[market_state.tradable_rate_curves.SOFR.2027-03.implied_rate,market_state.tradable_rate_curves.SOFR.2027-06.implied_rate],derived:futures_strip_average:CORRA[market_state.tradable_rate_curves.CORRA.2027-03.implied_rate,market_state.tradable_rate_curves.CORRA.2027-06.implied_rate]]",
+          "mark_price": null,
+          "mark_price_as_of": null,
+          "mark_price_source": null,
           "notional_usd": 70000000,
           "opened_at": "2026-09-19T22:36:50.082404-04:00",
           "opened_run_id": "tr-20260920T020818Z-ondemand",
@@ -2397,7 +2674,7 @@
             "output_unit": "bps",
             "type": "linear_combo"
           },
-          "pnl_unavailable": false,
+          "pnl_unavailable": true,
           "position_id": "pos-cdde326460b4",
           "risk_capital_method": "mtm_standard_1pct_move",
           "risk_capital_unavailable": false,
@@ -2409,10 +2686,10 @@
           },
           "side": "long",
           "thesis": "Sidecar has zero open positions. Open 70m of 100m gross cap long the locked SOFR 2027-03/06 versus CORRA 2027-03/06 implied-rate differential to own compression of the 4th-percentile CA-US 140bp policy/2Y dislocation after the delivered Fed hike.",
-          "unrealized_pnl_usd": -0.0
+          "unrealized_pnl_usd": null
         }
       ],
-      "prior_action": "OPEN",
+      "prior_action": "HOLD",
       "realized_pnl_usd": 0,
       "remit": "historical or fundamental dislocations and convergence trades",
       "required_pitch": null,
@@ -2432,11 +2709,13 @@
       "risk_stopped": false,
       "seat": "value-guy",
       "starting_nav_usd": 100000000,
-      "thesis": "Verified fact: CA-US 2Y is -140bp on 2026-09-17 (1y percentile about 3.8, 5y about 4.3); SOFR-CORRA_2Y_2027H1 marks 140.25 from SR3 4.58/4.72 versus CRA 3.13/3.365; overnight SOFR-CORRA is 156bp; Fed has hiked 25bp to 3.75-4.00% with SOFR at 3.85; Canada August CPI is 3% with core/trim/median near 2%; BoC minutes flag energy pass-through; US 2Y 4.76 is the 99.8th 1y percentile while CA 2Y 3.27 is only the 58.5th 5y percentile. Inference: that 140bp Canada discount is a peer-policy dislocation, not a fair labor-gap price, because activity gauges are close, Canada Q2 GDP re-accelerated, energy pass-through is now in BoC deliberations, and the US front end has already done the post-hike rerating. Closest level analog (2025-01-30 at -145bp) compressed 25bp over 3m. Unknown: Saudi Oman workaround versus the still-weak energy-shock-absorber channel; CFTC/CME positioning; whether the 2024-12-18 analog (further widening) dominates. Trade is long SOFR-CORRA_2Y_2027H1 to own compression of Canada cheapness. Book already holds pos-cdde326460b4 at this mid.",
+      "thesis": "Hold LONG SOFR-CORRA_2Y_2027H1. The valuation object remains CA 2Y cheap versus US after the delivered Fed hike. SOFR curve unavailability is a mark-gap, not evidence the 140.25 bp dislocation has converged. CORRA 2027-03/06 at 3.05/3.26 cannot alone mark the spread. OPEN/ADD blocked.",
       "unrealized_pnl_usd": 0.0
     },
     "vol-convexity": {
-      "alerts": [],
+      "alerts": [
+        "funding_accrual_failed_closed: official NY Fed SOFR history is missing; funding accrual failed closed"
+      ],
       "allocation_limit_usd": 10000000,
       "allocation_remaining_usd": 10000000.0,
       "allocation_used_usd": 0.0,
@@ -2444,12 +2723,12 @@
       "blocked_opens": [],
       "cash_usd": 100000000.0,
       "cash_yield_usd": 10694.44,
-      "conviction": 47,
+      "conviction": 20,
       "deployed_notional_usd": 0,
       "drawdown_usd": 0.0,
-      "evidence_cutoff": "2026-09-20T19:39:35Z",
+      "evidence_cutoff": "2026-09-22T06:52:19.184127-04:00",
       "expression_rule": "rates_first",
-      "funding_accrual_status": "applied",
+      "funding_accrual_status": "failed_closed",
       "funding_convention": "ACT/360",
       "funding_cost_usd": 0.0,
       "funding_day_count": 360,
@@ -2554,6 +2833,25 @@
           "note": "Official SOFR is the zero-return competition benchmark. Prior baseline paper-NAV cash yield is neutralized; realized/unrealized trading P&L and trade marks are unchanged.",
           "reclassified_nav_funding_usd": 10694.44,
           "result": "applied"
+        },
+        {
+          "action": "HOLD",
+          "at": "2026-09-22T06:52:19.184127-04:00",
+          "blocked_families": [
+            "news",
+            "market_state"
+          ],
+          "instrument": null,
+          "note": null,
+          "notional_usd": null,
+          "overnight_run_id": "overnight-20260922",
+          "paper_mid_as_of": null,
+          "paper_mid_kind": null,
+          "paper_mid_source": null,
+          "position_id": null,
+          "price": null,
+          "realized_pnl_usd": null,
+          "result": "applied"
         }
       ],
       "invalidation": "Live 3M put IV already prices the reversal, or AUDNZD makes new 5-year highs while AONIA hike pricing stays dominant.",
@@ -2585,7 +2883,7 @@
       "risk_stopped": false,
       "seat": "vol-convexity",
       "starting_nav_usd": 100000000,
-      "thesis": "FACT: AUDNZD is at a 5-year extreme because NZDUSD collapsed, not because AUDUSD broke out; AU housing is showing the tightening channel while AONIA still prices about +21.5bp by October and about +59.5bp by August 2027; NZ GDP beat and an India FTA have not reversed NZD; NZ yields are missing; Fed and BoJ hikes are delivered; USDJPY 20-day RV is 11.04 versus AUDNZD 5.09; VIX crushed to 15.44 on 17 Sep; no FX option marks exist. INFERENCE: the market is pricing a one-way RBA-over-RBNZ regime that is internally inconsistent, so the next move is a distribution with a delayed mean-reversion tail and a squeeze tail. Spot is dominated because timing is uncertain and event risk (housing prints, residual RBA path, NZ data, energy, global hike follow-through) is two-sided after realized FX vol on this cross stayed near 5%. Buying USDJPY vol after a +1.41% BoJ day is not the same trade: that realized has already printed. UNKNOWN: 3M ATMF IV, 25-delta risk-reversal, quoted premium, and the RBNZ curve \u2014 all must be checked before any OPEN. The paper book therefore HOLDs; the debate trade is still the put.",
+      "thesis": "Remain flat. Options are last-resort and unmarkable: the packet has no premium, IV, or strike data. OPEN/ADD blocked. Inventing a vol structure would violate the evidence boundary. HOLD is the only coherent convexity action.",
       "unrealized_pnl_usd": 0.0
     }
   },

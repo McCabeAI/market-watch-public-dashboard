@@ -111,6 +111,50 @@
       "run_id": "tr-20260920T193935Z-ondemand",
       "schema_version": 1,
       "thesis": "FACT: AONIA prices ~51bp of tightening by Mar-27 and ~59bp by Jun-27 against overnight 4.35, with open interest 21752 in Oct-26 versus 201 in Mar-27; AU inflation gauge 82; housing-downturn headlines are already in the packet; CFTC AUD futures OI is a 1y/3y extreme with leveraged funds still net long AUD; paper books already receive AONIA and CORRA. INFERENCE: the tradeable discrepancy is not 'Australia is hawkish' as a fresh macro call \u2014 bonds already show that \u2014 it is that housing-consensus receivers and crowded AUD longs own the fade of further RBA tightening, leaving Mar-27 AONIA as the cleaner squeeze if global tightening (Fed delivered, BoJ 1.25%, energy still a constraint) forces a higher Australian terminal. UNKNOWN: side of AONIA October open interest, MX CORRA specs, CME SR3 specs, and any post-2026-09-15 CFTC change. This seat therefore pays AONIA_2027-03 and closes the crowded CORRA receive rather than adding to CA-US value."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-03",
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-22T06:52:19.184127-04:00",
+      "conviction": 54,
+      "decision_fingerprint": "0eb732db13a1c10f14e35ea32f7fd17a619fb58eeb547a218c363b4836ff7c12",
+      "event_id": "jde-593d2592687047ee",
+      "funding_view": null,
+      "invalidation": "Housing-dove ownership flips or AONIA Mar-27 loses the second hike as housing/activity confirm the cap.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "e6f0151a54eabc626741def16de4c1dfb638118929eede3034dc4d970d2d7cdd",
+      "outcome_links": [],
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-22T06:52:19.184127-04:00",
+        "evidence_hash": "21a1ec3c722518819f9418afe972e4d7933baf6268e2983b68f3036a69dff2f1",
+        "overnight_run_id": "overnight-20260922",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold SHORT AONIA_2027-03. Implied 4.885 versus 4.86 is slightly in favor. The inhabited AUD-rates owner remains the housing-capped easing camp; fading that via the existing Mar-27 short still has better ownership asymmetry than flattening into a 2.5bp mark. Hunter\u2019s \u2018not unprecedented\u2019 line strips uniqueness premium without forcing a cover. OPEN/ADD blocked.",
+      "run_id": "overnight-20260922",
+      "schema_version": 1,
+      "thesis": "Hold SHORT AONIA_2027-03. Implied 4.885 versus 4.86 is slightly in favor. The inhabited AUD-rates owner remains the housing-capped easing camp; fading that via the existing Mar-27 short still has better ownership asymmetry than flattening into a 2.5bp mark. Hunter\u2019s \u2018not unprecedented\u2019 line strips uniqueness premium without forcing a cover. OPEN/ADD blocked."
     }
   ],
   "schema_version": 1,

@@ -87,6 +87,50 @@
       "run_id": "tr-20260920T193935Z-ondemand",
       "schema_version": 1,
       "thesis": "FACT: The Grinder book is empty; unused cash earns official NY Fed SOFR 3.85% ACT/360 effective 2026-09-17. FACT: Packet source is on_demand_trader_room_fallback, not a successful overnight 14-seat review; market_state is stale because NZ_rates; CME positioning is unavailable; options are unmarkable. FACT: Trader Room status is AWAITING_CHATGPT_ARBITRATION with 14 seats and 5 unarbitrated conflicts, including opposite directions on CORRA_2027-03 (carry-is-king long versus perma-bull short) and SOFR_2027-03 (mean-reverter long versus trend-follower short). FACT: CORRA overnight is 2.29 as of 2026-09-17; CRAH27 is 3.13 (+84bp) while 1m CORRA remains near overnight into October; Canada August CPI is 3% with core near 2%; BoC minutes flag energy pass-through. FACT: The Fed hiked 25bp to 3.75-4.00%; SOFR overnight is 3.85; SR3Z6 is 4.32 and SR3H7 is 4.58. FACT: AONIA overnight is 4.35 with October 4.565 (+21.5bp). INFERENCE: The markable SOFR, CORRA, and AONIA discrepancies are still post-event, two-sided, and seat-conflicted; none is a one-way path versus cash and the near-term strip, so converting unused SOFR cash into shocked risk fails the preservation hurdle on this fallback freeze. UNKNOWN: a successful overnight review, NZ official yields, live CME positioning, and option premium/IV/strike mids."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-22T07:03:58.766522-04:00",
+      "conviction": 80,
+      "decision_fingerprint": "532d344ff976574540ee122a9310fa101557243f5bb88a7ba16fbbec7fcd5588",
+      "event_id": "jde-710fe19c1edc49fa",
+      "funding_view": null,
+      "invalidation": null,
+      "kind": "PM_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "6e680d1701c4ff8f93e5f97dfcc1569475ab94ca917bf27857b9dcbb7ff94dcc",
+      "outcome_links": [],
+      "owner_id": "grinder",
+      "owner_type": "pm",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-22T06:52:19.184127-04:00",
+        "evidence_hash": "e2d7e4eb5244c9354e50cb2f30e86c0b9132db04e3d7057d859f44a7c2c1f075",
+        "overnight_run_id": "overnight-20260922",
+        "review_packet_id": "prp-grinder-overnight-20260922",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Preservation first: the book remains flat. All 14 accepted trader seats are HOLD with zero OPEN/ADD/HEDGE handoffs this cycle, so there is no independent markable expanding candidate to size against the risk-capital limit. Staying flat is the consistent action; expanding risk would require a markable handoff whose expected edge clears official SOFR ACT/360 on shocked-risk capital, and none was handed off.",
+      "run_id": "overnight-20260922",
+      "schema_version": 1,
+      "thesis": "Preservation first: the book remains flat. All 14 accepted trader seats are HOLD with zero OPEN/ADD/HEDGE handoffs this cycle, so there is no independent markable expanding candidate to size against the risk-capital limit. Staying flat is the consistent action; expanding risk would require a markable handoff whose expected edge clears official SOFR ACT/360 on shocked-risk capital, and none was handed off."
     }
   ],
   "schema_version": 1,
