@@ -73,6 +73,7 @@ on:
       - "data/overnight/**"
       - "tests/test_overnight_pipeline.py"
       - "tests/test_overnight_scheduled_output.py"
+      - "tests/test_overnight_review_identity.py"
       - "docs/OVERNIGHT_PIPELINE_V1.md"
       - ".github/workflows/overnight-pipeline.yml"
       - ".github/workflows/overnight-scheduled-output.yml"
@@ -101,7 +102,7 @@ jobs:
       - name: Unit tests
         run: |
           set -euo pipefail
-          PYTHONPATH=. python3 -m unittest tests.test_overnight_pipeline tests.test_overnight_scheduled_output tests.test_pm_scheduled_output tests.test_pm_overnight_packets tests.test_trading_memory tests.test_trader_room_dashboard -v
+          PYTHONPATH=. python3 -m unittest tests.test_overnight_pipeline tests.test_overnight_scheduled_output tests.test_overnight_review_identity tests.test_pm_scheduled_output tests.test_pm_overnight_packets tests.test_trading_memory tests.test_trader_room_dashboard -v
       - name: End-to-end zero-model dry-run
         run: |
           set -euo pipefail
