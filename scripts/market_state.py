@@ -23,6 +23,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from datetime import date, datetime, timedelta, timezone
+from html.parser import HTMLParser
 from pathlib import Path
 from typing import Mapping, Sequence
 
@@ -31,6 +32,7 @@ from scripts.canada_housing_data import collect_canada_housing, validate_canada_
 from scripts.country_registry import (
     extra_rate_tenor,
     rate_countries,
+    required_preflight_countries,
     rv_pairs as registry_rv_pairs,
     stale_after_days,
 )
@@ -43,6 +45,8 @@ from scripts.japan_rates_data import (
     MOF_JGB_CURRENT_EN,
     MOF_JGB_PAGE_EN,
     fetch_jp_jgb_rates,
+    japan_business_days_since,
+    jgb_observation_status,
 )
 from scripts.us_housing_data import collect_us_housing, validate_us_housing
 from scripts.cross_asset_data import collect_cross_assets
@@ -116,6 +120,7 @@ RBNZ_PAGE = (
     "https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/"
     "wholesale-interest-rates"
 )
+RBNZ_HTML_URL = RBNZ_PAGE
 ECB_FX_SDMX_URL = (
     "https://data-api.ecb.europa.eu/service/data/EXR/"
     "D.{currencies}.EUR.SP00.A"
@@ -173,8 +178,9 @@ def fetch_bytes(
             if attempt + 1 < retries:
                 time.sleep(1.5 * (attempt + 1))
     if isinstance(last, urllib.error.HTTPError) and last.code == 403 and "rbnz.govt.nz" in url:
+        kind = "B2 workbook" if str(url).lower().endswith(".xlsx") else "page"
         raise MarketStateError(
-            f"RBNZ official B2 workbook returned HTTP 403 from {url}. "
+            f"RBNZ official {kind} returned HTTP 403 from {url}. "
             "Refusing to substitute a third-party or vendor feed."
         ) from last
     raise MarketStateError(f"failed to fetch {url}: {last}")
@@ -548,24 +554,283 @@ def parse_rbnz_xlsx(data: bytes) -> dict[str, dict[date, float]]:
     return out
 
 
+class _HtmlTableParser(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__()
+        self.tables: list[list[list[str]]] = []
+        self._table: list[list[str]] | None = None
+        self._row: list[str] | None = None
+        self._cell: list[str] | None = None
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if tag == "table":
+            self._table = []
+        elif tag == "tr" and self._table is not None:
+            self._row = []
+        elif tag in {"td", "th"} and self._row is not None:
+            self._cell = []
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag in {"td", "th"} and self._cell is not None and self._row is not None:
+            text = re.sub(r"\s+", " ", " ".join(self._cell)).strip()
+            self._row.append(text)
+            self._cell = None
+        elif tag == "tr" and self._row is not None and self._table is not None:
+            if any(cell for cell in self._row):
+                self._table.append(self._row)
+            self._row = None
+        elif tag == "table" and self._table is not None:
+            if self._table:
+                self.tables.append(self._table)
+            self._table = None
+
+    def handle_data(self, data: str) -> None:
+        if self._cell is not None and data.strip():
+            self._cell.append(data.strip())
+
+
+def _curl_cffi_get(url: str, *, referer: str | None = None) -> bytes | None:
+    """Browser-TLS fetch for official hosts that 403 urllib on hosted runners."""
+    try:
+        from curl_cffi import requests as cffi_requests
+    except ImportError:
+        return None
+    headers = {
+        "Accept": "*/*",
+        "Accept-Language": "en-US,en;q=0.8",
+    }
+    if referer:
+        headers["Referer"] = referer
+    for impersonate in ("chrome", "safari18_0"):
+        try:
+            resp = cffi_requests.get(url, impersonate=impersonate, timeout=DEFAULT_TIMEOUT, headers=headers)
+        except Exception:
+            continue
+        if getattr(resp, "status_code", 0) == 200 and resp.content:
+            return bytes(resp.content)
+    return None
+
+
+def _download_rbnz_xlsx() -> bytes:
+    errors: list[str] = []
+    for label, loader in (
+        ("browser-ua", lambda: fetch_bytes(RBNZ_URL, user_agent=BROWSER_USER_AGENT)),
+        ("default-ua", lambda: fetch_bytes(RBNZ_URL)),
+    ):
+        try:
+            data = loader()
+        except MarketStateError as exc:
+            errors.append(f"{label}: {exc}")
+            continue
+        if data[:2] == b"PK":
+            return data
+        errors.append(f"{label}: response was not an xlsx workbook")
+    data = _curl_cffi_get(RBNZ_URL, referer=RBNZ_PAGE)
+    if data and data[:2] == b"PK":
+        return data
+    if data is not None:
+        errors.append("curl_cffi: response was not an xlsx workbook")
+    else:
+        errors.append("curl_cffi: official B2 workbook still blocked")
+    raise MarketStateError(
+        "RBNZ official B2 workbook was blocked or unusable ("
+        + "; ".join(errors)
+        + "). Refusing to substitute a third-party or vendor feed."
+    )
+
+
+def _download_rbnz_html() -> str:
+    errors: list[str] = []
+    try:
+        data = fetch_bytes(RBNZ_HTML_URL, user_agent=BROWSER_USER_AGENT, referer=RBNZ_PAGE)
+        text = data.decode("utf-8", errors="replace")
+        if "2 year" in text.lower() and "<table" in text.lower():
+            return text
+        errors.append("urllib: official page did not contain the B2 yield table")
+    except MarketStateError as exc:
+        errors.append(f"urllib: {exc}")
+    data = _curl_cffi_get(RBNZ_HTML_URL, referer=RBNZ_PAGE)
+    if data:
+        text = data.decode("utf-8", errors="replace")
+        if "2 year" in text.lower() and "<table" in text.lower():
+            return text
+        errors.append("curl_cffi: official page did not contain the B2 yield table")
+    else:
+        errors.append("curl_cffi: official B2 page still blocked")
+    raise MarketStateError(
+        "RBNZ official B2 HTML table was blocked or unusable ("
+        + "; ".join(errors)
+        + "). Refusing to substitute a third-party or vendor feed."
+    )
+
+
+def parse_rbnz_b2_html(text: str) -> dict[str, dict[date, float]]:
+    """Parse the official RBNZ B2 wholesale-rate HTML table.
+
+    The page publishes the same secondary-market government-bond closing
+    yields as the B2 workbook: 2-year, 5-year and 10-year. The on-page table
+    is a recent window, not the full workbook history.
+    """
+    parser = _HtmlTableParser()
+    parser.feed(text)
+    selected: tuple[list[list[str]], dict[int, str]] | None = None
+    for table in parser.tables:
+        for index, row in enumerate(table):
+            headers = [re.sub(r"\s+", " ", cell).strip().lower() for cell in row]
+            if not headers or headers[0] != "date":
+                continue
+            columns: dict[int, str] = {}
+            for ci, header in enumerate(headers):
+                for tenor, pattern in (("2Y", r"\b2\s*year\b"), ("5Y", r"\b5\s*year\b"), ("10Y", r"\b10\s*year\b")):
+                    if re.search(pattern, header):
+                        columns[ci] = tenor
+            if set(columns.values()) == set(RATE_TENORS):
+                selected = (table[index + 1 :], columns)
+                break
+        if selected:
+            break
+    if not selected:
+        raise MarketStateError("RBNZ HTML table did not expose government 2Y/5Y/10Y yields")
+    body, columns = selected
+    out = {k: {} for k in RATE_TENORS}
+    for row in body:
+        if not row:
+            continue
+        raw_date = re.sub(r"\bSept\b", "Sep", row[0], flags=re.IGNORECASE)
+        d = parse_date(raw_date)
+        if not d:
+            continue
+        for ci, tenor in columns.items():
+            if ci < len(row):
+                v = to_float(row[ci])
+                if v is not None:
+                    out[tenor][d] = v
+    if any(not out[k] for k in RATE_TENORS):
+        raise MarketStateError("RBNZ HTML table missing required government tenors")
+    return out
+
+
+def _clip_rate_history(
+    parsed: Mapping[str, Mapping[date, float]],
+    start: date,
+    end: date,
+    *,
+    empty_message: str,
+) -> dict[str, dict[date, float]]:
+    out = {k: {d: v for d, v in s.items() if start <= d <= end} for k, s in parsed.items()}
+    if any(not out[k] for k in RATE_TENORS):
+        raise MarketStateError(empty_message)
+    return out
+
+
+def fetch_nz_rates_with_provenance(
+    start: date,
+    end: date,
+    *,
+    workbook_bytes: bytes | None = None,
+    html_text: str | None = None,
+) -> tuple[dict[str, dict[date, float]], dict[str, str]]:
+    """Official RBNZ only. XLSX first; HTML table if the workbook is blocked."""
+    if workbook_bytes is not None:
+        if workbook_bytes[:2] != b"PK":
+            raise MarketStateError("RBNZ download was not an xlsx workbook; refusing to parse a substitute page")
+        parsed = parse_rbnz_xlsx(workbook_bytes)
+        series = _clip_rate_history(
+            parsed,
+            start,
+            end,
+            empty_message="RBNZ history missing required tenors after date filter",
+        )
+        return series, {
+            "source_kind": "rbnz_b2_xlsx",
+            "download_url": RBNZ_URL,
+            "note": "Indicative closing government-bond yields with a one-day publication lag.",
+        }
+    if html_text is not None:
+        parsed = parse_rbnz_b2_html(html_text)
+        series = _clip_rate_history(
+            parsed,
+            start,
+            end,
+            empty_message="RBNZ HTML history missing required tenors after date filter",
+        )
+        return series, {
+            "source_kind": "rbnz_b2_html",
+            "download_url": RBNZ_HTML_URL,
+            "note": (
+                "Official RBNZ B2 HTML table of secondary-market government-bond closing yields. "
+                "Used because the B2 XLSX workbook was blocked. The page table is a recent window, "
+                "not a vendor substitute."
+            ),
+        }
+    xlsx_error: Exception | None = None
+    try:
+        workbook = _download_rbnz_xlsx()
+    except MarketStateError as exc:
+        xlsx_error = exc
+    else:
+        parsed = parse_rbnz_xlsx(workbook)
+        series = _clip_rate_history(
+            parsed,
+            start,
+            end,
+            empty_message="RBNZ history missing required tenors after date filter",
+        )
+        return series, {
+            "source_kind": "rbnz_b2_xlsx",
+            "download_url": RBNZ_URL,
+            "note": "Indicative closing government-bond yields with a one-day publication lag.",
+        }
+    try:
+        page = _download_rbnz_html()
+    except MarketStateError as exc:
+        raise MarketStateError(
+            f"{xlsx_error}; official RBNZ HTML fallback also failed: {exc}"
+        ) from exc
+    parsed = parse_rbnz_b2_html(page)
+    series = _clip_rate_history(
+        parsed,
+        start,
+        end,
+        empty_message="RBNZ HTML history missing required tenors after date filter",
+    )
+    return series, {
+        "source_kind": "rbnz_b2_html",
+        "download_url": RBNZ_HTML_URL,
+        "note": (
+            "Official RBNZ B2 HTML table of secondary-market government-bond closing yields. "
+            f"Used because the B2 XLSX workbook was blocked ({xlsx_error}). "
+            "The page table is a recent window, not a vendor substitute."
+        ),
+    }
+
+
 def fetch_nz_rates(
     start: date,
     end: date,
     *,
     workbook_bytes: bytes | None = None,
+    html_text: str | None = None,
 ) -> dict[str, dict[date, float]]:
-    if workbook_bytes is None:
-        try:
-            workbook_bytes = fetch_bytes(RBNZ_URL, user_agent=BROWSER_USER_AGENT)
-        except MarketStateError:
-            workbook_bytes = fetch_bytes(RBNZ_URL)
-    if workbook_bytes[:2] != b"PK":
-        raise MarketStateError("RBNZ download was not an xlsx workbook; refusing to parse a substitute page")
-    parsed = parse_rbnz_xlsx(workbook_bytes)
-    out = {k: {d: v for d, v in s.items() if start <= d <= end} for k, s in parsed.items()}
-    if any(not out[k] for k in RATE_TENORS):
-        raise MarketStateError("RBNZ history missing required tenors after date filter")
-    return out
+    series, provenance = fetch_nz_rates_with_provenance(
+        start,
+        end,
+        workbook_bytes=workbook_bytes,
+        html_text=html_text,
+    )
+    fetch_nz_rates.last_provenance = provenance  # type: ignore[attr-defined]
+    return series
+
+
+def _preflight_blocking_source(source_key: str) -> bool:
+    """Registry preflight countries and FX/positioning drive the global packet status.
+
+    NZ, EA and JP are required_for_trader_preflight=false. Their stale or
+    unavailable states stay visible on the source and must not flip the packet.
+    SR3/SOFR curve gaps are expression-specific and are not global blockers.
+    """
+    required = {f"{code}_rates" for code in required_preflight_countries()}
+    return source_key in required or source_key in {"FX", "CFTC_positioning", "CME_positioning"}
 
 
 def parse_ecb_sdmx_csv(text: str) -> dict[str, dict[date, float]]:
@@ -829,13 +1094,18 @@ def build_snapshot(
     start = today - timedelta(days=366 * 5 + 15)
     nz_bytes = nz_workbook.read_bytes() if nz_workbook else None
     nz_error: str | None = None
+    nz_provenance: dict[str, str] | None = None
     try:
+        # Call the public wrapper so tests that patch fetch_nz_rates still supply
+        # the series. Provenance is only trusted when the live function recorded a dict.
         nz_raw = fetch_nz_rates(start, today, workbook_bytes=nz_bytes)
     except MarketStateError as exc:
         nz_error = str(exc)
         nz_raw, nz_block = _nz_rates_unavailable(nz_error)
     else:
         nz_block = None
+        recorded = getattr(fetch_nz_rates, "last_provenance", None)
+        nz_provenance = recorded if isinstance(recorded, dict) else None
 
     rates_raw = {
         "US": fetch_us_rates(start, today),
@@ -867,7 +1137,19 @@ def build_snapshot(
         }
         latest_as_of = max(date.fromisoformat(metrics[t]["as_of"]) for t in RATE_TENORS)
         age_days = max(0, (today - latest_as_of).days)
-        status = _freshness(age_days, country)
+        freshness_fields: dict[str, object] = {}
+        if country == "JP":
+            if age_days > FAIL_AFTER_DAYS:
+                raise MarketStateError(
+                    f"JP observation is {age_days} days old; refusing to emit a fabricated or silently substituted substitute"
+                )
+            status = jgb_observation_status(latest_as_of, today)
+            freshness_fields = {
+                "age_business_days": japan_business_days_since(latest_as_of, today),
+                "freshness_rule": "japan_business_day_publication_lag",
+            }
+        else:
+            status = _freshness(age_days, country)
         if status == "stale":
             stale_sources.append(f"{country}_rates")
         rates[country] = {
@@ -876,6 +1158,7 @@ def build_snapshot(
             "latest_observation": latest_as_of.isoformat(),
             "age_days": age_days,
             "status": status,
+            **freshness_fields,
         }
 
     rate_rv: dict[str, dict] = {}
@@ -1094,14 +1377,17 @@ def build_snapshot(
             stale_sources.append("CFTC_positioning")
         if positioning["cme"].get("status") == "stale":
             stale_sources.append("CME_positioning")
-    packet_status = "stale" if stale_sources else "ok"
+    preflight_stale = [source for source in stale_sources if _preflight_blocking_source(source)]
+    packet_status = "stale" if preflight_stale else "ok"
     nz_source = {
         "name": "Reserve Bank of New Zealand B2 wholesale interest rates",
         "url": RBNZ_PAGE,
-        "download_url": RBNZ_URL,
+        "download_url": (nz_provenance or {}).get("download_url") or RBNZ_URL,
         "observation_date": rates["NZ"]["latest_observation"],
         "status": rates["NZ"]["status"],
-        "note": "Indicative closing government-bond yields with a one-day publication lag.",
+        "note": (nz_provenance or {}).get("note")
+        or "Indicative closing government-bond yields with a one-day publication lag.",
+        "source_kind": (nz_provenance or {}).get("source_kind") or "rbnz_b2_xlsx",
     }
     if nz_error:
         nz_source["error"] = nz_error
@@ -1123,7 +1409,9 @@ def build_snapshot(
         "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
         "window_start": start.isoformat(),
         "status": packet_status,
+        "preflight_status": packet_status,
         "stale_sources": stale_sources,
+        "preflight_stale_sources": preflight_stale,
         "unavailable_sources": unavailable_sources,
         "rates": rates,
         "rate_rv": rate_rv,
@@ -1208,9 +1496,14 @@ def build_snapshot(
             "credentials_required": [],
             "note": (
                 "Live authorities remain canonical. This artifact is a compact research snapshot. "
-                "US, Canada, Australia and ECB FX are required; a blocked official RBNZ source "
-                "marks NZ rates and NZ-dependent RV spreads unavailable without fabricating data. "
-                "Euro-area Bund (Germany) and Japan JGB cash curves are required six-economy rate legs. "
+                "US, Canada, Australia and ECB FX are required preflight inputs. "
+                "NZ and Japan are not required_for_trader_preflight; a blocked RBNZ source or a "
+                "Japan holiday-calendar print stays visible on that source and does not by itself "
+                "mark the packet stale. NZ-dependent and JP-dependent expressions still fail closed. "
+                "The official RBNZ B2 XLSX is tried first, including a browser-TLS retry, then the "
+                "official RBNZ B2 HTML table. No vendor or media substitute is used. "
+                "Japan JGB freshness uses the Tokyo business-day calendar and a one-session publication lag. "
+                "Euro-area Bund (Germany) and Japan JGB cash curves remain six-economy rate legs. "
                 "Cross-country spreads use exact common observation dates only. "
                 "Policy-path context uses official overnight benchmarks plus public money-market data. "
                 "The required tradable paper rates universe remains SOFR via CME SR3, CORRA via MX CRA, and AONIA via ASX IB. "

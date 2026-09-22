@@ -618,8 +618,23 @@ def apply_action(
     seat = seat_book["seat"]
     memo = validate_expression_memo(action.get("expression_memo"), seat=seat, action=kind)
     blocked: list[str] = []
+    memo_for_gate = memo if isinstance(memo, dict) else {}
+    selected = memo_for_gate.get("selected")
+    selected_candidate = {
+        "rates": memo_for_gate.get("rates_candidate"),
+        "spot": memo_for_gate.get("spot_candidate"),
+        "options": memo_for_gate.get("options_candidate"),
+    }.get(selected)
+    selected_candidate = selected_candidate if isinstance(selected_candidate, dict) else {}
     try:
-        blocked = assert_action_allowed(kind, families, seat=seat)
+        blocked = assert_action_allowed(
+            kind,
+            families,
+            seat=seat,
+            instrument=action.get("instrument") or selected_candidate.get("instrument"),
+            asset_class=action.get("asset_class") or selected_candidate.get("asset_class"),
+            expression=action.get("expression"),
+        )
     except FreshnessError as exc:
         if kind in EXPANDING_ACTIONS:
             seat_book["blocked_opens"].append(

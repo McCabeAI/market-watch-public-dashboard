@@ -476,10 +476,27 @@ class PMFundingTests(unittest.TestCase):
             "selected": "rates",
             "rationale": "Rates-first comparison complete.",
         })
+        # The selected tenor bucket must be the rates candidate actually opened.
+        # Copying the 10Y scan and swapping only the candidate fails schema
+        # binding before funding is calculated.
+        rv_memo = with_tenor_scan(
+            {
+                "rates_candidate": {
+                    "instrument": "SOFR-CORRA_2Y",
+                    "asset_class": "rates_rv",
+                    "rationale": "spread",
+                },
+                "spot_candidate": {"instrument": "USDJPY", "asset_class": "spot_fx", "rationale": "spot alt"},
+                "options_candidate": None,
+                "selected": "rates",
+                "rationale": "Rates-first comparison complete.",
+            },
+            selected_bucket="cross_market_rv",
+        )
         specs = [
             ("dollar-king", "USDCAD", "spot_fx", 1.36, _spot_memo()),
             ("rate-hawk", "US 10Y", "rates", 4.20, rates_memo),
-            ("value-guy", "SOFR-CORRA_2Y", "rates_rv", 35.0, {**rates_memo, "rates_candidate": {"instrument": "SOFR-CORRA_2Y", "asset_class": "rates_rv", "rationale": "spread"}}),
+            ("value-guy", "SOFR-CORRA_2Y", "rates_rv", 35.0, rv_memo),
         ]
         charges = []
         for seat_id, instrument, asset, price, memo in specs:

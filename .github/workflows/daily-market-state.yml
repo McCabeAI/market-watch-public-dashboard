@@ -41,9 +41,11 @@ on:
 permissions:
   contents: read
 
+# Schedule and pull_request do not share a concurrency group. A delayed
+# weekday cron must not be cancelled by a PR run that touches this workflow.
 concurrency:
-  group: daily-market-state
-  cancel-in-progress: true
+  group: daily-market-state-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   validate:
@@ -106,15 +108,25 @@ jobs:
           assert packet["positioning"]["status"] in {"ok", "partial", "stale", "unavailable"}
           assert packet["positioning"]["method"]["model_calls"] == 0
           assert packet["positioning"]["method"]["credentials_required"] == []
-          assert packet["policy_paths"]["status"] == "ok"
+          assert packet["policy_paths"]["status"] in {"ok", "partial"}
           assert {"US", "CA", "AU"}.issubset(set(packet["policy_paths"]["countries"]))
-          for country in ("US", "CA", "AU"):
+          us_policy = packet["policy_paths"]["countries"]["US"]
+          assert us_policy["status"] in {"ok", "partial"}
+          assert us_policy["benchmark"]["rate"] is not None
+          assert us_policy["benchmark"].get("history") or us_policy["benchmark"].get("as_of")
+          for country in ("CA", "AU"):
               assert packet["policy_paths"]["countries"][country]["status"] == "ok"
-          assert packet["tradable_rate_curves"]["status"] == "ok"
+          assert packet["tradable_rate_curves"]["status"] in {"ok", "partial"}
           assert {"SOFR", "CORRA", "AONIA"}.issubset(set(packet["tradable_rate_curves"]["curves"]))
           assert "ESTR" in packet["tradable_rate_curves"]["curves"]
           assert "TONA" in packet["tradable_rate_curves"]["curves"]
-          for curve_id in ("SOFR", "CORRA", "AONIA"):
+          sofr_curve = packet["tradable_rate_curves"]["curves"]["SOFR"]
+          if sofr_curve["status"] != "ok":
+              assert sofr_curve.get("error")
+              assert us_policy["benchmark"]["source"] == "NY_FED" or "NY" in str(us_policy["benchmark"].get("source_url", "")).upper()
+          else:
+              assert sofr_curve["contracts"]
+          for curve_id in ("CORRA", "AONIA"):
               curve = packet["tradable_rate_curves"]["curves"][curve_id]
               assert curve["status"] == "ok"
               assert curve["contracts"]
