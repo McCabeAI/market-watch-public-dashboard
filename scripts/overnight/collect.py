@@ -174,7 +174,10 @@ def collect_inputs(
         score_registry = json.loads((root / "data" / "score_source_registry.json").read_text(encoding="utf-8"))
         macro_as_of = str(scores.get("as_of") or scores.get("last_refresh_date") or "")
         if macro_as_of and "T" not in macro_as_of:
-            macro_as_of = f"{macro_as_of}T04:00:00"
+            macro_as_of = datetime.fromisoformat(macro_as_of).replace(
+                hour=4,
+                tzinfo=stamp.tzinfo,
+            ).isoformat()
         age = age_status(macro_as_of, when=stamp) if macro_as_of else "missing"
         macro_status = age if macro_digest else "invalid"
         if not macro_digest:
