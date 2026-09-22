@@ -7,14 +7,20 @@
   "session_date": "2026-09-22",
   "stages": {
     "assemble": {
-      "as_of": null,
+      "as_of": "2026-09-22T07:34:20.579580-04:00",
       "errors": [],
-      "finished_at": null,
-      "inputs": {},
+      "finished_at": "2026-09-22T07:34:20.579580-04:00",
+      "inputs": {
+        "dry_run": false,
+        "offline": true
+      },
       "name": "assemble",
-      "outputs": {},
-      "started_at": null,
-      "status": "pending"
+      "outputs": {
+        "as_of": "2026-09-22T07:34:20.278108-04:00",
+        "packet_sha256": "e0ad7dbc8b2990648797b41ff138ce05456c4f1340ef08baea106e0782197a41"
+      },
+      "started_at": "2026-09-22T07:34:20.158089-04:00",
+      "status": "succeeded"
     },
     "collect": {
       "as_of": "2026-09-22T06:38:11.922670-04:00",

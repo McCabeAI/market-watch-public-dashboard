@@ -1,14 +1,55 @@
 {
-  "as_of": null,
-  "assembled_dataset": null,
+  "as_of": "2026-09-22T07:34:20.278108-04:00",
+  "assembled_dataset": "data/overnight/runs/overnight-20260922/assembled_dataset.json",
   "books_path": "data/overnight/books/latest.json",
   "dry_run": false,
-  "overnight_run_id": null,
+  "overnight_run_id": "overnight-20260922",
   "publication": {
+    "catastrophic_families": [],
     "core_status": "ok",
-    "last_successful_review_run_id": null,
+    "families": {
+      "central_bank_research": {
+        "as_of": "2026-09-18T04:00:00",
+        "blocking": true,
+        "catastrophic": false,
+        "digest": "96f024d0bd3b094b9de1b5c99cc2b60cda47d0df62259f1899e5b4c635ee77fb",
+        "notes": [
+          "rolling 30-day central-bank research state is frozen below"
+        ],
+        "status": "stale"
+      },
+      "macro_hard": {
+        "as_of": "2026-09-21T04:00:00",
+        "blocking": false,
+        "catastrophic": false,
+        "digest": "6e8d30e5f0c4e44f55b431439d9e36dfa2b12cca5b47bef72ec227c77b26c0c4",
+        "notes": [],
+        "status": "fresh"
+      },
+      "market_state": {
+        "as_of": "2026-09-22T11:31:21Z",
+        "blocking": true,
+        "catastrophic": false,
+        "digest": "2e75840d4692ec070e63943542aa721dea93061c486df2c3a706e787ca63e022",
+        "notes": [],
+        "status": "stale"
+      },
+      "news": {
+        "as_of": "2026-09-18T04:00:00",
+        "blocking": true,
+        "catastrophic": false,
+        "digest": "9b690e2e94842d1e7e7525e8cf6c7ffd6ed4e3eecbf7554f658f07ebdba498f7",
+        "notes": [
+          "substantive normalized news items are frozen below"
+        ],
+        "status": "stale"
+      }
+    },
+    "last_successful_pm_run_id": "overnight-20260922",
+    "last_successful_review_run_id": "overnight-20260922",
     "may_publish": true,
-    "reason": "No production overnight run has completed yet. Seed books are empty $100m paper accounts.",
-    "trader_books_status": "stale"
+    "pm_books_status": "fresh",
+    "reason": "core inputs are structurally valid",
+    "trader_books_status": "fresh"
   }
 }
