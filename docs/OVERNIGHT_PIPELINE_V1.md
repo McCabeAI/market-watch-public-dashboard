@@ -99,7 +99,7 @@ The 01:50 base packet is that review's `evidence_snapshot.json` and has a SHA-25
 | `review-001` | accepted | `e0ad7dbc8b2990648797b41ff138ce05456c4f1340ef08baea106e0782197a41` | Morning review recovered from git `c89f1f4`. Agent packet `21a1ec3c722518819f9418afe972e4d7933baf6268e2983b68f3036a69dff2f1`. |
 | `review-002` | frozen, not accepted | `5c69096c72b8567b8dfde193168b7ff0185332ca2f10fca42b77e5d4508b2619` | 11:28 ET evidence refresh (`2026-09-22T11:28:31.273278-04:00`). No scheduled output and no decisions. |
 
-The morning snapshot did not store `prior_pm_books`. That gap is recorded on `review-001` and `review-002`; those historical hashes are embedded-snapshot bindings, not canonical-file bindings, so they cannot be accepted again. Canonical trader books, PM books, NAV, positions, P&L, funding, and risk state were not rewritten. After this change is merged, the next intraday cycle is a new review from then-current levels:
+Both recovered snapshots include `prior_books` and `prior_pm_books`, so the recorded gaps are empty. Their starting hashes are `historical_embedded` bindings (SHA-256 of the embedded book objects), not `canonical_file` bindings, so neither historical review can be accepted again. Canonical trader books, PM books, NAV, positions, P&L, funding, and risk state were not rewritten. After this change is merged, the next intraday cycle is a new review from then-current levels:
 
 ```
 PYTHONPATH=. python3 scripts/overnight_pipeline.py open-review --run-id overnight-20260922
