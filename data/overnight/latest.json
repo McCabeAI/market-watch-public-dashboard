@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-09-22T07:34:20.278108-04:00",
+  "as_of": "2026-09-22T08:23:52.277458-04:00",
   "assembled_dataset": "data/overnight/runs/overnight-20260922/assembled_dataset.json",
   "books_path": "data/overnight/books/latest.json",
   "dry_run": false,
@@ -9,14 +9,14 @@
     "core_status": "ok",
     "families": {
       "central_bank_research": {
-        "as_of": "2026-09-18T04:00:00",
-        "blocking": true,
+        "as_of": "2026-09-22T06:52:19.184127-04:00",
+        "blocking": false,
         "catastrophic": false,
-        "digest": "96f024d0bd3b094b9de1b5c99cc2b60cda47d0df62259f1899e5b4c635ee77fb",
+        "digest": "33db9c2bd329b96ab0da382cf8b9fa59bee81d63f45943eb6c70ebaaf40ff504",
         "notes": [
-          "rolling 30-day central-bank research state is frozen below"
+          "accepted current-cycle ACP central-bank research supplement"
         ],
-        "status": "stale"
+        "status": "fresh"
       },
       "macro_hard": {
         "as_of": "2026-09-21T04:00:00",
@@ -27,22 +27,22 @@
         "status": "fresh"
       },
       "market_state": {
-        "as_of": "2026-09-22T11:31:21Z",
+        "as_of": "2026-09-22T11:44:28Z",
         "blocking": true,
         "catastrophic": false,
-        "digest": "2e75840d4692ec070e63943542aa721dea93061c486df2c3a706e787ca63e022",
+        "digest": "1785a5397db22b52ffc943fc2b10834cb01ad33173b8bb16e0bf557057165f74",
         "notes": [],
         "status": "stale"
       },
       "news": {
-        "as_of": "2026-09-18T04:00:00",
-        "blocking": true,
+        "as_of": "2026-09-22T06:52:19.184127-04:00",
+        "blocking": false,
         "catastrophic": false,
-        "digest": "9b690e2e94842d1e7e7525e8cf6c7ffd6ed4e3eecbf7554f658f07ebdba498f7",
+        "digest": "c2d550b2543bf33cedafe0fb2d1ec4abe3bdaacafb384d1fca59f104576645c5",
         "notes": [
-          "substantive normalized news items are frozen below"
+          "accepted current-cycle ACP research supplement"
         ],
-        "status": "stale"
+        "status": "fresh"
       }
     },
     "last_successful_pm_run_id": "overnight-20260922",

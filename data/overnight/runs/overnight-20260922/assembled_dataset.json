@@ -225,162 +225,116 @@
     ],
     "summary": "After the 2026-09-22T06:42:17-04:00 evidence cutoff, the clearest new market-color was in energy: Brent and WTI rebounded in early 22 September trade after Monday\u2019s sharp decline, with headlines still split between potential U.S.\u2013Iran diplomacy at the UN and supply-disruption risks including Saudi export flows. The RBA published Assistant Governor Sarah Hunter\u2019s 22 September podcast (recorded 7 September), reinforcing that house prices are not a policy target, that the recent housing correction is fast but not unprecedented, and that oil/geopolitical shocks remain a key inflation risk. U.S. hard data since the 16 September FOMC included August industrial production (unchanged; manufacturing -0.3%), August import/export prices (+0.7%/+0.6% m/m), the Philadelphia Fed manufacturing survey for September, and the Chicago Fed CFNAI for August at -0.04 with a three-month average of +0.01. Official NY Fed SOFR remains the latest confirmed print for 18 September at 3.85%; no verified SOFR observation for 19\u201321 September was available ahead of the usual ~08:00 ET 22 September publication, and SOFR futures/OIS curve inputs flagged in the base packet are still missing. No additional G10 rate decisions followed the BoJ\u2019s 18 September hike to ~1.25% (effective 24 September). Scheduled post-cutoff Fed remarks by Presidents Williams and Vice Chair Jefferson at the 22 September Treasury Market Conference were on the calendar but not yet available as published policy text. NZ local rate marks and the packet\u2019s news/market-state families remain stale relative to 18\u201321 September anchors."
   },
+  "agent_research_cutoff": "2026-09-22T06:52:19.184127-04:00",
   "artifacts": {
     "assembled_dataset": "data/overnight/runs/overnight-20260922/assembled_dataset.json",
     "collect": "data/overnight/runs/overnight-20260922/collect.json",
-    "digest": "f3c5cbea2dd2d14ff51fe6cf0d478335c054d32373b699e1ebe4a394cb219884",
+    "digest": "c970fd8fcfc75ed23fc336bb7d652325d215695e85ea217bfe337ceeea82936c",
     "evidence_snapshot": "data/overnight/runs/overnight-20260922/evidence_snapshot.json",
     "final_delta": "data/overnight/runs/overnight-20260922/final_delta.json",
     "pre_trader_delta": "data/overnight/runs/overnight-20260922/pre_trader_delta.json",
     "run": "data/overnight/runs/overnight-20260922/run.json",
     "trader_review": "data/overnight/runs/overnight-20260922/trader_review.json"
   },
-  "as_of": "2026-09-22T07:34:20.278108-04:00",
+  "as_of": "2026-09-22T08:23:52.277458-04:00",
   "core": {
     "central_bank_research": {
-      "as_of": "2026-09-18T04:00:00",
-      "daily_overlay_text": "from __future__ import annotations\n\nimport re\nimport sys\nfrom datetime import date\nfrom pathlib import Path\n\npath = Path(sys.argv[1] if len(sys.argv) > 1 else \"_site/index.html\")\nhtml = path.read_text()\n\nresearch_list_start = '<div class=\"news-list\">'\nresearch_list_end = '<div class=\"coverage\">'\nls = html.index(research_list_start) + len(research_list_start)\nle = html.index(research_list_end, ls)\nblob = html[ls:le]\ncard_re = re.compile(r'<article class=\"news-card[^>]*data-date=\"(\\d{4}-\\d{2}-\\d{2})\"[^>]*>.*?</article>', re.S)\ncards = [(m.group(1), m.group(0)) for m in card_re.finditer(blob)]\nif not cards:\n    raise SystemExit(\"no central-bank research cards found after v11\")\ncutoff = date(2026, 8, 20)\nkept = [card for d, card in cards if date.fromisoformat(d) >= cutoff]\n\nadditions = [\n'''<article class=\"news-card n-nz new\" data-date=\"2026-09-17\">\n<div class=\"news-meta\"><span><b>NZ</b> \u00b7 RBNZ</span><span>Sep 17 \u00b7 Research / Financial Stability</span></div>\n<h3>The Future of Banking Study: Future banking scenarios for NZ in 2035</h3><p>RBNZ develops three plausible scenarios for how technology, competition, consumer expectations and regulation could reshape New Zealand banking through 2035. This is forward-looking financial-stability research, not a monetary-policy signal.</p>\n<div class=\"tags\"><span class=\"tag primary\">Financial Stability</span><span class=\"tag\">Banking</span><span class=\"tag newtag\">NEW</span></div>\n<a class=\"news-link\" href=\"https://www.rbnz.govt.nz/hub/publications/bulletin/2026/future-of-banking\" rel=\"noopener\" target=\"_blank\">Open official source \u2197</a>\n</article>''',\n'''<article class=\"news-card n-g10 new\" data-date=\"2026-09-17\">\n<div class=\"news-meta\"><span><b>UK</b> \u00b7 Bank of England</span><span>Sep 17 \u00b7 Policy / QT</span></div>\n<h3>September 2026 Monetary Policy Summary and Minutes</h3><p>The MPC held Bank Rate at 3.75% by 6\u20133, with three members preferring a 25bp hike, and judged inflation risks more tilted to the upside. It also adopted a multi-year plan to unwind the remaining monetary-policy gilt stock.</p>\n<div class=\"tags\"><span class=\"tag primary\">Monetary Policy</span><span class=\"tag\">QT</span><span class=\"tag\">Inflation</span><span class=\"tag newtag\">NEW</span></div>\n<a class=\"news-link\" href=\"https://www.bankofengland.co.uk/monetary-policy-summary-and-minutes/2026/september-2026\" rel=\"noopener\" target=\"_blank\">Open official source \u2197</a>\n</article>''',\n'''<article class=\"news-card n-us new\" data-date=\"2026-09-16\">\n<div class=\"news-meta\"><span><b>US</b> \u00b7 Federal Reserve</span><span>Sep 16 \u00b7 Policy Decision</span></div>\n<h3>FOMC raises the federal funds target range to 3.75\u20134.00%</h3><p>The Committee voted unanimously for a 25bp increase, describing activity as solid, domestic spending as resilient and inflation as elevated. This is a policy decision, not research.</p>\n<div class=\"tags\"><span class=\"tag primary\">Monetary Policy</span><span class=\"tag\">Inflation</span><span class=\"tag\">Rates</span><span class=\"tag newtag\">NEW</span></div>\n<a class=\"news-link\" href=\"https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm\" rel=\"noopener\" target=\"_blank\">Open official source \u2197</a>\n</article>''',\n'''<article class=\"news-card n-us new\" data-date=\"2026-09-16\">\n<div class=\"news-meta\"><span><b>US</b> \u00b7 Federal Reserve</span><span>Sep 16 \u00b7 Economic Projections</span></div>\n<h3>September 2026 Summary of Economic Projections</h3><p>The Federal Reserve released the September projections alongside the FOMC decision. Treat the distribution of participant projections as policy-path evidence, not a Committee commitment.</p>\n<div class=\"tags\"><span class=\"tag primary\">Rates / Expectations</span><span class=\"tag\">Forecasts</span><span class=\"tag newtag\">NEW</span></div>\n<a class=\"news-link\" href=\"https://www.federalreserve.gov/monetarypolicy/fomcpresconf20260916.htm\" rel=\"noopener\" target=\"_blank\">Open official source \u2197</a>\n</article>'''\n]\nnew_cards = additions + kept\nhtml = html[:ls] + ''.join(new_cards) + html[le:]\ncount = len(new_cards)\nhtml = re.sub(r'<p><b>Window:</b> 16 Aug\u201314 Sep 2026\\.', '<p><b>Window:</b> 20 Aug\u201318 Sep 2026.', html, count=1)\nhtml = re.sub(r'<div class=\"scanline\"><b>Last scanned:</b> 14 Sep 2026 \u00b7 Rolling 30-day refresh</div>', '<div class=\"scanline\"><b>Last scanned:</b> 18 Sep 2026 \u00b7 Rolling 30-day refresh</div>', html, count=1)\nhtml = re.sub(r'<div class=\"stitle\">In scope now</div><div class=\"news-count\">66</div>', f'<div class=\"stitle\">In scope now</div><div class=\"news-count\">{count}</div>', html, count=1)\nhtml = re.sub(r'Research layer: 66 official central-bank publications remains below the 7-day news digest\\.', f'Research layer: {count} official central-bank publications remains below the 7-day news digest.', html, count=1)\n\nxs = html.index('<div class=\"x-signal\">')\nxe = html.index('<div class=\"news-divider\">', xs)\nx_status = '''<div class=\"x-signal\"><div class=\"x-head\"><div><div class=\"stitle\">X Signal</div><p>Fast signal only. Official accounts can stand as primary statements; media/reporter posts require corroboration before promotion.</p></div><span class=\"signal-badge\">18 SEP SCAN</span></div><div class=\"x-grid\"><div class=\"x-card\"><div class=\"xtype\">NO FRESH PROMOTION</div><b>Public-web X scan</b><span>No qualifying public X post added a material USD/CAD/AUD/NZD fact beyond the confirmed official/Reuters tape. The personalized X source universe remains pending the requested archive, so this remains a bounded public-web scan.</span><div class=\"xdate\">Refreshed Sep 18 \u00b7 no score impact</div></div></div></div>'''\nhtml = html[:xs] + x_status + html[xe:]\n\nif html.count('class=\"news-card') != count:\n    raise SystemExit('research card count mismatch')\nif any(f'data-date=\"2026-08-{d:02d}\"' in html[ls:] for d in range(1, 20)):\n    raise SystemExit('expired research remains')\nfor required in ('Window:</b> 20 Aug\u201318 Sep 2026', 'Last scanned:</b> 18 Sep 2026', 'The Future of Banking Study', 'September 2026 Monetary Policy Summary and Minutes', 'FOMC raises the federal funds target range', '18 SEP SCAN'):\n    if required not in html:\n        raise SystemExit(f'missing required Sep 18 state: {required}')\npath.write_text(html)\nprint(f'Sep 18 completeness refresh applied; research cards={count}')\n",
-      "digest": "96f024d0bd3b094b9de1b5c99cc2b60cda47d0df62259f1899e5b4c635ee77fb",
-      "files": [
-        {
-          "bytes": 13953,
-          "digest": "d916cc430188bcee0fcc7bf42bfc900a699c80234dff734e7d8a40b7dd8fcb96",
-          "path": "scripts/apply_v11_refresh.py",
-          "status": "present"
-        },
-        {
-          "bytes": 6301,
-          "digest": "e8c60313091f40b721f09270a64a5c8f999bd8c7f6c7fd8a0dcf5a25d0c3f897",
-          "path": "scripts/apply_daily_refresh.py",
-          "status": "present"
-        },
-        {
-          "bytes": 6395,
-          "digest": "7e9736a7279aca796f9d655c8550682f48e9f91f8456f9fd86ee71f74fe0f356",
-          "path": "ops/supabase/inbox/latest.json",
-          "status": "present"
-        },
-        {
-          "bytes": 8646,
-          "digest": "4a7e946efb7cebc29cf79fd41013af6923cf283fb6bc7b5c6598558757e9ef62",
-          "path": "patch_v9/news_rollup.html",
-          "status": "present"
-        }
-      ],
+      "as_of": "2026-09-22T06:52:19.184127-04:00",
+      "digest": "33db9c2bd329b96ab0da382cf8b9fa59bee81d63f45943eb6c70ebaaf40ff504",
       "items": [
         {
           "country_codes": [
-            "US"
+            "JP"
           ],
-          "headline": "Fed decision arrives with markets heavily priced for a 25bp hike",
-          "id": "mw_20260916_fomc_hike_pricing",
-          "institution": "Federal Reserve",
-          "origin": "ops/supabase/inbox/latest.json",
-          "primary_category": "monetary_policy",
-          "published_at": "2026-09-16T03:01:14Z",
-          "source_name": "Reuters",
-          "summary": "Interest-rate futures entered the September 16 FOMC decision with a greater-than-90% probability of a 25bp increase.",
-          "url": "https://www.reuters.com/world/india/rupee-faces-more-pressure-with-likely-fed-rate-hike-compounding-oil-pain-2026-09-16/",
-          "verification_status": "single_source"
+          "headline": "BoJ raises policy rate to around 1.25%, effective 24 September",
+          "institution": "BoJ",
+          "published_at": "2026-09-18T00:00:00+09:00",
+          "source_name": "Bank of Japan",
+          "summary": "The 18 September MPM lifted the uncollateralized overnight call target to around 1.25% (from ~1.0%) by a 7\u20132 vote, citing approaching 2% underlying CPI, Middle East energy risks, and spillover into consumer prices; complementary deposit facility rate also set at 1.25% from 24 September.",
+          "url": "https://www.boj.or.jp/en/mopo/mpmdeci/mpr_2026/k260918a.pdf"
+        },
+        {
+          "country_codes": [
+            "CA"
+          ],
+          "headline": "BoC September deliberations: energy shock keeps near-term CPI elevated, limited pass-through so far",
+          "institution": "BoC",
+          "published_at": "2026-09-16T13:30:00-04:00",
+          "source_name": "Bank of Canada",
+          "summary": "Summary of deliberations (16 September) ahead of the 2 September hold at 2.25% said gasoline-driven headline CPI near 3% could persist, upside inflation risks have risen with prolonged Middle East conflict, and governors would consider hikes if energy costs broaden into core prices.",
+          "url": "https://www.bankofcanada.ca/2026/09/publication-summary-of-deliberations-september-16-2026/"
         },
         {
           "country_codes": [
             "AU"
           ],
-          "headline": "Australian housing downturn shows the RBA tightening channel biting",
-          "id": "mw_20260916_au_housing_tightening",
-          "institution": null,
-          "origin": "ops/supabase/inbox/latest.json",
-          "primary_category": "financial_conditions",
-          "published_at": "2026-09-16T03:34:50Z",
-          "source_name": "Reuters",
-          "summary": "NSW residential stamp-duty receipts fell 24% year over year in August as transaction volumes fell 18%; Sydney and Melbourne home values are down more than 7% from peak.",
-          "url": "https://www.reuters.com/world/asia-pacific/sydney-housing-slump-creates-pandemic-sized-hole-state-tax-take-2026-09-16/",
-          "verification_status": "single_source"
+          "headline": "RBA Governor Bullock: housing correction larger than expected but stability risks contained",
+          "institution": "RBA",
+          "published_at": "2026-09-18T00:00:00+10:00",
+          "source_name": "Reserve Bank of Australia",
+          "summary": "In 18 September parliamentary testimony, Bullock said housing has softened more than expected, prices remain ~50% above early-2020 levels, negative-equity shares are limited, and monetary policy targets inflation/activity rather than house prices.",
+          "url": "https://www.rba.gov.au/speeches/2026/sp-gov-2026-09-18.html"
         },
         {
-          "country_codes": [],
-          "headline": "BoE holds 3.75% with three votes for a hike",
-          "id": "rollup:BoE holds 3.75% with three votes for a hike",
-          "institution": null,
-          "origin": "patch_v9/news_rollup.html",
-          "primary_category": null,
-          "published_at": null,
-          "source_name": "GLOBAL RATES \u00b7 BoE / QT \u00b7 Sep 17 \u00b7 Bank of England",
-          "summary": "GLOBAL RATES \u00b7 BoE / QT \u00b7 Sep 17 \u00b7 Bank of England",
-          "url": "https://www.bankofengland.co.uk/monetary-policy-summary-and-minutes/2026/september-2026",
-          "verification_status": "dashboard_retained"
+          "country_codes": [
+            "AU"
+          ],
+          "headline": "RBA Assistant Governor Hunter: rapid housing downturn within historical norms; oil shocks a key risk",
+          "institution": "RBA",
+          "published_at": "2026-09-22T00:00:00+10:00",
+          "source_name": "Reserve Bank of Australia",
+          "summary": "Podcast published 22 September (recorded 7 September) reiterated house prices are not targeted, described the current downturn as rapid but not unprecedented, and flagged ongoing oil/geopolitical shocks as complicating the inflation outlook ahead of the next Board meeting.",
+          "url": "https://www.rba.gov.au/speeches/2026/sp-ag-2026-09-22.html"
         },
         {
-          "country_codes": [],
-          "headline": "Fed raises 25bp to 3.75\u20134.00%",
-          "id": "rollup:Fed raises 25bp to 3.75\u20134.00%",
-          "institution": null,
-          "origin": "patch_v9/news_rollup.html",
-          "primary_category": null,
-          "published_at": null,
-          "source_name": "US \u00b7 Fed / Rates \u00b7 Sep 16 \u00b7 Federal Reserve",
-          "summary": "US \u00b7 Fed / Rates \u00b7 Sep 16 \u00b7 Federal Reserve",
-          "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm",
-          "verification_status": "dashboard_retained"
+          "country_codes": [
+            "EA"
+          ],
+          "headline": "BoE holds Bank Rate at 3.75% in 6\u20133 vote; energy path lifts CPI forecast",
+          "institution": "BoE",
+          "published_at": "2026-09-17T12:00:00+01:00",
+          "source_name": "Bank of England",
+          "summary": "September MPC minutes (16 September decision) kept Bank Rate at 3.75% with three dissenters favoring 4.00%; staff expect CPI to rise toward ~3.75% in Q4 2026 and slightly above 4% in early 2027 on energy, while unanimously approving a gilt QT plan averaging \u00a346bn/year to zero by 2034.",
+          "url": "https://www.bankofengland.co.uk/-/media/boe/files/monetary-policy-summary-and-minutes/2026/monetary-policy-summary-and-minutes-september-2026.pdf"
         },
         {
-          "country_codes": [],
-          "headline": "BoC minutes flag higher energy pass-through risk",
-          "id": "rollup:BoC minutes flag higher energy pass-through risk",
-          "institution": null,
-          "origin": "patch_v9/news_rollup.html",
-          "primary_category": null,
-          "published_at": null,
-          "source_name": "CANADA \u00b7 BoC / Inflation \u00b7 Sep 16 \u00b7 Bank of Canada",
-          "summary": "CANADA \u00b7 BoC / Inflation \u00b7 Sep 16 \u00b7 Bank of Canada",
-          "url": "https://www.bankofcanada.ca/2026/09/summary-of-governing-council-deliberations-fixed-announcement-date-of-september-2-2026/",
-          "verification_status": "dashboard_retained"
+          "country_codes": [
+            "EA"
+          ],
+          "headline": "ECB September hike: energy keeps headline inflation above target into H1 2027",
+          "institution": "ECB",
+          "published_at": "2026-09-10T14:45:00+02:00",
+          "source_name": "European Central Bank",
+          "summary": "At the 10 September meeting the Governing Council raised key rates 25bp, citing August euro-area headline CPI at 3.3% with energy inflation at 14.3%; staff project headline inflation returning near 2% toward end-2027.",
+          "url": "https://www.ecb.europa.eu/press/press_conference/monetary-policy-statement/2026/html/ecb.is260910~6a45359cfc.en.html"
         },
         {
-          "country_codes": [],
-          "headline": "New Zealand Q2 GDP slows to 0.2% q/q but beats forecasts",
-          "id": "rollup:New Zealand Q2 GDP slows to 0.2% q/q but beats forecasts",
-          "institution": null,
-          "origin": "patch_v9/news_rollup.html",
-          "primary_category": null,
-          "published_at": null,
-          "source_name": "NEW ZEALAND \u00b7 Activity / RBNZ \u00b7 Sep 16 \u00b7 Reuters / Stats NZ",
-          "summary": "NEW ZEALAND \u00b7 Activity / RBNZ \u00b7 Sep 16 \u00b7 Reuters / Stats NZ",
-          "url": "https://www.reuters.com/world/asia-pacific/new-zealands-economy-grows-02-q2-2026-09-16/",
-          "verification_status": "dashboard_retained"
+          "country_codes": [
+            "NZ"
+          ],
+          "headline": "RBNZ lifts OCR 25bp to 2.75% on energy-driven inflation",
+          "institution": "RBNZ",
+          "published_at": "2026-09-02T14:00:00+12:00",
+          "source_name": "Reserve Bank of New Zealand",
+          "summary": "The 2 September MPS increased OCR to 2.75% by consensus, noting June-quarter CPI at 4.1% (fuel-driven), expectation inflation stays above 3% through 2026, and openness to further hikes if needed to reach the 2% midpoint by late 2027.",
+          "url": "https://www.rbnz.govt.nz/news-and-events/news/2026/09/ocr-increased-by-25-basis-points-to-2-75"
         },
         {
-          "country_codes": [],
-          "headline": "Canada August inflation holds at 3%, core stays near 2%",
-          "id": "rollup:Canada August inflation holds at 3%, core stays near 2%",
-          "institution": null,
-          "origin": "patch_v9/news_rollup.html",
-          "primary_category": null,
-          "published_at": null,
-          "source_name": "CANADA \u00b7 Inflation / BoC \u00b7 Sep 14 \u00b7 Reuters / Statistics Canada",
-          "summary": "CANADA \u00b7 Inflation / BoC \u00b7 Sep 14 \u00b7 Reuters / Statistics Canada",
-          "url": "https://www.reuters.com/world/americas/canadas-august-inflation-holds-steady-3-crude-stays-firm-food-prices-ease-2026-09-14/",
-          "verification_status": "dashboard_retained"
-        },
-        {
-          "country_codes": [],
-          "headline": "August CPI keeps the Fed tightening bias intact",
-          "id": "rollup:August CPI keeps the Fed tightening bias intact",
-          "institution": null,
-          "origin": "patch_v9/news_rollup.html",
-          "primary_category": null,
-          "published_at": null,
-          "source_name": "US \u00b7 Inflation / Fed \u00b7 Sep 11 \u00b7 Reuters / BLS",
-          "summary": "US \u00b7 Inflation / Fed \u00b7 Sep 11 \u00b7 Reuters / BLS",
-          "url": "https://www.reuters.com/business/view-august-core-inflation-reading-boosts-rate-hike-expectations-2026-09-11/",
-          "verification_status": "dashboard_retained"
+          "country_codes": [
+            "US"
+          ],
+          "headline": "Fed September FOMC: unanimous 25bp hike to 3.75\u20134.00%; SEP median one further 2026 increase",
+          "institution": "Federal Reserve",
+          "published_at": "2026-09-16T14:00:00-04:00",
+          "source_name": "Board of Governors of the Federal Reserve System",
+          "summary": "The 16 September statement and SEP showed a unanimous quarter-point increase, removal of accommodation language, median 2026 year-end funds rate at 4.1%, and Chair Warsh emphasizing inflation remains too high without offering explicit forward guidance.",
+          "url": "https://www.federalreserve.gov/monetarypolicy/fomcpresconf20260916.htm"
         }
       ],
       "notes": [
-        "rolling 30-day central-bank research state is frozen below"
+        "accepted current-cycle ACP central-bank research supplement"
       ],
-      "status": "stale"
+      "status": "fresh"
     },
     "macro_hard": {
       "as_of": "2026-09-21T04:00:00",
@@ -2150,7 +2104,7 @@
       }
     },
     "market_state": {
-      "as_of": "2026-09-22T11:31:21Z",
+      "as_of": "2026-09-22T11:44:28Z",
       "data": {
         "australia_housing": {
           "country": "AU",
@@ -3727,7 +3681,7 @@
           "source_observation": "2026-09-21",
           "status": "ok"
         },
-        "generated_at": "2026-09-22T11:31:21Z",
+        "generated_at": "2026-09-22T11:44:28Z",
         "japan_housing": {
           "country": "JP",
           "error": "No official/free Japan housing transmission feed met the source contract; housing is non-blocking.",
@@ -70206,62 +70160,62 @@
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 77.0,
+                  "change_from_overnight_bps": 76.5,
                   "code": "CRAH27",
                   "expiry": "2027-03",
-                  "implied_rate": 3.06,
+                  "implied_rate": 3.055,
                   "open_interest": null,
-                  "price": 96.94,
+                  "price": 96.945,
                   "source": "MX_CORRA_FUTURES",
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 98.5,
+                  "change_from_overnight_bps": 98.0,
                   "code": "CRAM27",
                   "expiry": "2027-06",
-                  "implied_rate": 3.275,
+                  "implied_rate": 3.27,
                   "open_interest": null,
-                  "price": 96.725,
+                  "price": 96.73,
                   "source": "MX_CORRA_FUTURES",
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 112.5,
+                  "change_from_overnight_bps": 111.5,
                   "code": "CRAU27",
                   "expiry": "2027-09",
-                  "implied_rate": 3.415,
+                  "implied_rate": 3.405,
                   "open_interest": null,
-                  "price": 96.585,
+                  "price": 96.595,
                   "source": "MX_CORRA_FUTURES",
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 120.5,
+                  "change_from_overnight_bps": 120.0,
                   "code": "CRAZ27",
                   "expiry": "2027-12",
-                  "implied_rate": 3.495,
+                  "implied_rate": 3.49,
                   "open_interest": null,
-                  "price": 96.505,
+                  "price": 96.51,
                   "source": "MX_CORRA_FUTURES",
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 125.5,
+                  "change_from_overnight_bps": 125.0,
                   "code": "CRAH28",
                   "expiry": "2028-03",
-                  "implied_rate": 3.545,
+                  "implied_rate": 3.54,
                   "open_interest": null,
-                  "price": 96.455,
+                  "price": 96.46,
                   "source": "MX_CORRA_FUTURES",
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 128.5,
+                  "change_from_overnight_bps": 127.5,
                   "code": "CRAM28",
                   "expiry": "2028-06",
-                  "implied_rate": 3.575,
+                  "implied_rate": 3.565,
                   "open_interest": null,
-                  "price": 96.425,
+                  "price": 96.435,
                   "source": "MX_CORRA_FUTURES",
                   "volume": null
                 },
@@ -70276,22 +70230,22 @@
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 129.0,
+                  "change_from_overnight_bps": 128.5,
                   "code": "CRAZ28",
                   "expiry": "2028-12",
-                  "implied_rate": 3.58,
+                  "implied_rate": 3.575,
                   "open_interest": null,
-                  "price": 96.42,
+                  "price": 96.425,
                   "source": "MX_CORRA_FUTURES",
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 128.5,
+                  "change_from_overnight_bps": 128.0,
                   "code": "CRAH29",
                   "expiry": "2029-03",
-                  "implied_rate": 3.575,
+                  "implied_rate": 3.57,
                   "open_interest": null,
-                  "price": 96.425,
+                  "price": 96.43,
                   "source": "MX_CORRA_FUTURES",
                   "volume": null
                 },
@@ -71611,39 +71565,19 @@
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 71.5,
+                  "change_from_overnight_bps": 71.0,
                   "code": "SR3H7",
                   "expiry": "2027-03",
-                  "implied_rate": 4.565,
+                  "implied_rate": 4.56,
                   "open_interest": null,
-                  "price": 95.435,
-                  "source": "ESIGNAL_CME_SR3_DELAYED",
-                  "volume": null
-                },
-                {
-                  "change_from_overnight_bps": 84.5,
-                  "code": "SR3M7",
-                  "expiry": "2027-06",
-                  "implied_rate": 4.695,
-                  "open_interest": null,
-                  "price": 95.305,
-                  "source": "ESIGNAL_CME_SR3_DELAYED",
-                  "volume": null
-                },
-                {
-                  "change_from_overnight_bps": 87.0,
-                  "code": "SR3U7",
-                  "expiry": "2027-09",
-                  "implied_rate": 4.72,
-                  "open_interest": null,
-                  "price": 95.28,
+                  "price": 95.44,
                   "source": "ESIGNAL_CME_SR3_DELAYED",
                   "volume": null
                 },
                 {
                   "change_from_overnight_bps": 84.0,
-                  "code": "SR3Z7",
-                  "expiry": "2027-12",
+                  "code": "SR3M7",
+                  "expiry": "2027-06",
                   "implied_rate": 4.69,
                   "open_interest": null,
                   "price": 95.31,
@@ -71651,99 +71585,99 @@
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 79.5,
+                  "change_from_overnight_bps": 86.5,
+                  "code": "SR3U7",
+                  "expiry": "2027-09",
+                  "implied_rate": 4.715,
+                  "open_interest": null,
+                  "price": 95.285,
+                  "source": "ESIGNAL_CME_SR3_DELAYED",
+                  "volume": null
+                },
+                {
+                  "change_from_overnight_bps": 83.0,
+                  "code": "SR3Z7",
+                  "expiry": "2027-12",
+                  "implied_rate": 4.68,
+                  "open_interest": null,
+                  "price": 95.32,
+                  "source": "ESIGNAL_CME_SR3_DELAYED",
+                  "volume": null
+                },
+                {
+                  "change_from_overnight_bps": 78.5,
                   "code": "SR3H8",
                   "expiry": "2028-03",
-                  "implied_rate": 4.645,
+                  "implied_rate": 4.635,
                   "open_interest": null,
-                  "price": 95.355,
+                  "price": 95.365,
                   "source": "ESIGNAL_CME_SR3_DELAYED",
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 75.5,
+                  "change_from_overnight_bps": 74.5,
                   "code": "SR3M8",
                   "expiry": "2028-06",
-                  "implied_rate": 4.605,
+                  "implied_rate": 4.595,
                   "open_interest": null,
-                  "price": 95.395,
+                  "price": 95.405,
                   "source": "ESIGNAL_CME_SR3_DELAYED",
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 72.0,
+                  "change_from_overnight_bps": 71.0,
                   "code": "SR3U8",
                   "expiry": "2028-09",
-                  "implied_rate": 4.57,
+                  "implied_rate": 4.56,
                   "open_interest": null,
-                  "price": 95.43,
+                  "price": 95.44,
                   "source": "ESIGNAL_CME_SR3_DELAYED",
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 68.5,
+                  "change_from_overnight_bps": 67.5,
                   "code": "SR3Z8",
                   "expiry": "2028-12",
-                  "implied_rate": 4.535,
+                  "implied_rate": 4.525,
                   "open_interest": null,
-                  "price": 95.465,
+                  "price": 95.475,
                   "source": "ESIGNAL_CME_SR3_DELAYED",
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 65.5,
+                  "change_from_overnight_bps": 64.5,
                   "code": "SR3H9",
                   "expiry": "2029-03",
-                  "implied_rate": 4.505,
+                  "implied_rate": 4.495,
                   "open_interest": null,
-                  "price": 95.495,
+                  "price": 95.505,
                   "source": "ESIGNAL_CME_SR3_DELAYED",
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 63.0,
+                  "change_from_overnight_bps": 62.0,
                   "code": "SR3M9",
                   "expiry": "2029-06",
-                  "implied_rate": 4.48,
+                  "implied_rate": 4.47,
                   "open_interest": null,
-                  "price": 95.52,
+                  "price": 95.53,
                   "source": "ESIGNAL_CME_SR3_DELAYED",
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 61.0,
+                  "change_from_overnight_bps": 60.0,
                   "code": "SR3U9",
                   "expiry": "2029-09",
-                  "implied_rate": 4.46,
+                  "implied_rate": 4.45,
                   "open_interest": null,
-                  "price": 95.54,
-                  "source": "ESIGNAL_CME_SR3_DELAYED",
-                  "volume": null
-                },
-                {
-                  "change_from_overnight_bps": 59.5,
-                  "code": "SR3Z9",
-                  "expiry": "2029-12",
-                  "implied_rate": 4.445,
-                  "open_interest": null,
-                  "price": 95.555,
-                  "source": "ESIGNAL_CME_SR3_DELAYED",
-                  "volume": null
-                },
-                {
-                  "change_from_overnight_bps": 59.0,
-                  "code": "SR3H0",
-                  "expiry": "2030-03",
-                  "implied_rate": 4.44,
-                  "open_interest": null,
-                  "price": 95.56,
+                  "price": 95.55,
                   "source": "ESIGNAL_CME_SR3_DELAYED",
                   "volume": null
                 },
                 {
                   "change_from_overnight_bps": 58.5,
-                  "code": "SR3M0",
-                  "expiry": "2030-06",
+                  "code": "SR3Z9",
+                  "expiry": "2029-12",
                   "implied_rate": 4.435,
                   "open_interest": null,
                   "price": 95.565,
@@ -71751,9 +71685,39 @@
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 59.0,
+                  "change_from_overnight_bps": 58.0,
+                  "code": "SR3H0",
+                  "expiry": "2030-03",
+                  "implied_rate": 4.43,
+                  "open_interest": null,
+                  "price": 95.57,
+                  "source": "ESIGNAL_CME_SR3_DELAYED",
+                  "volume": null
+                },
+                {
+                  "change_from_overnight_bps": 57.5,
+                  "code": "SR3M0",
+                  "expiry": "2030-06",
+                  "implied_rate": 4.425,
+                  "open_interest": null,
+                  "price": 95.575,
+                  "source": "ESIGNAL_CME_SR3_DELAYED",
+                  "volume": null
+                },
+                {
+                  "change_from_overnight_bps": 58.0,
                   "code": "SR3U0",
                   "expiry": "2030-09",
+                  "implied_rate": 4.43,
+                  "open_interest": null,
+                  "price": 95.57,
+                  "source": "ESIGNAL_CME_SR3_DELAYED",
+                  "volume": null
+                },
+                {
+                  "change_from_overnight_bps": 59.0,
+                  "code": "SR3Z0",
+                  "expiry": "2030-12",
                   "implied_rate": 4.44,
                   "open_interest": null,
                   "price": 95.56,
@@ -71762,8 +71726,8 @@
                 },
                 {
                   "change_from_overnight_bps": 60.5,
-                  "code": "SR3Z0",
-                  "expiry": "2030-12",
+                  "code": "SR3H1",
+                  "expiry": "2031-03",
                   "implied_rate": 4.455,
                   "open_interest": null,
                   "price": 95.545,
@@ -71771,32 +71735,22 @@
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 62.0,
-                  "code": "SR3H1",
-                  "expiry": "2031-03",
-                  "implied_rate": 4.47,
-                  "open_interest": null,
-                  "price": 95.53,
-                  "source": "ESIGNAL_CME_SR3_DELAYED",
-                  "volume": null
-                },
-                {
-                  "change_from_overnight_bps": 64.0,
+                  "change_from_overnight_bps": 63.0,
                   "code": "SR3M1",
                   "expiry": "2031-06",
-                  "implied_rate": 4.49,
+                  "implied_rate": 4.48,
                   "open_interest": null,
-                  "price": 95.51,
+                  "price": 95.52,
                   "source": "ESIGNAL_CME_SR3_DELAYED",
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 66.5,
+                  "change_from_overnight_bps": 65.0,
                   "code": "SR3U1",
                   "expiry": "2031-09",
-                  "implied_rate": 4.515,
+                  "implied_rate": 4.5,
                   "open_interest": null,
-                  "price": 95.485,
+                  "price": 95.5,
                   "source": "ESIGNAL_CME_SR3_DELAYED",
                   "volume": null
                 },
@@ -76606,62 +76560,62 @@
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 77.0,
+                  "change_from_overnight_bps": 76.5,
                   "code": "CRAH27",
                   "expiry": "2027-03",
-                  "implied_rate": 3.06,
+                  "implied_rate": 3.055,
                   "open_interest": null,
-                  "price": 96.94,
+                  "price": 96.945,
                   "source": "MX_CORRA_FUTURES",
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 98.5,
+                  "change_from_overnight_bps": 98.0,
                   "code": "CRAM27",
                   "expiry": "2027-06",
-                  "implied_rate": 3.275,
+                  "implied_rate": 3.27,
                   "open_interest": null,
-                  "price": 96.725,
+                  "price": 96.73,
                   "source": "MX_CORRA_FUTURES",
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 112.5,
+                  "change_from_overnight_bps": 111.5,
                   "code": "CRAU27",
                   "expiry": "2027-09",
-                  "implied_rate": 3.415,
+                  "implied_rate": 3.405,
                   "open_interest": null,
-                  "price": 96.585,
+                  "price": 96.595,
                   "source": "MX_CORRA_FUTURES",
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 120.5,
+                  "change_from_overnight_bps": 120.0,
                   "code": "CRAZ27",
                   "expiry": "2027-12",
-                  "implied_rate": 3.495,
+                  "implied_rate": 3.49,
                   "open_interest": null,
-                  "price": 96.505,
+                  "price": 96.51,
                   "source": "MX_CORRA_FUTURES",
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 125.5,
+                  "change_from_overnight_bps": 125.0,
                   "code": "CRAH28",
                   "expiry": "2028-03",
-                  "implied_rate": 3.545,
+                  "implied_rate": 3.54,
                   "open_interest": null,
-                  "price": 96.455,
+                  "price": 96.46,
                   "source": "MX_CORRA_FUTURES",
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 128.5,
+                  "change_from_overnight_bps": 127.5,
                   "code": "CRAM28",
                   "expiry": "2028-06",
-                  "implied_rate": 3.575,
+                  "implied_rate": 3.565,
                   "open_interest": null,
-                  "price": 96.425,
+                  "price": 96.435,
                   "source": "MX_CORRA_FUTURES",
                   "volume": null
                 },
@@ -76676,22 +76630,22 @@
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 129.0,
+                  "change_from_overnight_bps": 128.5,
                   "code": "CRAZ28",
                   "expiry": "2028-12",
-                  "implied_rate": 3.58,
+                  "implied_rate": 3.575,
                   "open_interest": null,
-                  "price": 96.42,
+                  "price": 96.425,
                   "source": "MX_CORRA_FUTURES",
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 128.5,
+                  "change_from_overnight_bps": 128.0,
                   "code": "CRAH29",
                   "expiry": "2029-03",
-                  "implied_rate": 3.575,
+                  "implied_rate": 3.57,
                   "open_interest": null,
-                  "price": 96.425,
+                  "price": 96.43,
                   "source": "MX_CORRA_FUTURES",
                   "volume": null
                 },
@@ -77311,39 +77265,19 @@
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 71.5,
+                  "change_from_overnight_bps": 71.0,
                   "code": "SR3H7",
                   "expiry": "2027-03",
-                  "implied_rate": 4.565,
+                  "implied_rate": 4.56,
                   "open_interest": null,
-                  "price": 95.435,
-                  "source": "ESIGNAL_CME_SR3_DELAYED",
-                  "volume": null
-                },
-                {
-                  "change_from_overnight_bps": 84.5,
-                  "code": "SR3M7",
-                  "expiry": "2027-06",
-                  "implied_rate": 4.695,
-                  "open_interest": null,
-                  "price": 95.305,
-                  "source": "ESIGNAL_CME_SR3_DELAYED",
-                  "volume": null
-                },
-                {
-                  "change_from_overnight_bps": 87.0,
-                  "code": "SR3U7",
-                  "expiry": "2027-09",
-                  "implied_rate": 4.72,
-                  "open_interest": null,
-                  "price": 95.28,
+                  "price": 95.44,
                   "source": "ESIGNAL_CME_SR3_DELAYED",
                   "volume": null
                 },
                 {
                   "change_from_overnight_bps": 84.0,
-                  "code": "SR3Z7",
-                  "expiry": "2027-12",
+                  "code": "SR3M7",
+                  "expiry": "2027-06",
                   "implied_rate": 4.69,
                   "open_interest": null,
                   "price": 95.31,
@@ -77351,99 +77285,99 @@
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 79.5,
+                  "change_from_overnight_bps": 86.5,
+                  "code": "SR3U7",
+                  "expiry": "2027-09",
+                  "implied_rate": 4.715,
+                  "open_interest": null,
+                  "price": 95.285,
+                  "source": "ESIGNAL_CME_SR3_DELAYED",
+                  "volume": null
+                },
+                {
+                  "change_from_overnight_bps": 83.0,
+                  "code": "SR3Z7",
+                  "expiry": "2027-12",
+                  "implied_rate": 4.68,
+                  "open_interest": null,
+                  "price": 95.32,
+                  "source": "ESIGNAL_CME_SR3_DELAYED",
+                  "volume": null
+                },
+                {
+                  "change_from_overnight_bps": 78.5,
                   "code": "SR3H8",
                   "expiry": "2028-03",
-                  "implied_rate": 4.645,
+                  "implied_rate": 4.635,
                   "open_interest": null,
-                  "price": 95.355,
+                  "price": 95.365,
                   "source": "ESIGNAL_CME_SR3_DELAYED",
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 75.5,
+                  "change_from_overnight_bps": 74.5,
                   "code": "SR3M8",
                   "expiry": "2028-06",
-                  "implied_rate": 4.605,
+                  "implied_rate": 4.595,
                   "open_interest": null,
-                  "price": 95.395,
+                  "price": 95.405,
                   "source": "ESIGNAL_CME_SR3_DELAYED",
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 72.0,
+                  "change_from_overnight_bps": 71.0,
                   "code": "SR3U8",
                   "expiry": "2028-09",
-                  "implied_rate": 4.57,
+                  "implied_rate": 4.56,
                   "open_interest": null,
-                  "price": 95.43,
+                  "price": 95.44,
                   "source": "ESIGNAL_CME_SR3_DELAYED",
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 68.5,
+                  "change_from_overnight_bps": 67.5,
                   "code": "SR3Z8",
                   "expiry": "2028-12",
-                  "implied_rate": 4.535,
+                  "implied_rate": 4.525,
                   "open_interest": null,
-                  "price": 95.465,
+                  "price": 95.475,
                   "source": "ESIGNAL_CME_SR3_DELAYED",
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 65.5,
+                  "change_from_overnight_bps": 64.5,
                   "code": "SR3H9",
                   "expiry": "2029-03",
-                  "implied_rate": 4.505,
+                  "implied_rate": 4.495,
                   "open_interest": null,
-                  "price": 95.495,
+                  "price": 95.505,
                   "source": "ESIGNAL_CME_SR3_DELAYED",
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 63.0,
+                  "change_from_overnight_bps": 62.0,
                   "code": "SR3M9",
                   "expiry": "2029-06",
-                  "implied_rate": 4.48,
+                  "implied_rate": 4.47,
                   "open_interest": null,
-                  "price": 95.52,
+                  "price": 95.53,
                   "source": "ESIGNAL_CME_SR3_DELAYED",
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 61.0,
+                  "change_from_overnight_bps": 60.0,
                   "code": "SR3U9",
                   "expiry": "2029-09",
-                  "implied_rate": 4.46,
+                  "implied_rate": 4.45,
                   "open_interest": null,
-                  "price": 95.54,
-                  "source": "ESIGNAL_CME_SR3_DELAYED",
-                  "volume": null
-                },
-                {
-                  "change_from_overnight_bps": 59.5,
-                  "code": "SR3Z9",
-                  "expiry": "2029-12",
-                  "implied_rate": 4.445,
-                  "open_interest": null,
-                  "price": 95.555,
-                  "source": "ESIGNAL_CME_SR3_DELAYED",
-                  "volume": null
-                },
-                {
-                  "change_from_overnight_bps": 59.0,
-                  "code": "SR3H0",
-                  "expiry": "2030-03",
-                  "implied_rate": 4.44,
-                  "open_interest": null,
-                  "price": 95.56,
+                  "price": 95.55,
                   "source": "ESIGNAL_CME_SR3_DELAYED",
                   "volume": null
                 },
                 {
                   "change_from_overnight_bps": 58.5,
-                  "code": "SR3M0",
-                  "expiry": "2030-06",
+                  "code": "SR3Z9",
+                  "expiry": "2029-12",
                   "implied_rate": 4.435,
                   "open_interest": null,
                   "price": 95.565,
@@ -77451,9 +77385,39 @@
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 59.0,
+                  "change_from_overnight_bps": 58.0,
+                  "code": "SR3H0",
+                  "expiry": "2030-03",
+                  "implied_rate": 4.43,
+                  "open_interest": null,
+                  "price": 95.57,
+                  "source": "ESIGNAL_CME_SR3_DELAYED",
+                  "volume": null
+                },
+                {
+                  "change_from_overnight_bps": 57.5,
+                  "code": "SR3M0",
+                  "expiry": "2030-06",
+                  "implied_rate": 4.425,
+                  "open_interest": null,
+                  "price": 95.575,
+                  "source": "ESIGNAL_CME_SR3_DELAYED",
+                  "volume": null
+                },
+                {
+                  "change_from_overnight_bps": 58.0,
                   "code": "SR3U0",
                   "expiry": "2030-09",
+                  "implied_rate": 4.43,
+                  "open_interest": null,
+                  "price": 95.57,
+                  "source": "ESIGNAL_CME_SR3_DELAYED",
+                  "volume": null
+                },
+                {
+                  "change_from_overnight_bps": 59.0,
+                  "code": "SR3Z0",
+                  "expiry": "2030-12",
                   "implied_rate": 4.44,
                   "open_interest": null,
                   "price": 95.56,
@@ -77462,8 +77426,8 @@
                 },
                 {
                   "change_from_overnight_bps": 60.5,
-                  "code": "SR3Z0",
-                  "expiry": "2030-12",
+                  "code": "SR3H1",
+                  "expiry": "2031-03",
                   "implied_rate": 4.455,
                   "open_interest": null,
                   "price": 95.545,
@@ -77471,32 +77435,22 @@
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 62.0,
-                  "code": "SR3H1",
-                  "expiry": "2031-03",
-                  "implied_rate": 4.47,
-                  "open_interest": null,
-                  "price": 95.53,
-                  "source": "ESIGNAL_CME_SR3_DELAYED",
-                  "volume": null
-                },
-                {
-                  "change_from_overnight_bps": 64.0,
+                  "change_from_overnight_bps": 63.0,
                   "code": "SR3M1",
                   "expiry": "2031-06",
-                  "implied_rate": 4.49,
+                  "implied_rate": 4.48,
                   "open_interest": null,
-                  "price": 95.51,
+                  "price": 95.52,
                   "source": "ESIGNAL_CME_SR3_DELAYED",
                   "volume": null
                 },
                 {
-                  "change_from_overnight_bps": 66.5,
+                  "change_from_overnight_bps": 65.0,
                   "code": "SR3U1",
                   "expiry": "2031-09",
-                  "implied_rate": 4.515,
+                  "implied_rate": 4.5,
                   "open_interest": null,
-                  "price": 95.485,
+                  "price": 95.5,
                   "source": "ESIGNAL_CME_SR3_DELAYED",
                   "volume": null
                 },
@@ -78198,135 +78152,108 @@
         },
         "window_start": "2021-09-03"
       },
-      "digest": "2e75840d4692ec070e63943542aa721dea93061c486df2c3a706e787ca63e022",
+      "digest": "1785a5397db22b52ffc943fc2b10834cb01ad33173b8bb16e0bf557057165f74",
       "notes": [],
       "status": "stale"
     },
     "news": {
-      "as_of": "2026-09-18T04:00:00",
-      "digest": "9b690e2e94842d1e7e7525e8cf6c7ffd6ed4e3eecbf7554f658f07ebdba498f7",
-      "files": [
-        {
-          "bytes": 1722,
-          "digest": "8ddb004457d6df0eb39ccce0fced1455864bf147d06c7a44583a6ebaca46cec1",
-          "path": "patch_v7/last24_00.html",
-          "status": "present"
-        },
-        {
-          "bytes": 775,
-          "digest": "ae3cc60a540b0793ff5842dcb79bb5ad7790aaae02251f326e10db58e40afb52",
-          "path": "patch_v7/last24_01.html",
-          "status": "present"
-        },
-        {
-          "bytes": 17,
-          "digest": "64981e6274106890b442a82378f6e6f8bcb213b6e7e02abd76362a6424c4d392",
-          "path": "patch_v7/last24_02.html",
-          "status": "present"
-        },
-        {
-          "bytes": 8646,
-          "digest": "4a7e946efb7cebc29cf79fd41013af6923cf283fb6bc7b5c6598558757e9ef62",
-          "path": "patch_v9/news_rollup.html",
-          "status": "present"
-        },
-        {
-          "bytes": 6395,
-          "digest": "7e9736a7279aca796f9d655c8550682f48e9f91f8456f9fd86ee71f74fe0f356",
-          "path": "ops/supabase/inbox/latest.json",
-          "status": "present"
-        },
-        {
-          "bytes": 6301,
-          "digest": "e8c60313091f40b721f09270a64a5c8f999bd8c7f6c7fd8a0dcf5a25d0c3f897",
-          "path": "scripts/apply_daily_refresh.py",
-          "status": "present"
-        },
-        {
-          "bytes": 5113,
-          "digest": "846e1fa349b87a8d8731400cd1c6dc5b6ed96e088396049d105943445466d6a2",
-          "path": "scripts/sync_news_summary.py",
-          "status": "present"
-        }
-      ],
+      "as_of": "2026-09-22T06:52:19.184127-04:00",
+      "digest": "c2d550b2543bf33cedafe0fb2d1ec4abe3bdaacafb384d1fca59f104576645c5",
       "items": [
         {
           "country_codes": [
-            "SA",
-            "US",
-            "CA"
+            "US"
           ],
-          "headline": "Saudi workaround reduces the extreme oil-supply tail",
-          "id": "mw_20260916_saudi_oman_workaround",
-          "institution": null,
-          "origin": "ops/supabase/inbox/latest.json",
-          "primary_category": "inflation",
-          "published_at": "2026-09-16T00:41:06Z",
-          "source_name": "Reuters",
-          "summary": "Saudi Arabia began offering additional crude via ship-to-ship transfers off Oman after the East-West pipeline attack, while oil prices eased modestly.",
-          "url": "https://www.reuters.com/business/energy/oil-falls-us-crude-inventories-rise-despite-saudi-supply-concerns-2026-09-16/",
-          "verification_status": "single_source"
+          "headline": "Oil rebounds in early 22 September trade on U.S.\u2013Iran headlines and supply risks",
+          "primary_category": "energy",
+          "published_at": "2026-09-22T04:22:00-04:00",
+          "source_name": "CNBC",
+          "summary": "CNBC reported Brent November futures up about 1.2% near $101.54/bbl and WTI October up about 0.8% near $96.55/bbl early Tuesday, after Monday\u2019s selloff, as traders weighed UN-week diplomacy against Middle East supply concerns.",
+          "url": "https://www.cnbc.com/2026/09/22/oil-iran-us-bessent-un-crude.html"
         },
         {
           "country_codes": [
-            "NZ",
-            "IN"
+            "US"
           ],
-          "headline": "New Zealand passes India trade agreement",
-          "id": "mw_20260916_nz_india_trade",
-          "institution": null,
-          "origin": "ops/supabase/inbox/latest.json",
-          "primary_category": "trade",
-          "published_at": "2026-09-16T00:14:05Z",
-          "source_name": "Reuters",
-          "summary": "New Zealand's parliament approved legislation implementing a trade agreement that eliminates or materially reduces tariffs on about 95% of New Zealand exports to India.",
-          "url": "https://www.reuters.com/world/india/new-zealand-parliament-passes-india-trade-deal-cutting-tariffs-most-exports-2026-09-16/",
-          "verification_status": "single_source"
+          "headline": "Reuters: Brent climbs back above $100 after four-session losing streak",
+          "primary_category": "energy",
+          "published_at": "2026-09-22T02:17:00-04:00",
+          "source_name": "Reuters (syndicated)",
+          "summary": "Reuters wire reports cited on 22 September showed Brent November up roughly 1\u20131.7% toward $102/bbl and WTI October higher toward the mid-$90s to high-$90s, with investors awaiting potential U.S.\u2013Iran engagement at the UN General Assembly.",
+          "url": "https://www.yerepouni-news.com/oil-prices-climb-ahead-of-potential-us-iran-talks/"
         },
         {
-          "country_codes": [],
-          "headline": "BoJ raises its policy rate to 1.25%",
-          "id": "rollup:BoJ raises its policy rate to 1.25%",
-          "institution": null,
-          "origin": "patch_v9/news_rollup.html",
-          "primary_category": null,
-          "published_at": null,
-          "source_name": "GLOBAL RATES \u00b7 BoJ \u00b7 Sep 17 \u00b7 Reuters",
-          "summary": "GLOBAL RATES \u00b7 BoJ \u00b7 Sep 17 \u00b7 Reuters",
-          "url": "https://www.reuters.com/world/asia-pacific/bank-japan-set-raise-interest-rates-31-year-high-2026-09-17/",
-          "verification_status": "dashboard_retained"
+          "country_codes": [
+            "US",
+            "CA"
+          ],
+          "headline": "Oil rises as Saudi export disruptions keep Hormuz supply in focus",
+          "primary_category": "energy",
+          "published_at": "2026-09-22T03:10:00-04:00",
+          "source_name": "Anadolu Agency",
+          "summary": "Anadolu Agency reported Brent November near $101.70/bbl (+1.4%) and WTI November near $93.35/bbl (+1%+) on 22 September, citing continued concern about Saudi export disruptions and broader Middle East supply risks.",
+          "url": "https://www.aa.com.tr/en/energy/oil/oil-rises-as-saudi-export-disruptions-fuel-supply-concerns/59752"
         },
         {
-          "country_codes": [],
-          "headline": "Energy-market shock absorbers weaken",
-          "id": "rollup:Energy-market shock absorbers weaken",
-          "institution": null,
-          "origin": "patch_v9/news_rollup.html",
-          "primary_category": null,
-          "published_at": null,
-          "source_name": "GLOBAL / US / CAD \u00b7 Energy / Inflation \u00b7 Sep 16 \u00b7 Reuters",
-          "summary": "GLOBAL / US / CAD \u00b7 Energy / Inflation \u00b7 Sep 16 \u00b7 Reuters",
-          "url": "https://www.reuters.com/business/energy-market-shock-absorbers-weakening-shell-equinor-warn-2026-09-16/",
-          "verification_status": "dashboard_retained"
+          "country_codes": [
+            "US"
+          ],
+          "headline": "Monday oil hit multi-day lows on diplomacy hopes before Tuesday rebound",
+          "primary_category": "energy",
+          "published_at": "2026-09-21T13:16:00-04:00",
+          "source_name": "Reuters (syndicated)",
+          "summary": "Reuters reported Brent November fell to about $99.51/bbl (-4.2%) on Monday 21 September and WTI October fell about 5.3% to $95/bbl, the weakest closes in roughly 12 days, as markets priced possible UN diplomacy and partial Saudi flow recovery.",
+          "url": "https://tribune.com.pk/story/2630653/oil-hits-12-day-low-on-peace-talks-hopes"
         },
         {
-          "country_codes": [],
-          "headline": "Australian housing downturn deepens under higher rates",
-          "id": "rollup:Australian housing downturn deepens under higher rates",
-          "institution": null,
-          "origin": "patch_v9/news_rollup.html",
-          "primary_category": null,
-          "published_at": null,
-          "source_name": "AUSTRALIA \u00b7 Housing / Financial Conditions \u00b7 Sep 16 \u00b7 Reuters",
-          "summary": "AUSTRALIA \u00b7 Housing / Financial Conditions \u00b7 Sep 16 \u00b7 Reuters",
-          "url": "https://www.reuters.com/world/asia-pacific/sydney-housing-slump-creates-pandemic-sized-hole-state-tax-take-2026-09-16/",
-          "verification_status": "dashboard_retained"
+          "country_codes": [
+            "US"
+          ],
+          "headline": "Chicago Fed national activity index slips to -0.04 in August",
+          "primary_category": "activity",
+          "published_at": "2026-09-21T08:30:00-04:00",
+          "source_name": "Federal Reserve Bank of Chicago",
+          "summary": "The Chicago Fed CFNAI for August 2026 was -0.04 versus a revised +0.08 in July; the three-month average CFNAI-MA3 rose to +0.01, consistent with growth around trend rather than recessionary readings.",
+          "url": "https://www.chicagofed.org/research/data/cfnai/current-data"
+        },
+        {
+          "country_codes": [
+            "US"
+          ],
+          "headline": "U.S. industrial production flat in August; manufacturing output falls 0.3%",
+          "primary_category": "activity",
+          "published_at": "2026-09-18T09:15:00-04:00",
+          "source_name": "Board of Governors of the Federal Reserve System",
+          "summary": "The Fed\u2019s G.17 release showed total IP unchanged in August after +0.2% in July, manufacturing down 0.3%, utilities up 1.8%, and capacity utilization steady at 76.3%.",
+          "url": "https://www.federalreserve.gov/releases/g17/current/default.htm"
+        },
+        {
+          "country_codes": [
+            "US"
+          ],
+          "headline": "U.S. import prices rise 0.7% in August; export prices up 0.6%",
+          "primary_category": "inflation",
+          "published_at": "2026-09-16T08:30:00-04:00",
+          "source_name": "U.S. Bureau of Labor Statistics",
+          "summary": "BLS reported August import prices +0.7% m/m (+7.0% y/y) with fuel -0.1% but nonfuel +0.8%; export prices +0.6% m/m (+8.6% y/y), highlighting persistent external price pressure despite recent fuel volatility.",
+          "url": "https://www.bls.gov/news.release/ximpim.nr0.htm"
+        },
+        {
+          "country_codes": [
+            "US"
+          ],
+          "headline": "Philadelphia Fed manufacturing survey still expanding but price indexes firm",
+          "primary_category": "activity",
+          "published_at": "2026-09-21T09:00:00-04:00",
+          "source_name": "National Association of Manufacturers (Philadelphia Fed survey)",
+          "summary": "The September Philadelphia Fed general activity index fell to 37.8 from 47.4; prices paid rose to 48.6 and prices received to 31.3, indicating continued expansion with input-cost pressure.",
+          "url": "https://nam.org/philadelphia-fed-survey-shows-regional-manufacturing-expanding-at-slower-pace-in-september/"
         }
       ],
       "notes": [
-        "substantive normalized news items are frozen below"
+        "accepted current-cycle ACP research supplement"
       ],
-      "status": "stale"
+      "status": "fresh"
     },
     "temperature_scores": {
       "as_of": "2026-09-21",
@@ -79404,14 +79331,14 @@
     "core_status": "ok",
     "families": {
       "central_bank_research": {
-        "as_of": "2026-09-18T04:00:00",
-        "blocking": true,
+        "as_of": "2026-09-22T06:52:19.184127-04:00",
+        "blocking": false,
         "catastrophic": false,
-        "digest": "96f024d0bd3b094b9de1b5c99cc2b60cda47d0df62259f1899e5b4c635ee77fb",
+        "digest": "33db9c2bd329b96ab0da382cf8b9fa59bee81d63f45943eb6c70ebaaf40ff504",
         "notes": [
-          "rolling 30-day central-bank research state is frozen below"
+          "accepted current-cycle ACP central-bank research supplement"
         ],
-        "status": "stale"
+        "status": "fresh"
       },
       "macro_hard": {
         "as_of": "2026-09-21T04:00:00",
@@ -79422,22 +79349,22 @@
         "status": "fresh"
       },
       "market_state": {
-        "as_of": "2026-09-22T11:31:21Z",
+        "as_of": "2026-09-22T11:44:28Z",
         "blocking": true,
         "catastrophic": false,
-        "digest": "2e75840d4692ec070e63943542aa721dea93061c486df2c3a706e787ca63e022",
+        "digest": "1785a5397db22b52ffc943fc2b10834cb01ad33173b8bb16e0bf557057165f74",
         "notes": [],
         "status": "stale"
       },
       "news": {
-        "as_of": "2026-09-18T04:00:00",
-        "blocking": true,
+        "as_of": "2026-09-22T06:52:19.184127-04:00",
+        "blocking": false,
         "catastrophic": false,
-        "digest": "9b690e2e94842d1e7e7525e8cf6c7ffd6ed4e3eecbf7554f658f07ebdba498f7",
+        "digest": "c2d550b2543bf33cedafe0fb2d1ec4abe3bdaacafb384d1fca59f104576645c5",
         "notes": [
-          "substantive normalized news items are frozen below"
+          "accepted current-cycle ACP research supplement"
         ],
-        "status": "stale"
+        "status": "fresh"
       }
     },
     "last_successful_pm_run_id": "overnight-20260922",
@@ -79454,7 +79381,7 @@
     "final_delta": "succeeded",
     "freeze_evidence": "succeeded",
     "pre_trader_delta": "succeeded",
-    "publish": "pending",
+    "publish": "succeeded",
     "trader_review": "succeeded"
   },
   "timezone": "America/New_York",
