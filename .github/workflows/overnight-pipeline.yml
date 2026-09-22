@@ -138,6 +138,11 @@ jobs:
             exit 0
           fi
           git commit -m "chore: reconcile overnight deterministic stages"
+          # Live market-state generation may update tracked cache/source files that
+          # are intentionally outside the overnight persistence boundary. Discard
+          # those runner-local side effects before rebasing the committed state.
+          git restore --worktree -- .
+          git clean -fd
           git pull --rebase origin main
           git push origin HEAD:main
 
@@ -221,5 +226,9 @@ jobs:
             exit 0
           fi
           git commit -m "chore: overnight $STAGE $RUN_ID"
+          # Persist only the explicitly staged overnight/PM state. Live collection
+          # can leave unrelated tracked cache/source updates in the worktree.
+          git restore --worktree -- .
+          git clean -fd
           git pull --rebase origin main
           git push origin HEAD:main
