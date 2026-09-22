@@ -258,6 +258,40 @@ jobs:
             echo "stale Sep 18 Last 24 Hours survived accepted overnight news refresh"
             exit 1
           fi
+          PYTHONPATH=. python - <<'PY'
+          import json
+          import re
+          from pathlib import Path
+          from scripts.overnight.accepted_news import (
+              effective_public_news_context,
+              last_refreshed_label,
+              parse_visible_last_refreshed,
+          )
+          from scripts.overnight.clock import parse_iso
+          from scripts.overnight.store import OvernightStore
+
+          html = Path("_site/index.html").read_text(encoding="utf-8")
+          store = OvernightStore(root=Path("."))
+          dataset = None
+          latest = store.read_latest()
+          if latest and latest.get("overnight_run_id"):
+              run_id = latest["overnight_run_id"]
+              if store.has_artifact(run_id, "assembled_dataset.json"):
+                  dataset = store.read_artifact(run_id, "assembled_dataset.json")
+          context = effective_public_news_context(store, dataset)
+          if context is None:
+              raise SystemExit("missing accepted public news context for Pages HTML assertion")
+          cutoff = parse_iso(context["as_of"])
+          visible = parse_visible_last_refreshed(html)
+          if visible != cutoff.date():
+              raise SystemExit(
+                  f"visible Last refreshed {visible} != accepted news {cutoff.date()}"
+              )
+          if last_refreshed_label(cutoff) not in html:
+              raise SystemExit("accepted news Last refreshed label missing from HTML")
+          if not re.search(r"Oil rebounds in early 22 September trade", html):
+              raise SystemExit("representative Sep 22 oil headline missing from HTML")
+          PY
 
       - name: Sync news summary metadata
         shell: bash

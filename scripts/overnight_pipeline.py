@@ -123,9 +123,16 @@ def main(argv: list[str] | None = None) -> int:
         from scripts.overnight.publish import emit_trader_books_json, publication_gate
 
         store = OvernightStore(root=args.root, state_root=args.state_root)
-        gate = publication_gate(store, run_id=args.run_id, require_dataset=args.require_dataset)
-        if args.site_dir:
-            emit_trader_books_json(store, args.site_dir, run_id=args.run_id)
+        site_dir = args.site_dir
+        if site_dir:
+            emit_trader_books_json(store, site_dir, run_id=args.run_id)
+        gate = publication_gate(
+            store,
+            run_id=args.run_id,
+            require_dataset=args.require_dataset,
+            site_dir=site_dir,
+        )
+        if site_dir:
             from scripts.overnight.publish import emit_pm_books_json
 
             emit_pm_books_json(args.site_dir, root=args.root)

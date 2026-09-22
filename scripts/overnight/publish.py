@@ -5,9 +5,10 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
+from scripts.overnight.accepted_news import assert_site_news_matches_accepted, effective_public_news_context
 from scripts.overnight.assemble import validate_dataset
 from scripts.overnight.errors import PublicationError, SchemaError
-from scripts.overnight.freshness import assert_may_publish
+from scripts.overnight.freshness import assert_may_publish, age_status
 from scripts.overnight.store import OvernightStore, write_json
 
 
@@ -28,11 +29,19 @@ def publication_gate(
     *,
     run_id: str | None = None,
     require_dataset: bool = False,
+    site_dir: Path | None = None,
 ) -> dict[str, Any]:
     dataset = load_assembled(store, run_id)
     if dataset is None:
         if require_dataset:
             raise PublicationError("canonical morning dataset is missing; refusing to publish a false fresh state")
+        context = effective_public_news_context(store, None)
+        if context is not None and site_dir is not None:
+            html_path = Path(site_dir) / "index.html"
+            if html_path.is_file():
+                if age_status(context.get("as_of")) != "fresh":
+                    raise PublicationError("accepted public news is not fresh; refusing to publish stale visible news")
+                assert_site_news_matches_accepted(html_path, context)
         return {
             "may_publish": True,
             "core_status": "ok",
@@ -49,6 +58,18 @@ def publication_gate(
                 raise PublicationError(
                     f"assembled dataset claims publishable core but {family_name} is invalid"
                 )
+    context = effective_public_news_context(store, dataset)
+    if context is not None:
+        if dataset is not None:
+            news_status = (dataset.get("core") or {}).get("news", {}).get("status")
+        else:
+            news_status = age_status(context.get("as_of"))
+        if news_status != "fresh":
+            raise PublicationError("accepted public news is not fresh; refusing to publish stale visible news")
+        if site_dir is not None:
+            html_path = Path(site_dir) / "index.html"
+            if html_path.is_file():
+                assert_site_news_matches_accepted(html_path, context)
     return {**decision, "dataset": dataset}
 
 
