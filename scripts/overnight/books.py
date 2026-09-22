@@ -633,7 +633,7 @@ def apply_action(
             seat=seat,
             instrument=action.get("instrument") or selected_candidate.get("instrument"),
             asset_class=action.get("asset_class") or selected_candidate.get("asset_class"),
-            expression=action.get("expression"),
+            expression=_expression_for_freshness_gate(seat_book, action, selected_candidate),
         )
     except FreshnessError as exc:
         if kind in EXPANDING_ACTIONS:
@@ -729,6 +729,42 @@ def apply_action(
         _history_entry(action, when=stamp, run_id=run_id, result="applied", extra={"blocked_families": blocked})
     )
     return mark_to_market(seat_book, when=stamp, run_id=run_id)
+
+
+def _expression_for_freshness_gate(
+    seat_book: dict[str, Any],
+    action: dict[str, Any],
+    selected_candidate: dict[str, Any],
+) -> Any:
+    """Paper expression the freshness gate must evaluate.
+
+    Trader Room actions carry the expression on ``paper_expression``. ADD and
+    CLOSE follow the open position. A HEDGE with no instrument of its own
+    follows the target position. The selected candidate is only a fallback
+    when the action and its target omit the expression.
+    """
+    kind = action.get("action")
+    expression = action.get("paper_expression")
+    if kind in {"ADD", "REDUCE", "CLOSE"}:
+        try:
+            position = _find_position(seat_book, str(action.get("position_id") or ""))
+        except SchemaError:
+            position = None
+        if isinstance(position, dict) and position.get("paper_expression") is not None:
+            expression = position.get("paper_expression")
+    elif kind == "HEDGE" and not action.get("instrument"):
+        target_id = action.get("hedge_of") or action.get("position_id")
+        try:
+            target = _find_position(seat_book, str(target_id or ""))
+        except SchemaError:
+            target = None
+        if expression is None and isinstance(target, dict):
+            expression = target.get("paper_expression")
+    if expression is None and isinstance(selected_candidate, dict):
+        candidate_expression = selected_candidate.get("paper_expression")
+        if candidate_expression is not None:
+            expression = candidate_expression
+    return expression
 
 
 def _require_notional(action: dict[str, Any]) -> float:

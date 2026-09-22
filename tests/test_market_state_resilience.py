@@ -29,6 +29,7 @@ from scripts.market_state import (
     fetch_nz_rates_with_provenance,
     parse_rbnz_b2_html,
 )
+from scripts.overnight.books import apply_action, empty_seat, _expression_for_freshness_gate
 from scripts.overnight.errors import FreshnessError
 from scripts.overnight.freshness import assert_action_allowed, expression_dependencies
 from scripts.policy_path_data import build_tradable_rate_curves, collect_policy_paths, validate_policy_paths
@@ -334,8 +335,166 @@ class PreflightGateTests(unittest.TestCase):
         packet = _packet()
         packet["policy_paths"]["countries"]["CA"] = {"status": "unavailable", "error": "CORRA source down"}
         families = _families(packet)
+        assert_action_allowed("OPEN", families, seat="dollar-king", instrument="USDCAD")
+        assert_action_allowed("OPEN", families, seat="cross-merchant", instrument="EURJPY")
+        assert_action_allowed("ADD", families, seat="rate-hawk", instrument="US_10Y")
+        assert_action_allowed("OPEN", families, seat="rate-hawk", instrument="AONIA_2026-11")
         with self.assertRaises(FreshnessError):
-            assert_action_allowed("OPEN", families, seat="dollar-king", instrument="USDCAD")
+            assert_action_allowed("OPEN", families, seat="carry-is-king", instrument="CORRA_2027-03")
+        with self.assertRaises(FreshnessError):
+            assert_action_allowed(
+                "ADD",
+                families,
+                seat="carry-is-king",
+                instrument="BASKET",
+                expression={"curve_id": "CORRA"},
+            )
+
+    def test_aonia_policy_outage_blocks_only_aonia_expressions(self) -> None:
+        packet = _packet()
+        packet["policy_paths"]["countries"]["AU"] = {"status": "unavailable", "error": "AONIA source down"}
+        families = _families(packet)
+        assert_action_allowed("OPEN", families, seat="dollar-king", instrument="USDCAD")
+        assert_action_allowed("ADD", families, seat="carry-is-king", instrument="CORRA_2027-03")
+        with self.assertRaises(FreshnessError):
+            assert_action_allowed("OPEN", families, seat="rate-hawk", instrument="AONIA_2026-11")
+
+    def test_cme_positioning_stays_visible_and_does_not_block_preflight(self) -> None:
+        from scripts.market_state import _preflight_blocking_source
+
+        self.assertFalse(_preflight_blocking_source("CME_positioning"))
+        self.assertTrue(_preflight_blocking_source("CFTC_positioning"))
+        self.assertTrue(_preflight_blocking_source("US_rates"))
+        self.assertEqual(
+            [key for key in ("CME_positioning", "NZ_rates") if _preflight_blocking_source(key)],
+            [],
+        )
+        self.assertEqual(
+            [key for key in ("CFTC_positioning",) if _preflight_blocking_source(key)],
+            ["CFTC_positioning"],
+        )
+        packet = _packet()
+        packet["stale_sources"] = ["CME_positioning"]
+        packet["unavailable_sources"] = ["CME_positioning"]
+        packet["positioning"] = {
+            "status": "partial",
+            "cftc_tff": {"status": "ok"},
+            "cme": {"status": "unavailable", "error": "HTTP 403"},
+        }
+        packet["status"] = "ok"
+        packet["preflight_status"] = "ok"
+        families = _families(packet)
+        assert_action_allowed("OPEN", families, seat="dollar-king", instrument="EURJPY")
+        packet["stale_sources"] = ["CFTC_positioning"]
+        packet["preflight_stale_sources"] = ["CFTC_positioning"]
+        packet["status"] = "stale"
+        families = _families(packet, family_status="stale")
+        with self.assertRaises(FreshnessError):
+            assert_action_allowed("OPEN", families, seat="dollar-king", instrument="EURJPY")
+
+
+class PaperExpressionGateTests(unittest.TestCase):
+    def _memo(self, instrument: str = "BASKET") -> dict:
+        return {
+            "rates_candidate": None,
+            "spot_candidate": {"instrument": instrument, "asset_class": "spot_fx", "rationale": "spot"},
+            "options_candidate": None,
+            "selected": "spot",
+            "rationale": "Dedicated spot seat.",
+        }
+
+    def test_ambiguous_instrument_uses_paper_expression(self) -> None:
+        cases = (
+            ("SOFR", {"curve_id": "SOFR", "expiry": "2027-03"}, "SOFR"),
+            ("CORRA", {"type": "futures_strip_average", "curve_id": "CORRA"}, "CORRA"),
+            ("AONIA", {"benchmark": "AONIA"}, "AONIA"),
+            ("NZ", {"legs": ["NZ_2Y", "US_2Y"]}, "NZ"),
+            ("JP", {"instrument": "TONA_2027-03"}, "JP"),
+        )
+        when = datetime(2026, 9, 22, 12, 0, tzinfo=NY)
+        for label, expression, _needle in cases:
+            packet = _packet()
+            if label == "SOFR":
+                packet["tradable_rate_curves"]["curves"]["SOFR"] = {"status": "unavailable", "error": "SR3 down"}
+            elif label == "CORRA":
+                packet["policy_paths"]["countries"]["CA"] = {"status": "unavailable", "error": "CORRA down"}
+            elif label == "AONIA":
+                packet["tradable_rate_curves"]["curves"]["AONIA"] = {"status": "unavailable", "error": "AONIA down"}
+            elif label == "NZ":
+                packet["rates"]["NZ"] = {"status": "unavailable", "error": "RBNZ blocked"}
+            else:
+                packet["rates"]["JP"] = {"status": "stale", "latest_observation": "2026-09-01"}
+            seat = empty_seat("dollar-king")
+            apply_action(
+                seat,
+                {
+                    "action": "OPEN",
+                    "instrument": "BASKET",
+                    "side": "long",
+                    "notional_usd": 1_000_000,
+                    "price": 1.0,
+                    "asset_class": "spot_fx",
+                    "paper_expression": expression,
+                    "expression_memo": self._memo(),
+                },
+                families=_families(packet),
+                run_id="gate-1",
+                when=when,
+            )
+            self.assertEqual(seat["positions"], [], label)
+            self.assertTrue(seat["blocked_opens"], label)
+            self.assertIn("expression blocked", seat["blocked_opens"][-1]["reason"])
+
+    def test_add_and_hedge_use_target_paper_expression(self) -> None:
+        when = datetime(2026, 9, 22, 12, 0, tzinfo=NY)
+        packet = _packet()
+        seat = empty_seat("dollar-king")
+        apply_action(
+            seat,
+            {
+                "action": "OPEN",
+                "instrument": "BASKET",
+                "side": "long",
+                "notional_usd": 1_000_000,
+                "price": 1.0,
+                "asset_class": "spot_fx",
+                "paper_expression": {"curve_id": "CORRA"},
+                "expression_memo": self._memo(),
+            },
+            families=_families(packet),
+            run_id="gate-open",
+            when=when,
+        )
+        position = seat["positions"][0]
+        packet["policy_paths"]["countries"]["CA"] = {"status": "unavailable", "error": "CORRA down"}
+        apply_action(
+            seat,
+            {
+                "action": "ADD",
+                "position_id": position["position_id"],
+                "instrument": "BASKET",
+                "notional_usd": 500_000,
+                "price": 1.0,
+                "expression_memo": self._memo(),
+            },
+            families=_families(packet),
+            run_id="gate-add",
+            when=when,
+        )
+        self.assertEqual(len(seat["positions"]), 1)
+        self.assertEqual(seat["positions"][0]["notional_usd"], 1_000_000)
+        self.assertIn("CORRA_curve=unavailable", seat["blocked_opens"][-1]["reason"])
+        resolved = _expression_for_freshness_gate(
+            seat,
+            {"action": "HEDGE", "hedge_of": position["position_id"]},
+            {},
+        )
+        self.assertEqual(resolved, {"curve_id": "CORRA"})
+        candidate = {"paper_expression": {"benchmark": "AONIA"}}
+        self.assertEqual(
+            _expression_for_freshness_gate(seat, {"action": "OPEN", "instrument": "BASKET"}, candidate),
+            {"benchmark": "AONIA"},
+        )
 
 
 class SofrDecouplingTests(unittest.TestCase):

@@ -50,7 +50,7 @@ The JSON object always contains:
 | `schema_version` | `1` |
 | `generated_at` | UTC timestamp of the run (`...Z`) |
 | `window_start` | Inclusive history start used for context (~5 years) |
-| `status` / `preflight_status` | `ok` when every `required_for_trader_preflight` sovereign curve and ECB FX is inside its publication lag. NZ, EA and Japan do not flip this status. `stale` when a required preflight source is outside that lag |
+| `status` / `preflight_status` | `ok` when every `required_for_trader_preflight` sovereign cash curve, ECB FX, and CFTC positioning is inside its publication lag. NZ, EA, Japan, policy-path strips, and supplemental CME open interest do not flip this status. `stale` when a required preflight source is outside that lag |
 | `stale_sources` | Every stale or blocked source key, including non-preflight NZ/JP, else `[]` |
 | `preflight_stale_sources` | Subset of `stale_sources` that flips `status` |
 | `unavailable_sources` | Official sources that could not be fetched (currently NZ-only), else `[]` |

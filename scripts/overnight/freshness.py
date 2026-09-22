@@ -169,6 +169,15 @@ def _named_status(block: Any, *source_lists: Any, source_key: str) -> str:
     return "ok"
 
 
+_CURVE_POLICY_COUNTRY = {"SOFR": "US", "CORRA": "CA", "AONIA": "AU"}
+
+
+def _policy_country(packet: dict[str, Any], code: str) -> dict[str, Any] | None:
+    countries = ((packet.get("policy_paths") or {}).get("countries") or {})
+    block = countries.get(code) if isinstance(countries, dict) else None
+    return block if isinstance(block, dict) else None
+
+
 def _dependency_status(packet: dict[str, Any], dependency: str) -> str:
     rates = packet.get("rates") if isinstance(packet.get("rates"), dict) else {}
     curves = ((packet.get("tradable_rate_curves") or {}).get("curves") or {})
@@ -181,18 +190,32 @@ def _dependency_status(packet: dict[str, Any], dependency: str) -> str:
     curve_ids = {"SOFR_curve": "SOFR", "CORRA_curve": "CORRA", "AONIA_curve": "AONIA"}
     curve_id = curve_ids.get(dependency)
     if curve_id:
-        return _named_status(
+        curve_status = _named_status(
             curves.get(curve_id),
             unavailable,
             source_key=f"{curve_id}_tradable_curve",
         )
+        if curve_status in _BLOCKING_SOURCE_STATUSES:
+            return curve_status
+        policy = _policy_country(packet, _CURVE_POLICY_COUNTRY[curve_id])
+        if policy is not None:
+            policy_status = str(policy.get("status") or "")
+            if policy_status in _BLOCKING_SOURCE_STATUSES:
+                return policy_status
+            if curve_id == "SOFR" and policy_status in {"ok", "partial"}:
+                benchmark = policy.get("benchmark") if isinstance(policy.get("benchmark"), dict) else {}
+                if benchmark.get("rate") is None:
+                    return "missing"
+        return curve_status
     return "ok"
 
 
 def required_preflight_block(families: dict[str, Any]) -> str | None:
-    """Fail closed when a required US/CA/AU market-state leg is unusable.
+    """Fail closed when a required US/CA/AU cash curve or ECB FX is unusable.
 
-    Non-preflight countries and an SR3-only gap do not trip this check.
+    Policy paths and tradable futures strips are expression-specific. An SR3,
+    CORRA, or AONIA outage does not veto an unrelated trade. CME positioning
+    is supplemental and is not a preflight input.
     """
     packet = _market_packet(families)
     if packet is None:
@@ -208,18 +231,6 @@ def required_preflight_block(families: dict[str, Any]) -> str | None:
     fx_status = str(fx.get("status") or "")
     if fx_status in _BLOCKING_SOURCE_STATUSES:
         return f"required preflight FX is {fx_status}"
-    countries = ((packet.get("policy_paths") or {}).get("countries") or {})
-    if isinstance(countries, dict):
-        for code in required_preflight_countries():
-            block = countries.get(code)
-            if not isinstance(block, dict):
-                continue
-            if block.get("status") == "unavailable":
-                return f"required preflight {code} policy path is unavailable"
-            if code == "US" and block.get("status") in {"ok", "partial"}:
-                benchmark = block.get("benchmark") if isinstance(block.get("benchmark"), dict) else {}
-                if benchmark.get("rate") is None:
-                    return "required preflight US SOFR benchmark is missing"
     return None
 
 

@@ -835,14 +835,14 @@ def fetch_nz_rates(
 
 
 def _preflight_blocking_source(source_key: str) -> bool:
-    """Registry preflight countries and FX/positioning drive the global packet status.
+    """Registry preflight countries, ECB FX, and CFTC ownership drive packet status.
 
-    NZ, EA and JP are required_for_trader_preflight=false. Their stale or
-    unavailable states stay visible on the source and must not flip the packet.
-    SR3/SOFR curve gaps are expression-specific and are not global blockers.
+    NZ, EA and JP are required_for_trader_preflight=false. CME open interest is
+    a supplemental overlay: it stays visible and must not flip the packet.
+    SR3/CORRA/AONIA curve gaps are expression-specific and are not global blockers.
     """
     required = {f"{code}_rates" for code in required_preflight_countries()}
-    return source_key in required or source_key in {"FX", "CFTC_positioning", "CME_positioning"}
+    return source_key in required or source_key in {"FX", "CFTC_positioning"}
 
 
 def parse_ecb_sdmx_csv(text: str) -> dict[str, dict[date, float]]:
@@ -1524,7 +1524,8 @@ def build_snapshot(
                 "Euro-area sovereign fragmentation (IT/FR/ES vs Bund) is market context, never an EA temperature input. "
                 "Housing context is collected for the US, Canada and Australia from free maintained public sources: FHFA/Census/Fed/Freddie Mac via FRED for the US, Statistics Canada/CMHC/Bank of Canada for Canada, and ABS/RBA for Australia. "
                 "EA/JP housing is omitted until an official/free source meets the contract. "
-                "CFTC TFF supplies trader-class ownership/crowding context and CME's public volume/open-interest service supplies daily FX futures and aggregate options OI history. "
+                "CFTC TFF supplies trader-class ownership/crowding context and can mark the packet stale. "
+                "CME's public volume/open-interest service is a supplemental overlay and does not flip packet status. "
                 "No historical warehouse is written to GitHub or Supabase."
             ),
         },
