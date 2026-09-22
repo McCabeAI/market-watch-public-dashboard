@@ -28,7 +28,10 @@ MOF_JGB_HISTORICAL_JA = (
 )
 
 JGB_TENORS = ("2Y", "5Y", "10Y", "30Y")
-JGB_STALE_AFTER_DAYS = 4
+# MOF publishes the prior Tokyo session, and that print can lag one further
+# Tokyo business day. Weekends and public holidays do not age the series.
+# A naive calendar-day threshold falsely marks the last pre-holiday print stale.
+JGB_PUBLICATION_LAG_BUSINESS_DAYS = 1
 
 # --- BOJ overnight / TONA policy benchmark ---
 BOJ_CALL_MONEY_PAGE = "https://www.boj.or.jp/en/statistics/market/short/mutan/index.htm"
@@ -375,6 +378,138 @@ def _fetch_jpx_tona_settlement_csv(
     raise JapanRatesError("JPX OSE settlement CSV not found from index or recent walkback")
 
 
+def _nth_weekday(year: int, month: int, weekday: int, n: int) -> date:
+    first = date(year, month, 1)
+    shift = (weekday - first.weekday()) % 7
+    return date(year, month, 1 + shift + 7 * (n - 1))
+
+
+def _japan_equinox(year: int, *, autumnal: bool) -> date:
+    """Public-holiday equinox day for 1980-2099.
+
+    This is the standard civil approximation of the vernal (March) and
+    autumnal (September) equinox holidays. It is not a one-year exception.
+    """
+    years = year - 1980
+    if autumnal:
+        day = int(23.2488 + 0.242194 * years - int(years / 4))
+        return date(year, 9, day)
+    day = int(20.8431 + 0.242194 * years - int(years / 4))
+    return date(year, 3, day)
+
+
+def japan_public_holidays(year: int) -> set[date]:
+    """Japanese public holidays under the Act as in force since 2022.
+
+    Includes substitute holidays (振替休日) when a holiday falls on Sunday and
+    citizens' holidays (国民の休日) when a weekday is sandwiched between two
+    holidays. Mountain Day is 11 August, Sports Day is the second Monday of
+    October, and the Emperor's Birthday is 23 February.
+    """
+    holidays = {
+        date(year, 1, 1),
+        _nth_weekday(year, 1, 0, 2),
+        date(year, 2, 11),
+        date(year, 2, 23),
+        _japan_equinox(year, autumnal=False),
+        date(year, 4, 29),
+        date(year, 5, 3),
+        date(year, 5, 4),
+        date(year, 5, 5),
+        _nth_weekday(year, 7, 0, 3),
+        date(year, 8, 11),
+        _nth_weekday(year, 9, 0, 3),
+        _japan_equinox(year, autumnal=True),
+        _nth_weekday(year, 10, 0, 2),
+        date(year, 11, 3),
+        date(year, 11, 23),
+    }
+    if year <= 2018:
+        holidays.discard(date(year, 2, 23))
+        holidays.add(date(year, 12, 23))
+    substitutes: set[date] = set()
+    for holiday in sorted(holidays):
+        if holiday.weekday() != 6:
+            continue
+        nxt = holiday + timedelta(days=1)
+        while nxt in holidays or nxt in substitutes:
+            nxt += timedelta(days=1)
+        substitutes.add(nxt)
+    holidays |= substitutes
+    changed = True
+    while changed:
+        changed = False
+        for holiday in list(holidays):
+            mid = holiday + timedelta(days=1)
+            nxt = holiday + timedelta(days=2)
+            if nxt in holidays and mid not in holidays and mid.weekday() < 5:
+                holidays.add(mid)
+                changed = True
+    return holidays
+
+
+def is_japan_business_day(day: date) -> bool:
+    return day.weekday() < 5 and day not in japan_public_holidays(day.year)
+
+
+def previous_japan_business_day(day: date) -> date:
+    cursor = day - timedelta(days=1)
+    while not is_japan_business_day(cursor):
+        cursor -= timedelta(days=1)
+    return cursor
+
+
+def shift_japan_business_days(day: date, sessions: int) -> date:
+    cursor = day
+    for _ in range(sessions):
+        cursor = previous_japan_business_day(cursor)
+    return cursor
+
+
+def japan_business_days_since(observation: date, today: date) -> int:
+    """Tokyo business days strictly after `observation` through `today`."""
+    if today <= observation:
+        return 0
+    count = 0
+    cursor = observation + timedelta(days=1)
+    while cursor <= today:
+        if is_japan_business_day(cursor):
+            count += 1
+        cursor += timedelta(days=1)
+    return count
+
+
+def minimum_fresh_jgb_observation(
+    today: date,
+    *,
+    publication_lag_business_days: int = JGB_PUBLICATION_LAG_BUSINESS_DAYS,
+) -> date:
+    """Oldest MOF JGB print that is still current on `today`.
+
+    The anchor is the previous Tokyo business day: today's close is not
+    required on a session day, and a holiday uses the last completed session.
+    The print of that anchor session may itself be unpublished for
+    `publication_lag_business_days` further Tokyo sessions.
+    """
+    anchor = previous_japan_business_day(today)
+    if publication_lag_business_days <= 0:
+        return anchor
+    return shift_japan_business_days(anchor, publication_lag_business_days)
+
+
+def jgb_observation_status(
+    observation: date,
+    today: date,
+    *,
+    publication_lag_business_days: int = JGB_PUBLICATION_LAG_BUSINESS_DAYS,
+) -> str:
+    minimum = minimum_fresh_jgb_observation(
+        today,
+        publication_lag_business_days=publication_lag_business_days,
+    )
+    return "ok" if observation >= minimum else "stale"
+
+
 def _jgb_freshness(
     rates: dict[str, dict[date, float]],
     today: date,
@@ -387,8 +522,15 @@ def _jgb_freshness(
     if latest is None:
         return {"status": "unavailable", "error": "no JGB observations"}
     age = (today - latest).days
-    status = "ok" if age <= JGB_STALE_AFTER_DAYS else "stale"
-    return {"status": status, "as_of": latest.isoformat(), "age_days": age}
+    status = jgb_observation_status(latest, today)
+    return {
+        "status": status,
+        "as_of": latest.isoformat(),
+        "age_days": age,
+        "age_business_days": japan_business_days_since(latest, today),
+        "freshness_rule": "japan_business_day_publication_lag",
+        "minimum_fresh_observation": minimum_fresh_jgb_observation(today).isoformat(),
+    }
 
 
 def collect_jp_official_curve(

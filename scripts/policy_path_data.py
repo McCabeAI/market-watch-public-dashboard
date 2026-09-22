@@ -766,6 +766,121 @@ def _terminal_summary(contracts: list[dict[str, Any]]) -> dict[str, Any] | None:
     }
 
 
+_BROWSER_UA = (
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+)
+
+
+def _fetch_text(fetch_bytes: FetchBytes, url: str, **kwargs: Any) -> str:
+    raw = fetch_bytes(url, **kwargs)
+    if isinstance(raw, str):
+        return raw
+    return raw.decode("utf-8", errors="replace")
+
+
+def _acquire_sr1_contracts(
+    fetch_bytes: FetchBytes,
+    *,
+    benchmark: float,
+) -> tuple[list[dict[str, Any]], str, str]:
+    """SR1 policy context. Failures stay local and never discard NY Fed SOFR."""
+    errors: list[str] = []
+    try:
+        bulletin = fetch_bytes(
+            CME_SOFR_BULLETIN_URL,
+            user_agent=_BROWSER_UA,
+            referer="https://www.cmegroup.com/market-data/daily-bulletin.html",
+        )
+        return (
+            parse_cme_sofr_bulletin_pdf(bulletin, benchmark=benchmark),
+            CME_SOFR_BULLETIN_URL,
+            "CME Daily Bulletin SR1 settlements",
+        )
+    except Exception as exc:
+        errors.append(f"CME bulletin: {exc}")
+    try:
+        html = _fetch_text(fetch_bytes, ESIGNAL_SOFR_CHAIN_URL, user_agent=_BROWSER_UA)
+        return (
+            parse_esignal_sofr_html(html, benchmark=benchmark),
+            ESIGNAL_SOFR_CHAIN_URL,
+            "delayed ICE One-Month SOFR futures chain via eSignal fallback because CME blocks hosted runners",
+        )
+    except Exception as exc:
+        errors.append(f"eSignal SR1: {exc}")
+    raise ValueError("SR1 credential-free chain failed: " + "; ".join(errors))
+
+
+def _acquire_sr3_contracts(
+    fetch_bytes: FetchBytes,
+    *,
+    today: date,
+    benchmark: float,
+) -> tuple[list[dict[str, Any]], str, str]:
+    """SR3 tradable curve. A transient eSignal 403 falls through to CME sources.
+
+    fetch_bytes already retries HTTP 403. This chain then tries the accepted
+    public CME settlement API, the CME quote page, and the CME daily bulletin.
+    """
+    errors: list[str] = []
+    try:
+        html = _fetch_text(fetch_bytes, ESIGNAL_SR3_CHAIN_URL, user_agent=_BROWSER_UA)
+        return (
+            parse_esignal_sr3_html(html, benchmark=benchmark),
+            ESIGNAL_SR3_CHAIN_URL,
+            "delayed CME SR3 futures chain via eSignal",
+        )
+    except Exception as exc:
+        errors.append(f"eSignal SR3: {exc}")
+        # One explicit extra attempt so a transient 403 is retried before fallback.
+        try:
+            html = _fetch_text(fetch_bytes, ESIGNAL_SR3_CHAIN_URL, user_agent=_BROWSER_UA)
+            return (
+                parse_esignal_sr3_html(html, benchmark=benchmark),
+                ESIGNAL_SR3_CHAIN_URL,
+                "delayed CME SR3 futures chain via eSignal retry",
+            )
+        except Exception as retry_exc:
+            errors.append(f"eSignal SR3 retry: {retry_exc}")
+    try:
+        rows, url = _fetch_recent_cme_sr3_settlements(
+            today=today,
+            fetch_bytes=fetch_bytes,
+            benchmark=benchmark,
+        )
+        return rows, url, "CME SR3 settlements API"
+    except Exception as exc:
+        errors.append(f"CME SR3 settlements: {exc}")
+    try:
+        html = _fetch_text(
+            fetch_bytes,
+            CME_SR3_URL,
+            user_agent=_BROWSER_UA,
+            referer=CME_SR3_URL,
+        )
+        return (
+            parse_cme_sr3_html(html, benchmark=benchmark),
+            CME_SR3_URL,
+            "CME Three-Month SOFR delayed quote page",
+        )
+    except Exception as exc:
+        errors.append(f"CME SR3 quote page: {exc}")
+    try:
+        bulletin = fetch_bytes(
+            CME_SOFR_BULLETIN_URL,
+            user_agent=_BROWSER_UA,
+            referer="https://www.cmegroup.com/market-data/daily-bulletin.html",
+        )
+        return (
+            parse_cme_sr3_bulletin_pdf(bulletin, benchmark=benchmark),
+            CME_SOFR_BULLETIN_URL,
+            "CME Daily Bulletin SR3 settlements",
+        )
+    except Exception as exc:
+        errors.append(f"CME SR3 bulletin: {exc}")
+    raise ValueError("SR3 credential-free fallback chain failed: " + "; ".join(errors))
+
+
 def collect_policy_paths(
     *,
     today: date,
@@ -798,49 +913,49 @@ def collect_policy_paths(
         countries["CA"] = {"status": "unavailable", "error": str(exc)}
         sources["CA_policy"] = {"status": "unavailable", "error": str(exc), "benchmark_url": BOC_CORRA_PAGE, "path_url": MX_EXPECTATIONS_URL}
 
-    # United States
+    # United States. NY Fed SOFR is authoritative for funding and is kept even
+    # when SR1 or SR3 futures acquisition fails.
     try:
         sofr_payload = fetch_bytes(NYFED_SOFR_URL).decode("utf-8", errors="replace")
         sofr = parse_nyfed_sofr_json(sofr_payload)
-        us_curve_source = CME_SOFR_BULLETIN_URL
-        us_curve_method = "CME Daily Bulletin SR1 settlements"
+    except Exception as exc:
+        countries["US"] = {"status": "unavailable", "error": str(exc)}
+        sources["US_policy"] = {
+            "status": "unavailable",
+            "error": str(exc),
+            "benchmark_url": NYFED_SOFR_PAGE,
+            "path_url": CME_SOFR_URL,
+        }
+        sofr = None
+    if sofr is not None:
+        benchmark_rate = float(sofr["rate"])
+        sr1_error = None
+        sr3_error = None
         try:
-            bulletin = fetch_bytes(
-                CME_SOFR_BULLETIN_URL,
-                user_agent=(
-                    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-                    "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
-                ),
-                referer="https://www.cmegroup.com/market-data/daily-bulletin.html",
+            contracts, us_curve_source, us_curve_method = _acquire_sr1_contracts(
+                fetch_bytes,
+                benchmark=benchmark_rate,
             )
-            contracts = parse_cme_sofr_bulletin_pdf(bulletin, benchmark=float(sofr["rate"]))
-        except Exception:
-            fallback = fetch_bytes(
-                ESIGNAL_SOFR_CHAIN_URL,
-                user_agent=(
-                    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-                    "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
-                ),
-            ).decode("utf-8", errors="replace")
-            contracts = parse_esignal_sofr_html(fallback, benchmark=float(sofr["rate"]))
-            us_curve_source = ESIGNAL_SOFR_CHAIN_URL
-            us_curve_method = "delayed ICE One-Month SOFR futures chain via eSignal fallback because CME blocks hosted runners"
-        # Tradable USD curve: quarterly CME Three-Month SOFR futures (SR3).
-        # CME rejects GitHub-hosted runners with HTTP 403, so use eSignal's
-        # public delayed CME quote board as the deterministic hosted-runner feed.
-        sr3_html = fetch_bytes(
-            ESIGNAL_SR3_CHAIN_URL,
-            user_agent=(
-                "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-                "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
-            ),
-        ).decode("utf-8", errors="replace")
-        contracts_3m = parse_esignal_sr3_html(sr3_html, benchmark=float(sofr["rate"]))
-        sr3_source = ESIGNAL_SR3_CHAIN_URL
-        sr3_method = "delayed CME SR3 futures chain via eSignal"
-
+        except Exception as exc:
+            contracts = []
+            us_curve_source = CME_SOFR_URL
+            us_curve_method = "SR1 unavailable"
+            sr1_error = str(exc)
+        try:
+            contracts_3m, sr3_source, sr3_method = _acquire_sr3_contracts(
+                fetch_bytes,
+                today=today,
+                benchmark=benchmark_rate,
+            )
+        except Exception as exc:
+            contracts_3m = []
+            sr3_source = ESIGNAL_SR3_CHAIN_URL
+            sr3_method = "SR3 unavailable"
+            sr3_error = str(exc)
+        futures_errors = [item for item in (sr1_error, sr3_error) if item]
+        us_status = "ok" if contracts_3m else "partial"
         countries["US"] = {
-            "status": "ok",
+            "status": us_status,
             "benchmark": {
                 "name": "SOFR",
                 **sofr,
@@ -849,18 +964,23 @@ def collect_policy_paths(
             },
             "contracts_1m": contracts,
             "contracts_3m": contracts_3m,
-            "terminal": _terminal_summary(contracts),
+            "terminal": _terminal_summary(contracts or contracts_3m),
             "method": f"Policy context: 100 minus {us_curve_method}. Tradable curve: 100 minus {sr3_method}.",
         }
+        if sr1_error:
+            countries["US"]["sr1_error"] = sr1_error
+        if sr3_error:
+            countries["US"]["sr3_error"] = sr3_error
+        if futures_errors:
+            countries["US"]["error"] = "; ".join(futures_errors)
         sources["US_policy"] = {
-            "status": "ok",
+            "status": us_status,
             "benchmark_url": NYFED_SOFR_PAGE,
             "path_url": us_curve_source,
             "tradable_curve_url": sr3_source,
         }
-    except Exception as exc:
-        countries["US"] = {"status": "unavailable", "error": str(exc)}
-        sources["US_policy"] = {"status": "unavailable", "error": str(exc), "benchmark_url": NYFED_SOFR_PAGE, "path_url": CME_SOFR_URL}
+        if futures_errors:
+            sources["US_policy"]["error"] = "; ".join(futures_errors)
 
     # Australia
     try:
@@ -979,7 +1099,7 @@ def build_tradable_rate_curves(policy_paths: dict[str, Any]) -> dict[str, Any]:
     curves: dict[str, Any] = {}
     for curve_id, (country, family, instrument, product_code, period_months, source_url) in specs.items():
         block = countries.get(country) or {}
-        rows = block.get(family) if block.get("status") == "ok" else None
+        rows = block.get(family) if block.get("status") in {"ok", "partial"} else None
         if not isinstance(rows, list) or not rows:
             curves[curve_id] = {
                 "status": "unavailable",
@@ -1117,9 +1237,13 @@ def validate_policy_paths(payload: dict[str, Any]) -> None:
         if rate is None or not -2.0 < rate < 25.0:
             raise ValueError(f"{country} implausible overnight benchmark {rate}")
         if country in {"US", "CA", "AU"}:
-            contracts = block.get("contracts_1m") or block.get("contracts_3m") or []
-            if not contracts:
+            contracts = list(block.get("contracts_1m") or []) + list(block.get("contracts_3m") or [])
+            if block.get("status") == "ok" and not contracts:
                 raise ValueError(f"{country} available policy path has no futures contracts")
+            if block.get("status") == "partial" and not (
+                block.get("error") or block.get("sr1_error") or block.get("sr3_error")
+            ):
+                raise ValueError(f"{country} partial policy path missing error")
             for row in contracts:
                 implied = _num(row.get("implied_rate"))
                 if implied is None or not -2.0 < implied < 25.0:

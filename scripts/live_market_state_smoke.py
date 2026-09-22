@@ -83,8 +83,12 @@ def main() -> int:
     # workflow can trigger transient source throttling and make the end-to-end artifact fail.
     policy_paths = collect_policy_paths(today=today, fetch_bytes=fetch_bytes)
     validate_policy_paths(policy_paths)
+    us_policy = policy_paths.get("countries", {}).get("US") or {}
+    us_benchmark = us_policy.get("benchmark") or {}
+    if us_policy.get("status") == "unavailable" or us_benchmark.get("rate") is None:
+        raise MarketStateError(f"live NY Fed SOFR benchmark unavailable: {us_policy}")
     missing_policy = [
-        country for country in ("US", "CA", "AU")
+        country for country in ("CA", "AU")
         if (policy_paths.get("countries", {}).get(country) or {}).get("status") != "ok"
     ]
     if missing_policy:
@@ -99,8 +103,19 @@ def main() -> int:
 
     tradable = build_tradable_rate_curves(policy_paths)
     validate_tradable_rate_curves(tradable)
-    if tradable.get("status") != "ok":
-        raise MarketStateError(f"live tradable rate curves unavailable: {tradable}")
+    for curve_id in ("CORRA", "AONIA"):
+        curve = (tradable.get("curves") or {}).get(curve_id) or {}
+        if curve.get("status") != "ok" or not curve.get("contracts"):
+            raise MarketStateError(f"live {curve_id} tradable curve unavailable: {curve}")
+    sofr_curve = (tradable.get("curves") or {}).get("SOFR") or {}
+    if sofr_curve.get("status") != "ok":
+        report["SOFR_curve_status"] = sofr_curve.get("status")
+        report["SOFR_curve_error"] = sofr_curve.get("error")
+        print(
+            "SR3 tradable curve unavailable after the credential-free fallback chain; "
+            f"official SOFR benchmark retained: {sofr_curve.get('error')}",
+            file=sys.stderr,
+        )
     report["tradable_rate_curves"] = {
         curve_id: {
             "product_code": tradable["curves"][curve_id].get("product_code"),

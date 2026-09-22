@@ -50,8 +50,9 @@ The JSON object always contains:
 | `schema_version` | `1` |
 | `generated_at` | UTC timestamp of the run (`...Z`) |
 | `window_start` | Inclusive history start used for context (~5 years) |
-| `status` | `ok` if every required source is within its expected publication lag; `stale` if one or more sources are older than that lag but still present |
-| `stale_sources` | List of stale or blocked source keys, else `[]` |
+| `status` / `preflight_status` | `ok` when every `required_for_trader_preflight` sovereign cash curve, ECB FX, and CFTC positioning is inside its publication lag. NZ, EA, Japan, policy-path strips, and supplemental CME open interest do not flip this status. `stale` when a required preflight source is outside that lag |
+| `stale_sources` | Every stale or blocked source key, including non-preflight NZ/JP, else `[]` |
+| `preflight_stale_sources` | Subset of `stale_sources` that flips `status` |
 | `unavailable_sources` | Official sources that could not be fetched (currently NZ-only), else `[]` |
 | `rates` | `US`, `CA`, `AU`, `NZ` blocks |
 | `rate_rv` | 15 matching-tenor spreads |
@@ -181,22 +182,22 @@ Null lookbacks stay null. A missing US, Canada, Australia, or ECB FX source, ten
 | AU housing credit | RBA D1 | Monthly total / owner-occupier / investor credit growth |
 | AU mortgage rates | RBA F6 | Monthly rates on outstanding and newly funded housing loans |
 | AU mortgage cash flow | RBA E13 | Quarterly household housing-loan payments and payment-to-income ratios |
-| NZ rates | RBNZ B2 wholesale interest rates | Best-effort context only; blocked source is reported rather than substituted |
+| NZ rates | RBNZ B2 wholesale interest rates | Official XLSX first, then the official B2 HTML table if the workbook is blocked. Still RBNZ only. Non-preflight |
 | FX | ECB euro foreign-exchange reference rates | Same-fixing EUR legs; deterministic G10 crosses |
 | Positioning ownership | CFTC TFF Futures Only | Weekly trader-class positions |
 | Positioning OI overlay | CME public Volume & Open Interest | Supplemental daily product-level OI/volume |
 
-Expected publication lag before `status=stale`: US/CA/NZ/FX 4 calendar days; AU 12 calendar days. Observations older than 21 calendar days fail the run.
+Expected publication lag before a source is `stale`: US/CA/NZ/FX 4 calendar days; AU 12 calendar days. Japan JGB uses the Tokyo business-day calendar plus one publication-lag session, so a holiday sequence such as a citizens' holiday between Respect for the Aged Day and the autumnal equinox does not age the last pre-holiday MOF print. Observations older than 21 calendar days still fail the run. Only US, Canada, Australia and ECB FX staleness marks the packet `stale`. NZ and Japan remain visible at source level.
 
 ## Workflow
 
-`.github/workflows/daily-market-state.yml` runs weekdays at 12:30 UTC, on `workflow_dispatch`, and on PRs that touch the generator. It:
+`.github/workflows/daily-market-state.yml` runs weekdays at 12:30 UTC (08:30 ET while the US is on daylight time), on `workflow_dispatch`, and on PRs that touch the generator. GitHub Actions cron is UTC and is often delivered hours late; 18 Sep 2026 started at 16:37 UTC and 21 Sep 2026 started at 18:16 UTC. A missing run record shortly after 12:30 UTC is that platform delay, not a cron defect. Schedule and pull_request no longer share one concurrency group, so a PR cannot cancel a queued weekday run. The workflow:
 
 1. runs the deterministic unit tests
 2. runs `python scripts/live_market_state_smoke.py` against live Treasury, BoC, RBA and ECB sources
 3. runs the generator, including the CFTC and CME positioning collectors, and uploads `/tmp/market-state/market-state.json` as artifact `market-state` with 5-day retention (NZ or a supplemental positioning source may be `unavailable` with explicit provenance)
 
-GitHub-hosted runners often receive HTTP 403 from `rbnz.govt.nz` (Cloudflare). The workflow does not substitute a vendor or media feed; NZ rates and NZ-dependent RV spreads are emitted as `unavailable` while US/CA/AU/ECB remain required.
+GitHub-hosted runners often receive HTTP 403 from `rbnz.govt.nz` (Cloudflare) on the B2 XLSX. The generator retries that official workbook with browser TLS. The published workbook currently advertises worksheet dimension `A1` while the Data sheet holds the history, and the date column has no Date label, so parsing reads the full sheet and identifies the government 2Y/5Y/10Y headers directly. If the workbook is blocked or still unusable, the generator parses the official RBNZ B2 HTML table (the same 2Y/5Y/10Y government closing yields). It does not substitute a vendor or media feed. If both official paths fail, NZ rates and NZ-dependent RV spreads are `unavailable` and US/CA/AU/ECB remain required. That NZ gap does not by itself block unrelated OPEN/ADD.
 
 The GitHub Pages deploy workflow also runs the same generator into `_site/market-state.json` when live official sources respond, and serves it to the dashboard **Market Data** tab (`patch_v12/`). Pages generation is best-effort (`continue-on-error`) so a live-source outage does not block the dashboard deploy. The daily market-state workflow remains the required packet producer. It does not write to Supabase and does not read repository secrets.
 

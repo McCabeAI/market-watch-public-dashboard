@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from datetime import datetime
 from typing import Any
 
@@ -73,12 +74,214 @@ def blocked_expanding_families(families: dict[str, Any], *, required: tuple[str,
     return [name for name in required if assessed[name]["blocking"]]
 
 
-def assert_action_allowed(action: str, families: dict[str, Any], *, seat: str) -> list[str]:
+def _market_packet(families: dict[str, Any]) -> dict[str, Any] | None:
+    block = families.get("market_state") or {}
+    data = block.get("data") if isinstance(block, dict) else None
+    return data if isinstance(data, dict) else None
+
+
+_G10 = ("EUR", "GBP", "AUD", "NZD", "USD", "CAD", "CHF", "NOK", "SEK", "JPY")
+_BLOCKING_SOURCE_STATUSES = {"stale", "missing", "invalid", "unavailable"}
+
+
+def _bounded_token(name: str, *, allow_trailing_alnum: bool = False) -> str:
+    """Match a source token even when the next character is '_' or '-'.
+
+    ``\\b`` treats underscore as a word character, so ``SOFR_2027-03`` and
+    ``TONA_2027-03`` would otherwise look unrelated. CME month codes such as
+    ``SR3Z6`` keep a trailing alphanumeric on purpose.
+    """
+    tail = "" if allow_trailing_alnum else r"(?![A-Z0-9])"
+    return rf"(?<![A-Z0-9]){name}{tail}"
+
+
+def _walk_text(value: Any, parts: list[str]) -> None:
+    if isinstance(value, str):
+        parts.append(value)
+    elif isinstance(value, dict):
+        for key, item in value.items():
+            parts.append(str(key))
+            _walk_text(item, parts)
+    elif isinstance(value, (list, tuple)):
+        for item in value:
+            _walk_text(item, parts)
+
+
+def expression_dependencies(
+    instrument: Any = None,
+    *,
+    asset_class: str | None = None,
+    expression: Any = None,
+) -> set[str]:
+    """Source legs the selected expression actually needs.
+
+    Unevaluated alternate candidates are not included. Callers pass the
+    instrument being opened and, when present, its expression object.
+    """
+    parts: list[str] = []
+    _walk_text(instrument, parts)
+    _walk_text(asset_class, parts)
+    _walk_text(expression, parts)
+    upper = " ".join(parts).upper()
+    deps: set[str] = set()
+    for token in re.findall(r"(?<![A-Z])([A-Z]{6})(?![A-Z])", upper):
+        base, quote = token[:3], token[3:]
+        if base not in _G10 or quote not in _G10:
+            continue
+        if "NZD" in (base, quote):
+            deps.add("NZ_rates")
+        if "JPY" in (base, quote):
+            deps.add("JP_rates")
+    for left, right in re.findall(r"(?<![A-Z0-9])([A-Z]{2})-([A-Z]{2})_[0-9A-Z]+", upper):
+        if "NZ" in (left, right):
+            deps.add("NZ_rates")
+        if "JP" in (left, right):
+            deps.add("JP_rates")
+    if re.search(_bounded_token("NZD") + r"|" + _bounded_token("NZ") + r"(?![A-Z])", upper):
+        deps.add("NZ_rates")
+    if re.search(
+        _bounded_token("JPY")
+        + "|"
+        + _bounded_token("JP")
+        + r"(?![A-Z])|"
+        + _bounded_token("TONA")
+        + "|"
+        + _bounded_token("TOA3M"),
+        upper,
+    ):
+        deps.add("JP_rates")
+    if re.search(_bounded_token("SOFR") + "|" + _bounded_token("SR3", allow_trailing_alnum=True), upper):
+        deps.add("SOFR_curve")
+    if re.search(_bounded_token("CORRA"), upper):
+        deps.add("CORRA_curve")
+    if re.search(_bounded_token("AONIA"), upper):
+        deps.add("AONIA_curve")
+    return deps
+
+
+def _named_status(block: Any, *source_lists: Any, source_key: str) -> str:
+    """Explicit stale/unavailable wins. A packet that never carried the leg does not."""
+    if isinstance(block, dict) and block.get("status"):
+        return str(block.get("status"))
+    for items in source_lists:
+        if isinstance(items, list) and source_key in items:
+            return "unavailable"
+    return "ok"
+
+
+_CURVE_POLICY_COUNTRY = {"SOFR": "US", "CORRA": "CA", "AONIA": "AU"}
+
+
+def _policy_country(packet: dict[str, Any], code: str) -> dict[str, Any] | None:
+    countries = ((packet.get("policy_paths") or {}).get("countries") or {})
+    block = countries.get(code) if isinstance(countries, dict) else None
+    return block if isinstance(block, dict) else None
+
+
+def _dependency_status(packet: dict[str, Any], dependency: str) -> str:
+    rates = packet.get("rates") if isinstance(packet.get("rates"), dict) else {}
+    curves = ((packet.get("tradable_rate_curves") or {}).get("curves") or {})
+    stale = packet.get("stale_sources")
+    unavailable = packet.get("unavailable_sources")
+    if dependency == "NZ_rates":
+        return _named_status(rates.get("NZ"), stale, unavailable, source_key="NZ_rates")
+    if dependency == "JP_rates":
+        return _named_status(rates.get("JP"), stale, unavailable, source_key="JP_rates")
+    curve_ids = {"SOFR_curve": "SOFR", "CORRA_curve": "CORRA", "AONIA_curve": "AONIA"}
+    curve_id = curve_ids.get(dependency)
+    if curve_id:
+        curve_status = _named_status(
+            curves.get(curve_id),
+            unavailable,
+            source_key=f"{curve_id}_tradable_curve",
+        )
+        if curve_status in _BLOCKING_SOURCE_STATUSES:
+            return curve_status
+        policy = _policy_country(packet, _CURVE_POLICY_COUNTRY[curve_id])
+        if policy is not None:
+            policy_status = str(policy.get("status") or "")
+            if policy_status in _BLOCKING_SOURCE_STATUSES:
+                return policy_status
+            if curve_id == "SOFR" and policy_status in {"ok", "partial"}:
+                benchmark = policy.get("benchmark") if isinstance(policy.get("benchmark"), dict) else {}
+                if benchmark.get("rate") is None:
+                    return "missing"
+        return curve_status
+    return "ok"
+
+
+def required_preflight_block(families: dict[str, Any]) -> str | None:
+    """Fail closed when a required US/CA/AU cash curve or ECB FX is unusable.
+
+    Policy paths and tradable futures strips are expression-specific. An SR3,
+    CORRA, or AONIA outage does not veto an unrelated trade. CME positioning
+    is supplemental and is not a preflight input.
+    """
+    packet = _market_packet(families)
+    if packet is None:
+        return None
+    from scripts.country_registry import required_preflight_countries
+
+    rates = packet.get("rates") if isinstance(packet.get("rates"), dict) else {}
+    for code in required_preflight_countries():
+        status = str((rates.get(code) or {}).get("status") or "")
+        if status in _BLOCKING_SOURCE_STATUSES:
+            return f"required preflight {code}_rates is {status}"
+    fx = packet.get("fx") if isinstance(packet.get("fx"), dict) else {}
+    fx_status = str(fx.get("status") or "")
+    if fx_status in _BLOCKING_SOURCE_STATUSES:
+        return f"required preflight FX is {fx_status}"
+    return None
+
+
+def expression_evidence_block(
+    families: dict[str, Any],
+    *,
+    instrument: Any = None,
+    asset_class: str | None = None,
+    expression: Any = None,
+) -> str | None:
+    packet = _market_packet(families)
+    if packet is None:
+        return None
+    blocked: list[str] = []
+    for dependency in sorted(
+        expression_dependencies(instrument, asset_class=asset_class, expression=expression)
+    ):
+        status = _dependency_status(packet, dependency)
+        if status in _BLOCKING_SOURCE_STATUSES:
+            blocked.append(f"{dependency}={status}")
+    if not blocked:
+        return None
+    return "expression blocked by stale/missing required leg: " + ", ".join(blocked)
+
+
+def assert_action_allowed(
+    action: str,
+    families: dict[str, Any],
+    *,
+    seat: str,
+    instrument: Any = None,
+    asset_class: str | None = None,
+    expression: Any = None,
+) -> list[str]:
     blocked = blocked_expanding_families(families)
     if action in EXPANDING_ACTIONS and blocked:
         raise FreshnessError(
             f"{seat} {action} blocked by stale/missing required evidence: {blocked}"
         )
+    if action in EXPANDING_ACTIONS:
+        preflight = required_preflight_block(families)
+        if preflight:
+            raise FreshnessError(f"{seat} {action} blocked: {preflight}")
+        specific = expression_evidence_block(
+            families,
+            instrument=instrument,
+            asset_class=asset_class,
+            expression=expression,
+        )
+        if specific:
+            raise FreshnessError(f"{seat} {action} blocked: {specific}")
     return blocked
 
 

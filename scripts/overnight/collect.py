@@ -320,6 +320,12 @@ def collect_inputs(
             market_status = "stale" if market_payload.get("status") == "stale" else "fresh"
             market_as_of = market_payload.get("generated_at")
             market_digest = sha256_json(market_payload)
+            visible = [str(item) for item in (market_payload.get("stale_sources") or [])]
+            if market_status == "fresh" and visible:
+                market_notes.append(
+                    "non-preflight source staleness stays visible and does not block the market_state family: "
+                    + ", ".join(visible)
+                )
         except Exception as exc:
             market_status = "unavailable"
             market_as_of = None

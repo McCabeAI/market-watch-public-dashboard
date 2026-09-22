@@ -142,7 +142,7 @@ def _us_benchmark(payload: dict[str, Any] | None) -> dict[str, Any] | None:
     if not isinstance(countries, dict):
         return None
     us = countries.get("US")
-    if not isinstance(us, dict) or us.get("status") not in (None, "ok"):
+    if not isinstance(us, dict) or us.get("status") not in (None, "ok", "partial"):
         return None
     bench = us.get("benchmark")
     return bench if isinstance(bench, dict) else None

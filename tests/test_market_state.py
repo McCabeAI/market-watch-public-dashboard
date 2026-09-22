@@ -1,4 +1,5 @@
 import io
+import re
 import unittest
 from datetime import date, timedelta
 from unittest import mock
@@ -278,6 +279,32 @@ class MarketStateTests(unittest.TestCase):
         self.assertEqual(parsed["10Y"][date(2026, 9, 8)], 4.8)
         local = fetch_nz_rates(date(2026, 9, 1), date(2026, 9, 17), workbook_bytes=buf.getvalue())
         self.assertEqual(local["10Y"][date(2026, 9, 8)], 4.8)
+
+    def test_rbnz_workbook_ignores_collapsed_dimension(self):
+        import zipfile
+
+        import openpyxl
+
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.append([None, "Secondary market government bond closing yields (%pa)", None, None])
+        ws.append(["Date", "2 year", "5 year", "10 year"])
+        ws.append([date(2026, 9, 21), 3.55, 4.14, 4.72])
+        raw = io.BytesIO()
+        wb.save(raw)
+        src = zipfile.ZipFile(io.BytesIO(raw.getvalue()))
+        packed = io.BytesIO()
+        with zipfile.ZipFile(packed, "w") as dest:
+            for name in src.namelist():
+                payload = src.read(name)
+                if name.startswith("xl/worksheets/sheet") and name.endswith(".xml"):
+                    text = payload.decode("utf-8")
+                    text = re.sub(r'ref="[^"]+"', 'ref="A1"', text, count=1)
+                    payload = text.encode("utf-8")
+                dest.writestr(name, payload)
+        parsed = parse_rbnz_xlsx(packed.getvalue())
+        self.assertEqual(parsed["2Y"][date(2026, 9, 21)], 3.55)
+        self.assertEqual(parsed["10Y"][date(2026, 9, 21)], 4.72)
 
     def test_nz_rejects_html_challenge_page(self):
         with self.assertRaises(MarketStateError):
