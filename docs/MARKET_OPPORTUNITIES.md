@@ -22,7 +22,7 @@ Cross-asset regressions use aligned daily log returns or yield/spread changes, n
 
 Curve fly = `2 * y5 - y2 - y10`, in basis points. Positive means the 5Y yield is above the wings' average. This is not a DV01-neutral butterfly. Curve slopes = long yield minus short yield. Cross-country spreads = first country minus second, on exact common dates.
 
-Stale, unavailable and insufficient-history screens are excluded from the ranked watchlist. They remain visible in diagnostics. Freshness is measured from the observation date, including as the published page ages, not from the last build timestamp. Oil and broad-dollar source lags differ from market-close series. The UI shows the precise common date of every relationship and carry screen.
+Stale, unavailable and insufficient-history screens are excluded from the ranked watchlist. They remain visible in diagnostics. Freshness is measured from the observation date, including as the published page ages, not from the last build timestamp. Broad-dollar source lag differs from market-close series. WTI and Brent use completed continuous-futures daily bars. The UI shows the precise common date of every relationship and carry screen.
 
 ## Added regular collection
 
@@ -35,8 +35,8 @@ Stale, unavailable and insufficient-history screens are excluded from the ranked
 | Dow Jones | FRED / DJIA | Closing price index |
 | Russell 2000 | Yahoo Finance / ^RUT | Vendor daily close |
 | Gold | Yahoo Finance / GC=F | Continuous futures history, roll discontinuities possible |
-| WTI | FRED / EIA DCOILWTICO | Spot assessment; publication lag |
-| Brent | FRED / EIA DCOILBRENTEU | Spot assessment; publication lag |
+| WTI | Yahoo Finance / CL=F | Continuous front-contract futures history; roll discontinuities possible |
+| Brent | Yahoo Finance / BZ=F | Continuous futures history; roll discontinuities possible |
 | Copper | Yahoo Finance / HG=F | Continuous futures history, roll discontinuities possible |
 | VIX | FRED / VIXCLS | Index points, not a tradable security |
 | US high-yield OAS | FRED / BAMLH0A0HYM2 | Percent converted to bp; FRED history limited to three years |
@@ -48,7 +48,8 @@ Requests use five bounded concurrent workers, twenty-second timeouts and two att
 
 Primary source notes checked September 18, 2026:
 - https://fred.stlouisfed.org/series/SP500
-- https://fred.stlouisfed.org/series/DCOILBRENTEU
+- https://finance.yahoo.com/quote/CL%3DF/
+- https://finance.yahoo.com/quote/BZ%3DF/
 - https://fred.stlouisfed.org/series/DFII10
 - https://fred.stlouisfed.org/series/BAMLH0A0HYM2
 - https://finance.yahoo.com/quote/GC%3DF/history/
