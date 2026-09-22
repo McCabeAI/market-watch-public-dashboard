@@ -488,67 +488,75 @@ def parse_rbnz_xlsx(data: bytes) -> dict[str, dict[date, float]]:
         import openpyxl
     except ImportError as exc:
         raise MarketStateError("openpyxl is required for the RBNZ workbook") from exc
-    wb = openpyxl.load_workbook(io.BytesIO(data), read_only=True, data_only=True)
+    # The published B2 workbook sets dimension ref="A1" while the Data sheet
+    # holds the full history. read_only mode trusts that dimension and would
+    # report tenor discovery failed on an otherwise official file.
+    wb = openpyxl.load_workbook(io.BytesIO(data), read_only=False, data_only=True)
     best = None
-    for ws in wb.worksheets:
-        preview = list(ws.iter_rows(min_row=1, max_row=min(ws.max_row or 40, 40), values_only=True))
-        for ri, row in enumerate(preview):
+    out = {k: {} for k in RATE_TENORS}
+    try:
+        for ws in wb.worksheets:
+            preview = list(ws.iter_rows(min_row=1, max_row=min(ws.max_row or 40, 40), values_only=True))
+            for ri, row in enumerate(preview):
+                if not row:
+                    continue
+                labels = [str(v).strip().lower() if v not in (None, "") else "" for v in row]
+                # Current B2 files put dates in column A with no "Date" label.
+                # Older fixtures and the HTML table still use an explicit Date header.
+                if not any(label == "date" or "year" in label for label in labels):
+                    continue
+                header_start = max(0, ri - 5)
+                max_cols = max(len(r) for r in preview[header_start : ri + 1])
+                header_rows = preview[header_start : ri + 1]
+                filled_rows = []
+                for rr in header_rows:
+                    filled = []
+                    carry = None
+                    for ci in range(max_cols):
+                        val = rr[ci] if ci < len(rr) else None
+                        if val not in (None, ""):
+                            carry = val
+                        filled.append(carry)
+                    filled_rows.append(filled)
+                col_headers: dict[int, str] = {}
+                for ci in range(max_cols):
+                    parts = []
+                    for rr in filled_rows:
+                        if rr[ci] not in (None, ""):
+                            parts.append(str(rr[ci]).strip())
+                    col_headers[ci] = " | ".join(parts).lower()
+                selected: dict[int, str] = {}
+                for ci, header in col_headers.items():
+                    if "government" not in header and "bond" not in header:
+                        continue
+                    for n, tenor in ((2, "2Y"), (5, "5Y"), (10, "10Y")):
+                        if re.search(rf"\b{n}\s*year\b", header):
+                            selected[ci] = tenor
+                if set(selected.values()) == set(RATE_TENORS):
+                    best = (ws, ri + 1, selected)
+                    break
+            if best:
+                break
+        if not best:
+            raise MarketStateError("RBNZ workbook tenor discovery failed")
+        ws, header_row, selected = best
+        for row in ws.iter_rows(min_row=header_row + 1, values_only=True):
             if not row:
                 continue
-            date_cols = [i for i, v in enumerate(row) if str(v).strip().lower() == "date"]
-            if not date_cols:
+            d = None
+            for v in row[:3]:
+                d = parse_date(v)
+                if d:
+                    break
+            if not d:
                 continue
-            header_start = max(0, ri - 5)
-            max_cols = max(len(r) for r in preview[header_start : ri + 1])
-            header_rows = preview[header_start : ri + 1]
-            filled_rows = []
-            for rr in header_rows:
-                filled = []
-                carry = None
-                for ci in range(max_cols):
-                    val = rr[ci] if ci < len(rr) else None
-                    if val not in (None, ""):
-                        carry = val
-                    filled.append(carry)
-                filled_rows.append(filled)
-            col_headers: dict[int, str] = {}
-            for ci in range(max_cols):
-                parts = []
-                for rr in filled_rows:
-                    if rr[ci] not in (None, ""):
-                        parts.append(str(rr[ci]).strip())
-                col_headers[ci] = " | ".join(parts).lower()
-            selected: dict[int, str] = {}
-            for ci, header in col_headers.items():
-                if "government" not in header and "bond" not in header:
-                    continue
-                for n, tenor in ((2, "2Y"), (5, "5Y"), (10, "10Y")):
-                    if re.search(rf"\b{n}\s*year\b", header):
-                        selected[ci] = tenor
-            if set(selected.values()) == set(RATE_TENORS):
-                best = (ws, ri + 1, selected)
-                break
-        if best:
-            break
-    if not best:
-        raise MarketStateError("RBNZ workbook tenor discovery failed")
-    ws, header_row, selected = best
-    out = {k: {} for k in RATE_TENORS}
-    for row in ws.iter_rows(min_row=header_row + 1, values_only=True):
-        if not row:
-            continue
-        d = None
-        for v in row[:3]:
-            d = parse_date(v)
-            if d:
-                break
-        if not d:
-            continue
-        for ci, tenor in selected.items():
-            if ci < len(row):
-                v = to_float(row[ci])
-                if v is not None:
-                    out[tenor][d] = v
+            for ci, tenor in selected.items():
+                if ci < len(row):
+                    v = to_float(row[ci])
+                    if v is not None:
+                        out[tenor][d] = v
+    finally:
+        wb.close()
     if any(not out[k] for k in RATE_TENORS):
         raise MarketStateError("RBNZ workbook missing required government tenors")
     return out
@@ -769,18 +777,22 @@ def fetch_nz_rates_with_provenance(
     except MarketStateError as exc:
         xlsx_error = exc
     else:
-        parsed = parse_rbnz_xlsx(workbook)
-        series = _clip_rate_history(
-            parsed,
-            start,
-            end,
-            empty_message="RBNZ history missing required tenors after date filter",
-        )
-        return series, {
-            "source_kind": "rbnz_b2_xlsx",
-            "download_url": RBNZ_URL,
-            "note": "Indicative closing government-bond yields with a one-day publication lag.",
-        }
+        try:
+            parsed = parse_rbnz_xlsx(workbook)
+            series = _clip_rate_history(
+                parsed,
+                start,
+                end,
+                empty_message="RBNZ history missing required tenors after date filter",
+            )
+        except MarketStateError as exc:
+            xlsx_error = exc
+        else:
+            return series, {
+                "source_kind": "rbnz_b2_xlsx",
+                "download_url": RBNZ_URL,
+                "note": "Indicative closing government-bond yields with a one-day publication lag.",
+            }
     try:
         page = _download_rbnz_html()
     except MarketStateError as exc:
