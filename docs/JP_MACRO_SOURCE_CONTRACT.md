@@ -128,7 +128,7 @@ e-Stat API 3.0 requires an `app-id`; **not used** (no key in repo). Public file 
 | sheet | `DB_MainC_Graph` |
 | units | percent y/y |
 | SA | Yes |
-| score_role | **scored** (25% consumer basket) |
+| score_role | **scored** (25% consumer basket; LEVEL = 3-month trailing mean of y/y, IMPULSE = latest y/y vs prior print) |
 
 ### Consumer.income — FIES worker households, nominal y/y
 
@@ -139,8 +139,8 @@ e-Stat API 3.0 requires an `app-id`; **not used** (no key in repo). Public file 
 | row | `実収入` on sheet `名目増減率（月）` |
 | units | percent y/y (nominal; label in e-Stat is real-income table family) |
 | SA | No |
-| score_role | **scored** |
-| note | Worker households among two-or-more-person HH; not all-household income |
+| score_role | **scored** (25%; LEVEL = 3-month trailing mean of nominal y/y, IMPULSE = latest y/y vs prior print) |
+| note | Worker households among two-or-more-person HH; not all-household income. NSA FIES y/y is noisy; LEVEL smoothing is the V1 `trailing_mean_n3` transform, not a Japan-only engine. |
 
 ### Consumer.spending — FIES two+ HH consumption, nominal y/y
 
@@ -149,7 +149,7 @@ e-Stat API 3.0 requires an `app-id`; **not used** (no key in repo). Public file 
 | series_id | `FIES_TWO_PLUS_HH_CONSUMPTION_NOMINAL_YOY` |
 | statInfId | `000040270657` |
 | row | `消費支出` |
-| score_role | **scored** |
+| score_role | **scored** (25%; LEVEL = 3-month trailing mean of nominal y/y, IMPULSE = latest y/y vs prior print) |
 
 ### Consumer.confidence — Cabinet Office Consumer Sentiment Index SA
 
@@ -158,10 +158,12 @@ e-Stat API 3.0 requires an `app-id`; **not used** (no key in repo). Public file 
 | series_id | `CO_CONSUMER_SENTIMENT_INDEX_SA` |
 | primary URL | `https://www.esri.cao.go.jp/en/stat/shouhi/shouhi2.xlsx` (Table 2, SA, two-or-more-person households) |
 | fallback | e-Stat August 2026 long-term table `statInfId=000040498737`; April 2026 `000040450603` last resort |
-| units | index (diffusion-style; par ~50 TBD in calibration) |
+| units | index (diffusion-style; LEVEL 50 = current-methodology-era SA mean **38.1**, not the response midpoint of 50) |
 | SA | Yes |
-| score_role | **scored** |
+| score_role | **scored** (25% consumer basket; IMPULSE = latest vs prior print, `identity`) |
 | parser | `parse_esri_shouhi2_consumer_confidence_xlsx` (preferred); `parse_consumer_confidence_xlsx` fallback |
+| methodology_breaks | **April 2013:** survey method changed to mail; Cabinet Office notes the change has some impact and reviewed time-series tables from that month. **October 2018:** mail and online together (sensitivity only; not the scored anchor window). |
+| LEVEL_anchor | Arithmetic mean of official Table 2 SA CCI, two-or-more-person households, **2013-04 … 2026-08** (161 months): sum 6134.6, mean 38.10310559, stored **38.1**. Canonical file `https://www.esri.cao.go.jp/en/stat/shouhi/shouhi2.xlsx`. |
 
 ---
 
@@ -200,8 +202,8 @@ e-Stat API 3.0 requires an `app-id`; **not used** (no key in repo). Public file 
 | Employment trend | ~+10–30k/mo SA Δ | LFS derived thousands |
 | GDP potential SAAR | ~0.5–1.0% q/q SAAR | ESRI long-run post-2020 mean below cyclical 2026 prints |
 | PMI survey | 50.0 | Standard diffusion neutral |
-| Confidence par | ~50 (verify) | Cabinet Office index centered below 50 in 2025–26 — confirm in calibration pass |
-| JP nominal consumer anchors (retail/income/spending) | 2.6% y/y | 2% BOJ inflation target + 0.6% real potential (consistent with `JP.Activity.gdp_domestic_demand` SAAR anchor in `temperature_calibration.json`) |
+| Confidence par | **38.1** (not 50) | Official Table 2 SA CCI, two-or-more-person households, arithmetic mean **April 2013 – August 2026** (161 months, mean 38.1031, stored 38.1). April 2013 mail-survey method break per Cabinet Office notes. Canonical URL `https://www.esri.cao.go.jp/en/stat/shouhi/shouhi2.xlsx`. October 2018 mail+online mean (~35.3) is a sensitivity cross-check only. |
+| JP nominal consumer anchors (retail/income/spending) | 2.6% y/y | 2% BOJ inflation target + 0.6% real potential (consistent with `JP.Activity.gdp_domestic_demand` SAAR anchor in `temperature_calibration.json`). LEVEL transform is `trailing_mean_n3`; IMPULSE remains `identity`. |
 
 ---
 

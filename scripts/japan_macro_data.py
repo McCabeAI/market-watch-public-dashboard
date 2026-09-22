@@ -494,8 +494,17 @@ def parse_fies_nominal_yoy_row_xls(data: bytes, *, row_label: str) -> list[dict[
     return out
 
 
-def parse_esri_shouhi2_consumer_confidence_xlsx(data: bytes) -> list[dict[str, Any]]:
-    """Cabinet Office ESRI shouhi2.xlsx — CCI SA, households of two or more persons."""
+def parse_esri_shouhi2_consumer_confidence_xlsx(
+    data: bytes,
+    *,
+    restrict_to_score_window: bool = True,
+) -> list[dict[str, Any]]:
+    """Cabinet Office ESRI shouhi2.xlsx — CCI SA, households of two or more persons.
+
+    Table 2 column E is the seasonally adjusted Consumer Confidence Index.
+    Pass restrict_to_score_window=False to keep the full official history
+    (used to derive the current-methodology-era LEVEL anchor).
+    """
     import openpyxl
 
     wb = openpyxl.load_workbook(io.BytesIO(data), read_only=True, data_only=True)
@@ -515,8 +524,9 @@ def parse_esri_shouhi2_consumer_confidence_xlsx(data: bytes) -> list[dict[str, A
         except (TypeError, ValueError, IndexError):
             continue
         period = f"{year:04d}-{month:02d}"
-        if period_in_window_monthly(period):
-            out.append({"reference_period": period, "value": index_val})
+        if restrict_to_score_window and not period_in_window_monthly(period):
+            continue
+        out.append({"reference_period": period, "value": index_val})
     if not out:
         raise ValueError("Could not parse ESRI shouhi2 consumer confidence observations")
     return out

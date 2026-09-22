@@ -11,6 +11,8 @@ Single implementation: `scripts/temperature_level.py`. Calibration: `data/temper
 | AU | 63.2 | 50.1 | 46.0 | 54.3 |
 | NZ | 64.2 | 36.6 | 50.5 | 48.4 |
 
+Japan Consumer is a later calibration repair (3-month LEVEL on monthly FIES/METI y/y plus Cabinet Office CCI SA mean 38.1). Regenerated `temperature_scores.json` / `score_paths.json` remain the engine authority; inspect the JP Consumer drawer after `--write-state`.
+
 Repair vs PR #66 pre-repair (single-quarter GDP LEVEL, 150k payrolls, CA/AU/NZ surveys unobserved):
 
 | | US Act | CA Act | AU Act | NZ Act | US Labor |

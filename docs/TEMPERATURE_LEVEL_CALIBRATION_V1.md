@@ -36,7 +36,7 @@ Display bands are unchanged: 1–20 Cold, 21–40 Cool, 41–60 Neutral, 61–80
 | GDP | **Potential real growth** expressed as SAAR | `structural_policy` |
 | Business surveys (PMI) | Diffusion **expansion threshold 50** | `structural_policy` |
 | Consumer flows | Period-over-period growth consistent with **real potential ~2% SAAR**, or **nominal (target + 2%)** when the series is nominal | `structural_policy` |
-| Consumer confidence | Index-specific par / long-run normal (Michigan ~80; Westpac-MI 100; ANZ-Roy Morgan 100) | `structural_policy` |
+| Consumer confidence | Index-specific par / long-run normal (Michigan ~80; Westpac-MI 100; ANZ-Roy Morgan 100; **Cabinet Office CCI SA current-methodology-era mean 38.1**, not the response midpoint of 50) | `structural_policy` |
 
 No component uses “12-month sample median = 50”. The one-year history is for reconstructing LEVEL paths and checking pathologies, not for anchoring 50.
 
@@ -136,6 +136,8 @@ US ISM services/manufacturing: 12 months of official press releases (PR Newswire
 
 Monthly nominal series (US retail RSAFS, US DSPI, AU MHSI): 50 = **(inflation target + 2% real) / 12** percent m/m, scored on 3-month mean m/m, scale **40 per pp**.
 
+**Japan monthly nominal Consumer flows** (METI retail y/y, FIES worker-household income y/y, FIES two-or-more-person consumption y/y): 50 = **2.6% y/y** (BOJ 2% inflation target + 0.6% real potential, aligned with `JP.Activity.gdp_domestic_demand`). LEVEL uses `trailing_mean_n3` on the official y/y prints; IMPULSE uses `identity` (latest print versus prior print). Scale **12.5 per pp**. This is the existing V1 `level_scoring_transform` / `impulse_scoring_transform` split, not a Japan-only scorer. Weights remain 25/25/25/25.
+
 Monthly real series (US PCEC96): 50 = **2%/12** percent m/m, same scale.
 
 Quarterly real (CA/NZ spending, NZ retail): 50 = **2%/4** percent q/q, scale **15 per pp**.
@@ -150,6 +152,20 @@ Confidence:
 | Westpac-MI | 100 | 1.0 | Sep 2026 84.4 only |
 | ANZ-Roy Morgan | 100 | 1.0 | Aug 2026 98.0 only |
 | BoC CSCE | — | — | **unavailable** (coverage down) |
+| Cabinet Office CCI SA (JP, two-or-more-person households) | **38.1** | 1.0 | Official Table 2 (`https://www.esri.cao.go.jp/en/stat/shouhi/shouhi2.xlsx`). See Japan exception below. Not 50. |
+
+#### Japan Consumer exceptions (explicit, reproducible)
+
+1. **Monthly flow LEVEL smoothing.** `JP.Consumer.retail`, `JP.Consumer.income`, and `JP.Consumer.spending` score LEVEL on a 3-month trailing mean of the stored official y/y prints (`level_scoring_transform: trailing_mean_n3`, `n_periods: 3`). IMPULSE is unchanged latest-versus-prior `identity` on the same y/y series. A single noisy FIES month can still cool IMPULSE; it must not floor half of Consumer LEVEL by itself. Nominal 2.6% anchors and 12.5 scales are unchanged.
+
+2. **Confidence structural normal 38.1, not 50.** The Cabinet Office Consumer Confidence Survey **mail-survey method began in April 2013**; official notes state the method change has some impact on results, and the released time-series tables were reviewed from that month (`https://www.esri.cao.go.jp/en/stat/shouhi/shouhi-e.html`, notes 2–4). The LEVEL anchor is the unweighted arithmetic mean of the official **seasonally adjusted** Consumer Confidence Index for households of two or more persons (Table 2, column “Consumer Confidence Index”) from **2013-04 through 2026-08** inclusive:
+
+   - source file: `https://www.esri.cao.go.jp/en/stat/shouhi/shouhi2.xlsx` (committed copy `data/temperature_history/raw/jp/esri_shouhi2_sa.xlsx`)
+   - n = 161 consecutive monthly prints (no gaps)
+   - sum = 6134.6; mean = 38.10310559…
+   - stored anchor = **38.1** (rounded to the published one-decimal precision of the index)
+
+   IMPULSE remains latest print versus prior print (`identity`); the anchor does not enter the impulse difference except as a cancelled constant. A later survey-method note (mail and online together from October 2018) is **not** used as the sample start: the current-methodology-era window is the April 2013 mail-survey break documented by the Cabinet Office. Sensitivity (not scored): Oct 2018–Aug 2026 mean ≈ 35.3; full Table 2 sample from 1982-06 mean ≈ 40.4. Both sit well below the response midpoint of 50 (the published SA series never sustains 50 as a typical reading; sample maximum is 50.8).
 
 AU retail: ABS monthly retail **ceased** after Jun 2025 → component unobserved, coverage down.
 
@@ -232,4 +248,5 @@ I2 (dashboard + Trader Room) must:
 - NZ production GDP must be pinned; the history file also contains expenditure-GDP rows (including a 2025-Q2 lookback) that must not be used as “latest”.
 - Potential growth / u\* / productivity add-on are judgement-documented constants, frozen in the calibration JSON, not estimated from the one-year sample.
 - **Activity GDP LEVEL uses a two-quarter mean SAAR** (per-quarter SAAR then average). **GDP IMPULSE** remains the latest single-quarter SAAR mapped to LEVEL minus the prior quarter’s single-quarter SAAR (release shocks stay visible: e.g. CA ~+28, NZ ~−28 on the GDP component). Survey LEVEL uses a 3-month mean; missing survey months are gapped rather than imputed.
+- **Japan Consumer LEVEL** uses a 3-month trailing mean on the three monthly nominal flow y/y series and a Cabinet Office current-methodology-era CCI SA mean of 38.1. That is a Japan calibration exception inside the existing V1 transform split, not a new scoring engine. FIES remains a noisy NSA household sample; smoothing reduces single-print flooring, it does not convert FIES into national-accounts consumption.
 - **No automatic staleness decay.** A component that stops updating keeps its last LEVEL and full weight until it is marked unobserved. NZ Consumer income is 2026-Q1 while peers are 2026-Q2; CA retail is 2026-06. Coverage does not currently fall with age.
