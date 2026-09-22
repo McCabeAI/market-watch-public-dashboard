@@ -86,14 +86,21 @@
       "status": "succeeded"
     },
     "publish": {
-      "as_of": null,
+      "as_of": "2026-09-22T07:34:45.734004-04:00",
       "errors": [],
-      "finished_at": null,
-      "inputs": {},
+      "finished_at": "2026-09-22T07:34:45.734004-04:00",
+      "inputs": {
+        "dry_run": false,
+        "offline": true
+      },
       "name": "publish",
-      "outputs": {},
-      "started_at": null,
-      "status": "pending"
+      "outputs": {
+        "core_status": "ok",
+        "may_publish": true,
+        "trader_books_status": "fresh"
+      },
+      "started_at": "2026-09-22T07:34:45.717415-04:00",
+      "status": "succeeded"
     },
     "trader_review": {
       "as_of": "2026-09-22T07:03:58.914674-04:00",
@@ -114,6 +121,6 @@
       "status": "succeeded"
     }
   },
-  "status": "running",
+  "status": "succeeded",
   "timezone": "America/New_York"
 }
