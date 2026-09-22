@@ -16,8 +16,8 @@ SERIES = {
     'DOW': ('Dow Jones', 'DJIA', 'index', 'price', 4),
     'RUSSELL': ('Russell 2000', '^RUT', 'index', 'price', 4),
     'GOLD': ('Gold futures', 'GC=F', 'USD/oz', 'price', 4),
-    'WTI': ('WTI spot', 'DCOILWTICO', 'USD/bbl', 'price', 10),
-    'BRENT': ('Brent spot', 'DCOILBRENTEU', 'USD/bbl', 'price', 10),
+    'WTI': ('WTI futures', 'CL=F', 'USD/bbl', 'price', 4),
+    'BRENT': ('Brent futures', 'BZ=F', 'USD/bbl', 'price', 4),
     'COPPER': ('Copper futures', 'HG=F', 'USD/lb', 'price', 4),
     'VIX': ('VIX', 'VIXCLS', 'points', 'difference', 4),
     'HY_OAS': ('US high-yield spread', 'BAMLH0A0HYM2', 'bp', 'difference', 4),
@@ -53,7 +53,7 @@ def parse_yahoo(blob, start, today):
 def collect_cross_assets(start, today, fetch):
     def one(item):
         key,(label,symbol,unit,kind,lag)=item
-        yahoo=symbol in ['GC=F','HG=F','^RUT']
+        yahoo=symbol in ['GC=F','CL=F','BZ=F','HG=F','^RUT']
         url=f'https://finance.yahoo.com/quote/{quote(symbol,safe="")}/history/' if yahoo else f'https://fred.stlouisfed.org/series/{symbol}'
         download=f'https://query1.finance.yahoo.com/v8/finance/chart/{quote(symbol,safe="")}?range=5y&interval=1d' if yahoo else f'https://fred.stlouisfed.org/graph/fredgraph.csv?id={symbol}&cosd={start.isoformat()}&coed={today.isoformat()}'
         note='Daily completed close. Futures history includes contract rolls; roll jumps can distort screens.' if yahoo and '=' in symbol else 'Daily source observation; publication and market close times differ.'
