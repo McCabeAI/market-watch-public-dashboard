@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from scripts.overnight.store import read_json, sha256_json, write_json
+from scripts.pm.errors import SchemaError
 from scripts.pm.constants import (
     BOOKS_RELPATH,
     DECISIONS_DIRNAME,
@@ -72,8 +73,23 @@ class PMStore:
         return write_json(self.public_path(), payload)
 
     def write_packet(self, pm_id: str, payload: dict[str, Any]) -> Path:
-        latest = write_json(self.packet_path(pm_id, "latest.json"), payload)
         packet_id = payload.get("review_packet_id")
         if packet_id:
-            write_json(self.packet_path(pm_id, f"{packet_id}.json"), payload)
-        return latest
+            named_path = self.packet_path(pm_id, f"{packet_id}.json")
+            if named_path.is_file():
+                existing = read_json(named_path)
+                old_review_id = existing.get("review_id")
+                new_review_id = payload.get("review_id")
+                if (
+                    isinstance(old_review_id, str)
+                    and old_review_id
+                    and isinstance(new_review_id, str)
+                    and new_review_id
+                    and old_review_id != new_review_id
+                ):
+                    raise SchemaError(
+                        f"refusing to overwrite PM packet {packet_id} for {pm_id}: "
+                        f"existing review_id={old_review_id!r}, new review_id={new_review_id!r}"
+                    )
+            write_json(named_path, payload)
+        return write_json(self.packet_path(pm_id, "latest.json"), payload)

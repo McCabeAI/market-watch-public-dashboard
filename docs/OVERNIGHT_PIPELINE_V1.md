@@ -90,6 +90,8 @@ data/overnight/runs/<overnight_run_id>/reviews/<review_id>/trader_review.json
 
 The 01:50 base packet is that review's `evidence_snapshot.json` and has a SHA-256. The ACP/Cursor result must reference that exact base hash and the frozen `review_id`. Acceptance rejects the output when either id does not match, when the review's starting trader-book or PM-book hash is not the current canonical file hash, or when a later review in the same session is already accepted. Replaying an already accepted review is a no-op. Journal and trade provenance store both `overnight_run_id` and `review_id`; idempotency keys on `review_id`, so a later distinct review may update the evolving books.
 
+Overnight PM `review_packet_id` values are review-scoped: `prp-<pm_id>-<overnight_run_id>-<review_id>` (for example `prp-swinger-overnight-20260922-review-003`). Scheduled-output acceptance is serialized per overnight session (not per PR), and the accept workflow revalidates the git blob ids of `data/overnight/books/latest.json` and `data/pm/books/latest.json` on current `main` immediately before merge.
+
 ### Sep 22 migration
 
 `overnight-20260922` was repaired in place without replaying decisions:
@@ -216,6 +218,8 @@ The gate:
 8. generates canonical trader books, **three automated PM books**, P&L/run artifacts and `data/trading/**` from trusted code;
 9. appends only those generated files to the PR branch;
 10. squashes and merges the accepted PR.
+
+Acceptance for one `overnight_run_id` is a single concurrency group, shared by every scheduled-output PR in that session. Immediately before squash-merge, the workflow refetches `main` and refuses to merge when the canonical trader-book or PM-book blob no longer matches the checkout that was validated and applied.
 
 Missing or invalid PM output rejects the PR. Last trusted canonical state is retained. Publication may still show explicit stale/failed PM status when the deterministic morning path runs without a successful provider cycle. A failed gate does not mutate canonical books.
 

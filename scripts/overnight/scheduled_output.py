@@ -22,6 +22,7 @@ from scripts.overnight.errors import EvidenceBoundaryError, SchemaError
 from scripts.overnight.evidence import require_snapshot
 from scripts.overnight.ledger import load_or_create, mark_finished, mark_running, persist_run
 from scripts.overnight.paper_marks import market_state_from_families
+from scripts.overnight.acceptance_lock import overnight_acceptance_lock
 from scripts.overnight.accepted_news import overlay_accepted_research
 from scripts.overnight.store import OvernightStore, sha256_json
 from scripts.pm.automated import validate_pm_decisions
@@ -498,7 +499,11 @@ def simulate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str,
 
 
 def apply_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str, Any]:
-    return _apply_validated(store, payload, write=True)
+    run_id = payload.get("overnight_run_id")
+    if not isinstance(run_id, str) or not run_id.startswith("overnight-"):
+        return _apply_validated(store, payload, write=True)
+    with overnight_acceptance_lock(store, run_id):
+        return _apply_validated(store, payload, write=True)
 
 
 def main(argv: list[str] | None = None) -> int:

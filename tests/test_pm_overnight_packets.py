@@ -36,6 +36,7 @@ class OvernightPMPacketTests(unittest.TestCase):
         self.store = self._fixture.store
         self.state_root = self._fixture.state_root
         self.run_id = self._fixture.run_id
+        self.base = self._fixture.base
         self.payload = self._fixture.payload
         if "pm_decisions" not in self.payload:
             packet = self.payload["agent_packet"]
@@ -83,7 +84,11 @@ class OvernightPMPacketTests(unittest.TestCase):
             )
             self.assertIsNone(packet["trader_room"])
             self.assertNotEqual(packet["review_packet_id"], f"prp-{pm_id}-tr-20260919T123430Z-ondemand")
-            self.assertTrue(packet["review_packet_id"].startswith(f"prp-{pm_id}-{self.run_id}"))
+            self.assertEqual(
+                packet["review_packet_id"],
+                f"prp-{pm_id}-{self.run_id}-{self.base['review_id']}",
+            )
+            self.assertEqual(packet["review_id"], self.base["review_id"])
 
     def test_newer_incomplete_overnight_is_ignored(self) -> None:
         apply_output(self.store, self.payload)

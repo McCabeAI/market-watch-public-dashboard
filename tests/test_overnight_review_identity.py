@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import tempfile
+import threading
 import unittest
 from copy import deepcopy
 from datetime import datetime
@@ -22,8 +23,10 @@ from scripts.overnight.migrate_reviews import (
     migrate_sep22,
 )
 from scripts.overnight.pipeline import dry_run, run_stage
-from scripts.overnight.scheduled_output import apply_output
+from scripts.overnight.scheduled_output import apply_output, validate_output
 from scripts.overnight.store import OvernightStore, sha256_file
+from scripts.pm.constants import PM_IDS
+from scripts.pm.store import PMStore
 from scripts.trading.store import TradingStore
 from tests.test_overnight_scheduled_output import AS_OF, ScheduledOutputTests
 
@@ -82,6 +85,137 @@ class ReviewIdentityTests(ScheduledOutputTests):
             if pm_id in hashes:
                 decision["memory_context_sha256"] = hashes[pm_id]
         return payload
+
+    def _expected_packet_id(self, pm_id: str, run_id: str, review_id: str) -> str:
+        return f"prp-{pm_id}-{run_id}-{review_id}"
+
+    def test_same_session_reviews_get_distinct_pm_packets(self) -> None:
+        run_id = "overnight-20260918"
+        first = self.store.read_artifact(run_id, "evidence_snapshot.json", review_id="review-001")
+        first_payload = self._payload_for(first, thesis="First cycle holds.")
+        first_review = apply_output(self.store, first_payload)
+        self.assertEqual(first_review["review_id"], "review-001")
+
+        first_packet_bytes: dict[str, bytes] = {}
+        pm_store = PMStore(root=ROOT, state_root=self.state_root)
+        for pm_id in PM_IDS:
+            packet_id = self._expected_packet_id(pm_id, run_id, "review-001")
+            path = pm_store.packet_path(pm_id, f"{packet_id}.json")
+            self.assertTrue(path.is_file(), msg=f"missing {path}")
+            first_packet_bytes[pm_id] = path.read_bytes()
+
+        second_packet = freeze_snapshot(self.store, run_id=run_id, when=AS_OF, reuse_open=False)
+        self.assertEqual(second_packet["review_id"], "review-002")
+        second_payload = self._payload_for(second_packet, thesis="Second cycle still holds.")
+        apply_output(self.store, second_payload)
+
+        for pm_id in PM_IDS:
+            for review_id in ("review-001", "review-002"):
+                packet_id = self._expected_packet_id(pm_id, run_id, review_id)
+                path = pm_store.packet_path(pm_id, f"{packet_id}.json")
+                self.assertTrue(path.is_file(), msg=f"missing {path}")
+                packet = pm_store.read_json(path)
+                self.assertEqual(packet["review_packet_id"], packet_id)
+                self.assertEqual(packet["review_id"], review_id)
+            path = pm_store.packet_path(pm_id, self._expected_packet_id(pm_id, run_id, "review-001") + ".json")
+            self.assertEqual(path.read_bytes(), first_packet_bytes[pm_id])
+            first_payload_data = json.loads(first_packet_bytes[pm_id])
+            second_payload_data = pm_store.read_json(
+                pm_store.packet_path(pm_id, f"{self._expected_packet_id(pm_id, run_id, 'review-002')}.json")
+            )
+            self.assertNotEqual(first_payload_data, second_payload_data)
+
+        trading = TradingStore(root=ROOT, state_root=self.state_root)
+        for review_id in ("review-001", "review-002"):
+            events = [
+                event
+                for event in trading.read_journal("pm", "swinger")["events"]
+                if event.get("kind") == "PM_DECISION" and event.get("provenance", {}).get("review_id") == review_id
+            ]
+            self.assertEqual(len(events), 1)
+            expected = self._expected_packet_id("swinger", run_id, review_id)
+            self.assertEqual(events[0]["provenance"]["review_id"], review_id)
+            self.assertEqual(events[0]["provenance"]["review_packet_id"], expected)
+
+        latest = pm_store.read_json(pm_store.packet_path("swinger"))
+        self.assertEqual(latest["review_id"], "review-002")
+
+    def test_prevalidated_second_acceptance_fails_on_stale_books(self) -> None:
+        run_id = "overnight-20260918"
+        first = self.store.read_artifact(run_id, "evidence_snapshot.json", review_id="review-001")
+        second_packet = freeze_snapshot(self.store, run_id=run_id, when=AS_OF, reuse_open=False)
+        self.assertEqual(second_packet["review_id"], "review-002")
+        first_payload = self._payload_for(first, thesis="First cycle holds.")
+        second_payload = self._payload_for(second_packet, thesis="Second cycle still holds.")
+        validate_output(self.store, first_payload)
+        validate_output(self.store, second_payload)
+
+        apply_output(self.store, first_payload)
+        trader_after = _file_sha(self.store.books_path())
+        pm_after = _file_sha(self.state_root / "data" / "pm" / "books" / "latest.json")
+
+        with self.assertRaises(EvidenceBoundaryError):
+            apply_output(self.store, second_payload)
+
+        self.assertEqual(_file_sha(self.store.books_path()), trader_after)
+        self.assertEqual(_file_sha(self.state_root / "data" / "pm" / "books" / "latest.json"), pm_after)
+        index = self.store.read_review_index(run_id)
+        by_id = {row["review_id"]: row for row in index["reviews"]}
+        self.assertEqual(by_id["review-001"]["status"], "accepted")
+        self.assertEqual(by_id["review-002"]["status"], "frozen")
+        self.assertFalse((self.store.review_dir(run_id, "review-002") / "trader_review.json").is_file())
+
+    def test_concurrent_same_session_acceptance_cannot_both_apply(self) -> None:
+        run_id = "overnight-20260918"
+        first = self.store.read_artifact(run_id, "evidence_snapshot.json", review_id="review-001")
+        second_packet = freeze_snapshot(self.store, run_id=run_id, when=AS_OF, reuse_open=False)
+        first_payload = self._payload_for(first, thesis="First cycle holds.")
+        second_payload = self._payload_for(second_packet, thesis="Second cycle still holds.")
+        validate_output(self.store, first_payload)
+        validate_output(self.store, second_payload)
+        pm_books_path = self.state_root / "data" / "pm" / "books" / "latest.json"
+        pre_trader = _file_sha(self.store.books_path())
+        pre_pm = _file_sha(pm_books_path) if pm_books_path.is_file() else None
+
+        results: dict[str, object] = {}
+
+        def _worker(name: str, payload: dict) -> None:
+            try:
+                results[name] = apply_output(self.store, payload)
+            except Exception as exc:
+                results[name] = exc
+
+        threads = [
+            threading.Thread(target=_worker, args=("first", first_payload)),
+            threading.Thread(target=_worker, args=("second", second_payload)),
+        ]
+        for thread in threads:
+            thread.start()
+        for thread in threads:
+            thread.join()
+
+        successes = [name for name, value in results.items() if isinstance(value, dict)]
+        failures = [value for value in results.values() if isinstance(value, EvidenceBoundaryError)]
+        self.assertEqual(len(successes), 1)
+        self.assertEqual(len(failures), 1)
+
+        index = self.store.read_review_index(run_id)
+        accepted = [row["review_id"] for row in index["reviews"] if row.get("status") == "accepted"]
+        self.assertEqual(len(accepted), 1)
+        loser = "review-002" if accepted[0] == "review-001" else "review-001"
+        self.assertFalse((self.store.review_dir(run_id, loser) / "trader_review.json").is_file())
+
+        post_trader = _file_sha(self.store.books_path())
+        post_pm = _file_sha(pm_books_path)
+        self.assertNotEqual(post_trader, pre_trader)
+        if pre_pm is not None:
+            self.assertNotEqual(post_pm, pre_pm)
+        else:
+            self.assertTrue(pm_books_path.is_file())
+        winner_payload = first_payload if successes[0] == "first" else second_payload
+        apply_output(self.store, winner_payload)
+        self.assertEqual(_file_sha(self.store.books_path()), post_trader)
+        self.assertEqual(_file_sha(self.state_root / "data" / "pm" / "books" / "latest.json"), post_pm)
 
     def test_two_reviews_persist_and_replay_is_a_noop(self) -> None:
         run_id = "overnight-20260918"
