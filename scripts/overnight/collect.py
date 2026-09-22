@@ -11,6 +11,7 @@ from typing import Any
 from scripts.overnight.clock import isoformat, now_ny, parse_iso
 from scripts.overnight.constants import EVIDENCE_FAMILIES, SCHEMA_VERSION
 from scripts.overnight.errors import StageError
+from scripts.overnight.accepted_news import load_accepted_public_news
 from scripts.overnight.freshness import age_status
 from scripts.overnight.store import OvernightStore, sha256_file, sha256_json, sha256_text
 from scripts.trader_room.evidence import load_news_and_research
@@ -74,6 +75,47 @@ def _parse_news_as_of(root: Path) -> str | None:
     except ValueError:
         return None
     return parsed.isoformat()
+
+
+def _current_cycle_accepted_research(store: OvernightStore, run_id: str) -> dict[str, Any] | None:
+    if not store.has_artifact(run_id, "agent_evidence_packet.json"):
+        return None
+    packet = store.read_artifact(run_id, "agent_evidence_packet.json")
+    supplement = packet.get("research_supplement")
+    cutoff = packet.get("evidence_cutoff")
+    if not isinstance(supplement, dict) or not isinstance(cutoff, str):
+        return None
+    if not isinstance(supplement.get("news"), list) or not isinstance(supplement.get("central_bank_research"), list):
+        return None
+    if not supplement.get("news") and not supplement.get("central_bank_research"):
+        return None
+    return {"run_id": run_id, "cutoff": cutoff, "supplement": supplement, "source": "current-cycle-agent-packet"}
+
+
+def _canonical_public_news_artifact(root: Path) -> dict[str, Any] | None:
+    try:
+        artifact = load_accepted_public_news(root)
+    except Exception:
+        return None
+    if not artifact:
+        return None
+    news = artifact.get("news") or []
+    central = artifact.get("central_bank_research") or []
+    if not news and not central:
+        return None
+    cutoff = artifact.get("as_of")
+    if not isinstance(cutoff, str):
+        return None
+    return {
+        "run_id": artifact.get("overnight_run_id"),
+        "cutoff": cutoff,
+        "supplement": {
+            "news": news,
+            "central_bank_research": central,
+            "summary": artifact.get("summary"),
+        },
+        "source": "accepted-public-news-artifact",
+    }
 
 
 def _latest_accepted_research(store: OvernightStore) -> dict[str, Any] | None:
@@ -161,7 +203,20 @@ def collect_inputs(
     else:
         news_parse_error = None
 
-    accepted = _latest_accepted_research(store)
+    accepted = _current_cycle_accepted_research(store, run_id)
+    if accepted is None:
+        artifact = _canonical_public_news_artifact(root)
+        if artifact:
+            try:
+                artifact_cutoff = parse_iso(artifact["cutoff"])
+                static_cutoff = parse_iso(news_as_of) if news_as_of else None
+            except ValueError:
+                artifact_cutoff = None
+                static_cutoff = None
+            if artifact_cutoff is not None and (static_cutoff is None or artifact_cutoff > static_cutoff):
+                accepted = artifact
+    if accepted is None:
+        accepted = _latest_accepted_research(store)
     accepted_source: str | None = None
     if accepted:
         try:
@@ -183,7 +238,7 @@ def collect_inputs(
                     "static_files_digest": news_digest,
                 }
             )
-            accepted_source = accepted["run_id"]
+            accepted_source = str(accepted.get("run_id") or accepted.get("source") or "accepted-research")
 
     if news_digest is None:
         news_status = "invalid"

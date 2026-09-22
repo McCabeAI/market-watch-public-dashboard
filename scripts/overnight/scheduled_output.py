@@ -22,6 +22,7 @@ from scripts.overnight.errors import EvidenceBoundaryError, SchemaError
 from scripts.overnight.evidence import require_snapshot
 from scripts.overnight.ledger import load_or_create, mark_finished, mark_running, persist_run
 from scripts.overnight.paper_marks import market_state_from_families
+from scripts.overnight.accepted_news import overlay_accepted_research
 from scripts.overnight.store import OvernightStore, sha256_json
 from scripts.pm.automated import validate_pm_decisions
 from scripts.pm.review_packets import compact_overnight_decisions
@@ -253,16 +254,22 @@ def _apply_validated(
     from scripts.trading.store import TradingStore
 
     trading = TradingStore(root=store.root, state_root=store.state_root)
+    review_when = parse_iso(payload["agent_packet"]["evidence_cutoff"])
+    families = overlay_accepted_research(
+        base["families"],
+        payload["agent_packet"],
+        when=review_when,
+    )
     updated = apply_trader_review_with_memory(
         prior_books,
         decisions,
-        families=base["families"],
+        families=families,
         run_id=run_id,
         evidence_cutoff=payload["agent_packet"]["evidence_cutoff"],
         store=trading,
         memory_hashes=(base.get("seat_memory") or {}).get("hashes") or {},
         evidence_hash=payload["agent_packet"]["packet_sha256"],
-        when=parse_iso(payload["agent_packet"]["evidence_cutoff"]),
+        when=review_when,
         market_state=(base.get("families", {}).get("market_state", {}) or {}).get("data"),
     )
     updated["review_status"] = "fresh"
