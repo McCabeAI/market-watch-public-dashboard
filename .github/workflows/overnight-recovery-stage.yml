@@ -1,0 +1,104 @@
+name: Overnight Recovery Stage
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  # Share the production lock with the normal deterministic pipeline so a
+  # recovery stage can never overlap another production overnight mutation.
+  group: overnight-deterministic-pipeline-production
+  cancel-in-progress: false
+
+jobs:
+  run-stage:
+    if: github.event.issue.user.login == 'kevinnmccabe-PC' && startsWith(github.event.issue.title, '[overnight-recovery-stage] ')
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout current main
+        uses: actions/checkout@v6
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Resolve requested stage
+        id: resolve
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+        run: |
+          set -euo pipefail
+          PREFIX='[overnight-recovery-stage] '
+          STAGE="${ISSUE_TITLE#"$PREFIX"}"
+          case "$STAGE" in
+            collect|pre_trader_delta|freeze_evidence|final_delta|assemble|publish) ;;
+            *)
+              echo "::error::Unsupported recovery stage: $STAGE"
+              exit 1
+              ;;
+          esac
+          RUN_ID="$(PYTHONPATH=. python3 scripts/overnight_pipeline.py run-id)"
+          echo "stage=$STAGE" >> "$GITHUB_OUTPUT"
+          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Install market-state dependencies
+        if: contains(fromJSON('["collect","pre_trader_delta","final_delta"]'), steps.resolve.outputs.stage)
+        run: python -m pip install --disable-pip-version-check -r requirements-market-state.txt
+
+      - name: Run exactly one deterministic stage
+        env:
+          STAGE: ${{ steps.resolve.outputs.stage }}
+          RUN_ID: ${{ steps.resolve.outputs.run_id }}
+        run: |
+          set -euo pipefail
+          case "$STAGE" in
+            collect|pre_trader_delta|final_delta)
+              PYTHONPATH=. python3 scripts/overnight_pipeline.py stage "$STAGE" \
+                --run-id "$RUN_ID" --live-market-state
+              ;;
+            publish)
+              PYTHONPATH=. python3 scripts/overnight_pipeline.py stage publish \
+                --run-id "$RUN_ID" --require-dataset
+              ;;
+            *)
+              PYTHONPATH=. python3 scripts/overnight_pipeline.py stage "$STAGE" \
+                --run-id "$RUN_ID"
+              ;;
+          esac
+
+      - name: Persist only trusted deterministic state
+        env:
+          STAGE: ${{ steps.resolve.outputs.stage }}
+          RUN_ID: ${{ steps.resolve.outputs.run_id }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/overnight
+          git add data/pm/books data/pm/review_packets data/pm/public data/pm/data_requests 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "No deterministic state changes for $STAGE $RUN_ID"
+            exit 0
+          fi
+          git commit -m "chore: recovery $STAGE $RUN_ID"
+          git restore --worktree -- .
+          git clean -fd
+          test -z "$(git status --porcelain)" || { git status --porcelain; exit 1; }
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+      - name: Close successful recovery request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          STAGE: ${{ steps.resolve.outputs.stage }}
+          RUN_ID: ${{ steps.resolve.outputs.run_id }}
+        run: |
+          gh issue close "$ISSUE_NUMBER" --comment "Recovery stage `$STAGE` completed and persisted for `$RUN_ID`."
