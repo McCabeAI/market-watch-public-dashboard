@@ -42,14 +42,20 @@
       "status": "pending"
     },
     "freeze_evidence": {
-      "as_of": null,
+      "as_of": "2026-09-22T06:42:18.416796-04:00",
       "errors": [],
-      "finished_at": null,
-      "inputs": {},
+      "finished_at": "2026-09-22T06:42:18.416796-04:00",
+      "inputs": {
+        "dry_run": false,
+        "offline": true
+      },
       "name": "freeze_evidence",
-      "outputs": {},
-      "started_at": null,
-      "status": "pending"
+      "outputs": {
+        "as_of": "2026-09-22T06:42:17.657355-04:00",
+        "packet_sha256": "e0ad7dbc8b2990648797b41ff138ce05456c4f1340ef08baea106e0782197a41"
+      },
+      "started_at": "2026-09-22T06:42:17.625452-04:00",
+      "status": "succeeded"
     },
     "pre_trader_delta": {
       "as_of": "2026-09-22T06:41:52.889805-04:00",
