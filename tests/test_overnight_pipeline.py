@@ -945,8 +945,12 @@ class BookTransitionTests(unittest.TestCase):
         self.assertIn("drawdown_usd", public_with_pos)
         for seat, item in validated["seats"].items():
             if not item["positions"]:
-                self.assertEqual(item["net_pnl_usd"], 0.0, seat)
-                self.assertEqual(item["net_financing_pnl_usd"], 0.0, seat)
+                self.assertEqual(item["net_pnl_usd"], before["seats"][seat]["net_pnl_usd"], seat)
+                self.assertEqual(
+                    item["net_financing_pnl_usd"],
+                    before["seats"][seat]["net_financing_pnl_usd"],
+                    seat,
+                )
         self.assertEqual(validated["seats"]["no-trade-skeptic"]["net_pnl_usd"], 0.0)
         self.assertEqual(validated["seats"]["no-trade-skeptic"]["net_financing_pnl_usd"], 0.0)
         self.assertEqual(validated["seats"]["no-trade-skeptic"]["funding_regime"], "sofr_zero_benchmark")
