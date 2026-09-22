@@ -1,0 +1,211 @@
+{
+  "base_evidence_cutoff": "2026-09-22T15:33:42.283041-04:00",
+  "base_packet_sha256": "b6fc3b8f6416f0f9ee2b9057157fb1c0ddae7f07c0fd02f8dcd21b0312bbfc16",
+  "competition": {
+    "flat_book_pnl": "A flat seat has zero net financing/competition P&L: paper NAV earning SOFR is benchmarked at SOFR, so those flows cancel, and shocked-risk financing is zero.",
+    "funding_basis": "Official NY Fed SOFR ACT/360 is the zero-return competition benchmark, not free alpha. Every seat has $100m paper NAV that may be described as earning SOFR, but that capital is equally funded/benchmarked at SOFR so those flows cancel. Deployed shocked-risk capital pays the same official SOFR on trusted standard-shock risk capital: the absolute MTM loss from a 1% adverse spot move, a 100bp (1 percentage point) adverse outright rate move, or a 100bp adverse curve/RV spread move under the trusted duration-1 P&L convention. Equal risk capital receives equal financing treatment across asset classes. Notional is descriptive, not the funding base. A completely flat book \u2014 including no-trade-skeptic \u2014 therefore has zero net financing/competition P&L from SOFR cash or funding economics. Positive financing/carry alpha requires an explicit markable strategy that earns above SOFR or funds below SOFR. Weekends and holidays carry the last applicable published fixing until the next fixing. If official fixing history cannot be established, new funding accrual fails closed and prior canonical balances are preserved.",
+    "funding_convention": "ACT/360",
+    "funding_day_count": 360,
+    "funding_observation_date": "2026-09-21",
+    "funding_rate_annual": 0.0385,
+    "funding_source": "NY_FED",
+    "funding_source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr",
+    "instruction": "Do not optimize for gross notional or fill available capacity. Size risk from plausible adverse paths and historical excursions while staying inside the trusted risk-capital and drawdown limits. Flat cash at SOFR is the zero benchmark, not a source of alpha. The no-trade-skeptic must include a structured funding_view on every new risk or NO_TRADE thesis: the frozen official SOFR fixing, the relevant SR3 forward-curve view, its own assessment of whether realized funding will print higher, lower, or about the same as the curve, and the implication for remaining at the zero SOFR benchmark versus paying SOFR on shocked-risk capital.",
+    "metric": "net_pnl_after_funding",
+    "no_trade_allowed": true,
+    "objective": "Finish with the highest cumulative net paper P&L across the 14 standing seats.",
+    "risk_limits": {
+      "max_drawdown_usd": 5000000,
+      "paper_nav_usd": 100000000,
+      "risk_capital_limit_usd": 10000000,
+      "risk_capital_method": "mtm_standard_1pct_move"
+    }
+  },
+  "evidence_cutoff": "2026-09-22T15:40:57.474758-04:00",
+  "overnight_run_id": "overnight-20260922",
+  "packet_sha256": "4604777ecbaf69392a391d55c17179df50de45b89172d4f33ad95488bbcceff1",
+  "research_supplement": {
+    "central_bank_research": [
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Barkin: inflation risks dominate; last week\u2019s hike helps but more moves possible",
+        "institution": "Federal Reserve",
+        "published_at": "2026-09-22T13:00:00-04:00",
+        "source_name": "Federal Reserve Bank of Richmond",
+        "summary": "Richmond Fed President Tom Barkin told CFA Baltimore that July headline/core PCE at 3.7%/3.3% and broad >3% category gains outweigh labor-market strength; demand is firming (retail sales, AI capex, defense) while \u201cpassing\u201d shocks persist, justifying the Sep hike and leaving additional hikes an open question (\u201cWe\u2019ll see\u201d).",
+        "url": "https://www.richmondfed.org/press_room/speeches/thomas_i_barkin/2026/barkin_speech_20260922"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Williams: ample-reserves framework delivering effective rate control",
+        "institution": "Federal Reserve",
+        "published_at": "2026-09-22T09:07:00-04:00",
+        "source_name": "Reuters",
+        "summary": "NY Fed President John Williams told the Treasury Market Conference the post-2008 implementation toolkit has been \u201chighly effective\u201d at controlling short rates and supporting core market functioning, while stressing the framework must evolve with market structure; he did not discuss the outlook for policy rates.",
+        "url": "https://kelo.com/2026/09/22/feds-williams-says-rate-control-toolkit-is-working-well/"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Jefferson outlines discount-window modernization and Treasury collateral role",
+        "institution": "Federal Reserve",
+        "published_at": "2026-09-22T10:20:00-04:00",
+        "source_name": "Board of Governors of the Federal Reserve System",
+        "summary": "Vice Chair Jefferson\u2019s Treasury Market Conference speech focused on Discount Window Direct adoption, FHLB coordination, and how same-day Treasury collateral pledging supports market resilience and monetary policy implementation\u2014without guidance on the funds rate path.",
+        "url": "https://www.federalreserve.gov/newsevents/speech/jefferson20260922a.htm"
+      },
+      {
+        "country_codes": [
+          "AU"
+        ],
+        "headline": "Bullock: distinguish mortgage cost-of-living from inflation; anchor expectations amid supply shocks",
+        "institution": "Reserve Bank of Australia",
+        "published_at": "2026-09-22T15:00:00+10:00",
+        "source_name": "Reserve Bank of Australia",
+        "summary": "Governor Bullock emphasized communicating that higher mortgage payments are not the CPI inflation target, warned serial supply shocks (Middle East, tariffs, climate) risk embedding expectations, and reiterated policy must limit second-round effects ahead of the Sep 28\u201329 meeting where markets price a hike.",
+        "url": "https://www.rba.gov.au/speeches/2026/sp-gov-2026-09-22.html"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Collins backed September rate hike citing inflation risks (essay)",
+        "institution": "Federal Reserve",
+        "published_at": "2026-09-22T10:19:00+00:00",
+        "source_name": "Reuters",
+        "summary": "Boston Fed President Susan Collins published support for the Committee\u2019s 25bp September increase, citing inflation still above target and balanced risks\u2014referenced in Tuesday US equity wire copy alongside Barkin/Williams remarks.",
+        "url": "https://www.reuters.com/business/wall-st-futures-pause-after-ai-rally-focus-mideast-tensions-2026-09-22/"
+      }
+    ],
+    "news": [
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Iran offers conditional Hormuz reopening within seven days if US eases pressure",
+        "primary_category": "geopolitics",
+        "published_at": "2026-09-22T10:13:00+00:00",
+        "source_name": "Reuters",
+        "summary": "A senior Iranian official told Reuters Tehran could reopen the Strait of Hormuz within seven days if Washington eases military operations and lifts its blockade of Iranian ports, with the UNGA delegation authorized to revive diplomacy via mediators; Pezeshkian was not expected to meet Trump at UN headquarters.",
+        "url": "https://www.reuters.com/world/middle-east/iran-ready-reopen-strait-hormuz-if-us-eases-military-pressure-lifts-blockade-2026-09-22/"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Saudi Arabia restarts East-West pipeline; Yanbu exports may resume Tuesday",
+        "primary_category": "energy",
+        "published_at": "2026-09-22T10:08:00+00:00",
+        "source_name": "Reuters",
+        "summary": "Three sources told Reuters Aramco restarted Petroline at a low rate after September drone damage, could load a China-bound cargo at Yanbu later Tuesday, and may need six to eight weeks for full pumping rates near prior ~4 mbpd bypass flows around Hormuz disruption.",
+        "url": "https://www.reuters.com/business/energy/saudi-arabia-restarts-east-west-oil-pipeline-resume-exports-yanbu-sources-say-2026-09-22/"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Brent slides toward two-week low as Gulf supply outlook improves",
+        "primary_category": "energy",
+        "published_at": "2026-09-22T07:46:00-04:00",
+        "source_name": "BNN Bloomberg",
+        "summary": "Reuters-linked market coverage described Brent November futures down about 2% toward $98.33/barrel intraday London time as Hormuz diplomacy and Saudi pipeline restart compounded earlier risk-premium unwind from Monday\u2019s washout below $100.",
+        "url": "https://www.bnnbloomberg.ca/markets/oil/2026/09/22/oil-falls-to-two-week-low-as-gulf-supply-outlook-improves/"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Nasdaq touches intraday record as AI chips rally; Muse fears hit software and brokers",
+        "primary_category": "markets",
+        "published_at": "2026-09-22T10:19:00+00:00",
+        "source_name": "Reuters",
+        "summary": "Reuters reported Tuesday\u2019s Nasdaq up ~0.4% to ~27,225 with a new intraday high led by Micron/Sandisk, while the S&P hovered near flat (~7,768) and the Dow slipped; Uber, Expedia and Schwab fell on fears Meta\u2019s Muse agent could disintermediate consumer services, with oil near $100 and 10Y yields ~4.97% after Trump\u2019s UN Iran warning.",
+        "url": "https://www.reuters.com/business/wall-st-futures-pause-after-ai-rally-focus-mideast-tensions-2026-09-22/"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "US equities opened higher Tuesday as investors weigh US-Iran diplomacy at UNGA",
+        "primary_category": "markets",
+        "published_at": "2026-09-22T09:36:00-04:00",
+        "source_name": "Reuters (via Devdiscourse)",
+        "summary": "A Reuters snapshot at the US open showed the Dow +0.49%, S&P +0.08% and Nasdaq +0.14% with the tech index pressing record intraday territory while markets monitored potential US-Iran talks that could affect the six-month conflict premium in crude.",
+        "url": "https://www.devdiscourse.com/article/international/3980654-us-stocks-snapshot-nasdaq-leads-wall-st-higher-as-investors-weigh-mideast-developments"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Brent back below $100 supports risk assets as supply anxiety eases",
+        "primary_category": "markets",
+        "published_at": "2026-09-22T10:02:00-04:00",
+        "source_name": "Associated Press (Transport Topics)",
+        "summary": "AP noted Wall Street firming as Brent fell ~1.9% to ~$98.46, extending retreat from nearly $110 last week though still far above pre-war levels near $72, with lower fuel costs supporting transport and consumer-facing equities.",
+        "url": "https://www.ttnews.com/articles/oil-prices-below-100-barrel"
+      },
+      {
+        "country_codes": [
+          "AU"
+        ],
+        "headline": "RBA Governor Bullock: housing correction modest; investor approvals collapsed after tax changes",
+        "primary_category": "activity",
+        "published_at": "2026-09-22T15:00:00+10:00",
+        "source_name": "Reserve Bank of Australia",
+        "summary": "In her CEDA fireside chat (last public remarks before the 28\u201329 Sep board), Bullock said the RBA does not target house prices, described the downturn as within the lower range of historical corrections despite ~50% gains since early 2020, and flagged steep falls in investor housing approvals linked to federal tax changes.",
+        "url": "https://www.rba.gov.au/speeches/2026/sp-gov-2026-09-22.html"
+      }
+    ],
+    "sources": [
+      {
+        "publisher": "Reuters",
+        "title": "Iran ready to reopen Strait of Hormuz if US eases military pressure and lifts blockade",
+        "url": "https://www.reuters.com/world/middle-east/iran-ready-reopen-strait-hormuz-if-us-eases-military-pressure-lifts-blockade-2026-09-22/"
+      },
+      {
+        "publisher": "Reuters",
+        "title": "Saudi Arabia restarts East-West oil pipeline, to resume exports from Yanbu, sources say",
+        "url": "https://www.reuters.com/business/energy/saudi-arabia-restarts-east-west-oil-pipeline-resume-exports-yanbu-sources-say-2026-09-22/"
+      },
+      {
+        "publisher": "Reuters",
+        "title": "Nasdaq hits intraday record high, AI stocks rally",
+        "url": "https://www.reuters.com/business/wall-st-futures-pause-after-ai-rally-focus-mideast-tensions-2026-09-22/"
+      },
+      {
+        "publisher": "BNN Bloomberg",
+        "title": "Oil falls to two-week low as Gulf supply outlook improves",
+        "url": "https://www.bnnbloomberg.ca/markets/oil/2026/09/22/oil-falls-to-two-week-low-as-gulf-supply-outlook-improves/"
+      },
+      {
+        "publisher": "Federal Reserve Bank of Richmond",
+        "title": "Why Hike? (Tom Barkin, 22 Sep 2026)",
+        "url": "https://www.richmondfed.org/press_room/speeches/thomas_i_barkin/2026/barkin_speech_20260922"
+      },
+      {
+        "publisher": "Board of Governors of the Federal Reserve System",
+        "title": "Discount Window Modernization and Treasury Market Functioning (Vice Chair Jefferson)",
+        "url": "https://www.federalreserve.gov/newsevents/speech/jefferson20260922a.htm"
+      },
+      {
+        "publisher": "Reserve Bank of Australia",
+        "title": "Fireside Chat at CEDA (Governor Bullock, 22 Sep 2026)",
+        "url": "https://www.rba.gov.au/speeches/2026/sp-gov-2026-09-22.html"
+      },
+      {
+        "publisher": "Associated Press",
+        "title": "Brent crude falls back below $100 a barrel",
+        "url": "https://www.ttnews.com/articles/oil-prices-below-100-barrel"
+      }
+    ],
+    "summary": "Afternoon rerun color on 22 Sep 2026 (US) was dominated by easing Middle East supply fears rather than new US macro prints. Reuters reported that a senior Iranian official offered to reopen the Strait of Hormuz within seven days if the US eases military pressure and lifts its port blockade, while Pezeshkian would not meet Trump at UNGA; diplomats could still negotiate via mediators in New York. In parallel, Saudi Arabia restarted the damaged East-West (Petroline) system at a low rate, with Yanbu loadings possible later Tuesday and full restoration estimated at six to eight weeks\u2014helping push Brent toward the high-$90s, roughly a two-week low. US equities traded mixed-to-firm into the freeze window: Reuters midday snapshots showed the Nasdaq above its June intraday record on AI-chip strength while software and financials lagged on Muse-related disruption fears; oil choppy near $100 and the 10Y near 4.97% after Trump\u2019s UN warning on Iran. Fed speakers before the 15:33 ET packet freeze reinforced the post-16 Sep hike narrative\u2014Richmond\u2019s Barkin argued inflation risks dominate and further hikes remain possible\u2014while NY Fed Williams and Vice Chair Jefferson focused on rate-control plumbing and discount-window modernization, not the policy path. In Sydney, RBA Governor Bullock\u2019s last pre-meeting fireside chat stressed supply-shock inflation discipline, a modest housing correction from a high base, investor-approval collapse after tax changes, and tight labor\u2014cementing market pricing for a September hike. Post-cutoff (after 15:33 ET) independent verification of final US cash equity closes, late-day oil settlements, and any new Fed/BoC remarks was limited in this bounded pass; items below timestamp when primary publishers reported them."
+  },
+  "review_id": "review-004",
+  "schema_version": 1,
+  "type": "OVERNIGHT_AGENT_EVIDENCE_PACKET"
+}

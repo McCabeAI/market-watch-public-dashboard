@@ -211,6 +211,64 @@
       "run_id": "overnight-20260922",
       "schema_version": 1,
       "thesis": "Remain flat. News and market_state are stale, OPEN/ADD are blocked, official funding_context SOFR is missing, and SR3/SOFR forwards are unavailable. Apparent overnight edges are unpriced, untimed, and unfalsifiable under this tape. Flat cash at the zero SOFR benchmark is not alpha, but paying SOFR on shocked-risk capital with no live curve is worse."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-22T15:40:57.474758-04:00",
+      "conviction": 20,
+      "decision_fingerprint": "0f5b376cff7a89e92cb050c69bd5b5791f8244500c02ae59550a30cf32be6043",
+      "event_id": "jde-9a769037682b4b83",
+      "funding_view": {
+        "current_sofr": "Official NY Fed SOFR 3.85 percent observation_date 2026-09-21 ACT/360.",
+        "forward_funding_assessment": "about_the_same",
+        "implication": "Authority is the official NY Fed SOFR fixing, not SR3. Over this same-day horizon, realized funding is assessed about the same as the 3.85 percent official print. Remain at the zero official-SOFR benchmark. Paying SOFR on shocked-risk capital would levy 3.85 percent ACT/360 against risk with no documented mispricing to offset it. Flat cash is not alpha.",
+        "sr3_forward_view": "SR3 Z6 4.32 / H7 4.58 / U7 4.745 \u2014 curve still prices hikes then a mild fade."
+      },
+      "invalidation": "Endorse only if a later frozen packet shows a closed dated diplomatic or supply agreement with a verifiable barrel impact not already in the energy mark, plus a measurable executable dislocation versus those marks.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "8ad6c7ee1f05a14f9c54a614fc8b4fca24c55211552df73ea03bfbdcb6b30ab3",
+      "outcome_links": [],
+      "owner_id": "no-trade-skeptic",
+      "owner_type": "trader",
+      "payload": {
+        "funding_view": {
+          "current_sofr": "Official NY Fed SOFR 3.85 percent observation_date 2026-09-21 ACT/360.",
+          "forward_funding_assessment": "about_the_same",
+          "implication": "Authority is the official NY Fed SOFR fixing, not SR3. Over this same-day horizon, realized funding is assessed about the same as the 3.85 percent official print. Remain at the zero official-SOFR benchmark. Paying SOFR on shocked-risk capital would levy 3.85 percent ACT/360 against risk with no documented mispricing to offset it. Flat cash is not alpha.",
+          "sr3_forward_view": "SR3 Z6 4.32 / H7 4.58 / U7 4.745 \u2014 curve still prices hikes then a mild fade."
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-22T15:40:57.474758-04:00",
+        "evidence_hash": "4604777ecbaf69392a391d55c17179df50de45b89172d4f33ad95488bbcceff1",
+        "overnight_run_id": "overnight-20260922",
+        "review_id": "review-004",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "No trade. Official NY Fed SOFR is 3.85 percent (2026-09-21 ACT/360). Afternoon oil diplomacy moved the energy premium, but UN conditionality is not a closed deal; Barkin remains open to more hikes; packet marks already embed the STIR path; same-day headline risk is two-way. Trading STIR or energy from this packet is paying a priced path. Flat cash at 3.85 percent is cancelled by the equal official-SOFR benchmark and is not alpha.",
+      "run_id": "overnight-20260922",
+      "schema_version": 1,
+      "thesis": "No trade. Official NY Fed SOFR is 3.85 percent (2026-09-21 ACT/360). Afternoon oil diplomacy moved the energy premium, but UN conditionality is not a closed deal; Barkin remains open to more hikes; packet marks already embed the STIR path; same-day headline risk is two-way. Trading STIR or energy from this packet is paying a priced path. Flat cash at 3.85 percent is cancelled by the equal official-SOFR benchmark and is not alpha."
     }
   ],
   "schema_version": 1,

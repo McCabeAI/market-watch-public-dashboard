@@ -138,6 +138,71 @@
       "run_id": "overnight-20260922",
       "schema_version": 1,
       "thesis": "Hold SHORT AUDCAD. AU housing remains a domestic AUD drag while the oil rebound supports CAD energy. Paper mid 0.9996 versus 0.99758 is against the short but does not invalidate the housing-versus-energy relative-value. OPEN/ADD blocked; stay outside USD pairs."
+    },
+    {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDCAD",
+          "notional_usd": null,
+          "position_id": "pos-00661cabb94a",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "OPEN",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDCAD",
+          "notional_usd": 10000000,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-09-22T15:40:57.474758-04:00",
+      "conviction": 63,
+      "decision_fingerprint": "3816804dd4ab77e16f7d245799929acc30494a95f32aac442646d3b6b9bb2cdb",
+      "event_id": "jde-450dbb4c886f46b5",
+      "funding_view": null,
+      "invalidation": "Oil hold/spike that re-supports CAD terms-of-trade, Hormuz diplomacy failure, or AU dropping the priced RBA hike.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-00661cabb94a",
+        "pos-27d002b448b1"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-cross-merchant-pos-00661cabb94a",
+        "trd-trader-cross-merchant-pos-27d002b448b1"
+      ],
+      "memory_context_sha256": "86d57ab12d1c7b2d9038cc1be39ca72e8f77b17789c763f74d5d5129580129eb",
+      "outcome_links": [],
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-22T15:40:57.474758-04:00",
+        "evidence_hash": "4604777ecbaf69392a391d55c17179df50de45b89172d4f33ad95488bbcceff1",
+        "overnight_run_id": "overnight-20260922",
+        "review_id": "review-004",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Flip AUDCAD from short to a smaller long. Afternoon Hormuz diplomacy and Saudi restart skim CAD energy premium while Bullock keeps an RBA hike priced. AU 2Y 4.999 vs CA 2Y 3.29 and AONIA 4.35 vs CORRA 2.29 isolate in AUDCAD, not AUDUSD. The existing short fights carry and the afternoon tape. Size the new long to $10m so a Hormuz break is not a capacity fill.",
+      "run_id": "overnight-20260922",
+      "schema_version": 1,
+      "thesis": "Flip AUDCAD from short to a smaller long. Afternoon Hormuz diplomacy and Saudi restart skim CAD energy premium while Bullock keeps an RBA hike priced. AU 2Y 4.999 vs CA 2Y 3.29 and AONIA 4.35 vs CORRA 2.29 isolate in AUDCAD, not AUDUSD. The existing short fights carry and the afternoon tape. Size the new long to $10m so a Hormuz break is not a capacity fill."
     }
   ],
   "schema_version": 1,

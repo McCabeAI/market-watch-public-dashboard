@@ -138,6 +138,53 @@
       "run_id": "overnight-20260922",
       "schema_version": 1,
       "thesis": "Hold SHORT SOFR_2027-03. Delivered Fed hike, elevated US 2s/10s at 4.76/4.96, warm inflation 63.1 and the oil rebound keep the higher-for-longer trend intact. A missing SOFR print is not a reversal and is not a reason to fade. OPEN/ADD blocked."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-662bff0986be",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-22T15:40:57.474758-04:00",
+      "conviction": 70,
+      "decision_fingerprint": "96000b029569ffc99b7fddcffb784e89d8075b82490c260f62fc1c509b5af766",
+      "event_id": "jde-b72cbbf13cc94ee8",
+      "funding_view": null,
+      "invalidation": "Cover only if H7 reprices lower while the H7-to-U7 upward slope is lost, or if the hike cycle is taken off in packet evidence. Same-day oil is not invalidation.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-662bff0986be"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "113718cbe277c2a7cb6e2692464a4099c572019c3103ccf9a01d4d79593a417d",
+      "outcome_links": [],
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-22T15:40:57.474758-04:00",
+        "evidence_hash": "4604777ecbaf69392a391d55c17179df50de45b89172d4f33ad95488bbcceff1",
+        "overnight_run_id": "overnight-20260922",
+        "review_id": "review-004",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold pay SOFR_2027-03. Hiking cycle is still on (3.75-4.00, SEP 4.1%, Barkin more hikes possible) and the strip is still upward-sloping into U7 4.745. Unchanged H7 at 4.58 is continuation, not exhaustion. Oil ~$98 is same-day noise, not a reversal; fading the pay because energy softened one session is the premature mean-reversion this seat rejects.",
+      "run_id": "overnight-20260922",
+      "schema_version": 1,
+      "thesis": "Hold pay SOFR_2027-03. Hiking cycle is still on (3.75-4.00, SEP 4.1%, Barkin more hikes possible) and the strip is still upward-sloping into U7 4.745. Unchanged H7 at 4.58 is continuation, not exhaustion. Oil ~$98 is same-day noise, not a reversal; fading the pay because energy softened one session is the premature mean-reversion this seat rejects."
     }
   ],
   "schema_version": 1,

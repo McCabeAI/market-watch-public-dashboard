@@ -138,6 +138,53 @@
       "run_id": "overnight-20260922",
       "schema_version": 1,
       "thesis": "Hold LONG/receive CORRA_2027-03 via the 2027 H-Z strip. Current strip ~3.301 and Mar-27 3.05 versus 3.40 entry already favor the receive. Cash 2.29 versus a still-rich 2027 hike path remains the patient carry. Oil/energy is a live hawkish risk but has not overwhelmed cooling CA labor and core near 2%. OPEN/ADD blocked."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-b97bddbdbd2d",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-22T15:40:57.474758-04:00",
+      "conviction": 70,
+      "decision_fingerprint": "152f127bc5c500fdb2afe4b7ee62351afe4b1f1115e325e24e270589074a6870",
+      "event_id": "jde-807abc113759421a",
+      "funding_view": null,
+      "invalidation": "H27 mark rising toward M27 3.27 / U27 3.405 or entry 3.40; cash CORRA lifting from 2.29 in a way that validates that path; energy-pass-through catalyst returning; CA labor reversing.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-b97bddbdbd2d"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "eaff24be69bfda0c95bb3ed942afacee0924249048a9cf49239c880e70cd4e6b",
+      "outcome_links": [],
+      "owner_id": "carry-is-king",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-22T15:40:57.474758-04:00",
+        "evidence_hash": "4604777ecbaf69392a391d55c17179df50de45b89172d4f33ad95488bbcceff1",
+        "overnight_run_id": "overnight-20260922",
+        "review_id": "review-004",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold receive CORRA_2027-03. Cash 2.29 vs H27 3.06 still pays a large unused 2027 hike path after oil ~$98/Hormuz diplomacy and cooling CA labor 42.16 reduced the energy-pass-through catalyst. Patient receive is the carry.",
+      "run_id": "overnight-20260922",
+      "schema_version": 1,
+      "thesis": "Hold receive CORRA_2027-03. Cash 2.29 vs H27 3.06 still pays a large unused 2027 hike path after oil ~$98/Hormuz diplomacy and cooling CA labor 42.16 reduced the energy-pass-through catalyst. Patient receive is the carry."
     }
   ],
   "schema_version": 1,

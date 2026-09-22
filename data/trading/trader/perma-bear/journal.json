@@ -138,6 +138,53 @@
       "run_id": "overnight-20260922",
       "schema_version": 1,
       "thesis": "Hold the existing LONG/receive AONIA_2027-06. 2027H1 strip near 4.946 versus 4.9075 entry is adverse but not a thesis break. AU housing remains the defensive channel; Hunter\u2019s 22 Sep \u2018not unprecedented\u2019 line weakens a crash narrative without reversing the slowdown. Oil rebound is receive-risk, not a confirmed RBA re-hike. OPEN/ADD blocked."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-06",
+          "notional_usd": null,
+          "position_id": "pos-3b40ade3da2c",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-22T15:40:57.474758-04:00",
+      "conviction": 63,
+      "decision_fingerprint": "6422a30098d24a9b82c36a09c9c791ed9b7221497c62bf18377ea0abc5b080a3",
+      "event_id": "jde-fb4672c0ccd345b2",
+      "funding_view": null,
+      "invalidation": "Invalidate if AONIA Oct/Mar/Jun all reprice higher together while official AU commentary withdraws the housing correction.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-3b40ade3da2c"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "c9cd8f8c48fe6524a880415ec14ee572253badbb25ff366507331fce35979b6a",
+      "outcome_links": [],
+      "owner_id": "perma-bear",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-22T15:40:57.474758-04:00",
+        "evidence_hash": "4604777ecbaf69392a391d55c17179df50de45b89172d4f33ad95488bbcceff1",
+        "overnight_run_id": "overnight-20260922",
+        "review_id": "review-004",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold receive AONIA_2027-06. Bullock already concedes a modest AU housing correction while the strip still prices ~64.5bp of tightening cash-to-Jun. Nasdaq records plus same-day oil-premium collapse are complacent risk-on, not housing stabilization. Energy easing argues against adding, not against keeping the housing/policy-error receive.",
+      "run_id": "overnight-20260922",
+      "schema_version": 1,
+      "thesis": "Hold receive AONIA_2027-06. Bullock already concedes a modest AU housing correction while the strip still prices ~64.5bp of tightening cash-to-Jun. Nasdaq records plus same-day oil-premium collapse are complacent risk-on, not housing stabilization. Energy easing argues against adding, not against keeping the housing/policy-error receive."
     }
   ],
   "schema_version": 1,
