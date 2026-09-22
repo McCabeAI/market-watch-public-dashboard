@@ -82,6 +82,14 @@ class AnalyticsTests(unittest.TestCase):
         self.assertEqual(out['opportunities']['series'][1]['status'],'internal_only')
         self.assertIsNone(out['opportunities']['series'][1]['z'])
 
+    def test_oil_uses_fresh_continuous_futures_sources(self):
+        self.assertEqual(SERIES['WTI'][1], 'CL=F')
+        self.assertEqual(SERIES['BRENT'][1], 'BZ=F')
+        self.assertEqual(SERIES['WTI'][0], 'WTI futures')
+        self.assertEqual(SERIES['BRENT'][0], 'Brent futures')
+        self.assertEqual(SERIES['WTI'][4], 4)
+        self.assertEqual(SERIES['BRENT'][4], 4)
+
     def test_source_failure_explicit_no_substitute(self):
         def fail(*args,**kwargs):raise ValueError('offline')
         raw,meta=collect_cross_assets(TODAY-timedelta(days=10),TODAY,fail)
