@@ -5,6 +5,8 @@ import sys
 from datetime import date
 from pathlib import Path
 
+# Legacy 30-day central-bank research cards only. Last 24 Hours / 7-day digest are
+# owned by scripts/apply_overnight_news_refresh.py and must not be re-stamped here.
 path = Path(sys.argv[1] if len(sys.argv) > 1 else "_site/index.html")
 html = path.read_text()
 

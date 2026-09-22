@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+from copy import deepcopy
 from datetime import datetime
 from typing import Any
 
@@ -10,6 +11,7 @@ from scripts.overnight.books import empty_books, validate_books
 from scripts.overnight.clock import isoformat, now_ny
 from scripts.overnight.constants import LIVE_REVIEW_ENV, SCHEMA_VERSION, STANDING_SEATS
 from scripts.overnight.errors import EvidenceBoundaryError, LiveReviewBlocked, SchemaError
+from scripts.overnight.accepted_news import overlay_accepted_research, packet_has_accepted_research
 from scripts.overnight.evidence import assert_frozen_only, require_snapshot
 from scripts.overnight.expression import expression_rule
 from scripts.overnight.store import OvernightStore
@@ -545,6 +547,12 @@ def run_trader_review(
 
     reviews = _resolve_first_position(books, reviews)
     memory_hashes = dict((packet.get("seat_memory") or {}).get("hashes") or {})
+    agent_packet = None
+    if store.has_artifact(run_id, "agent_evidence_packet.json"):
+        candidate = store.read_artifact(run_id, "agent_evidence_packet.json")
+        if packet_has_accepted_research(candidate):
+            agent_packet = candidate
+    review_families = overlay_accepted_research(deepcopy(packet["families"]), agent_packet, when=when)
     if dry_run:
         for seat, payload in reviews.items():
             if memory_hashes.get(seat) and not payload.get("memory_context_sha256"):
@@ -556,7 +564,7 @@ def run_trader_review(
         updated = apply_trader_review_with_memory(
             books,
             reviews,
-            families=packet["families"],
+            families=review_families,
             run_id=run_id,
             evidence_cutoff=packet["as_of"],
             store=TradingStore(root=store.root, state_root=store.state_root),

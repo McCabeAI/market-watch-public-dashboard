@@ -8,6 +8,11 @@ from pathlib import Path
 from typing import Any
 from zoneinfo import ZoneInfo
 
+from scripts.overnight.accepted_news import (
+    load_accepted_public_news,
+    morning_dataset_from_public_news,
+)
+
 NY = ZoneInfo("America/New_York")
 LAST24_START = '<div class="last24">'
 ROLLUP_START = '<div class="stitle">Top Market Drivers</div>'
@@ -27,21 +32,29 @@ def _parse_iso(value: str | None) -> datetime | None:
 
 
 def _load_dataset(root: Path, dataset_path: Path | None = None) -> dict[str, Any]:
-    if dataset_path is None:
-        latest_path = root / "data" / "overnight" / "latest.json"
-        if not latest_path.is_file():
-            raise ValueError("overnight latest pointer missing")
+    if dataset_path is not None:
+        if not dataset_path.is_file():
+            raise ValueError(f"assembled dataset missing: {dataset_path}")
+        dataset = json.loads(dataset_path.read_text(encoding="utf-8"))
+        if dataset.get("type") != "OVERNIGHT_MORNING_DATASET":
+            raise ValueError("assembled dataset type mismatch")
+        return dataset
+
+    latest_path = root / "data" / "overnight" / "latest.json"
+    if latest_path.is_file():
         latest = json.loads(latest_path.read_text(encoding="utf-8"))
         rel = latest.get("assembled_dataset")
-        if not rel:
-            raise ValueError("overnight latest pointer missing assembled_dataset")
-        dataset_path = root / rel
-    if not dataset_path.is_file():
-        raise ValueError(f"assembled dataset missing: {dataset_path}")
-    dataset = json.loads(dataset_path.read_text(encoding="utf-8"))
-    if dataset.get("type") != "OVERNIGHT_MORNING_DATASET":
-        raise ValueError("assembled dataset type mismatch")
-    return dataset
+        if rel:
+            path = root / rel
+            if path.is_file():
+                dataset = json.loads(path.read_text(encoding="utf-8"))
+                if dataset.get("type") == "OVERNIGHT_MORNING_DATASET":
+                    return dataset
+
+    artifact = load_accepted_public_news(root)
+    if artifact is None:
+        raise ValueError("no assembled dataset or accepted_public_news.json available")
+    return morning_dataset_from_public_news(artifact)
 
 
 def _cutoff(dataset: dict[str, Any]) -> datetime:

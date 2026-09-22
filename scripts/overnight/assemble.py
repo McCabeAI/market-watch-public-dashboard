@@ -10,9 +10,13 @@ from scripts.overnight.books import empty_books, public_books_view, validate_boo
 from scripts.overnight.clock import isoformat, now_ny
 from scripts.overnight.constants import SCHEMA_VERSION
 from scripts.overnight.errors import SchemaError
-from scripts.overnight.freshness import age_status, publication_decision
+from scripts.overnight.accepted_news import (
+    overlay_accepted_research,
+    persist_accepted_public_news_from_assembly,
+)
+from scripts.overnight.freshness import publication_decision
 from scripts.overnight.ledger import artifact_index
-from scripts.overnight.store import OvernightStore, sha256_json
+from scripts.overnight.store import OvernightStore
 
 
 def _load_books(store: OvernightStore, run: dict[str, Any]) -> dict[str, Any]:
@@ -31,40 +35,10 @@ def _families_for_publication(store: OvernightStore, run_id: str) -> dict[str, A
     raise SchemaError("cannot assemble: no collected families")
 
 
-def _overlay_agent_research(
-    store: OvernightStore,
-    run_id: str,
-    families: dict[str, Any],
-    *,
-    when: datetime | None = None,
-) -> dict[str, Any] | None:
+def _load_agent_packet(store: OvernightStore, run_id: str) -> dict[str, Any] | None:
     if not store.has_artifact(run_id, "agent_evidence_packet.json"):
         return None
-    packet = store.read_artifact(run_id, "agent_evidence_packet.json")
-    supplement = packet.get("research_supplement") or {}
-    cutoff = packet.get("evidence_cutoff")
-    status = age_status(cutoff, when=when) if cutoff else "missing"
-
-    news = supplement.get("news") or []
-    if news:
-        families["news"] = {
-            "status": status,
-            "as_of": cutoff,
-            "digest": sha256_json(news),
-            "notes": ["accepted current-cycle ACP research supplement"],
-            "items": news,
-        }
-
-    central_bank = supplement.get("central_bank_research") or []
-    if central_bank:
-        families["central_bank_research"] = {
-            "status": status,
-            "as_of": cutoff,
-            "digest": sha256_json(central_bank),
-            "notes": ["accepted current-cycle ACP central-bank research supplement"],
-            "items": central_bank,
-        }
-    return packet
+    return store.read_artifact(run_id, "agent_evidence_packet.json")
 
 
 def assemble_dataset(
@@ -74,8 +48,12 @@ def assemble_dataset(
     when: datetime | None = None,
 ) -> dict[str, Any]:
     run_id = run["overnight_run_id"]
-    families = deepcopy(_families_for_publication(store, run_id))
-    agent_packet = _overlay_agent_research(store, run_id, families, when=when)
+    agent_packet = _load_agent_packet(store, run_id)
+    families = overlay_accepted_research(
+        _families_for_publication(store, run_id),
+        agent_packet,
+        when=when,
+    )
     review_status = "missing"
     last_success = None
     review: dict[str, Any] = {}
@@ -186,6 +164,14 @@ def assemble_dataset(
     }
     validate_dataset(dataset)
     store.write_artifact(run_id, "assembled_dataset.json", dataset)
+    if not run.get("dry_run"):
+        persist_accepted_public_news_from_assembly(
+            store,
+            run_id=run_id,
+            families=families,
+            agent_packet=agent_packet,
+            agent_research=dataset.get("agent_research"),
+        )
     if review_status == "fresh" and last_success == run_id:
         try:
             from scripts.pm.cli import refresh_packets
