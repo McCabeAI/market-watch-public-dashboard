@@ -67,6 +67,15 @@ def main(argv: list[str] | None = None) -> int:
     rid = sub.add_parser("run-id", help="Print the canonical overnight run id")
     rid.add_argument("--as-of", dest="as_of")
 
+    fresh = sub.add_parser(
+        "open-review",
+        help="Freeze a new immutable review_id under an existing session without applying decisions",
+    )
+    fresh.add_argument("--run-id", required=True)
+    fresh.add_argument("--root", type=Path, default=ROOT)
+    fresh.add_argument("--state-root", type=Path, default=None)
+    fresh.add_argument("--as-of", dest="as_of")
+
     seed = sub.add_parser("init-books", help="Write empty $100m books if missing")
     seed.add_argument("--root", type=Path, default=ROOT)
     seed.add_argument("--state-root", type=Path, default=None)
@@ -84,6 +93,30 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     if args.cmd == "run-id":
         print(overnight_run_id(_parse_when(args.as_of)))
+        return 0
+    if args.cmd == "open-review":
+        from scripts.overnight.evidence import freeze_snapshot
+
+        store = OvernightStore(root=args.root, state_root=args.state_root)
+        packet = freeze_snapshot(
+            store,
+            run_id=args.run_id,
+            when=_parse_when(args.as_of),
+            reuse_open=False,
+        )
+        print(
+            json.dumps(
+                {
+                    "overnight_run_id": packet["overnight_run_id"],
+                    "review_id": packet["review_id"],
+                    "packet_sha256": packet["packet_sha256"],
+                    "starting_trader_books_sha256": packet.get("starting_trader_books_sha256"),
+                    "starting_pm_books_sha256": packet.get("starting_pm_books_sha256"),
+                    "status": "frozen",
+                },
+                indent=2,
+            )
+        )
         return 0
     if args.cmd == "reconcile":
         result = reconcile_due_stages(

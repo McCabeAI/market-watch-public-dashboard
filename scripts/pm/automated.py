@@ -119,6 +119,7 @@ def apply_automated_pm_decisions(
     market_state: dict[str, Any] | None,
     run_id: str,
     evidence_cutoff: str,
+    review_id: str | None = None,
     packets: dict[str, dict[str, Any]] | None = None,
     trading_store: TradingStore | None = None,
     memory_hashes: dict[str, str] | None = None,
@@ -148,6 +149,7 @@ def apply_automated_pm_decisions(
             review_packet_sha256=packet.get("review_packet_sha256"),
             expected_memory_sha256=expected_memory,
             evidence_hash=packet.get("review_packet_sha256"),
+            review_id=review_id,
         )
         result["pms"][pm_id] = deepcopy(merged["pms"][pm_id])
     return result

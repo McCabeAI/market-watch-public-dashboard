@@ -69,9 +69,11 @@ jobs:
           mkdir -p /tmp/mw-generated
           cp -a "data/overnight/books" /tmp/mw-generated/
           mkdir -p "/tmp/mw-generated/runs/$RUN_ID"
-          for name in run.json agent_evidence_packet.json scheduled_output.json trader_review.json; do
-            cp "data/overnight/runs/$RUN_ID/$name" "/tmp/mw-generated/runs/$RUN_ID/$name"
-          done
+          cp "data/overnight/runs/$RUN_ID/run.json" "/tmp/mw-generated/runs/$RUN_ID/run.json"
+          if [ -d "data/overnight/runs/$RUN_ID/reviews" ]; then
+            mkdir -p "/tmp/mw-generated/runs/$RUN_ID/reviews"
+            cp -a "data/overnight/runs/$RUN_ID/reviews/." "/tmp/mw-generated/runs/$RUN_ID/reviews/"
+          fi
           if [ -d data/pm ]; then
             mkdir -p /tmp/mw-generated/pm
             for name in books review_packets public data_requests; do

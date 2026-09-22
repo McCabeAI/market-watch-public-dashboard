@@ -118,6 +118,11 @@ def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str,
     run_id = payload.get("overnight_run_id")
     if not isinstance(run_id, str) or not run_id.startswith("overnight-"):
         raise SchemaError("scheduled output overnight_run_id is missing or malformed")
+    from scripts.overnight.store import REVIEW_ID_RE
+
+    review_id = payload.get("review_id")
+    if not isinstance(review_id, str) or not REVIEW_ID_RE.match(review_id):
+        raise SchemaError("scheduled output review_id is missing or malformed")
 
     forbidden = _walk_forbidden(payload)
     if forbidden:
@@ -125,9 +130,17 @@ def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str,
             "model output may not provide canonical book/P&L state: " + ", ".join(forbidden[:8])
         )
 
-    base = require_snapshot(store, run_id)
+    base = require_snapshot(store, run_id, review_id)
     if payload.get("base_packet_sha256") != base.get("packet_sha256"):
-        raise EvidenceBoundaryError("scheduled output does not derive from the trusted 01:50 base packet")
+        raise EvidenceBoundaryError("scheduled output does not derive from the trusted base packet")
+    if base.get("review_id") not in (None, review_id):
+        raise EvidenceBoundaryError("scheduled output review_id does not match the frozen snapshot")
+
+    from scripts.overnight.reviews import assert_review_acceptable, load_review, raise_if_replay_conflict
+
+    meta = load_review(store, run_id, review_id)
+    raise_if_replay_conflict(meta, payload)
+    assert_review_acceptable(store, meta)
 
     agent_packet = payload.get("agent_packet")
     if not isinstance(agent_packet, dict):
@@ -136,6 +149,8 @@ def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str,
         raise SchemaError("agent_packet type mismatch")
     if agent_packet.get("overnight_run_id") != run_id:
         raise SchemaError("agent_packet overnight_run_id mismatch")
+    if agent_packet.get("review_id") != review_id:
+        raise SchemaError("agent_packet review_id mismatch")
     if agent_packet.get("base_packet_sha256") != base.get("packet_sha256"):
         raise EvidenceBoundaryError("agent_packet base hash mismatch")
     if agent_packet.get("base_evidence_cutoff") != base.get("as_of"):
@@ -176,6 +191,8 @@ def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str,
             raise SchemaError(f"{seat} decision seat mismatch")
         if decision.get("overnight_run_id") != run_id:
             raise EvidenceBoundaryError(f"{seat} run_id mismatch")
+        if decision.get("review_id") not in (None, review_id):
+            raise EvidenceBoundaryError(f"{seat} review_id mismatch")
         if decision.get("packet_sha256") != agent_packet["packet_sha256"]:
             raise EvidenceBoundaryError(f"{seat} did not use the final frozen agent packet")
         if decision.get("evidence_cutoff") != agent_packet["evidence_cutoff"]:
@@ -235,6 +252,11 @@ def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str,
         )
     except Exception as exc:
         raise SchemaError(str(exc)) from exc
+    pm_decisions = payload.get("pm_decisions") or {}
+    if isinstance(pm_decisions, dict):
+        for pm_id, decision in pm_decisions.items():
+            if isinstance(decision, dict) and decision.get("review_id") not in (None, review_id):
+                raise EvidenceBoundaryError(f"{pm_id} review_id mismatch")
     return payload
 
 
@@ -246,7 +268,24 @@ def _apply_validated(
 ) -> dict[str, Any]:
     payload = validate_output(store, payload)
     run_id = payload["overnight_run_id"]
-    base = require_snapshot(store, run_id)
+    review_id = payload["review_id"]
+    from scripts.overnight.reviews import load_review, mark_accepted, mark_accepting, review_effects_recorded
+
+    meta = load_review(store, run_id, review_id)
+    if meta.get("status") == "accepted" or review_effects_recorded(store, run_id, review_id):
+        if store.has_artifact(run_id, "trader_review.json", review_id=review_id):
+            existing = store.read_artifact(run_id, "trader_review.json", review_id=review_id)
+            if write and meta.get("status") != "accepted":
+                mark_accepted(
+                    store,
+                    meta,
+                    agent_packet_sha256=(payload.get("agent_packet") or {}).get("packet_sha256"),
+                )
+            return existing
+    if write and meta.get("status") == "frozen":
+        meta = mark_accepting(store, meta)
+
+    base = require_snapshot(store, run_id, review_id)
     prior_books = validate_books(deepcopy(base["prior_books"]))
     decisions = deepcopy(payload["decisions"])
 
@@ -260,25 +299,33 @@ def _apply_validated(
         payload["agent_packet"],
         when=review_when,
     )
-    updated = apply_trader_review_with_memory(
-        prior_books,
-        decisions,
-        families=families,
-        run_id=run_id,
-        evidence_cutoff=payload["agent_packet"]["evidence_cutoff"],
-        store=trading,
-        memory_hashes=(base.get("seat_memory") or {}).get("hashes") or {},
-        evidence_hash=payload["agent_packet"]["packet_sha256"],
-        when=review_when,
-        market_state=(base.get("families", {}).get("market_state", {}) or {}).get("data"),
-    )
+    from scripts.overnight.errors import ReviewAlreadyApplied
+
+    try:
+        updated = apply_trader_review_with_memory(
+            prior_books,
+            decisions,
+            families=families,
+            run_id=run_id,
+            review_id=review_id,
+            evidence_cutoff=payload["agent_packet"]["evidence_cutoff"],
+            store=trading,
+            memory_hashes=(base.get("seat_memory") or {}).get("hashes") or {},
+            evidence_hash=payload["agent_packet"]["packet_sha256"],
+            when=review_when,
+            market_state=(base.get("families", {}).get("market_state", {}) or {}).get("data"),
+        )
+    except ReviewAlreadyApplied:
+        updated = validate_books(store.read_books())
     updated["review_status"] = "fresh"
     updated["last_successful_review_run_id"] = run_id
+    updated["last_successful_review_id"] = review_id
 
     review = {
         "schema_version": SCHEMA_VERSION,
         "type": "OVERNIGHT_TRADER_REVIEW",
         "overnight_run_id": run_id,
+        "review_id": review_id,
         "as_of": isoformat(now_ny()),
         "evidence_cutoff": payload["agent_packet"]["evidence_cutoff"],
         "packet_sha256": payload["agent_packet"]["packet_sha256"],
@@ -299,6 +346,7 @@ def _apply_validated(
         payload,
         review,
         base,
+        review_id=review_id,
         write=write,
     )
     review["pm_books"] = pm_books
@@ -306,10 +354,16 @@ def _apply_validated(
     review["pm_source"] = pm_summary.get("source")
 
     if write:
-        store.write_artifact(run_id, "agent_evidence_packet.json", payload["agent_packet"])
-        store.write_artifact(run_id, "scheduled_output.json", payload)
-        store.write_artifact(run_id, "trader_review.json", review)
+        store.write_artifact(run_id, "agent_evidence_packet.json", payload["agent_packet"], review_id=review_id)
+        store.write_artifact(run_id, "scheduled_output.json", payload, review_id=review_id)
+        store.write_artifact(run_id, "trader_review.json", review, review_id=review_id)
         store.write_books(updated)
+        mark_accepted(
+            store,
+            meta,
+            when=review_when,
+            agent_packet_sha256=payload["agent_packet"]["packet_sha256"],
+        )
         run = load_or_create(store, run_id=run_id)
         mark_running(
             run,
@@ -318,6 +372,7 @@ def _apply_validated(
                 "source": "acp-scheduled-output",
                 "schedule_id": payload["schedule_id"],
                 "base_packet_sha256": payload["base_packet_sha256"],
+                "review_id": review_id,
             },
         )
         mark_finished(
@@ -326,6 +381,7 @@ def _apply_validated(
             status="succeeded",
             outputs={
                 "source": "acp-scheduled-output",
+                "review_id": review_id,
                 "packet_sha256": payload["agent_packet"]["packet_sha256"],
                 "model_calls": payload["execution"]["declared_total_model_calls"],
             },
@@ -341,6 +397,7 @@ def _refresh_pm_after_overnight(
     review: dict[str, Any],
     base: dict[str, Any],
     *,
+    review_id: str,
     write: bool,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     """Daily PM packets follow this accepted overnight 14-seat review. No Trader Room run."""
@@ -357,11 +414,11 @@ def _refresh_pm_after_overnight(
     from scripts.pm.store import PMStore
     from scripts.trading.store import TradingStore
 
-    store.write_artifact(run_id, "agent_evidence_packet.json", payload["agent_packet"])
+    store.write_artifact(run_id, "agent_evidence_packet.json", payload["agent_packet"], review_id=review_id)
 
     pm_store = PMStore(root=store.root, state_root=store.state_root)
     trading = TradingStore(root=store.root, state_root=store.state_root)
-    source = source_from_overnight_run(store.run_dir(run_id), review=review)
+    source = source_from_overnight_run(store.review_dir(run_id, review_id), review=review)
     memory_hashes = (base.get("pm_memory") or {}).get("hashes") or {}
 
     books = load_or_empty_books(
@@ -383,12 +440,14 @@ def _refresh_pm_after_overnight(
         payload["pm_decisions"],
         market_state=market_state_from_source(source),
         run_id=run_id,
+        review_id=review_id,
         evidence_cutoff=payload["agent_packet"]["evidence_cutoff"],
         packets=packets,
         trading_store=trading,
         memory_hashes=memory_hashes,
     )
     pm_books["last_successful_automated_pm_run_id"] = run_id
+    pm_books["last_successful_review_id"] = review_id
     pm_books["overnight_run_id"] = run_id
     if payload["agent_packet"].get("evidence_cutoff"):
         pm_books["evidence_cutoff"] = payload["agent_packet"]["evidence_cutoff"]
@@ -405,6 +464,7 @@ def _refresh_pm_after_overnight(
     summary = {
         "source": source.kind,
         "overnight_run_id": run_id,
+        "review_id": review_id,
         "trader_room_run_id": None,
         "evidence_cutoff": source.evidence.get("as_of"),
         "evidence_packet_sha256": source.evidence.get("packet_sha256"),
@@ -459,6 +519,7 @@ def main(argv: list[str] | None = None) -> int:
         json.dumps(
             {
                 "overnight_run_id": review["overnight_run_id"],
+                "review_id": review.get("review_id"),
                 "status": review["status"],
                 "model_calls": review["model_calls"],
             },

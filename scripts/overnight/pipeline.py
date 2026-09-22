@@ -76,7 +76,20 @@ def run_stage(
 
 
 def _summarize(payload: dict[str, Any]) -> dict[str, Any]:
-    keep = ("as_of", "status", "packet_sha256", "source", "model_calls", "unchanged", "core_status", "trader_books_status", "may_publish")
+    keep = (
+        "as_of",
+        "status",
+        "packet_sha256",
+        "review_id",
+        "source",
+        "model_calls",
+        "unchanged",
+        "core_status",
+        "trader_books_status",
+        "may_publish",
+        "starting_trader_books_sha256",
+        "starting_pm_books_sha256",
+    )
     return {k: payload[k] for k in keep if k in payload}
 
 

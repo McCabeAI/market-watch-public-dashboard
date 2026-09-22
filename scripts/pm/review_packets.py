@@ -217,6 +217,39 @@ def list_overnight_run_dirs(state_root) -> list[Path]:
     )
 
 
+def _session_dir(run_dir: Path) -> Path:
+    if run_dir.name.startswith("review-") and run_dir.parent.name == "reviews":
+        return run_dir.parent.parent
+    return run_dir
+
+
+def resolve_overnight_artifact_dir(run_dir) -> Path:
+    """Prefer the latest accepted review namespace when the session has one."""
+    run_dir = Path(run_dir)
+    index_path = run_dir / "reviews" / "index.json"
+    if not index_path.is_file():
+        return run_dir
+    try:
+        index = json.loads(index_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return run_dir
+    rows = [row for row in (index.get("reviews") or []) if isinstance(row, dict)]
+    for row in reversed(rows):
+        if row.get("status") != "accepted" or not isinstance(row.get("review_id"), str):
+            continue
+        candidate = run_dir / "reviews" / row["review_id"]
+        if (candidate / "trader_review.json").is_file():
+            return candidate
+    for row in reversed(rows):
+        review_id = row.get("review_id")
+        if not isinstance(review_id, str):
+            continue
+        candidate = run_dir / "reviews" / review_id
+        if (candidate / "trader_review.json").is_file():
+            return candidate
+    return run_dir
+
+
 def overnight_review_errors(run_dir) -> list[str]:
     """Return why an overnight run is not a successful 14-seat production review."""
     run_dir = Path(run_dir)
@@ -232,8 +265,9 @@ def overnight_review_errors(run_dir) -> list[str]:
         return ["trader_review.json is not an object"]
     if review.get("status") != "succeeded":
         errors.append(f"review status is {review.get('status')!r}, expected 'succeeded'")
-    if review.get("overnight_run_id") not in (None, run_dir.name):
-        errors.append(f"review overnight_run_id {review.get('overnight_run_id')!r} does not match {run_dir.name}")
+    session_name = _session_dir(run_dir).name
+    if review.get("overnight_run_id") not in (None, session_name):
+        errors.append(f"review overnight_run_id {review.get('overnight_run_id')!r} does not match {session_name}")
     seats = review.get("reviews")
     if not isinstance(seats, dict) or set(seats) != set(STANDING_SEATS):
         errors.append("trader_review.json does not contain exactly the locked 14 seats")
@@ -254,7 +288,7 @@ def overnight_review_errors(run_dir) -> list[str]:
 
 
 def is_successful_overnight_review(run_dir) -> bool:
-    return not overnight_review_errors(run_dir)
+    return not overnight_review_errors(resolve_overnight_artifact_dir(run_dir))
 
 
 def select_newest_successful_overnight_review(state_root) -> Path | None:
@@ -342,8 +376,9 @@ def compact_overnight_books(review: dict[str, Any]) -> dict[str, Any] | None:
 
 
 def _market_state_from_overnight(run_dir: Path, snapshot: dict[str, Any]) -> dict[str, Any]:
+    session_dir = _session_dir(run_dir)
     for name in ("final_delta.json", "pre_trader_delta.json"):
-        path = run_dir / name
+        path = session_dir / name
         if path.is_file():
             try:
                 payload = _load_json(path)
@@ -414,6 +449,8 @@ class PMPacketSource:
 
 def source_from_overnight_run(run_dir, *, review: dict[str, Any] | None = None) -> PMPacketSource:
     run_dir = Path(run_dir)
+    if review is None:
+        run_dir = resolve_overnight_artifact_dir(run_dir)
     errors = overnight_review_errors(run_dir) if review is None else []
     if errors:
         raise SchemaError(f"cannot build PM packet from unsuccessful overnight review {run_dir.name}: {errors}")

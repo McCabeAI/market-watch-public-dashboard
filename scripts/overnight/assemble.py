@@ -58,7 +58,13 @@ def assemble_dataset(
     last_success = None
     review: dict[str, Any] = {}
     books = _load_books(store, run)
-    snapshot = store.read_artifact(run_id, "evidence_snapshot.json") if store.has_artifact(run_id, "evidence_snapshot.json") else {}
+    accepted_review_id = store.latest_review_id(run_id, statuses={"accepted"})
+    if accepted_review_id and store.has_artifact(run_id, "evidence_snapshot.json", review_id=accepted_review_id):
+        snapshot = store.read_artifact(run_id, "evidence_snapshot.json", review_id=accepted_review_id)
+    elif store.has_artifact(run_id, "evidence_snapshot.json"):
+        snapshot = store.read_artifact(run_id, "evidence_snapshot.json")
+    else:
+        snapshot = {}
     evidence_cutoff = snapshot.get("as_of")
     if store.has_artifact(run_id, "trader_review.json"):
         review = store.read_artifact(run_id, "trader_review.json")

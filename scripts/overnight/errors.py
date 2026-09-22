@@ -29,3 +29,11 @@ class StageError(OvernightError):
 
 class LiveReviewBlocked(OvernightError):
     """Live Cursor trader-review spend is not armed."""
+
+
+class ReviewAlreadyApplied(OvernightError):
+    """This review_id already updated canonical state. Replay must not write books."""
+
+    def __init__(self, review_id: str):
+        self.review_id = review_id
+        super().__init__(f"review {review_id} is already applied")

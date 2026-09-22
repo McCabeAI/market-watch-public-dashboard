@@ -39,7 +39,7 @@ data/trading/<owner_type>/<owner_id>/postmortems_due.json
 data/trading/<owner_type>/<owner_id>/context.json
 ```
 
-Overnight freeze also writes per-seat sidecars at `data/overnight/runs/<run_id>/memory/<seat>.json`. Full Trader Room freeze writes `trader-room/runs/<run_id>/memory/<seat>.json`. Those sidecars are not part of the common evidence packet.
+Overnight freeze writes per-seat sidecars at `data/overnight/runs/<overnight_run_id>/reviews/<review_id>/memory/<seat>.json`. The session id stays on the run; `review_id` is the immutable decision cycle and is stored on journal and trade provenance. Full Trader Room freeze writes `trader-room/runs/<run_id>/memory/<seat>.json`. Those sidecars are not part of the common evidence packet.
 
 `trade_id` is stable and linked to `position_id`:
 

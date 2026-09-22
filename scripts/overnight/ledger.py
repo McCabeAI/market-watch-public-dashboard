@@ -146,14 +146,20 @@ def assert_same_run_id(run: dict[str, Any], payload: dict[str, Any], label: str)
 
 def artifact_index(run: dict[str, Any]) -> dict[str, str]:
     run_id = run["overnight_run_id"]
+    prefix = f"data/overnight/runs/{run_id}"
+    freeze_outputs = ((run.get("stages") or {}).get("freeze_evidence") or {}).get("outputs") or {}
+    review_outputs = ((run.get("stages") or {}).get("trader_review") or {}).get("outputs") or {}
+    review_id = review_outputs.get("review_id") or freeze_outputs.get("review_id")
+    review_prefix = f"{prefix}/reviews/{review_id}" if review_id else prefix
     return {
-        "run": f"data/overnight/runs/{run_id}/run.json",
-        "collect": f"data/overnight/runs/{run_id}/collect.json",
-        "pre_trader_delta": f"data/overnight/runs/{run_id}/pre_trader_delta.json",
-        "evidence_snapshot": f"data/overnight/runs/{run_id}/evidence_snapshot.json",
-        "trader_review": f"data/overnight/runs/{run_id}/trader_review.json",
-        "final_delta": f"data/overnight/runs/{run_id}/final_delta.json",
-        "assembled_dataset": f"data/overnight/runs/{run_id}/assembled_dataset.json",
+        "run": f"{prefix}/run.json",
+        "collect": f"{prefix}/collect.json",
+        "pre_trader_delta": f"{prefix}/pre_trader_delta.json",
+        "review_index": f"{prefix}/reviews/index.json",
+        "evidence_snapshot": f"{review_prefix}/evidence_snapshot.json",
+        "trader_review": f"{review_prefix}/trader_review.json",
+        "final_delta": f"{prefix}/final_delta.json",
+        "assembled_dataset": f"{prefix}/assembled_dataset.json",
         "digest": sha256_json({k: run["stages"][k]["status"] for k in STAGES}),
     }
 

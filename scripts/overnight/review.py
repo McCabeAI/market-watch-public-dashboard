@@ -98,8 +98,17 @@ def _overlay_automated_pm_stale(store: OvernightStore) -> None:
     pm_store.write_books(books)
 
 
-def _ensure_agent_packet_for_pm(store: OvernightStore, run_id: str, packet: dict[str, Any]) -> None:
-    if store.has_artifact(run_id, "agent_evidence_packet.json"):
+def _ensure_agent_packet_for_pm(
+    store: OvernightStore,
+    run_id: str,
+    packet: dict[str, Any],
+    *,
+    review_id: str | None = None,
+) -> None:
+    review_id = review_id or packet.get("review_id")
+    if review_id and store.has_artifact(run_id, "agent_evidence_packet.json", review_id=review_id):
+        return
+    if not review_id and store.has_artifact(run_id, "agent_evidence_packet.json"):
         return
     store.write_artifact(
         run_id,
@@ -108,6 +117,7 @@ def _ensure_agent_packet_for_pm(store: OvernightStore, run_id: str, packet: dict
             "schema_version": SCHEMA_VERSION,
             "type": "OVERNIGHT_AGENT_EVIDENCE_PACKET",
             "overnight_run_id": run_id,
+            "review_id": review_id,
             "packet_sha256": packet["packet_sha256"],
             "evidence_cutoff": packet["as_of"],
             "base_packet_sha256": packet["packet_sha256"],
@@ -120,6 +130,7 @@ def _ensure_agent_packet_for_pm(store: OvernightStore, run_id: str, packet: dict
                 "sources": [],
             },
         },
+        review_id=review_id,
     )
 
 
@@ -139,8 +150,10 @@ def _apply_pm_after_trader_review(
     from scripts.trading.store import TradingStore
 
     pm_store = PMStore(root=store.root, state_root=store.state_root)
-    _ensure_agent_packet_for_pm(store, run_id, packet)
-    source = source_from_overnight_run(store.run_dir(run_id), review=review)
+    review_id = review.get("review_id") or packet.get("review_id")
+    _ensure_agent_packet_for_pm(store, run_id, packet, review_id=review_id)
+    source_dir = store.review_dir(run_id, review_id) if review_id else store.run_dir(run_id)
+    source = source_from_overnight_run(source_dir, review=review)
     memory_hashes = _pm_memory_hashes(packet)
     try:
         summary = refresh_packets(
@@ -177,6 +190,7 @@ def _apply_pm_after_trader_review(
             pm_decisions,
             market_state=market_state_from_source(source),
             run_id=run_id,
+            review_id=review_id,
             evidence_cutoff=packet["as_of"],
             packets=packets,
             trading_store=TradingStore(root=store.root, state_root=store.state_root),
@@ -504,7 +518,20 @@ def run_trader_review(
     scenario: str = "default",
     live_reviews: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    packet = require_snapshot(store, run_id)
+    from scripts.overnight.reviews import assert_review_acceptable, load_review, mark_accepted, mark_accepting, review_effects_recorded
+
+    review_id = store.latest_review_id(run_id, statuses={"frozen", "accepting", "accepted"})
+    packet = require_snapshot(store, run_id, review_id)
+    review_id = packet.get("review_id") or review_id
+    meta = None
+    if review_id:
+        meta = load_review(store, run_id, review_id)
+        if meta.get("status") == "accepted" or review_effects_recorded(store, run_id, review_id):
+            if store.has_artifact(run_id, "trader_review.json", review_id=review_id):
+                return store.read_artifact(run_id, "trader_review.json", review_id=review_id)
+        if meta.get("status") == "frozen":
+            assert_review_acceptable(store, meta)
+            meta = mark_accepting(store, meta)
     if isinstance(packet.get("prior_books"), dict):
         books = validate_books(packet["prior_books"])
     elif store.books_path().is_file():
@@ -561,20 +588,28 @@ def run_trader_review(
         from scripts.trading.apply import apply_trader_review_with_memory
         from scripts.trading.store import TradingStore
 
-        updated = apply_trader_review_with_memory(
-            books,
-            reviews,
-            families=review_families,
-            run_id=run_id,
-            evidence_cutoff=packet["as_of"],
-            store=TradingStore(root=store.root, state_root=store.state_root),
-            memory_hashes=memory_hashes,
-            evidence_hash=packet.get("packet_sha256"),
-            when=when,
-            market_state=(packet.get("families", {}).get("market_state", {}) or {}).get("data"),
-        )
+        from scripts.overnight.errors import ReviewAlreadyApplied
+
+        try:
+            updated = apply_trader_review_with_memory(
+                books,
+                reviews,
+                families=review_families,
+                run_id=run_id,
+                review_id=review_id,
+                evidence_cutoff=packet["as_of"],
+                store=TradingStore(root=store.root, state_root=store.state_root),
+                memory_hashes=memory_hashes,
+                evidence_hash=packet.get("packet_sha256"),
+                when=when,
+                market_state=(packet.get("families", {}).get("market_state", {}) or {}).get("data"),
+            )
+        except ReviewAlreadyApplied:
+            updated = validate_books(store.read_books())
         updated["review_status"] = "fresh"
         updated["last_successful_review_run_id"] = run_id
+        if review_id:
+            updated["last_successful_review_id"] = review_id
         status = "succeeded"
         errors: list[str] = []
     except EvidenceBoundaryError:
@@ -595,6 +630,7 @@ def run_trader_review(
             review={
                 "status": status,
                 "overnight_run_id": run_id,
+                "review_id": review_id,
                 "evidence_cutoff": packet["as_of"],
                 "packet_sha256": packet["packet_sha256"],
                 "reviews": reviews,
@@ -609,6 +645,7 @@ def run_trader_review(
         "schema_version": SCHEMA_VERSION,
         "type": "OVERNIGHT_TRADER_REVIEW",
         "overnight_run_id": run_id,
+        "review_id": review_id,
         "as_of": isoformat(now_ny(when)),
         "evidence_cutoff": packet["as_of"],
         "packet_sha256": packet["packet_sha256"],
@@ -624,7 +661,9 @@ def run_trader_review(
         payload["pm_books"] = pm_books
     if pm_packets is not None:
         payload["pm_packets"] = pm_packets
-    store.write_artifact(run_id, "trader_review.json", payload)
+    store.write_artifact(run_id, "trader_review.json", payload, review_id=review_id)
+    if status == "succeeded" and meta is not None:
+        mark_accepted(store, meta, when=when, agent_packet_sha256=packet.get("packet_sha256"))
     return payload
 
 
@@ -635,7 +674,9 @@ def record_missing_live_review(
     when: datetime | None = None,
     reason: str = "Cursor live review payload was not present; books left unchanged",
 ) -> dict[str, Any]:
-    packet = require_snapshot(store, run_id)
+    review_id = store.latest_review_id(run_id)
+    packet = require_snapshot(store, run_id, review_id)
+    review_id = packet.get("review_id") or review_id
     if isinstance(packet.get("prior_books"), dict):
         books = validate_books(packet["prior_books"])
     elif store.books_path().is_file():
@@ -649,6 +690,7 @@ def record_missing_live_review(
         "schema_version": SCHEMA_VERSION,
         "type": "OVERNIGHT_TRADER_REVIEW",
         "overnight_run_id": run_id,
+        "review_id": review_id,
         "as_of": isoformat(now_ny(when)),
         "evidence_cutoff": packet["as_of"],
         "packet_sha256": packet["packet_sha256"],
@@ -660,5 +702,5 @@ def record_missing_live_review(
         "reviews": {},
         "books": books,
     }
-    store.write_artifact(run_id, "trader_review.json", payload)
+    store.write_artifact(run_id, "trader_review.json", payload, review_id=review_id)
     return payload

@@ -7,6 +7,7 @@ from datetime import datetime
 from typing import Any
 
 from scripts.overnight.books import apply_review, validate_books
+from scripts.overnight.errors import ReviewAlreadyApplied
 from scripts.overnight.clock import isoformat, now_ny
 from scripts.overnight.constants import STANDING_SEATS
 from scripts.pm.books import apply_decision as apply_pm_book_decision
@@ -145,6 +146,7 @@ def _sync_history_row(
     review_packet_id: str | None,
     review_packet_sha256: str | None,
     journal_event_id: str | None,
+    review_id: str | None = None,
 ) -> list[str]:
     kind = row.get("action")
     if kind not in {"OPEN", "ADD", "REDUCE", "HEDGE", "CLOSE"}:
@@ -247,6 +249,7 @@ def _sync_history_row(
                 review_packet_sha256=review_packet_sha256,
                 overnight_run_id=overnight_run_id,
                 trader_room_run_id=trader_room_run_id,
+                review_id=review_id,
             )
             linked.append(hedge_trade["trade_id"])
         if hedge_target:
@@ -268,6 +271,7 @@ def _sync_history_row(
                     source_journal_event_id=journal_event_id,
                     overnight_run_id=overnight_run_id,
                     trader_room_run_id=trader_room_run_id,
+                    review_id=review_id,
                 )
                 linked.append(original["trade_id"])
         return linked
@@ -309,6 +313,7 @@ def _sync_history_row(
         review_packet_sha256=review_packet_sha256,
         overnight_run_id=overnight_run_id,
         trader_room_run_id=trader_room_run_id,
+        review_id=review_id,
     )
     if kind == "CLOSE":
         create_postmortem_due(store, trade, run_id=run_id, when=when)
@@ -362,6 +367,7 @@ def apply_trader_review_with_memory(
     evidence_hash: str | None = None,
     when: datetime | None = None,
     market_state: dict[str, Any] | None = None,
+    review_id: str | None = None,
 ) -> dict[str, Any]:
     store.ensure_initialized()
     stamp = now_ny(when)
@@ -375,10 +381,13 @@ def apply_trader_review_with_memory(
             owner_id=seat,
             kind="OVERNIGHT_DECISION",
             run_id=run_id,
-            decision_fingerprint=fingerprints[seat],
+            review_id=review_id,
+            decision_fingerprint=None if review_id else fingerprints[seat],
         )
         for seat in STANDING_SEATS
     }
+    if review_id and all(existing.values()):
+        raise ReviewAlreadyApplied(review_id)
     if all(existing.values()):
         return books
 
@@ -458,6 +467,7 @@ def apply_trader_review_with_memory(
                     review_packet_id=None,
                     review_packet_sha256=None,
                     journal_event_id=reserved_ids[seat],
+                    review_id=review_id,
                 )
             )
             if row.get("result") == "applied" and row.get("position_id"):
@@ -489,6 +499,7 @@ def apply_trader_review_with_memory(
             evidence_hash=evidence_hash,
             overnight_run_id=overnight_run_id,
             trader_room_run_id=trader_room_run_id,
+            review_id=review_id,
             event_id=reserved_ids[seat],
             decision_fingerprint=fingerprints[seat],
             funding_view=decision.get("funding_view"),
@@ -515,6 +526,7 @@ def apply_pm_decision_with_memory(
     expected_memory_sha256: str | None = None,
     evidence_hash: str | None = None,
     when: datetime | None = None,
+    review_id: str | None = None,
 ) -> dict[str, Any]:
     store.ensure_initialized()
     stamp = now_ny(when)
@@ -529,8 +541,9 @@ def apply_pm_decision_with_memory(
         owner_id=pm_id,
         kind="PM_DECISION",
         run_id=run_id,
-        review_packet_id=review_packet_id,
-        decision_fingerprint=fingerprint,
+        review_id=review_id,
+        review_packet_id=None if review_id else review_packet_id,
+        decision_fingerprint=None if review_id else fingerprint,
     )
     if existing:
         decision["journal_event_id"] = existing["event_id"]
@@ -596,6 +609,7 @@ def apply_pm_decision_with_memory(
                 review_packet_id=review_packet_id,
                 review_packet_sha256=review_packet_sha256,
                 journal_event_id=journal_event_id,
+                review_id=review_id,
             )
         )
         if row.get("result") == "applied" and row.get("position_id"):
@@ -627,6 +641,7 @@ def apply_pm_decision_with_memory(
         evidence_hash=evidence_hash or review_packet_sha256,
         overnight_run_id=overnight_run_id,
         trader_room_run_id=trader_room_run_id,
+        review_id=review_id,
         review_packet_id=review_packet_id,
         event_id=journal_event_id,
         decision_fingerprint=fingerprint,
