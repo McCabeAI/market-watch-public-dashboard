@@ -132,6 +132,51 @@
       "run_id": "overnight-20260922",
       "schema_version": 1,
       "thesis": "Remain flat. Options are last-resort and unmarkable: the packet has no premium, IV, or strike data. OPEN/ADD blocked. Inventing a vol structure would violate the evidence boundary. HOLD is the only coherent convexity action."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-22T15:40:57.474758-04:00",
+      "conviction": 74,
+      "decision_fingerprint": "159dd5767448726909fd0c76194e2f986b303280252e53828af92efc26889bba",
+      "event_id": "jde-7093b7897f5745fe",
+      "funding_view": null,
+      "invalidation": "A markable options surface appears in-packet, or trusted freeze prints a still-unpriced discrete event with unmoved spot/STIR.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "66f4434e9a4815e09a06be01d9e247a02f247f5b6ae723ce392f35d3908d7d1a",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-22T15:40:57.474758-04:00",
+        "evidence_hash": "4604777ecbaf69392a391d55c17179df50de45b89172d4f33ad95488bbcceff1",
+        "overnight_run_id": "overnight-20260922",
+        "review_id": "review-004",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Stay flat. Residual Hormuz timing is uncertain, so the correct expression would be bounded-risk optionality, not chased spot or lagging rates. The oil-vol path already printed ~$110 to ~$98 and spot/STIR already moved. Packet has no IV/premium/strike surface, so options OPEN is not paper-markable. Do not manufacture a linear overlay that fails the SOFR hurdle.",
+      "run_id": "overnight-20260922",
+      "schema_version": 1,
+      "thesis": "Stay flat. Residual Hormuz timing is uncertain, so the correct expression would be bounded-risk optionality, not chased spot or lagging rates. The oil-vol path already printed ~$110 to ~$98 and spot/STIR already moved. Packet has no IV/premium/strike surface, so options OPEN is not paper-markable. Do not manufacture a linear overlay that fails the SOFR hurdle."
     }
   ],
   "schema_version": 1,

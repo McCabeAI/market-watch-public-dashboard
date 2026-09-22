@@ -138,6 +138,55 @@
       "run_id": "overnight-20260922",
       "schema_version": 1,
       "thesis": "Concentrated LONG/receive CORRA_2027-03 stays on: entry 3.13 versus packet implied 3.05 is already in favor, and cash 2.29 versus Mar-27 3.05 still prices too much BoC tightening against cooling Canadian labor and core near 2%. Stale news and market_state block OPEN/ADD; all 14 trader seats are HOLD with no expanding handoffs. Mandate is aggressive and concentrated while the thesis is valid; HEDGE is prohibited so the book is not diluted."
+    },
+    {
+      "actions": [
+        {
+          "action": "ADD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 850000000,
+          "position_id": "pm-swinger-2070479ca321",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-09-22T16:12:12.028522-04:00",
+      "conviction": 82,
+      "decision_fingerprint": "d4bfcfebfcc014c068b9ed02704b305beafec8cd5e8263018ef68ff04b93d216",
+      "event_id": "jde-03b7a026ae314226",
+      "funding_view": null,
+      "invalidation": "Close or reduce if H27 mid revisits 3.20 (through entry 3.13) on hot CA labor, if Brent reverses through $105 on a failed Hormuz reopen, or if Fed/Barkin-driven CAD inflation forces BoC to deliver the priced hike path (H27 through M27 3.27 as fair).",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-swinger-2070479ca321"
+      ],
+      "linked_trade_ids": [
+        "trd-pm-swinger-pm-swinger-2070479ca321"
+      ],
+      "memory_context_sha256": "fed6d1dda7ef1a01062d339207f7687c9e608e4d22870842cd5fa504d083d8ff",
+      "outcome_links": [],
+      "owner_id": "swinger",
+      "owner_type": "pm",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-22T15:40:57.474758-04:00",
+        "evidence_hash": "d6103c1049e8abc6c5dab94855065ffa06fb2f83665d77c817a4cf5fa8960083",
+        "overnight_run_id": "overnight-20260922",
+        "review_id": "review-004",
+        "review_packet_id": "prp-swinger-overnight-20260922-review-004",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Receive CORRA H27 remains the concentrated book. Cash CORRA 2.29 versus H27 3.06 still prices about 77bp of hikes into a six-month window while CA labor 42.16 is cooling and Brent eased to ~$98 on a conditional Hormuz reopen plus Saudi Petroline restart. Long duration is working (entry 3.13 to 3.06) and still has residual edge. Barkin/Fed hike-spillover is the main risk, not a reason to cut a valid receive. Skip AUDCAD: RBA hikes are already priced and AU housing is correcting.",
+      "run_id": "overnight-20260922",
+      "schema_version": 1,
+      "thesis": "Receive CORRA H27 remains the concentrated book. Cash CORRA 2.29 versus H27 3.06 still prices about 77bp of hikes into a six-month window while CA labor 42.16 is cooling and Brent eased to ~$98 on a conditional Hormuz reopen plus Saudi Petroline restart. Long duration is working (entry 3.13 to 3.06) and still has residual edge. Barkin/Fed hike-spillover is the main risk, not a reason to cut a valid receive. Skip AUDCAD: RBA hikes are already priced and AU housing is correcting."
     }
   ],
   "schema_version": 1,

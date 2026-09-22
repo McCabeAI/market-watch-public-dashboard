@@ -138,6 +138,55 @@
       "run_id": "overnight-20260922",
       "schema_version": 1,
       "thesis": "Hold LONG SOFR-CORRA_2Y_2027H1. The valuation object remains CA 2Y cheap versus US after the delivered Fed hike. SOFR curve unavailability is a mark-gap, not evidence the 140.25 bp dislocation has converged. CORRA 2027-03/06 at 3.05/3.26 cannot alone mark the spread. OPEN/ADD blocked."
+    },
+    {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": "rates_rv",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR-CORRA_2Y_2027H1",
+          "notional_usd": null,
+          "position_id": "pos-cdde326460b4",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-09-22T15:40:57.474758-04:00",
+      "conviction": 61,
+      "decision_fingerprint": "e122977e309fbbe54fb2e5521108eafe09076b2a5d3753b4a589e1bc35cce8d3",
+      "event_id": "jde-e5d27773428149e2",
+      "funding_view": null,
+      "invalidation": "Re-open the long only if H7-H27 prints clearly above the peer box with anchors intact (strip >=160bp while cash stays near 156 and US-CA 2Y near 147).",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-cdde326460b4"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-value-guy-pos-cdde326460b4"
+      ],
+      "memory_context_sha256": "b551ea4043404dcd604de5845cebaed4f5bd1b97796be84de9cf539c28385180",
+      "outcome_links": [],
+      "owner_id": "value-guy",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-22T15:40:57.474758-04:00",
+        "evidence_hash": "4604777ecbaf69392a391d55c17179df50de45b89172d4f33ad95488bbcceff1",
+        "overnight_run_id": "overnight-20260922",
+        "review_id": "review-004",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Close long SOFR-CORRA_2Y_2027H1. Trusted strip is H7 4.58 minus H27 3.06 = 152bp, inside the 147-156 peer box of US-CA 2Y sovereign 147bp and cash SOFR-CORRA 156bp. The 140.25 entry was tight versus both anchors; the 140-to-152 move was convergence toward fair, not a reason to stay long compression. CA labor cooling versus sticky US inflation supports cash 156bp remaining, the wrong fundamental for a long that needs the mark to fall. Do not reverse short: 5bp versus 2Y is noise.",
+      "run_id": "overnight-20260922",
+      "schema_version": 1,
+      "thesis": "Close long SOFR-CORRA_2Y_2027H1. Trusted strip is H7 4.58 minus H27 3.06 = 152bp, inside the 147-156 peer box of US-CA 2Y sovereign 147bp and cash SOFR-CORRA 156bp. The 140.25 entry was tight versus both anchors; the 140-to-152 move was convergence toward fair, not a reason to stay long compression. CA labor cooling versus sticky US inflation supports cash 156bp remaining, the wrong fundamental for a long that needs the mark to fall. Do not reverse short: 5bp versus 2Y is noise."
     }
   ],
   "schema_version": 1,

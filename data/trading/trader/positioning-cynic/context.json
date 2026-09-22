@@ -1,17 +1,17 @@
 {
   "active_lessons": [],
-  "as_of": "2026-09-22T06:52:19.184127-04:00",
+  "as_of": "2026-09-22T15:40:57.474758-04:00",
   "calibration": {
-    "average_holding_seconds": 62977,
-    "average_realized_pnl_usd": 0.0,
+    "average_holding_seconds": 117123,
+    "average_realized_pnl_usd": 3375.0,
     "breakeven": 1,
     "by_asset_class": {
       "rates": {
-        "count": 1,
-        "total_realized_pnl_usd": 0.0
+        "count": 2,
+        "total_realized_pnl_usd": 6750.0
       }
     },
-    "closed_trade_count": 1,
+    "closed_trade_count": 2,
     "conviction_buckets": {
       "high": {
         "average_pnl_usd": null,
@@ -24,31 +24,18 @@
         "hit_rate": null
       },
       "medium": {
-        "average_pnl_usd": 0.0,
-        "count": 1,
-        "hit_rate": null
+        "average_pnl_usd": 3375.0,
+        "count": 2,
+        "hit_rate": 1.0
       }
     },
     "losses": 0,
     "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
-    "total_realized_pnl_usd": 0.0,
-    "wins": 0
+    "total_realized_pnl_usd": 6750.0,
+    "wins": 1
   },
-  "memory_context_sha256": "e6f0151a54eabc626741def16de4c1dfb638118929eede3034dc4d970d2d7cdd",
-  "open_positions": [
-    {
-      "asset_class": "rates",
-      "conviction": 57,
-      "current_notional_usd": 45000000.0,
-      "entry_mark": 4.86,
-      "instrument": "AONIA_2027-03",
-      "opened_at": "2026-09-20T16:06:28.069463-04:00",
-      "position_id": "pos-f18c10895ae3",
-      "risk_capital_usd": 450000.0,
-      "side": "short",
-      "trade_id": "trd-trader-positioning-cynic-pos-f18c10895ae3"
-    }
-  ],
+  "memory_context_sha256": "64d1860497db03929c9e18fd9a71e80f1235ec4185d19784b6786faac1356b25",
+  "open_positions": [],
   "owner_id": "positioning-cynic",
   "owner_type": "trader",
   "postmortems_due": [
@@ -70,9 +57,39 @@
       },
       "postmortem_id": "pmd-86d9c87862a0",
       "trade_id": "trd-trader-positioning-cynic-pos-142ad113f303"
+    },
+    {
+      "created_at": "2026-09-22T15:40:57.474758-04:00",
+      "created_run_id": "overnight-20260922",
+      "facts": {
+        "asset_class": "rates",
+        "closed_at": "2026-09-22T15:40:57.474758-04:00",
+        "conviction": 57,
+        "entry_mark": 4.86,
+        "exit_mark": 4.88,
+        "holding_duration_seconds": 171269,
+        "instrument": "AONIA_2027-03",
+        "opened_at": "2026-09-20T16:06:28.069463-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 6750.0,
+        "side": "short"
+      },
+      "postmortem_id": "pmd-550c41ce938c",
+      "trade_id": "trd-trader-positioning-cynic-pos-f18c10895ae3"
     }
   ],
   "recent_closed_trades": [
+    {
+      "asset_class": "rates",
+      "closed_at": "2026-09-22T15:40:57.474758-04:00",
+      "conviction": 57,
+      "holding_duration_seconds": 171269,
+      "instrument": "AONIA_2027-03",
+      "opened_at": "2026-09-20T16:06:28.069463-04:00",
+      "realized_pnl_usd": 6750.0,
+      "side": "short",
+      "trade_id": "trd-trader-positioning-cynic-pos-f18c10895ae3"
+    },
     {
       "asset_class": "rates",
       "closed_at": "2026-09-20T16:06:28.069463-04:00",

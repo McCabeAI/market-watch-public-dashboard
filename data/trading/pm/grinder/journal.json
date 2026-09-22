@@ -132,6 +132,51 @@
       "run_id": "overnight-20260922",
       "schema_version": 1,
       "thesis": "Preservation first: the book remains flat. All 14 accepted trader seats are HOLD with zero OPEN/ADD/HEDGE handoffs this cycle, so there is no independent markable expanding candidate to size against the risk-capital limit. Staying flat is the consistent action; expanding risk would require a markable handoff whose expected edge clears official SOFR ACT/360 on shocked-risk capital, and none was handed off."
+    },
+    {
+      "actions": [
+        {
+          "action": "NO_TRADE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-22T16:12:12.064370-04:00",
+      "conviction": 78,
+      "decision_fingerprint": "44706ac5f13be587296dc673e50bac70763367a35cf6350a8e1a5b7b1630d5da",
+      "event_id": "jde-41086d2e93ef4d2d",
+      "funding_view": null,
+      "invalidation": "Reopen only if a markable AUDCAD dislocation appears in which residual AUD policy underpricing and CAD-specific deterioration dominate oil-supported CAD, and quantified expected edge clearly exceeds 3.85% ACT/360 SOFR on 1% shocked risk capital.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "6e680d1701c4ff8f93e5f97dfcc1569475ab94ca917bf27857b9dcbb7ff94dcc",
+      "outcome_links": [],
+      "owner_id": "grinder",
+      "owner_type": "pm",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-22T15:40:57.474758-04:00",
+        "evidence_hash": "a6dec58d71d78f0789a26450c4b2e1623d9ee23ce35cccfb5aebc8b8ae359b9b",
+        "overnight_run_id": "overnight-20260922",
+        "review_id": "review-004",
+        "review_packet_id": "prp-grinder-overnight-20260922-review-004",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Remain flat. The sole expanding markable handoff is long AUDCAD $10m at paper mid 0.99857. RBA hike is already priced, so residual AUD policy edge is spent. Brent near $98 with Hormuz diplomacy and a Saudi restart keeps CAD oil-beta two-way and typically CAD-supportive at high oil\u2014adverse to long AUDCAD. A 1% spot shock is $100,000 of risk capital; official SOFR 3.85% ACT/360 charges that capital, and no quantified edge compensates. Preservation and high hurdles select no-trade.",
+      "run_id": "overnight-20260922",
+      "schema_version": 1,
+      "thesis": "Remain flat. The sole expanding markable handoff is long AUDCAD $10m at paper mid 0.99857. RBA hike is already priced, so residual AUD policy edge is spent. Brent near $98 with Hormuz diplomacy and a Saudi restart keeps CAD oil-beta two-way and typically CAD-supportive at high oil\u2014adverse to long AUDCAD. A 1% spot shock is $100,000 of risk capital; official SOFR 3.85% ACT/360 charges that capital, and no quantified edge compensates. Preservation and high hurdles select no-trade."
     }
   ],
   "schema_version": 1,

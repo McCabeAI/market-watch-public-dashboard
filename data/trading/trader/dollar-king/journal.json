@@ -138,6 +138,53 @@
       "run_id": "overnight-20260922",
       "schema_version": 1,
       "thesis": "Hold LONG USDCAD. Fed 3.75-4.00 and confirmed SOFR 3.85 versus CORRA 2.29 still favor USD over CAD. Paper mid 1.4004 versus 1.40105 is noise. Oil rebound and BoC energy language are CAD-positive second-order risks, not a reason to flatten the USD-spot expression. OPEN/ADD blocked; spot-only seat stays in the existing pair."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDCAD",
+          "notional_usd": null,
+          "position_id": "pos-5317bc96d4eb",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-22T15:40:57.474758-04:00",
+      "conviction": 74,
+      "decision_fingerprint": "5a5ab8c9dc4fcdf4d5baccda25ce2a3481691a918d96df7c13770fe366c01a54",
+      "event_id": "jde-7cacf77f5c074ed9",
+      "funding_view": null,
+      "invalidation": "CAD re-bid if energy diplomacy/pipeline relief fails and oil tightens enough to dominate the rate gap; CA labor re-accelerates; Fed/Barkin communication turns dovish while CORRA-SOFR compresses.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-5317bc96d4eb"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "1f892fdf12ee3eaaf17a93c5c4b272abce05937a978ac33f6c5467fa1301a9cc",
+      "outcome_links": [],
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-22T15:40:57.474758-04:00",
+        "evidence_hash": "4604777ecbaf69392a391d55c17179df50de45b89172d4f33ad95488bbcceff1",
+        "overnight_run_id": "overnight-20260922",
+        "review_id": "review-004",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold long USDCAD. The USD-CAD rate gap (SOFR 3.85 vs CORRA 2.29) plus cooling Canadian labor is the clean two-leg split. Afternoon energy easing is CAD-negative via the oil channel and reinforces the existing USD spot rather than a new pair. Barkin hawkish lean and ~4.97% 10Y keep the USD policy bid intact.",
+      "run_id": "overnight-20260922",
+      "schema_version": 1,
+      "thesis": "Hold long USDCAD. The USD-CAD rate gap (SOFR 3.85 vs CORRA 2.29) plus cooling Canadian labor is the clean two-leg split. Afternoon energy easing is CAD-negative via the oil channel and reinforces the existing USD spot rather than a new pair. Barkin hawkish lean and ~4.97% 10Y keep the USD policy bid intact."
     }
   ],
   "schema_version": 1,

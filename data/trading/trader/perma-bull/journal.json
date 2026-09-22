@@ -138,6 +138,53 @@
       "run_id": "overnight-20260922",
       "schema_version": 1,
       "thesis": "Hold the existing SHORT/pay CORRA_2027-03. Packet implied 3.05 versus 3.13 entry is an 8bp adverse mark, not a growth-regime break. Cash CORRA 2.29 versus Mar-27 3.05 still prices a firming Canadian path; oil rebound and live BoC energy pass-through keep the pro-cyclical pay intact. OPEN/ADD blocked by stale news and market_state."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-dd6fdaf39119",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-22T15:40:57.474758-04:00",
+      "conviction": 66,
+      "decision_fingerprint": "1375189aadeaa0e44b7057f336e92cc2472f54563ee057897f4ca7a1cde30c87",
+      "event_id": "jde-63a70fdce3cd4924",
+      "funding_view": null,
+      "invalidation": "Close or reverse if CRAH27 paper mid trades at or through CRAZ26 2.735, or if oil/risk confirms demand destruction rather than Hormuz/Petroline supply, or if BoC communication caps or cuts from cash 2.29.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-dd6fdaf39119"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "adaf18ba8a4691d9381772bfe287761cdfca490ac76910ac8a738bd3f367a751",
+      "outcome_links": [],
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-22T15:40:57.474758-04:00",
+        "evidence_hash": "4604777ecbaf69392a391d55c17179df50de45b89172d4f33ad95488bbcceff1",
+        "overnight_run_id": "overnight-20260922",
+        "review_id": "review-004",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold short CORRA_2027-03. Afternoon oil is a supply impulse (conditional Hormuz plus Petroline), not demand destruction; Nasdaq at an intraday record is the risk-appetite tell. BoC cash 2.29 remains the easy outlier versus Fed 3.75-4.00 and a CORRA path that only gets H27 to 3.06. Labor 42.16 is over-discounted; do not cover the pay or flip to receiving. Residual US hike edge is thinner than the CAD catch-up still on the book.",
+      "run_id": "overnight-20260922",
+      "schema_version": 1,
+      "thesis": "Hold short CORRA_2027-03. Afternoon oil is a supply impulse (conditional Hormuz plus Petroline), not demand destruction; Nasdaq at an intraday record is the risk-appetite tell. BoC cash 2.29 remains the easy outlier versus Fed 3.75-4.00 and a CORRA path that only gets H27 to 3.06. Labor 42.16 is over-discounted; do not cover the pay or flip to receiving. Residual US hike edge is thinner than the CAD catch-up still on the book."
     }
   ],
   "schema_version": 1,

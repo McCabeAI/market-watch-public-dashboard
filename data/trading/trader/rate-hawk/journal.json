@@ -138,6 +138,53 @@
       "run_id": "overnight-20260922",
       "schema_version": 1,
       "thesis": "Hold SHORT SOFR_2027-09. Fed SEP median still includes one further 2026 hike; US inflation is warm; import prices rose 0.7%; oil rebounded. The SOFR tradable curve is unavailable, which is an operational mark-gap, not a reaction-function break. OPEN/ADD blocked; do not manufacture a replacement rates expression."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-09",
+          "notional_usd": null,
+          "position_id": "pos-c9184707c12b",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-22T15:40:57.474758-04:00",
+      "conviction": 63,
+      "decision_fingerprint": "0fcdda0b3089a66c23a0090fc899db4a346ac0b3865bfa323bc21ba02fcf63e0",
+      "event_id": "jde-d9dbc91a43184907",
+      "funding_view": null,
+      "invalidation": "U7 loses the SR3 peak versus Z6/H7/M7/Z7, or Barkin-style inflation-risk dominance is walked back while SEP 4.1% is cut, or energy CPI becomes the binding impulse with inflation temp no longer warm.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-c9184707c12b"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "eb55a16e620b15883b40211258e66517389508384c4ee76f549fb7fc9158686b",
+      "outcome_links": [],
+      "owner_id": "rate-hawk",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-22T15:40:57.474758-04:00",
+        "evidence_hash": "4604777ecbaf69392a391d55c17179df50de45b89172d4f33ad95488bbcceff1",
+        "overnight_run_id": "overnight-20260922",
+        "review_id": "review-004",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold pay SOFR_2027-09. SEP 4.1% is the too-low official terminal versus Barkin inflation-risk dominance and warm US inflation 63.1. The live underpricing is the post-peak fade (U7 4.745 to Z7 4.71), not a claim that hikes are unpriced. Oil ~$98 eases energy CPI but is not a wages/demand clearance. Do not add: path already above SEP and the book already owns the peak contract.",
+      "run_id": "overnight-20260922",
+      "schema_version": 1,
+      "thesis": "Hold pay SOFR_2027-09. SEP 4.1% is the too-low official terminal versus Barkin inflation-risk dominance and warm US inflation 63.1. The live underpricing is the post-peak fade (U7 4.745 to Z7 4.71), not a claim that hikes are unpriced. Oil ~$98 eases energy CPI but is not a wages/demand clearance. Do not add: path already above SEP and the book already owns the peak contract."
     }
   ],
   "schema_version": 1,

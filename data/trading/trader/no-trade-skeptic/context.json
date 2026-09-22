@@ -1,6 +1,6 @@
 {
   "active_lessons": [],
-  "as_of": "2026-09-22T06:52:19.184127-04:00",
+  "as_of": "2026-09-22T15:40:57.474758-04:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -29,13 +29,19 @@
     "total_realized_pnl_usd": 0.0,
     "wins": 0
   },
-  "memory_context_sha256": "8ad6c7ee1f05a14f9c54a614fc8b4fca24c55211552df73ea03bfbdcb6b30ab3",
+  "memory_context_sha256": "3adbfa8cedf7d794de18ec2794119d3293ce071e495175d6e5477ecd934469f5",
   "open_positions": [],
   "owner_id": "no-trade-skeptic",
   "owner_type": "trader",
   "postmortems_due": [],
   "recent_closed_trades": [],
   "recent_funding_views": [
+    {
+      "current_sofr": "Official NY Fed SOFR 3.85 percent observation_date 2026-09-21 ACT/360.",
+      "forward_funding_assessment": "about_the_same",
+      "implication": "Authority is the official NY Fed SOFR fixing, not SR3. Over this same-day horizon, realized funding is assessed about the same as the 3.85 percent official print. Remain at the zero official-SOFR benchmark. Paying SOFR on shocked-risk capital would levy 3.85 percent ACT/360 against risk with no documented mispricing to offset it. Flat cash is not alpha.",
+      "sr3_forward_view": "SR3 Z6 4.32 / H7 4.58 / U7 4.745 \u2014 curve still prices hikes then a mild fade."
+    },
     {
       "current_sofr": "Trusted funding_context official NY Fed SOFR is missing. Latest confirmed research cite is NY Fed SOFR 3.85 percent for 2026-09-18. Do not treat 3.85 percent as a live funding_context print after 18 September.",
       "forward_funding_assessment": "about_the_same",

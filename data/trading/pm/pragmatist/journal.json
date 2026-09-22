@@ -138,6 +138,53 @@
       "run_id": "overnight-20260922",
       "schema_version": 1,
       "thesis": "Keep the existing CORRA_2027-03 receive: 450m long/receive from 3.13 with the canonical implied now 3.05, so the mark has already moved in favor. Frozen packet has stale news and market_state, every accepted trader seat is HOLD, and OPEN/ADD is blocked, so there is no clean new expression. Cash CORRA at 2.29 with cooling Canadian labor and core near 2% still supports the receive; oil rebound and BoC energy pass-through are the main offset but not a reason to exit a working one-position book."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pm-pragmatist-4e0cbc4e0b05",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-09-22T16:12:12.048127-04:00",
+      "conviction": 68,
+      "decision_fingerprint": "5b9156a4809096f5e6093e314fac7a44253f8b8b84067d7c0235286519d14b42",
+      "event_id": "jde-85fa316829dc421b",
+      "funding_view": null,
+      "invalidation": "BoC re-hike / CA labor re-acceleration that lifts CORRA_2027-03 back through 3.13 toward 3.30+, or a failed Hormuz-reopen oil spike that re-tightens Canadian inflation and the H27 implied path.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-pragmatist-4e0cbc4e0b05"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "ad0fc97f559059f0e741f6f2fe94e2187e50891b567539cd863cd392fa9dfdf7",
+      "outcome_links": [],
+      "owner_id": "pragmatist",
+      "owner_type": "pm",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-22T15:40:57.474758-04:00",
+        "evidence_hash": "53da6c9ea7dea9bdb58fd9597a092486183a68a7f5c550b74925bb111819065f",
+        "overnight_run_id": "overnight-20260922",
+        "review_id": "review-004",
+        "review_packet_id": "prp-pragmatist-overnight-20260922-review-004",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Keep receiving CORRA_2027-03. Cash CORRA at 2.29 versus H27 3.06 still prices a large tightening path while CA labor is cooling, so the existing long-duration expression remains the clean opportunistic grind. Hormuz-reopen / Petroline / oil-down color is supportive, not a reason to rotate. Do not overlay the only expanding handoff (long AUDCAD $10m): it is CAD/oil duplicate beta, not a hedge.",
+      "run_id": "overnight-20260922",
+      "schema_version": 1,
+      "thesis": "Keep receiving CORRA_2027-03. Cash CORRA at 2.29 versus H27 3.06 still prices a large tightening path while CA labor is cooling, so the existing long-duration expression remains the clean opportunistic grind. Hormuz-reopen / Petroline / oil-down color is supportive, not a reason to rotate. Do not overlay the only expanding handoff (long AUDCAD $10m): it is CAD/oil duplicate beta, not a hedge."
     }
   ],
   "schema_version": 1,
