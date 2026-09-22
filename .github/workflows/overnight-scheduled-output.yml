@@ -10,26 +10,18 @@ permissions:
   contents: write
   pull-requests: write
 
-concurrency:
-  group: overnight-output-${{ github.event.pull_request.number }}
-  cancel-in-progress: false
-
 jobs:
-  validate-apply-merge:
+  inspect:
     if: startsWith(github.event.pull_request.title, '[overnight-output]')
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      file: ${{ steps.inspect.outputs.file }}
+      run_id: ${{ steps.inspect.outputs.run_id }}
     steps:
-      - name: Checkout trusted main
-        uses: actions/checkout@v6
-        with:
-          ref: main
-          fetch-depth: 0
-
-      - uses: actions/setup-python@v6
-        with:
-          python-version: "3.12"
-
       - name: Verify data-only scheduled-output PR
         id: inspect
         env:
@@ -48,30 +40,76 @@ jobs:
           [[ "$FILE" =~ ^data/overnight/inbox/overnight-[0-9]{8}/scheduled_output\.json$ ]] || {
             echo "::error::Unexpected scheduled-output path: $FILE"; exit 1;
           }
-          mkdir -p /tmp/mw-output
-          gh api "repos/$REPO/contents/$FILE?ref=$HEAD_SHA" --jq '.content'             | tr -d '\n' | base64 -d > /tmp/mw-output/scheduled_output.json
           RUN_ID="$(basename "$(dirname "$FILE")")"
           echo "file=$FILE" >> "$GITHUB_OUTPUT"
           echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
 
+  validate-apply-merge:
+    if: startsWith(github.event.pull_request.title, '[overnight-output]')
+    needs: inspect
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    concurrency:
+      group: overnight-accept-${{ needs.inspect.outputs.run_id }}
+      cancel-in-progress: false
+    steps:
+      - name: Checkout trusted main
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Record canonical book blobs on trusted main
+        id: record-blobs
+        run: |
+          set -euo pipefail
+          echo "trader_book_blob=$(git rev-parse HEAD:data/overnight/books/latest.json)" >> "$GITHUB_OUTPUT"
+          echo "pm_book_blob=$(git rev-parse HEAD:data/pm/books/latest.json)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Download scheduled output from PR head
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          FILE: ${{ needs.inspect.outputs.file }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/mw-output
+          gh api "repos/$REPO/contents/$FILE?ref=$HEAD_SHA" --jq '.content' \
+            | tr -d '\n' | base64 -d > /tmp/mw-output/scheduled_output.json
+
       - name: Validate and deterministically simulate books/P&L
         run: |
           set -euo pipefail
-          PYTHONPATH=. python3 scripts/overnight/scheduled_output.py validate             --input /tmp/mw-output/scheduled_output.json
-          PYTHONPATH=. python3 -m unittest             tests.test_overnight_pipeline             tests.test_overnight_scheduled_output             tests.test_pm_scheduled_output             tests.test_pm_overnight_packets             tests.test_pm_portfolio             tests.test_trading_memory -v
+          PYTHONPATH=. python3 scripts/overnight/scheduled_output.py validate \
+            --input /tmp/mw-output/scheduled_output.json
+          PYTHONPATH=. python3 -m unittest \
+            tests.test_overnight_pipeline \
+            tests.test_overnight_scheduled_output \
+            tests.test_pm_scheduled_output \
+            tests.test_pm_overnight_packets \
+            tests.test_pm_portfolio \
+            tests.test_trading_memory -v
 
       - name: Generate canonical deterministic state from trusted main
         env:
-          RUN_ID: ${{ steps.inspect.outputs.run_id }}
+          RUN_ID: ${{ needs.inspect.outputs.run_id }}
         run: |
           set -euo pipefail
-          PYTHONPATH=. python3 scripts/overnight/scheduled_output.py apply             --input /tmp/mw-output/scheduled_output.json
+          PYTHONPATH=. python3 scripts/overnight/scheduled_output.py apply \
+            --input /tmp/mw-output/scheduled_output.json
           mkdir -p /tmp/mw-generated
           cp -a "data/overnight/books" /tmp/mw-generated/
           mkdir -p "/tmp/mw-generated/runs/$RUN_ID"
-          for name in run.json agent_evidence_packet.json scheduled_output.json trader_review.json; do
-            cp "data/overnight/runs/$RUN_ID/$name" "/tmp/mw-generated/runs/$RUN_ID/$name"
-          done
+          cp "data/overnight/runs/$RUN_ID/run.json" "/tmp/mw-generated/runs/$RUN_ID/run.json"
+          if [ -d "data/overnight/runs/$RUN_ID/reviews" ]; then
+            mkdir -p "/tmp/mw-generated/runs/$RUN_ID/reviews"
+            cp -a "data/overnight/runs/$RUN_ID/reviews/." "/tmp/mw-generated/runs/$RUN_ID/reviews/"
+          fi
           if [ -d data/pm ]; then
             mkdir -p /tmp/mw-generated/pm
             for name in books review_packets public data_requests; do
@@ -96,7 +134,7 @@ jobs:
       - name: Append deterministic state to the scheduled-output branch
         env:
           HEAD_REF: ${{ github.event.pull_request.head.ref }}
-          RUN_ID: ${{ steps.inspect.outputs.run_id }}
+          RUN_ID: ${{ needs.inspect.outputs.run_id }}
         run: |
           set -euo pipefail
           git reset --hard
@@ -132,6 +170,24 @@ jobs:
           if ! git diff --cached --quiet; then
             git commit -m "chore: apply overnight decisions $RUN_ID"
             git push origin "HEAD:$HEAD_REF"
+          fi
+
+      - name: Revalidate canonical book blobs before merge
+        env:
+          TRADER_BOOK_BLOB: ${{ steps.record-blobs.outputs.trader_book_blob }}
+          PM_BOOK_BLOB: ${{ steps.record-blobs.outputs.pm_book_blob }}
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          CURRENT_TRADER="$(git rev-parse origin/main:data/overnight/books/latest.json)"
+          CURRENT_PM="$(git rev-parse origin/main:data/pm/books/latest.json)"
+          if [ "$CURRENT_TRADER" != "$TRADER_BOOK_BLOB" ]; then
+            echo "::error::Canonical trader books on main changed after validation (was $TRADER_BOOK_BLOB, now $CURRENT_TRADER). Aborting merge."
+            exit 1
+          fi
+          if [ "$CURRENT_PM" != "$PM_BOOK_BLOB" ]; then
+            echo "::error::Canonical PM books on main changed after validation (was $PM_BOOK_BLOB, now $CURRENT_PM). Aborting merge."
+            exit 1
           fi
 
       - name: Merge accepted scheduled output

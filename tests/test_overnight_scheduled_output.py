@@ -134,6 +134,7 @@ class ScheduledOutputTests(unittest.TestCase):
             "schema_version": 1,
             "type": AGENT_PACKET_TYPE,
             "overnight_run_id": self.run_id,
+            "review_id": self.base["review_id"],
             "base_packet_sha256": self.base["packet_sha256"],
             "base_evidence_cutoff": self.base["as_of"],
             "evidence_cutoff": "2026-09-18T02:20:00-04:00",
@@ -151,6 +152,7 @@ class ScheduledOutputTests(unittest.TestCase):
             "type": "OVERNIGHT_SCHEDULED_OUTPUT",
             "schedule_id": SCHEDULE_ID,
             "overnight_run_id": self.run_id,
+            "review_id": self.base["review_id"],
             "base_packet_sha256": self.base["packet_sha256"],
             "agent_packet": packet,
             "decisions": {

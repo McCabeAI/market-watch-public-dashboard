@@ -36,25 +36,76 @@ All times are America/New_York.
 
 The deterministic times above are **logical deadlines**, not assumptions that a single GitHub cron delivery will be punctual. GitHub scheduled events are redundant wake-ups. Each wake-up runs `overnight_pipeline.py reconcile`, which catches up every due missing deterministic stage in order and never synthesizes the ACP-owned trader review. Critical pre-02:05 wake-ups include 01:50, 01:55, and 02:00 ET so a delayed earlier cron can still persist the trusted freeze before provider launch.
 
-The 02:05 provider must find the current run's `run.json` and `evidence_snapshot.json` already committed on its starting ref with `freeze_evidence.status == "succeeded"`. If that trusted freeze is absent or invalid, the provider stops before child/model spend and opens no output PR. It may never regenerate the trusted base freeze locally.
+The 02:05 provider must find the current run's `run.json` and the open review's `evidence_snapshot.json` already committed on its starting ref with `freeze_evidence.status == "succeeded"`. The open review is the latest `frozen` or `accepting` row in `reviews/index.json` (or the latest accepted review when no open review exists). If that trusted freeze is absent or invalid, the provider stops before child/model spend and opens no output PR. It may never regenerate the trusted base freeze locally.
 
 There is no assumed provider completion clock. The scheduled-output PR is the completion event. If it is absent or rejected before assembly, the website may publish the last successful trader books with explicit stale status.
 
-## 3. Run identity
+## 3. Session identity and review identity
 
-Every night uses:
+Every night uses one immutable session id:
 
 ```
 overnight-YYYYMMDD
 ```
 
-The date is America/New_York. Deterministic artifacts live under:
+The date is America/New_York. That id is the deterministic scheduling contract. It is not a decision-cycle id. A session can contain more than one Trader Room / automated-PM review. Each review has its own immutable `review_id`, allocated only by trusted repository code:
 
 ```
-data/overnight/runs/<run_id>/
+review-001
+review-002
 ```
 
-The 01:50 base packet is `evidence_snapshot.json` and has a SHA-256. The ACP/Cursor result must reference that exact base hash.
+Review ids are sequential inside the session, zero-padded, and stable across retries of the same unaccepted review. A later cycle does not reuse an accepted review id and does not overwrite an earlier review. Kevin does not invent the id. The scheduled morning freeze creates `review-001` when the session has no open review. A fresh intraday cycle is opened with:
+
+```
+PYTHONPATH=. python3 scripts/overnight_pipeline.py open-review --run-id overnight-YYYYMMDD
+```
+
+That command freezes a new review from the current canonical books and the session's collected evidence. It does not apply trader or PM decisions and does not call models.
+
+Session artifacts that are shared by every review stay directly under the session:
+
+```
+data/overnight/runs/<overnight_run_id>/run.json
+data/overnight/runs/<overnight_run_id>/collect.json
+data/overnight/runs/<overnight_run_id>/pre_trader_delta.json
+data/overnight/runs/<overnight_run_id>/final_delta.json
+data/overnight/runs/<overnight_run_id>/assembled_dataset.json
+data/overnight/runs/<overnight_run_id>/reviews/index.json
+```
+
+Review-scoped artifacts are immutable once frozen and live only under that review:
+
+```
+data/overnight/runs/<overnight_run_id>/reviews/<review_id>/review.json
+data/overnight/runs/<overnight_run_id>/reviews/<review_id>/evidence_snapshot.json
+data/overnight/runs/<overnight_run_id>/reviews/<review_id>/memory/
+data/overnight/runs/<overnight_run_id>/reviews/<review_id>/pm_memory/
+data/overnight/runs/<overnight_run_id>/reviews/<review_id>/agent_evidence_packet.json
+data/overnight/runs/<overnight_run_id>/reviews/<review_id>/scheduled_output.json
+data/overnight/runs/<overnight_run_id>/reviews/<review_id>/trader_review.json
+```
+
+`review.json` is the durable identity record. It stores `overnight_run_id`, `review_id`, status (`allocating` → `freezing` → `frozen` → `accepting` → `accepted`), and the canonical trader-book and PM-book SHA-256 captured at freeze. Status becomes `accepted` only after review artifacts and canonical book writes succeed. A partial review never looks accepted.
+
+The 01:50 base packet is that review's `evidence_snapshot.json` and has a SHA-256. The ACP/Cursor result must reference that exact base hash and the frozen `review_id`. Acceptance rejects the output when either id does not match, when the review's starting trader-book or PM-book hash is not the current canonical file hash, or when a later review in the same session is already accepted. Replaying an already accepted review is a no-op. Journal and trade provenance store both `overnight_run_id` and `review_id`; idempotency keys on `review_id`, so a later distinct review may update the evolving books.
+
+Overnight PM `review_packet_id` values are review-scoped: `prp-<pm_id>-<overnight_run_id>-<review_id>` (for example `prp-swinger-overnight-20260922-review-003`). Scheduled-output acceptance is serialized per overnight session (not per PR), and the accept workflow revalidates the git blob ids of `data/overnight/books/latest.json` and `data/pm/books/latest.json` on current `main` immediately before merge.
+
+### Sep 22 migration
+
+`overnight-20260922` was repaired in place without replaying decisions:
+
+| review_id | status | base packet | meaning |
+| --- | --- | --- | --- |
+| `review-001` | accepted | `e0ad7dbc8b2990648797b41ff138ce05456c4f1340ef08baea106e0782197a41` | Morning review recovered from git `c89f1f4`. Agent packet `21a1ec3c722518819f9418afe972e4d7933baf6268e2983b68f3036a69dff2f1`. |
+| `review-002` | frozen, not accepted | `5c69096c72b8567b8dfde193168b7ff0185332ca2f10fca42b77e5d4508b2619` | 11:28 ET evidence refresh (`2026-09-22T11:28:31.273278-04:00`). No scheduled output and no decisions. |
+
+Both recovered snapshots include `prior_books` and `prior_pm_books`, so the recorded gaps are empty. Their starting hashes are `historical_embedded` bindings (SHA-256 of the embedded book objects), not `canonical_file` bindings, so neither historical review can be accepted again. Canonical trader books, PM books, NAV, positions, P&L, funding, and risk state were not rewritten. After this change is merged, the next intraday cycle is a new review from then-current levels:
+
+```
+PYTHONPATH=. python3 scripts/overnight_pipeline.py open-review --run-id overnight-20260922
+```
 
 ## 4. ACP/Cursor output boundary
 
@@ -125,7 +176,7 @@ Every trader child must receive:
 MW_TRADER_FROZEN=1
 ```
 
-the same final common packet/hash, and **only that trader's own frozen memory sidecar / `memory_context_sha256`**. The 01:50 freeze writes per-seat hashes on `evidence_snapshot.seat_memory.hashes` and sidecar files under `data/overnight/runs/<run_id>/memory/`. Common macro evidence stays identical. One seat's private learning context is never given to another seat. See `docs/TRADING_LEDGER_MEMORY_V1.md`.
+the same final common packet/hash, and **only that trader's own frozen memory sidecar / `memory_context_sha256`**. The review freeze writes per-seat hashes on `evidence_snapshot.seat_memory.hashes` and sidecar files under `data/overnight/runs/<overnight_run_id>/reviews/<review_id>/memory/`. Common macro evidence stays identical. One seat's private learning context is never given to another seat. See `docs/TRADING_LEDGER_MEMORY_V1.md`.
 
 `.cursor/hooks/enforce-overnight-runtime.py` blocks tool use for those children. They may not browse, read files, run shell, use MCP, or launch nested agents.
 
@@ -167,6 +218,8 @@ The gate:
 8. generates canonical trader books, **three automated PM books**, P&L/run artifacts and `data/trading/**` from trusted code;
 9. appends only those generated files to the PR branch;
 10. squashes and merges the accepted PR.
+
+Acceptance for one `overnight_run_id` is a single concurrency group, shared by every scheduled-output PR in that session. Immediately before squash-merge, the workflow refetches `main` and refuses to merge when the canonical trader-book or PM-book blob no longer matches the checkout that was validated and applied.
 
 Missing or invalid PM output rejects the PR. Last trusted canonical state is retained. Publication may still show explicit stale/failed PM status when the deterministic morning path runs without a successful provider cycle. A failed gate does not mutate canonical books.
 

@@ -139,13 +139,50 @@ def _git_json(path: str) -> dict[str, Any]:
     return payload
 
 
+def _try_git_json(path: str) -> dict[str, Any] | None:
+    try:
+        raw = subprocess.check_output(
+            ["git", "show", f"HEAD:{path}"],
+            stderr=subprocess.DEVNULL,
+            text=True,
+        )
+    except (OSError, subprocess.CalledProcessError):
+        return None
+    try:
+        payload = json.loads(raw)
+    except json.JSONDecodeError:
+        return None
+    if not isinstance(payload, dict):
+        return None
+    return payload
+
+
+def _trusted_snapshot_path(base: str) -> str:
+    """Prefer the open review namespace; fall back to a legacy session snapshot."""
+    index = _try_git_json(f"{base}/reviews/index.json")
+    rows = list((index or {}).get("reviews") or [])
+    chosen = None
+    for row in reversed(rows):
+        if isinstance(row, dict) and row.get("status") in {"frozen", "accepting"} and row.get("review_id"):
+            chosen = row
+            break
+    if chosen is None:
+        for row in reversed(rows):
+            if isinstance(row, dict) and row.get("status") == "accepted" and row.get("review_id"):
+                chosen = row
+                break
+    if chosen is not None:
+        return f"{base}/reviews/{chosen['review_id']}/evidence_snapshot.json"
+    return f"{base}/evidence_snapshot.json"
+
+
 def verify_trusted_overnight_freeze() -> None:
     """Require the current NY run's trusted freeze to exist in committed HEAD."""
     session = datetime.now(ZoneInfo("America/New_York")).strftime("%Y%m%d")
     run_id = f"overnight-{session}"
     base = f"data/overnight/runs/{run_id}"
     run = _git_json(f"{base}/run.json")
-    snapshot = _git_json(f"{base}/evidence_snapshot.json")
+    snapshot = _git_json(_trusted_snapshot_path(base))
 
     freeze = ((run.get("stages") or {}).get("freeze_evidence") or {})
     if freeze.get("status") != "succeeded":
@@ -154,6 +191,9 @@ def verify_trusted_overnight_freeze() -> None:
         respond("deny", f"{run_id} committed evidence snapshot type is invalid.")
     if snapshot.get("overnight_run_id") != run_id:
         respond("deny", f"{run_id} committed evidence snapshot run ID mismatch.")
+    review_id = snapshot.get("review_id")
+    if review_id is not None and not str(review_id).startswith("review-"):
+        respond("deny", f"{run_id} committed evidence snapshot review ID is malformed.")
 
     supplied = snapshot.get("packet_sha256")
     unsigned = {k: v for k, v in snapshot.items() if k != "packet_sha256"}

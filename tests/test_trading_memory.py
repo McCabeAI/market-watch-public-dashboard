@@ -851,8 +851,9 @@ class OvernightAndTraderRoomMemoryTests(unittest.TestCase):
             snapshot = store.read_artifact(run_id, "evidence_snapshot.json")
             hashes = snapshot["seat_memory"]["hashes"]
             self.assertEqual(set(hashes), set(STANDING_SEATS))
-            dollar = json.loads((store.run_dir(run_id) / "memory" / "dollar-king.json").read_text(encoding="utf-8"))
-            bear = json.loads((store.run_dir(run_id) / "memory" / "perma-bear.json").read_text(encoding="utf-8"))
+            review_dir = store.review_dir(run_id, snapshot["review_id"])
+            dollar = json.loads((review_dir / "memory" / "dollar-king.json").read_text(encoding="utf-8"))
+            bear = json.loads((review_dir / "memory" / "perma-bear.json").read_text(encoding="utf-8"))
             self.assertEqual(dollar["owner_id"], "dollar-king")
             self.assertEqual(bear["owner_id"], "perma-bear")
             self.assertNotEqual(dollar["memory_context_sha256"], "")
@@ -860,10 +861,10 @@ class OvernightAndTraderRoomMemoryTests(unittest.TestCase):
             pm_memory = snapshot.get("pm_memory") or {}
             for pm_id in ("chatgpt", "swinger", "pragmatist", "grinder"):
                 self.assertIn(pm_id, (pm_memory.get("hashes") or {}))
-                sidecar = store.run_dir(run_id) / "pm_memory" / f"{pm_id}.json"
+                sidecar = review_dir / "pm_memory" / f"{pm_id}.json"
                 self.assertTrue(sidecar.is_file())
             chatgpt_sidecar = json.loads(
-                (store.run_dir(run_id) / "pm_memory" / "chatgpt.json").read_text(encoding="utf-8")
+                (review_dir / "pm_memory" / "chatgpt.json").read_text(encoding="utf-8")
             )
             self.assertNotIn("swinger", json.dumps(chatgpt_sidecar))
             trading = TradingStore(root=ROOT, state_root=state)
@@ -891,6 +892,7 @@ class OvernightAndTraderRoomMemoryTests(unittest.TestCase):
                 "schema_version": 1,
                 "type": AGENT_PACKET_TYPE,
                 "overnight_run_id": run_id,
+                "review_id": base["review_id"],
                 "base_packet_sha256": base["packet_sha256"],
                 "base_evidence_cutoff": base["as_of"],
                 "evidence_cutoff": "2026-09-18T02:20:00-04:00",
@@ -922,6 +924,7 @@ class OvernightAndTraderRoomMemoryTests(unittest.TestCase):
                 "type": "OVERNIGHT_SCHEDULED_OUTPUT",
                 "schedule_id": SCHEDULE_ID,
                 "overnight_run_id": run_id,
+                "review_id": base["review_id"],
                 "base_packet_sha256": base["packet_sha256"],
                 "agent_packet": packet,
                 "decisions": decisions,
@@ -952,6 +955,7 @@ class OvernightAndTraderRoomMemoryTests(unittest.TestCase):
             self.assertEqual(pm_event["kind"], "PM_DECISION")
             self.assertEqual(pm_event["run_id"], run_id)
             self.assertEqual((pm_event.get("provenance") or {}).get("overnight_run_id"), run_id)
+            self.assertEqual((pm_event.get("provenance") or {}).get("review_id"), base["review_id"])
             chatgpt_path = trading.identity_dir("pm", "chatgpt") / "journal.json"
             if chatgpt_path.is_file():
                 chatgpt = trading.read_journal("pm", "chatgpt")

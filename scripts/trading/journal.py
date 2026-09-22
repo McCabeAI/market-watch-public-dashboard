@@ -109,18 +109,24 @@ def find_event(
     review_packet_id: str | None = None,
     event_id: str | None = None,
     decision_fingerprint: str | None = None,
+    review_id: str | None = None,
 ) -> dict[str, Any] | None:
     if event_id:
         for event in store.read_journal(owner_type, owner_id).get("events") or []:
             if event.get("event_id") == event_id:
                 return event
         return None
-    if not run_id:
+    if not run_id and not review_id:
         return None
     for event in store.read_journal(owner_type, owner_id).get("events") or []:
-        if event.get("kind") != kind or event.get("run_id") != run_id:
+        if event.get("kind") != kind:
             continue
-        if review_packet_id and (event.get("provenance") or {}).get("review_packet_id") != review_packet_id:
+        if run_id and event.get("run_id") != run_id:
+            continue
+        provenance = event.get("provenance") or {}
+        if review_id is not None and provenance.get("review_id") != review_id:
+            continue
+        if review_packet_id and provenance.get("review_packet_id") != review_packet_id:
             continue
         if decision_fingerprint and event.get("decision_fingerprint") != decision_fingerprint:
             continue
@@ -148,6 +154,7 @@ def record_event(
     evidence_hash: str | None = None,
     overnight_run_id: str | None = None,
     trader_room_run_id: str | None = None,
+    review_id: str | None = None,
     review_packet_id: str | None = None,
     source_ref: str | None = None,
     outcome_links: list[str] | None = None,
@@ -169,6 +176,15 @@ def record_event(
             kind=kind,
             run_id=run_id,
             event_id=event_id,
+        )
+    elif review_id:
+        existing = find_event(
+            store,
+            owner_type=owner_type,
+            owner_id=owner_id,
+            kind=kind,
+            run_id=run_id,
+            review_id=review_id,
         )
     elif decision_fingerprint:
         existing = find_event(
@@ -213,6 +229,7 @@ def record_event(
         "provenance": {
             "overnight_run_id": overnight_run_id,
             "trader_room_run_id": trader_room_run_id,
+            "review_id": review_id,
             "review_packet_id": review_packet_id,
             "evidence_cutoff": evidence_cutoff,
             "evidence_hash": evidence_hash,

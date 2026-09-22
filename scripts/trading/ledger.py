@@ -111,6 +111,7 @@ def empty_trade(
         "provenance": {
             "overnight_run_id": run_id if run_id and str(run_id).startswith("overnight-") else None,
             "trader_room_run_id": run_id if run_id and str(run_id).startswith("tr-") else None,
+            "review_id": None,
             "review_packet_id": None,
             "review_packet_sha256": None,
             "evidence_hash": None,
@@ -166,6 +167,7 @@ def record_lifecycle_event(
     review_packet_sha256: str | None = None,
     overnight_run_id: str | None = None,
     trader_room_run_id: str | None = None,
+    review_id: str | None = None,
 ) -> dict[str, Any]:
     if kind not in LEDGER_EVENT_KINDS:
         raise SchemaError(f"unknown ledger event kind {kind}")
@@ -276,6 +278,8 @@ def record_lifecycle_event(
         trade["provenance"]["overnight_run_id"] = overnight_run_id
     if trader_room_run_id:
         trade["provenance"]["trader_room_run_id"] = trader_room_run_id
+    if review_id:
+        trade["provenance"]["review_id"] = review_id
     if review_packet_id:
         trade["provenance"]["review_packet_id"] = review_packet_id
     if review_packet_sha256:

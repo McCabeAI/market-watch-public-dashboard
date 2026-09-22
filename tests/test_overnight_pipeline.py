@@ -1305,7 +1305,7 @@ class PipelineDryRunTests(unittest.TestCase):
         pm_hashes = pm_memory.get("hashes") or {}
         for pm_id in ("chatgpt", "swinger", "pragmatist", "grinder"):
             self.assertIn(pm_id, pm_hashes, msg="freeze snapshot must include pm_memory hashes (sibling freeze)")
-            sidecar = store.run_dir(run_id) / "pm_memory" / f"{pm_id}.json"
+            sidecar = store.review_dir(run_id, snapshot["review_id"]) / "pm_memory" / f"{pm_id}.json"
             self.assertTrue(sidecar.is_file(), msg=f"expected pm_memory sidecar for {pm_id}")
         self.assertIn("pm_books", review)
         self.assertIn("pm_packets", review)

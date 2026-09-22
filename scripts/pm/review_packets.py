@@ -10,7 +10,7 @@ from typing import Any
 
 from scripts.funding.context import build_funding_context
 from scripts.overnight.constants import STANDING_SEATS
-from scripts.overnight.store import sha256_json
+from scripts.overnight.store import REVIEW_ID_RE, sha256_json
 from scripts.pm.books import mandate, mark_pm_book
 from scripts.pm.constants import (
     ACTIONS,
@@ -191,8 +191,31 @@ def allowable_actions(pm_id: str, book: dict[str, Any], *, market_warnings: list
     return allowed
 
 
-def packet_id(pm_id: str, run_id: str) -> str:
+def packet_id(pm_id: str, run_id: str, *, review_id: str | None = None) -> str:
+    if review_id:
+        return f"prp-{pm_id}-{run_id}-{review_id}"
     return f"prp-{pm_id}-{run_id}"
+
+
+def resolve_overnight_session_id(review: dict[str, Any], run_dir: Path) -> str:
+    session = review.get("overnight_run_id")
+    if isinstance(session, str) and session.startswith("overnight-"):
+        return session
+    return _session_dir(run_dir).name
+
+
+def resolve_overnight_review_id(review: dict[str, Any], run_dir: Path) -> str:
+    review_id = review.get("review_id")
+    if isinstance(review_id, str) and REVIEW_ID_RE.match(review_id):
+        return review_id
+    run_dir = Path(run_dir)
+    if run_dir.name.startswith("review-") and run_dir.parent.name == "reviews":
+        if REVIEW_ID_RE.match(run_dir.name):
+            return run_dir.name
+    raise SchemaError(
+        f"cannot resolve overnight review_id for PM packet from {run_dir} "
+        f"(review_id={review.get('review_id')!r})"
+    )
 
 
 def _load_json(path: Path) -> Any:
@@ -217,6 +240,39 @@ def list_overnight_run_dirs(state_root) -> list[Path]:
     )
 
 
+def _session_dir(run_dir: Path) -> Path:
+    if run_dir.name.startswith("review-") and run_dir.parent.name == "reviews":
+        return run_dir.parent.parent
+    return run_dir
+
+
+def resolve_overnight_artifact_dir(run_dir) -> Path:
+    """Prefer the latest accepted review namespace when the session has one."""
+    run_dir = Path(run_dir)
+    index_path = run_dir / "reviews" / "index.json"
+    if not index_path.is_file():
+        return run_dir
+    try:
+        index = json.loads(index_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return run_dir
+    rows = [row for row in (index.get("reviews") or []) if isinstance(row, dict)]
+    for row in reversed(rows):
+        if row.get("status") != "accepted" or not isinstance(row.get("review_id"), str):
+            continue
+        candidate = run_dir / "reviews" / row["review_id"]
+        if (candidate / "trader_review.json").is_file():
+            return candidate
+    for row in reversed(rows):
+        review_id = row.get("review_id")
+        if not isinstance(review_id, str):
+            continue
+        candidate = run_dir / "reviews" / review_id
+        if (candidate / "trader_review.json").is_file():
+            return candidate
+    return run_dir
+
+
 def overnight_review_errors(run_dir) -> list[str]:
     """Return why an overnight run is not a successful 14-seat production review."""
     run_dir = Path(run_dir)
@@ -232,8 +288,9 @@ def overnight_review_errors(run_dir) -> list[str]:
         return ["trader_review.json is not an object"]
     if review.get("status") != "succeeded":
         errors.append(f"review status is {review.get('status')!r}, expected 'succeeded'")
-    if review.get("overnight_run_id") not in (None, run_dir.name):
-        errors.append(f"review overnight_run_id {review.get('overnight_run_id')!r} does not match {run_dir.name}")
+    session_name = _session_dir(run_dir).name
+    if review.get("overnight_run_id") not in (None, session_name):
+        errors.append(f"review overnight_run_id {review.get('overnight_run_id')!r} does not match {session_name}")
     seats = review.get("reviews")
     if not isinstance(seats, dict) or set(seats) != set(STANDING_SEATS):
         errors.append("trader_review.json does not contain exactly the locked 14 seats")
@@ -254,7 +311,7 @@ def overnight_review_errors(run_dir) -> list[str]:
 
 
 def is_successful_overnight_review(run_dir) -> bool:
-    return not overnight_review_errors(run_dir)
+    return not overnight_review_errors(resolve_overnight_artifact_dir(run_dir))
 
 
 def select_newest_successful_overnight_review(state_root) -> Path | None:
@@ -303,6 +360,7 @@ def compact_overnight_decisions(review: dict[str, Any]) -> dict[str, Any]:
     return {
         "source": SOURCE_OVERNIGHT,
         "overnight_run_id": review.get("overnight_run_id"),
+        "review_id": review.get("review_id"),
         "status": review.get("status"),
         "full_trader_room": False,
         "seat_count": len(rows),
@@ -342,8 +400,9 @@ def compact_overnight_books(review: dict[str, Any]) -> dict[str, Any] | None:
 
 
 def _market_state_from_overnight(run_dir: Path, snapshot: dict[str, Any]) -> dict[str, Any]:
+    session_dir = _session_dir(run_dir)
     for name in ("final_delta.json", "pre_trader_delta.json"):
-        path = run_dir / name
+        path = session_dir / name
         if path.is_file():
             try:
                 payload = _load_json(path)
@@ -400,6 +459,7 @@ class PMPacketSource:
     evidence: dict[str, Any]
     fourteen_seat: dict[str, Any]
     conflicts: dict[str, Any]
+    review_id: str | None = None
     overnight_run_id: str | None = None
     trader_room_run_id: str | None = None
     base_packet_sha256: str | None = None
@@ -414,15 +474,20 @@ class PMPacketSource:
 
 def source_from_overnight_run(run_dir, *, review: dict[str, Any] | None = None) -> PMPacketSource:
     run_dir = Path(run_dir)
+    if review is None:
+        run_dir = resolve_overnight_artifact_dir(run_dir)
     errors = overnight_review_errors(run_dir) if review is None else []
     if errors:
         raise SchemaError(f"cannot build PM packet from unsuccessful overnight review {run_dir.name}: {errors}")
     review = review or _load_json(run_dir / "trader_review.json")
+    review_id = resolve_overnight_review_id(review, run_dir)
+    session_id = resolve_overnight_session_id(review, run_dir)
     evidence = load_overnight_evidence(run_dir)
     return PMPacketSource(
         kind=SOURCE_OVERNIGHT,
-        run_id=str(evidence.get("run_id") or run_dir.name),
-        overnight_run_id=str(review.get("overnight_run_id") or run_dir.name),
+        run_id=session_id,
+        review_id=review_id,
+        overnight_run_id=session_id,
         trader_room_run_id=None,
         evidence=evidence,
         fourteen_seat=compact_overnight_decisions(review),
@@ -444,6 +509,7 @@ def source_from_trader_room_run(run_dir) -> PMPacketSource:
     return PMPacketSource(
         kind=SOURCE_TRADER_ROOM_FALLBACK,
         run_id=run_id,
+        review_id=None,
         overnight_run_id=None,
         trader_room_run_id=run_id,
         evidence=evidence,
@@ -499,6 +565,7 @@ def build_review_packet(
                 evidence=evidence,
                 fourteen_seat=source.fourteen_seat,
                 conflicts=source.conflicts,
+                review_id=source.review_id,
                 trader_room_run_id=str(evidence.get("run_id") or source.run_id),
                 run_dir=source.run_dir,
             )
@@ -519,13 +586,22 @@ def build_review_packet(
         )
     overnight_review = source.fourteen_seat if source.is_overnight else None
     trader_room = None if source.is_overnight else source.fourteen_seat
+    session_run_id = str(source.overnight_run_id or source.run_id)
+    overnight_review_id = source.review_id if source.is_overnight else None
+    if source.is_overnight and not overnight_review_id:
+        raise SchemaError("overnight PM packet requires review_id")
     packet = {
         "schema_version": SCHEMA_VERSION,
         "type": "PM_REVIEW_PACKET",
-        "review_packet_id": packet_id(pm_id, str(source.run_id)),
+        "review_packet_id": packet_id(
+            pm_id,
+            session_run_id,
+            review_id=overnight_review_id,
+        ),
         "pm_id": pm_id,
         "mandate": mandate(pm_id),
         "source": source.kind,
+        "review_id": overnight_review_id,
         "overnight_run_id": source.overnight_run_id,
         "trader_room_run_id": source.trader_room_run_id,
         "evidence_cutoff": evidence.get("as_of"),

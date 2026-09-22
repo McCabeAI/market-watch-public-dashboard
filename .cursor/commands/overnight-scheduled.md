@@ -16,11 +16,13 @@ ACP must emit a matching policy marker. `.cursor/hooks/enforce-overnight-budget.
 
 The ACP parent is already running at this point. Before launching the Composer research child or any trader/PM child:
 
-1. Resolve the current New York run ID as `overnight-YYYYMMDD`.
+1. Resolve the current New York session ID as `overnight-YYYYMMDD`.
 2. Read the **committed starting-ref** files:
    - `data/overnight/runs/<run_id>/run.json`
-   - `data/overnight/runs/<run_id>/evidence_snapshot.json`
-3. Require `freeze_evidence.status == "succeeded"`, snapshot `type == "OVERNIGHT_EVIDENCE_SNAPSHOT"`, matching `overnight_run_id`, and a valid committed `packet_sha256`.
+   - `data/overnight/runs/<run_id>/reviews/index.json`
+   - the open review's `data/overnight/runs/<run_id>/reviews/<review_id>/evidence_snapshot.json`
+   The open review is the latest `frozen` or `accepting` entry. Do not read a mutable session-level snapshot to invent `review_id`.
+3. Require `freeze_evidence.status == "succeeded"`, snapshot `type == "OVERNIGHT_EVIDENCE_SNAPSHOT"`, matching `overnight_run_id`, a `review_id` of the form `review-NNN`, and a valid committed `packet_sha256`. Copy that `review_id` into the scheduled output. Do not mint a new one.
 4. Never create, regenerate, or repair the trusted base freeze inside the provider run. Market Watch deterministic automation owns that state.
 5. If the committed trusted freeze is absent or invalid, stop **before launching any child** and return:
    `STATUS: BLOCKED_MISSING_TRUSTED_FREEZE`
@@ -63,7 +65,7 @@ Nested subagents are **prohibited** for both traders and PMs on overnight runs (
    ```
    data/overnight/inbox/<run_id>/scheduled_output.json
    ```
-   including `decisions` (14 seats) and **`pm_decisions`** (swinger, pragmatist, grinder). ChatGPT is excluded from automated overnight output.
+   including `overnight_run_id`, the frozen `review_id`, `decisions` (14 seats), and **`pm_decisions`** (swinger, pragmatist, grinder). The agent packet must carry the same `review_id`. ChatGPT is excluded from automated overnight output.
 
 ## Evidence-closed children
 
