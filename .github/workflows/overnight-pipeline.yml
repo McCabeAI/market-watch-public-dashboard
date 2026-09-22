@@ -82,7 +82,9 @@ permissions:
   contents: write
 
 concurrency:
-  group: overnight-deterministic-pipeline
+  # Serialize production schedule/manual runs, but do not let delayed production
+  # wake-ups cancel or starve pull-request validation runs.
+  group: overnight-deterministic-pipeline-${{ github.event_name == 'pull_request' && github.event.pull_request.number || 'production' }}
   cancel-in-progress: false
 
 jobs:
