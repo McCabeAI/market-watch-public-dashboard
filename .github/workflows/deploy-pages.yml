@@ -259,7 +259,7 @@ jobs:
             exit 1
           fi
           PYTHONPATH=. python - <<'PY'
-          import json
+          import html as html_lib
           from pathlib import Path
           from scripts.overnight.accepted_news import (
               effective_public_news_context,
@@ -288,7 +288,6 @@ jobs:
               )
           if last_refreshed_label(cutoff) not in html:
               raise SystemExit("accepted news Last refreshed label missing from HTML")
-          import html as html_lib
           plain = html_lib.unescape(html)
           headlines = [
               str(item.get("headline") or "").strip()
