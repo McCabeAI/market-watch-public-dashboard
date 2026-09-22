@@ -1257,6 +1257,13 @@ class FreshnessMatrixTests(unittest.TestCase):
         self.assertFalse(blocked["may_publish"])
         self.assertEqual(blocked["core_status"], "catastrophic_fail")
 
+    def test_stale_news_fails_morning_publication(self):
+        stale = _fresh_families()
+        stale["news"]["status"] = "stale"
+        blocked = publication_decision(families=stale, trader_review_status="fresh")
+        self.assertFalse(blocked["may_publish"])
+        self.assertIn("news", blocked["catastrophic_families"])
+
 
 class PipelineDryRunTests(unittest.TestCase):
     def setUp(self):
