@@ -93,6 +93,50 @@
       "run_id": "tr-20260920T193935Z-ondemand",
       "schema_version": 1,
       "thesis": "FACT: Fed hiked 25bp to 3.75-4.00%; official SOFR is 3.85; SR3H7 / SOFR_2027-03 implied is 4.58, +73bp versus overnight; the strip still peaks at 4.755 in Sep-27; US 2Y 4.76 is +57bp 1m and +9bp 1d; US gauges remain 69-75; BoJ hiked to 1.25% and the desk thesis says the energy shock is constraining global easing. INFERENCE: price, the rate strip, and macro revisions are still aligned with a hiking trend; 99th-percentile yields are what a continuing trend looks like, not a reversal. The clean continuation is to stay short duration in SOFR_2027-03 rather than fade it or migrate to spot. UNKNOWN: live CME positioning, post-18 Sep SR3 ticks, and whether the next CPI/labor print breaks the hot-gauge regime. Book action is HOLD of pos-662bff0986be at 50m; do not OPEN a second SOFR_2027-03."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-22T06:52:19.184127-04:00",
+      "conviction": 60,
+      "decision_fingerprint": "b3811435ddacd0639a7140c26522ea7a8a057b46df30d0c6d9072c281e498493",
+      "event_id": "jde-5ca747020b814ecc",
+      "funding_view": null,
+      "invalidation": "A packeted policy pivot or a clear 2s/10s break lower; do not invent a SOFR stop while the curve is unavailable.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "113718cbe277c2a7cb6e2692464a4099c572019c3103ccf9a01d4d79593a417d",
+      "outcome_links": [],
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-22T06:52:19.184127-04:00",
+        "evidence_hash": "21a1ec3c722518819f9418afe972e4d7933baf6268e2983b68f3036a69dff2f1",
+        "overnight_run_id": "overnight-20260922",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold SHORT SOFR_2027-03. Delivered Fed hike, elevated US 2s/10s at 4.76/4.96, warm inflation 63.1 and the oil rebound keep the higher-for-longer trend intact. A missing SOFR print is not a reversal and is not a reason to fade. OPEN/ADD blocked.",
+      "run_id": "overnight-20260922",
+      "schema_version": 1,
+      "thesis": "Hold SHORT SOFR_2027-03. Delivered Fed hike, elevated US 2s/10s at 4.76/4.96, warm inflation 63.1 and the oil rebound keep the higher-for-longer trend intact. A missing SOFR print is not a reversal and is not a reason to fade. OPEN/ADD blocked."
     }
   ],
   "schema_version": 1,

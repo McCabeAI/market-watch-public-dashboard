@@ -153,6 +153,63 @@
       "run_id": "tr-20260920T193935Z-ondemand",
       "schema_version": 1,
       "thesis": "Delivered Sep-16 hike and SOFR 3.85 leave US/CA/AU policy paths priced, FX extremes unexplained as trades, and official cash the only expression that clears the hurdle."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-22T06:52:19.184127-04:00",
+      "conviction": 88,
+      "decision_fingerprint": "25f53319dde7c60eb346aa8c206b9bcd6892402a519136fc1a7e780bc547f38c",
+      "event_id": "jde-bae2b41d5f874496",
+      "funding_view": {
+        "current_sofr": "Trusted funding_context official NY Fed SOFR is missing. Latest confirmed research cite is NY Fed SOFR 3.85 percent for 2026-09-18. Do not treat 3.85 percent as a live funding_context print after 18 September.",
+        "forward_funding_assessment": "about_the_same",
+        "implication": "Remain at the zero official-SOFR benchmark. Paying SOFR on shocked-risk capital would fund a position the packet cannot price or time. Flat cash is not alpha, but inventing risk versus a 3.85 percent 18-Sep cite is worse.",
+        "sr3_forward_view": "SR3 and the SOFR tradable curve are unavailable in the frozen packet; no live forward-funding path, term premium, or implied-cut profile can be claimed."
+      },
+      "invalidation": "OPEN/ADD unblocked with non-stale market_state, official SOFR, and a usable SR3 path that still survives crowding and catalyst tests.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "165b84eb1126ba2ceedeb1cc98f78c89894da4a1aeb7b4717096011235c0492c",
+      "outcome_links": [],
+      "owner_id": "no-trade-skeptic",
+      "owner_type": "trader",
+      "payload": {
+        "funding_view": {
+          "current_sofr": "Trusted funding_context official NY Fed SOFR is missing. Latest confirmed research cite is NY Fed SOFR 3.85 percent for 2026-09-18. Do not treat 3.85 percent as a live funding_context print after 18 September.",
+          "forward_funding_assessment": "about_the_same",
+          "implication": "Remain at the zero official-SOFR benchmark. Paying SOFR on shocked-risk capital would fund a position the packet cannot price or time. Flat cash is not alpha, but inventing risk versus a 3.85 percent 18-Sep cite is worse.",
+          "sr3_forward_view": "SR3 and the SOFR tradable curve are unavailable in the frozen packet; no live forward-funding path, term premium, or implied-cut profile can be claimed."
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-22T06:52:19.184127-04:00",
+        "evidence_hash": "21a1ec3c722518819f9418afe972e4d7933baf6268e2983b68f3036a69dff2f1",
+        "overnight_run_id": "overnight-20260922",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Remain flat. News and market_state are stale, OPEN/ADD are blocked, official funding_context SOFR is missing, and SR3/SOFR forwards are unavailable. Apparent overnight edges are unpriced, untimed, and unfalsifiable under this tape. Flat cash at the zero SOFR benchmark is not alpha, but paying SOFR on shocked-risk capital with no live curve is worse.",
+      "run_id": "overnight-20260922",
+      "schema_version": 1,
+      "thesis": "Remain flat. News and market_state are stale, OPEN/ADD are blocked, official funding_context SOFR is missing, and SR3/SOFR forwards are unavailable. Apparent overnight edges are unpriced, untimed, and unfalsifiable under this tape. Flat cash at the zero SOFR benchmark is not alpha, but paying SOFR on shocked-risk capital with no live curve is worse."
     }
   ],
   "schema_version": 1,

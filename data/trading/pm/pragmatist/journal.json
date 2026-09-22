@@ -93,6 +93,50 @@
       "run_id": "tr-20260920T193935Z-ondemand",
       "schema_version": 1,
       "thesis": "FACT: Prior book is long CORRA_2027-03 (MX CRAH27), position_id pm-pragmatist-4e0cbc4e0b05, side long (receive / duration-long; profits if the implied mark falls), notional_usd 450000000, risk_capital_usd 4500000, entry and packet mark 3.13 / price 96.87, opened_run_id tr-20260920T020818Z-ondemand, last_action OPEN, prior conviction 58, unrealized_pnl 0. CORRA overnight 2.29 as_of 2026-09-17. 1m path: COAZ26 / Dec-2026 implied 2.58 (+29bp). 3m: CRAU26 2.385, CRAZ26 2.775, CRAH27 3.13 (+84bp vs overnight), CRAM27 3.365, CRAU27 3.51, CRAZ27 3.595. Canada August CPI headline 3% with core near 2%; BoC minutes flag energy pass-through. CA gauges inflation 55, labor 38, activity 66, consumer 45. CA 2Y 3.27 / 10Y 3.83 as_of 2026-09-17. Fed hiked 25bp to 3.75-4.00%; SOFR overnight 3.85; SR3Z6 4.32; SR3H7 4.58. USDCAD 1.4010 as_of 2026-09-18 (5y percentile about 87). Book is not risk_stopped; used shocked risk 4.5m / remaining 95.5m; drawdown 0. Official SOFR 3.85% ACT/360 effective 2026-09-17 is charged on shocked risk capital. Packet source is on_demand_trader_room_fallback. Trader Room status STATUS: AWAITING_CHATGPT_ARBITRATION, 14 seats, 5 unarbitrated conflicts; this PM is not chair. carry-is-king HOLD long CORRA_2027-03; perma-bull HOLD short CORRA_2027-03; rate-dove HOLD long CORRA_2027H-Z; positioning-cynic CLOSED a prior CORRA_2027-03 receive. NZ rates unavailable (market_state stale); CME positioning unavailable; options unmarkable. Calibration closed_trade_count 0. INFERENCE: The Mar-27 contract still prices a Canadian hiking cycle that the live 1m strip through Dec-2026 (2.58) and still-soft core/labor have not started delivering. Energy-pass-through minutes and a delivered Fed hike are spillover risks, but they have not lifted CRAH27 off 3.13 or repriced the 1m path toward the 2027 CRA mid-3s, so the locked invalidation is not met. HOLD the existing receive; do not OPEN a duplicate CORRA/CRA family contract; do not ADD into unused 95.5m risk capacity on an unchanged mark and empty calibration. UNKNOWN: Whether BoC actually hikes; whether energy pass-through appears in subsequent core/trim/median; whether the CA-US policy gap compresses via Fed or BoC; live CME positioning; a successful overnight 14-seat review (this freeze is fallback)."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-22T07:03:58.753962-04:00",
+      "conviction": 62,
+      "decision_fingerprint": "910c8dcde8c76af2def4dda2701877b2670d0bc8926b7ad7b9de9d2520b4c7ae",
+      "event_id": "jde-206d8377e7d64aa3",
+      "funding_view": null,
+      "invalidation": "A decisive re-pricing of CORRA_2027-03 back through the 3.13 entry toward a higher canonical mark, or a live non-stale packet showing BoC energy pass-through and oil rebound dominating the labor/core-near-2% easing path.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "ad0fc97f559059f0e741f6f2fe94e2187e50891b567539cd863cd392fa9dfdf7",
+      "outcome_links": [],
+      "owner_id": "pragmatist",
+      "owner_type": "pm",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-22T06:52:19.184127-04:00",
+        "evidence_hash": "c5fb3049ca02a466bcf85e52aaeef999d6f03b19f18cbbaccad28cbcfbf89c50",
+        "overnight_run_id": "overnight-20260922",
+        "review_packet_id": "prp-pragmatist-overnight-20260922",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Keep the existing CORRA_2027-03 receive: 450m long/receive from 3.13 with the canonical implied now 3.05, so the mark has already moved in favor. Frozen packet has stale news and market_state, every accepted trader seat is HOLD, and OPEN/ADD is blocked, so there is no clean new expression. Cash CORRA at 2.29 with cooling Canadian labor and core near 2% still supports the receive; oil rebound and BoC energy pass-through are the main offset but not a reason to exit a working one-position book.",
+      "run_id": "overnight-20260922",
+      "schema_version": 1,
+      "thesis": "Keep the existing CORRA_2027-03 receive: 450m long/receive from 3.13 with the canonical implied now 3.05, so the mark has already moved in favor. Frozen packet has stale news and market_state, every accepted trader seat is HOLD, and OPEN/ADD is blocked, so there is no clean new expression. Cash CORRA at 2.29 with cooling Canadian labor and core near 2% still supports the receive; oil rebound and BoC energy pass-through are the main offset but not a reason to exit a working one-position book."
     }
   ],
   "schema_version": 1,

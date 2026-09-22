@@ -87,6 +87,50 @@
       "run_id": "tr-20260920T193935Z-ondemand",
       "schema_version": 1,
       "thesis": "FACT: AUDNZD is at a 5-year extreme because NZDUSD collapsed, not because AUDUSD broke out; AU housing is showing the tightening channel while AONIA still prices about +21.5bp by October and about +59.5bp by August 2027; NZ GDP beat and an India FTA have not reversed NZD; NZ yields are missing; Fed and BoJ hikes are delivered; USDJPY 20-day RV is 11.04 versus AUDNZD 5.09; VIX crushed to 15.44 on 17 Sep; no FX option marks exist. INFERENCE: the market is pricing a one-way RBA-over-RBNZ regime that is internally inconsistent, so the next move is a distribution with a delayed mean-reversion tail and a squeeze tail. Spot is dominated because timing is uncertain and event risk (housing prints, residual RBA path, NZ data, energy, global hike follow-through) is two-sided after realized FX vol on this cross stayed near 5%. Buying USDJPY vol after a +1.41% BoJ day is not the same trade: that realized has already printed. UNKNOWN: 3M ATMF IV, 25-delta risk-reversal, quoted premium, and the RBNZ curve \u2014 all must be checked before any OPEN. The paper book therefore HOLDs; the debate trade is still the put."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-22T06:52:19.184127-04:00",
+      "conviction": 20,
+      "decision_fingerprint": "3c87c8cc4e7f17eef010660fd5aff6fb73945086eecf6ede0665472e20f98e9f",
+      "event_id": "jde-f2ceed2a50d24483",
+      "funding_view": null,
+      "invalidation": null,
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "66f4434e9a4815e09a06be01d9e247a02f247f5b6ae723ce392f35d3908d7d1a",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-22T06:52:19.184127-04:00",
+        "evidence_hash": "21a1ec3c722518819f9418afe972e4d7933baf6268e2983b68f3036a69dff2f1",
+        "overnight_run_id": "overnight-20260922",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Remain flat. Options are last-resort and unmarkable: the packet has no premium, IV, or strike data. OPEN/ADD blocked. Inventing a vol structure would violate the evidence boundary. HOLD is the only coherent convexity action.",
+      "run_id": "overnight-20260922",
+      "schema_version": 1,
+      "thesis": "Remain flat. Options are last-resort and unmarkable: the packet has no premium, IV, or strike data. OPEN/ADD blocked. Inventing a vol structure would violate the evidence boundary. HOLD is the only coherent convexity action."
     }
   ],
   "schema_version": 1,

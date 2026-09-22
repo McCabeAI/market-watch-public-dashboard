@@ -93,6 +93,50 @@
       "run_id": "tr-20260920T193935Z-ondemand",
       "schema_version": 1,
       "thesis": "FACTS: SR3H7 implied 4.58 is 73bp above overnight SOFR 3.85 after a 25bp hike that futures had >90% priced; US 2Y/5Y/10Y sit at 1y extremes and 2s10s at the 0.2nd 1y percentile; Saudi STS workaround reduced the extreme oil-supply tail. INFERENCE: the market is extrapolating a known hike and an energy scare into a ~4.75% 2027 terminal that does not need three more tightenings if the energy tail fades and lagging tightening bites. UNKNOWN: speculative positioning. Expression: stay long duration in already-owned SOFR_2027-03 (receive; profits if implied rate falls)."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-22T06:52:19.184127-04:00",
+      "conviction": 52,
+      "decision_fingerprint": "ffae93fdca006454bfc87329bbc36f7319e98d72e4db2174270f02c308fd517b",
+      "event_id": "jde-7b23cddd033a45ab",
+      "funding_view": null,
+      "invalidation": "A re-justified hike path in a restored SOFR/SR3 strip, not oil/CPI color alone.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "21bbc64e3590c8f24d8468d6dffdaf53acbe326f71a3185e9a78077efdc71539",
+      "outcome_links": [],
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-22T06:52:19.184127-04:00",
+        "evidence_hash": "21a1ec3c722518819f9418afe972e4d7933baf6268e2983b68f3036a69dff2f1",
+        "overnight_run_id": "overnight-20260922",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold LONG/receive SOFR_2027-03. Cash SOFR 3.85 versus the 4.58 entry still embeds leftover 2027 hike premium. Warm inflation and the oil rebound argue against pressing the fade, not that the stretch has normalized. The curve is unmarkable; HOLD rather than REDUCE without a mark. OPEN/ADD blocked.",
+      "run_id": "overnight-20260922",
+      "schema_version": 1,
+      "thesis": "Hold LONG/receive SOFR_2027-03. Cash SOFR 3.85 versus the 4.58 entry still embeds leftover 2027 hike premium. Warm inflation and the oil rebound argue against pressing the fade, not that the stretch has normalized. The curve is unmarkable; HOLD rather than REDUCE without a mark. OPEN/ADD blocked."
     }
   ],
   "schema_version": 1,

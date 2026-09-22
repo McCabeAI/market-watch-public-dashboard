@@ -93,6 +93,50 @@
       "run_id": "tr-20260920T193935Z-ondemand",
       "schema_version": 1,
       "thesis": "Verified fact: CA-US 2Y is -140bp on 2026-09-17 (1y percentile about 3.8, 5y about 4.3); SOFR-CORRA_2Y_2027H1 marks 140.25 from SR3 4.58/4.72 versus CRA 3.13/3.365; overnight SOFR-CORRA is 156bp; Fed has hiked 25bp to 3.75-4.00% with SOFR at 3.85; Canada August CPI is 3% with core/trim/median near 2%; BoC minutes flag energy pass-through; US 2Y 4.76 is the 99.8th 1y percentile while CA 2Y 3.27 is only the 58.5th 5y percentile. Inference: that 140bp Canada discount is a peer-policy dislocation, not a fair labor-gap price, because activity gauges are close, Canada Q2 GDP re-accelerated, energy pass-through is now in BoC deliberations, and the US front end has already done the post-hike rerating. Closest level analog (2025-01-30 at -145bp) compressed 25bp over 3m. Unknown: Saudi Oman workaround versus the still-weak energy-shock-absorber channel; CFTC/CME positioning; whether the 2024-12-18 analog (further widening) dominates. Trade is long SOFR-CORRA_2Y_2027H1 to own compression of Canada cheapness. Book already holds pos-cdde326460b4 at this mid."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR-CORRA_2Y_2027H1",
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-22T06:52:19.184127-04:00",
+      "conviction": 58,
+      "decision_fingerprint": "3a7b699cd50513bbf36583b1f32a88a6a9dbdf929b2b5b6083a6ebfbd68f02b2",
+      "event_id": "jde-3fa7e47a90ff4d82",
+      "funding_view": null,
+      "invalidation": "SOFR restored and the 27H1 spread no longer cheap on the CA-US 2Y post-hike anchor, or both legs unmarkable.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "b551ea4043404dcd604de5845cebaed4f5bd1b97796be84de9cf539c28385180",
+      "outcome_links": [],
+      "owner_id": "value-guy",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-22T06:52:19.184127-04:00",
+        "evidence_hash": "21a1ec3c722518819f9418afe972e4d7933baf6268e2983b68f3036a69dff2f1",
+        "overnight_run_id": "overnight-20260922",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold LONG SOFR-CORRA_2Y_2027H1. The valuation object remains CA 2Y cheap versus US after the delivered Fed hike. SOFR curve unavailability is a mark-gap, not evidence the 140.25 bp dislocation has converged. CORRA 2027-03/06 at 3.05/3.26 cannot alone mark the spread. OPEN/ADD blocked.",
+      "run_id": "overnight-20260922",
+      "schema_version": 1,
+      "thesis": "Hold LONG SOFR-CORRA_2Y_2027H1. The valuation object remains CA 2Y cheap versus US after the delivered Fed hike. SOFR curve unavailability is a mark-gap, not evidence the 140.25 bp dislocation has converged. CORRA 2027-03/06 at 3.05/3.26 cannot alone mark the spread. OPEN/ADD blocked."
     }
   ],
   "schema_version": 1,

@@ -93,6 +93,50 @@
       "run_id": "tr-20260920T193935Z-ondemand",
       "schema_version": 1,
       "thesis": "FACT: Fed delivered 25bp to 3.75-4.00, SOFR 3.85, US gauges 69-75, SR3 still prices up to 4.755 by Sep-27; Canada overnight 2.29, headline CPI 3%/core near 2%, labor 38 with -42k jobs, CA-US 2Y -140bp (3.8th 1y percentile); USDCAD 1.401 at 74th 1y percentile after +1.10% in five days. INFERENCE: USD policy exceptionalism versus a Canada labor/core constraint is still under-expressed in the dollar pair, so the existing long USDCAD remains the clean spot. Crosses (AUDCAD at 99.8 1y percentile, NZDCAD) add AU housing or residual NZD risk; USDJPY is BoJ event vol. UNKNOWN: positioning, post-Sep-18 FX path, and whether energy pass-through lets BoC outrun labor weakness. Book action is HOLD of pos-5317bc96d4eb, not a second OPEN."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDCAD",
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-22T06:52:19.184127-04:00",
+      "conviction": 64,
+      "decision_fingerprint": "571d0b30d3c0bfab0ee8ab939c372026b1a4b625b9dc69151e0e1321c4fa99cf",
+      "event_id": "jde-a84c2576d5b34203",
+      "funding_view": null,
+      "invalidation": "Fed path recast as one-and-done and/or BoC/energy re-tightens CAD enough to close the policy gap.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "1f892fdf12ee3eaaf17a93c5c4b272abce05937a978ac33f6c5467fa1301a9cc",
+      "outcome_links": [],
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-22T06:52:19.184127-04:00",
+        "evidence_hash": "21a1ec3c722518819f9418afe972e4d7933baf6268e2983b68f3036a69dff2f1",
+        "overnight_run_id": "overnight-20260922",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold LONG USDCAD. Fed 3.75-4.00 and confirmed SOFR 3.85 versus CORRA 2.29 still favor USD over CAD. Paper mid 1.4004 versus 1.40105 is noise. Oil rebound and BoC energy language are CAD-positive second-order risks, not a reason to flatten the USD-spot expression. OPEN/ADD blocked; spot-only seat stays in the existing pair.",
+      "run_id": "overnight-20260922",
+      "schema_version": 1,
+      "thesis": "Hold LONG USDCAD. Fed 3.75-4.00 and confirmed SOFR 3.85 versus CORRA 2.29 still favor USD over CAD. Paper mid 1.4004 versus 1.40105 is noise. Oil rebound and BoC energy language are CAD-positive second-order risks, not a reason to flatten the USD-spot expression. OPEN/ADD blocked; spot-only seat stays in the existing pair."
     }
   ],
   "schema_version": 1,

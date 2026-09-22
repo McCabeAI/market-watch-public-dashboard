@@ -93,6 +93,50 @@
       "run_id": "tr-20260920T193935Z-ondemand",
       "schema_version": 1,
       "thesis": "FACT: Fed delivered 25bp to 3.75-4.00% on 16-Sep; official SOFR is 3.85%; SR3U7 implied 4.755% is the 3m peak then the strip eases; 6m core PCE still ~3.0%; labor and services demand remain firm; BoJ hiked to 1.25% and BoE had three hike votes. INFERENCE: that peak-then-ease shape is a 'cycle finished enough by late 2027' assumption that underprices inflation persistence and the post-hike reaction function. UNKNOWN: spec positioning and NZ rates. Expression: stay short duration / pay SOFR_2027-09 so the mark rising in implied-rate space is the P&L. This is a HOLD of pos-c9184707c12b, not a second OPEN."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-09",
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-22T06:52:19.184127-04:00",
+      "conviction": 55,
+      "decision_fingerprint": "667d9fbbe1f707fa74d31ac9e9e0c12a893e6d416aebe77272efbed910763c1c",
+      "event_id": "jde-0d2174cc40d1471b",
+      "funding_view": null,
+      "invalidation": "A packeted policy pivot or a restored SOFR/SR3 path that prices a finished hiking cycle below the 4.755 entry.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "eb55a16e620b15883b40211258e66517389508384c4ee76f549fb7fc9158686b",
+      "outcome_links": [],
+      "owner_id": "rate-hawk",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-22T06:52:19.184127-04:00",
+        "evidence_hash": "21a1ec3c722518819f9418afe972e4d7933baf6268e2983b68f3036a69dff2f1",
+        "overnight_run_id": "overnight-20260922",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold SHORT SOFR_2027-09. Fed SEP median still includes one further 2026 hike; US inflation is warm; import prices rose 0.7%; oil rebounded. The SOFR tradable curve is unavailable, which is an operational mark-gap, not a reaction-function break. OPEN/ADD blocked; do not manufacture a replacement rates expression.",
+      "run_id": "overnight-20260922",
+      "schema_version": 1,
+      "thesis": "Hold SHORT SOFR_2027-09. Fed SEP median still includes one further 2026 hike; US inflation is warm; import prices rose 0.7%; oil rebounded. The SOFR tradable curve is unavailable, which is an operational mark-gap, not a reaction-function break. OPEN/ADD blocked; do not manufacture a replacement rates expression."
     }
   ],
   "schema_version": 1,

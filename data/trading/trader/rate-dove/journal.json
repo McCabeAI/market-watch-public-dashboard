@@ -93,6 +93,50 @@
       "run_id": "tr-20260920T193935Z-ondemand",
       "schema_version": 1,
       "thesis": "FACT: Canada is pricing a 2027 hike cycle (CORRA 2.29 to 2027H-Z 3.40, +111bp) while August core/trim-median sit at 1.9-2.0 percent, employment contracted 42k, and wages slowed to 2.0 percent. INFERENCE: hawks are treating energy pass-through and Fed/BoJ tightening as sufficient to re-tighten Canada into the mid-3s; labor and underlying CPI say that cycle will not be delivered, so 2027 implied CORRA falls. UNKNOWN: whether a renewed oil spike or a strong Q3 GDP follow-through on the +0.8 percent Q2 print can keep the BoC on a hiking path despite jobs. Actionable expression: stay long the existing 2027H-Z strip."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027H-Z",
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-22T06:52:19.184127-04:00",
+      "conviction": 59,
+      "decision_fingerprint": "265eb334e4b8766d0019541c97df307dc727dbf5c051b3ed9aaabb981b8b0a8b",
+      "event_id": "jde-40de22fc02ce4301",
+      "funding_view": null,
+      "invalidation": "Oil rebound or BoC energy minutes that re-establish a higher 2027 path, or labor/core re-acceleration.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "fc401d7e127022f2088e61a07cbbddb58f60674810281bf6dd4c7c4359c4ac79",
+      "outcome_links": [],
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-22T06:52:19.184127-04:00",
+        "evidence_hash": "21a1ec3c722518819f9418afe972e4d7933baf6268e2983b68f3036a69dff2f1",
+        "overnight_run_id": "overnight-20260922",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold LONG/receive CORRA_2027H-Z. Strip ~3.301 versus 3.40 entry already favors the receive; cash CORRA 2.29 versus 2027 mid-3s remains the dove gap given cooling CA labor and core near 2%. Oil rebound and energy-colored BoC minutes are the adverse path, not a lived invalidation. OPEN/ADD blocked.",
+      "run_id": "overnight-20260922",
+      "schema_version": 1,
+      "thesis": "Hold LONG/receive CORRA_2027H-Z. Strip ~3.301 versus 3.40 entry already favors the receive; cash CORRA 2.29 versus 2027 mid-3s remains the dove gap given cooling CA labor and core near 2%. Oil rebound and energy-colored BoC minutes are the adverse path, not a lived invalidation. OPEN/ADD blocked."
     }
   ],
   "schema_version": 1,
