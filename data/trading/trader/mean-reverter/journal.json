@@ -93,6 +93,70 @@
       "run_id": "tr-20260920T193935Z-ondemand",
       "schema_version": 1,
       "thesis": "FACTS: SR3H7 implied 4.58 is 73bp above overnight SOFR 3.85 after a 25bp hike that futures had >90% priced; US 2Y/5Y/10Y sit at 1y extremes and 2s10s at the 0.2nd 1y percentile; Saudi STS workaround reduced the extreme oil-supply tail. INFERENCE: the market is extrapolating a known hike and an energy scare into a ~4.75% 2027 terminal that does not need three more tightenings if the energy tail fades and lagging tightening bites. UNKNOWN: speculative positioning. Expression: stay long duration in already-owned SOFR_2027-03 (receive; profits if implied rate falls)."
+    },
+    {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-1477172adb86",
+          "rationale": "Unchanged from Round 1. Sidecar still owns receive SOFR_2027-03 pos-1477172adb86. US gauges remain hot and the hike is delivered, so the US fade still lacks a reversal condition. Close at packet mid; do not keep a US-duration long beside the AU receive.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        },
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-03",
+          "notional_usd": 50000000,
+          "position_id": null,
+          "rationale": "Unchanged from Round 1. Final book intent is still receive AONIA_2027-03 (side long, expected implied-rate mark lower) at 50m / 500k shocked risk. Positioning-cynic's empty-OI pay does not create a duplicate or a reverse. Paper at packet mid 4.86. Official SOFR 3.85 ACT/360 on shocked risk remains the hurdle.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-09-20T23:10:16.011895-04:00",
+      "conviction": 58,
+      "decision_fingerprint": "083d9049d66321592ebea15d8f3cf9f93ae740d221064451a2322b3b28c301ae",
+      "event_id": "jde-3b21af3d56c140f6",
+      "funding_view": null,
+      "invalidation": "Housing stabilizes and inflation/labor re-accelerate, locking in AONIA_2027-03 at or above the packet 4.86 implied.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-1477172adb86",
+        "pos-6015c01ecc4e"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-mean-reverter-pos-1477172adb86",
+        "trd-trader-mean-reverter-pos-6015c01ecc4e"
+      ],
+      "memory_context_sha256": "21bbc64e3590c8f24d8468d6dffdaf53acbe326f71a3185e9a78077efdc71539",
+      "outcome_links": [],
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-21T02:36:10Z",
+        "evidence_hash": "cfb65337a1cdff3a17c8ffaab151fe220bf6640ba67547f1cda1ab5beac6a341",
+        "overnight_run_id": null,
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260921T023610Z-ondemand"
+      },
+      "rationale": "FACT: AU 2Y/5Y/10Y are at the 99th percentile of 1y and 5y history, AONIA Mar-27 still prices 4.86 versus cash 4.35, and the housing channel is already contracting (stamp duty, transactions, prices). INFERENCE: crowded extrapolation of a second RBA hike into a breaking housing market is the overshoot; the normalization catalyst is further housing/labor/sentiment deterioration capping the RBA after at most one more 25bp. Expression is receive AONIA_2027-03 (direction long, expected implied-rate mark lower). UNKNOWN: whether October still prints; CFTC; NZ yields; executable bid/ask. The legacy long SOFR_2027-03 is closed rather than added to: US 10Y is 99.9th percentile 5y, but inflation 72 / labor 75 / a delivered hike are not reversal conditions.",
+      "run_id": "tr-20260921T023610Z-ondemand",
+      "schema_version": 1,
+      "thesis": "FACT: AU 2Y/5Y/10Y are at the 99th percentile of 1y and 5y history, AONIA Mar-27 still prices 4.86 versus cash 4.35, and the housing channel is already contracting (stamp duty, transactions, prices). INFERENCE: crowded extrapolation of a second RBA hike into a breaking housing market is the overshoot; the normalization catalyst is further housing/labor/sentiment deterioration capping the RBA after at most one more 25bp. Expression is receive AONIA_2027-03 (direction long, expected implied-rate mark lower). UNKNOWN: whether October still prints; CFTC; NZ yields; executable bid/ask. The legacy long SOFR_2027-03 is closed rather than added to: US 10Y is 99.9th percentile 5y, but inflation 72 / labor 75 / a delivered hike are not reversal conditions."
     }
   ],
   "schema_version": 1,

@@ -93,6 +93,52 @@
       "run_id": "tr-20260920T193935Z-ondemand",
       "schema_version": 1,
       "thesis": "FACT: Canada is pricing a 2027 hike cycle (CORRA 2.29 to 2027H-Z 3.40, +111bp) while August core/trim-median sit at 1.9-2.0 percent, employment contracted 42k, and wages slowed to 2.0 percent. INFERENCE: hawks are treating energy pass-through and Fed/BoJ tightening as sufficient to re-tighten Canada into the mid-3s; labor and underlying CPI say that cycle will not be delivered, so 2027 implied CORRA falls. UNKNOWN: whether a renewed oil spike or a strong Q3 GDP follow-through on the +0.8 percent Q2 print can keep the BoC on a hiking path despite jobs. Actionable expression: stay long the existing 2027H-Z strip."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027H-Z",
+          "notional_usd": 85000000,
+          "position_id": "pos-9849cf751c27",
+          "rationale": "Round-2 CAD-higher / USD-lower / NZD-higher tags do not invalidate receive 2027 CRA. Sidecar still owns LONG CORRA_2027H-Z pos-9849cf751c27 at 3.4, 85m notional, 850k shocked risk. Do not OPEN a duplicate strip. Do not ADD: energy pass-through remains the live hawk risk. Official SOFR 3.85 ACT/360 continues on that shocked capital. HOLD is the final book intent.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-09-20T23:10:16.011895-04:00",
+      "conviction": 62,
+      "decision_fingerprint": "7eaea983f46c1185ce1edf1374a8644947d619504eab7cb8dbcdab9e1c1c9c80",
+      "event_id": "jde-2c27a93325374aa7",
+      "funding_view": null,
+      "invalidation": "BoC delivers the priced 2027 mid-3s path, or trim/median leave 1.9/2.0 while jobs stop contracting.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-9849cf751c27"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "fc401d7e127022f2088e61a07cbbddb58f60674810281bf6dd4c7c4359c4ac79",
+      "outcome_links": [],
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-21T02:36:10Z",
+        "evidence_hash": "cfb65337a1cdff3a17c8ffaab151fe220bf6640ba67547f1cda1ab5beac6a341",
+        "overnight_run_id": null,
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260921T023610Z-ondemand"
+      },
+      "rationale": "FACT: As of 2026-09-17 overnight CORRA is 2.29. Tradable CRA 3m implieds are 2.385 (2026-09), 2.775 (2026-12), 3.13 (2027-03, +84bp), 3.365 (2027-06, +107.5bp), 3.51 (2027-09, +122bp) and 3.595 (2027-12, +130.5bp); the equal-weight 2027 H-Z strip marks 3.40 (+111bp). FACT: August CPI headline is 3.0% y/y with CPI-trim 1.9 and CPI-median 2.0; employment -42k, unemployment 6.4% unchanged, average hourly wages +2.0% y/y versus +2.8% in July; CA gauges labor 38, consumer 45, inflation 55, activity 66. FACT: Fed hiked 25bp to 3.75-4.00; official SOFR jumped to 3.85 on 2026-09-17; SR3 prices 4.315 (2026-12), 4.565 (2027-03), 4.735 (2027-09). FACT: CA 2Y is 3.27 (1y percentile 97.8; 5y 58.5) and CA-US 2Y is -140bp (1y percentile 3.8). INFERENCE: The 2027 CRA strip is pricing an energy-pass-through catch-up hiking cycle that domestic labor and underlying CPI do not require. Restrictive US policy and the already-low 2.29 CORRA overnight should slow Canada further, so 2027 implied CORRA falls rather than being delivered into the mid-3s. UNKNOWN: whether BoC minutes' energy pass-through, Q2 GDP +0.8% q/q, and the two-sided oil news (shock absorbers weaker versus a Saudi/Oman workaround) can still force validation of the strip. CFTC/CME positioning is null/unavailable.",
+      "run_id": "tr-20260921T023610Z-ondemand",
+      "schema_version": 1,
+      "thesis": "FACT: As of 2026-09-17 overnight CORRA is 2.29. Tradable CRA 3m implieds are 2.385 (2026-09), 2.775 (2026-12), 3.13 (2027-03, +84bp), 3.365 (2027-06, +107.5bp), 3.51 (2027-09, +122bp) and 3.595 (2027-12, +130.5bp); the equal-weight 2027 H-Z strip marks 3.40 (+111bp). FACT: August CPI headline is 3.0% y/y with CPI-trim 1.9 and CPI-median 2.0; employment -42k, unemployment 6.4% unchanged, average hourly wages +2.0% y/y versus +2.8% in July; CA gauges labor 38, consumer 45, inflation 55, activity 66. FACT: Fed hiked 25bp to 3.75-4.00; official SOFR jumped to 3.85 on 2026-09-17; SR3 prices 4.315 (2026-12), 4.565 (2027-03), 4.735 (2027-09). FACT: CA 2Y is 3.27 (1y percentile 97.8; 5y 58.5) and CA-US 2Y is -140bp (1y percentile 3.8). INFERENCE: The 2027 CRA strip is pricing an energy-pass-through catch-up hiking cycle that domestic labor and underlying CPI do not require. Restrictive US policy and the already-low 2.29 CORRA overnight should slow Canada further, so 2027 implied CORRA falls rather than being delivered into the mid-3s. UNKNOWN: whether BoC minutes' energy pass-through, Q2 GDP +0.8% q/q, and the two-sided oil news (shock absorbers weaker versus a Saudi/Oman workaround) can still force validation of the strip. CFTC/CME positioning is null/unavailable."
     }
   ],
   "schema_version": 1,

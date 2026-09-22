@@ -1,0 +1,178 @@
+{
+  "type": "TRADER_ROOM_CONTRIBUTION",
+  "run_id": "tr-20260921T023610Z-ondemand",
+  "round": 1,
+  "agent": "catalyst-junkie",
+  "archetype": "catalyst-junkie",
+  "packet_sha256": "cfb65337a1cdff3a17c8ffaab151fe220bf6640ba67547f1cda1ab5beac6a341",
+  "remit": "credible path from mispricing to repricing",
+  "confidence": 58,
+  "stance_summary": "FACT: September AONIA sits at 4.355 versus 4.35 cash while October AONIA implies 4.565, 21.5bp of tightening, with the October contract the most liquid point on the ASX strip. FACT: NSW stamp-duty receipts fell 24% y/y in August, transactions fell 18%, Sydney and Melbourne values are more than 7% off peak, July employment fell 15.8k, and September Westpac-MI sentiment dropped 5.2% to 84.4. INFERENCE: the next RBA decision is the dated mechanism that must reconcile a housing/labor/sentiment tightening channel with a cash-rate hike that October already nearly fully prices; a hold/skip reprices October toward cash, while a standard 25bp hike is largely in the implied rate. UNKNOWN: the exact RBA calendar date and whether global energy/Fed/BoJ hawkish clustering forces an Australian hike anyway. Book already owns long AONIA_2026-10; HOLD, do not duplicate.",
+  "trade": {
+    "instrument": "AONIA_2026-10",
+    "asset_class": "rates",
+    "direction": "long",
+    "structure": "outright ASX 30-day AONIA October 2026 future; long = receive / profits if implied rate falls",
+    "entry": null,
+    "target": null,
+    "stop": null,
+    "horizon": "into the next RBA decision and the October AONIA averaging window",
+    "confidence": 58,
+    "thesis": "FACT: AONIA cash is 4.35 as of 18-Sep-2026; the September 30-day contract implies 4.355 (+0.5bp) while October implies 4.565 (+21.5bp) with open interest 21752 and volume 4450, the most active point on the strip. FACT: AU 3m bank bills are 4.68 and 6m bills 5.08, so the front STIR/bill complex is pricing a hike that has not printed in overnight cash. FACT: Reuters/NSW evidence dated 2026-09-16 shows stamp-duty receipts -24% y/y, volumes -18%, and Sydney/Melbourne values more than 7% below peak; ABS July employment -15.8k and unemployment 4.5%; September Westpac-MI sentiment 84.4, down 5.2% from 88.9. INFERENCE: September cash already reveals the RBA did not lift in the current month, so October is the first live month that can embed a 25bp cash move; pricing 21.5bp of that move is a near-certain October hike. The housing/labor/sentiment cluster is the transmission channel the next RBA statement has to address, so a hold or delay is a dated repricing path for October implied rates lower. UNKNOWN: whether trimmed-mean CPI still at 3.6% y/y plus an 82 inflation-gauge score and the post-FOMC/BoJ/BoE hawkish cluster dominate housing and force delivery. Sidecar already holds this exact long; paper action is HOLD.",
+    "mispricing": "FACT: October AONIA 4.565 versus cash 4.35 is 21.5bp of tightening packed into the first contract that can fully reflect a hike after a September contract that is pinned to cash. INFERENCE: that is too much certainty of an imminent cash-rate increase given the housing downturn, weaker labor impulse, and the September sentiment drop, all of which are information the next RBA decision must process. UNKNOWN: the precise day-count mapping of any hike inside the October averaging window, which the packet does not specify.",
+    "why_now": [
+      "October AONIA is the first live, liquid contract that embeds 21.5bp of tightening versus unchanged 4.35 cash after September AONIA printed only +0.5bp.",
+      "The 2026-09-16 housing evidence and the September Westpac-MI sentiment drop are dated inputs the next RBA decision cannot ignore, creating a defined repricing window rather than a valuation-only fade.",
+      "Global Fed/BoJ/BoE hawkish clustering can keep term premia bid, but it is not a substitute for an Australian cash hike in October once the housing channel is already biting."
+    ],
+    "catalysts": [
+      "Next RBA cash-rate decision, which is the event that either confirms or cancels the 21.5bp October AONIA hike premium.",
+      "Further Australian housing, labor, CPI, or sentiment prints that force the Board to acknowledge the tightening channel before that decision.",
+      "A hold or smaller-than-priced October cash outcome that pulls October implied AONIA back toward the 4.35 cash/September strip."
+    ],
+    "invalidation": "The thesis is invalidated if the RBA delivers a cash-rate increase that keeps October realized/implied AONIA at or above the current 4.565 packet mid, or if incoming Australian inflation/housing data reverse the downturn evidence and the Board signals an imminent hike the strip has not yet fully priced.",
+    "principal_risks": [
+      "AU inflation-gauge score 82 and trimmed-mean CPI 3.6% y/y still give the Board cover to hike despite housing.",
+      "Fed hike to 3.75-4.00%, BoJ hike to 1.25%, BoE 6-3 with three hike votes, and the desk energy-shock thesis can keep a global tightening impulse that spills into the RBA reaction function.",
+      "A larger-than-25bp Australian hike, or an early-October hike that prints a high October AONIA average, would move the mark higher against the long.",
+      "CFTC positioning is null and market-state is stale on NZ, so ownership/flow confirmation is missing."
+    ],
+    "evidence_refs": [
+      "policy_paths",
+      "tradable_rate_curves",
+      "policy:AU",
+      "rates:AU",
+      "mw_20260916_au_housing_tightening",
+      "rollup:Australian housing downturn deepens under higher rates",
+      "temp:AU:inflation",
+      "temp:AU:labor",
+      "temp:AU:activity",
+      "temp:AU:consumer",
+      "policy:US",
+      "rollup:Fed raises 25bp to 3.75–4.00%",
+      "last24:desk-thesis",
+      "last24:BoJ raises its policy rate to 1.25%",
+      "pos:cftc",
+      "fx:AUDUSD",
+      "market_state",
+      "research_method",
+      "funding_context"
+    ],
+    "expression_comparison": {
+      "rates_tenor_scan": {
+        "stir_policy_path": {
+          "status": "candidate",
+          "instrument": "AONIA_2026-10",
+          "asset_class": "rates",
+          "rationale": "FACT: AONIA cash 4.35, Sep 4.355, Oct 4.565 (+21.5bp), Nov 4.685 (+33.5bp); Oct is the most liquid (OI 21752, volume 4450). This is the first dated policy window after an unchanged September cash print. SOFR Dec 4.315 vs 3.85 cash (+46.5bp) and CORRA Dec 2.775 vs 2.29 (+48.5bp) were scanned; they lack as clean a skip-versus-priced-hike event as October AONIA."
+        },
+        "two_year": {
+          "status": "not_compelling",
+          "instrument": "AU 2Y",
+          "asset_class": "rates",
+          "rationale": "FACT: AU 2Y is 4.999 as of 2026-09-16, 99th percentile 1y/5y, +39.1bp over 1m. That already capitalizes a hiking path. It is a worse expression of the next RBA decision than October AONIA and is not a substitute for the live policy strip."
+        },
+        "five_year": {
+          "status": "not_compelling",
+          "instrument": "AU 5Y",
+          "asset_class": "rates",
+          "rationale": "FACT: AU 5Y is 5.041, 99th percentile, +37.1bp 1m. US 5Y 4.86 is similarly stretched. These tenors mix term premium and energy-shock duration; they do not isolate the dated RBA cash decision."
+        },
+        "ten_year": {
+          "status": "not_compelling",
+          "instrument": "AU 10Y",
+          "asset_class": "rates",
+          "rationale": "FACT: AU 10Y 5.348 and US 10Y 5.01 sit at 99th-percentile 1y levels. Desk thesis says energy is keeping term-rate pressure elevated. No dated fiscal/issuance event in the packet closes a 10Y mispricing on a known calendar."
+        },
+        "curve": {
+          "status": "not_compelling",
+          "instrument": "US 2s10s",
+          "asset_class": "curve",
+          "rationale": "FACT: US 2s10s is 25bp, 0.2 1y percentile, -21bp over 1m; AU 2s10s 34.9bp; CA 2s10s 56bp at 0.6 1y percentile. These are statistical flattening extremes without a dated meeting-specific closing mechanism."
+        },
+        "cross_market_rv": {
+          "status": "not_compelling",
+          "instrument": "CA-US 2Y",
+          "asset_class": "rates_rv",
+          "rationale": "FACT: CA-US 2Y is -140bp, 3.8 1y percentile, z_1y -1.84; AU-US 2Y +25.9bp. NZ RV is unavailable (RBNZ B2 HTTP 403). The CA-US extreme is a screen, not a dated RBA-housing catalyst, and SOFR-CORRA would mix two policy paths rather than own the October Australian decision."
+        },
+        "selected_bucket": "stir_policy_path",
+        "selection_rationale": "October AONIA is the only scanned rates expression that maps a packet-dated housing/sentiment/labor cluster onto a single, liquid, first-live policy contract whose implied rate already embeds nearly a full hike versus unchanged cash."
+      },
+      "rates_candidate": {
+        "instrument": "AONIA_2026-10",
+        "asset_class": "rates",
+        "rationale": "Long October AONIA (receive / implied-rate lower) owns the skip-or-delay versus a 21.5bp priced October hike; it is the selected stir_policy_path bucket."
+      },
+      "spot_candidate": "short AUDUSD (AUD lower if the RBA skips the hike already in October AONIA; packet mid 0.7120, 76th percentile 1y)",
+      "selected": "rates",
+      "rationale": "Rates are cleaner: October AONIA isolates the RBA cash decision and the 21.5bp hike premium. AUDUSD adds commodity, China, and USD-beta that the packet does not date to the same RBA event, so spot is the fallback not the primary."
+    },
+    "context_build": {
+      "causal_mechanism": "The RBA tightening channel is already operating through housing turnover, dwelling prices, labor, and consumer sentiment. Markets still price an October cash-rate increase in AONIA. The next RBA decision is the mechanism that either validates that hike or reprices the front strip lower if the Board holds because the channel is biting.",
+      "path_to_current_price": "FACT: AONIA cash 4.35; September contract 4.355; October 4.565; November 4.685; the strip then grinds toward about 4.94 by mid-2027. AU 2Y has sold off 39.1bp over 1m to 4.999. Over the same window the Fed hiked 25bp to 3.75-4.00% (SOFR 3.85 on 17-Sep), BoJ hiked to 1.25%, and BoE held 6-3 with three hike votes. INFERENCE: Australian front-end pricing imported a global hawkish impulse after a local cash rate that has not yet moved.",
+      "known_vs_new_information": "KNOWN: AU inflation-gauge score 82, trimmed-mean CPI 3.6% y/y, global energy-shock narrative, and a Fed that was already >90% priced to hike. NEW enough to force a decision: 2026-09-16 housing prints (stamp duty -24% y/y, volumes -18%, prices >7% off peak), July employment -15.8k, and the September Westpac-MI sentiment collapse to 84.4. Those are the facts a Board meeting has to digest rather than a slow valuation argument.",
+      "market_implied_assumption": "October AONIA at 4.565 versus 4.35 cash assumes the RBA almost certainly lifts cash in the October window, with still more tightening into November (4.685) and a ~60bp terminal lift by mid-2027.",
+      "market_assumption_disagreed_with": "The assumption that is wrong is near-certain October delivery. Housing, labor, and September sentiment imply a material probability of hold/delay, which would reprice October implied AONIA toward cash rather than leave 21.5bp of hike premium intact.",
+      "price_decomposition": "Level: cash 4.35 unchanged. Change: the entire 21.5bp October premium is the marginal hike-odds component, not term premium (that lives further out toward 4.94). 3m bank bills at 4.68 line up with November AONIA 4.685, confirming the hike is in the front money-market stack, not a 10Y duration story. AU 2s10s at 34.9bp is not the driver.",
+      "historical_reference": {
+        "distribution": "FACT: AU 2Y/5Y/10Y are all ~99th percentile on 1y and 5y windows after a 1m sell-off of 26-39bp. October AONIA is 21.5bp above cash; September is not. Percentiles flag how far the hiking narrative has already been capitalized in bonds; they are not the trade.",
+        "analogs": [
+          "Prior RBA cycles in which dwelling prices and transaction volumes cracked while inflation was still above target, and the Board delayed or stopped hiking because the housing credit channel was doing the tightening. The packet's own housing note frames the stamp-duty hole as pandemic-sized, which is the closest named analog in the frozen evidence."
+        ],
+        "regime_differences": "Unlike a garden-variety housing pause, today's AU inflation-gauge score is 82, trimmed mean is still 3.6%, the Fed has just hiked, BoJ is at a 31-year high, and the desk thesis says the energy shock is constraining global easing. Those differences keep October-hike odds alive and cap conviction."
+      },
+      "independent_checks": [
+        "ASX AONIA strip (Sep 4.355 / Oct 4.565 / Nov 4.685) versus AONIA cash 4.35 and versus RBA bank bills (1m 4.41, 3m 4.68, 6m 5.08) — three money-market measures all say a hike is priced that cash has not delivered.",
+        "Physical housing and labor: NSW stamp duty -24% y/y, volumes -18%, prices >7% off peak; employment -15.8k; U 4.5%; September sentiment 84.4. That is a different dataset from STIR and it points the other way.",
+        "Cross-market policy paths: SOFR already jumped to 3.85 after a delivered Fed hike with more hikes in SR3; CORRA still starts at 2.29 with a long hiking path. Australia is the market that has priced a near-term hike without moving cash — the discrepancy to close."
+      ],
+      "flow_and_positioning_check": "FACT: CFTC TFF in the packet is null with positioning status partial, so leveraged-ownership cannot be used as confirmation or contradiction. FACT: October AONIA has the strip's highest open interest (21752) and volume (4450), so the 21.5bp premium is a traded price, not a stale/illiquid print. INFERENCE: plumbing/flow is not an available explanation; treat the price as a policy-odds statement.",
+      "policy_path_check": {
+        "status": "available",
+        "relevant_countries": [
+          "AU",
+          "US",
+          "CA"
+        ],
+        "pricing_summary": "AU: AONIA 4.35; Sep 4.355 (+0.5bp); Oct 4.565 (+21.5bp); Nov 4.685 (+33.5bp); mid-2027 around 4.94 (+59.5bp). US: SOFR 3.85 after the Sep-16 25bp hike to 3.75-4.00%; SR3 Dec 4.315 (+46.5bp), Mar-27 4.565 (+71.5bp), peak Sep-27 4.735 (+88.5bp). CA: CORRA 2.29; Dec-26 2.775 (+48.5bp); Mar-27 3.13 (+84bp); peak near 3.655 in 2028. NZ policy path is not in the packet.",
+        "rationale": "The trade is an Australian front-end policy expression, so the AONIA strip is the required path. US and CA paths are the global tightening backdrop that can leak into RBA odds but are not the mispricing being owned. A 2Y yield percentile was not used as a substitute for the live AU path."
+      }
+    }
+  },
+  "conflict_synopsis": {
+    "seat": "catalyst-junkie",
+    "primary_trade": "long AONIA_2026-10 (receive / implied-rate lower)",
+    "core_view": "October AONIA prices a near-certain RBA hike that the housing/labor/sentiment channel and the next Board decision can still cancel, repricing implied rates lower.",
+    "usd_view": "higher",
+    "cad_view": "neutral",
+    "aud_view": "lower",
+    "nzd_view": "lower",
+    "us_rates_view": "higher",
+    "ca_rates_view": "higher",
+    "au_rates_view": "lower",
+    "nz_rates_view": "not_relevant",
+    "risk_view": "risk_off",
+    "carry_view": "supports_trade",
+    "time_horizon": "next RBA decision / October AONIA window",
+    "key_catalyst": "The next RBA cash-rate decision, informed by the Sep-16 housing evidence and the September sentiment drop, is the dated event that confirms or cancels the 21.5bp October hike premium.",
+    "key_invalidation": "RBA hikes enough that October AONIA stays at or above the 4.565 packet mid, or housing/inflation data reverse and the Board pre-commits to an imminent hike.",
+    "confidence": 58,
+    "conflict_tags": [
+      "AU_RATES_DOWN",
+      "AUD_DOWN",
+      "USD_UP",
+      "US_RATES_UP"
+    ]
+  },
+  "paper_actions": [
+    {
+      "action": "HOLD",
+      "position_id": "pos-deddf5aa0c83",
+      "instrument": "AONIA_2026-10",
+      "asset_class": "rates",
+      "side": "long",
+      "rationale": "FACT: sidecar already owns long AONIA_2026-10 (position_id pos-deddf5aa0c83), 55m notional, 550k shocked risk versus a 10m cap and 5m HWM stop, mark 4.565 versus sidecar entry 4.57. INFERENCE: the dated October RBA/housing catalyst is intact, so the existing receive is the right expression; Fed/BoJ/BoE hawkish clustering since the last hold is a reason not to ADD. Do not OPEN a duplicate. Official SOFR 3.85% ACT/360 on 550k shocked risk is a small hurdle versus a 21.5bp skip-October edge. Thesis remains implied-rate lower (canonical long)."
+    }
+  ]
+}

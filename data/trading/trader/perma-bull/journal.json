@@ -93,6 +93,52 @@
       "run_id": "tr-20260920T193935Z-ondemand",
       "schema_version": 1,
       "thesis": "FACT: Canada is still running overnight CORRA at 2.29 with headline inflation at 3.0%, while CRAH27 prices only 3.13 and the Fed has already hiked to 3.75-4.00% with SOFR at 3.85. FACT: CA activity is 66 on a Q2 GDP rebound and stronger Ivey PMI; US activity/labor/inflation gauges are 69/75/72. INFERENCE: pessimism about Canadian labor (score 38, employment -42k) is over-discounted as a reason to keep the 2027H1 path capped; a resilient global cycle plus BoC energy-pass-through risk should lift the March 2027 implied rate. UNKNOWN: CFTC/CME positioning and any post-cutoff BoC communication. The pro-growth expression is to pay that still-limited Canada path, not to buy already-high AUD or fade USD."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 50000000,
+          "position_id": "pos-dd6fdaf39119",
+          "rationale": "trade_change unchanged. FACT: sidecar already owns short CORRA_2027-03 pos-dd6fdaf39119, 50m notional, 500k shocked-risk capital, entry/mark 3.13, not risk_stopped. Direct opposite is carry-is-king long the same contract; that does not require CLOSE or ADD. Labor/core arguments were already in Round-1 principal risks. Official SOFR 3.85 ACT/360 remains the vig on 500k. HOLD; do not OPEN a duplicate.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-09-20T23:10:16.011895-04:00",
+      "conviction": 61,
+      "decision_fingerprint": "2b94143b204ab5bc870b30dceee26ee2a3ba7e0e42e2c47e044fe921fba06a38",
+      "event_id": "jde-a141edec29384224",
+      "funding_view": null,
+      "invalidation": "CORRA_2027-03 back to the packet Dec-26 3m mid 2.775, or a confirmed Canada demand break with core near 2% and fading energy pass-through.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-dd6fdaf39119"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "adaf18ba8a4691d9381772bfe287761cdfca490ac76910ac8a738bd3f367a751",
+      "outcome_links": [],
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-21T02:36:10Z",
+        "evidence_hash": "cfb65337a1cdff3a17c8ffaab151fe220bf6640ba67547f1cda1ab5beac6a341",
+        "overnight_run_id": null,
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260921T023610Z-ondemand"
+      },
+      "rationale": "FACT: CORRA overnight is 2.29 as of 2026-09-17; the 3m strip prices 2.775 by Dec-26, 3.13 by Mar-27 (+84.0bp vs overnight), 3.365 by Jun-27 and a 2028 peak near 3.655. US SOFR jumped to 3.85 after the Fed delivered 25bp to 3.75-4.00%; SR3H7 is 4.565 and SR3U7 peaks at 4.735. Canada Q2 GDP was +0.8% q/q after +0.1% in Q1, Ivey PMI accelerated, household consumption +0.8% q/q and disposable income +2.1% q/q. Headline CPI held at 3.0% y/y with CPI-trim 1.9% and CPI-median 2.0%. BoC minutes flag higher energy pass-through; the last-24 desk thesis says the energy shock is constraining the global easing impulse after the Fed hike, BoJ 25bp to 1.25%, and a BoE 6-3 hold with three hike votes. INFERENCE: 2.29 is an over-insurance setting against the August jobs print, not an equilibrium compatible with still-positive activity and a global tightening regime. Mar-27 at 3.13 still prices a shallow catch-up versus US 4.565 and versus Canada's own 2028 CRA peak near 3.65, so paying Mar-27 owns the residual hike impulse without needing a new 10Y term-premium story. UNKNOWN: whether energy pass-through actually shows up in subsequent CPI, and whether August employment -42k is the start of a demand break.",
+      "run_id": "tr-20260921T023610Z-ondemand",
+      "schema_version": 1,
+      "thesis": "FACT: CORRA overnight is 2.29 as of 2026-09-17; the 3m strip prices 2.775 by Dec-26, 3.13 by Mar-27 (+84.0bp vs overnight), 3.365 by Jun-27 and a 2028 peak near 3.655. US SOFR jumped to 3.85 after the Fed delivered 25bp to 3.75-4.00%; SR3H7 is 4.565 and SR3U7 peaks at 4.735. Canada Q2 GDP was +0.8% q/q after +0.1% in Q1, Ivey PMI accelerated, household consumption +0.8% q/q and disposable income +2.1% q/q. Headline CPI held at 3.0% y/y with CPI-trim 1.9% and CPI-median 2.0%. BoC minutes flag higher energy pass-through; the last-24 desk thesis says the energy shock is constraining the global easing impulse after the Fed hike, BoJ 25bp to 1.25%, and a BoE 6-3 hold with three hike votes. INFERENCE: 2.29 is an over-insurance setting against the August jobs print, not an equilibrium compatible with still-positive activity and a global tightening regime. Mar-27 at 3.13 still prices a shallow catch-up versus US 4.565 and versus Canada's own 2028 CRA peak near 3.65, so paying Mar-27 owns the residual hike impulse without needing a new 10Y term-premium story. UNKNOWN: whether energy pass-through actually shows up in subsequent CPI, and whether August employment -42k is the start of a demand break."
     }
   ],
   "schema_version": 1,

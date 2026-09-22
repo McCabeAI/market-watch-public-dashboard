@@ -93,6 +93,52 @@
       "run_id": "tr-20260920T193935Z-ondemand",
       "schema_version": 1,
       "thesis": "FACT: Fed delivered 25bp to 3.75-4.00% on 16-Sep; official SOFR is 3.85%; SR3U7 implied 4.755% is the 3m peak then the strip eases; 6m core PCE still ~3.0%; labor and services demand remain firm; BoJ hiked to 1.25% and BoE had three hike votes. INFERENCE: that peak-then-ease shape is a 'cycle finished enough by late 2027' assumption that underprices inflation persistence and the post-hike reaction function. UNKNOWN: spec positioning and NZ rates. Expression: stay short duration / pay SOFR_2027-09 so the mark rising in implied-rate space is the P&L. This is a HOLD of pos-c9184707c12b, not a second OPEN."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-09",
+          "notional_usd": 50000000,
+          "position_id": "pos-c9184707c12b",
+          "rationale": "Final book after FX-view rebuttal: sidecar still owns short SOFR_2027-09 pos-c9184707c12b ($50m, $500k shock, entry_mark 4.75). Opposing USD-down/CAD-up/AUD-up claims do not warrant ADD, REDUCE, or CLOSE. Do not OPEN a duplicate. HOLD versus official SOFR 3.85 ACT/360 on shocked risk.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-09-20T23:10:16.011895-04:00",
+      "conviction": 58,
+      "decision_fingerprint": "44c7ca15ef4729c661758e548de7a09de72b015709f692f0ff229345cb57ff62",
+      "event_id": "jde-8e07d3d4c3c844a5",
+      "funding_view": null,
+      "invalidation": "SR3 2027-09 implied rate falls as the strip prices a peak below 4.735 while US labor and services break.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-c9184707c12b"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "eb55a16e620b15883b40211258e66517389508384c4ee76f549fb7fc9158686b",
+      "outcome_links": [],
+      "owner_id": "rate-hawk",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-21T02:36:10Z",
+        "evidence_hash": "cfb65337a1cdff3a17c8ffaab151fe220bf6640ba67547f1cda1ab5beac6a341",
+        "overnight_run_id": null,
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260921T023610Z-ondemand"
+      },
+      "rationale": "FACT: policy_paths US overnight SOFR is 3.85 as of 2026-09-17 after jumping from 3.62 on 2026-09-16; the Fed raised 25bp to 3.75-4.00%; SR3 2027-09 implied 4.735 is the strip peak (+88.5bp vs overnight) before 2028-03 4.675 and 2029-06 4.52. FACT: temp:US:inflation 72 with July core PCE +0.2% m/m, ~2.4% 1m/3m and ~3.0% 6m annualized; labor 75 with unemployment 4.1% unchanged, AHE +3.1% y/y, payrolls +162k; activity 69 with ISM services 55.4 and business activity/new orders above 60, GDP +1.5% SAAR in Q2. FACT: August CPI kept the Fed tightening bias intact; BoJ hiked to 1.25%; BoE held 3.75% 6-3 with three votes for 4.00%; energy-market shock absorbers weaken. INFERENCE: a reaction function that still cares about above-target 6m PCE, a non-breaking labor market, and a global energy/tightening overlay will not treat 4.735 as a durable terminal or validate the ~21bp post-peak ease. Paying the peak SR3 contract owns extra hikes and delayed easing in one liquid mark. UNKNOWN: the next FOMC statement path beyond the delivered hike, full August CPI components, and CFTC crowding.",
+      "run_id": "tr-20260921T023610Z-ondemand",
+      "schema_version": 1,
+      "thesis": "FACT: policy_paths US overnight SOFR is 3.85 as of 2026-09-17 after jumping from 3.62 on 2026-09-16; the Fed raised 25bp to 3.75-4.00%; SR3 2027-09 implied 4.735 is the strip peak (+88.5bp vs overnight) before 2028-03 4.675 and 2029-06 4.52. FACT: temp:US:inflation 72 with July core PCE +0.2% m/m, ~2.4% 1m/3m and ~3.0% 6m annualized; labor 75 with unemployment 4.1% unchanged, AHE +3.1% y/y, payrolls +162k; activity 69 with ISM services 55.4 and business activity/new orders above 60, GDP +1.5% SAAR in Q2. FACT: August CPI kept the Fed tightening bias intact; BoJ hiked to 1.25%; BoE held 3.75% 6-3 with three votes for 4.00%; energy-market shock absorbers weaken. INFERENCE: a reaction function that still cares about above-target 6m PCE, a non-breaking labor market, and a global energy/tightening overlay will not treat 4.735 as a durable terminal or validate the ~21bp post-peak ease. Paying the peak SR3 contract owns extra hikes and delayed easing in one liquid mark. UNKNOWN: the next FOMC statement path beyond the delivered hike, full August CPI components, and CFTC crowding."
     }
   ],
   "schema_version": 1,

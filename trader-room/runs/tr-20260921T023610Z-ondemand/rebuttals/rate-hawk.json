@@ -1,0 +1,188 @@
+{
+  "type": "TRADER_ROOM_REBUTTAL",
+  "run_id": "tr-20260921T023610Z-ondemand",
+  "round": 2,
+  "agent": "rate-hawk",
+  "packet_sha256": "cfb65337a1cdff3a17c8ffaab151fe220bf6640ba67547f1cda1ab5beac6a341",
+  "subagent_calls": 0,
+  "opponents": [
+    "value-guy",
+    "perma-bull",
+    "cross-merchant",
+    "mean-reverter",
+    "trend-follower"
+  ],
+  "own_original_ref": "submissions/rate-hawk.json",
+  "holes_in_opposing_case": [
+    "STRONGEST CLAIM (value-guy): CA-US 2Y/2027H1 SOFR-CORRA at ~140bp is a 4th-percentile 5y cheap-Canada dislocation that must compress, so US rates and USD go lower while CAD goes higher. HOLE: FACT the 5d cheapening was US 2Y +13bp versus CA 2Y -4bp after a delivered Fed hike, not a Canada-collapse shock. Compression via the US-down leg contradicts SOFR 3.85, gauges 72/75/69, August CPI tightening bias, and SR3 still only peaking at 4.735. Compression via the CA-up leg needs BoC to deliver the 84-136bp hike path against CPI-trim/median 1.9/2.0, employment -42k, and wages +2.0% y/y. Value-guy's own 2024-12-18 analog at -130bp WIDENED 20bp over 3m. FACT the 2028 gap is already ~98.5bp; 2027H1 remaining cash-like is a split-regime price, not proof the US terminal is too high.",
+    "perma-bull: pay CORRA_2027-03 because global tightening/energy forces Canada catch-up, yet USD lower and CAD higher. HOLE: the same FACT cluster (Fed hike, BoJ 1.25%, BoE 6-3, energy absorbers weaken) is the overlay that supports a higher US terminal and USD, which they also mark us_rates_view higher. Using one shock to pay Canada and to sell USD is internally split. Overnight SOFR-CORRA is 156bp; USDCAD 1.401 is only 74th 1y / 87th 5y. CAD-up versus USD is not required for a Canada hiking residual, and core-at-target plus jobs -42k still cap how far CRAH27 can be squeezed above 3.13 without the US peak also rising.",
+    "cross-merchant: short AUDCAD as CAD higher plus AUD lower. HOLE: hawk agrees the AUD leg (housing stamp duty -24%, volumes -18%, home values more than 7% off peak). CAD higher is the extra claim. It requires either delivered BoC catch-up that labor/core have not printed, or a fade of USD-driven CAD weakness while SOFR-CORRA cash remains 156bp. AUDCAD at a 5y extreme can correct through AUD/USD without CAD rallying against USD.",
+    "mean-reverter: CAD higher is a passenger on a receive-AONIA_2027-03 housing fade. HOLE: receiving Mar-27 AONIA does not identify a CAD-up mechanism. Their ca_rates_view is lower, which is the opposite of a CAD-supportive policy story. The CAD-higher tag is unlinked to their own rates expression.",
+    "trend-follower: AUD higher while paying SOFR_2027-03. HOLE: they are an ally on US rates, not on AUD. FACT AU unemployment 4.5%, employment -15.8k, housing already contracting, AONIA still +51 to +59.5bp into 2027. Higher AU yields with a biting housing channel are AUD-negative financial conditions, not an AUD-up trend. 99th-percentile AU yields are the tightening, not a reason to bid AUD."
+  ],
+  "trade_change": "unchanged",
+  "attack": [
+    "The routed conflicts are FX views, not an opposite SOFR_2027-09 book. The only opponent who actually needs US terminal lower for their trade is value-guy (long SOFR-CORRA_2Y_2027H1, canonical long profits when the SOFR-minus-CORRA mark falls). That RV is a two-legged bet: US implied rates down and/or Canada implied rates up. The US-down leg is the one that would hurt a pay of SR3 2027-09.",
+    "FACT: US inflation 72, labor 75, activity 69, consumer 74; core PCE still ~3.0% 6m annualized; unemployment 4.1% unchanged; ISM services 55.4 with new orders above 60; Fed already at 3.75-4.00% with SOFR 3.85; SR3 peaks 4.735 then eases ~21bp. INFERENCE: the US-down compression leg is the weaker leg. If Canada catches up, SOFR-CORRA can compress while the US peak still rises; that would make value-guy right on the spread and still leave paying 2027-09 intact. UNKNOWN: whether energy pass-through shows up in the next Canadian core print.",
+    "perma-bull's CAD-up/USD-down pairing is the second-strongest FX attack and fails the same test: they invoke global tightening to pay CORRA, then drop USD. A hawk keeps the tightening overlay on the US reaction function. Cross-merchant and mean-reverter do not own a US-terminal view at all; their CAD-higher tags do not falsify SR3 4.735 being too low. Trend-follower's AUD-higher tag is a housing-channel error, not a reason to cover US STIR."
+  ],
+  "defense": [
+    "DEFEND the Round-1 expression: short SOFR_2027-09 / pay implied rate. FACT the live US policy path still peaks at 4.735 and then fades. The hawk disagreement remains that 6m PCE, non-breaking labor/services, and the energy/global-tightening overlay leave that peak and easing tail too low. Currency views (USD higher, CAD lower, AUD lower) are secondary inferences from that US-terminal view plus a still-wide 156bp cash SOFR-CORRA gap and AU housing stress. They are not the trade.",
+    "WHAT WOULD CONCEDE the SOFR book: SR3 2027-09 implied rate prices a peak below 4.735 while US unemployment leaves 4.1% higher and ISM services/new orders lose expansion, or post-hike Fed language treats 3.75-4.00% as terminal as 6m core PCE cools through the observed ~2.4% 1m/3m pace. WHAT WOULD CONCEDE the FX tags without forcing a SOFR cover: BoC actually delivers the 84-136bp path while US 2Y stops rising, which could lift CAD versus USD; that is a CAD-US relative outcome, not automatic proof the US peak is too high.",
+    "UNCERTAINTY KEPT: US 2Y/5Y already 99th 1y after +57/+51bp 1m; Q2 GDP +1.5% SAAR; Michigan 47.8; CFTC null; only ~21bp of post-peak ease is priced, so the larger error may be extra hikes rather than the fade. That is why the book is HOLD of pos-c9184707c12b ($50m, $500k shock) rather than ADD. Carry still opposes a pay of 4.735 versus overnight 3.85 if the extra restriction is not delivered.",
+    "No winner is named. Allies on USD-up (dollar-king, carry-is-king, rate-dove, trend-follower) are not treated as confirmation. ChatGPT is the arbiter."
+  ],
+  "revised_trade": {
+    "instrument": "SOFR_2027-09",
+    "asset_class": "rates",
+    "direction": "short",
+    "structure": "outright short SOFR_2027-09 (pay implied rate / short duration under the trusted mark convention)",
+    "thesis": "FACT: policy_paths US overnight SOFR is 3.85 as of 2026-09-17 after jumping from 3.62 on 2026-09-16; the Fed raised 25bp to 3.75-4.00%; SR3 2027-09 implied 4.735 is the strip peak (+88.5bp vs overnight) before 2028-03 4.675 and 2029-06 4.52. FACT: temp:US:inflation 72 with July core PCE +0.2% m/m, ~2.4% 1m/3m and ~3.0% 6m annualized; labor 75 with unemployment 4.1% unchanged, AHE +3.1% y/y, payrolls +162k; activity 69 with ISM services 55.4 and business activity/new orders above 60, GDP +1.5% SAAR in Q2. FACT: August CPI kept the Fed tightening bias intact; BoJ hiked to 1.25%; BoE held 3.75% 6-3 with three votes for 4.00%; energy-market shock absorbers weaken. INFERENCE: a reaction function that still cares about above-target 6m PCE, a non-breaking labor market, and a global energy/tightening overlay will not treat 4.735 as a durable terminal or validate the ~21bp post-peak ease. Paying the peak SR3 contract owns extra hikes and delayed easing in one liquid mark. UNKNOWN: the next FOMC statement path beyond the delivered hike, full August CPI components, and CFTC crowding.",
+    "mispricing": "FACT: SR3 prices ~88.5bp of additional tightening from SOFR 3.85 to a 4.735 peak, then a gentle fade. INFERENCE: that path assumes the September hike plus about three more 25bp steps completes the cycle and that inflation/labor cool enough to allow modest easing into 2028-29. The hawk disagreement is that persistence, services strength, and the energy/global-tightening overlay keep the terminal higher and keep the easing tail from being earned. UNKNOWN: whether the residual 21bp of post-peak ease is the larger error than the level of the peak itself.",
+    "why_now": [
+      "FACT: the 25bp hike is now realized (SOFR 3.85 on 2026-09-17) after >90% pre-decision pricing, so the live debate has shifted from the September meeting to the terminal and pause.",
+      "FACT: August CPI was already in the tape as keeping the tightening bias, and last-24h BoJ 1.25% plus BoE 6-3 hike dissent keep global easing constrained.",
+      "INFERENCE: that is when underpriced extra restriction shows up in the 2027 peak contract rather than in the front 1m SOFR, which already embeds the delivered hike."
+    ],
+    "evidence_refs": [
+      "policy:US",
+      "policy_paths",
+      "tradable_rate_curves",
+      "rates:US",
+      "temp:US:inflation",
+      "temp:US:labor",
+      "temp:US:activity",
+      "temp:US:consumer",
+      "rollup:Fed raises 25bp to 3.75–4.00%",
+      "rollup:August CPI keeps the Fed tightening bias intact",
+      "mw_20260916_fomc_hike_pricing",
+      "last24:BoJ raises its policy rate to 1.25%",
+      "last24:BoE holds 3.75%, but three members vote to hike",
+      "last24:desk-thesis",
+      "rollup:Energy-market shock absorbers weaken",
+      "policy:CA",
+      "policy:AU",
+      "rates:CA",
+      "rates:AU",
+      "temp:CA:inflation",
+      "temp:CA:labor",
+      "temp:AU:inflation",
+      "fx:USDCAD",
+      "pos:cftc",
+      "funding_context",
+      "paper_books",
+      "market_state"
+    ],
+    "horizon": "3-6 months, through the 2027 peak of the SR3 strip",
+    "entry": null,
+    "target": null,
+    "stop": null,
+    "invalidation": "Thesis is wrong if SR3 2027-09 implied rate moves lower because the strip prices a peak below the current 4.735 while US labor breaks from unemployment 4.1% and ISM services/new orders lose expansion, or if post-hike Fed communication treats 3.75-4.00% as terminal while 6m core PCE cools through the observed ~2.4% 1m/3m pace.",
+    "catalysts": [
+      "Further US inflation prints that keep the tightening bias after the delivered hike",
+      "Labor/services data that refuse to break (payrolls, unemployment, ISM services/new orders)",
+      "Energy pass-through and weaker shock-absorbers spilling into US and global reaction functions",
+      "BoJ/BoE-style tightening or hawkish splits reinforcing that global easing is constrained"
+    ],
+    "principal_risks": [
+      "FACT: US 2Y 4.76 / 5Y 4.86 / 10Y 5.01 already sit at ~99th 1y percentiles after +57bp/+51bp/+36bp over 1m, so a large hawkish rerating is already in the price.",
+      "FACT: Q2 GDP decelerated to +1.5% SAAR and Michigan preliminary September sentiment fell to 47.8; a demand break would validate the priced easing tail.",
+      "UNKNOWN: CFTC positioning is null, so crowding of the pay-terminal view cannot be measured.",
+      "INFERENCE: if the September hike was the last step markets needed, paying 4.735 is negative carry versus overnight SOFR 3.85."
+    ],
+    "confidence": 58,
+    "context_build": {
+      "causal_mechanism": "FACT: US inflation remains above a policy-neutral pace on 6m core PCE (~3.0% annualized) with unemployment 4.1% unchanged and ISM services in expansion. INFERENCE: the Fed reaction function that just hiked 25bp to 3.75-4.00% will not quickly pivot if those conditions persist, especially with energy shock-absorbers weakening and BoJ/BoE still resisting easing. The mechanism being tested is inflation persistence plus a still-restrictive reaction function, not a claim that nothing is priced.",
+      "path_to_current_price": "FACT: official SOFR held near 3.5-3.7 from May through 2026-09-16 then printed 3.85 on 2026-09-17 after the 25bp hike. US 2Y is 4.76 (+9bp 1d, +13bp 5d, +57bp 1m); 5Y 4.86 (+8bp 1d, +8bp 5d, +51bp 1m); 10Y 5.01 (+7bp 1d, +5bp 5d, +36bp 1m). SR3 strip: 2026-09 4.00, 2026-12 4.315, 2027-03 4.565, 2027-06 4.70, 2027-09 4.735 peak, then 2027-12 4.71 through 2029-06 4.52. Paper_books mark the owned SOFR_2027-09 short at 4.755 with sidecar entry_mark 4.75. INFERENCE: the path here is a delivered, pre-priced hike plus a still-steep near-term hiking path, not a surprise tightening shock.",
+      "known_vs_new_information": "FACT known before the cutoff: Reuters 2026-09-16 noted >90% odds of the 25bp hike; August CPI (Sep 11) kept the tightening bias; labor/PCE/ISM prints were already in the gauges. FACT new or newly realized: the hike is delivered and SOFR printed 3.85; BoJ raised to 1.25%; BoE held 6-3 with three votes for a hike and gilt QT; energy shock-absorbers weaken; desk thesis that global tightening plus the energy shock constrains easing. INFERENCE: the September hike itself does not justify a new long-duration pay, but the post-decision terminal/pause debate plus the global overlay does justify keeping the existing pay of the 2027-09 peak.",
+      "market_implied_assumption": "FACT: from SOFR 3.85 the SR3 curve prices about 88.5bp of extra tightening to a 4.735 peak in 2027-09 and then about 21.5bp of easing to 4.52 by 2029-06. INFERENCE: the market's required assumption is that the tightening cycle completes near 4.75 and that inflation/labor cool enough for a shallow ease thereafter. 1m SOFR already shows Oct 3.91 / Dec 4.1975, so the next steps are not unpriced.",
+      "market_assumption_disagreed_with": "INFERENCE: the hawk disagrees that 4.735 is a sufficient terminal and that the post-peak fade is earned. Persistence in 6m PCE, a labor market that is not breaking, services new orders above 60, and an energy/global-tightening overlay imply a higher peak and/or no ease. FACT: this is not a claim that zero hikes are priced.",
+      "price_decomposition": "FACT: level vs change — US 2Y/5Y/10Y are already 99th-percentile 1y levels, but the 1m change is front-loaded (2Y +57bp, 5Y +51bp, 10Y +36bp) and 2s10s is 25bp at the 0.2nd 1y percentile. STIR decomposition: overnight 3.85; 1m strip climbs to 4.695 by 2027-08; 3m peak 4.735 in 2027-09; beyond that the curve is a shallow downslope. INFERENCE: the marginal driver is still the policy-path peak, not 10Y term premium. Paper mid for the owned contract is 4.755 in paper_books versus 4.735 implied in policy_paths; UNKNOWN which mid trusted code will use, so no authored entry.",
+      "historical_reference": {
+        "distribution": "FACT: US 2Y 4.76 is 99.8th 1y / 88.0th 5y; 5Y 4.86 is 99.6th 1y and 5y; 10Y 5.01 is 99.6th 1y / 99.9th 5y; 2s10s 25bp is 0.2nd 1y / 54th 5y. Those percentiles are discovery flags that a lot of tightening is already in sovereign yields, not proof the STIR terminal is high enough.",
+        "analogs": [
+          "2023 US skip-then-hike: markets repeatedly priced a pause after a delivered hike while inflation and labor had not broken, then the path repriced higher.",
+          "2022-24 higher-for-longer versus repeated front-end easing: inflation persistence kept terminals above the first post-hike strip peak even after activity decelerated."
+        ],
+        "regime_differences": "FACT: today's funds band is 3.75-4.00% with 6m core PCE near 3.0%, unemployment 4.1%, and Q2 GDP already +1.5% SAAR — not the 2022 5%+ inflation / 5.25-5.50% funds starting point. Energy-shock overlay and BoJ at a 31-year high are structural differences versus a clean 2023 disinflation analog. INFERENCE: analogs support persistence after a hike, not a mechanical replay of 2022 hiking amplitude."
+      },
+      "independent_checks": [
+        "FACT policy-path check: SR3/1m SOFR versus overnight 3.85 shows 88.5bp of extra tightening to 4.735 then a fade — the priced assumption is observable in tradable_rate_curves, not inferred from 2Y percentiles.",
+        "FACT real-side/inflation triangulation: core PCE still modestly hot, unemployment unchanged, payrolls +162k, ISM services 55.4 with new orders above 60, August retail +1.2% after a weak July; offset by GDP deceleration, Michigan 47.8, and only impulse +2 on core PCE.",
+        "FACT cross-market policy: BoJ 25bp to 1.25% (7-2) and BoE 6-3 with three votes for 4.00% plus gilt unwind match the desk thesis that energy/global tightening constrains easing; CA CORRA 2.29 is priced +136bp toward ~3.65 while core is at target, so the US terminal — not Canada overnight — is the cleaner hawk discrepancy."
+      ],
+      "flow_and_positioning_check": "FACT: market_state.positioning status is partial; cftc is null. UNKNOWN: whether CTAs, asset-managers, or leveraged accounts are already paying the 2027 peak. FACT: this seat already owns short SOFR_2027-09 (pos-c9184707c12b, $50m notional, $500k shocked risk); paper_books also show other seats in nearby SR3 (including SOFR_2027-03 shorts and longs). INFERENCE: do not treat the idea as uncrowded, and do not OPEN a duplicate; HOLD the existing pay.",
+      "policy_path_check": {
+        "status": "available",
+        "relevant_countries": [
+          "US",
+          "CA",
+          "AU"
+        ],
+        "pricing_summary": "FACT US: SOFR 3.85; 1m to 4.695 by 2027-08; SR3 2026-09 4.00, 2026-12 4.315, 2027-03 4.565, 2027-06 4.70, 2027-09 4.735 peak, then 4.71/4.675/4.635/4.60/4.57/4.54/4.52 into 2029-06. FACT CA: CORRA 2.29; 1m Dec 2.58; 3m 2027-03 3.13, 2027-09 3.51, 2028-09 3.655 peak-ish then 3.62 by 2029-06 (~+136bp). FACT AU: AONIA 4.35; 1m Oct 4.565, Nov 4.685, Mar-27 4.86, Jul-Aug-27 4.945 peak (~+59.5bp). NZ policy path is unavailable in the packet.",
+        "rationale": "Short-end US policy pricing is present and is the right starting point before sovereign 2Y/5Y/10Y. The hawk discrepancy lives in the US peak/easing tail (4.735 then fade), not in Canada where 136bp of hikes are already priced against CPI-trim/median at 1.9/2.0% and wages/employment cooling, nor in Australia where only ~60bp more is priced but housing volumes/stamp duty are already contracting and AU 2Y/5Y/10Y are 99th percentile."
+      }
+    },
+    "expression_comparison": {
+      "rates_tenor_scan": {
+        "stir_policy_path": {
+          "status": "candidate",
+          "instrument": "SOFR_2027-09",
+          "asset_class": "rates",
+          "rationale": "FACT: SR3 2027-09 at 4.735 is the observable US terminal/peak, +88.5bp vs SOFR 3.85, then the strip eases. That is the cleanest markable expression of underpriced extra hikes or delayed easing. CA CORRA and AU AONIA are inferior: Canada already prices ~136bp of hikes with core at target and labor weakening; Australia prices ~60bp more but housing is biting and AONIA liquidity thins past the front months."
+        },
+        "two_year": {
+          "status": "candidate",
+          "instrument": "US 2Y",
+          "asset_class": "rates",
+          "rationale": "FACT: US 2Y 4.76, +57bp 1m, 99.8th 1y / 88th 5y, close to the SR3 peak. Paying 2Y is a valid higher-front-end expression, but a 2Y percentile is not a substitute for the policy path and the 1m rerating is already extreme."
+        },
+        "five_year": {
+          "status": "candidate",
+          "instrument": "US 5Y",
+          "asset_class": "rates",
+          "rationale": "FACT: US 5Y 4.86, +51bp 1m, 99.6th 1y and 5y. It can pay if the hiking cycle extends through 2027, but it mixes term premium with policy and is already at a historical extreme."
+        },
+        "ten_year": {
+          "status": "not_compelling",
+          "instrument": "US 10Y",
+          "asset_class": "rates",
+          "rationale": "FACT: US 10Y 5.01, 99.6th 1y / 99.9th 5y, only +36bp 1m. The hawk view is a reaction-function/terminal argument, not a 10Y duration or term-premium argument; this tenor is the wrong owner and already stretched."
+        },
+        "curve": {
+          "status": "not_compelling",
+          "instrument": "US 2s10s",
+          "asset_class": "curve",
+          "rationale": "FACT: US 2s10s 25bp at 0.2nd 1y percentile (-21bp 1m). Extra hikes would flatten further, delayed easing can steepen, and the curve is already at a 1y extreme. Mixed hawk implications plus no room as a flattener make curve a poor expression."
+        },
+        "cross_market_rv": {
+          "status": "not_compelling",
+          "instrument": "CA-US_2Y",
+          "asset_class": "rates_rv",
+          "rationale": "FACT: CA-US 2Y -140bp at 3.8th 1y / 4.3rd 5y; CA-US 5Y -124bp at 0.2nd 1y. Paying US versus Canada is already an extreme. BoC minutes flag energy pass-through, which would reprice CORRA higher and compress the spread. NZ RV is unavailable (RBNZ B2 403). AU-US 2Y +26bp is not a 1y extreme."
+        },
+        "selected_bucket": "stir_policy_path",
+        "selection_rationale": "The discrepancy is the US policy-path peak and the unearned easing tail after a delivered hike. SOFR_2027-09 is the liquid SR3 contract at that peak. 2Y/5Y are valid but already 99th-percentile sovereigns and are not substitutes for the strip. Curve and CA-US RV fight already-extreme levels and mixed country residuals."
+      },
+      "rates_candidate": {
+        "instrument": "SOFR_2027-09",
+        "asset_class": "rates",
+        "rationale": "Pay the SR3 2027-09 peak (short duration / profits if implied rate rises). This is the selected stir_policy_path bucket and matches the owned book instrument."
+      },
+      "spot_candidate": "USDCAD long (USD higher versus CAD)",
+      "selected": "rates",
+      "rationale": "Rates are cleaner: the mispricing is the US terminal/easing tail, which SR3 owns directly. USDCAD would mix a 140bp CA-US 2Y gap, a BoC hiking cycle already priced at ~136bp, and energy terms-of-trade for CAD. USDCHF is already 99.8th 1y. Prefer rates when both expressions are usable; here rates are strictly cleaner and the seat already owns the SR3 contract. Round-2 FX conflicts (USD-down/CAD-up/AUD-up) do not make spot the cleaner owner of the terminal disagreement."
+    }
+  },
+  "paper_actions": [
+    {
+      "action": "HOLD",
+      "position_id": "pos-c9184707c12b",
+      "instrument": "SOFR_2027-09",
+      "asset_class": "rates",
+      "side": "short",
+      "notional_usd": 50000000,
+      "rationale": "Final book after FX-view rebuttal: sidecar still owns short SOFR_2027-09 pos-c9184707c12b ($50m, $500k shock, entry_mark 4.75). Opposing USD-down/CAD-up/AUD-up claims do not warrant ADD, REDUCE, or CLOSE. Do not OPEN a duplicate. HOLD versus official SOFR 3.85 ACT/360 on shocked risk."
+    }
+  ]
+}

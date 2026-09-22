@@ -1,6 +1,55 @@
 {
-  "as_of": "2026-09-19T23:10:54.155789-04:00",
-  "requests": [],
+  "as_of": "2026-09-21T11:06:00.566629-04:00",
+  "requests": [
+    {
+      "attributions": [
+        {
+          "at": "2026-09-21T11:06:00.566595-04:00",
+          "decision_impact": "Would allow ADD versus HOLD if the receive is uncrowded, or faster CLOSE if STIR longs are extreme.",
+          "pm_id": "swinger",
+          "priority": "high",
+          "reason": "Packet MX CORRA open_interest and volume are null on every contract; CME_positioning is unavailable. Crowding is unknown and is the main reason not to ADD."
+        }
+      ],
+      "decision_impact": "Would allow ADD versus HOLD if the receive is uncrowded, or faster CLOSE if STIR longs are extreme.",
+      "first_requested": "2026-09-21T11:06:00.566595-04:00",
+      "last_requested": "2026-09-21T11:06:00.566595-04:00",
+      "originating_pms": [
+        "swinger"
+      ],
+      "priority": "high",
+      "reason": "Packet MX CORRA open_interest and volume are null on every contract; CME_positioning is unavailable. Crowding is unknown and is the main reason not to ADD.",
+      "repeat_count": 1,
+      "request": "MX CORRA futures open interest, volume, and any CME/MX positioning for CRAH27 / CORRA_2027-03",
+      "request_id": "fdr-5ffbf98aeb00dbb6",
+      "status": "requested",
+      "suggested_source": "MX CORRA futures OI/volume; CME/MX positioning if available"
+    },
+    {
+      "attributions": [
+        {
+          "at": "2026-09-21T11:06:00.566595-04:00",
+          "decision_impact": "A core/labor reheating would CLOSE; confirmation of cooling would keep HOLD rather than ADD.",
+          "pm_id": "swinger",
+          "priority": "high",
+          "reason": "Those prints are the explicit invalidation objects for this receive; BoC minutes energy pass-through is not a substitute."
+        }
+      ],
+      "decision_impact": "A core/labor reheating would CLOSE; confirmation of cooling would keep HOLD rather than ADD.",
+      "first_requested": "2026-09-21T11:06:00.566595-04:00",
+      "last_requested": "2026-09-21T11:06:00.566595-04:00",
+      "originating_pms": [
+        "swinger"
+      ],
+      "priority": "high",
+      "reason": "Those prints are the explicit invalidation objects for this receive; BoC minutes energy pass-through is not a substitute.",
+      "repeat_count": 1,
+      "request": "Next Canada CPI-trim/median and employment/wage prints after the August packet (trim/median 1.9/2.0, employment -42k, wages +2.0%)",
+      "request_id": "fdr-51d9dcef73c43371",
+      "status": "requested",
+      "suggested_source": "StatCan CPI and LFS; BoC communications"
+    }
+  ],
   "schema_version": 1,
   "type": "PM_FUTURE_DATA_REQUESTS"
 }

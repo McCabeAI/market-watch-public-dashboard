@@ -93,6 +93,54 @@
       "run_id": "tr-20260920T193935Z-ondemand",
       "schema_version": 1,
       "thesis": "FACT: Fed hiked 25bp to 3.75-4.00%; official SOFR is 3.85; SR3H7 / SOFR_2027-03 implied is 4.58, +73bp versus overnight; the strip still peaks at 4.755 in Sep-27; US 2Y 4.76 is +57bp 1m and +9bp 1d; US gauges remain 69-75; BoJ hiked to 1.25% and the desk thesis says the energy shock is constraining global easing. INFERENCE: price, the rate strip, and macro revisions are still aligned with a hiking trend; 99th-percentile yields are what a continuing trend looks like, not a reversal. The clean continuation is to stay short duration in SOFR_2027-03 rather than fade it or migrate to spot. UNKNOWN: live CME positioning, post-18 Sep SR3 ticks, and whether the next CPI/labor print breaks the hot-gauge regime. Book action is HOLD of pos-662bff0986be at 50m; do not OPEN a second SOFR_2027-03."
+    },
+    {
+      "actions": [
+        {
+          "action": "ADD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 25000000,
+          "position_id": "pos-662bff0986be",
+          "rationale": "Unchanged Round-1 book intent. FACT: sidecar already owns short SOFR_2027-03 (pos-662bff0986be, 50m notional, 500k shocked risk, entry/mark 4.58, risk_stopped false, 9.5m risk remaining). Do not OPEN a duplicate. FX-view conflicts did not produce a US policy-path reversal. Add 25m notional (about 250k additional 100bp risk) at packet mid. Carry opposes so size stays modest versus official SOFR 3.85 ACT/360 on shocked risk.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-09-20T23:10:16.011895-04:00",
+      "conviction": 66,
+      "decision_fingerprint": "16bae4f36c14816331f51ca0a84de784ee93fae61c017469a166e5a7856908c0",
+      "event_id": "jde-2c9e5b49fc5642c9",
+      "funding_view": null,
+      "invalidation": "A dovish Fed pivot or a clear cooling in US inflation/labor gauges that takes the SR3 strip off a hiking path.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-662bff0986be"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-trend-follower-pos-662bff0986be"
+      ],
+      "memory_context_sha256": "113718cbe277c2a7cb6e2692464a4099c572019c3103ccf9a01d4d79593a417d",
+      "outcome_links": [],
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-21T02:36:10Z",
+        "evidence_hash": "cfb65337a1cdff3a17c8ffaab151fe220bf6640ba67547f1cda1ab5beac6a341",
+        "overnight_run_id": null,
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260921T023610Z-ondemand"
+      },
+      "rationale": "FACT: Overnight SOFR printed 3.85 on 2026-09-17 after 3.62 on 2026-09-16; the Fed raised 25bp to 3.75\u20134.00%; CME SR3 Mar-27 (SR3H7) is 4.565 implied, +71.5bp versus overnight, and the strip peaks at SR3 Sep-27 4.735 (+88.5bp) before easing toward 4.49 by Dec-2029. US 2Y is 4.76 (+9bp 1d, +57bp 1m) at the 99.8th 1y percentile; 5Y 4.86 and 10Y 5.01 are also 1y extremes and still rising. US temperature gauges remain hot (inflation 72, labor 75, activity 69, consumer 74). August CPI kept the Fed tightening bias intact; futures entered the decision with greater-than-90% odds of the 25bp hike. BoJ hiked to 1.25%; BoE held 3.75% but split 6-3 with three hike votes. The desk thesis is that the Fed hawkish turn is being reinforced by broader global tightening. This seat already owns short SOFR_2027-03 (position_id pos-662bff0986be, paper entry/mark 4.58, 50m notional). INFERENCE: a fully priced hike that is followed by still-rising 2Y yields, hot gauges, and confirming global hikes is continuation, not a peak. Mean-reversion at a 99th-percentile print is not a reversal signal. The strip\u2019s modest remaining +88.5bp peak and subsequent fade assume the cycle ends inside four more 25bp steps; aligned price/policy/macro argue that trend persists and the fade is early. Canonical side is short because expected_mark_direction is higher. UNKNOWN: holder/CFTC positioning is partial/null; NZ official rates are unavailable; market-state is stale on NZ_rates.",
+      "run_id": "tr-20260921T023610Z-ondemand",
+      "schema_version": 1,
+      "thesis": "FACT: Overnight SOFR printed 3.85 on 2026-09-17 after 3.62 on 2026-09-16; the Fed raised 25bp to 3.75\u20134.00%; CME SR3 Mar-27 (SR3H7) is 4.565 implied, +71.5bp versus overnight, and the strip peaks at SR3 Sep-27 4.735 (+88.5bp) before easing toward 4.49 by Dec-2029. US 2Y is 4.76 (+9bp 1d, +57bp 1m) at the 99.8th 1y percentile; 5Y 4.86 and 10Y 5.01 are also 1y extremes and still rising. US temperature gauges remain hot (inflation 72, labor 75, activity 69, consumer 74). August CPI kept the Fed tightening bias intact; futures entered the decision with greater-than-90% odds of the 25bp hike. BoJ hiked to 1.25%; BoE held 3.75% but split 6-3 with three hike votes. The desk thesis is that the Fed hawkish turn is being reinforced by broader global tightening. This seat already owns short SOFR_2027-03 (position_id pos-662bff0986be, paper entry/mark 4.58, 50m notional). INFERENCE: a fully priced hike that is followed by still-rising 2Y yields, hot gauges, and confirming global hikes is continuation, not a peak. Mean-reversion at a 99th-percentile print is not a reversal signal. The strip\u2019s modest remaining +88.5bp peak and subsequent fade assume the cycle ends inside four more 25bp steps; aligned price/policy/macro argue that trend persists and the fade is early. Canonical side is short because expected_mark_direction is higher. UNKNOWN: holder/CFTC positioning is partial/null; NZ official rates are unavailable; market-state is stale on NZ_rates."
     }
   ],
   "schema_version": 1,

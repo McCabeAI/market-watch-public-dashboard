@@ -93,6 +93,52 @@
       "run_id": "tr-20260920T193935Z-ondemand",
       "schema_version": 1,
       "thesis": "FACT: Australian housing is already contracting under higher rates, labor is loosening, and September consumer sentiment reversed lower, while IB still prices AONIA 4.94 in 2027-06 versus overnight 4.35. INFERENCE: that remaining hike cycle is a policy-error / slowdown tail. Receiving the locked AONIA 2027 H1 strip is the defensive expression: it pays if housing transmission forces the RBA off the extra ~50\u201360bp, without needing a global crash. UNKNOWN: whether one more delivered hike still prints before the Board reacts."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-06",
+          "notional_usd": 55000000,
+          "position_id": "pos-3b40ade3da2c",
+          "rationale": "FACT: sidecar open_positions still owns long AONIA_2027-06 pos-3b40ade3da2c, 55m notional, 550k shocked risk, entry/mark 4.91 / 4.9075, risk_stopped false. Round-2 conflicts are opposite USD/AUD/NZD views, not an opposite AONIA book. INFERENCE: housing/labor/sentiment versus the residual 51-59bp IB path is intact, so this is not CLOSE; inflation 82 plus Fed/BoJ/BoE hawkish overlay is still why this is not ADD. Do not OPEN a duplicate. Official SOFR 3.85 ACT/360 on 550k remains the funding hurdle.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-09-20T23:10:16.011895-04:00",
+      "conviction": 61,
+      "decision_fingerprint": "dc9d47a4428a6a04d5c053a68e83617aac61e45d9a711653ef0ce628dc680c58",
+      "event_id": "jde-b88f4f63fcf7406a",
+      "funding_view": null,
+      "invalidation": "IB 2027-03/06 holds or rises through 4.86-4.94 while housing and labor stop deteriorating and inflation stays hot enough to deliver the extra hikes.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-3b40ade3da2c"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "c9cd8f8c48fe6524a880415ec14ee572253badbb25ff366507331fce35979b6a",
+      "outcome_links": [],
+      "owner_id": "perma-bear",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-21T02:36:10Z",
+        "evidence_hash": "cfb65337a1cdff3a17c8ffaab151fe220bf6640ba67547f1cda1ab5beac6a341",
+        "overnight_run_id": null,
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260921T023610Z-ondemand"
+      },
+      "rationale": "FACT: AONIA cash is 4.35 as of 18-Sep-2026. Tradable IB contracts price Oct-26 4.565 (+21.5bp), Mar-27 4.86 (+51bp), Jun-27 4.94 (+59bp) and Jul/Aug-27 4.945 (+59.5bp). The owned AONIA_2027-06 paper mark is the 2027-03/06 strip average 4.9075. NSW stamp-duty receipts fell 24% y/y in August with transactions -18% and Sydney/Melbourne values more than 7% below peak. AU labor: unemployment 4.5% from 4.4%, employment -15.8k, WPI +3.2% y/y vs +3.4%. Activity: Q2 GDP +0.4% q/q, August business conditions/confidence softer. Consumer: Westpac-MI sentiment fell 5.2% to 84.4 on 16 Sep after a still-strong July spending print. Inflation score is 82, but July headline CPI eased to 3.5% from 3.8% while trimmed mean stayed 3.6%. AU 2Y/5Y/10Y sit at 4.999/5.041/5.348, all ~99th 1y percentile after a +26 to +39bp one-month sell-off. Desk thesis: energy shock is constraining the global easing impulse after Fed 25bp to 3.75-4.00, BoJ to 1.25%, and BoE 6-3 hold. Sidecar open_positions already holds long AONIA_2027-06 pos-3b40ade3da2c. INFERENCE: the market is still pricing almost two extra RBA hikes into 2027 H1 after the housing/labor/sentiment channel is already open; that is a policy-error slowdown discrepancy, and receiving the locked strip owns it more cleanly than short AUD. UNKNOWN: CFTC/CME positioning (packet status partial/null), post-cutoff RBA communication, executable IB depth on the thin H1-27 contracts, and whether global term-rate pressure plus inflation 82 forces the residual 50-60bp to be delivered anyway.",
+      "run_id": "tr-20260921T023610Z-ondemand",
+      "schema_version": 1,
+      "thesis": "FACT: AONIA cash is 4.35 as of 18-Sep-2026. Tradable IB contracts price Oct-26 4.565 (+21.5bp), Mar-27 4.86 (+51bp), Jun-27 4.94 (+59bp) and Jul/Aug-27 4.945 (+59.5bp). The owned AONIA_2027-06 paper mark is the 2027-03/06 strip average 4.9075. NSW stamp-duty receipts fell 24% y/y in August with transactions -18% and Sydney/Melbourne values more than 7% below peak. AU labor: unemployment 4.5% from 4.4%, employment -15.8k, WPI +3.2% y/y vs +3.4%. Activity: Q2 GDP +0.4% q/q, August business conditions/confidence softer. Consumer: Westpac-MI sentiment fell 5.2% to 84.4 on 16 Sep after a still-strong July spending print. Inflation score is 82, but July headline CPI eased to 3.5% from 3.8% while trimmed mean stayed 3.6%. AU 2Y/5Y/10Y sit at 4.999/5.041/5.348, all ~99th 1y percentile after a +26 to +39bp one-month sell-off. Desk thesis: energy shock is constraining the global easing impulse after Fed 25bp to 3.75-4.00, BoJ to 1.25%, and BoE 6-3 hold. Sidecar open_positions already holds long AONIA_2027-06 pos-3b40ade3da2c. INFERENCE: the market is still pricing almost two extra RBA hikes into 2027 H1 after the housing/labor/sentiment channel is already open; that is a policy-error slowdown discrepancy, and receiving the locked strip owns it more cleanly than short AUD. UNKNOWN: CFTC/CME positioning (packet status partial/null), post-cutoff RBA communication, executable IB depth on the thin H1-27 contracts, and whether global term-rate pressure plus inflation 82 forces the residual 50-60bp to be delivered anyway."
     }
   ],
   "schema_version": 1,

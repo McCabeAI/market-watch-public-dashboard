@@ -111,6 +111,52 @@
       "run_id": "tr-20260920T193935Z-ondemand",
       "schema_version": 1,
       "thesis": "FACT: AONIA prices ~51bp of tightening by Mar-27 and ~59bp by Jun-27 against overnight 4.35, with open interest 21752 in Oct-26 versus 201 in Mar-27; AU inflation gauge 82; housing-downturn headlines are already in the packet; CFTC AUD futures OI is a 1y/3y extreme with leveraged funds still net long AUD; paper books already receive AONIA and CORRA. INFERENCE: the tradeable discrepancy is not 'Australia is hawkish' as a fresh macro call \u2014 bonds already show that \u2014 it is that housing-consensus receivers and crowded AUD longs own the fade of further RBA tightening, leaving Mar-27 AONIA as the cleaner squeeze if global tightening (Fed delivered, BoJ 1.25%, energy still a constraint) forces a higher Australian terminal. UNKNOWN: side of AONIA October open interest, MX CORRA specs, CME SR3 specs, and any post-2026-09-15 CFTC change. This seat therefore pays AONIA_2027-03 and closes the crowded CORRA receive rather than adding to CA-US value."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-03",
+          "notional_usd": 45000000,
+          "position_id": "pos-f18c10895ae3",
+          "rationale": "Direct conflict with mean-reverter long AONIA_2027-03 does not change the book. Sidecar already shorts pos-f18c10895ae3 at 45m / 450k shocked risk inside the 10m cap. Their proposed receive is the housing-cap idea this seat is paying. Do not OPEN a duplicate, do not ADD into 201 OI, do not flip. Official SOFR 3.85 ACT/360 remains the hurdle on existing risk. HOLD.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-09-20T23:10:16.011895-04:00",
+      "conviction": 58,
+      "decision_fingerprint": "65945567f6ec8afdcb22a602da23e04ab292ef7e727754f765510be938ee0fab",
+      "event_id": "jde-a047463302f54246",
+      "funding_view": null,
+      "invalidation": "Mar-27 AONIA implied falling toward Oct 4.565 or cash 4.35 as housing forces a skip, without offsetting global tightening.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-f18c10895ae3"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "e6f0151a54eabc626741def16de4c1dfb638118929eede3034dc4d970d2d7cdd",
+      "outcome_links": [],
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-21T02:36:10Z",
+        "evidence_hash": "cfb65337a1cdff3a17c8ffaab151fe220bf6640ba67547f1cda1ab5beac6a341",
+        "overnight_run_id": null,
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260921T023610Z-ondemand"
+      },
+      "rationale": "FACT: Sidecar already owns short AONIA_2027-03 pos-f18c10895ae3 at implied 4.86 versus overnight AONIA 4.35 (+51bp), with ASX open interest 201 and volume 1. FACT: Oct-26 AONIA implies 4.565 (+21.5bp) on 21752 open interest and 4450 volume; Jun-27 implies 4.94 (+59bp). FACT: AU 2Y/5Y/10Y are 4.999/5.041/5.348, each the 99th 1y and 99th 5y percentile. FACT: NSW stamp-duty receipts fell 24% y/y in August, transactions -18%, Sydney/Melbourne values more than 7% below peak; AU gauges are inflation 82, labor 50, activity 54, consumer 48. FACT: CFTC TFF 2026-09-15 shows AUD futures OI at the 99th 1y/3y percentile (z 3.61/5.42) after +37673 contracts, but leveraged-fund AUD net is only the 31.7th 1y percentile; AUDCAD/AUDNZD sit at the 99.8th 1y and 99.96th 5y percentiles while AUDUSD is only the 76th 1y. FACT: Paper book already has long AONIA_2026-10 (catalyst-junkie) and long AONIA_2027-06 (perma-bear) versus this seat's short Mar-27; cross-merchant is already short AUDCAD. FACT: Fed delivered 25bp to 3.75-4.00 with SOFR 3.85; SR3H7 implies 4.565 (+71.5bp); BoJ hiked to 1.25%; desk thesis says the energy shock is constraining global easing. INFERENCE: The crowded trade is 'housing caps the RBA, receive front AONIA and/or fade AUDCAD from a 5y extreme.' That ownership is in Oct OI, in 99th-percentile AU bonds, and in the obvious cross fade. Mar-27 AONIA at 4.86 still prices only about two hikes and is almost unowned, even though the 2Y is already 4.999. Paying that empty terminal owns the squeeze if inflation 82 plus delivered global tightening force the RBA through the housing constraint, without joining crowded AUD-longs (OI extreme, net not extreme) or the crowded AUDCAD short. UNKNOWN: post-15 Sep CFTC, CME daily OI (403), live ASX depth, and the next RBA decision. Do not OPEN a second AONIA_2027-03.",
+      "run_id": "tr-20260921T023610Z-ondemand",
+      "schema_version": 1,
+      "thesis": "FACT: Sidecar already owns short AONIA_2027-03 pos-f18c10895ae3 at implied 4.86 versus overnight AONIA 4.35 (+51bp), with ASX open interest 201 and volume 1. FACT: Oct-26 AONIA implies 4.565 (+21.5bp) on 21752 open interest and 4450 volume; Jun-27 implies 4.94 (+59bp). FACT: AU 2Y/5Y/10Y are 4.999/5.041/5.348, each the 99th 1y and 99th 5y percentile. FACT: NSW stamp-duty receipts fell 24% y/y in August, transactions -18%, Sydney/Melbourne values more than 7% below peak; AU gauges are inflation 82, labor 50, activity 54, consumer 48. FACT: CFTC TFF 2026-09-15 shows AUD futures OI at the 99th 1y/3y percentile (z 3.61/5.42) after +37673 contracts, but leveraged-fund AUD net is only the 31.7th 1y percentile; AUDCAD/AUDNZD sit at the 99.8th 1y and 99.96th 5y percentiles while AUDUSD is only the 76th 1y. FACT: Paper book already has long AONIA_2026-10 (catalyst-junkie) and long AONIA_2027-06 (perma-bear) versus this seat's short Mar-27; cross-merchant is already short AUDCAD. FACT: Fed delivered 25bp to 3.75-4.00 with SOFR 3.85; SR3H7 implies 4.565 (+71.5bp); BoJ hiked to 1.25%; desk thesis says the energy shock is constraining global easing. INFERENCE: The crowded trade is 'housing caps the RBA, receive front AONIA and/or fade AUDCAD from a 5y extreme.' That ownership is in Oct OI, in 99th-percentile AU bonds, and in the obvious cross fade. Mar-27 AONIA at 4.86 still prices only about two hikes and is almost unowned, even though the 2Y is already 4.999. Paying that empty terminal owns the squeeze if inflation 82 plus delivered global tightening force the RBA through the housing constraint, without joining crowded AUD-longs (OI extreme, net not extreme) or the crowded AUDCAD short. UNKNOWN: post-15 Sep CFTC, CME daily OI (403), live ASX depth, and the next RBA decision. Do not OPEN a second AONIA_2027-03."
     }
   ],
   "schema_version": 1,

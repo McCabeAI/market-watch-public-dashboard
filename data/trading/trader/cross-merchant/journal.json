@@ -93,6 +93,52 @@
       "run_id": "tr-20260920T193935Z-ondemand",
       "schema_version": 1,
       "thesis": "FACT: As of 2026-09-18 AUDCAD spot is 0.9975768872320596, 1y percentile 99.80 and 5y percentile 99.96, with +1.95% 1m and +1.37% 3m; 20d realized vol is 4.38. AUDUSD is only 76.4 1y / 84.3 5y and USDCAD 74.0 1y / 87.0 5y, so the extreme lives in the product of two moderate USD legs, not in either dollar pair. Overnight AONIA is 4.35 with Oct +21.5bp and Mar-27 +51bp (implied 4.86); CORRA is 2.29 with Dec 1m +29bp and Mar-27 +84bp (implied 3.13). AU 2Y is 4.999 at the 99th percentile 1y/5y; CA 2Y is 3.27 at 97.8 1y but only 58.5 5y; CA-AU 2Y is -164.9bp at the 10.5th 5y percentile. AU temperature: inflation 82, labor 50, activity 54, consumer 48. CA: inflation 55, labor 38, activity 66, consumer 45. NSW stamp-duty receipts fell 24% y/y in August with transactions -18% and Sydney/Melbourne values more than 7% below peak. Canada August CPI held at 3% with core near 2%; BoC minutes flag energy pass-through. The book already owns short AUDCAD pos-00661cabb94a, 50m notional, 500k standard-shock risk, mark equal to packet mid. INFERENCE: the market is pricing an RBA-over-BoC currency premium as if Australia can keep tightening from 4.35 into an already-open housing channel while Canada remains a cheap overnight and a cheap CAD in the cross. That is backwards on the remaining path: AONIA has less unused hike room into deteriorating housing, CORRA still prices a catch-up cycle, and energy pass-through is a CAD-specific catalyst. Short AUDCAD owns that differential without a Fed/USD residual. USD expressions (short AUDUSD or long USDCAD) contaminate a clean AU-versus-CA view with the just-delivered Fed 25bp hike to 3.75-4.00% and with SOFR 3.85. AUDNZD is also a 5y extreme but NZ official yields and the NZ policy path are unavailable in this packet, so it is not a cleaner cross. Carry opposes the short (AONIA 4.35 versus CORRA 2.29), which is why the book HOLDs 50m rather than ADDs. UNKNOWN: NZ rates, CME FX futures positioning, broker executable quotes, and any labeled historical analog with quantified forward outcomes."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDCAD",
+          "notional_usd": null,
+          "position_id": "pos-00661cabb94a",
+          "rationale": "FACT: sidecar still owns short AUDCAD pos-00661cabb94a at 50m notional / 500k shocked risk, inside the 10m shock cap and 5m HWM. INFERENCE: opposing CAD-down tags are either a USD residual (dollar-king) or a rates-implied leftover that those seats would not take in USDCAD; the only AUD-up tag is unargued spillover. Thesis unchanged at packet mid 0.9975768872320596. Do not OPEN a duplicate. Carry headwind, stale Sep-18 FX, null CFTC, and the unfinished Aug-27 retest still argue against ADD. UNKNOWN: FX after 2026-09-18.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-09-20T23:10:16.011895-04:00",
+      "conviction": 58,
+      "decision_fingerprint": "2dd6d53ae3fd1b1799e65e5f026facb631bb2a3817b6bd552c424d19d61b6cab",
+      "event_id": "jde-adcce7de5e21409c",
+      "funding_view": null,
+      "invalidation": "AU housing/activity re-accelerates versus Canada and AONIA incremental tightening again outpaces CORRA, proving a durable carry regime rather than USD-leg contamination.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-00661cabb94a"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "86d57ab12d1c7b2d9038cc1be39ca72e8f77b17789c763f74d5d5129580129eb",
+      "outcome_links": [],
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-21T02:36:10Z",
+        "evidence_hash": "cfb65337a1cdff3a17c8ffaab151fe220bf6640ba67547f1cda1ab5beac6a341",
+        "overnight_run_id": null,
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260921T023610Z-ondemand"
+      },
+      "rationale": "FACT: As of 2026-09-18 AUDCAD is 0.9975768872320596 at the 99.80 1y / 99.96 5y percentile after +1.95% 1m. AUDUSD is only the 76.4th 1y percentile and USDCAD the 74.0th; the 1m cross gain is almost entirely USDCAD +1.74%, not AUDUSD. AONIA is 4.35 with +51bp to Mar-27; CORRA is 2.29 with +84bp to 3.13. CA-AU 2Y is -164.9bp at only the 51st 1y percentile. AU housing is contracting (stamp duty -24% y/y, transactions -18%) while CA Q2 GDP re-accelerated +0.8% q/q. The sidecar already owns short AUDCAD pos-00661cabb94a at 50m notional / 500k shocked risk. INFERENCE: USD is contaminating an otherwise clean AU-versus-CA relative-value view. Short AUDCAD isolates housing-constrained Australia against a Canada that is pricing more incremental tightening and has the stronger activity gauge. Long USDCAD would own Fed exceptionalism; short AUDUSD would fade a non-extreme dollar pair; short AUDNZD would pick a statistically hotter Oceania cross without an NZ policy path. UNKNOWN: CFTC/CME positioning, the FX path after 2026-09-18, and whether energy pass-through or CA labor weakness dominates CAD. Book action is HOLD, not a second OPEN and not an ADD into negative carry.",
+      "run_id": "tr-20260921T023610Z-ondemand",
+      "schema_version": 1,
+      "thesis": "FACT: As of 2026-09-18 AUDCAD is 0.9975768872320596 at the 99.80 1y / 99.96 5y percentile after +1.95% 1m. AUDUSD is only the 76.4th 1y percentile and USDCAD the 74.0th; the 1m cross gain is almost entirely USDCAD +1.74%, not AUDUSD. AONIA is 4.35 with +51bp to Mar-27; CORRA is 2.29 with +84bp to 3.13. CA-AU 2Y is -164.9bp at only the 51st 1y percentile. AU housing is contracting (stamp duty -24% y/y, transactions -18%) while CA Q2 GDP re-accelerated +0.8% q/q. The sidecar already owns short AUDCAD pos-00661cabb94a at 50m notional / 500k shocked risk. INFERENCE: USD is contaminating an otherwise clean AU-versus-CA relative-value view. Short AUDCAD isolates housing-constrained Australia against a Canada that is pricing more incremental tightening and has the stronger activity gauge. Long USDCAD would own Fed exceptionalism; short AUDUSD would fade a non-extreme dollar pair; short AUDNZD would pick a statistically hotter Oceania cross without an NZ policy path. UNKNOWN: CFTC/CME positioning, the FX path after 2026-09-18, and whether energy pass-through or CA labor weakness dominates CAD. Book action is HOLD, not a second OPEN and not an ADD into negative carry."
     }
   ],
   "schema_version": 1,

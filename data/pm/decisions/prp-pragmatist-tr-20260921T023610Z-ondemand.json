@@ -1,0 +1,191 @@
+{
+  "decision": {
+    "actions": [
+      {
+        "action": "HOLD",
+        "asset_class": "rates",
+        "expected_mark_direction": "lower",
+        "instrument": "CORRA_2027-03",
+        "notional_usd": 450000000,
+        "position_id": "pm-pragmatist-4e0cbc4e0b05",
+        "side": "long"
+      }
+    ],
+    "conviction": 55,
+    "evidence_cutoff": "2026-09-21T02:36:10Z",
+    "evidence_packet_sha256": "cfb65337a1cdff3a17c8ffaab151fe220bf6640ba67547f1cda1ab5beac6a341",
+    "execution": {
+      "principal_model": "grok-4.6",
+      "subagent_count": 0,
+      "subagent_models": []
+    },
+    "invalidation": "Thesis fails if BoC hikes or the 1m CORRA strip through Dec-2026 reprices toward the 2027 CRA mid-3s; if CPI-trim/median leave the 1.9/2.0 zone higher while employment stops contracting and wages re-accelerate; or if CORRA_2027-03 implied holds at or above the 3.13 entry because catch-up is actually being delivered. A US-only or energy-headline move that leaves CRAH27 unchanged is not invalidation. Wrong timing, not wrong thesis, if implieds chop around 3.13 without a new BoC hike signal.",
+    "memory_context_sha256": "ad0fc97f559059f0e741f6f2fe94e2187e50891b567539cd863cd392fa9dfdf7",
+    "pm_id": "pragmatist",
+    "portfolio_construction": {
+      "adverse_scenario": "Main adverse for the CURRENT book is a Canada catch-up selloff in CRAH27: BoC delivers or credibly signals the priced 2027 mid-3s path, trim/median leave 1.9/2.0, labor reverses the -42k contraction, and/or the 1m strip through Dec-2026 (COAZ26 2.58) reprices toward CRA mid-3s. Standard 100bp rise in the owned implied mark costs about 4.5m shocked P&L. Global hawkish clustering (Fed delivered, BoJ 1.25%, BoE 6-3) is a transmission channel into that CA catch-up, not a separate shock unless CRAH27 actually moves.",
+      "candidate_interactions": [
+        {
+          "instrument": "AONIA_2026-10",
+          "interaction": "duplicate_beta",
+          "rationale": "Front-AONIA receive is another G10 STIR duration-long. A global-tightening spillover that lifts CRAH27 also tends to pin or lift October AONIA; it stacks the book's main adverse instead of diversifying it, and packs a 21.5bp RBA meeting binary on top."
+        },
+        {
+          "instrument": "AONIA_2027-03",
+          "interaction": "duplicate_beta",
+          "rationale": "Same-direction STIR receive as the owned CORRA. AU housing is a different micro story, but the shared factor versus the book's adverse is global hawkish rates beta. Seat conflict (mean-reverter long vs positioning-cynic short) plus thin Mar-27 OI (201) make it a worse second expression, not a complement."
+        },
+        {
+          "instrument": "AONIA_2027-06",
+          "interaction": "duplicate_beta",
+          "rationale": "perma-bear receive of Jun-27 AONIA 4.94 is the same residual-RBA-hike fade further out the IB strip; correlated duration versus the owned Canadian receive."
+        },
+        {
+          "instrument": "USDCAD",
+          "interaction": "duplicate_beta",
+          "rationale": "Long USDCAD is the same 'BoC does not catch up / CAD stays cheap' factor as receive-CORRA, expressed in spot. If Canada delivers the priced path, both the rates long and the FX long lose together; it concentrates the adverse instead of offsetting it. FX after 2026-09-18 is unobserved."
+        },
+        {
+          "instrument": "AUDCAD",
+          "interaction": "offset",
+          "rationale": "Short AUDCAD can profit if a BoC hike strengthens CAD (AUDCAD down), so it partially offsets the book's CA-catch-up adverse. That overlay is incoherent with the owned receive: it pays when the rates thesis is wrong and costs CAD-weakness when the rates thesis is right. Not a clean hedge."
+        },
+        {
+          "instrument": "SOFR_2027-03",
+          "interaction": "diversify",
+          "rationale": "Paying SR3H7 is a different sovereign (US terminal after a delivered hike), not a hedge of CRAH27. Canada-specific catch-up can reprice CORRA without SOFR rising; a joint global selloff would help the SOFR short while hurting the CORRA long, but that is incidental correlation, not an expression of the owned thesis."
+        },
+        {
+          "instrument": "SOFR_2027-09",
+          "interaction": "diversify",
+          "rationale": "Paying the 4.735 peak is the same US-terminal overlay as SOFR_2027-03 further out the strip; diversifies country, does not offset BoC catch-up, and is a second unarbitrated thesis."
+        },
+        {
+          "instrument": "CORRA_2027H-Z",
+          "interaction": "duplicate_beta",
+          "rationale": "rate-dove 2027 H-Z CRA strip receive is the same Canadian hike-fade in the locked CORRA/CRA family. Family lock forbids opening a second CRA contract as a hedge or add-on."
+        },
+        {
+          "instrument": "SOFR-CORRA_2Y_2027H1",
+          "interaction": "offset",
+          "rationale": "Canonical long of SOFR-minus-CORRA profits if CORRA rises or SOFR falls. CORRA rising is exactly the owned receive's loss, so the combo hedges the book by cancelling it when the thesis is right. It also mixes CORRA family legs."
+        },
+        {
+          "instrument": "AUDNZD_3M_25D_PUT",
+          "interaction": "unrelated",
+          "rationale": "vol-convexity 3M 25d AUDNZD put is a different asset class and NZD-extreme story; premium/IV/strike are missing so it is unmarkable and cannot OPEN."
+        }
+      ],
+      "chosen_actions_rationale": "HOLD pm-pragmatist-4e0cbc4e0b05. After comparing markable handoff alternatives to the existing CRAH27 receive and to the CA-catch-up adverse, none improve the opportunistic book: AONIA receives duplicate G10 duration into the same global-tightening path; USDCAD long duplicates the BoC-gap beta in spot; AUDCAD short and SOFR-CORRA long offset by fighting the owned thesis; SOFR pays add an unarbitrated US-terminal book; CRA family duplicates are locked. One-position is valid. Size stays 450m / 4.5m shocked as a single/double, not a capacity fill. No ADD, HEDGE, REDUCE, or CLOSE.",
+      "existing_book_summary": "One rates position: long/receive CORRA_2027-03 (MX CRAH27), position_id pm-pragmatist-4e0cbc4e0b05, side long (profits if implied mark falls), notional_usd 450000000, shocked risk 4500000, remaining 95500000, entry and packet mark 3.13, last_action HOLD, locked_expression_family corra, book not risk_stopped, drawdown 0, calibration empty.",
+      "independent_handoff_opportunities": [
+        {
+          "instrument": "AONIA_2026-10",
+          "markable": true,
+          "rationale": "catalyst-junkie receive of ASX October AONIA at packet implied 4.565 versus cash 4.35 (+21.5bp) into the next RBA window; liquid front contract, independent of the owned CRAH27 name."
+        },
+        {
+          "instrument": "AONIA_2027-03",
+          "markable": true,
+          "rationale": "mean-reverter receive versus positioning-cynic pay of Mar-27 AONIA at 4.86 (+51bp vs cash); housing-capped second-hike debate, two-way and independently markable."
+        },
+        {
+          "instrument": "USDCAD",
+          "markable": true,
+          "rationale": "dollar-king long USDCAD spot 1.4010 as_of 2026-09-18; CA-US 2Y historically cheap versus a only mid-to-high USDCAD z; markable FX alternative to the STIR book."
+        },
+        {
+          "instrument": "AUDCAD",
+          "markable": true,
+          "rationale": "cross-merchant short AUDCAD at packet spot ~0.9976 as_of 2026-09-18; AU housing versus CA incremental-hike pricing, independent cross of the owned outright CORRA."
+        },
+        {
+          "instrument": "SOFR_2027-03",
+          "markable": true,
+          "rationale": "trend-follower pay/short SR3H7 at 4.565; US 2027 path after the delivered hike, different sovereign family than locked CORRA."
+        },
+        {
+          "instrument": "SOFR_2027-09",
+          "markable": true,
+          "rationale": "rate-hawk pay/short SR3U7 at the 4.735 strip peak; independently markable US-terminal expression."
+        }
+      ],
+      "rejected_complements": [
+        {
+          "instrument": "AONIA_2026-10",
+          "reason": "Stacks G10 STIR duration and an RBA meeting binary onto the same global-tightening adverse; 21.5bp in the first live contract is not a cleaner grind than the already-open 84bp CRAH27 discrepancy."
+        },
+        {
+          "instrument": "AONIA_2027-03",
+          "reason": "Two-way unarbitrated seat conflict, thin OI, and duplicate duration beta versus the owned receive; AU housing does not hedge BoC catch-up."
+        },
+        {
+          "instrument": "AONIA_2027-06",
+          "reason": "Same residual-RBA-hike receive further out the IB strip; correlated, not complementary."
+        },
+        {
+          "instrument": "USDCAD",
+          "reason": "Same Canadian-policy-gap factor as receive-CORRA; concentrates the book's adverse in FX. Spot as_of 2026-09-18 only; later FX is UNKNOWN."
+        },
+        {
+          "instrument": "AUDCAD",
+          "reason": "CAD-strength overlay offsets the rates adverse only by paying when the receive thesis fails; incoherent hedge, not an independent single."
+        },
+        {
+          "instrument": "SOFR_2027-03",
+          "reason": "Second thesis (US terminal too low) that does not offset Canada-specific catch-up; empty calibration does not justify opening a second rates family."
+        },
+        {
+          "instrument": "SOFR_2027-09",
+          "reason": "Same US-pay overlay at the strip peak; diversification is not forced and does not improve the CA-catch-up adverse path."
+        },
+        {
+          "instrument": "CORRA_2027H-Z",
+          "reason": "Duplicate CORRA/CRA family; lock forbids a second CRA contract as add or hedge of pm-pragmatist-4e0cbc4e0b05."
+        },
+        {
+          "instrument": "SOFR-CORRA_2Y_2027H1",
+          "reason": "Spread long offsets the owned receive by design (profits if CORRA rises) and re-mixes the locked CORRA family; converting a clean outright into unarbitrated RV is not an upgrade."
+        },
+        {
+          "instrument": "AUDNZD_3M_25D_PUT",
+          "reason": "Unmarkable: premium, IV, and strike are not in the freeze; options cannot OPEN."
+        }
+      ]
+    },
+    "principal_model": "grok-4.6",
+    "rationale": "FACT: CRAH27 mark is unchanged versus entry at 3.13; 1m Dec-2026 remains 2.58; CRAZ26 remains 2.775. Used shocked risk is 4.5m of a 100m cap versus a 50m HWM stop; a standard 100bp rates adverse on this position is 4.5m, not a book-stop. Official SOFR on that 4.5m is the financing cost of keeping the expression; leftover cash at SOFR is the zero benchmark, not unused alpha. Trader Room is two-way and unarbitrated on this exact contract. INFERENCE: The discrepancy did not improve and did not break. ADD would be filling remaining capacity. REDUCE/CLOSE would treat energy minutes and a delivered Fed hike as invalidation even though CRAH27 did not move. HEDGE via AONIA receive stacks G10 duration into the same global-tightening adverse; HEDGE via USDCAD long concentrates the same BoC-does-not-catch-up beta in spot; AUDCAD short is a CAD-strength overlay that pays when the rates thesis is wrong and costs when it is right; SOFR pay is a second US-terminal thesis that does not offset Canada-specific catch-up. CORRA/CRA family lock forbids a second CRA contract as a hedge. NO_TRADE is the empty-book stance; HOLD is the explicit keep on pm-pragmatist-4e0cbc4e0b05. Conviction 55 is a one-point haircut from 56 for a more confirmed global-tightening cluster as a watch item, not a de-risk. UNKNOWN: next Canadian labor/CPI cluster. Trusted code hydrates mids; no invented levels.",
+    "review_packet_id": "prp-pragmatist-tr-20260921T023610Z-ondemand",
+    "review_packet_sha256": "722d8f353087df593f30f955fa80008ea2c724c8132f74e3d6b17ddb267958df",
+    "schema_version": 1,
+    "subagent_count": 0,
+    "subagent_models": [],
+    "thesis": "FACT: Book is long/receive CORRA_2027-03 (MX CRAH27), position_id pm-pragmatist-4e0cbc4e0b05, side long (duration-long; profits if the canonical implied mark falls), notional_usd 450000000, shocked risk 4500000, remaining 95500000, last_action HOLD, prior conviction 56, entry and this-packet mark 3.13 / price 96.87, unrealized 0, drawdown 0, not risk_stopped. CORRA overnight 2.29 as_of 2026-09-17. 1m: COAZ26 Dec-2026 2.58 (+29bp). 3m: CRAU26 2.385, CRAZ26 2.775, CRAH27 3.13 (+84bp), CRAM27 3.365, CRAU27 3.51, CRAZ27 3.595. Canada August CPI headline 3.0 with trim/median 1.9/2.0; employment -42k; wages +2.0% y/y. BoC minutes flag energy pass-through. CA 2Y 3.27 / 10Y 3.83 as_of 2026-09-17. Official NY Fed SOFR 3.85% ACT/360 effective 2026-09-17 charged on shocked risk capital; SR3Z6 4.315, SR3H7 4.565, SR3U7 4.735. USDCAD 1.4010 as_of 2026-09-18. Packet source on_demand_trader_room_fallback. Trader Room STATUS: AWAITING_CHATGPT_ARBITRATION; this PM is not chair. carry-is-king long CORRA_2027-03 vs perma-bull short the same contract. Calibration closed_trade_count 0. INFERENCE: Mar-27 still prices a Canadian hiking cycle the live 1m path and still-soft core/labor have not started delivering. Global hawkish clustering (delivered Fed, BoJ 1.25%, BoE 6-3) is a spillover watch, not invalidation, because CRAH27 is unchanged at 3.13 and COAZ26 is still 2.58. HOLD the existing receive as a sized single/double; do not ADD into leftover 95.5m; do not OPEN a second CORRA/CRA family contract. UNKNOWN: whether BoC actually hikes; whether energy pass-through prints into subsequent trim/median; whether an overnight 14-seat review would change the boundary; live CME positioning; NZ rates.",
+    "trader_room_run_id": "tr-20260921T023610Z-ondemand",
+    "type": "PM_DECISION"
+  },
+  "receipt": {
+    "as_of": "2026-09-21T11:06:00.568565-04:00",
+    "chatgpt_current_cycle_decision": "not_generated_not_applied",
+    "decision_fingerprint": "2548a78715c989fd3eeaddc4e13ceff8ca333c9a61e850d08e0112db4ddead27",
+    "decision_status": "active",
+    "drawdown_usd": 481.25,
+    "evidence_cutoff": "2026-09-21T02:36:10Z",
+    "evidence_packet_sha256": "cfb65337a1cdff3a17c8ffaab151fe220bf6640ba67547f1cda1ab5beac6a341",
+    "gross_utilization_usd": 450000000.0,
+    "overnight_run_id": null,
+    "pm_id": "pragmatist",
+    "position_count": 1,
+    "principal_model": "grok-4.6",
+    "review_packet_id": "prp-pragmatist-tr-20260921T023610Z-ondemand",
+    "review_packet_sha256": "722d8f353087df593f30f955fa80008ea2c724c8132f74e3d6b17ddb267958df",
+    "review_status": "fresh",
+    "risk_capital_remaining_usd": 95500000.0,
+    "risk_capital_usd": 4500000.0,
+    "schema_version": 1,
+    "source": "on_demand_trader_room_fallback",
+    "subagent_count": 0,
+    "trader_room_run_id": "tr-20260921T023610Z-ondemand",
+    "type": "PM_AUTOMATED_APPLY_RECEIPT"
+  }
+}

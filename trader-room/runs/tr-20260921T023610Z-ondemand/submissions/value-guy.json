@@ -1,0 +1,188 @@
+{
+  "type": "TRADER_ROOM_CONTRIBUTION",
+  "run_id": "tr-20260921T023610Z-ondemand",
+  "round": 1,
+  "agent": "value-guy",
+  "archetype": "value-guy",
+  "remit": "historical or fundamental dislocations and convergence trades",
+  "packet_sha256": "cfb65337a1cdff3a17c8ffaab151fe220bf6640ba67547f1cda1ab5beac6a341",
+  "stance_summary": "Canada remains a peer-policy cheap outlier versus the United States: the 140bp CA-US 2Y / 2027H1 SOFR-CORRA gap is a 5-year historical dislocation that overnight, 2028 strip, activity gauges, and the delivered Fed hike all say should start compressing. Own that convergence in the locked long SOFR-CORRA_2Y_2027H1 rather than in USDCAD, which is only an 87th-percentile 5y FX stretch.",
+  "confidence": 58,
+  "subagent_calls": 0,
+  "subagent_model": null,
+  "trade": {
+    "instrument": "SOFR-CORRA_2Y_2027H1",
+    "asset_class": "rates_rv",
+    "direction": "long",
+    "structure": "Locked linear_combo in implied-rate bp: +1 * futures_strip_average SOFR 2027-03/2027-06 minus 1 * futures_strip_average CORRA 2027-03/2027-06. Canonical long profits when that SOFR-CORRA mark falls. Do not migrate the open bond/STIR family.",
+    "expression_comparison": {
+      "rates_tenor_scan": {
+        "stir_policy_path": {
+          "status": "not_compelling",
+          "instrument": "CORRA_2027-03",
+          "asset_class": "rates",
+          "rationale": "FACT: CORRA overnight is 2.29 and CRAH27 implies 3.13 (+84bp); SOFR overnight is 3.85 and SR3H7 implies 4.565 (+71.5bp). Each country already prices a hike path. An outright pay of CORRA_2027-03 or pay of SOFR_2027-03 does not own the peer LEVEL gap that is the valuation object."
+        },
+        "two_year": {
+          "status": "not_compelling",
+          "instrument": "US 2Y",
+          "asset_class": "rates",
+          "rationale": "FACT: US 2Y is 4.76 (1y percentile 99.80, 5y 88.02, +57bp 1m); CA 2Y is 3.27 (1y 97.82, 5y only 58.49). Outright US 2Y richness is real but mixes term premium and the hiking cycle. Canada is not independently expensive on 5y history. The 2Y mispricing is the cross-market spread, not a single sovereign 2Y."
+        },
+        "five_year": {
+          "status": "not_compelling",
+          "instrument": "CA-US 5Y",
+          "asset_class": "rates_rv",
+          "rationale": "FACT: CA-US 5Y is -124bp (1y percentile 0.20, 5y 6.96, z_1y -2.03). Same Canada-cheap signal, but further from the observable SOFR/CORRA policy path required for a short-end US/CA rates trade. Inferior ownership versus the 2027H1 STIR window."
+        },
+        "ten_year": {
+          "status": "not_compelling",
+          "instrument": "CA-US 10Y",
+          "asset_class": "rates_rv",
+          "rationale": "FACT: CA-US 10Y is -111bp (1y percentile 0.20, 5y 10.62). Extreme, but 10Y mixes term premium and preferred-habitat with policy. Value wants the policy-rate gap, not duration."
+        },
+        "curve": {
+          "status": "not_compelling",
+          "instrument": "US 2s10s",
+          "asset_class": "curve",
+          "rationale": "FACT: US 2s10s is 25bp (1y percentile 0.20, -21bp 1m); CA 2s10s is 56bp (1y percentile 0.60). Both are 1y-curve extremes from the hiking re-steepen/flatten, not a peer-valuation dislocation. Fading US 2s10s would be a mean-reversion screen, not this remit."
+        },
+        "cross_market_rv": {
+          "status": "candidate",
+          "instrument": "SOFR-CORRA_2Y_2027H1",
+          "asset_class": "rates_rv",
+          "rationale": "FACT: CA-US 2Y is -140bp as of 2026-09-17 (1y percentile 3.77, 5y 4.31, z_1y -1.84, z_5y -1.51, 5d -15bp). The locked paper expression is SOFR 2027-03/06 minus CORRA 2027-03/06; the book marks that combo at 140.25. This is the tradable 2Y policy-gap analogue and the existing position."
+        },
+        "selected_bucket": "cross_market_rv",
+        "selection_rationale": "The valuation object is Canada too cheap versus the US at the policy/2Y horizon, not an outright hike, a 10Y term-premium gap, or a 2s10s screen. SOFR-CORRA_2Y_2027H1 is the packet-markable STIR expression of that 4th-percentile 5y CA-US 2Y dislocation, with live US and CA policy paths."
+      },
+      "rates_candidate": {
+        "instrument": "SOFR-CORRA_2Y_2027H1",
+        "asset_class": "rates_rv",
+        "rationale": "Long the locked 2027H1 SOFR minus CORRA implied-rate differential to own compression of the historically extreme Canada discount versus the US after the delivered Fed hike."
+      },
+      "spot_candidate": "short USDCAD",
+      "selected": "rates",
+      "rationale": "Rates is cleaner. FACT: USDCAD is 1.40105 (1y percentile 74.01, 5y 87.02, +1.10% 5d). That is only a moderate USD/CAD stretch. FACT: CA-US 2Y is a 4th-percentile 5y / 3.8th-percentile 1y peer-rate gap, and overnight SOFR minus CORRA is 156bp. The mispricing lives in the policy-rate relationship, not in 1.40 USDCAD. Short AUDCAD is a larger FX percentile extreme (5y 99.96) but that pair is AU-CA housing/RBA, not the US-CA policy gap. Prefer the rates RV when both expressions are executable."
+    },
+    "context_build": {
+      "causal_mechanism": "FACT: Canada runs CORRA at 2.29 with headline CPI 3.0% and CPI-trim/median 1.9%/2.0%, while the US has already hiked to 3.75-4.00% with SOFR at 3.85 and inflation/labor/activity gauges 72/75/69. INFERENCE: a 140bp 2Y / ~156bp overnight Canada discount treats Canadian labor slack (score 38, employment -42k, unemployment 6.4%) as a persistent policy-rate gap through 2027H1. That is the wrong denominator. Canada Q2 real GDP was +0.8% q/q versus +0.1% in Q1, Ivey PMI accelerated, and CA activity (66) sits next to US activity (69). BoC minutes now flag energy pass-through. The closing mechanism is Canada policy/2Y rates catching up relative to an already-rerated US front end, compressing SOFR-CORRA 2027H1.",
+      "path_to_current_price": "FACT: CA-US 2Y moved -1bp 1d, -15bp 5d (z -2.17), -17bp 1m, -9bp 3m, -46bp 6m, -43bp 1y to -140bp on 2026-09-17. US 2Y is 4.76 (+9bp 1d, +13bp 5d, +57bp 1m). CA 2Y is 3.27 (-8bp 1d, -4bp 5d, +31bp 1m). Overnight SOFR jumped from 3.62 on 2026-09-16 to 3.85 on 2026-09-17 after the Fed 25bp hike; CORRA is 2.29. Packet tradable mids: SR3 2027-03/06 at 4.565/4.70; CRA 2027-03/06 at 3.13/3.365; SR3 strip peaks at 4.735 in 2027-09; CORRA still rises toward 3.65 by 2028-06. Paper book last-marks the owned combo at 140.25. USDCAD rose 1.10% in five days to 1.401. Market-state snapshot is stale on NZ_rates.",
+      "known_vs_new_information": "KNOWN and already in the strip: Fed 25bp hike to 3.75-4.00%, August US CPI keeping a tightening bias, Canada August CPI 3% with trim/median near 2%, CA labor weakness including -42k jobs. NEW transmission, not new data: BoC minutes flag higher energy pass-through while energy-market shock absorbers are described as weakening, even as a Saudi/Oman workaround reduces the extreme oil-supply tail. Desk thesis: BoJ to 1.25% and a 6-3 BoE hold with three hike votes mean the energy shock is constraining global easing. The 5d CA-US 2Y cheapening of 15bp is the price move that still treats Canada as the easy-policy residual after a delivered Fed hike.",
+      "market_implied_assumption": "FACT: 2027H1 prices SOFR around 4.565-4.70 versus CORRA 3.13-3.365, a ~140bp US over Canada gap, while 2028 CORRA implieds cluster near 3.62-3.65 against SOFR 4.52-4.64. The market's 2027H1 assumption is that Canada's labor/core constraint keeps BoC far below the Fed through the first half of 2027, so the 156bp cash gap only modestly compresses into the 2Y window.",
+      "market_assumption_disagreed_with": "INFERENCE: 2027H1 should not still look like a near-cash 140bp Canada discount. Canada activity is not the weak object; labor is. Energy pass-through is now inside BoC deliberations, the US 2Y has already gone to the 99.8th 1y percentile, and the 2028 strip already prices a tighter gap. The priced assumption that labor slack freezes the 2027H1 spread near 140bp is the disagreement.",
+      "price_decomposition": "FACT: overnight SOFR-CORRA = 3.85-2.29 = 156bp (level). Sovereign 2Y CA-US = 3.27-4.76 = -140bp. 2027-03 implied gap 4.565-3.13 = 143.5bp; 2027-06 4.70-3.365 = 133.5bp. 2028-06 4.635-3.65 = 98.5bp. The 2Y/2027H1 window is still cash-like; the back strip has already conceded ~50-60bp of compression. US 2Y 5y percentile 88 versus CA 2Y 5y percentile 58 says the cheapness is Canada-versus-US, not Canada-outright-expensive. 5d driver of the spread is mostly US 2Y +13bp versus CA 2Y -4bp.",
+      "historical_reference": {
+        "distribution": "FACT: CA-US 2Y -140bp sits at 1y percentile 3.77 and 5y percentile 4.31, z_1y -1.84, z_5y -1.51. CA-US 5Y -124bp is 1y percentile 0.20 / 5y 6.96. This is a 5-year peer-spread tail, not a one-year wiggle. CA 2Y itself is only the 58.5th 5y percentile, so the screen is relative, not an absolute Canada-rich fade.",
+        "analogs": [
+          "Closest LEVEL analog: 2025-01-30 CA-US 2Y at -145bp after a matching -17bp 1m cheapening; forward 1m -5bp then forward 3m +25bp (spread compressed 25bp over 3m).",
+          "Counter-analog: 2024-12-18 at -130bp after the same -17bp 1m move; forward 1m -3bp and forward 3m -20bp (widened). Move-matched 2022-11-15 was at -51bp, a different LEVEL regime, and only compressed 6bp over 3m."
+        ],
+        "regime_differences": "Today's overnight gap is 156bp with a delivered Fed hike, SOFR 3.85, and US gauges 69-75 versus Canada core/trim/median near 2% and labor 38. January 2025 was a similar LEVEL (-145bp) but not this post-hike SOFR jump. December 2024 widened from a less extreme -130bp. Energy pass-through is now an explicit BoC minute item, and the 2028 strip already prices a ~100bp gap that 2025/2024 analogs did not have to fight. NZ rates are unavailable, so this is a US-CA regime only."
+      },
+      "independent_checks": [
+        "Policy-path versus sovereign 2Y versus 2028 strip: cash 156bp, 2Y 140bp, 2027H1 still ~134-144bp, 2028-06 ~98.5bp. Three points on the same curve disagree with a stationary 140bp 2027H1 gap.",
+        "Temperature gauges and hard inputs: CA activity 66 and Q2 GDP +0.8% q/q versus US activity 69 and US Q2 GDP +1.5% SAAR; CA inflation 55 with trim 1.9 / median 2.0 / headline 3.0 versus US inflation 72. Activity is close; the labor gap (38 vs 75) is the only large real-economy justification for 140bp, and it is already in overnight 2.29.",
+        "FX cross-check: USDCAD 87th 5y percentile is the same CAD-cheap story in milder form; AUDCAD 99.96th 5y percentile shows CAD cheap versus AU as well (CA-AU 2Y -164.9bp, 5y percentile 10.5). Spot confirms direction but is a worse expression of the US-CA policy gap."
+      ],
+      "flow_and_positioning_check": "FACT: positioning.as_of is null, cftc is null, status is partial; known_gaps list CME_positioning as unavailable with no third-party substitute. UNKNOWN whether CTA/levered or real-money ownership explains the 5d -15bp cheapening. Do not treat the percentile as flow-driven or flow-proof. Size stays at the existing 70m / 700k shocked-risk line.",
+      "policy_path_check": {
+        "status": "available",
+        "relevant_countries": [
+          "US",
+          "CA"
+        ],
+        "pricing_summary": "US: official SOFR 3.85 (2026-09-17); SR3 2026-12 4.315, 2027-03 4.565, 2027-06 4.70, peak 4.735 in 2027-09 then 4.52 by 2029-06. CA: CORRA 2.29 (2026-09-17); 3m CRA 2026-12 2.775, 2027-03 3.13, 2027-06 3.365, 2027-12 3.595, 2028-06 3.65. Both paths hike; Canada is priced for more catch-up from a much lower cash rate, leaving 2027H1 still ~140bp wide.",
+        "rationale": "Short-end US/CA rates RV requires live policy paths. Both country statuses are ok in policy_paths. The 2Y sovereign percentile is used only as the historical valuation anchor; the executable expression is the SR3 versus CRA 2027-03/06 strip already owned."
+      }
+    },
+    "thesis": "FACT: CA-US 2Y is -140bp on 2026-09-17 (1y percentile 3.77, 5y 4.31). FACT: overnight SOFR 3.85 minus CORRA 2.29 is 156bp; packet SR3 2027-03/06 are 4.565/4.70 and CRA 2027-03/06 are 3.13/3.365; the owned paper combo last-marks 140.25. FACT: Fed hiked 25bp to 3.75-4.00%; US 2Y 4.76 is the 99.8th 1y percentile; CA 2Y 3.27 is only the 58.5th 5y percentile; Canada CPI 3.0% with trim 1.9 and median 2.0; BoC minutes flag energy pass-through; CA activity 66 versus US 69, but CA labor 38 with employment -42k. INFERENCE: 140bp is a peer-policy dislocation, not a fair labor-gap price, because activity is close, Q2 Canadian GDP re-accelerated to +0.8% q/q, the US front end has already done the post-hike rerating, and 2028 implieds already price a ~100bp gap. Closest level analog (2025-01-30, -145bp) compressed 25bp over 3m. UNKNOWN: whether the 2024-12-18 analog (further widening) dominates; CFTC/CME positioning; Saudi/Oman workaround versus weakening energy shock-absorbers. Trade remains long SOFR-CORRA_2Y_2027H1 (canonical long: profits if the spread mark falls). Book already holds pos-cdde326460b4; HOLD, do not OPEN a duplicate.",
+    "mispricing": "Canada is historically cheap versus the US at the 2Y/2027H1 policy horizon (4th percentile of the 5y CA-US 2Y distribution) while 2028 STIR already prices substantial compression and Canada activity/core do not match a 156bp cash-rate discount. Valuation anchor is the 5y CA-US 2Y distribution plus the path from cash to 2028, not the fact that the spread fell.",
+    "why_now": [
+      "Fed hike is delivered and in SOFR 3.85 / US 2Y 4.76; the US-expensive leg of the gap has already re-rated.",
+      "CA-US 2Y cheapened another 15bp in five days (z -2.17) into the 4th percentile 5y tail rather than bouncing, so the dislocation is still being marked, not resolved.",
+      "BoC minutes now flag energy pass-through while trim/median sit at 1.9/2.0, giving a reaction-function reason for Canada catch-up to start in the 2027H1 window the 2028 strip already concedes."
+    ],
+    "evidence_refs": [
+      "market_state",
+      "policy_paths",
+      "tradable_rate_curves",
+      "rates:US",
+      "rates:CA",
+      "policy:US",
+      "policy:CA",
+      "temp:US:inflation",
+      "temp:US:labor",
+      "temp:US:activity",
+      "temp:CA:inflation",
+      "temp:CA:labor",
+      "temp:CA:activity",
+      "rollup:Fed raises 25bp to 3.75–4.00%",
+      "rollup:Canada August inflation holds at 3%, core stays near 2%",
+      "rollup:BoC minutes flag higher energy pass-through risk",
+      "rollup:August CPI keeps the Fed tightening bias intact",
+      "last24:desk-thesis",
+      "fx:USDCAD",
+      "fx:AUDCAD",
+      "pos:cftc",
+      "funding_context",
+      "research_method"
+    ],
+    "horizon": "1-3 months",
+    "entry": null,
+    "target": null,
+    "stop": null,
+    "invalidation": "CA-US 2Y follows the 2024-12-18 analog and widens further, or Canada activity follows labor lower and BoC drops energy pass-through so the 156bp overnight gap is re-accepted as 2027H1 equilibrium.",
+    "catalysts": [
+      "BoC communication or data that validates energy pass-through into Canadian core/trim/median.",
+      "US 2Y/SR3 holding the post-hike rerating while CORRA 2027H1 implieds catch up from 3.13-3.365.",
+      "Activity confirmation that Canadian Q2 GDP / Ivey strength is not reversed by the August jobs hole."
+    ],
+    "principal_risks": [
+      "Labor-gap risk: CA unemployment 6.4% and -42k August employment can keep BoC far below the Fed, matching the 2024-12-18 widening analog.",
+      "Energy two-way: Saudi/Oman workaround versus weakening shock-absorbers; pass-through may never lift Canadian core.",
+      "Stale market-state / null CFTC: the 140.25 book mark and 4.565/4.70 packet SR3 mids can disagree, and flow could be the 5d driver.",
+      "Official SOFR 3.85 ACT/360 is charged on 700k shocked risk; a non-compressing spread bleeds funding with no edge."
+    ],
+    "confidence": 58
+  },
+  "conflict_synopsis": {
+    "seat": "value-guy",
+    "primary_trade": "long SOFR-CORRA_2Y_2027H1",
+    "core_view": "Canada is a 4th-percentile 5y cheap outlier versus the US at 2027H1; own compression of that policy gap, not USDCAD.",
+    "usd_view": "lower",
+    "cad_view": "higher",
+    "aud_view": "lower",
+    "nzd_view": "higher",
+    "us_rates_view": "lower",
+    "ca_rates_view": "higher",
+    "au_rates_view": "not_relevant",
+    "nz_rates_view": "not_relevant",
+    "risk_view": "neutral",
+    "carry_view": "supports_trade",
+    "time_horizon": "1-3 months",
+    "key_catalyst": "BoC energy pass-through showing up in core/trim while US 2Y holds the post-hike rerating.",
+    "key_invalidation": "CA-US 2Y follows the 2024-12-18 widening analog or BoC drops pass-through after soft labor/core.",
+    "confidence": 58,
+    "conflict_tags": [
+      "USD_DOWN",
+      "CAD_UP",
+      "AUD_DOWN",
+      "NZD_UP",
+      "US_RATES_DOWN",
+      "CA_RATES_UP",
+      "US_CA_2Y_COMPRESS"
+    ]
+  },
+  "paper_actions": [
+    {
+      "action": "HOLD",
+      "position_id": "pos-cdde326460b4",
+      "instrument": "SOFR-CORRA_2Y_2027H1",
+      "asset_class": "rates_rv",
+      "side": "long",
+      "notional_usd": 70000000,
+      "rationale": "Sidecar already owns pos-cdde326460b4 long SOFR-CORRA_2Y_2027H1 at 70m / 700k shocked risk, 140.25 entry/mark, 74.86 drawdown versus a 5m stop, 9.3m risk remaining. Thesis is unchanged and market-state is stale; do not OPEN a duplicate and do not ADD on a 1-day-old mark with null CFTC. HOLD the locked SR3-versus-CRA 2027-03/06 family. Official SOFR 3.85 ACT/360 on 700k is a small hurdle if the 2025-01-30 25bp 3m compression analog repeats; it is not a reason to flatten."
+    }
+  ]
+}

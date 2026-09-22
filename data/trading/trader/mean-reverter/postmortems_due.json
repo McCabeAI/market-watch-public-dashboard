@@ -1,5 +1,28 @@
 {
-  "items": [],
+  "items": [
+    {
+      "created_at": "2026-09-20T23:10:16.011895-04:00",
+      "created_run_id": "tr-20260921T023610Z-ondemand",
+      "facts": {
+        "asset_class": "rates",
+        "closed_at": "2026-09-20T23:10:16.011895-04:00",
+        "conviction": 56,
+        "entry_mark": 4.58,
+        "exit_mark": 4.57,
+        "holding_duration_seconds": 88405,
+        "instrument": "SOFR_2027-03",
+        "opened_at": "2026-09-19T22:36:50.082404-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 6000.0,
+        "side": "long"
+      },
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-8bbd58b5a210",
+      "status": "due",
+      "trade_id": "trd-trader-mean-reverter-pos-1477172adb86"
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_POSTMORTEMS_DUE"
 }

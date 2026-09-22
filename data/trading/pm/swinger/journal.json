@@ -93,6 +93,52 @@
       "run_id": "tr-20260920T193935Z-ondemand",
       "schema_version": 1,
       "thesis": "FACT: This book is already duration-long / receive CORRA_2027-03 (MX CRAH27, family locked to CORRA/CRA) in position_id pm-swinger-2070479ca321, notional_usd 850000000, risk_capital_usd 8500000, side long, entry_mark 3.13 from opened_run_id tr-20260920T020818Z-ondemand. Frozen packet CRAH27 implied_rate is still 3.13 / price 96.87 (unrealized_pnl_usd 0). CORRA overnight is 2.29 as_of 2026-09-17, so CRAH27 is +84bp versus cash. Same freeze: CRAU26 2.385, CRAZ26 2.775, CRAM27 3.365, CRAU27 3.51, CRAZ27 3.595; 1m Dec-2026 COAZ26 2.58 (+29bp). Canada August CPI holds at 3% with core near 2%; CA gauges inflation 55, labor 38, activity 66, consumer 45. BoC minutes flag energy pass-through risk. Prior research in this room: August employment -42k, wages +2.0%, CPI-trim/median 1.9/2.0. Fed hiked 25bp to 3.75-4.00%; official NY Fed SOFR 3.85% ACT/360 effective 2026-09-17. CA 2Y 3.27 / 10Y 3.83 as_of 2026-09-17; US 2Y 4.76 / 10Y 5.01 as_of 2026-09-18; CA-US 2Y -140bp. USDCAD 1.4010 as_of 2026-09-18 (87th pctile 5y). Book is not risk_stopped; used shocked risk 8.5m / remaining 91.5m; drawdown 0; calibration closed_trade_count 0. Packet source is on_demand_trader_room_fallback. Trader Room status AWAITING_CHATGPT_ARBITRATION with an unarbitrated opposite-direction conflict on CORRA_2027-03. INFERENCE: The 84bp Mar-27 premium is still a 2027 hiking cycle that near-term 1m/3m CORRA and Canadian core/labor have not validated. Energy pass-through is a minutes risk, not a delivered path. Long in this book means receive / duration-long and profits if the canonical implied mark falls from 3.13 toward CRAZ26 2.775 / 1m Dec 2.58, not if Canada catches SOFR. Do not migrate onto SOFR, AONIA, CA-US 2Y, or USDCAD. Do not hedge the other-direction CORRA seat; if the thesis fails, close. Remaining 91.5m shocked-risk capacity is not a target. UNKNOWN: CME positioning; option premium/IV/strike mids (options unmarkable); NZ rates (market_state stale); whether the next Canada CPI-trim/median and employment prints leave the 1.9/2.0 and -42k zone; how ChatGPT arbitration resolves the CORRA conflict."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 850000000,
+          "position_id": "pm-swinger-2070479ca321",
+          "rationale": "HOLD existing receive only. No ADD, no duplicate CORRA/CRA OPEN, no hedge.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-09-21T11:06:00.531945-04:00",
+      "conviction": 72,
+      "decision_fingerprint": "476d6ee676955d1f8602253ba6732c1486c5fe63d3f020ac68b2d228768cd103",
+      "event_id": "jde-7d5cdb39c5c541a5",
+      "funding_view": null,
+      "invalidation": "Close pm-swinger-2070479ca321 if BoC delivers or explicitly endorses a 2027 path consistent with CRAH27 holding at or above the 3.13 entry, or if Canada CPI-trim/median leave the packet 1.9/2.0 zone higher while employment/wages reverse the August -42k / +2.0% cooling. Close if CRAH27 implied rises toward CRAM27 3.365 rather than cheapening. A US-only SOFR selloff that leaves CORRA_2027-03 unchanged is not invalidation. Energy headlines without a core/labor break are not invalidation. Unarbitrated Trader Room disagreement is not invalidation. No hedge: if the thesis fails, close.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-swinger-2070479ca321"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "fed6d1dda7ef1a01062d339207f7687c9e608e4d22870842cd5fa504d083d8ff",
+      "outcome_links": [],
+      "owner_id": "swinger",
+      "owner_type": "pm",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-21T02:36:10Z",
+        "evidence_hash": "1a7ebdc82385d8a3f497ddd08864184d1ddad876dfdcdb0055359c2e2d801130",
+        "overnight_run_id": null,
+        "review_packet_id": "prp-swinger-tr-20260921T023610Z-ondemand",
+        "source_ref": null,
+        "trader_room_run_id": "tr-20260921T023610Z-ondemand"
+      },
+      "rationale": "FACT: CRAH27 is unchanged at the 3.13 entry; overnight CORRA is still 2.29; trim/median remain 1.9/2.0; labor gauge is 38 with August employment -42k; BoC has not delivered the priced 2027 mid-3s path; carry-is-king and rate-dove still receive Canadian 2027 STIR while perma-bull pays the same CRAH27 contract; the book is not risk_stopped. INFERENCE: Invalidation has not triggered, so REDUCE/CLOSE would be a hedge substitute for the unarbitrated pay-CORRA seat, which this mandate forbids. The thesis is still valid, so the concentrated receive stays: that is the aggressive expression, not filling leftover capacity. ADD is rejected: remaining shocked-risk capacity is not a fill target; closed-trade calibration is empty; the mid has not cheapened, so scaling would be capacity-filling rather than a new adverse-path size. Packet shocked risk on this position is already 8500000 versus the 100000000 cap and 50000000 HWM stop; official SOFR 3.85% ACT/360 is charged on that shocked risk. HOLD the existing receive. Do not OPEN a duplicate CORRA/CRA contract (including CORRA_2027H-Z). Do not open SOFR, AONIA, SOFR-CORRA RV, USDCAD, AUDCAD, or unmarkable options. UNKNOWN: crowding (CME positioning unavailable; MX CORRA OI/volume null) and any overnight scheduled review (this packet is the on-demand fallback).",
+      "run_id": "tr-20260921T023610Z-ondemand",
+      "schema_version": 1,
+      "thesis": "FACT: This book is already duration-long / receive CORRA_2027-03 (MX CRAH27, family locked to CORRA/CRA) in position_id pm-swinger-2070479ca321, side long, notional_usd 850000000, last_action HOLD, opened_run_id tr-20260920T020818Z-ondemand, entry_mark 3.13. Frozen packet CRAH27 implied_rate is still 3.13 / price 96.87. CORRA overnight is 2.29 as_of 2026-09-17, so CRAH27 is +84bp versus cash. Same freeze: CRAU26 2.385, CRAZ26 2.775, CRAM27 3.365, CRAU27 3.51, CRAZ27 3.595, CRAU28 3.655; 1m Dec-2026 COAZ26 2.58 (+29bp). Canada August CPI holds at 3.0% with CPI-trim 1.9 and CPI-median 2.0; August employment -42k; wages +2.0% y/y. CA gauges inflation 55, labor 38, activity 66, consumer 45. BoC minutes flag energy pass-through. Fed hiked 25bp to 3.75-4.00%; official NY Fed SOFR 3.85% ACT/360 effective 2026-09-17. CA 2Y 3.27 / 10Y 3.83 as_of 2026-09-17; US 2Y 4.76 / 10Y 5.01 as_of 2026-09-18; CA-US 2Y -140bp. Packet source is on_demand_trader_room_fallback. Trader Room status AWAITING_CHATGPT_ARBITRATION with an unarbitrated opposite-direction conflict: carry-is-king long CORRA_2027-03 versus perma-bull short. Book is not risk_stopped. INFERENCE: The 84bp Mar-27 premium is still a 2027 hiking cycle that near-term 1m/3m CORRA and Canadian core/labor have not validated. Long in this book means receive / duration-long and profits if the canonical implied mark falls from 3.13 toward CRAZ26 2.775 / COAZ26 2.58, not if Canada catches SOFR. Energy pass-through and activity 66 are live two-sided risks, not a delivered BoC path. Do not migrate onto SOFR, AONIA, CA-US 2Y, USDCAD, or a duplicate CORRA/CRA contract. Do not hedge the other-direction CORRA seat; if the thesis fails, close. Remaining shocked-risk capacity is not a target. UNKNOWN: CME positioning / MX CRA open interest (null on every packet contract); option premium/IV/strike mids; NZ rates; CA official curve; whether the next Canada CPI-trim/median and employment prints leave the 1.9/2.0 and -42k zone; how ChatGPT arbitration resolves the CORRA conflict."
     }
   ],
   "schema_version": 1,
