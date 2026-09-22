@@ -143,6 +143,7 @@ jobs:
           # those runner-local side effects before rebasing the committed state.
           git restore --worktree -- .
           git clean -fd
+          test -z "$(git status --porcelain)" || { git status --porcelain; exit 1; }
           git pull --rebase origin main
           git push origin HEAD:main
 
@@ -230,5 +231,6 @@ jobs:
           # can leave unrelated tracked cache/source updates in the worktree.
           git restore --worktree -- .
           git clean -fd
+          test -z "$(git status --porcelain)" || { git status --porcelain; exit 1; }
           git pull --rebase origin main
           git push origin HEAD:main
