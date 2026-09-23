@@ -14,9 +14,13 @@ import sys
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from scripts.macro_ingestion.cli import resolve_raw_dir
+from scripts.macro_ingestion.runner import RAW_DIR
 from scripts.macro_ingestion.windows import (
+    CommitPathError,
     PostFreezePathError,
     assert_allowed_output_path,
+    assert_commit_paths,
     cutoff_class,
     write_post_freeze_delta,
 )
@@ -36,6 +40,17 @@ class TestMacroIngestionWindows(unittest.TestCase):
             assert_allowed_output_path("data/overnight/runs/foo/reviews/review-001/x.json")
         with self.assertRaises(PostFreezePathError):
             assert_allowed_output_path("evidence_snapshot.json")
+
+    def test_resolve_raw_dir_by_mode(self) -> None:
+        self.assertIsNone(resolve_raw_dir("offline"))
+        self.assertEqual(resolve_raw_dir("live"), RAW_DIR)
+
+    def test_assert_commit_paths_rejects_forbidden(self) -> None:
+        with self.assertRaises(CommitPathError):
+            assert_commit_paths(["data/overnight/runs/foo.json"])
+        with self.assertRaises(CommitPathError):
+            assert_commit_paths(["data/overnight/runs/foo/reviews/evidence_snapshot.json"])
+        assert_commit_paths(["data/macro_ingestion/health/ledger.jsonl"])
 
     def test_post_freeze_immutable_second_write(self) -> None:
         when = datetime(2026, 9, 23, 4, 0, tzinfo=NY)

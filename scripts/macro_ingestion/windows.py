@@ -26,6 +26,37 @@ class PostFreezePathError(ValueError):
     pass
 
 
+class CommitPathError(ValueError):
+    pass
+
+
+_FORBIDDEN_COMMIT_PREFIXES: tuple[str, ...] = (
+    "data/overnight",
+    "data/pm",
+    "data/temperature_calibration.json",
+    "data/temperature_scores.json",
+    "data/temperature_history",
+    "data/score_source_registry.json",
+    ".cursor",
+)
+
+
+def _normalize_commit_path(path: str) -> str:
+    return path.replace("\\", "/").lstrip("./")
+
+
+def assert_commit_paths(paths: list[str]) -> None:
+    """Reject macro-ingestion commits that touch trader-room or score artifacts."""
+    for raw in paths:
+        path = _normalize_commit_path(raw)
+        lowered = path.lower()
+        if "evidence_snapshot" in lowered:
+            raise CommitPathError(f"Refusing forbidden commit path: {raw}")
+        for prefix in _FORBIDDEN_COMMIT_PREFIXES:
+            if path == prefix or path.startswith(f"{prefix}/"):
+                raise CommitPathError(f"Refusing forbidden commit path: {raw}")
+
+
 def session_date_ny(when: datetime) -> date:
     if when.tzinfo is None:
         when = when.replace(tzinfo=NY)

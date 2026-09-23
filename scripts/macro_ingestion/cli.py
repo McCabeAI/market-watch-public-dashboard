@@ -8,9 +8,15 @@ import sys
 from pathlib import Path
 
 from scripts.macro_ingestion.contract import COUNTRY_CODES
-from scripts.macro_ingestion.runner import run_ingestion
+from scripts.macro_ingestion.runner import RAW_DIR, run_ingestion
 
 ROOT = Path(__file__).resolve().parents[2]
+
+
+def resolve_raw_dir(mode: str) -> Path | None:
+    if mode == "live":
+        return RAW_DIR
+    return None
 
 
 def _parse_countries(raw: str) -> list[str]:
@@ -27,7 +33,15 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     countries = _parse_countries(args.country)
-    result = run_ingestion(mode=args.mode, countries=countries, run_id=args.run_id)
+    kwargs: dict = {
+        "mode": args.mode,
+        "countries": countries,
+        "run_id": args.run_id,
+    }
+    raw_dir = resolve_raw_dir(args.mode)
+    if raw_dir is not None:
+        kwargs["raw_dir"] = raw_dir
+    result = run_ingestion(**kwargs)
     json.dump(result, sys.stdout, indent=2)
     sys.stdout.write("\n")
     return 0
