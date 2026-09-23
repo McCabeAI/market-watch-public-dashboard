@@ -1,0 +1,86 @@
+{
+  "checked_at": "2026-09-23T16:54:00Z",
+  "series_id": "EA.Activity.flash_composite_pmi",
+  "client": "urllib with the public browser user agent already used by scripts.market_state. The short bot token market-watch-macro-ingestion/1.0 is recorded only as a failed route. No paywall bypass, no curl_cffi impersonation, no secondary wire.",
+  "verified_primary": {
+    "source_type": "public_press_release_pdf",
+    "publisher": "S&P Global",
+    "url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/ab6649de01fd4c38a7f2c9a3e52a81bf",
+    "discovered_from": "https://www.pmi.spglobal.com/Public/Release/PressReleases",
+    "listing_title": "S&P Global Flash Eurozone PMI",
+    "listing_timestamp": "September 23 2026 08:00 UTC",
+    "http_status": 200,
+    "content_type": "application/pdf",
+    "sha256": "30e0c8d1a8e6443ad4fc57cd514da250a39dd950ece5ffaa7d532c4276bc3bc2",
+    "archive": "data/temperature_history/raw/ea/sp_eurozone_flash_composite_2026-09.pdf",
+    "reference_period": "2026-09",
+    "revision_status": "flash",
+    "release_date": "2026-09-23",
+    "economy": "EA",
+    "component": "composite",
+    "value": 53.1,
+    "prior_comparator": 52.0,
+    "headline_line": "Flash Eurozone PMI Composite Output Index: 53.1",
+    "scored_series": "EA.Activity.business_surveys remains final-only. This flash is context weight 0 and is not written into the scored gauge or review-001."
+  },
+  "routes": [
+    {
+      "url": "https://www.pmi.spglobal.com/Public/Release/PressReleases",
+      "user_agent": "market-watch-macro-ingestion/1.0",
+      "http_status": 403,
+      "parseable_figure": false
+    },
+    {
+      "url": "https://www.pmi.spglobal.com/Public/Release/PressReleases",
+      "user_agent": "public browser",
+      "http_status": 200,
+      "parseable_figure": false,
+      "notes": "Public listing HTML. English row is titled S&P Global Flash Eurozone PMI and links the press PDF. The page is not itself the numeric release."
+    },
+    {
+      "url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/ab6649de01fd4c38a7f2c9a3e52a81bf",
+      "user_agent": "market-watch-macro-ingestion/1.0",
+      "http_status": 403,
+      "parseable_figure": false
+    },
+    {
+      "url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/ab6649de01fd4c38a7f2c9a3e52a81bf",
+      "user_agent": "public browser",
+      "http_status": 200,
+      "content_type": "application/pdf",
+      "parseable_figure": true
+    },
+    {
+      "url": "https://www.pmi.spglobal.com/Public/Release/ReleaseDates?language=en",
+      "user_agent": "public browser",
+      "http_status": 200,
+      "parseable_figure": false,
+      "notes": "Calendar page, not the flash article."
+    },
+    {
+      "url": "https://www.spglobal.com/marketintelligence/en/mi/research-analysis.html",
+      "user_agent": "public browser",
+      "http_status": 403,
+      "parseable_figure": false
+    },
+    {
+      "url": "https://www.spglobal.com/en/search?q=Flash%20Eurozone%20PMI%20September%202026",
+      "user_agent": "public browser",
+      "http_status": 403,
+      "parseable_figure": false
+    },
+    {
+      "url": "https://www.spglobal.com/market-intelligence/en/news-insights/latest-news-headlines",
+      "user_agent": "public browser",
+      "http_status": 403,
+      "parseable_figure": false
+    },
+    {
+      "url": "https://web.archive.org/cdx/search/cdx?url=www.pmi.spglobal.com/Public/Release/PressReleases&from=20260920&to=20260923",
+      "user_agent": "public browser",
+      "http_status": 200,
+      "parseable_figure": false,
+      "notes": "No Wayback snapshot for 20-23 September 2026."
+    }
+  ]
+}

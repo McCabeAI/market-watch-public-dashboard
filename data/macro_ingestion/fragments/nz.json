@@ -1,0 +1,74 @@
+{
+  "country": "NZ",
+  "schedule_source_fixture": "tests/macro_ingestion/fixtures/nz/stats_nz_schedule_excerpt.json",
+  "series": [
+    {
+      "id": "NZ.Inflation.headline",
+      "release_rule": {
+        "kind": "country_local_schedule_required",
+        "timezone": "Pacific/Auckland",
+        "dates": ["2026-10-22T10:45:00"]
+      }
+    },
+    {
+      "id": "NZ.Inflation.underlying",
+      "release_rule": {
+        "kind": "country_local_schedule_required",
+        "timezone": "Pacific/Auckland",
+        "dates": ["2026-10-22T10:45:00"]
+      }
+    },
+    {
+      "id": "NZ.Labor.unemployment",
+      "release_rule": {
+        "kind": "country_local_schedule_required",
+        "timezone": "Pacific/Auckland",
+        "dates": ["2026-11-04T10:45:00"]
+      }
+    },
+    {
+      "id": "NZ.Labor.wages",
+      "release_rule": {
+        "kind": "country_local_schedule_required",
+        "timezone": "Pacific/Auckland",
+        "dates": ["2026-11-04T10:45:00"]
+      }
+    },
+    {
+      "id": "NZ.Labor.employment",
+      "release_rule": {
+        "kind": "country_local_schedule_required",
+        "timezone": "Pacific/Auckland",
+        "dates": ["2026-11-04T10:45:00"]
+      }
+    },
+    {
+      "id": "NZ.Activity.gdp_domestic_demand",
+      "release_rule": {
+        "kind": "country_local_schedule_required",
+        "timezone": "Pacific/Auckland",
+        "dates": ["2026-12-17T10:45:00"]
+      }
+    },
+    {
+      "id": "NZ.Consumer.retail",
+      "release_rule": {
+        "kind": "country_local_schedule_required",
+        "timezone": "Pacific/Auckland",
+        "dates": ["2026-11-23T10:45:00"]
+      }
+    },
+    {
+      "id": "NZ.Consumer.spending",
+      "release_rule": {
+        "kind": "country_local_schedule_required",
+        "timezone": "Pacific/Auckland",
+        "dates": ["2026-12-17T10:45:00"]
+      }
+    },
+    {
+      "id": "NZ.Labor.participation",
+      "series_id": "HLFQ.S1E3S"
+    }
+  ]
+}

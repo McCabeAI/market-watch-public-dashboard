@@ -1,0 +1,155 @@
+name: Macro ingestion
+
+# Manual-only pending Market Watch command-driven orchestration redesign.
+# Dispatch with mode=live for primary-source collection and artifact commits;
+# offline is the safe default for fixture/no-network testing.
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "offline uses fixture/no-network opener; live hits primary sources"
+        required: true
+        default: offline
+        type: choice
+        options:
+          - offline
+          - live
+      country:
+        description: "Economy to check, or all six"
+        required: true
+        default: all
+        type: choice
+        options:
+          - all
+          - US
+          - CA
+          - AU
+          - NZ
+          - EA
+          - JP
+  pull_request:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: macro-ingestion-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    name: Run macro ingestion runner
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install market-state dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-market-state.txt
+
+      - name: Resolve mode and country
+        id: resolve
+        env:
+          INPUT_MODE: ${{ github.event.inputs.mode }}
+          INPUT_COUNTRY: ${{ github.event.inputs.country }}
+        run: |
+          set -euo pipefail
+          MODE="${INPUT_MODE:-offline}"
+          COUNTRY="${INPUT_COUNTRY:-all}"
+          echo "mode=$MODE" >> "$GITHUB_OUTPUT"
+          echo "country=$COUNTRY" >> "$GITHUB_OUTPUT"
+
+      - name: Run ingestion
+        env:
+          MODE: ${{ steps.resolve.outputs.mode }}
+          COUNTRY: ${{ steps.resolve.outputs.country }}
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python3 -m scripts.macro_ingestion.cli \
+            --mode "$MODE" \
+            --country "$COUNTRY" \
+            --run-id "gh-${{ github.run_id }}"
+
+      - name: Commit live ingestion artifacts
+        if: steps.resolve.outputs.mode == 'live'
+        env:
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            data/macro_ingestion/health \
+            data/macro_ingestion/post_freeze \
+            data/macro_ingestion/raw \
+            data/macro_ingestion/observations \
+            data/macro_ingestion/alerts \
+            data/temperature_scores.json \
+            data/temperature_history/score_paths.json \
+            data/temperature_history/us.json \
+            data/temperature_history/ca.json \
+            data/temperature_history/au.json \
+            data/temperature_history/nz.json \
+            data/temperature_history/ea.json \
+            data/temperature_history/jp.json
+          if git diff --cached --quiet; then
+            echo "No macro ingestion artifacts to commit"
+            exit 0
+          fi
+          mapfile -t staged < <(git diff --cached --name-only)
+          if [ "${#staged[@]}" -gt 0 ]; then
+            PYTHONPATH=. python3 -c "
+          import sys
+          from scripts.macro_ingestion.windows import assert_commit_paths
+          assert_commit_paths(sys.argv[1:])
+          " "${staged[@]}"
+          fi
+          git commit -m "chore(macro-ingestion): live run ${{ github.run_id }}"
+          for attempt in 1 2 3; do
+            git pull --rebase origin "$BRANCH"
+            if git push origin "HEAD:$BRANCH"; then
+              exit 0
+            fi
+            echo "Push failed on attempt $attempt"
+          done
+          echo "::error::Failed to push macro ingestion artifacts after rebase retries"
+          exit 1
+
+  validate:
+    name: Validate macro ingestion and temperature suites
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install market-state dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-market-state.txt
+
+      - name: Run unit tests
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python3 -m unittest discover -s tests/macro_ingestion -t .
+          PYTHONPATH=. python3 -m unittest \
+            tests.test_macro_freshness \
+            tests.test_temperature_level \
+            tests.test_temperature_scores \
+            tests.test_overnight_pipeline \
+            tests.test_overnight_scheduled_output \
+            tests.test_overnight_review_identity \
+            tests.test_overnight_acceptance_handoff

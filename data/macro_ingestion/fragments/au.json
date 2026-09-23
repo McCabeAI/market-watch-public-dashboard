@@ -1,0 +1,180 @@
+{
+  "series": [
+    {
+      "id": "AU.Inflation.headline",
+      "release_rule": {
+        "kind": "country_local_schedule_required",
+        "timezone": "Australia/Sydney",
+        "dates": [
+          "2026-09-30T11:30:00+10:00",
+          "2026-10-28T11:30:00+11:00"
+        ],
+        "schedule_source": "tests/macro_ingestion/fixtures/au/abs_release_schedule_excerpt.txt"
+      }
+    },
+    {
+      "id": "AU.Inflation.underlying",
+      "release_rule": {
+        "kind": "country_local_schedule_required",
+        "timezone": "Australia/Sydney",
+        "dates": [
+          "2026-09-30T11:30:00+10:00",
+          "2026-10-28T11:30:00+11:00"
+        ],
+        "schedule_source": "tests/macro_ingestion/fixtures/au/abs_release_schedule_excerpt.txt"
+      }
+    },
+    {
+      "id": "AU.Labor.unemployment",
+      "release_rule": {
+        "kind": "country_local_schedule_required",
+        "timezone": "Australia/Sydney",
+        "dates": [
+          "2026-09-24T11:30:00+10:00",
+          "2026-10-16T11:30:00+11:00"
+        ],
+        "schedule_source": "tests/macro_ingestion/fixtures/au/abs_release_schedule_excerpt.txt"
+      }
+    },
+    {
+      "id": "AU.Labor.employment",
+      "release_rule": {
+        "kind": "country_local_schedule_required",
+        "timezone": "Australia/Sydney",
+        "dates": [
+          "2026-09-24T11:30:00+10:00",
+          "2026-10-16T11:30:00+11:00"
+        ],
+        "schedule_source": "tests/macro_ingestion/fixtures/au/abs_release_schedule_excerpt.txt"
+      }
+    },
+    {
+      "id": "AU.Labor.wages",
+      "release_rule": {
+        "kind": "country_local_schedule_required",
+        "timezone": "Australia/Sydney",
+        "dates": [
+          "2026-11-19T11:30:00+11:00"
+        ],
+        "schedule_source": "tests/macro_ingestion/fixtures/au/abs_release_schedule_excerpt.txt"
+      }
+    },
+    {
+      "id": "AU.Labor.participation",
+      "series_id": "A84423051C",
+      "endpoint": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/jul-2026/62020001.xlsx",
+      "release_rule": {
+        "kind": "country_local_schedule_required",
+        "timezone": "Australia/Sydney",
+        "dates": [
+          "2026-09-24T11:30:00+10:00"
+        ],
+        "schedule_source": "tests/macro_ingestion/fixtures/au/abs_release_schedule_excerpt.txt"
+      }
+    },
+    {
+      "id": "AU.Activity.gdp_domestic_demand",
+      "release_rule": {
+        "kind": "country_local_schedule_required",
+        "timezone": "Australia/Sydney",
+        "dates": [
+          "2026-12-02T11:30:00+11:00"
+        ],
+        "schedule_source": "tests/macro_ingestion/fixtures/au/abs_release_schedule_excerpt.txt"
+      }
+    },
+    {
+      "id": "AU.Activity.domestic_final_demand",
+      "endpoint": "https://www.abs.gov.au/statistics/economy/national-accounts/australian-national-accounts-national-income-expenditure-and-product/jun-2026/5206001_Key_Aggregates.xlsx",
+      "release_rule": {
+        "kind": "country_local_schedule_required",
+        "timezone": "Australia/Sydney",
+        "dates": [
+          "2026-12-02T11:30:00+11:00"
+        ],
+        "schedule_source": "tests/macro_ingestion/fixtures/au/abs_release_schedule_excerpt.txt"
+      }
+    },
+    {
+      "id": "AU.Consumer.income",
+      "release_rule": {
+        "kind": "country_local_schedule_required",
+        "timezone": "Australia/Sydney",
+        "dates": [
+          "2026-12-02T11:30:00+11:00"
+        ],
+        "schedule_source": "tests/macro_ingestion/fixtures/au/abs_release_schedule_excerpt.txt"
+      }
+    },
+    {
+      "id": "AU.Consumer.spending",
+      "release_rule": {
+        "kind": "country_local_schedule_required",
+        "timezone": "Australia/Sydney",
+        "dates": [
+          "2026-09-30T11:30:00+10:00"
+        ],
+        "schedule_source": "tests/macro_ingestion/fixtures/au/abs_release_schedule_excerpt.txt"
+      }
+    },
+    {
+      "id": "AU.Consumer.retail",
+      "release_rule": {
+        "kind": "country_local_schedule_required",
+        "timezone": "Australia/Sydney",
+        "dates": [],
+        "schedule_unparsed": "Retail Trade monthly series ceased after 2025-06; no further ABS monthly release."
+      }
+    },
+    {
+      "id": "AU.Inflation.ppi",
+      "series_id": "A2314865F",
+      "endpoint": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/producer-price-indexes-australia/jun-2026/642701.xlsx",
+      "release_rule": {
+        "kind": "country_local_schedule_required",
+        "timezone": "Australia/Sydney",
+        "dates": [
+          "2026-11-19T11:30:00+11:00"
+        ],
+        "schedule_source": "tests/macro_ingestion/fixtures/au/abs_release_schedule_excerpt.txt"
+      }
+    },
+    {
+      "id": "AU.Inflation.import_price_index",
+      "series_id": "A2295765J",
+      "endpoint": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/international-trade-price-indexes-australia/jun-2026/645701.xlsx",
+      "release_rule": {
+        "kind": "country_local_schedule_required",
+        "timezone": "Australia/Sydney",
+        "dates": [
+          "2026-11-19T11:30:00+11:00"
+        ],
+        "schedule_source": "tests/macro_ingestion/fixtures/au/abs_release_schedule_excerpt.txt"
+      }
+    },
+    {
+      "id": "AU.Inflation.export_price_index",
+      "series_id": "A2294886K",
+      "endpoint": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/international-trade-price-indexes-australia/jun-2026/645704.xlsx",
+      "release_rule": {
+        "kind": "country_local_schedule_required",
+        "timezone": "Australia/Sydney",
+        "dates": [
+          "2026-11-19T11:30:00+11:00"
+        ],
+        "schedule_source": "tests/macro_ingestion/fixtures/au/abs_release_schedule_excerpt.txt"
+      }
+    },
+    {
+      "id": "AU.Activity.business_surveys",
+      "release_rule": {
+        "kind": "country_local_schedule_required",
+        "timezone": "Australia/Sydney",
+        "dates": [
+          "2026-09-24T23:00:00+10:00"
+        ],
+        "schedule_source": "S&P Global release calendar (flash ~23:00 UTC prior day; finals via PMI listing)"
+      }
+    }
+  ]
+}

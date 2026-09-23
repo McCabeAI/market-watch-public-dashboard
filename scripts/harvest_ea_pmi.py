@@ -39,7 +39,7 @@ LISTING_ROW_RE = re.compile(
 GUID_RE = re.compile(r"/PressRelease/([a-f0-9]{32})", re.IGNORECASE)
 
 EMBARGO_CET_RE = re.compile(
-    r"Embargoed until\s+0900\s+(?:CET|CEST)\s+"
+    r"Embargoed until\s+\d{3,4}\s+(?:CET|CEST)(?:\s*\([^)]*\))?\s+"
     r"(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})",
     re.IGNORECASE,
 )
@@ -120,9 +120,6 @@ def _curl_cffi_get(url: str, *, referer: str | None = None) -> tuple[int, bytes,
 
 
 def _local_cached_pdf(guid: str) -> bytes | None:
-    for path in RAW_DIR.glob("sp_eurozone_*.pdf"):
-        if guid in path.read_bytes()[:200]:
-            pass
     guid_map = {
         "28c3f5d8cd55496b976ee43ab2e1066f": RAW_DIR / "sp_eurozone_composite_2025-09.pdf",
         "223ebbc5708245de8b680cd0abf17f65": RAW_DIR / "sp_eurozone_composite_2025-10.pdf",
@@ -270,11 +267,20 @@ _ENGLISH_EA_COMPOSITE_TITLES = frozenset(
     {
         "S&P Global Eurozone Composite PMI",
         "S&P Global Flash Eurozone Composite PMI",
+        # The English flash row on the public listing uses this title, not
+        # "Flash Eurozone Composite PMI". Language variants stay excluded.
+        "S&P Global Flash Eurozone PMI",
         # HCOB was the S&P Eurozone composite sponsor through early 2026.
         "HCOB Eurozone Composite PMI",
         "HCOB Flash Eurozone PMI",
         "HCOB Flash Eurozone Composite PMI",
     }
+)
+
+# Tried only when the press-release listing itself is not usable. These are
+# public S&P pages, not a second client and not a paywall bypass.
+ALT_PUBLIC_DISCOVERY_URLS = (
+    "https://www.spglobal.com/marketintelligence/en/mi/research-analysis.html",
 )
 
 
@@ -414,20 +420,32 @@ def is_flash_release(text: str) -> bool:
 
 
 def parse_headline_composite(text: str, reference_period: str | None) -> float | None:
+    month = (
+        r"(January|February|March|April|May|June|July|August|September|October|November|December)"
+    )
     patterns = [
+        # Key-findings line. "from 52.0" later in the sentence is the prior month.
+        r"Flash Eurozone PMI Composite Output Index:\s*([\d.]+)",
+        r"Flash Eurozone Composite PMI Output Index:\s*([\d.]+)",
         r"HCOB Eurozone Composite PMI Output\s*Index at\s+([\d.]+)",
         r"Eurozone Composite PMI Output\s*Index at\s+([\d.]+)",
         r"Eurozone Composite PMI Output\s*Index[^\n]{0,40}posted\s+([\d.]+)",
+        r"Eurozone Composite PMI Output Index(?:\s|\W){0,80}?rose to\s+([\d.]+)\s+in\s+" + month,
         r"Composite PMI Output\s*Index at\s+([\d.]+)",
-        r"Composite PMI Output Index[^\n]{0,60}?posted\s+([\d.]+)\s+in\s+"
-        r"(January|February|March|April|May|June|July|August|September|October|November|December)",
-        r"Flash Eurozone Composite PMI Output Index:\s*([\d.]+)",
+        r"Composite PMI Output Index[^\n]{0,60}?posted\s+([\d.]+)\s+in\s+" + month,
     ]
     for pat in patterns:
         m = re.search(pat, text, re.I | re.DOTALL)
         if not m:
             continue
-        val = float(m.group(1))
+        raw_value = m.group(1).rstrip(".")
+        if raw_value.count(".") != 1:
+            continue
+        val = float(raw_value)
+        window = text[max(0, m.start() - 80) : m.start()]
+        if re.search(r"Germany|France|Italy|Spain|Manufacturing|Services", window, re.I):
+            if not re.search(r"Eurozone|euro area", window, re.I):
+                continue
         if len(m.groups()) >= 2 and m.group(2):
             period = _month_year_to_period(m.group(2), int(reference_period[:4]) if reference_period else 2026)
             if reference_period and period != reference_period:
@@ -462,8 +480,7 @@ def parse_restated_priors(text: str, *, headline_period: str | None = None) -> d
     return priors
 
 
-def parse_release_artifact(data: bytes) -> dict[str, Any]:
-    text = pdf_to_text(data)
+def parse_release_text(text: str) -> dict[str, Any]:
     flash = is_flash_release(text)
     ref = infer_reference_period(text, is_flash=flash)
     composite = parse_headline_composite(text, ref)
@@ -475,6 +492,27 @@ def parse_release_artifact(data: bytes) -> dict[str, Any]:
         "is_flash": flash,
         "restated_priors": parse_restated_priors(text, headline_period=ref),
     }
+
+
+def parse_release_artifact(data: bytes) -> dict[str, Any]:
+    return parse_release_text(pdf_to_text(data))
+
+
+def html_to_text(data: bytes) -> str:
+    raw = data.decode("utf-8", "replace")
+    raw = re.sub(r"(?is)<script\b.*?>.*?</script>", " ", raw)
+    raw = re.sub(r"(?is)<style\b.*?>.*?</style>", " ", raw)
+    raw = re.sub(r"(?s)<[^>]+>", " ", raw)
+    return unescape(re.sub(r"\s+", " ", raw))
+
+
+def parse_release_html(data: bytes) -> dict[str, Any]:
+    return parse_release_text(html_to_text(data))
+
+
+def cached_release_pdf(guid: str) -> bytes | None:
+    """Local copy of a public press PDF already archived for this guid."""
+    return _local_cached_pdf(guid)
 
 
 def observation_from_release(
