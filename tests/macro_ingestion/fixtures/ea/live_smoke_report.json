@@ -1,0 +1,45 @@
+{
+  "checked_at": "2026-09-23T12:41:42Z",
+  "calls": [
+    {
+      "series_id": "EA.Inflation.headline",
+      "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOTAL&sinceTimePeriod=2024-01",
+      "ok": true,
+      "http_status": 200,
+      "latest_point": {
+        "period": "2026-08",
+        "value": 3.2,
+        "transformation": "yoy_pct",
+        "revision_status": "final",
+        "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOTAL&sinceTimePeriod=2024-01"
+      },
+      "error": null
+    },
+    {
+      "series_id": "EA.Labor.wages",
+      "url": "https://data-api.ecb.europa.eu/service/data/INW/INW.Q.I10.N.INWR.000000.4F0.GY.IX?format=csvdata&startPeriod=2024-Q1",
+      "ok": true,
+      "http_status": 200,
+      "latest_point": {
+        "period": "2026-Q2",
+        "value": 2.45,
+        "transformation": "yoy_pct",
+        "revision_status": "final",
+        "source_url": "https://data-api.ecb.europa.eu/service/data/INW/Q.I10.N.INWR.000000.4F0.GY.IX?format=csvdata&startPeriod=2024-Q1"
+      },
+      "error": null
+    },
+    {
+      "series_id": "EA.Activity.flash_composite_pmi",
+      "url": "https://www.pmi.spglobal.com/Public/Release/PressReleases",
+      "ok": false,
+      "http_status": 403,
+      "listing_bytes": 919,
+      "listing_is_pdf": false,
+      "challenge_page": false,
+      "parsed_points": 0,
+      "error": "primary_flash_pdf_unavailable at https://www.pmi.spglobal.com/Public/Release/PressReleases",
+      "primary_september_pdf_retrieved": false
+    }
+  ]
+}

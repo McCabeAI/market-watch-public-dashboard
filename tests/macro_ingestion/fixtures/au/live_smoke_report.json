@@ -1,0 +1,34 @@
+{
+  "checked_at": "2026-09-23T12:45:22Z",
+  "probes": [
+    {
+      "name": "abs_labour_topic",
+      "url": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia",
+      "ok": true,
+      "http_status": 200,
+      "error": null,
+      "bytes": 157258,
+      "challenge_page": false
+    },
+    {
+      "name": "abs_ppi_topic",
+      "url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/producer-price-indexes-australia",
+      "ok": true,
+      "http_status": 200,
+      "error": null,
+      "bytes": 106886,
+      "challenge_page": false,
+      "xlsx_link_in_html": false
+    },
+    {
+      "name": "sp_global_pmi_listing",
+      "url": "https://www.pmi.spglobal.com/Public/Release/PressReleases",
+      "ok": false,
+      "http_status": null,
+      "error": "Forbidden",
+      "bytes": 0,
+      "challenge_page": false,
+      "release_title_present": false
+    }
+  ]
+}

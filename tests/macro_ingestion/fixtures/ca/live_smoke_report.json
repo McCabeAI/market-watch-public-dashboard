@@ -1,0 +1,65 @@
+{
+  "checked_at": "2026-09-23T12:39:47Z",
+  "opener": "live_opener",
+  "results": [
+    {
+      "check": "CA.Labor.unemployment",
+      "series_id": "v2062815",
+      "ok": true,
+      "status": null,
+      "error": null,
+      "http_status": 200,
+      "points": [
+        {
+          "period": "2026-08",
+          "value": 6.4,
+          "transformation": "percent",
+          "revision_status": "final",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028701"
+        }
+      ],
+      "raw_sha256": "e9aa26b58762221bb725972a5864783b5997a67118daebf4e3c95d9cb14033ee",
+      "wds_url": "https://www150.statcan.gc.ca/t1/wds/rest/getDataFromVectorsAndLatestNPeriods"
+    },
+    {
+      "check": "CA.Inflation.headline",
+      "series_id": "v41690973_derived_yoy",
+      "ok": true,
+      "status": null,
+      "error": null,
+      "http_status": 200,
+      "points": [
+        {
+          "period": "2026-08",
+          "value": 3.033980582524265,
+          "transformation": "yoy_pct",
+          "revision_status": "final",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810000401"
+        }
+      ],
+      "raw_sha256": "cfa4b14fc4325ec5364fe6167bdd46eb25b86160f5d4dce692c86f72c9adb7dc",
+      "wds_url": "https://www150.statcan.gc.ca/t1/wds/rest/getDataFromVectorsAndLatestNPeriods"
+    },
+    {
+      "check": "pmi_listing_get",
+      "series_id": "SP_GLOBAL_CA_COMPOSITE",
+      "ok": false,
+      "status": null,
+      "error": "Forbidden",
+      "http_status": null,
+      "points": null,
+      "raw_sha256": null,
+      "url": "https://www.pmi.spglobal.com/Public/Release/PressReleases"
+    },
+    {
+      "check": "CA.Activity.business_surveys",
+      "series_id": "SP_GLOBAL_CA_COMPOSITE",
+      "ok": false,
+      "status": "license_gap",
+      "error": "Forbidden",
+      "http_status": null,
+      "points": null,
+      "raw_sha256": null
+    }
+  ]
+}

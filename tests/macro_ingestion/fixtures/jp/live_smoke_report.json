@@ -1,0 +1,30 @@
+{
+  "country": "JP",
+  "generated_at": "2026-09-23T12:37:45Z",
+  "checks": [
+    {
+      "label": "estat_cpi",
+      "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032103932&fileKind=1",
+      "ok": true,
+      "http_status": 200,
+      "error": null,
+      "notes": "binary_prefix=b'\\x97\\xde\\x81E\\x95i\\x96\\xda,\\x91\\x8d\\x8d\\x87,\\x90\\xb6'"
+    },
+    {
+      "label": "boj_cgpi_page",
+      "url": "https://www.boj.or.jp/en/statistics/pi/cgpi_release/index.htm",
+      "ok": true,
+      "http_status": 200,
+      "error": null,
+      "notes": "html_body_bytes=8192"
+    },
+    {
+      "label": "sp_japan_pmi_listing",
+      "url": "https://www.pmi.spglobal.com/Public/Release/PressReleases",
+      "ok": false,
+      "http_status": null,
+      "error": "HTTP Error 403: Forbidden",
+      "notes": null
+    }
+  ]
+}

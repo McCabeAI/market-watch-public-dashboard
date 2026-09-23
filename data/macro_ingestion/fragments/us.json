@@ -1,0 +1,23 @@
+{
+  "country": "US",
+  "series": [
+    {
+      "id": "US.Labor.unemployment",
+      "release_rule": {
+        "kind": "country_local_schedule_required",
+        "timezone": "America/New_York",
+        "dates": [],
+        "note": "Schedule fetch failed in worker session: https://www.bls.gov/schedule/news_release/ returned HTTP 403 Access Denied (bot policy). Excerpt saved at tests/macro_ingestion/fixtures/us/bls_schedule_fetch_excerpt.txt. Did not pin calendar days without a parsed schedule."
+      }
+    },
+    {
+      "id": "US.Inflation.cpi_headline",
+      "release_rule": {
+        "kind": "country_local_schedule_required",
+        "timezone": "America/New_York",
+        "dates": [],
+        "note": "Same BLS schedule URL failure as US.Labor.unemployment; 08:30 America/New_York not pinned without an official page excerpt from this session."
+      }
+    }
+  ]
+}

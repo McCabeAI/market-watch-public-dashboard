@@ -1,0 +1,47 @@
+{
+  "country": "NZ",
+  "checked_at": "2026-09-23T12:45:24.601530+00:00",
+  "probes": [
+    {
+      "label": "stats_nz_cpi_release",
+      "url": "https://www.stats.govt.nz/information-releases/consumers-price-index-june-2026-quarter/",
+      "ok": true,
+      "http_status": 200,
+      "error": null,
+      "body_prefix": "3c21444f43545950452068746d6c3e0a",
+      "is_pdf": false,
+      "challenge_page": false,
+      "has_page_view_data": true
+    },
+    {
+      "label": "stats_nz_overseas_trade_index",
+      "url": "https://www.stats.govt.nz/information-releases/overseas-trade-indexes-prices/",
+      "ok": false,
+      "http_status": null,
+      "error": "Not Found",
+      "body_prefix": "",
+      "is_pdf": false,
+      "challenge_page": false
+    },
+    {
+      "label": "bnz_psi_pdf",
+      "url": "https://www.bnz.co.nz/assets/markets/research/BNZ-BusinessNZ-PSI-Release_August-2026_web.pdf",
+      "ok": true,
+      "http_status": 200,
+      "error": null,
+      "body_prefix": "255044462d312e360d25e2e3cfd30d0a",
+      "is_pdf": true,
+      "challenge_page": false
+    },
+    {
+      "label": "bnz_publications_index",
+      "url": "https://www.bnz.co.nz/institutional-banking/research/publications",
+      "ok": true,
+      "http_status": 200,
+      "error": null,
+      "body_prefix": "3c21444f43545950452068746d6c3e0a",
+      "is_pdf": false,
+      "challenge_page": false
+    }
+  ]
+}

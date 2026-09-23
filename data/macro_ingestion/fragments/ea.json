@@ -1,0 +1,22 @@
+{
+  "series": [
+    {
+      "id": "EA.Inflation.ppi",
+      "series_id": "STS_INPPD_M.M.PRC_PRR_DOM.NSA.PCH_SM.B-E36.EA21",
+      "endpoint": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/STS_INPPD_M?geo=EA21&nace_r2=B-E36&indic_bt=PRC_PRR_DOM&s_adj=NSA&unit=PCH_SM&sinceTimePeriod=2024-01",
+      "registry_urls": [
+        "https://ec.europa.eu/eurostat/databrowser/view/sts_inppd_m/default/table"
+      ]
+    },
+    {
+      "id": "EA.Activity.flash_composite_pmi",
+      "release_rule": {
+        "kind": "explicit_timestamp",
+        "timezone": "UTC",
+        "dates": [
+          "2026-09-23T08:00:00Z"
+        ]
+      }
+    }
+  ]
+}
