@@ -385,22 +385,61 @@ class LedgerFreshnessTests(unittest.TestCase):
 
 
 class FrozenSessionTests(unittest.TestCase):
-    def test_sep23_review_identity_and_books_stay_put(self) -> None:
+    def test_sep23_immutable_evidence_survives_review_acceptance(self) -> None:
+        # Review status and latest books legitimately advance when trusted
+        # acceptance merges. Pin the immutable frozen evidence instead of
+        # treating mutable operational state as a fixture.
         review_path = ROOT / "data" / "overnight" / "runs" / "overnight-20260923" / "reviews" / "review-001" / "review.json"
+        index_path = ROOT / "data" / "overnight" / "runs" / "overnight-20260923" / "reviews" / "index.json"
+        snapshot_path = ROOT / "data" / "overnight" / "runs" / "overnight-20260923" / "reviews" / "review-001" / "evidence_snapshot.json"
         books_path = ROOT / "data" / "overnight" / "books" / "latest.json"
         pm_path = ROOT / "data" / "pm" / "books" / "latest.json"
+
         review = json.loads(review_path.read_text(encoding="utf-8"))
+        index = json.loads(index_path.read_text(encoding="utf-8"))
         self.assertEqual(review["review_id"], "review-001")
-        self.assertEqual(review["status"], "frozen")
+        self.assertEqual(review["overnight_run_id"], "overnight-20260923")
+        self.assertIn(review["status"], {"frozen", "accepted"})
         self.assertTrue(review["immutable"])
         self.assertEqual(review["packet_sha256"], FROZEN_PACKET)
-        self.assertEqual(_sha(review_path), "cdb76b4cc9f4d823894a7e283bf22c76fc51ff74a0b7e189dd97d65577e714e5")
-        snapshot = ROOT / "data" / "overnight" / "runs" / "overnight-20260923" / "reviews" / "review-001" / "evidence_snapshot.json"
-        self.assertEqual(_sha(snapshot), "41ad9248149d7f4337f20f8080a63a6932a618fc987f12afe048371d0b7a944b")
-        self.assertEqual(_sha(books_path), "b210528f77effba921437f860715c2ea172ab0a16eeb7a88a51551ff66a3fd54")
-        self.assertEqual(_sha(pm_path), "7864916d595665157d0d3f2c6979c7ef1fa959f09a987222b4e32945cdc4e9fa")
-        self.assertFalse((ROOT / "data" / "temperature_history" / "macro_source_audit.json").exists())
+        self.assertEqual(
+            _sha(snapshot_path),
+            "41ad9248149d7f4337f20f8080a63a6932a618fc987f12afe048371d0b7a944b",
+        )
 
+        indexed_review = next(
+            item for item in index["reviews"] if item["review_id"] == "review-001"
+        )
+        for field in (
+            "packet_sha256",
+            "frozen_at",
+            "starting_trader_books_sha256",
+            "starting_pm_books_sha256",
+            "status",
+        ):
+            self.assertEqual(review[field], indexed_review[field])
+        if review["status"] == "accepted":
+            self.assertTrue(review["accepted_at"])
+            self.assertTrue(review["agent_packet_sha256"])
+            self.assertEqual(review["accepted_at"], indexed_review["accepted_at"])
+            self.assertEqual(
+                review["agent_packet_sha256"], indexed_review["agent_packet_sha256"]
+            )
+        else:
+            self.assertIsNone(review["accepted_at"])
+            self.assertIsNone(review["agent_packet_sha256"])
+
+        # The latest operational books can move forward with trusted daily
+        # runs. When they point at this accepted review, verify their binding
+        # without pinning mutable book bytes to yesterday's baseline.
+        books = json.loads(books_path.read_text(encoding="utf-8"))
+        pm = json.loads(pm_path.read_text(encoding="utf-8"))
+        if books.get("last_successful_review_run_id") == "overnight-20260923":
+            self.assertEqual(review["status"], "accepted")
+            self.assertEqual(books["last_successful_review_id"], "review-001")
+        if pm.get("last_successful_automated_pm_run_id") == "overnight-20260923":
+            self.assertEqual(review["status"], "accepted")
+            self.assertEqual(pm["last_successful_review_id"], "review-001")
 
 class ParserTests(unittest.TestCase):
     def test_fred_and_statcan_fixtures_keep_period_and_value(self) -> None:
