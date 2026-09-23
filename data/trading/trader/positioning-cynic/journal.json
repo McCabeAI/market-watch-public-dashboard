@@ -205,6 +205,51 @@
       "run_id": "overnight-20260922",
       "schema_version": 1,
       "thesis": "Close short AONIA_2027-03. Outstanding postmortem blocks OPEN/ADD/HEDGE. Mar-27 already embeds ~52.5bp of tightening vs cash 4.35, so the directional AU pay is consensus, not anti-crowd. CFTC AUD OI at the 99th percentile is the FX twin of that hawkish-RBA package; paying AONIA sits in that ownership. Energy relief is the unwind that runs priced hikes and crowded AUD together. The real anti-crowd versus packed CORRA receives cannot be expressed under the postmortem block."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-23T06:20:00-04:00",
+      "conviction": 72,
+      "decision_fingerprint": "31b8e2cd4714ccfdb3afb788e7390e4600925efc106c4f19783484a0ac40b3dd",
+      "event_id": "jde-06fea1e258314f7a",
+      "funding_view": null,
+      "invalidation": "Ownership of receive-CORRA-2027 visibly unwinds and macro_hard refreshes with an unowned expression.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "64d1860497db03929c9e18fd9a71e80f1235ec4185d19784b6786faac1356b25",
+      "outcome_links": [],
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-23T06:20:00-04:00",
+        "evidence_hash": "79f165ba2bfb3870b2b05bba7b44da8dcfadb54c57fed48eeb0190ab4be48b53",
+        "overnight_run_id": "overnight-20260923",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Receive-CORRA-2027 is a consensus occupancy problem. The 20 Sep CORRA_2027-03 long close did not create spare capacity. CFTC AUD OI is extreme. Two outstanding postmortems plus stale macro_hard. Stay flat; do not buy the crowded receive.",
+      "run_id": "overnight-20260923",
+      "schema_version": 1,
+      "thesis": "Receive-CORRA-2027 is a consensus occupancy problem. The 20 Sep CORRA_2027-03 long close did not create spare capacity. CFTC AUD OI is extreme. Two outstanding postmortems plus stale macro_hard. Stay flat; do not buy the crowded receive."
     }
   ],
   "schema_version": 1,

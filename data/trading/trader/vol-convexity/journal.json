@@ -177,6 +177,51 @@
       "run_id": "overnight-20260922",
       "schema_version": 1,
       "thesis": "Stay flat. Residual Hormuz timing is uncertain, so the correct expression would be bounded-risk optionality, not chased spot or lagging rates. The oil-vol path already printed ~$110 to ~$98 and spot/STIR already moved. Packet has no IV/premium/strike surface, so options OPEN is not paper-markable. Do not manufacture a linear overlay that fails the SOFR hurdle."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-23T06:20:00-04:00",
+      "conviction": 40,
+      "decision_fingerprint": "4f372d53769573be3cfe1784fe66709065f2a72fc7763cd163c6a65be005a22a",
+      "event_id": "jde-6ffeb3088c24401d",
+      "funding_view": null,
+      "invalidation": "A later packet with a markable premium/IV/strike surface and fresh required families.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "66f4434e9a4815e09a06be01d9e247a02f247f5b6ae723ce392f35d3908d7d1a",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-23T06:20:00-04:00",
+        "evidence_hash": "79f165ba2bfb3870b2b05bba7b44da8dcfadb54c57fed48eeb0190ab4be48b53",
+        "overnight_run_id": "overnight-20260923",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Packet has no premium, IV, or strike marks, so optionality is not paper-tradeable. macro_hard is stale. Book is flat. HOLD; do not invent option marks.",
+      "run_id": "overnight-20260923",
+      "schema_version": 1,
+      "thesis": "Packet has no premium, IV, or strike marks, so optionality is not paper-tradeable. macro_hard is stale. Book is flat. HOLD; do not invent option marks."
     }
   ],
   "schema_version": 1,

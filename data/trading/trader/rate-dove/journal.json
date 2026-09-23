@@ -185,6 +185,53 @@
       "run_id": "overnight-20260922",
       "schema_version": 1,
       "thesis": "Hold receive CORRA_2027H-Z. 2027 strip still averages ~3.306 versus cash 2.29 \u2014 about 101bp of re-hike that labor cooling (42.16) and fading Hormuz/oil-hike rationale no longer justify. Existing receive is already marked cheaper than 3.40 entry. Barkin/SOFR spill is US-hawk noise around a CAD cash-strip dislocation, not a reason to fade the receive."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": "pos-9849cf751c27",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-23T06:20:00-04:00",
+      "conviction": 69,
+      "decision_fingerprint": "83a2ff51da2eb275e918efd6472e6691ba527d56dd0df73e3ca8241599742a00",
+      "event_id": "jde-42c4da54c9e649e7",
+      "funding_view": null,
+      "invalidation": "BoC delivers the priced 2027 hike cycle or energy pass-through re-accelerates.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-9849cf751c27"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "fc401d7e127022f2088e61a07cbbddb58f60674810281bf6dd4c7c4359c4ac79",
+      "outcome_links": [],
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-23T06:20:00-04:00",
+        "evidence_hash": "79f165ba2bfb3870b2b05bba7b44da8dcfadb54c57fed48eeb0190ab4be48b53",
+        "overnight_run_id": "overnight-20260923",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "2027H CORRA at 3.06 and H-Z at ~3.31 versus overnight 2.29 still prices a hike path that weaker oil/Hormuz diplomacy undermines. Hold the existing long CORRA_2027H-Z; cannot add while macro_hard is stale.",
+      "run_id": "overnight-20260923",
+      "schema_version": 1,
+      "thesis": "2027H CORRA at 3.06 and H-Z at ~3.31 versus overnight 2.29 still prices a hike path that weaker oil/Hormuz diplomacy undermines. Hold the existing long CORRA_2027H-Z; cannot add while macro_hard is stale."
     }
   ],
   "schema_version": 1,

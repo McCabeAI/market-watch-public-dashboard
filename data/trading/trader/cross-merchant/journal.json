@@ -203,6 +203,53 @@
       "run_id": "overnight-20260922",
       "schema_version": 1,
       "thesis": "Flip AUDCAD from short to a smaller long. Afternoon Hormuz diplomacy and Saudi restart skim CAD energy premium while Bullock keeps an RBA hike priced. AU 2Y 4.999 vs CA 2Y 3.29 and AONIA 4.35 vs CORRA 2.29 isolate in AUDCAD, not AUDUSD. The existing short fights carry and the afternoon tape. Size the new long to $10m so a Hormuz break is not a capacity fill."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDCAD",
+          "notional_usd": null,
+          "position_id": "pos-27d002b448b1",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-23T06:20:00-04:00",
+      "conviction": 56,
+      "decision_fingerprint": "dda0b431d290fc6ccc67ddc23c5e81ed913edf8070944bd5a8dcdd923f64ad02",
+      "event_id": "jde-2963f07c30834452",
+      "funding_view": null,
+      "invalidation": "Oil rebound restores CAD energy premium, or the AU-CA policy/2Y gap compresses.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-27d002b448b1"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "8540ca75b554d2b08d24a43bcfce61f43f73fcf3877fe91b11a290e0313cf196",
+      "outcome_links": [],
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-23T06:20:00-04:00",
+        "evidence_hash": "79f165ba2bfb3870b2b05bba7b44da8dcfadb54c57fed48eeb0190ab4be48b53",
+        "overnight_run_id": "overnight-20260923",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold long AUDCAD. AU-CA policy/carry (AONIA 4.35 vs CORRA 2.29; AU 2Y 4.999 vs CA 2Y 3.29) plus 23 Sep oil weakness pressuring CAD energy premium isolates in the cross, not in USD pairs. AUDCAD 1y pctile 99.4 is CAD-versus-AUD, not an AUDUSD blow-off. OPEN/ADD blocked by stale macro_hard and outstanding postmortem pmd-8ddf6ee19a94.",
+      "run_id": "overnight-20260923",
+      "schema_version": 1,
+      "thesis": "Hold long AUDCAD. AU-CA policy/carry (AONIA 4.35 vs CORRA 2.29; AU 2Y 4.999 vs CA 2Y 3.29) plus 23 Sep oil weakness pressuring CAD energy premium isolates in the cross, not in USD pairs. AUDCAD 1y pctile 99.4 is CAD-versus-AUD, not an AUDUSD blow-off. OPEN/ADD blocked by stale macro_hard and outstanding postmortem pmd-8ddf6ee19a94."
     }
   ],
   "schema_version": 1,

@@ -269,6 +269,70 @@
       "run_id": "overnight-20260922",
       "schema_version": 1,
       "thesis": "No trade. Official NY Fed SOFR is 3.85 percent (2026-09-21 ACT/360). Afternoon oil diplomacy moved the energy premium, but UN conditionality is not a closed deal; Barkin remains open to more hikes; packet marks already embed the STIR path; same-day headline risk is two-way. Trading STIR or energy from this packet is paying a priced path. Flat cash at 3.85 percent is cancelled by the equal official-SOFR benchmark and is not alpha."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-23T06:20:00-04:00",
+      "conviction": 78,
+      "decision_fingerprint": "4b1c93f469b73bda1509f3475b88a516b7c6ada4e609b398167334074638aac9",
+      "event_id": "jde-6fe4c7ee434248f7",
+      "funding_view": {
+        "current_sofr": {
+          "observation_date": "2026-09-21",
+          "rate": 3.85
+        },
+        "forward_funding_assessment": "about_the_same",
+        "implication": "Remain at the zero official-SOFR benchmark. Do not pay SOFR on shocked-risk capital. Stale macro_hard and a crowded receive-CORRA complex give no reason to leave flat cash. Flat cash is not alpha; paying SOFR to warehouse a stale crowded expression is worse.",
+        "sr3_forward_view": "Frozen SR3 path: Z6 4.315, H7 4.57, U7 4.735 versus official SOFR 3.85 effective 2026-09-21. That strip is priced hike/path premium, not unused alpha."
+      },
+      "invalidation": "Fresh macro_hard plus a dated, uncrowded, markable residual that clears SOFR on shocked-risk capital.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "3adbfa8cedf7d794de18ec2794119d3293ce071e495175d6e5477ecd934469f5",
+      "outcome_links": [],
+      "owner_id": "no-trade-skeptic",
+      "owner_type": "trader",
+      "payload": {
+        "funding_view": {
+          "current_sofr": {
+            "observation_date": "2026-09-21",
+            "rate": 3.85
+          },
+          "forward_funding_assessment": "about_the_same",
+          "implication": "Remain at the zero official-SOFR benchmark. Do not pay SOFR on shocked-risk capital. Stale macro_hard and a crowded receive-CORRA complex give no reason to leave flat cash. Flat cash is not alpha; paying SOFR to warehouse a stale crowded expression is worse.",
+          "sr3_forward_view": "Frozen SR3 path: Z6 4.315, H7 4.57, U7 4.735 versus official SOFR 3.85 effective 2026-09-21. That strip is priced hike/path premium, not unused alpha."
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-23T06:20:00-04:00",
+        "evidence_hash": "79f165ba2bfb3870b2b05bba7b44da8dcfadb54c57fed48eeb0190ab4be48b53",
+        "overnight_run_id": "overnight-20260923",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Reject new risk. Receive-CORRA is crowded and already in the price. Oil path is binary (diplomacy vs Fars denial). macro_hard is stale. Official SOFR 3.85 is the zero-alpha benchmark; paying SOFR on shocked-risk capital to warehouse a stale crowded expression is not an edge. Stay flat.",
+      "run_id": "overnight-20260923",
+      "schema_version": 1,
+      "thesis": "Reject new risk. Receive-CORRA is crowded and already in the price. Oil path is binary (diplomacy vs Fars denial). macro_hard is stale. Official SOFR 3.85 is the zero-alpha benchmark; paying SOFR on shocked-risk capital to warehouse a stale crowded expression is not an edge. Stay flat."
     }
   ],
   "schema_version": 1,

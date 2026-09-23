@@ -187,6 +187,53 @@
       "run_id": "overnight-20260922",
       "schema_version": 1,
       "thesis": "Receive CORRA H27 remains the concentrated book. Cash CORRA 2.29 versus H27 3.06 still prices about 77bp of hikes into a six-month window while CA labor 42.16 is cooling and Brent eased to ~$98 on a conditional Hormuz reopen plus Saudi Petroline restart. Long duration is working (entry 3.13 to 3.06) and still has residual edge. Barkin/Fed hike-spillover is the main risk, not a reason to cut a valid receive. Skip AUDCAD: RBA hikes are already priced and AU housing is correcting."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pm-swinger-2070479ca321",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-09-23T06:42:25.965663-04:00",
+      "conviction": 80,
+      "decision_fingerprint": "eb6a196ee9153d57a14d3623b27e87e90c392f9d2a80a502d6c31ed6244cb692",
+      "event_id": "jde-510103567a4f4b8c",
+      "funding_view": null,
+      "invalidation": "Close or reduce if CRAH27 implied rate rises through entry 3.13 toward a realized BoC hiking path, if oil diplomacy fails and a sustained Hormuz/energy shock restores a credible 2027 hike case, or if CRAH27 converges to cash such that the residual hike premium is no longer the thesis.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-swinger-2070479ca321"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "5ada39ba2950a8a570cb0d72cacdab726c7d6d79a09949aaaa3079c31d406099",
+      "outcome_links": [],
+      "owner_id": "swinger",
+      "owner_type": "pm",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-23T06:20:00-04:00",
+        "evidence_hash": "bbe7e9340c883e432758616569db33aef08642e57b38e56d6e428408e0ac1ce6",
+        "overnight_run_id": "overnight-20260923",
+        "review_id": "review-001",
+        "review_packet_id": "prp-swinger-overnight-20260923-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Keep the concentrated duration-long receive in CORRA_2027-03 (MX CRAH27). Cash CORRA 2.29 versus CRAH27 3.06 still prices an unwarranted 2027 hiking cycle. Frozen oil diplomacy (UNGA/Iran, Saudi East-West restart, Brent ~99.41) weakens the energy-pass-through BoC hike case and supports the existing receive. families.macro_hard is STALE so ADD is fail-closed; do not migrate onto SOFR/AONIA/USDCAD; HEDGE is forbidden so the book stays as a single concentrated receive.",
+      "run_id": "overnight-20260923",
+      "schema_version": 1,
+      "thesis": "Keep the concentrated duration-long receive in CORRA_2027-03 (MX CRAH27). Cash CORRA 2.29 versus CRAH27 3.06 still prices an unwarranted 2027 hiking cycle. Frozen oil diplomacy (UNGA/Iran, Saudi East-West restart, Brent ~99.41) weakens the energy-pass-through BoC hike case and supports the existing receive. families.macro_hard is STALE so ADD is fail-closed; do not migrate onto SOFR/AONIA/USDCAD; HEDGE is forbidden so the book stays as a single concentrated receive."
     }
   ],
   "schema_version": 1,
