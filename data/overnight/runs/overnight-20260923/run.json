@@ -7,14 +7,20 @@
   "session_date": "2026-09-23",
   "stages": {
     "assemble": {
-      "as_of": null,
+      "as_of": "2026-09-23T05:14:53.749364-04:00",
       "errors": [],
-      "finished_at": null,
-      "inputs": {},
+      "finished_at": "2026-09-23T05:14:53.749364-04:00",
+      "inputs": {
+        "dry_run": false,
+        "offline": true
+      },
       "name": "assemble",
-      "outputs": {},
-      "started_at": null,
-      "status": "pending"
+      "outputs": {
+        "as_of": "2026-09-23T05:14:53.749364-04:00",
+        "packet_sha256": "2c78eb3ff22353eab98e808cbd49cf4f29693c415744a9d4d6b28186f8ab9645"
+      },
+      "started_at": "2026-09-23T05:14:53.749364-04:00",
+      "status": "succeeded"
     },
     "collect": {
       "as_of": "2026-09-23T05:03:16.725212-04:00",
@@ -32,14 +38,20 @@
       "status": "succeeded"
     },
     "final_delta": {
-      "as_of": null,
+      "as_of": "2026-09-23T05:14:53.749364-04:00",
       "errors": [],
-      "finished_at": null,
-      "inputs": {},
+      "finished_at": "2026-09-23T05:14:53.749364-04:00",
+      "inputs": {
+        "dry_run": false,
+        "offline": false
+      },
       "name": "final_delta",
-      "outputs": {},
-      "started_at": null,
-      "status": "pending"
+      "outputs": {
+        "as_of": "2026-09-23T05:14:53.749364-04:00",
+        "unchanged": false
+      },
+      "started_at": "2026-09-23T05:14:53.749364-04:00",
+      "status": "succeeded"
     },
     "freeze_evidence": {
       "as_of": "2026-09-23T05:07:57.405462-04:00",
@@ -77,14 +89,21 @@
       "status": "succeeded"
     },
     "publish": {
-      "as_of": null,
+      "as_of": "2026-09-23T05:14:53.749364-04:00",
       "errors": [],
-      "finished_at": null,
-      "inputs": {},
+      "finished_at": "2026-09-23T05:14:53.749364-04:00",
+      "inputs": {
+        "dry_run": false,
+        "offline": true
+      },
       "name": "publish",
-      "outputs": {},
-      "started_at": null,
-      "status": "pending"
+      "outputs": {
+        "core_status": "ok",
+        "may_publish": true,
+        "trader_books_status": "stale"
+      },
+      "started_at": "2026-09-23T05:14:53.749364-04:00",
+      "status": "succeeded"
     },
     "trader_review": {
       "as_of": null,

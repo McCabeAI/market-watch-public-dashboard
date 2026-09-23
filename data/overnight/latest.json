@@ -1,9 +1,9 @@
 {
-  "as_of": "2026-09-22T08:23:52.277458-04:00",
-  "assembled_dataset": "data/overnight/runs/overnight-20260922/assembled_dataset.json",
+  "as_of": "2026-09-23T05:14:53.749364-04:00",
+  "assembled_dataset": "data/overnight/runs/overnight-20260923/assembled_dataset.json",
   "books_path": "data/overnight/books/latest.json",
   "dry_run": false,
-  "overnight_run_id": "overnight-20260922",
+  "overnight_run_id": "overnight-20260923",
   "publication": {
     "catastrophic_families": [],
     "core_status": "ok",
@@ -12,35 +12,36 @@
         "as_of": "2026-09-22T06:52:19.184127-04:00",
         "blocking": false,
         "catastrophic": false,
-        "digest": "33db9c2bd329b96ab0da382cf8b9fa59bee81d63f45943eb6c70ebaaf40ff504",
+        "digest": "4a903599bf7b7603ff26d41e62568ef2008d1c1daf440e4d69a098063fbbd423",
         "notes": [
-          "accepted current-cycle ACP central-bank research supplement"
+          "rolling 30-day central-bank research state is frozen below"
         ],
         "status": "fresh"
       },
       "macro_hard": {
-        "as_of": "2026-09-21T04:00:00",
-        "blocking": false,
+        "as_of": "2026-09-21T04:00:00-04:00",
+        "blocking": true,
         "catastrophic": false,
         "digest": "6e8d30e5f0c4e44f55b431439d9e36dfa2b12cca5b47bef72ec227c77b26c0c4",
         "notes": [],
-        "status": "fresh"
+        "status": "stale"
       },
       "market_state": {
-        "as_of": "2026-09-22T11:44:28Z",
-        "blocking": true,
+        "as_of": "2026-09-23T09:18:08Z",
+        "blocking": false,
         "catastrophic": false,
-        "digest": "1785a5397db22b52ffc943fc2b10834cb01ad33173b8bb16e0bf557057165f74",
+        "digest": "6c8999cdba6b42efe20ce9c3ca0d74777918a8259495005c8f99b855d46a1c43",
         "notes": [],
-        "status": "stale"
+        "status": "fresh"
       },
       "news": {
         "as_of": "2026-09-22T06:52:19.184127-04:00",
         "blocking": false,
         "catastrophic": false,
-        "digest": "c2d550b2543bf33cedafe0fb2d1ec4abe3bdaacafb384d1fca59f104576645c5",
+        "digest": "1e54107dc8f81b4faff3ae2f7cb25ff0cc552fe97332a125a3eb586f757f77c5",
         "notes": [
-          "accepted current-cycle ACP research supplement"
+          "substantive normalized news items are frozen below",
+          "newer accepted overnight research reused from overnight-20260922"
         ],
         "status": "fresh"
       }
@@ -48,8 +49,8 @@
     "last_successful_pm_run_id": "overnight-20260922",
     "last_successful_review_run_id": "overnight-20260922",
     "may_publish": true,
-    "pm_books_status": "fresh",
-    "reason": "core inputs are structurally valid",
-    "trader_books_status": "fresh"
+    "pm_books_status": "stale",
+    "reason": "core inputs are structurally valid; trader books stale; last successful review overnight-20260922; PM books stale; last successful automated PM cycle overnight-20260922",
+    "trader_books_status": "stale"
   }
 }
