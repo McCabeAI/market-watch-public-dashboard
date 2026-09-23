@@ -12,7 +12,7 @@ Parent model: Grok 4.7. Subagent allowlist: `composer-2.5` only. Caps: 1 frontie
 | Country NZ | Composer 2.5 | pending |
 | Country EA | Composer 2.5 | pending |
 | Country JP | Composer 2.5 | pending |
-| Integration / QA | Composer 2.5 | pending |
+| Integration / QA | Composer 2.5 | done (catalog merge, coverage gate, macro-ingestion workflow, EA Sep23 alert; unittest 73/73: macro_ingestion suite + test_macro_freshness) |
 | Bounded correction | Composer 2.5 | unused unless parent review requests it |
 | Independent final review | Grok 4.7 parent (same call) | pending |
 

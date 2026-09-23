@@ -1,0 +1,15 @@
+{
+  "alert_id": "ea_flash_composite_pmi_sep23_2026",
+  "series_id": "EA.Activity.flash_composite_pmi",
+  "status": "source_failed",
+  "schedule_utc": "2026-09-23T08:00:00Z",
+  "new_york": "2026-09-23T04:00:00-04:00",
+  "cutoff_class": "post_freeze",
+  "primary_url": "https://www.pmi.spglobal.com/Public/Release/PressReleases",
+  "http_status": 403,
+  "value": null,
+  "latest_held_period": "2026-08",
+  "note": "S&P Global press-release listing returned HTTP 403 with no PDF body on live smoke; August final composite is unchanged and no September 2026 flash was appended. This print was not in the 01:50 America/New_York trusted trader packet (review-001 freeze).",
+  "live_smoke_checked_at": "2026-09-23T12:41:42Z",
+  "source": "tests/macro_ingestion/fixtures/ea/live_smoke_report.json"
+}

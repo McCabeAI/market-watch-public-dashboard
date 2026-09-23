@@ -140,17 +140,24 @@ class TestMacroIngestionRunner(unittest.TestCase):
         self.assertEqual(second["rows"][0]["status"], "revision_applied")
 
     def test_missing_adapter_incomplete_country(self) -> None:
+        template = copy.deepcopy(
+            next(r for r in self.catalog["series"] if r["id"] == "US.Labor.unemployment")
+        )
+        template["id"] = "ZZ.Labor.unemployment"
+        template["country"] = "ZZ"
+        template["series_id"] = "ZZ_UNRATE"
+        cat = self._mini_catalog(template)
         result = run_ingestion(
             mode="offline",
-            countries=["US"],
-            catalog=self.catalog,
+            countries=["ZZ"],
+            catalog=cat,
             now=datetime(2026, 9, 21, 12, 0, tzinfo=timezone.utc),
             observations_dir=self.obs_dir,
             health_dir=self.health_dir,
         )
-        us_rows = [r for r in result["rows"] if r["series_id"].startswith("US.")]
-        self.assertTrue(us_rows)
-        self.assertTrue(all(r["status"] == "incomplete_country" for r in us_rows))
+        zz_rows = [r for r in result["rows"] if r["series_id"].startswith("ZZ.")]
+        self.assertTrue(zz_rows)
+        self.assertTrue(all(r["status"] == "incomplete_country" for r in zz_rows))
 
     def test_calendar_unparsed(self) -> None:
         def fetch_series(spec, *, opener, now, timeout=20):

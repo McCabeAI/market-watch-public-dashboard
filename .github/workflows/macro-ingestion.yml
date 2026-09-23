@@ -1,0 +1,123 @@
+name: Macro ingestion
+
+# Scheduled runs default to offline mode: they exercise the real runner path but do
+# not commit network-derived raw bytes or health ledgers. Enable workflow_dispatch
+# with mode=live when a human wants ingestion artifacts pushed to the branch.
+
+on:
+  schedule:
+    - cron: "20 0 * * 1-5"
+      timezone: "America/New_York"
+    - cron: "10 4 * * 1-5"
+      timezone: "America/New_York"
+    - cron: "50 9 * * 1-5"
+      timezone: "America/New_York"
+    - cron: "10 10 * * 1-5"
+      timezone: "America/New_York"
+    - cron: "0 21 * * 1-5"
+      timezone: "America/New_York"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "offline uses fixture/no-network opener; live hits primary sources"
+        required: true
+        default: offline
+        type: choice
+        options:
+          - offline
+          - live
+      country:
+        description: "Economy to check, or all six"
+        required: true
+        default: all
+        type: choice
+        options:
+          - all
+          - US
+          - CA
+          - AU
+          - NZ
+          - EA
+          - JP
+
+permissions:
+  contents: write
+
+concurrency:
+  group: macro-ingestion-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    name: Run macro ingestion runner
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Resolve mode and country
+        id: resolve
+        env:
+          EVENT: ${{ github.event_name }}
+          INPUT_MODE: ${{ github.event.inputs.mode }}
+          INPUT_COUNTRY: ${{ github.event.inputs.country }}
+        run: |
+          set -euo pipefail
+          if [ "$EVENT" = "workflow_dispatch" ]; then
+            MODE="${INPUT_MODE:-offline}"
+            COUNTRY="${INPUT_COUNTRY:-all}"
+          else
+            MODE="offline"
+            COUNTRY="all"
+          fi
+          echo "mode=$MODE" >> "$GITHUB_OUTPUT"
+          echo "country=$COUNTRY" >> "$GITHUB_OUTPUT"
+
+      - name: Run ingestion
+        env:
+          MODE: ${{ steps.resolve.outputs.mode }}
+          COUNTRY: ${{ steps.resolve.outputs.country }}
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python3 -m scripts.macro_ingestion.cli \
+            --mode "$MODE" \
+            --country "$COUNTRY" \
+            --run-id "gh-${{ github.run_id }}"
+
+      - name: Upload health ledger (scheduled offline)
+        if: github.event_name == 'schedule'
+        uses: actions/upload-artifact@v4
+        with:
+          name: macro-ingestion-health-${{ github.run_id }}
+          path: data/macro_ingestion/health/
+          if-no-files-found: warn
+
+      - name: Commit live ingestion artifacts
+        if: github.event_name == 'workflow_dispatch' && steps.resolve.outputs.mode == 'live'
+        env:
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/macro_ingestion/health data/macro_ingestion/post_freeze data/macro_ingestion/raw
+          if git diff --cached --quiet; then
+            echo "No macro ingestion artifacts to commit"
+            exit 0
+          fi
+          git commit -m "chore(macro-ingestion): live run ${{ github.run_id }}"
+          for attempt in 1 2 3; do
+            git pull --rebase origin "$BRANCH"
+            if git push origin "HEAD:$BRANCH"; then
+              exit 0
+            fi
+            echo "Push failed on attempt $attempt"
+          done
+          echo "::error::Failed to push macro ingestion artifacts after rebase retries"
+          exit 1
