@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import copy
 import json
+import os
 import sys
 import tempfile
 import unittest
@@ -191,6 +192,12 @@ class TestAdapterNz(unittest.TestCase):
 
 class TestNzLiveSmoke(unittest.TestCase):
     def test_write_live_smoke_report(self) -> None:
+        out = FIXTURES / "live_smoke_report.json"
+        if os.environ.get("MACRO_INGESTION_LIVE_SMOKE") != "1":
+            report = json.loads(out.read_text(encoding="utf-8"))
+            self.assertIn("probes", report)
+            self.assertTrue(report["probes"])
+            return
         probes = [
             {
                 "label": "stats_nz_cpi_release",

@@ -298,10 +298,16 @@ def run_ingestion(
 
     post_freeze_path = None
     if cutoff == "post_freeze" and post_freeze_changes:
+        # Tests pass a private observations_dir. Keep their deltas beside it
+        # so a unit run cannot append immutable files under the repo tree.
+        freeze_base = None
+        if observations_dir is not None:
+            freeze_base = Path(observations_dir).parent / "post_freeze"
         post_freeze_path = write_post_freeze_delta(
             when=when,
             changed_series=post_freeze_changes,
             run_id=run_id,
+            base_dir=freeze_base or POST_FREEZE_DIR,
         )
 
     return {

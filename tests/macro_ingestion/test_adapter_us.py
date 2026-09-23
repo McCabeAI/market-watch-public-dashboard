@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import copy
 import json
+import os
 import tempfile
 import unittest
 from datetime import datetime, timezone
@@ -79,10 +80,10 @@ def _write_live_smoke_report() -> None:
 class TestUSAdapter(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        try:
+        # Live probes are recorded in the committed fixture. Refresh only when
+        # a human sets MACRO_INGESTION_LIVE_SMOKE=1 so unit runs stay offline.
+        if os.environ.get("MACRO_INGESTION_LIVE_SMOKE") == "1":
             _write_live_smoke_report()
-        except Exception:
-            pass
 
     def setUp(self) -> None:
         self.catalog = load_catalog()

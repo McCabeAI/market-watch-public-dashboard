@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import copy
 import json
+import os
 import tempfile
 import unittest
 from datetime import datetime, timezone
@@ -154,6 +155,11 @@ class TestAustraliaAdapter(unittest.TestCase):
         self.assertEqual(payload.get("status"), "license_gap")
 
     def test_live_smoke_report(self) -> None:
+        if os.environ.get("MACRO_INGESTION_LIVE_SMOKE") != "1":
+            report = json.loads(LIVE_REPORT_PATH.read_text(encoding="utf-8"))
+            self.assertIn("probes", report)
+            self.assertTrue(report["probes"])
+            return
         probes = [
             {
                 "name": "abs_labour_topic",
