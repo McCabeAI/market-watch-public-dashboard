@@ -11,7 +11,9 @@ Only these two events start a launch:
 1. A human-created GitHub issue in `McCabeAI/market-watch-public-dashboard`.
 2. A human `workflow_dispatch` of `.github/workflows/launch-market-watch.yml`.
 
-Bot-authored issues and bot workflow dispatches are ignored. GitHub Actions must not open an `[agent-run]` issue.
+Bot-authored issues and bot workflow dispatches are ignored. GitHub Actions must not open an `[agent-run]` issue. The issue author must be the authenticated GitHub user, and that user must have `admin`, `maintain`, or `write` on this repository. A read-only or outside actor is refused at stage 00, before ingestion.
+
+An `acp` launch commits and pushes the stage 04 freeze, rereads that commit on the remote, and only then writes the delegation request. Stage 05 stays `awaiting_remote_freeze` until that attestation exists, and `awaiting_acp_one_shot_authority` after it. A local grant file is not a provider dispatch. After ACP later accepts an `[overnight-output]` pull request, it sends `repository_dispatch` event `market-watch-launch-accepted` with `client_payload` `{launch_id, review_id, base_packet_sha256, provider_run_url}`. That event is handled by `launch-continuation.yml`. Production Pages run only after stages 06 and 07 succeed for that same launch and review.
 
 ### Issue created from ChatGPT
 

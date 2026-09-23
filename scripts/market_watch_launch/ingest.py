@@ -11,14 +11,17 @@ from typing import Any
 
 from scripts.macro_ingestion.calendar import latest_due_release, release_due as calendar_release_due
 from scripts.macro_ingestion.contract import index_series_rows, load_catalog
+from scripts.macro_ingestion.retries import DEFAULT_ATTEMPTS
 from scripts.macro_ingestion.runner import run_ingestion
-from scripts.macro_ingestion.score_bridge import recompute_scores_after_observation
 from scripts.macro_ingestion.vintage import latest_period_in_store, load_store
 from scripts.market_watch_launch.contract import COUNTRIES, stage_receipt
+from scripts.market_watch_launch.lineage import stage_verified_lineage
 from scripts.temperature_level import HISTORY_DIR, load_history
 
 _STAGE = "01_ingest"
 _LAUNCH_COUNTRIES = tuple(COUNTRIES)
+
+_NON_RETRY_ERRORS = frozenset({"license_gap", "mapped_bridge_transform_not_wired"})
 
 
 def load_ingestion_rows(details: dict[str, Any]) -> list[dict[str, Any]]:
@@ -127,13 +130,12 @@ def _enrich_row(
     return row
 
 
-def _score_bridge_payload(result: Any) -> dict[str, Any]:
-    merge = result.merge or {}
-    appended = merge.get("appended") or []
+def _score_bridge_payload(lineage: dict[str, Any]) -> dict[str, Any]:
+    appended = lineage.get("appended_points") or []
     summary = f"appended={len(appended)}"
-    payload: dict[str, Any] = {"ok": bool(result.ok), "summary": summary}
-    if result.state is not None:
-        payload["state_sha256"] = _sha256_json(result.state)
+    payload: dict[str, Any] = {"ok": bool(lineage.get("ok")), "summary": summary}
+    if lineage.get("score_state_sha256"):
+        payload["state_sha256"] = lineage["score_state_sha256"]
     return payload
 
 
@@ -153,6 +155,91 @@ def _gap_entries(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return gaps
 
 
+def _lineage_details(lineage: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "score_state_sha256": lineage.get("score_state_sha256"),
+        "provenance_sha256": lineage.get("provenance_sha256"),
+        "appended_count": lineage.get("appended_count", 0),
+        "checked_at": lineage.get("checked_at"),
+        "appended_points": lineage.get("appended_points") or [],
+        "lineage_dir": lineage.get("lineage_dir"),
+    }
+
+
+def _canonical_history_dir(root: Path) -> Path:
+    history_dir = root / "data" / "temperature_history"
+    if history_dir.is_dir():
+        return history_dir
+    return HISTORY_DIR
+
+
+def _row_fetch_attempts(row: dict[str, Any]) -> int:
+    error = str(row.get("error") or "")
+    status = str(row.get("status") or "")
+    if error == "budget_deferred":
+        return 0
+    if status in {"incomplete_country", "calendar_unparsed"} and not error:
+        return 0
+    if error in _NON_RETRY_ERRORS:
+        return DEFAULT_ATTEMPTS
+    return DEFAULT_ATTEMPTS
+
+
+def _should_retry_live_row(row: dict[str, Any]) -> bool:
+    error = str(row.get("error") or "")
+    if error in _NON_RETRY_ERRORS:
+        return False
+    if "HTTP 404" in error:
+        return False
+    if error == "budget_deferred":
+        return True
+    if "timed out" in error.lower():
+        return True
+    return False
+
+
+def _merge_ingestion_rows(
+    primary: list[dict[str, Any]],
+    secondary: list[dict[str, Any]],
+    *,
+    attempts: dict[str, int],
+) -> list[dict[str, Any]]:
+    by_id = {str(row["series_id"]): dict(row) for row in primary}
+    for row in secondary:
+        sid = str(row["series_id"])
+        merged = dict(row)
+        merged["attempts"] = attempts.get(sid, _row_fetch_attempts(row))
+        by_id[sid] = merged
+    for sid, row in by_id.items():
+        row.setdefault("attempts", attempts.get(sid, _row_fetch_attempts(row)))
+    return list(by_id.values())
+
+
+def _build_source_matrix(
+    rows: list[dict[str, Any]],
+    catalog_series: list[dict[str, Any]],
+) -> tuple[list[dict[str, Any]], str]:
+    by_id = index_series_rows(catalog_series)
+    matrix: list[dict[str, Any]] = []
+    for row in rows:
+        spec = by_id.get(str(row.get("series_id")))
+        error = row.get("error")
+        error_text = str(error) if error is not None else ""
+        matrix.append(
+            {
+                "series_id": row.get("series_id"),
+                "country": row.get("country"),
+                "status": row.get("status"),
+                "error": error,
+                "attempts": row.get("attempts", _row_fetch_attempts(row)),
+                "endpoint": spec.get("endpoint") if spec else None,
+                "http_403": "HTTP 403" in error_text,
+            }
+        )
+    matrix.sort(key=lambda item: (str(item.get("country") or ""), str(item.get("series_id") or "")))
+    return matrix, _sha256_json(matrix)
+
+
 def _fixture_ingestion(
     *,
     root: Path,
@@ -161,9 +248,7 @@ def _fixture_ingestion(
     checked_at: str,
 ) -> tuple[dict[str, Any], str, str | None]:
     catalog = load_catalog()
-    history_dir = root / "data" / "temperature_history"
-    if not history_dir.is_dir():
-        history_dir = HISTORY_DIR
+    history_dir = _canonical_history_dir(root)
     histories = load_history(history_dir)
 
     observations_dir = launch_dir / "ingestion" / "observations"
@@ -217,20 +302,20 @@ def _fixture_ingestion(
 
         rows.append(row)
 
-    bridge = recompute_scores_after_observation(
-        persist_scores=False,
-        persist_history=False,
-        points=replay_points,
+    lineage = stage_verified_lineage(
+        launch_dir=launch_dir,
         checked_at=checked_at,
-        histories=histories,
+        canonical_history_dir=history_dir,
+        points=replay_points,
+        mode="fixture",
     )
-    score_bridge = _score_bridge_payload(bridge)
+    score_bridge = _score_bridge_payload(lineage)
 
     missing_countries = [c for c in _LAUNCH_COUNTRIES if c not in countries_with_scored]
     if missing_countries:
         status = "failed"
         reason = "missing_country_history"
-    elif not bridge.ok:
+    elif not lineage.get("ok"):
         status = "failed"
         reason = "score_bridge_failed"
     else:
@@ -243,6 +328,7 @@ def _fixture_ingestion(
         "rows": rows,
         "gaps": _gap_entries(rows),
         "score_bridge": score_bridge,
+        "lineage": _lineage_details(lineage),
         "live_fetch": False,
         "invented_values": False,
         "checked_at": checked_at,
@@ -258,6 +344,7 @@ def _live_ingestion(
     launch_dir: Path,
     when: datetime,
     launch_id: str | None,
+    root: Path,
 ) -> tuple[dict[str, Any], str]:
     base = launch_dir / "ingestion"
     observations_dir = base / "observations"
@@ -275,30 +362,77 @@ def _live_ingestion(
         observations_dir=observations_dir,
         health_dir=health_dir,
         raw_dir=raw_dir,
+        timeout_seconds=20,
+        country_budget_seconds=120,
+        run_budget_seconds=15 * 60,
     )
     if not result.get("rows"):
         raise RuntimeError("ingestion returned no rows")
+
+    attempts: dict[str, int] = {}
+    for row in result["rows"]:
+        sid = str(row["series_id"])
+        attempts[sid] = _row_fetch_attempts(row)
+
+    retry_ids = {
+        str(row["series_id"])
+        for row in result["rows"]
+        if _should_retry_live_row(row)
+    }
+    if retry_ids:
+        retry_result = run_ingestion(
+            mode="live",
+            countries=list(_LAUNCH_COUNTRIES),
+            now=when,
+            run_id=launch_id,
+            persist_canonical=False,
+            observations_dir=observations_dir,
+            health_dir=health_dir,
+            raw_dir=raw_dir,
+            timeout_seconds=20,
+            country_budget_seconds=120,
+            run_budget_seconds=8 * 60,
+            only_series_ids=retry_ids,
+        )
+        for row in retry_result.get("rows") or []:
+            sid = str(row["series_id"])
+            attempts[sid] = attempts.get(sid, 0) + _row_fetch_attempts(row)
+        merged_raw = _merge_ingestion_rows(result["rows"], retry_result["rows"], attempts=attempts)
+    else:
+        merged_raw = _merge_ingestion_rows(result["rows"], [], attempts=attempts)
 
     catalog = load_catalog()
     by_id = index_series_rows(catalog["series"])
     rows = [
         _enrich_row(raw, by_id[str(raw["series_id"])], when=when, observations_dir=observations_dir)
-        for raw in result["rows"]
+        for raw in merged_raw
         if str(raw.get("series_id")) in by_id
     ]
+    for row in rows:
+        row["attempts"] = attempts.get(str(row["series_id"]), _row_fetch_attempts(row))
 
-    bridge = recompute_scores_after_observation(
-        persist_scores=False,
-        persist_history=False,
+    checked_at = str(result.get("checked_at") or _utc_iso(when))
+    history_dir = _canonical_history_dir(root)
+    lineage = stage_verified_lineage(
+        launch_dir=launch_dir,
+        checked_at=checked_at,
+        canonical_history_dir=history_dir,
         observations_dir=observations_dir,
-        checked_at=str(result.get("checked_at") or _utc_iso(when)),
+        mode="live",
     )
+
+    source_matrix, source_matrix_sha256 = _build_source_matrix(rows, catalog["series"])
+    matrix_path = launch_dir / "source_matrix.json"
+    matrix_path.write_text(json.dumps(source_matrix, indent=2) + "\n", encoding="utf-8")
+
     details = {
         "mode": "live",
         "countries": list(_LAUNCH_COUNTRIES),
         "rows": rows,
         "gaps": _gap_entries(rows),
-        "score_bridge": _score_bridge_payload(bridge),
+        "score_bridge": _score_bridge_payload(lineage),
+        "lineage": _lineage_details(lineage),
+        "source_matrix_sha256": source_matrix_sha256,
         "live_fetch": True,
         "invented_values": False,
         "checked_at": result.get("checked_at"),
@@ -333,6 +467,7 @@ def run(launch: dict, ctx: dict) -> dict:
                 launch_dir=launch_dir,
                 when=when,
                 launch_id=launch.get("launch_id"),
+                root=Path(ctx["root"]),
             )
             reason = None
         else:

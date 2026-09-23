@@ -212,6 +212,63 @@ class MarketWatchLaunchGraphTests(unittest.TestCase):
         self.assertEqual(self.calls, [])
         self.assertEqual(result["launch"]["stages"]["01_ingest"]["status"], "pending")
 
+    def test_github_issue_read_permission_blocks_before_ingest(self) -> None:
+        handlers = self._handlers()
+        handlers.pop("00_authenticate", None)
+        result = run_launch(
+            self._request(
+                source="github_issue",
+                actor="kevin",
+                issue_number=42,
+                issue_url="https://github.com/org/repo/issues/42",
+                repository_permission="read",
+            ),
+            root=self.root,
+            state_root=self.state_root,
+            handlers=handlers,
+            when=FIXED_WHEN,
+        )
+        self.assertEqual(result["status"], "blocked")
+        self.assertEqual(result["launch"]["stages"]["00_authenticate"]["reason"], "outside_actor")
+        self.assertNotIn("01_ingest", self.calls)
+
+    def test_github_issue_write_permission_and_matching_actor_succeeds_auth(self) -> None:
+        handlers = self._handlers()
+        result = run_launch(
+            self._request(
+                source="github_issue",
+                actor="kevin",
+                issue_number=7,
+                issue_url="https://github.com/org/repo/issues/7",
+                repository_permission="write",
+                issue_actor="kevin",
+            ),
+            root=self.root,
+            state_root=self.state_root,
+            handlers=handlers,
+            when=FIXED_WHEN,
+        )
+        self.assertEqual(result["launch"]["stages"]["00_authenticate"]["status"], "succeeded")
+        self.assertEqual(result["launch"]["request"]["origin"]["issue_number"], 7)
+        self.assertEqual(
+            result["launch"]["request"]["origin"]["issue_url"],
+            "https://github.com/org/repo/issues/7",
+        )
+
+    def test_run_launch_through_authenticate_skips_later_handlers(self) -> None:
+        handlers = self._handlers()
+        result = run_launch(
+            self._request(),
+            root=self.root,
+            state_root=self.state_root,
+            handlers=handlers,
+            when=FIXED_WHEN,
+            through="00_authenticate",
+        )
+        self.assertEqual(result["launch"]["stages"]["00_authenticate"]["status"], "succeeded")
+        self.assertEqual(self.calls, ["00_authenticate"])
+        self.assertEqual(result["launch"]["stages"]["01_ingest"]["status"], "pending")
+
     def test_blocked_quality_gate_does_not_invoke_later_stages(self) -> None:
         from scripts.market_watch_launch.contract import stage_receipt
 

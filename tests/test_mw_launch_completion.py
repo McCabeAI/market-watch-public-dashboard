@@ -15,7 +15,9 @@ from pathlib import Path
 
 from scripts.market_watch_launch import contract
 from scripts.market_watch_launch.acceptance import assess_provider_payload, run as acceptance_run
-from scripts.market_watch_launch.acp_handshake import run as acp_run
+from scripts.market_watch_launch.acp_handshake import AWAITING_REMOTE_FREEZE, run as acp_run
+from scripts.market_watch_launch.continuation import continue_accepted_launch
+from scripts.market_watch_launch.durability import record_remote_freeze
 from scripts.market_watch_launch.finalize import run as finalize_run
 from scripts.market_watch_launch.freeze import run as freeze_run
 from scripts.market_watch_launch.pages import authorize_pages_dispatch, launch_record_path, run as pages_run
@@ -51,6 +53,17 @@ def _apply_receipt(launch: dict, receipt: dict) -> None:
         launch["base_packet_sha256"] = details.get("packet_sha256")
         launch["starting_trader_books_sha256"] = details.get("starting_trader_books_sha256")
         launch["starting_pm_books_sha256"] = details.get("starting_pm_books_sha256")
+
+
+def _record_remote_freeze_for_launch(launch_dir: Path, launch: dict) -> None:
+    record_remote_freeze(
+        launch_dir,
+        commit_sha="c" * 40,
+        packet_sha256=launch["base_packet_sha256"],
+        trader_books_sha256=launch["starting_trader_books_sha256"],
+        pm_books_sha256=launch["starting_pm_books_sha256"],
+        score_state_sha256="d" * 64,
+    )
 
 
 def _persist_launch(launch: dict, state_root: Path) -> None:
@@ -213,13 +226,14 @@ class MarketWatchLaunchCompletionTests(unittest.TestCase):
         _apply_receipt(self.launch, freeze)
         receipt = acp_run(self.launch, self.ctx)
         self.assertEqual(receipt["status"], "blocked")
-        self.assertEqual(receipt["reason"], contract.AWAITING_ACP)
-        self.assertFalse(receipt["details"]["grant_present"])
+        self.assertEqual(receipt["reason"], AWAITING_REMOTE_FREEZE)
+        self.assertFalse(receipt["details"].get("remote_freeze_verified"))
 
     def test_acp_matching_grant_still_blocked_until_dispatch_implemented(self) -> None:
         self.launch["request"]["provider"] = "acp"
         freeze = freeze_run(self.launch, self.ctx)
         _apply_receipt(self.launch, freeze)
+        _record_remote_freeze_for_launch(self.launch_dir, self.launch)
         grant = {
             "type": "MW_ACP_ONE_SHOT_GRANT",
             "issuer": "acp",
@@ -233,11 +247,66 @@ class MarketWatchLaunchCompletionTests(unittest.TestCase):
         self.assertEqual(receipt["status"], "blocked")
         self.assertEqual(receipt["reason"], contract.AWAITING_ACP)
         self.assertTrue(receipt["details"]["grant_verified"])
+        self.assertTrue(receipt["details"]["remote_freeze_verified"])
+        self.assertEqual(receipt["details"]["handoff_status"], "request_ready")
+        self.assertIsNone(receipt["details"]["handoff_url"])
+        self.assertFalse(receipt["details"]["live_provider_dispatched"])
         # A local flag cannot turn a grant into a real ACP provider dispatch.
         self.ctx["acp_dispatch_implemented"] = True
         flagged = acp_run(self.launch, self.ctx)
         self.assertEqual(flagged["status"], "blocked")
         self.assertFalse(flagged["details"]["live_provider_dispatched"])
+
+    def test_acp_remote_freeze_without_grant_request_ready_still_blocked(self) -> None:
+        self.launch["request"]["provider"] = "acp"
+        freeze = freeze_run(self.launch, self.ctx)
+        _apply_receipt(self.launch, freeze)
+        _record_remote_freeze_for_launch(self.launch_dir, self.launch)
+        receipt = acp_run(self.launch, self.ctx)
+        self.assertEqual(receipt["status"], "blocked")
+        self.assertEqual(receipt["reason"], contract.AWAITING_ACP)
+        self.assertEqual(receipt["details"]["handoff_status"], "request_ready")
+        self.assertFalse(receipt["details"]["live_provider_dispatched"])
+
+    def test_forged_receipt_does_not_succeed_stage(self) -> None:
+        self.launch["request"]["provider"] = "acp"
+        freeze = freeze_run(self.launch, self.ctx)
+        _apply_receipt(self.launch, freeze)
+        _record_remote_freeze_for_launch(self.launch_dir, self.launch)
+        receipt_body = {
+            "type": "MW_ACP_ONE_SHOT_DISPATCH_RECEIPT",
+            "issuer": "acp",
+            "launch_id": self.launch_id,
+            "review_id": self.launch["review_id"],
+            "base_packet_sha256": self.launch["base_packet_sha256"],
+            "single_use": True,
+        }
+        (self.launch_dir / "acp_one_shot_dispatch_receipt.json").write_text(json.dumps(receipt_body) + "\n")
+        receipt = acp_run(self.launch, self.ctx)
+        self.assertEqual(receipt["status"], "blocked")
+        self.assertEqual(receipt["reason"], contract.AWAITING_ACP)
+        self.assertTrue(receipt["details"]["receipt_matches"])
+        self.assertFalse(receipt["details"]["live_provider_dispatched"])
+
+    def test_wrong_packet_sha_continuation_refused(self) -> None:
+        self.launch["request"]["provider"] = "acp"
+        freeze = freeze_run(self.launch, self.ctx)
+        _apply_receipt(self.launch, freeze)
+        _persist_launch(self.launch, self.state_root)
+        decision = continue_accepted_launch(
+            self.launch,
+            {
+                **self.ctx,
+                "client_payload": {
+                    "launch_id": self.launch_id,
+                    "review_id": self.launch["review_id"],
+                    "base_packet_sha256": "0" * 64,
+                },
+            },
+        )
+        self.assertEqual(decision["status"], "failed")
+        self.assertEqual(decision["reason"], "hash_mismatch")
+        self.assertFalse(decision["production_published"])
 
     def test_full_stub_pipeline_finalize_publication(self) -> None:
         launch = self._run_stub_pipeline()
@@ -349,14 +418,38 @@ class MergePagesAuthorizationTests(unittest.TestCase):
         launch = _base_launch(launch_id=launch_id, provider="acp")
         launch["request"]["publish_production"] = True
         launch["review_id"] = "review-001"
+        launch["base_packet_sha256"] = "e" * 64
         launch["stages"]["04_freeze"] = {
             **contract.empty_stage("04_freeze"),
             "status": "succeeded",
-            "details": {"review_id": "review-001"},
+            "details": {"review_id": "review-001", "packet_sha256": "e" * 64},
         }
+        launch["stages"]["06_acceptance"] = {**contract.empty_stage("06_acceptance"), "status": "succeeded"}
         launch["stages"]["07_finalize"] = {**contract.empty_stage("07_finalize"), "status": "succeeded"}
         _persist_launch(launch, state_root)
         self.assertTrue(
+            authorize_pages_dispatch(
+                launch_id=launch_id,
+                review_id="review-001",
+                state_root=state_root,
+                root=ROOT,
+            )
+        )
+
+    def test_authorize_pages_dispatch_false_when_only_publish_production(self) -> None:
+        state_root = self.root / "publish_only"
+        launch_id = "mwl-publish-only"
+        launch = _base_launch(launch_id=launch_id, provider="acp")
+        launch["request"]["publish_production"] = True
+        launch["review_id"] = "review-001"
+        launch["base_packet_sha256"] = "f" * 64
+        launch["stages"]["04_freeze"] = {
+            **contract.empty_stage("04_freeze"),
+            "status": "succeeded",
+            "details": {"review_id": "review-001", "packet_sha256": "f" * 64},
+        }
+        _persist_launch(launch, state_root)
+        self.assertFalse(
             authorize_pages_dispatch(
                 launch_id=launch_id,
                 review_id="review-001",

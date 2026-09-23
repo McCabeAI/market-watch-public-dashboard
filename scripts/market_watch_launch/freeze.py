@@ -10,6 +10,8 @@ from typing import Any
 
 from scripts.market_watch_launch import contract
 from scripts.market_watch_launch.contract import LAUNCHER_ID, LEGACY_SCHEDULE_ID
+from scripts.market_watch_launch.lineage import apply_lineage_to_macro_hard, promote_staged_lineage
+from scripts.overnight.clock import isoformat
 from scripts.overnight.constants import FIXTURE_MARKET_STATE
 from scripts.overnight.delta import compute_delta
 from scripts.overnight.errors import EvidenceBoundaryError, OvernightError, SchemaError
@@ -52,16 +54,27 @@ def _offline_and_market_state(launch: dict[str, Any], ctx: dict[str, Any]) -> tu
     return False, None
 
 
-def apply_macro_overlay(families: dict[str, Any], launch: dict[str, Any]) -> dict[str, Any]:
+def apply_macro_overlay(
+    families: dict[str, Any],
+    launch: dict[str, Any],
+    *,
+    launch_dir: Path | None = None,
+) -> dict[str, Any]:
     ingest = ((launch.get("stages") or {}).get("01_ingest") or {}).get("details") or {}
     rows = ingest.get("rows")
+    lineage_summary = ingest.get("lineage")
     if not rows:
+        if launch_dir is not None and lineage_summary:
+            return apply_lineage_to_macro_hard(families, launch_dir, lineage_summary)
         return families
     try:
         from scripts.market_watch_launch import quality_gate as qg
 
         if hasattr(qg, "apply_macro_overlay") and isinstance(rows, list):
-            return qg.apply_macro_overlay(families, rows)
+            out = qg.apply_macro_overlay(families, rows)
+            if launch_dir is not None and lineage_summary:
+                return apply_lineage_to_macro_hard(out, launch_dir, lineage_summary)
+            return out
     except Exception:
         pass
     out = deepcopy(families)
@@ -73,22 +86,39 @@ def apply_macro_overlay(families: dict[str, Any], launch: dict[str, Any]) -> dic
     macro["extra"] = extra
     macro["notes"] = notes
     out["macro_hard"] = macro
+    if launch_dir is not None and lineage_summary:
+        out = apply_lineage_to_macro_hard(out, launch_dir, lineage_summary)
     return out
 
 
-def _write_collect_with_overlay(store: OvernightStore, run_id: str, launch: dict[str, Any]) -> None:
+def _write_collect_with_overlay(
+    store: OvernightStore, run_id: str, launch: dict[str, Any], launch_dir: Path
+) -> None:
     collect = store.read_artifact(run_id, "collect.json")
-    families = apply_macro_overlay(collect.get("families") or {}, launch)
+    families = apply_macro_overlay(collect.get("families") or {}, launch, launch_dir=launch_dir)
     collect = {**collect, "families": families}
     store.write_artifact(run_id, "collect.json", collect)
 
 
-def _overlay_delta_artifact(store: OvernightStore, run_id: str, filename: str, launch: dict[str, Any]) -> None:
+def _overlay_delta_artifact(
+    store: OvernightStore, run_id: str, filename: str, launch: dict[str, Any], launch_dir: Path
+) -> None:
     if not store.has_artifact(run_id, filename):
         return
     delta = store.read_artifact(run_id, filename)
-    families = apply_macro_overlay(delta.get("families") or {}, launch)
+    families = apply_macro_overlay(delta.get("families") or {}, launch, launch_dir=launch_dir)
     store.write_artifact(run_id, filename, {**delta, "families": families})
+
+
+def _lineage_binding_fields(launch: dict[str, Any]) -> dict[str, Any]:
+    ingest = ((launch.get("stages") or {}).get("01_ingest") or {}).get("details") or {}
+    lineage = ingest.get("lineage") or {}
+    fields: dict[str, Any] = {}
+    if lineage.get("score_state_sha256"):
+        fields["score_state_sha256"] = lineage["score_state_sha256"]
+    if lineage.get("provenance_sha256"):
+        fields["provenance_sha256"] = lineage["provenance_sha256"]
+    return fields
 
 
 def run(launch: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
@@ -123,8 +153,10 @@ def run(launch: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
         )
 
     offline, market_state_path = _offline_and_market_state(launch, ctx)
+    lineage_fields = _lineage_binding_fields(launch)
+    launch_as_of = isoformat(when) if when is not None else None
     try:
-        _write_collect_with_overlay(store, run_id, launch)
+        _write_collect_with_overlay(store, run_id, launch, launch_dir)
         compute_delta(
             store,
             run_id=run_id,
@@ -133,7 +165,7 @@ def run(launch: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
             offline=offline,
             market_state_path=market_state_path,
         )
-        _overlay_delta_artifact(store, run_id, "pre_trader_delta.json", launch)
+        _overlay_delta_artifact(store, run_id, "pre_trader_delta.json", launch, launch_dir)
 
         reuse_open = not (launch.get("rerun") or (launch.get("request") or {}).get("rerun"))
         packet = freeze_snapshot(store, run_id=run_id, when=when, reuse_open=reuse_open)
@@ -167,12 +199,13 @@ def run(launch: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
                             "overnight_run_id": run_id,
                             "review_id": review_id,
                             "packet_sha256": packet_sha256,
-                            "as_of": verified.get("as_of"),
+                            "as_of": launch_as_of or verified.get("as_of"),
                             "starting_trader_books_sha256": verified.get("starting_trader_books_sha256"),
                             "starting_pm_books_sha256": verified.get("starting_pm_books_sha256"),
                             "evidence_boundary": "actual_freeze_timestamp",
                             "legacy_0150_used": False,
                             "idempotent": True,
+                            **lineage_fields,
                         },
                     )
                 return contract.stage_receipt(
@@ -196,12 +229,15 @@ def run(launch: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
             "overnight_run_id": run_id,
             "review_id": review_id,
             "packet_sha256": packet_sha256,
-            "as_of": verified.get("as_of"),
+            "as_of": launch_as_of or verified.get("as_of"),
             "starting_trader_books_sha256": verified.get("starting_trader_books_sha256"),
             "starting_pm_books_sha256": verified.get("starting_pm_books_sha256"),
             "launcher_id": LAUNCHER_ID,
             "legacy_schedule_id": LEGACY_SCHEDULE_ID,
             "legacy_schedule_id_active": False,
+            "evidence_boundary": "actual_freeze_timestamp",
+            "legacy_0150_used": False,
+            **lineage_fields,
         }
         binding_path.write_text(json.dumps(binding, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         launch["overnight_run_id"] = run_id
@@ -209,6 +245,16 @@ def run(launch: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
         launch["base_packet_sha256"] = packet_sha256
         launch["starting_trader_books_sha256"] = verified.get("starting_trader_books_sha256")
         launch["starting_pm_books_sha256"] = verified.get("starting_pm_books_sha256")
+
+        if ctx.get("promote_canonical"):
+            mode = str((launch.get("request") or {}).get("mode") or "fixture")
+            promote_staged_lineage(
+                launch_dir / "lineage",
+                Path(ctx["canonical_history_dir"]),
+                Path(ctx["canonical_scores_path"]),
+                promote=True,
+                mode=mode,
+            )
 
         return contract.stage_receipt(
             STAGE,
@@ -220,11 +266,12 @@ def run(launch: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
                 "overnight_run_id": run_id,
                 "review_id": review_id,
                 "packet_sha256": packet_sha256,
-                "as_of": verified.get("as_of"),
+                "as_of": launch_as_of or verified.get("as_of"),
                 "starting_trader_books_sha256": verified.get("starting_trader_books_sha256"),
                 "starting_pm_books_sha256": verified.get("starting_pm_books_sha256"),
                 "evidence_boundary": "actual_freeze_timestamp",
                 "legacy_0150_used": False,
+                **lineage_fields,
             },
         )
     except (EvidenceBoundaryError, SchemaError, OvernightError) as exc:

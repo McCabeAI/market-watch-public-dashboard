@@ -15,8 +15,6 @@ from scripts.market_watch_launch.contract import (
 )
 from scripts.market_watch_launch.acquire import read_collect_families
 from scripts.market_watch_launch.ingest import load_ingestion_rows
-from scripts.overnight.freshness import required_preflight_block
-
 _STAGE = "03_quality_gate"
 _BLOCKING_LEG_STATUSES = frozenset({"stale", "missing", "invalid", "unavailable"})
 _ZERO_WEIGHT_ROLES = frozenset({"context", "registry_unweighted", "explanatory_alias"})
@@ -129,6 +127,40 @@ def _leg_statuses(packet: dict[str, Any]) -> dict[str, str]:
     return legs
 
 
+def _country_has_verified_scored(rows: list[dict[str, Any]], country: str) -> bool:
+    for row in rows:
+        if str(row.get("country") or "") != country:
+            continue
+        if not _is_scored_row(row):
+            continue
+        if _effective_status(row) in VERIFIED_OBSERVATION_STATUSES:
+            return True
+    return False
+
+
+def _country_release_due_blocking(rows: list[dict[str, Any]], country: str) -> list[dict[str, Any]]:
+    blocked: list[dict[str, Any]] = []
+    for row in rows:
+        if str(row.get("country") or "") != country:
+            continue
+        if not _is_scored_row(row):
+            continue
+        effective = _effective_status(row)
+        if effective in BLOCKING_SERIES_STATUSES and bool(row.get("release_due")):
+            blocked.append(row)
+    return blocked
+
+
+def _macro_eligible_countries(rows: list[dict[str, Any]]) -> list[str]:
+    eligible: list[str] = []
+    for code in COUNTRIES:
+        if _country_release_due_blocking(rows, code):
+            continue
+        if _country_has_verified_scored(rows, code):
+            eligible.append(code)
+    return eligible
+
+
 def _country_rollups(rows: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
     out: dict[str, dict[str, Any]] = {code: {"scored_status": "missing", "gaps": []} for code in COUNTRIES}
     for row in rows:
@@ -207,32 +239,35 @@ def evaluate_gate(
             partial_expressions.append(expr)
 
     blocked_sources = [str(row.get("series_id")) for row in blocking_scored if row.get("series_id")]
+    blocked_expressions: list[str] = []
+    for code in COUNTRIES:
+        if _country_release_due_blocking(rows, code):
+            expr = f"macro:{code}"
+            if expr not in blocked_expressions:
+                blocked_expressions.append(expr)
 
-    base = {
+    countries = _country_rollups(rows)
+
+    base: dict[str, Any] = {
         "outcome": "PASS",
         "coverage": "COMPLETE",
         "reason": None,
         "blocked_sources": blocked_sources,
+        "blocked_expressions": blocked_expressions,
         "blocked_legs": [],
         "partial_expressions": partial_expressions,
         "partial_series": partial_series,
         "eligible": False,
         "hold_decisions_emitted": 0,
         "synthetic_holds": False,
-        "countries": _country_rollups(rows),
+        "countries": countries,
+        "countries_unaffected": [],
     }
 
     if not scored_rows or len(verified_scored) == 0:
         base["outcome"] = "BLOCKED"
         base["coverage"] = "NONE"
         base["reason"] = "all_critical_missing"
-        base["eligible"] = False
-        return base
-
-    if blocking_scored:
-        base["outcome"] = "BLOCKED"
-        base["coverage"] = "NONE"
-        base["reason"] = "stale_or_missing_source"
         base["eligible"] = False
         return base
 
@@ -246,45 +281,36 @@ def evaluate_gate(
         base["eligible"] = False
         return base
 
-    preflight = required_preflight_block(families)
-    if preflight:
-        base["outcome"] = "BLOCKED"
-        base["coverage"] = "NONE"
-        base["reason"] = "missing_required_mark"
-        base["blocked_legs"] = ["preflight"]
-        base["eligible"] = False
-        return base
-
     legs = _leg_statuses(packet)
-    required = set(required_preflight_countries())
-    partial_legs: list[str] = []
-    blocked_legs: list[str] = []
-    required_rate_ok = False
-    for leg, status in legs.items():
-        if leg == "FX":
-            if status in _BLOCKING_LEG_STATUSES:
-                blocked_legs.append("FX")
-            continue
-        country = leg.replace("_rates", "")
-        if country in required:
-            if status in _BLOCKING_LEG_STATUSES:
-                blocked_legs.append(leg)
-            elif status not in _BLOCKING_LEG_STATUSES:
-                required_rate_ok = True
-        elif status in _BLOCKING_LEG_STATUSES:
-            partial_legs.append(leg)
-
-    if blocked_legs:
+    fx_status = legs.get("FX", "missing")
+    macro_eligible = _macro_eligible_countries(rows)
+    if fx_status in _BLOCKING_LEG_STATUSES:
         base["outcome"] = "BLOCKED"
         base["coverage"] = "NONE"
         base["reason"] = "no_markable_universe"
-        base["blocked_legs"] = blocked_legs
+        base["blocked_legs"] = ["FX"]
+        base["countries_unaffected"] = macro_eligible
         base["eligible"] = False
         return base
 
-    fx_status = legs.get("FX", "missing")
-    markable = required_rate_ok and fx_status not in _BLOCKING_LEG_STATUSES
-    if not markable:
+    partial_legs: list[str] = []
+    trade_eligible_countries: list[str] = []
+    for code in COUNTRIES:
+        due_block = _country_release_due_blocking(rows, code)
+        rate_status = legs.get(f"{code}_rates", "missing")
+        rates_ok = rate_status not in _BLOCKING_LEG_STATUSES
+        country_eligible = (
+            not due_block
+            and _country_has_verified_scored(rows, code)
+            and rates_ok
+        )
+        countries[code]["eligible"] = country_eligible
+        if country_eligible:
+            trade_eligible_countries.append(code)
+        elif rate_status in _BLOCKING_LEG_STATUSES:
+            partial_legs.append(f"{code}_rates")
+
+    if not trade_eligible_countries:
         base["outcome"] = "BLOCKED"
         base["coverage"] = "NONE"
         base["reason"] = "no_markable_universe"
@@ -292,10 +318,15 @@ def evaluate_gate(
         return base
 
     base["partial_legs"] = partial_legs
-    if optional_gaps or partial_legs or nondue_scored_gaps:
-        base["coverage"] = "PARTIAL"
-    else:
-        base["coverage"] = "COMPLETE"
+    base["trade_eligible_countries"] = trade_eligible_countries
+    has_partial = bool(
+        optional_gaps
+        or partial_legs
+        or nondue_scored_gaps
+        or blocking_scored
+        or blocked_expressions
+    )
+    base["coverage"] = "PARTIAL" if has_partial else "COMPLETE"
     base["eligible"] = True
     return base
 

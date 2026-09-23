@@ -49,17 +49,20 @@ def authorize_pages_dispatch(
         return False
     if record.get("launch_id") != launch_id:
         return False
-    finalize = (record.get("stages") or {}).get("07_finalize") or {}
-    if finalize.get("status") != "succeeded":
-        return False
-    freeze = (record.get("stages") or {}).get("04_freeze") or {}
-    freeze_review = ((freeze.get("details") or {}).get("review_id")) or record.get("review_id")
-    if freeze_review != review_id:
-        return False
     provider = (record.get("request") or {}).get("provider")
     if provider != "acp":
         return False
-    if not (record.get("request") or {}).get("publish_production"):
+    acceptance = (record.get("stages") or {}).get("06_acceptance") or {}
+    finalize = (record.get("stages") or {}).get("07_finalize") or {}
+    if acceptance.get("status") != "succeeded" or finalize.get("status") != "succeeded":
+        return False
+    freeze = (record.get("stages") or {}).get("04_freeze") or {}
+    freeze_details = freeze.get("details") or {}
+    freeze_review = freeze_details.get("review_id") or record.get("review_id")
+    if freeze_review != review_id:
+        return False
+    packet_sha = freeze_details.get("packet_sha256") or record.get("base_packet_sha256")
+    if not packet_sha or record.get("base_packet_sha256") != packet_sha:
         return False
     return True
 
@@ -92,9 +95,11 @@ def run(launch: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
 
     plan = _build_plan(launch)
     provider = _provider(launch)
-    publish_production = bool(ctx.get("publish_production") or (launch.get("request") or {}).get("publish_production"))
+    freeze = ((launch.get("stages") or {}).get("04_freeze") or {}).get("details") or {}
+    review_id = freeze.get("review_id") or launch.get("review_id")
+    state_root = ctx.get("state_root") or ctx.get("root")
 
-    if provider == "stub" or not publish_production:
+    if provider == "stub":
         return contract.stage_receipt(
             STAGE,
             status="succeeded",
@@ -106,6 +111,21 @@ def run(launch: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
                 "dry_run": True,
                 "production_published": False,
             },
+        )
+
+    authorized = authorize_pages_dispatch(
+        launch_id=launch["launch_id"],
+        review_id=review_id,
+        state_root=state_root,
+        root=ctx["root"],
+    )
+    if not authorized:
+        return contract.stage_receipt(
+            STAGE,
+            status="blocked",
+            input_sha256=input_sha,
+            reason="pages_dispatch_not_confirmed",
+            details={"plan": plan, "executed": False, "production_published": False},
         )
 
     dispatch: Callable[..., dict[str, Any]] | None = ctx.get("pages_dispatch")

@@ -56,6 +56,7 @@ jobs:
       issue_number: ${{ steps.decide.outputs.issue_number }}
       issue_title: ${{ steps.decide.outputs.issue_title }}
       issue_url: ${{ steps.decide.outputs.issue_url }}
+      repository_permission: ${{ steps.decide.outputs.repository_permission }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -76,6 +77,9 @@ jobs:
           INPUT_RERUN: ${{ github.event.inputs.rerun }}
           INPUT_MODE: ${{ github.event.inputs.mode }}
           INPUT_PROVIDER: ${{ github.event.inputs.provider }}
+          AUTHOR_ASSOCIATION: ${{ github.event.issue.author_association }}
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
           set -euo pipefail
           proceed=false
@@ -88,6 +92,7 @@ jobs:
           issue_number=""
           issue_title=""
           issue_url=""
+          repository_permission=""
 
           if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
             if [ "${SENDER_TYPE}" != "User" ]; then
@@ -130,6 +135,33 @@ jobs:
               if [ -n "$body_provider" ]; then provider="$body_provider"; fi
               if [ "$body_rerun" = "true" ]; then rerun=true; fi
             fi
+            if [ "${SENDER_LOGIN}" != "${ISSUE_USER_LOGIN}" ]; then
+              echo "issue sender does not match the issue author; skipping launch"
+              proceed=false
+            fi
+          fi
+
+          if [ "$proceed" = "true" ]; then
+            set +e
+            repository_permission=$(gh api "repos/${GITHUB_REPOSITORY}/collaborators/${actor}/permission" --jq .permission 2>/dev/null)
+            api_code=$?
+            set -e
+            if [ "$api_code" -ne 0 ] || [ -z "${repository_permission}" ]; then
+              if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+                repository_permission="write"
+              elif [ "${AUTHOR_ASSOCIATION}" = "OWNER" ]; then
+                repository_permission="admin"
+              else
+                repository_permission="none"
+              fi
+            fi
+            case "$repository_permission" in
+              admin|maintain|write) ;;
+              *)
+                echo "refusing launch: ${actor} permission is ${repository_permission}"
+                proceed=false
+                ;;
+            esac
           fi
 
           echo "proceed=$proceed" >> "$GITHUB_OUTPUT"
@@ -142,6 +174,7 @@ jobs:
           echo "issue_number=$issue_number" >> "$GITHUB_OUTPUT"
           echo "issue_title=$issue_title" >> "$GITHUB_OUTPUT"
           echo "issue_url=$issue_url" >> "$GITHUB_OUTPUT"
+          echo "repository_permission=$repository_permission" >> "$GITHUB_OUTPUT"
 
   orchestrate:
     name: Orchestrate manual launch
@@ -174,6 +207,7 @@ jobs:
           ISSUE_TITLE: ${{ needs.guard.outputs.issue_title }}
           ISSUE_URL: ${{ needs.guard.outputs.issue_url }}
           EVENT_NAME: ${{ github.event_name }}
+          REPOSITORY_PERMISSION: ${{ needs.guard.outputs.repository_permission }}
         run: |
           set -euo pipefail
           ARGS=(
@@ -182,7 +216,11 @@ jobs:
             --provider "$PROVIDER"
             --actor-type "$ACTOR_TYPE"
             --actor "$ACTOR"
+            --repository-permission "$REPOSITORY_PERMISSION"
           )
+          if [ "$PROVIDER" = "acp" ]; then
+            ARGS+=(--through 04_freeze)
+          fi
           if [ -n "${SESSION_DATE:-}" ]; then
             ARGS+=(--session-date "$SESSION_DATE")
           fi
@@ -198,36 +236,83 @@ jobs:
           PYTHONPATH=. python3 -m scripts.market_watch_launch.cli "${ARGS[@]}" | tee launch-result.json
           code=$?
           set -e
-          launch_id="$(python3 -c 'import json; print(json.load(open("launch-result.json"))["launch_id"])')"
-          echo "launch_id=$launch_id" >> "$GITHUB_OUTPUT"
-          if [ "$code" -ne 0 ] && [ "$code" -ne 1 ]; then
-            exit "$code"
-          fi
-          if [ "$code" -eq 1 ]; then
-            echo "launch failed (operational outcome)"
+          if [ ! -s launch-result.json ]; then
+            echo "launch CLI produced no result"
             exit 1
           fi
+          launch_id="$(python3 -c 'import json; print(json.load(open("launch-result.json"))["launch_id"])')"
+          echo "launch_id=$launch_id" >> "$GITHUB_OUTPUT"
+          echo "cli_code=$code" >> "$GITHUB_OUTPUT"
 
-      - name: Commit launch state
+      - name: Commit freeze and ledger
+        if: always() && steps.launch.outputs.launch_id != ''
         env:
           PROVIDER: ${{ needs.guard.outputs.provider }}
           LAUNCH_ID: ${{ steps.launch.outputs.launch_id }}
         run: |
           set -euo pipefail
-          if [ -d data/market_watch_launches ]; then
-            git add data/market_watch_launches
-          fi
+          git add data/market_watch_launches
           if [ "$PROVIDER" = "acp" ]; then
-            git add data/overnight/runs data/overnight/books data/overnight/latest.json data/pm 2>/dev/null || true
+            git add data/overnight/runs data/overnight/books data/overnight/latest.json data/pm || true
           fi
           if git diff --cached --quiet; then
             echo "no launch artifacts to commit"
             exit 0
           fi
           git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
-            commit -m "chore: market watch launch ${LAUNCH_ID}"
+            commit -m "chore: market watch launch ${LAUNCH_ID} freeze"
           git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
+
+      - name: Verify remote freeze before ACP handoff
+        if: needs.guard.outputs.provider == 'acp' && steps.launch.outputs.launch_id != ''
+        env:
+          LAUNCH_ID: ${{ steps.launch.outputs.launch_id }}
+        run: |
+          set -euo pipefail
+          git fetch origin "${GITHUB_REF_NAME}"
+          remote_sha="$(git rev-parse "origin/${GITHUB_REF_NAME}")"
+          local_binding="data/market_watch_launches/${LAUNCH_ID}/freeze_binding.json"
+          if [ ! -f "$local_binding" ]; then
+            echo "freeze binding absent; stage 05 stays blocked"
+            exit 0
+          fi
+          git show "${remote_sha}:${local_binding}" > /tmp/remote-freeze-binding.json
+          cmp -s "$local_binding" /tmp/remote-freeze-binding.json
+          BINDING="$local_binding" LAUNCH_DIR="data/market_watch_launches/${LAUNCH_ID}" COMMIT_SHA="$remote_sha" \
+            PYTHONPATH=. python3 -c 'import json,os; from pathlib import Path; from scripts.market_watch_launch.durability import record_remote_freeze; b=json.load(open(os.environ["BINDING"])); record_remote_freeze(Path(os.environ["LAUNCH_DIR"]), commit_sha=os.environ["COMMIT_SHA"], packet_sha256=str(b.get("packet_sha256") or ""), trader_books_sha256=str(b.get("starting_trader_books_sha256") or ""), pm_books_sha256=str(b.get("starting_pm_books_sha256") or ""), score_state_sha256=str(b.get("score_state_sha256") or ""))'
+          git add "data/market_watch_launches/${LAUNCH_ID}/remote_freeze.json"
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -m "chore: market watch launch ${LAUNCH_ID} remote freeze attestation"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+          git fetch origin "${GITHUB_REF_NAME}"
+          attested="$(git rev-parse "origin/${GITHUB_REF_NAME}:data/market_watch_launches/${LAUNCH_ID}/remote_freeze.json")"
+          test -n "$attested"
+
+      - name: ACP handoff after verified freeze
+        if: needs.guard.outputs.provider == 'acp' && steps.launch.outputs.launch_id != ''
+        env:
+          LAUNCH_ID: ${{ steps.launch.outputs.launch_id }}
+        run: |
+          set -euo pipefail
+          if [ ! -f "data/market_watch_launches/${LAUNCH_ID}/remote_freeze.json" ]; then
+            echo "remote freeze was not attested; not calling ACP"
+            exit 0
+          fi
+          PYTHONPATH=. python3 -m scripts.market_watch_launch.cli stage --launch-id "$LAUNCH_ID" --name 05_acp_handoff | tee handoff-result.json
+          git add data/market_watch_launches
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -m "chore: market watch launch ${LAUNCH_ID} acp handoff"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
+      - name: Fail the job when the launch itself failed
+        if: always() && steps.launch.outputs.cli_code == '1'
+        run: exit 1
 
   unit-tests:
     name: Market Watch launch unit tests
@@ -253,6 +338,7 @@ jobs:
           PYTHONPATH=. python3 -m unittest \
             tests.test_mw_launch_graph \
             tests.test_mw_launch_quality \
+            tests.test_mw_launch_lineage \
             tests.test_mw_launch_completion \
             tests.test_mw_launch_integration \
             -v

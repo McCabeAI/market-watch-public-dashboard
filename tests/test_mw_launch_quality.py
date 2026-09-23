@@ -124,10 +124,75 @@ class EvaluateGateTests(unittest.TestCase):
             },
         ]
         result = evaluate_gate(rows=rows, families=_fresh_market_families())
-        self.assertEqual(result["outcome"], "BLOCKED")
-        self.assertEqual(result["reason"], "stale_or_missing_source")
+        self.assertEqual(result["outcome"], "PASS")
+        self.assertEqual(result["coverage"], "PARTIAL")
+        self.assertTrue(result["eligible"])
         self.assertIn("CA.Inflation.cpi", result["blocked_sources"])
+        self.assertIn("macro:CA", result["blocked_expressions"])
+        self.assertTrue(result["countries"]["US"]["eligible"])
         self.assertEqual(result["hold_decisions_emitted"], 0)
+
+    def test_missing_due_us_does_not_block_verified_ca(self) -> None:
+        rows = [
+            {
+                "series_id": "US.Inflation.core_pce",
+                "country": "US",
+                "role": "scored",
+                "weight": 1.0,
+                "status": "due_missing",
+                "release_due": True,
+                "observation_period": "2025-05",
+                "due_period": "2025-07",
+            },
+            {
+                "series_id": "CA.Inflation.cpi",
+                "country": "CA",
+                "role": "scored",
+                "weight": 1.0,
+                "status": "checked_unchanged",
+                "release_due": False,
+                "observation_period": "2025-08",
+                "due_period": "2025-08",
+            },
+        ]
+        result = evaluate_gate(rows=rows, families=_fresh_market_families())
+        self.assertEqual(result["outcome"], "PASS")
+        self.assertEqual(result["coverage"], "PARTIAL")
+        self.assertIn("macro:US", result["blocked_expressions"])
+        self.assertTrue(result["countries"]["CA"]["eligible"])
+        self.assertFalse(result["countries"]["US"]["eligible"])
+
+    def test_fx_missing_blocks_launch_but_countries_remain_listed(self) -> None:
+        rows = [
+            {
+                "series_id": "US.Inflation.core_pce",
+                "country": "US",
+                "role": "scored",
+                "weight": 1.0,
+                "status": "checked_unchanged",
+                "release_due": False,
+                "observation_period": "2025-08",
+                "due_period": "2025-08",
+            },
+            {
+                "series_id": "CA.Inflation.cpi",
+                "country": "CA",
+                "role": "scored",
+                "weight": 1.0,
+                "status": "checked_unchanged",
+                "release_due": False,
+                "observation_period": "2025-08",
+                "due_period": "2025-08",
+            },
+        ]
+        families = _fresh_market_families()
+        families["market_state"]["data"]["fx"] = {"status": "missing"}
+        result = evaluate_gate(rows=rows, families=families)
+        self.assertEqual(result["outcome"], "BLOCKED")
+        self.assertEqual(result["reason"], "no_markable_universe")
+        self.assertIn("FX", result["blocked_legs"])
+        self.assertIn("US", result["countries_unaffected"])
+        self.assertIn("CA", result["countries_unaffected"])
 
     def test_optional_pmi_license_gap_partial_pass(self) -> None:
         rows = [
@@ -192,7 +257,41 @@ class EvaluateGateTests(unittest.TestCase):
         self.assertIsNotNone(required_preflight_block(families))
         result = evaluate_gate(rows=rows, families=families)
         self.assertEqual(result["outcome"], "BLOCKED")
-        self.assertEqual(result["reason"], "missing_required_mark")
+        self.assertEqual(result["reason"], "no_markable_universe")
+        self.assertEqual(result["hold_decisions_emitted"], 0)
+
+    def test_us_rates_missing_leaves_verified_ca_eligible(self) -> None:
+        rows = [
+            {
+                "series_id": "US.Inflation.core_pce",
+                "country": "US",
+                "role": "scored",
+                "weight": 1.0,
+                "status": "checked_unchanged",
+                "release_due": False,
+                "observation_period": "2025-08",
+                "due_period": "2025-08",
+            },
+            {
+                "series_id": "CA.Inflation.cpi",
+                "country": "CA",
+                "role": "scored",
+                "weight": 1.0,
+                "status": "checked_unchanged",
+                "release_due": False,
+                "observation_period": "2025-08",
+                "due_period": "2025-08",
+            },
+        ]
+        families = _fresh_market_families()
+        families["market_state"]["data"]["rates"]["US"]["status"] = "missing"
+        result = evaluate_gate(rows=rows, families=families)
+        self.assertEqual(result["outcome"], "PASS")
+        self.assertEqual(result["coverage"], "PARTIAL")
+        self.assertIn("CA", result["trade_eligible_countries"])
+        self.assertNotIn("US", result["trade_eligible_countries"])
+        self.assertIn("US_rates", result["partial_legs"])
+        self.assertEqual(result["hold_decisions_emitted"], 0)
 
 
 class FixtureIngestTests(unittest.TestCase):

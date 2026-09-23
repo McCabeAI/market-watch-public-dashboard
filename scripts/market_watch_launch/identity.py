@@ -18,6 +18,7 @@ from scripts.overnight.clock import now_ny, session_date as ny_session_date
 from scripts.overnight.store import sha256_text
 
 _ALLOWED_SOURCES = frozenset({"workflow_dispatch", "github_issue"})
+_WRITE_PERMISSIONS = frozenset({"admin", "maintain", "write"})
 
 
 def _utc_launch_timestamp(when: datetime) -> str:
@@ -87,16 +88,43 @@ def request_identity_digest(request: dict[str, Any]) -> str:
     return sha256_text("\n".join(parts))
 
 
+def _normalize_permission(value: Any) -> str | None:
+    if value is None:
+        return None
+    text = str(value).strip().lower()
+    return text if text else None
+
+
 def authenticate_origin(request: dict[str, Any]) -> tuple[bool, str | None]:
     source = request.get("source")
     if source not in _ALLOWED_SOURCES:
         return False, "initiating_event_forbidden"
-    actor_type = request.get("actor_type")
-    if not actor_type or not str(actor_type).strip():
+
+    actor_type = str(request.get("actor_type") or "").strip()
+    if not actor_type:
         return False, BOT_ORIGIN_FORBIDDEN
-    if str(actor_type).strip().lower() == "bot":
+    if actor_type.lower() == "bot":
         return False, BOT_ORIGIN_FORBIDDEN
-    return True, None
+
+    permission = _normalize_permission(request.get("repository_permission"))
+
+    if source == "github_issue":
+        if permission not in _WRITE_PERMISSIONS:
+            return False, "outside_actor"
+        issue_actor = request.get("issue_actor")
+        actor = request.get("actor")
+        if issue_actor is not None and str(issue_actor) != str(actor):
+            return False, "outside_actor"
+        return True, None
+
+    if source == "workflow_dispatch":
+        if actor_type != "User":
+            return False, BOT_ORIGIN_FORBIDDEN
+        if permission is not None and permission not in _WRITE_PERMISSIONS:
+            return False, "outside_actor"
+        return True, None
+
+    return False, "initiating_event_forbidden"
 
 
 def default_session_date(when: datetime | None = None) -> str:

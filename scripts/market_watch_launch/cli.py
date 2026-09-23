@@ -32,6 +32,8 @@ def _build_launch_request(args: argparse.Namespace) -> dict:
         request["issue_url"] = args.issue_url
     if args.market_state:
         request["market_state_path"] = args.market_state
+    if args.repository_permission:
+        request["repository_permission"] = args.repository_permission
     return request
 
 
@@ -46,6 +48,7 @@ def cmd_launch(args: argparse.Namespace) -> int:
         root=Path(args.root),
         state_root=Path(args.state_root),
         when=when,
+        through=args.through,
     )
     print(json.dumps(result, indent=2, sort_keys=True))
     status = result["status"]
@@ -96,6 +99,8 @@ def main(argv: list[str] | None = None) -> int:
     launch_p.add_argument("--issue-title", dest="issue_title")
     launch_p.add_argument("--issue-url", dest="issue_url")
     launch_p.add_argument("--market-state", dest="market_state")
+    launch_p.add_argument("--repository-permission", dest="repository_permission")
+    launch_p.add_argument("--through", dest="through")
     launch_p.add_argument("--publish-production", dest="publish_production", action="store_true")
     launch_p.set_defaults(func=cmd_launch)
 

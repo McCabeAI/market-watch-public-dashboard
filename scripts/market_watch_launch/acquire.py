@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from scripts.market_watch_launch.contract import stage_receipt
+from scripts.market_watch_launch.lineage import apply_lineage_to_macro_hard
 from scripts.overnight.collect import collect_inputs
 from scripts.overnight.constants import EVIDENCE_FAMILIES
 from scripts.overnight.freshness import required_preflight_block
@@ -96,6 +97,15 @@ def run(launch: dict, ctx: dict) -> dict:
         )
 
     families = snapshot.get("families") or {}
+    ingest_stage = (launch.get("stages") or {}).get("01_ingest") or {}
+    ingest_details = ingest_stage.get("details") or {}
+    lineage_summary = ingest_details.get("lineage")
+    launch_dir = Path(ctx["launch_dir"])
+    families = apply_lineage_to_macro_hard(families, launch_dir, lineage_summary)
+    if lineage_summary and (launch_dir / "lineage" / "temperature_scores.json").is_file():
+        collect = {**snapshot, "families": families}
+        store.write_artifact(run_id, "collect.json", collect)
+
     market_block = families.get("market_state") or {}
     market_payload = market_block.get("data") if isinstance(market_block, dict) else None
     preflight_error = required_preflight_block(families) if families else "missing families"

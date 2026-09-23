@@ -32,7 +32,7 @@ from scripts.market_watch_launch.identity import (
 )
 from scripts.market_watch_launch.state import LaunchStateStore
 from scripts.overnight.clock import isoformat, now_ny
-from scripts.overnight.store import sha256_json
+from scripts.overnight.store import sha256_json, write_json
 
 Handler = Callable[[dict[str, Any], dict[str, Any]], dict[str, Any]]
 
@@ -49,6 +49,14 @@ def _normalize_request(request: dict[str, Any], when: datetime) -> dict[str, Any
     normalized.setdefault("publish_production", False)
     if normalized.get("provider") == "stub":
         normalized["publish_production"] = False
+    normalized["origin"] = {
+        "source": normalized.get("source"),
+        "issue_number": normalized.get("issue_number"),
+        "issue_url": normalized.get("issue_url"),
+        "actor": normalized.get("actor"),
+        "actor_type": normalized.get("actor_type"),
+        "repository_permission": normalized.get("repository_permission"),
+    }
     return normalized
 
 
@@ -217,6 +225,30 @@ def _wrapper(launch: dict[str, Any], *, returned_existing: bool) -> dict[str, An
     }
 
 
+def _write_launch_ledger_best_effort(store: LaunchStateStore, launch: dict[str, Any]) -> None:
+    if launch.get("status") not in ("blocked", "failed"):
+        return
+    try:
+        stage_name: str | None = None
+        reason: str | None = None
+        for name in STAGES:
+            row = launch["stages"][name]
+            if row.get("status") in ("blocked", "failed"):
+                stage_name = name
+                reason = row.get("reason")
+                break
+        payload = {
+            "launch_id": launch["launch_id"],
+            "status": launch["status"],
+            "stage": stage_name,
+            "reason": reason,
+        }
+        path = store.launch_dir(launch["launch_id"]) / "ledger.json"
+        write_json(path, payload)
+    except Exception:  # noqa: BLE001 — ledger is best-effort
+        return
+
+
 def _prior_output_sha256(launch: dict[str, Any], stage_index: int) -> str | None:
     if stage_index == 0:
         return None
@@ -310,6 +342,8 @@ def _execute_stage(
     _apply_receipt_to_stage(stage_row, receipt, artifact_rel)
     launch["status"] = _launch_status_from_stages(launch)
     store.save_launch(launch)
+    if launch["status"] in ("blocked", "failed"):
+        _write_launch_ledger_best_effort(store, launch)
 
     if stage_row["status"] != "succeeded":
         return False
@@ -330,6 +364,7 @@ def _orchestrate(
     handlers: dict[str, Handler],
     when: datetime,
     only_stage: str | None = None,
+    through: str | None = None,
 ) -> dict[str, Any]:
     store = LaunchStateStore(state_root)
     if launch["status"] == "blocked":
@@ -343,6 +378,8 @@ def _orchestrate(
         for prior in STAGES[:start_index]:
             if launch["stages"][prior]["status"] != "succeeded":
                 raise ValueError(f"stage {only_stage} is not yet resumable; prior stage {prior} not succeeded")
+    if through is not None and through not in STAGES:
+        raise ValueError(f"unknown stage {through}")
 
     for stage in STAGES[start_index:]:
         if launch["status"] in TERMINAL_LAUNCH_STATUSES and launch["status"] != "running":
@@ -364,9 +401,12 @@ def _orchestrate(
             break
         if only_stage is not None:
             break
+        if through is not None and stage == through:
+            break
 
     launch["status"] = _launch_status_from_stages(launch)
     store.save_launch(launch)
+    _write_launch_ledger_best_effort(store, launch)
     return launch
 
 
@@ -377,6 +417,7 @@ def run_launch(
     state_root: Path,
     handlers: dict[str, Any] | None = None,
     when: datetime | None = None,
+    through: str | None = None,
 ) -> dict[str, Any]:
     ny_when = now_ny(when)
     normalized = _normalize_request(request, ny_when)
@@ -399,6 +440,7 @@ def run_launch(
                 state_root=state_root,
                 handlers=handler_map,
                 when=ny_when,
+                through=through,
             )
             return _wrapper(resumed, returned_existing=True)
 
@@ -436,6 +478,7 @@ def run_launch(
         state_root=state_root,
         handlers=handler_map,
         when=ny_when,
+        through=through,
     )
     return _wrapper(finished, returned_existing=False)
 
