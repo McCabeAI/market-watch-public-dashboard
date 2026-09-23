@@ -83,6 +83,25 @@ jobs:
           gh api "repos/$REPO/contents/$FILE?ref=$HEAD_SHA" --jq '.content' \
             | tr -d '\n' | base64 -d > /tmp/mw-output/scheduled_output.json
 
+      - name: Restore exact freeze-bound books if assembly only marked statuses stale
+        env:
+          RUN_ID: ${{ needs.inspect.outputs.run_id }}
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          from scripts.overnight.reviews import restore_assembly_stale_overlay_for_acceptance
+          from scripts.overnight.store import OvernightStore
+          payload = json.loads(Path("/tmp/mw-output/scheduled_output.json").read_text())
+          assert payload["overnight_run_id"] == os.environ["RUN_ID"]
+          changed = restore_assembly_stale_overlay_for_acceptance(
+              OvernightStore(), run_id=payload["overnight_run_id"], review_id=payload["review_id"]
+          )
+          print("Trusted runner-local freeze-bound book restore:", "performed" if changed else "not needed")
+          PY
+
       - name: Validate and deterministically simulate books/P&L
         run: |
           set -euo pipefail

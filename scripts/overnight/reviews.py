@@ -244,6 +244,87 @@ def starting_books_match(store: OvernightStore, meta: dict[str, Any]) -> bool:
     )
 
 
+
+def restore_assembly_stale_overlay_for_acceptance(
+    store: OvernightStore, *, run_id: str, review_id: str
+) -> bool:
+    """Restore freeze-bound books in the trusted acceptance runner only.
+
+    Assembly can mark prior-cycle book freshness stale while a frozen review
+    awaits provider output. Refuse every change other than those exact status
+    overlays, then restore the original serialized bytes so the ordinary hash
+    gate remains fully enforced. Never invoke this on live main state.
+    """
+    from copy import deepcopy
+
+    from scripts.overnight.evidence import require_snapshot
+    from scripts.overnight.store import write_json
+    from scripts.pm.books import overlay_automated_pm_stale_for_cycle
+    from scripts.pm.store import PMStore
+
+    meta = load_review(store, run_id, review_id)
+    if meta.get("status") != "frozen" or starting_books_match(store, meta):
+        return False
+    if meta.get("starting_state_binding") != CANONICAL_FILE_BINDING:
+        raise EvidenceBoundaryError("cannot restore an unbound review")
+    if not meta.get("starting_trader_books_present") or not meta.get("starting_pm_books_present"):
+        raise EvidenceBoundaryError("metadata-only restore requires both freeze-time canonical book files")
+    if not store.has_artifact(run_id, "assembled_dataset.json"):
+        raise EvidenceBoundaryError("metadata-only restore requires this session's assembled dataset")
+    dataset = store.read_artifact(run_id, "assembled_dataset.json")
+    publication = dataset.get("publication") or {}
+    if (
+        dataset.get("overnight_run_id") != run_id
+        or publication.get("trader_books_status") != "stale"
+        or publication.get("pm_books_status") != "stale"
+        or publication.get("last_successful_review_run_id") == run_id
+    ):
+        raise EvidenceBoundaryError("no qualifying stale-publication overlay for this review")
+
+    snapshot = require_snapshot(store, run_id, review_id)
+    if snapshot.get("packet_sha256") != meta.get("packet_sha256"):
+        raise EvidenceBoundaryError("frozen review packet no longer matches its metadata")
+    original_trader = snapshot.get("prior_books")
+    original_pm = snapshot.get("prior_pm_books")
+    if not isinstance(original_trader, dict) or not isinstance(original_pm, dict):
+        raise EvidenceBoundaryError("frozen snapshot lacks canonical prior books")
+    if (
+        snapshot.get("starting_trader_books_sha256") != meta.get("starting_trader_books_sha256")
+        or snapshot.get("starting_pm_books_sha256") != meta.get("starting_pm_books_sha256")
+        or sha256_json(original_trader) != meta.get("starting_trader_books_sha256")
+        or sha256_json(original_pm) != meta.get("starting_pm_books_sha256")
+    ):
+        raise EvidenceBoundaryError("frozen prior books fail their original byte binding")
+
+    pm_store = PMStore(root=store.root, state_root=store.state_root)
+    if not store.books_path().is_file() or not pm_store.books_path().is_file():
+        raise EvidenceBoundaryError("a canonical book file disappeared after freeze")
+    current_trader = store.read_books()
+    current_pm = pm_store.read_books()
+    expected_trader = deepcopy(original_trader)
+    expected_trader["review_status"] = "stale"
+    expected_pm = overlay_automated_pm_stale_for_cycle(original_pm)
+
+    # Require canonical serialized bytes, and permit only the assembler's exact
+    # stale-status overlays. Positions, accounting, provenance and all other
+    # fields must match the immutable frozen snapshot byte-for-byte.
+    if (
+        sha256_file(store.books_path()) != sha256_json(current_trader)
+        or sha256_file(pm_store.books_path()) != sha256_json(current_pm)
+        or current_trader not in (original_trader, expected_trader)
+        or current_pm not in (original_pm, expected_pm)
+    ):
+        raise EvidenceBoundaryError("canonical books changed beyond assembly's stale-status overlay")
+    if current_trader == original_trader and current_pm == original_pm:
+        raise EvidenceBoundaryError("canonical book mismatch is not an assembly stale-status overlay")
+
+    write_json(store.books_path(), original_trader)
+    write_json(pm_store.books_path(), original_pm)
+    if not starting_books_match(store, meta):
+        raise EvidenceBoundaryError("failed to restore the exact frozen canonical book hashes")
+    return True
+
+
 def later_review_accepted(store: OvernightStore, run_id: str, review_id: str) -> bool:
     seen = False
     for row in load_index(store, run_id)["reviews"]:

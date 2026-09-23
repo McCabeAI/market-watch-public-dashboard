@@ -63,6 +63,11 @@ class AcceptanceWorkflowContractTests(unittest.TestCase):
         self.assertNotIn("gh pr merge", workflow)
         self.assertNotIn("gh workflow run", workflow)
         self.assertEqual(workflow.count("merge_accepted_output.sh"), 1)
+        self.assertIn("restore_assembly_stale_overlay_for_acceptance", workflow)
+        self.assertLess(
+            workflow.index("restore_assembly_stale_overlay_for_acceptance"),
+            workflow.index("scheduled_output.py validate"),
+        )
         self.assertLess(workflow.index("scheduled_output.py validate"), workflow.index("scheduled_output.py apply"))
         self.assertLess(workflow.index("scheduled_output.py apply"), workflow.index("append_generated_state.sh"))
         self.assertLess(workflow.index("append_generated_state.sh"), workflow.index("Revalidate canonical book blobs"))
@@ -316,6 +321,154 @@ class AppendGeneratedStateRetryTests(unittest.TestCase):
         self.assertEqual(json.loads(book)["trades"], ["trd-once"])
         commits = _run(["git", "log", "--oneline", f"origin/{HEAD_REF}"], cwd=self.work)
         self.assertEqual(commits.stdout.count("chore: apply overnight decisions"), 1)
+
+
+class TrustedRunnerStatusRestoreTests(unittest.TestCase):
+    """A late assembly status overlay must not invalidate a frozen decision cycle."""
+
+    def setUp(self) -> None:
+        from scripts.overnight.reviews import persist_review
+        from scripts.overnight.store import OvernightStore, sha256_json, write_json
+        from scripts.pm.store import PMStore
+
+        self.tmp = tempfile.TemporaryDirectory()
+        self.run_id = "overnight-20260923"
+        self.review_id = "review-001"
+        self.store = OvernightStore(root=ROOT, state_root=Path(self.tmp.name))
+        self.pm_store = PMStore(root=ROOT, state_root=Path(self.tmp.name))
+        self.trader = {
+            "review_status": "fresh",
+            "last_successful_review_run_id": "overnight-20260922",
+            "seats": {"sample": {"positions": [{"instrument": "AONIA", "notional_usd": 12}], "nav_usd": 100}},
+        }
+        self.pm = {
+            "overnight_run_id": "overnight-20260922",
+            "pms": {
+                name: {
+                    "review_status": "fresh",
+                    "last_decision_at": "2026-09-22T10:00:00Z",
+                    "positions": [{"instrument": "CORRA", "notional_usd": 50}],
+                }
+                for name in ("swinger", "pragmatist", "grinder")
+            },
+        }
+        self.pm["pms"]["chatgpt"] = {
+            "review_status": "fresh", "last_decision_at": "2026-09-22T10:00:00Z",
+            "positions": [{"instrument": "CORRA", "notional_usd": 60}],
+        }
+        write_json(self.store.books_path(), self.trader)
+        write_json(self.pm_store.books_path(), self.pm)
+        trader_sha, pm_sha = sha256_json(self.trader), sha256_json(self.pm)
+        snapshot = {
+            "schema_version": 1,
+            "type": "OVERNIGHT_EVIDENCE_SNAPSHOT",
+            "overnight_run_id": self.run_id,
+            "review_id": self.review_id,
+            "as_of": "2026-09-23T05:07:56-04:00",
+            "prior_books": self.trader,
+            "prior_pm_books": self.pm,
+            "starting_trader_books_sha256": trader_sha,
+            "starting_pm_books_sha256": pm_sha,
+        }
+        snapshot["packet_sha256"] = sha256_json(snapshot)
+        self.store.write_artifact(
+            self.run_id, "evidence_snapshot.json", snapshot, review_id=self.review_id
+        )
+        self.meta = {
+            "schema_version": 1,
+            "type": "OVERNIGHT_REVIEW",
+            "overnight_run_id": self.run_id,
+            "review_id": self.review_id,
+            "status": "frozen",
+            "packet_sha256": snapshot["packet_sha256"],
+            "starting_state_binding": "canonical_file",
+            "starting_trader_books_present": True,
+            "starting_pm_books_present": True,
+            "starting_trader_books_sha256": trader_sha,
+            "starting_pm_books_sha256": pm_sha,
+        }
+        persist_review(self.store, self.meta)
+        self.store.write_artifact(
+            self.run_id, "assembled_dataset.json",
+            {
+                "overnight_run_id": self.run_id,
+                "publication": {
+                    "trader_books_status": "stale",
+                    "pm_books_status": "stale",
+                    "last_successful_review_run_id": "overnight-20260922",
+                },
+            },
+        )
+
+    def tearDown(self) -> None:
+        self.tmp.cleanup()
+
+    def _mark_stale_as_assembly_does(self) -> None:
+        from scripts.overnight.store import write_json
+        from scripts.pm.books import overlay_automated_pm_stale_for_cycle
+
+        trader = json.loads(self.store.books_path().read_text())
+        trader["review_status"] = "stale"
+        write_json(self.store.books_path(), trader)
+        pm = json.loads(self.pm_store.books_path().read_text())
+        write_json(self.pm_store.books_path(), overlay_automated_pm_stale_for_cycle(pm))
+
+    def _restore(self) -> bool:
+        from scripts.overnight.reviews import restore_assembly_stale_overlay_for_acceptance
+
+        return restore_assembly_stale_overlay_for_acceptance(
+            self.store, run_id=self.run_id, review_id=self.review_id
+        )
+
+    def test_restores_only_exact_assembler_overlay_to_frozen_hashes(self) -> None:
+        from scripts.overnight.reviews import starting_books_match
+
+        self._mark_stale_as_assembly_does()
+        self.assertFalse(starting_books_match(self.store, self.meta))
+        self.assertTrue(self._restore())
+        self.assertTrue(starting_books_match(self.store, self.meta))
+        self.assertEqual(json.loads(self.store.books_path().read_text()), self.trader)
+        self.assertEqual(json.loads(self.pm_store.books_path().read_text()), self.pm)
+        self.assertFalse(self._restore())
+
+    def test_rejects_substantive_trader_change_and_preserves_books(self) -> None:
+        from scripts.overnight.errors import EvidenceBoundaryError
+        from scripts.overnight.store import write_json
+
+        self._mark_stale_as_assembly_does()
+        trader = json.loads(self.store.books_path().read_text())
+        trader["seats"]["sample"]["positions"][0]["notional_usd"] = 13
+        write_json(self.store.books_path(), trader)
+        old_trader, old_pm = self.store.books_path().read_bytes(), self.pm_store.books_path().read_bytes()
+        with self.assertRaises(EvidenceBoundaryError):
+            self._restore()
+        self.assertEqual(self.store.books_path().read_bytes(), old_trader)
+        self.assertEqual(self.pm_store.books_path().read_bytes(), old_pm)
+
+    def test_rejects_substantive_pm_change_and_preserves_books(self) -> None:
+        from scripts.overnight.errors import EvidenceBoundaryError
+        from scripts.overnight.store import write_json
+
+        self._mark_stale_as_assembly_does()
+        pm = json.loads(self.pm_store.books_path().read_text())
+        pm["pms"]["swinger"]["positions"][0]["notional_usd"] = 51
+        write_json(self.pm_store.books_path(), pm)
+        old_trader, old_pm = self.store.books_path().read_bytes(), self.pm_store.books_path().read_bytes()
+        with self.assertRaises(EvidenceBoundaryError):
+            self._restore()
+        self.assertEqual(self.store.books_path().read_bytes(), old_trader)
+        self.assertEqual(self.pm_store.books_path().read_bytes(), old_pm)
+
+    def test_rejects_cross_session_assembly(self) -> None:
+        from scripts.overnight.errors import EvidenceBoundaryError
+        from scripts.overnight.store import write_json
+
+        self._mark_stale_as_assembly_does()
+        dataset = self.store.read_artifact(self.run_id, "assembled_dataset.json")
+        dataset["overnight_run_id"] = "overnight-20260924"
+        write_json(self.store.run_dir(self.run_id) / "assembled_dataset.json", dataset)
+        with self.assertRaises(EvidenceBoundaryError):
+            self._restore()
 
 
 if __name__ == "__main__":
