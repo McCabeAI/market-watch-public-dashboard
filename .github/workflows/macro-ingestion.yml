@@ -1,21 +1,10 @@
 name: Macro ingestion
 
-# Scheduled runs use live mode against primary sources and commit ingestion artifacts
-# (health, observations, raw bytes, post-freeze, alerts). workflow_dispatch defaults
-# to offline for dry runs; set mode=live to push the same artifact set manually.
+# Manual-only pending Market Watch command-driven orchestration redesign.
+# Dispatch with mode=live for primary-source collection and artifact commits;
+# offline is the safe default for fixture/no-network testing.
 
 on:
-  schedule:
-    - cron: "20 0 * * 1-5"
-      timezone: "America/New_York"
-    - cron: "10 4 * * 1-5"
-      timezone: "America/New_York"
-    - cron: "50 9 * * 1-5"
-      timezone: "America/New_York"
-    - cron: "10 10 * * 1-5"
-      timezone: "America/New_York"
-    - cron: "0 21 * * 1-5"
-      timezone: "America/New_York"
   workflow_dispatch:
     inputs:
       mode:
