@@ -97,7 +97,7 @@ class TestMacroIngestionCoverageGate(unittest.TestCase):
                     continue
                 self.assertNotEqual(
                     row["status"],
-                    "checked_success_no_new_release",
+                    "checked_unchanged",
                     msg=f"{row['series_id']} must not claim success without a pinned calendar",
                 )
 

@@ -37,6 +37,7 @@ def main(argv: list[str] | None = None) -> int:
         "mode": args.mode,
         "countries": countries,
         "run_id": args.run_id,
+        "persist_canonical": args.mode == "live",
     }
     raw_dir = resolve_raw_dir(args.mode)
     if raw_dir is not None:

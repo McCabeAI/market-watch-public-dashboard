@@ -1,5 +1,22 @@
 # Macro ingestion coverage matrix
 
+## Verification classes (2026-09-23 continuation)
+
+- **Canonical-merge-ready** when the adapter observation `transformation` equals the calibration `source_transformation`, `methodology_breaks` is empty on the target history component, and the fetch status is not `license_gap` or `source_failed`.
+- **Blocked / partial_transform_mismatch** (bridge skips merge; weights unchanged): `US.Labor.wages`, `CA.Activity.gdp_domestic_demand`, `CA.Consumer.confidence`, `AU.Labor.unemployment`, `AU.Consumer.retail`, `AU.Consumer.confidence`.
+- **`EA.Activity.flash_composite_pmi`**: S&P listing HTTP 403, `value` null, August final unchanged in history; no paywall bypass and no September 2026 flash PMI value stored.
+- S&P PMI listings that return HTTP 403 remain `license_gap` or `source_failed`.
+- `context` rows and `US.Inflation.mapped_bridge` stay weight 0 and are not merged into canonical history.
+
+**Manual commands** (live is `workflow_dispatch` only; it updates canonical history and scores only when a scored point actually appends; it does not start an ACP trader run):
+
+```bash
+PYTHONPATH=. python3 -m scripts.macro_ingestion.cli --mode offline --country all
+PYTHONPATH=. python3 -m scripts.macro_ingestion.cli --mode live --country all
+```
+
+Not every catalog series is live-primary today; see per-country rows below.
+
 Status: **INVENTORY**. This is the parent catalog for the six-economy daily ingestion system.
 Machine-readable twin: `data/macro_ingestion/baseline_catalog.json`.
 Calibration anchor remains **2026-09-21**. No row in this document adds or changes a temperature weight.

@@ -34,10 +34,20 @@ _FORBIDDEN_COMMIT_PREFIXES: tuple[str, ...] = (
     "data/overnight",
     "data/pm",
     "data/temperature_calibration.json",
-    "data/temperature_scores.json",
-    "data/temperature_history",
     "data/score_source_registry.json",
     ".cursor",
+)
+
+_ALLOWED_TEMPERATURE_HISTORY_FILES: frozenset[str] = frozenset(
+    {
+        "score_paths.json",
+        "us.json",
+        "ca.json",
+        "au.json",
+        "nz.json",
+        "ea.json",
+        "jp.json",
+    }
 )
 
 
@@ -50,8 +60,17 @@ def assert_commit_paths(paths: list[str]) -> None:
     for raw in paths:
         path = _normalize_commit_path(raw)
         lowered = path.lower()
-        if "evidence_snapshot" in lowered:
+        if "evidence_snapshot" in lowered or "reviews/" in lowered:
             raise CommitPathError(f"Refusing forbidden commit path: {raw}")
+        if path == "data/temperature_scores.json":
+            continue
+        if path == "data/temperature_history" or path.startswith("data/temperature_history/"):
+            if path == "data/temperature_history":
+                raise CommitPathError(f"Refusing forbidden commit path: {raw}")
+            rel = path.removeprefix("data/temperature_history/")
+            if "/" in rel or rel not in _ALLOWED_TEMPERATURE_HISTORY_FILES:
+                raise CommitPathError(f"Refusing forbidden commit path: {raw}")
+            continue
         for prefix in _FORBIDDEN_COMMIT_PREFIXES:
             if path == prefix or path.startswith(f"{prefix}/"):
                 raise CommitPathError(f"Refusing forbidden commit path: {raw}")

@@ -28,6 +28,7 @@ on:
           - NZ
           - EA
           - JP
+  pull_request:
 
 permissions:
   contents: write
@@ -39,6 +40,7 @@ concurrency:
 jobs:
   ingest:
     name: Run macro ingestion runner
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -53,18 +55,12 @@ jobs:
       - name: Resolve mode and country
         id: resolve
         env:
-          EVENT: ${{ github.event_name }}
           INPUT_MODE: ${{ github.event.inputs.mode }}
           INPUT_COUNTRY: ${{ github.event.inputs.country }}
         run: |
           set -euo pipefail
-          if [ "$EVENT" = "workflow_dispatch" ]; then
-            MODE="${INPUT_MODE:-offline}"
-            COUNTRY="${INPUT_COUNTRY:-all}"
-          else
-            MODE="live"
-            COUNTRY="all"
-          fi
+          MODE="${INPUT_MODE:-offline}"
+          COUNTRY="${INPUT_COUNTRY:-all}"
           echo "mode=$MODE" >> "$GITHUB_OUTPUT"
           echo "country=$COUNTRY" >> "$GITHUB_OUTPUT"
 
@@ -79,14 +75,6 @@ jobs:
             --country "$COUNTRY" \
             --run-id "gh-${{ github.run_id }}"
 
-      - name: Upload health ledger (scheduled live)
-        if: github.event_name == 'schedule'
-        uses: actions/upload-artifact@v4
-        with:
-          name: macro-ingestion-health-${{ github.run_id }}
-          path: data/macro_ingestion/health/
-          if-no-files-found: warn
-
       - name: Commit live ingestion artifacts
         if: steps.resolve.outputs.mode == 'live'
         env:
@@ -100,7 +88,15 @@ jobs:
             data/macro_ingestion/post_freeze \
             data/macro_ingestion/raw \
             data/macro_ingestion/observations \
-            data/macro_ingestion/alerts
+            data/macro_ingestion/alerts \
+            data/temperature_scores.json \
+            data/temperature_history/score_paths.json \
+            data/temperature_history/us.json \
+            data/temperature_history/ca.json \
+            data/temperature_history/au.json \
+            data/temperature_history/nz.json \
+            data/temperature_history/ea.json \
+            data/temperature_history/jp.json
           if git diff --cached --quiet; then
             echo "No macro ingestion artifacts to commit"
             exit 0
@@ -123,3 +119,31 @@ jobs:
           done
           echo "::error::Failed to push macro ingestion artifacts after rebase retries"
           exit 1
+
+  validate:
+    name: Validate macro ingestion and temperature suites
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Run unit tests
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python3 -m unittest discover -s tests/macro_ingestion -t .
+          PYTHONPATH=. python3 -m unittest \
+            tests.test_macro_freshness \
+            tests.test_temperature_level \
+            tests.test_temperature_scores \
+            tests.test_overnight_pipeline \
+            tests.test_overnight_scheduled_output \
+            tests.test_overnight_review_identity \
+            tests.test_overnight_acceptance_handoff

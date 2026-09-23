@@ -95,7 +95,7 @@ class TestMacroIngestionRunner(unittest.TestCase):
             health_dir=self.health_dir,
         )
         status = second["rows"][0]["status"]
-        self.assertEqual(status, "checked_success_no_new_release")
+        self.assertEqual(status, "checked_unchanged")
         store = json.loads((self.obs_dir / "us.json").read_text())
         self.assertEqual(len(store["observations"]), 1)
 

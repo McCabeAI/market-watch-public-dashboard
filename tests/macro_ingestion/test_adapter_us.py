@@ -148,7 +148,7 @@ class TestUSAdapter(unittest.TestCase):
             observations_dir=self.obs_dir,
             health_dir=self.health_dir,
         )
-        self.assertEqual(second["rows"][0]["status"], "checked_success_no_new_release")
+        self.assertEqual(second["rows"][0]["status"], "checked_unchanged")
         store_after = json.loads((self.obs_dir / "us.json").read_text())
         self.assertEqual(len(store_after["observations"]), 1)
 

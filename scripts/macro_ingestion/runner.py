@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 from collections import defaultdict
 from collections.abc import Callable
 from datetime import datetime, timezone
@@ -19,9 +20,11 @@ from scripts.macro_ingestion.contract import calibration_as_of, load_catalog
 from scripts.macro_ingestion.ledger import ledger_row, write_ledger
 from scripts.macro_ingestion.retries import retry_call
 from scripts.macro_ingestion.score_bridge import recompute_scores_after_observation
+from scripts.temperature_level import CALIBRATION_PATH
 from scripts.macro_ingestion.vintage import (
     append_observation,
     latest_for_period,
+    latest_period_in_store,
     load_store,
     save_store,
 )
@@ -29,6 +32,7 @@ from scripts.macro_ingestion.windows import POST_FREEZE_DIR, cutoff_class, write
 
 DEFAULT_TIMEOUT_SECONDS = 20
 DEFAULT_COUNTRY_BUDGET_SECONDS = 8 * 60
+DEFAULT_RUN_BUDGET_SECONDS = 25 * 60
 DEFAULT_ATTEMPTS = 3
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -84,6 +88,35 @@ def _series_by_country(catalog: dict[str, Any]) -> dict[str, list[dict[str, Any]
     return grouped
 
 
+def _point_release_date(point: dict[str, Any]) -> str | None:
+    if "release_date" in point:
+        return str(point["release_date"]) if point["release_date"] is not None else None
+    if "release_vintage" in point:
+        return str(point["release_vintage"]) if point["release_vintage"] is not None else None
+    return None
+
+
+def _payload_latest_period(points: list[dict[str, Any]]) -> str | None:
+    periods: list[str] = []
+    for point in points:
+        if "period" in point:
+            periods.append(str(point["period"]))
+    return max(periods) if periods else None
+
+
+def _validate_points(points: list[dict[str, Any]]) -> str | None:
+    for point in points:
+        if "period" not in point:
+            return "malformed_point"
+        try:
+            value = float(point["value"])
+        except (KeyError, TypeError, ValueError):
+            return "malformed_point"
+        if not math.isfinite(value):
+            return "malformed_point"
+    return None
+
+
 def _classify_points(
     spec: dict[str, Any],
     payload: dict[str, Any],
@@ -102,6 +135,10 @@ def _classify_points(
         return "source_failed", [], payload.get("error") or "adapter_not_ok"
 
     points = payload.get("points") or []
+    malformed = _validate_points(points)
+    if malformed:
+        return "source_failed", [], malformed
+
     changed: list[dict[str, Any]] = []
     had_new = False
     had_revision = False
@@ -109,6 +146,9 @@ def _classify_points(
 
     transform = str(spec.get("transform", ""))
     series_id = str(spec.get("series_id") or spec["id"])
+    store_latest_before = latest_period_in_store(store, series_id, transform)
+    payload_vintage = payload.get("vintage")
+    payload_vintage_str = str(payload_vintage) if payload_vintage is not None else None
 
     for point in points:
         period = str(point["period"])
@@ -123,6 +163,8 @@ def _classify_points(
             value=value,
             raw_sha256=raw_sha,
             retrieved_at=_utc_iso(when),
+            release_date=_point_release_date(point),
+            vintage=payload_vintage_str,
             revision_status=point.get("revision_status"),
             source_url=point.get("source_url"),
             prior=point.get("prior"),
@@ -158,12 +200,15 @@ def _classify_points(
     if release_due(spec, when):
         expected_period = (spec.get("known_fixture") or {}).get("period")
         if expected_period and not latest_for_period(store, series_id, expected_period, transform):
-            return "release_due_missing", [], None
-        if points:
-            return "checked_success_no_new_release", [], None
-        return "release_due_missing", [], "release_window_open_no_primary_point"
+            return "due_missing", [], None
+        payload_latest = _payload_latest_period(points)
+        if payload_latest is None:
+            return "due_missing", [], "release_window_open_no_primary_point"
+        if store_latest_before is not None and payload_latest <= store_latest_before:
+            return "due_missing", [], None
+        return "due_missing", [], "release_window_open_no_primary_point"
 
-    return "checked_success_no_new_release", [], None
+    return "checked_unchanged", [], None
 
 
 def run_ingestion(
@@ -177,10 +222,11 @@ def run_ingestion(
     health_dir: Path | None = None,
     raw_dir: Path | None = None,
     country_budget_seconds: float = DEFAULT_COUNTRY_BUDGET_SECONDS,
+    run_budget_seconds: float = DEFAULT_RUN_BUDGET_SECONDS,
     timeout_seconds: float = DEFAULT_TIMEOUT_SECONDS,
     monotonic: Callable[[], float] | None = None,
     run_id: str | None = None,
-    persist_scores: bool = False,
+    persist_canonical: bool = False,
 ) -> dict[str, Any]:
     catalog = catalog or load_catalog()
     when = now or datetime.now(timezone.utc)
@@ -197,11 +243,11 @@ def run_ingestion(
 
     rows: list[dict[str, Any]] = []
     post_freeze_changes: list[dict[str, Any]] = []
-    scored_append = False
 
     import time as _time
 
     clock = monotonic or _time.monotonic
+    run_start = clock()
 
     for country in target_countries:
         country_start = clock()
@@ -223,6 +269,20 @@ def run_ingestion(
             continue
 
         for spec in series_list:
+            if clock() - run_start > run_budget_seconds:
+                rows.append(
+                    ledger_row(
+                        series_id=spec["id"],
+                        status="source_failed",
+                        checked_at=checked_at,
+                        observation_vintage=None,
+                        calibration_as_of=cal_as_of,
+                        cutoff_class=cutoff,
+                        error="budget_deferred",
+                    )
+                )
+                continue
+
             if clock() - country_start > country_budget_seconds:
                 rows.append(
                     ledger_row(
@@ -271,8 +331,6 @@ def run_ingestion(
             status, changed, error = _classify_points(spec, payload, store, when)
             vintage = payload.get("vintage")
             extra: dict[str, Any] = {}
-            if status in {"new_observation", "revision_applied"} and spec.get("role") == "scored":
-                scored_append = True
 
             rows.append(
                 ledger_row(
@@ -291,10 +349,16 @@ def run_ingestion(
                 save_store(store, obs_dir)
                 post_freeze_changes.extend(changed)
 
-    if scored_append:
-        recompute_scores_after_observation(persist_scores=persist_scores, persist_history=False)
-
     write_ledger(rows, health_dir=health_dir or (ROOT / "data/macro_ingestion/health"), run_id=run_id)
+
+    if persist_canonical:
+        recompute_scores_after_observation(
+            persist_history=True,
+            persist_scores=True,
+            observations_dir=obs_dir,
+            checked_at=checked_at,
+            calibration_path=CALIBRATION_PATH,
+        )
 
     post_freeze_path = None
     if cutoff == "post_freeze" and post_freeze_changes:

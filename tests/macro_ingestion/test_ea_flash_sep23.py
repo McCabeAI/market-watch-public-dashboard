@@ -90,7 +90,7 @@ class TestEaFlashSep23(unittest.TestCase):
                 health_dir=health_dir,
             )
             flash_row = next(r for r in result["rows"] if r["series_id"] == self.flash_spec["id"])
-            self.assertIn(flash_row["status"], {"release_due_missing", "source_failed"})
+            self.assertIn(flash_row["status"], {"due_missing", "source_failed"})
 
             store_after = load_store("EA", obs_dir)
             periods = [o["period"] for o in store_after["observations"]]

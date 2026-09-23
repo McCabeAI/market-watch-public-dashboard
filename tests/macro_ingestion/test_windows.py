@@ -50,7 +50,20 @@ class TestMacroIngestionWindows(unittest.TestCase):
             assert_commit_paths(["data/overnight/runs/foo.json"])
         with self.assertRaises(CommitPathError):
             assert_commit_paths(["data/overnight/runs/foo/reviews/evidence_snapshot.json"])
+        with self.assertRaises(CommitPathError):
+            assert_commit_paths(["data/temperature_calibration.json"])
+        with self.assertRaises(CommitPathError):
+            assert_commit_paths(["data/temperature_history/raw/us/foo.json"])
+        with self.assertRaises(CommitPathError):
+            assert_commit_paths(["data/score_source_registry.json"])
         assert_commit_paths(["data/macro_ingestion/health/ledger.jsonl"])
+        assert_commit_paths(
+            [
+                "data/temperature_scores.json",
+                "data/temperature_history/score_paths.json",
+                "data/temperature_history/us.json",
+            ]
+        )
 
     def test_post_freeze_immutable_second_write(self) -> None:
         when = datetime(2026, 9, 23, 4, 0, tzinfo=NY)

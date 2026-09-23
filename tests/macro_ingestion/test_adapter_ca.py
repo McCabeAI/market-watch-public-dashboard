@@ -106,7 +106,7 @@ class TestCanadaAdapter(unittest.TestCase):
             observations_dir=self.obs_dir,
             health_dir=self.health_dir,
         )
-        self.assertEqual(second["rows"][0]["status"], "checked_success_no_new_release")
+        self.assertEqual(second["rows"][0]["status"], "checked_unchanged")
 
     def test_csce_license_gap(self) -> None:
         spec = next(r for r in self.catalog["series"] if r["id"] == "CA.Consumer.confidence")

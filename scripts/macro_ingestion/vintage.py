@@ -7,8 +7,12 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from scripts.macro_freshness import values_close
+
 ROOT = Path(__file__).resolve().parents[2]
 OBSERVATIONS_DIR = ROOT / "data/macro_ingestion/observations"
+
+_ALIAS_CAP = 8
 
 
 @dataclass(frozen=True)
@@ -74,6 +78,31 @@ def latest_for_period(
     return sorted(matches, key=lambda r: r.get("retrieved_at", ""))[-1]
 
 
+def latest_period_in_store(
+    store: dict[str, Any], series_id: str, transformation: str
+) -> str | None:
+    periods = [
+        str(row["period"])
+        for row in store.get("observations", [])
+        if row.get("series_id") == series_id and row.get("transformation", "") == transformation
+    ]
+    if not periods:
+        return None
+    return max(periods)
+
+
+def _record_sha_alias(row: dict[str, Any], raw_sha256: str) -> None:
+    primary = str(row.get("raw_sha256", ""))
+    if raw_sha256 == primary:
+        return
+    aliases = list(row.get("raw_sha256_aliases") or [])
+    seen = {primary, *aliases}
+    if raw_sha256 in seen:
+        return
+    aliases.append(raw_sha256)
+    row["raw_sha256_aliases"] = aliases[-_ALIAS_CAP:]
+
+
 @dataclass
 class AppendResult:
     appended: bool
@@ -90,13 +119,33 @@ def append_observation(
     value: float,
     raw_sha256: str,
     retrieved_at: str,
+    release_date: str | None = None,
+    vintage: str | None = None,
     revision_status: str | None = None,
     source_url: str | None = None,
     prior: float | None = None,
 ) -> AppendResult:
     key = ObservationKey(series_id, period, transformation, raw_sha256)
     if find_observation(store, key):
-        return AppendResult(appended=False, duplicate=True)
+        prior_row = latest_for_period(store, series_id, period, transformation)
+        if prior_row is not None:
+            _record_sha_alias(prior_row, raw_sha256)
+        return AppendResult(appended=False, duplicate=True, observation=prior_row)
+
+    prior_row = latest_for_period(store, series_id, period, transformation)
+    if prior_row is not None and values_close(float(prior_row["value"]), value):
+        _record_sha_alias(prior_row, raw_sha256)
+        return AppendResult(appended=False, duplicate=True, observation=prior_row)
+
+    earliest_release = release_date
+    latest_release = release_date
+    if prior_row is not None:
+        earliest_release = (
+            prior_row.get("earliest_release_vintage")
+            or prior_row.get("release_date")
+            or release_date
+        )
+        latest_release = release_date
 
     row = {
         "series_id": series_id,
@@ -105,6 +154,10 @@ def append_observation(
         "value": value,
         "raw_sha256": raw_sha256,
         "retrieved_at": retrieved_at,
+        "release_date": release_date,
+        "vintage": vintage,
+        "earliest_release_vintage": earliest_release,
+        "latest_release_vintage": latest_release,
         "revision_status": revision_status,
         "source_url": source_url,
         "prior": prior,

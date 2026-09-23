@@ -12,12 +12,12 @@ CALIBRATION_PATH = ROOT / "data/temperature_calibration.json"
 FRAGMENTS_DIR = ROOT / "data/macro_ingestion/fragments"
 
 STATUS_VOCABULARY: tuple[str, ...] = (
-    "checked_success_no_new_release",
+    "checked_unchanged",
     "new_observation",
     "revision_applied",
-    "release_due_missing",
-    "source_failed",
     "revision_pending",
+    "due_missing",
+    "source_failed",
     "license_gap",
     "not_applicable",
     "calendar_unparsed",
