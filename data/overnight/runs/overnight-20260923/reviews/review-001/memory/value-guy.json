@@ -1,0 +1,78 @@
+{
+  "active_lessons": [],
+  "as_of": "2026-09-23T05:07:57.000761-04:00",
+  "calibration": {
+    "average_holding_seconds": 234247,
+    "average_realized_pnl_usd": -56000.0,
+    "breakeven": 0,
+    "by_asset_class": {
+      "rates_rv": {
+        "count": 1,
+        "total_realized_pnl_usd": -56000.0
+      }
+    },
+    "closed_trade_count": 1,
+    "conviction_buckets": {
+      "high": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "low": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "medium": {
+        "average_pnl_usd": -56000.0,
+        "count": 1,
+        "hit_rate": 0.0
+      }
+    },
+    "losses": 1,
+    "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
+    "total_realized_pnl_usd": -56000.0,
+    "wins": 0
+  },
+  "memory_context_sha256": "e9f73677fca3bf4133a4e70f80c0f4673f5269d25edfc9bab425a7ffb8073587",
+  "open_positions": [],
+  "owner_id": "value-guy",
+  "owner_type": "trader",
+  "postmortems_due": [
+    {
+      "created_at": "2026-09-22T15:40:57.474758-04:00",
+      "created_run_id": "overnight-20260922",
+      "facts": {
+        "asset_class": "rates_rv",
+        "closed_at": "2026-09-22T15:40:57.474758-04:00",
+        "conviction": 58,
+        "entry_mark": 140.25,
+        "exit_mark": 148.25,
+        "holding_duration_seconds": 234247,
+        "instrument": "SOFR-CORRA_2Y_2027H1",
+        "opened_at": "2026-09-19T22:36:50.082404-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": -56000.0,
+        "side": "long"
+      },
+      "postmortem_id": "pmd-d9e2764dea0f",
+      "trade_id": "trd-trader-value-guy-pos-cdde326460b4"
+    }
+  ],
+  "recent_closed_trades": [
+    {
+      "asset_class": "rates_rv",
+      "closed_at": "2026-09-22T15:40:57.474758-04:00",
+      "conviction": 58,
+      "holding_duration_seconds": 234247,
+      "instrument": "SOFR-CORRA_2Y_2027H1",
+      "opened_at": "2026-09-19T22:36:50.082404-04:00",
+      "realized_pnl_usd": -56000.0,
+      "side": "long",
+      "trade_id": "trd-trader-value-guy-pos-cdde326460b4"
+    }
+  ],
+  "recent_funding_views": [],
+  "schema_version": 1,
+  "type": "IDENTITY_MEMORY_CONTEXT"
+}

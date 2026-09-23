@@ -1,0 +1,91 @@
+{
+  "active_lessons": [],
+  "as_of": "2026-09-23T05:07:56.966666-04:00",
+  "calibration": {
+    "average_holding_seconds": 234247,
+    "average_realized_pnl_usd": -49945.56,
+    "breakeven": 0,
+    "by_asset_class": {
+      "spot_fx": {
+        "count": 1,
+        "total_realized_pnl_usd": -49945.56
+      }
+    },
+    "closed_trade_count": 1,
+    "conviction_buckets": {
+      "high": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "low": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "medium": {
+        "average_pnl_usd": -49945.56,
+        "count": 1,
+        "hit_rate": 0.0
+      }
+    },
+    "losses": 1,
+    "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
+    "total_realized_pnl_usd": -49945.56,
+    "wins": 0
+  },
+  "memory_context_sha256": "8540ca75b554d2b08d24a43bcfce61f43f73fcf3877fe91b11a290e0313cf196",
+  "open_positions": [
+    {
+      "asset_class": "spot_fx",
+      "conviction": 63,
+      "current_notional_usd": 10000000.0,
+      "entry_mark": 1.0,
+      "instrument": "AUDCAD",
+      "opened_at": "2026-09-22T15:40:57.474758-04:00",
+      "position_id": "pos-27d002b448b1",
+      "risk_capital_usd": 100000.0,
+      "side": "long",
+      "trade_id": "trd-trader-cross-merchant-pos-27d002b448b1"
+    }
+  ],
+  "owner_id": "cross-merchant",
+  "owner_type": "trader",
+  "postmortems_due": [
+    {
+      "created_at": "2026-09-22T15:40:57.474758-04:00",
+      "created_run_id": "overnight-20260922",
+      "facts": {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-09-22T15:40:57.474758-04:00",
+        "conviction": 60,
+        "entry_mark": 1.0,
+        "exit_mark": 1.0,
+        "holding_duration_seconds": 234247,
+        "instrument": "AUDCAD",
+        "opened_at": "2026-09-19T22:36:50.082404-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": -49945.56,
+        "side": "short"
+      },
+      "postmortem_id": "pmd-8ddf6ee19a94",
+      "trade_id": "trd-trader-cross-merchant-pos-00661cabb94a"
+    }
+  ],
+  "recent_closed_trades": [
+    {
+      "asset_class": "spot_fx",
+      "closed_at": "2026-09-22T15:40:57.474758-04:00",
+      "conviction": 60,
+      "holding_duration_seconds": 234247,
+      "instrument": "AUDCAD",
+      "opened_at": "2026-09-19T22:36:50.082404-04:00",
+      "realized_pnl_usd": -49945.56,
+      "side": "short",
+      "trade_id": "trd-trader-cross-merchant-pos-00661cabb94a"
+    }
+  ],
+  "recent_funding_views": [],
+  "schema_version": 1,
+  "type": "IDENTITY_MEMORY_CONTEXT"
+}
