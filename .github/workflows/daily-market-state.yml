@@ -1,8 +1,7 @@
 name: Daily Market State
 
 on:
-  schedule:
-    - cron: "30 12 * * 1-5"
+  # All market-cycle stages are manual until the dependency-gated launch is installed.
   workflow_dispatch:
   pull_request:
     paths:
@@ -41,8 +40,7 @@ on:
 permissions:
   contents: read
 
-# Schedule and pull_request do not share a concurrency group. A delayed
-# weekday cron must not be cancelled by a PR run that touches this workflow.
+# Manual generation and pull-request validation have separate concurrency groups.
 concurrency:
   group: daily-market-state-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}

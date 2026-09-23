@@ -264,8 +264,16 @@ class ScheduledOutputTests(unittest.TestCase):
         self.assertIn("scheduled_output.py validate", gate)
         self.assertIn("scheduled_output.py apply", gate)
         self.assertIn("data/trading", gate)
-        for cron in ('"7 0 * * 1-5"', '"40 1 * * 1-5"', '"50 1 * * 1-5"', '"35 3 * * 1-5"', '"50 3 * * 1-5"', '"7 4 * * 1-5"'):
-            self.assertIn(cron, overnight)
+        # Automatic Market Watch clocks are retired; PR validation and explicit
+        # operator dispatch remain supported pending the ordered manual launcher.
+        self.assertIn("workflow_dispatch:", overnight)
+        self.assertNotIn("\n  schedule:", overnight)
+        daily = (ROOT / ".github" / "workflows" / "daily-market-state.yml").read_text(encoding="utf-8")
+        pages = (ROOT / ".github" / "workflows" / "deploy-pages.yml").read_text(encoding="utf-8")
+        for workflow in (daily, pages):
+            self.assertIn("workflow_dispatch:", workflow)
+            self.assertNotIn("\n  schedule:", workflow)
+        self.assertNotIn("\n  push:", pages)
         self.assertIn("market-watch-weekday-0205", (ROOT / "docs" / "OVERNIGHT_PIPELINE_V1.md").read_text(encoding="utf-8"))
 
 

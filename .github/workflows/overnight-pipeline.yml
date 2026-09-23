@@ -1,36 +1,7 @@
 name: Overnight Deterministic Pipeline
 
 on:
-  schedule:
-    # Keep the six logical stage clocks, but treat every scheduled event as a
-    # reconciliation wake-up. Additional wake-ups provide catch-up capacity
-    # when GitHub delays or drops one exact cron delivery.
-    - cron: "7 0 * * 1-5"
-      timezone: "America/New_York"
-    - cron: "27,47 0 * * 1-5"
-      timezone: "America/New_York"
-    - cron: "7,27 1 * * 1-5"
-      timezone: "America/New_York"
-    - cron: "40 1 * * 1-5"
-      timezone: "America/New_York"
-    - cron: "50 1 * * 1-5"
-      timezone: "America/New_York"
-    - cron: "55 1 * * 1-5"
-      timezone: "America/New_York"
-    - cron: "0 2 * * 1-5"
-      timezone: "America/New_York"
-    - cron: "35 3 * * 1-5"
-      timezone: "America/New_York"
-    - cron: "45 3 * * 1-5"
-      timezone: "America/New_York"
-    - cron: "50 3 * * 1-5"
-      timezone: "America/New_York"
-    - cron: "55 3 * * 1-5"
-      timezone: "America/New_York"
-    - cron: "7 4 * * 1-5"
-      timezone: "America/New_York"
-    - cron: "17 4 * * 1-5"
-      timezone: "America/New_York"
+  # All market-cycle stages are manual until the dependency-gated launch is installed.
   workflow_dispatch:
     inputs:
       mode:
