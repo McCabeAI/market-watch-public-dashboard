@@ -5,7 +5,7 @@ Parent model: Grok 4.7. Subagent allowlist: `composer-2.5` only. Caps: 1 frontie
 | Step | Model | State |
 | --- | --- | --- |
 | Audit main at `54673b377165a21911f6569665bbc17ff5cdb1a5`, write matrix, architecture, Drive plan, baseline catalog | Grok 4.7 parent | done in this call, before implementation |
-| Shared platform contract | Composer 2.5 | pending |
+| Shared platform contract | Composer 2.5 | done (`3929605`, unittest 36/36 pass: macro_ingestion + test_macro_freshness) |
 | Country US | Composer 2.5 | pending |
 | Country CA | Composer 2.5 | pending |
 | Country AU | Composer 2.5 | pending |
