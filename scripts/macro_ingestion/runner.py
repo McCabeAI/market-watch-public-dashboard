@@ -10,7 +10,7 @@ from collections.abc import Callable
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
-from urllib.error import URLError
+from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 from scripts.macro_freshness import values_close
@@ -54,9 +54,24 @@ def offline_opener(url: str, *, timeout: float = DEFAULT_TIMEOUT_SECONDS) -> dic
     }
 
 
+# Same public browser identity as scripts.market_state.BROWSER_USER_AGENT.
+# The PMI press pages return the public document to this agent and HTTP 403
+# to the short bot token.
+_PUBLIC_BROWSER_USER_AGENT = (
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+)
+
+
 def live_opener(url: str, *, timeout: float = DEFAULT_TIMEOUT_SECONDS) -> dict[str, Any]:
     try:
-        request = Request(url, headers={"User-Agent": "market-watch-macro-ingestion/1.0"})
+        request = Request(
+            url,
+            headers={
+                "User-Agent": _PUBLIC_BROWSER_USER_AGENT,
+                "Accept": "text/html,application/pdf,*/*",
+            },
+        )
         with urlopen(request, timeout=timeout) as response:
             body = response.read()
             return {
@@ -66,6 +81,15 @@ def live_opener(url: str, *, timeout: float = DEFAULT_TIMEOUT_SECONDS) -> dict[s
                 "body": body,
                 "error": None,
             }
+    except HTTPError as exc:
+        body = exc.read() if exc.fp is not None else b""
+        return {
+            "ok": False,
+            "url": url,
+            "http_status": exc.code,
+            "body": body,
+            "error": f"HTTP {exc.code}",
+        }
     except URLError as exc:
         return {
             "ok": False,

@@ -6,7 +6,7 @@
 - **Canonical-merge-ready** when the adapter observation `transformation` equals the calibration `source_transformation`, the component is not `observed: false`, any methodology break is already behind prints the stored series continues, and the fetch status is not `license_gap` or `source_failed`.
 - **Observation-key priority:** a scored catalog row outranks an alias or context row with the same `(country, series_id, transform)`. `AU.Inflation.underlying` wins over `AU.Inflation.cpi_core_trimmed_already_scored_note`. Two different scored rows on one key fail closed.
 - **Blocked / not merged** (weights unchanged): `US.Labor.wages`, `CA.Activity.gdp_domestic_demand`, `CA.Consumer.confidence`, `AU.Labor.unemployment`, `AU.Consumer.confidence` (transform or methodology), and `AU.Consumer.retail` (ceased; calibration `observed: false`, so a new print is `retired_unobserved` and does not re-enter the gauge).
-- **`EA.Activity.flash_composite_pmi`**: S&P listing HTTP 403, `value` null, August final unchanged in history; no paywall bypass and no September 2026 flash PMI value stored.
+- **`EA.Activity.flash_composite_pmi`**: the public press PDF `ab6649de01fd4c38a7f2c9a3e52a81bf` is the 2026-09 flash composite (53.1, released 2026-09-23). It is context weight 0. The scored `EA.Activity.business_surveys` series still keeps the August final (52.0) until a final September PDF is retrieved. The bot user agent receives HTTP 403 on the same public URLs; a normal browser fetch does not. Review-001 is unchanged.
 - S&P PMI listings that return HTTP 403 remain `license_gap` or `source_failed`.
 - `context` rows and `US.Inflation.mapped_bridge` stay weight 0 and are not merged into canonical history.
 

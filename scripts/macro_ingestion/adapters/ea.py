@@ -16,11 +16,14 @@ from scripts.euro_area_macro_data import (
     parse_eurostat_statistics_json,
 )
 from scripts.harvest_ea_pmi import (
+    ALT_PUBLIC_DISCOVERY_URLS,
     PMI_LISTING_URL,
     SEED_GUIDS,
+    cached_release_pdf,
     choose_observations,
     discover_eurozone_composite_listing,
     parse_release_artifact,
+    parse_release_html,
     press_release_url,
 )
 
@@ -100,6 +103,7 @@ def _point(
     source_url: str,
     revision_status: str = "final",
     prior: float | None = None,
+    release_date: str | None = None,
 ) -> dict[str, Any]:
     row: dict[str, Any] = {
         "period": period,
@@ -107,9 +111,12 @@ def _point(
         "transformation": transform,
         "revision_status": revision_status,
         "source_url": source_url,
+        "publisher": "S&P Global",
     }
     if prior is not None:
         row["prior"] = prior
+    if release_date:
+        row["release_date"] = release_date
     return row
 
 
@@ -384,6 +391,46 @@ def _flash_primary_unavailable(
     )
 
 
+def _listing_url(spec: dict[str, Any]) -> str:
+    if str(spec.get("id") or "") == "EA.Activity.flash_composite_pmi":
+        return str((spec.get("known_fixture") or {}).get("primary_listing") or PMI_LISTING_URL)
+    return str(spec.get("endpoint") or PMI_LISTING_URL)
+
+
+def _usable_html(resp: dict[str, Any]) -> bool:
+    body = resp.get("body") or b""
+    if not resp.get("ok") or not body:
+        return False
+    return not _is_bot_challenge(body, resp.get("http_status"))
+
+
+def _is_listing_html(body: bytes) -> bool:
+    return b"releaseTitle" in body and b"releaseDate" in body
+
+
+def _attempt_summary(attempts: list[dict[str, Any]]) -> str:
+    parts = []
+    for row in attempts:
+        parts.append(f"{row.get('http_status')}:{row.get('url')}")
+    return "; ".join(parts)[:700]
+
+
+def _headline_release(meta: dict[str, Any], *, source_url: str, body: bytes) -> dict[str, Any] | None:
+    period = meta.get("reference_period")
+    value = meta.get("composite_value")
+    if not isinstance(period, str) or value is None:
+        return None
+    return {
+        "source_url": source_url,
+        "body": body,
+        "reference_period": period,
+        "composite_value": float(value),
+        "is_flash": bool(meta.get("is_flash")),
+        "release_date": meta.get("release_date"),
+        "restated_priors": meta.get("restated_priors") or {},
+    }
+
+
 def _fetch_sp_composite_pmi(
     spec: dict[str, Any],
     *,
@@ -391,31 +438,49 @@ def _fetch_sp_composite_pmi(
     timeout: float,
     flash_only: bool,
 ) -> dict[str, Any]:
-    listing_url = str(spec.get("endpoint") or PMI_LISTING_URL)
-    if str(spec.get("id") or "") == "EA.Activity.flash_composite_pmi":
-        listing_url = str(
-            (spec.get("known_fixture") or {}).get("primary_listing") or PMI_LISTING_URL
-        )
-    listing_resp = _fetch_bytes(opener, listing_url, timeout=timeout)
-    listing_body = listing_resp.get("body") or b""
-    http_status = listing_resp.get("http_status")
+    """Eurozone composite PMI via the public listing, article, or archived final PDF.
 
-    if not listing_resp.get("ok") or not listing_body:
-        return _flash_primary_unavailable(
-            body=listing_body,
-            http_status=http_status,
-            url=listing_url,
-            flash_only=flash_only,
-        )
-    if _is_bot_challenge(listing_body, http_status):
-        return _flash_primary_unavailable(
-            body=listing_body,
-            http_status=http_status,
-            url=listing_url,
-            flash_only=flash_only,
-        )
+    Flash reads only a flash composite document for its own reference period.
+    Finals may use the local archive of public PDFs. An archived final is never
+    returned as the flash print.
+    """
+    listing_url = _listing_url(spec)
+    attempts: list[dict[str, Any]] = []
+    html_docs: list[tuple[str, bytes]] = []
 
-    discovered = _parse_listing(listing_body)
+    def _get(url: str) -> dict[str, Any]:
+        resp = _fetch_bytes(opener, url, timeout=timeout)
+        attempts.append(
+            {
+                "url": url,
+                "http_status": resp.get("http_status"),
+                "ok": bool(resp.get("ok")),
+            }
+        )
+        return resp
+
+    listing_resp = _get(listing_url)
+    if _usable_html(listing_resp):
+        html_docs.append((listing_url, listing_resp.get("body") or b""))
+    else:
+        for alt in ALT_PUBLIC_DISCOVERY_URLS:
+            if alt == listing_url:
+                continue
+            alt_resp = _get(alt)
+            if _usable_html(alt_resp):
+                html_docs.append((alt, alt_resp.get("body") or b""))
+
+    discovered: list[dict[str, str]] = []
+    article_releases: list[dict[str, Any]] = []
+    for url, body in html_docs:
+        if _is_listing_html(body):
+            discovered.extend(_parse_listing(body))
+            continue
+        meta = parse_release_html(body)
+        headline = _headline_release(meta, source_url=url, body=body)
+        if headline is not None:
+            article_releases.append(headline)
+
     guids: list[str] = []
     for row in discovered:
         title = row.get("title", "")
@@ -424,56 +489,106 @@ def _fetch_sp_composite_pmi(
             continue
         if not flash_only and is_flash_title:
             continue
-        guids.append(row["guid"])
+        if row["guid"] not in guids:
+            guids.append(row["guid"])
 
-    if flash_only and not guids:
-        for row in discovered:
-            if "Flash" in row.get("title", ""):
-                guids.append(row["guid"])
-
-    for guid in SEED_GUIDS:
-        if guid not in guids and not flash_only:
-            guids.append(guid)
+    if not flash_only:
+        for guid in SEED_GUIDS:
+            if guid not in guids:
+                guids.append(guid)
 
     parsed_releases: list[dict[str, Any]] = []
-    last_body = listing_body
-    last_status = http_status
+    bodies: dict[str, bytes] = {}
+    last_body = html_docs[-1][1] if html_docs else (listing_resp.get("body") or b"")
+    last_status = listing_resp.get("http_status")
 
     for guid in guids[:12]:
         pdf_url = press_release_url(guid)
-        pdf_resp = _fetch_bytes(opener, pdf_url, timeout=timeout)
+        pdf_resp = _get(pdf_url)
         pdf_body = pdf_resp.get("body") or b""
-        last_body = pdf_body or last_body
-        last_status = pdf_resp.get("http_status")
-
-        if not pdf_resp.get("ok"):
-            continue
-        if pdf_body[:4] != b"%PDF":
-            if _is_bot_challenge(pdf_body, pdf_resp.get("http_status"), expect_pdf=True):
-                return _flash_primary_unavailable(
-                    body=pdf_body,
-                    http_status=pdf_resp.get("http_status"),
-                    url=pdf_url,
-                    flash_only=flash_only,
+        if pdf_body[:4] != b"%PDF" and not flash_only:
+            cached = cached_release_pdf(guid)
+            if cached is not None:
+                pdf_body = cached
+                attempts.append(
+                    {
+                        "url": pdf_url,
+                        "http_status": 200,
+                        "ok": True,
+                        "notes": "local_public_archive",
+                    }
                 )
+        if pdf_body[:4] != b"%PDF":
             continue
         meta = parse_release_artifact(pdf_body)
         if flash_only and not meta.get("is_flash"):
             continue
         if not flash_only and meta.get("is_flash"):
             continue
-        parsed_releases.append({"guid": guid, "source_url": pdf_url, **meta})
+        headline = _headline_release(meta, source_url=pdf_url, body=pdf_body)
+        if headline is None:
+            continue
+        parsed_releases.append(headline)
+        bodies[pdf_url] = pdf_body
+        last_body = pdf_body
+        last_status = pdf_resp.get("http_status") or 200
+
+    if flash_only:
+        selected = [row for row in parsed_releases + article_releases if row.get("is_flash")]
+        if not selected:
+            return _base_payload(
+                ok=False,
+                error=f"primary_flash_pdf_unavailable; {_attempt_summary(attempts)}",
+                http_status=last_status,
+                body=last_body,
+                raw_sha256=_sha256(last_body),
+            )
+        selected.sort(key=lambda row: str(row["reference_period"]))
+        chosen_row = selected[-1]
+        transform = str(spec.get("transform") or "")
+        point = _point(
+            str(chosen_row["reference_period"]),
+            float(chosen_row["composite_value"]),
+            transform=transform,
+            source_url=str(chosen_row["source_url"]),
+            revision_status="flash",
+            release_date=str(chosen_row["release_date"]) if chosen_row.get("release_date") else None,
+        )
+        primary = chosen_row.get("body") or last_body
+        return _base_payload(
+            ok=True,
+            points=[point],
+            http_status=last_status,
+            body=primary,
+            raw_sha256=_sha256(primary),
+            vintage="flash",
+        )
+
+    for row in article_releases:
+        if row.get("is_flash"):
+            continue
+        parsed_releases.append(row)
 
     if not parsed_releases:
         return _flash_primary_unavailable(
             body=last_body,
             http_status=last_status,
             url=listing_url,
-            flash_only=flash_only,
+            flash_only=False,
         )
 
     chosen = choose_observations(
-        parsed_releases,
+        [
+            {
+                "source_url": row["source_url"],
+                "release_date": row.get("release_date"),
+                "is_flash": False,
+                "reference_period": row["reference_period"],
+                "composite_value": row["composite_value"],
+                "restated_priors": row.get("restated_priors") or {},
+            }
+            for row in parsed_releases
+        ],
         retrieved_at=datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
     )
     transform = str(spec.get("transform") or "")
@@ -484,16 +599,15 @@ def _fetch_sp_composite_pmi(
             transform=transform,
             source_url=str(obs["source_url"]),
             revision_status=str(obs.get("revision_status") or "final"),
+            release_date=str(obs["release_date"]) if obs.get("release_date") else None,
         )
         for period, obs in sorted(chosen.items())
     ]
     primary_body = last_body
-    for rel in parsed_releases:
-        pdf_resp = _fetch_bytes(opener, rel["source_url"], timeout=timeout)
-        if (pdf_resp.get("body") or b"")[:4] == b"%PDF":
-            primary_body = pdf_resp.get("body") or primary_body
+    for row in parsed_releases:
+        if row["source_url"] in bodies:
+            primary_body = bodies[row["source_url"]]
             break
-
     return _base_payload(
         ok=True,
         points=points,

@@ -41,6 +41,10 @@ Parent: Grok 4.7, no Composer worker. Two defects only.
 - Observation-key lookup keeps the scored row when an alias shares `(country, series_id, transform)`. Two different scored ids on one key raise `ScoredSeriesKeyCollision`.
 - An unchanged fetch after the bound expected period is already in the payload and the store is `checked_unchanged`. A later date bound to a period the fetch does not contain stays `due_missing`. A due date with no bound period and no pinned `known_fixture.period` stays `calendar_unparsed`. `EA.Activity.flash_composite_pmi` still requires period `2026-09`.
 
+## Call 4 (2026-09-23) Eurozone flash retrieval
+
+Parent: Grok 4.7. No Composer worker. The public S&P listing and press PDF are fetched with the existing browser user agent. The English flash title and the key-findings line are parsed by `scripts/harvest_ea_pmi.py`. Archived finals stay on the final collector only. The September flash PDF is archived under `data/temperature_history/raw/ea/` and is not written into review-001.
+
 ## Parent review
 
 Grok 4.7 review of the continuation on top of `a84d1e0`. Composer 2.5 only: canonical bridge, ingestion integrity, CI/verification. No fourth correction was required. No cron schedules were added. `743d82a` remains the manual-only dispatch choice.
