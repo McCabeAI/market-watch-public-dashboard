@@ -40,6 +40,8 @@ The 02:05 provider must find the current run's `run.json` and the open review's 
 
 There is no assumed provider completion clock. The scheduled-output PR is the completion event. If it is absent or rejected before assembly, the website may publish the last successful trader books with explicit stale status.
 
+**Late-acceptance recovery:** If an authorized provider result is accepted after the day's deterministic assembly has already run, the canonical books may be fresh while `data/overnight/latest.json` and `data/overnight/accepted_public_news.json` still reflect the earlier stale assembly. Run the existing trusted `[overnight-recovery-stage] assemble` recovery action once after acceptance to refresh those artifacts; do not rerun the provider or re-freeze evidence. A recovery job's `GITHUB_TOKEN` push does not trigger push-based Pages workflows, so explicitly initiate a new `deploy-pages.yml` run on current `main` and verify that its public HTML and trader/PM JSON reflect the accepted run. Never treat a successful book merge as proof of website publication.
+
 ## 3. Session identity and review identity
 
 Every night uses one immutable session id:
