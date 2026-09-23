@@ -185,6 +185,53 @@
       "run_id": "overnight-20260922",
       "schema_version": 1,
       "thesis": "Hold receive SOFR_2027-03. Cash-anchored richness is still 73bp (H7 4.58 vs SOFR 3.85). Same-day oil unwind to ~$98 is the reversal catalyst for last week's ~$110 spike, not a z-score. Do not add: mark is unchanged at 4.58 and Barkin remains hawkish."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": "pos-1477172adb86",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-23T06:20:00-04:00",
+      "conviction": 55,
+      "decision_fingerprint": "06facbcb8c28edc86f48743fee3b3d6bc84da6f89f74783c4a95b1c1345848f2",
+      "event_id": "jde-3af5b505da57442c",
+      "funding_view": null,
+      "invalidation": "Hike premium persists or expands versus SOFR 3.85, or the oil-lower catalyst reverses.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-1477172adb86"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "21bbc64e3590c8f24d8468d6dffdaf53acbe326f71a3185e9a78077efdc71539",
+      "outcome_links": [],
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-23T06:20:00-04:00",
+        "evidence_hash": "79f165ba2bfb3870b2b05bba7b44da8dcfadb54c57fed48eeb0190ab4be48b53",
+        "overnight_run_id": "overnight-20260923",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "SR3H7 at +72bp over SOFR 3.85 is leftover hike-premium after oil has already moved lower. The existing long SOFR_2027-03 is the fade of that stretch. Stale macro_hard blocks adding; thesis is not broken so do not close.",
+      "run_id": "overnight-20260923",
+      "schema_version": 1,
+      "thesis": "SR3H7 at +72bp over SOFR 3.85 is leftover hike-premium after oil has already moved lower. The existing long SOFR_2027-03 is the fade of that stretch. Stale macro_hard blocks adding; thesis is not broken so do not close."
     }
   ],
   "schema_version": 1,

@@ -1,0 +1,195 @@
+{
+  "base_evidence_cutoff": "2026-09-23T05:07:56.794290-04:00",
+  "base_packet_sha256": "2c78eb3ff22353eab98e808cbd49cf4f29693c415744a9d4d6b28186f8ab9645",
+  "competition": {
+    "flat_book_pnl": "A flat seat has zero net financing/competition P&L: paper NAV earning SOFR is benchmarked at SOFR, so those flows cancel, and shocked-risk financing is zero.",
+    "funding_basis": "Official NY Fed SOFR ACT/360 is the zero-return competition benchmark, not free alpha. Every seat has $100m paper NAV that may be described as earning SOFR, but that capital is equally funded/benchmarked at SOFR so those flows cancel. Deployed shocked-risk capital pays the same official SOFR on trusted standard-shock risk capital: the absolute MTM loss from a 1% adverse spot move, a 100bp (1 percentage point) adverse outright rate move, or a 100bp adverse curve/RV spread move under the trusted duration-1 P&L convention. Equal risk capital receives equal financing treatment across asset classes. Notional is descriptive, not the funding base. A completely flat book \u2014 including no-trade-skeptic \u2014 therefore has zero net financing/competition P&L from SOFR cash or funding economics. Positive financing/carry alpha requires an explicit markable strategy that earns above SOFR or funds below SOFR. Weekends and holidays carry the last applicable published fixing until the next fixing. If official fixing history cannot be established, new funding accrual fails closed and prior canonical balances are preserved.",
+    "funding_convention": "ACT/360",
+    "funding_day_count": 360,
+    "funding_observation_date": "2026-09-21",
+    "funding_rate_annual": 0.0385,
+    "funding_source": "NY_FED",
+    "funding_source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr",
+    "instruction": "Do not optimize for gross notional or fill available capacity. Size risk from plausible adverse paths and historical excursions while staying inside the trusted risk-capital and drawdown limits. Flat cash at SOFR is the zero benchmark, not a source of alpha. The no-trade-skeptic must include a structured funding_view on every new risk or NO_TRADE thesis: the frozen official SOFR fixing, the relevant SR3 forward-curve view, its own assessment of whether realized funding will print higher, lower, or about the same as the curve, and the implication for remaining at the zero SOFR benchmark versus paying SOFR on shocked-risk capital.",
+    "metric": "net_pnl_after_funding",
+    "no_trade_allowed": true,
+    "objective": "Finish with the highest cumulative net paper P&L across the 14 standing seats.",
+    "risk_limits": {
+      "max_drawdown_usd": 5000000,
+      "paper_nav_usd": 100000000,
+      "risk_capital_limit_usd": 10000000,
+      "risk_capital_method": "mtm_standard_1pct_move"
+    }
+  },
+  "evidence_cutoff": "2026-09-23T06:20:00-04:00",
+  "overnight_run_id": "overnight-20260923",
+  "packet_sha256": "79f165ba2bfb3870b2b05bba7b44da8dcfadb54c57fed48eeb0190ab4be48b53",
+  "research_supplement": {
+    "central_bank_research": [
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Fed Vice Chair Jefferson: discount window modernization supports Treasury and repo market functioning",
+        "institution": "Federal Reserve",
+        "published_at": "2026-09-22T00:00:00-04:00",
+        "source_name": "Board of Governors of the Federal Reserve System",
+        "summary": "22 Sep NY Treasury Market Conference remarks focused on discount window upgrades (DWD portal, collateral processes, FHLB coordination) and noted recent quarter-end discount window use when repo pressures lifted; not an explicit funds-rate path signal.",
+        "url": "https://www.federalreserve.gov/newsevents/speech/jefferson20260922a.htm"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "NY Fed SOMA Manager Perli: reserves ample; overnight rates near IORB; RMPs cut to zero",
+        "institution": "Federal Reserve",
+        "published_at": "2026-09-22T00:00:00-04:00",
+        "source_name": "Federal Reserve Bank of New York",
+        "summary": "22 Sep speech said money markets showed ample reserves, overnight rates trading slightly below IORB, and the Desk had reduced reserve management purchases to zero since mid-August while monitoring bill issuance and repo conditions\u2014implementation backdrop after the 16 Sep hike.",
+        "url": "https://www.newyorkfed.org/newsevents/speeches/2026/per260922"
+      },
+      {
+        "country_codes": [
+          "JP"
+        ],
+        "headline": "BoJ September hike implementation: ~1.25% call-rate target effective 24 September",
+        "institution": "BoJ",
+        "published_at": "2026-09-18T00:00:00+09:00",
+        "source_name": "Bank of Japan",
+        "summary": "Official 18 Sep MPM materials confirm the uncollateralized overnight call target and complementary deposit facility rate move to ~1.25% from 24 Sep, with basic loan rate 1.5%; decision already in frozen CB tape but timing is near-term for JPY/rates.",
+        "url": "https://www.boj.or.jp/en/mopo/mpmdeci/mpr_2026/k260918a.pdf"
+      }
+    ],
+    "news": [
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Trump tells UN he may 'annihilate' Iran or pursue a deal; Iran delegation walks out",
+        "primary_category": "geopolitics",
+        "published_at": "2026-09-22T00:00:00-04:00",
+        "source_name": "BBC",
+        "summary": "In his 22 Sep UNGA address, President Trump framed a binary choice between a rebuilding deal and rapid military annihilation of Iran, while tying the war to oil and politics; BBC/Reuters report much of the Iranian delegation left during the speech.",
+        "url": "https://www.bbc.com/news/articles/c52e0ywl9pr7o"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "US and Iran hold mediated UNGA talks on war end and Hormuz",
+        "primary_category": "geopolitics",
+        "published_at": "2026-09-23T00:00:00-04:00",
+        "source_name": "Al Jazeera",
+        "summary": "Al Jazeera reports hours of indirect US\u2013Iran contact via mediators on 22 Sep; envoy Steve Witkoff said shuttling continued and Trump cited a lengthy, productive meeting involving Witkoff and Jared Kushner, though accounts differ on direct vs mediated contact.",
+        "url": "https://www.aljazeera.com/news/2026/9/23/us-iran-hold-mediated-unga-talks-on-ending-war-opening-strait-of-hormuz"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Senior Iranian official tells Reuters Hormuz could reopen in seven days if US eases blockade",
+        "primary_category": "energy",
+        "published_at": "2026-09-22T06:13:00-04:00",
+        "source_name": "Reuters",
+        "summary": "Reuters (Parisa Hafezi) on 22 Sep quoted a senior Iranian official saying the strait could reopen within seven days if Washington eases military pressure and lifts the port blockade, with Iran\u2019s UN team described as fully empowered to revive diplomacy.",
+        "url": "https://www.reuters.com/world/middle-east/iran-ready-reopen-strait-hormuz-if-us-eases-military-pressure-lifts-blockade-2026-09-22/"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Fars News disputes Reuters/Kyodo Hormuz reopening reports",
+        "primary_category": "energy",
+        "published_at": "2026-09-22T00:00:00-04:00",
+        "source_name": "International News and Views (syndicates Reuters/Fars)",
+        "summary": "After the Reuters-sourced seven-day Hormuz story moved oil lower, Iran\u2019s semi-official Fars cited sources calling those reports invalid/untrue; markets treated diplomacy hopes as tentative rather than confirmed policy.",
+        "url": "https://www.internationalnewsandviews.com/strait-of-hormuz-reopening-iran-us-oil-prices-september-2026-409323-2/"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Saudi Arabia restarts East-West pipeline; Yanbu exports may resume",
+        "primary_category": "energy",
+        "published_at": "2026-09-22T06:08:00-04:00",
+        "source_name": "Reuters",
+        "summary": "Three industry sources told Reuters on 22 Sep that Saudi Arabia restarted the East-West pipeline at a low rate after the 11 Sep shutdown and could resume Red Sea loadings at Yanbu later Tuesday, with Aramco targeting higher flows over time.",
+        "url": "https://www.reuters.com/business/energy/saudi-arabia-restarts-east-west-oil-pipeline-resume-exports-yanbu-sources-say-2026-09-22/"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Oil holds near two-week lows as Gulf supply improves and Iran talks linger",
+        "primary_category": "energy",
+        "published_at": "2026-09-23T01:44:00-04:00",
+        "source_name": "Reuters",
+        "summary": "Reuters on 23 Sep reported Brent near ~$99.41/bbl in early London trade after Tuesday\u2019s sub-$100 session, citing improving Gulf supply (Saudi pipeline, higher regional exports) alongside still-uncertain US\u2013Iran diplomacy; prior-session Brent low cited near $97.36.",
+        "url": "https://www.reuters.com/business/energy/oil-falls-increased-gulf-supply-hopes-us-iran-talks-2026-09-23/"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Trump backs idea of US diesel export ban; Bessent says feasibility under review",
+        "primary_category": "energy",
+        "published_at": "2026-09-22T14:38:00-04:00",
+        "source_name": "Reuters",
+        "summary": "At UN meetings on 22 Sep, Trump said he supports halting diesel exports to ease record US pump prices; Treasury Secretary Bessent said officials are studying full vs partial restrictions, while Reuters analysts warned global market disruption.",
+        "url": "https://www.reuters.com/world/us/trump-says-he-backs-idea-ban-diesel-exports-2026-09-22/"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Wall Street mixed: Nasdaq closes at record as oil eases; Dow falls",
+        "primary_category": "markets",
+        "published_at": "2026-09-22T16:00:00-04:00",
+        "source_name": "Newser (AP syndication)",
+        "summary": "AP/Newser recap of 22 Sep US close: S&P 500 essentially flat (~7,764.64), Nasdaq +0.5% to a record ~27,244.28, Dow \u2212185 points; banks weighed after the prior week\u2019s Fed hike while the 10-year yield edged down toward ~4.95%.",
+        "url": "https://www.newser.com/article/de8c5f9659e44556e40e661f794b48ad/wall-street-holds-near-its-record-after-brent-oil-falls-below-100-per-barrel.html"
+      }
+    ],
+    "sources": [
+      {
+        "name": "Reuters \u2013 Iran Hormuz seven-day offer",
+        "published_at": "2026-09-22T06:13:00-04:00",
+        "url": "https://www.reuters.com/world/middle-east/iran-ready-reopen-strait-hormuz-if-us-eases-military-pressure-lifts-blockade-2026-09-22/"
+      },
+      {
+        "name": "Reuters \u2013 Saudi East-West pipeline restart",
+        "published_at": "2026-09-22T06:08:00-04:00",
+        "url": "https://www.reuters.com/business/energy/saudi-arabia-restarts-east-west-oil-pipeline-resume-exports-yanbu-sources-say-2026-09-22/"
+      },
+      {
+        "name": "Reuters \u2013 Oil 23 Sep",
+        "published_at": "2026-09-23T01:44:00-04:00",
+        "url": "https://www.reuters.com/business/energy/oil-falls-increased-gulf-supply-hopes-us-iran-talks-2026-09-23/"
+      },
+      {
+        "name": "Al Jazeera \u2013 mediated UNGA talks",
+        "published_at": "2026-09-23T00:00:00-04:00",
+        "url": "https://www.aljazeera.com/news/2026/9/23/us-iran-hold-mediated-unga-talks-on-ending-war-opening-strait-of-hormuz"
+      },
+      {
+        "name": "Federal Reserve \u2013 Jefferson speech",
+        "published_at": "2026-09-22T00:00:00-04:00",
+        "url": "https://www.federalreserve.gov/newsevents/speech/jefferson20260922a.htm"
+      },
+      {
+        "name": "New York Fed \u2013 Perli speech",
+        "published_at": "2026-09-22T00:00:00-04:00",
+        "url": "https://www.newyorkfed.org/newsevents/speeches/2026/per260922"
+      },
+      {
+        "name": "Bank of Japan \u2013 September MPM implementation notice",
+        "published_at": "2026-09-18T00:00:00+09:00",
+        "url": "https://www.boj.or.jp/en/mopo/mpmdeci/mpr_2026/k260918a.pdf"
+      }
+    ],
+    "summary": "Since the reused 22 Sep overnight digest, UNGA week has driven a sharp shift in energy risk pricing: Tuesday diplomacy headlines (mediated US\u2013Iran contacts, a Reuters-sourced Hormuz reopening offer, and Saudi restart of the East-West pipeline) helped push Brent back below $100 after the early-Tuesday rebound already in the frozen tape, with Wednesday Asia/London trade holding near two-week lows. Trump\u2019s UNGA speech mixed escalation rhetoric with claims of productive envoy talks, while Iran\u2019s semi-official Fars pushed back on the seven-day Hormuz story, leaving flow restoration unconfirmed. Separately, Trump backed exploring a US diesel export ban as product tightness persists despite softer crude. US equities closed mixed on 22 Sep (Nasdaq record, Dow weaker on financials) as Treasury yields edged lower with oil; official NY Fed SOFR remains last confirmed at 3.85% effective 21 Sep in the trusted packet, with no primary 22\u201323 Sep fixing verified here. families.macro_hard stays stale (as_of 21 Sep); families.market_state paper levels remain fresh per the 23 Sep collect. BoJ\u2019s 18 Sep hike to ~1.25% takes effect 24 Sep."
+  },
+  "review_id": "review-001",
+  "schema_version": 1,
+  "type": "OVERNIGHT_AGENT_EVIDENCE_PACKET"
+}

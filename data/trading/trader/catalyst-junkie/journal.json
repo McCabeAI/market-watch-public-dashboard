@@ -185,6 +185,55 @@
       "run_id": "overnight-20260922",
       "schema_version": 1,
       "thesis": "Hold receive AONIA_2026-10. Oct still prices +22bp overnight versus cash 4.35 and the paper mid 4.57 has not compressed after oil ~$98 diplomacy/restart. Energy relief is the path that should close that premium; the dated closer is the RBA October decision, with Bullock 28-29 Sep as the last communication. Do not CLOSE a live premium after the impulse and before the closer. Do not ADD: Bullock is two-way."
+    },
+    {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2026-10",
+          "notional_usd": null,
+          "position_id": "pos-deddf5aa0c83",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-23T06:20:00-04:00",
+      "conviction": 64,
+      "decision_fingerprint": "8b8214cbcdc99b763ef811e4b63ba6a846d57d4f6b5a46c7350eb674763794e4",
+      "event_id": "jde-c37794a6fdad4f0c",
+      "funding_view": null,
+      "invalidation": "A subsequent hawkish oil reversal or housing stabilization that restores a path to reprice Oct above 4.57.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-deddf5aa0c83"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-catalyst-junkie-pos-deddf5aa0c83"
+      ],
+      "memory_context_sha256": "d900989b23e1a2e714024f888e78fa6cabace425111693cc621494ccab3a1882",
+      "outcome_links": [],
+      "owner_id": "catalyst-junkie",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-23T06:20:00-04:00",
+        "evidence_hash": "79f165ba2bfb3870b2b05bba7b44da8dcfadb54c57fed48eeb0190ab4be48b53",
+        "overnight_run_id": "overnight-20260923",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "AONIA_2026-10 at 4.57 already prices +21.5bp versus 4.35 cash. Lower oil and a larger-than-expected housing correction are anti-hike incoming shocks. The October RBA event is dated, but the live path no longer supports a long that needs a hawkish surprise. Close the existing long.",
+      "run_id": "overnight-20260923",
+      "schema_version": 1,
+      "thesis": "AONIA_2026-10 at 4.57 already prices +21.5bp versus 4.35 cash. Lower oil and a larger-than-expected housing correction are anti-hike incoming shocks. The October RBA event is dated, but the live path no longer supports a long that needs a hawkish surprise. Close the existing long."
     }
   ],
   "schema_version": 1,

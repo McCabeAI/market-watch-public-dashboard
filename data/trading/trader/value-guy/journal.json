@@ -187,6 +187,51 @@
       "run_id": "overnight-20260922",
       "schema_version": 1,
       "thesis": "Close long SOFR-CORRA_2Y_2027H1. Trusted strip is H7 4.58 minus H27 3.06 = 152bp, inside the 147-156 peer box of US-CA 2Y sovereign 147bp and cash SOFR-CORRA 156bp. The 140.25 entry was tight versus both anchors; the 140-to-152 move was convergence toward fair, not a reason to stay long compression. CA labor cooling versus sticky US inflation supports cash 156bp remaining, the wrong fundamental for a long that needs the mark to fall. Do not reverse short: 5bp versus 2Y is noise."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-23T06:20:00-04:00",
+      "conviction": 45,
+      "decision_fingerprint": "c9d560d0d387ce106e1586998c337b0be2238a717f5ada3bcf34d19081933556",
+      "event_id": "jde-e6d850e15e8c4cdf",
+      "funding_view": null,
+      "invalidation": "A fresh packet with contemporaneous CA-US 2Y, policy-path confirmation, and a closed postmortem would be required before re-expressing the dislocation.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "e9f73677fca3bf4133a4e70f80c0f4673f5269d25edfc9bab425a7ffb8073587",
+      "outcome_links": [],
+      "owner_id": "value-guy",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-23T06:20:00-04:00",
+        "evidence_hash": "79f165ba2bfb3870b2b05bba7b44da8dcfadb54c57fed48eeb0190ab4be48b53",
+        "overnight_run_id": "overnight-20260923",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "CA-US 2Y at -147bp (1y pctile 0.2) remains a historically extreme peer-spread cheapness, but that is a stock valuation fact, not a re-entry. The same family was closed 22 Sep as SOFR-CORRA_2Y_2027H1 with outstanding postmortem pmd-d9e2764dea0f. Stale macro_hard and the memory gate block expansion. Stay flat.",
+      "run_id": "overnight-20260923",
+      "schema_version": 1,
+      "thesis": "CA-US 2Y at -147bp (1y pctile 0.2) remains a historically extreme peer-spread cheapness, but that is a stock valuation fact, not a re-entry. The same family was closed 22 Sep as SOFR-CORRA_2Y_2027H1 with outstanding postmortem pmd-d9e2764dea0f. Stale macro_hard and the memory gate block expansion. Stay flat."
     }
   ],
   "schema_version": 1,

@@ -177,6 +177,51 @@
       "run_id": "overnight-20260922",
       "schema_version": 1,
       "thesis": "Remain flat. The sole expanding markable handoff is long AUDCAD $10m at paper mid 0.99857. RBA hike is already priced, so residual AUD policy edge is spent. Brent near $98 with Hormuz diplomacy and a Saudi restart keeps CAD oil-beta two-way and typically CAD-supportive at high oil\u2014adverse to long AUDCAD. A 1% spot shock is $100,000 of risk capital; official SOFR 3.85% ACT/360 charges that capital, and no quantified edge compensates. Preservation and high hurdles select no-trade."
+    },
+    {
+      "actions": [
+        {
+          "action": "NO_TRADE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-23T06:42:26.014004-04:00",
+      "conviction": 84,
+      "decision_fingerprint": "18bfa7cd20a9821dae4fb457a610e19b09e5c4b14605e62a5ac0f2b733cfd909",
+      "event_id": "jde-d353fe1abab54473",
+      "funding_view": null,
+      "invalidation": "Fresh in-cutoff macro_hard restoring OPEN/ADD/HEDGE eligibility, plus at least one independent markable expanding handoff whose expected edge clears official SOFR on shocked-risk capital without relying on crowded receive-CORRA or invented prints.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "6e680d1701c4ff8f93e5f97dfcc1569475ab94ca917bf27857b9dcbb7ff94dcc",
+      "outcome_links": [],
+      "owner_id": "grinder",
+      "owner_type": "pm",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-23T06:20:00-04:00",
+        "evidence_hash": "6ba0cea2628f1db0e380424b88380a3a7c267253657a10e7c0be3963b104b182",
+        "overnight_run_id": "overnight-20260923",
+        "review_id": "review-001",
+        "review_packet_id": "prp-grinder-overnight-20260923-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Prior book is already flat and this cycle\u2019s 14-trader handoff has zero expanding OPEN/ADD/HEDGE. The room is HOLDs, flats, and one catalyst-junkie CLOSE of AONIA_2026-10; crowded receive-CORRA is not a chase. macro_hard is STALE, so any new rates OPEN fail-closes. Preservation, consistency, and the official SOFR 3.85% shocked-capital hurdle all point to staying flat rather than inheriting other desks\u2019 HOLDs.",
+      "run_id": "overnight-20260923",
+      "schema_version": 1,
+      "thesis": "Prior book is already flat and this cycle\u2019s 14-trader handoff has zero expanding OPEN/ADD/HEDGE. The room is HOLDs, flats, and one catalyst-junkie CLOSE of AONIA_2026-10; crowded receive-CORRA is not a chase. macro_hard is STALE, so any new rates OPEN fail-closes. Preservation, consistency, and the official SOFR 3.85% shocked-capital hurdle all point to staying flat rather than inheriting other desks\u2019 HOLDs."
     }
   ],
   "schema_version": 1,
