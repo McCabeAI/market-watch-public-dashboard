@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-import os
 from pathlib import Path
 from typing import Any
 
@@ -95,12 +94,6 @@ def _grant_matches(grant: dict[str, Any], launch: dict[str, Any], request: dict[
     return True
 
 
-def _dispatch_implemented(ctx: dict[str, Any]) -> bool:
-    if ctx.get("acp_dispatch_implemented"):
-        return bool(ctx["acp_dispatch_implemented"])
-    return os.environ.get("MW_LAUNCH_ACP_DISPATCH_IMPLEMENTED") == "1"
-
-
 def run(launch: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
     input_sha = launch.get("base_packet_sha256")
     blocked = _prior_failed(launch, input_sha256=input_sha)
@@ -149,35 +142,20 @@ def run(launch: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
             },
         )
 
-    dispatch_on = _dispatch_implemented(ctx)
-    if not dispatch_on:
-        return contract.stage_receipt(
-            STAGE,
-            status="blocked",
-            input_sha256=input_sha,
-            reason=AWAITING_ACP,
-            artifact=str(request_path),
-            details={
-                "delegation_request": request,
-                "grant_present": True,
-                "grant_verified": True,
-                "dispatch_implemented": False,
-                "live_provider_dispatched": False,
-                "live_model_calls": 0,
-            },
-        )
-
+    # A matching grant is authorization evidence, not proof of provider dispatch.
+    # Never mark stage 05 succeeded until an ACP callback supplies a verified
+    # provider run receipt and an actual dispatch adapter has been implemented.
     return contract.stage_receipt(
         STAGE,
-        status="succeeded",
+        status="blocked",
         input_sha256=input_sha,
+        reason=AWAITING_ACP,
         artifact=str(request_path),
-        reason="grant_verified_dispatch_not_implemented",
         details={
             "delegation_request": request,
             "grant_present": True,
             "grant_verified": True,
-            "dispatch_implemented": True,
+            "dispatch_implemented": False,
             "live_provider_dispatched": False,
             "live_model_calls": 0,
         },
