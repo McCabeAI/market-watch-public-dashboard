@@ -158,6 +158,9 @@ def collect_inputs(
     run_id: str,
     offline: bool = True,
     market_state_path: Path | None = None,
+    refresh_macro: bool = False,
+    macro_fetcher: Any = None,
+    persist_macro: bool | None = None,
 ) -> dict[str, Any]:
     root = store.root
     stamp = now_ny(when)
@@ -169,20 +172,36 @@ def collect_inputs(
     macro_status = "invalid"
     scores: dict[str, Any] | None = None
     score_registry: dict[str, Any] | None = None
+    macro_detail: dict[str, Any] = {}
     try:
         scores = json.loads((root / "data" / "temperature_scores.json").read_text(encoding="utf-8"))
         score_registry = json.loads((root / "data" / "score_source_registry.json").read_text(encoding="utf-8"))
-        macro_as_of = str(scores.get("as_of") or scores.get("last_refresh_date") or "")
-        if macro_as_of and "T" not in macro_as_of:
-            macro_as_of = datetime.fromisoformat(macro_as_of).replace(
-                hour=4,
-                tzinfo=stamp.tzinfo,
-            ).isoformat()
-        age = age_status(macro_as_of, when=stamp) if macro_as_of else "missing"
-        macro_status = age if macro_digest else "invalid"
         if not macro_digest:
             macro_status = "invalid"
             macro_notes.append("required macro files missing")
+            macro_as_of = None
+            macro_detail: dict[str, Any] = {}
+        else:
+            # Calibration as_of is the structural LEVEL anchor. Freshness uses
+            # release cadence plus the last verified source check, which is a
+            # different timestamp from that anchor.
+            persist = refresh_macro if persist_macro is None else persist_macro
+            if refresh_macro:
+                from scripts.macro_source_refresh import refresh_macro_sources
+
+                macro_detail = refresh_macro_sources(
+                    root,
+                    when=stamp,
+                    fetcher=macro_fetcher,
+                    persist=persist,
+                )
+            else:
+                from scripts.macro_freshness import assess_macro_family
+
+                macro_detail = assess_macro_family(root, when=stamp)
+            macro_status = str(macro_detail.get("status") or "invalid")
+            macro_as_of = macro_detail.get("as_of")
+            macro_notes.extend(list(macro_detail.get("notes") or []))
     except Exception as exc:
         macro_status = "invalid"
         macro_notes.append(f"temperature score state invalid: {exc}")
@@ -195,6 +214,11 @@ def collect_inputs(
             "files": macro_files,
             "temperature_scores": scores,
             "score_source_registry": score_registry,
+            "calibration_as_of": (macro_detail or {}).get("calibration_as_of") or (scores or {}).get("as_of"),
+            "components": (macro_detail or {}).get("components") or [],
+            "stale_countries": (macro_detail or {}).get("stale_countries") or [],
+            "fresh_countries": (macro_detail or {}).get("fresh_countries") or [],
+            "ingested": (macro_detail or {}).get("ingested") or [],
         },
     )
 

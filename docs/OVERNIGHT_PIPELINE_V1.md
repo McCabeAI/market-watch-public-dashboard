@@ -23,7 +23,7 @@ All times are America/New_York.
 
 | Time/event | Owner | Work |
 | --- | --- | --- |
-| 00:07 | Market Watch | deterministic collect + live market-state snapshot |
+| 00:07 | Market Watch | deterministic collect, release-aware macro source check, and live market-state snapshot |
 | 01:40 | Market Watch | deterministic pre-trader delta |
 | 01:50 | Market Watch | freeze trusted base evidence packet + prior books |
 | 02:05 | ACP | one approved scheduled Cursor parent |
@@ -35,6 +35,8 @@ All times are America/New_York.
 | 04:15 | Market Watch | GitHub Pages release |
 
 The deterministic times above are **logical deadlines**, not assumptions that a single GitHub cron delivery will be punctual. GitHub scheduled events are redundant wake-ups. Each wake-up runs `overnight_pipeline.py reconcile`, which catches up every due missing deterministic stage in order and never synthesizes the ACP-owned trader review. Critical pre-02:05 wake-ups include 01:50, 01:55, and 02:00 ET so a delayed earlier cron can still persist the trusted freeze before provider launch.
+
+Collect runs the macro release check before it freezes evidence. `data/temperature_calibration.json` `as_of` stays the structural LEVEL anchor. It is not the `macro_hard` freshness clock. Each scored component keeps its observation period, series id, and source URL separate from `checked_at`. A monthly or quarterly print that is not due stays fresh after a successful primary-source check inside the 36-hour business-time window (weekends and the configured holiday set do not consume that window). A due-but-missing print, a failed or unverified check, an unexpected revision, or a newer period that cannot be transformed stays on that component and blocks new risk only for expressions that use the affected country. Proprietary and unsupported surveys stay explicit gaps and do not fail closed the other countries. The same New York session reuses a successful component check; a later wake-up retries failures and a missed prior session checks again. There is no extra ACP clock and no trader or PM model call. Live reads are limited to FRED graph CSV and Statistics Canada WDS vectors. ABS, Stats NZ, e-Stat, ESRI, METI, and proprietary PMI/confidence sources are not treated as checked merely because the job ran.
 
 The 02:05 provider must find the current run's `run.json` and the open review's `evidence_snapshot.json` already committed on its starting ref with `freeze_evidence.status == "succeeded"`. The open review is the latest `frozen` or `accepting` row in `reviews/index.json` (or the latest accepted review when no open review exists). If that trusted freeze is absent or invalid, the provider stops before child/model spend and opens no output PR. It may never regenerate the trusted base freeze locally.
 
