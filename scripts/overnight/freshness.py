@@ -282,6 +282,16 @@ def assert_action_allowed(
         )
         if specific:
             raise FreshnessError(f"{seat} {action} blocked: {specific}")
+        from scripts.macro_freshness import macro_expression_block
+
+        macro_specific = macro_expression_block(
+            families,
+            instrument=instrument,
+            asset_class=asset_class,
+            expression=expression,
+        )
+        if macro_specific:
+            raise FreshnessError(f"{seat} {action} blocked: {macro_specific}")
     return blocked
 
 

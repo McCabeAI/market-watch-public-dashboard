@@ -109,7 +109,15 @@ def _dispatch(
 ) -> dict[str, Any]:
     run_id = run["overnight_run_id"]
     if stage == "collect":
-        return collect_inputs(store, when=when, run_id=run_id, offline=offline, market_state_path=market_state_path)
+        return collect_inputs(
+            store,
+            when=when,
+            run_id=run_id,
+            offline=offline,
+            market_state_path=market_state_path,
+            refresh_macro=not offline,
+            persist_macro=not offline and not dry_run,
+        )
     if stage in {"pre_trader_delta", "final_delta"}:
         return compute_delta(
             store,

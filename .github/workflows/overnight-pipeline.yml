@@ -62,6 +62,9 @@ on:
       - ".cursor/hooks/enforce-overnight-budget.py"
       - ".cursor/hooks/enforce-overnight-runtime.py"
       - "scripts/overnight/**"
+      - "scripts/macro_freshness.py"
+      - "scripts/macro_source_refresh.py"
+      - "tests/test_macro_freshness.py"
       - "scripts/pm/**"
       - "scripts/overnight_pipeline.py"
       - ".cursor/commands/overnight-scheduled.md"
@@ -103,7 +106,7 @@ jobs:
       - name: Unit tests
         run: |
           set -euo pipefail
-          PYTHONPATH=. python3 -m unittest tests.test_overnight_pipeline tests.test_overnight_scheduled_output tests.test_overnight_acceptance_handoff tests.test_overnight_review_identity tests.test_pm_scheduled_output tests.test_pm_overnight_packets tests.test_trading_memory tests.test_trader_room_dashboard -v
+          PYTHONPATH=. python3 -m unittest tests.test_macro_freshness tests.test_overnight_pipeline tests.test_overnight_scheduled_output tests.test_overnight_acceptance_handoff tests.test_overnight_review_identity tests.test_pm_scheduled_output tests.test_pm_overnight_packets tests.test_trading_memory tests.test_trader_room_dashboard -v
       - name: End-to-end zero-model dry-run
         run: |
           set -euo pipefail
@@ -150,6 +153,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/overnight
           git add data/pm/books data/pm/review_packets data/pm/public data/pm/data_requests 2>/dev/null || true
+          git add data/temperature_history/macro_source_audit.json data/temperature_scores.json data/temperature_history/score_paths.json data/temperature_history/us.json data/temperature_history/ca.json data/temperature_history/au.json data/temperature_history/nz.json data/temperature_history/ea.json data/temperature_history/jp.json 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "No deterministic overnight state changes"
             exit 0
@@ -239,6 +243,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/overnight
           git add data/pm/books data/pm/review_packets data/pm/public data/pm/data_requests 2>/dev/null || true
+          git add data/temperature_history/macro_source_audit.json data/temperature_scores.json data/temperature_history/score_paths.json data/temperature_history/us.json data/temperature_history/ca.json data/temperature_history/au.json data/temperature_history/nz.json data/temperature_history/ea.json data/temperature_history/jp.json 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "No deterministic overnight state changes"
             exit 0

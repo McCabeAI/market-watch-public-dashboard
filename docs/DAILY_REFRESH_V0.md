@@ -269,6 +269,8 @@ Do not rebuild LEVEL from an ad hoc historical distribution. Refresh updates obs
 
 If a registry source is inaccessible, keep the prior verified observation, record the source failure in the refresh result, and do not invent a release or silently mark that component checked.
 
+`scripts/macro_source_refresh.py` is the deterministic check that runs inside overnight collect. It reuses the registry cadence and the history file's series id, retrieval method, and observation dates. FRED graph CSV and StatCan WDS are the bounded live adapters. Other official publishers stay on the ledger with an explicit unsupported or gap status until a reliable adapter exists. A successful check does not rewrite `temperature_calibration.json` `as_of` and does not change LEVEL unless a new observation is actually appended.
+
 The top-level dashboard score board is derived from the same `data/temperature_scores.json` ledger as the country drawers. The older contextual country cards are a macro snapshot, not an independent score source, and must not display a competing set of 1–100 scores.
 
 

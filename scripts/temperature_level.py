@@ -349,6 +349,32 @@ def aggregate_dimension(
     }
 
 
+def scoring_cutoff(cal: dict[str, Any], histories: dict[str, dict[str, Any]]) -> str:
+    """Latest month the LEVEL engine may see.
+
+    The calibration ``as_of`` stays the structural anchor. A later verified
+    observation extends the scoring window; it does not move that anchor.
+    """
+    structural = str(cal.get("as_of") or "2026-09")[:7]
+    best_key = period_sort_key(structural)
+    best = structural
+    for history in histories.values():
+        for comp in (history.get("components") or {}).values():
+            for obs in comp.get("observations") or []:
+                period = obs.get("reference_period")
+                if not isinstance(period, str):
+                    continue
+                try:
+                    key = period_sort_key(period)
+                except ValueError:
+                    continue
+                if key > best_key:
+                    best_key = key
+                    _kind, year, month = parse_period(period)
+                    best = f"{year}-{month:02d}"
+    return best
+
+
 def compute_state(
     cal: dict[str, Any] | None = None,
     histories: dict[str, dict[str, Any]] | None = None,
@@ -356,7 +382,7 @@ def compute_state(
 ) -> dict[str, Any]:
     cal = cal or load_calibration()
     histories = histories or load_history()
-    cutoff = cutoff or cal["as_of"][:7]  # YYYY-MM from ISO date
+    cutoff = cutoff or scoring_cutoff(cal, histories)
 
     countries: dict[str, Any] = {}
     for country in COUNTRY_CODES:
