@@ -233,6 +233,11 @@ class MarketWatchLaunchCompletionTests(unittest.TestCase):
         self.assertEqual(receipt["status"], "blocked")
         self.assertEqual(receipt["reason"], contract.AWAITING_ACP)
         self.assertTrue(receipt["details"]["grant_verified"])
+        # A local flag cannot turn a grant into a real ACP provider dispatch.
+        self.ctx["acp_dispatch_implemented"] = True
+        flagged = acp_run(self.launch, self.ctx)
+        self.assertEqual(flagged["status"], "blocked")
+        self.assertFalse(flagged["details"]["live_provider_dispatched"])
 
     def test_full_stub_pipeline_finalize_publication(self) -> None:
         launch = self._run_stub_pipeline()
