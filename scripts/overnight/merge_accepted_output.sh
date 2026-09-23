@@ -27,6 +27,17 @@ fi
 
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 
+# Production acceptance sets MW_PAGES_REQUIRE_LAUNCH=1. Pages then run only
+# for a launch that stage 07 authorized. Legacy callers that leave the
+# variable unset keep the previous dispatch.
+if [ "${MW_PAGES_REQUIRE_LAUNCH:-}" = "1" ] && [ -z "${MW_PAGES_LAUNCH_ID:-}" ] && [ -n "${MW_PAGES_OUTPUT:-}" ] && [ -f "${MW_PAGES_OUTPUT}" ]; then
+  eval "$(MW_PAGES_OUTPUT="$MW_PAGES_OUTPUT" python3 -c 'import json,os,shlex; d=json.load(open(os.environ["MW_PAGES_OUTPUT"])); print("export MW_PAGES_LAUNCH_ID=%s" % shlex.quote(str(d.get("launch_id") or ""))); print("export MW_PAGES_REVIEW_ID=%s" % shlex.quote(str(d.get("review_id") or "")))')"
+fi
+if [ "${MW_PAGES_REQUIRE_LAUNCH:-}" = "1" ] && [ -z "${MW_PAGES_LAUNCH_ID:-}" ]; then
+  echo "Skipping GitHub Pages dispatch: accepted output is not bound to an authorized launch_id."
+  exit 0
+fi
+
 if [ -n "${MW_PAGES_LAUNCH_ID:-}" ]; then
   export MW_PAGES_REPO_ROOT="${MW_PAGES_REPO_ROOT:-$REPO_ROOT}"
   export MW_PAGES_STATE_ROOT="${MW_PAGES_STATE_ROOT:-$REPO_ROOT}"

@@ -181,4 +181,6 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           PR_URL: ${{ github.event.pull_request.html_url }}
+          MW_PAGES_REQUIRE_LAUNCH: "1"
+          MW_PAGES_OUTPUT: /tmp/mw-output/scheduled_output.json
         run: bash scripts/overnight/merge_accepted_output.sh

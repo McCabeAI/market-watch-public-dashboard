@@ -306,6 +306,12 @@ class MergePagesAuthorizationTests(unittest.TestCase):
             return []
         return [line.strip() for line in self.log.read_text(encoding="utf-8").splitlines() if line.strip()]
 
+    def test_required_launch_without_id_skips_pages(self) -> None:
+        result = self._merge({"MW_PAGES_REQUIRE_LAUNCH": "1"})
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("not bound to an authorized launch_id", result.stdout)
+        self.assertFalse(any("workflow run" in call for call in self._calls()))
+
     def test_legacy_unset_env_still_dispatches_pages(self) -> None:
         result = self._merge()
         self.assertEqual(result.returncode, 0, result.stderr)

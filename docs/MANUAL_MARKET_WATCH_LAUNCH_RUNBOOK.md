@@ -87,6 +87,8 @@ Legacy `schedule_id` `market-watch-weekday-0205` remains only so previously acce
 | 07 | `07_finalize` | Same launch, session, and review; publication gate `may_publish` |
 | 08 | `08_pages` | Explicit `deploy-pages.yml` `workflow_dispatch` after 07. Stub runs record a dry-run and do not publish |
 
+Accepted `[overnight-output]` merges set `MW_PAGES_REQUIRE_LAUNCH=1`. Production Pages then run only when that payload carries a `launch_id` whose stage 07 succeeded, the provider is `acp`, and `publish_production` is true. A merge with no launch binding skips Pages. Callers that leave `MW_PAGES_REQUIRE_LAUNCH` unset still dispatch Pages, so older handoff tests stay valid. No workflow `push` or `schedule` deploys production Pages.
+
 Durable status values are `pending`, `running`, `succeeded`, `blocked`, and `failed`. Each stage stores input and output hashes. A later stage does not run because an earlier process exited 0.
 
 State directory: `data/market_watch_launches/<launch_id>/`.
