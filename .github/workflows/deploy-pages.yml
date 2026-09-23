@@ -1,17 +1,7 @@
 name: Deploy Market Watch Dashboard
 
 on:
-  push:
-    branches: [main]
-    paths-ignore:
-      # Intermediate overnight ledger commits must not publish before the scheduled morning release.
-      - "data/overnight/runs/**"
-      - "data/overnight/latest.json"
-      - "data/overnight/books/**"
-      - "data/overnight/README.md"
-  schedule:
-    - cron: "15 4 * * 1-5"
-      timezone: "America/New_York"
+  # All market-cycle stages are manual until the dependency-gated launch is installed.
   workflow_dispatch:
   pull_request:
     paths:
@@ -395,7 +385,7 @@ jobs:
           set -euo pipefail
           python scripts/apply_trader_book_tab.py _site/index.html
           REQUIRE_DATASET=()
-          if [ "$GITHUB_EVENT_NAME" = "schedule" ]; then REQUIRE_DATASET=(--require-dataset); fi
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then REQUIRE_DATASET=(--require-dataset); fi
           PYTHONPATH=. python scripts/overnight_pipeline.py publish-check --site-dir _site "${REQUIRE_DATASET[@]}"
           test -s _site/trader-book.js
           test -s _site/trader-books.json
