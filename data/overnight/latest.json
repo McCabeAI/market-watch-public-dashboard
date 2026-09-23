@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-09-23T05:14:53.749364-04:00",
+  "as_of": "2026-09-23T06:43:31.004889-04:00",
   "assembled_dataset": "data/overnight/runs/overnight-20260923/assembled_dataset.json",
   "books_path": "data/overnight/books/latest.json",
   "dry_run": false,
@@ -9,12 +9,12 @@
     "core_status": "ok",
     "families": {
       "central_bank_research": {
-        "as_of": "2026-09-22T06:52:19.184127-04:00",
+        "as_of": "2026-09-23T06:20:00-04:00",
         "blocking": false,
         "catastrophic": false,
-        "digest": "4a903599bf7b7603ff26d41e62568ef2008d1c1daf440e4d69a098063fbbd423",
+        "digest": "0fdfb018ca5e5e28f2d49c8a22f8b83622482da5320124a4296c68c52193ca27",
         "notes": [
-          "rolling 30-day central-bank research state is frozen below"
+          "accepted current-cycle ACP central-bank research supplement"
         ],
         "status": "fresh"
       },
@@ -35,22 +35,21 @@
         "status": "fresh"
       },
       "news": {
-        "as_of": "2026-09-22T06:52:19.184127-04:00",
+        "as_of": "2026-09-23T06:20:00-04:00",
         "blocking": false,
         "catastrophic": false,
-        "digest": "1e54107dc8f81b4faff3ae2f7cb25ff0cc552fe97332a125a3eb586f757f77c5",
+        "digest": "08e4fcb55691c9f324f22c4b185ea39433c8c48de8b750220d9b374797b6e4d9",
         "notes": [
-          "substantive normalized news items are frozen below",
-          "newer accepted overnight research reused from overnight-20260922"
+          "accepted current-cycle ACP research supplement"
         ],
         "status": "fresh"
       }
     },
-    "last_successful_pm_run_id": "overnight-20260922",
-    "last_successful_review_run_id": "overnight-20260922",
+    "last_successful_pm_run_id": "overnight-20260923",
+    "last_successful_review_run_id": "overnight-20260923",
     "may_publish": true,
-    "pm_books_status": "stale",
-    "reason": "core inputs are structurally valid; trader books stale; last successful review overnight-20260922; PM books stale; last successful automated PM cycle overnight-20260922",
-    "trader_books_status": "stale"
+    "pm_books_status": "fresh",
+    "reason": "core inputs are structurally valid",
+    "trader_books_status": "fresh"
   }
 }
