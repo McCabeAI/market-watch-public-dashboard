@@ -125,9 +125,7 @@ jobs:
               rerun=true
             fi
             if [ -n "${ISSUE_BODY:-}" ]; then
-              read -r body_mode body_provider body_rerun <<EOF
-$(PYTHONPATH=. python3 -c 'import os; from scripts.market_watch_launch.identity import parse_issue_body; d=parse_issue_body(os.environ.get("ISSUE_BODY","")); print(d.get("mode",""), d.get("provider",""), "true" if d.get("rerun") else "")')
-EOF
+              read -r body_mode body_provider body_rerun < <(PYTHONPATH=. python3 -c 'import os; from scripts.market_watch_launch.identity import parse_issue_body; d=parse_issue_body(os.environ.get("ISSUE_BODY","")); print(d.get("mode",""), d.get("provider",""), "true" if d.get("rerun") else "")')
               if [ -n "$body_mode" ]; then mode="$body_mode"; fi
               if [ -n "$body_provider" ]; then provider="$body_provider"; fi
               if [ "$body_rerun" = "true" ]; then rerun=true; fi
@@ -159,6 +157,9 @@ EOF
         uses: actions/setup-python@v6
         with:
           python-version: "3.12"
+
+      - name: Install market-state dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-market-state.txt
 
       - name: Run launch CLI
         id: launch
@@ -197,11 +198,7 @@ EOF
           PYTHONPATH=. python3 -m scripts.market_watch_launch.cli "${ARGS[@]}" | tee launch-result.json
           code=$?
           set -e
-          launch_id=$(python3 - <<'PY'
-import json
-print(json.load(open("launch-result.json"))["launch_id"])
-PY
-)
+          launch_id="$(python3 -c 'import json; print(json.load(open("launch-result.json"))["launch_id"])')"
           echo "launch_id=$launch_id" >> "$GITHUB_OUTPUT"
           if [ "$code" -ne 0 ] && [ "$code" -ne 1 ]; then
             exit "$code"
@@ -246,6 +243,9 @@ PY
         uses: actions/setup-python@v6
         with:
           python-version: "3.12"
+
+      - name: Install market-state dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-market-state.txt
 
       - name: Run unit tests
         run: |
