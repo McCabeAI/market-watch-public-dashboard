@@ -25,5 +25,35 @@ if [ "$state" != "MERGED" ]; then
   exit 1
 fi
 
+REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+
+if [ -n "${MW_PAGES_LAUNCH_ID:-}" ]; then
+  export MW_PAGES_REPO_ROOT="${MW_PAGES_REPO_ROOT:-$REPO_ROOT}"
+  export MW_PAGES_STATE_ROOT="${MW_PAGES_STATE_ROOT:-$REPO_ROOT}"
+  if ! PYTHONPATH="$REPO_ROOT" python3 - <<'PY'
+import os
+import sys
+
+from scripts.market_watch_launch.pages import authorize_pages_dispatch
+
+launch_id = os.environ["MW_PAGES_LAUNCH_ID"]
+review_id = os.environ.get("MW_PAGES_REVIEW_ID", "")
+state_root = os.environ.get("MW_PAGES_STATE_ROOT", "")
+root = os.environ.get("MW_PAGES_REPO_ROOT", "")
+
+ok = authorize_pages_dispatch(
+    launch_id=launch_id,
+    review_id=review_id,
+    state_root=state_root,
+    root=root,
+)
+sys.exit(0 if ok else 2)
+PY
+  then
+    echo "Skipping GitHub Pages dispatch: launch ${MW_PAGES_LAUNCH_ID} is not authorized for production publish."
+    exit 0
+  fi
+fi
+
 echo "Accepted scheduled output is on main; dispatching GitHub Pages."
 gh workflow run deploy-pages.yml --ref main

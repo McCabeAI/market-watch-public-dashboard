@@ -1,0 +1,259 @@
+name: Launch Market Watch
+
+on:
+  workflow_dispatch:
+    inputs:
+      session_date:
+        description: "NY session date (YYYY-MM-DD); default is today in America/New_York"
+        required: false
+        type: string
+      rerun:
+        description: "Allocate a new same-day launch id (explicit rerun)"
+        required: false
+        type: boolean
+        default: false
+      mode:
+        description: "fixture or live"
+        required: true
+        type: choice
+        default: live
+        options:
+          - live
+          - fixture
+      provider:
+        description: "acp (canonical overnight store) or stub (scratch only)"
+        required: true
+        type: choice
+        default: acp
+        options:
+          - acp
+          - stub
+  issues:
+    types: [opened]
+  pull_request:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: market-watch-manual-launch
+  cancel-in-progress: false
+
+jobs:
+  guard:
+    name: Guard launch origin
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'issues'
+    runs-on: ubuntu-latest
+    outputs:
+      proceed: ${{ steps.decide.outputs.proceed }}
+      session_date: ${{ steps.decide.outputs.session_date }}
+      rerun: ${{ steps.decide.outputs.rerun }}
+      mode: ${{ steps.decide.outputs.mode }}
+      provider: ${{ steps.decide.outputs.provider }}
+      actor_type: ${{ steps.decide.outputs.actor_type }}
+      actor: ${{ steps.decide.outputs.actor }}
+      issue_number: ${{ steps.decide.outputs.issue_number }}
+      issue_title: ${{ steps.decide.outputs.issue_title }}
+      issue_url: ${{ steps.decide.outputs.issue_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Decide whether to launch
+        id: decide
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_USER_TYPE: ${{ github.event.issue.user.type }}
+          ISSUE_USER_LOGIN: ${{ github.event.issue.user.login }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_URL: ${{ github.event.issue.html_url }}
+          SENDER_TYPE: ${{ github.event.sender.type }}
+          SENDER_LOGIN: ${{ github.event.sender.login }}
+          INPUT_SESSION_DATE: ${{ github.event.inputs.session_date }}
+          INPUT_RERUN: ${{ github.event.inputs.rerun }}
+          INPUT_MODE: ${{ github.event.inputs.mode }}
+          INPUT_PROVIDER: ${{ github.event.inputs.provider }}
+        run: |
+          set -euo pipefail
+          proceed=false
+          session_date=""
+          rerun=false
+          mode=live
+          provider=acp
+          actor_type=""
+          actor=""
+          issue_number=""
+          issue_title=""
+          issue_url=""
+
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            if [ "${SENDER_TYPE}" != "User" ]; then
+              echo "workflow_dispatch sender is not a human User; skipping launch"
+              echo "proceed=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            proceed=true
+            session_date="${INPUT_SESSION_DATE}"
+            rerun="${INPUT_RERUN:-false}"
+            mode="${INPUT_MODE:-live}"
+            provider="${INPUT_PROVIDER:-acp}"
+            actor_type="${SENDER_TYPE}"
+            actor="${SENDER_LOGIN}"
+          elif [ "$EVENT_NAME" = "issues" ]; then
+            if [ "${ISSUE_USER_TYPE}" != "User" ]; then
+              echo "issue author is not a human User; skipping launch"
+              echo "proceed=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            if ! echo "$ISSUE_TITLE" | grep -Eq '^\[launch-market-watch\] [0-9]{4}-[0-9]{2}-[0-9]{2}( rerun)?$'; then
+              echo "issue title does not match launch contract; skipping"
+              echo "proceed=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            proceed=true
+            issue_title="$ISSUE_TITLE"
+            issue_number="$ISSUE_NUMBER"
+            issue_url="$ISSUE_URL"
+            actor_type="${ISSUE_USER_TYPE}"
+            actor="${ISSUE_USER_LOGIN}"
+            parsed_date=$(echo "$ISSUE_TITLE" | sed -n 's/^\[launch-market-watch\] \([0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}\).*/\1/p')
+            session_date="$parsed_date"
+            if echo "$ISSUE_TITLE" | grep -q ' rerun$'; then
+              rerun=true
+            fi
+            if [ -n "${ISSUE_BODY:-}" ]; then
+              read -r body_mode body_provider body_rerun <<EOF
+$(PYTHONPATH=. python3 -c 'import os; from scripts.market_watch_launch.identity import parse_issue_body; d=parse_issue_body(os.environ.get("ISSUE_BODY","")); print(d.get("mode",""), d.get("provider",""), "true" if d.get("rerun") else "")')
+EOF
+              if [ -n "$body_mode" ]; then mode="$body_mode"; fi
+              if [ -n "$body_provider" ]; then provider="$body_provider"; fi
+              if [ "$body_rerun" = "true" ]; then rerun=true; fi
+            fi
+          fi
+
+          echo "proceed=$proceed" >> "$GITHUB_OUTPUT"
+          echo "session_date=$session_date" >> "$GITHUB_OUTPUT"
+          echo "rerun=$rerun" >> "$GITHUB_OUTPUT"
+          echo "mode=$mode" >> "$GITHUB_OUTPUT"
+          echo "provider=$provider" >> "$GITHUB_OUTPUT"
+          echo "actor_type=$actor_type" >> "$GITHUB_OUTPUT"
+          echo "actor=$actor" >> "$GITHUB_OUTPUT"
+          echo "issue_number=$issue_number" >> "$GITHUB_OUTPUT"
+          echo "issue_title=$issue_title" >> "$GITHUB_OUTPUT"
+          echo "issue_url=$issue_url" >> "$GITHUB_OUTPUT"
+
+  orchestrate:
+    name: Orchestrate manual launch
+    needs: guard
+    if: needs.guard.outputs.proceed == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Run launch CLI
+        id: launch
+        env:
+          SESSION_DATE: ${{ needs.guard.outputs.session_date }}
+          RERUN: ${{ needs.guard.outputs.rerun }}
+          MODE: ${{ needs.guard.outputs.mode }}
+          PROVIDER: ${{ needs.guard.outputs.provider }}
+          ACTOR_TYPE: ${{ needs.guard.outputs.actor_type }}
+          ACTOR: ${{ needs.guard.outputs.actor }}
+          ISSUE_NUMBER: ${{ needs.guard.outputs.issue_number }}
+          ISSUE_TITLE: ${{ needs.guard.outputs.issue_title }}
+          ISSUE_URL: ${{ needs.guard.outputs.issue_url }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+          ARGS=(
+            launch
+            --mode "$MODE"
+            --provider "$PROVIDER"
+            --actor-type "$ACTOR_TYPE"
+            --actor "$ACTOR"
+          )
+          if [ -n "${SESSION_DATE:-}" ]; then
+            ARGS+=(--session-date "$SESSION_DATE")
+          fi
+          if [ "$RERUN" = "true" ]; then
+            ARGS+=(--rerun)
+          fi
+          if [ "$EVENT_NAME" = "issues" ]; then
+            ARGS+=(--source github_issue --issue-number "$ISSUE_NUMBER" --issue-title "$ISSUE_TITLE" --issue-url "$ISSUE_URL")
+          else
+            ARGS+=(--source workflow_dispatch)
+          fi
+          set +e
+          PYTHONPATH=. python3 -m scripts.market_watch_launch.cli "${ARGS[@]}" | tee launch-result.json
+          code=$?
+          set -e
+          launch_id=$(python3 - <<'PY'
+import json
+print(json.load(open("launch-result.json"))["launch_id"])
+PY
+)
+          echo "launch_id=$launch_id" >> "$GITHUB_OUTPUT"
+          if [ "$code" -ne 0 ] && [ "$code" -ne 1 ]; then
+            exit "$code"
+          fi
+          if [ "$code" -eq 1 ]; then
+            echo "launch failed (operational outcome)"
+            exit 1
+          fi
+
+      - name: Commit launch state
+        env:
+          PROVIDER: ${{ needs.guard.outputs.provider }}
+          LAUNCH_ID: ${{ steps.launch.outputs.launch_id }}
+        run: |
+          set -euo pipefail
+          if [ -d data/market_watch_launches ]; then
+            git add data/market_watch_launches
+          fi
+          if [ "$PROVIDER" = "acp" ]; then
+            git add data/overnight/runs data/overnight/books data/overnight/latest.json data/pm 2>/dev/null || true
+          fi
+          if git diff --cached --quiet; then
+            echo "no launch artifacts to commit"
+            exit 0
+          fi
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -m "chore: market watch launch ${LAUNCH_ID}"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
+  unit-tests:
+    name: Market Watch launch unit tests
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Run unit tests
+        run: |
+          set -euo pipefail
+          # Integration modules land in sibling tasks; run graph tests now and extend when present.
+          PYTHONPATH=. python3 -m unittest \
+            tests.test_mw_launch_graph \
+            tests.test_mw_launch_quality \
+            tests.test_mw_launch_completion \
+            tests.test_mw_launch_integration \
+            -v
