@@ -52,6 +52,9 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Install market-state dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-market-state.txt
+
       - name: Resolve mode and country
         id: resolve
         env:
@@ -134,6 +137,9 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: "3.12"
+
+      - name: Install market-state dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-market-state.txt
 
       - name: Run unit tests
         run: |
