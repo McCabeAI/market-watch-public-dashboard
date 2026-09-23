@@ -167,6 +167,7 @@ class TestIngestionIntegrity(unittest.TestCase):
             "kind": "explicit_timestamp",
             "timezone": "America/New_York",
             "dates": ["2026-09-01T08:30:00-04:00"],
+            "expected_periods": {"2026-09-01T08:30:00-04:00": "2026-09"},
         }
         cat = self._mini_catalog([spec])
         now = datetime(2026, 9, 21, 12, 0, tzinfo=timezone.utc)
@@ -187,6 +188,130 @@ class TestIngestionIntegrity(unittest.TestCase):
             health_dir=self.health_dir,
         )
         self.assertEqual(second["rows"][0]["status"], "due_missing")
+
+    def test_repeat_fetch_then_later_release_missing(self) -> None:
+        """New period, unchanged rerun, then a later bound release that is absent."""
+        payload = {
+            "ok": True,
+            "raw_sha256": "p",
+            "points": [{"period": "2026-08", "value": 4.2, "revision_status": "final"}],
+        }
+
+        def fetch_series(spec, *, opener, now, timeout=20):
+            return payload
+
+        register_adapter_override("US", fetch_series)
+        spec = self._us_unemployment_spec()
+        spec["release_rule"] = {
+            "kind": "explicit_timestamp",
+            "timezone": "America/New_York",
+            "dates": [
+                "2026-09-04T08:30:00-04:00",
+                "2026-10-02T08:30:00-04:00",
+            ],
+            "expected_periods": {
+                "2026-09-04T08:30:00-04:00": "2026-08",
+                "2026-10-02T08:30:00-04:00": "2026-09",
+            },
+        }
+        cat = self._mini_catalog([spec])
+        first_now = datetime(2026, 9, 5, 16, 0, tzinfo=timezone.utc)
+        first = run_ingestion(
+            mode="offline",
+            countries=["US"],
+            catalog=cat,
+            now=first_now,
+            observations_dir=self.obs_dir,
+            health_dir=self.health_dir,
+        )
+        self.assertEqual(first["rows"][0]["status"], "new_observation")
+        second = run_ingestion(
+            mode="offline",
+            countries=["US"],
+            catalog=cat,
+            now=first_now,
+            observations_dir=self.obs_dir,
+            health_dir=self.health_dir,
+        )
+        self.assertEqual(second["rows"][0]["status"], "checked_unchanged")
+        third = run_ingestion(
+            mode="offline",
+            countries=["US"],
+            catalog=cat,
+            now=datetime(2026, 10, 3, 16, 0, tzinfo=timezone.utc),
+            observations_dir=self.obs_dir,
+            health_dir=self.health_dir,
+        )
+        self.assertEqual(third["rows"][0]["status"], "due_missing")
+
+    def test_unbound_due_date_stays_unparsed(self) -> None:
+        def fetch_series(spec, *, opener, now, timeout=20):
+            return {
+                "ok": True,
+                "raw_sha256": "x",
+                "points": [{"period": "2026-08", "value": 4.1, "revision_status": "final"}],
+            }
+
+        register_adapter_override("US", fetch_series)
+        spec = self._us_unemployment_spec()
+        spec["release_rule"] = {
+            "kind": "explicit_timestamp",
+            "timezone": "America/New_York",
+            "dates": ["2026-09-01T08:30:00-04:00"],
+        }
+        cat = self._mini_catalog([spec])
+        now = datetime(2026, 9, 21, 12, 0, tzinfo=timezone.utc)
+        run_ingestion(
+            mode="offline",
+            countries=["US"],
+            catalog=cat,
+            now=now,
+            observations_dir=self.obs_dir,
+            health_dir=self.health_dir,
+        )
+        second = run_ingestion(
+            mode="offline",
+            countries=["US"],
+            catalog=cat,
+            now=now,
+            observations_dir=self.obs_dir,
+            health_dir=self.health_dir,
+        )
+        self.assertEqual(second["rows"][0]["status"], "calendar_unparsed")
+
+    def test_pinned_fixture_period_stays_missing(self) -> None:
+        def fetch_series(spec, *, opener, now, timeout=20):
+            return {
+                "ok": True,
+                "raw_sha256": "aug",
+                "points": [{"period": "2026-08", "value": 51.1, "revision_status": "final"}],
+            }
+
+        register_adapter_override("EA", fetch_series)
+        spec = copy.deepcopy(
+            next(r for r in self.catalog["series"] if r["id"] == "EA.Activity.flash_composite_pmi")
+        )
+        cat = self._mini_catalog([spec])
+        now = datetime(2026, 9, 23, 8, 5, tzinfo=timezone.utc)
+        run_ingestion(
+            mode="offline",
+            countries=["EA"],
+            catalog=cat,
+            now=now,
+            observations_dir=self.obs_dir,
+            health_dir=self.health_dir,
+        )
+        second = run_ingestion(
+            mode="offline",
+            countries=["EA"],
+            catalog=cat,
+            now=now,
+            observations_dir=self.obs_dir,
+            health_dir=self.health_dir,
+        )
+        self.assertEqual(second["rows"][0]["status"], "due_missing")
+        store = json.loads((self.obs_dir / "ea.json").read_text())
+        self.assertFalse(any(row.get("period") == "2026-09" for row in store["observations"]))
 
     def test_run_budget_deferred(self) -> None:
         clock = {"t": 0.0}

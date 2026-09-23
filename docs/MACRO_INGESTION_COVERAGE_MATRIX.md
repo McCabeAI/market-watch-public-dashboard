@@ -2,8 +2,10 @@
 
 ## Verification classes (2026-09-23 continuation)
 
-- **Canonical-merge-ready** when the adapter observation `transformation` equals the calibration `source_transformation`, `methodology_breaks` is empty on the target history component, and the fetch status is not `license_gap` or `source_failed`.
-- **Blocked / partial_transform_mismatch** (bridge skips merge; weights unchanged): `US.Labor.wages`, `CA.Activity.gdp_domestic_demand`, `CA.Consumer.confidence`, `AU.Labor.unemployment`, `AU.Consumer.retail`, `AU.Consumer.confidence`.
+- **66 scored rows are calibration weight rows, not 66 currently ingestible series.** Aliases, license gaps, ceased series, and rows whose transform or methodology does not match stay out of the gauge history.
+- **Canonical-merge-ready** when the adapter observation `transformation` equals the calibration `source_transformation`, the component is not `observed: false`, any methodology break is already behind prints the stored series continues, and the fetch status is not `license_gap` or `source_failed`.
+- **Observation-key priority:** a scored catalog row outranks an alias or context row with the same `(country, series_id, transform)`. `AU.Inflation.underlying` wins over `AU.Inflation.cpi_core_trimmed_already_scored_note`. Two different scored rows on one key fail closed.
+- **Blocked / not merged** (weights unchanged): `US.Labor.wages`, `CA.Activity.gdp_domestic_demand`, `CA.Consumer.confidence`, `AU.Labor.unemployment`, `AU.Consumer.confidence` (transform or methodology), and `AU.Consumer.retail` (ceased; calibration `observed: false`, so a new print is `retired_unobserved` and does not re-enter the gauge).
 - **`EA.Activity.flash_composite_pmi`**: S&P listing HTTP 403, `value` null, August final unchanged in history; no paywall bypass and no September 2026 flash PMI value stored.
 - S&P PMI listings that return HTTP 403 remain `license_gap` or `source_failed`.
 - `context` rows and `US.Inflation.mapped_bridge` stay weight 0 and are not merged into canonical history.

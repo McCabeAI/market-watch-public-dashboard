@@ -15,7 +15,7 @@ from urllib.request import Request, urlopen
 
 from scripts.macro_freshness import values_close
 from scripts.macro_ingestion.adapters import load_country_adapter
-from scripts.macro_ingestion.calendar import release_due, schedule_parseable
+from scripts.macro_ingestion.calendar import latest_due_release, schedule_parseable
 from scripts.macro_ingestion.contract import calibration_as_of, load_catalog
 from scripts.macro_ingestion.ledger import ledger_row, write_ledger
 from scripts.macro_ingestion.retries import retry_call
@@ -24,7 +24,6 @@ from scripts.temperature_level import CALIBRATION_PATH
 from scripts.macro_ingestion.vintage import (
     append_observation,
     latest_for_period,
-    latest_period_in_store,
     load_store,
     save_store,
 )
@@ -96,12 +95,17 @@ def _point_release_date(point: dict[str, Any]) -> str | None:
     return None
 
 
-def _payload_latest_period(points: list[dict[str, Any]]) -> str | None:
-    periods: list[str] = []
-    for point in points:
-        if "period" in point:
-            periods.append(str(point["period"]))
-    return max(periods) if periods else None
+def _confirms_period(
+    points: list[dict[str, Any]],
+    store: dict[str, Any],
+    series_id: str,
+    transform: str,
+    period: str,
+) -> bool:
+    """True when this fetch and the store both hold the expected reference period."""
+    in_payload = any(str(point.get("period")) == period for point in points)
+    in_store = latest_for_period(store, series_id, period, transform) is not None
+    return in_payload and in_store
 
 
 def _validate_points(points: list[dict[str, Any]]) -> str | None:
@@ -146,7 +150,6 @@ def _classify_points(
 
     transform = str(spec.get("transform", ""))
     series_id = str(spec.get("series_id") or spec["id"])
-    store_latest_before = latest_period_in_store(store, series_id, transform)
     payload_vintage = payload.get("vintage")
     payload_vintage_str = str(payload_vintage) if payload_vintage is not None else None
 
@@ -197,18 +200,25 @@ def _classify_points(
     if not schedule_parseable(spec.get("release_rule")):
         return "calendar_unparsed", [], None
 
-    if release_due(spec, when):
-        expected_period = (spec.get("known_fixture") or {}).get("period")
-        if expected_period and not latest_for_period(store, series_id, expected_period, transform):
-            return "due_missing", [], None
-        payload_latest = _payload_latest_period(points)
-        if payload_latest is None:
-            return "due_missing", [], "release_window_open_no_primary_point"
-        if store_latest_before is not None and payload_latest <= store_latest_before:
-            return "due_missing", [], None
-        return "due_missing", [], "release_window_open_no_primary_point"
+    due = latest_due_release(spec, when)
+    if due is None:
+        return "checked_unchanged", [], None
 
-    return "checked_unchanged", [], None
+    fixture = (spec.get("known_fixture") or {}).get("period")
+    fixture_period = str(fixture) if fixture else None
+    if fixture_period and not _confirms_period(points, store, series_id, transform, fixture_period):
+        return "due_missing", [], None
+
+    bound = due.get("period")
+    if bound:
+        if _confirms_period(points, store, series_id, transform, str(bound)):
+            return "checked_unchanged", [], None
+        return "due_missing", [], None
+
+    if fixture_period and _confirms_period(points, store, series_id, transform, fixture_period):
+        return "checked_unchanged", [], None
+
+    return "calendar_unparsed", [], None
 
 
 def run_ingestion(

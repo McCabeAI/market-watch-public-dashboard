@@ -38,6 +38,10 @@ class CatalogValidationError(ValueError):
     """Raised when the ingestion catalog violates the parent contract."""
 
 
+class ScoredSeriesKeyCollision(CatalogValidationError):
+    """Two different scored rows share one observation key."""
+
+
 def load_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
@@ -68,6 +72,46 @@ def _calibration_weight(cal: dict[str, Any], country: str, dimension: str, compo
         raise CatalogValidationError(
             f"No calibration weight for scored row {country}.{dimension}.{component}"
         ) from exc
+
+
+def lookup_series_by_observation_key(
+    rows: list[dict[str, Any]],
+) -> dict[tuple[str, str, str], dict[str, Any]]:
+    """Map (country, series_id, transform) to one catalog row.
+
+    Scored rows outrank aliases and context. Two different scored ids on the
+    same key are an ambiguity and are not resolved by list order.
+    """
+    by_key: dict[tuple[str, str, str], dict[str, Any]] = {}
+    for row in rows:
+        country = str(row.get("country") or "")
+        series_id = str(row.get("series_id") or "")
+        transform = str(row.get("transform") or "")
+        if not country or not series_id or not transform:
+            continue
+        key = (country, series_id, transform)
+        existing = by_key.get(key)
+        if existing is None:
+            by_key[key] = row
+            continue
+        if str(existing.get("id")) == str(row.get("id")):
+            new_pri = _ROLE_PRIORITY.get(str(row.get("role")), 0)
+            old_pri = _ROLE_PRIORITY.get(str(existing.get("role")), 0)
+            if new_pri >= old_pri:
+                by_key[key] = row
+            continue
+        old_role = str(existing.get("role") or "")
+        new_role = str(row.get("role") or "")
+        if old_role == "scored" and new_role == "scored":
+            raise ScoredSeriesKeyCollision(
+                f"scored key collision {key[0]}/{key[1]}/{key[2]}: "
+                f"{existing.get('id')} vs {row.get('id')}"
+            )
+        new_pri = _ROLE_PRIORITY.get(new_role, 0)
+        old_pri = _ROLE_PRIORITY.get(old_role, 0)
+        if new_pri > old_pri:
+            by_key[key] = row
+    return by_key
 
 
 def index_series_rows(rows: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:

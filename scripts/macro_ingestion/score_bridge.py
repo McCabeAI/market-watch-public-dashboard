@@ -9,7 +9,12 @@ from pathlib import Path
 from typing import Any
 
 from scripts.macro_ingestion.canonical_bridge import merge_scored_points, persist_if_changed
-from scripts.macro_ingestion.contract import COUNTRY_CODES, index_series_rows, load_catalog
+from scripts.macro_ingestion.contract import (
+    COUNTRY_CODES,
+    index_series_rows,
+    load_catalog,
+    lookup_series_by_observation_key,
+)
 from scripts.macro_ingestion.vintage import load_store
 from scripts.temperature_level import (
     CALIBRATION_PATH,
@@ -42,14 +47,7 @@ def _utc_iso(when: datetime | None = None) -> str:
 
 
 def _catalog_lookup(catalog: dict[str, Any]) -> dict[tuple[str, str, str], dict[str, Any]]:
-    by_key: dict[tuple[str, str, str], dict[str, Any]] = {}
-    for row in catalog.get("series") or []:
-        country = str(row.get("country") or "")
-        series_id = str(row.get("series_id") or "")
-        transform = str(row.get("transform") or "")
-        if country and series_id and transform:
-            by_key[(country, series_id, transform)] = row
-    return by_key
+    return lookup_series_by_observation_key(catalog.get("series") or [])
 
 
 def points_from_observation_stores(

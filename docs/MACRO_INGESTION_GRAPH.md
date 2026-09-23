@@ -34,6 +34,13 @@ PYTHONPATH=. python3 -m scripts.macro_ingestion.cli --mode offline --country all
 PYTHONPATH=. python3 -m scripts.macro_ingestion.cli --mode live --country all
 ```
 
+## Call 3 fixes (2026-09-23)
+
+Parent: Grok 4.7, no Composer worker. Two defects only.
+
+- Observation-key lookup keeps the scored row when an alias shares `(country, series_id, transform)`. Two different scored ids on one key raise `ScoredSeriesKeyCollision`.
+- An unchanged fetch after the bound expected period is already in the payload and the store is `checked_unchanged`. A later date bound to a period the fetch does not contain stays `due_missing`. A due date with no bound period and no pinned `known_fixture.period` stays `calendar_unparsed`. `EA.Activity.flash_composite_pmi` still requires period `2026-09`.
+
 ## Parent review
 
 Grok 4.7 review of the continuation on top of `a84d1e0`. Composer 2.5 only: canonical bridge, ingestion integrity, CI/verification. No fourth correction was required. No cron schedules were added. `743d82a` remains the manual-only dispatch choice.
@@ -47,7 +54,7 @@ Preserved SHA-256 after the local unittest run:
 
 Local validation command (the pull_request job): macro ingestion discover **75 passed**; freshness, temperature level/scores, and overnight contract tests **143 passed, 1 skipped**.
 
-What the bridge actually does: a scored point is appended to `data/temperature_history/{country}.json` only when its transformation equals the calibration `source_transformation`, the series id matches, `methodology_breaks` is empty, the value is finite, and the period is a forward print or a non-flash revision of an existing period. `data/temperature_scores.json` and `score_paths.json` are rewritten only when that append happens. Offline tests and `--mode offline` do not persist them. `--mode live` does, and only then.
+What the bridge actually does: a scored point is appended to `data/temperature_history/{country}.json` only when its transformation equals the calibration `source_transformation`, the series id matches, the component is not `observed: false`, any methodology break is already behind prints the stored series continues, the value is finite, and the period is a forward print or a non-flash revision of an existing period. `data/temperature_scores.json` and `score_paths.json` are rewritten only when that append happens. Offline tests and `--mode offline` do not persist them. `--mode live` does, and only then.
 
 Remaining blockages, not claimed live:
 

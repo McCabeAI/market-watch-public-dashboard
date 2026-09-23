@@ -51,36 +51,73 @@ def _roll_local_release(day: date, local_t: time, country: str, tz: ZoneInfo) ->
     return datetime.combine(cursor, local_t, tzinfo=tz)
 
 
-def _release_instants(series: dict[str, Any]) -> list[datetime]:
+def _period_for_raw(release_rule: dict[str, Any], raw: str) -> str | None:
+    mapping = release_rule.get("expected_periods") or {}
+    if not isinstance(mapping, dict):
+        return None
+    period = mapping.get(raw)
+    if period is None or period == "":
+        return None
+    return str(period)
+
+
+def _release_slots(series: dict[str, Any]) -> list[dict[str, Any]]:
+    """Each pinned publisher instant, with the reference period bound to that date."""
     release_rule = series.get("release_rule") or {}
     kind = release_rule.get("kind")
     country = str(series.get("country", "US"))
     tz = _rule_timezone(release_rule, series)
     dates = release_rule.get("dates") or []
-    instants: list[datetime] = []
+    slots: list[dict[str, Any]] = []
+
+    def _add(raw: str, instant: datetime) -> None:
+        slots.append(
+            {
+                "raw": str(raw),
+                "instant": instant,
+                "period": _period_for_raw(release_rule, str(raw)),
+            }
+        )
 
     if kind == "explicit_timestamp":
         for raw in dates:
-            instants.append(_parse_instant(raw, tz))
-    elif kind == "local_datetime_list":
+            _add(raw, _parse_instant(raw, tz))
+    elif kind in {"local_datetime_list", "country_local_schedule_required"} and dates:
         for raw in dates:
             dt = _parse_instant(raw, tz)
             if dt.tzinfo is None:
                 dt = dt.replace(tzinfo=tz)
             local = dt.astimezone(tz)
-            instants.append(
-                _roll_local_release(local.date(), local.timetz().replace(tzinfo=None), country, tz)
+            instant = _roll_local_release(
+                local.date(), local.timetz().replace(tzinfo=None), country, tz
             )
-    elif kind == "country_local_schedule_required" and dates:
-        for raw in dates:
-            dt = _parse_instant(raw, tz)
-            if dt.tzinfo is None:
-                dt = dt.replace(tzinfo=tz)
-            local = dt.astimezone(tz)
-            instants.append(
-                _roll_local_release(local.date(), local.timetz().replace(tzinfo=None), country, tz)
-            )
-    return instants
+            _add(raw, instant)
+    return slots
+
+
+def _release_instants(series: dict[str, Any]) -> list[datetime]:
+    return [slot["instant"] for slot in _release_slots(series)]
+
+
+def latest_due_release(spec: dict[str, Any], when: datetime) -> dict[str, Any] | None:
+    """Latest publisher instant at or before `when`, plus its bound period if any.
+
+    `period` is set only when `release_rule.expected_periods` names that date.
+    A missing period means the date is due but not tied to a reference period.
+    """
+    release_rule = spec.get("release_rule") or {}
+    kind = release_rule.get("kind")
+    if kind == "country_local_schedule_required" and not (release_rule.get("dates") or []):
+        return None
+    if not schedule_parseable(release_rule):
+        return None
+    if when.tzinfo is None:
+        when = when.replace(tzinfo=ZoneInfo("UTC"))
+    latest: dict[str, Any] | None = None
+    for slot in _release_slots(spec):
+        if when >= slot["instant"] and (latest is None or slot["instant"] > latest["instant"]):
+            latest = slot
+    return latest
 
 
 def release_due(spec: dict[str, Any], when: datetime) -> bool:

@@ -96,6 +96,42 @@ def _latest_period(
     return max((str(r["reference_period"]) for r in rows), key=period_sort_key)
 
 
+def _methodology_blocks(comp: dict[str, Any], period: str) -> bool:
+    """Block a print that crosses an unresolved or not-yet-continued break.
+
+    A historical break that the stored series already continues past does not
+    block a later print on the same series.
+    """
+    breaks = comp.get("methodology_breaks")
+    if not isinstance(breaks, list) or not breaks:
+        return False
+    break_keys: list[tuple[int, int]] = []
+    for item in breaks:
+        if not isinstance(item, dict) or not item.get("period"):
+            return True
+        try:
+            break_keys.append(period_sort_key(str(item["period"])))
+        except ValueError:
+            return True
+    try:
+        incoming = period_sort_key(period)
+    except ValueError:
+        return True
+    if any(incoming <= key for key in break_keys):
+        return True
+    latest_break = max(break_keys)
+    for row in comp.get("observations") or []:
+        ref = row.get("reference_period")
+        if not isinstance(ref, str):
+            continue
+        try:
+            if period_sort_key(ref) > latest_break:
+                return False
+        except ValueError:
+            continue
+    return True
+
+
 def _skip_id(point: dict[str, Any]) -> str:
     return str(point.get("catalog_id") or point.get("id") or "unknown")
 
@@ -128,6 +164,9 @@ def merge_scored_points(
         if not isinstance(spec, dict):
             skipped.append({"id": point_id, "reason": "partial_malformed"})
             continue
+        if spec.get("observed") is False:
+            skipped.append({"id": point_id, "reason": "retired_unobserved"})
+            continue
 
         country = str(point.get("country") or catalog_id.split(".", 1)[0])
         history = histories.get(country)
@@ -141,11 +180,6 @@ def merge_scored_points(
             skipped.append({"id": point_id, "reason": "partial_malformed"})
             continue
 
-        breaks = comp.get("methodology_breaks")
-        if isinstance(breaks, list) and breaks:
-            skipped.append({"id": point_id, "reason": "methodology_break_guard"})
-            continue
-
         period = point.get("period")
         if not isinstance(period, str):
             skipped.append({"id": point_id, "reason": "partial_malformed"})
@@ -154,6 +188,10 @@ def merge_scored_points(
             parse_period(period)
         except ValueError:
             skipped.append({"id": point_id, "reason": "partial_malformed"})
+            continue
+
+        if _methodology_blocks(comp, period):
+            skipped.append({"id": point_id, "reason": "methodology_break_guard"})
             continue
 
         value = _finite_value(point.get("value"))
