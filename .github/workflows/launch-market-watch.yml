@@ -250,7 +250,6 @@ PY
       - name: Run unit tests
         run: |
           set -euo pipefail
-          # Integration modules land in sibling tasks; run graph tests now and extend when present.
           PYTHONPATH=. python3 -m unittest \
             tests.test_mw_launch_graph \
             tests.test_mw_launch_quality \
