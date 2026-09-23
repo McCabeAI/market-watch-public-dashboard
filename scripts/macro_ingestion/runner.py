@@ -25,7 +25,7 @@ from scripts.macro_ingestion.vintage import (
     load_store,
     save_store,
 )
-from scripts.macro_ingestion.windows import cutoff_class, write_post_freeze_delta
+from scripts.macro_ingestion.windows import POST_FREEZE_DIR, cutoff_class, write_post_freeze_delta
 
 DEFAULT_TIMEOUT_SECONDS = 20
 DEFAULT_COUNTRY_BUDGET_SECONDS = 8 * 60
