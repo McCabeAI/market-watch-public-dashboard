@@ -90,12 +90,23 @@ def sanitize_public_prose(
     return clipped + "…"
 
 
-def public_research_summary(value: Any) -> str:
+def public_research_summary(value: Any, *, items: list[dict[str, Any]] | None = None) -> str:
     """Research summaries are all-or-nothing: never salvage a telemetry dump."""
     fallback = "Accepted overnight developments are shown below; no clean desk summary was published for this cycle."
-    if not isinstance(value, str) or not value.strip():
-        return fallback
-    text = value.strip()
-    if public_prose_issues(text) or len(text) > 1400:
-        return fallback
-    return text
+    if isinstance(value, str) and value.strip():
+        text = value.strip()
+        if not public_prose_issues(text) and len(text) <= 1400:
+            return text
+
+    headlines: list[str] = []
+    for row in items or []:
+        if not isinstance(row, dict):
+            continue
+        title = str(row.get("headline") or row.get("title") or "").strip()
+        if title and not public_prose_issues(title) and title not in headlines:
+            headlines.append(title)
+        if len(headlines) >= 3:
+            break
+    if headlines:
+        return "Overnight focus: " + "; ".join(headlines) + "."
+    return fallback
