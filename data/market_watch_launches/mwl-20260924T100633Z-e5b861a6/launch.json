@@ -2284,43 +2284,66 @@
         "handoff_status": "request_ready",
         "handoff_url": null,
         "live_model_calls": 0,
-        "live_provider_dispatched": false,
+        "live_provider_dispatched": true,
+        "provider_output_accepted": true,
+        "provider_run_url": null,
         "receipt_matches": false,
         "receipt_present": false,
         "remote_freeze_verified": true
       },
       "finished_at": null,
       "input_sha256": "36e3ba51622fba76a7f8474b02efc8b45e7fb8227af680d4926496a86787df63",
-      "output_sha256": "658655f3a496651b50941bfc1f4cd5e25a974db42dd31c897dfab06560624835",
-      "reason": "awaiting_acp_one_shot_authority",
+      "output_sha256": "36e3ba51622fba76a7f8474b02efc8b45e7fb8227af680d4926496a86787df63",
+      "reason": "provider_output_accepted",
       "source_run_url": null,
       "stage": "05_acp_handoff",
       "started_at": null,
-      "status": "blocked"
+      "status": "succeeded"
     },
     "06_acceptance": {
       "artifact": null,
-      "details": {},
+      "details": {
+        "already_applied": true,
+        "applied": true,
+        "launch_id": "mwl-20260924T100633Z-e5b861a6",
+        "live_model_calls": 0,
+        "packet_sha256": "36e3ba51622fba76a7f8474b02efc8b45e7fb8227af680d4926496a86787df63",
+        "pm_count": 3,
+        "review_id": "review-001",
+        "trader_seats": 14
+      },
       "finished_at": null,
-      "input_sha256": null,
-      "output_sha256": null,
+      "input_sha256": "36e3ba51622fba76a7f8474b02efc8b45e7fb8227af680d4926496a86787df63",
+      "output_sha256": "36e3ba51622fba76a7f8474b02efc8b45e7fb8227af680d4926496a86787df63",
       "reason": null,
       "source_run_url": null,
       "stage": "06_acceptance",
       "started_at": null,
-      "status": "pending"
+      "status": "succeeded"
     },
     "07_finalize": {
       "artifact": null,
-      "details": {},
+      "details": {
+        "coverage": "PARTIAL",
+        "launch_id": "mwl-20260924T100633Z-e5b861a6",
+        "packet_sha256": "36e3ba51622fba76a7f8474b02efc8b45e7fb8227af680d4926496a86787df63",
+        "partial": true,
+        "publication": {
+          "core_status": "ok",
+          "may_publish": true,
+          "reason": "core inputs are structurally valid"
+        },
+        "review_id": "review-001",
+        "session_date": "2026-09-24"
+      },
       "finished_at": null,
-      "input_sha256": null,
-      "output_sha256": null,
+      "input_sha256": "36e3ba51622fba76a7f8474b02efc8b45e7fb8227af680d4926496a86787df63",
+      "output_sha256": "36e3ba51622fba76a7f8474b02efc8b45e7fb8227af680d4926496a86787df63",
       "reason": null,
       "source_run_url": null,
       "stage": "07_finalize",
       "started_at": null,
-      "status": "pending"
+      "status": "succeeded"
     },
     "08_pages": {
       "artifact": null,
@@ -2337,7 +2360,7 @@
   },
   "starting_pm_books_sha256": "a72838cde87470b91e650381136cc6cb28ae14156f601eadb26a121323320676",
   "starting_trader_books_sha256": "4fbbab25b8961ea25932ed6768088dbaef86341c2ddbc8ff04aba85a67cd2d81",
-  "status": "blocked",
+  "status": "running",
   "timezone": "America/New_York",
   "type": "MARKET_WATCH_LAUNCH"
 }

@@ -5595,7 +5595,7 @@
       "source_observation": "2026-09-23",
       "status": "ok"
     },
-    "generated_at": "2026-09-24T10:19:32Z",
+    "generated_at": "2026-09-24T12:32:36Z",
     "official_curves": {
       "curves": {
         "AU": {
@@ -8547,7 +8547,7 @@
             {
               "code": "COAX26",
               "expiry": "2026-11",
-              "implied_rate": 2.43
+              "implied_rate": 2.42
             },
             {
               "code": "COAZ26",
@@ -8559,42 +8559,42 @@
             {
               "code": "CRAU26",
               "expiry": "2026-09",
-              "implied_rate": 2.3775
+              "implied_rate": 2.375
             },
             {
               "code": "CRAZ26",
               "expiry": "2026-12",
-              "implied_rate": 2.785
+              "implied_rate": 2.775
             },
             {
               "code": "CRAH27",
               "expiry": "2027-03",
-              "implied_rate": 3.15
+              "implied_rate": 3.14
             },
             {
               "code": "CRAM27",
               "expiry": "2027-06",
-              "implied_rate": 3.41
+              "implied_rate": 3.395
             },
             {
               "code": "CRAU27",
               "expiry": "2027-09",
-              "implied_rate": 3.59
+              "implied_rate": 3.565
             },
             {
               "code": "CRAZ27",
               "expiry": "2027-12",
-              "implied_rate": 3.695
+              "implied_rate": 3.665
             },
             {
               "code": "CRAH28",
               "expiry": "2028-03",
-              "implied_rate": 3.755
+              "implied_rate": 3.73
             },
             {
               "code": "CRAM28",
               "expiry": "2028-06",
-              "implied_rate": 3.785
+              "implied_rate": 3.755
             }
           ],
           "status": "ok"
@@ -8697,42 +8697,42 @@
             {
               "code": "SR3U6",
               "expiry": "2026-09",
-              "implied_rate": 4.0225
+              "implied_rate": 4.0175
             },
             {
               "code": "SR3Z6",
               "expiry": "2026-12",
-              "implied_rate": 4.375
+              "implied_rate": 4.36
             },
             {
               "code": "SR3H7",
               "expiry": "2027-03",
-              "implied_rate": 4.655
+              "implied_rate": 4.63
             },
             {
               "code": "SR3M7",
               "expiry": "2027-06",
-              "implied_rate": 4.82
+              "implied_rate": 4.78
             },
             {
               "code": "SR3U7",
               "expiry": "2027-09",
-              "implied_rate": 4.885
+              "implied_rate": 4.84
             },
             {
               "code": "SR3Z7",
               "expiry": "2027-12",
-              "implied_rate": 4.875
+              "implied_rate": 4.835
             },
             {
               "code": "SR3H8",
               "expiry": "2028-03",
-              "implied_rate": 4.86
+              "implied_rate": 4.82
             },
             {
               "code": "SR3M8",
               "expiry": "2028-06",
-              "implied_rate": 4.835
+              "implied_rate": 4.795
             }
           ],
           "status": "ok"
@@ -10420,15 +10420,15 @@
       },
       "EA": {
         "curves": {
-          "2s10s": 21.999999999999975,
-          "5s10s": 16.000000000000014
+          "2s10s": 25.99999999999998,
+          "5s10s": 15.99999999999997
         },
-        "latest_observation": "2026-09-23",
+        "latest_observation": "2026-09-24",
         "tenors": {
-          "10Y": 3.46,
-          "2Y": 3.24,
-          "30Y": 3.8,
-          "5Y": 3.3
+          "10Y": 3.57,
+          "2Y": 3.31,
+          "30Y": 3.86,
+          "5Y": 3.41
         }
       },
       "JP": {
@@ -10675,69 +10675,79 @@
           "contract_period_months": 3,
           "contracts": [
             {
-              "change_from_overnight_bps": 8.75,
+              "change_from_overnight_bps": 8.5,
               "code": "CRAU26",
               "expiry": "2026-09",
-              "implied_rate": 2.3775,
+              "implied_rate": 2.375,
               "open_interest": null,
-              "price": 97.6225,
+              "price": 97.625,
               "source": "MX_CORRA_FUTURES",
               "volume": null
             },
             {
-              "change_from_overnight_bps": 49.5,
+              "change_from_overnight_bps": 48.5,
               "code": "CRAZ26",
               "expiry": "2026-12",
-              "implied_rate": 2.785,
+              "implied_rate": 2.775,
               "open_interest": null,
-              "price": 97.215,
+              "price": 97.225,
               "source": "MX_CORRA_FUTURES",
               "volume": null
             },
             {
-              "change_from_overnight_bps": 86.0,
+              "change_from_overnight_bps": 85.0,
               "code": "CRAH27",
               "expiry": "2027-03",
-              "implied_rate": 3.15,
+              "implied_rate": 3.14,
               "open_interest": null,
-              "price": 96.85,
+              "price": 96.86,
               "source": "MX_CORRA_FUTURES",
               "volume": null
             },
             {
-              "change_from_overnight_bps": 112.0,
+              "change_from_overnight_bps": 110.5,
               "code": "CRAM27",
               "expiry": "2027-06",
-              "implied_rate": 3.41,
+              "implied_rate": 3.395,
               "open_interest": null,
-              "price": 96.59,
+              "price": 96.605,
               "source": "MX_CORRA_FUTURES",
               "volume": null
             },
             {
-              "change_from_overnight_bps": 130.0,
+              "change_from_overnight_bps": 127.5,
               "code": "CRAU27",
               "expiry": "2027-09",
-              "implied_rate": 3.59,
+              "implied_rate": 3.565,
               "open_interest": null,
-              "price": 96.41,
+              "price": 96.435,
               "source": "MX_CORRA_FUTURES",
               "volume": null
             },
             {
-              "change_from_overnight_bps": 140.5,
+              "change_from_overnight_bps": 137.5,
               "code": "CRAZ27",
               "expiry": "2027-12",
-              "implied_rate": 3.695,
+              "implied_rate": 3.665,
               "open_interest": null,
-              "price": 96.305,
+              "price": 96.335,
+              "source": "MX_CORRA_FUTURES",
+              "volume": null
+            },
+            {
+              "change_from_overnight_bps": 144.0,
+              "code": "CRAH28",
+              "expiry": "2028-03",
+              "implied_rate": 3.73,
+              "open_interest": null,
+              "price": 96.27,
               "source": "MX_CORRA_FUTURES",
               "volume": null
             },
             {
               "change_from_overnight_bps": 146.5,
-              "code": "CRAH28",
-              "expiry": "2028-03",
+              "code": "CRAM28",
+              "expiry": "2028-06",
               "implied_rate": 3.755,
               "open_interest": null,
               "price": 96.245,
@@ -10745,39 +10755,19 @@
               "volume": null
             },
             {
-              "change_from_overnight_bps": 149.5,
-              "code": "CRAM28",
-              "expiry": "2028-06",
-              "implied_rate": 3.785,
-              "open_interest": null,
-              "price": 96.215,
-              "source": "MX_CORRA_FUTURES",
-              "volume": null
-            },
-            {
-              "change_from_overnight_bps": 149.0,
+              "change_from_overnight_bps": 146.5,
               "code": "CRAU28",
               "expiry": "2028-09",
-              "implied_rate": 3.78,
+              "implied_rate": 3.755,
               "open_interest": null,
-              "price": 96.22,
-              "source": "MX_CORRA_FUTURES",
-              "volume": null
-            },
-            {
-              "change_from_overnight_bps": 147.5,
-              "code": "CRAZ28",
-              "expiry": "2028-12",
-              "implied_rate": 3.765,
-              "open_interest": null,
-              "price": 96.235,
+              "price": 96.245,
               "source": "MX_CORRA_FUTURES",
               "volume": null
             },
             {
               "change_from_overnight_bps": 145.0,
-              "code": "CRAH29",
-              "expiry": "2029-03",
+              "code": "CRAZ28",
+              "expiry": "2028-12",
               "implied_rate": 3.74,
               "open_interest": null,
               "price": 96.26,
@@ -10785,12 +10775,22 @@
               "volume": null
             },
             {
-              "change_from_overnight_bps": 142.0,
+              "change_from_overnight_bps": 142.5,
+              "code": "CRAH29",
+              "expiry": "2029-03",
+              "implied_rate": 3.715,
+              "open_interest": null,
+              "price": 96.285,
+              "source": "MX_CORRA_FUTURES",
+              "volume": null
+            },
+            {
+              "change_from_overnight_bps": 140.5,
               "code": "CRAM29",
               "expiry": "2029-06",
-              "implied_rate": 3.71,
+              "implied_rate": 3.695,
               "open_interest": null,
-              "price": 96.29,
+              "price": 96.305,
               "source": "MX_CORRA_FUTURES",
               "volume": null
             }
@@ -10829,14 +10829,8 @@
         },
         "SOFR": {
           "benchmark": {
-            "as_of": "2026-09-22",
+            "as_of": "2026-09-23",
             "history": [
-              {
-                "effective_date": "2026-05-14",
-                "percent_rate": 3.56,
-                "source": "NY_FED",
-                "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
-              },
               {
                 "effective_date": "2026-05-15",
                 "percent_rate": 3.55,
@@ -11370,6 +11364,12 @@
                 "percent_rate": 3.87,
                 "source": "NY_FED",
                 "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+              },
+              {
+                "effective_date": "2026-09-23",
+                "percent_rate": 3.87,
+                "source": "NY_FED",
+                "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
               }
             ],
             "name": "SOFR",
@@ -11380,79 +11380,59 @@
           "contract_period_months": 3,
           "contracts": [
             {
-              "change_from_overnight_bps": 15.25,
+              "change_from_overnight_bps": 14.75,
               "code": "SR3U6",
               "expiry": "2026-09",
-              "implied_rate": 4.0225,
+              "implied_rate": 4.0175,
               "open_interest": null,
-              "price": 95.9775,
+              "price": 95.9825,
               "source": "ESIGNAL_CME_SR3_DELAYED",
               "volume": null
             },
             {
-              "change_from_overnight_bps": 50.5,
+              "change_from_overnight_bps": 49.0,
               "code": "SR3Z6",
               "expiry": "2026-12",
-              "implied_rate": 4.375,
+              "implied_rate": 4.36,
               "open_interest": null,
-              "price": 95.625,
+              "price": 95.64,
               "source": "ESIGNAL_CME_SR3_DELAYED",
               "volume": null
             },
             {
-              "change_from_overnight_bps": 78.5,
+              "change_from_overnight_bps": 76.0,
               "code": "SR3H7",
               "expiry": "2027-03",
-              "implied_rate": 4.655,
+              "implied_rate": 4.63,
               "open_interest": null,
-              "price": 95.345,
+              "price": 95.37,
               "source": "ESIGNAL_CME_SR3_DELAYED",
               "volume": null
             },
             {
-              "change_from_overnight_bps": 95.0,
+              "change_from_overnight_bps": 91.0,
               "code": "SR3M7",
               "expiry": "2027-06",
-              "implied_rate": 4.82,
+              "implied_rate": 4.78,
               "open_interest": null,
-              "price": 95.18,
+              "price": 95.22,
               "source": "ESIGNAL_CME_SR3_DELAYED",
               "volume": null
             },
             {
-              "change_from_overnight_bps": 101.5,
+              "change_from_overnight_bps": 97.0,
               "code": "SR3U7",
               "expiry": "2027-09",
-              "implied_rate": 4.885,
+              "implied_rate": 4.84,
               "open_interest": null,
-              "price": 95.115,
-              "source": "ESIGNAL_CME_SR3_DELAYED",
-              "volume": null
-            },
-            {
-              "change_from_overnight_bps": 100.5,
-              "code": "SR3Z7",
-              "expiry": "2027-12",
-              "implied_rate": 4.875,
-              "open_interest": null,
-              "price": 95.125,
-              "source": "ESIGNAL_CME_SR3_DELAYED",
-              "volume": null
-            },
-            {
-              "change_from_overnight_bps": 99.0,
-              "code": "SR3H8",
-              "expiry": "2028-03",
-              "implied_rate": 4.86,
-              "open_interest": null,
-              "price": 95.14,
+              "price": 95.16,
               "source": "ESIGNAL_CME_SR3_DELAYED",
               "volume": null
             },
             {
               "change_from_overnight_bps": 96.5,
-              "code": "SR3M8",
-              "expiry": "2028-06",
+              "code": "SR3Z7",
+              "expiry": "2027-12",
               "implied_rate": 4.835,
               "open_interest": null,
               "price": 95.165,
@@ -11460,69 +11440,129 @@
               "volume": null
             },
             {
-              "change_from_overnight_bps": 94.0,
+              "change_from_overnight_bps": 95.0,
+              "code": "SR3H8",
+              "expiry": "2028-03",
+              "implied_rate": 4.82,
+              "open_interest": null,
+              "price": 95.18,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "volume": null
+            },
+            {
+              "change_from_overnight_bps": 92.5,
+              "code": "SR3M8",
+              "expiry": "2028-06",
+              "implied_rate": 4.795,
+              "open_interest": null,
+              "price": 95.205,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "volume": null
+            },
+            {
+              "change_from_overnight_bps": 90.0,
               "code": "SR3U8",
               "expiry": "2028-09",
-              "implied_rate": 4.81,
+              "implied_rate": 4.77,
               "open_interest": null,
-              "price": 95.19,
+              "price": 95.23,
               "source": "ESIGNAL_CME_SR3_DELAYED",
               "volume": null
             },
             {
-              "change_from_overnight_bps": 90.5,
+              "change_from_overnight_bps": 87.0,
               "code": "SR3Z8",
               "expiry": "2028-12",
-              "implied_rate": 4.775,
+              "implied_rate": 4.74,
               "open_interest": null,
-              "price": 95.225,
+              "price": 95.26,
               "source": "ESIGNAL_CME_SR3_DELAYED",
               "volume": null
             },
             {
-              "change_from_overnight_bps": 87.5,
+              "change_from_overnight_bps": 84.0,
               "code": "SR3H9",
               "expiry": "2029-03",
-              "implied_rate": 4.745,
+              "implied_rate": 4.71,
               "open_interest": null,
-              "price": 95.255,
+              "price": 95.29,
               "source": "ESIGNAL_CME_SR3_DELAYED",
               "volume": null
             },
             {
-              "change_from_overnight_bps": 85.0,
+              "change_from_overnight_bps": 82.0,
               "code": "SR3M9",
               "expiry": "2029-06",
-              "implied_rate": 4.72,
+              "implied_rate": 4.69,
               "open_interest": null,
-              "price": 95.28,
+              "price": 95.31,
               "source": "ESIGNAL_CME_SR3_DELAYED",
               "volume": null
             },
             {
-              "change_from_overnight_bps": 83.0,
+              "change_from_overnight_bps": 80.0,
               "code": "SR3U9",
               "expiry": "2029-09",
-              "implied_rate": 4.7,
+              "implied_rate": 4.67,
               "open_interest": null,
-              "price": 95.3,
+              "price": 95.33,
               "source": "ESIGNAL_CME_SR3_DELAYED",
               "volume": null
             },
             {
-              "change_from_overnight_bps": 81.0,
+              "change_from_overnight_bps": 78.5,
               "code": "SR3Z9",
               "expiry": "2029-12",
-              "implied_rate": 4.68,
+              "implied_rate": 4.655,
               "open_interest": null,
-              "price": 95.32,
+              "price": 95.345,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "volume": null
+            },
+            {
+              "change_from_overnight_bps": 77.5,
+              "code": "SR3H0",
+              "expiry": "2030-03",
+              "implied_rate": 4.645,
+              "open_interest": null,
+              "price": 95.355,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "volume": null
+            },
+            {
+              "change_from_overnight_bps": 77.5,
+              "code": "SR3M0",
+              "expiry": "2030-06",
+              "implied_rate": 4.645,
+              "open_interest": null,
+              "price": 95.355,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "volume": null
+            },
+            {
+              "change_from_overnight_bps": 78.0,
+              "code": "SR3U0",
+              "expiry": "2030-09",
+              "implied_rate": 4.65,
+              "open_interest": null,
+              "price": 95.35,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "volume": null
+            },
+            {
+              "change_from_overnight_bps": 79.0,
+              "code": "SR3Z0",
+              "expiry": "2030-12",
+              "implied_rate": 4.66,
+              "open_interest": null,
+              "price": 95.34,
               "source": "ESIGNAL_CME_SR3_DELAYED",
               "volume": null
             },
             {
               "change_from_overnight_bps": 80.5,
-              "code": "SR3H0",
-              "expiry": "2030-03",
+              "code": "SR3H1",
+              "expiry": "2031-03",
               "implied_rate": 4.675,
               "open_interest": null,
               "price": 95.325,
@@ -11530,49 +11570,19 @@
               "volume": null
             },
             {
-              "change_from_overnight_bps": 80.0,
-              "code": "SR3M0",
-              "expiry": "2030-06",
-              "implied_rate": 4.67,
+              "change_from_overnight_bps": 82.5,
+              "code": "SR3M1",
+              "expiry": "2031-06",
+              "implied_rate": 4.695,
               "open_interest": null,
-              "price": 95.33,
-              "source": "ESIGNAL_CME_SR3_DELAYED",
-              "volume": null
-            },
-            {
-              "change_from_overnight_bps": 80.0,
-              "code": "SR3U0",
-              "expiry": "2030-09",
-              "implied_rate": 4.67,
-              "open_interest": null,
-              "price": 95.33,
-              "source": "ESIGNAL_CME_SR3_DELAYED",
-              "volume": null
-            },
-            {
-              "change_from_overnight_bps": 81.5,
-              "code": "SR3Z0",
-              "expiry": "2030-12",
-              "implied_rate": 4.685,
-              "open_interest": null,
-              "price": 95.315,
-              "source": "ESIGNAL_CME_SR3_DELAYED",
-              "volume": null
-            },
-            {
-              "change_from_overnight_bps": 83.0,
-              "code": "SR3H1",
-              "expiry": "2031-03",
-              "implied_rate": 4.7,
-              "open_interest": null,
-              "price": 95.3,
+              "price": 95.305,
               "source": "ESIGNAL_CME_SR3_DELAYED",
               "volume": null
             },
             {
               "change_from_overnight_bps": 85.0,
-              "code": "SR3M1",
-              "expiry": "2031-06",
+              "code": "SR3U1",
+              "expiry": "2031-09",
               "implied_rate": 4.72,
               "open_interest": null,
               "price": 95.28,
@@ -11581,21 +11591,11 @@
             },
             {
               "change_from_overnight_bps": 87.5,
-              "code": "SR3U1",
-              "expiry": "2031-09",
+              "code": "SR3Z1",
+              "expiry": "2031-12",
               "implied_rate": 4.745,
               "open_interest": null,
               "price": 95.255,
-              "source": "ESIGNAL_CME_SR3_DELAYED",
-              "volume": null
-            },
-            {
-              "change_from_overnight_bps": 85.0,
-              "code": "SR3Z1",
-              "expiry": "2031-12",
-              "implied_rate": 4.72,
-              "open_interest": null,
-              "price": 95.28,
               "source": "ESIGNAL_CME_SR3_DELAYED",
               "volume": null
             },
@@ -13842,7 +13842,7 @@
   },
   "review_id": "review-001",
   "review_packet_id": "prp-chatgpt-overnight-20260924-review-001",
-  "review_packet_sha256": "393a7176dcc98427bd6007fe74f2b2f9def87c6336fa511093d212513f1903ab",
+  "review_packet_sha256": "0aa528cc4716f04761d438ff059e360136ec8c705b94f44b089876c7e6536eec",
   "risk_capital_limit_usd": 100000000,
   "risk_capital_remaining_usd": 95000000.0,
   "risk_capital_usd": 5000000.0,
