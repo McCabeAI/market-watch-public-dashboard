@@ -118,6 +118,23 @@ def continue_accepted_launch(launch: dict[str, Any], ctx: dict[str, Any]) -> dic
                     "production_published": False,
                     "stage": receipt.get("stage"),
                 }
+            # A trusted accepted output bound to this exact launch/review/freeze is
+            # the durable proof that ACP actually dispatched the one-shot provider.
+            handoff = (launch.get("stages") or {}).get("05_acp_handoff") or {}
+            handoff.update({
+                "status": "succeeded",
+                "reason": "provider_output_accepted",
+                "input_sha256": launch.get("base_packet_sha256"),
+                "output_sha256": launch.get("base_packet_sha256"),
+                "details": {
+                    **(handoff.get("details") or {}),
+                    "live_provider_dispatched": True,
+                    "provider_output_accepted": True,
+                    "provider_run_url": (identity or {}).get("provider_run_url"),
+                },
+            })
+            launch["stages"]["05_acp_handoff"] = handoff
+            launch["status"] = "running"
             store.save_launch(launch)
     elif provider == "stub":
         acceptance = (launch.get("stages") or {}).get("06_acceptance") or {}
@@ -156,6 +173,8 @@ def continue_accepted_launch(launch: dict[str, Any], ctx: dict[str, Any]) -> dic
         store.save_launch(launch)
 
     if ctx.get("defer_pages"):
+        launch["status"] = "running"
+        store.save_launch(launch)
         return {
             "launch_id": launch_id,
             "status": "succeeded",
@@ -179,6 +198,9 @@ def continue_accepted_launch(launch: dict[str, Any], ctx: dict[str, Any]) -> dic
     store.save_launch(launch)
 
     production_published = bool((pages.get("details") or {}).get("production_published"))
+    if pages.get("status") == "succeeded":
+        launch["status"] = "succeeded"
+        store.save_launch(launch)
     return {
         "launch_id": launch_id,
         "status": pages.get("status", "failed"),
