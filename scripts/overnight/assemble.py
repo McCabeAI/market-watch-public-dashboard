@@ -155,6 +155,7 @@ def assemble_dataset(
         },
         "evidence_cutoff": snapshot.get("as_of"),
         "packet_sha256": snapshot.get("packet_sha256"),
+        "trade_permissions": snapshot.get("trade_permissions") or collect.get("trade_permissions"),
         "agent_research": (agent_packet or {}).get("research_supplement"),
         "agent_research_cutoff": (agent_packet or {}).get("evidence_cutoff"),
         "trader_books": public_books_view(books),
