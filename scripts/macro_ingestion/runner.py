@@ -262,6 +262,7 @@ def run_ingestion(
     run_id: str | None = None,
     persist_canonical: bool = False,
     only_series_ids: set[str] | None = None,
+    attempts: int = DEFAULT_ATTEMPTS,
 ) -> dict[str, Any]:
     catalog = catalog or load_catalog()
     when = now or datetime.now(timezone.utc)
@@ -286,7 +287,15 @@ def run_ingestion(
 
     for country in target_countries:
         country_start = clock()
-        series_list = grouped.get(country, [])
+        # Scored inputs get breadth before context-only enrichment so one slow
+        # source cannot consume the country budget before the trade gate is usable.
+        series_list = sorted(
+            grouped.get(country, []),
+            key=lambda spec: (
+                0 if str(spec.get("role") or "") == "scored" else 1,
+                str(spec.get("id") or ""),
+            ),
+        )
         fetch_fn = load_country_adapter(country)
         if fetch_fn is None:
             for spec in series_list:
@@ -340,7 +349,7 @@ def run_ingestion(
                 return fetch_fn(spec, opener=opener, now=when, timeout=timeout_seconds)
 
             try:
-                payload = retry_call(_fetch, attempts=DEFAULT_ATTEMPTS)
+                payload = retry_call(_fetch, attempts=attempts)
             except Exception as exc:  # noqa: BLE001
                 rows.append(
                     ledger_row(

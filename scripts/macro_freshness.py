@@ -813,12 +813,21 @@ def macro_expression_block(
     asset_class: str | None = None,
     expression: Any = None,
 ) -> str | None:
+    """Block only the macro countries the selected expression actually needs.
+
+    macro_hard.status is an aggregate diagnostic. A partial six-country refresh
+    must never become a global veto when another country's scored inputs are
+    verified. Missing/invalid/unavailable family state still fails closed.
+    """
     family = families.get("macro_hard") if isinstance(families, dict) else None
     if not isinstance(family, dict):
-        return None
-    if family.get("status") in {"stale", "missing", "invalid", "unavailable"}:
-        return None
+        return "expression blocked by missing macro inputs"
+    status = str(family.get("status") or "missing")
     needed = macro_countries_for_expression(instrument, asset_class=asset_class, expression=expression)
+    if status in {"missing", "invalid", "unavailable"}:
+        if needed:
+            return "expression blocked by unavailable macro inputs: " + ", ".join(sorted(needed))
+        return "expression blocked by unavailable macro inputs"
     if not needed:
         return None
     blocked = sorted(needed & stale_countries_of(family))

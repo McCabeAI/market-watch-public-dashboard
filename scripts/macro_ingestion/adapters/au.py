@@ -10,6 +10,7 @@ from datetime import date, datetime
 from typing import Any, Callable
 
 from scripts.australia_housing_data import collect_australia_housing
+from scripts.macro_ingestion.calendar import latest_due_release
 from scripts.harvest_au_pmi import (
     PMI_LISTING_URL,
     SEED_GUIDS,
@@ -57,6 +58,12 @@ _CONTEXT_SERIES_IDS: dict[str, str] = {
     "AU.Inflation.import_price_index": "A2295765J",
     "AU.Inflation.export_price_index": "A2294886K",
     "AU.Labor.participation": "A84423051C",
+}
+
+_LABOUR_WORKBOOK_IDS = {
+    "AU.Labor.unemployment",
+    "AU.Labor.employment",
+    "AU.Labor.participation",
 }
 
 
@@ -226,8 +233,19 @@ def _resolve_series_id(spec: dict[str, Any]) -> str | None:
     return text
 
 
-def _resolve_endpoint(spec: dict[str, Any]) -> str | None:
-    return spec.get("endpoint") or _CONTEXT_SERIES_ENDPOINTS.get(spec["id"])
+def _resolve_endpoint(spec: dict[str, Any], *, now: datetime | None = None) -> str | None:
+    """Resolve the current ABS labour workbook once a dated release is due."""
+    spec_id = str(spec.get("id") or "")
+    if now is not None and spec_id in _LABOUR_WORKBOOK_IDS:
+        due = latest_due_release(spec, now)
+        period = str((due or {}).get("period") or "")
+        match = re.fullmatch(r"(20\d{2})-(\d{2})", period)
+        registry = list(spec.get("registry_urls") or [])
+        if match and registry:
+            year, month = int(match.group(1)), int(match.group(2))
+            slug = datetime(year, month, 1).strftime("%b").lower() + f"-{year}"
+            return registry[0].rstrip("/") + f"/{slug}/62020001.xlsx"
+    return spec.get("endpoint") or _CONTEXT_SERIES_ENDPOINTS.get(spec_id)
 
 
 def _fetch_workbook_bytes(
@@ -281,10 +299,11 @@ def _fetch_abs_workbook_series(
     *,
     opener: Callable[..., dict[str, Any]],
     timeout: float,
+    now: datetime | None = None,
     max_period: str | None = None,
 ) -> dict[str, Any]:
     series_id = _resolve_series_id(spec)
-    url = _resolve_endpoint(spec)
+    url = _resolve_endpoint(spec, now=now)
     if not series_id or not url:
         return _base_payload(
             ok=False,
@@ -565,6 +584,7 @@ def fetch_series(
             spec,
             opener=opener,
             timeout=timeout,
+            now=now,
             max_period=max_period,
         )
 

@@ -332,37 +332,37 @@ def evaluate_gate(
 
 
 def apply_macro_overlay(families: dict[str, Any], rows: list[dict[str, Any]]) -> dict[str, Any]:
+    """Overlay live rows using the same due-aware country logic as the quality gate."""
     out = copy.deepcopy(families)
     macro = dict(out.get("macro_hard") or {})
     notes = list(macro.get("notes") or [])
 
     if not rows:
         macro["status"] = "invalid"
+        macro["fresh_countries"] = []
+        macro["stale_countries"] = list(COUNTRIES)
         notes.append("macro ingestion rows empty")
     else:
-        blocking_countries: set[str] = set()
-        scored_countries: set[str] = set()
-        for row in rows:
-            if not _is_scored_row(row):
-                continue
-            country = str(row.get("country") or "")
-            if country:
-                scored_countries.add(country)
-            if _effective_status(row) in BLOCKING_SERIES_STATUSES:
-                blocking_countries.add(country)
-        if blocking_countries and blocking_countries == scored_countries:
-            macro["status"] = "invalid"
-        elif blocking_countries:
-            macro["status"] = "stale"
-        else:
-            macro["status"] = "fresh"
+        fresh_countries: list[str] = []
+        stale_countries: list[str] = []
+        for code in COUNTRIES:
+            verified = _country_has_verified_scored(rows, code)
+            due_block = _country_release_due_blocking(rows, code)
+            if verified and not due_block:
+                fresh_countries.append(code)
+            else:
+                stale_countries.append(code)
+
+        macro["fresh_countries"] = fresh_countries
+        macro["stale_countries"] = stale_countries
+        macro["status"] = "fresh" if fresh_countries else ("stale" if stale_countries else "invalid")
+        if stale_countries:
+            notes.append("country-specific macro restrictions: " + ", ".join(stale_countries))
 
     macro["notes"] = notes
     macro["components"] = [dict(row) for row in rows]
     out["macro_hard"] = macro
     return out
-
-
 def run(launch: dict, ctx: dict) -> dict:
     ingest_stage = (launch.get("stages") or {}).get("01_ingest") or {}
     acquire_stage = (launch.get("stages") or {}).get("02_acquire") or {}
