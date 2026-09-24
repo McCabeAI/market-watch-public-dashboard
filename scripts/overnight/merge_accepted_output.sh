@@ -27,9 +27,25 @@ fi
 
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 
-# Production acceptance sets MW_PAGES_REQUIRE_LAUNCH=1. Pages then run only
-# for a launch that stage 07 authorized. Legacy callers that leave the
-# variable unset keep the previous dispatch.
+# Manual Market Watch launches finalize and dispatch Pages only after the accepted
+# provider output has been merged and the launch's stage 06/07 state is durably
+# committed on main. Do not publish from this pre-continuation merge step.
+if [ "${MW_PAGES_REQUIRE_LAUNCH:-}" = "1" ]; then
+  if [ -n "${MW_PAGES_OUTPUT:-}" ] && [ -f "${MW_PAGES_OUTPUT}" ]; then
+    launch_id="$(python3 -c 'import json,os; print(json.load(open(os.environ["MW_PAGES_OUTPUT"])).get("launch_id") or "")')"
+    if [ -z "$launch_id" ]; then
+      echo "::error::Accepted manual output is missing launch_id."
+      exit 1
+    fi
+    echo "Accepted manual output merged for $launch_id; durable launch continuation owns finalization and Pages."
+    exit 0
+  fi
+  echo "::error::MW_PAGES_REQUIRE_LAUNCH requires MW_PAGES_OUTPUT."
+  exit 1
+fi
+
+# Legacy/manual callers outside the one-command launch path keep the explicit
+# dispatch behavior below.
 if [ "${MW_PAGES_REQUIRE_LAUNCH:-}" = "1" ] && [ -z "${MW_PAGES_LAUNCH_ID:-}" ] && [ -n "${MW_PAGES_OUTPUT:-}" ] && [ -f "${MW_PAGES_OUTPUT}" ]; then
   eval "$(MW_PAGES_OUTPUT="$MW_PAGES_OUTPUT" python3 -c 'import json,os,shlex; d=json.load(open(os.environ["MW_PAGES_OUTPUT"])); print("export MW_PAGES_LAUNCH_ID=%s" % shlex.quote(str(d.get("launch_id") or ""))); print("export MW_PAGES_REVIEW_ID=%s" % shlex.quote(str(d.get("review_id") or "")))')"
 fi
