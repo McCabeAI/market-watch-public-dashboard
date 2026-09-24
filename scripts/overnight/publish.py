@@ -99,7 +99,10 @@ def emit_trader_books_json(store: OvernightStore, site_dir: Path, *, run_id: str
         if dataset is not None:
             pub = dataset["publication"]
             research = dict(dataset.get("agent_research") or {})
-            research["summary"] = public_research_summary(research.get("summary"))
+            research["summary"] = public_research_summary(
+                research.get("summary"),
+                items=list(research.get("news") or []) + list(research.get("central_bank_research") or []),
+            )
             payload["overnight_research"] = research
             payload["trade_permissions"] = dataset.get("trade_permissions")
             publication = {
@@ -134,7 +137,11 @@ def emit_trader_books_json(store: OvernightStore, site_dir: Path, *, run_id: str
             **payload,
             "overnight_research": {
                 **dict(dataset.get("agent_research") or {}),
-                "summary": public_research_summary((dataset.get("agent_research") or {}).get("summary")),
+                "summary": public_research_summary(
+                    (dataset.get("agent_research") or {}).get("summary"),
+                    items=list((dataset.get("agent_research") or {}).get("news") or [])
+                    + list((dataset.get("agent_research") or {}).get("central_bank_research") or []),
+                ),
             },
             "trade_permissions": dataset.get("trade_permissions"),
             "publication": {
