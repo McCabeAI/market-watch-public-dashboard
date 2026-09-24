@@ -143,7 +143,7 @@ def _last24_html(items: list[dict[str, Any]], cutoff: datetime, summary: str | N
     start = cutoff - timedelta(hours=24)
     current = [row for row in items if start <= row["_published"] <= cutoff][:6]
     headline = current[0]["headline"] if current else "No new qualifying market driver in the last 24 hours"
-    desk_read = public_research_summary(summary)
+    desk_read = public_research_summary(summary, items=current)
     cards: list[str] = []
     for row in current:
         impact, _ = _impact(row)
