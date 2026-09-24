@@ -9,7 +9,8 @@ from calendar import monthrange
 from datetime import date, datetime
 from typing import Any, Callable
 
-from scripts.australia_housing_data import collect_australia_housing\nfrom scripts.macro_ingestion.calendar import latest_due_release
+from scripts.australia_housing_data import collect_australia_housing
+from scripts.macro_ingestion.calendar import latest_due_release
 from scripts.harvest_au_pmi import (
     PMI_LISTING_URL,
     SEED_GUIDS,
