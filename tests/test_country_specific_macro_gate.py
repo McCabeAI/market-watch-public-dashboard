@@ -73,6 +73,39 @@ class CountrySpecificMacroGateTests(unittest.TestCase):
                 asset_class="spot_fx",
             )
 
+    def test_sep24_aggregate_stale_does_not_block_verified_countries(self) -> None:
+        families = _families()
+        families["macro_hard"]["status"] = "stale"
+        families["macro_hard"]["fresh_countries"] = ["CA", "NZ", "EA", "JP"]
+        families["macro_hard"]["stale_countries"] = ["AU"]
+        assert_action_allowed(
+            "OPEN",
+            families,
+            seat="carry-is-king",
+            instrument="CORRA_2027-03",
+            asset_class="rates",
+        )
+        with self.assertRaises(FreshnessError):
+            assert_action_allowed(
+                "ADD",
+                families,
+                seat="dollar-king",
+                instrument="AUDUSD",
+                asset_class="spot_fx",
+            )
+
+    def test_missing_macro_family_fails_closed(self) -> None:
+        families = _families()
+        families.pop("macro_hard")
+        with self.assertRaises(FreshnessError):
+            assert_action_allowed(
+                "OPEN",
+                families,
+                seat="carry-is-king",
+                instrument="CORRA_2027-03",
+                asset_class="rates",
+            )
+
     def test_invalid_macro_family_still_fails_closed(self) -> None:
         families = _families()
         families["macro_hard"]["status"] = "invalid"

@@ -74,6 +74,14 @@ def publication_gate(
     return {**decision, "dataset": dataset}
 
 
+def _public_research(research: dict) -> dict:
+    projected = dict(research)
+    items = list(projected.get("news") or []) + list(projected.get("central_bank_research") or [])
+    if "summary" in projected or items:
+        projected["summary"] = public_research_summary(projected.get("summary"), items=items)
+    return projected
+
+
 def emit_trader_books_json(store: OvernightStore, site_dir: Path, *, run_id: str | None = None) -> Path:
     site_dir = Path(site_dir)
     site_dir.mkdir(parents=True, exist_ok=True)
@@ -98,12 +106,7 @@ def emit_trader_books_json(store: OvernightStore, site_dir: Path, *, run_id: str
                 position["invalidation"] = sanitize_public_prose(position.get("invalidation"), max_chars=400, fallback="")
         if dataset is not None:
             pub = dataset["publication"]
-            research = dict(dataset.get("agent_research") or {})
-            research["summary"] = public_research_summary(
-                research.get("summary"),
-                items=list(research.get("news") or []) + list(research.get("central_bank_research") or []),
-            )
-            payload["overnight_research"] = research
+            payload["overnight_research"] = _public_research(dataset.get("agent_research") or {})
             payload["trade_permissions"] = dataset.get("trade_permissions")
             publication = {
                 "core_status": pub["core_status"],
@@ -135,14 +138,7 @@ def emit_trader_books_json(store: OvernightStore, site_dir: Path, *, run_id: str
         payload = dataset["trader_books"]
         payload = {
             **payload,
-            "overnight_research": {
-                **dict(dataset.get("agent_research") or {}),
-                "summary": public_research_summary(
-                    (dataset.get("agent_research") or {}).get("summary"),
-                    items=list((dataset.get("agent_research") or {}).get("news") or [])
-                    + list((dataset.get("agent_research") or {}).get("central_bank_research") or []),
-                ),
-            },
+            "overnight_research": _public_research(dataset.get("agent_research") or {}),
             "trade_permissions": dataset.get("trade_permissions"),
             "publication": {
                 **{

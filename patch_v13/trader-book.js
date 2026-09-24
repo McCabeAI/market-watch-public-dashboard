@@ -44,7 +44,38 @@
     /\bPASS\/PARTIAL\b/i,
     /\bfail[- ]closed\b/i,
     /\bpmd-[0-9a-f]+\b/i,
-    /\bMW_[A-Z0-9_]+\b/i
+    /\bMW_[A-Z0-9_]+\b/i,
+    /\bVERIFIED:/i,
+    /\bselected\s*=\s*none\b/i,
+    /\bcandidate_assessments\b/i,
+    /\bOPEN\/ADD\/HEDGE\b/i,
+    /\brates_tenor_scan\b/i,
+    /\brates_candidate\b/i,
+    /\bHOLD\/REDUCE\/CLOSE\b/i
+  ];
+
+  const SCRUB_PROSE = [
+    /\b(?:base_)?packet(?:_sha256)?\s*=\s*[0-9a-f]+\b/gi,
+    /\bsha256\b/gi,
+    /\breview-\d+\b/gi,
+    /\bmwl-\d{8}T\d{6}Z-[0-9a-f]+\b/gi,
+    /\bovernight-\d{8}\b/gi,
+    /\bfamilies\.[A-Za-z0-9_.]+/gi,
+    /\bmacro_hard\b(?:\s+is|\s+was|\s*=)?\s*(?:STALE|FRESH|MISSING|INVALID)?/gi,
+    /\bmarket_state\b/gi,
+    /\bsource_failed\b/gi,
+    /\bbudget_deferred\b/gi,
+    /\bPASS\/PARTIAL\b/gi,
+    /\bfail[- ]closed\b/gi,
+    /\bpmd-[0-9a-f]+\b/gi,
+    /\bMW_[A-Z0-9_]+\b/g,
+    /\bselected\s*=\s*none\b/gi,
+    /\bcandidate_assessments\b/gi,
+    /\bOPEN\/ADD\/HEDGE\b/gi,
+    /\brates_tenor_scan\b:?/gi,
+    /\brates_candidate\b/gi,
+    /(?:\bso\s+)?(?:\band\s+)?\bonly\s+HOLD\/REDUCE\/CLOSE\s+are\s+live\b/gi,
+    /\bHOLD\/REDUCE\/CLOSE\b/gi
   ];
 
   function hasMachineProse(value) {
@@ -54,9 +85,12 @@
 
   function cleanBlurb(value, fallback, maxChars) {
     if (!value) return fallback || "";
-    const text = String(value).replace(/\b(?:FACT|INFERENCE|UNKNOWN):\s*/gi, "");
-    const chunks = text.match(/[^.!?]+[.!?]?/g) || [];
-    const kept = chunks.map(function (chunk) { return chunk.trim(); }).filter(function (chunk) {
+    const chunks = String(value).match(/[^.!?]+[.!?]?/g) || [];
+    const kept = chunks.map(function (chunk) {
+      let text = chunk.replace(/\b(?:FACT|INFERENCE|UNKNOWN|VERIFIED):\s*/gi, "");
+      SCRUB_PROSE.forEach(function (pattern) { text = text.replace(pattern, ""); });
+      return text.replace(/\s{2,}/g, " ").replace(/\s+([,.;:])/g, "$1").replace(/;\s*\./g, ".").trim();
+    }).filter(function (chunk) {
       return chunk && !hasMachineProse(chunk) && !(chunk.length > 420 && (chunk.match(/;/g) || []).length >= 3);
     });
     let out = kept.join(" ").trim();

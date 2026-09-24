@@ -42,6 +42,17 @@ const traderPacket = {
   review_status: "fresh",
   seat_count: 2,
   publication: { core_status: "ok", trader_books_status: "fresh" },
+  trade_permissions: {
+    trade_eligible_countries: ["CA", "NZ", "EA", "JP"],
+    countries: {
+      CA: { eligible: true },
+      NZ: { eligible: true },
+      EA: { eligible: true },
+      JP: { eligible: true },
+      US: { eligible: false },
+      AU: { eligible: false }
+    }
+  },
   seats: [
     {
       seat: "dollar-king",

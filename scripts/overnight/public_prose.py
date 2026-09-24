@@ -25,11 +25,40 @@ _MACHINE_PATTERNS: tuple[re.Pattern[str], ...] = tuple(
         r"\bfail[- ]closed\b",
         r"\bpmd-[0-9a-f]+\b",
         r"\bMW_[A-Z0-9_]+\b",
-        r"\b(?:FACT|INFERENCE|UNKNOWN):",
+        r"\b(?:FACT|INFERENCE|UNKNOWN|VERIFIED):",
+        r"\bselected\s*=\s*none\b",
+        r"\bcandidate_assessments\b",
+        r"\bOPEN/ADD/HEDGE\b",
+        r"\brates_tenor_scan\b",
+        r"\brates_candidate\b",
+        r"\bHOLD/REDUCE/CLOSE\b",
     )
 )
 
-_PUBLIC_LABEL_RE = re.compile(r"\b(?:FACT|INFERENCE|UNKNOWN):\s*", re.IGNORECASE)
+_PUBLIC_LABEL_RE = re.compile(r"\b(?:FACT|INFERENCE|UNKNOWN|VERIFIED):\s*", re.IGNORECASE)
+_SCRUB_RES: tuple[re.Pattern[str], ...] = (
+    re.compile(r"\b(?:base_)?packet(?:_sha256)?\s*=\s*[0-9a-fA-F]+\b", re.IGNORECASE),
+    re.compile(r"\bsha256\b", re.IGNORECASE),
+    re.compile(r"\breview-\d+\b", re.IGNORECASE),
+    re.compile(r"\bmwl-\d{8}T\d{6}Z-[0-9a-f]+\b", re.IGNORECASE),
+    re.compile(r"\bovernight-\d{8}\b", re.IGNORECASE),
+    re.compile(r"\bfamilies\.[A-Za-z0-9_.]+", re.IGNORECASE),
+    re.compile(r"\bmacro_hard\b(?:\s+is|\s+was|\s*=)?\s*(?:STALE|FRESH|MISSING|INVALID)?", re.IGNORECASE),
+    re.compile(r"\bmarket_state\b", re.IGNORECASE),
+    re.compile(r"\bsource_failed\b", re.IGNORECASE),
+    re.compile(r"\bbudget_deferred\b", re.IGNORECASE),
+    re.compile(r"\bPASS/PARTIAL\b", re.IGNORECASE),
+    re.compile(r"\bfail[- ]closed\b", re.IGNORECASE),
+    re.compile(r"\bpmd-[0-9a-f]+\b", re.IGNORECASE),
+    re.compile(r"\bMW_[A-Z0-9_]+\b"),
+    re.compile(r"\bselected\s*=\s*none\b", re.IGNORECASE),
+    re.compile(r"\bcandidate_assessments\b", re.IGNORECASE),
+    re.compile(r"\bOPEN/ADD/HEDGE\b", re.IGNORECASE),
+    re.compile(r"\brates_tenor_scan\b:?", re.IGNORECASE),
+    re.compile(r"\brates_candidate\b", re.IGNORECASE),
+    re.compile(r"(?:\bso\s+)?(?:\band\s+)?\bonly\s+HOLD/REDUCE/CLOSE\s+are\s+live\b", re.IGNORECASE),
+    re.compile(r"\bHOLD/REDUCE/CLOSE\b", re.IGNORECASE),
+)
 _SENTENCE_SPLIT_RE = re.compile(r"(?<=[.!?])\s+")
 
 
@@ -61,20 +90,37 @@ def assert_public_prose(
         raise SchemaError(f"{label} contains internal telemetry/provenance language")
 
 
+def _scrub_machine_tokens(sentence: str) -> str:
+    text = _PUBLIC_LABEL_RE.sub("", sentence)
+    for pattern in _SCRUB_RES:
+        text = pattern.sub("", text)
+    text = re.sub(r"\s{2,}", " ", text)
+    text = re.sub(r"\s+([,.;:])", r"\1", text)
+    text = re.sub(r"(?:^|[\s;])(?:and|but|so|while)\s+(?=[,.;]|$)", " ", text, flags=re.IGNORECASE)
+    text = re.sub(r"([;,:])\s*(?:[;,:]\s*)+", r"\1 ", text)
+    text = re.sub(r";\s*\.", ".", text)
+    return text.strip(" ;,:-")
+
+
 def sanitize_public_prose(
     value: Any,
     *,
     max_chars: int = 700,
     fallback: str = "",
 ) -> str:
-    """Defensive legacy renderer: keep useful sentences, remove machine telemetry."""
+    """Defensive legacy renderer: keep market sentences, strip machine telemetry."""
     if not isinstance(value, str) or not value.strip():
         return fallback
-    cleaned = _PUBLIC_LABEL_RE.sub("", value.strip())
     kept: list[str] = []
-    for sentence in _SENTENCE_SPLIT_RE.split(cleaned):
-        sentence = sentence.strip()
+    for raw_sentence in _SENTENCE_SPLIT_RE.split(value.strip()):
+        raw_sentence = raw_sentence.strip()
+        if not raw_sentence:
+            continue
+        had_machine = bool(public_prose_issues(raw_sentence))
+        sentence = _scrub_machine_tokens(raw_sentence)
         if not sentence:
+            continue
+        if had_machine and len(sentence.split()) < 6:
             continue
         if public_prose_issues(sentence):
             continue

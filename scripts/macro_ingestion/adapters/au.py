@@ -596,6 +596,7 @@ def fetch_series(
             overlay,
             opener=opener,
             timeout=timeout,
+            now=now,
             max_period=max_period,
         )
 

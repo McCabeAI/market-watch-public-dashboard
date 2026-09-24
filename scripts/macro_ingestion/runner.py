@@ -245,6 +245,112 @@ def _classify_points(
     return "calendar_unparsed", [], None
 
 
+def _budget_exhausted(
+    clock: Callable[[], float],
+    run_start: float,
+    country_start: float,
+    run_budget_seconds: float,
+    country_budget_seconds: float,
+) -> bool:
+    now = clock()
+    return (now - run_start) > run_budget_seconds or (now - country_start) > country_budget_seconds
+
+
+def _deferred_row(
+    spec: dict[str, Any],
+    *,
+    checked_at: str,
+    calibration_as_of: str,
+    cutoff_class: str,
+) -> dict[str, Any]:
+    return ledger_row(
+        series_id=spec["id"],
+        status="source_failed",
+        checked_at=checked_at,
+        observation_vintage=None,
+        calibration_as_of=calibration_as_of,
+        cutoff_class=cutoff_class,
+        error="budget_deferred",
+    )
+
+
+def _fetch_once(
+    spec: dict[str, Any],
+    *,
+    fetch_fn: Callable[..., dict[str, Any]],
+    opener: Callable[..., dict[str, Any]],
+    now: datetime,
+    timeout_seconds: float,
+    rows: list[dict[str, Any]],
+    checked_at: str,
+    cal_as_of: str,
+    cutoff: str,
+    mode: str,
+    raw_dir: Path | None,
+    country: str,
+    obs_dir: Path,
+    post_freeze_changes: list[dict[str, Any]],
+    replace_index: int | None = None,
+    extra_attempts: int = 0,
+) -> int:
+    """Fetch one series. Retries stay inside this series and cannot skip siblings."""
+    store = load_store(country, obs_dir)
+
+    def _fetch() -> dict[str, Any]:
+        return fetch_fn(spec, opener=opener, now=now, timeout=timeout_seconds)
+
+    call_attempts = extra_attempts if replace_index is not None else 1
+    if call_attempts < 1:
+        return replace_index if replace_index is not None else len(rows) - 1
+    try:
+        payload = retry_call(_fetch, attempts=call_attempts)
+    except Exception as exc:  # noqa: BLE001
+        row = ledger_row(
+            series_id=spec["id"],
+            status="source_failed",
+            checked_at=checked_at,
+            observation_vintage=None,
+            calibration_as_of=cal_as_of,
+            cutoff_class=cutoff,
+            error=str(exc),
+        )
+        if replace_index is None:
+            rows.append(row)
+            return len(rows) - 1
+        rows[replace_index] = row
+        return replace_index
+
+    if mode == "live" and payload.get("ok") and raw_dir is not None:
+        body = payload.get("body") or b""
+        if body:
+            sid = spec.get("series_id") or "unknown"
+            digest = _sha256(body)[:12]
+            stamp = checked_at.replace(":", "").replace("-", "")
+            out = raw_dir / country.lower() / str(sid) / f"{stamp}-{digest}"
+            out.parent.mkdir(parents=True, exist_ok=True)
+            out.write_bytes(body)
+
+    status, changed, error = _classify_points(spec, payload, store, now)
+    vintage = payload.get("vintage")
+    row = ledger_row(
+        series_id=spec["id"],
+        status=status,
+        checked_at=checked_at,
+        observation_vintage=str(vintage) if vintage is not None else None,
+        calibration_as_of=cal_as_of,
+        cutoff_class=cutoff,
+        error=error,
+    )
+    if changed:
+        save_store(store, obs_dir)
+        post_freeze_changes.extend(changed)
+    if replace_index is None:
+        rows.append(row)
+        return len(rows) - 1
+    rows[replace_index] = row
+    return replace_index
+
+
 def run_ingestion(
     *,
     mode: str = "offline",
@@ -312,88 +418,68 @@ def run_ingestion(
                 )
             continue
 
-        for spec in series_list:
-            if only_series_ids is not None and str(spec["id"]) not in only_series_ids:
-                continue
-            if clock() - run_start > run_budget_seconds:
+        pending = [
+            spec
+            for spec in series_list
+            if only_series_ids is None or str(spec["id"]) in only_series_ids
+        ]
+        # One attempt per series before any retry. A slow FRED read must not
+        # spend the country budget and stamp untouched series budget_deferred.
+        failed_for_retry: list[tuple[dict[str, Any], int]] = []
+        for spec in pending:
+            if _budget_exhausted(clock, run_start, country_start, run_budget_seconds, country_budget_seconds):
                 rows.append(
-                    ledger_row(
-                        series_id=spec["id"],
-                        status="source_failed",
+                    _deferred_row(
+                        spec,
                         checked_at=checked_at,
-                        observation_vintage=None,
                         calibration_as_of=cal_as_of,
                         cutoff_class=cutoff,
-                        error="budget_deferred",
                     )
                 )
                 continue
 
-            if clock() - country_start > country_budget_seconds:
-                rows.append(
-                    ledger_row(
-                        series_id=spec["id"],
-                        status="source_failed",
-                        checked_at=checked_at,
-                        observation_vintage=None,
-                        calibration_as_of=cal_as_of,
-                        cutoff_class=cutoff,
-                        error="budget_deferred",
-                    )
-                )
-                continue
-
-            store = load_store(country, obs_dir)
-
-            def _fetch() -> dict[str, Any]:
-                return fetch_fn(spec, opener=opener, now=when, timeout=timeout_seconds)
-
-            try:
-                payload = retry_call(_fetch, attempts=attempts)
-            except Exception as exc:  # noqa: BLE001
-                rows.append(
-                    ledger_row(
-                        series_id=spec["id"],
-                        status="source_failed",
-                        checked_at=checked_at,
-                        observation_vintage=None,
-                        calibration_as_of=cal_as_of,
-                        cutoff_class=cutoff,
-                        error=str(exc),
-                    )
-                )
-                continue
-
-            if mode == "live" and payload.get("ok") and raw_dir is not None:
-                body = payload.get("body") or b""
-                if body:
-                    sid = spec.get("series_id") or "unknown"
-                    digest = _sha256(body)[:12]
-                    stamp = checked_at.replace(":", "").replace("-", "")
-                    out = raw_dir / country.lower() / str(sid) / f"{stamp}-{digest}"
-                    out.parent.mkdir(parents=True, exist_ok=True)
-                    out.write_bytes(body)
-
-            status, changed, error = _classify_points(spec, payload, store, when)
-            vintage = payload.get("vintage")
-            extra: dict[str, Any] = {}
-
-            rows.append(
-                ledger_row(
-                    series_id=spec["id"],
-                    status=status,
-                    checked_at=checked_at,
-                    observation_vintage=str(vintage) if vintage is not None else None,
-                    calibration_as_of=cal_as_of,
-                    cutoff_class=cutoff,
-                    error=error,
-                    extra=extra,
-                )
+            row_index = _fetch_once(
+                spec,
+                fetch_fn=fetch_fn,
+                opener=opener,
+                now=when,
+                timeout_seconds=timeout_seconds,
+                rows=rows,
+                checked_at=checked_at,
+                cal_as_of=cal_as_of,
+                cutoff=cutoff,
+                mode=mode,
+                raw_dir=raw_dir,
+                country=country,
+                obs_dir=obs_dir,
+                post_freeze_changes=post_freeze_changes,
             )
+            row = rows[row_index]
+            if attempts > 1 and row.get("status") == "source_failed" and row.get("error") != "budget_deferred":
+                failed_for_retry.append((spec, row_index))
 
-            if changed:
-                save_store(store, obs_dir)
-                post_freeze_changes.extend(changed)
+        for spec, row_index in failed_for_retry:
+            if _budget_exhausted(clock, run_start, country_start, run_budget_seconds, country_budget_seconds):
+                # Keep the first truthful failure. Do not relabel an attempted read.
+                continue
+            _fetch_once(
+                spec,
+                fetch_fn=fetch_fn,
+                opener=opener,
+                now=when,
+                timeout_seconds=timeout_seconds,
+                rows=rows,
+                checked_at=checked_at,
+                cal_as_of=cal_as_of,
+                cutoff=cutoff,
+                mode=mode,
+                raw_dir=raw_dir,
+                country=country,
+                obs_dir=obs_dir,
+                post_freeze_changes=post_freeze_changes,
+                replace_index=row_index,
+                extra_attempts=attempts - 1,
+            )
 
     write_ledger(rows, health_dir=health_dir or (ROOT / "data/macro_ingestion/health"), run_id=run_id)
 

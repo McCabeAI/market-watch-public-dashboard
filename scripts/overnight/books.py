@@ -37,6 +37,7 @@ from scripts.overnight.constants import (
 )
 from scripts.overnight.errors import FreshnessError, SchemaError
 from scripts.overnight.expression import expression_rule, remit, selected_asset_class, validate_expression_memo
+from scripts.overnight.public_prose import sanitize_public_prose
 from scripts.overnight.freshness import assert_action_allowed
 from scripts.risk_capital import (
     already_force_flattened_ids,
@@ -1015,8 +1016,8 @@ def public_books_view(books: dict[str, Any]) -> dict[str, Any]:
                 "net_pnl_usd": item.get("net_pnl_usd"),
                 "pnl_unavailable": item["pnl_unavailable"],
                 "conviction": item["conviction"],
-                "thesis": item.get("thesis"),
-                "invalidation": item.get("invalidation"),
+                "thesis": sanitize_public_prose(item.get("thesis"), max_chars=700, fallback=""),
+                "invalidation": sanitize_public_prose(item.get("invalidation"), max_chars=500, fallback=""),
                 "last_action": item.get("last_action"),
                 "prior_action": item.get("prior_action"),
                 "alerts": item.get("alerts") or [],
@@ -1049,8 +1050,8 @@ def public_books_view(books: dict[str, Any]) -> dict[str, Any]:
                         "paper_expression": p.get("paper_expression"),
                         "opened_at": p.get("opened_at"),
                         "opened_run_id": p.get("opened_run_id"),
-                        "thesis": p.get("thesis"),
-                        "invalidation": p.get("invalidation"),
+                        "thesis": sanitize_public_prose(p.get("thesis"), max_chars=500, fallback=""),
+                        "invalidation": sanitize_public_prose(p.get("invalidation"), max_chars=400, fallback=""),
                         "unrealized_pnl_usd": p.get("unrealized_pnl_usd"),
                         "risk_capital_usd": p.get("risk_capital_usd"),
                         "risk_capital_method": p.get("risk_capital_method"),
