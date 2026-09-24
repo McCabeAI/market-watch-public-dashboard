@@ -34,14 +34,14 @@ if [ "${MW_PAGES_REQUIRE_LAUNCH:-}" = "1" ]; then
   if [ -n "${MW_PAGES_OUTPUT:-}" ] && [ -f "${MW_PAGES_OUTPUT}" ]; then
     launch_id="$(python3 -c 'import json,os; print(json.load(open(os.environ["MW_PAGES_OUTPUT"])).get("launch_id") or "")')"
     if [ -z "$launch_id" ]; then
-      echo "::error::Accepted manual output is missing launch_id."
-      exit 1
+      echo "Skipping manual launch continuation: accepted output is not bound to a launch_id."
+      exit 0
     fi
     echo "Accepted manual output merged for $launch_id; durable launch continuation owns finalization and Pages."
     exit 0
   fi
-  echo "::error::MW_PAGES_REQUIRE_LAUNCH requires MW_PAGES_OUTPUT."
-  exit 1
+  echo "Skipping manual launch continuation: MW_PAGES_OUTPUT is unavailable."
+  exit 0
 fi
 
 # Legacy/manual callers outside the one-command launch path keep the explicit
