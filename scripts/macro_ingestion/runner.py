@@ -261,6 +261,7 @@ def run_ingestion(
     monotonic: Callable[[], float] | None = None,
     run_id: str | None = None,
     persist_canonical: bool = False,
+    only_series_ids: set[str] | None = None,
 ) -> dict[str, Any]:
     catalog = catalog or load_catalog()
     when = now or datetime.now(timezone.utc)
@@ -303,6 +304,8 @@ def run_ingestion(
             continue
 
         for spec in series_list:
+            if only_series_ids is not None and str(spec["id"]) not in only_series_ids:
+                continue
             if clock() - run_start > run_budget_seconds:
                 rows.append(
                     ledger_row(

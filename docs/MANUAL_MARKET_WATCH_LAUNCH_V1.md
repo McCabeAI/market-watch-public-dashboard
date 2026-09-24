@@ -1,6 +1,8 @@
-# Market Watch — manual launch contract (design, not yet implemented)
+# Market Watch — manual launch contract
 
-Status: approved direction, implementation pending. September 23, 2026. Source of truth for future implementation is current `main`, not any earlier Cursor working tree. This document is the implementation contract for the next targeted build, not a claim that a one-command launcher exists.
+Status: implemented in this repository as **GATED_WAITING_ACP**. September 23, 2026. Operator commands, the stage table, and parameter schema are in `docs/MANUAL_MARKET_WATCH_LAUNCH_RUNBOOK.md`. The ACP addition required before a real trader dispatch is `docs/ACP_ONE_SHOT_AUTHORITY.md`. This repository does not start traders and does not publish mocked production Pages.
+
+Source of truth for implementation is current `main` after PR #109 and PR #110, not any earlier Cursor working tree.
 
 ## Operator intent
 

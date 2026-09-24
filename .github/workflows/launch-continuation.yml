@@ -1,0 +1,33 @@
+name: launch-continuation
+
+on:
+  workflow_dispatch:
+    inputs:
+      launch_id:
+        description: Manual Market Watch launch id
+        required: true
+        type: string
+  repository_dispatch:
+    types:
+      - market-watch-launch-accepted
+
+permissions:
+  contents: read
+
+jobs:
+  continue_launch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Continue accepted launch
+        env:
+          LAUNCH_ID: ${{ github.event.client_payload.launch_id || inputs.launch_id }}
+          CLIENT_PAYLOAD: ${{ toJson(github.event.client_payload) }}
+          PYTHONPATH: .
+        run: python3 -m scripts.market_watch_launch.continuation
