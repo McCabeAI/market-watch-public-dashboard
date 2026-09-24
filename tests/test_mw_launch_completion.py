@@ -308,6 +308,39 @@ class MarketWatchLaunchCompletionTests(unittest.TestCase):
         self.assertEqual(decision["reason"], "hash_mismatch")
         self.assertFalse(decision["production_published"])
 
+    def test_acp_accepted_output_closes_handoff_finalizes_and_dispatches_pages(self) -> None:
+        self.launch["request"]["provider"] = "acp"
+        self.launch["request"]["publish_production"] = True
+        freeze = freeze_run(self.launch, self.ctx)
+        _apply_receipt(self.launch, freeze)
+        base = require_snapshot(self.store, RUN_ID, self.launch["review_id"])
+        payload = build_stub_output(self.store, launch=self.launch, base_packet=base)
+        payload["launch_id"] = self.launch_id
+        _persist_launch(self.launch, self.state_root)
+        decision = continue_accepted_launch(
+            self.launch,
+            {
+                **self.ctx,
+                "provider_payload": payload,
+                "client_payload": {
+                    "launch_id": self.launch_id,
+                    "review_id": self.launch["review_id"],
+                    "base_packet_sha256": self.launch["base_packet_sha256"],
+                    "provider_run_url": "https://cursor.example/run-1",
+                },
+                "pages_dispatch": lambda **_: {"dispatched": True},
+            },
+        )
+        self.assertEqual(decision["status"], "succeeded")
+        self.assertTrue(decision["production_published"])
+        persisted = json.loads(launch_record_path(self.state_root, self.launch_id).read_text())
+        self.assertEqual(persisted["stages"]["05_acp_handoff"]["status"], "succeeded")
+        self.assertTrue(persisted["stages"]["05_acp_handoff"]["details"]["live_provider_dispatched"])
+        self.assertEqual(persisted["stages"]["06_acceptance"]["status"], "succeeded")
+        self.assertEqual(persisted["stages"]["07_finalize"]["status"], "succeeded")
+        self.assertEqual(persisted["stages"]["08_pages"]["status"], "succeeded")
+        self.assertEqual(persisted["status"], "succeeded")
+
     def test_full_stub_pipeline_finalize_publication(self) -> None:
         launch = self._run_stub_pipeline()
         fin = launch["stages"]["07_finalize"]["details"]
