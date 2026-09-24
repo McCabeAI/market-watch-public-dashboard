@@ -22,11 +22,14 @@ def launch_record_candidates(state_root: Path | str, launch_id: str) -> tuple[Pa
 
 def launch_record_path(state_root: Path | str, launch_id: str) -> Path:
     legacy, canonical = launch_record_candidates(state_root, launch_id)
-    if legacy.is_file():
-        return legacy
+    # Canonical durable launch state wins once it exists. The legacy scratch
+    # path may contain a pre-continuation copy and must not override stages
+    # 06/07 that were durably advanced after accepted provider output.
     if canonical.is_file():
         return canonical
-    return legacy
+    if legacy.is_file():
+        return legacy
+    return canonical
 
 
 def load_launch_record(*, launch_id: str, state_root: Path | str) -> dict[str, Any] | None:
