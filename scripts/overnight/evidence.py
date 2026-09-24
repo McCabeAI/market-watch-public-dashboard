@@ -96,6 +96,7 @@ def freeze_snapshot(
         "collect_as_of": collect.get("as_of"),
         "pre_trader_delta": None if delta is None else {"as_of": delta.get("as_of"), "changes": delta.get("changes")},
         "temperature_scores": collect.get("temperature_scores"),
+        "trade_permissions": collect.get("trade_permissions"),
         "research_method": load_research_method(store.root),
         "funding_context": funding_context,
         "competition": competition_contract(funding_context),
