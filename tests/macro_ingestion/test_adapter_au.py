@@ -82,6 +82,33 @@ class TestAustraliaAdapter(unittest.TestCase):
         self.assertEqual(store["observations"][-1]["period"], "2026-08")
         self.assertAlmostEqual(store["observations"][-1]["value"], 4.1)
 
+    def test_due_labour_release_resolves_current_workbook(self) -> None:
+        spec = copy.deepcopy(
+            next(r for r in self.catalog["series"] if r["id"] == "AU.Labor.unemployment")
+        )
+        fixture_bytes = (FIXTURES / "labour_unemployment_fixture.xlsx").read_bytes()
+        seen: list[str] = []
+
+        def opener(url: str, *, timeout: float = 20) -> dict:
+            seen.append(url)
+            return {
+                "ok": True,
+                "url": url,
+                "http_status": 200,
+                "body": fixture_bytes,
+                "error": None,
+            }
+
+        payload = fetch_series(
+            spec,
+            opener=opener,
+            now=datetime(2026, 9, 24, 2, 0, tzinfo=timezone.utc),
+        )
+        self.assertTrue(payload.get("ok"))
+        self.assertTrue(any("/aug-2026/62020001.xlsx" in url for url in seen), seen)
+        self.assertEqual(payload["points"][0]["period"], "2026-08")
+        self.assertAlmostEqual(payload["points"][0]["value"], 4.1)
+
     def test_ceased_retail_does_not_gain_2026_point(self) -> None:
         spec = copy.deepcopy(
             next(r for r in self.catalog["series"] if r["id"] == "AU.Consumer.retail")
