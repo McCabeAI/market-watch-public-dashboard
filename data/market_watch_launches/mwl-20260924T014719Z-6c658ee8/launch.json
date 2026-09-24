@@ -1,0 +1,2208 @@
+{
+  "base_packet_sha256": "a327a93d4bf7874e283bf7c6461cf674863d83e830b233cef8bd67adce2e1756",
+  "created_at": "2026-09-23T21:47:19.799140-04:00",
+  "duplicate_of": null,
+  "freeze_commit_sha": null,
+  "launch_id": "mwl-20260924T014719Z-6c658ee8",
+  "launcher_id": "manual-market-watch-launch-v1",
+  "overnight_run_id": "overnight-20260923",
+  "prior_launch_id": null,
+  "request": {
+    "actor": "kevinnmccabe-PC",
+    "actor_type": "User",
+    "issue_number": 113,
+    "issue_title": "[launch-market-watch] 2026-09-23 rerun",
+    "issue_url": "https://github.com/McCabeAI/market-watch-public-dashboard/issues/113",
+    "mode": "fixture",
+    "origin": {
+      "actor": "kevinnmccabe-PC",
+      "actor_type": "User",
+      "issue_number": 113,
+      "issue_url": "https://github.com/McCabeAI/market-watch-public-dashboard/issues/113",
+      "repository_permission": "admin",
+      "source": "github_issue"
+    },
+    "provider": "stub",
+    "publish_production": false,
+    "repository_permission": "admin",
+    "rerun": true,
+    "session_date": "2026-09-23",
+    "source": "github_issue"
+  },
+  "rerun": true,
+  "review_id": "review-001",
+  "schema_version": 1,
+  "session_date": "2026-09-23",
+  "stages": {
+    "00_authenticate": {
+      "artifact": "artifacts/00_authenticate.json",
+      "details": {
+        "actor": "kevinnmccabe-PC",
+        "authenticated": true,
+        "launch_id": "mwl-20260924T014719Z-6c658ee8",
+        "overnight_run_id": "overnight-20260923",
+        "session_date": "2026-09-23",
+        "source": "github_issue"
+      },
+      "finished_at": "2026-09-23T21:47:19.799140-04:00",
+      "input_sha256": "e32ea6c3facacea66342321934e045bdf6143554fde32dbbbbc86d53e157e12f",
+      "output_sha256": "b44b9ea19d4831e909a7efb229298cce507d968f1151d028263a896c7f87904a",
+      "reason": null,
+      "source_run_url": null,
+      "stage": "00_authenticate",
+      "started_at": "2026-09-23T21:47:19.799140-04:00",
+      "status": "succeeded"
+    },
+    "01_ingest": {
+      "artifact": "artifacts/01_ingest.json",
+      "details": {
+        "checked_at": "2026-09-24T01:47:19Z",
+        "countries": [
+          "US",
+          "CA",
+          "AU",
+          "NZ",
+          "EA",
+          "JP"
+        ],
+        "cutoff_class": null,
+        "gaps": [
+          {
+            "country": "CA",
+            "error": "no_canonical_history_point",
+            "series_id": "CA.Inflation.underlying",
+            "status": "due_missing"
+          },
+          {
+            "country": "CA",
+            "error": "no_canonical_history_point",
+            "series_id": "CA.Inflation.headline",
+            "status": "due_missing"
+          },
+          {
+            "country": "CA",
+            "error": "no_canonical_history_point",
+            "series_id": "CA.Labor.unemployment",
+            "status": "due_missing"
+          },
+          {
+            "country": "CA",
+            "error": "no_canonical_history_point",
+            "series_id": "CA.Labor.wages",
+            "status": "due_missing"
+          },
+          {
+            "country": "CA",
+            "error": "no_canonical_history_point",
+            "series_id": "CA.Labor.employment",
+            "status": "due_missing"
+          },
+          {
+            "country": "CA",
+            "error": "no_canonical_history_point",
+            "series_id": "CA.Activity.gdp_domestic_demand",
+            "status": "due_missing"
+          },
+          {
+            "country": "CA",
+            "error": "no_canonical_history_point",
+            "series_id": "CA.Consumer.retail",
+            "status": "due_missing"
+          },
+          {
+            "country": "CA",
+            "error": "no_canonical_history_point",
+            "series_id": "CA.Consumer.income",
+            "status": "due_missing"
+          },
+          {
+            "country": "CA",
+            "error": "no_canonical_history_point",
+            "series_id": "CA.Consumer.spending",
+            "status": "due_missing"
+          },
+          {
+            "country": "CA",
+            "error": "no_canonical_history_point",
+            "series_id": "CA.Consumer.confidence",
+            "status": "due_missing"
+          },
+          {
+            "country": "AU",
+            "error": "no_canonical_history_point",
+            "series_id": "AU.Activity.gdp_domestic_demand",
+            "status": "due_missing"
+          },
+          {
+            "country": "US",
+            "error": "no_canonical_history_point",
+            "series_id": "US.Inflation.cpi_headline",
+            "status": "license_gap"
+          },
+          {
+            "country": "US",
+            "error": "no_canonical_history_point",
+            "series_id": "US.Inflation.cpi_core",
+            "status": "license_gap"
+          },
+          {
+            "country": "US",
+            "error": "no_canonical_history_point",
+            "series_id": "US.Inflation.ppi_final_demand",
+            "status": "license_gap"
+          },
+          {
+            "country": "US",
+            "error": "no_canonical_history_point",
+            "series_id": "US.Inflation.import_price_index",
+            "status": "license_gap"
+          },
+          {
+            "country": "US",
+            "error": "no_canonical_history_point",
+            "series_id": "US.Inflation.export_price_index",
+            "status": "license_gap"
+          },
+          {
+            "country": "US",
+            "error": "no_canonical_history_point",
+            "series_id": "US.Inflation.pce_headline",
+            "status": "license_gap"
+          },
+          {
+            "country": "US",
+            "error": "no_canonical_history_point",
+            "series_id": "US.Labor.participation",
+            "status": "license_gap"
+          },
+          {
+            "country": "US",
+            "error": "no_canonical_history_point",
+            "series_id": "US.Activity.gdp_level",
+            "status": "license_gap"
+          },
+          {
+            "country": "US",
+            "error": "no_canonical_history_point",
+            "series_id": "US.Activity.flash_pmi",
+            "status": "license_gap"
+          },
+          {
+            "country": "US",
+            "error": "no_canonical_history_point",
+            "series_id": "US.Consumer.confidence_conference_board",
+            "status": "license_gap"
+          },
+          {
+            "country": "US",
+            "error": "no_canonical_history_point",
+            "series_id": "US.Housing.fhfa_purchase_only",
+            "status": "license_gap"
+          },
+          {
+            "country": "US",
+            "error": "no_canonical_history_point",
+            "series_id": "US.Housing.housing_starts",
+            "status": "license_gap"
+          },
+          {
+            "country": "US",
+            "error": "no_canonical_history_point",
+            "series_id": "US.Credit.mortgage_30y",
+            "status": "license_gap"
+          },
+          {
+            "country": "CA",
+            "error": "no_canonical_history_point",
+            "series_id": "CA.Inflation.ippi",
+            "status": "license_gap"
+          },
+          {
+            "country": "CA",
+            "error": "no_canonical_history_point",
+            "series_id": "CA.Inflation.rmpi",
+            "status": "license_gap"
+          },
+          {
+            "country": "CA",
+            "error": "no_canonical_history_point",
+            "series_id": "CA.Inflation.import_export_price_indexes",
+            "status": "license_gap"
+          },
+          {
+            "country": "CA",
+            "error": "no_canonical_history_point",
+            "series_id": "CA.Labor.participation",
+            "status": "license_gap"
+          },
+          {
+            "country": "CA",
+            "error": "no_canonical_history_point",
+            "series_id": "CA.Activity.ivey_pmi",
+            "status": "license_gap"
+          },
+          {
+            "country": "CA",
+            "error": "no_canonical_history_point",
+            "series_id": "CA.Activity.flash_composite_pmi",
+            "status": "license_gap"
+          },
+          {
+            "country": "CA",
+            "error": "no_canonical_history_point",
+            "series_id": "CA.Housing.new_housing_price_index",
+            "status": "license_gap"
+          },
+          {
+            "country": "AU",
+            "error": "no_canonical_history_point",
+            "series_id": "AU.Inflation.cpi_core_trimmed_already_scored_note",
+            "status": "license_gap"
+          },
+          {
+            "country": "AU",
+            "error": "no_canonical_history_point",
+            "series_id": "AU.Inflation.ppi",
+            "status": "license_gap"
+          },
+          {
+            "country": "AU",
+            "error": "no_canonical_history_point",
+            "series_id": "AU.Inflation.import_price_index",
+            "status": "license_gap"
+          },
+          {
+            "country": "AU",
+            "error": "no_canonical_history_point",
+            "series_id": "AU.Inflation.export_price_index",
+            "status": "license_gap"
+          },
+          {
+            "country": "AU",
+            "error": "no_canonical_history_point",
+            "series_id": "AU.Labor.participation",
+            "status": "license_gap"
+          },
+          {
+            "country": "AU",
+            "error": "no_canonical_history_point",
+            "series_id": "AU.Activity.domestic_final_demand",
+            "status": "license_gap"
+          },
+          {
+            "country": "AU",
+            "error": "no_canonical_history_point",
+            "series_id": "AU.Activity.flash_composite_pmi",
+            "status": "license_gap"
+          },
+          {
+            "country": "AU",
+            "error": "no_canonical_history_point",
+            "series_id": "AU.Housing.dwelling_values_and_approvals",
+            "status": "license_gap"
+          },
+          {
+            "country": "AU",
+            "error": "no_canonical_history_point",
+            "series_id": "AU.Consumer.retail_ceased",
+            "status": "license_gap"
+          },
+          {
+            "country": "NZ",
+            "error": "no_canonical_history_point",
+            "series_id": "NZ.Inflation.ppi",
+            "status": "license_gap"
+          },
+          {
+            "country": "NZ",
+            "error": "no_canonical_history_point",
+            "series_id": "NZ.Inflation.import_price_index",
+            "status": "license_gap"
+          },
+          {
+            "country": "NZ",
+            "error": "no_canonical_history_point",
+            "series_id": "NZ.Inflation.export_price_index",
+            "status": "license_gap"
+          },
+          {
+            "country": "NZ",
+            "error": "no_canonical_history_point",
+            "series_id": "NZ.Labor.participation",
+            "status": "license_gap"
+          },
+          {
+            "country": "NZ",
+            "error": "no_canonical_history_point",
+            "series_id": "NZ.Activity.gdp_expenditure",
+            "status": "license_gap"
+          },
+          {
+            "country": "NZ",
+            "error": "no_canonical_history_point",
+            "series_id": "NZ.Activity.manufacturing_pmi",
+            "status": "license_gap"
+          },
+          {
+            "country": "EA",
+            "error": "no_canonical_history_point",
+            "series_id": "EA.Inflation.hicp_flash",
+            "status": "license_gap"
+          },
+          {
+            "country": "EA",
+            "error": "no_canonical_history_point",
+            "series_id": "EA.Inflation.ppi",
+            "status": "license_gap"
+          },
+          {
+            "country": "EA",
+            "error": "no_canonical_history_point",
+            "series_id": "EA.Inflation.import_price_index",
+            "status": "license_gap"
+          },
+          {
+            "country": "EA",
+            "error": "no_canonical_history_point",
+            "series_id": "EA.Inflation.export_price_index",
+            "status": "license_gap"
+          },
+          {
+            "country": "EA",
+            "error": "no_canonical_history_point",
+            "series_id": "EA.Labor.participation",
+            "status": "license_gap"
+          },
+          {
+            "country": "EA",
+            "error": "no_canonical_history_point",
+            "series_id": "EA.Activity.gdp_components",
+            "status": "license_gap"
+          },
+          {
+            "country": "EA",
+            "error": "no_canonical_history_point",
+            "series_id": "EA.Activity.flash_composite_pmi",
+            "status": "license_gap"
+          },
+          {
+            "country": "EA",
+            "error": "no_canonical_history_point",
+            "series_id": "EA.Activity.manufacturing_pmi_final",
+            "status": "license_gap"
+          },
+          {
+            "country": "EA",
+            "error": "no_canonical_history_point",
+            "series_id": "EA.Activity.services_pmi_final",
+            "status": "license_gap"
+          },
+          {
+            "country": "JP",
+            "error": "no_canonical_history_point",
+            "series_id": "JP.Inflation.cgpi_ppi",
+            "status": "license_gap"
+          },
+          {
+            "country": "JP",
+            "error": "no_canonical_history_point",
+            "series_id": "JP.Inflation.import_price_index",
+            "status": "license_gap"
+          },
+          {
+            "country": "JP",
+            "error": "no_canonical_history_point",
+            "series_id": "JP.Inflation.export_price_index",
+            "status": "license_gap"
+          },
+          {
+            "country": "JP",
+            "error": "no_canonical_history_point",
+            "series_id": "JP.Labor.participation",
+            "status": "license_gap"
+          },
+          {
+            "country": "JP",
+            "error": "no_canonical_history_point",
+            "series_id": "JP.Activity.domestic_demand",
+            "status": "license_gap"
+          },
+          {
+            "country": "JP",
+            "error": "no_canonical_history_point",
+            "series_id": "JP.Activity.flash_composite_pmi",
+            "status": "license_gap"
+          },
+          {
+            "country": "JP",
+            "error": "no_canonical_history_point",
+            "series_id": "JP.Activity.tankan_large_manufacturing",
+            "status": "license_gap"
+          },
+          {
+            "country": "JP",
+            "error": "no_canonical_history_point",
+            "series_id": "JP.Activity.industrial_production",
+            "status": "license_gap"
+          }
+        ],
+        "invented_values": false,
+        "lineage": {
+          "appended_count": 0,
+          "appended_points": [],
+          "checked_at": "2026-09-24T01:47:19Z",
+          "lineage_dir": "data/market_watch_launches/mwl-20260924T014719Z-6c658ee8/lineage",
+          "provenance_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "score_state_sha256": "be38d6d80d04843613a0b138f80636b500bd3b77e3788a1107a6a6567a072c42"
+        },
+        "live_fetch": false,
+        "mode": "fixture",
+        "overnight_run_id": "overnight-20260923",
+        "rows": [
+          {
+            "country": "US",
+            "due_period": "2026-07",
+            "error": null,
+            "observation_period": "2026-07",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "US.Inflation.core_pce",
+            "status": "checked_unchanged",
+            "weight": 1.0
+          },
+          {
+            "country": "US",
+            "due_period": "2026-08",
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "registry_unweighted",
+            "series_id": "US.Inflation.mapped_bridge",
+            "status": "checked_unchanged",
+            "weight": 0.0
+          },
+          {
+            "country": "US",
+            "due_period": "2026-08",
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "US.Labor.unemployment",
+            "status": "checked_unchanged",
+            "weight": 0.7
+          },
+          {
+            "country": "US",
+            "due_period": "2026-08",
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "US.Labor.wages",
+            "status": "checked_unchanged",
+            "weight": 0.2
+          },
+          {
+            "country": "US",
+            "due_period": "2026-08",
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "US.Labor.payrolls",
+            "status": "checked_unchanged",
+            "weight": 0.1
+          },
+          {
+            "country": "US",
+            "due_period": "2026-Q2",
+            "error": null,
+            "observation_period": "2026-Q2",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "US.Activity.gdp_domestic_demand",
+            "status": "checked_unchanged",
+            "weight": 0.6
+          },
+          {
+            "country": "US",
+            "due_period": "2026-08",
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "US.Activity.services_surveys",
+            "status": "checked_unchanged",
+            "weight": 0.28
+          },
+          {
+            "country": "US",
+            "due_period": "2026-08",
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "US.Activity.manufacturing_surveys",
+            "status": "checked_unchanged",
+            "weight": 0.12
+          },
+          {
+            "country": "US",
+            "due_period": "2026-08",
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "US.Consumer.retail",
+            "status": "checked_unchanged",
+            "weight": 0.25
+          },
+          {
+            "country": "US",
+            "due_period": "2026-07",
+            "error": null,
+            "observation_period": "2026-07",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "US.Consumer.income",
+            "status": "checked_unchanged",
+            "weight": 0.25
+          },
+          {
+            "country": "US",
+            "due_period": "2026-07",
+            "error": null,
+            "observation_period": "2026-07",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "US.Consumer.spending",
+            "status": "checked_unchanged",
+            "weight": 0.25
+          },
+          {
+            "country": "US",
+            "due_period": "2026-07",
+            "error": null,
+            "observation_period": "2026-07",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "US.Consumer.confidence",
+            "status": "checked_unchanged",
+            "weight": 0.25
+          },
+          {
+            "country": "CA",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "CA.Inflation.underlying",
+            "status": "due_missing",
+            "weight": 0.6
+          },
+          {
+            "country": "CA",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "CA.Inflation.headline",
+            "status": "due_missing",
+            "weight": 0.4
+          },
+          {
+            "country": "CA",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "CA.Labor.unemployment",
+            "status": "due_missing",
+            "weight": 0.7
+          },
+          {
+            "country": "CA",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "CA.Labor.wages",
+            "status": "due_missing",
+            "weight": 0.2
+          },
+          {
+            "country": "CA",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "CA.Labor.employment",
+            "status": "due_missing",
+            "weight": 0.1
+          },
+          {
+            "country": "CA",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "CA.Activity.gdp_domestic_demand",
+            "status": "due_missing",
+            "weight": 0.6
+          },
+          {
+            "country": "CA",
+            "due_period": "2026-08",
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "CA.Activity.business_surveys",
+            "status": "checked_unchanged",
+            "weight": 0.4
+          },
+          {
+            "country": "CA",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "CA.Consumer.retail",
+            "status": "due_missing",
+            "weight": 0.25
+          },
+          {
+            "country": "CA",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "CA.Consumer.income",
+            "status": "due_missing",
+            "weight": 0.25
+          },
+          {
+            "country": "CA",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "CA.Consumer.spending",
+            "status": "due_missing",
+            "weight": 0.25
+          },
+          {
+            "country": "CA",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "CA.Consumer.confidence",
+            "status": "due_missing",
+            "weight": 0.25
+          },
+          {
+            "country": "AU",
+            "due_period": "2026-07",
+            "error": null,
+            "observation_period": "2026-07",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "AU.Inflation.underlying",
+            "status": "checked_unchanged",
+            "weight": 0.6
+          },
+          {
+            "country": "AU",
+            "due_period": "2026-07",
+            "error": null,
+            "observation_period": "2026-07",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "AU.Inflation.headline",
+            "status": "checked_unchanged",
+            "weight": 0.4
+          },
+          {
+            "country": "AU",
+            "due_period": "2026-07",
+            "error": null,
+            "observation_period": "2026-07",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "AU.Labor.unemployment",
+            "status": "checked_unchanged",
+            "weight": 0.7
+          },
+          {
+            "country": "AU",
+            "due_period": "2026-Q2",
+            "error": null,
+            "observation_period": "2026-Q2",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "AU.Labor.wages",
+            "status": "checked_unchanged",
+            "weight": 0.2
+          },
+          {
+            "country": "AU",
+            "due_period": "2026-07",
+            "error": null,
+            "observation_period": "2026-07",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "AU.Labor.employment",
+            "status": "checked_unchanged",
+            "weight": 0.1
+          },
+          {
+            "country": "AU",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "AU.Activity.gdp_domestic_demand",
+            "status": "due_missing",
+            "weight": 0.6
+          },
+          {
+            "country": "AU",
+            "due_period": "2026-08",
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "AU.Activity.business_surveys",
+            "status": "checked_unchanged",
+            "weight": 0.4
+          },
+          {
+            "country": "AU",
+            "due_period": "2025-06",
+            "error": null,
+            "observation_period": "2025-06",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "AU.Consumer.retail",
+            "status": "checked_unchanged",
+            "weight": 0.25
+          },
+          {
+            "country": "AU",
+            "due_period": "2026-Q2",
+            "error": null,
+            "observation_period": "2026-Q2",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "AU.Consumer.income",
+            "status": "checked_unchanged",
+            "weight": 0.25
+          },
+          {
+            "country": "AU",
+            "due_period": "2026-07",
+            "error": null,
+            "observation_period": "2026-07",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "AU.Consumer.spending",
+            "status": "checked_unchanged",
+            "weight": 0.25
+          },
+          {
+            "country": "AU",
+            "due_period": "2026-09",
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "AU.Consumer.confidence",
+            "status": "checked_unchanged",
+            "weight": 0.25
+          },
+          {
+            "country": "NZ",
+            "due_period": "2026-Q2",
+            "error": null,
+            "observation_period": "2026-Q2",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "NZ.Inflation.underlying",
+            "status": "checked_unchanged",
+            "weight": 0.6
+          },
+          {
+            "country": "NZ",
+            "due_period": "2026-Q2",
+            "error": null,
+            "observation_period": "2026-Q2",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "NZ.Inflation.headline",
+            "status": "checked_unchanged",
+            "weight": 0.4
+          },
+          {
+            "country": "NZ",
+            "due_period": "2026-Q2",
+            "error": null,
+            "observation_period": "2026-Q2",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "NZ.Labor.unemployment",
+            "status": "checked_unchanged",
+            "weight": 0.7
+          },
+          {
+            "country": "NZ",
+            "due_period": "2026-Q2",
+            "error": null,
+            "observation_period": "2026-Q2",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "NZ.Labor.wages",
+            "status": "checked_unchanged",
+            "weight": 0.2
+          },
+          {
+            "country": "NZ",
+            "due_period": "2026-Q2",
+            "error": null,
+            "observation_period": "2026-Q2",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "NZ.Labor.employment",
+            "status": "checked_unchanged",
+            "weight": 0.1
+          },
+          {
+            "country": "NZ",
+            "due_period": "2026-Q2",
+            "error": null,
+            "observation_period": "2026-Q2",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "NZ.Activity.gdp_domestic_demand",
+            "status": "checked_unchanged",
+            "weight": 0.6
+          },
+          {
+            "country": "NZ",
+            "due_period": "2026-08",
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "NZ.Activity.business_surveys",
+            "status": "checked_unchanged",
+            "weight": 0.4
+          },
+          {
+            "country": "NZ",
+            "due_period": "2026-Q2",
+            "error": null,
+            "observation_period": "2026-Q2",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "NZ.Consumer.retail",
+            "status": "checked_unchanged",
+            "weight": 0.25
+          },
+          {
+            "country": "NZ",
+            "due_period": "2026-Q1",
+            "error": null,
+            "observation_period": "2026-Q1",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "NZ.Consumer.income",
+            "status": "checked_unchanged",
+            "weight": 0.25
+          },
+          {
+            "country": "NZ",
+            "due_period": "2026-Q2",
+            "error": null,
+            "observation_period": "2026-Q2",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "NZ.Consumer.spending",
+            "status": "checked_unchanged",
+            "weight": 0.25
+          },
+          {
+            "country": "NZ",
+            "due_period": "2026-08",
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "NZ.Consumer.confidence",
+            "status": "checked_unchanged",
+            "weight": 0.25
+          },
+          {
+            "country": "EA",
+            "due_period": "2026-08",
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "EA.Inflation.underlying",
+            "status": "checked_unchanged",
+            "weight": 0.6
+          },
+          {
+            "country": "EA",
+            "due_period": "2026-08",
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "EA.Inflation.headline",
+            "status": "checked_unchanged",
+            "weight": 0.4
+          },
+          {
+            "country": "EA",
+            "due_period": "2026-07",
+            "error": null,
+            "observation_period": "2026-07",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "EA.Labor.unemployment",
+            "status": "checked_unchanged",
+            "weight": 0.7
+          },
+          {
+            "country": "EA",
+            "due_period": "2026-Q2",
+            "error": null,
+            "observation_period": "2026-Q2",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "EA.Labor.wages",
+            "status": "checked_unchanged",
+            "weight": 0.2
+          },
+          {
+            "country": "EA",
+            "due_period": "2026-Q2",
+            "error": null,
+            "observation_period": "2026-Q2",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "EA.Labor.employment",
+            "status": "checked_unchanged",
+            "weight": 0.1
+          },
+          {
+            "country": "EA",
+            "due_period": "2026-Q2",
+            "error": null,
+            "observation_period": "2026-Q2",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "EA.Activity.gdp_domestic_demand",
+            "status": "checked_unchanged",
+            "weight": 0.6
+          },
+          {
+            "country": "EA",
+            "due_period": "2026-08",
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "EA.Activity.business_surveys",
+            "status": "checked_unchanged",
+            "weight": 0.4
+          },
+          {
+            "country": "EA",
+            "due_period": "2026-07",
+            "error": null,
+            "observation_period": "2026-07",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "EA.Consumer.retail",
+            "status": "checked_unchanged",
+            "weight": 0.25
+          },
+          {
+            "country": "EA",
+            "due_period": "2026-Q1",
+            "error": null,
+            "observation_period": "2026-Q1",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "EA.Consumer.income",
+            "status": "checked_unchanged",
+            "weight": 0.25
+          },
+          {
+            "country": "EA",
+            "due_period": "2026-Q2",
+            "error": null,
+            "observation_period": "2026-Q2",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "EA.Consumer.spending",
+            "status": "checked_unchanged",
+            "weight": 0.25
+          },
+          {
+            "country": "EA",
+            "due_period": "2026-08",
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "EA.Consumer.confidence",
+            "status": "checked_unchanged",
+            "weight": 0.25
+          },
+          {
+            "country": "JP",
+            "due_period": "2026-08",
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "JP.Inflation.underlying",
+            "status": "checked_unchanged",
+            "weight": 0.6
+          },
+          {
+            "country": "JP",
+            "due_period": "2026-08",
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "JP.Inflation.headline",
+            "status": "checked_unchanged",
+            "weight": 0.4
+          },
+          {
+            "country": "JP",
+            "due_period": "2026-07",
+            "error": null,
+            "observation_period": "2026-07",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "JP.Labor.unemployment",
+            "status": "checked_unchanged",
+            "weight": 0.7
+          },
+          {
+            "country": "JP",
+            "due_period": "2026-06",
+            "error": null,
+            "observation_period": "2026-06",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "JP.Labor.wages",
+            "status": "checked_unchanged",
+            "weight": 0.2
+          },
+          {
+            "country": "JP",
+            "due_period": "2026-07",
+            "error": null,
+            "observation_period": "2026-07",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "JP.Labor.employment",
+            "status": "checked_unchanged",
+            "weight": 0.1
+          },
+          {
+            "country": "JP",
+            "due_period": "2026-Q2",
+            "error": null,
+            "observation_period": "2026-Q2",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "JP.Activity.gdp_domestic_demand",
+            "status": "checked_unchanged",
+            "weight": 0.6
+          },
+          {
+            "country": "JP",
+            "due_period": "2026-08",
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "JP.Activity.business_surveys",
+            "status": "checked_unchanged",
+            "weight": 0.4
+          },
+          {
+            "country": "JP",
+            "due_period": "2026-07",
+            "error": null,
+            "observation_period": "2026-07",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "JP.Consumer.retail",
+            "status": "checked_unchanged",
+            "weight": 0.25
+          },
+          {
+            "country": "JP",
+            "due_period": "2026-07",
+            "error": null,
+            "observation_period": "2026-07",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "JP.Consumer.income",
+            "status": "checked_unchanged",
+            "weight": 0.25
+          },
+          {
+            "country": "JP",
+            "due_period": "2026-07",
+            "error": null,
+            "observation_period": "2026-07",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "JP.Consumer.spending",
+            "status": "checked_unchanged",
+            "weight": 0.25
+          },
+          {
+            "country": "JP",
+            "due_period": "2026-08",
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "scored",
+            "series_id": "JP.Consumer.confidence",
+            "status": "checked_unchanged",
+            "weight": 0.25
+          },
+          {
+            "country": "US",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Inflation.cpi_headline",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "US",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Inflation.cpi_core",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "US",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Inflation.ppi_final_demand",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "US",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Inflation.import_price_index",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "US",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Inflation.export_price_index",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "US",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Inflation.pce_headline",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "US",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Labor.participation",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "US",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Activity.gdp_level",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "US",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Activity.flash_pmi",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "US",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Consumer.confidence_conference_board",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "US",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Housing.fhfa_purchase_only",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "US",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Housing.housing_starts",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "US",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Credit.mortgage_30y",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "CA",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "CA.Inflation.ippi",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "CA",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "CA.Inflation.rmpi",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "CA",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "CA.Inflation.import_export_price_indexes",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "CA",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "CA.Labor.participation",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "CA",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "CA.Activity.ivey_pmi",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "CA",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "CA.Activity.flash_composite_pmi",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "CA",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "CA.Housing.new_housing_price_index",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "AU",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "explanatory_alias",
+            "series_id": "AU.Inflation.cpi_core_trimmed_already_scored_note",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "AU",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "AU.Inflation.ppi",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "AU",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "AU.Inflation.import_price_index",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "AU",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "AU.Inflation.export_price_index",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "AU",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "AU.Labor.participation",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "AU",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "AU.Activity.domestic_final_demand",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "AU",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "AU.Activity.flash_composite_pmi",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "AU",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "AU.Housing.dwelling_values_and_approvals",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "AU",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "explanatory_alias",
+            "series_id": "AU.Consumer.retail_ceased",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "NZ",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "NZ.Inflation.ppi",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "NZ",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "NZ.Inflation.import_price_index",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "NZ",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "NZ.Inflation.export_price_index",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "NZ",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "NZ.Labor.participation",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "NZ",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "NZ.Activity.gdp_expenditure",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "NZ",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "NZ.Activity.manufacturing_pmi",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "EA",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "EA.Inflation.hicp_flash",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "EA",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "EA.Inflation.ppi",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "EA",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "EA.Inflation.import_price_index",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "EA",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "EA.Inflation.export_price_index",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "EA",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "EA.Labor.participation",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "EA",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "EA.Activity.gdp_components",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "EA",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "EA.Activity.flash_composite_pmi",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "EA",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "EA.Activity.manufacturing_pmi_final",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "EA",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "EA.Activity.services_pmi_final",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "JP",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "JP.Inflation.cgpi_ppi",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "JP",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "JP.Inflation.import_price_index",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "JP",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "JP.Inflation.export_price_index",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "JP",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "JP.Labor.participation",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "JP",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "JP.Activity.domestic_demand",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "JP",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "JP.Activity.flash_composite_pmi",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "JP",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "JP.Activity.tankan_large_manufacturing",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "country": "JP",
+            "due_period": null,
+            "error": "no_canonical_history_point",
+            "observation_period": null,
+            "provenance": "canonical_history_fixture",
+            "release_due": false,
+            "role": "context",
+            "series_id": "JP.Activity.industrial_production",
+            "status": "license_gap",
+            "weight": 0.0
+          }
+        ],
+        "score_bridge": {
+          "ok": true,
+          "state_sha256": "be38d6d80d04843613a0b138f80636b500bd3b77e3788a1107a6a6567a072c42",
+          "summary": "appended=0"
+        }
+      },
+      "finished_at": null,
+      "input_sha256": "b44b9ea19d4831e909a7efb229298cce507d968f1151d028263a896c7f87904a",
+      "output_sha256": "8b1053f442ab165a2a9d5c0d082f300c22ccd162b59f1d1e070bc68c5709931e",
+      "reason": null,
+      "source_run_url": null,
+      "stage": "01_ingest",
+      "started_at": null,
+      "status": "succeeded"
+    },
+    "02_acquire": {
+      "artifact": "artifacts/02_acquire.json",
+      "details": {
+        "families": {
+          "central_bank_research": {
+            "as_of": "2026-09-23T06:20:00-04:00",
+            "digest": "4a903599bf7b7603ff26d41e62568ef2008d1c1daf440e4d69a098063fbbd423",
+            "status": "fresh"
+          },
+          "macro_hard": {
+            "as_of": null,
+            "digest": "be38d6d80d04843613a0b138f80636b500bd3b77e3788a1107a6a6567a072c42",
+            "status": "stale"
+          },
+          "market_state": {
+            "as_of": "2026-09-18T00:07:00-04:00",
+            "digest": "41006e22c5d576c156c4b34b3a473d5ca6581101b7781cd08e8136525993c3c3",
+            "status": "fresh"
+          },
+          "news": {
+            "as_of": "2026-09-23T06:20:00-04:00",
+            "digest": "9c364c3e9eb1ab88ecfb57c9057eb71a1dac69c9504c1bc739f7d66e59d4f89b",
+            "status": "fresh"
+          }
+        },
+        "market_legs": {
+          "AU": "missing",
+          "CA": "missing",
+          "FX": "missing",
+          "US": "missing"
+        },
+        "market_state_generated_at": "2026-09-18T00:07:00-04:00",
+        "mode": "fixture",
+        "offline": true,
+        "overnight_run_id": "overnight-20260923",
+        "required_preflight_block": null,
+        "required_preflight_ok": true
+      },
+      "finished_at": null,
+      "input_sha256": "8b1053f442ab165a2a9d5c0d082f300c22ccd162b59f1d1e070bc68c5709931e",
+      "output_sha256": "1303c96bccefe77e0fe5bea2dce82e5e7c79717464c964dd3dd034b4c40ad471",
+      "reason": null,
+      "source_run_url": null,
+      "stage": "02_acquire",
+      "started_at": null,
+      "status": "succeeded"
+    },
+    "03_quality_gate": {
+      "artifact": "artifacts/03_quality_gate.json",
+      "details": {
+        "blocked_expressions": [],
+        "blocked_legs": [],
+        "blocked_sources": [],
+        "countries": {
+          "AU": {
+            "eligible": true,
+            "gaps": [
+              "AU.Activity.gdp_domestic_demand"
+            ],
+            "scored_status": "partial"
+          },
+          "CA": {
+            "eligible": true,
+            "gaps": [
+              "CA.Inflation.underlying",
+              "CA.Inflation.headline",
+              "CA.Labor.unemployment",
+              "CA.Labor.wages",
+              "CA.Labor.employment",
+              "CA.Activity.gdp_domestic_demand",
+              "CA.Consumer.retail",
+              "CA.Consumer.income",
+              "CA.Consumer.spending",
+              "CA.Consumer.confidence"
+            ],
+            "scored_status": "blocked"
+          },
+          "EA": {
+            "eligible": false,
+            "gaps": [],
+            "scored_status": "ok"
+          },
+          "JP": {
+            "eligible": false,
+            "gaps": [],
+            "scored_status": "ok"
+          },
+          "NZ": {
+            "eligible": false,
+            "gaps": [],
+            "scored_status": "ok"
+          },
+          "US": {
+            "eligible": true,
+            "gaps": [],
+            "scored_status": "ok"
+          }
+        },
+        "countries_unaffected": [],
+        "coverage": "PARTIAL",
+        "eligible": true,
+        "hold_decisions_emitted": 0,
+        "outcome": "PASS",
+        "partial_expressions": [
+          "activity:US",
+          "activity:CA",
+          "activity:AU",
+          "activity:NZ",
+          "activity:EA",
+          "activity:JP",
+          "macro:CA",
+          "macro:AU"
+        ],
+        "partial_legs": [
+          "NZ_rates",
+          "EA_rates",
+          "JP_rates"
+        ],
+        "partial_series": [
+          "CA.Inflation.underlying",
+          "CA.Inflation.headline",
+          "CA.Labor.unemployment",
+          "CA.Labor.wages",
+          "CA.Labor.employment",
+          "CA.Activity.gdp_domestic_demand",
+          "CA.Consumer.retail",
+          "CA.Consumer.income",
+          "CA.Consumer.spending",
+          "CA.Consumer.confidence",
+          "AU.Activity.gdp_domestic_demand"
+        ],
+        "reason": null,
+        "synthetic_holds": false,
+        "trade_eligible_countries": [
+          "US",
+          "CA",
+          "AU"
+        ]
+      },
+      "finished_at": null,
+      "input_sha256": "1303c96bccefe77e0fe5bea2dce82e5e7c79717464c964dd3dd034b4c40ad471",
+      "output_sha256": "36529615a3846479b97a1089b3f10dd3773ac4fe04cbd7d31184ff3835f5b778",
+      "reason": null,
+      "source_run_url": null,
+      "stage": "03_quality_gate",
+      "started_at": null,
+      "status": "succeeded"
+    },
+    "04_freeze": {
+      "artifact": "artifacts/04_freeze.json",
+      "details": {
+        "as_of": "2026-09-23T21:47:19.799140-04:00",
+        "evidence_boundary": "actual_freeze_timestamp",
+        "legacy_0150_used": false,
+        "overnight_run_id": "overnight-20260923",
+        "packet_sha256": "a327a93d4bf7874e283bf7c6461cf674863d83e830b233cef8bd67adce2e1756",
+        "provenance_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "review_id": "review-001",
+        "score_state_sha256": "be38d6d80d04843613a0b138f80636b500bd3b77e3788a1107a6a6567a072c42",
+        "starting_pm_books_sha256": "098ea76d878edeb91a7b871efa0dff0fa447297880c9c924c01da3de2cd4f14e",
+        "starting_trader_books_sha256": "6be7dfcf39f468d9712abd89d5be271a9a12db510004f98bc9ae7f9003443864"
+      },
+      "finished_at": null,
+      "input_sha256": "36529615a3846479b97a1089b3f10dd3773ac4fe04cbd7d31184ff3835f5b778",
+      "output_sha256": "170940b4e8018493efc1e4170f2027516657dcc9ecc6c675914bd553635d1308",
+      "reason": null,
+      "source_run_url": null,
+      "stage": "04_freeze",
+      "started_at": null,
+      "status": "succeeded"
+    },
+    "05_acp_handoff": {
+      "artifact": "artifacts/05_acp_handoff.json",
+      "details": {
+        "authority": "stub_not_live",
+        "delegation_request": {
+          "base_packet_sha256": "a327a93d4bf7874e283bf7c6461cf674863d83e830b233cef8bd67adce2e1756",
+          "binding_relpath": "data/market_watch_launches/mwl-20260924T014719Z-6c658ee8/freeze_binding.json",
+          "budget": {
+            "composer_cap": 2,
+            "frozen_command": ".cursor/commands/overnight-scheduled.md",
+            "grok_cap": 18,
+            "launcher_id": "manual-market-watch-launch-v1",
+            "legacy_schedule_id_inactive": "market-watch-weekday-0205",
+            "parent_model": "grok-4.6",
+            "total_model_cap": 19
+          },
+          "dispatch_when": "freeze-succeeded",
+          "freeze_commit_sha": null,
+          "launch_id": "mwl-20260924T014719Z-6c658ee8",
+          "origin": {
+            "actor": "kevinnmccabe-PC",
+            "actor_type": "User",
+            "issue_number": 113,
+            "issue_url": "https://github.com/McCabeAI/market-watch-public-dashboard/issues/113",
+            "repository_permission": "admin",
+            "source": "github_issue"
+          },
+          "overnight_run_id": "overnight-20260923",
+          "public_verification": {
+            "readable_without_secrets": true,
+            "ref": "main",
+            "repo": "McCabeAI/market-watch-public-dashboard"
+          },
+          "review_id": "review-001",
+          "score_state_sha256": "be38d6d80d04843613a0b138f80636b500bd3b77e3788a1107a6a6567a072c42",
+          "session_date": "2026-09-23",
+          "single_use": true,
+          "starting_pm_books_sha256": "098ea76d878edeb91a7b871efa0dff0fa447297880c9c924c01da3de2cd4f14e",
+          "starting_trader_books_sha256": "6be7dfcf39f468d9712abd89d5be271a9a12db510004f98bc9ae7f9003443864",
+          "target_repo": "McCabeAI/market-watch-public-dashboard",
+          "type": "MW_ACP_ONE_SHOT_DELEGATION_REQUEST",
+          "version": 1
+        },
+        "live_model_calls": 0,
+        "live_provider_dispatched": false,
+        "provider": "stub"
+      },
+      "finished_at": null,
+      "input_sha256": "a327a93d4bf7874e283bf7c6461cf674863d83e830b233cef8bd67adce2e1756",
+      "output_sha256": "f37a9b2d7f6c88cc646f5fc17b6209710f13a0c827790174ef46ee0701efdf90",
+      "reason": "stub_provider_skips_live_acp",
+      "source_run_url": null,
+      "stage": "05_acp_handoff",
+      "started_at": null,
+      "status": "succeeded"
+    },
+    "06_acceptance": {
+      "artifact": "artifacts/06_acceptance.json",
+      "details": {
+        "already_applied": false,
+        "applied": true,
+        "launch_id": "mwl-20260924T014719Z-6c658ee8",
+        "live_model_calls": 0,
+        "packet_sha256": "a327a93d4bf7874e283bf7c6461cf674863d83e830b233cef8bd67adce2e1756",
+        "pm_count": 3,
+        "review_id": "review-001",
+        "stub": true,
+        "trader_seats": 14
+      },
+      "finished_at": null,
+      "input_sha256": "a327a93d4bf7874e283bf7c6461cf674863d83e830b233cef8bd67adce2e1756",
+      "output_sha256": "2b814231c7eec1caf3c5c60c00c458823bb18d8b028aabd0821a513dded9bb1d",
+      "reason": null,
+      "source_run_url": null,
+      "stage": "06_acceptance",
+      "started_at": null,
+      "status": "succeeded"
+    },
+    "07_finalize": {
+      "artifact": "artifacts/07_finalize.json",
+      "details": {
+        "coverage": "PARTIAL",
+        "launch_id": "mwl-20260924T014719Z-6c658ee8",
+        "packet_sha256": "a327a93d4bf7874e283bf7c6461cf674863d83e830b233cef8bd67adce2e1756",
+        "partial": true,
+        "publication": {
+          "core_status": "ok",
+          "may_publish": true,
+          "reason": "core inputs are structurally valid"
+        },
+        "review_id": "review-001",
+        "session_date": "2026-09-23"
+      },
+      "finished_at": null,
+      "input_sha256": "a327a93d4bf7874e283bf7c6461cf674863d83e830b233cef8bd67adce2e1756",
+      "output_sha256": "efe8416b197a60b27c76f7fa02c769e9bef754a785e2f1981d5edd6bc73abe18",
+      "reason": null,
+      "source_run_url": null,
+      "stage": "07_finalize",
+      "started_at": null,
+      "status": "succeeded"
+    },
+    "08_pages": {
+      "artifact": "artifacts/08_pages.json",
+      "details": {
+        "dry_run": true,
+        "executed": false,
+        "plan": {
+          "event": "workflow_dispatch",
+          "launch_id": "mwl-20260924T014719Z-6c658ee8",
+          "ref": "main",
+          "review_id": "review-001",
+          "workflow": "deploy-pages.yml"
+        },
+        "production_published": false
+      },
+      "finished_at": null,
+      "input_sha256": "a327a93d4bf7874e283bf7c6461cf674863d83e830b233cef8bd67adce2e1756",
+      "output_sha256": "d549f991f584b32ee5f84dfbc7dad4064e06364e4c7a7fa6a8d347e98324d93f",
+      "reason": "stub_pages_dry_run",
+      "source_run_url": null,
+      "stage": "08_pages",
+      "started_at": null,
+      "status": "succeeded"
+    }
+  },
+  "starting_pm_books_sha256": "098ea76d878edeb91a7b871efa0dff0fa447297880c9c924c01da3de2cd4f14e",
+  "starting_trader_books_sha256": "6be7dfcf39f468d9712abd89d5be271a9a12db510004f98bc9ae7f9003443864",
+  "status": "succeeded",
+  "timezone": "America/New_York",
+  "type": "MARKET_WATCH_LAUNCH"
+}

@@ -1,0 +1,1825 @@
+{
+  "country": "AU",
+  "window": {
+    "start": "2025-09-21",
+    "end": "2026-09-21"
+  },
+  "retrieved_at": "2026-09-21",
+  "notes": "G0 observation backfill from ABS time-series workbooks (Jul 2026 CPI/LFS/spending; Jun 2026 national accounts/WPI; Jun 2025 final Retail Trade). Proprietary survey history gapped per SCHEMA.md. Unemployment rate stored at full ABS workbook precision (headline 4.5% in Jul 2026 release).",
+  "components": {
+    "Inflation.headline": {
+      "dimension": "Inflation",
+      "component": "headline",
+      "canonical_name": "Headline CPI year-ended inflation (all groups), Australia",
+      "publisher": "Australian Bureau of Statistics",
+      "distributor": "ABS",
+      "series_id": "A130393721F",
+      "cadence": "monthly",
+      "units": "percent",
+      "preferred_scoring_transformation": "yoy_pct",
+      "sa": true,
+      "source_urls": [
+        "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/jul-2026/640101.xlsx",
+        "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/jul-2026"
+      ],
+      "original_authority_url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/jul-2026",
+      "retrieval_method": "abs_time_series_workbook",
+      "methodology_breaks": [
+        {
+          "period": "2024-03",
+          "note": "CPI frequency shift to monthly; published y/y in this workbook begins 2025-04."
+        }
+      ],
+      "observations": [
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2025-08",
+          "value": 3.2,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/jul-2026/640101.xlsx",
+          "series_id": "A130393721F",
+          "release_date": "2026-08-27",
+          "calibration_lookback": true
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2025-09",
+          "value": 3.6,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/jul-2026/640101.xlsx",
+          "series_id": "A130393721F",
+          "release_date": "2026-08-27"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2025-10",
+          "value": 3.8,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/jul-2026/640101.xlsx",
+          "series_id": "A130393721F",
+          "release_date": "2026-08-27"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2025-11",
+          "value": 3.4,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/jul-2026/640101.xlsx",
+          "series_id": "A130393721F",
+          "release_date": "2026-08-27"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2025-12",
+          "value": 3.8,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/jul-2026/640101.xlsx",
+          "series_id": "A130393721F",
+          "release_date": "2026-08-27"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-01",
+          "value": 3.8,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/jul-2026/640101.xlsx",
+          "series_id": "A130393721F",
+          "release_date": "2026-08-27"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-02",
+          "value": 3.7,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/jul-2026/640101.xlsx",
+          "series_id": "A130393721F",
+          "release_date": "2026-08-27"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-03",
+          "value": 4.6,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/jul-2026/640101.xlsx",
+          "series_id": "A130393721F",
+          "release_date": "2026-08-27"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-04",
+          "value": 4.2,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/jul-2026/640101.xlsx",
+          "series_id": "A130393721F",
+          "release_date": "2026-08-27"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-05",
+          "value": 4.0,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/jul-2026/640101.xlsx",
+          "series_id": "A130393721F",
+          "release_date": "2026-08-27"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-06",
+          "value": 3.8,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/jul-2026/640101.xlsx",
+          "series_id": "A130393721F",
+          "release_date": "2026-08-27"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-07",
+          "value": 3.5,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/jul-2026/640101.xlsx",
+          "series_id": "A130393721F",
+          "release_date": "2026-08-27"
+        }
+      ],
+      "gaps": [
+        {
+          "expected_period": "2026-08",
+          "reason": "not yet released",
+          "attempted_sources": [],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2026-09",
+          "reason": "not yet released",
+          "attempted_sources": [],
+          "as_of": "2026-09-21"
+        }
+      ],
+      "coverage": {
+        "expected_periods_in_window": 13,
+        "observed_periods_in_window": 11,
+        "latest_reference_period": "2026-07",
+        "latest_release_date": "2026-08-27",
+        "status": "ok"
+      },
+      "notes": "Latest in-window observation: 2026-07 = 3.5 percent."
+    },
+    "Inflation.underlying": {
+      "dimension": "Inflation",
+      "component": "underlying",
+      "canonical_name": "Trimmed mean CPI year-ended inflation, Australia",
+      "publisher": "Australian Bureau of Statistics",
+      "distributor": "ABS",
+      "series_id": "A130400382R",
+      "cadence": "monthly",
+      "units": "percent",
+      "preferred_scoring_transformation": "yoy_pct",
+      "sa": true,
+      "source_urls": [
+        "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/jul-2026/640106.xlsx",
+        "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/jul-2026"
+      ],
+      "original_authority_url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/jul-2026",
+      "retrieval_method": "abs_time_series_workbook",
+      "methodology_breaks": [
+        {
+          "period": "2024-03",
+          "note": "CPI frequency shift to monthly; trimmed-mean y/y in this workbook begins 2025-04."
+        }
+      ],
+      "observations": [
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2025-08",
+          "value": 3.1,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/jul-2026/640106.xlsx",
+          "series_id": "A130400382R",
+          "release_date": "2026-08-27",
+          "calibration_lookback": true
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2025-09",
+          "value": 3.2,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/jul-2026/640106.xlsx",
+          "series_id": "A130400382R",
+          "release_date": "2026-08-27"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2025-10",
+          "value": 3.3,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/jul-2026/640106.xlsx",
+          "series_id": "A130400382R",
+          "release_date": "2026-08-27"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2025-11",
+          "value": 3.2,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/jul-2026/640106.xlsx",
+          "series_id": "A130400382R",
+          "release_date": "2026-08-27"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2025-12",
+          "value": 3.3,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/jul-2026/640106.xlsx",
+          "series_id": "A130400382R",
+          "release_date": "2026-08-27"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-01",
+          "value": 3.3,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/jul-2026/640106.xlsx",
+          "series_id": "A130400382R",
+          "release_date": "2026-08-27"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-02",
+          "value": 3.3,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/jul-2026/640106.xlsx",
+          "series_id": "A130400382R",
+          "release_date": "2026-08-27"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-03",
+          "value": 3.3,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/jul-2026/640106.xlsx",
+          "series_id": "A130400382R",
+          "release_date": "2026-08-27"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-04",
+          "value": 3.4,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/jul-2026/640106.xlsx",
+          "series_id": "A130400382R",
+          "release_date": "2026-08-27"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-05",
+          "value": 3.5,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/jul-2026/640106.xlsx",
+          "series_id": "A130400382R",
+          "release_date": "2026-08-27"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-06",
+          "value": 3.6,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/jul-2026/640106.xlsx",
+          "series_id": "A130400382R",
+          "release_date": "2026-08-27"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-07",
+          "value": 3.6,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/jul-2026/640106.xlsx",
+          "series_id": "A130400382R",
+          "release_date": "2026-08-27"
+        }
+      ],
+      "gaps": [
+        {
+          "expected_period": "2026-08",
+          "reason": "not yet released",
+          "attempted_sources": [],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2026-09",
+          "reason": "not yet released",
+          "attempted_sources": [],
+          "as_of": "2026-09-21"
+        }
+      ],
+      "coverage": {
+        "expected_periods_in_window": 13,
+        "observed_periods_in_window": 11,
+        "latest_reference_period": "2026-07",
+        "latest_release_date": "2026-08-27",
+        "status": "ok"
+      },
+      "notes": "Latest in-window observation: 2026-07 = 3.6 percent."
+    },
+    "Labor.unemployment": {
+      "dimension": "Labor",
+      "component": "unemployment",
+      "canonical_name": "Unemployment rate, seasonally adjusted",
+      "publisher": "Australian Bureau of Statistics",
+      "distributor": "ABS",
+      "series_id": "A84423050A",
+      "cadence": "monthly",
+      "units": "percent",
+      "preferred_scoring_transformation": "unemployment_rate_sa",
+      "sa": true,
+      "source_urls": [
+        "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/jul-2026/62020001.xlsx",
+        "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/jul-2026"
+      ],
+      "original_authority_url": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/jul-2026",
+      "retrieval_method": "abs_time_series_workbook",
+      "methodology_breaks": [],
+      "observations": [
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2025-08",
+          "value": 4.2447033,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/jul-2026/62020001.xlsx",
+          "series_id": "A84423050A",
+          "release_date": "2026-08-14",
+          "calibration_lookback": true
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2025-09",
+          "value": 4.4376985,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/jul-2026/62020001.xlsx",
+          "series_id": "A84423050A",
+          "release_date": "2026-08-14"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2025-10",
+          "value": 4.3315479,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/jul-2026/62020001.xlsx",
+          "series_id": "A84423050A",
+          "release_date": "2026-08-14"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2025-11",
+          "value": 4.3223122,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/jul-2026/62020001.xlsx",
+          "series_id": "A84423050A",
+          "release_date": "2026-08-14"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2025-12",
+          "value": 4.1181203,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/jul-2026/62020001.xlsx",
+          "series_id": "A84423050A",
+          "release_date": "2026-08-14"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-01",
+          "value": 4.0823344,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/jul-2026/62020001.xlsx",
+          "series_id": "A84423050A",
+          "release_date": "2026-08-14"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-02",
+          "value": 4.3050169,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/jul-2026/62020001.xlsx",
+          "series_id": "A84423050A",
+          "release_date": "2026-08-14"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-03",
+          "value": 4.2840759,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/jul-2026/62020001.xlsx",
+          "series_id": "A84423050A",
+          "release_date": "2026-08-14"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-04",
+          "value": 4.49108,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/jul-2026/62020001.xlsx",
+          "series_id": "A84423050A",
+          "release_date": "2026-08-14"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-05",
+          "value": 4.3796061,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/jul-2026/62020001.xlsx",
+          "series_id": "A84423050A",
+          "release_date": "2026-08-14"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-06",
+          "value": 4.4315479,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/jul-2026/62020001.xlsx",
+          "series_id": "A84423050A",
+          "release_date": "2026-08-14"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-07",
+          "value": 4.4618247,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/jul-2026/62020001.xlsx",
+          "series_id": "A84423050A",
+          "release_date": "2026-08-14"
+        }
+      ],
+      "gaps": [
+        {
+          "expected_period": "2026-08",
+          "reason": "not yet released",
+          "attempted_sources": [],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2026-09",
+          "reason": "not yet released",
+          "attempted_sources": [],
+          "as_of": "2026-09-21"
+        }
+      ],
+      "coverage": {
+        "expected_periods_in_window": 13,
+        "observed_periods_in_window": 11,
+        "latest_reference_period": "2026-07",
+        "latest_release_date": "2026-08-14",
+        "status": "ok"
+      },
+      "notes": "Latest in-window observation: 2026-07 = 4.4618247 percent."
+    },
+    "Labor.employment": {
+      "dimension": "Labor",
+      "component": "employment",
+      "canonical_name": "Monthly change in employed persons, seasonally adjusted",
+      "publisher": "Australian Bureau of Statistics",
+      "distributor": "ABS",
+      "series_id": "A84423043C",
+      "cadence": "monthly",
+      "units": "thousands",
+      "preferred_scoring_transformation": "mom_change_thousands_sa",
+      "sa": true,
+      "source_urls": [
+        "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/jul-2026/62020001.xlsx",
+        "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/jul-2026"
+      ],
+      "original_authority_url": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/jul-2026",
+      "retrieval_method": "abs_time_series_workbook",
+      "methodology_breaks": [],
+      "observations": [
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2025-08",
+          "value": 14600.8117011,
+          "units": "thousands_sa",
+          "transformation": "level_thousands_sa",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/jul-2026/62020001.xlsx",
+          "series_id": "A84423043C",
+          "release_date": "2026-08-14",
+          "calibration_lookback": true
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2025-09",
+          "value": 9.3,
+          "units": "thousands",
+          "transformation": "mom_change_thousands_sa",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/jul-2026/62020001.xlsx",
+          "series_id": "A84423043C",
+          "release_date": "2026-08-14",
+          "raw_level": 14610.091527
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2025-10",
+          "value": 33.2,
+          "units": "thousands",
+          "transformation": "mom_change_thousands_sa",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/jul-2026/62020001.xlsx",
+          "series_id": "A84423043C",
+          "release_date": "2026-08-14",
+          "raw_level": 14643.3128167
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2025-11",
+          "value": -39.2,
+          "units": "thousands",
+          "transformation": "mom_change_thousands_sa",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/jul-2026/62020001.xlsx",
+          "series_id": "A84423043C",
+          "release_date": "2026-08-14",
+          "raw_level": 14604.1172396
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2025-12",
+          "value": 57.3,
+          "units": "thousands",
+          "transformation": "mom_change_thousands_sa",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/jul-2026/62020001.xlsx",
+          "series_id": "A84423043C",
+          "release_date": "2026-08-14",
+          "raw_level": 14661.4373507
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-01",
+          "value": 36.1,
+          "units": "thousands",
+          "transformation": "mom_change_thousands_sa",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/jul-2026/62020001.xlsx",
+          "series_id": "A84423043C",
+          "release_date": "2026-08-14",
+          "raw_level": 14697.5134451
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-02",
+          "value": 22.1,
+          "units": "thousands",
+          "transformation": "mom_change_thousands_sa",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/jul-2026/62020001.xlsx",
+          "series_id": "A84423043C",
+          "release_date": "2026-08-14",
+          "raw_level": 14719.6499677
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-03",
+          "value": 20.0,
+          "units": "thousands",
+          "transformation": "mom_change_thousands_sa",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/jul-2026/62020001.xlsx",
+          "series_id": "A84423043C",
+          "release_date": "2026-08-14",
+          "raw_level": 14739.6086599
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-04",
+          "value": -34.9,
+          "units": "thousands",
+          "transformation": "mom_change_thousands_sa",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/jul-2026/62020001.xlsx",
+          "series_id": "A84423043C",
+          "release_date": "2026-08-14",
+          "raw_level": 14704.6698863
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-05",
+          "value": 38.2,
+          "units": "thousands",
+          "transformation": "mom_change_thousands_sa",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/jul-2026/62020001.xlsx",
+          "series_id": "A84423043C",
+          "release_date": "2026-08-14",
+          "raw_level": 14742.8207983
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-06",
+          "value": 80.2,
+          "units": "thousands",
+          "transformation": "mom_change_thousands_sa",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/jul-2026/62020001.xlsx",
+          "series_id": "A84423043C",
+          "release_date": "2026-08-14",
+          "raw_level": 14823.0696522
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-07",
+          "value": -15.8,
+          "units": "thousands",
+          "transformation": "mom_change_thousands_sa",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/jul-2026/62020001.xlsx",
+          "series_id": "A84423043C",
+          "release_date": "2026-08-14",
+          "raw_level": 14807.2431495
+        }
+      ],
+      "gaps": [
+        {
+          "expected_period": "2026-08",
+          "reason": "not yet released",
+          "attempted_sources": [],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2026-09",
+          "reason": "not yet released",
+          "attempted_sources": [],
+          "as_of": "2026-09-21"
+        }
+      ],
+      "coverage": {
+        "expected_periods_in_window": 13,
+        "observed_periods_in_window": 11,
+        "latest_reference_period": "2026-07",
+        "latest_release_date": "2026-08-14",
+        "status": "partial"
+      },
+      "notes": "Employment change is the first difference of employed-persons level series A84423043C."
+    },
+    "Labor.wages": {
+      "dimension": "Labor",
+      "component": "wages",
+      "canonical_name": "WPI total hourly rates (ex bonuses), all sectors, y/y, seasonally adjusted",
+      "publisher": "Australian Bureau of Statistics",
+      "distributor": "ABS",
+      "series_id": "A83895396W",
+      "cadence": "quarterly",
+      "units": "percent",
+      "preferred_scoring_transformation": "yoy_pct",
+      "sa": true,
+      "source_urls": [
+        "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/wage-price-index-australia/jun-2026/634501.xlsx",
+        "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/wage-price-index-australia/jun-2026"
+      ],
+      "original_authority_url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/wage-price-index-australia/jun-2026",
+      "retrieval_method": "abs_time_series_workbook",
+      "methodology_breaks": [],
+      "observations": [
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2025-Q3",
+          "value": 3.3,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/wage-price-index-australia/jun-2026/634501.xlsx",
+          "series_id": "A83895396W",
+          "release_date": "2026-08-13"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2025-Q4",
+          "value": 3.4,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/wage-price-index-australia/jun-2026/634501.xlsx",
+          "series_id": "A83895396W",
+          "release_date": "2026-08-13"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-Q1",
+          "value": 3.2,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/wage-price-index-australia/jun-2026/634501.xlsx",
+          "series_id": "A83895396W",
+          "release_date": "2026-08-13"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-Q2",
+          "value": 3.2,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/wage-price-index-australia/jun-2026/634501.xlsx",
+          "series_id": "A83895396W",
+          "release_date": "2026-08-13"
+        }
+      ],
+      "gaps": [
+        {
+          "expected_period": "2026-Q3",
+          "reason": "not yet released",
+          "attempted_sources": [],
+          "as_of": "2026-09-21"
+        }
+      ],
+      "coverage": {
+        "expected_periods_in_window": 5,
+        "observed_periods_in_window": 4,
+        "latest_reference_period": "2026-Q2",
+        "latest_release_date": "2026-08-13",
+        "status": "partial"
+      }
+    },
+    "Activity.gdp_domestic_demand": {
+      "dimension": "Activity",
+      "component": "gdp_domestic_demand",
+      "canonical_name": "Real GDP and domestic final demand (chain volume, SA q/q)",
+      "publisher": "Australian Bureau of Statistics",
+      "distributor": "ABS",
+      "series_id": "A2304370T;A2304183K",
+      "cadence": "quarterly",
+      "units": "percent",
+      "preferred_scoring_transformation": "qoq_pct",
+      "sa": true,
+      "source_urls": [
+        "https://www.abs.gov.au/statistics/economy/national-accounts/australian-national-accounts-national-income-expenditure-and-product/jun-2026/5206001_Key_Aggregates.xlsx",
+        "https://www.abs.gov.au/statistics/economy/national-accounts/australian-national-accounts-national-income-expenditure-and-product/jun-2026/5206002_Expenditure_Volume_Measures.xlsx",
+        "https://www.abs.gov.au/statistics/economy/national-accounts/australian-national-accounts-national-income-expenditure-and-product/jun-2026"
+      ],
+      "original_authority_url": "https://www.abs.gov.au/statistics/economy/national-accounts/australian-national-accounts-national-income-expenditure-and-product/jun-2026",
+      "retrieval_method": "abs_time_series_workbook",
+      "methodology_breaks": [],
+      "observations": [
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2025-Q3",
+          "value": 1.3,
+          "units": "percent",
+          "transformation": "qoq_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/national-accounts/australian-national-accounts-national-income-expenditure-and-product/jun-2026/5206002_Expenditure_Volume_Measures.xlsx",
+          "series_id": "A2304183K",
+          "release_date": "2026-09-03",
+          "notes": "Domestic final demand chain volume, SA q/q."
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2025-Q3",
+          "value": 0.5,
+          "units": "percent",
+          "transformation": "qoq_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/national-accounts/australian-national-accounts-national-income-expenditure-and-product/jun-2026/5206001_Key_Aggregates.xlsx",
+          "series_id": "A2304370T",
+          "release_date": "2026-09-03",
+          "notes": "Real GDP chain volume, SA q/q."
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2025-Q4",
+          "value": 0.6,
+          "units": "percent",
+          "transformation": "qoq_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/national-accounts/australian-national-accounts-national-income-expenditure-and-product/jun-2026/5206002_Expenditure_Volume_Measures.xlsx",
+          "series_id": "A2304183K",
+          "release_date": "2026-09-03",
+          "notes": "Domestic final demand chain volume, SA q/q."
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2025-Q4",
+          "value": 0.9,
+          "units": "percent",
+          "transformation": "qoq_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/national-accounts/australian-national-accounts-national-income-expenditure-and-product/jun-2026/5206001_Key_Aggregates.xlsx",
+          "series_id": "A2304370T",
+          "release_date": "2026-09-03",
+          "notes": "Real GDP chain volume, SA q/q."
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-Q1",
+          "value": 0.9,
+          "units": "percent",
+          "transformation": "qoq_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/national-accounts/australian-national-accounts-national-income-expenditure-and-product/jun-2026/5206002_Expenditure_Volume_Measures.xlsx",
+          "series_id": "A2304183K",
+          "release_date": "2026-09-03",
+          "notes": "Domestic final demand chain volume, SA q/q."
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-Q1",
+          "value": 0.3,
+          "units": "percent",
+          "transformation": "qoq_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/national-accounts/australian-national-accounts-national-income-expenditure-and-product/jun-2026/5206001_Key_Aggregates.xlsx",
+          "series_id": "A2304370T",
+          "release_date": "2026-09-03",
+          "notes": "Real GDP chain volume, SA q/q."
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-Q2",
+          "value": 0.3,
+          "units": "percent",
+          "transformation": "qoq_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/national-accounts/australian-national-accounts-national-income-expenditure-and-product/jun-2026/5206002_Expenditure_Volume_Measures.xlsx",
+          "series_id": "A2304183K",
+          "release_date": "2026-09-03",
+          "notes": "Domestic final demand chain volume, SA q/q."
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-Q2",
+          "value": 0.4,
+          "units": "percent",
+          "transformation": "qoq_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/national-accounts/australian-national-accounts-national-income-expenditure-and-product/jun-2026/5206001_Key_Aggregates.xlsx",
+          "series_id": "A2304370T",
+          "release_date": "2026-09-03",
+          "notes": "Real GDP chain volume, SA q/q."
+        }
+      ],
+      "gaps": [
+        {
+          "expected_period": "2026-Q3",
+          "reason": "not yet released",
+          "attempted_sources": [],
+          "as_of": "2026-09-21"
+        }
+      ],
+      "coverage": {
+        "expected_periods_in_window": 5,
+        "observed_periods_in_window": 4,
+        "latest_reference_period": "2026-Q2",
+        "latest_release_date": "2026-09-03",
+        "status": "partial"
+      }
+    },
+    "Activity.business_surveys": {
+      "dimension": "Activity",
+      "component": "business_surveys",
+      "canonical_name": "S&P Global / Judo Bank Australia Composite PMI Output Index",
+      "publisher": "S&P Global / Judo Bank",
+      "distributor": "S&P Global PMI press releases",
+      "series_id": "SP_GLOBAL_AU_COMPOSITE_PMI",
+      "cadence": "monthly",
+      "units": "diffusion_index",
+      "preferred_scoring_transformation": "diffusion_index",
+      "sa": true,
+      "source_urls": [
+        "https://www.pmi.spglobal.com/Public/Release/PressReleases"
+      ],
+      "original_authority_url": "https://www.pmi.spglobal.com/Public/Release/PressReleases",
+      "retrieval_method": "s_p_global_australia_services_or_flash_pmi_pdf",
+      "methodology_breaks": [],
+      "observations": [
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T17:20:30Z",
+          "reference_period": "2025-09",
+          "value": 52.4,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/5c5f34cfdfb1434b83f8eb4f2f9189da",
+          "release_date": "2025-11-05",
+          "revision_status": "revised",
+          "series_id": "SP_GLOBAL_AU_COMPOSITE_PMI",
+          "notes": "2025-09 Composite Output Index 52.4 restated as prior month in final PDF (release 2025-11-05)."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2025-10",
+          "value": 52.1,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/75fd3562725941c4a3c77d176e93f929",
+          "release_date": "2025-12-03",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_AU_COMPOSITE_PMI",
+          "notes": "October 2025 Composite Output Index 52.1 restated as prior in November final S&P Global Australia Services PMI PDF."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2025-11",
+          "value": 52.6,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/75fd3562725941c4a3c77d176e93f929",
+          "release_date": "2025-12-03",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_AU_COMPOSITE_PMI",
+          "notes": "November 2025 Composite Output Index 52.6, up from 52.1 in October (final)."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2025-12",
+          "value": 51.0,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/6c26872271534430bd2556521d2fe425",
+          "release_date": "2026-01-06",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_AU_COMPOSITE_PMI",
+          "notes": "December 2025 Composite Output Index 51.0, down from 52.6 in November (final)."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2026-01",
+          "value": 55.7,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/76c27f9824f24fafaa9415a19c54ff19",
+          "release_date": "2026-02-20",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_AU_COMPOSITE_PMI",
+          "notes": "January 2026 Composite Output Index 55.7 as restated prior in February flash PDF (January flash had been 55.5)."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2026-02",
+          "value": 52.4,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/f300c58c8acc4c599c45f7ef16616b33",
+          "release_date": "2026-04-07",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_AU_COMPOSITE_PMI",
+          "notes": "February 2026 Composite Output Index 52.4 restated as prior in March final PDF."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T18:30:00Z",
+          "reference_period": "2026-03",
+          "value": 46.6,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/f300c58c8acc4c599c45f7ef16616b33",
+          "release_date": "2026-04-07",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_AU_COMPOSITE_PMI",
+          "notes": "March 2026 Composite Output Index dropped to 46.6 from 52.4 in February (final)."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T17:20:30Z",
+          "reference_period": "2026-04",
+          "value": 50.4,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/3e446e09e41f474a900bdc93ce906d94",
+          "release_date": "2026-05-05",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_AU_COMPOSITE_PMI",
+          "notes": "2026-04 Composite Output Index 50.4 from final S&P Global Australia PMI PDF."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T17:20:30Z",
+          "reference_period": "2026-05",
+          "value": 48.7,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/19b01742d07c4deaa90a63e5d585b150",
+          "release_date": "2026-06-23",
+          "revision_status": "revised",
+          "series_id": "SP_GLOBAL_AU_COMPOSITE_PMI",
+          "notes": "2026-05 Composite Output Index 48.7 restated as prior month in flash PDF (release 2026-06-23)."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T17:20:30Z",
+          "reference_period": "2026-06",
+          "value": 50.4,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/5e210a2556224269a36d74a5288687df",
+          "release_date": "2026-07-24",
+          "revision_status": "revised",
+          "series_id": "SP_GLOBAL_AU_COMPOSITE_PMI",
+          "notes": "2026-06 Composite Output Index 50.4 restated as prior month in flash PDF (release 2026-07-24)."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T17:20:30Z",
+          "reference_period": "2026-07",
+          "value": 53.2,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/1406ace3389f4056ad742043ab5b2e92",
+          "release_date": "2026-09-03",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_AU_COMPOSITE_PMI",
+          "notes": "July 2026 Composite Output Index 53.2 (final), restated as prior in August 2026 final S&P Global Australia Services PMI PDF; replaces July flash 52.6."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T17:20:30Z",
+          "reference_period": "2026-08",
+          "value": 52.7,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/1406ace3389f4056ad742043ab5b2e92",
+          "release_date": "2026-09-03",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_AU_COMPOSITE_PMI",
+          "notes": "2026-08 Composite Output Index 52.7 from final S&P Global Australia PMI PDF."
+        }
+      ],
+      "gaps": [
+        {
+          "expected_period": "2026-09",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://www.pmi.spglobal.com/Public/Release/PressReleases"
+          ],
+          "as_of": "2026-09-21",
+          "notes": "September 2026 PMI not published as of 2026-09-21."
+        }
+      ],
+      "coverage": {
+        "expected_periods_in_window": 13,
+        "observed_periods_in_window": 12,
+        "latest_reference_period": "2026-08",
+        "latest_release_date": "2026-09-03",
+        "status": "partial",
+        "gap_count": 1
+      },
+      "notes": "No maintained free numerical business-conditions history on rba.gov.au statistical tables identified."
+    },
+    "Consumer.retail": {
+      "dimension": "Consumer",
+      "component": "retail",
+      "canonical_name": "Retail turnover, total industry, seasonally adjusted m/m",
+      "publisher": "Australian Bureau of Statistics",
+      "distributor": "ABS",
+      "series_id": "A3348586T",
+      "cadence": "monthly",
+      "units": "percent",
+      "preferred_scoring_transformation": "mom_sa_pct",
+      "sa": true,
+      "source_urls": [
+        "https://www.abs.gov.au/statistics/industry/retail-and-wholesale-trade/retail-trade-australia/jun-2025/850102.xlsx",
+        "https://www.abs.gov.au/statistics/industry/retail-and-wholesale-trade/retail-trade-australia/jun-2025"
+      ],
+      "original_authority_url": "https://www.abs.gov.au/statistics/industry/retail-and-wholesale-trade/retail-trade-australia",
+      "retrieval_method": "abs_time_series_workbook",
+      "methodology_breaks": [
+        {
+          "period": "2025-07",
+          "note": "ABS latest-release page shows June 2025 reference with next release 'Ceased'."
+        }
+      ],
+      "observations": [
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2025-06",
+          "value": 1.2,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/industry/retail-and-wholesale-trade/retail-trade-australia/jun-2025/850102.xlsx",
+          "series_id": "A3348586T",
+          "release_date": "2025-07-31",
+          "calibration_lookback": true,
+          "notes": "Final published retail turnover m/m before ABS marked the series ceased."
+        }
+      ],
+      "gaps": [
+        {
+          "expected_period": "2025-09",
+          "reason": "not yet released",
+          "attempted_sources": [],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2025-10",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://www.abs.gov.au/statistics/industry/retail-and-wholesale-trade/retail-trade-australia/jun-2025",
+            "https://www.abs.gov.au/statistics/industry/retail-and-wholesale-trade/retail-trade-australia/latest-release"
+          ],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2025-11",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://www.abs.gov.au/statistics/industry/retail-and-wholesale-trade/retail-trade-australia/jun-2025",
+            "https://www.abs.gov.au/statistics/industry/retail-and-wholesale-trade/retail-trade-australia/latest-release"
+          ],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2025-12",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://www.abs.gov.au/statistics/industry/retail-and-wholesale-trade/retail-trade-australia/jun-2025",
+            "https://www.abs.gov.au/statistics/industry/retail-and-wholesale-trade/retail-trade-australia/latest-release"
+          ],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2026-01",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://www.abs.gov.au/statistics/industry/retail-and-wholesale-trade/retail-trade-australia/jun-2025",
+            "https://www.abs.gov.au/statistics/industry/retail-and-wholesale-trade/retail-trade-australia/latest-release"
+          ],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2026-02",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://www.abs.gov.au/statistics/industry/retail-and-wholesale-trade/retail-trade-australia/jun-2025",
+            "https://www.abs.gov.au/statistics/industry/retail-and-wholesale-trade/retail-trade-australia/latest-release"
+          ],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2026-03",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://www.abs.gov.au/statistics/industry/retail-and-wholesale-trade/retail-trade-australia/jun-2025",
+            "https://www.abs.gov.au/statistics/industry/retail-and-wholesale-trade/retail-trade-australia/latest-release"
+          ],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2026-04",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://www.abs.gov.au/statistics/industry/retail-and-wholesale-trade/retail-trade-australia/jun-2025",
+            "https://www.abs.gov.au/statistics/industry/retail-and-wholesale-trade/retail-trade-australia/latest-release"
+          ],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2026-05",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://www.abs.gov.au/statistics/industry/retail-and-wholesale-trade/retail-trade-australia/jun-2025",
+            "https://www.abs.gov.au/statistics/industry/retail-and-wholesale-trade/retail-trade-australia/latest-release"
+          ],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2026-06",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://www.abs.gov.au/statistics/industry/retail-and-wholesale-trade/retail-trade-australia/jun-2025",
+            "https://www.abs.gov.au/statistics/industry/retail-and-wholesale-trade/retail-trade-australia/latest-release"
+          ],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2026-07",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://www.abs.gov.au/statistics/industry/retail-and-wholesale-trade/retail-trade-australia/jun-2025",
+            "https://www.abs.gov.au/statistics/industry/retail-and-wholesale-trade/retail-trade-australia/latest-release"
+          ],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2026-08",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://www.abs.gov.au/statistics/industry/retail-and-wholesale-trade/retail-trade-australia/jun-2025",
+            "https://www.abs.gov.au/statistics/industry/retail-and-wholesale-trade/retail-trade-australia/latest-release"
+          ],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2026-09",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://www.abs.gov.au/statistics/industry/retail-and-wholesale-trade/retail-trade-australia/jun-2025",
+            "https://www.abs.gov.au/statistics/industry/retail-and-wholesale-trade/retail-trade-australia/latest-release"
+          ],
+          "as_of": "2026-09-21"
+        }
+      ],
+      "coverage": {
+        "expected_periods_in_window": 13,
+        "observed_periods_in_window": 0,
+        "latest_reference_period": null,
+        "latest_release_date": "2025-07-31",
+        "status": "partial"
+      }
+    },
+    "Consumer.income": {
+      "dimension": "Consumer",
+      "component": "income",
+      "canonical_name": "Household gross disposable income, seasonally adjusted q/q",
+      "publisher": "Australian Bureau of Statistics",
+      "distributor": "ABS",
+      "series_id": "A2302939L",
+      "cadence": "quarterly",
+      "units": "percent",
+      "preferred_scoring_transformation": "qoq_pct",
+      "sa": true,
+      "source_urls": [
+        "https://www.abs.gov.au/statistics/economy/national-accounts/australian-national-accounts-national-income-expenditure-and-product/jun-2026/5206020_Household_Income.xlsx",
+        "https://www.abs.gov.au/statistics/economy/national-accounts/australian-national-accounts-national-income-expenditure-and-product/jun-2026"
+      ],
+      "original_authority_url": "https://www.abs.gov.au/statistics/economy/national-accounts/australian-national-accounts-national-income-expenditure-and-product/jun-2026",
+      "retrieval_method": "abs_time_series_workbook_derived_qoq",
+      "methodology_breaks": [],
+      "observations": [
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2025-Q2",
+          "value": 438171.0,
+          "units": "aud_millions_sa",
+          "transformation": "level_sa",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/national-accounts/australian-national-accounts-national-income-expenditure-and-product/jun-2026/5206020_Household_Income.xlsx",
+          "series_id": "A2302939L",
+          "release_date": "2026-09-03",
+          "calibration_lookback": true
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2025-Q3",
+          "value": 1.6,
+          "units": "percent",
+          "transformation": "qoq_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/national-accounts/australian-national-accounts-national-income-expenditure-and-product/jun-2026/5206020_Household_Income.xlsx",
+          "series_id": "A2302939L",
+          "release_date": "2026-09-03",
+          "raw_level": 445261.0,
+          "notes": "Household gross disposable income SA; q/q percent from official levels (5206020)."
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2025-Q4",
+          "value": 2.3,
+          "units": "percent",
+          "transformation": "qoq_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/national-accounts/australian-national-accounts-national-income-expenditure-and-product/jun-2026/5206020_Household_Income.xlsx",
+          "series_id": "A2302939L",
+          "release_date": "2026-09-03",
+          "raw_level": 455498.0,
+          "notes": "Household gross disposable income SA; q/q percent from official levels (5206020)."
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-Q1",
+          "value": 0.3,
+          "units": "percent",
+          "transformation": "qoq_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/national-accounts/australian-national-accounts-national-income-expenditure-and-product/jun-2026/5206020_Household_Income.xlsx",
+          "series_id": "A2302939L",
+          "release_date": "2026-09-03",
+          "raw_level": 457000.0,
+          "notes": "Household gross disposable income SA; q/q percent from official levels (5206020)."
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-Q2",
+          "value": 1.1,
+          "units": "percent",
+          "transformation": "qoq_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/national-accounts/australian-national-accounts-national-income-expenditure-and-product/jun-2026/5206020_Household_Income.xlsx",
+          "series_id": "A2302939L",
+          "release_date": "2026-09-03",
+          "raw_level": 462107.0,
+          "notes": "Household gross disposable income SA; q/q percent from official levels (5206020)."
+        }
+      ],
+      "gaps": [
+        {
+          "expected_period": "2026-Q3",
+          "reason": "not yet released",
+          "attempted_sources": [],
+          "as_of": "2026-09-21"
+        }
+      ],
+      "coverage": {
+        "expected_periods_in_window": 5,
+        "observed_periods_in_window": 4,
+        "latest_reference_period": "2026-Q2",
+        "latest_release_date": "2026-09-03",
+        "status": "partial"
+      }
+    },
+    "Consumer.spending": {
+      "dimension": "Consumer",
+      "component": "spending",
+      "canonical_name": "Monthly household spending indicator, total (current price), m/m, seasonally adjusted",
+      "publisher": "Australian Bureau of Statistics",
+      "distributor": "ABS",
+      "series_id": "A130200586W",
+      "cadence": "monthly",
+      "units": "percent",
+      "preferred_scoring_transformation": "mom_pct",
+      "sa": true,
+      "source_urls": [
+        "https://www.abs.gov.au/statistics/economy/finance/monthly-household-spending-indicator/jul-2026/5682001.xlsx",
+        "https://www.abs.gov.au/statistics/economy/finance/monthly-household-spending-indicator/jul-2026"
+      ],
+      "original_authority_url": "https://www.abs.gov.au/statistics/economy/finance/monthly-household-spending-indicator/jul-2026",
+      "retrieval_method": "abs_time_series_workbook",
+      "methodology_breaks": [],
+      "observations": [
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2025-08",
+          "value": 0.0,
+          "units": "percent",
+          "transformation": "mom_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/finance/monthly-household-spending-indicator/jul-2026/5682001.xlsx",
+          "series_id": "A130200586W",
+          "release_date": "2026-08-28",
+          "calibration_lookback": true
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2025-09",
+          "value": 0.4,
+          "units": "percent",
+          "transformation": "mom_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/finance/monthly-household-spending-indicator/jul-2026/5682001.xlsx",
+          "series_id": "A130200586W",
+          "release_date": "2026-08-28"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2025-10",
+          "value": 1.3,
+          "units": "percent",
+          "transformation": "mom_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/finance/monthly-household-spending-indicator/jul-2026/5682001.xlsx",
+          "series_id": "A130200586W",
+          "release_date": "2026-08-28"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2025-11",
+          "value": 1.0,
+          "units": "percent",
+          "transformation": "mom_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/finance/monthly-household-spending-indicator/jul-2026/5682001.xlsx",
+          "series_id": "A130200586W",
+          "release_date": "2026-08-28"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2025-12",
+          "value": -0.4,
+          "units": "percent",
+          "transformation": "mom_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/finance/monthly-household-spending-indicator/jul-2026/5682001.xlsx",
+          "series_id": "A130200586W",
+          "release_date": "2026-08-28"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-01",
+          "value": 0.3,
+          "units": "percent",
+          "transformation": "mom_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/finance/monthly-household-spending-indicator/jul-2026/5682001.xlsx",
+          "series_id": "A130200586W",
+          "release_date": "2026-08-28"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-02",
+          "value": 0.3,
+          "units": "percent",
+          "transformation": "mom_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/finance/monthly-household-spending-indicator/jul-2026/5682001.xlsx",
+          "series_id": "A130200586W",
+          "release_date": "2026-08-28"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-03",
+          "value": 1.7,
+          "units": "percent",
+          "transformation": "mom_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/finance/monthly-household-spending-indicator/jul-2026/5682001.xlsx",
+          "series_id": "A130200586W",
+          "release_date": "2026-08-28"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-04",
+          "value": -1.0,
+          "units": "percent",
+          "transformation": "mom_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/finance/monthly-household-spending-indicator/jul-2026/5682001.xlsx",
+          "series_id": "A130200586W",
+          "release_date": "2026-08-28"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-05",
+          "value": 1.2,
+          "units": "percent",
+          "transformation": "mom_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/finance/monthly-household-spending-indicator/jul-2026/5682001.xlsx",
+          "series_id": "A130200586W",
+          "release_date": "2026-08-28"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-06",
+          "value": 1.0,
+          "units": "percent",
+          "transformation": "mom_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/finance/monthly-household-spending-indicator/jul-2026/5682001.xlsx",
+          "series_id": "A130200586W",
+          "release_date": "2026-08-28"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-07",
+          "value": 1.1,
+          "units": "percent",
+          "transformation": "mom_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/finance/monthly-household-spending-indicator/jul-2026/5682001.xlsx",
+          "series_id": "A130200586W",
+          "release_date": "2026-08-28"
+        }
+      ],
+      "gaps": [
+        {
+          "expected_period": "2026-08",
+          "reason": "not yet released",
+          "attempted_sources": [],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2026-09",
+          "reason": "not yet released",
+          "attempted_sources": [],
+          "as_of": "2026-09-21"
+        }
+      ],
+      "coverage": {
+        "expected_periods_in_window": 13,
+        "observed_periods_in_window": 11,
+        "latest_reference_period": "2026-07",
+        "latest_release_date": "2026-08-28",
+        "status": "ok"
+      },
+      "notes": "Latest in-window observation: 2026-07 = 1.1 percent."
+    },
+    "Consumer.confidence": {
+      "dimension": "Consumer",
+      "component": "confidence",
+      "canonical_name": "Westpac-Melbourne Institute Consumer Sentiment Index",
+      "publisher": "Westpac-Melbourne Institute",
+      "distributor": "Westpac IQ",
+      "series_id": null,
+      "cadence": "monthly",
+      "units": "index",
+      "preferred_scoring_transformation": "index_level_or_mom_pct",
+      "sa": false,
+      "source_urls": [
+        "https://www.westpaciq.com.au/economics"
+      ],
+      "original_authority_url": "https://www.westpaciq.com.au/economics",
+      "retrieval_method": "ledger_cross_check_single_prints",
+      "methodology_breaks": [],
+      "observations": [
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-08",
+          "value": 6.0,
+          "units": "percent",
+          "transformation": "mom_pct",
+          "publisher": "Westpac-Melbourne Institute",
+          "source_url": "https://www.westpaciq.com.au/economics",
+          "release_date": "2026-09-01",
+          "notes": "Sentiment rose 6% from July; index level not in free historical table."
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-09",
+          "value": 84.4,
+          "units": "index",
+          "transformation": "index_level",
+          "publisher": "Westpac-Melbourne Institute",
+          "source_url": "https://www.westpaciq.com.au/economics",
+          "release_date": "2026-09-16",
+          "notes": "Index fell from 88.9 in August 2026 (-5.2% m/m)."
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:49:33Z",
+          "reference_period": "2026-09",
+          "value": -5.2,
+          "units": "percent",
+          "transformation": "mom_pct",
+          "publisher": "Westpac-Melbourne Institute",
+          "source_url": "https://www.westpaciq.com.au/economics",
+          "release_date": "2026-09-16"
+        }
+      ],
+      "gaps": [
+        {
+          "expected_period": "2025-09",
+          "reason": "proprietary no free history",
+          "attempted_sources": [
+            "https://www.westpaciq.com.au/economics"
+          ],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2025-10",
+          "reason": "proprietary no free history",
+          "attempted_sources": [
+            "https://www.westpaciq.com.au/economics"
+          ],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2025-11",
+          "reason": "proprietary no free history",
+          "attempted_sources": [
+            "https://www.westpaciq.com.au/economics"
+          ],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2025-12",
+          "reason": "proprietary no free history",
+          "attempted_sources": [
+            "https://www.westpaciq.com.au/economics"
+          ],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2026-01",
+          "reason": "proprietary no free history",
+          "attempted_sources": [
+            "https://www.westpaciq.com.au/economics"
+          ],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2026-02",
+          "reason": "proprietary no free history",
+          "attempted_sources": [
+            "https://www.westpaciq.com.au/economics"
+          ],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2026-03",
+          "reason": "proprietary no free history",
+          "attempted_sources": [
+            "https://www.westpaciq.com.au/economics"
+          ],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2026-04",
+          "reason": "proprietary no free history",
+          "attempted_sources": [
+            "https://www.westpaciq.com.au/economics"
+          ],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2026-05",
+          "reason": "proprietary no free history",
+          "attempted_sources": [
+            "https://www.westpaciq.com.au/economics"
+          ],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2026-06",
+          "reason": "proprietary no free history",
+          "attempted_sources": [
+            "https://www.westpaciq.com.au/economics"
+          ],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2026-07",
+          "reason": "proprietary no free history",
+          "attempted_sources": [
+            "https://www.westpaciq.com.au/economics"
+          ],
+          "as_of": "2026-09-21"
+        }
+      ],
+      "coverage": {
+        "expected_periods_in_window": 13,
+        "observed_periods_in_window": 2,
+        "latest_reference_period": "2026-09",
+        "latest_release_date": "2026-09-16",
+        "status": "partial"
+      }
+    }
+  }
+}

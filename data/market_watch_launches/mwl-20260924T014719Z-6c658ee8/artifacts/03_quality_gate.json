@@ -1,0 +1,92 @@
+{
+  "blocked_expressions": [],
+  "blocked_legs": [],
+  "blocked_sources": [],
+  "countries": {
+    "AU": {
+      "eligible": true,
+      "gaps": [
+        "AU.Activity.gdp_domestic_demand"
+      ],
+      "scored_status": "partial"
+    },
+    "CA": {
+      "eligible": true,
+      "gaps": [
+        "CA.Inflation.underlying",
+        "CA.Inflation.headline",
+        "CA.Labor.unemployment",
+        "CA.Labor.wages",
+        "CA.Labor.employment",
+        "CA.Activity.gdp_domestic_demand",
+        "CA.Consumer.retail",
+        "CA.Consumer.income",
+        "CA.Consumer.spending",
+        "CA.Consumer.confidence"
+      ],
+      "scored_status": "blocked"
+    },
+    "EA": {
+      "eligible": false,
+      "gaps": [],
+      "scored_status": "ok"
+    },
+    "JP": {
+      "eligible": false,
+      "gaps": [],
+      "scored_status": "ok"
+    },
+    "NZ": {
+      "eligible": false,
+      "gaps": [],
+      "scored_status": "ok"
+    },
+    "US": {
+      "eligible": true,
+      "gaps": [],
+      "scored_status": "ok"
+    }
+  },
+  "countries_unaffected": [],
+  "coverage": "PARTIAL",
+  "eligible": true,
+  "hold_decisions_emitted": 0,
+  "outcome": "PASS",
+  "partial_expressions": [
+    "activity:US",
+    "activity:CA",
+    "activity:AU",
+    "activity:NZ",
+    "activity:EA",
+    "activity:JP",
+    "macro:CA",
+    "macro:AU"
+  ],
+  "partial_legs": [
+    "NZ_rates",
+    "EA_rates",
+    "JP_rates"
+  ],
+  "partial_series": [
+    "CA.Inflation.underlying",
+    "CA.Inflation.headline",
+    "CA.Labor.unemployment",
+    "CA.Labor.wages",
+    "CA.Labor.employment",
+    "CA.Activity.gdp_domestic_demand",
+    "CA.Consumer.retail",
+    "CA.Consumer.income",
+    "CA.Consumer.spending",
+    "CA.Consumer.confidence",
+    "AU.Activity.gdp_domestic_demand"
+  ],
+  "reason": null,
+  "stage": "03_quality_gate",
+  "status": "succeeded",
+  "synthetic_holds": false,
+  "trade_eligible_countries": [
+    "US",
+    "CA",
+    "AU"
+  ]
+}
