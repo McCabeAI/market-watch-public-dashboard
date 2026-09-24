@@ -101,7 +101,7 @@ def build_accepted_public_news(
         "type": ACCEPTED_PUBLIC_NEWS_TYPE,
         "overnight_run_id": overnight_run_id,
         "as_of": as_of,
-        "summary": public_research_summary(summary),
+        "summary": public_research_summary(summary, items=list(news) + list(central_bank_research)),
         "news": list(news),
         "central_bank_research": list(central_bank_research),
         "source": source,
