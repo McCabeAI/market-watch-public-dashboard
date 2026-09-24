@@ -91,12 +91,34 @@ def apply_macro_overlay(
     return out
 
 
+def _trade_permissions(launch: dict[str, Any]) -> dict[str, Any]:
+    gate = (((launch.get("stages") or {}).get("03_quality_gate") or {}).get("details") or {})
+    country_rows = gate.get("countries") if isinstance(gate.get("countries"), dict) else {}
+    return {
+        "coverage": gate.get("coverage"),
+        "eligible": bool(gate.get("eligible")),
+        "trade_eligible_countries": list(gate.get("trade_eligible_countries") or []),
+        "blocked_expressions": list(gate.get("blocked_expressions") or []),
+        "partial_expressions": list(gate.get("partial_expressions") or []),
+        "blocked_sources": list(gate.get("blocked_sources") or []),
+        "countries": {
+            code: {
+                "eligible": bool((country_rows.get(code) or {}).get("eligible")),
+                "scored_status": (country_rows.get(code) or {}).get("scored_status"),
+                "gaps": list((country_rows.get(code) or {}).get("gaps") or []),
+            }
+            for code in sorted(country_rows)
+        },
+        "expansion_rule": "country_and_expression_specific",
+    }
+
+
 def _write_collect_with_overlay(
     store: OvernightStore, run_id: str, launch: dict[str, Any], launch_dir: Path
 ) -> None:
     collect = store.read_artifact(run_id, "collect.json")
     families = apply_macro_overlay(collect.get("families") or {}, launch, launch_dir=launch_dir)
-    collect = {**collect, "families": families}
+    collect = {**collect, "families": families, "trade_permissions": _trade_permissions(launch)}
     store.write_artifact(run_id, "collect.json", collect)
 
 
