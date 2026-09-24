@@ -348,6 +348,57 @@ class TestIngestionIntegrity(unittest.TestCase):
         self.assertTrue(deferred)
         self.assertTrue(all(r["status"] == "source_failed" for r in deferred))
 
+    def test_runner_prioritizes_scored_series_before_context(self) -> None:
+        seen: list[str] = []
+
+        def fetch_series(spec, *, opener, now, timeout=20):
+            seen.append(spec["id"])
+            return {
+                "ok": True,
+                "raw_sha256": spec["id"],
+                "points": [{"period": "2026-08", "value": 4.1, "revision_status": "final"}],
+            }
+
+        register_adapter_override("US", fetch_series)
+        scored = self._us_unemployment_spec()
+        context = copy.deepcopy(scored)
+        context["id"] = "US.Context.first"
+        context["series_id"] = "US_CONTEXT"
+        context["role"] = "context"
+        context["weight"] = 0
+        cat = self._mini_catalog([context, scored])
+
+        run_ingestion(
+            mode="offline",
+            countries=["US"],
+            catalog=cat,
+            now=datetime(2026, 9, 21, 12, 0, tzinfo=timezone.utc),
+            observations_dir=self.obs_dir,
+            health_dir=self.health_dir,
+            attempts=1,
+        )
+        self.assertEqual(seen[0], scored["id"])
+
+    def test_runner_attempt_count_is_configurable(self) -> None:
+        calls = {"n": 0}
+
+        def failing(spec, *, opener, now, timeout=20):
+            calls["n"] += 1
+            raise TimeoutError("slow source")
+
+        register_adapter_override("US", failing)
+        result = run_ingestion(
+            mode="offline",
+            countries=["US"],
+            catalog=self._mini_catalog([self._us_unemployment_spec()]),
+            now=datetime(2026, 9, 21, 12, 0, tzinfo=timezone.utc),
+            observations_dir=self.obs_dir,
+            health_dir=self.health_dir,
+            attempts=1,
+        )
+        self.assertEqual(calls["n"], 1)
+        self.assertEqual(result["rows"][0]["status"], "source_failed")
+
     def test_malformed_point_does_not_block_next_country(self) -> None:
         def bad_us(spec, *, opener, now, timeout=20):
             return {
