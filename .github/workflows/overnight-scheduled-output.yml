@@ -83,6 +83,41 @@ jobs:
           gh api "repos/$REPO/contents/$FILE?ref=$HEAD_SHA" --jq '.content' \
             | tr -d '\n' | base64 -d > /tmp/mw-output/scheduled_output.json
 
+      - name: Verify output is bound to the trusted manual launch
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from scripts.market_watch_launch.durability import remote_freeze_verified
+
+          payload = json.loads(Path("/tmp/mw-output/scheduled_output.json").read_text())
+          launch_id = str(payload.get("launch_id") or "")
+          if not launch_id:
+              raise SystemExit("manual scheduled output is missing launch_id")
+          launch_dir = Path("data/market_watch_launches") / launch_id
+          launch = json.loads((launch_dir / "launch.json").read_text())
+          freeze = ((launch.get("stages") or {}).get("04_freeze") or {})
+          details = freeze.get("details") or {}
+          if freeze.get("status") != "succeeded":
+              raise SystemExit("bound launch freeze did not succeed")
+          if (launch.get("request") or {}).get("provider") != "acp":
+              raise SystemExit("bound launch is not ACP")
+          if (launch.get("request") or {}).get("mode") != "live":
+              raise SystemExit("bound launch is not live")
+          if (launch.get("request") or {}).get("publish_production") is not True:
+              raise SystemExit("bound launch did not authorize production publication")
+          if payload.get("review_id") != details.get("review_id"):
+              raise SystemExit("scheduled output review_id does not match manual freeze")
+          if payload.get("base_packet_sha256") != details.get("packet_sha256"):
+              raise SystemExit("scheduled output packet SHA does not match manual freeze")
+          if payload.get("overnight_run_id") != details.get("overnight_run_id"):
+              raise SystemExit("scheduled output run id does not match manual freeze")
+          if not remote_freeze_verified(launch_dir):
+              raise SystemExit("manual freeze lacks verified remote attestation")
+          print(launch_id)
+          PY
+
       - name: Restore exact freeze-bound books if assembly only marked statuses stale
         env:
           RUN_ID: ${{ needs.inspect.outputs.run_id }}
@@ -177,10 +212,52 @@ jobs:
             exit 1
           fi
 
-      - name: Merge accepted scheduled output and publish Pages
+      - name: Merge accepted scheduled output
         env:
           GH_TOKEN: ${{ github.token }}
           PR_URL: ${{ github.event.pull_request.html_url }}
           MW_PAGES_REQUIRE_LAUNCH: "1"
           MW_PAGES_OUTPUT: /tmp/mw-output/scheduled_output.json
         run: bash scripts/overnight/merge_accepted_output.sh
+
+      - name: Persist accepted launch through finalization
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PROVIDER_PAYLOAD_PATH: /tmp/mw-output/scheduled_output.json
+          MW_DEFER_PAGES: "1"
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git reset --hard origin/main
+          launch_id="$(python3 -c 'import json; print(json.load(open("/tmp/mw-output/scheduled_output.json"))["launch_id"])')"
+          LAUNCH_ID="$launch_id" PYTHONPATH=. python3 -m scripts.market_watch_launch.continuation | tee /tmp/mw-output/continuation-finalize.json
+          git add data/market_watch_launches data/overnight data/pm data/trading 2>/dev/null || true
+          if ! git diff --cached --quiet; then
+            git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+              commit -m "chore: finalize market watch launch $launch_id"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+          git fetch origin main
+          git show "origin/main:data/market_watch_launches/$launch_id/launch.json" >/tmp/mw-output/remote-launch.json
+          python3 -c 'import json; d=json.load(open("/tmp/mw-output/remote-launch.json")); assert d["stages"]["06_acceptance"]["status"]=="succeeded"; assert d["stages"]["07_finalize"]["status"]=="succeeded"'
+
+      - name: Explicitly dispatch Pages for the finalized launch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MW_ENABLE_PAGES_DISPATCH: "1"
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git reset --hard origin/main
+          launch_id="$(python3 -c 'import json; print(json.load(open("/tmp/mw-output/scheduled_output.json"))["launch_id"])')"
+          payload="$(python3 -c 'import json; d=json.load(open("/tmp/mw-output/scheduled_output.json")); print(json.dumps({"launch_id":d["launch_id"],"review_id":d["review_id"],"base_packet_sha256":d["base_packet_sha256"]},separators=(",",":")))' )"
+          LAUNCH_ID="$launch_id" CLIENT_PAYLOAD="$payload" PYTHONPATH=. python3 -m scripts.market_watch_launch.continuation | tee /tmp/mw-output/continuation-pages.json
+          python3 -c 'import json; d=json.load(open("/tmp/mw-output/continuation-pages.json")); assert d["status"]=="succeeded"; assert d["production_published"] is True'
+          git add "data/market_watch_launches/$launch_id"
+          if ! git diff --cached --quiet; then
+            git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+              commit -m "chore: record market watch launch $launch_id Pages dispatch"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
