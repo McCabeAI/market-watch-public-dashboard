@@ -238,7 +238,7 @@ def _resolve_endpoint(spec: dict[str, Any], *, now: datetime | None = None) -> s
     if now is not None and spec_id in _LABOUR_WORKBOOK_IDS:
         due = latest_due_release(spec, now)
         period = str((due or {}).get("period") or "")
-        match = re.fullmatch(r"(20\\d{2})-(\\d{2})", period)
+        match = re.fullmatch(r"(20\d{2})-(\d{2})", period)
         registry = list(spec.get("registry_urls") or [])
         if match and registry:
             year, month = int(match.group(1)), int(match.group(2))
