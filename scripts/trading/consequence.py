@@ -6,7 +6,7 @@ from typing import Any
 
 from scripts.overnight.constants import MAX_DRAWDOWN_USD, RISK_CAPITAL_LIMIT_USD, STARTING_NAV_USD, STANDING_SEATS
 from scripts.overnight.store import OvernightStore
-from scripts.pm.constants import MAX_DRAWDOWN_USD as PM_MAX_DRAWDOWN_USD, PM_IDS
+from scripts.pm.constants import CASH_CAPITAL_USD, MAX_DRAWDOWN_USD as PM_MAX_DRAWDOWN_USD, PM_IDS
 from scripts.pm.store import PMStore
 from scripts.trading.constants import MATERIAL_DRAWDOWN_FRACTION
 from scripts.trading.store import TradingStore
@@ -284,6 +284,10 @@ def snapshot_observation_from_consequence(
     best_trader_pnl: float | None = None,
 ) -> dict[str, Any]:
     row: dict[str, Any] = {}
+    if consequence.get("drawdown_usd") is not None:
+        row["last_drawdown_usd"] = consequence["drawdown_usd"]
+    if consequence.get("high_water_nav_usd") is not None:
+        row["last_high_water_nav_usd"] = consequence["high_water_nav_usd"]
     if owner_type == "trader":
         if consequence.get("net_pnl_usd") is not None:
             row["last_net_pnl_usd"] = consequence["net_pnl_usd"]
@@ -339,6 +343,16 @@ def record_consequence_observation(
         if owner_id == "grinder":
             count = int(current.get("grinder_flat_snapshots") or 0)
             patch["grinder_flat_snapshots"] = count + 1 if near_zero else 0
+        if owner_id == "swinger":
+            drawdown = float(consequence.get("drawdown_usd") or 0.0)
+            high_water = float(consequence.get("high_water_nav_usd") or CASH_CAPITAL_USD)
+            net = float(own or 0.0)
+            compensated = net >= threshold or high_water > CASH_CAPITAL_USD + threshold
+            episodes = int(current.get("swinger_uncompensated_episodes") or 0)
+            if drawdown >= threshold and not compensated:
+                patch["swinger_uncompensated_episodes"] = episodes + 1
+            else:
+                patch["swinger_uncompensated_episodes"] = 0
     if not patch:
         return
     current.update(patch)

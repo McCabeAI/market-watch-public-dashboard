@@ -23,7 +23,10 @@ from scripts.trading.consequence import assert_trader_consequence_clean, build_p
 from scripts.trading.constants import MATERIAL_DRAWDOWN_FRACTION, MEMORY_SCHEMA_VERSION
 from scripts.trading.errors import LearningGateError, SchemaError
 from scripts.trading.gate import evaluate_decision_actions
-from scripts.trading.memory import accept_performance_reflection, accept_postmortem, build_memory_context
+from scripts.pm.books import public_pm_view
+from scripts.pm.review_packets import memory_market_inputs
+from scripts.trading.memory import accept_performance_reflection, accept_postmortem, build_memory_context, performance_triggers
+from scripts.trading.snapshot import compact_memory_for_packet
 from scripts.trading.store import TradingStore
 
 NY = ZoneInfo("America/New_York")
@@ -131,10 +134,7 @@ class TraderPsychologyTests(unittest.TestCase):
         self.assertEqual(owner["standing"], "good_standing")
         self.assertTrue(all("suck" not in note.lower() for note in owner.get("notes") or []))
 
-    def test_swinger_uncompensated_pain_raises_pressure(self) -> None:
-        pm_books = empty_pm_books()
-        pm_books["pms"]["swinger"]["drawdown_usd"] = 30_000_000.0
-        pm_books["pms"]["swinger"]["net_after_funding_pnl_usd"] = -1_000_000.0
+    def test_swinger_first_uncompensated_drawdown_is_tolerated(self) -> None:
         consequence = {
             "status": "ok",
             "drawdown_usd": 30_000_000.0,
@@ -145,9 +145,32 @@ class TraderPsychologyTests(unittest.TestCase):
             self.store,
             "swinger",
             consequence=consequence,
-            pm_book=pm_books["pms"]["swinger"],
+            pm_book={"max_drawdown_usd": 50_000_000.0, "cash_capital_usd": 1_000_000_000.0},
         )
-        self.assertIn(owner["standing"], ("watch", "probation"))
+        self.assertEqual(owner["standing"], "good_standing")
+        self.assertNotIn("repeated_uncompensated_drawdown", owner.get("pressure_flags") or [])
+        self.assertTrue(all("suck" not in note.lower() for note in owner.get("notes") or []))
+
+    def test_swinger_repeated_uncompensated_pain_escalates(self) -> None:
+        self.store.write_consequence_state(
+            "pm",
+            "swinger",
+            {"swinger_uncompensated_episodes": 1},
+        )
+        consequence = {
+            "status": "ok",
+            "drawdown_usd": 30_000_000.0,
+            "net_after_funding_pnl_usd": -5_000_000.0,
+            "high_water_nav_usd": 1_000_000_000.0,
+        }
+        owner = build_capital_owner(
+            self.store,
+            "swinger",
+            consequence=consequence,
+            pm_book={"max_drawdown_usd": 50_000_000.0, "cash_capital_usd": 1_000_000_000.0},
+        )
+        self.assertEqual(owner["standing"], "watch")
+        self.assertIn("repeated_uncompensated_drawdown", owner["pressure_flags"])
         self.assertTrue(any("suck" in note.lower() for note in owner.get("notes") or []))
 
     def test_grinder_zero_alpha_not_forced(self) -> None:
@@ -155,7 +178,46 @@ class TraderPsychologyTests(unittest.TestCase):
         owner = build_capital_owner(self.store, "grinder", consequence=consequence, pm_book={"max_drawdown_usd": 50_000_000.0})
         self.assertTrue(owner["zero_alpha"])
         self.assertFalse(owner["persistent_zero_alpha"])
+        self.assertEqual(owner["credible_opportunities"], "unknown")
         self.assertFalse(owner["force_deployment"])
+
+    def test_grinder_flat_without_opportunities_stays_legitimate(self) -> None:
+        self.store.write_consequence_state("pm", "grinder", {"grinder_flat_snapshots": 4})
+        consequence = {"status": "ok", "net_after_funding_pnl_usd": 0.0, "max_drawdown_usd": 50_000_000.0}
+        owner = build_capital_owner(
+            self.store,
+            "grinder",
+            consequence=consequence,
+            pm_book={"max_drawdown_usd": 50_000_000.0},
+            review_packet={"trader_room": {"trades": []}, "overnight_review": {"decisions": []}},
+        )
+        self.assertEqual(owner["credible_opportunities"], "none")
+        self.assertFalse(owner["persistent_zero_alpha"])
+        self.assertFalse(owner["force_deployment"])
+        self.assertEqual(owner["standing"], "good_standing")
+
+    def test_grinder_missed_opportunity_flatness_raises_pressure(self) -> None:
+        self.store.write_consequence_state("pm", "grinder", {"grinder_flat_snapshots": 2})
+        consequence = {"status": "ok", "net_after_funding_pnl_usd": 0.0, "max_drawdown_usd": 50_000_000.0}
+        packet = {
+            "market_state": {"fx": {"USDCAD": {"spot": 1.36}}},
+            "trader_room": {
+                "trades": [
+                    {"trade": {"instrument": "USDCAD", "asset_class": "spot_fx"}},
+                ]
+            },
+        }
+        owner = build_capital_owner(
+            self.store,
+            "grinder",
+            consequence=consequence,
+            pm_book={"max_drawdown_usd": 50_000_000.0},
+            review_packet=packet,
+        )
+        self.assertEqual(owner["credible_opportunities"], "present")
+        self.assertTrue(owner["persistent_zero_alpha"])
+        self.assertFalse(owner["force_deployment"])
+        self.assertEqual(owner["standing"], "watch")
 
     def test_pragmatist_mandate_text_and_unavailable_spx(self) -> None:
         consequence = {"status": "ok", "net_after_funding_pnl_usd": 0.0}
@@ -164,6 +226,77 @@ class TraderPsychologyTests(unittest.TestCase):
         self.assertIn("2–6%", joined)
         self.assertIn("20", joined)
         self.assertEqual(owner["spx_context"]["status"], "unavailable")
+        self.assertEqual(owner["stress_regime"], "unknown")
+
+    def test_pragmatist_reads_frozen_market_state_when_present(self) -> None:
+        self._write_pm_books(empty_pm_books())
+        frozen = {
+            "equities": {"spx": {"total_return_ytd": 11.0}},
+            "stress_regime": "stress",
+            "fx": {"USDCAD": {"spot": 1.36}},
+        }
+        evidence = {"market_state": frozen, "as_of": "2026-09-19T12:00:00Z"}
+        market, memory_packet = memory_market_inputs(
+            evidence,
+            compact_market={"fx": {}},
+            trader_room={"trades": []},
+            overnight_review=None,
+        )
+        self.assertIs(market, frozen)
+        context = compact_memory_for_packet(
+            self.store,
+            "pm",
+            "pragmatist",
+            market_state=market,
+            review_packet=memory_packet,
+        )
+        owner = context["capital_owner"]
+        self.assertEqual(owner["spx_context"]["status"], "ok")
+        self.assertEqual(owner["spx_context"]["opportunity_cost_context_pct"], 7.0)
+        self.assertEqual(owner["stress_regime"], "stress")
+
+    def test_pragmatist_on_demand_packet_uses_same_frozen_market(self) -> None:
+        on_demand_evidence = {
+            "market_state": {
+                "opportunities": {"series": [{"id": "SP500", "total_return_ytd": 8.0}]},
+                "stress_regime": "normal",
+            }
+        }
+        market, _packet = memory_market_inputs(on_demand_evidence, compact_market={"fx": {}})
+        owner = build_capital_owner(
+            self.store,
+            "pragmatist",
+            consequence={"status": "ok", "net_after_funding_pnl_usd": 0.0},
+            market_state=market,
+        )
+        self.assertEqual(owner["spx_context"]["opportunity_cost_context_pct"], 4.0)
+        self.assertEqual(owner["stress_regime"], "normal")
+
+    def test_negative_pnl_is_material_loss_not_win(self) -> None:
+        triggers = performance_triggers(
+            owner_type="trader",
+            book_row={"net_pnl_usd": -2_500_000.0, "drawdown_usd": 2_500_000.0, "high_water_nav_usd": 100_000_000.0, "max_drawdown_usd": 5_000_000.0},
+            rank=8,
+            prior_rank=None,
+        )
+        ids = {row["id"] for row in triggers}
+        self.assertIn("material_loss", ids)
+        self.assertNotIn("material_win", ids)
+        self.assertIn("material_drawdown", ids)
+
+    def test_unchanged_cumulative_pnl_does_not_create_a_new_event(self) -> None:
+        books = empty_books(overnight_run_id="overnight-20260919", when=AS_OF)
+        books["seats"]["dollar-king"]["realized_pnl_usd"] = -2_500_000.0
+        self._write_trader_books(books)
+        first = build_memory_context(self.store, "trader", "dollar-king")
+        self.assertIn("material_loss", first["reflections_due"][0]["trigger_ids"])
+        from scripts.trading.consequence import record_consequence_observation
+
+        record_consequence_observation(self.store, "trader", "dollar-king", trader_books=self.overnight.read_books())
+        second = build_memory_context(self.store, "trader", "dollar-king")
+        due_items = self.store.read_reflections_due("trader", "dollar-king")["items"]
+        self.assertEqual(len(due_items), 1)
+        self.assertEqual(len(second["reflections_due"]), 1)
 
     def test_material_drawdown_threshold_two_million(self) -> None:
         threshold = MATERIAL_DRAWDOWN_FRACTION * MAX_DRAWDOWN_USD
@@ -260,6 +393,40 @@ class TraderPsychologyTests(unittest.TestCase):
         dumped = json.dumps(view)
         self.assertNotIn("capital_owner", dumped)
         self.assertNotIn("performance_reflection", dumped)
+
+    def test_public_projection_drops_paraphrase_and_learning_gate_alerts(self) -> None:
+        books = empty_books(overnight_run_id="overnight-20260919", when=AS_OF)
+        books["seats"]["dollar-king"]["thesis"] = (
+            "The allocator is wondering whether we should hand the book to the specialist. CAD is rich."
+        )
+        books["seats"]["dollar-king"]["alerts"] = [
+            "dollar-king learning_gate: missing_pressure_assessment postmortems_due reflections_due",
+            "max drawdown breached but one or more positions lack a deterministic exit mark",
+        ]
+        view = public_books_view(books)
+        seat = next(row for row in view["seats"] if row["seat"] == "dollar-king")
+        self.assertNotIn("allocator", seat["thesis"].lower())
+        self.assertNotIn("hand the book", seat["thesis"].lower())
+        joined = " ".join(seat["alerts"]).lower()
+        self.assertNotIn("learning_gate", joined)
+        self.assertNotIn("missing_pressure_assessment", joined)
+        self.assertNotIn("postmortems_due", joined)
+        self.assertNotIn("reflections_due", joined)
+        self.assertTrue(any("drawdown" in alert.lower() for alert in seat["alerts"]))
+        pm_books = empty_pm_books()
+        pm_books["pms"]["grinder"]["alerts"] = [
+            "grinder learning_gate: reflections_due rfd-abc123",
+            "funding observation missing for one open position",
+        ]
+        pm_books["pms"]["grinder"]["thesis"] = "Maybe we should hand the book to the junior who earned more."
+        pm_view = public_pm_view(pm_books)
+        grinder = next(row for row in pm_view["pms"] if row["pm_id"] == "grinder")
+        pm_alerts = " ".join(grinder["alerts"]).lower()
+        self.assertNotIn("learning_gate", pm_alerts)
+        self.assertNotIn("reflections_due", pm_alerts)
+        self.assertNotIn("rfd-", pm_alerts)
+        self.assertNotIn("hand the book", grinder["thesis"].lower())
+        self.assertTrue(any("funding" in alert.lower() for alert in grinder["alerts"]))
 
     def test_memory_schema_version_two(self) -> None:
         context = build_memory_context(self.store, "trader", "dollar-king")

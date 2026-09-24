@@ -119,8 +119,21 @@ def snapshot_trader_room(
     )
 
 
-def compact_memory_for_packet(store: TradingStore, owner_type: str, owner_id: str) -> dict[str, Any]:
-    context = build_memory_context(store, owner_type, owner_id)
+def compact_memory_for_packet(
+    store: TradingStore,
+    owner_type: str,
+    owner_id: str,
+    *,
+    market_state: dict[str, Any] | None = None,
+    review_packet: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    context = build_memory_context(
+        store,
+        owner_type,
+        owner_id,
+        market_state=market_state,
+        review_packet=review_packet,
+    )
     return {
         "owner_type": owner_type,
         "owner_id": owner_id,

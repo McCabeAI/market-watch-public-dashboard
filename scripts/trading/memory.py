@@ -211,12 +211,24 @@ def _material_threshold(owner_type: str, book_row: dict[str, Any]) -> float:
     return MATERIAL_DRAWDOWN_FRACTION * max_dd
 
 
+def _crossed(current: float, prior: float | None, threshold: float) -> bool:
+    """True when this observation newly reaches the threshold."""
+    if current < threshold:
+        return False
+    if prior is None:
+        return True
+    return float(prior) < threshold
+
+
 def performance_triggers(
     *,
     owner_type: str,
     book_row: dict[str, Any],
     rank: int | None,
     prior_rank: int | None,
+    prior_net: float | None = None,
+    prior_drawdown: float | None = None,
+    prior_high_water: float | None = None,
 ) -> list[dict[str, Any]]:
     threshold = _material_threshold(owner_type, book_row)
     if owner_type == "trader":
@@ -230,13 +242,22 @@ def performance_triggers(
         high_water = float(book_row.get("high_water_nav_usd") or book_row.get("cash_capital_usd") or CASH_CAPITAL_USD)
         starting = float(book_row.get("cash_capital_usd") or CASH_CAPITAL_USD)
     triggers: list[dict[str, Any]] = []
-    if drawdown >= threshold:
+    if _crossed(drawdown, prior_drawdown, threshold):
         triggers.append({"id": "material_drawdown", "drawdown_usd": drawdown})
-    if abs(net) >= threshold:
-        triggers.append({"id": "material_win", "net_pnl_usd": net})
-    if drawdown >= threshold and high_water > starting:
+    delta = None if prior_net is None else net - float(prior_net)
+    if delta is None:
+        if net >= threshold:
+            triggers.append({"id": "material_win", "net_pnl_usd": net})
+        elif net <= -threshold:
+            triggers.append({"id": "material_loss", "net_pnl_usd": net})
+    elif delta >= threshold:
+        triggers.append({"id": "material_win", "net_pnl_usd": net, "delta_usd": round(delta, 2)})
+    elif delta <= -threshold:
+        triggers.append({"id": "material_loss", "net_pnl_usd": net, "delta_usd": round(delta, 2)})
+    if _crossed(drawdown, prior_drawdown, threshold) and high_water > starting:
         triggers.append({"id": "giveback", "drawdown_usd": drawdown})
-    if high_water > starting and net >= threshold:
+    high_water_rose = prior_high_water is None or high_water > float(prior_high_water) + 0.5
+    if high_water > starting and net >= threshold and high_water_rose and (prior_net is None or float(prior_net) < net):
         triggers.append({"id": "new_high", "net_pnl_usd": net})
     if prior_rank is not None and rank is not None and int(rank) - int(prior_rank) >= 4:
         triggers.append({"id": "rank_shock", "prior_rank": prior_rank, "rank": rank})
@@ -280,13 +301,17 @@ def ensure_reflections_due(
         consequence = build_pm_consequence(store, owner_id, pm_books=pm_books, trader_books=trader_books)
     if consequence.get("status") != "ok":
         return
-    prior_rank = store.read_consequence_state(owner_type, owner_id).get("last_competition_rank")
+    prior_state = store.read_consequence_state(owner_type, owner_id)
+    prior_rank = prior_state.get("last_competition_rank")
     rank = consequence.get("competition_rank")
     triggers = performance_triggers(
         owner_type=owner_type,
         book_row=book_row,
         rank=rank,
         prior_rank=prior_rank,
+        prior_net=prior_state.get("last_net_pnl_usd"),
+        prior_drawdown=prior_state.get("last_drawdown_usd"),
+        prior_high_water=prior_state.get("last_high_water_nav_usd"),
     )
     if not triggers:
         return
@@ -346,6 +371,7 @@ def build_memory_context(
     when: datetime | None = None,
     exclude_run_id: str | None = None,
     market_state: dict[str, Any] | None = None,
+    review_packet: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     assert_identity(owner_type, owner_id)
     store.ensure_initialized()
@@ -368,6 +394,7 @@ def build_memory_context(
             consequence=consequence,
             market_state=market_state,
             pm_book=pm_book,
+            review_packet=review_packet,
         )
     body = {
         "schema_version": MEMORY_SCHEMA_VERSION,

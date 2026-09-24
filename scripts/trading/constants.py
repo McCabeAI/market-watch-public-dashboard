@@ -16,11 +16,13 @@ MATERIAL_DRAWDOWN_FRACTION = 0.40
 
 REFLECTION_TRIGGER_IDS = (
     "material_drawdown",
+    "material_loss",
     "material_win",
     "giveback",
     "new_high",
     "rank_shock",
 )
+SWINGER_ESCALATION_EPISODES = 1
 REFLECTION_DUE_STATUSES = ("due", "submitted")
 PERFORMANCE_REFLECTION_ATTRIBUTION = (
     "thesis",

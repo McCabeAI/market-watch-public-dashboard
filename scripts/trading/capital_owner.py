@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from scripts.pm.constants import AUTOMATED_PM_IDS, CASH_CAPITAL_USD, MAX_DRAWDOWN_USD
-from scripts.trading.constants import MATERIAL_DRAWDOWN_FRACTION
+from scripts.trading.constants import MATERIAL_DRAWDOWN_FRACTION, SWINGER_ESCALATION_EPISODES
 from scripts.trading.store import TradingStore
 
 
@@ -35,30 +35,67 @@ def _stress_regime(market_state: dict[str, Any] | None) -> str:
     return "unknown"
 
 
+def _float_or_none(value: Any) -> float | None:
+    if value is None or isinstance(value, bool):
+        return None
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _spx_from_series(rows: Any) -> float | None:
+    if isinstance(rows, dict):
+        rows = rows.get("series") or rows.get("rows") or []
+    if not isinstance(rows, list):
+        return None
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        label = str(row.get("id") or row.get("symbol") or row.get("name") or "").upper()
+        if label not in {"SP500", "SPX", "GSPC", "SPXT"}:
+            continue
+        for key in ("total_return_ytd", "total_return", "total_return_pct"):
+            number = _float_or_none(row.get(key))
+            if number is not None:
+                return number
+    return None
+
+
 def _spx_total_return(market_state: dict[str, Any] | None) -> float | None:
     if not market_state:
         return None
     for path in (
         ("equities", "spx", "total_return_ytd"),
         ("equities", "SPX", "total_return_ytd"),
-        ("spx_total_return_ytd"),
+        ("spx_total_return_ytd",),
+        ("cross_assets", "SP500", "total_return_ytd"),
+        ("opportunities", "SP500", "total_return_ytd"),
     ):
-        if len(path) == 1:
-            value = market_state.get(path[0])
-        else:
-            node = market_state
-            for key in path:
-                if not isinstance(node, dict):
-                    node = None
-                    break
-                node = node.get(key)
-            value = node
-        if value is not None:
-            try:
-                return float(value)
-            except (TypeError, ValueError):
-                continue
+        node: Any = market_state
+        for key in path:
+            if not isinstance(node, dict):
+                node = None
+                break
+            node = node.get(key)
+        number = _float_or_none(node)
+        if number is not None:
+            return number
+    for key in ("opportunities", "cross_assets", "equities"):
+        found = _spx_from_series(market_state.get(key))
+        if found is not None:
+            return found
     return None
+
+
+def opportunity_status_from_packet(packet: dict[str, Any] | None) -> str:
+    """Trusted frozen handoff opportunities. Unknown when no packet was supplied."""
+    if not isinstance(packet, dict):
+        return "unknown"
+    from scripts.pm.portfolio import independent_markable_handoff_opportunities
+
+    rows = independent_markable_handoff_opportunities(packet)
+    return "present" if rows else "none"
 
 
 def build_capital_owner(
@@ -68,6 +105,7 @@ def build_capital_owner(
     consequence: dict[str, Any] | None,
     market_state: dict[str, Any] | None = None,
     pm_book: dict[str, Any] | None = None,
+    review_packet: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     if pm_id not in AUTOMATED_PM_IDS:
         return {"standing": "not_applicable", "mandate": "synthesis"}
@@ -86,16 +124,19 @@ def build_capital_owner(
 
     if pm_id == "swinger":
         compensated = net >= threshold or high_water > starting + threshold
-        if drawdown >= threshold and not compensated:
+        episodes = int(prior.get("swinger_uncompensated_episodes") or 0)
+        uncompensated = drawdown >= threshold and not compensated
+        if uncompensated and episodes >= SWINGER_ESCALATION_EPISODES:
             standing = "watch"
-            pressure_flags.append("uncompensated_drawdown")
+            pressure_flags.append("repeated_uncompensated_drawdown")
+            notes.append("I love risk. I'm starting to think you just suck at taking it.")
+        elif uncompensated:
             notes.append(
-                "I love risk. I'm starting to think you just suck at taking it."
+                "A single large drawdown is inside the swinger mandate. "
+                "Allocator escalation requires repeated uncompensated pain without an outsized payoff."
             )
         elif drawdown >= threshold and compensated:
             notes.append("Drawdown is real, but outsized gains have compensated the pain.")
-        elif drawdown >= threshold:
-            notes.append("Large drawdown without enough offsetting upside yet.")
 
     elif pm_id == "pragmatist":
         annual_low = 20_000_000
@@ -142,20 +183,33 @@ def build_capital_owner(
     elif pm_id == "grinder":
         near_zero = abs(net) < max(50_000.0, threshold * 0.02)
         flat_history = int(prior.get("grinder_flat_snapshots") or 0)
+        opportunities = opportunity_status_from_packet(review_packet)
         zero_alpha = near_zero
-        persistent = near_zero and flat_history >= 2
-        if persistent:
+        missed = near_zero and flat_history >= 2 and opportunities == "present"
+        if missed:
             standing = "watch"
-            pressure_flags.append("persistent_zero_alpha")
-            notes.append("Repeated flat SOFR-hurdle books suggest you need to beat cash, not hide in it.")
-        elif near_zero and flat_history == 0:
-            notes.append("Flat versus SOFR is zero alpha; first snapshot, no persistence claim yet.")
+            pressure_flags.append("missed_opportunity_zero_alpha")
+            notes.append(
+                "Repeated flat SOFR-hurdle results while frozen markable opportunities were available. "
+                "Selectivity is still allowed; deployment is not forced."
+            )
+        elif near_zero and opportunities == "none":
+            notes.append(
+                "Flat versus SOFR is zero alpha, but the frozen packet has no markable opportunity. Sitting out is legitimate."
+            )
+        elif near_zero and opportunities == "unknown":
+            notes.append(
+                "Flat versus SOFR is zero alpha. Opportunity availability is unknown in the frozen packet, so no missed-opportunity claim is made."
+            )
+        elif near_zero:
+            notes.append("Flat versus SOFR is zero alpha. No persistence claim yet.")
         return {
             "standing": standing,
             "mandate": "grinder",
             "hurdle": "SOFR",
             "zero_alpha": zero_alpha,
-            "persistent_zero_alpha": persistent,
+            "persistent_zero_alpha": missed,
+            "credible_opportunities": opportunities,
             "force_deployment": False,
             "notes": notes,
             "pressure_flags": pressure_flags,

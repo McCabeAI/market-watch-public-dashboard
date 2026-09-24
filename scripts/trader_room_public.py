@@ -43,7 +43,9 @@ def _text(value: Any) -> str:
 
 
 def _clip(value: Any, limit: int = 420) -> str:
-    text = _text(value)
+    from scripts.overnight.public_prose import sanitize_public_prose
+
+    text = sanitize_public_prose(_text(value), max_chars=limit, fallback="")
     if len(text) <= limit:
         return text
     return text[: limit - 1].rstrip() + "…"
