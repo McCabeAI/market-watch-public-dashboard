@@ -529,6 +529,7 @@ def apply_pm_decision_with_memory(
     evidence_hash: str | None = None,
     when: datetime | None = None,
     review_id: str | None = None,
+    review_packet: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     store.ensure_initialized()
     stamp = now_ny(when)
@@ -649,7 +650,14 @@ def apply_pm_decision_with_memory(
         decision_fingerprint=fingerprint,
     )
     _observe_marks(store, "pm", pm_id, list(book.get("positions") or []))
-    record_consequence_observation(store, "pm", pm_id, pm_books=updated, trader_books=None)
+    record_consequence_observation(
+        store,
+        "pm",
+        pm_id,
+        pm_books=updated,
+        trader_books=None,
+        review_packet=review_packet,
+    )
     build_memory_context(
         store,
         "pm",

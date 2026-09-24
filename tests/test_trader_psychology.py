@@ -19,7 +19,12 @@ from scripts.pm.store import PMStore
 from scripts.trader_room.paper_book import reviews_from_run
 from scripts.trading.apply import apply_trader_review_with_memory
 from scripts.trading.capital_owner import build_capital_owner
-from scripts.trading.consequence import assert_trader_consequence_clean, build_pm_consequence, build_trader_consequence
+from scripts.trading.consequence import (
+    assert_trader_consequence_clean,
+    build_pm_consequence,
+    build_trader_consequence,
+    record_consequence_observation,
+)
 from scripts.trading.constants import MATERIAL_DRAWDOWN_FRACTION, MEMORY_SCHEMA_VERSION
 from scripts.trading.errors import LearningGateError, SchemaError
 from scripts.trading.gate import evaluate_decision_actions
@@ -155,7 +160,7 @@ class TraderPsychologyTests(unittest.TestCase):
         self.store.write_consequence_state(
             "pm",
             "swinger",
-            {"swinger_uncompensated_episodes": 1},
+            {"swinger_uncompensated_episodes": 2},
         )
         consequence = {
             "status": "ok",
@@ -172,6 +177,63 @@ class TraderPsychologyTests(unittest.TestCase):
         self.assertEqual(owner["standing"], "watch")
         self.assertIn("repeated_uncompensated_drawdown", owner["pressure_flags"])
         self.assertTrue(any("suck" in note.lower() for note in owner.get("notes") or []))
+
+    def _set_swinger_realized(self, realized: float) -> None:
+        books = empty_pm_books()
+        books["pms"]["swinger"]["realized_pnl_usd"] = realized
+        self._write_pm_books(books)
+
+    def test_unchanged_swinger_drawdown_does_not_accumulate_episodes(self) -> None:
+        self._set_swinger_realized(-30_000_000.0)
+        for _ in range(4):
+            record_consequence_observation(self.store, "pm", "swinger")
+        state = self.store.read_consequence_state("pm", "swinger")
+        self.assertEqual(state["swinger_uncompensated_episodes"], 1)
+        self.assertTrue(state["swinger_episode_open"])
+        owner = build_capital_owner(
+            self.store,
+            "swinger",
+            consequence=build_pm_consequence(self.store, "swinger"),
+            pm_book={"max_drawdown_usd": 50_000_000.0, "cash_capital_usd": 1_000_000_000.0},
+        )
+        self.assertEqual(owner["standing"], "good_standing")
+        self.assertTrue(all("suck" not in note.lower() for note in owner.get("notes") or []))
+
+    def test_worsened_swinger_drawdown_opens_a_new_episode(self) -> None:
+        self._set_swinger_realized(-22_000_000.0)
+        record_consequence_observation(self.store, "pm", "swinger")
+        self._set_swinger_realized(-45_000_000.0)
+        record_consequence_observation(self.store, "pm", "swinger")
+        state = self.store.read_consequence_state("pm", "swinger")
+        self.assertEqual(state["swinger_uncompensated_episodes"], 2)
+        owner = build_capital_owner(
+            self.store,
+            "swinger",
+            consequence=build_pm_consequence(self.store, "swinger"),
+            pm_book={"max_drawdown_usd": 50_000_000.0, "cash_capital_usd": 1_000_000_000.0},
+        )
+        self.assertEqual(owner["standing"], "watch")
+
+    def test_recovered_then_distinct_swinger_drawdown_is_a_new_episode(self) -> None:
+        self._set_swinger_realized(-30_000_000.0)
+        record_consequence_observation(self.store, "pm", "swinger")
+        self._set_swinger_realized(0.0)
+        record_consequence_observation(self.store, "pm", "swinger")
+        recovered = self.store.read_consequence_state("pm", "swinger")
+        self.assertEqual(recovered["swinger_uncompensated_episodes"], 1)
+        self.assertFalse(recovered["swinger_episode_open"])
+        self._set_swinger_realized(-30_000_000.0)
+        record_consequence_observation(self.store, "pm", "swinger")
+        self.assertEqual(self.store.read_consequence_state("pm", "swinger")["swinger_uncompensated_episodes"], 2)
+
+    def test_swinger_outsized_payoff_resets_episode_history(self) -> None:
+        self._set_swinger_realized(-30_000_000.0)
+        record_consequence_observation(self.store, "pm", "swinger")
+        self._set_swinger_realized(25_000_000.0)
+        record_consequence_observation(self.store, "pm", "swinger")
+        state = self.store.read_consequence_state("pm", "swinger")
+        self.assertEqual(state["swinger_uncompensated_episodes"], 0)
+        self.assertFalse(state["swinger_episode_open"])
 
     def test_grinder_zero_alpha_not_forced(self) -> None:
         consequence = {"status": "ok", "net_after_funding_pnl_usd": 0.0, "max_drawdown_usd": 50_000_000.0}
@@ -218,6 +280,48 @@ class TraderPsychologyTests(unittest.TestCase):
         self.assertTrue(owner["persistent_zero_alpha"])
         self.assertFalse(owner["force_deployment"])
         self.assertEqual(owner["standing"], "watch")
+
+    def _opportunity_packet(self) -> dict:
+        return {
+            "market_state": {"fx": {"USDCAD": {"spot": 1.36}}},
+            "trader_room": {"trades": [{"trade": {"instrument": "USDCAD", "asset_class": "spot_fx"}}]},
+        }
+
+    def test_grinder_sitouts_do_not_become_missed_opportunity_pressure(self) -> None:
+        self._write_pm_books(empty_pm_books())
+        empty_packet = {"trader_room": {"trades": []}, "overnight_review": {"decisions": []}}
+        record_consequence_observation(self.store, "pm", "grinder", review_packet=empty_packet)
+        record_consequence_observation(self.store, "pm", "grinder", review_packet=None)
+        record_consequence_observation(self.store, "pm", "grinder", review_packet=self._opportunity_packet())
+        state = self.store.read_consequence_state("pm", "grinder")
+        self.assertEqual(state["grinder_flat_snapshots"], 1)
+        owner = build_capital_owner(
+            self.store,
+            "grinder",
+            consequence=build_pm_consequence(self.store, "grinder"),
+            pm_book={"max_drawdown_usd": 50_000_000.0},
+            review_packet=self._opportunity_packet(),
+        )
+        self.assertFalse(owner["persistent_zero_alpha"])
+        self.assertEqual(owner["standing"], "good_standing")
+        self.assertFalse(owner["force_deployment"])
+
+    def test_grinder_repeated_opportunity_flat_cycles_trigger_watch(self) -> None:
+        self._write_pm_books(empty_pm_books())
+        packet = self._opportunity_packet()
+        record_consequence_observation(self.store, "pm", "grinder", review_packet=packet)
+        record_consequence_observation(self.store, "pm", "grinder", review_packet=packet)
+        self.assertEqual(self.store.read_consequence_state("pm", "grinder")["grinder_flat_snapshots"], 2)
+        owner = build_capital_owner(
+            self.store,
+            "grinder",
+            consequence=build_pm_consequence(self.store, "grinder"),
+            pm_book={"max_drawdown_usd": 50_000_000.0},
+            review_packet=packet,
+        )
+        self.assertTrue(owner["persistent_zero_alpha"])
+        self.assertEqual(owner["standing"], "watch")
+        self.assertFalse(owner["force_deployment"])
 
     def test_pragmatist_mandate_text_and_unavailable_spx(self) -> None:
         consequence = {"status": "ok", "net_after_funding_pnl_usd": 0.0}
@@ -271,6 +375,54 @@ class TraderPsychologyTests(unittest.TestCase):
         )
         self.assertEqual(owner["spx_context"]["opportunity_cost_context_pct"], 4.0)
         self.assertEqual(owner["stress_regime"], "normal")
+
+    def test_overnight_freeze_pm_sidecar_uses_frozen_market_state(self) -> None:
+        from scripts.overnight.constants import ROOT
+        from scripts.overnight.evidence import freeze_snapshot
+        from scripts.overnight.store import OvernightStore
+
+        self._write_pm_books(empty_pm_books())
+        overnight = OvernightStore(root=ROOT, state_root=self.root)
+        run_id = "overnight-20260919"
+        frozen = {
+            "equities": {"spx": {"total_return_ytd": 11.0}},
+            "stress_regime": "stress",
+        }
+        overnight.write_artifact(
+            run_id,
+            "collect.json",
+            {"families": {"market_state": {"status": "fresh", "data": frozen}}},
+        )
+        packet = freeze_snapshot(overnight, run_id=run_id, when=AS_OF, reuse_open=False)
+        review_id = packet["review_id"]
+        sidecar_path = overnight.review_dir(run_id, review_id) / "pm_memory" / "pragmatist.json"
+        sidecar = json.loads(sidecar_path.read_text(encoding="utf-8"))
+        owner = sidecar["capital_owner"]
+        self.assertEqual(owner["spx_context"]["status"], "ok")
+        self.assertEqual(owner["spx_context"]["opportunity_cost_context_pct"], 7.0)
+        self.assertEqual(owner["stress_regime"], "stress")
+        self.assertEqual(packet["pm_memory"]["hashes"]["pragmatist"], sidecar["memory_context_sha256"])
+        trader_sidecar = json.loads(
+            (overnight.review_dir(run_id, review_id) / "memory" / "dollar-king.json").read_text(encoding="utf-8")
+        )
+        self.assertIsNone(trader_sidecar.get("capital_owner"))
+        self.assertNotEqual(packet["pm_memory"]["hashes"]["pragmatist"], packet["pm_memory"]["hashes"]["grinder"])
+
+        bare = OvernightStore(root=ROOT, state_root=self.root / "bare")
+        bare.write_artifact(
+            run_id,
+            "collect.json",
+            {"families": {"market_state": {"status": "fresh", "data": {"fx": {"USDCAD": {"spot": 1.36}}}}}},
+        )
+        PMStore(root=self.root, state_root=self.root / "bare").write_books(empty_pm_books())
+        bare_packet = freeze_snapshot(bare, run_id=run_id, when=AS_OF, reuse_open=False)
+        bare_sidecar = json.loads(
+            (bare.review_dir(run_id, bare_packet["review_id"]) / "pm_memory" / "pragmatist.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        self.assertEqual(bare_sidecar["capital_owner"]["spx_context"]["status"], "unavailable")
+        self.assertEqual(bare_sidecar["capital_owner"]["stress_regime"], "unknown")
 
     def test_negative_pnl_is_material_loss_not_win(self) -> None:
         triggers = performance_triggers(

@@ -197,6 +197,7 @@ def apply_chatgpt_decision(
         review_packet_sha256=packet.get("review_packet_sha256"),
         expected_memory_sha256=packet.get("memory_context_sha256"),
         evidence_hash=packet.get("review_packet_sha256"),
+        review_packet=packet,
     )
     registry = apply_requests(
         registry,

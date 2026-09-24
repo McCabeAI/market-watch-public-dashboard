@@ -223,15 +223,3 @@ def build_capital_owner(
         "force_deployment": False,
     }
 
-
-def record_grinder_flat_snapshot(store: TradingStore, pm_id: str, consequence: dict[str, Any]) -> None:
-    if pm_id != "grinder" or consequence.get("status") != "ok":
-        return
-    net = float(consequence.get("net_after_funding_pnl_usd") or 0.0)
-    max_dd = float(consequence.get("max_drawdown_usd") or MAX_DRAWDOWN_USD)
-    threshold = MATERIAL_DRAWDOWN_FRACTION * max_dd
-    near_zero = abs(net) < max(50_000.0, threshold * 0.02)
-    state = store.read_consequence_state("pm", pm_id)
-    count = int(state.get("grinder_flat_snapshots") or 0)
-    state["grinder_flat_snapshots"] = count + 1 if near_zero else 0
-    store.write_consequence_state("pm", pm_id, state)

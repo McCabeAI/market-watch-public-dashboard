@@ -310,6 +310,7 @@ def record_consequence_observation(
     *,
     pm_books: dict[str, Any] | None = None,
     trader_books: dict[str, Any] | None = None,
+    review_packet: dict[str, Any] | None = None,
 ) -> None:
     if owner_type == "trader":
         consequence = build_trader_consequence(store, owner_id, books=trader_books)
@@ -341,18 +342,35 @@ def record_consequence_observation(
         threshold = MATERIAL_DRAWDOWN_FRACTION * max_dd if max_dd else 0.0
         near_zero = own is not None and abs(float(own)) < max(50_000.0, threshold * 0.02)
         if owner_id == "grinder":
+            from scripts.trading.capital_owner import opportunity_status_from_packet
+
+            opportunities = opportunity_status_from_packet(review_packet)
             count = int(current.get("grinder_flat_snapshots") or 0)
-            patch["grinder_flat_snapshots"] = count + 1 if near_zero else 0
+            if near_zero and opportunities == "present":
+                patch["grinder_flat_snapshots"] = count + 1
+            else:
+                patch["grinder_flat_snapshots"] = 0
         if owner_id == "swinger":
             drawdown = float(consequence.get("drawdown_usd") or 0.0)
             high_water = float(consequence.get("high_water_nav_usd") or CASH_CAPITAL_USD)
             net = float(own or 0.0)
             compensated = net >= threshold or high_water > CASH_CAPITAL_USD + threshold
             episodes = int(current.get("swinger_uncompensated_episodes") or 0)
-            if drawdown >= threshold and not compensated:
+            episode_open = bool(current.get("swinger_episode_open"))
+            anchor = current.get("swinger_episode_anchor_drawdown_usd")
+            if compensated or drawdown < threshold:
+                patch["swinger_episode_open"] = False
+                patch["swinger_episode_anchor_drawdown_usd"] = None
+                if compensated:
+                    patch["swinger_uncompensated_episodes"] = 0
+            elif not episode_open:
                 patch["swinger_uncompensated_episodes"] = episodes + 1
-            else:
-                patch["swinger_uncompensated_episodes"] = 0
+                patch["swinger_episode_open"] = True
+                patch["swinger_episode_anchor_drawdown_usd"] = drawdown
+            elif anchor is not None and drawdown >= float(anchor) + threshold:
+                patch["swinger_uncompensated_episodes"] = episodes + 1
+                patch["swinger_episode_open"] = True
+                patch["swinger_episode_anchor_drawdown_usd"] = drawdown
     if not patch:
         return
     current.update(patch)

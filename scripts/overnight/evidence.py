@@ -135,6 +135,7 @@ def freeze_snapshot(
         run_dir=review_dir,
         run_id=run_id,
         when=when,
+        market_state=market_state if isinstance(market_state, dict) else None,
     )
     packet["pm_memory"] = {
         "isolation": "per_pm_sidecar",
