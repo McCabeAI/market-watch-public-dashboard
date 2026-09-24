@@ -1,0 +1,878 @@
+{
+  "agent_packet": {
+    "base_evidence_cutoff": "2026-09-24T06:06:33.355500-04:00",
+    "base_packet_sha256": "36e3ba51622fba76a7f8474b02efc8b45e7fb8227af680d4926496a86787df63",
+    "competition": {
+      "flat_book_pnl": "A flat seat has zero net financing/competition P&L: paper NAV earning SOFR is benchmarked at SOFR, so those flows cancel, and shocked-risk financing is zero.",
+      "funding_basis": "Official NY Fed SOFR ACT/360 is the zero-return competition benchmark, not free alpha. Every seat has $100m paper NAV that may be described as earning SOFR, but that capital is equally funded/benchmarked at SOFR so those flows cancel. Deployed shocked-risk capital pays the same official SOFR on trusted standard-shock risk capital: the absolute MTM loss from a 1% adverse spot move, a 100bp (1 percentage point) adverse outright rate move, or a 100bp adverse curve/RV spread move under the trusted duration-1 P&L convention. Equal risk capital receives equal financing treatment across asset classes. Notional is descriptive, not the funding base. A completely flat book \u2014 including no-trade-skeptic \u2014 therefore has zero net financing/competition P&L from SOFR cash or funding economics. Positive financing/carry alpha requires an explicit markable strategy that earns above SOFR or funds below SOFR. Weekends and holidays carry the last applicable published fixing until the next fixing. If official fixing history cannot be established, new funding accrual fails closed and prior canonical balances are preserved.",
+      "funding_convention": "ACT/360",
+      "funding_day_count": 360,
+      "funding_observation_date": "2026-09-22",
+      "funding_rate_annual": 0.0387,
+      "funding_source": "NY_FED",
+      "funding_source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr",
+      "instruction": "Do not optimize for gross notional or fill available capacity. Size risk from plausible adverse paths and historical excursions while staying inside the trusted risk-capital and drawdown limits. Flat cash at SOFR is the zero benchmark, not a source of alpha. The no-trade-skeptic must include a structured funding_view on every new risk or NO_TRADE thesis: the frozen official SOFR fixing, the relevant SR3 forward-curve view, its own assessment of whether realized funding will print higher, lower, or about the same as the curve, and the implication for remaining at the zero SOFR benchmark versus paying SOFR on shocked-risk capital.",
+      "metric": "net_pnl_after_funding",
+      "no_trade_allowed": true,
+      "objective": "Finish with the highest cumulative net paper P&L across the 14 standing seats.",
+      "risk_limits": {
+        "max_drawdown_usd": 5000000,
+        "paper_nav_usd": 100000000,
+        "risk_capital_limit_usd": 10000000,
+        "risk_capital_method": "mtm_standard_1pct_move"
+      }
+    },
+    "evidence_cutoff": "2026-09-24T06:06:33.355500-04:00",
+    "overnight_run_id": "overnight-20260924",
+    "packet_sha256": "669e2d29383e02c6cd5f5c8a75acda5c23e0ea453ef1cc83f8cce2ae5c55c9f6",
+    "research_supplement": {
+      "central_bank_research": [
+        {
+          "country_codes": [
+            "US"
+          ],
+          "headline": "Fed Vice Chair Jefferson: discount window modernization supports Treasury and repo market functioning",
+          "institution": "Federal Reserve",
+          "published_at": "2026-09-22T00:00:00-04:00",
+          "source_name": "Board of Governors of the Federal Reserve System",
+          "summary": "22 Sep NY Treasury Market Conference remarks focused on discount window upgrades (DWD portal, collateral processes, FHLB coordination) and noted recent quarter-end discount window use when repo pressures lifted; not an explicit funds-rate path signal.",
+          "url": "https://www.federalreserve.gov/newsevents/speech/jefferson20260922a.htm"
+        },
+        {
+          "country_codes": [
+            "US"
+          ],
+          "headline": "NY Fed SOMA Manager Perli: reserves ample; overnight rates near IORB; RMPs cut to zero",
+          "institution": "Federal Reserve",
+          "published_at": "2026-09-22T00:00:00-04:00",
+          "source_name": "Federal Reserve Bank of New York",
+          "summary": "22 Sep speech said money markets showed ample reserves, overnight rates trading slightly below IORB, and the Desk had reduced reserve management purchases to zero since mid-August while monitoring bill issuance and repo conditions\u2014implementation backdrop after the 16 Sep hike.",
+          "url": "https://www.newyorkfed.org/newsevents/speeches/2026/per260922"
+        },
+        {
+          "country_codes": [
+            "JP"
+          ],
+          "headline": "BoJ September hike implementation: ~1.25% call-rate target effective 24 September",
+          "institution": "BoJ",
+          "published_at": "2026-09-18T00:00:00+09:00",
+          "source_name": "Bank of Japan",
+          "summary": "Official 18 Sep MPM materials confirm the uncollateralized overnight call target and complementary deposit facility rate move to ~1.25% from 24 Sep, with basic loan rate 1.5%; decision already in frozen CB tape but timing is near-term for JPY/rates.",
+          "url": "https://www.boj.or.jp/en/mopo/mpmdeci/mpr_2026/k260918a.pdf"
+        }
+      ],
+      "news": [
+        {
+          "country_codes": [
+            "US"
+          ],
+          "headline": "Trump tells UN he may 'annihilate' Iran or pursue a deal; Iran delegation walks out",
+          "primary_category": "geopolitics",
+          "published_at": "2026-09-22T00:00:00-04:00",
+          "source_name": "BBC",
+          "summary": "In his 22 Sep UNGA address, President Trump framed a binary choice between a rebuilding deal and rapid military annihilation of Iran, while tying the war to oil and politics; BBC/Reuters report much of the Iranian delegation left during the speech.",
+          "url": "https://www.bbc.com/news/articles/c52e0ywl9pr7o"
+        },
+        {
+          "country_codes": [
+            "US"
+          ],
+          "headline": "US and Iran hold mediated UNGA talks on war end and Hormuz",
+          "primary_category": "geopolitics",
+          "published_at": "2026-09-23T00:00:00-04:00",
+          "source_name": "Al Jazeera",
+          "summary": "Al Jazeera reports hours of indirect US\u2013Iran contact via mediators on 22 Sep; envoy Steve Witkoff said shuttling continued and Trump cited a lengthy, productive meeting involving Witkoff and Jared Kushner, though accounts differ on direct vs mediated contact.",
+          "url": "https://www.aljazeera.com/news/2026/9/23/us-iran-hold-mediated-unga-talks-on-ending-war-opening-strait-of-hormuz"
+        },
+        {
+          "country_codes": [
+            "US"
+          ],
+          "headline": "Senior Iranian official tells Reuters Hormuz could reopen in seven days if US eases blockade",
+          "primary_category": "energy",
+          "published_at": "2026-09-22T06:13:00-04:00",
+          "source_name": "Reuters",
+          "summary": "Reuters (Parisa Hafezi) on 22 Sep quoted a senior Iranian official saying the strait could reopen within seven days if Washington eases military pressure and lifts the port blockade, with Iran\u2019s UN team described as fully empowered to revive diplomacy.",
+          "url": "https://www.reuters.com/world/middle-east/iran-ready-reopen-strait-hormuz-if-us-eases-military-pressure-lifts-blockade-2026-09-22/"
+        },
+        {
+          "country_codes": [
+            "US"
+          ],
+          "headline": "Fars News disputes Reuters/Kyodo Hormuz reopening reports",
+          "primary_category": "energy",
+          "published_at": "2026-09-22T00:00:00-04:00",
+          "source_name": "International News and Views (syndicates Reuters/Fars)",
+          "summary": "After the Reuters-sourced seven-day Hormuz story moved oil lower, Iran\u2019s semi-official Fars cited sources calling those reports invalid/untrue; markets treated diplomacy hopes as tentative rather than confirmed policy.",
+          "url": "https://www.internationalnewsandviews.com/strait-of-hormuz-reopening-iran-us-oil-prices-september-2026-409323-2/"
+        },
+        {
+          "country_codes": [
+            "US"
+          ],
+          "headline": "Saudi Arabia restarts East-West pipeline; Yanbu exports may resume",
+          "primary_category": "energy",
+          "published_at": "2026-09-22T06:08:00-04:00",
+          "source_name": "Reuters",
+          "summary": "Three industry sources told Reuters on 22 Sep that Saudi Arabia restarted the East-West pipeline at a low rate after the 11 Sep shutdown and could resume Red Sea loadings at Yanbu later Tuesday, with Aramco targeting higher flows over time.",
+          "url": "https://www.reuters.com/business/energy/saudi-arabia-restarts-east-west-oil-pipeline-resume-exports-yanbu-sources-say-2026-09-22/"
+        },
+        {
+          "country_codes": [
+            "US"
+          ],
+          "headline": "Oil holds near two-week lows as Gulf supply improves and Iran talks linger",
+          "primary_category": "energy",
+          "published_at": "2026-09-23T01:44:00-04:00",
+          "source_name": "Reuters",
+          "summary": "Reuters on 23 Sep reported Brent near ~$99.41/bbl in early London trade after Tuesday\u2019s sub-$100 session, citing improving Gulf supply (Saudi pipeline, higher regional exports) alongside still-uncertain US\u2013Iran diplomacy; prior-session Brent low cited near $97.36.",
+          "url": "https://www.reuters.com/business/energy/oil-falls-increased-gulf-supply-hopes-us-iran-talks-2026-09-23/"
+        },
+        {
+          "country_codes": [
+            "US"
+          ],
+          "headline": "Trump backs idea of US diesel export ban; Bessent says feasibility under review",
+          "primary_category": "energy",
+          "published_at": "2026-09-22T14:38:00-04:00",
+          "source_name": "Reuters",
+          "summary": "At UN meetings on 22 Sep, Trump said he supports halting diesel exports to ease record US pump prices; Treasury Secretary Bessent said officials are studying full vs partial restrictions, while Reuters analysts warned global market disruption.",
+          "url": "https://www.reuters.com/world/us/trump-says-he-backs-idea-ban-diesel-exports-2026-09-22/"
+        },
+        {
+          "country_codes": [
+            "US"
+          ],
+          "headline": "Wall Street mixed: Nasdaq closes at record as oil eases; Dow falls",
+          "primary_category": "markets",
+          "published_at": "2026-09-22T16:00:00-04:00",
+          "source_name": "Newser (AP syndication)",
+          "summary": "AP/Newser recap of 22 Sep US close: S&P 500 essentially flat (~7,764.64), Nasdaq +0.5% to a record ~27,244.28, Dow \u2212185 points; banks weighed after the prior week\u2019s Fed hike while the 10-year yield edged down toward ~4.95%.",
+          "url": "https://www.newser.com/article/de8c5f9659e44556e40e661f794b48ad/wall-street-holds-near-its-record-after-brent-oil-falls-below-100-per-barrel.html"
+        }
+      ],
+      "sources": [
+        {
+          "name": "BBC",
+          "published_at": "2026-09-22T00:00:00-04:00",
+          "url": "https://www.bbc.com/news/articles/c52e0ywl9pr7o"
+        },
+        {
+          "name": "Al Jazeera",
+          "published_at": "2026-09-23T00:00:00-04:00",
+          "url": "https://www.aljazeera.com/news/2026/9/23/us-iran-hold-mediated-unga-talks-on-ending-war-opening-strait-of-hormuz"
+        },
+        {
+          "name": "Reuters",
+          "published_at": "2026-09-22T06:13:00-04:00",
+          "url": "https://www.reuters.com/world/middle-east/iran-ready-reopen-strait-hormuz-if-us-eases-military-pressure-lifts-blockade-2026-09-22/"
+        },
+        {
+          "name": "International News and Views (syndicates Reuters/Fars)",
+          "published_at": "2026-09-22T00:00:00-04:00",
+          "url": "https://www.internationalnewsandviews.com/strait-of-hormuz-reopening-iran-us-oil-prices-september-2026-409323-2/"
+        },
+        {
+          "name": "Reuters",
+          "published_at": "2026-09-22T06:08:00-04:00",
+          "url": "https://www.reuters.com/business/energy/saudi-arabia-restarts-east-west-oil-pipeline-resume-exports-yanbu-sources-say-2026-09-22/"
+        },
+        {
+          "name": "Reuters",
+          "published_at": "2026-09-23T01:44:00-04:00",
+          "url": "https://www.reuters.com/business/energy/oil-falls-increased-gulf-supply-hopes-us-iran-talks-2026-09-23/"
+        },
+        {
+          "name": "Reuters",
+          "published_at": "2026-09-22T14:38:00-04:00",
+          "url": "https://www.reuters.com/world/us/trump-says-he-backs-idea-ban-diesel-exports-2026-09-22/"
+        },
+        {
+          "name": "Newser (AP syndication)",
+          "published_at": "2026-09-22T16:00:00-04:00",
+          "url": "https://www.newser.com/article/de8c5f9659e44556e40e661f794b48ad/wall-street-holds-near-its-record-after-brent-oil-falls-below-100-per-barrel.html"
+        },
+        {
+          "name": "Board of Governors of the Federal Reserve System",
+          "published_at": "2026-09-22T00:00:00-04:00",
+          "url": "https://www.federalreserve.gov/newsevents/speech/jefferson20260922a.htm"
+        },
+        {
+          "name": "Federal Reserve Bank of New York",
+          "published_at": "2026-09-22T00:00:00-04:00",
+          "url": "https://www.newyorkfed.org/newsevents/speeches/2026/per260922"
+        },
+        {
+          "name": "Bank of Japan",
+          "published_at": "2026-09-18T00:00:00+09:00",
+          "url": "https://www.boj.or.jp/en/mopo/mpmdeci/mpr_2026/k260918a.pdf"
+        }
+      ],
+      "summary": "Manual review-001 on trusted freeze 2026-09-24T06:06:33.355500-04:00 (base_packet_sha256 36e3ba51622fba76a7f8474b02efc8b45e7fb8227af680d4926496a86787df63). families.macro_hard is stale globally (as_of null); news and central_bank_research are fresh as of 2026-09-23T06:20:00-04:00; market_state is fresh as of 2026-09-24T10:19:32Z. Quality gate PASS/PARTIAL: trade-eligible CA/NZ/EA/JP; US scored_status blocked; AU ineligible and macro:AU blocked. Trusted freshness fails closed on OPEN/ADD/HEDGE while macro_hard is stale; HOLD/REDUCE/CLOSE remain valid and are not operational failure. Official NY Fed SOFR 3.87% effective 2026-09-22 ACT/360 is the zero-alpha benchmark. SR3 U6/Z6/H7/M7/U7 at 4.0225/4.375/4.655/4.82/4.885. UST 23 Sep 2Y/5Y/10Y 4.85/4.99/5.11 (+14/+16/+15bp 1d). CORRA 2.29; CRAH27 3.15 (+86bp vs cash). AONIA 4.35; Jun-27 4.935. BoJ ~1.25% effective 24 Sep; TONA ~0.977 / Mar-27 1.725. FX 23 Sep: EURUSD 1.1411 (pctile 6.9), USDCAD 1.4089 (89.1), AUDCAD 0.9957 (96.6), NZDUSD 0.5692 (11.3). News: UNGA US-Iran/Hormuz diplomacy vs Fars denial; Saudi East-West restart; oil near two-week lows (Reuters Brent ~$99.41); diesel-export-ban idea; mixed US equities 22 Sep. CB: Jefferson discount-window; Perli ample reserves/RMPs zero; BoJ implementation. Existing books cluster in CAD receive (CORRA_2027-03 / 2027H-Z) versus singles in USDCAD, AUDCAD, AONIA_2027-06, and opposing SOFR_2027-03/09. Outstanding postmortems block expansion for cross-merchant, value-guy, positioning-cynic, catalyst-junkie."
+    },
+    "review_id": "review-001",
+    "schema_version": 1,
+    "type": "OVERNIGHT_AGENT_EVIDENCE_PACKET"
+  },
+  "base_packet_sha256": "36e3ba51622fba76a7f8474b02efc8b45e7fb8227af680d4926496a86787df63",
+  "decisions": {
+    "carry-is-king": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Keep the 75m long/receive. Packet carry is +86bp CRAH27 vs cash CORRA; that differential still pays patience. Oil-at-lows/Hormuz-disputed is not a close catalyst. Cannot ADD or HEDGE while macro_hard is STALE. REDUCE/CLOSE only if implied CORRA is forced through 3.15.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "CORRA_2027-03",
+          "position_id": "pos-b97bddbdbd2d"
+        }
+      ],
+      "alerts": [],
+      "conviction": 68,
+      "evidence_cutoff": "2026-09-24T06:06:33.355500-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "No new expression. macro_hard STALE forbids OPEN/ADD/HEDGE. The live book already is the STIR receive (CORRA_2027-03 / CRAH27 3.15 vs cash 2.29). Spot FX unavailable; do not pay negative carry or chase Hormuz/oil. HOLD is the patient carry expression.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "Receive thesis fails if policy/inflation forces CORRA implied through the 3.15 CRAH27 receive (cash CORRA rising toward 3.15, or CRAH27 repricing higher), or if Hormuz is confirmed as an oil-supply shock the packet currently disputes while oil sits at two-week lows. No numeric stop in packet (null). REDUCE/CLOSE only on that path; do not OPEN a hedge while macro_hard is STALE.",
+      "memory_context_sha256": "eaff24be69bfda0c95bb3ed942afacee0924249048a9cf49239c880e70cd4e6b",
+      "overnight_run_id": "overnight-20260924",
+      "packet_sha256": "669e2d29383e02c6cd5f5c8a75acda5c23e0ea453ef1cc83f8cce2ae5c55c9f6",
+      "review_id": "review-001",
+      "seat": "carry-is-king",
+      "thesis": "FACT: long/receive CORRA_2027-03 75m pos-b97bddbdbd2d; CORRA cash 2.29; CRAH27 3.15 (+86bp vs cash); SOFR 3.87% as of 2026-09-22; oil near two-week lows and Hormuz disputed; macro_hard STALE so OPEN/ADD/HEDGE fail closed and only HOLD/REDUCE/CLOSE are live. INFERENCE: Mar-27 implied 86bp above cash pays the existing receiver to sit if the BoC path stays closer to 2.29 than 3.15; Hormuz/oil is an unconfirmed low-carry narrative (oil at two-week lows), not a catalyst that overwhelms carry; cash SOFR-CORRA 158bp is CAD-easier vs USD and argues against paying down a working CAD receive. UNKNOWN: 2Y/5Y/10Y, USD/CAD, matched SOFR 2027-03 implied, CRAH27 tick, and dollar holding-period carry on 75m are all null in packet, so carry is the +86bp path differential only, not a $ number. HOLD is the carry decision, not a data failure."
+    },
+    "catalyst-junkie": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "HOLD flat is mandated and valid: pmd-69691111cd40 blocks OPEN/ADD/HEDGE, AU STIR is ineligible, remaining rates buckets and spot have no closed-packet levels or dated catalyst, and this seat will not force a tenor or default to options.",
+            "selected": "none",
+            "spot_candidate": null
+          }
+        }
+      ],
+      "alerts": [
+        "outstanding postmortem pmd-69691111cd40"
+      ],
+      "conviction": 60,
+      "evidence_cutoff": "2026-09-24T06:06:33.355500-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "Rates-first scan found only the AU STIR ladder (AONIA 4.35 / Oct-26 4.565 / Jun-27 4.935), which is ineligible; 2Y, 5Y, 10Y, curve, and cross-market RV have no packet levels so candidates are null. Spot is not cleaner because it also lacks a dated in-scope mechanism under STALE macro_hard. Options not used. Postmortem pmd-69691111cd40 independently blocks OPEN/ADD/HEDGE, so selected is none and the book stays flat.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "pmd-69691111cd40 cleared AND macro_hard refreshed in-date AND a subsequent packet supplies an eligible (non-AU) dated catalyst with tradable rates levels. Until then OPEN/ADD/HEDGE remain blocked; do not treat the ineligible AONIA strip as a path to reprice.",
+      "memory_context_sha256": "261265a7c08d03afd42098b15cb48a2a7a63fa5b65d00bc752c60e19e189a4e5",
+      "overnight_run_id": "overnight-20260924",
+      "packet_sha256": "669e2d29383e02c6cd5f5c8a75acda5c23e0ea453ef1cc83f8cce2ae5c55c9f6",
+      "review_id": "review-001",
+      "seat": "catalyst-junkie",
+      "thesis": "VERIFIED: book is FLAT after closing AONIA_2026-10; pmd-69691111cd40 blocks OPEN/ADD/HEDGE; macro_hard is STALE; AU is ineligible; packet prints AONIA 4.35, Oct-26 4.565, Jun-27 4.935. INFERENCE: that AU strip is a hike-priced path versus cash, but valuation without an eligible dated mechanism can stay wrong, and this seat will not force a tenor or a ghost catalyst. rates_tenor_scan: STIR/policy-path = AU AONIA/Oct-26/Jun-27 ladder only and ineligible; 2Y/5Y/10Y/curve/cross-market rates RV = unavailable (no non-AU levels in the closed packet; nulls, not invented). Best rates expression is therefore none. Spot-FX candidate also none: no dated non-AU FX mechanism survives STALE macro_hard. UNKNOWN: postmortem substance and any non-AU print. Catalyst-junkie rejects an elegant reopen; HOLD flat is the only valid action."
+    },
+    "cross-merchant": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Fail-closed to OPEN/ADD/HEDGE. Stretched AUDCAD (0.9957, pctile 96.6) plus STALE macro_hard: hold pos-27d002b448b1, do not resize, do not switch into a USD pair.",
+            "selected": "none",
+            "spot_candidate": {
+              "asset_class": "spot_fx",
+              "instrument": "AUDCAD",
+              "rationale": "Existing non-USD AU-CA expression; isolates the booked relative-value view without a USD common factor."
+            }
+          },
+          "instrument": "AUDCAD",
+          "position_id": "pos-27d002b448b1"
+        }
+      ],
+      "alerts": [
+        "outstanding postmortem pmd-8ddf6ee19a94"
+      ],
+      "conviction": 56,
+      "evidence_cutoff": "2026-09-24T06:06:33.355500-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "SPOT seat, rates_candidate null. Valuation 96.6th percentile and STALE macro_hard argue against a new selection; OPEN/ADD/HEDGE fail-closed. Hold the existing AUDCAD 10m only.",
+        "selected": "none",
+        "spot_candidate": {
+          "asset_class": "spot_fx",
+          "instrument": "AUDCAD",
+          "rationale": "Existing non-USD AU-CA expression; isolates the booked relative-value view without a USD common factor."
+        }
+      },
+      "invalidation": "FACT: no stop, target, or hedge level is supplied in the frozen packet\u2014treat those as null. INFERENCE: the AU-CA long is invalidated if the intended differential is no longer best isolated in AUDCAD (CAD outperformance on a closed-book basis, or a postmortem that marks the 10m for risk reduction) or if a fresh non-stale macro_hard packet overturns the AU-over-CA premise. Do not invent levels. A USD expression (AUDUSD or USDCAD) would not isolate the same differential and is not a substitute invalidation.",
+      "memory_context_sha256": "8540ca75b554d2b08d24a43bcfce61f43f73fcf3877fe91b11a290e0313cf196",
+      "overnight_run_id": "overnight-20260924",
+      "packet_sha256": "669e2d29383e02c6cd5f5c8a75acda5c23e0ea453ef1cc83f8cce2ae5c55c9f6",
+      "review_id": "review-001",
+      "seat": "cross-merchant",
+      "thesis": "FACT: book is already long AUDCAD 10m (pos-27d002b448b1) at 0.9957 / 96.6th percentile; macro_hard is STALE; OPEN/ADD/HEDGE are fail-closed; postmortem pmd-8ddf6ee19a94 is outstanding. INFERENCE: AUDCAD remains the cleanest non-USD isolation of the AU-CA differential already on the book\u2014USD pairs would reintroduce a common-dollar factor and contaminate the intended relative-value view. Policy, growth, inflation, carry and catalyst asymmetry cannot be re-scored from fresh hard data while macro_hard is STALE; those legs are therefore unknown, not re-underwritten. Valuation is stretched (96.6th percentile), so this is not an add and not a new expression. UNKNOWN: unpublished stop/target levels, live carry, and any post-cutoff AU/CA policy or data surprise. Dedicated SPOT seat: rates_candidate is null. Only admissible book action is HOLD the existing 10m."
+    },
+    "dollar-king": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Fail-closed overnight: HOLD residual long USDCAD. Carry and 2Y differential still favor USD vs CAD; 89.1 percentile blocks adding even if size were open. No rates or options overlay.",
+            "selected": "none",
+            "spot_candidate": {
+              "asset_class": "spot_fx",
+              "instrument": "USDCAD",
+              "rationale": "Existing USD-spot expression."
+            }
+          },
+          "instrument": "USDCAD",
+          "position_id": "pos-5317bc96d4eb"
+        }
+      ],
+      "alerts": [],
+      "conviction": 70,
+      "evidence_cutoff": "2026-09-24T06:06:33.355500-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "Dedicated spot seat; rates_candidate null. OPEN/ADD/HEDGE fail closed, so no new expression. Keep residual long USDCAD as the USD-spot rates-and-growth benchmark versus CAD; a CAD cross would inject unnecessary second-order risk.",
+        "selected": "none",
+        "spot_candidate": {
+          "asset_class": "spot_fx",
+          "instrument": "USDCAD",
+          "rationale": "Existing USD-spot expression."
+        }
+      },
+      "invalidation": "HOLD thesis breaks if a non-stale macro_hard refresh shows CAD cyclical outperformance vs US, or if the CA-US 2Y gap and SOFR-CORRA wedge no longer favor USD. No price stop or target is in the packet (null). Fail-closed book: do not OPEN, ADD, or HEDGE.",
+      "memory_context_sha256": "1f892fdf12ee3eaaf17a93c5c4b272abce05937a978ac33f6c5467fa1301a9cc",
+      "overnight_run_id": "overnight-20260924",
+      "packet_sha256": "669e2d29383e02c6cd5f5c8a75acda5c23e0ea453ef1cc83f8cce2ae5c55c9f6",
+      "review_id": "review-001",
+      "seat": "dollar-king",
+      "thesis": "VERIFIED: book is long USDCAD 55m pos-5317bc96d4eb; spot 1.4089 at 89.1 percentile; SOFR 3.87 vs CORRA 2.29; CA-US 2Y -146bp; macro_hard STALE; OPEN/ADD/HEDGE fail closed. INFERENCE: the USD-CAD rate gap is the cleanest USD-spot expression in the book\u2014policy and carry still favor USD over CAD, so a CAD cross would add second-order non-USD risk without improving the rates or growth bet. Valuation is extended, so this is a keep-not-add stance. UNKNOWN: fresh CA/US growth, BoC/Fed path, and any level-based trigger (none in packet). Action is HOLD only."
+    },
+    "mean-reverter": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Existing 40m long is the rates-first fade of SR3H7 4.655 vs SOFR 3.87 after UST 2Y/10Y +14/+15bp stretch. Cannot OPEN/ADD/HEDGE. Spot unavailable. HOLD only.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "SOFR_2027-03",
+          "position_id": "pos-1477172adb86"
+        }
+      ],
+      "alerts": [
+        "SR3H7 implied holding/rising through 4.655 vs SOFR 3.87",
+        "UST 2Y/10Y failing to retrace 4.85/5.11 (+14/+15bp) prints",
+        "macro_hard unstale with higher path confirmation"
+      ],
+      "conviction": 55,
+      "evidence_cutoff": "2026-09-24T06:06:33.355500-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rates_tenor_scan": {
+          "10y": {
+            "asset_class": "10y",
+            "candidate": "fade +15bp to 5.11 via long 10Y",
+            "instrument": "UST_10Y",
+            "reason": "stretched overnight but OPEN fail closed; duration less precise than Mar-27 STIR vs cash SOFR"
+          },
+          "2y": {
+            "asset_class": "2y",
+            "candidate": "fade +14bp to 4.85 via long 2Y",
+            "instrument": "UST_2Y",
+            "reason": "stretched overnight but OPEN fail closed; inferior to live STIR line"
+          },
+          "5y": {
+            "asset_class": "5y",
+            "candidate": null,
+            "instrument": null,
+            "reason": "unavailable in packet"
+          },
+          "cross_market_rates_rv": {
+            "asset_class": "cross_market_rates_rv",
+            "candidate": null,
+            "instrument": null,
+            "reason": "unavailable in packet"
+          },
+          "curve": {
+            "asset_class": "curve",
+            "candidate": null,
+            "instrument": null,
+            "reason": "2s10s ~26bp after near-parallel +14/+15bp selloff; not compelling RV without history"
+          },
+          "stir_policy_path": {
+            "asset_class": "stir_policy_path",
+            "candidate": "HOLD long SOFR_2027-03 / SR3H7 4.655 vs SOFR 3.87",
+            "instrument": "SOFR_2027-03",
+            "reason": "cleanest stretched STIR premium vs cash; existing 40m long is the fade"
+          }
+        },
+        "rationale": "Best expression is the STIR bucket long SOFR_2027-03 already on book; spot FX has no packet levels so is inferior/unavailable; options not used. OPEN/ADD/HEDGE fail closed, so selected=none (no new expression) and action is HOLD.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "Mean-reversion thesis dies if the overnight UST stretch extends rather than retraces: UST 2Y remaining at/above 4.85 and 10Y at/above 5.11 while SR3H7 implied holds or rises through 4.655 and cash SOFR moves up from 3.87, so the 4.655 vs 3.87 gap is re-anchored as policy path not overshoot. Fresh macro_hard (currently STALE) confirming a higher terminal/path would also invalidate. No invented stops; levels are packet prints only (null otherwise).",
+      "memory_context_sha256": "21bbc64e3590c8f24d8468d6dffdaf53acbe326f71a3185e9a78077efdc71539",
+      "overnight_run_id": "overnight-20260924",
+      "packet_sha256": "669e2d29383e02c6cd5f5c8a75acda5c23e0ea453ef1cc83f8cce2ae5c55c9f6",
+      "review_id": "review-001",
+      "seat": "mean-reverter",
+      "thesis": "FACT: book is long SOFR_2027-03 / SR3H7 40m pos-1477172adb86; SR3H7 implied 4.655 vs cash SOFR 3.87; UST 2Y 4.85 (+14bp) and 10Y 5.11 (+15bp); macro_hard STALE; OPEN/ADD/HEDGE fail closed. INFERENCE: the overnight UST selloff is a same-session stretch, not a completed re-anchor, while Mar-27 STIR still prices ~78.5bp above cash SOFR\u2014crowded hawkish extrapolation that the existing long (short-implied-rate) is already fading. Anchor is cash SOFR 3.87 plus a still-elevated 2s/10s level (4.85/5.11, ~26bp 2s10s); reversal condition is overnight yield overshoot fading so SR3H7 implied compresses toward a less restrictive path. rates_tenor_scan: STIR/policy-path candidate=HOLD long SOFR_2027-03 (only clean fade of 4.655 vs 3.87); 2Y candidate=long UST2Y fade of +14bp to 4.85 but OPEN fail closed; 5Y unavailable in packet; 10Y candidate=long UST10Y fade of +15bp to 5.11 but OPEN fail closed; curve 2s10s ~26bp after near-parallel selloff, not a standalone RV without history; cross-market rates RV unavailable. Spot-FX candidate unavailable (no spot levels in packet). Rates selected conceptually; no new expression because book already is the STIR fade and new risk is fail-closed. UNKNOWN: fresh macro, positioning, vol, and whether the +14/+15bp move had a discrete catalyst. Do not add. HOLD the stretched-STIR fade."
+    },
+    "no-trade-skeptic": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "HOLD / BOOK FLAT. Official SOFR 3.87 effective 2026-09-22 is the realized funding authority; SR3 already prices Z6 4.375 / H7 4.655 / U7 4.885; Receive-CORRA crowded and macro_hard STALE. No rates, spot, or options candidate.",
+            "selected": "none",
+            "spot_candidate": null
+          }
+        }
+      ],
+      "alerts": [],
+      "conviction": 78,
+      "evidence_cutoff": "2026-09-24T06:06:33.355500-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "No instrument. Edges are priced into SR3 Z6/H7/U7 versus official SOFR 3.87, Receive-CORRA is crowded, macro_hard is STALE, and horizon is overnight. Rates-first comparison is moot because no candidate clears skeptic objections.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "funding_view": {
+        "current_sofr": {
+          "observation_date": "2026-09-22",
+          "rate": 3.87
+        },
+        "forward_funding_assessment": "about_the_same",
+        "implication": "Remain at the zero official-SOFR benchmark. Do not pay SOFR on shocked-risk capital.",
+        "sr3_forward_view": "Frozen SR3 Z6 4.375 / H7 4.655 / U7 4.885 versus official SOFR 3.87 effective 2026-09-22."
+      },
+      "invalidation": "Actionable only if a fresh packet revises official SOFR away from 3.87, unfreezes SR3 off Z6 4.375 / H7 4.655 / U7 4.885 with a documented residual versus 3.87, recodes Receive-CORRA as not crowded with a dated positioning source, and replaces STALE macro_hard with a same-morning catalyst that survives a rates-first scan. Until those four conditions hit together, no trade.",
+      "memory_context_sha256": "19377e16c7e0b05c787ef97b2477efbe0dd788a709beaa19609a80d5321cb93d",
+      "overnight_run_id": "overnight-20260924",
+      "packet_sha256": "669e2d29383e02c6cd5f5c8a75acda5c23e0ea453ef1cc83f8cce2ae5c55c9f6",
+      "review_id": "review-001",
+      "seat": "no-trade-skeptic",
+      "thesis": "BOOK FLAT. Verified fact: official NY Fed SOFR is 3.87 effective 2026-09-22, not 3.85; frozen SR3 is Z6 4.375 / H7 4.655 / U7 4.885; Receive-CORRA is labeled crowded; macro_hard is STALE at cutoff 2026-09-24T06:06:33.355500-04:00. Inference: the SR3 strip already prices a steep funding-normalization path above realized 3.87, so any overnight rates, curve, or CAD-receive expression is paying for an already-advertised path rather than an unpriced residual. Crowded Receive-CORRA is the opposite of an edge: entry is poorly timed, squeeze risk is one-sided, and a stale macro_hard packet cannot falsify the crowding or the timing. Apparent vol/spot overlays are noisier than the SOFR-vs-SR3 basis and do not clear a rates-first bar. Unknown: post-cutoff prints, unfrozen positioning updates, and any live CORRA/SOFR dislocation after 2026-09-22. Flat cash is not alpha; remaining at the zero official-SOFR benchmark is the only defensible overnight stance."
+    },
+    "perma-bear": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Keep pos-3b40ade3da2c unchanged. Adding or hedging would violate fail-closed and AU ineligibility; stale hard-macro cannot justify a new tenor, curve, or FX overlay. The 4.35 vs 4.935 gap remains the on-book slowdown/risk-off rates hold.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "AONIA_2027-06",
+          "position_id": "pos-3b40ade3da2c"
+        }
+      ],
+      "alerts": [],
+      "conviction": 61,
+      "evidence_cutoff": "2026-09-24T06:06:33.355500-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "Rates-first scan is blocked for new expression: AU ineligible, macro_hard STALE, OPEN/ADD/HEDGE fail closed. No cleaner spot or options substitute is admissible on a closed book. Residual bear expression is the existing long AONIA_2027-06 only.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "Jun-27 implied AONIA holds or rises because cash re-tightens on a hawkish RBA/inflation impulse rather than the contract yield falling; or a post-cutoff packet refresh clears STALE/ineligible and shows AU growth re-acceleration that validates the 4.935 path.",
+      "memory_context_sha256": "c9cd8f8c48fe6524a880415ec14ee572253badbb25ff366507331fce35979b6a",
+      "overnight_run_id": "overnight-20260924",
+      "packet_sha256": "669e2d29383e02c6cd5f5c8a75acda5c23e0ea453ef1cc83f8cce2ae5c55c9f6",
+      "review_id": "review-001",
+      "seat": "perma-bear",
+      "thesis": "Jun-27 AONIA at 4.935 versus cash AONIA 4.35 still prices a late-cycle re-tightening path that underweights growth, revision, and liquidity-fragility tails. The existing long AONIA_2027-06 is the cleanest already-on-book defensive rates expression of that mispricing. Evidence is closed, macro_hard is STALE, AU is ineligible, and OPEN/ADD/HEDGE fail closed, so no new risk is admissible. Hold the 55m; do not rotate into spot-FX or options."
+    },
+    "perma-bull": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "HOLD the existing 50m short/pay CORRA_2027-03. It is already the rates-first pro-growth expression (CRAH27 3.15 vs CORRA 2.29). No add, no USDCAD overlay, no options; OPEN/ADD/HEDGE fail closed.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "CORRA_2027-03",
+          "position_id": "pos-dd6fdaf39119"
+        }
+      ],
+      "alerts": [
+        "CRAH27 implied rate slides from 3.15 toward CORRA 2.29 (easing reprice against the pay)",
+        "USDCAD hold/break above 1.4089 on CAD-specific growth scare, not generic USD"
+      ],
+      "conviction": 62,
+      "evidence_cutoff": "2026-09-24T06:06:33.355500-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "Fail-closed: cannot OPEN/ADD/HEDGE. Preferred bull expression is already the book (short/pay CORRA_2027-03). Spot USDCAD 1.4089 is a dirtier cyclical read with CAD-idiosyncratic noise; options not used. selected=none.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "Growth/risk-off shock that reopens a BoC easing path and compresses CRAH27 from 3.15 toward CORRA 2.29, covering the pay; or CAD-idiosyncratic deterioration that makes USDCAD 1.4089 a growth-scare print rather than a residual USD move. macro_hard remaining STALE is not invalidation by itself.",
+      "memory_context_sha256": "adaf18ba8a4691d9381772bfe287761cdfca490ac76910ac8a738bd3f367a751",
+      "overnight_run_id": "overnight-20260924",
+      "packet_sha256": "669e2d29383e02c6cd5f5c8a75acda5c23e0ea453ef1cc83f8cce2ae5c55c9f6",
+      "review_id": "review-001",
+      "seat": "perma-bull",
+      "thesis": "FACT: book is short/pay CORRA_2027-03 50m (pos-dd6fdaf39119); CRAH27 3.15 vs CORRA 2.29; USDCAD 1.4089; macro_hard STALE; OPEN/ADD/HEDGE fail closed. INFERENCE: growth and risk appetite are more resilient than a defensive CAD-easing narrative; paying Mar-27 is the cleanest pro-cyclical expression because a non-cut/re-tightening path is how CAD growth shows up in rates, and short=pay already maps to that. The 3.15 vs 2.29 gap already embeds substantial re-tightening, so the existing 50m pay is the expression rather than a new USDCAD short. UNKNOWN: live hard-data revisions beyond stale macro_hard and any packet fields not in this seat brief. HOLD only."
+    },
+    "positioning-cynic": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Book flat, unpaid postmortems, stale macro_hard, and consensus Receive-CORRA-2027 occupancy veto every rates and spot expression. No instrument. HOLD.",
+            "selected": "none",
+            "spot_candidate": null
+          }
+        }
+      ],
+      "alerts": [
+        "outstanding postmortems pmd-86d9c87862a0 and pmd-550c41ce938c"
+      ],
+      "conviction": 72,
+      "evidence_cutoff": "2026-09-24T06:06:33.355500-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "Rates-first scan (closed packet): STIR/policy-path Receive-CORRA-2027 is consensus occupancy so not owned; 2Y/5Y/10Y not independently clean versus that occupancy and not compelling with macro_hard STALE; curve and cross-market rates RV have no non-crowded packet-supported candidate (unavailable/not-compelling). Spot-FX is not cleaner: it does not repair occupancy, stale macro, or open postmortems. Options not considered. Selected none; HOLD.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "HOLD/flat lifts only if all three are true in a later packet: both named postmortems closed, macro_hard refreshed after this cutoff, and Receive-CORRA-2027 no longer consensus occupancy (flush documented, not assumed). Any one remaining true keeps the book flat. A further rally in CAD 2027 rates does not invalidate crowding. Levels: null.",
+      "memory_context_sha256": "64d1860497db03929c9e18fd9a71e80f1235ec4185d19784b6786faac1356b25",
+      "overnight_run_id": "overnight-20260924",
+      "packet_sha256": "669e2d29383e02c6cd5f5c8a75acda5c23e0ea453ef1cc83f8cce2ae5c55c9f6",
+      "review_id": "review-001",
+      "seat": "positioning-cynic",
+      "thesis": "FACT: Frozen packet 669e2d29 at cutoff 2026-09-24T06:06:33.355500-04:00; book FLAT; Receive-CORRA-2027 labeled consensus occupancy; macro_hard STALE; postmortems pmd-86d9c87862a0 and pmd-550c41ce938c unpaid; REMIT HOLD. INFERENCE: Receive-CORRA-2027 is the crowded CAD-easing/carry expression. Ownership already sits on the receive, so adding it overnight is buying occupancy not edge. A fade of that crowd is a different thesis and is not licensed while the book is flat, the macro overlay is stale, and postmortems are open. Thesis vs entry: a BoC/CORRA-path view can still be a bad trade because this seat would be last in. UNKNOWN: CFTC/options-skew/CTA occupancy percentiles and flush levels are not restated here; all numeric levels null."
+    },
+    "rate-dove": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Fail-closed overnight: keep 85m receive CORRA_2027H-Z. CRAH27 3.15 / CRAM27 3.41 vs CORRA 2.29 still looks like overpriced 2027 tightening against cooling CA labor and weak oil. No add, no hedge, no spot substitute.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "CORRA_2027H-Z",
+          "position_id": "pos-9849cf751c27"
+        }
+      ],
+      "alerts": [],
+      "conviction": 69,
+      "evidence_cutoff": "2026-09-24T06:06:33.355500-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "Overnight remit is hold-only: OPEN/ADD/HEDGE fail closed and macro_hard is STALE, so no new STIR/2s/5s/10s/curve/RV or CAD spot expression can be put on. Best live dove expression is already the book\u2019s receive in CORRA_2027H-Z versus the 3.15/3.41 2027 strip. Rates-tenor scan not actionable overnight: STIR/policy-path candidate would be receive CORRA_2027H-Z (already on); 2Y/5Y/10Y/curve/cross-market RV unavailable or not compelling in the closed packet (no clean tenors/levels beyond CORRA/CRAH27/CRAM27). Spot CAD not cleaner than the existing receive and cannot be opened. Options not used.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "Packet-consistent CA labor re-acceleration, oil reversing off the two-week-low area, or CRAH27/CRAM27 richening further on a hawkish BoC path that validates 3.15\u20133.41 as intended rather than overpriced tightening. Stale macro_hard staying stale is not invalidation; a fresh hard print that re-steepens the 2027 hike premium is.",
+      "memory_context_sha256": "fc401d7e127022f2088e61a07cbbddb58f60674810281bf6dd4c7c4359c4ac79",
+      "overnight_run_id": "overnight-20260924",
+      "packet_sha256": "669e2d29383e02c6cd5f5c8a75acda5c23e0ea453ef1cc83f8cce2ae5c55c9f6",
+      "review_id": "review-001",
+      "seat": "rate-dove",
+      "thesis": "Verified: CORRA 2.29 vs CRAH27 3.15 and CRAM27 3.41; book is long/receive CORRA_2027H-Z 85m (pos-9849cf751c27); CA labor cooling; oil near two-week lows; macro_hard STALE; OPEN/ADD/HEDGE fail closed. Inference: the 2027 H-Z strip still prices ~86\u2013112bp of re-tightening versus current CORRA, which overstates BoC capacity to hike if labor is already cooling and energy is weakening; restrictive policy bites into 2027, so receive remains the underpriced-easing side. Unknown: updated macro_hard, exact STIR cut-count vs this strip, and any non-packet CAD spot/vol levels. Hold the existing receive; do not chase a new expression overnight."
+    },
+    "rate-hawk": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Book already pays Sep-27 SOFR (short=pay). SR3U7 4.885 vs SOFR 3.87 and the +14/+15bp UST 2s/10s backup keep the hawkish prior intact. Cannot OPEN/ADD/HEDGE; HOLD the 50m short pos-c9184707c12b with no overlay.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "SOFR_2027-09",
+          "position_id": "pos-c9184707c12b"
+        }
+      ],
+      "alerts": [],
+      "conviction": 60,
+      "evidence_cutoff": "2026-09-24T06:06:33.355500-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "Rates-first scan would prefer holding/adding the 2027 SOFR pay (STIR/policy-path bucket) over spot FX, but OPEN/ADD/HEDGE fail closed and macro_hard is STALE. No new rates, spot, or options ticket is admissible; selected none.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "A path-level dovish reaction-function shift\u2014not implementation\u2014that reprices SR3U7 and UST 2Y materially below the frozen 4.885 / 4.85 prints, or a verified non-stale macro_hard labor/disinflation break that collapses 2027 implied SOFR toward spot 3.87.",
+      "memory_context_sha256": "eb55a16e620b15883b40211258e66517389508384c4ee76f549fb7fc9158686b",
+      "overnight_run_id": "overnight-20260924",
+      "packet_sha256": "669e2d29383e02c6cd5f5c8a75acda5c23e0ea453ef1cc83f8cce2ae5c55c9f6",
+      "review_id": "review-001",
+      "seat": "rate-hawk",
+      "thesis": "Existing pay in SOFR_2027-09 remains the live hawkish expression. Verified: SR3U7 4.885 vs spot SOFR 3.87; UST 2Y/10Y 4.85/5.11, +14/+15bp. That stack is higher-terminal, not a deep-easing path. Jefferson/Perli are implementation, not reaction-function. Inference: inflation persistence still underpriced versus a 2027 cut cycle; do not fade the pay on plumbing talk. Unknown: fresh macro_hard (STALE). OPEN/ADD/HEDGE fail closed, so no new rates expression."
+    },
+    "trend-follower": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "HOLD the 50m short/pay. Trend, rate-spread (SR3H7 4.655 vs SOFR 3.87), and 23 Sep UST backup remain aligned; no reversal signal. Cannot OPEN/ADD/HEDGE. Spot is not cleaner. Do not fade.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "SOFR_2027-03",
+          "position_id": "pos-662bff0986be"
+        }
+      ],
+      "alerts": [],
+      "conviction": 67,
+      "evidence_cutoff": "2026-09-24T06:06:33.355500-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "OPEN/ADD/HEDGE closed, so no new expression. rates_tenor_scan: STIR/policy path = existing short SOFR_2027-03 / SR3H7 4.655 vs SOFR 3.87 is the live continuation (cannot add); 2Y = not compelling, no standalone 2Y print in packet; 5Y = not compelling, no 5Y print; 10Y = UST backup 23 Sep supports pay persistence but is backup context not a new 10Y ticket; curve = unavailable as a tradable curve ticket in packet; cross-market rates RV = not compelling, no RV pair specified. Best rates expression would be hold/continue the Mar-27 SOFR pay; spot-FX candidate is not cleaner and no spot levels are in packet; options default-off. Selected none because the only admissible action is HOLD the existing rates short.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "A concrete reversal of the pay trend: SR3H7 implied rate collapsing toward spot SOFR 3.87, and/or a full reversal of the 23 Sep UST backup. Stale macro_hard alone is not invalidation. Packet has no such reversal.",
+      "memory_context_sha256": "113718cbe277c2a7cb6e2692464a4099c572019c3103ccf9a01d4d79593a417d",
+      "overnight_run_id": "overnight-20260924",
+      "packet_sha256": "669e2d29383e02c6cd5f5c8a75acda5c23e0ea453ef1cc83f8cce2ae5c55c9f6",
+      "review_id": "review-001",
+      "seat": "trend-follower",
+      "thesis": "Verified: book is short/pay SOFR_2027-03 50m (pos-662bff0986be); SR3H7 4.655 versus spot SOFR 3.87; UST backed up 23 Sep; macro_hard STALE; OPEN/ADD/HEDGE closed. Inference: the live trend is higher-for-longer persistence in the 2027 SOFR strip, not a fade. The 23 Sep UST backup is the last hard price impulse in the packet and it aligns with staying short/pay. SR3H7 still sits far above spot SOFR, so the strip has not mean-reverted and covering would be a discretionary fade without a reversal print. Stale macro_hard removes a fresh revision tailwind but does not supply a policy or price reversal. Continuation of the existing pay is the clean trade; no new expression is admissible. Unknown: post-cutoff tape, a refreshed macro_hard path, and whether the 23 Sep backup extended after evidence_cutoff."
+    },
+    "value-guy": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Book FLAT by remit. Best rates expression of the CA-US 2Y -146bp gap is the closed SOFR-CORRA_2Y_2027H1; reopening it (or a substitute 2Y/5Y/10Y/curve/STIR or CAD spot) is blocked by outstanding postmortem pmd-d9e2764dea0f and STALE macro_hard. No new overnight expression.",
+            "selected": "none",
+            "spot_candidate": null
+          }
+        }
+      ],
+      "alerts": [
+        "outstanding postmortem pmd-d9e2764dea0f"
+      ],
+      "conviction": 58,
+      "evidence_cutoff": "2026-09-24T06:06:33.355500-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "Rates-first scan: STIR/policy-path, 2Y, 5Y, 10Y, curve, and cross-market RV are all unavailable/not-compelling overnight because the live CA-US 2Y -146bp dislocation maps to the already-closed SOFR-CORRA_2Y_2027H1 book with postmortem pmd-d9e2764dea0f still due, and macro_hard is STALE so no tenor can be re-underwritten. Spot CAD is inferior to that 2Y rates RV even if the book were open; with the book flat it is also not selectable. Options are not the default and are not used. Selected none; HOLD flat.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "A completed pmd-d9e2764dea0f that clears re-entry, a refreshed non-STALE macro_hard packet, and an explicit re-risk mandate would be required before any CA-US 2Y / SOFR-CORRA expression could be considered. Any of those remaining closed keeps the book flat.",
+      "memory_context_sha256": "e9f73677fca3bf4133a4e70f80c0f4673f5269d25edfc9bab425a7ffb8073587",
+      "overnight_run_id": "overnight-20260924",
+      "packet_sha256": "669e2d29383e02c6cd5f5c8a75acda5c23e0ea453ef1cc83f8cce2ae5c55c9f6",
+      "review_id": "review-001",
+      "seat": "value-guy",
+      "thesis": "Verified: book is FLAT; CA-US 2Y prints -146bp; the prior SOFR-CORRA_2Y_2027H1 expression is closed with outstanding postmortem pmd-d9e2764dea0f; macro_hard is STALE at cutoff. Inference: -146bp is a rates-relative dislocation versus a peer (US) policy path, the kind of cross-market 2Y gap this seat would normally want to fade via a rates RV rather than spot CAD, but a closed ticket plus a due postmortem is a stop on re-risking the same convergence until the failure mode is written down. Unknown: historical z-score of the -146bp print, REER/PPP and terms-of-trade anchors, and postmortem findings are not in this frozen overnight packet. Convergence is not underwritable tonight. HOLD flat; do not reopen SOFR-CORRA 2Y 2027H1 or substitute a CAD spot fade of the same view."
+    },
+    "vol-convexity": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "HOLD the existing flat book. Do not OPEN options. Hormuz binary plus oil near two-week lows is untradeable as spot and unpriceable as vol until macro_hard refreshes and a live surface exists. selected=none.",
+            "selected": "none",
+            "spot_candidate": null
+          }
+        }
+      ],
+      "alerts": [],
+      "conviction": 45,
+      "evidence_cutoff": "2026-09-24T06:06:33.355500-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "Asymmetric optionality is the right lens for a Hormuz binary at oil two-week lows, but the book is FLAT, options may not be opened, and implied vol/skew/strikes are null in closed evidence with macro_hard STALE. No rates, spot, or options candidate is executable. selected=none.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "Invalidate HOLD-flat only if (1) a live vol surface and event-vol premium versus two-week realized are in a later packet and clearly underprice Hormuz tail, and (2) macro_hard is no longer STALE, and (3) the flat-book mandate is lifted. A spot-only oil bounce or grind lower without those three does not authorize opening options or spot.",
+      "memory_context_sha256": "66f4434e9a4815e09a06be01d9e247a02f247f5b6ae723ce392f35d3908d7d1a",
+      "overnight_run_id": "overnight-20260924",
+      "packet_sha256": "669e2d29383e02c6cd5f5c8a75acda5c23e0ea453ef1cc83f8cce2ae5c55c9f6",
+      "review_id": "review-001",
+      "seat": "vol-convexity",
+      "thesis": "VERIFIED: Hormuz remains a binary choke-point; oil is near two-week lows; macro_hard is STALE; book mandate is FLAT; packet_sha256=669e2d29383e02c6cd5f5c8a75acda5c23e0ea453ef1cc83f8cce2ae5c55c9f6 at cutoff 2026-09-24T06:06:33.355500-04:00. INFERENCE: two-week lows plus an unresolved binary is a timing-uncertain, fat-tail setup where spot is the wrong instrument\u2014path can gap through any stop while premium for the right tail is the only bounded expression. UNKNOWN: no live implied/realized, skew, RR, strikes, or tenors in the frozen packet; event vol versus two-week realized cannot be scored while macro_hard is STALE. Do not invent option prices. Convexity would dominate only after a fresh macro_hard print and a live vol surface; until then the seat stays flat and selected=none."
+    }
+  },
+  "execution": {
+    "allowed_subagent_models": [
+      "composer-2.5",
+      "grok-4.6"
+    ],
+    "auto_used": false,
+    "composer_cap": 2,
+    "declared_composer_calls": 1,
+    "declared_grok_calls": 18,
+    "declared_total_model_calls": 19,
+    "grok_cap": 18,
+    "other_models_calls": 0,
+    "parent_model": "grok-4.6",
+    "total_model_cap": 19
+  },
+  "launch_id": "mwl-20260924T100633Z-e5b861a6",
+  "overnight_run_id": "overnight-20260924",
+  "pm_decisions": {
+    "grinder": {
+      "actions": [
+        {
+          "action": "NO_TRADE"
+        }
+      ],
+      "alerts": [],
+      "conviction": 82,
+      "deployment_hurdle": {
+        "benchmark": "Official NY Fed SOFR ACT/360 3.87% effective 2026-09-22 is the zero-alpha benchmark.",
+        "candidate_assessments": [],
+        "chosen_action_rationale": "Preservation mandate with a flat prior book and last_action NO_TRADE. All 14 accepted trader-room seats handed off HOLD only; there are zero OPEN/ADD/HEDGE expanding handoffs and therefore zero independent markable deployment candidates this cycle, so candidate_assessments is required empty. Existing trader HOLDs are other desks' books, not new risk for this principal. families.macro_hard is STALE, so any OPEN/ADD/HEDGE would fail closed. Receive-CORRA is labeled crowded. No-trade is the consistent action: stay flat, invent no position_id, and charge no shocked-risk capital against the 3.87% SOFR hurdle."
+      },
+      "evidence_cutoff": "2026-09-24T06:06:33.355500-04:00",
+      "execution": {
+        "principal_model": "grok-4.6",
+        "subagent_count": 0,
+        "subagent_models": []
+      },
+      "invalidation": "A later frozen cycle with at least one expanding markable OPEN/ADD/HEDGE handoff whose expected edge independently clears official SOFR on shocked-risk capital, with families.macro_hard no longer STALE/fail-closed for that action.",
+      "launch_id": "mwl-20260924T100633Z-e5b861a6",
+      "memory_context_sha256": "6e680d1701c4ff8f93e5f97dfcc1569475ab94ca917bf27857b9dcbb7ff94dcc",
+      "overnight_run_id": "overnight-20260924",
+      "packet_sha256": "669e2d29383e02c6cd5f5c8a75acda5c23e0ea453ef1cc83f8cce2ae5c55c9f6",
+      "pm_id": "grinder",
+      "principal_model": "grok-4.6",
+      "review_id": "review-001",
+      "subagent_count": 0,
+      "subagent_models": [],
+      "thesis": "Stay flat. High-hurdle preservation with no expanding markable handoff and a stale macro_hard family does not justify deploying shocked-risk capital versus official SOFR 3.87% ACT/360."
+    },
+    "pragmatist": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "expected_mark_direction": "lower",
+          "instrument": "CORRA_2027-03",
+          "position_id": "pm-pragmatist-4e0cbc4e0b05",
+          "side": "long"
+        }
+      ],
+      "alerts": [],
+      "conviction": 52,
+      "evidence_cutoff": "2026-09-24T06:06:33.355500-04:00",
+      "execution": {
+        "principal_model": "grok-4.6",
+        "subagent_count": 0,
+        "subagent_models": []
+      },
+      "invalidation": "Sustained CRAH27 repricing higher that erases the cash-futures carry versus official CORRA 2.29, a quality-gate CA ineligibility, or an authorized REDUCE/CLOSE path if families.macro_hard unstales into a confirmed hawkish BoC/oil-inflation shock. Do not invent a hedge while the family remains STALE.",
+      "memory_context_sha256": "ad0fc97f559059f0e741f6f2fe94e2187e50891b567539cd863cd392fa9dfdf7",
+      "overnight_run_id": "overnight-20260924",
+      "packet_sha256": "669e2d29383e02c6cd5f5c8a75acda5c23e0ea453ef1cc83f8cce2ae5c55c9f6",
+      "pm_id": "pragmatist",
+      "portfolio_construction": {
+        "adverse_scenario": "BoC path reprices hawkish or CAD inflation/oil shock lifts the 2027 CORRA strip; CRAH27 prints higher against a crowded receive, compounding the existing 2bp mark-up from 3.13 to 3.15. Stale families.macro_hard blocks any fail-closed HEDGE, so the book cannot offset that duration hit this cycle.",
+        "candidate_interactions": [],
+        "chosen_actions_rationale": "Keep the existing receive. Expression remains clean CA-eligible carry (CRAH27 3.15 versus official CORRA cash 2.29, +86bp) inside a small 4.5m shock-capital sleeve. The 14-seat handoff is unanimous HOLD with zero OPEN/ADD/HEDGE expanding tickets, and families.macro_hard STALE fail-closes any new risk. No complementary markable handoff exists to diversify or hedge; adding invented legs would violate the freeze. A 2bp adverse mark is not an invalidation. Official SOFR 3.87% ACT/360 on shocked capital is the funding hurdle, not a reason to cut a still-positive carry receive.",
+        "existing_book_summary": "Single live position: long/receive CORRA_2027-03 450m (position_id pm-pragmatist-4e0cbc4e0b05), entry_mark 3.13, assigned risk_capital_usd 4500000 versus the 100m shock cap. Freeze print CRAH27=3.15 is 2bp adverse versus entry. No other PM-book legs. Last action HOLD.",
+        "independent_handoff_opportunities": [],
+        "rejected_complements": []
+      },
+      "principal_model": "grok-4.6",
+      "review_id": "review-001",
+      "subagent_count": 0,
+      "subagent_models": [],
+      "thesis": "Hold the CA-eligible Mar-27 CORRA receive as a grind-single: still +86bp versus cash CORRA 2.29 with CRAH27 at 3.15, quality gate CA eligible, and size well inside the 100m shock cap. Crowding is noted (carry-is-king also long; perma-bull is the offsetting short) but is not a close signal while the strip still prices easing versus cash and no expanding handoff or hedge is authorized."
+    },
+    "swinger": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "expected_mark_direction": "lower",
+          "instrument": "CORRA_2027-03",
+          "position_id": "pm-swinger-2070479ca321",
+          "side": "long"
+        }
+      ],
+      "alerts": [
+        "Receive-CORRA labeled crowded; carry-is-king also long CORRA_2027-03 while perma-bull is short the same contract.",
+        "families.macro_hard STALE: OPEN/ADD/HEDGE fail closed this cycle.",
+        "CRAH27 3.15 versus entry 3.13 (2bp adverse on receive).",
+        "Hormuz disputed; oil-low support for receive can reverse on a supply shock."
+      ],
+      "conviction": 74,
+      "evidence_cutoff": "2026-09-24T06:06:33.355500-04:00",
+      "execution": {
+        "principal_model": "grok-4.6",
+        "subagent_count": 0,
+        "subagent_models": []
+      },
+      "invalidation": "CLOSE if CRAH27 revisits and holds above 3.25 (12bp further against receive from this freeze, ~12bp from entry) without cash CORRA falling; if the 86bp CRAH27-versus-cash gap compresses because cash CORRA rises rather than the forward declining; if CA loses quality-gate eligibility; or if Hormuz supply risk reverses oil and re-steepens CAD implied tightening. REDUCE only if crowding becomes the binding constraint via a further adverse print through 3.20 while the cash-forward gap is still intact. Never HEDGE.",
+      "launch_id": "mwl-20260924T100633Z-e5b861a6",
+      "memory_context_sha256": "5ada39ba2950a8a570cb0d72cacdab726c7d6d79a09949aaaa3079c31d406099",
+      "overnight_run_id": "overnight-20260924",
+      "packet_sha256": "669e2d29383e02c6cd5f5c8a75acda5c23e0ea453ef1cc83f8cce2ae5c55c9f6",
+      "pm_id": "swinger",
+      "principal_model": "grok-4.6",
+      "review_id": "review-001",
+      "subagent_count": 0,
+      "subagent_models": [],
+      "thesis": "Keep the concentrated receive in CORRA Mar-27. Cash CORRA 2.29 versus CRAH27 3.15 still embeds +86bp of implied tightness versus overnight; CA remains quality-gate eligible. Oil at two-week lows is disinflationary for the CAD path and supports duration. The freeze print 3.15 versus entry 3.13 is a 2bp adverse mark, not thesis break. Macro_hard is STALE so OPEN/ADD are fail-closed; no add, no new risk, no hedge. Receive-CORRA is labeled crowded and perma-bull sits short the same contract, but crowding is not invalidation while the 86bp cash-forward gap and CA eligibility hold. Size stays the existing 1.7bn / $17m shocked-risk seat inside the $100m shock cap; SOFR 3.87% ACT/360 accrues on that shocked capital."
+    }
+  },
+  "review_id": "review-001",
+  "schedule_id": "market-watch-weekday-0205",
+  "schema_version": 1,
+  "type": "OVERNIGHT_SCHEDULED_OUTPUT"
+}

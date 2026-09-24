@@ -333,6 +333,70 @@
       "run_id": "overnight-20260923",
       "schema_version": 1,
       "thesis": "Reject new risk. Receive-CORRA is crowded and already in the price. Oil path is binary (diplomacy vs Fars denial). macro_hard is stale. Official SOFR 3.85 is the zero-alpha benchmark; paying SOFR on shocked-risk capital to warehouse a stale crowded expression is not an edge. Stay flat."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-24T06:06:33.355500-04:00",
+      "conviction": 78,
+      "decision_fingerprint": "f6662b6a5936d6c78881300159c0e4ad2ae3cca78ea9983584fe0b7c19d3c3f0",
+      "event_id": "jde-eebd8cad13d14d50",
+      "funding_view": {
+        "current_sofr": {
+          "observation_date": "2026-09-22",
+          "rate": 3.87
+        },
+        "forward_funding_assessment": "about_the_same",
+        "implication": "Remain at the zero official-SOFR benchmark. Do not pay SOFR on shocked-risk capital.",
+        "sr3_forward_view": "Frozen SR3 Z6 4.375 / H7 4.655 / U7 4.885 versus official SOFR 3.87 effective 2026-09-22."
+      },
+      "invalidation": "Actionable only if a fresh packet revises official SOFR away from 3.87, unfreezes SR3 off Z6 4.375 / H7 4.655 / U7 4.885 with a documented residual versus 3.87, recodes Receive-CORRA as not crowded with a dated positioning source, and replaces STALE macro_hard with a same-morning catalyst that survives a rates-first scan. Until those four conditions hit together, no trade.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "19377e16c7e0b05c787ef97b2477efbe0dd788a709beaa19609a80d5321cb93d",
+      "outcome_links": [],
+      "owner_id": "no-trade-skeptic",
+      "owner_type": "trader",
+      "payload": {
+        "funding_view": {
+          "current_sofr": {
+            "observation_date": "2026-09-22",
+            "rate": 3.87
+          },
+          "forward_funding_assessment": "about_the_same",
+          "implication": "Remain at the zero official-SOFR benchmark. Do not pay SOFR on shocked-risk capital.",
+          "sr3_forward_view": "Frozen SR3 Z6 4.375 / H7 4.655 / U7 4.885 versus official SOFR 3.87 effective 2026-09-22."
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-24T06:06:33.355500-04:00",
+        "evidence_hash": "669e2d29383e02c6cd5f5c8a75acda5c23e0ea453ef1cc83f8cce2ae5c55c9f6",
+        "overnight_run_id": "overnight-20260924",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "BOOK FLAT. Verified fact: official NY Fed SOFR is 3.87 effective 2026-09-22, not 3.85; frozen SR3 is Z6 4.375 / H7 4.655 / U7 4.885; Receive-CORRA is labeled crowded; macro_hard is STALE at cutoff 2026-09-24T06:06:33.355500-04:00. Inference: the SR3 strip already prices a steep funding-normalization path above realized 3.87, so any overnight rates, curve, or CAD-receive expression is paying for an already-advertised path rather than an unpriced residual. Crowded Receive-CORRA is the opposite of an edge: entry is poorly timed, squeeze risk is one-sided, and a stale macro_hard packet cannot falsify the crowding or the timing. Apparent vol/spot overlays are noisier than the SOFR-vs-SR3 basis and do not clear a rates-first bar. Unknown: post-cutoff prints, unfrozen positioning updates, and any live CORRA/SOFR dislocation after 2026-09-22. Flat cash is not alpha; remaining at the zero official-SOFR benchmark is the only defensible overnight stance.",
+      "run_id": "overnight-20260924",
+      "schema_version": 1,
+      "thesis": "BOOK FLAT. Verified fact: official NY Fed SOFR is 3.87 effective 2026-09-22, not 3.85; frozen SR3 is Z6 4.375 / H7 4.655 / U7 4.885; Receive-CORRA is labeled crowded; macro_hard is STALE at cutoff 2026-09-24T06:06:33.355500-04:00. Inference: the SR3 strip already prices a steep funding-normalization path above realized 3.87, so any overnight rates, curve, or CAD-receive expression is paying for an already-advertised path rather than an unpriced residual. Crowded Receive-CORRA is the opposite of an edge: entry is poorly timed, squeeze risk is one-sided, and a stale macro_hard packet cannot falsify the crowding or the timing. Apparent vol/spot overlays are noisier than the SOFR-vs-SR3 basis and do not clear a rates-first bar. Unknown: post-cutoff prints, unfrozen positioning updates, and any live CORRA/SOFR dislocation after 2026-09-22. Flat cash is not alpha; remaining at the zero official-SOFR benchmark is the only defensible overnight stance."
     }
   ],
   "schema_version": 1,

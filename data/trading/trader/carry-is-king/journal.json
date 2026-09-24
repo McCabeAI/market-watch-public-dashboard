@@ -232,6 +232,53 @@
       "run_id": "overnight-20260923",
       "schema_version": 1,
       "thesis": "Stay long/receive CORRA_2027-03. CRAH27 3.06 versus CORRA cash 2.29 still pays the book if the energy-hike path is not delivered. Oil diplomacy cuts that hike case and does not overwhelm carry. Patient STIR receive remains the seat default."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-b97bddbdbd2d",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-24T06:06:33.355500-04:00",
+      "conviction": 68,
+      "decision_fingerprint": "594a8cbd94469c6d27d52059c20cee5ee35bef9384a7e8ecd56f10438249b752",
+      "event_id": "jde-9401fb561b994977",
+      "funding_view": null,
+      "invalidation": "Receive thesis fails if policy/inflation forces CORRA implied through the 3.15 CRAH27 receive (cash CORRA rising toward 3.15, or CRAH27 repricing higher), or if Hormuz is confirmed as an oil-supply shock the packet currently disputes while oil sits at two-week lows. No numeric stop in packet (null). REDUCE/CLOSE only on that path; do not OPEN a hedge while macro_hard is STALE.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-b97bddbdbd2d"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "eaff24be69bfda0c95bb3ed942afacee0924249048a9cf49239c880e70cd4e6b",
+      "outcome_links": [],
+      "owner_id": "carry-is-king",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-24T06:06:33.355500-04:00",
+        "evidence_hash": "669e2d29383e02c6cd5f5c8a75acda5c23e0ea453ef1cc83f8cce2ae5c55c9f6",
+        "overnight_run_id": "overnight-20260924",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "FACT: long/receive CORRA_2027-03 75m pos-b97bddbdbd2d; CORRA cash 2.29; CRAH27 3.15 (+86bp vs cash); SOFR 3.87% as of 2026-09-22; oil near two-week lows and Hormuz disputed; macro_hard STALE so OPEN/ADD/HEDGE fail closed and only HOLD/REDUCE/CLOSE are live. INFERENCE: Mar-27 implied 86bp above cash pays the existing receiver to sit if the BoC path stays closer to 2.29 than 3.15; Hormuz/oil is an unconfirmed low-carry narrative (oil at two-week lows), not a catalyst that overwhelms carry; cash SOFR-CORRA 158bp is CAD-easier vs USD and argues against paying down a working CAD receive. UNKNOWN: 2Y/5Y/10Y, USD/CAD, matched SOFR 2027-03 implied, CRAH27 tick, and dollar holding-period carry on 75m are all null in packet, so carry is the +86bp path differential only, not a $ number. HOLD is the carry decision, not a data failure.",
+      "run_id": "overnight-20260924",
+      "schema_version": 1,
+      "thesis": "FACT: long/receive CORRA_2027-03 75m pos-b97bddbdbd2d; CORRA cash 2.29; CRAH27 3.15 (+86bp vs cash); SOFR 3.87% as of 2026-09-22; oil near two-week lows and Hormuz disputed; macro_hard STALE so OPEN/ADD/HEDGE fail closed and only HOLD/REDUCE/CLOSE are live. INFERENCE: Mar-27 implied 86bp above cash pays the existing receiver to sit if the BoC path stays closer to 2.29 than 3.15; Hormuz/oil is an unconfirmed low-carry narrative (oil at two-week lows), not a catalyst that overwhelms carry; cash SOFR-CORRA 158bp is CAD-easier vs USD and argues against paying down a working CAD receive. UNKNOWN: 2Y/5Y/10Y, USD/CAD, matched SOFR 2027-03 implied, CRAH27 tick, and dollar holding-period carry on 75m are all null in packet, so carry is the +86bp path differential only, not a $ number. HOLD is the carry decision, not a data failure."
     }
   ],
   "schema_version": 1,

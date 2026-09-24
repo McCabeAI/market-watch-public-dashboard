@@ -232,6 +232,53 @@
       "run_id": "overnight-20260923",
       "schema_version": 1,
       "thesis": "Hawkish US path remains intact: Sep hike and SEP one more still in tape; Jefferson/Perli are implementation, not path. Oil-lower is an unquantified commodity challenge, not a reaction-function pivot. Hold short SOFR_2027-09 / SR3U7 4.735 versus SOFR 3.85."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-09",
+          "notional_usd": null,
+          "position_id": "pos-c9184707c12b",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-24T06:06:33.355500-04:00",
+      "conviction": 60,
+      "decision_fingerprint": "f46e10cecc034b821de47cb04e2d00f58259311228e55e748e488739e75e1313",
+      "event_id": "jde-3ee5398614c74665",
+      "funding_view": null,
+      "invalidation": "A path-level dovish reaction-function shift\u2014not implementation\u2014that reprices SR3U7 and UST 2Y materially below the frozen 4.885 / 4.85 prints, or a verified non-stale macro_hard labor/disinflation break that collapses 2027 implied SOFR toward spot 3.87.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-c9184707c12b"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "eb55a16e620b15883b40211258e66517389508384c4ee76f549fb7fc9158686b",
+      "outcome_links": [],
+      "owner_id": "rate-hawk",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-24T06:06:33.355500-04:00",
+        "evidence_hash": "669e2d29383e02c6cd5f5c8a75acda5c23e0ea453ef1cc83f8cce2ae5c55c9f6",
+        "overnight_run_id": "overnight-20260924",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Existing pay in SOFR_2027-09 remains the live hawkish expression. Verified: SR3U7 4.885 vs spot SOFR 3.87; UST 2Y/10Y 4.85/5.11, +14/+15bp. That stack is higher-terminal, not a deep-easing path. Jefferson/Perli are implementation, not reaction-function. Inference: inflation persistence still underpriced versus a 2027 cut cycle; do not fade the pay on plumbing talk. Unknown: fresh macro_hard (STALE). OPEN/ADD/HEDGE fail closed, so no new rates expression.",
+      "run_id": "overnight-20260924",
+      "schema_version": 1,
+      "thesis": "Existing pay in SOFR_2027-09 remains the live hawkish expression. Verified: SR3U7 4.885 vs spot SOFR 3.87; UST 2Y/10Y 4.85/5.11, +14/+15bp. That stack is higher-terminal, not a deep-easing path. Jefferson/Perli are implementation, not reaction-function. Inference: inflation persistence still underpriced versus a 2027 cut cycle; do not fade the pay on plumbing talk. Unknown: fresh macro_hard (STALE). OPEN/ADD/HEDGE fail closed, so no new rates expression."
     }
   ],
   "schema_version": 1,

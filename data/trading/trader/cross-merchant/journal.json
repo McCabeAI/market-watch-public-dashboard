@@ -250,6 +250,53 @@
       "run_id": "overnight-20260923",
       "schema_version": 1,
       "thesis": "Hold long AUDCAD. AU-CA policy/carry (AONIA 4.35 vs CORRA 2.29; AU 2Y 4.999 vs CA 2Y 3.29) plus 23 Sep oil weakness pressuring CAD energy premium isolates in the cross, not in USD pairs. AUDCAD 1y pctile 99.4 is CAD-versus-AUD, not an AUDUSD blow-off. OPEN/ADD blocked by stale macro_hard and outstanding postmortem pmd-8ddf6ee19a94."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDCAD",
+          "notional_usd": null,
+          "position_id": "pos-27d002b448b1",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-24T06:06:33.355500-04:00",
+      "conviction": 56,
+      "decision_fingerprint": "3933663098342cd944166179047d13d37abdd64e7c80e48c9ef4d392460696b8",
+      "event_id": "jde-6b3b2b5951da4c35",
+      "funding_view": null,
+      "invalidation": "FACT: no stop, target, or hedge level is supplied in the frozen packet\u2014treat those as null. INFERENCE: the AU-CA long is invalidated if the intended differential is no longer best isolated in AUDCAD (CAD outperformance on a closed-book basis, or a postmortem that marks the 10m for risk reduction) or if a fresh non-stale macro_hard packet overturns the AU-over-CA premise. Do not invent levels. A USD expression (AUDUSD or USDCAD) would not isolate the same differential and is not a substitute invalidation.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-27d002b448b1"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "8540ca75b554d2b08d24a43bcfce61f43f73fcf3877fe91b11a290e0313cf196",
+      "outcome_links": [],
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-24T06:06:33.355500-04:00",
+        "evidence_hash": "669e2d29383e02c6cd5f5c8a75acda5c23e0ea453ef1cc83f8cce2ae5c55c9f6",
+        "overnight_run_id": "overnight-20260924",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "FACT: book is already long AUDCAD 10m (pos-27d002b448b1) at 0.9957 / 96.6th percentile; macro_hard is STALE; OPEN/ADD/HEDGE are fail-closed; postmortem pmd-8ddf6ee19a94 is outstanding. INFERENCE: AUDCAD remains the cleanest non-USD isolation of the AU-CA differential already on the book\u2014USD pairs would reintroduce a common-dollar factor and contaminate the intended relative-value view. Policy, growth, inflation, carry and catalyst asymmetry cannot be re-scored from fresh hard data while macro_hard is STALE; those legs are therefore unknown, not re-underwritten. Valuation is stretched (96.6th percentile), so this is not an add and not a new expression. UNKNOWN: unpublished stop/target levels, live carry, and any post-cutoff AU/CA policy or data surprise. Dedicated SPOT seat: rates_candidate is null. Only admissible book action is HOLD the existing 10m.",
+      "run_id": "overnight-20260924",
+      "schema_version": 1,
+      "thesis": "FACT: book is already long AUDCAD 10m (pos-27d002b448b1) at 0.9957 / 96.6th percentile; macro_hard is STALE; OPEN/ADD/HEDGE are fail-closed; postmortem pmd-8ddf6ee19a94 is outstanding. INFERENCE: AUDCAD remains the cleanest non-USD isolation of the AU-CA differential already on the book\u2014USD pairs would reintroduce a common-dollar factor and contaminate the intended relative-value view. Policy, growth, inflation, carry and catalyst asymmetry cannot be re-scored from fresh hard data while macro_hard is STALE; those legs are therefore unknown, not re-underwritten. Valuation is stretched (96.6th percentile), so this is not an add and not a new expression. UNKNOWN: unpublished stop/target levels, live carry, and any post-cutoff AU/CA policy or data surprise. Dedicated SPOT seat: rates_candidate is null. Only admissible book action is HOLD the existing 10m."
     }
   ],
   "schema_version": 1,

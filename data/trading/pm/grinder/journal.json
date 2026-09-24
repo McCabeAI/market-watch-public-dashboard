@@ -222,6 +222,51 @@
       "run_id": "overnight-20260923",
       "schema_version": 1,
       "thesis": "Prior book is already flat and this cycle\u2019s 14-trader handoff has zero expanding OPEN/ADD/HEDGE. The room is HOLDs, flats, and one catalyst-junkie CLOSE of AONIA_2026-10; crowded receive-CORRA is not a chase. macro_hard is STALE, so any new rates OPEN fail-closes. Preservation, consistency, and the official SOFR 3.85% shocked-capital hurdle all point to staying flat rather than inheriting other desks\u2019 HOLDs."
+    },
+    {
+      "actions": [
+        {
+          "action": "NO_TRADE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-24T08:28:49.917150-04:00",
+      "conviction": 82,
+      "decision_fingerprint": "e78815359800694f2d5709c00cb575acc2320f7e6096a8e81da9f6efc19c91f5",
+      "event_id": "jde-885ca15ff2c5471f",
+      "funding_view": null,
+      "invalidation": "A later frozen cycle with at least one expanding markable OPEN/ADD/HEDGE handoff whose expected edge independently clears official SOFR on shocked-risk capital, with families.macro_hard no longer STALE/fail-closed for that action.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "6e680d1701c4ff8f93e5f97dfcc1569475ab94ca917bf27857b9dcbb7ff94dcc",
+      "outcome_links": [],
+      "owner_id": "grinder",
+      "owner_type": "pm",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-24T06:06:33.355500-04:00",
+        "evidence_hash": "bb443867a630f0e7e3bc057dc839f898c85078aa88a71a85f51f97a18a5d4074",
+        "overnight_run_id": "overnight-20260924",
+        "review_id": "review-001",
+        "review_packet_id": "prp-grinder-overnight-20260924-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Stay flat. High-hurdle preservation with no expanding markable handoff and a stale macro_hard family does not justify deploying shocked-risk capital versus official SOFR 3.87% ACT/360.",
+      "run_id": "overnight-20260924",
+      "schema_version": 1,
+      "thesis": "Stay flat. High-hurdle preservation with no expanding markable handoff and a stale macro_hard family does not justify deploying shocked-risk capital versus official SOFR 3.87% ACT/360."
     }
   ],
   "schema_version": 1,

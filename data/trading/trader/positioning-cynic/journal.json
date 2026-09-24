@@ -250,6 +250,51 @@
       "run_id": "overnight-20260923",
       "schema_version": 1,
       "thesis": "Receive-CORRA-2027 is a consensus occupancy problem. The 20 Sep CORRA_2027-03 long close did not create spare capacity. CFTC AUD OI is extreme. Two outstanding postmortems plus stale macro_hard. Stay flat; do not buy the crowded receive."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-24T06:06:33.355500-04:00",
+      "conviction": 72,
+      "decision_fingerprint": "8f8d9e0529f4dbc60e5e962bcb96bc699741853c07015e084e33107cfffbd31f",
+      "event_id": "jde-8ff92518da6647a5",
+      "funding_view": null,
+      "invalidation": "HOLD/flat lifts only if all three are true in a later packet: both named postmortems closed, macro_hard refreshed after this cutoff, and Receive-CORRA-2027 no longer consensus occupancy (flush documented, not assumed). Any one remaining true keeps the book flat. A further rally in CAD 2027 rates does not invalidate crowding. Levels: null.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "64d1860497db03929c9e18fd9a71e80f1235ec4185d19784b6786faac1356b25",
+      "outcome_links": [],
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-24T06:06:33.355500-04:00",
+        "evidence_hash": "669e2d29383e02c6cd5f5c8a75acda5c23e0ea453ef1cc83f8cce2ae5c55c9f6",
+        "overnight_run_id": "overnight-20260924",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "FACT: Frozen packet 669e2d29 at cutoff 2026-09-24T06:06:33.355500-04:00; book FLAT; Receive-CORRA-2027 labeled consensus occupancy; macro_hard STALE; postmortems pmd-86d9c87862a0 and pmd-550c41ce938c unpaid; REMIT HOLD. INFERENCE: Receive-CORRA-2027 is the crowded CAD-easing/carry expression. Ownership already sits on the receive, so adding it overnight is buying occupancy not edge. A fade of that crowd is a different thesis and is not licensed while the book is flat, the macro overlay is stale, and postmortems are open. Thesis vs entry: a BoC/CORRA-path view can still be a bad trade because this seat would be last in. UNKNOWN: CFTC/options-skew/CTA occupancy percentiles and flush levels are not restated here; all numeric levels null.",
+      "run_id": "overnight-20260924",
+      "schema_version": 1,
+      "thesis": "FACT: Frozen packet 669e2d29 at cutoff 2026-09-24T06:06:33.355500-04:00; book FLAT; Receive-CORRA-2027 labeled consensus occupancy; macro_hard STALE; postmortems pmd-86d9c87862a0 and pmd-550c41ce938c unpaid; REMIT HOLD. INFERENCE: Receive-CORRA-2027 is the crowded CAD-easing/carry expression. Ownership already sits on the receive, so adding it overnight is buying occupancy not edge. A fade of that crowd is a different thesis and is not licensed while the book is flat, the macro overlay is stale, and postmortems are open. Thesis vs entry: a BoC/CORRA-path view can still be a bad trade because this seat would be last in. UNKNOWN: CFTC/options-skew/CTA occupancy percentiles and flush levels are not restated here; all numeric levels null."
     }
   ],
   "schema_version": 1,

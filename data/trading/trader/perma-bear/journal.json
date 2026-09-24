@@ -232,6 +232,53 @@
       "run_id": "overnight-20260923",
       "schema_version": 1,
       "thesis": "Jun-27 AONIA ~4.995 versus cash 4.35 still embeds a delivered-hike path that an RBA housing-correction slowdown is supposed to invalidate. Disputed Hormuz after diplomacy is not a confirmed energy-supply break. Hold the existing long AONIA_2027-06."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-06",
+          "notional_usd": null,
+          "position_id": "pos-3b40ade3da2c",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-24T06:06:33.355500-04:00",
+      "conviction": 61,
+      "decision_fingerprint": "598150e1adbf46066e50fe934ffcb5b907fc6a9f819fff625504e36583171ca2",
+      "event_id": "jde-9522c8df33f94643",
+      "funding_view": null,
+      "invalidation": "Jun-27 implied AONIA holds or rises because cash re-tightens on a hawkish RBA/inflation impulse rather than the contract yield falling; or a post-cutoff packet refresh clears STALE/ineligible and shows AU growth re-acceleration that validates the 4.935 path.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-3b40ade3da2c"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "c9cd8f8c48fe6524a880415ec14ee572253badbb25ff366507331fce35979b6a",
+      "outcome_links": [],
+      "owner_id": "perma-bear",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-24T06:06:33.355500-04:00",
+        "evidence_hash": "669e2d29383e02c6cd5f5c8a75acda5c23e0ea453ef1cc83f8cce2ae5c55c9f6",
+        "overnight_run_id": "overnight-20260924",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Jun-27 AONIA at 4.935 versus cash AONIA 4.35 still prices a late-cycle re-tightening path that underweights growth, revision, and liquidity-fragility tails. The existing long AONIA_2027-06 is the cleanest already-on-book defensive rates expression of that mispricing. Evidence is closed, macro_hard is STALE, AU is ineligible, and OPEN/ADD/HEDGE fail closed, so no new risk is admissible. Hold the 55m; do not rotate into spot-FX or options.",
+      "run_id": "overnight-20260924",
+      "schema_version": 1,
+      "thesis": "Jun-27 AONIA at 4.935 versus cash AONIA 4.35 still prices a late-cycle re-tightening path that underweights growth, revision, and liquidity-fragility tails. The existing long AONIA_2027-06 is the cleanest already-on-book defensive rates expression of that mispricing. Evidence is closed, macro_hard is STALE, AU is ineligible, and OPEN/ADD/HEDGE fail closed, so no new risk is admissible. Hold the 55m; do not rotate into spot-FX or options."
     }
   ],
   "schema_version": 1,

@@ -232,6 +232,53 @@
       "run_id": "overnight-20260923",
       "schema_version": 1,
       "thesis": "UNGA/oil diplomacy is risk-on adaptation, not a Canada growth break. SOFR-CORRA gap (~156bp) and USDCAD 1.4044 still say BoC policy is too easy versus a Mar-27 implied 3.06. Keep the existing short/pay CORRA_2027-03 as the only live pro-cyclical expression. Stale macro_hard blocks adding."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-dd6fdaf39119",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-24T06:06:33.355500-04:00",
+      "conviction": 62,
+      "decision_fingerprint": "835c912b47722754da5792388ab8f778844576790e48adaf770d1896149f5fc2",
+      "event_id": "jde-2500354d415543ca",
+      "funding_view": null,
+      "invalidation": "Growth/risk-off shock that reopens a BoC easing path and compresses CRAH27 from 3.15 toward CORRA 2.29, covering the pay; or CAD-idiosyncratic deterioration that makes USDCAD 1.4089 a growth-scare print rather than a residual USD move. macro_hard remaining STALE is not invalidation by itself.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-dd6fdaf39119"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "adaf18ba8a4691d9381772bfe287761cdfca490ac76910ac8a738bd3f367a751",
+      "outcome_links": [],
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-24T06:06:33.355500-04:00",
+        "evidence_hash": "669e2d29383e02c6cd5f5c8a75acda5c23e0ea453ef1cc83f8cce2ae5c55c9f6",
+        "overnight_run_id": "overnight-20260924",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "FACT: book is short/pay CORRA_2027-03 50m (pos-dd6fdaf39119); CRAH27 3.15 vs CORRA 2.29; USDCAD 1.4089; macro_hard STALE; OPEN/ADD/HEDGE fail closed. INFERENCE: growth and risk appetite are more resilient than a defensive CAD-easing narrative; paying Mar-27 is the cleanest pro-cyclical expression because a non-cut/re-tightening path is how CAD growth shows up in rates, and short=pay already maps to that. The 3.15 vs 2.29 gap already embeds substantial re-tightening, so the existing 50m pay is the expression rather than a new USDCAD short. UNKNOWN: live hard-data revisions beyond stale macro_hard and any packet fields not in this seat brief. HOLD only.",
+      "run_id": "overnight-20260924",
+      "schema_version": 1,
+      "thesis": "FACT: book is short/pay CORRA_2027-03 50m (pos-dd6fdaf39119); CRAH27 3.15 vs CORRA 2.29; USDCAD 1.4089; macro_hard STALE; OPEN/ADD/HEDGE fail closed. INFERENCE: growth and risk appetite are more resilient than a defensive CAD-easing narrative; paying Mar-27 is the cleanest pro-cyclical expression because a non-cut/re-tightening path is how CAD growth shows up in rates, and short=pay already maps to that. The 3.15 vs 2.29 gap already embeds substantial re-tightening, so the existing 50m pay is the expression rather than a new USDCAD short. UNKNOWN: live hard-data revisions beyond stale macro_hard and any packet fields not in this seat brief. HOLD only."
     }
   ],
   "schema_version": 1,

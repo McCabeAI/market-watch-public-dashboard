@@ -232,6 +232,53 @@
       "run_id": "overnight-20260923",
       "schema_version": 1,
       "thesis": "Fed September hike is delivered and SR3H7 4.57 versus SOFR 3.85 still prices a restrictive path into Mar-27. Oil-down is a potential energy-leg interruption, not a path break. Hold the existing short SOFR_2027-03; covering would be a premature fade."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-662bff0986be",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-24T06:06:33.355500-04:00",
+      "conviction": 67,
+      "decision_fingerprint": "24865eba91f525ff53db79ba3e1d9c10d953138d5f3edb739c66103fb66e4df7",
+      "event_id": "jde-db10e97a8d7642f0",
+      "funding_view": null,
+      "invalidation": "A concrete reversal of the pay trend: SR3H7 implied rate collapsing toward spot SOFR 3.87, and/or a full reversal of the 23 Sep UST backup. Stale macro_hard alone is not invalidation. Packet has no such reversal.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-662bff0986be"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "113718cbe277c2a7cb6e2692464a4099c572019c3103ccf9a01d4d79593a417d",
+      "outcome_links": [],
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-24T06:06:33.355500-04:00",
+        "evidence_hash": "669e2d29383e02c6cd5f5c8a75acda5c23e0ea453ef1cc83f8cce2ae5c55c9f6",
+        "overnight_run_id": "overnight-20260924",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Verified: book is short/pay SOFR_2027-03 50m (pos-662bff0986be); SR3H7 4.655 versus spot SOFR 3.87; UST backed up 23 Sep; macro_hard STALE; OPEN/ADD/HEDGE closed. Inference: the live trend is higher-for-longer persistence in the 2027 SOFR strip, not a fade. The 23 Sep UST backup is the last hard price impulse in the packet and it aligns with staying short/pay. SR3H7 still sits far above spot SOFR, so the strip has not mean-reverted and covering would be a discretionary fade without a reversal print. Stale macro_hard removes a fresh revision tailwind but does not supply a policy or price reversal. Continuation of the existing pay is the clean trade; no new expression is admissible. Unknown: post-cutoff tape, a refreshed macro_hard path, and whether the 23 Sep backup extended after evidence_cutoff.",
+      "run_id": "overnight-20260924",
+      "schema_version": 1,
+      "thesis": "Verified: book is short/pay SOFR_2027-03 50m (pos-662bff0986be); SR3H7 4.655 versus spot SOFR 3.87; UST backed up 23 Sep; macro_hard STALE; OPEN/ADD/HEDGE closed. Inference: the live trend is higher-for-longer persistence in the 2027 SOFR strip, not a fade. The 23 Sep UST backup is the last hard price impulse in the packet and it aligns with staying short/pay. SR3H7 still sits far above spot SOFR, so the strip has not mean-reverted and covering would be a discretionary fade without a reversal print. Stale macro_hard removes a fresh revision tailwind but does not supply a policy or price reversal. Continuation of the existing pay is the clean trade; no new expression is admissible. Unknown: post-cutoff tape, a refreshed macro_hard path, and whether the 23 Sep backup extended after evidence_cutoff."
     }
   ],
   "schema_version": 1,
