@@ -219,6 +219,9 @@ def main() -> int:
     }
     if client_payload and isinstance(client_payload.get("provider_payload"), dict):
         ctx["provider_payload"] = client_payload["provider_payload"]
+    payload_path = os.environ.get("PROVIDER_PAYLOAD_PATH", "").strip()
+    if payload_path:
+        ctx["provider_payload"] = json.loads(Path(payload_path).read_text(encoding="utf-8"))
     if os.environ.get("MW_ENABLE_PAGES_DISPATCH") == "1":
         import subprocess
 
