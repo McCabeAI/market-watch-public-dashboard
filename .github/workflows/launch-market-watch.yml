@@ -240,14 +240,15 @@ jobs:
             ARGS+=(--source workflow_dispatch)
           fi
           set +e
-          PYTHONPATH=. python3 -m scripts.market_watch_launch.cli "${ARGS[@]}" | tee launch-result.json
+          export LAUNCH_RESULT="${RUNNER_TEMP}/launch-result.json"
+          PYTHONPATH=. python3 -m scripts.market_watch_launch.cli "${ARGS[@]}" | tee "$LAUNCH_RESULT"
           code=$?
           set -e
-          if [ ! -s launch-result.json ]; then
+          if [ ! -s "$LAUNCH_RESULT" ]; then
             echo "launch CLI produced no result"
             exit 1
           fi
-          launch_id="$(python3 -c 'import json; print(json.load(open("launch-result.json"))["launch_id"])')"
+          launch_id="$(python3 -c 'import json,os; print(json.load(open(os.environ["LAUNCH_RESULT"]))["launch_id"])')"
           echo "launch_id=$launch_id" >> "$GITHUB_OUTPUT"
           echo "cli_code=$code" >> "$GITHUB_OUTPUT"
 
@@ -258,12 +259,8 @@ jobs:
           LAUNCH_ID: ${{ steps.launch.outputs.launch_id }}
         run: |
           set -euo pipefail
-          git add data/market_watch_launches
-          if [ "$PROVIDER" = "acp" ]; then
-            git add data/overnight/runs data/overnight/books data/overnight/latest.json data/pm || true
-          fi
+          PYTHONPATH=. python3 -m scripts.market_watch_launch.persist_boundary --provider "$PROVIDER"
           if git diff --cached --quiet; then
-            echo "no launch artifacts to commit"
             exit 0
           fi
           git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
@@ -307,7 +304,8 @@ jobs:
             echo "remote freeze was not attested; not calling ACP"
             exit 0
           fi
-          PYTHONPATH=. python3 -m scripts.market_watch_launch.cli stage --launch-id "$LAUNCH_ID" --name 05_acp_handoff | tee handoff-result.json
+          HANDOFF_RESULT="${RUNNER_TEMP}/handoff-result.json"
+          PYTHONPATH=. python3 -m scripts.market_watch_launch.cli stage --launch-id "$LAUNCH_ID" --name 05_acp_handoff | tee "$HANDOFF_RESULT"
           git add data/market_watch_launches
           if git diff --cached --quiet; then
             exit 0
@@ -343,6 +341,7 @@ jobs:
         run: |
           set -euo pipefail
           PYTHONPATH=. python3 -m unittest \
+            tests.test_mw_launch_persist_boundary \
             tests.test_mw_launch_graph \
             tests.test_mw_launch_quality \
             tests.test_mw_launch_lineage \
