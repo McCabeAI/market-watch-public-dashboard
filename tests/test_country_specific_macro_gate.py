@@ -106,6 +106,46 @@ class CountrySpecificMacroGateTests(unittest.TestCase):
                 asset_class="rates",
             )
 
+    def test_unattributed_aggregate_stale_fails_closed(self) -> None:
+        families = _families()
+        families["macro_hard"] = {"status": "stale"}
+        with self.assertRaises(FreshnessError):
+            assert_action_allowed(
+                "OPEN",
+                families,
+                seat="carry-is-king",
+                instrument="CORRA_2027-03",
+                asset_class="rates",
+            )
+
+    def test_empty_country_lists_fail_closed(self) -> None:
+        families = _families()
+        families["macro_hard"]["status"] = "stale"
+        families["macro_hard"]["fresh_countries"] = []
+        families["macro_hard"]["stale_countries"] = []
+        with self.assertRaises(FreshnessError):
+            assert_action_allowed(
+                "OPEN",
+                families,
+                seat="carry-is-king",
+                instrument="CORRA_2027-03",
+                asset_class="rates",
+            )
+
+    def test_unknown_country_codes_fail_closed(self) -> None:
+        families = _families()
+        families["macro_hard"]["status"] = "stale"
+        families["macro_hard"]["fresh_countries"] = ["CA"]
+        families["macro_hard"]["stale_countries"] = ["USA"]
+        with self.assertRaises(FreshnessError):
+            assert_action_allowed(
+                "OPEN",
+                families,
+                seat="carry-is-king",
+                instrument="CORRA_2027-03",
+                asset_class="rates",
+            )
+
     def test_invalid_macro_family_still_fails_closed(self) -> None:
         families = _families()
         families["macro_hard"]["status"] = "invalid"

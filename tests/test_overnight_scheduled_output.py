@@ -235,6 +235,77 @@ class ScheduledOutputTests(unittest.TestCase):
         self.assertEqual(pos["mark_price"], 1.36)
         self.assertIn("market_state.fx.USDCAD.spot", pos["entry_price_source"])
 
+    def test_internal_telemetry_validates_and_stays_out_of_public_projections(self) -> None:
+        banned = (
+            "packet_sha256",
+            "macro_hard",
+            "review-001",
+            "families.macro_hard",
+            "fail-closed",
+            "VERIFIED:",
+        )
+        internal_thesis = (
+            "VERIFIED: packet_sha256 abc and families.macro_hard is STALE so the book stays flat. "
+            "USD remains the cleanest G10 expression against CAD."
+        )
+        internal_invalidation = "review-001 fail-closed if the frozen packet hash changes."
+        internal_summary = "Manual review-001 on base_packet_sha256 abc. macro_hard is STALE."
+        decision = self.payload["decisions"]["dollar-king"]
+        decision["thesis"] = internal_thesis
+        decision["invalidation"] = internal_invalidation
+        self.payload["pm_decisions"]["pragmatist"]["thesis"] = internal_thesis
+        self.payload["pm_decisions"]["pragmatist"]["invalidation"] = internal_invalidation
+        packet = self.payload["agent_packet"]
+        packet["research_supplement"]["summary"] = internal_summary
+        packet["packet_sha256"] = sha256_json({k: v for k, v in packet.items() if k != "packet_sha256"})
+        for seat_decision in self.payload["decisions"].values():
+            seat_decision["packet_sha256"] = packet["packet_sha256"]
+        for pm_decision in self.payload["pm_decisions"].values():
+            pm_decision["packet_sha256"] = packet["packet_sha256"]
+
+        validate_output(self.store, self.payload)
+        review = apply_output(self.store, self.payload)
+        stored_thesis = review["books"]["seats"]["dollar-king"]["thesis"]
+        self.assertIn("packet_sha256", stored_thesis)
+        self.assertIn("macro_hard", stored_thesis)
+        stored_packet = self.store.read_artifact(
+            self.run_id, "agent_evidence_packet.json", review_id=self.base["review_id"]
+        )
+        self.assertIn("base_packet_sha256", stored_packet["research_supplement"]["summary"])
+
+        from scripts.overnight.books import public_books_view
+        from scripts.overnight.public_prose import public_prose_issues, public_research_summary
+        from scripts.overnight.publish import emit_trader_books_json
+        from scripts.pm.books import public_pm_view
+        from scripts.pm.store import PMStore
+
+        public_traders = public_books_view(review["books"])
+        dollar = next(row for row in public_traders["seats"] if row["seat"] == "dollar-king")
+        self.assertIn("USD remains the cleanest G10 expression against CAD", dollar["thesis"])
+        rendered = json.dumps(public_traders)
+        for token in banned:
+            self.assertNotIn(token, rendered)
+            self.assertNotIn(token, dollar["invalidation"])
+
+        site = self.state_root / "site"
+        emit_trader_books_json(self.store, site, run_id=self.run_id)
+        public_json = (site / "trader-books.json").read_text(encoding="utf-8")
+        for token in banned:
+            self.assertNotIn(token, public_json)
+        self.assertIn("USD remains the cleanest G10 expression against CAD", public_json)
+
+        summary = public_research_summary(internal_summary)
+        self.assertFalse(public_prose_issues(summary))
+        self.assertNotIn("packet", summary.lower())
+
+        pm_books = PMStore(root=ROOT, state_root=self.state_root).read_books()
+        self.assertIn("packet_sha256", pm_books["pms"]["pragmatist"]["thesis"])
+        public_pm = json.dumps(public_pm_view(pm_books))
+        pragmatist = next(row for row in public_pm_view(pm_books)["pms"] if row["pm_id"] == "pragmatist")
+        self.assertIn("USD remains the cleanest G10 expression against CAD", pragmatist["thesis"])
+        for token in banned:
+            self.assertNotIn(token, public_pm)
+
     def test_rejects_model_calculated_book_state(self) -> None:
         self.payload["books"] = {"nav_usd": 999}
         with self.assertRaises(Exception):

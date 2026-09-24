@@ -25,7 +25,6 @@ from scripts.overnight.paper_marks import market_state_from_families
 from scripts.overnight.acceptance_lock import overnight_acceptance_lock
 from scripts.overnight.accepted_news import overlay_accepted_research
 from scripts.overnight.store import OvernightStore, sha256_json
-from scripts.overnight.public_prose import assert_public_prose
 from scripts.pm.automated import validate_pm_decisions
 from scripts.pm.review_packets import compact_overnight_decisions
 
@@ -179,12 +178,6 @@ def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str,
             raise SchemaError(f"research_supplement.{key} must be a list")
     if supplement.get("summary") is not None and not isinstance(supplement.get("summary"), str):
         raise SchemaError("research_supplement.summary must be a string or null")
-    if supplement.get("summary") is not None:
-        assert_public_prose(
-            supplement.get("summary"),
-            label="research_supplement.summary",
-            max_chars=1400,
-        )
     expected_packet_hash = _packet_hash(agent_packet)
     if agent_packet.get("packet_sha256") != expected_packet_hash:
         raise EvidenceBoundaryError("agent_packet packet_sha256 mismatch")
@@ -207,8 +200,6 @@ def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str,
             raise EvidenceBoundaryError(f"{seat} evidence cutoff mismatch")
         if not isinstance(decision.get("actions"), list) or not decision["actions"]:
             raise SchemaError(f"{seat} must return at least one structured action")
-        assert_public_prose(decision.get("thesis"), label=f"{seat}.thesis", max_chars=1600)
-        assert_public_prose(decision.get("invalidation"), label=f"{seat}.invalidation", max_chars=1200)
         if seat == "no-trade-skeptic":
             from scripts.funding.view import validate_funding_view
 
@@ -267,9 +258,6 @@ def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str,
         for pm_id, decision in pm_decisions.items():
             if isinstance(decision, dict) and decision.get("review_id") not in (None, review_id):
                 raise EvidenceBoundaryError(f"{pm_id} review_id mismatch")
-            if isinstance(decision, dict):
-                assert_public_prose(decision.get("thesis"), label=f"{pm_id}.thesis", max_chars=1600)
-                assert_public_prose(decision.get("invalidation"), label=f"{pm_id}.invalidation", max_chars=1200)
     return payload
 
 

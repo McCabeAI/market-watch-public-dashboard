@@ -788,22 +788,71 @@ def macro_countries_for_expression(
     return found
 
 
-def stale_countries_of(family: dict[str, Any] | None) -> set[str]:
-    if not isinstance(family, dict):
-        return set()
-    listed = family.get("stale_countries")
-    if isinstance(listed, list):
-        return {str(item) for item in listed}
+def _known_country_codes(value: Any) -> set[str] | None:
+    """Parse a country list. None means the list is absent or not trustworthy."""
+    if not isinstance(value, list):
+        return None
+    known = set(temperature_countries())
+    codes: set[str] = set()
+    for item in value:
+        code = str(item).strip().upper()
+        if code not in known:
+            return None
+        codes.add(code)
+    return codes
+
+
+def _component_country_attribution(family: dict[str, Any]) -> tuple[set[str], set[str]] | None:
     rows = family.get("components")
-    if not isinstance(rows, list):
-        return set()
-    blocked: set[str] = set()
+    if not isinstance(rows, list) or not rows:
+        return None
+    known = set(temperature_countries())
+    by_country: dict[str, list[dict[str, Any]]] = {}
     for row in rows:
         if not isinstance(row, dict) or not row.get("weight"):
             continue
-        if row.get("status") in _BLOCKING_COMPONENT_STATUSES:
-            blocked.add(str(row.get("country")))
-    return blocked
+        country = str(row.get("country") or "").strip().upper()
+        if country not in known:
+            return None
+        by_country.setdefault(country, []).append(row)
+    if not by_country:
+        return None
+    fresh: set[str] = set()
+    stale: set[str] = set()
+    for country, group in by_country.items():
+        if any(row.get("status") in _BLOCKING_COMPONENT_STATUSES for row in group):
+            stale.add(country)
+        else:
+            fresh.add(country)
+    return fresh, stale
+
+
+def country_macro_attribution(family: dict[str, Any] | None) -> tuple[set[str], set[str]] | None:
+    """Return (fresh, stale) only when eligibility can be established per country.
+
+    Explicit country lists win. Both lists must contain only known temperature
+    countries, must not overlap, and must name at least one country. Absent
+    lists may fall back to scored components. Empty, overlapping, or unknown
+    codes are untrustworthy.
+    """
+    if not isinstance(family, dict):
+        return None
+    has_fresh = "fresh_countries" in family
+    has_stale = "stale_countries" in family
+    if has_fresh or has_stale:
+        fresh = _known_country_codes(family.get("fresh_countries")) if has_fresh else set()
+        stale = _known_country_codes(family.get("stale_countries")) if has_stale else set()
+        if fresh is None or stale is None or fresh & stale or not (fresh or stale):
+            return None
+        return fresh, stale
+    return _component_country_attribution(family)
+
+
+def stale_countries_of(family: dict[str, Any] | None) -> set[str]:
+    attributed = country_macro_attribution(family)
+    if attributed is None:
+        return set()
+    return set(attributed[1])
 
 
 def macro_expression_block(
@@ -815,9 +864,10 @@ def macro_expression_block(
 ) -> str | None:
     """Block only the macro countries the selected expression actually needs.
 
-    macro_hard.status is an aggregate diagnostic. A partial six-country refresh
-    must never become a global veto when another country's scored inputs are
-    verified. Missing/invalid/unavailable family state still fails closed.
+    Country lists or scored components establish eligibility. A verified country
+    stays tradable when another country is stale. Aggregate stale status with
+    absent, empty, or untrustworthy attribution fails closed: eligibility cannot
+    be established. Missing/invalid/unavailable family state still fails closed.
     """
     family = families.get("macro_hard") if isinstance(families, dict) else None
     if not isinstance(family, dict):
@@ -828,9 +878,17 @@ def macro_expression_block(
         if needed:
             return "expression blocked by unavailable macro inputs: " + ", ".join(sorted(needed))
         return "expression blocked by unavailable macro inputs"
+    attributed = country_macro_attribution(family)
+    if attributed is None:
+        if status != "stale":
+            return None
+        if needed:
+            return "expression blocked by unattributed stale macro inputs: " + ", ".join(sorted(needed))
+        return "expression blocked by unattributed stale macro inputs"
+    stale = attributed[1]
     if not needed:
         return None
-    blocked = sorted(needed & stale_countries_of(family))
+    blocked = sorted(needed & stale)
     if not blocked:
         return None
     return "expression blocked by stale macro inputs: " + ", ".join(blocked)
