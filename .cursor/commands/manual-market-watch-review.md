@@ -46,7 +46,29 @@ The Composer child may organize, compare, calculate from, and summarize only the
 The parent may create a common **agent packet** from the trusted evidence plus that evidence-closed synthesis. The agent packet may have its own content SHA, but:
 - its evidence cutoff remains exactly the stage-04 `as_of`;
 - it must cite the same `base_packet_sha256`;
-- it cannot contain a source/value/vintage not already present in the trusted freeze.
+- it cannot contain a source/value/vintage not already present in the trusted freeze;
+- it must preserve the deterministic `trade_permissions` block from the trusted stage-04 evidence snapshot unchanged.
+
+### Trade-permission contract
+
+The deterministic `trade_permissions` block is authoritative for country-level new-risk eligibility. The aggregate `families.macro_hard.status` is diagnostic only and MUST NOT be treated as a global veto when `trade_permissions` marks the required country/countries eligible.
+
+- `OPEN` / `ADD`: allowed only when every country needed by the selected expression is eligible and the required market/rate legs are usable.
+- `HOLD` / `REDUCE` / `CLOSE`: remain valid management actions for existing positions.
+- `HEDGE`: a risk-management action, not proof that the book must be frozen. Propose it only when the frozen packet contains a markable hedge leg.
+- Never convert a US or AU data problem into a ban on an unrelated CA/NZ/EA/JP expression.
+- If a country is restricted, state the actual human-readable reason (for example, "August Australian labor could not be verified") rather than internal status enums.
+
+### Public narrative contract
+
+The research summary and every trader/PM thesis and invalidation are displayed to a human. Write them as concise desk notes, not execution telemetry.
+
+- Research summary: 80–180 words. Lead with the overnight market conclusion, then the 2–4 developments that matter and what to watch next. Numbers appear only when they support the point.
+- Trader/PM thesis: 2–4 sentences covering the position or opportunity, why it matters now, and the principal risk. Invalidation should describe the market condition that changes the view.
+- Never put hashes, run IDs, review IDs, internal family names/status enums, pipeline stages, model-control terms, postmortem IDs, or provenance mechanics in public prose.
+- Never use labels such as `FACT:`, `INFERENCE:`, or `UNKNOWN:`.
+- Do not narrate `PASS/PARTIAL`, "fail closed", `macro_hard`, `market_state`, `source_failed`, `budget_deferred`, `MW_...`, or packet metadata. Those facts remain in structured machine fields.
+- If the evidence is insufficient for a useful public note, say so plainly in one sentence instead of dumping telemetry.
 
 ### Traders
 
@@ -55,7 +77,7 @@ Launch exactly the locked 14 trader seats as direct Grok children. Each gets:
 - the same agent packet and exact base packet/review identity;
 - only that seat's prior memory sidecar.
 
-Trader children cannot use tools or fetch evidence. A valid `HOLD` is a deliberate trading decision. An operational data failure must already have stopped the deterministic launch before ACP and must never be represented as 14 synthetic HOLDs.
+Trader children cannot use tools or fetch evidence. A valid `HOLD` is a deliberate trading decision, but each seat must independently consider the full allowed action set for its book and remit. Do not default to HOLD because an unrelated country is restricted. An operational data failure must already have stopped the deterministic launch before ACP and must never be represented as 14 synthetic HOLDs.
 
 ### Automated PMs
 
