@@ -67,16 +67,26 @@
       "status": "pending"
     },
     "trader_review": {
-      "as_of": null,
+      "as_of": "2026-09-24T08:28:50.140779-04:00",
       "errors": [],
-      "finished_at": null,
-      "inputs": {},
+      "finished_at": "2026-09-24T08:28:50.140779-04:00",
+      "inputs": {
+        "base_packet_sha256": "36e3ba51622fba76a7f8474b02efc8b45e7fb8227af680d4926496a86787df63",
+        "review_id": "review-001",
+        "schedule_id": "market-watch-weekday-0205",
+        "source": "acp-scheduled-output"
+      },
       "name": "trader_review",
-      "outputs": {},
-      "started_at": null,
-      "status": "pending"
+      "outputs": {
+        "model_calls": 19,
+        "packet_sha256": "669e2d29383e02c6cd5f5c8a75acda5c23e0ea453ef1cc83f8cce2ae5c55c9f6",
+        "review_id": "review-001",
+        "source": "acp-scheduled-output"
+      },
+      "started_at": "2026-09-24T08:28:50.140762-04:00",
+      "status": "succeeded"
     }
   },
-  "status": "pending",
+  "status": "running",
   "timezone": "America/New_York"
 }

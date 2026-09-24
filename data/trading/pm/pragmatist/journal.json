@@ -232,6 +232,53 @@
       "run_id": "overnight-20260923",
       "schema_version": 1,
       "thesis": "Keep the existing receive in CORRA_2027-03. Implied 3.06 versus cash CORRA 2.29 still prices a hike path that is less likely after oil sold off (Brent ~99.41) on UNGA/Saudi restart, with Hormuz disputed rather than confirmed closed. The position is already working from 3.13 entry. Expression remains the clean opportunistic macro single; stale macro_hard blocks any new risk."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pm-pragmatist-4e0cbc4e0b05",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-09-24T08:28:49.894961-04:00",
+      "conviction": 52,
+      "decision_fingerprint": "a2b97014540a57435664600a20830722a2194b5443ff735019e31592d3afa1c2",
+      "event_id": "jde-6dbaa03b9d9240d1",
+      "funding_view": null,
+      "invalidation": "Sustained CRAH27 repricing higher that erases the cash-futures carry versus official CORRA 2.29, a quality-gate CA ineligibility, or an authorized REDUCE/CLOSE path if families.macro_hard unstales into a confirmed hawkish BoC/oil-inflation shock. Do not invent a hedge while the family remains STALE.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-pragmatist-4e0cbc4e0b05"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "ad0fc97f559059f0e741f6f2fe94e2187e50891b567539cd863cd392fa9dfdf7",
+      "outcome_links": [],
+      "owner_id": "pragmatist",
+      "owner_type": "pm",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-24T06:06:33.355500-04:00",
+        "evidence_hash": "92661770bf96ece6e62e4d80e315b0054db45e9bd0b6b54f8cd23ce628bd3c5d",
+        "overnight_run_id": "overnight-20260924",
+        "review_id": "review-001",
+        "review_packet_id": "prp-pragmatist-overnight-20260924-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold the CA-eligible Mar-27 CORRA receive as a grind-single: still +86bp versus cash CORRA 2.29 with CRAH27 at 3.15, quality gate CA eligible, and size well inside the 100m shock cap. Crowding is noted (carry-is-king also long; perma-bull is the offsetting short) but is not a close signal while the strip still prices easing versus cash and no expanding handoff or hedge is authorized.",
+      "run_id": "overnight-20260924",
+      "schema_version": 1,
+      "thesis": "Hold the CA-eligible Mar-27 CORRA receive as a grind-single: still +86bp versus cash CORRA 2.29 with CRAH27 at 3.15, quality gate CA eligible, and size well inside the 100m shock cap. Crowding is noted (carry-is-king also long; perma-bull is the offsetting short) but is not a close signal while the strip still prices easing versus cash and no expanding handoff or hedge is authorized."
     }
   ],
   "schema_version": 1,

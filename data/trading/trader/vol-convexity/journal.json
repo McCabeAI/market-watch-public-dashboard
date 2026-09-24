@@ -222,6 +222,51 @@
       "run_id": "overnight-20260923",
       "schema_version": 1,
       "thesis": "Packet has no premium, IV, or strike marks, so optionality is not paper-tradeable. macro_hard is stale. Book is flat. HOLD; do not invent option marks."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-24T06:06:33.355500-04:00",
+      "conviction": 45,
+      "decision_fingerprint": "deef8fceda55dcc3ed2e3826563987524c1fd1e6284b2835a1b3d0bdec28c46e",
+      "event_id": "jde-7d25cf2f26e445bf",
+      "funding_view": null,
+      "invalidation": "Invalidate HOLD-flat only if (1) a live vol surface and event-vol premium versus two-week realized are in a later packet and clearly underprice Hormuz tail, and (2) macro_hard is no longer STALE, and (3) the flat-book mandate is lifted. A spot-only oil bounce or grind lower without those three does not authorize opening options or spot.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "66f4434e9a4815e09a06be01d9e247a02f247f5b6ae723ce392f35d3908d7d1a",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-24T06:06:33.355500-04:00",
+        "evidence_hash": "669e2d29383e02c6cd5f5c8a75acda5c23e0ea453ef1cc83f8cce2ae5c55c9f6",
+        "overnight_run_id": "overnight-20260924",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "VERIFIED: Hormuz remains a binary choke-point; oil is near two-week lows; macro_hard is STALE; book mandate is FLAT; packet_sha256=669e2d29383e02c6cd5f5c8a75acda5c23e0ea453ef1cc83f8cce2ae5c55c9f6 at cutoff 2026-09-24T06:06:33.355500-04:00. INFERENCE: two-week lows plus an unresolved binary is a timing-uncertain, fat-tail setup where spot is the wrong instrument\u2014path can gap through any stop while premium for the right tail is the only bounded expression. UNKNOWN: no live implied/realized, skew, RR, strikes, or tenors in the frozen packet; event vol versus two-week realized cannot be scored while macro_hard is STALE. Do not invent option prices. Convexity would dominate only after a fresh macro_hard print and a live vol surface; until then the seat stays flat and selected=none.",
+      "run_id": "overnight-20260924",
+      "schema_version": 1,
+      "thesis": "VERIFIED: Hormuz remains a binary choke-point; oil is near two-week lows; macro_hard is STALE; book mandate is FLAT; packet_sha256=669e2d29383e02c6cd5f5c8a75acda5c23e0ea453ef1cc83f8cce2ae5c55c9f6 at cutoff 2026-09-24T06:06:33.355500-04:00. INFERENCE: two-week lows plus an unresolved binary is a timing-uncertain, fat-tail setup where spot is the wrong instrument\u2014path can gap through any stop while premium for the right tail is the only bounded expression. UNKNOWN: no live implied/realized, skew, RR, strikes, or tenors in the frozen packet; event vol versus two-week realized cannot be scored while macro_hard is STALE. Do not invent option prices. Convexity would dominate only after a fresh macro_hard print and a live vol surface; until then the seat stays flat and selected=none."
     }
   ],
   "schema_version": 1,

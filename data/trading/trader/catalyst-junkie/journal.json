@@ -234,6 +234,51 @@
       "run_id": "overnight-20260923",
       "schema_version": 1,
       "thesis": "AONIA_2026-10 at 4.57 already prices +21.5bp versus 4.35 cash. Lower oil and a larger-than-expected housing correction are anti-hike incoming shocks. The October RBA event is dated, but the live path no longer supports a long that needs a hawkish surprise. Close the existing long."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-24T06:06:33.355500-04:00",
+      "conviction": 60,
+      "decision_fingerprint": "dbae70ec77405cbb5478f8cbbc4a1452d2e46c2367563542ba607e836085345e",
+      "event_id": "jde-d6422669132a462b",
+      "funding_view": null,
+      "invalidation": "pmd-69691111cd40 cleared AND macro_hard refreshed in-date AND a subsequent packet supplies an eligible (non-AU) dated catalyst with tradable rates levels. Until then OPEN/ADD/HEDGE remain blocked; do not treat the ineligible AONIA strip as a path to reprice.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "261265a7c08d03afd42098b15cb48a2a7a63fa5b65d00bc752c60e19e189a4e5",
+      "outcome_links": [],
+      "owner_id": "catalyst-junkie",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-24T06:06:33.355500-04:00",
+        "evidence_hash": "669e2d29383e02c6cd5f5c8a75acda5c23e0ea453ef1cc83f8cce2ae5c55c9f6",
+        "overnight_run_id": "overnight-20260924",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "VERIFIED: book is FLAT after closing AONIA_2026-10; pmd-69691111cd40 blocks OPEN/ADD/HEDGE; macro_hard is STALE; AU is ineligible; packet prints AONIA 4.35, Oct-26 4.565, Jun-27 4.935. INFERENCE: that AU strip is a hike-priced path versus cash, but valuation without an eligible dated mechanism can stay wrong, and this seat will not force a tenor or a ghost catalyst. rates_tenor_scan: STIR/policy-path = AU AONIA/Oct-26/Jun-27 ladder only and ineligible; 2Y/5Y/10Y/curve/cross-market rates RV = unavailable (no non-AU levels in the closed packet; nulls, not invented). Best rates expression is therefore none. Spot-FX candidate also none: no dated non-AU FX mechanism survives STALE macro_hard. UNKNOWN: postmortem substance and any non-AU print. Catalyst-junkie rejects an elegant reopen; HOLD flat is the only valid action.",
+      "run_id": "overnight-20260924",
+      "schema_version": 1,
+      "thesis": "VERIFIED: book is FLAT after closing AONIA_2026-10; pmd-69691111cd40 blocks OPEN/ADD/HEDGE; macro_hard is STALE; AU is ineligible; packet prints AONIA 4.35, Oct-26 4.565, Jun-27 4.935. INFERENCE: that AU strip is a hike-priced path versus cash, but valuation without an eligible dated mechanism can stay wrong, and this seat will not force a tenor or a ghost catalyst. rates_tenor_scan: STIR/policy-path = AU AONIA/Oct-26/Jun-27 ladder only and ineligible; 2Y/5Y/10Y/curve/cross-market rates RV = unavailable (no non-AU levels in the closed packet; nulls, not invented). Best rates expression is therefore none. Spot-FX candidate also none: no dated non-AU FX mechanism survives STALE macro_hard. UNKNOWN: postmortem substance and any non-AU print. Catalyst-junkie rejects an elegant reopen; HOLD flat is the only valid action."
     }
   ],
   "schema_version": 1,

@@ -232,6 +232,53 @@
       "run_id": "overnight-20260923",
       "schema_version": 1,
       "thesis": "USD policy/labor premium versus cheap BoC remains extreme in CA-US 2Y (-147bp) and SOFR 3.85 versus CORRA 2.29. Softer oil after UNGA/Saudi restart is CAD-negative terms-of-trade, not a reason to scrap the existing USDCAD long. Dedicated USD-spot seat; cannot add while macro_hard is stale."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDCAD",
+          "notional_usd": null,
+          "position_id": "pos-5317bc96d4eb",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-24T06:06:33.355500-04:00",
+      "conviction": 70,
+      "decision_fingerprint": "5585970a2324bba1b2d8fba3f02dfd29592337d99d04ee7a8eec3838f23fab57",
+      "event_id": "jde-0a891a64e2174a84",
+      "funding_view": null,
+      "invalidation": "HOLD thesis breaks if a non-stale macro_hard refresh shows CAD cyclical outperformance vs US, or if the CA-US 2Y gap and SOFR-CORRA wedge no longer favor USD. No price stop or target is in the packet (null). Fail-closed book: do not OPEN, ADD, or HEDGE.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-5317bc96d4eb"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "1f892fdf12ee3eaaf17a93c5c4b272abce05937a978ac33f6c5467fa1301a9cc",
+      "outcome_links": [],
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-24T06:06:33.355500-04:00",
+        "evidence_hash": "669e2d29383e02c6cd5f5c8a75acda5c23e0ea453ef1cc83f8cce2ae5c55c9f6",
+        "overnight_run_id": "overnight-20260924",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "VERIFIED: book is long USDCAD 55m pos-5317bc96d4eb; spot 1.4089 at 89.1 percentile; SOFR 3.87 vs CORRA 2.29; CA-US 2Y -146bp; macro_hard STALE; OPEN/ADD/HEDGE fail closed. INFERENCE: the USD-CAD rate gap is the cleanest USD-spot expression in the book\u2014policy and carry still favor USD over CAD, so a CAD cross would add second-order non-USD risk without improving the rates or growth bet. Valuation is extended, so this is a keep-not-add stance. UNKNOWN: fresh CA/US growth, BoC/Fed path, and any level-based trigger (none in packet). Action is HOLD only.",
+      "run_id": "overnight-20260924",
+      "schema_version": 1,
+      "thesis": "VERIFIED: book is long USDCAD 55m pos-5317bc96d4eb; spot 1.4089 at 89.1 percentile; SOFR 3.87 vs CORRA 2.29; CA-US 2Y -146bp; macro_hard STALE; OPEN/ADD/HEDGE fail closed. INFERENCE: the USD-CAD rate gap is the cleanest USD-spot expression in the book\u2014policy and carry still favor USD over CAD, so a CAD cross would add second-order non-USD risk without improving the rates or growth bet. Valuation is extended, so this is a keep-not-add stance. UNKNOWN: fresh CA/US growth, BoC/Fed path, and any level-based trigger (none in packet). Action is HOLD only."
     }
   ],
   "schema_version": 1,

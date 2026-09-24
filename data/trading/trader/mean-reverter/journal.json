@@ -232,6 +232,53 @@
       "run_id": "overnight-20260923",
       "schema_version": 1,
       "thesis": "SR3H7 at +72bp over SOFR 3.85 is leftover hike-premium after oil has already moved lower. The existing long SOFR_2027-03 is the fade of that stretch. Stale macro_hard blocks adding; thesis is not broken so do not close."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-1477172adb86",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-24T06:06:33.355500-04:00",
+      "conviction": 55,
+      "decision_fingerprint": "96d725c9e7cf59723dcc3d13cd239d3f55ec68f27ea6726dbc69527b97401f35",
+      "event_id": "jde-9eb8af98a6a84cb8",
+      "funding_view": null,
+      "invalidation": "Mean-reversion thesis dies if the overnight UST stretch extends rather than retraces: UST 2Y remaining at/above 4.85 and 10Y at/above 5.11 while SR3H7 implied holds or rises through 4.655 and cash SOFR moves up from 3.87, so the 4.655 vs 3.87 gap is re-anchored as policy path not overshoot. Fresh macro_hard (currently STALE) confirming a higher terminal/path would also invalidate. No invented stops; levels are packet prints only (null otherwise).",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-1477172adb86"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "21bbc64e3590c8f24d8468d6dffdaf53acbe326f71a3185e9a78077efdc71539",
+      "outcome_links": [],
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-24T06:06:33.355500-04:00",
+        "evidence_hash": "669e2d29383e02c6cd5f5c8a75acda5c23e0ea453ef1cc83f8cce2ae5c55c9f6",
+        "overnight_run_id": "overnight-20260924",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "FACT: book is long SOFR_2027-03 / SR3H7 40m pos-1477172adb86; SR3H7 implied 4.655 vs cash SOFR 3.87; UST 2Y 4.85 (+14bp) and 10Y 5.11 (+15bp); macro_hard STALE; OPEN/ADD/HEDGE fail closed. INFERENCE: the overnight UST selloff is a same-session stretch, not a completed re-anchor, while Mar-27 STIR still prices ~78.5bp above cash SOFR\u2014crowded hawkish extrapolation that the existing long (short-implied-rate) is already fading. Anchor is cash SOFR 3.87 plus a still-elevated 2s/10s level (4.85/5.11, ~26bp 2s10s); reversal condition is overnight yield overshoot fading so SR3H7 implied compresses toward a less restrictive path. rates_tenor_scan: STIR/policy-path candidate=HOLD long SOFR_2027-03 (only clean fade of 4.655 vs 3.87); 2Y candidate=long UST2Y fade of +14bp to 4.85 but OPEN fail closed; 5Y unavailable in packet; 10Y candidate=long UST10Y fade of +15bp to 5.11 but OPEN fail closed; curve 2s10s ~26bp after near-parallel selloff, not a standalone RV without history; cross-market rates RV unavailable. Spot-FX candidate unavailable (no spot levels in packet). Rates selected conceptually; no new expression because book already is the STIR fade and new risk is fail-closed. UNKNOWN: fresh macro, positioning, vol, and whether the +14/+15bp move had a discrete catalyst. Do not add. HOLD the stretched-STIR fade.",
+      "run_id": "overnight-20260924",
+      "schema_version": 1,
+      "thesis": "FACT: book is long SOFR_2027-03 / SR3H7 40m pos-1477172adb86; SR3H7 implied 4.655 vs cash SOFR 3.87; UST 2Y 4.85 (+14bp) and 10Y 5.11 (+15bp); macro_hard STALE; OPEN/ADD/HEDGE fail closed. INFERENCE: the overnight UST selloff is a same-session stretch, not a completed re-anchor, while Mar-27 STIR still prices ~78.5bp above cash SOFR\u2014crowded hawkish extrapolation that the existing long (short-implied-rate) is already fading. Anchor is cash SOFR 3.87 plus a still-elevated 2s/10s level (4.85/5.11, ~26bp 2s10s); reversal condition is overnight yield overshoot fading so SR3H7 implied compresses toward a less restrictive path. rates_tenor_scan: STIR/policy-path candidate=HOLD long SOFR_2027-03 (only clean fade of 4.655 vs 3.87); 2Y candidate=long UST2Y fade of +14bp to 4.85 but OPEN fail closed; 5Y unavailable in packet; 10Y candidate=long UST10Y fade of +15bp to 5.11 but OPEN fail closed; curve 2s10s ~26bp after near-parallel selloff, not a standalone RV without history; cross-market rates RV unavailable. Spot-FX candidate unavailable (no spot levels in packet). Rates selected conceptually; no new expression because book already is the STIR fade and new risk is fail-closed. UNKNOWN: fresh macro, positioning, vol, and whether the +14/+15bp move had a discrete catalyst. Do not add. HOLD the stretched-STIR fade."
     }
   ],
   "schema_version": 1,

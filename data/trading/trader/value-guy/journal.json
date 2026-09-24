@@ -232,6 +232,51 @@
       "run_id": "overnight-20260923",
       "schema_version": 1,
       "thesis": "CA-US 2Y at -147bp (1y pctile 0.2) remains a historically extreme peer-spread cheapness, but that is a stock valuation fact, not a re-entry. The same family was closed 22 Sep as SOFR-CORRA_2Y_2027H1 with outstanding postmortem pmd-d9e2764dea0f. Stale macro_hard and the memory gate block expansion. Stay flat."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-24T06:06:33.355500-04:00",
+      "conviction": 58,
+      "decision_fingerprint": "5356b618a2b1947c6276cacb1cb615975795763200038b822342565aaacf6620",
+      "event_id": "jde-088a2bd4a16640a5",
+      "funding_view": null,
+      "invalidation": "A completed pmd-d9e2764dea0f that clears re-entry, a refreshed non-STALE macro_hard packet, and an explicit re-risk mandate would be required before any CA-US 2Y / SOFR-CORRA expression could be considered. Any of those remaining closed keeps the book flat.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "e9f73677fca3bf4133a4e70f80c0f4673f5269d25edfc9bab425a7ffb8073587",
+      "outcome_links": [],
+      "owner_id": "value-guy",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-24T06:06:33.355500-04:00",
+        "evidence_hash": "669e2d29383e02c6cd5f5c8a75acda5c23e0ea453ef1cc83f8cce2ae5c55c9f6",
+        "overnight_run_id": "overnight-20260924",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Verified: book is FLAT; CA-US 2Y prints -146bp; the prior SOFR-CORRA_2Y_2027H1 expression is closed with outstanding postmortem pmd-d9e2764dea0f; macro_hard is STALE at cutoff. Inference: -146bp is a rates-relative dislocation versus a peer (US) policy path, the kind of cross-market 2Y gap this seat would normally want to fade via a rates RV rather than spot CAD, but a closed ticket plus a due postmortem is a stop on re-risking the same convergence until the failure mode is written down. Unknown: historical z-score of the -146bp print, REER/PPP and terms-of-trade anchors, and postmortem findings are not in this frozen overnight packet. Convergence is not underwritable tonight. HOLD flat; do not reopen SOFR-CORRA 2Y 2027H1 or substitute a CAD spot fade of the same view.",
+      "run_id": "overnight-20260924",
+      "schema_version": 1,
+      "thesis": "Verified: book is FLAT; CA-US 2Y prints -146bp; the prior SOFR-CORRA_2Y_2027H1 expression is closed with outstanding postmortem pmd-d9e2764dea0f; macro_hard is STALE at cutoff. Inference: -146bp is a rates-relative dislocation versus a peer (US) policy path, the kind of cross-market 2Y gap this seat would normally want to fade via a rates RV rather than spot CAD, but a closed ticket plus a due postmortem is a stop on re-risking the same convergence until the failure mode is written down. Unknown: historical z-score of the -146bp print, REER/PPP and terms-of-trade anchors, and postmortem findings are not in this frozen overnight packet. Convergence is not underwritable tonight. HOLD flat; do not reopen SOFR-CORRA 2Y 2027H1 or substitute a CAD spot fade of the same view."
     }
   ],
   "schema_version": 1,
