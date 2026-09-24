@@ -45,7 +45,8 @@ EVIDENCE_FAMILIES = (
     "central_bank_research",
     "market_state",
 )
-REQUIRED_OPEN_FAMILIES = ("macro_hard", "news", "market_state")
+# Macro freshness is country/expression-specific; only news and market state are global expansion prerequisites.
+REQUIRED_OPEN_FAMILIES = ("news", "market_state")
 CATASTROPHIC_FAMILIES = ("macro_hard", "news")
 
 # News/macro older than this versus the run as-of is stale, not catastrophic.

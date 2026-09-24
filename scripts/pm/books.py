@@ -915,6 +915,12 @@ def validate_books(books: dict[str, Any]) -> dict[str, Any]:
     return books
 
 
+def _public_copy(value: Any, max_chars: int) -> str:
+    from scripts.overnight.public_prose import sanitize_public_prose
+
+    return sanitize_public_prose(value, max_chars=max_chars, fallback="")
+
+
 def public_pm_view(books: dict[str, Any]) -> dict[str, Any]:
     validate_books(books)
     rows = []
@@ -959,8 +965,8 @@ def public_pm_view(books: dict[str, Any]) -> dict[str, Any]:
                 "total_pnl_usd": item["total_pnl_usd"],
                 "pnl_unavailable": item["pnl_unavailable"],
                 "conviction": item["conviction"],
-                "thesis": item.get("thesis"),
-                "invalidation": item.get("invalidation"),
+                "thesis": _public_copy(item.get("thesis"), 700),
+                "invalidation": _public_copy(item.get("invalidation"), 500),
                 "alerts": item.get("alerts") or [],
                 "positions": [
                     {
@@ -979,8 +985,8 @@ def public_pm_view(books: dict[str, Any]) -> dict[str, Any]:
                         "locked_expression_family": p.get("locked_expression_family"),
                         "opened_at": p.get("opened_at"),
                         "opened_run_id": p.get("opened_run_id"),
-                        "thesis": p.get("thesis"),
-                        "invalidation": p.get("invalidation"),
+                        "thesis": _public_copy(p.get("thesis"), 500),
+                        "invalidation": _public_copy(p.get("invalidation"), 400),
                         "funding_basis": p.get("funding_basis"),
                         "funding_basis_status": p.get("funding_basis_status"),
                         "funding_draw_usd": p.get("funding_draw_usd"),

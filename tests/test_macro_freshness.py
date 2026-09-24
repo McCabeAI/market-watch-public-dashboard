@@ -335,7 +335,7 @@ class LedgerFreshnessTests(unittest.TestCase):
         self.assertEqual(caught_up["ingested"], [])
 
     def test_collect_uses_the_release_check_before_freeze_inputs(self) -> None:
-        self.assertIn("macro_hard", REQUIRED_OPEN_FAMILIES)
+        self.assertNotIn("macro_hard", REQUIRED_OPEN_FAMILIES)
         with tempfile.TemporaryDirectory() as tmp:
             store = OvernightStore(root=ROOT, state_root=Path(tmp))
             collected = collect_inputs(

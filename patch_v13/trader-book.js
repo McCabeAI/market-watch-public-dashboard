@@ -30,6 +30,82 @@
       .replace(/'/g, "&#039;");
   }
 
+  const MACHINE_PROSE = [
+    /\b(?:base_)?packet(?:_sha256)?\b/i,
+    /\bsha256\b/i,
+    /\breview-\d+\b/i,
+    /\bmwl-\d{8}T\d{6}Z-[0-9a-f]+\b/i,
+    /\bovernight-\d{8}\b/i,
+    /\bfamilies\./i,
+    /\bmacro_hard\b/i,
+    /\bmarket_state\b/i,
+    /\bsource_failed\b/i,
+    /\bbudget_deferred\b/i,
+    /\bPASS\/PARTIAL\b/i,
+    /\bfail[- ]closed\b/i,
+    /\bpmd-[0-9a-f]+\b/i,
+    /\bMW_[A-Z0-9_]+\b/i,
+    /\bVERIFIED:/i,
+    /\bselected\s*=\s*none\b/i,
+    /\bcandidate_assessments\b/i,
+    /\bOPEN\/ADD\/HEDGE\b/i,
+    /\brates_tenor_scan\b/i,
+    /\brates_candidate\b/i,
+    /\bHOLD\/REDUCE\/CLOSE\b/i
+  ];
+
+  const SCRUB_PROSE = [
+    /\b(?:base_)?packet(?:_sha256)?\s*=\s*[0-9a-f]+\b/gi,
+    /\bsha256\b/gi,
+    /\breview-\d+\b/gi,
+    /\bmwl-\d{8}T\d{6}Z-[0-9a-f]+\b/gi,
+    /\bovernight-\d{8}\b/gi,
+    /\bfamilies\.[A-Za-z0-9_.]+/gi,
+    /\bmacro_hard\b(?:\s+is|\s+was|\s*=)?\s*(?:STALE|FRESH|MISSING|INVALID)?/gi,
+    /\bmarket_state\b/gi,
+    /\bsource_failed\b/gi,
+    /\bbudget_deferred\b/gi,
+    /\bPASS\/PARTIAL\b/gi,
+    /\bfail[- ]closed\b/gi,
+    /\bpmd-[0-9a-f]+\b/gi,
+    /\bMW_[A-Z0-9_]+\b/g,
+    /\bselected\s*=\s*none\b/gi,
+    /\bcandidate_assessments\b/gi,
+    /\bOPEN\/ADD\/HEDGE\b/gi,
+    /\brates_tenor_scan\b:?/gi,
+    /\brates_candidate\b/gi,
+    /(?:\bso\s+)?(?:\band\s+)?\bonly\s+HOLD\/REDUCE\/CLOSE\s+are\s+live\b/gi,
+    /\bHOLD\/REDUCE\/CLOSE\b/gi
+  ];
+
+  function hasMachineProse(value) {
+    const text = String(value || "");
+    return MACHINE_PROSE.some(function (pattern) { return pattern.test(text); });
+  }
+
+  function cleanBlurb(value, fallback, maxChars) {
+    if (!value) return fallback || "";
+    const chunks = String(value).match(/[^.!?]+[.!?]?/g) || [];
+    const kept = chunks.map(function (chunk) {
+      let text = chunk.replace(/\b(?:FACT|INFERENCE|UNKNOWN|VERIFIED):\s*/gi, "");
+      SCRUB_PROSE.forEach(function (pattern) { text = text.replace(pattern, ""); });
+      return text.replace(/\s{2,}/g, " ").replace(/\s+([,.;:])/g, "$1").replace(/;\s*\./g, ".").trim();
+    }).filter(function (chunk) {
+      return chunk && !hasMachineProse(chunk) && !(chunk.length > 420 && (chunk.match(/;/g) || []).length >= 3);
+    });
+    let out = kept.join(" ").trim();
+    if (!out) return fallback || "";
+    const limit = maxChars || 700;
+    if (out.length > limit) out = out.slice(0, limit).replace(/\s+\S*$/, "").replace(/[ ,;:]+$/, "") + "…";
+    return out;
+  }
+
+  function cleanResearchSummary(value) {
+    const fallback = "Accepted overnight developments are listed below; no clean desk summary was published for this cycle.";
+    if (!value || hasMachineProse(value) || String(value).length > 1400) return fallback;
+    return cleanBlurb(value, fallback, 1400);
+  }
+
   function finite(value) {
     return typeof value === "number" && Number.isFinite(value);
   }
@@ -119,11 +195,13 @@
       ? '<div class="tb-position-marks"><span>Entry <b>' + level(pos.entry_price) +
         '</b></span><span>Mark <b>' + level(pos.mark_price) + '</b></span></div>'
       : "";
-    const thesis = pos.thesis
-      ? '<div class="tb-position-reason"><b>Why:</b> ' + esc(pos.thesis) + "</div>"
-      : '<div class="tb-position-reason tb-muted"><b>Why:</b> No position-specific thesis recorded.</div>';
-    const invalidation = pos.invalidation
-      ? '<div class="tb-position-invalidation"><b>Invalidation:</b> ' + esc(pos.invalidation) + "</div>"
+    const publicThesis = cleanBlurb(pos.thesis, "", 500);
+    const publicInvalidation = cleanBlurb(pos.invalidation, "", 400);
+    const thesis = publicThesis
+      ? '<div class="tb-position-reason"><b>Why:</b> ' + esc(publicThesis) + "</div>"
+      : '<div class="tb-position-reason tb-muted"><b>Why:</b> No clean position-specific note recorded.</div>';
+    const invalidation = publicInvalidation
+      ? '<div class="tb-position-invalidation"><b>Invalidation:</b> ' + esc(publicInvalidation) + "</div>"
       : "";
     const hedge = pos.hedge_of
       ? '<div class="tb-position-link">Hedge of ' + esc(pos.hedge_of) + "</div>"
@@ -172,6 +250,17 @@
     const openCount = seats.reduce(function (sum, seat) { return sum + ((seat.positions || []).length); }, 0);
     const changes = packet.overnight_changes || [];
     const research = packet.overnight_research || null;
+    const permissions = packet.trade_permissions || {};
+    const allowedCountries = permissions.trade_eligible_countries || [];
+    const permissionCountries = permissions.countries || {};
+    const restrictedCountries = Object.keys(permissionCountries).filter(function (code) {
+      return !permissionCountries[code].eligible;
+    });
+    const permissionNote = allowedCountries.length
+      ? "New risk eligible: " + allowedCountries.join(" / ") +
+        (restrictedCountries.length ? " · Restricted: " + restrictedCountries.join(" / ") : "") +
+        ". Existing positions may still be held, reduced or closed."
+      : "";
 
     let stale = "";
     if (status !== "fresh") {
@@ -204,8 +293,8 @@
         "</b></div><div><span>Risk funding</span><b class=\"tb-neg\">" +
         (finite(seat.funding_cost_usd) && seat.funding_cost_usd !== 0 ? "-" + money(seat.funding_cost_usd).replace("-", "") : money(seat.funding_cost_usd)) +
         "</b></div></div>" +
-        (seat.thesis ? '<p class="tb-thesis"><b>Current book view:</b> ' + esc(seat.thesis) + "</p>" : "") +
-        (seat.invalidation ? '<p class="tb-thesis"><b>Book invalidation:</b> ' + esc(seat.invalidation) + "</p>" : "") +
+        (cleanBlurb(seat.thesis, "", 700) ? '<p class="tb-thesis"><b>Current book view:</b> ' + esc(cleanBlurb(seat.thesis, "", 700)) + "</p>" : "") +
+        (cleanBlurb(seat.invalidation, "", 500) ? '<p class="tb-thesis"><b>Book invalidation:</b> ' + esc(cleanBlurb(seat.invalidation, "", 500)) + "</p>" : "") +
         pitch + "</article>";
     }).join("");
 
@@ -234,14 +323,14 @@
         return '<div class="tb-change"><b>' + esc(title) + '</b><span>' + esc(note) + '</span></div>';
       }).join("") : '<div class="tb-empty">No additional overnight research items</div>';
       researchHtml = '<section class="tb-panel"><div class="tb-panel-head"><h3>Overnight research</h3><p>' +
-        esc(research.summary || "Research gathered before the trader packet was frozen.") +
+        esc(cleanResearchSummary(research.summary)) +
         '</p></div><div class="tb-changes">' + rows + "</div></section>";
     }
 
     root.innerHTML = stale +
       researchHtml +
       '<section class="tb-panel"><div class="tb-panel-head"><h3>Trader snapshot</h3><p>' +
-      esc(packet.as_of || "") + " · evidence cutoff " + esc(packet.evidence_cutoff || "n/a") +
+      esc(permissionNote || ("Updated " + (packet.as_of || ""))) +
       '</p></div><div class="tb-kpis"><div class="tb-kpi"><span>Seats</span><b>' +
       esc(packet.seat_count || seats.length) + '</b></div><div class="tb-kpi"><span>Combined NAV</span><b>' +
       money(nav) + '</b></div><div class="tb-kpi"><span>Net P&amp;L</span><b class="' +
@@ -304,8 +393,8 @@
         "</b></div><div><span>Paper P&amp;L</span><b class=\"" + cls(pm.total_pnl_usd) + "\">" +
         money(pm.total_pnl_usd) + "</b></div><div><span>Last action</span><b>" +
         esc(pm.last_action || "—") + "</b></div></div>" +
-        (pm.thesis ? '<p class="tb-thesis"><b>Current book view:</b> ' + esc(pm.thesis) + "</p>" : "") +
-        (pm.invalidation ? '<p class="tb-thesis"><b>Book invalidation:</b> ' + esc(pm.invalidation) + "</p>" : "") +
+        (cleanBlurb(pm.thesis, "", 700) ? '<p class="tb-thesis"><b>Current book view:</b> ' + esc(cleanBlurb(pm.thesis, "", 700)) + "</p>" : "") +
+        (cleanBlurb(pm.invalidation, "", 500) ? '<p class="tb-thesis"><b>Book invalidation:</b> ' + esc(cleanBlurb(pm.invalidation, "", 500)) + "</p>" : "") +
         "</article>";
     }).join("");
     const comparison = (packet.comparison || []).map(function (row) {

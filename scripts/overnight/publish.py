@@ -9,6 +9,7 @@ from scripts.overnight.accepted_news import assert_site_news_matches_accepted, e
 from scripts.overnight.assemble import validate_dataset
 from scripts.overnight.errors import PublicationError, SchemaError
 from scripts.overnight.freshness import assert_may_publish, age_status
+from scripts.overnight.public_prose import public_research_summary, sanitize_public_prose
 from scripts.overnight.store import OvernightStore, write_json
 
 
@@ -73,6 +74,14 @@ def publication_gate(
     return {**decision, "dataset": dataset}
 
 
+def _public_research(research: dict) -> dict:
+    projected = dict(research)
+    items = list(projected.get("news") or []) + list(projected.get("central_bank_research") or [])
+    if "summary" in projected or items:
+        projected["summary"] = public_research_summary(projected.get("summary"), items=items)
+    return projected
+
+
 def emit_trader_books_json(store: OvernightStore, site_dir: Path, *, run_id: str | None = None) -> Path:
     site_dir = Path(site_dir)
     site_dir.mkdir(parents=True, exist_ok=True)
@@ -85,9 +94,20 @@ def emit_trader_books_json(store: OvernightStore, site_dir: Path, *, run_id: str
 
     if canonical_payload is not None:
         payload = dict(canonical_payload)
+        for seat in payload.get("seats") or []:
+            seat["thesis"] = sanitize_public_prose(
+                seat.get("thesis"),
+                max_chars=700,
+                fallback="No clean public book note was recorded for this cycle.",
+            )
+            seat["invalidation"] = sanitize_public_prose(seat.get("invalidation"), max_chars=500, fallback="")
+            for position in seat.get("positions") or []:
+                position["thesis"] = sanitize_public_prose(position.get("thesis"), max_chars=500, fallback="")
+                position["invalidation"] = sanitize_public_prose(position.get("invalidation"), max_chars=400, fallback="")
         if dataset is not None:
             pub = dataset["publication"]
-            payload["overnight_research"] = dataset.get("agent_research")
+            payload["overnight_research"] = _public_research(dataset.get("agent_research") or {})
+            payload["trade_permissions"] = dataset.get("trade_permissions")
             publication = {
                 "core_status": pub["core_status"],
                 "trader_books_status": pub["trader_books_status"],
@@ -118,7 +138,8 @@ def emit_trader_books_json(store: OvernightStore, site_dir: Path, *, run_id: str
         payload = dataset["trader_books"]
         payload = {
             **payload,
-            "overnight_research": dataset.get("agent_research"),
+            "overnight_research": _public_research(dataset.get("agent_research") or {}),
+            "trade_permissions": dataset.get("trade_permissions"),
             "publication": {
                 **{
                     "core_status": dataset["publication"]["core_status"],

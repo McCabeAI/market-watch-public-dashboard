@@ -348,6 +348,109 @@ class TestIngestionIntegrity(unittest.TestCase):
         self.assertTrue(deferred)
         self.assertTrue(all(r["status"] == "source_failed" for r in deferred))
 
+    def test_slow_fred_reads_do_not_defer_untouched_siblings(self) -> None:
+        clock = {"t": 0.0}
+        calls: list[str] = []
+
+        def monotonic() -> float:
+            return clock["t"]
+
+        def fetch_series(spec, *, opener, now, timeout=20):
+            calls.append(spec["id"])
+            if spec["id"] in {"US.Inflation.core_pce", "US.Labor.unemployment"}:
+                clock["t"] += 20.0
+                raise TimeoutError("timed out")
+            clock["t"] += 0.2
+            return {
+                "ok": True,
+                "raw_sha256": spec["id"],
+                "points": [{"period": "2026-08", "value": 1.0, "revision_status": "final"}],
+            }
+
+        slow_a = self._us_unemployment_spec()
+        slow_a["id"] = "US.Inflation.core_pce"
+        slow_b = self._us_unemployment_spec()
+        others = []
+        for name in ("US.Labor.participation", "US.Activity.retail"):
+            spec = copy.deepcopy(slow_b)
+            spec["id"] = name
+            spec["series_id"] = name
+            others.append(spec)
+        cat = self._mini_catalog([slow_a, slow_b, *others])
+        register_adapter_override("US", fetch_series)
+        result = run_ingestion(
+            mode="offline",
+            countries=["US"],
+            catalog=cat,
+            now=datetime(2026, 9, 24, 12, 0, tzinfo=timezone.utc),
+            observations_dir=self.obs_dir,
+            health_dir=self.health_dir,
+            country_budget_seconds=120,
+            run_budget_seconds=120,
+            timeout_seconds=20,
+            attempts=6,
+            monotonic=monotonic,
+        )
+        by_id = {row["series_id"]: row for row in result["rows"]}
+        self.assertEqual(by_id["US.Inflation.core_pce"]["error"], "timed out")
+        self.assertEqual(by_id["US.Labor.unemployment"]["error"], "timed out")
+        for name in ("US.Labor.participation", "US.Activity.retail"):
+            self.assertNotEqual(by_id[name].get("error"), "budget_deferred")
+            self.assertIn(name, calls)
+            second_slow = [i for i, sid in enumerate(calls) if sid == "US.Inflation.core_pce"][1]
+            self.assertLess(calls.index(name), second_slow)
+
+    def test_runner_prioritizes_scored_series_before_context(self) -> None:
+        seen: list[str] = []
+
+        def fetch_series(spec, *, opener, now, timeout=20):
+            seen.append(spec["id"])
+            return {
+                "ok": True,
+                "raw_sha256": spec["id"],
+                "points": [{"period": "2026-08", "value": 4.1, "revision_status": "final"}],
+            }
+
+        register_adapter_override("US", fetch_series)
+        scored = self._us_unemployment_spec()
+        context = copy.deepcopy(scored)
+        context["id"] = "US.Context.first"
+        context["series_id"] = "US_CONTEXT"
+        context["role"] = "context"
+        context["weight"] = 0
+        cat = self._mini_catalog([context, scored])
+
+        run_ingestion(
+            mode="offline",
+            countries=["US"],
+            catalog=cat,
+            now=datetime(2026, 9, 21, 12, 0, tzinfo=timezone.utc),
+            observations_dir=self.obs_dir,
+            health_dir=self.health_dir,
+            attempts=1,
+        )
+        self.assertEqual(seen[0], scored["id"])
+
+    def test_runner_attempt_count_is_configurable(self) -> None:
+        calls = {"n": 0}
+
+        def failing(spec, *, opener, now, timeout=20):
+            calls["n"] += 1
+            raise TimeoutError("slow source")
+
+        register_adapter_override("US", failing)
+        result = run_ingestion(
+            mode="offline",
+            countries=["US"],
+            catalog=self._mini_catalog([self._us_unemployment_spec()]),
+            now=datetime(2026, 9, 21, 12, 0, tzinfo=timezone.utc),
+            observations_dir=self.obs_dir,
+            health_dir=self.health_dir,
+            attempts=1,
+        )
+        self.assertEqual(calls["n"], 1)
+        self.assertEqual(result["rows"][0]["status"], "source_failed")
+
     def test_malformed_point_does_not_block_next_country(self) -> None:
         def bad_us(spec, *, opener, now, timeout=20):
             return {

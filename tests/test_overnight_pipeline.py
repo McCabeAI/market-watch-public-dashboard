@@ -1232,6 +1232,9 @@ class FreshnessMatrixTests(unittest.TestCase):
         seat = empty_seat("dollar-king")
         stale = _fresh_families()
         stale["macro_hard"]["status"] = "stale"
+        stale["macro_hard"].pop("fresh_countries", None)
+        stale["macro_hard"].pop("stale_countries", None)
+        stale["macro_hard"].pop("components", None)
         apply_action(
             seat,
             {

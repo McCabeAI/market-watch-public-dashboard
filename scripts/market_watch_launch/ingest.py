@@ -173,16 +173,14 @@ def _canonical_history_dir(root: Path) -> Path:
     return HISTORY_DIR
 
 
-def _row_fetch_attempts(row: dict[str, Any]) -> int:
+def _row_fetch_attempts(row: dict[str, Any], *, configured_attempts: int = DEFAULT_ATTEMPTS) -> int:
     error = str(row.get("error") or "")
     status = str(row.get("status") or "")
     if error == "budget_deferred":
         return 0
     if status in {"incomplete_country", "calendar_unparsed"} and not error:
         return 0
-    if error in _NON_RETRY_ERRORS:
-        return DEFAULT_ATTEMPTS
-    return DEFAULT_ATTEMPTS
+    return configured_attempts
 
 
 def _should_retry_live_row(row: dict[str, Any]) -> bool:
@@ -362,9 +360,12 @@ def _live_ingestion(
         observations_dir=observations_dir,
         health_dir=health_dir,
         raw_dir=raw_dir,
-        timeout_seconds=20,
-        country_budget_seconds=120,
+        # Breadth first: try every scored series once before spending the
+        # remaining budget retrying flaky sources.
+        timeout_seconds=10,
+        country_budget_seconds=180,
         run_budget_seconds=15 * 60,
+        attempts=1,
     )
     if not result.get("rows"):
         raise RuntimeError("ingestion returned no rows")
@@ -372,7 +373,7 @@ def _live_ingestion(
     attempts: dict[str, int] = {}
     for row in result["rows"]:
         sid = str(row["series_id"])
-        attempts[sid] = _row_fetch_attempts(row)
+        attempts[sid] = _row_fetch_attempts(row, configured_attempts=1)
 
     retry_ids = {
         str(row["series_id"])
@@ -393,10 +394,11 @@ def _live_ingestion(
             country_budget_seconds=120,
             run_budget_seconds=8 * 60,
             only_series_ids=retry_ids,
+            attempts=2,
         )
         for row in retry_result.get("rows") or []:
             sid = str(row["series_id"])
-            attempts[sid] = attempts.get(sid, 0) + _row_fetch_attempts(row)
+            attempts[sid] = attempts.get(sid, 0) + _row_fetch_attempts(row, configured_attempts=2)
         merged_raw = _merge_ingestion_rows(result["rows"], retry_result["rows"], attempts=attempts)
     else:
         merged_raw = _merge_ingestion_rows(result["rows"], [], attempts=attempts)

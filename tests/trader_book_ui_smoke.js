@@ -42,6 +42,17 @@ const traderPacket = {
   review_status: "fresh",
   seat_count: 2,
   publication: { core_status: "ok", trader_books_status: "fresh" },
+  trade_permissions: {
+    trade_eligible_countries: ["CA", "NZ", "EA", "JP"],
+    countries: {
+      CA: { eligible: true },
+      NZ: { eligible: true },
+      EA: { eligible: true },
+      JP: { eligible: true },
+      US: { eligible: false },
+      AU: { eligible: false }
+    }
+  },
   seats: [
     {
       seat: "dollar-king",
@@ -68,7 +79,7 @@ const traderPacket = {
           unrealized_pnl_usd: 999999,
           entry_price: 1.4,
           mark_price: 1.4,
-          thesis: "USD vs CAD",
+          thesis: "FACT: packet_sha256 deadbeef and macro_hard STALE. INFERENCE: USD vs CAD remains the cleaner expression.",
         },
       ],
     },
@@ -204,7 +215,12 @@ flush().then(function () {
   check(Boolean(grinder) && grinder.indexOf("NO TRADE") !== -1, "no-trade PM card is labeled NO TRADE");
   check(grinder.indexOf("LONG") === -1 && grinder.indexOf("SHORT") === -1, "no-trade PM card has no fake LONG/SHORT");
 
-  check(root.indexOf("Net financing") !== -1, "trader KPI uses net financing, not cash-yield alpha");
+  check(root.indexOf("base_packet_sha256") === -1, "research telemetry is not rendered");
+  check(root.indexOf("macro_hard") === -1, "internal family names are not rendered");
+  check(root.indexOf("USD vs CAD remains the cleaner expression") !== -1, "human trader sentence survives telemetry cleanup");
+  check(root.indexOf("New risk eligible: CA / NZ / EA / JP") !== -1, "country-specific new-risk permissions are visible");
+  check(root.indexOf("Restricted: US / AU") !== -1, "restricted countries are visible");
+    check(root.indexOf("Net financing") !== -1, "trader KPI uses net financing, not cash-yield alpha");
   check(root.indexOf("zero-return") !== -1, "leaderboard copy states SOFR is the zero-return benchmark");
   check(root.indexOf("Cash yield") === -1, "flat-book cash yield is not shown as alpha");
   check(pms.indexOf("$100m risk limit per 1% standard move") !== -1, "PM risk-limit wording is preserved");

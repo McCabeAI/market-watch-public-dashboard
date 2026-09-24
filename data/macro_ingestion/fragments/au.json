@@ -33,6 +33,10 @@
           "2026-09-24T11:30:00+10:00",
           "2026-10-16T11:30:00+11:00"
         ],
+        "expected_periods": {
+          "2026-09-24T11:30:00+10:00": "2026-08",
+          "2026-10-16T11:30:00+11:00": "2026-09"
+        },
         "schedule_source": "tests/macro_ingestion/fixtures/au/abs_release_schedule_excerpt.txt"
       }
     },
@@ -45,6 +49,10 @@
           "2026-09-24T11:30:00+10:00",
           "2026-10-16T11:30:00+11:00"
         ],
+        "expected_periods": {
+          "2026-09-24T11:30:00+10:00": "2026-08",
+          "2026-10-16T11:30:00+11:00": "2026-09"
+        },
         "schedule_source": "tests/macro_ingestion/fixtures/au/abs_release_schedule_excerpt.txt"
       }
     },
@@ -69,6 +77,9 @@
         "dates": [
           "2026-09-24T11:30:00+10:00"
         ],
+        "expected_periods": {
+          "2026-09-24T11:30:00+10:00": "2026-08"
+        },
         "schedule_source": "tests/macro_ingestion/fixtures/au/abs_release_schedule_excerpt.txt"
       }
     },

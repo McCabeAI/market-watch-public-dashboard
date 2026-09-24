@@ -13,6 +13,7 @@ from scripts.overnight.clock import parse_iso
 from scripts.overnight.errors import PublicationError, SchemaError
 from scripts.overnight.freshness import age_status
 from scripts.overnight.store import OvernightStore, sha256_json, write_json
+from scripts.overnight.public_prose import public_research_summary
 
 ACCEPTED_PUBLIC_NEWS_REL = "data/overnight/accepted_public_news.json"
 ACCEPTED_PUBLIC_NEWS_TYPE = "OVERNIGHT_ACCEPTED_PUBLIC_NEWS"
@@ -100,7 +101,7 @@ def build_accepted_public_news(
         "type": ACCEPTED_PUBLIC_NEWS_TYPE,
         "overnight_run_id": overnight_run_id,
         "as_of": as_of,
-        "summary": summary,
+        "summary": public_research_summary(summary, items=list(news) + list(central_bank_research)),
         "news": list(news),
         "central_bank_research": list(central_bank_research),
         "source": source,
