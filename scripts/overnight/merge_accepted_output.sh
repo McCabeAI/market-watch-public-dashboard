@@ -40,7 +40,7 @@ if [ "${MW_PAGES_REQUIRE_LAUNCH:-}" = "1" ]; then
     echo "Accepted manual output merged for $launch_id; durable launch continuation owns finalization and Pages."
     exit 0
   fi
-  echo "Skipping manual launch continuation: MW_PAGES_OUTPUT is unavailable."
+  echo "Skipping manual launch continuation: accepted output is not bound to an authorized launch_id (MW_PAGES_OUTPUT unavailable)."
   exit 0
 fi
 
