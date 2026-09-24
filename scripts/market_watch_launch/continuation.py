@@ -92,31 +92,33 @@ def continue_accepted_launch(launch: dict[str, Any], ctx: dict[str, Any]) -> dic
     }
 
     if provider == "acp":
-        if identity is None and provider_output is None:
-            return {
-                "launch_id": launch_id,
-                "status": "blocked",
-                "reason": AWAITING_ACP,
-                "production_published": False,
-            }
-        if provider_output is None:
-            return {
-                "launch_id": launch_id,
-                "status": "blocked",
-                "reason": "awaiting_provider_output",
-                "production_published": False,
-            }
-        receipt = acceptance_run(launch, {**ctx, "provider_payload": provider_output})
-        _apply_receipt(launch, receipt)
-        if receipt.get("status") != "succeeded":
-            return {
-                "launch_id": launch_id,
-                "status": receipt.get("status", "failed"),
-                "reason": receipt.get("reason"),
-                "production_published": False,
-                "stage": receipt.get("stage"),
-            }
-        store.save_launch(launch)
+        acceptance = (launch.get("stages") or {}).get("06_acceptance") or {}
+        if acceptance.get("status") != "succeeded":
+            if identity is None and provider_output is None:
+                return {
+                    "launch_id": launch_id,
+                    "status": "blocked",
+                    "reason": AWAITING_ACP,
+                    "production_published": False,
+                }
+            if provider_output is None:
+                return {
+                    "launch_id": launch_id,
+                    "status": "blocked",
+                    "reason": "awaiting_provider_output",
+                    "production_published": False,
+                }
+            receipt = acceptance_run(launch, {**ctx, "provider_payload": provider_output})
+            _apply_receipt(launch, receipt)
+            if receipt.get("status") != "succeeded":
+                return {
+                    "launch_id": launch_id,
+                    "status": receipt.get("status", "failed"),
+                    "reason": receipt.get("reason"),
+                    "production_published": False,
+                    "stage": receipt.get("stage"),
+                }
+            store.save_launch(launch)
     elif provider == "stub":
         acceptance = (launch.get("stages") or {}).get("06_acceptance") or {}
         if acceptance.get("status") != "succeeded":
@@ -139,17 +141,28 @@ def continue_accepted_launch(launch: dict[str, Any], ctx: dict[str, Any]) -> dic
             "production_published": False,
         }
 
-    fin = finalize_run(launch, ctx)
-    _apply_receipt(launch, fin)
-    if fin.get("status") != "succeeded":
+    finalize = (launch.get("stages") or {}).get("07_finalize") or {}
+    if finalize.get("status") != "succeeded":
+        fin = finalize_run(launch, ctx)
+        _apply_receipt(launch, fin)
+        if fin.get("status") != "succeeded":
+            return {
+                "launch_id": launch_id,
+                "status": fin.get("status", "failed"),
+                "reason": fin.get("reason"),
+                "production_published": False,
+                "stage": fin.get("stage"),
+            }
+        store.save_launch(launch)
+
+    if ctx.get("defer_pages"):
         return {
             "launch_id": launch_id,
-            "status": fin.get("status", "failed"),
-            "reason": fin.get("reason"),
+            "status": "succeeded",
+            "reason": "finalized_pages_deferred",
             "production_published": False,
-            "stage": fin.get("stage"),
+            "stage": "07_finalize",
         }
-    store.save_launch(launch)
 
     freeze = _freeze_details(launch)
     review_id = freeze.get("review_id") or launch.get("review_id")
@@ -202,9 +215,21 @@ def main() -> int:
         "state_root": root,
         "overnight_store_root": root,
         "client_payload": client_payload,
+        "defer_pages": os.environ.get("MW_DEFER_PAGES") == "1",
     }
     if client_payload and isinstance(client_payload.get("provider_payload"), dict):
         ctx["provider_payload"] = client_payload["provider_payload"]
+    if os.environ.get("MW_ENABLE_PAGES_DISPATCH") == "1":
+        import subprocess
+
+        def _dispatch_pages(*, plan: dict[str, Any], launch: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
+            _ = (launch, ctx)
+            workflow = str(plan.get("workflow") or "deploy-pages.yml")
+            ref = str(plan.get("ref") or "main")
+            subprocess.run(["gh", "workflow", "run", workflow, "--ref", ref], check=True)
+            return {"dispatched": True, "workflow": workflow, "ref": ref}
+
+        ctx["pages_dispatch"] = _dispatch_pages
     try:
         decision = continue_accepted_launch(launch, ctx)
     except Exception as exc:  # noqa: BLE001
