@@ -85,6 +85,26 @@ def empty_postmortems_due() -> dict[str, Any]:
     }
 
 
+def empty_reflections() -> dict[str, Any]:
+    return {
+        "schema_version": SCHEMA_VERSION,
+        "type": "TRADING_PERFORMANCE_REFLECTIONS",
+        "items": [],
+    }
+
+
+def empty_reflections_due() -> dict[str, Any]:
+    return {
+        "schema_version": SCHEMA_VERSION,
+        "type": "TRADING_REFLECTIONS_DUE",
+        "items": [],
+    }
+
+
+def empty_consequence_state() -> dict[str, Any]:
+    return {"schema_version": SCHEMA_VERSION, "type": "CONSEQUENCE_OBSERVATION", "observations": {}}
+
+
 class TradingStore:
     """Read/write data/trading without inventing canonical facts."""
 
@@ -120,6 +140,15 @@ class TradingStore:
     def postmortems_due_path(self, owner_type: str, owner_id: str) -> Path:
         return self.identity_dir(owner_type, owner_id) / "postmortems_due.json"
 
+    def reflections_path(self, owner_type: str, owner_id: str) -> Path:
+        return self.identity_dir(owner_type, owner_id) / "reflections.json"
+
+    def reflections_due_path(self, owner_type: str, owner_id: str) -> Path:
+        return self.identity_dir(owner_type, owner_id) / "reflections_due.json"
+
+    def consequence_state_path(self, owner_type: str, owner_id: str) -> Path:
+        return self.identity_dir(owner_type, owner_id) / "consequence_state.json"
+
     def context_path(self, owner_type: str, owner_id: str) -> Path:
         return self.identity_dir(owner_type, owner_id) / "context.json"
 
@@ -151,6 +180,12 @@ class TradingStore:
             self.write_json(self.postmortems_path(owner_type, owner_id), empty_postmortems())
         if not self.postmortems_due_path(owner_type, owner_id).is_file():
             self.write_json(self.postmortems_due_path(owner_type, owner_id), empty_postmortems_due())
+        if not self.reflections_path(owner_type, owner_id).is_file():
+            self.write_json(self.reflections_path(owner_type, owner_id), empty_reflections())
+        if not self.reflections_due_path(owner_type, owner_id).is_file():
+            self.write_json(self.reflections_due_path(owner_type, owner_id), empty_reflections_due())
+        if not self.consequence_state_path(owner_type, owner_id).is_file():
+            self.write_json(self.consequence_state_path(owner_type, owner_id), empty_consequence_state())
 
     def read_index(self) -> dict[str, Any]:
         return read_json(self.index_path())
@@ -238,6 +273,31 @@ class TradingStore:
 
     def write_postmortems_due(self, owner_type: str, owner_id: str, payload: dict[str, Any]) -> Path:
         return write_json(self.postmortems_due_path(owner_type, owner_id), payload)
+
+    def read_reflections(self, owner_type: str, owner_id: str) -> dict[str, Any]:
+        self.ensure_initialized()
+        return read_json(self.reflections_path(owner_type, owner_id))
+
+    def write_reflections(self, owner_type: str, owner_id: str, payload: dict[str, Any]) -> Path:
+        return write_json(self.reflections_path(owner_type, owner_id), payload)
+
+    def read_reflections_due(self, owner_type: str, owner_id: str) -> dict[str, Any]:
+        self.ensure_initialized()
+        return read_json(self.reflections_due_path(owner_type, owner_id))
+
+    def write_reflections_due(self, owner_type: str, owner_id: str, payload: dict[str, Any]) -> Path:
+        return write_json(self.reflections_due_path(owner_type, owner_id), payload)
+
+    def read_consequence_state(self, owner_type: str, owner_id: str) -> dict[str, Any]:
+        self.ensure_initialized()
+        doc = read_json(self.consequence_state_path(owner_type, owner_id))
+        return dict(doc.get("observations") or {})
+
+    def write_consequence_state(self, owner_type: str, owner_id: str, observations: dict[str, Any]) -> Path:
+        return write_json(
+            self.consequence_state_path(owner_type, owner_id),
+            {**empty_consequence_state(), "observations": observations},
+        )
 
     def write_context(self, owner_type: str, owner_id: str, context: dict[str, Any]) -> Path:
         return write_json(self.context_path(owner_type, owner_id), context)

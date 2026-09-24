@@ -25,6 +25,7 @@ from scripts.trading.journal import (
     record_event,
 )
 from scripts.trading.ledger import find_trade_by_position, observe_open_mark, record_lifecycle_event
+from scripts.trading.consequence import record_consequence_observation
 from scripts.trading.memory import apply_reflections, build_memory_context, create_postmortem_due
 from scripts.trading.store import TradingStore
 
@@ -506,7 +507,8 @@ def apply_trader_review_with_memory(
             extra={"funding_view": decision.get("funding_view")} if decision.get("funding_view") else None,
         )
         _observe_marks(store, "trader", seat, list(seat_book.get("positions") or []))
-        build_memory_context(store, "trader", seat, when=stamp)
+        record_consequence_observation(store, "trader", seat, trader_books=updated)
+        build_memory_context(store, "trader", seat, when=stamp, exclude_run_id=run_id)
         decision["journal_event_id"] = event["event_id"]
     validate_books(updated)
     return updated
@@ -647,7 +649,15 @@ def apply_pm_decision_with_memory(
         decision_fingerprint=fingerprint,
     )
     _observe_marks(store, "pm", pm_id, list(book.get("positions") or []))
-    build_memory_context(store, "pm", pm_id, when=stamp)
+    record_consequence_observation(store, "pm", pm_id, pm_books=updated, trader_books=None)
+    build_memory_context(
+        store,
+        "pm",
+        pm_id,
+        when=stamp,
+        exclude_run_id=run_id,
+        market_state=market_state,
+    )
     decision["journal_event_id"] = event["event_id"]
     return updated
 

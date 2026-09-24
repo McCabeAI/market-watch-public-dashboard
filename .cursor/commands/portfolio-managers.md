@@ -49,6 +49,12 @@ Each PM principal may use **0–3** children total. Allowed child models: **`com
 
 No grandchildren. No web/search/new evidence after freeze.
 
+## Consequence, allocator pressure, and reflections
+
+Each PM sidecar includes **consequence** (raw-dollar PM rank, spread to #1 PM, best trader seat and gap — `capital_normalized: false`), **capital_owner** standing for Swinger/Pragmatist/Grinder (ChatGPT: `not_applicable`), **reflections_due**, and lessons.
+
+Before `OPEN`/`ADD`/`HEDGE`, clear prior-run **postmortems_due** and **reflections_due** with substantive submissions. When competitive or allocator **pressure_flags** apply (behind leading PM, best trader ahead, or capital_owner `watch`/`probation`), include **pressure_assessment** (`judgment_effect`, `junior_vs_self`, chase/protect/heater, `allocator_vs_noise`). Flat equal books with zero P&L do not require pressure assessment. `HOLD`/`REDUCE`/`CLOSE` stay available.
+
 ## Apply path
 
 Trusted code applies decisions — models do not write canonical books:

@@ -32,6 +32,11 @@ _MACHINE_PATTERNS: tuple[re.Pattern[str], ...] = tuple(
         r"\brates_tenor_scan\b",
         r"\brates_candidate\b",
         r"\bHOLD/REDUCE/CLOSE\b",
+        r"\bshould we give him the book\b",
+        r"\bwhat exactly are we paying you for\b",
+        r"\bi love risk\.?\s*i'?m starting to think you just suck\b",
+        r"\bprf-[0-9a-f]+\b",
+        r"\brfd-[0-9a-f]+\b",
     )
 )
 
@@ -58,6 +63,11 @@ _SCRUB_RES: tuple[re.Pattern[str], ...] = (
     re.compile(r"\brates_candidate\b", re.IGNORECASE),
     re.compile(r"(?:\bso\s+)?(?:\band\s+)?\bonly\s+HOLD/REDUCE/CLOSE\s+are\s+live\b", re.IGNORECASE),
     re.compile(r"\bHOLD/REDUCE/CLOSE\b", re.IGNORECASE),
+    re.compile(r"\bshould we give him the book\b", re.IGNORECASE),
+    re.compile(r"\bwhat exactly are we paying you for\b", re.IGNORECASE),
+    re.compile(r"\bi love risk\.?\s*i'?m starting to think you just suck\b", re.IGNORECASE),
+    re.compile(r"\bprf-[0-9a-f]+\b", re.IGNORECASE),
+    re.compile(r"\brfd-[0-9a-f]+\b", re.IGNORECASE),
 )
 _SENTENCE_SPLIT_RE = re.compile(r"(?<=[.!?])\s+")
 

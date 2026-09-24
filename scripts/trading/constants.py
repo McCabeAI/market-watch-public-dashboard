@@ -10,7 +10,32 @@ from scripts.pm.constants import PM_IDS as _PM_IDS
 ROOT = Path(__file__).resolve().parents[2]
 STATE_DIRNAME = "data/trading"
 SCHEMA_VERSION = 1
-MEMORY_SCHEMA_VERSION = 1
+MEMORY_SCHEMA_VERSION = 2
+
+MATERIAL_DRAWDOWN_FRACTION = 0.40
+
+REFLECTION_TRIGGER_IDS = (
+    "material_drawdown",
+    "material_win",
+    "giveback",
+    "new_high",
+    "rank_shock",
+)
+REFLECTION_DUE_STATUSES = ("due", "submitted")
+PERFORMANCE_REFLECTION_ATTRIBUTION = (
+    "thesis",
+    "timing",
+    "entry",
+    "sizing",
+    "expression",
+    "hedge",
+    "variance",
+)
+PRESSURE_EFFECT_VALUES = ("sharpening", "distorting", "none", "not_applicable")
+SKILL_LUCK_VALUES = ("skill", "luck", "mixed", "not_applicable")
+YES_NO_NA = ("yes", "no", "not_applicable")
+CAPITAL_OWNER_STANDINGS = ("good_standing", "watch", "probation", "not_applicable")
+RECENT_REFLECTION_CAP = 4
 
 STANDING_TRADERS = STANDING_SEATS
 PM_IDS = _PM_IDS

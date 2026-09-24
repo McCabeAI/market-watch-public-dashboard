@@ -196,6 +196,25 @@ def overnight_families_from_packet(packet: dict[str, Any]) -> dict[str, Any]:
     return families
 
 
+def _learning_fields(contribution: dict[str, Any], rebuttal: dict[str, Any] | None) -> dict[str, Any]:
+    keys = (
+        "postmortems",
+        "memory_updates",
+        "performance_reflections",
+        "pressure_assessment",
+        "no_new_lesson",
+    )
+    out: dict[str, Any] = {}
+    for key in keys:
+        if key in contribution:
+            out[key] = deepcopy(contribution[key])
+    if rebuttal:
+        for key in keys:
+            if key in rebuttal and rebuttal.get(key) is not None:
+                out[key] = deepcopy(rebuttal[key])
+    return out
+
+
 def reviews_from_run(
     originals: dict[str, dict[str, Any]],
     rebuttals: dict[str, dict[str, Any]],
@@ -221,6 +240,7 @@ def reviews_from_run(
             "invalidation": synopsis.get("key_invalidation"),
             "funding_view": contribution.get("funding_view"),
             "expression_memo": actions[0].get("expression_memo") or _hold_memo(seat),
+            **_learning_fields(contribution, rebuttal),
         }
     if set(reviews) != set(STANDING_ADVOCATES):
         raise SchemaError("reviews must cover every standing advocate")

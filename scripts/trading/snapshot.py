@@ -129,6 +129,10 @@ def compact_memory_for_packet(store: TradingStore, owner_type: str, owner_id: st
         "recent_closed_trades": context["recent_closed_trades"],
         "active_lessons": context["active_lessons"],
         "postmortems_due": context["postmortems_due"],
+        "consequence": context.get("consequence"),
+        "capital_owner": context.get("capital_owner"),
+        "reflections_due": context.get("reflections_due") or [],
+        "recent_performance_reflections": context.get("recent_performance_reflections") or [],
         "open_positions": context["open_positions"],
     }
 

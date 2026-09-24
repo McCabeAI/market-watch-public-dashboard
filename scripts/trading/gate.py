@@ -6,7 +6,7 @@ from typing import Any
 
 from scripts.trading.constants import DERISK_ACTIONS, EXPANDING_ACTIONS
 from scripts.trading.errors import LearningGateError, RationaleError
-from scripts.trading.memory import outstanding_due
+from scripts.trading.memory import outstanding_due, outstanding_reflections_due
 from scripts.trading.store import TradingStore, assert_identity
 
 
@@ -76,6 +76,52 @@ def expansion_rationale_reason(action: dict[str, Any], decision: dict[str, Any] 
     return f"{owner_id} {action.get('action')} failed closed: missing required expansion rationale"
 
 
+def _pressure_assessment_valid(payload: Any) -> bool:
+    if not isinstance(payload, dict):
+        return False
+    required = {
+        "judgment_effect": ("sharpening", "distorting", "neither"),
+        "junior_vs_self": ("variance", "style", "information", "not_behind", "not_applicable"),
+        "chase_temptation": ("yes", "no", "not_applicable"),
+        "protecting_gains": ("yes", "no", "not_applicable"),
+        "heater_risk": ("yes", "no", "not_applicable"),
+        "allocator_vs_noise": ("mandate_failure", "short_horizon_noise", "not_applicable"),
+    }
+    for key, allowed in required.items():
+        if payload.get(key) not in allowed:
+            return False
+    return True
+
+
+def requires_pressure_assessment(decision: dict[str, Any]) -> bool:
+    memory = decision.get("_memory_context") or {}
+    consequence = memory.get("consequence") or {}
+    capital_owner = memory.get("capital_owner") or {}
+    flags = consequence.get("pressure_flags") or []
+    competitive = any(
+        flag in flags
+        for flag in ("behind_leading_pm", "best_trader_ahead", "competitive_pressure")
+    )
+    standing = capital_owner.get("standing")
+    if not competitive and standing not in ("watch", "probation"):
+        return False
+    if competitive and consequence.get("status") == "ok":
+        spread = consequence.get("spread_to_leader_pm_usd")
+        best_gap = consequence.get("gap_to_best_trader_usd")
+        own_pnl = float(consequence.get("net_after_funding_pnl_usd") or 0.0)
+        if spread == 0 and (best_gap in (None, 0)) and own_pnl == 0.0:
+            return False
+    return True
+
+
+def pressure_gate_reason(decision: dict[str, Any], *, owner_id: str) -> str | None:
+    if not requires_pressure_assessment(decision):
+        return None
+    if _pressure_assessment_valid(decision.get("pressure_assessment")):
+        return None
+    return f"{owner_id} learning_gate: missing_pressure_assessment"
+
+
 def learning_gate_reason(
     store: TradingStore,
     *,
@@ -98,6 +144,13 @@ def learning_gate_reason(
     if due:
         trade_ids = [row.get("trade_id") for row in due]
         return f"{owner_id} learning_gate: postmortems_due {trade_ids}"
+    reflections = outstanding_reflections_due(store, owner_type, owner_id, exclude_run_id=run_id)
+    if reflections:
+        ids = [row.get("reflection_due_id") for row in reflections]
+        return f"{owner_id} learning_gate: reflections_due {ids}"
+    pressure_reason = pressure_gate_reason(decision, owner_id=owner_id)
+    if pressure_reason:
+        return pressure_reason
     return None
 
 
@@ -121,6 +174,15 @@ def evaluate_decision_actions(
     blocked: list[dict[str, Any]] = []
     memory_reason = None
     if expanding_actions(decision):
+        if decision.get("_memory_context") is None and expected_memory_sha256:
+            from scripts.trading.memory import build_memory_context
+
+            decision["_memory_context"] = build_memory_context(
+                store,
+                owner_type,
+                owner_id,
+                exclude_run_id=run_id,
+            )
         memory_reason = learning_gate_reason(
             store,
             owner_type=owner_type,
