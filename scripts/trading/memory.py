@@ -36,6 +36,17 @@ from scripts.trading.constants import (
 from scripts.overnight.constants import MAX_DRAWDOWN_USD, STARTING_NAV_USD
 from scripts.pm.constants import CASH_CAPITAL_USD, MAX_DRAWDOWN_USD as PM_MAX_DRAWDOWN_USD
 from scripts.trading.errors import OwnershipError, SchemaError
+from scripts.trading.learning import (
+    apply_structured_lesson_fields,
+    causal_block,
+    compliance_view,
+    journal_learning_triggers,
+    lesson_public_fields,
+    migrate_lesson,
+    note_repeated_error,
+    substantive_no_new_lesson,
+    substantive_text,
+)
 from scripts.trading.store import TradingStore, assert_identity
 
 
@@ -315,6 +326,9 @@ def ensure_reflections_due(
         prior_drawdown=prior_state.get("last_drawdown_usd"),
         prior_high_water=prior_state.get("last_high_water_nav_usd"),
     )
+    for row in journal_learning_triggers(store.trades_for(owner_type, owner_id)):
+        if row["id"] not in {item["id"] for item in triggers}:
+            triggers.append(row)
     if not triggers:
         return
     net = consequence.get("net_pnl_usd") if owner_type == "trader" else consequence.get("net_after_funding_pnl_usd")
@@ -414,17 +428,8 @@ def build_memory_context(
         "as_of": isoformat(now_ny(when)),
         "calibration": calibration_from_trades(trades),
         "recent_closed_trades": recent_closed(trades),
-        "active_lessons": [
-            {
-                "lesson_id": row.get("lesson_id"),
-                "text": row.get("text"),
-                "trade_ids": row.get("trade_ids") or [],
-                "postmortem_ids": row.get("postmortem_ids") or [],
-                "reflection_ids": row.get("reflection_ids") or [],
-                "reinforcement_count": row.get("reinforcement_count"),
-            }
-            for row in lessons
-        ],
+        "active_lessons": [lesson_public_fields(row) for row in lessons],
+        "learning": compliance_view(store, owner_type, owner_id),
         "postmortems_due": [
             {
                 "postmortem_id": row.get("postmortem_id"),
@@ -494,6 +499,17 @@ def create_postmortem_due(
             "opened_at": trade.get("opened_at"),
             "closed_at": trade.get("closed_at"),
             "conviction": trade.get("conviction"),
+            "thesis": trade.get("thesis"),
+            "invalidation": trade.get("invalidation"),
+            "expression": trade.get("paper_expression"),
+            "exit_reason_category": next(
+                (
+                    event.get("exit_reason_category")
+                    for event in reversed(trade.get("events") or [])
+                    if isinstance(event, dict) and event.get("kind") == "CLOSE"
+                ),
+                None,
+            ),
             "rationale_status": next(
                 (
                     event.get("rationale_status")
@@ -544,10 +560,18 @@ def accept_postmortem(
     )
     if not any(_text(payload.get(field)) for field in assessment_fields):
         raise SchemaError("postmortem requires at least one substantive assessment field")
+    causal = causal_block(payload)
     lesson = _text(payload.get("lesson"))
     no_new_lesson = _text(payload.get("no_new_lesson"))
+    if lesson:
+        lesson = substantive_text(lesson, label="lesson")
+    if no_new_lesson:
+        no_new_lesson = substantive_no_new_lesson(no_new_lesson)
     if not lesson and not no_new_lesson:
         raise SchemaError("postmortem requires lesson or no_new_lesson reason")
+    future_rule = _text(payload.get("future_rule") or payload.get("what_to_do_differently"))
+    if lesson and not future_rule:
+        raise SchemaError("postmortem lesson requires future_rule")
     due_doc = store.read_postmortems_due(owner_type, owner_id)
     matched = None
     for item in due_doc.get("items") or []:
@@ -570,7 +594,8 @@ def accept_postmortem(
         "sizing_assessment": _text(payload.get("sizing_assessment")),
         "lesson": lesson,
         "no_new_lesson": no_new_lesson,
-        "future_rule": _text(payload.get("future_rule") or payload.get("what_to_do_differently")),
+        "future_rule": future_rule,
+        "causal": causal,
         "tags": [tag for tag in (payload.get("tags") or []) if isinstance(tag, str) and tag.strip()],
         "facts": (matched or {}).get("facts") or {
             "realized_pnl_usd": trade.get("realized_pnl_usd"),
@@ -590,6 +615,8 @@ def accept_postmortem(
             {
                 "op": "add",
                 "text": record["lesson"],
+                "future_rule": future_rule,
+                "scope": payload.get("scope") if isinstance(payload.get("scope"), dict) else {},
                 "trade_ids": [trade_id],
                 "postmortem_ids": [record["postmortem_id"]],
             },
@@ -664,18 +691,25 @@ def apply_memory_update(
     if op == "add":
         if not text:
             raise SchemaError("add lesson requires text")
-        lesson = {
-            "lesson_id": f"les-{uuid4().hex[:12]}",
-            "text": text,
-            "trade_ids": trade_ids,
-            "postmortem_ids": postmortem_ids,
-            "reflection_ids": reflection_ids,
-            "status": "active",
-            "reinforcement_count": 1,
-            "created_at": stamp,
-            "updated_at": stamp,
-            "source_run_id": run_id,
-        }
+        lesson = migrate_lesson(
+            {
+                "lesson_id": f"les-{uuid4().hex[:12]}",
+                "text": text,
+                "future_rule": _text(update.get("future_rule")) or text,
+                "trade_ids": trade_ids,
+                "postmortem_ids": postmortem_ids,
+                "reflection_ids": reflection_ids,
+                "status": "active",
+                "maturity": "candidate",
+                "reinforcement_count": 1,
+                "contradiction_count": 0,
+                "scope": update.get("scope") if isinstance(update.get("scope"), dict) else {},
+                "history": [{"op": "add", "at": stamp, "run_id": run_id}],
+                "created_at": stamp,
+                "updated_at": stamp,
+                "source_run_id": run_id,
+            }
+        )
         rows.append(lesson)
         active = [row for row in rows if row.get("status") == "active"]
         if len(active) > LESSON_CAP:
@@ -686,14 +720,16 @@ def apply_memory_update(
         store.write_lessons(owner_type, owner_id, lessons)
         return lesson
     lesson_id = update.get("lesson_id")
-    lesson = next((row for row in rows if row.get("lesson_id") == lesson_id), None)
-    if lesson is None:
+    index = next((i for i, row in enumerate(rows) if row.get("lesson_id") == lesson_id), None)
+    if index is None:
         raise SchemaError(f"unknown lesson_id {lesson_id}")
+    lesson = migrate_lesson(rows[index])
+    rows[index] = lesson
     if op == "reinforce":
-        lesson["reinforcement_count"] = int(lesson.get("reinforcement_count") or 0) + 1
-        lesson["updated_at"] = stamp
         if text:
             lesson["text"] = text
+        apply_structured_lesson_fields(lesson, update, stamp=stamp, run_id=run_id, op="reinforce")
+        lesson["updated_at"] = stamp
         for trade_id in trade_ids:
             if trade_id not in lesson["trade_ids"]:
                 lesson["trade_ids"].append(trade_id)
@@ -704,9 +740,24 @@ def apply_memory_update(
         for reflection_id in reflection_ids:
             if reflection_id not in lesson["reflection_ids"]:
                 lesson["reflection_ids"].append(reflection_id)
+    elif op in {"refine", "contradict"}:
+        if text:
+            lesson["text"] = text
+        apply_structured_lesson_fields(lesson, update, stamp=stamp, run_id=run_id, op=op)
+        lesson["updated_at"] = stamp
+        if op == "contradict":
+            note_repeated_error(
+                store,
+                owner_type,
+                owner_id,
+                lesson_id=lesson.get("lesson_id"),
+                failure_mode=(lesson.get("scope") or {}).get("failure_mode"),
+                run_id=run_id,
+            )
     elif op == "retire":
         lesson["status"] = "retired"
         lesson["updated_at"] = stamp
+        apply_structured_lesson_fields(lesson, update, stamp=stamp, run_id=run_id, op="retire")
     if lesson.get("status") not in LESSON_STATUSES:
         raise SchemaError(f"invalid lesson status {lesson.get('status')}")
     store.write_lessons(owner_type, owner_id, lessons)
@@ -759,11 +810,20 @@ def accept_performance_reflection(
     trigger_ids = matched.get("trigger_ids") or []
     if "material_win" in trigger_ids and skill_vs_luck == "not_applicable":
         raise SchemaError("material_win reflection requires skill_vs_luck skill|luck|mixed")
+    causal = causal_block(payload)
     lesson_text = _text(payload.get("lesson"))
     memory_update = payload.get("memory_update") if isinstance(payload.get("memory_update"), dict) else None
     no_new_lesson = _text(payload.get("no_new_lesson"))
+    if lesson_text:
+        lesson_text = substantive_text(lesson_text, label="lesson")
+    if no_new_lesson:
+        no_new_lesson = substantive_no_new_lesson(no_new_lesson)
     if not lesson_text and not memory_update and not no_new_lesson:
         raise SchemaError("performance_reflection requires lesson, memory_update, or no_new_lesson")
+    if memory_update and memory_update.get("op") == "add" and not _text(memory_update.get("text")):
+        raise SchemaError("add lesson requires text")
+    if memory_update and memory_update.get("op") == "add":
+        substantive_text(memory_update.get("text"), label="memory_update.text")
     reflection_id = f"prf-{uuid4().hex[:12]}"
     lesson_update = None
     if memory_update:
@@ -772,6 +832,8 @@ def accept_performance_reflection(
         lesson_update = {
             "op": "add",
             "text": lesson_text,
+            "future_rule": _text(payload.get("future_rule")) or lesson_text,
+            "scope": payload.get("scope") if isinstance(payload.get("scope"), dict) else {},
             "reflection_ids": [reflection_id],
             "trade_ids": [tid for tid in (payload.get("trade_ids") or []) if isinstance(tid, str)],
         }
@@ -798,6 +860,7 @@ def accept_performance_reflection(
         "overconfidence_risk": payload.get("overconfidence_risk"),
         "chase_or_revenge": payload.get("chase_or_revenge"),
         "no_new_lesson": no_new_lesson,
+        "causal": causal,
     }
     prior_due = deepcopy(due_doc)
     prior_reflections = deepcopy(store.read_reflections(owner_type, owner_id))

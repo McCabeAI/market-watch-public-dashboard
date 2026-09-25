@@ -156,6 +156,19 @@ def build_trader_consequence(
     utilization = None if risk_limit <= 0 else round(float(risk_cap or 0.0) / risk_limit, 4)
     ranks = trader_competition_ranks(books)
     rank = ranks.get(owner_id)
+    from scripts.trading.learning import read_learning_state
+
+    eligible = bool(read_learning_state(store, "trader", owner_id).get("competition_eligible", True))
+    eligible_rows = [
+        (seat, score)
+        for seat, score in (
+            (item_seat, float(books["seats"][item_seat]["net_pnl_usd"]))
+            for item_seat in STANDING_SEATS
+            if not books["seats"][item_seat].get("pnl_unavailable") and books["seats"][item_seat].get("net_pnl_usd") is not None
+        )
+        if read_learning_state(store, "trader", seat).get("competition_eligible", True)
+    ]
+    competitive_rank = None if not eligible else _rank_rows(eligible_rows).get(owner_id)
     prior = store.read_consequence_state("trader", owner_id)
     prior_pnl = prior.get("last_net_pnl_usd")
     prior_rank = prior.get("last_competition_rank")
@@ -178,6 +191,9 @@ def build_trader_consequence(
         "risk_capital_limit_usd": risk_limit,
         "risk_capital_utilization": utilization,
         "competition_rank": rank,
+        "raw_pnl_rank": rank,
+        "competition_eligible": eligible,
+        "competitive_rank": competitive_rank,
         "competition_cohort_size": len(STANDING_SEATS),
         "prior_competition_rank": prior_rank,
         "rank_change": rank_change,
@@ -233,6 +249,18 @@ def build_pm_consequence(
     max_dd = float(book.get("max_drawdown_usd") or PM_MAX_DRAWDOWN_USD)
     ranks = pm_competition_ranks(pm_books)
     rank = ranks.get(owner_id)
+    from scripts.trading.learning import read_learning_state
+
+    eligible = bool(read_learning_state(store, "pm", owner_id).get("competition_eligible", True))
+    eligible_rows = []
+    for pm_id in PM_IDS:
+        item = pm_books["pms"][pm_id]
+        pnl = item.get("net_after_funding_pnl_usd")
+        if item.get("pnl_unavailable") or pnl is None:
+            continue
+        if read_learning_state(store, "pm", pm_id).get("competition_eligible", True):
+            eligible_rows.append((pm_id, float(pnl)))
+    competitive_rank = None if not eligible else _rank_rows(eligible_rows).get(owner_id)
     leader_pnl = None
     spread_pm = 0.0
     if ranks:
@@ -265,6 +293,9 @@ def build_pm_consequence(
         "high_water_nav_usd": high_water,
         "max_drawdown_usd": max_dd,
         "competition_rank": rank,
+        "raw_pnl_rank": rank,
+        "competition_eligible": eligible,
+        "competitive_rank": competitive_rank,
         "competition_cohort_size": len([pid for pid in PM_IDS if pid in ranks]),
         "spread_to_leader_pm_usd": spread_pm,
         "best_trader_seat": (best or {}).get("seat"),

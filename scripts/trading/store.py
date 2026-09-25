@@ -101,6 +101,19 @@ def empty_reflections_due() -> dict[str, Any]:
     }
 
 
+def empty_learning_state() -> dict[str, Any]:
+    return {
+        "schema_version": SCHEMA_VERSION,
+        "type": "LEARNING_COMPLIANCE",
+        "learning_status": "compliant",
+        "learning_default_age_runs": 0,
+        "learning_default_count": 0,
+        "competition_eligible": True,
+        "retrieved_lessons": [],
+        "repeated_error_escalations": [],
+    }
+
+
 def empty_consequence_state() -> dict[str, Any]:
     return {"schema_version": SCHEMA_VERSION, "type": "CONSEQUENCE_OBSERVATION", "observations": {}}
 
@@ -149,6 +162,9 @@ class TradingStore:
     def consequence_state_path(self, owner_type: str, owner_id: str) -> Path:
         return self.identity_dir(owner_type, owner_id) / "consequence_state.json"
 
+    def learning_state_path(self, owner_type: str, owner_id: str) -> Path:
+        return self.identity_dir(owner_type, owner_id) / "learning_state.json"
+
     def context_path(self, owner_type: str, owner_id: str) -> Path:
         return self.identity_dir(owner_type, owner_id) / "context.json"
 
@@ -186,6 +202,8 @@ class TradingStore:
             self.write_json(self.reflections_due_path(owner_type, owner_id), empty_reflections_due())
         if not self.consequence_state_path(owner_type, owner_id).is_file():
             self.write_json(self.consequence_state_path(owner_type, owner_id), empty_consequence_state())
+        if not self.learning_state_path(owner_type, owner_id).is_file():
+            self.write_json(self.learning_state_path(owner_type, owner_id), empty_learning_state())
 
     def read_index(self) -> dict[str, Any]:
         return read_json(self.index_path())
@@ -255,7 +273,10 @@ class TradingStore:
 
     def read_lessons(self, owner_type: str, owner_id: str) -> dict[str, Any]:
         self.ensure_initialized()
-        return read_json(self.lessons_path(owner_type, owner_id))
+        from scripts.trading.learning import migrate_lessons_doc
+
+        doc = migrate_lessons_doc(read_json(self.lessons_path(owner_type, owner_id)))
+        return doc
 
     def write_lessons(self, owner_type: str, owner_id: str, payload: dict[str, Any]) -> Path:
         return write_json(self.lessons_path(owner_type, owner_id), payload)
@@ -292,6 +313,16 @@ class TradingStore:
         self.ensure_initialized()
         doc = read_json(self.consequence_state_path(owner_type, owner_id))
         return dict(doc.get("observations") or {})
+
+    def read_learning_state(self, owner_type: str, owner_id: str) -> dict[str, Any]:
+        self.ensure_initialized()
+        path = self.learning_state_path(owner_type, owner_id)
+        if not path.is_file():
+            return empty_learning_state()
+        return read_json(path)
+
+    def write_learning_state(self, owner_type: str, owner_id: str, payload: dict[str, Any]) -> Path:
+        return write_json(self.learning_state_path(owner_type, owner_id), payload)
 
     def write_consequence_state(self, owner_type: str, owner_id: str, observations: dict[str, Any]) -> Path:
         return write_json(

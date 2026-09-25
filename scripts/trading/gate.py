@@ -6,7 +6,8 @@ from typing import Any
 
 from scripts.trading.constants import DERISK_ACTIONS, EXPANDING_ACTIONS
 from scripts.trading.errors import LearningGateError, RationaleError
-from scripts.trading.memory import outstanding_due, outstanding_reflections_due
+from scripts.trading.learning import lesson_consideration_reason
+from scripts.trading.memory import active_lessons, outstanding_due, outstanding_reflections_due
 from scripts.trading.store import TradingStore, assert_identity
 
 
@@ -151,6 +152,11 @@ def learning_gate_reason(
     pressure_reason = pressure_gate_reason(decision, owner_id=owner_id)
     if pressure_reason:
         return pressure_reason
+    lessons = active_lessons(store, owner_type, owner_id)
+    for action in expanding_actions(decision):
+        reason = lesson_consideration_reason(action, decision, lessons, owner_id=owner_id)
+        if reason:
+            return reason
     return None
 
 

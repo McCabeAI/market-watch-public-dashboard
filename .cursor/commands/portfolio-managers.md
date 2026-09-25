@@ -53,7 +53,7 @@ No grandchildren. No web/search/new evidence after freeze.
 
 Each PM sidecar includes **consequence** (raw-dollar PM rank, spread to #1 PM, best trader seat and gap — `capital_normalized: false`), **capital_owner** standing for Swinger/Pragmatist/Grinder (ChatGPT: `not_applicable`), **reflections_due**, and lessons.
 
-Before `OPEN`/`ADD`/`HEDGE`, clear prior-run **postmortems_due** and **reflections_due** with substantive submissions. When competitive or allocator **pressure_flags** apply (behind leading PM, best trader ahead, or capital_owner `watch`/`probation`), include **pressure_assessment** (`judgment_effect`, `junior_vs_self`, chase/protect/heater, `allocator_vs_noise`). Flat equal books with zero P&L do not require pressure assessment. `HOLD`/`REDUCE`/`CLOSE` stay available.
+Prior-run **postmortems_due** and **reflections_due** are mandatory on this invocation even for `HOLD`/`NO_TRADE`. Submit a causal `causal` block. Outcome summaries do not count as lessons. `NO_NEW_LESSON` must explain bounded variance or a still-sound process. Unresolved debt creates learning default, blocks `OPEN`/`ADD`/`HEDGE`, removes competitive eligibility, and puts automated PM Capital Owner standing at least on probation until the debt clears. `HOLD`/`REDUCE`/`CLOSE` stay executable. Expansion requires `setup_fingerprint` and `APPLIES`/`DOES_NOT_APPLY`/`OVERRIDE` for each materially matching own lesson. When competitive or allocator **pressure_flags** apply (behind leading PM, best trader ahead, or capital_owner `watch`/`probation`), include **pressure_assessment** (`judgment_effect`, `junior_vs_self`, chase/protect/heater, `allocator_vs_noise`). Flat equal books with zero P&L do not require pressure assessment.
 
 ## Apply path
 

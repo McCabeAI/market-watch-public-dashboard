@@ -7,7 +7,7 @@ ACP launches this parent on schedule `market-watch-weekday-0205`. This repositor
 Emit exactly once:
 
 ```
-MW_OVERNIGHT_RUN_POLICY={"version":1,"schedule_id":"market-watch-weekday-0205","total_model_cap":19,"grok_cap":18,"composer_cap":2,"parent_model":"grok-4.6","parent_total":1,"parent_grok":1}
+MW_OVERNIGHT_RUN_POLICY={"version":1,"schedule_id":"market-watch-weekday-0205","total_model_cap":20,"grok_cap":18,"composer_cap":2,"parent_model":"grok-4.6","parent_total":1,"parent_grok":1}
 ```
 
 ACP must emit a matching policy marker. `.cursor/hooks/enforce-overnight-budget.py` enforces these caps atomically on every child spawn.
@@ -30,7 +30,7 @@ The ACP parent is already running at this point. Before launching the Composer r
 
 The runtime budget hook independently enforces this committed-freeze requirement on the first overnight child spawn, so a locally synthesized snapshot cannot substitute for persisted trusted state.
 
-## Approved graph (19 / 18 / 2)
+## Approved graph (20 / 18 / 2)
 
 | Role | Count | Model |
 | --- | ---: | --- |
@@ -38,8 +38,9 @@ The runtime budget hook independently enforces this committed-freeze requirement
 | Research (bounded) | 1 | `composer-2.5` |
 | Direct trader children | 14 | `grok-4.6` |
 | Direct automated PM principals | 3 | `grok-4.6` custom agents |
+| Learning-quality examiner | 1 | `composer-2.5` |
 
-**Total model invocations: 19** (1 Grok parent + 14 Grok traders + 3 Grok PM principals + 1 Composer research). Composer cap remains 2; only one Composer research child is used in the approved graph.
+**Total model invocations: 20** when the learning examiner is used (18 Grok + 2 Composer). Declared normal usage is 18 Grok + 2 Composer. The examiner runs once after the primary trader and PM decisions and grades causal adequacy of required learning submissions only. It must not produce a second market opinion, trade, lesson, or canonical fact. Skip the examiner only when no identity has a learning obligation; the caps stay 20 / 18 / 2.
 
 Nested subagents are **prohibited** for both traders and PMs on overnight runs (`allow_nested_composer` is false). Do not use Cursor Auto or Other Models.
 
@@ -60,8 +61,9 @@ Nested subagents are **prohibited** for both traders and PMs on overnight runs (
    - the same frozen packet + the same accepted 14 trader decisions
    - **only that PM's** prior book/memory sidecar
    No PM sees another PM's current-cycle decision.
-5. **Do not** launch ChatGPT PM, on-demand Trader Room aggregators, rebuttals, or continuation flows.
-6. **Output** — write only:
+5. **Learning-quality examiner** — one Composer 2.5 call after all primary trader and PM decisions. It reads only the required learning submissions and returns adequacy grades. It does not see a mandate to trade and its output cannot add actions, theses, or lessons.
+6. **Do not** launch ChatGPT PM, on-demand Trader Room aggregators, rebuttals, or continuation flows.
+7. **Output** — write only:
    ```
    data/overnight/inbox/<run_id>/scheduled_output.json
    ```

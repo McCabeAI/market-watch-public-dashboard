@@ -6,6 +6,7 @@ from typing import Any
 
 from scripts.pm.constants import AUTOMATED_PM_IDS, CASH_CAPITAL_USD, MAX_DRAWDOWN_USD
 from scripts.trading.constants import MATERIAL_DRAWDOWN_FRACTION, SWINGER_ESCALATION_EPISODES
+from scripts.trading.learning import read_learning_state, standing_floor_for_learning_default
 from scripts.trading.store import TradingStore
 
 
@@ -121,6 +122,14 @@ def build_capital_owner(
     notes: list[str] = []
     standing = "good_standing"
     pressure_flags: list[str] = []
+    learning_status = read_learning_state(store, "pm", pm_id).get("learning_status") or "compliant"
+
+    def _finish(body: dict[str, Any]) -> dict[str, Any]:
+        body["standing"] = standing_floor_for_learning_default(
+            str(body.get("standing") or standing),
+            learning_status=str(learning_status),
+        )
+        return body
 
     if pm_id == "swinger":
         compensated = net >= threshold or high_water > starting + threshold
@@ -166,7 +175,7 @@ def build_capital_owner(
         else:
             notes.append("Stress regime unknown: evaluation cannot switch regimes from frozen inputs alone.")
         # Pace versus the annual band needs elapsed time. A flat or young book is not a shortfall.
-        return {
+        return _finish({
             "standing": standing,
             "mandate": "pragmatist",
             "annual_objective_pct_low": 2.0,
@@ -178,7 +187,7 @@ def build_capital_owner(
             "notes": notes,
             "pressure_flags": pressure_flags,
             "force_deployment": False,
-        }
+        })
 
     elif pm_id == "grinder":
         near_zero = abs(net) < max(50_000.0, threshold * 0.02)
@@ -203,7 +212,7 @@ def build_capital_owner(
             )
         elif near_zero:
             notes.append("Flat versus SOFR is zero alpha. No persistence claim yet.")
-        return {
+        return _finish({
             "standing": standing,
             "mandate": "grinder",
             "hurdle": "SOFR",
@@ -213,13 +222,13 @@ def build_capital_owner(
             "force_deployment": False,
             "notes": notes,
             "pressure_flags": pressure_flags,
-        }
+        })
 
-    return {
+    return _finish({
         "standing": standing,
         "mandate": pm_id,
         "notes": notes,
         "pressure_flags": pressure_flags,
         "force_deployment": False,
-    }
+    })
 

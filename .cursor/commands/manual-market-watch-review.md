@@ -7,7 +7,7 @@ This command is used only after an authenticated human `[launch-market-watch]` r
 Emit exactly once:
 
 ```
-MW_OVERNIGHT_RUN_POLICY={"version":1,"schedule_id":"market-watch-weekday-0205","total_model_cap":19,"grok_cap":18,"composer_cap":2,"parent_model":"grok-4.6","parent_total":1,"parent_grok":1}
+MW_OVERNIGHT_RUN_POLICY={"version":1,"schedule_id":"market-watch-weekday-0205","total_model_cap":20,"grok_cap":18,"composer_cap":2,"parent_model":"grok-4.6","parent_total":1,"parent_grok":1}
 ```
 
 The legacy schedule id is an inactive compatibility identifier for existing hooks and validators. It is not launch authority and it does not imply a 02:05 clock.
@@ -36,8 +36,9 @@ Approved graph:
 | Frozen-packet synthesis child | 1 | `composer-2.5` |
 | Direct trader children | 14 | `grok-4.6` |
 | Direct automated PM principals | 3 | `grok-4.6` |
+| Learning-quality examiner | 1 | `composer-2.5` |
 
-Total: 19 invocations (18 Grok + 1 Composer). Cursor Auto and all other models are prohibited. Nested children are prohibited.
+Total: 20 invocations when the learning examiner is used (18 Grok + 2 Composer). The examiner grades causal adequacy of required learning submissions after the primary decisions and cannot create a second trading opinion. Cursor Auto and all other models are prohibited. Nested children are prohibited.
 
 ### Frozen-packet synthesis
 
