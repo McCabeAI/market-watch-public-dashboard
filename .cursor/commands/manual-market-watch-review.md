@@ -57,7 +57,9 @@ The deterministic `trade_permissions` block is authoritative for country-level n
 - `HOLD` / `REDUCE` / `CLOSE`: remain valid management actions for existing positions.
 - `HEDGE`: a risk-management action, not proof that the book must be frozen. Propose it only when the frozen packet contains a markable hedge leg.
 - Never convert a US or AU data problem into a ban on an unrelated CA/NZ/EA/JP expression.
-- If a country is restricted, state the actual human-readable reason (for example, "August Australian labor could not be verified") rather than internal status enums.
+- A not-due scored series that already has a verified vintage and failed only because of a timeout, HTTP error, source outage, or `budget_deferred` is a source-health carry-forward. It does not make that country ineligible and must not be described as hard data that could not be verified.
+- Block new risk only when a relevant due release cannot be verified, or the required historical observation itself is absent or invalid. Unknown country attribution stays fail-closed.
+- If a country is restricted, state the actual human-readable reason (for example, "August Australian labor could not be verified") rather than internal status enums. Put that caveat once in the research summary. Repeat it in a seat thesis only when it directly constrains that seat's selected expression.
 
 ### Public narrative contract
 
@@ -69,6 +71,7 @@ The research summary and every trader/PM thesis and invalidation are displayed t
 - Never use labels such as `FACT:`, `INFERENCE:`, or `UNKNOWN:`.
 - Do not narrate `PASS/PARTIAL`, "fail closed", `macro_hard`, `market_state`, `source_failed`, `budget_deferred`, `MW_...`, or packet metadata. Those facts remain in structured machine fields.
 - If the evidence is insufficient for a useful public note, say so plainly in one sentence instead of dumping telemetry.
+- Current oil, gold, and equity levels come from the frozen `cross_assets` marks (WTI `CL=F`, Brent `BZ=F`, and the other compact marks), not from an older news story. A Sep 23 story that says oil is near two-week lows must not describe a later freeze if the frozen Brent or WTI mark is newer.
 
 ### Traders
 

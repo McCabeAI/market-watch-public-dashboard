@@ -13,6 +13,7 @@ from scripts.market_watch_launch.contract import (
     VERIFIED_OBSERVATION_STATUSES,
     stage_receipt,
 )
+from scripts.macro_source_health import carried_forward, source_health_entries
 from scripts.market_watch_launch.acquire import read_collect_families
 from scripts.market_watch_launch.ingest import load_ingestion_rows
 _STAGE = "03_quality_gate"
@@ -127,13 +128,20 @@ def _leg_statuses(packet: dict[str, Any]) -> dict[str, str]:
     return legs
 
 
+def _counts_as_verified_scored(row: dict[str, Any]) -> bool:
+    """Verified vintage, including a not-due series carried forward after a fetch failure."""
+    if _effective_status(row) in VERIFIED_OBSERVATION_STATUSES:
+        return True
+    return carried_forward(row)
+
+
 def _country_has_verified_scored(rows: list[dict[str, Any]], country: str) -> bool:
     for row in rows:
         if str(row.get("country") or "") != country:
             continue
         if not _is_scored_row(row):
             continue
-        if _effective_status(row) in VERIFIED_OBSERVATION_STATUSES:
+        if _counts_as_verified_scored(row):
             return True
     return False
 
@@ -171,7 +179,7 @@ def _country_rollups(rows: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
             continue
         effective = _effective_status(row)
         bucket = out[country]
-        if effective in VERIFIED_OBSERVATION_STATUSES:
+        if _counts_as_verified_scored(row):
             if bucket["scored_status"] in {"missing", "ok"}:
                 bucket["scored_status"] = "ok"
         elif effective in BLOCKING_SERIES_STATUSES:
@@ -187,7 +195,10 @@ def _country_rollups(rows: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
             scored = [r for r in rows if r.get("country") == country and _is_scored_row(r)]
             if not scored:
                 bucket["scored_status"] = "missing"
-            elif all(_effective_status(r) in BLOCKING_SERIES_STATUSES for r in scored):
+            elif all(
+                _effective_status(r) in BLOCKING_SERIES_STATUSES and not _counts_as_verified_scored(r)
+                for r in scored
+            ):
                 bucket["scored_status"] = "blocked"
     return out
 
@@ -207,9 +218,7 @@ def evaluate_gate(
                 row["weight"] = spec.get("weight")
 
     scored_rows = [row for row in rows if _is_scored_row(row)]
-    verified_scored = [
-        row for row in scored_rows if _effective_status(row) in VERIFIED_OBSERVATION_STATUSES
-    ]
+    verified_scored = [row for row in scored_rows if _counts_as_verified_scored(row)]
     # A scored failure blocks the launch only when that series is release-due.
     # Historical catalog gaps that are not due stay on the partial matrix.
     blocking_scored = [
@@ -220,8 +229,11 @@ def evaluate_gate(
     nondue_scored_gaps = [
         row
         for row in scored_rows
-        if _effective_status(row) in BLOCKING_SERIES_STATUSES and not bool(row.get("release_due"))
+        if _effective_status(row) in BLOCKING_SERIES_STATUSES
+        and not bool(row.get("release_due"))
+        and not carried_forward(row)
     ]
+    source_health = source_health_entries(rows)
     optional_gaps = [row for row in rows if _is_optional_gap(row)]
 
     partial_expressions: list[str] = []
@@ -262,6 +274,7 @@ def evaluate_gate(
         "synthetic_holds": False,
         "countries": countries,
         "countries_unaffected": [],
+        "source_health": source_health,
     }
 
     if not scored_rows or len(verified_scored) == 0:
@@ -269,6 +282,8 @@ def evaluate_gate(
         base["coverage"] = "NONE"
         base["reason"] = "all_critical_missing"
         base["eligible"] = False
+        for code in countries:
+            countries[code]["eligible"] = False
         return base
 
     market_block = families.get("market_state") or {}
@@ -358,11 +373,40 @@ def apply_macro_overlay(families: dict[str, Any], rows: list[dict[str, Any]]) ->
         macro["status"] = "fresh" if fresh_countries else ("stale" if stale_countries else "invalid")
         if stale_countries:
             notes.append("country-specific macro restrictions: " + ", ".join(stale_countries))
+        carried = sorted({str(row.get("country")) for row in rows if carried_forward(row) and row.get("country")})
+        if carried:
+            macro["source_health_countries"] = carried
+            notes.append(
+                "source-health carry-forward (not-due, prior vintage kept): " + ", ".join(carried)
+            )
 
     macro["notes"] = notes
+    macro["source_health"] = source_health_entries(rows)
     macro["components"] = [dict(row) for row in rows]
     out["macro_hard"] = macro
     return out
+def _annotate_source_health(rows: list[dict[str, Any]], ctx: dict) -> list[dict[str, Any]]:
+    """Carry forward canonical vintages when a not-due fetch failed transiently."""
+    root = ctx.get("root")
+    if root is None:
+        return rows
+    try:
+        from pathlib import Path
+
+        from scripts.macro_ingestion.contract import index_series_rows, load_catalog
+        from scripts.macro_source_health import annotate_rows
+        from scripts.temperature_level import load_history
+
+        history_dir = Path(root) / "data" / "temperature_history"
+        if not history_dir.is_dir():
+            return rows
+        histories = load_history(history_dir)
+        catalog = load_catalog()
+        return annotate_rows(rows, histories=histories, catalog_by_id=index_series_rows(catalog["series"]))
+    except Exception:
+        return rows
+
+
 def run(launch: dict, ctx: dict) -> dict:
     ingest_stage = (launch.get("stages") or {}).get("01_ingest") or {}
     acquire_stage = (launch.get("stages") or {}).get("02_acquire") or {}
@@ -390,6 +434,7 @@ def run(launch: dict, ctx: dict) -> dict:
     if not families:
         families = {}
 
+    rows = _annotate_source_health(rows, ctx)
     result = evaluate_gate(rows=rows, families=families)
     if result["outcome"] == "BLOCKED":
         return stage_receipt(

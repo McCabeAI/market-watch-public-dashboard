@@ -204,12 +204,147 @@ def sanitize_public_prose(
     return clipped + "…"
 
 
-def public_research_summary(value: Any, *, items: list[dict[str, Any]] | None = None) -> str:
+_STALE_OIL_RE = re.compile(
+    r"two-week lows|near \$99|around \$99|\$97 handle|\$99",
+    re.IGNORECASE,
+)
+_DATA_CAVEAT_RE = re.compile(
+    r"hard data could not be verified|could not be verified|"
+    r"new (?:US|U\.S\.) risk (?:stays parked|cannot be added|is not allowed|are not allowed)",
+    re.IGNORECASE,
+)
+
+
+def _oil_marks(market_state: dict[str, Any] | None) -> dict[str, dict[str, Any]]:
+    from scripts.cross_asset_data import compact_cross_assets
+
+    compact = compact_cross_assets(market_state or {})
+    return {
+        str(mark.get("id")): mark
+        for mark in compact.get("marks") or []
+        if isinstance(mark, dict) and mark.get("id")
+    }
+
+
+def _format_mark(mark: dict[str, Any]) -> str:
+    value = mark.get("value")
+    try:
+        number = f"{float(value):.2f}"
+    except (TypeError, ValueError):
+        number = str(value)
+    as_of = mark.get("as_of") or "the freeze"
+    label = mark.get("label") or mark.get("id")
+    return f"{label} {number} as of {as_of}"
+
+
+def reconcile_current_levels(summary: str, market_state: dict[str, Any] | None) -> str:
+    """Prefer the newest frozen Brent/WTI mark over an older news-story price."""
+    if not summary or not isinstance(market_state, dict):
+        return summary
+    marks = _oil_marks(market_state)
+    brent = marks.get("BRENT") or {}
+    wti = marks.get("WTI") or {}
+    if brent.get("value") is None and wti.get("value") is None:
+        return summary
+    if not _STALE_OIL_RE.search(summary):
+        return summary
+    fresh_bits = [_format_mark(mark) for mark in (brent, wti) if mark.get("value") is not None]
+    replacement = (
+        "Frozen market marks put " + " and ".join(fresh_bits) + ", above the prior-week low."
+    )
+    sentences = _SENTENCE_SPLIT_RE.split(summary.strip())
+    kept: list[str] = []
+    replaced = False
+    for sentence in sentences:
+        if _STALE_OIL_RE.search(sentence):
+            if not replaced:
+                kept.append(replacement)
+                replaced = True
+            continue
+        if sentence.strip():
+            kept.append(sentence.strip())
+    if not replaced:
+        kept.append(replacement)
+    return " ".join(kept)
+
+
+def data_caveat_constrains(text: str, expression_countries: set[str] | None) -> bool:
+    """A data-limit sentence stays only when that country is in the selected expression."""
+    if not text or not _DATA_CAVEAT_RE.search(text):
+        return False
+    countries = {code.upper() for code in (expression_countries or set())}
+    if re.search(r"\bUS\b|U\.S\.", text) and "US" in countries:
+        return True
+    if re.search(r"\bNZ\b|New Zealand", text) and "NZ" in countries:
+        return True
+    return False
+
+
+def strip_unrelated_data_caveat(text: str, expression_countries: set[str] | None) -> str:
+    if not isinstance(text, str) or not text.strip() or not _DATA_CAVEAT_RE.search(text):
+        return text
+    if data_caveat_constrains(text, expression_countries):
+        return text
+    kept: list[str] = []
+    for sentence in _SENTENCE_SPLIT_RE.split(text.strip()):
+        if _DATA_CAVEAT_RE.search(sentence):
+            continue
+        if sentence.strip():
+            kept.append(sentence.strip())
+    return " ".join(kept)
+
+
+def room_data_caveat(trade_permissions: dict[str, Any] | None) -> str | None:
+    """One room-level sentence. Seat notes do not repeat it unless the expression needs it."""
+    if not isinstance(trade_permissions, dict):
+        return None
+    countries = trade_permissions.get("countries") if isinstance(trade_permissions.get("countries"), dict) else {}
+    health = trade_permissions.get("source_health") if isinstance(trade_permissions.get("source_health"), list) else []
+    carried = sorted(
+        {
+            str(row.get("country"))
+            for row in health
+            if isinstance(row, dict) and row.get("carried_forward") and not row.get("blocks_new_risk")
+        }
+    )
+    blocked = sorted(
+        code
+        for code, row in countries.items()
+        if isinstance(row, dict) and row.get("eligible") is False
+    )
+    parts: list[str] = []
+    if carried:
+        parts.append(
+            "Source checks for "
+            + ", ".join(carried)
+            + " did not refresh, so the latest verified vintages are carried forward; no new release was due."
+        )
+    real_blocks = [code for code in blocked if code not in carried]
+    if real_blocks:
+        parts.append(
+            "New risk stays restricted in "
+            + ", ".join(real_blocks)
+            + " because a due release or required history could not be verified."
+        )
+    if not parts:
+        return None
+    return " ".join(parts)
+
+
+def public_research_summary(
+    value: Any,
+    *,
+    items: list[dict[str, Any]] | None = None,
+    market_state: dict[str, Any] | None = None,
+    data_caveat: str | None = None,
+) -> str:
     """Research summaries are all-or-nothing: never salvage a telemetry dump."""
     fallback = "Accepted overnight developments are shown below; no clean desk summary was published for this cycle."
     if isinstance(value, str) and value.strip():
-        text = value.strip()
-        if not public_prose_issues(text) and len(text) <= 1400:
+        text = reconcile_current_levels(value.strip(), market_state)
+        if data_caveat and data_caveat not in text:
+            text = text.rstrip() + " " + data_caveat
+        if not public_prose_issues(text) and len(text) <= 1800:
             return text
 
     headlines: list[str] = []
