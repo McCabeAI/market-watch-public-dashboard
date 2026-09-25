@@ -279,6 +279,53 @@
       "run_id": "overnight-20260924",
       "schema_version": 1,
       "thesis": "FACT: book is short/pay CORRA_2027-03 50m (pos-dd6fdaf39119); CRAH27 3.15 vs CORRA 2.29; USDCAD 1.4089; macro_hard STALE; OPEN/ADD/HEDGE fail closed. INFERENCE: growth and risk appetite are more resilient than a defensive CAD-easing narrative; paying Mar-27 is the cleanest pro-cyclical expression because a non-cut/re-tightening path is how CAD growth shows up in rates, and short=pay already maps to that. The 3.15 vs 2.29 gap already embeds substantial re-tightening, so the existing 50m pay is the expression rather than a new USDCAD short. UNKNOWN: live hard-data revisions beyond stale macro_hard and any packet fields not in this seat brief. HOLD only."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-dd6fdaf39119",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-25T08:20:11.173624-04:00",
+      "conviction": 62,
+      "decision_fingerprint": "5e59b45e8306b44c05782378e75d64b86590a2b4a56fa03c83f0152fae292f3a",
+      "event_id": "jde-b61d3a230b034eab",
+      "funding_view": null,
+      "invalidation": "The pay is wrong if oil leaves the high nineties and Canadian demand cools enough for the Bank of Canada to stay near 2.29, sending the March implied back through the 3.13 entry toward the December 2.76 contract. A broad risk-off break that crushes commodity demand would also unwind the cyclical case.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-dd6fdaf39119"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "81339168f4a9212ce1aa10e1bdf16bea52a7ad694118f319454f830756e0bbd2",
+      "outcome_links": [],
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-25T08:20:11.173624-04:00",
+        "evidence_hash": "a3db441f35c00fe93f078e80e2b2274d1f9a6d05e462e36dc054fa17d687ac8c",
+        "overnight_run_id": "overnight-20260925",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Keep paying March 2027 CORRA. Oil near ninety-nine dollars and a still-tight labor backdrop abroad do not sit with overnight CORRA at 2.29 or with the March implied only at 3.12. The existing short remains the cleanest pro-cyclical expression of a Canadian path that still has to catch up.",
+      "run_id": "overnight-20260925",
+      "schema_version": 1,
+      "thesis": "Keep paying March 2027 CORRA. Oil near ninety-nine dollars and a still-tight labor backdrop abroad do not sit with overnight CORRA at 2.29 or with the March implied only at 3.12. The existing short remains the cleanest pro-cyclical expression of a Canadian path that still has to catch up."
     }
   ],
   "schema_version": 1,

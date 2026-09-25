@@ -40,22 +40,31 @@
     "nav_usd": 100000000.0,
     "net_pnl_usd": 0.0,
     "pressure_flags": [],
-    "prior_competition_rank": null,
-    "rank_change": null,
+    "prior_competition_rank": 5,
+    "rank_change": 2,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 0.0,
     "risk_capital_utilization": 0.0,
-    "session_pnl_change_usd": null,
+    "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
-  "memory_context_sha256": "3588da0185b74a3687b27483ef8e542da405799cb6d95ecc0ed6367badd3ea9a",
+  "memory_context_sha256": "4def29240f44a9d212f6d08a11f3af37abd7a438750b1d651f0686b91812f500",
   "open_positions": [],
   "owner_id": "no-trade-skeptic",
   "owner_type": "trader",
   "postmortems_due": [],
   "recent_closed_trades": [],
   "recent_funding_views": [
+    {
+      "current_sofr": {
+        "observation_date": "2026-09-24",
+        "rate": 3.88
+      },
+      "forward_funding_assessment": "lower",
+      "implication": "Remain at the zero official-SOFR benchmark. Overnight realized funding near 3.88 prints below the SR3 path, so new shocked-risk capital would pay SOFR for a view that is already in the strip. Flat cash is not alpha; it is the residual when no trade clears.",
+      "sr3_forward_view": "SR3 Z6 at 4.37, H7 at 4.655, and U7 at 4.87 sit 49bp, 77.5bp, and 99bp above the official 3.88 SOFR fixing. That strip already prices a higher future funding path; it is not unused carry."
+    },
     {
       "current_sofr": {
         "observation_date": "2026-09-22",
@@ -79,12 +88,6 @@
       "forward_funding_assessment": "about_the_same",
       "implication": "Authority is the official NY Fed SOFR fixing, not SR3. Over this same-day horizon, realized funding is assessed about the same as the 3.85 percent official print. Remain at the zero official-SOFR benchmark. Paying SOFR on shocked-risk capital would levy 3.85 percent ACT/360 against risk with no documented mispricing to offset it. Flat cash is not alpha.",
       "sr3_forward_view": "SR3 Z6 4.32 / H7 4.58 / U7 4.745 \u2014 curve still prices hikes then a mild fade."
-    },
-    {
-      "current_sofr": "Trusted funding_context official NY Fed SOFR is missing. Latest confirmed research cite is NY Fed SOFR 3.85 percent for 2026-09-18. Do not treat 3.85 percent as a live funding_context print after 18 September.",
-      "forward_funding_assessment": "about_the_same",
-      "implication": "Remain at the zero official-SOFR benchmark. Paying SOFR on shocked-risk capital would fund a position the packet cannot price or time. Flat cash is not alpha, but inventing risk versus a 3.85 percent 18-Sep cite is worse.",
-      "sr3_forward_view": "SR3 and the SOFR tradable curve are unavailable in the frozen packet; no live forward-funding path, term premium, or implied-cut profile can be claimed."
     }
   ],
   "recent_performance_reflections": [],

@@ -279,6 +279,53 @@
       "run_id": "overnight-20260924",
       "schema_version": 1,
       "thesis": "Verified: book is short/pay SOFR_2027-03 50m (pos-662bff0986be); SR3H7 4.655 versus spot SOFR 3.87; UST backed up 23 Sep; macro_hard STALE; OPEN/ADD/HEDGE closed. Inference: the live trend is higher-for-longer persistence in the 2027 SOFR strip, not a fade. The 23 Sep UST backup is the last hard price impulse in the packet and it aligns with staying short/pay. SR3H7 still sits far above spot SOFR, so the strip has not mean-reverted and covering would be a discretionary fade without a reversal print. Stale macro_hard removes a fresh revision tailwind but does not supply a policy or price reversal. Continuation of the existing pay is the clean trade; no new expression is admissible. Unknown: post-cutoff tape, a refreshed macro_hard path, and whether the 23 Sep backup extended after evidence_cutoff."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-662bff0986be",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-25T08:20:11.173624-04:00",
+      "conviction": 68,
+      "decision_fingerprint": "e6973213f849d89d3d074f100367fa831d6bd20dd652a81024649fb513b5df59",
+      "event_id": "jde-6c81d7fe90cb41bf",
+      "funding_view": null,
+      "invalidation": "The short is wrong if March implied SOFR and the US ten-year turn lower together, showing the hiking-cycle trend has broken. Housing headlines or a one-day oil dip are not that reversal. Australia at 5.005 and Japan ten-year at 3.073 are continuation tails, not a reason to exit the live US short.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-662bff0986be"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "5ec49a880205192508c07fa4460728e6979f7e1f7a223e6305de318d1bcaaccf",
+      "outcome_links": [],
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-25T08:20:11.173624-04:00",
+        "evidence_hash": "a3db441f35c00fe93f078e80e2b2274d1f9a6d05e462e36dc054fa17d687ac8c",
+        "overnight_run_id": "overnight-20260925",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold the existing short in March 2027 SOFR. The contract at 4.655 and the US ten-year at 5.18 are still the same high-rate trend. Cutting overnight would be a fade without a reversal print, and US size cannot be increased.",
+      "run_id": "overnight-20260925",
+      "schema_version": 1,
+      "thesis": "Hold the existing short in March 2027 SOFR. The contract at 4.655 and the US ten-year at 5.18 are still the same high-rate trend. Cutting overnight would be a fade without a reversal print, and US size cannot be increased."
     }
   ],
   "schema_version": 1,

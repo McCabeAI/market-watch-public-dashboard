@@ -279,6 +279,53 @@
       "run_id": "overnight-20260924",
       "schema_version": 1,
       "thesis": "Hold the CA-eligible Mar-27 CORRA receive as a grind-single: still +86bp versus cash CORRA 2.29 with CRAH27 at 3.15, quality gate CA eligible, and size well inside the 100m shock cap. Crowding is noted (carry-is-king also long; perma-bull is the offsetting short) but is not a close signal while the strip still prices easing versus cash and no expanding handoff or hedge is authorized."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pm-pragmatist-4e0cbc4e0b05",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-09-25T09:19:20.534394-04:00",
+      "conviction": 61,
+      "decision_fingerprint": "7e5a0a7c01d4c02c93e6b61e5f896302707c3056e0cae37b5bb1955d993fb1c9",
+      "event_id": "jde-ce7ecc3ead7f40cf",
+      "funding_view": null,
+      "invalidation": "The view breaks if oil-driven or data-driven hawkish repricing lifts the March contract back through entry with follow-through, confirming the tightening path rather than an overpriced stack. With no expanding hedge ticket this cycle, a sustained mark higher through the entry zone is the signal to reduce or exit rather than to invent a new line.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-pragmatist-4e0cbc4e0b05"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "f2f9ff539a698004b93f9befb4a3cceef6c901e6511a83dc717ac4060948e36f",
+      "outcome_links": [],
+      "owner_id": "pragmatist",
+      "owner_type": "pm",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-25T08:20:11.173624-04:00",
+        "evidence_hash": "2fff78f28c262367a606946cd19f7d0923d0b80e200f976e61835aeae58ac448",
+        "overnight_run_id": "overnight-20260925",
+        "review_id": "review-001",
+        "review_packet_id": "prp-pragmatist-overnight-20260925-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "March 2027 CORRA still prices a large tightening path versus cash near 2.29, so a modest receive remains a clean single if the Bank of Canada does not deliver the full hike stack. The line is already working by a basis point, shocked risk is small, and with a unanimous hold handoff there is no cleaner markable complement in Canada, Australia, Europe, or Japan.",
+      "run_id": "overnight-20260925",
+      "schema_version": 1,
+      "thesis": "March 2027 CORRA still prices a large tightening path versus cash near 2.29, so a modest receive remains a clean single if the Bank of Canada does not deliver the full hike stack. The line is already working by a basis point, shocked risk is small, and with a unanimous hold handoff there is no cleaner markable complement in Canada, Australia, Europe, or Japan."
     }
   ],
   "schema_version": 1,

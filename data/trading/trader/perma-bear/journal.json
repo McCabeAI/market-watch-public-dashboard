@@ -279,6 +279,53 @@
       "run_id": "overnight-20260924",
       "schema_version": 1,
       "thesis": "Jun-27 AONIA at 4.935 versus cash AONIA 4.35 still prices a late-cycle re-tightening path that underweights growth, revision, and liquidity-fragility tails. The existing long AONIA_2027-06 is the cleanest already-on-book defensive rates expression of that mispricing. Evidence is closed, macro_hard is STALE, AU is ineligible, and OPEN/ADD/HEDGE fail closed, so no new risk is admissible. Hold the 55m; do not rotate into spot-FX or options."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-06",
+          "notional_usd": null,
+          "position_id": "pos-3b40ade3da2c",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-25T08:20:11.173624-04:00",
+      "conviction": 64,
+      "decision_fingerprint": "be8c45d71bc8cd8cac917fe1604d9f240bedf8d6ec7bef496985cfff2211d192",
+      "event_id": "jde-949e609bd896451f",
+      "funding_view": null,
+      "invalidation": "The receive is wrong if June implied AONIA falls back through the 4.91 entry, or if Australian labor and income reverse the August and Q2 prints. A clear housing or demand break that forces the Reserve Bank off the hike path would also invalidate.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-3b40ade3da2c"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "e8f53f92b6887e419d5a3ccda80920fbfbbab23bb9fe556a83a40f8a52ec5183",
+      "outcome_links": [],
+      "owner_id": "perma-bear",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-25T08:20:11.173624-04:00",
+        "evidence_hash": "a3db441f35c00fe93f078e80e2b2274d1f9a6d05e462e36dc054fa17d687ac8c",
+        "overnight_run_id": "overnight-20260925",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold the June 2027 AONIA receive. Australia added 39.5 thousand jobs in August and Q2 household income rose 1.12 percent, so fading this pay is the wrong side of the print. Oil near 99 dollars keeps a floor under inflation and under a restrictive cash-rate path already marked at 5.005 versus cash 4.35.",
+      "run_id": "overnight-20260925",
+      "schema_version": 1,
+      "thesis": "Hold the June 2027 AONIA receive. Australia added 39.5 thousand jobs in August and Q2 household income rose 1.12 percent, so fading this pay is the wrong side of the print. Oil near 99 dollars keeps a floor under inflation and under a restrictive cash-rate path already marked at 5.005 versus cash 4.35."
     }
   ],
   "schema_version": 1,

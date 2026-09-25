@@ -279,6 +279,53 @@
       "run_id": "overnight-20260924",
       "schema_version": 1,
       "thesis": "FACT: book is long SOFR_2027-03 / SR3H7 40m pos-1477172adb86; SR3H7 implied 4.655 vs cash SOFR 3.87; UST 2Y 4.85 (+14bp) and 10Y 5.11 (+15bp); macro_hard STALE; OPEN/ADD/HEDGE fail closed. INFERENCE: the overnight UST selloff is a same-session stretch, not a completed re-anchor, while Mar-27 STIR still prices ~78.5bp above cash SOFR\u2014crowded hawkish extrapolation that the existing long (short-implied-rate) is already fading. Anchor is cash SOFR 3.87 plus a still-elevated 2s/10s level (4.85/5.11, ~26bp 2s10s); reversal condition is overnight yield overshoot fading so SR3H7 implied compresses toward a less restrictive path. rates_tenor_scan: STIR/policy-path candidate=HOLD long SOFR_2027-03 (only clean fade of 4.655 vs 3.87); 2Y candidate=long UST2Y fade of +14bp to 4.85 but OPEN fail closed; 5Y unavailable in packet; 10Y candidate=long UST10Y fade of +15bp to 5.11 but OPEN fail closed; curve 2s10s ~26bp after near-parallel selloff, not a standalone RV without history; cross-market rates RV unavailable. Spot-FX candidate unavailable (no spot levels in packet). Rates selected conceptually; no new expression because book already is the STIR fade and new risk is fail-closed. UNKNOWN: fresh macro, positioning, vol, and whether the +14/+15bp move had a discrete catalyst. Do not add. HOLD the stretched-STIR fade."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-1477172adb86",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-25T08:20:11.173624-04:00",
+      "conviction": 58,
+      "decision_fingerprint": "7b8bb91404663868b03e41cd08a210b34ecbdf2eadbda77b47656157917dc57f",
+      "event_id": "jde-4d8f5c30cbf94fd4",
+      "funding_view": null,
+      "invalidation": "The fade dies if the gap ceases to be a stretch because cash SOFR or the policy anchor has moved up, not because the 4.655 implied path has mean-reverted. Do not fade Australian June 2027 at 5.005 after a jobs re-anchor, and do not chase the three-basis-point Canadian retrace.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-1477172adb86"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "57ae4ed4f0ad286d4b2ea5585296f93fa8c5051681024141434c30a901845f12",
+      "outcome_links": [],
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-25T08:20:11.173624-04:00",
+        "evidence_hash": "a3db441f35c00fe93f078e80e2b2274d1f9a6d05e462e36dc054fa17d687ac8c",
+        "overnight_run_id": "overnight-20260925",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold the existing long in March 2027 SOFR. The contract at 4.655 is still 77.5 basis points above official SOFR at 3.88, so the stretch the book is fading has not normalized. US two-year and ten-year yields at 4.87 and 5.18 still corroborate an elevated path rather than a completed re-anchor.",
+      "run_id": "overnight-20260925",
+      "schema_version": 1,
+      "thesis": "Hold the existing long in March 2027 SOFR. The contract at 4.655 is still 77.5 basis points above official SOFR at 3.88, so the stretch the book is fading has not normalized. US two-year and ten-year yields at 4.87 and 5.18 still corroborate an elevated path rather than a completed re-anchor."
     }
   ],
   "schema_version": 1,

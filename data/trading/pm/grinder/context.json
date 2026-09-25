@@ -1,6 +1,6 @@
 {
   "active_lessons": [],
-  "as_of": "2026-09-25T08:20:11.173624-04:00",
+  "as_of": "2026-09-25T09:19:20.715314-04:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -30,12 +30,12 @@
     "wins": 0
   },
   "capital_owner": {
-    "credible_opportunities": "unknown",
+    "credible_opportunities": "none",
     "force_deployment": false,
     "hurdle": "SOFR",
     "mandate": "grinder",
     "notes": [
-      "Flat versus SOFR is zero alpha. Opportunity availability is unknown in the frozen packet, so no missed-opportunity claim is made."
+      "Flat versus SOFR is zero alpha, but the frozen packet has no markable opportunity. Sitting out is legitimate."
     ],
     "persistent_zero_alpha": false,
     "pressure_flags": [],
@@ -43,14 +43,14 @@
     "zero_alpha": true
   },
   "consequence": {
-    "best_trader_net_pnl_usd": 308125.84,
+    "best_trader_net_pnl_usd": 418551.29,
     "best_trader_outearn_streak": null,
     "best_trader_seat": "dollar-king",
     "capital_normalized": false,
     "competition_cohort_size": 4,
     "competition_rank": 1,
     "drawdown_usd": 0.0,
-    "gap_to_best_trader_usd": -308125.84,
+    "gap_to_best_trader_usd": -418551.29,
     "high_water_nav_usd": 1000000000.0,
     "max_drawdown_usd": 50000000.0,
     "net_after_funding_pnl_usd": 0.0,
@@ -62,7 +62,7 @@
     "status": "ok",
     "total_pnl_usd": 0.0
   },
-  "memory_context_sha256": "58cc43ddfe7830aaae743a806166240374a2ff1449a48ec5b5d95a5eee9a7282",
+  "memory_context_sha256": "178093afa7bd3e8aa3b33b2cf361b3a45393aebae25434ef92a9453a26708b76",
   "open_positions": [],
   "owner_id": "grinder",
   "owner_type": "pm",

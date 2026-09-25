@@ -279,6 +279,53 @@
       "run_id": "overnight-20260924",
       "schema_version": 1,
       "thesis": "FACT: long/receive CORRA_2027-03 75m pos-b97bddbdbd2d; CORRA cash 2.29; CRAH27 3.15 (+86bp vs cash); SOFR 3.87% as of 2026-09-22; oil near two-week lows and Hormuz disputed; macro_hard STALE so OPEN/ADD/HEDGE fail closed and only HOLD/REDUCE/CLOSE are live. INFERENCE: Mar-27 implied 86bp above cash pays the existing receiver to sit if the BoC path stays closer to 2.29 than 3.15; Hormuz/oil is an unconfirmed low-carry narrative (oil at two-week lows), not a catalyst that overwhelms carry; cash SOFR-CORRA 158bp is CAD-easier vs USD and argues against paying down a working CAD receive. UNKNOWN: 2Y/5Y/10Y, USD/CAD, matched SOFR 2027-03 implied, CRAH27 tick, and dollar holding-period carry on 75m are all null in packet, so carry is the +86bp path differential only, not a $ number. HOLD is the carry decision, not a data failure."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-b97bddbdbd2d",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-25T08:20:11.173624-04:00",
+      "conviction": 68,
+      "decision_fingerprint": "d31e4d8c69f5ec30d946e339de4c407618f36b454c9fc29ba817256f1b3123e9",
+      "event_id": "jde-bce700e6f5544c76",
+      "funding_view": null,
+      "invalidation": "Flatten only if a Canadian policy-path catalyst overwhelms the 83 basis-point premium of the March contract over cash, so the forward is fair rather than rich. Crowding alone is not that catalyst.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-b97bddbdbd2d"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "5705013acf933389e0d3b35908742faa3c2821b2eaea144f6d9400cac907069f",
+      "outcome_links": [],
+      "owner_id": "carry-is-king",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-25T08:20:11.173624-04:00",
+        "evidence_hash": "a3db441f35c00fe93f078e80e2b2274d1f9a6d05e462e36dc054fa17d687ac8c",
+        "overnight_run_id": "overnight-20260925",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Keep the existing long in March 2027 CORRA. The contract at 3.12 still sits 83 basis points above cash CORRA at 2.29, so the receive continues to earn that gap. Crowding is a reason not to add, not a reason to cut a line that is still being paid.",
+      "run_id": "overnight-20260925",
+      "schema_version": 1,
+      "thesis": "Keep the existing long in March 2027 CORRA. The contract at 3.12 still sits 83 basis points above cash CORRA at 2.29, so the receive continues to earn that gap. Crowding is a reason not to add, not a reason to cut a line that is still being paid."
     }
   ],
   "schema_version": 1,

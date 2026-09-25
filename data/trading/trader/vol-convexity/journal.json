@@ -267,6 +267,51 @@
       "run_id": "overnight-20260924",
       "schema_version": 1,
       "thesis": "VERIFIED: Hormuz remains a binary choke-point; oil is near two-week lows; macro_hard is STALE; book mandate is FLAT; packet_sha256=669e2d29383e02c6cd5f5c8a75acda5c23e0ea453ef1cc83f8cce2ae5c55c9f6 at cutoff 2026-09-24T06:06:33.355500-04:00. INFERENCE: two-week lows plus an unresolved binary is a timing-uncertain, fat-tail setup where spot is the wrong instrument\u2014path can gap through any stop while premium for the right tail is the only bounded expression. UNKNOWN: no live implied/realized, skew, RR, strikes, or tenors in the frozen packet; event vol versus two-week realized cannot be scored while macro_hard is STALE. Do not invent option prices. Convexity would dominate only after a fresh macro_hard print and a live vol surface; until then the seat stays flat and selected=none."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-25T08:20:11.173624-04:00",
+      "conviction": 45,
+      "decision_fingerprint": "b937bb81a41015d66854937bddd9320547d41a47ecfb0000d98f8c2fe6a75585",
+      "event_id": "jde-9fce4083a1214289",
+      "funding_view": null,
+      "invalidation": "Invalidate the flat book only if a later freeze supplies a live surface and an event-vol premium that clearly underprices the Hormuz tail. A spot-only oil bounce or grind lower without those marks does not authorize opening options or spot.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "7e9044755a1f625033b4516de9cd7991c8bd9ccc412370a9d11903c7a7d0dca4",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-25T08:20:11.173624-04:00",
+        "evidence_hash": "a3db441f35c00fe93f078e80e2b2274d1f9a6d05e462e36dc054fa17d687ac8c",
+        "overnight_run_id": "overnight-20260925",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Stay flat until a live options surface exists. Hormuz remains a binary choke-point and oil is still near two-week lows around 99 dollars, which is a timing-uncertain fat-tail setup, but there are no strikes, expiries or implied vols to price. Eligible countries do not create a markable options book on their own.",
+      "run_id": "overnight-20260925",
+      "schema_version": 1,
+      "thesis": "Stay flat until a live options surface exists. Hormuz remains a binary choke-point and oil is still near two-week lows around 99 dollars, which is a timing-uncertain fat-tail setup, but there are no strikes, expiries or implied vols to price. Eligible countries do not create a markable options book on their own."
     }
   ],
   "schema_version": 1,

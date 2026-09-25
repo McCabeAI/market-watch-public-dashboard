@@ -277,6 +277,51 @@
       "run_id": "overnight-20260924",
       "schema_version": 1,
       "thesis": "Verified: book is FLAT; CA-US 2Y prints -146bp; the prior SOFR-CORRA_2Y_2027H1 expression is closed with outstanding postmortem pmd-d9e2764dea0f; macro_hard is STALE at cutoff. Inference: -146bp is a rates-relative dislocation versus a peer (US) policy path, the kind of cross-market 2Y gap this seat would normally want to fade via a rates RV rather than spot CAD, but a closed ticket plus a due postmortem is a stop on re-risking the same convergence until the failure mode is written down. Unknown: historical z-score of the -146bp print, REER/PPP and terms-of-trade anchors, and postmortem findings are not in this frozen overnight packet. Convergence is not underwritable tonight. HOLD flat; do not reopen SOFR-CORRA 2Y 2027H1 or substitute a CAD spot fade of the same view."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-25T08:20:11.173624-04:00",
+      "conviction": 55,
+      "decision_fingerprint": "4792d429c29e82fb9bd455376debb5cef8e238fc4e8f287595ad13bda8f5e211",
+      "event_id": "jde-22b5b1bda91b4da8",
+      "funding_view": null,
+      "invalidation": "A completed write-up that clears re-entry, plus a fresh freeze that still shows a markable dislocation, would be required before any Canada-US or Canada-Australia convergence line could be considered. Until then the book stays empty.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "2b8605a0129df5cafde9f516c321f8816ed97cac2276cbe4f7fb43775bc11ac3",
+      "outcome_links": [],
+      "owner_id": "value-guy",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-25T08:20:11.173624-04:00",
+        "evidence_hash": "a3db441f35c00fe93f078e80e2b2274d1f9a6d05e462e36dc054fa17d687ac8c",
+        "overnight_run_id": "overnight-20260925",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Stay flat. The Canada-US two-year gap is still wide, but the prior convergence trade failed and that write-up is unfinished, so the same idea cannot be reopened. Canada-Australia two-year cheapness is conceptually eligible and is not a reason to expand while the last failure is still unwritten.",
+      "run_id": "overnight-20260925",
+      "schema_version": 1,
+      "thesis": "Stay flat. The Canada-US two-year gap is still wide, but the prior convergence trade failed and that write-up is unfinished, so the same idea cannot be reopened. Canada-Australia two-year cheapness is conceptually eligible and is not a reason to expand while the last failure is still unwritten."
     }
   ],
   "schema_version": 1,
