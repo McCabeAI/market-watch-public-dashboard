@@ -1,0 +1,153 @@
+{
+  "base_packet_sha256": null,
+  "created_at": "2026-09-25T07:01:00.822340-04:00",
+  "duplicate_of": null,
+  "freeze_commit_sha": null,
+  "launch_id": "mwl-20260925T110100Z-a665a459",
+  "launcher_id": "manual-market-watch-launch-v1",
+  "overnight_run_id": null,
+  "prior_launch_id": null,
+  "request": {
+    "actor": "kevinnmccabe-PC",
+    "actor_type": "User",
+    "issue_number": 123,
+    "issue_title": "[launch-market-watch] 2026-09-25",
+    "issue_url": "https://github.com/McCabeAI/market-watch-public-dashboard/issues/123",
+    "mode": "live",
+    "origin": {
+      "actor": "kevinnmccabe-PC",
+      "actor_type": "User",
+      "issue_number": 123,
+      "issue_url": "https://github.com/McCabeAI/market-watch-public-dashboard/issues/123",
+      "repository_permission": "admin",
+      "source": "github_issue"
+    },
+    "provider": "acp",
+    "publish_production": true,
+    "repository_permission": "admin",
+    "rerun": false,
+    "session_date": "2026-09-25",
+    "source": "github_issue"
+  },
+  "rerun": false,
+  "review_id": null,
+  "schema_version": 1,
+  "session_date": "2026-09-25",
+  "stages": {
+    "00_authenticate": {
+      "artifact": null,
+      "details": {
+        "blocked_by_launch_id": "mwl-20260924T100633Z-e5b861a6"
+      },
+      "finished_at": "2026-09-25T07:01:00.822340-04:00",
+      "input_sha256": null,
+      "output_sha256": null,
+      "reason": "concurrency_one_live_launch",
+      "source_run_url": null,
+      "stage": "00_authenticate",
+      "started_at": "2026-09-25T07:01:00.822340-04:00",
+      "status": "blocked"
+    },
+    "01_ingest": {
+      "artifact": null,
+      "details": {},
+      "finished_at": null,
+      "input_sha256": null,
+      "output_sha256": null,
+      "reason": null,
+      "source_run_url": null,
+      "stage": "01_ingest",
+      "started_at": null,
+      "status": "pending"
+    },
+    "02_acquire": {
+      "artifact": null,
+      "details": {},
+      "finished_at": null,
+      "input_sha256": null,
+      "output_sha256": null,
+      "reason": null,
+      "source_run_url": null,
+      "stage": "02_acquire",
+      "started_at": null,
+      "status": "pending"
+    },
+    "03_quality_gate": {
+      "artifact": null,
+      "details": {},
+      "finished_at": null,
+      "input_sha256": null,
+      "output_sha256": null,
+      "reason": null,
+      "source_run_url": null,
+      "stage": "03_quality_gate",
+      "started_at": null,
+      "status": "pending"
+    },
+    "04_freeze": {
+      "artifact": null,
+      "details": {},
+      "finished_at": null,
+      "input_sha256": null,
+      "output_sha256": null,
+      "reason": null,
+      "source_run_url": null,
+      "stage": "04_freeze",
+      "started_at": null,
+      "status": "pending"
+    },
+    "05_acp_handoff": {
+      "artifact": null,
+      "details": {},
+      "finished_at": null,
+      "input_sha256": null,
+      "output_sha256": null,
+      "reason": null,
+      "source_run_url": null,
+      "stage": "05_acp_handoff",
+      "started_at": null,
+      "status": "pending"
+    },
+    "06_acceptance": {
+      "artifact": null,
+      "details": {},
+      "finished_at": null,
+      "input_sha256": null,
+      "output_sha256": null,
+      "reason": null,
+      "source_run_url": null,
+      "stage": "06_acceptance",
+      "started_at": null,
+      "status": "pending"
+    },
+    "07_finalize": {
+      "artifact": null,
+      "details": {},
+      "finished_at": null,
+      "input_sha256": null,
+      "output_sha256": null,
+      "reason": null,
+      "source_run_url": null,
+      "stage": "07_finalize",
+      "started_at": null,
+      "status": "pending"
+    },
+    "08_pages": {
+      "artifact": null,
+      "details": {},
+      "finished_at": null,
+      "input_sha256": null,
+      "output_sha256": null,
+      "reason": null,
+      "source_run_url": null,
+      "stage": "08_pages",
+      "started_at": null,
+      "status": "pending"
+    }
+  },
+  "starting_pm_books_sha256": null,
+  "starting_trader_books_sha256": null,
+  "status": "blocked",
+  "timezone": "America/New_York",
+  "type": "MARKET_WATCH_LAUNCH"
+}
