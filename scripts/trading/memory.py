@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from copy import deepcopy
 from datetime import datetime
 from typing import Any
 from uuid import uuid4
@@ -591,15 +592,14 @@ def accept_postmortem(
     return record
 
 
-def apply_memory_update(
+def _validated_memory_update(
     store: TradingStore,
     update: dict[str, Any],
     *,
     owner_type: str,
     owner_id: str,
-    run_id: str | None,
-    when: datetime | None = None,
-) -> dict[str, Any]:
+    pending_reflection_ids: set[str] | None = None,
+) -> tuple[str, list[str], list[str], list[str], str | None]:
     assert_identity(owner_type, owner_id)
     op = update.get("op")
     if op not in LESSON_OPS:
@@ -615,12 +615,40 @@ def apply_memory_update(
         if postmortem_id not in known_pm:
             raise OwnershipError(f"{owner_id} referenced unknown postmortem_id {postmortem_id}")
     known_refl = {row.get("reflection_id") for row in store.read_reflections(owner_type, owner_id).get("items") or []}
+    known_refl.update(pending_reflection_ids or set())
     for reflection_id in reflection_ids:
         if reflection_id not in known_refl:
             raise OwnershipError(f"{owner_id} referenced unknown reflection_id {reflection_id}")
     if op == "add" and not trade_ids and not postmortem_ids and not reflection_ids:
         raise SchemaError("durable lessons must cite one or more owned trade_ids, postmortem_ids, or reflection_ids")
     text = _text(update.get("text"))
+    if op == "add" and not text:
+        raise SchemaError("add lesson requires text")
+    if op != "add":
+        lesson_id = update.get("lesson_id")
+        rows = store.read_lessons(owner_type, owner_id).get("lessons") or []
+        if not any(row.get("lesson_id") == lesson_id for row in rows):
+            raise SchemaError(f"unknown lesson_id {lesson_id}")
+    return op, trade_ids, postmortem_ids, reflection_ids, text
+
+
+def apply_memory_update(
+    store: TradingStore,
+    update: dict[str, Any],
+    *,
+    owner_type: str,
+    owner_id: str,
+    run_id: str | None,
+    when: datetime | None = None,
+    pending_reflection_ids: set[str] | None = None,
+) -> dict[str, Any]:
+    op, trade_ids, postmortem_ids, reflection_ids, text = _validated_memory_update(
+        store,
+        update,
+        owner_type=owner_type,
+        owner_id=owner_id,
+        pending_reflection_ids=pending_reflection_ids,
+    )
     lessons = store.read_lessons(owner_type, owner_id)
     rows = lessons.setdefault("lessons", [])
     stamp = isoformat(now_ny(when))
@@ -728,6 +756,24 @@ def accept_performance_reflection(
     if not lesson_text and not memory_update and not no_new_lesson:
         raise SchemaError("performance_reflection requires lesson, memory_update, or no_new_lesson")
     reflection_id = f"prf-{uuid4().hex[:12]}"
+    lesson_update = None
+    if memory_update:
+        lesson_update = {**memory_update, "reflection_ids": [reflection_id]}
+    elif lesson_text:
+        lesson_update = {
+            "op": "add",
+            "text": lesson_text,
+            "reflection_ids": [reflection_id],
+            "trade_ids": [tid for tid in (payload.get("trade_ids") or []) if isinstance(tid, str)],
+        }
+    if lesson_update:
+        _validated_memory_update(
+            store,
+            lesson_update,
+            owner_type=owner_type,
+            owner_id=owner_id,
+            pending_reflection_ids={reflection_id},
+        )
     record = {
         "reflection_id": reflection_id,
         "reflection_due_id": matched.get("reflection_due_id"),
@@ -744,40 +790,32 @@ def accept_performance_reflection(
         "chase_or_revenge": payload.get("chase_or_revenge"),
         "no_new_lesson": no_new_lesson,
     }
-    matched["status"] = "submitted"
-    store.write_reflections_due(owner_type, owner_id, due_doc)
-    reflections = store.read_reflections(owner_type, owner_id)
-    reflections.setdefault("items", []).append(record)
-    store.write_reflections(owner_type, owner_id, reflections)
-    lesson_id = None
-    if memory_update:
-        lesson = apply_memory_update(
-            store,
-            {**memory_update, "reflection_ids": [reflection_id]},
-            owner_type=owner_type,
-            owner_id=owner_id,
-            run_id=run_id,
-            when=when,
-        )
-        lesson_id = lesson.get("lesson_id")
-        record["lesson_id"] = lesson_id
-    elif lesson_text:
-        lesson = apply_memory_update(
-            store,
-            {
-                "op": "add",
-                "text": lesson_text,
-                "reflection_ids": [reflection_id],
-                "trade_ids": [tid for tid in (payload.get("trade_ids") or []) if isinstance(tid, str)],
-            },
-            owner_type=owner_type,
-            owner_id=owner_id,
-            run_id=run_id,
-            when=when,
-        )
-        lesson_id = lesson.get("lesson_id")
-        record["lesson_id"] = lesson_id
-    store.write_reflections(owner_type, owner_id, reflections)
+    prior_due = deepcopy(due_doc)
+    prior_reflections = deepcopy(store.read_reflections(owner_type, owner_id))
+    prior_lessons = deepcopy(store.read_lessons(owner_type, owner_id))
+    try:
+        reflections = deepcopy(prior_reflections)
+        reflections.setdefault("items", []).append(record)
+        store.write_reflections(owner_type, owner_id, reflections)
+        if lesson_update:
+            lesson = apply_memory_update(
+                store,
+                lesson_update,
+                owner_type=owner_type,
+                owner_id=owner_id,
+                run_id=run_id,
+                when=when,
+                pending_reflection_ids={reflection_id},
+            )
+            record["lesson_id"] = lesson.get("lesson_id")
+            store.write_reflections(owner_type, owner_id, reflections)
+        matched["status"] = "submitted"
+        store.write_reflections_due(owner_type, owner_id, due_doc)
+    except Exception:
+        store.write_reflections_due(owner_type, owner_id, prior_due)
+        store.write_reflections(owner_type, owner_id, prior_reflections)
+        store.write_lessons(owner_type, owner_id, prior_lessons)
+        raise
     return record
 
 

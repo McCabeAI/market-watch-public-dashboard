@@ -728,6 +728,127 @@ class TraderPsychologyTests(unittest.TestCase):
         self.assertTrue(king["active_lessons"])
         self.assertFalse(bear["active_lessons"])
 
+    def test_pm_session_win_while_behind_does_not_increment_streak(self) -> None:
+        trader_books = empty_books(overnight_run_id="overnight-20260919", when=AS_OF)
+        trader_books["seats"]["dollar-king"]["realized_pnl_usd"] = 5_000_000.0
+        self._write_trader_books(trader_books)
+        pm_books = empty_pm_books()
+        pm_books["pms"]["swinger"]["realized_pnl_usd"] = 0.0
+        self._write_pm_books(pm_books)
+        record_consequence_observation(self.store, "pm", "swinger")
+        self.assertIsNone(self.store.read_consequence_state("pm", "swinger").get("best_trader_outearn_streak"))
+        trader_books["seats"]["dollar-king"]["realized_pnl_usd"] = 6_000_000.0
+        self._write_trader_books(trader_books)
+        pm_books["pms"]["swinger"]["realized_pnl_usd"] = 2_000_000.0
+        self._write_pm_books(pm_books)
+        record_consequence_observation(self.store, "pm", "swinger")
+        consequence = build_pm_consequence(self.store, "swinger")
+        self.assertEqual(consequence["best_trader_outearn_streak"], 0)
+        self.assertLess(consequence["gap_to_best_trader_usd"], 0)
+        self.assertEqual(consequence["best_trader_net_pnl_usd"], 6_000_000.0)
+
+    def test_consecutive_session_outearns_increment_streak(self) -> None:
+        trader_books = empty_books(overnight_run_id="overnight-20260919", when=AS_OF)
+        trader_books["seats"]["dollar-king"]["realized_pnl_usd"] = 1.0
+        pm_books = empty_pm_books()
+        self._write_trader_books(trader_books)
+        self._write_pm_books(pm_books)
+        record_consequence_observation(self.store, "pm", "pragmatist")
+        trader_books["seats"]["dollar-king"]["realized_pnl_usd"] = 2_000_000.0
+        pm_books["pms"]["pragmatist"]["realized_pnl_usd"] = 0.0
+        self._write_trader_books(trader_books)
+        self._write_pm_books(pm_books)
+        record_consequence_observation(self.store, "pm", "pragmatist")
+        self.assertEqual(build_pm_consequence(self.store, "pragmatist")["best_trader_outearn_streak"], 1)
+        trader_books["seats"]["dollar-king"]["realized_pnl_usd"] = 4_000_000.0
+        pm_books["pms"]["pragmatist"]["realized_pnl_usd"] = 1_000_000.0
+        self._write_trader_books(trader_books)
+        self._write_pm_books(pm_books)
+        record_consequence_observation(self.store, "pm", "pragmatist")
+        self.assertEqual(build_pm_consequence(self.store, "pragmatist")["best_trader_outearn_streak"], 2)
+
+    def test_missing_prior_comparator_does_not_fabricate_streak(self) -> None:
+        trader_books = empty_books(overnight_run_id="overnight-20260919", when=AS_OF)
+        trader_books["seats"]["dollar-king"]["realized_pnl_usd"] = 3_000_000.0
+        self._write_trader_books(trader_books)
+        pm_books = empty_pm_books()
+        pm_books["pms"]["grinder"]["realized_pnl_usd"] = 1_000_000.0
+        self._write_pm_books(pm_books)
+        record_consequence_observation(self.store, "pm", "grinder")
+        self.assertIsNone(build_pm_consequence(self.store, "grinder")["best_trader_outearn_streak"])
+        trader_books["seats"]["dollar-king"]["realized_pnl_usd"] = 1_000_000.0
+        trader_books["seats"]["carry-is-king"]["realized_pnl_usd"] = 4_000_000.0
+        self._write_trader_books(trader_books)
+        record_consequence_observation(self.store, "pm", "grinder")
+        self.assertIsNone(build_pm_consequence(self.store, "grinder")["best_trader_outearn_streak"])
+        self.assertEqual(build_pm_consequence(self.store, "grinder")["best_trader_seat"], "carry-is-king")
+
+    def test_invalid_memory_update_does_not_clear_reflection_debt(self) -> None:
+        books = empty_books(overnight_run_id="overnight-20260919", when=AS_OF)
+        books["seats"]["dollar-king"]["realized_pnl_usd"] = -2_100_000.0
+        self._write_trader_books(books)
+        context = build_memory_context(self.store, "trader", "dollar-king")
+        due_id = context["reflections_due"][0]["reflection_due_id"]
+        with self.assertRaises(SchemaError):
+            accept_performance_reflection(
+                self.store,
+                {
+                    "reflection_due_id": due_id,
+                    "what_happened_vs_expected": "Loss was timing.",
+                    "attribution": ["timing"],
+                    "pressure_effect": "none",
+                    "skill_vs_luck": "luck",
+                    "overconfidence_risk": "no",
+                    "chase_or_revenge": "no",
+                    "memory_update": {"op": "add", "text": "bad cite", "trade_ids": ["trd-missing"]},
+                },
+                owner_type="trader",
+                owner_id="dollar-king",
+                run_id="overnight-20260920",
+            )
+        due = self.store.read_reflections_due("trader", "dollar-king")["items"]
+        self.assertEqual(due[0]["status"], "due")
+        self.assertEqual(self.store.read_reflections("trader", "dollar-king").get("items") or [], [])
+        self.assertEqual(self.store.read_lessons("trader", "dollar-king").get("lessons") or [], [])
+
+    def test_valid_reflection_commits_lesson_once(self) -> None:
+        books = empty_books(overnight_run_id="overnight-20260919", when=AS_OF)
+        books["seats"]["dollar-king"]["realized_pnl_usd"] = -2_100_000.0
+        self._write_trader_books(books)
+        context = build_memory_context(self.store, "trader", "dollar-king")
+        due_id = context["reflections_due"][0]["reflection_due_id"]
+        payload = {
+            "reflection_due_id": due_id,
+            "what_happened_vs_expected": "Loss was timing.",
+            "attribution": ["timing"],
+            "pressure_effect": "none",
+            "skill_vs_luck": "luck",
+            "overconfidence_risk": "no",
+            "chase_or_revenge": "no",
+            "memory_update": {"op": "add", "text": "Do not chase the same entry."},
+        }
+        accepted = accept_performance_reflection(
+            self.store,
+            payload,
+            owner_type="trader",
+            owner_id="dollar-king",
+            run_id="overnight-20260920",
+        )
+        self.assertEqual(self.store.read_reflections_due("trader", "dollar-king")["items"][0]["status"], "submitted")
+        self.assertEqual(len(self.store.read_reflections("trader", "dollar-king")["items"]), 1)
+        self.assertEqual(len(self.store.read_lessons("trader", "dollar-king")["lessons"]), 1)
+        self.assertEqual(accepted["lesson_id"], self.store.read_lessons("trader", "dollar-king")["lessons"][0]["lesson_id"])
+        with self.assertRaises(SchemaError):
+            accept_performance_reflection(
+                self.store,
+                payload,
+                owner_type="trader",
+                owner_id="dollar-king",
+                run_id="overnight-20260921",
+            )
+        self.assertEqual(len(self.store.read_lessons("trader", "dollar-king")["lessons"]), 1)
+        self.assertEqual(len(self.store.read_reflections("trader", "dollar-king")["items"]), 1)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -247,9 +247,8 @@ def build_pm_consequence(
     if best and own_pnl is not None:
         best_gap = round(float(own_pnl) - float(best["net_pnl_usd"]), 2)
     prior = store.read_consequence_state("pm", owner_id)
-    streak = None
-    if prior.get("last_net_pnl_usd") is not None and best and own_pnl is not None:
-        streak = int(prior.get("best_trader_outearn_streak") or 0)
+    stored_streak = prior.get("best_trader_outearn_streak")
+    streak = stored_streak if isinstance(stored_streak, int) else None
     pressure: list[str] = []
     if spread_pm < 0:
         pressure.append("behind_leading_pm")
@@ -300,6 +299,9 @@ def snapshot_observation_from_consequence(
             row["last_competition_rank"] = consequence["competition_rank"]
         if best_trader_pnl is not None:
             row["last_best_trader_pnl_usd"] = best_trader_pnl
+        seat = consequence.get("best_trader_seat")
+        if isinstance(seat, str) and seat:
+            row["last_best_trader_seat"] = seat
     return row
 
 
@@ -333,8 +335,23 @@ def record_consequence_observation(
     current = store.read_consequence_state(owner_type, owner_id)
     if owner_type == "pm":
         own = consequence.get("net_after_funding_pnl_usd")
-        if best_pnl is not None and own is not None:
-            if float(best_pnl) > float(own):
+        prior_own = current.get("last_net_pnl_usd")
+        prior_best = current.get("last_best_trader_pnl_usd")
+        prior_seat = current.get("last_best_trader_seat")
+        current_seat = consequence.get("best_trader_seat")
+        same_seat = isinstance(prior_seat, str) and prior_seat == current_seat
+        if (
+            best_pnl is None
+            or own is None
+            or prior_own is None
+            or prior_best is None
+            or not same_seat
+        ):
+            patch["best_trader_outearn_streak"] = None
+        else:
+            pm_delta = float(own) - float(prior_own)
+            trader_delta = float(best_pnl) - float(prior_best)
+            if trader_delta > pm_delta:
                 patch["best_trader_outearn_streak"] = int(current.get("best_trader_outearn_streak") or 0) + 1
             else:
                 patch["best_trader_outearn_streak"] = 0
