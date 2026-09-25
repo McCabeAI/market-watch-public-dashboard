@@ -162,6 +162,7 @@ def evaluate_decision_actions(
     decision: dict[str, Any],
     run_id: str | None,
     expected_memory_sha256: str | None,
+    trader_books: dict[str, Any] | None = None,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     """Split a decision into executable actions and explicitly blocked expansions.
 
@@ -182,6 +183,7 @@ def evaluate_decision_actions(
                 owner_type,
                 owner_id,
                 exclude_run_id=run_id,
+                trader_books=trader_books,
             )
         memory_reason = learning_gate_reason(
             store,

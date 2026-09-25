@@ -139,6 +139,7 @@ def compact_memory_for_packet(
     *,
     market_state: dict[str, Any] | None = None,
     review_packet: dict[str, Any] | None = None,
+    trader_books: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     context = build_memory_context(
         store,
@@ -146,6 +147,7 @@ def compact_memory_for_packet(
         owner_id,
         market_state=market_state,
         review_packet=review_packet,
+        trader_books=trader_books,
     )
     return {
         "owner_type": owner_type,

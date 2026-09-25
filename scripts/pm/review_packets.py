@@ -571,6 +571,7 @@ def build_review_packet(
     run_dir=None,
     evidence: dict[str, Any] | None = None,
     state_root=None,
+    trader_books: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     if pm_id not in PM_IDS:
         raise SchemaError(f"unknown pm_id {pm_id}")
@@ -713,6 +714,7 @@ def build_review_packet(
         pm_id,
         market_state=frozen_market,
         review_packet=memory_packet,
+        trader_books=trader_books,
     )
     packet["memory_context_sha256"] = packet["memory"]["memory_context_sha256"]
     packet["postmortems_due"] = packet["memory"]["postmortems_due"]
@@ -731,6 +733,7 @@ def build_all_packets(
     source: PMPacketSource | None = None,
     allow_trader_room_fallback: bool = True,
     overnight_run_id: str | None = None,
+    trader_books: dict[str, Any] | None = None,
 ) -> dict[str, dict[str, Any]]:
     selected_source = source or select_daily_pm_source(
         root,
@@ -747,6 +750,7 @@ def build_all_packets(
             book=books["pms"][pm_id],
             registry=registry,
             state_root=state_root,
+            trader_books=trader_books,
         )
     return packets
 

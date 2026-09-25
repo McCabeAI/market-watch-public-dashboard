@@ -339,6 +339,7 @@ def _prepare_identity(
     run_id: str | None,
     expected_memory_sha256: str | None,
     when: datetime | None,
+    trader_books: dict[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
     apply_reflections(store, decision, owner_type=owner_type, owner_id=owner_id, run_id=run_id, when=when)
     original = [row for row in (decision.get("actions") or []) if isinstance(row, dict)]
@@ -349,6 +350,7 @@ def _prepare_identity(
         decision=decision,
         run_id=run_id,
         expected_memory_sha256=expected_memory_sha256,
+        trader_books=trader_books,
     )
     raise_if_unexecutable(blocked, allowed)
     decision["actions"] = allowed
@@ -530,6 +532,7 @@ def apply_pm_decision_with_memory(
     when: datetime | None = None,
     review_id: str | None = None,
     review_packet: dict[str, Any] | None = None,
+    trader_books: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     store.ensure_initialized()
     stamp = now_ny(when)
@@ -561,6 +564,7 @@ def apply_pm_decision_with_memory(
         run_id=run_id,
         expected_memory_sha256=expected,
         when=stamp,
+        trader_books=trader_books,
     )
     prior = {p["position_id"]: deepcopy(p) for p in books["pms"][pm_id].get("positions") or []}
     hist_len = len(books["pms"][pm_id].get("history") or [])
@@ -655,7 +659,7 @@ def apply_pm_decision_with_memory(
         "pm",
         pm_id,
         pm_books=updated,
-        trader_books=None,
+        trader_books=trader_books,
         review_packet=review_packet,
     )
     build_memory_context(
@@ -665,6 +669,7 @@ def apply_pm_decision_with_memory(
         when=stamp,
         exclude_run_id=run_id,
         market_state=market_state,
+        trader_books=trader_books,
     )
     decision["journal_event_id"] = event["event_id"]
     return updated

@@ -283,8 +283,9 @@ def ensure_reflections_due(
     *,
     run_id: str | None,
     when: datetime | None = None,
+    trader_books: dict[str, Any] | None = None,
 ) -> None:
-    trader_books = _read_trader_books(store)
+    trader_books = trader_books if trader_books is not None else _read_trader_books(store)
     pm_books = _read_pm_books(store)
     if owner_type == "trader":
         if trader_books is None:
@@ -373,15 +374,23 @@ def build_memory_context(
     exclude_run_id: str | None = None,
     market_state: dict[str, Any] | None = None,
     review_packet: dict[str, Any] | None = None,
+    trader_books: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     assert_identity(owner_type, owner_id)
     store.ensure_initialized()
-    ensure_reflections_due(store, owner_type, owner_id, run_id=None, when=when)
+    ensure_reflections_due(
+        store,
+        owner_type,
+        owner_id,
+        run_id=None,
+        when=when,
+        trader_books=trader_books,
+    )
     trades = store.trades_for(owner_type, owner_id)
     lessons = active_lessons(store, owner_type, owner_id)
     due = outstanding_due(store, owner_type, owner_id, exclude_run_id=exclude_run_id)
     reflections_due = outstanding_reflections_due(store, owner_type, owner_id, exclude_run_id=exclude_run_id)
-    trader_books = _read_trader_books(store)
+    trader_books = trader_books if trader_books is not None else _read_trader_books(store)
     pm_books = _read_pm_books(store)
     if owner_type == "trader":
         consequence = build_trader_consequence(store, owner_id, books=trader_books)

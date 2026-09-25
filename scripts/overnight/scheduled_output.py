@@ -349,6 +349,7 @@ def _apply_validated(
         base,
         review_id=review_id,
         write=write,
+        trader_books=updated,
     )
     review["pm_books"] = pm_books
     review["pm_packets"] = pm_summary
@@ -400,6 +401,7 @@ def _refresh_pm_after_overnight(
     *,
     review_id: str,
     write: bool,
+    trader_books: dict[str, Any] | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     """Daily PM packets follow this accepted overnight 14-seat review. No Trader Room run."""
     from scripts.pm.automated import apply_automated_pm_decisions
@@ -434,6 +436,7 @@ def _refresh_pm_after_overnight(
         books=books,
         registry=registry,
         source=source,
+        trader_books=trader_books,
     )
 
     pm_books = apply_automated_pm_decisions(
@@ -446,6 +449,7 @@ def _refresh_pm_after_overnight(
         packets=packets,
         trading_store=trading,
         memory_hashes=memory_hashes,
+        trader_books=trader_books,
     )
     pm_books["last_successful_automated_pm_run_id"] = run_id
     pm_books["last_successful_review_id"] = review_id
@@ -459,6 +463,7 @@ def _refresh_pm_after_overnight(
         books=pm_books,
         registry=registry,
         source=source,
+        trader_books=trader_books,
     )
     pm_books = mark_stale_if_packet_changed(pm_books, packets_after)
 

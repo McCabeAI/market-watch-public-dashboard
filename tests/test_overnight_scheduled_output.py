@@ -10,6 +10,7 @@ from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+from scripts.overnight.books import empty_books, validate_books
 from scripts.overnight.clock import isoformat, now_ny
 from scripts.overnight.constants import ROOT, STANDING_SEATS
 from scripts.overnight.pipeline import run_stage
@@ -21,8 +22,12 @@ from scripts.overnight.scheduled_output import (
     validate_output,
 )
 from scripts.overnight.store import OvernightStore, sha256_json
+from scripts.pm.books import empty_books as empty_pm_books
+from scripts.pm.books import validate_books as validate_pm_books
 from scripts.pm.grinder import synthetic_grinder_hurdle
 from scripts.pm.portfolio import synthetic_portfolio_construction
+from scripts.pm.store import PMStore
+from scripts.trading.store import TradingStore
 
 AS_OF = datetime.fromisoformat("2026-09-18T01:55:00-04:00")
 POLICY = {
@@ -305,6 +310,127 @@ class ScheduledOutputTests(unittest.TestCase):
         self.assertIn("USD remains the cleanest G10 expression against CAD", pragmatist["thesis"])
         for token in banned:
             self.assertNotIn(token, public_pm)
+
+    def test_pm_consequence_uses_same_session_trader_book_before_write(self) -> None:
+        state_root = Path(self.tmp.name) / "same-session"
+        state_root.mkdir()
+        run_id = "overnight-20260918-session"
+        for stage in ("collect", "pre_trader_delta"):
+            run_stage(
+                stage,
+                root=ROOT,
+                state_root=state_root,
+                run_id=run_id,
+                when=AS_OF,
+                dry_run=True,
+                market_state_path=ROOT / "data" / "overnight" / "fixtures" / "market_state.json",
+            )
+        store = OvernightStore(root=ROOT, state_root=state_root)
+        prior = empty_books(overnight_run_id=run_id, when=AS_OF)
+        seat = prior["seats"]["dollar-king"]
+        seat["realized_pnl_usd"] = 1_000_000.0
+        seat["positions"] = [
+            {
+                "position_id": "pos-prior-session",
+                "instrument": "USDCAD",
+                "asset_class": "spot_fx",
+                "side": "long",
+                "notional_usd": 1_300_000.0,
+                "entry_price": 1.30,
+                "mark_price": 1.30,
+                "opened_at": isoformat(AS_OF),
+                "opened_run_id": "overnight-prior",
+                "unrealized_pnl_usd": 0.0,
+                "pnl_unavailable": False,
+            }
+        ]
+        store.write_books(validate_books(prior))
+        persisted_pnl = store.read_books()["seats"]["dollar-king"]["net_pnl_usd"]
+        self.assertEqual(persisted_pnl, 1_000_000.0)
+        pm_store = PMStore(root=ROOT, state_root=state_root)
+        pm_store.write_books(validate_pm_books(empty_pm_books()))
+        run_stage(
+            "freeze_evidence",
+            root=ROOT,
+            state_root=state_root,
+            run_id=run_id,
+            when=AS_OF,
+            dry_run=True,
+            market_state_path=ROOT / "data" / "overnight" / "fixtures" / "market_state.json",
+        )
+        self.assertEqual(store.read_books()["seats"]["dollar-king"]["net_pnl_usd"], persisted_pnl)
+        trading = TradingStore(root=ROOT, state_root=state_root)
+        trading.write_consequence_state(
+            "pm",
+            "swinger",
+            {
+                "last_net_pnl_usd": 0.0,
+                "last_best_trader_pnl_usd": persisted_pnl,
+                "last_best_trader_seat": "dollar-king",
+                "best_trader_outearn_streak": 0,
+            },
+        )
+        base = store.read_artifact(run_id, "evidence_snapshot.json")
+        packet = {
+            "schema_version": 1,
+            "type": AGENT_PACKET_TYPE,
+            "overnight_run_id": run_id,
+            "review_id": base["review_id"],
+            "base_packet_sha256": base["packet_sha256"],
+            "base_evidence_cutoff": base["as_of"],
+            "evidence_cutoff": "2026-09-18T02:20:00-04:00",
+            "competition": base["competition"],
+            "research_supplement": {
+                "summary": "No material new research after the deterministic cutoff.",
+                "news": [],
+                "central_bank_research": [],
+                "sources": [],
+            },
+        }
+        packet["packet_sha256"] = sha256_json(packet)
+        payload = {
+            "schema_version": 1,
+            "type": "OVERNIGHT_SCHEDULED_OUTPUT",
+            "schedule_id": SCHEDULE_ID,
+            "overnight_run_id": run_id,
+            "review_id": base["review_id"],
+            "base_packet_sha256": base["packet_sha256"],
+            "agent_packet": packet,
+            "decisions": {
+                seat_id: _hold_decision(seat_id, run_id, packet["packet_sha256"], packet["evidence_cutoff"])
+                for seat_id in STANDING_SEATS
+            },
+            "pm_decisions": _pm_block(run_id, packet["packet_sha256"], packet["evidence_cutoff"]),
+            "execution": self.payload["execution"],
+        }
+        seen: dict[str, object] = {}
+        original_write = store.write_books
+
+        def _capture_write(books: dict) -> Path:
+            if isinstance(books, dict) and "seats" in books:
+                seen["disk_pnl"] = store.read_books()["seats"]["dollar-king"]["net_pnl_usd"]
+                context = trading.read_context("pm", "swinger") or {}
+                consequence = context.get("consequence") or {}
+                seen["memory_best"] = consequence.get("best_trader_net_pnl_usd")
+                seen["memory_gap"] = consequence.get("gap_to_best_trader_usd")
+                seen["memory_streak"] = consequence.get("best_trader_outearn_streak")
+                state = trading.read_consequence_state("pm", "swinger")
+                seen["recorded_best"] = state.get("last_best_trader_pnl_usd")
+                seen["recorded_streak"] = state.get("best_trader_outearn_streak")
+            return original_write(books)
+
+        store.write_books = _capture_write  # type: ignore[method-assign]
+        review = apply_output(store, payload)
+        session_pnl = review["books"]["seats"]["dollar-king"]["net_pnl_usd"]
+        self.assertNotEqual(session_pnl, persisted_pnl)
+        self.assertGreater(session_pnl, persisted_pnl)
+        self.assertEqual(seen["disk_pnl"], persisted_pnl)
+        self.assertEqual(seen["memory_best"], session_pnl)
+        self.assertEqual(seen["memory_gap"], round(0.0 - float(session_pnl), 2))
+        self.assertEqual(seen["memory_streak"], 1)
+        self.assertEqual(seen["recorded_best"], session_pnl)
+        self.assertEqual(seen["recorded_streak"], 1)
+        self.assertNotEqual(seen["memory_best"], persisted_pnl)
 
     def test_rejects_model_calculated_book_state(self) -> None:
         self.payload["books"] = {"nav_usd": 999}
