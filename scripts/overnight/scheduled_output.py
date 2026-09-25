@@ -32,7 +32,7 @@ SCHEDULE_ID = "market-watch-weekday-0205"
 OUTPUT_TYPE = "OVERNIGHT_SCHEDULED_OUTPUT"
 AGENT_PACKET_TYPE = "OVERNIGHT_AGENT_EVIDENCE_PACKET"
 ALLOWED_MODELS = {"grok-4.6", "composer-2.5"}
-TOTAL_MODEL_CAP = 19
+TOTAL_MODEL_CAP = 20
 GROK_CAP = 18
 COMPOSER_CAP = 2
 
@@ -107,6 +107,66 @@ def validate_execution(execution: dict[str, Any]) -> dict[str, Any]:
     if total > total_cap or grok > grok_cap or composer > composer_cap:
         raise SchemaError("declared model-call counts exceed the run budget")
     return execution
+
+
+def _learning_submission_rows(payload: dict[str, Any]) -> list[tuple[str, str, dict[str, Any], str]]:
+    rows: list[tuple[str, str, dict[str, Any], str]] = []
+    for owner_id, decision in (payload.get("decisions") or {}).items():
+        if not isinstance(decision, dict):
+            continue
+        for kind, key in (("postmortem", "postmortems"), ("performance_reflection", "performance_reflections")):
+            for item in decision.get(key) or []:
+                if isinstance(item, dict):
+                    rows.append(("trader", str(owner_id), item, kind))
+    for owner_id, decision in (payload.get("pm_decisions") or {}).items():
+        if not isinstance(decision, dict):
+            continue
+        for kind, key in (("postmortem", "postmortems"), ("performance_reflection", "performance_reflections")):
+            for item in decision.get(key) or []:
+                if isinstance(item, dict):
+                    rows.append(("pm", str(owner_id), item, kind))
+    return rows
+
+
+def _enforce_learning_quality(payload: dict[str, Any]) -> None:
+    """One examiner grades causal adequacy. It cannot author a second trading opinion."""
+    from scripts.trading.learning import (
+        drop_inadequate_learning_submissions,
+        inadequate_submission_refs,
+        validate_learning_quality_review,
+    )
+
+    submissions = _learning_submission_rows(payload)
+    review = payload.get("learning_quality_review")
+    if not submissions:
+        if review is not None:
+            validate_learning_quality_review(review)
+        return
+    if review is None:
+        raise SchemaError("learning submissions require one learning_quality_review")
+    cleaned = validate_learning_quality_review(review)
+    payload["learning_quality_review"] = cleaned
+    blocked = inadequate_submission_refs(cleaned)
+    decisions = payload.get("decisions")
+    if isinstance(decisions, dict):
+        for owner_id, decision in list(decisions.items()):
+            if isinstance(decision, dict):
+                decisions[owner_id] = drop_inadequate_learning_submissions(
+                    decision,
+                    owner_type="trader",
+                    owner_id=str(owner_id),
+                    blocked_refs=blocked,
+                )
+    pm_decisions = payload.get("pm_decisions")
+    if isinstance(pm_decisions, dict):
+        for owner_id, decision in list(pm_decisions.items()):
+            if isinstance(decision, dict):
+                pm_decisions[owner_id] = drop_inadequate_learning_submissions(
+                    decision,
+                    owner_type="pm",
+                    owner_id=str(owner_id),
+                    blocked_refs=blocked,
+                )
 
 
 def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str, Any]:
@@ -258,6 +318,7 @@ def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str,
         for pm_id, decision in pm_decisions.items():
             if isinstance(decision, dict) and decision.get("review_id") not in (None, review_id):
                 raise EvidenceBoundaryError(f"{pm_id} review_id mismatch")
+    _enforce_learning_quality(payload)
     return payload
 
 

@@ -33,7 +33,7 @@ AS_OF = datetime.fromisoformat("2026-09-18T01:55:00-04:00")
 POLICY = {
     "version": 1,
     "schedule_id": SCHEDULE_ID,
-    "total_model_cap": 19,
+    "total_model_cap": 20,
     "grok_cap": 18,
     "composer_cap": 2,
     "parent_model": "grok-4.6",
@@ -168,7 +168,7 @@ class ScheduledOutputTests(unittest.TestCase):
             "execution": {
                 "parent_model": "grok-4.6",
                 "allowed_subagent_models": ["composer-2.5", "grok-4.6"],
-                "total_model_cap": 19,
+                "total_model_cap": 20,
                 "grok_cap": 18,
                 "composer_cap": 2,
                 "declared_total_model_calls": 19,
@@ -543,6 +543,7 @@ class BudgetHookTests(unittest.TestCase):
         blocked_grok = self._call("root", "grok-4.6")
         self.assertNotEqual(blocked_grok.returncode, 0)
         self.assertIn("cap", blocked_grok.stdout.lower())
+        self.assertEqual(self._call("root", "composer-2.5").returncode, 0)
         blocked_composer = self._call("root", "composer-2.5")
         self.assertNotEqual(blocked_composer.returncode, 0)
         self.assertIn("cap", blocked_composer.stdout.lower())

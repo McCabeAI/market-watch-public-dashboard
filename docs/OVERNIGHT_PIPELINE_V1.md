@@ -148,13 +148,13 @@ Prohibited:
 
 Run caps (**target-repo contract** enforced by `.cursor/hooks/enforce-overnight-budget.py`):
 
-- total model calls: **19**
+- total model calls: **20**
 - Grok 4.6 calls: **18**
 - Composer 2.5 calls: **2**
 
 The ACP parent counts as total=1 / Grok=1 before any child starts.
 
-The enabled ACP `market-watch-weekday-0205` schedule uses the matching **19 / 18 / 2** contract. No Sunday clock or second provider schedule exists. ChatGPT remains excluded from automated current-cycle PM execution.
+This repository's overnight contract is **20 / 18 / 2**. ACP's schedule registry is a separate authorization layer and is not modified here. No Sunday clock or second provider schedule exists. ChatGPT remains excluded from automated current-cycle PM execution.
 
 `.cursor/hooks/enforce-overnight-budget.py` atomically reserves every `subagentStart` before launch. It blocks a spawn that would exceed any cap. Once an overnight root is active, only that root conversation may spawn children; grandchildren are denied.
 
@@ -166,7 +166,7 @@ The approved graph is:
 - 1 Composer research worker;
 - 14 Grok trader seats;
 - 3 Grok automated PM principals (swinger, pragmatist, grinder custom agents);
-- **19 / 18 / 1** declared usage: 1 Grok parent + 14 Grok traders + 3 Grok PM principals + 1 Composer research.
+- **20 / 18 / 2** declared normal usage when the learning examiner is used: 1 Grok parent + 14 Grok traders + 3 Grok PM principals + 1 Composer research + 1 Composer learning-quality examiner. The examiner grades causal adequacy only and is not a second trading opinion.
 
 Caps never expand automatically.
 
@@ -332,16 +332,16 @@ ACP remains the only place where the real 02:05 schedule may be enabled. The tar
 Target-repo ready marker (hooks/validator in this repository):
 
 ```
-MW_OVERNIGHT_RUN_POLICY={"version":1,"schedule_id":"market-watch-weekday-0205","total_model_cap":19,"grok_cap":18,"composer_cap":2,"parent_model":"grok-4.6","parent_total":1,"parent_grok":1}
+MW_OVERNIGHT_RUN_POLICY={"version":1,"schedule_id":"market-watch-weekday-0205","total_model_cap":20,"grok_cap":18,"composer_cap":2,"parent_model":"grok-4.6","parent_total":1,"parent_grok":1}
 ```
 
 Committed ACP `market-watch-weekday-0205` is still **18 / 16 / 2** (ACP commit `f5b75df8`). That live schedule cannot launch 3 Grok-4.6 PM principals after 14 Grok traders without downgrading PM principals or independence. **This repository does not change ACP.** Minimal ACP-only delta required before the weekday job can succeed:
 
-- `total_model_cap` 18 → **19**
+- `total_model_cap` 18 → **20**
 - `grok_cap` 16 → **18**
 - `composer_cap` remains **2**
-- job objective/constraints: after the accepted 14-trader handoff, launch concurrent custom-agent PMs `swinger`, `pragmatist`, and `grinder` (`grok-4.6[]`); ChatGPT excluded; each PM sees the frozen packet + the same 14 decisions + only its own prior book/memory; no nested children
-- emit the 19/18/2 policy marker above
+- job objective/constraints: after the accepted 14-trader handoff, launch concurrent custom-agent PMs `swinger`, `pragmatist`, and `grinder` (`grok-4.6[]`); then one Composer 2.5 learning-quality examiner that grades causal adequacy only; ChatGPT excluded; each PM sees the frozen packet + the same 14 decisions + only its own prior book/memory; no nested children
+- emit the 20/18/2 policy marker above
 - no Sunday clock and no second provider schedule
 
 The parent must perform research first, freeze the final packet, launch the 14 direct trader children, then launch the 3 automated PM children. Each child receives the common frozen packet plus only that child's own frozen memory sidecar. It must not update books/P&L and must not launch grandchildren.

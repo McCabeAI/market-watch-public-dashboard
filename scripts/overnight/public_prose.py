@@ -48,6 +48,14 @@ _MACHINE_PATTERNS: tuple[re.Pattern[str], ...] = tuple(
         r"\brfd-[0-9a-f]+\b",
         r"\bpmr-[0-9a-f]+\b",
         r"\bles-[0-9a-f]+\b",
+        r"\blearning_default\b",
+        r"\blearning_status\b",
+        r"\blesson_considerations\b",
+        r"\bsetup_fingerprint\b",
+        r"\blearning_quality\b",
+        r"\bcompetition_eligible\b",
+        r"\brepeated_error_escalation\b",
+        r"\bDOES_NOT_APPLY\b",
     )
 )
 
@@ -90,6 +98,14 @@ _SCRUB_RES: tuple[re.Pattern[str], ...] = (
     re.compile(r"\brfd-[0-9a-f]+\b", re.IGNORECASE),
     re.compile(r"\bpmr-[0-9a-f]+\b", re.IGNORECASE),
     re.compile(r"\bles-[0-9a-f]+\b", re.IGNORECASE),
+    re.compile(r"\blearning_default\b", re.IGNORECASE),
+    re.compile(r"\blearning_status\b", re.IGNORECASE),
+    re.compile(r"\blesson_considerations\b", re.IGNORECASE),
+    re.compile(r"\bsetup_fingerprint\b", re.IGNORECASE),
+    re.compile(r"\blearning_quality\b", re.IGNORECASE),
+    re.compile(r"\bcompetition_eligible\b", re.IGNORECASE),
+    re.compile(r"\brepeated_error_escalation\b", re.IGNORECASE),
+    re.compile(r"\bDOES_NOT_APPLY\b"),
 )
 
 
@@ -105,6 +121,13 @@ _PRIVATE_ALERT_MARKERS = (
     "reflection_due",
     "postmortem_id",
     "allocator",
+    "learning_default",
+    "learning_status",
+    "lesson_considerations",
+    "setup_fingerprint",
+    "learning_quality",
+    "competition_eligible",
+    "repeated_error",
 )
 
 

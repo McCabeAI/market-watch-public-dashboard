@@ -26,7 +26,17 @@ from scripts.trading.journal import (
 )
 from scripts.trading.ledger import find_trade_by_position, observe_open_mark, record_lifecycle_event
 from scripts.trading.consequence import record_consequence_observation
-from scripts.trading.memory import apply_reflections, build_memory_context, create_postmortem_due
+from scripts.trading.constants import EXPANDING_ACTIONS
+from scripts.trading.errors import OwnershipError, SchemaError
+from scripts.trading.learning import materially_matching_lessons, record_retrieved_lessons, settle_learning_compliance
+from scripts.trading.memory import (
+    active_lessons,
+    apply_reflections,
+    build_memory_context,
+    create_postmortem_due,
+    outstanding_due,
+    outstanding_reflections_due,
+)
 from scripts.trading.store import TradingStore
 
 
@@ -341,7 +351,21 @@ def _prepare_identity(
     when: datetime | None,
     trader_books: dict[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
-    apply_reflections(store, decision, owner_type=owner_type, owner_id=owner_id, run_id=run_id, when=when)
+    try:
+        apply_reflections(store, decision, owner_type=owner_type, owner_id=owner_id, run_id=run_id, when=when)
+    except (SchemaError, OwnershipError):
+        pass
+    prior_left = outstanding_due(store, owner_type, owner_id, exclude_run_id=run_id)
+    prior_reflections = outstanding_reflections_due(store, owner_type, owner_id, exclude_run_id=run_id)
+    any_due = outstanding_due(store, owner_type, owner_id)
+    any_reflections = outstanding_reflections_due(store, owner_type, owner_id)
+    settle_learning_compliance(
+        store,
+        owner_type,
+        owner_id,
+        prior_debt_remains=bool(prior_left or prior_reflections),
+        same_run_debt=bool(any_due or any_reflections) and not (prior_left or prior_reflections),
+    )
     original = [row for row in (decision.get("actions") or []) if isinstance(row, dict)]
     allowed, blocked = evaluate_decision_actions(
         store,
@@ -355,6 +379,24 @@ def _prepare_identity(
     raise_if_unexecutable(blocked, allowed)
     decision["actions"] = allowed
     decision["_original_actions"] = original
+    lessons = active_lessons(store, owner_type, owner_id)
+    retrieved: list[str] = []
+    for action in allowed:
+        if action.get("action") not in EXPANDING_ACTIONS:
+            continue
+        retrieved.extend(
+            str(row.get("lesson_id"))
+            for row in materially_matching_lessons(action, lessons)
+            if row.get("lesson_id")
+        )
+    record_retrieved_lessons(
+        store,
+        owner_type,
+        owner_id,
+        lesson_ids=retrieved,
+        run_id=run_id,
+        when=when,
+    )
     return blocked
 
 
