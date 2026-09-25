@@ -1,0 +1,1377 @@
+{
+  "country": "EA",
+  "window": {
+    "start": "2025-09-21",
+    "end": "2026-09-21"
+  },
+  "retrieved_at": "2026-09-21T20:51:07Z",
+  "notes": "Euro-area (EA) official macro via Eurostat statistics/SDMX APIs and ECB Data Portal; no vendor substitution on missing required series. HICP uses geo=EA (Eurostat euro-area aggregate); EA21 HICP y/y not populated in API at collect time. GDP and several national-accounts flows use Eurostat SCA (seasonally and calendar adjusted) q/q %. Employment growth derived as q/q change in thousands from LFSI_EMP_Q EMP_LFS (no monthly EA print).",
+  "context": {
+    "economic_sentiment_indicator": {
+      "series_id": "BS-ESI-I",
+      "score_role": "context",
+      "observations": [
+        {
+          "reference_period": "2025-09",
+          "value": 95.9,
+          "units": "balance"
+        },
+        {
+          "reference_period": "2025-10",
+          "value": 97.1,
+          "units": "balance"
+        },
+        {
+          "reference_period": "2025-11",
+          "value": 97.2,
+          "units": "balance"
+        },
+        {
+          "reference_period": "2025-12",
+          "value": 96.8,
+          "units": "balance"
+        },
+        {
+          "reference_period": "2026-01",
+          "value": 99.1,
+          "units": "balance"
+        },
+        {
+          "reference_period": "2026-02",
+          "value": 98.3,
+          "units": "balance"
+        },
+        {
+          "reference_period": "2026-03",
+          "value": 96.8,
+          "units": "balance"
+        },
+        {
+          "reference_period": "2026-04",
+          "value": 93.7,
+          "units": "balance"
+        },
+        {
+          "reference_period": "2026-05",
+          "value": 94.2,
+          "units": "balance"
+        },
+        {
+          "reference_period": "2026-06",
+          "value": 95.6,
+          "units": "balance"
+        },
+        {
+          "reference_period": "2026-07",
+          "value": 97.1,
+          "units": "balance"
+        },
+        {
+          "reference_period": "2026-08",
+          "value": 98.4,
+          "units": "balance"
+        }
+      ]
+    }
+  },
+  "components": {
+    "Inflation.headline": {
+      "dimension": "Inflation",
+      "component": "headline",
+      "canonical_name": "HICP all-items, 12-month rate of change (ECOICOP v2 TOTAL)",
+      "publisher": "Eurostat",
+      "distributor": "Eurostat",
+      "series_id": "PRC_HICP_MINR.M.RCH_A.TOTAL.EA21",
+      "cadence": "monthly",
+      "units": "percent",
+      "preferred_scoring_transformation": "yoy_pct",
+      "sa": false,
+      "source_urls": [
+        "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOTAL&sinceTimePeriod=2024-01"
+      ],
+      "original_authority_url": "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table",
+      "retrieval_method": "eurostat_statistics_api",
+      "methodology_breaks": [
+        {
+          "period": "2026-01",
+          "note": "Eurostat moved monthly HICP annual rates to PRC_HICP_MINR (ECOICOP ver.2). Headline code is coicop18=TOTAL, geo=EA21. PRC_HICP_MANR/CP00 ends 2025-12."
+        }
+      ],
+      "observations": [
+        {
+          "reference_period": "2025-09",
+          "value": 2.2,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOTAL&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOTAL.EA21"
+        },
+        {
+          "reference_period": "2025-10",
+          "value": 2.1,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOTAL&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOTAL.EA21"
+        },
+        {
+          "reference_period": "2025-11",
+          "value": 2.1,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOTAL&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOTAL.EA21"
+        },
+        {
+          "reference_period": "2025-12",
+          "value": 2.0,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOTAL&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOTAL.EA21"
+        },
+        {
+          "reference_period": "2026-01",
+          "value": 1.7,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOTAL&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOTAL.EA21"
+        },
+        {
+          "reference_period": "2026-02",
+          "value": 1.9,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOTAL&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOTAL.EA21"
+        },
+        {
+          "reference_period": "2026-03",
+          "value": 2.6,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOTAL&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOTAL.EA21"
+        },
+        {
+          "reference_period": "2026-04",
+          "value": 3.0,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOTAL&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOTAL.EA21"
+        },
+        {
+          "reference_period": "2026-05",
+          "value": 3.2,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOTAL&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOTAL.EA21"
+        },
+        {
+          "reference_period": "2026-06",
+          "value": 2.8,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOTAL&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOTAL.EA21"
+        },
+        {
+          "reference_period": "2026-07",
+          "value": 3.0,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOTAL&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOTAL.EA21"
+        },
+        {
+          "reference_period": "2026-08",
+          "value": 3.2,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOTAL&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOTAL.EA21"
+        }
+      ]
+    },
+    "Inflation.underlying": {
+      "dimension": "Inflation",
+      "component": "underlying",
+      "canonical_name": "HICP excluding energy, food, alcohol and tobacco, 12-month rate of change (ECOICOP v2)",
+      "publisher": "Eurostat",
+      "distributor": "Eurostat",
+      "series_id": "PRC_HICP_MINR.M.RCH_A.TOT_X_NRG_FOOD.EA21",
+      "cadence": "monthly",
+      "units": "percent",
+      "preferred_scoring_transformation": "yoy_pct",
+      "sa": false,
+      "source_urls": [
+        "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOT_X_NRG_FOOD&sinceTimePeriod=2024-01"
+      ],
+      "original_authority_url": "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table",
+      "retrieval_method": "eurostat_statistics_api",
+      "methodology_breaks": [],
+      "observations": [
+        {
+          "reference_period": "2025-09",
+          "value": 2.4,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOT_X_NRG_FOOD&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOT_X_NRG_FOOD.EA21"
+        },
+        {
+          "reference_period": "2025-10",
+          "value": 2.4,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOT_X_NRG_FOOD&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOT_X_NRG_FOOD.EA21"
+        },
+        {
+          "reference_period": "2025-11",
+          "value": 2.4,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOT_X_NRG_FOOD&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOT_X_NRG_FOOD.EA21"
+        },
+        {
+          "reference_period": "2025-12",
+          "value": 2.3,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOT_X_NRG_FOOD&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOT_X_NRG_FOOD.EA21"
+        },
+        {
+          "reference_period": "2026-01",
+          "value": 2.2,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOT_X_NRG_FOOD&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOT_X_NRG_FOOD.EA21"
+        },
+        {
+          "reference_period": "2026-02",
+          "value": 2.4,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOT_X_NRG_FOOD&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOT_X_NRG_FOOD.EA21"
+        },
+        {
+          "reference_period": "2026-03",
+          "value": 2.3,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOT_X_NRG_FOOD&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOT_X_NRG_FOOD.EA21"
+        },
+        {
+          "reference_period": "2026-04",
+          "value": 2.2,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOT_X_NRG_FOOD&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOT_X_NRG_FOOD.EA21"
+        },
+        {
+          "reference_period": "2026-05",
+          "value": 2.6,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOT_X_NRG_FOOD&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOT_X_NRG_FOOD.EA21"
+        },
+        {
+          "reference_period": "2026-06",
+          "value": 2.4,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOT_X_NRG_FOOD&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOT_X_NRG_FOOD.EA21"
+        },
+        {
+          "reference_period": "2026-07",
+          "value": 2.5,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOT_X_NRG_FOOD&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOT_X_NRG_FOOD.EA21"
+        },
+        {
+          "reference_period": "2026-08",
+          "value": 2.4,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=EA21&unit=RCH_A&coicop18=TOT_X_NRG_FOOD&sinceTimePeriod=2024-01",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:51:07Z",
+          "series_id": "PRC_HICP_MINR.M.RCH_A.TOT_X_NRG_FOOD.EA21"
+        }
+      ]
+    },
+    "Labor.unemployment": {
+      "dimension": "Labor",
+      "component": "unemployment",
+      "canonical_name": "Unemployment rate, seasonally adjusted (LFS)",
+      "publisher": "Eurostat",
+      "distributor": "Eurostat",
+      "series_id": "UNE_RT_M.M.SA.TOTAL.PC_ACT.T.EA21",
+      "cadence": "monthly",
+      "units": "percent",
+      "preferred_scoring_transformation": "percent",
+      "sa": true,
+      "source_urls": [
+        "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/UNE_RT_M?geo=EA21&sex=T&s_adj=SA&age=TOTAL&unit=PC_ACT&sinceTimePeriod=2025-09",
+        "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/une_rt_m/M.SA.TOTAL.PC_ACT.T.EA21?format=JSON&startPeriod=2025-09"
+      ],
+      "original_authority_url": "https://ec.europa.eu/eurostat/databrowser/view/une_rt_m/default/table",
+      "retrieval_method": "eurostat_statistics_api",
+      "methodology_breaks": [],
+      "observations": [
+        {
+          "reference_period": "2025-09",
+          "value": 6.3,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/UNE_RT_M?geo=EA21&sex=T&s_adj=SA&age=TOTAL&unit=PC_ACT&sinceTimePeriod=2025-09",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "UNE_RT_M.M.SA.TOTAL.PC_ACT.T.EA21"
+        },
+        {
+          "reference_period": "2025-10",
+          "value": 6.3,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/UNE_RT_M?geo=EA21&sex=T&s_adj=SA&age=TOTAL&unit=PC_ACT&sinceTimePeriod=2025-09",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "UNE_RT_M.M.SA.TOTAL.PC_ACT.T.EA21"
+        },
+        {
+          "reference_period": "2025-11",
+          "value": 6.3,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/UNE_RT_M?geo=EA21&sex=T&s_adj=SA&age=TOTAL&unit=PC_ACT&sinceTimePeriod=2025-09",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "UNE_RT_M.M.SA.TOTAL.PC_ACT.T.EA21"
+        },
+        {
+          "reference_period": "2025-12",
+          "value": 6.3,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/UNE_RT_M?geo=EA21&sex=T&s_adj=SA&age=TOTAL&unit=PC_ACT&sinceTimePeriod=2025-09",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "UNE_RT_M.M.SA.TOTAL.PC_ACT.T.EA21"
+        },
+        {
+          "reference_period": "2026-01",
+          "value": 6.3,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/UNE_RT_M?geo=EA21&sex=T&s_adj=SA&age=TOTAL&unit=PC_ACT&sinceTimePeriod=2025-09",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "UNE_RT_M.M.SA.TOTAL.PC_ACT.T.EA21"
+        },
+        {
+          "reference_period": "2026-02",
+          "value": 6.4,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/UNE_RT_M?geo=EA21&sex=T&s_adj=SA&age=TOTAL&unit=PC_ACT&sinceTimePeriod=2025-09",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "UNE_RT_M.M.SA.TOTAL.PC_ACT.T.EA21"
+        },
+        {
+          "reference_period": "2026-03",
+          "value": 6.4,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/UNE_RT_M?geo=EA21&sex=T&s_adj=SA&age=TOTAL&unit=PC_ACT&sinceTimePeriod=2025-09",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "UNE_RT_M.M.SA.TOTAL.PC_ACT.T.EA21"
+        },
+        {
+          "reference_period": "2026-04",
+          "value": 6.4,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/UNE_RT_M?geo=EA21&sex=T&s_adj=SA&age=TOTAL&unit=PC_ACT&sinceTimePeriod=2025-09",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "UNE_RT_M.M.SA.TOTAL.PC_ACT.T.EA21"
+        },
+        {
+          "reference_period": "2026-05",
+          "value": 6.3,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/UNE_RT_M?geo=EA21&sex=T&s_adj=SA&age=TOTAL&unit=PC_ACT&sinceTimePeriod=2025-09",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "UNE_RT_M.M.SA.TOTAL.PC_ACT.T.EA21"
+        },
+        {
+          "reference_period": "2026-06",
+          "value": 6.4,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/UNE_RT_M?geo=EA21&sex=T&s_adj=SA&age=TOTAL&unit=PC_ACT&sinceTimePeriod=2025-09",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "UNE_RT_M.M.SA.TOTAL.PC_ACT.T.EA21"
+        },
+        {
+          "reference_period": "2026-07",
+          "value": 6.4,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/UNE_RT_M?geo=EA21&sex=T&s_adj=SA&age=TOTAL&unit=PC_ACT&sinceTimePeriod=2025-09",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "UNE_RT_M.M.SA.TOTAL.PC_ACT.T.EA21"
+        }
+      ]
+    },
+    "Labor.wages": {
+      "dimension": "Labor",
+      "component": "wages",
+      "canonical_name": "ECB indicator of negotiated wage rates, annual rate of change",
+      "publisher": "European Central Bank",
+      "distributor": "ECB Data Portal",
+      "series_id": "INW.Q.I10.N.INWR.000000.4F0.GY.IX",
+      "cadence": "quarterly",
+      "units": "percent",
+      "preferred_scoring_transformation": "yoy_pct",
+      "sa": false,
+      "source_urls": [
+        "https://data-api.ecb.europa.eu/service/data/INW/INW.Q.I10.N.INWR.000000.4F0.GY.IX?format=csvdata&startPeriod=2024-Q1"
+      ],
+      "original_authority_url": "https://data.ecb.europa.eu/data/datasets/INW",
+      "retrieval_method": "ecb_sdmx_csvdata",
+      "methodology_breaks": [
+        {
+          "period": "2026-Q1",
+          "note": "REF_AREA I10 = EA21 fixed composition from 2026-01-01 per ECB series metadata."
+        }
+      ],
+      "observations": [
+        {
+          "reference_period": "2025-Q3",
+          "value": 1.95,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "European Central Bank",
+          "source_url": "https://data-api.ecb.europa.eu/service/data/INW/INW.Q.I10.N.INWR.000000.4F0.GY.IX?format=csvdata&startPeriod=2024-Q1",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "INW.Q.I10.N.INWR.000000.4F0.GY.IX"
+        },
+        {
+          "reference_period": "2025-Q4",
+          "value": 2.91,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "European Central Bank",
+          "source_url": "https://data-api.ecb.europa.eu/service/data/INW/INW.Q.I10.N.INWR.000000.4F0.GY.IX?format=csvdata&startPeriod=2024-Q1",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "INW.Q.I10.N.INWR.000000.4F0.GY.IX"
+        },
+        {
+          "reference_period": "2026-Q1",
+          "value": 2.56,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "European Central Bank",
+          "source_url": "https://data-api.ecb.europa.eu/service/data/INW/INW.Q.I10.N.INWR.000000.4F0.GY.IX?format=csvdata&startPeriod=2024-Q1",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "INW.Q.I10.N.INWR.000000.4F0.GY.IX"
+        },
+        {
+          "reference_period": "2026-Q2",
+          "value": 2.44,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "European Central Bank",
+          "source_url": "https://data-api.ecb.europa.eu/service/data/INW/INW.Q.I10.N.INWR.000000.4F0.GY.IX?format=csvdata&startPeriod=2024-Q1",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "INW.Q.I10.N.INWR.000000.4F0.GY.IX"
+        },
+        {
+          "reference_period": "2026-Q2",
+          "value": 2.45,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "European Central Bank",
+          "source_url": "https://data-api.ecb.europa.eu/service/data/INW/Q.I10.N.INWR.000000.4F0.GY.IX?format=csvdata&startPeriod=2024-Q1",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-25T12:20:11Z",
+          "series_id": "INW.Q.I10.N.INWR.000000.4F0.GY.IX",
+          "revision_status": "final"
+        }
+      ]
+    },
+    "Labor.employment": {
+      "dimension": "Labor",
+      "component": "employment",
+      "canonical_name": "Employment (LFS), quarter-over-quarter change in thousands (derived from SA levels)",
+      "publisher": "Eurostat",
+      "distributor": "Eurostat",
+      "series_id": "LFSI_EMP_Q.Q.SA.EMP_LFS.T.Y15-74.THS_PER.EA21_derived_qq_thousands",
+      "cadence": "quarterly",
+      "units": "thousands",
+      "preferred_scoring_transformation": "qq_change_thousands",
+      "sa": true,
+      "source_urls": [
+        "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/LFSI_EMP_Q?geo=EA21&indic_em=EMP_LFS&sex=T&age=Y15-74&s_adj=SA&unit=THS_PER&sinceTimePeriod=2024-Q1"
+      ],
+      "original_authority_url": "https://ec.europa.eu/eurostat/databrowser/view/lfsi_emp_q/default/table",
+      "retrieval_method": "eurostat_statistics_api_derived",
+      "methodology_breaks": [],
+      "observations": [
+        {
+          "reference_period": "2025-Q3",
+          "value": -21.0,
+          "units": "thousands",
+          "transformation": "qq_change_thousands",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/LFSI_EMP_Q?geo=EA21&indic_em=EMP_LFS&sex=T&age=Y15-74&s_adj=SA&unit=THS_PER&sinceTimePeriod=2024-Q1",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "LFSI_EMP_Q.Q.SA.EMP_LFS.T.Y15-74.THS_PER.EA21_derived_qq_thousands",
+          "notes": "Derived q/q change in employed persons (thousands) from EMP_LFS SA levels."
+        },
+        {
+          "reference_period": "2025-Q4",
+          "value": 481.0,
+          "units": "thousands",
+          "transformation": "qq_change_thousands",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/LFSI_EMP_Q?geo=EA21&indic_em=EMP_LFS&sex=T&age=Y15-74&s_adj=SA&unit=THS_PER&sinceTimePeriod=2024-Q1",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "LFSI_EMP_Q.Q.SA.EMP_LFS.T.Y15-74.THS_PER.EA21_derived_qq_thousands",
+          "notes": "Derived q/q change in employed persons (thousands) from EMP_LFS SA levels."
+        },
+        {
+          "reference_period": "2026-Q1",
+          "value": 124.0,
+          "units": "thousands",
+          "transformation": "qq_change_thousands",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/LFSI_EMP_Q?geo=EA21&indic_em=EMP_LFS&sex=T&age=Y15-74&s_adj=SA&unit=THS_PER&sinceTimePeriod=2024-Q1",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "LFSI_EMP_Q.Q.SA.EMP_LFS.T.Y15-74.THS_PER.EA21_derived_qq_thousands",
+          "notes": "Derived q/q change in employed persons (thousands) from EMP_LFS SA levels."
+        },
+        {
+          "reference_period": "2026-Q2",
+          "value": 162.0,
+          "units": "thousands",
+          "transformation": "qq_change_thousands",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/LFSI_EMP_Q?geo=EA21&indic_em=EMP_LFS&sex=T&age=Y15-74&s_adj=SA&unit=THS_PER&sinceTimePeriod=2024-Q1",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "LFSI_EMP_Q.Q.SA.EMP_LFS.T.Y15-74.THS_PER.EA21_derived_qq_thousands",
+          "notes": "Derived q/q change in employed persons (thousands) from EMP_LFS SA levels."
+        }
+      ]
+    },
+    "Activity.gdp_domestic_demand": {
+      "dimension": "Activity",
+      "component": "gdp_domestic_demand",
+      "canonical_name": "Real GDP, chain-linked volumes, q/q % change (SCA)",
+      "publisher": "Eurostat",
+      "distributor": "Eurostat",
+      "series_id": "NAMQ_10_GDP.Q.CLV_PCH_PRE.SCA.B1GQ.EA21",
+      "cadence": "quarterly",
+      "units": "percent",
+      "preferred_scoring_transformation": "qoq_sa_pct",
+      "sa": true,
+      "source_urls": [
+        "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/namq_10_gdp/Q.CLV_PCH_PRE.SCA.B1GQ.EA21?format=JSON&startPeriod=2024-Q1"
+      ],
+      "original_authority_url": "https://ec.europa.eu/eurostat/databrowser/view/namq_10_gdp/default/table",
+      "retrieval_method": "eurostat_sdmx_json",
+      "methodology_breaks": [],
+      "observations": [
+        {
+          "reference_period": "2025-Q3",
+          "value": 0.3,
+          "units": "percent",
+          "transformation": "qoq_sa_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/namq_10_gdp/Q.CLV_PCH_PRE.SCA.B1GQ.EA21?format=JSON&startPeriod=2024-Q1",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "NAMQ_10_GDP.Q.CLV_PCH_PRE.SCA.B1GQ.EA21",
+          "notes": "B1GQ gross domestic product at market prices; SCA = seasonally and calendar adjusted."
+        },
+        {
+          "reference_period": "2025-Q4",
+          "value": 0.2,
+          "units": "percent",
+          "transformation": "qoq_sa_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/namq_10_gdp/Q.CLV_PCH_PRE.SCA.B1GQ.EA21?format=JSON&startPeriod=2024-Q1",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "NAMQ_10_GDP.Q.CLV_PCH_PRE.SCA.B1GQ.EA21",
+          "notes": "B1GQ gross domestic product at market prices; SCA = seasonally and calendar adjusted."
+        },
+        {
+          "reference_period": "2026-Q1",
+          "value": 0.0,
+          "units": "percent",
+          "transformation": "qoq_sa_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/namq_10_gdp/Q.CLV_PCH_PRE.SCA.B1GQ.EA21?format=JSON&startPeriod=2024-Q1",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "NAMQ_10_GDP.Q.CLV_PCH_PRE.SCA.B1GQ.EA21",
+          "notes": "B1GQ gross domestic product at market prices; SCA = seasonally and calendar adjusted."
+        },
+        {
+          "reference_period": "2026-Q2",
+          "value": 0.6,
+          "units": "percent",
+          "transformation": "qoq_sa_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/namq_10_gdp/Q.CLV_PCH_PRE.SCA.B1GQ.EA21?format=JSON&startPeriod=2024-Q1",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "NAMQ_10_GDP.Q.CLV_PCH_PRE.SCA.B1GQ.EA21",
+          "notes": "B1GQ gross domestic product at market prices; SCA = seasonally and calendar adjusted."
+        }
+      ]
+    },
+    "Consumer.retail": {
+      "dimension": "Consumer",
+      "component": "retail",
+      "canonical_name": "Retail trade volume of sales, m/m % (SCA)",
+      "publisher": "Eurostat",
+      "distributor": "Eurostat",
+      "series_id": "STS_TRTU_M.M.SCA.VOL_SLS.G47.PCH_PRE.EA21",
+      "cadence": "monthly",
+      "units": "percent",
+      "preferred_scoring_transformation": "mom_sa_pct",
+      "sa": true,
+      "source_urls": [
+        "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/STS_TRTU_M?geo=EA21&indic_bt=VOL_SLS&nace_r2=G47&s_adj=SCA&unit=PCH_PRE&sinceTimePeriod=2025-09"
+      ],
+      "original_authority_url": "https://ec.europa.eu/eurostat/databrowser/view/sts_trtu_m/default/table",
+      "retrieval_method": "eurostat_statistics_api",
+      "methodology_breaks": [],
+      "observations": [
+        {
+          "reference_period": "2025-09",
+          "value": 0.1,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/STS_TRTU_M?geo=EA21&indic_bt=VOL_SLS&nace_r2=G47&s_adj=SCA&unit=PCH_PRE&sinceTimePeriod=2025-09",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "STS_TRTU_M.M.SCA.VOL_SLS.G47.PCH_PRE.EA21"
+        },
+        {
+          "reference_period": "2025-10",
+          "value": 0.4,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/STS_TRTU_M?geo=EA21&indic_bt=VOL_SLS&nace_r2=G47&s_adj=SCA&unit=PCH_PRE&sinceTimePeriod=2025-09",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "STS_TRTU_M.M.SCA.VOL_SLS.G47.PCH_PRE.EA21"
+        },
+        {
+          "reference_period": "2025-11",
+          "value": 0.1,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/STS_TRTU_M?geo=EA21&indic_bt=VOL_SLS&nace_r2=G47&s_adj=SCA&unit=PCH_PRE&sinceTimePeriod=2025-09",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "STS_TRTU_M.M.SCA.VOL_SLS.G47.PCH_PRE.EA21"
+        },
+        {
+          "reference_period": "2025-12",
+          "value": 0.0,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/STS_TRTU_M?geo=EA21&indic_bt=VOL_SLS&nace_r2=G47&s_adj=SCA&unit=PCH_PRE&sinceTimePeriod=2025-09",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "STS_TRTU_M.M.SCA.VOL_SLS.G47.PCH_PRE.EA21"
+        },
+        {
+          "reference_period": "2026-01",
+          "value": 0.2,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/STS_TRTU_M?geo=EA21&indic_bt=VOL_SLS&nace_r2=G47&s_adj=SCA&unit=PCH_PRE&sinceTimePeriod=2025-09",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "STS_TRTU_M.M.SCA.VOL_SLS.G47.PCH_PRE.EA21"
+        },
+        {
+          "reference_period": "2026-02",
+          "value": -0.4,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/STS_TRTU_M?geo=EA21&indic_bt=VOL_SLS&nace_r2=G47&s_adj=SCA&unit=PCH_PRE&sinceTimePeriod=2025-09",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "STS_TRTU_M.M.SCA.VOL_SLS.G47.PCH_PRE.EA21"
+        },
+        {
+          "reference_period": "2026-03",
+          "value": 0.9,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/STS_TRTU_M?geo=EA21&indic_bt=VOL_SLS&nace_r2=G47&s_adj=SCA&unit=PCH_PRE&sinceTimePeriod=2025-09",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "STS_TRTU_M.M.SCA.VOL_SLS.G47.PCH_PRE.EA21"
+        },
+        {
+          "reference_period": "2026-04",
+          "value": -0.4,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/STS_TRTU_M?geo=EA21&indic_bt=VOL_SLS&nace_r2=G47&s_adj=SCA&unit=PCH_PRE&sinceTimePeriod=2025-09",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "STS_TRTU_M.M.SCA.VOL_SLS.G47.PCH_PRE.EA21"
+        },
+        {
+          "reference_period": "2026-05",
+          "value": 0.3,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/STS_TRTU_M?geo=EA21&indic_bt=VOL_SLS&nace_r2=G47&s_adj=SCA&unit=PCH_PRE&sinceTimePeriod=2025-09",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "STS_TRTU_M.M.SCA.VOL_SLS.G47.PCH_PRE.EA21"
+        },
+        {
+          "reference_period": "2026-06",
+          "value": 0.2,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/STS_TRTU_M?geo=EA21&indic_bt=VOL_SLS&nace_r2=G47&s_adj=SCA&unit=PCH_PRE&sinceTimePeriod=2025-09",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "STS_TRTU_M.M.SCA.VOL_SLS.G47.PCH_PRE.EA21"
+        },
+        {
+          "reference_period": "2026-07",
+          "value": -0.6,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/STS_TRTU_M?geo=EA21&indic_bt=VOL_SLS&nace_r2=G47&s_adj=SCA&unit=PCH_PRE&sinceTimePeriod=2025-09",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "STS_TRTU_M.M.SCA.VOL_SLS.G47.PCH_PRE.EA21"
+        }
+      ]
+    },
+    "Consumer.income": {
+      "dimension": "Consumer",
+      "component": "income",
+      "canonical_name": "Adjusted gross disposable income of households, real per capita q/q % (SCA)",
+      "publisher": "Eurostat",
+      "distributor": "Eurostat",
+      "series_id": "NASQ_10_KI.Q.PC.SCA.S14_S15.B7G_R_HAB_GR.EA21",
+      "cadence": "quarterly",
+      "units": "percent",
+      "preferred_scoring_transformation": "qoq_sa_pct",
+      "sa": true,
+      "source_urls": [
+        "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/NASQ_10_KI?geo=EA21&sector=S14_S15&na_item=B7G_R_HAB_GR&unit=PC&s_adj=SCA&sinceTimePeriod=2024-Q1"
+      ],
+      "original_authority_url": "https://ec.europa.eu/eurostat/databrowser/view/nasq_10_ki/default/table",
+      "retrieval_method": "eurostat_statistics_api",
+      "methodology_breaks": [],
+      "observations": [
+        {
+          "reference_period": "2025-Q3",
+          "value": -0.11,
+          "units": "percent",
+          "transformation": "qoq_sa_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/NASQ_10_KI?geo=EA21&sector=S14_S15&na_item=B7G_R_HAB_GR&unit=PC&s_adj=SCA&sinceTimePeriod=2024-Q1",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "NASQ_10_KI.Q.PC.SCA.S14_S15.B7G_R_HAB_GR.EA21"
+        },
+        {
+          "reference_period": "2025-Q4",
+          "value": 0.21,
+          "units": "percent",
+          "transformation": "qoq_sa_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/NASQ_10_KI?geo=EA21&sector=S14_S15&na_item=B7G_R_HAB_GR&unit=PC&s_adj=SCA&sinceTimePeriod=2024-Q1",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "NASQ_10_KI.Q.PC.SCA.S14_S15.B7G_R_HAB_GR.EA21"
+        },
+        {
+          "reference_period": "2026-Q1",
+          "value": 0.0,
+          "units": "percent",
+          "transformation": "qoq_sa_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/NASQ_10_KI?geo=EA21&sector=S14_S15&na_item=B7G_R_HAB_GR&unit=PC&s_adj=SCA&sinceTimePeriod=2024-Q1",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "NASQ_10_KI.Q.PC.SCA.S14_S15.B7G_R_HAB_GR.EA21"
+        }
+      ]
+    },
+    "Consumer.spending": {
+      "dimension": "Consumer",
+      "component": "spending",
+      "canonical_name": "Household final consumption expenditure (P31_S15), real q/q % (SCA)",
+      "publisher": "Eurostat",
+      "distributor": "Eurostat",
+      "series_id": "NAMQ_10_GDP.Q.CLV_PCH_PRE.SCA.P31_S15.EA21",
+      "cadence": "quarterly",
+      "units": "percent",
+      "preferred_scoring_transformation": "qoq_sa_pct",
+      "sa": true,
+      "source_urls": [
+        "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/namq_10_gdp/Q.CLV_PCH_PRE.SCA.P31_S15.EA21?format=JSON&startPeriod=2024-Q1"
+      ],
+      "original_authority_url": "https://ec.europa.eu/eurostat/databrowser/view/namq_10_gdp/default/table",
+      "retrieval_method": "eurostat_sdmx_json",
+      "methodology_breaks": [],
+      "observations": [
+        {
+          "reference_period": "2025-Q3",
+          "value": 0.6,
+          "units": "percent",
+          "transformation": "qoq_sa_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/namq_10_gdp/Q.CLV_PCH_PRE.SCA.P31_S15.EA21?format=JSON&startPeriod=2024-Q1",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "NAMQ_10_GDP.Q.CLV_PCH_PRE.SCA.P31_S15.EA21"
+        },
+        {
+          "reference_period": "2025-Q4",
+          "value": 0.8,
+          "units": "percent",
+          "transformation": "qoq_sa_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/namq_10_gdp/Q.CLV_PCH_PRE.SCA.P31_S15.EA21?format=JSON&startPeriod=2024-Q1",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "NAMQ_10_GDP.Q.CLV_PCH_PRE.SCA.P31_S15.EA21"
+        },
+        {
+          "reference_period": "2026-Q1",
+          "value": 0.5,
+          "units": "percent",
+          "transformation": "qoq_sa_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/namq_10_gdp/Q.CLV_PCH_PRE.SCA.P31_S15.EA21?format=JSON&startPeriod=2024-Q1",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "NAMQ_10_GDP.Q.CLV_PCH_PRE.SCA.P31_S15.EA21"
+        },
+        {
+          "reference_period": "2026-Q2",
+          "value": 0.3,
+          "units": "percent",
+          "transformation": "qoq_sa_pct",
+          "publisher": "Eurostat",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/namq_10_gdp/Q.CLV_PCH_PRE.SCA.P31_S15.EA21?format=JSON&startPeriod=2024-Q1",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "NAMQ_10_GDP.Q.CLV_PCH_PRE.SCA.P31_S15.EA21"
+        }
+      ]
+    },
+    "Consumer.confidence": {
+      "dimension": "Consumer",
+      "component": "confidence",
+      "canonical_name": "European Commission consumer confidence indicator (balance)",
+      "publisher": "European Commission (DG ECFIN)",
+      "distributor": "Eurostat",
+      "series_id": "EI_BSCO_M.M.SA.BS-CSMCI.BAL.EA21",
+      "cadence": "monthly",
+      "units": "balance",
+      "preferred_scoring_transformation": "index_level",
+      "sa": true,
+      "source_urls": [
+        "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/EI_BSCO_M?geo=EA21&indic=BS-CSMCI&s_adj=SA&unit=BAL&sinceTimePeriod=2025-09"
+      ],
+      "original_authority_url": "https://ec.europa.eu/eurostat/databrowser/view/ei_bsco_m/default/table",
+      "retrieval_method": "eurostat_statistics_api",
+      "methodology_breaks": [
+        {
+          "period": "n/a",
+          "note": "Balance statistic centred near 0 (not PMI 50); structural par requires separate calibration review."
+        }
+      ],
+      "observations": [
+        {
+          "reference_period": "2025-09",
+          "value": -13.5,
+          "units": "balance",
+          "transformation": "index_level",
+          "publisher": "European Commission (DG ECFIN)",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/EI_BSCO_M?geo=EA21&indic=BS-CSMCI&s_adj=SA&unit=BAL&sinceTimePeriod=2025-09",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "EI_BSCO_M.M.SA.BS-CSMCI.BAL.EA21",
+          "notes": "Official EC consumer confidence balance; long-run mean near -10 to -15 (document for anchor)."
+        },
+        {
+          "reference_period": "2025-10",
+          "value": -12.7,
+          "units": "balance",
+          "transformation": "index_level",
+          "publisher": "European Commission (DG ECFIN)",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/EI_BSCO_M?geo=EA21&indic=BS-CSMCI&s_adj=SA&unit=BAL&sinceTimePeriod=2025-09",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "EI_BSCO_M.M.SA.BS-CSMCI.BAL.EA21",
+          "notes": "Official EC consumer confidence balance; long-run mean near -10 to -15 (document for anchor)."
+        },
+        {
+          "reference_period": "2025-11",
+          "value": -12.9,
+          "units": "balance",
+          "transformation": "index_level",
+          "publisher": "European Commission (DG ECFIN)",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/EI_BSCO_M?geo=EA21&indic=BS-CSMCI&s_adj=SA&unit=BAL&sinceTimePeriod=2025-09",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "EI_BSCO_M.M.SA.BS-CSMCI.BAL.EA21",
+          "notes": "Official EC consumer confidence balance; long-run mean near -10 to -15 (document for anchor)."
+        },
+        {
+          "reference_period": "2025-12",
+          "value": -13.3,
+          "units": "balance",
+          "transformation": "index_level",
+          "publisher": "European Commission (DG ECFIN)",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/EI_BSCO_M?geo=EA21&indic=BS-CSMCI&s_adj=SA&unit=BAL&sinceTimePeriod=2025-09",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "EI_BSCO_M.M.SA.BS-CSMCI.BAL.EA21",
+          "notes": "Official EC consumer confidence balance; long-run mean near -10 to -15 (document for anchor)."
+        },
+        {
+          "reference_period": "2026-01",
+          "value": -12.5,
+          "units": "balance",
+          "transformation": "index_level",
+          "publisher": "European Commission (DG ECFIN)",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/EI_BSCO_M?geo=EA21&indic=BS-CSMCI&s_adj=SA&unit=BAL&sinceTimePeriod=2025-09",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "EI_BSCO_M.M.SA.BS-CSMCI.BAL.EA21",
+          "notes": "Official EC consumer confidence balance; long-run mean near -10 to -15 (document for anchor)."
+        },
+        {
+          "reference_period": "2026-02",
+          "value": -12.4,
+          "units": "balance",
+          "transformation": "index_level",
+          "publisher": "European Commission (DG ECFIN)",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/EI_BSCO_M?geo=EA21&indic=BS-CSMCI&s_adj=SA&unit=BAL&sinceTimePeriod=2025-09",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "EI_BSCO_M.M.SA.BS-CSMCI.BAL.EA21",
+          "notes": "Official EC consumer confidence balance; long-run mean near -10 to -15 (document for anchor)."
+        },
+        {
+          "reference_period": "2026-03",
+          "value": -16.3,
+          "units": "balance",
+          "transformation": "index_level",
+          "publisher": "European Commission (DG ECFIN)",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/EI_BSCO_M?geo=EA21&indic=BS-CSMCI&s_adj=SA&unit=BAL&sinceTimePeriod=2025-09",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "EI_BSCO_M.M.SA.BS-CSMCI.BAL.EA21",
+          "notes": "Official EC consumer confidence balance; long-run mean near -10 to -15 (document for anchor)."
+        },
+        {
+          "reference_period": "2026-04",
+          "value": -20.5,
+          "units": "balance",
+          "transformation": "index_level",
+          "publisher": "European Commission (DG ECFIN)",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/EI_BSCO_M?geo=EA21&indic=BS-CSMCI&s_adj=SA&unit=BAL&sinceTimePeriod=2025-09",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "EI_BSCO_M.M.SA.BS-CSMCI.BAL.EA21",
+          "notes": "Official EC consumer confidence balance; long-run mean near -10 to -15 (document for anchor)."
+        },
+        {
+          "reference_period": "2026-05",
+          "value": -18.9,
+          "units": "balance",
+          "transformation": "index_level",
+          "publisher": "European Commission (DG ECFIN)",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/EI_BSCO_M?geo=EA21&indic=BS-CSMCI&s_adj=SA&unit=BAL&sinceTimePeriod=2025-09",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "EI_BSCO_M.M.SA.BS-CSMCI.BAL.EA21",
+          "notes": "Official EC consumer confidence balance; long-run mean near -10 to -15 (document for anchor)."
+        },
+        {
+          "reference_period": "2026-06",
+          "value": -17.6,
+          "units": "balance",
+          "transformation": "index_level",
+          "publisher": "European Commission (DG ECFIN)",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/EI_BSCO_M?geo=EA21&indic=BS-CSMCI&s_adj=SA&unit=BAL&sinceTimePeriod=2025-09",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "EI_BSCO_M.M.SA.BS-CSMCI.BAL.EA21",
+          "notes": "Official EC consumer confidence balance; long-run mean near -10 to -15 (document for anchor)."
+        },
+        {
+          "reference_period": "2026-07",
+          "value": -15.9,
+          "units": "balance",
+          "transformation": "index_level",
+          "publisher": "European Commission (DG ECFIN)",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/EI_BSCO_M?geo=EA21&indic=BS-CSMCI&s_adj=SA&unit=BAL&sinceTimePeriod=2025-09",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "EI_BSCO_M.M.SA.BS-CSMCI.BAL.EA21",
+          "notes": "Official EC consumer confidence balance; long-run mean near -10 to -15 (document for anchor)."
+        },
+        {
+          "reference_period": "2026-08",
+          "value": -15.5,
+          "units": "balance",
+          "transformation": "index_level",
+          "publisher": "European Commission (DG ECFIN)",
+          "source_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/EI_BSCO_M?geo=EA21&indic=BS-CSMCI&s_adj=SA&unit=BAL&sinceTimePeriod=2025-09",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T20:24:59Z",
+          "series_id": "EI_BSCO_M.M.SA.BS-CSMCI.BAL.EA21",
+          "notes": "Official EC consumer confidence balance; long-run mean near -10 to -15 (document for anchor)."
+        }
+      ]
+    },
+    "Activity.business_surveys": {
+      "dimension": "Activity",
+      "component": "business_surveys",
+      "canonical_name": "S&P Global Eurozone Composite PMI Output Index",
+      "publisher": "S&P Global",
+      "distributor": "S&P Global public press releases",
+      "series_id": "SP_GLOBAL_EA_COMPOSITE_PMI",
+      "cadence": "monthly",
+      "units": "diffusion_index",
+      "preferred_scoring_transformation": "diffusion_index",
+      "sa": true,
+      "source_urls": [
+        "https://www.pmi.spglobal.com/Public/Release/PressReleases"
+      ],
+      "original_authority_url": "https://www.pmi.spglobal.com/Public/Release/PressReleases",
+      "retrieval_method": "sp_global_press_release_pdf",
+      "methodology_breaks": [],
+      "observations": [
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T22:21:07Z",
+          "reference_period": "2025-09",
+          "value": 51.2,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/28c3f5d8cd55496b976ee43ab2e1066f",
+          "release_date": "",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_EA_COMPOSITE_PMI",
+          "notes": "2025-09 Eurozone Composite Output Index 51.2 from final S&P Global PDF."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T22:21:07Z",
+          "reference_period": "2025-10",
+          "value": 52.5,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/223ebbc5708245de8b680cd0abf17f65",
+          "release_date": "",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_EA_COMPOSITE_PMI",
+          "notes": "2025-10 Eurozone Composite Output Index 52.5 from final S&P Global PDF."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T22:21:07Z",
+          "reference_period": "2025-11",
+          "value": 52.8,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/782bddb90d9a4258bb1efe5b6a46e86d",
+          "release_date": "",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_EA_COMPOSITE_PMI",
+          "notes": "2025-11 Eurozone Composite Output Index 52.8 from final S&P Global PDF."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T22:21:07Z",
+          "reference_period": "2025-12",
+          "value": 51.5,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/85a7e7b2b2864290b945f2bd8d7c41eb",
+          "release_date": "",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_EA_COMPOSITE_PMI",
+          "notes": "2025-12 Eurozone Composite Output Index 51.5 from final S&P Global PDF."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T22:21:07Z",
+          "reference_period": "2026-01",
+          "value": 51.3,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/96530bc528ed4c7d856ec7e770f9fbf9",
+          "release_date": "",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_EA_COMPOSITE_PMI",
+          "notes": "2026-01 Eurozone Composite Output Index 51.3 from final S&P Global PDF."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T22:21:07Z",
+          "reference_period": "2026-02",
+          "value": 51.9,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/2fda0e818e2047f3b5f1bc7e982f7249",
+          "release_date": "",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_EA_COMPOSITE_PMI",
+          "notes": "2026-02 Eurozone Composite Output Index 51.9 from final S&P Global PDF."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T22:21:07Z",
+          "reference_period": "2026-03",
+          "value": 50.7,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/a319e0a783f040d0b760d719f6160326",
+          "release_date": "",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_EA_COMPOSITE_PMI",
+          "notes": "2026-03 Eurozone Composite Output Index 50.7 from final S&P Global PDF."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T22:21:07Z",
+          "reference_period": "2026-04",
+          "value": 48.8,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/e189dc5785424a6f9dd3384266699426",
+          "release_date": "",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_EA_COMPOSITE_PMI",
+          "notes": "2026-04 Eurozone Composite Output Index 48.8 from final S&P Global PDF."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T22:21:07Z",
+          "reference_period": "2026-05",
+          "value": 48.5,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/e023f278ec0a499cbe1c6f97b8360695",
+          "release_date": "",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_EA_COMPOSITE_PMI",
+          "notes": "2026-05 Eurozone Composite Output Index 48.5 from final S&P Global PDF."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T22:21:07Z",
+          "reference_period": "2026-06",
+          "value": 50.0,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/ee04639d3fa04104b6248a31a71ebd12",
+          "release_date": "",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_EA_COMPOSITE_PMI",
+          "notes": "2026-06 Eurozone Composite Output Index 50.0 from final S&P Global PDF."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T22:21:07Z",
+          "reference_period": "2026-07",
+          "value": 52.0,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/6efbc02cd9b849e6aafcc6c3a9b703db",
+          "release_date": "",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_EA_COMPOSITE_PMI",
+          "notes": "2026-07 Eurozone Composite Output Index 52.0 from final S&P Global PDF."
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T22:21:07Z",
+          "reference_period": "2026-08",
+          "value": 52.0,
+          "publisher": "S&P Global",
+          "source_url": "https://www.pmi.spglobal.com/Public/Home/PressRelease/0a3fb112708046bba18d27b555ce7ecb",
+          "release_date": "",
+          "revision_status": "final",
+          "series_id": "SP_GLOBAL_EA_COMPOSITE_PMI",
+          "notes": "2026-08 Eurozone Composite Output Index 52.0 from final S&P Global PDF."
+        }
+      ],
+      "gaps": [
+        {
+          "expected_period": "2026-09",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://www.pmi.spglobal.com/Public/Release/PressReleases"
+          ],
+          "failure_mode": "future_release",
+          "as_of": "2026-09-21",
+          "notes": "Reference month not published as of cutoff."
+        }
+      ]
+    }
+  },
+  "pmi_harvest": {
+    "report_path": "/workspace/data/temperature_history/raw/ea/harvest_report.json"
+  }
+}

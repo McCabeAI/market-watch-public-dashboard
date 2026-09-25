@@ -1,0 +1,110 @@
+{
+  "blocked_expressions": [],
+  "blocked_legs": [],
+  "blocked_sources": [],
+  "countries": {
+    "AU": {
+      "eligible": true,
+      "gaps": [
+        "AU.Activity.business_surveys",
+        "AU.Consumer.confidence"
+      ],
+      "scored_status": "partial"
+    },
+    "CA": {
+      "eligible": true,
+      "gaps": [
+        "CA.Consumer.confidence"
+      ],
+      "scored_status": "ok"
+    },
+    "EA": {
+      "eligible": true,
+      "gaps": [],
+      "scored_status": "ok"
+    },
+    "JP": {
+      "eligible": true,
+      "gaps": [
+        "JP.Activity.business_surveys"
+      ],
+      "scored_status": "partial"
+    },
+    "NZ": {
+      "eligible": false,
+      "gaps": [
+        "NZ.Activity.gdp_domestic_demand",
+        "NZ.Consumer.income",
+        "NZ.Consumer.retail",
+        "NZ.Consumer.spending",
+        "NZ.Labor.wages"
+      ],
+      "scored_status": "partial"
+    },
+    "US": {
+      "eligible": false,
+      "gaps": [
+        "US.Activity.gdp_domestic_demand",
+        "US.Activity.manufacturing_surveys",
+        "US.Activity.services_surveys",
+        "US.Consumer.confidence",
+        "US.Consumer.income",
+        "US.Consumer.retail",
+        "US.Consumer.spending",
+        "US.Inflation.core_pce",
+        "US.Labor.payrolls",
+        "US.Labor.unemployment",
+        "US.Labor.wages"
+      ],
+      "scored_status": "blocked"
+    }
+  },
+  "countries_unaffected": [],
+  "coverage": "PARTIAL",
+  "eligible": true,
+  "hold_decisions_emitted": 0,
+  "outcome": "PASS",
+  "partial_expressions": [
+    "activity:US",
+    "activity:CA",
+    "activity:AU",
+    "activity:NZ",
+    "activity:EA",
+    "activity:JP",
+    "macro:US",
+    "macro:AU",
+    "macro:NZ"
+  ],
+  "partial_legs": [
+    "NZ_rates"
+  ],
+  "partial_series": [
+    "US.Activity.gdp_domestic_demand",
+    "US.Activity.manufacturing_surveys",
+    "US.Activity.services_surveys",
+    "US.Consumer.confidence",
+    "US.Consumer.income",
+    "US.Consumer.retail",
+    "US.Consumer.spending",
+    "US.Inflation.core_pce",
+    "US.Labor.payrolls",
+    "US.Labor.unemployment",
+    "US.Labor.wages",
+    "AU.Consumer.confidence",
+    "NZ.Activity.gdp_domestic_demand",
+    "NZ.Consumer.income",
+    "NZ.Consumer.retail",
+    "NZ.Consumer.spending",
+    "NZ.Labor.wages"
+  ],
+  "reason": null,
+  "stage": "03_quality_gate",
+  "status": "succeeded",
+  "synthetic_holds": false,
+  "trade_eligible_countries": [
+    "CA",
+    "AU",
+    "EA",
+    "JP"
+  ]
+}
