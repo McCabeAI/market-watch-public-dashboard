@@ -1,15 +1,15 @@
 {
-  "as_of": "2026-09-24T08:32:36.518612-04:00",
-  "assembled_dataset": "data/overnight/runs/overnight-20260924/assembled_dataset.json",
+  "as_of": "2026-09-25T09:23:06.303491-04:00",
+  "assembled_dataset": "data/overnight/runs/overnight-20260925/assembled_dataset.json",
   "books_path": "data/overnight/books/latest.json",
   "dry_run": false,
-  "overnight_run_id": "overnight-20260924",
+  "overnight_run_id": "overnight-20260925",
   "publication": {
     "catastrophic_families": [],
     "core_status": "ok",
     "families": {
       "central_bank_research": {
-        "as_of": "2026-09-24T06:06:33.355500-04:00",
+        "as_of": "2026-09-25T08:20:11.173624-04:00",
         "blocking": false,
         "catastrophic": false,
         "digest": "0fdfb018ca5e5e28f2d49c8a22f8b83622482da5320124a4296c68c52193ca27",
@@ -20,27 +20,28 @@
       },
       "macro_hard": {
         "as_of": null,
-        "blocking": true,
+        "blocking": false,
         "catastrophic": false,
         "digest": "6e8d30e5f0c4e44f55b431439d9e36dfa2b12cca5b47bef72ec227c77b26c0c4",
         "notes": [
           "calibration_as_of 2026-09-21 is the structural anchor, not the freshness clock",
-          "component exceptions: AU.Activity.business_surveys=unverified, AU.Activity.gdp_domestic_demand=unverified, AU.Consumer.confidence=unverified, AU.Consumer.income=unverified, AU.Consumer.retail=unverified, AU.Consumer.spending=unverified, AU.Inflation.headline=unverified, AU.Inflation.underlying=unverified (+57 more)"
+          "component exceptions: AU.Activity.business_surveys=unverified, AU.Activity.gdp_domestic_demand=unverified, AU.Consumer.confidence=unverified, AU.Consumer.income=unverified, AU.Consumer.retail=unverified, AU.Consumer.spending=unverified, AU.Inflation.headline=unverified, AU.Inflation.underlying=unverified (+57 more)",
+          "country-specific macro restrictions: US"
         ],
-        "status": "stale"
+        "status": "fresh"
       },
       "market_state": {
-        "as_of": "2026-09-24T12:32:36Z",
+        "as_of": "2026-09-25T13:23:06Z",
         "blocking": false,
         "catastrophic": false,
-        "digest": "5d48252542b730255cd11e3daafb52b340a8c09b98060376429e1d34b7288f34",
+        "digest": "c4e5494ec08d76f06d8b36e5400221a12c2aad8d6378d41ab446a5ad874706f7",
         "notes": [
           "non-preflight source staleness stays visible and does not block the market_state family: NZ_rates"
         ],
         "status": "fresh"
       },
       "news": {
-        "as_of": "2026-09-24T06:06:33.355500-04:00",
+        "as_of": "2026-09-25T08:20:11.173624-04:00",
         "blocking": false,
         "catastrophic": false,
         "digest": "08e4fcb55691c9f324f22c4b185ea39433c8c48de8b750220d9b374797b6e4d9",
@@ -50,8 +51,8 @@
         "status": "fresh"
       }
     },
-    "last_successful_pm_run_id": "overnight-20260924",
-    "last_successful_review_run_id": "overnight-20260924",
+    "last_successful_pm_run_id": "overnight-20260925",
+    "last_successful_review_run_id": "overnight-20260925",
     "may_publish": true,
     "pm_books_status": "fresh",
     "reason": "core inputs are structurally valid",
