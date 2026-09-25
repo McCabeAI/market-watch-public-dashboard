@@ -13,6 +13,12 @@ from scripts.pm.grinder import synthetic_grinder_hurdle
 from scripts.pm.portfolio import synthetic_portfolio_construction
 
 
+def _frozen_cross_assets(packet: dict[str, Any]) -> dict[str, Any]:
+    from scripts.cross_asset_data import frozen_cross_assets_from_evidence
+
+    return frozen_cross_assets_from_evidence(packet)
+
+
 def _skeptic_funding_view() -> dict[str, Any]:
     return {
         "current_sofr": "Frozen official NY Fed SOFR fixing in funding_context.",
@@ -120,6 +126,8 @@ def build_stub_output(
             "central_bank_research": [],
             "sources": [],
         },
+        "cross_assets": _frozen_cross_assets(base_packet),
+        "trade_permissions": base_packet.get("trade_permissions"),
     }
     agent_packet["packet_sha256"] = sha256_json(agent_packet)
     packet_hash = agent_packet["packet_sha256"]

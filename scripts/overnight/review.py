@@ -98,6 +98,12 @@ def _overlay_automated_pm_stale(store: OvernightStore) -> None:
     pm_store.write_books(books)
 
 
+def _frozen_cross_assets(packet: dict[str, Any]) -> dict[str, Any]:
+    from scripts.cross_asset_data import frozen_cross_assets_from_evidence
+
+    return frozen_cross_assets_from_evidence(packet)
+
+
 def _ensure_agent_packet_for_pm(
     store: OvernightStore,
     run_id: str,
@@ -129,6 +135,7 @@ def _ensure_agent_packet_for_pm(
                 "central_bank_research": [],
                 "sources": [],
             },
+            "cross_assets": _frozen_cross_assets(packet),
         },
         review_id=review_id,
     )
