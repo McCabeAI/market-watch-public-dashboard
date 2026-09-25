@@ -279,6 +279,51 @@
       "run_id": "overnight-20260924",
       "schema_version": 1,
       "thesis": "VERIFIED: book is FLAT after closing AONIA_2026-10; pmd-69691111cd40 blocks OPEN/ADD/HEDGE; macro_hard is STALE; AU is ineligible; packet prints AONIA 4.35, Oct-26 4.565, Jun-27 4.935. INFERENCE: that AU strip is a hike-priced path versus cash, but valuation without an eligible dated mechanism can stay wrong, and this seat will not force a tenor or a ghost catalyst. rates_tenor_scan: STIR/policy-path = AU AONIA/Oct-26/Jun-27 ladder only and ineligible; 2Y/5Y/10Y/curve/cross-market rates RV = unavailable (no non-AU levels in the closed packet; nulls, not invented). Best rates expression is therefore none. Spot-FX candidate also none: no dated non-AU FX mechanism survives STALE macro_hard. UNKNOWN: postmortem substance and any non-AU print. Catalyst-junkie rejects an elegant reopen; HOLD flat is the only valid action."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-25T08:20:11.173624-04:00",
+      "conviction": 60,
+      "decision_fingerprint": "be81eb3a9ce866588672f767428ccdeeffe95cde393490c2b98a25dbd5673b12",
+      "event_id": "jde-c32136b45b7a4c81",
+      "funding_view": null,
+      "invalidation": "A completed write-up plus a later freeze with a dated Australian cash-rate event or a different eligible catalyst would be required before putting risk back on. The leftover October gap can stay wrong until then.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "d8b2bad798b4c5f5f8a104631090182f20b077929c4a90b32186458ec67d163c",
+      "outcome_links": [],
+      "owner_id": "catalyst-junkie",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-25T08:20:11.173624-04:00",
+        "evidence_hash": "a3db441f35c00fe93f078e80e2b2274d1f9a6d05e462e36dc054fa17d687ac8c",
+        "overnight_run_id": "overnight-20260925",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Stay flat after the October AONIA contract was closed. October implied at 4.575 versus cash 4.35 is still a dated Australian policy-path gap, but the same contract cannot be reopened while the write-up is unfinished. No other dated catalyst is selectable in this freeze.",
+      "run_id": "overnight-20260925",
+      "schema_version": 1,
+      "thesis": "Stay flat after the October AONIA contract was closed. October implied at 4.575 versus cash 4.35 is still a dated Australian policy-path gap, but the same contract cannot be reopened while the write-up is unfinished. No other dated catalyst is selectable in this freeze."
     }
   ],
   "schema_version": 1,

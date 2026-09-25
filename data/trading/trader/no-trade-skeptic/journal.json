@@ -397,6 +397,70 @@
       "run_id": "overnight-20260924",
       "schema_version": 1,
       "thesis": "BOOK FLAT. Verified fact: official NY Fed SOFR is 3.87 effective 2026-09-22, not 3.85; frozen SR3 is Z6 4.375 / H7 4.655 / U7 4.885; Receive-CORRA is labeled crowded; macro_hard is STALE at cutoff 2026-09-24T06:06:33.355500-04:00. Inference: the SR3 strip already prices a steep funding-normalization path above realized 3.87, so any overnight rates, curve, or CAD-receive expression is paying for an already-advertised path rather than an unpriced residual. Crowded Receive-CORRA is the opposite of an edge: entry is poorly timed, squeeze risk is one-sided, and a stale macro_hard packet cannot falsify the crowding or the timing. Apparent vol/spot overlays are noisier than the SOFR-vs-SR3 basis and do not clear a rates-first bar. Unknown: post-cutoff prints, unfrozen positioning updates, and any live CORRA/SOFR dislocation after 2026-09-22. Flat cash is not alpha; remaining at the zero official-SOFR benchmark is the only defensible overnight stance."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-25T08:20:11.173624-04:00",
+      "conviction": 78,
+      "decision_fingerprint": "1a7bf4fd13103fd70c04c4a5ff4809e51383458455f830035d61735c35d3f2d2",
+      "event_id": "jde-c3df72cefbbc4d1c",
+      "funding_view": {
+        "current_sofr": {
+          "observation_date": "2026-09-24",
+          "rate": 3.88
+        },
+        "forward_funding_assessment": "lower",
+        "implication": "Remain at the zero official-SOFR benchmark. Overnight realized funding near 3.88 prints below the SR3 path, so new shocked-risk capital would pay SOFR for a view that is already in the strip. Flat cash is not alpha; it is the residual when no trade clears.",
+        "sr3_forward_view": "SR3 Z6 at 4.37, H7 at 4.655, and U7 at 4.87 sit 49bp, 77.5bp, and 99bp above the official 3.88 SOFR fixing. That strip already prices a higher future funding path; it is not unused carry."
+      },
+      "invalidation": "A fresh dated dislocation that is not already in Australian 5.005 or the SOFR strip, with receive-CORRA no longer crowded and US new risk explicitly unblocked, would be required before paying official SOFR on shocked capital. Until then flat cash at the zero benchmark is the funding-correct stance.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "3588da0185b74a3687b27483ef8e542da405799cb6d95ecc0ed6367badd3ea9a",
+      "outcome_links": [],
+      "owner_id": "no-trade-skeptic",
+      "owner_type": "trader",
+      "payload": {
+        "funding_view": {
+          "current_sofr": {
+            "observation_date": "2026-09-24",
+            "rate": 3.88
+          },
+          "forward_funding_assessment": "lower",
+          "implication": "Remain at the zero official-SOFR benchmark. Overnight realized funding near 3.88 prints below the SR3 path, so new shocked-risk capital would pay SOFR for a view that is already in the strip. Flat cash is not alpha; it is the residual when no trade clears.",
+          "sr3_forward_view": "SR3 Z6 at 4.37, H7 at 4.655, and U7 at 4.87 sit 49bp, 77.5bp, and 99bp above the official 3.88 SOFR fixing. That strip already prices a higher future funding path; it is not unused carry."
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-25T08:20:11.173624-04:00",
+        "evidence_hash": "a3db441f35c00fe93f078e80e2b2274d1f9a6d05e462e36dc054fa17d687ac8c",
+        "overnight_run_id": "overnight-20260925",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold a flat book. The live ideas are already in the price, already owned, or not eligible. Receive-CORRA is crowded, new US risk is blocked, and Australian implieds are already 5.005. Official SOFR is 3.88 while the SOFR strip prices 4.37, 4.655 and 4.87; that is a priced funding path, not an edge.",
+      "run_id": "overnight-20260925",
+      "schema_version": 1,
+      "thesis": "Hold a flat book. The live ideas are already in the price, already owned, or not eligible. Receive-CORRA is crowded, new US risk is blocked, and Australian implieds are already 5.005. Official SOFR is 3.88 while the SOFR strip prices 4.37, 4.655 and 4.87; that is a priced funding path, not an edge."
     }
   ],
   "schema_version": 1,

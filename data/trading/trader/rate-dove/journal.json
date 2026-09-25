@@ -279,6 +279,53 @@
       "run_id": "overnight-20260924",
       "schema_version": 1,
       "thesis": "Verified: CORRA 2.29 vs CRAH27 3.15 and CRAM27 3.41; book is long/receive CORRA_2027H-Z 85m (pos-9849cf751c27); CA labor cooling; oil near two-week lows; macro_hard STALE; OPEN/ADD/HEDGE fail closed. Inference: the 2027 H-Z strip still prices ~86\u2013112bp of re-tightening versus current CORRA, which overstates BoC capacity to hike if labor is already cooling and energy is weakening; restrictive policy bites into 2027, so receive remains the underpriced-easing side. Unknown: updated macro_hard, exact STIR cut-count vs this strip, and any non-packet CAD spot/vol levels. Hold the existing receive; do not chase a new expression overnight."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027H-Z",
+          "notional_usd": null,
+          "position_id": "pos-9849cf751c27",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-25T08:20:11.173624-04:00",
+      "conviction": 64,
+      "decision_fingerprint": "c8942ebec6c08d81207b6e8a6e2ff9f9903fde87c8264e6b5d4efb5f67fab1fd",
+      "event_id": "jde-9d59a0edafa14aa5",
+      "funding_view": null,
+      "invalidation": "The receive is wrong if the Bank of Canada delivers or endorses a 2027 path consistent with the mid-3s strip, or if oil-driven inflation lifts cash CORRA toward that stack. A one-day oil headline without a core or labor break is not enough to flatten.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-9849cf751c27"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "01b7b6775e44f46274ef99176dbab48dce909a64198dd19ee37a7b15dd6f9ba1",
+      "outcome_links": [],
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-25T08:20:11.173624-04:00",
+        "evidence_hash": "a3db441f35c00fe93f078e80e2b2274d1f9a6d05e462e36dc054fa17d687ac8c",
+        "overnight_run_id": "overnight-20260925",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold the existing long in the 2027 CORRA strip. March at 3.12, June at 3.365 and September at 3.535 still sit well above overnight CORRA at 2.29, so the market continues to price a large 2027 re-tightening. That path still looks too hawkish if restriction is already biting.",
+      "run_id": "overnight-20260925",
+      "schema_version": 1,
+      "thesis": "Hold the existing long in the 2027 CORRA strip. March at 3.12, June at 3.365 and September at 3.535 still sit well above overnight CORRA at 2.29, so the market continues to price a large 2027 re-tightening. That path still looks too hawkish if restriction is already biting."
     }
   ],
   "schema_version": 1,

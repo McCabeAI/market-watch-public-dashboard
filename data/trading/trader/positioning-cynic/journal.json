@@ -295,6 +295,51 @@
       "run_id": "overnight-20260924",
       "schema_version": 1,
       "thesis": "FACT: Frozen packet 669e2d29 at cutoff 2026-09-24T06:06:33.355500-04:00; book FLAT; Receive-CORRA-2027 labeled consensus occupancy; macro_hard STALE; postmortems pmd-86d9c87862a0 and pmd-550c41ce938c unpaid; REMIT HOLD. INFERENCE: Receive-CORRA-2027 is the crowded CAD-easing/carry expression. Ownership already sits on the receive, so adding it overnight is buying occupancy not edge. A fade of that crowd is a different thesis and is not licensed while the book is flat, the macro overlay is stale, and postmortems are open. Thesis vs entry: a BoC/CORRA-path view can still be a bad trade because this seat would be last in. UNKNOWN: CFTC/options-skew/CTA occupancy percentiles and flush levels are not restated here; all numeric levels null."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-25T08:20:11.173624-04:00",
+      "conviction": 72,
+      "decision_fingerprint": "3c4f05da213b189d4fe75f5f7f3f713dc5dc8b30fe4c25a0de7b797b7687804e",
+      "event_id": "jde-ea0a2802a9ec4549",
+      "funding_view": null,
+      "invalidation": "A later cycle with those write-ups cleared and a less crowded ownership set would be required before fading or joining the Canadian receive. Crowding alone is not a mandate to short a still-working path from a flat book.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "9a2ca20aaacdaf598e0dbfa8997560a7dd27787a0ac8da15651e5bb662fa2af6",
+      "outcome_links": [],
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-25T08:20:11.173624-04:00",
+        "evidence_hash": "a3db441f35c00fe93f078e80e2b2274d1f9a6d05e462e36dc054fa17d687ac8c",
+        "overnight_run_id": "overnight-20260925",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Stay flat. Receive-CORRA is already owned by carry, the dove, and both live automated books that sit long Canada, with the bull as the only offsetting short. Ownership is crowded and two unfinished write-ups still bar new risk.",
+      "run_id": "overnight-20260925",
+      "schema_version": 1,
+      "thesis": "Stay flat. Receive-CORRA is already owned by carry, the dove, and both live automated books that sit long Canada, with the bull as the only offsetting short. Ownership is crowded and two unfinished write-ups still bar new risk."
     }
   ],
   "schema_version": 1,

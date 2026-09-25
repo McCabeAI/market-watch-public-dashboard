@@ -267,6 +267,51 @@
       "run_id": "overnight-20260924",
       "schema_version": 1,
       "thesis": "Stay flat. High-hurdle preservation with no expanding markable handoff and a stale macro_hard family does not justify deploying shocked-risk capital versus official SOFR 3.87% ACT/360."
+    },
+    {
+      "actions": [
+        {
+          "action": "NO_TRADE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-25T09:19:20.570600-04:00",
+      "conviction": 88,
+      "decision_fingerprint": "598a961333bf4a208833ba1172d5f71d5c43774ef0970101a18eb3d975bb3339",
+      "event_id": "jde-3809e612f39946f4",
+      "funding_view": null,
+      "invalidation": "Stay-flat is invalidated only if a later frozen cycle presents an independently markable Canada, Australia, euro-area or Japan expanding ticket whose expected edge after plausible adverse P&L clears official SOFR charged on shocked-risk capital. Crowded receive-CORRA and country-specific US or New Zealand gaps would not, by themselves, create an eligible new line from a hold-only handoff.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "58cc43ddfe7830aaae743a806166240374a2ff1449a48ec5b5d95a5eee9a7282",
+      "outcome_links": [],
+      "owner_id": "grinder",
+      "owner_type": "pm",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-25T08:20:11.173624-04:00",
+        "evidence_hash": "7875e5fc29bb50e4f994517643396e668b29a84088fecd162d2cfecd18cc2a23",
+        "overnight_run_id": "overnight-20260925",
+        "review_id": "review-001",
+        "review_packet_id": "prp-grinder-overnight-20260925-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book stays flat. The accepted fourteen-trader handoff is a unanimous hold, with no expanding tickets that would create new risk, so there is no independent markable opportunity against which official SOFR can be charged on shocked-risk capital. Sitting out is the correct action when other desks are not offering new Canada, Australia, Europe or Japan risk.",
+      "run_id": "overnight-20260925",
+      "schema_version": 1,
+      "thesis": "The book stays flat. The accepted fourteen-trader handoff is a unanimous hold, with no expanding tickets that would create new risk, so there is no independent markable opportunity against which official SOFR can be charged on shocked-risk capital. Sitting out is the correct action when other desks are not offering new Canada, Australia, Europe or Japan risk."
     }
   ],
   "schema_version": 1,

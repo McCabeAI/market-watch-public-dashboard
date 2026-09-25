@@ -281,6 +281,53 @@
       "run_id": "overnight-20260924",
       "schema_version": 1,
       "thesis": "Keep the concentrated receive in CORRA Mar-27. Cash CORRA 2.29 versus CRAH27 3.15 still embeds +86bp of implied tightness versus overnight; CA remains quality-gate eligible. Oil at two-week lows is disinflationary for the CAD path and supports duration. The freeze print 3.15 versus entry 3.13 is a 2bp adverse mark, not thesis break. Macro_hard is STALE so OPEN/ADD are fail-closed; no add, no new risk, no hedge. Receive-CORRA is labeled crowded and perma-bull sits short the same contract, but crowding is not invalidation while the 86bp cash-forward gap and CA eligibility hold. Size stays the existing 1.7bn / $17m shocked-risk seat inside the $100m shock cap; SOFR 3.87% ACT/360 accrues on that shocked capital."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pm-swinger-2070479ca321",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-09-25T09:19:20.485467-04:00",
+      "conviction": 74,
+      "decision_fingerprint": "00de9533d37413319d8937aef87e1e061a04c626d810b447d1ed9e3360f090eb",
+      "event_id": "jde-6f0440615a3548c3",
+      "funding_view": null,
+      "invalidation": "The receive is wrong if the March 2027 implied sustains a move through 3.35 as oil-driven growth and inflation put the Bank of Canada onto a delivered hike path, or if cash CORRA itself backs up toward 2.75 without the contract richening. Collapse of the cash-to-implied cushion toward 40 basis points via cash rising rather than the contract falling also kills the carry-and-reprice case and requires a reduce or close, not a hedge.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-swinger-2070479ca321"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "e83b6fda5d290d90471af9c984104715c71407c13db10caa60fed0116f035520",
+      "outcome_links": [],
+      "owner_id": "swinger",
+      "owner_type": "pm",
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-25T08:20:11.173624-04:00",
+        "evidence_hash": "7aea59dc18ed4058a8a41335d92e48fa96440272d0f9f3ec0391654ff1709df3",
+        "overnight_run_id": "overnight-20260925",
+        "review_id": "review-001",
+        "review_packet_id": "prp-swinger-overnight-20260925-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Keep the concentrated receive in March 2027 CORRA. Cash at 2.29 still leaves about 83 basis points of hikes inside 3.12, so the book is paid to sit in a Canadian path that does not fully deliver that tightening. The contract has cheapened to 3.12, one basis point through the 3.13 entry, which confirms the thesis rather than completing it. Oil near 99 is the live threat to a Canadian reprice, but it does not justify cutting a working concentrated receive or opening a second ticket because paper P&L lags a leader.",
+      "run_id": "overnight-20260925",
+      "schema_version": 1,
+      "thesis": "Keep the concentrated receive in March 2027 CORRA. Cash at 2.29 still leaves about 83 basis points of hikes inside 3.12, so the book is paid to sit in a Canadian path that does not fully deliver that tightening. The contract has cheapened to 3.12, one basis point through the 3.13 entry, which confirms the thesis rather than completing it. Oil near 99 is the live threat to a Canadian reprice, but it does not justify cutting a working concentrated receive or opening a second ticket because paper P&L lags a leader."
     }
   ],
   "schema_version": 1,
