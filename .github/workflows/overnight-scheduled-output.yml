@@ -252,7 +252,8 @@ jobs:
           git reset --hard origin/main
           launch_id="$(python3 -c 'import json; print(json.load(open("/tmp/mw-output/scheduled_output.json"))["launch_id"])')"
           payload="$(python3 -c 'import json; d=json.load(open("/tmp/mw-output/scheduled_output.json")); print(json.dumps({"launch_id":d["launch_id"],"review_id":d["review_id"],"base_packet_sha256":d["base_packet_sha256"]},separators=(",",":")))' )"
-          LAUNCH_ID="$launch_id" CLIENT_PAYLOAD="$payload" PYTHONPATH=. python3 -m scripts.market_watch_launch.continuation | tee /tmp/mw-output/continuation-pages.json
+          LAUNCH_ID="$launch_id" CLIENT_PAYLOAD="$payload" MW_CONTINUATION_DECISION=/tmp/mw-output/continuation-pages.json \
+            PYTHONPATH=. python3 -m scripts.market_watch_launch.continuation
           python3 -c 'import json; d=json.load(open("/tmp/mw-output/continuation-pages.json")); assert d["status"]=="succeeded"; assert d["production_published"] is True'
           git add "data/market_watch_launches/$launch_id"
           if ! git diff --cached --quiet; then

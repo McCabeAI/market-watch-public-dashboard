@@ -2347,20 +2347,41 @@
     },
     "08_pages": {
       "artifact": null,
-      "details": {},
+      "details": {
+        "dry_run": false,
+        "executed": true,
+        "plan": {
+          "event": "workflow_dispatch",
+          "launch_id": "mwl-20260924T100633Z-e5b861a6",
+          "ref": "main",
+          "review_id": "review-001",
+          "workflow": "deploy-pages.yml"
+        },
+        "production_published": true,
+        "publication_evidence": {
+          "conclusion": "success",
+          "event": "workflow_dispatch",
+          "head_sha": "4738349560d675adb3b6f7479fa88c87cdfac74e",
+          "launch_id": "mwl-20260924T100633Z-e5b861a6",
+          "ref": "main",
+          "run_url": "https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/35999721201",
+          "workflow": "deploy-pages.yml"
+        },
+        "reconciled": true
+      },
       "finished_at": null,
-      "input_sha256": null,
-      "output_sha256": null,
-      "reason": null,
+      "input_sha256": "36e3ba51622fba76a7f8474b02efc8b45e7fb8227af680d4926496a86787df63",
+      "output_sha256": "342a6189a7bc6dc78ba54d145fdc23a382022e0100baf091491880d593e28e4c",
+      "reason": "pages_publication_reconciled",
       "source_run_url": null,
       "stage": "08_pages",
       "started_at": null,
-      "status": "pending"
+      "status": "succeeded"
     }
   },
   "starting_pm_books_sha256": "a72838cde87470b91e650381136cc6cb28ae14156f601eadb26a121323320676",
   "starting_trader_books_sha256": "4fbbab25b8961ea25932ed6768088dbaef86341c2ddbc8ff04aba85a67cd2d81",
-  "status": "running",
+  "status": "succeeded",
   "timezone": "America/New_York",
   "type": "MARKET_WATCH_LAUNCH"
 }

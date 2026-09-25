@@ -251,7 +251,13 @@ def main() -> int:
             _ = (launch, ctx)
             workflow = str(plan.get("workflow") or "deploy-pages.yml")
             ref = str(plan.get("ref") or "main")
-            subprocess.run(["gh", "workflow", "run", workflow, "--ref", ref], check=True)
+            # Capture gh output so the continuation decision stays a single JSON document.
+            subprocess.run(
+                ["gh", "workflow", "run", workflow, "--ref", ref],
+                check=True,
+                capture_output=True,
+                text=True,
+            )
             return {"dispatched": True, "workflow": workflow, "ref": ref}
 
         ctx["pages_dispatch"] = _dispatch_pages
@@ -260,7 +266,11 @@ def main() -> int:
     except Exception as exc:  # noqa: BLE001
         print(json.dumps({"error": "exception", "detail": str(exc)}))
         return 1
-    print(json.dumps(decision, indent=2, sort_keys=True))
+    decision_text = json.dumps(decision, indent=2, sort_keys=True)
+    decision_path = os.environ.get("MW_CONTINUATION_DECISION", "").strip()
+    if decision_path:
+        Path(decision_path).write_text(decision_text + "\n", encoding="utf-8")
+    print(decision_text)
     if decision.get("status") == "failed":
         return 1
     if decision.get("reason") in {"hash_mismatch", "review_mismatch", "launch_mismatch"}:

@@ -18,6 +18,7 @@ from typing import Any, Callable
 
 from scripts.market_watch_launch.contract import (
     CONCURRENCY_BLOCK,
+    LIVE_LAUNCH_STATUSES,
     STAGES,
     TERMINAL_LAUNCH_STATUSES,
     empty_launch,
@@ -58,6 +59,27 @@ def _normalize_request(request: dict[str, Any], when: datetime) -> dict[str, Any
         "repository_permission": normalized.get("repository_permission"),
     }
     return normalized
+
+
+def _stale_concurrency_block(launch: dict[str, Any], store: LaunchStateStore) -> bool:
+    """A concurrency block is stale once the launch that held the lock is terminal.
+
+    The blocked attempt stays in history. It must not be replayed as the session's
+    current launch, and it must not keep the one-live-launch gate closed.
+    """
+    if launch.get("status") != "blocked":
+        return False
+    auth = (launch.get("stages") or {}).get("00_authenticate") or {}
+    if auth.get("reason") != CONCURRENCY_BLOCK:
+        return False
+    blocker_id = (auth.get("details") or {}).get("blocked_by_launch_id")
+    if not blocker_id:
+        return False
+    try:
+        blocker = store.load_launch(str(blocker_id))
+    except FileNotFoundError:
+        return True
+    return blocker.get("status") not in LIVE_LAUNCH_STATUSES
 
 
 def _launch_status_from_stages(launch: dict[str, Any]) -> str:
@@ -428,7 +450,7 @@ def run_launch(
 
     if not normalized.get("rerun"):
         existing = store.current_launch_for_session(normalized["session_date"])
-        if existing is not None:
+        if existing is not None and not _stale_concurrency_block(existing, store):
             if existing["status"] == "blocked":
                 return _wrapper(existing, returned_existing=True)
             if existing["status"] == "succeeded":
