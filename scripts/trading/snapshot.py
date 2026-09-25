@@ -26,13 +26,22 @@ def snapshot_identities(
     run_id: str,
     common_evidence_sha256: str | None = None,
     when: datetime | None = None,
+    market_state: dict[str, Any] | None = None,
+    review_packet: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     store.ensure_initialized()
     dest_dir.mkdir(parents=True, exist_ok=True)
     hashes: dict[str, str] = {}
     paths: dict[str, str] = {}
     for owner_id in owner_ids:
-        context = build_memory_context(store, owner_type, owner_id, when=when)
+        context = build_memory_context(
+            store,
+            owner_type,
+            owner_id,
+            when=when,
+            market_state=market_state,
+            review_packet=review_packet,
+        )
         filename = f"{owner_id}.json"
         write_json(dest_dir / filename, context)
         hashes[owner_id] = context["memory_context_sha256"]
@@ -59,6 +68,8 @@ def snapshot_overnight_pms(
     run_id: str,
     common_evidence_sha256: str | None = None,
     when: datetime | None = None,
+    market_state: dict[str, Any] | None = None,
+    review_packet: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     backfill_from_books(store, when=when)
     return snapshot_identities(
@@ -69,6 +80,8 @@ def snapshot_overnight_pms(
         run_id=run_id,
         common_evidence_sha256=common_evidence_sha256,
         when=when,
+        market_state=market_state,
+        review_packet=review_packet,
     )
 
 
@@ -119,8 +132,23 @@ def snapshot_trader_room(
     )
 
 
-def compact_memory_for_packet(store: TradingStore, owner_type: str, owner_id: str) -> dict[str, Any]:
-    context = build_memory_context(store, owner_type, owner_id)
+def compact_memory_for_packet(
+    store: TradingStore,
+    owner_type: str,
+    owner_id: str,
+    *,
+    market_state: dict[str, Any] | None = None,
+    review_packet: dict[str, Any] | None = None,
+    trader_books: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    context = build_memory_context(
+        store,
+        owner_type,
+        owner_id,
+        market_state=market_state,
+        review_packet=review_packet,
+        trader_books=trader_books,
+    )
     return {
         "owner_type": owner_type,
         "owner_id": owner_id,
@@ -129,6 +157,10 @@ def compact_memory_for_packet(store: TradingStore, owner_type: str, owner_id: st
         "recent_closed_trades": context["recent_closed_trades"],
         "active_lessons": context["active_lessons"],
         "postmortems_due": context["postmortems_due"],
+        "consequence": context.get("consequence"),
+        "capital_owner": context.get("capital_owner"),
+        "reflections_due": context.get("reflections_due") or [],
+        "recent_performance_reflections": context.get("recent_performance_reflections") or [],
         "open_positions": context["open_positions"],
     }
 

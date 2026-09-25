@@ -32,6 +32,22 @@ _MACHINE_PATTERNS: tuple[re.Pattern[str], ...] = tuple(
         r"\brates_tenor_scan\b",
         r"\brates_candidate\b",
         r"\bHOLD/REDUCE/CLOSE\b",
+        r"\bshould we give him the book\b",
+        r"\bwhat exactly are we paying you for\b",
+        r"\bi love risk\.?\s*i'?m starting to think you just suck\b",
+        r"\bhand(?:ing)?\s+(?:him\s+|her\s+|them\s+)?the book\b",
+        r"\ballocator\b",
+        r"\bcapital[- ]owner\b",
+        r"\blearning_gate\b",
+        r"\bmissing_pressure_assessment\b",
+        r"\bpressure_assessment\b",
+        r"\bpostmortems_due\b",
+        r"\breflections_due\b",
+        r"\bperformance_reflection\b",
+        r"\bprf-[0-9a-f]+\b",
+        r"\brfd-[0-9a-f]+\b",
+        r"\bpmr-[0-9a-f]+\b",
+        r"\bles-[0-9a-f]+\b",
     )
 )
 
@@ -58,7 +74,59 @@ _SCRUB_RES: tuple[re.Pattern[str], ...] = (
     re.compile(r"\brates_candidate\b", re.IGNORECASE),
     re.compile(r"(?:\bso\s+)?(?:\band\s+)?\bonly\s+HOLD/REDUCE/CLOSE\s+are\s+live\b", re.IGNORECASE),
     re.compile(r"\bHOLD/REDUCE/CLOSE\b", re.IGNORECASE),
+    re.compile(r"\bshould we give him the book\b", re.IGNORECASE),
+    re.compile(r"\bwhat exactly are we paying you for\b", re.IGNORECASE),
+    re.compile(r"\bi love risk\.?\s*i'?m starting to think you just suck\b", re.IGNORECASE),
+    re.compile(r"\bhand(?:ing)?\s+(?:him\s+|her\s+|them\s+)?the book\b", re.IGNORECASE),
+    re.compile(r"\ballocator\b", re.IGNORECASE),
+    re.compile(r"\bcapital[- ]owner\b", re.IGNORECASE),
+    re.compile(r"\blearning_gate\b", re.IGNORECASE),
+    re.compile(r"\bmissing_pressure_assessment\b", re.IGNORECASE),
+    re.compile(r"\bpressure_assessment\b", re.IGNORECASE),
+    re.compile(r"\bpostmortems_due\b", re.IGNORECASE),
+    re.compile(r"\breflections_due\b", re.IGNORECASE),
+    re.compile(r"\bperformance_reflection\b", re.IGNORECASE),
+    re.compile(r"\bprf-[0-9a-f]+\b", re.IGNORECASE),
+    re.compile(r"\brfd-[0-9a-f]+\b", re.IGNORECASE),
+    re.compile(r"\bpmr-[0-9a-f]+\b", re.IGNORECASE),
+    re.compile(r"\bles-[0-9a-f]+\b", re.IGNORECASE),
 )
+
+
+_PRIVATE_ALERT_MARKERS = (
+    "learning_gate",
+    "postmortems_due",
+    "reflections_due",
+    "missing_pressure_assessment",
+    "pressure_assessment",
+    "capital_owner",
+    "capital owner",
+    "performance_reflection",
+    "reflection_due",
+    "postmortem_id",
+    "allocator",
+)
+
+
+def public_alerts(alerts: Any) -> list[str]:
+    """Drop private psychology machinery. Keep ordinary market and risk alerts."""
+    if not isinstance(alerts, list):
+        return []
+    kept: list[str] = []
+    for alert in alerts:
+        if not isinstance(alert, str) or not alert.strip():
+            continue
+        lowered = alert.lower()
+        if any(marker in lowered for marker in _PRIVATE_ALERT_MARKERS):
+            continue
+        if public_prose_issues(alert):
+            continue
+        cleaned = sanitize_public_prose(alert, max_chars=500, fallback="")
+        if cleaned:
+            kept.append(cleaned)
+    return kept
+
+
 _SENTENCE_SPLIT_RE = re.compile(r"(?<=[.!?])\s+")
 
 

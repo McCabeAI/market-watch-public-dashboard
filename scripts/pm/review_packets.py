@@ -109,6 +109,25 @@ def _compact_curves(block: Any, *, label: str) -> dict[str, Any]:
     }
 
 
+def memory_market_inputs(
+    evidence: dict[str, Any] | None,
+    *,
+    compact_market: dict[str, Any] | None = None,
+    trader_room: dict[str, Any] | None = None,
+    overnight_review: dict[str, Any] | None = None,
+) -> tuple[dict[str, Any] | None, dict[str, Any]]:
+    """Use the same frozen market-state object the PM packet is built from."""
+    evidence = evidence or {}
+    frozen = evidence.get("market_state") if isinstance(evidence.get("market_state"), dict) else None
+    if frozen is None and isinstance(compact_market, dict):
+        frozen = compact_market
+    return frozen, {
+        "market_state": frozen or {},
+        "trader_room": trader_room,
+        "overnight_review": overnight_review,
+    }
+
+
 def compact_market_state(evidence: dict[str, Any]) -> dict[str, Any]:
     market = evidence.get("market_state") if isinstance(evidence.get("market_state"), dict) else {}
     warnings = []
@@ -552,6 +571,7 @@ def build_review_packet(
     run_dir=None,
     evidence: dict[str, Any] | None = None,
     state_root=None,
+    trader_books: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     if pm_id not in PM_IDS:
         raise SchemaError(f"unknown pm_id {pm_id}")
@@ -682,7 +702,20 @@ def build_review_packet(
     from scripts.trading.store import TradingStore
 
     trading = TradingStore(state_root=state_root)
-    packet["memory"] = compact_memory_for_packet(trading, "pm", pm_id)
+    frozen_market, memory_packet = memory_market_inputs(
+        evidence,
+        compact_market=market,
+        trader_room=trader_room,
+        overnight_review=overnight_review,
+    )
+    packet["memory"] = compact_memory_for_packet(
+        trading,
+        "pm",
+        pm_id,
+        market_state=frozen_market,
+        review_packet=memory_packet,
+        trader_books=trader_books,
+    )
     packet["memory_context_sha256"] = packet["memory"]["memory_context_sha256"]
     packet["postmortems_due"] = packet["memory"]["postmortems_due"]
     packet["calibration"] = packet["memory"]["calibration"]
@@ -700,6 +733,7 @@ def build_all_packets(
     source: PMPacketSource | None = None,
     allow_trader_room_fallback: bool = True,
     overnight_run_id: str | None = None,
+    trader_books: dict[str, Any] | None = None,
 ) -> dict[str, dict[str, Any]]:
     selected_source = source or select_daily_pm_source(
         root,
@@ -716,6 +750,7 @@ def build_all_packets(
             book=books["pms"][pm_id],
             registry=registry,
             state_root=state_root,
+            trader_books=trader_books,
         )
     return packets
 

@@ -25,6 +25,7 @@ from scripts.trading.journal import (
     record_event,
 )
 from scripts.trading.ledger import find_trade_by_position, observe_open_mark, record_lifecycle_event
+from scripts.trading.consequence import record_consequence_observation
 from scripts.trading.memory import apply_reflections, build_memory_context, create_postmortem_due
 from scripts.trading.store import TradingStore
 
@@ -338,6 +339,7 @@ def _prepare_identity(
     run_id: str | None,
     expected_memory_sha256: str | None,
     when: datetime | None,
+    trader_books: dict[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
     apply_reflections(store, decision, owner_type=owner_type, owner_id=owner_id, run_id=run_id, when=when)
     original = [row for row in (decision.get("actions") or []) if isinstance(row, dict)]
@@ -348,6 +350,7 @@ def _prepare_identity(
         decision=decision,
         run_id=run_id,
         expected_memory_sha256=expected_memory_sha256,
+        trader_books=trader_books,
     )
     raise_if_unexecutable(blocked, allowed)
     decision["actions"] = allowed
@@ -506,7 +509,8 @@ def apply_trader_review_with_memory(
             extra={"funding_view": decision.get("funding_view")} if decision.get("funding_view") else None,
         )
         _observe_marks(store, "trader", seat, list(seat_book.get("positions") or []))
-        build_memory_context(store, "trader", seat, when=stamp)
+        record_consequence_observation(store, "trader", seat, trader_books=updated)
+        build_memory_context(store, "trader", seat, when=stamp, exclude_run_id=run_id)
         decision["journal_event_id"] = event["event_id"]
     validate_books(updated)
     return updated
@@ -527,6 +531,8 @@ def apply_pm_decision_with_memory(
     evidence_hash: str | None = None,
     when: datetime | None = None,
     review_id: str | None = None,
+    review_packet: dict[str, Any] | None = None,
+    trader_books: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     store.ensure_initialized()
     stamp = now_ny(when)
@@ -558,6 +564,7 @@ def apply_pm_decision_with_memory(
         run_id=run_id,
         expected_memory_sha256=expected,
         when=stamp,
+        trader_books=trader_books,
     )
     prior = {p["position_id"]: deepcopy(p) for p in books["pms"][pm_id].get("positions") or []}
     hist_len = len(books["pms"][pm_id].get("history") or [])
@@ -647,7 +654,23 @@ def apply_pm_decision_with_memory(
         decision_fingerprint=fingerprint,
     )
     _observe_marks(store, "pm", pm_id, list(book.get("positions") or []))
-    build_memory_context(store, "pm", pm_id, when=stamp)
+    record_consequence_observation(
+        store,
+        "pm",
+        pm_id,
+        pm_books=updated,
+        trader_books=trader_books,
+        review_packet=review_packet,
+    )
+    build_memory_context(
+        store,
+        "pm",
+        pm_id,
+        when=stamp,
+        exclude_run_id=run_id,
+        market_state=market_state,
+        trader_books=trader_books,
+    )
     decision["journal_event_id"] = event["event_id"]
     return updated
 

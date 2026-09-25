@@ -119,6 +119,15 @@ Persist the complete run under `trader-room/runs/<run_id>/` and end with exactly
 
 Optional private Markdown copy may use Google Drive folder `1NS6Qb6vNGKM18_PW0zPl4NOIJZOLyfUD`. Repository artifacts are authoritative.
 
+## Learning memory, consequence, and reflections
+
+Before any book decision, read your own frozen sidecar (`memory/<seat>.json`). It includes **consequence** (your rank among 14, own P&L/NAV/drawdown/risk utilization — never other seats' P&L or spread-to-winner), **active_lessons**, **postmortems_due**, and **reflections_due** from prior runs.
+
+- Prior-run **postmortems_due** or **reflections_due** block `OPEN`/`ADD`/`HEDGE` until you submit substantive learning in the same decision (`postmortems` / `performance_reflections`). `HOLD`/`REDUCE`/`CLOSE` always remain available.
+- A same-run `CLOSE` creates a future postmortem due; it does not block sibling actions in that decision.
+- Material drawdown/win triggers require a structured **performance_reflection** (not prose acknowledgement alone). You may answer with a durable lesson or explicit `no_new_lesson` plus reason.
+- Do not invent canonical P&L, rank, or marks; trusted code owns books.
+
 ## Hard limits
 
 Full run policy:

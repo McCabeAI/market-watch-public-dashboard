@@ -37,7 +37,7 @@ from scripts.overnight.constants import (
 )
 from scripts.overnight.errors import FreshnessError, SchemaError
 from scripts.overnight.expression import expression_rule, remit, selected_asset_class, validate_expression_memo
-from scripts.overnight.public_prose import sanitize_public_prose
+from scripts.overnight.public_prose import public_alerts, sanitize_public_prose
 from scripts.overnight.freshness import assert_action_allowed
 from scripts.risk_capital import (
     already_force_flattened_ids,
@@ -1020,7 +1020,7 @@ def public_books_view(books: dict[str, Any]) -> dict[str, Any]:
                 "invalidation": sanitize_public_prose(item.get("invalidation"), max_chars=500, fallback=""),
                 "last_action": item.get("last_action"),
                 "prior_action": item.get("prior_action"),
-                "alerts": item.get("alerts") or [],
+                "alerts": public_alerts(item.get("alerts")),
                 "allocation_limit_usd": item.get("allocation_limit_usd", allocation_limit_usd()),
                 "allocation_used_usd": item.get("allocation_used_usd"),
                 "allocation_remaining_usd": item.get("allocation_remaining_usd"),

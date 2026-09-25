@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from copy import deepcopy
 from datetime import datetime
 from typing import Any
 from uuid import uuid4
@@ -9,16 +10,31 @@ from uuid import uuid4
 from scripts.overnight.clock import isoformat, now_ny
 from scripts.overnight.store import sha256_json
 from scripts.risk_capital import position_risk_capital
+from scripts.trading.capital_owner import build_capital_owner
+from scripts.trading.consequence import (
+    _read_pm_books,
+    _read_trader_books,
+    build_pm_consequence,
+    build_trader_consequence,
+)
 from scripts.trading.constants import (
     CALIBRATION_SAMPLE_NOTE,
     CONVICTION_BUCKETS,
     LESSON_CAP,
     LESSON_OPS,
     LESSON_STATUSES,
+    MATERIAL_DRAWDOWN_FRACTION,
     MEMORY_SCHEMA_VERSION,
+    PERFORMANCE_REFLECTION_ATTRIBUTION,
     POSTMORTEM_STATUSES,
+    PRESSURE_EFFECT_VALUES,
     RECENT_CLOSED_CAP,
+    RECENT_REFLECTION_CAP,
+    SKILL_LUCK_VALUES,
+    YES_NO_NA,
 )
+from scripts.overnight.constants import MAX_DRAWDOWN_USD, STARTING_NAV_USD
+from scripts.pm.constants import CASH_CAPITAL_USD, MAX_DRAWDOWN_USD as PM_MAX_DRAWDOWN_USD
 from scripts.trading.errors import OwnershipError, SchemaError
 from scripts.trading.store import TradingStore, assert_identity
 
@@ -171,6 +187,184 @@ def outstanding_due(store: TradingStore, owner_type: str, owner_id: str, *, excl
     return items
 
 
+def outstanding_reflections_due(
+    store: TradingStore,
+    owner_type: str,
+    owner_id: str,
+    *,
+    exclude_run_id: str | None = None,
+) -> list[dict[str, Any]]:
+    items = []
+    for row in store.read_reflections_due(owner_type, owner_id).get("items") or []:
+        if row.get("status") != "due":
+            continue
+        if exclude_run_id and row.get("created_run_id") == exclude_run_id:
+            continue
+        items.append(row)
+    return items
+
+
+def _material_threshold(owner_type: str, book_row: dict[str, Any]) -> float:
+    if owner_type == "trader":
+        max_dd = float(book_row.get("max_drawdown_usd") or MAX_DRAWDOWN_USD)
+    else:
+        max_dd = float(book_row.get("max_drawdown_usd") or PM_MAX_DRAWDOWN_USD)
+    return MATERIAL_DRAWDOWN_FRACTION * max_dd
+
+
+def _crossed(current: float, prior: float | None, threshold: float) -> bool:
+    """True when this observation newly reaches the threshold."""
+    if current < threshold:
+        return False
+    if prior is None:
+        return True
+    return float(prior) < threshold
+
+
+def performance_triggers(
+    *,
+    owner_type: str,
+    book_row: dict[str, Any],
+    rank: int | None,
+    prior_rank: int | None,
+    prior_net: float | None = None,
+    prior_drawdown: float | None = None,
+    prior_high_water: float | None = None,
+) -> list[dict[str, Any]]:
+    threshold = _material_threshold(owner_type, book_row)
+    if owner_type == "trader":
+        net = float(book_row.get("net_pnl_usd") or 0.0)
+        drawdown = float(book_row.get("drawdown_usd") or 0.0)
+        high_water = float(book_row.get("high_water_nav_usd") or book_row.get("nav_usd") or STARTING_NAV_USD)
+        starting = STARTING_NAV_USD
+    else:
+        net = float(book_row.get("net_after_funding_pnl_usd") or 0.0)
+        drawdown = float(book_row.get("drawdown_usd") or 0.0)
+        high_water = float(book_row.get("high_water_nav_usd") or book_row.get("cash_capital_usd") or CASH_CAPITAL_USD)
+        starting = float(book_row.get("cash_capital_usd") or CASH_CAPITAL_USD)
+    triggers: list[dict[str, Any]] = []
+    if _crossed(drawdown, prior_drawdown, threshold):
+        triggers.append({"id": "material_drawdown", "drawdown_usd": drawdown})
+    delta = None if prior_net is None else net - float(prior_net)
+    if delta is None:
+        if net >= threshold:
+            triggers.append({"id": "material_win", "net_pnl_usd": net})
+        elif net <= -threshold:
+            triggers.append({"id": "material_loss", "net_pnl_usd": net})
+    elif delta >= threshold:
+        triggers.append({"id": "material_win", "net_pnl_usd": net, "delta_usd": round(delta, 2)})
+    elif delta <= -threshold:
+        triggers.append({"id": "material_loss", "net_pnl_usd": net, "delta_usd": round(delta, 2)})
+    if _crossed(drawdown, prior_drawdown, threshold) and high_water > starting:
+        triggers.append({"id": "giveback", "drawdown_usd": drawdown})
+    high_water_rose = prior_high_water is None or high_water > float(prior_high_water) + 0.5
+    if high_water > starting and net >= threshold and high_water_rose and (prior_net is None or float(prior_net) < net):
+        triggers.append({"id": "new_high", "net_pnl_usd": net})
+    if prior_rank is not None and rank is not None and int(rank) - int(prior_rank) >= 4:
+        triggers.append({"id": "rank_shock", "prior_rank": prior_rank, "rank": rank})
+    return triggers
+
+
+def reflection_due_fingerprint(triggers: list[dict[str, Any]], *, net_pnl: float | None, drawdown: float | None, rank: int | None) -> str:
+    return sha256_json(
+        {
+            "trigger_ids": sorted(row["id"] for row in triggers),
+            "net_pnl": round(float(net_pnl), 2) if net_pnl is not None else None,
+            "drawdown": round(float(drawdown), 2) if drawdown is not None else None,
+            "rank": rank,
+        }
+    )
+
+
+def ensure_reflections_due(
+    store: TradingStore,
+    owner_type: str,
+    owner_id: str,
+    *,
+    run_id: str | None,
+    when: datetime | None = None,
+    trader_books: dict[str, Any] | None = None,
+) -> None:
+    trader_books = trader_books if trader_books is not None else _read_trader_books(store)
+    pm_books = _read_pm_books(store)
+    if owner_type == "trader":
+        if trader_books is None:
+            return
+        book_row = trader_books["seats"].get(owner_id)
+        if book_row is None:
+            return
+        consequence = build_trader_consequence(store, owner_id, books=trader_books)
+    else:
+        if pm_books is None:
+            return
+        book_row = pm_books["pms"].get(owner_id)
+        if book_row is None:
+            return
+        consequence = build_pm_consequence(store, owner_id, pm_books=pm_books, trader_books=trader_books)
+    if consequence.get("status") != "ok":
+        return
+    prior_state = store.read_consequence_state(owner_type, owner_id)
+    prior_rank = prior_state.get("last_competition_rank")
+    rank = consequence.get("competition_rank")
+    triggers = performance_triggers(
+        owner_type=owner_type,
+        book_row=book_row,
+        rank=rank,
+        prior_rank=prior_rank,
+        prior_net=prior_state.get("last_net_pnl_usd"),
+        prior_drawdown=prior_state.get("last_drawdown_usd"),
+        prior_high_water=prior_state.get("last_high_water_nav_usd"),
+    )
+    if not triggers:
+        return
+    net = consequence.get("net_pnl_usd") if owner_type == "trader" else consequence.get("net_after_funding_pnl_usd")
+    drawdown = consequence.get("drawdown_usd")
+    fingerprint = reflection_due_fingerprint(triggers, net_pnl=net, drawdown=drawdown, rank=rank)
+    due_doc = store.read_reflections_due(owner_type, owner_id)
+    for item in due_doc.get("items") or []:
+        if item.get("fingerprint") == fingerprint:
+            return
+    item = {
+        "reflection_due_id": f"rfd-{uuid4().hex[:12]}",
+        "owner_type": owner_type,
+        "owner_id": owner_id,
+        "created_at": isoformat(now_ny(when)),
+        "created_run_id": run_id,
+        "status": "due",
+        "fingerprint": fingerprint,
+        "trigger_ids": sorted(row["id"] for row in triggers),
+        "facts": {
+            "net_pnl_usd": net,
+            "drawdown_usd": drawdown,
+            "competition_rank": rank,
+            "prior_competition_rank": prior_rank,
+        },
+    }
+    due_doc.setdefault("items", []).append(item)
+    store.write_reflections_due(owner_type, owner_id, due_doc)
+
+
+def recent_performance_reflections(store: TradingStore, owner_type: str, owner_id: str) -> list[dict[str, Any]]:
+    items = list(store.read_reflections(owner_type, owner_id).get("items") or [])
+    items.sort(key=lambda row: row.get("at") or "", reverse=True)
+    out = []
+    for row in items[:RECENT_REFLECTION_CAP]:
+        out.append(
+            {
+                "reflection_id": row.get("reflection_id"),
+                "run_id": row.get("run_id"),
+                "trigger_ids": row.get("trigger_ids") or [],
+                "what_happened_vs_expected": row.get("what_happened_vs_expected"),
+                "attribution": row.get("attribution") or [],
+                "pressure_effect": row.get("pressure_effect"),
+                "skill_vs_luck": row.get("skill_vs_luck"),
+                "lesson_id": row.get("lesson_id"),
+                "no_new_lesson": row.get("no_new_lesson"),
+            }
+        )
+    return out
+
+
 def build_memory_context(
     store: TradingStore,
     owner_type: str,
@@ -178,12 +372,40 @@ def build_memory_context(
     *,
     when: datetime | None = None,
     exclude_run_id: str | None = None,
+    market_state: dict[str, Any] | None = None,
+    review_packet: dict[str, Any] | None = None,
+    trader_books: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     assert_identity(owner_type, owner_id)
     store.ensure_initialized()
+    ensure_reflections_due(
+        store,
+        owner_type,
+        owner_id,
+        run_id=None,
+        when=when,
+        trader_books=trader_books,
+    )
     trades = store.trades_for(owner_type, owner_id)
     lessons = active_lessons(store, owner_type, owner_id)
     due = outstanding_due(store, owner_type, owner_id, exclude_run_id=exclude_run_id)
+    reflections_due = outstanding_reflections_due(store, owner_type, owner_id, exclude_run_id=exclude_run_id)
+    trader_books = trader_books if trader_books is not None else _read_trader_books(store)
+    pm_books = _read_pm_books(store)
+    if owner_type == "trader":
+        consequence = build_trader_consequence(store, owner_id, books=trader_books)
+        capital_owner = None
+    else:
+        consequence = build_pm_consequence(store, owner_id, pm_books=pm_books, trader_books=trader_books)
+        pm_book = (pm_books or {}).get("pms", {}).get(owner_id) if pm_books else None
+        capital_owner = build_capital_owner(
+            store,
+            owner_id,
+            consequence=consequence,
+            market_state=market_state,
+            pm_book=pm_book,
+            review_packet=review_packet,
+        )
     body = {
         "schema_version": MEMORY_SCHEMA_VERSION,
         "type": "IDENTITY_MEMORY_CONTEXT",
@@ -198,6 +420,7 @@ def build_memory_context(
                 "text": row.get("text"),
                 "trade_ids": row.get("trade_ids") or [],
                 "postmortem_ids": row.get("postmortem_ids") or [],
+                "reflection_ids": row.get("reflection_ids") or [],
                 "reinforcement_count": row.get("reinforcement_count"),
             }
             for row in lessons
@@ -212,6 +435,19 @@ def build_memory_context(
             }
             for row in due
         ],
+        "consequence": consequence,
+        "capital_owner": capital_owner,
+        "reflections_due": [
+            {
+                "reflection_due_id": row.get("reflection_due_id"),
+                "created_at": row.get("created_at"),
+                "created_run_id": row.get("created_run_id"),
+                "trigger_ids": row.get("trigger_ids") or [],
+                "facts": row.get("facts") or {},
+            }
+            for row in reflections_due
+        ],
+        "recent_performance_reflections": recent_performance_reflections(store, owner_type, owner_id),
         "open_positions": open_position_context(trades),
         "recent_funding_views": [
             event.get("funding_view")
@@ -298,6 +534,20 @@ def accept_postmortem(
     trade = _owned_trade(store, owner_type, owner_id, trade_id)
     if trade.get("status") != "closed":
         raise SchemaError(f"postmortem is only accepted for a closed trade; {trade_id} is {trade.get('status')}")
+    assessment_fields = (
+        "what_worked",
+        "what_failed",
+        "thesis_assessment",
+        "expression_assessment",
+        "timing_assessment",
+        "sizing_assessment",
+    )
+    if not any(_text(payload.get(field)) for field in assessment_fields):
+        raise SchemaError("postmortem requires at least one substantive assessment field")
+    lesson = _text(payload.get("lesson"))
+    no_new_lesson = _text(payload.get("no_new_lesson"))
+    if not lesson and not no_new_lesson:
+        raise SchemaError("postmortem requires lesson or no_new_lesson reason")
     due_doc = store.read_postmortems_due(owner_type, owner_id)
     matched = None
     for item in due_doc.get("items") or []:
@@ -318,7 +568,8 @@ def accept_postmortem(
         "expression_assessment": _text(payload.get("expression_assessment")),
         "timing_assessment": _text(payload.get("timing_assessment")),
         "sizing_assessment": _text(payload.get("sizing_assessment")),
-        "lesson": _text(payload.get("lesson")),
+        "lesson": lesson,
+        "no_new_lesson": no_new_lesson,
         "future_rule": _text(payload.get("future_rule") or payload.get("what_to_do_differently")),
         "tags": [tag for tag in (payload.get("tags") or []) if isinstance(tag, str) and tag.strip()],
         "facts": (matched or {}).get("facts") or {
@@ -350,6 +601,46 @@ def accept_postmortem(
     return record
 
 
+def _validated_memory_update(
+    store: TradingStore,
+    update: dict[str, Any],
+    *,
+    owner_type: str,
+    owner_id: str,
+    pending_reflection_ids: set[str] | None = None,
+) -> tuple[str, list[str], list[str], list[str], str | None]:
+    assert_identity(owner_type, owner_id)
+    op = update.get("op")
+    if op not in LESSON_OPS:
+        raise SchemaError(f"memory update op must be one of {LESSON_OPS}")
+    trade_ids = [tid for tid in (update.get("trade_ids") or []) if isinstance(tid, str)]
+    postmortem_ids = [pid for pid in (update.get("postmortem_ids") or []) if isinstance(pid, str)]
+    reflection_ids = [rid for rid in (update.get("reflection_ids") or []) if isinstance(rid, str)]
+    for trade_id in trade_ids:
+        _owned_trade(store, owner_type, owner_id, trade_id)
+    known_pm = {row.get("postmortem_id") for row in store.read_postmortems(owner_type, owner_id).get("items") or []}
+    known_pm.update(row.get("postmortem_id") for row in store.read_postmortems_due(owner_type, owner_id).get("items") or [])
+    for postmortem_id in postmortem_ids:
+        if postmortem_id not in known_pm:
+            raise OwnershipError(f"{owner_id} referenced unknown postmortem_id {postmortem_id}")
+    known_refl = {row.get("reflection_id") for row in store.read_reflections(owner_type, owner_id).get("items") or []}
+    known_refl.update(pending_reflection_ids or set())
+    for reflection_id in reflection_ids:
+        if reflection_id not in known_refl:
+            raise OwnershipError(f"{owner_id} referenced unknown reflection_id {reflection_id}")
+    if op == "add" and not trade_ids and not postmortem_ids and not reflection_ids:
+        raise SchemaError("durable lessons must cite one or more owned trade_ids, postmortem_ids, or reflection_ids")
+    text = _text(update.get("text"))
+    if op == "add" and not text:
+        raise SchemaError("add lesson requires text")
+    if op != "add":
+        lesson_id = update.get("lesson_id")
+        rows = store.read_lessons(owner_type, owner_id).get("lessons") or []
+        if not any(row.get("lesson_id") == lesson_id for row in rows):
+            raise SchemaError(f"unknown lesson_id {lesson_id}")
+    return op, trade_ids, postmortem_ids, reflection_ids, text
+
+
 def apply_memory_update(
     store: TradingStore,
     update: dict[str, Any],
@@ -358,23 +649,15 @@ def apply_memory_update(
     owner_id: str,
     run_id: str | None,
     when: datetime | None = None,
+    pending_reflection_ids: set[str] | None = None,
 ) -> dict[str, Any]:
-    assert_identity(owner_type, owner_id)
-    op = update.get("op")
-    if op not in LESSON_OPS:
-        raise SchemaError(f"memory update op must be one of {LESSON_OPS}")
-    trade_ids = [tid for tid in (update.get("trade_ids") or []) if isinstance(tid, str)]
-    postmortem_ids = [pid for pid in (update.get("postmortem_ids") or []) if isinstance(pid, str)]
-    for trade_id in trade_ids:
-        _owned_trade(store, owner_type, owner_id, trade_id)
-    known_pm = {row.get("postmortem_id") for row in store.read_postmortems(owner_type, owner_id).get("items") or []}
-    known_pm.update(row.get("postmortem_id") for row in store.read_postmortems_due(owner_type, owner_id).get("items") or [])
-    for postmortem_id in postmortem_ids:
-        if postmortem_id not in known_pm:
-            raise OwnershipError(f"{owner_id} referenced unknown postmortem_id {postmortem_id}")
-    if op == "add" and not trade_ids and not postmortem_ids:
-        raise SchemaError("durable lessons must cite one or more owned trade_ids or postmortem_ids")
-    text = _text(update.get("text"))
+    op, trade_ids, postmortem_ids, reflection_ids, text = _validated_memory_update(
+        store,
+        update,
+        owner_type=owner_type,
+        owner_id=owner_id,
+        pending_reflection_ids=pending_reflection_ids,
+    )
     lessons = store.read_lessons(owner_type, owner_id)
     rows = lessons.setdefault("lessons", [])
     stamp = isoformat(now_ny(when))
@@ -386,6 +669,7 @@ def apply_memory_update(
             "text": text,
             "trade_ids": trade_ids,
             "postmortem_ids": postmortem_ids,
+            "reflection_ids": reflection_ids,
             "status": "active",
             "reinforcement_count": 1,
             "created_at": stamp,
@@ -416,6 +700,10 @@ def apply_memory_update(
         for postmortem_id in postmortem_ids:
             if postmortem_id not in lesson["postmortem_ids"]:
                 lesson["postmortem_ids"].append(postmortem_id)
+        lesson.setdefault("reflection_ids", [])
+        for reflection_id in reflection_ids:
+            if reflection_id not in lesson["reflection_ids"]:
+                lesson["reflection_ids"].append(reflection_id)
     elif op == "retire":
         lesson["status"] = "retired"
         lesson["updated_at"] = stamp
@@ -423,6 +711,121 @@ def apply_memory_update(
         raise SchemaError(f"invalid lesson status {lesson.get('status')}")
     store.write_lessons(owner_type, owner_id, lessons)
     return lesson
+
+
+def accept_performance_reflection(
+    store: TradingStore,
+    payload: dict[str, Any],
+    *,
+    owner_type: str,
+    owner_id: str,
+    run_id: str | None,
+    when: datetime | None = None,
+) -> dict[str, Any]:
+    assert_identity(owner_type, owner_id)
+    what = _text(payload.get("what_happened_vs_expected"))
+    if not what:
+        raise SchemaError("performance_reflection requires what_happened_vs_expected")
+    attribution = [row for row in (payload.get("attribution") or []) if row in PERFORMANCE_REFLECTION_ATTRIBUTION]
+    if not attribution:
+        raise SchemaError("performance_reflection requires attribution")
+    pressure_effect = payload.get("pressure_effect")
+    if pressure_effect not in PRESSURE_EFFECT_VALUES:
+        raise SchemaError("performance_reflection requires valid pressure_effect")
+    skill_vs_luck = payload.get("skill_vs_luck")
+    if skill_vs_luck not in SKILL_LUCK_VALUES:
+        raise SchemaError("performance_reflection requires skill_vs_luck")
+    for field in ("overconfidence_risk", "chase_or_revenge"):
+        if payload.get(field) not in YES_NO_NA:
+            raise SchemaError(f"performance_reflection requires {field}")
+    due_id = payload.get("reflection_due_id")
+    due_doc = store.read_reflections_due(owner_type, owner_id)
+    matched = None
+    for item in due_doc.get("items") or []:
+        if item.get("status") != "due":
+            continue
+        if due_id and item.get("reflection_due_id") != due_id:
+            continue
+        matched = item
+        break
+    if matched is None and due_id:
+        raise SchemaError(f"unknown reflection_due_id {due_id}")
+    if matched is None:
+        outstanding = outstanding_reflections_due(store, owner_type, owner_id, exclude_run_id=run_id)
+        if len(outstanding) == 1:
+            matched = outstanding[0]
+    if matched is None:
+        raise SchemaError("performance_reflection has no matching reflections_due item")
+    trigger_ids = matched.get("trigger_ids") or []
+    if "material_win" in trigger_ids and skill_vs_luck == "not_applicable":
+        raise SchemaError("material_win reflection requires skill_vs_luck skill|luck|mixed")
+    lesson_text = _text(payload.get("lesson"))
+    memory_update = payload.get("memory_update") if isinstance(payload.get("memory_update"), dict) else None
+    no_new_lesson = _text(payload.get("no_new_lesson"))
+    if not lesson_text and not memory_update and not no_new_lesson:
+        raise SchemaError("performance_reflection requires lesson, memory_update, or no_new_lesson")
+    reflection_id = f"prf-{uuid4().hex[:12]}"
+    lesson_update = None
+    if memory_update:
+        lesson_update = {**memory_update, "reflection_ids": [reflection_id]}
+    elif lesson_text:
+        lesson_update = {
+            "op": "add",
+            "text": lesson_text,
+            "reflection_ids": [reflection_id],
+            "trade_ids": [tid for tid in (payload.get("trade_ids") or []) if isinstance(tid, str)],
+        }
+    if lesson_update:
+        _validated_memory_update(
+            store,
+            lesson_update,
+            owner_type=owner_type,
+            owner_id=owner_id,
+            pending_reflection_ids={reflection_id},
+        )
+    record = {
+        "reflection_id": reflection_id,
+        "reflection_due_id": matched.get("reflection_due_id"),
+        "owner_type": owner_type,
+        "owner_id": owner_id,
+        "at": isoformat(now_ny(when)),
+        "run_id": run_id,
+        "trigger_ids": trigger_ids,
+        "what_happened_vs_expected": what,
+        "attribution": attribution,
+        "pressure_effect": pressure_effect,
+        "skill_vs_luck": skill_vs_luck,
+        "overconfidence_risk": payload.get("overconfidence_risk"),
+        "chase_or_revenge": payload.get("chase_or_revenge"),
+        "no_new_lesson": no_new_lesson,
+    }
+    prior_due = deepcopy(due_doc)
+    prior_reflections = deepcopy(store.read_reflections(owner_type, owner_id))
+    prior_lessons = deepcopy(store.read_lessons(owner_type, owner_id))
+    try:
+        reflections = deepcopy(prior_reflections)
+        reflections.setdefault("items", []).append(record)
+        store.write_reflections(owner_type, owner_id, reflections)
+        if lesson_update:
+            lesson = apply_memory_update(
+                store,
+                lesson_update,
+                owner_type=owner_type,
+                owner_id=owner_id,
+                run_id=run_id,
+                when=when,
+                pending_reflection_ids={reflection_id},
+            )
+            record["lesson_id"] = lesson.get("lesson_id")
+            store.write_reflections(owner_type, owner_id, reflections)
+        matched["status"] = "submitted"
+        store.write_reflections_due(owner_type, owner_id, due_doc)
+    except Exception:
+        store.write_reflections_due(owner_type, owner_id, prior_due)
+        store.write_reflections(owner_type, owner_id, prior_reflections)
+        store.write_lessons(owner_type, owner_id, prior_lessons)
+        raise
+    return record
 
 
 def apply_reflections(
@@ -434,6 +837,20 @@ def apply_reflections(
     run_id: str | None,
     when: datetime | None = None,
 ) -> dict[str, Any]:
+    reflections = []
+    for payload in decision.get("performance_reflections") or []:
+        if not isinstance(payload, dict):
+            continue
+        reflections.append(
+            accept_performance_reflection(
+                store,
+                payload,
+                owner_type=owner_type,
+                owner_id=owner_id,
+                run_id=run_id,
+                when=when,
+            )
+        )
     accepted = []
     for payload in decision.get("postmortems") or []:
         if not isinstance(payload, dict):
@@ -462,4 +879,4 @@ def apply_reflections(
                 when=when,
             )
         )
-    return {"postmortems": accepted, "memory_updates": updates}
+    return {"postmortems": accepted, "memory_updates": updates, "performance_reflections": reflections}

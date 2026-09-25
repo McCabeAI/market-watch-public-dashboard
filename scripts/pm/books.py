@@ -921,6 +921,12 @@ def _public_copy(value: Any, max_chars: int) -> str:
     return sanitize_public_prose(value, max_chars=max_chars, fallback="")
 
 
+def _public_alerts(alerts: Any) -> list[str]:
+    from scripts.overnight.public_prose import public_alerts
+
+    return public_alerts(alerts)
+
+
 def public_pm_view(books: dict[str, Any]) -> dict[str, Any]:
     validate_books(books)
     rows = []
@@ -967,7 +973,7 @@ def public_pm_view(books: dict[str, Any]) -> dict[str, Any]:
                 "conviction": item["conviction"],
                 "thesis": _public_copy(item.get("thesis"), 700),
                 "invalidation": _public_copy(item.get("invalidation"), 500),
-                "alerts": item.get("alerts") or [],
+                "alerts": _public_alerts(item.get("alerts")),
                 "positions": [
                     {
                         "position_id": p["position_id"],

@@ -123,6 +123,7 @@ def apply_automated_pm_decisions(
     packets: dict[str, dict[str, Any]] | None = None,
     trading_store: TradingStore | None = None,
     memory_hashes: dict[str, str] | None = None,
+    trader_books: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Apply each automated PM independently. No PM sees another's current decision."""
     prior = deepcopy(books)
@@ -150,6 +151,8 @@ def apply_automated_pm_decisions(
             expected_memory_sha256=expected_memory,
             evidence_hash=packet.get("review_packet_sha256"),
             review_id=review_id,
+            review_packet=packet or None,
+            trader_books=trader_books,
         )
         result["pms"][pm_id] = deepcopy(merged["pms"][pm_id])
     return result
