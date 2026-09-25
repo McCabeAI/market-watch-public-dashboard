@@ -255,7 +255,7 @@ jobs:
           LAUNCH_ID="$launch_id" CLIENT_PAYLOAD="$payload" MW_CONTINUATION_DECISION=/tmp/mw-output/continuation-pages.json \
             PYTHONPATH=. python3 -m scripts.market_watch_launch.continuation
           python3 -c 'import json; d=json.load(open("/tmp/mw-output/continuation-pages.json")); assert d["status"]=="succeeded"; assert d["production_published"] is True'
-          git add "data/market_watch_launches/$launch_id"
+          git add "data/market_watch_launches/$launch_id" "data/market_watch_launches/index.json"
           if ! git diff --cached --quiet; then
             git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
               commit -m "chore: record market watch launch $launch_id Pages dispatch"

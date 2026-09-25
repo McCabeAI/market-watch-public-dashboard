@@ -284,3 +284,17 @@ class StalePagesReconciliationTests(unittest.TestCase):
         self.assertEqual(preserved["status"], "blocked")
         self.assertEqual(preserved["stages"]["00_authenticate"]["reason"], CONCURRENCY_BLOCK)
         self.assertEqual(self._digests(), self.before)
+
+class PagesPersistenceWorkflowTests(unittest.TestCase):
+    def test_pages_step_stages_launch_index_before_rebase(self) -> None:
+        workflow = (
+            Path(__file__).resolve().parents[1]
+            / ".github"
+            / "workflows"
+            / "overnight-scheduled-output.yml"
+        ).read_text(encoding="utf-8")
+        self.assertIn(
+            'git add "data/market_watch_launches/$launch_id" "data/market_watch_launches/index.json"',
+            workflow,
+        )
+
