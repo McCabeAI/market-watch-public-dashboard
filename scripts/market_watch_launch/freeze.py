@@ -109,6 +109,7 @@ def _trade_permissions(launch: dict[str, Any]) -> dict[str, Any]:
             }
             for code in sorted(country_rows)
         },
+        "source_health": list(gate.get("source_health") or []),
         "expansion_rule": "country_and_expression_specific",
     }
 

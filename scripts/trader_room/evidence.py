@@ -410,6 +410,11 @@ def assemble_packet(
     packet["competition"] = competition_contract(packet["funding_context"])
     if market.get("status") == "unavailable":
         packet["known_gaps"].append("market_state snapshot was not supplied")
+    from scripts.cross_asset_data import compact_cross_assets
+
+    compact = compact_cross_assets(market)
+    packet["cross_assets"] = compact
+    packet["cross_asset"] = list(compact.get("marks") or [])
     packet["source_index"] = source_index_from_packet(packet)
     return packet
 

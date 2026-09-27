@@ -74,6 +74,74 @@ def collect_cross_assets(start, today, fetch):
     return {k:v for k,v,m in results}, {k:m for k,v,m in results}
 
 
+COMPACT_MARK_IDS = ("WTI", "BRENT", "GOLD", "SP500", "NASDAQ", "DOW", "RUSSELL", "COPPER", "VIX")
+
+
+def stamp_latest_values(cross_raw, cross_meta):
+    """Copy the newest completed observation onto series metadata before freeze."""
+    for key, values in (cross_raw or {}).items():
+        meta = (cross_meta or {}).get(key)
+        if not isinstance(meta, dict) or not values:
+            continue
+        asof = max(values)
+        meta["value"] = values[asof]
+        meta.setdefault("as_of", asof.isoformat())
+    return cross_meta
+
+
+def compact_cross_assets(market_state):
+    """Small oil/gold/equity block safe to copy into trader, PM, and agent packets."""
+    market_state = market_state if isinstance(market_state, dict) else {}
+    block = market_state.get("cross_assets") if isinstance(market_state.get("cross_assets"), dict) else {}
+    series = block.get("series") if isinstance(block.get("series"), dict) else {}
+    opportunities = market_state.get("opportunities") if isinstance(market_state.get("opportunities"), dict) else {}
+    by_id = {}
+    for row in opportunities.get("series") or []:
+        if isinstance(row, dict) and row.get("id"):
+            by_id[str(row["id"])] = row
+    marks = []
+    for key in COMPACT_MARK_IDS:
+        meta = series.get(key) if isinstance(series.get(key), dict) else {}
+        opp = by_id.get(key) or {}
+        if not meta and not opp:
+            continue
+        value = meta.get("value", opp.get("value"))
+        marks.append(
+            {
+                "id": key,
+                "symbol": meta.get("symbol"),
+                "label": meta.get("label") or opp.get("label"),
+                "value": value,
+                "unit": meta.get("unit") or opp.get("unit"),
+                "as_of": meta.get("as_of") or opp.get("as_of"),
+                "status": meta.get("status") or opp.get("status"),
+                "source": meta.get("source"),
+            }
+        )
+    return {
+        "status": block.get("status") or ("ok" if marks else "missing"),
+        "generated_at": market_state.get("generated_at"),
+        "provenance": "frozen_market_state",
+        "marks": marks,
+    }
+
+
+def frozen_cross_assets_from_evidence(packet):
+    """Compact marks from a frozen evidence snapshot or a bare market-state object."""
+    if not isinstance(packet, dict):
+        return compact_cross_assets({})
+    families = packet.get("families") if isinstance(packet.get("families"), dict) else None
+    if families is not None:
+        block = families.get("market_state") if isinstance(families.get("market_state"), dict) else {}
+        data = block.get("data") if isinstance(block.get("data"), dict) else block
+        return compact_cross_assets(data)
+    if isinstance(packet.get("market_state"), dict):
+        market = packet["market_state"]
+        data = market.get("data") if isinstance(market.get("data"), dict) else market
+        return compact_cross_assets(data)
+    return compact_cross_assets(packet)
+
+
 def public_snapshot(packet):
     """Do not redistribute licensed index histories in the public Pages JSON."""
     import copy

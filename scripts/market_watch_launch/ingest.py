@@ -410,6 +410,16 @@ def _live_ingestion(
         for raw in merged_raw
         if str(raw.get("series_id")) in by_id
     ]
+    from scripts.macro_source_health import annotate_rows
+    from scripts.temperature_level import load_history
+
+    history_dir = _canonical_history_dir(root)
+    if history_dir.is_dir():
+        rows = annotate_rows(
+            rows,
+            histories=load_history(history_dir),
+            catalog_by_id=by_id,
+        )
     for row in rows:
         row["attempts"] = attempts.get(str(row["series_id"]), _row_fetch_attempts(row))
 

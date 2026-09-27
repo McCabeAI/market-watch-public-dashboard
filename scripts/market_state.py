@@ -49,7 +49,7 @@ from scripts.japan_rates_data import (
     jgb_observation_status,
 )
 from scripts.us_housing_data import collect_us_housing, validate_us_housing
-from scripts.cross_asset_data import collect_cross_assets
+from scripts.cross_asset_data import collect_cross_assets, compact_cross_assets, stamp_latest_values
 from scripts.market_opportunities import build_opportunities
 from scripts.official_curve_data import collect_official_curves, validate_official_curves
 from scripts.positioning_data import build_positioning, validate_positioning
@@ -1283,6 +1283,8 @@ def build_snapshot(
     )
 
     cross_raw, cross_meta = collect_cross_assets(start, today, fetch_bytes) if include_cross_assets else ({}, {})
+    if include_cross_assets:
+        stamp_latest_values(cross_raw, cross_meta)
     opportunities = build_opportunities(rates_raw, fx_raw, cross_raw, cross_meta, today)
     if include_policy_paths is None:
         include_policy_paths = include_cross_assets
@@ -1414,7 +1416,19 @@ def build_snapshot(
         "euro_area_housing": euro_area_housing,
         "japan_housing": japan_housing,
         "euro_area_fragmentation": euro_area_fragmentation,
-        "cross_assets": {"series": cross_meta, "status": "partial" if any(m["status"] != "ok" for m in cross_meta.values()) else "ok"},
+        "cross_assets": {
+            "series": cross_meta,
+            "status": "partial" if any(m["status"] != "ok" for m in cross_meta.values()) else "ok",
+            "compact": compact_cross_assets(
+                {
+                    "generated_at": None,
+                    "cross_assets": {
+                        "series": cross_meta,
+                        "status": "partial" if any(m["status"] != "ok" for m in cross_meta.values()) else "ok",
+                    },
+                }
+            ),
+        },
         "opportunities": opportunities,
         "positioning": positioning,
         "schema_version": 1,

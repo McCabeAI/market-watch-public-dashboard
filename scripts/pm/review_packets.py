@@ -129,6 +129,8 @@ def memory_market_inputs(
 
 
 def compact_market_state(evidence: dict[str, Any]) -> dict[str, Any]:
+    from scripts.cross_asset_data import compact_cross_assets
+
     market = evidence.get("market_state") if isinstance(evidence.get("market_state"), dict) else {}
     warnings = []
     if "tradable_rate_curves" not in market:
@@ -144,6 +146,7 @@ def compact_market_state(evidence: dict[str, Any]) -> dict[str, Any]:
         "policy_paths": _compact_policy(market.get("policy_paths")),
         "tradable_rate_curves": _compact_curves(market.get("tradable_rate_curves"), label="SOFR/CORRA/AONIA curves"),
         "official_curves": _compact_curves(market.get("official_curves"), label="official sovereign curves"),
+        "cross_assets": compact_cross_assets(market),
         "warnings": warnings,
     }
 

@@ -9,7 +9,12 @@ from scripts.overnight.accepted_news import assert_site_news_matches_accepted, e
 from scripts.overnight.assemble import validate_dataset
 from scripts.overnight.errors import PublicationError, SchemaError
 from scripts.overnight.freshness import assert_may_publish, age_status
-from scripts.overnight.public_prose import public_research_summary, sanitize_public_prose
+from scripts.overnight.public_prose import (
+    public_research_summary,
+    room_data_caveat,
+    sanitize_public_prose,
+    strip_unrelated_data_caveat,
+)
 from scripts.overnight.store import OvernightStore, write_json
 
 
@@ -74,11 +79,44 @@ def publication_gate(
     return {**decision, "dataset": dataset}
 
 
-def _public_research(research: dict) -> dict:
+def _expression_countries(seat: dict[str, Any]) -> set[str]:
+    from scripts.macro_freshness import macro_countries_for_expression
+
+    countries: set[str] = set()
+    for position in seat.get("positions") or []:
+        if not isinstance(position, dict):
+            continue
+        countries |= macro_countries_for_expression(
+            position.get("instrument"),
+            asset_class=position.get("asset_class"),
+            expression=position.get("expression"),
+        )
+    for action in seat.get("actions") or []:
+        if not isinstance(action, dict):
+            continue
+        countries |= macro_countries_for_expression(
+            action.get("instrument"),
+            asset_class=action.get("asset_class"),
+            expression=action.get("expression"),
+        )
+    return countries
+
+
+def _public_research(research: dict, *, market_state: dict | None = None, trade_permissions: dict | None = None) -> dict:
     projected = dict(research)
     items = list(projected.get("news") or []) + list(projected.get("central_bank_research") or [])
     if "summary" in projected or items:
-        projected["summary"] = public_research_summary(projected.get("summary"), items=items)
+        projected["summary"] = public_research_summary(
+            projected.get("summary"),
+            items=items,
+            market_state=market_state,
+            data_caveat=room_data_caveat(trade_permissions),
+        )
+    if trade_permissions is not None:
+        projected["data_health"] = {
+            "source_health": list(trade_permissions.get("source_health") or []),
+            "room_caveat": room_data_caveat(trade_permissions),
+        }
     return projected
 
 
@@ -94,19 +132,42 @@ def emit_trader_books_json(store: OvernightStore, site_dir: Path, *, run_id: str
 
     if canonical_payload is not None:
         payload = dict(canonical_payload)
+        permissions = dataset.get("trade_permissions") if dataset is not None else None
+        market_state = None
+        if dataset is not None:
+            market_block = (dataset.get("core") or {}).get("market_state") or {}
+            market_state = market_block.get("data") if isinstance(market_block, dict) else None
         for seat in payload.get("seats") or []:
+            countries = _expression_countries(seat)
             seat["thesis"] = sanitize_public_prose(
-                seat.get("thesis"),
+                strip_unrelated_data_caveat(str(seat.get("thesis") or ""), countries),
                 max_chars=700,
                 fallback="No clean public book note was recorded for this cycle.",
             )
-            seat["invalidation"] = sanitize_public_prose(seat.get("invalidation"), max_chars=500, fallback="")
+            seat["invalidation"] = sanitize_public_prose(
+                strip_unrelated_data_caveat(str(seat.get("invalidation") or ""), countries),
+                max_chars=500,
+                fallback="",
+            )
             for position in seat.get("positions") or []:
-                position["thesis"] = sanitize_public_prose(position.get("thesis"), max_chars=500, fallback="")
-                position["invalidation"] = sanitize_public_prose(position.get("invalidation"), max_chars=400, fallback="")
+                position_countries = _expression_countries({"positions": [position]})
+                position["thesis"] = sanitize_public_prose(
+                    strip_unrelated_data_caveat(str(position.get("thesis") or ""), position_countries),
+                    max_chars=500,
+                    fallback="",
+                )
+                position["invalidation"] = sanitize_public_prose(
+                    strip_unrelated_data_caveat(str(position.get("invalidation") or ""), position_countries),
+                    max_chars=400,
+                    fallback="",
+                )
         if dataset is not None:
             pub = dataset["publication"]
-            payload["overnight_research"] = _public_research(dataset.get("agent_research") or {})
+            payload["overnight_research"] = _public_research(
+                dataset.get("agent_research") or {},
+                market_state=market_state if isinstance(market_state, dict) else None,
+                trade_permissions=permissions if isinstance(permissions, dict) else None,
+            )
             payload["trade_permissions"] = dataset.get("trade_permissions")
             publication = {
                 "core_status": pub["core_status"],
@@ -138,7 +199,15 @@ def emit_trader_books_json(store: OvernightStore, site_dir: Path, *, run_id: str
         payload = dataset["trader_books"]
         payload = {
             **payload,
-            "overnight_research": _public_research(dataset.get("agent_research") or {}),
+            "overnight_research": _public_research(
+                dataset.get("agent_research") or {},
+                market_state=((dataset.get("core") or {}).get("market_state") or {}).get("data")
+                if isinstance((dataset.get("core") or {}).get("market_state"), dict)
+                else None,
+                trade_permissions=dataset.get("trade_permissions")
+                if isinstance(dataset.get("trade_permissions"), dict)
+                else None,
+            ),
             "trade_permissions": dataset.get("trade_permissions"),
             "publication": {
                 **{
