@@ -37,7 +37,13 @@ from scripts.trading.learning import (
     record_retrieved_lessons,
     validate_learning_quality_review,
 )
-from scripts.trading.memory import accept_performance_reflection, accept_postmortem, apply_memory_update, build_memory_context
+from scripts.trading.memory import (
+    accept_performance_reflection,
+    accept_postmortem,
+    apply_memory_update,
+    build_memory_context,
+    reflection_obligation_already_covered,
+)
 from scripts.trading.store import TradingStore
 
 NY = ZoneInfo("America/New_York")
@@ -650,30 +656,26 @@ class TraderLearningV2Tests(unittest.TestCase):
         }
         self.assertIn("close_reason_diverges", {row["id"] for row in journal_learning_triggers([funding])})
 
-        mismatched = {
+        invalidated = {
             "trade_id": "trd-expr",
             "status": "closed",
             "entry_thesis": "USDCAD spot would extend.",
             "instrument": "USDCAD",
             "asset_class": "spot_fx",
             "paper_expression": {"type": "futures_strip_average", "curve_id": "sofr", "contracts": ["SR3U6"]},
+            "catalysts": ["growth_data"],
             "events": [{"kind": "CLOSE", "exit_reason_category": "thesis_invalidated"}],
         }
-        mismatched_ids = {row["id"] for row in journal_learning_triggers([mismatched])}
-        self.assertIn("right_thesis_wrong_expression", mismatched_ids)
-        self.assertIn("thesis_invalidated", mismatched_ids)
-        self.assertNotIn("catalyst_or_reaction_diverged", mismatched_ids)
+        invalidated_ids = {row["id"] for row in journal_learning_triggers([invalidated])}
+        self.assertEqual(invalidated_ids, {"thesis_invalidated"})
 
-        catalyst = {
-            **mismatched,
-            "trade_id": "trd-cat",
-            "paper_expression": None,
-            "catalysts": ["growth_data"],
+        mismatched = {
+            **invalidated,
+            "trade_id": "trd-risk",
+            "events": [{"kind": "CLOSE", "exit_reason_category": "risk_cut"}],
         }
-        catalyst_ids = {row["id"] for row in journal_learning_triggers([catalyst])}
-        self.assertIn("catalyst_or_reaction_diverged", catalyst_ids)
-        self.assertIn("thesis_invalidated", catalyst_ids)
-        self.assertNotIn("right_thesis_wrong_expression", catalyst_ids)
+        mismatched_ids = {row["id"] for row in journal_learning_triggers([mismatched])}
+        self.assertEqual(mismatched_ids, {"stop_or_forced_exit", "right_thesis_wrong_expression"})
 
         state = {
             "repeated_error_escalations": [{"lesson_id": "les-1", "failure_mode": "crowded_expression", "count": 2}],
@@ -690,6 +692,40 @@ class TraderLearningV2Tests(unittest.TestCase):
             },
         )
         self.assertEqual(again, [])
+
+    def test_distinct_lesson_contradictions_stay_distinct_obligations(self) -> None:
+        covered = [{
+            "trigger_ids": ["material_loss", "explicit_lesson_contradiction"],
+            "facts": {
+                "net_pnl_usd": -2_100_000.0,
+                "drawdown_usd": 0.0,
+                "competition_rank": 3,
+                "lesson_ids": ["les-1"],
+                "trade_ids": [],
+            },
+        }]
+        same_economics = {
+            "net_pnl": -2_100_000.0,
+            "drawdown": 0.0,
+            "rank": 3,
+        }
+        self.assertTrue(reflection_obligation_already_covered(
+            covered,
+            [{"id": "material_loss"}],
+            **same_economics,
+        ))
+        self.assertFalse(reflection_obligation_already_covered(
+            covered,
+            [{"id": "explicit_lesson_contradiction", "lesson_id": "les-2"}],
+            **same_economics,
+        ))
+        self.assertFalse(reflection_obligation_already_covered(
+            covered,
+            [{"id": "material_loss"}],
+            net_pnl=-2_600_000.0,
+            drawdown=0.0,
+            rank=3,
+        ))
 
     def test_lesson_disposition_is_persisted_for_the_owner_only(self) -> None:
         due_id = self._due_reflection()

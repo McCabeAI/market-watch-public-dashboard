@@ -278,15 +278,66 @@ def performance_triggers(
     return triggers
 
 
+def _trigger_identity_sets(triggers: list[dict[str, Any]]) -> tuple[set[str], set[str], set[str]]:
+    return (
+        {str(row["id"]) for row in triggers if row.get("id")},
+        {str(row["lesson_id"]) for row in triggers if row.get("lesson_id")},
+        {str(row["trade_id"]) for row in triggers if row.get("trade_id")},
+    )
+
+
 def reflection_due_fingerprint(triggers: list[dict[str, Any]], *, net_pnl: float | None, drawdown: float | None, rank: int | None) -> str:
+    trigger_ids, lesson_ids, trade_ids = _trigger_identity_sets(triggers)
     return sha256_json(
         {
-            "trigger_ids": sorted(row["id"] for row in triggers),
+            "trigger_ids": sorted(trigger_ids),
+            "lesson_ids": sorted(lesson_ids),
+            "trade_ids": sorted(trade_ids),
             "net_pnl": round(float(net_pnl), 2) if net_pnl is not None else None,
             "drawdown": round(float(drawdown), 2) if drawdown is not None else None,
             "rank": rank,
         }
     )
+
+
+def _econ_key(net_pnl: float | None, drawdown: float | None, rank: int | None) -> tuple[float | None, float | None, int | None]:
+    return (
+        round(float(net_pnl), 2) if net_pnl is not None else None,
+        round(float(drawdown), 2) if drawdown is not None else None,
+        rank,
+    )
+
+
+def reflection_obligation_already_covered(
+    items: list[dict[str, Any]],
+    triggers: list[dict[str, Any]],
+    *,
+    net_pnl: float | None,
+    drawdown: float | None,
+    rank: int | None,
+) -> bool:
+    """True when an existing due item already contains this fact set.
+
+    A later call that drops an already-recorded compliance trigger must not open
+    a new item for the same P&L, drawdown, and rank. A new lesson id or trade id
+    is not covered by an older item.
+    """
+    new_ids, new_lessons, new_trades = _trigger_identity_sets(triggers)
+    economics = _econ_key(net_pnl, drawdown, rank)
+    for item in items:
+        if not isinstance(item, dict):
+            continue
+        facts = item.get("facts") if isinstance(item.get("facts"), dict) else {}
+        if "net_pnl_usd" not in facts and "drawdown_usd" not in facts:
+            continue
+        if _econ_key(facts.get("net_pnl_usd"), facts.get("drawdown_usd"), facts.get("competition_rank")) != economics:
+            continue
+        old_ids = {str(trigger_id) for trigger_id in (item.get("trigger_ids") or [])}
+        old_lessons = {str(lesson_id) for lesson_id in (facts.get("lesson_ids") or []) if lesson_id}
+        old_trades = {str(trade_id) for trade_id in (facts.get("trade_ids") or []) if trade_id}
+        if new_ids <= old_ids and new_lessons <= old_lessons and new_trades <= old_trades:
+            return True
+    return False
 
 
 def ensure_reflections_due(
@@ -353,6 +404,14 @@ def ensure_reflections_due(
     for item in due_doc.get("items") or []:
         if item.get("fingerprint") == fingerprint:
             return
+    if reflection_obligation_already_covered(
+        list(due_doc.get("items") or []),
+        triggers,
+        net_pnl=net,
+        drawdown=drawdown,
+        rank=rank,
+    ):
+        return
     item = {
         "reflection_due_id": f"rfd-{uuid4().hex[:12]}",
         "owner_type": owner_type,

@@ -554,10 +554,12 @@ def journal_learning_triggers(trades: list[dict[str, Any]]) -> list[dict[str, An
     - ``close_reason_diverges``: an entry thesis is stored and the close
       category is ``funding`` or ``mandate`` (a non-thesis close reason).
     - ``right_thesis_wrong_expression``: an entry thesis and paper expression
-      are stored, the close was not ``target_reached``, and the expression
-      family differs from the instrument's own family.
-    - ``catalyst_or_reaction_diverged``: entry catalysts are stored and the
-      close category is ``thesis_invalidated``.
+      are stored, the expression family differs from the instrument family,
+      and the close category is neither ``thesis_invalidated`` nor
+      ``target_reached``.
+    - ``catalyst_or_reaction_diverged`` is not emitted. No ledger field records
+      a catalyst or reaction divergence, and entry catalysts plus a thesis
+      invalidation are not that fact.
     """
     triggers: list[dict[str, Any]] = []
     for trade in trades:
@@ -581,21 +583,17 @@ def journal_learning_triggers(trades: list[dict[str, Any]]) -> list[dict[str, An
                     "evidence": ["entry_thesis", "exit_reason_category"],
                 }
             )
-        if category != "target_reached" and _expression_family_mismatch(trade):
+        # A family mismatch is a stored fact. It is not evidence that the thesis
+        # was right. thesis_invalidated says the thesis failed, and target_reached
+        # says the expression worked. Neither can support this trigger.
+        # catalyst_or_reaction_diverged is intentionally absent: the ledger stores
+        # the entry catalyst list, not an observed-versus-expected reaction.
+        if category not in {None, "thesis_invalidated", "target_reached"} and _expression_family_mismatch(trade):
             triggers.append(
                 {
                     "id": "right_thesis_wrong_expression",
                     "trade_id": trade_id,
-                    "evidence": ["entry_thesis", "paper_expression", "instrument"],
-                }
-            )
-        catalysts = [item for item in (trade.get("catalysts") or []) if _text(item)]
-        if catalysts and category == "thesis_invalidated":
-            triggers.append(
-                {
-                    "id": "catalyst_or_reaction_diverged",
-                    "trade_id": trade_id,
-                    "evidence": ["catalysts", "exit_reason_category"],
+                    "evidence": ["entry_thesis", "paper_expression", "instrument", "exit_reason_category"],
                 }
             )
     return triggers
