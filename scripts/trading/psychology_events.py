@@ -79,6 +79,22 @@ def _open_run(trade: dict[str, Any]) -> str | None:
     return trade.get("opened_run_id")
 
 
+def _lesson_instruments(row: dict[str, Any]) -> set[str]:
+    found: set[str] = set()
+    for item in row.get("instruments") or []:
+        text = str(item).strip().upper()
+        if text:
+            found.add(text)
+    return found
+
+
+def _disposition_matches_trade(row: dict[str, Any], trade: dict[str, Any]) -> bool:
+    """A stored disposition moves psychology only for the instrument it was applied to."""
+    instruments = _lesson_instruments(row)
+    instrument = str(trade.get("instrument") or "").strip().upper()
+    return bool(instrument) and instrument in instruments
+
+
 def detect_cycle_events(
     *,
     owner_type: str,
@@ -164,13 +180,9 @@ def detect_cycle_events(
     if rank_answers.get("pressure_read") == "distorting":
         events.append(_event("self_report_admission_pressure_distorting", 1.0, {"source": "psychology_check"}, source={"layer": "self_report"}))
 
-    dispositions = {
-        str(row.get("lesson_id")): row
-        for row in (learning_state.get("retrieved_lessons") or [])
-        if isinstance(row, dict) and row.get("disposition")
-    }
     alert_rows = list(decision.get("alerts") or []) + list(alerts or [])
     forced_flat = any("max drawdown breached" in str(alert).lower() for alert in alert_rows)
+    fired_dispositions: set[tuple[str, str]] = set()
     for trade in trades:
         if trade.get("status") != "closed" or trade.get("closed_run_id") != run_id:
             continue
@@ -196,15 +208,26 @@ def detect_cycle_events(
             events.append(_event("trade_loss_close", mag, subject, soften=soften))
         open_run = _open_run(trade)
         opening = [
-            row for row in (learning_state.get("retrieved_lessons") or [])
-            if isinstance(row, dict) and row.get("run_id") == open_run and row.get("disposition")
+            row
+            for row in (learning_state.get("retrieved_lessons") or [])
+            if isinstance(row, dict)
+            and row.get("run_id") == open_run
+            and row.get("disposition")
+            and _disposition_matches_trade(row, trade)
         ]
-        if mag or realized >= 0:
-            if any(row.get("disposition") in {"OVERRIDE", "DOES_NOT_APPLY"} for row in opening) and realized < -dead:
-                events.append(_event("override_failed", mag, subject, source={"layer": "L3"}))
-            if any(row.get("disposition") == "APPLIES" for row in opening) and realized >= 0:
-                events.append(_event("correction_success", max(0.5, mag), subject, source={"layer": "L3"}))
-            if any(row.get("disposition") == "OVERRIDE" for row in opening) and realized > dead:
+        for row in opening:
+            disposition = str(row.get("disposition"))
+            key = (str(row.get("lesson_id") or ""), disposition)
+            if key in fired_dispositions:
+                continue
+            if disposition in {"OVERRIDE", "DOES_NOT_APPLY"} and realized < -dead:
+                fired_dispositions.add(key)
+                events.append(_event("override_failed", mag or 1.0, subject, source={"layer": "L3"}))
+            elif disposition == "APPLIES" and realized > dead:
+                fired_dispositions.add(key)
+                events.append(_event("correction_success", mag, subject, source={"layer": "L3"}))
+            elif disposition == "OVERRIDE" and realized > dead:
+                fired_dispositions.add(key)
                 events.append(_event("override_vindicated", min(0.5, mag), subject, source={"layer": "L3"}))
 
     actions = [row for row in (decision.get("actions") or []) if isinstance(row, dict)]
@@ -228,24 +251,26 @@ def detect_cycle_events(
 
     previous_status = state.get("last_learning_status")
     status = learning_state.get("learning_status")
-    if status == "learning_default" and previous_status != "learning_default":
+    entered_default = status == "learning_default" and previous_status != "learning_default"
+    if entered_default:
         events.append(_event("learning_default_entered", 1.0, {"learning_status": status}, source={"layer": "L3"}))
     elif previous_status == "learning_default" and status and status != "learning_default":
         events.append(_event("learning_default_cleared", 1.0, {"learning_status": status}, source={"layer": "L3"}))
 
     previous_counts = dict(state.get("last_repeated_error_counts") or {})
-    new_counts = {}
-    escalations = 0
+    max_counts: dict[str, int] = {}
     for row in learning_state.get("repeated_error_escalations") or []:
         if not isinstance(row, dict) or not row.get("lesson_id"):
             continue
         lesson_id = str(row.get("lesson_id"))
         count = int(row.get("count") or 0)
-        new_counts[lesson_id] = count
+        max_counts[lesson_id] = max(int(max_counts.get(lesson_id) or 0), count)
+    escalations = 0
+    for lesson_id, count in max_counts.items():
         if count > int(previous_counts.get(lesson_id) or 0) and escalations < 2:
             escalations += 1
             events.append(_event("lesson_contradicted_after_retrieval", 1.0, {"lesson_id": lesson_id, "count": count}, source={"layer": "L3"}))
-    annotations["repeated_counts"] = new_counts
+    annotations["repeated_counts"] = max_counts
 
     active_tags = [tag for tag in ((state.get("tags") or {}).get("revenge") or []) if int(tag.get("ttl") or 0) > 0]
     win_streak = int((state.get("streaks") or {}).get("session_win") or 0)
@@ -272,7 +297,11 @@ def detect_cycle_events(
     previous_standing = state.get("last_capital_owner_standing")
     if capital_standing and previous_standing and capital_standing in _STANDING_RANK and previous_standing in _STANDING_RANK:
         if _STANDING_RANK[capital_standing] > _STANDING_RANK[previous_standing]:
-            events.append(_event("allocator_standing_worsened", 1.0, {"standing_from": previous_standing, "standing_to": capital_standing}))
+            # The learning-default floor lifts good_standing/watch to probation.
+            # That administrative step is not a second psychology event.
+            floor_only = entered_default and capital_standing == "probation"
+            if not floor_only:
+                events.append(_event("allocator_standing_worsened", 1.0, {"standing_from": previous_standing, "standing_to": capital_standing}))
         elif capital_standing == "good_standing" and previous_standing != "good_standing":
             events.append(_event("allocator_standing_restored", 1.0, {"standing_from": previous_standing, "standing_to": capital_standing}))
     flags = set(consequence.get("pressure_flags") or [])
@@ -391,9 +420,12 @@ def _verdict_name(
     distorted_evidence = bool(attributions & {"sizing", "timing", "entry"}) or chase or exit_category == "risk_cut"
     if realized <= -unit and distorted_evidence:
         return "distorted"
-    luck = any(row.get("skill_vs_luck") == "luck" for row in reflections)
-    non_luck = any(row.get("skill_vs_luck") not in (None, "luck") for row in reflections)
-    if realized >= unit and non_luck and not luck:
+    labels = {
+        str(row.get("skill_vs_luck"))
+        for row in reflections
+        if row.get("skill_vs_luck") not in (None, "")
+    }
+    if realized >= unit and labels == {"skill"}:
         return "sharpened"
     return "inconclusive"
 

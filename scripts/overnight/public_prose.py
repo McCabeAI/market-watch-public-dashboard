@@ -60,7 +60,13 @@ _MACHINE_PATTERNS: tuple[re.Pattern[str], ...] = tuple(
         r"\bstate_sha256\b",
         r"\bpse-[0-9a-f]+\b",
         r"\b(?:revenge_risk|heater_risk|chase_risk|stubbornness_risk|capitulation_risk|rank_distortion_risk|fragile_confidence|inflated_confidence|self_report_unreliable)\b",
-        r"\b(?:self_trust|frustration|defensiveness|chase_pressure|revenge_pressure|complacency|thesis_attachment|external_pressure)\s+(?:is\s+|at\s+|of\s+)?-?\d",
+        r"\b(?:self_trust|frustration|defensiveness|chase_pressure|revenge_pressure|complacency|thesis_attachment|external_pressure)\s*(?:=|:|is|at|of|was|\()\s*-?\d",
+        r"\b(?:revenge|heater|chase|stubbornness|capitulation)\s+risk\b",
+        r"\brank\s+distortion\s+risk\b",
+        r"\b(?:fragile|inflated)\s+confidence\b",
+        r"\bself[- ]report\s+unreliable\b",
+        r"\blearning\s+default\b",
+        r"\blesson\s+matching\b",
     )
 )
 
@@ -119,9 +125,15 @@ _SCRUB_RES: tuple[re.Pattern[str], ...] = (
         re.IGNORECASE,
     ),
     re.compile(
-        r"\b(?:self_trust|frustration|defensiveness|chase_pressure|revenge_pressure|complacency|thesis_attachment|external_pressure)\s+(?:is\s+|at\s+|of\s+)?-?\d",
+        r"\b(?:self_trust|frustration|defensiveness|chase_pressure|revenge_pressure|complacency|thesis_attachment|external_pressure)\s*(?:=|:|is|at|of|was|\()\s*-?\d",
         re.IGNORECASE,
     ),
+    re.compile(r"\b(?:revenge|heater|chase|stubbornness|capitulation)\s+risk\b", re.IGNORECASE),
+    re.compile(r"\brank\s+distortion\s+risk\b", re.IGNORECASE),
+    re.compile(r"\b(?:fragile|inflated)\s+confidence\b", re.IGNORECASE),
+    re.compile(r"\bself[- ]report\s+unreliable\b", re.IGNORECASE),
+    re.compile(r"\blearning\s+default\b", re.IGNORECASE),
+    re.compile(r"\blesson\s+matching\b", re.IGNORECASE),
 )
 
 
@@ -157,6 +169,14 @@ _PRIVATE_ALERT_MARKERS = (
     "fragile_confidence",
     "inflated_confidence",
     "self_report_unreliable",
+    "learning default",
+    "lesson matching",
+    "heater risk",
+    "revenge risk",
+    "chase risk",
+    "stubbornness risk",
+    "capitulation risk",
+    "rank distortion",
 )
 
 
@@ -254,6 +274,19 @@ def sanitize_public_prose(
         return out
     clipped = out[:max_chars].rsplit(" ", 1)[0].rstrip(" ,;:")
     return clipped + "…"
+
+
+def sanitize_public_value(value: Any, *, max_chars: int = 700) -> Any:
+    """Sanitize string leaves inside public projections. Numbers and ids stay."""
+    if value is None:
+        return None
+    if isinstance(value, str):
+        return sanitize_public_prose(value, max_chars=max_chars, fallback="")
+    if isinstance(value, list):
+        return [sanitize_public_value(item, max_chars=max_chars) for item in value]
+    if isinstance(value, dict):
+        return {key: sanitize_public_value(item, max_chars=max_chars) for key, item in value.items()}
+    return value
 
 
 def public_research_summary(value: Any, *, items: list[dict[str, Any]] | None = None) -> str:

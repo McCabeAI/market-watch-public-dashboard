@@ -69,11 +69,24 @@ def decision_fingerprint(decision: dict[str, Any] | None) -> str:
     )
 
 
+def _strip_runtime(value: Any) -> Any:
+    """Drop hidden CoT at every depth. Lists and scalars stay otherwise intact."""
+    if isinstance(value, dict):
+        return {
+            key: _strip_runtime(item)
+            for key, item in value.items()
+            if key not in RUNTIME_ONLY_PAYLOAD_KEYS
+        }
+    if isinstance(value, list):
+        return [_strip_runtime(item) for item in value]
+    return deepcopy(value)
+
+
 def durable_structured_payload(payload: dict[str, Any] | None) -> dict[str, Any]:
     """Keep the complete validated argument; drop hidden CoT and runtime-only junk."""
     if not isinstance(payload, dict):
         return {}
-    return {key: deepcopy(value) for key, value in payload.items() if key not in RUNTIME_ONLY_PAYLOAD_KEYS}
+    return _strip_runtime(payload)
 
 
 def compact_actions(actions: list[Any] | None) -> list[dict[str, Any]]:

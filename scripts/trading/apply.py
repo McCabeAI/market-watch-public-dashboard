@@ -448,10 +448,19 @@ def _prepare_identity(
             retrieved.append(str(lesson_id))
             consideration = considerations.get(lesson_id)
             if isinstance(consideration, dict):
-                dispositions[str(lesson_id)] = {
-                    "disposition": consideration.get("disposition"),
-                    "rationale": consideration.get("rationale"),
-                }
+                slot = dispositions.setdefault(
+                    str(lesson_id),
+                    {
+                        "disposition": consideration.get("disposition"),
+                        "rationale": consideration.get("rationale"),
+                        "instruments": [],
+                    },
+                )
+                slot["disposition"] = consideration.get("disposition")
+                slot["rationale"] = consideration.get("rationale")
+                instrument = action.get("instrument")
+                if isinstance(instrument, str) and instrument.strip() and instrument.strip() not in slot["instruments"]:
+                    slot["instruments"].append(instrument.strip())
     record_retrieved_lessons(
         store,
         owner_type,

@@ -37,7 +37,7 @@ from scripts.overnight.constants import (
 )
 from scripts.overnight.errors import FreshnessError, SchemaError
 from scripts.overnight.expression import expression_rule, remit, selected_asset_class, validate_expression_memo
-from scripts.overnight.public_prose import public_alerts, sanitize_public_prose
+from scripts.overnight.public_prose import public_alerts, sanitize_public_prose, sanitize_public_value
 from scripts.overnight.freshness import assert_action_allowed
 from scripts.risk_capital import (
     already_force_flattened_ids,
@@ -1047,7 +1047,7 @@ def public_books_view(books: dict[str, Any]) -> dict[str, Any]:
                         "entry_price_as_of": p.get("entry_price_as_of"),
                         "mark_price_source": p.get("mark_price_source"),
                         "mark_price_as_of": p.get("mark_price_as_of"),
-                        "paper_expression": p.get("paper_expression"),
+                        "paper_expression": sanitize_public_value(p.get("paper_expression"), max_chars=500),
                         "opened_at": p.get("opened_at"),
                         "opened_run_id": p.get("opened_run_id"),
                         "thesis": sanitize_public_prose(p.get("thesis"), max_chars=500, fallback=""),
@@ -1059,8 +1059,8 @@ def public_books_view(books: dict[str, Any]) -> dict[str, Any]:
                     }
                     for p in item["positions"]
                 ],
-                "required_pitch": item.get("required_pitch"),
-                "risk_put_on": item.get("risk_put_on"),
+                "required_pitch": sanitize_public_value(item.get("required_pitch"), max_chars=700),
+                "risk_put_on": sanitize_public_value(item.get("risk_put_on"), max_chars=700),
             }
         )
         for row in item.get("history") or []:

@@ -167,6 +167,85 @@ class PsychologyGateTests(unittest.TestCase):
         status = psychology_journal_payload(optional, [])
         self.assertEqual(status["check_status"], "missing_optional")
 
+    def test_override_on_open_still_requires_stubbornness_check(self) -> None:
+        flag = {
+            "id": "stubbornness_risk",
+            "scope": "all",
+            "families": [],
+            "relevant_actions": ["ADD"],
+            "check": "required",
+        }
+        expanding = {
+            "action": "OPEN",
+            "instrument": "USDCAD",
+            "lesson_considerations": [
+                {
+                    "lesson_id": "les-1",
+                    "disposition": "OVERRIDE",
+                    "rationale": "The crowded extension is not the same setup this time.",
+                }
+            ],
+        }
+        decision = {"_memory_context": _context(flag)}
+        reason = psychology_action_reason(expanding, decision, owner_id="value-guy")
+        self.assertIn("missing_psychology_check stubbornness_risk", reason or "")
+        self.assertIsNone(
+            psychology_action_reason({"action": "OPEN", "instrument": "USDCAD"}, decision, owner_id="value-guy")
+        )
+        closed = dict(expanding)
+        closed["action"] = "CLOSE"
+        self.assertIsNone(psychology_action_reason(closed, decision, owner_id="value-guy"))
+
+    def test_derived_family_scope_reaches_the_gate(self) -> None:
+        from scripts.trading.psychology import derive_flags, fold_cycle, psychology_block_for_context, seed_state
+
+        stop = {
+            "kind": "stop_or_risk_cut_close",
+            "magnitude": 0.5,
+            "subject": {"family": "sofr", "side": "long", "trade_id": "t1"},
+        }
+        state, _records = fold_cycle(seed_state("trader", "mean-reverter"), [stop], run_id="a", review_id="1")
+        state["flags"] = derive_flags(state)
+        second = derive_flags(state)
+        revenge = next(row for row in second if row["id"] == "revenge_risk")
+        self.assertEqual(revenge["scope"], "family")
+        block = psychology_block_for_context(state)
+        visible = next(row for row in block["active_flags"] if row["id"] == "revenge_risk")
+        self.assertEqual(visible["scope"], "family")
+        decision = {"_memory_context": {"psychology": block}}
+        other = psychology_action_reason(
+            {"action": "OPEN", "instrument": "USDJPY", "asset_class": "spot_fx"},
+            decision,
+            owner_id="mean-reverter",
+        )
+        same = psychology_action_reason(
+            {"action": "OPEN", "instrument": "SOFR", "asset_class": "rates"},
+            decision,
+            owner_id="mean-reverter",
+        )
+        self.assertIsNone(other)
+        self.assertIn("missing_psychology_check revenge_risk", same or "")
+
+    def test_nested_chain_of_thought_does_not_survive_the_journal(self) -> None:
+        from scripts.trading.journal import durable_structured_payload
+
+        payload = durable_structured_payload(
+            {
+                "psychology": {
+                    "pressure_assessment": {
+                        "judgment_effect": "neither",
+                        "chain_of_thought": "secret path",
+                        "nested": {"reasoning": "also secret", "note": "keep the public note"},
+                    }
+                }
+            }
+        )
+        rendered = str(payload)
+        self.assertNotIn("secret", rendered)
+        self.assertNotIn("chain_of_thought", rendered)
+        self.assertEqual(payload["psychology"]["pressure_assessment"]["nested"]["note"], "keep the public note")
+        self.assertEqual(durable_structured_payload(None), {})
+
     def test_inapplicable_context_does_not_block(self) -> None:
         decision = {"_memory_context": {"psychology": {"applicable": False}}}
         self.assertIsNone(psychology_action_reason({"action": "OPEN"}, decision, owner_id="chatgpt"))

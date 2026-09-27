@@ -363,6 +363,173 @@ class PsychologyStateTests(unittest.TestCase):
         self.assertEqual(sharpened, "sharpened")
         self.assertEqual(luck, "inconclusive")
         self.assertEqual(small, "inconclusive")
+        mixed = _verdict_name(
+            realized=700_000,
+            unit=500_000,
+            attributions=set(),
+            reflections=[{"skill_vs_luck": "mixed"}],
+            exit_category=None,
+        )
+        not_applicable = _verdict_name(
+            realized=700_000,
+            unit=500_000,
+            attributions=set(),
+            reflections=[{"skill_vs_luck": "not_applicable"}],
+            exit_category=None,
+        )
+        self.assertEqual(mixed, "inconclusive")
+        self.assertEqual(not_applicable, "inconclusive")
+
+    def test_family_revenge_hysteresis_does_not_promote_scope(self) -> None:
+        state = seed_state("pm", "pragmatist")
+        state["axes"]["revenge_pressure"]["value"] = 0.40
+        state["tags"] = {"revenge": [{"family": "sofr", "ttl": 3, "loss_notional_usd": 1_000_000}]}
+        state["flags"] = []
+        first = derive_flags(state)
+        revenge = next(row for row in first if row["id"] == "revenge_risk")
+        self.assertEqual(revenge["scope"], "family")
+        state["flags"] = first
+        second = derive_flags(state)
+        again = next(row for row in second if row["id"] == "revenge_risk")
+        self.assertEqual(again["scope"], "family")
+
+    def test_repeated_escalation_emits_once_per_lesson(self) -> None:
+        escalations = [
+            {"lesson_id": "les-1", "failure_mode": "crowded", "count": 4},
+            {"lesson_id": "les-1", "failure_mode": "timing", "count": 2},
+        ]
+        state = seed_state("trader", "value-guy")
+        events, notes = detect_cycle_events(
+            owner_type="trader",
+            owner_id="value-guy",
+            state=state,
+            consequence={"session_pnl_change_usd": 0},
+            prior={},
+            decision={"actions": [{"action": "HOLD"}]},
+            blocked=[],
+            trades=[],
+            reflections=[],
+            learning_state={"learning_status": "compliant", "repeated_error_escalations": escalations},
+            capital_standing=None,
+            market_fresh=False,
+            run_id="esc-1",
+            positions=[],
+        )
+        emitted = [row for row in events if row["kind"] == "lesson_contradicted_after_retrieval"]
+        self.assertEqual(len(emitted), 1)
+        self.assertEqual(notes["repeated_counts"]["les-1"], 4)
+        state["last_repeated_error_counts"] = notes["repeated_counts"]
+        again, _notes = detect_cycle_events(
+            owner_type="trader",
+            owner_id="value-guy",
+            state=state,
+            consequence={"session_pnl_change_usd": 0},
+            prior={},
+            decision={"actions": [{"action": "HOLD"}]},
+            blocked=[],
+            trades=[],
+            reflections=[],
+            learning_state={"learning_status": "compliant", "repeated_error_escalations": escalations},
+            capital_standing=None,
+            market_fresh=False,
+            run_id="esc-2",
+            positions=[],
+        )
+        self.assertFalse(any(row["kind"] == "lesson_contradicted_after_retrieval" for row in again))
+
+    def test_disposition_outcomes_match_instrument_once(self) -> None:
+        def closed(trade_id: str, instrument: str, realized: float) -> dict:
+            return {
+                "trade_id": trade_id,
+                "status": "closed",
+                "instrument": instrument,
+                "closed_run_id": "close-1",
+                "realized_pnl_usd": realized,
+                "opened_run_id": "open-1",
+                "events": [
+                    {"kind": "OPEN", "run_id": "open-1"},
+                    {"kind": "CLOSE", "run_id": "close-1"},
+                ],
+            }
+
+        events, _notes = detect_cycle_events(
+            owner_type="trader",
+            owner_id="value-guy",
+            state=seed_state("trader", "value-guy"),
+            consequence={"session_pnl_change_usd": 0},
+            prior={},
+            decision={"actions": [{"action": "HOLD"}]},
+            blocked=[],
+            trades=[
+                closed("t-loss", "SOFR", -80_000),
+                closed("t-other", "EURUSD", -80_000),
+                closed("t-zero", "SOFR", 0),
+                closed("t-win", "SOFR", 100_000),
+            ],
+            reflections=[],
+            learning_state={
+                "learning_status": "compliant",
+                "retrieved_lessons": [
+                    {"lesson_id": "les-over", "run_id": "open-1", "disposition": "OVERRIDE", "instruments": ["SOFR"]},
+                    {"lesson_id": "les-apply", "run_id": "open-1", "disposition": "APPLIES", "instruments": ["SOFR"]},
+                ],
+            },
+            capital_standing=None,
+            market_fresh=False,
+            run_id="close-1",
+            positions=[],
+        )
+        kinds = [row["kind"] for row in events]
+        self.assertEqual(kinds.count("override_failed"), 1)
+        self.assertEqual(kinds.count("correction_success"), 1)
+        self.assertNotIn("override_vindicated", kinds)
+        failed = next(row for row in events if row["kind"] == "override_failed")
+        self.assertEqual(failed["subject"]["trade_id"], "t-loss")
+        success = next(row for row in events if row["kind"] == "correction_success")
+        self.assertEqual(success["subject"]["trade_id"], "t-win")
+        self.assertLess(success["magnitude"], 0.5)
+
+    def test_learning_default_floor_is_not_a_second_standing_event(self) -> None:
+        state = seed_state("pm", "grinder")
+        state["last_capital_owner_standing"] = "good_standing"
+        entered, _notes = detect_cycle_events(
+            owner_type="pm",
+            owner_id="grinder",
+            state=state,
+            consequence={},
+            prior={},
+            decision={"actions": [{"action": "HOLD"}]},
+            blocked=[],
+            trades=[],
+            reflections=[],
+            learning_state={"learning_status": "learning_default"},
+            capital_standing="probation",
+            market_fresh=False,
+            run_id="ld-floor",
+            positions=[],
+        )
+        kinds = [row["kind"] for row in entered]
+        self.assertIn("learning_default_entered", kinds)
+        self.assertNotIn("allocator_standing_worsened", kinds)
+        real, _notes = detect_cycle_events(
+            owner_type="pm",
+            owner_id="grinder",
+            state=state,
+            consequence={},
+            prior={},
+            decision={"actions": [{"action": "HOLD"}]},
+            blocked=[],
+            trades=[],
+            reflections=[],
+            learning_state={"learning_status": "compliant"},
+            capital_standing="probation",
+            market_fresh=False,
+            run_id="stand-1",
+            positions=[],
+        )
+        real_kinds = [row["kind"] for row in real]
+        self.assertIn("allocator_standing_worsened", real_kinds)
+        self.assertNotIn("learning_default_entered", real_kinds)
 
 
 if __name__ == "__main__":

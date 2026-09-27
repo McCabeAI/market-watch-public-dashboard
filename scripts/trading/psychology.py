@@ -385,13 +385,17 @@ def _shown(value: float) -> float:
 
 def derive_flags(state: dict[str, Any]) -> list[dict[str, Any]]:
     values = {axis: _shown(raw) for axis, raw in _axis_values(state).items()}
-    previous = {row.get("id") for row in (state.get("flags") or []) if isinstance(row, dict)}
+    previous_rows = [row for row in (state.get("flags") or []) if isinstance(row, dict)]
+    previous = {row.get("id") for row in previous_rows}
     streaks = state.get("streaks") or {}
     tags = (state.get("tags") or {}).get("revenge") or []
     active_tags = [tag for tag in tags if int(tag.get("ttl") or 0) > 0]
     flags: list[dict[str, Any]] = []
+    previous_level_revenge = any(
+        row.get("id") == "revenge_risk" and row.get("scope") != "family" for row in previous_rows
+    )
 
-    revenge_level = values["revenge_pressure"] >= 0.45 or ("revenge_risk" in previous and revenge_level_hold(values))
+    revenge_level = values["revenge_pressure"] >= 0.45 or (previous_level_revenge and revenge_level_hold(values))
     if revenge_level or active_tags:
         families = sorted({str(tag.get("family")) for tag in active_tags if tag.get("family")})
         scope = "all" if revenge_level else "family"
@@ -658,6 +662,7 @@ def psychology_block_for_context(state: dict[str, Any] | None, *, recent_events:
         visible_flags.append(
             {
                 "id": flag["id"],
+                "scope": flag.get("scope") or "all",
                 "basis": flag["basis"],
                 "relevant_actions": flag["relevant_actions"],
                 "families": flag.get("families") or [],

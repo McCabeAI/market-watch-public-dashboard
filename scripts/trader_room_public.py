@@ -14,6 +14,7 @@ import re
 from pathlib import Path
 from typing import Any
 
+from scripts.overnight.public_prose import sanitize_public_value
 from scripts.trader_room.constants import HANDOFF_MARKER, STANDING_ADVOCATES
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -84,11 +85,11 @@ def _trade_row(agent: str, contribution: dict[str, Any], rebuttal: dict[str, Any
             "instrument": trade.get("instrument"),
             "structure": trade.get("structure"),
             "direction": trade.get("direction"),
-            "expression": trade.get("expression"),
+            "expression": sanitize_public_value(trade.get("expression"), max_chars=420),
             "horizon": trade.get("horizon"),
             "entry": trade.get("entry"),
             "target": trade.get("target"),
-            "invalidation": trade.get("invalidation"),
+            "invalidation": sanitize_public_value(trade.get("invalidation"), max_chars=420),
         },
         "confidence": contribution.get("confidence", trade.get("confidence")),
         "entry_reason": _entry_reason(contribution),

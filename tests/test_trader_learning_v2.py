@@ -790,6 +790,7 @@ class TraderLearningV2Tests(unittest.TestCase):
         self.assertEqual(rows[0]["owner_type"], "trader")
         self.assertEqual(rows[0]["run_id"], "overnight-20260922")
         self.assertTrue(rows[0]["rationale"])
+        self.assertEqual(rows[0]["instruments"], ["USDCAD"])
         self.assertEqual(read_learning_state(self.store, "trader", "mean-reverter")["retrieved_lessons"], [])
         record_retrieved_lessons(
             self.store,

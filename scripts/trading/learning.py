@@ -421,6 +421,7 @@ def record_retrieved_lessons(
         if disposition not in LESSON_CONSIDERATION_DISPOSITIONS:
             disposition = None
         rationale = _text(raw.get("rationale")) if disposition else None
+        instruments = _string_list(raw.get("instruments"))
         existing = by_key.get((lesson_id, run_id))
         if existing is not None:
             if disposition and not existing.get("disposition"):
@@ -428,6 +429,12 @@ def record_retrieved_lessons(
                 existing["rationale"] = rationale
                 existing["owner_type"] = owner_type
                 existing["owner_id"] = owner_id
+            merged = _string_list(existing.get("instruments"))
+            for item in instruments:
+                if item not in merged:
+                    merged.append(item)
+            if merged:
+                existing["instruments"] = merged
             continue
         row = {
             "lesson_id": lesson_id,
@@ -437,6 +444,7 @@ def record_retrieved_lessons(
             "owner_id": owner_id,
             "disposition": disposition,
             "rationale": rationale,
+            "instruments": instruments,
         }
         state["retrieved_lessons"].append(row)
         by_key[(lesson_id, run_id)] = row

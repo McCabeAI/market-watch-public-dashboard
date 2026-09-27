@@ -109,6 +109,11 @@ FORBIDDEN_MODEL_STATE_KEYS = {
     "mae_usd",
     "holding_duration_seconds",
     "realized_pnl_increment_usd",
+    "psychology",
+    "psychology_state",
+    "psychology_events",
+    "axes",
+    "active_flags",
 }
 
 STATE_DIRNAME = "data/pm"

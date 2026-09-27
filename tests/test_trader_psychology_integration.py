@@ -171,6 +171,85 @@ class PsychologyIntegrationTests(unittest.TestCase):
         self.assertNotIn("heater_risk", rendered)
         self.assertNotIn("psychology_gate", rendered)
         self.assertNotIn("missing_psychology_check", rendered)
+        for prose in (
+            "self_trust=0.91 and the dollar still leads on the growth gap versus the rest of G10.",
+            "Heater risk is elevated, but the growth gap remains the reason to hold the dollar.",
+            "Learning Default does not change the growth gap that still supports the dollar.",
+            "Lesson matching would hide the same growth gap that still supports the dollar.",
+        ):
+            self.assertTrue(public_prose_issues(prose))
+            cleaned = sanitize_public_prose(prose)
+            lowered = cleaned.lower()
+            self.assertNotIn("self_trust", lowered)
+            self.assertNotIn("heater risk", lowered)
+            self.assertNotIn("learning default", lowered)
+            self.assertNotIn("lesson matching", lowered)
+        books["seats"]["dollar-king"]["required_pitch"] = {
+            "instrument": "USDJPY",
+            "note": "self_trust=0.91 would add risk. The growth gap is still the reason to look at the dollar.",
+        }
+        books["seats"]["dollar-king"]["risk_put_on"] = {
+            "instrument": "USDCAD",
+            "note": "Learning Default is active. Actual risk stays in the smaller USDCAD long.",
+        }
+        books["seats"]["dollar-king"]["positions"] = [
+            {
+                "position_id": "pos-1",
+                "instrument": "USDCAD",
+                "asset_class": "spot_fx",
+                "side": "long",
+                "notional_usd": 1_000_000,
+                "entry_price": 1.36,
+                "mark_price": 1.36,
+                "paper_expression": "heater risk says add. Long USDCAD remains the cash expression of the growth gap.",
+                "thesis": "The growth gap still supports the dollar.",
+                "invalidation": "The growth gap closes.",
+            }
+        ]
+        view = public_books_view(validate_books(books))
+        rendered = json.dumps(view)
+        self.assertNotIn("self_trust", rendered)
+        self.assertNotIn("heater risk", rendered.lower())
+        self.assertNotIn("Learning Default", rendered)
+        self.assertNotIn("learning_default", rendered)
+        from scripts.pm.constants import FORBIDDEN_MODEL_STATE_KEYS as PM_FORBIDDEN
+        from scripts.pm.data_requests import public_requests_view
+        from scripts.trader_room_public import _trade_row
+
+        self.assertTrue(
+            {"psychology", "psychology_state", "psychology_events", "axes", "active_flags"} <= PM_FORBIDDEN
+        )
+        requests = public_requests_view(
+            {
+                "requests": [
+                    {
+                        "request_id": "req-1",
+                        "request": "self_trust=0.91 feed for the desk",
+                        "reason": "Learning Default needs a private score.",
+                        "decision_impact": "heater risk would change the size of the dollar long.",
+                    }
+                ]
+            }
+        )
+        request_blob = json.dumps(requests)
+        self.assertNotIn("self_trust", request_blob)
+        self.assertNotIn("Learning Default", request_blob)
+        self.assertNotIn("heater risk", request_blob.lower())
+        row = _trade_row(
+            "dollar-king",
+            {
+                "trade": {
+                    "instrument": "USDCAD",
+                    "expression": "heater risk says add to the dollar.",
+                    "invalidation": "self_trust=0.91 would be the private stop, and the growth gap closing is the real one.",
+                }
+            },
+            None,
+        )
+        trade_blob = json.dumps(row)
+        self.assertEqual(row["trade"]["instrument"], "USDCAD")
+        self.assertNotIn("heater risk", trade_blob.lower())
+        self.assertNotIn("self_trust", trade_blob)
 
     def test_paper_book_passes_psychology_check(self) -> None:
         check = {"state_sha256": "abc", "flags_acknowledged": [], "answers": {}, "proceed_despite_flags": True}

@@ -8,6 +8,7 @@ from datetime import datetime
 from typing import Any
 
 from scripts.overnight.clock import isoformat, now_ny
+from scripts.overnight.public_prose import sanitize_public_value
 from scripts.pm.constants import PM_IDS, PRIORITIES, SCHEMA_VERSION
 from scripts.pm.errors import SchemaError
 
@@ -147,9 +148,9 @@ def public_requests_view(registry: dict[str, Any]) -> dict[str, Any]:
         requests.append(
             {
                 "request_id": row.get("request_id"),
-                "request": row.get("request"),
-                "reason": row.get("reason"),
-                "decision_impact": row.get("decision_impact"),
+                "request": sanitize_public_value(row.get("request")),
+                "reason": sanitize_public_value(row.get("reason")),
+                "decision_impact": sanitize_public_value(row.get("decision_impact")),
                 "priority": row.get("priority"),
                 "suggested_source": row.get("suggested_source"),
                 "originating_pms": row.get("originating_pms") or [],
