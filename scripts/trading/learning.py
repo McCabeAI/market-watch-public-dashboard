@@ -398,16 +398,48 @@ def record_retrieved_lessons(
     lesson_ids: list[str],
     run_id: str | None,
     when: datetime | None = None,
+    dispositions: dict[str, dict[str, Any]] | None = None,
 ) -> None:
+    """Persist retrieval plus the identity's own APPLIES / DOES_NOT_APPLY / OVERRIDE.
+
+    Owner and run come from the trusted apply path, not from model-supplied fields.
+    """
     if not lesson_ids:
         return
+    assert_identity(owner_type, owner_id)
     state = read_learning_state(store, owner_type, owner_id)
     stamp = isoformat(now_ny(when))
-    known = {(row.get("lesson_id"), row.get("run_id")) for row in state["retrieved_lessons"]}
+    supplied = dispositions or {}
+    by_key = {
+        (row.get("lesson_id"), row.get("run_id")): row
+        for row in state["retrieved_lessons"]
+        if isinstance(row, dict)
+    }
     for lesson_id in lesson_ids:
-        if (lesson_id, run_id) in known:
+        raw = supplied.get(lesson_id) if isinstance(supplied.get(lesson_id), dict) else {}
+        disposition = raw.get("disposition")
+        if disposition not in LESSON_CONSIDERATION_DISPOSITIONS:
+            disposition = None
+        rationale = _text(raw.get("rationale")) if disposition else None
+        existing = by_key.get((lesson_id, run_id))
+        if existing is not None:
+            if disposition and not existing.get("disposition"):
+                existing["disposition"] = disposition
+                existing["rationale"] = rationale
+                existing["owner_type"] = owner_type
+                existing["owner_id"] = owner_id
             continue
-        state["retrieved_lessons"].append({"lesson_id": lesson_id, "run_id": run_id, "at": stamp})
+        row = {
+            "lesson_id": lesson_id,
+            "run_id": run_id,
+            "at": stamp,
+            "owner_type": owner_type,
+            "owner_id": owner_id,
+            "disposition": disposition,
+            "rationale": rationale,
+        }
+        state["retrieved_lessons"].append(row)
+        by_key[(lesson_id, run_id)] = row
     state["retrieved_lessons"] = state["retrieved_lessons"][-40:]
     write_learning_state(store, owner_type, owner_id, state)
 
@@ -470,31 +502,155 @@ def apply_structured_lesson_fields(lesson: dict[str, Any], update: dict[str, Any
         lesson["contradiction_count"] = int(lesson.get("contradiction_count") or 0)
 
 
+# These keys are not written by record_lifecycle_event. Reading them created
+# triggers that could never fire, and accepting them from a payload would let a
+# model fabricate a learning obligation. They are ignored on purpose.
+_DEAD_CLOSE_FIELDS = ("close_path", "expression_vs_thesis", "reaction_vs_expectation")
+_NON_THESIS_CLOSE_CATEGORIES = ("funding", "mandate")
+
+
+def _close_event(trade: dict[str, Any]) -> dict[str, Any] | None:
+    for event in reversed(trade.get("events") or []):
+        if isinstance(event, dict) and event.get("kind") == "CLOSE":
+            return event
+    return None
+
+
+def _expression_family_mismatch(trade: dict[str, Any]) -> bool:
+    """True only when stored expression and instrument resolve to different families.
+
+    Both families must be specific. Missing expression, or a family the lock
+    helper cannot classify, is not evidence of a wrong expression.
+    """
+    expression = trade.get("paper_expression")
+    instrument = _text(trade.get("instrument"))
+    if not isinstance(expression, dict) or not expression or not instrument:
+        return False
+    if not _text(trade.get("entry_thesis")):
+        return False
+    try:
+        from scripts.pm.curve_lock import expression_family
+    except Exception:
+        return False
+    asset = _text(trade.get("asset_class"))
+    try:
+        natural = expression_family(instrument, asset, None)
+        expressed = expression_family(instrument, asset, expression)
+    except Exception:
+        return False
+    if natural in (None, "", "other") or expressed in (None, "", "other"):
+        return False
+    return natural != expressed
+
+
 def journal_learning_triggers(trades: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Triggers only from fields already present on the journal. No invented causes."""
+    """Learning triggers from authoritative ledger facts only.
+
+    ``close_path``, ``expression_vs_thesis``, and ``reaction_vs_expectation``
+    are not lifecycle fields. They never create a trigger, even if a payload
+    contains them. Equivalents use facts ``record_lifecycle_event`` already
+    stores:
+
+    - ``close_reason_diverges``: an entry thesis is stored and the close
+      category is ``funding`` or ``mandate`` (a non-thesis close reason).
+    - ``right_thesis_wrong_expression``: an entry thesis and paper expression
+      are stored, the close was not ``target_reached``, and the expression
+      family differs from the instrument's own family.
+    - ``catalyst_or_reaction_diverged``: entry catalysts are stored and the
+      close category is ``thesis_invalidated``.
+    """
     triggers: list[dict[str, Any]] = []
     for trade in trades:
         if trade.get("status") != "closed":
             continue
-        close = None
-        for event in reversed(trade.get("events") or []):
-            if isinstance(event, dict) and event.get("kind") == "CLOSE":
-                close = event
-                break
+        close = _close_event(trade)
         if not close:
             continue
+        close = {key: value for key, value in close.items() if key not in _DEAD_CLOSE_FIELDS}
         trade_id = trade.get("trade_id")
-        category = close.get("exit_reason_category")
+        category = close.get("exit_reason_category") or trade.get("exit_reason_category")
         if category == "thesis_invalidated":
-            triggers.append({"id": "thesis_invalidated", "trade_id": trade_id})
+            triggers.append({"id": "thesis_invalidated", "trade_id": trade_id, "evidence": ["exit_reason_category"]})
         elif category == "risk_cut":
-            triggers.append({"id": "stop_or_forced_exit", "trade_id": trade_id})
-        if close.get("close_path") == "diverged_from_thesis":
-            triggers.append({"id": "close_reason_diverges", "trade_id": trade_id})
-        if close.get("expression_vs_thesis") == "right_thesis_wrong_expression":
-            triggers.append({"id": "right_thesis_wrong_expression", "trade_id": trade_id})
-        if close.get("reaction_vs_expectation") == "materially_different":
-            triggers.append({"id": "catalyst_or_reaction_diverged", "trade_id": trade_id})
+            triggers.append({"id": "stop_or_forced_exit", "trade_id": trade_id, "evidence": ["exit_reason_category"]})
+        if _text(trade.get("entry_thesis")) and category in _NON_THESIS_CLOSE_CATEGORIES:
+            triggers.append(
+                {
+                    "id": "close_reason_diverges",
+                    "trade_id": trade_id,
+                    "evidence": ["entry_thesis", "exit_reason_category"],
+                }
+            )
+        if category != "target_reached" and _expression_family_mismatch(trade):
+            triggers.append(
+                {
+                    "id": "right_thesis_wrong_expression",
+                    "trade_id": trade_id,
+                    "evidence": ["entry_thesis", "paper_expression", "instrument"],
+                }
+            )
+        catalysts = [item for item in (trade.get("catalysts") or []) if _text(item)]
+        if catalysts and category == "thesis_invalidated":
+            triggers.append(
+                {
+                    "id": "catalyst_or_reaction_diverged",
+                    "trade_id": trade_id,
+                    "evidence": ["catalysts", "exit_reason_category"],
+                }
+            )
+    return triggers
+
+
+def compliance_learning_triggers(
+    state: dict[str, Any],
+    lessons: list[dict[str, Any]],
+    *,
+    already_obligated: set[tuple[str, str]] | None = None,
+) -> list[dict[str, Any]]:
+    """Repeated-failure and explicit-contradiction triggers from stored learning facts.
+
+    Each (trigger, lesson) pair is emitted at most once. Lesson text is not reused
+    as a fabricated close reason.
+    """
+    obligated = already_obligated or set()
+    triggers: list[dict[str, Any]] = []
+    seen: set[tuple[str, str]] = set()
+    for row in state.get("repeated_error_escalations") or []:
+        if not isinstance(row, dict):
+            continue
+        lesson_id = str(row.get("lesson_id") or "")
+        if int(row.get("count") or 0) < 2 or not lesson_id:
+            continue
+        key = ("repeated_same_failure_mode", lesson_id)
+        if key in obligated or key in seen:
+            continue
+        seen.add(key)
+        triggers.append(
+            {
+                "id": "repeated_same_failure_mode",
+                "lesson_id": lesson_id,
+                "evidence": ["repeated_error_escalations"],
+            }
+        )
+    for lesson in lessons:
+        if not isinstance(lesson, dict):
+            continue
+        lesson_id = str(lesson.get("lesson_id") or "")
+        history = lesson.get("history") if isinstance(lesson.get("history"), list) else []
+        contradicted = any(isinstance(item, dict) and item.get("op") == "contradict" for item in history)
+        if not contradicted or not lesson_id:
+            continue
+        key = ("explicit_lesson_contradiction", lesson_id)
+        if key in obligated or key in seen:
+            continue
+        seen.add(key)
+        triggers.append(
+            {
+                "id": "explicit_lesson_contradiction",
+                "lesson_id": lesson_id,
+                "evidence": ["lesson.history"],
+            }
+        )
     return triggers
 
 
@@ -510,6 +666,7 @@ def standing_floor_for_learning_default(standing: str, *, learning_status: str) 
 
 EXAMINER_ROLE = "learning_quality_examiner"
 EXAMINER_MODEL = "composer-2.5"
+SUBMISSION_KINDS = ("postmortem", "performance_reflection")
 EXAMINER_FORBIDDEN_KEYS = {
     "actions",
     "thesis",
@@ -557,12 +714,22 @@ def validate_learning_quality_review(review: Any) -> dict[str, Any]:
         reasons = row.get("reasons") or []
         if not isinstance(reasons, list) or any(not isinstance(item, str) for item in reasons):
             raise SchemaError("learning assessment reasons must be strings")
+        kind = row.get("submission_kind")
+        if kind not in SUBMISSION_KINDS:
+            raise SchemaError("learning assessment wrong-kind")
+        owner_type = row.get("owner_type")
+        owner_id = row.get("owner_id")
+        if owner_type not in {"trader", "pm"} or not isinstance(owner_id, str) or not owner_id.strip():
+            raise SchemaError("learning assessment wrong-owner")
+        ref = row.get("submission_ref")
+        if not isinstance(ref, str) or not ref.strip():
+            raise SchemaError("learning assessment wrong-reference")
         cleaned.append(
             {
-                "owner_type": row.get("owner_type"),
-                "owner_id": row.get("owner_id"),
-                "submission_kind": row.get("submission_kind"),
-                "submission_ref": row.get("submission_ref"),
+                "owner_type": owner_type,
+                "owner_id": owner_id.strip(),
+                "submission_kind": kind,
+                "submission_ref": ref.strip(),
                 "adequate": row.get("adequate"),
                 "reasons": reasons,
             }
@@ -570,18 +737,97 @@ def validate_learning_quality_review(review: Any) -> dict[str, Any]:
     return {**review, "assessments": cleaned}
 
 
-def inadequate_submission_refs(review: dict[str, Any] | None) -> set[tuple[str, str, str]]:
+def submission_reference(kind: str, item: dict[str, Any]) -> str:
+    if kind == "postmortem":
+        return str(item.get("trade_id") or "").strip()
+    if kind == "performance_reflection":
+        return str(item.get("reflection_due_id") or "").strip()
+    return ""
+
+
+def assert_examiner_coverage(
+    submissions: list[tuple[str, str, dict[str, Any], str]],
+    assessments: list[dict[str, Any]],
+) -> None:
+    """Require one assessment per submitted learning item, and no extras.
+
+    Rejects missing, duplicate, unknown, wrong-owner, wrong-kind, and
+    wrong-reference coverage. A submission the examiner did not grade cannot
+    be treated as accepted.
+    """
+    expected: list[tuple[str, str, str, str]] = []
+    for owner_type, owner_id, item, kind in submissions:
+        if kind not in SUBMISSION_KINDS:
+            raise SchemaError("learning submission wrong-kind")
+        ref = submission_reference(kind, item)
+        if not ref:
+            raise SchemaError(f"learning submission wrong-reference for {owner_type}/{owner_id}")
+        expected.append((str(owner_type), str(owner_id), str(kind), ref))
+    if len(expected) != len(set(expected)):
+        raise SchemaError("duplicate learning submission")
+
+    seen: list[tuple[str, str, str, str]] = []
+    for row in assessments:
+        kind = str(row.get("submission_kind") or "")
+        owner_type = str(row.get("owner_type") or "")
+        owner_id = str(row.get("owner_id") or "")
+        ref = str(row.get("submission_ref") or "")
+        key = (owner_type, owner_id, kind, ref)
+        if key in seen:
+            raise SchemaError(f"duplicate learning assessment {owner_type}/{owner_id} {kind} {ref}")
+        seen.append(key)
+
+    expected_set = set(expected)
+    seen_set = set(seen)
+    if expected_set == seen_set:
+        return
+
+    for key in seen_set - expected_set:
+        owner_type, owner_id, kind, ref = key
+        same_ref = [item for item in expected if item[3] == ref]
+        same_owner_ref = [item for item in expected if item[0] == owner_type and item[1] == owner_id and item[3] == ref]
+        same_owner_kind = [
+            item for item in expected if item[0] == owner_type and item[1] == owner_id and item[2] == kind
+        ]
+        if same_ref and all(item[0] != owner_type or item[1] != owner_id for item in same_ref):
+            raise SchemaError(f"learning assessment wrong-owner {owner_id} {ref}")
+        if same_owner_ref and all(item[2] != kind for item in same_owner_ref):
+            raise SchemaError(f"learning assessment wrong-kind {kind} {ref}")
+        if same_owner_kind and all(item[3] != ref for item in same_owner_kind):
+            raise SchemaError(f"learning assessment wrong-reference {ref}")
+        raise SchemaError(f"learning assessment unknown {owner_type}/{owner_id} {kind} {ref}")
+    missing = sorted(expected_set - seen_set)
+    raise SchemaError(f"learning assessment missing {missing}")
+
+
+def inadequate_submission_refs(review: dict[str, Any] | None) -> set[tuple[str, str, str, str]]:
     if not review:
         return set()
     refs = set()
     for row in review.get("assessments") or []:
         if row.get("adequate") is False:
-            refs.add((str(row.get("owner_type")), str(row.get("owner_id")), str(row.get("submission_ref"))))
+            refs.add(
+                (
+                    str(row.get("owner_type")),
+                    str(row.get("owner_id")),
+                    str(row.get("submission_kind")),
+                    str(row.get("submission_ref")),
+                )
+            )
     return refs
 
 
-def drop_inadequate_learning_submissions(decision: dict[str, Any], *, owner_type: str, owner_id: str, blocked_refs: set[tuple[str, str, str]]) -> dict[str, Any]:
-    """Remove examiner-rejected learning payloads. Trading actions stay untouched."""
+def drop_inadequate_learning_submissions(
+    decision: dict[str, Any],
+    *,
+    owner_type: str,
+    owner_id: str,
+    blocked_refs: set[tuple[str, str, str, str]],
+) -> dict[str, Any]:
+    """Remove examiner-rejected learning payloads. Trading actions stay untouched.
+
+    Rejected or missing coverage must not clear postmortem or reflection debt.
+    """
     if not blocked_refs:
         return decision
     out = dict(decision)
@@ -592,8 +838,8 @@ def drop_inadequate_learning_submissions(decision: dict[str, Any], *, owner_type
             if not isinstance(row, dict):
                 kept.append(row)
                 continue
-            ref = str(row.get("trade_id") or row.get("reflection_due_id") or row.get("submission_ref") or "")
-            if (owner_type, owner_id, ref) in blocked_refs:
+            ref = submission_reference(kind, row)
+            if (owner_type, owner_id, kind, ref) in blocked_refs:
                 continue
             kept.append(row)
         return kept

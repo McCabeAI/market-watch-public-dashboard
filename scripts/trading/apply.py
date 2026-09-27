@@ -28,7 +28,12 @@ from scripts.trading.ledger import find_trade_by_position, observe_open_mark, re
 from scripts.trading.consequence import record_consequence_observation
 from scripts.trading.constants import EXPANDING_ACTIONS
 from scripts.trading.errors import OwnershipError, SchemaError
-from scripts.trading.learning import materially_matching_lessons, record_retrieved_lessons, settle_learning_compliance
+from scripts.trading.learning import (
+    _considerations,
+    materially_matching_lessons,
+    record_retrieved_lessons,
+    settle_learning_compliance,
+)
 from scripts.trading.memory import (
     active_lessons,
     apply_reflections,
@@ -381,14 +386,27 @@ def _prepare_identity(
     decision["_original_actions"] = original
     lessons = active_lessons(store, owner_type, owner_id)
     retrieved: list[str] = []
+    dispositions: dict[str, dict[str, Any]] = {}
     for action in allowed:
         if action.get("action") not in EXPANDING_ACTIONS:
             continue
-        retrieved.extend(
-            str(row.get("lesson_id"))
-            for row in materially_matching_lessons(action, lessons)
-            if row.get("lesson_id")
-        )
+        matched = materially_matching_lessons(action, lessons)
+        considerations = {
+            row.get("lesson_id"): row
+            for row in _considerations(decision, action)
+            if isinstance(row, dict)
+        }
+        for row in matched:
+            lesson_id = row.get("lesson_id")
+            if not lesson_id:
+                continue
+            retrieved.append(str(lesson_id))
+            consideration = considerations.get(lesson_id)
+            if isinstance(consideration, dict):
+                dispositions[str(lesson_id)] = {
+                    "disposition": consideration.get("disposition"),
+                    "rationale": consideration.get("rationale"),
+                }
     record_retrieved_lessons(
         store,
         owner_type,
@@ -396,6 +414,7 @@ def _prepare_identity(
         lesson_ids=retrieved,
         run_id=run_id,
         when=when,
+        dispositions=dispositions,
     )
     return blocked
 

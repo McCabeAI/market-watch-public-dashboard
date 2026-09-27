@@ -39,11 +39,13 @@ from scripts.trading.errors import OwnershipError, SchemaError
 from scripts.trading.learning import (
     apply_structured_lesson_fields,
     causal_block,
+    compliance_learning_triggers,
     compliance_view,
     journal_learning_triggers,
     lesson_public_fields,
     migrate_lesson,
     note_repeated_error,
+    read_learning_state,
     substantive_no_new_lesson,
     substantive_text,
 )
@@ -326,9 +328,22 @@ def ensure_reflections_due(
         prior_drawdown=prior_state.get("last_drawdown_usd"),
         prior_high_water=prior_state.get("last_high_water_nav_usd"),
     )
-    for row in journal_learning_triggers(store.trades_for(owner_type, owner_id)):
-        if row["id"] not in {item["id"] for item in triggers}:
-            triggers.append(row)
+    triggers.extend(journal_learning_triggers(store.trades_for(owner_type, owner_id)))
+    due_doc = store.read_reflections_due(owner_type, owner_id)
+    obligated: set[tuple[str, str]] = set()
+    for item in due_doc.get("items") or []:
+        facts = item.get("facts") if isinstance(item.get("facts"), dict) else {}
+        lesson_ids = [str(lesson_id) for lesson_id in (facts.get("lesson_ids") or []) if lesson_id]
+        for trigger_id in item.get("trigger_ids") or []:
+            for lesson_id in lesson_ids:
+                obligated.add((str(trigger_id), lesson_id))
+    learning_state = read_learning_state(store, owner_type, owner_id)
+    lesson_rows = [
+        row
+        for row in (store.read_lessons(owner_type, owner_id).get("lessons") or [])
+        if isinstance(row, dict)
+    ]
+    triggers.extend(compliance_learning_triggers(learning_state, lesson_rows, already_obligated=obligated))
     if not triggers:
         return
     net = consequence.get("net_pnl_usd") if owner_type == "trader" else consequence.get("net_after_funding_pnl_usd")
@@ -352,6 +367,8 @@ def ensure_reflections_due(
             "drawdown_usd": drawdown,
             "competition_rank": rank,
             "prior_competition_rank": prior_rank,
+            "lesson_ids": sorted({str(row.get("lesson_id")) for row in triggers if row.get("lesson_id")}),
+            "trade_ids": sorted({str(row.get("trade_id")) for row in triggers if row.get("trade_id")}),
         },
     }
     due_doc.setdefault("items", []).append(item)

@@ -131,6 +131,7 @@ def _learning_submission_rows(payload: dict[str, Any]) -> list[tuple[str, str, d
 def _enforce_learning_quality(payload: dict[str, Any]) -> None:
     """One examiner grades causal adequacy. It cannot author a second trading opinion."""
     from scripts.trading.learning import (
+        assert_examiner_coverage,
         drop_inadequate_learning_submissions,
         inadequate_submission_refs,
         validate_learning_quality_review,
@@ -140,11 +141,14 @@ def _enforce_learning_quality(payload: dict[str, Any]) -> None:
     review = payload.get("learning_quality_review")
     if not submissions:
         if review is not None:
-            validate_learning_quality_review(review)
+            cleaned = validate_learning_quality_review(review)
+            assert_examiner_coverage([], cleaned.get("assessments") or [])
+            payload["learning_quality_review"] = cleaned
         return
     if review is None:
         raise SchemaError("learning submissions require one learning_quality_review")
     cleaned = validate_learning_quality_review(review)
+    assert_examiner_coverage(submissions, cleaned.get("assessments") or [])
     payload["learning_quality_review"] = cleaned
     blocked = inadequate_submission_refs(cleaned)
     decisions = payload.get("decisions")
