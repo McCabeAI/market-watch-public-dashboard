@@ -48,6 +48,27 @@ _MACHINE_PATTERNS: tuple[re.Pattern[str], ...] = tuple(
         r"\brfd-[0-9a-f]+\b",
         r"\bpmr-[0-9a-f]+\b",
         r"\bles-[0-9a-f]+\b",
+        r"\blearning_default\b",
+        r"\blearning_status\b",
+        r"\blesson_considerations\b",
+        r"\bsetup_fingerprint\b",
+        r"\blearning_quality\b",
+        r"\bcompetition_eligible\b",
+        r"\brepeated_error_escalation\b",
+        r"\bDOES_NOT_APPLY\b",
+        r"\bpsychology(?:_check|_gate|_state|_events)?\b",
+        r"\bstate_sha256\b",
+        r"\bpse-[0-9a-f]+\b",
+        r"\b(?:revenge_risk|heater_risk|chase_risk|stubbornness_risk|capitulation_risk|rank_distortion_risk|fragile_confidence|inflated_confidence|self_report_unreliable)\b",
+        r"\b(?:self[\s_-]*trust|frustration|defensiveness|chase[\s_-]*pressure|revenge[\s_-]*pressure|complacency|thesis[\s_-]*attachment|external[\s_-]*pressure)\s*(?:=|:|is|at|of|was|\()\s*-?\.?\d+(?:\.\d+)?%?\)?",
+        r"\b(?:revenge|heater|chase|stubbornness|capitulation)[\s_-]+risk\b",
+        r"\brank[\s_-]+distortion(?:[\s_-]+risk)?\b",
+        r"\b(?:fragile|inflated)[\s_-]+confidence\b",
+        r"\bself[\s_-]+report[\s_-]+unreliable\b",
+        r"\blearning[\s_-]+default\b",
+        r"\blesson[\s_-]+matching\b",
+        r"\b(?:self[\s_-]*trust|frustration|defensiveness|chase[\s_-]*pressure|revenge[\s_-]*pressure|complacency|thesis[\s_-]*attachment|external[\s_-]*pressure)\b(?:\W+\w+){0,6}\W+(?:0?\.\d+|1(?:\.0+)?)\b",
+        r"\bself[\s_-]+report\b(?:\W+\w+){0,4}\W+unreliable\b",
     )
 )
 
@@ -90,6 +111,36 @@ _SCRUB_RES: tuple[re.Pattern[str], ...] = (
     re.compile(r"\brfd-[0-9a-f]+\b", re.IGNORECASE),
     re.compile(r"\bpmr-[0-9a-f]+\b", re.IGNORECASE),
     re.compile(r"\bles-[0-9a-f]+\b", re.IGNORECASE),
+    re.compile(r"\blearning_default\b", re.IGNORECASE),
+    re.compile(r"\blearning_status\b", re.IGNORECASE),
+    re.compile(r"\blesson_considerations\b", re.IGNORECASE),
+    re.compile(r"\bsetup_fingerprint\b", re.IGNORECASE),
+    re.compile(r"\blearning_quality\b", re.IGNORECASE),
+    re.compile(r"\bcompetition_eligible\b", re.IGNORECASE),
+    re.compile(r"\brepeated_error_escalation\b", re.IGNORECASE),
+    re.compile(r"\bDOES_NOT_APPLY\b"),
+    re.compile(r"\bpsychology(?:_check|_gate|_state|_events)?\b", re.IGNORECASE),
+    re.compile(r"\bstate_sha256\b", re.IGNORECASE),
+    re.compile(r"\bpse-[0-9a-f]+\b", re.IGNORECASE),
+    re.compile(
+        r"\b(?:revenge_risk|heater_risk|chase_risk|stubbornness_risk|capitulation_risk|rank_distortion_risk|fragile_confidence|inflated_confidence|self_report_unreliable)\b",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        r"\b(?:self[\s_-]*trust|frustration|defensiveness|chase[\s_-]*pressure|revenge[\s_-]*pressure|complacency|thesis[\s_-]*attachment|external[\s_-]*pressure)\s*(?:=|:|is|at|of|was|\()\s*-?\.?\d+(?:\.\d+)?%?\)?",
+        re.IGNORECASE,
+    ),
+    re.compile(r"\b(?:revenge|heater|chase|stubbornness|capitulation)[\s_-]+risk\b", re.IGNORECASE),
+    re.compile(r"\brank[\s_-]+distortion(?:[\s_-]+risk)?\b", re.IGNORECASE),
+    re.compile(r"\b(?:fragile|inflated)[\s_-]+confidence\b", re.IGNORECASE),
+    re.compile(r"\bself[\s_-]+report[\s_-]+unreliable\b", re.IGNORECASE),
+    re.compile(r"\blearning[\s_-]+default\b", re.IGNORECASE),
+    re.compile(r"\blesson[\s_-]+matching\b", re.IGNORECASE),
+    re.compile(
+        r"\b(?:self[\s_-]*trust|frustration|defensiveness|chase[\s_-]*pressure|revenge[\s_-]*pressure|complacency|thesis[\s_-]*attachment|external[\s_-]*pressure)\b(?:\W+\w+){0,6}\W+(?:0?\.\d+|1(?:\.0+)?)\b",
+        re.IGNORECASE,
+    ),
+    re.compile(r"\bself[\s_-]+report\b(?:\W+\w+){0,4}\W+unreliable\b", re.IGNORECASE),
 )
 
 
@@ -105,6 +156,46 @@ _PRIVATE_ALERT_MARKERS = (
     "reflection_due",
     "postmortem_id",
     "allocator",
+    "learning_default",
+    "learning_status",
+    "lesson_considerations",
+    "setup_fingerprint",
+    "learning_quality",
+    "competition_eligible",
+    "repeated_error",
+    "psychology",
+    "psychology_check",
+    "psychology_gate",
+    "state_sha256",
+    "revenge_risk",
+    "heater_risk",
+    "chase_risk",
+    "stubbornness_risk",
+    "capitulation_risk",
+    "rank_distortion_risk",
+    "fragile_confidence",
+    "inflated_confidence",
+    "self_report_unreliable",
+    "learning default",
+    "lesson matching",
+    "heater risk",
+    "revenge risk",
+    "chase risk",
+    "stubbornness risk",
+    "capitulation risk",
+    "rank distortion",
+    "heater-risk",
+    "revenge-risk",
+    "chase-risk",
+    "stubbornness-risk",
+    "capitulation-risk",
+    "rank-distortion",
+    "learning-default",
+    "lesson-matching",
+    "self trust",
+    "self_trust",
+    "chase pressure",
+    "revenge pressure",
 )
 
 
@@ -116,7 +207,7 @@ def public_alerts(alerts: Any) -> list[str]:
     for alert in alerts:
         if not isinstance(alert, str) or not alert.strip():
             continue
-        lowered = alert.lower()
+        lowered = _visible_text(alert).lower()
         if any(marker in lowered for marker in _PRIVATE_ALERT_MARKERS):
             continue
         if public_prose_issues(alert):
@@ -128,13 +219,44 @@ def public_alerts(alerts: Any) -> list[str]:
 
 
 _SENTENCE_SPLIT_RE = re.compile(r"(?<=[.!?])\s+")
+_INVISIBLE_RE = re.compile(r"[\u200b-\u200d\u2060\ufeff\u00ad]")
+_STRICT_AXIS_RE = re.compile(
+    r"\b(?:self[\s_-]*trust|chase[\s_-]*pressure|revenge[\s_-]*pressure|thesis[\s_-]*attachment|external[\s_-]*pressure)\b",
+    re.IGNORECASE,
+)
+_UNIT_READING_RE = re.compile(r"(?<!\d)(?:0?\.\d+|1\.0+)(?!\d)")
+_STATED_READING_RE = re.compile(r"\b(?:at|is|of|=|:)\s*(?:100|\d{1,2})(?!\d|\.\d|%)", re.IGNORECASE)
+_NEAR_LOOSE_READING_RE = re.compile(
+    r"\b(?:frustration|defensiveness|complacency)\b(?:\W+\w+){0,4}\W+(?:0?\.\d+|1\.0+|\b(?:at|is|of|=|:)\s*(?:100|\d{1,2})(?!\d|\.\d|%))",
+    re.IGNORECASE,
+)
+
+
+def _visible_text(value: str) -> str:
+    return _INVISIBLE_RE.sub("", value)
+
+
+def _axis_reading(text: str) -> bool:
+    """Private when a sidecar token has a reading, or a loose word has one nearby.
+
+    Ordinary macro English can say frustration or complacency next to a yield.
+    """
+    for sentence in _SENTENCE_SPLIT_RE.split(text):
+        if _STRICT_AXIS_RE.search(sentence) and (_UNIT_READING_RE.search(sentence) or _STATED_READING_RE.search(sentence)):
+            return True
+        if _NEAR_LOOSE_READING_RE.search(sentence):
+            return True
+    return False
 
 
 def public_prose_issues(value: Any) -> list[str]:
     if value is None:
         return []
-    text = str(value)
-    return [pattern.pattern for pattern in _MACHINE_PATTERNS if pattern.search(text)]
+    text = _visible_text(str(value))
+    found = [pattern.pattern for pattern in _MACHINE_PATTERNS if pattern.search(text)]
+    if _axis_reading(text):
+        found.append("axis_reading")
+    return found
 
 
 def assert_public_prose(
@@ -179,6 +301,7 @@ def sanitize_public_prose(
     """Defensive legacy renderer: keep market sentences, strip machine telemetry."""
     if not isinstance(value, str) or not value.strip():
         return fallback
+    value = _visible_text(value)
     kept: list[str] = []
     for raw_sentence in _SENTENCE_SPLIT_RE.split(value.strip()):
         raw_sentence = raw_sentence.strip()
@@ -204,6 +327,10 @@ def sanitize_public_prose(
     return clipped + "…"
 
 
+_PRIVATE_KEY = re.compile(
+    r"\b(?:self[\s_-]*trust|frustration|defensiveness|complacency|chase[\s_-]*pressure|revenge[\s_-]*pressure|thesis[\s_-]*attachment|external[\s_-]*pressure|learning[\s_-]*default|lesson[\s_-]*matching|psychology(?:[\s_-]*(?:check|gate|state|events))?|heater[\s_-]*risk|revenge[\s_-]*risk|chase[\s_-]*risk|stubbornness[\s_-]*risk|capitulation[\s_-]*risk|rank[\s_-]*distortion|fragile[\s_-]*confidence|inflated[\s_-]*confidence|self[\s_-]*report|state[\s_-]*sha256)\b",
+    re.IGNORECASE,
+)
 _STALE_OIL_RE = re.compile(
     r"two-week lows|near \$99|around \$99|\$97 handle|\$99",
     re.IGNORECASE,
@@ -213,6 +340,24 @@ _DATA_CAVEAT_RE = re.compile(
     r"new (?:US|U\.S\.) risk (?:stays parked|cannot be added|is not allowed|are not allowed)",
     re.IGNORECASE,
 )
+
+
+def sanitize_public_value(value: Any, *, max_chars: int = 700) -> Any:
+    """Sanitize string leaves inside public projections. Numbers and ids stay."""
+    if value is None:
+        return None
+    if isinstance(value, str):
+        return sanitize_public_prose(value, max_chars=max_chars, fallback="")
+    if isinstance(value, list):
+        return [sanitize_public_value(item, max_chars=max_chars) for item in value]
+    if isinstance(value, dict):
+        cleaned: dict[Any, Any] = {}
+        for key, item in value.items():
+            if isinstance(key, str) and (public_prose_issues(key) or _PRIVATE_KEY.search(key)):
+                continue
+            cleaned[key] = sanitize_public_value(item, max_chars=max_chars)
+        return cleaned
+    return value
 
 
 def _oil_marks(market_state: dict[str, Any] | None) -> dict[str, dict[str, Any]]:

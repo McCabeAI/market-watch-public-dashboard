@@ -91,7 +91,7 @@ def build_delegation_request(launch: dict[str, Any]) -> dict[str, Any]:
         "budget": {
             "launcher_id": LAUNCHER_ID,
             "legacy_schedule_id_inactive": LEGACY_SCHEDULE_ID,
-            "total_model_cap": 19,
+            "total_model_cap": 20,
             "grok_cap": 18,
             "composer_cap": 2,
             "parent_model": "grok-4.6",

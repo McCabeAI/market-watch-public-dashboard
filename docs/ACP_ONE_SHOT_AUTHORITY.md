@@ -73,7 +73,7 @@ Weekday schedule `market-watch-weekday-0205` remains disabled. No bot `[agent-ru
   "budget": {
     "launcher_id": "manual-market-watch-launch-v1",
     "legacy_schedule_id_inactive": "market-watch-weekday-0205",
-    "total_model_cap": 19,
+    "total_model_cap": 20,
     "grok_cap": 18,
     "composer_cap": 2,
     "parent_model": "grok-4.6",

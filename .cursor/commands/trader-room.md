@@ -123,10 +123,13 @@ Optional private Markdown copy may use Google Drive folder `1NS6Qb6vNGKM18_PW0zP
 
 Before any book decision, read your own frozen sidecar (`memory/<seat>.json`). It includes **consequence** (your rank among 14, own P&L/NAV/drawdown/risk utilization — never other seats' P&L or spread-to-winner), **active_lessons**, **postmortems_due**, and **reflections_due** from prior runs.
 
-- Prior-run **postmortems_due** or **reflections_due** block `OPEN`/`ADD`/`HEDGE` until you submit substantive learning in the same decision (`postmortems` / `performance_reflections`). `HOLD`/`REDUCE`/`CLOSE` always remain available.
+- Prior-run **postmortems_due** or **reflections_due** are mandatory on this invocation, including when you choose `HOLD` or `NO_TRADE`. A causal `causal` block is required. P&L summaries and platitudes do not clear debt. `NO_NEW_LESSON` is valid only when you explain ordinary bounded variance or why the prior process remains sound.
+- `OPEN`/`ADD`/`HEDGE` stay blocked until that debt is cleared. Unresolved debt is learning default: competitive eligibility is removed while raw P&L rank stays auditable. `HOLD`/`REDUCE`/`CLOSE` remain executable.
+- On expansion, supply `setup_fingerprint` and address every materially matching own lesson with `lesson_considerations` (`APPLIES`, `DOES_NOT_APPLY`, or `OVERRIDE`) and a substantive rationale. You do not see peer lessons.
 - A same-run `CLOSE` creates a future postmortem due; it does not block sibling actions in that decision.
 - Material drawdown/win triggers require a structured **performance_reflection** (not prose acknowledgement alone). You may answer with a durable lesson or explicit `no_new_lesson` plus reason.
 - Do not invent canonical P&L, rank, or marks; trusted code owns books.
+- The sidecar also includes private **psychology**. When an active required flag intersects `OPEN`/`ADD`/`HEDGE`, return `psychology_check` echoing `state_sha256`. `HOLD`/`NO_TRADE`/`REDUCE`/`CLOSE` never require it and stay executable. A substantive `override_rationale` may proceed despite an adverse answer. Never quote psychology, axes, flags, or Learning Default in public prose. Psychology does not size or force a trade.
 
 ## Hard limits
 

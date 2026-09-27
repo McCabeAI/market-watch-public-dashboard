@@ -40,6 +40,16 @@ MARKET = {
     "generated_at": "2026-09-19T12:00:00Z",
     "fx": {"pairs": {"USDCAD": {"spot": 1.36}}},
 }
+CAUSAL = {
+    "original_belief": "Dollar strength would extend because relative growth still favored the United States.",
+    "observed_reality": "The pair reversed after the catalyst printed without the expected follow-through.",
+    "assumptions_right": "The growth differential was real and visible at the decision time.",
+    "assumptions_wrong_or_underweighted": "I underweighted how crowded the long-dollar expression already was.",
+    "causal_divergence": "The reaction function faded the data instead of extending the prior trend.",
+    "decision_quality_attribution": "expression",
+    "same_information_counterfactual": "With the same information I would have used a smaller expression or waited for confirmation.",
+    "future_implication": "When this crowded dollar setup reappears, fade the first extension rather than adding risk.",
+}
 
 
 def _spot_memo() -> dict:
@@ -672,13 +682,14 @@ class TraderPsychologyTests(unittest.TestCase):
             self.store,
             {
                 "reflection_due_id": due_id,
-                "what_happened_vs_expected": "Drawdown matched risk budget use.",
+                "what_happened_vs_expected": "Drawdown matched the planned risk budget and stayed inside ordinary variance.",
                 "attribution": ["sizing"],
                 "pressure_effect": "none",
                 "skill_vs_luck": "mixed",
                 "overconfidence_risk": "no",
                 "chase_or_revenge": "no",
-                "no_new_lesson": "Sizing was intentional for the catalyst window.",
+                "causal": CAUSAL,
+                "no_new_lesson": "The outcome was ordinary bounded variance and the prior process remains sound.",
             },
             owner_type="trader",
             owner_id="dollar-king",
@@ -711,13 +722,15 @@ class TraderPsychologyTests(unittest.TestCase):
             self.store,
             {
                 "reflection_due_id": due_id,
-                "what_happened_vs_expected": "Lost on timing.",
+                "what_happened_vs_expected": "The extension failed because the expression was crowded.",
                 "attribution": ["timing"],
                 "pressure_effect": "distorting",
                 "skill_vs_luck": "luck",
                 "overconfidence_risk": "yes",
                 "chase_or_revenge": "no",
-                "lesson": "Wait for confirmation after drawdown.",
+                "causal": CAUSAL,
+                "future_rule": "When the same crowded dollar setup appears, wait for confirmation before adding.",
+                "lesson": "After a crowded dollar extension, wait for confirmation before adding risk.",
             },
             owner_type="trader",
             owner_id="dollar-king",
@@ -794,13 +807,18 @@ class TraderPsychologyTests(unittest.TestCase):
                 self.store,
                 {
                     "reflection_due_id": due_id,
-                    "what_happened_vs_expected": "Loss was timing.",
+                    "what_happened_vs_expected": "The loss came from chasing an entry that the packet did not confirm.",
                     "attribution": ["timing"],
                     "pressure_effect": "none",
                     "skill_vs_luck": "luck",
                     "overconfidence_risk": "no",
                     "chase_or_revenge": "no",
-                    "memory_update": {"op": "add", "text": "bad cite", "trade_ids": ["trd-missing"]},
+                    "causal": CAUSAL,
+                    "memory_update": {
+                        "op": "add",
+                        "text": "Do not chase the same unconfirmed dollar entry after the catalyst has faded.",
+                        "trade_ids": ["trd-missing"],
+                    },
                 },
                 owner_type="trader",
                 owner_id="dollar-king",
@@ -819,13 +837,17 @@ class TraderPsychologyTests(unittest.TestCase):
         due_id = context["reflections_due"][0]["reflection_due_id"]
         payload = {
             "reflection_due_id": due_id,
-            "what_happened_vs_expected": "Loss was timing.",
+            "what_happened_vs_expected": "The loss came from chasing an entry that the packet did not confirm.",
             "attribution": ["timing"],
             "pressure_effect": "none",
             "skill_vs_luck": "luck",
             "overconfidence_risk": "no",
             "chase_or_revenge": "no",
-            "memory_update": {"op": "add", "text": "Do not chase the same entry."},
+            "causal": CAUSAL,
+            "memory_update": {
+                "op": "add",
+                "text": "Do not chase the same unconfirmed dollar entry after the catalyst has faded.",
+            },
         }
         accepted = accept_performance_reflection(
             self.store,

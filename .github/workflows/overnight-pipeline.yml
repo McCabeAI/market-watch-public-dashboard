@@ -42,6 +42,12 @@ on:
       - "tests/test_pm_scheduled_output.py"
       - "tests/test_pm_overnight_packets.py"
       - "tests/test_trading_memory.py"
+      - "tests/test_trader_learning_v2.py"
+      - "tests/test_trader_psychology.py"
+      - "tests/test_trader_psychology_state.py"
+      - "tests/test_trader_psychology_gate.py"
+      - "tests/test_trader_psychology_integration.py"
+      - "scripts/trading/**"
       - "scripts/apply_trader_book_tab.py"
       - "patch_v13/**"
       - "data/overnight/**"
@@ -64,11 +70,11 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  validate:
+  unit-contracts:
     if: github.event_name != 'schedule'
-    name: Overnight contracts and dry-run
+    name: Overnight unit contracts
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-python@v6
@@ -77,7 +83,32 @@ jobs:
       - name: Unit tests
         run: |
           set -euo pipefail
-          PYTHONPATH=. python3 -m unittest tests.test_macro_freshness tests.test_overnight_pipeline tests.test_overnight_scheduled_output tests.test_overnight_acceptance_handoff tests.test_overnight_review_identity tests.test_pm_scheduled_output tests.test_pm_overnight_packets tests.test_trading_memory tests.test_trader_room_dashboard -v
+          PYTHONPATH=. python3 -m unittest \
+            tests.test_macro_freshness \
+            tests.test_overnight_pipeline \
+            tests.test_overnight_scheduled_output \
+            tests.test_overnight_acceptance_handoff \
+            tests.test_overnight_review_identity \
+            tests.test_pm_scheduled_output \
+            tests.test_pm_overnight_packets \
+            tests.test_trading_memory \
+            tests.test_trader_learning_v2 \
+            tests.test_trader_psychology \
+            tests.test_trader_psychology_state \
+            tests.test_trader_psychology_gate \
+            tests.test_trader_psychology_integration \
+            tests.test_trader_room_dashboard -v
+
+  zero-model-dry-run:
+    if: github.event_name != 'schedule'
+    name: Zero-model dry-run
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
       - name: End-to-end zero-model dry-run
         run: |
           set -euo pipefail
@@ -85,6 +116,16 @@ jobs:
           PYTHONPATH=. python3 scripts/overnight_pipeline.py dry-run --suffix ci --site-dir /tmp/overnight-site
           test -s /tmp/overnight-site/trader-books.json
           test -s /tmp/overnight-site/pm-books.json
+
+  validate:
+    if: github.event_name != 'schedule'
+    name: Overnight contracts and dry-run
+    needs: [unit-contracts, zero-model-dry-run]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Confirm split checks
+        run: echo "unit contracts and zero-model dry-run both succeeded"
 
   scheduled-reconcile:
     if: github.event_name == 'schedule'

@@ -14,6 +14,7 @@ import re
 from pathlib import Path
 from typing import Any
 
+from scripts.overnight.public_prose import sanitize_public_value
 from scripts.trader_room.constants import HANDOFF_MARKER, STANDING_ADVOCATES
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -75,25 +76,25 @@ def _trade_row(agent: str, contribution: dict[str, Any], rebuttal: dict[str, Any
             "trade": None,
             "confidence": contribution.get("confidence"),
             "entry_reason": _entry_reason(contribution),
-            "rebuttal": rebuttal,
+            "rebuttal": sanitize_public_value(rebuttal, max_chars=420),
         }
     return {
         "agent": agent,
         "stance_summary": _clip(contribution.get("stance_summary"), 220),
         "trade": {
-            "instrument": trade.get("instrument"),
-            "structure": trade.get("structure"),
-            "direction": trade.get("direction"),
-            "expression": trade.get("expression"),
-            "horizon": trade.get("horizon"),
-            "entry": trade.get("entry"),
-            "target": trade.get("target"),
-            "invalidation": trade.get("invalidation"),
+            "instrument": sanitize_public_value(trade.get("instrument"), max_chars=80),
+            "structure": sanitize_public_value(trade.get("structure"), max_chars=420),
+            "direction": sanitize_public_value(trade.get("direction"), max_chars=120),
+            "expression": sanitize_public_value(trade.get("expression"), max_chars=420),
+            "horizon": sanitize_public_value(trade.get("horizon"), max_chars=160),
+            "entry": sanitize_public_value(trade.get("entry"), max_chars=240),
+            "target": sanitize_public_value(trade.get("target"), max_chars=240),
+            "invalidation": sanitize_public_value(trade.get("invalidation"), max_chars=420),
         },
         "confidence": contribution.get("confidence", trade.get("confidence")),
         "entry_reason": _entry_reason(contribution),
         "mispricing": _clip(trade.get("mispricing") or contribution.get("pricing_or_mispricing"), 320),
-        "rebuttal": rebuttal,
+        "rebuttal": sanitize_public_value(rebuttal, max_chars=420),
     }
 
 

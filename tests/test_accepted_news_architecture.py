@@ -287,7 +287,7 @@ class ScheduledOutputNewsOverlayTests(unittest.TestCase):
             "execution": {
                 "parent_model": "grok-4.6",
                 "allowed_subagent_models": ["composer-2.5", "grok-4.6"],
-                "total_model_cap": 19,
+                "total_model_cap": 20,
                 "grok_cap": 18,
                 "composer_cap": 2,
                 "declared_total_model_calls": 19,

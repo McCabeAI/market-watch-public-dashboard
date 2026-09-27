@@ -26,7 +26,22 @@ from scripts.trading.journal import (
 )
 from scripts.trading.ledger import find_trade_by_position, observe_open_mark, record_lifecycle_event
 from scripts.trading.consequence import record_consequence_observation
-from scripts.trading.memory import apply_reflections, build_memory_context, create_postmortem_due
+from scripts.trading.constants import EXPANDING_ACTIONS
+from scripts.trading.errors import OwnershipError, SchemaError
+from scripts.trading.learning import (
+    _considerations,
+    materially_matching_lessons,
+    record_retrieved_lessons,
+    settle_learning_compliance,
+)
+from scripts.trading.memory import (
+    active_lessons,
+    apply_reflections,
+    build_memory_context,
+    create_postmortem_due,
+    outstanding_due,
+    outstanding_reflections_due,
+)
 from scripts.trading.store import TradingStore
 
 
@@ -321,6 +336,51 @@ def _sync_history_row(
     return [trade["trade_id"]]
 
 
+def _decision_extra(decision: dict[str, Any], blocked: list[dict[str, Any]]) -> dict[str, Any]:
+    from scripts.trading.journal import durable_structured_payload
+    from scripts.trading.psychology_gate import psychology_journal_payload
+
+    extra: dict[str, Any] = {"psychology": psychology_journal_payload(decision, blocked)}
+    if decision.get("funding_view"):
+        extra["funding_view"] = decision.get("funding_view")
+    return durable_structured_payload(extra)
+
+
+def _observe_psychology(
+    store: TradingStore,
+    *,
+    owner_type: str,
+    owner_id: str,
+    run_id: str | None,
+    review_id: str | None,
+    bundle: dict[str, Any] | None,
+    decision: dict[str, Any],
+    blocked: list[dict[str, Any]],
+    market_fresh: bool,
+    positions: list[dict[str, Any]],
+    when: datetime,
+    capital_standing: str | None = None,
+    alerts: list[Any] | None = None,
+) -> None:
+    from scripts.trading.psychology_events import observe_psychology_cycle
+
+    observe_psychology_cycle(
+        store,
+        owner_type,
+        owner_id,
+        run_id=run_id,
+        review_id=review_id,
+        consequence_bundle=bundle,
+        decision=decision,
+        blocked=blocked,
+        market_fresh=market_fresh,
+        capital_standing=capital_standing,
+        positions=positions,
+        alerts=alerts,
+        when=when,
+    )
+
+
 def _observe_marks(store: TradingStore, owner_type: str, owner_id: str, positions: list[dict[str, Any]]) -> None:
     for position in positions:
         trade = find_trade_by_position(
@@ -341,7 +401,21 @@ def _prepare_identity(
     when: datetime | None,
     trader_books: dict[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
-    apply_reflections(store, decision, owner_type=owner_type, owner_id=owner_id, run_id=run_id, when=when)
+    try:
+        apply_reflections(store, decision, owner_type=owner_type, owner_id=owner_id, run_id=run_id, when=when)
+    except (SchemaError, OwnershipError):
+        pass
+    prior_left = outstanding_due(store, owner_type, owner_id, exclude_run_id=run_id)
+    prior_reflections = outstanding_reflections_due(store, owner_type, owner_id, exclude_run_id=run_id)
+    any_due = outstanding_due(store, owner_type, owner_id)
+    any_reflections = outstanding_reflections_due(store, owner_type, owner_id)
+    settle_learning_compliance(
+        store,
+        owner_type,
+        owner_id,
+        prior_debt_remains=bool(prior_left or prior_reflections),
+        same_run_debt=bool(any_due or any_reflections) and not (prior_left or prior_reflections),
+    )
     original = [row for row in (decision.get("actions") or []) if isinstance(row, dict)]
     allowed, blocked = evaluate_decision_actions(
         store,
@@ -355,6 +429,47 @@ def _prepare_identity(
     raise_if_unexecutable(blocked, allowed)
     decision["actions"] = allowed
     decision["_original_actions"] = original
+    lessons = active_lessons(store, owner_type, owner_id)
+    retrieved: list[str] = []
+    dispositions: dict[str, dict[str, Any]] = {}
+    for action in allowed:
+        if action.get("action") not in EXPANDING_ACTIONS:
+            continue
+        matched = materially_matching_lessons(action, lessons)
+        considerations = {
+            row.get("lesson_id"): row
+            for row in _considerations(decision, action)
+            if isinstance(row, dict)
+        }
+        for row in matched:
+            lesson_id = row.get("lesson_id")
+            if not lesson_id:
+                continue
+            retrieved.append(str(lesson_id))
+            consideration = considerations.get(lesson_id)
+            if isinstance(consideration, dict):
+                slot = dispositions.setdefault(
+                    str(lesson_id),
+                    {
+                        "disposition": consideration.get("disposition"),
+                        "rationale": consideration.get("rationale"),
+                        "instruments": [],
+                    },
+                )
+                slot["disposition"] = consideration.get("disposition")
+                slot["rationale"] = consideration.get("rationale")
+                instrument = action.get("instrument")
+                if isinstance(instrument, str) and instrument.strip() and instrument.strip() not in slot["instruments"]:
+                    slot["instruments"].append(instrument.strip())
+    record_retrieved_lessons(
+        store,
+        owner_type,
+        owner_id,
+        lesson_ids=retrieved,
+        run_id=run_id,
+        when=when,
+        dispositions=dispositions,
+    )
     return blocked
 
 
@@ -506,10 +621,24 @@ def apply_trader_review_with_memory(
             event_id=reserved_ids[seat],
             decision_fingerprint=fingerprints[seat],
             funding_view=decision.get("funding_view"),
-            extra={"funding_view": decision.get("funding_view")} if decision.get("funding_view") else None,
+            extra=_decision_extra(decision, blocked_by_seat.get(seat) or []),
         )
         _observe_marks(store, "trader", seat, list(seat_book.get("positions") or []))
-        record_consequence_observation(store, "trader", seat, trader_books=updated)
+        bundle = record_consequence_observation(store, "trader", seat, trader_books=updated)
+        _observe_psychology(
+            store,
+            owner_type="trader",
+            owner_id=seat,
+            run_id=run_id,
+            review_id=review_id,
+            bundle=bundle,
+            decision=decision,
+            blocked=blocked_by_seat.get(seat) or [],
+            market_fresh=str((families.get("market_state") or {}).get("status") or "") == "fresh",
+            positions=list(seat_book.get("positions") or []),
+            alerts=list(seat_book.get("alerts") or []),
+            when=stamp,
+        )
         build_memory_context(store, "trader", seat, when=stamp, exclude_run_id=run_id)
         decision["journal_event_id"] = event["event_id"]
     validate_books(updated)
@@ -652,15 +781,47 @@ def apply_pm_decision_with_memory(
         review_packet_id=review_packet_id,
         event_id=journal_event_id,
         decision_fingerprint=fingerprint,
+        extra=_decision_extra(decision, blocked),
     )
     _observe_marks(store, "pm", pm_id, list(book.get("positions") or []))
-    record_consequence_observation(
+    bundle = record_consequence_observation(
         store,
         "pm",
         pm_id,
         pm_books=updated,
         trader_books=trader_books,
         review_packet=review_packet,
+    )
+    standing = None
+    try:
+        from scripts.trading.capital_owner import build_capital_owner
+        from scripts.trading.consequence import build_pm_consequence
+
+        pm_consequence = build_pm_consequence(store, pm_id, pm_books=updated, trader_books=trader_books)
+        standing = build_capital_owner(
+            store,
+            pm_id,
+            consequence=pm_consequence,
+            market_state=market_state,
+            pm_book=book,
+            review_packet=review_packet,
+        ).get("standing")
+    except (SchemaError, KeyError, TypeError, ValueError, AttributeError):
+        standing = None
+    _observe_psychology(
+        store,
+        owner_type="pm",
+        owner_id=pm_id,
+        run_id=run_id,
+        review_id=review_id or review_packet_id,
+        bundle=bundle,
+        decision=decision,
+        blocked=blocked,
+        market_fresh=isinstance(market_state, dict) and market_state.get("status") == "fresh",
+        capital_standing=standing,
+        positions=list(book.get("positions") or []),
+        alerts=list(book.get("alerts") or []),
+        when=stamp,
     )
     build_memory_context(
         store,

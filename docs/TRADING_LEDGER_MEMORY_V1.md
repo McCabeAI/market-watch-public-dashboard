@@ -37,6 +37,8 @@ data/trading/<owner_type>/<owner_id>/lessons.json
 data/trading/<owner_type>/<owner_id>/postmortems.json
 data/trading/<owner_type>/<owner_id>/postmortems_due.json
 data/trading/<owner_type>/<owner_id>/context.json
+data/trading/<owner_type>/<owner_id>/psychology_events.json
+data/trading/<owner_type>/<owner_id>/psychology_state.json
 ```
 
 Overnight freeze writes per-seat sidecars at `data/overnight/runs/<overnight_run_id>/reviews/<review_id>/memory/<seat>.json`. The session id stays on the run; `review_id` is the immutable decision cycle and is stored on journal and trade provenance. Full Trader Room freeze writes `trader-room/runs/<run_id>/memory/<seat>.json`. Those sidecars are not part of the common evidence packet.
@@ -142,4 +144,8 @@ Initialize from current canonical books. Reconstruct only fields proven by live 
 
 ## 14. Prompt discipline
 
-The lifetime ledger and journal may grow in Git. The memory prompt surface stays bounded: deterministic calibration, up to 8 recent closed trades, up to 12 active lessons, outstanding postmortems, and current open-position context. Do not stuff the complete journal into a prompt. No vector database, embeddings, or new external state service.
+The lifetime ledger and journal may grow in Git. The memory prompt surface stays bounded: deterministic calibration, up to 8 recent closed trades, up to 12 active lessons, outstanding postmortems, current open-position context, and a compact private psychology block. Do not stuff the complete journal into a prompt. No vector database, embeddings, or new external state service.
+
+## 15. Psychology (private)
+
+See `docs/TRADER_PSYCHOLOGY_V1.md`. Psychology state is derived from the append-only psychology event ledger and read into the hashed memory sidecar. It can require a self-check before `OPEN` / `ADD` / `HEDGE`. It cannot forbid a de-risk, and it is stripped from public prose.

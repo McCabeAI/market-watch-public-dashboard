@@ -6,7 +6,8 @@ from typing import Any
 
 from scripts.trading.constants import DERISK_ACTIONS, EXPANDING_ACTIONS
 from scripts.trading.errors import LearningGateError, RationaleError
-from scripts.trading.memory import outstanding_due, outstanding_reflections_due
+from scripts.trading.learning import lesson_consideration_reason
+from scripts.trading.memory import active_lessons, outstanding_due, outstanding_reflections_due
 from scripts.trading.store import TradingStore, assert_identity
 
 
@@ -151,6 +152,11 @@ def learning_gate_reason(
     pressure_reason = pressure_gate_reason(decision, owner_id=owner_id)
     if pressure_reason:
         return pressure_reason
+    lessons = active_lessons(store, owner_type, owner_id)
+    for action in expanding_actions(decision):
+        reason = lesson_consideration_reason(action, decision, lessons, owner_id=owner_id)
+        if reason:
+            return reason
     return None
 
 
@@ -174,17 +180,24 @@ def evaluate_decision_actions(
     allowed: list[dict[str, Any]] = []
     blocked: list[dict[str, Any]] = []
     memory_reason = None
-    if expanding_actions(decision):
-        if decision.get("_memory_context") is None and expected_memory_sha256:
-            from scripts.trading.memory import build_memory_context
+    from scripts.trading.memory import _psychology_context, build_memory_context
 
-            decision["_memory_context"] = build_memory_context(
-                store,
-                owner_type,
-                owner_id,
-                exclude_run_id=run_id,
-                trader_books=trader_books,
-            )
+    if expanding_actions(decision) and not isinstance(decision.get("_memory_context"), dict) and expected_memory_sha256:
+        decision["_memory_context"] = build_memory_context(
+            store,
+            owner_type,
+            owner_id,
+            exclude_run_id=run_id,
+            trader_books=trader_books,
+        )
+    context = decision.get("_memory_context")
+    if not isinstance(context, dict):
+        context = {}
+        decision["_memory_context"] = context
+    # The model cannot hide or replace the sidecar. Flags come from the store
+    # on de-risk decisions too, so the journal can record an optional check.
+    context["psychology"] = _psychology_context(store, owner_type, owner_id)
+    if expanding_actions(decision):
         memory_reason = learning_gate_reason(
             store,
             owner_type=owner_type,
@@ -202,6 +215,12 @@ def evaluate_decision_actions(
                 continue
             if memory_reason:
                 blocked.append({"action": action, "reason": memory_reason, "result": "blocked"})
+                continue
+            from scripts.trading.psychology_gate import psychology_action_reason
+
+            psychology_reason = psychology_action_reason(action, decision, owner_id=owner_id)
+            if psychology_reason:
+                blocked.append({"action": action, "reason": psychology_reason, "result": "blocked"})
                 continue
         allowed.append(action)
     return allowed, blocked
