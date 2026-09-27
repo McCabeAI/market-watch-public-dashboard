@@ -203,6 +203,7 @@ def _learning_fields(contribution: dict[str, Any], rebuttal: dict[str, Any] | No
         "performance_reflections",
         "pressure_assessment",
         "no_new_lesson",
+        "psychology_check",
     )
     out: dict[str, Any] = {}
     for key in keys:

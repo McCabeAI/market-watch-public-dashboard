@@ -455,6 +455,14 @@ def recent_performance_reflections(store: TradingStore, owner_type: str, owner_i
     return out
 
 
+def _psychology_context(store: TradingStore, owner_type: str, owner_id: str) -> dict[str, Any]:
+    from scripts.trading.psychology import psychology_block_for_context
+
+    state = store.read_psychology_state(owner_type, owner_id)
+    events = store.read_psychology_events(owner_type, owner_id).get("events") or []
+    return psychology_block_for_context(state, recent_events=events)
+
+
 def build_memory_context(
     store: TradingStore,
     owner_type: str,
@@ -535,6 +543,7 @@ def build_memory_context(
             for event in reversed(store.read_journal(owner_type, owner_id).get("events") or [])
             if event.get("funding_view")
         ][:4],
+        "psychology": _psychology_context(store, owner_type, owner_id),
     }
     digest = sha256_json({k: v for k, v in body.items() if k not in {"memory_context_sha256", "as_of"}})
     body["memory_context_sha256"] = digest

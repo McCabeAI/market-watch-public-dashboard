@@ -129,6 +129,7 @@ Before any book decision, read your own frozen sidecar (`memory/<seat>.json`). I
 - A same-run `CLOSE` creates a future postmortem due; it does not block sibling actions in that decision.
 - Material drawdown/win triggers require a structured **performance_reflection** (not prose acknowledgement alone). You may answer with a durable lesson or explicit `no_new_lesson` plus reason.
 - Do not invent canonical P&L, rank, or marks; trusted code owns books.
+- The sidecar also includes private **psychology**. When an active required flag intersects `OPEN`/`ADD`/`HEDGE`, return `psychology_check` echoing `state_sha256`. `HOLD`/`NO_TRADE`/`REDUCE`/`CLOSE` never require it and stay executable. A substantive `override_rationale` may proceed despite an adverse answer. Never quote psychology, axes, flags, or Learning Default in public prose. Psychology does not size or force a trade.
 
 ## Hard limits
 

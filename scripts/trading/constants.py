@@ -11,7 +11,34 @@ from scripts.pm.constants import PM_IDS as _PM_IDS
 ROOT = Path(__file__).resolve().parents[2]
 STATE_DIRNAME = "data/trading"
 SCHEMA_VERSION = 1
-MEMORY_SCHEMA_VERSION = 3
+MEMORY_SCHEMA_VERSION = 4
+PSYCH_SCHEMA_VERSION = 1
+PSYCH_PROFILE_VERSION = 1
+PSYCH_ENGINE_VERSION = 1
+PSYCH_UNIT_FRACTION = 0.25
+PSYCH_DEAD_BAND_FRACTION = 0.02
+PSYCH_CYCLE_CAP = 0.25
+PSYCH_AXES = (
+    "self_trust",
+    "frustration",
+    "defensiveness",
+    "chase_pressure",
+    "revenge_pressure",
+    "complacency",
+    "thesis_attachment",
+    "external_pressure",
+)
+PSYCH_FLAG_IDS = (
+    "revenge_risk",
+    "heater_risk",
+    "chase_risk",
+    "stubbornness_risk",
+    "capitulation_risk",
+    "rank_distortion_risk",
+    "fragile_confidence",
+    "inflated_confidence",
+    "self_report_unreliable",
+)
 
 MATERIAL_DRAWDOWN_FRACTION = 0.40
 
@@ -150,4 +177,9 @@ FORBIDDEN_MODEL_FACT_KEYS = {
     "canonical_ledger",
     "trade_ledger",
     "trades",
+    "psychology",
+    "psychology_state",
+    "psychology_events",
+    "axes",
+    "active_flags",
 }

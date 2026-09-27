@@ -344,7 +344,7 @@ def record_consequence_observation(
     pm_books: dict[str, Any] | None = None,
     trader_books: dict[str, Any] | None = None,
     review_packet: dict[str, Any] | None = None,
-) -> None:
+) -> dict[str, Any] | None:
     if owner_type == "trader":
         consequence = build_trader_consequence(store, owner_id, books=trader_books)
     else:
@@ -355,7 +355,7 @@ def record_consequence_observation(
             trader_books=trader_books,
         )
     if consequence.get("status") != "ok":
-        return
+        return None
     best_pnl = consequence.get("best_trader_net_pnl_usd")
     patch = snapshot_observation_from_consequence(
         owner_type,
@@ -364,6 +364,12 @@ def record_consequence_observation(
         best_trader_pnl=float(best_pnl) if best_pnl is not None else None,
     )
     current = store.read_consequence_state(owner_type, owner_id)
+    prior_snapshot = {
+        "last_net_pnl_usd": current.get("last_net_pnl_usd"),
+        "last_high_water_nav_usd": current.get("last_high_water_nav_usd"),
+        "last_drawdown_usd": current.get("last_drawdown_usd"),
+        "last_competition_rank": current.get("last_competition_rank"),
+    }
     if owner_type == "pm":
         own = consequence.get("net_after_funding_pnl_usd")
         prior_own = current.get("last_net_pnl_usd")
@@ -419,7 +425,7 @@ def record_consequence_observation(
                 patch["swinger_uncompensated_episodes"] = episodes + 1
                 patch["swinger_episode_open"] = True
                 patch["swinger_episode_anchor_drawdown_usd"] = drawdown
-    if not patch:
-        return
-    current.update(patch)
-    store.write_consequence_state(owner_type, owner_id, current)
+    if patch:
+        current.update(patch)
+        store.write_consequence_state(owner_type, owner_id, current)
+    return {"consequence": consequence, "prior": prior_snapshot}

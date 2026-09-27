@@ -61,9 +61,10 @@ Nested subagents are **prohibited** for both traders and PMs on overnight runs (
    - the same frozen packet + the same accepted 14 trader decisions
    - **only that PM's** prior book/memory sidecar
    No PM sees another PM's current-cycle decision.
-5. **Learning-quality examiner** — one Composer 2.5 call after all primary trader and PM decisions. It reads only the required learning submissions and returns adequacy grades. It does not see a mandate to trade and its output cannot add actions, theses, or lessons.
-6. **Do not** launch ChatGPT PM, on-demand Trader Room aggregators, rebuttals, or continuation flows.
-7. **Output** — write only:
+5. **Learning-quality examiner** — one Composer 2.5 call after all primary trader and PM decisions. It reads only the required learning submissions and returns adequacy grades. It does not see a mandate to trade and its output cannot add actions, theses, or lessons. The examiner does not grade psychology and does not change the 20 / 18 / 2 contract.
+6. Each seat sidecar includes a private `psychology` block. When an active required flag intersects `OPEN`/`ADD`/`HEDGE`, return `psychology_check` echoing `state_sha256`. `HOLD`/`NO_TRADE`/`REDUCE`/`CLOSE` never require it and always remain executable. Do not quote axes, flags, Learning Default, or psychology in public prose. Psychology never sizes or forces a trade.
+7. **Do not** launch ChatGPT PM, on-demand Trader Room aggregators, rebuttals, or continuation flows.
+8. **Output** — write only:
    ```
    data/overnight/inbox/<run_id>/scheduled_output.json
    ```

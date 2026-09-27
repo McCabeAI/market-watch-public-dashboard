@@ -209,6 +209,12 @@ def evaluate_decision_actions(
             if memory_reason:
                 blocked.append({"action": action, "reason": memory_reason, "result": "blocked"})
                 continue
+            from scripts.trading.psychology_gate import psychology_action_reason
+
+            psychology_reason = psychology_action_reason(action, decision, owner_id=owner_id)
+            if psychology_reason:
+                blocked.append({"action": action, "reason": psychology_reason, "result": "blocked"})
+                continue
         allowed.append(action)
     return allowed, blocked
 

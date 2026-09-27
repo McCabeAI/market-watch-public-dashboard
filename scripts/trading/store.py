@@ -165,6 +165,12 @@ class TradingStore:
     def learning_state_path(self, owner_type: str, owner_id: str) -> Path:
         return self.identity_dir(owner_type, owner_id) / "learning_state.json"
 
+    def psychology_events_path(self, owner_type: str, owner_id: str) -> Path:
+        return self.identity_dir(owner_type, owner_id) / "psychology_events.json"
+
+    def psychology_state_path(self, owner_type: str, owner_id: str) -> Path:
+        return self.identity_dir(owner_type, owner_id) / "psychology_state.json"
+
     def context_path(self, owner_type: str, owner_id: str) -> Path:
         return self.identity_dir(owner_type, owner_id) / "context.json"
 
@@ -204,6 +210,14 @@ class TradingStore:
             self.write_json(self.consequence_state_path(owner_type, owner_id), empty_consequence_state())
         if not self.learning_state_path(owner_type, owner_id).is_file():
             self.write_json(self.learning_state_path(owner_type, owner_id), empty_learning_state())
+        if not self.psychology_events_path(owner_type, owner_id).is_file():
+            from scripts.trading.psychology import empty_events_doc
+
+            self.write_json(self.psychology_events_path(owner_type, owner_id), empty_events_doc(owner_type, owner_id))
+        if not self.psychology_state_path(owner_type, owner_id).is_file():
+            from scripts.trading.psychology import seed_state
+
+            self.write_json(self.psychology_state_path(owner_type, owner_id), seed_state(owner_type, owner_id))
 
     def read_index(self) -> dict[str, Any]:
         return read_json(self.index_path())
@@ -323,6 +337,20 @@ class TradingStore:
 
     def write_learning_state(self, owner_type: str, owner_id: str, payload: dict[str, Any]) -> Path:
         return write_json(self.learning_state_path(owner_type, owner_id), payload)
+
+    def read_psychology_events(self, owner_type: str, owner_id: str) -> dict[str, Any]:
+        self.ensure_initialized()
+        return read_json(self.psychology_events_path(owner_type, owner_id))
+
+    def write_psychology_events(self, owner_type: str, owner_id: str, payload: dict[str, Any]) -> Path:
+        return write_json(self.psychology_events_path(owner_type, owner_id), payload)
+
+    def read_psychology_state(self, owner_type: str, owner_id: str) -> dict[str, Any]:
+        self.ensure_initialized()
+        return read_json(self.psychology_state_path(owner_type, owner_id))
+
+    def write_psychology_state(self, owner_type: str, owner_id: str, payload: dict[str, Any]) -> Path:
+        return write_json(self.psychology_state_path(owner_type, owner_id), payload)
 
     def write_consequence_state(self, owner_type: str, owner_id: str, observations: dict[str, Any]) -> Path:
         return write_json(

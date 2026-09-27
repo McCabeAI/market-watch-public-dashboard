@@ -56,6 +56,11 @@ _MACHINE_PATTERNS: tuple[re.Pattern[str], ...] = tuple(
         r"\bcompetition_eligible\b",
         r"\brepeated_error_escalation\b",
         r"\bDOES_NOT_APPLY\b",
+        r"\bpsychology(?:_check|_gate|_state|_events)?\b",
+        r"\bstate_sha256\b",
+        r"\bpse-[0-9a-f]+\b",
+        r"\b(?:revenge_risk|heater_risk|chase_risk|stubbornness_risk|capitulation_risk|rank_distortion_risk|fragile_confidence|inflated_confidence|self_report_unreliable)\b",
+        r"\b(?:self_trust|frustration|defensiveness|chase_pressure|revenge_pressure|complacency|thesis_attachment|external_pressure)\s+(?:is\s+|at\s+|of\s+)?-?\d",
     )
 )
 
@@ -106,6 +111,17 @@ _SCRUB_RES: tuple[re.Pattern[str], ...] = (
     re.compile(r"\bcompetition_eligible\b", re.IGNORECASE),
     re.compile(r"\brepeated_error_escalation\b", re.IGNORECASE),
     re.compile(r"\bDOES_NOT_APPLY\b"),
+    re.compile(r"\bpsychology(?:_check|_gate|_state|_events)?\b", re.IGNORECASE),
+    re.compile(r"\bstate_sha256\b", re.IGNORECASE),
+    re.compile(r"\bpse-[0-9a-f]+\b", re.IGNORECASE),
+    re.compile(
+        r"\b(?:revenge_risk|heater_risk|chase_risk|stubbornness_risk|capitulation_risk|rank_distortion_risk|fragile_confidence|inflated_confidence|self_report_unreliable)\b",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        r"\b(?:self_trust|frustration|defensiveness|chase_pressure|revenge_pressure|complacency|thesis_attachment|external_pressure)\s+(?:is\s+|at\s+|of\s+)?-?\d",
+        re.IGNORECASE,
+    ),
 )
 
 
@@ -128,6 +144,19 @@ _PRIVATE_ALERT_MARKERS = (
     "learning_quality",
     "competition_eligible",
     "repeated_error",
+    "psychology",
+    "psychology_check",
+    "psychology_gate",
+    "state_sha256",
+    "revenge_risk",
+    "heater_risk",
+    "chase_risk",
+    "stubbornness_risk",
+    "capitulation_risk",
+    "rank_distortion_risk",
+    "fragile_confidence",
+    "inflated_confidence",
+    "self_report_unreliable",
 )
 
 

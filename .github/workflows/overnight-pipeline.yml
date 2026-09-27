@@ -44,6 +44,9 @@ on:
       - "tests/test_trading_memory.py"
       - "tests/test_trader_learning_v2.py"
       - "tests/test_trader_psychology.py"
+      - "tests/test_trader_psychology_state.py"
+      - "tests/test_trader_psychology_gate.py"
+      - "tests/test_trader_psychology_integration.py"
       - "scripts/trading/**"
       - "scripts/apply_trader_book_tab.py"
       - "patch_v13/**"
@@ -91,6 +94,9 @@ jobs:
             tests.test_trading_memory \
             tests.test_trader_learning_v2 \
             tests.test_trader_psychology \
+            tests.test_trader_psychology_state \
+            tests.test_trader_psychology_gate \
+            tests.test_trader_psychology_integration \
             tests.test_trader_room_dashboard -v
 
   zero-model-dry-run:

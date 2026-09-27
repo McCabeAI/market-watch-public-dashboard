@@ -55,6 +55,8 @@ Each PM sidecar includes **consequence** (raw-dollar PM rank, spread to #1 PM, b
 
 Prior-run **postmortems_due** and **reflections_due** are mandatory on this invocation even for `HOLD`/`NO_TRADE`. Submit a causal `causal` block. Outcome summaries do not count as lessons. `NO_NEW_LESSON` must explain bounded variance or a still-sound process. Unresolved debt creates learning default, blocks `OPEN`/`ADD`/`HEDGE`, removes competitive eligibility, and puts automated PM Capital Owner standing at least on probation until the debt clears. `HOLD`/`REDUCE`/`CLOSE` stay executable. Expansion requires `setup_fingerprint` and `APPLIES`/`DOES_NOT_APPLY`/`OVERRIDE` for each materially matching own lesson. When competitive or allocator **pressure_flags** apply (behind leading PM, best trader ahead, or capital_owner `watch`/`probation`), include **pressure_assessment** (`judgment_effect`, `junior_vs_self`, chase/protect/heater, `allocator_vs_noise`). Flat equal books with zero P&L do not require pressure assessment.
 
+The sidecar also includes private **psychology**. When an active required flag intersects an expanding action, return `psychology_check` echoing `state_sha256`. A valid `pressure_assessment` already satisfies `rank_distortion_risk`, so do not answer that flag twice. `HOLD`/`NO_TRADE`/`REDUCE`/`CLOSE` never require a psychology check and stay executable. Flat or no-trade pressure is not a deployment order. Never quote psychology, axes, flags, or Learning Default in public prose.
+
 ## Apply path
 
 Trusted code applies decisions — models do not write canonical books:
