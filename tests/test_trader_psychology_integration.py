@@ -184,6 +184,9 @@ class PsychologyIntegrationTests(unittest.TestCase):
             "Lesson matching would hide the same growth gap that still supports the dollar.",
             "Rank distortion would hide the same growth gap that still supports the dollar.",
             "chase pressure is 0.62 and the growth gap still supports the dollar versus the rest of G10.",
+            "self_trust is high at 0.91 and the dollar still leads on the growth gap versus the rest of G10.",
+            "complacency was about 0.47 and the growth gap still supports the dollar versus the rest of G10.",
+            "A self-report is unreliable, but the growth gap still supports the dollar versus the rest of G10.",
         ):
             self.assertTrue(public_prose_issues(prose), prose)
             cleaned = sanitize_public_prose(prose)
@@ -204,6 +207,8 @@ class PsychologyIntegrationTests(unittest.TestCase):
             self.assertNotIn("frustration", lowered)
             self.assertNotIn("complacency", lowered)
             self.assertNotIn("chase pressure", lowered)
+            self.assertNotIn("self-report", lowered)
+            self.assertNotIn("unreliable", lowered)
         books["seats"]["dollar-king"]["required_pitch"] = {
             "instrument": "USDJPY",
             "note": "self_trust=0.91 would add risk. The growth gap is still the reason to look at the dollar.",

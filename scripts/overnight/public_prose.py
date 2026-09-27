@@ -67,6 +67,8 @@ _MACHINE_PATTERNS: tuple[re.Pattern[str], ...] = tuple(
         r"\bself[\s_-]+report[\s_-]+unreliable\b",
         r"\blearning[\s_-]+default\b",
         r"\blesson[\s_-]+matching\b",
+        r"\b(?:self[\s_-]*trust|frustration|defensiveness|chase[\s_-]*pressure|revenge[\s_-]*pressure|complacency|thesis[\s_-]*attachment|external[\s_-]*pressure)\b(?:\W+\w+){0,6}\W+(?:0?\.\d+|1(?:\.0+)?)\b",
+        r"\bself[\s_-]+report\b(?:\W+\w+){0,4}\W+unreliable\b",
     )
 )
 
@@ -134,6 +136,11 @@ _SCRUB_RES: tuple[re.Pattern[str], ...] = (
     re.compile(r"\bself[\s_-]+report[\s_-]+unreliable\b", re.IGNORECASE),
     re.compile(r"\blearning[\s_-]+default\b", re.IGNORECASE),
     re.compile(r"\blesson[\s_-]+matching\b", re.IGNORECASE),
+    re.compile(
+        r"\b(?:self[\s_-]*trust|frustration|defensiveness|chase[\s_-]*pressure|revenge[\s_-]*pressure|complacency|thesis[\s_-]*attachment|external[\s_-]*pressure)\b(?:\W+\w+){0,6}\W+(?:0?\.\d+|1(?:\.0+)?)\b",
+        re.IGNORECASE,
+    ),
+    re.compile(r"\bself[\s_-]+report\b(?:\W+\w+){0,4}\W+unreliable\b", re.IGNORECASE),
 )
 
 
