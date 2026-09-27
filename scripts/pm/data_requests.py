@@ -152,7 +152,7 @@ def public_requests_view(registry: dict[str, Any]) -> dict[str, Any]:
                 "reason": sanitize_public_value(row.get("reason")),
                 "decision_impact": sanitize_public_value(row.get("decision_impact")),
                 "priority": row.get("priority"),
-                "suggested_source": row.get("suggested_source"),
+                "suggested_source": sanitize_public_value(row.get("suggested_source")),
                 "originating_pms": row.get("originating_pms") or [],
                 "first_requested": row.get("first_requested"),
                 "last_requested": row.get("last_requested"),

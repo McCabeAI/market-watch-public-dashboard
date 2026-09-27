@@ -60,13 +60,13 @@ _MACHINE_PATTERNS: tuple[re.Pattern[str], ...] = tuple(
         r"\bstate_sha256\b",
         r"\bpse-[0-9a-f]+\b",
         r"\b(?:revenge_risk|heater_risk|chase_risk|stubbornness_risk|capitulation_risk|rank_distortion_risk|fragile_confidence|inflated_confidence|self_report_unreliable)\b",
-        r"\b(?:self_trust|frustration|defensiveness|chase_pressure|revenge_pressure|complacency|thesis_attachment|external_pressure)\s*(?:=|:|is|at|of|was|\()\s*-?\d",
-        r"\b(?:revenge|heater|chase|stubbornness|capitulation)\s+risk\b",
-        r"\brank\s+distortion\s+risk\b",
-        r"\b(?:fragile|inflated)\s+confidence\b",
-        r"\bself[- ]report\s+unreliable\b",
-        r"\blearning\s+default\b",
-        r"\blesson\s+matching\b",
+        r"\b(?:self[\s_-]*trust|frustration|defensiveness|chase[\s_-]*pressure|revenge[\s_-]*pressure|complacency|thesis[\s_-]*attachment|external[\s_-]*pressure)\s*(?:=|:|is|at|of|was|\()\s*-?\.?\d+(?:\.\d+)?%?\)?",
+        r"\b(?:revenge|heater|chase|stubbornness|capitulation)[\s_-]+risk\b",
+        r"\brank[\s_-]+distortion(?:[\s_-]+risk)?\b",
+        r"\b(?:fragile|inflated)[\s_-]+confidence\b",
+        r"\bself[\s_-]+report[\s_-]+unreliable\b",
+        r"\blearning[\s_-]+default\b",
+        r"\blesson[\s_-]+matching\b",
     )
 )
 
@@ -125,15 +125,15 @@ _SCRUB_RES: tuple[re.Pattern[str], ...] = (
         re.IGNORECASE,
     ),
     re.compile(
-        r"\b(?:self_trust|frustration|defensiveness|chase_pressure|revenge_pressure|complacency|thesis_attachment|external_pressure)\s*(?:=|:|is|at|of|was|\()\s*-?\d",
+        r"\b(?:self[\s_-]*trust|frustration|defensiveness|chase[\s_-]*pressure|revenge[\s_-]*pressure|complacency|thesis[\s_-]*attachment|external[\s_-]*pressure)\s*(?:=|:|is|at|of|was|\()\s*-?\.?\d+(?:\.\d+)?%?\)?",
         re.IGNORECASE,
     ),
-    re.compile(r"\b(?:revenge|heater|chase|stubbornness|capitulation)\s+risk\b", re.IGNORECASE),
-    re.compile(r"\brank\s+distortion\s+risk\b", re.IGNORECASE),
-    re.compile(r"\b(?:fragile|inflated)\s+confidence\b", re.IGNORECASE),
-    re.compile(r"\bself[- ]report\s+unreliable\b", re.IGNORECASE),
-    re.compile(r"\blearning\s+default\b", re.IGNORECASE),
-    re.compile(r"\blesson\s+matching\b", re.IGNORECASE),
+    re.compile(r"\b(?:revenge|heater|chase|stubbornness|capitulation)[\s_-]+risk\b", re.IGNORECASE),
+    re.compile(r"\brank[\s_-]+distortion(?:[\s_-]+risk)?\b", re.IGNORECASE),
+    re.compile(r"\b(?:fragile|inflated)[\s_-]+confidence\b", re.IGNORECASE),
+    re.compile(r"\bself[\s_-]+report[\s_-]+unreliable\b", re.IGNORECASE),
+    re.compile(r"\blearning[\s_-]+default\b", re.IGNORECASE),
+    re.compile(r"\blesson[\s_-]+matching\b", re.IGNORECASE),
 )
 
 
@@ -177,6 +177,18 @@ _PRIVATE_ALERT_MARKERS = (
     "stubbornness risk",
     "capitulation risk",
     "rank distortion",
+    "heater-risk",
+    "revenge-risk",
+    "chase-risk",
+    "stubbornness-risk",
+    "capitulation-risk",
+    "rank-distortion",
+    "learning-default",
+    "lesson-matching",
+    "self trust",
+    "self_trust",
+    "chase pressure",
+    "revenge pressure",
 )
 
 
@@ -276,6 +288,12 @@ def sanitize_public_prose(
     return clipped + "…"
 
 
+_PRIVATE_KEY = re.compile(
+    r"\b(?:self[\s_-]*trust|frustration|defensiveness|complacency|chase[\s_-]*pressure|revenge[\s_-]*pressure|thesis[\s_-]*attachment|external[\s_-]*pressure|learning[\s_-]*default|lesson[\s_-]*matching|psychology(?:[\s_-]*(?:check|gate|state|events))?|heater[\s_-]*risk|revenge[\s_-]*risk|chase[\s_-]*risk|stubbornness[\s_-]*risk|capitulation[\s_-]*risk|rank[\s_-]*distortion|fragile[\s_-]*confidence|inflated[\s_-]*confidence|self[\s_-]*report|state[\s_-]*sha256)\b",
+    re.IGNORECASE,
+)
+
+
 def sanitize_public_value(value: Any, *, max_chars: int = 700) -> Any:
     """Sanitize string leaves inside public projections. Numbers and ids stay."""
     if value is None:
@@ -285,7 +303,12 @@ def sanitize_public_value(value: Any, *, max_chars: int = 700) -> Any:
     if isinstance(value, list):
         return [sanitize_public_value(item, max_chars=max_chars) for item in value]
     if isinstance(value, dict):
-        return {key: sanitize_public_value(item, max_chars=max_chars) for key, item in value.items()}
+        cleaned: dict[Any, Any] = {}
+        for key, item in value.items():
+            if isinstance(key, str) and (public_prose_issues(key) or _PRIVATE_KEY.search(key)):
+                continue
+            cleaned[key] = sanitize_public_value(item, max_chars=max_chars)
+        return cleaned
     return value
 
 

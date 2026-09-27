@@ -173,20 +173,41 @@ class PsychologyIntegrationTests(unittest.TestCase):
         self.assertNotIn("missing_psychology_check", rendered)
         for prose in (
             "self_trust=0.91 and the dollar still leads on the growth gap versus the rest of G10.",
+            "self trust is 0.91 and the dollar still leads on the growth gap versus the rest of G10.",
+            "self_trust=.91 and the dollar still leads on the growth gap versus the rest of G10.",
+            "frustration (0.80) does not change the growth gap that still supports the dollar.",
+            "complacency was 0.47 and the growth gap still supports the dollar versus the rest of G10.",
             "Heater risk is elevated, but the growth gap remains the reason to hold the dollar.",
+            "Heater-risk is elevated, but the growth gap remains the reason to hold the dollar.",
             "Learning Default does not change the growth gap that still supports the dollar.",
+            "Learning-Default does not change the growth gap that still supports the dollar.",
             "Lesson matching would hide the same growth gap that still supports the dollar.",
+            "Rank distortion would hide the same growth gap that still supports the dollar.",
+            "chase pressure is 0.62 and the growth gap still supports the dollar versus the rest of G10.",
         ):
-            self.assertTrue(public_prose_issues(prose))
+            self.assertTrue(public_prose_issues(prose), prose)
             cleaned = sanitize_public_prose(prose)
             lowered = cleaned.lower()
             self.assertNotIn("self_trust", lowered)
+            self.assertNotIn("self trust", lowered)
+            self.assertNotIn("0.91", lowered)
+            self.assertNotIn(".91", lowered)
+            self.assertNotIn("0.80", lowered)
+            self.assertNotIn("0.47", lowered)
+            self.assertNotIn("0.62", lowered)
             self.assertNotIn("heater risk", lowered)
+            self.assertNotIn("heater-risk", lowered)
             self.assertNotIn("learning default", lowered)
+            self.assertNotIn("learning-default", lowered)
             self.assertNotIn("lesson matching", lowered)
+            self.assertNotIn("rank distortion", lowered)
+            self.assertNotIn("frustration", lowered)
+            self.assertNotIn("complacency", lowered)
+            self.assertNotIn("chase pressure", lowered)
         books["seats"]["dollar-king"]["required_pitch"] = {
             "instrument": "USDJPY",
             "note": "self_trust=0.91 would add risk. The growth gap is still the reason to look at the dollar.",
+            "Learning Default": "private",
         }
         books["seats"]["dollar-king"]["risk_put_on"] = {
             "instrument": "USDCAD",
@@ -227,6 +248,7 @@ class PsychologyIntegrationTests(unittest.TestCase):
                         "request": "self_trust=0.91 feed for the desk",
                         "reason": "Learning Default needs a private score.",
                         "decision_impact": "heater risk would change the size of the dollar long.",
+                        "suggested_source": "Learning Default heater risk self_trust=0.91",
                     }
                 ]
             }
@@ -240,7 +262,12 @@ class PsychologyIntegrationTests(unittest.TestCase):
             {
                 "trade": {
                     "instrument": "USDCAD",
+                    "structure": "self_trust=0.91 spot",
+                    "direction": "Learning Default long",
                     "expression": "heater risk says add to the dollar.",
+                    "horizon": "rank distortion risk into the next print",
+                    "entry": "frustration (0.80) at 1.36",
+                    "target": "Heater-risk at 1.40 if the growth gap holds through the next data.",
                     "invalidation": "self_trust=0.91 would be the private stop, and the growth gap closing is the real one.",
                 }
             },
@@ -249,7 +276,16 @@ class PsychologyIntegrationTests(unittest.TestCase):
         trade_blob = json.dumps(row)
         self.assertEqual(row["trade"]["instrument"], "USDCAD")
         self.assertNotIn("heater risk", trade_blob.lower())
+        self.assertNotIn("heater-risk", trade_blob.lower())
         self.assertNotIn("self_trust", trade_blob)
+        self.assertNotIn("0.91", trade_blob)
+        self.assertNotIn("0.80", trade_blob)
+        self.assertNotIn("Learning Default", trade_blob)
+        self.assertNotIn("rank distortion", trade_blob.lower())
+        self.assertNotIn("Learning Default", rendered)
+        self.assertNotIn("Learning Default", request_blob)
+        self.assertNotIn("0.91", request_blob)
+        self.assertNotIn("heater risk", request_blob.lower())
 
     def test_paper_book_passes_psychology_check(self) -> None:
         check = {"state_sha256": "abc", "flags_acknowledged": [], "answers": {}, "proceed_despite_flags": True}
