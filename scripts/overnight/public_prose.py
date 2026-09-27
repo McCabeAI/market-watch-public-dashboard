@@ -220,12 +220,16 @@ def public_alerts(alerts: Any) -> list[str]:
 
 _SENTENCE_SPLIT_RE = re.compile(r"(?<=[.!?])\s+")
 _INVISIBLE_RE = re.compile(r"[\u200b-\u200d\u2060\ufeff\u00ad]")
-_AXIS_TOKEN_RE = re.compile(
-    r"\b(?:self[\s_-]*trust|frustration|defensiveness|chase[\s_-]*pressure|revenge[\s_-]*pressure|complacency|thesis[\s_-]*attachment|external[\s_-]*pressure)\b",
+_STRICT_AXIS_RE = re.compile(
+    r"\b(?:self[\s_-]*trust|chase[\s_-]*pressure|revenge[\s_-]*pressure|thesis[\s_-]*attachment|external[\s_-]*pressure)\b",
     re.IGNORECASE,
 )
 _UNIT_READING_RE = re.compile(r"(?<!\d)(?:0?\.\d+|1\.0+)(?!\d)")
-_STATED_READING_RE = re.compile(r"\b(?:at|is|of|=|:)\s*(?:100|\d{1,2})\b", re.IGNORECASE)
+_STATED_READING_RE = re.compile(r"\b(?:at|is|of|=|:)\s*(?:100|\d{1,2})(?!\d|\.\d|%)", re.IGNORECASE)
+_NEAR_LOOSE_READING_RE = re.compile(
+    r"\b(?:frustration|defensiveness|complacency)\b(?:\W+\w+){0,4}\W+(?:0?\.\d+|1\.0+|\b(?:at|is|of|=|:)\s*(?:100|\d{1,2})(?!\d|\.\d|%))",
+    re.IGNORECASE,
+)
 
 
 def _visible_text(value: str) -> str:
@@ -233,9 +237,14 @@ def _visible_text(value: str) -> str:
 
 
 def _axis_reading(text: str) -> bool:
-    """An axis name and a reading anywhere in the same sentence is private."""
+    """Private when a sidecar token has a reading, or a loose word has one nearby.
+
+    Ordinary macro English can say frustration or complacency next to a yield.
+    """
     for sentence in _SENTENCE_SPLIT_RE.split(text):
-        if _AXIS_TOKEN_RE.search(sentence) and (_UNIT_READING_RE.search(sentence) or _STATED_READING_RE.search(sentence)):
+        if _STRICT_AXIS_RE.search(sentence) and (_UNIT_READING_RE.search(sentence) or _STATED_READING_RE.search(sentence)):
+            return True
+        if _NEAR_LOOSE_READING_RE.search(sentence):
             return True
     return False
 

@@ -180,23 +180,24 @@ def evaluate_decision_actions(
     allowed: list[dict[str, Any]] = []
     blocked: list[dict[str, Any]] = []
     memory_reason = None
-    if expanding_actions(decision):
-        from scripts.trading.memory import _psychology_context, build_memory_context
+    from scripts.trading.memory import _psychology_context, build_memory_context
 
-        if not isinstance(decision.get("_memory_context"), dict) and expected_memory_sha256:
-            decision["_memory_context"] = build_memory_context(
-                store,
-                owner_type,
-                owner_id,
-                exclude_run_id=run_id,
-                trader_books=trader_books,
-            )
-        context = decision.get("_memory_context")
-        if not isinstance(context, dict):
-            context = {}
-            decision["_memory_context"] = context
-        # The model cannot hide or replace the sidecar. Flags come from the store.
-        context["psychology"] = _psychology_context(store, owner_type, owner_id)
+    if expanding_actions(decision) and not isinstance(decision.get("_memory_context"), dict) and expected_memory_sha256:
+        decision["_memory_context"] = build_memory_context(
+            store,
+            owner_type,
+            owner_id,
+            exclude_run_id=run_id,
+            trader_books=trader_books,
+        )
+    context = decision.get("_memory_context")
+    if not isinstance(context, dict):
+        context = {}
+        decision["_memory_context"] = context
+    # The model cannot hide or replace the sidecar. Flags come from the store
+    # on de-risk decisions too, so the journal can record an optional check.
+    context["psychology"] = _psychology_context(store, owner_type, owner_id)
+    if expanding_actions(decision):
         memory_reason = learning_gate_reason(
             store,
             owner_type=owner_type,

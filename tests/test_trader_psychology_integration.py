@@ -185,6 +185,32 @@ class PsychologyIntegrationTests(unittest.TestCase):
             )
             raise_if_unexecutable(pure_blocked, pure_allowed)
 
+    def test_close_journals_optional_capitulation_without_blocking(self) -> None:
+        from scripts.trading.psychology import derive_flags, seed_state, state_digest
+        from scripts.trading.psychology_gate import psychology_journal_payload
+
+        close_state = seed_state("trader", "dollar-king")
+        close_state["axes"]["defensiveness"]["value"] = 0.70
+        close_state["axes"]["frustration"]["value"] = 0.50
+        close_state["flags"] = derive_flags(close_state)
+        close_state["state_sha256"] = state_digest(close_state)
+        self.store.write_psychology_state("trader", "dollar-king", close_state)
+        de_risk = {"actions": [{"action": "CLOSE", "position_id": "pos-1", "instrument": "USDCAD"}]}
+        allowed, blocked = evaluate_decision_actions(
+            self.store,
+            owner_type="trader",
+            owner_id="dollar-king",
+            decision=de_risk,
+            run_id="overnight-20260926",
+            expected_memory_sha256="unused",
+        )
+        self.assertEqual([row["action"] for row in allowed], ["CLOSE"])
+        self.assertEqual(blocked, [])
+        payload = psychology_journal_payload(de_risk, blocked)
+        self.assertEqual(payload["state_sha256"], close_state["state_sha256"])
+        self.assertIn("capitulation_risk", payload["active_flags"])
+        self.assertEqual(payload["check_status"], "missing_optional")
+
     def test_public_prose_strips_psychology(self) -> None:
         thesis = "USD remains the cleanest expression. My complacency is 0.47 so I am sizing the book. The growth gap is intact."
         self.assertTrue(public_prose_issues(thesis))
@@ -220,6 +246,13 @@ class PsychologyIntegrationTests(unittest.TestCase):
             "Learning\u200b Default does not change the growth gap that still supports the dollar.",
             "heater\u200b_risk says add. The growth gap still supports the dollar versus the rest of G10.",
         ):
+            kept_macro = [
+                "Frustration in the rates market is evident as 10y yields sit at 4.25 percent.",
+                "Vol complacency is the risk here with VIX at 12 and 2s10s at 0.35.",
+            ]
+            for macro in kept_macro:
+                self.assertFalse(public_prose_issues(macro), macro)
+                self.assertIn("4.25" if "4.25" in macro else "0.35", sanitize_public_prose(macro))
             self.assertTrue(public_prose_issues(prose), prose)
             cleaned = sanitize_public_prose(prose)
             lowered = cleaned.lower()
