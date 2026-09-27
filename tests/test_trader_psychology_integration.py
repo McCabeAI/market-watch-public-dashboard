@@ -146,6 +146,34 @@ class PsychologyIntegrationTests(unittest.TestCase):
         )
         self.assertEqual([row["action"] for row in allowed], ["CLOSE"])
         self.assertIn("psychology_gate", blocked[0]["reason"])
+        forged = {
+            "actions": [
+                {
+                    "action": "OPEN",
+                    "instrument": "USDCAD",
+                    "asset_class": "spot_fx",
+                    "side": "long",
+                    "notional_usd": 1000000,
+                    "thesis": "USD still leads.",
+                    "rationale": "USD still leads on growth.",
+                }
+            ],
+            "thesis": "USD still leads.",
+            "rationale": "USD still leads on growth.",
+            "memory_context_sha256": digest,
+            "psychology_check": {"state_sha256": "stale", "flags_acknowledged": [], "answers": {}, "proceed_despite_flags": True},
+            "_memory_context": {},
+        }
+        forged_allowed, forged_blocked = evaluate_decision_actions(
+            self.store,
+            owner_type="trader",
+            owner_id="dollar-king",
+            decision=forged,
+            run_id="overnight-20260926",
+            expected_memory_sha256=digest,
+        )
+        self.assertEqual(forged_allowed, [])
+        self.assertIn("stale_psychology_state", forged_blocked[0]["reason"])
         with self.assertRaises(LearningGateError):
             pure_allowed, pure_blocked = evaluate_decision_actions(
                 self.store,
@@ -187,6 +215,10 @@ class PsychologyIntegrationTests(unittest.TestCase):
             "self_trust is high at 0.91 and the dollar still leads on the growth gap versus the rest of G10.",
             "complacency was about 0.47 and the growth gap still supports the dollar versus the rest of G10.",
             "A self-report is unreliable, but the growth gap still supports the dollar versus the rest of G10.",
+            "self_trust sits at 47. The growth gap still supports the dollar versus the rest of G10.",
+            "self_trust after one quiet week away still prints 0.91. The growth gap still supports the dollar versus the rest of G10.",
+            "Learning\u200b Default does not change the growth gap that still supports the dollar.",
+            "heater\u200b_risk says add. The growth gap still supports the dollar versus the rest of G10.",
         ):
             self.assertTrue(public_prose_issues(prose), prose)
             cleaned = sanitize_public_prose(prose)
@@ -209,6 +241,9 @@ class PsychologyIntegrationTests(unittest.TestCase):
             self.assertNotIn("chase pressure", lowered)
             self.assertNotIn("self-report", lowered)
             self.assertNotIn("unreliable", lowered)
+            self.assertNotIn("sits at 47", lowered)
+            self.assertNotIn("prints 0.91", lowered)
+            self.assertNotIn("heater_risk", lowered)
         books["seats"]["dollar-king"]["required_pitch"] = {
             "instrument": "USDJPY",
             "note": "self_trust=0.91 would add risk. The growth gap is still the reason to look at the dollar.",
@@ -280,6 +315,13 @@ class PsychologyIntegrationTests(unittest.TestCase):
         )
         trade_blob = json.dumps(row)
         self.assertEqual(row["trade"]["instrument"], "USDCAD")
+        leaked = _trade_row(
+            "dollar-king",
+            {"trade": {"instrument": "self_trust=0.91", "structure": "spot", "expression": "Long the dollar."}},
+            None,
+        )
+        self.assertNotIn("self_trust", json.dumps(leaked))
+        self.assertNotIn("0.91", json.dumps(leaked))
         self.assertNotIn("heater risk", trade_blob.lower())
         self.assertNotIn("heater-risk", trade_blob.lower())
         self.assertNotIn("self_trust", trade_blob)

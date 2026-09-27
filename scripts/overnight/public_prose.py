@@ -207,7 +207,7 @@ def public_alerts(alerts: Any) -> list[str]:
     for alert in alerts:
         if not isinstance(alert, str) or not alert.strip():
             continue
-        lowered = alert.lower()
+        lowered = _visible_text(alert).lower()
         if any(marker in lowered for marker in _PRIVATE_ALERT_MARKERS):
             continue
         if public_prose_issues(alert):
@@ -219,13 +219,35 @@ def public_alerts(alerts: Any) -> list[str]:
 
 
 _SENTENCE_SPLIT_RE = re.compile(r"(?<=[.!?])\s+")
+_INVISIBLE_RE = re.compile(r"[\u200b-\u200d\u2060\ufeff\u00ad]")
+_AXIS_TOKEN_RE = re.compile(
+    r"\b(?:self[\s_-]*trust|frustration|defensiveness|chase[\s_-]*pressure|revenge[\s_-]*pressure|complacency|thesis[\s_-]*attachment|external[\s_-]*pressure)\b",
+    re.IGNORECASE,
+)
+_UNIT_READING_RE = re.compile(r"(?<!\d)(?:0?\.\d+|1\.0+)(?!\d)")
+_STATED_READING_RE = re.compile(r"\b(?:at|is|of|=|:)\s*(?:100|\d{1,2})\b", re.IGNORECASE)
+
+
+def _visible_text(value: str) -> str:
+    return _INVISIBLE_RE.sub("", value)
+
+
+def _axis_reading(text: str) -> bool:
+    """An axis name and a reading anywhere in the same sentence is private."""
+    for sentence in _SENTENCE_SPLIT_RE.split(text):
+        if _AXIS_TOKEN_RE.search(sentence) and (_UNIT_READING_RE.search(sentence) or _STATED_READING_RE.search(sentence)):
+            return True
+    return False
 
 
 def public_prose_issues(value: Any) -> list[str]:
     if value is None:
         return []
-    text = str(value)
-    return [pattern.pattern for pattern in _MACHINE_PATTERNS if pattern.search(text)]
+    text = _visible_text(str(value))
+    found = [pattern.pattern for pattern in _MACHINE_PATTERNS if pattern.search(text)]
+    if _axis_reading(text):
+        found.append("axis_reading")
+    return found
 
 
 def assert_public_prose(
@@ -270,6 +292,7 @@ def sanitize_public_prose(
     """Defensive legacy renderer: keep market sentences, strip machine telemetry."""
     if not isinstance(value, str) or not value.strip():
         return fallback
+    value = _visible_text(value)
     kept: list[str] = []
     for raw_sentence in _SENTENCE_SPLIT_RE.split(value.strip()):
         raw_sentence = raw_sentence.strip()

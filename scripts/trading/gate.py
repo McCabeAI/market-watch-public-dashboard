@@ -181,9 +181,9 @@ def evaluate_decision_actions(
     blocked: list[dict[str, Any]] = []
     memory_reason = None
     if expanding_actions(decision):
-        if decision.get("_memory_context") is None and expected_memory_sha256:
-            from scripts.trading.memory import build_memory_context
+        from scripts.trading.memory import _psychology_context, build_memory_context
 
+        if not isinstance(decision.get("_memory_context"), dict) and expected_memory_sha256:
             decision["_memory_context"] = build_memory_context(
                 store,
                 owner_type,
@@ -191,6 +191,12 @@ def evaluate_decision_actions(
                 exclude_run_id=run_id,
                 trader_books=trader_books,
             )
+        context = decision.get("_memory_context")
+        if not isinstance(context, dict):
+            context = {}
+            decision["_memory_context"] = context
+        # The model cannot hide or replace the sidecar. Flags come from the store.
+        context["psychology"] = _psychology_context(store, owner_type, owner_id)
         memory_reason = learning_gate_reason(
             store,
             owner_type=owner_type,
