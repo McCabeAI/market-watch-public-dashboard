@@ -23,6 +23,8 @@ REVIEW_SCOPED_ARTIFACTS = frozenset(
         "agent_evidence_packet.json",
         "scheduled_output.json",
         "trader_review.json",
+        "learning_audit.json",
+        "learning_obligations.json",
     }
 )
 ACCEPTED_REVIEW_ARTIFACTS = frozenset(

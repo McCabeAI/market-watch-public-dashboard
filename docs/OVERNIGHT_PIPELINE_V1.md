@@ -166,7 +166,7 @@ The approved graph is:
 - 1 Composer research worker;
 - 14 Grok trader seats;
 - 3 Grok automated PM principals (swinger, pragmatist, grinder custom agents);
-- **20 / 18 / 2** declared normal usage when the learning examiner is used: 1 Grok parent + 14 Grok traders + 3 Grok PM principals + 1 Composer research + 1 Composer learning-quality examiner. The examiner grades causal adequacy only and is not a second trading opinion.
+- **20 / 18 / 2** declared normal usage when the learning examiner is used: 1 Grok parent + 14 Grok traders + 3 Grok PM principals + 1 Composer research + 1 Composer learning-quality examiner. The examiner grades causal adequacy only and is not a second trading opinion. It is required whenever the frozen learning-obligation manifest is non-empty, and declared calls cannot be 19 in that case. The shared packet stores only `manifest_sha256` and `obligation_count`; the rows are the private review artifact `learning_obligations.json`. Omitting submissions does not skip it. An adequate reflection may conclude `no_new_lesson` without creating a lesson.
 
 Caps never expand automatically.
 
@@ -340,7 +340,7 @@ Committed ACP `market-watch-weekday-0205` is still **18 / 16 / 2** (ACP commit `
 - `total_model_cap` 18 → **20**
 - `grok_cap` 16 → **18**
 - `composer_cap` remains **2**
-- job objective/constraints: after the accepted 14-trader handoff, launch concurrent custom-agent PMs `swinger`, `pragmatist`, and `grinder` (`grok-4.6[]`); then one Composer 2.5 learning-quality examiner that grades causal adequacy only; ChatGPT excluded; each PM sees the frozen packet + the same 14 decisions + only its own prior book/memory; no nested children
+- job objective/constraints: after the accepted 14-trader handoff, launch concurrent custom-agent PMs `swinger`, `pragmatist`, and `grinder` (`grok-4.6[]`); then, when the frozen learning-obligation manifest is non-empty, one Composer 2.5 learning-quality examiner that grades causal adequacy only and must account for every manifest obligation; ChatGPT excluded; each PM sees the frozen packet + the same 14 decisions + only its own prior book/memory; no nested children
 - emit the 20/18/2 policy marker above
 - no Sunday clock and no second provider schedule
 

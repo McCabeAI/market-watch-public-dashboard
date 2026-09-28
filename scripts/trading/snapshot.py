@@ -158,6 +158,7 @@ def compact_memory_for_packet(
         "active_lessons": context["active_lessons"],
         "learning": context.get("learning"),
         "postmortems_due": context["postmortems_due"],
+        "learning_obligations": context.get("learning_obligations") or [],
         "consequence": context.get("consequence"),
         "capital_owner": context.get("capital_owner"),
         "reflections_due": context.get("reflections_due") or [],

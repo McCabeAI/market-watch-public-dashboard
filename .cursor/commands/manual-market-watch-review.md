@@ -38,7 +38,7 @@ Approved graph:
 | Direct automated PM principals | 3 | `grok-4.6` |
 | Learning-quality examiner | 1 | `composer-2.5` |
 
-Total: 20 invocations when the learning examiner is used (18 Grok + 2 Composer). The examiner grades causal adequacy of required learning submissions after the primary decisions and cannot create a second trading opinion. Cursor Auto and all other models are prohibited. Nested children are prohibited.
+Total: 20 invocations when the learning examiner is used (18 Grok + 2 Composer). Cursor Auto and all other models are prohibited. Nested children are prohibited. If the frozen learning-obligation manifest is non-empty, declared calls must be 20 / 18 / 2 and the graph includes exactly one Composer 2.5 learning-quality examiner after the primary decisions. Declared 19 is not valid in that case. Omitting submissions does not skip the examiner. The examiner grades causal adequacy only (`adequate`, `inadequate`, or `missing` for every manifest obligation) and cannot create a second trading opinion, lesson, or canonical fact. An adequate `no_new_lesson` may clear debt without a lesson. Do not force lessons.
 
 ### Frozen-packet synthesis
 
@@ -91,6 +91,8 @@ After all 14 trader decisions exist, launch exactly three direct Grok custom-age
 - only its own prior book/memory.
 
 No PM sees another PM's current-cycle decision. Do not launch ChatGPT PM.
+
+Each trader and automated PM must address every item in its own frozen sidecar `learning_obligations` before the trading decision, including `HOLD` and `NO_TRADE`. The shared packet binds only `manifest_sha256` and `obligation_count`. Read full rows from the private `learning_obligations.json` when launching the examiner; do not give that file, another identity's obligations or lessons, or examiner notes to a trader or PM. After those decisions exist, launch the learning-quality examiner when `obligation_count` is non-zero. Each assessment uses `submission_ref` equal to the frozen `obligation_id` and `submission_state` of `adequate`, `inadequate`, or `missing`.
 
 ## Output
 

@@ -43,6 +43,7 @@ on:
       - "tests/test_pm_overnight_packets.py"
       - "tests/test_trading_memory.py"
       - "tests/test_trader_learning_v2.py"
+      - "tests/test_learning_obligations.py"
       - "tests/test_trader_psychology.py"
       - "tests/test_trader_psychology_state.py"
       - "tests/test_trader_psychology_gate.py"
@@ -70,34 +71,44 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # Mandatory pull-request shards. Learning obligations stay on the learning
+  # shard. validate needs every matrix leg plus the zero-model dry-run and
+  # fails closed: a skipped aggregate check would otherwise count as success.
+  # Shards replace the 15-minute monolith, which was cancelled while tests were
+  # still running. Each leg is a fraction of that suite, with a 20-minute cap.
   unit-contracts:
     if: github.event_name != 'schedule'
-    name: Overnight unit contracts
+    name: Overnight unit contracts (${{ matrix.shard }})
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - shard: overnight-core
+            modules: tests.test_macro_freshness tests.test_overnight_pipeline tests.test_overnight_scheduled_output tests.test_overnight_acceptance_handoff tests.test_pm_overnight_packets tests.test_trader_room_dashboard
+          - shard: review-identity
+            modules: tests.test_overnight_review_identity
+          - shard: pm-scheduled
+            modules: tests.test_pm_scheduled_output
+          - shard: learning
+            modules: tests.test_trading_memory tests.test_trader_learning_v2 tests.test_learning_obligations tests.test_trader_psychology tests.test_trader_psychology_state tests.test_trader_psychology_gate tests.test_trader_psychology_integration
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - name: Unit tests
+        env:
+          UNIT_MODULES: ${{ matrix.modules }}
         run: |
           set -euo pipefail
-          PYTHONPATH=. python3 -m unittest \
-            tests.test_macro_freshness \
-            tests.test_overnight_pipeline \
-            tests.test_overnight_scheduled_output \
-            tests.test_overnight_acceptance_handoff \
-            tests.test_overnight_review_identity \
-            tests.test_pm_scheduled_output \
-            tests.test_pm_overnight_packets \
-            tests.test_trading_memory \
-            tests.test_trader_learning_v2 \
-            tests.test_trader_psychology \
-            tests.test_trader_psychology_state \
-            tests.test_trader_psychology_gate \
-            tests.test_trader_psychology_integration \
-            tests.test_trader_room_dashboard -v
+          if [ -z "${UNIT_MODULES// /}" ]; then
+            echo "unit-contract shard has no modules" >&2
+            exit 1
+          fi
+          # Modules are a workflow-owned matrix value, split into unittest args.
+          PYTHONPATH=. python3 -m unittest $UNIT_MODULES -v
 
   zero-model-dry-run:
     if: github.event_name != 'schedule'
@@ -118,14 +129,23 @@ jobs:
           test -s /tmp/overnight-site/pm-books.json
 
   validate:
-    if: github.event_name != 'schedule'
+    if: always() && github.event_name != 'schedule'
     name: Overnight contracts and dry-run
     needs: [unit-contracts, zero-model-dry-run]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - name: Confirm split checks
-        run: echo "unit contracts and zero-model dry-run both succeeded"
+        env:
+          UNIT_RESULT: ${{ needs.unit-contracts.result }}
+          DRY_RUN_RESULT: ${{ needs.zero-model-dry-run.result }}
+        run: |
+          set -euo pipefail
+          if [ "$UNIT_RESULT" != "success" ] || [ "$DRY_RUN_RESULT" != "success" ]; then
+            echo "overnight validation failed: unit-contracts=$UNIT_RESULT zero-model-dry-run=$DRY_RUN_RESULT" >&2
+            exit 1
+          fi
+          echo "all overnight unit-contract shards and the zero-model dry-run succeeded"
 
   scheduled-reconcile:
     if: github.event_name == 'schedule'

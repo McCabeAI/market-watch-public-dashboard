@@ -20,8 +20,12 @@ from scripts.trading.constants import (
     LEARNING_STATUSES,
     MATERIAL_LESSON_SCORE,
     NO_NEW_LESSON_MARKERS,
+    PERFORMANCE_REFLECTION_ATTRIBUTION,
     PLATITUDE_PATTERNS,
+    PRESSURE_EFFECT_VALUES,
     SETUP_FINGERPRINT_LIST_CAP,
+    SKILL_LUCK_VALUES,
+    YES_NO_NA,
 )
 from scripts.trading.errors import SchemaError
 from scripts.trading.store import TradingStore, assert_identity
@@ -82,6 +86,10 @@ def causal_block(payload: dict[str, Any]) -> dict[str, str]:
 def substantive_no_new_lesson(value: Any) -> str:
     text = substantive_text(value, label="no_new_lesson")
     lowered = _norm(text)
+    if re.search(r"\bnothing learned\b", lowered) or re.search(r"\btiming was bad\b", lowered):
+        raise SchemaError(
+            "NO_NEW_LESSON rejects a shallow variant; explain bounded variance or why the prior process remains sound"
+        )
     if not any(marker in lowered for marker in NO_NEW_LESSON_MARKERS):
         raise SchemaError(
             "NO_NEW_LESSON must explain ordinary bounded variance or why the prior process remains sound"
@@ -715,8 +723,6 @@ def validate_learning_quality_review(review: Any) -> dict[str, Any]:
         extra = [key for key in row if key in EXAMINER_FORBIDDEN_KEYS]
         if extra:
             raise SchemaError("learning assessment cannot author a trade or lesson")
-        if row.get("adequate") not in (True, False):
-            raise SchemaError("learning assessment adequate must be boolean")
         reasons = row.get("reasons") or []
         if not isinstance(reasons, list) or any(not isinstance(item, str) for item in reasons):
             raise SchemaError("learning assessment reasons must be strings")
@@ -730,17 +736,146 @@ def validate_learning_quality_review(review: Any) -> dict[str, Any]:
         ref = row.get("submission_ref")
         if not isinstance(ref, str) or not ref.strip():
             raise SchemaError("learning assessment wrong-reference")
+        state = _assessment_state(row)
         cleaned.append(
             {
                 "owner_type": owner_type,
                 "owner_id": owner_id.strip(),
                 "submission_kind": kind,
                 "submission_ref": ref.strip(),
-                "adequate": row.get("adequate"),
+                "submission_state": state,
+                "adequate": state == "adequate",
                 "reasons": reasons,
             }
         )
     return {**review, "assessments": cleaned}
+
+
+def _assessment_state(row: dict[str, Any]) -> str:
+    """adequate / inadequate / missing. Missing cannot be inferred from a boolean."""
+    state = row.get("submission_state")
+    adequate = row.get("adequate")
+    if state is None:
+        if adequate is True:
+            state = "adequate"
+        elif adequate is False:
+            state = "inadequate"
+        else:
+            raise SchemaError("learning assessment adequate must be boolean")
+    elif state not in {"adequate", "inadequate", "missing"}:
+        raise SchemaError("learning assessment submission_state must be adequate, inadequate, or missing")
+    if state == "adequate" and adequate is not True:
+        raise SchemaError("learning assessment adequate must be true when submission_state is adequate")
+    if state in {"inadequate", "missing"} and adequate is not False:
+        raise SchemaError("learning assessment adequate must be false when submission_state is inadequate or missing")
+    return state
+
+
+_POSTMORTEM_ASSESSMENT_FIELDS = (
+    "what_worked",
+    "what_failed",
+    "thesis_assessment",
+    "expression_assessment",
+    "timing_assessment",
+    "sizing_assessment",
+)
+
+
+def assert_causal_submission(kind: str, item: dict[str, Any]) -> None:
+    """Trusted shape check for an examiner-adequate submission. Does not write."""
+    if kind not in SUBMISSION_KINDS:
+        raise SchemaError("learning submission wrong-kind")
+    if not isinstance(item, dict):
+        raise SchemaError("learning submission must be an object")
+    causal_block(item)
+    lesson = _text(item.get("lesson"))
+    no_new = _text(item.get("no_new_lesson"))
+    if lesson:
+        substantive_text(lesson, label="lesson")
+    if no_new:
+        substantive_no_new_lesson(no_new)
+    if kind == "postmortem":
+        trade_id = item.get("trade_id")
+        if not isinstance(trade_id, str) or not trade_id.strip():
+            raise SchemaError("postmortem requires trade_id")
+        if not any(_text(item.get(field)) for field in _POSTMORTEM_ASSESSMENT_FIELDS):
+            raise SchemaError("postmortem requires at least one substantive assessment field")
+        if lesson and not _text(item.get("future_rule") or item.get("what_to_do_differently")):
+            raise SchemaError("postmortem lesson requires future_rule")
+        if not lesson and not no_new:
+            raise SchemaError("postmortem requires lesson or no_new_lesson reason")
+        return
+    if not _text(item.get("what_happened_vs_expected")):
+        raise SchemaError("performance_reflection requires what_happened_vs_expected")
+    due_id = item.get("reflection_due_id")
+    if not isinstance(due_id, str) or not due_id.strip():
+        raise SchemaError("performance_reflection requires reflection_due_id")
+    attribution = [row for row in (item.get("attribution") or []) if row in PERFORMANCE_REFLECTION_ATTRIBUTION]
+    if not attribution:
+        raise SchemaError("performance_reflection requires attribution")
+    if item.get("pressure_effect") not in PRESSURE_EFFECT_VALUES:
+        raise SchemaError("performance_reflection requires valid pressure_effect")
+    if item.get("skill_vs_luck") not in SKILL_LUCK_VALUES:
+        raise SchemaError("performance_reflection requires skill_vs_luck")
+    for field in ("overconfidence_risk", "chase_or_revenge"):
+        if item.get(field) not in YES_NO_NA:
+            raise SchemaError(f"performance_reflection requires {field}")
+    memory_update = item.get("memory_update") if isinstance(item.get("memory_update"), dict) else None
+    if memory_update and memory_update.get("op") == "add":
+        substantive_text(memory_update.get("text"), label="memory_update.text")
+    if not lesson and memory_update is None and not no_new:
+        raise SchemaError("performance_reflection requires lesson, memory_update, or no_new_lesson")
+
+
+def obligation_key(obligation: dict[str, Any]) -> tuple[str, str, str, str]:
+    return (
+        str(obligation.get("owner_type") or ""),
+        str(obligation.get("owner_id") or ""),
+        str(obligation.get("kind") or ""),
+        str(obligation.get("obligation_id") or ""),
+    )
+
+
+def submission_matches_obligation(obligation: dict[str, Any], item: dict[str, Any]) -> bool:
+    kind = obligation.get("kind")
+    if kind == "postmortem":
+        if str(item.get("trade_id") or "").strip() != str(obligation.get("reference") or "").strip():
+            return False
+        supplied = str(item.get("postmortem_id") or "").strip()
+        return not supplied or supplied == obligation.get("obligation_id")
+    if kind == "performance_reflection":
+        return str(item.get("reflection_due_id") or "").strip() == str(obligation.get("obligation_id") or "")
+    return False
+
+
+def match_submissions_to_obligations(
+    obligations: list[dict[str, Any]],
+    submissions: list[tuple[str, str, dict[str, Any], str]],
+) -> dict[tuple[str, str, str, str], dict[str, Any]]:
+    matched: dict[tuple[str, str, str, str], dict[str, Any]] = {}
+    for owner_type, owner_id, item, kind in submissions:
+        if not isinstance(item, dict):
+            raise SchemaError("learning submission must be an object")
+        if kind not in SUBMISSION_KINDS:
+            raise SchemaError("learning submission wrong-kind")
+        hits = [
+            row
+            for row in obligations
+            if row.get("owner_type") == owner_type
+            and row.get("owner_id") == owner_id
+            and row.get("kind") == kind
+            and submission_matches_obligation(row, item)
+        ]
+        ref = submission_reference(kind, item) or str(item.get("postmortem_id") or "").strip()
+        if not hits:
+            raise SchemaError(f"learning submission unknown {owner_type}/{owner_id} {kind} {ref}")
+        if len(hits) != 1:
+            raise SchemaError("duplicate learning submission")
+        key = obligation_key(hits[0])
+        if key in matched:
+            raise SchemaError(f"duplicate learning submission {owner_type}/{owner_id} {kind} {key[3]}")
+        matched[key] = item
+    return matched
 
 
 def submission_reference(kind: str, item: dict[str, Any]) -> str:
@@ -804,6 +939,114 @@ def assert_examiner_coverage(
         raise SchemaError(f"learning assessment unknown {owner_type}/{owner_id} {kind} {ref}")
     missing = sorted(expected_set - seen_set)
     raise SchemaError(f"learning assessment missing {missing}")
+
+
+def _unexpected_assessment(key: tuple[str, str, str, str], expected: set[tuple[str, str, str, str]]) -> None:
+    owner_type, owner_id, kind, ref = key
+    same_ref = [item for item in expected if item[3] == ref]
+    same_owner_ref = [item for item in expected if item[0] == owner_type and item[1] == owner_id and item[3] == ref]
+    same_owner_kind = [item for item in expected if item[0] == owner_type and item[1] == owner_id and item[2] == kind]
+    if same_ref and all(item[0] != owner_type or item[1] != owner_id for item in same_ref):
+        raise SchemaError(f"learning assessment wrong-owner {owner_id} {ref}")
+    if same_owner_ref and all(item[2] != kind for item in same_owner_ref):
+        raise SchemaError(f"learning assessment wrong-kind {kind} {ref}")
+    if same_owner_kind and all(item[3] != ref for item in same_owner_kind):
+        raise SchemaError(f"learning assessment wrong-reference {ref}")
+    raise SchemaError(f"learning assessment unknown {owner_type}/{owner_id} {kind} {ref}")
+
+
+def assert_obligation_coverage(
+    obligations: list[dict[str, Any]],
+    submissions: list[tuple[str, str, dict[str, Any], str]],
+    assessments: list[dict[str, Any]],
+) -> dict[tuple[str, str, str, str], dict[str, Any]]:
+    """One assessment for every frozen obligation, including missing submissions.
+
+    A provider cannot make an obligation disappear by omitting the row. Adequate
+    grades must also survive the trusted causal check. The examiner does not
+    choose the trade.
+    """
+    expected = [obligation_key(row) for row in obligations]
+    if len(expected) != len(set(expected)):
+        raise SchemaError("duplicate frozen learning obligation")
+    expected_set = set(expected)
+    matched = match_submissions_to_obligations(obligations, submissions)
+    seen: list[tuple[str, str, str, str]] = []
+    states: dict[tuple[str, str, str, str], str] = {}
+    for row in assessments:
+        key = (
+            str(row.get("owner_type") or ""),
+            str(row.get("owner_id") or ""),
+            str(row.get("submission_kind") or ""),
+            str(row.get("submission_ref") or ""),
+        )
+        if key in seen:
+            raise SchemaError(f"duplicate learning assessment {key[0]}/{key[1]} {key[2]} {key[3]}")
+        seen.append(key)
+        if key not in expected_set:
+            _unexpected_assessment(key, expected_set)
+        states[key] = str(row.get("submission_state") or "")
+    seen_set = set(seen)
+    if expected_set != seen_set:
+        for key in seen_set - expected_set:
+            _unexpected_assessment(key, expected_set)
+        missing = sorted(expected_set - seen_set)
+        raise SchemaError(f"learning assessment missing {missing}")
+    for key in expected:
+        state = states.get(key)
+        present = key in matched
+        if state == "missing" and present:
+            raise SchemaError(f"missing learning assessment has a submission {key[0]}/{key[1]} {key[2]} {key[3]}")
+        if state in {"adequate", "inadequate"} and not present:
+            raise SchemaError(f"learning assessment missing submission {key[0]}/{key[1]} {key[2]} {key[3]}")
+        if state == "adequate":
+            assert_causal_submission(key[2], matched[key])
+    return matched
+
+
+def retain_manifest_approved_submissions(
+    decision: dict[str, Any],
+    *,
+    owner_type: str,
+    owner_id: str,
+    obligations: list[dict[str, Any]],
+    assessments: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """Keep only examiner-adequate rows. Actions are not rewritten."""
+    approved = {
+        (
+            str(row.get("owner_type")),
+            str(row.get("owner_id")),
+            str(row.get("submission_kind")),
+            str(row.get("submission_ref")),
+        )
+        for row in assessments
+        if row.get("submission_state") == "adequate"
+    }
+    relevant = [
+        row for row in obligations if row.get("owner_type") == owner_type and row.get("owner_id") == owner_id
+    ]
+    out = dict(decision)
+
+    def _keep(kind: str, rows: Any) -> list[Any]:
+        kept = []
+        for row in rows or []:
+            if not isinstance(row, dict):
+                continue
+            hits = [
+                item
+                for item in relevant
+                if item.get("kind") == kind and submission_matches_obligation(item, row)
+            ]
+            if len(hits) == 1 and obligation_key(hits[0]) in approved:
+                kept.append(row)
+        return kept
+
+    if "postmortems" in out:
+        out["postmortems"] = _keep("postmortem", out.get("postmortems"))
+    if "performance_reflections" in out:
+        out["performance_reflections"] = _keep("performance_reflection", out.get("performance_reflections"))
+    return out
 
 
 def inadequate_submission_refs(review: dict[str, Any] | None) -> set[tuple[str, str, str, str]]:

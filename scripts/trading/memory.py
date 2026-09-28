@@ -545,6 +545,14 @@ def build_memory_context(
         ][:4],
         "psychology": _psychology_context(store, owner_type, owner_id),
     }
+    from scripts.trading.obligations import project_learning_obligations
+
+    body["learning_obligations"] = project_learning_obligations(
+        owner_type=owner_type,
+        owner_id=owner_id,
+        postmortems_due=body["postmortems_due"],
+        reflections_due=body["reflections_due"],
+    )
     digest = sha256_json({k: v for k, v in body.items() if k not in {"memory_context_sha256", "as_of"}})
     body["memory_context_sha256"] = digest
     store.write_context(owner_type, owner_id, body)

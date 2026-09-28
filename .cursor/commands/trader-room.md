@@ -121,9 +121,9 @@ Optional private Markdown copy may use Google Drive folder `1NS6Qb6vNGKM18_PW0zP
 
 ## Learning memory, consequence, and reflections
 
-Before any book decision, read your own frozen sidecar (`memory/<seat>.json`). It includes **consequence** (your rank among 14, own P&L/NAV/drawdown/risk utilization — never other seats' P&L or spread-to-winner), **active_lessons**, **postmortems_due**, and **reflections_due** from prior runs.
+Before any book decision, read your own frozen sidecar (`memory/<seat>.json`). It includes **consequence** (your rank among 14, own P&L/NAV/drawdown/risk utilization — never other seats' P&L or spread-to-winner), **active_lessons**, **learning_obligations**, **postmortems_due**, and **reflections_due** from prior runs. You do not receive another identity's obligations, lessons, or examiner notes.
 
-- Prior-run **postmortems_due** or **reflections_due** are mandatory on this invocation, including when you choose `HOLD` or `NO_TRADE`. A causal `causal` block is required. P&L summaries and platitudes do not clear debt. `NO_NEW_LESSON` is valid only when you explain ordinary bounded variance or why the prior process remains sound.
+- Prior-run **learning_obligations** (`postmortems_due` and `reflections_due`) are mandatory before the trading decision on this invocation, including when you choose `HOLD` or `NO_TRADE`. A causal `causal` block is required. P&L summaries and platitudes do not clear debt. `NO_NEW_LESSON` is valid only when you explain ordinary bounded variance or why the prior process remains sound. Do not invent a lesson to fill a quota. Omitting the reflection does not remove the obligation.
 - `OPEN`/`ADD`/`HEDGE` stay blocked until that debt is cleared. Unresolved debt is learning default: competitive eligibility is removed while raw P&L rank stays auditable. `HOLD`/`REDUCE`/`CLOSE` remain executable.
 - On expansion, supply `setup_fingerprint` and address every materially matching own lesson with `lesson_considerations` (`APPLIES`, `DOES_NOT_APPLY`, or `OVERRIDE`) and a substantive rationale. You do not see peer lessons.
 - A same-run `CLOSE` creates a future postmortem due; it does not block sibling actions in that decision.

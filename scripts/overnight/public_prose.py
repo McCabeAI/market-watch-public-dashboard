@@ -53,6 +53,12 @@ _MACHINE_PATTERNS: tuple[re.Pattern[str], ...] = tuple(
         r"\blesson_considerations\b",
         r"\bsetup_fingerprint\b",
         r"\blearning_quality\b",
+        r"\blearning_audit\b",
+        r"\blearning_obligation\b",
+        r"\bno_new_lesson\b",
+        r"\bexaminer_assessment\b",
+        r"\bexaminer_invoked\b",
+        r"\bsubmission_state\b",
         r"\bcompetition_eligible\b",
         r"\brepeated_error_escalation\b",
         r"\bDOES_NOT_APPLY\b",
@@ -116,6 +122,12 @@ _SCRUB_RES: tuple[re.Pattern[str], ...] = (
     re.compile(r"\blesson_considerations\b", re.IGNORECASE),
     re.compile(r"\bsetup_fingerprint\b", re.IGNORECASE),
     re.compile(r"\blearning_quality\b", re.IGNORECASE),
+    re.compile(r"\blearning_audit\b", re.IGNORECASE),
+    re.compile(r"\blearning_obligation\b", re.IGNORECASE),
+    re.compile(r"\bno_new_lesson\b", re.IGNORECASE),
+    re.compile(r"\bexaminer_assessment\b", re.IGNORECASE),
+    re.compile(r"\bexaminer_invoked\b", re.IGNORECASE),
+    re.compile(r"\bsubmission_state\b", re.IGNORECASE),
     re.compile(r"\bcompetition_eligible\b", re.IGNORECASE),
     re.compile(r"\brepeated_error_escalation\b", re.IGNORECASE),
     re.compile(r"\bDOES_NOT_APPLY\b"),
@@ -161,6 +173,12 @@ _PRIVATE_ALERT_MARKERS = (
     "lesson_considerations",
     "setup_fingerprint",
     "learning_quality",
+    "learning_audit",
+    "learning_obligation",
+    "no_new_lesson",
+    "examiner_assessment",
+    "examiner_invoked",
+    "submission_state",
     "competition_eligible",
     "repeated_error",
     "psychology",
@@ -328,7 +346,7 @@ def sanitize_public_prose(
 
 
 _PRIVATE_KEY = re.compile(
-    r"\b(?:self[\s_-]*trust|frustration|defensiveness|complacency|chase[\s_-]*pressure|revenge[\s_-]*pressure|thesis[\s_-]*attachment|external[\s_-]*pressure|learning[\s_-]*default|lesson[\s_-]*matching|psychology(?:[\s_-]*(?:check|gate|state|events))?|heater[\s_-]*risk|revenge[\s_-]*risk|chase[\s_-]*risk|stubbornness[\s_-]*risk|capitulation[\s_-]*risk|rank[\s_-]*distortion|fragile[\s_-]*confidence|inflated[\s_-]*confidence|self[\s_-]*report|state[\s_-]*sha256)\b",
+    r"\b(?:self[\s_-]*trust|frustration|defensiveness|complacency|chase[\s_-]*pressure|revenge[\s_-]*pressure|thesis[\s_-]*attachment|external[\s_-]*pressure|learning[\s_-]*default|learning[\s_-]*audit|learning[\s_-]*obligation|no[\s_-]*new[\s_-]*lesson|examiner[\s_-]*(?:assessment|invoked)|submission[\s_-]*state|lesson[\s_-]*matching|psychology(?:[\s_-]*(?:check|gate|state|events))?|heater[\s_-]*risk|revenge[\s_-]*risk|chase[\s_-]*risk|stubbornness[\s_-]*risk|capitulation[\s_-]*risk|rank[\s_-]*distortion|fragile[\s_-]*confidence|inflated[\s_-]*confidence|self[\s_-]*report|state[\s_-]*sha256)\b",
     re.IGNORECASE,
 )
 _STALE_OIL_RE = re.compile(

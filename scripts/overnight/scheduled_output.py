@@ -87,7 +87,7 @@ def _packet_hash(packet: dict[str, Any]) -> str:
     return sha256_json({k: v for k, v in packet.items() if k != "packet_sha256"})
 
 
-def validate_execution(execution: dict[str, Any]) -> dict[str, Any]:
+def validate_execution(execution: dict[str, Any], *, learning_examiner_required: bool = False) -> dict[str, Any]:
     if not isinstance(execution, dict):
         raise SchemaError("scheduled output missing execution object")
     if execution.get("parent_model") != "grok-4.6":
@@ -111,6 +111,11 @@ def validate_execution(execution: dict[str, Any]) -> dict[str, Any]:
         raise SchemaError("declared model-call counts are inconsistent")
     if total > total_cap or grok > grok_cap or composer > composer_cap:
         raise SchemaError("declared model-call counts exceed the run budget")
+    if learning_examiner_required and (total, grok, composer) != (TOTAL_MODEL_CAP, GROK_CAP, COMPOSER_CAP):
+        raise SchemaError(
+            "non-empty learning obligation manifest requires declared model calls "
+            f"{TOTAL_MODEL_CAP}/{GROK_CAP}/{COMPOSER_CAP}; got {total}/{grok}/{composer}"
+        )
     return execution
 
 
@@ -133,29 +138,31 @@ def _learning_submission_rows(payload: dict[str, Any]) -> list[tuple[str, str, d
     return rows
 
 
-def _enforce_learning_quality(payload: dict[str, Any]) -> None:
-    """One examiner grades causal adequacy. It cannot author a second trading opinion."""
-    from scripts.trading.learning import (
-        assert_examiner_coverage,
-        drop_inadequate_learning_submissions,
-        inadequate_submission_refs,
-        validate_learning_quality_review,
-    )
+def _audit_seed(
+    *,
+    manifest_sha256: str | None,
+    obligations: list[dict[str, Any]],
+    submitted: int,
+    review: dict[str, Any] | None,
+) -> dict[str, Any]:
+    assessments = (review or {}).get("assessments") or []
+    states = [row.get("submission_state") for row in assessments if isinstance(row, dict)]
+    return {
+        "manifest_sha256": manifest_sha256,
+        "obligations": obligations,
+        "prior_obligations": len(obligations),
+        "submitted": submitted,
+        "examiner_assessments": len(assessments),
+        "adequate": states.count("adequate"),
+        "inadequate": states.count("inadequate"),
+        "missing": states.count("missing"),
+        "examiner_invoked": review is not None,
+    }
 
-    submissions = _learning_submission_rows(payload)
-    review = payload.get("learning_quality_review")
-    if not submissions:
-        if review is not None:
-            cleaned = validate_learning_quality_review(review)
-            assert_examiner_coverage([], cleaned.get("assessments") or [])
-            payload["learning_quality_review"] = cleaned
-        return
-    if review is None:
-        raise SchemaError("learning submissions require one learning_quality_review")
-    cleaned = validate_learning_quality_review(review)
-    assert_examiner_coverage(submissions, cleaned.get("assessments") or [])
-    payload["learning_quality_review"] = cleaned
-    blocked = inadequate_submission_refs(cleaned)
+
+def _drop_blocked_submissions(payload: dict[str, Any], blocked: set[tuple[str, str, str, str]]) -> None:
+    from scripts.trading.learning import drop_inadequate_learning_submissions
+
     decisions = payload.get("decisions")
     if isinstance(decisions, dict):
         for owner_id, decision in list(decisions.items()):
@@ -176,6 +183,98 @@ def _enforce_learning_quality(payload: dict[str, Any]) -> None:
                     owner_id=str(owner_id),
                     blocked_refs=blocked,
                 )
+
+
+def _retain_approved_submissions(payload: dict[str, Any], obligations: list[dict[str, Any]], review: dict[str, Any]) -> None:
+    from scripts.trading.learning import retain_manifest_approved_submissions
+
+    assessments = review.get("assessments") or []
+    decisions = payload.get("decisions")
+    if isinstance(decisions, dict):
+        for owner_id, decision in list(decisions.items()):
+            if isinstance(decision, dict):
+                decisions[owner_id] = retain_manifest_approved_submissions(
+                    decision,
+                    owner_type="trader",
+                    owner_id=str(owner_id),
+                    obligations=obligations,
+                    assessments=assessments,
+                )
+    pm_decisions = payload.get("pm_decisions")
+    if isinstance(pm_decisions, dict):
+        for owner_id, decision in list(pm_decisions.items()):
+            if isinstance(decision, dict):
+                pm_decisions[owner_id] = retain_manifest_approved_submissions(
+                    decision,
+                    owner_type="pm",
+                    owner_id=str(owner_id),
+                    obligations=obligations,
+                    assessments=assessments,
+                )
+
+
+def _enforce_learning_quality(
+    payload: dict[str, Any],
+    *,
+    obligations: list[dict[str, Any]] | None = None,
+    manifest_sha256: str | None = None,
+) -> None:
+    """Require the Composer examiner for every frozen prior obligation.
+
+    Examiner necessity used to follow submitted postmortem and reflection rows.
+    Omitting those rows returned before a review was required, so a provider
+    could skip the examiner while prior-run debt stayed due. The frozen
+    obligation manifest is the contract. Submitted rows alone cannot suppress it.
+    """
+    from scripts.trading.learning import (
+        assert_examiner_coverage,
+        assert_obligation_coverage,
+        inadequate_submission_refs,
+        validate_learning_quality_review,
+    )
+
+    obligation_rows = list(obligations or [])
+    submissions = _learning_submission_rows(payload)
+    review = payload.get("learning_quality_review")
+    if obligation_rows:
+        if review is None:
+            raise SchemaError("prior learning obligations require one learning_quality_review")
+        cleaned = validate_learning_quality_review(review)
+        matched = assert_obligation_coverage(obligation_rows, submissions, cleaned.get("assessments") or [])
+        payload["learning_quality_review"] = cleaned
+        payload["_trusted_learning_audit_seed"] = _audit_seed(
+            manifest_sha256=manifest_sha256,
+            obligations=obligation_rows,
+            submitted=len(matched),
+            review=cleaned,
+        )
+        _retain_approved_submissions(payload, obligation_rows, cleaned)
+        return
+    if not submissions:
+        cleaned = None
+        if review is not None:
+            cleaned = validate_learning_quality_review(review)
+            assert_examiner_coverage([], cleaned.get("assessments") or [])
+            payload["learning_quality_review"] = cleaned
+        payload["_trusted_learning_audit_seed"] = _audit_seed(
+            manifest_sha256=manifest_sha256,
+            obligations=[],
+            submitted=0,
+            review=cleaned,
+        )
+        return
+    if review is None:
+        raise SchemaError("learning submissions require one learning_quality_review")
+    cleaned = validate_learning_quality_review(review)
+    assert_examiner_coverage(submissions, cleaned.get("assessments") or [])
+    payload["learning_quality_review"] = cleaned
+    payload["_trusted_learning_audit_seed"] = _audit_seed(
+        manifest_sha256=manifest_sha256,
+        obligations=[],
+        submitted=len(submissions),
+        review=cleaned,
+    )
+    _drop_blocked_submissions(payload, inadequate_submission_refs(cleaned))
 
 
 def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str, Any]:
@@ -297,7 +396,13 @@ def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str,
             if supplied_hash != frozen_hash:
                 raise EvidenceBoundaryError(f"{seat} referenced a memory snapshot that is not this seat/run freeze")
 
-    validate_execution(payload.get("execution") or {})
+    from scripts.trading.obligations import trusted_obligation_manifest
+
+    obligation_manifest = trusted_obligation_manifest(store, base)
+    validate_execution(
+        payload.get("execution") or {},
+        learning_examiner_required=bool(obligation_manifest.get("obligations")),
+    )
     try:
         validate_pm_decisions(
             payload.get("pm_decisions"),
@@ -327,7 +432,11 @@ def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str,
         for pm_id, decision in pm_decisions.items():
             if isinstance(decision, dict) and decision.get("review_id") not in (None, review_id):
                 raise EvidenceBoundaryError(f"{pm_id} review_id mismatch")
-    _enforce_learning_quality(payload)
+    _enforce_learning_quality(
+        payload,
+        obligations=obligation_manifest.get("obligations") or [],
+        manifest_sha256=obligation_manifest.get("manifest_sha256"),
+    )
     return payload
 
 
@@ -364,6 +473,9 @@ def _apply_validated(
     from scripts.trading.store import TradingStore
 
     trading = TradingStore(root=store.root, state_root=store.state_root)
+    from scripts.trading.obligations import build_learning_audit, lesson_census
+
+    before_lessons = lesson_census(trading)
     review_when = parse_iso(payload["agent_packet"]["evidence_cutoff"])
     families = overlay_accepted_research(
         base["families"],
@@ -424,11 +536,30 @@ def _apply_validated(
     review["pm_books"] = pm_books
     review["pm_packets"] = pm_summary
     review["pm_source"] = pm_summary.get("source")
+    seed = payload.pop("_trusted_learning_audit_seed", None) or {
+        "obligations": [],
+        "prior_obligations": 0,
+        "submitted": 0,
+        "examiner_assessments": 0,
+        "adequate": 0,
+        "inadequate": 0,
+        "missing": 0,
+        "examiner_invoked": False,
+    }
+    learning_audit = build_learning_audit(
+        run_id=run_id,
+        review_id=review_id,
+        seed=seed,
+        store=trading,
+        before_lessons=before_lessons,
+        after_lessons=lesson_census(trading),
+    )
 
     if write:
         store.write_artifact(run_id, "agent_evidence_packet.json", payload["agent_packet"], review_id=review_id)
         store.write_artifact(run_id, "scheduled_output.json", payload, review_id=review_id)
         store.write_artifact(run_id, "trader_review.json", review, review_id=review_id)
+        store.write_artifact(run_id, "learning_audit.json", learning_audit, review_id=review_id)
         store.write_books(updated)
         mark_accepted(
             store,
