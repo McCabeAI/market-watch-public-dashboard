@@ -72,7 +72,8 @@ concurrency:
 
 jobs:
   # Mandatory pull-request shards. Learning obligations stay on the learning
-  # shard; validate below needs every matrix leg plus the zero-model dry-run.
+  # shard. validate needs every matrix leg plus the zero-model dry-run and
+  # fails closed: a skipped aggregate check would otherwise count as success.
   # Shards replace the 15-minute monolith, which was cancelled while tests were
   # still running. Each leg is a fraction of that suite, with a 20-minute cap.
   unit-contracts:
@@ -128,14 +129,23 @@ jobs:
           test -s /tmp/overnight-site/pm-books.json
 
   validate:
-    if: github.event_name != 'schedule'
+    if: always() && github.event_name != 'schedule'
     name: Overnight contracts and dry-run
     needs: [unit-contracts, zero-model-dry-run]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - name: Confirm split checks
-        run: echo "all overnight unit-contract shards and the zero-model dry-run succeeded"
+        env:
+          UNIT_RESULT: ${{ needs.unit-contracts.result }}
+          DRY_RUN_RESULT: ${{ needs.zero-model-dry-run.result }}
+        run: |
+          set -euo pipefail
+          if [ "$UNIT_RESULT" != "success" ] || [ "$DRY_RUN_RESULT" != "success" ]; then
+            echo "overnight validation failed: unit-contracts=$UNIT_RESULT zero-model-dry-run=$DRY_RUN_RESULT" >&2
+            exit 1
+          fi
+          echo "all overnight unit-contract shards and the zero-model dry-run succeeded"
 
   scheduled-reconcile:
     if: github.event_name == 'schedule'
