@@ -13,7 +13,11 @@ from scripts.overnight.collect import collect_inputs
 from scripts.overnight.constants import EVIDENCE_FAMILIES, ROOT
 from scripts.overnight.delta import compute_delta
 from scripts.overnight.evidence import freeze_snapshot
-from scripts.overnight.live_news import acquire_current_news, merge_live_news
+from scripts.overnight.live_news import (
+    acquire_current_news,
+    attribute_country_codes,
+    merge_live_news,
+)
 from scripts.overnight.store import OvernightStore
 
 CUTOFF = datetime.fromisoformat("2026-09-27T18:00:00-04:00")
@@ -489,6 +493,238 @@ class LiveNewsAcquisitionTests(unittest.TestCase):
         self.assertEqual(calls, [])
         urls = [i.get("url") or "" for i in delta["families"]["news"]["items"]]
         self.assertTrue(any("iran-says-won-t-soften" in u for u in urls))
+
+
+class CountryAttributionTests(unittest.TestCase):
+    def test_direct_attribution_six_economies(self) -> None:
+        cases = [
+            ("Fed holds rates", "", ["US"]),
+            ("FOMC sees inflation progress", "", ["US"]),
+            ("Treasury yields rise", "", ["US"]),
+            ("US payrolls beat forecasts", "", ["US"]),
+            ("USD slips", "", ["US"]),
+            ("U.S. inflation cools", "", ["US"]),
+            ("U.S. dollar slides", "", ["US"]),
+            ("u.s. payrolls beat", "", ["US"]),
+            ("U.S.A. jobs", "", ["US"]),
+            ("Bank of Canada holds the policy rate", "", ["CA"]),
+            ("BoC watches CAD", "", ["CA"]),
+            ("Canada inflation", "", ["CA"]),
+            ("RBA holds the policy rate", "", ["AU"]),
+            ("Australia AUD", "", ["AU"]),
+            ("RBNZ holds the policy rate", "", ["NZ"]),
+            ("New Zealand NZD", "", ["NZ"]),
+            ("ECB holds the policy rate", "", ["EA"]),
+            ("euro area inflation", "", ["EA"]),
+            ("eurozone EUR", "", ["EA"]),
+            ("Bank of Japan holds the policy rate", "", ["JP"]),
+            ("BoJ and the yen", "", ["JP"]),
+            ("Japan JPY", "", ["JP"]),
+        ]
+        for headline, snippet, expected in cases:
+            self.assertEqual(attribute_country_codes(headline, snippet), expected, msg=headline)
+
+    def test_direct_attribution_multi_country_and_dedup(self) -> None:
+        self.assertEqual(
+            attribute_country_codes(
+                "RBNZ and the Fed weigh rate hikes while the Bank of Japan watches",
+                "",
+            ),
+            ["US", "NZ", "JP"],
+        )
+        self.assertEqual(
+            attribute_country_codes("ECB and Bank of Canada", ""),
+            ["CA", "EA"],
+        )
+        self.assertEqual(
+            attribute_country_codes("Fed and the Federal Reserve and USD", ""),
+            ["US"],
+        )
+
+    def test_direct_attribution_global_and_negatives(self) -> None:
+        self.assertEqual(
+            attribute_country_codes("Brent crude jumps as OPEC weighs Hormuz risk", ""),
+            [],
+        )
+        self.assertEqual(
+            attribute_country_codes(
+                "Iran says it will not soften demands after Trump rejects a Hormuz offer",
+                "",
+            ),
+            [],
+        )
+        self.assertEqual(
+            attribute_country_codes("Oil traders tell us Brent is rising", ""),
+            [],
+        )
+        self.assertEqual(
+            attribute_country_codes("Crude was fed by OPEC supply cuts", ""),
+            [],
+        )
+        self.assertEqual(attribute_country_codes("The dollar falls as gold rises", ""), [])
+        self.assertEqual(attribute_country_codes("Australian dollar slides", ""), ["AU"])
+        self.assertEqual(attribute_country_codes("Australian Treasury yields rise", ""), ["AU"])
+        self.assertEqual(attribute_country_codes("UK Treasury bond sale", ""), [])
+
+    def test_direct_attribution_snippet_and_join_boundary(self) -> None:
+        self.assertEqual(
+            attribute_country_codes("Policy preview", "The Bank of Canada is in focus"),
+            ["CA"],
+        )
+        self.assertEqual(attribute_country_codes("Brent", "jumps"), [])
+        self.assertEqual(attribute_country_codes("euro", "zone growth"), ["EA"])
+
+    def test_bloomberg_rss_country_codes_on_candidates(self) -> None:
+        rss = """<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel>
+  <item>
+    <title>Fed Sees Inflation Cooling After CPI Surprise - Bloomberg.com</title>
+    <link>http://www.bing.com/news/apiclick.aspx?url=https%3a%2f%2fwww.bloomberg.com%2fnews%2farticles%2f2026-09-27%2ffed-inflation-cpi</link>
+    <pubDate>Sun, 27 Sep 2026 16:06:17 GMT</pubDate>
+    <description>Fed officials said inflation progress may stall after the latest CPI print.</description>
+    <Source>Bloomberg</Source>
+  </item>
+  <item>
+    <title>Bank of Canada Holds Policy Rate Steady - Bloomberg.com</title>
+    <link>http://www.bing.com/news/apiclick.aspx?url=https%3a%2f%2fwww.bloomberg.com%2fnews%2farticles%2f2026-09-27%2fboc-policy-rate</link>
+    <pubDate>Sun, 27 Sep 2026 16:06:17 GMT</pubDate>
+    <description>Officials left the policy rate unchanged as inflation cooled.</description>
+    <Source>Bloomberg</Source>
+  </item>
+  <item>
+    <title>Central Banks in Focus - Bloomberg.com</title>
+    <link>http://www.bing.com/news/apiclick.aspx?url=https%3a%2f%2fwww.bloomberg.com%2fnews%2farticles%2f2026-09-27%2frba-snippet-only</link>
+    <pubDate>Sun, 27 Sep 2026 16:06:17 GMT</pubDate>
+    <description>RBA holds the policy rate steady as inflation remains sticky.</description>
+    <Source>Bloomberg</Source>
+  </item>
+  <item>
+    <title>Fed and ECB Both Signal Rate Hikes - Bloomberg.com</title>
+    <link>http://www.bing.com/news/apiclick.aspx?url=https%3a%2f%2fwww.bloomberg.com%2fnews%2farticles%2f2026-09-27%2ffed-ecb-hikes</link>
+    <pubDate>Sun, 27 Sep 2026 16:06:17 GMT</pubDate>
+    <description>Central bank officials flagged further policy rate increases.</description>
+    <Source>Bloomberg</Source>
+  </item>
+  <item>
+    <title>Brent Crude Jumps as OPEC Weighs Hormuz Risk - Bloomberg.com</title>
+    <link>http://www.bing.com/news/apiclick.aspx?url=https%3a%2f%2fwww.bloomberg.com%2fnews%2farticles%2f2026-09-27%2fbrent-hormuz</link>
+    <pubDate>Sun, 27 Sep 2026 16:06:17 GMT</pubDate>
+    <description>Oil traders tracked Brent as Hormuz tensions lifted crude prices.</description>
+    <Source>Bloomberg</Source>
+  </item>
+  <item>
+    <title>Iran Says Won't Soften Demands After Trump Rejects Hormuz Offer - Bloomberg.com</title>
+    <link>http://www.bing.com/news/apiclick.aspx?aid=1&amp;url=https%3a%2f%2fwww.bloomberg.com%2fnews%2farticles%2f2026-09-27%2firan-says-won-t-soften-demands-after-trump-rejects-hormuz-offer</link>
+    <pubDate>Sun, 27 Sep 2026 16:06:17 GMT</pubDate>
+    <description>Iran said it will not soften demands after President Trump rejected a Hormuz offer, and crude bounced.</description>
+    <Source>Bloomberg</Source>
+  </item>
+</channel></rss>"""
+        acquisition = acquire_current_news(
+            when=CUTOFF,
+            offline=False,
+            fetcher=_news_fetcher(rss, REUTERS_EMPTY),
+        )
+        bloomberg = {c["url"]: c for c in acquisition["candidates"] if c["source_name"] == "Bloomberg"}
+        self.assertEqual(
+            bloomberg["https://www.bloomberg.com/news/articles/2026-09-27/fed-inflation-cpi"]["country_codes"],
+            ["US"],
+        )
+        self.assertEqual(
+            bloomberg["https://www.bloomberg.com/news/articles/2026-09-27/boc-policy-rate"]["country_codes"],
+            ["CA"],
+        )
+        self.assertEqual(
+            bloomberg["https://www.bloomberg.com/news/articles/2026-09-27/rba-snippet-only"]["country_codes"],
+            ["AU"],
+        )
+        self.assertEqual(
+            bloomberg["https://www.bloomberg.com/news/articles/2026-09-27/fed-ecb-hikes"]["country_codes"],
+            ["US", "EA"],
+        )
+        self.assertEqual(
+            bloomberg["https://www.bloomberg.com/news/articles/2026-09-27/brent-hormuz"]["country_codes"],
+            [],
+        )
+        iran = next(
+            c
+            for c in acquisition["candidates"]
+            if "iran-says-won-t-soften" in (c.get("url") or "")
+        )
+        self.assertEqual(iran["country_codes"], [])
+
+    def test_reuters_sitemap_country_codes_on_candidates(self) -> None:
+        reuters = """<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+  <url>
+    <loc>https://www.reuters.com/markets/us/fed-officials-see-inflation-progress-stalling-2026-09-27/</loc>
+    <news:news>
+      <news:publication><news:name>Reuters</news:name></news:publication>
+      <news:publication_date>2026-09-27T14:00:00Z</news:publication_date>
+      <news:title>Fed officials see inflation progress stalling</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://www.reuters.com/markets/asia/rba-boj-policy-rates-2026-09-27/</loc>
+    <news:news>
+      <news:publication><news:name>Reuters</news:name></news:publication>
+      <news:publication_date>2026-09-27T14:30:00Z</news:publication_date>
+      <news:title>RBA and Bank of Japan hold policy rates</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://www.reuters.com/markets/nz/rbnz-policy-rate-2026-09-27/</loc>
+    <news:news>
+      <news:publication><news:name>Reuters</news:name></news:publication>
+      <news:publication_date>2026-09-27T14:45:00Z</news:publication_date>
+      <news:title>RBNZ holds the policy rate</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://www.reuters.com/markets/europe/ecb-eurozone-inflation-2026-09-27/</loc>
+    <news:news>
+      <news:publication><news:name>Reuters</news:name></news:publication>
+      <news:publication_date>2026-09-27T15:00:00Z</news:publication_date>
+      <news:title>ECB sees eurozone inflation stalling</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://www.reuters.com/markets/us/brent-crude-jumps-opec-hormuz-2026-09-27/</loc>
+    <news:news>
+      <news:publication><news:name>Reuters</news:name></news:publication>
+      <news:publication_date>2026-09-27T15:15:00Z</news:publication_date>
+      <news:title>Brent crude jumps as OPEC weighs Hormuz risk</news:title>
+    </news:news>
+  </url>
+</urlset>"""
+        empty_bing = """<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>Bing</title></channel></rss>"""
+        acquisition = acquire_current_news(
+            when=CUTOFF,
+            offline=False,
+            fetcher=_news_fetcher(empty_bing, reuters),
+        )
+        reuters_items = {c["headline"]: c for c in acquisition["candidates"] if c["source_name"] == "Reuters"}
+        self.assertEqual(
+            reuters_items["Fed officials see inflation progress stalling"]["country_codes"],
+            ["US"],
+        )
+        self.assertEqual(
+            reuters_items["RBA and Bank of Japan hold policy rates"]["country_codes"],
+            ["AU", "JP"],
+        )
+        self.assertEqual(
+            reuters_items["RBNZ holds the policy rate"]["country_codes"],
+            ["NZ"],
+        )
+        self.assertEqual(
+            reuters_items["ECB sees eurozone inflation stalling"]["country_codes"],
+            ["EA"],
+        )
+        global_item = reuters_items["Brent crude jumps as OPEC weighs Hormuz risk"]
+        self.assertEqual(global_item["country_codes"], [])
+        self.assertIn("/markets/us/", global_item["url"])
 
 
 if __name__ == "__main__":

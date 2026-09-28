@@ -90,6 +90,80 @@ DEDUP_STOP = frozenset(
 
 REUTERS_HEADLINE_ONLY = "Headline-only public metadata; article body was not retrieved."
 
+_COUNTRY_ATTRIBUTION_ORDER = ("US", "CA", "AU", "NZ", "EA", "JP")
+
+_COUNTRY_ALIASES: tuple[tuple[str, str, int], ...] = (
+    ("US", r"\bFederal Reserve\b", re.IGNORECASE),
+    ("US", r"\bFOMC\b", re.IGNORECASE),
+    ("US", r"\bFed\b", 0),
+    ("US", r"\bFED\b", 0),
+    ("US", r"\bUnited States\b", re.IGNORECASE),
+    ("US", r"\bU\.S\.A\.?(?!\w)", re.IGNORECASE),
+    ("US", r"\bU\.S\.(?!\w)", re.IGNORECASE),
+    ("US", r"\bUSA\b", re.IGNORECASE),
+    ("US", r"\bUSD\b", re.IGNORECASE),
+    ("US", r"\bUS\b", 0),
+    ("CA", r"\bBank of Canada\b", re.IGNORECASE),
+    ("CA", r"\bBoC\b", re.IGNORECASE),
+    ("CA", r"\bCanada\b", re.IGNORECASE),
+    ("CA", r"\bCanadian\b", re.IGNORECASE),
+    ("CA", r"\bCAD\b", re.IGNORECASE),
+    ("AU", r"\bReserve Bank of Australia\b", re.IGNORECASE),
+    ("AU", r"\bRBA\b", re.IGNORECASE),
+    ("AU", r"\bAustralia\b", re.IGNORECASE),
+    ("AU", r"\bAustralian\b", re.IGNORECASE),
+    ("AU", r"\bAUD\b", re.IGNORECASE),
+    ("NZ", r"\bReserve Bank of New Zealand\b", re.IGNORECASE),
+    ("NZ", r"\bRBNZ\b", re.IGNORECASE),
+    ("NZ", r"\bNew Zealand\b", re.IGNORECASE),
+    ("NZ", r"\bNZD\b", re.IGNORECASE),
+    ("NZ", r"\bNZ\b", 0),
+    ("EA", r"\bEuropean Central Bank\b", re.IGNORECASE),
+    ("EA", r"\bECB\b", re.IGNORECASE),
+    ("EA", r"\beuro area\b", re.IGNORECASE),
+    ("EA", r"\beurozone\b", re.IGNORECASE),
+    ("EA", r"\beuro-zone\b", re.IGNORECASE),
+    ("EA", r"\beuro zone\b", re.IGNORECASE),
+    ("EA", r"\bEUR\b", re.IGNORECASE),
+    ("EA", r"\beuro\b", re.IGNORECASE),
+    ("JP", r"\bBank of Japan\b", re.IGNORECASE),
+    ("JP", r"\bBoJ\b", re.IGNORECASE),
+    ("JP", r"\bJapan\b", re.IGNORECASE),
+    ("JP", r"\bJapanese\b", re.IGNORECASE),
+    ("JP", r"\bJPY\b", re.IGNORECASE),
+    ("JP", r"\byen\b", re.IGNORECASE),
+)
+
+_COMPILED_COUNTRY_ALIASES: list[tuple[str, re.Pattern[str]]] = [
+    (code, re.compile(pattern, flags)) for code, pattern, flags in _COUNTRY_ALIASES
+]
+
+_NON_US_TREASURY = re.compile(
+    r"\b(?:australian|canadian|canada(?:['\u2019]s)?|british|uk|u\.k\.|japanese|japan(?:['\u2019]s)?|"
+    r"new zealand(?:['\u2019]s)?|eurozone|euro-zone|euro area|european)\s+treasury\b",
+    re.IGNORECASE,
+)
+_TREASURY_TOKEN = re.compile(r"\btreasury\b", re.IGNORECASE)
+
+
+def attribute_country_codes(headline: str, snippet: str) -> list[str]:
+    """Infer covered economy codes from headline and snippet text only."""
+    h = headline if headline is not None else ""
+    s = snippet if snippet is not None else ""
+    if not h and not s:
+        return []
+    text = f"{h}\n{s}"
+    matched: set[str] = set()
+    for code, pattern in _COMPILED_COUNTRY_ALIASES:
+        if pattern.search(text):
+            matched.add(code)
+    if _TREASURY_TOKEN.search(text):
+        stripped = _NON_US_TREASURY.sub("", text)
+        if _TREASURY_TOKEN.search(stripped):
+            matched.add("US")
+    return [code for code in _COUNTRY_ATTRIBUTION_ORDER if code in matched]
+
+
 _USER_AGENT = (
     "MarketWatch-Public-News-Discovery/1.0 "
     "(McCabeAI market-watch-public-dashboard; lawful RSS/sitemap discovery only)"
@@ -270,7 +344,7 @@ def _parse_bing_rss(data: bytes, *, surface: str, cutoff: datetime) -> tuple[int
                 "source_name": source_name,
                 "verification_status": "single_source",
                 "primary_category": _primary_category(headline, snippet),
-                "country_codes": ["US"],
+                "country_codes": attribute_country_codes(headline, snippet),
                 "discovery_surface": surface,
                 "distribution_weight": "high",
             }
@@ -319,7 +393,7 @@ def _parse_reuters_sitemap(data: bytes, *, surface: str, cutoff: datetime) -> tu
                 "source_name": "Reuters",
                 "verification_status": "single_source",
                 "primary_category": _primary_category(headline, snippet),
-                "country_codes": ["US"],
+                "country_codes": attribute_country_codes(headline, snippet),
                 "discovery_surface": surface,
                 "distribution_weight": "standard",
             }
