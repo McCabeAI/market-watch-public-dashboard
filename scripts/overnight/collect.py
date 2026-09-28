@@ -161,6 +161,8 @@ def collect_inputs(
     refresh_macro: bool = False,
     macro_fetcher: Any = None,
     persist_macro: bool | None = None,
+    news_fetcher: Any = None,
+    acquire_news: bool | None = None,
 ) -> dict[str, Any]:
     root = store.root
     stamp = now_ny(when)
@@ -282,12 +284,78 @@ def collect_inputs(
             news_notes.append(f"newer accepted overnight research reused from {accepted_source}")
     if news_parse_error:
         news_notes.append(f"normalized news parse failed: {news_parse_error}")
+
+    pre_live_news_as_of = news_as_of
+    news_acquisition: dict[str, Any] | None = None
+    research_supplement: dict[str, Any] | None = None
+    # Offline/fixture collect never touches the network. Final post-freeze deltas
+    # pass acquire_news=False so a later market refresh cannot browse for news.
+    do_live_news = (not offline) if acquire_news is None else bool(acquire_news) and not offline
+    if do_live_news:
+        from scripts.overnight.live_news import acquire_current_news, merge_live_news
+
+        acquisition = acquire_current_news(when=stamp, offline=False, fetcher=news_fetcher)
+        merged = merge_live_news(
+            baseline=list(news_items),
+            live_candidates=acquisition["candidates"],
+            when=stamp,
+        )
+        news_acquisition = {
+            "mode": acquisition["mode"],
+            "partial": acquisition["partial"],
+            "cutoff": acquisition["cutoff"],
+            "receipts": acquisition["receipts"],
+        }
+        any_ok = any(r.get("status") == "ok" for r in acquisition["receipts"])
+        if any_ok:
+            news_items = merged["items"]
+            news_as_of = isoformat(stamp)
+            news_status = age_status(news_as_of, when=stamp)
+            news_notes = [
+                note
+                for note in news_notes
+                if not str(note).startswith("newer accepted overnight research reused")
+            ]
+            news_notes.append("accepted news kept as baseline; live discovery merged into the current window")
+            news_notes.append("live news acquisition completed")
+            if acquisition["partial"]:
+                for receipt in acquisition["receipts"]:
+                    if receipt.get("status") == "failed":
+                        src = receipt.get("source", "unknown")
+                        news_notes.append(
+                            f"live news {src} check failed: {receipt.get('failure')}"
+                        )
+            news_digest = sha256_json(
+                {
+                    "item_ids": [item.get("id") for item in news_items],
+                    "receipts": [
+                        {"source": r.get("source"), "status": r.get("status")}
+                        for r in acquisition["receipts"]
+                    ],
+                }
+            )
+            research_supplement = merged["research_supplement"]
+            research_supplement["central_bank_research"] = list(central_bank_items)
+        else:
+            research_supplement = None
+            for receipt in acquisition["receipts"]:
+                if receipt.get("status") == "failed":
+                    src = receipt.get("source", "unknown")
+                    news_notes.append(
+                        f"live news {src} check failed: {receipt.get('failure')}"
+                    )
+
+    news_extra: dict[str, Any] = {"files": news_files, "items": news_items}
+    if news_acquisition is not None:
+        news_extra["acquisition"] = news_acquisition
+    if research_supplement is not None:
+        news_extra["research_supplement"] = research_supplement
     families["news"] = _family(
         news_status,
         as_of=news_as_of,
         digest=news_digest,
         notes=news_notes,
-        extra={"files": news_files, "items": news_items},
+        extra=news_extra,
     )
 
     research_digest, research_files = _concat_digest(root, RESEARCH_FILES)
@@ -298,7 +366,7 @@ def collect_inputs(
         research_as_of = None
         research_notes = ["central-bank research refresh surfaces missing"]
     else:
-        research_as_of = news_as_of
+        research_as_of = pre_live_news_as_of if not offline else news_as_of
         research_status = age_status(research_as_of, when=stamp) if research_as_of else "stale"
         research_notes = ["rolling 30-day central-bank research state is frozen below"]
     if news_parse_error:

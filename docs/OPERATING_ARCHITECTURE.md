@@ -114,6 +114,12 @@ Official statistical agencies and first-party government releases are preferred 
 
 ### 5.2 Financial and mainstream news
 
+Live Market Watch **collect** checks Bloomberg (Bing News RSS publisher discovery) and Reuters (public news sitemap) on every non-offline run before the evidence freeze. Offline / fixture collect reuses static and accepted news without network acquisition.
+
+Bloomberg is required for discovery and market-salience ranking (distribution weight); it does not by itself corroborate or officialize a claim. Reuters remains the explicitly checked wire for timely confirmed reporting. Verification (`official`, `corroborated`, `single_source`, `unverified`) is independent of salience. Direct Bloomberg article HTML is not scraped from this environment (HTTP 403); only lawful RSS/sitemap metadata is used. Acquisition receipts record per-source success or failure; partial acquisition is allowed when one required source fails. Event deduplication keeps one user-facing item and retains the Bloomberg headline as a source edge. A failed pre-freeze recheck does not drop Bloomberg evidence already acquired in that run, and it does not invent a Bloomberg item when the check failed. The post-freeze final delta reuses that frozen news family and does not open another discovery fetch.
+
+Presentation caps for the public desk remain **6** Last 24 Hours items and **3** Top Market Drivers.
+
 The news layer searches established financial and mainstream media for material developments involving:
 
 - central banks and monetary-policy expectations;
