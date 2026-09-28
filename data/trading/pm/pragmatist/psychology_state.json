@@ -4,9 +4,9 @@
     "chase_pressure": {
       "band": "calm",
       "baseline": 0.1,
-      "delta_last_cycle": 0.0,
+      "delta_last_cycle": 0.0189,
       "half_life_cycles": 4.0,
-      "value": 0.1
+      "value": 0.1189
     },
     "complacency": {
       "band": "calm",
@@ -25,16 +25,16 @@
     "external_pressure": {
       "band": "calm",
       "baseline": 0.1,
-      "delta_last_cycle": 0.0,
+      "delta_last_cycle": 0.0495,
       "half_life_cycles": 6.0,
-      "value": 0.1
+      "value": 0.1495
     },
     "frustration": {
       "band": "calm",
       "baseline": 0.1,
-      "delta_last_cycle": 0.0,
+      "delta_last_cycle": 0.009,
       "half_life_cycles": 3.0,
-      "value": 0.1
+      "value": 0.109
     },
     "revenge_pressure": {
       "band": "calm",
@@ -58,21 +58,21 @@
       "value": 0.25
     }
   },
-  "cycle_count": 0,
+  "cycle_count": 1,
   "engine_version": 1,
   "flags": [],
   "flat_cycles_pending": 0,
-  "last_capital_owner_standing": null,
-  "last_event_seq": 0,
-  "last_learning_status": null,
+  "last_capital_owner_standing": "good_standing",
+  "last_event_seq": 2,
+  "last_learning_status": "compliant",
   "last_repeated_error_counts": {},
-  "last_review_id": null,
-  "last_run_id": null,
+  "last_review_id": "review-001",
+  "last_run_id": "overnight-20260928",
   "metrics": {
     "conviction_volatility": 0.0,
     "distortion_verdicts": 0,
     "inconclusive_verdicts": 0,
-    "self_report_clean_cycles": 0,
+    "self_report_clean_cycles": 1,
     "self_report_mismatches": 0,
     "sharpened_verdicts": 0
   },
@@ -81,7 +81,7 @@
   "profile_version": 1,
   "provenance": "seeded_baseline_v1",
   "schema_version": 1,
-  "state_sha256": "feb338af2274b8ba25a5f5e970301cb35b39ef1a27d710d7f8175042a7c67672",
+  "state_sha256": "88712e4ddfdc7cc9d3f16bbd3a7e15b1ace35b341fe791d8533d9d31262cdaa8",
   "streaks": {
     "flat_cycles": 0,
     "session_loss": 0,

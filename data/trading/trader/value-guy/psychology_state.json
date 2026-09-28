@@ -25,16 +25,16 @@
     "external_pressure": {
       "band": "calm",
       "baseline": 0.1,
-      "delta_last_cycle": 0.0,
+      "delta_last_cycle": 0.18,
       "half_life_cycles": 6.0,
-      "value": 0.1
+      "value": 0.28
     },
     "frustration": {
       "band": "calm",
       "baseline": 0.1,
-      "delta_last_cycle": 0.0,
+      "delta_last_cycle": 0.081,
       "half_life_cycles": 3.0,
-      "value": 0.1
+      "value": 0.181
     },
     "revenge_pressure": {
       "band": "calm",
@@ -46,9 +46,9 @@
     "self_trust": {
       "band": "steady",
       "baseline": 0.5,
-      "delta_last_cycle": 0.0,
+      "delta_last_cycle": -0.025,
       "half_life_cycles": 12.0,
-      "value": 0.5
+      "value": 0.475
     },
     "thesis_attachment": {
       "band": "calm",
@@ -58,21 +58,21 @@
       "value": 0.25
     }
   },
-  "cycle_count": 0,
+  "cycle_count": 1,
   "engine_version": 1,
   "flags": [],
   "flat_cycles_pending": 0,
   "last_capital_owner_standing": null,
-  "last_event_seq": 0,
-  "last_learning_status": null,
+  "last_event_seq": 2,
+  "last_learning_status": "learning_default",
   "last_repeated_error_counts": {},
-  "last_review_id": null,
-  "last_run_id": null,
+  "last_review_id": "review-001",
+  "last_run_id": "overnight-20260928",
   "metrics": {
     "conviction_volatility": 0.0,
     "distortion_verdicts": 0,
     "inconclusive_verdicts": 0,
-    "self_report_clean_cycles": 0,
+    "self_report_clean_cycles": 1,
     "self_report_mismatches": 0,
     "sharpened_verdicts": 0
   },
@@ -81,9 +81,9 @@
   "profile_version": 1,
   "provenance": "seeded_baseline_v1",
   "schema_version": 1,
-  "state_sha256": "1489a4ef79bc197af98731089e4c5f73d35c8b75b1eecd520eed83278c9b7eb0",
+  "state_sha256": "8f1475331915b70042af69f4382c7c4cc2721e0c1b186c4d3268d4251a06eca5",
   "streaks": {
-    "flat_cycles": 0,
+    "flat_cycles": 1,
     "session_loss": 0,
     "session_win": 0,
     "trade_loss": 0,

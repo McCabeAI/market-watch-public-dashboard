@@ -1,5 +1,52 @@
 {
-  "events": [],
+  "events": [
+    {
+      "annotations": {
+        "flat_cycles": 1,
+        "hold_through_pain": {},
+        "learning_status": "learning_default",
+        "open_risk": [],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-09-28T06:26:47.664507-04:00",
+      "event_id": "pse-000001",
+      "flat_cycles": 1,
+      "kind": "decay_tick",
+      "owner_id": "value-guy",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20260928",
+      "seq": 1,
+      "skipped_reason": "first_cycle_after_seed"
+    },
+    {
+      "at": "2026-09-28T06:26:47.664507-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "external_pressure": 0.18,
+        "frustration": 0.081,
+        "self_trust": -0.025
+      },
+      "event_id": "pse-000002",
+      "kind": "learning_default_entered",
+      "magnitude": 1.0,
+      "mismatch": false,
+      "owner_id": "value-guy",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20260928",
+      "scale": 1.0,
+      "seq": 2,
+      "soften": false,
+      "source": {
+        "layer": "L3"
+      },
+      "subject": {
+        "learning_status": "learning_default"
+      }
+    }
+  ],
   "owner_id": "value-guy",
   "owner_type": "trader",
   "schema_version": 1,

@@ -1,5 +1,54 @@
 {
-  "events": [],
+  "events": [
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-09-28T06:26:47.664507-04:00",
+      "event_id": "pse-000001",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "perma-bull",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20260928",
+      "seq": 1,
+      "skipped_reason": "first_cycle_after_seed"
+    },
+    {
+      "at": "2026-09-28T06:26:47.664507-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "chase_pressure": -0.003,
+        "complacency": 0.0495,
+        "external_pressure": -0.008,
+        "frustration": -0.003,
+        "self_trust": 0.01
+      },
+      "event_id": "pse-000002",
+      "kind": "rank_gain_major",
+      "magnitude": 1.0,
+      "mismatch": false,
+      "owner_id": "perma-bull",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20260928",
+      "scale": 1.0,
+      "seq": 2,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "rank_change": -4
+      }
+    }
+  ],
   "owner_id": "perma-bull",
   "owner_type": "trader",
   "schema_version": 1,

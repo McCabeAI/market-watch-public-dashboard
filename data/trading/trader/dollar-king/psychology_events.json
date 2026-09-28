@@ -1,5 +1,56 @@
 {
-  "events": [],
+  "events": [
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-09-28T06:26:47.664507-04:00",
+      "event_id": "pse-000001",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "dollar-king",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20260928",
+      "seq": 1,
+      "skipped_reason": "first_cycle_after_seed"
+    },
+    {
+      "at": "2026-09-28T06:26:47.664507-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "chase_pressure": -0.0004,
+        "complacency": 0.0141,
+        "defensiveness": -0.001,
+        "external_pressure": -0.0004,
+        "frustration": -0.0012,
+        "revenge_pressure": -0.0004,
+        "self_trust": 0.0032
+      },
+      "event_id": "pse-000002",
+      "kind": "session_gain",
+      "magnitude": 0.20054370000000002,
+      "mismatch": false,
+      "owner_id": "dollar-king",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20260928",
+      "scale": 1.0,
+      "seq": 2,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "session_pnl_change_usd": 100271.85
+      }
+    }
+  ],
   "owner_id": "dollar-king",
   "owner_type": "trader",
   "schema_version": 1,

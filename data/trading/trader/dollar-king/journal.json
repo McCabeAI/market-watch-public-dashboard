@@ -326,6 +326,62 @@
       "run_id": "overnight-20260925",
       "schema_version": 1,
       "thesis": "Hold the existing long in USDCAD. Official SOFR at 3.88 versus CORRA at 2.29 and a 145 basis-point two-year gap still pay the dollar against Canada. New dollar pairs are not allowed because US hard data could not be verified, so closing this line would leave no dollar expression."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDCAD",
+          "notional_usd": null,
+          "position_id": "pos-5317bc96d4eb",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-28T06:26:47.664507-04:00",
+      "conviction": 72,
+      "decision_fingerprint": "384df0063eff11ff9569f0f7f9b626f40e7d6e0593bde9916a8a1a2fcf83cfe3",
+      "event_id": "jde-0a51374aa82a4015",
+      "funding_view": null,
+      "invalidation": "The dollar-versus-Canada hold breaks if Canadian cyclical outperformance closes the policy gap, or if the two-year and cash differentials no longer favor the dollar. A one-day oil spike without a rates move is not enough to flatten.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-5317bc96d4eb"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "da45f57d99c887a37ed80cbd1347a0908801fdeffacdca087ac1acbf18dbf96f",
+      "outcome_links": [],
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "78be7d8630558259a136e11743c5e10b94ba92f41396d4d666864f0d2dcb2f98"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-28T06:26:47.664507-04:00",
+        "evidence_hash": "4ff48a5ec75db52528fe1810f2c7e03d439baff62b3548d4d467676580a29ed3",
+        "overnight_run_id": "overnight-20260928",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold the existing long in USDCAD. Official SOFR at 3.88 versus CORRA at 2.30 and a 142 basis-point two-year gap still pay the dollar against Canada. The pair is marked at 1.4143 against a 1.40 entry, so the line is working. Oil at Brent 104.32 is a Canadian offset, not a reason to flatten a rates-supported dollar long already on.",
+      "run_id": "overnight-20260928",
+      "schema_version": 1,
+      "thesis": "Hold the existing long in USDCAD. Official SOFR at 3.88 versus CORRA at 2.30 and a 142 basis-point two-year gap still pay the dollar against Canada. The pair is marked at 1.4143 against a 1.40 entry, so the line is working. Oil at Brent 104.32 is a Canadian offset, not a reason to flatten a rates-supported dollar long already on."
     }
   ],
   "schema_version": 1,

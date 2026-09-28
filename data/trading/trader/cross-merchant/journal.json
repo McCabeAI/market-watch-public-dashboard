@@ -344,6 +344,62 @@
       "run_id": "overnight-20260925",
       "schema_version": 1,
       "thesis": "Hold the existing long in AUDCAD. Australia's two-year at 4.947 versus Canada's 3.40 and the August jobs print still isolate in the cross without a dollar common factor. Oil near 99 dollars is a known Canadian terms-of-trade support, not a mandate to cut a clean Australia-versus-Canada line."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDCAD",
+          "notional_usd": null,
+          "position_id": "pos-27d002b448b1",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-28T06:26:47.664507-04:00",
+      "conviction": 57,
+      "decision_fingerprint": "68d3a09025f51212d5870b3660cb8db54ae722c6a4247d4f9acfab7336cfbabc",
+      "event_id": "jde-5fff190837d3456d",
+      "funding_view": null,
+      "invalidation": "Cut the cross if oil keeps lifting Canadian terms of trade enough to erase Australia's yield and jobs advantage, or if the pair loses 0.98 with Australian data rolling over. An unfinished write-up still bars adding or hedging this cycle.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-27d002b448b1"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "71afcce0825095166d580637dc13f1e3f9a947bee0b8ce79e94ea88a85ecab4c",
+      "outcome_links": [],
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "89eeaab5888bab90fd7cf77bb20f9875efc2a8c96361a7eb8d85623eb043f4c3"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-28T06:26:47.664507-04:00",
+        "evidence_hash": "4ff48a5ec75db52528fe1810f2c7e03d439baff62b3548d4d467676580a29ed3",
+        "overnight_run_id": "overnight-20260928",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold the existing long in AUDCAD. Australia's two-year at 4.947 versus Canada's 3.39 still isolates the labor and yield gap without a dollar common factor. The cross is marked at 0.9943 against a 1.00 entry, a small giveback, not a broken Australia-versus-Canada case. Oil at Brent 104.32 is a known Canadian offset, not a mandate to cut the line.",
+      "run_id": "overnight-20260928",
+      "schema_version": 1,
+      "thesis": "Hold the existing long in AUDCAD. Australia's two-year at 4.947 versus Canada's 3.39 still isolates the labor and yield gap without a dollar common factor. The cross is marked at 0.9943 against a 1.00 entry, a small giveback, not a broken Australia-versus-Canada case. Oil at Brent 104.32 is a known Canadian offset, not a mandate to cut the line."
     }
   ],
   "schema_version": 1,
