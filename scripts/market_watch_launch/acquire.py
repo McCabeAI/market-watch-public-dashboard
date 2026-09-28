@@ -121,6 +121,9 @@ def run(launch: dict, ctx: dict) -> dict:
         "required_preflight_block": preflight_error,
         "market_legs": _market_leg_matrix(market_payload if isinstance(market_payload, dict) else None),
     }
+    news_block = families.get("news") or {}
+    if isinstance(news_block, dict) and news_block.get("acquisition"):
+        details["news_acquisition"] = news_block["acquisition"]
 
     return stage_receipt(
         _STAGE,

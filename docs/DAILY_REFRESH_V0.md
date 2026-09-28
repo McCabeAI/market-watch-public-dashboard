@@ -29,6 +29,16 @@ The default is incremental refresh, not reconstruction. No new observation means
 
 ## 3. News refresh
 
+Every **live** Market Watch news acquisition explicitly checks **Bloomberg** and **Reuters** discovery surfaces before the trusted freeze. **Fixture / offline** collect stays on the static and accepted snapshot path and does not use the network.
+
+Bloomberg is mandatory for discovery and **market salience** because its headlines reach institutional participants broadly. Distribution weight may raise salience ranking; it does **not** upgrade an uncorroborated claim to `official` or `corroborated`.
+
+**Factual verification** stays separate from salience: first-party / official sources remain preferred for their own statements; Reuters remains explicitly checked for timely confirmed reporting and market context; other established outlets may add material facts. Verification states remain `official`, `corroborated`, `single_source`, and `unverified`.
+
+**Discovery (lawful public metadata only):** direct `bloomberg.com` HTML currently returns HTTP 403 in the automation environment and is not scraped. Canonical URLs, headlines, timestamps, and public snippets come from the publisher-filtered Bing News RSS `url=` parameter. Reuters uses the public news sitemap. No paywall bypass, no Bloomberg credentials, and no full-text claim when only a snippet or headline is public.
+
+Event deduplication keeps one user-facing item per event but retains the Bloomberg headline as a **source edge** when both publishers cover the same story. A source failure is recorded on the acquisition receipt (`checked_at`, `status`, counts, `failure`) and is not treated as a successful check. Partial news is allowed when the other required source is healthy; missing Bloomberg coverage is not invented.
+
 The news desk is a sparse trader feed, not a general G10 or macro-news digest. Its purpose is to surface developments that can plausibly change the USD/CAD/AUD/NZD rates or FX view.
 
 ### Coverage hierarchy
@@ -79,19 +89,23 @@ Score every candidate before adoption:
 
 A normal news item must score at least `6/10` and at least `2/3` on direct Tier 1 relevance. A Top Market Driver should normally score at least `8/10`.
 
+Market salience is scored separately from that verification component. Bloomberg distribution weight can raise salience and make a headline a Top Market Driver candidate. It does not change `verification_status`.
+
 If an item does not clear the gate, omit it. Do not lower the threshold to fill space.
 
 ### Last 24 Hours
 
 Use an exact rolling one-day window ending at the run cutoff.
 
-Hard cap: **6 items**. Fewer is better when fewer qualify.
+Hard cap: **6 items** (presentation cap unchanged). Fewer is better when fewer qualify.
 
 Prefer sources in this order:
 
-1. first-party official source
+1. first-party official source for that institution's own statement
 2. Reuters for timely confirmed reporting and market context
 3. another established financial publication only when it adds a material fact or confirmation not available from the first two
+
+Bloomberg is not an extra rung on this factual ladder. Live discovery still has to check it on every run, and its headline stays available as a source edge when another outlet covers the same event.
 
 Each adopted item must preserve:
 
@@ -117,7 +131,7 @@ Do not present `unverified` material as established fact.
 
 ### Top Market Drivers
 
-Hard cap: **3 items**.
+Hard cap: **3 items** (presentation cap unchanged).
 
 Select only the highest-ranked developments most likely to change price formation, policy expectations, growth / inflation trajectories, risk premia or cross-asset transmission for the Tier 1 universe. Do not promote an item merely because it was widely reported.
 

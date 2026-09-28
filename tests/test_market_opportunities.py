@@ -67,7 +67,17 @@ class AnalyticsTests(unittest.TestCase):
         from scripts.overnight.collect import collect_inputs
         from scripts.overnight.store import OvernightStore
         payload={'status':'ok','generated_at':'2026-09-18T20:00:00Z','cross_assets':{'series':{'GOLD':{'status':'ok'}}}}
-        with tempfile.TemporaryDirectory() as temp, patch('scripts.market_state.build_snapshot',return_value=payload) as generator, patch('scripts.market_state.validate_snapshot') as validator:
+        live_news_stub={
+            'mode':'live',
+            'cutoff':'2026-09-18T20:00:00-04:00',
+            'partial':False,
+            'receipts':[
+                {'source':'bloomberg','status':'ok','candidate_count':0,'result_count':0,'failure':None,'checked_at':'2026-09-18T20:00:00-04:00','surface':'https://www.bing.com/news/search'},
+                {'source':'reuters','status':'ok','candidate_count':0,'result_count':0,'failure':None,'checked_at':'2026-09-18T20:00:00-04:00','surface':'https://www.reuters.com/arc/outboundfeeds/news-sitemap/'},
+            ],
+            'candidates':[],
+        }
+        with tempfile.TemporaryDirectory() as temp, patch('scripts.market_state.build_snapshot',return_value=payload) as generator, patch('scripts.market_state.validate_snapshot') as validator, patch('scripts.overnight.live_news.acquire_current_news',return_value=live_news_stub):
             result=collect_inputs(OvernightStore(root=Path(__file__).resolve().parents[1],state_root=Path(temp)),run_id='overnight-20260918-test',offline=False)
             generator.assert_called_once_with();validator.assert_called_once_with(payload)
             self.assertEqual(result['families']['market_state']['status'],'fresh')
