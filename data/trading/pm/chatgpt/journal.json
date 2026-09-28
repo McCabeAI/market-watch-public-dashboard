@@ -47,6 +47,62 @@
       "run_id": "tr-20260920T020818Z-ondemand",
       "schema_version": 1,
       "thesis": "The cleanest mispricing in the frozen packet is the Canadian policy path: 2027 CORRA embeds a substantial hiking cycle that is difficult to reconcile with weak labor and near-target core inflation."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027H-Z",
+          "notional_usd": null,
+          "position_id": "pm-chatgpt-595561a1b90f",
+          "rationale": "Fresh Sep 28 review of the actual H/M/U/Z strip: HOLD, no add. The position is not the March-only winner; later-2027 oil/inflation exposure lowers conviction.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-28T08:55:41.642445-04:00",
+      "conviction": 54,
+      "decision_fingerprint": "ce05051a8a49eb27962700b66a44894a25b4ae77ca714c3c439a067811e7893e",
+      "event_id": "jde-69e33ef1bd1e4bcf",
+      "funding_view": null,
+      "invalidation": "A sustained cheapening of the full 2027 CORRA strip, particularly alongside March above roughly 3.20, remains elevated oil, and Canadian core/labor or BoC evidence validating additional tightening, should trigger reduction or closure. If domestic Canada remains soft and the strip richens despite oil, continue to hold.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-chatgpt-595561a1b90f"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "f23cbb58bb28608aa16bc55aa27a5187f9f2e42dbaf186bc77b2f4eb49f0af1a",
+      "outcome_links": [],
+      "owner_id": "chatgpt",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": null
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-28T06:26:47.664507-04:00",
+        "evidence_hash": "1b84f09af71e0873123f8922f7c1c52abfd4274599fc88176652973243b4867b",
+        "overnight_run_id": "overnight-20260928",
+        "review_id": null,
+        "review_packet_id": "prp-chatgpt-overnight-20260928-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "This replaces the stale Sep 19 judgment with a Sep 28 review of the position actually in the book. The frozen packet has Brent at 104.32, WTI at 92.41, USDCAD at 1.4143 and March 2027 CORRA at 3.145 versus about 2.30 cash. March therefore still prices substantial tightening, but my position is not March: it is the equal-weight 2027 H/M/U/Z strip, whose later contracts contain materially more tightening/inflation premium. The deterministic strip mark is around the low-3.4s rather than 3.145, so the trade has not delivered the large gain implied by looking at March alone. Canadian domestic weakness still argues against abandoning the receive, while the oil rebound argues against adding and lowers conviction. HOLD the existing risk and use a strip-level, not March-only, de-risk trigger.",
+      "run_id": "overnight-20260928",
+      "schema_version": 1,
+      "thesis": "Hold the existing 500mm receive in the 2027 CORRA H/M/U/Z strip, with lower conviction. The near-end Canadian path still looks aggressive relative to domestic evidence, but the actual book owns the full 2027 strip rather than March alone. That longer expression carries more exposure to the oil/inflation regime, so the Sep 28 Brent rebound is a real challenge to the trade rather than a cosmetic headline."
     }
   ],
   "schema_version": 1,
