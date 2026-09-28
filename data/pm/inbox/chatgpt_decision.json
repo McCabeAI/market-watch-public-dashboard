@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "type": "PM_DECISION",
+  "pm_id": "chatgpt",
+  "review_packet_id": "prp-chatgpt-overnight-20260928-review-001",
+  "review_packet_sha256": "1b84f09af71e0873123f8922f7c1c52abfd4274599fc88176652973243b4867b",
+  "evidence_cutoff": "2026-09-28T06:26:47.664507-04:00",
+  "actions": [
+    {
+      "action": "HOLD",
+      "instrument": "CORRA_2027H-Z",
+      "asset_class": "rates",
+      "position_id": "pm-chatgpt-595561a1b90f",
+      "thesis": "Keep the existing 2027 H/M/U/Z CORRA receive, but do not add. March 2027 at 3.145 still embeds roughly 85bp of tightening versus about 2.30 cash, while the full strip is materially higher because the later-2027 contracts carry more tightening and inflation premium. Canadian domestic evidence still does not clearly validate that whole path, but Brent at 104.32 makes the later strip substantially less clean than the March-only receive.",
+      "invalidation": "De-risk if the full 2027 strip cheapens materially beyond its current low-3.4s area with follow-through, especially if March also pushes through roughly 3.20 and persistent Brent strength is confirmed by firmer Canadian core inflation, labor, or explicitly hawkish BoC guidance. A one-day energy move alone is not enough.",
+      "conviction": 54,
+      "note": "Fresh Sep 28 review of the actual H/M/U/Z strip: HOLD, no add. The position is not the March-only winner; later-2027 oil/inflation exposure lowers conviction."
+    }
+  ],
+  "thesis": "Hold the existing 500mm receive in the 2027 CORRA H/M/U/Z strip, with lower conviction. The near-end Canadian path still looks aggressive relative to domestic evidence, but the actual book owns the full 2027 strip rather than March alone. That longer expression carries more exposure to the oil/inflation regime, so the Sep 28 Brent rebound is a real challenge to the trade rather than a cosmetic headline.",
+  "invalidation": "A sustained cheapening of the full 2027 CORRA strip, particularly alongside March above roughly 3.20, remains elevated oil, and Canadian core/labor or BoC evidence validating additional tightening, should trigger reduction or closure. If domestic Canada remains soft and the strip richens despite oil, continue to hold.",
+  "conviction": 54,
+  "rationale": "This replaces the stale Sep 19 judgment with a Sep 28 review of the position actually in the book. The frozen packet has Brent at 104.32, WTI at 92.41, USDCAD at 1.4143 and March 2027 CORRA at 3.145 versus about 2.30 cash. March therefore still prices substantial tightening, but my position is not March: it is the equal-weight 2027 H/M/U/Z strip, whose later contracts contain materially more tightening/inflation premium. The deterministic strip mark is around the low-3.4s rather than 3.145, so the trade has not delivered the large gain implied by looking at March alone. Canadian domestic weakness still argues against abandoning the receive, while the oil rebound argues against adding and lowers conviction. HOLD the existing risk and use a strip-level, not March-only, de-risk trigger.",
+  "synthesis": "Fresh Sep 28 ChatGPT PM review consumed at the correct expression level. Maintain the existing 2027 CORRA strip receive with lower conviction and no add; monitor both the full-strip mark and March as the early-warning leg, with persistent oil plus domestic Canadian confirmation required for a stronger de-risk signal.",
+  "alerts": [
+    "Full 2027 CORRA H/M/U/Z strip cheapens materially from the low-3.4s with follow-through",
+    "March 2027 CORRA above ~3.20 while Brent remains elevated",
+    "Canadian core inflation or labor reaccelerates",
+    "BoC communication validates a materially tighter 2027 policy path"
+  ],
+  "future_data_requests": [
+    {
+      "request": "Expose the current deterministic mark for each existing PM position, including derived strip marks, directly in the ChatGPT review packet summary.",
+      "reason": "The Sep 28 packet prominently summarized March CORRA at 3.145 while the ChatGPT book actually owns the H/M/U/Z strip, making it easy to confuse a component mark with the position-level mark.",
+      "decision_impact": "Prevents position-level P&L and conviction decisions from being based on the wrong contract or component of a derived expression.",
+      "priority": "high",
+      "suggested_source": "trusted paper_marks / current PM book hydration"
+    }
+  ]
+}
