@@ -5755,7 +5755,7 @@
   },
   "market_state": {
     "cross_assets": {
-      "generated_at": "2026-09-28T10:39:49Z",
+      "generated_at": "2026-09-28T11:32:16Z",
       "marks": [
         {
           "as_of": "2026-09-25",
@@ -6037,7 +6037,7 @@
       "source_observation": "2026-09-25",
       "status": "ok"
     },
-    "generated_at": "2026-09-28T10:39:49Z",
+    "generated_at": "2026-09-28T11:32:16Z",
     "official_curves": {
       "curves": {
         "AU": {
@@ -9006,37 +9006,37 @@
             {
               "code": "CRAZ26",
               "expiry": "2026-12",
-              "implied_rate": 2.77
+              "implied_rate": 2.76
             },
             {
               "code": "CRAH27",
               "expiry": "2027-03",
-              "implied_rate": 3.145
+              "implied_rate": 3.13
             },
             {
               "code": "CRAM27",
               "expiry": "2027-06",
-              "implied_rate": 3.395
+              "implied_rate": 3.37
             },
             {
               "code": "CRAU27",
               "expiry": "2027-09",
-              "implied_rate": 3.56
+              "implied_rate": 3.545
             },
             {
               "code": "CRAZ27",
               "expiry": "2027-12",
-              "implied_rate": 3.665
+              "implied_rate": 3.65
             },
             {
               "code": "CRAH28",
               "expiry": "2028-03",
-              "implied_rate": 3.74
+              "implied_rate": 3.72
             },
             {
               "code": "CRAM28",
               "expiry": "2028-06",
-              "implied_rate": 3.76
+              "implied_rate": 3.745
             }
           ],
           "status": "ok"
@@ -9139,7 +9139,7 @@
             {
               "code": "SR3U6",
               "expiry": "2026-09",
-              "implied_rate": 4.0125
+              "implied_rate": 4.01
             },
             {
               "code": "SR3Z6",
@@ -9164,17 +9164,17 @@
             {
               "code": "SR3Z7",
               "expiry": "2027-12",
-              "implied_rate": 4.885
+              "implied_rate": 4.89
             },
             {
               "code": "SR3H8",
               "expiry": "2028-03",
-              "implied_rate": 4.875
+              "implied_rate": 4.88
             },
             {
               "code": "SR3M8",
               "expiry": "2028-06",
-              "implied_rate": 4.85
+              "implied_rate": 4.855
             }
           ],
           "status": "ok"
@@ -9472,148 +9472,46 @@
         "z_5y": -0.3891222927336134
       },
       "AU-NZ_10Y": {
-        "as_of": "2026-09-23",
-        "bps": 32.500000000000014,
-        "chg_1d_bps": -1.799999999999983,
-        "chg_1m_bps": 4.200000000000067,
-        "chg_1y_bps": 37.80000000000001,
-        "chg_3m_bps": -7.3999999999999915,
-        "chg_5d_bps": -0.30000000000001137,
-        "chg_6m_bps": 7.900000000000059,
-        "historical_move_analogs": [
-          {
-            "as_of": "2022-08-19",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -18.5,
-            "forward_3m_move": -43.3,
-            "level": -15.99999999999997,
-            "prior_1m_move": 4.2
-          },
-          {
-            "as_of": "2026-02-16",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -0.5,
-            "forward_3m_move": 6.2,
-            "level": 26.199999999999957,
-            "prior_1m_move": 4.2
-          },
-          {
-            "as_of": "2026-06-18",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -7.6,
-            "forward_3m_move": -1.2,
-            "level": 33.999999999999986,
-            "prior_1m_move": 4.2
-          },
-          {
-            "as_of": "2025-08-12",
-            "distance_from_current_move": 0.1,
-            "forward_1m_move": 9.4,
-            "forward_3m_move": 42.2,
-            "level": -14.59999999999999,
-            "prior_1m_move": 4.3
-          }
-        ],
-        "pctile_1y": 74.4047619047619,
-        "pctile_5y": 94.81094127111827,
-        "z_1y": 0.6961092615746596,
-        "z_5y": 1.7513566698292924
+        "as_of": null,
+        "bps": null,
+        "chg_1d_bps": null,
+        "chg_1m_bps": null,
+        "chg_3m_bps": null,
+        "chg_5d_bps": null,
+        "pctile_1y": null,
+        "pctile_5y": null,
+        "reason": "RBNZ official B2 workbook was blocked or unusable (browser-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; default-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 workbook still blocked). Refusing to substitute a third-party or vendor feed.; official RBNZ HTML fallback also failed: RBNZ official B2 HTML table was blocked or unusable (urllib: RBNZ official page returned HTTP 403 from https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/wholesale-interest-rates. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 page still blocked). Refusing to substitute a third-party or vendor feed.",
+        "status": "unavailable",
+        "z_1y": null,
+        "z_5y": null
       },
       "AU-NZ_2Y": {
-        "as_of": "2026-09-23",
-        "bps": 111.7,
-        "chg_1d_bps": -1.5999999999999943,
-        "chg_1m_bps": 11.999999999999972,
-        "chg_1y_bps": 69.59999999999998,
-        "chg_3m_bps": -1.600000000000037,
-        "chg_5d_bps": -0.30000000000001137,
-        "chg_6m_bps": 1.90000000000002,
-        "historical_move_analogs": [
-          {
-            "as_of": "2022-08-24",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -3.2,
-            "forward_3m_move": -84.5,
-            "level": -61.10000000000002,
-            "prior_1m_move": 12.0
-          },
-          {
-            "as_of": "2025-05-22",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -21.8,
-            "forward_3m_move": 22.4,
-            "level": 8.400000000000007,
-            "prior_1m_move": 12.0
-          },
-          {
-            "as_of": "2025-07-08",
-            "distance_from_current_move": 0.1,
-            "forward_1m_move": 8.1,
-            "forward_3m_move": 69.1,
-            "level": 7.200000000000006,
-            "prior_1m_move": 11.9
-          },
-          {
-            "as_of": "2024-01-05",
-            "distance_from_current_move": 0.1,
-            "forward_1m_move": -38.5,
-            "forward_3m_move": -25.6,
-            "level": -71.60000000000002,
-            "prior_1m_move": 12.1
-          }
-        ],
-        "pctile_1y": 83.53174603174604,
-        "pctile_5y": 96.63422546634226,
-        "z_1y": 0.9874772855719001,
-        "z_5y": 1.7173236689604503
+        "as_of": null,
+        "bps": null,
+        "chg_1d_bps": null,
+        "chg_1m_bps": null,
+        "chg_3m_bps": null,
+        "chg_5d_bps": null,
+        "pctile_1y": null,
+        "pctile_5y": null,
+        "reason": "RBNZ official B2 workbook was blocked or unusable (browser-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; default-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 workbook still blocked). Refusing to substitute a third-party or vendor feed.; official RBNZ HTML fallback also failed: RBNZ official B2 HTML table was blocked or unusable (urllib: RBNZ official page returned HTTP 403 from https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/wholesale-interest-rates. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 page still blocked). Refusing to substitute a third-party or vendor feed.",
+        "status": "unavailable",
+        "z_1y": null,
+        "z_5y": null
       },
       "AU-NZ_5Y": {
-        "as_of": "2026-09-23",
-        "bps": 54.49999999999999,
-        "chg_1d_bps": -0.7000000000000526,
-        "chg_1m_bps": 7.30000000000004,
-        "chg_1y_bps": 46.99999999999997,
-        "chg_3m_bps": -3.2000000000000455,
-        "chg_5d_bps": 0.39999999999995595,
-        "chg_6m_bps": 9.79999999999999,
-        "historical_move_analogs": [
-          {
-            "as_of": "2022-01-24",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -0.1,
-            "forward_3m_move": 11.5,
-            "level": -76.4,
-            "prior_1m_move": 7.3
-          },
-          {
-            "as_of": "2025-08-15",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 24.1,
-            "forward_3m_move": 55.1,
-            "level": -16.299999999999983,
-            "prior_1m_move": 7.3
-          },
-          {
-            "as_of": "2024-01-22",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -29.6,
-            "forward_3m_move": -6.0,
-            "level": -57.100000000000016,
-            "prior_1m_move": 7.3
-          },
-          {
-            "as_of": "2022-08-17",
-            "distance_from_current_move": 0.1,
-            "forward_1m_move": -16.7,
-            "forward_3m_move": -53.1,
-            "level": -27.89999999999999,
-            "prior_1m_move": 7.2
-          }
-        ],
-        "pctile_1y": 81.74603174603175,
-        "pctile_5y": 96.29927594529364,
-        "z_1y": 0.9482738194788864,
-        "z_5y": 1.7509329756476093
+        "as_of": null,
+        "bps": null,
+        "chg_1d_bps": null,
+        "chg_1m_bps": null,
+        "chg_3m_bps": null,
+        "chg_5d_bps": null,
+        "pctile_1y": null,
+        "pctile_5y": null,
+        "reason": "RBNZ official B2 workbook was blocked or unusable (browser-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; default-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 workbook still blocked). Refusing to substitute a third-party or vendor feed.; official RBNZ HTML fallback also failed: RBNZ official B2 HTML table was blocked or unusable (urllib: RBNZ official page returned HTTP 403 from https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/wholesale-interest-rates. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 page still blocked). Refusing to substitute a third-party or vendor feed.",
+        "status": "unavailable",
+        "z_1y": null,
+        "z_5y": null
       },
       "AU-US_10Y": {
         "as_of": "2026-09-23",
@@ -10192,148 +10090,46 @@
         "z_5y": -1.2456880359439877
       },
       "CA-NZ_10Y": {
-        "as_of": "2026-09-24",
-        "bps": -110.00000000000001,
-        "chg_1d_bps": -14.000000000000014,
-        "chg_1m_bps": 1.0000000000000142,
-        "chg_1y_bps": 6.0,
-        "chg_3m_bps": -12.000000000000014,
-        "chg_5d_bps": 6.999999999999986,
-        "chg_6m_bps": 13.999999999999957,
-        "historical_move_analogs": [
-          {
-            "as_of": "2024-11-25",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -3.0,
-            "forward_3m_move": -35.0,
-            "level": -124.99999999999996,
-            "prior_1m_move": 1.0
-          },
-          {
-            "as_of": "2022-01-31",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -18.0,
-            "forward_3m_move": 11.0,
-            "level": -82.99999999999999,
-            "prior_1m_move": 1.0
-          },
-          {
-            "as_of": "2022-05-20",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -7.0,
-            "forward_3m_move": -5.0,
-            "level": -67.99999999999997,
-            "prior_1m_move": 1.0
-          },
-          {
-            "as_of": "2023-05-09",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 8.0,
-            "forward_3m_move": 3.0,
-            "level": -121.99999999999997,
-            "prior_1m_move": 1.0
-          }
-        ],
-        "pctile_1y": 50.198412698412696,
-        "pctile_5y": 58.52459016393443,
-        "z_1y": -0.07752447252432218,
-        "z_5y": 0.07975873493605405
+        "as_of": null,
+        "bps": null,
+        "chg_1d_bps": null,
+        "chg_1m_bps": null,
+        "chg_3m_bps": null,
+        "chg_5d_bps": null,
+        "pctile_1y": null,
+        "pctile_5y": null,
+        "reason": "RBNZ official B2 workbook was blocked or unusable (browser-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; default-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 workbook still blocked). Refusing to substitute a third-party or vendor feed.; official RBNZ HTML fallback also failed: RBNZ official B2 HTML table was blocked or unusable (urllib: RBNZ official page returned HTTP 403 from https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/wholesale-interest-rates. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 page still blocked). Refusing to substitute a third-party or vendor feed.",
+        "status": "unavailable",
+        "z_1y": null,
+        "z_5y": null
       },
       "CA-NZ_2Y": {
-        "as_of": "2026-09-24",
-        "bps": -54.0,
-        "chg_1d_bps": -10.999999999999986,
-        "chg_1m_bps": 13.0,
-        "chg_1y_bps": -6.999999999999979,
-        "chg_3m_bps": 3.0000000000000284,
-        "chg_5d_bps": 6.999999999999986,
-        "chg_6m_bps": 8.000000000000014,
-        "historical_move_analogs": [
-          {
-            "as_of": "2025-08-29",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 7.0,
-            "forward_3m_move": -38.0,
-            "level": -33.00000000000001,
-            "prior_1m_move": 13.0
-          },
-          {
-            "as_of": "2026-01-05",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -17.0,
-            "forward_3m_move": -11.0,
-            "level": -58.00000000000001,
-            "prior_1m_move": 13.0
-          },
-          {
-            "as_of": "2022-04-11",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 31.0,
-            "forward_3m_move": 38.0,
-            "level": -79.99999999999999,
-            "prior_1m_move": 13.0
-          },
-          {
-            "as_of": "2023-01-27",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 14.0,
-            "forward_3m_move": -43.0,
-            "level": -76.00000000000003,
-            "prior_1m_move": 13.0
-          }
-        ],
-        "pctile_1y": 71.62698412698413,
-        "pctile_5y": 74.25619834710744,
-        "z_1y": 0.28105725660168707,
-        "z_5y": 0.5812521709393629
+        "as_of": null,
+        "bps": null,
+        "chg_1d_bps": null,
+        "chg_1m_bps": null,
+        "chg_3m_bps": null,
+        "chg_5d_bps": null,
+        "pctile_1y": null,
+        "pctile_5y": null,
+        "reason": "RBNZ official B2 workbook was blocked or unusable (browser-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; default-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 workbook still blocked). Refusing to substitute a third-party or vendor feed.; official RBNZ HTML fallback also failed: RBNZ official B2 HTML table was blocked or unusable (urllib: RBNZ official page returned HTTP 403 from https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/wholesale-interest-rates. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 page still blocked). Refusing to substitute a third-party or vendor feed.",
+        "status": "unavailable",
+        "z_1y": null,
+        "z_5y": null
       },
       "CA-NZ_5Y": {
-        "as_of": "2026-09-24",
-        "bps": -88.00000000000003,
-        "chg_1d_bps": -15.000000000000028,
-        "chg_1m_bps": 4.999999999999986,
-        "chg_1y_bps": -5.000000000000028,
-        "chg_3m_bps": -5.000000000000028,
-        "chg_5d_bps": 7.999999999999972,
-        "chg_6m_bps": 24.999999999999957,
-        "historical_move_analogs": [
-          {
-            "as_of": "2022-01-31",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -27.0,
-            "forward_3m_move": 2.0,
-            "level": -80.0,
-            "prior_1m_move": 5.0
-          },
-          {
-            "as_of": "2023-06-15",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 4.0,
-            "forward_3m_move": -15.0,
-            "level": -84.00000000000003,
-            "prior_1m_move": 5.0
-          },
-          {
-            "as_of": "2023-11-27",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 23.0,
-            "forward_3m_move": 10.0,
-            "level": -115.00000000000003,
-            "prior_1m_move": 5.0
-          },
-          {
-            "as_of": "2024-10-30",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -21.0,
-            "forward_3m_move": -43.0,
-            "level": -90.00000000000003,
-            "prior_1m_move": 5.0
-          }
-        ],
-        "pctile_1y": 60.91269841269841,
-        "pctile_5y": 58.97540983606557,
-        "z_1y": 0.16626720984486165,
-        "z_5y": 0.18947861689125933
+        "as_of": null,
+        "bps": null,
+        "chg_1d_bps": null,
+        "chg_1m_bps": null,
+        "chg_3m_bps": null,
+        "chg_5d_bps": null,
+        "pctile_1y": null,
+        "pctile_5y": null,
+        "reason": "RBNZ official B2 workbook was blocked or unusable (browser-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; default-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 workbook still blocked). Refusing to substitute a third-party or vendor feed.; official RBNZ HTML fallback also failed: RBNZ official B2 HTML table was blocked or unusable (urllib: RBNZ official page returned HTTP 403 from https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/wholesale-interest-rates. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 page still blocked). Refusing to substitute a third-party or vendor feed.",
+        "status": "unavailable",
+        "z_1y": null,
+        "z_5y": null
       },
       "CA-US_10Y": {
         "as_of": "2026-09-24",
@@ -10912,436 +10708,130 @@
         "z_5y": 0.5522796657072878
       },
       "NZ-EA_10Y": {
-        "as_of": "2026-09-25",
-        "bps": 153.00000000000003,
-        "chg_1d_bps": 2.9999999999999716,
-        "chg_1m_bps": 4.999999999999972,
-        "chg_1y_bps": -2.0,
-        "chg_3m_bps": 1.0000000000000284,
-        "chg_5d_bps": 8.0,
-        "chg_6m_bps": -21.999999999999915,
-        "historical_move_analogs": [
-          {
-            "as_of": "2022-07-29",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -2.0,
-            "forward_3m_move": -33.0,
-            "level": 248.99999999999997,
-            "prior_1m_move": 5.0
-          },
-          {
-            "as_of": "2024-10-10",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 27.0,
-            "forward_3m_move": 10.0,
-            "level": 209.00000000000003,
-            "prior_1m_move": 5.0
-          },
-          {
-            "as_of": "2022-12-14",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -20.0,
-            "forward_3m_move": 1.0,
-            "level": 217.99999999999997,
-            "prior_1m_move": 5.0
-          },
-          {
-            "as_of": "2024-08-20",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -1.0,
-            "forward_3m_move": 38.0,
-            "level": 196.99999999999997,
-            "prior_1m_move": 5.0
-          }
-        ],
-        "pctile_1y": 41.07142857142857,
-        "pctile_5y": 8.273381294964029,
-        "z_1y": -0.46012894730730725,
-        "z_5y": -1.5251120027051142
+        "as_of": null,
+        "bps": null,
+        "chg_1d_bps": null,
+        "chg_1m_bps": null,
+        "chg_3m_bps": null,
+        "chg_5d_bps": null,
+        "pctile_1y": null,
+        "pctile_5y": null,
+        "reason": "RBNZ official B2 workbook was blocked or unusable (browser-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; default-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 workbook still blocked). Refusing to substitute a third-party or vendor feed.; official RBNZ HTML fallback also failed: RBNZ official B2 HTML table was blocked or unusable (urllib: RBNZ official page returned HTTP 403 from https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/wholesale-interest-rates. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 page still blocked). Refusing to substitute a third-party or vendor feed.",
+        "status": "unavailable",
+        "z_1y": null,
+        "z_5y": null
       },
       "NZ-EA_2Y": {
-        "as_of": "2026-09-25",
-        "bps": 64.00000000000001,
-        "chg_1d_bps": 2.0,
-        "chg_1m_bps": -9.999999999999957,
-        "chg_1y_bps": -15.999999999999972,
-        "chg_3m_bps": -14.000000000000014,
-        "chg_5d_bps": 6.000000000000007,
-        "chg_6m_bps": -27.999999999999986,
-        "historical_move_analogs": [
-          {
-            "as_of": "2021-12-16",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 0.0,
-            "forward_3m_move": 31.0,
-            "level": 271.0,
-            "prior_1m_move": -10.0
-          },
-          {
-            "as_of": "2024-05-29",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -0.0,
-            "forward_3m_move": -26.0,
-            "level": 193.00000000000003,
-            "prior_1m_move": -10.0
-          },
-          {
-            "as_of": "2026-03-19",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 8.0,
-            "forward_3m_move": -17.0,
-            "level": 95.00000000000001,
-            "prior_1m_move": -10.0
-          },
-          {
-            "as_of": "2022-04-22",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -24.0,
-            "forward_3m_move": 10.0,
-            "level": 297.0,
-            "prior_1m_move": -10.0
-          }
-        ],
-        "pctile_1y": 8.333333333333334,
-        "pctile_5y": 1.6921837228041903,
-        "z_1y": -1.47259423750903,
-        "z_5y": -1.7948043369813003
+        "as_of": null,
+        "bps": null,
+        "chg_1d_bps": null,
+        "chg_1m_bps": null,
+        "chg_3m_bps": null,
+        "chg_5d_bps": null,
+        "pctile_1y": null,
+        "pctile_5y": null,
+        "reason": "RBNZ official B2 workbook was blocked or unusable (browser-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; default-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 workbook still blocked). Refusing to substitute a third-party or vendor feed.; official RBNZ HTML fallback also failed: RBNZ official B2 HTML table was blocked or unusable (urllib: RBNZ official page returned HTTP 403 from https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/wholesale-interest-rates. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 page still blocked). Refusing to substitute a third-party or vendor feed.",
+        "status": "unavailable",
+        "z_1y": null,
+        "z_5y": null
       },
       "NZ-EA_5Y": {
-        "as_of": "2026-09-25",
-        "bps": 119.0,
-        "chg_1d_bps": 2.999999999999986,
-        "chg_1m_bps": -0.9999999999999716,
-        "chg_1y_bps": 3.9999999999999716,
-        "chg_3m_bps": -7.000000000000028,
-        "chg_5d_bps": 7.999999999999972,
-        "chg_6m_bps": -35.0,
-        "historical_move_analogs": [
-          {
-            "as_of": "2022-10-11",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -2.0,
-            "forward_3m_move": -35.0,
-            "level": 228.00000000000003,
-            "prior_1m_move": -1.0
-          },
-          {
-            "as_of": "2023-02-21",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 14.0,
-            "forward_3m_move": 3.0,
-            "level": 178.00000000000003,
-            "prior_1m_move": -1.0
-          },
-          {
-            "as_of": "2023-09-15",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 33.0,
-            "forward_3m_move": 9.0,
-            "level": 231.0,
-            "prior_1m_move": -1.0
-          },
-          {
-            "as_of": "2024-05-03",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -5.0,
-            "forward_3m_move": -25.0,
-            "level": 205.00000000000003,
-            "prior_1m_move": -1.0
-          }
-        ],
-        "pctile_1y": 26.19047619047619,
-        "pctile_5y": 5.355715427657874,
-        "z_1y": -0.727134132169069,
-        "z_5y": -1.5879410460376107
+        "as_of": null,
+        "bps": null,
+        "chg_1d_bps": null,
+        "chg_1m_bps": null,
+        "chg_3m_bps": null,
+        "chg_5d_bps": null,
+        "pctile_1y": null,
+        "pctile_5y": null,
+        "reason": "RBNZ official B2 workbook was blocked or unusable (browser-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; default-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 workbook still blocked). Refusing to substitute a third-party or vendor feed.; official RBNZ HTML fallback also failed: RBNZ official B2 HTML table was blocked or unusable (urllib: RBNZ official page returned HTTP 403 from https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/wholesale-interest-rates. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 page still blocked). Refusing to substitute a third-party or vendor feed.",
+        "status": "unavailable",
+        "z_1y": null,
+        "z_5y": null
       },
       "NZ-JP_10Y": {
-        "as_of": "2026-09-25",
-        "bps": 203.9,
-        "chg_1d_bps": 4.19999999999996,
-        "chg_1m_bps": 19.599999999999966,
-        "chg_1y_bps": -69.4,
-        "chg_3m_bps": 26.599999999999994,
-        "chg_5d_bps": 1.700000000000017,
-        "chg_6m_bps": -42.0,
-        "historical_move_analogs": [
-          {
-            "as_of": "2022-02-18",
-            "distance_from_current_move": 0.1,
-            "forward_1m_move": 49.9,
-            "forward_3m_move": 77.7,
-            "level": 259.7,
-            "prior_1m_move": 19.7
-          },
-          {
-            "as_of": "2024-10-21",
-            "distance_from_current_move": 0.1,
-            "forward_1m_move": 13.7,
-            "forward_3m_move": -12.8,
-            "level": 346.7,
-            "prior_1m_move": 19.7
-          },
-          {
-            "as_of": "2022-08-24",
-            "distance_from_current_move": 0.4,
-            "forward_1m_move": 40.2,
-            "forward_3m_move": 20.0,
-            "level": 359.40000000000003,
-            "prior_1m_move": 19.2
-          },
-          {
-            "as_of": "2025-11-26",
-            "distance_from_current_move": 0.4,
-            "forward_1m_move": -2.7,
-            "forward_3m_move": -19.5,
-            "level": 250.5,
-            "prior_1m_move": 19.2
-          }
-        ],
-        "pctile_1y": 33.92857142857143,
-        "pctile_5y": 9.156118143459915,
-        "z_1y": -0.6031645559037231,
-        "z_5y": -1.5555405839375351
+        "as_of": null,
+        "bps": null,
+        "chg_1d_bps": null,
+        "chg_1m_bps": null,
+        "chg_3m_bps": null,
+        "chg_5d_bps": null,
+        "pctile_1y": null,
+        "pctile_5y": null,
+        "reason": "RBNZ official B2 workbook was blocked or unusable (browser-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; default-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 workbook still blocked). Refusing to substitute a third-party or vendor feed.; official RBNZ HTML fallback also failed: RBNZ official B2 HTML table was blocked or unusable (urllib: RBNZ official page returned HTTP 403 from https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/wholesale-interest-rates. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 page still blocked). Refusing to substitute a third-party or vendor feed.",
+        "status": "unavailable",
+        "z_1y": null,
+        "z_5y": null
       },
       "NZ-JP_2Y": {
-        "as_of": "2026-09-25",
-        "bps": 198.20000000000002,
-        "chg_1d_bps": -3.5999999999999943,
-        "chg_1m_bps": 10.700000000000017,
-        "chg_1y_bps": -14.900000000000006,
-        "chg_3m_bps": 0.700000000000017,
-        "chg_5d_bps": -9.69999999999996,
-        "chg_6m_bps": -13.499999999999972,
-        "historical_move_analogs": [
-          {
-            "as_of": "2022-01-26",
-            "distance_from_current_move": 0.1,
-            "forward_1m_move": 21.4,
-            "forward_3m_move": 123.5,
-            "level": 219.10000000000002,
-            "prior_1m_move": 10.8
-          },
-          {
-            "as_of": "2023-03-15",
-            "distance_from_current_move": 0.1,
-            "forward_1m_move": -9.1,
-            "forward_3m_move": 29.0,
-            "level": 489.1,
-            "prior_1m_move": 10.6
-          },
-          {
-            "as_of": "2023-08-29",
-            "distance_from_current_move": 0.1,
-            "forward_1m_move": 12.5,
-            "forward_3m_move": -57.1,
-            "level": 552.1,
-            "prior_1m_move": 10.6
-          },
-          {
-            "as_of": "2023-05-16",
-            "distance_from_current_move": 0.1,
-            "forward_1m_move": 45.0,
-            "forward_3m_move": 84.8,
-            "level": 470.4000000000001,
-            "prior_1m_move": 10.8
-          }
-        ],
-        "pctile_1y": 45.63492063492063,
-        "pctile_5y": 11.914893617021276,
-        "z_1y": -0.16721590415728332,
-        "z_5y": -1.1557133459376714
+        "as_of": null,
+        "bps": null,
+        "chg_1d_bps": null,
+        "chg_1m_bps": null,
+        "chg_3m_bps": null,
+        "chg_5d_bps": null,
+        "pctile_1y": null,
+        "pctile_5y": null,
+        "reason": "RBNZ official B2 workbook was blocked or unusable (browser-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; default-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 workbook still blocked). Refusing to substitute a third-party or vendor feed.; official RBNZ HTML fallback also failed: RBNZ official B2 HTML table was blocked or unusable (urllib: RBNZ official page returned HTTP 403 from https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/wholesale-interest-rates. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 page still blocked). Refusing to substitute a third-party or vendor feed.",
+        "status": "unavailable",
+        "z_1y": null,
+        "z_5y": null
       },
       "NZ-JP_5Y": {
-        "as_of": "2026-09-25",
-        "bps": 216.7,
-        "chg_1d_bps": -0.3000000000000398,
-        "chg_1m_bps": 17.199999999999932,
-        "chg_1y_bps": -28.30000000000004,
-        "chg_3m_bps": 20.299999999999983,
-        "chg_5d_bps": -3.5,
-        "chg_6m_bps": -32.69999999999999,
-        "historical_move_analogs": [
-          {
-            "as_of": "2022-10-06",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 43.6,
-            "forward_3m_move": -28.3,
-            "level": 402.4,
-            "prior_1m_move": 17.2
-          },
-          {
-            "as_of": "2023-08-28",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 10.5,
-            "forward_3m_move": -29.3,
-            "level": 477.19999999999993,
-            "prior_1m_move": 17.2
-          },
-          {
-            "as_of": "2022-02-01",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 18.2,
-            "forward_3m_move": 91.1,
-            "level": 245.00000000000003,
-            "prior_1m_move": 17.2
-          },
-          {
-            "as_of": "2022-11-10",
-            "distance_from_current_move": 0.1,
-            "forward_1m_move": -27.0,
-            "forward_3m_move": -22.1,
-            "level": 430.5,
-            "prior_1m_move": 17.1
-          }
-        ],
-        "pctile_1y": 40.67460317460318,
-        "pctile_5y": 11.265822784810126,
-        "z_1y": -0.22648318207605878,
-        "z_5y": -1.2659402914473323
+        "as_of": null,
+        "bps": null,
+        "chg_1d_bps": null,
+        "chg_1m_bps": null,
+        "chg_3m_bps": null,
+        "chg_5d_bps": null,
+        "pctile_1y": null,
+        "pctile_5y": null,
+        "reason": "RBNZ official B2 workbook was blocked or unusable (browser-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; default-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 workbook still blocked). Refusing to substitute a third-party or vendor feed.; official RBNZ HTML fallback also failed: RBNZ official B2 HTML table was blocked or unusable (urllib: RBNZ official page returned HTTP 403 from https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/wholesale-interest-rates. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 page still blocked). Refusing to substitute a third-party or vendor feed.",
+        "status": "unavailable",
+        "z_1y": null,
+        "z_5y": null
       },
       "NZ-US_10Y": {
-        "as_of": "2026-09-25",
-        "bps": -5.999999999999961,
-        "chg_1d_bps": 4.999999999999982,
-        "chg_1m_bps": -7.999999999999918,
-        "chg_1y_bps": -34.999999999999964,
-        "chg_3m_bps": 8.881784197001252e-14,
-        "chg_5d_bps": 0.0,
-        "chg_6m_bps": -40.00000000000003,
-        "historical_move_analogs": [
-          {
-            "as_of": "2023-08-10",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 1.0,
-            "forward_3m_move": -15.0,
-            "level": 69.00000000000004,
-            "prior_1m_move": -8.0
-          },
-          {
-            "as_of": "2023-11-13",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 21.0,
-            "forward_3m_move": 1.0,
-            "level": 57.00000000000003,
-            "prior_1m_move": -8.0
-          },
-          {
-            "as_of": "2024-01-23",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 7.0,
-            "forward_3m_move": -20.0,
-            "level": 53.00000000000003,
-            "prior_1m_move": -8.0
-          },
-          {
-            "as_of": "2026-01-22",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -0.0,
-            "forward_3m_move": 7.0,
-            "level": 31.00000000000005,
-            "prior_1m_move": -8.0
-          }
-        ],
-        "pctile_1y": 5.753968253968254,
-        "pctile_5y": 1.768092105263158,
-        "z_1y": -1.3649025783265267,
-        "z_5y": -1.8031473509754377
+        "as_of": null,
+        "bps": null,
+        "chg_1d_bps": null,
+        "chg_1m_bps": null,
+        "chg_3m_bps": null,
+        "chg_5d_bps": null,
+        "pctile_1y": null,
+        "pctile_5y": null,
+        "reason": "RBNZ official B2 workbook was blocked or unusable (browser-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; default-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 workbook still blocked). Refusing to substitute a third-party or vendor feed.; official RBNZ HTML fallback also failed: RBNZ official B2 HTML table was blocked or unusable (urllib: RBNZ official page returned HTTP 403 from https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/wholesale-interest-rates. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 page still blocked). Refusing to substitute a third-party or vendor feed.",
+        "status": "unavailable",
+        "z_1y": null,
+        "z_5y": null
       },
       "NZ-US_2Y": {
-        "as_of": "2026-09-25",
-        "bps": -87.99999999999994,
-        "chg_1d_bps": 6.000000000000057,
-        "chg_1m_bps": -22.999999999999915,
-        "chg_1y_bps": -30.999999999999957,
-        "chg_3m_bps": -6.999999999999943,
-        "chg_5d_bps": 5.000000000000028,
-        "chg_6m_bps": -58.99999999999994,
-        "historical_move_analogs": [
-          {
-            "as_of": "2024-11-12",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -6.0,
-            "forward_3m_move": -22.0,
-            "level": -36.999999999999964,
-            "prior_1m_move": -23.0
-          },
-          {
-            "as_of": "2022-03-31",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 21.0,
-            "forward_3m_move": -38.0,
-            "level": 61.00000000000003,
-            "prior_1m_move": -23.0
-          },
-          {
-            "as_of": "2023-02-13",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 70.0,
-            "forward_3m_move": 40.0,
-            "level": 21.000000000000085,
-            "prior_1m_move": -23.0
-          },
-          {
-            "as_of": "2021-12-08",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -32.0,
-            "forward_3m_move": -65.0,
-            "level": 138.0,
-            "prior_1m_move": -23.0
-          }
-        ],
-        "pctile_1y": 8.928571428571429,
-        "pctile_5y": 1.8656716417910448,
-        "z_1y": -1.4208449123321516,
-        "z_5y": -1.666649904056075
+        "as_of": null,
+        "bps": null,
+        "chg_1d_bps": null,
+        "chg_1m_bps": null,
+        "chg_3m_bps": null,
+        "chg_5d_bps": null,
+        "pctile_1y": null,
+        "pctile_5y": null,
+        "reason": "RBNZ official B2 workbook was blocked or unusable (browser-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; default-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 workbook still blocked). Refusing to substitute a third-party or vendor feed.; official RBNZ HTML fallback also failed: RBNZ official B2 HTML table was blocked or unusable (urllib: RBNZ official page returned HTTP 403 from https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/wholesale-interest-rates. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 page still blocked). Refusing to substitute a third-party or vendor feed.",
+        "status": "unavailable",
+        "z_1y": null,
+        "z_5y": null
       },
       "NZ-US_5Y": {
-        "as_of": "2026-09-25",
-        "bps": -39.00000000000006,
-        "chg_1d_bps": 6.999999999999943,
-        "chg_1m_bps": -14.000000000000057,
-        "chg_1y_bps": -38.00000000000008,
-        "chg_3m_bps": -6.000000000000007,
-        "chg_5d_bps": 2.999999999999936,
-        "chg_6m_bps": -66.0000000000001,
-        "historical_move_analogs": [
-          {
-            "as_of": "2025-09-24",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -12.0,
-            "forward_3m_move": 53.0,
-            "level": -32.00000000000003,
-            "prior_1m_move": -14.0
-          },
-          {
-            "as_of": "2021-12-15",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -12.0,
-            "forward_3m_move": -19.0,
-            "level": 95.0,
-            "prior_1m_move": -14.0
-          },
-          {
-            "as_of": "2022-03-21",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -22.0,
-            "forward_3m_move": -18.0,
-            "level": 64.99999999999999,
-            "prior_1m_move": -14.0
-          },
-          {
-            "as_of": "2023-05-08",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -1.0,
-            "forward_3m_move": -3.0,
-            "level": 60.99999999999994,
-            "prior_1m_move": -14.0
-          }
-        ],
-        "pctile_1y": 10.317460317460318,
-        "pctile_5y": 3.2483552631578947,
-        "z_1y": -1.2506311237215169,
-        "z_5y": -1.7538794891882203
+        "as_of": null,
+        "bps": null,
+        "chg_1d_bps": null,
+        "chg_1m_bps": null,
+        "chg_3m_bps": null,
+        "chg_5d_bps": null,
+        "pctile_1y": null,
+        "pctile_5y": null,
+        "reason": "RBNZ official B2 workbook was blocked or unusable (browser-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; default-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 workbook still blocked). Refusing to substitute a third-party or vendor feed.; official RBNZ HTML fallback also failed: RBNZ official B2 HTML table was blocked or unusable (urllib: RBNZ official page returned HTTP 403 from https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/wholesale-interest-rates. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 page still blocked). Refusing to substitute a third-party or vendor feed.",
+        "status": "unavailable",
+        "z_1y": null,
+        "z_5y": null
       }
     },
     "rates": {
@@ -11397,15 +10887,12 @@
         }
       },
       "NZ": {
-        "curves": {
-          "2s10s": 118.00000000000001,
-          "5s10s": 52.00000000000004
-        },
-        "latest_observation": "2026-09-25",
+        "curves": {},
+        "latest_observation": null,
         "tenors": {
-          "10Y": 5.11,
-          "2Y": 3.93,
-          "5Y": 4.59
+          "10Y": null,
+          "2Y": null,
+          "5Y": null
         }
       },
       "US": {
@@ -11640,72 +11127,72 @@
               "volume": null
             },
             {
-              "change_from_overnight_bps": 47.0,
+              "change_from_overnight_bps": 46.0,
               "code": "CRAZ26",
               "expiry": "2026-12",
-              "implied_rate": 2.77,
+              "implied_rate": 2.76,
               "open_interest": null,
-              "price": 97.23,
+              "price": 97.24,
               "source": "MX_CORRA_FUTURES",
               "volume": null
             },
             {
-              "change_from_overnight_bps": 84.5,
+              "change_from_overnight_bps": 83.0,
               "code": "CRAH27",
               "expiry": "2027-03",
-              "implied_rate": 3.145,
+              "implied_rate": 3.13,
               "open_interest": null,
-              "price": 96.855,
+              "price": 96.87,
               "source": "MX_CORRA_FUTURES",
               "volume": null
             },
             {
-              "change_from_overnight_bps": 109.5,
+              "change_from_overnight_bps": 107.0,
               "code": "CRAM27",
               "expiry": "2027-06",
-              "implied_rate": 3.395,
+              "implied_rate": 3.37,
               "open_interest": null,
-              "price": 96.605,
+              "price": 96.63,
               "source": "MX_CORRA_FUTURES",
               "volume": null
             },
             {
-              "change_from_overnight_bps": 126.0,
+              "change_from_overnight_bps": 124.5,
               "code": "CRAU27",
               "expiry": "2027-09",
-              "implied_rate": 3.56,
+              "implied_rate": 3.545,
               "open_interest": null,
-              "price": 96.44,
+              "price": 96.455,
               "source": "MX_CORRA_FUTURES",
               "volume": null
             },
             {
-              "change_from_overnight_bps": 136.5,
+              "change_from_overnight_bps": 135.0,
               "code": "CRAZ27",
               "expiry": "2027-12",
-              "implied_rate": 3.665,
+              "implied_rate": 3.65,
               "open_interest": null,
-              "price": 96.335,
+              "price": 96.35,
               "source": "MX_CORRA_FUTURES",
               "volume": null
             },
             {
-              "change_from_overnight_bps": 144.0,
+              "change_from_overnight_bps": 142.0,
               "code": "CRAH28",
               "expiry": "2028-03",
-              "implied_rate": 3.74,
+              "implied_rate": 3.72,
               "open_interest": null,
-              "price": 96.26,
+              "price": 96.28,
               "source": "MX_CORRA_FUTURES",
               "volume": null
             },
             {
-              "change_from_overnight_bps": 146.0,
+              "change_from_overnight_bps": 144.5,
               "code": "CRAM28",
               "expiry": "2028-06",
-              "implied_rate": 3.76,
+              "implied_rate": 3.745,
               "open_interest": null,
-              "price": 96.24,
+              "price": 96.255,
               "source": "MX_CORRA_FUTURES",
               "volume": null
             },
@@ -11720,22 +11207,22 @@
               "volume": null
             },
             {
-              "change_from_overnight_bps": 145.5,
+              "change_from_overnight_bps": 144.5,
               "code": "CRAZ28",
               "expiry": "2028-12",
-              "implied_rate": 3.755,
+              "implied_rate": 3.745,
               "open_interest": null,
-              "price": 96.245,
+              "price": 96.255,
               "source": "MX_CORRA_FUTURES",
               "volume": null
             },
             {
-              "change_from_overnight_bps": 143.5,
+              "change_from_overnight_bps": 141.5,
               "code": "CRAH29",
               "expiry": "2029-03",
-              "implied_rate": 3.735,
+              "implied_rate": 3.715,
               "open_interest": null,
-              "price": 96.265,
+              "price": 96.285,
               "source": "MX_CORRA_FUTURES",
               "volume": null
             },
@@ -12335,12 +11822,12 @@
           "contract_period_months": 3,
           "contracts": [
             {
-              "change_from_overnight_bps": 13.25,
+              "change_from_overnight_bps": 13.0,
               "code": "SR3U6",
               "expiry": "2026-09",
-              "implied_rate": 4.0125,
+              "implied_rate": 4.01,
               "open_interest": null,
-              "price": 95.9875,
+              "price": 95.99,
               "source": "ESIGNAL_CME_SR3_DELAYED",
               "volume": null
             },
@@ -12385,62 +11872,62 @@
               "volume": null
             },
             {
-              "change_from_overnight_bps": 100.5,
+              "change_from_overnight_bps": 101.0,
               "code": "SR3Z7",
               "expiry": "2027-12",
-              "implied_rate": 4.885,
+              "implied_rate": 4.89,
               "open_interest": null,
-              "price": 95.115,
+              "price": 95.11,
               "source": "ESIGNAL_CME_SR3_DELAYED",
               "volume": null
             },
             {
-              "change_from_overnight_bps": 99.5,
+              "change_from_overnight_bps": 100.0,
               "code": "SR3H8",
               "expiry": "2028-03",
-              "implied_rate": 4.875,
+              "implied_rate": 4.88,
               "open_interest": null,
-              "price": 95.125,
+              "price": 95.12,
               "source": "ESIGNAL_CME_SR3_DELAYED",
               "volume": null
             },
             {
-              "change_from_overnight_bps": 97.0,
+              "change_from_overnight_bps": 97.5,
               "code": "SR3M8",
               "expiry": "2028-06",
-              "implied_rate": 4.85,
+              "implied_rate": 4.855,
               "open_interest": null,
-              "price": 95.15,
+              "price": 95.145,
               "source": "ESIGNAL_CME_SR3_DELAYED",
               "volume": null
             },
             {
-              "change_from_overnight_bps": 95.0,
+              "change_from_overnight_bps": 95.5,
               "code": "SR3U8",
               "expiry": "2028-09",
-              "implied_rate": 4.83,
+              "implied_rate": 4.835,
               "open_interest": null,
-              "price": 95.17,
+              "price": 95.165,
               "source": "ESIGNAL_CME_SR3_DELAYED",
               "volume": null
             },
             {
-              "change_from_overnight_bps": 92.5,
+              "change_from_overnight_bps": 93.0,
               "code": "SR3Z8",
               "expiry": "2028-12",
-              "implied_rate": 4.805,
+              "implied_rate": 4.81,
               "open_interest": null,
-              "price": 95.195,
+              "price": 95.19,
               "source": "ESIGNAL_CME_SR3_DELAYED",
               "volume": null
             },
             {
-              "change_from_overnight_bps": 90.0,
+              "change_from_overnight_bps": 90.5,
               "code": "SR3H9",
               "expiry": "2029-03",
-              "implied_rate": 4.78,
+              "implied_rate": 4.785,
               "open_interest": null,
-              "price": 95.22,
+              "price": 95.215,
               "source": "ESIGNAL_CME_SR3_DELAYED",
               "volume": null
             },
@@ -12465,12 +11952,12 @@
               "volume": null
             },
             {
-              "change_from_overnight_bps": 86.0,
+              "change_from_overnight_bps": 85.5,
               "code": "SR3Z9",
               "expiry": "2029-12",
-              "implied_rate": 4.74,
+              "implied_rate": 4.735,
               "open_interest": null,
-              "price": 95.26,
+              "price": 95.265,
               "source": "ESIGNAL_CME_SR3_DELAYED",
               "volume": null
             },
@@ -12505,12 +11992,12 @@
               "volume": null
             },
             {
-              "change_from_overnight_bps": 89.0,
+              "change_from_overnight_bps": 88.5,
               "code": "SR3Z0",
               "expiry": "2030-12",
-              "implied_rate": 4.77,
+              "implied_rate": 4.765,
               "open_interest": null,
-              "price": 95.23,
+              "price": 95.235,
               "source": "ESIGNAL_CME_SR3_DELAYED",
               "volume": null
             },
@@ -12525,22 +12012,22 @@
               "volume": null
             },
             {
-              "change_from_overnight_bps": 94.0,
+              "change_from_overnight_bps": 93.5,
               "code": "SR3M1",
               "expiry": "2031-06",
-              "implied_rate": 4.82,
+              "implied_rate": 4.815,
               "open_interest": null,
-              "price": 95.18,
+              "price": 95.185,
               "source": "ESIGNAL_CME_SR3_DELAYED",
               "volume": null
             },
             {
-              "change_from_overnight_bps": 97.0,
+              "change_from_overnight_bps": 96.5,
               "code": "SR3U1",
               "expiry": "2031-09",
-              "implied_rate": 4.85,
+              "implied_rate": 4.845,
               "open_interest": null,
-              "price": 95.15,
+              "price": 95.155,
               "source": "ESIGNAL_CME_SR3_DELAYED",
               "volume": null
             },
@@ -12555,12 +12042,12 @@
               "volume": null
             },
             {
-              "change_from_overnight_bps": 98.0,
+              "change_from_overnight_bps": 101.5,
               "code": "SR3H2",
               "expiry": "2032-03",
-              "implied_rate": 4.86,
+              "implied_rate": 4.895,
               "open_interest": null,
-              "price": 95.14,
+              "price": 95.105,
               "source": "ESIGNAL_CME_SR3_DELAYED",
               "volume": null
             },
@@ -13012,20 +12499,19 @@
       "capital_normalized": false,
       "competition_cohort_size": 4,
       "competition_eligible": true,
-      "competition_rank": 2,
-      "competitive_rank": 2,
+      "competition_rank": 1,
+      "competitive_rank": 1,
       "drawdown_usd": 0.0,
       "gap_to_best_trader_usd": -518823.14,
       "high_water_nav_usd": 1000000000.0,
       "max_drawdown_usd": 50000000.0,
       "net_after_funding_pnl_usd": 0.0,
       "pressure_flags": [
-        "behind_leading_pm",
         "best_trader_ahead",
         "competitive_pressure"
       ],
-      "raw_pnl_rank": 2,
-      "spread_to_leader_pm_usd": -42106.25,
+      "raw_pnl_rank": 1,
+      "spread_to_leader_pm_usd": 0.0,
       "status": "ok",
       "total_pnl_usd": 0.0
     },
@@ -13036,7 +12522,7 @@
       "learning_status": "compliant",
       "repeated_error_escalations": []
     },
-    "memory_context_sha256": "a8cfff227ff1e97b71f5998d542d1f7426ba8ad6a407fdaed9287b6773a77823",
+    "memory_context_sha256": "d0ae383c40e0e830cb6b32a62863afcc8d3940405a008d74a3b9fc2a469f6526",
     "open_positions": [],
     "owner_id": "grinder",
     "owner_type": "pm",
@@ -13114,7 +12600,7 @@
     "recent_performance_reflections": [],
     "reflections_due": []
   },
-  "memory_context_sha256": "a8cfff227ff1e97b71f5998d542d1f7426ba8ad6a407fdaed9287b6773a77823",
+  "memory_context_sha256": "d0ae383c40e0e830cb6b32a62863afcc8d3940405a008d74a3b9fc2a469f6526",
   "overnight_books": {
     "as_of": "2026-09-28T06:26:47.664507-04:00",
     "competition_metric": "net_pnl_after_funding",
@@ -14843,7 +14329,7 @@
   },
   "review_id": "review-001",
   "review_packet_id": "prp-grinder-overnight-20260928-review-001",
-  "review_packet_sha256": "9606f9827cd9a1e85d308c2c8d94d7903c2d8187cfb5a42e69db44898731decd",
+  "review_packet_sha256": "c1a746edcad94627593d7856dc16caa5a23197419bd8bfb61214e7d498504a61",
   "risk_capital_limit_usd": 100000000,
   "risk_capital_remaining_usd": 100000000.0,
   "risk_capital_usd": 0.0,
