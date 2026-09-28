@@ -1,0 +1,49 @@
+{
+  "decision": {
+    "actions": [
+      {
+        "action": "HOLD",
+        "asset_class": "rates",
+        "conviction": 62,
+        "instrument": "CORRA_2027H-Z",
+        "invalidation": "Reduce or close if March 2027 CORRA reprices above roughly 3.20 with follow-through while Brent remains elevated and Canadian core inflation/labor or BoC communication validate a materially tighter 2027 path. A one-day energy move without domestic confirmation is not enough by itself.",
+        "note": "Fresh Sep 28 review: hold existing risk; no add. Oil is a genuine hawkish counterweight, but the priced BoC path remains aggressive versus domestic evidence.",
+        "position_id": "pm-chatgpt-595561a1b90f",
+        "thesis": "Keep the existing 2027 CORRA receive. The frozen Sep 28 packet has March 2027 CORRA at 3.145 against roughly 2.30 cash, still embedding about 85bp of tightening despite a Canadian domestic backdrop that does not yet validate that full path. The position is already materially through its 3.40 entry, so the correct response to the oil rebound is to protect the existing winner rather than add risk."
+      }
+    ],
+    "alerts": [
+      "March 2027 CORRA above ~3.20 with follow-through",
+      "Brent remains elevated while Canadian core inflation or labor reaccelerate",
+      "BoC communication validates a materially tighter 2027 policy path"
+    ],
+    "conviction": 62,
+    "evidence_cutoff": "2026-09-28T06:26:47.664507-04:00",
+    "future_data_requests": [],
+    "invalidation": "A sustained repricing of March 2027 CORRA above about 3.20, especially if accompanied by persistent Brent strength plus firmer Canadian core inflation, labor, or explicit BoC hawkish guidance, would materially weaken the thesis and trigger de-risking.",
+    "pm_id": "chatgpt",
+    "rationale": "The stale Sep 19 decision should not remain the active ChatGPT PM view. Today\u2019s frozen packet is materially different: Brent is 104.32, WTI 92.41, USDCAD 1.4143 and March 2027 CORRA is 3.145 versus roughly 2.30 cash. That oil move makes the receive less clean than at entry, but the contract still prices about 85bp of BoC tightening and the position has moved from 3.40 to 3.145 in our favor. There is insufficient evidence to add, but also insufficient domestic confirmation to close solely because oil rebounded. Hold and tighten the invalidation.",
+    "review_packet_id": "prp-chatgpt-overnight-20260928-review-001",
+    "review_packet_sha256": "1b84f09af71e0873123f8922f7c1c52abfd4274599fc88176652973243b4867b",
+    "schema_version": 1,
+    "synthesis": "Fresh Sep 28 ChatGPT PM review consumed. Maintain the existing Canadian receive, do not add, and treat persistent oil-led inflation pressure plus a sustained move back through ~3.20 in March CORRA as the key de-risk signal.",
+    "thesis": "Hold the existing 500mm receive in the 2027 CORRA H/M/U/Z strip. The fresh Sep 28 packet still shows a substantial tightening path priced into Canada, while the domestic reaction-function evidence has not caught up to it. Oil has rebounded sharply and raises the inflation tail, so this is now a hold-not-add position rather than a fresh deployment candidate.",
+    "type": "PM_DECISION"
+  },
+  "receipt": {
+    "already_applied": false,
+    "as_of": "2026-09-28T08:41:35.158749-04:00",
+    "decision_fingerprint": "058a595b52135ecce6ef10ecf233fc54227a6d2af8ee4cec5af42c7e3b35ce47",
+    "decision_status": "active",
+    "evidence_cutoff": "2026-09-28T06:26:47.664507-04:00",
+    "gross_utilization_usd": 500000000.0,
+    "overnight_run_id": "overnight-20260928",
+    "pm_id": "chatgpt",
+    "review_packet_id": "prp-chatgpt-overnight-20260928-review-001",
+    "review_packet_sha256": "1b84f09af71e0873123f8922f7c1c52abfd4274599fc88176652973243b4867b",
+    "schema_version": 1,
+    "source": "overnight_scheduled_review",
+    "trader_room_run_id": null,
+    "type": "PM_CHATGPT_APPLY_RECEIPT"
+  }
+}
