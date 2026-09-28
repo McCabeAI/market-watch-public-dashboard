@@ -326,6 +326,64 @@
       "run_id": "overnight-20260925",
       "schema_version": 1,
       "thesis": "Keep the existing long in March 2027 CORRA. The contract at 3.12 still sits 83 basis points above cash CORRA at 2.29, so the receive continues to earn that gap. Crowding is a reason not to add, not a reason to cut a line that is still being paid."
+    },
+    {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-b97bddbdbd2d",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-28T06:26:47.664507-04:00",
+      "conviction": 71,
+      "decision_fingerprint": "102fddadfb7d350b65ea0853cb6d209da06d9100f7ffcbc758e6963f3e3ba8fe",
+      "event_id": "jde-7d99de3e99a54862",
+      "funding_view": null,
+      "invalidation": "The flatten is wrong if oil reverses hard and March implieds resume cheapening through 3.10 without a Canadian policy-path catalyst, showing the oil backup was noise rather than a threat to the remaining carry.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-b97bddbdbd2d"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-carry-is-king-pos-b97bddbdbd2d"
+      ],
+      "memory_context_sha256": "542f1433d9225817800073b7f4e2b359fa593042a784fa4a7ab410846414e361",
+      "outcome_links": [],
+      "owner_id": "carry-is-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "65c6667dbfa7f91cb74e8d86bd20723a458121498ae95aa801519f51f9f3f4d2"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-28T06:26:47.664507-04:00",
+        "evidence_hash": "4ff48a5ec75db52528fe1810f2c7e03d439baff62b3548d4d467676580a29ed3",
+        "overnight_run_id": "overnight-20260928",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Close the long in March 2027 CORRA. Cash still sits at 2.30 against a 3.145 implied, so about 85 basis points of tightening remain in the contract, but oil is no longer a quiet backdrop and the receive is already crowded. The mark has come 25 basis points from the 3.40 entry; locking that and stepping aside is cleaner than sitting in a commodity-sensitive Canadian path that can gap higher.",
+      "run_id": "overnight-20260928",
+      "schema_version": 1,
+      "thesis": "Close the long in March 2027 CORRA. Cash still sits at 2.30 against a 3.145 implied, so about 85 basis points of tightening remain in the contract, but oil is no longer a quiet backdrop and the receive is already crowded. The mark has come 25 basis points from the 3.40 entry; locking that and stepping aside is cleaner than sitting in a commodity-sensitive Canadian path that can gap higher."
     }
   ],
   "schema_version": 1,

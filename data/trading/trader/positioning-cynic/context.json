@@ -37,9 +37,9 @@
   "capital_owner": null,
   "consequence": {
     "competition_cohort_size": 14,
-    "competition_eligible": true,
+    "competition_eligible": false,
     "competition_rank": 4,
-    "competitive_rank": 4,
+    "competitive_rank": null,
     "drawdown_usd": 4596.25,
     "giveback_usd": 4596.25,
     "high_water_nav_usd": 100011207.22,
@@ -47,8 +47,8 @@
     "nav_usd": 100006610.97,
     "net_pnl_usd": 6610.97,
     "pressure_flags": [],
-    "prior_competition_rank": 4,
-    "rank_change": 0,
+    "prior_competition_rank": 5,
+    "rank_change": -1,
     "raw_pnl_rank": 4,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
@@ -58,13 +58,13 @@
     "status": "ok"
   },
   "learning": {
-    "competition_eligible": true,
-    "learning_default_age_runs": 0,
-    "learning_default_count": 0,
-    "learning_status": "compliant",
+    "competition_eligible": false,
+    "learning_default_age_runs": 1,
+    "learning_default_count": 1,
+    "learning_status": "learning_default",
     "repeated_error_escalations": []
   },
-  "memory_context_sha256": "b27804250457fede96fd4088451b04aad3a10bcf07e43f617e18b5400ae6f2ee",
+  "memory_context_sha256": "939301de460909d379941208a18ee5cf8e49ba72f81cea9834f75bc53ae11a1b",
   "open_positions": [],
   "owner_id": "positioning-cynic",
   "owner_type": "trader",
@@ -129,13 +129,13 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "up",
+        "value": 0.28
       },
       "frustration": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "up",
+        "value": 0.19
       },
       "revenge_pressure": {
         "band": "calm",
@@ -144,8 +144,8 @@
       },
       "self_trust": {
         "band": "steady",
-        "trend": "flat",
-        "value": 0.5
+        "trend": "down",
+        "value": 0.47
       },
       "thesis_attachment": {
         "band": "calm",
@@ -161,12 +161,18 @@
       "sharpened_verdicts": 0
     },
     "profile_version": 1,
-    "recent_events": [],
+    "recent_events": [
+      {
+        "kind": "learning_default_entered",
+        "magnitude": 1.0,
+        "run_id": "overnight-20260928"
+      }
+    ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "423cee38b4fe48e392082eb887a54957471e2c313be1dd80ef83f158b4b79de6",
+    "state_sha256": "577158aff87b196d96828e7bf83c2d21cd34b4494611beb551bbd748f79d5ece",
     "streaks": {
-      "flat_cycles": 0,
+      "flat_cycles": 1,
       "session_loss": 0,
       "session_win": 0
     }

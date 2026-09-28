@@ -326,6 +326,62 @@
       "run_id": "overnight-20260925",
       "schema_version": 1,
       "thesis": "Hold the June 2027 AONIA receive. Australia added 39.5 thousand jobs in August and Q2 household income rose 1.12 percent, so fading this pay is the wrong side of the print. Oil near 99 dollars keeps a floor under inflation and under a restrictive cash-rate path already marked at 5.005 versus cash 4.35."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-06",
+          "notional_usd": null,
+          "position_id": "pos-3b40ade3da2c",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-28T06:26:47.664507-04:00",
+      "conviction": 63,
+      "decision_fingerprint": "5117b448a265947d71f820f757cb363e16311c99afa6ef78dadeecdcac4486b4",
+      "event_id": "jde-2ed5ca15312e4e3b",
+      "funding_view": null,
+      "invalidation": "The receive is wrong if June implied AONIA falls back through the 4.91 entry, or if Australian labor reverses the recent prints. A clear demand break that forces the Reserve Bank off the hike path would also invalidate.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-3b40ade3da2c"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "ccb1918434f4db5b9b7b0e307f8907fff5ca6734709f8afe5e57679bffa2c179",
+      "outcome_links": [],
+      "owner_id": "perma-bear",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "8dee339465d40f73a2076ad64848cdcdf97c618c13dc266b770fec2b62b695e5"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-28T06:26:47.664507-04:00",
+        "evidence_hash": "4ff48a5ec75db52528fe1810f2c7e03d439baff62b3548d4d467676580a29ed3",
+        "overnight_run_id": "overnight-20260928",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold the June 2027 AONIA receive. Australia still prints a firm labor backdrop and cash AONIA at 4.35 against a 4.98 implied keeps a restrictive path in the contract. The mark at 4.98 is 7 basis points through the 4.91 entry, so the line has given a little back, but oil at Brent 104.32 keeps a floor under inflation and under that cash-rate path. Receiving Canada against 3.145 would fight the same oil impulse.",
+      "run_id": "overnight-20260928",
+      "schema_version": 1,
+      "thesis": "Hold the June 2027 AONIA receive. Australia still prints a firm labor backdrop and cash AONIA at 4.35 against a 4.98 implied keeps a restrictive path in the contract. The mark at 4.98 is 7 basis points through the 4.91 entry, so the line has given a little back, but oil at Brent 104.32 keeps a floor under inflation and under that cash-rate path. Receiving Canada against 3.145 would fight the same oil impulse."
     }
   ],
   "schema_version": 1,

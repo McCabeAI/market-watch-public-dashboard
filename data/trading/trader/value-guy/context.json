@@ -37,9 +37,9 @@
   "capital_owner": null,
   "consequence": {
     "competition_cohort_size": 14,
-    "competition_eligible": true,
+    "competition_eligible": false,
     "competition_rank": 13,
-    "competitive_rank": 13,
+    "competitive_rank": null,
     "drawdown_usd": 56224.58,
     "giveback_usd": 0.0,
     "high_water_nav_usd": 100000000.0,
@@ -58,13 +58,13 @@
     "status": "ok"
   },
   "learning": {
-    "competition_eligible": true,
-    "learning_default_age_runs": 0,
-    "learning_default_count": 0,
-    "learning_status": "compliant",
+    "competition_eligible": false,
+    "learning_default_age_runs": 1,
+    "learning_default_count": 1,
+    "learning_status": "learning_default",
     "repeated_error_escalations": []
   },
-  "memory_context_sha256": "e2709fb3ed5da9501873274f25c8d2e779dd425a7e0cc5c83745f7c29e81ec1f",
+  "memory_context_sha256": "f4d11a2984843b10ad08844caf6ffa11ddea944effc5848eb61b419c5dc616ac",
   "open_positions": [],
   "owner_id": "value-guy",
   "owner_type": "trader",
@@ -110,13 +110,13 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "up",
+        "value": 0.28
       },
       "frustration": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "up",
+        "value": 0.18
       },
       "revenge_pressure": {
         "band": "calm",
@@ -125,8 +125,8 @@
       },
       "self_trust": {
         "band": "steady",
-        "trend": "flat",
-        "value": 0.5
+        "trend": "down",
+        "value": 0.47
       },
       "thesis_attachment": {
         "band": "calm",
@@ -142,12 +142,18 @@
       "sharpened_verdicts": 0
     },
     "profile_version": 1,
-    "recent_events": [],
+    "recent_events": [
+      {
+        "kind": "learning_default_entered",
+        "magnitude": 1.0,
+        "run_id": "overnight-20260928"
+      }
+    ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "1489a4ef79bc197af98731089e4c5f73d35c8b75b1eecd520eed83278c9b7eb0",
+    "state_sha256": "8f1475331915b70042af69f4382c7c4cc2721e0c1b186c4d3268d4251a06eca5",
     "streaks": {
-      "flat_cycles": 0,
+      "flat_cycles": 1,
       "session_loss": 0,
       "session_win": 0
     }

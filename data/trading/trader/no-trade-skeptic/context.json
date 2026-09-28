@@ -34,7 +34,7 @@
     "competition_cohort_size": 14,
     "competition_eligible": true,
     "competition_rank": 5,
-    "competitive_rank": 5,
+    "competitive_rank": 4,
     "drawdown_usd": 0.0,
     "giveback_usd": 0.0,
     "high_water_nav_usd": 100000000.0,
@@ -42,8 +42,8 @@
     "nav_usd": 100000000.0,
     "net_pnl_usd": 0.0,
     "pressure_flags": [],
-    "prior_competition_rank": 5,
-    "rank_change": 0,
+    "prior_competition_rank": 6,
+    "rank_change": -1,
     "raw_pnl_rank": 5,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
@@ -59,7 +59,7 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "memory_context_sha256": "404b8df413498abb8f064c5430267e8897149b559ffcbcc21494ad37bd2ea493",
+  "memory_context_sha256": "2f1e6f311e834f1ebe609a5f32c441173a2c61c3f8b73e5bf859cfcdd3a151d3",
   "open_positions": [],
   "owner_id": "no-trade-skeptic",
   "owner_type": "trader",
@@ -120,15 +120,24 @@
     "recent_events": [],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "38712419babfa1b170860360ca33830f1ea3286e397a7249afe99db70147f5fd",
+    "state_sha256": "ff91cbac6664196e32e9c429ad45a6489bd36497addabf12cb6e9e720f5e1d66",
     "streaks": {
-      "flat_cycles": 0,
+      "flat_cycles": 1,
       "session_loss": 0,
       "session_win": 0
     }
   },
   "recent_closed_trades": [],
   "recent_funding_views": [
+    {
+      "current_sofr": {
+        "observation_date": "2026-09-24",
+        "rate": 3.88
+      },
+      "forward_funding_assessment": "about_the_same",
+      "implication": "Remain at the zero official-SOFR benchmark. Realized overnight funding near 3.88 is consistent with the official fixing, and the SR3 strip already prices a higher future path. New shocked-risk capital would pay SOFR for a view that is already in the curve. Flat cash is not alpha; it is the residual when no trade clears.",
+      "sr3_forward_view": "SR3 Z6 at 4.38, H7 at 4.67, and U7 at 4.895 sit 50bp, 79bp, and 101.5bp above the official 3.88 SOFR fixing. That strip already prices a higher future funding path; it is not unused carry."
+    },
     {
       "current_sofr": {
         "observation_date": "2026-09-24",
@@ -155,12 +164,6 @@
       "forward_funding_assessment": "about_the_same",
       "implication": "Remain at the zero official-SOFR benchmark. Do not pay SOFR on shocked-risk capital. Stale macro_hard and a crowded receive-CORRA complex give no reason to leave flat cash. Flat cash is not alpha; paying SOFR to warehouse a stale crowded expression is worse.",
       "sr3_forward_view": "Frozen SR3 path: Z6 4.315, H7 4.57, U7 4.735 versus official SOFR 3.85 effective 2026-09-21. That strip is priced hike/path premium, not unused alpha."
-    },
-    {
-      "current_sofr": "Official NY Fed SOFR 3.85 percent observation_date 2026-09-21 ACT/360.",
-      "forward_funding_assessment": "about_the_same",
-      "implication": "Authority is the official NY Fed SOFR fixing, not SR3. Over this same-day horizon, realized funding is assessed about the same as the 3.85 percent official print. Remain at the zero official-SOFR benchmark. Paying SOFR on shocked-risk capital would levy 3.85 percent ACT/360 against risk with no documented mispricing to offset it. Flat cash is not alpha.",
-      "sr3_forward_view": "SR3 Z6 4.32 / H7 4.58 / U7 4.745 \u2014 curve still prices hikes then a mild fade."
     }
   ],
   "recent_performance_reflections": [],

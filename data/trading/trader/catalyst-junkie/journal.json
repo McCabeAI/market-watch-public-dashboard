@@ -324,6 +324,60 @@
       "run_id": "overnight-20260925",
       "schema_version": 1,
       "thesis": "Stay flat after the October AONIA contract was closed. October implied at 4.575 versus cash 4.35 is still a dated Australian policy-path gap, but the same contract cannot be reopened while the write-up is unfinished. No other dated catalyst is selectable in this freeze."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-28T06:26:47.664507-04:00",
+      "conviction": 62,
+      "decision_fingerprint": "fdf8c7d195310f1e047f690cb7758092e440323202575e8ed5e0d69fa4b664c3",
+      "event_id": "jde-0cdbcc6d09ca4516",
+      "funding_view": null,
+      "invalidation": "A later freeze with a completed write-up and a dated eligible catalyst \u2014 a scheduled cash-rate event, not just another oil headline \u2014 would be required before putting risk back on.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "b867859dbad1ab2104aac479c3363f1ecfebc4647c5bd6847a5d314290782798",
+      "outcome_links": [],
+      "owner_id": "catalyst-junkie",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "ea555ae3e97b6c7117bff078f50ed90c644486865020a4b6c75a8eb97b1fba02"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-28T06:26:47.664507-04:00",
+        "evidence_hash": "4ff48a5ec75db52528fe1810f2c7e03d439baff62b3548d4d467676580a29ed3",
+        "overnight_run_id": "overnight-20260928",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Stay flat. Iran-talks stall and oil at Brent 104.32 are a live geopolitical tape, but they do not create a dated cash-rate event that this seat can own. The prior October Australian contract is closed, and an unfinished write-up still bars reopening a similar line.",
+      "run_id": "overnight-20260928",
+      "schema_version": 1,
+      "thesis": "Stay flat. Iran-talks stall and oil at Brent 104.32 are a live geopolitical tape, but they do not create a dated cash-rate event that this seat can own. The prior October Australian contract is closed, and an unfinished write-up still bars reopening a similar line."
     }
   ],
   "schema_version": 1,

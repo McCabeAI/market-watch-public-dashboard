@@ -1,5 +1,41 @@
 {
-  "items": [],
+  "items": [
+    {
+      "created_at": "2026-09-28T06:26:47.664507-04:00",
+      "created_run_id": "overnight-20260928",
+      "facts": {
+        "asset_class": "rates",
+        "closed_at": "2026-09-28T06:26:47.664507-04:00",
+        "conviction": 62,
+        "entry_mark": 3.4,
+        "exit_mark": 3.44,
+        "exit_reason_category": null,
+        "expression": {
+          "curve_id": "CORRA",
+          "expiries": [
+            "2027-03",
+            "2027-06",
+            "2027-09",
+            "2027-12"
+          ],
+          "type": "futures_strip_average"
+        },
+        "holding_duration_seconds": 719397,
+        "instrument": "CORRA_2027-03",
+        "invalidation": "Trim/median leave 1.9\u20132.0% higher and CORRA 2027 implieds hold at or above the 3.40% strip / 3.13% Mar-27 entry because BoC delivers the priced catch-up.",
+        "opened_at": "2026-09-19T22:36:50.082404-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": -30937.5,
+        "side": "long",
+        "thesis": null
+      },
+      "owner_id": "carry-is-king",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-7f29b83dabfc",
+      "status": "due",
+      "trade_id": "trd-trader-carry-is-king-pos-b97bddbdbd2d"
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_POSTMORTEMS_DUE"
 }

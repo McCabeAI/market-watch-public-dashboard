@@ -326,6 +326,62 @@
       "run_id": "overnight-20260925",
       "schema_version": 1,
       "thesis": "Hold the existing long in March 2027 SOFR. The contract at 4.655 is still 77.5 basis points above official SOFR at 3.88, so the stretch the book is fading has not normalized. US two-year and ten-year yields at 4.87 and 5.18 still corroborate an elevated path rather than a completed re-anchor."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-1477172adb86",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-28T06:26:47.664507-04:00",
+      "conviction": 56,
+      "decision_fingerprint": "2fd4ece60ab113151144f67ba1c561ce95155dd03fd8962b6fe4194b4bd3d281",
+      "event_id": "jde-d69f7a694c294d99",
+      "funding_view": null,
+      "invalidation": "The fade dies if cash SOFR or the policy anchor moves up so the 4.67 implied is no longer a stretch, not because the contract cheapens a few basis points. Do not chase a one-day oil headline as a reason to cut.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-1477172adb86"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "a9f0232396dbb32c00683e35db6e9ea9456e4940a92919501835cc268dfe86bb",
+      "outcome_links": [],
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "69c7ed11cdf31846f2560ff8ff0a6da6123622b5641a64a7f03b4975daad226d"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-28T06:26:47.664507-04:00",
+        "evidence_hash": "4ff48a5ec75db52528fe1810f2c7e03d439baff62b3548d4d467676580a29ed3",
+        "overnight_run_id": "overnight-20260928",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold the existing long in March 2027 SOFR. The contract at 4.67 is still 79 basis points above official SOFR at 3.88, so the stretch this book is fading has not come in. The mark is 9 basis points through the 4.58 entry, which hurts but does not complete a re-anchor. US two-year and ten-year yields at 4.81 and 5.17 still corroborate an elevated path.",
+      "run_id": "overnight-20260928",
+      "schema_version": 1,
+      "thesis": "Hold the existing long in March 2027 SOFR. The contract at 4.67 is still 79 basis points above official SOFR at 3.88, so the stretch this book is fading has not come in. The mark is 9 basis points through the 4.58 entry, which hurts but does not complete a re-anchor. US two-year and ten-year yields at 4.81 and 5.17 still corroborate an elevated path."
     }
   ],
   "schema_version": 1,

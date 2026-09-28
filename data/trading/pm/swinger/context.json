@@ -1,6 +1,6 @@
 {
   "active_lessons": [],
-  "as_of": "2026-09-28T06:26:47.664507-04:00",
+  "as_of": "2026-09-28T07:27:53.911522-04:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -37,8 +37,8 @@
     "standing": "good_standing"
   },
   "consequence": {
-    "best_trader_net_pnl_usd": 418551.29,
-    "best_trader_outearn_streak": null,
+    "best_trader_net_pnl_usd": 518823.14,
+    "best_trader_outearn_streak": 1,
     "best_trader_seat": "dollar-king",
     "capital_normalized": false,
     "competition_cohort_size": 4,
@@ -46,7 +46,7 @@
     "competition_rank": 4,
     "competitive_rank": 4,
     "drawdown_usd": 1154795.84,
-    "gap_to_best_trader_usd": -894256.16,
+    "gap_to_best_trader_usd": -994528.01,
     "high_water_nav_usd": 1000679090.97,
     "max_drawdown_usd": 50000000.0,
     "net_after_funding_pnl_usd": -475704.87,
@@ -67,7 +67,7 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "memory_context_sha256": "c75aff15ea56d4adb0d0592a677bfa4ae9a63d725df4b8af5ddc5a1dae775d03",
+  "memory_context_sha256": "6f8b474b67ff4b511b97f738b62d514d46b5258ae019cecbece745bb0c444ba4",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -91,8 +91,8 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "up",
+        "value": 0.12
       },
       "complacency": {
         "band": "calm",
@@ -106,13 +106,13 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "up",
+        "value": 0.14
       },
       "frustration": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "up",
+        "value": 0.11
       },
       "revenge_pressure": {
         "band": "calm",
@@ -138,10 +138,16 @@
       "sharpened_verdicts": 0
     },
     "profile_version": 1,
-    "recent_events": [],
+    "recent_events": [
+      {
+        "kind": "competitive_flag_active",
+        "magnitude": 1.0,
+        "run_id": "overnight-20260928"
+      }
+    ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "4f17b6ee8004ccbd619f0225d2e8717cf3bcf59e4d7ca59b99fd4739c9ccc04b",
+    "state_sha256": "b26849212e9bfee6978a9a499bb1e6ada086a1a1a9e4603db8dfc968c0d1ca02",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
