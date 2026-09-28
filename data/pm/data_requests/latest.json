@@ -1,6 +1,31 @@
 {
-  "as_of": "2026-09-19T23:10:54.155789-04:00",
-  "requests": [],
+  "as_of": "2026-09-28T08:55:41.877205-04:00",
+  "requests": [
+    {
+      "attributions": [
+        {
+          "at": "2026-09-28T08:55:41.877220-04:00",
+          "decision_impact": "Prevents position-level P&L and conviction decisions from being based on the wrong contract or component of a derived expression.",
+          "pm_id": "chatgpt",
+          "priority": "high",
+          "reason": "The Sep 28 packet prominently summarized March CORRA at 3.145 while the ChatGPT book actually owns the H/M/U/Z strip, making it easy to confuse a component mark with the position-level mark."
+        }
+      ],
+      "decision_impact": "Prevents position-level P&L and conviction decisions from being based on the wrong contract or component of a derived expression.",
+      "first_requested": "2026-09-28T08:55:41.877220-04:00",
+      "last_requested": "2026-09-28T08:55:41.877220-04:00",
+      "originating_pms": [
+        "chatgpt"
+      ],
+      "priority": "high",
+      "reason": "The Sep 28 packet prominently summarized March CORRA at 3.145 while the ChatGPT book actually owns the H/M/U/Z strip, making it easy to confuse a component mark with the position-level mark.",
+      "repeat_count": 1,
+      "request": "Expose the current deterministic mark for each existing PM position, including derived strip marks, directly in the ChatGPT review packet summary.",
+      "request_id": "fdr-560502e60f04e367",
+      "status": "requested",
+      "suggested_source": "trusted paper_marks / current PM book hydration"
+    }
+  ],
   "schema_version": 1,
   "type": "PM_FUTURE_DATA_REQUESTS"
 }

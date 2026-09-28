@@ -1,24 +1,24 @@
 {
-  "as_of": "2026-09-20T16:15:56.411265-04:00",
+  "as_of": "2026-09-28T08:55:41.642445-04:00",
   "cash_capital_usd": 1000000000,
   "comparison": [
     {
       "decision_status": "active",
-      "drawdown_usd": 0.0,
+      "drawdown_usd": 123600.0,
       "funded_draw_usd": 5000000.0,
       "gross_utilization_usd": 500000000.0,
       "label": "ChatGPT",
       "max_drawdown_usd": 50000000,
-      "net_after_funding_pnl_usd": 0.0,
-      "net_financing_pnl_usd": 0.0,
+      "net_after_funding_pnl_usd": -123600.0,
+      "net_financing_pnl_usd": -4850.0,
       "pm_id": "chatgpt",
       "realized_pnl_usd": 0.0,
-      "review_status": "stale",
+      "review_status": "fresh",
       "risk_capital_limit_usd": 100000000,
       "risk_capital_usd": 5000000.0,
       "risk_stopped": false,
-      "total_pnl_usd": 0.0,
-      "unrealized_pnl_usd": 0.0,
+      "total_pnl_usd": -118750.0,
+      "unrealized_pnl_usd": -118750.0,
       "unused_cash_usd": 1000000000.0
     },
     {
@@ -80,10 +80,26 @@
     }
   ],
   "data_requests": {
-    "as_of": "2026-09-19T23:10:54.155789-04:00",
+    "as_of": "2026-09-28T08:55:41.877205-04:00",
     "note": "Future runs only. These requests never break the current evidence freeze and do not launch collectors.",
-    "request_count": 0,
-    "requests": [],
+    "request_count": 1,
+    "requests": [
+      {
+        "decision_impact": "Prevents position-level P&L and conviction decisions from being based on the wrong contract or component of a derived expression.",
+        "first_requested": "2026-09-28T08:55:41.877220-04:00",
+        "last_requested": "2026-09-28T08:55:41.877220-04:00",
+        "originating_pms": [
+          "chatgpt"
+        ],
+        "priority": "high",
+        "reason": "",
+        "repeat_count": 1,
+        "request": "",
+        "request_id": "fdr-560502e60f04e367",
+        "status": "requested",
+        "suggested_source": "trusted paper_marks / current PM book hydration"
+      }
+    ],
     "schema_version": 1,
     "type": "PM_PUBLIC_DATA_REQUESTS"
   },
@@ -97,32 +113,36 @@
   "pms": [
     {
       "alerts": [
-        "Canada official curve is unavailable, so the position stays locked to the tradable CORRA/CRA futures family."
+        "Canada official curve is unavailable, so the position stays locked to the tradable CORRA/CRA futures family.",
+        "Full 2027 CORRA H/M/U/Z strip cheapens materially from the low-3.4s with follow-through",
+        "March 2027 CORRA above ~3.20 while Brent remains elevated",
+        "Canadian core inflation or labor reaccelerates",
+        "BoC communication validates a materially tighter 2027 policy path"
       ],
-      "benchmark_cost_usd": 0.0,
+      "benchmark_cost_usd": 970000.0,
       "cash_capital_usd": 1000000000.0,
-      "cash_yield_usd": 0.0,
-      "conviction": 68,
+      "cash_yield_usd": 970000.0,
+      "conviction": 54,
       "decision_status": "active",
-      "drawdown_usd": 0.0,
+      "drawdown_usd": 123600.0,
       "funded_draw_usd": 5000000.0,
       "funding_basis_status": "risk_capital_1pct_shock",
       "funding_convention": "ACT/360",
-      "funding_cost_usd": 0.0,
-      "funding_rate_annual": 0.0385,
+      "funding_cost_usd": 4850.0,
+      "funding_rate_annual": 0.0388,
       "funding_source": "NY_FED",
       "gross_notional_limit_enforced": false,
       "gross_notional_limit_usd": 1000000000,
       "gross_remaining_usd": 500000000.0,
       "gross_utilization_usd": 500000000.0,
       "high_water_nav_usd": 1000000000.0,
-      "invalidation": "Reduce or close if Canadian core inflation moves decisively above the current near-2% zone while employment and wage growth reaccelerate, or if BoC communication/delivered hikes validate a 2027 path in the mid-3% area. A headline-energy spike without confirmation in core inflation and labor is not sufficient invalidation.",
+      "invalidation": "De-risk if the full 2027 strip cheapens materially beyond its current low-3.4s area with follow-through, especially if March also pushes through roughly 3.20 and persistent Brent strength is confirmed by firmer Canadian core inflation, labor, or explicitly hawkish BoC guidance. A one-day energy move alone is not enough.",
       "label": "ChatGPT",
-      "last_action": "OPEN",
+      "last_action": "HOLD",
       "mandate": "Final synthesis; may trade or choose no-trade. No forced style.",
       "max_drawdown_usd": 50000000,
-      "net_after_funding_pnl_usd": 0.0,
-      "net_financing_pnl_usd": 0.0,
+      "net_after_funding_pnl_usd": -123600.0,
+      "net_financing_pnl_usd": -4850.0,
       "pm_id": "chatgpt",
       "pnl_unavailable": false,
       "positions": [
@@ -138,8 +158,8 @@
           "instrument": "CORRA_2027H-Z",
           "invalidation": "Reduce or close if Canadian core inflation moves decisively above the current near-2% zone while employment and wage growth reaccelerate, or if BoC communication/delivered hikes validate a 2027 path in the mid-3% area. A headline-energy spike without confirmation in core inflation and labor is not sufficient invalidation.",
           "locked_expression_family": "corra",
-          "mark_price": 3.4,
-          "mark_price_as_of": "2026-09-20T02:06:32Z",
+          "mark_price": 3.42375,
+          "mark_price_as_of": "2026-09-28T11:32:16Z",
           "mark_price_source": "derived:futures_strip_average:CORRA[market_state.tradable_rate_curves.CORRA.2027-03.implied_rate,market_state.tradable_rate_curves.CORRA.2027-06.implied_rate,market_state.tradable_rate_curves.CORRA.2027-09.implied_rate,market_state.tradable_rate_curves.CORRA.2027-12.implied_rate]",
           "notional_usd": 500000000.0,
           "opened_at": "2026-09-19T23:10:54.130509-04:00",
@@ -159,20 +179,20 @@
           "risk_capital_usd": 5000000.0,
           "side": "long",
           "thesis": "Receive the 2027 CORRA H/M/U/Z strip. The market prices roughly 84 to 130.5 bp of BoC tightening from a 2.29% overnight rate even though Canadian labor is weak and core inflation is near 2%; the 2027 hike cycle is too aggressive relative to the domestic reaction function.",
-          "unrealized_pnl_usd": -0.0
+          "unrealized_pnl_usd": -118750.0
         }
       ],
       "realized_pnl_usd": 0.0,
-      "review_status": "stale",
+      "review_status": "fresh",
       "risk_capital_limit_usd": 100000000,
       "risk_capital_method": "mtm_standard_1pct_move",
       "risk_capital_remaining_usd": 95000000.0,
       "risk_capital_usd": 5000000.0,
       "risk_stop_pending": false,
       "risk_stopped": false,
-      "thesis": "Receive the 2027 CORRA H/M/U/Z strip. The market prices roughly 84 to 130.5 bp of BoC tightening from a 2.29% overnight rate even though Canadian labor is weak and core inflation is near 2%; the 2027 hike cycle is too aggressive relative to the domestic reaction function.",
-      "total_pnl_usd": 0.0,
-      "unrealized_pnl_usd": 0.0,
+      "thesis": "Keep the existing 2027 H/M/U/Z CORRA receive, but do not add. March 2027 at 3.145 still embeds roughly 85bp of tightening versus about 2.30 cash, while the full strip is materially higher because the later-2027 contracts carry more tightening and inflation premium. Canadian domestic evidence still does not clearly validate that whole path, but Brent at 104.32 makes the later strip substantially less clean than the March-only receive.",
+      "total_pnl_usd": -118750.0,
+      "unrealized_pnl_usd": -118750.0,
       "unresolved_funding_positions": [],
       "unused_cash_usd": 1000000000.0
     },
