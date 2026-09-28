@@ -92,9 +92,11 @@ Risk-expanding `OPEN` / `ADD` / `HEDGE` fail closed independently when:
 - the identity has outstanding `postmortems_due` created on a prior run; or
 - required expansion rationale is missing.
 
-A trade closed in the current run becomes `postmortem_due` for a later decision opportunity. Same-run hindsight is not required and must not retroactively block other already-valid de-risk actions in that decision.
+A trade closed in the current run becomes `postmortem_due` for a later decision opportunity. Same-run hindsight is not required and must not retroactively block other already-valid de-risk actions in that decision. That new due is not part of the current invocation's frozen learning-obligation manifest.
 
-Trusted code accepts a postmortem only for a closed trade owned by that identity. Reflection cannot change entry/exit marks or P&L. Durable lessons must cite owned `trade_id`s or `postmortem_id`s. Active lessons are capped at 12.
+Trusted code accepts a postmortem only for a closed trade owned by that identity, and only after the learning-quality examiner marks that frozen obligation adequate. Reflection cannot change entry/exit marks or P&L. An adequate `no_new_lesson` clears the obligation without writing a lesson. Durable lessons must cite owned `trade_id`s, `postmortem_id`s, or `reflection_id`s. Active lessons are capped at 12. Missing or inadequate work stays due and keeps Learning Default. The examiner grades adequacy only and does not change the trade.
+
+The 14 traders and three automated PMs receive only their own `learning_obligations` in the freeze-time sidecar. The shared evidence snapshot binds that set with `learning_obligations.manifest_sha256` and `obligation_count` inside `packet_sha256`. The full rows live only in the private review artifact `learning_obligations.json`, which the parent and the examiner read. Do not paste that file, the examiner notes, or another identity's sidecar into a trader or PM child. Scheduled output must include one Composer 2.5 `learning_quality_review` whenever that manifest is non-empty. Declared model calls are then 20 / 18 / 2, not 19. A private `learning_audit.json` records obligation, examiner, lesson, and debt counts for that review. It is not public prose.
 
 ## 8. Overnight consumption
 

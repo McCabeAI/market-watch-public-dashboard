@@ -142,6 +142,17 @@ def freeze_snapshot(
         "index": "pm_memory/index.json",
         "hashes": pm_index.get("hashes") or {},
     }
+    from scripts.trading.obligations import manifest_binding, manifest_from_frozen_review
+
+    full_manifest = manifest_from_frozen_review(
+        store,
+        run_id=run_id,
+        review_id=review_id,
+        seat_hashes=packet["seat_memory"]["hashes"],
+        pm_hashes=packet["pm_memory"]["hashes"],
+    )
+    # Shared packet carries the digest only. Full rows are a private review artifact.
+    packet["learning_obligations"] = manifest_binding(full_manifest)
     from scripts.pm.store import PMStore
 
     pm_store = PMStore(root=store.root, state_root=store.state_root)
@@ -154,6 +165,7 @@ def freeze_snapshot(
     if snapshot_path.is_file():
         raise EvidenceBoundaryError(f"refusing to overwrite frozen evidence for {review_id}")
     store.write_artifact(run_id, "evidence_snapshot.json", packet, review_id=review_id)
+    store.write_artifact(run_id, "learning_obligations.json", full_manifest, review_id=review_id)
     meta["status"] = "frozen"
     meta["immutable"] = True
     meta["packet_sha256"] = digest
