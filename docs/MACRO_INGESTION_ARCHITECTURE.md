@@ -46,7 +46,7 @@ ACP 02:05 stays an ACP clock. This repo must not add a second trader/PM run. A f
 
 ## 3. Catalog
 
-`data/macro_ingestion/baseline_catalog.json` is the parent inventory (120 rows):
+`data/macro_ingestion/baseline_catalog.json` is the parent inventory (120 parent rows, plus 11 Canada physical-energy / hard-activity context rows added for Market Watch issue #139):
 
 - 66 scored components, weights copied from calibration and then frozen;
 - 1 registry-unweighted row (`US.Inflation.mapped_bridge`);
@@ -89,6 +89,7 @@ Rules:
 - A failed primary fetch stays failed. There is no silent fallback number.
 - Flash and final are different series ids. A final supersedes a flash only when the final primary document is stored. Until then the flash, if itself primary-sourced, is preliminary (`revision_status=flash`).
 - `opener` is injectable so unit tests never hit the network. Live smoke tests call the real opener once per country and record the outcome, including failure.
+- A point may carry optional `units` and `derivation` fields; the store writes them onto the observation when present. A point's `transformation` is honoured only when the catalog row lists it in `derived_transforms` (opt-in; e.g. the Canada physical-energy rows store an official `monthly_level` and a derived `calendar_day_rate` on one `series_id`, see `docs/CA_PHYSICAL_ENERGY_SOURCE_CONTRACT.md`). Rows without `derived_transforms` keep the single-transform behaviour.
 
 ## 5. Status vocabulary
 
