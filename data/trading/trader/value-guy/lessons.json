@@ -1,5 +1,44 @@
 {
-  "lessons": [],
+  "lessons": [
+    {
+      "contradiction_count": 0,
+      "created_at": "2026-09-29T04:44:08.485973-04:00",
+      "future_rule": "If the 2Y SOFR-CORRA minus cash SOFR-CORRA gap is negligible, do not express CAD valuation in SOFR-CORRA packs; the residual, if any, is spot.",
+      "history": [
+        {
+          "at": "2026-09-29T04:44:08.485973-04:00",
+          "op": "add",
+          "run_id": "overnight-20260929"
+        }
+      ],
+      "lesson_id": "les-b02e04336ac7",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-d9e2764dea0f"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null
+      },
+      "source_run_id": "overnight-20260929",
+      "status": "active",
+      "text": "A 2Y cross-market spread is not cheap because the currency is cheap. Screen the spread against cash before invoking REER.",
+      "trade_ids": [
+        "trd-trader-value-guy-pos-cdde326460b4"
+      ],
+      "updated_at": "2026-09-29T04:44:08.485973-04:00"
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_LESSONS"
 }

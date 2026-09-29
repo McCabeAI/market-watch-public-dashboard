@@ -384,6 +384,60 @@
       "run_id": "overnight-20260928",
       "schema_version": 1,
       "thesis": "Close the long in March 2027 CORRA. Cash still sits at 2.30 against a 3.145 implied, so about 85 basis points of tightening remain in the contract, but oil is no longer a quiet backdrop and the receive is already crowded. The mark has come 25 basis points from the 3.40 entry; locking that and stepping aside is cleaner than sitting in a commodity-sensitive Canadian path that can gap higher."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-29T04:44:08.485973-04:00",
+      "conviction": 35,
+      "decision_fingerprint": "b8a998ce0fb15df3a0acc3f57f8d81212203c79169f92223958c0fa7968b74bc",
+      "event_id": "jde-d38aee9e95f441e0",
+      "funding_view": null,
+      "invalidation": "Stay-flat breaks if oil reverses lower and Iran talks thaw enough that implied hike premia compress while cash policy is unchanged, restoring a patient receive. It also breaks the other way if BoC or Fed cash rates lift, or if Mar27 CORRA and SR3 implieds reprice sharply higher from the frozen prints, confirming energy as a policy regime.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "f8e33db151aa37613576dd3a1078b3cd843b733ccf7e5f12974053687c46a2ed",
+      "outcome_links": [],
+      "owner_id": "carry-is-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "3108a5fc06c587ea849296068140108a02e0ffacb35283b4966ef52e9cb6a781"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-29T04:44:08.485973-04:00",
+        "evidence_hash": "8b9288c07dfc32f6e98a27b1e08272473051ef7f9fc9117815f3ad9172b0d492",
+        "overnight_run_id": "overnight-20260929",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Cash policy is still easy in Canada at 2.30 and only 3.90 on SOFR, while listed implieds price a heavy hike path. That cash-versus-implied gap is the carry-friendly receive, but Brent at 105.28, WTI at 92.60, and Iran-deal pessimism are the same catalyst that already backed CAD implieds from 3.40 to 3.44. With no open risk, the overnight job is to stay flat: do not re-receive duration, and do not chase AUDCAD parity carry while oil is CAD-supportive.",
+      "run_id": "overnight-20260929",
+      "schema_version": 1,
+      "thesis": "Cash policy is still easy in Canada at 2.30 and only 3.90 on SOFR, while listed implieds price a heavy hike path. That cash-versus-implied gap is the carry-friendly receive, but Brent at 105.28, WTI at 92.60, and Iran-deal pessimism are the same catalyst that already backed CAD implieds from 3.40 to 3.44. With no open risk, the overnight job is to stay flat: do not re-receive duration, and do not chase AUDCAD parity carry while oil is CAD-supportive."
     }
   ],
   "schema_version": 1,

@@ -400,6 +400,64 @@
       "run_id": "overnight-20260928",
       "schema_version": 1,
       "thesis": "Hold the existing long in AUDCAD. Australia's two-year at 4.947 versus Canada's 3.39 still isolates the labor and yield gap without a dollar common factor. The cross is marked at 0.9943 against a 1.00 entry, a small giveback, not a broken Australia-versus-Canada case. Oil at Brent 104.32 is a known Canadian offset, not a mandate to cut the line."
+    },
+    {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDCAD",
+          "notional_usd": null,
+          "position_id": "pos-27d002b448b1",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-29T04:44:08.485973-04:00",
+      "conviction": 64,
+      "decision_fingerprint": "05379ea826776f5a00d30e727d2ab05157ad68e2c7d956a30cd6f7e62e189655",
+      "event_id": "jde-071ba90d82464cf8",
+      "funding_view": null,
+      "invalidation": "The flatten is wrong if AUDCAD reclaims the 0.99857 entry and holds while Brent stays at or above 105.28 and AONIA versus CORRA remains near 4.35/2.30.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-27d002b448b1"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-cross-merchant-pos-27d002b448b1"
+      ],
+      "memory_context_sha256": "51566acedc061b7f78138cbaeb255625f43feba4af2b1a5a3969b29f4dcd3a9a",
+      "outcome_links": [],
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "339ee08f5a2ff554253952221ce0efb642448e1ab1cabd0ef05e89bbcba9f9fe"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-29T04:44:08.485973-04:00",
+        "evidence_hash": "8b9288c07dfc32f6e98a27b1e08272473051ef7f9fc9117815f3ad9172b0d492",
+        "overnight_run_id": "overnight-20260929",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "AUDCAD remains the cleanest non-USD expression of RBA versus BoC: AONIA 4.35 against CORRA 2.30 isolates a 205bp policy and carry gap that AUDUSD and NZDUSD contaminate with USD. That carry does not justify staying long at 0.9950 with a 1y z of +1.15 while Brent 105.28 supports CAD. The 22 Sep long is the wrong side of that isolated differential, and the 5d fade is already the richness fade; close it rather than re-express through USD.",
+      "run_id": "overnight-20260929",
+      "schema_version": 1,
+      "thesis": "AUDCAD remains the cleanest non-USD expression of RBA versus BoC: AONIA 4.35 against CORRA 2.30 isolates a 205bp policy and carry gap that AUDUSD and NZDUSD contaminate with USD. That carry does not justify staying long at 0.9950 with a 1y z of +1.15 while Brent 105.28 supports CAD. The 22 Sep long is the wrong side of that isolated differential, and the 5d fade is already the richness fade; close it rather than re-express through USD."
     }
   ],
   "schema_version": 1,

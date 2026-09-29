@@ -49,7 +49,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 500000.0,
     "risk_capital_utilization": 0.05,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -22445.83,
     "status": "ok"
   },
   "learning": {
@@ -60,19 +60,31 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "f38c47da94e92e755d1a8ecfa127eb0c43a91c7d24f5ff6876e6f4b911316390",
+  "memory_context_sha256": "27f7745137fe44aff8b8e93cb45cf1e811c25cdb713fccb1b028095ae42cbea3",
   "open_positions": [
     {
       "asset_class": "rates",
       "conviction": 60,
-      "current_notional_usd": 50000000,
+      "current_notional_usd": 25000000.0,
       "entry_mark": 4.75,
       "instrument": "SOFR_2027-09",
       "opened_at": "2026-09-19T22:36:50.082404-04:00",
       "position_id": "pos-c9184707c12b",
-      "risk_capital_usd": 500000.0,
+      "risk_capital_usd": 250000.0,
       "side": "short",
       "trade_id": "trd-trader-rate-hawk-pos-c9184707c12b"
+    },
+    {
+      "asset_class": "rates",
+      "conviction": 67,
+      "current_notional_usd": 25000000.0,
+      "entry_mark": 3.12,
+      "instrument": "CORRA_2027-03",
+      "opened_at": "2026-09-29T04:44:08.485973-04:00",
+      "position_id": "pos-2709875e8c9c",
+      "risk_capital_usd": 250000.0,
+      "side": "short",
+      "trade_id": "trd-trader-rate-hawk-pos-2709875e8c9c"
     }
   ],
   "owner_id": "rate-hawk",
@@ -134,7 +146,7 @@
     "recent_events": [],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "601fe0aa518f70336e9eb8ed69e0188aed24be737aec2190f519c57fbd533766",
+    "state_sha256": "760ed700505f85ef31af9d229afed76ef1634175a4ca86cf425a8a3c573f156e",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

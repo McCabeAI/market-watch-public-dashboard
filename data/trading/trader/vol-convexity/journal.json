@@ -366,6 +366,60 @@
       "run_id": "overnight-20260928",
       "schema_version": 1,
       "thesis": "Stay flat until a live options surface exists. Stalled Iran talks and Brent at 104.32 keep a timing-uncertain fat tail on the tape, but there are no strikes, expiries, or implied vols to price. Eligible countries do not create a markable options book on their own."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-29T04:44:08.485973-04:00",
+      "conviction": 72,
+      "decision_fingerprint": "df038ec9eea1410b01ea4f794ecb3e1e36442326a981c8413fd9bb4d611eb9bf",
+      "event_id": "jde-905f1cebff3d4546",
+      "funding_view": null,
+      "invalidation": "A markable listed vol surface, or a one-way markable rates dislocation that prices the Iran or yen-warning tail more cleanly than cash, would invalidate stay-flat.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "43fe8fba89b9ed6842119b33f9d3b4a6404ed50daa578611c22d858b57f684b9",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "01dd776f696ba549c94e04af6549a481afbfce7721b93e0b15dd77ef80d72f5d"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-29T04:44:08.485973-04:00",
+        "evidence_hash": "8b9288c07dfc32f6e98a27b1e08272473051ef7f9fc9117815f3ad9172b0d492",
+        "overnight_run_id": "overnight-20260929",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Spot is the wrong instrument for the Iran oil tail and the yen-warning jump: timing is uncertain and a flat book would take unbounded directional risk. The marked hike path already sits in rates, so a curve or front-end expression is a policy-path bet, not bounded convexity on that tail. With no vol surface, no options leg is markable, and staying flat dominates both the rates and spot candidates.",
+      "run_id": "overnight-20260929",
+      "schema_version": 1,
+      "thesis": "Spot is the wrong instrument for the Iran oil tail and the yen-warning jump: timing is uncertain and a flat book would take unbounded directional risk. The marked hike path already sits in rates, so a curve or front-end expression is a policy-path bet, not bounded convexity on that tail. With no vol surface, no options leg is markable, and staying flat dominates both the rates and spot candidates."
     }
   ],
   "schema_version": 1,

@@ -382,6 +382,62 @@
       "run_id": "overnight-20260928",
       "schema_version": 1,
       "thesis": "Hold the existing long in USDCAD. Official SOFR at 3.88 versus CORRA at 2.30 and a 142 basis-point two-year gap still pay the dollar against Canada. The pair is marked at 1.4143 against a 1.40 entry, so the line is working. Oil at Brent 104.32 is a Canadian offset, not a reason to flatten a rates-supported dollar long already on."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDCAD",
+          "notional_usd": null,
+          "position_id": "pos-5317bc96d4eb",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-29T04:44:08.485973-04:00",
+      "conviction": 55,
+      "decision_fingerprint": "d0ce698e44124b0c1b38b96d126808ed7f2e0458d6a4e88d1d30860fb1779d9c",
+      "event_id": "jde-8144092fb5a3426e",
+      "funding_view": null,
+      "invalidation": "Thesis breaks if the SOFR-CORRA advantage is compressed or if Iran-deal pessimism produces a sustained further oil bid that the CAD rates gap can no longer dominate.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-5317bc96d4eb"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "9d5b018a6d5728394be4636524bf5197706e9cb3b5d2e236be42b58e2f56343e",
+      "outcome_links": [],
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "249ac302712ef0ae612ce1016d5e6afa3a815b40f898b8d18dfd2b059711bee2"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-29T04:44:08.485973-04:00",
+        "evidence_hash": "8b9288c07dfc32f6e98a27b1e08272473051ef7f9fc9117815f3ad9172b0d492",
+        "overnight_run_id": "overnight-20260929",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "SOFR 3.90 versus CORRA 2.30 leaves a 160bp USD-Canada cash gap, and the working long USDCAD at 1.4166 is still the cleanest USD-spot expression. CAD is the soft-rate leg, so the view belongs in USDCAD rather than a euro, yen, or franc cross; USDJPY is contaminated by the post-Bessent yen warning. Oil at Brent 105.28 on Iran-deal pessimism is a known CAD-positive headwind, not a reason to abandon the rates identity of the book. Hold the existing long and do not add into the 1y z +1.65 extension.",
+      "run_id": "overnight-20260929",
+      "schema_version": 1,
+      "thesis": "SOFR 3.90 versus CORRA 2.30 leaves a 160bp USD-Canada cash gap, and the working long USDCAD at 1.4166 is still the cleanest USD-spot expression. CAD is the soft-rate leg, so the view belongs in USDCAD rather than a euro, yen, or franc cross; USDJPY is contaminated by the post-Bessent yen warning. Oil at Brent 105.28 on Iran-deal pessimism is a known CAD-positive headwind, not a reason to abandon the rates identity of the book. Hold the existing long and do not add into the 1y z +1.65 extension."
     }
   ],
   "schema_version": 1,

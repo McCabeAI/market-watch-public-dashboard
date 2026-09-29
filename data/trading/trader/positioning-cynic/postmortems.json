@@ -1,5 +1,88 @@
 {
-  "items": [],
+  "items": [
+    {
+      "at": "2026-09-29T04:44:08.485973-04:00",
+      "causal": {
+        "assumptions_right": "The cash-versus-strip gap was real; CAD policy was easier than the 2027 contract.",
+        "assumptions_wrong_or_underweighted": "Ownership and holding period. Other desks already received CAD. A sub-day hold cannot harvest a multi-quarter easing gap, and the bid was crowded before entry.",
+        "causal_divergence": "Zero result was not a one-day falsification of CAD easing versus 3.40. Price did not pay the late receiver because the receive was already owned.",
+        "decision_quality_attribution": "positioning_crowding",
+        "future_implication": "Do not receive CORRA Mar27 while other desks are crowded received. Cash 2.30 versus 3.125 is not permission to join.",
+        "observed_reality": "Flat scratch in under a day: entry 3.40, exit 3.40. The freeze now shows Mar27 at 3.125 versus CORRA cash 2.30 with the receive crowded on other desks.",
+        "original_belief": "Long/receive CORRA Mar27 at 3.40 was a cheap policy-path receive versus easier CAD cash, with room for the 2027 strip to rally.",
+        "same_information_counterfactual": "With crowding known, the receive would not have been opened for a same-session hold; the book would have stayed flat."
+      },
+      "expression_assessment": "Outright CORRA Mar27 receive was the consensus expression; better ownership was elsewhere or flat.",
+      "facts": {
+        "asset_class": "rates",
+        "closed_at": "2026-09-20T16:06:28.069463-04:00",
+        "conviction": 56,
+        "entry_mark": 3.4,
+        "exit_mark": 3.4,
+        "holding_duration_seconds": 62977,
+        "instrument": "CORRA_2027-03",
+        "opened_at": "2026-09-19T22:36:50.082404-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 0.0,
+        "side": "long"
+      },
+      "future_rule": "No new receive on CORRA 2027-03 while crowding is flagged, regardless of cash-strip cheapness; if the hold cannot extend beyond one session, do not enter.",
+      "lesson": "Cheap versus cash is not an entry when the receive is already the crowded desk position.",
+      "no_new_lesson": null,
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-86d9c87862a0",
+      "run_id": "overnight-20260929",
+      "sizing_assessment": null,
+      "tags": [],
+      "thesis_assessment": null,
+      "timing_assessment": "Sub-day scratch was an entry into an already-owned bid, not a timed harvest.",
+      "trade_id": "trd-trader-positioning-cynic-pos-142ad113f303",
+      "what_failed": "Opened a crowded CAD receive with no ownership edge and no holding period long enough to monetize the cash-strip gap.",
+      "what_worked": null
+    },
+    {
+      "at": "2026-09-29T04:44:08.485973-04:00",
+      "causal": {
+        "assumptions_right": "Paying the less-crowded AUD path had ownership edge relative to CAD receive; a short window was enough to clip 2bp.",
+        "assumptions_wrong_or_underweighted": "A 2bp two-session gain is not proof the RBA hike cycle was harvested as a structural thesis; path and tenor beyond Mar27 were not required for the result.",
+        "causal_divergence": "Result matched the anti-crowd pay, then stopped. It did not demonstrate that scaling AUD pays, or recycling CAD, was licensed.",
+        "decision_quality_attribution": "timing",
+        "future_implication": "Keep preferring unowned AUD pay over crowded CAD receive when expansion is allowed; do not read a 2bp clip as a green light to reopen either leg.",
+        "observed_reality": "Brief pay worked: entry 4.86, exit 4.88 over two sessions. The freeze now shows AONIA cash 4.35 versus Jun27 5.005.",
+        "original_belief": "Short/pay AONIA Mar27 at 4.86 was the less-owned hike-path expression versus a crowded CAD receive.",
+        "same_information_counterfactual": "The pay would still have been the correct side versus crowded CORRA receive; it would not have been treated as confirmation to re-enter CAD or to enlarge AONIA."
+      },
+      "expression_assessment": null,
+      "facts": {
+        "asset_class": "rates",
+        "closed_at": "2026-09-22T15:40:57.474758-04:00",
+        "conviction": 57,
+        "entry_mark": 4.86,
+        "exit_mark": 4.88,
+        "holding_duration_seconds": 171269,
+        "instrument": "AONIA_2027-03",
+        "opened_at": "2026-09-20T16:06:28.069463-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 6750.0,
+        "side": "short"
+      },
+      "future_rule": null,
+      "lesson": null,
+      "no_new_lesson": "Bounded ordinary variance around a sound anti-crowd pay; process remains sound. Do not overfit a two-session 2bp win into a new rule beyond keep fading crowded CAD receive.",
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-550c41ce938c",
+      "run_id": "overnight-20260929",
+      "sizing_assessment": "Size produced a small 2bp clip without turning a brief timing window into a concentrated structural bet.",
+      "tags": [],
+      "thesis_assessment": "Anti-crowd pay versus crowded CAD receive was the right ownership lens; the clip was too small to call the structural hike path complete.",
+      "timing_assessment": null,
+      "trade_id": "trd-trader-positioning-cynic-pos-f18c10895ae3",
+      "what_failed": null,
+      "what_worked": "Paid a less-owned AONIA Mar27 expression and exited after a small, timely 2bp move rather than joining CAD receive."
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_POSTMORTEMS"
 }

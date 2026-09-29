@@ -47,6 +47,78 @@
       "subject": {
         "rank_change": -4
       }
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-09-29T04:44:08.485973-04:00",
+      "event_id": "pse-000003",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "perma-bull",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20260929",
+      "seq": 3,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-09-29T04:44:08.485973-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "chase_pressure": 0.0944,
+        "complacency": -0.0079,
+        "external_pressure": 0.1814,
+        "frustration": 0.0722,
+        "self_trust": -0.0153
+      },
+      "event_id": "pse-000004",
+      "kind": "rank_shock",
+      "magnitude": 1.0,
+      "mismatch": false,
+      "owner_id": "perma-bull",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20260929",
+      "scale": 1.0,
+      "seq": 4,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "rank_change": 4
+      }
+    },
+    {
+      "at": "2026-09-29T04:44:08.485973-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "complacency": 0.0471
+      },
+      "event_id": "pse-000005",
+      "kind": "self_report_admission_overconfidence",
+      "magnitude": 1.0,
+      "mismatch": false,
+      "owner_id": "perma-bull",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20260929",
+      "scale": 1.0,
+      "seq": 5,
+      "soften": false,
+      "source": {
+        "layer": "self_report"
+      },
+      "subject": {
+        "reflection_id": "prf-20093ee1f067"
+      }
     }
   ],
   "owner_id": "perma-bull",

@@ -1,5 +1,39 @@
 {
-  "items": [],
+  "items": [
+    {
+      "at": "2026-09-29T04:44:08.485973-04:00",
+      "attribution": [
+        "variance_luck",
+        "variance",
+        "sizing"
+      ],
+      "causal": {
+        "assumptions_right": "The hike path (CORRA 2.30 vs Mar27 3.125) and the oil inflation impulse remain on the tape.",
+        "assumptions_wrong_or_underweighted": "Competition rank and book marks can gap without the live implied retracing the policy path; Iran-deal oil is an inflation impulse, not a clean risk-on FX impulse.",
+        "causal_divergence": "Rank 4 to 8 was competition and mark variance, not an 82bp collapse of the priced CAD hike path.",
+        "decision_quality_attribution": "variance_luck",
+        "future_implication": "Keep the live pay while 2.30 versus 3.125 and the oil bid hold; do not add into a recovered rank, and do not close solely because rank previously shocked.",
+        "observed_reality": "Mar27 implieds only slipped 3.13 to 3.125; oil is still bid at 105.28/92.60; the rank and book shock was far larger than the live instrument move and has already mean-reverted.",
+        "original_belief": "Paying CAD March 2027 implieds expresses resilient growth and an oil-supported BoC tightening path.",
+        "same_information_counterfactual": "Closing or cutting on the rank-8 print with Mar27 still at 3.125 and crude still bid would have treated leaderboard noise as policy-path information and would have missed the subsequent recovery."
+      },
+      "chase_or_revenge": "no",
+      "lesson_id": "les-4e8a63b10376",
+      "no_new_lesson": null,
+      "overconfidence_risk": "yes",
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "pressure_effect": "sharpening",
+      "reflection_due_id": "rfd-f28dcd29b302",
+      "reflection_id": "prf-20093ee1f067",
+      "run_id": "overnight-20260929",
+      "skill_vs_luck": "mixed",
+      "trigger_ids": [
+        "rank_shock"
+      ],
+      "what_happened_vs_expected": "The CAD implieds pay was expected to track a still-priced BoC hike path, not a leaderboard crash. At trigger, rank fell 4 to 8 with a drawdown of 15107.64 and net result of -5321.52, but frozen Mar27 CORRA only moved 3.13 to 3.125 while spot CORRA 2.30 versus 3.125 still priced tightening. Rank has since recovered to 4 and the shock was mark-to-market and competition variance around an intact rates thesis, not a broken growth/oil-into-BoC story."
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_PERFORMANCE_REFLECTIONS"
 }

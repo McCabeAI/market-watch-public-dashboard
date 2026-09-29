@@ -376,6 +376,60 @@
       "run_id": "overnight-20260928",
       "schema_version": 1,
       "thesis": "Stay flat. The Canada-US two-year gap is still about 142 basis points, but the prior convergence trade failed and that write-up is unfinished, so the same idea cannot be reopened. Canada-Australia two-year cheapness is conceptually eligible and is not a reason to expand while the last failure is still unwritten."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Book is flat. Outstanding write-up on the closed SOFR-CORRA pack blocks new risk.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-29T04:44:08.485973-04:00",
+      "conviction": 58,
+      "decision_fingerprint": "8f9f4677bb7c19badc6ab991b89022c015457b69b15bc8bcaae3250537038842",
+      "event_id": "jde-3f9f9e23ff404bb0",
+      "funding_view": null,
+      "invalidation": "The flat stance is wrong if a new cash-versus-forward US-Canada gap re-opens, or if USDCAD mean-reverts toward z-neutrality while Brent remains bid, which would erase the remaining valuation case.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "d1a9f7ffc9d325563c928033d9443ac3c4724acacc1e4103defc8ad9f6fbbfb7",
+      "outcome_links": [],
+      "owner_id": "value-guy",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "8f1475331915b70042af69f4382c7c4cc2721e0c1b186c4d3268d4251a06eca5"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-29T04:44:08.485973-04:00",
+        "evidence_hash": "8b9288c07dfc32f6e98a27b1e08272473051ef7f9fc9117815f3ad9172b0d492",
+        "overnight_run_id": "overnight-20260929",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "CAD is still the cheap currency: USDCAD 1.4166 sits +1.65 1y z while Brent 105.28 is a terms-of-trade tailwind, and AUDCAD 0.9950 at +1.15 1y z is the same CAD-cheap cross. That cheapness is no longer a rates dislocation. Cash SOFR 3.90 versus CORRA 2.30 is 160bp, and H7 4.705 versus Mar27 3.125 is 158bp, so the 2Y US-Canada gap has already aligned with the cash policy gap. Overnight the book stays flat: residual value lives in spot CAD, and new risk is blocked until the closed SOFR-CORRA pack is fully digested.",
+      "run_id": "overnight-20260929",
+      "schema_version": 1,
+      "thesis": "CAD is still the cheap currency: USDCAD 1.4166 sits +1.65 1y z while Brent 105.28 is a terms-of-trade tailwind, and AUDCAD 0.9950 at +1.15 1y z is the same CAD-cheap cross. That cheapness is no longer a rates dislocation. Cash SOFR 3.90 versus CORRA 2.30 is 160bp, and H7 4.705 versus Mar27 3.125 is 158bp, so the 2Y US-Canada gap has already aligned with the cash policy gap. Overnight the book stays flat: residual value lives in spot CAD, and new risk is blocked until the closed SOFR-CORRA pack is fully digested."
     }
   ],
   "schema_version": 1,

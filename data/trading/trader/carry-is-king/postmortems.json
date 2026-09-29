@@ -1,5 +1,60 @@
 {
-  "items": [],
+  "items": [
+    {
+      "at": "2026-09-29T04:44:08.485973-04:00",
+      "causal": {
+        "assumptions_right": "The cash-versus-implied gap was real. Oil and stalled Iran talks can overwhelm a CAD receive. Not adding into the backup was correct risk hygiene. Cash policy did not need to have eased further for the structural gap to exist.",
+        "assumptions_wrong_or_underweighted": "Underweighted that an already-known energy and Iran headline is first-order to outright Mar27 implieds over a nine-day hold. Treated a 4bp implied backup as invalidation while cash CORRA was unchanged. Chose an expression whose beta to Brent/Iran was the trade, not a residual.",
+        "causal_divergence": "The path was driven by energy and geopolitics repricing CAD implied hikes, not by a change in the thesis variable of easy cash policy versus a rich hike path. Cash stayed at 2.30. Divergence is catalyst dominating carry over the hold.",
+        "decision_quality_attribution": "reaction_function",
+        "future_implication": "Do not re-receive CAD or US STIR overnight while Brent is triple-digit and Iran pessimism is current. When the catalyst fades, express cash-versus-implied richness with lower oil beta and invalidate on a cash-rate or reaction-function shift, not on the first few basis points of a headline that was already in the thesis.",
+        "observed_reality": "The long was opened 19 Sep at 3.40 and closed 28 Sep at 3.44 because oil and stalled Iran talks were backing implieds up. Cash CORRA is still 2.30. Energy remains elevated (Brent 105.28, WTI 92.60) and Iran-deal pessimism is still current.",
+        "original_belief": "Mar27 CORRA implieds at 3.40 were rich versus cash CORRA at 2.30. A patient long receive would be paid as the hike path failed to land, with oil and Iran as background risk rather than the holding-period driver.",
+        "same_information_counterfactual": "On 19 Sep oil was already the live risk and Iran was already fragile. Same information implied either do not open an outright CAD receive, express the gap as curve or cross-market RV with less parallel oil beta, or pre-commit that unchanged cash CORRA means holding through sub-5bp geopolitics."
+      },
+      "expression_assessment": "Outright long Mar27 CORRA was too first-order to a parallel oil-driven backup.",
+      "facts": {
+        "asset_class": "rates",
+        "closed_at": "2026-09-28T06:26:47.664507-04:00",
+        "conviction": 62,
+        "entry_mark": 3.4,
+        "exit_mark": 3.44,
+        "exit_reason_category": null,
+        "expression": {
+          "curve_id": "CORRA",
+          "expiries": [
+            "2027-03",
+            "2027-06",
+            "2027-09",
+            "2027-12"
+          ],
+          "type": "futures_strip_average"
+        },
+        "holding_duration_seconds": 719397,
+        "instrument": "CORRA_2027-03",
+        "invalidation": "Trim/median leave 1.9\u20132.0% higher and CORRA 2027 implieds hold at or above the 3.40% strip / 3.13% Mar-27 entry because BoC delivers the priced catch-up.",
+        "opened_at": "2026-09-19T22:36:50.082404-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": -30937.5,
+        "side": "long",
+        "thesis": null
+      },
+      "future_rule": "Do not flatten a CAD or STIR receive on a sub-5bp implied backup from oil/Iran while cash policy is unchanged and the cash-implied hike gap remains wide; require a cash-rate shift, an explicit reaction-function change, or express the view in a lower oil-beta curve/RV.",
+      "lesson": "A carry receive is invalidated by a change in cash policy or by a large, persistent re-pricing of the path, not by a small backup in implieds that is the mechanical beta of a headline already known at entry.",
+      "no_new_lesson": null,
+      "owner_id": "carry-is-king",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-7f29b83dabfc",
+      "run_id": "overnight-20260929",
+      "sizing_assessment": "A four-basis-point adverse implied move producing a mid-five-figure loss implies the outright was large versus a catalyst that was already visible at entry.",
+      "tags": [],
+      "thesis_assessment": "The structural claim that CAD implieds were rich to easy cash was not falsified: cash is still 2.30. The failed claim was that the receive could be held patiently through oil/Iran.",
+      "timing_assessment": "Entry on 19 Sep was already inside the oil/Iran regime, so the hold never had a clean carry window.",
+      "trade_id": "trd-trader-carry-is-king-pos-b97bddbdbd2d",
+      "what_failed": "Used a 4bp implied backup from a known energy/Iran headline as the reaction trigger to kill a receive whose thesis was cash 2.30 versus a rich hike path.",
+      "what_worked": "Identified oil and stalled Iran talks as the risk that can overwhelm CAD carry, and flattened rather than adding."
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_POSTMORTEMS"
 }
