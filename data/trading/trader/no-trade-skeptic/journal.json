@@ -532,6 +532,77 @@
       "run_id": "overnight-20260928",
       "schema_version": 1,
       "thesis": "Hold a flat book. The live ideas are already in the price or already owned. Receive-CORRA is crowded, March implieds at 3.145 still price about 85 basis points of Canadian tightening, and Australian June implieds are already 4.98 against cash 4.35. Official SOFR is 3.88 while the SOFR strip prices 4.38, 4.67 and 4.895; that is a priced funding path, not an unused edge."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-29T04:44:08.485973-04:00",
+      "conviction": 0,
+      "decision_fingerprint": "058ed4c251442233ed497bc96515b29b23764ef8396a6f2a4608cc83eca63668",
+      "event_id": "jde-779c0d298f3742fe",
+      "funding_view": {
+        "current_sofr": {
+          "observation_date": "2026-09-25",
+          "rate": 3.9
+        },
+        "forward_funding_assessment": "about_the_same",
+        "implication": "Stay at the zero official-SOFR cash benchmark. Paying 3.90 SOFR, and the higher Z6/H7/U7 path, on shocked-risk capital does not clear for a book that is flat and for views already inside the strip.",
+        "sr3_forward_view": "Z6 at 4.40, H7 at 4.705 and U7 at 4.94 sit 50bp, 80.5bp and 104bp above the 3.90 official SOFR fixing; the strip is a fully priced hiking path, not unused carry."
+      },
+      "invalidation": "A frozen, dated catalyst that moves Z6/H7/U7 independently of the existing strip; evidence the CORRA receive has been flushed rather than still crowded; or a documented cross-market basis that still pays after 3.90 SOFR on shocked-risk capital. Absent that, stand down.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "e09ef1fc6633739b1ea00b0dc7d47cdb021eb8b9cc0322827f59f47ec058bdf4",
+      "outcome_links": [],
+      "owner_id": "no-trade-skeptic",
+      "owner_type": "trader",
+      "payload": {
+        "funding_view": {
+          "current_sofr": {
+            "observation_date": "2026-09-25",
+            "rate": 3.9
+          },
+          "forward_funding_assessment": "about_the_same",
+          "implication": "Stay at the zero official-SOFR cash benchmark. Paying 3.90 SOFR, and the higher Z6/H7/U7 path, on shocked-risk capital does not clear for a book that is flat and for views already inside the strip.",
+          "sr3_forward_view": "Z6 at 4.40, H7 at 4.705 and U7 at 4.94 sit 50bp, 80.5bp and 104bp above the 3.90 official SOFR fixing; the strip is a fully priced hiking path, not unused carry."
+        },
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "ff91cbac6664196e32e9c429ad45a6489bd36497addabf12cb6e9e720f5e1d66"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-29T04:44:08.485973-04:00",
+        "evidence_hash": "8b9288c07dfc32f6e98a27b1e08272473051ef7f9fc9117815f3ad9172b0d492",
+        "overnight_run_id": "overnight-20260929",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The SR3 strip already prices 4.40 in Z6, 4.705 in H7 and 4.94 in U7 against the 3.90 official SOFR fixing, so a US hiking continuation is inside the forwards, not an overnight edge. CORRA Mar27 at 3.125 versus 2.30 cash is a crowded receive on other desks, and AONIA Jun27 at 5.005 versus 4.35 already embeds a large hike stack. Brent at 105.28 adds inflation noise rather than a dated catalyst, and with the book flat none of those expressions clear official SOFR charged on shocked-risk capital.",
+      "run_id": "overnight-20260929",
+      "schema_version": 1,
+      "thesis": "The SR3 strip already prices 4.40 in Z6, 4.705 in H7 and 4.94 in U7 against the 3.90 official SOFR fixing, so a US hiking continuation is inside the forwards, not an overnight edge. CORRA Mar27 at 3.125 versus 2.30 cash is a crowded receive on other desks, and AONIA Jun27 at 5.005 versus 4.35 already embeds a large hike stack. Brent at 105.28 adds inflation noise rather than a dated catalyst, and with the book flat none of those expressions clear official SOFR charged on shocked-risk capital."
     }
   ],
   "schema_version": 1,

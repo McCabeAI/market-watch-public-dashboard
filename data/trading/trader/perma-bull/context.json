@@ -1,5 +1,33 @@
 {
-  "active_lessons": [],
+  "active_lessons": [
+    {
+      "contradiction_count": 0,
+      "future_rule": "If the live implied has not retraced the priced policy path (spot CORRA 2.30 vs Mar27 3.125), treat rank and mark shocks as non-signals: hold or reduce only, never add to a recovering leaderboard.",
+      "lesson_id": "les-4e8a63b10376",
+      "maturity": "candidate",
+      "postmortem_ids": [],
+      "reflection_ids": [
+        "prf-20093ee1f067"
+      ],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null
+      },
+      "source_run_id": "overnight-20260929",
+      "status": "active",
+      "text": "A rank drop that dwarfs a 0.5bp adverse tick in the live implied is competition variance, not a thesis break, and a recovered rank is not permission to add.",
+      "trade_ids": []
+    }
+  ],
   "as_of": "2026-09-29T04:44:08.485973-04:00",
   "calibration": {
     "average_holding_seconds": null,
@@ -42,14 +70,14 @@
     "nav_usd": 100007016.81,
     "net_pnl_usd": 7016.81,
     "pressure_flags": [],
-    "prior_competition_rank": 4,
-    "rank_change": 0,
+    "prior_competition_rank": 8,
+    "rank_change": -4,
     "raw_pnl_rank": 4,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 500000.0,
     "risk_capital_utilization": 0.05,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 10054.17,
     "status": "ok"
   },
   "learning": {
@@ -59,17 +87,8 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [
-    {
-      "kind": "performance_reflection",
-      "obligation_id": "rfd-f28dcd29b302",
-      "owner_id": "perma-bull",
-      "owner_type": "trader",
-      "reference": "rfd-f28dcd29b302",
-      "source_run_id": null
-    }
-  ],
-  "memory_context_sha256": "4833f6742fab1a59696aba5cd67e9e8eeca365477080bb0b9fc1fdbc20553ba6",
+  "learning_obligations": [],
+  "memory_context_sha256": "1fa14cd431339c1347c4556fce16011a93f83d2eaf2fd5a9d30e8a3157726bf5",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -93,13 +112,13 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "up",
+        "value": 0.19
       },
       "complacency": {
         "band": "calm",
         "trend": "up",
-        "value": 0.15
+        "value": 0.18
       },
       "defensiveness": {
         "band": "calm",
@@ -108,13 +127,13 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.09
+        "trend": "up",
+        "value": 0.27
       },
       "frustration": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "up",
+        "value": 0.17
       },
       "revenge_pressure": {
         "band": "calm",
@@ -123,8 +142,8 @@
       },
       "self_trust": {
         "band": "steady",
-        "trend": "up",
-        "value": 0.51
+        "trend": "down",
+        "value": 0.49
       },
       "thesis_attachment": {
         "band": "calm",
@@ -145,11 +164,21 @@
         "kind": "rank_gain_major",
         "magnitude": 1.0,
         "run_id": "overnight-20260928"
+      },
+      {
+        "kind": "rank_shock",
+        "magnitude": 1.0,
+        "run_id": "overnight-20260929"
+      },
+      {
+        "kind": "self_report_admission_overconfidence",
+        "magnitude": 1.0,
+        "run_id": "overnight-20260929"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "fd422f47413cd005c371f2134d7825f4d9dde32c440159d6b4439aae2c032454",
+    "state_sha256": "37b00b5b6f346743eb693a6898bd698bfe5dae0d7e67cc85aac2cb640dcc48f4",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
@@ -158,25 +187,26 @@
   },
   "recent_closed_trades": [],
   "recent_funding_views": [],
-  "recent_performance_reflections": [],
-  "reflections_due": [
+  "recent_performance_reflections": [
     {
-      "created_at": "2026-09-28T06:26:47.664507-04:00",
-      "created_run_id": null,
-      "facts": {
-        "competition_rank": 8,
-        "drawdown_usd": 15107.64,
-        "lesson_ids": [],
-        "net_pnl_usd": -5321.52,
-        "prior_competition_rank": 4,
-        "trade_ids": []
-      },
-      "reflection_due_id": "rfd-f28dcd29b302",
+      "attribution": [
+        "variance_luck",
+        "variance",
+        "sizing"
+      ],
+      "lesson_id": "les-4e8a63b10376",
+      "no_new_lesson": null,
+      "pressure_effect": "sharpening",
+      "reflection_id": "prf-20093ee1f067",
+      "run_id": "overnight-20260929",
+      "skill_vs_luck": "mixed",
       "trigger_ids": [
         "rank_shock"
-      ]
+      ],
+      "what_happened_vs_expected": "The CAD implieds pay was expected to track a still-priced BoC hike path, not a leaderboard crash. At trigger, rank fell 4 to 8 with a drawdown of 15107.64 and net result of -5321.52, but frozen Mar27 CORRA only moved 3.13 to 3.125 while spot CORRA 2.30 versus 3.125 still priced tightening. Rank has since recovered to 4 and the shock was mark-to-market and competition variance around an intact rates thesis, not a broken growth/oil-into-BoC story."
     }
   ],
+  "reflections_due": [],
   "schema_version": 4,
   "type": "IDENTITY_MEMORY_CONTEXT"
 }

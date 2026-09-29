@@ -1,5 +1,42 @@
 {
-  "lessons": [],
+  "lessons": [
+    {
+      "contradiction_count": 0,
+      "created_at": "2026-09-29T04:44:08.485973-04:00",
+      "future_rule": "If the live implied has not retraced the priced policy path (spot CORRA 2.30 vs Mar27 3.125), treat rank and mark shocks as non-signals: hold or reduce only, never add to a recovering leaderboard.",
+      "history": [
+        {
+          "at": "2026-09-29T04:44:08.485973-04:00",
+          "op": "add",
+          "run_id": "overnight-20260929"
+        }
+      ],
+      "lesson_id": "les-4e8a63b10376",
+      "maturity": "candidate",
+      "postmortem_ids": [],
+      "reflection_ids": [
+        "prf-20093ee1f067"
+      ],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null
+      },
+      "source_run_id": "overnight-20260929",
+      "status": "active",
+      "text": "A rank drop that dwarfs a 0.5bp adverse tick in the live implied is competition variance, not a thesis break, and a recovered rank is not permission to add.",
+      "trade_ids": [],
+      "updated_at": "2026-09-29T04:44:08.485973-04:00"
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_LESSONS"
 }

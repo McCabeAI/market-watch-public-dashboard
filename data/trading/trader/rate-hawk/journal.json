@@ -382,6 +382,80 @@
       "run_id": "overnight-20260928",
       "schema_version": 1,
       "thesis": "Hold the existing short in September 2027 SOFR. The contract at 4.895 is 14.5 basis points through the 4.75 entry, so persistence and a delayed easing path are working, not spent. Official SOFR at 3.88 still leaves more than 100 basis points of hikes inside that contract. A new Australian pay at 4.98 would be stacking an already-priced labor path, not a cleaner hawk expression."
+    },
+    {
+      "actions": [
+        {
+          "action": "REDUCE",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-09",
+          "notional_usd": 25000000,
+          "position_id": "pos-c9184707c12b",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 25000000,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-09-29T04:44:08.485973-04:00",
+      "conviction": 67,
+      "decision_fingerprint": "e7bfbc208ac132440e8bdea01129853ccb6131dcbf9280b46881d1dad8f45137",
+      "event_id": "jde-8bec95ed6589435a",
+      "funding_view": null,
+      "invalidation": "Iran-deal pessimism lifts and Brent/WTI reverse sharply from 105.28/92.60, letting BoC stay near 2.30 and sending U7 back through 4.75; or a yen-warning risk-off duration bid that cheapens pays without a hawkish policy rethink.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-2709875e8c9c",
+        "pos-c9184707c12b"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-rate-hawk-pos-2709875e8c9c",
+        "trd-trader-rate-hawk-pos-c9184707c12b"
+      ],
+      "memory_context_sha256": "f38c47da94e92e755d1a8ecfa127eb0c43a91c7d24f5ff6876e6f4b911316390",
+      "outcome_links": [],
+      "owner_id": "rate-hawk",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "601fe0aa518f70336e9eb8ed69e0188aed24be737aec2190f519c57fbd533766"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-29T04:44:08.485973-04:00",
+        "evidence_hash": "8b9288c07dfc32f6e98a27b1e08272473051ef7f9fc9117815f3ad9172b0d492",
+        "overnight_run_id": "overnight-20260929",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Brent 105.28 and WTI 92.60 with Iran-deal pessimism keep inflation sticky while BoC cash still sits at an easy 2.30 and SOFR cash at 3.90 only reaches 4.40 by Z6. Sep-27 SOFR at 4.94 already prices 104bp of tightening and is 19bp through the 4.75 pay, so late-2027 USD is no longer the cleanest hawkish marginal. Reduce that U7 pay into the extension and shift the residual into paying Mar-27 CORRA at 3.125, where policy is still accommodative into the same energy shock.",
+      "run_id": "overnight-20260929",
+      "schema_version": 1,
+      "thesis": "Brent 105.28 and WTI 92.60 with Iran-deal pessimism keep inflation sticky while BoC cash still sits at an easy 2.30 and SOFR cash at 3.90 only reaches 4.40 by Z6. Sep-27 SOFR at 4.94 already prices 104bp of tightening and is 19bp through the 4.75 pay, so late-2027 USD is no longer the cleanest hawkish marginal. Reduce that U7 pay into the extension and shift the residual into paying Mar-27 CORRA at 3.125, where policy is still accommodative into the same energy shock."
     }
   ],
   "schema_version": 1,

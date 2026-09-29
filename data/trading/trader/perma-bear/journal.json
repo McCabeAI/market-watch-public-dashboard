@@ -382,6 +382,64 @@
       "run_id": "overnight-20260928",
       "schema_version": 1,
       "thesis": "Hold the June 2027 AONIA receive. Australia still prints a firm labor backdrop and cash AONIA at 4.35 against a 4.98 implied keeps a restrictive path in the contract. The mark at 4.98 is 7 basis points through the 4.91 entry, so the line has given a little back, but oil at Brent 104.32 keeps a floor under inflation and under that cash-rate path. Receiving Canada against 3.145 would fight the same oil impulse."
+    },
+    {
+      "actions": [
+        {
+          "action": "REDUCE",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-06",
+          "notional_usd": 27500000,
+          "position_id": "pos-3b40ade3da2c",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-09-29T04:44:08.485973-04:00",
+      "conviction": 66,
+      "decision_fingerprint": "599707e97492d18310b3c3655113b2aa04a318885e1bbc81eb3c41d72bf64c87",
+      "event_id": "jde-df6f137b1add4037",
+      "funding_view": null,
+      "invalidation": "Iran de-escalation and Brent leaving the 105 area in a way that restores a disinflationary slowdown, with AONIA June 2027 implied reversing back through 4.9075 toward cash 4.35.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-3b40ade3da2c"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-perma-bear-pos-3b40ade3da2c"
+      ],
+      "memory_context_sha256": "b1ba8f958db4d56c9c7da843317c7c7ebadfd9b38276aaca2b5581961474543b",
+      "outcome_links": [],
+      "owner_id": "perma-bear",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "011dd53ff263a61e989e00d72955cccd87a425b9dae164923071ba292fbb1d5b"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-29T04:44:08.485973-04:00",
+        "evidence_hash": "8b9288c07dfc32f6e98a27b1e08272473051ef7f9fc9117815f3ad9172b0d492",
+        "overnight_run_id": "overnight-20260929",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Brent at 105.28 with Iran pessimism is a supply-side inflation shock, not the demand-destruction tape a global slowdown receive needs. Long AONIA June 2027 is already through (entry 4.9075, mark 4.9325) while cash 4.35 still prices 65bp of hikes to 5.005; that path gets easier to deliver if energy inflation sticks, so the Australian receive is no longer the cleanest defensive line. Reduce it rather than holding full size into the oil headwind.",
+      "run_id": "overnight-20260929",
+      "schema_version": 1,
+      "thesis": "Brent at 105.28 with Iran pessimism is a supply-side inflation shock, not the demand-destruction tape a global slowdown receive needs. Long AONIA June 2027 is already through (entry 4.9075, mark 4.9325) while cash 4.35 still prices 65bp of hikes to 5.005; that path gets easier to deliver if energy inflation sticks, so the Australian receive is no longer the cleanest defensive line. Reduce it rather than holding full size into the oil headwind."
     }
   ],
   "schema_version": 1,

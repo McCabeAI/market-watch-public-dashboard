@@ -1,5 +1,35 @@
 {
-  "active_lessons": [],
+  "active_lessons": [
+    {
+      "contradiction_count": 0,
+      "future_rule": "No new receive on CORRA 2027-03 while crowding is flagged, regardless of cash-strip cheapness; if the hold cannot extend beyond one session, do not enter.",
+      "lesson_id": "les-a9925954d887",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-86d9c87862a0"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null
+      },
+      "source_run_id": "overnight-20260929",
+      "status": "active",
+      "text": "Cheap versus cash is not an entry when the receive is already the crowded desk position.",
+      "trade_ids": [
+        "trd-trader-positioning-cynic-pos-142ad113f303"
+      ]
+    }
+  ],
   "as_of": "2026-09-29T04:44:08.485973-04:00",
   "calibration": {
     "average_holding_seconds": 117123,
@@ -37,9 +67,9 @@
   "capital_owner": null,
   "consequence": {
     "competition_cohort_size": 14,
-    "competition_eligible": false,
+    "competition_eligible": true,
     "competition_rank": 5,
-    "competitive_rank": null,
+    "competitive_rank": 5,
     "drawdown_usd": 4596.25,
     "giveback_usd": 4596.25,
     "high_water_nav_usd": 100011207.22,
@@ -47,8 +77,8 @@
     "nav_usd": 100006610.97,
     "net_pnl_usd": 6610.97,
     "pressure_flags": [],
-    "prior_competition_rank": 5,
-    "rank_change": 0,
+    "prior_competition_rank": 4,
+    "rank_change": 1,
     "raw_pnl_rank": 5,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
@@ -58,74 +88,18 @@
     "status": "ok"
   },
   "learning": {
-    "competition_eligible": false,
-    "learning_default_age_runs": 1,
+    "competition_eligible": true,
+    "learning_default_age_runs": 0,
     "learning_default_count": 1,
-    "learning_status": "learning_default",
+    "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [
-    {
-      "kind": "postmortem",
-      "obligation_id": "pmd-550c41ce938c",
-      "owner_id": "positioning-cynic",
-      "owner_type": "trader",
-      "reference": "trd-trader-positioning-cynic-pos-f18c10895ae3",
-      "source_run_id": "overnight-20260922"
-    },
-    {
-      "kind": "postmortem",
-      "obligation_id": "pmd-86d9c87862a0",
-      "owner_id": "positioning-cynic",
-      "owner_type": "trader",
-      "reference": "trd-trader-positioning-cynic-pos-142ad113f303",
-      "source_run_id": "tr-20260920T193935Z-ondemand"
-    }
-  ],
-  "memory_context_sha256": "ecf53af750d2107f07f8e768e3f1ed6b0e4a23abc8c22a60b3de26b32e8b85a6",
+  "learning_obligations": [],
+  "memory_context_sha256": "7a426c6f76b2ab3740903c13debfea2eb76fd24b61da7fb0d8dc2628afcf83b6",
   "open_positions": [],
   "owner_id": "positioning-cynic",
   "owner_type": "trader",
-  "postmortems_due": [
-    {
-      "created_at": "2026-09-20T16:06:28.069463-04:00",
-      "created_run_id": "tr-20260920T193935Z-ondemand",
-      "facts": {
-        "asset_class": "rates",
-        "closed_at": "2026-09-20T16:06:28.069463-04:00",
-        "conviction": 56,
-        "entry_mark": 3.4,
-        "exit_mark": 3.4,
-        "holding_duration_seconds": 62977,
-        "instrument": "CORRA_2027-03",
-        "opened_at": "2026-09-19T22:36:50.082404-04:00",
-        "rationale_status": "present",
-        "realized_pnl_usd": 0.0,
-        "side": "long"
-      },
-      "postmortem_id": "pmd-86d9c87862a0",
-      "trade_id": "trd-trader-positioning-cynic-pos-142ad113f303"
-    },
-    {
-      "created_at": "2026-09-22T15:40:57.474758-04:00",
-      "created_run_id": "overnight-20260922",
-      "facts": {
-        "asset_class": "rates",
-        "closed_at": "2026-09-22T15:40:57.474758-04:00",
-        "conviction": 57,
-        "entry_mark": 4.86,
-        "exit_mark": 4.88,
-        "holding_duration_seconds": 171269,
-        "instrument": "AONIA_2027-03",
-        "opened_at": "2026-09-20T16:06:28.069463-04:00",
-        "rationale_status": "present",
-        "realized_pnl_usd": 6750.0,
-        "side": "short"
-      },
-      "postmortem_id": "pmd-550c41ce938c",
-      "trade_id": "trd-trader-positioning-cynic-pos-f18c10895ae3"
-    }
-  ],
+  "postmortems_due": [],
   "psychology": {
     "active_flags": [],
     "applicable": true,
@@ -147,13 +121,13 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.28
+        "trend": "down",
+        "value": 0.22
       },
       "frustration": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.19
+        "trend": "down",
+        "value": 0.15
       },
       "revenge_pressure": {
         "band": "calm",
@@ -162,8 +136,8 @@
       },
       "self_trust": {
         "band": "steady",
-        "trend": "down",
-        "value": 0.47
+        "trend": "up",
+        "value": 0.49
       },
       "thesis_attachment": {
         "band": "calm",
@@ -184,13 +158,18 @@
         "kind": "learning_default_entered",
         "magnitude": 1.0,
         "run_id": "overnight-20260928"
+      },
+      {
+        "kind": "learning_default_cleared",
+        "magnitude": 1.0,
+        "run_id": "overnight-20260929"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "577158aff87b196d96828e7bf83c2d21cd34b4494611beb551bbd748f79d5ece",
+    "state_sha256": "10b495752a7f60c572395442508b8a5c32f15a964f3ff4ff36738f122a8ee251",
     "streaks": {
-      "flat_cycles": 1,
+      "flat_cycles": 2,
       "session_loss": 0,
       "session_win": 0
     }

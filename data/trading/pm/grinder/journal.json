@@ -366,6 +366,60 @@
       "run_id": "overnight-20260928",
       "schema_version": 1,
       "thesis": "The book stays flat. The accepted fourteen-seat handoff offers no expanding tickets that would create new risk, so there is no independent markable opportunity against which official SOFR can be charged on shocked-risk capital. Sitting out is the correct action when other desks are managing existing Canada, Australia and US lines rather than offering new ones."
+    },
+    {
+      "actions": [
+        {
+          "action": "NO_TRADE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-29T07:07:51.731214-04:00",
+      "conviction": 78,
+      "decision_fingerprint": "d4b0dc0567691ea413ebcbc3563f2b93e64012cb338735dd894ef8cb9b80bb40",
+      "event_id": "jde-3f0517a55a1e485c",
+      "funding_view": null,
+      "invalidation": "Stay-flat is wrong if Mar-27 implied rates cheapen enough versus cash that a modest further hawk still covers 3.90 percent SOFR on 100-basis-point shocked capital, or if official cash SOFR falls while those forwards stay elevated enough to create positive carry after the same shock.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "452a67f28bd5265fba17a3d40508c03ad58a30005c8561e743ef0e0b9b2b379a",
+      "outcome_links": [],
+      "owner_id": "grinder",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "17876b386bbe1dce3117ed6159e4c0cdccc251b250c025c0d1e90b30694c406f"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-29T04:44:08.485973-04:00",
+        "evidence_hash": "994c14f0fe7cb6738a71cc0fba6e006b5b8dee0033b212331d49499eda297195",
+        "overnight_run_id": "overnight-20260929",
+        "review_id": "review-001",
+        "review_packet_id": "prp-grinder-overnight-20260929-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Official cash SOFR at 3.90 percent is the hurdle on any new shocked-risk pay, and neither Mar-27 implied rate leaves enough residual edge after the hike path already on the screen. Canadian Mar-27 at 3.125 versus 2.30 cash already prices 82.5 basis points of tightening; oil near 105 supports a hawk story but does not cover a fresh 25 million pay once a 100-basis-point adverse move is the shock. US Mar-27 at 4.705 versus 3.90 cash already prices 80.5 basis points, so another pay is SOFR-funded risk into an extended path. The book stays flat.",
+      "run_id": "overnight-20260929",
+      "schema_version": 1,
+      "thesis": "Official cash SOFR at 3.90 percent is the hurdle on any new shocked-risk pay, and neither Mar-27 implied rate leaves enough residual edge after the hike path already on the screen. Canadian Mar-27 at 3.125 versus 2.30 cash already prices 82.5 basis points of tightening; oil near 105 supports a hawk story but does not cover a fresh 25 million pay once a 100-basis-point adverse move is the shock. US Mar-27 at 4.705 versus 3.90 cash already prices 80.5 basis points, so another pay is SOFR-funded risk into an extended path. The book stays flat."
     }
   ],
   "schema_version": 1,

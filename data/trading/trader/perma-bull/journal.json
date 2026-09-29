@@ -382,6 +382,62 @@
       "run_id": "overnight-20260928",
       "schema_version": 1,
       "thesis": "Keep paying March 2027 CORRA. Brent at 104.32 after stalled Iran talks does not sit with overnight CORRA at 2.30 or with the March implied only at 3.145. The short from 3.13 is a basis point and a half through entry, so the cyclical catch-up case is working rather than spent. The existing pay remains the cleanest pro-growth expression of a Canadian path that still has to reprice."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-dd6fdaf39119",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-09-29T04:44:08.485973-04:00",
+      "conviction": 63,
+      "decision_fingerprint": "b6753939e5f96840a05172e750d5a891d12f6884c6eb9e6b8ca8fb257eafa34b",
+      "event_id": "jde-31105b07c0654407",
+      "funding_view": null,
+      "invalidation": "The pay is wrong if March 2027 CORRA implieds fade from 3.125 toward spot CORRA 2.30 and collapse the priced hike path, or if Brent/WTI reverse hard enough that the inflation impulse into Canadian policy is withdrawn.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-dd6fdaf39119"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "4833f6742fab1a59696aba5cd67e9e8eeca365477080bb0b9fc1fdbc20553ba6",
+      "outcome_links": [],
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "fd422f47413cd005c371f2134d7825f4d9dde32c440159d6b4439aae2c032454"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-29T04:44:08.485973-04:00",
+        "evidence_hash": "8b9288c07dfc32f6e98a27b1e08272473051ef7f9fc9117815f3ad9172b0d492",
+        "overnight_run_id": "overnight-20260929",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Growth is still firm enough, and crude remains bid at Brent 105.28 and WTI 92.60, that the Bank of Canada should stay in a tightening bias rather than fade into cuts. Spot CORRA at 2.30 versus March 2027 implieds at 3.125 already prices a hike path; paying those implieds is the cleanest pro-cyclical expression of that inflation-tolerant policy stance. Iran-deal pessimism makes the oil bid an inflation impulse, not a clean risk-on CAD FX impulse, so hold the existing pay and do not add.",
+      "run_id": "overnight-20260929",
+      "schema_version": 1,
+      "thesis": "Growth is still firm enough, and crude remains bid at Brent 105.28 and WTI 92.60, that the Bank of Canada should stay in a tightening bias rather than fade into cuts. Spot CORRA at 2.30 versus March 2027 implieds at 3.125 already prices a hike path; paying those implieds is the cleanest pro-cyclical expression of that inflation-tolerant policy stance. Iran-deal pessimism makes the oil bid an inflation impulse, not a clean risk-on CAD FX impulse, so hold the existing pay and do not add."
     }
   ],
   "schema_version": 1,

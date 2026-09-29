@@ -1,5 +1,35 @@
 {
-  "active_lessons": [],
+  "active_lessons": [
+    {
+      "contradiction_count": 0,
+      "future_rule": "If the 2Y SOFR-CORRA minus cash SOFR-CORRA gap is negligible, do not express CAD valuation in SOFR-CORRA packs; the residual, if any, is spot.",
+      "lesson_id": "les-b02e04336ac7",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-d9e2764dea0f"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null
+      },
+      "source_run_id": "overnight-20260929",
+      "status": "active",
+      "text": "A 2Y cross-market spread is not cheap because the currency is cheap. Screen the spread against cash before invoking REER.",
+      "trade_ids": [
+        "trd-trader-value-guy-pos-cdde326460b4"
+      ]
+    }
+  ],
   "as_of": "2026-09-29T04:44:08.485973-04:00",
   "calibration": {
     "average_holding_seconds": 234247,
@@ -37,9 +67,9 @@
   "capital_owner": null,
   "consequence": {
     "competition_cohort_size": 14,
-    "competition_eligible": false,
+    "competition_eligible": true,
     "competition_rank": 13,
-    "competitive_rank": null,
+    "competitive_rank": 12,
     "drawdown_usd": 56224.58,
     "giveback_usd": 0.0,
     "high_water_nav_usd": 100000000.0,
@@ -58,47 +88,18 @@
     "status": "ok"
   },
   "learning": {
-    "competition_eligible": false,
-    "learning_default_age_runs": 1,
+    "competition_eligible": true,
+    "learning_default_age_runs": 0,
     "learning_default_count": 1,
-    "learning_status": "learning_default",
+    "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [
-    {
-      "kind": "postmortem",
-      "obligation_id": "pmd-d9e2764dea0f",
-      "owner_id": "value-guy",
-      "owner_type": "trader",
-      "reference": "trd-trader-value-guy-pos-cdde326460b4",
-      "source_run_id": "overnight-20260922"
-    }
-  ],
-  "memory_context_sha256": "d1a9f7ffc9d325563c928033d9443ac3c4724acacc1e4103defc8ad9f6fbbfb7",
+  "learning_obligations": [],
+  "memory_context_sha256": "8422a649543e6cb2757adcb40903ba2ab93c19d250f379c17fff58489e9e7095",
   "open_positions": [],
   "owner_id": "value-guy",
   "owner_type": "trader",
-  "postmortems_due": [
-    {
-      "created_at": "2026-09-22T15:40:57.474758-04:00",
-      "created_run_id": "overnight-20260922",
-      "facts": {
-        "asset_class": "rates_rv",
-        "closed_at": "2026-09-22T15:40:57.474758-04:00",
-        "conviction": 58,
-        "entry_mark": 140.25,
-        "exit_mark": 148.25,
-        "holding_duration_seconds": 234247,
-        "instrument": "SOFR-CORRA_2Y_2027H1",
-        "opened_at": "2026-09-19T22:36:50.082404-04:00",
-        "rationale_status": "present",
-        "realized_pnl_usd": -56000.0,
-        "side": "long"
-      },
-      "postmortem_id": "pmd-d9e2764dea0f",
-      "trade_id": "trd-trader-value-guy-pos-cdde326460b4"
-    }
-  ],
+  "postmortems_due": [],
   "psychology": {
     "active_flags": [],
     "applicable": true,
@@ -120,13 +121,13 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.28
+        "trend": "down",
+        "value": 0.22
       },
       "frustration": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.18
+        "trend": "down",
+        "value": 0.15
       },
       "revenge_pressure": {
         "band": "calm",
@@ -135,8 +136,8 @@
       },
       "self_trust": {
         "band": "steady",
-        "trend": "down",
-        "value": 0.47
+        "trend": "up",
+        "value": 0.49
       },
       "thesis_attachment": {
         "band": "calm",
@@ -157,13 +158,18 @@
         "kind": "learning_default_entered",
         "magnitude": 1.0,
         "run_id": "overnight-20260928"
+      },
+      {
+        "kind": "learning_default_cleared",
+        "magnitude": 1.0,
+        "run_id": "overnight-20260929"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "8f1475331915b70042af69f4382c7c4cc2721e0c1b186c4d3268d4251a06eca5",
+    "state_sha256": "1d1b5619eed097b676ca0733e35401b510b0f70ca1d86e871cba31d61107c07d",
     "streaks": {
-      "flat_cycles": 1,
+      "flat_cycles": 2,
       "session_loss": 0,
       "session_win": 0
     }

@@ -1,5 +1,35 @@
 {
-  "active_lessons": [],
+  "active_lessons": [
+    {
+      "contradiction_count": 0,
+      "future_rule": "Do not flatten a CAD or STIR receive on a sub-5bp implied backup from oil/Iran while cash policy is unchanged and the cash-implied hike gap remains wide; require a cash-rate shift, an explicit reaction-function change, or express the view in a lower oil-beta curve/RV.",
+      "lesson_id": "les-8ebd7519a541",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-7f29b83dabfc"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null
+      },
+      "source_run_id": "overnight-20260929",
+      "status": "active",
+      "text": "A carry receive is invalidated by a change in cash policy or by a large, persistent re-pricing of the path, not by a small backup in implieds that is the mechanical beta of a headline already known at entry.",
+      "trade_ids": [
+        "trd-trader-carry-is-king-pos-b97bddbdbd2d"
+      ]
+    }
+  ],
   "as_of": "2026-09-29T04:44:08.485973-04:00",
   "calibration": {
     "average_holding_seconds": 719397,
@@ -39,7 +69,7 @@
     "competition_cohort_size": 14,
     "competition_eligible": true,
     "competition_rank": 10,
-    "competitive_rank": 8,
+    "competitive_rank": 9,
     "drawdown_usd": 105644.58,
     "giveback_usd": 105644.58,
     "high_water_nav_usd": 100073982.29,
@@ -47,8 +77,8 @@
     "nav_usd": 99968337.71,
     "net_pnl_usd": -31662.29,
     "pressure_flags": [],
-    "prior_competition_rank": 10,
-    "rank_change": 0,
+    "prior_competition_rank": 11,
+    "rank_change": -1,
     "raw_pnl_rank": 10,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
@@ -64,54 +94,12 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [
-    {
-      "kind": "postmortem",
-      "obligation_id": "pmd-7f29b83dabfc",
-      "owner_id": "carry-is-king",
-      "owner_type": "trader",
-      "reference": "trd-trader-carry-is-king-pos-b97bddbdbd2d",
-      "source_run_id": "overnight-20260928"
-    }
-  ],
-  "memory_context_sha256": "f8e33db151aa37613576dd3a1078b3cd843b733ccf7e5f12974053687c46a2ed",
+  "learning_obligations": [],
+  "memory_context_sha256": "266bfe27c873160855dac8c0ab789438b7a49599192c443a47f8e95ced2fc806",
   "open_positions": [],
   "owner_id": "carry-is-king",
   "owner_type": "trader",
-  "postmortems_due": [
-    {
-      "created_at": "2026-09-28T06:26:47.664507-04:00",
-      "created_run_id": "overnight-20260928",
-      "facts": {
-        "asset_class": "rates",
-        "closed_at": "2026-09-28T06:26:47.664507-04:00",
-        "conviction": 62,
-        "entry_mark": 3.4,
-        "exit_mark": 3.44,
-        "exit_reason_category": null,
-        "expression": {
-          "curve_id": "CORRA",
-          "expiries": [
-            "2027-03",
-            "2027-06",
-            "2027-09",
-            "2027-12"
-          ],
-          "type": "futures_strip_average"
-        },
-        "holding_duration_seconds": 719397,
-        "instrument": "CORRA_2027-03",
-        "invalidation": "Trim/median leave 1.9\u20132.0% higher and CORRA 2027 implieds hold at or above the 3.40% strip / 3.13% Mar-27 entry because BoC delivers the priced catch-up.",
-        "opened_at": "2026-09-19T22:36:50.082404-04:00",
-        "rationale_status": "present",
-        "realized_pnl_usd": -30937.5,
-        "side": "long",
-        "thesis": null
-      },
-      "postmortem_id": "pmd-7f29b83dabfc",
-      "trade_id": "trd-trader-carry-is-king-pos-b97bddbdbd2d"
-    }
-  ],
+  "postmortems_due": [],
   "psychology": {
     "active_flags": [],
     "applicable": true,
@@ -168,9 +156,9 @@
     "recent_events": [],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "3108a5fc06c587ea849296068140108a02e0ffacb35283b4966ef52e9cb6a781",
+    "state_sha256": "deaca59ffe91feb5f96212fcac296e7c6dfad0cd7397902d960e4bff81350c9c",
     "streaks": {
-      "flat_cycles": 0,
+      "flat_cycles": 1,
       "session_loss": 0,
       "session_win": 0
     }

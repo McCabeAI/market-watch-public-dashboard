@@ -1,5 +1,47 @@
 {
-  "items": [],
+  "items": [
+    {
+      "at": "2026-09-29T04:44:08.485973-04:00",
+      "causal": {
+        "assumptions_right": "CAD was and remains cheap on the 1y z. Brent 105.28 is a genuine terms-of-trade support. Cash BoC at 2.30 versus SOFR 3.90 is a large policy gap.",
+        "assumptions_wrong_or_underweighted": "Mapped REER cheapness onto the claim that the 2Y spread was too wide and must compress. At 140.25 the 2Y was too tight versus the 160bp cash gap, so the value sign in rates was the opposite of the pack.",
+        "causal_divergence": "FX cheapness and STIR-spread richness are not the same object. Oil and the USDCAD z argued for CAD, not for compression from an already-tight 140bp 2Y. The pack lost because 140bp mean-reverted toward 160bp cash.",
+        "decision_quality_attribution": "expression",
+        "future_implication": "Cross-market STIR is rich or cheap versus the cash policy gap first. If 2Y is already aligned with cash, residual CAD value lives in spot. Do not recycle the closed pack while 158bp tracks 160bp.",
+        "observed_reality": "The quoted spread moved 140.25 to 148.25 in three days, toward cash SOFR 3.90 minus CORRA 2.30 at 160bp, and the long pack was closed at a loss. Frozen forwards now print H7 4.705 versus Mar27 3.125, 158bp, i.e. the tightness has normalized to cash.",
+        "original_belief": "CAD cheapness plus high oil would force the 2Y US-Canada differential to compress, so a long in SOFR-CORRA_2Y_2027H1 at 140.25 was a valuation convergence trade.",
+        "same_information_counterfactual": "With the same cash 160bp versus a 140bp 2Y print, the rates-value trade was to be long the rate spread, or to skip rates and hold the CAD cheapness in spot USDCAD. The long pack was the wrong sign on the only rates dislocation that then existed."
+      },
+      "expression_assessment": "Long SOFR-CORRA_2Y_2027H1 translated a spot valuation view into a rate-spread short at a print that was already tight to cash.",
+      "facts": {
+        "asset_class": "rates_rv",
+        "closed_at": "2026-09-22T15:40:57.474758-04:00",
+        "conviction": 58,
+        "entry_mark": 140.25,
+        "exit_mark": 148.25,
+        "holding_duration_seconds": 234247,
+        "instrument": "SOFR-CORRA_2Y_2027H1",
+        "opened_at": "2026-09-19T22:36:50.082404-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": -56000.0,
+        "side": "long"
+      },
+      "future_rule": "If the 2Y SOFR-CORRA minus cash SOFR-CORRA gap is negligible, do not express CAD valuation in SOFR-CORRA packs; the residual, if any, is spot.",
+      "lesson": "A 2Y cross-market spread is not cheap because the currency is cheap. Screen the spread against cash before invoking REER.",
+      "no_new_lesson": null,
+      "owner_id": "value-guy",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-d9e2764dea0f",
+      "run_id": "overnight-20260929",
+      "sizing_assessment": null,
+      "tags": [],
+      "thesis_assessment": "CAD-cheap versus oil remains intact. The rates-compression overlay was the error.",
+      "timing_assessment": "A three-day hold cannot adjudicate CAD valuation; it can only adjudicate whether 140bp was tight to 160bp cash.",
+      "trade_id": "trd-trader-value-guy-pos-cdde326460b4",
+      "what_failed": "Expression sign versus the cash-forward gap; using 2027H1 STIR as a REER vehicle.",
+      "what_worked": "Cutting the pack once 140bp started normalizing toward cash, rather than adding."
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_POSTMORTEMS"
 }

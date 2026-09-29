@@ -2,16 +2,16 @@
   "active_lessons": [],
   "as_of": "2026-09-29T04:44:08.485973-04:00",
   "calibration": {
-    "average_holding_seconds": 234247,
-    "average_realized_pnl_usd": -49945.56,
+    "average_holding_seconds": 399819,
+    "average_realized_pnl_usd": -42866.74,
     "breakeven": 0,
     "by_asset_class": {
       "spot_fx": {
-        "count": 1,
-        "total_realized_pnl_usd": -49945.56
+        "count": 2,
+        "total_realized_pnl_usd": -85733.48
       }
     },
-    "closed_trade_count": 1,
+    "closed_trade_count": 2,
     "conviction_buckets": {
       "high": {
         "average_pnl_usd": null,
@@ -24,14 +24,14 @@
         "hit_rate": null
       },
       "medium": {
-        "average_pnl_usd": -49945.56,
-        "count": 1,
+        "average_pnl_usd": -42866.74,
+        "count": 2,
         "hit_rate": 0.0
       }
     },
-    "losses": 1,
+    "losses": 2,
     "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
-    "total_realized_pnl_usd": -49945.56,
+    "total_realized_pnl_usd": -85733.48,
     "wins": 0
   },
   "capital_owner": null,
@@ -54,12 +54,12 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 100000.0,
     "risk_capital_utilization": 0.01,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -7333.18,
     "status": "ok"
   },
   "learning": {
     "competition_eligible": false,
-    "learning_default_age_runs": 1,
+    "learning_default_age_runs": 2,
     "learning_default_count": 1,
     "learning_status": "learning_default",
     "repeated_error_escalations": []
@@ -74,21 +74,8 @@
       "source_run_id": "overnight-20260922"
     }
   ],
-  "memory_context_sha256": "51566acedc061b7f78138cbaeb255625f43feba4af2b1a5a3969b29f4dcd3a9a",
-  "open_positions": [
-    {
-      "asset_class": "spot_fx",
-      "conviction": 63,
-      "current_notional_usd": 10000000.0,
-      "entry_mark": 1.0,
-      "instrument": "AUDCAD",
-      "opened_at": "2026-09-22T15:40:57.474758-04:00",
-      "position_id": "pos-27d002b448b1",
-      "risk_capital_usd": 100000.0,
-      "side": "long",
-      "trade_id": "trd-trader-cross-merchant-pos-27d002b448b1"
-    }
-  ],
+  "memory_context_sha256": "32012bf009ac4e192511eb98e3f7513a6a3b0a0b1c7bf58f698924bb6dc7701a",
+  "open_positions": [],
   "owner_id": "cross-merchant",
   "owner_type": "trader",
   "postmortems_due": [
@@ -133,13 +120,13 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.28
+        "trend": "down",
+        "value": 0.26
       },
       "frustration": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.19
+        "trend": "down",
+        "value": 0.17
       },
       "revenge_pressure": {
         "band": "calm",
@@ -148,8 +135,8 @@
       },
       "self_trust": {
         "band": "steady",
-        "trend": "down",
-        "value": 0.47
+        "trend": "flat",
+        "value": 0.48
       },
       "thesis_attachment": {
         "band": "calm",
@@ -174,7 +161,7 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "339ee08f5a2ff554253952221ce0efb642448e1ab1cabd0ef05e89bbcba9f9fe",
+    "state_sha256": "50dc475873331c3f409da0de1a5b3b5238571f235f7215ed9bc784732743ec3d",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
@@ -182,6 +169,17 @@
     }
   },
   "recent_closed_trades": [
+    {
+      "asset_class": "spot_fx",
+      "closed_at": "2026-09-29T04:44:08.485973-04:00",
+      "conviction": 63,
+      "holding_duration_seconds": 565391,
+      "instrument": "AUDCAD",
+      "opened_at": "2026-09-22T15:40:57.474758-04:00",
+      "realized_pnl_usd": -35787.92,
+      "side": "long",
+      "trade_id": "trd-trader-cross-merchant-pos-27d002b448b1"
+    },
     {
       "asset_class": "spot_fx",
       "closed_at": "2026-09-22T15:40:57.474758-04:00",

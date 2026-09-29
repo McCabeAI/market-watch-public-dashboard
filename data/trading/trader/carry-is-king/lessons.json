@@ -1,5 +1,44 @@
 {
-  "lessons": [],
+  "lessons": [
+    {
+      "contradiction_count": 0,
+      "created_at": "2026-09-29T04:44:08.485973-04:00",
+      "future_rule": "Do not flatten a CAD or STIR receive on a sub-5bp implied backup from oil/Iran while cash policy is unchanged and the cash-implied hike gap remains wide; require a cash-rate shift, an explicit reaction-function change, or express the view in a lower oil-beta curve/RV.",
+      "history": [
+        {
+          "at": "2026-09-29T04:44:08.485973-04:00",
+          "op": "add",
+          "run_id": "overnight-20260929"
+        }
+      ],
+      "lesson_id": "les-8ebd7519a541",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-7f29b83dabfc"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null
+      },
+      "source_run_id": "overnight-20260929",
+      "status": "active",
+      "text": "A carry receive is invalidated by a change in cash policy or by a large, persistent re-pricing of the path, not by a small backup in implieds that is the mechanical beta of a headline already known at entry.",
+      "trade_ids": [
+        "trd-trader-carry-is-king-pos-b97bddbdbd2d"
+      ],
+      "updated_at": "2026-09-29T04:44:08.485973-04:00"
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_LESSONS"
 }
