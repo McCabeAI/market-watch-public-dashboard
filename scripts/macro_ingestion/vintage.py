@@ -124,6 +124,8 @@ def append_observation(
     revision_status: str | None = None,
     source_url: str | None = None,
     prior: float | None = None,
+    units: str | None = None,
+    derivation: dict[str, Any] | None = None,
 ) -> AppendResult:
     key = ObservationKey(series_id, period, transformation, raw_sha256)
     if find_observation(store, key):
@@ -162,5 +164,11 @@ def append_observation(
         "source_url": source_url,
         "prior": prior,
     }
+    # Optional per-observation contract fields (units, derivation lineage).
+    # Only written when supplied so legacy rows keep their exact shape.
+    if units is not None:
+        row["units"] = units
+    if derivation is not None:
+        row["derivation"] = dict(derivation)
     store.setdefault("observations", []).append(row)
     return AppendResult(appended=True, duplicate=False, observation=row)
