@@ -1,15 +1,15 @@
 {
-  "as_of": "2026-09-28T07:32:16.635341-04:00",
-  "assembled_dataset": "data/overnight/runs/overnight-20260928/assembled_dataset.json",
+  "as_of": "2026-09-29T07:10:10.628115-04:00",
+  "assembled_dataset": "data/overnight/runs/overnight-20260929/assembled_dataset.json",
   "books_path": "data/overnight/books/latest.json",
   "dry_run": false,
-  "overnight_run_id": "overnight-20260928",
+  "overnight_run_id": "overnight-20260929",
   "publication": {
     "catastrophic_families": [],
     "core_status": "ok",
     "families": {
       "central_bank_research": {
-        "as_of": "2026-09-28T06:26:47.664507-04:00",
+        "as_of": "2026-09-29T04:44:08.485973-04:00",
         "blocking": false,
         "catastrophic": false,
         "digest": "0fdfb018ca5e5e28f2d49c8a22f8b83622482da5320124a4296c68c52193ca27",
@@ -31,28 +31,28 @@
         "status": "fresh"
       },
       "market_state": {
-        "as_of": "2026-09-28T11:32:16Z",
-        "blocking": false,
+        "as_of": null,
+        "blocking": true,
         "catastrophic": false,
-        "digest": "6c589c4f7a9df415c334e2db31a6a9c97031b5e26ee73d89a2c67b2feb717a7b",
+        "digest": null,
         "notes": [
-          "non-preflight source staleness stays visible and does not block the market_state family: NZ_rates"
+          "live market_state generation failed: IncompleteRead(0 bytes read)"
         ],
-        "status": "fresh"
+        "status": "unavailable"
       },
       "news": {
-        "as_of": "2026-09-28T06:26:47.664507-04:00",
+        "as_of": "2026-09-29T04:44:08.485973-04:00",
         "blocking": false,
         "catastrophic": false,
-        "digest": "e94e2b4c69ee3088402ef290c1ecb7dea66846b7f5790cd0d99b8ce981536a23",
+        "digest": "bc7c5501bd3a6050e0e92566b5177bb9e65c13d1f43bf40dde12506f38246644",
         "notes": [
           "accepted current-cycle ACP research supplement"
         ],
         "status": "fresh"
       }
     },
-    "last_successful_pm_run_id": "overnight-20260928",
-    "last_successful_review_run_id": "overnight-20260928",
+    "last_successful_pm_run_id": "overnight-20260929",
+    "last_successful_review_run_id": "overnight-20260929",
     "may_publish": true,
     "pm_books_status": "fresh",
     "reason": "core inputs are structurally valid",
