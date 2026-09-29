@@ -2655,20 +2655,31 @@
     },
     "08_pages": {
       "artifact": null,
-      "details": {},
+      "details": {
+        "dry_run": false,
+        "executed": true,
+        "plan": {
+          "event": "workflow_dispatch",
+          "launch_id": "mwl-20260929T084408Z-d80eae6e",
+          "ref": "main",
+          "review_id": "review-001",
+          "workflow": "deploy-pages.yml"
+        },
+        "production_published": true
+      },
       "finished_at": null,
-      "input_sha256": null,
+      "input_sha256": "78f934550a6c02e7f69510ff72efeb026d325b44c69c0f3b8ab2c8095d675fa7",
       "output_sha256": null,
       "reason": null,
       "source_run_url": null,
       "stage": "08_pages",
       "started_at": null,
-      "status": "pending"
+      "status": "succeeded"
     }
   },
   "starting_pm_books_sha256": "b3d3c15bf05f356d73758408a9c25fb579f9479552df7fe9054dd4361204dd78",
   "starting_trader_books_sha256": "dd2f2c769d823e2036caa0a57a6e9aa5d7ec48fc98c92631f5f85fa5d4e00b4c",
-  "status": "running",
+  "status": "succeeded",
   "timezone": "America/New_York",
   "type": "MARKET_WATCH_LAUNCH"
 }
