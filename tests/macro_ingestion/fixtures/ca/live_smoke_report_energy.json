@@ -1,0 +1,574 @@
+{
+  "checked_at": "2026-09-29T12:23:20Z",
+  "opener": "live_opener",
+  "results": [
+    {
+      "id": "CA.Energy.ab_oil_total_production",
+      "series_id": "AER_ST3_OIL_TOTAL_PRODUCTION_M3",
+      "endpoint": "https://www.aer.ca/documents/sts/st3/Oil_current.xlsx",
+      "retrieval_method": "aer_st3_oil_workbook",
+      "ok": true,
+      "status": null,
+      "error": null,
+      "http_status": 200,
+      "raw_sha256": "64799b435ffb9500d2abc9c43337bb654f181cf0ca8be10f837d7d900c6ea51b",
+      "vintage": "aer_st3_run_date:2026-08-27",
+      "units": "cubic metres",
+      "period_count": 19,
+      "first_period": "2025-01",
+      "latest_period": "2026-07",
+      "backfill_errors": [],
+      "tail_points": [
+        {
+          "period": "2026-05",
+          "transformation": "monthly_level",
+          "value": 19679887.199999996,
+          "units": "cubic metres",
+          "release_date": "2026-08-27",
+          "revision_status": "latest_available"
+        },
+        {
+          "period": "2026-05",
+          "transformation": "calendar_day_rate",
+          "value": 634835.0709677418,
+          "units": "cubic metres per calendar day",
+          "release_date": "2026-08-27",
+          "revision_status": "latest_available"
+        },
+        {
+          "period": "2026-06",
+          "transformation": "monthly_level",
+          "value": 19675110.4,
+          "units": "cubic metres",
+          "release_date": "2026-08-27",
+          "revision_status": "latest_available"
+        },
+        {
+          "period": "2026-06",
+          "transformation": "calendar_day_rate",
+          "value": 655837.0133333333,
+          "units": "cubic metres per calendar day",
+          "release_date": "2026-08-27",
+          "revision_status": "latest_available"
+        },
+        {
+          "period": "2026-07",
+          "transformation": "monthly_level",
+          "value": 21677452.5,
+          "units": "cubic metres",
+          "release_date": "2026-08-27",
+          "revision_status": "latest_available"
+        },
+        {
+          "period": "2026-07",
+          "transformation": "calendar_day_rate",
+          "value": 699272.6612903225,
+          "units": "cubic metres per calendar day",
+          "release_date": "2026-08-27",
+          "revision_status": "latest_available"
+        }
+      ]
+    },
+    {
+      "id": "CA.Energy.ab_oil_sands_production",
+      "series_id": "AER_ST3_OIL_SANDS_TOTAL_PRODUCTION_M3",
+      "endpoint": "https://www.aer.ca/documents/sts/st3/Oil_current.xlsx",
+      "retrieval_method": "aer_st3_oil_workbook",
+      "ok": true,
+      "status": null,
+      "error": null,
+      "http_status": 200,
+      "raw_sha256": "64799b435ffb9500d2abc9c43337bb654f181cf0ca8be10f837d7d900c6ea51b",
+      "vintage": "aer_st3_run_date:2026-08-27",
+      "units": "cubic metres",
+      "period_count": 19,
+      "first_period": "2025-01",
+      "latest_period": "2026-07",
+      "backfill_errors": [],
+      "tail_points": [
+        {
+          "period": "2026-05",
+          "transformation": "monthly_level",
+          "value": 16420623.899999999,
+          "units": "cubic metres",
+          "release_date": "2026-08-27",
+          "revision_status": "latest_available"
+        },
+        {
+          "period": "2026-05",
+          "transformation": "calendar_day_rate",
+          "value": 529697.5451612903,
+          "units": "cubic metres per calendar day",
+          "release_date": "2026-08-27",
+          "revision_status": "latest_available"
+        },
+        {
+          "period": "2026-06",
+          "transformation": "monthly_level",
+          "value": 16513522.1,
+          "units": "cubic metres",
+          "release_date": "2026-08-27",
+          "revision_status": "latest_available"
+        },
+        {
+          "period": "2026-06",
+          "transformation": "calendar_day_rate",
+          "value": 550450.7366666667,
+          "units": "cubic metres per calendar day",
+          "release_date": "2026-08-27",
+          "revision_status": "latest_available"
+        },
+        {
+          "period": "2026-07",
+          "transformation": "monthly_level",
+          "value": 18423653.0,
+          "units": "cubic metres",
+          "release_date": "2026-08-27",
+          "revision_status": "latest_available"
+        },
+        {
+          "period": "2026-07",
+          "transformation": "calendar_day_rate",
+          "value": 594311.3870967742,
+          "units": "cubic metres per calendar day",
+          "release_date": "2026-08-27",
+          "revision_status": "latest_available"
+        }
+      ]
+    },
+    {
+      "id": "CA.Energy.ab_conventional_crude_production",
+      "series_id": "AER_ST3_CONVENTIONAL_CRUDE_PRODUCTION_M3",
+      "endpoint": "https://www.aer.ca/documents/sts/st3/Oil_current.xlsx",
+      "retrieval_method": "aer_st3_oil_workbook",
+      "ok": true,
+      "status": null,
+      "error": null,
+      "http_status": 200,
+      "raw_sha256": "64799b435ffb9500d2abc9c43337bb654f181cf0ca8be10f837d7d900c6ea51b",
+      "vintage": "aer_st3_run_date:2026-08-27",
+      "units": "cubic metres",
+      "period_count": 19,
+      "first_period": "2025-01",
+      "latest_period": "2026-07",
+      "backfill_errors": [],
+      "tail_points": [
+        {
+          "period": "2026-05",
+          "transformation": "monthly_level",
+          "value": 2815550.4,
+          "units": "cubic metres",
+          "release_date": "2026-08-27",
+          "revision_status": "latest_available"
+        },
+        {
+          "period": "2026-05",
+          "transformation": "calendar_day_rate",
+          "value": 90824.2064516129,
+          "units": "cubic metres per calendar day",
+          "release_date": "2026-08-27",
+          "revision_status": "latest_available"
+        },
+        {
+          "period": "2026-06",
+          "transformation": "monthly_level",
+          "value": 2697477.9,
+          "units": "cubic metres",
+          "release_date": "2026-08-27",
+          "revision_status": "latest_available"
+        },
+        {
+          "period": "2026-06",
+          "transformation": "calendar_day_rate",
+          "value": 89915.93,
+          "units": "cubic metres per calendar day",
+          "release_date": "2026-08-27",
+          "revision_status": "latest_available"
+        },
+        {
+          "period": "2026-07",
+          "transformation": "monthly_level",
+          "value": 2801760.5,
+          "units": "cubic metres",
+          "release_date": "2026-08-27",
+          "revision_status": "latest_available"
+        },
+        {
+          "period": "2026-07",
+          "transformation": "calendar_day_rate",
+          "value": 90379.37096774194,
+          "units": "cubic metres per calendar day",
+          "release_date": "2026-08-27",
+          "revision_status": "latest_available"
+        }
+      ]
+    },
+    {
+      "id": "CA.Energy.ab_condensate_production",
+      "series_id": "AER_ST3_CONDENSATE_PRODUCTION_M3",
+      "endpoint": "https://www.aer.ca/documents/sts/st3/Oil_current.xlsx",
+      "retrieval_method": "aer_st3_oil_workbook",
+      "ok": true,
+      "status": null,
+      "error": null,
+      "http_status": 200,
+      "raw_sha256": "64799b435ffb9500d2abc9c43337bb654f181cf0ca8be10f837d7d900c6ea51b",
+      "vintage": "aer_st3_run_date:2026-08-27",
+      "units": "cubic metres",
+      "period_count": 19,
+      "first_period": "2025-01",
+      "latest_period": "2026-07",
+      "backfill_errors": [],
+      "tail_points": [
+        {
+          "period": "2026-05",
+          "transformation": "monthly_level",
+          "value": 443712.9,
+          "units": "cubic metres",
+          "release_date": "2026-08-27",
+          "revision_status": "latest_available"
+        },
+        {
+          "period": "2026-05",
+          "transformation": "calendar_day_rate",
+          "value": 14313.31935483871,
+          "units": "cubic metres per calendar day",
+          "release_date": "2026-08-27",
+          "revision_status": "latest_available"
+        },
+        {
+          "period": "2026-06",
+          "transformation": "monthly_level",
+          "value": 464110.4,
+          "units": "cubic metres",
+          "release_date": "2026-08-27",
+          "revision_status": "latest_available"
+        },
+        {
+          "period": "2026-06",
+          "transformation": "calendar_day_rate",
+          "value": 15470.346666666668,
+          "units": "cubic metres per calendar day",
+          "release_date": "2026-08-27",
+          "revision_status": "latest_available"
+        },
+        {
+          "period": "2026-07",
+          "transformation": "monthly_level",
+          "value": 452039.0,
+          "units": "cubic metres",
+          "release_date": "2026-08-27",
+          "revision_status": "latest_available"
+        },
+        {
+          "period": "2026-07",
+          "transformation": "calendar_day_rate",
+          "value": 14581.90322580645,
+          "units": "cubic metres per calendar day",
+          "release_date": "2026-08-27",
+          "revision_status": "latest_available"
+        }
+      ]
+    },
+    {
+      "id": "CA.Energy.gas_marketable_production",
+      "series_id": "v1864626177",
+      "endpoint": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=2510008601",
+      "retrieval_method": "statcan_wds_vector_history",
+      "ok": true,
+      "status": null,
+      "error": null,
+      "http_status": 200,
+      "raw_sha256": "9c6715983ef88185cbb43c14c23d5d6cfb051e47e8e43eae68fa7b1c1b5f7901",
+      "vintage": "latest_available:9c6715983ef8",
+      "units": "thousands of cubic metres",
+      "period_count": 36,
+      "first_period": "2023-08",
+      "latest_period": "2026-07",
+      "backfill_errors": null,
+      "tail_points": [
+        {
+          "period": "2026-05",
+          "transformation": "monthly_level",
+          "value": 17270865.2,
+          "units": "thousands of cubic metres",
+          "release_date": "2026-08-24",
+          "revision_status": "final"
+        },
+        {
+          "period": "2026-05",
+          "transformation": "calendar_day_rate",
+          "value": 557124.6838709677,
+          "units": "thousands of cubic metres per calendar day",
+          "release_date": "2026-08-24",
+          "revision_status": "final"
+        },
+        {
+          "period": "2026-06",
+          "transformation": "monthly_level",
+          "value": 17078082.2,
+          "units": "thousands of cubic metres",
+          "release_date": "2026-08-24",
+          "revision_status": "final"
+        },
+        {
+          "period": "2026-06",
+          "transformation": "calendar_day_rate",
+          "value": 569269.4066666666,
+          "units": "thousands of cubic metres per calendar day",
+          "release_date": "2026-08-24",
+          "revision_status": "final"
+        },
+        {
+          "period": "2026-07",
+          "transformation": "monthly_level",
+          "value": 17568809.8,
+          "units": "thousands of cubic metres",
+          "release_date": "2026-09-23",
+          "revision_status": "final"
+        },
+        {
+          "period": "2026-07",
+          "transformation": "calendar_day_rate",
+          "value": 566735.8,
+          "units": "thousands of cubic metres per calendar day",
+          "release_date": "2026-09-23",
+          "revision_status": "final"
+        }
+      ]
+    },
+    {
+      "id": "CA.Activity.real_manufacturing_sales",
+      "series_id": "v123263908",
+      "endpoint": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1610001301",
+      "retrieval_method": "statcan_wds_vector_history",
+      "ok": true,
+      "status": null,
+      "error": null,
+      "http_status": 200,
+      "raw_sha256": "58fad45e1a66532720f414279352382a25a2d2216758b4592196c090f6ccaf68",
+      "vintage": "latest_available:58fad45e1a66",
+      "units": "millions of 2017 dollars",
+      "period_count": 36,
+      "first_period": "2023-08",
+      "latest_period": "2026-07",
+      "backfill_errors": null,
+      "tail_points": [
+        {
+          "period": "2026-05",
+          "transformation": "monthly_level",
+          "value": 53959.0,
+          "units": "millions of 2017 dollars",
+          "release_date": "2026-09-14",
+          "revision_status": "final"
+        },
+        {
+          "period": "2026-06",
+          "transformation": "monthly_level",
+          "value": 54768.0,
+          "units": "millions of 2017 dollars",
+          "release_date": "2026-09-14",
+          "revision_status": "final"
+        },
+        {
+          "period": "2026-07",
+          "transformation": "monthly_level",
+          "value": 54000.0,
+          "units": "millions of 2017 dollars",
+          "release_date": "2026-09-14",
+          "revision_status": "final"
+        }
+      ]
+    },
+    {
+      "id": "CA.Consumer.retail_sales_volume",
+      "series_id": "v1446870181",
+      "endpoint": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=2010006701",
+      "retrieval_method": "statcan_wds_vector_history",
+      "ok": true,
+      "status": null,
+      "error": null,
+      "http_status": 200,
+      "raw_sha256": "33790f822a2319662f79c74a42e6528c0c974dcc2c0dc3815b27a8c939ca9923",
+      "vintage": "latest_available:33790f822a23",
+      "units": "millions of chained (2017) dollars",
+      "period_count": 36,
+      "first_period": "2023-08",
+      "latest_period": "2026-07",
+      "backfill_errors": null,
+      "tail_points": [
+        {
+          "period": "2026-05",
+          "transformation": "monthly_level",
+          "value": 60220.0,
+          "units": "millions of chained (2017) dollars",
+          "release_date": "2026-09-24",
+          "revision_status": "final"
+        },
+        {
+          "period": "2026-06",
+          "transformation": "monthly_level",
+          "value": 61175.0,
+          "units": "millions of chained (2017) dollars",
+          "release_date": "2026-09-24",
+          "revision_status": "final"
+        },
+        {
+          "period": "2026-07",
+          "transformation": "monthly_level",
+          "value": 60501.0,
+          "units": "millions of chained (2017) dollars",
+          "release_date": "2026-09-24",
+          "revision_status": "final"
+        }
+      ]
+    },
+    {
+      "id": "CA.Activity.wholesale_sales_volume",
+      "series_id": "v120586538",
+      "endpoint": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=2010000301",
+      "retrieval_method": "statcan_wds_vector_history",
+      "ok": true,
+      "status": null,
+      "error": null,
+      "http_status": 200,
+      "raw_sha256": "2ee972091da297b2aaba30d608c791c67a413a27e00cb1f4807103ba14f9a1be",
+      "vintage": "latest_available:2ee972091da2",
+      "units": "millions of chained (2012) dollars",
+      "period_count": 36,
+      "first_period": "2023-08",
+      "latest_period": "2026-07",
+      "backfill_errors": null,
+      "tail_points": [
+        {
+          "period": "2026-05",
+          "transformation": "monthly_level",
+          "value": 111370.0,
+          "units": "millions of chained (2012) dollars",
+          "release_date": "2026-09-15",
+          "revision_status": "final"
+        },
+        {
+          "period": "2026-06",
+          "transformation": "monthly_level",
+          "value": 110967.0,
+          "units": "millions of chained (2012) dollars",
+          "release_date": "2026-09-15",
+          "revision_status": "final"
+        },
+        {
+          "period": "2026-07",
+          "transformation": "monthly_level",
+          "value": 111429.0,
+          "units": "millions of chained (2012) dollars",
+          "release_date": "2026-09-15",
+          "revision_status": "final"
+        }
+      ]
+    },
+    {
+      "id": "CA.Activity.real_building_investment",
+      "series_id": "v1705315927",
+      "endpoint": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3410029301",
+      "retrieval_method": "statcan_wds_vector_history",
+      "ok": true,
+      "status": null,
+      "error": null,
+      "http_status": 200,
+      "raw_sha256": "a06745e0403aefd842252756c333494329151a70e5513f3c16691b89102611ca",
+      "vintage": "latest_available:a06745e0403a",
+      "units": "constant 2017 dollars",
+      "period_count": 36,
+      "first_period": "2023-08",
+      "latest_period": "2026-07",
+      "backfill_errors": null,
+      "tail_points": [
+        {
+          "period": "2026-05",
+          "transformation": "monthly_level",
+          "value": 21241553851.0,
+          "units": "constant 2017 dollars",
+          "release_date": "2026-09-21",
+          "revision_status": "final"
+        },
+        {
+          "period": "2026-06",
+          "transformation": "monthly_level",
+          "value": 21043012237.0,
+          "units": "constant 2017 dollars",
+          "release_date": "2026-09-21",
+          "revision_status": "final"
+        },
+        {
+          "period": "2026-07",
+          "transformation": "monthly_level",
+          "value": 21248226101.0,
+          "units": "constant 2017 dollars",
+          "release_date": "2026-09-21",
+          "revision_status": "final"
+        }
+      ]
+    },
+    {
+      "id": "CA.Activity.crude_export_volume",
+      "series_id": "v1566916256",
+      "endpoint": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1210016801",
+      "retrieval_method": "statcan_wds_vector_history",
+      "ok": true,
+      "status": null,
+      "error": null,
+      "http_status": 200,
+      "raw_sha256": "6356f1bb9ed33fe7ed5295a58ec0b4333de54484d3a6cceaffd37a0b0e8b2619",
+      "vintage": "latest_available:6356f1bb9ed3",
+      "units": "Laspeyres volume index (2017=100)",
+      "period_count": 36,
+      "first_period": "2023-08",
+      "latest_period": "2026-07",
+      "backfill_errors": null,
+      "tail_points": [
+        {
+          "period": "2026-05",
+          "transformation": "monthly_level",
+          "value": 131.4,
+          "units": "Laspeyres volume index (2017=100)",
+          "release_date": "2026-09-03",
+          "revision_status": "final"
+        },
+        {
+          "period": "2026-06",
+          "transformation": "monthly_level",
+          "value": 135.1,
+          "units": "Laspeyres volume index (2017=100)",
+          "release_date": "2026-09-03",
+          "revision_status": "final"
+        },
+        {
+          "period": "2026-07",
+          "transformation": "monthly_level",
+          "value": 129.7,
+          "units": "Laspeyres volume index (2017=100)",
+          "release_date": "2026-09-03",
+          "revision_status": "final"
+        }
+      ]
+    },
+    {
+      "id": "CA.Housing.existing_home_sales",
+      "series_id": null,
+      "endpoint": "https://stats.crea.ca/en-CA/",
+      "retrieval_method": "unavailable",
+      "ok": false,
+      "status": "license_gap",
+      "error": "crea_existing_home_sales_no_stable_lawful_machine_readable_primary_series",
+      "http_status": null,
+      "raw_sha256": null,
+      "vintage": null,
+      "units": "units, seasonally adjusted",
+      "period_count": 0,
+      "first_period": null,
+      "latest_period": null,
+      "backfill_errors": null,
+      "tail_points": []
+    }
+  ]
+}
