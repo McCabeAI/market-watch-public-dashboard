@@ -10,6 +10,17 @@ from typing import Any, Callable
 from urllib.error import URLError
 from urllib.request import Request, urlopen
 
+from scripts.canada_energy_data import (
+    AER_OIL_UNITS,
+    CALENDAR_DAY_RATE,
+    CanadaEnergyError,
+    aer_oil_points,
+    aer_vintage,
+    merge_aer_years,
+    parse_aer_st3_oil_workbook,
+    statcan_vector_history_points,
+    with_calendar_day_rates,
+)
 from scripts.canada_housing_data import (
     STATCAN_NHPI_CSV,
     STATCAN_NHPI_PAGE,
@@ -556,6 +567,180 @@ def _fetch_housing_nhpi(
     )
 
 
+def _wants_calendar_day_rate(spec: dict[str, Any]) -> bool:
+    return CALENDAR_DAY_RATE in {str(t) for t in (spec.get("derived_transforms") or [])}
+
+
+def _fetch_aer_st3_oil(
+    spec: dict[str, Any],
+    *,
+    opener: Callable[..., dict[str, Any]],
+    timeout: float,
+) -> dict[str, Any]:
+    """AER ST3 crude oil and equivalent workbook: current year plus bounded backfill.
+
+    One workbook feeds four catalog rows; each row reads it independently so a
+    row's ledger status reflects exactly the bytes it parsed.
+    """
+    selector = spec.get("source_selector") or {}
+    series_key = str(selector.get("series_key") or "")
+    endpoint = str(spec.get("endpoint") or "")
+    if not series_key or not endpoint:
+        return {
+            "ok": False,
+            "status": "source_failed",
+            "error": f"{spec.get('id')}: aer series_key or endpoint missing in catalog",
+            "http_status": None,
+        }
+
+    body, http_status, err = _opener_bytes(opener, endpoint, timeout=timeout)
+    if body is None:
+        return {
+            "ok": False,
+            "status": "source_failed",
+            "error": err or "aer_st3_unreachable",
+            "http_status": http_status,
+        }
+    if body[:4] != b"PK\x03\x04":
+        lowered = body[:8000].lower()
+        challenge = any(
+            token in lowered for token in (b"access denied", b"captcha", b"cf-challenge", b"just a moment")
+        )
+        return {
+            "ok": False,
+            "status": "source_failed",
+            "error": "aer_st3_body_not_xlsx",
+            "http_status": http_status,
+            "challenge_page": challenge,
+            "raw_sha256": _sha256(body),
+            "body": body,
+        }
+    try:
+        parsed = parse_aer_st3_oil_workbook(body)
+    except CanadaEnergyError as exc:
+        return {
+            "ok": False,
+            "status": "source_failed",
+            "error": str(exc),
+            "http_status": http_status,
+            "raw_sha256": _sha256(body),
+            "body": body,
+        }
+    if series_key not in (parsed.get("series") or {}):
+        return {
+            "ok": False,
+            "status": "source_failed",
+            "error": f"aer_st3_series_key_unknown:{series_key}",
+            "http_status": http_status,
+            "raw_sha256": _sha256(body),
+            "body": body,
+        }
+    units = str(parsed.get("units") or AER_OIL_UNITS)
+    current_points = aer_oil_points(parsed, series_key, source_url=endpoint)
+
+    backfill_points: list[dict[str, Any]] = []
+    backfill_errors: list[dict[str, Any]] = []
+    for archive_url in spec.get("backfill_endpoints") or []:
+        archive_url = str(archive_url)
+        abody, astatus, aerr = _opener_bytes(opener, archive_url, timeout=timeout)
+        if abody is None or abody[:4] != b"PK\x03\x04":
+            backfill_errors.append(
+                {"url": archive_url, "http_status": astatus, "error": aerr or "aer_archive_not_xlsx"}
+            )
+            continue
+        try:
+            archive = parse_aer_st3_oil_workbook(abody)
+        except CanadaEnergyError as exc:
+            backfill_errors.append({"url": archive_url, "http_status": astatus, "error": str(exc)})
+            continue
+        if archive.get("units") != parsed.get("units"):
+            backfill_errors.append(
+                {"url": archive_url, "http_status": astatus, "error": "aer_archive_units_mismatch"}
+            )
+            continue
+        backfill_points.extend(aer_oil_points(archive, series_key, source_url=archive_url))
+
+    merged = merge_aer_years(current_points, backfill_points)
+    if not merged:
+        return {
+            "ok": False,
+            "status": "source_failed",
+            "error": "aer_st3_no_published_months",
+            "http_status": http_status,
+            "raw_sha256": _sha256(body),
+            "body": body,
+        }
+    points = with_calendar_day_rates(merged, units=units) if _wants_calendar_day_rate(spec) else [
+        {**point, "units": units} for point in merged
+    ]
+    payload = _payload_ok(body=body, http_status=http_status, points=points, source_url=endpoint)
+    payload["vintage"] = aer_vintage(parsed)
+    payload["units"] = units
+    payload["publisher_run_date"] = parsed.get("run_date")
+    payload["backfill_errors"] = backfill_errors
+    return payload
+
+
+def _fetch_statcan_vector_history(
+    spec: dict[str, Any],
+    *,
+    opener: Callable[..., dict[str, Any]],
+    timeout: float,
+) -> dict[str, Any]:
+    """Full bounded history for one StatCan vector, release dates and revision flags kept."""
+    vector_ids = _vector_ids_for_spec(spec)
+    if len(vector_ids) != 1:
+        return {
+            "ok": False,
+            "status": "source_failed",
+            "error": f"{spec.get('id')}: exactly one StatCan vector id required on series_id",
+            "http_status": None,
+        }
+    latest_n = int(spec.get("history_latest_n") or 36)
+    fetched = _statcan_wds_fetch(vector_ids, opener=opener, timeout=timeout, latest_n=latest_n)
+    if not fetched.get("ok"):
+        return {
+            "ok": False,
+            "status": "source_failed",
+            "error": fetched.get("error") or "statcan_wds_failed",
+            "http_status": fetched.get("http_status"),
+        }
+    body = fetched.get("body") or b""
+    try:
+        payload = json.loads(body.decode("utf-8", errors="replace"))
+    except json.JSONDecodeError:
+        return {
+            "ok": False,
+            "status": "source_failed",
+            "error": "statcan_wds_invalid_json",
+            "http_status": fetched.get("http_status"),
+            "raw_sha256": _sha256(body),
+            "body": body,
+        }
+    source_url = str(spec.get("endpoint") or STATCAN_WDS_URL)
+    uom_label = str(spec.get("source_uom_label") or spec.get("units") or "")
+    points = statcan_vector_history_points(
+        payload, vector_ids[0], source_url=source_url, uom_label=uom_label
+    )
+    if not points:
+        return {
+            "ok": False,
+            "status": "source_failed",
+            "error": "statcan payload had no points for vector",
+            "http_status": fetched.get("http_status"),
+            "raw_sha256": _sha256(body),
+            "body": body,
+        }
+    if _wants_calendar_day_rate(spec):
+        points = with_calendar_day_rates(points, units=uom_label)
+    return _payload_ok(
+        body=body,
+        http_status=fetched.get("http_status"),
+        points=points,
+        source_url=source_url,
+    )
+
+
 def fetch_series(
     spec: dict[str, Any],
     *,
@@ -571,9 +756,22 @@ def fetch_series(
         return {
             "ok": False,
             "status": "license_gap",
-            "error": "bank_of_canada_csce_no_machine_readable_series",
+            "error": str(spec.get("gap_reason") or "bank_of_canada_csce_no_machine_readable_series"),
             "http_status": None,
         }
+
+    if method == "aer_st3_oil_workbook":
+        return _fetch_aer_st3_oil(spec, opener=opener, timeout=timeout)
+
+    if method == "statcan_wds_vector_history":
+        if spec.get("series_id") is None:
+            return {
+                "ok": False,
+                "status": "source_failed",
+                "error": f"{spec_id}: vector id unpinned in catalog",
+                "http_status": None,
+            }
+        return _fetch_statcan_vector_history(spec, opener=opener, timeout=timeout)
 
     if spec_id == "CA.Activity.ivey_pmi":
         return {
