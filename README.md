@@ -7,6 +7,7 @@ Public dashboard and operational data layer for Market Watch.
 - Active light daily refresh specification: [`docs/DAILY_REFRESH_V0.md`](docs/DAILY_REFRESH_V0.md)
 - Live 1–100 score state: [`data/temperature_scores.json`](data/temperature_scores.json) (calibrated LEVEL + separate IMPULSE), computed by [`scripts/temperature_level.py`](scripts/temperature_level.py) from [`data/temperature_calibration.json`](data/temperature_calibration.json) and applied by [`scripts/apply_temperature_scores.py`](scripts/apply_temperature_scores.py)
 - Standalone daily rates/FX research snapshot: [`docs/MARKET_STATE_FEED_V1.md`](docs/MARKET_STATE_FEED_V1.md)
+- Canadian physical oil/gas production and hard-activity context series in the macro ingestion pull: [`docs/CA_PHYSICAL_ENERGY_SOURCE_CONTRACT.md`](docs/CA_PHYSICAL_ENERGY_SOURCE_CONTRACT.md)
 - Supabase schema migrations: [`supabase/migrations/`](supabase/migrations/)
 - GitHub Pages build/deploy gate: [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml)
 - On-demand Trader Room entrypoint: [`scripts/trader_room_go.py`](scripts/trader_room_go.py) (`go`); contract: [`docs/TRADER_ROOM_ON_DEMAND.md`](docs/TRADER_ROOM_ON_DEMAND.md)

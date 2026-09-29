@@ -477,7 +477,7 @@ US scored coverage already includes Core PCE, unemployment, average hourly earni
 
 ## CA
 
-18 catalog rows.
+29 catalog rows (18 parent rows plus 11 issue #139 context rows).
 
 ### `CA.Inflation.underlying`
 
@@ -775,6 +775,222 @@ US scored coverage already includes Core PCE, unemployment, average hourly earni
 - Held observations: 0 · latest period: `None` · ledger vintage: `None` · retrieved_at: `None`
 - Verification: `catalogued_adapter_pending` · freshness: `not_yet_checked_by_new_runner`
 - Notes: Reuse scripts/canada_housing_data.py. Weight 0. CMHC starts are a separate previously collected feed in that module.
+
+### Issue #139 physical energy and hard-activity context rows (added 2026-09-29)
+
+Eleven `context` rows, weight 0, acquisition only. Source contract, derivation formula, and live verification: `docs/CA_PHYSICAL_ENERGY_SOURCE_CONTRACT.md`. Live retrieval record: `tests/macro_ingestion/fixtures/ca/live_smoke_report_energy.json`. Every physical-production row stores the official `monthly_level` and a derived `calendar_day_rate` observation (`monthly_level / days_in_calendar_month`) on the same `series_id`; the derived row carries its `derivation` block and units. `CA.Housing.existing_home_sales` is a recorded gap (`license_gap`, no fetch attempted), not a series.
+
+### `CA.Energy.ab_oil_total_production`
+
+- Role: `context` · weight: `0.0` · policy: weight_must_remain_zero
+- Name: Alberta total crude oil and equivalent production (conventional crude + condensate + oil sands), monthly, cubic metres
+- Publisher: Alberta Energy Regulator · distributor: AER ST3 statistical reports (XLSX) · classification: `official`
+- Series id: `AER_ST3_OIL_TOTAL_PRODUCTION_M3`
+- Endpoint: https://www.aer.ca/documents/sts/st3/Oil_current.xlsx
+- Backfill endpoints (best effort): https://www.aer.ca/prd/documents/sts/st3/Oil_2025.xlsx
+- Source table: AER ST3 Oil supply and disposition
+- Workbook selector: sheet `Data` · row `Total Production` · key `ab_oil_total_production`
+- Units: cubic metres · seasonal adjustment: `False` · transform: `monthly_level` · derived transforms: `['calendar_day_rate']`
+- Cadence: monthly · timezone: `America/Edmonton`
+- Release rule: `country_local_schedule_required` · dates: `[]` · schedule: https://www.aer.ca/providing-information/data-and-reports/statistical-reports/st3 (publisher_release_calendar_not_machine_pinned)
+- Actual / revision / prior metadata: `{'actual': 'when_primary_retrieved', 'revision': 'when_publisher_marks_revision', 'prior': 'when_series_has_history'}`
+- Raw provenance: `data/macro_ingestion/raw/ca/`
+- Retrieval: `aer_st3_oil_workbook` · adapter: `scripts.macro_ingestion.adapters.ca`
+- Held observations: 0 · latest period: `None` · ledger vintage: `None` · retrieved_at: `None`
+- Verification: `catalogued_adapter_live_verified_2026-09-29` · freshness: `not_yet_checked_by_new_runner`
+- Notes: AER ST3 'Supply and Disposition of Crude Oil and Equivalent' workbook, Data sheet, SUPPLY block. Official monthly level in cubic metres (m3) plus derived calendar_day_rate = monthly_level / days_in_month. Months at or after the workbook run-date month and all-zero months are unpublished, not zero production. Prior-year archive workbook is a best-effort backfill; its failure never fails the current read. Weight 0; acquisition only.
+
+### `CA.Energy.ab_oil_sands_production`
+
+- Role: `context` · weight: `0.0` · policy: weight_must_remain_zero
+- Name: Alberta total oil sands production (nonupgraded total + upgraded), monthly, cubic metres
+- Publisher: Alberta Energy Regulator · distributor: AER ST3 statistical reports (XLSX) · classification: `official`
+- Series id: `AER_ST3_OIL_SANDS_TOTAL_PRODUCTION_M3`
+- Endpoint: https://www.aer.ca/documents/sts/st3/Oil_current.xlsx
+- Backfill endpoints (best effort): https://www.aer.ca/prd/documents/sts/st3/Oil_2025.xlsx
+- Source table: AER ST3 Oil supply and disposition
+- Workbook selector: sheet `Data` · row `Total Oil Sands Production` · key `ab_oil_sands_production`
+- Units: cubic metres · seasonal adjustment: `False` · transform: `monthly_level` · derived transforms: `['calendar_day_rate']`
+- Cadence: monthly · timezone: `America/Edmonton`
+- Release rule: `country_local_schedule_required` · dates: `[]` · schedule: https://www.aer.ca/providing-information/data-and-reports/statistical-reports/st3 (publisher_release_calendar_not_machine_pinned)
+- Actual / revision / prior metadata: `{'actual': 'when_primary_retrieved', 'revision': 'when_publisher_marks_revision', 'prior': 'when_series_has_history'}`
+- Raw provenance: `data/macro_ingestion/raw/ca/`
+- Retrieval: `aer_st3_oil_workbook` · adapter: `scripts.macro_ingestion.adapters.ca`
+- Held observations: 0 · latest period: `None` · ledger vintage: `None` · retrieved_at: `None`
+- Verification: `catalogued_adapter_live_verified_2026-09-29` · freshness: `not_yet_checked_by_new_runner`
+- Notes: AER ST3 'Supply and Disposition of Crude Oil and Equivalent' workbook, Data sheet, SUPPLY block. Official monthly level in cubic metres (m3) plus derived calendar_day_rate = monthly_level / days_in_month. Months at or after the workbook run-date month and all-zero months are unpublished, not zero production. Prior-year archive workbook is a best-effort backfill; its failure never fails the current read. Weight 0; acquisition only.
+
+### `CA.Energy.ab_conventional_crude_production`
+
+- Role: `context` · weight: `0.0` · policy: weight_must_remain_zero
+- Name: Alberta total conventional crude oil production (light + medium + heavy + ultra-heavy), monthly, cubic metres
+- Publisher: Alberta Energy Regulator · distributor: AER ST3 statistical reports (XLSX) · classification: `official`
+- Series id: `AER_ST3_CONVENTIONAL_CRUDE_PRODUCTION_M3`
+- Endpoint: https://www.aer.ca/documents/sts/st3/Oil_current.xlsx
+- Backfill endpoints (best effort): https://www.aer.ca/prd/documents/sts/st3/Oil_2025.xlsx
+- Source table: AER ST3 Oil supply and disposition
+- Workbook selector: sheet `Data` · row `Total Crude Oil Production` · key `ab_conventional_crude_production`
+- Units: cubic metres · seasonal adjustment: `False` · transform: `monthly_level` · derived transforms: `['calendar_day_rate']`
+- Cadence: monthly · timezone: `America/Edmonton`
+- Release rule: `country_local_schedule_required` · dates: `[]` · schedule: https://www.aer.ca/providing-information/data-and-reports/statistical-reports/st3 (publisher_release_calendar_not_machine_pinned)
+- Actual / revision / prior metadata: `{'actual': 'when_primary_retrieved', 'revision': 'when_publisher_marks_revision', 'prior': 'when_series_has_history'}`
+- Raw provenance: `data/macro_ingestion/raw/ca/`
+- Retrieval: `aer_st3_oil_workbook` · adapter: `scripts.macro_ingestion.adapters.ca`
+- Held observations: 0 · latest period: `None` · ledger vintage: `None` · retrieved_at: `None`
+- Verification: `catalogued_adapter_live_verified_2026-09-29` · freshness: `not_yet_checked_by_new_runner`
+- Notes: AER ST3 'Supply and Disposition of Crude Oil and Equivalent' workbook, Data sheet, SUPPLY block. Official monthly level in cubic metres (m3) plus derived calendar_day_rate = monthly_level / days_in_month. Months at or after the workbook run-date month and all-zero months are unpublished, not zero production. Prior-year archive workbook is a best-effort backfill; its failure never fails the current read. Weight 0; acquisition only.
+
+### `CA.Energy.ab_condensate_production`
+
+- Role: `context` · weight: `0.0` · policy: weight_must_remain_zero
+- Name: Alberta condensate production, monthly, cubic metres
+- Publisher: Alberta Energy Regulator · distributor: AER ST3 statistical reports (XLSX) · classification: `official`
+- Series id: `AER_ST3_CONDENSATE_PRODUCTION_M3`
+- Endpoint: https://www.aer.ca/documents/sts/st3/Oil_current.xlsx
+- Backfill endpoints (best effort): https://www.aer.ca/prd/documents/sts/st3/Oil_2025.xlsx
+- Source table: AER ST3 Oil supply and disposition
+- Workbook selector: sheet `Data` · row `Condensate Production` · key `ab_condensate_production`
+- Units: cubic metres · seasonal adjustment: `False` · transform: `monthly_level` · derived transforms: `['calendar_day_rate']`
+- Cadence: monthly · timezone: `America/Edmonton`
+- Release rule: `country_local_schedule_required` · dates: `[]` · schedule: https://www.aer.ca/providing-information/data-and-reports/statistical-reports/st3 (publisher_release_calendar_not_machine_pinned)
+- Actual / revision / prior metadata: `{'actual': 'when_primary_retrieved', 'revision': 'when_publisher_marks_revision', 'prior': 'when_series_has_history'}`
+- Raw provenance: `data/macro_ingestion/raw/ca/`
+- Retrieval: `aer_st3_oil_workbook` · adapter: `scripts.macro_ingestion.adapters.ca`
+- Held observations: 0 · latest period: `None` · ledger vintage: `None` · retrieved_at: `None`
+- Verification: `catalogued_adapter_live_verified_2026-09-29` · freshness: `not_yet_checked_by_new_runner`
+- Notes: AER ST3 'Supply and Disposition of Crude Oil and Equivalent' workbook, Data sheet, SUPPLY block. Official monthly level in cubic metres (m3) plus derived calendar_day_rate = monthly_level / days_in_month. Months at or after the workbook run-date month and all-zero months are unpublished, not zero production. Prior-year archive workbook is a best-effort backfill; its failure never fails the current read. Weight 0; acquisition only.
+
+### `CA.Energy.gas_marketable_production`
+
+- Role: `context` · weight: `0.0` · policy: weight_must_remain_zero
+- Name: Canada marketable natural gas production, monthly, thousands of cubic metres
+- Publisher: Statistics Canada · distributor: Statistics Canada WDS · classification: `official`
+- Series id: `v1864626177`
+- Endpoint: https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=2510008601
+- Source table: 25-10-0086-01 Natural gas supply and disposition, monthly · coordinate: `1.8.1.0.0.0.0.0.0.0`
+- Units: thousands of cubic metres · seasonal adjustment: `False` · transform: `monthly_level` · derived transforms: `['calendar_day_rate']`
+- Cadence: monthly · timezone: `America/Toronto`
+- Release rule: `country_local_schedule_required` · dates: `[]` · schedule: https://www150.statcan.gc.ca/n1/dai-quo/cal2-eng.htm (publisher_release_calendar_not_machine_pinned)
+- Actual / revision / prior metadata: `{'actual': True, 'revision': 'wds_symbol_code_preliminary_or_revised_per_point', 'prior': 'prior_observation_in_ledger'}`
+- Raw provenance: `data/macro_ingestion/raw/ca/`
+- Retrieval: `statcan_wds_vector_history` · adapter: `scripts.macro_ingestion.adapters.ca`
+- History per fetch: latest 36 periods (WDS `latestN`), every point appended with its own `releaseTime`
+- Held observations: 0 · latest period: `None` · ledger vintage: `None` · retrieved_at: `None`
+- Verification: `catalogued_adapter_live_verified_2026-09-29` · freshness: `not_yet_checked_by_new_runner`
+- Notes: Table 25-10-0086-01, Canada / Marketable production, supply / Cubic metres (WDS scalar factor 3 = thousands). Official monthly level plus derived calendar_day_rate. Not seasonally adjusted. WDS symbolCode 1/3 recorded as preliminary/revised; per-point releaseTime stored as release_date. Weight 0.
+
+### `CA.Activity.real_manufacturing_sales`
+
+- Role: `context` · weight: `0.0` · policy: weight_must_remain_zero
+- Name: Real manufacturing sales of goods manufactured (shipments), total, 2017 dollars, seasonally adjusted
+- Publisher: Statistics Canada · distributor: Statistics Canada WDS · classification: `official`
+- Series id: `v123263908`
+- Endpoint: https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1610001301
+- Source table: 16-10-0013-01 Real manufacturing sales, orders, inventory owned and inventory to sales ratio, 2017 dollars, seasonally adjusted · coordinate: `1.1.1.0.0.0.0.0.0.0`
+- Units: millions of 2017 dollars · seasonal adjustment: `True` · transform: `monthly_level`
+- Cadence: monthly · timezone: `America/Toronto`
+- Release rule: `country_local_schedule_required` · dates: `[]` · schedule: https://www150.statcan.gc.ca/n1/dai-quo/cal2-eng.htm (publisher_release_calendar_not_machine_pinned)
+- Actual / revision / prior metadata: `{'actual': True, 'revision': 'wds_symbol_code_preliminary_or_revised_per_point', 'prior': 'prior_observation_in_ledger'}`
+- Raw provenance: `data/macro_ingestion/raw/ca/`
+- Retrieval: `statcan_wds_vector_history` · adapter: `scripts.macro_ingestion.adapters.ca`
+- History per fetch: latest 36 periods (WDS `latestN`), every point appended with its own `releaseTime`
+- Held observations: 0 · latest period: `None` · ledger vintage: `None` · retrieved_at: `None`
+- Verification: `catalogued_adapter_live_verified_2026-09-29` · freshness: `not_yet_checked_by_new_runner`
+- Notes: Volume (real) manufacturing sales. Nominal sales are not collected elsewhere in the pull; no duplicate. Weight 0.
+
+### `CA.Consumer.retail_sales_volume`
+
+- Role: `context` · weight: `0.0` · policy: weight_must_remain_zero
+- Name: Retail sales volume, retail trade total, seasonally adjusted (WDS member 'Chained Fisher volume index', published in millions of chained 2017 dollars)
+- Publisher: Statistics Canada · distributor: Statistics Canada WDS · classification: `official`
+- Series id: `v1446870181`
+- Endpoint: https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=2010006701
+- Source table: 20-10-0067-01 Monthly retail sales, price, and volume, seasonally adjusted · coordinate: `1.1.2.0.0.0.0.0.0.0`
+- Units: millions of chained (2017) dollars · seasonal adjustment: `True` · transform: `monthly_level`
+- Cadence: monthly · timezone: `America/Toronto`
+- Release rule: `country_local_schedule_required` · dates: `[]` · schedule: https://www150.statcan.gc.ca/n1/dai-quo/cal2-eng.htm (publisher_release_calendar_not_machine_pinned)
+- Actual / revision / prior metadata: `{'actual': True, 'revision': 'wds_symbol_code_preliminary_or_revised_per_point', 'prior': 'prior_observation_in_ledger'}`
+- Raw provenance: `data/macro_ingestion/raw/ca/`
+- Retrieval: `statcan_wds_vector_history` · adapter: `scripts.macro_ingestion.adapters.ca`
+- History per fetch: latest 36 periods (WDS `latestN`), every point appended with its own `releaseTime`
+- Held observations: 0 · latest period: `None` · ledger vintage: `None` · retrieved_at: `None`
+- Verification: `catalogued_adapter_live_verified_2026-09-29` · freshness: `not_yet_checked_by_new_runner`
+- Notes: Volume complement to the scored nominal CA.Consumer.retail (v1446859483, m/m SA percent, table 20-10-0056). Different table, different measure; the scored series is not touched. WDS labels the member 'Chained Fisher volume index (scaled to equal 100 in 2017)' but publishes it with UOM dollars and scalar factor millions, i.e. millions of chained (2017) dollars (July 2026 volume ~60.5bn vs ~73.7bn current prices). Weight 0.
+
+### `CA.Activity.wholesale_sales_volume`
+
+- Role: `context` · weight: `0.0` · policy: weight_must_remain_zero
+- Name: Wholesale sales volume, wholesale trade total, seasonally adjusted (WDS member 'Chained Fisher volume index', published in millions of chained 2012 dollars)
+- Publisher: Statistics Canada · distributor: Statistics Canada WDS · classification: `official`
+- Series id: `v120586538`
+- Endpoint: https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=2010000301
+- Source table: 20-10-0003-01 Wholesale sales, price and volume, by industry, seasonally adjusted · coordinate: `1.2.1.0.0.0.0.0.0.0`
+- Units: millions of chained (2012) dollars · seasonal adjustment: `True` · transform: `monthly_level`
+- Cadence: monthly · timezone: `America/Toronto`
+- Release rule: `country_local_schedule_required` · dates: `[]` · schedule: https://www150.statcan.gc.ca/n1/dai-quo/cal2-eng.htm (publisher_release_calendar_not_machine_pinned)
+- Actual / revision / prior metadata: `{'actual': True, 'revision': 'wds_symbol_code_preliminary_or_revised_per_point', 'prior': 'prior_observation_in_ledger'}`
+- Raw provenance: `data/macro_ingestion/raw/ca/`
+- Retrieval: `statcan_wds_vector_history` · adapter: `scripts.macro_ingestion.adapters.ca`
+- History per fetch: latest 36 periods (WDS `latestN`), every point appended with its own `releaseTime`
+- Held observations: 0 · latest period: `None` · ledger vintage: `None` · retrieved_at: `None`
+- Verification: `catalogued_adapter_live_verified_2026-09-29` · freshness: `not_yet_checked_by_new_runner`
+- Notes: Wholesale volume. Not previously collected. WDS labels the member 'Chained Fisher volume index (scaled to equal 100 in 2012)' but publishes it with UOM dollars and scalar factor millions, i.e. millions of chained (2012) dollars (July 2026 volume ~111.4bn vs ~137.3bn current prices). Weight 0.
+
+### `CA.Activity.real_building_investment`
+
+- Role: `context` · weight: `0.0` · policy: weight_must_remain_zero
+- Name: Investment in building construction, total residential and non-residential, all work types, seasonally adjusted, constant (2017) dollars
+- Publisher: Statistics Canada · distributor: Statistics Canada WDS · classification: `official`
+- Series id: `v1705315927`
+- Endpoint: https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3410029301
+- Source table: 34-10-0293-01 Investment in Building Construction · coordinate: `1.1.1.4.0.0.0.0.0.0`
+- Units: constant 2017 dollars · seasonal adjustment: `True` · transform: `monthly_level`
+- Cadence: monthly · timezone: `America/Toronto`
+- Release rule: `country_local_schedule_required` · dates: `[]` · schedule: https://www150.statcan.gc.ca/n1/dai-quo/cal2-eng.htm (publisher_release_calendar_not_machine_pinned)
+- Actual / revision / prior metadata: `{'actual': True, 'revision': 'wds_symbol_code_preliminary_or_revised_per_point', 'prior': 'prior_observation_in_ledger'}`
+- Raw provenance: `data/macro_ingestion/raw/ca/`
+- Retrieval: `statcan_wds_vector_history` · adapter: `scripts.macro_ingestion.adapters.ca`
+- History per fetch: latest 36 periods (WDS `latestN`), every point appended with its own `releaseTime`
+- Held observations: 0 · latest period: `None` · ledger vintage: `None` · retrieved_at: `None`
+- Verification: `catalogued_adapter_live_verified_2026-09-29` · freshness: `not_yet_checked_by_new_runner`
+- Notes: Real building investment (successor of inactive table 34-10-0175). Not previously collected. Weight 0.
+
+### `CA.Activity.crude_export_volume`
+
+- Role: `context` · weight: `0.0` · policy: weight_must_remain_zero
+- Name: Exports of crude oil and crude bitumen, Laspeyres fixed-weighted volume index (2017=100), balance of payments basis, seasonally adjusted
+- Publisher: Statistics Canada · distributor: Statistics Canada WDS · classification: `official`
+- Series id: `v1566916256`
+- Endpoint: https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1210016801
+- Source table: 12-10-0168-01 International merchandise trade, by commodity, price and volume indexes, monthly · coordinate: `1.2.2.2.2.2.15.0.0.0`
+- Units: volume index, 2017=100 · seasonal adjustment: `True` · transform: `monthly_level`
+- Cadence: monthly · timezone: `America/Toronto`
+- Release rule: `country_local_schedule_required` · dates: `[]` · schedule: https://www150.statcan.gc.ca/n1/dai-quo/cal2-eng.htm (publisher_release_calendar_not_machine_pinned)
+- Actual / revision / prior metadata: `{'actual': True, 'revision': 'wds_symbol_code_preliminary_or_revised_per_point', 'prior': 'prior_observation_in_ledger'}`
+- Raw provenance: `data/macro_ingestion/raw/ca/`
+- Retrieval: `statcan_wds_vector_history` · adapter: `scripts.macro_ingestion.adapters.ca`
+- History per fetch: latest 36 periods (WDS `latestN`), every point appended with its own `releaseTime`
+- Held observations: 0 · latest period: `None` · ledger vintage: `None` · retrieved_at: `None`
+- Verification: `catalogued_adapter_live_verified_2026-09-29` · freshness: `not_yet_checked_by_new_runner`
+- Notes: Official real/volume crude export series. StatCan monthly crude supply-disposition volumes (m3) are not exposed as a current WDS cube (25-10-0014 ended 2016); the trade volume index is the maintained official volume measure. Weight 0.
+
+### `CA.Housing.existing_home_sales`
+
+- Role: `context` · weight: `0.0` · policy: weight_must_remain_zero
+- Name: Existing (resale) home sales, national, seasonally adjusted (CREA MLS)
+- Publisher: Canadian Real Estate Association · distributor: — · classification: `proprietary_blocked`
+- Series id: `None`
+- Endpoint: https://stats.crea.ca/en-CA/
+- Units: units, seasonally adjusted · seasonal adjustment: `True` · transform: `monthly_level`
+- Cadence: monthly · timezone: `America/Toronto`
+- Release rule: `country_local_schedule_required` · dates: `[]` · schedule: https://www.crea.ca/housing-market-stats/ (publisher_release_calendar_not_machine_pinned)
+- Actual / revision / prior metadata: `{'actual': False, 'revision': 'none', 'prior': 'none'}`
+- Raw provenance: `data/macro_ingestion/raw/ca/`
+- Retrieval: `unavailable` · adapter: `scripts.macro_ingestion.adapters.ca`
+- Held observations: 0 · latest period: `None` · ledger vintage: `None` · retrieved_at: `None`
+- Verification: `gap_no_stable_lawful_primary_series` · freshness: `gap_recorded`
+- Blocked / weight note: crea_existing_home_sales_no_stable_lawful_machine_readable_primary_series
+- Notes: Recorded gap per issue #139: CREA national resale statistics are published under CREA terms of use with no stable, lawful, machine-readable primary endpoint. Do not scrape the interactive stats page or a news wire. Revisit only if CREA publishes an open data series.
 
 ## AU
 

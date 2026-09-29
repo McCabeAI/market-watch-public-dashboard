@@ -132,6 +132,26 @@ def _confirms_period(
     return in_payload and in_store
 
 
+def _allowed_point_transforms(spec: dict[str, Any]) -> frozenset[str]:
+    """Spec transform plus any opt-in ``derived_transforms`` the catalog row declares.
+
+    Rows without ``derived_transforms`` keep the legacy behaviour: every point
+    is stored under the row's single ``transform`` regardless of what the
+    adapter wrote on the point.
+    """
+    base = str(spec.get("transform", ""))
+    derived = spec.get("derived_transforms") or []
+    return frozenset({base, *(str(item) for item in derived if item is not None)})
+
+
+def _point_transform(point: dict[str, Any], transform: str, allowed: frozenset[str]) -> str:
+    candidate = point.get("transformation")
+    if candidate is None:
+        return transform
+    candidate = str(candidate)
+    return candidate if candidate in allowed else transform
+
+
 def _validate_points(points: list[dict[str, Any]]) -> str | None:
     for point in points:
         if "period" not in point:
@@ -176,17 +196,19 @@ def _classify_points(
     series_id = str(spec.get("series_id") or spec["id"])
     payload_vintage = payload.get("vintage")
     payload_vintage_str = str(payload_vintage) if payload_vintage is not None else None
+    allowed_transforms = _allowed_point_transforms(spec)
 
     for point in points:
         period = str(point["period"])
         value = float(point["value"])
+        point_transform = _point_transform(point, transform, allowed_transforms)
         raw_sha = str(payload.get("raw_sha256") or _sha256(json.dumps(point).encode()))
-        prior_row = latest_for_period(store, series_id, period, transform)
+        prior_row = latest_for_period(store, series_id, period, point_transform)
         result = append_observation(
             store,
             series_id=series_id,
             period=period,
-            transformation=transform,
+            transformation=point_transform,
             value=value,
             raw_sha256=raw_sha,
             retrieved_at=_utc_iso(when),
@@ -195,6 +217,8 @@ def _classify_points(
             revision_status=point.get("revision_status"),
             source_url=point.get("source_url"),
             prior=point.get("prior"),
+            units=point.get("units"),
+            derivation=point.get("derivation"),
         )
         if result.duplicate:
             continue
@@ -204,6 +228,7 @@ def _classify_points(
                 "id": spec["id"],
                 "period": period,
                 "value": value,
+                "transformation": point_transform,
                 "revision_status": point.get("revision_status"),
             }
         )
