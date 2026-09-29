@@ -1,0 +1,63 @@
+{
+  "families": {
+    "central_bank_research": {
+      "as_of": "2026-09-28T06:26:47.664507-04:00",
+      "digest": "4a903599bf7b7603ff26d41e62568ef2008d1c1daf440e4d69a098063fbbd423",
+      "status": "fresh"
+    },
+    "macro_hard": {
+      "as_of": null,
+      "digest": "facc46bfff096b2ac5e2697016302a8af726555d67a0529fa4da0af9835ac3e3",
+      "status": "stale"
+    },
+    "market_state": {
+      "as_of": "2026-09-29T08:54:03Z",
+      "digest": "1560c5b6cbba7a36a5bdd2fd6150a0dafe202322f662c773bef8b7f47b45ae95",
+      "status": "fresh"
+    },
+    "news": {
+      "as_of": "2026-09-29T04:44:08.485973-04:00",
+      "digest": "72188ffe65bb2386c5b70fdf1ffd6af4a62fb9568a173c934173c4c5966516c8",
+      "status": "fresh"
+    }
+  },
+  "market_legs": {
+    "AU": "ok",
+    "CA": "ok",
+    "FX": "ok",
+    "US": "ok"
+  },
+  "market_state_generated_at": "2026-09-29T08:54:03Z",
+  "mode": "live",
+  "news_acquisition": {
+    "cutoff": "2026-09-29T04:44:08.485973-04:00",
+    "mode": "live",
+    "partial": false,
+    "receipts": [
+      {
+        "candidate_count": 12,
+        "checked_at": "2026-09-29T04:44:08.485973-04:00",
+        "failure": null,
+        "result_count": 5,
+        "source": "bloomberg",
+        "status": "ok",
+        "surface": "https://www.bing.com/news/search?q=site%3Abloomberg.com%20%28Federal%20Reserve%20OR%20FOMC%20OR%20inflation%20OR%20CPI%20OR%20payrolls%20OR%20Treasury%20OR%20yields%20OR%20oil%20OR%20Brent%20OR%20crude%20OR%20Hormuz%20OR%20OPEC%20OR%20FX%20OR%20dollar%20OR%20tariff%20OR%20sanctions%20OR%20%22central%20bank%22%20OR%20RBA%20OR%20%22Bank%20of%20Canada%22%20OR%20RBNZ%20OR%20ECB%20OR%20%22Bank%20of%20Japan%22%29&format=rss&qft=interval%3d%227%22"
+      },
+      {
+        "candidate_count": 50,
+        "checked_at": "2026-09-29T04:44:08.485973-04:00",
+        "failure": null,
+        "result_count": 4,
+        "source": "reuters",
+        "status": "ok",
+        "surface": "https://www.reuters.com/arc/outboundfeeds/news-sitemap/?outputType=xml"
+      }
+    ]
+  },
+  "offline": false,
+  "overnight_run_id": "overnight-20260929",
+  "required_preflight_block": null,
+  "required_preflight_ok": true,
+  "stage": "02_acquire",
+  "status": "succeeded"
+}
