@@ -122,26 +122,51 @@ def _score_level_parts(spec: Mapping[str, Any]) -> tuple[str, str, str]:
     return score_text, klass, width_text
 
 
-def _data_state_markup(data_state: str | None) -> str:
+def _data_state_markup(data_state: str | None, display_label: str | None = None) -> str:
     if not data_state or data_state == "ok":
         return ""
-    label = DATA_STATE_LABELS.get(data_state)
+    label = display_label or DATA_STATE_LABELS.get(data_state)
     if not label:
         return ""
-    extra = ""
-    if data_state == "failed_fetch":
-        # retrieved_at should appear in evidence meta from observation; label only here
-        pass
-    return f'<span class="evidence-data-state">{_esc(label)}</span>{extra}'
+    return f'<span class="evidence-data-state">{_esc(label)}</span>'
+
+
+def _member_for_observation(
+    members: list[Mapping[str, Any]], observation_id: str
+) -> Mapping[str, Any] | None:
+    for member in members:
+        if str(member.get("observation_id")) == observation_id:
+            return member
+    return None
 
 
 def _member_ineligibility(
     members: list[Mapping[str, Any]], observation_id: str
 ) -> list[str]:
-    for member in members:
-        if str(member.get("observation_id")) == observation_id:
-            return list(member.get("ineligibility") or [])
-    return []
+    member = _member_for_observation(members, observation_id)
+    if member is None:
+        return []
+    return list(member.get("ineligibility") or [])
+
+
+def _resolved_data_state(
+    obs: Mapping[str, Any], members: list[Mapping[str, Any]]
+) -> tuple[str, str | None]:
+    """Use the attention member's state for this observation_id.
+
+    Stale is classified on the member. The projection row can still say ``ok``.
+    When no member matches, the projection state and label are the fallback.
+    """
+    member = _member_for_observation(members, str(obs.get("observation_id") or ""))
+    if member is not None and member.get("data_state"):
+        state = str(member.get("data_state") or "ok")
+        label = member.get("display_label") or DATA_STATE_LABELS.get(state)
+    else:
+        state = str(obs.get("data_state") or "ok")
+        label = obs.get("display_label") or DATA_STATE_LABELS.get(state)
+    if state == "ok":
+        return "ok", None
+    return state, label
 
 
 def _history_limitation_text(reasons: list[str]) -> str | None:
@@ -257,8 +282,8 @@ def _render_evidence_row(
     elif obs.get("geography"):
         geo_bits.append(str(obs["geography"]))
     sa = _seasonal_text(obs)
-    data_state = str(obs.get("data_state") or "ok")
-    state_html = _data_state_markup(data_state)
+    data_state, display_label = _resolved_data_state(obs, members)
+    state_html = _data_state_markup(data_state, display_label)
     source_url = obs.get("source_url") or "#"
     publisher = obs.get("publisher") or "Source"
     retrieved = obs.get("retrieved_at") or ""
@@ -339,13 +364,20 @@ def _render_country_evidence(
     return "".join(parts)
 
 
-def _audit_row(obs: Mapping[str, Any], link_only: bool = False) -> str:
+def _audit_row(
+    obs: Mapping[str, Any],
+    link_only: bool = False,
+    state_markup: str = "",
+) -> str:
     oid = str(obs["observation_id"])
     label = obs.get("label") or obs.get("series_id") or oid
     if link_only:
+        lead = f"<strong>{_esc(label)}</strong>"
+        if state_markup:
+            lead = f"{lead} {state_markup}"
         return (
             f'<div class="evidence-grid-row" data-observation-id="{_esc(oid)}">'
-            f"<strong>{_esc(label)}</strong> — "
+            f"{lead} — "
             f'see <a href="#ev-{_esc(oid)}">{_esc(oid[:12])}…</a> in Country Evidence'
             "</div>"
         )
@@ -365,6 +397,7 @@ def _render_score_drilldown(
     country_code: str,
     observations: list[Mapping[str, Any]],
     score_state: Mapping[str, Any],
+    members: list[Mapping[str, Any]],
 ) -> str:
     obs_by_topic: dict[str, list[Mapping[str, Any]]] = {t: [] for t in TOPIC_IDS}
     for obs in observations:
@@ -384,7 +417,14 @@ def _render_score_drilldown(
         hard_rows = "".join(_audit_row(o) for o in scored) or (
             '<div class="evidence-grid-row">No scored inputs for this dimension in projection.</div>'
         )
-        ctx_rows = "".join(_audit_row(o, link_only=True) for o in context)
+        ctx_rows = "".join(
+            _audit_row(
+                o,
+                link_only=True,
+                state_markup=_data_state_markup(*_resolved_data_state(o, members)),
+            )
+            for o in context
+        )
         if not ctx_rows:
             ctx_rows = '<div class="evidence-grid-row">No context rows for this topic.</div>'
 
@@ -438,7 +478,7 @@ def render_country_detail(
         _render_score_compact(code, score_state),
         _render_wmn(attention_country, obs_map),
         _render_country_evidence(code, observations, members),
-        _render_score_drilldown(code, observations, score_state),
+        _render_score_drilldown(code, observations, score_state, members),
         "</section>",
     ]
     return "".join(chunks)

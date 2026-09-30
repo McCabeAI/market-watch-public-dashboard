@@ -1,6 +1,6 @@
 # Country Detail validation
 
-Status: unit-tested integration. Browser review is still pending. No screenshot pass is claimed.
+Status: unit-tested integration. Stale wins over revised, and Country Evidence shows that label. A second data check and a reloaded browser pass confirmed the US and JP panes. Opus review 2 is the remaining approval.
 
 ## What was integrated
 
@@ -18,7 +18,7 @@ The shared Country Detail renderer is wired into the static dashboard after the 
 
 ```text
 PYTHONPATH=. python3 -m unittest tests.test_country_detail_contract tests.test_country_detail_attention tests.test_country_detail_projection tests.test_country_detail_render tests.test_country_detail_apply -v
-Ran 28 tests in 0.046s
+Ran 30 tests in 0.050s
 OK
 ```
 
@@ -65,6 +65,6 @@ In `tests/fixtures/country_detail/review.html`:
 
 - CA energy rows are tail points only (3 history points on the AER oil and gas series in this projection). That is below the monthly notable minimum, so those rows do not clear What Matters Now.
 - Short stored history is the reason several fresh rows stay quiet. AU is inside its 12-day registry window and still has zero findings: 12 rows are `insufficient_history`, 2 are `seasonal_history_insufficient`, and 1 is `not_material`.
-- Projection `as_of` is the newest `retrieved_at` (`2026-09-30T14:02:01Z` on the AU annual cache). US, EA, and JP rows are entirely `stale` against registry `stale_after_days` of 4. NZ is mostly stale; its revised rows are `insufficient_history`. CA mixes stale rows with short or seasonal-peer samples. Zero live findings is an allowed result of those rules.
+- Projection `as_of` is the newest `retrieved_at` (`2026-09-30T14:02:01Z` on the AU annual cache). US, EA, JP, and NZ rows are entirely `stale` against registry `stale_after_days` of 4. Revised projection rows are included in that stale check. CA mixes stale rows with short or seasonal-peer samples. Zero live findings is an allowed result of those rules.
 - One CA GDP monthly series is stored with cadence `quarterly` and month periods, so it is not ranked.
-- Browser review of `tests/fixtures/country_detail/review.html` is still pending.
+- Stale now wins over a revised or preliminary projection state. Evidence rows use the attention member's label, so the real US and JP panes show Stale. A reloaded browser check of `review.html?v=stale2` showed `Stale · 55.4` on ISM Services PMI and the US quiet sentence. The score file hash was unchanged.

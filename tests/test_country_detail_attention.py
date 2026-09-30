@@ -257,6 +257,119 @@ class CountryDetailAttentionAdversarialTest(unittest.TestCase):
         self.assertEqual(failed.get("retrieved_at"), fixture["expect"]["failed_fetch_retrieved_at"])
         self.assertNotEqual(failed.get("retrieved_at"), fixture["failed_fetch_timestamps"]["attempted_retrieved_at"])
 
+    def test_revised_or_preliminary_stale_extreme_is_not_outlier(self) -> None:
+        """Stale wins over a revised or preliminary projection state.
+
+        Invented 60-point monthly SA sample. The latest value is the unique
+        maximum, so a fresh revised row can still be an outlier.
+        """
+        as_of = "2024-07-01"
+        stale_retrieved_at = "2024-06-21T00:00:00Z"  # 10 days before as_of
+        fresh_retrieved_at = "2024-07-01T00:00:00Z"
+
+        def observation(*, data_state: str, revision_status: str, retrieved_at: str) -> dict:
+            history = []
+            year, month = 2019, 1
+            for index in range(59):
+                history.append(
+                    {
+                        "reference_period": f"{year:04d}-{month:02d}",
+                        "value": index + 1,
+                    }
+                )
+                month += 1
+                if month == 13:
+                    month = 1
+                    year += 1
+            return {
+                "label": "fixture_extreme",
+                "methodology_breaks": [],
+                "comparison_broken": False,
+                "revision_status": revision_status,
+                "vintage": "fixture-v1",
+                "retrieved_at": retrieved_at,
+                "observed_at": retrieved_at,
+                "source_url": "https://example.invalid/country-detail-fixture/revised-stale",
+                "country": "US",
+                "series_id": "FIXTURE_REVISED_STALE_EXTREME",
+                "reference_period": "2023-12",
+                "transformation": "mom_pct",
+                "geography": "US",
+                "seasonal_adjustment": True,
+                "units": "index points",
+                "nominal_basis": "index",
+                "score_role": "context",
+                "weight": 0,
+                "topic": "activity",
+                "cadence": "monthly",
+                "release_family": "fixture_revised_stale_extreme",
+                "data_state": data_state,
+                "value": 500,
+                "history": history,
+            }
+
+        def evaluate(obs: dict) -> dict:
+            assert evaluate_observations is not None
+            return evaluate_observations(
+                [obs],
+                as_of=as_of,
+                stale_after_days=4,
+            )
+
+        def assert_stale_not_finding(result: dict) -> None:
+            self.assertEqual(result["finding_count"], 0)
+            self.assertEqual(result["findings"], [])
+            row = result["members"][0]
+            self.assertEqual(row["comparable_n"], 60)
+            self.assertEqual(row["data_state"], "stale")
+            self.assertEqual(row["attention_status"], "none")
+            self.assertIsNone(row["badge_text"])
+            self.assertIn("stale", row["ineligibility"])
+            self.assertNotEqual(row["badge_text"], "Outlier")
+            self.assertNotEqual(row["badge_text"], "Notable")
+
+        revised_stale = evaluate(
+            observation(
+                data_state="revised",
+                revision_status="revised",
+                retrieved_at=stale_retrieved_at,
+            )
+        )
+        assert_stale_not_finding(revised_stale)
+
+        preliminary_stale = evaluate(
+            observation(
+                data_state="revised",
+                revision_status="preliminary",
+                retrieved_at=stale_retrieved_at,
+            )
+        )
+        assert_stale_not_finding(preliminary_stale)
+
+        ok_stale = evaluate(
+            observation(
+                data_state="ok",
+                revision_status="final",
+                retrieved_at=stale_retrieved_at,
+            )
+        )
+        assert_stale_not_finding(ok_stale)
+
+        fresh_revised = evaluate(
+            observation(
+                data_state="revised",
+                revision_status="revised",
+                retrieved_at=fresh_retrieved_at,
+            )
+        )
+        self.assertEqual(fresh_revised["finding_count"], 1)
+        row = fresh_revised["members"][0]
+        self.assertEqual(row["comparable_n"], 60)
+        self.assertEqual(row["data_state"], "revised")
+        self.assertEqual(row["attention_status"], "outlier")
+        self.assertEqual(row["badge_text"], "Outlier")
+        self.assertNotIn("stale", row["ineligibility"])
+
 
 if __name__ == "__main__":
     unittest.main()

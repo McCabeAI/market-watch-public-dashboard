@@ -256,6 +256,9 @@ def _effective_data_state(
 
     Classification priority for data states that block or replace ``ok``:
     missing, failed fetch, structurally non-comparable, stale, then revised.
+    A projection row already marked ``revised`` (including a preliminary
+    print stored as ``revised``) is still checked for staleness. Stale wins.
+    A revised row that is not stale stays ``revised``.
     ``comparison_broken`` is left as ``ok`` so ``classify_attention`` records
     ``structurally_non_comparable``.
     """
@@ -271,7 +274,7 @@ def _effective_data_state(
         return "ok"
     retrieved_at = observation.get("retrieved_at")
     if (
-        source_state == "ok"
+        source_state in {"ok", "revised"}
         and retrieved_at
         and policy.is_stale(
             retrieved_at=str(retrieved_at),

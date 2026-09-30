@@ -216,6 +216,69 @@ class CountryDetailRenderTest(unittest.TestCase):
         self.assertIsNotNone(finding_match)
         self.assertIsNotNone(evidence_match)
 
+    def test_evidence_shows_attention_stale_when_projection_is_ok(self) -> None:
+        oid = "1111111111111111111111111111111111111111111111111111111111111111"
+        retrieved_at = "2024-06-01T00:00:00Z"
+        projection = {
+            "observations": [
+                {
+                    "observation_id": oid,
+                    "label": "Invented stale fixture",
+                    "topic": "inflation",
+                    "series_id": "FIXTURE_STALE_MEMBER",
+                    "reference_period": "2024-06",
+                    "value": 4.2,
+                    "units": "index points",
+                    "transformation": "mom_pct",
+                    "geography": "US",
+                    "data_state": "ok",
+                    "display_label": None,
+                    "retrieved_at": retrieved_at,
+                    "score_role": "context",
+                    "publisher": "Fixture source",
+                }
+            ],
+        }
+        attention = {
+            "finding_count": 0,
+            "findings": [],
+            "members": [
+                {
+                    "observation_id": oid,
+                    "data_state": "stale",
+                    "display_label": "Stale",
+                    "ineligibility": ["stale"],
+                }
+            ],
+        }
+        html = render_country_detail(
+            "US",
+            projection,
+            attention,
+            synthetic_score_state(),
+        )
+        evidence = re.search(
+            rf'<article class="evidence-item" data-observation-id="{oid}".*?</article>',
+            html,
+        )
+        self.assertIsNotNone(evidence)
+        row_html = evidence.group(0)
+        self.assertIn("Stale", row_html)
+        self.assertIn('class="evidence-data-state">Stale</span>', row_html)
+        meta = re.search(r'class="evidence-item-meta">(.*?)</div>', row_html)
+        self.assertIsNotNone(meta)
+        # An ok projection rendered as current-only would omit the state span.
+        self.assertTrue(
+            meta.group(1).startswith('<span class="evidence-data-state">Stale</span>')
+        )
+        self.assertEqual(row_html.count(retrieved_at), 0)
+        context = re.search(
+            rf'<div class="evidence-grid-row" data-observation-id="{oid}">.*?</div>',
+            html,
+        )
+        self.assertIsNotNone(context)
+        self.assertIn('class="evidence-data-state">Stale</span>', context.group(0))
+
     def test_stylesheet_contract(self) -> None:
         # Browser viewport widths are verified elsewhere; this is a static stylesheet contract.
         css = CSS_PATH.read_text(encoding="utf-8")
