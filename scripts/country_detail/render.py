@@ -22,6 +22,16 @@ from scripts.country_detail.policy import (
     TRANSFORMATION_LABELS,
     WMN_QUIET_TEXT,
 )
+from scripts.country_detail.present import (
+    bucket_label,
+    format_macro_value,
+    history_limitation,
+    plain_series_name,
+    point_contribution,
+    score_print_text,
+    series_synopsis,
+    why_it_surfaced,
+)
 from scripts.temperature_level import display_score, temperature_class
 
 _CSS_PATH = Path(__file__).resolve().parent / "country_detail.css"
@@ -59,13 +69,8 @@ def _transformation_label(transformation: str | None) -> str:
     return str(TRANSFORMATION_LABELS.get(transformation, transformation.replace("_", " ")))
 
 
-def _format_value(value: Any, units: str | None) -> str:
-    if value is None:
-        return "—"
-    u = (units or "").strip().lower()
-    if u in ("percent", "%", "pct") or u.startswith("percent "):
-        return f"{value}%"
-    return f"{value} {units or ''}".strip()
+def _format_value(value: Any, units: str | None, transformation: str | None = None) -> str:
+    return format_macro_value(value, units, transformation)
 
 
 def _seasonal_text(obs: Mapping[str, Any]) -> str:
@@ -169,15 +174,8 @@ def _resolved_data_state(
     return state, label
 
 
-def _history_limitation_text(reasons: list[str]) -> str | None:
-    if "insufficient_history" in reasons:
-        return "History table omitted: comparable sample below the notable minimum (insufficient_history)."
-    if "seasonal_history_insufficient" in reasons:
-        return (
-            "History table omitted: seasonal peer sample below the notable minimum "
-            "(seasonal_history_insufficient)."
-        )
-    return None
+def _history_limitation_text(reasons: list[str]) -> tuple[str, str] | None:
+    return history_limitation(reasons)
 
 
 def _related_obs_text(
@@ -189,9 +187,9 @@ def _related_obs_text(
     for rid in related_ids:
         obs = obs_map.get(rid)
         if obs:
-            parts.append(f"{obs.get('label', rid)} ({rid[:8]}…)")
+            parts.append(plain_series_name(obs))
         else:
-            parts.append(rid)
+            parts.append("a related series")
     return "; ".join(parts)
 
 
@@ -246,20 +244,36 @@ def _render_wmn(
             )
             if badge:
                 parts.append(f'<span class="wmn-badge">{_esc(badge)}</span>')
-            geo = _geography_label(finding.get("geography"))
+            obs = obs_map.get(oid) or finding
+            geo = _geography_label(finding.get("geography") or obs.get("geography"))
             if geo:
                 parts.append(f'<p class="wmn-geo">{_esc(geo)}</p>')
-            parts.append(f'<p class="wmn-reason">{_esc(finding.get("reason", ""))}</p>')
-            parts.append(
-                f'<p class="wmn-headline">{_esc(finding.get("headline_text", ""))}</p>'
-            )
+            parts.append(f'<h3 class="wmn-series">{_esc(plain_series_name(obs))}</h3>')
+            value_s = _format_value(obs.get("value"), obs.get("units"), obs.get("transformation"))
+            period = _format_period(obs.get("reference_period") or finding.get("reference_period"))
+            value_bits = " · ".join(bit for bit in (value_s, period) if bit)
+            parts.append(f'<p class="wmn-value">{_esc(value_bits)}</p>')
+            parts.append(f'<p class="wmn-bucket">{_esc(bucket_label(obs))}</p>')
+            parts.append(f'<p class="wmn-synopsis">{_esc(series_synopsis(obs))}</p>')
+            parts.append(f'<p class="wmn-why">{_esc(why_it_surfaced(finding, obs))}</p>')
             related = list(finding.get("related_observation_ids") or [])
             rel_text = _related_obs_text(related, obs_map)
             if rel_text:
                 parts.append(
-                    f'<p class="wmn-related">Related observations: {_esc(rel_text)}</p>'
+                    f'<p class="wmn-related">Related: {_esc(rel_text)}</p>'
                 )
-            parts.append("</article>")
+            parts.append('<details class="wmn-technical"><summary>Technical detail</summary>')
+            parts.append(f'<p class="wmn-reason">{_esc(finding.get("reason", ""))}</p>')
+            parts.append(
+                f'<p class="wmn-headline">{_esc(finding.get("headline_text", ""))}</p>'
+            )
+            series_id = obs.get("series_id") or finding.get("series_id")
+            if series_id:
+                parts.append(f'<p class="evidence-code">{_esc(series_id)}</p>')
+            raw_transformation = obs.get("transformation") or finding.get("transformation")
+            if raw_transformation:
+                parts.append(f'<p class="evidence-code">{_esc(raw_transformation)}</p>')
+            parts.append("</details></article>")
         parts.append("</ol>")
     parts.append("</section>")
     return "".join(parts)
@@ -271,42 +285,22 @@ def _render_evidence_row(
 ) -> str:
     oid = str(obs["observation_id"])
     topic = str(obs.get("topic") or "other")
-    label = obs.get("label") or obs.get("series_id") or oid
-    value_s = _format_value(obs.get("value"), obs.get("units"))
+    label = plain_series_name(obs)
+    value_s = _format_value(obs.get("value"), obs.get("units"), obs.get("transformation"))
     period = _format_period(obs.get("reference_period"))
-    transform = _transformation_label(str(obs.get("transformation") or ""))
-    geo_bits: list[str] = []
     geo_label = _geography_label(obs.get("geography"))
-    if geo_label:
-        geo_bits.append(geo_label)
-    elif obs.get("geography"):
-        geo_bits.append(str(obs["geography"]))
-    sa = _seasonal_text(obs)
     data_state, display_label = _resolved_data_state(obs, members)
     state_html = _data_state_markup(data_state, display_label)
     source_url = obs.get("source_url") or "#"
     publisher = obs.get("publisher") or "Source"
     retrieved = obs.get("retrieved_at") or ""
 
-    meta_parts = [
-        _esc(value_s),
-        _esc(period) if period else "",
-        _esc(transform) if transform else "",
-    ]
-    series_id = obs.get("series_id")
-    if series_id:
-        meta_parts.append(_esc(str(series_id)))
-    raw_transformation = obs.get("transformation")
-    if raw_transformation:
-        meta_parts.append(_esc(str(raw_transformation)))
-    if geo_bits:
-        meta_parts.append(_esc(", ".join(geo_bits)))
-    meta_parts.append(_esc(sa))
+    meta_parts = [_esc(value_s), _esc(period) if period else "", _esc(bucket_label(obs))]
+    if geo_label:
+        meta_parts.append(_esc(geo_label))
     meta_line = " · ".join(p for p in meta_parts if p)
     if state_html:
         meta_line = f"{state_html} · {meta_line}" if meta_line else state_html
-    if data_state == "failed_fetch" and retrieved:
-        meta_line = f"{meta_line} · retrieved {_esc(retrieved)}".strip(" · ")
 
     history = list(obs.get("history") or [])
     reasons = _member_ineligibility(members, oid)
@@ -314,25 +308,48 @@ def _render_evidence_row(
 
     parts = [
         f'<article class="evidence-item" data-observation-id="{_esc(oid)}" data-topic="{_esc(topic)}">',
+        '<details class="evidence-details">',
+        "<summary>",
         f'<div class="evidence-item-header">{_esc(label)}</div>',
         f'<div class="evidence-item-meta">{meta_line}</div>',
-        f'<a href="{_esc(str(source_url))}" rel="noopener noreferrer">{_esc(publisher)}</a>',
-        '<details class="history-drill"><summary>History</summary>',
+        "</summary>",
+        '<div class="evidence-technical">',
+        f'<p class="evidence-synopsis">{_esc(series_synopsis(obs))}</p>',
     ]
+    series_id = obs.get("series_id")
+    if series_id:
+        parts.append(f'<p class="evidence-code">Series {_esc(series_id)}</p>')
+    raw_transformation = obs.get("transformation")
+    if raw_transformation:
+        parts.append(
+            f'<p class="evidence-code">Transform {_esc(raw_transformation)}'
+            f" · {_esc(_transformation_label(str(raw_transformation)))}</p>"
+        )
+    parts.append(f'<p class="evidence-code">{_esc(_seasonal_text(obs))}</p>')
+    if obs.get("geography") and not geo_label:
+        parts.append(f'<p class="evidence-code">Geography {_esc(obs.get("geography"))}</p>')
+    if data_state == "failed_fetch" and retrieved:
+        parts.append(f'<p class="evidence-code">Retrieved {_esc(retrieved)}</p>')
+    parts.append(
+        f'<a href="{_esc(str(source_url))}" rel="noopener noreferrer">{_esc(publisher)}</a>'
+    )
+    parts.append('<details class="history-drill"><summary>History</summary>')
     if history:
         parts.append('<table class="history-table"><thead><tr><th>Period</th><th>Value</th></tr></thead><tbody>')
         for point in history:
             parts.append(
                 "<tr><td>"
                 f'{_esc(_format_period(point.get("reference_period") or point.get("period")))}'
-                f"</td><td>{_esc(_format_value(point.get('value'), obs.get('units')))}</td></tr>"
+                f"</td><td>{_esc(_format_value(point.get('value'), obs.get('units'), obs.get('transformation')))}</td></tr>"
             )
         parts.append("</tbody></table>")
     elif limitation:
-        parts.append(f'<p class="history-limitation">{_esc(limitation)}</p>')
+        prose, code = limitation
+        parts.append(f'<p class="history-limitation">{_esc(prose)}</p>')
+        parts.append(f'<p class="evidence-code">{_esc(code)}</p>')
     else:
         parts.append('<p class="history-limitation">No history points in projection.</p>')
-    parts.append("</details></article>")
+    parts.append("</details></div></details></article>")
     return "".join(parts)
 
 
@@ -366,11 +383,13 @@ def _render_country_evidence(
 
 def _audit_row(
     obs: Mapping[str, Any],
+    country_code: str,
+    score_state: Mapping[str, Any],
     link_only: bool = False,
     state_markup: str = "",
 ) -> str:
     oid = str(obs["observation_id"])
-    label = obs.get("label") or obs.get("series_id") or oid
+    label = plain_series_name(obs)
     if link_only:
         lead = f"<strong>{_esc(label)}</strong>"
         if state_markup:
@@ -378,17 +397,29 @@ def _audit_row(
         return (
             f'<div class="evidence-grid-row" data-observation-id="{_esc(oid)}">'
             f"{lead} — "
-            f'see <a href="#ev-{_esc(oid)}">{_esc(oid[:12])}…</a> in Country Evidence'
+            f'<a href="#ev-{_esc(oid)}">Country Evidence</a>'
             "</div>"
         )
     period = _format_period(obs.get("reference_period"))
-    value_s = _format_value(obs.get("value"), obs.get("units"))
-    weight = obs.get("weight")
-    role = obs.get("score_role") or ""
-    weight_bit = f" · weight {weight}" if weight is not None and role == "scored" else ""
+    contribution = point_contribution(obs, country_code, score_state)
+    value_s = score_print_text(obs, contribution)
+    points = ""
+    technical = ""
+    if contribution:
+        points = f' <span class="score-points">{_esc(contribution["text"])}</span>'
+        level_text = f"{float(contribution['level']):.2f}"
+        weight_text = f"{float(contribution['weight']):.2f}"
+        technical = (
+            '<details class="score-input-technical"><summary>Score detail</summary>'
+            f'<p class="evidence-code">Component level {_esc(level_text)}'
+            f" · weight {_esc(weight_text)}"
+            " · points versus the neutral 50 anchor.</p></details>"
+        )
     return (
         f'<div class="evidence-grid-row" id="ev-{_esc(oid)}" data-observation-id="{_esc(oid)}">'
-        f"<strong>{_esc(label)}</strong> · {_esc(value_s)} · {_esc(period)}{_esc(weight_bit)}"
+        f"<strong>{_esc(label)}</strong> · {_esc(value_s)}"
+        f"{(' · ' + _esc(period)) if period else ''}"
+        f"{points}{technical}"
         "</div>"
     )
 
@@ -412,14 +443,26 @@ def _render_score_drilldown(
         topic_obs = obs_by_topic.get(topic, [])
 
         scored = [o for o in topic_obs if o.get("score_role") == "scored"]
-        context = [o for o in topic_obs if o.get("score_role") in ("context", "unscored")]
+        scoring = [o for o in scored if o.get("score_input")]
+        hard = scoring or scored
+        hard_ids = {str(o.get("observation_id")) for o in hard}
+        context = [
+            o
+            for o in topic_obs
+            if str(o.get("observation_id")) not in hard_ids
+            and o.get("score_role") in ("context", "unscored", "scored")
+        ]
 
-        hard_rows = "".join(_audit_row(o) for o in scored) or (
+        hard_rows = "".join(
+            _audit_row(o, country_code, score_state) for o in hard
+        ) or (
             '<div class="evidence-grid-row">No scored inputs for this dimension in projection.</div>'
         )
         ctx_rows = "".join(
             _audit_row(
                 o,
+                country_code,
+                score_state,
                 link_only=True,
                 state_markup=_data_state_markup(*_resolved_data_state(o, members)),
             )

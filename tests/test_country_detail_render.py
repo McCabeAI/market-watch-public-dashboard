@@ -286,6 +286,194 @@ class CountryDetailRenderTest(unittest.TestCase):
         self.assertIn(".score-compact", css)
         self.assertIn(".what-matters-now", css)
 
+    def test_evidence_rows_are_collapsed_and_hide_internal_codes(self) -> None:
+        oid = "2222222222222222222222222222222222222222222222222222222222222222"
+        projection = {
+            "observations": [
+                {
+                    "observation_id": oid,
+                    "label": "Monthly change in employed persons, seasonally adjusted (mom change thousands sa)",
+                    "topic": "labor",
+                    "series_id": "A84423043C",
+                    "reference_period": "2026-07",
+                    "value": -15.8,
+                    "units": "thousands",
+                    "transformation": "mom_change_thousands_sa",
+                    "score_role": "scored",
+                    "score_input": True,
+                    "catalog_id": "AU.Labor.employment",
+                    "publisher": "ABS",
+                    "source_url": "https://example.invalid/au/employment",
+                }
+            ]
+        }
+        attention = {
+            "finding_count": 1,
+            "findings": [
+                {
+                    "observation_id": oid,
+                    "attention_status": "interesting",
+                    "badge_text": "Interesting",
+                    "headline_text": "mom change thousands sa -15.8",
+                    "reason": (
+                        "Reversal: mom change thousands sa ran +38.2, +80.2, and -15.8. "
+                        "The latest -15.8 flips the prior direction of travel. "
+                        "A historical percentile badge is not claimed (insufficient_history)."
+                    ),
+                    "related_observation_ids": [],
+                    "travel_pattern": "reversal",
+                    "travel_run_length": 2,
+                    "reference_period": "2026-07",
+                    "score_role": "scored",
+                    "topic": "labor",
+                    "transformation": "mom_change_thousands_sa",
+                    "units": "thousands",
+                    "series_id": "A84423043C",
+                }
+            ],
+            "members": [],
+        }
+        html = render_country_detail("AU", projection, attention, synthetic_score_state())
+        self.assertIn('class="evidence-details"', html)
+        self.assertNotIn('class="evidence-details" open', html)
+        visible = re.sub(r"<details\b[^>]*>.*?</details>", "", html, flags=re.S)
+        self.assertNotIn("mom_change_thousands_sa", visible)
+        self.assertNotIn("insufficient_history", visible)
+        self.assertIn("Monthly change in employed persons, seasonally adjusted", visible)
+        self.assertIn("-15.80k", visible)
+        self.assertIn("JUL 2026", visible)
+        self.assertIn("Labor", visible)
+        self.assertIn("How many jobs were added or lost", visible)
+        self.assertIn("reversed direction", visible)
+        self.assertIn("too short for a historical notable or outlier label", visible)
+        self.assertIn("mom_change_thousands_sa", html)
+        self.assertIn("insufficient_history", html)
+
+    def test_stock_thousands_hide_seasonal_unit_code(self) -> None:
+        from scripts.country_detail.present import format_macro_value
+
+        shown = format_macro_value(14600.81, "thousands_sa", "level")
+        self.assertEqual(shown, "14,600.81 thousand")
+        self.assertNotIn("thousands_sa", shown)
+        oid = "4444444444444444444444444444444444444444444444444444444444444444"
+        html = render_country_detail(
+            "AU",
+            {
+                "observations": [
+                    {
+                        "observation_id": oid,
+                        "label": "Monthly change in employed persons, seasonally adjusted (level thousands sa)",
+                        "topic": "labor",
+                        "series_id": "A84423043A",
+                        "reference_period": "2025-08",
+                        "value": 14600.81,
+                        "units": "thousands_sa",
+                        "transformation": "level_thousands_sa",
+                        "score_role": "context",
+                        "score_input": False,
+                    }
+                ]
+            },
+            {"finding_count": 0, "findings": [], "members": []},
+            synthetic_score_state(),
+        )
+        meta = re.search(r'class="evidence-item-meta">([^<]+)', html)
+        header = re.search(r'class="evidence-item-header">([^<]+)', html)
+        self.assertIsNotNone(meta)
+        self.assertIsNotNone(header)
+        self.assertEqual(header.group(1), "Level of employed persons, seasonally adjusted")
+        self.assertIn("14,600.81 thousand", meta.group(1))
+        self.assertNotIn("thousands_sa", meta.group(1))
+        self.assertIn("The number of people employed.", html)
+
+    def test_scored_input_shows_point_contribution_not_raw_weight(self) -> None:
+        oid = "3333333333333333333333333333333333333333333333333333333333333333"
+        projection = {
+            "observations": [
+                {
+                    "observation_id": oid,
+                    "label": "Unemployment Rate",
+                    "topic": "labor",
+                    "series_id": "UNRATE",
+                    "reference_period": "2026-08",
+                    "value": 4.1,
+                    "units": "percent",
+                    "transformation": "percent",
+                    "score_role": "scored",
+                    "score_input": True,
+                    "weight": 0.7,
+                    "catalog_id": "US.Labor.unemployment",
+                }
+            ]
+        }
+        score_state = synthetic_score_state()
+        score_state["baseline_score"] = 50
+        score_state = {
+            "baseline_score": 50,
+            "countries": {
+                "US": {
+                    **{
+                        dimension: score_state[dimension]
+                        for dimension in policy.SCORE_DIMENSIONS
+                    },
+                    "Labor": {
+                        **score_state["Labor"],
+                        "coverage": 1.0,
+                        "component_state": {
+                            "unemployment": {
+                                "observed": True,
+                                "level": 52.0,
+                                "weight": 0.7,
+                                "transform_value": 4.1,
+                            }
+                        },
+                    },
+                }
+            },
+        }
+        html = render_country_detail(
+            "US",
+            projection,
+            synthetic_attention_quiet(),
+            score_state,
+        )
+        row = re.search(
+            rf'<div class="evidence-grid-row" id="ev-{oid}".*?</div>',
+            html,
+        )
+        self.assertIsNotNone(row)
+        face = re.sub(r"<details\b[^>]*>.*?</details>", "", row.group(0), flags=re.S)
+        self.assertIn("4.10%", face)
+        self.assertIn("+1.40 points in Labor", face)
+        self.assertNotIn("weight", face)
+        self.assertNotIn("4.100000", html)
+
+    def test_percent_values_use_two_decimals(self) -> None:
+        oid = "4444444444444444444444444444444444444444444444444444444444444444"
+        projection = {
+            "observations": [
+                {
+                    "observation_id": oid,
+                    "label": "Average hourly earnings (through-the-year percent change)",
+                    "topic": "labor",
+                    "series_id": "CES0500000003",
+                    "reference_period": "2026-08",
+                    "value": 3.085745,
+                    "units": "percent",
+                    "transformation": "yoy_pct",
+                    "score_role": "context",
+                }
+            ]
+        }
+        html = render_country_detail(
+            "US",
+            projection,
+            synthetic_attention_quiet(),
+            synthetic_score_state(),
+        )
+        self.assertIn("3.09%", html)
+        self.assertNotIn("3.085745", html)
+
 
 if __name__ == "__main__":
     unittest.main()
