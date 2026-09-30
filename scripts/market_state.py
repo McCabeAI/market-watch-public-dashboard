@@ -1645,6 +1645,20 @@ def validate_snapshot(s: Mapping) -> None:
         raise MarketStateError("generated_at missing")
 
 
+def _refresh_policy_state() -> None:
+    """Best-effort official policy-state refresh during market-state acquisition.
+
+    A failure leaves the previous canonical file in place and does not change
+    the market-state snapshot or this process's exit status.
+    """
+    try:
+        from scripts.policy_state import refresh_and_write
+
+        refresh_and_write()
+    except Exception as exc:
+        print(f"policy state refresh skipped: {exc}", file=sys.stderr)
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="Generate the Market Watch daily market-state packet")
     ap.add_argument("--output", required=True, help="JSON snapshot path")
@@ -1667,6 +1681,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     out = Path(args.output)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(snapshot, indent=2, sort_keys=True) + "\n")
+    _refresh_policy_state()
     print(
         json.dumps(
             {

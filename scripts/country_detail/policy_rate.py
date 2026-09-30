@@ -1,123 +1,165 @@
-"""Wire Policy / Transmission rates to an accepted official decision.
+"""Render Policy / Transmission lines from canonical policy state.
 
-The v6 dashboard hard-codes a Fed target range. The accepted range is the
-Federal Reserve policy-decision card already inserted by the daily refresh.
-This module reads that card. It does not invent a rate. A missing or stale
-card is labeled, and the old hard-coded number is not left in place.
+The rate comes from ``data/policy_state.json`` via ``scripts.policy_state``.
+This module does not parse dashboard HTML, news cards, headlines, or prose,
+and it has no hard-coded current rate to fall back on.
 """
 
 from __future__ import annotations
 
+import html
 import re
 from datetime import date, datetime
 from typing import Any
 
-# A standing policy decision stays current across an FOMC cycle. Past this
-# age the page must say the record is stale instead of calling it current.
-POLICY_MAX_AGE_DAYS = 70
+from scripts.policy_state import resolve_country
 
-_CARD = re.compile(
-    r'<article class="news-card[^"]*"[^>]*data-date="(\d{4}-\d{2}-\d{2})"[^>]*>(.*?)</article>',
+# Canonical label, then legacy sentence starts that the v6 dashboard still uses.
+_PANELS: dict[str, tuple[str, ...]] = {
+    "US": ("Fed target range:",),
+    "CA": ("BoC target overnight rate:",),
+    "AU": ("RBA cash rate:",),
+    "NZ": ("RBNZ official cash rate:", "RBNZ raised the OCR to"),
+    "EA": ("ECB deposit facility rate:",),
+    "JP": ("BoJ policy rate:",),
+}
+
+_BANKS = {
+    "US": "Federal Reserve",
+    "CA": "Bank of Canada",
+    "AU": "Reserve Bank of Australia",
+    "NZ": "Reserve Bank of New Zealand",
+    "EA": "European Central Bank",
+    "JP": "Bank of Japan",
+}
+_BADGE_CODE = {"Fed": "US", "BoC": "CA", "RBA": "AU", "RBNZ": "NZ"}
+_BADGE_SHORT = {code: short for short, code in _BADGE_CODE.items()}
+# Slot markers only. The previous number is not read.
+_BADGE_SLOT = re.compile(r'(<span class="policy">)(Fed|BoC|RBA|RBNZ)\b[^<]*')
+_MATRIX_RATE_CELL = re.compile(
+    r"(<tr>\s*<td>\s*<b>(US|CA|AU|NZ)</b>\s*</td>(?:(?!</tr>).)*?<td>\s*)"
+    r"\d+(?:\.\d+)?%(?:\s*[–-]\s*\d+(?:\.\d+)?%)?"
+    r"(\s*</td>)",
     re.S,
 )
-_RANGE = re.compile(
-    r"target range to\s+([0-9]+(?:\.[0-9]+)?)[\u2013-]([0-9]+(?:\.[0-9]+)?)%",
-    re.I,
-)
-_HREF = re.compile(r'href="(https://www\.federalreserve\.gov[^"]+)"')
-
-_HARD_CODED_CLAUSES = (
-    ("Fed target range:", None),
-    (
-        "BoC target overnight rate:",
-        "BoC target overnight rate: unavailable, because no current official Bank of Canada policy-rate record is on this page and an older hard-coded rate is not shown.",
-    ),
-    (
-        "RBA cash rate:",
-        "RBA cash rate: unavailable, because no current official Reserve Bank of Australia policy-rate record is on this page and an older hard-coded rate is not shown.",
-    ),
-    (
-        "RBNZ raised the OCR to",
-        "RBNZ official cash rate: unavailable, because no current official Reserve Bank of New Zealand policy-rate record is on this page and an older hard-coded rate is not shown.",
-    ),
-)
 
 
-def extract_us_fed_decision(page: str) -> dict[str, Any] | None:
-    """Official FOMC target range already present as a policy-decision card."""
-    for decision_date, body in _CARD.findall(page):
-        if "Federal Reserve" not in body or "Policy Decision" not in body:
-            continue
-        title_match = re.search(r"<h3>(.*?)</h3>", body, re.S)
-        if not title_match:
-            continue
-        title = re.sub(r"<[^>]+>", "", title_match.group(1))
-        title = title.replace("&ndash;", "–").replace("&#8211;", "–")
-        range_match = _RANGE.search(title)
-        url_match = _HREF.search(body)
-        if not range_match or not url_match:
-            continue
-        lower = float(range_match.group(1))
-        upper = float(range_match.group(2))
-        return {
-            "lower": lower,
-            "upper": upper,
-            "decision_date": decision_date,
-            "source_url": url_match.group(1),
-            "source_name": "Federal Reserve",
-            "display": f"{lower:.2f}%-{upper:.2f}%",
-        }
-    return None
+def _as_date(as_of: date | datetime | None) -> date:
+    if as_of is None:
+        return date.today()
+    if isinstance(as_of, datetime):
+        return as_of.date()
+    return as_of
 
 
-def policy_rate_status(decision: dict[str, Any] | None, as_of: date) -> str:
-    if not decision or not decision.get("source_url") or not decision.get("display"):
-        return "unavailable"
-    try:
-        decided = date.fromisoformat(str(decision["decision_date"]))
-    except ValueError:
-        return "unavailable"
-    if decided > as_of:
-        return "unavailable"
-    if (as_of - decided).days > POLICY_MAX_AGE_DAYS:
-        return "stale"
-    return "current"
+def _label(code: str) -> str:
+    return _PANELS[code][0].rstrip(":")
 
 
-def us_policy_clause(page: str, *, as_of: date) -> str:
-    decision = extract_us_fed_decision(page)
-    status = policy_rate_status(decision, as_of)
+def _display_rate(decision: dict[str, Any]) -> str | None:
+    lower = decision.get("lower")
+    upper = decision.get("upper")
+    if lower is not None and upper is not None:
+        return f"{float(lower):.2f}%-{float(upper):.2f}%"
+    rate = decision.get("rate")
+    if rate is None:
+        return None
+    return f"{float(rate):.2f}%"
+
+
+def _long_date(iso_day: str) -> str:
+    return date.fromisoformat(iso_day).strftime("%d %b %Y").lstrip("0")
+
+
+def policy_clause(code: str, policy_state: dict[str, Any] | None, as_of: date) -> str:
+    """One policy sentence for a country. Does not read page markup."""
+    label = _label(code)
+    bank = _BANKS[code]
+    resolved = resolve_country(policy_state, code, as_of)
+    status = resolved["status"]
+    decision = resolved["decision"]
     if status == "current" and decision is not None:
-        decided = date.fromisoformat(str(decision["decision_date"]))
-        label = decided.strftime("%d %b %Y").lstrip("0")
+        display = _display_rate(decision)
+        source_url = str(decision.get("source_url") or "")
+        if display and source_url.startswith("https://"):
+            decided = _long_date(str(decision["decision_date"]))
+            source_name = html.escape(str(decision.get("source_name") or bank))
+            href = html.escape(source_url, quote=True)
+            effective = decision.get("effective_date")
+            effective_text = f", effective {_long_date(str(effective))}" if effective else ""
+            return (
+                f'{label}: {display} '
+                f'(<a href="{href}" rel="noopener noreferrer">'
+                f"{source_name} policy decision, {decided}</a>{effective_text})."
+            )
+        status = "unavailable"
+    if status == "missing":
         return (
-            f'Fed target range: {decision["display"]} '
-            f'(<a href="{decision["source_url"]}" rel="noopener noreferrer">'
-            f"Federal Reserve policy decision, {label}</a>)."
+            f"{label}: missing, because no canonical policy-state record exists "
+            "for this country and an older hard-coded rate is not shown."
         )
     if status == "stale":
         return (
-            "Fed target range: stale, because the official policy-rate record on this page "
-            "is older than the standing-decision window and is not shown as current."
+            f"{label}: stale, because the canonical policy-state record is not a "
+            "verified standing decision and is not shown as current."
         )
     return (
-        "Fed target range: unavailable, because no current official Federal Reserve "
-        "policy decision is on this page and an older hard-coded range is not shown."
+        f"{label}: unavailable, because the canonical policy state has no verified "
+        f"{bank} rate and an older hard-coded rate is not shown."
     )
 
 
-def rewrite_policy_transmission(page: str, *, as_of: date | None = None) -> str:
-    """Replace hard-coded policy-rate sentences. Idempotent for the US clause."""
-    as_of = as_of or date.today()
-    if isinstance(as_of, datetime):
-        as_of = as_of.date()
-    us_clause = us_policy_clause(page, as_of=as_of)
-    page = _replace_clause(page, "Fed target range:", us_clause)
-    for prefix, clause in _HARD_CODED_CLAUSES:
-        if prefix == "Fed target range:" or clause is None:
-            continue
-        page = _replace_clause(page, prefix, clause)
+def policy_badge(code: str, policy_state: dict[str, Any] | None, as_of: date) -> str:
+    """Compact board label. A missing or unverified setting is not a number."""
+    short = _BADGE_SHORT[code]
+    resolved = resolve_country(policy_state, code, as_of)
+    decision = resolved["decision"]
+    if resolved["status"] == "current" and decision is not None:
+        display = _display_rate(decision)
+        if display:
+            return f"{short} {display}"
+    return f"{short} {resolved['status']}"
+
+
+def rewrite_policy_transmission(
+    page: str,
+    *,
+    policy_state: dict[str, Any] | None,
+    as_of: date | datetime | None = None,
+) -> str:
+    """Replace hard-coded policy sentences from structured state. Idempotent."""
+    on = _as_date(as_of)
+    for code, prefixes in _PANELS.items():
+        clause = policy_clause(code, policy_state, on)
+        for prefix in prefixes:
+            page = _replace_clause(page, prefix, clause)
+    page = _rewrite_badges(page, policy_state, on)
+    page = _rewrite_matrix_rates(page, policy_state, on)
     return page
+
+
+def _rewrite_badges(page: str, policy_state: dict[str, Any] | None, as_of: date) -> str:
+    def replace(match: re.Match[str]) -> str:
+        code = _BADGE_CODE[match.group(2)]
+        return match.group(1) + policy_badge(code, policy_state, as_of)
+
+    return _BADGE_SLOT.sub(replace, page)
+
+
+def _rewrite_matrix_rates(page: str, policy_state: dict[str, Any] | None, as_of: date) -> str:
+    """Replace a Policy-column cell whose entire value is a hard-coded rate."""
+
+    def replace(match: re.Match[str]) -> str:
+        code = match.group(2)
+        resolved = resolve_country(policy_state, code, as_of)
+        decision = resolved["decision"]
+        if resolved["status"] == "current" and decision is not None:
+            display = _display_rate(decision)
+            if display:
+                return f"{match.group(1)}{display}{match.group(3)}"
+        return f"{match.group(1)}{resolved['status']}{match.group(3)}"
+
+    return _MATRIX_RATE_CELL.sub(replace, page)
 
 
 def _replace_clause(page: str, prefix: str, clause: str) -> str:

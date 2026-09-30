@@ -15,6 +15,7 @@ from datetime import date
 from scripts.country_detail.attention import evaluate_projection
 from scripts.country_detail.policy import COUNTRY_CODES
 from scripts.country_detail.policy_rate import rewrite_policy_transmission
+from scripts.policy_state import load_policy_state
 from scripts.country_detail.projection import build_projection
 from scripts.country_detail.render import (
     _preview_fixtures,
@@ -160,7 +161,11 @@ def apply_country_detail(page: str, *, root: Path | None = None) -> str:
         block = page[start:end]
         updated = _inject_section(block, keys[code], sections[code])
         page = page[:start] + updated + page[end:]
-    return rewrite_policy_transmission(page, as_of=date.today())
+    return rewrite_policy_transmission(
+        page,
+        policy_state=load_policy_state(root),
+        as_of=date.today(),
+    )
 
 
 def write_review_html(path: Path | None = None, *, root: Path | None = None) -> str:
