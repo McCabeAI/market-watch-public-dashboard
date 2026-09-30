@@ -83,6 +83,10 @@ on:
       - ".github/workflows/overnight-scheduled-output.yml"
       - "requirements-market-state.txt"
       - "scripts/apply_country_detail.py"
+      - "scripts/policy_state.py"
+      - "scripts/country_detail/policy_rate.py"
+      - "data/policy_state.json"
+      - "tests/test_policy_state.py"
       - "scripts/country_detail/country_detail.css"
       - "scripts/country_detail/projection.py"
       - "scripts/country_detail/render.py"
@@ -352,6 +356,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          PYTHONPATH=. python -m unittest tests.test_country_detail_policy_rate tests.test_policy_state -v
+          if ! PYTHONPATH=. python3 scripts/policy_state.py --refresh; then
+            echo "policy state refresh failed; Country Detail will use the committed artifact"
+          fi
           PYTHONPATH=. python3 scripts/apply_country_detail.py _site/index.html
           for code in US CA AU NZ EA JP; do
             grep -Fq "data-country=\"${code}\"" _site/index.html

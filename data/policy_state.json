@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-09-30T21:14:37Z",
+  "source_note": "Structured policy settings produced by scripts/policy_state.py from official central-bank decisions. Country Detail reads this file. It does not parse dashboard HTML, news cards, or headlines.",
+  "countries": {
+    "US": {
+      "central_bank": "Federal Reserve",
+      "instrument": "federal funds target range",
+      "rate_type": "range",
+      "status": "current",
+      "decisions": [
+        {
+          "lower": 3.75,
+          "upper": 4.0,
+          "decision_date": "2026-09-16",
+          "effective_date": "2026-09-17",
+          "source_name": "Federal Reserve",
+          "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm",
+          "implementation_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a1.htm",
+          "retrieved_at": "2026-09-30T21:14:37Z",
+          "status": "current",
+          "provenance": "official_fomc_statement"
+        }
+      ],
+      "gap": null,
+      "last_refresh_error": null
+    },
+    "CA": {
+      "central_bank": "Bank of Canada",
+      "instrument": "target overnight rate",
+      "rate_type": "single",
+      "status": "unavailable",
+      "decisions": [],
+      "gap": "No structured Bank of Canada target-overnight-rate series is collected. scripts/policy_path_data.py records CORRA, an overnight financing benchmark, not the policy target. This record does not invent a target rate.",
+      "last_refresh_error": null
+    },
+    "AU": {
+      "central_bank": "Reserve Bank of Australia",
+      "instrument": "cash rate target",
+      "rate_type": "single",
+      "status": "unavailable",
+      "decisions": [],
+      "gap": "No structured RBA cash-rate target decision is collected. RBA F1 AONIA is an overnight cash benchmark, not the cash-rate target. This record does not invent a target rate.",
+      "last_refresh_error": null
+    },
+    "NZ": {
+      "central_bank": "Reserve Bank of New Zealand",
+      "instrument": "official cash rate",
+      "rate_type": "single",
+      "status": "unavailable",
+      "decisions": [],
+      "gap": "data/country_registry.json sets NZ has_policy_path to false, and no official OCR decision series is collected. This record does not invent a cash rate.",
+      "last_refresh_error": null
+    },
+    "EA": {
+      "central_bank": "European Central Bank",
+      "instrument": "deposit facility rate",
+      "rate_type": "single",
+      "status": "unavailable",
+      "decisions": [],
+      "gap": "No structured ECB deposit-facility-rate decision is collected. Euro-area acquisition covers Bund yields and €STR futures, not the policy rates. This record does not invent a rate.",
+      "last_refresh_error": null
+    },
+    "JP": {
+      "central_bank": "Bank of Japan",
+      "instrument": "uncollateralized overnight call rate target",
+      "rate_type": "single",
+      "status": "unavailable",
+      "decisions": [],
+      "gap": "No structured Bank of Japan policy-rate decision is collected. The JP rates bundle records the overnight call fixing and TONA futures, not the policy-rate decision. This record does not invent a rate.",
+      "last_refresh_error": null
+    }
+  }
+}
