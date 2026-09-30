@@ -1,0 +1,51 @@
+{
+  "contract_version": 1,
+  "synthetic": true,
+  "description": "NSA monthly series with eight same-calendar-month peers and an extreme latest value. Must not earn an Outlier badge.",
+  "country": "CA",
+  "as_of": "2024-12-15T00:00:00Z",
+  "observations": [
+    {
+      "label": "nsa_short_extreme",
+      "methodology_breaks": [],
+      "comparison_broken": false,
+      "revision_status": "final",
+      "vintage": "adv-v1",
+      "retrieved_at": "2024-12-15T00:00:00Z",
+      "observed_at": "2024-12-15T00:00:00Z",
+      "source_url": "https://example.invalid/country-detail-adversarial/nsa_short",
+      "country": "CA",
+      "series_id": "ADV_NSA_JAN_LEVEL",
+      "reference_period": "2024-01",
+      "transformation": "monthly_level",
+      "geography": "AB",
+      "seasonal_adjustment": false,
+      "units": "cubic metres",
+      "nominal_basis": "physical",
+      "score_role": "context",
+      "weight": 0,
+      "topic": "energy_physical",
+      "cadence": "monthly",
+      "release_family": "adv_nsa_short",
+      "data_state": "ok",
+      "value": 9999,
+      "history": [
+        {"reference_period": "2017-01", "value": 11},
+        {"reference_period": "2018-01", "value": 12},
+        {"reference_period": "2019-01", "value": 13},
+        {"reference_period": "2020-01", "value": 14},
+        {"reference_period": "2021-01", "value": 15},
+        {"reference_period": "2022-01", "value": 16},
+        {"reference_period": "2023-01", "value": 17},
+        {"reference_period": "2024-01", "value": 9999}
+      ]
+    }
+  ],
+  "expect": {
+    "label": "nsa_short_extreme",
+    "attention_status": "none",
+    "ineligibility_includes": "seasonal_history_insufficient",
+    "badge_text": null,
+    "reason_must_not_contain": "Outlier"
+  }
+}
