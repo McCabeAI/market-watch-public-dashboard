@@ -26,7 +26,7 @@ Three axes stay separate:
 | Axis | Values | Meaning |
 |---|---|---|
 | `score_role` | `scored`, `context`, `unscored` | Whether the series is allowed to move a calibrated score. Weight may be 0. |
-| `attention_status` | `none`, `notable`, `outlier` | How unusual the latest comparable point is. Ordinary rows have no badge. |
+| `attention_status` | `none`, `interesting`, `notable`, `outlier` | Why a row is called out. `interesting` is direction of travel. `notable` and `outlier` are historical percentile only. Ordinary rows have no badge. |
 | `economic_direction` | score impulse only | Direction stays on the score. Attention color must not imply bullish, bearish, hot, or cold. |
 
 An unscored or context series with weight 0 may lead What Matters Now. That lead must not change any calibrated score, score weight, impulse, or Trader Room evidence.
@@ -61,7 +61,7 @@ Comparable observations only:
 | quarterly | 16 | 24 |
 | other or unknown | ineligible | ineligible |
 
-- If `n` is below the notable minimum, status is `none` and ineligibility includes `insufficient_history`. A short history never receives an Outlier badge, even when the inclusive percentile would be 100.
+- If `n` is below the notable minimum, the historical axis is `none` and ineligibility includes `insufficient_history`. A short history never receives a Notable or Outlier badge, even when the inclusive percentile would be 100. That limitation does not by itself suppress a direction-of-travel finding. See section 5.
 - If `n` meets the notable minimum but not the outlier minimum, and the percentile is outside 1/99, status is `notable` (not `outlier`) and ineligibility includes `insufficient_history_for_outlier`.
 - Unknown cadence: status `none`, ineligibility `unknown_cadence`. No badge.
 
@@ -79,9 +79,24 @@ Do not splice across methodology breaks. A break boundary is the first period of
 
 Resolve vintages before ranking. The sample contains one value per `reference_period`: the current vintage. Do not rank a prior vintage beside the current one.
 
-## 5. Materiality and freshness
+## 5. Admission
 
-A percentile breach is necessary and not sufficient. Eligible series whose percentile is inside the closed interval [5, 95] have status `none` and ineligibility `not_material`. There is no extra numeric materiality cutoff.
+Historical percentile is one reason, not the gate. A fresh or revised row is admitted when either axis qualifies and no source-health block applies.
+
+Historical axis (`classify_attention`): unchanged bands and sample minima. Inside the closed interval [5, 95], this axis is `not_material` and does not award Notable or Outlier. There is no extra numeric cutoff on the percentile axis.
+
+Direction-of-travel axis (`classify_travel`): a short run can be `interesting` with badge `Interesting` even when the historical axis is `not_material`, `insufficient_history`, or `seasonal_history_insufficient`. The reason names the pattern. Patterns, strongest first: reversal, acceleration, deceleration, range break, persistence. Thresholds are round and were not fit to current prints.
+
+- Month-on-month, quarter-on-quarter, and other period-change transforms use the sign of the print. A print within the 0.05 percent reprint tolerance is flat.
+- Through-the-year percent and levels use the first difference. A long run of positive year-over-year rates is not persistence.
+- Persistence: the last 3 or more steps share a direction.
+- Acceleration: that same run, and the latest step is materially larger than the previous step. Percent-like material means at least 0.5 percentage points. Other units mean at least 1.5 times the previous step. `+1, +1, +1, +2` is acceleration.
+- Deceleration: a prior run of at least 2 steps, and the latest step materially slows that direction.
+- Reversal: a prior run of at least 2 steps, and the latest step is materially the other way.
+- Range break: the latest point leaves the prior range by more than a typical step, and none of the run patterns above already apply.
+- When the historical sample is too short, the reason says a historical percentile badge is not claimed and keeps `insufficient_history` or `seasonal_history_insufficient`. The badge is Interesting, not Notable or Outlier.
+
+Source-health blocks still win over both axes. Missing, failed fetch, structurally non-comparable, and stale rows stay status `none` and never become a current finding. Unknown cadence stays ineligible.
 
 Unchanged reprint: if value, reference period, transformation, and revision status match the prior persisted attention snapshot for that observation id, do not create a fresh alert. The finding may remain visible with `alert_freshness=unchanged`. It must not be duplicated and must not sort above a genuinely new or revised qualifying finding. Vintage is not part of the unchanged match. A vintage change without a value change stays unchanged.
 
@@ -119,7 +134,9 @@ Show 0 to 3 findings initially (`MAX_FINDINGS_INITIAL = 3`). The architecture al
 
 One release or theme occupies at most one slot. The correlation key is `(country, topic, release_family, reference_period)`. `release_family` is a stable id for series published together. Examples, not a closed catalog: `au_mhsi_total`, `au_cpi` (headline and trimmed mean), `aer_st3_oil` (Alberta oil rows from one AER workbook).
 
-Within a group, keep the stronger status (`outlier` over `notable` over `none`). Tie-break: larger distance outside the nearest band edge already crossed (99 or 1 if the point is in the outlier region, otherwise 95 or 5). That prefers the qualifying transform over a companion that did not qualify. If status and distance still tie, the lexicographically smaller `observation_id` wins.
+Within a group, keep the stronger status (`outlier` over `notable` over `interesting` over `none`). Among Interesting rows, prefer reversal, then acceleration, then deceleration, then range break, then persistence, then the longer run. Tie-break after that: larger distance outside the nearest band edge already crossed (99 or 1 if the point is in the outlier region, otherwise 95 or 5), then the lexicographically smaller `observation_id`. Notable and Outlier ordering among themselves stays the historical distance order.
+
+One release still occupies one slot when the members share a travel direction. Opposite travel directions are distinct: both keep a slot, and each reason includes `Confirmed divergence`. A monthly acceleration and a through-the-year reversal are that case. Two positive persistence reads of the same release are not.
 
 Companions stay on the surviving finding as `related_observation_ids`. They do not get a slot, and their ineligibility includes `correlated_companion`. Their own attention status remains available to Country Evidence. A group whose strongest member has status `none` produces no finding.
 
@@ -191,7 +208,7 @@ If that workbook column is absent, `data_state=missing` with a limitation reason
 
 ## 10. Data states and the score patcher
 
-Country Evidence and, when a row also qualifies, What Matters Now show the display label from section 5. A revised row can carry both the label `Revised` and a `Notable` or `Outlier` badge. Those are different axes. Badge text is exactly `Notable` or `Outlier`, and only when the status is that value. Status `none` renders no badge.
+Country Evidence and, when a row also qualifies, What Matters Now show the display label from section 5. A revised row can carry both the label `Revised` and a `Notable` or `Outlier` badge. Those are different axes. Badge text is exactly `Interesting`, `Notable`, or `Outlier`, and only when the status is that value. Status `none` renders no badge.
 
 The score drill-down stays compatible with `scripts/apply_temperature_scores.py`:
 
@@ -248,10 +265,10 @@ Projection, attention, and render are not part of this change. Call the policy h
 `tests/fixtures/country_detail/acceptance_matrix.json` is the oracle. Compare percentiles with absolute tolerance `1e-9`. Cases:
 
 1. `unscored_zero_weight_leads` — weight 0 physical series, monthly SA, n=60, percentile 100, leads. Scored series percentile 50 does not. Score levels stay at the fixture numbers.
-2. `au_spending_headline` — monthly inside the band, annual percentile `100 * 59 / 60` (notable, not outlier), one slot, annual headline, monthly id related.
-3. `extreme_vs_nonextreme_vs_short` — statuses `outlier`, `none`, `none`. The n=10 series is `insufficient_history` and must not say `Outlier`.
-4. `ca_daily_vs_monthly_and_alberta` — distinct ids, only the calendar-day rate qualifies, geography `AB`, `sa=false`, eight same-month peers are `seasonal_history_insufficient`.
-5. `quiet_country` — findings empty.
+2. `au_spending_headline` — annual percentile `100 * 59 / 60` (notable, not outlier) leads. Monthly is inside 5/95 and decelerates in the opposite direction from the annual reversal, so both keep a slot and the reasons say confirmed divergence.
+3. `extreme_vs_nonextreme_vs_short` — historical outlier leads. The inside-band series surfaces as deceleration. The n=10 series surfaces as acceleration, keeps `insufficient_history`, and must not wear an Outlier badge.
+4. `ca_daily_vs_monthly_and_alberta` — distinct ids, calendar-day rate remains the historical outlier and leads, geography `AB`, `sa=false`. The January level reversal keeps a second slot. Eight same-month peers are `seasonal_history_insufficient` and may surface as Interesting persistence without an Outlier badge.
+5. `quiet_country` — findings empty. The fixture path alternates and has no three-period run and no historical breach.
 6. `dedup_and_unchanged` — one CPI slot; a within-tolerance reprint is `unchanged` and sorts after a new finding.
 7. `data_states` — Missing, Stale, Revised, Not comparable, Source failed. Failed fetch keeps `2024-05-01T00:00:00Z`. A break at `2015-01` excludes 10 older points.
 8. `score_firewall` — attention stays out of the fake frozen packet.
@@ -262,7 +279,11 @@ Projection, attention, and render are not part of this change. Call the policy h
 
 - Exactly 5, 95, 1, and 99 are not breaches.
 - `seasonal_adjustment is null` does not use same-month peers. Only explicit `false` does.
-- `not_material` means the sample is eligible and the percentile is not strictly outside 5/95.
+- `not_material` means the historical axis is eligible and the percentile is not strictly outside 5/95. It does not block a direction-of-travel finding.
+- A 3-period same-direction run is Interesting without 36 or 60 observations and without a 5/95 breach.
+- `+1, +1, +1, +2` on a change series is acceleration.
+- Insufficient history withholds Notable and Outlier. It does not suppress a legitimate short-run pattern.
+- Stale, missing, failed, and structurally non-comparable rows never become current findings.
 - Unchanged reprints do not require the vintage to match. A vintage change without a value change stays unchanged.
 - A value move that is neither an unchanged reprint nor a revised data state is freshness `new`.
 - Within a release, status and extremity choose the slot before freshness does. Across findings, freshness sorts first and unchanged is last.

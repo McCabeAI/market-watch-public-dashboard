@@ -141,18 +141,21 @@ class CountryDetailAttentionMatrixTest(unittest.TestCase):
         self.assertEqual(result["finding_count"], 0)
         self.assertEqual(result.get("findings"), [])
 
-    def test_au_spending_headline_dedup_single_slot(self) -> None:
+    def test_au_spending_headline_keeps_distinct_directions(self) -> None:
         case = self.cases_by_id["au_spending_headline"]
         snapshot = case["snapshots"][0]
         result = call_evaluate_observations(case, snapshot)
-        self.assertEqual(result["finding_count"], 1)
+        self.assertEqual(result["finding_count"], 2)
         finding = result["findings"][0]
         expected = snapshot["expected"]["findings"][0]
         self.assertEqual(finding["observation_id"], expected["observation_id"])
+        self.assertEqual(finding["attention_status"], "notable")
         self.assertEqual(
             finding.get("related_observation_ids"),
             expected.get("related_observation_ids"),
         )
+        self.assertIn("Confirmed divergence", finding["reason"])
+        self.assertIn("Confirmed divergence", result["findings"][1]["reason"])
 
     def test_dedup_and_unchanged_correlated_pair(self) -> None:
         case = self.cases_by_id["dedup_and_unchanged"]
@@ -188,7 +191,9 @@ class CountryDetailAttentionAdversarialTest(unittest.TestCase):
             row = next(m for m in result["members"] if m["label"] == label)
         self.assertEqual(row["attention_status"], fixture["expect"]["attention_status"])
         self.assertIn(fixture["expect"]["ineligibility_includes"], row["ineligibility"])
-        self.assertIsNone(row.get("badge_text"))
+        self.assertEqual(row.get("badge_text"), fixture["expect"]["badge_text"])
+        self.assertNotEqual(row.get("badge_text"), "Outlier")
+        self.assertNotEqual(row.get("badge_text"), "Notable")
         self.assertNotIn(fixture["expect"]["reason_must_not_contain"], row.get("reason", ""))
 
     def test_unchanged_reprint_fixture(self) -> None:

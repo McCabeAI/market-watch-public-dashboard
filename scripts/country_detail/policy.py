@@ -1,10 +1,13 @@
-"""Frozen Country Detail attention policy (v1).
+"""Country Detail attention policy (v1).
 
 Pure constants and helpers. No I/O, no temperature history, no threshold fitting.
-Thresholds were frozen before implementation and were not fit to current prints.
+Historical percentile bands were frozen before implementation and were not fit
+to current prints. Direction-of-travel thresholds are round auditable cuts
+(0.5 percentage point, 1.5x pace), also not fit to current prints.
 
 Percentiles describe the historical distribution of comparable observations only.
 They are not predictive probabilities and do not imply mean reversion.
+A historical percentile is one admission reason. It is not the gate.
 """
 
 from __future__ import annotations
@@ -48,12 +51,47 @@ KNOWN_CADENCES = (CADENCE_MONTHLY, CADENCE_QUARTERLY)
 
 # --- Axes. Attention never encodes economic direction. ---
 SCORE_ROLES = ("scored", "context", "unscored")
-ATTENTION_STATUSES = ("none", "notable", "outlier")
+# ``interesting`` is a direction-of-travel finding. It is not a historical percentile.
+ATTENTION_STATUSES = ("none", "interesting", "notable", "outlier")
 # Smaller rank wins a correlation slot and sorts earlier among equal freshness.
-ATTENTION_STATUS_RANK = MappingProxyType({"outlier": 0, "notable": 1, "none": 2})
+ATTENTION_STATUS_RANK = MappingProxyType(
+    {"outlier": 0, "notable": 1, "interesting": 2, "none": 3}
+)
 ECONOMIC_DIRECTION_IS_NOT_ATTENTION = True
 FORBIDDEN_ATTENTION_TEMPERATURE_CLASSES = ("hot", "warm", "cold", "cool")
-ATTENTION_BADGE_TEXT = MappingProxyType({"notable": "Notable", "outlier": "Outlier"})
+ATTENTION_BADGE_TEXT = MappingProxyType(
+    {"interesting": "Interesting", "notable": "Notable", "outlier": "Outlier"}
+)
+
+# Direction-of-travel patterns. Historical percentile is not required.
+# Smaller rank sorts earlier among Interesting findings.
+TRAVEL_PATTERNS = (
+    "reversal",
+    "acceleration",
+    "deceleration",
+    "range_break",
+    "persistence",
+)
+TRAVEL_PATTERN_RANK = MappingProxyType(
+    {
+        "reversal": 0,
+        "acceleration": 1,
+        "deceleration": 2,
+        "range_break": 3,
+        "persistence": 4,
+    }
+)
+# mom/qoq prints already are the period's direction. yoy and levels use the
+# change in the observation, so a long run of positive yoy is not persistence.
+CHANGE_SIGN_TRANSFORMATIONS = frozenset({"mom_pct", "qoq_pct", "mom_sa_pct"})
+# Percent-like pace change that counts as acceleration, deceleration, or reversal.
+# Ten times the 0.05 reprint tolerance. Not fit to live prints.
+PERCENT_STEP_MATERIAL = Decimal("0.5")
+# Non-percent pace is material when the latest step is at least this multiple
+# of the prior step. Not fit to live prints.
+LEVEL_PACE_RATIO = Decimal("1.5")
+MIN_SAME_DIRECTION_PERIODS = 3
+MIN_PRIOR_RUN_FOR_TURN = 2
 
 ALERT_FRESHNESS = ("new", "revised", "unchanged")
 ALERT_FRESHNESS_RANK = MappingProxyType({"new": 0, "revised": 1, "unchanged": 2})
@@ -246,6 +284,8 @@ PACKET_FORBIDDEN_KEYS = (
     "research_narrative",
     "notable",
     "outlier",
+    "interesting",
+    "travel_pattern",
 )
 NARRATIVE_MUST_BE_COUNTRY_SPECIFIC = ("EA", "JP")
 
@@ -447,6 +487,319 @@ def classify_attention(
             f"5/95 on {cadence} n={comparable_n})."
         ),
     )
+
+
+def _signed_number(value: float) -> str:
+    """Display a source number with an explicit plus on positives."""
+    text = format_source_value(value)
+    if value > 0 and not text.startswith("+"):
+        return f"+{text}"
+    return text
+
+
+def _join_signed(values: Sequence[float]) -> str:
+    parts = [_signed_number(value) for value in values]
+    if len(parts) == 1:
+        return parts[0]
+    if len(parts) == 2:
+        return f"{parts[0]} and {parts[1]}"
+    return ", ".join(parts[:-1]) + f", and {parts[-1]}"
+
+
+def _ending_run(steps: Sequence[int]) -> tuple[int, int]:
+    """Sign and length of the same-direction run ending at the last step.
+
+    A flat step (0) ends the run. Returns ``(0, 0)`` when the last step is flat
+    or the sequence is empty.
+    """
+    if not steps or steps[-1] == 0:
+        return 0, 0
+    sign = steps[-1]
+    run = 0
+    for step in reversed(steps):
+        if step != sign:
+            break
+        run += 1
+    return sign, run
+
+
+def _percentish(units: str) -> bool:
+    return is_percent_like_units(units)
+
+
+def _flat_change(value: float, units: str) -> bool:
+    """A change-series print too small to be a direction."""
+    if _percentish(units):
+        return abs(_decimal(value)) < PERCENT_ABSOLUTE_TOLERANCE
+    return value_unchanged(units, 0.0, value)
+
+
+def _flat_diff(previous: float, current: float, units: str) -> bool:
+    return value_unchanged(units, previous, current)
+
+
+def _pace_increased(previous_mag: float, latest_mag: float, units: str) -> bool:
+    if previous_mag <= 0:
+        return False
+    if _percentish(units):
+        return _decimal(latest_mag) - _decimal(previous_mag) >= PERCENT_STEP_MATERIAL
+    return _decimal(latest_mag) >= _decimal(previous_mag) * LEVEL_PACE_RATIO
+
+
+def _pace_decreased(previous_mag: float, latest_mag: float, units: str) -> bool:
+    if previous_mag <= 0:
+        return False
+    if _percentish(units):
+        return _decimal(previous_mag) - _decimal(latest_mag) >= PERCENT_STEP_MATERIAL
+    if latest_mag == 0:
+        return True
+    return _decimal(previous_mag) >= _decimal(latest_mag) * LEVEL_PACE_RATIO
+
+
+def _reversal_material(latest_mag: float, units: str) -> bool:
+    if _percentish(units):
+        return _decimal(latest_mag) >= PERCENT_STEP_MATERIAL
+    return latest_mag > 0
+
+
+def uses_print_sign(transformation: str) -> bool:
+    """True when the print itself is the period's direction.
+
+    Month-on-month and quarter-on-quarter changes, including job-change
+    transforms, use the sign of the print. Through-the-year percent and
+    rate levels use the change in that rate, so a long positive run is not
+    treated as persistence. Levels and indexes use the first difference.
+    """
+    name = transformation.strip().lower()
+    if name in {"yoy_pct", "rate_pct"}:
+        return False
+    if name in CHANGE_SIGN_TRANSFORMATIONS:
+        return True
+    if "change" in name:
+        return True
+    if name.endswith("_pct") or name.endswith("_pct_saar") or "saar" in name:
+        return True
+    return False
+
+
+def _travel_steps(
+    values: Sequence[float],
+    *,
+    units: str,
+    transformation: str,
+) -> tuple[list[int], list[float], list[float]]:
+    """Return step signs, step magnitudes, and the observation tail those steps use.
+
+    Change-sign transforms (mom/qoq and other period changes) use the print
+    itself. yoy and levels use the first difference, so a structurally positive
+    yoy rate is not persistence.
+    """
+    if uses_print_sign(transformation):
+        signs: list[int] = []
+        magnitudes: list[float] = []
+        for value in values:
+            if _flat_change(value, units):
+                signs.append(0)
+                magnitudes.append(0.0)
+            elif value > 0:
+                signs.append(1)
+                magnitudes.append(abs(value))
+            else:
+                signs.append(-1)
+                magnitudes.append(abs(value))
+        return signs, magnitudes, list(values)
+    signs = []
+    magnitudes = []
+    for previous, current in zip(values, values[1:]):
+        if _flat_diff(previous, current, units):
+            signs.append(0)
+            magnitudes.append(0.0)
+        elif current > previous:
+            signs.append(1)
+            magnitudes.append(abs(current - previous))
+        else:
+            signs.append(-1)
+            magnitudes.append(abs(current - previous))
+    return signs, magnitudes, list(values)
+
+
+def _display_tail(observed: Sequence[float], run: int, *, differenced: bool) -> list[float]:
+    """Observations that illustrate the ending run. At most four numbers."""
+    span = run + 1 if differenced else run
+    span = max(span, 2)
+    tail = list(observed[-span:])
+    if len(tail) > 4:
+        tail = tail[-4:]
+    return tail
+
+
+def _range_break(values: Sequence[float], units: str) -> bool:
+    """Latest print leaves the prior range by more than a typical step."""
+    if len(values) < 4:
+        return False
+    prior = list(values[:-1])
+    latest = float(values[-1])
+    lo = min(prior)
+    hi = max(prior)
+    if lo <= latest <= hi:
+        return False
+    overshoot = latest - hi if latest > hi else lo - latest
+    extreme = hi if latest > hi else lo
+    if _percentish(units):
+        if _decimal(abs(overshoot)) < PERCENT_STEP_MATERIAL:
+            return False
+    elif value_unchanged(units, extreme, latest):
+        return False
+    steps = [abs(after - before) for before, after in zip(prior, prior[1:])]
+    if not steps:
+        return True
+    ordered = sorted(steps)
+    median = ordered[len(ordered) // 2]
+    if median == 0:
+        return True
+    return abs(overshoot) >= float(LEVEL_PACE_RATIO) * median
+
+
+def _travel_reason(
+    pattern: str,
+    *,
+    transformation: str,
+    tail: Sequence[float],
+    run: int,
+) -> str:
+    label = transformation_label(transformation)
+    joined = _join_signed(tail)
+    if pattern == "persistence":
+        return (
+            f"Persistence: {label} kept the same direction for {run} periods, "
+            f"ending {joined}."
+        )
+    if pattern == "acceleration":
+        return (
+            f"Acceleration: {label} ran {joined}. The latest {_signed_number(tail[-1])} "
+            f"is larger in the same direction than the prior {_signed_number(tail[-2])}."
+        )
+    if pattern == "deceleration":
+        return (
+            f"Deceleration: {label} ran {joined}. The latest {_signed_number(tail[-1])} "
+            "materially slows the prior direction of travel."
+        )
+    if pattern == "reversal":
+        return (
+            f"Reversal: {label} ran {joined}. The latest {_signed_number(tail[-1])} "
+            "flips the prior direction of travel."
+        )
+    if pattern == "range_break":
+        prior = list(tail[:-1]) if len(tail) > 1 else list(tail)
+        return (
+            f"Range break: the latest {_signed_number(tail[-1])} on {label} is outside "
+            f"the prior comparable range {_signed_number(min(prior))} to "
+            f"{_signed_number(max(prior))}."
+        )
+    raise ValueError(f"unknown travel pattern: {pattern}")
+
+
+def classify_travel(
+    values: Sequence[float],
+    *,
+    units: str,
+    transformation: str,
+    cadence: str,
+) -> dict[str, Any] | None:
+    """Direction-of-travel pattern on an ordered comparable sample, or None.
+
+    ``values`` includes the latest observation and is chronological.
+    This does not apply source-health blocks and does not assign Notable or
+    Outlier. Callers suppress the result when the row is stale, missing,
+    failed, or structurally non-comparable.
+    """
+    if cadence not in KNOWN_CADENCES:
+        return None
+    if len(values) < 3:
+        return None
+    finite = []
+    for value in values:
+        number = float(value)
+        if number != number or number in (float("inf"), float("-inf")):
+            return None
+        finite.append(number)
+    signs, magnitudes, observed = _travel_steps(
+        finite,
+        units=units,
+        transformation=transformation,
+    )
+    if len(signs) < 2:
+        return None
+    differenced = not uses_print_sign(transformation)
+    latest_sign, run = _ending_run(signs)
+    prior_sign, prior_run = _ending_run(signs[:-1])
+    latest_mag = magnitudes[-1]
+    previous_mag = magnitudes[-2] if len(magnitudes) >= 2 else 0.0
+
+    pattern: str | None = None
+    direction = 0
+    reported_run = run
+    if (
+        prior_run >= MIN_PRIOR_RUN_FOR_TURN
+        and latest_sign != 0
+        and prior_sign != 0
+        and latest_sign == -prior_sign
+        and _reversal_material(latest_mag, units)
+    ):
+        pattern = "reversal"
+        direction = latest_sign
+        reported_run = prior_run
+    elif run >= MIN_SAME_DIRECTION_PERIODS and _pace_increased(previous_mag, latest_mag, units):
+        pattern = "acceleration"
+        direction = latest_sign
+    elif (
+        prior_run >= MIN_PRIOR_RUN_FOR_TURN
+        and prior_sign != 0
+        and (latest_sign == prior_sign or latest_sign == 0)
+        and _pace_decreased(previous_mag, latest_mag, units)
+    ):
+        pattern = "deceleration"
+        direction = prior_sign
+        reported_run = prior_run if latest_sign == 0 else run
+    elif run >= MIN_SAME_DIRECTION_PERIODS:
+        pattern = "persistence"
+        direction = latest_sign
+    elif _range_break(finite, units):
+        pattern = "range_break"
+        direction = 1 if finite[-1] > max(finite[:-1]) else -1
+        reported_run = 1
+
+    if pattern is None or direction == 0:
+        return None
+    display_run = prior_run + 1 if pattern == "reversal" else reported_run
+    tail = _display_tail(observed, display_run, differenced=differenced)
+    if pattern == "range_break":
+        tail = [min(finite[:-1]), max(finite[:-1]), finite[-1]]
+    if len(tail) < 2:
+        return None
+    return {
+        "pattern": pattern,
+        "direction": direction,
+        "run_length": reported_run,
+        "reason": _travel_reason(
+            pattern,
+            transformation=transformation,
+            tail=tail,
+            run=reported_run,
+        ),
+        "tail_values": tail,
+    }
+
+
+def historical_label_clause(ineligibility: Sequence[str]) -> str:
+    """Sentence appended when a travel finding must not wear a historical badge."""
+    if "seasonal_history_insufficient" in ineligibility:
+        return (
+            " A historical percentile badge is not claimed (seasonal_history_insufficient)."
+        )
+    if "insufficient_history" in ineligibility:
+        return " A historical percentile badge is not claimed (insufficient_history)."
+    return ""
 
 
 def _require_period(period: str, cadence: str) -> str:
@@ -671,17 +1024,33 @@ def preference_key(
     attention_status: str,
     percentile: float | None,
     observation_id: str,
+    travel_pattern: str | None = None,
+    run_length: int = 0,
 ) -> tuple[Any, ...]:
     """Smaller key wins the correlation slot.
 
-    Order: stronger status, then more extreme distance outside the nearest
-    band edge, then lexicographically smaller observation_id.
-    Status already prefers a qualifying transform over a companion with status none.
+    Order: stronger status, then (for Interesting only) the travel pattern and
+    run length, then more extreme distance outside the nearest band edge, then
+    lexicographically smaller observation_id.
+    Notable and Outlier keep the historical distance order. Status prefers a
+    qualifying transform over a companion with status none.
     """
     if attention_status not in ATTENTION_STATUS_RANK:
         raise ValueError(f"unknown attention_status: {attention_status}")
     distance = 0.0 if percentile is None else distance_outside_nearest_band(percentile)
-    return (ATTENTION_STATUS_RANK[attention_status], -distance, observation_id)
+    if attention_status == "interesting":
+        pattern_rank = TRAVEL_PATTERN_RANK.get(str(travel_pattern), 99)
+        run_key = -int(run_length)
+    else:
+        pattern_rank = 0
+        run_key = 0
+    return (
+        ATTENTION_STATUS_RANK[attention_status],
+        pattern_rank,
+        run_key,
+        -distance,
+        observation_id,
+    )
 
 
 def finding_list_sort_key(
@@ -690,20 +1059,32 @@ def finding_list_sort_key(
     attention_status: str,
     percentile: float | None,
     observation_id: str,
+    travel_pattern: str | None = None,
+    run_length: int = 0,
 ) -> tuple[Any, ...]:
     """Smaller key sorts earlier. Unchanged reprints sort after new and revised findings."""
     if alert_freshness not in ALERT_FRESHNESS_RANK:
         raise ValueError(f"unknown alert_freshness: {alert_freshness}")
-    status_rank, distance_key, obs = preference_key(
+    status_rank, pattern_rank, run_key, distance_key, obs = preference_key(
         attention_status=attention_status,
         percentile=percentile,
         observation_id=observation_id,
+        travel_pattern=travel_pattern,
+        run_length=run_length,
     )
-    return (ALERT_FRESHNESS_RANK[alert_freshness], status_rank, distance_key, obs)
+    return (
+        ALERT_FRESHNESS_RANK[alert_freshness],
+        status_rank,
+        pattern_rank,
+        run_key,
+        distance_key,
+        obs,
+    )
 
 
 def transformation_label(transformation: str) -> str:
-    return TRANSFORMATION_LABELS.get(transformation, transformation)
+    """Human label. Unknown ids keep their words without underscores."""
+    return TRANSFORMATION_LABELS.get(transformation, transformation.replace("_", " "))
 
 
 def format_source_value(value: float) -> str:
@@ -798,6 +1179,118 @@ def packet_contains_attention(packet: Mapping[str, Any]) -> bool:
     return _walk(packet)
 
 
+_QUALIFYING_STATUSES = frozenset({"interesting", "notable", "outlier"})
+
+
+def _member_preference(member: Mapping[str, Any]) -> tuple[Any, ...]:
+    return preference_key(
+        attention_status=str(member["attention_status"]),
+        percentile=member.get("percentile"),
+        observation_id=str(member["observation_id"]),
+        travel_pattern=member.get("travel_pattern"),
+        run_length=int(member.get("travel_run_length") or 0),
+    )
+
+
+def _travel_direction(member: Mapping[str, Any]) -> int:
+    raw = member.get("travel_direction") or 0
+    try:
+        direction = int(raw)
+    except (TypeError, ValueError):
+        return 0
+    if direction not in (-1, 0, 1):
+        return 0
+    return direction
+
+
+def _divergence_sentence(left: Mapping[str, Any], right: Mapping[str, Any]) -> str:
+    left_label = transformation_label(str(left["transformation"]))
+    right_label = transformation_label(str(right["transformation"]))
+    left_pattern = left.get("travel_pattern") or left.get("attention_status")
+    right_pattern = right.get("travel_pattern") or right.get("attention_status")
+    return (
+        f"Confirmed divergence: {left_label} is {left_pattern} while "
+        f"{right_label} is {right_pattern}."
+    )
+
+
+def _slot_winners(group: Sequence[Mapping[str, Any]]) -> list[Mapping[str, Any]]:
+    """One slot, or two when opposite travel directions are both legitimate.
+
+    Same-direction monthly and yoy variants stay one release. Opposite
+    directions are distinct information and each keep a slot.
+    """
+    qualifying = [
+        member
+        for member in group
+        if str(member["attention_status"]) in _QUALIFYING_STATUSES
+    ]
+    if not qualifying:
+        return []
+    primary = min(qualifying, key=_member_preference)
+    winners: list[Mapping[str, Any]] = [primary]
+    primary_direction = _travel_direction(primary)
+    if primary_direction == 0:
+        return winners
+    opposite = [
+        member
+        for member in qualifying
+        if member is not primary and _travel_direction(member) == -primary_direction
+    ]
+    if opposite:
+        winners.append(min(opposite, key=_member_preference))
+    return winners
+
+
+def _finding_from_winner(
+    winner: Mapping[str, Any],
+    *,
+    related: list[str],
+    divergence: str | None,
+) -> dict[str, Any]:
+    winner_status = str(winner["attention_status"])
+    freshness = str(winner.get("alert_freshness") or "new")
+    reason = wmn_reason(str(winner["reason"]), freshness)
+    if divergence:
+        reason = f"{reason} {divergence}"
+    finding = {
+        "observation_id": winner["observation_id"],
+        "attention_status": winner_status,
+        "badge_text": badge_text(winner_status),
+        "percentile": winner.get("percentile"),
+        "comparable_n": winner.get("comparable_n"),
+        "reason": reason,
+        "ineligibility": list(winner.get("ineligibility") or []),
+        "alert_freshness": freshness,
+        "fresh_alert": freshness != "unchanged",
+        "headline_observation_id": winner["observation_id"],
+        "headline_transformation": winner["transformation"],
+        "headline_label": transformation_label(str(winner["transformation"])),
+        # Display string only. The stored number stays on the observation.
+        "headline_text": headline_text(str(winner["transformation"]), winner["value"]),
+        "related_observation_ids": list(related),
+        "topic": winner["topic"],
+        "release_family": winner["release_family"],
+        "reference_period": winner["reference_period"],
+        "geography": winner["geography"],
+        "seasonal_adjustment": winner["seasonal_adjustment"],
+        "score_role": winner["score_role"],
+        "weight": winner["weight"],
+        "data_state": winner["data_state"],
+        "country": winner["country"],
+        "series_id": winner["series_id"],
+        "transformation": winner["transformation"],
+        "units": winner["units"],
+        "nominal_basis": winner["nominal_basis"],
+        "travel_pattern": winner.get("travel_pattern"),
+        "travel_direction": _travel_direction(winner),
+        "travel_run_length": int(winner.get("travel_run_length") or 0),
+    }
+    if freshness == "unchanged" and "unchanged_reprint" not in finding["ineligibility"]:
+        finding["ineligibility"] = [*finding["ineligibility"], "unchanged_reprint"]
+    return finding
+
+
 def select_what_matters_now(
     members: Sequence[Mapping[str, Any]],
     *,
@@ -807,7 +1300,9 @@ def select_what_matters_now(
 
     A group whose strongest member has status ``none`` contributes no finding
     and does not mark companions as ``correlated_companion``.
-    Qualifying groups keep one slot. Every other member is a companion.
+    Qualifying groups keep one slot unless two members have opposite
+    direction-of-travel patterns. Those two are distinct and both keep a slot.
+    Every other member is a companion.
     """
     if limit < 0:
         raise ValueError("limit must be >= 0")
@@ -830,62 +1325,23 @@ def select_what_matters_now(
     findings: list[dict[str, Any]] = []
     for key in order:
         group = grouped[key]
-        winner = min(
-            group,
-            key=lambda member: preference_key(
-                attention_status=str(member["attention_status"]),
-                percentile=member.get("percentile"),
-                observation_id=str(member["observation_id"]),
-            ),
-        )
-        winner_status = str(winner["attention_status"])
-        group_qualifies = winner_status in {"notable", "outlier"}
-        related = tuple(
-            sorted(
+        winners = _slot_winners(group)
+        winner_ids = {id(winner) for winner in winners}
+        group_qualifies = bool(winners)
+        divergence = _divergence_sentence(winners[0], winners[1]) if len(winners) == 2 else None
+        for winner in winners:
+            related = sorted(
                 str(member["observation_id"])
                 for member in group
                 if member is not winner
             )
-        )
-        if group_qualifies:
-            freshness = str(winner.get("alert_freshness") or "new")
-            finding = {
-                "observation_id": winner["observation_id"],
-                "attention_status": winner_status,
-                "badge_text": badge_text(winner_status),
-                "percentile": winner.get("percentile"),
-                "comparable_n": winner.get("comparable_n"),
-                "reason": wmn_reason(str(winner["reason"]), freshness),
-                "ineligibility": list(winner.get("ineligibility") or []),
-                "alert_freshness": freshness,
-                "fresh_alert": freshness != "unchanged",
-                "headline_observation_id": winner["observation_id"],
-                "headline_transformation": winner["transformation"],
-                "headline_label": transformation_label(str(winner["transformation"])),
-                # Display string only. The stored number stays on the observation.
-                "headline_text": headline_text(str(winner["transformation"]), winner["value"]),
-                "related_observation_ids": list(related),
-                "topic": winner["topic"],
-                "release_family": winner["release_family"],
-                "reference_period": winner["reference_period"],
-                "geography": winner["geography"],
-                "seasonal_adjustment": winner["seasonal_adjustment"],
-                "score_role": winner["score_role"],
-                "weight": winner["weight"],
-                "data_state": winner["data_state"],
-                "country": winner["country"],
-                "series_id": winner["series_id"],
-                "transformation": winner["transformation"],
-                "units": winner["units"],
-                "nominal_basis": winner["nominal_basis"],
-            }
-            if freshness == "unchanged" and "unchanged_reprint" not in finding["ineligibility"]:
-                finding["ineligibility"] = [*finding["ineligibility"], "unchanged_reprint"]
-            findings.append(finding)
+            findings.append(
+                _finding_from_winner(winner, related=related, divergence=divergence)
+            )
         for member in group:
             record = dict(member)
             reasons = list(member.get("ineligibility") or [])
-            won = member is winner
+            won = id(member) in winner_ids
             record["what_matters_now_slot"] = bool(group_qualifies and won)
             if group_qualifies and not won and "correlated_companion" not in reasons:
                 reasons.append("correlated_companion")
@@ -893,7 +1349,11 @@ def select_what_matters_now(
                 reasons.append("unchanged_reprint")
             record["ineligibility"] = reasons
             if group_qualifies and won:
-                record["related_observation_ids"] = list(related)
+                record["related_observation_ids"] = sorted(
+                    str(other["observation_id"])
+                    for other in group
+                    if other is not member
+                )
             else:
                 record["related_observation_ids"] = []
             annotated.append(record)
@@ -904,6 +1364,8 @@ def select_what_matters_now(
             attention_status=str(finding["attention_status"]),
             percentile=finding.get("percentile"),
             observation_id=str(finding["observation_id"]),
+            travel_pattern=finding.get("travel_pattern"),
+            run_length=int(finding.get("travel_run_length") or 0),
         )
     )
     shown = findings[:limit]

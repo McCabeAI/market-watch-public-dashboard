@@ -1,7 +1,7 @@
 {
   "contract_version": 1,
   "synthetic": true,
-  "description": "NSA monthly series with eight same-calendar-month peers and an extreme latest value. Must not earn an Outlier badge.",
+  "description": "NSA monthly series with eight same-calendar-month peers and a rising latest value. A short same-month sample must not earn an Outlier badge. The rising run can still surface as Interesting.",
   "country": "CA",
   "as_of": "2024-12-15T00:00:00Z",
   "observations": [
@@ -43,9 +43,9 @@
   ],
   "expect": {
     "label": "nsa_short_extreme",
-    "attention_status": "none",
+    "attention_status": "interesting",
     "ineligibility_includes": "seasonal_history_insufficient",
-    "badge_text": null,
+    "badge_text": "Interesting",
     "reason_must_not_contain": "Outlier"
   }
 }

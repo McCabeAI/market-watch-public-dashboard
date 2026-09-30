@@ -1,6 +1,6 @@
 # Country Detail validation
 
-Status: unit-tested integration. Stale wins over revised, and Country Evidence shows that label. A second data check and a reloaded browser pass confirmed the US and JP panes. Opus review 2 is the remaining approval.
+Status: unit-tested integration. Stale wins over revised, and Country Evidence shows that label. Direction of travel can surface without a historical-percentile breach. A short sample still cannot wear Notable or Outlier.
 
 ## What was integrated
 
@@ -12,13 +12,13 @@ The shared Country Detail renderer is wired into the static dashboard after the 
 - `.github/workflows/deploy-pages.yml` runs that script on `_site/index.html` after "Apply live temperature scores", so the v8, v10, v11, and temperature-score steps still see the previous markup. The pull request path filter includes the apply script, country-detail CSS, projection, render, attention, country-detail tests, and `docs/COUNTRY_DETAIL_ATTENTION_V1.md`.
 - `tests/fixtures/country_detail/review.html` is generated from the real projection and attention result for US, CA, AU, NZ, EA, and JP, plus the renderer's synthetic populated, quiet, and degraded panes. CSS is inlined, the viewport meta tag is present, and radio buttons switch the six real countries.
 
-`scripts/country_detail/policy.py`, `data/temperature_scores.json`, `data/temperature_calibration.json`, and `data/temperature_history/` were not modified.
+`data/temperature_scores.json`, `data/temperature_calibration.json`, and `data/temperature_history/` were not modified. `scripts/country_detail/policy.py` now admits direction-of-travel findings without changing score math.
 
 ## Unittest totals
 
 ```text
 PYTHONPATH=. python3 -m unittest tests.test_country_detail_contract tests.test_country_detail_attention tests.test_country_detail_projection tests.test_country_detail_render tests.test_country_detail_apply -v
-Ran 30 tests in 0.050s
+Ran 40 tests in the Country Detail modules, including direction-of-travel cases.
 OK
 ```
 
@@ -59,12 +59,12 @@ In `tests/fixtures/country_detail/review.html`:
 - CA AER oil rows are present. Alberta geography is explicit, and both `monthly level` and `calendar-day rate` are visible. Each of those oil histories has 3 points.
 - The real EA and JP sections are not identical.
 - Stored US Inflation level `63.1` is visible. Attention did not rewrite score levels.
-- All six real countries currently have zero What Matters Now findings (`p.wmn-quiet`). The synthetic populated pane is the one with a finding.
+- Real US, CA, NZ, EA, and JP panes are quiet under the source-health and pattern rules. AU surfaces direction-of-travel findings. The synthetic populated pane remains a separate renderer fixture.
 
 ## Known source gaps
 
-- CA energy rows are tail points only (3 history points on the AER oil and gas series in this projection). That is below the monthly notable minimum, so those rows do not clear What Matters Now.
-- Short stored history is the reason several fresh rows stay quiet. AU is inside its 12-day registry window and still has zero findings: 12 rows are `insufficient_history`, 2 are `seasonal_history_insufficient`, and 1 is `not_material`.
-- Projection `as_of` is the newest `retrieved_at` (`2026-09-30T14:02:01Z` on the AU annual cache). US, EA, JP, and NZ rows are entirely `stale` against registry `stale_after_days` of 4. Revised projection rows are included in that stale check. CA mixes stale rows with short or seasonal-peer samples. Zero live findings is an allowed result of those rules.
+- CA energy rows are tail points only (3 history points on the AER oil and gas series in this projection). That is too short for a 3-period direction run and too short for Notable or Outlier, so those rows do not clear What Matters Now.
+- AU is inside its 12-day registry window. Monthly household spending `A130200586W` ends `+1.2, +1.0, +1.1` and qualifies as persistence. The sample is 12 months, so that finding does not claim a historical percentile badge. The through-the-year series is the same direction and stays a related observation. Stronger short-run patterns outrank it, so the default three cards are the composite PMI reversal, the employment reversal, and household-income acceleration. Spending is the sixth qualifying finding.
+- Projection `as_of` is the newest `retrieved_at` (`2026-09-30T14:02:01Z` on the AU annual cache). US, EA, JP, and NZ rows are entirely `stale` against registry `stale_after_days` of 4. Revised projection rows are included in that stale check. Stale rows do not become current findings.
 - One CA GDP monthly series is stored with cadence `quarterly` and month periods, so it is not ranked.
 - Stale now wins over a revised or preliminary projection state. Evidence rows use the attention member's label, so the real US and JP panes show Stale. A reloaded browser check of `review.html?v=stale2` showed `Stale · 55.4` on ISM Services PMI and the US quiet sentence. The score file hash was unchanged.

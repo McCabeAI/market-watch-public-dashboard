@@ -160,25 +160,25 @@ def _measure(
     observation: Mapping[str, Any],
     *,
     effective_state: str,
-) -> tuple[float | None, int, int | None, int | None]:
-    """Return percentile, comparable_n, excluded_count, seasonal_excluded_count."""
+) -> tuple[float | None, int, int | None, int | None, list[float]]:
+    """Return percentile, comparable_n, excluded counts, and chronological values."""
     value = observation.get("value")
     if effective_state in _UNRANKED_STATES or value is None:
-        return None, 0, None, None
+        return None, 0, None, None, []
 
     cadence = observation.get("cadence")
     history = _ranking_history(observation)
     if cadence not in policy.KNOWN_CADENCES:
-        values = [point["value"] for point in history]
+        values = [float(point["value"]) for point in history]
         if not values:
-            return None, 0, None, None
+            return None, 0, None, None, []
         percentile = policy.inclusive_midrank_percentile(values, value)
-        return percentile, len(values), None, None
+        return percentile, len(values), None, None, values
 
     # A known cadence whose periods are not in that cadence's form cannot be
     # ranked. Example: a quarterly label on YYYY-MM history.
     if not _history_periods_match(observation, str(cadence)):
-        return None, 0, None, None
+        return None, 0, None, None, []
 
     filtered = policy.filter_comparable_history(
         history,
@@ -190,17 +190,17 @@ def _measure(
     )
     comparable = filtered["comparable"]
     comparable_n = len(comparable)
+    ordered = sorted(comparable, key=lambda point: str(point["reference_period"]))
+    values = [float(point["value"]) for point in ordered]
     percentile = None
     if comparable_n:
-        percentile = policy.inclusive_midrank_percentile(
-            [point["value"] for point in comparable],
-            value,
-        )
+        percentile = policy.inclusive_midrank_percentile(values, value)
     return (
         percentile,
         comparable_n,
         filtered["excluded_count"],
         filtered["seasonal_excluded_count"],
+        values,
     )
 
 
@@ -338,7 +338,7 @@ def _qualify_observation(
         stale_after_days=stale_after_days,
         prior_row=prior_row,
     )
-    percentile, comparable_n, excluded_count, seasonal_excluded_count = _measure(
+    percentile, comparable_n, excluded_count, seasonal_excluded_count, values = _measure(
         observation,
         effective_state=effective_state,
     )
@@ -354,6 +354,34 @@ def _qualify_observation(
         comparison_broken=bool(observation.get("comparison_broken")),
     )
     data_state = classified["data_state"]
+    travel = None
+    if data_state in {"ok", "revised"} and cadence in policy.KNOWN_CADENCES and values:
+        travel = policy.classify_travel(
+            values,
+            units=str(observation.get("units") or ""),
+            transformation=str(observation.get("transformation") or ""),
+            cadence=cadence,
+        )
+    # Historical percentile remains the badge when it qualifies. Travel admits
+    # a row that the historical axis would have left at none, including when
+    # the only historical limitation is a short sample.
+    if (
+        travel
+        and classified["attention_status"] == "none"
+        and "unknown_cadence" not in classified["ineligibility"]
+    ):
+        reasons = [
+            reason
+            for reason in classified["ineligibility"]
+            if reason != "not_material"
+        ]
+        classified = {
+            **classified,
+            "attention_status": "interesting",
+            "badge_text": policy.badge_text("interesting"),
+            "ineligibility": reasons,
+            "reason": travel["reason"] + policy.historical_label_clause(reasons),
+        }
     member = {
         "observation_id": computed_id,
         "country": observation.get("country"),
@@ -386,6 +414,9 @@ def _qualify_observation(
         "seasonal_excluded_count": seasonal_excluded_count,
         "ineligibility": list(classified["ineligibility"]),
         "reason": classified["reason"],
+        "travel_pattern": None if travel is None else travel["pattern"],
+        "travel_direction": 0 if travel is None else travel["direction"],
+        "travel_run_length": 0 if travel is None else travel["run_length"],
         "data_state": data_state,
         "display_label": policy.DATA_STATE_LABELS.get(data_state),
         "alert_freshness": _alert_freshness(observation, prior_row),

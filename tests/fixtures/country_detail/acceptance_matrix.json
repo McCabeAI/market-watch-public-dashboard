@@ -406,7 +406,7 @@
     {
       "id": "unscored_zero_weight_leads",
       "country": "CA",
-      "summary": "A weight-0 unscored physical series outside 1/99 leads. A scored series inside 5/95 does not. Score levels stay at the fixture numbers.",
+      "summary": "A weight-0 unscored physical series outside 1/99 still leads. A scored series inside 5/95 can surface on direction of travel and does not lead. Score levels stay at the fixture numbers.",
       "score_state": {
         "Inflation": {
           "level": 61,
@@ -969,7 +969,7 @@
             }
           ],
           "expected": {
-            "finding_count": 1,
+            "finding_count": 2,
             "findings": [
               {
                 "observation_id": "66c7f8ccdcb71d1584202749f8d99fa82ade871265d1d3ec5da0e8a39862e62f",
@@ -996,6 +996,32 @@
                 "data_state": "ok",
                 "series_id": "FIXTURE_UNSCORED_PHYSICAL",
                 "display_value_rule": "headline_text is display formatting of the single observation value; do not store a second number"
+              },
+              {
+                "observation_id": "17c1577f3b2506d26a1be9e8f2eedcb0d791e3a0c4cd71f7fdb67be8e1e99195",
+                "attention_status": "interesting",
+                "badge_text": "Interesting",
+                "percentile": 50.0,
+                "comparable_n": 60,
+                "reason": "Deceleration: monthly percent change ran +58, +59, +60, and +30. The latest +30 materially slows the prior direction of travel.",
+                "ineligibility": [],
+                "alert_freshness": "new",
+                "fresh_alert": true,
+                "headline_observation_id": "17c1577f3b2506d26a1be9e8f2eedcb0d791e3a0c4cd71f7fdb67be8e1e99195",
+                "headline_transformation": "mom_pct",
+                "headline_label": "monthly percent change",
+                "headline_text": "monthly percent change 30",
+                "related_observation_ids": [],
+                "topic": "activity",
+                "release_family": "fixture_scored_inside",
+                "reference_period": "2024-12",
+                "geography": "CA",
+                "seasonal_adjustment": true,
+                "score_role": "scored",
+                "weight": 0.25,
+                "data_state": "ok",
+                "series_id": "FIXTURE_SCORED_INSIDE_BAND",
+                "display_value_rule": "headline_text is display formatting of the single observation value; do not store a second number"
               }
             ],
             "observations": {
@@ -1019,18 +1045,16 @@
               "scored_inside_band": {
                 "observation_id": "17c1577f3b2506d26a1be9e8f2eedcb0d791e3a0c4cd71f7fdb67be8e1e99195",
                 "canonical_json": "{\"country\":\"CA\",\"geography\":\"CA\",\"nominal_basis\":\"nominal\",\"reference_period\":\"2024-12\",\"seasonal_adjustment\":true,\"series_id\":\"FIXTURE_SCORED_INSIDE_BAND\",\"transformation\":\"mom_pct\",\"units\":\"percent\"}",
-                "attention_status": "none",
-                "badge_text": null,
+                "attention_status": "interesting",
+                "badge_text": "Interesting",
                 "percentile": 50.0,
                 "comparable_n": 60,
                 "excluded_count": 0,
                 "seasonal_excluded_count": 0,
-                "ineligibility": [
-                  "not_material"
-                ],
-                "what_matters_now_slot": false,
+                "ineligibility": [],
+                "what_matters_now_slot": true,
                 "related_observation_ids": [],
-                "reason": "No attention badge: not_material (percentile 50.000000 is inside 5/95 on monthly n=60).",
+                "reason": "Deceleration: monthly percent change ran +58, +59, +60, and +30. The latest +30 materially slows the prior direction of travel.",
                 "data_state": "ok",
                 "display_label": null,
                 "alert_freshness": "new"
@@ -1059,7 +1083,7 @@
     {
       "id": "au_spending_headline",
       "country": "AU",
-      "summary": "Monthly mom_pct is inside 5/95. The annual through-the-year percent is outside 5/95 and not outside 1/99. Same release family, so one slot. The headline is the annual measure. The monthly id is related, not a second slot. FIXTURE_MHSI_TTY_NOT_AN_ABS_ID is a fixture stand-in, not an ABS series id. Production must parse the official workbook column. The +7.0% illustration is not a fixture value.",
+      "summary": "Annual percentile is notable and leads. Monthly is inside 5/95 but decelerates, the opposite travel direction from the annual reversal, so both keep a slot and the reasons say confirmed divergence.",
       "annual_series_id_rule": "required_from_official_workbook_column",
       "score_state": {
         "Inflation": {
@@ -1619,7 +1643,7 @@
             }
           ],
           "expected": {
-            "finding_count": 1,
+            "finding_count": 2,
             "findings": [
               {
                 "observation_id": "dbfcb26c340709fc28db62bfc830822443b05569b3e952247208aa1c797d1530",
@@ -1627,7 +1651,7 @@
                 "badge_text": "Notable",
                 "percentile": 98.33333333333333,
                 "comparable_n": 60,
-                "reason": "Notable: inclusive nearest-rank percentile 98.333333 is outside 5/95 on monthly n=60.",
+                "reason": "Notable: inclusive nearest-rank percentile 98.333333 is outside 5/95 on monthly n=60. Confirmed divergence: through-the-year percent change is reversal while monthly percent change is deceleration.",
                 "ineligibility": [],
                 "alert_freshness": "new",
                 "fresh_alert": true,
@@ -1648,25 +1672,52 @@
                 "data_state": "ok",
                 "series_id": "FIXTURE_MHSI_TTY_NOT_AN_ABS_ID",
                 "display_value_rule": "headline_text is display formatting of the single observation value; do not store a second number"
+              },
+              {
+                "observation_id": "f133c0c66cd06e6a19e480ce697b9a7c7e6ee4d4b62f2a2a24c27d8609ea8ca7",
+                "attention_status": "interesting",
+                "badge_text": "Interesting",
+                "percentile": 50.0,
+                "comparable_n": 60,
+                "reason": "Deceleration: monthly percent change ran +58, +59, +60, and +30. The latest +30 materially slows the prior direction of travel. Confirmed divergence: through-the-year percent change is reversal while monthly percent change is deceleration.",
+                "ineligibility": [],
+                "alert_freshness": "new",
+                "fresh_alert": true,
+                "headline_observation_id": "f133c0c66cd06e6a19e480ce697b9a7c7e6ee4d4b62f2a2a24c27d8609ea8ca7",
+                "headline_transformation": "mom_pct",
+                "headline_label": "monthly percent change",
+                "headline_text": "monthly percent change 30",
+                "related_observation_ids": [
+                  "dbfcb26c340709fc28db62bfc830822443b05569b3e952247208aa1c797d1530"
+                ],
+                "topic": "consumer",
+                "release_family": "au_mhsi_total",
+                "reference_period": "2024-06",
+                "geography": "AU",
+                "seasonal_adjustment": true,
+                "score_role": "scored",
+                "weight": 0.25,
+                "data_state": "ok",
+                "series_id": "A130200586W",
+                "display_value_rule": "headline_text is display formatting of the single observation value; do not store a second number"
               }
             ],
             "observations": {
               "au_spending_monthly": {
                 "observation_id": "f133c0c66cd06e6a19e480ce697b9a7c7e6ee4d4b62f2a2a24c27d8609ea8ca7",
                 "canonical_json": "{\"country\":\"AU\",\"geography\":\"AU\",\"nominal_basis\":\"nominal\",\"reference_period\":\"2024-06\",\"seasonal_adjustment\":true,\"series_id\":\"A130200586W\",\"transformation\":\"mom_pct\",\"units\":\"percent\"}",
-                "attention_status": "none",
-                "badge_text": null,
+                "attention_status": "interesting",
+                "badge_text": "Interesting",
                 "percentile": 50.0,
                 "comparable_n": 60,
                 "excluded_count": 0,
                 "seasonal_excluded_count": 0,
-                "ineligibility": [
-                  "not_material",
-                  "correlated_companion"
+                "ineligibility": [],
+                "what_matters_now_slot": true,
+                "related_observation_ids": [
+                  "dbfcb26c340709fc28db62bfc830822443b05569b3e952247208aa1c797d1530"
                 ],
-                "what_matters_now_slot": false,
-                "related_observation_ids": [],
-                "reason": "No attention badge: not_material (percentile 50.000000 is inside 5/95 on monthly n=60).",
+                "reason": "Deceleration: monthly percent change ran +58, +59, +60, and +30. The latest +30 materially slows the prior direction of travel.",
                 "data_state": "ok",
                 "display_label": null,
                 "alert_freshness": "new"
@@ -1709,7 +1760,7 @@
     {
       "id": "extreme_vs_nonextreme_vs_short",
       "country": "NZ",
-      "summary": "Outlier-eligible, inside 5/95, and n=10 extreme. Statuses outlier, none, none. The short series is insufficient_history and has no Outlier badge.",
+      "summary": "Historical outlier still leads. The inside-band series surfaces as deceleration. The n=10 series surfaces as acceleration and must not say Outlier; ineligibility keeps insufficient_history.",
       "snapshots": [
         {
           "id": "only",
@@ -2317,7 +2368,7 @@
             }
           ],
           "expected": {
-            "finding_count": 1,
+            "finding_count": 3,
             "findings": [
               {
                 "observation_id": "e61cf0ae40036592ca254b3e7688bed0fd5b3f322926853f10a89552861b43cc",
@@ -2344,6 +2395,60 @@
                 "data_state": "ok",
                 "series_id": "FIXTURE_OUTLIER_ELIGIBLE",
                 "display_value_rule": "headline_text is display formatting of the single observation value; do not store a second number"
+              },
+              {
+                "observation_id": "04bc9e8529029ccaad37967e0c9e728f9afb21706a7cb495cf6a69efd9e4445b",
+                "attention_status": "interesting",
+                "badge_text": "Interesting",
+                "percentile": 100.0,
+                "comparable_n": 10,
+                "reason": "Acceleration: monthly percent change ran +7, +8, +9, and +10. The latest +10 is larger in the same direction than the prior +9. A historical percentile badge is not claimed (insufficient_history).",
+                "ineligibility": [
+                  "insufficient_history"
+                ],
+                "alert_freshness": "new",
+                "fresh_alert": true,
+                "headline_observation_id": "04bc9e8529029ccaad37967e0c9e728f9afb21706a7cb495cf6a69efd9e4445b",
+                "headline_transformation": "mom_pct",
+                "headline_label": "monthly percent change",
+                "headline_text": "monthly percent change 10",
+                "related_observation_ids": [],
+                "topic": "activity",
+                "release_family": "fixture_short_extreme",
+                "reference_period": "2024-12",
+                "geography": "NZ",
+                "seasonal_adjustment": true,
+                "score_role": "context",
+                "weight": 0,
+                "data_state": "ok",
+                "series_id": "FIXTURE_SHORT_EXTREME",
+                "display_value_rule": "headline_text is display formatting of the single observation value; do not store a second number"
+              },
+              {
+                "observation_id": "6a3f1d2db46d85255422423f73364c0ca6a41313a0cc6fd0bc98d98aabeb378d",
+                "attention_status": "interesting",
+                "badge_text": "Interesting",
+                "percentile": 50.0,
+                "comparable_n": 60,
+                "reason": "Deceleration: monthly percent change ran +58, +59, +60, and +30. The latest +30 materially slows the prior direction of travel.",
+                "ineligibility": [],
+                "alert_freshness": "new",
+                "fresh_alert": true,
+                "headline_observation_id": "6a3f1d2db46d85255422423f73364c0ca6a41313a0cc6fd0bc98d98aabeb378d",
+                "headline_transformation": "mom_pct",
+                "headline_label": "monthly percent change",
+                "headline_text": "monthly percent change 30",
+                "related_observation_ids": [],
+                "topic": "activity",
+                "release_family": "fixture_inside_band",
+                "reference_period": "2024-12",
+                "geography": "NZ",
+                "seasonal_adjustment": true,
+                "score_role": "context",
+                "weight": 0,
+                "data_state": "ok",
+                "series_id": "FIXTURE_INSIDE_BAND",
+                "display_value_rule": "headline_text is display formatting of the single observation value; do not store a second number"
               }
             ],
             "observations": {
@@ -2367,18 +2472,16 @@
               "inside_band": {
                 "observation_id": "6a3f1d2db46d85255422423f73364c0ca6a41313a0cc6fd0bc98d98aabeb378d",
                 "canonical_json": "{\"country\":\"NZ\",\"geography\":\"NZ\",\"nominal_basis\":\"index\",\"reference_period\":\"2024-12\",\"seasonal_adjustment\":true,\"series_id\":\"FIXTURE_INSIDE_BAND\",\"transformation\":\"mom_pct\",\"units\":\"percent\"}",
-                "attention_status": "none",
-                "badge_text": null,
+                "attention_status": "interesting",
+                "badge_text": "Interesting",
                 "percentile": 50.0,
                 "comparable_n": 60,
                 "excluded_count": 0,
                 "seasonal_excluded_count": 0,
-                "ineligibility": [
-                  "not_material"
-                ],
-                "what_matters_now_slot": false,
+                "ineligibility": [],
+                "what_matters_now_slot": true,
                 "related_observation_ids": [],
-                "reason": "No attention badge: not_material (percentile 50.000000 is inside 5/95 on monthly n=60).",
+                "reason": "Deceleration: monthly percent change ran +58, +59, +60, and +30. The latest +30 materially slows the prior direction of travel.",
                 "data_state": "ok",
                 "display_label": null,
                 "alert_freshness": "new"
@@ -2386,8 +2489,8 @@
               "short_extreme": {
                 "observation_id": "04bc9e8529029ccaad37967e0c9e728f9afb21706a7cb495cf6a69efd9e4445b",
                 "canonical_json": "{\"country\":\"NZ\",\"geography\":\"NZ\",\"nominal_basis\":\"index\",\"reference_period\":\"2024-12\",\"seasonal_adjustment\":true,\"series_id\":\"FIXTURE_SHORT_EXTREME\",\"transformation\":\"mom_pct\",\"units\":\"percent\"}",
-                "attention_status": "none",
-                "badge_text": null,
+                "attention_status": "interesting",
+                "badge_text": "Interesting",
                 "percentile": 100.0,
                 "comparable_n": 10,
                 "excluded_count": 0,
@@ -2395,9 +2498,9 @@
                 "ineligibility": [
                   "insufficient_history"
                 ],
-                "what_matters_now_slot": false,
+                "what_matters_now_slot": true,
                 "related_observation_ids": [],
-                "reason": "No attention badge: insufficient_history (n=10 < 36 monthly).",
+                "reason": "Acceleration: monthly percent change ran +7, +8, +9, and +10. The latest +10 is larger in the same direction than the prior +9. A historical percentile badge is not claimed (insufficient_history).",
                 "data_state": "ok",
                 "display_label": null,
                 "alert_freshness": "new"
@@ -2411,7 +2514,7 @@
     {
       "id": "ca_daily_vs_monthly_and_alberta",
       "country": "CA",
-      "summary": "monthly_level and calendar_day_rate share a series id and a release but are different observation ids and are not one ranked sample. Only same-calendar-month peers count because sa is false. Only the calendar-day rate qualifies. Geography is AB. calendar_day_rate is not seasonal adjustment. Eight same-month peers do not earn Outlier.",
+      "summary": "Calendar-day rate remains the historical outlier and leads. January monthly level reverses and keeps a second slot. Eight same-month peers stay below the outlier minimum and surface as persistence without an Outlier badge.",
       "snapshots": [
         {
           "id": "only",
@@ -3267,7 +3370,7 @@
             }
           ],
           "expected": {
-            "finding_count": 1,
+            "finding_count": 3,
             "findings": [
               {
                 "observation_id": "db39eda0756f780a58bad21b4efb912cfaa21c41c3812136500d947b6c5a9ac0",
@@ -3275,7 +3378,7 @@
                 "badge_text": "Outlier",
                 "percentile": 100.0,
                 "comparable_n": 60,
-                "reason": "Outlier: inclusive nearest-rank percentile 100.000000 is outside 1/99 on monthly n=60.",
+                "reason": "Outlier: inclusive nearest-rank percentile 100.000000 is outside 1/99 on monthly n=60. Confirmed divergence: calendar-day rate is persistence while monthly level is reversal.",
                 "ineligibility": [],
                 "alert_freshness": "new",
                 "fresh_alert": true,
@@ -3296,25 +3399,80 @@
                 "data_state": "ok",
                 "series_id": "AER_ST3_OIL_TOTAL_PRODUCTION_M3",
                 "display_value_rule": "headline_text is display formatting of the single observation value; do not store a second number"
+              },
+              {
+                "observation_id": "6bf4aa07baa422ddf4f41f3893b1b2b307e8e5d56172cb467f94b45d4b7eac7e",
+                "attention_status": "interesting",
+                "badge_text": "Interesting",
+                "percentile": 50.0,
+                "comparable_n": 60,
+                "reason": "Reversal: monthly level ran +6700, +6800, +6900, and +3900. The latest +3900 flips the prior direction of travel. Confirmed divergence: calendar-day rate is persistence while monthly level is reversal.",
+                "ineligibility": [],
+                "alert_freshness": "new",
+                "fresh_alert": true,
+                "headline_observation_id": "6bf4aa07baa422ddf4f41f3893b1b2b307e8e5d56172cb467f94b45d4b7eac7e",
+                "headline_transformation": "monthly_level",
+                "headline_label": "monthly level",
+                "headline_text": "monthly level 3900",
+                "related_observation_ids": [
+                  "db39eda0756f780a58bad21b4efb912cfaa21c41c3812136500d947b6c5a9ac0"
+                ],
+                "topic": "energy_physical",
+                "release_family": "aer_st3_oil",
+                "reference_period": "2024-01",
+                "geography": "AB",
+                "seasonal_adjustment": false,
+                "score_role": "context",
+                "weight": 0,
+                "data_state": "ok",
+                "series_id": "AER_ST3_OIL_TOTAL_PRODUCTION_M3",
+                "display_value_rule": "headline_text is display formatting of the single observation value; do not store a second number"
+              },
+              {
+                "observation_id": "f21561b890e5372fc1adcb4f04b0fb70edff46122438ce1286436fd1c3e4fae8",
+                "attention_status": "interesting",
+                "badge_text": "Interesting",
+                "percentile": 100.0,
+                "comparable_n": 8,
+                "reason": "Persistence: monthly level kept the same direction for 7 periods, ending +50, +60, +70, and +80. A historical percentile badge is not claimed (seasonal_history_insufficient).",
+                "ineligibility": [
+                  "seasonal_history_insufficient"
+                ],
+                "alert_freshness": "new",
+                "fresh_alert": true,
+                "headline_observation_id": "f21561b890e5372fc1adcb4f04b0fb70edff46122438ce1286436fd1c3e4fae8",
+                "headline_transformation": "monthly_level",
+                "headline_label": "monthly level",
+                "headline_text": "monthly level 80",
+                "related_observation_ids": [],
+                "topic": "energy_physical",
+                "release_family": "fixture_nsa_short",
+                "reference_period": "2024-01",
+                "geography": "AB",
+                "seasonal_adjustment": false,
+                "score_role": "context",
+                "weight": 0,
+                "data_state": "ok",
+                "series_id": "FIXTURE_NSA_SHORT_SEASONAL",
+                "display_value_rule": "headline_text is display formatting of the single observation value; do not store a second number"
               }
             ],
             "observations": {
               "ab_monthly_level": {
                 "observation_id": "6bf4aa07baa422ddf4f41f3893b1b2b307e8e5d56172cb467f94b45d4b7eac7e",
                 "canonical_json": "{\"country\":\"CA\",\"geography\":\"AB\",\"nominal_basis\":\"physical\",\"reference_period\":\"2024-01\",\"seasonal_adjustment\":false,\"series_id\":\"AER_ST3_OIL_TOTAL_PRODUCTION_M3\",\"transformation\":\"monthly_level\",\"units\":\"cubic metres\"}",
-                "attention_status": "none",
-                "badge_text": null,
+                "attention_status": "interesting",
+                "badge_text": "Interesting",
                 "percentile": 50.0,
                 "comparable_n": 60,
                 "excluded_count": 0,
                 "seasonal_excluded_count": 12,
-                "ineligibility": [
-                  "not_material",
-                  "correlated_companion"
+                "ineligibility": [],
+                "what_matters_now_slot": true,
+                "related_observation_ids": [
+                  "db39eda0756f780a58bad21b4efb912cfaa21c41c3812136500d947b6c5a9ac0"
                 ],
-                "what_matters_now_slot": false,
-                "related_observation_ids": [],
-                "reason": "No attention badge: not_material (percentile 50.000000 is inside 5/95 on monthly n=60).",
+                "reason": "Reversal: monthly level ran +6700, +6800, +6900, and +3900. The latest +3900 flips the prior direction of travel.",
                 "data_state": "ok",
                 "display_label": null,
                 "alert_freshness": "new"
@@ -3341,8 +3499,8 @@
               "ab_short_seasonal": {
                 "observation_id": "f21561b890e5372fc1adcb4f04b0fb70edff46122438ce1286436fd1c3e4fae8",
                 "canonical_json": "{\"country\":\"CA\",\"geography\":\"AB\",\"nominal_basis\":\"physical\",\"reference_period\":\"2024-01\",\"seasonal_adjustment\":false,\"series_id\":\"FIXTURE_NSA_SHORT_SEASONAL\",\"transformation\":\"monthly_level\",\"units\":\"cubic metres\"}",
-                "attention_status": "none",
-                "badge_text": null,
+                "attention_status": "interesting",
+                "badge_text": "Interesting",
                 "percentile": 100.0,
                 "comparable_n": 8,
                 "excluded_count": 0,
@@ -3350,9 +3508,9 @@
                 "ineligibility": [
                   "seasonal_history_insufficient"
                 ],
-                "what_matters_now_slot": false,
+                "what_matters_now_slot": true,
                 "related_observation_ids": [],
-                "reason": "No attention badge: seasonal_history_insufficient (same-calendar-period n=8 < 36 monthly).",
+                "reason": "Persistence: monthly level kept the same direction for 7 periods, ending +50, +60, +70, and +80. A historical percentile badge is not claimed (seasonal_history_insufficient).",
                 "data_state": "ok",
                 "display_label": null,
                 "alert_freshness": "new"
@@ -3366,7 +3524,7 @@
     {
       "id": "quiet_country",
       "country": "EA",
-      "summary": "Every series is inside the band or ineligible. Findings are empty. Do not pad. EA narrative text is not reused from another country.",
+      "summary": "No historical breach and no direction-of-travel pattern. Findings stay empty.",
       "renderer": {
         "element": "p.wmn-quiet",
         "text": "No finding clears the attention rules.",
@@ -3386,247 +3544,247 @@
               "source_url": "https://example.invalid/country-detail-fixture/quiet_inside",
               "label": "quiet_inside",
               "reference_period": "2024-12",
-              "value": 30,
+              "value": -0.4,
               "history": [
                 {
                   "reference_period": "2020-01",
-                  "value": 1
+                  "value": 0.4
                 },
                 {
                   "reference_period": "2020-02",
-                  "value": 2
+                  "value": -0.4
                 },
                 {
                   "reference_period": "2020-03",
-                  "value": 3
+                  "value": 0.4
                 },
                 {
                   "reference_period": "2020-04",
-                  "value": 4
+                  "value": -0.4
                 },
                 {
                   "reference_period": "2020-05",
-                  "value": 5
+                  "value": 0.4
                 },
                 {
                   "reference_period": "2020-06",
-                  "value": 6
+                  "value": -0.4
                 },
                 {
                   "reference_period": "2020-07",
-                  "value": 7
+                  "value": 0.4
                 },
                 {
                   "reference_period": "2020-08",
-                  "value": 8
+                  "value": -0.4
                 },
                 {
                   "reference_period": "2020-09",
-                  "value": 9
+                  "value": 0.4
                 },
                 {
                   "reference_period": "2020-10",
-                  "value": 10
+                  "value": -0.4
                 },
                 {
                   "reference_period": "2020-11",
-                  "value": 11
+                  "value": 0.4
                 },
                 {
                   "reference_period": "2020-12",
-                  "value": 12
+                  "value": -0.4
                 },
                 {
                   "reference_period": "2021-01",
-                  "value": 13
+                  "value": 0.4
                 },
                 {
                   "reference_period": "2021-02",
-                  "value": 14
+                  "value": -0.4
                 },
                 {
                   "reference_period": "2021-03",
-                  "value": 15
+                  "value": 0.4
                 },
                 {
                   "reference_period": "2021-04",
-                  "value": 16
+                  "value": -0.4
                 },
                 {
                   "reference_period": "2021-05",
-                  "value": 17
+                  "value": 0.4
                 },
                 {
                   "reference_period": "2021-06",
-                  "value": 18
+                  "value": -0.4
                 },
                 {
                   "reference_period": "2021-07",
-                  "value": 19
+                  "value": 0.4
                 },
                 {
                   "reference_period": "2021-08",
-                  "value": 20
+                  "value": -0.4
                 },
                 {
                   "reference_period": "2021-09",
-                  "value": 21
+                  "value": 0.4
                 },
                 {
                   "reference_period": "2021-10",
-                  "value": 22
+                  "value": -0.4
                 },
                 {
                   "reference_period": "2021-11",
-                  "value": 23
+                  "value": 0.4
                 },
                 {
                   "reference_period": "2021-12",
-                  "value": 24
+                  "value": -0.4
                 },
                 {
                   "reference_period": "2022-01",
-                  "value": 25
+                  "value": 0.4
                 },
                 {
                   "reference_period": "2022-02",
-                  "value": 26
+                  "value": -0.4
                 },
                 {
                   "reference_period": "2022-03",
-                  "value": 27
+                  "value": 0.4
                 },
                 {
                   "reference_period": "2022-04",
-                  "value": 28
+                  "value": -0.4
                 },
                 {
                   "reference_period": "2022-05",
-                  "value": 29
+                  "value": 0.4
                 },
                 {
                   "reference_period": "2022-06",
-                  "value": 31
+                  "value": -0.4
                 },
                 {
                   "reference_period": "2022-07",
-                  "value": 32
+                  "value": 0.4
                 },
                 {
                   "reference_period": "2022-08",
-                  "value": 33
+                  "value": -0.4
                 },
                 {
                   "reference_period": "2022-09",
-                  "value": 34
+                  "value": 0.4
                 },
                 {
                   "reference_period": "2022-10",
-                  "value": 35
+                  "value": -0.4
                 },
                 {
                   "reference_period": "2022-11",
-                  "value": 36
+                  "value": 0.4
                 },
                 {
                   "reference_period": "2022-12",
-                  "value": 37
+                  "value": -0.4
                 },
                 {
                   "reference_period": "2023-01",
-                  "value": 38
+                  "value": 0.4
                 },
                 {
                   "reference_period": "2023-02",
-                  "value": 39
+                  "value": -0.4
                 },
                 {
                   "reference_period": "2023-03",
-                  "value": 40
+                  "value": 0.4
                 },
                 {
                   "reference_period": "2023-04",
-                  "value": 41
+                  "value": -0.4
                 },
                 {
                   "reference_period": "2023-05",
-                  "value": 42
+                  "value": 0.4
                 },
                 {
                   "reference_period": "2023-06",
-                  "value": 43
+                  "value": -0.4
                 },
                 {
                   "reference_period": "2023-07",
-                  "value": 44
+                  "value": 0.4
                 },
                 {
                   "reference_period": "2023-08",
-                  "value": 45
+                  "value": -0.4
                 },
                 {
                   "reference_period": "2023-09",
-                  "value": 46
+                  "value": 0.4
                 },
                 {
                   "reference_period": "2023-10",
-                  "value": 47
+                  "value": -0.4
                 },
                 {
                   "reference_period": "2023-11",
-                  "value": 48
+                  "value": 0.4
                 },
                 {
                   "reference_period": "2023-12",
-                  "value": 49
+                  "value": -0.4
                 },
                 {
                   "reference_period": "2024-01",
-                  "value": 50
+                  "value": 0.4
                 },
                 {
                   "reference_period": "2024-02",
-                  "value": 51
+                  "value": -0.4
                 },
                 {
                   "reference_period": "2024-03",
-                  "value": 52
+                  "value": 0.4
                 },
                 {
                   "reference_period": "2024-04",
-                  "value": 53
+                  "value": -0.4
                 },
                 {
                   "reference_period": "2024-05",
-                  "value": 54
+                  "value": 0.4
                 },
                 {
                   "reference_period": "2024-06",
-                  "value": 55
+                  "value": -0.4
                 },
                 {
                   "reference_period": "2024-07",
-                  "value": 56
+                  "value": 0.4
                 },
                 {
                   "reference_period": "2024-08",
-                  "value": 57
+                  "value": -0.4
                 },
                 {
                   "reference_period": "2024-09",
-                  "value": 58
+                  "value": 0.4
                 },
                 {
                   "reference_period": "2024-10",
-                  "value": 59
+                  "value": -0.4
                 },
                 {
                   "reference_period": "2024-11",
-                  "value": 60
+                  "value": 0.4
                 },
                 {
                   "reference_period": "2024-12",
-                  "value": 30
+                  "value": -0.4
                 }
               ],
               "cadence": "monthly",
@@ -3653,47 +3811,47 @@
               "source_url": "https://example.invalid/country-detail-fixture/quiet_short",
               "label": "quiet_short",
               "reference_period": "2024-12",
-              "value": 10,
+              "value": -0.4,
               "history": [
                 {
                   "reference_period": "2024-03",
-                  "value": 1
+                  "value": 0.4
                 },
                 {
                   "reference_period": "2024-04",
-                  "value": 2
+                  "value": -0.4
                 },
                 {
                   "reference_period": "2024-05",
-                  "value": 3
+                  "value": 0.4
                 },
                 {
                   "reference_period": "2024-06",
-                  "value": 4
+                  "value": -0.4
                 },
                 {
                   "reference_period": "2024-07",
-                  "value": 5
+                  "value": 0.4
                 },
                 {
                   "reference_period": "2024-08",
-                  "value": 6
+                  "value": -0.4
                 },
                 {
                   "reference_period": "2024-09",
-                  "value": 7
+                  "value": 0.4
                 },
                 {
                   "reference_period": "2024-10",
-                  "value": 8
+                  "value": -0.4
                 },
                 {
                   "reference_period": "2024-11",
-                  "value": 9
+                  "value": 0.4
                 },
                 {
                   "reference_period": "2024-12",
-                  "value": 10
+                  "value": -0.4
                 }
               ],
               "cadence": "monthly",
@@ -3955,7 +4113,7 @@
                 "canonical_json": "{\"country\":\"EA\",\"geography\":\"EA\",\"nominal_basis\":\"index\",\"reference_period\":\"2024-12\",\"seasonal_adjustment\":true,\"series_id\":\"FIXTURE_QUIET_INSIDE\",\"transformation\":\"yoy_pct\",\"units\":\"percent\"}",
                 "attention_status": "none",
                 "badge_text": null,
-                "percentile": 50.0,
+                "percentile": 25.833333333333336,
                 "comparable_n": 60,
                 "excluded_count": 0,
                 "seasonal_excluded_count": 0,
@@ -3964,7 +4122,7 @@
                 ],
                 "what_matters_now_slot": false,
                 "related_observation_ids": [],
-                "reason": "No attention badge: not_material (percentile 50.000000 is inside 5/95 on monthly n=60).",
+                "reason": "No attention badge: not_material (percentile 25.833333 is inside 5/95 on monthly n=60).",
                 "data_state": "ok",
                 "display_label": null,
                 "alert_freshness": "new"
@@ -3974,7 +4132,7 @@
                 "canonical_json": "{\"country\":\"EA\",\"geography\":\"EA\",\"nominal_basis\":\"index\",\"reference_period\":\"2024-12\",\"seasonal_adjustment\":true,\"series_id\":\"FIXTURE_QUIET_SHORT\",\"transformation\":\"yoy_pct\",\"units\":\"percent\"}",
                 "attention_status": "none",
                 "badge_text": null,
-                "percentile": 100.0,
+                "percentile": 30.0,
                 "comparable_n": 10,
                 "excluded_count": 0,
                 "seasonal_excluded_count": 0,
