@@ -82,6 +82,13 @@ on:
       - "docs/OVERNIGHT_PIPELINE_V1.md"
       - ".github/workflows/overnight-scheduled-output.yml"
       - "requirements-market-state.txt"
+      - "scripts/apply_country_detail.py"
+      - "scripts/country_detail/country_detail.css"
+      - "scripts/country_detail/projection.py"
+      - "scripts/country_detail/render.py"
+      - "scripts/country_detail/attention.py"
+      - "tests/test_country_detail_*.py"
+      - "docs/COUNTRY_DETAIL_ATTENTION_V1.md"
 
 permissions:
   contents: read
@@ -340,6 +347,23 @@ jobs:
               print("stale Michigan 47.8 SCORED narrative remains")
               sys.exit(1)
           PY
+
+      - name: Apply Country Detail
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python3 scripts/apply_country_detail.py _site/index.html
+          for code in US CA AU NZ EA JP; do
+            grep -Fq "data-country=\"${code}\"" _site/index.html
+          done
+          test "$(grep -o 'class="temp-dimension score-detail"' _site/index.html | wc -l | tr -d '[:space:]')" -eq 24
+          test "$(grep -o '50 = structural/policy neutral anchor' _site/index.html | wc -l | tr -d '[:space:]')" -eq 24
+          grep -Eq 'What Matters Now|what-matters-now' _site/index.html
+          if grep -Fq 'Petrol and diesel accounted for almost two-thirds' _site/index.html; then
+            echo "stale petrol sentence remains"
+            exit 1
+          fi
+          grep -Eq 'class="wmn-quiet"|class="wmn-finding"' _site/index.html
 
       - name: Set up Python for market-state packet
         uses: actions/setup-python@v6
