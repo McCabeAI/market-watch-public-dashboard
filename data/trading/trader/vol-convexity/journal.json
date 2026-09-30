@@ -420,6 +420,60 @@
       "run_id": "overnight-20260929",
       "schema_version": 1,
       "thesis": "Spot is the wrong instrument for the Iran oil tail and the yen-warning jump: timing is uncertain and a flat book would take unbounded directional risk. The marked hike path already sits in rates, so a curve or front-end expression is a policy-path bet, not bounded convexity on that tail. With no vol surface, no options leg is markable, and staying flat dominates both the rates and spot candidates."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-30T04:49:40.475210-04:00",
+      "conviction": 20,
+      "decision_fingerprint": "567bfa28cb286c09d6a01831acdd5d12296e80bf786b2b6a7ee766c97c3a311e",
+      "event_id": "jde-57037619c6bd40b9",
+      "funding_view": null,
+      "invalidation": "Hold is wrong if a listed two-way options surface appears on a named underlier with tenor, strikes, and marks, or if a documented implied-versus-realized gap can be expressed without inventing prices. Spot continuation through the frozen prints does not invalidate hold.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "0fe535e8efd25d0eb0f954e0c0070e96872d042144be40782dbd338193bbaf85",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "e3421af84872830bc48d9326d1e859de00196cc5f4f5c2d17ac1cf5e9a8198c6"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-30T04:49:40.475210-04:00",
+        "evidence_hash": "e0bfe52fa5e19917bfc4588d4c35322269544d1c6d97ee8fd913c261dad403fd",
+        "overnight_run_id": "overnight-20260930",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Frozen marks are VIX 16.07, dollar-yen 157.12, dollar-Canada 1.41797, Brent 102.59, and a 5.26 percent U.S. 10-year, with the book flat and no listed options surface. Those are spots and a modest implied-vol print, not a trade. With timing and event risk unspecified, linear spot in foreign exchange, crude, or rates is the wrong instrument because path and gap risk are unbounded while convexity is unmarkable. Hold; do not invent an options overlay and do not endorse a spot substitute.",
+      "run_id": "overnight-20260930",
+      "schema_version": 1,
+      "thesis": "Frozen marks are VIX 16.07, dollar-yen 157.12, dollar-Canada 1.41797, Brent 102.59, and a 5.26 percent U.S. 10-year, with the book flat and no listed options surface. Those are spots and a modest implied-vol print, not a trade. With timing and event risk unspecified, linear spot in foreign exchange, crude, or rates is the wrong instrument because path and gap risk are unbounded while convexity is unmarkable. Hold; do not invent an options overlay and do not endorse a spot substitute."
     }
   ],
   "schema_version": 1,

@@ -1,5 +1,64 @@
 {
-  "active_lessons": [],
+  "active_lessons": [
+    {
+      "contradiction_count": 0,
+      "future_rule": "If an AUDCAD fade needs housing or BoC path time longer than the overnight holding clock, stay flat rather than fade and then flip the same cross.",
+      "lesson_id": "les-a8f64a5fd921",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-8ddf6ee19a94"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null
+      },
+      "source_run_id": "overnight-20260930",
+      "status": "active",
+      "text": "A multi-year AUDCAD richness fade is a multi-week relative-value book, not a two-to-three-day overnight fade, and closing it unchanged does not authorize a reverse.",
+      "trade_ids": [
+        "trd-trader-cross-merchant-pos-00661cabb94a"
+      ]
+    },
+    {
+      "contradiction_count": 0,
+      "future_rule": "After closing AUDCAD, stay flat until a new Australia-versus-Canada policy, growth, inflation, or carry gap appears that is not merely the opposite of the trade just exited.",
+      "lesson_id": "les-bd910b94260a",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-6734b7229e26"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null
+      },
+      "source_run_id": "overnight-20260930",
+      "status": "active",
+      "text": "Do not reverse a closed AUDCAD fade on a same-session diplomacy or oil tape. An oil hold that re-supports CAD is an invalidation of the long, not a reason to own it.",
+      "trade_ids": [
+        "trd-trader-cross-merchant-pos-27d002b448b1"
+      ]
+    }
+  ],
   "as_of": "2026-09-30T04:49:40.475210-04:00",
   "calibration": {
     "average_holding_seconds": 399819,
@@ -37,9 +96,9 @@
   "capital_owner": null,
   "consequence": {
     "competition_cohort_size": 14,
-    "competition_eligible": false,
+    "competition_eligible": true,
     "competition_rank": 14,
-    "competitive_rank": null,
+    "competitive_rank": 14,
     "drawdown_usd": 85969.27,
     "giveback_usd": 0.0,
     "high_water_nav_usd": 100000000.0,
@@ -58,78 +117,18 @@
     "status": "ok"
   },
   "learning": {
-    "competition_eligible": false,
-    "learning_default_age_runs": 2,
+    "competition_eligible": true,
+    "learning_default_age_runs": 0,
     "learning_default_count": 1,
-    "learning_status": "learning_default",
+    "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [
-    {
-      "kind": "postmortem",
-      "obligation_id": "pmd-6734b7229e26",
-      "owner_id": "cross-merchant",
-      "owner_type": "trader",
-      "reference": "trd-trader-cross-merchant-pos-27d002b448b1",
-      "source_run_id": "overnight-20260929"
-    },
-    {
-      "kind": "postmortem",
-      "obligation_id": "pmd-8ddf6ee19a94",
-      "owner_id": "cross-merchant",
-      "owner_type": "trader",
-      "reference": "trd-trader-cross-merchant-pos-00661cabb94a",
-      "source_run_id": "overnight-20260922"
-    }
-  ],
-  "memory_context_sha256": "5af89700a5e0fc961164d80a5606d36a53ddfad4b34649e3346143a6e4cee304",
+  "learning_obligations": [],
+  "memory_context_sha256": "450e92813853396fc75bce22dfe98d4b94e24bd6a9ccbe876890da54f5736bb6",
   "open_positions": [],
   "owner_id": "cross-merchant",
   "owner_type": "trader",
-  "postmortems_due": [
-    {
-      "created_at": "2026-09-22T15:40:57.474758-04:00",
-      "created_run_id": "overnight-20260922",
-      "facts": {
-        "asset_class": "spot_fx",
-        "closed_at": "2026-09-22T15:40:57.474758-04:00",
-        "conviction": 60,
-        "entry_mark": 1.0,
-        "exit_mark": 1.0,
-        "holding_duration_seconds": 234247,
-        "instrument": "AUDCAD",
-        "opened_at": "2026-09-19T22:36:50.082404-04:00",
-        "rationale_status": "present",
-        "realized_pnl_usd": -49945.56,
-        "side": "short"
-      },
-      "postmortem_id": "pmd-8ddf6ee19a94",
-      "trade_id": "trd-trader-cross-merchant-pos-00661cabb94a"
-    },
-    {
-      "created_at": "2026-09-29T04:44:08.485973-04:00",
-      "created_run_id": "overnight-20260929",
-      "facts": {
-        "asset_class": "spot_fx",
-        "closed_at": "2026-09-29T04:44:08.485973-04:00",
-        "conviction": 63,
-        "entry_mark": 1.0,
-        "exit_mark": 0.99,
-        "exit_reason_category": null,
-        "expression": null,
-        "holding_duration_seconds": 565391,
-        "instrument": "AUDCAD",
-        "invalidation": "Oil hold/spike that re-supports CAD terms-of-trade, Hormuz diplomacy failure, or AU dropping the priced RBA hike.",
-        "opened_at": "2026-09-22T15:40:57.474758-04:00",
-        "rationale_status": "present",
-        "realized_pnl_usd": -35787.92,
-        "side": "long",
-        "thesis": null
-      },
-      "postmortem_id": "pmd-6734b7229e26",
-      "trade_id": "trd-trader-cross-merchant-pos-27d002b448b1"
-    }
-  ],
+  "postmortems_due": [],
   "psychology": {
     "active_flags": [],
     "applicable": true,
@@ -152,12 +151,12 @@
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.26
+        "value": 0.21
       },
       "frustration": {
         "band": "calm",
         "trend": "down",
-        "value": 0.17
+        "value": 0.14
       },
       "revenge_pressure": {
         "band": "calm",
@@ -166,8 +165,8 @@
       },
       "self_trust": {
         "band": "steady",
-        "trend": "flat",
-        "value": 0.48
+        "trend": "up",
+        "value": 0.49
       },
       "thesis_attachment": {
         "band": "calm",
@@ -188,13 +187,18 @@
         "kind": "learning_default_entered",
         "magnitude": 1.0,
         "run_id": "overnight-20260928"
+      },
+      {
+        "kind": "learning_default_cleared",
+        "magnitude": 1.0,
+        "run_id": "overnight-20260930"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "50dc475873331c3f409da0de1a5b3b5238571f235f7215ed9bc784732743ec3d",
+    "state_sha256": "10a051a88f2fe712f354d41b3e19a788e02f06ba1ae82d15cf9190e5e21aee16",
     "streaks": {
-      "flat_cycles": 0,
+      "flat_cycles": 1,
       "session_loss": 0,
       "session_win": 0
     }

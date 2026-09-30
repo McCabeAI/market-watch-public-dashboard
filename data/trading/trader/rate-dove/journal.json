@@ -440,6 +440,62 @@
       "run_id": "overnight-20260929",
       "schema_version": 1,
       "thesis": "CORRA cash at 2.30 versus Mar27 at 3.125 still prices about 82bp of tightening, which treats Brent 105.28 as a Canadian inflation license rather than a global demand shock on an already-restrictive stance. The CAD H-Z curve receive is no longer the cleanest dove line: Iran-oil pessimism is a hike headwind to any receive, and Canada\u2019s exporter channel makes this book the dirtiest seat for that shock. Cut the existing CAD curve rather than hold full size or add another receive."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "curve",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027H-Z",
+          "notional_usd": null,
+          "position_id": "pos-9849cf751c27",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-09-30T04:49:40.475210-04:00",
+      "conviction": 57,
+      "decision_fingerprint": "a1a1b41848946c725e5475f741c68cbfa1cdb8a731e9fb166710560aca32bf8e",
+      "event_id": "jde-bf85b4e2e48a448e",
+      "funding_view": null,
+      "invalidation": "Hold fails if the late-2027 implied holds above 3.63 alongside cash staying at 2.30 with oil-led re-tightening, confirming the hike tail rather than fading it.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-9849cf751c27"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "ab43fd618641de613ef2130a571d5c6f3aeab92e6478152de2a95410d835aa60",
+      "outcome_links": [],
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "e8ab22b9e7851ff71233a3c296b063ca1c79b857a03e4585187f9e9dab745373"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-30T04:49:40.475210-04:00",
+        "evidence_hash": "e0bfe52fa5e19917bfc4588d4c35322269544d1c6d97ee8fd913c261dad403fd",
+        "overnight_run_id": "overnight-20260930",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Frozen CORRA still prices a large 2027 tightening arc from cash 2.30 through March at 3.105 toward the late-2027 3.63 area, so lower-rate repricing remains the live dove node rather than a fresh overnight add. The book already expresses that node via the existing 2027 H-versus-Z curve, and Brent at 102.59 plus a 5.26 percent U.S. 10-year are enough of a near-term inflation offset that expanding Canadian rates or Canada spot tonight is not cleaner. Hold the existing curve; do not chase blocked Australian risk and do not swap into spot Canada against 102-handle oil.",
+      "run_id": "overnight-20260930",
+      "schema_version": 1,
+      "thesis": "Frozen CORRA still prices a large 2027 tightening arc from cash 2.30 through March at 3.105 toward the late-2027 3.63 area, so lower-rate repricing remains the live dove node rather than a fresh overnight add. The book already expresses that node via the existing 2027 H-versus-Z curve, and Brent at 102.59 plus a 5.26 percent U.S. 10-year are enough of a near-term inflation offset that expanding Canadian rates or Canada spot tonight is not cleaner. Hold the existing curve; do not chase blocked Australian risk and do not swap into spot Canada against 102-handle oil."
     }
   ],
   "schema_version": 1,

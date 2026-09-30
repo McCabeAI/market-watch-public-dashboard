@@ -448,6 +448,60 @@
       "run_id": "overnight-20260929",
       "schema_version": 1,
       "thesis": "The CORRA Mar27 receive is a crowded ownership problem, not an entry: other desks already own it, and the last same-tenor receive was a one-session scratch at 3.40 unchanged. Cash CORRA at 2.30 versus Mar27 at 3.125 can stay cheap without paying a late receiver, so fading it by paying 3.125 is a knife-catch against an 82bp cash-strip gap, not better asymmetry. Stay flat. The cleaner rates lean when expansion is allowed is paying AONIA Jun27 at 5.005 versus cash 4.35."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-30T04:49:40.475210-04:00",
+      "conviction": 45,
+      "decision_fingerprint": "c5839970a301d2cec548f8c0152614bcbfac3846277ca65904ccfe4d965c8e3f",
+      "event_id": "jde-a2a1665b650f4e87",
+      "funding_view": null,
+      "invalidation": "The crowded-receive veto fails only if desk Canada and U.S. STIR is closed or flipped to pay, or if the cash-to-forward gap compresses with documented covering rather than a still-owned receive.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "76ff37bc9912d6968bae63880f2f1cd8dc8009865c95f74f2cca46bdb92d40e5",
+      "outcome_links": [],
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "10b495752a7f60c572395442508b8a5c32f15a964f3ff4ff36738f122a8ee251"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-30T04:49:40.475210-04:00",
+        "evidence_hash": "e0bfe52fa5e19917bfc4588d4c35322269544d1c6d97ee8fd913c261dad403fd",
+        "overnight_run_id": "overnight-20260930",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "March 2027 CORRA at 3.105 versus cash 2.30, and SOFR March 2027 at 4.62 versus 3.90, is the already-owned receive, not a setup. Other seats still hold that Canada and U.S. STIR risk, so buying the same cheap-versus-cash story has no ownership. Stay flat: do not join the receive, and do not mechanically invert it in USDCAD at 1.41797 while Brent sits at 102.59.",
+      "run_id": "overnight-20260930",
+      "schema_version": 1,
+      "thesis": "March 2027 CORRA at 3.105 versus cash 2.30, and SOFR March 2027 at 4.62 versus 3.90, is the already-owned receive, not a setup. Other seats still hold that Canada and U.S. STIR risk, so buying the same cheap-versus-cash story has no ownership. Stay flat: do not join the receive, and do not mechanically invert it in USDCAD at 1.41797 while Brent sits at 102.59."
     }
   ],
   "schema_version": 1,

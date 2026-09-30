@@ -69,7 +69,7 @@
     "competition_cohort_size": 14,
     "competition_eligible": true,
     "competition_rank": 13,
-    "competitive_rank": 12,
+    "competitive_rank": 13,
     "drawdown_usd": 56224.58,
     "giveback_usd": 0.0,
     "high_water_nav_usd": 100000000.0,
@@ -95,7 +95,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "8422a649543e6cb2757adcb40903ba2ab93c19d250f379c17fff58489e9e7095",
+  "memory_context_sha256": "604d449ec4e6c44dc7c0c03ad1d862ffb43fb7817b9fd07fa34380aaae102ab1",
   "open_positions": [],
   "owner_id": "value-guy",
   "owner_type": "trader",
@@ -106,8 +106,8 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "up",
+        "value": 0.13
       },
       "complacency": {
         "band": "calm",
@@ -121,12 +121,12 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "down",
+        "trend": "flat",
         "value": 0.22
       },
       "frustration": {
         "band": "calm",
-        "trend": "down",
+        "trend": "up",
         "value": 0.15
       },
       "revenge_pressure": {
@@ -136,7 +136,7 @@
       },
       "self_trust": {
         "band": "steady",
-        "trend": "up",
+        "trend": "flat",
         "value": 0.49
       },
       "thesis_attachment": {
@@ -163,13 +163,18 @@
         "kind": "learning_default_cleared",
         "magnitude": 1.0,
         "run_id": "overnight-20260929"
+      },
+      {
+        "kind": "flat_with_market",
+        "magnitude": 1.0,
+        "run_id": "overnight-20260930"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "1d1b5619eed097b676ca0733e35401b510b0f70ca1d86e871cba31d61107c07d",
+    "state_sha256": "d4d5435b566a4d93ca09c5093faa5d993bcbda111259a8a56c68a430cbc6e88c",
     "streaks": {
-      "flat_cycles": 2,
+      "flat_cycles": 3,
       "session_loss": 0,
       "session_win": 0
     }

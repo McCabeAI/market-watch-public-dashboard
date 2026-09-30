@@ -438,6 +438,62 @@
       "run_id": "overnight-20260929",
       "schema_version": 1,
       "thesis": "Receive Mar27 CORRA remains the book: cash at 2.30 versus a 3.125 forward still pays you to fade a fully advertised tightening path, even with Brent at 105. Deal pessimism and oil are the adverse, but they are already why that forward sits 82bp above cash, not a fresh reason to flip the seat. A 25mm pay in the same contract would offset only a sliver of the 450mm receive, and a 25mm pay in SOFR Mar27 at 4.705 is a US hike-trend sidecar that does not hedge Canada\u2019s oil-exporter inflation channel."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pm-pragmatist-4e0cbc4e0b05",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-09-30T06:53:44.460703-04:00",
+      "conviction": 58,
+      "decision_fingerprint": "68292d806df83bad67a609c6cfbc86e8402dd6b97b08960e65f3ebb05297c71a",
+      "event_id": "jde-7d8f6f6f69624430",
+      "funding_view": null,
+      "invalidation": "March 2027 implied prints sustainably above the 3.13 entry on a Bank of Canada re-hike or inflation-spillover path that lifts the contract, or the receive\u2019s standard-shock loss path becomes material relative to the high-water-mark stop.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-pragmatist-4e0cbc4e0b05"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "ae41337ac8cc8b7b68d13626a29432f6232d70bb99be28cea1455d25ff6728fd",
+      "outcome_links": [],
+      "owner_id": "pragmatist",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "4d90dc7cfbd14e7098073bde75834a268579ab345bc72309135372279db9d21f"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-30T04:49:40.475210-04:00",
+        "evidence_hash": "b9409825f1244752f16e333adce5db1de9406df6ba7587fc2d3cbb78a954ac3b",
+        "overnight_run_id": "overnight-20260930",
+        "review_id": "review-001",
+        "review_packet_id": "prp-pragmatist-overnight-20260930-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Cash CORRA at 2.30 versus frozen March 2027 implied 3.105 still prices a large tightening path. The live 450 million receive remains a clean grind: long is receive duration and the mark is expected lower. Brent near 102.59, a 5.26 percent U.S. 10-year, and dollar-Canada at 1.41797 are the hawkish-spillover risks, but shocked risk of 4.5 million sits well inside the rails. This cycle\u2019s only markable expanding handoff is another receive in the same contract; that does not earn a new or larger seat.",
+      "run_id": "overnight-20260930",
+      "schema_version": 1,
+      "thesis": "Cash CORRA at 2.30 versus frozen March 2027 implied 3.105 still prices a large tightening path. The live 450 million receive remains a clean grind: long is receive duration and the mark is expected lower. Brent near 102.59, a 5.26 percent U.S. 10-year, and dollar-Canada at 1.41797 are the hawkish-spillover risks, but shocked risk of 4.5 million sits well inside the rails. This cycle\u2019s only markable expanding handoff is another receive in the same contract; that does not earn a new or larger seat."
     }
   ],
   "schema_version": 1,

@@ -49,7 +49,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 550000.0,
     "risk_capital_utilization": 0.055,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -53809.09,
     "status": "ok"
   },
   "learning": {
@@ -60,7 +60,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "6f022e930aea569287690ae1d1f50b7daa642044d18b24a0eaf3ffb32658516e",
+  "memory_context_sha256": "1f8761501dcfe85c9c40b2f0fd019030cde74cc5d1f51eb5e6d29e7c919cd9ff",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -90,7 +90,7 @@
       "complacency": {
         "band": "calm",
         "trend": "up",
-        "value": 0.13
+        "value": 0.14
       },
       "defensiveness": {
         "band": "calm",
@@ -141,15 +141,20 @@
         "kind": "session_gain",
         "magnitude": 0.18175404,
         "run_id": "overnight-20260929"
+      },
+      {
+        "kind": "session_gain",
+        "magnitude": 0.10761818,
+        "run_id": "overnight-20260930"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "8869af264559d240c35471a1cc20556c7e0831ba3b02484d84d6b38430b21a6f",
+    "state_sha256": "3dc279e4f1142d51e7e45238c0dad92b667758234c643a390912628e0bd3e22d",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
-      "session_win": 2
+      "session_win": 3
     }
   },
   "recent_closed_trades": [],

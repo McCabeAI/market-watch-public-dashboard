@@ -438,6 +438,64 @@
       "run_id": "overnight-20260929",
       "schema_version": 1,
       "thesis": "Cash policy is still easy in Canada at 2.30 and only 3.90 on SOFR, while listed implieds price a heavy hike path. That cash-versus-implied gap is the carry-friendly receive, but Brent at 105.28, WTI at 92.60, and Iran-deal pessimism are the same catalyst that already backed CAD implieds from 3.40 to 3.44. With no open risk, the overnight job is to stay flat: do not re-receive duration, and do not chase AUDCAD parity carry while oil is CAD-supportive."
+    },
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 25000000,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-09-30T04:49:40.475210-04:00",
+      "conviction": 55,
+      "decision_fingerprint": "f083aaa982920b3e56a6f48a5c88d33e0bcad585894a9f72caee5738056e98aa",
+      "event_id": "jde-c8b772b8e8284b69",
+      "funding_view": null,
+      "invalidation": "Cash CORRA shifts higher, or a quantified lower oil-beta Canadian curve or relative-value expression becomes cleaner. Oil remaining elevated without a cash-rate move does not invalidate.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-c76f7b616be7"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-carry-is-king-pos-c76f7b616be7"
+      ],
+      "memory_context_sha256": "bb2a064ea9487d9945907ff1d02d70a53ea70d619c162b02db3c14ee47eb7ec5",
+      "outcome_links": [],
+      "owner_id": "carry-is-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "deaca59ffe91feb5f96212fcac296e7c6dfad0cd7397902d960e4bff81350c9c"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-30T04:49:40.475210-04:00",
+        "evidence_hash": "e0bfe52fa5e19917bfc4588d4c35322269544d1c6d97ee8fd913c261dad403fd",
+        "overnight_run_id": "overnight-20260930",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Cash CORRA remains 2.30 against March 2027 implied 3.105, so a patient receive is still paid about 80 basis points of policy-path premium with no cash-rate shift. Brent at 102.59 and WTI at 89.38 stay elevated, but that is an oil overlay, not the cash-policy or lower-beta relative-value bar required to stay out of this receive. Re-open a modest long in March 2027 CORRA in Canada-eligible risk; dollar-Canada spot is not a substitute because its carry is inferior to the measured implied gap.",
+      "run_id": "overnight-20260930",
+      "schema_version": 1,
+      "thesis": "Cash CORRA remains 2.30 against March 2027 implied 3.105, so a patient receive is still paid about 80 basis points of policy-path premium with no cash-rate shift. Brent at 102.59 and WTI at 89.38 stay elevated, but that is an oil overlay, not the cash-policy or lower-beta relative-value bar required to stay out of this receive. Re-open a modest long in March 2027 CORRA in Canada-eligible risk; dollar-Canada spot is not a substitute because its carry is inferior to the measured implied gap."
     }
   ],
   "schema_version": 1,

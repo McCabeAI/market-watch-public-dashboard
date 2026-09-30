@@ -440,6 +440,62 @@
       "run_id": "overnight-20260929",
       "schema_version": 1,
       "thesis": "The Mar-27 SOFR receive has not mean-reverted: SR3 H7 at 4.705 still sits 80.5bp above overnight SOFR 3.90, and the book mark at 4.67 is already 9bp through the 4.58 receive. The overnight peg remains the anchor, but Brent at 105.28 and the 18 Sep 10Y at 4.997 give that hiking path a fundamental bid, so the reversal condition is weaker than at entry. Reduce the existing SOFR_2027-03 receive; do not add, close the whole line, or open a second one."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-1477172adb86",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-09-30T04:49:40.475210-04:00",
+      "conviction": 52,
+      "decision_fingerprint": "c13f7cbd5c54bbdd4ff278e01862955a2223e86de6e3a14140f7da0a182ee587",
+      "event_id": "jde-a8d845efc69144b5",
+      "funding_view": null,
+      "invalidation": "The residual receive is wrong if March 2027 implied closes through the 4.705 book mark, or if the 72 basis-point cash-to-forward gap compresses because cash SOFR rises toward 4.62 rather than the forward falling toward 3.90.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-1477172adb86"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "63cb8cc26dc6cd9b0ae31b7a3de70108b427ab82d4c5c10dc505f5cbbbc42e26",
+      "outcome_links": [],
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "4dbc1e56e087a76367714f30bf8c3b7a0d121a331f088801fc294af4051cd8d2"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-30T04:49:40.475210-04:00",
+        "evidence_hash": "e0bfe52fa5e19917bfc4588d4c35322269544d1c6d97ee8fd913c261dad403fd",
+        "overnight_run_id": "overnight-20260930",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Cash SOFR at 3.90 remains the overnight anchor; frozen March 2027 at 4.62 still prices 72 basis points of re-tightening, which is the stretch to fade rather than a reason to abandon the residual receive. Frozen 4.62 sits inside the 4.705 book mark, so this is not a fresh extreme versus the already-reduced 20 million long. Brent at 102.59 and a 5.26 percent 10-year can keep implieds bid, but they do not rewrite the cash-to-forward gap. Hold the residual receive; do not add, cut, or flip.",
+      "run_id": "overnight-20260930",
+      "schema_version": 1,
+      "thesis": "Cash SOFR at 3.90 remains the overnight anchor; frozen March 2027 at 4.62 still prices 72 basis points of re-tightening, which is the stretch to fade rather than a reason to abandon the residual receive. Frozen 4.62 sits inside the 4.705 book mark, so this is not a fresh extreme versus the already-reduced 20 million long. Brent at 102.59 and a 5.26 percent 10-year can keep implieds bid, but they do not rewrite the cash-to-forward gap. Hold the residual receive; do not add, cut, or flip."
     }
   ],
   "schema_version": 1,

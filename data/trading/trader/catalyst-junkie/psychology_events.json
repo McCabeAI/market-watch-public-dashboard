@@ -65,6 +65,78 @@
       "run_id": "overnight-20260929",
       "seq": 3,
       "skipped_reason": null
+    },
+    {
+      "annotations": {
+        "flat_cycles": 3,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-09-30T04:49:40.475210-04:00",
+      "event_id": "pse-000004",
+      "flat_cycles": 3,
+      "kind": "decay_tick",
+      "owner_id": "catalyst-junkie",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20260930",
+      "seq": 4,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-09-30T04:49:40.475210-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "chase_pressure": 0.0757,
+        "external_pressure": 0.0151,
+        "frustration": 0.0171
+      },
+      "event_id": "pse-000005",
+      "kind": "flat_with_market",
+      "magnitude": 1.0,
+      "mismatch": false,
+      "owner_id": "catalyst-junkie",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20260930",
+      "scale": 1.0,
+      "seq": 5,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "flat_cycles": 3
+      }
+    },
+    {
+      "at": "2026-09-30T04:49:40.475210-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "external_pressure": -0.0364,
+        "frustration": -0.0147,
+        "self_trust": 0.0157
+      },
+      "event_id": "pse-000006",
+      "kind": "learning_default_cleared",
+      "magnitude": 1.0,
+      "mismatch": false,
+      "owner_id": "catalyst-junkie",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20260930",
+      "scale": 1.0,
+      "seq": 6,
+      "soften": false,
+      "source": {
+        "layer": "L3"
+      },
+      "subject": {
+        "learning_status": "compliant"
+      }
     }
   ],
   "owner_id": "catalyst-junkie",

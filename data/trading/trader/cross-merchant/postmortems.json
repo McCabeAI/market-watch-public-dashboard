@@ -1,5 +1,92 @@
 {
-  "items": [],
+  "items": [
+    {
+      "at": "2026-09-30T04:49:40.475210-04:00",
+      "causal": {
+        "assumptions_right": "AUDCAD was the right isolation of an Australia-versus-Canada residual. A dollar pair would have mixed Fed and common-commodity beta into a view that was supposed to be AU versus CA.",
+        "assumptions_wrong_or_underweighted": "The fade needed housing and BoC path time measured in weeks, but the book was managed as a two-to-three-day overnight trade. Higher Australian carry versus Canada, and any afternoon oil-diplomacy tape, were treated as exit reasons rather than noise around a longer horizon.",
+        "causal_divergence": "The loss was a horizon mismatch, not a failed cross isolation. A slow valuation residual was forced through a short holding period and abandoned at an unchanged mid instead of waiting for the housing or BoC invalidation that had justified the short.",
+        "decision_quality_attribution": "timing",
+        "future_implication": "Do not fade a multi-year non-USD extreme on a two-to-three-day clock, and do not reverse the same cross when the original housing or BoC invalidation has not printed.",
+        "observed_reality": "The short opened 19 Sep near 1.00 and was closed 22 Sep near 1.00 after about two and a half days, realizing about -49945, then immediately flipped long in the same pair. The richness residual did not compress on that overnight clock.",
+        "original_belief": "The 19 Sep short treated AUDCAD near 1.00 as a multi-year richness extreme that isolated an Australian housing slowdown against a still-open Canadian hike path, so fading the cross was cleaner than shorting AUDUSD or buying USDCAD.",
+        "same_information_counterfactual": "With the same 19 Sep richness and housing-versus-hike facts, an explicit multi-week horizon would have kept the short through 22 Sep or stayed out of an expression the overnight clock could not host. It would not have closed unchanged at 1.00 and reversed."
+      },
+      "expression_assessment": "AUDCAD remained cleaner than USD pairs. Expression was not the failure; horizon and the subsequent reverse were.",
+      "facts": {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-09-22T15:40:57.474758-04:00",
+        "conviction": 60,
+        "entry_mark": 1.0,
+        "exit_mark": 1.0,
+        "holding_duration_seconds": 234247,
+        "instrument": "AUDCAD",
+        "opened_at": "2026-09-19T22:36:50.082404-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": -49945.56,
+        "side": "short"
+      },
+      "future_rule": "If an AUDCAD fade needs housing or BoC path time longer than the overnight holding clock, stay flat rather than fade and then flip the same cross.",
+      "lesson": "A multi-year AUDCAD richness fade is a multi-week relative-value book, not a two-to-three-day overnight fade, and closing it unchanged does not authorize a reverse.",
+      "no_new_lesson": null,
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-8ddf6ee19a94",
+      "run_id": "overnight-20260930",
+      "sizing_assessment": null,
+      "tags": [],
+      "thesis_assessment": "The AU-CA residual in AUDCAD was coherent. The error was forcing that residual onto an overnight horizon that could not deliver the housing and BoC path the thesis needed.",
+      "timing_assessment": "Holding period was about two and a half days against a thesis that needed housing and BoC path time. That is a horizon error, not a tick-entry miss.",
+      "trade_id": "trd-trader-cross-merchant-pos-00661cabb94a",
+      "what_failed": "The short was exited as if a multi-year percentile extreme would compress inside one overnight cycle, then replaced by the opposite side of the same pair.",
+      "what_worked": "Keeping the residual in AUDCAD rather than a USD pair was the correct expression of an Australia-versus-Canada view."
+    },
+    {
+      "at": "2026-09-30T04:49:40.475210-04:00",
+      "causal": {
+        "assumptions_right": "AUDCAD still isolated AU versus CA without a dollar common factor, and oil remains the Canadian terms-of-trade swing that can break an AUDCAD long.",
+        "assumptions_wrong_or_underweighted": "Afternoon diplomacy was treated as a regime change in CAD energy premium. The stated invalidation already included an oil hold or spike that re-supports CAD. That oil risk was underweighted relative to owning the new tape after cutting the short.",
+        "causal_divergence": "The long was not a new Australia-versus-Canada differential. It was a catalyst reverse of an unfinished richness fade. When oil stayed high enough to support CAD, the diplomacy skim did not dominate and the pair drifted from 1.00 toward 0.99.",
+        "decision_quality_attribution": "catalyst",
+        "future_implication": "Flattening a horizon-mismatched fade is not a signal to own the opposite side of the same non-USD residual. Require a new policy, growth, inflation, or carry gap before re-entering AUDCAD.",
+        "observed_reality": "The long opened 22 Sep near 1.00 and closed 29 Sep near 0.99, realizing about -35788. The diplomacy-driven CAD discount did not arrive. The pair leaked lower and was flattened as the wrong side of the same residual. Frozen AUDCAD is 0.99321 with Brent 102.59.",
+        "original_belief": "On 22 Sep the seat treated afternoon Hormuz diplomacy and a Saudi restart as enough to skim CAD energy premium while an Australian hike stayed priced, so flipping the closed short into a smaller AUDCAD long would isolate that new AU-over-CA catalyst better than AUDUSD.",
+        "same_information_counterfactual": "If the 22 Sep close of the short had been followed by a flat book instead of a reverse, the same oil and diplomacy information would have been observed from zero risk, and the long P&L path would not have existed."
+      },
+      "expression_assessment": "AUDCAD was still cleaner than USD pairs. The error was direction and catalyst, not choosing a dollar pair.",
+      "facts": {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-09-29T04:44:08.485973-04:00",
+        "conviction": 63,
+        "entry_mark": 1.0,
+        "exit_mark": 0.99,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 565391,
+        "instrument": "AUDCAD",
+        "invalidation": "Oil hold/spike that re-supports CAD terms-of-trade, Hormuz diplomacy failure, or AU dropping the priced RBA hike.",
+        "opened_at": "2026-09-22T15:40:57.474758-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": -35787.92,
+        "side": "long",
+        "thesis": null
+      },
+      "future_rule": "After closing AUDCAD, stay flat until a new Australia-versus-Canada policy, growth, inflation, or carry gap appears that is not merely the opposite of the trade just exited.",
+      "lesson": "Do not reverse a closed AUDCAD fade on a same-session diplomacy or oil tape. An oil hold that re-supports CAD is an invalidation of the long, not a reason to own it.",
+      "no_new_lesson": null,
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-6734b7229e26",
+      "run_id": "overnight-20260930",
+      "sizing_assessment": "A smaller 10m long reduced capacity risk versus the prior short but did not fix being the wrong side of oil-supported CAD.",
+      "tags": [],
+      "thesis_assessment": "The AU-over-CA long assumed CAD energy premium would skim. That catalyst did not dominate, so direction was wrong even though the cross isolation was still the right expression family.",
+      "timing_assessment": "The long was held about six and a half days, long enough for the oil invalidation to matter. Unlike the prior short, this was not a two-day horizon squeeze; it was a bad reverse.",
+      "trade_id": "trd-trader-cross-merchant-pos-27d002b448b1",
+      "what_failed": "The long converted an unfinished fade into a diplomacy and oil catalyst trade whose own oil invalidation then defined the loss.",
+      "what_worked": "Closing on 29 Sep when oil was still supporting CAD respected the long's own oil invalidation rather than adding into the same reverse."
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_POSTMORTEMS"
 }

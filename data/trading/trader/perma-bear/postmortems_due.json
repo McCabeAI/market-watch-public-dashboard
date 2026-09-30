@@ -1,5 +1,41 @@
 {
-  "items": [],
+  "items": [
+    {
+      "created_at": "2026-09-30T04:49:40.475210-04:00",
+      "created_run_id": "overnight-20260930",
+      "facts": {
+        "asset_class": "rates",
+        "closed_at": "2026-09-30T04:49:40.475210-04:00",
+        "conviction": 64,
+        "entry_mark": 4.91,
+        "exit_mark": 4.91,
+        "exit_reason_category": null,
+        "expression": {
+          "curve_id": "AONIA",
+          "expiries": [
+            "2027-03",
+            "2027-04",
+            "2027-05",
+            "2027-06"
+          ],
+          "type": "futures_strip_average"
+        },
+        "holding_duration_seconds": 886370,
+        "instrument": "AONIA_2027-06",
+        "invalidation": "RBA delivers or IB fully prices the remaining 50-60bp of tightening while housing/labor stop deteriorating.",
+        "opened_at": "2026-09-19T22:36:50.082404-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": -12718.75,
+        "side": "long",
+        "thesis": null
+      },
+      "owner_id": "perma-bear",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-c1fdef4a17b0",
+      "status": "due",
+      "trade_id": "trd-trader-perma-bear-pos-3b40ade3da2c"
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_POSTMORTEMS_DUE"
 }

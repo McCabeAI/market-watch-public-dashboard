@@ -1,5 +1,47 @@
 {
-  "items": [],
+  "items": [
+    {
+      "at": "2026-09-30T04:49:40.475210-04:00",
+      "causal": {
+        "assumptions_right": "The 4.57 quoted anchor was not violently disproved: entry and exit prints were identical, so the book was not hit by an adverse catalyst-driven repricing. Exiting rather than adding kept the result bounded.",
+        "assumptions_wrong_or_underweighted": "A calendar-linked Australian STIR expression can fail to reprice and still lose cash. Identical 4.57 prints do not imply a free option. The holding window's catalyst path was treated as a mechanism when the observed contract did not move.",
+        "causal_divergence": "The outcome was not caused by October 2026 AONIA repricing; the quoted move was 4.57 to 4.57. The divergence is a catalyst-repricing thesis versus an unchanged print whose residual cost is variance, not a catalyst firing for or against the long.",
+        "decision_quality_attribution": "variance_luck",
+        "future_implication": "Do not open AONIA. Do not read a 4.57/4.57 scratch as confirmation or as a green light to re-enter Australian STIR. New risk requires a dated mechanism in an unblocked market, with explicit levels; otherwise remain flat.",
+        "observed_reality": "The position was closed long AONIA_2026-10, entry 4.57, exit 4.57, on 23 Sep. The quoted level did not reprice. The book is now flat. New Australia risk is blocked, so AONIA may not be reopened.",
+        "original_belief": "Long AONIA_2026-10 at 4.57 was a rates expression of a dated Australian policy or data mechanism that would reprice October 2026 AONIA away from 4.57 in the long's favor inside an identifiable event window, rather than a valuation view that could stay wrong with no clock.",
+        "same_information_counterfactual": "With the same 4.57 information set and no observed repricing, not being long, or flattening once the event window failed to move the print, avoids the residual scratch. Extending the long would still have lacked a realized dated repricing at the last quoted level. Reopening AONIA repeats a blocked expression."
+      },
+      "expression_assessment": "Front-dated AONIA mapped the event, but an unchanged print shows the expression had no gap to close.",
+      "facts": {
+        "asset_class": "rates",
+        "closed_at": "2026-09-23T06:20:00-04:00",
+        "conviction": 59,
+        "entry_mark": 4.57,
+        "exit_mark": 4.57,
+        "holding_duration_seconds": 286989,
+        "instrument": "AONIA_2026-10",
+        "opened_at": "2026-09-19T22:36:50.082404-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": -2750.0,
+        "side": "long"
+      },
+      "future_rule": null,
+      "lesson": null,
+      "no_new_lesson": "No new lesson: bounded ordinary variance around an unchanged 4.57 print and a residual scratch; the process remains sound. Do not overfit a rule from a non-repricing residual.",
+      "owner_id": "catalyst-junkie",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-69691111cd40",
+      "run_id": "overnight-20260930",
+      "sizing_assessment": null,
+      "tags": [],
+      "thesis_assessment": "The dated-path claim was not confirmed: the print stayed at 4.57 and no repricing occurred.",
+      "timing_assessment": "The holding window ended with the same quote as entry, so the clock expired without a catalyst print.",
+      "trade_id": "trd-trader-catalyst-junkie-pos-deddf5aa0c83",
+      "what_failed": "A dated catalyst was treated as a mechanism when the contract never moved from 4.57.",
+      "what_worked": "Exiting rather than adding kept the unchanged 4.57 print from becoming a larger residual."
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_POSTMORTEMS"
 }
