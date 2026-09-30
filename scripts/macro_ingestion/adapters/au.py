@@ -66,6 +66,27 @@ _LABOUR_WORKBOOK_IDS = {
     "AU.Labor.participation",
 }
 
+_ENGLISH_MONTH_SLUGS = (
+    "jan",
+    "feb",
+    "mar",
+    "apr",
+    "may",
+    "jun",
+    "jul",
+    "aug",
+    "sep",
+    "oct",
+    "nov",
+    "dec",
+)
+
+_DATED_WORKBOOK_SLUG_RE = re.compile(
+    r"/(" + "|".join(_ENGLISH_MONTH_SLUGS) + r")-(\d{4})/",
+    re.IGNORECASE,
+)
+_MONTHLY_PERIOD_RE = re.compile(r"(20\d{2})-(\d{2})")
+
 
 def _sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
@@ -233,19 +254,76 @@ def _resolve_series_id(spec: dict[str, Any]) -> str | None:
     return text
 
 
-def _resolve_endpoint(spec: dict[str, Any], *, now: datetime | None = None) -> str | None:
-    """Resolve the current ABS labour workbook once a dated release is due."""
+def _month_slug_for_period(period: str) -> str | None:
+    match = _MONTHLY_PERIOD_RE.fullmatch(period.strip())
+    if not match:
+        return None
+    year = int(match.group(1))
+    month = int(match.group(2))
+    if month < 1 or month > 12:
+        return None
+    return f"{_ENGLISH_MONTH_SLUGS[month - 1]}-{year}"
+
+
+def _resolve_abs_workbook_endpoint(
+    spec: dict[str, Any],
+    *,
+    now: datetime | None = None,
+) -> tuple[str | None, str | None, bool]:
+    """Return (url, expected_period, release_due_unresolved).
+
+    When a monthly release is due with a bound YYYY-MM period, resolve the official
+    `{mon-yyyy}` workbook URL. Otherwise keep the catalog static endpoint.
+    """
     spec_id = str(spec.get("id") or "")
-    if now is not None and spec_id in _LABOUR_WORKBOOK_IDS:
-        due = latest_due_release(spec, now)
-        period = str((due or {}).get("period") or "")
-        match = re.fullmatch(r"(20\d{2})-(\d{2})", period)
+    static = spec.get("endpoint") or _CONTEXT_SERIES_ENDPOINTS.get(spec_id)
+    if now is None:
+        return static, None, False
+
+    due = latest_due_release(spec, now)
+    if not due:
+        return static, None, False
+
+    period = str(due.get("period") or "")
+    if not _MONTHLY_PERIOD_RE.fullmatch(period):
+        return static, None, False
+
+    slug = _month_slug_for_period(period)
+    if not slug:
+        return None, period, True
+
+    if static and _DATED_WORKBOOK_SLUG_RE.search(static):
+        url = _DATED_WORKBOOK_SLUG_RE.sub(f"/{slug}/", static, count=1)
+        return url, period, False
+
+    if spec_id in _LABOUR_WORKBOOK_IDS:
         registry = list(spec.get("registry_urls") or [])
-        if match and registry:
-            year, month = int(match.group(1)), int(match.group(2))
-            slug = datetime(year, month, 1).strftime("%b").lower() + f"-{year}"
-            return registry[0].rstrip("/") + f"/{slug}/62020001.xlsx"
-    return spec.get("endpoint") or _CONTEXT_SERIES_ENDPOINTS.get(spec_id)
+        if registry:
+            url = registry[0].rstrip("/") + f"/{slug}/62020001.xlsx"
+            return url, period, False
+
+    return None, period, True
+
+
+def _point_for_period(
+    series: list[tuple[str, float]],
+    period: str,
+    *,
+    transform: str,
+    source_url: str,
+) -> dict[str, Any] | None:
+    chosen: dict[str, Any] | None = None
+    for p, value in series:
+        if p != period:
+            continue
+        chosen = {
+            "period": p,
+            "value": value,
+            "transformation": transform,
+            "revision_status": "final",
+            "source_url": source_url,
+        }
+    return chosen
 
 
 def _fetch_workbook_bytes(
@@ -303,7 +381,13 @@ def _fetch_abs_workbook_series(
     max_period: str | None = None,
 ) -> dict[str, Any]:
     series_id = _resolve_series_id(spec)
-    url = _resolve_endpoint(spec, now=now)
+    url, expected_period, unresolved = _resolve_abs_workbook_endpoint(spec, now=now)
+    if unresolved:
+        return _base_payload(
+            ok=False,
+            status="source_failed",
+            error=f"release_due_unresolved:expected_period={expected_period}",
+        )
     if not series_id or not url:
         return _base_payload(
             ok=False,
@@ -341,21 +425,41 @@ def _fetch_abs_workbook_series(
     else:
         series = levels
 
-    point = _latest_point(
-        series,
-        transform=transform,
-        source_url=url,
-        max_period=max_period,
-    )
-    if point is None:
-        return _base_payload(
-            ok=False,
-            status="source_failed",
-            error="no_point_after_filters",
-            raw_sha256=fetched.get("raw_sha256"),
-            body=fetched.get("body") or b"",
-            http_status=fetched.get("http_status"),
+    if expected_period is not None:
+        point = _point_for_period(
+            series,
+            expected_period,
+            transform=transform,
+            source_url=url,
         )
+        if point is None:
+            observed = series[-1][0] if series else None
+            return _base_payload(
+                ok=False,
+                status="source_failed",
+                error=(
+                    f"release_due_stale_workbook:expected={expected_period}:observed={observed}"
+                ),
+                raw_sha256=fetched.get("raw_sha256"),
+                body=fetched.get("body") or b"",
+                http_status=fetched.get("http_status"),
+            )
+    else:
+        point = _latest_point(
+            series,
+            transform=transform,
+            source_url=url,
+            max_period=max_period,
+        )
+        if point is None:
+            return _base_payload(
+                ok=False,
+                status="source_failed",
+                error="no_point_after_filters",
+                raw_sha256=fetched.get("raw_sha256"),
+                body=fetched.get("body") or b"",
+                http_status=fetched.get("http_status"),
+            )
 
     return _base_payload(
         ok=True,

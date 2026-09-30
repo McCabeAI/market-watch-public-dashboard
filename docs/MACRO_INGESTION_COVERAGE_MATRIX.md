@@ -1011,7 +1011,7 @@ Eleven `context` rows, weight 0, acquisition only. Source contract, derivation f
 - Retrieval: `abs_time_series_workbook` · adapter: `scripts.macro_ingestion.adapters.au`
 - Held observations: 12 · latest period: `2026-07` · ledger vintage: `latest_available` · retrieved_at: `2026-09-21T14:49:33Z`
 - Verification: `held_in_temperature_history` · freshness: `pending_daily_check`
-- Notes: Latest in-window observation: 2026-07 = 3.6 percent.
+- Notes: Latest in-window observation: 2026-07 = 3.6 percent. A due monthly release resolves the official `{mon-yyyy}` workbook from `expected_periods` and fails closed when that period is absent.
 
 ### `AU.Inflation.headline`
 
@@ -1028,7 +1028,7 @@ Eleven `context` rows, weight 0, acquisition only. Source contract, derivation f
 - Retrieval: `abs_time_series_workbook` · adapter: `scripts.macro_ingestion.adapters.au`
 - Held observations: 12 · latest period: `2026-07` · ledger vintage: `latest_available` · retrieved_at: `2026-09-21T14:49:33Z`
 - Verification: `held_in_temperature_history` · freshness: `pending_daily_check`
-- Notes: Latest in-window observation: 2026-07 = 3.5 percent.
+- Notes: Latest in-window observation: 2026-07 = 3.5 percent. A due monthly release resolves the official `{mon-yyyy}` workbook from `expected_periods` and fails closed when that period is absent.
 
 ### `AU.Labor.unemployment`
 
@@ -1160,7 +1160,7 @@ Eleven `context` rows, weight 0, acquisition only. Source contract, derivation f
 - Retrieval: `abs_time_series_workbook` · adapter: `scripts.macro_ingestion.adapters.au`
 - Held observations: 12 · latest period: `2026-07` · ledger vintage: `latest_available` · retrieved_at: `2026-09-21T14:49:33Z`
 - Verification: `held_in_temperature_history` · freshness: `pending_daily_check`
-- Notes: Latest in-window observation: 2026-07 = 1.1 percent.
+- Notes: Latest in-window observation: 2026-07 = 1.1 percent. A due monthly release resolves the official `{mon-yyyy}` workbook from `expected_periods` and fails closed when that period is absent.
 
 ### `AU.Consumer.confidence`
 
