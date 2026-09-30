@@ -2,11 +2,16 @@
   "active_lessons": [],
   "as_of": "2026-09-30T04:49:40.475210-04:00",
   "calibration": {
-    "average_holding_seconds": null,
-    "average_realized_pnl_usd": null,
+    "average_holding_seconds": 886370,
+    "average_realized_pnl_usd": -12718.75,
     "breakeven": 0,
-    "by_asset_class": {},
-    "closed_trade_count": 0,
+    "by_asset_class": {
+      "rates": {
+        "count": 1,
+        "total_realized_pnl_usd": -12718.75
+      }
+    },
+    "closed_trade_count": 1,
     "conviction_buckets": {
       "high": {
         "average_pnl_usd": null,
@@ -19,14 +24,14 @@
         "hit_rate": null
       },
       "medium": {
-        "average_pnl_usd": null,
-        "count": 0,
-        "hit_rate": null
+        "average_pnl_usd": -12718.75,
+        "count": 1,
+        "hit_rate": 0.0
       }
     },
-    "losses": 0,
+    "losses": 1,
     "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
-    "total_realized_pnl_usd": 0.0,
+    "total_realized_pnl_usd": -12718.75,
     "wins": 0
   },
   "capital_owner": null,
@@ -34,7 +39,7 @@
     "competition_cohort_size": 14,
     "competition_eligible": true,
     "competition_rank": 10,
-    "competitive_rank": 9,
+    "competitive_rank": 10,
     "drawdown_usd": 33355.81,
     "giveback_usd": 33355.81,
     "high_water_nav_usd": 100007327.22,
@@ -49,7 +54,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 275000.0,
     "risk_capital_utilization": 0.0275,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -12688.96,
     "status": "ok"
   },
   "learning": {
@@ -60,21 +65,8 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "d3bea985bb6f9ea400c958a430e8d1623d03c6973a664585309e8cb581519b6c",
-  "open_positions": [
-    {
-      "asset_class": "rates",
-      "conviction": 64,
-      "current_notional_usd": 27500000.0,
-      "entry_mark": 4.91,
-      "instrument": "AONIA_2027-06",
-      "opened_at": "2026-09-19T22:36:50.082404-04:00",
-      "position_id": "pos-3b40ade3da2c",
-      "risk_capital_usd": 275000.0,
-      "side": "long",
-      "trade_id": "trd-trader-perma-bear-pos-3b40ade3da2c"
-    }
-  ],
+  "memory_context_sha256": "3aa4eb33582981a88547b7840b3c41af796fef9f633946755ad9d8e19a6a4f67",
+  "open_positions": [],
   "owner_id": "perma-bear",
   "owner_type": "trader",
   "postmortems_due": [],
@@ -134,14 +126,26 @@
     "recent_events": [],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "322fc06504b620ace3f2d2eeca79769b9bcd21779630c350a845a657dcdda56e",
+    "state_sha256": "6b7e7070175239ffc528bd2e33306c084b21375994d39cf2d703c14e06ca4c4d",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
       "session_win": 0
     }
   },
-  "recent_closed_trades": [],
+  "recent_closed_trades": [
+    {
+      "asset_class": "rates",
+      "closed_at": "2026-09-30T04:49:40.475210-04:00",
+      "conviction": 64,
+      "holding_duration_seconds": 886370,
+      "instrument": "AONIA_2027-06",
+      "opened_at": "2026-09-19T22:36:50.082404-04:00",
+      "realized_pnl_usd": -12718.75,
+      "side": "long",
+      "trade_id": "trd-trader-perma-bear-pos-3b40ade3da2c"
+    }
+  ],
   "recent_funding_views": [],
   "recent_performance_reflections": [],
   "reflections_due": [],

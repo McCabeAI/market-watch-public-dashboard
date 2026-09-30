@@ -438,6 +438,62 @@
       "run_id": "overnight-20260929",
       "schema_version": 1,
       "thesis": "SOFR 3.90 versus CORRA 2.30 leaves a 160bp USD-Canada cash gap, and the working long USDCAD at 1.4166 is still the cleanest USD-spot expression. CAD is the soft-rate leg, so the view belongs in USDCAD rather than a euro, yen, or franc cross; USDJPY is contaminated by the post-Bessent yen warning. Oil at Brent 105.28 on Iran-deal pessimism is a known CAD-positive headwind, not a reason to abandon the rates identity of the book. Hold the existing long and do not add into the 1y z +1.65 extension."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDCAD",
+          "notional_usd": null,
+          "position_id": "pos-5317bc96d4eb",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-09-30T04:49:40.475210-04:00",
+      "conviction": 58,
+      "decision_fingerprint": "f8faeb146612a7a25c6219ac8eed51a7ae8d9036c7dea49d5e050c5229aff894",
+      "event_id": "jde-7560c78152be4d5a",
+      "funding_view": null,
+      "invalidation": "Thesis breaks if the SOFR\u2013CORRA advantage compresses, or if a further oil bid overwhelms the rates gap and USDCAD reverses through the 1.4010 entry.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-5317bc96d4eb"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "6f022e930aea569287690ae1d1f50b7daa642044d18b24a0eaf3ffb32658516e",
+      "outcome_links": [],
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "8869af264559d240c35471a1cc20556c7e0831ba3b02484d84d6b38430b21a6f"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-30T04:49:40.475210-04:00",
+        "evidence_hash": "e0bfe52fa5e19917bfc4588d4c35322269544d1c6d97ee8fd913c261dad403fd",
+        "overnight_run_id": "overnight-20260930",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The 160 basis-point SOFR\u2013CORRA cash gap is a dollar-versus-Canada rates story and is already on as long USDCAD; that remains the cleanest eligible dollar spot. Oil near 102.59 and the Shell LNG Canada decision are Canada-supportive overlays, and a +1.71 one-year z-score makes adding the wrong overnight location, but those idiosyncrasies do not close the dollar rates gap. Hold the existing long; do not rotate into euro or yen crosses that would add a second policy leg.",
+      "run_id": "overnight-20260930",
+      "schema_version": 1,
+      "thesis": "The 160 basis-point SOFR\u2013CORRA cash gap is a dollar-versus-Canada rates story and is already on as long USDCAD; that remains the cleanest eligible dollar spot. Oil near 102.59 and the Shell LNG Canada decision are Canada-supportive overlays, and a +1.71 one-year z-score makes adding the wrong overnight location, but those idiosyncrasies do not close the dollar rates gap. Hold the existing long; do not rotate into euro or yen crosses that would add a second policy leg."
     }
   ],
   "schema_version": 1,

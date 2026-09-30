@@ -41,6 +41,84 @@
       "run_id": "overnight-20260929",
       "seq": 2,
       "skipped_reason": null
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [
+          250000.0
+        ],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-09-30T04:49:40.475210-04:00",
+      "event_id": "pse-000003",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "trend-follower",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20260930",
+      "seq": 3,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-09-30T04:49:40.475210-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "complacency": -0.0015,
+        "defensiveness": 0.0047,
+        "external_pressure": 0.0023,
+        "frustration": 0.0092,
+        "revenge_pressure": 0.0031,
+        "self_trust": -0.0026,
+        "thesis_attachment": 0.0019
+      },
+      "event_id": "pse-000004",
+      "kind": "session_loss",
+      "magnitude": 0.1276625,
+      "mismatch": false,
+      "owner_id": "trend-follower",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20260930",
+      "scale": 1.0,
+      "seq": 4,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "session_pnl_change_usd": -63831.25
+      }
+    },
+    {
+      "at": "2026-09-30T04:49:40.475210-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "chase_pressure": 0.0378,
+        "external_pressure": 0.072,
+        "frustration": 0.027
+      },
+      "event_id": "pse-000005",
+      "kind": "rank_drop_minor",
+      "magnitude": 1.0,
+      "mismatch": false,
+      "owner_id": "trend-follower",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20260930",
+      "scale": 1.0,
+      "seq": 5,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "rank_change": 3
+      }
     }
   ],
   "owner_id": "trend-follower",

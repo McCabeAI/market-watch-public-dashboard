@@ -440,6 +440,62 @@
       "run_id": "overnight-20260929",
       "schema_version": 1,
       "thesis": "Iran pessimism is still keeping Brent bid at 105.28 and the global hike path intact: SOFR cash 3.90 versus H7 4.705 and U7 4.94, with CORRA and AONIA pricing the same direction. The working March-27 pay is already on the right side of that trend, from 4.58 through a 4.67 book mark to a 4.705 screen, and a move that is through is not a reversal signal. Add to the existing short SOFR 2027-03 rather than fade it."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-662bff0986be",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-09-30T04:49:40.475210-04:00",
+      "conviction": 70,
+      "decision_fingerprint": "f9ecdd91a54cf72b8f9e331d898665f2fe73e3140c132c705cd340587a6d233d",
+      "event_id": "jde-6519bd65bf2f4b2a",
+      "funding_view": null,
+      "invalidation": "The hold is wrong if the forward hike path reverses: March 2027 implied moving back toward spot SOFR 3.90 and the 10-year reversing lower without a replacement hawkish catalyst.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-662bff0986be"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "b57ee5f8086600078aef039a4215ece5f5c08113c17be1234ced789d28f0c3b9",
+      "outcome_links": [],
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "132e1bdcb3b9019c217c12c726a2f0953c27cf1b50e8b40bf20dbb08c57ab62c"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-30T04:49:40.475210-04:00",
+        "evidence_hash": "e0bfe52fa5e19917bfc4588d4c35322269544d1c6d97ee8fd913c261dad403fd",
+        "overnight_run_id": "overnight-20260930",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Spot SOFR is 3.90, March 2027 implied 4.62, September 2027 implied 4.85, and the U.S. 10-year is 5.26, with Brent still at 102.59. That ladder is an intact hike path with no reversal signal, so the existing 75 million pay of March 2027 SOFR is the continuation trade and covering it would be a premature fade. Hold the pay; do not add because the frozen implied is unchanged versus the 4.6217 entry and the line is already large.",
+      "run_id": "overnight-20260930",
+      "schema_version": 1,
+      "thesis": "Spot SOFR is 3.90, March 2027 implied 4.62, September 2027 implied 4.85, and the U.S. 10-year is 5.26, with Brent still at 102.59. That ladder is an intact hike path with no reversal signal, so the existing 75 million pay of March 2027 SOFR is the continuation trade and covering it would be a premature fade. Hold the pay; do not add because the frozen implied is unchanged versus the 4.6217 entry and the line is already large."
     }
   ],
   "schema_version": 1,

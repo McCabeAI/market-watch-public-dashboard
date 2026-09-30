@@ -432,6 +432,60 @@
       "run_id": "overnight-20260929",
       "schema_version": 1,
       "thesis": "The Oct-26 AONIA long was a dated Australian cash-rate expression that did not reprice: the contract left at 4.57, unchanged from entry, so the event did not close a mispricing. Cash AONIA is 4.35 and Oct-26 still sits at 4.58, a 23bp residual that is not a new catalyst. Iran-deal pessimism with Brent at 105.28 and the yen warning at USDJPY 156.88 are identifiable overlays, but neither supplies an unpriced, dated rates path worth owning from a flat book."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-09-30T04:49:40.475210-04:00",
+      "conviction": 30,
+      "decision_fingerprint": "1dd936f9543cccdf3a290cd4fb8222065db651be7cd2c09c128648fa67660a45",
+      "event_id": "jde-5dcd246d7049488c",
+      "funding_view": null,
+      "invalidation": "The flat stance is wrong if a non-Australian, unblocked, dated catalyst appears with an executable rates expression and explicit levels. A valuation story without a clock does not invalidate flat.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "91e525d4640f745066fb36a9d6f1c861f7c09009b0df6a69a3dcb185aa2661ef",
+      "outcome_links": [],
+      "owner_id": "catalyst-junkie",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "55eda18c194ed26c5faedcbd827202b4b4173228a6a2f29a98ff20732e339550"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-30T04:49:40.475210-04:00",
+        "evidence_hash": "e0bfe52fa5e19917bfc4588d4c35322269544d1c6d97ee8fd913c261dad403fd",
+        "overnight_run_id": "overnight-20260930",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Remain flat. After the October 2026 AONIA long closed unchanged at 4.57, there is no executable dated path from mispricing to repricing: the only concrete rates candidate is blocked Australian STIR, and every other tenor plus the Australian dollar lacks a dated mechanism with usable levels. Valuation elegance without a clock is not a ticket.",
+      "run_id": "overnight-20260930",
+      "schema_version": 1,
+      "thesis": "Remain flat. After the October 2026 AONIA long closed unchanged at 4.57, there is no executable dated path from mispricing to repricing: the only concrete rates candidate is blocked Australian STIR, and every other tenor plus the Australian dollar lacks a dated mechanism with usable levels. Valuation elegance without a clock is not a ticket."
     }
   ],
   "schema_version": 1,

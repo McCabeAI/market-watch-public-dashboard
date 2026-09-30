@@ -42,8 +42,8 @@
     "nav_usd": 100000000.0,
     "net_pnl_usd": 0.0,
     "pressure_flags": [],
-    "prior_competition_rank": 5,
-    "rank_change": 0,
+    "prior_competition_rank": 4,
+    "rank_change": 1,
     "raw_pnl_rank": 5,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
@@ -60,7 +60,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "0fe535e8efd25d0eb0f954e0c0070e96872d042144be40782dbd338193bbaf85",
+  "memory_context_sha256": "dd35ff3b170a19d6b62bde80f6151b9ae1418c33ddc84f78438367c0106cbc92",
   "open_positions": [],
   "owner_id": "vol-convexity",
   "owner_type": "trader",
@@ -71,8 +71,8 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "up",
+        "value": 0.12
       },
       "complacency": {
         "band": "calm",
@@ -86,13 +86,13 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "up",
+        "value": 0.11
       },
       "frustration": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "up",
+        "value": 0.11
       },
       "revenge_pressure": {
         "band": "calm",
@@ -118,12 +118,18 @@
       "sharpened_verdicts": 0
     },
     "profile_version": 1,
-    "recent_events": [],
+    "recent_events": [
+      {
+        "kind": "flat_with_market",
+        "magnitude": 1.0,
+        "run_id": "overnight-20260930"
+      }
+    ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "e3421af84872830bc48d9326d1e859de00196cc5f4f5c2d17ac1cf5e9a8198c6",
+    "state_sha256": "8a93d4e4879b3e761d86bd81cf90d1f212f35f96ccda49df56a06b66057e51c8",
     "streaks": {
-      "flat_cycles": 2,
+      "flat_cycles": 3,
       "session_loss": 0,
       "session_win": 0
     }

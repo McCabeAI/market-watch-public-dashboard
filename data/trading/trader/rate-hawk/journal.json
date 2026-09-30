@@ -456,6 +456,77 @@
       "run_id": "overnight-20260929",
       "schema_version": 1,
       "thesis": "Brent 105.28 and WTI 92.60 with Iran-deal pessimism keep inflation sticky while BoC cash still sits at an easy 2.30 and SOFR cash at 3.90 only reaches 4.40 by Z6. Sep-27 SOFR at 4.94 already prices 104bp of tightening and is 19bp through the 4.75 pay, so late-2027 USD is no longer the cleanest hawkish marginal. Reduce that U7 pay into the extension and shift the residual into paying Mar-27 CORRA at 3.125, where policy is still accommodative into the same energy shock."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-09",
+          "notional_usd": null,
+          "position_id": "pos-c9184707c12b",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-2709875e8c9c",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-09-30T04:49:40.475210-04:00",
+      "conviction": 64,
+      "decision_fingerprint": "7f9b9f2de8459f79f81e40e20ddc4e821d6895e00a964f6b1a0d4f3bbb6a2cba",
+      "event_id": "jde-11b25e7e033e41b0",
+      "funding_view": null,
+      "invalidation": "Cover if September 2027 SOFR implieds fall back toward cash 3.90 while Brent leaves the 100 handle and the 10-year reverses lower from 5.26.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-2709875e8c9c",
+        "pos-c9184707c12b"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "8586bad993b1e6290809b713d230d44147053a5d77ccf8395f6a55f0105575c7",
+      "outcome_links": [],
+      "owner_id": "rate-hawk",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "760ed700505f85ef31af9d229afed76ef1634175a4ca86cf425a8a3c573f156e"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-30T04:49:40.475210-04:00",
+        "evidence_hash": "e0bfe52fa5e19917bfc4588d4c35322269544d1c6d97ee8fd913c261dad403fd",
+        "overnight_run_id": "overnight-20260930",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Brent at 102.59 and a U.S. 10-year at 5.26 keep energy-sticky inflation and a high term structure live against front-end SOFR at 3.90. Frozen September 2027 implied 4.85 is already a hiking terminal versus spot, but persistence can still reprice 2027 SOFR higher, so the existing short stays the core expression. March 2027 CORRA at 3.105 versus cash 2.30 prices a Bank of Canada hike path; a two-basis-point frozen mark versus the 3.125 entry is not a fade.",
+      "run_id": "overnight-20260930",
+      "schema_version": 1,
+      "thesis": "Brent at 102.59 and a U.S. 10-year at 5.26 keep energy-sticky inflation and a high term structure live against front-end SOFR at 3.90. Frozen September 2027 implied 4.85 is already a hiking terminal versus spot, but persistence can still reprice 2027 SOFR higher, so the existing short stays the core expression. March 2027 CORRA at 3.105 versus cash 2.30 prices a Bank of Canada hike path; a two-basis-point frozen mark versus the 3.125 entry is not a fade."
     }
   ],
   "schema_version": 1,

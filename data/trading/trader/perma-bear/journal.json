@@ -440,6 +440,64 @@
       "run_id": "overnight-20260929",
       "schema_version": 1,
       "thesis": "Brent at 105.28 with Iran pessimism is a supply-side inflation shock, not the demand-destruction tape a global slowdown receive needs. Long AONIA June 2027 is already through (entry 4.9075, mark 4.9325) while cash 4.35 still prices 65bp of hikes to 5.005; that path gets easier to deliver if energy inflation sticks, so the Australian receive is no longer the cleanest defensive line. Reduce it rather than holding full size into the oil headwind."
+    },
+    {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-06",
+          "notional_usd": null,
+          "position_id": "pos-3b40ade3da2c",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-09-30T04:49:40.475210-04:00",
+      "conviction": 68,
+      "decision_fingerprint": "78a47d2c05cf463ef91df9e0ddc1ac56d79227e47676c6a23b9c51c18cb7847f",
+      "event_id": "jde-ac84f84af14540ff",
+      "funding_view": null,
+      "invalidation": "The flatten is wrong if June 2027 AONIA holds or rises from 4.95 as a justified inflation-hike path while oil stays bid and cash AONIA lifts toward the implied.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-3b40ade3da2c"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-perma-bear-pos-3b40ade3da2c"
+      ],
+      "memory_context_sha256": "d3bea985bb6f9ea400c958a430e8d1623d03c6973a664585309e8cb581519b6c",
+      "outcome_links": [],
+      "owner_id": "perma-bear",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "322fc06504b620ace3f2d2eeca79769b9bcd21779630c350a845a657dcdda56e"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-09-30T04:49:40.475210-04:00",
+        "evidence_hash": "e0bfe52fa5e19917bfc4588d4c35322269544d1c6d97ee8fd913c261dad403fd",
+        "overnight_run_id": "overnight-20260930",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "June 2027 AONIA at 4.95 sits 60 basis points above cash 4.35, so the existing long-rate line is a hike-path long into unverified Australian demand while equities and a 16-handle VIX still treat the landing as benign. The same late-cycle tightening premium is in the SOFR strip and a 5.26 percent U.S. 10-year; a growth or financial-conditions tail compresses those implieds and punishes a pay-fixed Australian line. Close the live book at the frozen 4.95 print to exit anti-defensive exposure while it is still modestly through the 4.9075 entry.",
+      "run_id": "overnight-20260930",
+      "schema_version": 1,
+      "thesis": "June 2027 AONIA at 4.95 sits 60 basis points above cash 4.35, so the existing long-rate line is a hike-path long into unverified Australian demand while equities and a 16-handle VIX still treat the landing as benign. The same late-cycle tightening premium is in the SOFR strip and a 5.26 percent U.S. 10-year; a growth or financial-conditions tail compresses those implieds and punishes a pay-fixed Australian line. Close the live book at the frozen 4.95 print to exit anti-defensive exposure while it is still modestly through the 4.9075 entry."
     }
   ],
   "schema_version": 1,
