@@ -139,6 +139,31 @@ class LedgerFreshnessTests(unittest.TestCase):
         self.assertIsNone(expired["as_of"])
         self.assertEqual(expired["fresh_countries"], [])
 
+    def test_oct1_append_does_not_cover_the_sep23_session(self) -> None:
+        # The shared temperature ledger gained two Australia CPI rows on
+        # 2026-10-01. They stay in the file. A September 23 assessment already
+        # has the September 21 vintage of those series, so the later append is
+        # not a check that had happened, and it is not the latest print.
+        # After the retrieval instant, the same rows are the current vintage.
+        history = json.loads((ROOT / "data" / "temperature_history" / "au.json").read_text(encoding="utf-8"))
+        headline_obs = history["components"]["Inflation.headline"]["observations"]
+        self.assertTrue(any(obs.get("retrieved_at") == "2026-10-01T08:50:57Z" and obs.get("reference_period") == "2026-08" for obs in headline_obs))
+        noon = datetime(2026, 9, 23, 12, 0, tzinfo=NY)
+        expired = assess_macro_family(ROOT, when=noon)
+        headline = next(row for row in expired["components"] if row["id"] == "AU.Inflation.headline")
+        underlying = next(row for row in expired["components"] if row["id"] == "AU.Inflation.underlying")
+        self.assertEqual(headline["reference_period"], "2026-07")
+        self.assertEqual(headline["observation_value"], 3.5)
+        self.assertNotEqual(headline["status"], "fresh")
+        self.assertFalse(str(headline.get("checked_at") or "").startswith("2026-10-01"))
+        self.assertEqual(underlying["reference_period"], "2026-07")
+        self.assertNotEqual(underlying["status"], "fresh")
+        after = assess_macro_family(ROOT, when=datetime(2026, 10, 1, 12, 0, tzinfo=NY))
+        current = next(row for row in after["components"] if row["id"] == "AU.Inflation.headline")
+        self.assertEqual(current["reference_period"], "2026-08")
+        self.assertEqual(current["observation_value"], 4.0)
+        self.assertTrue(str(current.get("checked_at") or "").startswith("2026-10-01"))
+
     def test_no_release_due_on_the_next_several_days_when_checks_are_healthy(self) -> None:
         for day in ("2026-09-23", "2026-09-24", "2026-09-25", "2026-09-26"):
             when = datetime.fromisoformat(f"{day}T00:07:00-04:00")

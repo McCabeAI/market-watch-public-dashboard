@@ -423,7 +423,7 @@ def refresh_macro_sources(
     stamp = now_ny(when)
     session = stamp.date().isoformat()
     calibration, registry, histories, _scores = load_macro_inputs(root)
-    catalog = build_catalog(calibration, registry, histories)
+    catalog = build_catalog(calibration, registry, histories, when=stamp)
     if prior is None and persist:
         audit_path = root / AUDIT_RELPATH
         if audit_path.is_file():
@@ -479,7 +479,7 @@ def refresh_macro_sources(
         when=stamp,
         checks=checks,
         due_overrides=due_overrides,
-        catalog=build_catalog(calibration, registry, histories) if ingested else catalog,
+        catalog=build_catalog(calibration, registry, histories, when=stamp) if ingested else catalog,
     )
     if ingested:
         # Catalog for the rollup was rebuilt so latest periods include the
@@ -489,7 +489,7 @@ def refresh_macro_sources(
             when=stamp,
             checks=checks,
             due_overrides=due_overrides,
-            catalog=build_catalog(calibration, registry, histories),
+            catalog=build_catalog(calibration, registry, histories, when=stamp),
         )
         state = build_score_state(calibration, compute_state(calibration, histories, cutoff=scoring_cutoff(calibration, histories)))
         assessment["score_state"] = state
