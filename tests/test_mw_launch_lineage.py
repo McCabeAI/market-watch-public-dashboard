@@ -374,6 +374,30 @@ class LineageAtomicPromotionTests(unittest.TestCase):
                 )
             self.assertEqual(before, _snapshot_canonical_hashes(canonical_history, canonical_scores))
 
+    def test_oct1_staged_employment_level_is_not_promoted(self) -> None:
+        launch = ROOT / "data/market_watch_launches/mwl-20261001T085057Z-ec2e990b/lineage"
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            staging = root / "lineage"
+            shutil.copytree(launch, staging)
+            canonical_history = root / "canonical_history"
+            canonical_history.mkdir()
+            for index, filename in enumerate(history_files().values()):
+                (canonical_history / filename).write_bytes(f'{{"prior": {index}}}\n'.encode("utf-8"))
+            canonical_scores = root / "temperature_scores.json"
+            canonical_scores.write_text('{"prior": "scores"}\n', encoding="utf-8")
+            before = _snapshot_canonical_hashes(canonical_history, canonical_scores)
+            with self.assertRaises(CanonicalScorePromotionError):
+                promote_staged_lineage(
+                    staging,
+                    canonical_history,
+                    canonical_scores,
+                    promote=True,
+                    mode="live",
+                )
+            self.assertEqual(before, _snapshot_canonical_hashes(canonical_history, canonical_scores))
+            self.assertNotIn(b"1511", (canonical_history / "nz.json").read_bytes())
+
     def test_protected_destinations_refused_without_writes(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             staging = Path(tmp) / "lineage"

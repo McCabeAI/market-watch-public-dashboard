@@ -13,6 +13,7 @@ from typing import Any
 
 from scripts.country_registry import history_files
 from scripts.macro_ingestion.contract import load_catalog
+from scripts.macro_ingestion.semantic_guards import implausible_nz_employment_qoq_values
 from scripts.macro_ingestion.score_bridge import (
     points_from_observation_stores,
     recompute_scores_after_observation,
@@ -434,6 +435,21 @@ def promote_staged_lineage(
         if _is_protected_destination(dest):
             raise ValueError("refuse promotion into protected overnight or evidence paths")
         staged_histories.append((filename, src.read_bytes()))
+
+    for filename, data in staged_histories:
+        if filename != "nz.json":
+            continue
+        try:
+            nz_doc = json.loads(data.decode("utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+            raise CanonicalScorePromotionError("staged NZ history is not valid JSON") from exc
+        if not isinstance(nz_doc, dict):
+            raise CanonicalScorePromotionError("staged NZ history is not valid JSON")
+        bad_values = implausible_nz_employment_qoq_values(nz_doc)
+        if bad_values:
+            raise CanonicalScorePromotionError(
+                "staged NZ employment change is an employment level, not a quarterly change"
+            )
 
     if _is_protected_destination(canonical_scores_path):
         raise ValueError("refuse promotion into protected overnight or evidence paths")
