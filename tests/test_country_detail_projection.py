@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import unittest
 from pathlib import Path
 
@@ -86,6 +87,28 @@ class CountryDetailProjectionTest(unittest.TestCase):
                     row = missing_annual[0]
                     self.assertEqual(row.get("data_state"), "missing")
                     self.assertIsNone(row.get("value"))
+
+    def test_au_accepted_august_cpi_is_canonical(self) -> None:
+        scores = json.loads(TEMP_SCORES.read_text(encoding="utf-8"))
+        inflation = scores["countries"]["AU"]["Inflation"]
+        headline = inflation["component_state"]["headline"]
+        underlying = inflation["component_state"]["underlying"]
+        self.assertEqual(headline["as_of"], "2026-08")
+        self.assertEqual(headline["transform_value"], 4.0)
+        self.assertEqual(underlying["as_of"], "2026-08")
+        self.assertEqual(underlying["transform_value"], 3.6)
+        self.assertEqual(inflation["level"], 65.75)
+        self.assertEqual(inflation["impulse"], 2.5)
+        projection = build_projection()
+        rows = [
+            row
+            for row in projection["countries"]["AU"]["observations"]
+            if row.get("series_id") == "A130393721F" and row.get("transformation") == "yoy_pct"
+        ]
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["reference_period"], "2026-08")
+        self.assertEqual(rows[0]["value"], 4.0)
+        self.assertEqual(rows[0]["topic"], "inflation")
 
     def test_ca_alberta_oil_monthly_vs_calendar_day_rate(self) -> None:
         projection = build_projection()

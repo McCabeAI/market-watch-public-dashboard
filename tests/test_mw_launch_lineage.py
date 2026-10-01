@@ -7,13 +7,21 @@ import json
 import shutil
 import tempfile
 import unittest
+from unittest import mock
 from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+from scripts.country_registry import history_files
 from scripts.market_watch_launch import contract
 from scripts.market_watch_launch.freeze import run as freeze_run
-from scripts.market_watch_launch.lineage import promote_staged_lineage, stage_verified_lineage
+from scripts.market_watch_launch.lineage import (
+    CanonicalScorePromotionError,
+    _write_bytes_atomic,
+    promote_accepted_launch_lineage,
+    promote_staged_lineage,
+    stage_verified_lineage,
+)
 from scripts.overnight.constants import ROOT
 from scripts.overnight.evidence import require_snapshot
 from scripts.overnight.pipeline import run_stage
@@ -41,6 +49,32 @@ PROTECTED = (
 
 def _sha256_file(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _write_staging_lineage(
+    staging: Path,
+    *,
+    scores: dict,
+    history_payload: bytes | None = None,
+) -> str:
+    history_dir = staging / "history"
+    history_dir.mkdir(parents=True, exist_ok=True)
+    payload = history_payload if history_payload is not None else b"{}\n"
+    for filename in history_files().values():
+        (history_dir / filename).write_bytes(payload)
+    scores_path = staging / "temperature_scores.json"
+    scores_path.write_text(json.dumps(scores, indent=2) + "\n", encoding="utf-8")
+    return hashlib.sha256(scores_path.read_bytes()).hexdigest()
+
+
+def _snapshot_canonical_hashes(canonical_history: Path, canonical_scores: Path) -> dict[str, str | None]:
+    hashes: dict[str, str | None] = {
+        str(canonical_scores): _sha256_file(canonical_scores) if canonical_scores.is_file() else None
+    }
+    for filename in history_files().values():
+        path = canonical_history / filename
+        hashes[str(path)] = _sha256_file(path) if path.is_file() else None
+    return hashes
 
 
 class LineageStagingTests(unittest.TestCase):
@@ -103,11 +137,99 @@ class LineageStagingTests(unittest.TestCase):
             self.assertEqual(first["provenance_sha256"], second["provenance_sha256"])
             self.assertEqual(first["score_state_sha256"], second["score_state_sha256"])
 
+    def test_accepted_live_lineage_promotes_and_rejected_launches_do_not(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            launch_dir = root / "launch"
+            staging = launch_dir / "lineage"
+            scores = {
+                "version": 3,
+                "countries": {
+                    "AU": {
+                        "Inflation": {
+                            "component_state": {
+                                "headline": {"as_of": "2026-08", "transform_value": 4.0}
+                            }
+                        }
+                    }
+                },
+            }
+            digest = _write_staging_lineage(staging, scores=scores)
+            canonical_history = root / "history"
+            canonical_history.mkdir()
+            canonical_scores = root / "temperature_scores.json"
+            canonical_scores.write_text("{}\n", encoding="utf-8")
+
+            rejected = promote_accepted_launch_lineage(
+                launch_dir=launch_dir,
+                canonical_history_dir=canonical_history,
+                canonical_scores_path=canonical_scores,
+                mode="live",
+                accepted=False,
+                recorded_score_sha256=digest,
+            )
+            self.assertFalse(rejected["promoted"])
+            self.assertEqual(canonical_scores.read_text(encoding="utf-8"), "{}\n")
+
+            fixture = promote_accepted_launch_lineage(
+                launch_dir=launch_dir,
+                canonical_history_dir=canonical_history,
+                canonical_scores_path=canonical_scores,
+                mode="fixture",
+                accepted=True,
+                recorded_score_sha256=digest,
+            )
+            self.assertFalse(fixture["promoted"])
+            self.assertEqual(canonical_scores.read_text(encoding="utf-8"), "{}\n")
+
+            untouched = root / "untouched_scores.json"
+            untouched.write_text("{}\n", encoding="utf-8")
+            with self.assertRaises(CanonicalScorePromotionError):
+                promote_accepted_launch_lineage(
+                    launch_dir=launch_dir,
+                    canonical_history_dir=canonical_history,
+                    canonical_scores_path=untouched,
+                    mode="live",
+                    accepted=True,
+                    recorded_score_sha256="0" * 64,
+                )
+            self.assertEqual(untouched.read_text(encoding="utf-8"), "{}\n")
+
+            empty = root / "empty-launch"
+            empty.mkdir()
+            with self.assertRaises(CanonicalScorePromotionError):
+                promote_accepted_launch_lineage(
+                    launch_dir=empty,
+                    canonical_history_dir=canonical_history,
+                    canonical_scores_path=canonical_scores,
+                    mode="live",
+                    accepted=True,
+                )
+            self.assertEqual(canonical_scores.read_text(encoding="utf-8"), "{}\n")
+
+            promoted = promote_accepted_launch_lineage(
+                launch_dir=launch_dir,
+                canonical_history_dir=canonical_history,
+                canonical_scores_path=canonical_scores,
+                mode="live",
+                accepted=True,
+                recorded_score_sha256=digest,
+            )
+            self.assertTrue(promoted["promoted"])
+            written = json.loads(canonical_scores.read_text(encoding="utf-8"))
+            self.assertEqual(
+                written["countries"]["AU"]["Inflation"]["component_state"]["headline"]["transform_value"],
+                4.0,
+            )
+            self.assertEqual(
+                written["countries"]["AU"]["Inflation"]["component_state"]["headline"]["as_of"],
+                "2026-08",
+            )
+
     def test_promote_staged_lineage_refuses_fixture_mode(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             staging = Path(tmp) / "lineage"
-            (staging / "history").mkdir(parents=True)
-            (staging / "temperature_scores.json").write_text("{}\n", encoding="utf-8")
+            _write_staging_lineage(staging, scores={})
             with self.assertRaises(ValueError):
                 promote_staged_lineage(
                     staging,
@@ -115,6 +237,195 @@ class LineageStagingTests(unittest.TestCase):
                     ROOT / "data" / "temperature_scores.json",
                     promote=True,
                     mode="fixture",
+                )
+
+
+class LineageAtomicPromotionTests(unittest.TestCase):
+    def _promotion_fixture(self) -> tuple[Path, Path, Path, Path, dict[str, str | None]]:
+        tmp = tempfile.mkdtemp()
+        root = Path(tmp)
+        staging = root / "lineage"
+        staged_scores = {"version": 3, "tag": "staged"}
+        _write_staging_lineage(staging, scores=staged_scores, history_payload=b'{"staged": true}\n')
+        canonical_history = root / "canonical_history"
+        canonical_history.mkdir()
+        for index, filename in enumerate(history_files().values()):
+            (canonical_history / filename).write_bytes(f'{{"prior": {index}}}\n'.encode("utf-8"))
+        canonical_scores = root / "temperature_scores.json"
+        canonical_scores.write_text('{"prior": "scores"}\n', encoding="utf-8")
+        before = _snapshot_canonical_hashes(canonical_history, canonical_scores)
+        return staging, canonical_history, canonical_scores, root, before
+
+    def test_happy_path_promotes_all_histories_and_scores(self) -> None:
+        staging, canonical_history, canonical_scores, root, before = self._promotion_fixture()
+        try:
+            result = promote_staged_lineage(
+                staging,
+                canonical_history,
+                canonical_scores,
+                promote=True,
+                mode="live",
+            )
+            self.assertTrue(result["promoted"])
+            for filename in history_files().values():
+                self.assertEqual(
+                    (canonical_history / filename).read_bytes(),
+                    b'{"staged": true}\n',
+                )
+            written = json.loads(canonical_scores.read_text(encoding="utf-8"))
+            self.assertEqual(written["tag"], "staged")
+        finally:
+            shutil.rmtree(root, ignore_errors=True)
+
+    def test_failure_on_history_file_rolls_back_all_destinations(self) -> None:
+        for fail_on in (2, 4):
+            staging, canonical_history, canonical_scores, root, before = self._promotion_fixture()
+            try:
+                calls = {"n": 0}
+                real_write = _write_bytes_atomic
+
+                def counting_write(path: Path, data: bytes) -> None:
+                    calls["n"] += 1
+                    if calls["n"] == fail_on:
+                        raise OSError(f"injected failure on history write {fail_on}")
+                    real_write(path, data)
+
+                with mock.patch(
+                    "scripts.market_watch_launch.lineage._write_bytes_atomic",
+                    side_effect=counting_write,
+                ):
+                    with self.assertRaises(OSError):
+                        promote_staged_lineage(
+                            staging,
+                            canonical_history,
+                            canonical_scores,
+                            promote=True,
+                            mode="live",
+                        )
+                after = _snapshot_canonical_hashes(canonical_history, canonical_scores)
+                self.assertEqual(before, after)
+            finally:
+                shutil.rmtree(root, ignore_errors=True)
+
+    def test_failure_on_scores_write_rolls_back_histories(self) -> None:
+        staging, canonical_history, canonical_scores, root, before = self._promotion_fixture()
+        try:
+            real_bytes = _write_bytes_atomic
+
+            state = {"scores_write_attempted": False}
+
+            def bytes_write(path: Path, data: bytes) -> None:
+                if path.resolve() == canonical_scores.resolve() and not state["scores_write_attempted"]:
+                    state["scores_write_attempted"] = True
+                    raise OSError("injected scores write failure")
+                real_bytes(path, data)
+
+            with mock.patch(
+                "scripts.market_watch_launch.lineage._write_bytes_atomic",
+                side_effect=bytes_write,
+            ):
+                with self.assertRaises(OSError):
+                    promote_staged_lineage(
+                        staging,
+                        canonical_history,
+                        canonical_scores,
+                        promote=True,
+                        mode="live",
+                    )
+            after = _snapshot_canonical_hashes(canonical_history, canonical_scores)
+            self.assertEqual(before, after)
+        finally:
+            shutil.rmtree(root, ignore_errors=True)
+
+    def test_post_write_verify_failure_rolls_back(self) -> None:
+        staging, canonical_history, canonical_scores, root, before = self._promotion_fixture()
+        try:
+            with self.assertRaises(CanonicalScorePromotionError):
+                promote_staged_lineage(
+                    staging,
+                    canonical_history,
+                    canonical_scores,
+                    promote=True,
+                    mode="live",
+                    verify_scores_document={"version": 3, "tag": "expected-mismatch"},
+                )
+            after = _snapshot_canonical_hashes(canonical_history, canonical_scores)
+            self.assertEqual(before, after)
+        finally:
+            shutil.rmtree(root, ignore_errors=True)
+
+    def test_missing_staged_history_does_not_write(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            staging = Path(tmp) / "lineage"
+            digest = _write_staging_lineage(staging, scores={"version": 3})
+            (staging / "history" / "nz.json").unlink()
+            canonical_history = Path(tmp) / "history"
+            canonical_history.mkdir()
+            canonical_scores = Path(tmp) / "scores.json"
+            canonical_scores.write_text("{}\n", encoding="utf-8")
+            before = _snapshot_canonical_hashes(canonical_history, canonical_scores)
+            with self.assertRaises(ValueError):
+                promote_staged_lineage(
+                    staging,
+                    canonical_history,
+                    canonical_scores,
+                    promote=True,
+                    mode="live",
+                )
+            self.assertEqual(before, _snapshot_canonical_hashes(canonical_history, canonical_scores))
+
+    def test_oct1_staged_employment_level_is_not_promoted(self) -> None:
+        launch = ROOT / "data/market_watch_launches/mwl-20261001T085057Z-ec2e990b/lineage"
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            staging = root / "lineage"
+            shutil.copytree(launch, staging)
+            canonical_history = root / "canonical_history"
+            canonical_history.mkdir()
+            for index, filename in enumerate(history_files().values()):
+                (canonical_history / filename).write_bytes(f'{{"prior": {index}}}\n'.encode("utf-8"))
+            canonical_scores = root / "temperature_scores.json"
+            canonical_scores.write_text('{"prior": "scores"}\n', encoding="utf-8")
+            before = _snapshot_canonical_hashes(canonical_history, canonical_scores)
+            with self.assertRaises(CanonicalScorePromotionError):
+                promote_staged_lineage(
+                    staging,
+                    canonical_history,
+                    canonical_scores,
+                    promote=True,
+                    mode="live",
+                )
+            self.assertEqual(before, _snapshot_canonical_hashes(canonical_history, canonical_scores))
+            self.assertNotIn(b"1511", (canonical_history / "nz.json").read_bytes())
+
+    def test_protected_destinations_refused_without_writes(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            staging = Path(tmp) / "lineage"
+            _write_staging_lineage(staging, scores={"version": 3})
+            protected_history = (
+                ROOT
+                / "data"
+                / "overnight"
+                / "runs"
+                / "overnight-20260923"
+                / "history"
+            )
+            protected_scores = protected_history.parent / "evidence_snapshot.json"
+            with self.assertRaises(ValueError):
+                promote_staged_lineage(
+                    staging,
+                    protected_history,
+                    ROOT / "data" / "temperature_scores.json",
+                    promote=True,
+                    mode="live",
+                )
+            with self.assertRaises(ValueError):
+                promote_staged_lineage(
+                    staging,
+                    Path(tmp) / "history",
+                    protected_scores,
+                    promote=True,
+                    mode="live",
                 )
 
 

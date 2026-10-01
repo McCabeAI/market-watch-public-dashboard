@@ -20,6 +20,10 @@ from scripts.macro_ingestion.contract import index_series_rows, load_catalog
 from scripts.macro_ingestion.runner import live_opener, run_ingestion
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures/nz"
+OCT1_HLFS_RAW = (
+    ROOT
+    / "data/market_watch_launches/mwl-20261001T085057Z-ec2e990b/ingestion/raw/nz/HLFQ.S1A3S/20261001T085057Z-315f48f981cb"
+)
 
 
 def _fixture_opener_factory() -> dict[str, bytes]:
@@ -178,6 +182,77 @@ class TestAdapterNz(unittest.TestCase):
         }
         payload = nz_adapter.fetch_series(spec, opener=self._opener, now=self.now)
         self.assertEqual(payload.get("status"), "source_failed")
+
+    def test_hlfs_employment_qoq_oct1_workbook(self) -> None:
+        body = OCT1_HLFS_RAW.read_bytes()
+        points = nz_adapter._parse_hlfs_xlsx(
+            body,
+            series_id="HLFQ.S1A3S",
+            transform="qoq_change_thousands_sa",
+            source_url="https://example.test/hlfs.xlsx",
+        )
+        self.assertEqual(len(points), 1)
+        self.assertEqual(points[0]["period"], "2026-Q2")
+        self.assertEqual(points[0]["value"], 13.0)
+        self.assertNotEqual(points[0]["value"], 1511.0)
+
+    def test_hlfs_employment_qoq_tiny_fixture(self) -> None:
+        body = (FIXTURES / "hlfs_table1_tiny.xlsx").read_bytes()
+        points = nz_adapter._parse_hlfs_xlsx(
+            body,
+            series_id="HLFQ.S1A3S",
+            transform="qoq_change_thousands_sa",
+            source_url="https://example.test/hlfs.xlsx",
+        )
+        self.assertEqual(len(points), 1)
+        self.assertEqual(points[0]["value"], 13.0)
+
+    def test_hlfs_employment_qoq_fails_closed_without_prior_quarter(self) -> None:
+        import io
+
+        from openpyxl import Workbook
+
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Table 1"
+        ws.append(["Series ref: HLFQ", None, "S1A3S"])
+        ws.append(["Quarter", None, None])
+        ws.append(["2026", "Jun", 2905])
+        buf = io.BytesIO()
+        wb.save(buf)
+        points = nz_adapter._parse_hlfs_xlsx(
+            buf.getvalue(),
+            series_id="HLFQ.S1A3S",
+            transform="qoq_change_thousands_sa",
+            source_url="https://example.test/hlfs.xlsx",
+        )
+        self.assertEqual(points, [])
+
+    def test_infoshare_employment_qoq_from_levels(self) -> None:
+        csv_body = (
+            "Series_Reference,Period,Data_Value\n"
+            "HLFQ.S1A3S,2026.03,2892\n"
+            "HLFQ.S1A3S,2026.06,2905\n"
+        ).encode()
+        points = nz_adapter._parse_infoshare_csv(
+            csv_body,
+            series_id="HLFQ.S1A3S",
+            transform="qoq_change_thousands_sa",
+            source_url="https://example.test/hlfs.csv",
+        )
+        self.assertEqual(len(points), 1)
+        self.assertEqual(points[0]["period"], "2026-Q2")
+        self.assertEqual(points[0]["value"], 13.0)
+
+    def test_infoshare_employment_qoq_rejects_level_passthrough(self) -> None:
+        csv_body = "Series_Reference,Period,Data_Value\nHLFQ.S1A3S,2026.06,1511\n".encode()
+        points = nz_adapter._parse_infoshare_csv(
+            csv_body,
+            series_id="HLFQ.S1A3S",
+            transform="qoq_change_thousands_sa",
+            source_url="https://example.test/hlfs.csv",
+        )
+        self.assertEqual(points, [])
 
     def test_explanatory_alias_skipped(self) -> None:
         spec = {

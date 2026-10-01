@@ -14,6 +14,7 @@ from typing import Any, Mapping
 
 from scripts.country_detail import policy
 from scripts.country_detail.persistence import load_snapshot, save_snapshot
+from scripts.country_detail.present import is_raw_price_index_level
 from scripts.country_detail.release_status import assess_release
 
 __all__ = [
@@ -423,6 +424,17 @@ def _qualify_observation(
             transformation=str(observation.get("transformation") or ""),
             cadence=cadence,
         )
+    # A raw price-index level drifts with the index base. It is not an
+    # economic move, so it cannot become a What Matters Now alert. The
+    # percent-change transform of the same index is classified above.
+    if is_raw_price_index_level(observation):
+        travel = None
+        classified = {
+            **classified,
+            "attention_status": "none",
+            "badge_text": None,
+            "reason": "Raw price-index level is not an economic move.",
+        }
     # Historical percentile remains the badge when it qualifies. Travel admits
     # a row that the historical axis would have left at none, including when
     # the only historical limitation is a short sample.

@@ -207,8 +207,74 @@ class ReleaseAwareAttentionTest(unittest.TestCase):
         self.assertIn('data-country="NZ"', html)
         self.assertIn('class="wmn-finding"', html)
         self.assertNotIn(policy.WMN_QUIET_TEXT, html)
+        face = html.split('<details class="wmn-technical">', 1)[0]
+        self.assertIn("sped up to 2.00%", face)
+        self.assertNotIn("Comparable history is too short", face)
+        self.assertNotIn("The latest move sped up", face)
         evidence = html[html.find('class="country-evidence"'):]
         self.assertNotIn(result["findings"][0]["observation_id"], evidence)
+
+    def test_raw_price_index_trend_is_not_a_finding_for_any_country(self) -> None:
+        from scripts.country_detail.present import is_raw_price_index_level, series_synopsis
+
+        core_pce = {
+            "label": "Personal Consumption Expenditures: Chain-type Price Index, Excluding Food and Energy",
+            "units": "index 2017=100",
+            "nominal_basis": "index",
+            "transformation": "index_level",
+        }
+        self.assertTrue(is_raw_price_index_level(core_pce))
+        self.assertEqual(series_synopsis(core_pce), "How fast prices are rising.")
+        spending = {
+            "label": "Real Personal Consumption Expenditures",
+            "units": "percent",
+            "transformation": "mom_sa_pct",
+        }
+        self.assertFalse(is_raw_price_index_level(spending))
+        self.assertEqual(series_synopsis(spending), "How fast household spending is growing.")
+        percent_change = {**core_pce, "transformation": "mom_sa_pct", "units": "percent", "nominal_basis": "nominal"}
+        self.assertFalse(is_raw_price_index_level(percent_change))
+
+        for code in policy.COUNTRY_CODES:
+            level = _observation(
+                [100, 101, 102, 104],
+                country=code,
+                series_id=f"{code}_PCE_INDEX",
+            )
+            level["label"] = "PCE price index"
+            level["transformation"] = "index_level"
+            level["units"] = "index 2017=100"
+            level["nominal_basis"] = "index"
+            level["topic"] = "inflation"
+            level["observation_id"] = policy.observation_id(level)
+            result = evaluate_observations(
+                [level],
+                as_of="2026-09-30",
+                stale_after_days=40,
+                country=code,
+            )
+            self.assertEqual(result["finding_count"], 0, msg=code)
+            member = result["members"][0]
+            self.assertEqual(member["attention_status"], "none", msg=code)
+            self.assertNotIn("raw_price", member.get("ineligibility") or [])
+            self.assertEqual(member.get("reason"), "Raw price-index level is not an economic move.")
+
+        pmi_values = list(range(1, 61)) + [99]
+        for code in policy.COUNTRY_CODES:
+            pmi = _observation(pmi_values, country=code, series_id=f"{code}_PMI")
+            pmi["label"] = "Manufacturing PMI"
+            pmi["units"] = "diffusion_index"
+            pmi["transformation"] = "diffusion_index"
+            pmi["topic"] = "activity"
+            pmi["observation_id"] = policy.observation_id(pmi)
+            self.assertFalse(is_raw_price_index_level(pmi), msg=code)
+            pmi_result = evaluate_observations(
+                [pmi],
+                as_of="2026-09-30",
+                stale_after_days=40,
+                country=code,
+            )
+            self.assertGreaterEqual(pmi_result["finding_count"], 1, msg=code)
 
     def test_quiet_country_is_explained_by_evaluated_evidence(self) -> None:
         obs = _observation([0.2, -0.1, 0.2, -0.1], country="JP", series_id="JP_FLAT")

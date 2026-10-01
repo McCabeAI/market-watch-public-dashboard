@@ -13,6 +13,7 @@ from typing import Any
 
 from scripts.country_registry import history_files
 from scripts.macro_ingestion.contract import load_catalog
+from scripts.macro_ingestion.semantic_guards import implausible_nz_employment_qoq_values
 from scripts.macro_ingestion.score_bridge import (
     points_from_observation_stores,
     recompute_scores_after_observation,
@@ -121,16 +122,47 @@ def _component_metric(state: dict[str, Any], catalog_id: str) -> dict[str, Any] 
 def _write_json_atomic(path: Path, payload: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     text = json.dumps(payload, indent=2) + "\n"
+    _write_bytes_atomic(path, text.encode("utf-8"))
+
+
+def _destination_snapshot(path: Path) -> bytes | None:
+    if path.is_file():
+        return path.read_bytes()
+    return None
+
+
+def _restore_destination(path: Path, prior: bytes | None) -> None:
+    if prior is None:
+        if path.is_file():
+            path.unlink()
+        return
+    _write_bytes_atomic(path, prior)
+
+
+def _write_bytes_atomic(path: Path, data: bytes) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
     fd, tmp_name = tempfile.mkstemp(dir=str(path.parent), prefix=f".{path.name}.", suffix=".tmp")
     try:
-        with os.fdopen(fd, "w", encoding="utf-8") as handle:
-            handle.write(text)
+        with os.fdopen(fd, "wb") as handle:
+            handle.write(data)
             handle.flush()
             os.fsync(handle.fileno())
         os.replace(tmp_name, path)
     finally:
         if os.path.exists(tmp_name):
             os.unlink(tmp_name)
+
+
+def _rollback_promotion(snapshots: list[tuple[Path, bytes | None]]) -> None:
+    first_error: BaseException | None = None
+    for path, prior in reversed(snapshots):
+        try:
+            _restore_destination(path, prior)
+        except OSError as exc:
+            if first_error is None:
+                first_error = exc
+    if first_error is not None:
+        raise first_error
 
 
 def _is_protected_destination(path: Path) -> bool:
@@ -323,6 +355,55 @@ def apply_lineage_to_macro_hard(
     return out
 
 
+class CanonicalScorePromotionError(ValueError):
+    """Accepted lineage could not be written to canonical score state."""
+
+
+def promote_accepted_launch_lineage(
+    *,
+    launch_dir: Path,
+    canonical_history_dir: Path,
+    canonical_scores_path: Path,
+    mode: str,
+    accepted: bool,
+    recorded_score_sha256: str | None = None,
+) -> dict[str, Any]:
+    """Copy staged history and scores into canonical state after acceptance.
+
+    Fixture mode and any launch that is not accepted return without writing.
+    A live accepted launch with missing or mismatched lineage fails loudly
+    instead of leaving the previous canonical scores in place.
+    """
+    if not accepted:
+        return {"promoted": False, "ok": True, "reason": "launch_not_accepted"}
+    if mode != "live":
+        return {"promoted": False, "ok": True, "reason": "non_live_mode"}
+
+    staging = launch_dir / LINEAGE_SUBDIR
+    scores_src = staging / STAGED_SCORES_NAME
+    history_src = staging / HISTORY_SUBDIR
+    if not history_src.is_dir() or not scores_src.is_file():
+        raise CanonicalScorePromotionError("accepted launch is missing staged score lineage")
+
+    digest = _sha256_bytes(scores_src.read_bytes())
+    if recorded_score_sha256 and digest != recorded_score_sha256:
+        raise CanonicalScorePromotionError(
+            "staged score state does not match the accepted lineage digest"
+        )
+    staged_doc = json.loads(scores_src.read_text(encoding="utf-8"))
+    result = promote_staged_lineage(
+        staging,
+        canonical_history_dir,
+        canonical_scores_path,
+        promote=True,
+        mode="live",
+        verify_scores_document=staged_doc,
+    )
+    result["ok"] = True
+    result["score_state_sha256"] = digest
+    return result
+
+
 def promote_staged_lineage(
     staging_dir: Path,
     canonical_history_dir: Path,
@@ -330,6 +411,7 @@ def promote_staged_lineage(
     *,
     promote: bool = False,
     mode: str = "live",
+    verify_scores_document: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     if not promote:
         return {"promoted": False, "reason": "promote_not_requested"}
@@ -343,17 +425,56 @@ def promote_staged_lineage(
     if not history_src.is_dir() or not scores_src.is_file():
         raise ValueError("staged lineage incomplete")
 
-    for _country, filename in history_files().items():
+    filenames = list(history_files().values())
+    staged_histories: list[tuple[str, bytes]] = []
+    for filename in filenames:
         src = history_src / filename
         if not src.is_file():
-            continue
+            raise ValueError(f"staged history file missing: {filename}")
         dest = canonical_history_dir / filename
         if _is_protected_destination(dest):
             raise ValueError("refuse promotion into protected overnight or evidence paths")
-        shutil.copy2(src, dest)
+        staged_histories.append((filename, src.read_bytes()))
+
+    for filename, data in staged_histories:
+        if filename != "nz.json":
+            continue
+        try:
+            nz_doc = json.loads(data.decode("utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+            raise CanonicalScorePromotionError("staged NZ history is not valid JSON") from exc
+        if not isinstance(nz_doc, dict):
+            raise CanonicalScorePromotionError("staged NZ history is not valid JSON")
+        bad_values = implausible_nz_employment_qoq_values(nz_doc)
+        if bad_values:
+            raise CanonicalScorePromotionError(
+                "staged NZ employment change is an employment level, not a quarterly change"
+            )
 
     if _is_protected_destination(canonical_scores_path):
         raise ValueError("refuse promotion into protected overnight or evidence paths")
-    _write_json_atomic(canonical_scores_path, json.loads(scores_src.read_text(encoding="utf-8")))
+
+    scores_payload = json.loads(scores_src.read_text(encoding="utf-8"))
+    snapshots: list[tuple[Path, bytes | None]] = []
+    for filename, _data in staged_histories:
+        snapshots.append((canonical_history_dir / filename, _destination_snapshot(canonical_history_dir / filename)))
+    snapshots.append((canonical_scores_path, _destination_snapshot(canonical_scores_path)))
+
+    try:
+        for filename, data in staged_histories:
+            _write_bytes_atomic(canonical_history_dir / filename, data)
+        _write_json_atomic(canonical_scores_path, scores_payload)
+        if verify_scores_document is not None:
+            written = json.loads(canonical_scores_path.read_text(encoding="utf-8"))
+            if written != verify_scores_document:
+                _rollback_promotion(snapshots)
+                raise CanonicalScorePromotionError(
+                    "canonical score state does not match staged lineage after promotion"
+                )
+    except CanonicalScorePromotionError:
+        raise
+    except Exception:
+        _rollback_promotion(snapshots)
+        raise
 
     return {"promoted": True, "scores_path": str(canonical_scores_path)}
