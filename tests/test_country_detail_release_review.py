@@ -254,7 +254,27 @@ class ReleaseAwareAttentionTest(unittest.TestCase):
                 country=code,
             )
             self.assertEqual(result["finding_count"], 0, msg=code)
-            self.assertEqual(result["members"][0]["attention_status"], "none", msg=code)
+            member = result["members"][0]
+            self.assertEqual(member["attention_status"], "none", msg=code)
+            self.assertNotIn("raw_price", member.get("ineligibility") or [])
+            self.assertEqual(member.get("reason"), "Raw price-index level is not an economic move.")
+
+        pmi_values = list(range(1, 61)) + [99]
+        for code in policy.COUNTRY_CODES:
+            pmi = _observation(pmi_values, country=code, series_id=f"{code}_PMI")
+            pmi["label"] = "Manufacturing PMI"
+            pmi["units"] = "diffusion_index"
+            pmi["transformation"] = "diffusion_index"
+            pmi["topic"] = "activity"
+            pmi["observation_id"] = policy.observation_id(pmi)
+            self.assertFalse(is_raw_price_index_level(pmi), msg=code)
+            pmi_result = evaluate_observations(
+                [pmi],
+                as_of="2026-09-30",
+                stale_after_days=40,
+                country=code,
+            )
+            self.assertGreaterEqual(pmi_result["finding_count"], 1, msg=code)
 
     def test_quiet_country_is_explained_by_evaluated_evidence(self) -> None:
         obs = _observation([0.2, -0.1, 0.2, -0.1], country="JP", series_id="JP_FLAT")

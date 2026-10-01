@@ -17,6 +17,7 @@ from urllib.parse import urljoin
 from openpyxl import load_workbook
 from pypdf import PdfReader
 
+from scripts.macro_ingestion.semantic_guards import qoq_change_thousands_sa_plausible
 from scripts.harvest_nz_pci import (
     BNZ_PUBLICATIONS,
     PSI_PDF_RE,
@@ -177,8 +178,7 @@ def _parse_infoshare_csv(
     text = body.decode("utf-8", "replace")
     reader = csv.DictReader(io.StringIO(text))
     target_ref = _INFOSHARE_SERIES_REF.get((series_id, transform), series_id)
-    points: list[dict[str, Any]] = []
-    latest: tuple[str, float] | None = None
+    levels: list[tuple[str, float]] = []
     for row in reader:
         ref = (row.get("Series_Reference") or "").strip()
         if ref != target_ref:
@@ -186,11 +186,21 @@ def _parse_infoshare_csv(
         period = _quarter_from_yyyy_mm(row.get("Period") or "")
         if not period:
             continue
-        value = float(row["Data_Value"])
-        latest = (period, value)
-    if latest:
-        period, value = latest
-        points.append(
+        levels.append((period, float(row["Data_Value"])))
+    if not levels:
+        return []
+    levels.sort(key=lambda item: item[0])
+    if transform == "qoq_change_thousands_sa" and series_id == "HLFQ.S1A3S":
+        if len(levels) < 2:
+            return []
+        prior_period, prior_level = levels[-2]
+        period, latest_level = levels[-1]
+        value = latest_level - prior_level
+        if not qoq_change_thousands_sa_plausible(
+            value, prior_level=prior_level, latest_level=latest_level
+        ):
+            return []
+        return [
             {
                 "period": period,
                 "value": value,
@@ -198,8 +208,17 @@ def _parse_infoshare_csv(
                 "revision_status": "final",
                 "source_url": source_url,
             }
-        )
-    return points
+        ]
+    period, value = levels[-1]
+    return [
+        {
+            "period": period,
+            "value": value,
+            "transformation": transform,
+            "revision_status": "final",
+            "source_url": source_url,
+        }
+    ]
 
 
 def _parse_cpi_xlsx_table(
@@ -263,6 +282,60 @@ def _parse_cpi_xlsx_table(
     return points
 
 
+def _hlfs_block_bounds(rows: list[tuple[Any, ...]], suffix: str) -> tuple[int, int, int] | None:
+    """Return (column_index, start_row, end_row) for one Table 1 section."""
+    col: int | None = _HLFS_COLUMN.get(f"HLFQ.{suffix}")
+    start: int | None = None
+    end = len(rows)
+    for idx, row in enumerate(rows):
+        if not row or not str(row[0]).startswith("Series ref: HLFQ"):
+            continue
+        if start is not None:
+            end = idx
+            break
+        for cell_idx, cell in enumerate(row):
+            if cell == suffix:
+                col = cell_idx
+                start = idx + 1
+                break
+    if col is None or start is None:
+        return None
+    return col, start, end
+
+
+def _hlfs_block_levels(
+    rows: list[tuple[Any, ...]], *, col: int, start: int, end: int
+) -> list[tuple[str, float]]:
+    year: int | None = None
+    observations: list[tuple[str, float]] = []
+    for row in rows[start:end]:
+        if not row:
+            continue
+        first = row[0]
+        if first == "Quarter":
+            continue
+        if isinstance(first, str) and first.startswith(("1.", "2.", "3.")):
+            break
+        second = row[1] if len(row) > 1 else None
+        if first in (2024, 2025, 2026, "2024", "2025", "2026"):
+            year = int(first)
+            if second not in ("Mar", "Jun", "Sep", "Dec"):
+                continue
+            month = second
+        elif year is not None and second in ("Mar", "Jun", "Sep", "Dec"):
+            month = second
+        else:
+            continue
+        quarter = {"Mar": 1, "Jun": 2, "Sep": 3, "Dec": 4}[month]
+        period = f"{year}-Q{quarter}"
+        val = row[col] if len(row) > col else None
+        if val is None:
+            continue
+        observations.append((period, float(val)))
+    observations.sort(key=lambda item: item[0])
+    return observations
+
+
 def _parse_hlfs_xlsx(
     body: bytes,
     *,
@@ -273,51 +346,29 @@ def _parse_hlfs_xlsx(
     wb = load_workbook(io.BytesIO(body), read_only=True, data_only=True)
     ws = wb["Table 1"] if "Table 1" in wb.sheetnames else wb.active
     rows = list(ws.iter_rows(values_only=True))
-    col = _HLFS_COLUMN.get(series_id)
     suffix = series_id.split(".")[-1] if series_id.startswith("HLFQ.") else ""
-    if suffix:
-        for row in rows:
-            if row and str(row[0]).startswith("Series ref: HLFQ"):
-                for idx, cell in enumerate(row):
-                    if cell == suffix:
-                        col = idx
-                        break
-    if col is None:
+    if not suffix:
         return []
-    year: int | None = None
-    observations: list[tuple[str, float, float | None]] = []
-    for row in rows:
-        if not row:
-            continue
-        first = row[0]
-        second = row[1] if len(row) > 1 else None
-        if first in (2024, 2025, 2026, "2024", "2025", "2026"):
-            year = int(first)
-            if second in ("Mar", "Jun", "Sep", "Dec"):
-                month = second
-            else:
-                continue
-        elif year is not None and second in ("Mar", "Jun", "Sep", "Dec"):
-            month = second
-        else:
-            continue
-        quarter = {"Mar": 1, "Jun": 2, "Sep": 3, "Dec": 4}[month]
-        period = f"{year}-Q{quarter}"
-        val = row[col] if len(row) > col else None
-        if val is None:
-            continue
-        employed = row[2] if series_id == "HLFQ.S1A3S" and len(row) > 2 else None
-        observations.append((period, float(val), float(employed) if employed is not None else None))
+    bounds = _hlfs_block_bounds(rows, suffix)
+    if bounds is None:
+        return []
+    col, start, end = bounds
+    observations = _hlfs_block_levels(rows, col=col, start=start, end=end)
     if not observations:
         return []
-    observations.sort(key=lambda x: x[0])
-    latest = observations[-1]
-    period, value, employed = latest
+    period, latest_level = observations[-1]
     if series_id == "HLFQ.S1A3S" and transform == "qoq_change_thousands_sa":
-        prior = next((o for o in reversed(observations[:-1])), None)
-        if prior:
-            value = float(employed or 0) - float(prior[2] or 0)
-    points = [
+        if len(observations) < 2:
+            return []
+        _, prior_level = observations[-2]
+        value = latest_level - prior_level
+        if not qoq_change_thousands_sa_plausible(
+            value, prior_level=prior_level, latest_level=latest_level
+        ):
+            return []
+    else:
+        value = latest_level
+    return [
         {
             "period": period,
             "value": value,
@@ -326,7 +377,6 @@ def _parse_hlfs_xlsx(
             "source_url": source_url,
         }
     ]
-    return points
 
 
 def _fetch_stats_release(

@@ -9,6 +9,10 @@ from pathlib import Path
 from typing import Any
 
 from scripts.macro_ingestion.canonical_bridge import merge_scored_points, persist_if_changed
+from scripts.macro_ingestion.semantic_guards import (
+    is_nz_employment_qoq_point,
+    qoq_change_thousands_sa_plausible,
+)
 from scripts.macro_ingestion.contract import (
     COUNTRY_CODES,
     index_series_rows,
@@ -50,6 +54,20 @@ def _catalog_lookup(catalog: dict[str, Any]) -> dict[tuple[str, str, str], dict[
     return lookup_series_by_observation_key(catalog.get("series") or [])
 
 
+def _scoring_point_semantically_valid(point: dict[str, Any]) -> bool:
+    if not is_nz_employment_qoq_point(point):
+        return True
+    try:
+        value = float(point["value"])
+    except (KeyError, TypeError, ValueError):
+        return False
+    return qoq_change_thousands_sa_plausible(value)
+
+
+def _filter_semantically_valid_points(points: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [pt for pt in points if _scoring_point_semantically_valid(pt)]
+
+
 def points_from_observation_stores(
     *,
     observations_dir: Path,
@@ -73,23 +91,23 @@ def points_from_observation_stores(
                 continue
             catalog_id = str(row["id"])
             spec_row = by_id.get(catalog_id, row)
-            points.append(
-                {
-                    "country": country,
-                    "catalog_id": catalog_id,
-                    "role": spec_row.get("role"),
-                    "series_id": series_id,
-                    "period": obs.get("period"),
-                    "value": obs.get("value"),
-                    "transformation": transformation,
-                    "revision_status": obs.get("revision_status"),
-                    "source_url": obs.get("source_url"),
-                    "raw_sha256": obs.get("raw_sha256"),
-                    "vintage": obs.get("vintage"),
-                    "release_date": obs.get("release_date"),
-                    "retrieved_at": obs.get("retrieved_at") or checked_at,
-                }
-            )
+            candidate = {
+                "country": country,
+                "catalog_id": catalog_id,
+                "role": spec_row.get("role"),
+                "series_id": series_id,
+                "period": obs.get("period"),
+                "value": obs.get("value"),
+                "transformation": transformation,
+                "revision_status": obs.get("revision_status"),
+                "source_url": obs.get("source_url"),
+                "raw_sha256": obs.get("raw_sha256"),
+                "vintage": obs.get("vintage"),
+                "release_date": obs.get("release_date"),
+                "retrieved_at": obs.get("retrieved_at") or checked_at,
+            }
+            if _scoring_point_semantically_valid(candidate):
+                points.append(candidate)
     return points
 
 
@@ -119,6 +137,8 @@ def recompute_scores_after_observation(
     if points is None:
         obs_dir = observations_dir or OBSERVATIONS_DIR
         points = points_from_observation_stores(observations_dir=obs_dir, checked_at=stamp)
+    else:
+        points = _filter_semantically_valid_points(list(points))
 
     merge_result = merge_scored_points(working_histories, cal, points, checked_at=stamp)
 
