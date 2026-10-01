@@ -496,6 +496,62 @@
       "run_id": "overnight-20260930",
       "schema_version": 1,
       "thesis": "Spot SOFR is 3.90, March 2027 implied 4.62, September 2027 implied 4.85, and the U.S. 10-year is 5.26, with Brent still at 102.59. That ladder is an intact hike path with no reversal signal, so the existing 75 million pay of March 2027 SOFR is the continuation trade and covering it would be a premature fade. Hold the pay; do not add because the frozen implied is unchanged versus the 4.6217 entry and the line is already large."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-662bff0986be",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-01T04:50:57.400664-04:00",
+      "conviction": 75,
+      "decision_fingerprint": "5588efe04c2638fcb48d6393e741d7c930e398c29875932919a0e5559387951a",
+      "event_id": "jde-63d41a8704e44051",
+      "funding_view": null,
+      "invalidation": "A concrete path break, not a one-print dip: Mar27 through 4.62 with Sep27 reversing the 4.85 prior and 10Y losing 5.26, or a print that prices cuts instead of the hike path from SOFR through Mar and Sep.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-662bff0986be"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "b8b76e54a83d0b17fc47c6be7c4e6e97d99fa88964e5003555713668b15f925d",
+      "outcome_links": [],
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "b6222a4fc65c17a6ed21cd854149a2bc6bb19013f490762b438f3f95f1a1d973"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-01T04:50:57.400664-04:00",
+        "evidence_hash": "b9179b8ddff511573b36cf75f2af404d250c583341fb3157466cd9ce8aa4d410",
+        "overnight_run_id": "overnight-20261001",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The hike path is still in force and has steepened, not stalled: SOFR remains 3.88 while Mar27 holds 4.625, Sep27 is 4.905, and the 10Y at 5.29 is the highest since 2002. Brent at 103.53 and EURUSD at a 17-month low of 1.1355 keep inflation and dollar trends behind the pay, and a 16.04 VIX with equities still high is not a risk-off signal. Fading this stack without a path break would be premature mean reversion. Hold the existing Mar27 pay.",
+      "run_id": "overnight-20261001",
+      "schema_version": 1,
+      "thesis": "The hike path is still in force and has steepened, not stalled: SOFR remains 3.88 while Mar27 holds 4.625, Sep27 is 4.905, and the 10Y at 5.29 is the highest since 2002. Brent at 103.53 and EURUSD at a 17-month low of 1.1355 keep inflation and dollar trends behind the pay, and a 16.04 VIX with equities still high is not a risk-off signal. Fading this stack without a path break would be premature mean reversion. Hold the existing Mar27 pay."
     }
   ],
   "schema_version": 1,

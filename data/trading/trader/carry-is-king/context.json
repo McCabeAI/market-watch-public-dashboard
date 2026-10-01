@@ -32,16 +32,16 @@
   ],
   "as_of": "2026-10-01T04:50:57.400664-04:00",
   "calibration": {
-    "average_holding_seconds": 719397,
-    "average_realized_pnl_usd": -30937.5,
+    "average_holding_seconds": 402936,
+    "average_realized_pnl_usd": -13593.75,
     "breakeven": 0,
     "by_asset_class": {
       "rates": {
-        "count": 1,
-        "total_realized_pnl_usd": -30937.5
+        "count": 2,
+        "total_realized_pnl_usd": -27187.5
       }
     },
-    "closed_trade_count": 1,
+    "closed_trade_count": 2,
     "conviction_buckets": {
       "high": {
         "average_pnl_usd": null,
@@ -54,15 +54,15 @@
         "hit_rate": null
       },
       "medium": {
-        "average_pnl_usd": -30937.5,
-        "count": 1,
-        "hit_rate": 0.0
+        "average_pnl_usd": -13593.75,
+        "count": 2,
+        "hit_rate": 0.5
       }
     },
     "losses": 1,
     "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
-    "total_realized_pnl_usd": -30937.5,
-    "wins": 0
+    "total_realized_pnl_usd": -27187.5,
+    "wins": 1
   },
   "capital_owner": null,
   "consequence": {
@@ -84,7 +84,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 250000.0,
     "risk_capital_utilization": 0.025,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -3723.06,
     "status": "ok"
   },
   "learning": {
@@ -95,21 +95,8 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "f6c3b0e8e580aded2df5761c020a04d22f37f68454ceaf6443d0d8ee4461b5de",
-  "open_positions": [
-    {
-      "asset_class": "rates",
-      "conviction": 55,
-      "current_notional_usd": 25000000.0,
-      "entry_mark": 3.1,
-      "instrument": "CORRA_2027-03",
-      "opened_at": "2026-09-30T04:49:40.475210-04:00",
-      "position_id": "pos-c76f7b616be7",
-      "risk_capital_usd": 250000.0,
-      "side": "long",
-      "trade_id": "trd-trader-carry-is-king-pos-c76f7b616be7"
-    }
-  ],
+  "memory_context_sha256": "b82313913a51984ad4fb1e9de42e75811446d05d39e753e2a5d55fce3af20cb5",
+  "open_positions": [],
   "owner_id": "carry-is-king",
   "owner_type": "trader",
   "postmortems_due": [],
@@ -169,7 +156,7 @@
     "recent_events": [],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "beba5353de0296fcffe36501838e5002d6c30b5b2676b2471c49845565138353",
+    "state_sha256": "278339ea6a1e2fd42551aaff04483ef1989b4237f2650837a727f68f3e6543d5",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
@@ -177,6 +164,17 @@
     }
   },
   "recent_closed_trades": [
+    {
+      "asset_class": "rates",
+      "closed_at": "2026-10-01T04:50:57.400664-04:00",
+      "conviction": 55,
+      "holding_duration_seconds": 86476,
+      "instrument": "CORRA_2027-03",
+      "opened_at": "2026-09-30T04:49:40.475210-04:00",
+      "realized_pnl_usd": 3750.0,
+      "side": "long",
+      "trade_id": "trd-trader-carry-is-king-pos-c76f7b616be7"
+    },
     {
       "asset_class": "rates",
       "closed_at": "2026-09-28T06:26:47.664507-04:00",

@@ -494,6 +494,62 @@
       "run_id": "overnight-20260930",
       "schema_version": 1,
       "thesis": "Canada is still at a 2.30 policy rate against a high-oil, risk-on tape while the United States is already at 3.90 with a 10-year at 5.26. March 2027 CORRA at 3.105 prices only about 80 basis points of catch-up, which remains too little if commodity income and global growth stay resilient, so the existing pay is the cleanest pro-cyclical rates expression. The small yield decline versus the 3.13 entry is tape noise, not a thesis break, and does not justify adding or covering."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-dd6fdaf39119",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-01T04:50:57.400664-04:00",
+      "conviction": 70,
+      "decision_fingerprint": "c928a29006bea9aad9136b8d77eda7e33423b178c2baa1b47f51eca98c8d1a97",
+      "event_id": "jde-87905b1164134f62",
+      "funding_view": null,
+      "invalidation": "The pay is wrong if Brent loses its bid, US 10s reverse off 5.29, or Mar27 CORRA cheapens because Canada is treated as unable to follow. Get out if equities break and VIX starts pricing a real growth scare rather than a higher-for-longer real-rate regime.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-dd6fdaf39119"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "9eb617c9bbea9c8885d8e7a2b75b610d5a1a1401a23a51da98d4b90520fd8065",
+      "outcome_links": [],
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "3f8cb708e83bff9c3eb53938df6daea06f07dbb6cb1df8228e300b31d64301a2"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-01T04:50:57.400664-04:00",
+        "evidence_hash": "b9179b8ddff511573b36cf75f2af404d250c583341fb3157466cd9ce8aa4d410",
+        "overnight_run_id": "overnight-20261001",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Risk still looks like a growth tape: S&P 7651 with VIX 16, Brent 103.53, and the US 10-year at 5.29, the highest since 2002. Canada is the outlier at 2.30 cash versus official SOFR 3.88, and Mar27 CORRA at 3.09 still prices too little catch-up if oil and US term premia stay this firm. Keep paying the existing CORRA 2027-03 line; that isolates the policy gap better than chasing USDCAD or the already-extended Treasury 10-year.",
+      "run_id": "overnight-20261001",
+      "schema_version": 1,
+      "thesis": "Risk still looks like a growth tape: S&P 7651 with VIX 16, Brent 103.53, and the US 10-year at 5.29, the highest since 2002. Canada is the outlier at 2.30 cash versus official SOFR 3.88, and Mar27 CORRA at 3.09 still prices too little catch-up if oil and US term premia stay this firm. Keep paying the existing CORRA 2027-03 line; that isolates the policy gap better than chasing USDCAD or the already-extended Treasury 10-year."
     }
   ],
   "schema_version": 1,

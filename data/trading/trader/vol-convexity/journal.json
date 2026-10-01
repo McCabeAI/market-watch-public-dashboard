@@ -474,6 +474,60 @@
       "run_id": "overnight-20260930",
       "schema_version": 1,
       "thesis": "Frozen marks are VIX 16.07, dollar-yen 157.12, dollar-Canada 1.41797, Brent 102.59, and a 5.26 percent U.S. 10-year, with the book flat and no listed options surface. Those are spots and a modest implied-vol print, not a trade. With timing and event risk unspecified, linear spot in foreign exchange, crude, or rates is the wrong instrument because path and gap risk are unbounded while convexity is unmarkable. Hold; do not invent an options overlay and do not endorse a spot substitute."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-01T04:50:57.400664-04:00",
+      "conviction": 1,
+      "decision_fingerprint": "0d00067993b93f6fdd1e19203d7047ec28be0709f0d7d4007d6576479a1a0fc3",
+      "event_id": "jde-dbf8c6f5b5fd44b8",
+      "funding_view": null,
+      "invalidation": "A later freeze supplies a two-way listed options chain with strikes and implied vols on a relevant rates, FX, or equity tenor, or a markable vol or hedge leg appears.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "07f138a5e18c0792f97496fcc84617468c7249d103c1163dec97dfba35d886f9",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "8a93d4e4879b3e761d86bd81cf90d1f212f35f96ccda49df56a06b66057e51c8"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-01T04:50:57.400664-04:00",
+        "evidence_hash": "b9179b8ddff511573b36cf75f2af404d250c583341fb3157466cd9ce8aa4d410",
+        "overnight_run_id": "overnight-20261001",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "US 10Y 5.29 is the highest since 2002, EURUSD 1.1355 is a 17-month low, USDJPY is 156.997, USDCAD is 1.4183, Brent is 103.53, gold is 4186.70, the S&P is 7651.54, and VIX is 16.04, but there is still no listed two-way options chain, strikes, or implied vols beyond that VIX print. Timing on the rates and FX event is uncertain, so linear spot and cash rates are the wrong expression versus bounded-risk convexity. Book stays flat; no invented vol, strike, or premium.",
+      "run_id": "overnight-20261001",
+      "schema_version": 1,
+      "thesis": "US 10Y 5.29 is the highest since 2002, EURUSD 1.1355 is a 17-month low, USDJPY is 156.997, USDCAD is 1.4183, Brent is 103.53, gold is 4186.70, the S&P is 7651.54, and VIX is 16.04, but there is still no listed two-way options chain, strikes, or implied vols beyond that VIX print. Timing on the rates and FX event is uncertain, so linear spot and cash rates are the wrong expression versus bounded-risk convexity. Book stays flat; no invented vol, strike, or premium."
     }
   ],
   "schema_version": 1,

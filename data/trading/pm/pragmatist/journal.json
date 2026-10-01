@@ -494,6 +494,62 @@
       "run_id": "overnight-20260930",
       "schema_version": 1,
       "thesis": "Cash CORRA at 2.30 versus frozen March 2027 implied 3.105 still prices a large tightening path. The live 450 million receive remains a clean grind: long is receive duration and the mark is expected lower. Brent near 102.59, a 5.26 percent U.S. 10-year, and dollar-Canada at 1.41797 are the hawkish-spillover risks, but shocked risk of 4.5 million sits well inside the rails. This cycle\u2019s only markable expanding handoff is another receive in the same contract; that does not earn a new or larger seat."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pm-pragmatist-4e0cbc4e0b05",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-01T06:19:08.895005-04:00",
+      "conviction": 58,
+      "decision_fingerprint": "5f5c65892e25a3512338f9e493fda5f4593a908bf59efa05567837310a54a47c",
+      "event_id": "jde-2e8423af689141bb",
+      "funding_view": null,
+      "invalidation": "The receive is wrong if March CORRA implied reclaims 3.13 and keeps rising as cash and the 2027 strip reprice a genuine hiking cycle, especially with oil holding above 100 and a further US front-end backup dragging Canada with it.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-pragmatist-4e0cbc4e0b05"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "420affa15c5825273a1a8322586da328fff881ea27b71b7298c0fd2d858d2ea7",
+      "outcome_links": [],
+      "owner_id": "pragmatist",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "f0cb21f8d4aa81d63c41387c8c7f56acdb76308db0700d7ac0aa9ee14a221070"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-01T04:50:57.400664-04:00",
+        "evidence_hash": "fd26c5ce4daaa3f930088ccd86a731839eb526dfe555597f66eaaa11e2e93633",
+        "overnight_run_id": "overnight-20261001",
+        "review_id": "review-001",
+        "review_packet_id": "prp-pragmatist-overnight-20261001-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Keep the Canada receive. Cash CORRA at 2.30 still sits 79bp below the March 2027 implied 3.09, so the live line continues to be paid to fade a Bank of Canada catch-up that has not appeared in the policy rate even while US yields sit at a multi-decade high. Canada 10-year yields near 3.96 have not tracked the US 10-year, which is the core divergence, and a token Australia pay does not change oil-and-US-spillover risk on a 450 million receive.",
+      "run_id": "overnight-20261001",
+      "schema_version": 1,
+      "thesis": "Keep the Canada receive. Cash CORRA at 2.30 still sits 79bp below the March 2027 implied 3.09, so the live line continues to be paid to fade a Bank of Canada catch-up that has not appeared in the policy rate even while US yields sit at a multi-decade high. Canada 10-year yields near 3.96 have not tracked the US 10-year, which is the core divergence, and a token Australia pay does not change oil-and-US-spillover risk on a 450 million receive."
     }
   ],
   "schema_version": 1,

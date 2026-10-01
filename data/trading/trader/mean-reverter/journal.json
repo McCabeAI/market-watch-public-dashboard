@@ -496,6 +496,64 @@
       "run_id": "overnight-20260930",
       "schema_version": 1,
       "thesis": "Cash SOFR at 3.90 remains the overnight anchor; frozen March 2027 at 4.62 still prices 72 basis points of re-tightening, which is the stretch to fade rather than a reason to abandon the residual receive. Frozen 4.62 sits inside the 4.705 book mark, so this is not a fresh extreme versus the already-reduced 20 million long. Brent at 102.59 and a 5.26 percent 10-year can keep implieds bid, but they do not rewrite the cash-to-forward gap. Hold the residual receive; do not add, cut, or flip."
+    },
+    {
+      "actions": [
+        {
+          "action": "REDUCE",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 10000000,
+          "position_id": "pos-1477172adb86",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-01T04:50:57.400664-04:00",
+      "conviction": 33,
+      "decision_fingerprint": "5015c94fd8d6fad7b31730357ab262beefbc4fe273b12b659c0526f3d08787e5",
+      "event_id": "jde-bbe5f8b0626f401b",
+      "funding_view": null,
+      "invalidation": "Exit remaining receive if Mar27 trades through 4.705 or SOFR cash rises toward 4.62.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-1477172adb86"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-mean-reverter-pos-1477172adb86"
+      ],
+      "memory_context_sha256": "b32c25b0a3401a12a0ab2ff17550bd31400e7a74eb327383abf1352d7f33b3a3",
+      "outcome_links": [],
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "f3776b81910836ece35e354d9c4dc16cb23333cfe09a36f3c63101af83b84dcf"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-01T04:50:57.400664-04:00",
+        "evidence_hash": "b9179b8ddff511573b36cf75f2af404d250c583341fb3157466cd9ce8aa4d410",
+        "overnight_run_id": "overnight-20261001",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "SOFR cash at 3.88 is still the anchor and Mar27 at 4.625 prices 74.5bp of tightening that cash has not printed, so the receive remains a fade of forward extrapolation rather than a denial of a cash hike. That gap has widened while implieds lifted through the 4.58 entry, and Brent at 103.53 with the 10Y at 5.29 keep the hike path persistent enough that a full-size fade is the wrong side of the tape. Reduce the 20 million receive by 10 million, hold 10 million, and do not add until a normalization catalyst appears.",
+      "run_id": "overnight-20261001",
+      "schema_version": 1,
+      "thesis": "SOFR cash at 3.88 is still the anchor and Mar27 at 4.625 prices 74.5bp of tightening that cash has not printed, so the receive remains a fade of forward extrapolation rather than a denial of a cash hike. That gap has widened while implieds lifted through the 4.58 entry, and Brent at 103.53 with the 10Y at 5.29 keep the hike path persistent enough that a full-size fade is the wrong side of the tape. Reduce the 20 million receive by 10 million, hold 10 million, and do not add until a normalization catalyst appears."
     }
   ],
   "schema_version": 1,

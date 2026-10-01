@@ -674,6 +674,77 @@
       "run_id": "overnight-20260930",
       "schema_version": 1,
       "thesis": "December 2026, March 2027 and September 2027 already print 4.32, 4.62 and 4.85 against official SOFR 3.90, so the hiking path is inside the strip rather than left on the table. The book is flat; leaving the zero SOFR cash benchmark to put shocked-risk capital on a fully priced, multi-quarter curve is crowding and horizon mismatch, not an edge. Stay in cash at the official 3.90 fixing."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-01T04:50:57.400664-04:00",
+      "conviction": 4,
+      "decision_fingerprint": "bda02000111290d5c4f0c1cd2f4f549ed07b52b29c1e67852dff48f3682f1300",
+      "event_id": "jde-42c3c3796eca4755",
+      "funding_view": {
+        "current_sofr": {
+          "observation_date": "2026-09-29",
+          "rate": 3.88
+        },
+        "forward_funding_assessment": "lower",
+        "implication": "Remain at the zero official-SOFR cash benchmark. Do not pay SOFR on shocked-risk capital; the curve already charges the hike path, and flat cash is the zero, not alpha.",
+        "sr3_forward_view": "Frozen SR3 Dec26 4.31, Mar27 4.625, Sep27 4.905 versus official SOFR 3.88: the strip already embeds a higher funding path, so overnight cash at 3.88 is not a mispriced hike-trade."
+      },
+      "invalidation": "A later official SOFR fixing or SR3 strip move that breaks the frozen 3.88 versus 4.31/4.625/4.905 relationship, or a risk-off break not already inside the 10Y 5.29 print, would be required before any expression is actionable.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "9938e95f6c3786214045b806c6ff2627fb259c6fa40f69e32edb58e55f741879",
+      "outcome_links": [],
+      "owner_id": "no-trade-skeptic",
+      "owner_type": "trader",
+      "payload": {
+        "funding_view": {
+          "current_sofr": {
+            "observation_date": "2026-09-29",
+            "rate": 3.88
+          },
+          "forward_funding_assessment": "lower",
+          "implication": "Remain at the zero official-SOFR cash benchmark. Do not pay SOFR on shocked-risk capital; the curve already charges the hike path, and flat cash is the zero, not alpha.",
+          "sr3_forward_view": "Frozen SR3 Dec26 4.31, Mar27 4.625, Sep27 4.905 versus official SOFR 3.88: the strip already embeds a higher funding path, so overnight cash at 3.88 is not a mispriced hike-trade."
+        },
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "3bad13b98dc3493cb9c56e01a7d043de47b676dd475f50ec1862adc6d0a6de83"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-01T04:50:57.400664-04:00",
+        "evidence_hash": "b9179b8ddff511573b36cf75f2af404d250c583341fb3157466cd9ce8aa4d410",
+        "overnight_run_id": "overnight-20261001",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The US 10Y at 5.29 and SR3 at Dec26 4.31 / Mar27 4.625 / Sep27 4.905 versus official SOFR 3.88 already price the tightening and term-premium story; chasing a 2002-high overnight is crowded and late. CORRA 2.30 versus Mar27 3.09 and AONIA 4.60 versus Mar27 4.81 are likewise in the forwards, and equities bid with VIX 16.04 supply no risk-off catalyst on this cutoff. Book stays flat at the official SOFR 3.88 cash zero; that print is the benchmark, not an edge.",
+      "run_id": "overnight-20261001",
+      "schema_version": 1,
+      "thesis": "The US 10Y at 5.29 and SR3 at Dec26 4.31 / Mar27 4.625 / Sep27 4.905 versus official SOFR 3.88 already price the tightening and term-premium story; chasing a 2002-high overnight is crowded and late. CORRA 2.30 versus Mar27 3.09 and AONIA 4.60 versus Mar27 4.81 are likewise in the forwards, and equities bid with VIX 16.04 supply no risk-off catalyst on this cutoff. Book stays flat at the official SOFR 3.88 cash zero; that print is the benchmark, not an edge."
     }
   ],
   "schema_version": 1,

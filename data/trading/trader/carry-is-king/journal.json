@@ -496,6 +496,64 @@
       "run_id": "overnight-20260930",
       "schema_version": 1,
       "thesis": "Cash CORRA remains 2.30 against March 2027 implied 3.105, so a patient receive is still paid about 80 basis points of policy-path premium with no cash-rate shift. Brent at 102.59 and WTI at 89.38 stay elevated, but that is an oil overlay, not the cash-policy or lower-beta relative-value bar required to stay out of this receive. Re-open a modest long in March 2027 CORRA in Canada-eligible risk; dollar-Canada spot is not a substitute because its carry is inferior to the measured implied gap."
+    },
+    {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-c76f7b616be7",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-01T04:50:57.400664-04:00",
+      "conviction": 61,
+      "decision_fingerprint": "e6521d3b9b0fa10ad0316848b0e034b6acc2f02bf824a80f116308af636aa3ed",
+      "event_id": "jde-6326b7dd71824f65",
+      "funding_view": null,
+      "invalidation": "Re-open a CAD receive only if the 79bp implied-cash gap is no longer the expression and a genuine carry bid appears in CAD itself. An AU receive would be wrong if Mar-27 AONIA trades through cash on an easing path, or if cash AONIA loses its cushion versus SOFR 3.88.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-c76f7b616be7"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-carry-is-king-pos-c76f7b616be7"
+      ],
+      "memory_context_sha256": "f6c3b0e8e580aded2df5761c020a04d22f37f68454ceaf6443d0d8ee4461b5de",
+      "outcome_links": [],
+      "owner_id": "carry-is-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "beba5353de0296fcffe36501838e5002d6c30b5b2676b2471c49845565138353"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-01T04:50:57.400664-04:00",
+        "evidence_hash": "b9179b8ddff511573b36cf75f2af404d250c583341fb3157466cd9ce8aa4d410",
+        "overnight_run_id": "overnight-20261001",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The CAD Mar-27 receive is a path-premium fade, not a carry harvest: cash CORRA is 2.30, the contract marks 3.09, and shocked-risk capital is charged at SOFR 3.88, so the book is not paid to wait. Oil remains an overlay rather than a cash-policy shift, and the implied-cash gap is still about 79bp, but that residual is a Bank of Canada path view rather than coupon. Close the CAD receive. A Mar-27 AONIA receive at 4.81 versus cash 4.60 still clears SOFR on paper, but no executable size was specified, so that replacement stays off the book.",
+      "run_id": "overnight-20261001",
+      "schema_version": 1,
+      "thesis": "The CAD Mar-27 receive is a path-premium fade, not a carry harvest: cash CORRA is 2.30, the contract marks 3.09, and shocked-risk capital is charged at SOFR 3.88, so the book is not paid to wait. Oil remains an overlay rather than a cash-policy shift, and the implied-cash gap is still about 79bp, but that residual is a Bank of Canada path view rather than coupon. Close the CAD receive. A Mar-27 AONIA receive at 4.81 versus cash 4.60 still clears SOFR on paper, but no executable size was specified, so that replacement stays off the book."
     }
   ],
   "schema_version": 1,
