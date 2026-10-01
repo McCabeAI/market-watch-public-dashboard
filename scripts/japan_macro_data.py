@@ -13,6 +13,7 @@ from dataclasses import dataclass
 from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
+from urllib.parse import urljoin, urlparse
 
 _ROOT = Path(__file__).resolve().parents[1]
 if str(_ROOT) not in sys.path:
@@ -36,6 +37,11 @@ class SeriesUnavailableError(RuntimeError):
         self.reason = reason
 
 ESTAT_FILE_DOWNLOAD = "https://www.e-stat.go.jp/stat-search/file-download?statInfId={sid}&fileKind={fk}"
+
+METI_RETAIL_INDEX_URL_JA = "https://www.meti.go.jp/statistics/tyo/syoudou/result-2.html"
+METI_RETAIL_INDEX_URL_EN = "https://www.meti.go.jp/english/statistics/tyo/syoudou/index.html"
+
+_METI_RETAIL_WORKBOOK_RE = re.compile(r"DB_(\d{6})S\.xlsx", re.IGNORECASE)
 
 # Pinned statInfId / URLs verified live on 2026-09-21.
 SOURCE_CONTRACT = {
@@ -369,7 +375,97 @@ def parse_esri_real_gdp_qoq_saar_csv(text: str) -> list[dict[str, Any]]:
     return out
 
 
-def parse_meti_retail_yoy_xlsx(data: bytes) -> list[dict[str, Any]]:
+def meti_retail_period_from_url(url: str) -> str | None:
+    m = _METI_RETAIL_WORKBOOK_RE.search(url)
+    if not m:
+        return None
+    yymm = m.group(1)
+    return f"{yymm[:4]}-{yymm[4:6]}"
+
+
+def extract_meti_retail_workbook_links(html: str, base_url: str) -> list[tuple[str, str]]:
+    """Return (period YYYY-MM, absolute workbook URL) for preliminary DB_YYYYMMS.xlsx links."""
+    found: dict[str, str] = {}
+    for href_m in re.finditer(r"""href\s*=\s*["']([^"']+)["']""", html, re.IGNORECASE):
+        href = href_m.group(1)
+        if not _METI_RETAIL_WORKBOOK_RE.search(href):
+            continue
+        abs_url = urljoin(base_url, href)
+        period = meti_retail_period_from_url(abs_url)
+        if period:
+            found[abs_url] = period
+    return [(period, url) for url, period in found.items()]
+
+
+def discover_meti_retail_workbook(
+    fetcher: Callable[[str], bytes],
+    *,
+    extra_listing_urls: list[str] | None = None,
+) -> dict[str, Any]:
+    listing_urls: list[str] = [METI_RETAIL_INDEX_URL_JA, METI_RETAIL_INDEX_URL_EN]
+    for raw in extra_listing_urls or []:
+        u = str(raw).strip()
+        if not u or meti_retail_period_from_url(u):
+            continue
+        if u not in listing_urls:
+            listing_urls.append(u)
+
+    checked: list[str] = []
+    candidates: dict[str, str] = {}
+    ja_index_html: str | None = None
+    ja_base = METI_RETAIL_INDEX_URL_JA
+
+    def _fetch_listing_html(url: str) -> str:
+        checked.append(url)
+        try:
+            raw = fetcher(url)
+        except Exception:
+            return ""
+        head = raw[:256].lstrip().lower()
+        if head.startswith(b"<!doc") or head.startswith(b"<html") or b"<a " in raw[:4096].lower():
+            return raw.decode("utf-8", errors="replace")
+        return ""
+
+    for url in listing_urls:
+        html = _fetch_listing_html(url)
+        if url == METI_RETAIL_INDEX_URL_JA:
+            ja_index_html = html
+        for period, abs_url in extract_meti_retail_workbook_links(html, url):
+            candidates[abs_url] = period
+
+    if ja_index_html:
+        sokuho_followed = 0
+        for href_m in re.finditer(r"""href\s*=\s*["']([^"']+)["']""", ja_index_html, re.IGNORECASE):
+            if sokuho_followed >= 4:
+                break
+            href = href_m.group(1)
+            abs_url = urljoin(ja_base, href)
+            if urlparse(abs_url).netloc != urlparse(ja_base).netloc:
+                continue
+            if "sokuho" not in urlparse(abs_url).path:
+                continue
+            if meti_retail_period_from_url(abs_url):
+                continue
+            sokuho_followed += 1
+            html = _fetch_listing_html(abs_url)
+            for period, wb_url in extract_meti_retail_workbook_links(html, abs_url):
+                candidates[wb_url] = period
+
+    if not candidates:
+        raise SeriesUnavailableError(
+            "METI_CSC_RETAIL_SALES_YOY",
+            f"meti_retail_release_undiscovered; listing_urls_checked={checked!r}",
+        )
+
+    best_url, best_period = max(candidates.items(), key=lambda item: item[1])
+    return {"url": best_url, "period": best_period, "listing_urls_checked": checked}
+
+
+def parse_meti_retail_yoy_xlsx(
+    data: bytes,
+    *,
+    apply_harvest_window: bool = True,
+) -> list[dict[str, Any]]:
     import openpyxl
 
     wb = openpyxl.load_workbook(io.BytesIO(data), read_only=True, data_only=True)
@@ -383,7 +479,7 @@ def parse_meti_retail_yoy_xlsx(data: bytes) -> list[dict[str, Any]]:
         if not m:
             continue
         period = f"{int(m.group(1)):04d}-{int(m.group(2)):02d}"
-        if not period_in_window_monthly(period):
+        if apply_harvest_window and not period_in_window_monthly(period):
             continue
         try:
             retail_yoy = float(row[5])
@@ -915,10 +1011,11 @@ def collect_japan_macro(
         errors.append(f"Activity.gdp_domestic_demand: {exc}")
 
     # --- Retail ---
-    meti_url = "https://www.meti.go.jp/statistics/tyo/syoudou/result/excel/DB_202607S.xlsx"
     try:
+        discovered = discover_meti_retail_workbook(fetch)
+        meti_url = discovered["url"]
         meti_bytes = fetch(meti_url)
-        save_raw_bytes("meti_commerce_survey_DB_202607S.xlsx", meti_bytes)
+        save_raw_bytes(Path(meti_url).name, meti_bytes)
         retail = parse_meti_retail_yoy_xlsx(meti_bytes)
         components["Consumer.retail"] = component_shell(
             dimension="Consumer",

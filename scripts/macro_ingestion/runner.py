@@ -20,6 +20,7 @@ from scripts.macro_ingestion.contract import calibration_as_of, load_catalog
 from scripts.macro_ingestion.ledger import ledger_row, write_ledger
 from scripts.macro_ingestion.retries import retry_call
 from scripts.macro_ingestion.score_bridge import recompute_scores_after_observation
+from scripts.macro_ingestion.semantic_guards import stale_pinned_artifact_error
 from scripts.temperature_level import CALIBRATION_PATH
 from scripts.macro_ingestion.vintage import (
     append_observation,
@@ -165,6 +166,13 @@ def _validate_points(points: list[dict[str, Any]]) -> str | None:
     return None
 
 
+def _checked_unchanged_or_stale(payload: dict[str, Any]) -> tuple[str, list[dict[str, Any]], str | None]:
+    stale = stale_pinned_artifact_error(payload)
+    if stale:
+        return "due_missing", [], stale
+    return "checked_unchanged", [], None
+
+
 def _classify_points(
     spec: dict[str, Any],
     payload: dict[str, Any],
@@ -247,11 +255,14 @@ def _classify_points(
         return "new_observation", changed, None
 
     if not schedule_parseable(spec.get("release_rule")):
+        stale = stale_pinned_artifact_error(payload)
+        if stale:
+            return "due_missing", [], stale
         return "calendar_unparsed", [], None
 
     due = latest_due_release(spec, when)
     if due is None:
-        return "checked_unchanged", [], None
+        return _checked_unchanged_or_stale(payload)
 
     fixture = (spec.get("known_fixture") or {}).get("period")
     fixture_period = str(fixture) if fixture else None
@@ -261,11 +272,11 @@ def _classify_points(
     bound = due.get("period")
     if bound:
         if _confirms_period(points, store, series_id, transform, str(bound)):
-            return "checked_unchanged", [], None
+            return _checked_unchanged_or_stale(payload)
         return "due_missing", [], None
 
     if fixture_period and _confirms_period(points, store, series_id, transform, fixture_period):
-        return "checked_unchanged", [], None
+        return _checked_unchanged_or_stale(payload)
 
     return "calendar_unparsed", [], None
 

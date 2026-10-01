@@ -3,6 +3,10 @@
 from __future__ import annotations
 
 import math
+import re
+
+_MONTH_PERIOD_RE = re.compile(r"^\d{4}-\d{2}$")
+_QUARTER_PERIOD_RE = re.compile(r"^(\d{4})-Q([1-4])$")
 
 # Employment levels in HLFS Table 1 are ~1300–3000 (thousands); quarterly changes are tens.
 QOQ_CHANGE_THOUSANDS_SA_MAX_ABS = 500.0
@@ -55,6 +59,36 @@ def implausible_nz_employment_qoq_values(document: dict) -> list[float]:
         if not qoq_change_thousands_sa_plausible(value):
             bad.append(value)
     return bad
+
+
+def _period_sort_key(period: str) -> tuple[int, int] | None:
+    if _MONTH_PERIOD_RE.match(period):
+        year = int(period[:4])
+        month = int(period[5:7])
+        return year, month
+    match = _QUARTER_PERIOD_RE.match(period)
+    if match:
+        year = int(match.group(1))
+        quarter = int(match.group(2))
+        return year, quarter * 3
+    return None
+
+
+def stale_pinned_artifact_error(payload: dict) -> str | None:
+    """Block checked_unchanged when the read artifact is older than the official release."""
+    official = payload.get("official_latest_period")
+    artifact = payload.get("artifact_release_period")
+    if not isinstance(official, str) or not isinstance(artifact, str):
+        return None
+    if not official or not artifact:
+        return None
+    official_key = _period_sort_key(official)
+    artifact_key = _period_sort_key(artifact)
+    if official_key is None or artifact_key is None:
+        return None
+    if official_key <= artifact_key:
+        return None
+    return f"stale_pinned_artifact:artifact={artifact}:official={official}"
 
 
 def is_nz_employment_qoq_point(point: dict) -> bool:

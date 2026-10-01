@@ -20,6 +20,8 @@ from scripts.macro_ingestion.runner import run_ingestion
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "ea"
 HICP_FIXTURE = FIXTURES / "eurostat_hicp_headline_2026-08.json"
+HICP_DE_FIXTURE = FIXTURES / "eurostat_hicp_de.json"
+ZEW_TABELLE_TEXT = FIXTURES / "zew_tabelle_sample.txt"
 
 
 class TestEaAdapter(unittest.TestCase):
@@ -97,6 +99,122 @@ class TestEaAdapter(unittest.TestCase):
             self.assertEqual(result["rows"][0]["status"], "new_observation")
             store = json.loads((obs_dir / "ea.json").read_text())
             self.assertTrue(any(o["period"] == "2026-08" for o in store["observations"]))
+
+    def test_country_hicp_de_fixture_uses_geo_de(self) -> None:
+        body = HICP_DE_FIXTURE.read_bytes()
+        spec = next(r for r in load_catalog()["series"] if r["id"] == "EA.Inflation.hicp_de")
+        captured: list[str] = []
+
+        def opener(url: str, *, timeout: float = 20):
+            captured.append(url)
+            return {
+                "ok": True,
+                "url": url,
+                "http_status": 200,
+                "body": body,
+                "error": None,
+            }
+
+        payload = ea_adapter.fetch_series(
+            spec,
+            opener=opener,
+            now=datetime(2026, 10, 1, 12, 0, tzinfo=timezone.utc),
+        )
+        self.assertTrue(payload["ok"])
+        self.assertEqual(payload["points"][-1]["period"], "2026-08")
+        self.assertEqual(payload["points"][-1]["value"], 2.9)
+        self.assertTrue(captured)
+        self.assertIn("geo=DE", captured[0])
+        self.assertNotIn("geo=EA21", captured[0])
+
+    def test_headline_hicp_series_unchanged(self) -> None:
+        headline = next(r for r in load_catalog()["series"] if r["id"] == "EA.Inflation.headline")
+        self.assertIn("EA21", str(headline["series_id"]))
+        self.assertEqual(headline["weight"], 0.4)
+
+    def test_context_catalog_rows_remain_zero_weight(self) -> None:
+        catalog = load_catalog()
+        self.assertEqual(catalog["scored_weight_row_count"], 66)
+        for row in catalog["series"]:
+            if row["id"].startswith("EA.Inflation.hicp_") and row["id"] != "EA.Inflation.hicp_flash":
+                self.assertEqual(row["weight"], 0.0)
+            if row["id"].startswith("EA.Activity.zew_"):
+                self.assertEqual(row["weight"], 0.0)
+
+    def test_zew_tabelle_text_parser(self) -> None:
+        text = ZEW_TABELLE_TEXT.read_text(encoding="utf-8")
+        balances = ea_adapter.parse_zew_tabelle_text(text)
+        self.assertEqual(balances["ZEW_DE_CURRENT_SITUATION"], -47.1)
+        self.assertEqual(balances["ZEW_DE_EXPECTATIONS"], 34.7)
+        self.assertEqual(balances["ZEW_EA_EXPECTATIONS"], 25.8)
+
+    def test_zew_discovers_indicator_article_past_other_press_notes(self) -> None:
+        spec = next(
+            r for r in load_catalog()["series"] if r["id"] == "EA.Activity.zew_expectations_de"
+        )
+        listing = str(spec["endpoint"])
+        fillers = "".join(
+            f'<a href="/en/press/latest-press-releases/filler-{i}">note {i}</a>'
+            for i in range(10)
+        )
+        listing_html = (
+            "<html><body>"
+            + fillers
+            + "<p>ZEW Indicator of Economic Sentiment // 15.09.2026</p>"
+            + '<a href="/en/press/latest-press-releases/late-release">Economic Expectations</a>'
+            + "</body></html>"
+        ).encode()
+        article_html = (
+            b'<html><body><a href="http://download.zew.de/e_09_2026_Tabelle.pdf">table</a></body></html>'
+        )
+        calls: list[str] = []
+
+        def opener(url: str, *, timeout: float = 20):
+            calls.append(url)
+            if url == listing:
+                body = listing_html
+            elif url.endswith("/late-release"):
+                body = article_html
+            else:
+                body = b"%PDF-1.4\nnot-a-real-pdf"
+            return {"ok": True, "url": url, "http_status": 200, "body": body, "error": None}
+
+        payload = ea_adapter.fetch_series(
+            spec,
+            opener=opener,
+            now=datetime(2026, 10, 1, 12, 0, tzinfo=timezone.utc),
+        )
+        self.assertIn("http://download.zew.de/e_09_2026_Tabelle.pdf", calls)
+        self.assertTrue(any(url.endswith("/late-release") for url in calls))
+        self.assertFalse(payload["ok"])
+        self.assertEqual(payload.get("status"), "source_failed")
+        self.assertIn("not parsed", str(payload.get("error")))
+
+    def test_zew_listing_without_tabelle_is_source_failed(self) -> None:
+        spec = next(
+            r for r in load_catalog()["series"] if r["id"] == "EA.Activity.zew_expectations_de"
+        )
+        listing = str(spec["endpoint"])
+
+        def opener(url: str, *, timeout: float = 20):
+            return {
+                "ok": True,
+                "url": url,
+                "http_status": 200,
+                "body": b"<html><body><p>No table PDF here.</p></body></html>",
+                "error": None,
+            }
+
+        payload = ea_adapter.fetch_series(
+            spec,
+            opener=opener,
+            now=datetime(2026, 10, 1, 12, 0, tzinfo=timezone.utc),
+        )
+        self.assertFalse(payload["ok"])
+        self.assertEqual(payload.get("status"), "source_failed")
+        self.assertEqual(payload.get("points"), [])
+        self.assertIn(listing, str(payload.get("error")))
+        self.assertIn("Official ZEW Tabelle was not retrieved or not parsed", str(payload.get("error")))
 
 
 if __name__ == "__main__":
