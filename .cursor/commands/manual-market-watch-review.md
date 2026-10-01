@@ -10,7 +10,13 @@ Emit exactly once:
 MW_OVERNIGHT_RUN_POLICY={"version":1,"schedule_id":"market-watch-weekday-0205","total_model_cap":20,"grok_cap":18,"composer_cap":2,"parent_model":"grok-4.6","parent_total":1,"parent_grok":1}
 ```
 
-The legacy schedule id is an inactive compatibility identifier for existing hooks and validators. It is not launch authority and it does not imply a 02:05 clock.
+Emit the current-graph marker exactly once. The one-shot launch ceiling is 20 calls, not 19:
+
+```
+MW_CURRENT_GRAPH={"automated_pms":3,"composer_calls":2,"grok_family_calls":18,"learning_examiner":1,"parent":1,"synthesis":1,"total_calls":20,"traders":14,"version":1}
+```
+
+The legacy schedule id is an inactive compatibility identifier for existing hooks and validators. It is not launch authority and it does not imply a 02:05 clock. The learning examiner is a required node of this graph whenever the frozen obligation manifest is non-empty. Do not drop it to stay inside a 19-call ceiling.
 
 ## 0. Immutable manual-freeze preflight — before any child spend
 

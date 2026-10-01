@@ -69,9 +69,12 @@ class AcceptanceWorkflowContractTests(unittest.TestCase):
             workflow.index("scheduled_output.py validate"),
         )
         self.assertLess(workflow.index("scheduled_output.py validate"), workflow.index("scheduled_output.py apply"))
-        self.assertLess(workflow.index("scheduled_output.py apply"), workflow.index("append_generated_state.sh"))
-        self.assertLess(workflow.index("append_generated_state.sh"), workflow.index("Revalidate canonical book blobs"))
+        self.assertLess(workflow.index("scheduled_output.py apply"), workflow.index("Revalidate canonical book blobs"))
         self.assertLess(workflow.index("Revalidate canonical book blobs"), workflow.index("merge_accepted_output.sh"))
+        self.assertLess(workflow.index("merge_accepted_output.sh"), workflow.index("append_generated_state.sh"))
+        self.assertLess(workflow.index("append_generated_state.sh"), workflow.index("Persist accepted launch through finalization"))
+        self.assertNotIn("github.event.pull_request.head.ref", workflow)
+        self.assertIn("HEAD_REF: main", workflow)
 
         self.assertLess(merge_script.index("gh pr ready"), merge_script.index("gh pr merge"))
         self.assertLess(merge_script.index("gh pr merge"), merge_script.index("gh workflow run deploy-pages.yml --ref main"))

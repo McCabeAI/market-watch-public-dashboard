@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from scripts.market_watch_launch.call_graph import COMPOSER_CALLS, GROK_FAMILY_CALLS, TOTAL_CALLS
 from scripts.market_watch_launch.contract import LAUNCHER_ID
 from scripts.overnight.constants import SCHEMA_VERSION, STANDING_SEATS
 from scripts.overnight.scheduled_output import AGENT_PACKET_TYPE, SCHEDULE_ID
@@ -150,12 +151,12 @@ def build_stub_output(
         "execution": {
             "parent_model": "grok-4.6",
             "allowed_subagent_models": ["composer-2.5", "grok-4.6"],
-            "total_model_cap": 20,
-            "grok_cap": 18,
-            "composer_cap": 2,
-            "declared_total_model_calls": 20,
-            "declared_grok_calls": 18,
-            "declared_composer_calls": 2,
+            "total_model_cap": TOTAL_CALLS,
+            "grok_cap": GROK_FAMILY_CALLS,
+            "composer_cap": COMPOSER_CALLS,
+            "declared_total_model_calls": TOTAL_CALLS,
+            "declared_grok_calls": GROK_FAMILY_CALLS,
+            "declared_composer_calls": COMPOSER_CALLS,
             "other_models_calls": 0,
             "auto_used": False,
         },
