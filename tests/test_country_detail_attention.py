@@ -36,6 +36,7 @@ def call_evaluate_observations(case: dict, snapshot: dict) -> dict:
         "stale_after_days": case.get("stale_after_days"),
         "prior_attention_snapshot": snapshot.get("prior_attention_snapshot"),
         "frozen_packet": case.get("frozen_packet"),
+        "release_aware": case.get("release_aware"),
     }
     try:
         return evaluate_observations(**{key: value for key, value in kwargs.items() if value is not None})
@@ -236,13 +237,16 @@ class CountryDetailAttentionAdversarialTest(unittest.TestCase):
             "stale_after_days": fixture["stale_after_days"],
         }
         snapshot = {"id": "only", "observations": fixture["observations"], "as_of": fixture["as_of"]}
+        # The fixture's "stale" row is data_state ok with an old retrieval. It has
+        # no authoritative release rule, so clock age must not invent a deadline.
+        case["release_aware"] = True
         result = call_evaluate_observations(case, snapshot)
         obs_lookup = result.get("observations") or {
             row["label"]: row for row in result.get("members", []) if row.get("label")
         }
         state_by_label = {
             "missing": "missing",
-            "stale": "stale",
+            "stale": "ok",
             "revised": "revised",
             "not_comparable": "structurally_non_comparable",
             "failed_fetch": "failed_fetch",
@@ -250,7 +254,14 @@ class CountryDetailAttentionAdversarialTest(unittest.TestCase):
         for label, expected_label in fixture["expect"]["display_labels"].items():
             row = obs_lookup[label]
             self.assertEqual(row["data_state"], state_by_label[label])
-            self.assertEqual(row.get("display_label"), expected_label)
+            if label == "stale":
+                self.assertEqual(row.get("release_state"), "current")
+                self.assertEqual(row.get("release_calendar"), "unavailable")
+                self.assertNotEqual(row.get("display_label"), "Stale")
+                self.assertNotEqual(row.get("display_label"), "Due")
+                self.assertGreater(row.get("retrieval_age_days"), fixture["stale_after_days"])
+            else:
+                self.assertEqual(row.get("display_label"), expected_label)
 
         failed = obs_lookup["failed_fetch"]
         expected_retrieved = policy.next_retrieved_at(
@@ -263,14 +274,24 @@ class CountryDetailAttentionAdversarialTest(unittest.TestCase):
         self.assertNotEqual(failed.get("retrieved_at"), fixture["failed_fetch_timestamps"]["attempted_retrieved_at"])
 
     def test_revised_or_preliminary_stale_extreme_is_not_outlier(self) -> None:
-        """Stale wins over a revised or preliminary projection state.
+        """An authoritative due successor blocks a revised extreme. Retrieval age does not.
 
         Invented 60-point monthly SA sample. The latest value is the unique
-        maximum, so a fresh revised row can still be an outlier.
+        maximum, so a current revised row can still be an outlier. The due
+        cases attach an explicit release instant bound to 2024-06. The same
+        print stays eligible when that instant has not been reached, including
+        when retrieval age exceeds the registry TTL.
         """
         as_of = "2024-07-01"
-        stale_retrieved_at = "2024-06-21T00:00:00Z"  # 10 days before as_of
-        fresh_retrieved_at = "2024-07-01T00:00:00Z"
+        current_as_of = "2024-01-20"
+        due_rule = {
+            "kind": "explicit_timestamp",
+            "timezone": "UTC",
+            "dates": ["2024-06-15T12:00:00Z"],
+            "expected_periods": {"2024-06-15T12:00:00Z": "2024-06"},
+        }
+        aged_retrieved_at = "2024-01-10T00:00:00Z"  # 10 days before current_as_of
+        fresh_retrieved_at = "2024-01-20T00:00:00Z"
 
         def observation(*, data_state: str, revision_status: str, retrieved_at: str) -> dict:
             history = []
@@ -313,59 +334,101 @@ class CountryDetailAttentionAdversarialTest(unittest.TestCase):
                 "history": history,
             }
 
-        def evaluate(obs: dict) -> dict:
+        def evaluate(obs: dict, *, when: str, release_aware: bool) -> dict:
             assert evaluate_observations is not None
             return evaluate_observations(
                 [obs],
-                as_of=as_of,
+                as_of=when,
                 stale_after_days=4,
+                release_aware=release_aware,
             )
 
-        def assert_stale_not_finding(result: dict) -> None:
+        def assert_due_not_finding(result: dict) -> None:
             self.assertEqual(result["finding_count"], 0)
             self.assertEqual(result["findings"], [])
             row = result["members"][0]
             self.assertEqual(row["comparable_n"], 60)
-            self.assertEqual(row["data_state"], "stale")
+            self.assertEqual(row["data_state"], "due_late")
+            self.assertEqual(row["release_state"], "due_late")
+            self.assertEqual(row["display_label"], "Due")
+            self.assertNotEqual(row["display_label"], "Stale")
             self.assertEqual(row["attention_status"], "none")
             self.assertIsNone(row["badge_text"])
-            self.assertIn("stale", row["ineligibility"])
+            self.assertIn("due_late", row["ineligibility"])
+            self.assertNotIn("stale", row["ineligibility"])
             self.assertNotEqual(row["badge_text"], "Outlier")
             self.assertNotEqual(row["badge_text"], "Notable")
 
-        revised_stale = evaluate(
-            observation(
-                data_state="revised",
-                revision_status="revised",
-                retrieved_at=stale_retrieved_at,
-            )
-        )
-        assert_stale_not_finding(revised_stale)
+        def with_due_rule(obs: dict) -> dict:
+            row = dict(obs)
+            row["release_rule"] = due_rule
+            return row
 
-        preliminary_stale = evaluate(
-            observation(
-                data_state="revised",
-                revision_status="preliminary",
-                retrieved_at=stale_retrieved_at,
-            )
+        revised_due = evaluate(
+            with_due_rule(
+                observation(
+                    data_state="revised",
+                    revision_status="revised",
+                    retrieved_at=fresh_retrieved_at,
+                )
+            ),
+            when=as_of,
+            release_aware=True,
         )
-        assert_stale_not_finding(preliminary_stale)
+        assert_due_not_finding(revised_due)
 
-        ok_stale = evaluate(
+        preliminary_due = evaluate(
+            with_due_rule(
+                observation(
+                    data_state="revised",
+                    revision_status="preliminary",
+                    retrieved_at=fresh_retrieved_at,
+                )
+            ),
+            when=as_of,
+            release_aware=True,
+        )
+        assert_due_not_finding(preliminary_due)
+
+        ok_due = evaluate(
+            with_due_rule(
+                observation(
+                    data_state="ok",
+                    revision_status="final",
+                    retrieved_at=fresh_retrieved_at,
+                )
+            ),
+            when=as_of,
+            release_aware=True,
+        )
+        assert_due_not_finding(ok_due)
+
+        aged_current = evaluate(
             observation(
                 data_state="ok",
                 revision_status="final",
-                retrieved_at=stale_retrieved_at,
-            )
+                retrieved_at=aged_retrieved_at,
+            ),
+            when=current_as_of,
+            release_aware=True,
         )
-        assert_stale_not_finding(ok_stale)
+        aged_row = aged_current["members"][0]
+        self.assertEqual(aged_current["finding_count"], 1)
+        self.assertEqual(aged_row["data_state"], "ok")
+        self.assertEqual(aged_row["release_state"], "current")
+        self.assertNotEqual(aged_row["display_label"], "Stale")
+        self.assertNotIn("stale", aged_row["ineligibility"])
+        self.assertGreater(aged_row["retrieval_age_days"], 4)
+        self.assertEqual(aged_row["attention_status"], "outlier")
 
         fresh_revised = evaluate(
             observation(
                 data_state="revised",
                 revision_status="revised",
                 retrieved_at=fresh_retrieved_at,
-            )
+            ),
+            when=current_as_of,
+            release_aware=True,
         )
         self.assertEqual(fresh_revised["finding_count"], 1)
         row = fresh_revised["members"][0]

@@ -108,6 +108,8 @@ INELIGIBILITY_REASONS = frozenset(
         "structurally_non_comparable",
         "missing_value",
         "stale",
+        "due_late",
+        "superseded",
         "failed_fetch",
         "unchanged_reprint",
         "not_material",
@@ -120,6 +122,8 @@ DATA_STATES = (
     "ok",
     "missing",
     "stale",
+    "due_late",
+    "superseded",
     "revised",
     "structurally_non_comparable",
     "failed_fetch",
@@ -128,12 +132,26 @@ DATA_STATE_LABELS = MappingProxyType(
     {
         "missing": "Missing",
         "stale": "Stale",
+        "due_late": "Due",
+        "superseded": "Superseded",
         "revised": "Revised",
         "structurally_non_comparable": "Not comparable",
         "failed_fetch": "Source failed",
     }
 )
-
+# Analytical release states. ``current`` is the latest official observation.
+# ``due_late`` means a successor should already exist. ``superseded`` means a
+# newer official observation of the same series identity is present.
+RELEASE_STATES = (
+    "current",
+    "due_late",
+    "superseded",
+    "missing",
+    "failed_fetch",
+    "revised",
+    "structurally_non_comparable",
+    "stale",
+)
 REVISED_REVISION_STATUSES = frozenset({"revised", "preliminary"})
 
 # Value-equality tolerance for unchanged reprints. Decimal, not binary float.
@@ -141,11 +159,14 @@ PERCENT_ABSOLUTE_TOLERANCE = Decimal("0.05")
 RELATIVE_TOLERANCE = Decimal("0.001")
 ZERO_BASELINE_ABSOLUTE_TOLERANCE = Decimal("1e-9")
 
-# Stale age is whole UTC days since the last successful retrieved_at.
+# Registry retrieval TTL. This is not the Country Detail analytical gate.
+# ``is_stale`` remains for that TTL. Attention must not exclude the latest
+# official observation because this many days have elapsed since retrieval.
 # The day count comes from data/country_registry.json economies.<code>.stale_after_days.
 # This module does not copy those day counts and does not read the file.
 STALE_AFTER_DAYS_SOURCE = "data/country_registry.json#economies.<code>.stale_after_days"
 STALE_WHEN_AGE_DAYS_STRICTLY_GREATER = True
+CLOCK_AGE_DOES_NOT_GATE_ANALYTICAL_ELIGIBILITY = True
 
 # --- Identity ---
 # Canonical JSON uses sorted keys. This tuple is the exact key set, user order.
@@ -418,6 +439,10 @@ def classify_attention(
             ("structurally_non_comparable",),
             "No attention badge: structurally_non_comparable.",
         )
+    if effective_state == "due_late":
+        return _result("none", ("due_late",), "No attention badge: due_late.")
+    if effective_state == "superseded":
+        return _result("none", ("superseded",), "No attention badge: superseded.")
     if effective_state == "stale":
         return _result("none", ("stale",), "No attention badge: stale.")
 
@@ -991,10 +1016,44 @@ def age_in_days(retrieved_at: str, as_of: str) -> int:
 
 
 def is_stale(*, retrieved_at: str, as_of: str, stale_after_days: int) -> bool:
-    """Stale only when age in whole UTC days is strictly greater than the registry count."""
+    """Registry retrieval TTL. Not the Country Detail analytical exclusion.
+
+    Whole UTC days since ``retrieved_at`` strictly greater than the registry
+    count. Country Detail must not call this to drop a latest official print.
+    Macro-ingestion freshness stays on its own gate.
+    """
     if stale_after_days < 0:
         raise ValueError("stale_after_days must be >= 0")
     return age_in_days(retrieved_at, as_of) > stale_after_days
+
+
+def series_identity(observation: Mapping[str, Any]) -> tuple[Any, ...]:
+    """Series identity without reference period. A later period supersedes this one."""
+    return tuple(
+        observation.get(field)
+        for field in OBSERVATION_ID_FIELDS
+        if field != "reference_period"
+    )
+
+
+def period_sort_key(period: str) -> tuple[int, int]:
+    """Order monthly and quarterly reference periods. Unparsed periods sort first."""
+    monthly = _MONTHLY_PERIOD.match(period or "")
+    if monthly:
+        return (int(monthly.group(1)), int(monthly.group(2)))
+    quarterly = _QUARTERLY_PERIOD.match(period or "")
+    if quarterly:
+        return (int(quarterly.group(1)), int(quarterly.group(2)) * 3)
+    return (0, 0)
+
+
+def release_state_for_data_state(data_state: str) -> str:
+    """Map an analytical data state onto the release-state vocabulary."""
+    if data_state == "ok":
+        return "current"
+    if data_state not in RELEASE_STATES:
+        raise ValueError(f"unknown data_state: {data_state}")
+    return data_state
 
 
 def next_retrieved_at(

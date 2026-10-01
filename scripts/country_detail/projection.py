@@ -527,6 +527,7 @@ def _build_identity_observation(
         "comparison_broken": comparison_broken,
         "label": label_override or _label_for(catalog_row, transformation),
         "catalog_id": catalog_id,
+        "release_date": latest.get("release_date"),
         "score_input": _score_input(
             catalog_id=catalog_id,
             transformation=transformation,

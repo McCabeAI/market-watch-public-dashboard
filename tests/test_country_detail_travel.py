@@ -159,17 +159,36 @@ class DirectionOfTravelTest(unittest.TestCase):
             if state == "missing":
                 obs["value"] = None
             if state == "stale":
-                obs["retrieved_at"] = "2026-09-01T00:00:00Z"
+                # Explicit source stale is not this row. An authoritative release
+                # instant names a later period that is absent, so the row is due.
+                obs["retrieved_at"] = "2026-09-28T00:00:00Z"
                 obs["data_state"] = "ok"
-            if state == "structurally_non_comparable":
-                obs["data_state"] = "ok"
-                obs["comparison_broken"] = True
-            result = _evaluate([obs])
+                obs["release_rule"] = {
+                    "kind": "explicit_timestamp",
+                    "timezone": "UTC",
+                    "dates": ["2024-06-01T12:00:00Z"],
+                    "expected_periods": {"2024-06-01T12:00:00Z": "2024-05"},
+                }
+                result = evaluate_observations(
+                    [obs],
+                    as_of="2026-09-30",
+                    stale_after_days=4,
+                    release_aware=True,
+                )
+            else:
+                if state == "structurally_non_comparable":
+                    obs["data_state"] = "ok"
+                    obs["comparison_broken"] = True
+                result = _evaluate([obs])
             self.assertEqual(result["finding_count"], 0, msg=state)
             self.assertEqual(result["findings"], [])
             row = result["members"][0]
             self.assertEqual(row["attention_status"], "none", msg=state)
             self.assertIsNone(row["badge_text"], msg=state)
+            if state == "stale":
+                self.assertEqual(row["data_state"], "due_late", msg=state)
+                self.assertNotIn("stale", row["ineligibility"])
+                self.assertLessEqual(row["retrieval_age_days"], 4)
 
     def test_same_direction_release_keeps_one_slot(self) -> None:
         monthly = _observation(
@@ -223,7 +242,12 @@ class DirectionOfTravelTest(unittest.TestCase):
         self.assertIn("Range break", result["findings"][0]["reason"])
         self.assertEqual(result["findings"][0]["badge_text"], "Interesting")
 
-    def test_au_household_spending_live_path_surfaces(self) -> None:
+    def test_au_household_spending_follows_the_abs_release_calendar(self) -> None:
+        """August household spending is due once the catalogued 30 Sep release has passed.
+
+        The held print is 2026-07. The ABS rule binds 2026-09-30 11:30 Sydney to
+        2026-08. That is the macro-ingestion calendar, not a retrieval TTL.
+        """
         projection = build_projection()
         registry = load_country_registry()
         attention = evaluate_projection(
@@ -232,42 +256,25 @@ class DirectionOfTravelTest(unittest.TestCase):
             limit=8,
         )
         au = attention["countries"]["AU"]
-        spending = [
-            row
-            for row in au["members"]
-            if row.get("release_family") == policy.AU_MHSI_RELEASE_FAMILY
-            and row.get("attention_status") != "none"
-        ]
-        self.assertGreaterEqual(len(spending), 1)
-        surfaced = [row for row in spending if row.get("what_matters_now_slot")]
-        self.assertGreaterEqual(len(surfaced), 1)
-        lead = next(row for row in spending if row.get("what_matters_now_slot"))
-        self.assertIn(
-            lead["travel_pattern"],
-            {"persistence", "acceleration", "deceleration", "reversal", "range_break"},
-        )
-        self.assertTrue(lead["reason"])
-        self.assertNotIn(lead["data_state"], {"stale", "missing", "failed_fetch", "structurally_non_comparable"})
         monthly = next(
             row
             for row in au["members"]
             if row.get("series_id") == policy.AU_HOUSEHOLD_SPENDING_MONTHLY["series_id"]
+            and row.get("transformation") == policy.AU_HOUSEHOLD_SPENDING_MONTHLY["transformation"]
         )
-        if monthly["comparable_n"] < policy.SAMPLE_MINIMA["monthly"]["notable"]:
-            self.assertNotEqual(monthly["badge_text"], "Notable")
-            self.assertNotEqual(monthly["badge_text"], "Outlier")
-            if monthly["attention_status"] == "interesting":
-                self.assertIn("insufficient_history", monthly["ineligibility"])
-        findings = [
-            finding
-            for finding in au["findings"]
-            if finding.get("release_family") == policy.AU_MHSI_RELEASE_FAMILY
-        ]
-        self.assertGreaterEqual(len(findings), 1)
-        self.assertIn("Persistence", findings[0]["reason"])
-        self.assertIn("+1.2", findings[0]["reason"])
-        self.assertIn("+1.1", findings[0]["reason"])
-        self.assertIn("is not claimed", findings[0]["reason"])
+        self.assertEqual(monthly["reference_period"], "2026-07")
+        self.assertEqual(monthly["data_state"], "due_late")
+        self.assertEqual(monthly["release_state"], "due_late")
+        self.assertEqual(monthly["release_calendar"], "due")
+        self.assertEqual(monthly["display_label"], "Due")
+        self.assertNotEqual(monthly["display_label"], "Stale")
+        self.assertIn("due_late", monthly["ineligibility"])
+        self.assertNotIn("stale", monthly["ineligibility"])
+        self.assertNotEqual(monthly.get("what_matters_now_slot"), True)
+        self.assertNotIn(
+            monthly["observation_id"],
+            {finding["observation_id"] for finding in au["findings"]},
+        )
 
 
 if __name__ == "__main__":

@@ -44,6 +44,15 @@ class CountryDetailApplyTest(unittest.TestCase):
         self.assertIn("Country Detail — mobile-first", out)
         self.assertEqual(out.count("Country Detail — mobile-first"), 1)
         self.assertNotIn('class="temp-inputs"', out)
+        us = out.split('<div class="cdetail ca">', 1)[0]
+        self.assertLess(us.find('class="score-compact"'), us.find('class="what-matters-now"'))
+        self.assertLess(us.find('class="what-matters-now"'), us.find("keep-us-tail"))
+        self.assertLess(us.find("keep-us-tail"), us.find('class="country-evidence"'))
+        self.assertIn("country-detail-evidence-filter", out)
+        self.assertIn("evidence-search", out)
+        self.assertIn("addEventListener('input'", out)
+        self.assertIn("addEventListener('click'", out)
+        self.assertEqual(out.count("country-detail-evidence-filter"), 1)
 
 
 if __name__ == "__main__":

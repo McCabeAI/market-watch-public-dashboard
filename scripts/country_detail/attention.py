@@ -14,6 +14,7 @@ from typing import Any, Mapping
 
 from scripts.country_detail import policy
 from scripts.country_detail.persistence import load_snapshot, save_snapshot
+from scripts.country_detail.release_status import assess_release
 
 __all__ = [
     "evaluate_observations",
@@ -245,44 +246,72 @@ def _alert_freshness(observation: Mapping[str, Any], prior_row: Mapping[str, Any
     )
 
 
+def _retrieval_age_days(retrieved_at: Any, as_of: str) -> int | None:
+    """Whole UTC days since retrieval. Metadata only; never an eligibility gate."""
+    if not retrieved_at or not as_of:
+        return None
+    try:
+        return policy.age_in_days(str(retrieved_at), as_of)
+    except ValueError:
+        return None
+
+
+def _explicit_release_state(observation: Mapping[str, Any]) -> str | None:
+    raw = observation.get("release_state")
+    if raw in {"current", "due_late", "superseded"}:
+        return str(raw)
+    return None
+
+
 def _effective_data_state(
     observation: Mapping[str, Any],
     *,
-    as_of: str,
     stale_after_days: int,
     prior_row: Mapping[str, Any] | None,
+    superseded: bool,
+    release_aware: bool,
+    calendar_due: bool,
 ) -> str:
-    """Apply stale and revised upgrades without mutating the source row.
+    """Resolve analytical state without using retrieval age as a gate.
 
-    Classification priority for data states that block or replace ``ok``:
-    missing, failed fetch, structurally non-comparable, stale, then revised.
-    A projection row already marked ``revised`` (including a preliminary
-    print stored as ``revised``) is still checked for staleness. Stale wins.
-    A revised row that is not stale stays ``revised``.
+    ``stale_after_days`` is accepted so existing callers keep working. It is
+    not applied. Elapsed days since ``retrieved_at`` do not make the latest
+    official observation stale.
+
+    Priority: missing, failed fetch, structurally non-comparable, superseded,
+    an explicit source ``stale`` or ``due_late``, then an authoritative
+    release-calendar due/late when ``release_aware`` is set, then revised. A
+    current latest print stays ``ok`` or ``revised``. The calendar decision
+    comes from ``scripts.macro_ingestion.calendar`` or an explicit repository
+    ``release_due`` / ``due_missing`` flag. There is no generic grace table.
     ``comparison_broken`` is left as ``ok`` so ``classify_attention`` records
     ``structurally_non_comparable``.
     """
+    del stale_after_days  # registry TTL is not the analytical gate
     source_state = observation.get("data_state") or "ok"
     if source_state not in policy.DATA_STATES:
         raise ValueError(f"unknown data_state: {source_state}")
     comparison_broken = bool(observation.get("comparison_broken"))
+    explicit = _explicit_release_state(observation)
     if source_state in {"missing", "failed_fetch", "structurally_non_comparable"}:
         return source_state
     if source_state == "ok" and observation.get("value") is None:
         return "missing"
+    if superseded or explicit == "superseded":
+        return "superseded"
+    if source_state in {"stale", "due_late", "superseded"}:
+        return source_state
     if source_state == "ok" and comparison_broken:
         return "ok"
-    retrieved_at = observation.get("retrieved_at")
+    if explicit == "due_late":
+        return "due_late"
     if (
-        source_state in {"ok", "revised"}
-        and retrieved_at
-        and policy.is_stale(
-            retrieved_at=str(retrieved_at),
-            as_of=as_of,
-            stale_after_days=stale_after_days,
-        )
+        explicit != "current"
+        and release_aware
+        and calendar_due
+        and source_state in {"ok", "revised"}
     ):
-        return "stale"
+        return "due_late"
     if source_state == "ok" and _row_is_revised(observation, prior_row):
         return "revised"
     return source_state
@@ -314,12 +343,42 @@ def _resolved_timestamp(observation: Mapping[str, Any], *, field: str, attempted
     )
 
 
+def _latest_period_by_identity(observations: list[Mapping[str, Any]]) -> dict[tuple[Any, ...], str]:
+    latest: dict[tuple[Any, ...], str] = {}
+    for observation in observations:
+        period = observation.get("reference_period")
+        if not isinstance(period, str) or not period:
+            continue
+        key = policy.series_identity(observation)
+        current = latest.get(key)
+        if current is None or policy.period_sort_key(period) > policy.period_sort_key(current):
+            latest[key] = period
+    return latest
+
+
+def _is_superseded(
+    observation: Mapping[str, Any],
+    latest_periods: Mapping[tuple[Any, ...], str],
+) -> bool:
+    period = observation.get("reference_period")
+    if not isinstance(period, str) or not period:
+        return False
+    latest = latest_periods.get(policy.series_identity(observation))
+    if not latest:
+        return False
+    return policy.period_sort_key(period) < policy.period_sort_key(latest)
+
+
 def _qualify_observation(
     observation: Mapping[str, Any],
     *,
     as_of: str,
     stale_after_days: int,
     prior: Mapping[str, dict],
+    superseded: bool,
+    release_aware: bool,
+    calendar_due: bool = False,
+    release_calendar: str | None = None,
 ) -> dict[str, Any]:
     for field in policy.OBSERVATION_ID_FIELDS:
         if field not in observation:
@@ -334,9 +393,11 @@ def _qualify_observation(
     prior_row = prior.get(computed_id)
     effective_state = _effective_data_state(
         observation,
-        as_of=as_of,
         stale_after_days=stale_after_days,
         prior_row=prior_row,
+        superseded=superseded,
+        release_aware=release_aware,
+        calendar_due=calendar_due,
     )
     percentile, comparable_n, excluded_count, seasonal_excluded_count, values = _measure(
         observation,
@@ -419,8 +480,12 @@ def _qualify_observation(
         "travel_run_length": 0 if travel is None else travel["run_length"],
         "data_state": data_state,
         "display_label": policy.DATA_STATE_LABELS.get(data_state),
+        "release_state": policy.release_state_for_data_state(data_state),
+        "retrieval_age_days": _retrieval_age_days(observation.get("retrieved_at"), as_of),
         "alert_freshness": _alert_freshness(observation, prior_row),
     }
+    if release_calendar is not None:
+        member["release_calendar"] = release_calendar
     if observation.get("label") is not None:
         member["label"] = observation.get("label")
     return member
@@ -445,6 +510,7 @@ def evaluate_observations(
     score_state: Mapping[str, Any] | None = None,
     prior_attention_snapshot: Any = None,
     frozen_packet: Mapping[str, Any] | None = None,
+    release_aware: bool = False,
 ) -> dict:
     """Qualify observations and select What Matters Now.
 
@@ -461,8 +527,16 @@ def evaluate_observations(
 
     ``as_of`` and ``stale_after_days`` may be omitted. ``as_of`` then comes
     from the latest ``retrieved_at`` on the observations, or ``2026-09-30``.
-    ``stale_after_days`` defaults to 4. Callers that pass ``prior=`` should
-    still pass ``as_of`` when they have an evaluation date.
+    ``stale_after_days`` defaults to 4 and is ignored for eligibility. Retrieval
+    age is stored on each member and does not exclude a latest official print.
+
+    ``release_aware`` asks the macro-ingestion calendar whether a successor
+    release is due. A missing expected observation becomes ``due_late``.
+    A series with no parseable release rule stays current. Superseded rows
+    are detected either way when a newer observation of the same series
+    identity is in the batch.
+    Callers that pass ``prior=`` should still pass ``as_of`` when they have an
+    evaluation date.
     """
     if observations is None:
         raise ValueError("observations are required")
@@ -486,20 +560,53 @@ def evaluate_observations(
         prior = prior_attention_snapshot
 
     prior_map = _coerce_prior(prior)
-    members = [
-        _qualify_observation(
-            observation,
-            as_of=as_of,
-            stale_after_days=stale_after_days,
-            prior=prior_map,
+    latest_periods = _latest_period_by_identity(rows)
+    members = []
+    for observation in rows:
+        calendar_due = False
+        release_calendar = None
+        if release_aware:
+            assessed = assess_release(observation, as_of=as_of)
+            calendar_due = bool(assessed["due"])
+            release_calendar = str(assessed["release_calendar"])
+        members.append(
+            _qualify_observation(
+                observation,
+                as_of=as_of,
+                stale_after_days=stale_after_days,
+                prior=prior_map,
+                superseded=_is_superseded(observation, latest_periods),
+                release_aware=bool(release_aware),
+                calendar_due=calendar_due,
+                release_calendar=release_calendar,
+            )
         )
-        for observation in rows
-    ]
     selected = policy.select_what_matters_now(members, limit=limit)
+    selected["review"] = _review_summary(members, country)
     overlap = _SCORE_REWRITE_KEYS.intersection(selected)
     if overlap:
         raise RuntimeError(f"attention output rewrote score levels: {sorted(overlap)}")
     return selected
+
+
+def _review_summary(members: list[dict[str, Any]], country: str | None) -> dict[str, Any]:
+    """Counts that explain a quiet country after its own evidence was evaluated."""
+    counts: dict[str, int] = {}
+    for member in members:
+        state = str(member.get("data_state") or "ok")
+        counts[state] = counts.get(state, 0) + 1
+    eligible = counts.get("ok", 0) + counts.get("revised", 0)
+    return {
+        "country": country,
+        "evaluated_count": len(members),
+        "eligible_count": eligible,
+        "current_count": counts.get("ok", 0),
+        "revised_count": counts.get("revised", 0),
+        "due_late_count": counts.get("due_late", 0),
+        "superseded_count": counts.get("superseded", 0),
+        "explicit_stale_count": counts.get("stale", 0),
+        "blocked_count": len(members) - eligible,
+    }
 
 
 def evaluate_projection(
@@ -509,11 +616,13 @@ def evaluate_projection(
     prior: dict | None = None,
     limit: int = 3,
 ) -> dict:
-    """Evaluate each country in a projection.
+    """Evaluate each country in a projection independently.
 
     ``projection["countries"][code]`` is either an observation list or a
     mapping with ``observations`` and an optional ``as_of``. ``stale_after_days``
-    maps a country code to the registry day count. Returns
+    maps a country code to the registry retrieval TTL. That TTL is not an
+    analytical gate. Every present country uses the same release-aware review.
+    There is no cross-country quota and no country-specific branch. Returns
     ``{"countries": {code: evaluate_observations result}}``.
     """
     if isinstance(projection.get("countries"), dict):
@@ -543,6 +652,8 @@ def evaluate_projection(
             stale_after_days=int(stale_after_days[code]),
             prior=_prior_for_country(prior, str(code)),
             limit=limit,
+            country=str(code),
+            release_aware=True,
         )
     return {"countries": countries}
 

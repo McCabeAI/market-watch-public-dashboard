@@ -21,6 +21,7 @@ from scripts.country_detail.render import (
     _preview_fixtures,
     _preview_script,
     country_detail_css,
+    evidence_filter_script,
     render_country_detail,
 )
 from scripts.country_registry import dashboard_keys, load_country_registry, stale_after_days
@@ -31,6 +32,7 @@ SCORES_PATH = ROOT / "data" / "temperature_scores.json"
 REGISTRY_PATH = ROOT / "data" / "country_registry.json"
 REVIEW_PATH = ROOT / "tests" / "fixtures" / "country_detail" / "review.html"
 _CSS_MARKER = "Country Detail — mobile-first"
+_FILTER_MARKER = "country-detail-evidence-filter"
 _TEMP_INPUTS = '<div class="temp-inputs"'
 
 
@@ -125,6 +127,42 @@ def _country_bounds(page: str, key: str, keys: list[str]) -> tuple[int, int]:
     return start, end
 
 
+def _split_country_evidence(section: str) -> tuple[str, str]:
+    """Keep score content in the lead and lift Remaining Country Evidence out."""
+    marker = '<section class="country-evidence"'
+    start = section.find(marker)
+    if start < 0:
+        return section, ""
+    end = section.find("</section>", start)
+    if end < 0:
+        raise ValueError("country evidence section is not closed")
+    end += len("</section>")
+    return section[:start] + section[end:], section[start:end]
+
+
+def _append_evidence(block: str, code: str, evidence: str) -> str:
+    if not evidence:
+        return block
+    trailer = (
+        f'<section class="country-detail country-detail-evidence" data-country="{html.escape(code)}">'
+        f"{evidence}</section>"
+    )
+    close_at = _closing_div(block, 0) - len("</div>")
+    return block[:close_at] + trailer + block[close_at:]
+
+
+def _inject_filter_script(page: str) -> str:
+    if _FILTER_MARKER in page:
+        return page
+    script = (
+        f"<!-- {_FILTER_MARKER} -->\n<script>\n{evidence_filter_script()}\n</script>\n"
+    )
+    idx = page.rfind("</body>")
+    if idx < 0:
+        return page + script
+    return page[:idx] + script + page[idx:]
+
+
 def _inject_section(block: str, key: str, section: str) -> str:
     count = block.count(_TEMP_INPUTS)
     if count > 1:
@@ -159,8 +197,10 @@ def apply_country_detail(page: str, *, root: Path | None = None) -> str:
     bounds = [(code, _country_bounds(page, keys[code], key_list)) for code in present]
     for code, (start, end) in reversed(bounds):
         block = page[start:end]
-        updated = _inject_section(block, keys[code], sections[code])
+        lead, evidence = _split_country_evidence(sections[code])
+        updated = _append_evidence(_inject_section(block, keys[code], lead), code, evidence)
         page = page[:start] + updated + page[end:]
+    page = _inject_filter_script(page)
     return rewrite_policy_transmission(
         page,
         policy_state=load_policy_state(root),
