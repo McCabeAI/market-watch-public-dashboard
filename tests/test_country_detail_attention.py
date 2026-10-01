@@ -237,11 +237,8 @@ class CountryDetailAttentionAdversarialTest(unittest.TestCase):
             "stale_after_days": fixture["stale_after_days"],
         }
         snapshot = {"id": "only", "observations": fixture["observations"], "as_of": fixture["as_of"]}
-        # The fixture's "stale" row is an old clock-TTL case. Move its period so a
-        # successor is actually due, and review it on the release calendar.
-        for obs in snapshot["observations"]:
-            if obs.get("label") == "stale":
-                obs["reference_period"] = "2024-03"
+        # The fixture's "stale" row is data_state ok with an old retrieval. It has
+        # no authoritative release rule, so clock age must not invent a deadline.
         case["release_aware"] = True
         result = call_evaluate_observations(case, snapshot)
         obs_lookup = result.get("observations") or {
@@ -249,7 +246,7 @@ class CountryDetailAttentionAdversarialTest(unittest.TestCase):
         }
         state_by_label = {
             "missing": "missing",
-            "stale": "due_late",
+            "stale": "ok",
             "revised": "revised",
             "not_comparable": "structurally_non_comparable",
             "failed_fetch": "failed_fetch",
@@ -258,8 +255,10 @@ class CountryDetailAttentionAdversarialTest(unittest.TestCase):
             row = obs_lookup[label]
             self.assertEqual(row["data_state"], state_by_label[label])
             if label == "stale":
-                self.assertEqual(row.get("display_label"), "Due")
+                self.assertEqual(row.get("release_state"), "current")
+                self.assertEqual(row.get("release_calendar"), "unavailable")
                 self.assertNotEqual(row.get("display_label"), "Stale")
+                self.assertNotEqual(row.get("display_label"), "Due")
                 self.assertGreater(row.get("retrieval_age_days"), fixture["stale_after_days"])
             else:
                 self.assertEqual(row.get("display_label"), expected_label)
@@ -275,15 +274,22 @@ class CountryDetailAttentionAdversarialTest(unittest.TestCase):
         self.assertNotEqual(failed.get("retrieved_at"), fixture["failed_fetch_timestamps"]["attempted_retrieved_at"])
 
     def test_revised_or_preliminary_stale_extreme_is_not_outlier(self) -> None:
-        """A due successor blocks a revised extreme. Retrieval age does not.
+        """An authoritative due successor blocks a revised extreme. Retrieval age does not.
 
         Invented 60-point monthly SA sample. The latest value is the unique
-        maximum, so a current revised row can still be an outlier. The same
-        print stays eligible when it was retrieved 10 days earlier and the
-        next monthly release is not yet due.
+        maximum, so a current revised row can still be an outlier. The due
+        cases attach an explicit release instant bound to 2024-06. The same
+        print stays eligible when that instant has not been reached, including
+        when retrieval age exceeds the registry TTL.
         """
         as_of = "2024-07-01"
         current_as_of = "2024-01-20"
+        due_rule = {
+            "kind": "explicit_timestamp",
+            "timezone": "UTC",
+            "dates": ["2024-06-15T12:00:00Z"],
+            "expected_periods": {"2024-06-15T12:00:00Z": "2024-06"},
+        }
         aged_retrieved_at = "2024-01-10T00:00:00Z"  # 10 days before current_as_of
         fresh_retrieved_at = "2024-01-20T00:00:00Z"
 
@@ -353,11 +359,18 @@ class CountryDetailAttentionAdversarialTest(unittest.TestCase):
             self.assertNotEqual(row["badge_text"], "Outlier")
             self.assertNotEqual(row["badge_text"], "Notable")
 
+        def with_due_rule(obs: dict) -> dict:
+            row = dict(obs)
+            row["release_rule"] = due_rule
+            return row
+
         revised_due = evaluate(
-            observation(
-                data_state="revised",
-                revision_status="revised",
-                retrieved_at=fresh_retrieved_at,
+            with_due_rule(
+                observation(
+                    data_state="revised",
+                    revision_status="revised",
+                    retrieved_at=fresh_retrieved_at,
+                )
             ),
             when=as_of,
             release_aware=True,
@@ -365,10 +378,12 @@ class CountryDetailAttentionAdversarialTest(unittest.TestCase):
         assert_due_not_finding(revised_due)
 
         preliminary_due = evaluate(
-            observation(
-                data_state="revised",
-                revision_status="preliminary",
-                retrieved_at=fresh_retrieved_at,
+            with_due_rule(
+                observation(
+                    data_state="revised",
+                    revision_status="preliminary",
+                    retrieved_at=fresh_retrieved_at,
+                )
             ),
             when=as_of,
             release_aware=True,
@@ -376,10 +391,12 @@ class CountryDetailAttentionAdversarialTest(unittest.TestCase):
         assert_due_not_finding(preliminary_due)
 
         ok_due = evaluate(
-            observation(
-                data_state="ok",
-                revision_status="final",
-                retrieved_at=fresh_retrieved_at,
+            with_due_rule(
+                observation(
+                    data_state="ok",
+                    revision_status="final",
+                    retrieved_at=fresh_retrieved_at,
+                )
             ),
             when=as_of,
             release_aware=True,

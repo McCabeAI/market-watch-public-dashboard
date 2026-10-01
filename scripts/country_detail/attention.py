@@ -14,6 +14,7 @@ from typing import Any, Mapping
 
 from scripts.country_detail import policy
 from scripts.country_detail.persistence import load_snapshot, save_snapshot
+from scripts.country_detail.release_status import assess_release
 
 __all__ = [
     "evaluate_observations",
@@ -265,11 +266,11 @@ def _explicit_release_state(observation: Mapping[str, Any]) -> str | None:
 def _effective_data_state(
     observation: Mapping[str, Any],
     *,
-    as_of: str,
     stale_after_days: int,
     prior_row: Mapping[str, Any] | None,
     superseded: bool,
     release_aware: bool,
+    calendar_due: bool,
 ) -> str:
     """Resolve analytical state without using retrieval age as a gate.
 
@@ -278,9 +279,11 @@ def _effective_data_state(
     official observation stale.
 
     Priority: missing, failed fetch, structurally non-comparable, superseded,
-    an explicit source ``stale`` or ``due_late``, then a release-calendar
-    due/late when ``release_aware`` is set, then revised. A current latest
-    print stays ``ok`` or ``revised``.
+    an explicit source ``stale`` or ``due_late``, then an authoritative
+    release-calendar due/late when ``release_aware`` is set, then revised. A
+    current latest print stays ``ok`` or ``revised``. The calendar decision
+    comes from ``scripts.macro_ingestion.calendar`` or an explicit repository
+    ``release_due`` / ``due_missing`` flag. There is no generic grace table.
     ``comparison_broken`` is left as ``ok`` so ``classify_attention`` records
     ``structurally_non_comparable``.
     """
@@ -305,12 +308,8 @@ def _effective_data_state(
     if (
         explicit != "current"
         and release_aware
+        and calendar_due
         and source_state in {"ok", "revised"}
-        and policy.release_is_due(
-            reference_period=str(observation.get("reference_period") or ""),
-            cadence=str(observation.get("cadence") or ""),
-            as_of=as_of,
-        )
     ):
         return "due_late"
     if source_state == "ok" and _row_is_revised(observation, prior_row):
@@ -378,6 +377,8 @@ def _qualify_observation(
     prior: Mapping[str, dict],
     superseded: bool,
     release_aware: bool,
+    calendar_due: bool = False,
+    release_calendar: str | None = None,
 ) -> dict[str, Any]:
     for field in policy.OBSERVATION_ID_FIELDS:
         if field not in observation:
@@ -392,11 +393,11 @@ def _qualify_observation(
     prior_row = prior.get(computed_id)
     effective_state = _effective_data_state(
         observation,
-        as_of=as_of,
         stale_after_days=stale_after_days,
         prior_row=prior_row,
         superseded=superseded,
         release_aware=release_aware,
+        calendar_due=calendar_due,
     )
     percentile, comparable_n, excluded_count, seasonal_excluded_count, values = _measure(
         observation,
@@ -483,6 +484,8 @@ def _qualify_observation(
         "retrieval_age_days": _retrieval_age_days(observation.get("retrieved_at"), as_of),
         "alert_freshness": _alert_freshness(observation, prior_row),
     }
+    if release_calendar is not None:
+        member["release_calendar"] = release_calendar
     if observation.get("label") is not None:
         member["label"] = observation.get("label")
     return member
@@ -527,9 +530,11 @@ def evaluate_observations(
     ``stale_after_days`` defaults to 4 and is ignored for eligibility. Retrieval
     age is stored on each member and does not exclude a latest official print.
 
-    ``release_aware`` turns on the cadence calendar. A successor that should
-    already exist becomes ``due_late``. Superseded rows are detected either
-    way when a newer observation of the same series identity is in the batch.
+    ``release_aware`` asks the macro-ingestion calendar whether a successor
+    release is due. A missing expected observation becomes ``due_late``.
+    A series with no parseable release rule stays current. Superseded rows
+    are detected either way when a newer observation of the same series
+    identity is in the batch.
     Callers that pass ``prior=`` should still pass ``as_of`` when they have an
     evaluation date.
     """
@@ -556,17 +561,26 @@ def evaluate_observations(
 
     prior_map = _coerce_prior(prior)
     latest_periods = _latest_period_by_identity(rows)
-    members = [
-        _qualify_observation(
-            observation,
-            as_of=as_of,
-            stale_after_days=stale_after_days,
-            prior=prior_map,
-            superseded=_is_superseded(observation, latest_periods),
-            release_aware=bool(release_aware),
+    members = []
+    for observation in rows:
+        calendar_due = False
+        release_calendar = None
+        if release_aware:
+            assessed = assess_release(observation, as_of=as_of)
+            calendar_due = bool(assessed["due"])
+            release_calendar = str(assessed["release_calendar"])
+        members.append(
+            _qualify_observation(
+                observation,
+                as_of=as_of,
+                stale_after_days=stale_after_days,
+                prior=prior_map,
+                superseded=_is_superseded(observation, latest_periods),
+                release_aware=bool(release_aware),
+                calendar_due=calendar_due,
+                release_calendar=release_calendar,
+            )
         )
-        for observation in rows
-    ]
     selected = policy.select_what_matters_now(members, limit=limit)
     selected["review"] = _review_summary(members, country)
     overlap = _SCORE_REWRITE_KEYS.intersection(selected)

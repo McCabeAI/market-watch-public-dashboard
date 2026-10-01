@@ -95,13 +95,6 @@ class ReleaseAwareAttentionTest(unittest.TestCase):
         self.assertTrue(
             policy.is_stale(retrieved_at=obs["retrieved_at"], as_of="2026-09-30", stale_after_days=4)
         )
-        self.assertFalse(
-            policy.release_is_due(
-                reference_period=obs["reference_period"],
-                cadence="monthly",
-                as_of="2026-09-30",
-            )
-        )
         result = evaluate_observations(
             [obs],
             as_of="2026-09-30",
@@ -118,6 +111,7 @@ class ReleaseAwareAttentionTest(unittest.TestCase):
         self.assertNotIn("stale", row["ineligibility"])
         self.assertGreater(row["retrieval_age_days"], 4)
         self.assertEqual(row["attention_status"], "interesting")
+        self.assertEqual(row["release_calendar"], "unavailable")
 
     def test_due_and_superseded_are_not_current_findings(self) -> None:
         current = _observation([1, 1, 1, 2], country="CA", series_id="CPI")
@@ -133,6 +127,12 @@ class ReleaseAwareAttentionTest(unittest.TestCase):
             series_id="OLD_CPI",
             reference_periods=_periods_ending(4, end_year=2025, end_month=6),
         )
+        overdue["release_rule"] = {
+            "kind": "explicit_timestamp",
+            "timezone": "UTC",
+            "dates": ["2025-08-01T12:00:00Z"],
+            "expected_periods": {"2025-08-01T12:00:00Z": "2025-07"},
+        }
         result = evaluate_observations(
             [older, current, overdue],
             as_of="2026-09-30",
@@ -144,7 +144,10 @@ class ReleaseAwareAttentionTest(unittest.TestCase):
         self.assertEqual(by_period["2026-07"]["data_state"], "superseded")
         self.assertEqual(by_period["2026-07"]["display_label"], "Superseded")
         self.assertEqual(by_period["2025-06"]["data_state"], "due_late")
+        self.assertEqual(by_period["2025-06"]["release_calendar"], "due")
         self.assertEqual(by_period["2025-06"]["display_label"], "Due")
+        self.assertEqual(by_period["2026-08"]["release_calendar"], "unavailable")
+        self.assertEqual(by_period["2026-08"]["data_state"], "ok")
         self.assertNotEqual(by_period["2026-08"]["display_label"], "Stale")
         self.assertEqual(result["finding_count"], 1)
         self.assertEqual(result["findings"][0]["reference_period"], "2026-08")
@@ -229,6 +232,167 @@ class ReleaseAwareAttentionTest(unittest.TestCase):
         self.assertIn(policy.WMN_QUIET_TEXT, html)
         self.assertIn("1 of 1 observations were eligible latest evidence", html)
         self.assertNotIn("Stale", html)
+
+    def test_nz_cpi_follows_the_repository_release_instant(self) -> None:
+        """Stats NZ CPI: 2026-10-22 10:45 Pacific/Auckland, no invented grace period."""
+        prior = _nz_cpi("2026-Q2", "2026-07-21")
+        before = evaluate_observations(
+            [prior],
+            as_of="2026-10-22T10:44:00+13:00",
+            stale_after_days=4,
+            country="NZ",
+            release_aware=True,
+        )
+        before_row = before["members"][0]
+        self.assertEqual(before_row["data_state"], "ok")
+        self.assertEqual(before_row["release_state"], "current")
+        self.assertEqual(before_row["release_calendar"], "not_due")
+        self.assertNotEqual(before_row.get("display_label"), "Due")
+
+        absent = evaluate_observations(
+            [prior],
+            as_of="2026-10-22T10:45:00+13:00",
+            stale_after_days=4,
+            country="NZ",
+            release_aware=True,
+        )
+        absent_row = absent["members"][0]
+        self.assertEqual(absent_row["data_state"], "due_late")
+        self.assertEqual(absent_row["release_state"], "due_late")
+        self.assertEqual(absent_row["release_calendar"], "due")
+        self.assertEqual(absent_row["display_label"], "Due")
+        self.assertEqual(absent["finding_count"], 0)
+
+        # The same instant in UTC. 10:45 NZDT (UTC+13) is 21:45 the previous UTC day.
+        utc_before = evaluate_observations(
+            [prior],
+            as_of="2026-10-21T21:44:00Z",
+            country="NZ",
+            release_aware=True,
+        )
+        utc_after = evaluate_observations(
+            [prior],
+            as_of="2026-10-21T21:45:00Z",
+            country="NZ",
+            release_aware=True,
+        )
+        self.assertEqual(utc_before["members"][0]["release_state"], "current")
+        self.assertEqual(utc_after["members"][0]["data_state"], "due_late")
+
+        successor = _nz_cpi("2026-Q3", "2026-10-22")
+        held = evaluate_observations(
+            [prior, successor],
+            as_of="2026-10-22T10:45:00+13:00",
+            country="NZ",
+            release_aware=True,
+        )
+        by_period = {row["reference_period"]: row for row in held["members"]}
+        self.assertEqual(by_period["2026-Q2"]["data_state"], "superseded")
+        self.assertEqual(by_period["2026-Q3"]["data_state"], "ok")
+        self.assertEqual(by_period["2026-Q3"]["release_calendar"], "satisfied")
+        self.assertEqual(by_period["2026-Q3"]["release_state"], "current")
+
+    def test_unparseable_schedule_does_not_invent_a_deadline(self) -> None:
+        old = _observation(
+            [1, 1, 1, 2],
+            country="JP",
+            series_id="NO_CALENDAR",
+            reference_periods=_periods_ending(4, end_year=2020, end_month=1),
+        )
+        old["release_rule"] = {
+            "kind": "country_local_schedule_required",
+            "timezone": "Pacific/Auckland",
+            "dates": [],
+        }
+        result = evaluate_observations(
+            [old],
+            as_of="2030-06-01T00:00:00Z",
+            stale_after_days=4,
+            country="JP",
+            release_aware=True,
+        )
+        row = result["members"][0]
+        self.assertEqual(row["data_state"], "ok")
+        self.assertEqual(row["release_state"], "current")
+        self.assertEqual(row["release_calendar"], "unavailable")
+        self.assertNotEqual(row.get("display_label"), "Due")
+        self.assertNotEqual(row.get("display_label"), "Stale")
+        self.assertGreater(row["retrieval_age_days"], 4)
+
+        bare = _observation(
+            [1, 1, 1, 2],
+            country="US",
+            series_id="BARE_SERIES",
+            reference_periods=_periods_ending(4, end_year=2019, end_month=6),
+            retrieved_at="2019-08-01T00:00:00Z",
+        )
+        bare_result = evaluate_observations(
+            [bare],
+            as_of="2030-01-01",
+            country="US",
+            release_aware=True,
+        )
+        bare_row = bare_result["members"][0]
+        self.assertEqual(bare_row["release_calendar"], "unavailable")
+        self.assertEqual(bare_row["release_state"], "current")
+        self.assertEqual(bare_row["data_state"], "ok")
+
+    def test_explicit_release_due_is_reused(self) -> None:
+        pinned = _nz_cpi("2026-Q2", "2026-07-21")
+        pinned["release_due"] = False
+        kept = evaluate_observations(
+            [pinned],
+            as_of="2026-10-22T10:45:00+13:00",
+            country="NZ",
+            release_aware=True,
+        )
+        self.assertEqual(kept["members"][0]["data_state"], "ok")
+        self.assertEqual(kept["members"][0]["release_calendar"], "explicit")
+
+        missing = _nz_cpi("2026-Q2", "2026-07-21")
+        missing["status"] = "due_missing"
+        missing["release_due"] = False
+        flagged = evaluate_observations(
+            [missing],
+            as_of="2026-10-21T21:44:00Z",
+            country="NZ",
+            release_aware=True,
+        )
+        self.assertEqual(flagged["members"][0]["data_state"], "due_late")
+        self.assertEqual(flagged["members"][0]["release_calendar"], "explicit")
+
+
+def _nz_cpi(reference_period: str, release_date: str) -> dict:
+    row = {
+        "label": "NZ CPI",
+        "methodology_breaks": [],
+        "comparison_broken": False,
+        "revision_status": "final",
+        "vintage": "latest_available",
+        "retrieved_at": "2026-09-21T14:51:02Z",
+        "observed_at": f"{release_date}T00:00:00Z",
+        "release_date": release_date,
+        "source_url": "https://www.stats.govt.nz/topics/consumers-price-index",
+        "country": "NZ",
+        "series_id": "CPIQ.SE9A",
+        "reference_period": reference_period,
+        "transformation": "yoy_pct",
+        "geography": "NZ",
+        "seasonal_adjustment": False,
+        "units": "percent",
+        "nominal_basis": "index",
+        "score_role": "scored",
+        "weight": 0.4,
+        "topic": "inflation",
+        "cadence": "quarterly",
+        "release_family": "nz_cpi",
+        "data_state": "ok",
+        "value": 2.7,
+        "history": [{"reference_period": reference_period, "value": 2.7}],
+        "catalog_id": "NZ.Inflation.headline",
+    }
+    row["observation_id"] = policy.observation_id(row)
+    return row
 
 
 if __name__ == "__main__":

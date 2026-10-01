@@ -15,8 +15,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
-import calendar
-from datetime import date, timedelta
+from datetime import date
 from decimal import Decimal
 from types import MappingProxyType
 from typing import Any, Mapping, Sequence
@@ -153,11 +152,6 @@ RELEASE_STATES = (
     "structurally_non_comparable",
     "stale",
 )
-# Days after the *next* period ends before a missing successor is due.
-# Long enough that a normal publication lag is still the latest official print.
-# Clock age of retrieved_at is not an input.
-NEXT_RELEASE_GRACE_DAYS = MappingProxyType({"monthly": 45, "quarterly": 60})
-
 REVISED_REVISION_STATUSES = frozenset({"revised", "preliminary"})
 
 # Value-equality tolerance for unchanged reprints. Decimal, not binary float.
@@ -1051,60 +1045,6 @@ def period_sort_key(period: str) -> tuple[int, int]:
     if quarterly:
         return (int(quarterly.group(1)), int(quarterly.group(2)) * 3)
     return (0, 0)
-
-
-def _advance_period(period: str, cadence: str) -> str:
-    if cadence == CADENCE_MONTHLY:
-        year = int(period[:4])
-        month = int(period[5:7])
-        if month == 12:
-            return f"{year + 1}-01"
-        return f"{year}-{month + 1:02d}"
-    year = int(period[:4])
-    quarter = int(period[-1])
-    if quarter == 4:
-        return f"{year + 1}-Q1"
-    return f"{year}-Q{quarter + 1}"
-
-
-def _period_end(period: str, cadence: str) -> date:
-    if cadence == CADENCE_MONTHLY:
-        year = int(period[:4])
-        month = int(period[5:7])
-        return date(year, month, calendar.monthrange(year, month)[1])
-    year = int(period[:4])
-    quarter = int(period[-1])
-    month = quarter * 3
-    return date(year, month, calendar.monthrange(year, month)[1])
-
-
-def successor_due_date(reference_period: str, cadence: str) -> date | None:
-    """First date on which a missing successor is analytically due.
-
-    Monthly: 45 days after the next month ends. Quarterly: 60 days after the
-    next quarter ends. Unknown cadence or an unparsable period returns None,
-    which means the latest observation stays current.
-    """
-    if cadence not in KNOWN_CADENCES or not reference_period:
-        return None
-    try:
-        _require_period(reference_period, cadence)
-    except ValueError:
-        return None
-    following = _advance_period(reference_period, cadence)
-    return _period_end(following, cadence) + timedelta(days=int(NEXT_RELEASE_GRACE_DAYS[cadence]))
-
-
-def release_is_due(*, reference_period: str, cadence: str, as_of: str) -> bool:
-    """True when a newer official release should already have been ingested."""
-    due = successor_due_date(reference_period, cadence)
-    if due is None or not as_of:
-        return False
-    try:
-        today = date.fromisoformat(str(as_of)[:10])
-    except ValueError:
-        return False
-    return today >= due
 
 
 def release_state_for_data_state(data_state: str) -> str:
