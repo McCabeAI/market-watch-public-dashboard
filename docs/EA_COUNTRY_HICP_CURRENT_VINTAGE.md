@@ -14,7 +14,11 @@ Vintage ranks (higher wins for a given period in the observation store and in pr
 
 Legacy rows with `revision_status=final` and a Eurostat `source_url` are treated as rank 3 even when `vintage` is `latest_available`.
 
-Reconciliation keeps **one point per period**: Eurostat final always replaces a national point for that month; national points are pre-collapsed so `national_final` beats `national_preliminary`. A later lower-rank print does not replace a higher-rank row. The same rank with a different value is a revision and the later retrieval wins. The same value at a higher rank updates that row in place instead of storing a second observation.
+Reconciliation keeps **one point per period**: Eurostat final always replaces a national point for that month; national points are pre-collapsed so `national_final` beats `national_preliminary`. A later lower-rank print does not replace a higher-rank row. The same rank with a different value is a revision and the later retrieval wins. The same value at a higher rank updates that row in place instead of storing a second observation. On that upgrade the row's `raw_sha256` becomes the hash of the higher-rank artifact, and the previous digest is kept as an alias.
+
+## Provenance
+
+Each stored observation's `raw_sha256` is the SHA-256 of the response body that was parsed into that observation. Eurostat months fingerprint the Eurostat statistics JSON. A national flash fingerprints that statistics office's press page or BDM document. Points do not inherit the payload-level digest, and a reconciled point list is never hashed in place of those bodies. A national row that was previously stored under another source's digest is rewritten to its own artifact hash when that same source is fetched again. The economic value, vintage rank, and source URL stay as they were.
 
 ## Official sources (parsed field)
 
@@ -46,5 +50,6 @@ This repair stays on pull request 152. It does not change EA21 headline or under
 | Implementation | Composer 2.5 (`bc-d12ead33-e6d3-52c3-9ea7-1186c6f1ccab`) | Module, adapter dispatch, runner append, projection collapse, fixtures |
 | Adversarial review | Grok 4.7 (`bc-85c06a23-69b2-5ed7-8b99-80238c37a5cc`) | Failed the first tree: Portugal could bind the flash to an earlier dateline month, and a France Solr loop reused `_attempt` and could recurse |
 | Integration repair | Grok 4.7 | Those two defects, Italy/Spain/Portugal discovery against the live listing HTML, and equal-rank Eurostat revisions |
+| Provenance repair | Grok 4.7 | Each observation's `raw_sha256` is the body that produced it. A later same-source fetch rewrites a digest that belongs to a different source URL. |
 
-The accepting review is the pull-request note for the commit that contains this file. That note is not followed by another code change.
+The Portugal flash month is read from tag-stripped headline text, with the same plain-text cap that stops before the year-ago comparison.

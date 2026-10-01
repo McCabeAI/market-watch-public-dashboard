@@ -2,12 +2,18 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
+import tempfile
 import unittest
 from datetime import datetime, timezone
 from pathlib import Path
 
-from scripts.macro_ingestion.adapters import ea as ea_adapter
+from scripts.macro_ingestion.adapters import (
+    clear_adapter_overrides,
+    ea as ea_adapter,
+    register_adapter_override,
+)
 from scripts.macro_ingestion.canonical_bridge import merge_scored_points
 from scripts.macro_ingestion.contract import load_catalog
 from scripts.macro_ingestion.ea_country_hicp import (
@@ -27,6 +33,7 @@ from scripts.macro_ingestion.ea_country_hicp import (
     select_current_rows,
     vintage_rank,
 )
+from scripts.macro_ingestion.runner import run_ingestion
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "ea"
 HICP_DE_FIXTURE = FIXTURES / "eurostat_hicp_de.json"
 
@@ -194,9 +201,68 @@ class TestEaCountryHicpStore(unittest.TestCase):
             derivation={"publisher": "Eurostat"},
         )
         self.assertTrue(upgraded.upgraded)
+        self.assertTrue(upgraded.provenance_updated)
         period_rows = [r for r in store["observations"] if r["period"] == "2026-11"]
         self.assertEqual(len(period_rows), 1)
         self.assertEqual(period_rows[0]["vintage"], "eurostat_final")
+        self.assertEqual(period_rows[0]["raw_sha256"], "b")
+        self.assertIn("a", period_rows[0]["raw_sha256_aliases"])
+
+    def test_borrowed_payload_hash_is_replaced_by_the_source_artifact(self) -> None:
+        store = {"country": "EA", "observations": []}
+        series_id = "PRC_HICP_MINR.M.RCH_A.TOTAL.DE"
+        euro_url = "https://ec.europa.eu/eurostat/api/de"
+        national_url = "https://www.destatis.de/press/september"
+        for period in ("2026-07", "2026-08"):
+            append_ranked_country_hicp(
+                store,
+                series_id=series_id,
+                period=period,
+                transformation="yoy_pct",
+                value=2.0,
+                raw_sha256="euro-body",
+                retrieved_at="2026-10-01T12:00:00Z",
+                vintage="eurostat_final",
+                revision_status="final",
+                source_url=euro_url,
+                derivation={"publisher": "Eurostat"},
+            )
+        append_ranked_country_hicp(
+            store,
+            series_id=series_id,
+            period="2026-09",
+            transformation="yoy_pct",
+            value=3.3,
+            raw_sha256="euro-body",
+            retrieved_at="2026-10-01T17:41:18Z",
+            vintage="national_preliminary",
+            revision_status="preliminary",
+            source_url=national_url,
+            derivation={"publisher": "Destatis"},
+        )
+        repaired = append_ranked_country_hicp(
+            store,
+            series_id=series_id,
+            period="2026-09",
+            transformation="yoy_pct",
+            value=3.3,
+            raw_sha256="destatis-press",
+            retrieved_at="2026-10-02T12:00:00Z",
+            vintage="national_preliminary",
+            revision_status="preliminary",
+            source_url=national_url,
+            derivation={"publisher": "Destatis"},
+        )
+        self.assertTrue(repaired.duplicate)
+        self.assertTrue(repaired.provenance_updated)
+        national = next(row for row in store["observations"] if row["period"] == "2026-09")
+        self.assertEqual(national["raw_sha256"], "destatis-press")
+        self.assertEqual(national["value"], 3.3)
+        self.assertEqual(national["vintage"], "national_preliminary")
+        self.assertIn("euro-body", national["raw_sha256_aliases"])
+        euro_rows = [row for row in store["observations"] if row["period"] != "2026-09"]
+        self.assertTrue(euro_rows)
+        self.assertTrue(all(row["raw_sha256"] == "euro-body" for row in euro_rows))
 
     def test_equal_rank_value_change_appends(self) -> None:
         store = {"country": "EA", "observations": []}
@@ -318,6 +384,22 @@ class TestEaCountryHicpParsers(unittest.TestCase):
         self.assertEqual(row["period"], "2026-09")
         self.assertEqual(row["vintage"], "national_preliminary")
 
+    def test_portugal_headline_month_is_not_hidden_by_markup(self) -> None:
+        filler = "<span class='x'></span>" * 30
+        html = f"""
+        <p>Publicado em 1 de outubro de 2025</p>
+        <b>Estimativa Rápida</b>
+        {filler}
+        <div>Taxa de variação homóloga do IPC terá aumentado para 1,0% - Setembro de 2026</div>
+        <p>O Índice Harmonizado de Preços no Consumidor (IHPC) português terá registado
+        uma variação homóloga de 9,5% (valor idêntico em agosto).</p>
+        <p>{"contexto " * 80}0,9% em setembro de 2025.</p>
+        """
+        row = parse_ine_portugal_ihpc_press(html.encode(), "https://ine.pt/x")
+        self.assertIsNotNone(row)
+        self.assertAlmostEqual(row["value"], 9.5)
+        self.assertEqual(row["period"], "2026-09")
+
 
 class TestEaCountryHicpDiscovery(unittest.TestCase):
     def test_destatis_latest_pd(self) -> None:
@@ -382,6 +464,111 @@ class TestEaCountryHicpDiscovery(unittest.TestCase):
         self.assertEqual(doc_id, "99999")
 
 
+class TestEaCountryHicpRunnerProvenance(unittest.TestCase):
+    def tearDown(self) -> None:
+        clear_adapter_overrides()
+
+    def _de_opener(self, euro_body: bytes, press: bytes, listing: bytes):
+        def opener(url: str, *, timeout: float = 20):
+            if "eurostat" in url:
+                return {"ok": True, "http_status": 200, "body": euro_body, "error": None}
+            if "destatis.de" in url and "Pressemitteilungen" not in url:
+                return {"ok": True, "http_status": 200, "body": listing, "error": None}
+            if "Pressemitteilungen" in url:
+                return {"ok": True, "http_status": 200, "body": press, "error": None}
+            return {"ok": False, "http_status": 404, "body": b"", "error": "skip"}
+
+        return opener
+
+    def test_runner_persists_per_artifact_hashes_and_repairs_a_borrowed_one(self) -> None:
+        euro_body = HICP_DE_FIXTURE.read_bytes()
+        press = (
+            b"<p>Harmonisierter Verbraucherpreisindex, Oktober 2026: "
+            b"9,5 % zum Vorjahresmonat (vorl\xc3\xa4ufig)</p>"
+        )
+        listing = b'<a href="/Pressemitteilungen/2026/10/PD01_1_611.html">press</a>'
+        euro_sha = hashlib.sha256(euro_body).hexdigest()
+        press_sha = hashlib.sha256(press).hexdigest()
+        spec = next(r for r in load_catalog()["series"] if r["id"] == "EA.Inflation.hicp_de")
+        now = datetime(2026, 10, 1, 12, 0, tzinfo=timezone.utc)
+        with tempfile.TemporaryDirectory() as tmp:
+            obs_dir = Path(tmp) / "observations"
+            health_dir = Path(tmp) / "health"
+            first = run_ingestion(
+                mode="offline",
+                countries=["EA"],
+                now=now,
+                opener=self._de_opener(euro_body, press, listing),
+                observations_dir=obs_dir,
+                health_dir=health_dir,
+                only_series_ids={"EA.Inflation.hicp_de"},
+                attempts=1,
+            )
+            self.assertEqual(first["rows"][0]["status"], "new_observation")
+            store = json.loads((obs_dir / "ea.json").read_text(encoding="utf-8"))
+            by_period = {row["period"]: row for row in store["observations"]}
+            self.assertEqual(by_period["2026-08"]["raw_sha256"], euro_sha)
+            self.assertEqual(by_period["2026-10"]["raw_sha256"], press_sha)
+            self.assertEqual(by_period["2026-10"]["derivation"]["publisher"], "Destatis")
+
+            by_period["2026-10"]["raw_sha256"] = euro_sha
+            (obs_dir / "ea.json").write_text(json.dumps(store, indent=2) + "\n", encoding="utf-8")
+            second = run_ingestion(
+                mode="offline",
+                countries=["EA"],
+                now=now,
+                opener=self._de_opener(euro_body, press, listing),
+                observations_dir=obs_dir,
+                health_dir=health_dir,
+                only_series_ids={"EA.Inflation.hicp_de"},
+                attempts=1,
+            )
+            self.assertNotEqual(second["rows"][0]["status"], "source_failed")
+            repaired = json.loads((obs_dir / "ea.json").read_text(encoding="utf-8"))
+            repaired_by_period = {row["period"]: row for row in repaired["observations"]}
+            self.assertEqual(repaired_by_period["2026-10"]["raw_sha256"], press_sha)
+            self.assertEqual(repaired_by_period["2026-10"]["value"], 9.5)
+            self.assertEqual(repaired_by_period["2026-10"]["vintage"], "national_preliminary")
+            self.assertIn(euro_sha, repaired_by_period["2026-10"]["raw_sha256_aliases"])
+            self.assertEqual(repaired_by_period["2026-08"]["raw_sha256"], euro_sha)
+            self.assertEqual(repaired_by_period["2026-08"]["value"], by_period["2026-08"]["value"])
+
+    def test_runner_rejects_country_hicp_without_an_artifact_hash(self) -> None:
+        def fetch_series(spec, *, opener, now, timeout=20):
+            return {
+                "ok": True,
+                "raw_sha256": "payload-hash",
+                "points": [
+                    {
+                        "period": "2026-10",
+                        "value": 9.5,
+                        "transformation": "yoy_pct",
+                        "revision_status": "preliminary",
+                        "vintage": "national_preliminary",
+                        "source_url": "https://national.example/flash",
+                        "publisher": "Destatis",
+                    }
+                ],
+            }
+
+        register_adapter_override("EA", fetch_series)
+        now = datetime(2026, 10, 1, 12, 0, tzinfo=timezone.utc)
+        with tempfile.TemporaryDirectory() as tmp:
+            obs_dir = Path(tmp) / "observations"
+            result = run_ingestion(
+                mode="offline",
+                countries=["EA"],
+                now=now,
+                observations_dir=obs_dir,
+                health_dir=Path(tmp) / "health",
+                only_series_ids={"EA.Inflation.hicp_de"},
+                attempts=1,
+            )
+            self.assertEqual(result["rows"][0]["status"], "source_failed")
+            self.assertEqual(result["rows"][0]["error"], "missing_artifact_sha")
+            self.assertFalse((obs_dir / "ea.json").exists())
+
+
 class TestEaCountryHicpAdapter(unittest.TestCase):
     def test_adapter_merges_national_flash_with_eurostat(self) -> None:
         euro_body = HICP_DE_FIXTURE.read_bytes()
@@ -419,6 +606,47 @@ class TestEaCountryHicpAdapter(unittest.TestCase):
         self.assertEqual(prior["period"], "2026-08")
         self.assertEqual(prior["vintage"], "eurostat_final")
         self.assertEqual(spec["weight"], 0.0)
+        euro_sha = hashlib.sha256(euro_body).hexdigest()
+        press_sha = hashlib.sha256(press).hexdigest()
+        merged = hashlib.sha256(json.dumps(payload["points"]).encode()).hexdigest()
+        self.assertEqual(prior["raw_sha256"], euro_sha)
+        self.assertEqual(last["raw_sha256"], press_sha)
+        self.assertEqual(payload["raw_sha256"], euro_sha)
+        self.assertNotEqual(last["raw_sha256"], euro_sha)
+        self.assertNotEqual(last["raw_sha256"], merged)
+        self.assertNotEqual(payload["raw_sha256"], merged)
+
+    def test_national_only_hash_is_the_press_body(self) -> None:
+        national_html = (
+            b"<p>Harmonisierter Verbraucherpreisindex, Oktober 2026: "
+            b"9,5 % zum Vorjahresmonat (vorl\xc3\xa4ufig)</p>"
+        )
+        spec = next(r for r in load_catalog()["series"] if r["id"] == "EA.Inflation.hicp_de")
+        listing = b'<a href="/Pressemitteilungen/2026/10/PD01_1_611.html">press</a>'
+
+        def opener(url: str, *, timeout: float = 20):
+            if "eurostat" in url:
+                return {"ok": False, "http_status": 503, "body": b"", "error": "down"}
+            if "destatis.de" in url and "Pressemitteilungen" not in url:
+                return {"ok": True, "http_status": 200, "body": listing, "error": None}
+            if "Pressemitteilungen" in url:
+                return {"ok": True, "http_status": 200, "body": national_html, "error": None}
+            return {"ok": False, "http_status": 404, "body": b"", "error": "skip"}
+
+        payload = ea_adapter.fetch_series(
+            spec,
+            opener=opener,
+            now=datetime(2026, 10, 1, tzinfo=timezone.utc),
+        )
+        self.assertTrue(payload["ok"])
+        self.assertEqual(len(payload["points"]), 1)
+        press_sha = hashlib.sha256(national_html).hexdigest()
+        listing_sha = hashlib.sha256(listing).hexdigest()
+        merged = hashlib.sha256(json.dumps(payload["points"]).encode()).hexdigest()
+        self.assertEqual(payload["points"][0]["raw_sha256"], press_sha)
+        self.assertNotEqual(payload["points"][0]["raw_sha256"], listing_sha)
+        self.assertNotEqual(payload["points"][0]["raw_sha256"], merged)
+        self.assertIsNone(payload["raw_sha256"])
 
     def test_context_not_scored_in_bridge(self) -> None:
         cal = {"as_of": "2026-01-01", "components": {}}

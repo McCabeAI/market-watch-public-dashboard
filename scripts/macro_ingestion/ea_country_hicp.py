@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import html
 import json
 import re
@@ -177,6 +178,21 @@ _PORTUGUESE_MONTHS = {
 }
 
 _YOY_ABS_MAX = 30.0
+
+
+def _sha256(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
+
+
+def stamp_source_artifact(point: dict[str, Any], body: bytes) -> dict[str, Any]:
+    """Fingerprint the bytes that were parsed into this point.
+
+    The digest is the source document itself. It is not a hash of the merged
+    point list and not another publisher's response body.
+    """
+    stamped = dict(point)
+    stamped["raw_sha256"] = _sha256(body)
+    return stamped
 
 
 def _normalize_html_text(body: bytes) -> str:
@@ -577,16 +593,26 @@ def _portugal_period_in(fragment: str) -> str | None:
     return _period_from_ym(year, month)
 
 
+def _html_to_plain(fragment: str) -> str:
+    plain = re.sub(r"<[^>]+>", " ", fragment)
+    return re.sub(r"\s+", " ", plain)
+
+
 def _portugal_reference_period(text: str, ihpc_end: int) -> str | None:
-    """Bind the month to the IHPC sentence or the flash headline, not an earlier dateline."""
-    near_rate = _portugal_period_in(text[ihpc_end : ihpc_end + 180])
+    """Bind the month to the IHPC sentence or the flash headline, not an earlier dateline.
+
+    The window is measured on text with tags removed. A raw character cap stops
+    inside the markup between the flash title and "Setembro de 2026" and drops
+    the print. The plain-text cap still ends before the later year-ago comparison.
+    """
+    near_rate = _portugal_period_in(_html_to_plain(text[ihpc_end : ihpc_end + 800])[:240])
     if near_rate:
         return near_rate
     for marker in ("Estimativa Rápida", "Estimativa Rapida", "terá", "tera"):
         start = text.lower().find(marker.lower())
         if start < 0:
             continue
-        headed = _portugal_period_in(text[start : start + 240])
+        headed = _portugal_period_in(_html_to_plain(text[start : start + 4000])[:240])
         if headed:
             return headed
     return None
@@ -679,7 +705,7 @@ def fetch_national_hicp_points(
                 if press.get("ok") and press.get("body"):
                     row = parse_destatis_hicp_press(press["body"], press_url)
                     if row:
-                        points.append(row)
+                        points.append(stamp_source_artifact(row, press["body"]))
         if not points:
             errors.append("de_national_unavailable")
 
@@ -700,10 +726,13 @@ def fetch_national_hicp_points(
                 if page.get("ok") and page.get("body"):
                     row = parse_insee_press_page(page["body"], page_url)
                     if row:
-                        points.append(row)
+                        points.append(stamp_source_artifact(row, page["body"]))
         bdm = _fetch_url(opener, INSEE_BDM_URL, timeout=timeout)
         if bdm.get("ok") and bdm.get("body"):
-            points.extend(parse_insee_bdm_sdmx(bdm["body"], INSEE_BDM_URL))
+            points.extend(
+                stamp_source_artifact(row, bdm["body"])
+                for row in parse_insee_bdm_sdmx(bdm["body"], INSEE_BDM_URL)
+            )
         if not points:
             errors.append("fr_national_unavailable")
 
@@ -716,7 +745,7 @@ def fetch_national_hicp_points(
                 if press.get("ok") and press.get("body"):
                     row = parse_istat_ipca_press(press["body"], press_url, provisional=True)
                     if row:
-                        points.append(row)
+                        points.append(stamp_source_artifact(row, press["body"]))
         if not points:
             errors.append("it_national_unavailable")
 
@@ -729,7 +758,7 @@ def fetch_national_hicp_points(
                 if press.get("ok") and press.get("body"):
                     row = parse_ine_spain_ipca_press(press["body"], press_url)
                     if row:
-                        points.append(row)
+                        points.append(stamp_source_artifact(row, press["body"]))
         if not points:
             errors.append("es_national_unavailable")
 
@@ -742,7 +771,7 @@ def fetch_national_hicp_points(
                 if press.get("ok") and press.get("body"):
                     row = parse_ine_portugal_ihpc_press(press["body"], press_url)
                     if row:
-                        points.append(row)
+                        points.append(stamp_source_artifact(row, press["body"]))
         if not points:
             errors.append("pt_national_unavailable")
 
@@ -781,6 +810,44 @@ class RankedAppendResult:
     duplicate: bool
     upgraded: bool
     observation: dict[str, Any] | None = None
+    provenance_updated: bool = False
+
+
+def _claim_artifact_sha(row: dict[str, Any], raw_sha256: str) -> bool:
+    """Make raw_sha256 the artifact that produced this row's current vintage."""
+    previous = str(row.get("raw_sha256") or "")
+    if not raw_sha256 or previous == raw_sha256:
+        return False
+    row["raw_sha256"] = raw_sha256
+    if previous:
+        _record_sha_alias(row, previous)
+    return True
+
+
+def artifact_sha_belongs_to_other_source(store: dict[str, Any], row: dict[str, Any]) -> bool:
+    """True when this row's digest is the fingerprint of a different source URL.
+
+    A shared Eurostat payload hash copied onto a national print matches this.
+    A tie between sources does not, so a later byte-identical re-fetch is left
+    on the original artifact.
+    """
+    sha = str(row.get("raw_sha256") or "")
+    source = str(row.get("source_url") or "")
+    if not sha or not source:
+        return False
+    counts: dict[str, int] = {}
+    for other in store.get("observations", []):
+        if str(other.get("raw_sha256") or "") != sha:
+            continue
+        key = str(other.get("source_url") or "")
+        counts[key] = counts.get(key, 0) + 1
+    if source not in counts:
+        return False
+    best = max(counts.values())
+    leaders = [url for url, count in counts.items() if count == best]
+    if len(leaders) != 1:
+        return False
+    return leaders[0] != source
 
 
 def append_ranked_country_hicp(
@@ -817,6 +884,16 @@ def append_ranked_country_hicp(
         return RankedAppendResult(appended=False, duplicate=True, upgraded=False, observation=winner)
 
     if winner is not None and incoming_rank == winner_rank and values_close(float(winner["value"]), value):
+        same_source = str(winner.get("source_url") or "") == str(source_url or "")
+        if same_source and artifact_sha_belongs_to_other_source(store, winner):
+            claimed = _claim_artifact_sha(winner, raw_sha256)
+            return RankedAppendResult(
+                appended=False,
+                duplicate=True,
+                upgraded=False,
+                provenance_updated=claimed,
+                observation=winner,
+            )
         _record_sha_alias(winner, raw_sha256)
         return RankedAppendResult(appended=False, duplicate=True, upgraded=False, observation=winner)
 
@@ -839,8 +916,14 @@ def append_ranked_country_hicp(
         winner["latest_release_vintage"] = release_date
         winner["retrieved_at"] = retrieved_at
         winner["derivation"] = deriv
-        _record_sha_alias(winner, raw_sha256)
-        return RankedAppendResult(appended=False, duplicate=False, upgraded=True, observation=winner)
+        claimed = _claim_artifact_sha(winner, raw_sha256)
+        return RankedAppendResult(
+            appended=False,
+            duplicate=False,
+            upgraded=True,
+            provenance_updated=claimed,
+            observation=winner,
+        )
 
     row = {
         "series_id": series_id,

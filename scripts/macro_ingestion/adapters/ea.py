@@ -171,6 +171,8 @@ def _fetch_country_hicp_current_vintage(
                 payload = json.loads(body.decode("utf-8"))
                 rows = parse_eurostat_statistics_json(payload)
                 transform = str(spec.get("transform") or "")
+                euro_body = body
+                euro_sha = _sha256(body)
                 eurostat_points = [
                     {
                         "period": p,
@@ -180,11 +182,10 @@ def _fetch_country_hicp_current_vintage(
                         "source_url": fetch_url,
                         "vintage": "eurostat_final",
                         "publisher": "Eurostat",
+                        "raw_sha256": euro_sha,
                     }
                     for p, v in rows
                 ]
-                euro_body = body
-                euro_sha = _sha256(body)
             except Exception as exc:  # noqa: BLE001
                 eurostat_error = f"parse_failed: {exc}"
         elif not resp.get("ok"):
@@ -214,13 +215,15 @@ def _fetch_country_hicp_current_vintage(
         )
 
     latest = points[-1]
+    # Payload digest is the Eurostat body when that body exists. It is not a
+    # hash of the reconciled point list, and national points do not inherit it.
     payload = _base_payload(
         ok=True,
         points=points,
         vintage=str(latest.get("vintage") or "latest_available"),
         http_status=http_status,
         body=euro_body,
-        raw_sha256=euro_sha or _sha256(json.dumps(points).encode()),
+        raw_sha256=euro_sha,
         national_source_error=national_source_error,
     )
     if eurostat_error and eurostat_points:
