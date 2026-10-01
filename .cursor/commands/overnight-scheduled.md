@@ -10,7 +10,13 @@ Emit exactly once:
 MW_OVERNIGHT_RUN_POLICY={"version":1,"schedule_id":"market-watch-weekday-0205","total_model_cap":20,"grok_cap":18,"composer_cap":2,"parent_model":"grok-4.6","parent_total":1,"parent_grok":1}
 ```
 
-ACP must emit a matching policy marker. `.cursor/hooks/enforce-overnight-budget.py` enforces these caps atomically on every child spawn.
+Emit the current-graph marker exactly once. It is the launch ceiling. A 19-call ceiling is the pre-examiner graph and is not valid:
+
+```
+MW_CURRENT_GRAPH={"automated_pms":3,"composer_calls":2,"grok_family_calls":18,"learning_examiner":1,"parent":1,"synthesis":1,"total_calls":20,"traders":14,"version":1}
+```
+
+ACP must emit a matching policy marker. `.cursor/hooks/enforce-overnight-budget.py` enforces these caps atomically on every child spawn. The hook rejects a policy whose `total_model_cap` is 19.
 
 ## 0. Trusted-freeze preflight — before any child subagent spend
 

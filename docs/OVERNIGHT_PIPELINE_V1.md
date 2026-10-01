@@ -160,13 +160,15 @@ This repository's overnight contract is **20 / 18 / 2**. ACP's schedule registry
 
 `.cursor/hooks/enforce-subagent-models.sh` separately enforces the exact per-run ACP model allowlist.
 
-The approved graph is:
+The approved graph is 20 calls (18 grok-family + 2 composer). A 19-call ceiling is stale and is rejected:
 
 - 1 Grok parent;
-- 1 Composer research worker;
+- 1 Composer synthesis worker;
 - 14 Grok trader seats;
 - 3 Grok automated PM principals (swinger, pragmatist, grinder custom agents);
-- **20 / 18 / 2** declared normal usage when the learning examiner is used: 1 Grok parent + 14 Grok traders + 3 Grok PM principals + 1 Composer research + 1 Composer learning-quality examiner. The examiner grades causal adequacy only and is not a second trading opinion. It is required whenever the frozen learning-obligation manifest is non-empty, and declared calls cannot be 19 in that case. The shared packet stores only `manifest_sha256` and `obligation_count`; the rows are the private review artifact `learning_obligations.json`. Omitting submissions does not skip it. An adequate reflection may conclude `no_new_lesson` without creating a lesson.
+- 1 Composer learning-quality examiner.
+
+**20 / 18 / 2** is the declared normal usage when the learning examiner is used: 1 Grok parent + 14 Grok traders + 3 Grok PM principals + 1 Composer synthesis + 1 Composer learning-quality examiner. The examiner grades causal adequacy only and is not a second trading opinion. It is required whenever the frozen learning-obligation manifest is non-empty, and declared calls cannot be 19 in that case. The shared packet stores only `manifest_sha256` and `obligation_count`; the rows are the private review artifact `learning_obligations.json`. Omitting submissions does not skip it. An adequate reflection may conclude `no_new_lesson` without creating a lesson. Caps above 20 / 18 / 2 are unauthorized.
 
 Caps never expand automatically.
 

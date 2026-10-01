@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
-# Overlay trusted deterministic acceptance state onto the scheduled-output branch.
+# Overlay trusted deterministic acceptance state onto HEAD_REF.
+# The acceptance workflow passes HEAD_REF=main after the provider PR has merged.
+# Do not aim this push at an open pull-request head: a GITHUB_TOKEN update of
+# that head starts pull_request workflows that fail with zero jobs.
 # Retries are safe: untracked files left by apply on trusted main are removed
 # before checkout, and an identical tree does not create another commit.
 set -euo pipefail

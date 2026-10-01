@@ -187,13 +187,6 @@ jobs:
             cp -a "data/overnight/runs/$RUN_ID/pm_memory/." "/tmp/mw-generated/runs/$RUN_ID/pm_memory/"
           fi
 
-      - name: Append deterministic state to the scheduled-output branch
-        env:
-          HEAD_REF: ${{ github.event.pull_request.head.ref }}
-          RUN_ID: ${{ needs.inspect.outputs.run_id }}
-          GENERATED_DIR: /tmp/mw-generated
-        run: bash scripts/overnight/append_generated_state.sh
-
       - name: Revalidate canonical book blobs before merge
         env:
           TRADER_BOOK_BLOB: ${{ steps.record-blobs.outputs.trader_book_blob }}
@@ -219,6 +212,19 @@ jobs:
           MW_PAGES_REQUIRE_LAUNCH: "1"
           MW_PAGES_OUTPUT: /tmp/mw-output/scheduled_output.json
         run: bash scripts/overnight/merge_accepted_output.sh
+
+      # The provider PR head already passed pull_request validation. Pushing the
+      # bot apply commit onto that head emits a pull_request synchronize from
+      # github-actions[bot]. Those runs fail immediately with zero jobs and make
+      # a successful cycle look broken. Commit the canonical books on main
+      # after the merge instead. GITHUB_TOKEN pushes to main do not start
+      # pull_request workflows. workflow_dispatch deploy remains the Pages path.
+      - name: Commit canonical acceptance state on main
+        env:
+          HEAD_REF: main
+          RUN_ID: ${{ needs.inspect.outputs.run_id }}
+          GENERATED_DIR: /tmp/mw-generated
+        run: bash scripts/overnight/append_generated_state.sh
 
       - name: Persist accepted launch through finalization
         env:

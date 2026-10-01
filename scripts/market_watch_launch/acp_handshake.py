@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from scripts.market_watch_launch import contract
+from scripts.market_watch_launch.call_graph import assert_launch_budget, current_graph
 from scripts.market_watch_launch.contract import AWAITING_ACP, LAUNCHER_ID, LEGACY_SCHEDULE_ID
 from scripts.market_watch_launch.durability import remote_freeze_verified
 
@@ -62,6 +63,23 @@ def _request_origin(launch: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _delegation_budget() -> dict[str, Any]:
+    graph = current_graph()
+    budget = {
+        "launcher_id": LAUNCHER_ID,
+        "legacy_schedule_id_inactive": LEGACY_SCHEDULE_ID,
+        "total_model_cap": graph["total_calls"],
+        "grok_cap": graph["grok_family_calls"],
+        "composer_cap": graph["composer_calls"],
+        "parent_model": "grok-4.6",
+        "frozen_command": ".cursor/commands/overnight-scheduled.md",
+        "launch_command": ".cursor/commands/manual-market-watch-review.md",
+        "current_graph": graph,
+    }
+    assert_launch_budget(budget)
+    return budget
+
+
 def build_delegation_request(launch: dict[str, Any]) -> dict[str, Any]:
     freeze = _freeze_details(launch)
     launch_id = launch["launch_id"]
@@ -88,15 +106,7 @@ def build_delegation_request(launch: dict[str, Any]) -> dict[str, Any]:
             "readable_without_secrets": True,
         },
         "origin": _request_origin(launch),
-        "budget": {
-            "launcher_id": LAUNCHER_ID,
-            "legacy_schedule_id_inactive": LEGACY_SCHEDULE_ID,
-            "total_model_cap": 20,
-            "grok_cap": 18,
-            "composer_cap": 2,
-            "parent_model": "grok-4.6",
-            "frozen_command": ".cursor/commands/overnight-scheduled.md",
-        },
+        "budget": _delegation_budget(),
         "dispatch_when": "freeze-succeeded",
         "single_use": True,
     }
