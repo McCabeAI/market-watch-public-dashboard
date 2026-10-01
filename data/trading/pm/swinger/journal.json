@@ -498,6 +498,62 @@
       "run_id": "overnight-20260930",
       "schema_version": 1,
       "thesis": "Cash CORRA at 2.30 versus March 2027 at 3.105 still prices a large hike path that a concentrated receive is paid to fade. The existing 700 million long from 3.13 is already through on the frozen implied, and the shocked-risk line sits well inside the rails, so the swing stays on. Brent at 102.59 and a 5.26 percent U.S. 10-year are accepted volatility, not a reason to cut a working book. The 25 million trader add does not change the adverse-path size, so it is not taken."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pm-swinger-2070479ca321",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-01T06:19:08.632022-04:00",
+      "conviction": 65,
+      "decision_fingerprint": "b91f7ebcd6e12a115aa01f50651ee18a00746ee01bb4aba290885dd7b567231f",
+      "event_id": "jde-57003dc65c67478a",
+      "funding_view": null,
+      "invalidation": "Reduce or close if March 2027 implied CORRA pushes through 3.25\u20133.30 on an actual Bank of Canada hike or a clear catch-up to the global tightening impulse, because that would mean the 2.30-to-3.09 gap was the start of the path rather than a misprice.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-swinger-2070479ca321"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "100c639bf1c20d584ce819945f8c77916aac9ed2ed3aa84f6c8690c28636380d",
+      "outcome_links": [],
+      "owner_id": "swinger",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "52911b6f0423fac64c8a3395f6d09b53f2bee46ad72b5d33aefcfa70c2b4ea65"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-01T04:50:57.400664-04:00",
+        "evidence_hash": "81972e23814f7b84ab96eaa0ce14639fd9b1298372b5067f09758dd3605574f2",
+        "overnight_run_id": "overnight-20261001",
+        "review_id": "review-001",
+        "review_packet_id": "prp-swinger-overnight-20261001-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Keep receiving March 2027 CORRA as a single concentrated line. Cash is still 2.30 while the contract sits at 3.09, so the market is asking for about eighty basis points of Bank of Canada tightening into early spring; that remains too much path unless policy has already turned, and the payoff is a lower mark if hikes are delayed or scaled back. Size stays where it is: global yields at multi-decade highs and oil above one hundred are a live headwind, not a reason to press a book that already expresses the view.",
+      "run_id": "overnight-20261001",
+      "schema_version": 1,
+      "thesis": "Keep receiving March 2027 CORRA as a single concentrated line. Cash is still 2.30 while the contract sits at 3.09, so the market is asking for about eighty basis points of Bank of Canada tightening into early spring; that remains too much path unless policy has already turned, and the payoff is a lower mark if hikes are delayed or scaled back. Size stays where it is: global yields at multi-decade highs and oil above one hundred are a live headwind, not a reason to press a book that already expresses the view."
     }
   ],
   "schema_version": 1,

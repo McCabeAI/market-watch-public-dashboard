@@ -496,6 +496,62 @@
       "run_id": "overnight-20260930",
       "schema_version": 1,
       "thesis": "Frozen CORRA still prices a large 2027 tightening arc from cash 2.30 through March at 3.105 toward the late-2027 3.63 area, so lower-rate repricing remains the live dove node rather than a fresh overnight add. The book already expresses that node via the existing 2027 H-versus-Z curve, and Brent at 102.59 plus a 5.26 percent U.S. 10-year are enough of a near-term inflation offset that expanding Canadian rates or Canada spot tonight is not cleaner. Hold the existing curve; do not chase blocked Australian risk and do not swap into spot Canada against 102-handle oil."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "curve",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027H-Z",
+          "notional_usd": null,
+          "position_id": "pos-9849cf751c27",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-01T04:50:57.400664-04:00",
+      "conviction": 57,
+      "decision_fingerprint": "75d3ebaf80b50f8ac12e3cdcf470942d4d80655558ff9b476b00aa4cf920cf1e",
+      "event_id": "jde-f279376eef274958",
+      "funding_view": null,
+      "invalidation": "The receive is wrong if cash CORRA leaves 2.30 via delivered hikes, or if the 2027 strip confirms the hike destination with Dec27 moving above 3.63 and Mar27 rising through 3.09 in a sustained re-tightening.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-9849cf751c27"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "98f852d307131e1a74007d518ea9dfb6955a98a164aa0cc75e4e82e2ba13a24b",
+      "outcome_links": [],
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "9b3b9511ee422a7e017891af7c13dffe11e1adc838dab7ea977893b849118a87"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-01T04:50:57.400664-04:00",
+        "evidence_hash": "b9179b8ddff511573b36cf75f2af404d250c583341fb3157466cd9ce8aa4d410",
+        "overnight_run_id": "overnight-20261001",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Cash CORRA at 2.30 still maps into Dec27 at 3.63, a 133 basis-point re-hiking arc that overstates how much tightening Canada can deliver if demand rolls over under already-restrictive global financial conditions. Receiving 2027 H-Z at a 3.399 mark versus 3.40 entry remains the clean fade of that destination: Mar27 at 3.09 already prices nearly 80 basis points of hikes into next spring, and Sep27\u2013Dec27 at 3.515\u20133.63 treat late-2027 as a plateau rather than an easing path. US 10Y at 5.29 and Brent at 103.53 keep inflation risk alive, so this is not an add, but they do not justify covering a receive that is still fading an intact hike arc from an eased cash rate. Hold the existing receive.",
+      "run_id": "overnight-20261001",
+      "schema_version": 1,
+      "thesis": "Cash CORRA at 2.30 still maps into Dec27 at 3.63, a 133 basis-point re-hiking arc that overstates how much tightening Canada can deliver if demand rolls over under already-restrictive global financial conditions. Receiving 2027 H-Z at a 3.399 mark versus 3.40 entry remains the clean fade of that destination: Mar27 at 3.09 already prices nearly 80 basis points of hikes into next spring, and Sep27\u2013Dec27 at 3.515\u20133.63 treat late-2027 as a plateau rather than an easing path. US 10Y at 5.29 and Brent at 103.53 keep inflation risk alive, so this is not an add, but they do not justify covering a receive that is still fading an intact hike arc from an eased cash rate. Hold the existing receive."
     }
   ],
   "schema_version": 1,

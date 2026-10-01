@@ -1,5 +1,35 @@
 {
-  "active_lessons": [],
+  "active_lessons": [
+    {
+      "contradiction_count": 0,
+      "future_rule": "If cash sits below the policy-path strip and risk assets treat landing as benign, do not receive that strip as a defensive expression. Sit out, pay the strip if the view is stress, or receive only a tenor where tightening is already extreme in the price.",
+      "lesson_id": "les-0defe89be86a",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-c1fdef4a17b0"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null
+      },
+      "source_run_id": "overnight-20261001",
+      "status": "active",
+      "text": "A receive of a STIR or policy-path strip that prices hikes while cash is still below that strip is a fade of tightening, not a defensive slowdown trade.",
+      "trade_ids": [
+        "trd-trader-perma-bear-pos-3b40ade3da2c"
+      ]
+    }
+  ],
   "as_of": "2026-10-01T04:50:57.400664-04:00",
   "calibration": {
     "average_holding_seconds": 886370,
@@ -47,8 +77,8 @@
     "nav_usd": 99986660.37,
     "net_pnl_usd": -13339.63,
     "pressure_flags": [],
-    "prior_competition_rank": 10,
-    "rank_change": 0,
+    "prior_competition_rank": 9,
+    "rank_change": 1,
     "raw_pnl_rank": 10,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
@@ -64,54 +94,12 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [
-    {
-      "kind": "postmortem",
-      "obligation_id": "pmd-c1fdef4a17b0",
-      "owner_id": "perma-bear",
-      "owner_type": "trader",
-      "reference": "trd-trader-perma-bear-pos-3b40ade3da2c",
-      "source_run_id": "overnight-20260930"
-    }
-  ],
-  "memory_context_sha256": "37d31ec463a32921859a4d9dd1f12d6c81f195efd63ae761f5a9132d5ef72369",
+  "learning_obligations": [],
+  "memory_context_sha256": "b9722472dbf619f3888a39b284cb31499e7c4f1fe8242167e0a8d98d1b11e21e",
   "open_positions": [],
   "owner_id": "perma-bear",
   "owner_type": "trader",
-  "postmortems_due": [
-    {
-      "created_at": "2026-09-30T04:49:40.475210-04:00",
-      "created_run_id": "overnight-20260930",
-      "facts": {
-        "asset_class": "rates",
-        "closed_at": "2026-09-30T04:49:40.475210-04:00",
-        "conviction": 64,
-        "entry_mark": 4.91,
-        "exit_mark": 4.91,
-        "exit_reason_category": null,
-        "expression": {
-          "curve_id": "AONIA",
-          "expiries": [
-            "2027-03",
-            "2027-04",
-            "2027-05",
-            "2027-06"
-          ],
-          "type": "futures_strip_average"
-        },
-        "holding_duration_seconds": 886370,
-        "instrument": "AONIA_2027-06",
-        "invalidation": "RBA delivers or IB fully prices the remaining 50-60bp of tightening while housing/labor stop deteriorating.",
-        "opened_at": "2026-09-19T22:36:50.082404-04:00",
-        "rationale_status": "present",
-        "realized_pnl_usd": -12718.75,
-        "side": "long",
-        "thesis": null
-      },
-      "postmortem_id": "pmd-c1fdef4a17b0",
-      "trade_id": "trd-trader-perma-bear-pos-3b40ade3da2c"
-    }
-  ],
+  "postmortems_due": [],
   "psychology": {
     "active_flags": [],
     "applicable": true,
@@ -168,9 +156,9 @@
     "recent_events": [],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "6b7e7070175239ffc528bd2e33306c084b21375994d39cf2d703c14e06ca4c4d",
+    "state_sha256": "4a0c7cbd34f6cf49869f27c5274b496869f6397691e9bb2e2625d8375e7bcda9",
     "streaks": {
-      "flat_cycles": 0,
+      "flat_cycles": 1,
       "session_loss": 0,
       "session_win": 0
     }

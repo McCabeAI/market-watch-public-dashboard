@@ -49,7 +49,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 500000.0,
     "risk_capital_utilization": 0.05,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -9946.11,
     "status": "ok"
   },
   "learning": {
@@ -60,7 +60,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "9725f1cc9303adbf080d7f76e18323e6dcaf0a694de94cf5432ecf481a409bd0",
+  "memory_context_sha256": "d56979b0e3498976128723ca8c9162a994eba99c1b8b40a5c315acf0e5aade14",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -85,6 +85,18 @@
       "risk_capital_usd": 250000.0,
       "side": "short",
       "trade_id": "trd-trader-rate-hawk-pos-2709875e8c9c"
+    },
+    {
+      "asset_class": "rates",
+      "conviction": 70,
+      "current_notional_usd": 25000000.0,
+      "entry_mark": 4.91,
+      "instrument": "AONIA_2027-06",
+      "opened_at": "2026-10-01T04:50:57.400664-04:00",
+      "position_id": "pos-9cbf3f27dfff",
+      "risk_capital_usd": 250000.0,
+      "side": "short",
+      "trade_id": "trd-trader-rate-hawk-pos-9cbf3f27dfff"
     }
   ],
   "owner_id": "rate-hawk",
@@ -146,7 +158,7 @@
     "recent_events": [],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "c10cfedd9edda50bfff1945f62bde94178bb1f924ec5d9615bcbaaa46325afc0",
+    "state_sha256": "453d103455ea4f82da8b4824db4d844420723964af7d10cadbac2ef07170a41b",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

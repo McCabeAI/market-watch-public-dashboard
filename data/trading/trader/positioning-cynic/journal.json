@@ -502,6 +502,60 @@
       "run_id": "overnight-20260930",
       "schema_version": 1,
       "thesis": "March 2027 CORRA at 3.105 versus cash 2.30, and SOFR March 2027 at 4.62 versus 3.90, is the already-owned receive, not a setup. Other seats still hold that Canada and U.S. STIR risk, so buying the same cheap-versus-cash story has no ownership. Stay flat: do not join the receive, and do not mechanically invert it in USDCAD at 1.41797 while Brent sits at 102.59."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-01T04:50:57.400664-04:00",
+      "conviction": 30,
+      "decision_fingerprint": "f69e28d28ba9b6cd2a587cffce2f86694f66344819502b2b55da52324123fb19",
+      "event_id": "jde-d71b4f473585473e",
+      "funding_view": null,
+      "invalidation": "Reassess only if same-sign STIR and USDCAD inventory is reduced on a subsequent freeze, or if an unowned rates sleeve prints a usable level that does not duplicate receive-versus-cash.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "22ec95db88d646a36639e80f58d6acc33460208e9c7d796757f0118bf1035978",
+      "outcome_links": [],
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "d77d69741a0f618e701e89e453b0e675ad30731f5168e18939d494d4d5e77db2"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-01T04:50:57.400664-04:00",
+        "evidence_hash": "b9179b8ddff511573b36cf75f2af404d250c583341fb3157466cd9ce8aa4d410",
+        "overnight_run_id": "overnight-20261001",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Desk STIR is already two-way and net paying 2027 SOFR/CORRA while the cheap-versus-cash receive is owned elsewhere; joining either sign is crowding, not asymmetry. US 10Y at 5.29 is a 24-year high with no cash-duration inventory here, but fading that print is the same too-much-tightening view as receiving STIR versus cash. USDCAD is already long 55 million and EURUSD has no ownership hook in this freeze. Stay flat; last hold stands.",
+      "run_id": "overnight-20261001",
+      "schema_version": 1,
+      "thesis": "Desk STIR is already two-way and net paying 2027 SOFR/CORRA while the cheap-versus-cash receive is owned elsewhere; joining either sign is crowding, not asymmetry. US 10Y at 5.29 is a 24-year high with no cash-duration inventory here, but fading that print is the same too-much-tightening view as receiving STIR versus cash. USDCAD is already long 55 million and EURUSD has no ownership hook in this freeze. Stay flat; last hold stands."
     }
   ],
   "schema_version": 1,

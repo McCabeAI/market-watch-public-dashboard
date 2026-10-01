@@ -474,6 +474,60 @@
       "run_id": "overnight-20260930",
       "schema_version": 1,
       "thesis": "The only expanding handoff is a markable 25 million receive in March 2027 CORRA at 3.105 versus cash 2.30. Receiving 3.105 sits through official SOFR 3.90 charged on shocked-risk capital, so the ticket is negative residual versus the hurdle once the cash-to-forward gap is treated as a priced path, not alpha. Brent at 102.59 and a 5.26 percent U.S. 10-year keep a further Canadian backup as the first-order adverse path. The book is already flat; sitting out is the consistent preservation action."
+    },
+    {
+      "actions": [
+        {
+          "action": "NO_TRADE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-01T06:19:09.158633-04:00",
+      "conviction": 72,
+      "decision_fingerprint": "a95e39dc7a042baace40e87411950c40458fcad8536c337a790b51d851c66510",
+      "event_id": "jde-20bee36b88694d2c",
+      "funding_view": null,
+      "invalidation": "Reopen a pay only if June 2027 implied AONIA cheapens toward cash while inflation, oil, or the cash rate itself is clearly repricing higher, so expected edge would cover official SOFR charged on shocked risk capital after a plausible 100 basis-point adverse move.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "60ae68fff410f018006e2e791065b7803251ff6e8312ce4ae20ea90cc332bf48",
+      "outcome_links": [],
+      "owner_id": "grinder",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "ccb4ad0e90c25ab25a37a92570469ded526b7931741c07a7c41242a12e1f1001"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-01T04:50:57.400664-04:00",
+        "evidence_hash": "c4fc5dc26d1da25b275257dc5f9cfbccf1d52183e1a92a6679f3b83837028d9b",
+        "overnight_run_id": "overnight-20261001",
+        "review_id": "review-001",
+        "review_packet_id": "prp-grinder-overnight-20261001-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "June 2027 Australian overnight is already 4.91 versus 4.60 cash, so a new pay needs implied rates to rise further after 31 basis points of tightening have been priced. Firm oil and a high global rate backdrop can support a hawkish bias, but that residual is too thin against negative carry if cash stays near 4.60 and against a 100 basis-point easing shock on new risk capital. Stay flat.",
+      "run_id": "overnight-20261001",
+      "schema_version": 1,
+      "thesis": "June 2027 Australian overnight is already 4.91 versus 4.60 cash, so a new pay needs implied rates to rise further after 31 basis points of tightening have been priced. Firm oil and a high global rate backdrop can support a hawkish bias, but that residual is too thin against negative carry if cash stays near 4.60 and against a 100 basis-point easing shock on new risk capital. Stay flat."
     }
   ],
   "schema_version": 1,

@@ -512,6 +512,60 @@
       "run_id": "overnight-20260930",
       "schema_version": 1,
       "thesis": "The book is already flat. AUDCAD at 0.99321 with Brent at 102.59 is a known oil and cross mark, not a fresh Australia-versus-Canada policy, growth, inflation, or carry gap versus last week's flatten. Opening a new short would recycle a multi-year fade on a clock that already failed; opening a new long would recycle the diplomacy reverse whose oil invalidation already ended the last long."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-01T04:50:57.400664-04:00",
+      "conviction": 30,
+      "decision_fingerprint": "0039b13647f81a1b5c5684e7848115fc50be42aa3e3243c010ba963c853c156b",
+      "event_id": "jde-441bc922f72543a1",
+      "funding_view": null,
+      "invalidation": "The CADJPY long candidate is wrong if Brent no longer supports cheap CAD versus JPY, if that cheapness is a yen-haven bid rather than CAD lag, or if a non-recycled AU-versus-CA or AU-versus-NZ policy gap becomes the clearer cross.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "450e92813853396fc75bce22dfe98d4b94e24bd6a9ccbe876890da54f5736bb6",
+      "outcome_links": [],
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "10a051a88f2fe712f354d41b3e19a788e02f06ba1ae82d15cf9190e5e21aee16"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-01T04:50:57.400664-04:00",
+        "evidence_hash": "b9179b8ddff511573b36cf75f2af404d250c583341fb3157466cd9ce8aa4d410",
+        "overnight_run_id": "overnight-20261001",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "CAD versus JPY is the cleanest non-dollar relative-value on this tape: Brent is supporting Canada while CADJPY still sits cheap, and buying EURUSD or USDCAD would only warehouse the dollar bid that already drove EURUSD to a 17-month low. Australia cash at 4.60 against CORRA at 2.30 is a real AU-versus-CA carry widening, but AUDCAD is already rich and last week's AUDCAD short or reverse-long is off-limits unless the gap is more than a simple flip, so that pair is not the expression. Book stays flat: long CADJPY is the candidate, not the order.",
+      "run_id": "overnight-20261001",
+      "schema_version": 1,
+      "thesis": "CAD versus JPY is the cleanest non-dollar relative-value on this tape: Brent is supporting Canada while CADJPY still sits cheap, and buying EURUSD or USDCAD would only warehouse the dollar bid that already drove EURUSD to a 17-month low. Australia cash at 4.60 against CORRA at 2.30 is a real AU-versus-CA carry widening, but AUDCAD is already rich and last week's AUDCAD short or reverse-long is off-limits unless the gap is more than a simple flip, so that pair is not the expression. Book stays flat: long CADJPY is the candidate, not the order."
     }
   ],
   "schema_version": 1,

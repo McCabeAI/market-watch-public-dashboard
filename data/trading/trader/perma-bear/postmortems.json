@@ -1,5 +1,60 @@
 {
-  "items": [],
+  "items": [
+    {
+      "at": "2026-10-01T04:50:57.400664-04:00",
+      "causal": {
+        "assumptions_right": "Risk assets stayed complacent, so the close did not wait for a growth break that never printed. The 4.91 strip did not rally, which was consistent with hiking not being cancelled. Exiting once the expression was recognized as anti-defensive, and while AU was blocked, capped the damage to unchanged marks plus a limited dollar loss.",
+        "assumptions_wrong_or_underweighted": "The 56bp cash-to-strip gap was read as slowdown mispricing rather than a path that cash could close from below. Demand failure was unverified and then cash hiked 25bp. A receive of a hike-priced strip is a fade of tightening, which conflicted with a defensive remit while VIX and equities stayed bid. Composition of the -12718.75 on a flat mark is not in the packet (carry, roll, or friction).",
+        "causal_divergence": "The thesis needed the strip to come in as demand failed. Adjustment came from cash rising toward 4.91, not from 4.91 falling. Same mark, negative P&L, tighter cash: the receive was on the wrong side of delivered tightening.",
+        "decision_quality_attribution": "expression",
+        "future_implication": "Do not treat the now-eligible AU strip at 4.91 versus cash 4.60 as a green light to rebuild the receive. Remaining hike premium is small, and the expression is still a fade of tightening. Defensive duration belongs where tightening is already extreme in the cash long end, not in STIR strips that still price hikes above cash while risk assets are calm.",
+        "observed_reality": "The strip exited at the same 4.91 mark, realized P&L was -12718.75, and cash AONIA rose from 4.35 to 4.60. Equities and VIX treated landing as benign. The seat closed because new AU risk was blocked and a hike-path receive was anti-defensive into unverified demand. AU is eligible now; the remaining strip-to-cash gap is 31bp.",
+        "original_belief": "Receiving the Mar-Jun 2027 AONIA average at 4.91 versus cash 4.35 was a defensive fade of too much hiking: Australian demand would fail and the strip would print lower.",
+        "same_information_counterfactual": "With AU blocked and a benign risk tape, standing down or paying the strip would have avoided the loss. The 2026-09-30 close was the right reaction to that information. Re-entering a Jun27 receive now is not implied: cash has already moved 25bp toward the strip and only 31bp remains."
+      },
+      "expression_assessment": "Receiving a hike-priced Mar-Jun 2027 average was a fade of tightening, not a slowdown hedge. That vehicle conflicted with the defensive remit once demand was unverified and risk assets were bid. The close was process-correct; the open was the error.",
+      "facts": {
+        "asset_class": "rates",
+        "closed_at": "2026-09-30T04:49:40.475210-04:00",
+        "conviction": 64,
+        "entry_mark": 4.91,
+        "exit_mark": 4.91,
+        "exit_reason_category": null,
+        "expression": {
+          "curve_id": "AONIA",
+          "expiries": [
+            "2027-03",
+            "2027-04",
+            "2027-05",
+            "2027-06"
+          ],
+          "type": "futures_strip_average"
+        },
+        "holding_duration_seconds": 886370,
+        "instrument": "AONIA_2027-06",
+        "invalidation": "RBA delivers or IB fully prices the remaining 50-60bp of tightening while housing/labor stop deteriorating.",
+        "opened_at": "2026-09-19T22:36:50.082404-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": -12718.75,
+        "side": "long",
+        "thesis": null
+      },
+      "future_rule": "If cash sits below the policy-path strip and risk assets treat landing as benign, do not receive that strip as a defensive expression. Sit out, pay the strip if the view is stress, or receive only a tenor where tightening is already extreme in the price.",
+      "lesson": "A receive of a STIR or policy-path strip that prices hikes while cash is still below that strip is a fade of tightening, not a defensive slowdown trade.",
+      "no_new_lesson": null,
+      "owner_id": "perma-bear",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-c1fdef4a17b0",
+      "run_id": "overnight-20261001",
+      "sizing_assessment": null,
+      "tags": [],
+      "thesis_assessment": "The view that Jun27 AONIA at 4.91 would fall because demand would fail was not borne out. Cash rose; the strip did not.",
+      "timing_assessment": null,
+      "trade_id": "trd-trader-perma-bear-pos-3b40ade3da2c",
+      "what_failed": "Opening a receive of a 2027 hike average as a defensive trade. The strip never came in, cash tightened, and the book lost 12718.75 over about ten days.",
+      "what_worked": "Closing when Australia was blocked and the hike-path receive was recognized as anti-defensive. The 4.91 mark did not run against the book while cash rose 25bp after the exit."
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_POSTMORTEMS"
 }

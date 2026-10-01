@@ -484,6 +484,60 @@
       "run_id": "overnight-20260930",
       "schema_version": 1,
       "thesis": "The U.S. 10-year at 5.26 is the only rates print with a historical one-year z-score near +3.23, so the rates-first candidate is receive tens, not a two-year United States\u2013Canada spread. That two-year gap is 152 basis points, but the U.S. two-year already screens 99 basis points over SOFR 3.90, so cheap euro or kiwi spot is not a substitute valuation. A one-year yield z-score is not a real-yield or terms-of-trade clock that would start convergence tonight, so the book stays flat."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-01T04:50:57.400664-04:00",
+      "conviction": 35,
+      "decision_fingerprint": "5f1a12d0dc35c185e41045a74f1d3ddf5042c27c2bbec6ebf7b6464a168a947e",
+      "event_id": "jde-24ab51942d9c4129",
+      "funding_view": null,
+      "invalidation": "Flip from a flat book to a fade only if a later freeze dates a convergence clock: a named policy meeting that re-anchors the path, a terms-of-trade break that re-prices a named pair, or a documented term-premium peak followed by a US 10Y lower high. A further rise in US 10s is not invalidation of staying flat.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "604d449ec4e6c44dc7c0c03ad1d862ffb43fb7817b9fd07fa34380aaae102ab1",
+      "outcome_links": [],
+      "owner_id": "value-guy",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "d4d5435b566a4d93ca09c5093faa5d993bcbda111259a8a56c68a430cbc6e88c"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-01T04:50:57.400664-04:00",
+        "evidence_hash": "b9179b8ddff511573b36cf75f2af404d250c583341fb3157466cd9ce8aa4d410",
+        "overnight_run_id": "overnight-20261001",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "US 10-year yields are the highest since 2002 and remain a genuine historical dislocation versus the post-2002 distribution, but a one-year percentile is a discovery flag rather than a mean-reversion thesis. The freeze still supplies no dated terms-of-trade, external-balance, productivity, or policy-path clock that says convergence begins on this review; the further cheapening from the prior 5.26 print argues the other way. Canada and Australia 10s and cheap EUR and NZD versus USD are peer dislocations without that clock either, so the book stays flat.",
+      "run_id": "overnight-20261001",
+      "schema_version": 1,
+      "thesis": "US 10-year yields are the highest since 2002 and remain a genuine historical dislocation versus the post-2002 distribution, but a one-year percentile is a discovery flag rather than a mean-reversion thesis. The freeze still supplies no dated terms-of-trade, external-balance, productivity, or policy-path clock that says convergence begins on this review; the further cheapening from the prior 5.26 print argues the other way. Canada and Australia 10s and cheap EUR and NZD versus USD are peer dislocations without that clock either, so the book stays flat."
     }
   ],
   "schema_version": 1,

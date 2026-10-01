@@ -1,0 +1,497 @@
+{
+  "base_evidence_cutoff": "2026-10-01T04:50:57.400664-04:00",
+  "base_packet_sha256": "50438996882b7419c15926ac81142d681ced3574a75f179e953b7647bdbce03d",
+  "competition": {
+    "flat_book_pnl": "A flat seat has zero net financing/competition P&L: paper NAV earning SOFR is benchmarked at SOFR, so those flows cancel, and shocked-risk financing is zero.",
+    "funding_basis": "Official NY Fed SOFR ACT/360 is the zero-return competition benchmark, not free alpha. Every seat has $100m paper NAV that may be described as earning SOFR, but that capital is equally funded/benchmarked at SOFR so those flows cancel. Deployed shocked-risk capital pays the same official SOFR on trusted standard-shock risk capital: the absolute MTM loss from a 1% adverse spot move, a 100bp (1 percentage point) adverse outright rate move, or a 100bp adverse curve/RV spread move under the trusted duration-1 P&L convention. Equal risk capital receives equal financing treatment across asset classes. Notional is descriptive, not the funding base. A completely flat book \u2014 including no-trade-skeptic \u2014 therefore has zero net financing/competition P&L from SOFR cash or funding economics. Positive financing/carry alpha requires an explicit markable strategy that earns above SOFR or funds below SOFR. Weekends and holidays carry the last applicable published fixing until the next fixing. If official fixing history cannot be established, new funding accrual fails closed and prior canonical balances are preserved.",
+    "funding_convention": "ACT/360",
+    "funding_day_count": 360,
+    "funding_observation_date": "2026-09-29",
+    "funding_rate_annual": 0.0388,
+    "funding_source": "NY_FED",
+    "funding_source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr",
+    "instruction": "Do not optimize for gross notional or fill available capacity. Size risk from plausible adverse paths and historical excursions while staying inside the trusted risk-capital and drawdown limits. Flat cash at SOFR is the zero benchmark, not a source of alpha. The no-trade-skeptic must include a structured funding_view on every new risk or NO_TRADE thesis: the frozen official SOFR fixing, the relevant SR3 forward-curve view, its own assessment of whether realized funding will print higher, lower, or about the same as the curve, and the implication for remaining at the zero SOFR benchmark versus paying SOFR on shocked-risk capital.",
+    "metric": "net_pnl_after_funding",
+    "no_trade_allowed": true,
+    "objective": "Finish with the highest cumulative net paper P&L across the 14 standing seats.",
+    "risk_limits": {
+      "max_drawdown_usd": 5000000,
+      "paper_nav_usd": 100000000,
+      "risk_capital_limit_usd": 10000000,
+      "risk_capital_method": "mtm_standard_1pct_move"
+    }
+  },
+  "evidence_cutoff": "2026-10-01T04:50:57.400664-04:00",
+  "overnight_run_id": "overnight-20261001",
+  "packet_sha256": "b9179b8ddff511573b36cf75f2af404d250c583341fb3157466cd9ce8aa4d410",
+  "research_supplement": {
+    "central_bank_research": [
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Fed Vice Chair Jefferson: discount window modernization supports Treasury and repo market functioning",
+        "institution": "Federal Reserve",
+        "published_at": "2026-09-22T00:00:00-04:00",
+        "source_name": "Board of Governors of the Federal Reserve System",
+        "summary": "22 Sep NY Treasury Market Conference remarks focused on discount window upgrades (DWD portal, collateral processes, FHLB coordination) and noted recent quarter-end discount window use when repo pressures lifted; not an explicit funds-rate path signal.",
+        "url": "https://www.federalreserve.gov/newsevents/speech/jefferson20260922a.htm"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "NY Fed SOMA Manager Perli: reserves ample; overnight rates near IORB; RMPs cut to zero",
+        "institution": "Federal Reserve",
+        "published_at": "2026-09-22T00:00:00-04:00",
+        "source_name": "Federal Reserve Bank of New York",
+        "summary": "22 Sep speech said money markets showed ample reserves, overnight rates trading slightly below IORB, and the Desk had reduced reserve management purchases to zero since mid-August while monitoring bill issuance and repo conditions\u2014implementation backdrop after the 16 Sep hike.",
+        "url": "https://www.newyorkfed.org/newsevents/speeches/2026/per260922"
+      },
+      {
+        "country_codes": [
+          "JP"
+        ],
+        "headline": "BoJ September hike implementation: ~1.25% call-rate target effective 24 September",
+        "institution": "BoJ",
+        "published_at": "2026-09-18T00:00:00+09:00",
+        "source_name": "Bank of Japan",
+        "summary": "Official 18 Sep MPM materials confirm the uncollateralized overnight call target and complementary deposit facility rate move to ~1.25% from 24 Sep, with basic loan rate 1.5%; decision already in frozen CB tape but timing is near-term for JPY/rates.",
+        "url": "https://www.boj.or.jp/en/mopo/mpmdeci/mpr_2026/k260918a.pdf"
+      }
+    ],
+    "news": [
+      {
+        "country_codes": [],
+        "headline": "Schweizer Inflation steigt auf 1,0 Prozent - Druck auf SNB w\u00e4chst",
+        "primary_category": "inflation",
+        "published_at": "2026-10-01T04:49:43.735000-04:00",
+        "source_name": "Reuters",
+        "summary": "Headline-only public metadata; article body was not retrieved.",
+        "url": "https://www.reuters.com/de/wirtschaft/schweizer-inflation-steigt-auf-10-prozent-druck-auf-snb-wchst-2026-10-01/"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Gold steadies as cooler US inflation data counters higher Treasury yields",
+        "primary_category": "inflation",
+        "published_at": "2026-10-01T04:48:15.535000-04:00",
+        "source_name": "Reuters",
+        "summary": "Headline-only public metadata; article body was not retrieved.",
+        "url": "https://www.reuters.com/world/india/gold-inches-higher-softer-us-inflation-dims-october-fed-hike-bets-2026-10-01/"
+      },
+      {
+        "country_codes": [],
+        "headline": "UK factories report growing inflation pressures, PMI shows",
+        "primary_category": "inflation",
+        "published_at": "2026-10-01T04:41:44.320000-04:00",
+        "source_name": "Reuters",
+        "summary": "Headline-only public metadata; article body was not retrieved.",
+        "url": "https://www.reuters.com/business/france-presents-belt-tightening-2027-budget-bond-investors-sour-french-debt-2026-10-01/"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "10 year US Treasury yield hits highest since 2002",
+        "primary_category": "rates",
+        "published_at": "2026-10-01T04:32:33.288000-04:00",
+        "source_name": "Reuters",
+        "summary": "Headline-only public metadata; article body was not retrieved.",
+        "url": "https://www.reuters.com/world/10-year-us-treasury-yield-hits-highest-since-2002-2026-10-01/"
+      },
+      {
+        "country_codes": [
+          "EA"
+        ],
+        "headline": "Euro slides to 17-month low, hit by rates and inflation cocktail",
+        "primary_category": "inflation",
+        "published_at": "2026-10-01T04:25:44.081000-04:00",
+        "source_name": "Reuters",
+        "summary": "Headline-only public metadata; article body was not retrieved.",
+        "url": "https://www.reuters.com/world/africa/dollar-gets-lift-higher-yields-2026-10-01/"
+      },
+      {
+        "country_codes": [],
+        "headline": "China Oil Comeback Loses Steam as Iran War Drags On",
+        "primary_category": "energy",
+        "published_at": "2026-09-29T21:26:00-04:00",
+        "source_name": "Bloomberg",
+        "summary": "A nascent recovery in Chinese oil demand has begun to falter, as continued fighting in the Middle East and limited Iranian supply keep crude prices too high for private refiners, prompting some ...",
+        "url": "https://www.bloomberg.com/news/articles/2026-09-30/china-crude-comeback-loses-steam-as-iran-war-enters-eighth-month"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Why Is Oil at $100 If Trump Is Winning the Battle in Hormuz?",
+        "primary_category": "energy",
+        "published_at": "2026-09-29T17:00:00-04:00",
+        "source_name": "Bloomberg",
+        "summary": "I don\u2019t know who will win the US-Iran war. But if you ask me who\u2019s prevailing in the battle over the Strait of Hormuz, it\u2019s clear US President Donald Trump has the advantage. As much as Tehran says ...",
+        "url": "https://www.bloomberg.com/opinion/articles/2026-09-30/why-is-oil-at-100-if-trump-is-winning-the-battle-in-hormuz"
+      },
+      {
+        "country_codes": [],
+        "headline": "JPMorgan and Goldman See Mideast Oil Flows Near Pre-War Levels",
+        "primary_category": "energy",
+        "published_at": "2026-09-29T14:16:00-04:00",
+        "source_name": "Bloomberg",
+        "summary": "Crude oil flows from the Middle East are almost back to pre-war levels despite continued risks to shipping, according to JPMorgan Chase & Co.",
+        "url": "https://www.bloomberg.com/news/articles/2026-09-30/mideast-crude-oil-flows-hit-98-of-pre-war-level-jpmorgan-says"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Iran Officials Pessimistic About US Deal Before Midterms",
+        "primary_category": "energy",
+        "published_at": "2026-09-28T19:13:00-04:00",
+        "source_name": "Bloomberg",
+        "summary": "Iranian officials have privately expressed pessimism about reaching a deal to end hostilities with Washington and reopen the Strait of Hormuz before US midterm elections in November, according to ...",
+        "url": "https://www.bloomberg.com/news/articles/2026-09-28/iran-officials-pessimistic-about-deal-with-us-before-midterms"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Man Group Says 5.5% Yields Risk Cracking AI Capex, US Consumer",
+        "primary_category": "rates",
+        "published_at": "2026-09-28T05:56:00-04:00",
+        "source_name": "Bloomberg",
+        "summary": "Man Group Plc Chief Market Strategist Kristina Hooper warned that surging long-end Treasury yields threaten to topple the two pillars propping up US economic growth: AI capital expenditures and ...",
+        "url": "https://www.bloomberg.com/news/articles/2026-09-28/man-group-says-5-5-yields-risk-cracking-ai-capex-us-consumer"
+      },
+      {
+        "country_codes": [],
+        "headline": "Kallas Pushes EU to Send Pledged Hormuz Ships to Counter Houthis",
+        "primary_category": "energy",
+        "published_at": "2026-09-27T21:54:00-04:00",
+        "source_name": "Bloomberg",
+        "summary": "The European Union is pressing countries to redirect ships pledged for a stalled Strait of Hormuz mission to the Red Sea instead, as nearby Houthi strikes have prompted fresh fears of economic ...",
+        "url": "https://www.bloomberg.com/news/articles/2026-09-28/kallas-pushes-eu-to-send-pledged-hormuz-ships-to-counter-houthis"
+      },
+      {
+        "country_codes": [],
+        "headline": "Higher Bond Yields Are Raising Doubts About Europe\u2019s Stock Rally",
+        "primary_category": "inflation",
+        "published_at": "2026-09-27T19:17:00-04:00",
+        "source_name": "Bloomberg",
+        "summary": "Rising global bond yields are fueling skepticism about Europe\u2019s equity rally, as investors worry that fiscal and inflation risks are causing cracks in what has so far been a resilient economy.",
+        "url": "https://www.bloomberg.com/news/articles/2026-09-28/higher-bond-yields-are-raising-doubts-about-europe-s-stock-rally"
+      },
+      {
+        "country_codes": [
+          "JP"
+        ],
+        "headline": "Yen Strengthens Past 157 Per Dollar, Outperforming G-10 Peers",
+        "primary_category": "fx",
+        "published_at": "2026-09-29T13:00:00-04:00",
+        "source_name": "Bloomberg",
+        "summary": "The yen strengthened past the 157 level against the dollar on Wednesday as a series of government warnings on the currency and quarter-end flows provided support.",
+        "url": "https://www.bloomberg.com/news/articles/2026-09-30/yen-strengthens-past-157-per-dollar-outperforming-g-10-peers"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Demand Boost for US Crops Still Unclear After China Tariff Cuts",
+        "primary_category": "geopolitics",
+        "published_at": "2026-09-28T20:53:00-04:00",
+        "source_name": "Bloomberg",
+        "summary": "A day after China announced tariff cuts across a slew of US agricultural products, crop traders are trying to parse whether \u2014 and how quickly \u2014 that will translate into a demand pickup for major ...",
+        "url": "https://www.bloomberg.com/news/articles/2026-09-29/demand-boost-for-us-crops-still-unclear-after-china-tariff-cuts"
+      },
+      {
+        "country_codes": [
+          "CA"
+        ],
+        "headline": "Shell\u2019s LNG Canada to Proceed With Multibillion-Dollar Expansion",
+        "primary_category": "fx",
+        "published_at": "2026-09-28T19:54:00-04:00",
+        "source_name": "Bloomberg",
+        "summary": "Shareholders in the Shell Plc-led LNG Canada venture made a final investment decision to expand its liquefied natural gas exports, forging ahead with the multibillion-dollar plan as key customers in ...",
+        "url": "https://www.bloomberg.com/news/articles/2026-09-29/shell-s-lng-canada-to-proceed-with-multibillion-dollar-expansion"
+      }
+    ],
+    "sources": [
+      {
+        "name": "Reuters",
+        "published_at": "2026-10-01T04:49:43.735000-04:00",
+        "url": "https://www.reuters.com/de/wirtschaft/schweizer-inflation-steigt-auf-10-prozent-druck-auf-snb-wchst-2026-10-01/"
+      },
+      {
+        "name": "Reuters",
+        "published_at": "2026-10-01T04:48:15.535000-04:00",
+        "url": "https://www.reuters.com/world/india/gold-inches-higher-softer-us-inflation-dims-october-fed-hike-bets-2026-10-01/"
+      },
+      {
+        "name": "Reuters",
+        "published_at": "2026-10-01T04:41:44.320000-04:00",
+        "url": "https://www.reuters.com/business/france-presents-belt-tightening-2027-budget-bond-investors-sour-french-debt-2026-10-01/"
+      },
+      {
+        "name": "Reuters",
+        "published_at": "2026-10-01T04:32:33.288000-04:00",
+        "url": "https://www.reuters.com/world/10-year-us-treasury-yield-hits-highest-since-2002-2026-10-01/"
+      },
+      {
+        "name": "Reuters",
+        "published_at": "2026-10-01T04:25:44.081000-04:00",
+        "url": "https://www.reuters.com/world/africa/dollar-gets-lift-higher-yields-2026-10-01/"
+      },
+      {
+        "name": "Bloomberg",
+        "published_at": "2026-09-29T21:26:00-04:00",
+        "url": "https://www.bloomberg.com/news/articles/2026-09-30/china-crude-comeback-loses-steam-as-iran-war-enters-eighth-month"
+      },
+      {
+        "name": "Bloomberg",
+        "published_at": "2026-09-29T17:00:00-04:00",
+        "url": "https://www.bloomberg.com/opinion/articles/2026-09-30/why-is-oil-at-100-if-trump-is-winning-the-battle-in-hormuz"
+      },
+      {
+        "name": "Bloomberg",
+        "published_at": "2026-09-29T14:16:00-04:00",
+        "url": "https://www.bloomberg.com/news/articles/2026-09-30/mideast-crude-oil-flows-hit-98-of-pre-war-level-jpmorgan-says"
+      },
+      {
+        "name": "Bloomberg",
+        "published_at": "2026-09-28T19:13:00-04:00",
+        "url": "https://www.bloomberg.com/news/articles/2026-09-28/iran-officials-pessimistic-about-deal-with-us-before-midterms"
+      },
+      {
+        "name": "Bloomberg",
+        "published_at": "2026-09-28T05:56:00-04:00",
+        "url": "https://www.bloomberg.com/news/articles/2026-09-28/man-group-says-5-5-yields-risk-cracking-ai-capex-us-consumer"
+      },
+      {
+        "name": "Bloomberg",
+        "published_at": "2026-09-27T21:54:00-04:00",
+        "url": "https://www.bloomberg.com/news/articles/2026-09-28/kallas-pushes-eu-to-send-pledged-hormuz-ships-to-counter-houthis"
+      },
+      {
+        "name": "Bloomberg",
+        "published_at": "2026-09-27T19:17:00-04:00",
+        "url": "https://www.bloomberg.com/news/articles/2026-09-28/higher-bond-yields-are-raising-doubts-about-europe-s-stock-rally"
+      },
+      {
+        "name": "Bloomberg",
+        "published_at": "2026-09-29T13:00:00-04:00",
+        "url": "https://www.bloomberg.com/news/articles/2026-09-30/yen-strengthens-past-157-per-dollar-outperforming-g-10-peers"
+      },
+      {
+        "name": "Bloomberg",
+        "published_at": "2026-09-28T20:53:00-04:00",
+        "url": "https://www.bloomberg.com/news/articles/2026-09-29/demand-boost-for-us-crops-still-unclear-after-china-tariff-cuts"
+      },
+      {
+        "name": "Bloomberg",
+        "published_at": "2026-09-28T19:54:00-04:00",
+        "url": "https://www.bloomberg.com/news/articles/2026-09-29/shell-s-lng-canada-to-proceed-with-multibillion-dollar-expansion"
+      },
+      {
+        "name": "Board of Governors of the Federal Reserve System",
+        "published_at": "2026-09-22T00:00:00-04:00",
+        "url": "https://www.federalreserve.gov/newsevents/speech/jefferson20260922a.htm"
+      },
+      {
+        "name": "Federal Reserve Bank of New York",
+        "published_at": "2026-09-22T00:00:00-04:00",
+        "url": "https://www.newyorkfed.org/newsevents/speeches/2026/per260922"
+      },
+      {
+        "name": "Bank of Japan",
+        "published_at": "2026-09-18T00:00:00+09:00",
+        "url": "https://www.boj.or.jp/en/mopo/mpmdeci/mpr_2026/k260918a.pdf"
+      }
+    ],
+    "summary": "Overnight markets lean into a higher-for-longer US rate story while equity indices stay elevated and volatility remains subdued. The ten-year Treasury reached its highest level since 2002 alongside a steep two-to-ten-year spread, even as headlines describe gold steadying on cooler US inflation competing with rising yields. Brent near 103.53 and WTI at 90.42 keep energy firm despite talk of Middle East flows normalizing; spot gold near 4186.70 holds at an elevated plateau. The euro trades at multiyear weakness into European inflation concerns and global yield pressure, with the S&P near 7651.54 and Nasdaq near 26861.06 still absorbing the move. Canada's dollar sits rich versus the US dollar, while the yen has firmed near 157 after the Bank of Japan's late-September hike. Watch whether long-end Treasury momentum extends, European FX weakness broadens, and UK and Swiss inflation feed policy expectations."
+  },
+  "review_id": "review-001",
+  "schema_version": 1,
+  "trade_permissions": {
+    "blocked_expressions": [],
+    "blocked_sources": [],
+    "countries": {
+      "AU": {
+        "eligible": true,
+        "gaps": [
+          "AU.Activity.business_surveys",
+          "AU.Consumer.confidence"
+        ],
+        "scored_status": "partial"
+      },
+      "CA": {
+        "eligible": true,
+        "gaps": [
+          "CA.Consumer.confidence"
+        ],
+        "scored_status": "ok"
+      },
+      "EA": {
+        "eligible": true,
+        "gaps": [],
+        "scored_status": "ok"
+      },
+      "JP": {
+        "eligible": true,
+        "gaps": [
+          "JP.Activity.business_surveys"
+        ],
+        "scored_status": "partial"
+      },
+      "NZ": {
+        "eligible": true,
+        "gaps": [
+          "NZ.Activity.gdp_domestic_demand",
+          "NZ.Consumer.income",
+          "NZ.Consumer.retail",
+          "NZ.Consumer.spending",
+          "NZ.Labor.wages"
+        ],
+        "scored_status": "partial"
+      },
+      "US": {
+        "eligible": true,
+        "gaps": [],
+        "scored_status": "ok"
+      }
+    },
+    "coverage": "PARTIAL",
+    "eligible": true,
+    "expansion_rule": "country_and_expression_specific",
+    "partial_expressions": [
+      "activity:US",
+      "activity:CA",
+      "activity:AU",
+      "activity:NZ",
+      "activity:EA",
+      "activity:JP",
+      "macro:AU",
+      "macro:NZ"
+    ],
+    "source_health": [
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-Q2",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Activity.gdp_domestic_demand"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "HTTP 404",
+        "observation_period": "2026-08",
+        "retrieved_at": "2026-09-21T16:30:00Z",
+        "series_id": "US.Activity.manufacturing_surveys"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "HTTP 404",
+        "observation_period": "2026-08",
+        "retrieved_at": "2026-09-21T16:30:00Z",
+        "series_id": "US.Activity.services_surveys"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-07",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Consumer.confidence"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-07",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Consumer.income"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-08",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Consumer.retail"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-07",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Consumer.spending"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-07",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Inflation.core_pce"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "budget_deferred",
+        "country": "US",
+        "fetch_error": "budget_deferred",
+        "observation_period": "2026-08",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Labor.payrolls"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "budget_deferred",
+        "country": "US",
+        "fetch_error": "budget_deferred",
+        "observation_period": "2026-08",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Labor.unemployment"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "budget_deferred",
+        "country": "US",
+        "fetch_error": "budget_deferred",
+        "observation_period": "2026-08",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Labor.wages"
+      }
+    ],
+    "trade_eligible_countries": [
+      "US",
+      "CA",
+      "AU",
+      "NZ",
+      "EA",
+      "JP"
+    ]
+  },
+  "type": "OVERNIGHT_AGENT_EVIDENCE_PACKET"
+}

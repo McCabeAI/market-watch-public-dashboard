@@ -486,6 +486,60 @@
       "run_id": "overnight-20260930",
       "schema_version": 1,
       "thesis": "Remain flat. After the October 2026 AONIA long closed unchanged at 4.57, there is no executable dated path from mispricing to repricing: the only concrete rates candidate is blocked Australian STIR, and every other tenor plus the Australian dollar lacks a dated mechanism with usable levels. Valuation elegance without a clock is not a ticket."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-01T04:50:57.400664-04:00",
+      "conviction": 0,
+      "decision_fingerprint": "b734c627b2261478646d375e123ad4101d00701d5f20c8736dcb83b2bc5c7c9a",
+      "event_id": "jde-536a445ac24d40c3",
+      "funding_view": null,
+      "invalidation": "The flat book dies if a later freeze shows a dated policy meeting, inflation release, election, or issuance event that can reprice a specified STIR or cash-rates contract; a delivered cash move or a new yield extreme alone is not enough.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "54074bf4dd945f100a19c9b5d95a3ae7e01c24058c4e0fd138187d4a737c28ac",
+      "outcome_links": [],
+      "owner_id": "catalyst-junkie",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "112edda93ae4512162d78105df26430a3d9366953961967cbbc980c125da08f7"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-01T04:50:57.400664-04:00",
+        "evidence_hash": "b9179b8ddff511573b36cf75f2af404d250c583341fb3157466cd9ce8aa4d410",
+        "overnight_run_id": "overnight-20261001",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "AU eligibility does not create a trade: AONIA cash is already 4.60 against October 4.595, so the hike is delivered, and March 2027 at 4.81 / June 2027 at 4.91 is residual path pricing without a dated RBA meeting. US 10-year at 5.29, SOFR 3.88 versus March 2027 at 4.625, Swiss CPI at 1.0 percent, UK factory inflation, the euro at a 17-month low, and Brent at 103.53 are prints or ongoing tape, not scheduled clocks. Book stays flat until a dated mechanism maps onto a live mispricing.",
+      "run_id": "overnight-20261001",
+      "schema_version": 1,
+      "thesis": "AU eligibility does not create a trade: AONIA cash is already 4.60 against October 4.595, so the hike is delivered, and March 2027 at 4.81 / June 2027 at 4.91 is residual path pricing without a dated RBA meeting. US 10-year at 5.29, SOFR 3.88 versus March 2027 at 4.625, Swiss CPI at 1.0 percent, UK factory inflation, the euro at a 17-month low, and Brent at 103.53 are prints or ongoing tape, not scheduled clocks. Book stays flat until a dated mechanism maps onto a live mispricing."
     }
   ],
   "schema_version": 1,

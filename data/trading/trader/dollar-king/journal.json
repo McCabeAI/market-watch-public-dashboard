@@ -494,6 +494,62 @@
       "run_id": "overnight-20260930",
       "schema_version": 1,
       "thesis": "The 160 basis-point SOFR\u2013CORRA cash gap is a dollar-versus-Canada rates story and is already on as long USDCAD; that remains the cleanest eligible dollar spot. Oil near 102.59 and the Shell LNG Canada decision are Canada-supportive overlays, and a +1.71 one-year z-score makes adding the wrong overnight location, but those idiosyncrasies do not close the dollar rates gap. Hold the existing long; do not rotate into euro or yen crosses that would add a second policy leg."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDCAD",
+          "notional_usd": null,
+          "position_id": "pos-5317bc96d4eb",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-01T04:50:57.400664-04:00",
+      "conviction": 50,
+      "decision_fingerprint": "166d13df35d60cb97df3a83668cc8314b6e555ef7dfc50dd4e07e51be42ce3e3",
+      "event_id": "jde-9c13c240a89e418b",
+      "funding_view": null,
+      "invalidation": "The hold fails if the SOFR-CORRA gap compresses enough to erase the carry case, if US 10-year yields reverse lower from 5.29 without matching CAD cheapening, or if the oil and LNG Canada channel starts to reprice CAD tighter.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-5317bc96d4eb"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "05cd36ef9fb29842a8ed329b39091e8291eaed97211a1abbfe1454ae37c8a70b",
+      "outcome_links": [],
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "3dc279e4f1142d51e7e45238c0dad92b667758234c643a390912628e0bd3e22d"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-01T04:50:57.400664-04:00",
+        "evidence_hash": "b9179b8ddff511573b36cf75f2af404d250c583341fb3157466cd9ce8aa4d410",
+        "overnight_run_id": "overnight-20261001",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Keep expressing the dollar through the existing long USDCAD. SOFR still clears CORRA by 158 basis points and the US 10-year is at 5.29, the highest since 2002, so Canada remains the cleaner funding leg against a still-dominant USD rates complex. Spot is already at z +1.72 and the 95.4th percentile after a 2.13 percent one-month rise, while Brent at 103.53, WTI at 90.42, and Shell LNG Canada FID still in the tape are CAD-supportive overlays, not a reason to press. EURUSD at a 17-month low and z -1.99, and USDCHF at z +2.71, are more stretched USD chases; a cross would only add a second-order Europe or Switzerland leg the book does not need.",
+      "run_id": "overnight-20261001",
+      "schema_version": 1,
+      "thesis": "Keep expressing the dollar through the existing long USDCAD. SOFR still clears CORRA by 158 basis points and the US 10-year is at 5.29, the highest since 2002, so Canada remains the cleaner funding leg against a still-dominant USD rates complex. Spot is already at z +1.72 and the 95.4th percentile after a 2.13 percent one-month rise, while Brent at 103.53, WTI at 90.42, and Shell LNG Canada FID still in the tape are CAD-supportive overlays, not a reason to press. EURUSD at a 17-month low and z -1.99, and USDCHF at z +2.71, are more stretched USD chases; a cross would only add a second-order Europe or Switzerland leg the book does not need."
     }
   ],
   "schema_version": 1,
