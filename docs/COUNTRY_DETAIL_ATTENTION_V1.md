@@ -16,8 +16,8 @@ The page order is fixed:
 
 1. A compact four-score block (Inflation, Labor, Activity, Consumer) with level and impulse text.
 2. What Matters Now.
-3. Searchable, topic-organized Country Evidence.
-4. Score and methodology drill-down.
+3. The full country dashboard: temperature, narrative, policy, and score-detail content.
+4. Remaining Country Evidence, collapsed by default. It omits observations already shown on a What Matters Now card. Search and topic controls filter that remaining list.
 
 Calibrated 1–100 scores stay available and visually subordinate. Attention does not rewrite them.
 
@@ -96,7 +96,7 @@ Direction-of-travel axis (`classify_travel`): a short run can be `interesting` w
 - Range break: the latest point leaves the prior range by more than a typical step, and none of the run patterns above already apply.
 - When the historical sample is too short, the reason says a historical percentile badge is not claimed and keeps `insufficient_history` or `seasonal_history_insufficient`. The badge is Interesting, not Notable or Outlier.
 
-Source-health blocks still win over both axes. Missing, failed fetch, structurally non-comparable, and stale rows stay status `none` and never become a current finding. Unknown cadence stays ineligible.
+Source-health blocks still win over both axes. Missing, failed fetch, structurally non-comparable, due/late, superseded, and an explicit source stale state stay status `none` and never become a current finding. Unknown cadence stays ineligible. Elapsed days since retrieval do not create that block.
 
 Unchanged reprint: if value, reference period, transformation, and revision status match the prior persisted attention snapshot for that observation id, do not create a fresh alert. The finding may remain visible with `alert_freshness=unchanged`. It must not be duplicated and must not sort above a genuinely new or revised qualifying finding. Vintage is not part of the unchanged match. A vintage change without a value change stays unchanged.
 
@@ -114,19 +114,23 @@ Missing, stale, revised, structurally non-comparable, and failed fetch are disti
 |---|---|
 | `missing` | Missing |
 | `stale` | Stale |
+| `due_late` | Due |
+| `superseded` | Superseded |
 | `revised` | Revised |
 | `structurally_non_comparable` | Not comparable |
 | `failed_fetch` | Source failed |
 
 `failed_fetch` must not advance `retrieved_at` or `observed_at`. The timestamp stays at the last successful observation. Source failed must not show a newer timestamp.
 
-Stale uses whole UTC calendar days from the last successful `retrieved_at` to the evaluation `as_of`, and only when that age is strictly greater than the country's `stale_after_days` in `data/country_registry.json`. Do not invent a second table of day counts. Policy does not read the registry; the caller passes the registry value. An otherwise extreme stale row has status `none`, ineligibility `stale`, and no Outlier badge.
+Country Detail analytical eligibility is release-aware and is separate from the macro-ingestion freshness gate. Clock age alone does not make the latest official observation stale. `retrieval_age_days` may be stored as metadata. `is_stale` remains the registry retrieval TTL (`stale_after_days` in `data/country_registry.json`) and is not the analytical exclusion.
+
+A monthly or quarterly print stays `current` and eligible while it is the latest official observation and a successor is not yet due. Due/late means the next period should already have been published: 45 days after the next month ends, or 60 days after the next quarter ends. Superseded means a newer official observation of the same series identity is in the batch. Due/late and superseded stay status `none`. An explicit source `data_state` of `stale` is still a source-health block; it is not inferred from elapsed days.
 
 Ineligibility reasons, and no others:
 
-`insufficient_history`, `insufficient_history_for_outlier`, `seasonal_history_insufficient`, `structurally_non_comparable`, `missing_value`, `stale`, `failed_fetch`, `unchanged_reprint`, `not_material`, `correlated_companion`, `unknown_cadence`.
+`insufficient_history`, `insufficient_history_for_outlier`, `seasonal_history_insufficient`, `structurally_non_comparable`, `missing_value`, `stale`, `due_late`, `superseded`, `failed_fetch`, `unchanged_reprint`, `not_material`, `correlated_companion`, `unknown_cadence`.
 
-Classification priority when several could apply: missing, failed fetch, structurally non-comparable, stale, unknown cadence, seasonal history, insufficient history, then the bands.
+Classification priority when several could apply: missing, failed fetch, structurally non-comparable, due/late, superseded, explicit stale, unknown cadence, seasonal history, insufficient history, then the bands.
 
 ## 6. What Matters Now
 

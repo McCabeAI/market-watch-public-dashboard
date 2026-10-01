@@ -159,17 +159,30 @@ class DirectionOfTravelTest(unittest.TestCase):
             if state == "missing":
                 obs["value"] = None
             if state == "stale":
-                obs["retrieved_at"] = "2026-09-01T00:00:00Z"
+                # Old reference period, recent retrieval. The calendar says the
+                # next print is due. Elapsed retrieval days are not the block.
+                obs["retrieved_at"] = "2026-09-28T00:00:00Z"
                 obs["data_state"] = "ok"
-            if state == "structurally_non_comparable":
-                obs["data_state"] = "ok"
-                obs["comparison_broken"] = True
-            result = _evaluate([obs])
+                result = evaluate_observations(
+                    [obs],
+                    as_of="2026-09-30",
+                    stale_after_days=4,
+                    release_aware=True,
+                )
+            else:
+                if state == "structurally_non_comparable":
+                    obs["data_state"] = "ok"
+                    obs["comparison_broken"] = True
+                result = _evaluate([obs])
             self.assertEqual(result["finding_count"], 0, msg=state)
             self.assertEqual(result["findings"], [])
             row = result["members"][0]
             self.assertEqual(row["attention_status"], "none", msg=state)
             self.assertIsNone(row["badge_text"], msg=state)
+            if state == "stale":
+                self.assertEqual(row["data_state"], "due_late", msg=state)
+                self.assertNotIn("stale", row["ineligibility"])
+                self.assertLessEqual(row["retrieval_age_days"], 4)
 
     def test_same_direction_release_keeps_one_slot(self) -> None:
         monthly = _observation(

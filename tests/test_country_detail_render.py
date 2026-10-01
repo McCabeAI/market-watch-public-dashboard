@@ -136,6 +136,16 @@ class CountryDetailRenderTest(unittest.TestCase):
             finding_pos = html.find("wmn-finding")
         self.assertGreater(finding_pos, -1)
         self.assertGreaterEqual(html.count(SHARED_OBS_ID), 2)
+        compact = html.find('class="score-compact"')
+        wmn = html.find('class="what-matters-now"')
+        scores = html.find('class="temp-dimension score-detail"')
+        evidence = html.find('class="country-evidence"')
+        self.assertTrue(0 <= compact < wmn < scores < evidence)
+        evidence_html = html[evidence:]
+        self.assertNotIn(f'data-observation-id="{SHARED_OBS_ID}"', evidence_html)
+        self.assertIn('class="country-evidence-fold"', html)
+        self.assertNotIn('class="country-evidence-fold" open', html)
+        self.assertIn("Remaining Country Evidence", html)
 
     def test_quiet_fixture(self) -> None:
         html = render_country_detail(
@@ -199,9 +209,22 @@ class CountryDetailRenderTest(unittest.TestCase):
         self.assertNotEqual(rendered["EA"], rendered["JP"])
 
     def test_shared_observation_id_in_finding_and_evidence(self) -> None:
+        other_id = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        projection = synthetic_projection(SHARED_OBS_ID)
+        projection["observations"].append(
+            {
+                "observation_id": other_id,
+                "label": "Synthetic unemployment",
+                "topic": "labor",
+                "series_id": "SYN_UNRATE",
+                "reference_period": "2024-02",
+                "value": 4.2,
+                "data_state": "ok",
+            }
+        )
         html = render_country_detail(
             "CA",
-            synthetic_projection(SHARED_OBS_ID),
+            projection,
             synthetic_attention_populated(SHARED_OBS_ID),
             synthetic_score_state(),
         )
@@ -209,12 +232,13 @@ class CountryDetailRenderTest(unittest.TestCase):
             rf'<article[^>]*class="[^"]*wmn-finding[^"]*"[^>]*data-observation-id="{SHARED_OBS_ID}"',
             html,
         )
-        evidence_match = re.search(
-            rf'<article[^>]*data-observation-id="{SHARED_OBS_ID}"',
-            html,
-        )
+        evidence_html = html[html.find('class="country-evidence"'):]
         self.assertIsNotNone(finding_match)
-        self.assertIsNotNone(evidence_match)
+        self.assertNotIn(f'data-observation-id="{SHARED_OBS_ID}"', evidence_html)
+        self.assertIn(f'data-observation-id="{other_id}"', evidence_html)
+        self.assertIn('class="evidence-filter-empty"', evidence_html)
+        self.assertIn('class="evidence-search"', evidence_html)
+        self.assertIn('data-topic="all"', evidence_html)
 
     def test_evidence_shows_attention_stale_when_projection_is_ok(self) -> None:
         oid = "1111111111111111111111111111111111111111111111111111111111111111"
@@ -333,6 +357,22 @@ class CountryDetailRenderTest(unittest.TestCase):
             ],
             "members": [],
         }
+        companion_id = "5555555555555555555555555555555555555555555555555555555555555555"
+        projection["observations"].append(
+            {
+                "observation_id": companion_id,
+                "label": "Unemployment rate",
+                "topic": "labor",
+                "series_id": "A84423050A",
+                "reference_period": "2026-07",
+                "value": 4.1,
+                "units": "percent",
+                "transformation": "percent",
+                "score_role": "context",
+                "publisher": "ABS",
+                "source_url": "https://example.invalid/au/unemployment",
+            }
+        )
         html = render_country_detail("AU", projection, attention, synthetic_score_state())
         self.assertIn('class="evidence-details"', html)
         self.assertNotIn('class="evidence-details" open', html)

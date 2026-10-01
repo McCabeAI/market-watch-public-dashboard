@@ -231,7 +231,9 @@ def _render_wmn(
     findings = list(attention_country.get("findings") or [])
     parts = ['<section class="what-matters-now"><h2>What Matters Now</h2>']
     if finding_count == 0 or not findings:
-        parts.append(f'<p class="wmn-quiet">{_esc(WMN_QUIET_TEXT)}</p>')
+        why = _quiet_explanation(attention_country.get("review"))
+        why_html = f' <span class="wmn-quiet-why">{_esc(why)}</span>' if why else ""
+        parts.append(f'<p class="wmn-quiet">{_esc(WMN_QUIET_TEXT)}{why_html}</p>')
     else:
         parts.append('<ol class="wmn-list">')
         for finding in findings:
@@ -239,7 +241,8 @@ def _render_wmn(
             status = str(finding["attention_status"])
             badge = finding.get("badge_text") or ATTENTION_BADGE_TEXT.get(status, "")
             parts.append(
-                f'<article class="wmn-finding" data-observation-id="{_esc(oid)}" '
+                f'<article class="wmn-finding" id="ev-{_esc(oid)}" '
+                f'data-observation-id="{_esc(oid)}" '
                 f'data-attention="{_esc(status)}">'
             )
             if badge:
@@ -279,6 +282,48 @@ def _render_wmn(
     return "".join(parts)
 
 
+def _quiet_explanation(review: Mapping[str, Any] | None) -> str:
+    """Say why a country is quiet after its own evidence was evaluated."""
+    if not isinstance(review, Mapping):
+        return ""
+    evaluated = int(review.get("evaluated_count") or 0)
+    eligible = int(review.get("eligible_count") or 0)
+    due = int(review.get("due_late_count") or 0)
+    superseded = int(review.get("superseded_count") or 0)
+    if evaluated == 0:
+        return "No observations were available to review."
+    if eligible == 0 and due:
+        return (
+            f"{evaluated} observations were reviewed. "
+            f"{due} are due or late because a newer release should exist, "
+            "not because a short number of days passed since the last print."
+        )
+    if eligible == 0 and superseded and not due:
+        return (
+            f"{evaluated} observations were reviewed. "
+            f"{superseded} are superseded by a newer official observation."
+        )
+    return (
+        f"{eligible} of {evaluated} observations were eligible latest evidence "
+        "and none qualified."
+    )
+
+
+def _search_text(obs: Mapping[str, Any], *, label: str, value_s: str, period: str, geo_label: str) -> str:
+    bits = [
+        label,
+        series_synopsis(obs),
+        str(obs.get("topic") or ""),
+        period,
+        str(obs.get("publisher") or ""),
+        geo_label,
+        value_s,
+        bucket_label(obs),
+        str(obs.get("reference_period") or ""),
+    ]
+    return " ".join(bit for bit in bits if bit)
+
+
 def _render_evidence_row(
     obs: Mapping[str, Any],
     members: list[Mapping[str, Any]],
@@ -306,8 +351,10 @@ def _render_evidence_row(
     reasons = _member_ineligibility(members, oid)
     limitation = _history_limitation_text(reasons)
 
+    search = _search_text(obs, label=label, value_s=value_s, period=period or "", geo_label=geo_label)
     parts = [
-        f'<article class="evidence-item" data-observation-id="{_esc(oid)}" data-topic="{_esc(topic)}">',
+        f'<article class="evidence-item" data-observation-id="{_esc(oid)}" '
+        f'data-topic="{_esc(topic)}" data-search="{_esc(search)}">',
         '<details class="evidence-details">',
         "<summary>",
         f'<div class="evidence-item-header">{_esc(label)}</div>',
@@ -353,31 +400,58 @@ def _render_evidence_row(
     return "".join(parts)
 
 
+def _wmn_observation_ids(attention_country: Mapping[str, Any]) -> set[str]:
+    return {
+        str(finding.get("observation_id"))
+        for finding in (attention_country.get("findings") or [])
+        if finding.get("observation_id")
+    }
+
+
 def _render_country_evidence(
     country_code: str,
     observations: list[Mapping[str, Any]],
     members: list[Mapping[str, Any]],
+    *,
+    shown_ids: set[str] | None = None,
 ) -> str:
+    """Remaining evidence. Observations already on a What Matters Now card are omitted."""
+    remaining = [
+        obs
+        for obs in observations
+        if str(obs.get("observation_id")) not in (shown_ids or set())
+    ]
     parts = [
-        '<section class="country-evidence"><h2>Country Evidence</h2>',
+        '<section class="country-evidence">',
+        '<details class="country-evidence-fold">',
+        "<summary><h2>Remaining Country Evidence</h2></summary>",
         '<div class="evidence-toolbar">',
-        '<input type="search" class="evidence-search" aria-label="Search country evidence" placeholder="Search evidence">',
+        '<input type="search" class="evidence-search" aria-label="Search country evidence" '
+        'placeholder="Search evidence" autocomplete="off">',
     ]
     parts.append(
         '<button type="button" class="topic-btn" data-topic="all" aria-pressed="true">All</button>'
     )
     for topic_id in TOPIC_IDS:
         parts.append(
-            f'<button type="button" class="topic-btn" data-topic="{_esc(topic_id)}">'
+            f'<button type="button" class="topic-btn" data-topic="{_esc(topic_id)}" aria-pressed="false">'
             f"{_esc(topic_id.replace('_', ' '))}</button>"
         )
     parts.append('</div><div class="evidence-list">')
-    if not observations:
-        parts.append(f'<p class="evidence-empty">{_esc(_empty_evidence_line(country_code))}</p>')
+    parts.append(
+        '<p class="evidence-filter-empty" hidden>No evidence matches this search or topic.</p>'
+    )
+    if not remaining:
+        if observations and shown_ids:
+            parts.append(
+                '<p class="evidence-empty">Every observation in this view is already on a What Matters Now card.</p>'
+            )
+        else:
+            parts.append(f'<p class="evidence-empty">{_esc(_empty_evidence_line(country_code))}</p>')
     else:
-        for obs in observations:
+        for obs in remaining:
             parts.append(_render_evidence_row(obs, members))
-    parts.append("</div></section>")
+    parts.append("</div></details></section>")
     return "".join(parts)
 
 
@@ -520,8 +594,13 @@ def render_country_detail(
         f'<section class="country-detail" data-country="{_esc(code)}">',
         _render_score_compact(code, score_state),
         _render_wmn(attention_country, obs_map),
-        _render_country_evidence(code, observations, members),
         _render_score_drilldown(code, observations, score_state, members),
+        _render_country_evidence(
+            code,
+            observations,
+            members,
+            shown_ids=_wmn_observation_ids(attention_country),
+        ),
         "</section>",
     ]
     return "".join(chunks)
@@ -862,40 +941,68 @@ def _preview_fixtures() -> dict[str, dict[str, Any]]:
     }
 
 
-def _preview_script() -> str:
+def evidence_filter_script() -> str:
+    """Production search and topic controls. No network and no runtime model calls."""
     return """
 (function () {
   function wire(root) {
-    if (!root) return;
+    if (!root || root.getAttribute('data-evidence-wired') === '1') return;
     var search = root.querySelector('.evidence-search');
     var topicBtns = root.querySelectorAll('.topic-btn');
+    if (!search && !topicBtns.length) return;
+    root.setAttribute('data-evidence-wired', '1');
     var items = root.querySelectorAll('.evidence-item');
+    var empty = root.querySelector('.evidence-filter-empty');
     var activeTopic = 'all';
 
     function applyFilter() {
-      var q = (search && search.value || '').toLowerCase();
+      var q = (search && search.value || '').trim().toLowerCase();
+      var visible = 0;
       items.forEach(function (el) {
-        var text = el.textContent.toLowerCase();
         var topic = el.getAttribute('data-topic') || '';
+        var hay = (el.getAttribute('data-search') || el.textContent || '').toLowerCase();
         var topicOk = activeTopic === 'all' || topic === activeTopic;
-        var searchOk = !q || text.indexOf(q) !== -1;
-        el.style.display = topicOk && searchOk ? '' : 'none';
+        var searchOk = !q || hay.indexOf(q) !== -1;
+        var show = topicOk && searchOk;
+        el.hidden = !show;
+        if (show) visible += 1;
       });
+      if (empty) empty.hidden = visible !== 0;
     }
 
     topicBtns.forEach(function (btn) {
       btn.addEventListener('click', function () {
         activeTopic = btn.getAttribute('data-topic') || 'all';
-        topicBtns.forEach(function (b) {
-          b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
+        topicBtns.forEach(function (other) {
+          other.setAttribute('aria-pressed', other === btn ? 'true' : 'false');
         });
         applyFilter();
       });
     });
-    if (search) search.addEventListener('input', applyFilter);
+    if (search) {
+      search.addEventListener('input', applyFilter);
+      search.addEventListener('search', applyFilter);
+      search.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+          search.value = '';
+          applyFilter();
+        }
+      });
+    }
   }
 
-  document.querySelectorAll('.country-detail').forEach(wire);
+  function boot() {
+    document.querySelectorAll('.country-detail').forEach(wire);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+})();
+"""
+
+
+def _preview_script() -> str:
+    return evidence_filter_script() + """
+(function () {
 
   var radios = document.querySelectorAll('input[name="cd-country"]');
   var panes = document.querySelectorAll('.country-pane');

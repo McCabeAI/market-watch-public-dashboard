@@ -15,7 +15,8 @@ from __future__ import annotations
 import hashlib
 import json
 import re
-from datetime import date
+import calendar
+from datetime import date, timedelta
 from decimal import Decimal
 from types import MappingProxyType
 from typing import Any, Mapping, Sequence
@@ -108,6 +109,8 @@ INELIGIBILITY_REASONS = frozenset(
         "structurally_non_comparable",
         "missing_value",
         "stale",
+        "due_late",
+        "superseded",
         "failed_fetch",
         "unchanged_reprint",
         "not_material",
@@ -120,6 +123,8 @@ DATA_STATES = (
     "ok",
     "missing",
     "stale",
+    "due_late",
+    "superseded",
     "revised",
     "structurally_non_comparable",
     "failed_fetch",
@@ -128,11 +133,30 @@ DATA_STATE_LABELS = MappingProxyType(
     {
         "missing": "Missing",
         "stale": "Stale",
+        "due_late": "Due",
+        "superseded": "Superseded",
         "revised": "Revised",
         "structurally_non_comparable": "Not comparable",
         "failed_fetch": "Source failed",
     }
 )
+# Analytical release states. ``current`` is the latest official observation.
+# ``due_late`` means a successor should already exist. ``superseded`` means a
+# newer official observation of the same series identity is present.
+RELEASE_STATES = (
+    "current",
+    "due_late",
+    "superseded",
+    "missing",
+    "failed_fetch",
+    "revised",
+    "structurally_non_comparable",
+    "stale",
+)
+# Days after the *next* period ends before a missing successor is due.
+# Long enough that a normal publication lag is still the latest official print.
+# Clock age of retrieved_at is not an input.
+NEXT_RELEASE_GRACE_DAYS = MappingProxyType({"monthly": 45, "quarterly": 60})
 
 REVISED_REVISION_STATUSES = frozenset({"revised", "preliminary"})
 
@@ -141,11 +165,14 @@ PERCENT_ABSOLUTE_TOLERANCE = Decimal("0.05")
 RELATIVE_TOLERANCE = Decimal("0.001")
 ZERO_BASELINE_ABSOLUTE_TOLERANCE = Decimal("1e-9")
 
-# Stale age is whole UTC days since the last successful retrieved_at.
+# Registry retrieval TTL. This is not the Country Detail analytical gate.
+# ``is_stale`` remains for that TTL. Attention must not exclude the latest
+# official observation because this many days have elapsed since retrieval.
 # The day count comes from data/country_registry.json economies.<code>.stale_after_days.
 # This module does not copy those day counts and does not read the file.
 STALE_AFTER_DAYS_SOURCE = "data/country_registry.json#economies.<code>.stale_after_days"
 STALE_WHEN_AGE_DAYS_STRICTLY_GREATER = True
+CLOCK_AGE_DOES_NOT_GATE_ANALYTICAL_ELIGIBILITY = True
 
 # --- Identity ---
 # Canonical JSON uses sorted keys. This tuple is the exact key set, user order.
@@ -418,6 +445,10 @@ def classify_attention(
             ("structurally_non_comparable",),
             "No attention badge: structurally_non_comparable.",
         )
+    if effective_state == "due_late":
+        return _result("none", ("due_late",), "No attention badge: due_late.")
+    if effective_state == "superseded":
+        return _result("none", ("superseded",), "No attention badge: superseded.")
     if effective_state == "stale":
         return _result("none", ("stale",), "No attention badge: stale.")
 
@@ -991,10 +1022,98 @@ def age_in_days(retrieved_at: str, as_of: str) -> int:
 
 
 def is_stale(*, retrieved_at: str, as_of: str, stale_after_days: int) -> bool:
-    """Stale only when age in whole UTC days is strictly greater than the registry count."""
+    """Registry retrieval TTL. Not the Country Detail analytical exclusion.
+
+    Whole UTC days since ``retrieved_at`` strictly greater than the registry
+    count. Country Detail must not call this to drop a latest official print.
+    Macro-ingestion freshness stays on its own gate.
+    """
     if stale_after_days < 0:
         raise ValueError("stale_after_days must be >= 0")
     return age_in_days(retrieved_at, as_of) > stale_after_days
+
+
+def series_identity(observation: Mapping[str, Any]) -> tuple[Any, ...]:
+    """Series identity without reference period. A later period supersedes this one."""
+    return tuple(
+        observation.get(field)
+        for field in OBSERVATION_ID_FIELDS
+        if field != "reference_period"
+    )
+
+
+def period_sort_key(period: str) -> tuple[int, int]:
+    """Order monthly and quarterly reference periods. Unparsed periods sort first."""
+    monthly = _MONTHLY_PERIOD.match(period or "")
+    if monthly:
+        return (int(monthly.group(1)), int(monthly.group(2)))
+    quarterly = _QUARTERLY_PERIOD.match(period or "")
+    if quarterly:
+        return (int(quarterly.group(1)), int(quarterly.group(2)) * 3)
+    return (0, 0)
+
+
+def _advance_period(period: str, cadence: str) -> str:
+    if cadence == CADENCE_MONTHLY:
+        year = int(period[:4])
+        month = int(period[5:7])
+        if month == 12:
+            return f"{year + 1}-01"
+        return f"{year}-{month + 1:02d}"
+    year = int(period[:4])
+    quarter = int(period[-1])
+    if quarter == 4:
+        return f"{year + 1}-Q1"
+    return f"{year}-Q{quarter + 1}"
+
+
+def _period_end(period: str, cadence: str) -> date:
+    if cadence == CADENCE_MONTHLY:
+        year = int(period[:4])
+        month = int(period[5:7])
+        return date(year, month, calendar.monthrange(year, month)[1])
+    year = int(period[:4])
+    quarter = int(period[-1])
+    month = quarter * 3
+    return date(year, month, calendar.monthrange(year, month)[1])
+
+
+def successor_due_date(reference_period: str, cadence: str) -> date | None:
+    """First date on which a missing successor is analytically due.
+
+    Monthly: 45 days after the next month ends. Quarterly: 60 days after the
+    next quarter ends. Unknown cadence or an unparsable period returns None,
+    which means the latest observation stays current.
+    """
+    if cadence not in KNOWN_CADENCES or not reference_period:
+        return None
+    try:
+        _require_period(reference_period, cadence)
+    except ValueError:
+        return None
+    following = _advance_period(reference_period, cadence)
+    return _period_end(following, cadence) + timedelta(days=int(NEXT_RELEASE_GRACE_DAYS[cadence]))
+
+
+def release_is_due(*, reference_period: str, cadence: str, as_of: str) -> bool:
+    """True when a newer official release should already have been ingested."""
+    due = successor_due_date(reference_period, cadence)
+    if due is None or not as_of:
+        return False
+    try:
+        today = date.fromisoformat(str(as_of)[:10])
+    except ValueError:
+        return False
+    return today >= due
+
+
+def release_state_for_data_state(data_state: str) -> str:
+    """Map an analytical data state onto the release-state vocabulary."""
+    if data_state == "ok":
+        return "current"
+    if data_state not in RELEASE_STATES:
+        raise ValueError(f"unknown data_state: {data_state}")
+    return data_state
 
 
 def next_retrieved_at(
