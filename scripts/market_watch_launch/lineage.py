@@ -323,6 +323,59 @@ def apply_lineage_to_macro_hard(
     return out
 
 
+class CanonicalScorePromotionError(ValueError):
+    """Accepted lineage could not be written to canonical score state."""
+
+
+def promote_accepted_launch_lineage(
+    *,
+    launch_dir: Path,
+    canonical_history_dir: Path,
+    canonical_scores_path: Path,
+    mode: str,
+    accepted: bool,
+    recorded_score_sha256: str | None = None,
+) -> dict[str, Any]:
+    """Copy staged history and scores into canonical state after acceptance.
+
+    Fixture mode and any launch that is not accepted return without writing.
+    A live accepted launch with missing or mismatched lineage fails loudly
+    instead of leaving the previous canonical scores in place.
+    """
+    if not accepted:
+        return {"promoted": False, "ok": True, "reason": "launch_not_accepted"}
+    if mode != "live":
+        return {"promoted": False, "ok": True, "reason": "non_live_mode"}
+
+    staging = launch_dir / LINEAGE_SUBDIR
+    scores_src = staging / STAGED_SCORES_NAME
+    history_src = staging / HISTORY_SUBDIR
+    if not history_src.is_dir() or not scores_src.is_file():
+        raise CanonicalScorePromotionError("accepted launch is missing staged score lineage")
+
+    digest = _sha256_bytes(scores_src.read_bytes())
+    if recorded_score_sha256 and digest != recorded_score_sha256:
+        raise CanonicalScorePromotionError(
+            "staged score state does not match the accepted lineage digest"
+        )
+    staged_doc = json.loads(scores_src.read_text(encoding="utf-8"))
+    result = promote_staged_lineage(
+        staging,
+        canonical_history_dir,
+        canonical_scores_path,
+        promote=True,
+        mode="live",
+    )
+    written = json.loads(canonical_scores_path.read_text(encoding="utf-8"))
+    if written != staged_doc:
+        raise CanonicalScorePromotionError(
+            "canonical score state does not match staged lineage after promotion"
+        )
+    result["ok"] = True
+    result["score_state_sha256"] = digest
+    return result
+
+
 def promote_staged_lineage(
     staging_dir: Path,
     canonical_history_dir: Path,

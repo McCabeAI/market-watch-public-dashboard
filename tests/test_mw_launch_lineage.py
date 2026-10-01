@@ -13,7 +13,12 @@ from zoneinfo import ZoneInfo
 
 from scripts.market_watch_launch import contract
 from scripts.market_watch_launch.freeze import run as freeze_run
-from scripts.market_watch_launch.lineage import promote_staged_lineage, stage_verified_lineage
+from scripts.market_watch_launch.lineage import (
+    CanonicalScorePromotionError,
+    promote_accepted_launch_lineage,
+    promote_staged_lineage,
+    stage_verified_lineage,
+)
 from scripts.overnight.constants import ROOT
 from scripts.overnight.evidence import require_snapshot
 from scripts.overnight.pipeline import run_stage
@@ -102,6 +107,98 @@ class LineageStagingTests(unittest.TestCase):
             )
             self.assertEqual(first["provenance_sha256"], second["provenance_sha256"])
             self.assertEqual(first["score_state_sha256"], second["score_state_sha256"])
+
+    def test_accepted_live_lineage_promotes_and_rejected_launches_do_not(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            launch_dir = root / "launch"
+            staging = launch_dir / "lineage"
+            (staging / "history").mkdir(parents=True)
+            scores = {
+                "version": 3,
+                "countries": {
+                    "AU": {
+                        "Inflation": {
+                            "component_state": {
+                                "headline": {"as_of": "2026-08", "transform_value": 4.0}
+                            }
+                        }
+                    }
+                },
+            }
+            scores_path = staging / "temperature_scores.json"
+            scores_path.write_text(json.dumps(scores, indent=2) + "\n", encoding="utf-8")
+            canonical_history = root / "history"
+            canonical_history.mkdir()
+            canonical_scores = root / "temperature_scores.json"
+            canonical_scores.write_text("{}\n", encoding="utf-8")
+            digest = hashlib.sha256(scores_path.read_bytes()).hexdigest()
+
+            rejected = promote_accepted_launch_lineage(
+                launch_dir=launch_dir,
+                canonical_history_dir=canonical_history,
+                canonical_scores_path=canonical_scores,
+                mode="live",
+                accepted=False,
+                recorded_score_sha256=digest,
+            )
+            self.assertFalse(rejected["promoted"])
+            self.assertEqual(canonical_scores.read_text(encoding="utf-8"), "{}\n")
+
+            fixture = promote_accepted_launch_lineage(
+                launch_dir=launch_dir,
+                canonical_history_dir=canonical_history,
+                canonical_scores_path=canonical_scores,
+                mode="fixture",
+                accepted=True,
+                recorded_score_sha256=digest,
+            )
+            self.assertFalse(fixture["promoted"])
+            self.assertEqual(canonical_scores.read_text(encoding="utf-8"), "{}\n")
+
+            untouched = root / "untouched_scores.json"
+            untouched.write_text("{}\n", encoding="utf-8")
+            with self.assertRaises(CanonicalScorePromotionError):
+                promote_accepted_launch_lineage(
+                    launch_dir=launch_dir,
+                    canonical_history_dir=canonical_history,
+                    canonical_scores_path=untouched,
+                    mode="live",
+                    accepted=True,
+                    recorded_score_sha256="0" * 64,
+                )
+            self.assertEqual(untouched.read_text(encoding="utf-8"), "{}\n")
+
+            empty = root / "empty-launch"
+            empty.mkdir()
+            with self.assertRaises(CanonicalScorePromotionError):
+                promote_accepted_launch_lineage(
+                    launch_dir=empty,
+                    canonical_history_dir=canonical_history,
+                    canonical_scores_path=canonical_scores,
+                    mode="live",
+                    accepted=True,
+                )
+            self.assertEqual(canonical_scores.read_text(encoding="utf-8"), "{}\n")
+
+            promoted = promote_accepted_launch_lineage(
+                launch_dir=launch_dir,
+                canonical_history_dir=canonical_history,
+                canonical_scores_path=canonical_scores,
+                mode="live",
+                accepted=True,
+                recorded_score_sha256=digest,
+            )
+            self.assertTrue(promoted["promoted"])
+            written = json.loads(canonical_scores.read_text(encoding="utf-8"))
+            self.assertEqual(
+                written["countries"]["AU"]["Inflation"]["component_state"]["headline"]["transform_value"],
+                4.0,
+            )
+            self.assertEqual(
+                written["countries"]["AU"]["Inflation"]["component_state"]["headline"]["as_of"],
+                "2026-08",
+            )
 
     def test_promote_staged_lineage_refuses_fixture_mode(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

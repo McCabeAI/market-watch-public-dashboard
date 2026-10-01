@@ -5,7 +5,7 @@
     "end": "2026-09-21"
   },
   "retrieved_at": "2026-09-21",
-  "notes": "G0 observation backfill from ABS time-series workbooks (Jul 2026 CPI/LFS/spending; Jun 2026 national accounts/WPI; Jun 2025 final Retail Trade). Proprietary survey history gapped per SCHEMA.md. Unemployment rate stored at full ABS workbook precision (headline 4.5% in Jul 2026 release).",
+  "notes": "G0 observation backfill from ABS time-series workbooks (Jul 2026 LFS/spending; Jun 2026 national accounts/WPI; Jun 2025 final Retail Trade). August 2026 headline and trimmed-mean CPI were appended from the accepted 2026-10-01 launch observations. Proprietary survey history gapped per SCHEMA.md. Unemployment rate stored at full ABS workbook precision (headline 4.5% in Jul 2026 release).",
   "components": {
     "Inflation.headline": {
       "dimension": "Inflation",
@@ -175,15 +175,22 @@
           "source_url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/jul-2026/640101.xlsx",
           "series_id": "A130393721F",
           "release_date": "2026-08-27"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-10-01T08:50:57Z",
+          "reference_period": "2026-08",
+          "value": 4.0,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/aug-2026/640101.xlsx",
+          "series_id": "A130393721F",
+          "release_date": "2026-08-27",
+          "revision_status": "final"
         }
       ],
       "gaps": [
-        {
-          "expected_period": "2026-08",
-          "reason": "not yet released",
-          "attempted_sources": [],
-          "as_of": "2026-09-21"
-        },
         {
           "expected_period": "2026-09",
           "reason": "not yet released",
@@ -193,12 +200,12 @@
       ],
       "coverage": {
         "expected_periods_in_window": 13,
-        "observed_periods_in_window": 11,
-        "latest_reference_period": "2026-07",
+        "observed_periods_in_window": 12,
+        "latest_reference_period": "2026-08",
         "latest_release_date": "2026-08-27",
         "status": "ok"
       },
-      "notes": "Latest in-window observation: 2026-07 = 3.5 percent."
+      "notes": "Latest in-window observation: 2026-08 = 4.0 percent."
     },
     "Inflation.underlying": {
       "dimension": "Inflation",
@@ -368,15 +375,22 @@
           "source_url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/jul-2026/640106.xlsx",
           "series_id": "A130400382R",
           "release_date": "2026-08-27"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-10-01T08:50:57Z",
+          "reference_period": "2026-08",
+          "value": 3.6,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/aug-2026/640106.xlsx",
+          "series_id": "A130400382R",
+          "release_date": "2026-08-27",
+          "revision_status": "final"
         }
       ],
       "gaps": [
-        {
-          "expected_period": "2026-08",
-          "reason": "not yet released",
-          "attempted_sources": [],
-          "as_of": "2026-09-21"
-        },
         {
           "expected_period": "2026-09",
           "reason": "not yet released",
@@ -386,12 +400,12 @@
       ],
       "coverage": {
         "expected_periods_in_window": 13,
-        "observed_periods_in_window": 11,
-        "latest_reference_period": "2026-07",
+        "observed_periods_in_window": 12,
+        "latest_reference_period": "2026-08",
         "latest_release_date": "2026-08-27",
         "status": "ok"
       },
-      "notes": "Latest in-window observation: 2026-07 = 3.6 percent."
+      "notes": "Latest in-window observation: 2026-08 = 3.6 percent."
     },
     "Labor.unemployment": {
       "dimension": "Labor",

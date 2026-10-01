@@ -384,8 +384,10 @@ class CountryDetailRenderTest(unittest.TestCase):
         self.assertIn("JUL 2026", visible)
         self.assertIn("Labor", visible)
         self.assertIn("How many jobs were added or lost", visible)
-        self.assertIn("reversed direction", visible)
-        self.assertIn("too short for a historical notable or outlier label", visible)
+        self.assertIn("turned down to -15.80k", visible)
+        self.assertIn("from +80.20k", visible)
+        self.assertNotIn("Comparable history is too short", visible)
+        self.assertNotIn("The latest move sped up", visible)
         self.assertIn("mom_change_thousands_sa", html)
         self.assertIn("insufficient_history", html)
 

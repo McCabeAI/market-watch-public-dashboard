@@ -8,6 +8,10 @@ from typing import Any
 
 from scripts.market_watch_launch import contract
 from scripts.market_watch_launch.freeze import apply_macro_overlay
+from scripts.market_watch_launch.lineage import (
+    CanonicalScorePromotionError,
+    promote_accepted_launch_lineage,
+)
 from scripts.overnight.assemble import assemble_dataset
 from scripts.overnight.constants import FIXTURE_MARKET_STATE
 from scripts.overnight.delta import compute_delta
@@ -111,6 +115,43 @@ def run(launch: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
 
     require_snapshot(store, run_id, review_id)
 
+    mode = str((launch.get("request") or {}).get("mode") or "fixture")
+    promotion: dict[str, Any] = {"promoted": False, "reason": "non_live_mode"}
+    if mode == "live":
+        if meta.get("status") != "accepted":
+            return contract.stage_receipt(
+                STAGE,
+                status="failed",
+                input_sha256=input_sha,
+                reason="review_not_accepted",
+            )
+        root = Path(ctx["root"])
+        ingest_lineage = (
+            ((launch.get("stages") or {}).get("01_ingest") or {}).get("details") or {}
+        ).get("lineage") or {}
+        try:
+            promotion = promote_accepted_launch_lineage(
+                launch_dir=Path(ctx["launch_dir"]),
+                canonical_history_dir=Path(ctx.get("canonical_history_dir") or root / "data" / "temperature_history"),
+                canonical_scores_path=Path(ctx.get("canonical_scores_path") or root / "data" / "temperature_scores.json"),
+                mode=mode,
+                accepted=True,
+                recorded_score_sha256=ingest_lineage.get("score_state_sha256"),
+            )
+        except (CanonicalScorePromotionError, ValueError, OSError) as exc:
+            return contract.stage_receipt(
+                STAGE,
+                status="failed",
+                input_sha256=input_sha,
+                reason="canonical_score_promotion_failed",
+                details={
+                    "launch_id": launch["launch_id"],
+                    "review_id": review_id,
+                    "error": str(exc),
+                    "promoted": False,
+                },
+            )
+
     offline, market_state_path = _offline_and_market_state(launch, ctx)
     run = load_or_create(store, run_id=run_id, when=when, dry_run=(launch.get("request") or {}).get("mode") == "fixture")
 
@@ -157,6 +198,7 @@ def run(launch: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
                 "publication": {"may_publish": False, "core_status": None, "reason": str(exc)},
                 "coverage": coverage.get("coverage"),
                 "partial": bool(partial),
+                "score_promotion": promotion,
             },
         )
 
@@ -185,10 +227,11 @@ def run(launch: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
                     "core_status": gate.get("core_status"),
                     "reason": gate.get("reason"),
                 },
-                "coverage": coverage.get("coverage"),
-                "partial": bool(partial),
-            },
-        )
+            "coverage": coverage.get("coverage"),
+            "partial": bool(partial),
+            "score_promotion": promotion,
+        },
+    )
 
     if review_id != (freeze.get("review_id") or launch.get("review_id")):
         return contract.stage_receipt(
@@ -215,5 +258,6 @@ def run(launch: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
             },
             "coverage": coverage.get("coverage"),
             "partial": bool(partial),
+            "score_promotion": promotion,
         },
     )

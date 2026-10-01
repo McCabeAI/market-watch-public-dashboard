@@ -10,7 +10,7 @@ from typing import Any
 
 from scripts.market_watch_launch import contract
 from scripts.market_watch_launch.contract import LAUNCHER_ID, LEGACY_SCHEDULE_ID
-from scripts.market_watch_launch.lineage import apply_lineage_to_macro_hard, promote_staged_lineage
+from scripts.market_watch_launch.lineage import apply_lineage_to_macro_hard
 from scripts.overnight.clock import isoformat
 from scripts.overnight.constants import FIXTURE_MARKET_STATE
 from scripts.overnight.delta import compute_delta
@@ -269,15 +269,8 @@ def run(launch: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
         launch["starting_trader_books_sha256"] = verified.get("starting_trader_books_sha256")
         launch["starting_pm_books_sha256"] = verified.get("starting_pm_books_sha256")
 
-        if ctx.get("promote_canonical"):
-            mode = str((launch.get("request") or {}).get("mode") or "fixture")
-            promote_staged_lineage(
-                launch_dir / "lineage",
-                Path(ctx["canonical_history_dir"]),
-                Path(ctx["canonical_scores_path"]),
-                promote=True,
-                mode=mode,
-            )
+        # Canonical history and scores are promoted only after acceptance.
+        # Freeze keeps the recomputed state inside the launch lineage.
 
         return contract.stage_receipt(
             STAGE,

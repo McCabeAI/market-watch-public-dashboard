@@ -66,14 +66,16 @@ def series_synopsis(obs: Mapping[str, Any]) -> str:
         return "How fast household income is growing."
     if "retail" in name:
         return "How fast retail sales are growing."
+    # Price indexes before spending: "Personal Consumption Expenditures ... Price Index"
+    # contains "consumption" and is still an inflation series.
+    if _names_price_index(name):
+        return "How fast prices are rising."
     if any(token in name for token in ("consumption", "spending", "household spending")):
         return "How fast household spending is growing."
     if any(token in name for token in ("confidence", "sentiment")):
         return "How households say they feel about the economy."
-    if "gdp" in name or "domestic demand" in name:
+    if "gdp" in name or "gross domestic product" in name or "domestic demand" in name:
         return "How fast the economy is growing."
-    if any(token in name for token in ("cpi", "price index", "pce", "inflation", "hicp")):
-        return "How fast prices are rising."
     if any(token in name for token in ("oil", "bitumen", "crude", "gas")):
         return "Physical energy supply, kept as context beside the scores."
     if "permit" in name:
@@ -110,49 +112,38 @@ def format_macro_value(value: Any, units: str | None, transformation: str | None
     return f"{number:.2f}"
 
 
-def format_signed_macro(value: float, obs: Mapping[str, Any]) -> str:
-    text = format_macro_value(value, obs.get("units"), obs.get("transformation"))
-    if value > 0 and not text.startswith("+"):
-        return f"+{text}"
-    return text
+def is_raw_price_index_level(obs: Mapping[str, Any]) -> bool:
+    """True for a drifting price-index level, not its percent change.
+
+    A raw CPI, PCE, HICP, or PPI index almost always trends up. That trend is
+    not an economic move. The percent-change transforms of the same index stay
+    eligible. Diffusion indexes such as PMIs are not price indexes.
+    """
+    transformation = str(obs.get("transformation") or "").lower()
+    if any(token in transformation for token in ("pct", "percent", "change")):
+        return False
+    units = str(obs.get("units") or "").lower()
+    if _is_percent(units):
+        return False
+    nominal = str(obs.get("nominal_basis") or "").lower()
+    looks_like_index = transformation == "index_level" or (
+        "index" in units
+        and nominal == "index"
+        and transformation in {"index_level", "level", "index", ""}
+    )
+    if not looks_like_index:
+        return False
+    name = f"{plain_series_name(obs)} {obs.get('label') or ''}".lower()
+    return _names_price_index(name)
 
 
 def why_it_surfaced(finding: Mapping[str, Any], obs: Mapping[str, Any]) -> str:
-    """Plain-English reason. Internal codes stay in the technical detail."""
+    """One numerical sentence. Sample-depth codes stay in technical detail."""
+    sentence = _movement_sentence(finding, obs)
     reason = str(finding.get("reason") or "")
-    pattern = str(finding.get("travel_pattern") or "")
-    status = str(finding.get("attention_status") or "")
-    if pattern == "reversal":
-        lead = "The latest readings reversed direction."
-    elif pattern == "acceleration":
-        lead = "The latest move sped up in the same direction."
-    elif pattern == "deceleration":
-        lead = "The latest move slowed the prior direction."
-    elif pattern == "persistence":
-        run = int(finding.get("travel_run_length") or 0)
-        lead = (
-            f"It has moved the same way for {run} periods."
-            if run
-            else "It has kept the same direction."
-        )
-    elif pattern == "range_break":
-        lead = "The latest reading moved outside its recent range."
-    elif status in {"notable", "outlier"}:
-        lead = "It stands out against its own history."
-    else:
-        lead = "It cleared the attention rules."
-
-    extras = [_tail_phrase(reason, obs)]
     if "Confirmed divergence" in reason:
-        extras.append("The monthly and longer-run readings point opposite ways.")
-    if "insufficient_history" in reason or "seasonal_history_insufficient" in reason:
-        extras.append("Comparable history is too short for a historical notable or outlier label.")
-    if "unchanged_reprint" in reason:
-        extras.append("This print matches the prior vintage, so it is not a new alert.")
-    if "Freshness revised" in reason:
-        extras.append("The publisher revised this print.")
-    sentence = " ".join(part for part in [lead, *extras] if part)
-    return f"Why it surfaced: {sentence}"
+        sentence = sentence.rstrip(".") + ", while another reading of this release moved the other way."
+    return sentence
 
 
 def contains_internal_code(text: str) -> bool:
@@ -246,6 +237,116 @@ def _component_state(
     return dimension, spec, state
 
 
+def _names_price_index(name: str) -> bool:
+    """Inflation semantics. Checked before consumption/spending wording."""
+    if any(token in name for token in ("price index", "hicp", "ppi")):
+        return True
+    if re.search(r"\bpce\b", name) or re.search(r"\bcpi\b", name):
+        return True
+    if "inflation" in name and "consumption" not in name and "spending" not in name:
+        return True
+    return False
+
+
+_MONTH_NAMES = (
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+)
+
+
+def _period_phrase(period: Any) -> str:
+    text = str(period or "")
+    monthly = re.fullmatch(r"(\d{4})-(\d{2})", text)
+    if monthly:
+        month = int(monthly.group(2))
+        if 1 <= month <= 12:
+            return f" in {_MONTH_NAMES[month - 1]} {monthly.group(1)}"
+    quarterly = re.fullmatch(r"(\d{4})-Q([1-4])", text)
+    if quarterly:
+        return f" in Q{quarterly.group(2)} {quarterly.group(1)}"
+    return ""
+
+
+_RAN = re.compile(r" ran (.+?)\. ")
+
+
+def _reason_numbers(reason: str) -> list[float]:
+    match = _RAN.search(reason)
+    if not match:
+        return []
+    return [float(number) for number in re.findall(r"[+-]?\d+(?:\.\d+)?", match.group(1))]
+
+
+def _movement_pair(
+    finding: Mapping[str, Any], obs: Mapping[str, Any]
+) -> tuple[float | None, float | None]:
+    """Previous and latest values. History wins; the technical reason is the fallback."""
+    latest: float | None
+    try:
+        latest = float(obs["value"]) if obs.get("value") is not None else None
+    except (TypeError, ValueError):
+        latest = None
+    history = [
+        row
+        for row in (obs.get("history") or [])
+        if isinstance(row, Mapping) and row.get("value") is not None
+    ]
+    if len(history) >= 2:
+        try:
+            previous = float(history[-2]["value"])
+            if latest is None:
+                latest = float(history[-1]["value"])
+            return previous, latest
+        except (TypeError, ValueError):
+            pass
+    numbers = _reason_numbers(str(finding.get("reason") or ""))
+    if latest is None and numbers:
+        latest = numbers[-1]
+    previous = numbers[-2] if len(numbers) >= 2 else None
+    if previous is not None and latest is not None and previous == latest and len(numbers) >= 3:
+        previous = numbers[-3]
+    return previous, latest
+
+
+def _movement_sentence(finding: Mapping[str, Any], obs: Mapping[str, Any]) -> str:
+    name = plain_series_name(obs)
+    previous, latest = _movement_pair(finding, obs)
+    when = _period_phrase(obs.get("reference_period") or finding.get("reference_period"))
+    if latest is None:
+        return f"{name} has a new reading{when}."
+    latest_text = format_macro_value(latest, obs.get("units"), obs.get("transformation"))
+    if previous is None:
+        return f"{name} is {latest_text}{when}."
+    previous_text = format_macro_value(previous, obs.get("units"), obs.get("transformation"))
+    try:
+        unchanged = abs(float(latest) - float(previous)) < 1e-9 or latest_text == previous_text
+    except (TypeError, ValueError):
+        unchanged = latest_text == previous_text
+    if unchanged:
+        return f"{name} is unchanged at {latest_text}{when}."
+    pattern = str(finding.get("travel_pattern") or "")
+    up = float(latest) > float(previous)
+    if pattern == "reversal":
+        verb = "turned up" if up else "turned down"
+    elif pattern == "acceleration" and up:
+        verb = "sped up"
+    elif pattern == "acceleration":
+        verb = "fell faster"
+    else:
+        verb = "rose" if up else "fell"
+    return f"{name} {verb} to {latest_text}{when} from {previous_text}."
+
+
 def _transformation_words(transformation: str) -> str:
     if not transformation:
         return ""
@@ -299,22 +400,3 @@ def history_limitation(reasons: list[str]) -> tuple[str, str] | None:
         )
     return None
 
-
-_RAN = re.compile(r" ran (.+?)\. ")
-
-
-def _tail_phrase(reason: str, obs: Mapping[str, Any]) -> str:
-    match = _RAN.search(reason)
-    if not match:
-        return ""
-    numbers = re.findall(r"[+-]?\d+(?:\.\d+)?", match.group(1))
-    if not numbers:
-        return ""
-    formatted = [format_signed_macro(float(number), obs) for number in numbers]
-    if len(formatted) == 1:
-        joined = formatted[0]
-    elif len(formatted) == 2:
-        joined = f"{formatted[0]} and {formatted[1]}"
-    else:
-        joined = ", ".join(formatted[:-1]) + f", and {formatted[-1]}"
-    return f"Recent readings: {joined}."
