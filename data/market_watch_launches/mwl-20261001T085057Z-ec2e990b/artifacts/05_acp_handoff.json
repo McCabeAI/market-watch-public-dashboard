@@ -1,0 +1,53 @@
+{
+  "delegation_request": {
+    "base_packet_sha256": "50438996882b7419c15926ac81142d681ced3574a75f179e953b7647bdbce03d",
+    "binding_relpath": "data/market_watch_launches/mwl-20261001T085057Z-ec2e990b/freeze_binding.json",
+    "budget": {
+      "composer_cap": 2,
+      "frozen_command": ".cursor/commands/overnight-scheduled.md",
+      "grok_cap": 18,
+      "launcher_id": "manual-market-watch-launch-v1",
+      "legacy_schedule_id_inactive": "market-watch-weekday-0205",
+      "parent_model": "grok-4.6",
+      "total_model_cap": 20
+    },
+    "dispatch_when": "freeze-succeeded",
+    "freeze_commit_sha": null,
+    "launch_id": "mwl-20261001T085057Z-ec2e990b",
+    "origin": {
+      "actor": "kevinnmccabe-PC",
+      "actor_type": "User",
+      "issue_number": 148,
+      "issue_url": "https://github.com/McCabeAI/market-watch-public-dashboard/issues/148",
+      "repository_permission": "admin",
+      "source": "github_issue"
+    },
+    "overnight_run_id": "overnight-20261001",
+    "public_verification": {
+      "readable_without_secrets": true,
+      "ref": "main",
+      "repo": "McCabeAI/market-watch-public-dashboard"
+    },
+    "review_id": "review-001",
+    "score_state_sha256": "a853ab9397930dcd722287c1d1dfca3184bd3ec5a1ad268b4811d1824ee73dbe",
+    "session_date": "2026-10-01",
+    "single_use": true,
+    "starting_pm_books_sha256": "54edb0fb975713fadebb1fb6948e847b36fdcf71e26964bad404e04a24826406",
+    "starting_trader_books_sha256": "59eeb691dee88fa4049e969795fa12ef75e02510625ec55b95caebe9c5b541f3",
+    "target_repo": "McCabeAI/market-watch-public-dashboard",
+    "type": "MW_ACP_ONE_SHOT_DELEGATION_REQUEST",
+    "version": 1
+  },
+  "dispatch_implemented": false,
+  "grant_present": false,
+  "grant_verified": false,
+  "handoff_status": "request_ready",
+  "handoff_url": null,
+  "live_model_calls": 0,
+  "live_provider_dispatched": false,
+  "receipt_matches": false,
+  "receipt_present": false,
+  "remote_freeze_verified": true,
+  "stage": "05_acp_handoff",
+  "status": "blocked"
+}
