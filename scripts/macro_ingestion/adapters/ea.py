@@ -20,6 +20,12 @@ from scripts.euro_area_macro_data import (
     parse_eurostat_sdmx_json,
     parse_eurostat_statistics_json,
 )
+from scripts.macro_ingestion.ea_country_hicp import (
+    CATALOG_ID_TO_GEO,
+    COUNTRY_HICP_IDS,
+    fetch_national_hicp_points,
+    reconcile_country_hicp_points,
+)
 from scripts.harvest_ea_pmi import (
     ALT_PUBLIC_DISCOVERY_URLS,
     PMI_LISTING_URL,
@@ -138,6 +144,88 @@ def _point(
 
 def _fetch_bytes(opener: Callable[..., dict[str, Any]], url: str, *, timeout: float) -> dict[str, Any]:
     return opener(url, timeout=timeout)
+
+
+def _fetch_country_hicp_current_vintage(
+    spec: dict[str, Any],
+    *,
+    opener: Callable[..., dict[str, Any]],
+    timeout: float,
+) -> dict[str, Any]:
+    series_id = str(spec.get("id") or "")
+    geo = CATALOG_ID_TO_GEO.get(series_id, "")
+    fetch_url = str(spec.get("endpoint") or "")
+
+    eurostat_points: list[dict[str, Any]] = []
+    euro_body = b""
+    euro_sha: str | None = None
+    eurostat_error: str | None = None
+    http_status = None
+
+    if fetch_url:
+        resp = _fetch_bytes(opener, fetch_url, timeout=timeout)
+        body = resp.get("body") or b""
+        http_status = resp.get("http_status")
+        if resp.get("ok") and body and not _is_bot_challenge(body, http_status):
+            try:
+                payload = json.loads(body.decode("utf-8"))
+                rows = parse_eurostat_statistics_json(payload)
+                transform = str(spec.get("transform") or "")
+                eurostat_points = [
+                    {
+                        "period": p,
+                        "value": v,
+                        "transformation": transform,
+                        "revision_status": "final",
+                        "source_url": fetch_url,
+                        "vintage": "eurostat_final",
+                        "publisher": "Eurostat",
+                    }
+                    for p, v in rows
+                ]
+                euro_body = body
+                euro_sha = _sha256(body)
+            except Exception as exc:  # noqa: BLE001
+                eurostat_error = f"parse_failed: {exc}"
+        elif not resp.get("ok"):
+            eurostat_error = resp.get("error") or "transport_failed"
+        else:
+            eurostat_error = "challenge_or_empty"
+
+    national_points: list[dict[str, Any]] = []
+    national_source_error: str | None = None
+    if geo:
+        try:
+            national_points, national_source_error = fetch_national_hicp_points(
+                geo, opener=opener, timeout=timeout
+            )
+        except Exception as exc:  # noqa: BLE001
+            national_source_error = f"national_fetch_failed: {exc}"
+
+    points = reconcile_country_hicp_points(eurostat_points, national_points)
+    if not points:
+        err = eurostat_error or national_source_error or "no_points"
+        return _base_payload(
+            error=err,
+            http_status=http_status,
+            body=euro_body,
+            raw_sha256=euro_sha,
+            national_source_error=national_source_error,
+        )
+
+    latest = points[-1]
+    payload = _base_payload(
+        ok=True,
+        points=points,
+        vintage=str(latest.get("vintage") or "latest_available"),
+        http_status=http_status,
+        body=euro_body,
+        raw_sha256=euro_sha or _sha256(json.dumps(points).encode()),
+        national_source_error=national_source_error,
+    )
+    if eurostat_error and eurostat_points:
+        payload["eurostat_warning"] = eurostat_error
+    return payload
 
 
 def _fetch_eurostat_statistics(
@@ -925,6 +1013,8 @@ def fetch_series(
         return _fetch_ecb_wages(spec, opener=opener, timeout=timeout)
     if method == "eurostat_sdmx_json":
         return _fetch_eurostat_sdmx(spec, opener=opener, timeout=timeout)
+    if series_id in COUNTRY_HICP_IDS:
+        return _fetch_country_hicp_current_vintage(spec, opener=opener, timeout=timeout)
     if method == "eurostat_statistics_api":
         return _fetch_eurostat_statistics(spec, opener=opener, timeout=timeout)
     if method == "zew_financial_market_survey_table":

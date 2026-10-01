@@ -6207,7 +6207,8 @@
       "classification": "official",
       "endpoint": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=DE&unit=RCH_A&coicop18=TOTAL&sinceTimePeriod=2024-01",
       "registry_urls": [
-        "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table"
+        "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table",
+        "https://www.destatis.de/DE/Themen/Wirtschaft/Preise/Verbraucherpreisindex/_inhalt.html"
       ],
       "units": "percent",
       "seasonal_adjustment": false,
@@ -6226,7 +6227,7 @@
         "prior": "when_series_has_history"
       },
       "raw_provenance": "data/macro_ingestion/raw/ea/",
-      "retrieval_method": "eurostat_statistics_api",
+      "retrieval_method": "eurostat_national_hicp_current_vintage",
       "adapter": "scripts.macro_ingestion.adapters.ea",
       "observation_count": 0,
       "latest_period": null,
@@ -6236,7 +6237,7 @@
       "verification_state": "catalogued_adapter_pending",
       "freshness_state": "not_yet_checked_by_new_runner",
       "blocked_reason": null,
-      "history_notes": "Unweighted country HICP context beside the scored EA21 aggregate. Weight 0. Do not use this row in the EA temperature score.",
+      "history_notes": "Current vintage uses the national official flash/preliminary HICP when it leads Eurostat PRC_HICP_MINR; Eurostat final replaces that national point for the same reference period. Weight stays 0; not an EA21 score input.",
       "score_weight_policy": "weight_must_remain_zero"
     },
     {
@@ -6253,7 +6254,8 @@
       "classification": "official",
       "endpoint": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=FR&unit=RCH_A&coicop18=TOTAL&sinceTimePeriod=2024-01",
       "registry_urls": [
-        "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table"
+        "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table",
+        "https://www.insee.fr/fr/solr/consultation"
       ],
       "units": "percent",
       "seasonal_adjustment": false,
@@ -6272,7 +6274,7 @@
         "prior": "when_series_has_history"
       },
       "raw_provenance": "data/macro_ingestion/raw/ea/",
-      "retrieval_method": "eurostat_statistics_api",
+      "retrieval_method": "eurostat_national_hicp_current_vintage",
       "adapter": "scripts.macro_ingestion.adapters.ea",
       "observation_count": 0,
       "latest_period": null,
@@ -6282,7 +6284,7 @@
       "verification_state": "catalogued_adapter_pending",
       "freshness_state": "not_yet_checked_by_new_runner",
       "blocked_reason": null,
-      "history_notes": "Unweighted country HICP context beside the scored EA21 aggregate. Weight 0. Do not use this row in the EA temperature score.",
+      "history_notes": "Current vintage uses the national official flash/preliminary HICP when it leads Eurostat PRC_HICP_MINR; Eurostat final replaces that national point for the same reference period. Weight stays 0; not an EA21 score input.",
       "score_weight_policy": "weight_must_remain_zero"
     },
     {
@@ -6299,7 +6301,8 @@
       "classification": "official",
       "endpoint": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=IT&unit=RCH_A&coicop18=TOTAL&sinceTimePeriod=2024-01",
       "registry_urls": [
-        "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table"
+        "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table",
+        "https://www.istat.it/tag/prezzi-al-consumo/"
       ],
       "units": "percent",
       "seasonal_adjustment": false,
@@ -6318,7 +6321,7 @@
         "prior": "when_series_has_history"
       },
       "raw_provenance": "data/macro_ingestion/raw/ea/",
-      "retrieval_method": "eurostat_statistics_api",
+      "retrieval_method": "eurostat_national_hicp_current_vintage",
       "adapter": "scripts.macro_ingestion.adapters.ea",
       "observation_count": 0,
       "latest_period": null,
@@ -6328,7 +6331,7 @@
       "verification_state": "catalogued_adapter_pending",
       "freshness_state": "not_yet_checked_by_new_runner",
       "blocked_reason": null,
-      "history_notes": "Unweighted country HICP context beside the scored EA21 aggregate. Weight 0. Do not use this row in the EA temperature score.",
+      "history_notes": "Current vintage uses the national official flash/preliminary HICP when it leads Eurostat PRC_HICP_MINR; Eurostat final replaces that national point for the same reference period. Weight stays 0; not an EA21 score input.",
       "score_weight_policy": "weight_must_remain_zero"
     },
     {
@@ -6345,7 +6348,8 @@
       "classification": "official",
       "endpoint": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=ES&unit=RCH_A&coicop18=TOTAL&sinceTimePeriod=2024-01",
       "registry_urls": [
-        "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table"
+        "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table",
+        "https://www.ine.es/dyngs/Prensa/notasPrensa.htm"
       ],
       "units": "percent",
       "seasonal_adjustment": false,
@@ -6364,7 +6368,7 @@
         "prior": "when_series_has_history"
       },
       "raw_provenance": "data/macro_ingestion/raw/ea/",
-      "retrieval_method": "eurostat_statistics_api",
+      "retrieval_method": "eurostat_national_hicp_current_vintage",
       "adapter": "scripts.macro_ingestion.adapters.ea",
       "observation_count": 0,
       "latest_period": null,
@@ -6374,7 +6378,7 @@
       "verification_state": "catalogued_adapter_pending",
       "freshness_state": "not_yet_checked_by_new_runner",
       "blocked_reason": null,
-      "history_notes": "Unweighted country HICP context beside the scored EA21 aggregate. Weight 0. Do not use this row in the EA temperature score.",
+      "history_notes": "Current vintage uses the national official flash/preliminary HICP when it leads Eurostat PRC_HICP_MINR; Eurostat final replaces that national point for the same reference period. Weight stays 0; not an EA21 score input.",
       "score_weight_policy": "weight_must_remain_zero"
     },
     {
@@ -6391,7 +6395,8 @@
       "classification": "official",
       "endpoint": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/PRC_HICP_MINR?geo=PT&unit=RCH_A&coicop18=TOTAL&sinceTimePeriod=2024-01",
       "registry_urls": [
-        "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table"
+        "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table",
+        "https://www.ine.pt/xportal/xmain?xpid=INE&xpgid=ine_destaques&DESTAQUEStema=5414296&xlang=pt"
       ],
       "units": "percent",
       "seasonal_adjustment": false,
@@ -6410,7 +6415,7 @@
         "prior": "when_series_has_history"
       },
       "raw_provenance": "data/macro_ingestion/raw/ea/",
-      "retrieval_method": "eurostat_statistics_api",
+      "retrieval_method": "eurostat_national_hicp_current_vintage",
       "adapter": "scripts.macro_ingestion.adapters.ea",
       "observation_count": 0,
       "latest_period": null,
@@ -6420,7 +6425,7 @@
       "verification_state": "catalogued_adapter_pending",
       "freshness_state": "not_yet_checked_by_new_runner",
       "blocked_reason": null,
-      "history_notes": "Unweighted country HICP context beside the scored EA21 aggregate. Weight 0. Do not use this row in the EA temperature score.",
+      "history_notes": "Current vintage uses the national official flash/preliminary HICP when it leads Eurostat PRC_HICP_MINR; Eurostat final replaces that national point for the same reference period. Weight stays 0; not an EA21 score input.",
       "score_weight_policy": "weight_must_remain_zero"
     },
     {

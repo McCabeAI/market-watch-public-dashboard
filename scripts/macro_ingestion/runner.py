@@ -22,6 +22,7 @@ from scripts.macro_ingestion.retries import retry_call
 from scripts.macro_ingestion.score_bridge import recompute_scores_after_observation
 from scripts.macro_ingestion.semantic_guards import stale_pinned_artifact_error
 from scripts.temperature_level import CALIBRATION_PATH
+from scripts.macro_ingestion.ea_country_hicp import COUNTRY_HICP_IDS, append_ranked_country_hicp
 from scripts.macro_ingestion.vintage import (
     append_observation,
     latest_for_period,
@@ -64,14 +65,23 @@ _PUBLIC_BROWSER_USER_AGENT = (
 )
 
 
-def live_opener(url: str, *, timeout: float = DEFAULT_TIMEOUT_SECONDS) -> dict[str, Any]:
+def live_opener(
+    url: str,
+    *,
+    timeout: float = DEFAULT_TIMEOUT_SECONDS,
+    data: bytes | None = None,
+) -> dict[str, Any]:
     try:
+        headers = {
+            "User-Agent": _PUBLIC_BROWSER_USER_AGENT,
+            "Accept": "application/json,text/html,application/pdf,*/*",
+        }
+        if data is not None:
+            headers["Content-Type"] = "application/json"
         request = Request(
             url,
-            headers={
-                "User-Agent": _PUBLIC_BROWSER_USER_AGENT,
-                "Accept": "text/html,application/pdf,*/*",
-            },
+            data=data,
+            headers=headers,
         )
         with urlopen(request, timeout=timeout) as response:
             body = response.read()
@@ -212,25 +222,59 @@ def _classify_points(
         point_transform = _point_transform(point, transform, allowed_transforms)
         raw_sha = str(payload.get("raw_sha256") or _sha256(json.dumps(point).encode()))
         prior_row = latest_for_period(store, series_id, period, point_transform)
-        result = append_observation(
-            store,
-            series_id=series_id,
-            period=period,
-            transformation=point_transform,
-            value=value,
-            raw_sha256=raw_sha,
-            retrieved_at=_utc_iso(when),
-            release_date=_point_release_date(point),
-            vintage=payload_vintage_str,
-            revision_status=point.get("revision_status"),
-            source_url=point.get("source_url"),
-            prior=point.get("prior"),
-            units=point.get("units"),
-            derivation=point.get("derivation"),
-        )
-        if result.duplicate:
-            continue
-        had_new = True
+        point_vintage = point.get("vintage")
+        vintage_for_row = str(point_vintage) if point_vintage is not None else payload_vintage_str
+        publisher = point.get("publisher")
+        derivation = dict(point.get("derivation") or {})
+        if publisher and "publisher" not in derivation:
+            derivation["publisher"] = publisher
+
+        if spec["id"] in COUNTRY_HICP_IDS:
+            result = append_ranked_country_hicp(
+                store,
+                series_id=series_id,
+                period=period,
+                transformation=point_transform,
+                value=value,
+                raw_sha256=raw_sha,
+                retrieved_at=_utc_iso(when),
+                release_date=_point_release_date(point),
+                vintage=vintage_for_row,
+                revision_status=point.get("revision_status"),
+                source_url=point.get("source_url"),
+                prior=point.get("prior"),
+                units=point.get("units"),
+                derivation=derivation or None,
+            )
+            if result.duplicate:
+                continue
+            if result.upgraded:
+                had_new = True
+                had_revision = True
+            elif result.appended:
+                had_new = True
+            else:
+                continue
+        else:
+            result = append_observation(
+                store,
+                series_id=series_id,
+                period=period,
+                transformation=point_transform,
+                value=value,
+                raw_sha256=raw_sha,
+                retrieved_at=_utc_iso(when),
+                release_date=_point_release_date(point),
+                vintage=vintage_for_row,
+                revision_status=point.get("revision_status"),
+                source_url=point.get("source_url"),
+                prior=point.get("prior"),
+                units=point.get("units"),
+                derivation=derivation or None,
+            )
+            if result.duplicate:
+                continue
+            had_new = True
         changed.append(
             {
                 "id": spec["id"],
@@ -240,7 +284,17 @@ def _classify_points(
                 "revision_status": point.get("revision_status"),
             }
         )
-        if prior_row and not values_close(float(prior_row["value"]), value):
+        if spec["id"] not in COUNTRY_HICP_IDS and prior_row and not values_close(
+            float(prior_row["value"]), value
+        ):
+            rev = str(point.get("revision_status") or "")
+            if rev in {"flash", "preliminary", "prelim"}:
+                had_pending = True
+            else:
+                had_revision = True
+        elif spec["id"] in COUNTRY_HICP_IDS and result.appended and prior_row and not values_close(
+            float(prior_row["value"]), value
+        ):
             rev = str(point.get("revision_status") or "")
             if rev in {"flash", "preliminary", "prelim"}:
                 had_pending = True

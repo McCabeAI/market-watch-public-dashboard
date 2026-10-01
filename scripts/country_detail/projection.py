@@ -11,6 +11,7 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
 
+from scripts.macro_ingestion.ea_country_hicp import COUNTRY_HICP_IDS, select_current_rows
 from scripts.country_detail.policy import (
     AU_HOUSEHOLD_SPENDING_ANNUAL,
     AU_HOUSEHOLD_SPENDING_MONTHLY,
@@ -847,9 +848,14 @@ def _observations_from_macro_ingestion_store(
         transformation = key[1]
         if (catalog_id, transformation) in existing_ids:
             continue
+        publisher = catalog_row.get("publisher")
+        deriv = row.get("derivation") or {}
+        if isinstance(deriv, dict) and deriv.get("publisher"):
+            publisher = deriv.get("publisher")
         grouped.setdefault(catalog_id, []).append(
             {
                 "reference_period": str(row["period"]),
+                "period": str(row["period"]),
                 "value": row.get("value"),
                 "transformation": transformation,
                 "source_url": row.get("source_url"),
@@ -859,12 +865,14 @@ def _observations_from_macro_ingestion_store(
                 "release_date": row.get("release_date"),
                 "series_id": row.get("series_id"),
                 "units": row.get("units") or catalog_row.get("units"),
-                "publisher": catalog_row.get("publisher"),
+                "publisher": publisher,
             }
         )
 
     out: list[dict[str, Any]] = []
     for catalog_id, observations in grouped.items():
+        if catalog_id in COUNTRY_HICP_IDS:
+            observations = select_current_rows(observations)
         catalog_row = catalog_by_id[catalog_id]
         component_stub = {
             "publisher": catalog_row.get("publisher"),
