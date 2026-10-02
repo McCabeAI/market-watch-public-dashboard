@@ -42,14 +42,14 @@
     "nav_usd": 99965526.88,
     "net_pnl_usd": -34473.12,
     "pressure_flags": [],
-    "prior_competition_rank": 12,
-    "rank_change": 0,
+    "prior_competition_rank": 9,
+    "rank_change": 3,
     "raw_pnl_rank": 12,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 100000.0,
     "risk_capital_utilization": 0.01,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -13989.17,
     "status": "ok"
   },
   "learning": {
@@ -60,7 +60,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "2214cc0910e476aab9ebf4e75adf600526d0dfffbaa346312e9dd7161fbcf911",
+  "memory_context_sha256": "a088366cb498411b20e968fa71c47be56783b1bad70c6d4ba9d8c6fd3c274ab9",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -89,8 +89,8 @@
       },
       "complacency": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "up",
+        "value": 0.14
       },
       "defensiveness": {
         "band": "calm",
@@ -99,8 +99,8 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "down",
+        "value": 0.09
       },
       "frustration": {
         "band": "calm",
@@ -114,8 +114,8 @@
       },
       "self_trust": {
         "band": "steady",
-        "trend": "flat",
-        "value": 0.5
+        "trend": "up",
+        "value": 0.51
       },
       "thesis_attachment": {
         "band": "calm",
@@ -131,10 +131,16 @@
       "sharpened_verdicts": 0
     },
     "profile_version": 1,
-    "recent_events": [],
+    "recent_events": [
+      {
+        "kind": "rank_gain_major",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261002"
+      }
+    ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "1009ce60478425f5bd69eaae36d49e0f255cabe851b880717a24e5148fd6da41",
+    "state_sha256": "71070143881e8b56dcafe363e446df3ed714c05f0990fbcb048790e0e6a69958",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

@@ -554,6 +554,64 @@
       "run_id": "overnight-20261001",
       "schema_version": 1,
       "thesis": "The CAD Mar-27 receive is a path-premium fade, not a carry harvest: cash CORRA is 2.30, the contract marks 3.09, and shocked-risk capital is charged at SOFR 3.88, so the book is not paid to wait. Oil remains an overlay rather than a cash-policy shift, and the implied-cash gap is still about 79bp, but that residual is a Bank of Canada path view rather than coupon. Close the CAD receive. A Mar-27 AONIA receive at 4.81 versus cash 4.60 still clears SOFR on paper, but no executable size was specified, so that replacement stays off the book."
+    },
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-03",
+          "notional_usd": 25000000,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-02T05:40:56.963171-04:00",
+      "conviction": 62,
+      "decision_fingerprint": "1447f13b9dcd9cd89869c67140467c02f7d9d8482dd6177f15d9dbba735cf3d8",
+      "event_id": "jde-ab42121f55dd4a02",
+      "funding_view": null,
+      "invalidation": "Stand down if persistent RBA easing breaks the 4.60 cash regime, or if a large persistent AONIA path reprice higher turns the 23bp premium into a dominant hike-premium fade. Ordinary oil or risk-beta noise is not invalidation.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-524ab67108ee"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-carry-is-king-pos-524ab67108ee"
+      ],
+      "memory_context_sha256": "c7681456d4303686ce761aae2a196bcf533a0c5e708dab0f1d7316e996c697b1",
+      "outcome_links": [],
+      "owner_id": "carry-is-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "278339ea6a1e2fd42551aaff04483ef1989b4237f2650837a727f68f3e6543d5"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-02T05:40:56.963171-04:00",
+        "evidence_hash": "558b501805049da733c5b3a1f59af45b9b809870cc24ab48976f5748ee0fdabc",
+        "overnight_run_id": "overnight-20261002",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Receive AONIA March 2027 at 4.83 against cash 4.60. This is the only high-cash STIR with modest path premium, so the holding-period return comes from remaining in the high cash-rate market rather than fading a hike strip. Reject reopening the CAD March receive: 2.945 versus cash 2.31 is still path premium, the same non-carry identity as the closed trade.",
+      "run_id": "overnight-20261002",
+      "schema_version": 1,
+      "thesis": "Receive AONIA March 2027 at 4.83 against cash 4.60. This is the only high-cash STIR with modest path premium, so the holding-period return comes from remaining in the high cash-rate market rather than fading a hike strip. Reject reopening the CAD March receive: 2.945 versus cash 2.31 is still path premium, the same non-carry identity as the closed trade."
     }
   ],
   "schema_version": 1,

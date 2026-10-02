@@ -528,6 +528,60 @@
       "run_id": "overnight-20261001",
       "schema_version": 1,
       "thesis": "US 10Y 5.29 is the highest since 2002, EURUSD 1.1355 is a 17-month low, USDJPY is 156.997, USDCAD is 1.4183, Brent is 103.53, gold is 4186.70, the S&P is 7651.54, and VIX is 16.04, but there is still no listed two-way options chain, strikes, or implied vols beyond that VIX print. Timing on the rates and FX event is uncertain, so linear spot and cash rates are the wrong expression versus bounded-risk convexity. Book stays flat; no invented vol, strike, or premium."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-02T05:40:56.963171-04:00",
+      "conviction": 82,
+      "decision_fingerprint": "d1891343a51bd8987a6afadc6da45017c47ecab0e63ec3752f08cf70050ed16f",
+      "event_id": "jde-0c6bf213ff394889",
+      "funding_view": null,
+      "invalidation": "A later freeze that supplies a listed, executable chain for rates or index options, allowing a bounded-risk structure to be marked. Spot or US 10-year drift alone does not invalidate staying flat.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "57f216de910373704d206d51273ad321f675bc904f0220c3d096e1b2da400a94",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "b385d3f316f48886e800045adedbbc4b3157121abd2aba7c93adb27a3b601fbb"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-02T05:40:56.963171-04:00",
+        "evidence_hash": "558b501805049da733c5b3a1f59af45b9b809870cc24ab48976f5748ee0fdabc",
+        "overnight_run_id": "overnight-20261002",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book stays flat. The freeze has no listed options chain, strikes, or premiums; the only vol print is VIX 16.34. Overnight timing is uncertain, so unbounded linear spot or cash rates is the wrong expression versus bounded-risk convexity. HOLD is the only markable action; an options structure is preferred in principle but not executable without inventing a chain.",
+      "run_id": "overnight-20261002",
+      "schema_version": 1,
+      "thesis": "The book stays flat. The freeze has no listed options chain, strikes, or premiums; the only vol print is VIX 16.34. Overnight timing is uncertain, so unbounded linear spot or cash rates is the wrong expression versus bounded-risk convexity. HOLD is the only markable action; an options structure is preferred in principle but not executable without inventing a chain."
     }
   ],
   "schema_version": 1,

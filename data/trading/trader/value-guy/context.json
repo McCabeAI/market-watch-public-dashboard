@@ -77,8 +77,8 @@
     "nav_usd": 99943775.42,
     "net_pnl_usd": -56224.58,
     "pressure_flags": [],
-    "prior_competition_rank": 13,
-    "rank_change": 0,
+    "prior_competition_rank": 11,
+    "rank_change": 2,
     "raw_pnl_rank": 13,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
@@ -95,7 +95,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "2510dc980ae6833debc3b1676d20869bf9b2c0dd90bbf74b93fa4381ee1a1e22",
+  "memory_context_sha256": "3d1741cc7d0b24d2d17d2f48cc82030630246b7e1267ab6de376cb035a47f969",
   "open_positions": [],
   "owner_id": "value-guy",
   "owner_type": "trader",
@@ -107,7 +107,7 @@
       "chase_pressure": {
         "band": "calm",
         "trend": "up",
-        "value": 0.15
+        "value": 0.17
       },
       "complacency": {
         "band": "calm",
@@ -155,11 +155,6 @@
     "profile_version": 1,
     "recent_events": [
       {
-        "kind": "learning_default_cleared",
-        "magnitude": 1.0,
-        "run_id": "overnight-20260929"
-      },
-      {
         "kind": "flat_with_market",
         "magnitude": 1.0,
         "run_id": "overnight-20260930"
@@ -168,13 +163,18 @@
         "kind": "flat_with_market",
         "magnitude": 1.0,
         "run_id": "overnight-20261001"
+      },
+      {
+        "kind": "flat_with_market",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261002"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "e8a4204d776d548c01086b62ace5b4d0f44f4658a5eaae57715f4e3fe605f590",
+    "state_sha256": "c3a86e2b87a70413b8fc741830fccd0b5815dc7ca3b4ca8447a46023b8276378",
     "streaks": {
-      "flat_cycles": 4,
+      "flat_cycles": 5,
       "session_loss": 0,
       "session_win": 0
     }

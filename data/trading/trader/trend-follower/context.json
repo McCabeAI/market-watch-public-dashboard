@@ -42,14 +42,14 @@
     "nav_usd": 100001800.56,
     "net_pnl_usd": 1800.56,
     "pressure_flags": [],
-    "prior_competition_rank": 4,
-    "rank_change": 0,
+    "prior_competition_rank": 14,
+    "rank_change": -10,
     "raw_pnl_rank": 4,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 750000.0,
     "risk_capital_utilization": 0.075,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 105081.25,
     "status": "ok"
   },
   "learning": {
@@ -60,7 +60,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "9d06cfe2853a3f2b96e0a010b6389beeb6e10e2747808c38d5f7c7d663ea066f",
+  "memory_context_sha256": "84270d3c22ea4bd50d50107ad2ba4f5c36157c8ce68b34e69abf147d4b9653c5",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -84,38 +84,38 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.13
+        "trend": "up",
+        "value": 0.22
       },
       "complacency": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "down",
+        "value": 0.09
       },
       "defensiveness": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.2
+        "trend": "up",
+        "value": 0.21
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.17
+        "trend": "up",
+        "value": 0.33
       },
       "frustration": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.13
+        "trend": "up",
+        "value": 0.21
       },
       "revenge_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.05
+        "trend": "up",
+        "value": 0.06
       },
       "self_trust": {
         "band": "steady",
-        "trend": "flat",
-        "value": 0.5
+        "trend": "down",
+        "value": 0.48
       },
       "thesis_attachment": {
         "band": "calm",
@@ -133,22 +133,27 @@
     "profile_version": 1,
     "recent_events": [
       {
-        "kind": "session_loss",
-        "magnitude": 0.1276625,
-        "run_id": "overnight-20260930"
-      },
-      {
         "kind": "rank_drop_minor",
         "magnitude": 1.0,
         "run_id": "overnight-20260930"
+      },
+      {
+        "kind": "session_loss",
+        "magnitude": 0.2101625,
+        "run_id": "overnight-20261002"
+      },
+      {
+        "kind": "rank_shock",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261002"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "d91e2b5f96b670cafad3dde18186a7c1ba412b6fca515f96d38cb74b2a3e4c60",
+    "state_sha256": "bbc0244bab66f0b85941b9bf283f27fa777a39cfac0fc51a286a366513dd91e7",
     "streaks": {
       "flat_cycles": 0,
-      "session_loss": 1,
+      "session_loss": 2,
       "session_win": 0
     }
   },

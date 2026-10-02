@@ -552,6 +552,62 @@
       "run_id": "overnight-20261001",
       "schema_version": 1,
       "thesis": "The hike path is still in force and has steepened, not stalled: SOFR remains 3.88 while Mar27 holds 4.625, Sep27 is 4.905, and the 10Y at 5.29 is the highest since 2002. Brent at 103.53 and EURUSD at a 17-month low of 1.1355 keep inflation and dollar trends behind the pay, and a 16.04 VIX with equities still high is not a risk-off signal. Fading this stack without a path break would be premature mean reversion. Hold the existing Mar27 pay."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-662bff0986be",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-02T05:40:56.963171-04:00",
+      "conviction": 67,
+      "decision_fingerprint": "d44a2283779ba933d3bcf38a290ad081dc1aa1a457df14821473d116da613526",
+      "event_id": "jde-649d41b3eae44231",
+      "funding_view": null,
+      "invalidation": "Cover if March implieds compress toward cash SOFR 3.90 with confirming policy evidence, or if the aligned high-yield and high-oil backdrop breaks. A bounce in the contract alone is not invalidation.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-662bff0986be"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "9d06cfe2853a3f2b96e0a010b6389beeb6e10e2747808c38d5f7c7d663ea066f",
+      "outcome_links": [],
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "d91e2b5f96b670cafad3dde18186a7c1ba412b6fca515f96d38cb74b2a3e4c60"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-02T05:40:56.963171-04:00",
+        "evidence_hash": "558b501805049da733c5b3a1f59af45b9b809870cc24ab48976f5748ee0fdabc",
+        "overnight_run_id": "overnight-20261002",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The existing 75 million short of March 2027 SOFR is still a hike-path trend: cash is 3.90 versus the contract at 4.485, and the US 10-year at 5.24 plus Brent near 102 keep policy restriction aligned with that path. The 14bp rally from 4.625 to 4.485 is a countertrend bounce, not a reversal. Persist with the live short; do not treat the bounce as a signal to cover and do not open a second March contract.",
+      "run_id": "overnight-20261002",
+      "schema_version": 1,
+      "thesis": "The existing 75 million short of March 2027 SOFR is still a hike-path trend: cash is 3.90 versus the contract at 4.485, and the US 10-year at 5.24 plus Brent near 102 keep policy restriction aligned with that path. The 14bp rally from 4.625 to 4.485 is a countertrend bounce, not a reversal. Persist with the live short; do not treat the bounce as a signal to cover and do not open a second March contract."
     }
   ],
   "schema_version": 1,

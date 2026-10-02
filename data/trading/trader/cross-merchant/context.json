@@ -106,8 +106,8 @@
     "nav_usd": 99914030.73,
     "net_pnl_usd": -85969.27,
     "pressure_flags": [],
-    "prior_competition_rank": 14,
-    "rank_change": 0,
+    "prior_competition_rank": 12,
+    "rank_change": 2,
     "raw_pnl_rank": 14,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
@@ -124,8 +124,21 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "967c6c6075f310288705081f3732309c90a18ee15d1abd4f37443676f3d6311b",
-  "open_positions": [],
+  "memory_context_sha256": "d99b4bf16c164f37ff840d806669a42327fda1c0359ef534c7e2dc558174357d",
+  "open_positions": [
+    {
+      "asset_class": "spot_fx",
+      "conviction": 58,
+      "current_notional_usd": 15000000.0,
+      "entry_mark": 110.9,
+      "instrument": "CADJPY",
+      "opened_at": "2026-10-02T05:40:56.963171-04:00",
+      "position_id": "pos-44de67c4b24f",
+      "risk_capital_usd": 150000.0,
+      "side": "long",
+      "trade_id": "trd-trader-cross-merchant-pos-44de67c4b24f"
+    }
+  ],
   "owner_id": "cross-merchant",
   "owner_type": "trader",
   "postmortems_due": [],
@@ -151,7 +164,7 @@
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.19
+        "value": 0.18
       },
       "frustration": {
         "band": "calm",
@@ -184,11 +197,6 @@
     "profile_version": 1,
     "recent_events": [
       {
-        "kind": "learning_default_entered",
-        "magnitude": 1.0,
-        "run_id": "overnight-20260928"
-      },
-      {
         "kind": "learning_default_cleared",
         "magnitude": 1.0,
         "run_id": "overnight-20260930"
@@ -196,9 +204,9 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "58a96708b358eb105aa3ad8417457b90b8d55d9285964ba174ebbcaf8568416b",
+    "state_sha256": "bdec99aabc2f9bc918fc625592af1132a2613407457509e4834e3794078b8e89",
     "streaks": {
-      "flat_cycles": 2,
+      "flat_cycles": 0,
       "session_loss": 0,
       "session_win": 0
     }

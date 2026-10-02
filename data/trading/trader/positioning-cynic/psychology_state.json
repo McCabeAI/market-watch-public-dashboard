@@ -4,9 +4,9 @@
     "chase_pressure": {
       "band": "calm",
       "baseline": 0.1,
-      "delta_last_cycle": 0.0243,
+      "delta_last_cycle": -0.0086,
       "half_life_cycles": 4.0,
-      "value": 0.1541
+      "value": 0.1455
     },
     "complacency": {
       "band": "calm",
@@ -25,16 +25,16 @@
     "external_pressure": {
       "band": "calm",
       "baseline": 0.1,
-      "delta_last_cycle": 0.0023,
+      "delta_last_cycle": -0.0138,
       "half_life_cycles": 6.0,
-      "value": 0.2262
+      "value": 0.2124
     },
     "frustration": {
       "band": "calm",
       "baseline": 0.1,
-      "delta_last_cycle": 0.0046,
+      "delta_last_cycle": -0.0134,
       "half_life_cycles": 3.0,
-      "value": 0.1648
+      "value": 0.1514
     },
     "revenge_pressure": {
       "band": "calm",
@@ -48,7 +48,7 @@
       "baseline": 0.5,
       "delta_last_cycle": 0.0005,
       "half_life_cycles": 12.0,
-      "value": 0.4917
+      "value": 0.4922
     },
     "thesis_attachment": {
       "band": "calm",
@@ -58,21 +58,21 @@
       "value": 0.25
     }
   },
-  "cycle_count": 4,
+  "cycle_count": 5,
   "engine_version": 1,
   "flags": [],
   "flat_cycles_pending": 0,
   "last_capital_owner_standing": null,
-  "last_event_seq": 8,
+  "last_event_seq": 9,
   "last_learning_status": "compliant",
   "last_repeated_error_counts": {},
   "last_review_id": "review-001",
-  "last_run_id": "overnight-20261001",
+  "last_run_id": "overnight-20261002",
   "metrics": {
     "conviction_volatility": 0.0,
     "distortion_verdicts": 0,
     "inconclusive_verdicts": 0,
-    "self_report_clean_cycles": 4,
+    "self_report_clean_cycles": 5,
     "self_report_mismatches": 0,
     "sharpened_verdicts": 0
   },
@@ -81,9 +81,9 @@
   "profile_version": 1,
   "provenance": "seeded_baseline_v1",
   "schema_version": 1,
-  "state_sha256": "f48943f58c118ec482ff133605d763a58068cc62da9000ce57d91d11b1320553",
+  "state_sha256": "21ecf75779a7ca248614d853ccb6b677e203e7163e3fe3311e4bb26af7321141",
   "streaks": {
-    "flat_cycles": 4,
+    "flat_cycles": 0,
     "session_loss": 0,
     "session_win": 0,
     "trade_loss": 0,
@@ -93,6 +93,8 @@
     "hold_through_pain": {},
     "revenge": []
   },
-  "trailing_open_risk_capital_usd": [],
+  "trailing_open_risk_capital_usd": [
+    150000.0
+  ],
   "type": "TRADER_PSYCHOLOGY_STATE"
 }

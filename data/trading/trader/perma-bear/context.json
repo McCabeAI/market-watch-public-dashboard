@@ -77,8 +77,8 @@
     "nav_usd": 99986660.37,
     "net_pnl_usd": -13339.63,
     "pressure_flags": [],
-    "prior_competition_rank": 9,
-    "rank_change": 0,
+    "prior_competition_rank": 8,
+    "rank_change": 1,
     "raw_pnl_rank": 9,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
@@ -95,8 +95,21 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "56a70d3ae3a92c9fbd760b93bbd11753873d15073126802c6989b208a95822e8",
-  "open_positions": [],
+  "memory_context_sha256": "454d1d813cf73b55d36d9a5d2c4305a349acfcc2632913a8285b4d7c2a75749e",
+  "open_positions": [
+    {
+      "asset_class": "rates",
+      "conviction": 64,
+      "current_notional_usd": 25000000.0,
+      "entry_mark": 5.24,
+      "instrument": "US_10Y",
+      "opened_at": "2026-10-02T05:40:56.963171-04:00",
+      "position_id": "pos-5ac8fc69cb81",
+      "risk_capital_usd": 250000.0,
+      "side": "long",
+      "trade_id": "trd-trader-perma-bear-pos-5ac8fc69cb81"
+    }
+  ],
   "owner_id": "perma-bear",
   "owner_type": "trader",
   "postmortems_due": [],
@@ -156,9 +169,9 @@
     "recent_events": [],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "4a0c7cbd34f6cf49869f27c5274b496869f6397691e9bb2e2625d8375e7bcda9",
+    "state_sha256": "1702c372707b5e9257653b87fcafd2f6426dc7cfdca62177ad1dcc868bda33a6",
     "streaks": {
-      "flat_cycles": 1,
+      "flat_cycles": 0,
       "session_loss": 0,
       "session_win": 0
     }

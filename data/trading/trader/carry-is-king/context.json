@@ -77,8 +77,8 @@
     "nav_usd": 99972060.77,
     "net_pnl_usd": -27939.23,
     "pressure_flags": [],
-    "prior_competition_rank": 11,
-    "rank_change": 0,
+    "prior_competition_rank": 10,
+    "rank_change": 1,
     "raw_pnl_rank": 11,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
@@ -94,45 +94,25 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [
+  "learning_obligations": [],
+  "memory_context_sha256": "2158cb1b1630ff6a5c0a4f77abac9baae1c6d13e3b0aadbc4b081ab7bcb948a6",
+  "open_positions": [
     {
-      "kind": "postmortem",
-      "obligation_id": "pmd-30b51979e71c",
-      "owner_id": "carry-is-king",
-      "owner_type": "trader",
-      "reference": "trd-trader-carry-is-king-pos-c76f7b616be7",
-      "source_run_id": "overnight-20261001"
+      "asset_class": "rates",
+      "conviction": 62,
+      "current_notional_usd": 25000000.0,
+      "entry_mark": 4.83,
+      "instrument": "AONIA_2027-03",
+      "opened_at": "2026-10-02T05:40:56.963171-04:00",
+      "position_id": "pos-524ab67108ee",
+      "risk_capital_usd": 250000.0,
+      "side": "long",
+      "trade_id": "trd-trader-carry-is-king-pos-524ab67108ee"
     }
   ],
-  "memory_context_sha256": "c7681456d4303686ce761aae2a196bcf533a0c5e708dab0f1d7316e996c697b1",
-  "open_positions": [],
   "owner_id": "carry-is-king",
   "owner_type": "trader",
-  "postmortems_due": [
-    {
-      "created_at": "2026-10-01T04:50:57.400664-04:00",
-      "created_run_id": "overnight-20261001",
-      "facts": {
-        "asset_class": "rates",
-        "closed_at": "2026-10-01T04:50:57.400664-04:00",
-        "conviction": 55,
-        "entry_mark": 3.1,
-        "exit_mark": 3.09,
-        "exit_reason_category": null,
-        "expression": null,
-        "holding_duration_seconds": 86476,
-        "instrument": "CORRA_2027-03",
-        "invalidation": "Cash CORRA shifts higher, or a quantified lower oil-beta Canadian curve or relative-value expression becomes cleaner. Oil remaining elevated without a cash-rate move does not invalidate.",
-        "opened_at": "2026-09-30T04:49:40.475210-04:00",
-        "rationale_status": "present",
-        "realized_pnl_usd": 3750.0,
-        "side": "long",
-        "thesis": null
-      },
-      "postmortem_id": "pmd-30b51979e71c",
-      "trade_id": "trd-trader-carry-is-king-pos-c76f7b616be7"
-    }
-  ],
+  "postmortems_due": [],
   "psychology": {
     "active_flags": [],
     "applicable": true,
@@ -189,7 +169,7 @@
     "recent_events": [],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "278339ea6a1e2fd42551aaff04483ef1989b4237f2650837a727f68f3e6543d5",
+    "state_sha256": "7ef72e2b5f4767c1300d574f03b830723e6fa068e2d4c07ff77c758e0198b33d",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

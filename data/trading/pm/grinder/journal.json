@@ -528,6 +528,60 @@
       "run_id": "overnight-20261001",
       "schema_version": 1,
       "thesis": "June 2027 Australian overnight is already 4.91 versus 4.60 cash, so a new pay needs implied rates to rise further after 31 basis points of tightening have been priced. Firm oil and a high global rate backdrop can support a hawkish bias, but that residual is too thin against negative carry if cash stays near 4.60 and against a 100 basis-point easing shock on new risk capital. Stay flat."
+    },
+    {
+      "actions": [
+        {
+          "action": "NO_TRADE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-02T07:01:03.466390-04:00",
+      "conviction": 78,
+      "decision_fingerprint": "7a4441c03de19a0b704235564c11f6d05171c92dd1f6e228bc67be698fef17f6",
+      "event_id": "jde-f63f5a176fc84127",
+      "funding_view": null,
+      "invalidation": "A later frozen markable candidate with a quantified expected P&L that exceeds SOFR on the same 100bp or 1 percent shocked-capital path, and with a catalyst consistent with the required mark direction, would reopen deployment at a reduced size.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "e9e4e8dbd1d35eacf697fd9d8c458e1d7814c3058b508ce5a5c8f3ad5e6eb978",
+      "outcome_links": [],
+      "owner_id": "grinder",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "bf39b2a5bd47d0e89942d814490a2804f5e437415d2747b9fb1e30a8b58bf751"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-02T05:40:56.963171-04:00",
+        "evidence_hash": "f0255a8278876d04b2c67126f658cc06ebbf7b88f19c50e607ad0ef4519a2ead",
+        "overnight_run_id": "overnight-20261002",
+        "review_id": "review-001",
+        "review_packet_id": "prp-grinder-overnight-20261002-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book stays flat. None of the four markable expanding handoffs shows expected edge large enough to pay official SOFR 3.90 ACT/360 charged on shocked-risk capital after a 100bp rate shock or a 1 percent spot shock. Cash-versus-strip gaps and outright yield levels are priced paths, not alpha, and the FX sleeves have no stated target that covers a 1 percent adverse move.",
+      "run_id": "overnight-20261002",
+      "schema_version": 1,
+      "thesis": "The book stays flat. None of the four markable expanding handoffs shows expected edge large enough to pay official SOFR 3.90 ACT/360 charged on shocked-risk capital after a 100bp rate shock or a 1 percent spot shock. Cash-versus-strip gaps and outright yield levels are priced paths, not alpha, and the FX sleeves have no stated target that covers a 1 percent adverse move."
     }
   ],
   "schema_version": 1,

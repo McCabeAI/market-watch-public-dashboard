@@ -70,14 +70,14 @@
     "nav_usd": 99979354.58,
     "net_pnl_usd": -20645.42,
     "pressure_flags": [],
-    "prior_competition_rank": 10,
-    "rank_change": 0,
+    "prior_competition_rank": 13,
+    "rank_change": -3,
     "raw_pnl_rank": 10,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 500000.0,
     "risk_capital_utilization": 0.05,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 72554.17,
     "status": "ok"
   },
   "learning": {
@@ -88,7 +88,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "691dac46b12a4a8eb3f1dc7cc6358ac419ad2f8b82274a7ee21d1c61a8d3efc9",
+  "memory_context_sha256": "a49f9a9bee7307b720acca48dbafb7251cf3d53a48e9315e29f25b8939d3091b",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -112,28 +112,28 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.17
+        "trend": "up",
+        "value": 0.19
       },
       "complacency": {
         "band": "calm",
         "trend": "down",
-        "value": 0.16
+        "value": 0.15
       },
       "defensiveness": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.2
+        "trend": "up",
+        "value": 0.21
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.24
+        "trend": "up",
+        "value": 0.29
       },
       "frustration": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.14
+        "trend": "up",
+        "value": 0.17
       },
       "revenge_pressure": {
         "band": "calm",
@@ -161,22 +161,22 @@
     "profile_version": 1,
     "recent_events": [
       {
-        "kind": "rank_shock",
-        "magnitude": 1.0,
-        "run_id": "overnight-20260929"
+        "kind": "session_loss",
+        "magnitude": 0.14510834,
+        "run_id": "overnight-20261002"
       },
       {
-        "kind": "self_report_admission_overconfidence",
+        "kind": "rank_drop_minor",
         "magnitude": 1.0,
-        "run_id": "overnight-20260929"
+        "run_id": "overnight-20261002"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "e1cc545da29696f735fbf39c42f24734e56397310399ba4b216ffe40c9c634b8",
+    "state_sha256": "69aba4d2006a18af429c3bc086eb76f6bed5d59a28a690c4c307ae96798ba989",
     "streaks": {
       "flat_cycles": 0,
-      "session_loss": 0,
+      "session_loss": 1,
       "session_win": 0
     }
   },

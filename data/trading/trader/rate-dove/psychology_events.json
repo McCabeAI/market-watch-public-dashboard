@@ -79,6 +79,84 @@
       "run_id": "overnight-20261001",
       "seq": 4,
       "skipped_reason": null
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-10-02T05:40:56.963171-04:00",
+      "event_id": "pse-000005",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "rate-dove",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261002",
+      "seq": 5,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-10-02T05:40:56.963171-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "chase_pressure": -0.0003,
+        "complacency": 0.008,
+        "defensiveness": -0.0009,
+        "external_pressure": -0.0003,
+        "frustration": -0.0009,
+        "revenge_pressure": -0.0003,
+        "self_trust": 0.003
+      },
+      "event_id": "pse-000006",
+      "kind": "session_gain",
+      "magnitude": 0.14759542,
+      "mismatch": false,
+      "owner_id": "rate-dove",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261002",
+      "scale": 1.0,
+      "seq": 6,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "session_pnl_change_usd": 73797.71
+      }
+    },
+    {
+      "at": "2026-10-02T05:40:56.963171-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "chase_pressure": -0.003,
+        "complacency": 0.045,
+        "external_pressure": -0.008,
+        "frustration": -0.003,
+        "self_trust": 0.01
+      },
+      "event_id": "pse-000007",
+      "kind": "rank_gain_major",
+      "magnitude": 1.0,
+      "mismatch": false,
+      "owner_id": "rate-dove",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261002",
+      "scale": 1.0,
+      "seq": 7,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "rank_change": -6
+      }
     }
   ],
   "owner_id": "rate-dove",

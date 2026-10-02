@@ -552,6 +552,64 @@
       "run_id": "overnight-20261001",
       "schema_version": 1,
       "thesis": "Ten-year yields at a twenty-four-year high have already tightened financial conditions that cash policy and a still-bid equity tape have not acknowledged. Receiving that long end is the defensive growth-break expression: oil is high, volatility is subdued, and the slowdown tail sits in duration that has already sold, not in fading a front-end hike path. The trade is wrong if crude and gold keep pushing yields through that extreme while equities never price the hit."
+    },
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "US_10Y",
+          "notional_usd": 25000000,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-02T05:40:56.963171-04:00",
+      "conviction": 64,
+      "decision_fingerprint": "830bbc8bdbfa6a30ae49dd8402282d814370887c767bb24a3d12c58a3af35370",
+      "event_id": "jde-ee39fd8f35994b24",
+      "funding_view": null,
+      "invalidation": "A further selloff in the US 10-year driven by tighter policy and higher term premium with no growth break would hurt long duration.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-5ac8fc69cb81"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-perma-bear-pos-5ac8fc69cb81"
+      ],
+      "memory_context_sha256": "56a70d3ae3a92c9fbd760b93bbd11753873d15073126802c6989b208a95822e8",
+      "outcome_links": [],
+      "owner_id": "perma-bear",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "4a0c7cbd34f6cf49869f27c5274b496869f6397691e9bb2e2625d8375e7bcda9"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-02T05:40:56.963171-04:00",
+        "evidence_hash": "558b501805049da733c5b3a1f59af45b9b809870cc24ab48976f5748ee0fdabc",
+        "overnight_run_id": "overnight-20261002",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Fragility is underpriced: VIX is 16.34, equities are bid, cash still sits below a hike-priced STIR strip, and oil is near 100. Receiving that strip would fade tightening already in the forwards, which is not a defensive trade. Buy the long end already sold at 5.24 and mark yields lower if growth or policy error arrives.",
+      "run_id": "overnight-20261002",
+      "schema_version": 1,
+      "thesis": "Fragility is underpriced: VIX is 16.34, equities are bid, cash still sits below a hike-priced STIR strip, and oil is near 100. Receiving that strip would fade tightening already in the forwards, which is not a defensive trade. Buy the long end already sold at 5.24 and mark yields lower if growth or policy error arrives."
     }
   ],
   "schema_version": 1,

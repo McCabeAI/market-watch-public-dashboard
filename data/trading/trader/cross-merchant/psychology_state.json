@@ -25,16 +25,16 @@
     "external_pressure": {
       "band": "calm",
       "baseline": 0.1,
-      "delta_last_cycle": -0.0116,
+      "delta_last_cycle": -0.0104,
       "half_life_cycles": 6.0,
-      "value": 0.1949
+      "value": 0.1845
     },
     "frustration": {
       "band": "calm",
       "baseline": 0.1,
-      "delta_last_cycle": -0.0085,
+      "delta_last_cycle": -0.0067,
       "half_life_cycles": 3.0,
-      "value": 0.1325
+      "value": 0.1258
     },
     "revenge_pressure": {
       "band": "calm",
@@ -46,9 +46,9 @@
     "self_trust": {
       "band": "steady",
       "baseline": 0.5,
-      "delta_last_cycle": 0.0004,
+      "delta_last_cycle": 0.0003,
       "half_life_cycles": 12.0,
-      "value": 0.4938
+      "value": 0.4941
     },
     "thesis_attachment": {
       "band": "calm",
@@ -58,21 +58,21 @@
       "value": 0.25
     }
   },
-  "cycle_count": 4,
+  "cycle_count": 5,
   "engine_version": 1,
   "flags": [],
   "flat_cycles_pending": 0,
   "last_capital_owner_standing": null,
-  "last_event_seq": 6,
+  "last_event_seq": 7,
   "last_learning_status": "compliant",
   "last_repeated_error_counts": {},
   "last_review_id": "review-001",
-  "last_run_id": "overnight-20261001",
+  "last_run_id": "overnight-20261002",
   "metrics": {
     "conviction_volatility": 0.0,
     "distortion_verdicts": 0,
     "inconclusive_verdicts": 0,
-    "self_report_clean_cycles": 4,
+    "self_report_clean_cycles": 5,
     "self_report_mismatches": 0,
     "sharpened_verdicts": 0
   },
@@ -81,9 +81,9 @@
   "profile_version": 1,
   "provenance": "seeded_baseline_v1",
   "schema_version": 1,
-  "state_sha256": "58a96708b358eb105aa3ad8417457b90b8d55d9285964ba174ebbcaf8568416b",
+  "state_sha256": "bdec99aabc2f9bc918fc625592af1132a2613407457509e4834e3794078b8e89",
   "streaks": {
-    "flat_cycles": 2,
+    "flat_cycles": 0,
     "session_loss": 0,
     "session_win": 0,
     "trade_loss": 0,
@@ -93,6 +93,8 @@
     "hold_through_pain": {},
     "revenge": []
   },
-  "trailing_open_risk_capital_usd": [],
+  "trailing_open_risk_capital_usd": [
+    150000.0
+  ],
   "type": "TRADER_PSYCHOLOGY_STATE"
 }

@@ -552,6 +552,62 @@
       "run_id": "overnight-20261001",
       "schema_version": 1,
       "thesis": "Cash CORRA at 2.30 still maps into Dec27 at 3.63, a 133 basis-point re-hiking arc that overstates how much tightening Canada can deliver if demand rolls over under already-restrictive global financial conditions. Receiving 2027 H-Z at a 3.399 mark versus 3.40 entry remains the clean fade of that destination: Mar27 at 3.09 already prices nearly 80 basis points of hikes into next spring, and Sep27\u2013Dec27 at 3.515\u20133.63 treat late-2027 as a plateau rather than an easing path. US 10Y at 5.29 and Brent at 103.53 keep inflation risk alive, so this is not an add, but they do not justify covering a receive that is still fading an intact hike arc from an eased cash rate. Hold the existing receive."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "curve",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027H-Z",
+          "notional_usd": null,
+          "position_id": "pos-9849cf751c27",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-02T05:40:56.963171-04:00",
+      "conviction": 57,
+      "decision_fingerprint": "db8f7fb74d8bfe5fd0b2a8869428102648f0d72cc87ff2446f6974d2107c09cc",
+      "event_id": "jde-0020fa484db446d1",
+      "funding_view": null,
+      "invalidation": "The receive is wrong if cash CORRA leaves 2.31 via delivered hikes, or if the 2027 strip confirms the hike destination with December implieds moving higher in a sustained re-tightening.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-9849cf751c27"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "5bd7f7ae19e9ef8c257d3f40b5c6da15fd0a159fad21aac8bbd89ea21ede1d7f",
+      "outcome_links": [],
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "69e6ee11395af7aaf4d37c21052e9bbee77cef298e7b332caf3fae369884b85d"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-02T05:40:56.963171-04:00",
+        "evidence_hash": "558b501805049da733c5b3a1f59af45b9b809870cc24ab48976f5748ee0fdabc",
+        "overnight_run_id": "overnight-20261002",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The 2027 hike arc off 2.31 cash is still too much tightening priced. Implieds have only ticked from 3.40 to 3.39375, so do not add into a rally and do not cut a mispricing that has not normalized. Hold the existing 42.5 million receive of CORRA 2027 H-Z.",
+      "run_id": "overnight-20261002",
+      "schema_version": 1,
+      "thesis": "The 2027 hike arc off 2.31 cash is still too much tightening priced. Implieds have only ticked from 3.40 to 3.39375, so do not add into a rally and do not cut a mispricing that has not normalized. Hold the existing 42.5 million receive of CORRA 2027 H-Z."
     }
   ],
   "schema_version": 1,

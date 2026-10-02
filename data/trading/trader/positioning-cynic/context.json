@@ -77,8 +77,8 @@
     "nav_usd": 100006610.97,
     "net_pnl_usd": 6610.97,
     "pressure_flags": [],
-    "prior_competition_rank": 3,
-    "rank_change": 0,
+    "prior_competition_rank": 4,
+    "rank_change": -1,
     "raw_pnl_rank": 3,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
@@ -95,8 +95,21 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "127e83cac0807d2ffc2c364c2aad0bbf883a2a616bd978245f92a8a157ed72a5",
-  "open_positions": [],
+  "memory_context_sha256": "390140b126a0bd0814e9d98ee1d665b24b4989e29973813ee6bde0810c59aae6",
+  "open_positions": [
+    {
+      "asset_class": "spot_fx",
+      "conviction": 56,
+      "current_notional_usd": 15000000.0,
+      "entry_mark": 1.42,
+      "instrument": "USDCAD",
+      "opened_at": "2026-10-02T05:40:56.963171-04:00",
+      "position_id": "pos-ccb6655acbad",
+      "risk_capital_usd": 150000.0,
+      "side": "short",
+      "trade_id": "trd-trader-positioning-cynic-pos-ccb6655acbad"
+    }
+  ],
   "owner_id": "positioning-cynic",
   "owner_type": "trader",
   "postmortems_due": [],
@@ -106,7 +119,7 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "up",
+        "trend": "down",
         "value": 0.15
       },
       "complacency": {
@@ -121,13 +134,13 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.23
+        "trend": "down",
+        "value": 0.21
       },
       "frustration": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.16
+        "trend": "down",
+        "value": 0.15
       },
       "revenge_pressure": {
         "band": "calm",
@@ -155,11 +168,6 @@
     "profile_version": 1,
     "recent_events": [
       {
-        "kind": "learning_default_cleared",
-        "magnitude": 1.0,
-        "run_id": "overnight-20260929"
-      },
-      {
         "kind": "flat_with_market",
         "magnitude": 1.0,
         "run_id": "overnight-20260930"
@@ -172,9 +180,9 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "f48943f58c118ec482ff133605d763a58068cc62da9000ce57d91d11b1320553",
+    "state_sha256": "21ecf75779a7ca248614d853ccb6b677e203e7163e3fe3311e4bb26af7321141",
     "streaks": {
-      "flat_cycles": 4,
+      "flat_cycles": 0,
       "session_loss": 0,
       "session_win": 0
     }

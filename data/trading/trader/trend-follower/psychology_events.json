@@ -141,6 +141,86 @@
       "run_id": "overnight-20261001",
       "seq": 6,
       "skipped_reason": null
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [
+          250000.0
+        ],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-10-02T05:40:56.963171-04:00",
+      "event_id": "pse-000007",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "trend-follower",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261002",
+      "seq": 7,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-10-02T05:40:56.963171-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "complacency": -0.0025,
+        "defensiveness": 0.0096,
+        "external_pressure": 0.0035,
+        "frustration": 0.0185,
+        "revenge_pressure": 0.0063,
+        "self_trust": -0.0042,
+        "thesis_attachment": 0.0031
+      },
+      "event_id": "pse-000008",
+      "kind": "session_loss",
+      "magnitude": 0.2101625,
+      "mismatch": false,
+      "owner_id": "trend-follower",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261002",
+      "scale": 1.0,
+      "seq": 8,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "session_pnl_change_usd": -105081.25
+      }
+    },
+    {
+      "at": "2026-10-02T05:40:56.963171-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "chase_pressure": 0.0943,
+        "complacency": -0.0059,
+        "external_pressure": 0.1682,
+        "frustration": 0.0704,
+        "self_trust": -0.0149
+      },
+      "event_id": "pse-000009",
+      "kind": "rank_shock",
+      "magnitude": 1.0,
+      "mismatch": false,
+      "owner_id": "trend-follower",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261002",
+      "scale": 1.0,
+      "seq": 9,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "rank_change": 10
+      }
     }
   ],
   "owner_id": "trend-follower",

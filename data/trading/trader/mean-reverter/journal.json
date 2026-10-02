@@ -554,6 +554,62 @@
       "run_id": "overnight-20261001",
       "schema_version": 1,
       "thesis": "SOFR cash at 3.88 is still the anchor and Mar27 at 4.625 prices 74.5bp of tightening that cash has not printed, so the receive remains a fade of forward extrapolation rather than a denial of a cash hike. That gap has widened while implieds lifted through the 4.58 entry, and Brent at 103.53 with the 10Y at 5.29 keep the hike path persistent enough that a full-size fade is the wrong side of the tape. Reduce the 20 million receive by 10 million, hold 10 million, and do not add until a normalization catalyst appears."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-1477172adb86",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-02T05:40:56.963171-04:00",
+      "conviction": 61,
+      "decision_fingerprint": "351b1df3ff188e050b1f4315e009fb88cb51e28cf16990bf69ec2a3fa96c26e7",
+      "event_id": "jde-e1fa9e19fce34809",
+      "funding_view": null,
+      "invalidation": "Cover if March implieds back through last mark 4.625 or through entry 4.58, or if the 58.5bp cash-to-strip gap fails to compress because cash 3.90 is rising into a still-elevated strip.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-1477172adb86"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "2214cc0910e476aab9ebf4e75adf600526d0dfffbaa346312e9dd7161fbcf911",
+      "outcome_links": [],
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "1009ce60478425f5bd69eaae36d49e0f255cabe851b880717a24e5148fd6da41"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-02T05:40:56.963171-04:00",
+        "evidence_hash": "558b501805049da733c5b3a1f59af45b9b809870cc24ab48976f5748ee0fdabc",
+        "overnight_run_id": "overnight-20261002",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Cash SOFR is 3.90 versus March 2027 implied 4.485, so 58.5bp of hike path remains priced. The existing 10 million receive at 4.58 already reflects the prior cut, and implieds have come in from 4.625 to 4.485. That 14bp is partial normalization toward the cash anchor, not completion of the stretch, so the receive stays; the US 10-year at 5.24 and Brent at 102.31 keep size at 10 million rather than an add.",
+      "run_id": "overnight-20261002",
+      "schema_version": 1,
+      "thesis": "Cash SOFR is 3.90 versus March 2027 implied 4.485, so 58.5bp of hike path remains priced. The existing 10 million receive at 4.58 already reflects the prior cut, and implieds have come in from 4.625 to 4.485. That 14bp is partial normalization toward the cash anchor, not completion of the stretch, so the receive stays; the US 10-year at 5.24 and Brent at 102.31 keep size at 10 million rather than an add."
     }
   ],
   "schema_version": 1,

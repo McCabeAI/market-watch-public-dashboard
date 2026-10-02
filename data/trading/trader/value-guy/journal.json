@@ -538,6 +538,60 @@
       "run_id": "overnight-20261001",
       "schema_version": 1,
       "thesis": "US 10-year yields are the highest since 2002 and remain a genuine historical dislocation versus the post-2002 distribution, but a one-year percentile is a discovery flag rather than a mean-reversion thesis. The freeze still supplies no dated terms-of-trade, external-balance, productivity, or policy-path clock that says convergence begins on this review; the further cheapening from the prior 5.26 print argues the other way. Canada and Australia 10s and cheap EUR and NZD versus USD are peer dislocations without that clock either, so the book stays flat."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-02T05:40:56.963171-04:00",
+      "conviction": 64,
+      "decision_fingerprint": "d6be9d1acbc8724ab8ec62471a98b17f608a4a950dc567a5228415da429bd2c5",
+      "event_id": "jde-b74855811b174946",
+      "funding_view": null,
+      "invalidation": "Flip from a flat book only if a later freeze dates a EUR-USD or US 10-year convergence clock, or supplies complete tenor marks that make a rates expression of EUR cheapness cleaner than doing nothing.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "2510dc980ae6833debc3b1676d20869bf9b2c0dd90bbf74b93fa4381ee1a1e22",
+      "outcome_links": [],
+      "owner_id": "value-guy",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "e8a4204d776d548c01086b62ace5b4d0f44f4658a5eaae57715f4e3fe605f590"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-02T05:40:56.963171-04:00",
+        "evidence_hash": "558b501805049da733c5b3a1f59af45b9b809870cc24ab48976f5748ee0fdabc",
+        "overnight_run_id": "overnight-20261002",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The US 10-year at 5.24 remains a discovery flag rather than a mean-reversion book: the 5bp dip from 5.29 is not a dated convergence clock, and no peer 10-year relative-value levels are supplied. EURUSD at 1.1298 and z-2.39 is the only valuation dislocation in the freeze, but a 2-year cross-market pack is not the expression of that cheapness and SOFR-CORRA is ineligible when the futures-cash gap is negligible. Stay flat.",
+      "run_id": "overnight-20261002",
+      "schema_version": 1,
+      "thesis": "The US 10-year at 5.24 remains a discovery flag rather than a mean-reversion book: the 5bp dip from 5.29 is not a dated convergence clock, and no peer 10-year relative-value levels are supplied. EURUSD at 1.1298 and z-2.39 is the only valuation dislocation in the freeze, but a 2-year cross-market pack is not the expression of that cheapness and SOFR-CORRA is ineligible when the futures-cash gap is negligible. Stay flat."
     }
   ],
   "schema_version": 1,

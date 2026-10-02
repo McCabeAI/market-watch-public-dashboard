@@ -556,6 +556,64 @@
       "run_id": "overnight-20261001",
       "schema_version": 1,
       "thesis": "Desk STIR is already two-way and net paying 2027 SOFR/CORRA while the cheap-versus-cash receive is owned elsewhere; joining either sign is crowding, not asymmetry. US 10Y at 5.29 is a 24-year high with no cash-duration inventory here, but fading that print is the same too-much-tightening view as receiving STIR versus cash. USDCAD is already long 55 million and EURUSD has no ownership hook in this freeze. Stay flat; last hold stands."
+    },
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDCAD",
+          "notional_usd": 15000000,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-02T05:40:56.963171-04:00",
+      "conviction": 56,
+      "decision_fingerprint": "30b7a8787bf8e0a982ca4ef2a33911b5de40404162b6ce947e7bc3fe30524468",
+      "event_id": "jde-2b9b4076693844ac",
+      "funding_view": null,
+      "invalidation": "The fade is wrong if USDCAD holds bid or squeezes higher while the desk remains or adds long, implying the long is not a crowded supply source.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-ccb6655acbad"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-positioning-cynic-pos-ccb6655acbad"
+      ],
+      "memory_context_sha256": "127e83cac0807d2ffc2c364c2aad0bbf883a2a616bd978245f92a8a157ed72a5",
+      "outcome_links": [],
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "f48943f58c118ec482ff133605d763a58068cc62da9000ce57d91d11b1320553"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-02T05:40:56.963171-04:00",
+        "evidence_hash": "558b501805049da733c5b3a1f59af45b9b809870cc24ab48976f5748ee0fdabc",
+        "overnight_run_id": "overnight-20261002",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The 2027 SOFR and CORRA complex is already two-way on the desk, and cheap-versus-cash is not an entry for a new March CORRA receive while that crowding is flagged. Adding a 2027 pay does not create incremental ownership asymmetry because pays are already a desk position. The remaining one-way crowded expression is the desk long in USDCAD at 1.4246; fading that long is the cleaner ownership-asymmetric trade.",
+      "run_id": "overnight-20261002",
+      "schema_version": 1,
+      "thesis": "The 2027 SOFR and CORRA complex is already two-way on the desk, and cheap-versus-cash is not an entry for a new March CORRA receive while that crowding is flagged. Adding a 2027 pay does not create incremental ownership asymmetry because pays are already a desk position. The remaining one-way crowded expression is the desk long in USDCAD at 1.4246; fading that long is the cleaner ownership-asymmetric trade."
     }
   ],
   "schema_version": 1,

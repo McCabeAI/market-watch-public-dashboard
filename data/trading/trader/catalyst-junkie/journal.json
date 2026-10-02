@@ -540,6 +540,60 @@
       "run_id": "overnight-20261001",
       "schema_version": 1,
       "thesis": "AU eligibility does not create a trade: AONIA cash is already 4.60 against October 4.595, so the hike is delivered, and March 2027 at 4.81 / June 2027 at 4.91 is residual path pricing without a dated RBA meeting. US 10-year at 5.29, SOFR 3.88 versus March 2027 at 4.625, Swiss CPI at 1.0 percent, UK factory inflation, the euro at a 17-month low, and Brent at 103.53 are prints or ongoing tape, not scheduled clocks. Book stays flat until a dated mechanism maps onto a live mispricing."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-02T05:40:56.963171-04:00",
+      "conviction": 72,
+      "decision_fingerprint": "0e3bad60396fc0bf198f3a6794763c0d4b15b7ec8753242f514cf5b1b5390a67",
+      "event_id": "jde-e7546249d90c4687",
+      "funding_view": null,
+      "invalidation": "Abandon this hold if a dated RBA, FOMC, BoC, or ECB decision, a scheduled inflation or issuance event, or a dated LNG Canada FID maps onto an un-delivered STIR contract versus cash rather than a residual path already in the price.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "b6f8767a350e0cd06cd81b9ee4a1eac04ed8bb74237d795ebed4f9f34e2484d9",
+      "outcome_links": [],
+      "owner_id": "catalyst-junkie",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "6f55908ded1281cf065b03616fd688c74d16c2dd614ab99b8580d9bbe1fea3ab"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-02T05:40:56.963171-04:00",
+        "evidence_hash": "558b501805049da733c5b3a1f59af45b9b809870cc24ab48976f5748ee0fdabc",
+        "overnight_run_id": "overnight-20261002",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book stays flat because the freeze has delivered cash levels and residual paths, not a dated meeting, print, or issuance that can force repricing. Cash AONIA at 4.60 versus October at 4.595 already delivers the near Australian hike, so March 2027 at 4.83 and June 2027 at 4.945 are undated RBA path, not a trade. SOFR at 3.90 versus March 2027 at 4.485 and CORRA at 2.31 versus March 2027 at 2.945 are the same residual-path problem with no FOMC or BoC date, while euro-area inflation at a three-year high against fewer ECB hike bets, Brent at 102.31, and a still-live LNG Canada FID are a print and identifiable events without a clock.",
+      "run_id": "overnight-20261002",
+      "schema_version": 1,
+      "thesis": "The book stays flat because the freeze has delivered cash levels and residual paths, not a dated meeting, print, or issuance that can force repricing. Cash AONIA at 4.60 versus October at 4.595 already delivers the near Australian hike, so March 2027 at 4.83 and June 2027 at 4.945 are undated RBA path, not a trade. SOFR at 3.90 versus March 2027 at 4.485 and CORRA at 2.31 versus March 2027 at 2.945 are the same residual-path problem with no FOMC or BoC date, while euro-area inflation at a three-year high against fewer ECB hike bets, Brent at 102.31, and a still-live LNG Canada FID are a print and identifiable events without a clock."
     }
   ],
   "schema_version": 1,

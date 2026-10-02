@@ -159,6 +159,82 @@
       "run_id": "overnight-20261001",
       "seq": 7,
       "skipped_reason": null
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-10-02T05:40:56.963171-04:00",
+      "event_id": "pse-000008",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "perma-bull",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261002",
+      "seq": 8,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-10-02T05:40:56.963171-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "complacency": -0.0025,
+        "defensiveness": 0.0064,
+        "external_pressure": 0.0023,
+        "frustration": 0.01,
+        "revenge_pressure": 0.0044,
+        "self_trust": -0.0029,
+        "thesis_attachment": 0.0023
+      },
+      "event_id": "pse-000009",
+      "kind": "session_loss",
+      "magnitude": 0.14510834,
+      "mismatch": false,
+      "owner_id": "perma-bull",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261002",
+      "scale": 1.0,
+      "seq": 9,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "session_pnl_change_usd": -72554.17
+      }
+    },
+    {
+      "at": "2026-10-02T05:40:56.963171-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "chase_pressure": 0.0376,
+        "external_pressure": 0.0621,
+        "frustration": 0.026
+      },
+      "event_id": "pse-000010",
+      "kind": "rank_drop_minor",
+      "magnitude": 1.0,
+      "mismatch": false,
+      "owner_id": "perma-bull",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261002",
+      "scale": 1.0,
+      "seq": 10,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "rank_change": 3
+      }
     }
   ],
   "owner_id": "perma-bull",

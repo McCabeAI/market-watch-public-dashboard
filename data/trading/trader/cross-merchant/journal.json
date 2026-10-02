@@ -566,6 +566,64 @@
       "run_id": "overnight-20261001",
       "schema_version": 1,
       "thesis": "CAD versus JPY is the cleanest non-dollar relative-value on this tape: Brent is supporting Canada while CADJPY still sits cheap, and buying EURUSD or USDCAD would only warehouse the dollar bid that already drove EURUSD to a 17-month low. Australia cash at 4.60 against CORRA at 2.30 is a real AU-versus-CA carry widening, but AUDCAD is already rich and last week's AUDCAD short or reverse-long is off-limits unless the gap is more than a simple flip, so that pair is not the expression. Book stays flat: long CADJPY is the candidate, not the order."
+    },
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CADJPY",
+          "notional_usd": 15000000,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-02T05:40:56.963171-04:00",
+      "conviction": 58,
+      "decision_fingerprint": "945ef9e912e49cf026534a998bedf6297634e3509d70edfe6bb198f27502e4c0",
+      "event_id": "jde-8157e76fabe9468f",
+      "funding_view": null,
+      "invalidation": "The CADJPY long is wrong if Brent no longer supports cheap CAD versus JPY, if the cheapness is a yen-haven bid rather than CAD lag, or if a non-recycled AU-versus-CA gap becomes the clearer cross.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-44de67c4b24f"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-cross-merchant-pos-44de67c4b24f"
+      ],
+      "memory_context_sha256": "967c6c6075f310288705081f3732309c90a18ee15d1abd4f37443676f3d6311b",
+      "outcome_links": [],
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "58a96708b358eb105aa3ad8417457b90b8d55d9285964ba174ebbcaf8568416b"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-02T05:40:56.963171-04:00",
+        "evidence_hash": "558b501805049da733c5b3a1f59af45b9b809870cc24ab48976f5748ee0fdabc",
+        "overnight_run_id": "overnight-20261002",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Buy spot CADJPY at 110.90. CAD is cheap versus JPY at z-1.18 while Brent 102.31 supports the oil exporter versus the oil importer. Expressing that via USDCAD or USDJPY contaminates the view with SOFR 3.90 and USD beta. Do not reverse the closed AUDCAD richness fade on oil; that fade is multi-week and currently pays carry against AONIA 4.60 versus CORRA 2.31.",
+      "run_id": "overnight-20261002",
+      "schema_version": 1,
+      "thesis": "Buy spot CADJPY at 110.90. CAD is cheap versus JPY at z-1.18 while Brent 102.31 supports the oil exporter versus the oil importer. Expressing that via USDCAD or USDJPY contaminates the view with SOFR 3.90 and USD beta. Do not reverse the closed AUDCAD richness fade on oil; that fade is multi-week and currently pays carry against AONIA 4.60 versus CORRA 2.31."
     }
   ],
   "schema_version": 1,

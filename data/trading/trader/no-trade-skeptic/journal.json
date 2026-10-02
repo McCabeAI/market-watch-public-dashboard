@@ -745,6 +745,77 @@
       "run_id": "overnight-20261001",
       "schema_version": 1,
       "thesis": "The US 10Y at 5.29 and SR3 at Dec26 4.31 / Mar27 4.625 / Sep27 4.905 versus official SOFR 3.88 already price the tightening and term-premium story; chasing a 2002-high overnight is crowded and late. CORRA 2.30 versus Mar27 3.09 and AONIA 4.60 versus Mar27 4.81 are likewise in the forwards, and equities bid with VIX 16.04 supply no risk-off catalyst on this cutoff. Book stays flat at the official SOFR 3.88 cash zero; that print is the benchmark, not an edge."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-02T05:40:56.963171-04:00",
+      "conviction": 78,
+      "decision_fingerprint": "bd786d3f0c03a34adcb4675a30b9a74d9b388ac0e11390fc99d6292a3b4a920d",
+      "event_id": "jde-c254113c56dd4f67",
+      "funding_view": {
+        "current_sofr": {
+          "observation_date": "2026-09-30",
+          "rate": 3.9
+        },
+        "forward_funding_assessment": "about_the_same",
+        "implication": "Remain at the zero official-SOFR cash benchmark. Paying SOFR on shocked-risk capital would finance a hike-path thesis the forwards already contain. Flat cash at 3.90 is the zero, not alpha.",
+        "sr3_forward_view": "Frozen SR3 Dec26 4.225, Mar27 4.485, Sep27 4.745 versus official SOFR 3.90: the strip already embeds a higher funding path, so overnight cash at 3.90 is not a mispriced hike-trade."
+      },
+      "invalidation": "Leave the SOFR cash zero only if a later freeze shows official SOFR or the SR3, CAD, or AUD strips printing a residual after the already-priced hike path, or names a dated catalyst that reopens that path.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "d3e4d4e9ccc90d6ddfc81963c681a3115ffab9950e1193033433965383a798ac",
+      "outcome_links": [],
+      "owner_id": "no-trade-skeptic",
+      "owner_type": "trader",
+      "payload": {
+        "funding_view": {
+          "current_sofr": {
+            "observation_date": "2026-09-30",
+            "rate": 3.9
+          },
+          "forward_funding_assessment": "about_the_same",
+          "implication": "Remain at the zero official-SOFR cash benchmark. Paying SOFR on shocked-risk capital would finance a hike-path thesis the forwards already contain. Flat cash at 3.90 is the zero, not alpha.",
+          "sr3_forward_view": "Frozen SR3 Dec26 4.225, Mar27 4.485, Sep27 4.745 versus official SOFR 3.90: the strip already embeds a higher funding path, so overnight cash at 3.90 is not a mispriced hike-trade."
+        },
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "74e65980798d69364e1b007c4570ae448a36a26edd8d24c9bf2bc157fc3c6c74"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-02T05:40:56.963171-04:00",
+        "evidence_hash": "558b501805049da733c5b3a1f59af45b9b809870cc24ab48976f5748ee0fdabc",
+        "overnight_run_id": "overnight-20261002",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Official SOFR is 3.90 against SR3 December 4.225, March 4.485, and September 4.745, so about 85bp of tightening is already in the US strip. CORRA 2.31 versus March 2.945 and AONIA 4.60 versus March 4.83 are likewise in the forwards, and a 5.24 10-year with Brent at 102 and VIX at 16.34 is a priced restrictive tape, not an overnight dislocation. Stay at the official SOFR cash zero; that print is the benchmark, not an edge.",
+      "run_id": "overnight-20261002",
+      "schema_version": 1,
+      "thesis": "Official SOFR is 3.90 against SR3 December 4.225, March 4.485, and September 4.745, so about 85bp of tightening is already in the US strip. CORRA 2.31 versus March 2.945 and AONIA 4.60 versus March 4.83 are likewise in the forwards, and a 5.24 10-year with Brent at 102 and VIX at 16.34 is a priced restrictive tape, not an overnight dislocation. Stay at the official SOFR cash zero; that print is the benchmark, not an edge."
     }
   ],
   "schema_version": 1,

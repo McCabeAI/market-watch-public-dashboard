@@ -550,6 +550,62 @@
       "run_id": "overnight-20261001",
       "schema_version": 1,
       "thesis": "Risk still looks like a growth tape: S&P 7651 with VIX 16, Brent 103.53, and the US 10-year at 5.29, the highest since 2002. Canada is the outlier at 2.30 cash versus official SOFR 3.88, and Mar27 CORRA at 3.09 still prices too little catch-up if oil and US term premia stay this firm. Keep paying the existing CORRA 2027-03 line; that isolates the policy gap better than chasing USDCAD or the already-extended Treasury 10-year."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-dd6fdaf39119",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-02T05:40:56.963171-04:00",
+      "conviction": 61,
+      "decision_fingerprint": "6462a406b3b528d907d20b5b8d826cd0f6a695b48b568b7caa9ffebc76d2a6d7",
+      "event_id": "jde-9072cedc2a504063",
+      "funding_view": null,
+      "invalidation": "Cover if cash CORRA leaves the 2.31 eased regime via delivered hikes collapsing into a cut path, or if risk assets and oil break together in a way that cancels the priced 2027 tightening.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-dd6fdaf39119"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "691dac46b12a4a8eb3f1dc7cc6358ac419ad2f8b82274a7ee21d1c61a8d3efc9",
+      "outcome_links": [],
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "e1cc545da29696f735fbf39c42f24734e56397310399ba4b216ffe40c9c634b8"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-02T05:40:56.963171-04:00",
+        "evidence_hash": "558b501805049da733c5b3a1f59af45b9b809870cc24ab48976f5748ee0fdabc",
+        "overnight_run_id": "overnight-20261002",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Global risk appetite is still on with the S&P at 7666 and VIX at 16.34, oil is still high, and the US 10-year at 5.24 does not look like a growth-scare collapse. Canada cash at 2.31 versus March 2027 at 2.945 remains a hike arc, so the existing 50 million pay stays the pro-cyclical expression. The adverse mark from 3.13 to 2.945 is a shock, not a thesis break, and a recovered rank is not permission to add.",
+      "run_id": "overnight-20261002",
+      "schema_version": 1,
+      "thesis": "Global risk appetite is still on with the S&P at 7666 and VIX at 16.34, oil is still high, and the US 10-year at 5.24 does not look like a growth-scare collapse. Canada cash at 2.31 versus March 2027 at 2.945 remains a hike arc, so the existing 50 million pay stays the pro-cyclical expression. The adverse mark from 3.13 to 2.945 is a shock, not a thesis break, and a recovered rank is not permission to add."
     }
   ],
   "schema_version": 1,

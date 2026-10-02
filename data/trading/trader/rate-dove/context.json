@@ -41,15 +41,17 @@
     "material_threshold_usd": 2000000.0,
     "nav_usd": 99994213.39,
     "net_pnl_usd": -5786.61,
-    "pressure_flags": [],
-    "prior_competition_rank": 8,
-    "rank_change": 0,
+    "pressure_flags": [
+      "rank_shock"
+    ],
+    "prior_competition_rank": 2,
+    "rank_change": 6,
     "raw_pnl_rank": 8,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 425000.0,
     "risk_capital_utilization": 0.0425,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -73797.71,
     "status": "ok"
   },
   "learning": {
@@ -59,8 +61,17 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [],
-  "memory_context_sha256": "5bd7f7ae19e9ef8c257d3f40b5c6da15fd0a159fad21aac8bbd89ea21ede1d7f",
+  "learning_obligations": [
+    {
+      "kind": "performance_reflection",
+      "obligation_id": "rfd-b31468a2b557",
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "reference": "rfd-b31468a2b557",
+      "source_run_id": null
+    }
+  ],
+  "memory_context_sha256": "3e72fa8adea2a5621f2114b8fc1df6e2ac52a112b309aedbebd5c6099c97f66e",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -89,8 +100,8 @@
       },
       "complacency": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "up",
+        "value": 0.15
       },
       "defensiveness": {
         "band": "calm",
@@ -99,8 +110,8 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "down",
+        "value": 0.09
       },
       "frustration": {
         "band": "calm",
@@ -114,8 +125,8 @@
       },
       "self_trust": {
         "band": "steady",
-        "trend": "flat",
-        "value": 0.5
+        "trend": "up",
+        "value": 0.51
       },
       "thesis_attachment": {
         "band": "calm",
@@ -131,20 +142,48 @@
       "sharpened_verdicts": 0
     },
     "profile_version": 1,
-    "recent_events": [],
+    "recent_events": [
+      {
+        "kind": "session_gain",
+        "magnitude": 0.14759542,
+        "run_id": "overnight-20261002"
+      },
+      {
+        "kind": "rank_gain_major",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261002"
+      }
+    ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "69e6ee11395af7aaf4d37c21052e9bbee77cef298e7b332caf3fae369884b85d",
+    "state_sha256": "036c87e464f4292093d64b721d6362a67cf7f1290070171dca9592c48ab807e7",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
-      "session_win": 0
+      "session_win": 1
     }
   },
   "recent_closed_trades": [],
   "recent_funding_views": [],
   "recent_performance_reflections": [],
-  "reflections_due": [],
+  "reflections_due": [
+    {
+      "created_at": "2026-10-02T05:40:56.963171-04:00",
+      "created_run_id": null,
+      "facts": {
+        "competition_rank": 8,
+        "drawdown_usd": 89633.21,
+        "lesson_ids": [],
+        "net_pnl_usd": -5786.61,
+        "prior_competition_rank": 2,
+        "trade_ids": []
+      },
+      "reflection_due_id": "rfd-b31468a2b557",
+      "trigger_ids": [
+        "rank_shock"
+      ]
+    }
+  ],
   "schema_version": 4,
   "type": "IDENTITY_MEMORY_CONTEXT"
 }

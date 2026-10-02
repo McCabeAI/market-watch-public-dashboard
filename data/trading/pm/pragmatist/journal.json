@@ -550,6 +550,62 @@
       "run_id": "overnight-20261001",
       "schema_version": 1,
       "thesis": "Keep the Canada receive. Cash CORRA at 2.30 still sits 79bp below the March 2027 implied 3.09, so the live line continues to be paid to fade a Bank of Canada catch-up that has not appeared in the policy rate even while US yields sit at a multi-decade high. Canada 10-year yields near 3.96 have not tracked the US 10-year, which is the core divergence, and a token Australia pay does not change oil-and-US-spillover risk on a 450 million receive."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pm-pragmatist-4e0cbc4e0b05",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-02T07:01:03.306708-04:00",
+      "conviction": 68,
+      "decision_fingerprint": "a4adf3412b17fd77f3c1cbb9e57fa252f146e6fff3fa4776cb5ca12890c83ff9",
+      "event_id": "jde-ce9a359c882e4625",
+      "funding_view": null,
+      "invalidation": "CORRA March 2027 implied back through 3.13, or cash CORRA reversing higher toward 2.70-plus with a clear Bank of Canada hike path led by oil or inflation; either event ends the hold and forces a cut or exit.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-pragmatist-4e0cbc4e0b05"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "ff463112e28e5b06607ce104e8f5720cb01e92ceebb5921b5af89001fc91f520",
+      "outcome_links": [],
+      "owner_id": "pragmatist",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "8c7df1ba61dfcc5c82f5fceb3a0b2b9ba72aef9e0fbe348c6a35544b459965f0"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-02T05:40:56.963171-04:00",
+        "evidence_hash": "13d94226fbac838482baba0246c790a7c63a1c54b82c15105ed07eae08e862c8",
+        "overnight_run_id": "overnight-20261002",
+        "review_id": "review-001",
+        "review_packet_id": "prp-pragmatist-overnight-20261002-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Keep the existing CORRA March 2027 receive. Cash at 2.31 versus implied 2.945 still prices a re-tightening path the position is fading, and the line has already worked from 3.13 without the thesis breaking. Brent near 102 is the live hawkish-Canada risk, but the accepted expanding clips are too small to hedge that path or to add a second independent macro bet. Unused risk capacity is not a reason to overlay token AONIA, US 10-year, or CAD FX risk that either duplicates easing beta or only partially offsets it.",
+      "run_id": "overnight-20261002",
+      "schema_version": 1,
+      "thesis": "Keep the existing CORRA March 2027 receive. Cash at 2.31 versus implied 2.945 still prices a re-tightening path the position is fading, and the line has already worked from 3.13 without the thesis breaking. Brent near 102 is the live hawkish-Canada risk, but the accepted expanding clips are too small to hedge that path or to add a second independent macro bet. Unused risk capacity is not a reason to overlay token AONIA, US 10-year, or CAD FX risk that either duplicates easing beta or only partially offsets it."
     }
   ],
   "schema_version": 1,

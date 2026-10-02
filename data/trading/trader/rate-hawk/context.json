@@ -42,14 +42,14 @@
     "nav_usd": 100074354.58,
     "net_pnl_usd": 74354.58,
     "pressure_flags": [],
-    "prior_competition_rank": 2,
-    "rank_change": 0,
+    "prior_competition_rank": 3,
+    "rank_change": -1,
     "raw_pnl_rank": 2,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 750000.0,
     "risk_capital_utilization": 0.075,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 67581.25,
     "status": "ok"
   },
   "learning": {
@@ -60,7 +60,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "248fe544f1b60ed9d7e1b08b34880aa4f1a1e544d8438e4079239e706b82be1c",
+  "memory_context_sha256": "b2f879adcab4cfbd040172a91e4a26724ddb62191b7b698036d5654390cdcf21",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -118,8 +118,8 @@
       },
       "defensiveness": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.2
+        "trend": "up",
+        "value": 0.21
       },
       "external_pressure": {
         "band": "calm",
@@ -128,8 +128,8 @@
       },
       "frustration": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "up",
+        "value": 0.11
       },
       "revenge_pressure": {
         "band": "calm",
@@ -155,13 +155,19 @@
       "sharpened_verdicts": 0
     },
     "profile_version": 1,
-    "recent_events": [],
+    "recent_events": [
+      {
+        "kind": "session_loss",
+        "magnitude": 0.1351625,
+        "run_id": "overnight-20261002"
+      }
+    ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "453d103455ea4f82da8b4824db4d844420723964af7d10cadbac2ef07170a41b",
+    "state_sha256": "5e0d7e85b03674989f0f0509c6549d75400a504fdd7a56a674e2832ed26422f0",
     "streaks": {
       "flat_cycles": 0,
-      "session_loss": 0,
+      "session_loss": 1,
       "session_win": 0
     }
   },
