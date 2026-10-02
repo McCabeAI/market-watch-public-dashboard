@@ -3,9 +3,14 @@
 from __future__ import annotations
 
 import hashlib
+import io
 import json
+import re
 from datetime import datetime, timezone
 from typing import Any, Callable
+from urllib.parse import urljoin
+
+from pypdf import PdfReader
 
 from scripts.euro_area_macro_data import (
     employment_qq_change_thousands,
@@ -14,6 +19,12 @@ from scripts.euro_area_macro_data import (
     parse_ecb_csvdata,
     parse_eurostat_sdmx_json,
     parse_eurostat_statistics_json,
+)
+from scripts.macro_ingestion.ea_country_hicp import (
+    CATALOG_ID_TO_GEO,
+    COUNTRY_HICP_IDS,
+    fetch_national_hicp_points,
+    reconcile_country_hicp_points,
 )
 from scripts.harvest_ea_pmi import (
     ALT_PUBLIC_DISCOVERY_URLS,
@@ -47,6 +58,17 @@ IMPORT_EXPORT_CHECK_URL = (
 )
 PARTICIPATION_CHECK_URL = "https://ec.europa.eu/eurostat/web/lfs"
 HICP_FLASH_CHECK_URL = "https://ec.europa.eu/eurostat/web/hicp"
+ZEW_LISTING_URL = "https://www.zew.de/en/press/latest-press-releases"
+ZEW_TABELLE_HREF_RE = re.compile(
+    r'href="((?:https?://(?:download\.)?zew\.de)?/[^"]*e_(\d{2})_(\d{4})_Tabelle\.pdf)"',
+    re.IGNORECASE,
+)
+ZEW_PRESS_ARTICLE_RE = re.compile(r'href="(/en/press/latest-press-releases/[^"#?]+)"', re.IGNORECASE)
+ZEW_SERIES_KEYS = {
+    "EA.Activity.zew_expectations_de": "ZEW_DE_EXPECTATIONS",
+    "EA.Activity.zew_current_de": "ZEW_DE_CURRENT_SITUATION",
+    "EA.Activity.zew_expectations_ea": "ZEW_EA_EXPECTATIONS",
+}
 
 
 def _sha256(data: bytes) -> str:
@@ -122,6 +144,91 @@ def _point(
 
 def _fetch_bytes(opener: Callable[..., dict[str, Any]], url: str, *, timeout: float) -> dict[str, Any]:
     return opener(url, timeout=timeout)
+
+
+def _fetch_country_hicp_current_vintage(
+    spec: dict[str, Any],
+    *,
+    opener: Callable[..., dict[str, Any]],
+    timeout: float,
+) -> dict[str, Any]:
+    series_id = str(spec.get("id") or "")
+    geo = CATALOG_ID_TO_GEO.get(series_id, "")
+    fetch_url = str(spec.get("endpoint") or "")
+
+    eurostat_points: list[dict[str, Any]] = []
+    euro_body = b""
+    euro_sha: str | None = None
+    eurostat_error: str | None = None
+    http_status = None
+
+    if fetch_url:
+        resp = _fetch_bytes(opener, fetch_url, timeout=timeout)
+        body = resp.get("body") or b""
+        http_status = resp.get("http_status")
+        if resp.get("ok") and body and not _is_bot_challenge(body, http_status):
+            try:
+                payload = json.loads(body.decode("utf-8"))
+                rows = parse_eurostat_statistics_json(payload)
+                transform = str(spec.get("transform") or "")
+                euro_body = body
+                euro_sha = _sha256(body)
+                eurostat_points = [
+                    {
+                        "period": p,
+                        "value": v,
+                        "transformation": transform,
+                        "revision_status": "final",
+                        "source_url": fetch_url,
+                        "vintage": "eurostat_final",
+                        "publisher": "Eurostat",
+                        "raw_sha256": euro_sha,
+                    }
+                    for p, v in rows
+                ]
+            except Exception as exc:  # noqa: BLE001
+                eurostat_error = f"parse_failed: {exc}"
+        elif not resp.get("ok"):
+            eurostat_error = resp.get("error") or "transport_failed"
+        else:
+            eurostat_error = "challenge_or_empty"
+
+    national_points: list[dict[str, Any]] = []
+    national_source_error: str | None = None
+    if geo:
+        try:
+            national_points, national_source_error = fetch_national_hicp_points(
+                geo, opener=opener, timeout=timeout
+            )
+        except Exception as exc:  # noqa: BLE001
+            national_source_error = f"national_fetch_failed: {exc}"
+
+    points = reconcile_country_hicp_points(eurostat_points, national_points)
+    if not points:
+        err = eurostat_error or national_source_error or "no_points"
+        return _base_payload(
+            error=err,
+            http_status=http_status,
+            body=euro_body,
+            raw_sha256=euro_sha,
+            national_source_error=national_source_error,
+        )
+
+    latest = points[-1]
+    # Payload digest is the Eurostat body when that body exists. It is not a
+    # hash of the reconciled point list, and national points do not inherit it.
+    payload = _base_payload(
+        ok=True,
+        points=points,
+        vintage=str(latest.get("vintage") or "latest_available"),
+        http_status=http_status,
+        body=euro_body,
+        raw_sha256=euro_sha,
+        national_source_error=national_source_error,
+    )
+    if eurostat_error and eurostat_points:
+        payload["eurostat_warning"] = eurostat_error
+    return payload
 
 
 def _fetch_eurostat_statistics(
@@ -431,6 +538,240 @@ def _headline_release(meta: dict[str, Any], *, source_url: str, body: bytes) -> 
     }
 
 
+def _balance_from_table_row(line: str) -> float:
+    numbers = re.findall(r"(-?\d+(?:\.\d+)?)\s*(?:\([^)]*\))?", line)
+    if len(numbers) < 4:
+        raise ValueError(f"expected_four_columns:{line[:80]}")
+    return float(numbers[3])
+
+
+def parse_zew_tabelle_text(text: str) -> dict[str, float]:
+    """Parse official ZEW Financial Market Survey Tabelle PDF text."""
+    lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
+    current_start = next(
+        (i for i, ln in enumerate(lines) if ln.lower().startswith("current economic situation")),
+        None,
+    )
+    expectations_start = next(
+        (i for i, ln in enumerate(lines) if ln.lower().startswith("economic expectations")),
+        None,
+    )
+    inflation_start = next(
+        (i for i, ln in enumerate(lines) if ln.lower().startswith("inflation rate")),
+        None,
+    )
+    if current_start is None or expectations_start is None:
+        raise ValueError("missing_zew_sections")
+
+    out: dict[str, float] = {}
+    for ln in lines[current_start + 1 : expectations_start]:
+        if ln.startswith("Germany ") and "ZEW" not in ln:
+            out["ZEW_DE_CURRENT_SITUATION"] = _balance_from_table_row(ln)
+            break
+
+    expectations_end = inflation_start if inflation_start is not None else len(lines)
+    for ln in lines[expectations_start + 1 : expectations_end]:
+        if ln.startswith("Germany (ZEW Indicator)"):
+            out["ZEW_DE_EXPECTATIONS"] = _balance_from_table_row(ln)
+        elif ln.startswith("Euro area"):
+            out.setdefault("ZEW_EA_EXPECTATIONS", _balance_from_table_row(ln))
+
+    missing = {k for k in ("ZEW_DE_CURRENT_SITUATION", "ZEW_DE_EXPECTATIONS", "ZEW_EA_EXPECTATIONS") if k not in out}
+    if missing:
+        raise ValueError(f"missing_zew_rows:{','.join(sorted(missing))}")
+    return out
+
+
+def _period_from_tabelle_filename(month: str, year: str) -> str:
+    return f"{year}-{month}"
+
+
+def _ranked_zew_press_articles(html: str) -> list[tuple[int, str]]:
+    """Indicator articles first, then the rest of the press list in page order."""
+    ranked: list[tuple[int, int, str]] = []
+    seen: set[str] = set()
+    order = 0
+    for match in ZEW_PRESS_ARTICLE_RE.finditer(html):
+        path = match.group(1)
+        if path.rstrip("/") == "/en/press/latest-press-releases":
+            continue
+        if path in seen:
+            continue
+        seen.add(path)
+        window = html[max(0, match.start() - 900) : match.start()].lower()
+        score = 0
+        if "zew indicator" in window or "zew-indicator" in path.lower():
+            score += 2
+        ranked.append((score, order, path))
+        order += 1
+    ranked.sort(key=lambda item: (-item[0], item[1]))
+    return [(score, path) for score, _, path in ranked]
+
+
+def _collect_tabelle_candidates(html: bytes, page_url: str) -> list[tuple[tuple[int, int], str]]:
+    text = html.decode("utf-8", errors="replace")
+    found: list[tuple[tuple[int, int], str]] = []
+    for match in ZEW_TABELLE_HREF_RE.finditer(text):
+        href = match.group(1)
+        month = match.group(2)
+        year = match.group(3)
+        pdf_url = urljoin(page_url, href)
+        found.append(((int(year), int(month)), pdf_url))
+    return found
+
+
+def _is_zew_access_wall(body: bytes, http_status: int | None) -> bool:
+    """ZEW press pages mention 'challenge' in article copy; avoid generic HTML heuristics."""
+    if not body:
+        return http_status in {403, 202, 503, 429}
+    if body[:4] == b"%PDF":
+        return False
+    if http_status not in {403, 202, 429, 503}:
+        return False
+    lower = body.lower()
+    return any(
+        marker in lower
+        for marker in (
+            b"captcha",
+            b"access denied",
+            b"request blocked",
+            b"cf-browser-verification",
+        )
+    )
+
+
+def _discover_zew_tabelle_pdf(
+    opener: Callable[..., dict[str, Any]],
+    *,
+    timeout: float,
+    listing_url: str,
+) -> tuple[str, str, bytes] | dict[str, Any]:
+    listing_resp = _fetch_bytes(opener, listing_url, timeout=timeout)
+    body = listing_resp.get("body") or b""
+    http_status = listing_resp.get("http_status")
+    if not listing_resp.get("ok"):
+        return _base_payload(
+            ok=False,
+            status="source_failed",
+            error=(
+                f"Official ZEW Tabelle was not retrieved or not parsed "
+                f"(listing {listing_url})"
+            ),
+            http_status=http_status,
+            body=body,
+        )
+    if _is_zew_access_wall(body, http_status):
+        return _base_payload(
+            ok=False,
+            status="license_gap",
+            challenge_page=True,
+            error=f"challenge_page at {listing_url}",
+            http_status=http_status,
+            body=body,
+            raw_sha256=_sha256(body),
+        )
+
+    candidates: list[tuple[tuple[int, int], str]] = []
+    candidates.extend(_collect_tabelle_candidates(body, listing_url))
+
+    text = body.decode("utf-8", errors="replace")
+    fetched_articles = 0
+    for score, rel in _ranked_zew_press_articles(text):
+        if fetched_articles >= 24:
+            break
+        if candidates and score == 0:
+            break
+        fetched_articles += 1
+        article_url = urljoin(listing_url, rel)
+        article_resp = _fetch_bytes(opener, article_url, timeout=timeout)
+        article_body = article_resp.get("body") or b""
+        if not article_resp.get("ok") or _is_zew_access_wall(article_body, article_resp.get("http_status")):
+            continue
+        candidates.extend(_collect_tabelle_candidates(article_body, article_url))
+
+    if not candidates:
+        return _base_payload(
+            ok=False,
+            status="source_failed",
+            error=(
+                f"Official ZEW Tabelle was not retrieved or not parsed "
+                f"(listing {listing_url})"
+            ),
+            http_status=http_status,
+            body=body,
+        )
+
+    (_year, _month), pdf_url = max(candidates, key=lambda item: item[0])
+    pdf_resp = _fetch_bytes(opener, pdf_url, timeout=timeout)
+    pdf_body = pdf_resp.get("body") or b""
+    if not pdf_resp.get("ok") or pdf_body[:4] != b"%PDF":
+        return _base_payload(
+            ok=False,
+            status="source_failed",
+            error=(
+                f"Official ZEW Tabelle was not retrieved or not parsed "
+                f"(listing {listing_url})"
+            ),
+            http_status=pdf_resp.get("http_status"),
+            body=pdf_body or body,
+        )
+    period = _period_from_tabelle_filename(f"{_month:02d}", str(_year))
+    return pdf_url, period, pdf_body
+
+
+def _zew_pdf_text(pdf_body: bytes) -> str:
+    return "\n".join((page.extract_text() or "") for page in PdfReader(io.BytesIO(pdf_body)).pages)
+
+
+def _fetch_zew_financial_market_survey(
+    spec: dict[str, Any],
+    *,
+    opener: Callable[..., dict[str, Any]],
+    timeout: float,
+) -> dict[str, Any]:
+    listing_url = str(spec.get("endpoint") or ZEW_LISTING_URL)
+    series_key = str(spec.get("series_id") or "")
+    discovered = _discover_zew_tabelle_pdf(opener, timeout=timeout, listing_url=listing_url)
+    if isinstance(discovered, dict):
+        return discovered
+
+    pdf_url, period, pdf_body = discovered
+    try:
+        balances = parse_zew_tabelle_text(_zew_pdf_text(pdf_body))
+        value = balances[series_key]
+    except Exception as exc:  # noqa: BLE001
+        return _base_payload(
+            ok=False,
+            status="source_failed",
+            error=(
+                f"Official ZEW Tabelle was not retrieved or not parsed "
+                f"(listing {listing_url}): {exc}"
+            ),
+            body=pdf_body,
+            raw_sha256=_sha256(pdf_body),
+        )
+
+    transform = str(spec.get("transform") or "balance")
+    point = {
+        "period": period,
+        "value": value,
+        "transformation": transform,
+        "revision_status": "final",
+        "source_url": pdf_url,
+        "publisher": str(spec.get("publisher") or "ZEW"),
+    }
+    return _base_payload(
+        ok=True,
+        points=[point],
+        http_status=200,
+        body=pdf_body,
+        raw_sha256=_sha256(pdf_body),
+        artifact_release_period=period,
+        official_latest_period=period,
+        source_url=pdf_url,
+    )
+
+
 def _fetch_sp_composite_pmi(
     spec: dict[str, Any],
     *,
@@ -655,6 +996,8 @@ def fetch_series(
             url=HICP_FLASH_CHECK_URL,
             reason="Distinct HICP flash vintage not pinned from Eurostat statistics API",
         )
+    if series_id in ZEW_SERIES_KEYS:
+        return _fetch_zew_financial_market_survey(spec, opener=opener, timeout=timeout)
     if series_id == "EA.Activity.flash_composite_pmi":
         return _fetch_sp_composite_pmi(spec, opener=opener, timeout=timeout, flash_only=True)
     if series_id == "EA.Activity.business_surveys":
@@ -673,7 +1016,11 @@ def fetch_series(
         return _fetch_ecb_wages(spec, opener=opener, timeout=timeout)
     if method == "eurostat_sdmx_json":
         return _fetch_eurostat_sdmx(spec, opener=opener, timeout=timeout)
+    if series_id in COUNTRY_HICP_IDS:
+        return _fetch_country_hicp_current_vintage(spec, opener=opener, timeout=timeout)
     if method == "eurostat_statistics_api":
         return _fetch_eurostat_statistics(spec, opener=opener, timeout=timeout)
+    if method == "zew_financial_market_survey_table":
+        return _fetch_zew_financial_market_survey(spec, opener=opener, timeout=timeout)
 
     return _base_payload(error=f"unsupported_retrieval_method:{method}")

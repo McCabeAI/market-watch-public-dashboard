@@ -12,6 +12,11 @@ try:
 except ImportError:  # pragma: no cover
     build_projection = None
 
+try:
+    from scripts.country_detail.render import render_country_detail
+except ImportError:  # pragma: no cover
+    render_country_detail = None
+
 PROJECTION_SOURCE = Path("scripts/country_detail/projection.py")
 TEMP_SCORES = Path("data/temperature_scores.json")
 AU_HISTORY = Path("data/temperature_history/au.json")
@@ -136,6 +141,39 @@ class CountryDetailProjectionTest(unittest.TestCase):
                     for field in ("label", "units", "display_label", "headline_text")
                 ).lower()
                 self.assertNotIn("seasonally adjusted", label_blob)
+
+    def test_ea_country_hicp_context_from_macro_observations(self) -> None:
+        projection = build_projection()
+        observations = projection["countries"]["EA"].get("observations") or []
+        hicp_ids = {
+            "EA.Inflation.hicp_de",
+            "EA.Inflation.hicp_fr",
+            "EA.Inflation.hicp_it",
+            "EA.Inflation.hicp_es",
+            "EA.Inflation.hicp_pt",
+        }
+        rows = [row for row in observations if row.get("catalog_id") in hicp_ids]
+        self.assertEqual(len(rows), 5)
+        for row in rows:
+            self.assertEqual(row.get("score_role"), "context")
+            self.assertEqual(row.get("weight"), 0.0)
+            self.assertFalse(row.get("score_input"))
+
+    def test_ea_country_detail_renders_hicp_context_and_zew(self) -> None:
+        if render_country_detail is None:
+            self.skipTest("render_country_detail unavailable")
+        projection = build_projection()
+        attention = {"members": []}
+        html = render_country_detail("EA", projection["countries"]["EA"], attention, {})
+        for label in ("Germany", "France", "Italy", "Spain", "Portugal"):
+            self.assertIn(label, html)
+        zew_rows = [
+            row
+            for row in projection["countries"]["EA"]["observations"]
+            if str(row.get("catalog_id", "")).startswith("EA.Activity.zew_")
+        ]
+        if zew_rows:
+            self.assertIn("ZEW", html)
 
 
 if __name__ == "__main__":

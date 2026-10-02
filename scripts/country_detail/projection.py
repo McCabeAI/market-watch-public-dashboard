@@ -11,6 +11,7 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
 
+from scripts.macro_ingestion.ea_country_hicp import COUNTRY_HICP_IDS, select_current_rows
 from scripts.country_detail.policy import (
     AU_HOUSEHOLD_SPENDING_ANNUAL,
     AU_HOUSEHOLD_SPENDING_MONTHLY,
@@ -807,6 +808,102 @@ def _au_annual_observation(
     )
 
 
+def _observations_from_macro_ingestion_store(
+    *,
+    country: str,
+    root: Path,
+    catalog_by_id: dict[str, dict[str, Any]],
+    calibration_sources: Mapping[str, str],
+    existing_ids: set[tuple[str, str]],
+) -> list[dict[str, Any]]:
+    store_path = root / "data/macro_ingestion/observations" / f"{country.lower()}.json"
+    if not store_path.is_file():
+        return []
+
+    store = _read_json(store_path)
+    rows = list(store.get("observations") or [])
+    if not rows:
+        return []
+
+    catalog_by_series: dict[tuple[str, str], dict[str, Any]] = {}
+    for catalog_row in catalog_by_id.values():
+        if str(catalog_row.get("country") or "").upper() != country.upper():
+            continue
+        role = str(catalog_row.get("role") or "")
+        if role not in {"context", "registry_unweighted"}:
+            continue
+        series_id = catalog_row.get("series_id")
+        transform = str(catalog_row.get("transform") or "")
+        if not series_id or not transform:
+            continue
+        catalog_by_series[(str(series_id), transform)] = catalog_row
+
+    grouped: dict[str, list[dict[str, Any]]] = {}
+    for row in rows:
+        key = (str(row.get("series_id") or ""), str(row.get("transformation") or ""))
+        catalog_row = catalog_by_series.get(key)
+        if catalog_row is None:
+            continue
+        catalog_id = str(catalog_row["id"])
+        transformation = key[1]
+        if (catalog_id, transformation) in existing_ids:
+            continue
+        publisher = catalog_row.get("publisher")
+        deriv = row.get("derivation") or {}
+        if isinstance(deriv, dict) and deriv.get("publisher"):
+            publisher = deriv.get("publisher")
+        grouped.setdefault(catalog_id, []).append(
+            {
+                "reference_period": str(row["period"]),
+                "period": str(row["period"]),
+                "value": row.get("value"),
+                "transformation": transformation,
+                "source_url": row.get("source_url"),
+                "retrieved_at": row.get("retrieved_at"),
+                "revision_status": row.get("revision_status"),
+                "vintage": row.get("vintage"),
+                "release_date": row.get("release_date"),
+                "series_id": row.get("series_id"),
+                "units": row.get("units") or catalog_row.get("units"),
+                "publisher": publisher,
+            }
+        )
+
+    out: list[dict[str, Any]] = []
+    for catalog_id, observations in grouped.items():
+        if catalog_id in COUNTRY_HICP_IDS:
+            observations = select_current_rows(observations)
+        catalog_row = catalog_by_id[catalog_id]
+        component_stub = {
+            "publisher": catalog_row.get("publisher"),
+            "cadence": catalog_row.get("cadence"),
+            "sa": catalog_row.get("seasonal_adjustment"),
+            "methodology_breaks": [],
+        }
+        transforms = sorted({str(row.get("transformation") or "") for row in observations if row.get("transformation")})
+        for transformation in transforms:
+            history = _history_for_transform(observations, transformation)
+            if not history:
+                continue
+            latest = _latest_row(observations, transformation)
+            if latest is None:
+                continue
+            out.append(
+                _build_identity_observation(
+                    country=country,
+                    catalog_row=catalog_row,
+                    component=component_stub,
+                    transformation=transformation,
+                    history=history,
+                    latest=latest,
+                    catalog_id=catalog_id,
+                    calibration_sources=calibration_sources,
+                    score_role_override=("context", 0.0),
+                )
+            )
+    return out
+
+
 def _observations_from_ca_energy_fixture(
     *,
     root: Path,
@@ -928,12 +1025,26 @@ def build_projection(root: Path | None = None, *, as_of: str | None = None) -> d
                     if obs.get("transformation") == "mom_pct" and obs.get("value") is not None:
                         au_monthly_latest = str(obs.get("reference_period"))
 
+        existing_ids = {(o["catalog_id"], o["transformation"]) for o in observations}
+
         if country == "CA":
-            existing_ids = {(o["catalog_id"], o["transformation"]) for o in observations}
             for obs in _observations_from_ca_energy_fixture(
                 root=root,
                 catalog_by_id=catalog_by_id,
                 calibration_sources=calibration_sources,
+            ):
+                key = (obs["catalog_id"], obs["transformation"])
+                if key not in existing_ids:
+                    observations.append(obs)
+                    existing_ids.add(key)
+
+        if country == "EA":
+            for obs in _observations_from_macro_ingestion_store(
+                country=country,
+                root=root,
+                catalog_by_id=catalog_by_id,
+                calibration_sources=calibration_sources,
+                existing_ids=existing_ids,
             ):
                 key = (obs["catalog_id"], obs["transformation"])
                 if key not in existing_ids:

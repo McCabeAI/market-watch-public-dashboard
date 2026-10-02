@@ -20,7 +20,10 @@ from scripts.harvest_jp_pmi import (
 from scripts.japan_macro_data import (
     ESTAT_FILE_DOWNLOAD,
     SOURCE_CONTRACT,
+    SeriesUnavailableError,
     discover_esri_gdp_csv_url,
+    discover_meti_retail_workbook,
+    meti_retail_period_from_url,
     parse_cci_workbook,
     parse_cpi_yoy_csv,
     parse_esri_real_gdp_qoq_saar_csv,
@@ -366,31 +369,58 @@ def _fetch_domestic_demand_context(
     return gdp
 
 
-def _meti_retail_url(spec: dict[str, Any]) -> str:
-    endpoint = str(spec.get("endpoint") or "")
-    if endpoint:
-        return endpoint
-    template = SOURCE_CONTRACT["Consumer.retail"]["url_template"]
-    return template.format(yymm="202607")
-
-
 def _fetch_retail(
     spec: dict[str, Any],
     *,
     opener: Callable[..., dict[str, Any]],
     timeout: float,
 ) -> dict[str, Any]:
-    url = _meti_retail_url(spec)
-    got = _require_body(_fetch(opener, url, timeout=timeout))
+    def _bytes_fetcher(url: str) -> bytes:
+        resp = opener(url, timeout=timeout)
+        if not resp.get("ok"):
+            raise RuntimeError(str(resp.get("error") or "fetch_failed"))
+        return resp["body"]
+
+    extra_listing = [
+        str(u)
+        for u in (spec.get("registry_urls") or [])
+        if u and not meti_retail_period_from_url(str(u))
+    ]
+    try:
+        discovered = discover_meti_retail_workbook(
+            _bytes_fetcher,
+            extra_listing_urls=extra_listing,
+        )
+    except SeriesUnavailableError as exc:
+        return _fail(error=exc.reason, status="source_failed")
+
+    workbook_url = discovered["url"]
+    release_period = discovered["period"]
+    got = _require_body(_fetch(opener, workbook_url, timeout=timeout))
     if isinstance(got, dict):
         return got
     body, http_status, final_url = got
-    retail = parse_meti_retail_yoy_xlsx(body)
+    if _looks_like_html(body):
+        return _fail(error="meti_retail_workbook_html", status="source_failed", url=workbook_url)
+    retail = parse_meti_retail_yoy_xlsx(body, apply_harvest_window=False)
     transform = str(spec.get("transform") or "yoy_pct")
-    points = _observations_to_points(retail, transform=transform, source_url=final_url or url)
+    source_url = final_url or workbook_url
+    points = _observations_to_points(retail, transform=transform, source_url=source_url)
     if not points:
-        return _fail(error="meti_retail_parse_empty", status="source_failed", url=url)
-    return _success(body=body, points=points, source_url=final_url or url, http_status=http_status)
+        return _fail(error="meti_retail_parse_empty", status="source_failed", url=workbook_url)
+    observed = max(str(point["period"]) for point in points)
+    artifact_period = meti_retail_period_from_url(source_url) or observed
+    if artifact_period != release_period or observed < release_period:
+        return _fail(
+            error=f"stale_pinned_artifact:artifact={artifact_period}:official={release_period}",
+            status="source_failed",
+            url=source_url,
+            http_status=http_status,
+        )
+    out = _success(body=body, points=points, source_url=source_url, http_status=http_status)
+    out["artifact_release_period"] = artifact_period
+    out["official_latest_period"] = release_period
+    return out
 
 
 def _fetch_fies_row(

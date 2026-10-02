@@ -20,7 +20,9 @@ from scripts.macro_ingestion.contract import calibration_as_of, load_catalog
 from scripts.macro_ingestion.ledger import ledger_row, write_ledger
 from scripts.macro_ingestion.retries import retry_call
 from scripts.macro_ingestion.score_bridge import recompute_scores_after_observation
+from scripts.macro_ingestion.semantic_guards import stale_pinned_artifact_error
 from scripts.temperature_level import CALIBRATION_PATH
+from scripts.macro_ingestion.ea_country_hicp import COUNTRY_HICP_IDS, append_ranked_country_hicp
 from scripts.macro_ingestion.vintage import (
     append_observation,
     latest_for_period,
@@ -63,14 +65,23 @@ _PUBLIC_BROWSER_USER_AGENT = (
 )
 
 
-def live_opener(url: str, *, timeout: float = DEFAULT_TIMEOUT_SECONDS) -> dict[str, Any]:
+def live_opener(
+    url: str,
+    *,
+    timeout: float = DEFAULT_TIMEOUT_SECONDS,
+    data: bytes | None = None,
+) -> dict[str, Any]:
     try:
+        headers = {
+            "User-Agent": _PUBLIC_BROWSER_USER_AGENT,
+            "Accept": "application/json,text/html,application/pdf,*/*",
+        }
+        if data is not None:
+            headers["Content-Type"] = "application/json"
         request = Request(
             url,
-            headers={
-                "User-Agent": _PUBLIC_BROWSER_USER_AGENT,
-                "Accept": "text/html,application/pdf,*/*",
-            },
+            data=data,
+            headers=headers,
         )
         with urlopen(request, timeout=timeout) as response:
             body = response.read()
@@ -165,32 +176,64 @@ def _validate_points(points: list[dict[str, Any]]) -> str | None:
     return None
 
 
+def _checked_unchanged_or_stale(
+    payload: dict[str, Any],
+) -> tuple[str, list[dict[str, Any]], str | None, bool]:
+    stale = stale_pinned_artifact_error(payload)
+    if stale:
+        return "due_missing", [], stale, False
+    return "checked_unchanged", [], None, False
+
+
+def _observation_raw_sha(spec: dict[str, Any], point: dict[str, Any], payload: dict[str, Any]) -> str | None:
+    """Digest stored on an observation.
+
+    Country HICP rows must carry the hash of the artifact that produced that
+    point. A payload-level digest, or a hash of the reconciled point list,
+    would stamp a national print with Eurostat bytes or with a merged payload.
+    """
+    if spec.get("id") in COUNTRY_HICP_IDS:
+        point_sha = point.get("raw_sha256")
+        if not point_sha:
+            return None
+        return str(point_sha)
+    return str(payload.get("raw_sha256") or _sha256(json.dumps(point).encode()))
+
+
 def _classify_points(
     spec: dict[str, Any],
     payload: dict[str, Any],
     store: dict[str, Any],
     when: datetime,
-) -> tuple[str, list[dict[str, Any]], str | None]:
-    """Return status, changed rows for post-freeze, optional error."""
+) -> tuple[str, list[dict[str, Any]], str | None, bool]:
+    """Return status, changed rows for post-freeze, optional error, and whether to save.
+
+    The last flag is true when a country-HICP fingerprint was corrected without
+    a new economic observation, so the store is still written.
+    """
     if payload.get("challenge_page"):
-        return "license_gap", [], payload.get("error") or "challenge_page"
+        return "license_gap", [], payload.get("error") or "challenge_page", False
 
     override = payload.get("status")
     if override in {"license_gap", "not_applicable", "source_failed"}:
-        return override, [], payload.get("error")
+        return override, [], payload.get("error"), False
 
     if not payload.get("ok"):
-        return "source_failed", [], payload.get("error") or "adapter_not_ok"
+        return "source_failed", [], payload.get("error") or "adapter_not_ok", False
 
     points = payload.get("points") or []
     malformed = _validate_points(points)
     if malformed:
-        return "source_failed", [], malformed
+        return "source_failed", [], malformed, False
+
+    if spec.get("id") in COUNTRY_HICP_IDS and any(not point.get("raw_sha256") for point in points):
+        return "source_failed", [], "missing_artifact_sha", False
 
     changed: list[dict[str, Any]] = []
     had_new = False
     had_revision = False
     had_pending = False
+    persist_provenance = False
 
     transform = str(spec.get("transform", ""))
     series_id = str(spec.get("series_id") or spec["id"])
@@ -202,27 +245,65 @@ def _classify_points(
         period = str(point["period"])
         value = float(point["value"])
         point_transform = _point_transform(point, transform, allowed_transforms)
-        raw_sha = str(payload.get("raw_sha256") or _sha256(json.dumps(point).encode()))
+        raw_sha = _observation_raw_sha(spec, point, payload)
+        if raw_sha is None:
+            return "source_failed", [], "missing_artifact_sha", False
         prior_row = latest_for_period(store, series_id, period, point_transform)
-        result = append_observation(
-            store,
-            series_id=series_id,
-            period=period,
-            transformation=point_transform,
-            value=value,
-            raw_sha256=raw_sha,
-            retrieved_at=_utc_iso(when),
-            release_date=_point_release_date(point),
-            vintage=payload_vintage_str,
-            revision_status=point.get("revision_status"),
-            source_url=point.get("source_url"),
-            prior=point.get("prior"),
-            units=point.get("units"),
-            derivation=point.get("derivation"),
-        )
-        if result.duplicate:
-            continue
-        had_new = True
+        point_vintage = point.get("vintage")
+        vintage_for_row = str(point_vintage) if point_vintage is not None else payload_vintage_str
+        publisher = point.get("publisher")
+        derivation = dict(point.get("derivation") or {})
+        if publisher and "publisher" not in derivation:
+            derivation["publisher"] = publisher
+
+        if spec["id"] in COUNTRY_HICP_IDS:
+            result = append_ranked_country_hicp(
+                store,
+                series_id=series_id,
+                period=period,
+                transformation=point_transform,
+                value=value,
+                raw_sha256=raw_sha,
+                retrieved_at=_utc_iso(when),
+                release_date=_point_release_date(point),
+                vintage=vintage_for_row,
+                revision_status=point.get("revision_status"),
+                source_url=point.get("source_url"),
+                prior=point.get("prior"),
+                units=point.get("units"),
+                derivation=derivation or None,
+            )
+            if result.provenance_updated:
+                persist_provenance = True
+            if result.duplicate:
+                continue
+            if result.upgraded:
+                had_new = True
+                had_revision = True
+            elif result.appended:
+                had_new = True
+            else:
+                continue
+        else:
+            result = append_observation(
+                store,
+                series_id=series_id,
+                period=period,
+                transformation=point_transform,
+                value=value,
+                raw_sha256=raw_sha,
+                retrieved_at=_utc_iso(when),
+                release_date=_point_release_date(point),
+                vintage=vintage_for_row,
+                revision_status=point.get("revision_status"),
+                source_url=point.get("source_url"),
+                prior=point.get("prior"),
+                units=point.get("units"),
+                derivation=derivation or None,
+            )
+            if result.duplicate:
+                continue
+            had_new = True
         changed.append(
             {
                 "id": spec["id"],
@@ -232,7 +313,17 @@ def _classify_points(
                 "revision_status": point.get("revision_status"),
             }
         )
-        if prior_row and not values_close(float(prior_row["value"]), value):
+        if spec["id"] not in COUNTRY_HICP_IDS and prior_row and not values_close(
+            float(prior_row["value"]), value
+        ):
+            rev = str(point.get("revision_status") or "")
+            if rev in {"flash", "preliminary", "prelim"}:
+                had_pending = True
+            else:
+                had_revision = True
+        elif spec["id"] in COUNTRY_HICP_IDS and result.appended and prior_row and not values_close(
+            float(prior_row["value"]), value
+        ):
             rev = str(point.get("revision_status") or "")
             if rev in {"flash", "preliminary", "prelim"}:
                 had_pending = True
@@ -240,34 +331,40 @@ def _classify_points(
                 had_revision = True
 
     if had_revision:
-        return "revision_applied", changed, None
+        return "revision_applied", changed, None, persist_provenance
     if had_pending:
-        return "revision_pending", changed, None
+        return "revision_pending", changed, None, persist_provenance
     if had_new:
-        return "new_observation", changed, None
+        return "new_observation", changed, None, persist_provenance
 
     if not schedule_parseable(spec.get("release_rule")):
-        return "calendar_unparsed", [], None
+        stale = stale_pinned_artifact_error(payload)
+        if stale:
+            return "due_missing", [], stale, persist_provenance
+        return "calendar_unparsed", [], None, persist_provenance
 
     due = latest_due_release(spec, when)
     if due is None:
-        return "checked_unchanged", [], None
+        status, unchanged, error, _persist = _checked_unchanged_or_stale(payload)
+        return status, unchanged, error, persist_provenance
 
     fixture = (spec.get("known_fixture") or {}).get("period")
     fixture_period = str(fixture) if fixture else None
     if fixture_period and not _confirms_period(points, store, series_id, transform, fixture_period):
-        return "due_missing", [], None
+        return "due_missing", [], None, persist_provenance
 
     bound = due.get("period")
     if bound:
         if _confirms_period(points, store, series_id, transform, str(bound)):
-            return "checked_unchanged", [], None
-        return "due_missing", [], None
+            status, unchanged, error, _persist = _checked_unchanged_or_stale(payload)
+            return status, unchanged, error, persist_provenance
+        return "due_missing", [], None, persist_provenance
 
     if fixture_period and _confirms_period(points, store, series_id, transform, fixture_period):
-        return "checked_unchanged", [], None
+        status, unchanged, error, _persist = _checked_unchanged_or_stale(payload)
+        return status, unchanged, error, persist_provenance
 
-    return "calendar_unparsed", [], None
+    return "calendar_unparsed", [], None, persist_provenance
 
 
 def _budget_exhausted(
@@ -355,7 +452,7 @@ def _fetch_once(
             out.parent.mkdir(parents=True, exist_ok=True)
             out.write_bytes(body)
 
-    status, changed, error = _classify_points(spec, payload, store, now)
+    status, changed, error, persist_provenance = _classify_points(spec, payload, store, now)
     vintage = payload.get("vintage")
     row = ledger_row(
         series_id=spec["id"],
@@ -366,8 +463,9 @@ def _fetch_once(
         cutoff_class=cutoff,
         error=error,
     )
-    if changed:
+    if changed or persist_provenance:
         save_store(store, obs_dir)
+    if changed:
         post_freeze_changes.extend(changed)
     if replace_index is None:
         rows.append(row)

@@ -19,6 +19,7 @@ if str(ROOT) not in sys.path:
 from scripts.macro_ingestion.adapters import clear_adapter_overrides, register_adapter_override
 from scripts.macro_ingestion.contract import load_catalog
 from scripts.macro_ingestion.runner import run_ingestion
+from scripts.macro_ingestion.semantic_guards import stale_pinned_artifact_error
 
 CALIBRATION_PATH = ROOT / "data/temperature_calibration.json"
 EVIDENCE_PATH = (
@@ -49,6 +50,191 @@ class TestMacroIngestionRunner(unittest.TestCase):
         cat = copy.deepcopy(self.catalog)
         cat["series"] = [spec]
         return cat
+
+    def test_stale_pinned_artifact_blocks_checked_unchanged(self) -> None:
+        raw = "stale-pin-hash"
+
+        def fetch_series(spec, *, opener, now, timeout=20):
+            return {
+                "ok": True,
+                "raw_sha256": raw,
+                "vintage": "latest_available",
+                "artifact_release_period": "2026-07",
+                "official_latest_period": "2026-08",
+                "points": [
+                    {
+                        "period": "2026-07",
+                        "value": 4.1,
+                        "transformation": spec.get("transform"),
+                        "revision_status": "final",
+                    }
+                ],
+            }
+
+        register_adapter_override("US", fetch_series)
+        spec = copy.deepcopy(next(r for r in self.catalog["series"] if r["id"] == "US.Labor.unemployment"))
+        spec["release_rule"] = {
+            "kind": "explicit_timestamp",
+            "timezone": "America/New_York",
+            "dates": ["2026-12-01T08:30:00-05:00"],
+        }
+        cat = self._mini_catalog(spec)
+        now = datetime(2026, 9, 21, 12, 0, tzinfo=timezone.utc)
+        first = run_ingestion(
+            mode="offline",
+            countries=["US"],
+            catalog=cat,
+            now=now,
+            observations_dir=self.obs_dir,
+            health_dir=self.health_dir,
+        )
+        self.assertEqual(first["rows"][0]["status"], "new_observation")
+        second = run_ingestion(
+            mode="offline",
+            countries=["US"],
+            catalog=cat,
+            now=now,
+            observations_dir=self.obs_dir,
+            health_dir=self.health_dir,
+        )
+        row = second["rows"][0]
+        self.assertEqual(row["status"], "due_missing")
+        self.assertTrue(
+            (row.get("error") or "").startswith(
+                "stale_pinned_artifact:artifact=2026-07:official=2026-08"
+            )
+        )
+
+    def test_stale_pinned_artifact_blocks_unparsed_calendar(self) -> None:
+        """Empty publisher calendars must not treat an obsolete pin as a successful check."""
+
+        def fetch_series(spec, *, opener, now, timeout=20):
+            return {
+                "ok": True,
+                "raw_sha256": "unparsed-calendar-stale",
+                "vintage": "latest_available",
+                "artifact_release_period": "2026-07",
+                "official_latest_period": "2026-08",
+                "points": [
+                    {
+                        "period": "2026-07",
+                        "value": 4.0,
+                        "transformation": spec.get("transform"),
+                        "revision_status": "final",
+                    }
+                ],
+            }
+
+        register_adapter_override("JP", fetch_series)
+        spec = copy.deepcopy(next(r for r in self.catalog["series"] if r["id"] == "JP.Consumer.retail"))
+        spec["release_rule"] = {
+            "kind": "country_local_schedule_required",
+            "timezone": "Asia/Tokyo",
+            "dates": [],
+        }
+        cat = self._mini_catalog(spec)
+        now = datetime(2026, 10, 1, 12, 0, tzinfo=timezone.utc)
+        first = run_ingestion(
+            mode="offline",
+            countries=["JP"],
+            catalog=cat,
+            now=now,
+            observations_dir=self.obs_dir,
+            health_dir=self.health_dir,
+        )
+        self.assertEqual(first["rows"][0]["status"], "new_observation")
+        second = run_ingestion(
+            mode="offline",
+            countries=["JP"],
+            catalog=cat,
+            now=now,
+            observations_dir=self.obs_dir,
+            health_dir=self.health_dir,
+        )
+        row = second["rows"][0]
+        self.assertEqual(row["status"], "due_missing")
+        self.assertTrue(
+            (row.get("error") or "").startswith(
+                "stale_pinned_artifact:artifact=2026-07:official=2026-08"
+            )
+        )
+
+    def test_stale_pinned_artifact_allows_checked_unchanged_when_current(self) -> None:
+        raw = "current-pin-hash"
+
+        def fetch_series(spec, *, opener, now, timeout=20):
+            return {
+                "ok": True,
+                "raw_sha256": raw,
+                "vintage": "latest_available",
+                "artifact_release_period": "2026-08",
+                "official_latest_period": "2026-08",
+                "points": [
+                    {
+                        "period": "2026-08",
+                        "value": 4.1,
+                        "transformation": spec.get("transform"),
+                        "revision_status": "final",
+                    }
+                ],
+            }
+
+        register_adapter_override("US", fetch_series)
+        spec = copy.deepcopy(next(r for r in self.catalog["series"] if r["id"] == "US.Labor.unemployment"))
+        spec["release_rule"] = {
+            "kind": "explicit_timestamp",
+            "timezone": "America/New_York",
+            "dates": ["2026-12-01T08:30:00-05:00"],
+        }
+        cat = self._mini_catalog(spec)
+        now = datetime(2026, 9, 21, 12, 0, tzinfo=timezone.utc)
+        run_ingestion(
+            mode="offline",
+            countries=["US"],
+            catalog=cat,
+            now=now,
+            observations_dir=self.obs_dir,
+            health_dir=self.health_dir,
+        )
+        second = run_ingestion(
+            mode="offline",
+            countries=["US"],
+            catalog=cat,
+            now=now,
+            observations_dir=self.obs_dir,
+            health_dir=self.health_dir,
+        )
+        self.assertEqual(second["rows"][0]["status"], "checked_unchanged")
+
+    def test_stale_pinned_artifact_error_unit(self) -> None:
+        self.assertIsNone(
+            stale_pinned_artifact_error(
+                {
+                    "artifact_release_period": "2026-08",
+                    "official_latest_period": "2026-08",
+                }
+            )
+        )
+        self.assertIsNone(stale_pinned_artifact_error({"artifact_release_period": "2026-07"}))
+        self.assertIsNone(stale_pinned_artifact_error({"official_latest_period": "2026-08"}))
+        blocked = stale_pinned_artifact_error(
+            {
+                "artifact_release_period": "2026-Q2",
+                "official_latest_period": "2026-Q3",
+            }
+        )
+        self.assertEqual(
+            blocked,
+            "stale_pinned_artifact:artifact=2026-Q2:official=2026-Q3",
+        )
+        self.assertIsNone(
+            stale_pinned_artifact_error(
+                {
+                    "artifact_release_period": "not-a-period",
+                    "official_latest_period": "2026-08",
+                }
+            )
+        )
 
     def test_idempotent_rerun(self) -> None:
         raw = "abc123hash"

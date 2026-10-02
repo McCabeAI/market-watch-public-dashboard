@@ -6,6 +6,14 @@ checks, observation periods, and the registry cadence. A monthly or quarterly
 print that is not yet due stays fresh after a successful primary-source check.
 A due, failed, unverified, partial, or unexpectedly changed source stays
 visible and blocks only expressions that need it.
+
+A historical ``when`` does not get to use a row appended after that session
+once the component already has a row retrieved at or before ``when``. The
+September 21 backfill is one retrieval cohort: assessing September 18 still
+uses that cohort, because nothing earlier exists, and its stamps are the
+freshness clock rather than the calibration date. An October 1 append on top
+of that cohort is a later vintage. It stays in the ledger and covers sessions
+at or after its own retrieval, and it does not refresh September 23.
 """
 
 from __future__ import annotations
@@ -318,7 +326,88 @@ def _primary_source(reg_entry: dict[str, Any] | None, comp: dict[str, Any]) -> t
     return comp.get("publisher"), url
 
 
-def _retrieved_at(history: dict[str, Any], comp: dict[str, Any]) -> str | None:
+def _visible_observations(observations: list[Any], when: datetime | None) -> list[Any]:
+    """Ledger rows that a session at ``when`` is allowed to treat as already retrieved.
+
+    Rows retrieved after ``when`` are invisible when the component already has
+    an earlier row. That is the October 1 Australia CPI append: it must not
+    become the freshness clock, or the latest print, for September 23.
+
+    If every dated row is after ``when``, keep only the earliest New York
+    retrieval day. That is the committed backfill snapshot (September 21 for
+    the current ledger). A later calendar day is a new append, not part of
+    that snapshot, so September 18 still reads the September 21 cohort and
+    does not read October 1.
+    """
+    if when is None or not observations:
+        return observations
+    limit = now_ny(when)
+    undated: list[Any] = []
+    dated: list[tuple[datetime, Any]] = []
+    for obs in observations:
+        if not isinstance(obs, dict):
+            undated.append(obs)
+            continue
+        raw = obs.get("retrieved_at")
+        stamp = _parse_stamp(raw) if isinstance(raw, str) else None
+        if stamp is None:
+            undated.append(obs)
+        else:
+            dated.append((stamp, obs))
+    if not dated:
+        return observations
+    knowable = [obs for stamp, obs in dated if stamp <= limit]
+    if knowable:
+        if len(knowable) == len(dated) and not undated:
+            return observations
+        return knowable + undated
+    earliest_day = min(stamp.date() for stamp, _obs in dated)
+    cohort = [obs for stamp, obs in dated if stamp.date() == earliest_day]
+    if len(cohort) == len(dated) and not undated:
+        return observations
+    return cohort + undated
+
+
+def _component_visible_at(comp: dict[str, Any], when: datetime | None) -> dict[str, Any]:
+    observations = list(comp.get("observations") or [])
+    visible = _visible_observations(observations, when)
+    if visible is observations:
+        return comp
+    viewed = dict(comp)
+    viewed["observations"] = visible
+    if when is None:
+        return viewed
+    limit = now_ny(when)
+    knowable = False
+    for obs in visible:
+        if not isinstance(obs, dict):
+            continue
+        raw = obs.get("retrieved_at")
+        stamp = _parse_stamp(raw) if isinstance(raw, str) else None
+        if stamp is not None and stamp <= limit:
+            knowable = True
+            break
+    if not knowable:
+        return viewed
+    limit_day = limit.date()
+    gaps: list[Any] = []
+    for gap in comp.get("gaps") or []:
+        if not isinstance(gap, dict):
+            gaps.append(gap)
+            continue
+        raw = gap.get("as_of")
+        if isinstance(raw, str) and len(raw) >= 10:
+            try:
+                if date.fromisoformat(raw[:10]) > limit_day:
+                    continue
+            except ValueError:
+                pass
+        gaps.append(gap)
+    viewed["gaps"] = gaps
+    return viewed
+
+
+def _retrieved_at(history: dict[str, Any], comp: dict[str, Any], *, when: datetime | None = None) -> str | None:
     stamps: list[str] = []
     if isinstance(history.get("retrieved_at"), str):
         stamps.append(history["retrieved_at"])
@@ -326,9 +415,14 @@ def _retrieved_at(history: dict[str, Any], comp: dict[str, Any]) -> str | None:
         if isinstance(obs.get("retrieved_at"), str):
             stamps.append(obs["retrieved_at"])
     parsed = [(stamp, _parse_stamp(stamp)) for stamp in stamps]
-    parsed = [(stamp, when) for stamp, when in parsed if when is not None]
+    parsed = [(stamp, seen) for stamp, seen in parsed if seen is not None]
     if not parsed:
         return None
+    if when is not None:
+        limit = now_ny(when)
+        knowable = [(stamp, seen) for stamp, seen in parsed if seen <= limit]
+        if knowable:
+            parsed = knowable
     return max(parsed, key=lambda item: item[1])[0]
 
 
@@ -347,6 +441,8 @@ def build_catalog(
     calibration: dict[str, Any],
     registry: dict[str, Any],
     histories: dict[str, dict[str, Any]],
+    *,
+    when: datetime | None = None,
 ) -> list[dict[str, Any]]:
     reg = _registry_index(registry)
     specs = calibration.get("components") or {}
@@ -377,6 +473,7 @@ def build_catalog(
                         reg_entry=reg_entry,
                         history=history,
                         calibration=calibration,
+                        when=when,
                     )
                 )
         for history_key, comp in components.items():
@@ -398,6 +495,7 @@ def build_catalog(
                     reg_entry=reg_entry,
                     history=history,
                     calibration=calibration,
+                    when=when,
                 )
             )
     rows.sort(key=lambda row: row["id"])
@@ -416,7 +514,9 @@ def _catalog_row(
     reg_entry: dict[str, Any] | None,
     history: dict[str, Any],
     calibration: dict[str, Any],
+    when: datetime | None = None,
 ) -> dict[str, Any]:
+    comp = _component_visible_at(comp, when)
     source_transformation = spec.get("source_transformation") or comp.get("preferred_scoring_transformation")
     latest_period, latest_value, _transform = _latest_scored(comp, source_transformation)
     index_period, index_value = _strict_latest(comp, "index_level")
@@ -429,7 +529,7 @@ def _catalog_row(
     if method in {"unavailable", "failed"} and not (comp.get("observations") or []):
         explicit = True
     preserved = (not (comp.get("observations") or [])) and gap_kind == "not_yet_released"
-    retrieved = _retrieved_at(history, comp)
+    retrieved = _retrieved_at(history, comp, when=when)
     anchor = gap_anchor
     if anchor is None and retrieved:
         parsed_retrieval = _parse_stamp(retrieved)
@@ -728,7 +828,7 @@ def assess_macro_family(
     try:
         if catalog is None:
             calibration, registry, histories, _scores = load_macro_inputs(root)
-            catalog = build_catalog(calibration, registry, histories)
+            catalog = build_catalog(calibration, registry, histories, when=stamp)
         if checks is None:
             checks = backfill_checks(catalog)
         return rollup_macro_family(catalog, checks, when=stamp, due_overrides=due_overrides)
