@@ -103,6 +103,62 @@
       "run_id": "overnight-20260928",
       "schema_version": 1,
       "thesis": "Hold the existing 500mm receive in the 2027 CORRA H/M/U/Z strip, with lower conviction. The near-end Canadian path still looks aggressive relative to domestic evidence, but the actual book owns the full 2027 strip rather than March alone. That longer expression carries more exposure to the oil/inflation regime, so the Sep 28 Brent rebound is a real challenge to the trade rather than a cosmetic headline."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027H-Z",
+          "notional_usd": null,
+          "position_id": "pm-chatgpt-595561a1b90f",
+          "rationale": "Oct 2 review at the actual position level: HOLD 500mm, no add. The trade has paid about 18bp at the strip level, but a large residual hike path remains. Preserve the position while tightening the de-risk trigger around a renewed strip cheapening plus domestic confirmation.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-02T14:30:12.373594-04:00",
+      "conviction": 62,
+      "decision_fingerprint": "514f9b67b075c82fee9e6e3af21bbab7f9cb19cab2fd43e62f167f149bfd60e6",
+      "event_id": "jde-f8d178e55a6644dd",
+      "funding_view": null,
+      "invalidation": "De-risk on a sustained reversal of the exact strip back toward or through 3.35-3.40, particularly with March above about 3.20 and Canadian core inflation, labor/wages, or BoC communication validating a materially tighter 2027 path. A headline-energy move without domestic pass-through is not enough.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-chatgpt-595561a1b90f"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "4783ff6ed997eccb5b5d772fc4f0e9f09c9a98b37875db997fcd5395ebd461a3",
+      "outcome_links": [],
+      "owner_id": "chatgpt",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": null
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-02T05:40:56.963171-04:00",
+        "evidence_hash": "ea582a2d7479b018836f4340f175c21874d68a32cbef21d825e6d6b1e319cdc2",
+        "overnight_run_id": "overnight-20261002",
+        "review_id": null,
+        "review_packet_id": "prp-chatgpt-overnight-20261002-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The current-cycle decision is based on the actual book expression rather than a component contract. The exact equal-weight Mar/Jun/Sep/Dec 2027 CORRA strip is marked around 3.22 versus a 3.40 entry, while March is 2.945 versus 2.31 cash. That means the receive has already delivered meaningful normalization, but the average strip still embeds roughly 91bp of tightening above cash. Canadian underlying inflation is about 1.95%, and the frozen domestic evidence does not show the labor/core reacceleration that would validate that full path. The opposing evidence is real: Brent remains near 102 and LNG Canada has moved ahead, so the later-2027 legs are less clean than March and the trade should not be enlarged. Portfolio pass: long CADJPY or short USDCAD could offset a Canada-energy/hawk shock, but both add separate FX and yen/USD regime risk and are weaker independent edges; long US 10Y and receiving AONIA add overlapping duration/disinflation beta rather than diversification. With only about 5mm of shocked risk against a 100mm risk-capital limit, capacity is not the constraint. Risk/reward after the 18bp move is. Keep the one-position book, no add and no hedge.",
+      "run_id": "overnight-20261002",
+      "schema_version": 1,
+      "thesis": "Maintain the existing 500mm receive in the 2027 CORRA H/M/U/Z strip. The position-level expression has moved from 3.40 at entry to about 3.22, so part of the original mispricing has normalized, but the strip still embeds substantial tightening relative to 2.31 cash while Canadian underlying inflation remains near 2% and domestic labor evidence is weak. Oil and LNG Canada reduce the asymmetry enough to rule out an add, not enough to reverse or close the trade without domestic confirmation."
     }
   ],
   "schema_version": 1,
