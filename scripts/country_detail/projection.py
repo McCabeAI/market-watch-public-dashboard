@@ -1038,7 +1038,7 @@ def build_projection(root: Path | None = None, *, as_of: str | None = None) -> d
                     observations.append(obs)
                     existing_ids.add(key)
 
-        if country == "EA":
+        if country in {"EA", "US"}:
             for obs in _observations_from_macro_ingestion_store(
                 country=country,
                 root=root,
@@ -1065,7 +1065,15 @@ def build_projection(root: Path | None = None, *, as_of: str | None = None) -> d
         timestamp_candidates.extend(
             [str(item["retrieved_at"]) if item.get("retrieved_at") else None for item in observations]
         )
-        countries_out[country] = {"code": country, "observations": observations}
+        country_payload: dict[str, Any] = {"code": country, "observations": observations}
+        if country == "US":
+            from scripts.macro_ingestion.us_employment.context_block import build_us_employment_context
+
+            country_payload["employment_context"] = build_us_employment_context(
+                catalog={"series": list(catalog_by_id.values()), "status_vocabulary": []},
+                observations_dir=root / "data" / "macro_ingestion" / "observations",
+            )
+        countries_out[country] = country_payload
 
     if as_of is None:
         as_of = _max_timestamp(timestamp_candidates)

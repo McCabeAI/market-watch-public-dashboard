@@ -8,6 +8,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Callable
 
+from scripts.macro_ingestion.us_employment.dispatch import fetch_us_employment
 from scripts.macro_source_refresh import parse_fred_csv
 from scripts.temperature_level import month_before
 
@@ -339,6 +340,10 @@ def fetch_series(
             "status": "license_gap",
             "error": "retrieval_unavailable",
         }
+
+    employment = fetch_us_employment(spec, opener=opener, now=now, timeout=timeout)
+    if employment is not None:
+        return employment
 
     if method in {"fredgraph.csv", "existing_us_housing_data"}:
         return _fetch_fred_series(spec, opener=opener, timeout=timeout)

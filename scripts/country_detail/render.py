@@ -498,11 +498,75 @@ def _audit_row(
     )
 
 
+def _fmt_employment_value(value: Any) -> str:
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return ""
+    return f"{number:.2f}"
+
+
+def _render_us_employment_context(block: Mapping[str, Any]) -> str:
+    sections = block.get("sections") or {}
+    if not isinstance(sections, Mapping):
+        return ""
+    order = (
+        ("forecast", "Forecast"),
+        ("current_flows", "Current labor-market flows"),
+        ("labor_supply_regime", "Labor-supply regime"),
+        ("corroboration", "Corroborating data"),
+        ("post_print_attribution", "Post-print attribution"),
+    )
+    parts: list[str] = [
+        '<div class="evidence-block us-employment-context" data-employment-context="us">',
+        '<div class="evidence-title">US employment context</div>',
+        '<p class="evidence-code">Context only. Weight 0. Does not change the calibrated US Labor score.</p>',
+    ]
+    for key, title in order:
+        raw = sections.get(key)
+        rows: list[Mapping[str, Any]]
+        cause = ""
+        if key == "post_print_attribution" and isinstance(raw, Mapping):
+            rows = list(raw.get("metrics") or [])
+            primary = raw.get("primary_cause")
+            if primary:
+                cause = f'<p class="evidence-code">Primary cause: {_esc(primary)}</p>'
+        elif isinstance(raw, list):
+            rows = raw
+        else:
+            rows = []
+        rendered = []
+        for row in rows:
+            if row.get("status") == "license_gap":
+                rendered.append(
+                    f'<div class="evidence-grid-row">{_esc(row.get("name"))}: license gap. {_esc(row.get("error") or "")}</div>'
+                )
+                continue
+            if row.get("status") != "observed":
+                continue
+            value = _fmt_employment_value(row.get("value"))
+            period = str(row.get("period") or "")
+            rendered.append(
+                f'<div class="evidence-grid-row"><strong>{_esc(row.get("name"))}</strong>'
+                f'{(" · " + _esc(value)) if value else ""}'
+                f'{(" · " + _esc(period)) if period else ""}</div>'
+            )
+        body = "".join(rendered) or '<div class="evidence-grid-row">No observations in this section yet.</div>'
+        parts.append(
+            f'<div class="evidence-block" data-employment-section="{_esc(key)}">'
+            f'<div class="evidence-title">{_esc(title)}</div>'
+            f'<div class="evidence-grid">{cause}{body}</div></div>'
+        )
+    parts.append("</div>")
+    return "".join(parts)
+
+
 def _render_score_drilldown(
     country_code: str,
     observations: list[Mapping[str, Any]],
     score_state: Mapping[str, Any],
     members: list[Mapping[str, Any]],
+    employment_context: Mapping[str, Any] | None = None,
 ) -> str:
     obs_by_topic: dict[str, list[Mapping[str, Any]]] = {t: [] for t in TOPIC_IDS}
     for obs in observations:
@@ -573,6 +637,7 @@ def _render_score_drilldown(
             f'<div class="evidence-title">Context / corroboration</div>'
             f'<div class="evidence-grid">{ctx_rows}</div>'
             f"</div>"
+            f"{_render_us_employment_context(employment_context) if dimension == 'Labor' and employment_context else ''}"
             f"</div></details>"
         )
     return "".join(parts)
@@ -594,7 +659,15 @@ def render_country_detail(
         f'<section class="country-detail" data-country="{_esc(code)}">',
         _render_score_compact(code, score_state),
         _render_wmn(attention_country, obs_map),
-        _render_score_drilldown(code, observations, score_state, members),
+        _render_score_drilldown(
+            code,
+            observations,
+            score_state,
+            members,
+            employment_context=projection_country.get("employment_context")
+            if isinstance(projection_country, Mapping)
+            else None,
+        ),
         _render_country_evidence(
             code,
             observations,
