@@ -4,10 +4,6 @@ from __future__ import annotations
 
 from typing import Any
 
-# A move smaller than this (thousands of persons) is not attributed.
-_UNEMPLOYED_NOISE_THOUSANDS = 50.0
-
-
 def monthly_delta(latest: float, prior: float) -> float:
     return float(latest) - float(prior)
 
@@ -77,11 +73,14 @@ def _delta(now: dict[str, float], prior: dict[str, float], key: str) -> float | 
     return float(now[key]) - float(prior[key])
 
 
+_ACCOUNTING_IDENTITY = "delta_unemployed = delta_labor_force - delta_household_employment"
+
+
 def attribution_channels(
     now: dict[str, float],
     prior: dict[str, float],
 ) -> dict[str, Any]:
-    """Upward-unemployment channel scores in thousands of persons.
+    """Labor-market attribution: accounting identity plus non-additive diagnostic channels.
 
     Missing inputs stay null. Nothing is filled in from another concept except
     the documented fallback from reason categories to the matching gross flow.
@@ -104,45 +103,57 @@ def attribution_channels(
         entrant = (reentrants or 0.0) + (new_entrants or 0.0)
         entrant_source = "reentrants_plus_new_entrants"
 
-    labor_force = _delta(now, prior, "labor_force")
-    expansion = None if labor_force is None else max(labor_force, 0.0)
-    exit_pressure = None if labor_force is None else max(-labor_force, 0.0)
-    unemployed = _delta(now, prior, "unemployed")
+    delta_unemployed = _delta(now, prior, "unemployed")
+    delta_labor_force = _delta(now, prior, "labor_force")
+    delta_household_employment = _delta(now, prior, "household_employment")
 
-    channels = {
-        "job_loss": job_loss,
-        "weak_job_finding": weak_job_finding,
-        "entrant_reentrant": entrant,
-        "labor_force_expansion": expansion,
-        "labor_force_exit": exit_pressure,
-    }
+    absorption: float | None = None
+    identity_implied: float | None = None
+    identity_residual: float | None = None
+    if delta_household_employment is not None and delta_labor_force is not None:
+        absorption = labor_force_absorption(delta_household_employment, delta_labor_force)
+        identity_implied = delta_labor_force - delta_household_employment
+        if delta_unemployed is not None:
+            identity_residual = delta_unemployed - identity_implied
+
     return {
-        "channels": channels,
-        "sources": {
+        "accounting": {
+            "identity": _ACCOUNTING_IDENTITY,
+            "delta_unemployed": delta_unemployed,
+            "delta_labor_force": delta_labor_force,
+            "delta_household_employment": delta_household_employment,
+            "labor_force_absorption": absorption,
+            "identity_implied_unemployment_change": identity_implied,
+            "identity_residual": identity_residual,
+            "additive_labor_force_cause": False,
+        },
+        "diagnostic_channels": {
+            "job_loss": job_loss,
+            "weak_job_finding": weak_job_finding,
+            "entrant_reentrant": entrant,
+        },
+        "diagnostic_sources": {
             "job_loss": job_loss_source,
             "weak_job_finding": "flow_ue" if weak_job_finding is not None else None,
             "entrant_reentrant": entrant_source,
-            "labor_force_expansion": "labor_force" if expansion is not None else None,
-            "labor_force_exit": "labor_force" if exit_pressure is not None else None,
         },
-        "delta_unemployed": unemployed,
-        "primary_cause": primary_cause(channels, unemployed),
+        "diagnostic_channels_are_additive_decomposition": False,
     }
 
 
-def primary_cause(channels: dict[str, float | None], delta_unemployed: float | None) -> str:
-    """Name the dominant upward channel, or an explicit non-causal state."""
-    if delta_unemployed is None:
-        return "insufficient_data"
-    if abs(delta_unemployed) < _UNEMPLOYED_NOISE_THOUSANDS:
-        return "little_change"
-    positive = {name: value for name, value in channels.items() if value is not None and value > 0}
-    if not positive:
-        return "insufficient_data" if all(value is None for value in channels.values()) else "mixed"
-    total = sum(positive.values())
-    name, score = max(positive.items(), key=lambda item: item[1])
-    if total <= 0:
-        return "mixed"
-    if score >= 0.5 * total:
-        return name
-    return "mixed"
+def _empty_attribution() -> dict[str, Any]:
+    return {
+        "accounting": {
+            "identity": _ACCOUNTING_IDENTITY,
+            "delta_unemployed": None,
+            "delta_labor_force": None,
+            "delta_household_employment": None,
+            "labor_force_absorption": None,
+            "identity_implied_unemployment_change": None,
+            "identity_residual": None,
+            "additive_labor_force_cause": False,
+        },
+        "diagnostic_channels": {},
+        "diagnostic_sources": {},
+        "diagnostic_channels_are_additive_decomposition": False,
+    }

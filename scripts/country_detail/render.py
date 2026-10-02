@@ -506,6 +506,44 @@ def _fmt_employment_value(value: Any) -> str:
     return f"{number:.2f}"
 
 
+def _fmt_thousands_delta(value: Any) -> str:
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return ""
+    if number == int(number):
+        return f"{int(number):,}"
+    return f"{number:,.1f}"
+
+
+def _render_post_print_accounting_line(accounting: Mapping[str, Any]) -> str:
+    keys = (
+        "delta_unemployed",
+        "delta_labor_force",
+        "delta_household_employment",
+        "labor_force_absorption",
+    )
+    if not any(accounting.get(key) is not None for key in keys):
+        return ""
+    parts: list[str] = []
+    if accounting.get("delta_unemployed") is not None:
+        parts.append(f"unemployment change {_fmt_thousands_delta(accounting['delta_unemployed'])} (thousands)")
+    if accounting.get("delta_labor_force") is not None:
+        parts.append(f"labor force {_fmt_thousands_delta(accounting['delta_labor_force'])}")
+    if accounting.get("delta_household_employment") is not None:
+        parts.append(f"household employment {_fmt_thousands_delta(accounting['delta_household_employment'])}")
+    if accounting.get("labor_force_absorption") is not None:
+        parts.append(f"absorption {_fmt_thousands_delta(accounting['labor_force_absorption'])}")
+    if accounting.get("identity_residual") is not None:
+        parts.append(f"identity residual {_fmt_thousands_delta(accounting['identity_residual'])}")
+    detail = "; ".join(parts)
+    return (
+        '<p class="evidence-code">Accounting: the change in unemployment equals labor-force change '
+        "minus household-employment change"
+        f" ({detail}). Diagnostic channels are not an additive decomposition.</p>"
+    )
+
+
 def _render_us_employment_context(block: Mapping[str, Any]) -> str:
     sections = block.get("sections") or {}
     if not isinstance(sections, Mapping):
@@ -528,9 +566,9 @@ def _render_us_employment_context(block: Mapping[str, Any]) -> str:
         cause = ""
         if key == "post_print_attribution" and isinstance(raw, Mapping):
             rows = list(raw.get("metrics") or [])
-            primary = raw.get("primary_cause")
-            if primary:
-                cause = f'<p class="evidence-code">Primary cause: {_esc(primary)}</p>'
+            accounting = raw.get("accounting")
+            if isinstance(accounting, Mapping):
+                cause = _render_post_print_accounting_line(accounting)
         elif isinstance(raw, list):
             rows = raw
         else:

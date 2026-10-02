@@ -57,12 +57,13 @@ def _point(
     source_url: str,
     prior: float | None = None,
     vintage: str = "derived",
+    revision_status: str = "final",
 ) -> dict[str, Any]:
     row: dict[str, Any] = {
         "period": period,
         "value": value,
         "transformation": transform,
-        "revision_status": "final",
+        "revision_status": revision_status,
         "source_url": source_url,
         "vintage": vintage,
         "derivation": {
@@ -138,7 +139,7 @@ def fetch_derived_series(
         claims = load_claims_batch(opener, timeout=timeout, now=now)
         if not claims.get("ok"):
             return _failed(claims, "claims_batch_unavailable")
-        initial = _as_map(_series_pairs(claims, CLAIMS_SERIES["US.Labor.initial_claims"]))
+        initial = _as_map(_series_pairs(claims, CLAIMS_SERIES["US.Labor.initial_claims_revised"]))
         covered_levels = _as_map(_series_pairs(claims, CLAIMS_COVERED_SERIES))
         points = []
         previous = None
@@ -153,16 +154,20 @@ def fetch_derived_series(
                     period=period,
                     value=value,
                     transform=transform or "percent",
-                    formula="initial_claims_sa / eta539_covered_employment * 100",
+                    formula="revised_initial_claims_sa / eta539_covered_employment * 100",
                     inputs={
                         "week_ending": period,
                         "initial_claims": initial[stamp],
                         "ui_covered_employment": covered,
                         "covered_employment_series": CLAIMS_COVERED_SERIES,
+                        "claims_form": "ETA 539",
+                        "vintage_kind": "revised",
+                        "not_the_thursday_advance": True,
                         "monthly_interpolation": False,
                     },
                     source_url=claims.get("batch_url") or "",
                     prior=previous,
+                    revision_status="revised",
                 )
             )
             previous = value
@@ -334,21 +339,35 @@ def fetch_derived_series(
             )
         return _ok(points, jolts)
 
-    channel_ids = {
+    diagnostic_ids = {
         "US.Labor.attr_job_loss": "job_loss",
         "US.Labor.attr_weak_job_finding": "weak_job_finding",
         "US.Labor.attr_entrant_reentrant": "entrant_reentrant",
-        "US.Labor.attr_labor_force_expansion": "labor_force_expansion",
-        "US.Labor.attr_labor_force_exit": "labor_force_exit",
     }
-    if catalog_id in channel_ids:
+    accounting_ids = {
+        "US.Labor.attr_labor_force_expansion": "labor_force_absorption",
+        "US.Labor.attr_labor_force_exit": "identity_residual",
+    }
+    if catalog_id in diagnostic_ids or catalog_id in accounting_ids:
         periods = sorted(_as_map(unemployed))
         if len(periods) < 2:
             return {"ok": False, "status": "source_failed", "error": "derived_inputs_missing", "body": cps.get("body") or b""}
         points = []
         for previous_period, period in zip(periods, periods[1:]):
             report = attribution_channels(_levels_at(cps, period), _levels_at(cps, previous_period))
-            value = report["channels"].get(channel_ids[catalog_id])
+            accounting = report.get("accounting") or {}
+            if catalog_id in diagnostic_ids:
+                key = diagnostic_ids[catalog_id]
+                value = (report.get("diagnostic_channels") or {}).get(key)
+                formula = f"diagnostic_channel:{key}"
+                source = (report.get("diagnostic_sources") or {}).get(key)
+                additive = False
+            else:
+                key = accounting_ids[catalog_id]
+                value = accounting.get(key)
+                formula = f"accounting:{key}"
+                source = "labor_force_and_household_employment"
+                additive = False
             if value is None:
                 continue
             points.append(
@@ -356,12 +375,17 @@ def fetch_derived_series(
                     period=period,
                     value=float(value),
                     transform=transform or "mom_change_thousands",
-                    formula=f"attribution_channel:{channel_ids[catalog_id]}",
+                    formula=formula,
                     inputs={
                         "prior_period": previous_period,
-                        "source": (report.get("sources") or {}).get(channel_ids[catalog_id]),
-                        "primary_cause": report["primary_cause"],
-                        "delta_unemployed": report["delta_unemployed"],
+                        "source": source,
+                        "additive_decomposition": additive,
+                        "additive_labor_force_cause": False,
+                        "delta_unemployed": accounting.get("delta_unemployed"),
+                        "delta_labor_force": accounting.get("delta_labor_force"),
+                        "delta_household_employment": accounting.get("delta_household_employment"),
+                        "labor_force_absorption": accounting.get("labor_force_absorption"),
+                        "identity_residual": accounting.get("identity_residual"),
                     },
                     source_url="https://www.bls.gov/news.release/empsit.htm",
                 )

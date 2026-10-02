@@ -1,5 +1,7 @@
-"""DOL ETA 539 national weekly claims in one XML request.
+"""DOL ETA 539 revised national weekly claims in one XML request.
 
+This file is revised history. It is not the Thursday ETA 538 advance print.
+Callers must not present these points as the current pre-payroll claims signal.
 FRED graph CSV is not used. From this environment that download stalls and
 would burn the country budget on a predictable timeout.
 """
@@ -201,12 +203,17 @@ def fetch_claims_series(
             "vintage": vintage,
             "derivation": {
                 "publisher": "U.S. Department of Labor",
-                "report": "ETA 539 national",
+                "report": "ETA 539",
+                "claims_form": "ETA 539",
+                "vintage_kind": "revised",
+                "revision_status": "revised",
                 "series_id": series_id,
                 "batch_url": bundle["batch_url"],
                 "cps_reference_week": reference_week,
                 "week_ending": period,
                 "advance_embargo": False,
+                "not_eta_538": True,
+                "masquerades_as_advance": False,
             },
         }
         if previous is not None:

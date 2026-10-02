@@ -5,6 +5,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any, Callable
 
+from scripts.macro_ingestion.us_employment.advance_claims import fetch_advance_claims_series
 from scripts.macro_ingestion.us_employment.bls_public import fetch_bls_series
 from scripts.macro_ingestion.us_employment.chicago_fed import fetch_chicago_series
 from scripts.macro_ingestion.us_employment.claims import fetch_claims_series
@@ -26,6 +27,8 @@ def fetch_us_employment(
         return fetch_chicago_series(spec, opener=opener, timeout=timeout)
     if method == "bls_public_api_batch":
         return fetch_bls_series(spec, opener=opener, timeout=timeout, end_year=now.year)
+    if method == "dol_eta_advance_claims":
+        return fetch_advance_claims_series(spec, opener=opener, timeout=timeout, now=now)
     if method == "dol_eta_claims_xml":
         return fetch_claims_series(spec, opener=opener, timeout=timeout, now=now)
     if method == "labor_supply_snapshot":

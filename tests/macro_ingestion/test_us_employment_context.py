@@ -56,7 +56,9 @@ REPLAY_IDS = (
     "US.Labor.initial_claims",
     "US.Labor.continuing_claims",
     "US.Labor.insured_unemployment_rate",
+    "US.Labor.initial_claims_revised",
     "US.Labor.initial_claims_normalized",
+    "US.Labor.attr_labor_force_expansion",
     "US.Labor.jolts_hires_rate",
     "US.Labor.conference_board_labor_differential",
     "US.Labor.breakeven_employment",
@@ -136,6 +138,34 @@ def _chicago_json() -> bytes:
     ).encode()
 
 
+def _advance_oct1() -> bytes:
+    return (
+        "TRANSMISSION OF MATERIALS IN THIS RELEASE IS EMBARGOED UNTIL "
+        "8:30 A.M. (Eastern) Thursday, October 1, 2026 "
+        "In the week ending September 26, the advance figure for seasonally adjusted initial claims was 197,000, "
+        "a decrease of 1,000 from the previous week's revised level. "
+        "The 4-week moving average was 200,000, a decrease of 2,500 from the previous week's revised average. "
+        "The advance seasonally adjusted insured unemployment rate was 1.1 percent for the week ending September 19, "
+        "unchanged from the previous week's unrevised rate. "
+        "The advance number for seasonally adjusted insured unemployment during the week ending September 19 was 1,701,000, "
+        "a decrease of 11,000 from the previous week's revised level. "
+        "2. Most recent week used covered employment of 153,732,307 as denominator."
+    ).encode()
+
+
+def _advance_sep17() -> bytes:
+    return (
+        "TRANSMISSION OF MATERIALS IN THIS RELEASE IS EMBARGOED UNTIL "
+        "8:30 A.M. (Eastern) Thursday, September 17, 2026 "
+        "In the week ending September 12, the advance figure for seasonally adjusted initial claims was 196,000, "
+        "a decrease of 10,000 from the previous week's unrevised level of 206,000. "
+        "The 4-week moving average was 203,250, a decrease of 2,750 from the previous week's unrevised average of 206,000. "
+        "The advance seasonally adjusted insured unemployment rate was 1.1 percent for the week ending September 5, "
+        "a decrease of 0.1 percentage point from the previous week's unrevised rate. "
+        "The advance number for seasonally adjusted insured unemployment during the week ending September 5 was 1,730,000."
+    ).encode()
+
+
 def _claims_xml() -> bytes:
     return b"""<r539cyNational rundate="10/2/2026">
 <week>
@@ -190,8 +220,10 @@ class TestEmploymentFormulas(unittest.TestCase):
                 "labor_force": 50,
             },
         )
-        self.assertEqual(report["primary_cause"], "job_loss")
-        self.assertEqual(report["channels"]["job_loss"], 300)
+        self.assertNotIn("primary_cause", report)
+        self.assertEqual(report["diagnostic_channels"]["job_loss"], 300)
+        self.assertFalse(report["diagnostic_channels_are_additive_decomposition"])
+        self.assertNotIn("labor_force_expansion", report["diagnostic_channels"])
 
     def test_schedule_and_ism_parsers(self) -> None:
         html = """
@@ -250,6 +282,14 @@ class TestEmploymentReplay(unittest.TestCase):
             body = b"October 1, 2026"
         elif url.endswith("/wkclaims/report.asp"):
             body = _claims_xml()
+        elif url.rstrip("/").endswith("/press/2026"):
+            body = b'<a href="091726.pdf">091726.pdf</a><a href="100126.pdf">100126.pdf</a>'
+        elif url.endswith("100126.pdf"):
+            body = _advance_oct1()
+        elif url.endswith("091726.pdf"):
+            body = _advance_sep17()
+        elif url.endswith("/ui/data.pdf"):
+            return {"ok": False, "url": url, "http_status": 403, "body": b"", "error": "HTTP 403"}
         else:
             return {"ok": False, "url": url, "http_status": 404, "body": b"", "error": "unmapped"}
         return {"ok": True, "url": url, "http_status": 200, "body": body, "error": None}
@@ -318,9 +358,41 @@ class TestEmploymentReplay(unittest.TestCase):
         claims = next(
             row
             for row in store["observations"]
+            if row["series_id"] == "ETA538_INITIAL_CLAIMS_SA" and row["period"] == "2026-09-26"
+        )
+        self.assertEqual(claims["revision_status"], "advance")
+        self.assertEqual(claims["value"], 197000)
+        self.assertEqual(claims["derivation"]["report"], "ETA 538")
+        self.assertTrue(claims["derivation"]["not_eta_539"])
+        reference = next(
+            row
+            for row in store["observations"]
+            if row["series_id"] == "ETA538_INITIAL_CLAIMS_SA" and row["period"] == "2026-09-12"
+        )
+        self.assertTrue(reference["derivation"]["cps_reference_week"])
+        self.assertEqual(reference["vintage"], "2026-09-17")
+        self.assertEqual(reference["derivation"]["advance_release_date"], "2026-09-17")
+        self.assertTrue(reference["derivation"]["available_before_payroll"])
+        self.assertEqual(reference["derivation"]["payroll_release_bound"], "2026-10-02")
+        self.assertEqual(reference["value"], 196000)
+        revised = next(
+            row
+            for row in store["observations"]
             if row["series_id"] == "ETA539_INITIAL_CLAIMS_SA" and row["period"] == "2026-09-12"
         )
-        self.assertTrue(claims["derivation"]["cps_reference_week"])
+        self.assertEqual(revised["revision_status"], "revised")
+        self.assertEqual(revised["derivation"]["vintage_kind"], "revised")
+        self.assertFalse(revised["derivation"]["masquerades_as_advance"])
+        imbalance = next(
+            row
+            for row in store["observations"]
+            if row["series_id"] == "ATTR_LABOR_FORCE_EXPANSION" and row["period"] == "2026-09"
+        )
+        self.assertAlmostEqual(imbalance["value"], 352 - 485)
+        self.assertNotIn("primary_cause", imbalance["derivation"]["inputs"])
+        self.assertFalse(imbalance["derivation"]["inputs"]["additive_labor_force_cause"])
+        advance_name = next(row for row in self.catalog["series"] if row["id"] == "US.Labor.attr_labor_force_expansion")
+        self.assertNotIn("labor-force expansion", advance_name["canonical_name"].lower())
         self.assertTrue(any(self.raw_dir.rglob("*")))
 
         block = build_us_employment_context(catalog=self._mini(), observations_dir=self.obs_dir)

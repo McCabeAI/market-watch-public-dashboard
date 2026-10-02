@@ -16,6 +16,8 @@ CHICAGO_SCHEDULE_URL = (
 BLS_SCHEDULE_INDEX = "https://blsmon1.bls.gov/schedule/news_release/empsit.htm"
 DOL_CLAIMS_REGISTRY = "https://oui.doleta.gov/unemploy/claims.asp"
 DOL_CLAIMS_REPORT = "https://oui.doleta.gov/unemploy/wkclaims/report.asp"
+DOL_ADVANCE_PRESS_ROOT = "https://oui.doleta.gov/press/"
+DOL_UI_DATA_PDF = "https://www.dol.gov/ui/data.pdf"
 
 PARTICIPATION_ID = "US.Labor.participation"
 
@@ -86,12 +88,19 @@ CHICAGO_PROBABILITY_BINS: dict[str, tuple[str, str]] = {
     "CFLMIPROBGEPLUS03PPADVANCE": ("advance", ">=+0.3pp"),
 }
 
-CLAIMS_SERIES: dict[str, str] = {
-    "US.Labor.initial_claims": "ETA539_INITIAL_CLAIMS_SA",
-    "US.Labor.initial_claims_4w": "ETA539_INITIAL_CLAIMS_SA4WK",
-    "US.Labor.continuing_claims": "ETA539_CONTINUED_CLAIMS_SA",
-    "US.Labor.insured_unemployment_rate": "ETA539_IUR_SA",
+ADVANCE_CLAIMS_SERIES: dict[str, str] = {
+    "US.Labor.initial_claims": "ETA538_INITIAL_CLAIMS_SA",
+    "US.Labor.initial_claims_4w": "ETA538_INITIAL_CLAIMS_SA4WK",
+    "US.Labor.continuing_claims": "ETA538_CONTINUED_CLAIMS_SA",
+    "US.Labor.insured_unemployment_rate": "ETA538_IUR_SA",
 }
+REVISED_CLAIMS_SERIES: dict[str, str] = {
+    "US.Labor.initial_claims_revised": "ETA539_INITIAL_CLAIMS_SA",
+    "US.Labor.initial_claims_4w_revised": "ETA539_INITIAL_CLAIMS_SA4WK",
+    "US.Labor.continuing_claims_revised": "ETA539_CONTINUED_CLAIMS_SA",
+    "US.Labor.insured_unemployment_rate_revised": "ETA539_IUR_SA",
+}
+CLAIMS_SERIES = REVISED_CLAIMS_SERIES
 CLAIMS_COVERED_SERIES = "ETA539_COVERED_EMPLOYMENT"
 
 SECTION_FORECAST = "forecast"
@@ -345,18 +354,52 @@ def employment_catalog_rows() -> list[dict[str, Any]]:
             )
         )
 
+    advance_notes = (
+        "Official DOL ETA 538 advance figures from the ETA weekly claims news release. "
+        "This is the Thursday advance print used before the payroll report. "
+        "If that week is missing, the series is due_missing and is not backfilled from ETA 539. "
+        "The key-gated DOL API is not called."
+    )
     claims_meta = {
-        "US.Labor.initial_claims": ("Initial unemployment insurance claims, seasonally adjusted", "persons", "level", False),
-        "US.Labor.initial_claims_4w": ("Initial claims, 4-week moving average, seasonally adjusted", "persons", "level", False),
-        "US.Labor.continuing_claims": ("Continued unemployment insurance claims, seasonally adjusted", "persons", "level", False),
-        "US.Labor.insured_unemployment_rate": ("Insured unemployment rate, seasonally adjusted", "percent", "percent", True),
+        "US.Labor.initial_claims": ("Initial unemployment insurance claims, seasonally adjusted, advance", "persons", "level"),
+        "US.Labor.initial_claims_4w": ("Initial claims, 4-week moving average, seasonally adjusted, advance", "persons", "level"),
+        "US.Labor.continuing_claims": ("Continued unemployment insurance claims, seasonally adjusted, advance", "persons", "level"),
+        "US.Labor.insured_unemployment_rate": ("Insured unemployment rate, seasonally adjusted, advance", "percent", "percent"),
     }
-    for catalog_id, (name, units, transform, is_rate) in claims_meta.items():
-        series_id = CLAIMS_SERIES[catalog_id]
+    for catalog_id, (name, units, transform) in claims_meta.items():
         add(
             _context_row(
                 catalog_id,
-                series_id=series_id,
+                series_id=ADVANCE_CLAIMS_SERIES[catalog_id],
+                name=name,
+                publisher="U.S. Department of Labor",
+                section=SECTION_FLOWS,
+                transform=transform,
+                units=units,
+                cadence="weekly",
+                retrieval_method="dol_eta_advance_claims",
+                endpoint=DOL_ADVANCE_PRESS_ROOT,
+                registry_urls=[DOL_CLAIMS_REGISTRY, DOL_ADVANCE_PRESS_ROOT, DOL_UI_DATA_PDF],
+                notes=advance_notes,
+                seasonal_adjustment=True,
+            )
+        )
+    revised_notes = (
+        "Official DOL ETA 539 revised national weekly claims. Revised history only. "
+        "Not the Thursday ETA 538 advance print. Source, vintage, revision status, and "
+        "week ending stay distinct from the advance series."
+    )
+    revised_meta = {
+        "US.Labor.initial_claims_revised": ("Initial unemployment insurance claims, seasonally adjusted, revised", "persons", "level"),
+        "US.Labor.initial_claims_4w_revised": ("Initial claims, 4-week moving average, seasonally adjusted, revised", "persons", "level"),
+        "US.Labor.continuing_claims_revised": ("Continued unemployment insurance claims, seasonally adjusted, revised", "persons", "level"),
+        "US.Labor.insured_unemployment_rate_revised": ("Insured unemployment rate, seasonally adjusted, revised", "percent", "percent"),
+    }
+    for catalog_id, (name, units, transform) in revised_meta.items():
+        add(
+            _context_row(
+                catalog_id,
+                series_id=REVISED_CLAIMS_SERIES[catalog_id],
                 name=name,
                 publisher="U.S. Department of Labor",
                 section=SECTION_FLOWS,
@@ -366,16 +409,10 @@ def employment_catalog_rows() -> list[dict[str, Any]]:
                 retrieval_method="dol_eta_claims_xml",
                 endpoint=DOL_CLAIMS_REPORT,
                 registry_urls=[DOL_CLAIMS_REGISTRY, DOL_CLAIMS_REPORT],
-                notes=(
-                    "Official DOL ETA 539 national weekly claims XML. One POST covers "
-                    "seasonally adjusted initial claims, the published 4-week average, "
-                    "continued claims, and the insured unemployment rate. This is the "
-                    "revised national file, not the Thursday advance embargo."
-                ),
+                notes=revised_notes,
                 seasonal_adjustment=True,
             )
         )
-        _ = is_rate
 
     jolts_names = {
         "US.Labor.jolts_hires": ("JOLTS hires, total nonfarm", "thousands", "level_thousands"),
@@ -432,14 +469,14 @@ def employment_catalog_rows() -> list[dict[str, Any]]:
         ("US.Labor.labor_force_absorption", "Labor-force absorption", "thousands", "mom_change_thousands", SECTION_ATTRIBUTION, "Change in household employment minus change in the labor force."),
         ("US.Labor.population_change", "Monthly change in civilian noninstitutional population", "thousands", "mom_change_thousands", SECTION_SUPPLY, "Change in LNU00000000. Not an immigration interpolation."),
         ("US.Labor.labor_force_change", "Monthly change in the labor force (supply)", "thousands", "mom_change_thousands", SECTION_SUPPLY, "Same labor-force delta, kept on the supply section."),
-        ("US.Labor.initial_claims_normalized", "Initial claims as a percent of UI-covered employment", "percent", "percent", SECTION_FLOWS, "Seasonally adjusted initial claims divided by the ETA 539 covered-employment level for the same week. Not an interpolated population."),
+        ("US.Labor.initial_claims_normalized", "Revised initial claims as a percent of UI-covered employment", "percent", "percent", SECTION_FLOWS, "ETA 539 revised seasonally adjusted initial claims divided by that file's covered-employment level for the same week. Not the Thursday ETA 538 advance print and not an interpolated population."),
         ("US.Labor.payroll_vs_breakeven", "Payroll change minus sourced structural breakeven", "thousands", "thousands", SECTION_ATTRIBUTION, "CES total-nonfarm monthly change minus the current Board FEDS breakeven snapshot. Context only; the score anchor is unchanged."),
         ("US.Labor.chicago_fed_error", "Unrounded U-3 minus final Chicago Fed nowcast", "percentage points", "percentage_points", SECTION_ATTRIBUTION, "Computed only for a month where both the BLS household print and the final nowcast exist."),
-        ("US.Labor.attr_job_loss", "Unemployment-move channel: job loss", "thousands", "mom_change_thousands", SECTION_ATTRIBUTION, "Delta in job losers, else delta in employed-to-unemployed flow."),
-        ("US.Labor.attr_weak_job_finding", "Unemployment-move channel: weak job finding", "thousands", "mom_change_thousands", SECTION_ATTRIBUTION, "Negative of the change in the unemployed-to-employed flow."),
-        ("US.Labor.attr_entrant_reentrant", "Unemployment-move channel: entrants and reentrants", "thousands", "mom_change_thousands", SECTION_ATTRIBUTION, "Delta reentrants plus new entrants, else not-in-labor-force-to-unemployed."),
-        ("US.Labor.attr_labor_force_expansion", "Unemployment-move channel: labor-force expansion", "thousands", "mom_change_thousands", SECTION_ATTRIBUTION, "Positive part of the labor-force change."),
-        ("US.Labor.attr_labor_force_exit", "Unemployment-move channel: labor-force exit", "thousands", "mom_change_thousands", SECTION_ATTRIBUTION, "Positive part of a labor-force decline."),
+        ("US.Labor.attr_job_loss", "Diagnostic: change in job losers", "thousands", "mom_change_thousands", SECTION_ATTRIBUTION, "Change in job losers, else the employed-to-unemployed flow. A diagnostic channel, not an additive cause of the unemployment change."),
+        ("US.Labor.attr_weak_job_finding", "Diagnostic: weak job finding", "thousands", "mom_change_thousands", SECTION_ATTRIBUTION, "Negative of the change in the unemployed-to-employed flow. Not part of an additive decomposition."),
+        ("US.Labor.attr_entrant_reentrant", "Diagnostic: entrants and reentrants", "thousands", "mom_change_thousands", SECTION_ATTRIBUTION, "Change in reentrants plus new entrants, else not-in-labor-force-to-unemployed. A diagnostic, not an additive cause."),
+        ("US.Labor.attr_labor_force_expansion", "Accounting imbalance (employment change minus labor-force change)", "thousands", "mom_change_thousands", SECTION_ATTRIBUTION, "Equals labor-force absorption. Not an additive causal contribution and not a primary cause. A labor-force increase is not counted again beside the diagnostic channels."),
+        ("US.Labor.attr_labor_force_exit", "Unemployment identity residual", "thousands", "mom_change_thousands", SECTION_ATTRIBUTION, "Observed unemployment change minus (labor-force change minus household-employment change). Near zero when the CPS identity holds. Not a causal channel."),
     ]
     for catalog_id, name, units, transform, section, notes in derived:
         add(

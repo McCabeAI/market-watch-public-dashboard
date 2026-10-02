@@ -13,7 +13,7 @@ from scripts.macro_ingestion.us_employment.contract import (
     SECTION_FORECAST,
     SECTION_SUPPLY,
 )
-from scripts.macro_ingestion.us_employment.derived import attribution_channels
+from scripts.macro_ingestion.us_employment.derived import _empty_attribution, attribution_channels
 from scripts.macro_ingestion.vintage import load_store
 
 _SECTION_ORDER = (
@@ -150,14 +150,16 @@ def build_us_employment_context(
         sections.setdefault(section, []).append(view)
 
     periods = sorted({str(obs.get("period")) for obs in flat_history if obs.get("_catalog_id") == "US.Labor.unemployed"})
-    attribution: dict[str, Any] = {"primary_cause": "insufficient_data", "channels": {}}
+    attribution: dict[str, Any] = _empty_attribution()
+    period: str | None = None
+    prior_period: str | None = None
     if len(periods) >= 2:
         attribution = attribution_channels(
             _levels_from_history(flat_history, periods[-1]),
             _levels_from_history(flat_history, periods[-2]),
         )
-        attribution["period"] = periods[-1]
-        attribution["prior_period"] = periods[-2]
+        period = periods[-1]
+        prior_period = periods[-2]
 
     return {
         "country": "US",
@@ -171,11 +173,14 @@ def build_us_employment_context(
             "corroboration": sections.get(SECTION_CORROBORATION, []),
             "post_print_attribution": {
                 "metrics": sections.get(SECTION_ATTRIBUTION, []),
-                "primary_cause": attribution.get("primary_cause"),
-                "channels": attribution.get("channels") or {},
-                "period": attribution.get("period"),
-                "prior_period": attribution.get("prior_period"),
-                "sources": attribution.get("sources"),
+                "accounting": attribution.get("accounting"),
+                "diagnostic_channels": attribution.get("diagnostic_channels") or {},
+                "diagnostic_channels_are_additive_decomposition": attribution.get(
+                    "diagnostic_channels_are_additive_decomposition", False
+                ),
+                "period": period,
+                "prior_period": prior_period,
+                "diagnostic_sources": attribution.get("diagnostic_sources") or {},
             },
         },
     }

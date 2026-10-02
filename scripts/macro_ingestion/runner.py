@@ -216,7 +216,7 @@ def _classify_points(
         return "license_gap", [], payload.get("error") or "challenge_page", False
 
     override = payload.get("status")
-    if override in {"license_gap", "not_applicable", "source_failed"}:
+    if override in {"license_gap", "not_applicable", "source_failed", "due_missing"}:
         return override, [], payload.get("error"), False
 
     if not payload.get("ok"):
