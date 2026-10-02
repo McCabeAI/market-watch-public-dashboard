@@ -428,10 +428,11 @@ class PsychologyIntegrationTests(unittest.TestCase):
 
     def test_shadow_replay_stays_near_baseline(self) -> None:
         report = shadow_report(ROOT)
-        # September rank reshuffles move external_pressure, but not to a required flag.
-        # The plan's 0.20 sketch treated a ~$50k close as inside the dead band; the
-        # written $40k band and rank_shock magnitude are unchanged. No axis reaches
-        # the elevated-band enter (0.35) or a required-check threshold.
+        # Live overnight history moves, so this does not pin an exact distance.
+        # September rank reshuffles move external_pressure, but not to a required
+        # flag. The plan's 0.20 sketch treated a ~$50k close as inside the dead
+        # band; the written $40k band and rank_shock magnitude are unchanged. No
+        # axis reaches the elevated-band enter (0.35) or a required-check threshold.
         self.assertLess(report["max_abs_distance"], 0.30)
         self.assertEqual(report["level_flags"], [])
         self.assertEqual(report["family_revenge_flags"], [])
@@ -440,15 +441,16 @@ class PsychologyIntegrationTests(unittest.TestCase):
                 self.assertLess(row["distances"][axis], 0.30)
             self.assertNotEqual(owner_id, "chatgpt")
             self.assertFalse(row["flags"])
+
+    def test_shadow_replay_matches_immutable_inputs(self) -> None:
         fixture_dir = ROOT / "tests" / "fixtures" / "psychology"
-        fixture_dir.mkdir(parents=True, exist_ok=True)
-        fixture = fixture_dir / "shadow_report.json"
-        encoded = json.dumps(report, indent=2, sort_keys=True) + "\n"
-        if not fixture.is_file():
-            fixture.write_text(encoded, encoding="utf-8")
-        stored = json.loads(fixture.read_text(encoding="utf-8"))
-        self.assertEqual(stored["max_abs_distance"], report["max_abs_distance"])
-        self.assertEqual(stored["level_flags"], report["level_flags"])
+        report = shadow_report(fixture_dir / "replay_root")
+        stored = json.loads((fixture_dir / "shadow_report.json").read_text(encoding="utf-8"))
+        # October 1 snapshot. Do not retarget this at a later production run.
+        self.assertEqual(stored["max_abs_distance"], 0.2192)
+        self.assertEqual(report, stored)
+        self.assertEqual(report["level_flags"], [])
+        self.assertEqual(report["family_revenge_flags"], [])
 
     def test_grinder_flat_does_not_force_deployment(self) -> None:
         owner = build_capital_owner(
