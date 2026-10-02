@@ -75,6 +75,13 @@ class AcceptanceWorkflowContractTests(unittest.TestCase):
         self.assertLess(workflow.index("append_generated_state.sh"), workflow.index("Persist accepted launch through finalization"))
         self.assertNotIn("github.event.pull_request.head.ref", workflow)
         self.assertIn("HEAD_REF: main", workflow)
+        self.assertIn("recover_accepted_finalization.sh", workflow)
+        self.assertNotIn(
+            "git add data/market_watch_launches data/overnight data/pm data/trading",
+            workflow,
+        )
+        self.assertIn("may_publish", workflow)
+        self.assertIn('latest["overnight_run_id"]', workflow)
 
         self.assertLess(merge_script.index("gh pr ready"), merge_script.index("gh pr merge"))
         self.assertLess(merge_script.index("gh pr merge"), merge_script.index("gh workflow run deploy-pages.yml --ref main"))

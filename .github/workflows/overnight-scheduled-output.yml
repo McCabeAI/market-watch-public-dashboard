@@ -231,22 +231,17 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           PROVIDER_PAYLOAD_PATH: /tmp/mw-output/scheduled_output.json
           MW_DEFER_PAGES: "1"
+          RUN_ID: ${{ needs.inspect.outputs.run_id }}
         run: |
           set -euo pipefail
-          git fetch origin main
-          git reset --hard origin/main
           launch_id="$(python3 -c 'import json; print(json.load(open("/tmp/mw-output/scheduled_output.json"))["launch_id"])')"
-          LAUNCH_ID="$launch_id" PYTHONPATH=. python3 -m scripts.market_watch_launch.continuation | tee /tmp/mw-output/continuation-finalize.json
-          git add data/market_watch_launches data/overnight data/pm data/trading 2>/dev/null || true
-          if ! git diff --cached --quiet; then
-            git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
-              commit -m "chore: finalize market watch launch $launch_id"
-            git pull --rebase origin main
-            git push origin HEAD:main
-          fi
+          LAUNCH_ID="$launch_id" RUN_ID="$RUN_ID" \
+            bash scripts/market_watch_launch/recover_accepted_finalization.sh \
+            | tee /tmp/mw-output/continuation-finalize.json
           git fetch origin main
           git show "origin/main:data/market_watch_launches/$launch_id/launch.json" >/tmp/mw-output/remote-launch.json
-          python3 -c 'import json; d=json.load(open("/tmp/mw-output/remote-launch.json")); assert d["stages"]["06_acceptance"]["status"]=="succeeded"; assert d["stages"]["07_finalize"]["status"]=="succeeded"'
+          python3 -c 'import json; d=json.load(open("/tmp/mw-output/remote-launch.json")); assert d["stages"]["06_acceptance"]["status"]=="succeeded"; assert d["stages"]["07_finalize"]["status"]=="succeeded"; pub=(d["stages"]["07_finalize"].get("details") or {}).get("publication") or {}; assert pub.get("may_publish") is True'
+          python3 -c 'import json,os,subprocess; latest=json.loads(subprocess.check_output(["git","show","origin/main:data/overnight/latest.json"])); assert latest["overnight_run_id"]==os.environ["RUN_ID"]'
 
       - name: Explicitly dispatch Pages for the finalized launch
         env:
