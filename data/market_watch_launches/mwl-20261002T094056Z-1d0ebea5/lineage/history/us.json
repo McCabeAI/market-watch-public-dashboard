@@ -1,0 +1,3539 @@
+{
+  "country": "US",
+  "window": {
+    "start": "2025-09-21",
+    "end": "2026-09-21"
+  },
+  "retrieved_at": "2026-09-21T14:41:19Z",
+  "notes": "Trailing-12-month observation backfill for US temperature components. FRED graph CSV downloads saved under data/temperature_history/raw/us/. ISM PMI and mapped-bridge history are partial by design. Cross-check: official FRED retail Aug 2026 m/m ~+1.24% vs ledger +1.2%; core PCE Jul m/m ~+0.25% vs ledger +0.2%; personal income Jul m/m ~+0.53% vs ledger +0.4%; UMCSENT on FRED ends 2026-07 (55.2) while ledger cites Aug decline and Sep preliminary 47.8.",
+  "components": {
+    "Inflation.core_pce": {
+      "dimension": "Inflation",
+      "component": "core_pce",
+      "canonical_name": "Personal Consumption Expenditures: Chain-type Price Index, Excluding Food and Energy",
+      "publisher": "BEA",
+      "distributor": "FRED",
+      "series_id": "PCEPILFE",
+      "cadence": "monthly",
+      "units": "index 2017=100",
+      "preferred_scoring_transformation": "mom_sa_pct",
+      "sa": true,
+      "source_urls": [
+        "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+        "https://www.bea.gov/data/personal-consumption-expenditures-price-index-excluding-food-and-energy"
+      ],
+      "original_authority_url": "https://www.bea.gov/data/personal-consumption-expenditures-price-index-excluding-food-and-energy",
+      "retrieval_method": "fredgraph.csv",
+      "methodology_breaks": [],
+      "observations": [
+        {
+          "reference_period": "2025-08",
+          "value": 126.714,
+          "units": "index 2017=100",
+          "transformation": "index_level",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEPILFE",
+          "notes": "Pre-window level for m/m and y/y transforms.",
+          "calibration_lookback": true
+        },
+        {
+          "reference_period": "2025-09",
+          "value": 126.954,
+          "units": "index 2017=100",
+          "transformation": "index_level",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEPILFE"
+        },
+        {
+          "reference_period": "2025-09",
+          "value": 0.189403,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEPILFE",
+          "raw_level": 126.954,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2025-09",
+          "value": 2.825069,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEPILFE",
+          "raw_level": 126.954,
+          "notes": "Computed from official levels 12 months apart."
+        },
+        {
+          "reference_period": "2025-10",
+          "value": 127.243,
+          "units": "index 2017=100",
+          "transformation": "index_level",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEPILFE"
+        },
+        {
+          "reference_period": "2025-10",
+          "value": 0.227642,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEPILFE",
+          "raw_level": 127.243,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2025-10",
+          "value": 2.754538,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEPILFE",
+          "raw_level": 127.243,
+          "notes": "Computed from official levels 12 months apart."
+        },
+        {
+          "reference_period": "2025-11",
+          "value": 127.469,
+          "units": "index 2017=100",
+          "transformation": "index_level",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEPILFE"
+        },
+        {
+          "reference_period": "2025-11",
+          "value": 0.177613,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEPILFE",
+          "raw_level": 127.469,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2025-11",
+          "value": 2.829093,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEPILFE",
+          "raw_level": 127.469,
+          "notes": "Computed from official levels 12 months apart."
+        },
+        {
+          "reference_period": "2025-12",
+          "value": 127.886,
+          "units": "index 2017=100",
+          "transformation": "index_level",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEPILFE"
+        },
+        {
+          "reference_period": "2025-12",
+          "value": 0.327138,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEPILFE",
+          "raw_level": 127.886,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2025-12",
+          "value": 2.97111,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEPILFE",
+          "raw_level": 127.886,
+          "notes": "Computed from official levels 12 months apart."
+        },
+        {
+          "reference_period": "2026-01",
+          "value": 128.455,
+          "units": "index 2017=100",
+          "transformation": "index_level",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEPILFE"
+        },
+        {
+          "reference_period": "2026-01",
+          "value": 0.444928,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEPILFE",
+          "raw_level": 128.455,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-01",
+          "value": 3.104658,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEPILFE",
+          "raw_level": 128.455,
+          "notes": "Computed from official levels 12 months apart."
+        },
+        {
+          "reference_period": "2026-02",
+          "value": 128.961,
+          "units": "index 2017=100",
+          "transformation": "index_level",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEPILFE"
+        },
+        {
+          "reference_period": "2026-02",
+          "value": 0.393912,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEPILFE",
+          "raw_level": 128.961,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-02",
+          "value": 3.049263,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEPILFE",
+          "raw_level": 128.961,
+          "notes": "Computed from official levels 12 months apart."
+        },
+        {
+          "reference_period": "2026-03",
+          "value": 129.343,
+          "units": "index 2017=100",
+          "transformation": "index_level",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEPILFE"
+        },
+        {
+          "reference_period": "2026-03",
+          "value": 0.296214,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEPILFE",
+          "raw_level": 129.343,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-03",
+          "value": 3.25385,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEPILFE",
+          "raw_level": 129.343,
+          "notes": "Computed from official levels 12 months apart."
+        },
+        {
+          "reference_period": "2026-04",
+          "value": 129.681,
+          "units": "index 2017=100",
+          "transformation": "index_level",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEPILFE"
+        },
+        {
+          "reference_period": "2026-04",
+          "value": 0.261321,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEPILFE",
+          "raw_level": 129.681,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-04",
+          "value": 3.329827,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEPILFE",
+          "raw_level": 129.681,
+          "notes": "Computed from official levels 12 months apart."
+        },
+        {
+          "reference_period": "2026-05",
+          "value": 130.147,
+          "units": "index 2017=100",
+          "transformation": "index_level",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEPILFE"
+        },
+        {
+          "reference_period": "2026-05",
+          "value": 0.359343,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEPILFE",
+          "raw_level": 130.147,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-05",
+          "value": 3.463709,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEPILFE",
+          "raw_level": 130.147,
+          "notes": "Computed from official levels 12 months apart."
+        },
+        {
+          "reference_period": "2026-06",
+          "value": 130.338,
+          "units": "index 2017=100",
+          "transformation": "index_level",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEPILFE"
+        },
+        {
+          "reference_period": "2026-06",
+          "value": 0.146757,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEPILFE",
+          "raw_level": 130.338,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-06",
+          "value": 3.343614,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEPILFE",
+          "raw_level": 130.338,
+          "notes": "Computed from official levels 12 months apart."
+        },
+        {
+          "reference_period": "2026-07",
+          "value": 130.658,
+          "units": "index 2017=100",
+          "transformation": "index_level",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEPILFE"
+        },
+        {
+          "reference_period": "2026-07",
+          "value": 0.245516,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEPILFE",
+          "raw_level": 130.658,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-07",
+          "value": 3.344143,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEPILFE",
+          "raw_level": 130.658,
+          "notes": "Computed from official levels 12 months apart."
+        }
+      ],
+      "gaps": [
+        {
+          "expected_period": "2026-08",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+            "https://www.bea.gov/data/personal-consumption-expenditures-price-index-excluding-food-and-energy"
+          ],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2026-09",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+            "https://www.bea.gov/data/personal-consumption-expenditures-price-index-excluding-food-and-energy"
+          ],
+          "as_of": "2026-09-21"
+        }
+      ],
+      "coverage": {
+        "expected_periods_in_window": 13,
+        "observed_periods_in_window": 11,
+        "latest_reference_period": "2026-07",
+        "latest_release_date": null,
+        "status": "partial"
+      },
+      "notes": "PCEPILFE_PC1 not available on FRED graph CSV; y/y and m/m stored as transforms from PCEPILFE index."
+    },
+    "Inflation.mapped_bridge": {
+      "dimension": "Inflation",
+      "component": "mapped_bridge",
+      "canonical_name": "BEA-mapped Core PCE PPI bridge component table (Aug 2026 documentation)",
+      "publisher": "BEA / BLS",
+      "distributor": "internal_csv",
+      "series_id": null,
+      "cadence": "monthly-between-Core-PCE-releases",
+      "units": "percent",
+      "preferred_scoring_transformation": "ppi_component_mom_pct",
+      "sa": true,
+      "source_urls": [
+        "data/us_core_pce_ppi_bridge_2026-08.csv",
+        "https://www.bls.gov/news.release/ppi.htm"
+      ],
+      "original_authority_url": "https://www.bea.gov/data/personal-consumption-expenditures-price-index-excluding-food-and-energy",
+      "retrieval_method": "repository_csv",
+      "methodology_breaks": [],
+      "observations": [
+        {
+          "reference_period": "2026-07",
+          "value": -0.1,
+          "units": "percent",
+          "transformation": "ppi_component_mom_pct",
+          "publisher": "BLS PPI",
+          "source_url": "data/us_core_pce_ppi_bridge_2026-08.csv",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "notes": "component=Physician services; status=OBSERVED; basis=BLS Table 2 physician care"
+        },
+        {
+          "reference_period": "2026-08",
+          "value": 0.1,
+          "units": "percent",
+          "transformation": "ppi_component_mom_pct",
+          "publisher": "BLS PPI",
+          "source_url": "data/us_core_pce_ppi_bridge_2026-08.csv",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "notes": "component=Physician services; status=OBSERVED; basis=BLS Table 2 physician care"
+        },
+        {
+          "reference_period": "2026-07",
+          "value": 0.1,
+          "units": "percent",
+          "transformation": "ppi_component_mom_pct",
+          "publisher": "BLS PPI",
+          "source_url": "data/us_core_pce_ppi_bridge_2026-08.csv",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "notes": "component=Home health care; status=OBSERVED; basis=BLS Table 2 home health and hospice care"
+        },
+        {
+          "reference_period": "2026-08",
+          "value": -0.4,
+          "units": "percent",
+          "transformation": "ppi_component_mom_pct",
+          "publisher": "BLS PPI",
+          "source_url": "data/us_core_pce_ppi_bridge_2026-08.csv",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "notes": "component=Home health care; status=OBSERVED; basis=BLS Table 2 home health and hospice care"
+        },
+        {
+          "reference_period": "2026-07",
+          "value": 0.0,
+          "units": "percent",
+          "transformation": "ppi_component_mom_pct",
+          "publisher": "BLS PPI",
+          "source_url": "data/us_core_pce_ppi_bridge_2026-08.csv",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "notes": "component=Medical laboratories / diagnostic imaging; status=OBSERVED; basis=BLS Table 2 medical laboratory and diagnostic imaging care"
+        },
+        {
+          "reference_period": "2026-08",
+          "value": 0.0,
+          "units": "percent",
+          "transformation": "ppi_component_mom_pct",
+          "publisher": "BLS PPI",
+          "source_url": "data/us_core_pce_ppi_bridge_2026-08.csv",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "notes": "component=Medical laboratories / diagnostic imaging; status=OBSERVED; basis=BLS Table 2 medical laboratory and diagnostic imaging care"
+        },
+        {
+          "reference_period": "2026-07",
+          "value": -0.0008,
+          "units": "percent",
+          "transformation": "ppi_component_mom_pct",
+          "publisher": "BLS PPI",
+          "source_url": "data/us_core_pce_ppi_bridge_2026-08.csv",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "notes": "component=Hospitals (nonprofit + proprietary + government); status=OBSERVED; basis=BLS PPI Hospitals aggregate PCU622---622---"
+        },
+        {
+          "reference_period": "2026-08",
+          "value": 0.6232,
+          "units": "percent",
+          "transformation": "ppi_component_mom_pct",
+          "publisher": "BLS PPI",
+          "source_url": "data/us_core_pce_ppi_bridge_2026-08.csv",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "notes": "component=Hospitals (nonprofit + proprietary + government); status=OBSERVED; basis=BLS PPI Hospitals aggregate PCU622---622---"
+        },
+        {
+          "reference_period": "2026-07",
+          "value": 0.2,
+          "units": "percent",
+          "transformation": "ppi_component_mom_pct",
+          "publisher": "BLS PPI",
+          "source_url": "data/us_core_pce_ppi_bridge_2026-08.csv",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "notes": "component=Nursing homes (nonprofit + proprietary/government); status=OBSERVED; basis=BLS Table 2 nursing home care"
+        },
+        {
+          "reference_period": "2026-08",
+          "value": -0.2,
+          "units": "percent",
+          "transformation": "ppi_component_mom_pct",
+          "publisher": "BLS PPI",
+          "source_url": "data/us_core_pce_ppi_bridge_2026-08.csv",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "notes": "component=Nursing homes (nonprofit + proprietary/government); status=OBSERVED; basis=BLS Table 2 nursing home care"
+        },
+        {
+          "reference_period": "2026-07",
+          "value": -3.1,
+          "units": "percent",
+          "transformation": "ppi_component_mom_pct",
+          "publisher": "BLS PPI",
+          "source_url": "data/us_core_pce_ppi_bridge_2026-08.csv",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "notes": "component=Air transportation; status=OBSERVED; basis=BLS Table 2 airline passenger services"
+        },
+        {
+          "reference_period": "2026-08",
+          "value": 4.2,
+          "units": "percent",
+          "transformation": "ppi_component_mom_pct",
+          "publisher": "BLS PPI",
+          "source_url": "data/us_core_pce_ppi_bridge_2026-08.csv",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "notes": "component=Air transportation; status=OBSERVED; basis=BLS Table 2 airline passenger services"
+        },
+        {
+          "reference_period": "2026-07",
+          "value": -0.9,
+          "units": "percent",
+          "transformation": "ppi_component_mom_pct",
+          "publisher": "BLS PPI",
+          "source_url": "data/us_core_pce_ppi_bridge_2026-08.csv",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "notes": "component=Securities commission / brokerage components; status=OBSERVED; basis=BLS Table 2 securities brokerage/dealing/investment advice and related services"
+        },
+        {
+          "reference_period": "2026-08",
+          "value": -0.1,
+          "units": "percent",
+          "transformation": "ppi_component_mom_pct",
+          "publisher": "BLS PPI",
+          "source_url": "data/us_core_pce_ppi_bridge_2026-08.csv",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "notes": "component=Securities commission / brokerage components; status=OBSERVED; basis=BLS Table 2 securities brokerage/dealing/investment advice and related services"
+        },
+        {
+          "reference_period": "2026-07",
+          "value": 6.2,
+          "units": "percent",
+          "transformation": "ppi_component_mom_pct",
+          "publisher": "BLS PPI",
+          "source_url": "data/us_core_pce_ppi_bridge_2026-08.csv",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "notes": "component=Portfolio management; status=OBSERVED; basis=BLS Table 2 portfolio management"
+        },
+        {
+          "reference_period": "2026-08",
+          "value": -1.6,
+          "units": "percent",
+          "transformation": "ppi_component_mom_pct",
+          "publisher": "BLS PPI",
+          "source_url": "data/us_core_pce_ppi_bridge_2026-08.csv",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "notes": "component=Portfolio management; status=OBSERVED; basis=BLS Table 2 portfolio management"
+        },
+        {
+          "reference_period": "2026-07",
+          "value": 0.2,
+          "units": "percent",
+          "transformation": "ppi_component_mom_pct",
+          "publisher": "BLS PPI",
+          "source_url": "data/us_core_pce_ppi_bridge_2026-08.csv",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "notes": "component=Medical care & hospitalization insurance; status=OBSERVED; basis=BLS Table 2 health and medical insurance"
+        },
+        {
+          "reference_period": "2026-08",
+          "value": 0.2,
+          "units": "percent",
+          "transformation": "ppi_component_mom_pct",
+          "publisher": "BLS PPI",
+          "source_url": "data/us_core_pce_ppi_bridge_2026-08.csv",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "notes": "component=Medical care & hospitalization insurance; status=OBSERVED; basis=BLS Table 2 health and medical insurance"
+        }
+      ],
+      "gaps": [
+        {
+          "expected_period": "2025-09",
+          "reason": "methodology unresolved",
+          "attempted_sources": [
+            "/workspace/data/us_core_pce_ppi_bridge_2026-08.csv",
+            "https://www.bls.gov/news.release/ppi.htm",
+            "https://www.bls.gov/news.release/cpi.htm"
+          ],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2025-10",
+          "reason": "methodology unresolved",
+          "attempted_sources": [
+            "/workspace/data/us_core_pce_ppi_bridge_2026-08.csv",
+            "https://www.bls.gov/news.release/ppi.htm",
+            "https://www.bls.gov/news.release/cpi.htm"
+          ],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2025-11",
+          "reason": "methodology unresolved",
+          "attempted_sources": [
+            "/workspace/data/us_core_pce_ppi_bridge_2026-08.csv",
+            "https://www.bls.gov/news.release/ppi.htm",
+            "https://www.bls.gov/news.release/cpi.htm"
+          ],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2025-12",
+          "reason": "methodology unresolved",
+          "attempted_sources": [
+            "/workspace/data/us_core_pce_ppi_bridge_2026-08.csv",
+            "https://www.bls.gov/news.release/ppi.htm",
+            "https://www.bls.gov/news.release/cpi.htm"
+          ],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2026-01",
+          "reason": "methodology unresolved",
+          "attempted_sources": [
+            "/workspace/data/us_core_pce_ppi_bridge_2026-08.csv",
+            "https://www.bls.gov/news.release/ppi.htm",
+            "https://www.bls.gov/news.release/cpi.htm"
+          ],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2026-02",
+          "reason": "methodology unresolved",
+          "attempted_sources": [
+            "/workspace/data/us_core_pce_ppi_bridge_2026-08.csv",
+            "https://www.bls.gov/news.release/ppi.htm",
+            "https://www.bls.gov/news.release/cpi.htm"
+          ],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2026-03",
+          "reason": "methodology unresolved",
+          "attempted_sources": [
+            "/workspace/data/us_core_pce_ppi_bridge_2026-08.csv",
+            "https://www.bls.gov/news.release/ppi.htm",
+            "https://www.bls.gov/news.release/cpi.htm"
+          ],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2026-04",
+          "reason": "methodology unresolved",
+          "attempted_sources": [
+            "/workspace/data/us_core_pce_ppi_bridge_2026-08.csv",
+            "https://www.bls.gov/news.release/ppi.htm",
+            "https://www.bls.gov/news.release/cpi.htm"
+          ],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2026-05",
+          "reason": "methodology unresolved",
+          "attempted_sources": [
+            "/workspace/data/us_core_pce_ppi_bridge_2026-08.csv",
+            "https://www.bls.gov/news.release/ppi.htm",
+            "https://www.bls.gov/news.release/cpi.htm"
+          ],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2026-06",
+          "reason": "methodology unresolved",
+          "attempted_sources": [
+            "/workspace/data/us_core_pce_ppi_bridge_2026-08.csv",
+            "https://www.bls.gov/news.release/ppi.htm",
+            "https://www.bls.gov/news.release/cpi.htm"
+          ],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2026-09",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "/workspace/data/us_core_pce_ppi_bridge_2026-08.csv",
+            "https://www.bls.gov/news.release/ppi.htm"
+          ],
+          "as_of": "2026-09-21"
+        }
+      ],
+      "coverage": {
+        "expected_periods_in_window": 13,
+        "observed_periods_in_window": 2,
+        "latest_reference_period": "2026-08",
+        "latest_release_date": null,
+        "status": "partial"
+      },
+      "notes": "No 12-month micro-bridge history; Jul/Aug 2026 component-level PPI moves from documented bridge file only."
+    },
+    "Labor.unemployment": {
+      "dimension": "Labor",
+      "component": "unemployment",
+      "canonical_name": "Unemployment Rate",
+      "publisher": "BLS",
+      "distributor": "FRED",
+      "series_id": "UNRATE",
+      "cadence": "monthly",
+      "units": "percent",
+      "preferred_scoring_transformation": "percent",
+      "sa": true,
+      "source_urls": [
+        "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UNRATE",
+        "https://www.bls.gov/news.release/empsit.htm"
+      ],
+      "original_authority_url": "https://www.bls.gov/news.release/empsit.htm",
+      "retrieval_method": "fredgraph.csv",
+      "methodology_breaks": [],
+      "observations": [
+        {
+          "reference_period": "2025-08",
+          "value": 4.3,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UNRATE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "UNRATE",
+          "notes": "Pre-window level for m/m and y/y transforms.",
+          "calibration_lookback": true
+        },
+        {
+          "reference_period": "2025-09",
+          "value": 4.4,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UNRATE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "UNRATE"
+        },
+        {
+          "reference_period": "2025-11",
+          "value": 4.5,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UNRATE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "UNRATE"
+        },
+        {
+          "reference_period": "2025-12",
+          "value": 4.4,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UNRATE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "UNRATE"
+        },
+        {
+          "reference_period": "2026-01",
+          "value": 4.3,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UNRATE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "UNRATE"
+        },
+        {
+          "reference_period": "2026-02",
+          "value": 4.4,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UNRATE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "UNRATE"
+        },
+        {
+          "reference_period": "2026-03",
+          "value": 4.3,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UNRATE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "UNRATE"
+        },
+        {
+          "reference_period": "2026-04",
+          "value": 4.3,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UNRATE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "UNRATE"
+        },
+        {
+          "reference_period": "2026-05",
+          "value": 4.3,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UNRATE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "UNRATE"
+        },
+        {
+          "reference_period": "2026-06",
+          "value": 4.2,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UNRATE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "UNRATE"
+        },
+        {
+          "reference_period": "2026-07",
+          "value": 4.1,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UNRATE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "UNRATE"
+        },
+        {
+          "reference_period": "2026-08",
+          "value": 4.1,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UNRATE",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "UNRATE"
+        }
+      ],
+      "gaps": [
+        {
+          "expected_period": "2026-09",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UNRATE",
+            "https://www.bls.gov/news.release/empsit.htm"
+          ],
+          "as_of": "2026-09-21"
+        }
+      ],
+      "coverage": {
+        "expected_periods_in_window": 13,
+        "observed_periods_in_window": 11,
+        "latest_reference_period": "2026-08",
+        "latest_release_date": null,
+        "status": "partial"
+      }
+    },
+    "Labor.wages": {
+      "dimension": "Labor",
+      "component": "wages",
+      "canonical_name": "Average Hourly Earnings of All Employees, Total Private",
+      "publisher": "BLS",
+      "distributor": "FRED",
+      "series_id": "CES0500000003",
+      "cadence": "monthly",
+      "units": "USD per hour",
+      "preferred_scoring_transformation": "mom_sa_pct",
+      "sa": true,
+      "source_urls": [
+        "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+        "https://www.bls.gov/news.release/empsit.htm"
+      ],
+      "original_authority_url": "https://www.bls.gov/news.release/empsit.htm",
+      "retrieval_method": "fredgraph.csv",
+      "methodology_breaks": [],
+      "observations": [
+        {
+          "reference_period": "2025-08",
+          "value": 36.62,
+          "units": "USD per hour",
+          "transformation": "USD per hour",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "CES0500000003",
+          "notes": "Pre-window level for m/m and y/y transforms.",
+          "calibration_lookback": true
+        },
+        {
+          "reference_period": "2025-09",
+          "value": 36.7,
+          "units": "USD per hour",
+          "transformation": "index_level",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "CES0500000003"
+        },
+        {
+          "reference_period": "2025-09",
+          "value": 0.21846,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "CES0500000003",
+          "raw_level": 36.7,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2025-09",
+          "value": 3.848331,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "CES0500000003",
+          "raw_level": 36.7,
+          "notes": "Computed from official levels 12 months apart."
+        },
+        {
+          "reference_period": "2025-10",
+          "value": 36.85,
+          "units": "USD per hour",
+          "transformation": "index_level",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "CES0500000003"
+        },
+        {
+          "reference_period": "2025-10",
+          "value": 0.408719,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "CES0500000003",
+          "raw_level": 36.85,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2025-10",
+          "value": 3.91991,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "CES0500000003",
+          "raw_level": 36.85,
+          "notes": "Computed from official levels 12 months apart."
+        },
+        {
+          "reference_period": "2025-11",
+          "value": 37.0,
+          "units": "USD per hour",
+          "transformation": "index_level",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "CES0500000003"
+        },
+        {
+          "reference_period": "2025-11",
+          "value": 0.407056,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "CES0500000003",
+          "raw_level": 37.0,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2025-11",
+          "value": 3.932584,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "CES0500000003",
+          "raw_level": 37.0,
+          "notes": "Computed from official levels 12 months apart."
+        },
+        {
+          "reference_period": "2025-12",
+          "value": 37.02,
+          "units": "USD per hour",
+          "transformation": "index_level",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "CES0500000003"
+        },
+        {
+          "reference_period": "2025-12",
+          "value": 0.054054,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "CES0500000003",
+          "raw_level": 37.02,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2025-12",
+          "value": 3.726534,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "CES0500000003",
+          "raw_level": 37.02,
+          "notes": "Computed from official levels 12 months apart."
+        },
+        {
+          "reference_period": "2026-01",
+          "value": 37.15,
+          "units": "USD per hour",
+          "transformation": "index_level",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "CES0500000003"
+        },
+        {
+          "reference_period": "2026-01",
+          "value": 0.351162,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "CES0500000003",
+          "raw_level": 37.15,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-01",
+          "value": 3.655134,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "CES0500000003",
+          "raw_level": 37.15,
+          "notes": "Computed from official levels 12 months apart."
+        },
+        {
+          "reference_period": "2026-02",
+          "value": 37.27,
+          "units": "USD per hour",
+          "transformation": "index_level",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "CES0500000003"
+        },
+        {
+          "reference_period": "2026-02",
+          "value": 0.323015,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "CES0500000003",
+          "raw_level": 37.27,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-02",
+          "value": 3.700612,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "CES0500000003",
+          "raw_level": 37.27,
+          "notes": "Computed from official levels 12 months apart."
+        },
+        {
+          "reference_period": "2026-03",
+          "value": 37.35,
+          "units": "USD per hour",
+          "transformation": "index_level",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "CES0500000003"
+        },
+        {
+          "reference_period": "2026-03",
+          "value": 0.21465,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "CES0500000003",
+          "raw_level": 37.35,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-03",
+          "value": 3.433952,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "CES0500000003",
+          "raw_level": 37.35,
+          "notes": "Computed from official levels 12 months apart."
+        },
+        {
+          "reference_period": "2026-04",
+          "value": 37.41,
+          "units": "USD per hour",
+          "transformation": "index_level",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "CES0500000003"
+        },
+        {
+          "reference_period": "2026-04",
+          "value": 0.160643,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "CES0500000003",
+          "raw_level": 37.41,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-04",
+          "value": 3.571429,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "CES0500000003",
+          "raw_level": 37.41,
+          "notes": "Computed from official levels 12 months apart."
+        },
+        {
+          "reference_period": "2026-05",
+          "value": 37.49,
+          "units": "USD per hour",
+          "transformation": "index_level",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "CES0500000003"
+        },
+        {
+          "reference_period": "2026-05",
+          "value": 0.213847,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "CES0500000003",
+          "raw_level": 37.49,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-05",
+          "value": 3.335171,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "CES0500000003",
+          "raw_level": 37.49,
+          "notes": "Computed from official levels 12 months apart."
+        },
+        {
+          "reference_period": "2026-06",
+          "value": 37.59,
+          "units": "USD per hour",
+          "transformation": "index_level",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "CES0500000003"
+        },
+        {
+          "reference_period": "2026-06",
+          "value": 0.266738,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "CES0500000003",
+          "raw_level": 37.59,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-06",
+          "value": 3.382838,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "CES0500000003",
+          "raw_level": 37.59,
+          "notes": "Computed from official levels 12 months apart."
+        },
+        {
+          "reference_period": "2026-07",
+          "value": 37.65,
+          "units": "USD per hour",
+          "transformation": "index_level",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "CES0500000003"
+        },
+        {
+          "reference_period": "2026-07",
+          "value": 0.159617,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "CES0500000003",
+          "raw_level": 37.65,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-07",
+          "value": 3.235536,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "CES0500000003",
+          "raw_level": 37.65,
+          "notes": "Computed from official levels 12 months apart."
+        },
+        {
+          "reference_period": "2026-08",
+          "value": 37.75,
+          "units": "USD per hour",
+          "transformation": "index_level",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "CES0500000003"
+        },
+        {
+          "reference_period": "2026-08",
+          "value": 0.265604,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "CES0500000003",
+          "raw_level": 37.75,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-08",
+          "value": 3.085745,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "CES0500000003",
+          "raw_level": 37.75,
+          "notes": "Computed from official levels 12 months apart."
+        }
+      ],
+      "gaps": [
+        {
+          "expected_period": "2026-09",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+            "https://www.bls.gov/news.release/empsit.htm"
+          ],
+          "as_of": "2026-09-21"
+        }
+      ],
+      "coverage": {
+        "expected_periods_in_window": 13,
+        "observed_periods_in_window": 12,
+        "latest_reference_period": "2026-08",
+        "latest_release_date": null,
+        "status": "ok"
+      }
+    },
+    "Labor.payrolls": {
+      "dimension": "Labor",
+      "component": "payrolls",
+      "canonical_name": "All Employees, Total Nonfarm",
+      "publisher": "BLS",
+      "distributor": "FRED",
+      "series_id": "PAYEMS",
+      "cadence": "monthly",
+      "units": "thousands",
+      "preferred_scoring_transformation": "mm_change_thousands_sa",
+      "sa": true,
+      "source_urls": [
+        "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PAYEMS",
+        "https://www.bls.gov/news.release/empsit.htm"
+      ],
+      "original_authority_url": "https://www.bls.gov/news.release/empsit.htm",
+      "retrieval_method": "fredgraph.csv",
+      "methodology_breaks": [],
+      "observations": [
+        {
+          "reference_period": "2025-08",
+          "value": 158472.0,
+          "units": "thousands",
+          "transformation": "thousands_sa",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PAYEMS",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PAYEMS",
+          "calibration_lookback": true
+        },
+        {
+          "reference_period": "2025-09",
+          "value": 158548.0,
+          "units": "thousands",
+          "transformation": "thousands_sa",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PAYEMS",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PAYEMS"
+        },
+        {
+          "reference_period": "2025-09",
+          "value": 76.0,
+          "units": "thousands",
+          "transformation": "mm_change_thousands_sa",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PAYEMS",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PAYEMS",
+          "raw_level": 158548.0,
+          "notes": "Month-over-month change in nonfarm payroll employment level."
+        },
+        {
+          "reference_period": "2025-10",
+          "value": 158408.0,
+          "units": "thousands",
+          "transformation": "thousands_sa",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PAYEMS",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PAYEMS"
+        },
+        {
+          "reference_period": "2025-10",
+          "value": -140.0,
+          "units": "thousands",
+          "transformation": "mm_change_thousands_sa",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PAYEMS",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PAYEMS",
+          "raw_level": 158408.0,
+          "notes": "Month-over-month change in nonfarm payroll employment level."
+        },
+        {
+          "reference_period": "2025-11",
+          "value": 158449.0,
+          "units": "thousands",
+          "transformation": "thousands_sa",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PAYEMS",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PAYEMS"
+        },
+        {
+          "reference_period": "2025-11",
+          "value": 41.0,
+          "units": "thousands",
+          "transformation": "mm_change_thousands_sa",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PAYEMS",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PAYEMS",
+          "raw_level": 158449.0,
+          "notes": "Month-over-month change in nonfarm payroll employment level."
+        },
+        {
+          "reference_period": "2025-12",
+          "value": 158432.0,
+          "units": "thousands",
+          "transformation": "thousands_sa",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PAYEMS",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PAYEMS"
+        },
+        {
+          "reference_period": "2025-12",
+          "value": -17.0,
+          "units": "thousands",
+          "transformation": "mm_change_thousands_sa",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PAYEMS",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PAYEMS",
+          "raw_level": 158432.0,
+          "notes": "Month-over-month change in nonfarm payroll employment level."
+        },
+        {
+          "reference_period": "2026-01",
+          "value": 158592.0,
+          "units": "thousands",
+          "transformation": "thousands_sa",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PAYEMS",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PAYEMS"
+        },
+        {
+          "reference_period": "2026-01",
+          "value": 160.0,
+          "units": "thousands",
+          "transformation": "mm_change_thousands_sa",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PAYEMS",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PAYEMS",
+          "raw_level": 158592.0,
+          "notes": "Month-over-month change in nonfarm payroll employment level."
+        },
+        {
+          "reference_period": "2026-02",
+          "value": 158436.0,
+          "units": "thousands",
+          "transformation": "thousands_sa",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PAYEMS",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PAYEMS"
+        },
+        {
+          "reference_period": "2026-02",
+          "value": -156.0,
+          "units": "thousands",
+          "transformation": "mm_change_thousands_sa",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PAYEMS",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PAYEMS",
+          "raw_level": 158436.0,
+          "notes": "Month-over-month change in nonfarm payroll employment level."
+        },
+        {
+          "reference_period": "2026-03",
+          "value": 158650.0,
+          "units": "thousands",
+          "transformation": "thousands_sa",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PAYEMS",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PAYEMS"
+        },
+        {
+          "reference_period": "2026-03",
+          "value": 214.0,
+          "units": "thousands",
+          "transformation": "mm_change_thousands_sa",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PAYEMS",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PAYEMS",
+          "raw_level": 158650.0,
+          "notes": "Month-over-month change in nonfarm payroll employment level."
+        },
+        {
+          "reference_period": "2026-04",
+          "value": 158798.0,
+          "units": "thousands",
+          "transformation": "thousands_sa",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PAYEMS",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PAYEMS"
+        },
+        {
+          "reference_period": "2026-04",
+          "value": 148.0,
+          "units": "thousands",
+          "transformation": "mm_change_thousands_sa",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PAYEMS",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PAYEMS",
+          "raw_level": 158798.0,
+          "notes": "Month-over-month change in nonfarm payroll employment level."
+        },
+        {
+          "reference_period": "2026-05",
+          "value": 158861.0,
+          "units": "thousands",
+          "transformation": "thousands_sa",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PAYEMS",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PAYEMS"
+        },
+        {
+          "reference_period": "2026-05",
+          "value": 63.0,
+          "units": "thousands",
+          "transformation": "mm_change_thousands_sa",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PAYEMS",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PAYEMS",
+          "raw_level": 158861.0,
+          "notes": "Month-over-month change in nonfarm payroll employment level."
+        },
+        {
+          "reference_period": "2026-06",
+          "value": 158892.0,
+          "units": "thousands",
+          "transformation": "thousands_sa",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PAYEMS",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PAYEMS"
+        },
+        {
+          "reference_period": "2026-06",
+          "value": 31.0,
+          "units": "thousands",
+          "transformation": "mm_change_thousands_sa",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PAYEMS",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PAYEMS",
+          "raw_level": 158892.0,
+          "notes": "Month-over-month change in nonfarm payroll employment level."
+        },
+        {
+          "reference_period": "2026-07",
+          "value": 158913.0,
+          "units": "thousands",
+          "transformation": "thousands_sa",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PAYEMS",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PAYEMS"
+        },
+        {
+          "reference_period": "2026-07",
+          "value": 21.0,
+          "units": "thousands",
+          "transformation": "mm_change_thousands_sa",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PAYEMS",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PAYEMS",
+          "raw_level": 158913.0,
+          "notes": "Month-over-month change in nonfarm payroll employment level."
+        },
+        {
+          "reference_period": "2026-08",
+          "value": 159075.0,
+          "units": "thousands",
+          "transformation": "thousands_sa",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PAYEMS",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PAYEMS"
+        },
+        {
+          "reference_period": "2026-08",
+          "value": 162.0,
+          "units": "thousands",
+          "transformation": "mm_change_thousands_sa",
+          "publisher": "BLS",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PAYEMS",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PAYEMS",
+          "raw_level": 159075.0,
+          "notes": "Month-over-month change in nonfarm payroll employment level."
+        }
+      ],
+      "gaps": [
+        {
+          "expected_period": "2026-09",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PAYEMS"
+          ],
+          "as_of": "2026-09-21"
+        }
+      ],
+      "coverage": {
+        "expected_periods_in_window": 13,
+        "observed_periods_in_window": 12,
+        "latest_reference_period": "2026-08",
+        "latest_release_date": null,
+        "status": "ok"
+      }
+    },
+    "Activity.gdp_domestic_demand": {
+      "dimension": "Activity",
+      "component": "gdp_domestic_demand",
+      "canonical_name": "Real Gross Domestic Product, Percent Change from Preceding Period, Seasonally Adjusted Annual Rate",
+      "publisher": "BEA",
+      "distributor": "FRED",
+      "series_id": "A191RL1Q225SBEA",
+      "cadence": "quarterly",
+      "units": "percent",
+      "preferred_scoring_transformation": "saar_pct",
+      "sa": true,
+      "source_urls": [
+        "https://fred.stlouisfed.org/graph/fredgraph.csv?id=A191RL1Q225SBEA",
+        "https://www.bea.gov/data/gdp/gross-domestic-product"
+      ],
+      "original_authority_url": "https://www.bea.gov/data/gdp/gross-domestic-product",
+      "retrieval_method": "fredgraph.csv",
+      "methodology_breaks": [],
+      "observations": [
+        {
+          "reference_period": "2025-Q3",
+          "value": 4.4,
+          "units": "percent",
+          "transformation": "saar_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=A191RL1Q225SBEA",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "A191RL1Q225SBEA",
+          "calibration_lookback": true
+        },
+        {
+          "reference_period": "2025-Q4",
+          "value": 0.5,
+          "units": "percent",
+          "transformation": "saar_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=A191RL1Q225SBEA",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "A191RL1Q225SBEA"
+        },
+        {
+          "reference_period": "2026-Q1",
+          "value": 2.1,
+          "units": "percent",
+          "transformation": "saar_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=A191RL1Q225SBEA",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "A191RL1Q225SBEA"
+        },
+        {
+          "reference_period": "2026-Q2",
+          "value": 1.5,
+          "units": "percent",
+          "transformation": "saar_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=A191RL1Q225SBEA",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "A191RL1Q225SBEA"
+        }
+      ],
+      "gaps": [
+        {
+          "expected_period": "2026-Q3",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=A191RL1Q225SBEA",
+            "https://www.bea.gov/data/gdp/gross-domestic-product"
+          ],
+          "as_of": "2026-09-21"
+        }
+      ],
+      "coverage": {
+        "expected_periods_in_window": 4,
+        "observed_periods_in_window": 3,
+        "latest_reference_period": "2026-Q2",
+        "latest_release_date": null,
+        "status": "partial"
+      },
+      "notes": "Series is total real GDP SAAR percent change (BEA/FRED A191RL1Q225SBEA) as domestic-demand proxy per registry."
+    },
+    "Activity.manufacturing_surveys": {
+      "dimension": "Activity",
+      "component": "manufacturing_surveys",
+      "canonical_name": "ISM Manufacturing PMI",
+      "publisher": "ISM",
+      "distributor": null,
+      "series_id": "NAPM",
+      "cadence": "monthly",
+      "units": "diffusion_index",
+      "preferred_scoring_transformation": "diffusion_index",
+      "sa": false,
+      "source_urls": [
+        "https://www.ismworld.org/supply-management-news-and-reports/reports/ism-pmi-reports/pmi/"
+      ],
+      "original_authority_url": "https://www.ismworld.org/supply-management-news-and-reports/reports/ism-pmi-reports/pmi/",
+      "retrieval_method": "ism_prnewswire_press_releases",
+      "methodology_breaks": [
+        {
+          "note": "Historical monthly values harvested from ISM press releases on PR Newswire (official distribution); not FRED NAPM/NMFBAI."
+        }
+      ],
+      "observations": [
+        {
+          "reference_period": "2025-09",
+          "value": 49.1,
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "publisher": "ISM",
+          "source_url": "https://www.prnewswire.com/news-releases/manufacturing-pmi-at-49-1-september-2025-ism-manufacturing-pmi-report-302571530.html",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T16:30:00Z",
+          "revision_status": "unknown",
+          "series_id": "NAPM",
+          "notes": "Headline ISM PMI from official ISM press release (PR Newswire distribution)."
+        },
+        {
+          "reference_period": "2025-10",
+          "value": 48.7,
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "publisher": "ISM",
+          "source_url": "https://www.prnewswire.com/news-releases/manufacturing-pmi-at-48-7-october-2025-ism-manufacturing-pmi-report-302601422.html",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T16:30:00Z",
+          "revision_status": "unknown",
+          "series_id": "NAPM",
+          "notes": "Headline ISM PMI from official ISM press release (PR Newswire distribution)."
+        },
+        {
+          "reference_period": "2025-11",
+          "value": 48.2,
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "publisher": "ISM",
+          "source_url": "https://www.prnewswire.com/news-releases/manufacturing-pmi-at-48-2-november-2025-ism-manufacturing-pmi-report-302626979.html",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T16:30:00Z",
+          "revision_status": "unknown",
+          "series_id": "NAPM",
+          "notes": "Headline ISM PMI from official ISM press release (PR Newswire distribution)."
+        },
+        {
+          "reference_period": "2025-12",
+          "value": 47.9,
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "publisher": "ISM",
+          "source_url": "https://www.prnewswire.com/news-releases/manufacturing-pmi-at-47-9-december-2025-ism-manufacturing-pmi-report-302649307.html",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T16:30:00Z",
+          "revision_status": "unknown",
+          "series_id": "NAPM",
+          "notes": "Headline ISM PMI from official ISM press release (PR Newswire distribution)."
+        },
+        {
+          "reference_period": "2026-01",
+          "value": 52.6,
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "publisher": "ISM",
+          "source_url": "https://www.prnewswire.com/news-releases/manufacturing-pmi-at-52-6-january-2026-ism-manufacturing-pmi-report-302675443.html",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T16:30:00Z",
+          "revision_status": "unknown",
+          "series_id": "NAPM",
+          "notes": "Headline ISM PMI from official ISM press release (PR Newswire distribution)."
+        },
+        {
+          "reference_period": "2026-02",
+          "value": 52.4,
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "publisher": "ISM",
+          "source_url": "https://www.prnewswire.com/news-releases/manufacturing-pmi-at-52-4-february-2026-ism-manufacturing-pmi-report-302699883.html",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T16:30:00Z",
+          "revision_status": "unknown",
+          "series_id": "NAPM",
+          "notes": "Headline ISM PMI from official ISM press release (PR Newswire distribution)."
+        },
+        {
+          "reference_period": "2026-03",
+          "value": 52.7,
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "publisher": "ISM",
+          "source_url": "https://www.prnewswire.com/news-releases/manufacturing-pmi-at-52-7-march-2026-ism-manufacturing-pmi-report-302730721.html",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T16:30:00Z",
+          "revision_status": "unknown",
+          "series_id": "NAPM",
+          "notes": "Headline ISM PMI from official ISM press release (PR Newswire distribution)."
+        },
+        {
+          "reference_period": "2026-04",
+          "value": 52.7,
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "publisher": "ISM",
+          "source_url": "https://www.prnewswire.com/news-releases/manufacturing-pmi-at-52-7-april-2026-ism-manufacturing-pmi-report-302759226.html",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T16:30:00Z",
+          "revision_status": "unknown",
+          "series_id": "NAPM",
+          "notes": "Headline ISM PMI from official ISM press release (PR Newswire distribution)."
+        },
+        {
+          "reference_period": "2026-05",
+          "value": 54.0,
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "publisher": "ISM",
+          "source_url": "https://www.prnewswire.com/news-releases/manufacturing-pmi-at-54-may-2026-ism-manufacturing-pmi-report-302786165.html",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T16:30:00Z",
+          "revision_status": "unknown",
+          "series_id": "NAPM",
+          "notes": "Headline ISM PMI from official ISM press release (PR Newswire distribution)."
+        },
+        {
+          "reference_period": "2026-06",
+          "value": 53.3,
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "publisher": "ISM",
+          "source_url": "https://www.prnewswire.com/news-releases/manufacturing-pmi-at-53-3-june-2026-ism-manufacturing-pmi-report-302814991.html",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T16:30:00Z",
+          "revision_status": "unknown",
+          "series_id": "NAPM",
+          "notes": "Headline ISM PMI from official ISM press release (PR Newswire distribution)."
+        },
+        {
+          "reference_period": "2026-07",
+          "value": 55.6,
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "publisher": "ISM",
+          "source_url": "https://www.prnewswire.com/news-releases/manufacturing-pmi-at-55-6-july-2026-ism-manufacturing-pmi-report-302840669.html",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T16:30:00Z",
+          "revision_status": "unknown",
+          "series_id": "NAPM",
+          "notes": "Headline ISM PMI from official ISM press release (PR Newswire distribution)."
+        },
+        {
+          "reference_period": "2026-08",
+          "value": 54.6,
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "publisher": "ISM",
+          "source_url": "https://www.prnewswire.com/news-releases/manufacturing-pmi-at-54-6-august-2026-ism-manufacturing-pmi-report-302865127.html",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T16:30:00Z",
+          "revision_status": "unknown",
+          "series_id": "NAPM",
+          "notes": "Headline ISM PMI from official ISM press release (PR Newswire distribution)."
+        }
+      ],
+      "gaps": [
+        {
+          "expected_period": "2026-09",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://www.prnewswire.com/news/institute-for-supply-management/"
+          ],
+          "as_of": "2026-09-21"
+        }
+      ],
+      "coverage": {
+        "expected_periods_in_window": 13,
+        "observed_periods_in_window": 12,
+        "latest_reference_period": "2026-08",
+        "latest_release_date": null,
+        "status": "partial"
+      }
+    },
+    "Activity.services_surveys": {
+      "dimension": "Activity",
+      "component": "services_surveys",
+      "canonical_name": "ISM Services PMI",
+      "publisher": "ISM",
+      "distributor": null,
+      "series_id": "NMFBAI",
+      "cadence": "monthly",
+      "units": "diffusion_index",
+      "preferred_scoring_transformation": "diffusion_index",
+      "sa": false,
+      "source_urls": [
+        "https://www.ismworld.org/supply-management-news-and-reports/reports/ism-pmi-reports/services/"
+      ],
+      "original_authority_url": "https://www.ismworld.org/supply-management-news-and-reports/reports/ism-pmi-reports/services/",
+      "retrieval_method": "ism_prnewswire_press_releases",
+      "methodology_breaks": [
+        {
+          "note": "Historical monthly values harvested from ISM press releases on PR Newswire (official distribution); not FRED NAPM/NMFBAI."
+        }
+      ],
+      "observations": [
+        {
+          "reference_period": "2025-09",
+          "value": 50.0,
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "publisher": "ISM",
+          "source_url": "https://www.prnewswire.com/news-releases/services-pmi-at-50-september-2025-ism-services-pmi-report-302574151.html",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T16:30:00Z",
+          "revision_status": "unknown",
+          "series_id": "NMFBAI",
+          "notes": "Headline ISM PMI from official ISM press release (PR Newswire distribution)."
+        },
+        {
+          "reference_period": "2025-10",
+          "value": 52.4,
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "publisher": "ISM",
+          "source_url": "https://www.prnewswire.com/news-releases/services-pmi-at-52-4-october-2025-ism-services-pmi-report-302604583.html",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T16:30:00Z",
+          "revision_status": "unknown",
+          "series_id": "NMFBAI",
+          "notes": "Headline ISM PMI from official ISM press release (PR Newswire distribution)."
+        },
+        {
+          "reference_period": "2025-11",
+          "value": 52.6,
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "publisher": "ISM",
+          "source_url": "https://www.prnewswire.com/news-releases/services-pmi-at-52-6-november-2025-ism-services-pmi-report-302630958.html",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T16:30:00Z",
+          "revision_status": "unknown",
+          "series_id": "NMFBAI",
+          "notes": "Headline ISM PMI from official ISM press release (PR Newswire distribution)."
+        },
+        {
+          "reference_period": "2025-12",
+          "value": 54.4,
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "publisher": "ISM",
+          "source_url": "https://www.prnewswire.com/news-releases/services-pmi-at-54-4-december-2025-ism-services-pmi-report-302654304.html",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T16:30:00Z",
+          "revision_status": "unknown",
+          "series_id": "NMFBAI",
+          "notes": "Headline ISM PMI from official ISM press release (PR Newswire distribution)."
+        },
+        {
+          "reference_period": "2026-01",
+          "value": 53.8,
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "publisher": "ISM",
+          "source_url": "https://www.prnewswire.com/news-releases/services-pmi-at-53-8-january-2026-ism-services-pmi-report-302678227.html",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T16:30:00Z",
+          "revision_status": "unknown",
+          "series_id": "NMFBAI",
+          "notes": "Headline ISM PMI from official ISM press release (PR Newswire distribution)."
+        },
+        {
+          "reference_period": "2026-02",
+          "value": 56.1,
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "publisher": "ISM",
+          "source_url": "https://www.prnewswire.com/news-releases/services-pmi-at-56-1-february-2026-ism-services-pmi-report-302702978.html",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T16:30:00Z",
+          "revision_status": "unknown",
+          "series_id": "NMFBAI",
+          "notes": "Headline ISM PMI from official ISM press release (PR Newswire distribution)."
+        },
+        {
+          "reference_period": "2026-03",
+          "value": 54.0,
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "publisher": "ISM",
+          "source_url": "https://www.prnewswire.com/news-releases/services-pmi-at-54-march-2026-ism-services-pmi-report-302734026.html",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T16:30:00Z",
+          "revision_status": "unknown",
+          "series_id": "NMFBAI",
+          "notes": "Headline ISM PMI from official ISM press release (PR Newswire distribution)."
+        },
+        {
+          "reference_period": "2026-04",
+          "value": 53.6,
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "publisher": "ISM",
+          "source_url": "https://www.prnewswire.com/news-releases/services-pmi-at-53-6-april-2026-ism-services-pmi-report-302761674.html",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T16:30:00Z",
+          "revision_status": "unknown",
+          "series_id": "NMFBAI",
+          "notes": "Headline ISM PMI from official ISM press release (PR Newswire distribution)."
+        },
+        {
+          "reference_period": "2026-05",
+          "value": 54.5,
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "publisher": "ISM",
+          "source_url": "https://www.prnewswire.com/news-releases/services-pmi-at-54-5-may-2026-ism-services-pmi-report-302789082.html",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T16:30:00Z",
+          "revision_status": "unknown",
+          "series_id": "NMFBAI",
+          "notes": "Headline ISM PMI from official ISM press release (PR Newswire distribution)."
+        },
+        {
+          "reference_period": "2026-06",
+          "value": 54.0,
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "publisher": "ISM",
+          "source_url": "https://www.prnewswire.com/news-releases/services-pmi-at-54-june-2026-ism-services-pmi-report-302817275.html",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T16:30:00Z",
+          "revision_status": "unknown",
+          "series_id": "NMFBAI",
+          "notes": "Headline ISM PMI from official ISM press release (PR Newswire distribution)."
+        },
+        {
+          "reference_period": "2026-07",
+          "value": 54.1,
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "publisher": "ISM",
+          "source_url": "https://www.prnewswire.com/news-releases/services-pmi-at-54-1-july-2026-ism-services-pmi-report-302843134.html",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T16:30:00Z",
+          "revision_status": "unknown",
+          "series_id": "NMFBAI",
+          "notes": "Headline ISM PMI from official ISM press release (PR Newswire distribution)."
+        },
+        {
+          "reference_period": "2026-08",
+          "value": 55.4,
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "publisher": "ISM",
+          "source_url": "https://www.prnewswire.com/news-releases/services-pmi-at-55-4-august-2026-ism-services-pmi-report-302868046.html",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T16:30:00Z",
+          "revision_status": "unknown",
+          "series_id": "NMFBAI",
+          "notes": "Headline ISM PMI from official ISM press release (PR Newswire distribution)."
+        }
+      ],
+      "gaps": [
+        {
+          "expected_period": "2026-09",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://www.prnewswire.com/news/institute-for-supply-management/"
+          ],
+          "as_of": "2026-09-21"
+        }
+      ],
+      "coverage": {
+        "expected_periods_in_window": 13,
+        "observed_periods_in_window": 12,
+        "latest_reference_period": "2026-08",
+        "latest_release_date": null,
+        "status": "partial"
+      }
+    },
+    "Consumer.retail": {
+      "dimension": "Consumer",
+      "component": "retail",
+      "canonical_name": "Advance Retail Sales: Retail Trade and Food Services, Total",
+      "publisher": "U.S. Census Bureau",
+      "distributor": "FRED",
+      "series_id": "RSAFS",
+      "cadence": "monthly",
+      "units": "millions USD SA",
+      "preferred_scoring_transformation": "mom_sa_pct",
+      "sa": true,
+      "source_urls": [
+        "https://fred.stlouisfed.org/graph/fredgraph.csv?id=RSAFS",
+        "https://www.census.gov/retail/sales.html"
+      ],
+      "original_authority_url": "https://www.census.gov/retail/sales.html",
+      "retrieval_method": "fredgraph.csv",
+      "methodology_breaks": [],
+      "observations": [
+        {
+          "reference_period": "2025-09",
+          "value": 0.295191,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "U.S. Census Bureau",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=RSAFS",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "RSAFS",
+          "raw_level": 732192.0,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2025-10",
+          "value": -0.155833,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "U.S. Census Bureau",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=RSAFS",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "RSAFS",
+          "raw_level": 731051.0,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2025-11",
+          "value": 0.501607,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "U.S. Census Bureau",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=RSAFS",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "RSAFS",
+          "raw_level": 734718.0,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2025-12",
+          "value": -0.000136,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "U.S. Census Bureau",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=RSAFS",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "RSAFS",
+          "raw_level": 734717.0,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-01",
+          "value": -0.029127,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "U.S. Census Bureau",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=RSAFS",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "RSAFS",
+          "raw_level": 734503.0,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-02",
+          "value": 0.922392,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "U.S. Census Bureau",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=RSAFS",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "RSAFS",
+          "raw_level": 741278.0,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-03",
+          "value": 1.717979,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "U.S. Census Bureau",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=RSAFS",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "RSAFS",
+          "raw_level": 754013.0,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-04",
+          "value": 0.674259,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "U.S. Census Bureau",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=RSAFS",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "RSAFS",
+          "raw_level": 759097.0,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-05",
+          "value": 0.934663,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "U.S. Census Bureau",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=RSAFS",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "RSAFS",
+          "raw_level": 766192.0,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-06",
+          "value": 0.312585,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "U.S. Census Bureau",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=RSAFS",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "RSAFS",
+          "raw_level": 768587.0,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-07",
+          "value": -0.536699,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "U.S. Census Bureau",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=RSAFS",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "RSAFS",
+          "raw_level": 764462.0,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-08",
+          "value": 1.240742,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "U.S. Census Bureau",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=RSAFS",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "RSAFS",
+          "raw_level": 773947.0,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        }
+      ],
+      "gaps": [
+        {
+          "expected_period": "2026-09",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=RSAFS",
+            "https://www.census.gov/retail/sales.html"
+          ],
+          "as_of": "2026-09-21"
+        }
+      ],
+      "coverage": {
+        "expected_periods_in_window": 13,
+        "observed_periods_in_window": 12,
+        "latest_reference_period": "2026-08",
+        "latest_release_date": null,
+        "status": "ok"
+      }
+    },
+    "Consumer.income": {
+      "dimension": "Consumer",
+      "component": "income",
+      "canonical_name": "Disposable Personal Income",
+      "publisher": "BEA",
+      "distributor": "FRED",
+      "series_id": "DSPI",
+      "cadence": "monthly",
+      "units": "billions USD SA",
+      "preferred_scoring_transformation": "mom_sa_pct",
+      "sa": true,
+      "source_urls": [
+        "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DSPI",
+        "https://www.bea.gov/data/income-saving/personal-income"
+      ],
+      "original_authority_url": "https://www.bea.gov/data/income-saving/personal-income",
+      "retrieval_method": "fredgraph.csv",
+      "methodology_breaks": [],
+      "observations": [
+        {
+          "reference_period": "2025-09",
+          "value": 0.35899,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DSPI",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "DSPI",
+          "raw_level": 23091.6,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2025-10",
+          "value": -0.124721,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DSPI",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "DSPI",
+          "raw_level": 23062.8,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2025-11",
+          "value": 0.208127,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DSPI",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "DSPI",
+          "raw_level": 23110.8,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2025-12",
+          "value": 0.238417,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DSPI",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "DSPI",
+          "raw_level": 23165.9,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-01",
+          "value": 0.992839,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DSPI",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "DSPI",
+          "raw_level": 23395.9,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-02",
+          "value": -0.057702,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DSPI",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "DSPI",
+          "raw_level": 23382.4,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-03",
+          "value": 0.54742,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DSPI",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "DSPI",
+          "raw_level": 23510.4,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-04",
+          "value": 0.008082,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DSPI",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "DSPI",
+          "raw_level": 23512.3,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-05",
+          "value": 0.722175,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DSPI",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "DSPI",
+          "raw_level": 23682.1,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-06",
+          "value": 0.211552,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DSPI",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "DSPI",
+          "raw_level": 23732.2,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-07",
+          "value": 0.530503,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DSPI",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "DSPI",
+          "raw_level": 23858.1,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        }
+      ],
+      "gaps": [
+        {
+          "expected_period": "2026-08",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DSPI",
+            "https://www.bea.gov/data/income-saving/personal-income"
+          ],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2026-09",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DSPI",
+            "https://www.bea.gov/data/income-saving/personal-income"
+          ],
+          "as_of": "2026-09-21"
+        }
+      ],
+      "coverage": {
+        "expected_periods_in_window": 13,
+        "observed_periods_in_window": 11,
+        "latest_reference_period": "2026-07",
+        "latest_release_date": null,
+        "status": "partial"
+      }
+    },
+    "Consumer.spending": {
+      "dimension": "Consumer",
+      "component": "spending",
+      "canonical_name": "Real Personal Consumption Expenditures",
+      "publisher": "BEA",
+      "distributor": "FRED",
+      "series_id": "PCEC96",
+      "cadence": "monthly",
+      "units": "billions chained 2017 USD SA",
+      "preferred_scoring_transformation": "mom_sa_pct",
+      "sa": true,
+      "source_urls": [
+        "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEC96",
+        "https://www.bea.gov/data/consumer-spending/main"
+      ],
+      "original_authority_url": "https://www.bea.gov/data/consumer-spending/main",
+      "retrieval_method": "fredgraph.csv",
+      "methodology_breaks": [],
+      "observations": [
+        {
+          "reference_period": "2025-09",
+          "value": 0.111474,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEC96",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEC96",
+          "raw_level": 16614.3,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2025-10",
+          "value": 0.210662,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEC96",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEC96",
+          "raw_level": 16649.3,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2025-11",
+          "value": 0.098503,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEC96",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEC96",
+          "raw_level": 16665.7,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2025-12",
+          "value": 0.090005,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEC96",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEC96",
+          "raw_level": 16680.7,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-01",
+          "value": -0.193037,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEC96",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEC96",
+          "raw_level": 16648.5,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-02",
+          "value": 0.216836,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEC96",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEC96",
+          "raw_level": 16684.6,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-03",
+          "value": 0.272707,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEC96",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEC96",
+          "raw_level": 16730.1,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-04",
+          "value": 0.19964,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEC96",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEC96",
+          "raw_level": 16763.5,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-05",
+          "value": 0.369851,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEC96",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEC96",
+          "raw_level": 16825.5,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-06",
+          "value": 0.44278,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEC96",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEC96",
+          "raw_level": 16900.0,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-07",
+          "value": 0.007692,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEC96",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "PCEC96",
+          "raw_level": 16901.3,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        }
+      ],
+      "gaps": [
+        {
+          "expected_period": "2026-08",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEC96",
+            "https://www.bea.gov/data/consumer-spending/main"
+          ],
+          "as_of": "2026-09-21"
+        },
+        {
+          "expected_period": "2026-09",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEC96",
+            "https://www.bea.gov/data/consumer-spending/main"
+          ],
+          "as_of": "2026-09-21"
+        }
+      ],
+      "coverage": {
+        "expected_periods_in_window": 13,
+        "observed_periods_in_window": 11,
+        "latest_reference_period": "2026-07",
+        "latest_release_date": null,
+        "status": "partial"
+      }
+    },
+    "Consumer.confidence": {
+      "dimension": "Consumer",
+      "component": "confidence",
+      "canonical_name": "University of Michigan Consumer Sentiment",
+      "publisher": "University of Michigan Surveys of Consumers",
+      "distributor": "FRED",
+      "series_id": "UMCSENT",
+      "cadence": "monthly",
+      "units": "index",
+      "preferred_scoring_transformation": "index_level",
+      "sa": true,
+      "source_urls": [
+        "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UMCSENT",
+        "https://www.sca.isr.umich.edu/"
+      ],
+      "original_authority_url": "https://www.sca.isr.umich.edu/",
+      "retrieval_method": "fredgraph.csv",
+      "methodology_breaks": [],
+      "observations": [
+        {
+          "reference_period": "2025-08",
+          "value": 58.2,
+          "units": "index",
+          "transformation": "index_level",
+          "publisher": "University of Michigan Surveys of Consumers",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UMCSENT",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "UMCSENT",
+          "notes": "Pre-window level for m/m and y/y transforms.",
+          "calibration_lookback": true
+        },
+        {
+          "reference_period": "2025-09",
+          "value": 55.1,
+          "units": "index",
+          "transformation": "index_level",
+          "publisher": "University of Michigan Surveys of Consumers",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UMCSENT",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "UMCSENT"
+        },
+        {
+          "reference_period": "2025-09",
+          "value": -5.32646,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "University of Michigan Surveys of Consumers",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UMCSENT",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "UMCSENT",
+          "raw_level": 55.1,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2025-10",
+          "value": 53.6,
+          "units": "index",
+          "transformation": "index_level",
+          "publisher": "University of Michigan Surveys of Consumers",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UMCSENT",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "UMCSENT"
+        },
+        {
+          "reference_period": "2025-10",
+          "value": -2.722323,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "University of Michigan Surveys of Consumers",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UMCSENT",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "UMCSENT",
+          "raw_level": 53.6,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2025-11",
+          "value": 51.0,
+          "units": "index",
+          "transformation": "index_level",
+          "publisher": "University of Michigan Surveys of Consumers",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UMCSENT",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "UMCSENT"
+        },
+        {
+          "reference_period": "2025-11",
+          "value": -4.850746,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "University of Michigan Surveys of Consumers",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UMCSENT",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "UMCSENT",
+          "raw_level": 51.0,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2025-12",
+          "value": 52.9,
+          "units": "index",
+          "transformation": "index_level",
+          "publisher": "University of Michigan Surveys of Consumers",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UMCSENT",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "UMCSENT"
+        },
+        {
+          "reference_period": "2025-12",
+          "value": 3.72549,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "University of Michigan Surveys of Consumers",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UMCSENT",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "UMCSENT",
+          "raw_level": 52.9,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-01",
+          "value": 56.4,
+          "units": "index",
+          "transformation": "index_level",
+          "publisher": "University of Michigan Surveys of Consumers",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UMCSENT",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "UMCSENT"
+        },
+        {
+          "reference_period": "2026-01",
+          "value": 6.616257,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "University of Michigan Surveys of Consumers",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UMCSENT",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "UMCSENT",
+          "raw_level": 56.4,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-02",
+          "value": 56.6,
+          "units": "index",
+          "transformation": "index_level",
+          "publisher": "University of Michigan Surveys of Consumers",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UMCSENT",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "UMCSENT"
+        },
+        {
+          "reference_period": "2026-02",
+          "value": 0.35461,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "University of Michigan Surveys of Consumers",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UMCSENT",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "UMCSENT",
+          "raw_level": 56.6,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-03",
+          "value": 53.3,
+          "units": "index",
+          "transformation": "index_level",
+          "publisher": "University of Michigan Surveys of Consumers",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UMCSENT",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "UMCSENT"
+        },
+        {
+          "reference_period": "2026-03",
+          "value": -5.830389,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "University of Michigan Surveys of Consumers",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UMCSENT",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "UMCSENT",
+          "raw_level": 53.3,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-04",
+          "value": 49.8,
+          "units": "index",
+          "transformation": "index_level",
+          "publisher": "University of Michigan Surveys of Consumers",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UMCSENT",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "UMCSENT"
+        },
+        {
+          "reference_period": "2026-04",
+          "value": -6.566604,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "University of Michigan Surveys of Consumers",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UMCSENT",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "UMCSENT",
+          "raw_level": 49.8,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-05",
+          "value": 44.8,
+          "units": "index",
+          "transformation": "index_level",
+          "publisher": "University of Michigan Surveys of Consumers",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UMCSENT",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "UMCSENT"
+        },
+        {
+          "reference_period": "2026-05",
+          "value": -10.040161,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "University of Michigan Surveys of Consumers",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UMCSENT",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "UMCSENT",
+          "raw_level": 44.8,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-06",
+          "value": 49.5,
+          "units": "index",
+          "transformation": "index_level",
+          "publisher": "University of Michigan Surveys of Consumers",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UMCSENT",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "UMCSENT"
+        },
+        {
+          "reference_period": "2026-06",
+          "value": 10.491071,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "University of Michigan Surveys of Consumers",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UMCSENT",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "UMCSENT",
+          "raw_level": 49.5,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        },
+        {
+          "reference_period": "2026-07",
+          "value": 55.2,
+          "units": "index",
+          "transformation": "index_level",
+          "publisher": "University of Michigan Surveys of Consumers",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UMCSENT",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "UMCSENT"
+        },
+        {
+          "reference_period": "2026-07",
+          "value": 11.515152,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "University of Michigan Surveys of Consumers",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UMCSENT",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "revision_status": "unknown",
+          "series_id": "UMCSENT",
+          "raw_level": 55.2,
+          "notes": "Computed from official SA levels as simple m/m percent change."
+        }
+      ],
+      "gaps": [
+        {
+          "expected_period": "2025-09",
+          "reason": "proprietary no free history",
+          "attempted_sources": [
+            "https://www.conference-board.org/topics/consumer-confidence",
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CONCCONF",
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CSCICP03USM665S"
+          ],
+          "as_of": "2026-09-21",
+          "series_id": "CONCCONF"
+        },
+        {
+          "expected_period": "2025-10",
+          "reason": "proprietary no free history",
+          "attempted_sources": [
+            "https://www.conference-board.org/topics/consumer-confidence",
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CONCCONF",
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CSCICP03USM665S"
+          ],
+          "as_of": "2026-09-21",
+          "series_id": "CONCCONF"
+        },
+        {
+          "expected_period": "2025-11",
+          "reason": "proprietary no free history",
+          "attempted_sources": [
+            "https://www.conference-board.org/topics/consumer-confidence",
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CONCCONF",
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CSCICP03USM665S"
+          ],
+          "as_of": "2026-09-21",
+          "series_id": "CONCCONF"
+        },
+        {
+          "expected_period": "2025-12",
+          "reason": "proprietary no free history",
+          "attempted_sources": [
+            "https://www.conference-board.org/topics/consumer-confidence",
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CONCCONF",
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CSCICP03USM665S"
+          ],
+          "as_of": "2026-09-21",
+          "series_id": "CONCCONF"
+        },
+        {
+          "expected_period": "2026-01",
+          "reason": "proprietary no free history",
+          "attempted_sources": [
+            "https://www.conference-board.org/topics/consumer-confidence",
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CONCCONF",
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CSCICP03USM665S"
+          ],
+          "as_of": "2026-09-21",
+          "series_id": "CONCCONF"
+        },
+        {
+          "expected_period": "2026-02",
+          "reason": "proprietary no free history",
+          "attempted_sources": [
+            "https://www.conference-board.org/topics/consumer-confidence",
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CONCCONF",
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CSCICP03USM665S"
+          ],
+          "as_of": "2026-09-21",
+          "series_id": "CONCCONF"
+        },
+        {
+          "expected_period": "2026-03",
+          "reason": "proprietary no free history",
+          "attempted_sources": [
+            "https://www.conference-board.org/topics/consumer-confidence",
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CONCCONF",
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CSCICP03USM665S"
+          ],
+          "as_of": "2026-09-21",
+          "series_id": "CONCCONF"
+        },
+        {
+          "expected_period": "2026-04",
+          "reason": "proprietary no free history",
+          "attempted_sources": [
+            "https://www.conference-board.org/topics/consumer-confidence",
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CONCCONF",
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CSCICP03USM665S"
+          ],
+          "as_of": "2026-09-21",
+          "series_id": "CONCCONF"
+        },
+        {
+          "expected_period": "2026-05",
+          "reason": "proprietary no free history",
+          "attempted_sources": [
+            "https://www.conference-board.org/topics/consumer-confidence",
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CONCCONF",
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CSCICP03USM665S"
+          ],
+          "as_of": "2026-09-21",
+          "series_id": "CONCCONF"
+        },
+        {
+          "expected_period": "2026-06",
+          "reason": "proprietary no free history",
+          "attempted_sources": [
+            "https://www.conference-board.org/topics/consumer-confidence",
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CONCCONF",
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CSCICP03USM665S"
+          ],
+          "as_of": "2026-09-21",
+          "series_id": "CONCCONF"
+        },
+        {
+          "expected_period": "2026-07",
+          "reason": "proprietary no free history",
+          "attempted_sources": [
+            "https://www.conference-board.org/topics/consumer-confidence",
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CONCCONF",
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CSCICP03USM665S"
+          ],
+          "as_of": "2026-09-21",
+          "series_id": "CONCCONF"
+        },
+        {
+          "expected_period": "2026-08",
+          "reason": "proprietary no free history",
+          "attempted_sources": [
+            "https://www.conference-board.org/topics/consumer-confidence",
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CONCCONF",
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CSCICP03USM665S"
+          ],
+          "as_of": "2026-09-21",
+          "series_id": "CONCCONF"
+        },
+        {
+          "expected_period": "2026-08",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UMCSENT",
+            "https://www.sca.isr.umich.edu/"
+          ],
+          "as_of": "2026-09-21",
+          "series_id": "UMCSENT"
+        },
+        {
+          "expected_period": "2026-09",
+          "reason": "proprietary no free history",
+          "attempted_sources": [
+            "https://www.conference-board.org/topics/consumer-confidence",
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CONCCONF",
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CSCICP03USM665S"
+          ],
+          "as_of": "2026-09-21",
+          "series_id": "CONCCONF"
+        },
+        {
+          "expected_period": "2026-09",
+          "reason": "not yet released",
+          "attempted_sources": [
+            "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UMCSENT",
+            "https://www.sca.isr.umich.edu/"
+          ],
+          "as_of": "2026-09-21",
+          "series_id": "UMCSENT"
+        }
+      ],
+      "coverage": {
+        "expected_periods_in_window": 13,
+        "observed_periods_in_window": 11,
+        "latest_reference_period": "2026-07",
+        "latest_release_date": null,
+        "status": "partial"
+      },
+      "notes": "UMCSENT via FRED; CONCCONF graph CSV unavailable (404); OECD CSCICP03USM665S last observation 2024-01. Do not average series. Live ledger cites Conference Board and Michigan Sep-2026 preliminary not present in this FRED vintage."
+    }
+  }
+}
