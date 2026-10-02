@@ -1,12 +1,14 @@
-"""Explicit git persistence boundary for Market Watch freeze commits."""
+"""Explicit git persistence boundaries for Market Watch freeze and finalization commits."""
 
 from __future__ import annotations
 
 import argparse
+import json
 import subprocess
 import sys
 from pathlib import Path
 
+from scripts.country_registry import history_files
 from scripts.overnight.constants import ROOT
 
 ACP_ALLOWLIST: tuple[str, ...] = (
@@ -19,6 +21,24 @@ ACP_ALLOWLIST: tuple[str, ...] = (
 )
 
 STUB_ALLOWLIST: tuple[str, ...] = ("data/market_watch_launches",)
+
+# Stage 07 writes the launch record, assembled overnight dataset, PM packets,
+# trading memory touched by assembly, and the canonical temperature history and
+# scores promoted from the accepted lineage. score_paths.json is the derived
+# chart the Pages temperature gate compares against those histories.
+def finalization_persist_allowlist() -> tuple[str, ...]:
+    histories = tuple(
+        f"data/temperature_history/{filename}" for filename in history_files().values()
+    )
+    return (
+        "data/market_watch_launches",
+        "data/overnight",
+        "data/pm",
+        "data/trading",
+        "data/temperature_scores.json",
+        *histories,
+        "data/temperature_history/score_paths.json",
+    )
 
 
 def freeze_persist_allowlist(provider: str) -> tuple[str, ...]:
@@ -130,29 +150,50 @@ def stage_allowlisted_paths(allowlist: tuple[str, ...], *, repo_root: Path) -> b
     )
 
 
-def stage_freeze_artifacts(provider: str, *, repo_root: Path | None = None) -> int:
-    root = Path(repo_root or ROOT)
-    allowlist = freeze_persist_allowlist(provider)
+def refresh_promoted_score_paths(repo_root: Path) -> bool:
+    """Rewrite score_paths.json from the canonical histories already on disk.
 
-    before = porcelain_paths(root)
+    Promotion copies staged histories and scores. The Pages temperature gate
+    recomputes score paths from those histories and rejects a stale chart.
+    Calibration is read and not rewritten. Returns True when the file changes.
+    """
+    from scripts.temperature_level import build_paths, load_calibration, load_history
+
+    root = Path(repo_root)
+    history_dir = root / "data" / "temperature_history"
+    calibration_path = root / "data" / "temperature_calibration.json"
+    paths_path = history_dir / "score_paths.json"
+    calibration = load_calibration(calibration_path)
+    histories = load_history(history_dir)
+    document = build_paths(calibration, histories)
+    text = json.dumps(document, indent=2) + "\n"
+    if paths_path.is_file() and paths_path.read_text(encoding="utf-8") == text:
+        return False
+    paths_path.parent.mkdir(parents=True, exist_ok=True)
+    paths_path.write_text(text, encoding="utf-8")
+    return True
+
+
+def _stage_boundary(allowlist: tuple[str, ...], *, repo_root: Path, label: str) -> int:
+    before = porcelain_paths(repo_root)
     bad = unexpected_paths(before, allowlist)
     if bad:
-        print("unexpected paths outside freeze persistence boundary:", file=sys.stderr)
+        print(f"unexpected paths outside {label} persistence boundary:", file=sys.stderr)
         for path in bad:
             print(path, file=sys.stderr)
         return 1
 
     try:
-        has_staged = stage_allowlisted_paths(allowlist, repo_root=root)
+        has_staged = stage_allowlisted_paths(allowlist, repo_root=repo_root)
     except RuntimeError as exc:
         print(str(exc), file=sys.stderr)
         return 1
 
     if not has_staged:
-        print("no launch artifacts to commit")
+        print(f"no {label} artifacts to commit")
         return 0
 
-    leftover = has_unstaged_or_untracked(root)
+    leftover = has_unstaged_or_untracked(repo_root)
     if leftover:
         print("unstaged or untracked paths remain after staging:", file=sys.stderr)
         for path in leftover:
@@ -161,9 +202,39 @@ def stage_freeze_artifacts(provider: str, *, repo_root: Path | None = None) -> i
     return 0
 
 
+def stage_freeze_artifacts(provider: str, *, repo_root: Path | None = None) -> int:
+    root = Path(repo_root or ROOT)
+    allowlist = freeze_persist_allowlist(provider)
+    return _stage_boundary(allowlist, repo_root=root, label="freeze")
+
+
+def stage_finalization_artifacts(
+    *,
+    repo_root: Path | None = None,
+    refresh_score_paths: bool = False,
+) -> int:
+    root = Path(repo_root or ROOT)
+    if refresh_score_paths:
+        refresh_promoted_score_paths(root)
+    return _stage_boundary(finalization_persist_allowlist(), repo_root=root, label="finalization")
+
+
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Stage Market Watch freeze artifacts within an allowlist.")
-    parser.add_argument("--provider", required=True, help="Launch provider (acp or stub).")
+    parser = argparse.ArgumentParser(
+        description="Stage Market Watch freeze or finalization artifacts within an allowlist."
+    )
+    parser.add_argument(
+        "--boundary",
+        choices=("freeze", "finalization"),
+        default="freeze",
+        help="Persistence boundary to enforce (default: freeze).",
+    )
+    parser.add_argument("--provider", default=None, help="Launch provider (required for freeze).")
+    parser.add_argument(
+        "--refresh-score-paths",
+        action="store_true",
+        help="Rewrite data/temperature_history/score_paths.json from canonical histories before staging.",
+    )
     parser.add_argument(
         "--repo-root",
         type=Path,
@@ -171,7 +242,18 @@ def main(argv: list[str] | None = None) -> int:
         help="Repository root (default: overnight ROOT).",
     )
     args = parser.parse_args(argv)
-    return stage_freeze_artifacts(args.provider, repo_root=args.repo_root)
+    if args.boundary == "freeze":
+        if args.refresh_score_paths:
+            print("--refresh-score-paths is only valid for the finalization boundary", file=sys.stderr)
+            return 1
+        if not args.provider:
+            print("--provider is required for the freeze boundary", file=sys.stderr)
+            return 1
+        return stage_freeze_artifacts(args.provider, repo_root=args.repo_root)
+    return stage_finalization_artifacts(
+        repo_root=args.repo_root,
+        refresh_score_paths=args.refresh_score_paths,
+    )
 
 
 if __name__ == "__main__":

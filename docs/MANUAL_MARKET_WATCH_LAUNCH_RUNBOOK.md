@@ -114,3 +114,36 @@ PYTHONPATH=. python3 -m scripts.market_watch_launch.live_smoke
 ```
 
 The report lists each series status. HTTP 403 is recorded only when the primary source returns it.
+
+## Deterministic finalization recovery
+
+Use this when Stage 07 has already succeeded on the runner but the finalization commit never reached `main`. The October 2 failure was launch `mwl-20261002T094056Z-1d0ebea5`: acceptance committed `overnight-20261002`, then `git pull --rebase` stopped on unstaged canonical temperature history and scores. `data/overnight/latest.json` stayed on `overnight-20261001`, so Pages kept that previous dataset.
+
+The recovery replays stages 06 and 07 from the accepted inbox output. It does not call traders, PMs, learning models, or ACP. It does not rewrite `scheduled_output.json`. A second run is a no-op once `main` has stages 06 and 07 succeeded, `publication.may_publish` true, and `data/overnight/latest.json` pointing at the same run. The commit stages the launch record, overnight assembly, PM state, trading state, canonical temperature histories, `data/temperature_scores.json`, and the derived `data/temperature_history/score_paths.json`. Any other dirty path fails the commit. Pages stays a separate explicit dispatch.
+
+After this change is on `main`:
+
+```bash
+gh workflow run recover-accepted-finalization.yml --ref main \
+  -f launch_id=mwl-20261002T094056Z-1d0ebea5 \
+  -f run_id=overnight-20261002
+```
+
+Equivalent local command, from a clean checkout of that `main`, with permission to push:
+
+```bash
+git fetch origin main
+git checkout main
+git reset --hard origin/main
+LAUNCH_ID=mwl-20261002T094056Z-1d0ebea5 \
+RUN_ID=overnight-20261002 \
+  bash scripts/market_watch_launch/recover_accepted_finalization.sh
+git fetch origin main
+git show origin/main:data/overnight/latest.json
+```
+
+`latest.json` must name `overnight-20261002` and its `assembled_dataset` must exist on that commit. Then dispatch Pages once, still without rerunning models:
+
+```bash
+gh workflow run deploy-pages.yml --ref main
+```

@@ -1,0 +1,50 @@
+{
+  "asset_class": "rates_rv",
+  "closed_run_id": "overnight-20260922",
+  "events": [
+    {
+      "exit_reason_category": null,
+      "kind": "CLOSE"
+    }
+  ],
+  "exit_reason_category": null,
+  "initial_notional_usd": 70000000.0,
+  "instrument": "SOFR-CORRA_2Y_2027H1",
+  "owner_id": "value-guy",
+  "paper_expression": {
+    "legs": [
+      {
+        "asset_class": "rates",
+        "expression": {
+          "curve_id": "SOFR",
+          "expiries": [
+            "2027-03",
+            "2027-06"
+          ],
+          "type": "futures_strip_average"
+        },
+        "instrument": "SOFR_2027H1",
+        "weight": 1
+      },
+      {
+        "asset_class": "rates",
+        "expression": {
+          "curve_id": "CORRA",
+          "expiries": [
+            "2027-03",
+            "2027-06"
+          ],
+          "type": "futures_strip_average"
+        },
+        "instrument": "CORRA_2027H1",
+        "weight": -1
+      }
+    ],
+    "output_unit": "bps",
+    "type": "linear_combo"
+  },
+  "realized_pnl_usd": -56000.0,
+  "side": "long",
+  "status": "closed",
+  "trade_id": "trd-trader-value-guy-pos-cdde326460b4"
+}
