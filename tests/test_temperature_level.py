@@ -363,6 +363,79 @@ class TemperatureLevelFixtureTest(unittest.TestCase):
         self.assertEqual(res.level, second.level)
 
 
+def _month_span(start: str, end: str) -> list[str]:
+    year, month = int(start[:4]), int(start[5:7])
+    end_year, end_month = int(end[:4]), int(end[5:7])
+    periods: list[str] = []
+    while (year, month) <= (end_year, end_month):
+        periods.append(f"{year}-{month:02d}")
+        if month == 12:
+            year, month = year + 1, 1
+        else:
+            month += 1
+    return periods
+
+
+def _blank_temperature_histories(cal: dict) -> dict:
+    histories = {
+        country: {"country": country, "components": {}}
+        for country in temperature_countries()
+    }
+    for key, spec in cal["components"].items():
+        country = key.split(".", 1)[0]
+        histories[country]["components"].setdefault(spec["history_key"], {"observations": []})
+    return histories
+
+
+def _identity_jp_flow_calibration(cal: dict) -> dict:
+    """Copy of calibration that scores JP consumer flows on the latest print."""
+    identity = copy.deepcopy(cal)
+    for key in ("JP.Consumer.retail", "JP.Consumer.income", "JP.Consumer.spending"):
+        identity["components"][key]["level_scoring_transform"] = "identity"
+    return identity
+
+
+def _frozen_jp_fies_sawtooth_histories(cal: dict) -> dict:
+    """Anchor-flat JP consumer path with one income and spending collapse.
+
+    Retail stays at the 2.6 nominal anchor. Income and spending print -4.0 in
+    2026-07 only, then return to 2.6. Confidence stays at the 38.1
+    current-methodology mean. The observations are synthetic; they are not
+    read from production temperature history.
+    """
+    histories = _blank_temperature_histories(cal)
+    components = histories["JP"]["components"]
+    collapse_keys = {"JP.Consumer.income", "JP.Consumer.spending"}
+    flow_keys = ("JP.Consumer.retail", "JP.Consumer.income", "JP.Consumer.spending")
+    for period in _month_span("2025-09", "2026-09"):
+        for comp_key in flow_keys:
+            spec = cal["components"][comp_key]
+            value = -4.0 if comp_key in collapse_keys and period == "2026-07" else 2.6
+            components[spec["history_key"]]["observations"].append(
+                {
+                    "reference_period": period,
+                    "value": value,
+                    "transformation": spec["source_transformation"],
+                    "series_id": spec["series_id"],
+                }
+            )
+        confidence = cal["components"]["JP.Consumer.confidence"]
+        components[confidence["history_key"]]["observations"].append(
+            {
+                "reference_period": period,
+                "value": 38.1,
+                "transformation": confidence["source_transformation"],
+                "series_id": confidence["series_id"],
+            }
+        )
+    return histories
+
+
+def _jp_consumer_levels(paths: dict) -> list[float]:
+    series = paths["paths"]["JP"]["Consumer"]
+    return [float(row["level"]) for row in series]
+
+
 class JapanConsumerCalibrationTest(unittest.TestCase):
     """JP Consumer: 3-month LEVEL on monthly flows; identity IMPULSE; CCI SA mean 38.1."""
 
@@ -461,9 +534,16 @@ class JapanConsumerCalibrationTest(unittest.TestCase):
         self.assertNotAlmostEqual(res.level or 0, reverted.level or 0, places=1)
 
     def test_reconstructed_path_reduces_fies_sawtooth(self) -> None:
+        """Live history: smoothing stays off the FIES floor and is no jumpier than identity.
+
+        The reconstruction window and the off-clip / max-jump bounds are methodology
+        safety checks. The latest LEVEL is not pinned: production vintages move it.
+        Exact levels for a one-month FIES collapse live on frozen synthetic inputs.
+        """
         paths = build_paths(self.cal, self.histories)
         series = paths["paths"]["JP"]["Consumer"]
-        levels = [float(row["level"]) for row in series if row["level"] is not None]
+        self.assertTrue(all(row["level"] is not None for row in series))
+        levels = _jp_consumer_levels(paths)
         self.assertEqual([row["period"] for row in series], [
             "2025-09",
             "2025-10",
@@ -484,14 +564,66 @@ class JapanConsumerCalibrationTest(unittest.TestCase):
         self.assertLess(max(jumps), 12.0, f"JP Consumer still sawtoothing: {levels}")
         # Pre-repair path printed 26.1 / 26.25 from FIES floors; smoothed LEVEL stays off the clip.
         self.assertGreater(min(levels), 26.5)
-        latest = series[-1]
-        self.assertAlmostEqual(float(latest["level"]), 38.0, delta=1.0)
+        for level in levels:
+            self.assertGreaterEqual(level, 1.0)
+            self.assertLessEqual(level, 100.0)
+        identity_paths = build_paths(_identity_jp_flow_calibration(self.cal), self.histories)
+        identity_series = identity_paths["paths"]["JP"]["Consumer"]
+        self.assertEqual(
+            [row["period"] for row in identity_series],
+            [row["period"] for row in series],
+        )
+        self.assertTrue(all(row["level"] is not None for row in identity_series))
+        identity_levels = _jp_consumer_levels(identity_paths)
+        identity_jumps = [abs(b - a) for a, b in zip(identity_levels, identity_levels[1:])]
+        self.assertLessEqual(max(jumps), max(identity_jumps))
+        self.assertGreaterEqual(min(levels), min(identity_levels))
         jp_consumer_findings = [
             f
             for f in paths["pathology"]["findings"]
             if f.get("country") == "JP" and f.get("dimension") == "Consumer"
         ]
         self.assertEqual(jp_consumer_findings, [])
+
+    def test_frozen_fies_collapse_pins_smoothed_level(self) -> None:
+        """One frozen FIES collapse prints 36.25 smoothed, not the 25.5 identity floor."""
+        histories = _frozen_jp_fies_sawtooth_histories(self.cal)
+        paths = build_paths(self.cal, histories)
+        levels = _jp_consumer_levels(paths)
+        expected_smoothed = [50.0] * 10 + [36.25, 36.25, 36.25]
+        self.assertEqual(len(levels), len(expected_smoothed))
+        for actual, expected in zip(levels, expected_smoothed):
+            self.assertAlmostEqual(actual, expected, places=2)
+
+        identity_paths = build_paths(_identity_jp_flow_calibration(self.cal), histories)
+        identity_levels = _jp_consumer_levels(identity_paths)
+        expected_identity = [50.0] * 10 + [25.5, 50.0, 50.0]
+        self.assertEqual(len(identity_levels), len(expected_identity))
+        for actual, expected in zip(identity_levels, expected_identity):
+            self.assertAlmostEqual(actual, expected, places=2)
+
+        smoothed_jumps = [abs(b - a) for a, b in zip(levels, levels[1:])]
+        identity_jumps = [abs(b - a) for a, b in zip(identity_levels, identity_levels[1:])]
+        self.assertAlmostEqual(max(smoothed_jumps), 13.75, places=2)
+        self.assertAlmostEqual(max(identity_jumps), 24.5, places=2)
+        self.assertLess(max(smoothed_jumps), max(identity_jumps))
+        self.assertGreater(min(levels), 26.5)
+        self.assertLess(min(identity_levels), 26.5)
+
+        smoothed_findings = [
+            f
+            for f in paths["pathology"]["findings"]
+            if f.get("country") == "JP" and f.get("dimension") == "Consumer"
+        ]
+        identity_jumps_flagged = [
+            f
+            for f in identity_paths["pathology"]["findings"]
+            if f.get("country") == "JP"
+            and f.get("dimension") == "Consumer"
+            and f.get("kind") == "large_level_jump"
+        ]
+        self.assertEqual(smoothed_findings, [])
+        self.assertTrue(identity_jumps_flagged)
 
 
 if __name__ == "__main__":

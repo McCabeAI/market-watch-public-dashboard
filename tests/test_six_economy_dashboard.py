@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 import json
 import re
 import unittest
@@ -13,9 +14,87 @@ from scripts.apply_six_economy_dashboard import (
 )
 from scripts.apply_temperature_scores import apply_scores
 from scripts.dashboard_mini_cards import PLACEHOLDER_VALUES, mini_rows_for_country
+from scripts.temperature_level import period_sort_key
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE_V3 = Path(__file__).resolve().parent / "fixtures" / "temperature_scores_v3_minimal.json"
+_SOURCE_PERIOD = re.compile(r"^\d{4}-(?:0[1-9]|1[0-2]|Q[1-4])$")
+_ACTIVITY_SOURCE_PREFERENCE = (
+    ("business_surveys", "Business surveys", False),
+    ("gdp_domestic_demand", "Domestic demand", True),
+)
+_INFLATION_LABELS = {"EA": "HICP / core", "JP": "CPI / core"}
+
+
+def _frozen_mini_country(country: str) -> dict:
+    """Synthetic component state. Numbers are not a production vintage."""
+    return {
+        "countries": {
+            country: {
+                "Inflation": {
+                    "as_of": "2024-06",
+                    "component_state": {
+                        "headline": {
+                            "observed": True,
+                            "transform_value": 1.25,
+                            "as_of": "2024-06",
+                        },
+                        "underlying": {
+                            "observed": True,
+                            "transform_value": 4.5,
+                            "as_of": "2024-05",
+                        },
+                    },
+                },
+                "Labor": {
+                    "as_of": "2024-06",
+                    "component_state": {
+                        "unemployment": {
+                            "observed": True,
+                            "transform_value": 6,
+                            "as_of": "2024-06",
+                        }
+                    },
+                },
+                "Activity": {
+                    "as_of": "2024-Q2",
+                    "component_state": {
+                        "business_surveys": {
+                            "observed": True,
+                            "transform_value": 49.5,
+                            "as_of": "2024-06",
+                        },
+                        "gdp_domestic_demand": {
+                            "observed": True,
+                            "transform_value": 9.99,
+                            "as_of": "2024-Q2",
+                        },
+                    },
+                },
+            }
+        }
+    }
+
+
+def _current_activity_source(activity_state: dict) -> tuple[str, str, bool, dict]:
+    component_state = activity_state.get("component_state") or {}
+    for name, label, percent in _ACTIVITY_SOURCE_PREFERENCE:
+        component = component_state.get(name) or {}
+        if component.get("observed") and component.get("transform_value") is not None:
+            return name, label, percent, component
+    raise AssertionError("activity mini row has no observed current source")
+
+
+def _assert_displays_current_number(test: unittest.TestCase, text: str, value: float, *, percent: bool) -> None:
+    if percent:
+        test.assertTrue(text.endswith("%"), text)
+        test.assertNotIn(" / ", text)
+        displayed = float(text[:-1])
+    else:
+        test.assertFalse(text.endswith("%"), text)
+        displayed = float(text)
+    test.assertAlmostEqual(displayed, round(float(value), 4), places=4)
+    test.assertNotIn(text.strip(), PLACEHOLDER_VALUES)
 
 
 class _CdetailStackParser(HTMLParser):
@@ -183,16 +262,114 @@ class SixEconomyDashboardTest(unittest.TestCase):
         self.assertEqual(jp_rows["Unemployment"], "2.4%")
         self.assertEqual(jp_rows["Domestic demand"], "1.65%")
 
+    def test_mini_rows_mapping_frozen_synthetic(self) -> None:
+        """Exact mini-card strings come from frozen inputs, not the live vintage."""
+        for country, inflation_label in _INFLATION_LABELS.items():
+            rows = dict(mini_rows_for_country(_frozen_mini_country(country), country))
+            self.assertEqual(rows[inflation_label], "1.25% / 4.5%")
+            self.assertEqual(rows["Unemployment"], "6%")
+            self.assertEqual(rows["Business surveys"], "49.5")
+            self.assertNotIn("Domestic demand", rows)
+            self.assertNotIn("9.99", rows["Business surveys"])
+
+        fallback = _frozen_mini_country("EA")
+        surveys = fallback["countries"]["EA"]["Activity"]["component_state"]["business_surveys"]
+        surveys["observed"] = False
+        fallback_rows = dict(mini_rows_for_country(fallback, "EA"))
+        self.assertEqual(fallback_rows["Domestic demand"], "9.99%")
+        self.assertNotIn("Business surveys", fallback_rows)
+
+        missing = _frozen_mini_country("EA")
+        missing["countries"]["EA"]["Inflation"]["component_state"]["headline"]["observed"] = False
+        with self.assertRaises(ValueError):
+            mini_rows_for_country(missing, "EA")
+
     def test_mini_rows_mapping_live_state(self) -> None:
+        """Live EA/JP cards follow the current observed source, whatever the vintage prints."""
         from scripts.apply_temperature_scores import load_state
 
         state = load_state()
-        ea_rows = dict(mini_rows_for_country(state, "EA"))
-        self.assertEqual(ea_rows["HICP / core"], "3.2% / 2.4%")
-        self.assertEqual(ea_rows["Unemployment"], "6.4%")
-        jp_rows = dict(mini_rows_for_country(state, "JP"))
-        self.assertEqual(jp_rows["CPI / core"], "2% / 1.7%")
-        self.assertEqual(jp_rows["Unemployment"], "2.4%")
+        for country, inflation_label in _INFLATION_LABELS.items():
+            block = state["countries"][country]
+            rows = mini_rows_for_country(state, country)
+            self.assertEqual(len(rows), 3)
+            labels = [label for label, _ in rows]
+            values = dict(rows)
+
+            inflation = block["Inflation"]
+            headline = inflation["component_state"]["headline"]
+            underlying = inflation["component_state"]["underlying"]
+            self._assert_current_source(headline, inflation["as_of"], f"{country} headline")
+            self._assert_current_source(underlying, inflation["as_of"], f"{country} underlying")
+            left, right = values[inflation_label].split(" / ")
+            self.assertEqual(labels[0], inflation_label)
+            _assert_displays_current_number(self, left, headline["transform_value"], percent=True)
+            _assert_displays_current_number(self, right, underlying["transform_value"], percent=True)
+
+            labor = block["Labor"]
+            unemployment = labor["component_state"]["unemployment"]
+            self._assert_current_source(unemployment, labor["as_of"], f"{country} unemployment")
+            self.assertEqual(labels[1], "Unemployment")
+            _assert_displays_current_number(
+                self,
+                values["Unemployment"],
+                unemployment["transform_value"],
+                percent=True,
+            )
+
+            activity_name, activity_label, activity_percent, activity = _current_activity_source(
+                block["Activity"]
+            )
+            self._assert_current_source(activity, block["Activity"]["as_of"], f"{country} {activity_name}")
+            self.assertEqual(labels[2], activity_label)
+            _assert_displays_current_number(
+                self,
+                values[activity_label],
+                activity["transform_value"],
+                percent=activity_percent,
+            )
+            for value in values.values():
+                self.assertNotIn(value.strip(), PLACEHOLDER_VALUES)
+
+        ea_headline = state["countries"]["EA"]["Inflation"]["component_state"]["headline"]
+        sentinel = round(float(ea_headline["transform_value"]) + 10.0, 4)
+        probed = copy.deepcopy(state)
+        probed["countries"]["EA"]["Inflation"]["component_state"]["headline"]["transform_value"] = sentinel
+        probed_rows = dict(mini_rows_for_country(probed, "EA"))
+        live_rows = dict(mini_rows_for_country(state, "EA"))
+        self.assertNotEqual(probed_rows["HICP / core"], live_rows["HICP / core"])
+        probed_headline, _probed_underlying = probed_rows["HICP / core"].split(" / ")
+        _assert_displays_current_number(self, probed_headline, sentinel, percent=True)
+
+        activity_state = state["countries"]["EA"]["Activity"]["component_state"]
+        surveys = activity_state.get("business_surveys") or {}
+        gdp = activity_state.get("gdp_domestic_demand") or {}
+        if (
+            surveys.get("observed")
+            and surveys.get("transform_value") is not None
+            and gdp.get("observed")
+            and gdp.get("transform_value") is not None
+        ):
+            surveys_off = copy.deepcopy(state)
+            surveys_off["countries"]["EA"]["Activity"]["component_state"]["business_surveys"]["observed"] = False
+            fallback_rows = dict(mini_rows_for_country(surveys_off, "EA"))
+            self.assertIn("Domestic demand", fallback_rows)
+            self.assertNotIn("Business surveys", fallback_rows)
+            _assert_displays_current_number(
+                self,
+                fallback_rows["Domestic demand"],
+                gdp["transform_value"],
+                percent=True,
+            )
+
+    def _assert_current_source(self, component: dict, dimension_as_of: str, label: str) -> None:
+        self.assertTrue(component.get("observed"), label)
+        as_of = component.get("as_of")
+        self.assertIsInstance(as_of, str, label)
+        self.assertRegex(as_of, _SOURCE_PERIOD, label)
+        self.assertRegex(str(dimension_as_of), _SOURCE_PERIOD, label)
+        self.assertLessEqual(period_sort_key(as_of), period_sort_key(str(dimension_as_of)), label)
+        self.assertIsNotNone(component.get("transform_value"), label)
 
 
 if __name__ == "__main__":
