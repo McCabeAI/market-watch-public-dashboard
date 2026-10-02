@@ -70,14 +70,15 @@ def live_opener(
     *,
     timeout: float = DEFAULT_TIMEOUT_SECONDS,
     data: bytes | None = None,
+    content_type: str | None = None,
 ) -> dict[str, Any]:
     try:
         headers = {
             "User-Agent": _PUBLIC_BROWSER_USER_AGENT,
-            "Accept": "application/json,text/html,application/pdf,*/*",
+            "Accept": "application/json,text/xml,text/html,application/pdf,*/*",
         }
         if data is not None:
-            headers["Content-Type"] = "application/json"
+            headers["Content-Type"] = content_type or "application/json"
         request = Request(
             url,
             data=data,
@@ -215,7 +216,7 @@ def _classify_points(
         return "license_gap", [], payload.get("error") or "challenge_page", False
 
     override = payload.get("status")
-    if override in {"license_gap", "not_applicable", "source_failed"}:
+    if override in {"license_gap", "not_applicable", "source_failed", "due_missing"}:
         return override, [], payload.get("error"), False
 
     if not payload.get("ok"):

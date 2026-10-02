@@ -351,6 +351,11 @@ class TestMacroIngestionRunner(unittest.TestCase):
 
         register_adapter_override("US", fetch_series)
         spec = copy.deepcopy(next(r for r in self.catalog["series"] if r["id"] == "US.Labor.unemployment"))
+        spec["release_rule"] = {
+            "kind": "country_local_schedule_required",
+            "timezone": "America/New_York",
+            "dates": [],
+        }
         cat = self._mini_catalog(spec)
         result = run_ingestion(
             mode="offline",
