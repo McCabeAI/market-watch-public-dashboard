@@ -16,6 +16,7 @@ from scripts.market_watch_launch.contract import (
 from scripts.macro_source_health import carried_forward, source_health_entries
 from scripts.market_watch_launch.acquire import read_collect_families
 from scripts.market_watch_launch.ingest import load_ingestion_rows
+from scripts.run_state.policy import evaluate_policy
 _STAGE = "03_quality_gate"
 _BLOCKING_LEG_STATUSES = frozenset({"stale", "missing", "invalid", "unavailable"})
 _ZERO_WEIGHT_ROLES = frozenset({"context", "registry_unweighted", "explanatory_alias"})
@@ -346,6 +347,250 @@ def evaluate_gate(
     return base
 
 
+def _minimal_passing_market_families() -> dict[str, Any]:
+    return {
+        "macro_hard": {"status": "fresh", "notes": []},
+        "market_state": {
+            "status": "fresh",
+            "data": {
+                "rates": {code: {"status": "ok"} for code in COUNTRIES},
+                "fx": {"status": "ok"},
+            },
+        },
+    }
+
+
+def _gate_rows_from_states(states: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for state in states:
+        series_id = str(state.get("series_id") or "")
+        country = str(state.get("country") or (series_id.split(".", 1)[0] if "." in series_id else ""))
+        trade_critical = bool(state.get("trade_critical"))
+        if not trade_critical:
+            role = state.get("role")
+            weight = state.get("weight")
+            if role == "scored" and weight is not None:
+                try:
+                    trade_critical = float(weight) > 0
+                except (TypeError, ValueError):
+                    trade_critical = False
+        role = "scored" if trade_critical else str(state.get("role") or "context")
+        weight = state.get("weight")
+        if weight is None:
+            weight = 1.0 if trade_critical else 0.0
+        reason = state.get("carry_forward_reason")
+        row: dict[str, Any] = {
+            "series_id": series_id,
+            "country": country,
+            "role": role,
+            "weight": weight,
+        }
+        if reason == "overdue_unverified":
+            row.update({"status": "source_failed", "release_due": True})
+        elif reason == "old_after_failed_check":
+            row.update({"status": "source_failed", "release_due": False})
+        elif reason == "old_but_current":
+            row.update(
+                {
+                    "status": "checked_unchanged",
+                    "release_due": False,
+                    "observation_period": "2026-08",
+                }
+            )
+        elif reason == "unknown_calendar":
+            row.update({"status": "checked_unchanged", "release_due": False})
+        else:
+            row.update({"status": "checked_unchanged", "release_due": False, "observation_period": "2026-08"})
+        rows.append(row)
+    return rows
+
+
+def _overlay_state_country(state: dict[str, Any]) -> str | None:
+    country = state.get("country")
+    if isinstance(country, str) and country:
+        return country
+    series_id = state.get("series_id")
+    if isinstance(series_id, str) and "." in series_id:
+        return series_id.split(".", 1)[0]
+    return None
+
+
+def _overlay_trade_critical(state: dict[str, Any]) -> bool:
+    if "trade_critical" in state:
+        return bool(state["trade_critical"])
+    role = state.get("role")
+    weight = state.get("weight")
+    if role == "scored" and weight is not None:
+        try:
+            return float(weight) > 0
+        except (TypeError, ValueError):
+            return False
+    return False
+
+
+def _legacy_country_blocked(result: dict[str, Any], code: str) -> bool:
+    countries = result.get("countries")
+    if isinstance(countries, dict):
+        bucket = countries.get(code)
+        if isinstance(bucket, dict) and bucket.get("eligible") is False:
+            return True
+    for expr in result.get("blocked_expressions") or []:
+        if expr == f"macro:{code}":
+            return True
+    return False
+
+
+def _legacy_country_series_ids(result: dict[str, Any], code: str) -> set[str]:
+    ids: set[str] = set()
+    prefix = f"{code}."
+    for sid in result.get("blocked_sources") or []:
+        text = str(sid)
+        if text.startswith(prefix):
+            ids.add(text)
+    for sid in result.get("partial_series") or []:
+        text = str(sid)
+        if text.startswith(prefix):
+            ids.add(text)
+    countries = result.get("countries")
+    if isinstance(countries, dict):
+        bucket = countries.get(code)
+        if isinstance(bucket, dict):
+            for sid in bucket.get("gaps") or []:
+                ids.add(str(sid))
+    return ids
+
+
+def _policy_may_clear_legacy_block(
+    states: list[dict[str, Any]], code: str, legacy: dict[str, Any]
+) -> bool:
+    country_states = [
+        st for st in states if isinstance(st, dict) and _overlay_state_country(st) == code
+    ]
+    if not country_states:
+        return False
+    trade_critical_states = [st for st in country_states if _overlay_trade_critical(st)]
+    if any(st.get("carry_forward_reason") == "overdue_unverified" for st in trade_critical_states):
+        return False
+    tc_series_in_states = {
+        str(st.get("series_id"))
+        for st in trade_critical_states
+        if st.get("series_id")
+    }
+    legacy_series = _legacy_country_series_ids(legacy, code)
+    if legacy_series and not legacy_series.issubset(tc_series_in_states):
+        return False
+    if not legacy_series and not tc_series_in_states:
+        return False
+    return True
+
+
+def _apply_policy_overlay(
+    result: dict[str, Any], policy: dict[str, Any], states: list[dict[str, Any]]
+) -> dict[str, Any]:
+    out = dict(result)
+    legacy_outcome = out.get("outcome")
+    out["policy_version"] = policy["policy_version"]
+
+    states_by_country: dict[str, list[dict[str, Any]]] = {}
+    for st in states:
+        if not isinstance(st, dict):
+            continue
+        code = _overlay_state_country(st)
+        if code:
+            states_by_country.setdefault(code, []).append(st)
+
+    policy_blocks = list(policy.get("blocked_expressions") or [])
+    legacy_blocks = list(result.get("blocked_expressions") or [])
+    merged_blocks: list[str] = []
+    for expr in policy_blocks:
+        if expr not in merged_blocks:
+            merged_blocks.append(expr)
+    for expr in legacy_blocks:
+        if not isinstance(expr, str) or not expr.startswith("macro:"):
+            continue
+        code = expr.split(":", 1)[1]
+        if code not in states_by_country and expr not in merged_blocks:
+            merged_blocks.append(expr)
+
+    countries = out.get("countries")
+    if not isinstance(countries, dict):
+        countries = {}
+        out["countries"] = countries
+
+    policy_blocked_codes = {
+        expr.split(":", 1)[1]
+        for expr in policy_blocks
+        if isinstance(expr, str) and expr.startswith("macro:") and ":" in expr
+    }
+
+    trade_eligible: list[str] = []
+    for code in COUNTRIES:
+        bucket = countries.get(code)
+        if not isinstance(bucket, dict):
+            bucket = {}
+            countries[code] = bucket
+        policy_info = (policy.get("countries") or {}).get(code) or {}
+        policy_eligible = bool(policy_info.get("eligible"))
+        legacy_blocked = _legacy_country_blocked(result, code)
+
+        if code not in states_by_country:
+            if legacy_blocked:
+                eligible = False
+            else:
+                eligible = bool(bucket.get("eligible"))
+        elif code in policy_blocked_codes:
+            eligible = False
+        elif legacy_blocked and not _policy_may_clear_legacy_block(states, code, result):
+            eligible = False
+        else:
+            eligible = policy_eligible
+
+        bucket["eligible"] = eligible
+        if eligible:
+            trade_eligible.append(code)
+
+    for code in COUNTRIES:
+        if code not in states_by_country and _legacy_country_blocked(result, code):
+            expr = f"macro:{code}"
+            if expr not in merged_blocks:
+                merged_blocks.append(expr)
+        elif not countries.get(code, {}).get("eligible"):
+            expr = f"macro:{code}"
+            if expr not in merged_blocks:
+                merged_blocks.append(expr)
+
+    out["blocked_expressions"] = merged_blocks
+    out["trade_eligible_countries"] = trade_eligible
+
+    if legacy_outcome != "BLOCKED":
+        if trade_eligible:
+            out["eligible"] = True
+        if legacy_outcome == "PASS":
+            out["outcome"] = "PASS"
+        elif trade_eligible and not merged_blocks:
+            out["outcome"] = "PASS"
+    return out
+
+
+def evaluate_gate_canonical(
+    states: list[dict[str, Any]],
+    families: dict[str, Any] | None,
+    *,
+    cutoff_at: str | None = None,
+    freeze_cutoff: str | None = None,
+) -> dict[str, Any]:
+    packet = families if families is not None else _minimal_passing_market_families()
+    policy = evaluate_policy(states)
+    rows = _gate_rows_from_states(states)
+    result = evaluate_gate(rows=rows, families=packet)
+    result = _apply_policy_overlay(result, policy, states)
+    if cutoff_at is not None:
+        result["cutoff_at"] = cutoff_at
+    if freeze_cutoff is not None:
+        result["freeze_cutoff"] = freeze_cutoff
+    return result
+
+
 def apply_macro_overlay(families: dict[str, Any], rows: list[dict[str, Any]]) -> dict[str, Any]:
     """Overlay live rows using the same due-aware country logic as the quality gate."""
     out = copy.deepcopy(families)
@@ -376,9 +621,13 @@ def apply_macro_overlay(families: dict[str, Any], rows: list[dict[str, Any]]) ->
         carried = sorted({str(row.get("country")) for row in rows if carried_forward(row) and row.get("country")})
         if carried:
             macro["source_health_countries"] = carried
-            notes.append(
-                "source-health carry-forward (not-due, prior vintage kept): " + ", ".join(carried)
-            )
+            stale_set = set(stale_countries)
+            carried_not_stale = [code for code in carried if code not in stale_set]
+            if carried_not_stale:
+                notes.append(
+                    "source-health carry-forward (not-due, prior vintage kept): "
+                    + ", ".join(carried_not_stale)
+                )
 
     macro["notes"] = notes
     macro["source_health"] = source_health_entries(rows)
@@ -436,6 +685,23 @@ def run(launch: dict, ctx: dict) -> dict:
 
     rows = _annotate_source_health(rows, ctx)
     result = evaluate_gate(rows=rows, families=families)
+    series_run_states = ingest_details.get("series_run_states")
+    if isinstance(series_run_states, list) and series_run_states:
+        policy = evaluate_policy(series_run_states)
+        result = _apply_policy_overlay(result, policy, series_run_states)
+        if ingest_details.get("score_state_sha256"):
+            result["score_state_sha256"] = ingest_details["score_state_sha256"]
+        state_ids = sorted(
+            str(st["state_id"])
+            for st in series_run_states
+            if isinstance(st, dict) and st.get("state_id")
+        )
+        if state_ids:
+            result["state_ids"] = state_ids
+    if ctx.get("cutoff_at") is not None:
+        result["cutoff_at"] = ctx["cutoff_at"]
+    if ctx.get("freeze_cutoff") is not None:
+        result["freeze_cutoff"] = ctx["freeze_cutoff"]
     if result["outcome"] == "BLOCKED":
         return stage_receipt(
             _STAGE,

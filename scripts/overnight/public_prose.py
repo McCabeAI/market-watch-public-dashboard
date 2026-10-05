@@ -475,20 +475,30 @@ def room_data_caveat(trade_permissions: dict[str, Any] | None) -> str | None:
         for code, row in countries.items()
         if isinstance(row, dict) and row.get("eligible") is False
     )
+    blocked_set = set(blocked)
+    carried_not_blocked = sorted(code for code in carried if code not in blocked_set)
     parts: list[str] = []
-    if carried:
+    if carried_not_blocked:
         parts.append(
-            "Source checks for "
-            + ", ".join(carried)
-            + " did not refresh, so the latest verified vintages are carried forward; no new release was due."
+            "Latest verified vintages for "
+            + ", ".join(carried_not_blocked)
+            + " are carried forward; no new release was due."
         )
-    real_blocks = [code for code in blocked if code not in carried]
-    if real_blocks:
+    if blocked:
         parts.append(
             "New risk stays restricted in "
-            + ", ".join(real_blocks)
-            + " because a due release or required history could not be verified."
+            + ", ".join(blocked)
+            + " because a due release could not be verified."
         )
+    unknown = trade_permissions.get("unknown_calendar_countries")
+    if isinstance(unknown, list):
+        unknown_codes = sorted({str(code) for code in unknown if code})
+        if unknown_codes:
+            parts.append(
+                "The release calendar for "
+                + ", ".join(unknown_codes)
+                + " is unknown; a not-due claim is not allowed."
+            )
     if not parts:
         return None
     return " ".join(parts)
