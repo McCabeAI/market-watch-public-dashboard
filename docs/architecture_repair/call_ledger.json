@@ -199,5 +199,30 @@
     "total_provider_invocations": 15,
     "in_process_grok_reviews": ["N11", "N14", "N17"],
     "within_ceilings": true
+  },
+  "repair_execution": {
+    "issue": "https://github.com/McCabeAI/agent-control-plane/issues/224",
+    "starting_ref": "3a4ec335e0d1356586980337d373a9324e6ac16f",
+    "allowlist": ["grok-4.7", "composer-2.5"],
+    "provider_executions": 1,
+    "models_used": ["grok-4.7", "composer-2.5"],
+    "invocations": [
+      {
+        "id": "R1",
+        "model": "composer-2.5",
+        "role": "pages-recovery-hermetic-fixtures-and-one-score-freeze-sync",
+        "status": "completed",
+        "agent_id": "bc-a797e5f5-5489-5d8e-84b3-e7515cafa064",
+        "result": "Pinned Oct 2/Oct 5 recovery inputs. Synced freeze and acquire score copies. Launch shard 84 OK."
+      },
+      {
+        "id": "R2",
+        "model": "grok-4.7",
+        "role": "exact-head-review",
+        "status": "completed",
+        "result": "PASS. Zero unresolved critical/high. Parent review in this provider execution, not a second provider call. N17 does not approve this tree.",
+        "artifact": "docs/architecture_repair/PAGES_LINEAGE_REPAIR_APPROVAL.md"
+      }
+    ]
   }
 }

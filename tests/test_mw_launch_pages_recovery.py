@@ -28,6 +28,10 @@ NY = ZoneInfo("America/New_York")
 OCT2 = "mwl-20261002T094056Z-1d0ebea5"
 OCT5 = "mwl-20261005T091406Z-a512db27"
 HEAD_SHA = "ffec0735582a357277e2ffa6cfe571b29608c6dc"
+INDEX_COMMIT = "6ad0214922d677581d1c68aff24c19c86a264dc2"
+CANONICAL_OCT2_LAUNCH_SHA256 = (
+    "2735b7fd338f61df995f166ebc4fbd20f549c7193ea7235a43c2cd01bc2ba46b"
+)
 RUN_ID = "37036473785"
 RUN_URL = "https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/37036473785"
 REPOSITORY = "McCabeAI/market-watch-public-dashboard"
@@ -57,9 +61,9 @@ def _oct2_run(**overrides: object) -> dict:
     return payload
 
 
-def _ensure_deploy_commit() -> None:
+def _ensure_git_object(sha: str) -> None:
     probe = subprocess.run(
-        ["git", "cat-file", "-e", HEAD_SHA],
+        ["git", "cat-file", "-e", sha],
         cwd=ROOT,
         check=False,
         capture_output=True,
@@ -67,14 +71,41 @@ def _ensure_deploy_commit() -> None:
     if probe.returncode == 0:
         return
     fetched = subprocess.run(
-        ["git", "fetch", "--depth", "1", "origin", HEAD_SHA],
+        ["git", "fetch", "--depth", "1", "origin", sha],
         cwd=ROOT,
         check=False,
         capture_output=True,
         text=True,
     )
     if fetched.returncode != 0:
-        raise AssertionError(fetched.stderr or fetched.stdout or "deploy commit is not available")
+        raise AssertionError(fetched.stderr or fetched.stdout or f"git object {sha} is not available")
+
+
+def _ensure_deploy_commit() -> None:
+    _ensure_git_object(HEAD_SHA)
+
+
+def _git_object_bytes(sha: str, repo_path: str) -> bytes:
+    _ensure_git_object(sha)
+    return subprocess.check_output(["git", "show", f"{sha}:{repo_path}"], cwd=ROOT)
+
+
+def _materialize_pages_recovery_launch_state(state_root: Path) -> None:
+    """Seed isolated launch state from pinned commits, not the working tree."""
+    _ensure_deploy_commit()
+    _ensure_git_object(INDEX_COMMIT)
+    base = state_root / "data" / "market_watch_launches"
+    oct2_dir = base / OCT2
+    oct2_dir.mkdir(parents=True, exist_ok=True)
+    (oct2_dir / "launch.json").write_bytes(
+        _git_object_bytes(HEAD_SHA, f"data/market_watch_launches/{OCT2}/launch.json")
+    )
+    oct5_dir = base / OCT5
+    oct5_dir.mkdir(parents=True, exist_ok=True)
+    (oct5_dir / "launch.json").write_bytes(
+        _git_object_bytes(INDEX_COMMIT, f"data/market_watch_launches/{OCT5}/launch.json")
+    )
+    (base / "index.json").write_bytes(_git_object_bytes(INDEX_COMMIT, "data/market_watch_launches/index.json"))
 
 
 def _git(cwd: Path, *args: str, check: bool = True) -> subprocess.CompletedProcess[str]:
@@ -112,12 +143,7 @@ class Oct2PagesRecoveryTests(unittest.TestCase):
         self.tmp.cleanup()
 
     def _copy_launch_state(self) -> None:
-        source = ROOT / "data" / "market_watch_launches"
-        for launch_id in (OCT2, OCT5):
-            target = self.state_root / "data" / "market_watch_launches" / launch_id
-            target.mkdir(parents=True)
-            shutil.copy2(source / launch_id / "launch.json", target / "launch.json")
-        shutil.copy2(source / "index.json", self.state_root / "data" / "market_watch_launches" / "index.json")
+        _materialize_pages_recovery_launch_state(self.state_root)
 
     def _launch_path(self, launch_id: str) -> Path:
         return self.state_root / "data" / "market_watch_launches" / launch_id / "launch.json"
@@ -155,13 +181,12 @@ class Oct2PagesRecoveryTests(unittest.TestCase):
         )
 
     def test_deployed_tree_matches_the_canonical_oct2_launch(self) -> None:
-        deployed = subprocess.check_output(
-            ["git", "show", f"{HEAD_SHA}:data/market_watch_launches/{OCT2}/launch.json"],
-            cwd=ROOT,
-        )
-        current = (ROOT / "data" / "market_watch_launches" / OCT2 / "launch.json").read_bytes()
-        self.assertEqual(deployed, current)
-        payload = json.loads(current)
+        deployed = _git_object_bytes(HEAD_SHA, f"data/market_watch_launches/{OCT2}/launch.json")
+        fixture = self._launch_path(OCT2).read_bytes()
+        self.assertEqual(fixture, deployed)
+        canonical_path = ROOT / "data" / "market_watch_launches" / OCT2 / "launch.json"
+        self.assertEqual(_sha256_file(canonical_path), CANONICAL_OCT2_LAUNCH_SHA256)
+        payload = json.loads(fixture)
         self.assertEqual(payload["launch_id"], OCT2)
         self.assertEqual(payload["review_id"], "review-001")
         self.assertEqual(payload["base_packet_sha256"], PACKET)
@@ -341,15 +366,7 @@ class Oct2PagesRecoveryTests(unittest.TestCase):
 class PagesRecoveryCommitTests(unittest.TestCase):
     def _seed(self, tmp: Path) -> tuple[Path, str]:
         work = _init_remote_repo(tmp)
-        launches = work / "data" / "market_watch_launches"
-        for launch_id in (OCT2, OCT5):
-            target = launches / launch_id
-            target.mkdir(parents=True)
-            shutil.copy2(
-                ROOT / "data" / "market_watch_launches" / launch_id / "launch.json",
-                target / "launch.json",
-            )
-        shutil.copy2(ROOT / "data" / "market_watch_launches" / "index.json", launches / "index.json")
+        _materialize_pages_recovery_launch_state(work)
         sentinel = work / "data" / "overnight" / "books" / "latest.json"
         sentinel.parent.mkdir(parents=True)
         sentinel.write_text('{"do":"not-touch"}\n', encoding="utf-8")

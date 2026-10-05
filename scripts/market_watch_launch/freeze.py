@@ -120,7 +120,14 @@ def _write_collect_with_overlay(
 ) -> None:
     collect = store.read_artifact(run_id, "collect.json")
     families = apply_macro_overlay(collect.get("families") or {}, launch, launch_dir=launch_dir)
+    macro_hard = families.get("macro_hard") or {}
+    extra_scores = (macro_hard.get("extra") or {}).get("temperature_scores")
+    if isinstance(extra_scores, dict):
+        macro_hard = {**macro_hard, "temperature_scores": extra_scores}
+        families = {**families, "macro_hard": macro_hard}
     collect = {**collect, "families": families, "trade_permissions": _trade_permissions(launch)}
+    if isinstance(extra_scores, dict):
+        collect["temperature_scores"] = extra_scores
     store.write_artifact(run_id, "collect.json", collect)
 
 
@@ -131,6 +138,11 @@ def _overlay_delta_artifact(
         return
     delta = store.read_artifact(run_id, filename)
     families = apply_macro_overlay(delta.get("families") or {}, launch, launch_dir=launch_dir)
+    macro_hard = families.get("macro_hard") or {}
+    extra_scores = (macro_hard.get("extra") or {}).get("temperature_scores")
+    if isinstance(extra_scores, dict):
+        macro_hard = {**macro_hard, "temperature_scores": extra_scores}
+        families = {**families, "macro_hard": macro_hard}
     store.write_artifact(run_id, filename, {**delta, "families": families})
 
 

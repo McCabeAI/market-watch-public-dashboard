@@ -14,7 +14,8 @@ from zoneinfo import ZoneInfo
 
 from scripts.country_registry import history_files
 from scripts.market_watch_launch import contract
-from scripts.market_watch_launch.freeze import run as freeze_run
+from scripts.market_watch_launch.freeze import _verify_score_payload, run as freeze_run
+from scripts.run_state.replay import ScoreConflict
 from scripts.market_watch_launch.lineage import (
     CanonicalScorePromotionError,
     _write_bytes_atomic,
@@ -565,6 +566,95 @@ class LineageFreezeTests(unittest.TestCase):
             )
             self.assertEqual(receipt["details"].get("score_state_sha256"), lineage["score_state_sha256"])
             self.assertEqual(receipt["details"].get("provenance_sha256"), lineage["provenance_sha256"])
+
+    def test_verify_score_payload_rejects_unequal_copies(self) -> None:
+        staged = {"version": 3, "countries": {"US": {"tag": "staged"}}}
+        canonical = {"version": 3, "countries": {"US": {"tag": "canonical"}}}
+        conflicting = {
+            "temperature_scores": canonical,
+            "families": {"macro_hard": {"extra": {"temperature_scores": staged}}},
+        }
+        with self.assertRaises(ScoreConflict):
+            _verify_score_payload(conflicting)
+
+        aligned = {
+            "temperature_scores": staged,
+            "families": {"macro_hard": {"extra": {"temperature_scores": staged}}},
+        }
+        _verify_score_payload(aligned)
+
+    def test_freeze_stage_fails_on_unequal_score_copies_in_snapshot(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            state_root = Path(tmp)
+            launch_id = "mwl-lineage-freeze-conflict"
+            launch_dir = state_root / "market_watch_launch" / launch_id
+            launch_dir.mkdir(parents=True)
+
+            for stage in ("collect",):
+                run_stage(
+                    stage,
+                    root=ROOT,
+                    state_root=state_root,
+                    run_id=RUN_ID,
+                    when=AS_OF,
+                    dry_run=True,
+                    market_state_path=FIXTURE_MS,
+                )
+
+            launch = contract.empty_launch(
+                launch_id=launch_id,
+                session_date="2026-09-23",
+                created_at="2026-09-23T12:00:00Z",
+                request={"mode": "fixture", "provider": "stub", "publish_production": False},
+            )
+            launch["overnight_run_id"] = RUN_ID
+            launch["stages"]["03_quality_gate"] = {
+                **contract.empty_stage("03_quality_gate"),
+                "status": "succeeded",
+                "details": {"outcome": "PASS"},
+            }
+
+            ctx = {
+                "root": ROOT,
+                "state_root": state_root,
+                "overnight_store_root": state_root,
+                "launch_dir": launch_dir,
+                "when": AS_OF,
+                "publish_production": False,
+            }
+
+            store = OvernightStore(root=ROOT, state_root=state_root)
+            collect = store.read_artifact(RUN_ID, "collect.json")
+            macro = dict((collect.get("families") or {}).get("macro_hard") or {})
+            extra = dict(macro.get("extra") or {})
+            extra["temperature_scores"] = {"version": 3, "tag": "extra-copy"}
+            macro["extra"] = extra
+            families = {**(collect.get("families") or {}), "macro_hard": macro}
+            store.write_artifact(
+                RUN_ID,
+                "collect.json",
+                {**collect, "temperature_scores": {"version": 3, "tag": "top-copy"}, "families": families},
+            )
+
+            def _conflicting_snapshot(*args: object, **kwargs: object) -> dict:
+                return {
+                    "schema_version": 1,
+                    "type": "OVERNIGHT_EVIDENCE_SNAPSHOT",
+                    "overnight_run_id": RUN_ID,
+                    "review_id": "review-conflict",
+                    "as_of": "2026-09-23T08:00:00-04:00",
+                    "families": families,
+                    "temperature_scores": {"version": 3, "tag": "top-copy"},
+                    "packet_sha256": "0" * 64,
+                }
+
+            with mock.patch(
+                "scripts.market_watch_launch.freeze.freeze_snapshot",
+                side_effect=_conflicting_snapshot,
+            ):
+                receipt = freeze_run(launch, ctx)
+            self.assertEqual(receipt["status"], "failed")
+            self.assertIn("ScoreConflict", receipt.get("reason", ""))
 
 
 if __name__ == "__main__":

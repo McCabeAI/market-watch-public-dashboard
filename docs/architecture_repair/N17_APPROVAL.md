@@ -1,5 +1,7 @@
 # N17 exact-tree approval
 
+> This PASS approves only commit `3a4ec335e0d1356586980337d373a9324e6ac16f`. It does not approve the later Pages-recovery and freeze-score repair. That tree is covered by `docs/architecture_repair/PAGES_LINEAGE_REPAIR_APPROVAL.md`.
+
 - **Verdict:** PASS
 - **Reviewer:** parent Grok 4.7, in-process. A fresh `grok-4.7` subagent was denied by the repository hook (allowlist composer-2.5, grok-4.6, grok-4.5). This review is not an additional provider invocation. grok-4.6 was not used.
 - **Baseline:** `07d6406f2a360c57c52d7be034f3f2530daae7e9`
