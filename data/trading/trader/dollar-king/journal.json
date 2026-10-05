@@ -606,6 +606,62 @@
       "run_id": "overnight-20261002",
       "schema_version": 1,
       "thesis": "Keep the existing long USDCAD as the USD-spot expression: cash SOFR 3.90 versus CORRA 2.31 and March 2027 SOFR 4.485 versus CORRA 2.945 still pay the dollar, and the parallel strip easing left that gap intact while the US 10-year at 5.24 continues to underwrite USD over CAD. The position is already working from 1.401 with spot 1.4246; Brent near 102 and a still-live Shell LNG Canada FID are CAD-supportive, so this is not an add and not a second USDCAD. EURUSD 1.1298 and gold above 4200 show some broader USD softness, but that noise belongs off this Canada-specific rate gap."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDCAD",
+          "notional_usd": null,
+          "position_id": "pos-5317bc96d4eb",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-05T06:08:21.051325-04:00",
+      "conviction": 67,
+      "decision_fingerprint": "6f8874a913bcbd5f811f0d5597184e994ebd4b02643611abe3b643df059c2526",
+      "event_id": "jde-1a19d6848a614ea0",
+      "funding_view": null,
+      "invalidation": "Exit if the SOFR-CORRA cash gap or the March 2027 strip gap compresses enough that USD no longer pays versus CAD, or if USDCAD retraces through the 1.401 entry while oil-driven CAD strength undoes the move.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-5317bc96d4eb"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "8fe4e3baea59a5ebfd76848d2df5a4564395af11a150f616b577892e3b288fa2",
+      "outcome_links": [],
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "9789be8e7640d78e89e9686907790b856a87df57929cee5c54b3ec5e9bddc223"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-05T06:08:21.051325-04:00",
+        "evidence_hash": "faf58936ce4244d4764e369706414d248e0492f94138e44d07ebfe83fd5db0fc",
+        "overnight_run_id": "overnight-20261005",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "USD still pays versus CAD on cash and the 2027 strip: SOFR 3.87 against CORRA 2.30, and March 2027 SOFR 4.51 against CORRA 2.975. That gap is why the view belongs in USDCAD spot, not a cross and not a second dollar pair. Brent at 102.25 is a CAD-positive offset, but it has not closed the yield differential that carried the long from 1.401 to 1.4240. September US labor is unverified, so new US risk is unavailable; the existing long is held, not added.",
+      "run_id": "overnight-20261005",
+      "schema_version": 1,
+      "thesis": "USD still pays versus CAD on cash and the 2027 strip: SOFR 3.87 against CORRA 2.30, and March 2027 SOFR 4.51 against CORRA 2.975. That gap is why the view belongs in USDCAD spot, not a cross and not a second dollar pair. Brent at 102.25 is a CAD-positive offset, but it has not closed the yield differential that carried the long from 1.401 to 1.4240. September US labor is unverified, so new US risk is unavailable; the existing long is held, not added."
     }
   ],
   "schema_version": 1,

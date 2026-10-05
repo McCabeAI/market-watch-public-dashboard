@@ -701,6 +701,92 @@
       "run_id": "overnight-20261002",
       "schema_version": 1,
       "thesis": "Hold the three 2027 implied-rate pays through the STIR rally. September 2027 SOFR at 4.745 versus cash 3.90 still prices tightening with the US 10-year at 5.24; March 2027 CORRA at 2.945 versus cash 2.31 still prices a hike arc despite the mark drawdown; June 2027 AONIA at 4.945 versus cash 4.60 is working and does not justify harvesting a few basis points. Brent near 102 supports inflation persistence. This is a mark move, not a cover."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-09",
+          "notional_usd": null,
+          "position_id": "pos-c9184707c12b",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-2709875e8c9c",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-06",
+          "notional_usd": null,
+          "position_id": "pos-9cbf3f27dfff",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-05T06:08:21.051325-04:00",
+      "conviction": 64,
+      "decision_fingerprint": "61e5695790b7c789b619e4006a8f0026e7d75f4c273c86d4c615b164a951c97e",
+      "event_id": "jde-08377eef32a34091",
+      "funding_view": null,
+      "invalidation": "Hike-path thesis fails if SOFR September 2027 implieds fall back through the 4.745 book toward cash 3.87, if CORRA March 2027 extends the fade through the 2.945 book toward cash 2.30, or if AONIA June 2027 surrenders the remaining premium from 4.89 toward cash 4.60 as Brent and the US 10-year leave those marks lower.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-2709875e8c9c",
+        "pos-9cbf3f27dfff",
+        "pos-c9184707c12b"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "55400d3bc746d27311b8343da6422fa51b71b580da18917b9d7ce3fd86634fd8",
+      "outcome_links": [],
+      "owner_id": "rate-hawk",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "5e0d7e85b03674989f0f0509c6549d75400a504fdd7a56a674e2832ed26422f0"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-05T06:08:21.051325-04:00",
+        "evidence_hash": "faf58936ce4244d4764e369706414d248e0492f94138e44d07ebfe83fd5db0fc",
+        "overnight_run_id": "overnight-20261005",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Overnight policy rates still sit well below 2027 STIR implieds while Brent at 102.25 and the US 10-year at 5.28 keep inflation persistence and an asymmetric tightening reaction function in force. September 2027 SOFR at 4.775 versus 3.87 cash is a higher path that is already working versus the 4.745 book, so the existing pay remains the clean US expression with no add. March 2027 CORRA cheapening from 3.125 to 2.975 and June 2027 AONIA easing from 4.91 to 4.89 look like residual hike underpricing, not a completed easing cycle. Hold all three pays.",
+      "run_id": "overnight-20261005",
+      "schema_version": 1,
+      "thesis": "Overnight policy rates still sit well below 2027 STIR implieds while Brent at 102.25 and the US 10-year at 5.28 keep inflation persistence and an asymmetric tightening reaction function in force. September 2027 SOFR at 4.775 versus 3.87 cash is a higher path that is already working versus the 4.745 book, so the existing pay remains the clean US expression with no add. March 2027 CORRA cheapening from 3.125 to 2.975 and June 2027 AONIA easing from 4.91 to 4.89 look like residual hike underpricing, not a completed easing cycle. Hold all three pays."
     }
   ],
   "schema_version": 1,

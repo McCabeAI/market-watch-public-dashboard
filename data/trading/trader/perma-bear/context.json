@@ -77,14 +77,14 @@
     "nav_usd": 99986660.37,
     "net_pnl_usd": -13339.63,
     "pressure_flags": [],
-    "prior_competition_rank": 8,
-    "rank_change": 0,
+    "prior_competition_rank": 10,
+    "rank_change": -2,
     "raw_pnl_rank": 8,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 250000.0,
     "risk_capital_utilization": 0.025,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 10080.62,
     "status": "ok"
   },
   "learning": {
@@ -95,7 +95,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "cc3d44b5c3886add5d638a998b2b5ad3f2585452e693225b8c96dd3aee0cca29",
+  "memory_context_sha256": "1ce152daeeb08ba5becb4bff001ac75050968f02f41da9ed3a34529c72cbc821",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -119,8 +119,8 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "up",
+        "value": 0.14
       },
       "complacency": {
         "band": "calm",
@@ -134,13 +134,13 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "up",
+        "value": 0.17
       },
       "frustration": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "up",
+        "value": 0.13
       },
       "revenge_pressure": {
         "band": "calm",
@@ -166,10 +166,16 @@
       "sharpened_verdicts": 0
     },
     "profile_version": 1,
-    "recent_events": [],
+    "recent_events": [
+      {
+        "kind": "rank_drop_minor",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261005"
+      }
+    ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "1702c372707b5e9257653b87fcafd2f6426dc7cfdca62177ad1dcc868bda33a6",
+    "state_sha256": "0b61ec46a7b81c1c57a89c06a03a6171768734d071d6965f53fd187c0e0091a8",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

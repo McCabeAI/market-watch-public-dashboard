@@ -606,6 +606,62 @@
       "run_id": "overnight-20261002",
       "schema_version": 1,
       "thesis": "Global risk appetite is still on with the S&P at 7666 and VIX at 16.34, oil is still high, and the US 10-year at 5.24 does not look like a growth-scare collapse. Canada cash at 2.31 versus March 2027 at 2.945 remains a hike arc, so the existing 50 million pay stays the pro-cyclical expression. The adverse mark from 3.13 to 2.945 is a shock, not a thesis break, and a recovered rank is not permission to add."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-dd6fdaf39119",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-05T06:08:21.051325-04:00",
+      "conviction": 64,
+      "decision_fingerprint": "f9b1872bda2c4cf450a2634220b2d9e385c0dbd237171f24fea2621fad43d231",
+      "event_id": "jde-1335ed169baa4d49",
+      "funding_view": null,
+      "invalidation": "The pay is wrong if March 2027 implied collapses toward cash and erases the roughly 67 basis points of tightening still priced, or if a genuine risk-off break forces a cut-heavy Bank of Canada path.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-dd6fdaf39119"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "137fc1136bfe359ca34907edf9a713cf1ac71bab0402d5b5e96acd8db2bde910",
+      "outcome_links": [],
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "69aba4d2006a18af429c3bc086eb76f6bed5d59a28a690c4c307ae96798ba989"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-05T06:08:21.051325-04:00",
+        "evidence_hash": "faf58936ce4244d4764e369706414d248e0492f94138e44d07ebfe83fd5db0fc",
+        "overnight_run_id": "overnight-20261005",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Global growth and risk appetite still look more resilient than a Canadian re-easing story. Equities are bid, implied vol is contained, crude is firm, and US 10-year yields remain restrictive, which keeps the case for paying the Bank of Canada hike arc intact. Cash CORRA at 2.30 versus March 2027 implied at 2.975 still prices a substantial tightening path, so the existing pay is the cleanest pro-cyclical expression. A modest bounce from the book mark is not a new signal to add.",
+      "run_id": "overnight-20261005",
+      "schema_version": 1,
+      "thesis": "Global growth and risk appetite still look more resilient than a Canadian re-easing story. Equities are bid, implied vol is contained, crude is firm, and US 10-year yields remain restrictive, which keeps the case for paying the Bank of Canada hike arc intact. Cash CORRA at 2.30 versus March 2027 implied at 2.975 still prices a substantial tightening path, so the existing pay is the cleanest pro-cyclical expression. A modest bounce from the book mark is not a new signal to add."
     }
   ],
   "schema_version": 1,

@@ -594,6 +594,60 @@
       "run_id": "overnight-20261002",
       "schema_version": 1,
       "thesis": "The book stays flat because the freeze has delivered cash levels and residual paths, not a dated meeting, print, or issuance that can force repricing. Cash AONIA at 4.60 versus October at 4.595 already delivers the near Australian hike, so March 2027 at 4.83 and June 2027 at 4.945 are undated RBA path, not a trade. SOFR at 3.90 versus March 2027 at 4.485 and CORRA at 2.31 versus March 2027 at 2.945 are the same residual-path problem with no FOMC or BoC date, while euro-area inflation at a three-year high against fewer ECB hike bets, Brent at 102.31, and a still-live LNG Canada FID are a print and identifiable events without a clock."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-05T06:08:21.051325-04:00",
+      "conviction": 0,
+      "decision_fingerprint": "dfc5a8577626a9561db56e93a83b347b9542688bdad01097f6d87cc95b01b86b",
+      "event_id": "jde-932dc64cec644e8d",
+      "funding_view": null,
+      "invalidation": "A still-unused dated Bank of Canada, RBA, ECB, or Bank of Japan meeting, or a still-unused scheduled print, is supplied in a later packet and maps onto a still-undelivered eligible contract.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "510288753c8a08f1c3110edbbad98000bcb77f699ab9607551a0ded025544b64",
+      "outcome_links": [],
+      "owner_id": "catalyst-junkie",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "896c5986c639cad6907e2ee2ad822ca70864457f308fdfd21e4ee761b9e2e041"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-05T06:08:21.051325-04:00",
+        "evidence_hash": "faf58936ce4244d4764e369706414d248e0492f94138e44d07ebfe83fd5db0fc",
+        "overnight_run_id": "overnight-20261005",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Every frozen event is already printed or effective, so none of it is an unused clock. Cash versus October AONIA is already delivered, March CORRA sits above cash with no Bank of Canada date attached, and euro-area inflation plus the Bank of Japan move are spent. With the book flat and no unused dated meeting or print mapping onto an undelivered eligible contract, residual hike-path gaps are not a trade.",
+      "run_id": "overnight-20261005",
+      "schema_version": 1,
+      "thesis": "Every frozen event is already printed or effective, so none of it is an unused clock. Cash versus October AONIA is already delivered, March CORRA sits above cash with no Bank of Canada date attached, and euro-area inflation plus the Bank of Japan move are spent. With the book flat and no unused dated meeting or print mapping onto an undelivered eligible contract, residual hike-path gaps are not a trade."
     }
   ],
   "schema_version": 1,

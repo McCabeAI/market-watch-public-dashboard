@@ -60,7 +60,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "61f64cacca532de3c015c4c5de7c74c95e26cbadabc17b88b58b862dc80dae58",
+  "memory_context_sha256": "c36a3329d632d62287bf46c21c8257e78eb30ce5f1653215325653b219d33fac",
   "open_positions": [],
   "owner_id": "no-trade-skeptic",
   "owner_type": "trader",
@@ -122,30 +122,39 @@
       {
         "kind": "flat_with_market",
         "magnitude": 1.0,
-        "run_id": "overnight-20260930"
-      },
-      {
-        "kind": "flat_with_market",
-        "magnitude": 1.0,
         "run_id": "overnight-20261001"
       },
       {
         "kind": "flat_with_market",
         "magnitude": 1.0,
         "run_id": "overnight-20261002"
+      },
+      {
+        "kind": "flat_with_market",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261005"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "e013ae25dec276dd00cbad4281a5accbc6a0db44d95e1c5a4c03e7dab435f56e",
+    "state_sha256": "a841d52c31fb65ae2717483484e243c50c1f2d930311789551deb2dbac0dbe07",
     "streaks": {
-      "flat_cycles": 5,
+      "flat_cycles": 6,
       "session_loss": 0,
       "session_win": 0
     }
   },
   "recent_closed_trades": [],
   "recent_funding_views": [
+    {
+      "current_sofr": {
+        "observation_date": "2026-10-01",
+        "rate": 3.87
+      },
+      "forward_funding_assessment": "lower",
+      "implication": "Realized overnight funding should print near the 3.87 official fixing and below those SR3 forwards. Remain at the zero official-SOFR cash benchmark; do not pay SOFR on shocked-risk capital. Flat cash is not alpha.",
+      "sr3_forward_view": "Over this overnight review the listed SR3 curve sits well above cash: December 4.23, March 2027 4.51, September 2027 4.775. That is a priced multi-meeting hiking path, not an overnight funding print."
+    },
     {
       "current_sofr": {
         "observation_date": "2026-09-30",
@@ -172,15 +181,6 @@
       "forward_funding_assessment": "about_the_same",
       "implication": "Remain at the zero official-SOFR cash benchmark. Paying SOFR on shocked-risk capital to own a view already in the strip has no edge if realized funding prints about in line with that strip. Flat cash is not alpha; leaving cash to fund a priced hike path is worse than sitting on the 3.90 fixing.",
       "sr3_forward_view": "Over this horizon the SR3 strip is December 2026 at 4.32, March 2027 at 4.62, and September 2027 at 4.85 against the official New York Fed SOFR fixing of 3.90 on 2026-09-28 \u2014 about 42, 72 and 95 basis points of tightening already in forwards. That path is the market\u2019s funded curve, not unused carry."
-    },
-    {
-      "current_sofr": {
-        "observation_date": "2026-09-25",
-        "rate": 3.9
-      },
-      "forward_funding_assessment": "about_the_same",
-      "implication": "Stay at the zero official-SOFR cash benchmark. Paying 3.90 SOFR, and the higher Z6/H7/U7 path, on shocked-risk capital does not clear for a book that is flat and for views already inside the strip.",
-      "sr3_forward_view": "Z6 at 4.40, H7 at 4.705 and U7 at 4.94 sit 50bp, 80.5bp and 104bp above the 3.90 official SOFR fixing; the strip is a fully priced hiking path, not unused carry."
     }
   ],
   "recent_performance_reflections": [],

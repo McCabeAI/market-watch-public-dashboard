@@ -610,6 +610,62 @@
       "run_id": "overnight-20261002",
       "schema_version": 1,
       "thesis": "Cash SOFR is 3.90 versus March 2027 implied 4.485, so 58.5bp of hike path remains priced. The existing 10 million receive at 4.58 already reflects the prior cut, and implieds have come in from 4.625 to 4.485. That 14bp is partial normalization toward the cash anchor, not completion of the stretch, so the receive stays; the US 10-year at 5.24 and Brent at 102.31 keep size at 10 million rather than an add."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-1477172adb86",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-05T06:08:21.051325-04:00",
+      "conviction": 63,
+      "decision_fingerprint": "02edbd2ad23cf94d93aa879e852ad0142cc384936bfad8bb9706bb50bcdeb667",
+      "event_id": "jde-6156145b2a124041",
+      "funding_view": null,
+      "invalidation": "Cover the March 2027 receive if yield trades through 4.58, with 4.625 the hard cover. The fade is also wrong if cash SOFR rises toward 4.51 instead of the forward mean-reverting lower.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-1477172adb86"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "2210248fa8d3cebfbd0a358cefcbb03de6d9230aaaa7d27d53edd7b6ff45e132",
+      "outcome_links": [],
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "71070143881e8b56dcafe363e446df3ed714c05f0990fbcb048790e0e6a69958"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-05T06:08:21.051325-04:00",
+        "evidence_hash": "faf58936ce4244d4764e369706414d248e0492f94138e44d07ebfe83fd5db0fc",
+        "overnight_run_id": "overnight-20261005",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Cash SOFR at 3.87 versus March 2027 at 4.51 still prices 64 basis points of tightening, a hawkish overshoot against the cash anchor rather than a completed re-pricing. The existing receive is already 7 basis points through the 4.58 entry and remains inside the 4.58/4.625 cover band, so the stretch is unfinished, not invalidated. New US risk is blocked, so the fade is hold the March 2027 receive, not add.",
+      "run_id": "overnight-20261005",
+      "schema_version": 1,
+      "thesis": "Cash SOFR at 3.87 versus March 2027 at 4.51 still prices 64 basis points of tightening, a hawkish overshoot against the cash anchor rather than a completed re-pricing. The existing receive is already 7 basis points through the 4.58 entry and remains inside the 4.58/4.625 cover band, so the stretch is unfinished, not invalidated. New US risk is blocked, so the fade is hold the March 2027 receive, not add."
     }
   ],
   "schema_version": 1,

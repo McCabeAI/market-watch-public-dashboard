@@ -1,0 +1,1003 @@
+{
+  "agent_packet": {
+    "base_evidence_cutoff": "2026-10-05T06:08:21.051325-04:00",
+    "base_packet_sha256": "d8e2467d0bf7821bbce9d5ad5bf6d04f867bfb9c8ffe8867139d3a3667326a01",
+    "competition": {
+      "flat_book_pnl": "A flat seat has zero net financing/competition P&L: paper NAV earning SOFR is benchmarked at SOFR, so those flows cancel, and shocked-risk financing is zero.",
+      "funding_basis": "Official NY Fed SOFR ACT/360 is the zero-return competition benchmark, not free alpha. Every seat has $100m paper NAV that may be described as earning SOFR, but that capital is equally funded/benchmarked at SOFR so those flows cancel. Deployed shocked-risk capital pays the same official SOFR on trusted standard-shock risk capital: the absolute MTM loss from a 1% adverse spot move, a 100bp (1 percentage point) adverse outright rate move, or a 100bp adverse curve/RV spread move under the trusted duration-1 P&L convention. Equal risk capital receives equal financing treatment across asset classes. Notional is descriptive, not the funding base. A completely flat book \u2014 including no-trade-skeptic \u2014 therefore has zero net financing/competition P&L from SOFR cash or funding economics. Positive financing/carry alpha requires an explicit markable strategy that earns above SOFR or funds below SOFR. Weekends and holidays carry the last applicable published fixing until the next fixing. If official fixing history cannot be established, new funding accrual fails closed and prior canonical balances are preserved.",
+      "funding_convention": "ACT/360",
+      "funding_day_count": 360,
+      "funding_observation_date": "2026-10-01",
+      "funding_rate_annual": 0.0387,
+      "funding_source": "NY_FED",
+      "funding_source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr",
+      "instruction": "Do not optimize for gross notional or fill available capacity. Size risk from plausible adverse paths and historical excursions while staying inside the trusted risk-capital and drawdown limits. Flat cash at SOFR is the zero benchmark, not a source of alpha. The no-trade-skeptic must include a structured funding_view on every new risk or NO_TRADE thesis: the frozen official SOFR fixing, the relevant SR3 forward-curve view, its own assessment of whether realized funding will print higher, lower, or about the same as the curve, and the implication for remaining at the zero SOFR benchmark versus paying SOFR on shocked-risk capital.",
+      "metric": "net_pnl_after_funding",
+      "no_trade_allowed": true,
+      "objective": "Finish with the highest cumulative net paper P&L across the 14 standing seats.",
+      "risk_limits": {
+        "max_drawdown_usd": 5000000,
+        "paper_nav_usd": 100000000,
+        "risk_capital_limit_usd": 10000000,
+        "risk_capital_method": "mtm_standard_1pct_move"
+      }
+    },
+    "evidence_cutoff": "2026-10-05T06:08:21.051325-04:00",
+    "launch_id": "mwl-20261005T100821Z-3f9807cb",
+    "overnight_run_id": "overnight-20261005",
+    "packet_sha256": "faf58936ce4244d4764e369706414d248e0492f94138e44d07ebfe83fd5db0fc",
+    "research_supplement": {
+      "central_bank_research": [
+        {
+          "summary": "22 Sep remarks focused on discount window upgrades and quarter-end window use when repo pressures lifted, without signaling a funds-rate path.",
+          "title": "Fed Vice Chair Jefferson: discount window modernization supports Treasury and repo market functioning"
+        },
+        {
+          "summary": "22 Sep speech said reserves look ample, overnight rates trade slightly below IORB, and reserve management purchases were cut to zero since mid-August.",
+          "title": "NY Fed SOMA Manager Perli: reserves ample; overnight rates near IORB; RMPs cut to zero"
+        },
+        {
+          "summary": "18 Sep MPM materials confirm the uncollateralized overnight call target moves to about 1.25% from 24 Sep, with the basic loan rate at 1.5%.",
+          "title": "BoJ September hike implementation: ~1.25% call-rate target effective 24 September"
+        }
+      ],
+      "news": [
+        {
+          "headline": "Global Oil Supply Buffer Running \u2018Scarily Thin,\u2019 Aramco CEO Says",
+          "published_at": "2026-10-04T21:20:00-04:00",
+          "summary": "The oil stockpiles that cushion the world from supply shocks have become \u201cscarily thin,\u201d putting markets at risk of worsening unless the Strait of Hormuz reopens, according to the head of Saudi Arabia\u2019s Aramco."
+        },
+        {
+          "headline": "Iran\u2019s Oil Minister Resigns as Exports Dry Up Under US Pressure",
+          "published_at": "2026-10-04T19:20:00-04:00",
+          "summary": "Iran\u2019s Oil Minister Mohsen Paknejad resigned citing personal reasons, as the Islamic Republic tries to sustain its oil industry under a tightening US blockade."
+        },
+        {
+          "headline": "LNG Trade Through Hormuz Extends Rebound Despite Shipping Risks",
+          "published_at": "2026-10-04T13:00:00-04:00",
+          "summary": "Shipments of liquefied natural gas through the Strait of Hormuz extended a rebound that began in September, as the region\u2019s producers seek to restore supplies to energy-starved customers."
+        },
+        {
+          "headline": "China Oil Comeback Loses Steam as Iran War Drags On",
+          "published_at": "2026-09-29T21:26:00-04:00",
+          "summary": "A nascent recovery in Chinese oil demand has begun to falter, as continued fighting in the Middle East and limited Iranian supply keep crude prices too high for private refiners."
+        },
+        {
+          "headline": "Euro-Zone Inflation Tops Estimates to Hit Three-Year High",
+          "published_at": "2026-10-01T22:01:00-04:00",
+          "summary": "Euro-area inflation quickened more than expected to the highest in three years, bolstering expectations that the European Central Bank will lift interest rates further."
+        },
+        {
+          "headline": "Europe\u2019s Bond-Spread Blowout Prompts Bets on Fewer ECB Hikes",
+          "published_at": "2026-10-01T21:55:00-04:00",
+          "summary": "A surge in euro-area sovereign bond spreads slowed as traders bet the European Central Bank will deliver fewer interest-rate hikes to support more-indebted members."
+        },
+        {
+          "headline": "ECB Hopeful Knot Says Market Access At Risk If Nations Cut Rules",
+          "published_at": "2026-10-04T22:13:00-04:00",
+          "summary": "Europe may have to reconsider the market access it gives other jurisdictions that are rapidly relaxing their financial regulations, ECB presidency candidate Klaas Knot said."
+        },
+        {
+          "headline": "Yen Strengthens Past 157 Per Dollar, Outperforming G-10 Peers",
+          "published_at": "2026-09-29T13:00:00-04:00",
+          "summary": "The yen strengthened past the 157 level against the dollar as government warnings on the currency and quarter-end flows provided support."
+        },
+        {
+          "headline": "Shell\u2019s LNG Canada to Proceed With Multibillion-Dollar Expansion",
+          "published_at": "2026-09-28T19:54:00-04:00",
+          "summary": "Shareholders in the Shell-led LNG Canada venture made a final investment decision to expand liquefied natural gas exports on a multibillion-dollar plan."
+        },
+        {
+          "headline": "Man Group Says 5.5% Yields Risk Cracking AI Capex, US Consumer",
+          "published_at": "2026-09-28T05:56:00-04:00",
+          "summary": "Man Group\u2019s Kristina Hooper warned that surging long-end Treasury yields threaten AI capital expenditures and US consumer resilience."
+        },
+        {
+          "headline": "Pimco\u2019s Stracke Says AI Spending Drove Yields, Not Inflation",
+          "published_at": "2026-10-01T20:34:00-04:00",
+          "summary": "Surging capital demand from hyperscalers and the AI ecosystem\u2014not inflation expectations\u2014is the primary force pushing real rates and bond yields higher, Pimco\u2019s Stracke said."
+        },
+        {
+          "headline": "UK Firms Predict Faster Price Increases After Energy Costs Surge",
+          "published_at": "2026-10-01T21:58:00-04:00",
+          "summary": "The resurgence in oil and gas prices drove up UK businesses\u2019 inflation expectations as firms planned to pass on cost increases to consumers."
+        }
+      ],
+      "sources": [
+        "Bloomberg",
+        "NY_FED",
+        "Federal Reserve",
+        "NY Fed",
+        "BoJ"
+      ],
+      "summary": "Overnight markets still price a firm US rate backdrop while equities hold gains: the S&P is near 7723, VIX near 16.4, and the US 10-year at 5.28% as SOFR cash at 3.87% leaves March 2027 futures roughly 64bp above fixings. Brent at 102.25 and WTI at 91.11 keep energy supported with gold near 4162; EURUSD at 1.1225 and USDJPY near 157.7 show a softer euro and a heavy yen. Middle East supply headlines intensified\u2014Aramco warned stockpile buffers are dangerously thin without Hormuz reopening, and Iran\u2019s oil minister resigned as exports weakened\u2014alongside euro-area inflation at a three-year high and spread stress that has traders leaning to fewer ECB hikes. September US payrolls, unemployment, and wage data could not be verified, so be careful adding fresh US macro risk. Watch Hormuz oil and LNG flows, ECB politics, and whether AI-capex versus inflation stories keep shaping long-end yields."
+    },
+    "review_id": "review-001",
+    "schema_version": 1,
+    "trade_permissions": {
+      "blocked_expressions": [
+        "macro:US"
+      ],
+      "blocked_sources": [
+        "US.Labor.payrolls",
+        "US.Labor.unemployment",
+        "US.Labor.wages"
+      ],
+      "countries": {
+        "AU": {
+          "eligible": true,
+          "gaps": [
+            "AU.Activity.business_surveys",
+            "AU.Consumer.confidence"
+          ],
+          "scored_status": "partial"
+        },
+        "CA": {
+          "eligible": true,
+          "gaps": [
+            "CA.Activity.business_surveys",
+            "CA.Consumer.confidence"
+          ],
+          "scored_status": "partial"
+        },
+        "EA": {
+          "eligible": true,
+          "gaps": [],
+          "scored_status": "ok"
+        },
+        "JP": {
+          "eligible": true,
+          "gaps": [
+            "JP.Activity.business_surveys"
+          ],
+          "scored_status": "partial"
+        },
+        "NZ": {
+          "eligible": true,
+          "gaps": [
+            "NZ.Activity.gdp_domestic_demand",
+            "NZ.Consumer.income",
+            "NZ.Consumer.retail",
+            "NZ.Consumer.spending",
+            "NZ.Labor.wages"
+          ],
+          "scored_status": "partial"
+        },
+        "US": {
+          "eligible": false,
+          "gaps": [
+            "US.Labor.payrolls",
+            "US.Labor.unemployment",
+            "US.Labor.wages"
+          ],
+          "scored_status": "partial"
+        }
+      },
+      "coverage": "PARTIAL",
+      "eligible": true,
+      "expansion_rule": "country_and_expression_specific",
+      "partial_expressions": [
+        "activity:US",
+        "activity:CA",
+        "activity:AU",
+        "activity:NZ",
+        "activity:EA",
+        "activity:JP",
+        "macro:AU",
+        "macro:NZ"
+      ],
+      "source_health": [
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "The read operation timed out",
+          "observation_period": "2026-Q2",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "series_id": "US.Activity.gdp_domestic_demand"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "HTTP 404",
+          "observation_period": "2026-08",
+          "retrieved_at": "2026-09-21T16:30:00Z",
+          "series_id": "US.Activity.manufacturing_surveys"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "HTTP 404",
+          "observation_period": "2026-08",
+          "retrieved_at": "2026-09-21T16:30:00Z",
+          "series_id": "US.Activity.services_surveys"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "The read operation timed out",
+          "observation_period": "2026-07",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "series_id": "US.Consumer.confidence"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "The read operation timed out",
+          "observation_period": "2026-07",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "series_id": "US.Consumer.income"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "The read operation timed out",
+          "observation_period": "2026-08",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "series_id": "US.Consumer.retail"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "The read operation timed out",
+          "observation_period": "2026-07",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "series_id": "US.Consumer.spending"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "The read operation timed out",
+          "observation_period": "2026-07",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "series_id": "US.Inflation.core_pce"
+        }
+      ],
+      "trade_eligible_countries": [
+        "CA",
+        "AU",
+        "NZ",
+        "EA",
+        "JP"
+      ]
+    },
+    "type": "OVERNIGHT_AGENT_EVIDENCE_PACKET"
+  },
+  "base_packet_sha256": "d8e2467d0bf7821bbce9d5ad5bf6d04f867bfb9c8ffe8867139d3a3667326a01",
+  "decisions": {
+    "carry-is-king": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "expected_mark_direction": "lower",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "No incremental rates or spot risk; managing the current book only.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "AONIA_2027-03",
+          "position_id": "pos-524ab67108ee",
+          "reason": "Retain the 25m receive; 4.60 cash versus 18.5bp path is still carry.",
+          "side": "long"
+        }
+      ],
+      "conviction": 70,
+      "evidence_cutoff": "2026-10-05T06:08:21.051325-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "No incremental rates or spot risk; managing the current book only.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "Cash AONIA rises toward or through 4.785 and erases the paid path, or the expected March quarter average is lifted through 4.785 by delivered hikes.",
+      "memory_context_sha256": "84ab55cd7c2910eb5e6a725353f5196c56939508d193c04dd90fda9a3e33f5ff",
+      "overnight_run_id": "overnight-20261005",
+      "packet_sha256": "faf58936ce4244d4764e369706414d248e0492f94138e44d07ebfe83fd5db0fc",
+      "review_id": "review-001",
+      "seat": "carry-is-king",
+      "thesis": "March AONIA at 4.785 still sits 18.5 basis points above 4.60 cash, so the existing receive is paid to wait if cash holds. That differential is carry, not an easing story, and a small oil-beta backup is not a reason to flatten a long that is already through the 4.83 entry. Canada stays closed: March CORRA at 2.975 versus 2.30 cash is 67.5 basis points of hike path, a policy fight rather than residual carry."
+    },
+    "catalyst-junkie": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "No markable incremental expression; the book stays flat.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "reason": "Book is already flat. No unused dated meeting or print maps onto an undelivered eligible contract."
+        }
+      ],
+      "conviction": 0,
+      "evidence_cutoff": "2026-10-05T06:08:21.051325-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "No markable incremental expression; the book stays flat.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "A still-unused dated Bank of Canada, RBA, ECB, or Bank of Japan meeting, or a still-unused scheduled print, is supplied in a later packet and maps onto a still-undelivered eligible contract.",
+      "memory_context_sha256": "510288753c8a08f1c3110edbbad98000bcb77f699ab9607551a0ded025544b64",
+      "overnight_run_id": "overnight-20261005",
+      "packet_sha256": "faf58936ce4244d4764e369706414d248e0492f94138e44d07ebfe83fd5db0fc",
+      "review_id": "review-001",
+      "seat": "catalyst-junkie",
+      "thesis": "Every frozen event is already printed or effective, so none of it is an unused clock. Cash versus October AONIA is already delivered, March CORRA sits above cash with no Bank of Canada date attached, and euro-area inflation plus the Bank of Japan move are spent. With the book flat and no unused dated meeting or print mapping onto an undelivered eligible contract, residual hike-path gaps are not a trade."
+    },
+    "cross-merchant": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Spot-only long CADJPY. Do not express via USDCAD, USDJPY, or AUDCAD.",
+            "selected": "spot",
+            "spot_candidate": {
+              "asset_class": "spot_fx",
+              "instrument": "CADJPY",
+              "rationale": "CORRA-TONA carry plus Brent at 102.25 still isolate CAD versus JPY without a dollar pair."
+            }
+          },
+          "instrument": "CADJPY",
+          "position_id": "pos-44de67c4b24f",
+          "reason": "Hold the existing 15m CADJPY long; modest adverse spot is not a flip.",
+          "side": "long"
+        }
+      ],
+      "conviction": 64,
+      "evidence_cutoff": "2026-10-05T06:08:21.051325-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "Dedicated spot seat; keep the live CADJPY long and leave rates unused.",
+        "selected": "spot",
+        "spot_candidate": {
+          "asset_class": "spot_fx",
+          "instrument": "CADJPY",
+          "rationale": "Oil-supported CAD versus still-easy JPY remains the non-dollar expression."
+        }
+      },
+      "invalidation": "Oil support for CAD fails if Brent loses the bid that underwrites the cross, or the CORRA minus TONA advantage compresses enough to erase carry.",
+      "memory_context_sha256": "fae0b34bce47b6532ba9b73d0090827d23be36b4ba55f20123dcffe1abd6e613",
+      "overnight_run_id": "overnight-20261005",
+      "packet_sha256": "faf58936ce4244d4764e369706414d248e0492f94138e44d07ebfe83fd5db0fc",
+      "review_id": "review-001",
+      "seat": "cross-merchant",
+      "thesis": "Long CADJPY is still the cleanest non-dollar expression of oil-supported Canada against still-easy Japan: CORRA at 2.30 versus TONA at 1.227 keeps carry with the long while Brent at 102.25 underwrites the CAD leg. A mark of 110.73 against 110.90 entry is noise, not a regime change, and the oil bid is not a license to reopen a closed AUDCAD book. Hold the existing spot long; do not add, reverse, or fold a multi-week relative-value into a two-day flip."
+    },
+    "dollar-king": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Keep the live USDCAD long as the USD-spot expression. No new US risk. No rates candidate.",
+            "selected": "spot",
+            "spot_candidate": {
+              "asset_class": "spot_fx",
+              "instrument": "USDCAD",
+              "rationale": "Existing long USDCAD remains the cleanest USD-spot expression of the still-wide SOFR-CORRA cash and 2027 strip gaps."
+            }
+          },
+          "instrument": "USDCAD",
+          "position_id": "pos-5317bc96d4eb",
+          "reason": "Cash and 2027 strip still pay USD versus CAD; hold the existing 55m long. Oil is a CAD tailwind, not a thesis break. ADD is blocked while September US labor is unverified.",
+          "side": "long"
+        }
+      ],
+      "conviction": 67,
+      "evidence_cutoff": "2026-10-05T06:08:21.051325-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "Existing long USDCAD remains the cleanest USD-spot expression. No ADD and no second USD pair while September US labor is unverified.",
+        "selected": "spot",
+        "spot_candidate": {
+          "asset_class": "spot_fx",
+          "instrument": "USDCAD",
+          "rationale": "Verified SOFR-CORRA cash and Mar27 strip gaps still favor USD versus CAD in the existing USDCAD long."
+        }
+      },
+      "invalidation": "Exit if the SOFR-CORRA cash gap or the March 2027 strip gap compresses enough that USD no longer pays versus CAD, or if USDCAD retraces through the 1.401 entry while oil-driven CAD strength undoes the move.",
+      "memory_context_sha256": "8fe4e3baea59a5ebfd76848d2df5a4564395af11a150f616b577892e3b288fa2",
+      "overnight_run_id": "overnight-20261005",
+      "packet_sha256": "faf58936ce4244d4764e369706414d248e0492f94138e44d07ebfe83fd5db0fc",
+      "review_id": "review-001",
+      "seat": "dollar-king",
+      "thesis": "USD still pays versus CAD on cash and the 2027 strip: SOFR 3.87 against CORRA 2.30, and March 2027 SOFR 4.51 against CORRA 2.975. That gap is why the view belongs in USDCAD spot, not a cross and not a second dollar pair. Brent at 102.25 is a CAD-positive offset, but it has not closed the yield differential that carried the long from 1.401 to 1.4240. September US labor is unverified, so new US risk is unavailable; the existing long is held, not added."
+    },
+    "mean-reverter": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "expected_mark_direction": "lower",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "No incremental rates or spot risk; managing the current book only.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "SOFR_2027-03",
+          "position_id": "pos-1477172adb86",
+          "reason": "Hold the reduced 10 million receive; the 64bp stretch is unfinished. Do not add US risk.",
+          "side": "long"
+        }
+      ],
+      "conviction": 63,
+      "evidence_cutoff": "2026-10-05T06:08:21.051325-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "No incremental rates or spot risk; managing the current book only.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "Cover the March 2027 receive if yield trades through 4.58, with 4.625 the hard cover. The fade is also wrong if cash SOFR rises toward 4.51 instead of the forward mean-reverting lower.",
+      "memory_context_sha256": "2210248fa8d3cebfbd0a358cefcbb03de6d9230aaaa7d27d53edd7b6ff45e132",
+      "overnight_run_id": "overnight-20261005",
+      "packet_sha256": "faf58936ce4244d4764e369706414d248e0492f94138e44d07ebfe83fd5db0fc",
+      "review_id": "review-001",
+      "seat": "mean-reverter",
+      "thesis": "Cash SOFR at 3.87 versus March 2027 at 4.51 still prices 64 basis points of tightening, a hawkish overshoot against the cash anchor rather than a completed re-pricing. The existing receive is already 7 basis points through the 4.58 entry and remains inside the 4.58/4.625 cover band, so the stretch is unfinished, not invalidated. New US risk is blocked, so the fade is hold the March 2027 receive, not add."
+    },
+    "no-trade-skeptic": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "No markable incremental expression; the book stays flat.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "reason": "Stay at the zero official-SOFR cash benchmark; the strip already prices the hike path."
+        }
+      ],
+      "conviction": 80,
+      "evidence_cutoff": "2026-10-05T06:08:21.051325-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "No markable incremental expression; the book stays flat.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "funding_view": {
+        "current_sofr": {
+          "observation_date": "2026-10-01",
+          "rate": 3.87
+        },
+        "forward_funding_assessment": "lower",
+        "implication": "Realized overnight funding should print near the 3.87 official fixing and below those SR3 forwards. Remain at the zero official-SOFR cash benchmark; do not pay SOFR on shocked-risk capital. Flat cash is not alpha.",
+        "sr3_forward_view": "Over this overnight review the listed SR3 curve sits well above cash: December 4.23, March 2027 4.51, September 2027 4.775. That is a priced multi-meeting hiking path, not an overnight funding print."
+      },
+      "invalidation": "Actionable only if the packet shows a measured spread versus the listed SR3 path, a dated catalyst inside the review horizon, and a stop that can actually fire. A VIX or oil shock without a rates basis still does not open a trade.",
+      "memory_context_sha256": "61f64cacca532de3c015c4c5de7c74c95e26cbadabc17b88b58b862dc80dae58",
+      "overnight_run_id": "overnight-20261005",
+      "packet_sha256": "faf58936ce4244d4764e369706414d248e0492f94138e44d07ebfe83fd5db0fc",
+      "review_id": "review-001",
+      "seat": "no-trade-skeptic",
+      "thesis": "Cash SOFR is 3.87 against SR3 December 4.23, March 4.51 and September 4.775, with the 10-year at 5.28, Brent at 102.25 and VIX at 16.39, and the book is flat. That hiking path and term level are already on the screen, so fade-or-chase setups are crowded, noisy versus an overnight horizon, and poorly timed with no named catalyst. Sit in official SOFR cash as the zero benchmark; do not manufacture risk."
+    },
+    "perma-bear": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "expected_mark_direction": "lower",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "No incremental rates or spot risk; managing the current book only.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "US_10Y",
+          "position_id": "pos-5ac8fc69cb81",
+          "reason": "Hold the existing 25m long US 10-year; do not receive hike-priced STIR.",
+          "side": "long"
+        }
+      ],
+      "conviction": 62,
+      "evidence_cutoff": "2026-10-05T06:08:21.051325-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "No incremental rates or spot risk; managing the current book only.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "The growth-scare bid for duration fails if the 10-year backup continues because oil-driven term premium dominates, or if equities and oil reverse together into a stable re-acceleration.",
+      "memory_context_sha256": "cc3d44b5c3886add5d638a998b2b5ad3f2585452e693225b8c96dd3aee0cca29",
+      "overnight_run_id": "overnight-20261005",
+      "packet_sha256": "faf58936ce4244d4764e369706414d248e0492f94138e44d07ebfe83fd5db0fc",
+      "review_id": "review-001",
+      "seat": "perma-bear",
+      "thesis": "Risk pricing is still complacent with the S&P near 7723 and VIX at 16.4 while Brent at 102 is already a late-cycle real-income and financial-conditions squeeze. Front-end receive is not defensive: cash remains below the hike-priced STIR strip, so that coupon is a carry trap rather than a slowdown hedge. The clean remaining expression is the long-end already on the book: keep receiving 10s and do not add US risk. A backup from 5.24 to 5.28 is noise, not a regime change."
+    },
+    "perma-bull": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "expected_mark_direction": "higher",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "No incremental rates or spot risk; managing the current book only.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "CORRA_2027-03",
+          "position_id": "pos-dd6fdaf39119",
+          "reason": "Hold the existing 50m March 2027 CORRA pay; do not add on the small implied recovery.",
+          "side": "short"
+        }
+      ],
+      "conviction": 64,
+      "evidence_cutoff": "2026-10-05T06:08:21.051325-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "No incremental rates or spot risk; managing the current book only.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "The pay is wrong if March 2027 implied collapses toward cash and erases the roughly 67 basis points of tightening still priced, or if a genuine risk-off break forces a cut-heavy Bank of Canada path.",
+      "memory_context_sha256": "137fc1136bfe359ca34907edf9a713cf1ac71bab0402d5b5e96acd8db2bde910",
+      "overnight_run_id": "overnight-20261005",
+      "packet_sha256": "faf58936ce4244d4764e369706414d248e0492f94138e44d07ebfe83fd5db0fc",
+      "review_id": "review-001",
+      "seat": "perma-bull",
+      "thesis": "Global growth and risk appetite still look more resilient than a Canadian re-easing story. Equities are bid, implied vol is contained, crude is firm, and US 10-year yields remain restrictive, which keeps the case for paying the Bank of Canada hike arc intact. Cash CORRA at 2.30 versus March 2027 implied at 2.975 still prices a substantial tightening path, so the existing pay is the cleanest pro-cyclical expression. A modest bounce from the book mark is not a new signal to add."
+    },
+    "positioning-cynic": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "No incremental rates or spot risk; managing the current book only.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "USDCAD",
+          "position_id": "pos-ccb6655acbad",
+          "reason": "Hold the fade while the desk dollar-king long remains the crowded one-way. Do not add. Do not receive CORRA Mar27.",
+          "side": "short"
+        }
+      ],
+      "conviction": 66,
+      "evidence_cutoff": "2026-10-05T06:08:21.051325-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "No incremental rates or spot risk; managing the current book only.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "If the desk dollar-king long is reduced or flipped, the short is no longer fading a crowded owner and must be reviewed.",
+      "memory_context_sha256": "a180227b8485554dbeacf6826e4a1bb998f654ca342c5bbced1d9156f5d9db8f",
+      "overnight_run_id": "overnight-20261005",
+      "packet_sha256": "faf58936ce4244d4764e369706414d248e0492f94138e44d07ebfe83fd5db0fc",
+      "review_id": "review-001",
+      "seat": "positioning-cynic",
+      "thesis": "The crowded one-way is still the desk's large dollar-king USDCAD long; the existing short is the fade against that owner, not the crowd, so covering it would join the one-way. Hold that short and do not add. March 2027 CORRA at 2.975 versus 2.30 cash remains crowded receive territory: that is a reason to refuse a new receive, not a reason to pay the strip without a packet-quality entry. New US risk stays closed and new USDCAD stays closed."
+    },
+    "rate-dove": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "expected_mark_direction": "lower",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "No incremental rates or spot risk; managing the current book only.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "CORRA_2027H-Z",
+          "position_id": "pos-9849cf751c27",
+          "reason": "2027 CAD path still prices too much tightening versus CORRA cash 2.30. Rank recovery is not a reason to add.",
+          "side": "long"
+        }
+      ],
+      "conviction": 64,
+      "evidence_cutoff": "2026-10-05T06:08:21.051325-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "No incremental rates or spot risk; managing the current book only.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "The H-Z average moves sustainably above the 3.40 entry toward December 2027 at 3.50 with cash CORRA rising off 2.30, or realized 2027 tightening validates the strip rather than mean-reverting it.",
+      "memory_context_sha256": "cfcf18fc6bbe1143d66af6167a50918ff5bf4fd04fba9d892eb4639e80ceaee1",
+      "overnight_run_id": "overnight-20261005",
+      "packet_sha256": "faf58936ce4244d4764e369706414d248e0492f94138e44d07ebfe83fd5db0fc",
+      "performance_reflections": [
+        {
+          "attribution": [
+            "variance_luck",
+            "thesis",
+            "sizing"
+          ],
+          "causal": {
+            "assumptions_right": "Direction was right: the 2027 hike path was rich relative to cash, and the receive from 3.40 did not need to be abandoned.",
+            "assumptions_wrong_or_underweighted": "Near-term mark-to-market and rank-path variance was underweighted; a correctly signed receive can still print a large interim drawdown and rank shock.",
+            "causal_divergence": "The shock was mark-to-market path, not a completed 2027 tightening cycle that validated December 2027 at 3.50. Cash stayed 2.30 in the supplied marks; the strip did not realize the priced hike path.",
+            "decision_quality_attribution": "variance_luck",
+            "future_implication": "Rank is not a sizing signal. Keep the existing 42.5 million receive and do not scale up because the shock reversed.",
+            "observed_reality": "Rank moved from 2 to 8 with an interim drawdown near 89633 and net near -5787, then rank returned to 2 with positive net. Live H-Z near 3.264 remains below the 3.40 entry and far above cash 2.30.",
+            "original_belief": "The 2027 CORRA strip overpriced tightening versus a cash rate already at 2.30, so receiving the H-Z pack was the right easing expression.",
+            "same_information_counterfactual": "The same information would still hold the receive and would still refuse an add on a rank 8-to-2 recovery."
+          },
+          "chase_or_revenge": "no",
+          "no_new_lesson": "The rank 2-to-8-to-2 move with an interim drawdown then positive net is bounded ordinary variance around a correctly signed receive; the original process remains sound. Do not add because rank recovered.",
+          "overconfidence_risk": "yes",
+          "pressure_effect": "none",
+          "reflection_due_id": "rfd-b31468a2b557",
+          "skill_vs_luck": "mixed",
+          "trigger": "rank_shock",
+          "what_happened_vs_expected": "Expected a grind lower in 2027 implieds toward cash. Instead printed a rank 2-to-8 drawdown near 89633 and net near -5787, then recovered to rank 2 and positive net, with live H-Z near 3.264 still only partway from 3.40 toward 2.30."
+        }
+      ],
+      "review_id": "review-001",
+      "seat": "rate-dove",
+      "thesis": "CORRA cash is 2.30 against March through December 2027 implieds of 2.975, 3.205, 3.375 and 3.50, so the second-half 2027 strip still averages about 3.264. That remains too much tightening versus a cash rate already at 2.30, and the existing receive from 3.40 is still the clean expression of less-hike. Rank recovery is not incremental information on the path, so the 42.5 million line is held and not added."
+    },
+    "rate-hawk": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "expected_mark_direction": "higher",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "No incremental rates or spot risk; managing the current book only.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "SOFR_2027-09",
+          "position_id": "pos-c9184707c12b",
+          "reason": "Pay working; hike path 4.775 vs cash 3.87 still too low versus 5.28 10-year and Brent 102.25. No add.",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "expected_mark_direction": "higher",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "No incremental rates or spot risk; managing the current book only.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "CORRA_2027-03",
+          "position_id": "pos-2709875e8c9c",
+          "reason": "15bp fade from entry is residual tightening, not a cover; still 67.5bp above cash 2.30.",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "expected_mark_direction": "higher",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "No incremental rates or spot risk; managing the current book only.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "AONIA_2027-06",
+          "position_id": "pos-9cbf3f27dfff",
+          "reason": "Only 29bp of hikes priced versus cash 4.60 with Brent 102.25; hold the existing pay.",
+          "side": "short"
+        }
+      ],
+      "conviction": 64,
+      "evidence_cutoff": "2026-10-05T06:08:21.051325-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "No incremental rates or spot risk; managing the current book only.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "Hike-path thesis fails if SOFR September 2027 implieds fall back through the 4.745 book toward cash 3.87, if CORRA March 2027 extends the fade through the 2.945 book toward cash 2.30, or if AONIA June 2027 surrenders the remaining premium from 4.89 toward cash 4.60 as Brent and the US 10-year leave those marks lower.",
+      "memory_context_sha256": "55400d3bc746d27311b8343da6422fa51b71b580da18917b9d7ce3fd86634fd8",
+      "overnight_run_id": "overnight-20261005",
+      "packet_sha256": "faf58936ce4244d4764e369706414d248e0492f94138e44d07ebfe83fd5db0fc",
+      "review_id": "review-001",
+      "seat": "rate-hawk",
+      "thesis": "Overnight policy rates still sit well below 2027 STIR implieds while Brent at 102.25 and the US 10-year at 5.28 keep inflation persistence and an asymmetric tightening reaction function in force. September 2027 SOFR at 4.775 versus 3.87 cash is a higher path that is already working versus the 4.745 book, so the existing pay remains the clean US expression with no add. March 2027 CORRA cheapening from 3.125 to 2.975 and June 2027 AONIA easing from 4.91 to 4.89 look like residual hike underpricing, not a completed easing cycle. Hold all three pays."
+    },
+    "trend-follower": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "expected_mark_direction": "higher",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "No incremental rates or spot risk; managing the current book only.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "SOFR_2027-03",
+          "position_id": "pos-662bff0986be",
+          "reason": "Hike-path trend intact. Do not cover the bounce from 4.485 to 4.51. Do not add a second March contract.",
+          "side": "short"
+        }
+      ],
+      "conviction": 73,
+      "evidence_cutoff": "2026-10-05T06:08:21.051325-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "No incremental rates or spot risk; managing the current book only.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "A verified break in the hike path, not a bounce: March 2027 no longer pricing above spot SOFR, or packet evidence that the policy path has flipped to easing.",
+      "memory_context_sha256": "0a7664e34bc5257c5f8c029c33b7f45bf9cfb4058d30330e467c99fc9c037661",
+      "overnight_run_id": "overnight-20261005",
+      "packet_sha256": "faf58936ce4244d4764e369706414d248e0492f94138e44d07ebfe83fd5db0fc",
+      "review_id": "review-001",
+      "seat": "trend-follower",
+      "thesis": "The hike path is still the trend: spot SOFR at 3.87 versus March 2027 at 4.51 continues to price a large tightening path, and the 10-year at 5.28 with Brent at 102.25 keeps policy, term premia, and inflation pressure pointing the same way. The live pay in March SOFR is the continuation of that alignment; a bounce from the 4.485 book mark to 4.51 is not a reversal. Hold the existing short and do not add a second March contract while new US risk stays blocked."
+    },
+    "value-guy": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "No markable incremental expression; the book stays flat.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "reason": "Eligible non-US dislocation exists but has no dated convergence clock. HOLD is the value decision, not a US-restriction default."
+        }
+      ],
+      "conviction": 50,
+      "evidence_cutoff": "2026-10-05T06:08:21.051325-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "No markable incremental expression; the book stays flat.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "A dated AU/NZ policy, terms-of-trade, or data clock that times residual closure, or a packet update that supplies REER/PPP cheapness with an explicit convergence window, invalidates staying flat.",
+      "memory_context_sha256": "31eb844eb5190449eea7b5c2744f9579908250dbc09cfbecd33eaff9bad23fb6",
+      "overnight_run_id": "overnight-20261005",
+      "packet_sha256": "faf58936ce4244d4764e369706414d248e0492f94138e44d07ebfe83fd5db0fc",
+      "review_id": "review-001",
+      "seat": "value-guy",
+      "thesis": "AUDNZD versus the AU-NZ two-year differential is the only eligible, historically anchored dislocation in the marks, at a residual z-score of -2.16. That residual is a valuation fact, not a clock: nothing dates when the gap should close, and a large z alone is not a reason to fade. USDCAD versus CA-US 2Y at +1.73z is both smaller and ineligible as new US risk. With the book flat, stay flat until a dated AU/NZ catalyst or a real-effective or terms-of-trade anchor appears."
+    },
+    "vol-convexity": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "No markable incremental expression; the book stays flat.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "reason": "Cannot mark options; do not invent strikes or substitute unbounded linear risk."
+        }
+      ],
+      "conviction": 74,
+      "evidence_cutoff": "2026-10-05T06:08:21.051325-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "No markable incremental expression; the book stays flat.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "A live listed chain with executable strikes, expiries, and premiums becomes markable, or the US-risk block lifts and a bounded structure can be shown on those marks to dominate flat.",
+      "memory_context_sha256": "31fb3bc65342a4a2a3cf4d8d96a96283a4dcd7266b90396d732bcebe1b5cc79d",
+      "overnight_run_id": "overnight-20261005",
+      "packet_sha256": "faf58936ce4244d4764e369706414d248e0492f94138e44d07ebfe83fd5db0fc",
+      "review_id": "review-001",
+      "seat": "vol-convexity",
+      "thesis": "Spot is the wrong default when timing and event risk cannot be priced, but this freeze has no markable listed chain\u2014only a VIX print of 16.39 and no strikes or premiums. A convex structure would dominate linear if it could be marked; it cannot, so options are unused rather than invented. Unbounded linear does not beat staying flat: the book is already flat, new US risk is blocked, and a directional spot expression would warehouse unlimited gap risk without a hedge that can be sized from live marks."
+    }
+  },
+  "execution": {
+    "allowed_subagent_models": [
+      "composer-2.5",
+      "grok-4.6"
+    ],
+    "auto_used": false,
+    "composer_cap": 2,
+    "declared_composer_calls": 2,
+    "declared_grok_calls": 18,
+    "declared_total_model_calls": 20,
+    "grok_cap": 18,
+    "other_models_calls": 0,
+    "parent_model": "grok-4.6",
+    "total_model_cap": 20
+  },
+  "launch_id": "mwl-20261005T100821Z-3f9807cb",
+  "learning_quality_review": {
+    "assessments": [
+      {
+        "adequate": true,
+        "owner_id": "rate-dove",
+        "owner_type": "trader",
+        "reasons": [
+          "All seven causal fields are substantive: belief (strip rich vs cash), reality with rank/MTM and live H-Z vs entry/cash, what held vs what was underweighted (path variance), divergence (MTM path vs unrealized hike thesis), counterfactual (hold receive, no add on rank recovery), and future implication (rank not sizing).",
+          "decision_quality_attribution is the valid enum variance_luck and is consistent with causal_divergence and assumptions_wrong_or_underweighted.",
+          "what_happened_vs_expected is present and contrasts expected grind with rank shock and partial strip move.",
+          "attribution, pressure_effect, skill_vs_luck, overconfidence_risk, and chase_or_revenge use valid values and align with the causal narrative.",
+          "no_new_lesson explicitly bounds the rank swing as ordinary variance around a correctly signed receive and states process remains sound without forcing a new lesson."
+        ],
+        "submission_kind": "performance_reflection",
+        "submission_ref": "rfd-b31468a2b557",
+        "submission_state": "adequate"
+      }
+    ],
+    "call_count": 1,
+    "model": "composer-2.5",
+    "role": "learning_quality_examiner"
+  },
+  "overnight_run_id": "overnight-20261005",
+  "pm_decisions": {
+    "grinder": {
+      "actions": [
+        {
+          "action": "NO_TRADE"
+        }
+      ],
+      "conviction": 78,
+      "deployment_hurdle": {
+        "benchmark": "Official NY Fed SOFR ACT/360 3.87% as of 2026-10-01 charged on shocked-risk capital.",
+        "candidate_assessments": [],
+        "chosen_action_rationale": "Every accepted seat is HOLD, so there are zero expanding markable handoff trades to test against the SOFR hurdle. Inventing CADJPY, AONIA, US 10Y, or USDCAD as new clips would violate the handoff. With a flat book, blocked US risk, and no independent CA/AU/NZ/EA/JP expression that independently clears the hurdle, NO_TRADE is the preservation action."
+      },
+      "evidence_cutoff": "2026-10-05T06:08:21.051325-04:00",
+      "execution": {
+        "principal_model": "grok-4.6",
+        "subagent_count": 0,
+        "subagent_models": []
+      },
+      "invalidation": "A subsequent frozen handoff presents at least one independent, markable, non-US expanding OPEN that clears official SOFR on shocked-risk capital with a defined adverse-P&L size, or an existing book risk appears that must be reduced or closed.",
+      "memory_context_sha256": "0fdac1230bb7cced5042410778485913998551a9d5e56065c4c3839972c7be5f",
+      "overnight_run_id": "overnight-20261005",
+      "packet_sha256": "faf58936ce4244d4764e369706414d248e0492f94138e44d07ebfe83fd5db0fc",
+      "pm_id": "grinder",
+      "principal_model": "grok-4.6",
+      "review_id": "review-001",
+      "subagent_count": 0,
+      "subagent_models": [],
+      "thesis": "The book is already flat and the accepted trader-room handoff contains no expanding clips to underwrite. Preservation requires staying out: cash-versus-strip gaps are priced paths, not a standalone edge versus official SOFR charged on shocked risk capital, and new US risk is blocked. I will not originate an independent CA, AU, NZ, EA, or JP expression merely to put capital to work. Sit tight until a markable expanding idea clears the hurdle on a plausible adverse P&L path."
+    },
+    "pragmatist": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "expected_mark_direction": "lower",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "No incremental rates or spot risk; managing the current book only.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "CORRA_2027-03",
+          "position_id": "pm-pragmatist-4e0cbc4e0b05",
+          "side": "long"
+        }
+      ],
+      "conviction": 58,
+      "evidence_cutoff": "2026-10-05T06:08:21.051325-04:00",
+      "execution": {
+        "principal_model": "grok-4.6",
+        "subagent_count": 0,
+        "subagent_models": []
+      },
+      "invalidation": "The receive is wrong if March 2027 CORRA reprices through 3.20 on a confirmed hike cycle, or if cash CORRA rises through 2.75 while the forward stays higher, showing the 2.30 versus 2.975 gap was warranted tightening rather than excess.",
+      "memory_context_sha256": "6fb0cef628f166797799dd81091b77065ce18d0352fd035d8cb1a9b1a918ccda",
+      "overnight_run_id": "overnight-20261005",
+      "packet_sha256": "faf58936ce4244d4764e369706414d248e0492f94138e44d07ebfe83fd5db0fc",
+      "pm_id": "pragmatist",
+      "portfolio_construction": {
+        "adverse_scenario": "A hawkish Bank of Canada re-tightening that lifts March 2027 CORRA back through 3.13 toward 3.30-plus, unwinding the receive. Secondary path is a CAD-positive growth or inflation surprise that reprices the Canadian hike path without needing a US labor catalyst. Funding drag on 4.5 million shocked capital is small next to that rates move.",
+        "candidate_interactions": [],
+        "chosen_actions_rationale": "HOLD the existing receive. Spot-to-forward still embeds too much tightening versus 2.30 cash, so the original Canadian expression remains valid and does not need a second sleeve. The room offered no expanding OPEN, ADD, or HEDGE clips, so there is nothing independent and markable to add. New US risk is blocked. The gap to the leading trader is small versus NAV and the allocator band and does not justify inventing size or forcing diversification.",
+        "existing_book_summary": "Single sleeve: received 450 million March 2027 CORRA, entry 3.13 versus a 2.975 mark, about 4.5 million shocked risk capital. Concentrated Canada rates duration only; no FX, no US rates, no vol. The position is modestly profitable with negligible drawdown versus the 50 million stop.",
+        "independent_handoff_opportunities": [],
+        "rejected_complements": []
+      },
+      "principal_model": "grok-4.6",
+      "review_id": "review-001",
+      "subagent_count": 0,
+      "subagent_models": [],
+      "thesis": "March 2027 CORRA still trades at 2.975 against 2.30 cash, which prices a large Bank of Canada re-tightening from here. That gap still looks like too much policy path, so staying received on the existing Canadian sleeve is the right expression. The trader room handed over no expanding clips this cycle and new US risk is blocked, so there is no clean second trade to add. Cash at SOFR is the benchmark, not a reason to invent risk."
+    },
+    "swinger": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "expected_mark_direction": "lower",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "No incremental rates or spot risk; managing the current book only.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "CORRA_2027-03",
+          "position_id": "pm-swinger-2070479ca321",
+          "side": "long"
+        }
+      ],
+      "conviction": 74,
+      "evidence_cutoff": "2026-10-05T06:08:21.051325-04:00",
+      "execution": {
+        "principal_model": "grok-4.6",
+        "subagent_count": 0,
+        "subagent_models": []
+      },
+      "invalidation": "Cut or close if cash CORRA rises through 2.75 or March 2027 revisits 3.20, collapsing the 67.5bp gap and confirming the hiking path.",
+      "memory_context_sha256": "9965e84e9148067f48094bbe65b6c0305bbde20eef4413428b131bc130ec0476",
+      "overnight_run_id": "overnight-20261005",
+      "packet_sha256": "faf58936ce4244d4764e369706414d248e0492f94138e44d07ebfe83fd5db0fc",
+      "pm_id": "swinger",
+      "principal_model": "grok-4.6",
+      "review_id": "review-001",
+      "subagent_count": 0,
+      "subagent_models": [],
+      "thesis": "Cash CORRA at 2.30 versus March 2027 at 2.975 still prices 67.5 basis points of Bank of Canada tightening that has not been delivered. That hike arc remains too rich, so the concentrated receive stays the book. The contract has already cheapened from 3.13 and further compression toward cash is the payoff. No add and no second sleeve: size is already the expression of this one path, and US risk stays blocked."
+    }
+  },
+  "review_id": "review-001",
+  "schedule_id": "market-watch-weekday-0205",
+  "schema_version": 1,
+  "type": "OVERNIGHT_SCHEDULED_OUTPUT"
+}

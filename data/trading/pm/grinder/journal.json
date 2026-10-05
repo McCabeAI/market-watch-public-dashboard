@@ -582,6 +582,60 @@
       "run_id": "overnight-20261002",
       "schema_version": 1,
       "thesis": "The book stays flat. None of the four markable expanding handoffs shows expected edge large enough to pay official SOFR 3.90 ACT/360 charged on shocked-risk capital after a 100bp rate shock or a 1 percent spot shock. Cash-versus-strip gaps and outright yield levels are priced paths, not alpha, and the FX sleeves have no stated target that covers a 1 percent adverse move."
+    },
+    {
+      "actions": [
+        {
+          "action": "NO_TRADE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-05T07:39:50.429216-04:00",
+      "conviction": 78,
+      "decision_fingerprint": "0e18a4cf4cf4587b661dd982556aa9d16516807b4cfa5e9eec4b559cae02956b",
+      "event_id": "jde-d3d6ecc79cc7479f",
+      "funding_view": null,
+      "invalidation": "A subsequent frozen handoff presents at least one independent, markable, non-US expanding OPEN that clears official SOFR on shocked-risk capital with a defined adverse-P&L size, or an existing book risk appears that must be reduced or closed.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "0fdac1230bb7cced5042410778485913998551a9d5e56065c4c3839972c7be5f",
+      "outcome_links": [],
+      "owner_id": "grinder",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "4314c19746f444c0a0f28a5c1163a8e9005e6ce1b64ce00b305256c09fe8dfac"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-05T06:08:21.051325-04:00",
+        "evidence_hash": "38296e2c7f2bda7b94664ceb1c158ea7ce24fd1e906c25d4714c8038def4c4ea",
+        "overnight_run_id": "overnight-20261005",
+        "review_id": "review-001",
+        "review_packet_id": "prp-grinder-overnight-20261005-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book is already flat and the accepted trader-room handoff contains no expanding clips to underwrite. Preservation requires staying out: cash-versus-strip gaps are priced paths, not a standalone edge versus official SOFR charged on shocked risk capital, and new US risk is blocked. I will not originate an independent CA, AU, NZ, EA, or JP expression merely to put capital to work. Sit tight until a markable expanding idea clears the hurdle on a plausible adverse P&L path.",
+      "run_id": "overnight-20261005",
+      "schema_version": 1,
+      "thesis": "The book is already flat and the accepted trader-room handoff contains no expanding clips to underwrite. Preservation requires staying out: cash-versus-strip gaps are priced paths, not a standalone edge versus official SOFR charged on shocked risk capital, and new US risk is blocked. I will not originate an independent CA, AU, NZ, EA, or JP expression merely to put capital to work. Sit tight until a markable expanding idea clears the hurdle on a plausible adverse P&L path."
     }
   ],
   "schema_version": 1,

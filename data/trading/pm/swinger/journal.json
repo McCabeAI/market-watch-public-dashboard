@@ -610,6 +610,62 @@
       "run_id": "overnight-20261002",
       "schema_version": 1,
       "thesis": "March 2027 CORRA still implies about 63.5bp of tightening versus 2.31 cash, which remains too much Bank of Canada path even after the contract came in 18.5bp from 3.13. Oil at 102 and UST 10s at 5.24 are the inflation-spillover risks, but they have not produced the hike path the contract still discounts. Keep the concentrated receive; do not overlay FX or a pay-side offset."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pm-swinger-2070479ca321",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-05T07:39:49.879767-04:00",
+      "conviction": 74,
+      "decision_fingerprint": "bff354d0f74560f12c686f6c5dd76a8a73263982bff0f7da6aa03868b73622fc",
+      "event_id": "jde-cf44a01ccfa442d3",
+      "funding_view": null,
+      "invalidation": "Cut or close if cash CORRA rises through 2.75 or March 2027 revisits 3.20, collapsing the 67.5bp gap and confirming the hiking path.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-swinger-2070479ca321"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "9965e84e9148067f48094bbe65b6c0305bbde20eef4413428b131bc130ec0476",
+      "outcome_links": [],
+      "owner_id": "swinger",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "cf41fd2681e2526aa9d2153556e4713cf7c41421cfd612825b245c6a879573d8"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-05T06:08:21.051325-04:00",
+        "evidence_hash": "337fb8599a626406832cec52fb5e7dc7cbbd8da96c804d8a12509aa158be545e",
+        "overnight_run_id": "overnight-20261005",
+        "review_id": "review-001",
+        "review_packet_id": "prp-swinger-overnight-20261005-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Cash CORRA at 2.30 versus March 2027 at 2.975 still prices 67.5 basis points of Bank of Canada tightening that has not been delivered. That hike arc remains too rich, so the concentrated receive stays the book. The contract has already cheapened from 3.13 and further compression toward cash is the payoff. No add and no second sleeve: size is already the expression of this one path, and US risk stays blocked.",
+      "run_id": "overnight-20261005",
+      "schema_version": 1,
+      "thesis": "Cash CORRA at 2.30 versus March 2027 at 2.975 still prices 67.5 basis points of Bank of Canada tightening that has not been delivered. That hike arc remains too rich, so the concentrated receive stays the book. The contract has already cheapened from 3.13 and further compression toward cash is the payoff. No add and no second sleeve: size is already the expression of this one path, and US risk stays blocked."
     }
   ],
   "schema_version": 1,

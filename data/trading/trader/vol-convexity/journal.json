@@ -582,6 +582,60 @@
       "run_id": "overnight-20261002",
       "schema_version": 1,
       "thesis": "The book stays flat. The freeze has no listed options chain, strikes, or premiums; the only vol print is VIX 16.34. Overnight timing is uncertain, so unbounded linear spot or cash rates is the wrong expression versus bounded-risk convexity. HOLD is the only markable action; an options structure is preferred in principle but not executable without inventing a chain."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-05T06:08:21.051325-04:00",
+      "conviction": 74,
+      "decision_fingerprint": "93ae560f320608399219acff9a0657aafd641c57473b559be1ffe24cdef5fcc8",
+      "event_id": "jde-82dba6fd5e864934",
+      "funding_view": null,
+      "invalidation": "A live listed chain with executable strikes, expiries, and premiums becomes markable, or the US-risk block lifts and a bounded structure can be shown on those marks to dominate flat.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "31fb3bc65342a4a2a3cf4d8d96a96283a4dcd7266b90396d732bcebe1b5cc79d",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "372874ba705e3e6acca6c118a31c42a53cbd4b6825bca5fcb26282df0b53e44d"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-05T06:08:21.051325-04:00",
+        "evidence_hash": "faf58936ce4244d4764e369706414d248e0492f94138e44d07ebfe83fd5db0fc",
+        "overnight_run_id": "overnight-20261005",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Spot is the wrong default when timing and event risk cannot be priced, but this freeze has no markable listed chain\u2014only a VIX print of 16.39 and no strikes or premiums. A convex structure would dominate linear if it could be marked; it cannot, so options are unused rather than invented. Unbounded linear does not beat staying flat: the book is already flat, new US risk is blocked, and a directional spot expression would warehouse unlimited gap risk without a hedge that can be sized from live marks.",
+      "run_id": "overnight-20261005",
+      "schema_version": 1,
+      "thesis": "Spot is the wrong default when timing and event risk cannot be priced, but this freeze has no markable listed chain\u2014only a VIX print of 16.39 and no strikes or premiums. A convex structure would dominate linear if it could be marked; it cannot, so options are unused rather than invented. Unbounded linear does not beat staying flat: the book is already flat, new US risk is blocked, and a directional spot expression would warehouse unlimited gap risk without a hedge that can be sized from live marks."
     }
   ],
   "schema_version": 1,

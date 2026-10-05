@@ -606,6 +606,62 @@
       "run_id": "overnight-20261002",
       "schema_version": 1,
       "thesis": "Keep the existing CORRA March 2027 receive. Cash at 2.31 versus implied 2.945 still prices a re-tightening path the position is fading, and the line has already worked from 3.13 without the thesis breaking. Brent near 102 is the live hawkish-Canada risk, but the accepted expanding clips are too small to hedge that path or to add a second independent macro bet. Unused risk capacity is not a reason to overlay token AONIA, US 10-year, or CAD FX risk that either duplicates easing beta or only partially offsets it."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pm-pragmatist-4e0cbc4e0b05",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-05T07:39:50.155338-04:00",
+      "conviction": 58,
+      "decision_fingerprint": "f53ee879156be9d5bb68ea493c485dae0b6a8d28f0e762c9a0a9fbcd5b858f8a",
+      "event_id": "jde-fb8c117cba784ccd",
+      "funding_view": null,
+      "invalidation": "The receive is wrong if March 2027 CORRA reprices through 3.20 on a confirmed hike cycle, or if cash CORRA rises through 2.75 while the forward stays higher, showing the 2.30 versus 2.975 gap was warranted tightening rather than excess.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-pragmatist-4e0cbc4e0b05"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "6fb0cef628f166797799dd81091b77065ce18d0352fd035d8cb1a9b1a918ccda",
+      "outcome_links": [],
+      "owner_id": "pragmatist",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "8c7c6d0ed0fed718b1d4950a24afe5939638ade0df685bdb5d365f24bbab085f"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-05T06:08:21.051325-04:00",
+        "evidence_hash": "60810fd106899e4cf69eca41d35b88728bb9b0d7884722749d62487ff848cb56",
+        "overnight_run_id": "overnight-20261005",
+        "review_id": "review-001",
+        "review_packet_id": "prp-pragmatist-overnight-20261005-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "March 2027 CORRA still trades at 2.975 against 2.30 cash, which prices a large Bank of Canada re-tightening from here. That gap still looks like too much policy path, so staying received on the existing Canadian sleeve is the right expression. The trader room handed over no expanding clips this cycle and new US risk is blocked, so there is no clean second trade to add. Cash at SOFR is the benchmark, not a reason to invent risk.",
+      "run_id": "overnight-20261005",
+      "schema_version": 1,
+      "thesis": "March 2027 CORRA still trades at 2.975 against 2.30 cash, which prices a large Bank of Canada re-tightening from here. That gap still looks like too much policy path, so staying received on the existing Canadian sleeve is the right expression. The trader room handed over no expanding clips this cycle and new US risk is blocked, so there is no clean second trade to add. Cash at SOFR is the benchmark, not a reason to invent risk."
     }
   ],
   "schema_version": 1,

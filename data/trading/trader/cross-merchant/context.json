@@ -106,14 +106,14 @@
     "nav_usd": 99914030.73,
     "net_pnl_usd": -85969.27,
     "pressure_flags": [],
-    "prior_competition_rank": 12,
-    "rank_change": 0,
+    "prior_competition_rank": 14,
+    "rank_change": -2,
     "raw_pnl_rank": 12,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 150000.0,
     "risk_capital_utilization": 0.015,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 22814.59,
     "status": "ok"
   },
   "learning": {
@@ -124,7 +124,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "fae0b34bce47b6532ba9b73d0090827d23be36b4ba55f20123dcffe1abd6e613",
+  "memory_context_sha256": "75b62db221c8022e40a7d18ff758ff5f180ae21dd622fb5e021700dbe8d5ff8b",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -148,8 +148,8 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "up",
+        "value": 0.14
       },
       "complacency": {
         "band": "calm",
@@ -163,13 +163,13 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.18
+        "trend": "up",
+        "value": 0.24
       },
       "frustration": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.13
+        "trend": "up",
+        "value": 0.15
       },
       "revenge_pressure": {
         "band": "calm",
@@ -200,11 +200,16 @@
         "kind": "learning_default_cleared",
         "magnitude": 1.0,
         "run_id": "overnight-20260930"
+      },
+      {
+        "kind": "rank_drop_minor",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261005"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "bdec99aabc2f9bc918fc625592af1132a2613407457509e4834e3794078b8e89",
+    "state_sha256": "1006c1eadfa6c91dd7246141bf3ce23ae6666700877b5810fbe3b7c2ebb3aa2d",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

@@ -157,6 +157,50 @@
       "subject": {
         "rank_change": -6
       }
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-10-05T06:08:21.051325-04:00",
+      "event_id": "pse-000008",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "rate-dove",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261005",
+      "seq": 8,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-10-05T06:08:21.051325-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "complacency": 0.0427
+      },
+      "event_id": "pse-000009",
+      "kind": "self_report_admission_overconfidence",
+      "magnitude": 1.0,
+      "mismatch": false,
+      "owner_id": "rate-dove",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261005",
+      "scale": 1.0,
+      "seq": 9,
+      "soften": false,
+      "source": {
+        "layer": "self_report"
+      },
+      "subject": {
+        "reflection_id": "prf-02c296305348"
+      }
     }
   ],
   "owner_id": "rate-dove",

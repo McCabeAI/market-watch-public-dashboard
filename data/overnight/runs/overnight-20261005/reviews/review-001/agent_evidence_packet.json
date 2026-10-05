@@ -1,0 +1,279 @@
+{
+  "base_evidence_cutoff": "2026-10-05T06:08:21.051325-04:00",
+  "base_packet_sha256": "d8e2467d0bf7821bbce9d5ad5bf6d04f867bfb9c8ffe8867139d3a3667326a01",
+  "competition": {
+    "flat_book_pnl": "A flat seat has zero net financing/competition P&L: paper NAV earning SOFR is benchmarked at SOFR, so those flows cancel, and shocked-risk financing is zero.",
+    "funding_basis": "Official NY Fed SOFR ACT/360 is the zero-return competition benchmark, not free alpha. Every seat has $100m paper NAV that may be described as earning SOFR, but that capital is equally funded/benchmarked at SOFR so those flows cancel. Deployed shocked-risk capital pays the same official SOFR on trusted standard-shock risk capital: the absolute MTM loss from a 1% adverse spot move, a 100bp (1 percentage point) adverse outright rate move, or a 100bp adverse curve/RV spread move under the trusted duration-1 P&L convention. Equal risk capital receives equal financing treatment across asset classes. Notional is descriptive, not the funding base. A completely flat book \u2014 including no-trade-skeptic \u2014 therefore has zero net financing/competition P&L from SOFR cash or funding economics. Positive financing/carry alpha requires an explicit markable strategy that earns above SOFR or funds below SOFR. Weekends and holidays carry the last applicable published fixing until the next fixing. If official fixing history cannot be established, new funding accrual fails closed and prior canonical balances are preserved.",
+    "funding_convention": "ACT/360",
+    "funding_day_count": 360,
+    "funding_observation_date": "2026-10-01",
+    "funding_rate_annual": 0.0387,
+    "funding_source": "NY_FED",
+    "funding_source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr",
+    "instruction": "Do not optimize for gross notional or fill available capacity. Size risk from plausible adverse paths and historical excursions while staying inside the trusted risk-capital and drawdown limits. Flat cash at SOFR is the zero benchmark, not a source of alpha. The no-trade-skeptic must include a structured funding_view on every new risk or NO_TRADE thesis: the frozen official SOFR fixing, the relevant SR3 forward-curve view, its own assessment of whether realized funding will print higher, lower, or about the same as the curve, and the implication for remaining at the zero SOFR benchmark versus paying SOFR on shocked-risk capital.",
+    "metric": "net_pnl_after_funding",
+    "no_trade_allowed": true,
+    "objective": "Finish with the highest cumulative net paper P&L across the 14 standing seats.",
+    "risk_limits": {
+      "max_drawdown_usd": 5000000,
+      "paper_nav_usd": 100000000,
+      "risk_capital_limit_usd": 10000000,
+      "risk_capital_method": "mtm_standard_1pct_move"
+    }
+  },
+  "evidence_cutoff": "2026-10-05T06:08:21.051325-04:00",
+  "launch_id": "mwl-20261005T100821Z-3f9807cb",
+  "overnight_run_id": "overnight-20261005",
+  "packet_sha256": "faf58936ce4244d4764e369706414d248e0492f94138e44d07ebfe83fd5db0fc",
+  "research_supplement": {
+    "central_bank_research": [
+      {
+        "summary": "22 Sep remarks focused on discount window upgrades and quarter-end window use when repo pressures lifted, without signaling a funds-rate path.",
+        "title": "Fed Vice Chair Jefferson: discount window modernization supports Treasury and repo market functioning"
+      },
+      {
+        "summary": "22 Sep speech said reserves look ample, overnight rates trade slightly below IORB, and reserve management purchases were cut to zero since mid-August.",
+        "title": "NY Fed SOMA Manager Perli: reserves ample; overnight rates near IORB; RMPs cut to zero"
+      },
+      {
+        "summary": "18 Sep MPM materials confirm the uncollateralized overnight call target moves to about 1.25% from 24 Sep, with the basic loan rate at 1.5%.",
+        "title": "BoJ September hike implementation: ~1.25% call-rate target effective 24 September"
+      }
+    ],
+    "news": [
+      {
+        "headline": "Global Oil Supply Buffer Running \u2018Scarily Thin,\u2019 Aramco CEO Says",
+        "published_at": "2026-10-04T21:20:00-04:00",
+        "summary": "The oil stockpiles that cushion the world from supply shocks have become \u201cscarily thin,\u201d putting markets at risk of worsening unless the Strait of Hormuz reopens, according to the head of Saudi Arabia\u2019s Aramco."
+      },
+      {
+        "headline": "Iran\u2019s Oil Minister Resigns as Exports Dry Up Under US Pressure",
+        "published_at": "2026-10-04T19:20:00-04:00",
+        "summary": "Iran\u2019s Oil Minister Mohsen Paknejad resigned citing personal reasons, as the Islamic Republic tries to sustain its oil industry under a tightening US blockade."
+      },
+      {
+        "headline": "LNG Trade Through Hormuz Extends Rebound Despite Shipping Risks",
+        "published_at": "2026-10-04T13:00:00-04:00",
+        "summary": "Shipments of liquefied natural gas through the Strait of Hormuz extended a rebound that began in September, as the region\u2019s producers seek to restore supplies to energy-starved customers."
+      },
+      {
+        "headline": "China Oil Comeback Loses Steam as Iran War Drags On",
+        "published_at": "2026-09-29T21:26:00-04:00",
+        "summary": "A nascent recovery in Chinese oil demand has begun to falter, as continued fighting in the Middle East and limited Iranian supply keep crude prices too high for private refiners."
+      },
+      {
+        "headline": "Euro-Zone Inflation Tops Estimates to Hit Three-Year High",
+        "published_at": "2026-10-01T22:01:00-04:00",
+        "summary": "Euro-area inflation quickened more than expected to the highest in three years, bolstering expectations that the European Central Bank will lift interest rates further."
+      },
+      {
+        "headline": "Europe\u2019s Bond-Spread Blowout Prompts Bets on Fewer ECB Hikes",
+        "published_at": "2026-10-01T21:55:00-04:00",
+        "summary": "A surge in euro-area sovereign bond spreads slowed as traders bet the European Central Bank will deliver fewer interest-rate hikes to support more-indebted members."
+      },
+      {
+        "headline": "ECB Hopeful Knot Says Market Access At Risk If Nations Cut Rules",
+        "published_at": "2026-10-04T22:13:00-04:00",
+        "summary": "Europe may have to reconsider the market access it gives other jurisdictions that are rapidly relaxing their financial regulations, ECB presidency candidate Klaas Knot said."
+      },
+      {
+        "headline": "Yen Strengthens Past 157 Per Dollar, Outperforming G-10 Peers",
+        "published_at": "2026-09-29T13:00:00-04:00",
+        "summary": "The yen strengthened past the 157 level against the dollar as government warnings on the currency and quarter-end flows provided support."
+      },
+      {
+        "headline": "Shell\u2019s LNG Canada to Proceed With Multibillion-Dollar Expansion",
+        "published_at": "2026-09-28T19:54:00-04:00",
+        "summary": "Shareholders in the Shell-led LNG Canada venture made a final investment decision to expand liquefied natural gas exports on a multibillion-dollar plan."
+      },
+      {
+        "headline": "Man Group Says 5.5% Yields Risk Cracking AI Capex, US Consumer",
+        "published_at": "2026-09-28T05:56:00-04:00",
+        "summary": "Man Group\u2019s Kristina Hooper warned that surging long-end Treasury yields threaten AI capital expenditures and US consumer resilience."
+      },
+      {
+        "headline": "Pimco\u2019s Stracke Says AI Spending Drove Yields, Not Inflation",
+        "published_at": "2026-10-01T20:34:00-04:00",
+        "summary": "Surging capital demand from hyperscalers and the AI ecosystem\u2014not inflation expectations\u2014is the primary force pushing real rates and bond yields higher, Pimco\u2019s Stracke said."
+      },
+      {
+        "headline": "UK Firms Predict Faster Price Increases After Energy Costs Surge",
+        "published_at": "2026-10-01T21:58:00-04:00",
+        "summary": "The resurgence in oil and gas prices drove up UK businesses\u2019 inflation expectations as firms planned to pass on cost increases to consumers."
+      }
+    ],
+    "sources": [
+      "Bloomberg",
+      "NY_FED",
+      "Federal Reserve",
+      "NY Fed",
+      "BoJ"
+    ],
+    "summary": "Overnight markets still price a firm US rate backdrop while equities hold gains: the S&P is near 7723, VIX near 16.4, and the US 10-year at 5.28% as SOFR cash at 3.87% leaves March 2027 futures roughly 64bp above fixings. Brent at 102.25 and WTI at 91.11 keep energy supported with gold near 4162; EURUSD at 1.1225 and USDJPY near 157.7 show a softer euro and a heavy yen. Middle East supply headlines intensified\u2014Aramco warned stockpile buffers are dangerously thin without Hormuz reopening, and Iran\u2019s oil minister resigned as exports weakened\u2014alongside euro-area inflation at a three-year high and spread stress that has traders leaning to fewer ECB hikes. September US payrolls, unemployment, and wage data could not be verified, so be careful adding fresh US macro risk. Watch Hormuz oil and LNG flows, ECB politics, and whether AI-capex versus inflation stories keep shaping long-end yields."
+  },
+  "review_id": "review-001",
+  "schema_version": 1,
+  "trade_permissions": {
+    "blocked_expressions": [
+      "macro:US"
+    ],
+    "blocked_sources": [
+      "US.Labor.payrolls",
+      "US.Labor.unemployment",
+      "US.Labor.wages"
+    ],
+    "countries": {
+      "AU": {
+        "eligible": true,
+        "gaps": [
+          "AU.Activity.business_surveys",
+          "AU.Consumer.confidence"
+        ],
+        "scored_status": "partial"
+      },
+      "CA": {
+        "eligible": true,
+        "gaps": [
+          "CA.Activity.business_surveys",
+          "CA.Consumer.confidence"
+        ],
+        "scored_status": "partial"
+      },
+      "EA": {
+        "eligible": true,
+        "gaps": [],
+        "scored_status": "ok"
+      },
+      "JP": {
+        "eligible": true,
+        "gaps": [
+          "JP.Activity.business_surveys"
+        ],
+        "scored_status": "partial"
+      },
+      "NZ": {
+        "eligible": true,
+        "gaps": [
+          "NZ.Activity.gdp_domestic_demand",
+          "NZ.Consumer.income",
+          "NZ.Consumer.retail",
+          "NZ.Consumer.spending",
+          "NZ.Labor.wages"
+        ],
+        "scored_status": "partial"
+      },
+      "US": {
+        "eligible": false,
+        "gaps": [
+          "US.Labor.payrolls",
+          "US.Labor.unemployment",
+          "US.Labor.wages"
+        ],
+        "scored_status": "partial"
+      }
+    },
+    "coverage": "PARTIAL",
+    "eligible": true,
+    "expansion_rule": "country_and_expression_specific",
+    "partial_expressions": [
+      "activity:US",
+      "activity:CA",
+      "activity:AU",
+      "activity:NZ",
+      "activity:EA",
+      "activity:JP",
+      "macro:AU",
+      "macro:NZ"
+    ],
+    "source_health": [
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-Q2",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Activity.gdp_domestic_demand"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "HTTP 404",
+        "observation_period": "2026-08",
+        "retrieved_at": "2026-09-21T16:30:00Z",
+        "series_id": "US.Activity.manufacturing_surveys"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "HTTP 404",
+        "observation_period": "2026-08",
+        "retrieved_at": "2026-09-21T16:30:00Z",
+        "series_id": "US.Activity.services_surveys"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-07",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Consumer.confidence"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-07",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Consumer.income"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-08",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Consumer.retail"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-07",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Consumer.spending"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-07",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Inflation.core_pce"
+      }
+    ],
+    "trade_eligible_countries": [
+      "CA",
+      "AU",
+      "NZ",
+      "EA",
+      "JP"
+    ]
+  },
+  "type": "OVERNIGHT_AGENT_EVIDENCE_PACKET"
+}

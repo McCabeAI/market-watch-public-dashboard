@@ -612,6 +612,62 @@
       "run_id": "overnight-20261002",
       "schema_version": 1,
       "thesis": "Receive AONIA March 2027 at 4.83 against cash 4.60. This is the only high-cash STIR with modest path premium, so the holding-period return comes from remaining in the high cash-rate market rather than fading a hike strip. Reject reopening the CAD March receive: 2.945 versus cash 2.31 is still path premium, the same non-carry identity as the closed trade."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-524ab67108ee",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-05T06:08:21.051325-04:00",
+      "conviction": 70,
+      "decision_fingerprint": "a75cad2fbf0f5fbdc0d278493c4585f1c483cbcaa283706a8643b66fe8196939",
+      "event_id": "jde-d0eb9c1eca3b4d29",
+      "funding_view": null,
+      "invalidation": "Cash AONIA rises toward or through 4.785 and erases the paid path, or the expected March quarter average is lifted through 4.785 by delivered hikes.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-524ab67108ee"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "84ab55cd7c2910eb5e6a725353f5196c56939508d193c04dd90fda9a3e33f5ff",
+      "outcome_links": [],
+      "owner_id": "carry-is-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "7ef72e2b5f4767c1300d574f03b830723e6fa068e2d4c07ff77c758e0198b33d"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-05T06:08:21.051325-04:00",
+        "evidence_hash": "faf58936ce4244d4764e369706414d248e0492f94138e44d07ebfe83fd5db0fc",
+        "overnight_run_id": "overnight-20261005",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "March AONIA at 4.785 still sits 18.5 basis points above 4.60 cash, so the existing receive is paid to wait if cash holds. That differential is carry, not an easing story, and a small oil-beta backup is not a reason to flatten a long that is already through the 4.83 entry. Canada stays closed: March CORRA at 2.975 versus 2.30 cash is 67.5 basis points of hike path, a policy fight rather than residual carry.",
+      "run_id": "overnight-20261005",
+      "schema_version": 1,
+      "thesis": "March AONIA at 4.785 still sits 18.5 basis points above 4.60 cash, so the existing receive is paid to wait if cash holds. That differential is carry, not an easing story, and a small oil-beta backup is not a reason to flatten a long that is already through the 4.83 entry. Canada stays closed: March CORRA at 2.975 versus 2.30 cash is 67.5 basis points of hike path, a policy fight rather than residual carry."
     }
   ],
   "schema_version": 1,

@@ -1,5 +1,38 @@
 {
-  "items": [],
+  "items": [
+    {
+      "at": "2026-10-05T06:08:21.051325-04:00",
+      "attribution": [
+        "variance_luck",
+        "thesis",
+        "sizing"
+      ],
+      "causal": {
+        "assumptions_right": "Direction was right: the 2027 hike path was rich relative to cash, and the receive from 3.40 did not need to be abandoned.",
+        "assumptions_wrong_or_underweighted": "Near-term mark-to-market and rank-path variance was underweighted; a correctly signed receive can still print a large interim drawdown and rank shock.",
+        "causal_divergence": "The shock was mark-to-market path, not a completed 2027 tightening cycle that validated December 2027 at 3.50. Cash stayed 2.30 in the supplied marks; the strip did not realize the priced hike path.",
+        "decision_quality_attribution": "variance_luck",
+        "future_implication": "Rank is not a sizing signal. Keep the existing 42.5 million receive and do not scale up because the shock reversed.",
+        "observed_reality": "Rank moved from 2 to 8 with an interim drawdown near 89633 and net near -5787, then rank returned to 2 with positive net. Live H-Z near 3.264 remains below the 3.40 entry and far above cash 2.30.",
+        "original_belief": "The 2027 CORRA strip overpriced tightening versus a cash rate already at 2.30, so receiving the H-Z pack was the right easing expression.",
+        "same_information_counterfactual": "The same information would still hold the receive and would still refuse an add on a rank 8-to-2 recovery."
+      },
+      "chase_or_revenge": "no",
+      "no_new_lesson": "The rank 2-to-8-to-2 move with an interim drawdown then positive net is bounded ordinary variance around a correctly signed receive; the original process remains sound. Do not add because rank recovered.",
+      "overconfidence_risk": "yes",
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "pressure_effect": "none",
+      "reflection_due_id": "rfd-b31468a2b557",
+      "reflection_id": "prf-02c296305348",
+      "run_id": "overnight-20261005",
+      "skill_vs_luck": "mixed",
+      "trigger_ids": [
+        "rank_shock"
+      ],
+      "what_happened_vs_expected": "Expected a grind lower in 2027 implieds toward cash. Instead printed a rank 2-to-8 drawdown near 89633 and net near -5787, then recovered to rank 2 and positive net, with live H-Z near 3.264 still only partway from 3.40 toward 2.30."
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_PERFORMANCE_REFLECTIONS"
 }

@@ -153,6 +153,54 @@
       "run_id": "overnight-20261002",
       "seq": 7,
       "skipped_reason": null
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [
+          150000.0
+        ],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-10-05T06:08:21.051325-04:00",
+      "event_id": "pse-000008",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "cross-merchant",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261005",
+      "seq": 8,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-10-05T06:08:21.051325-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "chase_pressure": 0.0431,
+        "external_pressure": 0.066,
+        "frustration": 0.0264
+      },
+      "event_id": "pse-000009",
+      "kind": "rank_drop_minor",
+      "magnitude": 1.0,
+      "mismatch": false,
+      "owner_id": "cross-merchant",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261005",
+      "scale": 1.0,
+      "seq": 9,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "rank_change": 2
+      }
     }
   ],
   "owner_id": "cross-merchant",

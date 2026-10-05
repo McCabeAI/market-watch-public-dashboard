@@ -614,6 +614,62 @@
       "run_id": "overnight-20261002",
       "schema_version": 1,
       "thesis": "The 2027 SOFR and CORRA complex is already two-way on the desk, and cheap-versus-cash is not an entry for a new March CORRA receive while that crowding is flagged. Adding a 2027 pay does not create incremental ownership asymmetry because pays are already a desk position. The remaining one-way crowded expression is the desk long in USDCAD at 1.4246; fading that long is the cleaner ownership-asymmetric trade."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDCAD",
+          "notional_usd": null,
+          "position_id": "pos-ccb6655acbad",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-05T06:08:21.051325-04:00",
+      "conviction": 66,
+      "decision_fingerprint": "b9ae28c90b3715f924d56e8b9d381f5410e5805f82108b52df6d94d35022b3e6",
+      "event_id": "jde-81fac0b9ec70468a",
+      "funding_view": null,
+      "invalidation": "If the desk dollar-king long is reduced or flipped, the short is no longer fading a crowded owner and must be reviewed.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-ccb6655acbad"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "a180227b8485554dbeacf6826e4a1bb998f654ca342c5bbced1d9156f5d9db8f",
+      "outcome_links": [],
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "21ecf75779a7ca248614d853ccb6b677e203e7163e3fe3311e4bb26af7321141"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-05T06:08:21.051325-04:00",
+        "evidence_hash": "faf58936ce4244d4764e369706414d248e0492f94138e44d07ebfe83fd5db0fc",
+        "overnight_run_id": "overnight-20261005",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The crowded one-way is still the desk's large dollar-king USDCAD long; the existing short is the fade against that owner, not the crowd, so covering it would join the one-way. Hold that short and do not add. March 2027 CORRA at 2.975 versus 2.30 cash remains crowded receive territory: that is a reason to refuse a new receive, not a reason to pay the strip without a packet-quality entry. New US risk stays closed and new USDCAD stays closed.",
+      "run_id": "overnight-20261005",
+      "schema_version": 1,
+      "thesis": "The crowded one-way is still the desk's large dollar-king USDCAD long; the existing short is the fade against that owner, not the crowd, so covering it would join the one-way. Hold that short and do not add. March 2027 CORRA at 2.975 versus 2.30 cash remains crowded receive territory: that is a reason to refuse a new receive, not a reason to pay the strip without a packet-quality entry. New US risk stays closed and new USDCAD stays closed."
     }
   ],
   "schema_version": 1,
