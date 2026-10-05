@@ -71,7 +71,7 @@ def authorize_pages_dispatch(
 
 
 PAGES_RECONCILED = "pages_publication_reconciled"
-_REQUIRED_PRIOR_STAGES: tuple[str, ...] = (
+REQUIRED_PRIOR_STAGES: tuple[str, ...] = (
     "00_authenticate",
     "01_ingest",
     "02_acquire",
@@ -119,7 +119,7 @@ def publication_evidence_proven(launch: dict[str, Any], evidence: dict[str, Any]
         return False
     final_stages = finalized.get("stages") or {}
     current_stages = launch.get("stages") or {}
-    for name in _REQUIRED_PRIOR_STAGES:
+    for name in REQUIRED_PRIOR_STAGES:
         final_row = final_stages.get(name) or {}
         current_row = current_stages.get(name) or {}
         if final_row.get("status") != "succeeded" or current_row.get("status") != "succeeded":
