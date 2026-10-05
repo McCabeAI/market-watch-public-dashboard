@@ -147,3 +147,32 @@ git show origin/main:data/overnight/latest.json
 ```bash
 gh workflow run deploy-pages.yml --ref main
 ```
+
+A successful dispatch does not by itself terminal the launch. After that run is green, reconcile it with the Pages publication recovery below. Until stage `08_pages` is `succeeded`, the launch stays `running` and the one-live-launch guard stays closed.
+
+## Reconcile a successful Pages deploy
+
+Use this when `deploy-pages.yml` has already succeeded as a `workflow_dispatch` on `main`, but the bound launch is still `status=running` with stage `08_pages` pending. The October 2 case is launch `mwl-20261002T094056Z-1d0ebea5` and Actions run `37036473785` (`Deploy Market Watch Dashboard`, head `ffec0735582a357277e2ffa6cfe571b29608c6dc`). The launch record at that deployed commit is finalized through stage 07, and stage 08 is still pending there.
+
+The recovery records that deploy into canonical launch state through `publication_evidence_proven()` and `reconcile_published_pages()`. It does not rerun traders, PMs, learning, ingestion, market-state acquisition, score calibration, books, or P&L. It does not dispatch Pages again. It refuses a mismatched launch id, review id, or packet SHA, a deploy head SHA that is not that commit on the current branch, a non-success conclusion, a non-main ref, a non-`workflow_dispatch` event, any other workflow, or stages 00–07 that are not all succeeded. A second run is a no-op once `main` has stage 08 succeeded with reason `pages_publication_reconciled` for the same run. The commit stages only that launch's `launch.json`, `artifacts/08_pages.json`, and `data/market_watch_launches/index.json`. Any other dirty path fails the run.
+
+This does not resume a later launch that already blocked on the guard. The October 5 attempt stays blocked in history. After the October 2 launch is terminal, a new human launch can authenticate.
+
+After this change is on `main`:
+
+```bash
+gh workflow run reconcile-published-pages.yml --ref main \
+  -f launch_id=mwl-20261002T094056Z-1d0ebea5 \
+  -f run_id=37036473785
+```
+
+Equivalent local command, from a clean checkout of `main`, with permission to push:
+
+```bash
+git fetch origin main
+git checkout main
+git reset --hard origin/main
+LAUNCH_ID=mwl-20261002T094056Z-1d0ebea5 \
+RUN_ID=37036473785 \
+  bash scripts/market_watch_launch/reconcile_published_pages.sh
+```

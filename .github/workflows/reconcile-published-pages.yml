@@ -1,0 +1,45 @@
+name: Reconcile published Pages
+
+on:
+  workflow_dispatch:
+    inputs:
+      launch_id:
+        description: Finalized launch still running with stage 08_pages pending
+        required: true
+        default: mwl-20261002T094056Z-1d0ebea5
+        type: string
+      run_id:
+        description: Successful deploy-pages.yml workflow_dispatch run id
+        required: true
+        default: "37036473785"
+        type: string
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: reconcile-published-pages
+  cancel-in-progress: false
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout trusted main
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Reconcile the successful Pages deploy into launch state
+        env:
+          GH_TOKEN: ${{ github.token }}
+          LAUNCH_ID: ${{ inputs.launch_id }}
+          RUN_ID: ${{ inputs.run_id }}
+        run: bash scripts/market_watch_launch/reconcile_published_pages.sh
