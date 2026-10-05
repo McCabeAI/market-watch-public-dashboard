@@ -13,10 +13,13 @@ on:
         required: true
         default: "37036473785"
         type: string
+  issues:
+    types: [opened]
 
 permissions:
   contents: write
   actions: read
+  issues: write
 
 concurrency:
   group: reconcile-published-pages
@@ -24,9 +27,49 @@ concurrency:
 
 jobs:
   reconcile:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'issues' &&
+       github.event.issue.user.type == 'User' &&
+       github.event.issue.user.login == 'kevinnmccabe-PC' &&
+       startsWith(github.event.issue.title, '[reconcile-published-pages] '))
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
+      - name: Resolve authorized recovery request
+        id: resolve
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_LAUNCH_ID: ${{ inputs.launch_id }}
+          INPUT_RUN_ID: ${{ inputs.run_id }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_USER: ${{ github.event.issue.user.login }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            launch_id="$INPUT_LAUNCH_ID"
+            run_id="$INPUT_RUN_ID"
+          else
+            read -r launch_id run_id < <(python3 - <<'PY'
+          import os, re
+          title = os.environ.get("ISSUE_TITLE", "")
+          m = re.fullmatch(r"\[reconcile-published-pages\] (mwl-[0-9]{8}T[0-9]{6}Z-[0-9a-f]{8}) ([0-9]{1,20})", title)
+          if not m:
+              raise SystemExit("invalid reconcile issue title")
+          print(m.group(1), m.group(2))
+          PY
+            )
+            permission="$(gh api "repos/${GITHUB_REPOSITORY}/collaborators/${ISSUE_USER}/permission" --jq .permission)"
+            case "$permission" in
+              admin|maintain|write) ;;
+              *) echo "refusing reconcile request from permission=$permission"; exit 1 ;;
+            esac
+          fi
+          echo "launch_id=$launch_id" >> "$GITHUB_OUTPUT"
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+
       - name: Checkout trusted main
         uses: actions/checkout@v6
         with:
@@ -40,6 +83,15 @@ jobs:
       - name: Reconcile the successful Pages deploy into launch state
         env:
           GH_TOKEN: ${{ github.token }}
-          LAUNCH_ID: ${{ inputs.launch_id }}
-          RUN_ID: ${{ inputs.run_id }}
+          LAUNCH_ID: ${{ steps.resolve.outputs.launch_id }}
+          RUN_ID: ${{ steps.resolve.outputs.run_id }}
         run: bash scripts/market_watch_launch/reconcile_published_pages.sh
+
+      - name: Close successful issue request
+        if: github.event_name == 'issues' && success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          LAUNCH_ID: ${{ steps.resolve.outputs.launch_id }}
+          RUN_ID: ${{ steps.resolve.outputs.run_id }}
+        run: gh issue close "$ISSUE_NUMBER" --comment "Reconciled Pages publication for ${LAUNCH_ID} from workflow run ${RUN_ID}."
