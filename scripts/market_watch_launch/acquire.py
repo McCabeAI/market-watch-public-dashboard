@@ -104,6 +104,13 @@ def run(launch: dict, ctx: dict) -> dict:
     families = apply_lineage_to_macro_hard(families, launch_dir, lineage_summary)
     if lineage_summary and (launch_dir / "lineage" / "temperature_scores.json").is_file():
         collect = {**snapshot, "families": families}
+        macro_hard = families.get("macro_hard") or {}
+        extra_scores = (macro_hard.get("extra") or {}).get("temperature_scores")
+        if isinstance(extra_scores, dict):
+            macro_hard = {**macro_hard, "temperature_scores": extra_scores}
+            families = {**families, "macro_hard": macro_hard}
+            collect["families"] = families
+            collect["temperature_scores"] = extra_scores
         store.write_artifact(run_id, "collect.json", collect)
 
     market_block = families.get("market_state") or {}

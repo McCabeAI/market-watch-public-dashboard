@@ -196,6 +196,21 @@ def _should_retry_live_row(row: dict[str, Any]) -> bool:
     return False
 
 
+def _primary_has_started_attempt(row: dict[str, Any]) -> bool:
+    history = row.get("attempt_history")
+    if isinstance(history, list) and history:
+        return True
+    error = str(row.get("error") or "")
+    status = str(row.get("status") or "")
+    return error != "budget_deferred" and status == "source_failed"
+
+
+def _append_scheduler_event(row: dict[str, Any], sid: str, *, kind: str) -> None:
+    events = list(row.get("scheduler_events") or [])
+    events.append({"kind": kind, "reason": "budget_deferred", "series_id": sid})
+    row["scheduler_events"] = events
+
+
 def _merge_ingestion_rows(
     primary: list[dict[str, Any]],
     secondary: list[dict[str, Any]],
@@ -205,11 +220,53 @@ def _merge_ingestion_rows(
     by_id = {str(row["series_id"]): dict(row) for row in primary}
     for row in secondary:
         sid = str(row["series_id"])
-        merged = dict(row)
-        merged["attempts"] = attempts.get(sid, _row_fetch_attempts(row))
+        secondary_row = dict(row)
+        counter = attempts.get(sid, _row_fetch_attempts(secondary_row))
+        secondary_row["attempts"] = counter
+
+        if sid not in by_id:
+            by_id[sid] = secondary_row
+            continue
+
+        merged = dict(by_id[sid])
+        history = list(merged.get("attempt_history") or [])
+        merged["attempt_history"] = history
+        sec_error = str(secondary_row.get("error") or "")
+
+        if sec_error == "budget_deferred" and _primary_has_started_attempt(merged):
+            skip_kind = "skipped_retry" if history else "skipped_admission"
+            _append_scheduler_event(merged, sid, kind=skip_kind)
+            merged["attempts"] = counter
+            by_id[sid] = merged
+            continue
+
+        if sec_error != "budget_deferred":
+            retry_entry = dict(secondary_row)
+            retry_entry["kind"] = "retry"
+            history.append(retry_entry)
+            merged["attempt_history"] = history
+            for key, value in secondary_row.items():
+                if key in ("attempt_history", "scheduler_events"):
+                    continue
+                merged[key] = value
+            merged["attempts"] = counter
+            by_id[sid] = merged
+            continue
+
+        if history:
+            merged["attempt_history"] = history
+        _append_scheduler_event(merged, sid, kind="skipped_admission")
+        for key, value in secondary_row.items():
+            if key in ("attempt_history", "scheduler_events"):
+                continue
+            merged[key] = value
+        merged["attempts"] = counter
         by_id[sid] = merged
+
     for sid, row in by_id.items():
         row.setdefault("attempts", attempts.get(sid, _row_fetch_attempts(row)))
+        if "attempt_history" in row and row["attempt_history"] is not None:
+            row["attempt_history"] = list(row["attempt_history"])
     return list(by_id.values())
 
 

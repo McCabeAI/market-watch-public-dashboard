@@ -1,0 +1,188 @@
+{
+  "schema_version": "oct5-incident-fixture/1",
+  "run_id": "mwl-20261005T100821Z-3f9807cb",
+  "overnight_run_id": "overnight-20261005",
+  "session_date": "2026-10-05",
+  "cutoff_at": "2026-10-05T06:08:21.051325-04:00",
+  "freeze_cutoff": "2026-10-05T06:08:21.051325-04:00",
+  "injected_clock": "2026-10-05T06:08:21.051325-04:00",
+  "employment_situation": {
+    "release_at": "2026-10-02T08:30:00-04:00",
+    "period": "2026-09",
+    "calendar_status": "known",
+    "series_ids": [
+      "US.Labor.payrolls",
+      "US.Labor.unemployment",
+      "US.Labor.wages"
+    ]
+  },
+  "reconstructed_primary_attempts": [
+    {
+      "series_id": "US.Labor.payrolls",
+      "kind": "primary",
+      "ordinal": 1,
+      "result": "timeout",
+      "error": "timed out",
+      "started": true,
+      "queued_at": "2026-10-05T06:08:10.051325-04:00",
+      "started_at": "2026-10-05T06:08:11.051325-04:00",
+      "ended_at": "2026-10-05T06:08:21.051325-04:00",
+      "elapsed_ms": 10000,
+      "deadline_at": "2026-10-05T06:08:21.051325-04:00"
+    },
+    {
+      "series_id": "US.Labor.unemployment",
+      "kind": "primary",
+      "ordinal": 1,
+      "result": "timeout",
+      "error": "timed out",
+      "started": true,
+      "queued_at": "2026-10-05T06:08:10.051325-04:00",
+      "started_at": "2026-10-05T06:08:11.051325-04:00",
+      "ended_at": "2026-10-05T06:08:21.051325-04:00",
+      "elapsed_ms": 10000,
+      "deadline_at": "2026-10-05T06:08:21.051325-04:00"
+    },
+    {
+      "series_id": "US.Labor.wages",
+      "kind": "primary",
+      "ordinal": 1,
+      "result": "timeout",
+      "error": "timed out",
+      "started": true,
+      "queued_at": "2026-10-05T06:08:10.051325-04:00",
+      "started_at": "2026-10-05T06:08:11.051325-04:00",
+      "ended_at": "2026-10-05T06:08:21.051325-04:00",
+      "elapsed_ms": 10000,
+      "deadline_at": "2026-10-05T06:08:21.051325-04:00"
+    }
+  ],
+  "labor_skipped_retries": [
+    {
+      "series_id": "US.Labor.payrolls",
+      "kind": "skipped_retry",
+      "reason": "budget_exhausted_lower_priority_admitted_first"
+    },
+    {
+      "series_id": "US.Labor.unemployment",
+      "kind": "skipped_retry",
+      "reason": "budget_exhausted_lower_priority_admitted_first"
+    },
+    {
+      "series_id": "US.Labor.wages",
+      "kind": "skipped_retry",
+      "reason": "budget_exhausted_lower_priority_admitted_first"
+    }
+  ],
+  "lower_priority_retry_attempts": [
+    {
+      "series_id": "US.Activity.gdp_domestic_demand",
+      "kind": "retry",
+      "result": "timeout",
+      "error": "The read operation timed out",
+      "attempts_recorded": 3,
+      "release_due": false,
+      "started": true
+    },
+    {
+      "series_id": "US.Consumer.confidence",
+      "kind": "retry",
+      "result": "timeout",
+      "error": "The read operation timed out",
+      "attempts_recorded": 3,
+      "release_due": false,
+      "started": true
+    },
+    {
+      "series_id": "US.Consumer.income",
+      "kind": "retry",
+      "result": "timeout",
+      "error": "The read operation timed out",
+      "attempts_recorded": 3,
+      "release_due": false,
+      "started": true
+    },
+    {
+      "series_id": "US.Consumer.retail",
+      "kind": "retry",
+      "result": "timeout",
+      "error": "The read operation timed out",
+      "attempts_recorded": 3,
+      "release_due": false,
+      "started": true
+    },
+    {
+      "series_id": "US.Consumer.spending",
+      "kind": "retry",
+      "result": "timeout",
+      "error": "The read operation timed out",
+      "attempts_recorded": 3,
+      "release_due": false,
+      "started": true
+    },
+    {
+      "series_id": "US.Inflation.core_pce",
+      "kind": "retry",
+      "result": "timeout",
+      "error": "The read operation timed out",
+      "attempts_recorded": 3,
+      "release_due": false,
+      "started": true
+    }
+  ],
+  "defect_rows": [
+    {
+      "series_id": "US.Labor.payrolls",
+      "status": "source_failed",
+      "error": "budget_deferred",
+      "attempts": 1,
+      "release_due": true,
+      "due_period": "2026-09",
+      "observation_period": null,
+      "country": "US",
+      "role": "scored",
+      "weight": 0.1
+    },
+    {
+      "series_id": "US.Labor.unemployment",
+      "status": "source_failed",
+      "error": "budget_deferred",
+      "attempts": 1,
+      "release_due": true,
+      "due_period": "2026-09",
+      "observation_period": null,
+      "country": "US",
+      "role": "scored",
+      "weight": 0.7
+    },
+    {
+      "series_id": "US.Labor.wages",
+      "status": "source_failed",
+      "error": "budget_deferred",
+      "attempts": 1,
+      "release_due": true,
+      "due_period": "2026-09",
+      "observation_period": null,
+      "country": "US",
+      "role": "scored",
+      "weight": 0.2
+    }
+  ],
+  "gate_expectation": {
+    "outcome": "PASS",
+    "eligible": true,
+    "blocked_expressions": ["macro:US"],
+    "trade_eligible_countries": ["CA", "AU", "NZ", "EA", "JP"],
+    "us_eligible": false
+  },
+  "score_copies": {
+    "score_copy_a": {"id": "score_copy_a", "level": 50},
+    "score_copy_b": {"id": "score_copy_b", "level": 51}
+  },
+  "lineage_score_sha256": "304760ad8c1f57ace7502ed5464f32678ee008daf0890974c09b70bc5940d1d6",
+  "prose_defect": {
+    "sentence": "Source checks for US did not refresh, so the latest verified vintages are carried forward; no new release was due.",
+    "source_health_carried_countries": ["US"],
+    "blocked_countries": ["US"]
+  }
+}

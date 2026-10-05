@@ -18,6 +18,7 @@ from scripts.overnight.errors import EvidenceBoundaryError, OvernightError, Sche
 from scripts.overnight.evidence import freeze_snapshot, require_snapshot
 from scripts.overnight.ledger import load_or_create
 from scripts.overnight.store import OvernightStore
+from scripts.run_state.replay import ScoreConflict, reject_unequal_score_copies
 
 STAGE = "04_freeze"
 PRIOR_STAGE = "03_quality_gate"
@@ -119,7 +120,14 @@ def _write_collect_with_overlay(
 ) -> None:
     collect = store.read_artifact(run_id, "collect.json")
     families = apply_macro_overlay(collect.get("families") or {}, launch, launch_dir=launch_dir)
+    macro_hard = families.get("macro_hard") or {}
+    extra_scores = (macro_hard.get("extra") or {}).get("temperature_scores")
+    if isinstance(extra_scores, dict):
+        macro_hard = {**macro_hard, "temperature_scores": extra_scores}
+        families = {**families, "macro_hard": macro_hard}
     collect = {**collect, "families": families, "trade_permissions": _trade_permissions(launch)}
+    if isinstance(extra_scores, dict):
+        collect["temperature_scores"] = extra_scores
     store.write_artifact(run_id, "collect.json", collect)
 
 
@@ -130,6 +138,11 @@ def _overlay_delta_artifact(
         return
     delta = store.read_artifact(run_id, filename)
     families = apply_macro_overlay(delta.get("families") or {}, launch, launch_dir=launch_dir)
+    macro_hard = families.get("macro_hard") or {}
+    extra_scores = (macro_hard.get("extra") or {}).get("temperature_scores")
+    if isinstance(extra_scores, dict):
+        macro_hard = {**macro_hard, "temperature_scores": extra_scores}
+        families = {**families, "macro_hard": macro_hard}
     store.write_artifact(run_id, filename, {**delta, "families": families})
 
 
@@ -142,6 +155,58 @@ def _lineage_binding_fields(launch: dict[str, Any]) -> dict[str, Any]:
     if lineage.get("provenance_sha256"):
         fields["provenance_sha256"] = lineage["provenance_sha256"]
     return fields
+
+
+def _gate_cutoff_fields(launch: dict[str, Any], launch_as_of: str | None) -> tuple[str | None, dict[str, Any]]:
+    """Return (failure_reason, cutoff_fields) when gate bound a cutoff."""
+    gate_details = (((launch.get("stages") or {}).get(PRIOR_STAGE) or {}).get("details") or {})
+    gate_cutoff = gate_details.get("cutoff_at")
+    if gate_cutoff is None:
+        return None, {}
+    if launch_as_of != gate_cutoff:
+        return "cutoff_mismatch", {}
+    fields = {
+        "cutoff_at": gate_cutoff,
+        "freeze_cutoff": gate_details.get("freeze_cutoff") or gate_cutoff,
+        "policy_version": "quality-policy/1",
+    }
+    return None, fields
+
+
+def _gate_canonical_binding_fields(
+    launch: dict[str, Any], ctx: dict[str, Any]
+) -> tuple[str | None, dict[str, Any]]:
+    """Bind score hash and state ids from the quality gate when present."""
+    gate_details = (((launch.get("stages") or {}).get(PRIOR_STAGE) or {}).get("details") or {})
+    fields: dict[str, Any] = {}
+    gate_score = gate_details.get("score_state_sha256")
+    if gate_score:
+        ctx_score = ctx.get("score_state_sha256")
+        if ctx_score is not None and str(ctx_score) != str(gate_score):
+            return "score_mismatch", {}
+        fields["score_state_sha256"] = gate_score
+    state_ids = gate_details.get("state_ids")
+    if isinstance(state_ids, list) and state_ids:
+        fields["state_ids"] = list(state_ids)
+    return None, fields
+
+
+def _verify_score_payload(snapshot: dict[str, Any]) -> None:
+    hashes: list[str] = []
+
+    def walk(node: Any) -> None:
+        if isinstance(node, dict):
+            for key, value in node.items():
+                if key == "temperature_scores" and isinstance(value, dict):
+                    hashes.append(value)
+                walk(value)
+        elif isinstance(node, list):
+            for item in node:
+                walk(item)
+
+    walk(snapshot)
+    if len(hashes) >= 2:
+        reject_unequal_score_copies(snapshot)
 
 
 def run(launch: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
@@ -178,6 +243,22 @@ def run(launch: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
     offline, market_state_path = _offline_and_market_state(launch, ctx)
     lineage_fields = _lineage_binding_fields(launch)
     launch_as_of = isoformat(when) if when is not None else None
+    cutoff_reason, cutoff_fields = _gate_cutoff_fields(launch, launch_as_of)
+    if cutoff_reason:
+        return contract.stage_receipt(
+            STAGE,
+            status="failed",
+            input_sha256=input_sha,
+            reason=cutoff_reason,
+        )
+    score_reason, canonical_fields = _gate_canonical_binding_fields(launch, ctx)
+    if score_reason:
+        return contract.stage_receipt(
+            STAGE,
+            status="failed",
+            input_sha256=input_sha,
+            reason=score_reason,
+        )
     try:
         _write_collect_with_overlay(store, run_id, launch, launch_dir)
         compute_delta(
@@ -192,6 +273,7 @@ def run(launch: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
 
         reuse_open = not (launch.get("rerun") or (launch.get("request") or {}).get("rerun"))
         packet = freeze_snapshot(store, run_id=run_id, when=when, reuse_open=reuse_open)
+        _verify_score_payload(packet)
         review_id = packet["review_id"]
         packet_sha256 = packet["packet_sha256"]
 
@@ -229,6 +311,8 @@ def run(launch: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
                             "legacy_0150_used": False,
                             "idempotent": True,
                             **lineage_fields,
+                            **cutoff_fields,
+                            **canonical_fields,
                         },
                     )
                 return contract.stage_receipt(
@@ -288,7 +372,16 @@ def run(launch: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
                 "evidence_boundary": "actual_freeze_timestamp",
                 "legacy_0150_used": False,
                 **lineage_fields,
+                **cutoff_fields,
+                **canonical_fields,
             },
+        )
+    except ScoreConflict as exc:
+        return contract.stage_receipt(
+            STAGE,
+            status="failed",
+            input_sha256=input_sha,
+            reason=str(exc),
         )
     except (EvidenceBoundaryError, SchemaError, OvernightError) as exc:
         return contract.stage_receipt(

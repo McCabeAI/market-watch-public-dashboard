@@ -1,0 +1,228 @@
+{
+  "schema_version": "model-call-ledger/1",
+  "starting_ref": "07d6406f2a360c57c52d7be034f3f2530daae7e9",
+  "branch": "cursor/market-watch-canonical-data-state-architecture-repair-f998",
+  "allowlist": ["grok-4.7", "composer-2.5"],
+  "ceilings": {
+    "total_invocations": 38,
+    "grok_4_7": 5,
+    "note": "Ceilings, not targets. Parent Grok counts as one grok-4.7 invocation."
+  },
+  "reserved_grok_rereview": 1,
+  "invocations": [
+    {
+      "id": "N00",
+      "node": "N00",
+      "model": "grok-4.7",
+      "role": "parent-contract-and-repair-plan",
+      "status": "completed",
+      "started_at": "2026-10-05T16:00:00Z",
+      "finished_at": "2026-10-05T16:25:00Z",
+      "artifact": "docs/architecture_repair/N00_REPAIR_PLAN.md"
+    },
+    {
+      "id": "N01",
+      "node": "N01",
+      "model": "composer-2.5",
+      "role": "hermetic-incident-fixtures",
+      "status": "completed",
+      "agent_id": "bc-0077d3d1-5b4e-5a45-92fb-254b6a559953",
+      "result": "4 tests OK; oct2 sha256 2735b7fd338f61df995f166ebc4fbd20f549c7193ea7235a43c2cd01bc2ba46b"
+    },
+    {
+      "id": "N03",
+      "node": "N03",
+      "model": "composer-2.5",
+      "role": "registry-schema-compiler",
+      "status": "completed",
+      "agent_id": "bc-71138de3-a11b-53e2-aa21-302c9c77cde6",
+      "result": "schema, compiler, expectations on disk; test_schema and test_compiler OK"
+    },
+    {
+      "id": "N02",
+      "node": "N02",
+      "model": "composer-2.5",
+      "role": "correctness-containment",
+      "status": "completed",
+      "agent_id": "bc-719a3dd6-c216-5501-823f-604e612bb2fc",
+      "result": "Oct 5 replay caveat blocks US and does not claim no release was due; 26 tests OK"
+    },
+    {
+      "id": "N06",
+      "node": "N06",
+      "model": "composer-2.5",
+      "role": "scores-policy-freeze",
+      "status": "completed",
+      "agent_id": "bc-b53a7f49-f732-5151-8949-e23a3395049a",
+      "result": "policy, scores, state on disk; policy tests and Oct 5 replay OK"
+    },
+    {
+      "id": "N07",
+      "node": "N07",
+      "model": "composer-2.5",
+      "role": "research-public-contract",
+      "status": "completed",
+      "agent_id": "bc-14ebc75d-178b-5cfd-9e09-c069d126fbd8",
+      "result": "11 evidence/prose tests OK; URL optional; unscoped not-due prose rejected"
+    },
+    {
+      "id": "N08",
+      "node": "N08",
+      "model": "composer-2.5",
+      "role": "workflow-lifecycle-publication",
+      "status": "completed",
+      "agent_id": "bc-314e82dc-cf10-55ae-940b-56ddfbfd9a80",
+      "result": "11 lifecycle/publication tests OK; publish_offline has no opener"
+    },
+    {
+      "id": "N10",
+      "node": "N10",
+      "model": "composer-2.5",
+      "role": "consolidation-deletion",
+      "status": "completed",
+      "agent_id": "bc-3578c335-cfc6-5e57-aec6-3000c7d6eff6",
+      "result": "audit kept all five candidates; no production deletions; 91 tests OK"
+    },
+    {
+      "id": "N11",
+      "node": "N11",
+      "model": "grok-4.7",
+      "role": "integration-review",
+      "status": "completed",
+      "result": "FAIL. F1 critical policy overlay fail-open, F2 high scheduler demotes known expectation, F3 high deploy ack artifact mismatch, F4-F5 medium. Fresh subagent denied by repo hook; parent grok-4.7 reviewed in-process, not a second invocation.",
+      "artifact": "docs/architecture_repair/N11_REVIEW.md"
+    },
+    {
+      "id": "N12",
+      "node": "N12",
+      "model": "composer-2.5",
+      "role": "integration-remediation",
+      "status": "completed",
+      "agent_id": "bc-6328ecf8-76a6-5db5-a5de-9474092f1cf1",
+      "result": "F1-F5 fixed; overlay keeps uncovered US block; expectation wins tier; artifact mismatch rejected"
+    },
+    {
+      "id": "N13",
+      "node": "N13",
+      "model": "composer-2.5",
+      "role": "deterministic-integration-validation",
+      "status": "completed",
+      "agent_id": "bc-3fc9d394-3819-5325-ad8a-115ded099d5e",
+      "result": "111 run_state tests OK including 15-scenario e2e matrix"
+    },
+    {
+      "id": "N14",
+      "node": "N14",
+      "model": "grok-4.7",
+      "role": "adversarial-review",
+      "status": "completed",
+      "result": "FAIL. A1 high cross-transform satisfaction, A2 high naive post-cutoff timestamp published. Fresh subagent denied by repo hook; parent grok-4.7 reviewed in-process.",
+      "artifact": "docs/architecture_repair/N14_REVIEW.md"
+    },
+    {
+      "id": "N15",
+      "node": "N15",
+      "model": "composer-2.5",
+      "role": "adversarial-remediation",
+      "status": "completed",
+      "agent_id": "bc-22806f80-f10a-5311-803c-d26d2562fa67",
+      "result": "A1 transform/units required for satisfaction; A2 naive timestamps rejected; 114 tests OK"
+    },
+    {
+      "id": "N16",
+      "node": "N16",
+      "model": "composer-2.5",
+      "role": "final-deterministic-e2e",
+      "status": "completed",
+      "agent_id": "bc-9894faa6-95c3-5d6f-ac35-aa9fad833a62",
+      "result": "114 run_state tests OK. Pages recovery 12 failures + 1 error reproduced on clean HEAD 07d6406; not introduced by this branch; launch.json not modified.",
+      "artifact": "docs/architecture_repair/N16_E2E.md"
+    },
+    {
+      "id": "N17",
+      "node": "N17",
+      "model": "grok-4.7",
+      "role": "exact-tree-approval",
+      "status": "completed",
+      "result": "PASS. Zero unresolved critical/high. Fresh subagent denied by repo hook; parent grok-4.7 reviewed in-process, not an additional invocation. Bound to implementation digests in N17_APPROVAL.md.",
+      "artifact": "docs/architecture_repair/N17_APPROVAL.md"
+    },
+    {
+      "id": "N18",
+      "node": "N18",
+      "model": "grok-4.7",
+      "role": "candidate-handoff",
+      "status": "completed",
+      "result": "Mechanical hash check, commit, and one unmerged PR. Final commit SHA is recorded in the PR body. No code edits after N17."
+    },
+    {
+      "id": "N04",
+      "node": "N04",
+      "model": "composer-2.5",
+      "role": "release-planner-scheduler",
+      "status": "completed",
+      "agent_id": "bc-41b7145e-d6f3-58a2-8ccd-761094ee541e",
+      "result": "19 scheduler tests OK with observations"
+    },
+    {
+      "id": "N05",
+      "node": "N05",
+      "model": "composer-2.5",
+      "role": "observations-provenance",
+      "status": "completed",
+      "agent_id": "bc-8521b0bc-d95a-50aa-8add-289bf59e7d7a",
+      "result": "9 observation tests OK"
+    },
+    {
+      "id": "N09",
+      "node": "N09",
+      "model": "composer-2.5",
+      "role": "run-observability",
+      "status": "completed",
+      "agent_id": "bc-7f6a51ed-9b40-57c6-b7ca-31429c72394d",
+      "result": "5 run-report tests OK"
+    }
+  ],
+  "deviations": [
+    {
+      "id": "D1",
+      "note": "N02 is sequenced after the N03 interface lands so containment imports the locked shadow types. N01 still runs in parallel with N03."
+    },
+    {
+      "id": "D2",
+      "note": "Repository hook rejected fresh grok-4.7 subagents (allowlist composer-2.5, grok-4.6, grok-4.5). Parent grok-4.7 performed N11, N14, and N17 in-process. Those reviews are not additional provider invocations. grok-4.6 was not used. No model fallback."
+    }
+  ],
+  "budget": {
+    "grok_4_7_provider_invocations": 1,
+    "composer_2_5_provider_invocations": 14,
+    "total_provider_invocations": 15,
+    "in_process_grok_reviews": ["N11", "N14", "N17"],
+    "within_ceilings": true
+  },
+  "repair_execution": {
+    "issue": "https://github.com/McCabeAI/agent-control-plane/issues/224",
+    "starting_ref": "3a4ec335e0d1356586980337d373a9324e6ac16f",
+    "allowlist": ["grok-4.7", "composer-2.5"],
+    "provider_executions": 1,
+    "models_used": ["grok-4.7", "composer-2.5"],
+    "invocations": [
+      {
+        "id": "R1",
+        "model": "composer-2.5",
+        "role": "pages-recovery-hermetic-fixtures-and-one-score-freeze-sync",
+        "status": "completed",
+        "agent_id": "bc-a797e5f5-5489-5d8e-84b3-e7515cafa064",
+        "result": "Pinned Oct 2/Oct 5 recovery inputs. Synced freeze and acquire score copies. Launch shard 84 OK."
+      },
+      {
+        "id": "R2",
+        "model": "grok-4.7",
+        "role": "exact-head-review",
+        "status": "completed",
+        "result": "PASS. Zero unresolved critical/high. Parent review in this provider execution, not a second provider call. N17 does not approve this tree.",
+        "artifact": "docs/architecture_repair/PAGES_LINEAGE_REPAIR_APPROVAL.md"
+      }
+    ]
+  }
+}
