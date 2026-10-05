@@ -40,8 +40,8 @@ CURRENT_TAPE_RE = re.compile(
     r'( window, ranked by expected rates/FX significance rather than headline volume\.</p>)'
 )
 DRIVER_RE = re.compile(
-    r'<a class="driver-card"[^>]*>.*?<div class="dmeta">.*?</div>'
-    r'<b>(.*?)</b><span>(.*?)</span></a>',
+    r'<(?:a|div) class="driver-card"[^>]*>.*?<div class="dmeta">.*?</div>'
+    r'<b>(.*?)</b><span>(.*?)</span></(?:a|div)>',
     re.S,
 )
 FRONT_ALERT_RE = re.compile(
