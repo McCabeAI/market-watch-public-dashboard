@@ -59,18 +59,12 @@ ACTIVITY_ITEM = {
 }
 
 
-def _dataset_from_accepted() -> dict:
-    artifact = json.loads((ROOT / "data" / "overnight" / "accepted_public_news.json").read_text(encoding="utf-8"))
-    return {
-        "type": "OVERNIGHT_MORNING_DATASET",
-        "overnight_run_id": artifact["overnight_run_id"],
-        "agent_research_cutoff": artifact["as_of"],
-        "agent_research": {
-            "summary": artifact.get("summary"),
-            "news": artifact["news"],
-            "central_bank_research": artifact["central_bank_research"],
-        },
-    }
+def _sep22_dataset() -> dict:
+    # Pin the historical URL-bearing packet. The live accepted artifact moves
+    # forward with each overnight run and is covered by the Oct 5 adapter tests.
+    return json.loads(
+        (ROOT / "data/overnight/runs/overnight-20260922/assembled_dataset.json").read_text(encoding="utf-8")
+    )
 
 
 def _skeptic_funding_view() -> dict:
@@ -116,7 +110,7 @@ class AcceptedNewsArchitectureTests(unittest.TestCase):
         self.assertEqual(families["news"]["status"], "stale")
 
     def test_pages_refresh_replaces_sep18_visible_news(self) -> None:
-        out = apply_overnight_news_refresh(SEP18_HTML, _dataset_from_accepted())
+        out = apply_overnight_news_refresh(SEP18_HTML, _sep22_dataset())
         self.assertIn("Last refreshed 22 Sep 2026", out)
         self.assertIn("Oil rebounds in early 22 September trade", out)
         self.assertIn("Chicago Fed national activity index slips", out)

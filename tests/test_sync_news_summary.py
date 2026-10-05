@@ -47,6 +47,36 @@ class SyncNewsSummaryTests(unittest.TestCase):
         self.assertNotIn('<div class="news-count">19</div>', out)
         self.assertNotIn("Old Sep 8 headline", out)
 
+    def test_summary_accepts_non_clickable_driver_cards(self):
+        html = """
+        <div class="news-alert market-alert">
+          <div class="flag">MARKET NEWS · 7-DAY WINDOW</div>
+          <div><h3>Old headline</h3><p>Old summary.</p><span class="alert-sub">Research layer: 19 old items.</span></div>
+          <label for="p-news">Open News &amp; Research</label>
+        </div>
+        <div class="market-news-head">
+          <div class="panel">
+            <div class="news-window"><b>Last scanned:</b> 8 Sep 2026 · Sources include Reuters.</div>
+          </div>
+          <div class="panel"><div class="stitle">Current tape</div><div class="news-count">19</div><p>curated market-relevant stories in the 2–8 September window, ranked by expected rates/FX significance rather than headline volume.</p></div>
+        </div>
+        Last refreshed 5 Oct 2026 · 06:08 ET
+        <div class="driver-grid">
+          <div class="driver-card"><div class="dmeta"><span class="impact high">HIGH</span>GLOBAL · ENERGY</div><b>Oil buffer is thin</b><span>Stockpiles are thin.</span></div>
+          <div class="driver-card"><div class="dmeta"><span class="impact high">HIGH</span>GLOBAL · ENERGY</div><b>Exports stay constrained</b><span>Shipments remain tight.</span></div>
+        </div>
+        <div class="digest-tools"><div class="scanline"><b>Window:</b> 28 Sep 06:08 ET → 5 Oct 06:08 ET</div></div>
+        <div class="news-digest">
+          <details class="story"></details>
+          <details class="story"></details>
+        </div>
+        """
+        out = sync_news_summary(html)
+        self.assertIn("<h3>Oil buffer is thin</h3>", out)
+        self.assertIn("<b>Exports stay constrained:</b> Shipments remain tight.", out)
+        self.assertIn("<b>Last scanned:</b> 5 Oct 2026", out)
+        self.assertIn("curated market-relevant stories in the 28 September–5 October 2026 window", out)
+
     def test_rejects_mismatched_refresh_dates(self):
         html = """
         <div class="news-window"><b>Last scanned:</b> 8 Sep 2026 · Sources include Reuters.</div>

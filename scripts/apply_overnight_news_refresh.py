@@ -66,7 +66,22 @@ def _cutoff(dataset: dict[str, Any]) -> datetime:
     return stamp
 
 
+def _display_title(raw: dict[str, Any]) -> str:
+    # Central-bank research may carry title instead of headline.
+    return str(raw.get("headline") or raw.get("title") or "").strip()
+
+
+def _item_url(raw: dict[str, Any]) -> str:
+    # URL is optional in the canonical accepted-research contract.
+    return str(raw.get("url") or "").strip()
+
+
 def _clean_items(dataset: dict[str, Any]) -> list[dict[str, Any]]:
+    """Keep accepted research that can be placed in a rolling window.
+
+    URL is optional. Central-bank items may use title instead of headline.
+    published_at stays required so undated items cannot skip the freshness window.
+    """
     research = dataset.get("agent_research") or {}
     combined: list[dict[str, Any]] = []
     for family, items in (
@@ -76,13 +91,19 @@ def _clean_items(dataset: dict[str, Any]) -> list[dict[str, Any]]:
         for raw in items:
             if not isinstance(raw, dict):
                 continue
-            title = str(raw.get("headline") or "").strip()
-            url = str(raw.get("url") or "").strip()
+            title = _display_title(raw)
+            url = _item_url(raw)
             summary = str(raw.get("summary") or "").strip()
             published = _parse_iso(raw.get("published_at"))
-            if not title or not url or not summary or published is None:
+            if not title or not summary or published is None:
                 continue
             item = dict(raw)
+            item["headline"] = title
+            item["summary"] = summary
+            if url:
+                item["url"] = url
+            else:
+                item.pop("url", None)
             item["_family"] = family
             item["_published"] = published
             combined.append(item)
@@ -90,7 +111,7 @@ def _clean_items(dataset: dict[str, Any]) -> list[dict[str, Any]]:
     seen: set[tuple[str, str]] = set()
     out: list[dict[str, Any]] = []
     for item in sorted(combined, key=lambda row: row["_published"], reverse=True):
-        key = (str(item.get("url")), str(item.get("headline")))
+        key = (_item_url(item), _display_title(item))
         if key in seen:
             continue
         seen.add(key)
@@ -103,7 +124,7 @@ def _impact(item: dict[str, Any]) -> tuple[str, str]:
     family = item.get("_family")
     blob = " ".join(
         str(item.get(k) or "").lower()
-        for k in ("headline", "summary", "institution", "source_name")
+        for k in ("headline", "title", "summary", "institution", "source_name")
     )
     high = (
         family == "central_bank_research"
@@ -148,13 +169,20 @@ def _last24_html(items: list[dict[str, Any]], cutoff: datetime, summary: str | N
     for row in current:
         impact, _ = _impact(row)
         stamp = row["_published"]
-        cards.append(
-            f'''    <a class="last24-item" href="{_esc(row["url"])}" target="_blank" rel="noopener">
-      <div class="meta">{_esc(_market_label(row))} · {impact}/10 · {_esc(_source_label(row).upper())} {_esc(_day_label(stamp).upper())}</div>
-      <b>{_esc(row["headline"])}</b>
-      <span>{_esc(row["summary"])}</span>
-    </a>'''
+        body = (
+            f'      <div class="meta">{_esc(_market_label(row))} · {impact}/10 · {_esc(_source_label(row).upper())} {_esc(_day_label(stamp).upper())}</div>\n'
+            f'      <b>{_esc(row["headline"])}</b>\n'
+            f'      <span>{_esc(row["summary"])}</span>'
         )
+        url = _item_url(row)
+        if url:
+            cards.append(
+                f'    <a class="last24-item" href="{_esc(url)}" target="_blank" rel="noopener">\n'
+                f"{body}\n"
+                "    </a>"
+            )
+        else:
+            cards.append(f'    <div class="last24-item">\n{body}\n    </div>')
     if not cards:
         cards.append(
             '    <div class="last24-empty">No accepted overnight research item was published inside the exact rolling 24-hour window.</div>'
@@ -193,25 +221,37 @@ def _rollup_html(items: list[dict[str, Any]], cutoff: datetime) -> str:
     driver_html: list[str] = []
     for row in drivers:
         impact, css = _impact(row)
-        driver_html.append(
-            f'<a class="driver-card" href="{_esc(row["url"])}" rel="noopener" target="_blank">'
+        inner = (
             f'<div class="dmeta"><span class="impact {css}">{impact}</span>{_esc(_market_label(row))}</div>'
-            f'<b>{_esc(row["headline"])}</b><span>{_esc(row["summary"])}</span></a>'
+            f'<b>{_esc(row["headline"])}</b><span>{_esc(row["summary"])}</span>'
         )
+        url = _item_url(row)
+        if url:
+            driver_html.append(
+                f'<a class="driver-card" href="{_esc(url)}" rel="noopener" target="_blank">{inner}</a>'
+            )
+        else:
+            driver_html.append(f'<div class="driver-card">{inner}</div>')
 
     stories: list[str] = []
     for row in digest[:12]:
         impact, css = _impact(row)
         stamp = row["_published"]
         kicker = f'{_market_label(row)} · {_day_label(stamp)} · {_source_label(row)}'
+        source = ""
+        url = _item_url(row)
+        if url:
+            source = (
+                f'<a class="story-source" href="{_esc(url)}" rel="noopener" target="_blank">Open source ↗</a>'
+            )
         stories.append(
             '<details class="story"><summary>'
             f'<span class="impact {css}">{impact}</span><span>'
             f'<span class="story-title">{_esc(row["headline"])}</span>'
             f'<span class="story-kicker">{_esc(kicker)}</span></span></summary>'
             f'<div class="story-body"><p><b>What happened:</b> {_esc(row["summary"])}</p>'
-            f'<a class="story-source" href="{_esc(row["url"])}" rel="noopener" target="_blank">Open source ↗</a>'
-            '</div></details>'
+            f"{source}"
+            "</div></details>"
         )
 
     return (
