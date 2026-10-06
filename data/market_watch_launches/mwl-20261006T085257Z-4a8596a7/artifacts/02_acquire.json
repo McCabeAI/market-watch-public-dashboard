@@ -1,0 +1,63 @@
+{
+  "families": {
+    "central_bank_research": {
+      "as_of": "2026-10-05T06:08:21.051325-04:00",
+      "digest": "4a903599bf7b7603ff26d41e62568ef2008d1c1daf440e4d69a098063fbbd423",
+      "status": "fresh"
+    },
+    "macro_hard": {
+      "as_of": "2026-10-05T06:08:21-04:00",
+      "digest": "2eb377000a1ffe326aaaa4cd399fd65470f359c6367876202603e168fd60549f",
+      "status": "stale"
+    },
+    "market_state": {
+      "as_of": "2026-10-06T09:04:12Z",
+      "digest": "3145b319dd93371dc9a83b670397c539c412777f73d659adf255e8e60528b215",
+      "status": "fresh"
+    },
+    "news": {
+      "as_of": "2026-10-06T04:52:57.791209-04:00",
+      "digest": "ab4068a40cd5bf620f0e37087827c15f1ae3280ac49909fefe23df255c744e52",
+      "status": "fresh"
+    }
+  },
+  "market_legs": {
+    "AU": "ok",
+    "CA": "ok",
+    "FX": "ok",
+    "US": "ok"
+  },
+  "market_state_generated_at": "2026-10-06T09:04:12Z",
+  "mode": "live",
+  "news_acquisition": {
+    "cutoff": "2026-10-06T04:52:57.791209-04:00",
+    "mode": "live",
+    "partial": false,
+    "receipts": [
+      {
+        "candidate_count": 12,
+        "checked_at": "2026-10-06T04:52:57.791209-04:00",
+        "failure": null,
+        "result_count": 8,
+        "source": "bloomberg",
+        "status": "ok",
+        "surface": "https://www.bing.com/news/search?q=site%3Abloomberg.com%20%28Federal%20Reserve%20OR%20FOMC%20OR%20inflation%20OR%20CPI%20OR%20payrolls%20OR%20Treasury%20OR%20yields%20OR%20oil%20OR%20Brent%20OR%20crude%20OR%20Hormuz%20OR%20OPEC%20OR%20FX%20OR%20dollar%20OR%20tariff%20OR%20sanctions%20OR%20%22central%20bank%22%20OR%20RBA%20OR%20%22Bank%20of%20Canada%22%20OR%20RBNZ%20OR%20ECB%20OR%20%22Bank%20of%20Japan%22%29&format=rss&qft=interval%3d%227%22"
+      },
+      {
+        "candidate_count": 50,
+        "checked_at": "2026-10-06T04:52:57.791209-04:00",
+        "failure": null,
+        "result_count": 5,
+        "source": "reuters",
+        "status": "ok",
+        "surface": "https://www.reuters.com/arc/outboundfeeds/news-sitemap/?outputType=xml"
+      }
+    ]
+  },
+  "offline": false,
+  "overnight_run_id": "overnight-20261006",
+  "required_preflight_block": null,
+  "required_preflight_ok": true,
+  "stage": "02_acquire",
+  "status": "succeeded"
+}
