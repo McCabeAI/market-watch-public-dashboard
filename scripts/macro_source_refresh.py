@@ -312,7 +312,13 @@ def _derived_score_value(
     payload: dict[str, Any],
 ) -> dict[str, Any] | None:
     transform = entry.get("source_transformation")
-    if payload.get("transformation") == transform and value is not None:
+    declared = payload.get("transformation")
+    # An explicit scored transform must be the catalog transform. Raw
+    # ``source_level`` rows still derive through the direct-transform branch.
+    # A mismatched label must not be coerced into the scored series.
+    if isinstance(declared, str) and declared not in {"", "source_level"} and declared != transform:
+        return None
+    if declared == transform and value is not None:
         return {"period": period, "value": float(value), "transformation": transform}
     if transform in _DIRECT_TRANSFORMS and not entry.get("index_period") and value is not None and not payload.get("period_only"):
         return {"period": period, "value": float(value), "transformation": transform}
