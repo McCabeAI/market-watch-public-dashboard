@@ -90,6 +90,13 @@ def _compile_row(row: Mapping[str, Any], catalog_publisher: str) -> Dict[str, An
     if not isinstance(transform, str) or transform == "":
         raise ContractError(f"catalog row {row_id!r}: missing transform")
 
+    fallbacks = row.get("fallback_series_ids")
+    fallback_ids: list[str] = []
+    if isinstance(fallbacks, list):
+        for item in fallbacks:
+            if isinstance(item, str):
+                fallback_ids.append(item)
+
     body: Dict[str, Any] = {
         "schema_version": SCHEMA_SERIES_DEFINITION,
         "id": row_id,
@@ -98,7 +105,7 @@ def _compile_row(row: Mapping[str, Any], catalog_publisher: str) -> Dict[str, An
         "publisher": pub,
         "provider": provider,
         "source_authority": "primary",
-        "fallback_series_ids": [],
+        "fallback_series_ids": fallback_ids,
         "calendar_status": cal_status,
         "trade_critical": trade_critical,
         "weight": weight,

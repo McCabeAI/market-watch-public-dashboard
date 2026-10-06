@@ -10,6 +10,7 @@ from scripts.macro_ingestion.us_employment.cache import cache_get, cache_put, op
 from scripts.macro_ingestion.us_employment.contract import (
     BLS_API_URL,
     BLS_CPS_SERIES,
+    BLS_EMPSIT_SERIES,
     BLS_JOLTS_SERIES,
 )
 
@@ -17,6 +18,7 @@ _HISTORY_LIMIT = 13
 _BATCHES = {
     "cps": BLS_CPS_SERIES,
     "jolts": BLS_JOLTS_SERIES,
+    "empsit": BLS_EMPSIT_SERIES,
 }
 
 
@@ -25,6 +27,8 @@ def _sha256(data: bytes) -> str:
 
 
 def _batch_for(catalog_id: str) -> str | None:
+    if catalog_id in BLS_EMPSIT_SERIES:
+        return "empsit"
     if catalog_id in BLS_CPS_SERIES:
         return "cps"
     if catalog_id in BLS_JOLTS_SERIES:
@@ -87,44 +91,37 @@ def load_bls_batch(
     ).encode("utf-8")
     response = open_url(opener, BLS_API_URL, timeout=timeout, data=payload)
     body: bytes = response.get("body") or b""
-    if response.get("error") == "opener_does_not_accept_post" or response.get("status") == "source_failed":
-        bundle = {
+    def _fail_bundle(error: str) -> dict[str, Any]:
+        return {
             "ok": False,
             "status": "source_failed",
-            "error": response.get("error") or "bls_fetch_failed",
+            "error": error,
             "http_status": response.get("http_status"),
             "body": body,
         }
+
+    if response.get("error") == "opener_does_not_accept_post" or response.get("status") == "source_failed":
+        bundle = _fail_bundle(response.get("error") or "bls_fetch_failed")
+        if batch_name == "empsit":
+            return bundle
         return cache_put(opener, key, bundle)
     if not response.get("ok"):
-        bundle = {
-            "ok": False,
-            "status": "source_failed",
-            "error": response.get("error") or "bls_fetch_failed",
-            "http_status": response.get("http_status"),
-            "body": body,
-        }
+        bundle = _fail_bundle(response.get("error") or "bls_fetch_failed")
+        if batch_name == "empsit":
+            return bundle
         return cache_put(opener, key, bundle)
     try:
         document = json.loads(body.decode("utf-8"))
     except json.JSONDecodeError:
-        bundle = {
-            "ok": False,
-            "status": "source_failed",
-            "error": "bls_json_unparsed",
-            "http_status": response.get("http_status"),
-            "body": body,
-        }
+        bundle = _fail_bundle("bls_json_unparsed")
+        if batch_name == "empsit":
+            return bundle
         return cache_put(opener, key, bundle)
     if document.get("status") != "REQUEST_SUCCEEDED":
         message = document.get("message")
-        bundle = {
-            "ok": False,
-            "status": "source_failed",
-            "error": f"bls_request_not_succeeded:{message}",
-            "http_status": response.get("http_status"),
-            "body": body,
-        }
+        bundle = _fail_bundle(f"bls_request_not_succeeded:{message}")
+        if batch_name == "empsit":
+            return bundle
         return cache_put(opener, key, bundle)
 
     parsed: dict[str, list[tuple[str, float]]] = {}

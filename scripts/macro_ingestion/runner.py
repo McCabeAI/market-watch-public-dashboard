@@ -39,6 +39,14 @@ DEFAULT_ATTEMPTS = 3
 ROOT = Path(__file__).resolve().parents[2]
 RAW_DIR = ROOT / "data/macro_ingestion/raw"
 
+PROTECTED_LABOR_IDS = frozenset(
+    {
+        "US.Labor.payrolls",
+        "US.Labor.unemployment",
+        "US.Labor.wages",
+    }
+)
+
 
 def _utc_iso(when: datetime) -> str:
     if when.tzinfo is None:
@@ -385,8 +393,10 @@ def _deferred_row(
     checked_at: str,
     calibration_as_of: str,
     cutoff_class: str,
+    scheduler_kind: str | None = None,
+    scheduler_reason: str | None = None,
 ) -> dict[str, Any]:
-    return ledger_row(
+    row = ledger_row(
         series_id=spec["id"],
         status="source_failed",
         checked_at=checked_at,
@@ -395,6 +405,74 @@ def _deferred_row(
         cutoff_class=cutoff_class,
         error="budget_deferred",
     )
+    if scheduler_kind and scheduler_reason:
+        _append_scheduler_event(row, kind=scheduler_kind, reason=scheduler_reason)
+    return row
+
+
+def _protected_due_labor(spec: dict[str, Any], when: datetime) -> bool:
+    if str(spec.get("id") or "") not in PROTECTED_LABOR_IDS:
+        return False
+    return latest_due_release(spec, when) is not None
+
+
+def _series_lane(spec: dict[str, Any], when: datetime) -> int:
+    if _protected_due_labor(spec, when):
+        return 0
+    if str(spec.get("role") or "") == "scored":
+        return 1
+    return 2
+
+
+def _append_scheduler_event(row: dict[str, Any], *, kind: str, reason: str) -> None:
+    events = list(row.get("scheduler_events") or [])
+    events.append({"kind": kind, "reason": reason, "series_id": row.get("series_id")})
+    row["scheduler_events"] = events
+
+
+def _deferred_admission_reason(
+    spec: dict[str, Any],
+    *,
+    when: datetime,
+    protected_due_total: int,
+    protected_admitted: int,
+) -> str:
+    if _protected_due_labor(spec, when):
+        return "protected_budget_exhausted"
+    if protected_admitted < protected_due_total:
+        return "starved_by_critical_reservation"
+    return "budget_exhausted"
+
+
+def _skipped_retry_reason(
+    spec: dict[str, Any],
+    *,
+    when: datetime,
+    protected_failures: int,
+    protected_retries_admitted: int,
+) -> str:
+    if _protected_due_labor(spec, when):
+        return "protected_budget_exhausted"
+    if protected_retries_admitted < protected_failures:
+        return "starved_by_critical_reservation"
+    return "budget_exhausted"
+
+
+def _history_snapshot(row: dict[str, Any]) -> dict[str, Any]:
+    prior = dict(row)
+    prior.pop("attempt_history", None)
+    return prior
+
+
+def _row_with_attempt_history(
+    new_row: dict[str, Any],
+    prior_row: dict[str, Any],
+) -> dict[str, Any]:
+    history = list(prior_row.get("attempt_history") or [])
+    history.append(_history_snapshot(prior_row))
+    merged = dict(new_row)
+    merged["attempt_history"] = history
+    return merged
 
 
 def _fetch_once(
@@ -440,7 +518,7 @@ def _fetch_once(
         if replace_index is None:
             rows.append(row)
             return len(rows) - 1
-        rows[replace_index] = row
+        rows[replace_index] = _row_with_attempt_history(row, rows[replace_index])
         return replace_index
 
     if mode == "live" and payload.get("ok") and raw_dir is not None:
@@ -455,6 +533,7 @@ def _fetch_once(
 
     status, changed, error, persist_provenance = _classify_points(spec, payload, store, now)
     vintage = payload.get("vintage")
+    ledger_extra = payload.get("ledger_extra")
     row = ledger_row(
         series_id=spec["id"],
         status=status,
@@ -463,6 +542,7 @@ def _fetch_once(
         calibration_as_of=cal_as_of,
         cutoff_class=cutoff,
         error=error,
+        extra=ledger_extra if isinstance(ledger_extra, dict) else None,
     )
     if changed or persist_provenance:
         save_store(store, obs_dir)
@@ -471,7 +551,7 @@ def _fetch_once(
     if replace_index is None:
         rows.append(row)
         return len(rows) - 1
-    rows[replace_index] = row
+    rows[replace_index] = _row_with_attempt_history(row, rows[replace_index])
     return replace_index
 
 
@@ -522,7 +602,7 @@ def run_ingestion(
         series_list = sorted(
             grouped.get(country, []),
             key=lambda spec: (
-                0 if str(spec.get("role") or "") == "scored" else 1,
+                _series_lane(spec, when),
                 str(spec.get("id") or ""),
             ),
         )
@@ -547,6 +627,9 @@ def run_ingestion(
             for spec in series_list
             if only_series_ids is None or str(spec["id"]) in only_series_ids
         ]
+        pending.sort(key=lambda spec: (_series_lane(spec, when), str(spec.get("id") or "")))
+        protected_due_total = sum(1 for spec in pending if _protected_due_labor(spec, when))
+        protected_admitted = 0
         # One attempt per series before any retry. A slow FRED read must not
         # spend the country budget and stamp untouched series budget_deferred.
         failed_for_retry: list[tuple[dict[str, Any], int]] = []
@@ -558,6 +641,13 @@ def run_ingestion(
                         checked_at=checked_at,
                         calibration_as_of=cal_as_of,
                         cutoff_class=cutoff,
+                        scheduler_kind="skipped_admission",
+                        scheduler_reason=_deferred_admission_reason(
+                            spec,
+                            when=when,
+                            protected_due_total=protected_due_total,
+                            protected_admitted=protected_admitted,
+                        ),
                     )
                 )
                 continue
@@ -578,13 +668,28 @@ def run_ingestion(
                 obs_dir=obs_dir,
                 post_freeze_changes=post_freeze_changes,
             )
+            if _protected_due_labor(spec, when):
+                protected_admitted += 1
             row = rows[row_index]
             if attempts > 1 and row.get("status") == "source_failed" and row.get("error") != "budget_deferred":
                 failed_for_retry.append((spec, row_index))
 
+        protected_failures = sum(1 for spec, _ in failed_for_retry if _protected_due_labor(spec, when))
+        protected_retries_admitted = 0
+        failed_for_retry.sort(key=lambda item: (_series_lane(item[0], when), str(item[0].get("id") or "")))
+
         for spec, row_index in failed_for_retry:
             if _budget_exhausted(clock, run_start, country_start, run_budget_seconds, country_budget_seconds):
-                # Keep the first truthful failure. Do not relabel an attempted read.
+                _append_scheduler_event(
+                    rows[row_index],
+                    kind="skipped_retry",
+                    reason=_skipped_retry_reason(
+                        spec,
+                        when=when,
+                        protected_failures=protected_failures,
+                        protected_retries_admitted=protected_retries_admitted,
+                    ),
+                )
                 continue
             _fetch_once(
                 spec,
@@ -604,6 +709,8 @@ def run_ingestion(
                 replace_index=row_index,
                 extra_attempts=attempts - 1,
             )
+            if _protected_due_labor(spec, when):
+                protected_retries_admitted += 1
 
     write_ledger(rows, health_dir=health_dir or (ROOT / "data/macro_ingestion/health"), run_id=run_id)
 

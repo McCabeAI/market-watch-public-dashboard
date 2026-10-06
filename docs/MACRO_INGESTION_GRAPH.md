@@ -62,7 +62,7 @@ What the bridge actually does: a scored point is appended to `data/temperature_h
 
 Remaining blockages, not claimed live:
 
-- Transform mismatch, bridge skips: `US.Labor.wages`, `CA.Activity.gdp_domestic_demand`, `CA.Consumer.confidence`, `AU.Labor.unemployment`, `AU.Consumer.retail`, `AU.Consumer.confidence`.
+- Transform mismatch, bridge skips: `CA.Activity.gdp_domestic_demand`, `CA.Consumer.confidence`, `AU.Labor.unemployment`, `AU.Consumer.retail`, `AU.Consumer.confidence`.
 - Non-empty `methodology_breaks` on a history component skips the merge (`methodology_break_guard`). AU trimmed-mean CPI is in that set.
 - `EA.Activity.flash_composite_pmi`: S&P listing HTTP 403, value stays null, August final stays. No substitute and no paywall bypass.
 - S&P public listings that return 403 stay `license_gap` or `source_failed`.

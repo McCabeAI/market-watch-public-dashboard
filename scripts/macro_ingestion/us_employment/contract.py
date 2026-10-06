@@ -50,6 +50,22 @@ BLS_CPS_SERIES: dict[str, str] = {
     "US.Labor.employment_native_born": "LNU02073413",
 }
 
+# Employment Situation primary batch (separate from the 24-id CPS batch).
+BLS_EMPSIT_SERIES: dict[str, str] = {
+    "US.Labor.payrolls": "CES0000000001",
+    "US.Labor.unemployment": "LNS14000000",
+    "US.Labor.wages": "CES0500000003",
+    PARTICIPATION_ID: "LNS11300000",
+}
+
+SCORED_EMPSIT_CATALOG_IDS = frozenset(
+    {
+        "US.Labor.payrolls",
+        "US.Labor.unemployment",
+        "US.Labor.wages",
+    }
+)
+
 BLS_JOLTS_SERIES: dict[str, str] = {
     "US.Labor.jolts_hires": "JTS000000000000000HIL",
     "US.Labor.jolts_hires_rate": "JTS000000000000000HIR",
