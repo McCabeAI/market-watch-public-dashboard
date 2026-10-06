@@ -1,9 +1,10 @@
 """Grinder deployment-hurdle contract.
 
 Grinder may stay flat, but missing data is never a global veto. Before a
-decision it must evaluate the best frozen, markable handoff candidates against
-the SOFR funding hurdle and identify only candidate-specific missing data that
-would materially change the edge/risk assessment.
+decision it evaluates frozen candidates against the SOFR funding hurdle.
+Trader Room handoffs are a challenge set. PM-originated candidates are
+accepted when the frozen packet can mark and risk them. Missing data is
+candidate-specific.
 """
 
 from __future__ import annotations
@@ -11,7 +12,9 @@ from __future__ import annotations
 from typing import Any
 
 from scripts.pm.errors import SchemaError
+from scripts.pm.opportunity_scan import frozen_candidate_supported
 from scripts.pm.portfolio import (
+    market_state_from_packet,
     independent_markable_handoff_opportunities,
     packet_handoff_trades,
 )
@@ -81,6 +84,7 @@ def _assert_packet_coverage(candidates: list[Any], *, packet: dict[str, Any]) ->
         for row in packet_handoff_trades(packet)
         if _instrument_key(row.get("instrument"))
     }
+    market_state = market_state_from_packet(packet)
     markable = independent_markable_handoff_opportunities(packet)
     markable_keys = {_instrument_key(row.get("instrument")) for row in markable}
     required = min(MIN_CANDIDATE_REVIEW, len(markable))
@@ -92,10 +96,18 @@ def _assert_packet_coverage(candidates: list[Any], *, packet: dict[str, Any]) ->
         instrument = row.get("instrument")
         key = _instrument_key(instrument)
         if key not in handoff_keys:
-            raise SchemaError(
-                f"grinder.deployment_hurdle.candidate_assessments[{idx}] instrument "
-                f"{instrument!r} is not traceable to the frozen PM packet/handoff"
-            )
+            if not frozen_candidate_supported(
+                market_state,
+                instrument=instrument,
+                asset_class=row.get("asset_class"),
+                shock_1pct_pnl_usd=row.get("shock_1pct_pnl_usd"),
+            ):
+                raise SchemaError(
+                    f"grinder.deployment_hurdle.candidate_assessments[{idx}] instrument "
+                    f"{instrument!r} is not traceable to the frozen PM packet/handoff "
+                    "and has no deterministic frozen-packet mark and risk"
+                )
+            continue
         if row.get("markable") and key in markable_keys:
             covered.add(key)
 

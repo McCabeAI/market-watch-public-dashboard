@@ -12,6 +12,7 @@ from scripts.pm.constants import ALLOWED_SUBAGENT_MODELS, AUTOMATED_PM_IDS, MAX_
 from scripts.pm.errors import IndependenceError, SchemaError
 from scripts.pm.models import PM_PRINCIPAL_MODEL
 from scripts.pm.grinder import synthetic_grinder_hurdle, validate_grinder_hurdle
+from scripts.pm.opportunity_scan import accept_opportunity_scan, synthetic_opportunity_scan
 from scripts.pm.portfolio import synthetic_portfolio_construction, validate_portfolio_construction
 
 
@@ -95,6 +96,7 @@ def validate_pm_decisions(
             )
         validate_portfolio_construction(decision, pm_id=pm_id, required=True, packet=packet)
         validate_grinder_hurdle(decision, pm_id=pm_id, required=True, packet=packet)
+        accept_opportunity_scan(decision, pm_id=pm_id)
         expanding = [
             row
             for row in decision["actions"]
@@ -177,6 +179,7 @@ def dry_run_pm_decisions(
             "subagent_count": 0,
             "subagent_models": [],
             "actions": [{"action": "HOLD"}],
+            "opportunity_scan": synthetic_opportunity_scan(),
             "thesis": "Dry-run hold; no live model invocation.",
             "invalidation": None,
             "conviction": 0,

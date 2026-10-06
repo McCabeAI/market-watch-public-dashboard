@@ -313,6 +313,83 @@ class OptionalAutomatedPMDecisionTests(ScheduledOutputTests):
         }
         validate_grinder_hurdle(decision, pm_id="grinder", packet=packet)
 
+    def test_grinder_accepts_pm_originated_markable_candidate(self) -> None:
+        packet = {
+            "market_state": {
+                "fx": {
+                    "pairs": {
+                        "USDCAD": {"spot": 1.36, "as_of": "2026-09-18"},
+                        "AUDUSD": {"spot": 0.71, "as_of": "2026-09-18"},
+                        "USDJPY": {"spot": 148.0, "as_of": "2026-09-18"},
+                    }
+                }
+            },
+            "proposed_trades": [
+                {"trade": {"instrument": "USDCAD", "asset_class": "spot_fx"}},
+                {"trade": {"instrument": "AUDUSD", "asset_class": "spot_fx"}},
+            ],
+        }
+        decision = {
+            "actions": [{"action": "NO_TRADE"}],
+            "deployment_hurdle": {
+                "benchmark": "Official SOFR 3.85% ACT/360.",
+                "candidate_assessments": [
+                    {
+                        "instrument": "USDCAD",
+                        "markable": True,
+                        "hurdle_result": "does_not_clear",
+                        "rationale": "Handoff challenge does not clear SOFR.",
+                        "material_missing_data": [],
+                        "ignored_unrelated_gaps": [],
+                    },
+                    {
+                        "instrument": "AUDUSD",
+                        "markable": True,
+                        "hurdle_result": "does_not_clear",
+                        "rationale": "Handoff challenge does not clear SOFR.",
+                        "material_missing_data": [],
+                        "ignored_unrelated_gaps": [],
+                    },
+                    {
+                        "instrument": "USDJPY",
+                        "asset_class": "spot_fx",
+                        "markable": True,
+                        "hurdle_result": "does_not_clear",
+                        "rationale": "PM-originated yen idea from frozen FX does not clear SOFR.",
+                        "material_missing_data": [],
+                        "ignored_unrelated_gaps": [],
+                    },
+                ],
+                "chosen_action_rationale": "Handoff challenges and the independent yen idea fail on economics.",
+            },
+        }
+        validate_grinder_hurdle(decision, pm_id="grinder", packet=packet)
+
+    def test_opportunity_scan_is_not_an_audit_gate(self) -> None:
+        packet = self.payload["agent_packet"]
+        block = _pm_block(self.run_id, packet["packet_sha256"], packet["evidence_cutoff"])
+        block["swinger"]["opportunity_scan"] = "not-a-list"
+        block["pragmatist"]["opportunity_scan"] = [
+            {"instrument": "USDJPY", "rationale": "Independent frozen-market idea."},
+            "skip-me",
+        ]
+        del block["grinder"]["opportunity_scan"]
+        validate_pm_decisions(
+            block,
+            overnight_run_id=self.run_id,
+            packet_sha256=packet["packet_sha256"],
+            evidence_cutoff=packet["evidence_cutoff"],
+            required=True,
+        )
+        from scripts.pm.opportunity_scan import normalize_opportunity_scan
+
+        self.assertEqual(
+            normalize_opportunity_scan(block["pragmatist"]["opportunity_scan"]),
+            [{"instrument": "USDJPY", "rationale": "Independent frozen-market idea."}],
+        )
+        self.assertEqual(normalize_opportunity_scan(block["swinger"]["opportunity_scan"]), [])
+        self.assertEqual(normalize_opportunity_scan(None), [])
+
     def test_more_than_three_subagents_or_unsupported_model_rejected(self) -> None:
         packet = self.payload["agent_packet"]
         block = _pm_block(self.run_id, packet["packet_sha256"], packet["evidence_cutoff"])

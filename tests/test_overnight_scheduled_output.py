@@ -54,6 +54,7 @@ def _pm_block(run_id: str, packet_hash: str, cutoff: str) -> dict:
             "subagent_count": 0,
             "subagent_models": [],
             "actions": [{"action": "HOLD"}],
+            "opportunity_scan": [],
             "thesis": "Await cleaner setup.",
             "invalidation": None,
             "conviction": 20,

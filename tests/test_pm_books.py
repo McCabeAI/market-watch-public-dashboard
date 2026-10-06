@@ -12,7 +12,7 @@ from scripts.pm.books import (
     validate_books,
 )
 from scripts.pm.constants import AUTOMATED_PM_IDS, CASH_CAPITAL_USD, GROSS_NOTIONAL_LIMIT_USD, RISK_CAPITAL_LIMIT_USD, MAX_DRAWDOWN_USD, PM_IDS
-from scripts.pm.errors import CapError, CurveLockError, MarkError, SchemaError
+from scripts.pm.errors import CapError, CurveLockError, SchemaError
 
 
 MARKET = {
@@ -286,18 +286,72 @@ class PMBookTests(unittest.TestCase):
                 review_packet_sha256="h",
             )
 
-    def test_missing_mark_fails_closed_on_open(self) -> None:
-        with self.assertRaises(MarkError):
-            apply_decision(
-                empty_books(),
-                {"pm_id": "chatgpt", "actions": [_open(instrument="NOFXPAIR")]},
-                pm_id="chatgpt",
-                market_state=MARKET,
-                run_id="r1",
-                evidence_cutoff="c",
-                review_packet_id="p",
-                review_packet_sha256="h",
-            )
+    def test_unmarkable_expansion_blocks_at_action_level(self) -> None:
+        books = apply_decision(
+            empty_books(),
+            {"pm_id": "chatgpt", "actions": [_open(instrument="NOFXPAIR", price=1.11)]},
+            pm_id="chatgpt",
+            market_state=MARKET,
+            run_id="r1",
+            evidence_cutoff="c",
+            review_packet_id="p",
+            review_packet_sha256="h",
+        )
+        book = books["pms"]["chatgpt"]
+        self.assertEqual(book["positions"], [])
+        self.assertTrue(any(row.get("result") == "blocked_mark" for row in book["history"]))
+        self.assertTrue(any("blocked_mark" in alert for alert in book["alerts"]))
+        self.assertEqual(book["decision_status"], "hold")
+
+    def test_unmarkable_expansion_keeps_derisk_and_continues(self) -> None:
+        opened = apply_decision(
+            empty_books(),
+            {"pm_id": "pragmatist", "actions": [_open()]},
+            pm_id="pragmatist",
+            market_state=MARKET,
+            run_id="r-open",
+            evidence_cutoff="c",
+            review_packet_id="p",
+            review_packet_sha256="h",
+        )
+        position_id = opened["pms"]["pragmatist"]["positions"][0]["position_id"]
+        mixed = apply_decision(
+            opened,
+            {
+                "pm_id": "pragmatist",
+                "actions": [
+                    _open(instrument="NOFXPAIR", price=9.9),
+                    {"action": "CLOSE", "position_id": position_id},
+                ],
+            },
+            pm_id="pragmatist",
+            market_state=MARKET,
+            run_id="r-mixed",
+            evidence_cutoff="c2",
+            review_packet_id="p2",
+            review_packet_sha256="h2",
+        )
+        book = mixed["pms"]["pragmatist"]
+        self.assertEqual(book["positions"], [])
+        self.assertTrue(any(row.get("action") == "CLOSE" and row.get("result") == "applied" for row in book["history"]))
+        self.assertTrue(any(row.get("action") == "OPEN" and row.get("result") == "blocked_mark" for row in book["history"]))
+
+    def test_unriskable_expansion_blocks_without_raising(self) -> None:
+        books = apply_decision(
+            empty_books(),
+            {"pm_id": "swinger", "actions": [_open(asset_class="options", notional=1_000_000)]},
+            pm_id="swinger",
+            market_state=MARKET,
+            run_id="r-unrisk",
+            evidence_cutoff="c",
+            review_packet_id="p",
+            review_packet_sha256="h",
+        )
+        book = books["pms"]["swinger"]
+        self.assertEqual(book["positions"], [])
+        self.assertTrue(any(row.get("result") == "blocked_risk_capital" for row in book["history"]))
+        self.assertTrue(any("unavailable" in alert.lower() for alert in book["alerts"]))
+        self.assertEqual(book["decision_status"], "hold")
 
     def test_pm_books_have_zero_risk_funding_when_flat(self) -> None:
         book = empty_pm_book("grinder")

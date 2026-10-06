@@ -551,6 +551,11 @@ def apply_action(
         raise CapError(f"{pm_id} is RISK_STOPPED after breaching the hard drawdown limit")
     if kind == "HEDGE" and not hedge_allowed(pm_id):
         raise SchemaError(f"{pm_id} mandate prohibits HEDGE; reduce or close instead")
+    if kind in {"OPEN", "ADD", "HEDGE"} and action.get("_paper_mark_error"):
+        raise MarkError(
+            f"{pm_id} {kind} blocked_mark: deterministic paper mark unavailable "
+            f"({action['_paper_mark_error']})"
+        )
 
     had_prior = bool(book.get("last_decision_at") or book.get("last_action"))
     if kind == "OPEN":
@@ -751,6 +756,24 @@ def prepare_actions(
     return actions
 
 
+def _record_blocked_expansion(
+    book: dict[str, Any],
+    action: dict[str, Any],
+    *,
+    when: datetime,
+    run_id: str | None,
+    result: str,
+    reason: str,
+) -> None:
+    """Loud action-level rejection. Sibling de-risking actions still run."""
+    book.setdefault("alerts", []).append(reason)
+    book.setdefault("history", []).append(
+        _history_entry(action, when=when, run_id=run_id, result=result, extra={"reason": reason})
+    )
+    book["prior_action"] = book.get("last_action")
+    book["last_action"] = action.get("action")
+
+
 def apply_decision(
     books: dict[str, Any],
     decision: dict[str, Any],
@@ -777,6 +800,7 @@ def apply_decision(
     stamp = now_ny(when)
     expanding = {"OPEN", "ADD", "HEDGE"}
     applied = False
+    blocked_expansion = False
     first_cap_error: CapError | None = None
     for action in actions:
         if not action.get("thesis") and decision.get("thesis"):
@@ -795,19 +819,43 @@ def apply_decision(
                 market_state=market_state,
             )
             applied = True
+        except MarkError as exc:
+            kind = str(action.get("action") or "")
+            if kind not in expanding:
+                raise
+            _record_blocked_expansion(
+                book,
+                action,
+                when=stamp,
+                run_id=run_id,
+                result="blocked_mark",
+                reason=str(exc),
+            )
+            blocked_expansion = True
         except CapError as exc:
             kind = str(action.get("action") or "")
             if kind not in expanding:
                 raise
             result = "blocked_risk_stop" if book.get("risk_stopped") else "blocked_risk_capital"
-            book.setdefault("alerts", []).append(str(exc))
-            book.setdefault("history", []).append(
-                _history_entry(action, when=stamp, run_id=run_id, result=result)
+            _record_blocked_expansion(
+                book,
+                action,
+                when=stamp,
+                run_id=run_id,
+                result=result,
+                reason=str(exc),
             )
+            blocked_expansion = True
+            # Uncomputable risk fails this expansion only. Cap breaches and the
+            # hard drawdown stop still abort a decision that applied nothing else.
+            if "unavailable" in str(exc).lower():
+                continue
             if first_cap_error is None:
                 first_cap_error = exc
     if first_cap_error is not None and not applied:
         raise first_cap_error
+    if blocked_expansion and book.get("decision_status") == awaiting_status(pm_id):
+        book["decision_status"] = "active" if book.get("positions") else "hold"
     book["last_decision_at"] = isoformat(stamp)
     book["last_decision_packet_id"] = review_packet_id
     book["last_decision_packet_sha256"] = review_packet_sha256
