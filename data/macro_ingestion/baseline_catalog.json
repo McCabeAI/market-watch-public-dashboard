@@ -123,9 +123,15 @@
       "series_id": "UNRATE",
       "canonical_name": "Unemployment Rate",
       "publisher": "BLS",
-      "distributor": "FRED",
+      "distributor": null,
       "classification": "licensed_public",
-      "endpoint": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UNRATE",
+      "endpoint": "https://api.bls.gov/publicAPI/v2/timeseries/data/",
+      "bls_series_id": "LNS14000000",
+      "fallback_series_ids": [
+        "UNRATE"
+      ],
+      "fallback_retrieval_method": "fredgraph.csv",
+      "fallback_endpoint": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UNRATE",
       "registry_urls": [
         "https://www.bls.gov/news.release/empsit.htm"
       ],
@@ -146,7 +152,7 @@
         "prior": "prior_observation_in_ledger"
       },
       "raw_provenance": "data/temperature_history/raw/us/",
-      "retrieval_method": "fredgraph.csv",
+      "retrieval_method": "bls_empsit_primary",
       "adapter": "scripts.macro_ingestion.adapters.us",
       "observation_count": 12,
       "latest_period": "2026-08",
@@ -169,9 +175,15 @@
       "series_id": "CES0500000003",
       "canonical_name": "Average Hourly Earnings of All Employees, Total Private",
       "publisher": "BLS",
-      "distributor": "FRED",
+      "distributor": null,
       "classification": "licensed_public",
-      "endpoint": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
+      "endpoint": "https://api.bls.gov/publicAPI/v2/timeseries/data/",
+      "bls_series_id": "CES0500000003",
+      "fallback_series_ids": [
+        "CES0500000003"
+      ],
+      "fallback_retrieval_method": "fredgraph.csv",
+      "fallback_endpoint": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003",
       "registry_urls": [
         "https://www.bls.gov/news.release/empsit.htm"
       ],
@@ -192,7 +204,7 @@
         "prior": "prior_observation_in_ledger"
       },
       "raw_provenance": "data/temperature_history/raw/us/",
-      "retrieval_method": "fredgraph.csv",
+      "retrieval_method": "bls_empsit_primary",
       "adapter": "scripts.macro_ingestion.adapters.us",
       "observation_count": 37,
       "latest_period": "2026-08",
@@ -215,9 +227,15 @@
       "series_id": "PAYEMS",
       "canonical_name": "All Employees, Total Nonfarm",
       "publisher": "BLS",
-      "distributor": "FRED",
+      "distributor": null,
       "classification": "licensed_public",
-      "endpoint": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PAYEMS",
+      "endpoint": "https://api.bls.gov/publicAPI/v2/timeseries/data/",
+      "bls_series_id": "CES0000000001",
+      "fallback_series_ids": [
+        "PAYEMS"
+      ],
+      "fallback_retrieval_method": "fredgraph.csv",
+      "fallback_endpoint": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PAYEMS",
       "registry_urls": [
         "https://www.bls.gov/news.release/empsit.htm"
       ],
@@ -238,7 +256,7 @@
         "prior": "prior_observation_in_ledger"
       },
       "raw_provenance": "data/temperature_history/raw/us/",
-      "retrieval_method": "fredgraph.csv",
+      "retrieval_method": "bls_empsit_primary",
       "adapter": "scripts.macro_ingestion.adapters.us",
       "observation_count": 25,
       "latest_period": "2026-08",

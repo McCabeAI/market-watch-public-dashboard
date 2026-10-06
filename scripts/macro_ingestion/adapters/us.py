@@ -8,7 +8,14 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Callable
 
+from scripts.macro_freshness import values_close
 from scripts.macro_ingestion.us_employment.dispatch import fetch_us_employment
+from scripts.macro_ingestion.us_employment.empsit import (
+    footnote_code_for_period,
+    level_pairs,
+    load_empsit_batch,
+    native_series_id,
+)
 from scripts.macro_source_refresh import parse_fred_csv
 from scripts.temperature_level import month_before
 
@@ -178,6 +185,284 @@ def _fetch_fred_series(
     }
 
 
+def _primary_result_from_bundle(bundle: dict[str, Any]) -> tuple[str, str | None]:
+    if bundle.get("ok"):
+        return "success", None
+    err = str(bundle.get("error") or "bls_batch_failed")
+    if "timeout" in err.lower() or "timed out" in err.lower():
+        return "timeout", err
+    return str(bundle.get("status") or "source_failed"), err
+
+
+def _fred_validation_result(fred: dict[str, Any] | None, *, exc: BaseException | None = None) -> tuple[str, str | None]:
+    if exc is not None:
+        msg = str(exc)
+        if isinstance(exc, TimeoutError) or "timeout" in msg.lower() or "timed out" in msg.lower():
+            return "timeout", msg
+        return "source_failed", msg
+    if fred is None:
+        return "source_failed", "fred_not_called"
+    if fred.get("ok"):
+        return "success", None
+    err = str(fred.get("error") or "fred_fetch_failed")
+    if "timeout" in err.lower() or "timed out" in err.lower():
+        return "timeout", err
+    return str(fred.get("status") or "source_failed"), err
+
+
+def _enrich_empsit_point(
+    spec: dict[str, Any],
+    point: dict[str, Any],
+    *,
+    bls_series_id: str,
+    level_series: list[tuple[str, float]],
+    body: bytes,
+    raw_sha256: str,
+    accepted_source: str,
+    retrieval_method: str,
+    batch: str | None,
+) -> dict[str, Any]:
+    score_series_id = str(spec.get("series_id") or "")
+    ordered = sorted(level_series, key=lambda item: item[0])
+    prior_period: str | None = None
+    prior_level: float | None = None
+    raw_level: float | None = None
+    if ordered:
+        latest_period = str(point.get("period") or ordered[-1][0])
+        raw_level = float(ordered[-1][1])
+        if len(ordered) >= 2:
+            prior_period = ordered[-2][0]
+            prior_level = float(ordered[-2][1])
+    foot = footnote_code_for_period(body, bls_series_id, str(point.get("period") or ""))
+    if foot == "P":
+        point["revision_status"] = "preliminary"
+    derivation = dict(point.get("derivation") or {})
+    derivation.update(
+        {
+            "publisher": "BLS",
+            "bls_series_id": bls_series_id,
+            "score_series_id": score_series_id,
+            "retrieval_method": retrieval_method,
+            "accepted_source": accepted_source,
+            "fred_series_id": score_series_id,
+            "prior_period": prior_period,
+            "prior_level": prior_level,
+            "raw_level": raw_level,
+        }
+    )
+    if batch:
+        derivation["batch"] = batch
+    point["publisher"] = "BLS"
+    point["derivation"] = derivation
+    point["source_url"] = f"https://data.bls.gov/timeseries/{bls_series_id}"
+    return {
+        "ok": True,
+        "points": [point],
+        "vintage": "latest_available",
+        "raw_sha256": raw_sha256,
+        "body": body,
+        "ledger_extra": {
+            "acquisition": {
+                "accepted_source": accepted_source,
+                "primary": {
+                    "provider": "BLS",
+                    "series_id": bls_series_id,
+                    "result": "success",
+                    "error": None,
+                },
+                "validation_or_fallback": None,
+            }
+        },
+    }
+
+
+def _fetch_scored_empsit_labor(
+    spec: dict[str, Any],
+    *,
+    opener: Callable[..., dict[str, Any]],
+    now: datetime,
+    timeout: float,
+) -> dict[str, Any]:
+    catalog_id = str(spec["id"])
+    bls_series_id = str(spec.get("bls_series_id") or native_series_id(catalog_id) or "")
+    fred_series_id = str(spec.get("series_id") or "")
+    score_transform = str(spec.get("transform") or "")
+
+    bls_exc: BaseException | None = None
+    bundle: dict[str, Any] = {}
+    try:
+        bundle = load_empsit_batch(opener, timeout=timeout, end_year=now.year)
+    except BaseException as exc:  # noqa: BLE001
+        bls_exc = exc
+        msg = str(exc)
+        if isinstance(exc, TimeoutError) or "timeout" in msg.lower() or "timed out" in msg.lower():
+            primary_status, primary_error = "timeout", msg
+        else:
+            primary_status, primary_error = "source_failed", msg
+    else:
+        primary_status, primary_error = _primary_result_from_bundle(bundle)
+
+    bls_point: dict[str, Any] | None = None
+    bls_body = bundle.get("body") or b""
+    bls_sha = str(bundle.get("raw_sha256") or "")
+    if bls_exc is None and bundle.get("ok") and bls_series_id:
+        levels = level_pairs(bundle, bls_series_id)
+        bls_point = _derive_latest_point(
+            spec,
+            levels,
+            source_url=f"https://data.bls.gov/timeseries/{bls_series_id}",
+        )
+        if bls_point is None:
+            primary_status, primary_error = "source_failed", f"transform_not_derived:{score_transform}"
+            bls_point = None
+
+    fred_payload: dict[str, Any] | None = None
+    fred_exc: BaseException | None = None
+    try:
+        fred_payload = _fetch_fred_series(spec, opener=opener, timeout=timeout)
+    except BaseException as exc:  # noqa: BLE001
+        fred_exc = exc
+
+    fred_status, fred_error = _fred_validation_result(fred_payload, exc=fred_exc)
+    fred_points = (fred_payload or {}).get("points") or []
+    fred_point = fred_points[0] if fred_payload and fred_payload.get("ok") and fred_points else None
+
+    def _acquisition(
+        accepted: str | None,
+        *,
+        primary_result: str,
+        primary_err: str | None,
+        validation: dict[str, Any] | None,
+        extra: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        doc: dict[str, Any] = {
+            "accepted_source": accepted,
+            "primary": {
+                "provider": "BLS",
+                "series_id": bls_series_id,
+                "result": primary_result,
+                "error": primary_err,
+            },
+            "validation_or_fallback": validation,
+        }
+        if extra:
+            doc.update(extra)
+        return {"acquisition": doc}
+
+    if bls_point is not None and fred_point is not None:
+        same_period = str(bls_point.get("period")) == str(fred_point.get("period"))
+        bls_transform = str(bls_point.get("transformation") or score_transform)
+        fred_transform = str(fred_point.get("transformation") or score_transform)
+        if same_period and bls_transform == fred_transform and not values_close(
+            float(bls_point["value"]), float(fred_point["value"])
+        ):
+            fred_body_conflict = (fred_payload or {}).get("body") or b""
+            fred_sha_conflict = str((fred_payload or {}).get("raw_sha256") or "")
+            if fred_body_conflict and not fred_sha_conflict:
+                fred_sha_conflict = _sha256(fred_body_conflict)
+            conflict_extra: dict[str, Any] = {
+                "bls_value": float(bls_point["value"]),
+                "fred_value": float(fred_point["value"]),
+            }
+            if bls_body:
+                conflict_extra["bls_raw_sha256"] = bls_sha or _sha256(bls_body)
+            if fred_body_conflict:
+                conflict_extra["fred_raw_sha256"] = fred_sha_conflict
+            return {
+                "ok": False,
+                "status": "source_failed",
+                "error": (
+                    "verification_conflict:"
+                    f"bls={bls_point['value']};fred={fred_point['value']};period={bls_point.get('period')}"
+                ),
+                "body": bls_body,
+                "ledger_extra": _acquisition(
+                    None,
+                    primary_result="success",
+                    primary_err=None,
+                    validation={
+                        "provider": "FRED",
+                        "series_id": fred_series_id,
+                        "result": "success",
+                        "error": None,
+                    },
+                    extra=conflict_extra,
+                ),
+            }
+
+    if bls_point is not None:
+        payload = _enrich_empsit_point(
+            spec,
+            bls_point,
+            bls_series_id=bls_series_id,
+            level_series=level_pairs(bundle, bls_series_id),
+            body=bls_body,
+            raw_sha256=bls_sha,
+            accepted_source="bls_primary",
+            retrieval_method="bls_public_api_v2_batch",
+            batch="empsit",
+        )
+        payload["ledger_extra"]["acquisition"]["validation_or_fallback"] = {
+            "provider": "FRED",
+            "series_id": fred_series_id,
+            "result": fred_status,
+            "error": fred_error,
+        }
+        return payload
+
+    if fred_point is not None and fred_payload and fred_payload.get("ok"):
+        point = dict(fred_point)
+        fred_body = fred_payload.get("body") or b""
+        fred_sha = str(fred_payload.get("raw_sha256") or _sha256(fred_body))
+        url = FRED_GRAPH_URL.format(series_id=fred_series_id)
+        parsed = parse_fred_csv(fred_body.decode("utf-8", errors="replace"))
+        payload = _enrich_empsit_point(
+            spec,
+            point,
+            bls_series_id=bls_series_id,
+            level_series=parsed,
+            body=fred_body,
+            raw_sha256=fred_sha,
+            accepted_source="fred_fallback",
+            retrieval_method="fredgraph.csv",
+            batch=None,
+        )
+        point_out = payload["points"][0]
+        point_out["source_url"] = url
+        payload["ledger_extra"] = _acquisition(
+            "fred_fallback",
+            primary_result=primary_status,
+            primary_err=primary_error,
+            validation={
+                "provider": "FRED",
+                "series_id": fred_series_id,
+                "result": "success",
+                "error": None,
+            },
+        )
+        return payload
+
+    err_parts = [f"primary: {primary_error or primary_status}"]
+    err_parts.append(f"fallback: {fred_error or fred_status}")
+    return {
+        "ok": False,
+        "status": "source_failed",
+        "error": "; ".join(err_parts),
+        "body": bls_body or (fred_payload or {}).get("body") or b"",
+        "ledger_extra": _acquisition(
+            None,
+            primary_result=primary_status,
+            primary_err=primary_error,
+            validation={
+                "provider": "FRED",
+                "series_id": fred_series_id,
+                "result": fred_status,
+                "error": fred_error,
+            },
+        ),
+    }
+
+
 def _parse_ism_pmi(body: bytes, *, services: bool) -> dict[str, Any] | None:
     text = body.decode("utf-8", errors="replace")
     if services:
@@ -316,7 +601,6 @@ def fetch_series(
     timeout: float = 20,
 ) -> dict[str, Any]:
     """Fetch one US catalog row via the injectable opener."""
-    _ = now
     role = str(spec.get("role") or "")
     if role == "explanatory_alias":
         return {
@@ -340,6 +624,9 @@ def fetch_series(
             "status": "license_gap",
             "error": "retrieval_unavailable",
         }
+
+    if method == "bls_empsit_primary":
+        return _fetch_scored_empsit_labor(spec, opener=opener, now=now, timeout=timeout)
 
     employment = fetch_us_employment(spec, opener=opener, now=now, timeout=timeout)
     if employment is not None:
