@@ -666,6 +666,62 @@
       "run_id": "overnight-20261005",
       "schema_version": 1,
       "thesis": "Cash CORRA at 2.30 versus March 2027 at 2.975 still prices 67.5 basis points of Bank of Canada tightening that has not been delivered. That hike arc remains too rich, so the concentrated receive stays the book. The contract has already cheapened from 3.13 and further compression toward cash is the payoff. No add and no second sleeve: size is already the expression of this one path, and US risk stays blocked."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pm-swinger-2070479ca321",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-06T07:19:05.222214-04:00",
+      "conviction": 82,
+      "decision_fingerprint": "98246974f8332d4b7914b8b86ab6620208b6dd543ec9c83611a38818ac5ab209",
+      "event_id": "jde-43bfe49435864e16",
+      "funding_view": null,
+      "invalidation": "Close or reduce if Mar-27 CORRA reprices higher as cash tightening is delivered, if Canadian or US labor re-accelerates enough to restore a hike path, or if the strip converges toward cash by the implied tightening being realized rather than faded.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-swinger-2070479ca321"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "778546e1b21af57516bb4a5e82cf34bcd0d3490d35157a95caae2c3a64e0b9a5",
+      "outcome_links": [],
+      "owner_id": "swinger",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "eb168bc604d01cbf11e9f5ec4f14394334310384b4b0f4753f97e58725dd7532"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-06T04:52:57.791209-04:00",
+        "evidence_hash": "573bd54445fcf03416b609edfb9ea33366b04a8f6b9ddd6b963e0068892bb6f6",
+        "overnight_run_id": "overnight-20261006",
+        "review_id": "review-001",
+        "review_packet_id": "prp-swinger-overnight-20261006-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Mar-27 CORRA at 2.95 still prices about 65bp of tightening versus 2.30 cash, so the Canada hike-path fade remains the concentrated book. Verified US labor cooling and the frozen eligible-jurisdiction tape keep that receive thesis valid; the 700m sleeve is already in the money from roughly 3.09 toward 2.95. The accepted 14-trader handoff is all stay-flat with no expanding clips, so no second sleeve is added. Shocked risk stays about $7m of the $100m cap, which is concentrated enough without filling unused capacity.",
+      "run_id": "overnight-20261006",
+      "schema_version": 1,
+      "thesis": "Mar-27 CORRA at 2.95 still prices about 65bp of tightening versus 2.30 cash, so the Canada hike-path fade remains the concentrated book. Verified US labor cooling and the frozen eligible-jurisdiction tape keep that receive thesis valid; the 700m sleeve is already in the money from roughly 3.09 toward 2.95. The accepted 14-trader handoff is all stay-flat with no expanding clips, so no second sleeve is added. Shocked risk stays about $7m of the $100m cap, which is concentrated enough without filling unused capacity."
     }
   ],
   "schema_version": 1,

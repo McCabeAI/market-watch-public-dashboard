@@ -636,6 +636,60 @@
       "run_id": "overnight-20261005",
       "schema_version": 1,
       "thesis": "Spot is the wrong default when timing and event risk cannot be priced, but this freeze has no markable listed chain\u2014only a VIX print of 16.39 and no strikes or premiums. A convex structure would dominate linear if it could be marked; it cannot, so options are unused rather than invented. Unbounded linear does not beat staying flat: the book is already flat, new US risk is blocked, and a directional spot expression would warehouse unlimited gap risk without a hedge that can be sized from live marks."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-06T04:52:57.791209-04:00",
+      "conviction": 88,
+      "decision_fingerprint": "2ed7621c4750bb119983ca28b37de97e91f1565c198157a795ae2e71b2f082fb",
+      "event_id": "jde-68fb3032bf124c88",
+      "funding_view": null,
+      "invalidation": "A live listed chain with executable strikes, expiries, and premiums becomes markable, or a bounded structure can be shown on those marks to dominate flat.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "b28ed9d18edd72d1f22c733184bd064cd0632ec9950da37bfb892975436eaefc",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "5c98a87132ed077f66603f70bf59e5e1dc96c253d2073f5f67cf540dad589c7f"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-06T04:52:57.791209-04:00",
+        "evidence_hash": "7952afc0027e7fc435117001c2bdab03a7a8c2d0ae25999e97d6be277499b04f",
+        "overnight_run_id": "overnight-20261006",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book is flat and the only available vol print is VIX at 15.31. No strikes, expiries, or premiums are supplied, so no option structure is markable and none is selected. Unbounded linear spot or rates is not a substitute for missing convexity. Stay flat.",
+      "run_id": "overnight-20261006",
+      "schema_version": 1,
+      "thesis": "The book is flat and the only available vol print is VIX at 15.31. No strikes, expiries, or premiums are supplied, so no option structure is markable and none is selected. Unbounded linear spot or rates is not a substitute for missing convexity. Stay flat."
     }
   ],
   "schema_version": 1,

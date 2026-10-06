@@ -648,6 +648,60 @@
       "run_id": "overnight-20261005",
       "schema_version": 1,
       "thesis": "Every frozen event is already printed or effective, so none of it is an unused clock. Cash versus October AONIA is already delivered, March CORRA sits above cash with no Bank of Canada date attached, and euro-area inflation plus the Bank of Japan move are spent. With the book flat and no unused dated meeting or print mapping onto an undelivered eligible contract, residual hike-path gaps are not a trade."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-06T04:52:57.791209-04:00",
+      "conviction": 86,
+      "decision_fingerprint": "d54174613460a561a9683980e20a888f008c5b6a6b12b546cedc15d11726dc3a",
+      "event_id": "jde-d7fadfc787fd406d",
+      "funding_view": null,
+      "invalidation": "A still-unused dated Bank of Canada, RBA, ECB, or Bank of Japan meeting, or a still-unused scheduled print, is supplied later and maps onto a still-undelivered eligible contract.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "944feb550e401760a2cb0dbb33c07595bf5b8f998827bae0401400b04c904e83",
+      "outcome_links": [],
+      "owner_id": "catalyst-junkie",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "8997fbab4b09231ccd89cb3f68fb4d443f8afeeb200e3ecf35ec6f63c943b95d"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-06T04:52:57.791209-04:00",
+        "evidence_hash": "7952afc0027e7fc435117001c2bdab03a7a8c2d0ae25999e97d6be277499b04f",
+        "overnight_run_id": "overnight-20261006",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Ueda left October hike fades largely unchallenged, so the September BoJ implementation is a spent mechanism rather than a live path from gap to mark. CORRA 2.95 has no BoC date attached, which leaves a residual hike gap without a calendar that can reprice an eligible contract. Valuation residue is not a trade in this remit: with the book already flat, stay flat until an unused dated catalyst maps onto a markable rates or spot expression.",
+      "run_id": "overnight-20261006",
+      "schema_version": 1,
+      "thesis": "Ueda left October hike fades largely unchallenged, so the September BoJ implementation is a spent mechanism rather than a live path from gap to mark. CORRA 2.95 has no BoC date attached, which leaves a residual hike gap without a calendar that can reprice an eligible contract. Valuation residue is not a trade in this remit: with the book already flat, stay flat until an unused dated catalyst maps onto a markable rates or spot expression."
     }
   ],
   "schema_version": 1,

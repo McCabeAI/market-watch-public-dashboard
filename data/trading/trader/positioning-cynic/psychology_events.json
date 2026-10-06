@@ -227,6 +227,54 @@
       "run_id": "overnight-20261005",
       "seq": 10,
       "skipped_reason": null
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [
+          150000.0
+        ],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-10-06T04:52:57.791209-04:00",
+      "event_id": "pse-000011",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "positioning-cynic",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261006",
+      "seq": 11,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-10-06T04:52:57.791209-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "chase_pressure": 0.0228,
+        "external_pressure": 0.0649,
+        "frustration": 0.026
+      },
+      "event_id": "pse-000012",
+      "kind": "rank_drop_minor",
+      "magnitude": 1.0,
+      "mismatch": false,
+      "owner_id": "positioning-cynic",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261006",
+      "scale": 1.0,
+      "seq": 12,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "rank_change": 3
+      }
     }
   ],
   "owner_id": "positioning-cynic",

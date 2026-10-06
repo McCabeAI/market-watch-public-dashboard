@@ -680,6 +680,62 @@
       "run_id": "overnight-20261005",
       "schema_version": 1,
       "thesis": "Long CADJPY is still the cleanest non-dollar expression of oil-supported Canada against still-easy Japan: CORRA at 2.30 versus TONA at 1.227 keeps carry with the long while Brent at 102.25 underwrites the CAD leg. A mark of 110.73 against 110.90 entry is noise, not a regime change, and the oil bid is not a license to reopen a closed AUDCAD book. Hold the existing spot long; do not add, reverse, or fold a multi-week relative-value into a two-day flip."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CADJPY",
+          "notional_usd": null,
+          "position_id": "pos-44de67c4b24f",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-06T04:52:57.791209-04:00",
+      "conviction": 71,
+      "decision_fingerprint": "4cc65130005de00052eb3937b0e4f46f3129da11d1dafd8d441b54f2299a5d9b",
+      "event_id": "jde-6892b6f1fa0240b6",
+      "funding_view": null,
+      "invalidation": "Oil support for CAD fails if Brent loses the bid that underwrites the cross, or the CORRA minus TONA advantage compresses enough to erase carry.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-44de67c4b24f"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "3819f5fd1af12460f6bbd9c50b765602b93f449ad43bd59fb3ad897117bf66e6",
+      "outcome_links": [],
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "1006c1eadfa6c91dd7246141bf3ce23ae6666700877b5810fbe3b7c2ebb3aa2d"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-06T04:52:57.791209-04:00",
+        "evidence_hash": "7952afc0027e7fc435117001c2bdab03a7a8c2d0ae25999e97d6be277499b04f",
+        "overnight_run_id": "overnight-20261006",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "CADJPY is the cleanest non-USD expression of the Canadian-Japanese differential: CORRA at 2.30 versus TONA at 1.227 leaves CAD the higher-yielding long, and Brent at 100.32 supports CAD oil terms of trade while Japan remains the energy importer. Pairing either currency with USD would fold Fed beta into both legs and dirty that BoC-versus-BoJ and oil view. The open 15 million long from 110.90, live 111.02, already isolates that relative-value gap; New Zealand new risk is closed and AUDCAD stays off the sheet, so the seat keeps CADJPY rather than rotating.",
+      "run_id": "overnight-20261006",
+      "schema_version": 1,
+      "thesis": "CADJPY is the cleanest non-USD expression of the Canadian-Japanese differential: CORRA at 2.30 versus TONA at 1.227 leaves CAD the higher-yielding long, and Brent at 100.32 supports CAD oil terms of trade while Japan remains the energy importer. Pairing either currency with USD would fold Fed beta into both legs and dirty that BoC-versus-BoJ and oil view. The open 15 million long from 110.90, live 111.02, already isolates that relative-value gap; New Zealand new risk is closed and AUDCAD stays off the sheet, so the seat keeps CADJPY rather than rotating."
     }
   ],
   "schema_version": 1,

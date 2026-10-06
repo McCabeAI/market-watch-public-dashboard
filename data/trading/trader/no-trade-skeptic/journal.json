@@ -887,6 +887,77 @@
       "run_id": "overnight-20261005",
       "schema_version": 1,
       "thesis": "Cash SOFR is 3.87 against SR3 December 4.23, March 4.51 and September 4.775, with the 10-year at 5.28, Brent at 102.25 and VIX at 16.39, and the book is flat. That hiking path and term level are already on the screen, so fade-or-chase setups are crowded, noisy versus an overnight horizon, and poorly timed with no named catalyst. Sit in official SOFR cash as the zero benchmark; do not manufacture risk."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-06T04:52:57.791209-04:00",
+      "conviction": 84,
+      "decision_fingerprint": "963e7199d9670e5212457c9f98ef2d24d0ea5e3480162a0e37d5c3ed62ed5888",
+      "event_id": "jde-14c32af481cd432e",
+      "funding_view": {
+        "current_sofr": {
+          "observation_date": "2026-10-02",
+          "rate": 3.88
+        },
+        "forward_funding_assessment": "lower",
+        "implication": "Realized overnight funding should print near the 3.88 official fixing and below those SR3 forwards. Remain at the zero official-SOFR cash benchmark; do not pay SOFR on shocked-risk capital. Flat cash is not alpha.",
+        "sr3_forward_view": "Over this overnight review the listed SR3 path sits well above cash: December 4.25, March 4.53, September 4.775. That is a priced multi-meeting hiking path, not an overnight funding print."
+      },
+      "invalidation": "Actionable only if the freeze shows a measured spread versus the listed SR3 path, a dated catalyst inside the review horizon, and a stop that can actually fire. A VIX or oil shock without a rates basis still does not open a trade.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "c36a3329d632d62287bf46c21c8257e78eb30ce5f1653215325653b219d33fac",
+      "outcome_links": [],
+      "owner_id": "no-trade-skeptic",
+      "owner_type": "trader",
+      "payload": {
+        "funding_view": {
+          "current_sofr": {
+            "observation_date": "2026-10-02",
+            "rate": 3.88
+          },
+          "forward_funding_assessment": "lower",
+          "implication": "Realized overnight funding should print near the 3.88 official fixing and below those SR3 forwards. Remain at the zero official-SOFR cash benchmark; do not pay SOFR on shocked-risk capital. Flat cash is not alpha.",
+          "sr3_forward_view": "Over this overnight review the listed SR3 path sits well above cash: December 4.25, March 4.53, September 4.775. That is a priced multi-meeting hiking path, not an overnight funding print."
+        },
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "a841d52c31fb65ae2717483484e243c50c1f2d930311789551deb2dbac0dbe07"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-06T04:52:57.791209-04:00",
+        "evidence_hash": "7952afc0027e7fc435117001c2bdab03a7a8c2d0ae25999e97d6be277499b04f",
+        "overnight_run_id": "overnight-20261006",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Cash SOFR is 3.88 against SR3 December 4.25, March 4.53 and September 4.775, with the 10-year at 5.31, Brent at 100.32 and VIX at 15.31, and the book is flat. That hiking path, term yield, oil print and contained vol are already on the screen, so fade-or-chase setups are priced, crowded, noisy versus this overnight horizon, and poorly timed with no named catalyst that is not already in the strip. Remain at the zero official-SOFR cash benchmark; do not pay SOFR on shocked-risk capital unless a marked trade beats that charge.",
+      "run_id": "overnight-20261006",
+      "schema_version": 1,
+      "thesis": "Cash SOFR is 3.88 against SR3 December 4.25, March 4.53 and September 4.775, with the 10-year at 5.31, Brent at 100.32 and VIX at 15.31, and the book is flat. That hiking path, term yield, oil print and contained vol are already on the screen, so fade-or-chase setups are priced, crowded, noisy versus this overnight horizon, and poorly timed with no named catalyst that is not already in the strip. Remain at the zero official-SOFR cash benchmark; do not pay SOFR on shocked-risk capital unless a marked trade beats that charge."
     }
   ],
   "schema_version": 1,

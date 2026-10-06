@@ -664,6 +664,62 @@
       "run_id": "overnight-20261005",
       "schema_version": 1,
       "thesis": "CORRA cash is 2.30 against March through December 2027 implieds of 2.975, 3.205, 3.375 and 3.50, so the second-half 2027 strip still averages about 3.264. That remains too much tightening versus a cash rate already at 2.30, and the existing receive from 3.40 is still the clean expression of less-hike. Rank recovery is not incremental information on the path, so the 42.5 million line is held and not added."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027H-Z",
+          "notional_usd": null,
+          "position_id": "pos-9849cf751c27",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-06T04:52:57.791209-04:00",
+      "conviction": 74,
+      "decision_fingerprint": "2e4a5a70cc7abbc4e54bae509df85a684575456ccf707f4cfbd487faab401bc9",
+      "event_id": "jde-d86f5444e6c7449d",
+      "funding_view": null,
+      "invalidation": "The H-Z average moves sustainably above the 3.40 entry toward December 2027 at 3.45 with cash CORRA rising off 2.30, or realized 2027 tightening validates the strip rather than mean-reverting it.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-9849cf751c27"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "f4a66cdb38af966c06edd2c2891622b9de6b3cf10456d7982d95af119a290b1e",
+      "outcome_links": [],
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "bd47ca31b5634e44eeea58679f4eab8829a87d51af40cca3c19e29413c8d05d4"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-06T04:52:57.791209-04:00",
+        "evidence_hash": "7952afc0027e7fc435117001c2bdab03a7a8c2d0ae25999e97d6be277499b04f",
+        "overnight_run_id": "overnight-20261006",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "US labor cooling is verified and restrictive policy still bites, so the CORRA strip rebuild from cash 2.30 into Mar 2.95, H-Z near 3.226 and Dec 3.45 overprices a re-hiking path. The book is already long 42.5m CORRA_2027H-Z from 3.40 versus live near 3.226; that gap is earned, not a reason to add. Rank recovery toward the 3.40 entry would be a hawkish squeeze, not an invitation to increase size. Keep the receive and keep expected mark direction lower.",
+      "run_id": "overnight-20261006",
+      "schema_version": 1,
+      "thesis": "US labor cooling is verified and restrictive policy still bites, so the CORRA strip rebuild from cash 2.30 into Mar 2.95, H-Z near 3.226 and Dec 3.45 overprices a re-hiking path. The book is already long 42.5m CORRA_2027H-Z from 3.40 versus live near 3.226; that gap is earned, not a reason to add. Rank recovery toward the 3.40 entry would be a hawkish squeeze, not an invitation to increase size. Keep the receive and keep expected mark direction lower."
     }
   ],
   "schema_version": 1,

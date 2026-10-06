@@ -646,6 +646,60 @@
       "run_id": "overnight-20261005",
       "schema_version": 1,
       "thesis": "AUDNZD versus the AU-NZ two-year differential is the only eligible, historically anchored dislocation in the marks, at a residual z-score of -2.16. That residual is a valuation fact, not a clock: nothing dates when the gap should close, and a large z alone is not a reason to fade. USDCAD versus CA-US 2Y at +1.73z is both smaller and ineligible as new US risk. With the book flat, stay flat until a dated AU/NZ catalyst or a real-effective or terms-of-trade anchor appears."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-06T04:52:57.791209-04:00",
+      "conviction": 0,
+      "decision_fingerprint": "38a742a9d8b327919c718598ba61d369c12bccf492fa178be4479e3c489c8a80",
+      "event_id": "jde-f29e37c7f0234365",
+      "funding_view": null,
+      "invalidation": "A dated AU, US, or CA policy, terms-of-trade, or data clock that times residual closure, or a later freeze that supplies REER/PPP cheapness with an explicit convergence window, invalidates staying flat.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "2729638d78a790364873c2786c32e7a804b89e2eba070acac599ffc92b5dbc9f",
+      "outcome_links": [],
+      "owner_id": "value-guy",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "093e62814a20e273e1905a345ee201fc91dc63d8ab9fa20abb646b0b419d7908"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-06T04:52:57.791209-04:00",
+        "evidence_hash": "7952afc0027e7fc435117001c2bdab03a7a8c2d0ae25999e97d6be277499b04f",
+        "overnight_run_id": "overnight-20261006",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book is already flat, and NZ-linked new risk is closed, which also closes AUDNZD as a new-risk expression, so any REER or pairwise cheapness in that cross is not executable. US rates are now eligible, but the supplied cash marks are only levels: US 2s10s 4.84/5.31, CA 3.25/3.93, AU 4.942/5.344; a level or z-score is not a convergence clock, and a 2Y spread is not cheap merely because the FX looks cheap. Screening those cash marks before any REER story still finds no dated, markable non-NZ dislocation with a start date for mean reversion. Stay flat.",
+      "run_id": "overnight-20261006",
+      "schema_version": 1,
+      "thesis": "The book is already flat, and NZ-linked new risk is closed, which also closes AUDNZD as a new-risk expression, so any REER or pairwise cheapness in that cross is not executable. US rates are now eligible, but the supplied cash marks are only levels: US 2s10s 4.84/5.31, CA 3.25/3.93, AU 4.942/5.344; a level or z-score is not a convergence clock, and a 2Y spread is not cheap merely because the FX looks cheap. Screening those cash marks before any REER story still finds no dated, markable non-NZ dislocation with a start date for mean reversion. Stay flat."
     }
   ],
   "schema_version": 1,

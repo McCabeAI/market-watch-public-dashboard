@@ -42,8 +42,8 @@
     "nav_usd": 100000000.0,
     "net_pnl_usd": 0.0,
     "pressure_flags": [],
-    "prior_competition_rank": 5,
-    "rank_change": 0,
+    "prior_competition_rank": 4,
+    "rank_change": 1,
     "raw_pnl_rank": 5,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
@@ -60,7 +60,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "b28ed9d18edd72d1f22c733184bd064cd0632ec9950da37bfb892975436eaefc",
+  "memory_context_sha256": "acc2168e59628b1317a4e8d1135f54643856e7a565305be0c31bd73980ca1720",
   "open_positions": [],
   "owner_id": "vol-convexity",
   "owner_type": "trader",
@@ -72,7 +72,7 @@
       "chase_pressure": {
         "band": "calm",
         "trend": "up",
-        "value": 0.17
+        "value": 0.18
       },
       "complacency": {
         "band": "calm",
@@ -87,12 +87,12 @@
       "external_pressure": {
         "band": "calm",
         "trend": "up",
-        "value": 0.13
+        "value": 0.14
       },
       "frustration": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.13
+        "trend": "flat",
+        "value": 0.14
       },
       "revenge_pressure": {
         "band": "calm",
@@ -122,24 +122,24 @@
       {
         "kind": "flat_with_market",
         "magnitude": 1.0,
-        "run_id": "overnight-20261001"
-      },
-      {
-        "kind": "flat_with_market",
-        "magnitude": 1.0,
         "run_id": "overnight-20261002"
       },
       {
         "kind": "flat_with_market",
         "magnitude": 1.0,
         "run_id": "overnight-20261005"
+      },
+      {
+        "kind": "flat_with_market",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261006"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "5c98a87132ed077f66603f70bf59e5e1dc96c253d2073f5f67cf540dad589c7f",
+    "state_sha256": "b776cfbb65f7a25a464443c58763ca05b91dfbee993bec19f4a2b1864e979a0a",
     "streaks": {
-      "flat_cycles": 6,
+      "flat_cycles": 7,
       "session_loss": 0,
       "session_win": 0
     }

@@ -662,6 +662,62 @@
       "run_id": "overnight-20261005",
       "schema_version": 1,
       "thesis": "Global growth and risk appetite still look more resilient than a Canadian re-easing story. Equities are bid, implied vol is contained, crude is firm, and US 10-year yields remain restrictive, which keeps the case for paying the Bank of Canada hike arc intact. Cash CORRA at 2.30 versus March 2027 implied at 2.975 still prices a substantial tightening path, so the existing pay is the cleanest pro-cyclical expression. A modest bounce from the book mark is not a new signal to add."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-dd6fdaf39119",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-06T04:52:57.791209-04:00",
+      "conviction": 66,
+      "decision_fingerprint": "73049045a73202b0234931c82c73c195b9a929a246698ca0ed83b123269ec211",
+      "event_id": "jde-3436604bf42448a4",
+      "funding_view": null,
+      "invalidation": "The pay is wrong if Canadian activity cooling is confirmed, if the oil bid reverses enough to remove the CA cyclical impulse, or if US labor deteriorates from the 4.2% / ~3.02% wage print and reopens a growth-scare that drives CORRA March 2027 back toward 2.30 cash.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-dd6fdaf39119"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "593f4b096e1bc79c51aab9adf801408f974c0e6b894582e9383e68c1f7de865f",
+      "outcome_links": [],
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "196c06b7a191c3d9970d062908ef3acb7b91cb3e472cff3fd17bca01e65dbd81"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-06T04:52:57.791209-04:00",
+        "evidence_hash": "7952afc0027e7fc435117001c2bdab03a7a8c2d0ae25999e97d6be277499b04f",
+        "overnight_run_id": "overnight-20261006",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Risk appetite is intact with equities bid at 7774 and VIX at 15.31, while Brent 100.32 and WTI 89.43 keep a cyclical impulse under Canada. Verified US labor at a 4.2% unemployment rate and wages near 3.02%, plus warming Canadian activity, argue growth is adapting rather than rolling over, so CORRA March 2027 at 2.95 can still reprice higher versus 2.30 cash if oil and activity persist. The existing 50 million pay remains the cleanest pro-growth expression; the move from 3.13 to 2.95 is mark variance around that path, not a thesis break and not permission to add.",
+      "run_id": "overnight-20261006",
+      "schema_version": 1,
+      "thesis": "Risk appetite is intact with equities bid at 7774 and VIX at 15.31, while Brent 100.32 and WTI 89.43 keep a cyclical impulse under Canada. Verified US labor at a 4.2% unemployment rate and wages near 3.02%, plus warming Canadian activity, argue growth is adapting rather than rolling over, so CORRA March 2027 at 2.95 can still reprice higher versus 2.30 cash if oil and activity persist. The existing 50 million pay remains the cleanest pro-growth expression; the move from 3.13 to 2.95 is mark variance around that path, not a thesis break and not permission to add."
     }
   ],
   "schema_version": 1,

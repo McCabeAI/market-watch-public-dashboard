@@ -1,6 +1,6 @@
 {
   "active_lessons": [],
-  "as_of": "2026-10-06T04:52:57.791209-04:00",
+  "as_of": "2026-10-06T07:19:06.307768-04:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -30,12 +30,12 @@
     "wins": 0
   },
   "capital_owner": {
-    "credible_opportunities": "unknown",
+    "credible_opportunities": "none",
     "force_deployment": false,
     "hurdle": "SOFR",
     "mandate": "grinder",
     "notes": [
-      "Flat versus SOFR is zero alpha. Opportunity availability is unknown in the frozen packet, so no missed-opportunity claim is made."
+      "Flat versus SOFR is zero alpha, but the frozen packet has no markable opportunity. Sitting out is legitimate."
     ],
     "persistent_zero_alpha": false,
     "pressure_flags": [],
@@ -43,8 +43,8 @@
     "zero_alpha": true
   },
   "consequence": {
-    "best_trader_net_pnl_usd": 898700.54,
-    "best_trader_outearn_streak": 0,
+    "best_trader_net_pnl_usd": 950858.98,
+    "best_trader_outearn_streak": 1,
     "best_trader_seat": "dollar-king",
     "capital_normalized": false,
     "competition_cohort_size": 4,
@@ -52,7 +52,7 @@
     "competition_rank": 4,
     "competitive_rank": 4,
     "drawdown_usd": 0.0,
-    "gap_to_best_trader_usd": -898700.54,
+    "gap_to_best_trader_usd": -950858.98,
     "high_water_nav_usd": 1000000000.0,
     "max_drawdown_usd": 50000000.0,
     "net_after_funding_pnl_usd": 0.0,
@@ -74,7 +74,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "ced2f11a73ecefd4c2b57d056042eb541ff1aac9f7d46b006de617641d73f128",
+  "memory_context_sha256": "7f2860942289495b9832d665935904c3312bba1166d8c1e3facbdabd0d75a09d",
   "open_positions": [],
   "owner_id": "grinder",
   "owner_type": "pm",
@@ -100,12 +100,12 @@
       },
       "external_pressure": {
         "band": "elevated",
-        "trend": "down",
-        "value": 0.36
+        "trend": "up",
+        "value": 0.38
       },
       "frustration": {
         "band": "calm",
-        "trend": "down",
+        "trend": "flat",
         "value": 0.14
       },
       "revenge_pressure": {
@@ -115,7 +115,7 @@
       },
       "self_trust": {
         "band": "steady",
-        "trend": "up",
+        "trend": "flat",
         "value": 0.5
       },
       "thesis_attachment": {
@@ -136,24 +136,24 @@
       {
         "kind": "competitive_flag_active",
         "magnitude": 1.0,
-        "run_id": "overnight-20261002"
-      },
-      {
-        "kind": "competitive_flag_active",
-        "magnitude": 1.0,
         "run_id": "overnight-20261005"
       },
       {
         "kind": "allocator_standing_restored",
         "magnitude": 1.0,
         "run_id": "overnight-20261005"
+      },
+      {
+        "kind": "competitive_flag_active",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261006"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "12ffda2da8fc0f460b8c61b588351f2a79ac6a6a2ec829f00827d55d151e75a3",
+    "state_sha256": "6a6c900b764ce88f1ca5f539f2fca936604ad755de073704e18a0ef4457925d6",
     "streaks": {
-      "flat_cycles": 6,
+      "flat_cycles": 7,
       "session_loss": 0,
       "session_win": 0
     }

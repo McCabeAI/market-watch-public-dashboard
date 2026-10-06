@@ -662,6 +662,62 @@
       "run_id": "overnight-20261005",
       "schema_version": 1,
       "thesis": "USD still pays versus CAD on cash and the 2027 strip: SOFR 3.87 against CORRA 2.30, and March 2027 SOFR 4.51 against CORRA 2.975. That gap is why the view belongs in USDCAD spot, not a cross and not a second dollar pair. Brent at 102.25 is a CAD-positive offset, but it has not closed the yield differential that carried the long from 1.401 to 1.4240. September US labor is unverified, so new US risk is unavailable; the existing long is held, not added."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDCAD",
+          "notional_usd": null,
+          "position_id": "pos-5317bc96d4eb",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-06T04:52:57.791209-04:00",
+      "conviction": 72,
+      "decision_fingerprint": "1333f02a2b1baf2fe2c05745aa352dd8f26072164cc419fb96f06b02d58c242a",
+      "event_id": "jde-5c462bfe53db4bc8",
+      "funding_view": null,
+      "invalidation": "The USD rate advantage versus CAD is lost on cash SOFR-CORRA or March-27 implieds, or oil reasserts a CAD-supportive squeeze.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-5317bc96d4eb"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "83dd75cce72e6cb407b48d38a1c644cf49296b8fda06594e8f0c9b66d4741d8b",
+      "outcome_links": [],
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "320e5ffed448de01a9a846870155208c0bd05a8362bfe8f8e9cf186434b81818"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-06T04:52:57.791209-04:00",
+        "evidence_hash": "7952afc0027e7fc435117001c2bdab03a7a8c2d0ae25999e97d6be277499b04f",
+        "overnight_run_id": "overnight-20261006",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "USD still pays versus CAD on verified marks: cash SOFR 3.88 versus CORRA 2.30, and March-27 implieds 4.53 versus 2.95, so the first-order expression is long USDCAD spot rather than a non-dollar cross. The book is already long USDCAD from 1.401 with the live mark at 1.4253; that dollar-spot position is the working trade. An oil-ease path reduces CAD terms-of-trade support while USD carry remains intact, so fading CAD via a cross would add unnecessary second-order risk. The next oil impulse and any policy path beyond the implieds are not a reason to abandon the USD leg.",
+      "run_id": "overnight-20261006",
+      "schema_version": 1,
+      "thesis": "USD still pays versus CAD on verified marks: cash SOFR 3.88 versus CORRA 2.30, and March-27 implieds 4.53 versus 2.95, so the first-order expression is long USDCAD spot rather than a non-dollar cross. The book is already long USDCAD from 1.401 with the live mark at 1.4253; that dollar-spot position is the working trade. An oil-ease path reduces CAD terms-of-trade support while USD carry remains intact, so fading CAD via a cross would add unnecessary second-order risk. The next oil impulse and any policy path beyond the implieds are not a reason to abandon the USD leg."
     }
   ],
   "schema_version": 1,

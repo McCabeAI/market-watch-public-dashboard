@@ -666,6 +666,62 @@
       "run_id": "overnight-20261005",
       "schema_version": 1,
       "thesis": "Cash SOFR at 3.87 versus March 2027 at 4.51 still prices 64 basis points of tightening, a hawkish overshoot against the cash anchor rather than a completed re-pricing. The existing receive is already 7 basis points through the 4.58 entry and remains inside the 4.58/4.625 cover band, so the stretch is unfinished, not invalidated. New US risk is blocked, so the fade is hold the March 2027 receive, not add."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-1477172adb86",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-06T04:52:57.791209-04:00",
+      "conviction": 63,
+      "decision_fingerprint": "d33b5fa489568836a7d53ddd6ffc62ed45bf5400e18fa8a9428badb4be6662b2",
+      "event_id": "jde-182ea73278f04f0a",
+      "funding_view": null,
+      "invalidation": "Cover the March 2027 receive if yield trades through 4.58, with 4.625 the hard cover. The fade is also wrong if cash SOFR rises toward 4.53 instead of the forward mean-reverting lower.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-1477172adb86"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "648c3b9ad3780193eabe82a5768f0711466c079bc0731eae1f0b0b783f87b2e1",
+      "outcome_links": [],
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "1769e3456815f43a1d97ca2e087c3d97fd6f73c55b936d99354302a8bd3fc521"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-06T04:52:57.791209-04:00",
+        "evidence_hash": "7952afc0027e7fc435117001c2bdab03a7a8c2d0ae25999e97d6be277499b04f",
+        "overnight_run_id": "overnight-20261006",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Mar27 SOFR is still about 65 basis points above cash at 3.88, so the cash-to-contract overshoot has not fully normalized. The contract has already traded through the 4.58 receive entry toward cash from the 4.58/4.625 cover, which is the first stage of the fade rather than a rebuilt extreme. Keep the existing 10 million receive and do not add; the add condition is a rebuild of that prior cover stretch, not chasing a move that is already working through entry.",
+      "run_id": "overnight-20261006",
+      "schema_version": 1,
+      "thesis": "Mar27 SOFR is still about 65 basis points above cash at 3.88, so the cash-to-contract overshoot has not fully normalized. The contract has already traded through the 4.58 receive entry toward cash from the 4.58/4.625 cover, which is the first stage of the fade rather than a rebuilt extreme. Keep the existing 10 million receive and do not add; the add condition is a rebuild of that prior cover stretch, not chasing a move that is already working through entry."
     }
   ],
   "schema_version": 1,
