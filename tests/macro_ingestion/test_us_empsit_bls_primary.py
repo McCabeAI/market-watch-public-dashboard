@@ -465,14 +465,14 @@ class TestUSEmpsitBlsPrimary(unittest.TestCase):
             for item in merge.get("appended") or []
             if item.get("id") == "US.Labor.wages"
         ]
-        self.assertEqual(len(wage_appended), 1)
-        self.assertEqual(wage_appended[0]["series_id"], "CES0500000003")
-        self.assertEqual(wage_appended[0]["transformation"], "yoy_pct")
-        self.assertEqual(wage_appended[0]["reference_period"], "2026-09")
+        # The verified BLS September wage yoy is already the scored observation.
+        # Re-merging that print must not append a second row.
+        self.assertEqual(wage_appended, [])
         skipped_ids = {
             (item.get("id"), item.get("reason"))
             for item in merge.get("skipped") or []
         }
+        self.assertIn(("US.Labor.wages", "duplicate_value"), skipped_ids)
         self.assertNotIn(("US.Labor.wages", "partial_transform_mismatch"), skipped_ids)
         wages_obs = histories["US"]["components"]["Labor.wages"]["observations"]
         yoy_rows = [
@@ -483,6 +483,7 @@ class TestUSEmpsitBlsPrimary(unittest.TestCase):
             and row.get("reference_period") == "2026-09"
         ]
         self.assertEqual(len(yoy_rows), 1)
+        self.assertEqual(yoy_rows[0]["source_url"], "https://data.bls.gov/timeseries/CES0500000003")
         self.assertAlmostEqual(float(yoy_rows[0]["value"]), WAGE_YOY)
         wages_state = outcome.state["countries"]["US"]["Labor"]["component_state"]["wages"]
         self.assertEqual(wages_state["as_of"], "2026-09")
@@ -491,6 +492,50 @@ class TestUSEmpsitBlsPrimary(unittest.TestCase):
         comp_spec = calibration["components"]["US.Labor.wages"]
         expected_level = round(component_level(WAGE_YOY, comp_spec, calibration), 2)
         self.assertEqual(wages_state["level"], expected_level)
+        self.assertEqual(CALIBRATION_PATH.read_bytes(), cal_before)
+
+        store = json.loads((self.obs_dir / "us.json").read_text(encoding="utf-8"))
+        september = next(
+            row
+            for row in store["observations"]
+            if row.get("series_id") == "CES0500000003"
+            and row.get("transformation") == "yoy_pct"
+            and row.get("period") == "2026-09"
+        )
+        forward = dict(september)
+        forward["period"] = "2026-10"
+        forward["value"] = WAGE_YOY + 1.0
+        store["observations"].append(forward)
+        (self.obs_dir / "us.json").write_text(json.dumps(store), encoding="utf-8")
+        forward_histories = copy.deepcopy(load_history())
+        forward_outcome = recompute_scores_after_observation(
+            persist_history=False,
+            persist_scores=False,
+            observations_dir=self.obs_dir,
+            histories=forward_histories,
+            checked_at=checked_at,
+        )
+        forward_appended = [
+            item
+            for item in (forward_outcome.merge or {}).get("appended") or []
+            if item.get("id") == "US.Labor.wages"
+        ]
+        self.assertEqual(len(forward_appended), 1)
+        self.assertEqual(forward_appended[0]["series_id"], "CES0500000003")
+        self.assertEqual(forward_appended[0]["transformation"], "yoy_pct")
+        self.assertEqual(forward_appended[0]["reference_period"], "2026-10")
+        forward_rows = [
+            row
+            for row in forward_histories["US"]["components"]["Labor.wages"]["observations"]
+            if row.get("series_id") == "CES0500000003"
+            and row.get("transformation") == "yoy_pct"
+            and row.get("reference_period") == "2026-10"
+        ]
+        self.assertEqual(len(forward_rows), 1)
+        self.assertAlmostEqual(float(forward_rows[0]["value"]), WAGE_YOY + 1.0)
+        forward_state = forward_outcome.state["countries"]["US"]["Labor"]["component_state"]["wages"]
+        self.assertEqual(forward_state["as_of"], "2026-10")
+        self.assertEqual(forward_state["transform_value"], round(WAGE_YOY + 1.0, 4))
         self.assertEqual(CALIBRATION_PATH.read_bytes(), cal_before)
 
     def test_wages_missing_year_ago_bls_and_fred_timeout_source_failed(self) -> None:
