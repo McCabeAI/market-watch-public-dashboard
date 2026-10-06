@@ -1030,6 +1030,18 @@
           "retrieved_at": "2026-09-21T14:41:19Z",
           "revision_status": "unknown",
           "series_id": "UNRATE"
+        },
+        {
+          "reference_period": "2026-09",
+          "value": 4.2,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "BLS",
+          "source_url": "https://data.bls.gov/timeseries/LNS14000000",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-10-06T08:52:57Z",
+          "revision_status": "final",
+          "series_id": "UNRATE"
         }
       ],
       "gaps": [
@@ -1563,6 +1575,19 @@
           "series_id": "CES0500000003",
           "raw_level": 37.75,
           "notes": "Computed from official levels 12 months apart."
+        },
+        {
+          "reference_period": "2026-09",
+          "value": 3.0245231607629375,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "BLS",
+          "source_url": "https://data.bls.gov/timeseries/CES0500000003",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-10-06T08:52:57Z",
+          "revision_status": "preliminary",
+          "series_id": "CES0500000003",
+          "raw_level": 37.75
         }
       ],
       "gaps": [
@@ -1927,6 +1952,19 @@
           "series_id": "PAYEMS",
           "raw_level": 159075.0,
           "notes": "Month-over-month change in nonfarm payroll employment level."
+        },
+        {
+          "reference_period": "2026-09",
+          "value": 29.0,
+          "units": "thousands",
+          "transformation": "mm_change_thousands_sa",
+          "publisher": "BLS",
+          "source_url": "https://data.bls.gov/timeseries/CES0000000001",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-10-06T08:52:57Z",
+          "revision_status": "preliminary",
+          "series_id": "PAYEMS",
+          "raw_level": 159075.0
         }
       ],
       "gaps": [
