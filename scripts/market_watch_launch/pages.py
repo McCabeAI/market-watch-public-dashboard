@@ -71,6 +71,7 @@ def authorize_pages_dispatch(
 
 
 PAGES_RECONCILED = "pages_publication_reconciled"
+PAGES_DISPATCH_REQUESTED = "pages_dispatch_requested"
 REQUIRED_PRIOR_STAGES: tuple[str, ...] = (
     "00_authenticate",
     "01_ingest",
@@ -279,14 +280,20 @@ def run(launch: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
             details={"plan": plan, "executed": False, "production_published": False},
         )
 
+    # A workflow_dispatch request is not a completed deployment. Stage 08
+    # stays pending so a failed Pages run can be repaired by reconcile
+    # without rerunning traders, PMs, or ingestion.
     return contract.stage_receipt(
         STAGE,
-        status="succeeded",
+        status="pending",
         input_sha256=input_sha,
+        reason=PAGES_DISPATCH_REQUESTED,
         details={
             "plan": plan,
-            "executed": True,
+            "executed": False,
             "dry_run": False,
-            "production_published": True,
+            "dispatched": True,
+            "production_published": False,
+            "publication_state": "dispatched",
         },
     )

@@ -20,7 +20,15 @@ from scripts.market_watch_launch.continuation import continue_accepted_launch
 from scripts.market_watch_launch.durability import record_remote_freeze
 from scripts.market_watch_launch.finalize import run as finalize_run
 from scripts.market_watch_launch.freeze import run as freeze_run
-from scripts.market_watch_launch.pages import authorize_pages_dispatch, launch_record_path, run as pages_run
+from scripts.market_watch_launch.pages import (
+    PAGES_RECONCILED,
+    authorize_pages_dispatch,
+    launch_record_path,
+    reconcile_published_pages,
+    run as pages_run,
+)
+from scripts.market_watch_launch.pages_recovery import matching_reconciliation
+from scripts.market_watch_launch.state import LaunchStateStore
 from scripts.market_watch_launch.provider_stub import build_stub_output
 from scripts.overnight.constants import ROOT
 from scripts.overnight.evidence import require_snapshot
@@ -331,15 +339,144 @@ class MarketWatchLaunchCompletionTests(unittest.TestCase):
                 "pages_dispatch": lambda **_: {"dispatched": True},
             },
         )
-        self.assertEqual(decision["status"], "succeeded")
-        self.assertTrue(decision["production_published"])
+        self.assertEqual(decision["status"], "pending")
+        self.assertEqual(decision["reason"], "pages_dispatch_requested")
+        self.assertFalse(decision["production_published"])
         persisted = json.loads(launch_record_path(self.state_root, self.launch_id).read_text())
         self.assertEqual(persisted["stages"]["05_acp_handoff"]["status"], "succeeded")
         self.assertTrue(persisted["stages"]["05_acp_handoff"]["details"]["live_provider_dispatched"])
         self.assertEqual(persisted["stages"]["06_acceptance"]["status"], "succeeded")
         self.assertEqual(persisted["stages"]["07_finalize"]["status"], "succeeded")
-        self.assertEqual(persisted["stages"]["08_pages"]["status"], "succeeded")
-        self.assertEqual(persisted["status"], "succeeded")
+        pages = persisted["stages"]["08_pages"]
+        self.assertEqual(pages["status"], "pending")
+        self.assertEqual(pages["reason"], "pages_dispatch_requested")
+        self.assertTrue(pages["details"]["dispatched"])
+        self.assertFalse(pages["details"]["executed"])
+        self.assertFalse(pages["details"]["production_published"])
+        self.assertEqual(persisted["status"], "running")
+
+    def test_dispatch_then_failed_deploy_stays_recoverable_until_reconcile(self) -> None:
+        packet = "e9083194b0b8ba35bf9b395c608e340b7cac8537aeb38f945fbe7d1d43c1eff6"
+        review_id = "review-001"
+        launch = _base_launch(launch_id=self.launch_id, provider="acp")
+        launch["request"]["publish_production"] = True
+        launch["review_id"] = review_id
+        launch["base_packet_sha256"] = packet
+        launch["status"] = "running"
+        for name in contract.STAGES:
+            if name == "08_pages":
+                continue
+            launch["stages"][name]["status"] = "succeeded"
+        launch["stages"]["04_freeze"]["details"] = {
+            "review_id": review_id,
+            "packet_sha256": packet,
+        }
+        launch["stages"]["05_acp_handoff"]["reason"] = "provider_output_accepted"
+        launch["stages"]["05_acp_handoff"]["details"] = {"provider_output_accepted": True}
+        launch["stages"]["06_acceptance"]["details"] = {"review_id": review_id}
+        launch["stages"]["07_finalize"]["details"] = {
+            "review_id": review_id,
+            "packet_sha256": packet,
+            "publication": {"may_publish": True, "core_status": "ok"},
+        }
+        store = LaunchStateStore(self.state_root)
+        store.save_launch(launch)
+        head_sha = "a" * 40
+        run_url = "https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/37456007090"
+        decision = continue_accepted_launch(
+            launch,
+            {
+                **self.ctx,
+                "client_payload": {
+                    "launch_id": self.launch_id,
+                    "review_id": review_id,
+                    "base_packet_sha256": packet,
+                },
+                "pages_dispatch": lambda **_: {"dispatched": True, "workflow": "deploy-pages.yml", "ref": "main"},
+            },
+        )
+        self.assertEqual(decision["status"], "pending")
+        self.assertFalse(decision["production_published"])
+        dispatched = store.load_launch(self.launch_id)
+        self.assertEqual(dispatched["status"], "running")
+        self.assertEqual(dispatched["stages"]["08_pages"]["status"], "pending")
+        self.assertFalse(dispatched["stages"]["08_pages"]["details"]["production_published"])
+        self.assertTrue(dispatched["stages"]["06_acceptance"]["status"] == "succeeded")
+        self.assertTrue(dispatched["stages"]["07_finalize"]["status"] == "succeeded")
+
+        def evidence(**overrides: object) -> dict:
+            payload = {
+                "workflow": "deploy-pages.yml",
+                "event": "workflow_dispatch",
+                "ref": "main",
+                "conclusion": "success",
+                "launch_id": self.launch_id,
+                "head_sha": head_sha,
+                "run_url": run_url,
+                "finalized_launch": json.loads(json.dumps(dispatched)),
+            }
+            payload.update(overrides)
+            return payload
+
+        failed = reconcile_published_pages(
+            store.load_launch(self.launch_id),
+            evidence(conclusion="failure"),
+            store=store,
+        )
+        self.assertEqual(failed["status"], "blocked")
+        self.assertEqual(failed["reason"], "pages_publication_not_proven")
+        self.assertFalse(failed["details"]["production_published"])
+        self.assertEqual(store.load_launch(self.launch_id)["stages"]["08_pages"]["status"], "pending")
+        self.assertEqual(store.load_launch(self.launch_id)["status"], "running")
+
+        mismatched = reconcile_published_pages(
+            store.load_launch(self.launch_id),
+            evidence(head_sha="b" * 40, launch_id="mwl-20260918T015500Z-ffffffff"),
+            store=store,
+        )
+        self.assertEqual(mismatched["status"], "blocked")
+        stale = json.loads(json.dumps(dispatched))
+        stale["stages"]["08_pages"]["status"] = "succeeded"
+        stale["stages"]["08_pages"]["details"]["production_published"] = True
+        stale_receipt = reconcile_published_pages(
+            store.load_launch(self.launch_id),
+            evidence(finalized_launch=stale),
+            store=store,
+        )
+        self.assertEqual(stale_receipt["status"], "blocked")
+        self.assertEqual(store.load_launch(self.launch_id)["status"], "running")
+        self.assertFalse(store.load_launch(self.launch_id)["stages"]["08_pages"]["details"]["production_published"])
+
+        proven = reconcile_published_pages(store.load_launch(self.launch_id), evidence(), store=store)
+        self.assertEqual(proven["status"], "succeeded")
+        self.assertEqual(proven["reason"], PAGES_RECONCILED)
+        self.assertTrue(proven["details"]["production_published"])
+        published = store.load_launch(self.launch_id)
+        self.assertEqual(published["status"], "succeeded")
+        self.assertEqual(published["stages"]["08_pages"]["status"], "succeeded")
+        self.assertEqual(published["stages"]["08_pages"]["reason"], PAGES_RECONCILED)
+        self.assertEqual(published["stages"]["08_pages"]["details"]["publication_evidence"]["head_sha"], head_sha)
+        self.assertEqual(published["stages"]["08_pages"]["details"]["publication_evidence"]["conclusion"], "success")
+        published_bytes = store.launch_path(self.launch_id).read_bytes()
+        artifact_bytes = store.artifact_path(self.launch_id, "08_pages").read_bytes()
+
+        again = reconcile_published_pages(store.load_launch(self.launch_id), evidence(), store=store)
+        self.assertEqual(again["status"], "blocked")
+        self.assertEqual(store.launch_path(self.launch_id).read_bytes(), published_bytes)
+        self.assertEqual(store.artifact_path(self.launch_id, "08_pages").read_bytes(), artifact_bytes)
+        self.assertTrue(
+            matching_reconciliation(
+                store.load_launch(self.launch_id),
+                {
+                    "workflow": "deploy-pages.yml",
+                    "event": "workflow_dispatch",
+                    "ref": "main",
+                    "conclusion": "success",
+                    "head_sha": head_sha,
+                    "run_url": run_url,
+                },
+            )
+        )
 
     def test_full_stub_pipeline_finalize_publication(self) -> None:
         launch = self._run_stub_pipeline()

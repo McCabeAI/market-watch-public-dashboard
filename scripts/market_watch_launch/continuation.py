@@ -195,12 +195,16 @@ def continue_accepted_launch(launch: dict[str, Any], ctx: dict[str, Any]) -> dic
         ctx["publish_production"] = False
     pages = pages_run(launch, ctx)
     _apply_receipt(launch, pages)
-    store.save_launch(launch)
-
-    production_published = bool((pages.get("details") or {}).get("production_published"))
-    if pages.get("status") == "succeeded":
+    details = pages.get("details") or {}
+    production_published = bool(details.get("production_published"))
+    # Successful gh workflow dispatch is not publication. production_published
+    # and a terminal launch require reconcile_published_pages after a verified
+    # successful deploy. A stub dry-run may still complete without publishing.
+    if pages.get("status") == "succeeded" and (production_published or details.get("dry_run")):
         launch["status"] = "succeeded"
-        store.save_launch(launch)
+    elif details.get("dispatched"):
+        launch["status"] = "running"
+    store.save_launch(launch)
     return {
         "launch_id": launch_id,
         "status": pages.get("status", "failed"),
