@@ -20,15 +20,18 @@ if str(ROOT) not in sys.path:
 from scripts.macro_ingestion.adapters import clear_adapter_overrides, register_adapter_override
 from scripts.macro_ingestion.contract import load_catalog
 from scripts.macro_ingestion.runner import run_ingestion
+from scripts.macro_ingestion.score_bridge import recompute_scores_after_observation
 from scripts.macro_ingestion.us_employment.cache import clear_employment_caches
 from scripts.macro_ingestion.us_employment.contract import BLS_EMPSIT_SERIES, SCORED_EMPSIT_CATALOG_IDS
 from scripts.market_watch_launch.ingest import _enrich_row
 from scripts.market_watch_launch.quality_gate import _minimal_passing_market_families, evaluate_gate
+from scripts.temperature_level import CALIBRATION_PATH, component_level, load_calibration, load_history
 
 BLS_URL = "https://api.bls.gov/publicAPI/v2/timeseries/data/"
 DUE_AFTER_EMPSIT = datetime(2026, 10, 5, 16, 0, tzinfo=timezone.utc)
 LABOR_IDS = tuple(sorted(SCORED_EMPSIT_CATALOG_IDS))
 WAGE_MOM = (37.81 / 37.76 - 1.0) * 100.0
+WAGE_YOY = (37.81 / 36.70 - 1.0) * 100.0
 
 
 def _bls_block(series_id: str, rows: list[tuple[int, int, float, str | None]]) -> dict:
@@ -48,7 +51,7 @@ def _official_sep_2026_bls_body() -> bytes:
             "series": [
                 _bls_block("CES0000000001", [(2026, 8, 159015, None), (2026, 9, 159044, "P")]),
                 _bls_block("LNS14000000", [(2026, 8, 4.1, None), (2026, 9, 4.2, None)]),
-                _bls_block("CES0500000003", [(2026, 8, 37.76, None), (2026, 9, 37.81, "P")]),
+                _bls_block("CES0500000003", [(2025, 9, 36.70, None), (2026, 8, 37.76, None), (2026, 9, 37.81, "P")]),
                 _bls_block("LNS11300000", [(2026, 8, 61.6, None), (2026, 9, 61.8, None)]),
             ]
         },
@@ -129,7 +132,19 @@ class TestUSEmpsitBlsPrimary(unittest.TestCase):
         obs_by_key = {(o["series_id"], o.get("transformation"), o["period"]): o for o in store["observations"]}
         self.assertAlmostEqual(obs_by_key[("PAYEMS", "mm_change_thousands_sa", "2026-09")]["value"], 29.0)
         self.assertAlmostEqual(obs_by_key[("UNRATE", "percent", "2026-09")]["value"], 4.2)
+        self.assertAlmostEqual(obs_by_key[("CES0500000003", "yoy_pct", "2026-09")]["value"], WAGE_YOY)
         self.assertAlmostEqual(obs_by_key[("CES0500000003", "mom_sa_pct", "2026-09")]["value"], WAGE_MOM)
+        yoy_obs = obs_by_key[("CES0500000003", "yoy_pct", "2026-09")]
+        deriv_yoy = yoy_obs.get("derivation") or {}
+        self.assertEqual(deriv_yoy.get("prior_period"), "2025-09")
+        self.assertAlmostEqual(float(deriv_yoy.get("prior_level")), 36.70)
+        self.assertAlmostEqual(float(deriv_yoy.get("raw_level")), 37.81)
+        self.assertEqual(deriv_yoy.get("bls_series_id"), "CES0500000003")
+        self.assertEqual(deriv_yoy.get("retrieval_method"), "bls_public_api_v2_batch")
+        self.assertEqual(yoy_obs.get("revision_status"), "preliminary")
+        self.assertEqual(yoy_obs.get("vintage"), "latest_available")
+        pay_deriv = obs_by_key[("PAYEMS", "mm_change_thousands_sa", "2026-09")].get("derivation") or {}
+        self.assertEqual(pay_deriv.get("prior_period"), "2026-08")
         for obs in store["observations"]:
             deriv = obs.get("derivation") or {}
             self.assertEqual(deriv.get("accepted_source"), "bls_primary")
@@ -151,7 +166,10 @@ class TestUSEmpsitBlsPrimary(unittest.TestCase):
     def test_bls_post_timeout_fred_fallback_passes_gate(self) -> None:
         unrate = _fred_csv("UNRATE", [("2026-08-01", 4.1), ("2026-09-01", 4.2)])
         payems = _fred_csv("PAYEMS", [("2026-08-01", 159015), ("2026-09-01", 159044)])
-        wages = _fred_csv("CES0500000003", [("2026-08-01", 37.76), ("2026-09-01", 37.81)])
+        wages = _fred_csv(
+            "CES0500000003",
+            [("2025-09-01", 36.70), ("2026-08-01", 37.76), ("2026-09-01", 37.81)],
+        )
 
         def opener(url: str, *, timeout: float = 20, data: bytes | None = None, **kwargs):
             if url == BLS_URL and data is not None:
@@ -178,7 +196,8 @@ class TestUSEmpsitBlsPrimary(unittest.TestCase):
         obs_by_key = {(o["series_id"], o.get("transformation"), o["period"]): o for o in store["observations"]}
         self.assertIn(("PAYEMS", "mm_change_thousands_sa", "2026-09"), obs_by_key)
         self.assertIn(("UNRATE", "percent", "2026-09"), obs_by_key)
-        self.assertIn(("CES0500000003", "mom_sa_pct", "2026-09"), obs_by_key)
+        self.assertIn(("CES0500000003", "yoy_pct", "2026-09"), obs_by_key)
+        self.assertAlmostEqual(obs_by_key[("CES0500000003", "yoy_pct", "2026-09")]["value"], WAGE_YOY)
         for obs in store["observations"]:
             if obs.get("period") != "2026-09":
                 continue
@@ -223,7 +242,10 @@ class TestUSEmpsitBlsPrimary(unittest.TestCase):
     def test_fred_fallback_when_bls_fails(self) -> None:
         unrate = _fred_csv("UNRATE", [("2026-08-01", 4.1), ("2026-09-01", 4.2)])
         payems = _fred_csv("PAYEMS", [("2026-08-01", 159015), ("2026-09-01", 159044)])
-        wages = _fred_csv("CES0500000003", [("2026-08-01", 37.76), ("2026-09-01", 37.81)])
+        wages = _fred_csv(
+            "CES0500000003",
+            [("2025-09-01", 36.70), ("2026-08-01", 37.76), ("2026-09-01", 37.81)],
+        )
 
         def opener(url: str, *, timeout: float = 20, data: bytes | None = None, **kwargs):
             if "UNRATE" in url:
@@ -261,7 +283,10 @@ class TestUSEmpsitBlsPrimary(unittest.TestCase):
         bls_body = _official_sep_2026_bls_body()
         payems_conflict = _fred_csv("PAYEMS", [("2026-08-01", 159015), ("2026-09-01", 159095)])
         unrate = _fred_csv("UNRATE", [("2026-08-01", 4.1), ("2026-09-01", 4.2)])
-        wages = _fred_csv("CES0500000003", [("2026-08-01", 37.76), ("2026-09-01", 37.81)])
+        wages = _fred_csv(
+            "CES0500000003",
+            [("2025-09-01", 36.70), ("2026-08-01", 37.76), ("2026-09-01", 37.81)],
+        )
 
         def opener(url: str, *, timeout: float = 20, data: bytes | None = None, **kwargs):
             if "PAYEMS" in url:
@@ -404,6 +429,151 @@ class TestUSEmpsitBlsPrimary(unittest.TestCase):
             self.assertEqual(calls[labor_id], 1)
         self.assertEqual(calls["US.Activity.retail"], 0)
         self.assertEqual(by_id["US.Activity.retail"].get("error"), "budget_deferred")
+
+    def test_wages_yoy_merges_through_score_bridge(self) -> None:
+        bls_body = _official_sep_2026_bls_body()
+        cal_before = CALIBRATION_PATH.read_bytes()
+        checked_at = "2026-10-05T16:00:00Z"
+
+        def opener(url: str, *, timeout: float = 20, data: bytes | None = None, **kwargs):
+            if "fred.stlouisfed.org" in url:
+                raise TimeoutError("The read operation timed out")
+            if url == BLS_URL and data is not None:
+                return {"ok": True, "http_status": 200, "body": bls_body, "error": None}
+            return {"ok": False, "http_status": None, "body": b"", "error": "offline_unmapped_url"}
+
+        run_ingestion(
+            mode="offline",
+            countries=["US"],
+            catalog=self._mini_catalog(list(LABOR_IDS)),
+            now=DUE_AFTER_EMPSIT,
+            opener=opener,
+            observations_dir=self.obs_dir,
+            health_dir=self.health_dir,
+        )
+        histories = copy.deepcopy(load_history())
+        outcome = recompute_scores_after_observation(
+            persist_history=False,
+            persist_scores=False,
+            observations_dir=self.obs_dir,
+            histories=histories,
+            checked_at=checked_at,
+        )
+        merge = outcome.merge or {}
+        wage_appended = [
+            item
+            for item in merge.get("appended") or []
+            if item.get("id") == "US.Labor.wages"
+        ]
+        self.assertEqual(len(wage_appended), 1)
+        self.assertEqual(wage_appended[0]["series_id"], "CES0500000003")
+        self.assertEqual(wage_appended[0]["transformation"], "yoy_pct")
+        self.assertEqual(wage_appended[0]["reference_period"], "2026-09")
+        skipped_ids = {
+            (item.get("id"), item.get("reason"))
+            for item in merge.get("skipped") or []
+        }
+        self.assertNotIn(("US.Labor.wages", "partial_transform_mismatch"), skipped_ids)
+        wages_obs = histories["US"]["components"]["Labor.wages"]["observations"]
+        yoy_rows = [
+            row
+            for row in wages_obs
+            if row.get("series_id") == "CES0500000003"
+            and row.get("transformation") == "yoy_pct"
+            and row.get("reference_period") == "2026-09"
+        ]
+        self.assertEqual(len(yoy_rows), 1)
+        self.assertAlmostEqual(float(yoy_rows[0]["value"]), WAGE_YOY)
+        wages_state = outcome.state["countries"]["US"]["Labor"]["component_state"]["wages"]
+        self.assertEqual(wages_state["as_of"], "2026-09")
+        self.assertEqual(wages_state["transform_value"], round(WAGE_YOY, 4))
+        calibration = load_calibration()
+        comp_spec = calibration["components"]["US.Labor.wages"]
+        expected_level = round(component_level(WAGE_YOY, comp_spec, calibration), 2)
+        self.assertEqual(wages_state["level"], expected_level)
+        self.assertEqual(CALIBRATION_PATH.read_bytes(), cal_before)
+
+    def test_wages_missing_year_ago_bls_and_fred_timeout_source_failed(self) -> None:
+        doc = {
+            "status": "REQUEST_SUCCEEDED",
+            "Results": {
+                "series": [
+                    _bls_block("CES0000000001", [(2026, 8, 159015, None), (2026, 9, 159044, "P")]),
+                    _bls_block("LNS14000000", [(2026, 8, 4.1, None), (2026, 9, 4.2, None)]),
+                    _bls_block("CES0500000003", [(2026, 8, 37.76, None), (2026, 9, 37.81, "P")]),
+                    _bls_block("LNS11300000", [(2026, 8, 61.6, None), (2026, 9, 61.8, None)]),
+                ]
+            },
+        }
+        bls_body = json.dumps(doc).encode("utf-8")
+
+        def opener(url: str, *, timeout: float = 20, data: bytes | None = None, **kwargs):
+            if "fred.stlouisfed.org" in url:
+                raise TimeoutError("The read operation timed out")
+            if url == BLS_URL and data is not None:
+                return {"ok": True, "http_status": 200, "body": bls_body, "error": None}
+            return {"ok": False, "http_status": None, "body": b"", "error": "offline_unmapped_url"}
+
+        result = run_ingestion(
+            mode="offline",
+            countries=["US"],
+            catalog=self._mini_catalog(list(LABOR_IDS)),
+            now=DUE_AFTER_EMPSIT,
+            opener=opener,
+            observations_dir=self.obs_dir,
+            health_dir=self.health_dir,
+        )
+        by_id = {row["series_id"]: row for row in result["rows"]}
+        self.assertEqual(by_id["US.Labor.wages"]["status"], "source_failed")
+        store_path = self.obs_dir / "us.json"
+        store = json.loads(store_path.read_text()) if store_path.is_file() else {"observations": []}
+        bad = [
+            o
+            for o in store.get("observations", [])
+            if o.get("transformation") == "yoy_pct" and float(o.get("value", 0)) == 37.81
+        ]
+        self.assertFalse(bad)
+
+    def test_wages_mom_disagreement_does_not_block_yoy(self) -> None:
+        bls_body = _official_sep_2026_bls_body()
+        wages_fred = _fred_csv(
+            "CES0500000003",
+            [("2025-09-01", 36.70), ("2026-08-01", 38.00), ("2026-09-01", 37.81)],
+        )
+        unrate = _fred_csv("UNRATE", [("2026-08-01", 4.1), ("2026-09-01", 4.2)])
+        payems = _fred_csv("PAYEMS", [("2026-08-01", 159015), ("2026-09-01", 159044)])
+
+        def opener(url: str, *, timeout: float = 20, data: bytes | None = None, **kwargs):
+            if "UNRATE" in url:
+                return {"ok": True, "http_status": 200, "body": unrate, "error": None}
+            if "PAYEMS" in url:
+                return {"ok": True, "http_status": 200, "body": payems, "error": None}
+            if "CES0500000003" in url:
+                return {"ok": True, "http_status": 200, "body": wages_fred, "error": None}
+            if url == BLS_URL and data is not None:
+                return {"ok": True, "http_status": 200, "body": bls_body, "error": None}
+            return {"ok": False, "http_status": None, "body": b"", "error": "offline_unmapped_url"}
+
+        result = run_ingestion(
+            mode="offline",
+            countries=["US"],
+            catalog=self._mini_catalog(["US.Labor.wages"]),
+            now=DUE_AFTER_EMPSIT,
+            opener=opener,
+            observations_dir=self.obs_dir,
+            health_dir=self.health_dir,
+        )
+        row = result["rows"][0]
+        self.assertIn(
+            row["status"],
+            {"checked_unchanged", "new_observation", "revision_applied", "revision_pending"},
+        )
+        self.assertNotIn("verification_conflict", str(row.get("error") or ""))
+        store = json.loads((self.obs_dir / "us.json").read_text())
+        obs_by_key = {(o["series_id"], o.get("transformation"), o["period"]): o for o in store["observations"]}
+        yoy_obs = obs_by_key[("CES0500000003", "yoy_pct", "2026-09")]
+        self.assertAlmostEqual(yoy_obs["value"], WAGE_YOY)
+        self.assertEqual((yoy_obs.get("derivation") or {}).get("accepted_source"), "bls_primary")
 
 
 if __name__ == "__main__":

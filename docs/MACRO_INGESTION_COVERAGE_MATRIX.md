@@ -5,7 +5,7 @@
 - **66 scored rows are calibration weight rows, not 66 currently ingestible series.** Aliases, license gaps, ceased series, and rows whose transform or methodology does not match stay out of the gauge history.
 - **Canonical-merge-ready** when the adapter observation `transformation` equals the calibration `source_transformation`, the component is not `observed: false`, any methodology break is already behind prints the stored series continues, and the fetch status is not `license_gap` or `source_failed`.
 - **Observation-key priority:** a scored catalog row outranks an alias or context row with the same `(country, series_id, transform)`. `AU.Inflation.underlying` wins over `AU.Inflation.cpi_core_trimmed_already_scored_note`. Two different scored rows on one key fail closed.
-- **Blocked / not merged** (weights unchanged): `US.Labor.wages`, `CA.Activity.gdp_domestic_demand`, `CA.Consumer.confidence`, `AU.Labor.unemployment`, `AU.Consumer.confidence` (transform or methodology), and `AU.Consumer.retail` (ceased; calibration `observed: false`, so a new print is `retired_unobserved` and does not re-enter the gauge).
+- **Blocked / not merged** (weights unchanged): `CA.Activity.gdp_domestic_demand`, `CA.Consumer.confidence`, `AU.Labor.unemployment`, `AU.Consumer.confidence` (transform or methodology), and `AU.Consumer.retail` (ceased; calibration `observed: false`, so a new print is `retired_unobserved` and does not re-enter the gauge).
 - **`EA.Activity.flash_composite_pmi`**: the public press PDF `ab6649de01fd4c38a7f2c9a3e52a81bf` is the 2026-09 flash composite (53.1, released 2026-09-23). It is context weight 0. The scored `EA.Activity.business_surveys` series still keeps the August final (52.0) until a final September PDF is retrieved. The bot user agent receives HTTP 403 on the same public URLs; a normal browser fetch does not. Review-001 is unchanged.
 - S&P PMI listings that return HTTP 403 remain `license_gap` or `source_failed`.
 - `context` rows and `US.Inflation.mapped_bridge` stay weight 0 and are not merged into canonical history.
@@ -112,15 +112,15 @@ US scored coverage already includes Core PCE, unemployment, average hourly earni
 
 - Role: `scored` · weight: `0.2` · policy: existing_calibration_weight
 - Name: Average Hourly Earnings of All Employees, Total Private
-- Publisher: BLS · distributor: FRED · classification: `licensed_public`
+- Publisher: BLS · distributor: none · classification: `licensed_public`
 - Series id: `CES0500000003`
-- Endpoint: https://fred.stlouisfed.org/graph/fredgraph.csv?id=CES0500000003
-- Units: USD per hour · seasonal adjustment: `True` · transform: `mom_sa_pct`
+- Endpoint: https://api.bls.gov/publicAPI/v2/timeseries/data/
+- Units: USD per hour · seasonal adjustment: `True` · transform: `yoy_pct` (contextual `derived_transforms`: `mom_sa_pct`)
 - Cadence: monthly · timezone: `America/New_York`
 - Release rule: `country_local_schedule_required` · dates: `[]`
 - Actual / revision / prior metadata: `{'actual': True, 'revision': 'vintage_latest_available_only', 'prior': 'prior_observation_in_ledger'}`
 - Raw provenance: `data/temperature_history/raw/us/`
-- Retrieval: `fredgraph.csv` · adapter: `scripts.macro_ingestion.adapters.us`
+- Retrieval: `bls_empsit_primary` · adapter: `scripts.macro_ingestion.adapters.us`
 - Held observations: 37 · latest period: `2026-08` · ledger vintage: `latest_available` · retrieved_at: `2026-09-21T14:41:19Z`
 - Verification: `held_in_temperature_history` · freshness: `pending_daily_check`
 

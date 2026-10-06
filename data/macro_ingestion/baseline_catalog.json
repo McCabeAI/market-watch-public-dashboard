@@ -189,7 +189,10 @@
       ],
       "units": "USD per hour",
       "seasonal_adjustment": true,
-      "transform": "mom_sa_pct",
+      "transform": "yoy_pct",
+      "derived_transforms": [
+        "mom_sa_pct"
+      ],
       "cadence": "monthly",
       "timezone": "America/New_York",
       "release_rule": {
