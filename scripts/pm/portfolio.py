@@ -1,9 +1,11 @@
 """Pragmatist portfolio-construction contract.
 
 Opportunistic mandate is unchanged. Before final actions the PM must inspect
-its existing book and independent markable Trader Room opportunities, name the
-main adverse scenario, and explain whether candidates complement, diversify,
-offset, or duplicate beta. Flat and one-position outcomes remain valid.
+its existing book and the full frozen market evidence, name the main adverse
+scenario, and explain whether candidates complement, diversify, offset, or
+duplicate beta. Trader Room handoffs are a challenge set. PM-originated
+candidates are accepted when the frozen packet can mark and risk them. Flat
+and one-position outcomes remain valid.
 """
 
 from __future__ import annotations
@@ -12,6 +14,7 @@ from typing import Any
 
 from scripts.overnight.paper_marks import PaperMarkError, resolve_paper_mid
 from scripts.pm.errors import SchemaError
+from scripts.pm.opportunity_scan import frozen_candidate_supported
 
 PRAGMATIST_PM_ID = "pragmatist"
 PORTFOLIO_CONSTRUCTION_FIELDS = (
@@ -123,7 +126,7 @@ def _append_handoff_trade(
     )
 
 
-def _market_state_from_packet(packet: dict[str, Any] | None) -> dict[str, Any] | None:
+def market_state_from_packet(packet: dict[str, Any] | None) -> dict[str, Any] | None:
     if not isinstance(packet, dict):
         return None
     for candidate in (
@@ -222,7 +225,7 @@ def independent_markable_handoff_opportunities(
     packet: dict[str, Any] | None,
 ) -> list[dict[str, Any]]:
     """Unique packet instruments that trusted code can mark from frozen market state."""
-    market_state = _market_state_from_packet(packet)
+    market_state = market_state_from_packet(packet)
     seen: dict[str, dict[str, Any]] = {}
     for row in packet_handoff_trades(packet):
         key = _instrument_key(row["instrument"])
@@ -247,6 +250,7 @@ def _assert_packet_opportunity_coverage(
 ) -> None:
     handoff_rows = packet_handoff_trades(packet)
     handoff_keys = {_instrument_key(row["instrument"]) for row in handoff_rows if _instrument_key(row["instrument"])}
+    market_state = market_state_from_packet(packet)
     markable = independent_markable_handoff_opportunities(packet)
     markable_keys = {_instrument_key(row["instrument"]) for row in markable}
     required = required_independent_opportunity_count(packet)
@@ -258,10 +262,17 @@ def _assert_packet_opportunity_coverage(
         key = _instrument_key(_row_instrument(row))
         field = f"pragmatist.portfolio_construction.independent_handoff_opportunities[{idx}]"
         if key not in handoff_keys:
-            raise SchemaError(
-                f"{field} instrument {_row_instrument(row)!r} is not traceable to the "
-                "frozen PM packet/handoff"
-            )
+            if not frozen_candidate_supported(
+                market_state,
+                instrument=_row_instrument(row),
+                asset_class=row.get("asset_class"),
+                shock_1pct_pnl_usd=row.get("shock_1pct_pnl_usd"),
+            ):
+                raise SchemaError(
+                    f"{field} instrument {_row_instrument(row)!r} is not traceable to the "
+                    "frozen PM packet/handoff and has no deterministic frozen-packet mark and risk"
+                )
+            continue
         listed_keys.append(key)
 
     covered = set(listed_keys) & markable_keys

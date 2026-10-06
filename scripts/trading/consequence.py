@@ -345,6 +345,9 @@ def record_consequence_observation(
     trader_books: dict[str, Any] | None = None,
     review_packet: dict[str, Any] | None = None,
 ) -> dict[str, Any] | None:
+    # Callers still pass the frozen packet. Grinder flat snapshots accumulate
+    # from near-zero performance and do not reset when handoffs are absent.
+    del review_packet
     if owner_type == "trader":
         consequence = build_trader_consequence(store, owner_id, books=trader_books)
     else:
@@ -396,11 +399,8 @@ def record_consequence_observation(
         threshold = MATERIAL_DRAWDOWN_FRACTION * max_dd if max_dd else 0.0
         near_zero = own is not None and abs(float(own)) < max(50_000.0, threshold * 0.02)
         if owner_id == "grinder":
-            from scripts.trading.capital_owner import opportunity_status_from_packet
-
-            opportunities = opportunity_status_from_packet(review_packet)
             count = int(current.get("grinder_flat_snapshots") or 0)
-            if near_zero and opportunities == "present":
+            if near_zero:
                 patch["grinder_flat_snapshots"] = count + 1
             else:
                 patch["grinder_flat_snapshots"] = 0

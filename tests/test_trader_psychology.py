@@ -253,7 +253,7 @@ class TraderPsychologyTests(unittest.TestCase):
         self.assertEqual(owner["credible_opportunities"], "unknown")
         self.assertFalse(owner["force_deployment"])
 
-    def test_grinder_flat_without_opportunities_stays_legitimate(self) -> None:
+    def test_grinder_flat_without_opportunities_still_accumulates_pressure(self) -> None:
         self.store.write_consequence_state("pm", "grinder", {"grinder_flat_snapshots": 4})
         consequence = {"status": "ok", "net_after_funding_pnl_usd": 0.0, "max_drawdown_usd": 50_000_000.0}
         owner = build_capital_owner(
@@ -264,9 +264,10 @@ class TraderPsychologyTests(unittest.TestCase):
             review_packet={"trader_room": {"trades": []}, "overnight_review": {"decisions": []}},
         )
         self.assertEqual(owner["credible_opportunities"], "none")
-        self.assertFalse(owner["persistent_zero_alpha"])
+        self.assertTrue(owner["persistent_zero_alpha"])
+        self.assertGreaterEqual(owner["allocator_pressure"], 4)
         self.assertFalse(owner["force_deployment"])
-        self.assertEqual(owner["standing"], "good_standing")
+        self.assertEqual(owner["standing"], "watch")
 
     def test_grinder_missed_opportunity_flatness_raises_pressure(self) -> None:
         self.store.write_consequence_state("pm", "grinder", {"grinder_flat_snapshots": 2})
@@ -297,24 +298,37 @@ class TraderPsychologyTests(unittest.TestCase):
             "trader_room": {"trades": [{"trade": {"instrument": "USDCAD", "asset_class": "spot_fx"}}]},
         }
 
-    def test_grinder_sitouts_do_not_become_missed_opportunity_pressure(self) -> None:
+    def test_grinder_near_zero_pressure_accumulates_without_handoffs(self) -> None:
         self._write_pm_books(empty_pm_books())
         empty_packet = {"trader_room": {"trades": []}, "overnight_review": {"decisions": []}}
         record_consequence_observation(self.store, "pm", "grinder", review_packet=empty_packet)
+        self.assertEqual(self.store.read_consequence_state("pm", "grinder")["grinder_flat_snapshots"], 1)
+        early = build_capital_owner(
+            self.store,
+            "grinder",
+            consequence=build_pm_consequence(self.store, "grinder"),
+            pm_book={"max_drawdown_usd": 50_000_000.0},
+            review_packet=empty_packet,
+        )
+        self.assertEqual(early["allocator_pressure"], 1)
+        self.assertFalse(early["persistent_zero_alpha"])
+        self.assertFalse(early["force_deployment"])
         record_consequence_observation(self.store, "pm", "grinder", review_packet=None)
         record_consequence_observation(self.store, "pm", "grinder", review_packet=self._opportunity_packet())
         state = self.store.read_consequence_state("pm", "grinder")
-        self.assertEqual(state["grinder_flat_snapshots"], 1)
+        self.assertEqual(state["grinder_flat_snapshots"], 3)
         owner = build_capital_owner(
             self.store,
             "grinder",
             consequence=build_pm_consequence(self.store, "grinder"),
             pm_book={"max_drawdown_usd": 50_000_000.0},
-            review_packet=self._opportunity_packet(),
+            review_packet=empty_packet,
         )
-        self.assertFalse(owner["persistent_zero_alpha"])
-        self.assertEqual(owner["standing"], "good_standing")
+        self.assertTrue(owner["persistent_zero_alpha"])
+        self.assertGreater(owner["allocator_pressure"], early["allocator_pressure"])
+        self.assertEqual(owner["standing"], "watch")
         self.assertFalse(owner["force_deployment"])
+        self.assertEqual(owner["credible_opportunities"], "none")
 
     def test_grinder_repeated_opportunity_flat_cycles_trigger_watch(self) -> None:
         self._write_pm_books(empty_pm_books())
@@ -331,6 +345,32 @@ class TraderPsychologyTests(unittest.TestCase):
         )
         self.assertTrue(owner["persistent_zero_alpha"])
         self.assertEqual(owner["standing"], "watch")
+        self.assertFalse(owner["force_deployment"])
+
+    def test_grinder_alpha_resets_accumulated_pressure(self) -> None:
+        books = empty_pm_books()
+        self._write_pm_books(books)
+        empty_packet = {"trader_room": {"trades": []}, "overnight_review": {"decisions": []}}
+        record_consequence_observation(self.store, "pm", "grinder", review_packet=empty_packet)
+        record_consequence_observation(self.store, "pm", "grinder", review_packet=empty_packet)
+        self.assertGreaterEqual(
+            self.store.read_consequence_state("pm", "grinder")["grinder_flat_snapshots"],
+            2,
+        )
+        books["pms"]["grinder"]["realized_pnl_usd"] = 2_000_000.0
+        self._write_pm_books(books)
+        record_consequence_observation(self.store, "pm", "grinder", review_packet=empty_packet)
+        self.assertEqual(self.store.read_consequence_state("pm", "grinder")["grinder_flat_snapshots"], 0)
+        owner = build_capital_owner(
+            self.store,
+            "grinder",
+            consequence=build_pm_consequence(self.store, "grinder"),
+            pm_book={"max_drawdown_usd": 50_000_000.0},
+            review_packet=empty_packet,
+        )
+        self.assertFalse(owner["zero_alpha"])
+        self.assertFalse(owner["persistent_zero_alpha"])
+        self.assertEqual(owner["allocator_pressure"], 0)
         self.assertFalse(owner["force_deployment"])
 
     def test_pragmatist_mandate_text_and_unavailable_spx(self) -> None:

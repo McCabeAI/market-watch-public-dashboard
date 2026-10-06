@@ -194,21 +194,22 @@ def build_capital_owner(
         flat_history = int(prior.get("grinder_flat_snapshots") or 0)
         opportunities = opportunity_status_from_packet(review_packet)
         zero_alpha = near_zero
-        missed = near_zero and flat_history >= 2 and opportunities == "present"
-        if missed:
+        # Repeated near-zero performance is the pressure input. Handoff
+        # presence does not gate the count, and nothing here forces a trade.
+        persistent = near_zero and flat_history >= 2
+        allocator_pressure = flat_history if near_zero else 0
+        if persistent:
             standing = "watch"
-            pressure_flags.append("missed_opportunity_zero_alpha")
+            pressure_flags.append("persistent_zero_alpha")
             notes.append(
-                "Repeated flat SOFR-hurdle results while frozen markable opportunities were available. "
-                "Selectivity is still allowed; deployment is not forced."
+                "Repeated near-zero performance versus SOFR is allocator pressure, "
+                "with or without Trader Room handoff opportunities. "
+                "Selectivity remains allowed; deployment is not forced."
             )
-        elif near_zero and opportunities == "none":
+        elif near_zero and allocator_pressure:
             notes.append(
-                "Flat versus SOFR is zero alpha, but the frozen packet has no markable opportunity. Sitting out is legitimate."
-            )
-        elif near_zero and opportunities == "unknown":
-            notes.append(
-                "Flat versus SOFR is zero alpha. Opportunity availability is unknown in the frozen packet, so no missed-opportunity claim is made."
+                "Flat versus SOFR is zero alpha. Allocator pressure has started to accumulate "
+                "and deployment is not forced."
             )
         elif near_zero:
             notes.append("Flat versus SOFR is zero alpha. No persistence claim yet.")
@@ -217,7 +218,8 @@ def build_capital_owner(
             "mandate": "grinder",
             "hurdle": "SOFR",
             "zero_alpha": zero_alpha,
-            "persistent_zero_alpha": missed,
+            "persistent_zero_alpha": persistent,
+            "allocator_pressure": allocator_pressure,
             "credible_opportunities": opportunities,
             "force_deployment": False,
             "notes": notes,

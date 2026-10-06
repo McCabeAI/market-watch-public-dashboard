@@ -22,6 +22,7 @@ from scripts.pm.constants import (
     PM_IDS,
     SCHEMA_VERSION,
 )
+from scripts.pm.opportunity_scan import OPPORTUNITY_INSTRUCTION
 from scripts.pm.data_requests import unresolved_for_pm
 from scripts.pm.errors import SchemaError
 from scripts.trader_room_public import build_from_run, completeness_errors, select_newest_complete_run
@@ -691,6 +692,7 @@ def build_review_packet(
             "Do not mechanically fill remaining shocked-risk capacity. OPEN/ADD/HEDGE fail closed "
             "while risk_stopped; there is no reset policy in this packet."
         ),
+        "opportunity_instruction": OPPORTUNITY_INSTRUCTION,
         "gross_utilization_usd": prior.get("gross_utilization_usd"),
         "funded_draw_usd": prior.get("funded_draw_usd", 0.0),
         "unresolved_future_data_requests": unresolved_for_pm(registry, pm_id),

@@ -169,6 +169,33 @@ class PragmatistPacketOpportunityTests(unittest.TestCase):
             packet=packet,
         )
 
+    def test_pm_originated_markable_candidate_is_accepted(self) -> None:
+        packet = _packet("USDCAD", "AUDUSD")
+        packet["market_state"]["fx"]["USDJPY"] = {"spot": 148.0}
+        validate_portfolio_construction(
+            _decision(
+                [
+                    {
+                        "instrument": "USDCAD",
+                        "rationale": "Handoff challenge evaluated and rejected.",
+                        "markable": True,
+                    },
+                    {
+                        "instrument": "AUDUSD",
+                        "rationale": "Handoff challenge evaluated and rejected.",
+                        "markable": True,
+                    },
+                    {
+                        "instrument": "USDJPY",
+                        "rationale": "PM-originated yen idea from the frozen FX evidence.",
+                        "markable": True,
+                    },
+                ]
+            ),
+            pm_id="pragmatist",
+            packet=packet,
+        )
+
     def test_other_pms_are_not_required_to_include_the_section(self) -> None:
         self.assertIsNone(validate_portfolio_construction({"actions": [{"action": "HOLD"}]}, pm_id="swinger"))
         self.assertIsNone(validate_portfolio_construction({"actions": [{"action": "HOLD"}]}, pm_id="grinder"))

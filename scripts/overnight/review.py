@@ -45,6 +45,7 @@ def _fallback_dry_run_pm_decisions(
             "subagent_count": 0,
             "subagent_models": [],
             "actions": [{"action": "HOLD"}],
+            "opportunity_scan": [],
             "thesis": "Dry-run: no incremental PM edge in the frozen packet.",
             "invalidation": None,
             "conviction": 20,
