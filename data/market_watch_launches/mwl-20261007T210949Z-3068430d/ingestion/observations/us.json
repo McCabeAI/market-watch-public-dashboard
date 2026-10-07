@@ -1,0 +1,113 @@
+{
+  "country": "US",
+  "observations": [
+    {
+      "series_id": "PAYEMS",
+      "period": "2026-09",
+      "transformation": "mm_change_thousands_sa",
+      "value": 29.0,
+      "raw_sha256": "830f091ea4b455d85c7e986415c079ce760b8289cb97d54aa5a583066ecfec0f",
+      "retrieved_at": "2026-10-07T21:09:49Z",
+      "release_date": null,
+      "vintage": "latest_available",
+      "earliest_release_vintage": null,
+      "latest_release_vintage": null,
+      "revision_status": "preliminary",
+      "source_url": "https://data.bls.gov/timeseries/CES0000000001",
+      "prior": 159015.0,
+      "derivation": {
+        "publisher": "BLS",
+        "bls_series_id": "CES0000000001",
+        "score_series_id": "PAYEMS",
+        "retrieval_method": "bls_public_api_v2_batch",
+        "accepted_source": "bls_primary",
+        "fred_series_id": "PAYEMS",
+        "prior_period": "2026-08",
+        "prior_level": 159015.0,
+        "raw_level": 159044.0,
+        "batch": "empsit"
+      }
+    },
+    {
+      "series_id": "UNRATE",
+      "period": "2026-09",
+      "transformation": "percent",
+      "value": 4.2,
+      "raw_sha256": "830f091ea4b455d85c7e986415c079ce760b8289cb97d54aa5a583066ecfec0f",
+      "retrieved_at": "2026-10-07T21:09:49Z",
+      "release_date": null,
+      "vintage": "latest_available",
+      "earliest_release_vintage": null,
+      "latest_release_vintage": null,
+      "revision_status": "final",
+      "source_url": "https://data.bls.gov/timeseries/LNS14000000",
+      "prior": null,
+      "derivation": {
+        "publisher": "BLS",
+        "bls_series_id": "LNS14000000",
+        "score_series_id": "UNRATE",
+        "retrieval_method": "bls_public_api_v2_batch",
+        "accepted_source": "bls_primary",
+        "fred_series_id": "UNRATE",
+        "prior_period": "2026-08",
+        "prior_level": 4.1,
+        "raw_level": 4.2,
+        "batch": "empsit"
+      }
+    },
+    {
+      "series_id": "CES0500000003",
+      "period": "2026-09",
+      "transformation": "yoy_pct",
+      "value": 3.0245231607629375,
+      "raw_sha256": "830f091ea4b455d85c7e986415c079ce760b8289cb97d54aa5a583066ecfec0f",
+      "retrieved_at": "2026-10-07T21:09:49Z",
+      "release_date": null,
+      "vintage": "latest_available",
+      "earliest_release_vintage": null,
+      "latest_release_vintage": null,
+      "revision_status": "preliminary",
+      "source_url": "https://data.bls.gov/timeseries/CES0500000003",
+      "prior": 36.7,
+      "derivation": {
+        "publisher": "BLS",
+        "bls_series_id": "CES0500000003",
+        "score_series_id": "CES0500000003",
+        "retrieval_method": "bls_public_api_v2_batch",
+        "accepted_source": "bls_primary",
+        "fred_series_id": "CES0500000003",
+        "prior_period": "2025-09",
+        "prior_level": 36.7,
+        "raw_level": 37.81,
+        "batch": "empsit"
+      }
+    },
+    {
+      "series_id": "CES0500000003",
+      "period": "2026-09",
+      "transformation": "mom_sa_pct",
+      "value": 0.13241525423730582,
+      "raw_sha256": "830f091ea4b455d85c7e986415c079ce760b8289cb97d54aa5a583066ecfec0f",
+      "retrieved_at": "2026-10-07T21:09:49Z",
+      "release_date": null,
+      "vintage": "latest_available",
+      "earliest_release_vintage": null,
+      "latest_release_vintage": null,
+      "revision_status": "preliminary",
+      "source_url": "https://data.bls.gov/timeseries/CES0500000003",
+      "prior": 37.76,
+      "derivation": {
+        "publisher": "BLS",
+        "bls_series_id": "CES0500000003",
+        "score_series_id": "CES0500000003",
+        "retrieval_method": "bls_public_api_v2_batch",
+        "accepted_source": "bls_primary",
+        "fred_series_id": "CES0500000003",
+        "prior_period": "2026-08",
+        "prior_level": 37.76,
+        "raw_level": 37.81,
+        "batch": "empsit"
+      }
+    }
+  ]
+}
