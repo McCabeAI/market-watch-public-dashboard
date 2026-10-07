@@ -1,15 +1,15 @@
 {
-  "as_of": "2026-10-06T07:22:43.705970-04:00",
-  "assembled_dataset": "data/overnight/runs/overnight-20261006/assembled_dataset.json",
+  "as_of": "2026-10-07T18:11:41.925093-04:00",
+  "assembled_dataset": "data/overnight/runs/overnight-20261007/assembled_dataset.json",
   "books_path": "data/overnight/books/latest.json",
   "dry_run": false,
-  "overnight_run_id": "overnight-20261006",
+  "overnight_run_id": "overnight-20261007",
   "publication": {
     "catastrophic_families": [],
     "core_status": "ok",
     "families": {
       "central_bank_research": {
-        "as_of": "2026-10-06T04:52:57.791209-04:00",
+        "as_of": "2026-10-07T17:09:49.248484-04:00",
         "blocking": false,
         "catastrophic": false,
         "digest": "c3d9a955b499598f37ce6ab6f35b6588dcab7482844f241e0c22ce36cfbbfac1",
@@ -19,40 +19,40 @@
         "status": "fresh"
       },
       "macro_hard": {
-        "as_of": "2026-10-05T06:08:21-04:00",
+        "as_of": "2026-10-07T17:09:49-04:00",
         "blocking": false,
         "catastrophic": false,
-        "digest": "c841e572c241d0f09c4167ddb29b8e91833f061edcf4303d2522fce415914950",
+        "digest": "f077c2762af3c888fbe9d1a38f9895a26f5147690f994a82669128a563aeaa8a",
         "notes": [
           "calibration_as_of 2026-09-21 is the structural anchor, not the freshness clock",
-          "component exceptions: AU.Activity.business_surveys=unverified, AU.Activity.gdp_domestic_demand=unverified, AU.Consumer.confidence=unverified, AU.Consumer.income=unverified, AU.Consumer.retail=unverified, AU.Consumer.spending=unverified, AU.Inflation.headline=unverified, AU.Inflation.underlying=unverified (+51 more)",
+          "component exceptions: AU.Activity.business_surveys=due_missing, AU.Activity.gdp_domestic_demand=unverified, AU.Consumer.confidence=due_missing, AU.Consumer.income=unverified, AU.Consumer.retail=due_missing, AU.Consumer.spending=due_missing, AU.Inflation.headline=due_missing, AU.Inflation.underlying=due_missing (+56 more)",
           "source-health carry-forward (not-due, prior vintage kept): US"
         ],
         "status": "fresh"
       },
       "market_state": {
-        "as_of": "2026-10-06T11:22:43Z",
+        "as_of": "2026-10-07T22:11:41Z",
         "blocking": false,
         "catastrophic": false,
-        "digest": "9392e055ed36dbf9e417fd53cad0164173a0ffebd81909d55746eedcf929b2e4",
+        "digest": "3fac921b7cf919b827e3b91a03b7246fb92b6004870f7b15048818c0b63cd31c",
         "notes": [
           "non-preflight source staleness stays visible and does not block the market_state family: NZ_rates"
         ],
         "status": "fresh"
       },
       "news": {
-        "as_of": "2026-10-06T04:52:57.791209-04:00",
+        "as_of": "2026-10-07T17:09:49.248484-04:00",
         "blocking": false,
         "catastrophic": false,
-        "digest": "a906b6bfdcf41d8f31746ebe7bd340b8313724e2923d5f019f9bae1d8f348c2f",
+        "digest": "ed8b02ef792e664c2d4bc840d3145f7fb5927b508bc1b2a0b59d4313822af6c7",
         "notes": [
           "accepted current-cycle ACP research supplement"
         ],
         "status": "fresh"
       }
     },
-    "last_successful_pm_run_id": "overnight-20261006",
-    "last_successful_review_run_id": "overnight-20261006",
+    "last_successful_pm_run_id": "overnight-20261007",
+    "last_successful_review_run_id": "overnight-20261007",
     "may_publish": true,
     "pm_books_status": "fresh",
     "reason": "core inputs are structurally valid",
