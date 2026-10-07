@@ -718,6 +718,62 @@
       "run_id": "overnight-20261006",
       "schema_version": 1,
       "thesis": "USD still pays versus CAD on verified marks: cash SOFR 3.88 versus CORRA 2.30, and March-27 implieds 4.53 versus 2.95, so the first-order expression is long USDCAD spot rather than a non-dollar cross. The book is already long USDCAD from 1.401 with the live mark at 1.4253; that dollar-spot position is the working trade. An oil-ease path reduces CAD terms-of-trade support while USD carry remains intact, so fading CAD via a cross would add unnecessary second-order risk. The next oil impulse and any policy path beyond the implieds are not a reason to abandon the USD leg."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDCAD",
+          "notional_usd": null,
+          "position_id": "pos-5317bc96d4eb",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-07T17:09:49.248484-04:00",
+      "conviction": 61,
+      "decision_fingerprint": "22971d8804712fb2417b2a8d19b698339504cfad63f3baea002dc02c28772dc0",
+      "event_id": "jde-2ff5cc77bd864ab0",
+      "funding_view": null,
+      "invalidation": "Exit if the SOFR versus CORRA advantage compresses sharply toward or through the already-narrower March strip, or if a sustained oil-and-risk bid reverses the dollar against Canada while United States rates stop supporting the long.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-5317bc96d4eb"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "05ed9e224801ce8b86d11f08562e4f1a0f228a809fc55902fb1839fcdc4314de",
+      "outcome_links": [],
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "03ceea7c1eb7e05bbf15fc2b634224d84d93b768517295de5d46a525e94efa55"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-07T17:09:49.248484-04:00",
+        "evidence_hash": "705c5bdee36f60237b6a6842ebeedefc51b8f50b7161535ac1d4040b06cf5330",
+        "overnight_run_id": "overnight-20261007",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "United States cash and March strip rates still dominate Canada by more than a point and a half, so the dollar versus the loonie remains the cleanest hold of that gap. A cross or an oil-tied Canada expression would add crude and risk beta the rate story does not need. Expensive crude and a quiet equity tape can slow further dollar gains, which is why this is a hold of the existing long rather than an add. Keep the view in dollar spot until that policy advantage actually closes.",
+      "run_id": "overnight-20261007",
+      "schema_version": 1,
+      "thesis": "United States cash and March strip rates still dominate Canada by more than a point and a half, so the dollar versus the loonie remains the cleanest hold of that gap. A cross or an oil-tied Canada expression would add crude and risk beta the rate story does not need. Expensive crude and a quiet equity tape can slow further dollar gains, which is why this is a hold of the existing long rather than an add. Keep the view in dollar spot until that policy advantage actually closes."
     }
   ],
   "schema_version": 1,

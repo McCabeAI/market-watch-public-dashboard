@@ -42,14 +42,14 @@
     "nav_usd": 100000200.62,
     "net_pnl_usd": 200.62,
     "pressure_flags": [],
-    "prior_competition_rank": 3,
-    "rank_change": 0,
+    "prior_competition_rank": 7,
+    "rank_change": -4,
     "raw_pnl_rank": 3,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 750000.0,
     "risk_capital_utilization": 0.075,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 16331.25,
     "status": "ok"
   },
   "learning": {
@@ -60,7 +60,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "9a41931ce0ccc1972c014585f8df4cc4d8160bad60f329eba008a6b68184dafa",
+  "memory_context_sha256": "9e3e0e518d919f561cddabdc022981b05e561713a8c53bffac6cebee1675fc40",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -108,13 +108,13 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "up",
+        "value": 0.19
       },
       "complacency": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.1
+        "value": 0.09
       },
       "defensiveness": {
         "band": "calm",
@@ -123,13 +123,13 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "up",
+        "value": 0.28
       },
       "frustration": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.11
+        "trend": "up",
+        "value": 0.18
       },
       "revenge_pressure": {
         "band": "calm",
@@ -138,8 +138,8 @@
       },
       "self_trust": {
         "band": "steady",
-        "trend": "flat",
-        "value": 0.5
+        "trend": "down",
+        "value": 0.48
       },
       "thesis_attachment": {
         "band": "calm",
@@ -160,11 +160,16 @@
         "kind": "session_loss",
         "magnitude": 0.1351625,
         "run_id": "overnight-20261002"
+      },
+      {
+        "kind": "rank_shock",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261007"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "72cba9947d1ec6be03ebd2d638b498565db959a158551470187717d79cd8bce1",
+    "state_sha256": "e3a045807a6e758b5c4ef8ba9a69f92f096f2105d2394563e3ad9d538902a324",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 1,

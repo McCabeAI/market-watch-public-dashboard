@@ -722,6 +722,62 @@
       "run_id": "overnight-20261006",
       "schema_version": 1,
       "thesis": "Cash SOFR at 3.88 sits well below SOFR Mar27 at 4.53, so the front end is hike-priced and is not a defensive receive. The book already expresses the slowdown via long US 10Y from 5.24 with the live mark at 5.31; that 7bp lag fits Brent at 100.32 plus a complacent S&P 7774 / VIX 15.31 tape, not a broken growth-tail thesis. Duration still has the cleaner downside asymmetry if growth revises weaker, whereas paying the strip would be wrong-way if the 65bp of hike premium collapses toward cash. Keep the 25m US 10Y receive; do not add while oil is the live term-premium headwind, and do not replace it with an unmarked risk-off FX short."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "US_10Y",
+          "notional_usd": null,
+          "position_id": "pos-5ac8fc69cb81",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-07T17:09:49.248484-04:00",
+      "conviction": 57,
+      "decision_fingerprint": "9e00cad0d1319b19f00b3ceb3fb13a093b56e5c3309b4fea47945f4a4741f207",
+      "event_id": "jde-fa6042b186a14c7d",
+      "funding_view": null,
+      "invalidation": "Cover if the 10-year backup continues because oil-driven term premium dominates the growth-scare bid, or if equities and oil reverse together into a stable re-acceleration that removes the downside growth tail.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-5ac8fc69cb81"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "ad4a958cd3e79ad8ed6ccee14ffb01dd0d126e2b444b7c9882dd1ccfe250e56d",
+      "outcome_links": [],
+      "owner_id": "perma-bear",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "6ddfb3574a34c69df7b59418366320d52b9e88c5e18747f0a3cc89f513dba026"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-07T17:09:49.248484-04:00",
+        "evidence_hash": "705c5bdee36f60237b6a6842ebeedefc51b8f50b7161535ac1d4040b06cf5330",
+        "overnight_run_id": "overnight-20261007",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Cash SOFR at 3.90 still sits below SOFR Mar27 at 4.48 and Sep27 at 4.72, so receiving that hike-priced strip would fade tightening rather than express a growth scare. The book already has the cleaner defensive expression in long US 10Y from 5.24 versus the live 5.28 mark; that modest backup sits with Brent at 100.58 and a complacent S&P 7818.93 / VIX 15.01 tape, not a broken slowdown thesis. Keep the 25m 10-year receive and do not add while oil remains the live term-premium headwind; do not replace it with an unmarked risk-off FX short.",
+      "run_id": "overnight-20261007",
+      "schema_version": 1,
+      "thesis": "Cash SOFR at 3.90 still sits below SOFR Mar27 at 4.48 and Sep27 at 4.72, so receiving that hike-priced strip would fade tightening rather than express a growth scare. The book already has the cleaner defensive expression in long US 10Y from 5.24 versus the live 5.28 mark; that modest backup sits with Brent at 100.58 and a complacent S&P 7818.93 / VIX 15.01 tape, not a broken slowdown thesis. Keep the 25m 10-year receive and do not add while oil remains the live term-premium headwind; do not replace it with an unmarked risk-off FX short."
     }
   ],
   "schema_version": 1,

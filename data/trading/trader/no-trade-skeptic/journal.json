@@ -958,6 +958,71 @@
       "run_id": "overnight-20261006",
       "schema_version": 1,
       "thesis": "Cash SOFR is 3.88 against SR3 December 4.25, March 4.53 and September 4.775, with the 10-year at 5.31, Brent at 100.32 and VIX at 15.31, and the book is flat. That hiking path, term yield, oil print and contained vol are already on the screen, so fade-or-chase setups are priced, crowded, noisy versus this overnight horizon, and poorly timed with no named catalyst that is not already in the strip. Remain at the zero official-SOFR cash benchmark; do not pay SOFR on shocked-risk capital unless a marked trade beats that charge."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-07T17:09:49.248484-04:00",
+      "conviction": 74,
+      "decision_fingerprint": "d1ad9b1d439ba597416eb7276017f40f63522d260c43fefcfd1a6e82b59ec537",
+      "event_id": "jde-9b934d1a984247bd",
+      "funding_view": {
+        "current_sofr": "Official NY Fed SOFR 3.90 percent ACT/360, effective 2026-10-06.",
+        "forward_funding_assessment": "lower",
+        "implication": "Realized overnight funding should print near the 3.90 official fixing and below those SR3 forwards. Remain at the zero official-SOFR cash benchmark; do not pay SOFR on shocked-risk capital to own a hike path the curve already contains. Flat cash is not alpha.",
+        "sr3_forward_view": "Over this overnight horizon the frozen SR3 strip is Dec26 4.23, Mar27 4.48, Jun27 4.65, Sep27 4.72, Dec27 4.745. That is a priced multi-meeting hiking path, not an overnight funding print."
+      },
+      "invalidation": "Actionable if official cash or the SR3 strip gaps versus 3.90 and Dec26 4.23 / Mar27 4.48 / Jun27 4.65 / Sep27 4.72 / Dec27 4.745, if a scheduled policy event reprices the front independently of oil and equity vol, or if CORRA and USDCAD crowding visibly unwinds into a markable uncrowded rates expression whose expected edge clears official SOFR on shocked-risk capital.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "322ab6c8ff2225e3765a65d2d28479cacf91063486b375a132ef906f8b1484b8",
+      "outcome_links": [],
+      "owner_id": "no-trade-skeptic",
+      "owner_type": "trader",
+      "payload": {
+        "funding_view": {
+          "current_sofr": "Official NY Fed SOFR 3.90 percent ACT/360, effective 2026-10-06.",
+          "forward_funding_assessment": "lower",
+          "implication": "Realized overnight funding should print near the 3.90 official fixing and below those SR3 forwards. Remain at the zero official-SOFR cash benchmark; do not pay SOFR on shocked-risk capital to own a hike path the curve already contains. Flat cash is not alpha.",
+          "sr3_forward_view": "Over this overnight horizon the frozen SR3 strip is Dec26 4.23, Mar27 4.48, Jun27 4.65, Sep27 4.72, Dec27 4.745. That is a priced multi-meeting hiking path, not an overnight funding print."
+        },
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "519f8b836a2d6d16d370998015f89e2f7bf61fedb92f23626070306f06d309f1"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-07T17:09:49.248484-04:00",
+        "evidence_hash": "705c5bdee36f60237b6a6842ebeedefc51b8f50b7161535ac1d4040b06cf5330",
+        "overnight_run_id": "overnight-20261007",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Front-end hikes are already in the SR3 strip, so an overnight policy or duration expression is paying official cash to own a path the forwards have already charged. Brent near 100 and VIX at 15.01 are known temperature, not a fresh shock with a clean unpriced instrument. CORRA and USDCAD books are crowded, which is a timing and crowding veto rather than an edge. Stay flat unless a dated catalyst moves implied policy or that crowding independently of the already-priced hike path.",
+      "run_id": "overnight-20261007",
+      "schema_version": 1,
+      "thesis": "Front-end hikes are already in the SR3 strip, so an overnight policy or duration expression is paying official cash to own a path the forwards have already charged. Brent near 100 and VIX at 15.01 are known temperature, not a fresh shock with a clean unpriced instrument. CORRA and USDCAD books are crowded, which is a timing and crowding veto rather than an edge. Stay flat unless a dated catalyst moves implied policy or that crowding independently of the already-priced hike path."
     }
   ],
   "schema_version": 1,

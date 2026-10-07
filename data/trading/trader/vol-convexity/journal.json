@@ -690,6 +690,60 @@
       "run_id": "overnight-20261006",
       "schema_version": 1,
       "thesis": "The book is flat and the only available vol print is VIX at 15.31. No strikes, expiries, or premiums are supplied, so no option structure is markable and none is selected. Unbounded linear spot or rates is not a substitute for missing convexity. Stay flat."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-07T17:09:49.248484-04:00",
+      "conviction": 80,
+      "decision_fingerprint": "3c923b639e6a74065c793c4ee887d5af870421f96b2a722c97d44478cf3b453c",
+      "event_id": "jde-8066ee487a164174",
+      "funding_view": null,
+      "invalidation": "A live listed chain with executable strikes, expiries, and premiums becomes markable, or a bounded structure can be shown on those marks to dominate flat.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "6e954f0691717056f7143957547df7af4a148c7ce18829fd9dec4614f8497de8",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "b776cfbb65f7a25a464443c58763ca05b91dfbee993bec19f4a2b1864e979a0a"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-07T17:09:49.248484-04:00",
+        "evidence_hash": "705c5bdee36f60237b6a6842ebeedefc51b8f50b7161535ac1d4040b06cf5330",
+        "overnight_run_id": "overnight-20261007",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book is flat and the freeze contains one vol print, VIX 15.01, with no strikes, expiries, or premiums. No bounded-risk option, spread, or risk reversal can be marked, so convexity cannot be shown to dominate spot. Stay flat; do not substitute unbounded linear spot or rates for missing optionality.",
+      "run_id": "overnight-20261007",
+      "schema_version": 1,
+      "thesis": "The book is flat and the freeze contains one vol print, VIX 15.01, with no strikes, expiries, or premiums. No bounded-risk option, spread, or risk reversal can be marked, so convexity cannot be shown to dominate spot. Stay flat; do not substitute unbounded linear spot or rates for missing optionality."
     }
   ],
   "schema_version": 1,

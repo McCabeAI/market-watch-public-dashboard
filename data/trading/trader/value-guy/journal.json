@@ -700,6 +700,60 @@
       "run_id": "overnight-20261006",
       "schema_version": 1,
       "thesis": "The book is already flat, and NZ-linked new risk is closed, which also closes AUDNZD as a new-risk expression, so any REER or pairwise cheapness in that cross is not executable. US rates are now eligible, but the supplied cash marks are only levels: US 2s10s 4.84/5.31, CA 3.25/3.93, AU 4.942/5.344; a level or z-score is not a convergence clock, and a 2Y spread is not cheap merely because the FX looks cheap. Screening those cash marks before any REER story still finds no dated, markable non-NZ dislocation with a start date for mean reversion. Stay flat."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-07T17:09:49.248484-04:00",
+      "conviction": 62,
+      "decision_fingerprint": "1d88b39131608b1617fc9f8cacddafacf8316ece44832d6c37117b6570c035b8",
+      "event_id": "jde-388a0480ddf44467",
+      "funding_view": null,
+      "invalidation": "A dated NZ, AU, US, or CA policy, terms-of-trade, or data clock that times residual closure, or a later freeze that supplies REER/PPP cheapness with an explicit convergence window, invalidates staying flat.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "cd16c23591a86b431a35adc66fd9953db58fa8662fedd21011ee504a5fa7aa3f",
+      "outcome_links": [],
+      "owner_id": "value-guy",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "8a214cd1247f210d2a6401986daf6de0230d358ca35f83f8643c1e5792211271"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-07T17:09:49.248484-04:00",
+        "evidence_hash": "705c5bdee36f60237b6a6842ebeedefc51b8f50b7161535ac1d4040b06cf5330",
+        "overnight_run_id": "overnight-20261007",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book is already flat, and New Zealand is eligible, so NZ cash 2s/10s at 3.88/5.11 can be screened with US 4.77/5.28, Canada 3.23/3.92, and Australia 4.942/5.344 rather than being excluded on jurisdiction. Those prints are cash levels only: a 2Y cross-market gap is not cheap merely because the currency looks cheap, and screening the cash 2Y residual first still finds no dated policy, data, or terms-of-trade clock that starts mean reversion now. No REER or PPP cheapness was supplied with an explicit convergence window, so neither NZD spot nor a NZ-US or NZ-AU 2Y expression is markable on valuation. Stay flat.",
+      "run_id": "overnight-20261007",
+      "schema_version": 1,
+      "thesis": "The book is already flat, and New Zealand is eligible, so NZ cash 2s/10s at 3.88/5.11 can be screened with US 4.77/5.28, Canada 3.23/3.92, and Australia 4.942/5.344 rather than being excluded on jurisdiction. Those prints are cash levels only: a 2Y cross-market gap is not cheap merely because the currency looks cheap, and screening the cash 2Y residual first still finds no dated policy, data, or terms-of-trade clock that starts mean reversion now. No REER or PPP cheapness was supplied with an explicit convergence window, so neither NZD spot nor a NZ-US or NZ-AU 2Y expression is markable on valuation. Stay flat."
     }
   ],
   "schema_version": 1,

@@ -722,6 +722,62 @@
       "run_id": "overnight-20261006",
       "schema_version": 1,
       "thesis": "Mar-27 CORRA at 2.95 still prices about 65bp of tightening versus 2.30 cash, so the Canada hike-path fade remains the concentrated book. Verified US labor cooling and the frozen eligible-jurisdiction tape keep that receive thesis valid; the 700m sleeve is already in the money from roughly 3.09 toward 2.95. The accepted 14-trader handoff is all stay-flat with no expanding clips, so no second sleeve is added. Shocked risk stays about $7m of the $100m cap, which is concentrated enough without filling unused capacity."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pm-swinger-2070479ca321",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-07T18:08:05.661858-04:00",
+      "conviction": 8,
+      "decision_fingerprint": "a21006a7789c0d5fbb143d3331e6eee275963c5ca091afd3581805b6c3c1f0c4",
+      "event_id": "jde-1fe56908dc79471e",
+      "funding_view": null,
+      "invalidation": "Close or reduce if March 2027 CORRA reprices higher back through the 3.13 entry, or if cash CORRA rises toward the contract so the 2.29-to-2.94 gap closes from a hawkish cash move rather than the strip falling.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-swinger-2070479ca321"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "7478fda0c66967194757e68de1e1b05c261c04f3e6a179ac8d1c3a7c78a14532",
+      "outcome_links": [],
+      "owner_id": "swinger",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "dd0c90e8298700cc5a6f1d93e448abf7ad8fcbf6acbc2795f3b1cac4590a88ed"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-07T17:09:49.248484-04:00",
+        "evidence_hash": "8ae0bda9b44f89440adfebe4d8f217652a35837585ed03f5b8df496d3aa8f664",
+        "overnight_run_id": "overnight-20261007",
+        "review_id": "review-001",
+        "review_packet_id": "prp-swinger-overnight-20261007-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Keep the concentrated March 2027 CORRA receive. Overnight CORRA at 2.29 versus the 2.94 live mark still leaves a wide path for the contract to reprice lower, and the 3.13 entry has already moved the required direction. The accepted room stayed with existing books and offered no expanding clip, so a second sleeve in SOFR or AONIA would only dilute a working Canada thesis. Shocked risk stays about seven million of the one-hundred million cap, concentrated enough without filling unused capacity.",
+      "run_id": "overnight-20261007",
+      "schema_version": 1,
+      "thesis": "Keep the concentrated March 2027 CORRA receive. Overnight CORRA at 2.29 versus the 2.94 live mark still leaves a wide path for the contract to reprice lower, and the 3.13 entry has already moved the required direction. The accepted room stayed with existing books and offered no expanding clip, so a second sleeve in SOFR or AONIA would only dilute a working Canada thesis. Shocked risk stays about seven million of the one-hundred million cap, concentrated enough without filling unused capacity."
     }
   ],
   "schema_version": 1,

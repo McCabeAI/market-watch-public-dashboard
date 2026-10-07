@@ -722,6 +722,62 @@
       "run_id": "overnight-20261006",
       "schema_version": 1,
       "thesis": "Mar27 SOFR is still about 65 basis points above cash at 3.88, so the cash-to-contract overshoot has not fully normalized. The contract has already traded through the 4.58 receive entry toward cash from the 4.58/4.625 cover, which is the first stage of the fade rather than a rebuilt extreme. Keep the existing 10 million receive and do not add; the add condition is a rebuild of that prior cover stretch, not chasing a move that is already working through entry."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-1477172adb86",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-07T17:09:49.248484-04:00",
+      "conviction": 64,
+      "decision_fingerprint": "2716abc737d4323457f58a1b2e59f86f7e32604ad06ba0df134482d13b44baab",
+      "event_id": "jde-5edc0e6f1f824d2b",
+      "funding_view": null,
+      "invalidation": "Cover the March 2027 receive if the implied yield trades back through the 4.58 entry. The fade is also wrong if cash SOFR rises toward 4.48 instead of the forward mean-reverting lower.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-1477172adb86"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "2573efeb26bcff2271e3f2947eafdc9ad9d3c28be36c582906ad0acf2f74a251",
+      "outcome_links": [],
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "b631daa49e45e80a24eff1530527426f3e466d926921eeaf68884ef46a8e6e36"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-07T17:09:49.248484-04:00",
+        "evidence_hash": "705c5bdee36f60237b6a6842ebeedefc51b8f50b7161535ac1d4040b06cf5330",
+        "overnight_run_id": "overnight-20261007",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Cash SOFR at 3.90 is still the anchor, and March 2027 at 4.48 still prices about 58 basis points of tightening that cash has not printed. The existing receive is already through the 4.58 entry toward cash, so the hawkish overshoot is compressing rather than rebuilding. Hold the 10 million March 2027 receive; do not add until that stretch widens again.",
+      "run_id": "overnight-20261007",
+      "schema_version": 1,
+      "thesis": "Cash SOFR at 3.90 is still the anchor, and March 2027 at 4.48 still prices about 58 basis points of tightening that cash has not printed. The existing receive is already through the 4.58 entry toward cash, so the hawkish overshoot is compressing rather than rebuilding. Hold the 10 million March 2027 receive; do not add until that stretch widens again."
     }
   ],
   "schema_version": 1,

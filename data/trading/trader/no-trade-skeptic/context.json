@@ -42,8 +42,8 @@
     "nav_usd": 100000000.0,
     "net_pnl_usd": 0.0,
     "pressure_flags": [],
-    "prior_competition_rank": 4,
-    "rank_change": 0,
+    "prior_competition_rank": 3,
+    "rank_change": 1,
     "raw_pnl_rank": 4,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
@@ -60,7 +60,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "322ab6c8ff2225e3765a65d2d28479cacf91063486b375a132ef906f8b1484b8",
+  "memory_context_sha256": "ad9af921f70c30f590ef63545794de6328c4177bdea9484f4981bb3f538ef979",
   "open_positions": [],
   "owner_id": "no-trade-skeptic",
   "owner_type": "trader",
@@ -92,7 +92,7 @@
       "frustration": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.11
+        "value": 0.12
       },
       "revenge_pressure": {
         "band": "calm",
@@ -122,30 +122,36 @@
       {
         "kind": "flat_with_market",
         "magnitude": 1.0,
-        "run_id": "overnight-20261002"
-      },
-      {
-        "kind": "flat_with_market",
-        "magnitude": 1.0,
         "run_id": "overnight-20261005"
       },
       {
         "kind": "flat_with_market",
         "magnitude": 1.0,
         "run_id": "overnight-20261006"
+      },
+      {
+        "kind": "flat_with_market",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261007"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "519f8b836a2d6d16d370998015f89e2f7bf61fedb92f23626070306f06d309f1",
+    "state_sha256": "95fc4e18452f1fdd9ac2b736207306af7ca7f3d928c18844dfff8bc62067e7fe",
     "streaks": {
-      "flat_cycles": 7,
+      "flat_cycles": 8,
       "session_loss": 0,
       "session_win": 0
     }
   },
   "recent_closed_trades": [],
   "recent_funding_views": [
+    {
+      "current_sofr": "Official NY Fed SOFR 3.90 percent ACT/360, effective 2026-10-06.",
+      "forward_funding_assessment": "lower",
+      "implication": "Realized overnight funding should print near the 3.90 official fixing and below those SR3 forwards. Remain at the zero official-SOFR cash benchmark; do not pay SOFR on shocked-risk capital to own a hike path the curve already contains. Flat cash is not alpha.",
+      "sr3_forward_view": "Over this overnight horizon the frozen SR3 strip is Dec26 4.23, Mar27 4.48, Jun27 4.65, Sep27 4.72, Dec27 4.745. That is a priced multi-meeting hiking path, not an overnight funding print."
+    },
     {
       "current_sofr": {
         "observation_date": "2026-10-02",
@@ -172,15 +178,6 @@
       "forward_funding_assessment": "about_the_same",
       "implication": "Remain at the zero official-SOFR cash benchmark. Paying SOFR on shocked-risk capital would finance a hike-path thesis the forwards already contain. Flat cash at 3.90 is the zero, not alpha.",
       "sr3_forward_view": "Frozen SR3 Dec26 4.225, Mar27 4.485, Sep27 4.745 versus official SOFR 3.90: the strip already embeds a higher funding path, so overnight cash at 3.90 is not a mispriced hike-trade."
-    },
-    {
-      "current_sofr": {
-        "observation_date": "2026-09-29",
-        "rate": 3.88
-      },
-      "forward_funding_assessment": "lower",
-      "implication": "Remain at the zero official-SOFR cash benchmark. Do not pay SOFR on shocked-risk capital; the curve already charges the hike path, and flat cash is the zero, not alpha.",
-      "sr3_forward_view": "Frozen SR3 Dec26 4.31, Mar27 4.625, Sep27 4.905 versus official SOFR 3.88: the strip already embeds a higher funding path, so overnight cash at 3.88 is not a mispriced hike-trade."
     }
   ],
   "recent_performance_reflections": [],

@@ -873,6 +873,92 @@
       "run_id": "overnight-20261006",
       "schema_version": 1,
       "thesis": "Cash SOFR at 3.88 versus Sep-27 at 4.775 still leaves 2027 policy too cheap if inflation stays sticky while Brent at 100.32 and the UST 10Y at 5.31 keep the restraint case open. US labor is verified cooling and that is not a veto: it does not authorize fading pays while energy and the long end say persistence is underpriced. CORRA Mar-27 at 2.95 versus cash 2.30 and a 3.125 pay entry is an over-eased BoC path; AONIA Jun-27 at 4.885 versus cash 4.60 is only a shallow glide and does not embed enough residual tightness. Keep all three book pays for higher implied fixes; do not cut the book on a labor print that has not broken the inflation case."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-09",
+          "notional_usd": null,
+          "position_id": "pos-c9184707c12b",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-2709875e8c9c",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-06",
+          "notional_usd": null,
+          "position_id": "pos-9cbf3f27dfff",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-07T17:09:49.248484-04:00",
+      "conviction": 68,
+      "decision_fingerprint": "cb1b26a63813011ba6921510430d908522cf337f43d6031a962e3f6521b35cf2",
+      "event_id": "jde-10bdea3c3aee41b2",
+      "funding_view": null,
+      "invalidation": "Hike-path thesis fails if SOFR September 2027 implieds fall back through the book toward cash 3.90, if CORRA March 2027 extends the fade through 2.94 toward cash 2.29, or if AONIA June 2027 surrenders the remaining premium from 4.885 toward cash 4.60.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-2709875e8c9c",
+        "pos-9cbf3f27dfff",
+        "pos-c9184707c12b"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "9a41931ce0ccc1972c014585f8df4cc4d8160bad60f329eba008a6b68184dafa",
+      "outcome_links": [],
+      "owner_id": "rate-hawk",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "72cba9947d1ec6be03ebd2d638b498565db959a158551470187717d79cd8bce1"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-07T17:09:49.248484-04:00",
+        "evidence_hash": "705c5bdee36f60237b6a6842ebeedefc51b8f50b7161535ac1d4040b06cf5330",
+        "overnight_run_id": "overnight-20261007",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The overnight book is a 2027-dated pay strip in USD, CAD, and AUD, and it still points the right way. Cash SOFR 3.90 versus Sep-27 4.72, CORRA 2.29 versus Mar-27 2.94, and AONIA 4.60 versus Jun-27 4.885 leave too much easing in the path against EA/AU headlines at 3.8/4.0, Brent at 100.58, and a US 10Y at 5.28. That combination is delayed-cut and higher-terminal risk, not a thesis break. Hold all three pays.",
+      "run_id": "overnight-20261007",
+      "schema_version": 1,
+      "thesis": "The overnight book is a 2027-dated pay strip in USD, CAD, and AUD, and it still points the right way. Cash SOFR 3.90 versus Sep-27 4.72, CORRA 2.29 versus Mar-27 2.94, and AONIA 4.60 versus Jun-27 4.885 leave too much easing in the path against EA/AU headlines at 3.8/4.0, Brent at 100.58, and a US 10Y at 5.28. That combination is delayed-cut and higher-terminal risk, not a thesis break. Hold all three pays."
     }
   ],
   "schema_version": 1,

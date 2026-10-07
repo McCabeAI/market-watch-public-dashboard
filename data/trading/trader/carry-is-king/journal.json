@@ -724,6 +724,62 @@
       "run_id": "overnight-20261006",
       "schema_version": 1,
       "thesis": "March 2027 AONIA is still a residual-carry receive: cash sits at 4.60 with the contract live at 4.78, so only about 18 basis points of path remain, and the 25 million long from 4.83 is already 5 basis points in the money. A small known-headline backup is not the event that kills a carry receive; cash-policy change or a large path reprice would be. CORRA at 2.30 versus 2.95 prices 65 basis points of hikes and is a path trade, not a reason to cut or replace the Australia receive. Brent at 100.32 is a risk to the RBA outlook but has not moved cash, so the clean expression remains the existing AONIA long, expecting marks lower toward cash."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-524ab67108ee",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-07T17:09:49.248484-04:00",
+      "conviction": 70,
+      "decision_fingerprint": "39bf9710843da722da668233aafa54e4ae2a3e8a6ba9da076e4b6b90e699dfeb",
+      "event_id": "jde-01e934ea29434fda",
+      "funding_view": null,
+      "invalidation": "Cash AONIA rises toward or through 4.80 and erases the paid path, or the expected March quarter average is lifted through 4.80 by delivered hikes.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-524ab67108ee"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "666cc813e72a52fd298308e763f0164e62138c4b312f1aadf9ad0fa059997901",
+      "outcome_links": [],
+      "owner_id": "carry-is-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "6a95d07b7e7bca54aac9986adb408c9891f89e6b2276a03bd14ca068d54b9299"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-07T17:09:49.248484-04:00",
+        "evidence_hash": "705c5bdee36f60237b6a6842ebeedefc51b8f50b7161535ac1d4040b06cf5330",
+        "overnight_run_id": "overnight-20261007",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book is a receive of Mar-27 AONIA at a live 4.80 against cash still at 4.60, so unchanged policy continues to pay the holder through roll-down. A modest implied backup linked to oil is not a reason to flatten a positive-carry receive while the cash rate has not moved. Hold the 25m long and let the mark work lower toward cash if policy stays put. Do not add on the same thesis without a cleaner dislocation versus unchanged cash.",
+      "run_id": "overnight-20261007",
+      "schema_version": 1,
+      "thesis": "The book is a receive of Mar-27 AONIA at a live 4.80 against cash still at 4.60, so unchanged policy continues to pay the holder through roll-down. A modest implied backup linked to oil is not a reason to flatten a positive-carry receive while the cash rate has not moved. Hold the 25m long and let the mark work lower toward cash if policy stays put. Do not add on the same thesis without a cleaner dislocation versus unchanged cash."
     }
   ],
   "schema_version": 1,

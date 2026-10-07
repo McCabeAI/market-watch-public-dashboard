@@ -1,6 +1,6 @@
 {
   "active_lessons": [],
-  "as_of": "2026-10-07T17:09:49.248484-04:00",
+  "as_of": "2026-10-07T18:08:06.939906-04:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -30,13 +30,13 @@
     "wins": 0
   },
   "capital_owner": {
-    "allocator_pressure": 0,
-    "credible_opportunities": "unknown",
+    "allocator_pressure": 1,
+    "credible_opportunities": "none",
     "force_deployment": false,
     "hurdle": "SOFR",
     "mandate": "grinder",
     "notes": [
-      "Flat versus SOFR is zero alpha. No persistence claim yet."
+      "Flat versus SOFR is zero alpha. Allocator pressure has started to accumulate and deployment is not forced."
     ],
     "persistent_zero_alpha": false,
     "pressure_flags": [],
@@ -44,8 +44,8 @@
     "zero_alpha": true
   },
   "consequence": {
-    "best_trader_net_pnl_usd": 950858.98,
-    "best_trader_outearn_streak": 1,
+    "best_trader_net_pnl_usd": 952495.64,
+    "best_trader_outearn_streak": 2,
     "best_trader_seat": "dollar-king",
     "capital_normalized": false,
     "competition_cohort_size": 4,
@@ -53,7 +53,7 @@
     "competition_rank": 4,
     "competitive_rank": 4,
     "drawdown_usd": 0.0,
-    "gap_to_best_trader_usd": -950858.98,
+    "gap_to_best_trader_usd": -952495.64,
     "high_water_nav_usd": 1000000000.0,
     "max_drawdown_usd": 50000000.0,
     "net_after_funding_pnl_usd": 0.0,
@@ -75,7 +75,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "f943bbfb662128e4274a353d0986ddf52b2f6bf57c6de65d948f217fc3f7e72f",
+  "memory_context_sha256": "f5b8c061ed3a4f8374aa8329670ef56554b64f58aa0173be19f3af0045e7782b",
   "open_positions": [],
   "owner_id": "grinder",
   "owner_type": "pm",
@@ -135,11 +135,6 @@
     "profile_version": 1,
     "recent_events": [
       {
-        "kind": "competitive_flag_active",
-        "magnitude": 1.0,
-        "run_id": "overnight-20261005"
-      },
-      {
         "kind": "allocator_standing_restored",
         "magnitude": 1.0,
         "run_id": "overnight-20261005"
@@ -148,13 +143,18 @@
         "kind": "competitive_flag_active",
         "magnitude": 1.0,
         "run_id": "overnight-20261006"
+      },
+      {
+        "kind": "competitive_flag_active",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261007"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "6a6c900b764ce88f1ca5f539f2fca936604ad755de073704e18a0ef4457925d6",
+    "state_sha256": "7e393c7b41616602e627ce6c279d144c4bb492c19dd3a1a6380ca98245cf3735",
     "streaks": {
-      "flat_cycles": 7,
+      "flat_cycles": 8,
       "session_loss": 0,
       "session_win": 0
     }
