@@ -1,0 +1,200 @@
+{
+  "active_lessons": [
+    {
+      "contradiction_count": 0,
+      "future_rule": "If the 2Y SOFR-CORRA minus cash SOFR-CORRA gap is negligible, do not express CAD valuation in SOFR-CORRA packs; the residual, if any, is spot.",
+      "lesson_id": "les-b02e04336ac7",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-d9e2764dea0f"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null
+      },
+      "source_run_id": "overnight-20260929",
+      "status": "active",
+      "text": "A 2Y cross-market spread is not cheap because the currency is cheap. Screen the spread against cash before invoking REER.",
+      "trade_ids": [
+        "trd-trader-value-guy-pos-cdde326460b4"
+      ]
+    }
+  ],
+  "as_of": "2026-10-13T11:45:39.974637-04:00",
+  "calibration": {
+    "average_holding_seconds": 234247,
+    "average_realized_pnl_usd": -56000.0,
+    "breakeven": 0,
+    "by_asset_class": {
+      "rates_rv": {
+        "count": 1,
+        "total_realized_pnl_usd": -56000.0
+      }
+    },
+    "closed_trade_count": 1,
+    "conviction_buckets": {
+      "high": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "low": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "medium": {
+        "average_pnl_usd": -56000.0,
+        "count": 1,
+        "hit_rate": 0.0
+      }
+    },
+    "losses": 1,
+    "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
+    "total_realized_pnl_usd": -56000.0,
+    "wins": 0
+  },
+  "capital_owner": null,
+  "consequence": {
+    "competition_cohort_size": 14,
+    "competition_eligible": true,
+    "competition_rank": 11,
+    "competitive_rank": 11,
+    "drawdown_usd": 56224.58,
+    "giveback_usd": 0.0,
+    "high_water_nav_usd": 100000000.0,
+    "material_threshold_usd": 2000000.0,
+    "nav_usd": 99943775.42,
+    "net_pnl_usd": -56224.58,
+    "pressure_flags": [],
+    "prior_competition_rank": 11,
+    "rank_change": 0,
+    "raw_pnl_rank": 11,
+    "recent_pattern": "flat",
+    "risk_capital_limit_usd": 10000000.0,
+    "risk_capital_usd": 0.0,
+    "risk_capital_utilization": 0.0,
+    "session_pnl_change_usd": 0.0,
+    "status": "ok"
+  },
+  "learning": {
+    "competition_eligible": true,
+    "learning_default_age_runs": 0,
+    "learning_default_count": 1,
+    "learning_status": "compliant",
+    "repeated_error_escalations": []
+  },
+  "learning_obligations": [],
+  "memory_context_sha256": "bbe54cdb2ad3bf03962f61bf675c49b7ceb65d6cbc78e8afe67c0879c5ae20d0",
+  "open_positions": [],
+  "owner_id": "value-guy",
+  "owner_type": "trader",
+  "postmortems_due": [],
+  "psychology": {
+    "active_flags": [],
+    "applicable": true,
+    "axes": {
+      "chase_pressure": {
+        "band": "calm",
+        "trend": "up",
+        "value": 0.21
+      },
+      "complacency": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.1
+      },
+      "defensiveness": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.2
+      },
+      "external_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.23
+      },
+      "frustration": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.17
+      },
+      "revenge_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.05
+      },
+      "self_trust": {
+        "band": "steady",
+        "trend": "flat",
+        "value": 0.49
+      },
+      "thesis_attachment": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.25
+      }
+    },
+    "boundary": "Private decision machinery. Never quote or paraphrase in public prose. This state never sizes, forces, or blocks a trade.",
+    "metrics": {
+      "conviction_volatility": 0.0,
+      "distortion_verdicts": 0,
+      "self_report_mismatches": 0,
+      "sharpened_verdicts": 0
+    },
+    "profile_version": 1,
+    "recent_events": [
+      {
+        "kind": "flat_with_market",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261005"
+      },
+      {
+        "kind": "flat_with_market",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261006"
+      },
+      {
+        "kind": "flat_with_market",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261007"
+      }
+    ],
+    "required_checks": {},
+    "schema_version": 1,
+    "state_sha256": "3100a5a011b3c10aeb6e97db532080dd89bc7901d184995ea3fb535faef19229",
+    "streaks": {
+      "flat_cycles": 8,
+      "session_loss": 0,
+      "session_win": 0
+    }
+  },
+  "recent_closed_trades": [
+    {
+      "asset_class": "rates_rv",
+      "closed_at": "2026-09-22T15:40:57.474758-04:00",
+      "conviction": 58,
+      "holding_duration_seconds": 234247,
+      "instrument": "SOFR-CORRA_2Y_2027H1",
+      "opened_at": "2026-09-19T22:36:50.082404-04:00",
+      "realized_pnl_usd": -56000.0,
+      "side": "long",
+      "trade_id": "trd-trader-value-guy-pos-cdde326460b4"
+    }
+  ],
+  "recent_funding_views": [],
+  "recent_performance_reflections": [],
+  "reflections_due": [],
+  "schema_version": 4,
+  "type": "IDENTITY_MEMORY_CONTEXT"
+}
