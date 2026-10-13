@@ -5,7 +5,6 @@ from __future__ import annotations
 import copy
 from typing import Any
 
-from scripts.country_registry import required_preflight_countries
 from scripts.market_watch_launch.contract import (
     BLOCKING_SERIES_STATUSES,
     COUNTRIES,
@@ -123,6 +122,69 @@ def _fx_leg_status(packet: dict[str, Any]) -> str:
     return "missing"
 
 
+def _normalize_preflight_stale(packet: dict[str, Any]) -> set[str]:
+    raw = packet.get("preflight_stale_sources")
+    if raw is None:
+        return set()
+    if isinstance(raw, (list, tuple, set, frozenset)):
+        return {str(item) for item in raw if item}
+    return set()
+
+
+def _ca_only_preflight_stale(packet: dict[str, Any]) -> bool:
+    return _normalize_preflight_stale(packet) == {"CA_rates"}
+
+
+def _unmarkable_positions(
+    packet: dict[str, Any],
+    positions: list[Any],
+) -> list[dict[str, Any]]:
+    from scripts.overnight.freshness import _dependency_status, expression_dependencies
+
+    out: list[dict[str, Any]] = []
+    for position in positions:
+        if not isinstance(position, dict):
+            continue
+        instrument = position.get("instrument")
+        asset_class = position.get("asset_class")
+        expression = position.get("paper_expression") or position.get("expression")
+        seat = position.get("seat")
+        position_id = position.get("position_id")
+        for dependency in sorted(
+            expression_dependencies(
+                instrument,
+                asset_class=asset_class,
+                expression=expression,
+            )
+        ):
+            status = _dependency_status(packet, dependency)
+            if status not in _BLOCKING_LEG_STATUSES:
+                continue
+            observation_date = None
+            if dependency.endswith("_rates"):
+                code = dependency[: -len("_rates")]
+                rates = packet.get("rates") if isinstance(packet.get("rates"), dict) else {}
+                block = rates.get(code) if isinstance(rates, dict) else None
+                if isinstance(block, dict):
+                    observation_date = block.get("latest_observation")
+            out.append(
+                {
+                    "position_id": position_id,
+                    "seat": seat,
+                    "instrument": instrument,
+                    "dependency": dependency,
+                    "dependency_status": status,
+                    "observation_date": observation_date,
+                    "reason": (
+                        f"position {instrument!r} depends on {dependency} ({status}); "
+                        f"latest observation {observation_date}"
+                    ),
+                }
+            )
+            break
+    return out
+
+
 def _leg_statuses(packet: dict[str, Any]) -> dict[str, str]:
     legs = {f"{code}_rates": _rate_leg_status(packet, code) for code in COUNTRIES}
     legs["FX"] = _fx_leg_status(packet)
@@ -209,6 +271,7 @@ def evaluate_gate(
     rows: list[dict[str, Any]],
     families: dict[str, Any],
     catalog_roles: dict[str, dict] | None = None,
+    positions: list | None = None,
 ) -> dict[str, Any]:
     if catalog_roles:
         for row in rows:
@@ -290,12 +353,36 @@ def evaluate_gate(
     market_block = families.get("market_state") or {}
     market_status = str(market_block.get("status") or "missing")
     packet = _market_packet(families)
-    if market_status in _BLOCKING_LEG_STATUSES or packet is None:
+    if packet is None:
         base["outcome"] = "BLOCKED"
         base["coverage"] = "NONE"
         base["reason"] = "no_markable_universe"
         base["eligible"] = False
         return base
+    if market_status in {"missing", "invalid", "unavailable"}:
+        base["outcome"] = "BLOCKED"
+        base["coverage"] = "NONE"
+        base["reason"] = "no_markable_universe"
+        base["eligible"] = False
+        return base
+    if market_status == "stale":
+        legs_preview = _leg_statuses(packet)
+        fx_preview = legs_preview.get("FX", "missing")
+        non_ca_rate_ok = any(
+            legs_preview.get(f"{code}_rates", "missing") not in _BLOCKING_LEG_STATUSES
+            for code in COUNTRIES
+            if code != "CA"
+        )
+        if not (
+            _ca_only_preflight_stale(packet)
+            and fx_preview not in _BLOCKING_LEG_STATUSES
+            and non_ca_rate_ok
+        ):
+            base["outcome"] = "BLOCKED"
+            base["coverage"] = "NONE"
+            base["reason"] = "no_markable_universe"
+            base["eligible"] = False
+            return base
 
     legs = _leg_statuses(packet)
     fx_status = legs.get("FX", "missing")
@@ -326,15 +413,24 @@ def evaluate_gate(
         elif rate_status in _BLOCKING_LEG_STATUSES:
             partial_legs.append(f"{code}_rates")
 
+    base["partial_legs"] = partial_legs
+    base["trade_eligible_countries"] = trade_eligible_countries
+    if positions:
+        unmarkable = _unmarkable_positions(packet, positions)
+        if unmarkable:
+            base["outcome"] = "BLOCKED"
+            base["reason"] = "existing_book_unmarkable"
+            base["eligible"] = False
+            base["unmarkable_positions"] = unmarkable
+            base["coverage"] = "PARTIAL" if trade_eligible_countries else "NONE"
+            return base
+
     if not trade_eligible_countries:
         base["outcome"] = "BLOCKED"
         base["coverage"] = "NONE"
         base["reason"] = "no_markable_universe"
         base["eligible"] = False
         return base
-
-    base["partial_legs"] = partial_legs
-    base["trade_eligible_countries"] = trade_eligible_countries
     has_partial = bool(
         optional_gaps
         or partial_legs
@@ -656,6 +752,52 @@ def _annotate_source_health(rows: list[dict[str, Any]], ctx: dict) -> list[dict[
         return rows
 
 
+def _positions_from_books(books: dict[str, Any], *seat_keys: str) -> list[dict[str, Any]]:
+    positions: list[dict[str, Any]] = []
+    for seat_key in seat_keys:
+        seats = books.get(seat_key) if isinstance(books.get(seat_key), dict) else {}
+        for seat, seat_book in seats.items():
+            if not isinstance(seat_book, dict):
+                continue
+            for position in seat_book.get("positions") or []:
+                if not isinstance(position, dict):
+                    continue
+                row = dict(position)
+                row.setdefault("seat", seat)
+                positions.append(row)
+    return positions
+
+
+def _load_open_positions(ctx: dict) -> list[dict[str, Any]] | None:
+    """Read-only open positions for the launch store. Missing files are an empty book.
+
+    Trader books use ``seats``. PM books use ``pms``. A present file that cannot
+    be read fails the stage instead of skipping the existing-book check.
+    """
+    root = ctx.get("overnight_store_root") or ctx.get("root")
+    if root is None:
+        return None
+    from pathlib import Path
+
+    from scripts.overnight.store import OvernightStore, read_json
+    from scripts.pm.constants import BOOKS_RELPATH as PM_BOOKS_RELPATH
+
+    state_root = Path(root)
+    repo_root = Path(ctx.get("root") or state_root)
+    positions: list[dict[str, Any]] = []
+    overnight = OvernightStore(root=repo_root, state_root=state_root)
+    if overnight.books_path().is_file():
+        books = overnight.read_books()
+        if isinstance(books, dict):
+            positions.extend(_positions_from_books(books, "seats"))
+    pm_path = state_root / PM_BOOKS_RELPATH
+    if pm_path.is_file():
+        pm_books = read_json(pm_path)
+        if isinstance(pm_books, dict):
+            positions.extend(_positions_from_books(pm_books, "pms", "seats"))
+    return positions
+
+
 def run(launch: dict, ctx: dict) -> dict:
     ingest_stage = (launch.get("stages") or {}).get("01_ingest") or {}
     acquire_stage = (launch.get("stages") or {}).get("02_acquire") or {}
@@ -684,7 +826,7 @@ def run(launch: dict, ctx: dict) -> dict:
         families = {}
 
     rows = _annotate_source_health(rows, ctx)
-    result = evaluate_gate(rows=rows, families=families)
+    result = evaluate_gate(rows=rows, families=families, positions=_load_open_positions(ctx))
     series_run_states = ingest_details.get("series_run_states")
     if isinstance(series_run_states, list) and series_run_states:
         policy = evaluate_policy(series_run_states)

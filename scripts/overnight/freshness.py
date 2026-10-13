@@ -132,11 +132,15 @@ def expression_dependencies(
             deps.add("NZ_rates")
         if "JPY" in (base, quote):
             deps.add("JP_rates")
+        if "CAD" in (base, quote):
+            deps.add("CA_rates")
     for left, right in re.findall(r"(?<![A-Z0-9])([A-Z]{2})-([A-Z]{2})_[0-9A-Z]+", upper):
         if "NZ" in (left, right):
             deps.add("NZ_rates")
         if "JP" in (left, right):
             deps.add("JP_rates")
+        if "CA" in (left, right):
+            deps.add("CA_rates")
     if re.search(_bounded_token("NZD") + r"|" + _bounded_token("NZ") + r"(?![A-Z])", upper):
         deps.add("NZ_rates")
     if re.search(
@@ -150,6 +154,15 @@ def expression_dependencies(
         upper,
     ):
         deps.add("JP_rates")
+    if re.search(
+        _bounded_token("CAD")
+        + "|"
+        + _bounded_token("CA")
+        + r"(?![A-Z])|"
+        + _bounded_token("CORRA"),
+        upper,
+    ):
+        deps.add("CA_rates")
     if re.search(_bounded_token("SOFR") + "|" + _bounded_token("SR3", allow_trailing_alnum=True), upper):
         deps.add("SOFR_curve")
     if re.search(_bounded_token("CORRA"), upper):
@@ -187,6 +200,8 @@ def _dependency_status(packet: dict[str, Any], dependency: str) -> str:
         return _named_status(rates.get("NZ"), stale, unavailable, source_key="NZ_rates")
     if dependency == "JP_rates":
         return _named_status(rates.get("JP"), stale, unavailable, source_key="JP_rates")
+    if dependency == "CA_rates":
+        return _named_status(rates.get("CA"), stale, unavailable, source_key="CA_rates")
     curve_ids = {"SOFR_curve": "SOFR", "CORRA_curve": "CORRA", "AONIA_curve": "AONIA"}
     curve_id = curve_ids.get(dependency)
     if curve_id:
@@ -211,11 +226,13 @@ def _dependency_status(packet: dict[str, Any], dependency: str) -> str:
 
 
 def required_preflight_block(families: dict[str, Any]) -> str | None:
-    """Fail closed when a required US/CA/AU cash curve or ECB FX is unusable.
+    """Fail closed when a required US/AU cash curve or ECB FX is unusable.
 
-    Policy paths and tradable futures strips are expression-specific. An SR3,
-    CORRA, or AONIA outage does not veto an unrelated trade. CME positioning
-    is supplemental and is not a preflight input.
+    Canadian benchmark cash staleness is enforced per expression and on the
+    existing book; it does not veto every trade. Policy paths and tradable
+    futures strips are expression-specific. An SR3, CORRA, or AONIA outage
+    does not veto an unrelated trade. CME positioning is supplemental and is
+    not a preflight input.
     """
     packet = _market_packet(families)
     if packet is None:
@@ -224,6 +241,8 @@ def required_preflight_block(families: dict[str, Any]) -> str | None:
 
     rates = packet.get("rates") if isinstance(packet.get("rates"), dict) else {}
     for code in required_preflight_countries():
+        if code == "CA":
+            continue
         status = str((rates.get(code) or {}).get("status") or "")
         if status in _BLOCKING_SOURCE_STATUSES:
             return f"required preflight {code}_rates is {status}"

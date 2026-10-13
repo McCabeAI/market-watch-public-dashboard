@@ -41,6 +41,13 @@ from scripts.euro_area_rates_data import (
     collect_ea_fragmentation,
     fetch_ea_bund_rates,
 )
+from scripts.canada_rates_calendar import (
+    CA_FRESHNESS_RULE,
+    CA_PUBLICATION_LAG_BUSINESS_DAYS,
+    ca_observation_status,
+    canada_business_days_since,
+    minimum_fresh_ca_observation,
+)
 from scripts.japan_rates_data import (
     MOF_JGB_CURRENT_EN,
     MOF_JGB_PAGE_EN,
@@ -835,13 +842,18 @@ def fetch_nz_rates(
 
 
 def _preflight_blocking_source(source_key: str) -> bool:
-    """Registry preflight countries, ECB FX, and CFTC ownership drive packet status.
+    """US/AU registry preflight, ECB FX, and CFTC ownership drive packet status.
 
+    CA uses a Canadian business-day publication lag and does not flip packet status.
     NZ, EA and JP are required_for_trader_preflight=false. CME open interest is
     a supplemental overlay: it stays visible and must not flip the packet.
     SR3/CORRA/AONIA curve gaps are expression-specific and are not global blockers.
     """
-    required = {f"{code}_rates" for code in required_preflight_countries()}
+    required = {
+        f"{code}_rates"
+        for code in required_preflight_countries()
+        if code != "CA"
+    }
     return source_key in required or source_key in {"FX", "CFTC_positioning"}
 
 
@@ -1160,6 +1172,19 @@ def build_snapshot(
                 "age_business_days": japan_business_days_since(latest_as_of, today),
                 "freshness_rule": "japan_business_day_publication_lag",
             }
+        elif country == "CA":
+            if age_days > FAIL_AFTER_DAYS:
+                raise MarketStateError(
+                    f"CA observation is {age_days} days old; refusing to emit a fabricated or silently substituted substitute"
+                )
+            status = ca_observation_status(latest_as_of, today)
+            freshness_fields = {
+                "age_calendar_days": age_days,
+                "age_business_days": canada_business_days_since(latest_as_of, today),
+                "freshness_rule": CA_FRESHNESS_RULE,
+                "minimum_fresh_observation": minimum_fresh_ca_observation(today).isoformat(),
+                "publication_lag_business_days": CA_PUBLICATION_LAG_BUSINESS_DAYS,
+            }
         else:
             status = _freshness(age_days, country)
         if status == "stale":
@@ -1461,6 +1486,14 @@ def build_snapshot(
                 "download_url": BOC_GROUP_URL,
                 "observation_date": rates["CA"]["latest_observation"],
                 "status": rates["CA"]["status"],
+                "note": (
+                    "Bank of Canada Valet selected benchmark bond yields are prior mid-market closing "
+                    "yields published once each Canadian business day at 09:30–10:00 ET, with a one "
+                    "Canadian business-day publication lag. Weekends and Bank publication holidays do "
+                    "not age the series. Observation dates are the printed session and are never "
+                    "rewritten forward. A missing Friday print is not evidence the Friday session "
+                    "was a holiday."
+                ),
             },
             "AU_rates": {
                 "name": "Reserve Bank of Australia F2 government-bond yields",
@@ -1522,7 +1555,11 @@ def build_snapshot(
             "credentials_required": [],
             "note": (
                 "Live authorities remain canonical. This artifact is a compact research snapshot. "
-                "US, Canada, Australia and ECB FX are required preflight inputs. "
+                "US, Australia, ECB FX, and CFTC positioning remain packet-level preflight. "
+                "A stale Canadian benchmark yield stays visible on CA_rates and does not by itself "
+                "mark the packet stale. CA-dependent expressions and existing-book positions that "
+                "depend on that leg fail closed. Canadian benchmark freshness uses the Canadian "
+                "business-day calendar and a one-session publication lag. "
                 "NZ and Japan are not required_for_trader_preflight; a blocked RBNZ source or a "
                 "Japan holiday-calendar print stays visible on that source and does not by itself "
                 "mark the packet stale. NZ-dependent and JP-dependent expressions still fail closed. "
