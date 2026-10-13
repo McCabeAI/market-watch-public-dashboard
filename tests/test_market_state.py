@@ -1,7 +1,7 @@
 import io
 import re
 import unittest
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta, timezone
 from unittest import mock
 
 from scripts.market_state import (
@@ -188,6 +188,8 @@ class MarketStateTests(unittest.TestCase):
 
     def test_fetch_fx_falls_back_to_per_currency_sdmx(self):
         asof = date(2026, 9, 16)
+        reference_now = datetime(2026, 9, 20, 12, 0, tzinfo=timezone.utc)
+        self.assertLessEqual((reference_now.date() - asof).days, FAIL_AFTER_DAYS)
         legs = {
             ccy: {ccy: {asof: 1.1 + i * 0.01}, "EUR": {asof: 1.0}}
             for i, ccy in enumerate(c for c in G10 if c != "EUR")
@@ -203,10 +205,38 @@ class MarketStateTests(unittest.TestCase):
                 c: {} for c in G10 if c not in legs[currencies]
             }
 
+        class ReferenceClock(datetime):
+            @classmethod
+            def now(cls, tz=None):
+                return reference_now if tz is None else reference_now.astimezone(tz)
+
         with mock.patch("scripts.market_state._fetch_ecb_sdmx", side_effect=fake_sdmx):
-            crosses = fetch_fx(date(2021, 1, 1))
+            with mock.patch("scripts.market_state.datetime", ReferenceClock):
+                crosses = fetch_fx(date(2021, 1, 1))
         self.assertEqual(len(crosses), 45)
         self.assertAlmostEqual(crosses["EURUSD"][asof], 1.15)
+
+    def test_fetch_fx_rejects_stale_ecb_observation_against_reference_clock(self):
+        asof = date(2026, 9, 16)
+        reference_now = datetime(2026, 10, 13, 12, 0, tzinfo=timezone.utc)
+        self.assertGreater((reference_now.date() - asof).days, FAIL_AFTER_DAYS)
+
+        def fake_sdmx(currencies, start, timeout=90, retries=4):
+            return {
+                c: ({asof: 1.15} if c == "USD" else {asof: 1.0 + i * 0.01})
+                for i, c in enumerate(G10)
+            }
+
+        class ReferenceClock(datetime):
+            @classmethod
+            def now(cls, tz=None):
+                return reference_now if tz is None else reference_now.astimezone(tz)
+
+        with mock.patch("scripts.market_state._fetch_ecb_sdmx", side_effect=fake_sdmx):
+            with mock.patch("scripts.market_state.datetime", ReferenceClock):
+                with self.assertRaises(MarketStateError) as ctx:
+                    fetch_fx(date(2021, 1, 1))
+        self.assertIn("too old", str(ctx.exception))
 
     def test_fetch_fx_fails_loudly_if_fallback_still_incomplete(self):
         def fake_sdmx(currencies, start, timeout=90, retries=4):
