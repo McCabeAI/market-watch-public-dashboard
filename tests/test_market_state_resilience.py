@@ -254,7 +254,7 @@ class PreflightGateTests(unittest.TestCase):
         self.assertEqual(expression_dependencies("SR3Z6"), {"SOFR_curve"})
         self.assertEqual(expression_dependencies("TONA_2027-03"), {"JP_rates"})
         self.assertEqual(expression_dependencies("TOA3M_2026-12"), {"JP_rates"})
-        self.assertEqual(expression_dependencies("CORRA_2027-03"), {"CORRA_curve"})
+        self.assertEqual(expression_dependencies("CORRA_2027-03"), {"CA_rates", "CORRA_curve"})
         self.assertEqual(expression_dependencies("AONIA_2026-11"), {"AONIA_curve"})
 
     def test_nz_unavailable_does_not_block_unrelated_open_add(self) -> None:
@@ -321,7 +321,7 @@ class PreflightGateTests(unittest.TestCase):
         self.assertEqual(history[-1]["effective_date"], "2026-09-18")
 
     def test_required_preflight_us_ca_au_failures_block_globally(self) -> None:
-        for code, instrument in (("US", "USDCAD"), ("CA", "CORRA_2027-03"), ("AU", "AONIA_2026-11")):
+        for code in ("US", "AU"):
             packet = _packet()
             packet["rates"][code] = {"status": "stale", "latest_observation": "2026-09-01"}
             packet["stale_sources"] = [f"{code}_rates"]
@@ -329,9 +329,29 @@ class PreflightGateTests(unittest.TestCase):
             packet["status"] = "stale"
             families = _families(packet, family_status="fresh")
             with self.assertRaises(FreshnessError):
-                assert_action_allowed("OPEN", families, seat="dollar-king", instrument=instrument)
+                assert_action_allowed(
+                    "OPEN",
+                    families,
+                    seat="dollar-king",
+                    instrument="USDCAD" if code == "US" else "AONIA_2026-11",
+                )
             with self.assertRaises(FreshnessError):
                 assert_action_allowed("ADD", families, seat="carry-is-king", instrument="EURUSD")
+
+    def test_stale_ca_blocks_only_ca_expressions(self) -> None:
+        packet = _packet()
+        packet["rates"]["CA"] = {"status": "stale", "latest_observation": "2026-09-01"}
+        packet["stale_sources"] = ["CA_rates"]
+        packet["preflight_stale_sources"] = []
+        packet["status"] = "ok"
+        families = _families(packet, family_status="fresh")
+        for instrument in ("USDCAD", "CADJPY", "CA_10Y", "CA-US_10Y", "CORRA_2027-03"):
+            with self.assertRaises(FreshnessError):
+                assert_action_allowed("OPEN", families, seat="dollar-king", instrument=instrument)
+        assert_action_allowed("OPEN", families, seat="dollar-king", instrument="EURUSD")
+        assert_action_allowed("OPEN", families, seat="rate-hawk", instrument="US_10Y")
+        assert_action_allowed("OPEN", families, seat="rate-hawk", instrument="AONIA_2026-11")
+        assert_action_allowed("OPEN", families, seat="dollar-king", instrument="USDJPY")
         packet = _packet()
         packet["policy_paths"]["countries"]["CA"] = {"status": "unavailable", "error": "CORRA source down"}
         families = _families(packet)

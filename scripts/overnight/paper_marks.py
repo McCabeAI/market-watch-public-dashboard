@@ -71,11 +71,25 @@ def _fx_mark(state: Mapping[str, Any], pair: str) -> dict[str, Any]:
     }
 
 
-def _rate_mark(state: Mapping[str, Any], country: str, tenor: str) -> dict[str, Any]:
+_BLOCKING_RATE_STATUSES = frozenset({"stale", "missing", "invalid", "unavailable"})
+
+
+def _require_rate_block_ok(state: Mapping[str, Any], country: str) -> None:
     rates = state.get("rates")
     if not isinstance(rates, Mapping) or not isinstance(rates.get(country), Mapping):
         raise PaperMarkError(f"rates block unavailable for {country}")
     block = rates[country]
+    status = block.get("status")
+    if status in _BLOCKING_RATE_STATUSES:
+        raise PaperMarkError(
+            f"{country} rates are {status} (latest_observation={block.get('latest_observation')})"
+        )
+
+
+def _rate_mark(state: Mapping[str, Any], country: str, tenor: str) -> dict[str, Any]:
+    _require_rate_block_ok(state, country)
+    rates = state.get("rates")
+    block = rates[country]  # type: ignore[index]
     tenors = block.get("tenors") if isinstance(block.get("tenors"), Mapping) else block
     row = tenors.get(tenor)
     if isinstance(row, Mapping):
@@ -96,6 +110,7 @@ def _rate_mark(state: Mapping[str, Any], country: str, tenor: str) -> dict[str, 
 
 
 def _curve_mark(state: Mapping[str, Any], country: str, curve: str) -> dict[str, Any]:
+    _require_rate_block_ok(state, country)
     rates = state.get("rates")
     block = rates.get(country) if isinstance(rates, Mapping) else None
     curves = block.get("curves") if isinstance(block, Mapping) else None
@@ -112,6 +127,10 @@ def _curve_mark(state: Mapping[str, Any], country: str, curve: str) -> dict[str,
 
 
 def _rv_mark(state: Mapping[str, Any], instrument: str) -> dict[str, Any]:
+    leg_match = re.fullmatch(r"([A-Z]{2})-([A-Z]{2})_[0-9A-Z]+", instrument.upper())
+    if leg_match:
+        for code in (leg_match.group(1), leg_match.group(2)):
+            _require_rate_block_ok(state, code)
     block = state.get("rate_rv")
     row = block.get(instrument) if isinstance(block, Mapping) else None
     if not isinstance(row, Mapping) or row.get("bps") is None:

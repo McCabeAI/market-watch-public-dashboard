@@ -121,10 +121,14 @@ jobs:
         with:
           python-version: "3.12"
       - name: End-to-end zero-model dry-run
+        env:
+          # Align with committed patch_v7/v9 news timestamps (18 Sep 2026). Wall-clock
+          # runners must not treat that static news as stale (STALE_AFTER_HOURS=36).
+          OVERNIGHT_DRY_RUN_AS_OF: 2026-09-18T12:00:00-04:00
         run: |
           set -euo pipefail
           PYTHONPATH=. python3 scripts/overnight_pipeline.py schedule
-          PYTHONPATH=. python3 scripts/overnight_pipeline.py dry-run --suffix ci --site-dir /tmp/overnight-site
+          PYTHONPATH=. python3 scripts/overnight_pipeline.py dry-run --suffix ci --site-dir /tmp/overnight-site --as-of "$OVERNIGHT_DRY_RUN_AS_OF"
           test -s /tmp/overnight-site/trader-books.json
           test -s /tmp/overnight-site/pm-books.json
 

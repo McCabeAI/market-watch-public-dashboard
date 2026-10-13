@@ -50,7 +50,7 @@ The JSON object always contains:
 | `schema_version` | `1` |
 | `generated_at` | UTC timestamp of the run (`...Z`) |
 | `window_start` | Inclusive history start used for context (~5 years) |
-| `status` / `preflight_status` | `ok` when every `required_for_trader_preflight` sovereign cash curve, ECB FX, and CFTC positioning is inside its publication lag. NZ, EA, Japan, policy-path strips, and supplemental CME open interest do not flip this status. `stale` when a required preflight source is outside that lag |
+| `status` / `preflight_status` | `ok` when US and Australia sovereign cash curves, ECB FX, and CFTC positioning are inside their publication lag. Canada uses a Canadian business-day lag and does not flip this status. NZ, EA, Japan, policy-path strips, and supplemental CME open interest do not flip this status. `stale` when a required preflight source (US, AU, FX, CFTC) is outside that lag |
 | `stale_sources` | Every stale or blocked source key, including non-preflight NZ/JP, else `[]` |
 | `preflight_stale_sources` | Subset of `stale_sources` that flips `status` |
 | `unavailable_sources` | Official sources that could not be fetched (currently NZ-only), else `[]` |
@@ -187,7 +187,7 @@ Null lookbacks stay null. A missing US, Canada, Australia, or ECB FX source, ten
 | Positioning ownership | CFTC TFF Futures Only | Weekly trader-class positions |
 | Positioning OI overlay | CME public Volume & Open Interest | Supplemental daily product-level OI/volume |
 
-Expected publication lag before a source is `stale`: US/CA/NZ/FX 4 calendar days; AU 12 calendar days. Japan JGB uses the Tokyo business-day calendar plus one publication-lag session, so a holiday sequence such as a citizens' holiday between Respect for the Aged Day and the autumnal equinox does not age the last pre-holiday MOF print. Observations older than 21 calendar days still fail the run. Only US, Canada, Australia and ECB FX staleness marks the packet `stale`. NZ and Japan remain visible at source level.
+Expected publication lag before a source is `stale`: US/NZ/FX 4 calendar days; AU 12 calendar days. Canada benchmark yields use the Canadian business-day calendar plus one publication-lag session (same bounded allowance as Japan’s one Tokyo session). Japan JGB uses the Tokyo business-day calendar plus one publication-lag session, so a holiday sequence such as a citizens' holiday between Respect for the Aged Day and the autumnal equinox does not age the last pre-holiday MOF print. Observations older than 21 calendar days still fail the run. Only US, Australia, ECB FX, and CFTC staleness marks the packet `stale`. Canadian, NZ, and Japan cash legs remain visible at source level when stale under their respective rules.
 
 ## Workflow
 
