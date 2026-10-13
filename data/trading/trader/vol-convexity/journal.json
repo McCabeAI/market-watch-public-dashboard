@@ -744,6 +744,60 @@
       "run_id": "overnight-20261007",
       "schema_version": 1,
       "thesis": "The book is flat and the freeze contains one vol print, VIX 15.01, with no strikes, expiries, or premiums. No bounded-risk option, spread, or risk reversal can be marked, so convexity cannot be shown to dominate spot. Stay flat; do not substitute unbounded linear spot or rates for missing optionality."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-13T11:45:39.974637-04:00",
+      "conviction": 38,
+      "decision_fingerprint": "1f16f71fbd0dfeba0424653974489ae05a07bb1c025f57c6f9a59b987ec0fb37",
+      "event_id": "jde-69bc1988bd3b492d",
+      "funding_view": null,
+      "invalidation": "Consider options only if a later freeze shows a markable convex payoff that rates and spot cannot express, and that last-resort use is required.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "384018aeb56abe8b5871ad33d54f4d616db36c36e6d7e12a0ce5f6e4c33e07c6",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "6c28f91c85f9efe1b34a8581ecb498605796ae851d61cbd52b70d97ab9bed12d"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-13T11:45:39.974637-04:00",
+        "evidence_hash": "89cc14eabd485c5d9a7dbc3ce55ea7da8902e6ff5508909a9c1c52c194f3d2c1",
+        "overnight_run_id": "overnight-20261013",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "VIX at 15.21 and a steady equity tape do not justify last-resort options when rates and spot already express the oil and policy story. A vol clip would pay SOFR on shocked-risk capital without a packet-supported convex payoff. Stay flat; options remain last resort.",
+      "run_id": "overnight-20261013",
+      "schema_version": 1,
+      "thesis": "VIX at 15.21 and a steady equity tape do not justify last-resort options when rates and spot already express the oil and policy story. A vol clip would pay SOFR on shocked-risk capital without a packet-supported convex payoff. Stay flat; options remain last resort."
     }
   ],
   "schema_version": 1,

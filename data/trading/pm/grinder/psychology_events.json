@@ -407,6 +407,79 @@
         "layer": "L1"
       },
       "subject": {}
+    },
+    {
+      "annotations": {
+        "flat_cycles": 9,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [],
+        "repeated_counts": {},
+        "standing": "watch"
+      },
+      "at": "2026-10-13T16:11:28.208042-04:00",
+      "event_id": "pse-000019",
+      "flat_cycles": 9,
+      "kind": "decay_tick",
+      "owner_id": "grinder",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261013",
+      "seq": 19,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-10-13T16:11:28.208042-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "chase_pressure": 0.0151,
+        "defensiveness": 0.0183,
+        "external_pressure": 0.194,
+        "frustration": 0.0348,
+        "self_trust": -0.01
+      },
+      "event_id": "pse-000020",
+      "kind": "allocator_standing_worsened",
+      "magnitude": 1.0,
+      "mismatch": false,
+      "owner_id": "grinder",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261013",
+      "scale": 1.0,
+      "seq": 20,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "standing_from": "good_standing",
+        "standing_to": "watch"
+      }
+    },
+    {
+      "at": "2026-10-13T16:11:28.208042-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "chase_pressure": 0.0101,
+        "external_pressure": 0.0388,
+        "frustration": 0.007
+      },
+      "event_id": "pse-000021",
+      "kind": "competitive_flag_active",
+      "magnitude": 1.0,
+      "mismatch": false,
+      "owner_id": "grinder",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261013",
+      "scale": 1.0,
+      "seq": 21,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {}
     }
   ],
   "owner_id": "grinder",

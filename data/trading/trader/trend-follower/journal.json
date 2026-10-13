@@ -776,6 +776,62 @@
       "run_id": "overnight-20261007",
       "schema_version": 1,
       "thesis": "The paid-hike path remains the persistent regime: cash 3.90 versus Mar27 4.48 and Sep27 4.72, with US 10Y 5.28 and Brent 100.58 still aligned with higher forwards. The 5bp ease in Mar27 from 4.53 to 4.48 is a counter-trend pause, not a cover signal. Keep the existing pay and do not add until Mar27 itself prints a higher-rate continuation."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-662bff0986be",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-13T11:45:39.974637-04:00",
+      "conviction": 59,
+      "decision_fingerprint": "4b70a7389b31c6349e60c5af33b6e12d06d167985dd49918a94da1ac41817dc1",
+      "event_id": "jde-4c2ca0f4e7eb4ae0",
+      "funding_view": null,
+      "invalidation": "Cover if March 2027 SOFR falls through 4.40 toward cash 3.87 and the ten-year loses 5.00 while oil reverses, breaking the hike-path trend.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-662bff0986be"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "ef55afc8ada418e735ca20834f8263a779787b873132c375daa07e21bd7207d0",
+      "outcome_links": [],
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "388f9d1bde7271fb6a425f93de8a90fcdc2c739d4c431e24d7474383baeca1a0"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-13T11:45:39.974637-04:00",
+        "evidence_hash": "89cc14eabd485c5d9a7dbc3ce55ea7da8902e6ff5508909a9c1c52c194f3d2c1",
+        "overnight_run_id": "overnight-20261013",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The existing 75 million March 2027 SOFR pay still follows the higher-for-longer path: cash 3.87 versus 4.54 live, with the US 10-year at 5.24 and Brent at 106.65 supporting the trend. The contract has eased from the 4.62 entry toward 4.54, which is a pullback inside the trend rather than a break. Hold; do not add while the strip is off the entry.",
+      "run_id": "overnight-20261013",
+      "schema_version": 1,
+      "thesis": "The existing 75 million March 2027 SOFR pay still follows the higher-for-longer path: cash 3.87 versus 4.54 live, with the US 10-year at 5.24 and Brent at 106.65 supporting the trend. The contract has eased from the 4.62 entry toward 4.54, which is a pullback inside the trend rather than a break. Hold; do not add while the strip is off the entry."
     }
   ],
   "schema_version": 1,

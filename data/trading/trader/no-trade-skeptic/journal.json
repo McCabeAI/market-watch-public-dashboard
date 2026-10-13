@@ -1023,6 +1023,71 @@
       "run_id": "overnight-20261007",
       "schema_version": 1,
       "thesis": "Front-end hikes are already in the SR3 strip, so an overnight policy or duration expression is paying official cash to own a path the forwards have already charged. Brent near 100 and VIX at 15.01 are known temperature, not a fresh shock with a clean unpriced instrument. CORRA and USDCAD books are crowded, which is a timing and crowding veto rather than an edge. Stay flat unless a dated catalyst moves implied policy or that crowding independently of the already-priced hike path."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-13T11:45:39.974637-04:00",
+      "conviction": 71,
+      "decision_fingerprint": "b66d70dd8a8fe66edb3e309f90958e3b81377f4aa7c3eea054360fb64fc614f4",
+      "event_id": "jde-2387cb82a9664f86",
+      "funding_view": {
+        "current_sofr": "Official NY Fed SOFR 3.87 percent ACT/360, observation date 2026-10-09.",
+        "forward_funding_assessment": "about_the_same",
+        "implication": "Realized overnight funding should print near the 3.87 official fixing and well below those SR3 forwards. Remain at the zero official-SOFR cash benchmark; do not pay SOFR on shocked-risk capital to own a hike path the curve already contains. Flat cash is not alpha.",
+        "sr3_forward_view": "Over this overnight horizon the frozen SR3 strip is Dec26 4.26, Mar27 4.54, Jun27 4.71, Sep27 4.77, Dec27 4.78. That is a priced multi-meeting hiking path, not an overnight funding print."
+      },
+      "invalidation": "Take risk only if a later freeze shows a markable expression whose expected edge clears official SOFR charged on shocked-risk capital, rather than leasing a path the curve already contains.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "f2ca1ef106b3236b1aa9bfb5dbd0718e13ea389972f7e71ea591ede17bcfd421",
+      "outcome_links": [],
+      "owner_id": "no-trade-skeptic",
+      "owner_type": "trader",
+      "payload": {
+        "funding_view": {
+          "current_sofr": "Official NY Fed SOFR 3.87 percent ACT/360, observation date 2026-10-09.",
+          "forward_funding_assessment": "about_the_same",
+          "implication": "Realized overnight funding should print near the 3.87 official fixing and well below those SR3 forwards. Remain at the zero official-SOFR cash benchmark; do not pay SOFR on shocked-risk capital to own a hike path the curve already contains. Flat cash is not alpha.",
+          "sr3_forward_view": "Over this overnight horizon the frozen SR3 strip is Dec26 4.26, Mar27 4.54, Jun27 4.71, Sep27 4.77, Dec27 4.78. That is a priced multi-meeting hiking path, not an overnight funding print."
+        },
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "95fc4e18452f1fdd9ac2b736207306af7ca7f3d928c18844dfff8bc62067e7fe"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-13T11:45:39.974637-04:00",
+        "evidence_hash": "89cc14eabd485c5d9a7dbc3ce55ea7da8902e6ff5508909a9c1c52c194f3d2c1",
+        "overnight_run_id": "overnight-20261013",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Official SOFR at 3.87 is the zero benchmark, and the 2027 strip already prices a multi-meeting hike path through 4.54 and 4.77. Paying that path or receiving it from a flat book just leases shocked-risk capital at SOFR without a packet-supported edge above the official fixing. Stay in cash. New Zealand risk is off, and the accepted oil-and-policy tape does not create a standalone funding alpha.",
+      "run_id": "overnight-20261013",
+      "schema_version": 1,
+      "thesis": "Official SOFR at 3.87 is the zero benchmark, and the 2027 strip already prices a multi-meeting hike path through 4.54 and 4.77. Paying that path or receiving it from a flat book just leases shocked-risk capital at SOFR without a packet-supported edge above the official fixing. Stay in cash. New Zealand risk is off, and the accepted oil-and-policy tape does not create a standalone funding alpha."
     }
   ],
   "schema_version": 1,

@@ -42,14 +42,14 @@
     "nav_usd": 99983869.37,
     "net_pnl_usd": -16130.63,
     "pressure_flags": [],
-    "prior_competition_rank": 7,
-    "rank_change": 0,
+    "prior_competition_rank": 9,
+    "rank_change": -2,
     "raw_pnl_rank": 7,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 750000.0,
     "risk_capital_utilization": 0.075,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 4233.75,
     "status": "ok"
   },
   "learning": {
@@ -60,7 +60,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "dff8acc04d2d7307357136ef58f9423178efe617993ac067060ae303672163c4",
+  "memory_context_sha256": "e5a1f5381644a1f521c49f38695c748f12a5cbd13a4bf0532ffb715c6c6ee0d7",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -77,12 +77,12 @@
     {
       "asset_class": "rates",
       "conviction": 67,
-      "current_notional_usd": 25000000.0,
+      "current_notional_usd": 12500000.0,
       "entry_mark": 3.12,
       "instrument": "CORRA_2027-03",
       "opened_at": "2026-09-29T04:44:08.485973-04:00",
       "position_id": "pos-2709875e8c9c",
-      "risk_capital_usd": 250000.0,
+      "risk_capital_usd": 125000.0,
       "side": "short",
       "trade_id": "trd-trader-rate-hawk-pos-2709875e8c9c"
     },
@@ -109,12 +109,12 @@
       "chase_pressure": {
         "band": "calm",
         "trend": "up",
-        "value": 0.19
+        "value": 0.22
       },
       "complacency": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.09
+        "value": 0.1
       },
       "defensiveness": {
         "band": "calm",
@@ -124,12 +124,12 @@
       "external_pressure": {
         "band": "calm",
         "trend": "up",
-        "value": 0.28
+        "value": 0.32
       },
       "frustration": {
         "band": "calm",
         "trend": "up",
-        "value": 0.18
+        "value": 0.19
       },
       "revenge_pressure": {
         "band": "calm",
@@ -138,7 +138,7 @@
       },
       "self_trust": {
         "band": "steady",
-        "trend": "down",
+        "trend": "flat",
         "value": 0.48
       },
       "thesis_attachment": {
@@ -157,19 +157,19 @@
     "profile_version": 1,
     "recent_events": [
       {
-        "kind": "session_loss",
-        "magnitude": 0.1351625,
-        "run_id": "overnight-20261002"
-      },
-      {
         "kind": "rank_shock",
         "magnitude": 1.0,
         "run_id": "overnight-20261007"
+      },
+      {
+        "kind": "rank_drop_minor",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261013"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "e3a045807a6e758b5c4ef8ba9a69f92f096f2105d2394563e3ad9d538902a324",
+    "state_sha256": "4557ac04fd5532e5d33274baa341ef03a4ac3bec469e07ec089aa619caf958bd",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 1,

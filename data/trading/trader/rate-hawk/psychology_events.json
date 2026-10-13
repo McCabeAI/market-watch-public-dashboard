@@ -236,6 +236,55 @@
       "subject": {
         "rank_change": 4
       }
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [
+          250000.0,
+          250000.0
+        ],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-10-13T11:45:39.974637-04:00",
+      "event_id": "pse-000011",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "rate-hawk",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261013",
+      "seq": 11,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-10-13T11:45:39.974637-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "chase_pressure": 0.0371,
+        "external_pressure": 0.0591,
+        "frustration": 0.0252
+      },
+      "event_id": "pse-000012",
+      "kind": "rank_drop_minor",
+      "magnitude": 1.0,
+      "mismatch": false,
+      "owner_id": "rate-hawk",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261013",
+      "scale": 1.0,
+      "seq": 12,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "rank_change": 2
+      }
     }
   ],
   "owner_id": "rate-hawk",

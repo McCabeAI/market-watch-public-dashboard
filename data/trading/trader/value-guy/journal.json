@@ -754,6 +754,60 @@
       "run_id": "overnight-20261007",
       "schema_version": 1,
       "thesis": "The book is already flat, and New Zealand is eligible, so NZ cash 2s/10s at 3.88/5.11 can be screened with US 4.77/5.28, Canada 3.23/3.92, and Australia 4.942/5.344 rather than being excluded on jurisdiction. Those prints are cash levels only: a 2Y cross-market gap is not cheap merely because the currency looks cheap, and screening the cash 2Y residual first still finds no dated policy, data, or terms-of-trade clock that starts mean reversion now. No REER or PPP cheapness was supplied with an explicit convergence window, so neither NZD spot nor a NZ-US or NZ-AU 2Y expression is markable on valuation. Stay flat."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-13T11:45:39.974637-04:00",
+      "conviction": 40,
+      "decision_fingerprint": "adb8658f9faf7bf5f1ed8db7ff86f0a17916d14cd2feb2461f340111299736fc",
+      "event_id": "jde-9835b119dd5c42a1",
+      "funding_view": null,
+      "invalidation": "Open only if a later freeze shows an unowned, markable rate whose cash-to-forward gap is not already the desk's consensus inventory.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "bbe54cdb2ad3bf03962f61bf675c49b7ceb65d6cbc78e8afe67c0879c5ae20d0",
+      "outcome_links": [],
+      "owner_id": "value-guy",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "3100a5a011b3c10aeb6e97db532080dd89bc7901d184995ea3fb535faef19229"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-13T11:45:39.974637-04:00",
+        "evidence_hash": "89cc14eabd485c5d9a7dbc3ce55ea7da8902e6ff5508909a9c1c52c194f3d2c1",
+        "overnight_run_id": "overnight-20261013",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Cash-versus-strip gaps in SOFR, CORRA and AONIA are already owned by other seats and are priced paths, not a fresh valuation dislocation. The US 10-year at 5.24 matches the existing defensive receive elsewhere, and New Zealand yields are unavailable so that value sleeve is closed. Stay flat rather than paying up for a crowded 2027 contract.",
+      "run_id": "overnight-20261013",
+      "schema_version": 1,
+      "thesis": "Cash-versus-strip gaps in SOFR, CORRA and AONIA are already owned by other seats and are priced paths, not a fresh valuation dislocation. The US 10-year at 5.24 matches the existing defensive receive elsewhere, and New Zealand yields are unavailable so that value sleeve is closed. Stay flat rather than paying up for a crowded 2027 contract."
     }
   ],
   "schema_version": 1,

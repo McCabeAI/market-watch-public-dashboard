@@ -782,6 +782,62 @@
       "run_id": "overnight-20261007",
       "schema_version": 1,
       "thesis": "Dollar-king still owns 55 million long USDCAD, so the live 15 million short remains the fade of a one-way desk owner rather than a consensus add. March 2027 CORRA at 2.94 versus cash 2.29 still looks cheap on a screen, but that receive is already a two-way crowded book across seats and PMs. Cheap versus cash is not an entry into that receive. Keep the existing USDCAD short while that long owner remains; do not add, and do not receive March CORRA."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDCAD",
+          "notional_usd": null,
+          "position_id": "pos-ccb6655acbad",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-13T11:45:39.974637-04:00",
+      "conviction": 54,
+      "decision_fingerprint": "be474498d38359816b7527b9ecc8b05450aef8d7233d61de30c666547f2ab05a",
+      "event_id": "jde-48809f175cba44f8",
+      "funding_view": null,
+      "invalidation": "Reassess only if same-sign STIR and USDCAD inventory is reduced on a subsequent freeze, or if an unowned rates sleeve prints a usable level that does not duplicate receive-versus-cash.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-ccb6655acbad"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "1bd003792697f0ffc94e1abbcad9238cf57e993dc29bdc7944bd93aca4e35bc1",
+      "outcome_links": [],
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "91fb7ffaf24a34c20828f5d1d7c9ddd0e9ccf00009797c62fda06135780022a3"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-13T11:45:39.974637-04:00",
+        "evidence_hash": "89cc14eabd485c5d9a7dbc3ce55ea7da8902e6ff5508909a9c1c52c194f3d2c1",
+        "overnight_run_id": "overnight-20261013",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Desk STIR is already two-way and net paying 2027 SOFR and CORRA while the cheap-versus-cash receive is owned elsewhere; joining either sign is crowding, not asymmetry. The existing 15 million USDCAD short sits against a still-wide SOFR-CORRA gap that the dollar seat is long, so this fade is the crowded other side rather than a new hook. Hold the small short; do not add or rotate into an already-owned rates sleeve.",
+      "run_id": "overnight-20261013",
+      "schema_version": 1,
+      "thesis": "Desk STIR is already two-way and net paying 2027 SOFR and CORRA while the cheap-versus-cash receive is owned elsewhere; joining either sign is crowding, not asymmetry. The existing 15 million USDCAD short sits against a still-wide SOFR-CORRA gap that the dollar seat is long, so this fade is the crowded other side rather than a new hook. Hold the small short; do not add or rotate into an already-owned rates sleeve."
     }
   ],
   "schema_version": 1,

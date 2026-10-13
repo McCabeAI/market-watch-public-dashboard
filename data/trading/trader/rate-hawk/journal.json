@@ -959,6 +959,94 @@
       "run_id": "overnight-20261007",
       "schema_version": 1,
       "thesis": "The overnight book is a 2027-dated pay strip in USD, CAD, and AUD, and it still points the right way. Cash SOFR 3.90 versus Sep-27 4.72, CORRA 2.29 versus Mar-27 2.94, and AONIA 4.60 versus Jun-27 4.885 leave too much easing in the path against EA/AU headlines at 3.8/4.0, Brent at 100.58, and a US 10Y at 5.28. That combination is delayed-cut and higher-terminal risk, not a thesis break. Hold all three pays."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-09",
+          "notional_usd": null,
+          "position_id": "pos-c9184707c12b",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "REDUCE",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 12500000,
+          "position_id": "pos-2709875e8c9c",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-06",
+          "notional_usd": null,
+          "position_id": "pos-9cbf3f27dfff",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-13T11:45:39.974637-04:00",
+      "conviction": 64,
+      "decision_fingerprint": "6a4555600762d6fe57746259df3e1f7bdd2fe623ce053707c691f2164e9ec1d2",
+      "event_id": "jde-326800f323bf4605",
+      "funding_view": null,
+      "invalidation": "The hike-path thesis fails if SOFR September 2027 implieds fall back through the book toward cash 3.87, if residual March 2027 CORRA extends the fade through 2.75, or if AONIA June 2027 surrenders the remaining premium toward cash 4.60.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-2709875e8c9c",
+        "pos-9cbf3f27dfff",
+        "pos-c9184707c12b"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-rate-hawk-pos-2709875e8c9c"
+      ],
+      "memory_context_sha256": "dff8acc04d2d7307357136ef58f9423178efe617993ac067060ae303672163c4",
+      "outcome_links": [],
+      "owner_id": "rate-hawk",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "e3a045807a6e758b5c4ef8ba9a69f92f096f2105d2394563e3ad9d538902a324"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-13T11:45:39.974637-04:00",
+        "evidence_hash": "89cc14eabd485c5d9a7dbc3ce55ea7da8902e6ff5508909a9c1c52c194f3d2c1",
+        "overnight_run_id": "overnight-20261013",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The 2027 pay strip still points the right way in the United States and Australia: cash SOFR 3.87 versus September 2027 at 4.77, and cash AONIA 4.60 versus June 2027 at 4.86, leave too much ease against Brent at 106.65. Canada is the weak sleeve. March 2027 CORRA has cheapened from the 3.125 pay toward 2.90 while cash sits at 2.28, so half the Canada pay comes off rather than waiting for a full retrace. Hold the SOFR September and AONIA June pays.",
+      "run_id": "overnight-20261013",
+      "schema_version": 1,
+      "thesis": "The 2027 pay strip still points the right way in the United States and Australia: cash SOFR 3.87 versus September 2027 at 4.77, and cash AONIA 4.60 versus June 2027 at 4.86, leave too much ease against Brent at 106.65. Canada is the weak sleeve. March 2027 CORRA has cheapened from the 3.125 pay toward 2.90 while cash sits at 2.28, so half the Canada pay comes off rather than waiting for a full retrace. Hold the SOFR September and AONIA June pays."
     }
   ],
   "schema_version": 1,

@@ -776,6 +776,62 @@
       "run_id": "overnight-20261007",
       "schema_version": 1,
       "thesis": "US unemployment at 4.2 percent confirms labor cooling, and cash CORRA at 2.29 already sits in an eased setting. The 2027 March-December strip still averages about 3.21, with March 2.94, June 3.145, September 3.31 and December 3.44, which prices a re-tightening path that cooling demand and the lag of restrictive policy should not deliver. The book is already receiving 42.5 million of that strip from 3.40; keep that receive and keep expected marks lower rather than adding size or covering. USDCAD would mix the same easing view with growth and risk premia, so the existing CORRA strip remains the cleaner expression."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027H-Z",
+          "notional_usd": null,
+          "position_id": "pos-9849cf751c27",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-13T11:45:39.974637-04:00",
+      "conviction": 58,
+      "decision_fingerprint": "3187b77b5fc295cf33ae7572fb06bb94697902ec1e661e991a98fc78b31c2bb8",
+      "event_id": "jde-1737535d462a438f",
+      "funding_view": null,
+      "invalidation": "Cover if cash CORRA rises toward 2.75 or if the 2027 H-Z mark backs through 3.40 as oil and US spillover reprice the Bank of Canada path higher.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-9849cf751c27"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "99625d4dae8751020e30f4504a6331a00227b29a6f56fb0b1b7bcabfdbcc5d28",
+      "outcome_links": [],
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "6e9767108ec975ee52cf80431a0590a5631df0d85300af7ac987aeb5428b2e63"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-13T11:45:39.974637-04:00",
+        "evidence_hash": "89cc14eabd485c5d9a7dbc3ce55ea7da8902e6ff5508909a9c1c52c194f3d2c1",
+        "overnight_run_id": "overnight-20261013",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book is a receive of the Canada 2027 H-Z curve from 3.40, and cash CORRA at 2.28 versus March 2.90 still leaves leftover tightening in the path. Oil at 106.65 is a headwind, but the existing curve receive already expresses the ease that has not been taken back. Hold the 42.5 million sleeve; do not add while Brent keeps Canadian inflation risk alive.",
+      "run_id": "overnight-20261013",
+      "schema_version": 1,
+      "thesis": "The book is a receive of the Canada 2027 H-Z curve from 3.40, and cash CORRA at 2.28 versus March 2.90 still leaves leftover tightening in the path. Oil at 106.65 is a headwind, but the existing curve receive already expresses the ease that has not been taken back. Hold the 42.5 million sleeve; do not add while Brent keeps Canadian inflation risk alive."
     }
   ],
   "schema_version": 1,
