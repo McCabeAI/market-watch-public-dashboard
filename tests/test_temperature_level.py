@@ -14,6 +14,7 @@ from scripts.temperature_level import (
     build_score_state,
     component_level,
     compute_state,
+    consecutive_tail,
     load_calibration,
     load_history,
     load_state,
@@ -436,6 +437,33 @@ def _jp_consumer_levels(paths: dict) -> list[float]:
     return [float(row["level"]) for row in series]
 
 
+# Official FIES worker-household nominal income y/y prints used for frozen trailing-mean regression.
+_FROZEN_JP_FIES_INCOME_PRINTS: dict[str, float] = {
+    "2026-05": 2.4,
+    "2026-06": 3.9,
+    "2026-07": -1.7,
+    "2026-08": 1.3,
+}
+
+
+def _minimal_jp_income_history(cal: dict, prints_by_period: dict[str, float]) -> dict:
+    """Synthetic JP history with only Consumer.income observations (not production history)."""
+    spec = cal["components"]["JP.Consumer.income"]
+    observations = [
+        {
+            "reference_period": period,
+            "value": value,
+            "transformation": spec["source_transformation"],
+            "series_id": spec["series_id"],
+        }
+        for period, value in sorted(prints_by_period.items())
+    ]
+    return {
+        "country": "JP",
+        "components": {spec["history_key"]: {"observations": observations}},
+    }
+
+
 class JapanConsumerCalibrationTest(unittest.TestCase):
     """JP Consumer: 3-month LEVEL on monthly flows; identity IMPULSE; CCI SA mean 38.1."""
 
@@ -472,19 +500,58 @@ class JapanConsumerCalibrationTest(unittest.TestCase):
         self.assertIn("38.1", spec["anchor_meaning"])
 
     def test_live_income_level_uses_three_month_mean_not_latest_print(self) -> None:
+        """Live FIES vintages move; assert trailing-mean LEVEL and identity IMPULSE contracts."""
+        cutoff = "2026-09"
         spec = self.cal["components"]["JP.Consumer.income"]
-        res = score_component(self.histories["JP"], spec, self.cal, "2026-09", 0.25)
-        values = raw_values_by_period(self.histories["JP"], spec, "2026-09")
-        self.assertAlmostEqual(values["2026-07"], -1.7)
-        expected_mean = (values["2026-05"] + values["2026-06"] + values["2026-07"]) / 3.0
+        n = int(spec.get("n_periods", 3))
+        res = score_component(self.histories["JP"], spec, self.cal, cutoff, 0.25)
+        values = raw_values_by_period(self.histories["JP"], spec, cutoff)
+        periods = sorted(values.keys())
+        self.assertGreaterEqual(len(periods), n)
+        latest = periods[-1]
+        prev = periods[-2]
+        tail = consecutive_tail(values, latest, n)
+        self.assertEqual(len(tail), n, f"expected {n} consecutive months ending at {latest}")
+        expected_mean = sum(v for _, v in tail) / n
         self.assertAlmostEqual(res.transform_value or 0, expected_mean, places=4)
-        self.assertNotAlmostEqual(res.transform_value or 0, -1.7, places=2)
-        identity_level = component_level(-1.7, spec, self.cal)
-        self.assertAlmostEqual(identity_level, 1.0)
+        self.assertNotAlmostEqual(res.transform_value or 0, values[latest], places=2)
+        self.assertEqual(res.as_of, latest)
         self.assertGreater(res.level or 0, 20.0)
-        prior_level = component_level(values["2026-06"], spec, self.cal)
-        latest_identity_level = component_level(values["2026-07"], spec, self.cal)
-        self.assertAlmostEqual(res.impulse or 0, latest_identity_level - prior_level, places=2)
+        latest_identity_level = component_level(values[latest], spec, self.cal)
+        prior_identity_level = component_level(values[prev], spec, self.cal)
+        self.assertAlmostEqual(res.impulse or 0, latest_identity_level - prior_identity_level, places=2)
+
+    def test_frozen_jp_income_trailing_mean_exact_windows(self) -> None:
+        """Pin May–Jul and Jun–Aug 3-month LEVEL means and Aug identity IMPULSE on frozen prints."""
+        spec = self.cal["components"]["JP.Consumer.income"]
+        history = _minimal_jp_income_history(self.cal, _FROZEN_JP_FIES_INCOME_PRINTS)
+        may_jun_jul = (
+            _FROZEN_JP_FIES_INCOME_PRINTS["2026-05"]
+            + _FROZEN_JP_FIES_INCOME_PRINTS["2026-06"]
+            + _FROZEN_JP_FIES_INCOME_PRINTS["2026-07"]
+        ) / 3.0
+        jun_jul_aug = (
+            _FROZEN_JP_FIES_INCOME_PRINTS["2026-06"]
+            + _FROZEN_JP_FIES_INCOME_PRINTS["2026-07"]
+            + _FROZEN_JP_FIES_INCOME_PRINTS["2026-08"]
+        ) / 3.0
+        self.assertAlmostEqual(may_jun_jul, 1.5333333333333332, places=10)
+        self.assertAlmostEqual(jun_jul_aug, 1.1666666666666667, places=10)
+
+        res_jul = score_component(history, spec, self.cal, "2026-07", 0.25)
+        self.assertAlmostEqual(res_jul.transform_value or 0, may_jun_jul, places=6)
+        self.assertNotAlmostEqual(res_jul.transform_value or 0, _FROZEN_JP_FIES_INCOME_PRINTS["2026-07"], places=2)
+
+        res_aug = score_component(history, spec, self.cal, "2026-08", 0.25)
+        self.assertAlmostEqual(res_aug.transform_value or 0, jun_jul_aug, places=6)
+        self.assertNotAlmostEqual(res_aug.transform_value or 0, _FROZEN_JP_FIES_INCOME_PRINTS["2026-08"], places=2)
+
+        jul_identity = component_level(_FROZEN_JP_FIES_INCOME_PRINTS["2026-07"], spec, self.cal)
+        jun_identity = component_level(_FROZEN_JP_FIES_INCOME_PRINTS["2026-06"], spec, self.cal)
+        self.assertAlmostEqual(res_jul.impulse or 0, jul_identity - jun_identity, places=2)
+
+        aug_identity = component_level(_FROZEN_JP_FIES_INCOME_PRINTS["2026-08"], spec, self.cal)
+        self.assertAlmostEqual(res_aug.impulse or 0, aug_identity - jul_identity, places=2)
 
     def test_single_weak_fies_print_does_not_floor_level(self) -> None:
         """Regression: a one-month FIES collapse must not revert LEVEL to single-print flooring."""
