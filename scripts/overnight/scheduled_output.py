@@ -24,6 +24,7 @@ from scripts.overnight.ledger import load_or_create, mark_finished, mark_running
 from scripts.overnight.paper_marks import market_state_from_families
 from scripts.overnight.acceptance_lock import overnight_acceptance_lock
 from scripts.overnight.accepted_news import overlay_accepted_research
+from scripts.overnight.research_publishability import validate_research_supplement_publishability
 from scripts.overnight.store import OvernightStore, sha256_json
 from scripts.pm.automated import validate_pm_decisions
 from scripts.pm.review_packets import compact_overnight_decisions
@@ -346,6 +347,7 @@ def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str,
             raise SchemaError(f"research_supplement.{key} must be a list")
     if supplement.get("summary") is not None and not isinstance(supplement.get("summary"), str):
         raise SchemaError("research_supplement.summary must be a string or null")
+    validate_research_supplement_publishability(supplement)
     expected_packet_hash = _packet_hash(agent_packet)
     if agent_packet.get("packet_sha256") != expected_packet_hash:
         raise EvidenceBoundaryError("agent_packet packet_sha256 mismatch")

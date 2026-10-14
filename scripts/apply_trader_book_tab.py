@@ -71,13 +71,23 @@ def apply_trader_book_tab(path: Path, *, repo_root: Path | None = None) -> Path:
 
     for required in (
         "Last 24 Hours · Desk Summary",
-        "7-Day Quick Digest",
         "Live 1–100 Score Board",
         "Market Data · official snapshot",
         "Trader Book · paper P&L",
     ):
         if required not in html:
             raise SystemExit(f"trader book tab lost required dashboard marker: {required}")
+
+    # Dated research retains the rolling digest; accepted undated research
+    # uses an age-unverified section instead of a fabricated time window.
+    if not any(
+        marker in html
+        for marker in (
+            "7-Day Quick Digest",
+            "Accepted Overnight Research · Age Unverified",
+        )
+    ):
+        raise SystemExit("trader book tab lost required dashboard news digest marker")
 
     path.write_text(html)
     shutil.copyfile(root / "patch_v13/trader-book.js", site_dir / "trader-book.js")

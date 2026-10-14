@@ -1420,8 +1420,9 @@ class PipelineDryRunTests(unittest.TestCase):
 
 
 class TraderBookTabTests(unittest.TestCase):
-    def test_tab_is_additive_and_keeps_existing_markers(self):
-        html = """
+    @staticmethod
+    def _html_with_news_marker(news_marker: str) -> str:
+        return """
         <style>
         #p-feed:checked~.app .nav label[for=p-feed],
         #p-marketdata:checked~.app .nav label[for=p-marketdata],
@@ -1437,26 +1438,43 @@ class TraderBookTabTests(unittest.TestCase):
         <section class="page marketdata">Market Data · official snapshot</section>
         <section class="page relative"></section>
         <div>Last 24 Hours · Desk Summary</div>
-        <div>7-Day Quick Digest</div>
+        <div>NEWS_MARKER</div>
         <div>Live 1–100 Score Board</div>
-        """
+        """.replace("NEWS_MARKER", news_marker)
+
+    def test_tab_is_additive_and_keeps_existing_markers(self):
+        from scripts.apply_trader_book_tab import apply_trader_book_tab
+
+        for news_marker in (
+            "7-Day Quick Digest",
+            "Accepted Overnight Research · Age Unverified",
+        ):
+            with self.subTest(news_marker=news_marker):
+                tmp = Path(tempfile.mkdtemp(prefix="tb-tab-"))
+                self.addCleanup(shutil.rmtree, tmp)
+                target = tmp / "index.html"
+                target.write_text(self._html_with_news_marker(news_marker))
+                apply_trader_book_tab(target, repo_root=ROOT)
+                out = target.read_text()
+                self.assertIn('id="p-traderbook"', out)
+                self.assertIn("Trader Book · paper P&L", out)
+                self.assertIn("14 Traders + 4 Portfolio Managers", out)
+                self.assertIn("14 Traders · Total P&amp;L", out)
+                self.assertIn("Last 24 Hours · Desk Summary", out)
+                self.assertIn("Live 1–100 Score Board", out)
+                self.assertIn("Market Data · official snapshot", out)
+                self.assertIn(news_marker, out)
+                self.assertTrue((tmp / "trader-book.js").is_file())
+
+    def test_tab_fails_closed_if_both_news_markers_are_missing(self):
+        from scripts.apply_trader_book_tab import apply_trader_book_tab
+
         tmp = Path(tempfile.mkdtemp(prefix="tb-tab-"))
         self.addCleanup(shutil.rmtree, tmp)
         target = tmp / "index.html"
-        target.write_text(html)
-        from scripts.apply_trader_book_tab import apply_trader_book_tab
-
-        apply_trader_book_tab(target, repo_root=ROOT)
-        out = target.read_text()
-        self.assertIn('id="p-traderbook"', out)
-        self.assertIn("Trader Book · paper P&L", out)
-        self.assertIn("14 Traders + 4 Portfolio Managers", out)
-        self.assertIn("14 Traders · Total P&amp;L", out)
-        self.assertIn("Last 24 Hours · Desk Summary", out)
-        self.assertIn("Live 1–100 Score Board", out)
-        self.assertIn("Market Data · official snapshot", out)
-        self.assertIn("7-Day Quick Digest", out)
-        self.assertTrue((tmp / "trader-book.js").is_file())
+        target.write_text(self._html_with_news_marker("No accepted news section"))
+        with self.assertRaisesRegex(SystemExit, "required dashboard news digest marker"):
+            apply_trader_book_tab(target, repo_root=ROOT)
 
 
 class SeedBooksTests(unittest.TestCase):

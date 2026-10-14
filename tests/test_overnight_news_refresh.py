@@ -7,7 +7,11 @@ import unittest
 from copy import deepcopy
 from pathlib import Path
 
-from scripts.apply_overnight_news_refresh import apply_overnight_news_refresh, main
+from scripts.apply_overnight_news_refresh import (
+    _partition_items,
+    apply_overnight_news_refresh,
+    main,
+)
 from scripts.overnight.constants import ROOT
 
 
@@ -62,6 +66,8 @@ def _dataset() -> dict:
 
 
 OCT5_DATASET = ROOT / "data/overnight/runs/overnight-20261005/assembled_dataset.json"
+OCT13_DATASET = ROOT / "data/overnight/runs/overnight-20261013/assembled_dataset.json"
+OCT14_DATASET = ROOT / "data/overnight/runs/overnight-20261014/assembled_dataset.json"
 
 
 def _oct5_dataset() -> dict:
@@ -107,10 +113,10 @@ class OvernightNewsRefreshTests(unittest.TestCase):
         self.assertIn('<div class="last24-item">', out)
         self.assertIn('<div class="driver-card">', out)
         self.assertNotIn('class="story-source"', out)
-        # Undated title-only central-bank notes stay out of the current windows.
-        self.assertNotIn("SOMA Manager Perli", out)
-        self.assertNotIn("discount window modernization", out)
         last24, _, rest = out.partition('<div class="stitle">Top Market Drivers</div>')
+        # Undated central-bank notes stay out of rolling windows but may appear in the age-unverified supplement.
+        self.assertNotIn("SOMA Manager Perli", last24)
+        self.assertNotIn("discount window modernization", last24)
         self.assertIn("Global Oil Supply Buffer", last24)
         self.assertNotIn("Euro-Zone Inflation", last24)
         self.assertIn("Euro-Zone Inflation", rest)
@@ -158,7 +164,6 @@ class OvernightNewsRefreshTests(unittest.TestCase):
         )
         self.assertIn('<div class="last24-item">', out)
         self.assertNotIn('href=""', out)
-        self.assertNotIn("SOMA Manager Perli", out)
         last24, _, _rest = out.partition('<div class="stitle">Top Market Drivers</div>')
         self.assertIn("Linked desk wire confirms the clickable path", last24)
         self.assertNotIn("Fed reserve-conditions note", last24)
@@ -182,6 +187,75 @@ class OvernightNewsRefreshTests(unittest.TestCase):
         with self.assertRaises(ValueError) as caught:
             apply_overnight_news_refresh(BASE_HTML, dataset)
         self.assertIn("rolling 7-day window", str(caught.exception))
+
+    def test_oct14_undated_only_renders_age_unverified_section(self) -> None:
+        dataset = json.loads(OCT14_DATASET.read_text(encoding="utf-8"))
+        dated, undated = _partition_items(dataset)
+        self.assertEqual(len(dated), 0)
+        self.assertEqual(len(undated), 15)
+
+        out = apply_overnight_news_refresh(BASE_HTML, dataset)
+
+        self.assertIn("Last refreshed 14 Oct 2026 · 05:31 ET", out)
+        self.assertIn("Accepted Overnight Research · Age Unverified", out)
+        self.assertIn("Global Oil Supply Buffer", out)
+        self.assertIn("AGE UNVERIFIED", out)
+        self.assertIn('data-news-provenance="undated"', out)
+        self.assertNotIn("7-Day Quick Digest", out)
+        self.assertIn("0 dated market-relevant developments in the exact rolling window.", out)
+        self.assertIn(
+            "No accepted overnight research item with a verified publication timestamp",
+            out,
+        )
+        self.assertNotIn("OLD LAST24", out)
+        self.assertEqual(out.count('class="driver-card"'), 3)
+        self.assertEqual(out.count('<details class="story"'), 12)
+        self.assertNotIn("<script", out.lower())
+
+    def test_oct13_dated_dataset_keeps_rolling_windows(self) -> None:
+        dataset = json.loads(OCT13_DATASET.read_text(encoding="utf-8"))
+        dated, undated = _partition_items(dataset)
+        self.assertGreater(len(dated), 0)
+
+        out = apply_overnight_news_refresh(BASE_HTML, dataset)
+
+        self.assertIn("7-Day Quick Digest", out)
+        self.assertIn("Window:", out)
+        self.assertNotIn("Accepted Overnight Research · Age Unverified", out)
+        self.assertGreaterEqual(out.count('class="driver-card"'), 1)
+        self.assertGreaterEqual(out.count('<details class="story"'), 1)
+
+    def test_mixed_dated_and_undated_keeps_windows_and_adds_supplement(self) -> None:
+        dataset = _dataset()
+        dataset["agent_research"]["news"].append(
+            {
+                "headline": "Undated supplement headline",
+                "summary": "Accepted without a publication timestamp.",
+            }
+        )
+        out = apply_overnight_news_refresh(BASE_HTML, dataset)
+        self.assertIn("7-Day Quick Digest", out)
+        self.assertIn("Additional Accepted Research · Age Unverified", out)
+        self.assertIn("Undated supplement headline", out)
+        self.assertIn("Oil rebounds in early trade", out)
+
+    def test_html_escaping_on_malicious_undated_headline(self) -> None:
+        dataset = _dataset()
+        dataset["agent_research"] = {
+            "summary": "Undated only.",
+            "news": [
+                {
+                    "headline": 'Alert <img src=x onerror="alert(1)">',
+                    "summary": 'Summary with <a href="javascript:evil">link</a>.',
+                }
+            ],
+            "central_bank_research": [],
+        }
+        out = apply_overnight_news_refresh(BASE_HTML, dataset)
+        self.assertIn("Accepted Overnight Research · Age Unverified", out)
+        self.assertNotIn("<img", out)
+        self.assertNotIn('href="javascript:evil"', out)
+        self.assertIn("&lt;img", out)
 
     def test_cli_refreshes_canonical_oct5_dataset(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

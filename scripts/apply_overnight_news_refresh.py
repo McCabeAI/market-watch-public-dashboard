@@ -13,11 +13,13 @@ from scripts.overnight.accepted_news import (
     morning_dataset_from_public_news,
 )
 from scripts.overnight.public_prose import public_research_summary
+from scripts.overnight.research_publishability import audit_agent_research
 
 NY = ZoneInfo("America/New_York")
 LAST24_START = '<div class="last24">'
 ROLLUP_START = '<div class="stitle">Top Market Drivers</div>'
 ROLLUP_END = '<div class="x-signal">'
+UNDATED_PROVENANCE_ATTR = 'data-news-provenance="undated"'
 
 
 def _parse_iso(value: str | None) -> datetime | None:
@@ -76,47 +78,66 @@ def _item_url(raw: dict[str, Any]) -> str:
     return str(raw.get("url") or "").strip()
 
 
-def _clean_items(dataset: dict[str, Any]) -> list[dict[str, Any]]:
-    """Keep accepted research that can be placed in a rolling window.
+def _normalize_raw_item(raw: dict[str, Any], *, family: str) -> dict[str, Any] | None:
+    if not isinstance(raw, dict):
+        return None
+    title = _display_title(raw)
+    url = _item_url(raw)
+    summary = str(raw.get("summary") or "").strip()
+    if not title or not summary:
+        return None
+    item = dict(raw)
+    item["headline"] = title
+    item["summary"] = summary
+    if url:
+        item["url"] = url
+    else:
+        item.pop("url", None)
+    item["_family"] = family
+    return item
 
-    URL is optional. Central-bank items may use title instead of headline.
-    published_at stays required so undated items cannot skip the freshness window.
-    """
+
+def _partition_items(dataset: dict[str, Any]) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Split accepted research into dated (time-window eligible) and undated renderables."""
     research = dataset.get("agent_research") or {}
-    combined: list[dict[str, Any]] = []
+    dated_combined: list[dict[str, Any]] = []
+    undated_combined: list[dict[str, Any]] = []
     for family, items in (
         ("news", research.get("news") or []),
         ("central_bank_research", research.get("central_bank_research") or []),
     ):
         for raw in items:
-            if not isinstance(raw, dict):
+            item = _normalize_raw_item(raw, family=family)
+            if item is None:
                 continue
-            title = _display_title(raw)
-            url = _item_url(raw)
-            summary = str(raw.get("summary") or "").strip()
             published = _parse_iso(raw.get("published_at"))
-            if not title or not summary or published is None:
-                continue
-            item = dict(raw)
-            item["headline"] = title
-            item["summary"] = summary
-            if url:
-                item["url"] = url
-            else:
-                item.pop("url", None)
-            item["_family"] = family
-            item["_published"] = published
-            combined.append(item)
+            if published is not None:
+                item["_published"] = published
+                dated_combined.append(item)
+            elif raw.get("published_at") in (None, ""):
+                undated_combined.append(item)
+            # Malformed published_at values are excluded (fail-closed for time windows).
 
-    seen: set[tuple[str, str]] = set()
-    out: list[dict[str, Any]] = []
-    for item in sorted(combined, key=lambda row: row["_published"], reverse=True):
-        key = (_item_url(item), _display_title(item))
-        if key in seen:
-            continue
-        seen.add(key)
-        out.append(item)
-    return out
+    def _dedupe(rows: list[dict[str, Any]], *, sort_key) -> list[dict[str, Any]]:
+        seen: set[tuple[str, str]] = set()
+        out: list[dict[str, Any]] = []
+        for item in sorted(rows, key=sort_key, reverse=True):
+            key = (_item_url(item), _display_title(item))
+            if key in seen:
+                continue
+            seen.add(key)
+            out.append(item)
+        return out
+
+    dated = _dedupe(dated_combined, sort_key=lambda row: row["_published"])
+    undated = _dedupe(undated_combined, sort_key=lambda row: (_impact(row)[0] == "HIGH", _display_title(row)))
+    return dated, undated
+
+
+def _clean_items(dataset: dict[str, Any]) -> list[dict[str, Any]]:
+    """Dated items only — preserved for callers expecting the rolling-window list."""
+    dated, _undated = _partition_items(dataset)
+    return dated
 
 
 def _impact(item: dict[str, Any]) -> tuple[str, str]:
@@ -160,10 +181,41 @@ def _esc(value: Any) -> str:
     return html_lib.escape(str(value), quote=True)
 
 
-def _last24_html(items: list[dict[str, Any]], cutoff: datetime, summary: str | None) -> str:
+def _driver_card(row: dict[str, Any], *, kicker: str) -> str:
+    impact, css = _impact(row)
+    inner = (
+        f'<div class="dmeta"><span class="impact {css}">{impact}</span>{_esc(kicker)}</div>'
+        f'<b>{_esc(row["headline"])}</b><span>{_esc(row["summary"])}</span>'
+    )
+    url = _item_url(row)
+    if url:
+        return f'<a class="driver-card" href="{_esc(url)}" rel="noopener" target="_blank">{inner}</a>'
+    return f'<div class="driver-card">{inner}</div>'
+
+
+def _story_details(row: dict[str, Any], *, kicker: str) -> str:
+    impact, css = _impact(row)
+    source = ""
+    url = _item_url(row)
+    if url:
+        source = (
+            f'<a class="story-source" href="{_esc(url)}" rel="noopener" target="_blank">Open source ↗</a>'
+        )
+    return (
+        '<details class="story"><summary>'
+        f'<span class="impact {css}">{impact}</span><span>'
+        f'<span class="story-title">{_esc(row["headline"])}</span>'
+        f'<span class="story-kicker">{_esc(kicker)}</span></span></summary>'
+        f'<div class="story-body"><p><b>What happened:</b> {_esc(row["summary"])}</p>'
+        f"{source}"
+        "</div></details>"
+    )
+
+
+def _last24_html(dated_items: list[dict[str, Any]], cutoff: datetime, summary: str | None) -> str:
     start = cutoff - timedelta(hours=24)
-    current = [row for row in items if start <= row["_published"] <= cutoff][:6]
-    headline = current[0]["headline"] if current else "No new qualifying market driver in the last 24 hours"
+    current = [row for row in dated_items if start <= row["_published"] <= cutoff][:6]
+    headline = current[0]["headline"] if current else "No dated market driver in the rolling 24-hour window"
     desk_read = public_research_summary(summary, items=current)
     cards: list[str] = []
     for row in current:
@@ -185,7 +237,7 @@ def _last24_html(items: list[dict[str, Any]], cutoff: datetime, summary: str | N
             cards.append(f'    <div class="last24-item">\n{body}\n    </div>')
     if not cards:
         cards.append(
-            '    <div class="last24-empty">No accepted overnight research item was published inside the exact rolling 24-hour window.</div>'
+            '    <div class="last24-empty">No accepted overnight research item with a verified publication timestamp fell inside the exact rolling 24-hour window.</div>'
         )
     plural = "s" if len(current) != 1 else ""
     return (
@@ -194,7 +246,7 @@ def _last24_html(items: list[dict[str, Any]], cutoff: datetime, summary: str | N
         '    <div>\n'
         '      <div class="stitle">Last 24 Hours · Desk Summary</div>\n'
         f'      <h2>{_esc(headline)}</h2>\n'
-        f'      <p>{len(current)} accepted market-relevant development{plural} in the exact rolling window.</p>\n'
+        f'      <p>{len(current)} dated market-relevant development{plural} in the exact rolling window.</p>\n'
         '    </div>\n'
         f'    <div class="last24-window"><b>Window</b>{_esc(_window_label(start, cutoff))}<br>'
         f'Last refreshed {cutoff.day} {cutoff.strftime("%b")} {cutoff.year} · {cutoff.strftime("%H:%M")} ET</div>\n'
@@ -206,53 +258,27 @@ def _last24_html(items: list[dict[str, Any]], cutoff: datetime, summary: str | N
     )
 
 
-def _rollup_html(items: list[dict[str, Any]], cutoff: datetime) -> str:
+def _dated_rollup_html(digest: list[dict[str, Any]], cutoff: datetime) -> str:
     start = cutoff - timedelta(days=7)
-    digest = [row for row in items if start <= row["_published"] <= cutoff]
-    if not digest:
-        raise ValueError("accepted overnight research has no items in the rolling 7-day window")
-
     ranked = sorted(
         digest,
         key=lambda row: (_impact(row)[0] == "HIGH", row["_published"]),
         reverse=True,
     )
     drivers = ranked[:3]
-    driver_html: list[str] = []
-    for row in drivers:
-        impact, css = _impact(row)
-        inner = (
-            f'<div class="dmeta"><span class="impact {css}">{impact}</span>{_esc(_market_label(row))}</div>'
-            f'<b>{_esc(row["headline"])}</b><span>{_esc(row["summary"])}</span>'
+    driver_html = [
+        _driver_card(
+            row,
+            kicker=_market_label(row),
         )
-        url = _item_url(row)
-        if url:
-            driver_html.append(
-                f'<a class="driver-card" href="{_esc(url)}" rel="noopener" target="_blank">{inner}</a>'
-            )
-        else:
-            driver_html.append(f'<div class="driver-card">{inner}</div>')
+        for row in drivers
+    ]
 
-    stories: list[str] = []
+    stories = []
     for row in digest[:12]:
-        impact, css = _impact(row)
         stamp = row["_published"]
         kicker = f'{_market_label(row)} · {_day_label(stamp)} · {_source_label(row)}'
-        source = ""
-        url = _item_url(row)
-        if url:
-            source = (
-                f'<a class="story-source" href="{_esc(url)}" rel="noopener" target="_blank">Open source ↗</a>'
-            )
-        stories.append(
-            '<details class="story"><summary>'
-            f'<span class="impact {css}">{impact}</span><span>'
-            f'<span class="story-title">{_esc(row["headline"])}</span>'
-            f'<span class="story-kicker">{_esc(kicker)}</span></span></summary>'
-            f'<div class="story-body"><p><b>What happened:</b> {_esc(row["summary"])}</p>'
-            f"{source}"
-            "</div></details>"
-        )
+        stories.append(_story_details(row, kicker=kicker))
 
     return (
         '<div class="stitle">Top Market Drivers</div><div class="driver-grid">\n'
@@ -267,9 +293,137 @@ def _rollup_html(items: list[dict[str, Any]], cutoff: datetime) -> str:
     )
 
 
+def _undated_block_html(undated_items: list[dict[str, Any]], cutoff: datetime) -> str:
+    ranked = sorted(
+        undated_items,
+        key=lambda row: (_impact(row)[0] == "HIGH", _display_title(row)),
+        reverse=True,
+    )
+    drivers = ranked[:3]
+    driver_html = [
+        _driver_card(row, kicker=f"AGE UNVERIFIED · {_market_label(row)}") for row in drivers
+    ]
+    stories = []
+    for row in ranked[:12]:
+        kicker = f"AGE UNVERIFIED · {_market_label(row)} · {_source_label(row)}"
+        stories.append(_story_details(row, kicker=kicker))
+
+    accepted_label = (
+        f"{cutoff.day} {cutoff.strftime('%b')} {cutoff.year} · {cutoff.strftime('%H:%M')} ET"
+    )
+    return (
+        '<div class="stitle">Top Market Drivers</div><div class="driver-grid">\n'
+        + "\n".join(driver_html)
+        + '\n</div>\n'
+        '<div class="digest-tools undated-research-tools" '
+        + UNDATED_PROVENANCE_ATTR
+        + '><div><div class="stitle">Accepted Overnight Research · Age Unverified</div>'
+        "<p>These accepted summaries carry no verified publication timestamp. "
+        "They are shown for desk context only and are not placed in the rolling 24-hour or 7-day windows.</p></div>"
+        f'<div class="scanline"><b>Provenance:</b> Publication dates not supplied · packet accepted {accepted_label}</div></div>\n'
+        '<div class="news-digest undated-research-digest">\n'
+        + "\n".join(stories)
+        + '\n</div>\n'
+    )
+
+
+def _undated_supplement_html(
+    undated_items: list[dict[str, Any]],
+    cutoff: datetime,
+    *,
+    max_stories: int = 12,
+) -> str:
+    ranked = sorted(
+        undated_items,
+        key=lambda row: (_impact(row)[0] == "HIGH", _display_title(row)),
+        reverse=True,
+    )
+    stories = []
+    for row in ranked[: max(0, min(12, max_stories))]:
+        kicker = f"AGE UNVERIFIED · {_market_label(row)} · {_source_label(row)}"
+        stories.append(_story_details(row, kicker=kicker))
+    accepted_label = (
+        f"{cutoff.day} {cutoff.strftime('%b')} {cutoff.year} · {cutoff.strftime('%H:%M')} ET"
+    )
+    return (
+        '<div class="digest-tools undated-research-tools" '
+        + UNDATED_PROVENANCE_ATTR
+        + '><div><div class="stitle">Additional Accepted Research · Age Unverified</div>'
+        "<p>Accepted summaries below carry no verified publication timestamp and are excluded from the rolling windows above.</p></div>"
+        f'<div class="scanline"><b>Provenance:</b> Publication dates not supplied · packet accepted {accepted_label}</div></div>\n'
+        '<div class="news-digest undated-research-digest">\n'
+        + "\n".join(stories)
+        + '\n</div>\n'
+    )
+
+
+def _rollup_html(
+    dated_items: list[dict[str, Any]],
+    undated_items: list[dict[str, Any]],
+    cutoff: datetime,
+) -> str:
+    start = cutoff - timedelta(days=7)
+    digest = [row for row in dated_items if start <= row["_published"] <= cutoff]
+    if digest:
+        html = _dated_rollup_html(digest, cutoff)
+        if undated_items:
+            dated_story_count = min(len(digest), 12)
+            extra_story_slots = max(0, 12 - dated_story_count)
+            if extra_story_slots:
+                html += _undated_supplement_html(
+                    undated_items,
+                    cutoff,
+                    max_stories=extra_story_slots,
+                )
+        return html
+    if undated_items:
+        return _undated_block_html(undated_items, cutoff)
+    raise ValueError("accepted overnight research has no renderable items for the rolling windows or undated fallback")
+
+
+def _rollup_mode(dated_items: list[dict[str, Any]], undated_items: list[dict[str, Any]], cutoff: datetime) -> str:
+    start = cutoff - timedelta(days=7)
+    digest = [row for row in dated_items if start <= row["_published"] <= cutoff]
+    if digest:
+        return "dated"
+    if undated_items:
+        return "undated_only"
+    return "empty"
+
+
+def _assert_refresh_output(
+    out: str,
+    *,
+    cutoff: datetime,
+    mode: str,
+) -> None:
+    scan_date = f"{cutoff.day} {cutoff.strftime('%b')} {cutoff.year}"
+    if f"Last refreshed {scan_date}" not in out:
+        raise ValueError("live Last 24 Hours timestamp missing after refresh")
+    driver_count = out.count('class="driver-card"')
+    if not 1 <= driver_count <= 3:
+        raise ValueError("live Top Market Drivers count invalid")
+    story_count = out.count('<details class="story"')
+    if not 1 <= story_count <= 12:
+        raise ValueError("live digest story count invalid")
+    if mode == "undated_only":
+        if UNDATED_PROVENANCE_ATTR not in out:
+            raise ValueError("undated research provenance marker missing")
+        if "Accepted Overnight Research · Age Unverified" not in out:
+            raise ValueError("undated research section title missing")
+        if '<div class="stitle">7-Day Quick Digest</div>' in out:
+            raise ValueError("undated-only refresh must not render a 7-Day Quick Digest")
+    elif mode == "dated":
+        if '<div class="stitle">7-Day Quick Digest</div>' not in out:
+            raise ValueError("dated rolling digest title missing")
+
+
 def apply_overnight_news_refresh(html: str, dataset: dict[str, Any]) -> str:
     cutoff = _cutoff(dataset)
-    items = _clean_items(dataset)
+    audit = audit_agent_research(dataset.get("agent_research"))
+    if audit.renderable == 0:
+        raise ValueError("accepted overnight research has no renderable items")
+    dated_items, undated_items = _partition_items(dataset)
     research = dataset.get("agent_research") or {}
     summary = research.get("summary")
 
@@ -279,17 +433,15 @@ def apply_overnight_news_refresh(html: str, dataset: dict[str, Any]) -> str:
     rollup_start = html.index(ROLLUP_START, last_start)
     rollup_end = html.index(ROLLUP_END, rollup_start)
 
-    new_last24 = _last24_html(items, cutoff, summary)
-    new_rollup = _rollup_html(items, cutoff)
+    mode = _rollup_mode(dated_items, undated_items, cutoff)
+    if mode == "empty":
+        raise ValueError("accepted overnight research has no items in the rolling 7-day window")
+
+    new_last24 = _last24_html(dated_items, cutoff, summary)
+    new_rollup = _rollup_html(dated_items, undated_items, cutoff)
     out = html[:last_start] + new_last24 + new_rollup + html[rollup_end:]
 
-    scan_date = f"{cutoff.day} {cutoff.strftime('%b')} {cutoff.year}"
-    if f"Last refreshed {scan_date}" not in out:
-        raise ValueError("live Last 24 Hours timestamp missing after refresh")
-    if out.count('class="driver-card"') < 1 or out.count('class="driver-card"') > 3:
-        raise ValueError("live Top Market Drivers count invalid")
-    if not 1 <= out.count('class="story"') <= 12:
-        raise ValueError("live 7-Day Quick Digest count invalid")
+    _assert_refresh_output(out, cutoff=cutoff, mode=mode)
     return out
 
 
@@ -305,9 +457,11 @@ def main(argv: list[str] | None = None) -> int:
     updated = apply_overnight_news_refresh(current, dataset)
     args.html.write_text(updated, encoding="utf-8")
     cutoff = _cutoff(dataset)
+    audit = audit_agent_research(dataset.get("agent_research"))
     print(
         f"Overnight news refreshed from {dataset['overnight_run_id']} "
-        f"through {cutoff.isoformat()}"
+        f"through {cutoff.isoformat()} "
+        f"(dated={audit.dated}, undated={audit.undated})"
     )
     return 0
 
