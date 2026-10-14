@@ -1,0 +1,49 @@
+{
+  "schema": "core_pce_snapshot_v1",
+  "source_map": {
+    "table": "BEA Table 2.4.4 U-D",
+    "dated": "2026-09-30",
+    "url": "https://www.bea.gov/sites/default/files/2026-10/FAQ521-Sep26-update.xlsx",
+    "sha256": "66c53c60cd0c2b1258589e0d8239beed95d0a1ff9822575a640c3dc5da701c7b"
+  },
+  "expenditures": {
+    "table": "BEA Table 2.4.5U",
+    "sheet": "U20405-Q",
+    "period": "2026Q2",
+    "published": "2026-09-30",
+    "url": "https://apps.bea.gov/national/Release/XLS/Underlying/Section2All_xls.xlsx",
+    "sha256": "6ab82fff44c97fceabf2c2248e44309fcc8a16a6b59646004488f500aec32e44",
+    "official_core_pce_line": 374,
+    "official_core_pce_millions": "19556763",
+    "signed_partition_millions": "19556769",
+    "rounding_residual_millions": "-6",
+    "food_energy_exclusion_lines": [
+      73,
+      113,
+      169
+    ],
+    "note": "Residual is BEA million-dollar rounding on net identities. Weights are not renormalized."
+  },
+  "pcepilfe": {
+    "series": "PCEPILFE",
+    "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+    "retrieved_on": "2026-10-14",
+    "sha256": "9f8d0f8e100cff9d9ee2e024557c8aa253c9aed7eade47ac5539c5860c36f616",
+    "fingerprint": {
+      "2025-11": "127.363",
+      "2025-12": "127.765",
+      "2026-02": "128.701",
+      "2026-03": "129.030",
+      "2026-05": "129.796",
+      "2026-06": "129.969",
+      "2026-07": "130.133",
+      "2026-08": "130.455"
+    },
+    "not_used": "data/temperature_history/raw/us/PCEPILFE.csv is a different vintage and ends 2026-07"
+  },
+  "component_count": 215,
+  "weight_share_sum": "1.000000306799238708369069054",
+  "bls_sa_direct_weight_share": "0.3134190970151859998507933035",
+  "accepted_august_bridge_carries": 0,
+  "components_sha256": "5b13b3d28fc1c110526276b8b6f9bd44ab145f578f516859f4afa2f8dcae3e85"
+}

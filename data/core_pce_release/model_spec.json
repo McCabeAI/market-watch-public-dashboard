@@ -1,0 +1,99 @@
+{
+  "schema": "core_pce_model_spec_v1",
+  "method_version": "nowcast_repair_v1",
+  "frozen_by": "G0",
+  "target_release": "2026-09",
+  "anchor_period": "2026-08",
+  "history_schema": "core_pce_bea_component_history_v1",
+  "history_sha256": "35c4f0ac0d714c5b2aba461347b671ec677ed23726a3352720af45deafa5206f",
+  "cpi_cache": "data/core_pce_release/cpi_cache_2026-10-14.json",
+  "central_rule": "observed_bls_sa_else_last_published_component_mom",
+  "scenario_rule": "contribution_min_max_of_last_published_versus_three_month_geometric_on_independent_lines_offset_copies_share_the_primary_mom",
+  "classification": {
+    "hot": "unrounded_3m_and_6m_deltas_strictly_positive",
+    "cold": "unrounded_3m_and_6m_deltas_strictly_negative",
+    "neutral": "otherwise",
+    "deadband_annualized_pp": "0",
+    "nine_month": "independent_direction_not_an_input_to_class",
+    "gap_to_two_percent": "reported_separately_not_an_input_to_class",
+    "scenario_class_can_differ": true,
+    "scenario_class_difference_suppresses_number": false
+  },
+  "publication": {
+    "missing_absolute_weight_gate": null,
+    "zero_fill": false,
+    "weight_renormalization": false,
+    "false_bea_sa_on_raw_bls": false,
+    "require_exact_bea_seasonal_factor": false
+  },
+  "unchanged_momentum_mom_percent": {
+    "3": "0.133286079694289500446855100",
+    "6": "0.255631269376306322406197300",
+    "9": "0.315633268688708651649223100"
+  },
+  "benchmarks_not_targets": {
+    "pcepilfe_august_mom_percent": "0.247439158399483605234644600",
+    "three_month_arithmetic_mean_of_official_moms_percent": "0.1689697247543891152821540333",
+    "prompt_rounded_three_month_benchmark_percent": "0.16895",
+    "august_first_order_component_sum_percent": "0.2513914988704109365301230746",
+    "approximation_gap_component_sum_minus_official_percent": "0.0039523404709273312954784746"
+  },
+  "sentinels_august_actuals_not_september_forecasts": {
+    "174_physician_mom_percent": "0.066307720871018221361695400",
+    "184_and_359_nonprofit_hospital_mom_percent": "0.493478210504367166323008100",
+    "268_portfolio_management_mom_percent": "0.558618378971094392494898100",
+    "346_nonprofit_hospital_gross_output_mom_percent": "0",
+    "rejected_portfolio_ppi_mom_percent": "-1.6",
+    "portfolio_weight_share": "0.01870923117491376256898956131",
+    "aggregate_pp_if_rejected_ppi_replaced_portfolio_baseline": "0.04038609027058780992839884881"
+  },
+  "g0_reference_post_cpi_pre_ppi": {
+    "label": "method check, not a BEA observation and not a 0.27 percent illustration",
+    "central_mom_percent": "0.3688405280179773205064998201",
+    "low_mom_percent": "0.1759189058295244177603611525",
+    "high_mom_percent": "0.5030684119319698761678417501",
+    "central_class": "HOT",
+    "low_class": "NEUTRAL",
+    "high_class": "HOT",
+    "display_4dp": {
+      "central": "0.3688",
+      "low": "0.1759",
+      "high": "0.5031"
+    },
+    "horizons_after_annualized_percent": {
+      "3": "3.010011452941926280034213200",
+      "6": "2.976441015962943524610234700",
+      "9": "3.322994092058747847779467400"
+    },
+    "horizons_before_annualized_percent": {
+      "3": "2.046398408308198674504153700",
+      "6": "2.744271114822287402650029700",
+      "9": "3.249969468981784987499425400"
+    }
+  },
+  "bls_budget": {
+    "chunk_unregistered": 25,
+    "chunk_registered": 50,
+    "max_requests_per_acquire": 4,
+    "max_elapsed_seconds": 20,
+    "timeout_seconds": 8,
+    "max_attempts_per_request": 2,
+    "individual_series_fallback": false,
+    "priority_ppi_cap": 25,
+    "material_absolute_weight_min": "0.001",
+    "env_key_names": [
+      "BLS_API_KEY",
+      "BLS_REGISTRATION_KEY"
+    ],
+    "public_unregistered_daily_queries": 25,
+    "public_registered_daily_queries": 500,
+    "packet_daily_ceiling_unregistered": 8,
+    "packet_daily_ceiling_registered": 24,
+    "other_programs_quota_unknown": true,
+    "ppi_pilot_not_before": "2026-10-15T08:30:00-04:00",
+    "ppi_pilot_not_before_zone": "America/New_York"
+  },
+  "approximation": "first_order_signed_expenditure_share",
+  "not_official_pce": true,
+  "scenario_range_is_confidence_interval": false
+}

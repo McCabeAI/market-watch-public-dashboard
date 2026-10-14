@@ -1,0 +1,30 @@
+{
+  "schema": "core_pce_observations_v1",
+  "synthetic": true,
+  "note": "Synthetic fixture for pilot tests only. Not an official BLS PPI release.",
+  "target_period": "2026-09",
+  "observations": [
+    {
+      "series_id": "PCU622---622---",
+      "line": 185,
+      "period": "2026-08",
+      "mom_percent": "1.0",
+      "role": "raw_bls_reference",
+      "source_family": "PPI",
+      "seasonal_status": "BLS_NSA",
+      "bls_footnote_code": "P",
+      "applied_to_estimate": false
+    },
+    {
+      "series_id": "PCU622---622---",
+      "line": 185,
+      "period": "2026-09",
+      "mom_percent": "1.5",
+      "role": "raw_bls_reference",
+      "source_family": "PPI",
+      "seasonal_status": "BLS_NSA",
+      "bls_footnote_code": "P",
+      "applied_to_estimate": false
+    }
+  ]
+}
