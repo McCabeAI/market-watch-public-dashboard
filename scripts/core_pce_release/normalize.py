@@ -23,12 +23,38 @@ def _mom(points: dict[str, str], period: str, prior: str) -> Decimal | None:
     return (current / base - 1) * 100
 
 
-def _pair(points: dict[str, str], release: str, anchor: str, prior_anchor: str) -> tuple[str, str] | None:
-    if release in points and anchor in points:
-        return release, anchor
-    if anchor in points and prior_anchor in points:
-        return anchor, prior_anchor
-    return None
+def _seasonal_status(entry: dict, usable: bool) -> str:
+    if usable:
+        return "SA"
+    if entry.get("bls_seasonal") == "S":
+        return "BLS_SA"
+    return "BLS_NSA"
+
+
+def _base_row(entry: dict, line: int, period: str, prior: str, mom: Decimal, series_points: dict[str, str], usable: bool) -> dict:
+    row = {
+        "line": line,
+        "period": period,
+        "mom_percent": _format(mom),
+        "index_level": series_points[period],
+        "prior_index_level": series_points[prior],
+        "source_family": entry["source_family"],
+        "series_id": entry["series_id"],
+        "bls_survey": entry.get("bls_survey"),
+        "bls_seasonal": entry.get("bls_seasonal"),
+        "bea_seasonal_status": entry.get("bea_seasonal_status"),
+    }
+    if usable:
+        row["seasonal_status"] = _seasonal_status(entry, True)
+        row["applied_to_estimate"] = True
+    else:
+        row["role"] = "raw_bls_reference"
+        row["seasonal_status"] = _seasonal_status(entry, False)
+        row["applied_to_estimate"] = False
+        row["note"] = entry.get("not_a_pce_rate_because") or (
+            "Raw BLS print is not a BEA-adjusted PCE rate."
+        )
+    return row
 
 
 def build_observations(registry: dict, points: dict[str, dict[str, str]], release: str) -> tuple[list[dict], list[dict]]:
@@ -63,8 +89,31 @@ def build_observations(registry: dict, points: dict[str, dict[str, str]], releas
                     }
                 )
             continue
-        chosen = _pair(series_points, release, anchor, prior_anchor)
-        if chosen is None:
+
+        emitted = False
+        if release in series_points and anchor in series_points:
+            mom = _mom(series_points, release, anchor)
+            if mom is None:
+                gaps.append({"series_id": series_id, "reason": "non_positive_index"})
+            else:
+                usable = bool(entry.get("usable_as_pce_rate"))
+                for line in entry.get("pce_lines") or []:
+                    observations.append(_base_row(entry, line, release, anchor, mom, series_points, usable))
+                emitted = True
+
+        if anchor in series_points and prior_anchor in series_points:
+            mom_anchor = _mom(series_points, anchor, prior_anchor)
+            if mom_anchor is None:
+                if not emitted:
+                    gaps.append({"series_id": series_id, "reason": "non_positive_index"})
+            else:
+                for line in entry.get("pce_lines") or []:
+                    observations.append(
+                        _base_row(entry, line, anchor, prior_anchor, mom_anchor, series_points, False)
+                    )
+                emitted = True
+
+        if not emitted:
             gaps.append(
                 {
                     "series_id": series_id,
@@ -73,37 +122,6 @@ def build_observations(registry: dict, points: dict[str, dict[str, str]], releas
                     "latest": max(series_points) if series_points else None,
                 }
             )
-            continue
-        period, prior = chosen
-        mom = _mom(series_points, period, prior)
-        if mom is None:
-            gaps.append({"series_id": series_id, "reason": "non_positive_index"})
-            continue
-        usable = bool(entry.get("usable_as_pce_rate")) and period == release
-        for line in entry.get("pce_lines") or []:
-            row = {
-                "line": line,
-                "period": period,
-                "mom_percent": _format(mom),
-                "index_level": series_points[period],
-                "prior_index_level": series_points[prior],
-                "source_family": entry["source_family"],
-                "series_id": series_id,
-                "bls_survey": entry.get("bls_survey"),
-                "bls_seasonal": entry.get("bls_seasonal"),
-                "bea_seasonal_status": entry.get("bea_seasonal_status"),
-            }
-            if usable:
-                row["seasonal_status"] = "SA"
-                row["applied_to_estimate"] = True
-            else:
-                row["role"] = "raw_bls_reference"
-                row["seasonal_status"] = "BLS_SA" if entry.get("bls_seasonal") == "S" else "BLS_NSA"
-                row["applied_to_estimate"] = False
-                row["note"] = entry.get("not_a_pce_rate_because") or (
-                    "Raw BLS print is not a BEA-adjusted PCE rate."
-                )
-            observations.append(row)
 
     for group in registry.get("ambiguous") or []:
         details = []
@@ -112,11 +130,15 @@ def build_observations(registry: dict, points: dict[str, dict[str, str]], releas
         complete = True
         for candidate in group.get("candidates") or []:
             series_points = points.get(candidate["series_id"]) or {}
-            chosen = _pair(series_points, release, anchor, prior_anchor)
-            if chosen is None:
+            period = None
+            prior = None
+            if release in series_points and anchor in series_points:
+                period, prior = release, anchor
+            elif anchor in series_points and prior_anchor in series_points:
+                period, prior = anchor, prior_anchor
+            else:
                 complete = False
                 break
-            period, prior = chosen
             if chosen_period is None:
                 chosen_period = period
             elif chosen_period != period:
