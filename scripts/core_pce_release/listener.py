@@ -1,9 +1,4 @@
-"""Bounded one-release listener.
-
-Arm is a foreground process. It keeps publishing while the release is
-INCOMPLETE, and it stops on a settled source set, cancellation, or its deadline.
-It does not install a cron or a recurring workflow.
-"""
+"""Bounded one-release listener. Foreground only."""
 
 from __future__ import annotations
 
@@ -16,6 +11,10 @@ from scripts.core_pce_release.ledger import export_observations, merge_observati
 from scripts.core_pce_release.packet import load_packet
 from scripts.core_pce_release.report import render_detailed, render_flash
 from scripts.core_pce_release.snapshot import load_snapshot, residual_weight
+
+
+def _default_emit(text: str) -> None:
+    print(text, end="" if text.endswith("\n") else "\n", flush=True)
 
 
 def _sha256(path: Path) -> str:
@@ -48,12 +47,8 @@ def _outstanding(expected: list[str], ledger: dict, release: str) -> list[str]:
     return [series_id for series_id in expected if series_id not in present]
 
 
-def _publish(packet_dir: Path, calculated: dict, revision: dict) -> None:
-    (packet_dir / "flash.txt").write_text(render_flash(calculated), encoding="utf-8")
-    (packet_dir / "detailed.txt").write_text(render_detailed(calculated), encoding="utf-8")
-    (packet_dir / "detailed.json").write_text(json.dumps(calculated, indent=2) + "\n", encoding="utf-8")
-    with (packet_dir / "revisions.jsonl").open("a", encoding="utf-8") as handle:
-        handle.write(json.dumps(revision) + "\n")
+def _central_mom(calculated: dict) -> str | None:
+    return calculated.get("projected_core_pce_mom_percent") or calculated.get("central_mom_percent")
 
 
 def run_listener(
@@ -65,10 +60,13 @@ def run_listener(
     max_runtime_seconds: float,
     interval_seconds: float,
     fetch=None,
+    emit=None,
 ) -> dict:
+    emit = emit or _default_emit
     packet = load_packet(packet_dir)
     if packet.get("status") != "READY":
         return {"state": "STOPPED", "reason": "packet_not_ready", "polls": 0, "headline": None}
+
     snapshot = load_snapshot(Path(packet["snapshot_dir"]))
     release = packet["release"]
     expected = list(packet.get("fetch_series") or [])
@@ -87,11 +85,12 @@ def run_listener(
             return
         seen_rejections.add(key)
         rejections.append(row)
+
     ledger, conflicts = _load_ledger(packet_dir)
     polls = 0
     revisions = 0
-    published_once = False
-    previous_contribution = None
+    previous_central: str | None = None
+    last_headline: str | None = None
     latest_seen: dict[str, str] = {}
 
     def _reject_stale_latest(batch: dict) -> dict:
@@ -110,86 +109,113 @@ def run_listener(
         batch["observations"] = fresh_observations
         return batch
 
-    def _calculate_and_maybe_publish(source_latency: float | None, seen_at: float, new_count: int) -> dict:
-        nonlocal revisions, published_once, previous_contribution
-        calculated = calculate(
+    def _calculate() -> dict:
+        return calculate(
             snapshot["components"],
             snapshot["levels"],
             release,
             export_observations(ledger),
             residual_weight=residual_weight(snapshot),
         )
+
+    def _maybe_publish(calculated: dict, *, source_latency: float | None, new_count: int) -> bool:
+        nonlocal revisions, previous_central, last_headline
+        central = _central_mom(calculated)
+        if central is not None and central == previous_central:
+            return False
         flash_at = now()
         calculated["latency"] = {
-            "source_seen_clock": seen_at,
-            "flash_clock": flash_at,
             "source_latency_seconds": source_latency,
-            "flash_seconds_after_seen": flash_at - seen_at,
+            "flash_clock": flash_at,
             "official_publication_latency": "UNMEASURED",
             "sla_claim": None,
-            "note": (
-                "source_latency_seconds is BLS HTTP time. "
-                "flash_seconds_after_seen is local handler time after the response was in memory. "
-                "Neither is official publication lag."
-            ),
+            "note": "source_latency_seconds is BLS HTTP time when fetch is used.",
         }
-        (packet_dir / "flash.txt").write_text(render_flash(calculated), encoding="utf-8")
-        detailed_at = now()
-        calculated["latency"]["detailed_clock"] = detailed_at
-        calculated["latency"]["detailed_seconds_after_seen"] = detailed_at - seen_at
-        contribution = calculated.get("resolved_contribution_percent")
+        flash = render_flash(calculated)
+        emit(flash)
+        (packet_dir / "flash.txt").write_text(flash, encoding="utf-8")
+        (packet_dir / "detailed.txt").write_text(render_detailed(calculated), encoding="utf-8")
+        (packet_dir / "detailed.json").write_text(json.dumps(calculated, indent=2) + "\n", encoding="utf-8")
         delta = None
-        if contribution is not None and previous_contribution is not None:
+        if previous_central is not None and central is not None:
             from decimal import Decimal
 
-            delta = format(Decimal(contribution) - Decimal(previous_contribution), "f")
+            delta = format(Decimal(central) - Decimal(previous_central), "f")
         revision = {
             "revision": revisions + 1,
             "headline": calculated["headline"],
-            "headline_reason": calculated.get("headline_reason"),
-            "resolved_contribution_percent": contribution,
+            "central_mom_percent": central,
             "contribution_delta_vs_previous": delta,
-            "projected_core_pce_mom_percent": calculated.get("projected_core_pce_mom_percent"),
             "horizons": calculated["horizons"],
-            "coverage": calculated["coverage"],
+            "information_stage": calculated.get("information_stage"),
+            "attribution": calculated.get("attribution") or [],
             "source_latency_seconds": source_latency,
-            "handler_flash_seconds": calculated["latency"]["flash_seconds_after_seen"],
             "new_observations": new_count,
             "outstanding_series": len(_outstanding(expected, ledger, release)),
         }
-        _publish(packet_dir, calculated, revision)
+        with (packet_dir / "revisions.jsonl").open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(revision) + "\n")
         revisions += 1
-        published_once = True
-        previous_contribution = contribution
-        return calculated
+        previous_central = central
+        last_headline = calculated.get("headline")
+        return True
+
+    baseline = _calculate()
+    _maybe_publish(baseline, source_latency=None, new_count=0)
 
     while True:
         if (packet_dir / "CANCEL").exists():
-            result = {"state": "STOPPED", "reason": "cancelled", "polls": polls, "headline": None, "revisions": revisions}
-            (packet_dir / "listener_result.json").write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
-            return result
+            outcome = {
+                "state": "STOPPED",
+                "reason": "cancelled",
+                "polls": polls,
+                "headline": last_headline,
+                "revisions": revisions,
+            }
+            (packet_dir / "listener_result.json").write_text(json.dumps(outcome, indent=2) + "\n", encoding="utf-8")
+            return outcome
+
+        if now() >= deadline:
+            outcome = {
+                "state": "STOPPED",
+                "reason": "deadline",
+                "polls": polls,
+                "headline": last_headline,
+                "revisions": revisions,
+                "outstanding_series": len(_outstanding(expected, ledger, release)),
+                "rejections": rejections,
+            }
+            (packet_dir / "listener_result.json").write_text(json.dumps(outcome, indent=2) + "\n", encoding="utf-8")
+            return outcome
+
         polls += 1
         new_count = 0
         source_latency = None
         if fetch is not None and expected:
-            batch = fetch(expected, release)
-            if not isinstance(batch, dict):
+            try:
+                batch = fetch(expected, release)
+            except Exception as exc:  # noqa: BLE001 — transport errors keep the last flash
+                _reject({"reason": "transport_error", "detail": str(exc)})
+                batch = {}
+            if batch and not isinstance(batch, dict):
                 raise TypeError("fetch must return a dict")
-            source_latency = batch.get("source_latency_seconds")
-            batch = _reject_stale_latest(batch)
-            for gap in batch.get("gaps") or []:
-                _reject(gap)
-            raw_documents = batch.get("raw_documents") or []
-            if raw_documents:
-                encoded = json.dumps(raw_documents).encode("utf-8")
-                digest = hashlib.sha256(encoded).hexdigest()
-                if digest not in seen_raw:
-                    seen_raw.add(digest)
-                    (packet_dir / "raw" / f"poll-{polls}.json").write_bytes(encoded)
-                    (packet_dir / "raw" / f"poll-{polls}.sha256").write_text(digest + "\n", encoding="utf-8")
-            merged = merge_observations(ledger, list(batch.get("observations") or []))
-            conflicts.extend(merged["conflicts"])
-            new_count += len(merged["changed"])
+            if batch:
+                source_latency = batch.get("source_latency_seconds")
+                batch = _reject_stale_latest(batch)
+                for gap in batch.get("gaps") or []:
+                    _reject(gap)
+                raw_documents = batch.get("raw_documents") or []
+                if raw_documents:
+                    encoded = json.dumps(raw_documents).encode("utf-8")
+                    digest = hashlib.sha256(encoded).hexdigest()
+                    if digest not in seen_raw:
+                        seen_raw.add(digest)
+                        (packet_dir / "raw" / f"poll-{polls}.json").write_bytes(encoded)
+                        (packet_dir / "raw" / f"poll-{polls}.sha256").write_text(digest + "\n", encoding="utf-8")
+                merged = merge_observations(ledger, list(batch.get("observations") or []))
+                conflicts.extend(merged["conflicts"])
+                new_count += len(merged["changed"])
+
         for path in sorted(inbox.glob("*.json")):
             try:
                 digest = _sha256(path)
@@ -214,53 +240,14 @@ def run_listener(
             merged = merge_observations(ledger, incoming)
             conflicts.extend(merged["conflicts"])
             new_count += len(merged["changed"])
-        calculated = None
+
         if new_count:
-            # Clock starts after the source body is in memory, so handler time
-            # does not include BLS HTTP time.
-            seen_at = now()
-            calculated = _calculate_and_maybe_publish(source_latency, seen_at, new_count)
+            calculated = _calculate()
+            _maybe_publish(calculated, source_latency=source_latency, new_count=new_count)
             _save_ledger(packet_dir, ledger, conflicts)
+
         (packet_dir / "rejections.json").write_text(json.dumps(rejections, indent=2) + "\n", encoding="utf-8")
         (packet_dir / "conflicts.json").write_text(json.dumps(conflicts, indent=2) + "\n", encoding="utf-8")
-        outstanding = _outstanding(expected, ledger, release)
-        headline = None if calculated is None else calculated["headline"]
-        if calculated is None and (packet_dir / "detailed.json").exists() and published_once:
-            headline = json.loads((packet_dir / "detailed.json").read_text(encoding="utf-8"))["headline"]
-        settled = published_once and not outstanding and new_count == 0
-        if now() >= deadline or max_runtime_seconds <= 0:
-            outcome = {
-                "state": "STOPPED",
-                "reason": "deadline",
-                "polls": polls,
-                "headline": headline,
-                "revisions": revisions,
-                "outstanding_series": len(outstanding),
-                "rejections": rejections,
-            }
-            (packet_dir / "listener_result.json").write_text(json.dumps(outcome, indent=2) + "\n", encoding="utf-8")
-            return outcome
-        if settled:
-            outcome = {
-                "state": "COMPLETED",
-                "reason": "sources_settled",
-                "polls": polls,
-                "headline": headline,
-                "revisions": revisions,
-                "outstanding_series": 0,
-            }
-            (packet_dir / "listener_result.json").write_text(json.dumps(outcome, indent=2) + "\n", encoding="utf-8")
-            return outcome
-        if headline in {"HOT", "NEUTRAL", "COLD"} and not outstanding:
-            outcome = {
-                "state": "COMPLETED",
-                "reason": "estimate_complete",
-                "polls": polls,
-                "headline": headline,
-                "revisions": revisions,
-                "outstanding_series": 0,
-            }
-            (packet_dir / "listener_result.json").write_text(json.dumps(outcome, indent=2) + "\n", encoding="utf-8")
-            return outcome
+
         remaining = deadline - now()
         sleep(min(interval_seconds, max(0.0, remaining)))

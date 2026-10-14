@@ -1,10 +1,16 @@
-"""Plain-text flash and detailed release notes. No model call."""
+"""Plain-text flash and detailed release notes."""
 
 from __future__ import annotations
 
 from decimal import Decimal, ROUND_HALF_UP
 
 _PLACES = Decimal("0.0001")
+
+_STAGE_TEXT = {
+    "post_cpi_pre_ppi": "awaiting current PPI",
+    "ppi_partial": "PPI updated",
+    "blocked": "integrity blocked",
+}
 
 
 def _display(value: str | None) -> str:
@@ -24,124 +30,184 @@ def _signed(value: str | None) -> str:
     return text
 
 
-def _horizon_block(months: int, row: dict) -> list[str]:
-    return [
-        f"{months}-month annualized core PCE",
-        f"  before: {_display(row.get('before'))}",
-        f"  after: {_display(row.get('after'))}",
-        f"  delta: {_signed(row.get('delta'))}",
-        f"  unchanged-momentum monthly: {_display(row.get('unchanged_momentum_mom_percent'))}",
-    ]
+def _stage_line(result: dict) -> str:
+    stage = result.get("information_stage") or "post_cpi_pre_ppi"
+    if result.get("integrity", {}).get("blocked"):
+        stage = "blocked"
+    label = _STAGE_TEXT.get(stage, stage)
+    return f"stage: {label}"
 
 
-def _coverage_block(result: dict) -> list[str]:
-    coverage = result["coverage"]
-    lines = [
-        "Coverage",
-        f"  resolved signed weight: {_display(coverage['resolved_signed_weight'])}",
-        f"  unresolved absolute weight: {_display(coverage['unresolved_absolute_weight'])}",
-        f"  carry absolute weight: {_display(coverage['carry_absolute_weight'])}",
-        f"  unresolved limit: {_display(coverage['unresolved_limit'])}",
-    ]
-    if result["headline"] == "INCOMPLETE":
+def _headline_line(result: dict) -> str:
+    blocked = bool(result.get("integrity", {}).get("blocked")) or result.get("information_stage") == "blocked"
+    if blocked or result.get("headline_reason") == "integrity_blocked":
+        return result.get("headline") or "INCOMPLETE"
+    central = _display(result.get("projected_core_pce_mom_percent") or result.get("central_mom_percent"))
+    low = _display(result.get("low_mom_percent"))
+    high = _display(result.get("high_mom_percent"))
+    return f"{result['headline']} baseline {central}% low {low}% high {high}%"
+
+
+def _horizon_lines(result: dict) -> list[str]:
+    lines: list[str] = []
+    for months in (3, 6, 9):
+        row = result["horizons"][str(months)]
         lines.append(
-            "  resolved contribution is not a core PCE estimate: "
-            + _display(result.get("resolved_contribution_percent"))
+            f"{months}-month before {_display(row.get('before'))}% "
+            f"after {_display(row.get('after'))}% "
+            f"delta {_signed(row.get('delta'))}% "
+            f"unchanged-momentum monthly {_display(row.get('unchanged_momentum_mom_percent'))}%"
         )
-    else:
-        lines.append(f"  projected core PCE MoM: {_display(result.get('projected_core_pce_mom_percent'))}")
-    carried = [row for row in result["components"] if row["status"] == "CARRY"]
-    lines.append(f"  PPI/CPI carry lines: {len(carried)}")
-    if result.get("sensitivity", {}).get("stable") is False:
-        lines.append("  carry sensitivity: classification changes inside +/-50bp")
-    reference_count = sum(1 for row in result["components"] if row.get("raw_bls_references"))
-    if reference_count:
-        lines.append(f"  raw BLS references not applied to the estimate: {reference_count}")
     return lines
 
 
-def _reference_suffix(references: list[dict]) -> str:
-    if not references:
-        return ""
-    parts = []
-    for reference in references:
-        mom = "conflict" if reference.get("mom_percent") is None else _display(reference.get("mom_percent"))
-        mark = " preliminary" if reference.get("bls_footnote_code") == "P" else ""
-        parts.append(f"{reference.get('period')}={mom}{mark}")
-    return " raw_bls_not_applied:" + ",".join(parts)
+def _gap_lines(result: dict) -> list[str]:
+    gap = result.get("gap_to_two_percent") or {}
+    lines: list[str] = []
+    for months in (3, 6, 9):
+        value = gap.get(months) or gap.get(str(months))
+        lines.append(f"gap to 2% ({months}-month post-release annualized): {_signed(value)} pp")
+    return lines
 
 
-def _context_block(result: dict) -> list[str]:
+def _scenario_line(result: dict) -> list[str]:
+    sensitive = result.get("classification_sensitive")
+    if sensitive:
+        detail = (
+            f"central {result.get('headline')}, low scenario {result.get('low_headline')}, "
+            f"high scenario {result.get('high_headline')}"
+        )
+        return [
+            "The scenario range is not a confidence interval.",
+            f"Classification is sensitive across the scenario range ({detail}).",
+        ]
+    return [
+        "The scenario range is not a confidence interval.",
+        "Classification is not sensitive across the scenario range.",
+    ]
+
+
+def _reliability_lines(result: dict) -> list[str]:
+    coverage = result.get("coverage") or {}
+    return [
+        "Reliability absolute weights",
+        f"  observed: {_display(coverage.get('observed_absolute_weight'))}",
+        f"  transformed: {_display(coverage.get('transformed_absolute_weight'))}",
+        f"  carried: {_display(coverage.get('carried_absolute_weight'))}",
+        f"  proxy: {_display(coverage.get('proxy_absolute_weight'))}",
+        f"  baseline: {_display(coverage.get('baseline_absolute_weight'))}",
+    ]
+
+
+def _cpi_context_lines(result: dict) -> list[str]:
     context = result.get("cpi_context")
     if not context:
         return []
     return [
-        "CPI context (not a core PCE nowcast)",
-        f"  {context['series_id']} MoM: {_display(context['mom_percent'])}",
-        "  used in core PCE: no",
+        "CPI context (not a core PCE estimate)",
+        f"  {context['series_id']} MoM: {_display(context.get('mom_percent'))}%",
     ]
 
 
-def _component_lines(rows: list[dict]) -> list[str]:
-    lines = ["Components"]
-    ordered = sorted(rows, key=lambda row: abs(Decimal(row["weight_share"])), reverse=True)
-    for row in ordered:
-        mom = "none" if row["mom_percent"] is None else _display(row["mom_percent"])
-        contribution = "none" if row["contribution_percent"] is None else _display(row["contribution_percent"])
-        reason = row["reason"] or row["assumption"] or ""
-        reference = _reference_suffix(row.get("raw_bls_references") or [])
+def _attribution_lines(result: dict) -> list[str]:
+    rows = result.get("attribution") or []
+    if not rows:
+        return []
+    lines = ["Attribution"]
+    for row in rows:
         lines.append(
-            f"  {row['line']} {row['status']} w={_display(row['weight_share'])} "
-            f"mom={mom} contrib={contribution} {row['source_family']} {reason} {row['name']}{reference}"
+            f"  line {row['line']} series {row['series_id']} "
+            f"baseline mom {_display(row.get('baseline_mom_percent'))}% "
+            f"updated mom {_display(row.get('updated_mom_percent'))}% "
+            f"contribution delta {_signed(row.get('contribution_delta_percent'))}%"
         )
     return lines
 
 
+def _component_lines(rows: list[dict], *, limit: int | None = None) -> list[str]:
+    ordered = sorted(rows, key=lambda row: abs(Decimal(row["weight_share"])), reverse=True)
+    if limit is not None:
+        ordered = ordered[:limit]
+    lines = ["Largest components (first-order preliminary, not official PCE)"]
+    for row in ordered:
+        mom = _display(row.get("mom_percent"))
+        assumption = row.get("assumption") or ""
+        lines.append(
+            f"  {row['line']} {row.get('name', '')} "
+            f"w={_display(row['weight_share'])} mom={mom}% "
+            f"method={row.get('method')} reliability={row.get('reliability')} {assumption}"
+        )
+    return lines
+
+
+def _footer_lines() -> list[str]:
+    return [
+        "This is a first-order preliminary forecast, not an official BEA core PCE print.",
+    ]
+
+
 def render_flash(result: dict, *, component_limit: int = 15) -> str:
-    lines = [result["headline"]]
-    if result.get("headline_reason"):
-        lines.append(f"reason: {result['headline_reason']}")
+    lines = [_headline_line(result), _stage_line(result), ""]
+    lines.extend(_horizon_lines(result))
     lines.append("")
-    for months in (3, 6, 9):
-        lines.extend(_horizon_block(months, result["horizons"][str(months)]))
-        lines.append("")
-    lines.extend(_coverage_block(result))
+    lines.extend(_gap_lines(result))
     lines.append("")
-    context = _context_block(result)
+    lines.extend(_scenario_line(result))
+    lines.append("")
+    lines.extend(_reliability_lines(result))
+    context = _cpi_context_lines(result)
     if context:
-        lines.extend(context)
         lines.append("")
+        lines.extend(context)
+    attribution = _attribution_lines(result)
+    if attribution:
+        lines.append("")
+        lines.extend(attribution)
+    lines.append("")
     ordered = sorted(result["components"], key=lambda row: abs(Decimal(row["weight_share"])), reverse=True)
-    lines.extend(_component_lines(ordered[:component_limit]))
+    lines.extend(_component_lines(ordered, limit=component_limit))
     hidden = len(ordered) - component_limit
     if hidden > 0:
-        lines.append(f"  {hidden} more components in the detailed ledger")
+        lines.append(f"  {hidden} more components in detailed.json")
+    lines.append("")
+    lines.extend(_footer_lines())
     lines.append("")
     return "\n".join(lines)
 
 
 def render_detailed(result: dict) -> str:
-    lines = [result["headline"]]
-    if result.get("headline_reason"):
-        lines.append(f"reason: {result['headline_reason']}")
-    lines.append(f"target: {result['target_period']}")
-    lines.append(f"anchor: {result['anchor_period']}")
-    lines.append(f"approximation: {result.get('approximation')}")
+    lines = [
+        _headline_line(result),
+        _stage_line(result),
+        f"target: {result['target_period']}",
+        f"anchor: {result['anchor_period']}",
+        f"approximation: {result.get('approximation')}",
+        f"method_version: {result.get('method_version')}",
+        "",
+    ]
+    lines.extend(_horizon_lines(result))
     lines.append("")
-    for months in (3, 6, 9):
-        lines.extend(_horizon_block(months, result["horizons"][str(months)]))
-        lines.append("")
-    lines.extend(_coverage_block(result))
+    lines.extend(_gap_lines(result))
     lines.append("")
-    context = _context_block(result)
+    lines.extend(_scenario_line(result))
+    lines.append("")
+    lines.extend(_reliability_lines(result))
+    context = _cpi_context_lines(result)
     if context:
-        lines.extend(context)
         lines.append("")
+        lines.extend(context)
+    attribution = _attribution_lines(result)
+    if attribution:
+        lines.append("")
+        lines.extend(attribution)
+    lines.append("")
     lines.extend(_component_lines(result["components"]))
-    if result["rejected_observations"]:
+    if result.get("rejected_observations"):
         lines.append("")
         lines.append("Rejected observations")
         for row in result["rejected_observations"]:
             lines.append(f"  {row}")
+    lines.append("")
+    lines.extend(_footer_lines())
     lines.append("")
     return "\n".join(lines)

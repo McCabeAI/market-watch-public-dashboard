@@ -81,6 +81,7 @@ def main(argv: list[str] | None = None) -> int:
         code, text = _run(args.packet, args.observations)
         print(text, end="")
         return code
+
     def _fetch(series_ids: list[str], release: str) -> dict:
         return acquire_official(series_ids, release)
 
@@ -93,12 +94,10 @@ def main(argv: list[str] | None = None) -> int:
         interval_seconds=args.interval_seconds,
         fetch=None if args.no_live_fetch else _fetch,
     )
-    if outcome.get("headline"):
-        flash = (args.packet / "flash.txt").read_text(encoding="utf-8")
-        print(flash, end="")
-        return 0
-    print(f"STOPPED\nreason: {outcome['reason']}\npolls: {outcome['polls']}\n", end="")
-    return 0
+    reason = outcome.get("reason")
+    if reason:
+        print(f"stopped: {reason}", flush=True)
+    return 0 if outcome.get("headline") else 0
 
 
 if __name__ == "__main__":

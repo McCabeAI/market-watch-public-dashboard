@@ -6,105 +6,125 @@ import json
 from decimal import Decimal
 from pathlib import Path
 
-from scripts.core_pce_release.acquire import fetch_plan, live_fetch_status, load_registry
-from scripts.core_pce_release.history import break_even_mom, rates_ending, shift_month
+from scripts.core_pce_release.acquire import fetch_plan, load_registry
+from scripts.core_pce_release.calculator import calculate
+from scripts.core_pce_release.prepare_model import load_cpi_cache
+from scripts.core_pce_release.report import render_detailed, render_flash
 from scripts.core_pce_release.snapshot import load_snapshot, residual_weight, validate_snapshot
 
 
-def _text(value: Decimal | None) -> str | None:
-    if value is None:
+def _cpi_context_from_cache(release: str) -> dict | None:
+    cache = load_cpi_cache()
+    points = (cache.get("points") or {}).get("CUSR0000SA0L1E")
+    if not points:
         return None
-    return format(value, "f")
+    anchor = cache.get("anchor") or "2026-08"
+    level = points.get(release)
+    prior = points.get(anchor)
+    if level in (None, "") or prior in (None, ""):
+        return None
+    mom = (Decimal(str(level)) / Decimal(str(prior)) - 1) * 100
+    return {
+        "series_id": "CUSR0000SA0L1E",
+        "role": "cpi_context_only",
+        "used_in_core_pce": False,
+        "index_level": str(level),
+        "prior_index_level": str(prior),
+        "mom_percent": format(mom, "f"),
+    }
+
+
+def _attach_cpi_context(calculated: dict, release: str) -> dict:
+    if calculated.get("cpi_context"):
+        return calculated
+    context = _cpi_context_from_cache(release)
+    if context is None:
+        return calculated
+    enriched = dict(calculated)
+    enriched["cpi_context"] = context
+    return enriched
 
 
 def prepare(kind: str, release: str, out_dir: Path, snapshot_dir: Path | None = None) -> tuple[int, str]:
     if kind not in {"cpi", "ppi"}:
         raise ValueError("kind must be cpi or ppi")
     snapshot = load_snapshot(snapshot_dir)
-    problems = validate_snapshot(snapshot)
-    anchor = shift_month(release, -1)
-    levels = snapshot["levels"]
-    rates = rates_ending(levels, anchor)
-    thresholds = {months: break_even_mom(levels, anchor, months) for months in (3, 6, 9)}
-    if anchor not in levels:
-        problems.append("anchor_missing:" + anchor)
-    for months in (3, 6, 9):
-        if rates[months] is None or thresholds[months] is None:
-            problems.append(f"history_window:{months}")
-    status = "READY" if not problems else "NOT READY"
+    problems = list(validate_snapshot(snapshot))
     registry = load_registry()
-    fetch = live_fetch_status(registry)
-    planned = fetch_plan(registry, kind) if status == "READY" else []
-    direct = [
-        row
-        for row in snapshot["components"]
-        if row["policy"] == "bls_sa_direct" and (kind == "cpi" or row["source_family"] == "PPI")
-    ]
+    status = "READY" if not problems else "NOT READY"
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    if status != "READY":
+        state = {
+            "schema": "core_pce_pre_release_v1",
+            "status": status,
+            "problems": problems,
+            "kind": kind,
+            "release": release,
+            "snapshot_dir": str(snapshot["root"]),
+            "listener": "not_armed",
+            "fetch_series": [],
+            "estimate_status": "NOT READY",
+            "information_stage": "blocked",
+        }
+        (out_dir / "pre_release_state.json").write_text(json.dumps(state, indent=2) + "\n", encoding="utf-8")
+        text = "NOT READY\n" + "problems: " + ",".join(problems) + "\n"
+        (out_dir / "PREPARE.txt").write_text(text, encoding="utf-8")
+        return 2, text
+
+    calculated = calculate(
+        snapshot["components"],
+        snapshot["levels"],
+        release,
+        [],
+        residual_weight=residual_weight(snapshot),
+    )
+    calculated = _attach_cpi_context(calculated, release)
+    flash = render_flash(calculated)
+    detailed = render_detailed(calculated)
+    planned = fetch_plan(registry, kind)
     state = {
         "schema": "core_pce_pre_release_v1",
-        "status": status,
-        "problems": problems,
+        "status": "READY",
+        "problems": [],
         "kind": kind,
         "release": release,
-        "anchor": anchor,
         "snapshot_dir": str(snapshot["root"]),
         "listener": "not_armed",
-        "live_fetch": fetch,
         "fetch_series": planned,
-        "registry_coverage": registry.get("coverage"),
-        "estimate_status": "INCOMPLETE",
-        "estimate_reason": "observations are not part of prepare; nothing has been estimated",
-        "accepted_august_bridge_carries": snapshot["manifest"]["accepted_august_bridge_carries"],
-        "bls_sa_direct_weight_share": snapshot["manifest"]["bls_sa_direct_weight_share"],
-        "direct_lines_for_kind": [row["line"] for row in direct],
-        "residual_weight": format(residual_weight(snapshot), "f"),
-        "horizons": {
-            str(months): {
-                "before": _text(rates[months]),
-                "unchanged_momentum_mom_percent": _text(thresholds[months]),
-            }
-            for months in (3, 6, 9)
-        },
+        "headline": calculated["headline"],
+        "information_stage": calculated.get("information_stage"),
+        "central_mom_percent": calculated.get("central_mom_percent"),
+        "low_mom_percent": calculated.get("low_mom_percent"),
+        "high_mom_percent": calculated.get("high_mom_percent"),
+        "projected_core_pce_mom_percent": calculated.get("projected_core_pce_mom_percent"),
+        "estimate_status": calculated["headline"],
         "activation": {
-            "run": "python -m scripts.core_pce_release run --packet <packet> --observations <file>",
-            "arm": "python -m scripts.core_pce_release arm --packet <packet> --inbox <dir> --max-runtime-seconds 900 --interval-seconds 10",
-            "note": (
-                "prepare does not fetch and does not arm. arm is a foreground process for one release. "
-                "A chat message does not start it. There is no hosted worker in this repository."
+            "arm": (
+                "python -m scripts.core_pce_release arm "
+                f"--packet {out_dir} --inbox {out_dir / 'inbox'} "
+                "--max-runtime-seconds 1800 --interval-seconds 10"
             ),
+            "note": "prepare does not fetch and does not arm. arm is a foreground process for one release.",
         },
     }
-    out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "pre_release_state.json").write_text(json.dumps(state, indent=2) + "\n", encoding="utf-8")
-    lines = [
-        f"PACKET {status}",
-        "pilot: NOT READY",
-        "estimate: INCOMPLETE",
-        f"kind: {kind}",
-        f"release: {release}",
-        f"anchor: {anchor}",
-        "listener: not_armed",
-        f"live_fetch: {fetch['status']}",
-        f"fetch_series: {len(planned)}",
-        f"usable_as_pce_rate_series: {fetch['usable_as_pce_rate_series']}",
-        f"accepted_august_bridge_carries: {state['accepted_august_bridge_carries']}",
-        f"direct_bls_sa_lines_for_kind: {len(direct)}",
-    ]
-    if kind == "ppi":
-        lines.append("raw_bls_ppi_mom_is_not_a_pce_rate: yes")
-        lines.append("ppi_lines_need_bea_seasonal_adjustment_or_explicit_composite: yes")
-    if problems:
-        lines.append("problems: " + ",".join(problems))
-    else:
-        for months in (3, 6, 9):
-            lines.append(
-                f"{months}-month before: {rates[months]} unchanged-momentum monthly: {thresholds[months]}"
-            )
-    if fetch["blocker"]:
-        lines.append("live_fetch_blocker: " + fetch["blocker"])
-    text = "\n".join(lines) + "\n"
-    (out_dir / "PREPARE.txt").write_text(text, encoding="utf-8")
-    return (0 if status == "READY" else 2), text
+    (out_dir / "flash.txt").write_text(flash, encoding="utf-8")
+    (out_dir / "detailed.txt").write_text(detailed, encoding="utf-8")
+    (out_dir / "detailed.json").write_text(json.dumps(calculated, indent=2) + "\n", encoding="utf-8")
+    prepare_note = "\n".join(
+        [
+            f"PACKET READY kind={kind} release={release}",
+            f"headline: {calculated['headline']}",
+            f"information_stage: {calculated.get('information_stage')}",
+            f"central_mom_percent: {calculated.get('central_mom_percent')}",
+            f"fetch_series: {len(planned)}",
+            "listener: not_armed",
+            "prepare is offline (committed BEA history and CPI cache). arm may call api.bls.gov.",
+        ]
+    ) + "\n"
+    (out_dir / "PREPARE.txt").write_text(prepare_note, encoding="utf-8")
+    return 0, flash
 
 
 def load_packet(packet_dir: Path) -> dict:
