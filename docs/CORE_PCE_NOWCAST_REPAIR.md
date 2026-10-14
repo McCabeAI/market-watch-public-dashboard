@@ -52,19 +52,19 @@ Three-month geometric average is the scenario alternative, not the central value
 geo = 100 * (((1+r1/100)*(1+r2/100)*(1+r3/100)) ** (1/3) - 1)
 ```
 
-Use `Decimal`. The low scenario picks, on each non-observed line, the mom among `{last, geo}` that produces the smaller `weight_share * mom`. The high scenario picks the larger contribution. Observed SA CPI lines stay fixed in all three scenarios. The range is not a confidence interval.
+Use `Decimal`. On each independent non-observed line, the low scenario picks the mom among `{last, geo}` that produces the smaller `weight_share * mom`, and the high scenario picks the larger contribution. Observed SA CPI lines stay fixed in all three scenarios. The range is not a confidence interval.
 
-Lines that share a `bea_series_code` in `data/core_pce_release/source_overrides.json` must finish with the same mom. Copy the primary line's mom onto the offset. Do not estimate the offset independently.
+Lines that share a `bea_series_code` in `data/core_pce_release/source_overrides.json` must finish with the same mom in the central, low, and high cases. Copy the primary line's three moms onto the offset. Do not run an independent min/max on the negative line. The four shared pairs have equal and opposite weights, so a shared mom contributes zero in every scenario. An independent choice would invent a hospital spread.
 
 Reference recomputation with the committed history and CPI cache, post-CPI and pre-PPI:
 
 | | MoM percent | Class |
 | --- | ---: | --- |
 | Central | 0.3688405280179773205064998201 | HOT |
-| Low | 0.1712571775488444585440198840 | NEUTRAL |
-| High | 0.5077301402126498353841830186 | HOT |
+| Low | 0.1759189058295244177603611525 | NEUTRAL |
+| High | 0.5030684119319698761678417501 | HOT |
 
-Displayed at 4 decimal places, half up: central `0.3688`, low `0.1713`, high `0.5077`. A 0.27% illustration and the unverified chat figure of about 0.23% are not this forecast. An implementation of this formula must match the full-precision central, low, and high strings.
+Displayed at 4 decimal places, half up: central `0.3688`, low `0.1759`, high `0.5031`. A 0.27% illustration and the unverified chat figure of about 0.23% are not this forecast. An implementation of this formula must match the full-precision central, low, and high strings.
 
 ## PPI replacement
 
