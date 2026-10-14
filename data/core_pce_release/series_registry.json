@@ -1,0 +1,17 @@
+{
+  "schema": "core_pce_series_registry_v1",
+  "live_component_fetch": "NOT_READY",
+  "blocker": "Detailed PCE-component BLS series ids are not in this registry. The release engine will not guess ids, scrape an unverified crosswalk, or treat core CPI as core PCE.",
+  "verified": [
+    {
+      "series_id": "CUSR0000SA0L1E",
+      "role": "cpi_context_only",
+      "title": "CPI-U all items less food and energy, seasonally adjusted",
+      "seasonal_status": "SA",
+      "maps_to_pce_line": null,
+      "august_2026_index": "337.765",
+      "september_2026_index": "338.896",
+      "verified_against": "BLS series cited in docs/US_CPI_CORE_PCE_RELEASE_POSTMORTEM_2026-10-14.md"
+    }
+  ]
+}
