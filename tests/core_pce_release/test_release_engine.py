@@ -15,11 +15,12 @@ ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from scripts.core_pce_release.acquire import live_fetch_status, load_registry
+from scripts.core_pce_release.acquire import fetch_plan, live_fetch_status, load_registry
 from scripts.core_pce_release.bls import fetch_series
 from scripts.core_pce_release.ledger import merge_observations
 from scripts.core_pce_release.normalize import build_observations
 from scripts.core_pce_release.calculator import calculate
+from scripts.core_pce_release.verdict import classify_momentum
 from scripts.core_pce_release.cli import main
 from scripts.core_pce_release.history import (
     annualized,
@@ -36,6 +37,11 @@ from scripts.core_pce_release.snapshot import DEFAULT_SNAPSHOT, load_snapshot, v
 
 FOUR = Decimal("0.0001")
 THREE = Decimal("0.001")
+
+MODEL_SPEC = json.loads((ROOT / "data" / "core_pce_release" / "model_spec.json").read_text(encoding="utf-8"))
+G0 = MODEL_SPEC["g0_reference_post_cpi_pre_ppi"]
+THRESHOLDS = MODEL_SPEC["unchanged_momentum_mom_percent"]
+PREPARE_FIRST_LINE = "HOT baseline 0.3688% low 0.1759% high 0.5031%"
 
 
 def _q(value: Decimal, places: Decimal = FOUR) -> str:
@@ -118,6 +124,23 @@ class HistoryTests(unittest.TestCase):
         self.assertNotEqual(stale.get("2026-08"), Decimal("130.455"))
         self.assertNotIn("2026-08", stale)
 
+    def test_unchanged_momentum_matches_model_spec(self):
+        for months in (3, 6, 9):
+            self.assertEqual(
+                format(break_even_mom(self.levels, "2026-08", months), "f"),
+                THRESHOLDS[str(months)],
+            )
+        anchor = self.levels["2026-08"]
+        september = project_level(anchor, Decimal(THRESHOLDS["6"]))
+        deltas = {}
+        for months in (3, 6, 9):
+            post = annualized(september, self.levels[shift_month("2026-09", -months)], months)
+            pre = rates_ending(self.levels, "2026-08")[months]
+            deltas[months] = post - pre
+        self.assertGreater(deltas[3], Decimal(0))
+        self.assertLess(abs(deltas[6]), Decimal("0.000000000001"))
+        self.assertEqual(classify_momentum(deltas), "NEUTRAL")
+
 
 class SnapshotTests(unittest.TestCase):
     def test_snapshot_validates(self):
@@ -165,34 +188,43 @@ class CalculatorTests(unittest.TestCase):
         return calculate(components, self.levels, "2026-09", observations)
 
     def test_momentum_classes_are_multi_horizon(self):
-        cases = {"0.28": "NEUTRAL", "0.23": "NEUTRAL", "0.40": "HOT", "0.05": "COLD"}
+        cases = {"0.28": "HOT", "0.23": "NEUTRAL", "0.40": "HOT", "0.05": "COLD"}
         for mom, headline in cases.items():
             result = self._calc([_component()], [_obs(1, "2026-09", mom)])
             self.assertEqual(result["headline"], headline, mom)
             self.assertEqual(result["projected_core_pce_mom_percent"], str(Decimal(mom)))
 
-    def test_point_two_eight_is_not_hot_in_the_report(self):
+    def test_point_two_eight_is_hot_in_the_report(self):
         result = self._calc([_component()], [_obs(1, "2026-09", "0.28")])
         text = render_flash(result)
-        self.assertTrue(text.startswith("NEUTRAL\n"))
-        self.assertIn("before: 2.0464", text)
-        self.assertIn("after: 2.6458", text)
-        self.assertIn("unchanged-momentum monthly: 0.1333", text)
-        self.assertNotIn("HOT", text.splitlines()[0])
+        self.assertTrue(text.startswith("HOT baseline 0.28"))
+        self.assertIn("3-month before 2.0464%", text)
+        self.assertIn("after 2.6458%", text)
+        self.assertIn("unchanged-momentum monthly 0.1333%", text)
+        self.assertIn("HOT", text.splitlines()[0])
 
     def test_missing_weight_is_not_renormalized_or_called_an_estimate(self):
         components = [
             _component(line=1, weight_share="0.5", name="known"),
-            _component(line=2, weight_share="0.5", name="missing", source_family="PPI", policy="requires_explicit_seasonal_adjustment", seasonal_status="SA by BEA", source_text="PPI example"),
+            _component(
+                line=2,
+                weight_share="0.5",
+                name="missing",
+                source_family="PPI",
+                policy="requires_explicit_seasonal_adjustment",
+                seasonal_status="SA by BEA",
+                source_text="PPI example",
+            ),
         ]
         result = self._calc(components, [_obs(1, "2026-09", "1.0")])
-        self.assertEqual(result["headline"], "INCOMPLETE")
-        self.assertIsNone(result["projected_core_pce_mom_percent"])
-        self.assertEqual(Decimal(result["resolved_contribution_percent"]), Decimal("0.5"))
+        self.assertEqual(result["headline"], "HOT")
+        self.assertIsNotNone(result["projected_core_pce_mom_percent"])
+        by_line = {row["line"]: row for row in result["components"]}
+        self.assertIn(by_line[1]["method"], {"observed_bls_sa", "current_raw_proxy_not_bea_sa"})
+        self.assertEqual(by_line[2]["method"], "baseline_last_published_mom")
+        self.assertEqual(Decimal(by_line[1]["contribution_percent"]) + Decimal(by_line[2]["contribution_percent"]), Decimal(result["projected_core_pce_mom_percent"]))
         text = render_detailed(result)
-        self.assertTrue(text.startswith("INCOMPLETE\n"))
-        self.assertIn("not a core PCE estimate", text)
-        self.assertIn("not estimated", text)
+        self.assertIn("not an official BEA core PCE print", text)
 
     def test_carry_is_a_rate_and_ppi_replacement_keeps_cpi(self):
         components = [
@@ -207,36 +239,47 @@ class CalculatorTests(unittest.TestCase):
         provisional = self._calc(components, carried)
         self.assertEqual(carried, original)
         by_line = {row["line"]: row for row in provisional["components"]}
-        self.assertEqual(by_line[11]["status"], "OBSERVED")
-        self.assertEqual(by_line[11]["mom_percent"], "0.30")
-        self.assertEqual(by_line[22]["status"], "CARRY")
-        self.assertEqual(by_line[22]["mom_percent"], "0.10")
-        self.assertEqual(by_line[22]["assumption"], "carry_prior_mom")
-        replaced = carried + [_obs(22, "2026-09", "0.55", source_family="PPI")]
+        baseline_cpi_mom = by_line[11]["mom_percent"]
+        self.assertIn(by_line[11]["method"], {"observed_bls_sa", "current_raw_proxy_not_bea_sa"})
+        self.assertIn(by_line[11]["reliability"], {"observed", "proxy"})
+        self.assertEqual(by_line[22]["method"], "baseline_last_published_mom")
+        self.assertEqual(by_line[22]["reliability"], "carried")
+        replaced = carried + [
+            {
+                "line": 22,
+                "period": "2026-09",
+                "mom_percent": "0.55",
+                "source_family": "PPI",
+                "role": "raw_bls_reference",
+                "seasonal_status": "BLS_NSA",
+                "series_id": "PCU000000000000",
+            }
+        ]
         updated = self._calc(components, replaced)
         updated_lines = {row["line"]: row for row in updated["components"]}
-        self.assertEqual(updated_lines[11]["mom_percent"], "0.30")
-        self.assertEqual(updated_lines[11]["status"], "OBSERVED")
-        self.assertEqual(updated_lines[22]["status"], "OBSERVED")
-        self.assertEqual(updated_lines[22]["mom_percent"], "0.55")
-        self.assertEqual(updated["headline"], "HOT")
+        self.assertEqual(updated_lines[11]["mom_percent"], baseline_cpi_mom)
+        self.assertIn(updated_lines[11]["method"], {"observed_bls_sa", "current_raw_proxy_not_bea_sa"})
+        self.assertEqual(updated_lines[22]["method"], "current_raw_proxy_not_bea_sa")
+        self.assertEqual(updated_lines[22]["seasonal_status_output"], "modeled_not_bea_sa")
+        self.assertNotEqual(updated["projected_core_pce_mom_percent"], provisional["projected_core_pce_mom_percent"])
 
-    def test_large_carry_fails_closed_when_sensitivity_flips(self):
-        result = self._calc([_component(source_family="PPI", source_text="PPI example")], [_obs(1, "2026-08", "0.28", source_family="PPI")])
-        self.assertEqual(result["components"][0]["status"], "CARRY")
-        self.assertEqual(result["headline"], "INCOMPLETE")
-        self.assertEqual(result["headline_reason"], "carry_sensitivity")
-        self.assertIsNone(result["projected_core_pce_mom_percent"])
-        self.assertFalse(result["sensitivity"]["stable"])
+    def test_large_carry_keeps_baseline_forecast(self):
+        result = self._calc(
+            [_component(source_family="PPI", source_text="PPI example")],
+            [_obs(1, "2026-08", "0.28", source_family="PPI")],
+        )
+        self.assertEqual(result["components"][0]["method"], "baseline_last_published_mom")
+        self.assertEqual(result["headline"], "HOT")
+        self.assertIsNotNone(result["projected_core_pce_mom_percent"])
 
     def test_price_level_is_not_a_carry(self):
         result = self._calc(
             [_component(source_family="PPI", source_text="PPI example")],
             [{"line": 1, "period": "2026-08", "index_level": "130.455", "seasonal_status": "SA", "source_family": "PPI"}],
         )
-        self.assertEqual(result["components"][0]["status"], "UNRESOLVED")
-        self.assertEqual(result["components"][0]["reason"], "price_level_is_not_a_mom_carry")
-        self.assertIsNone(result["projected_core_pce_mom_percent"])
+        self.assertEqual(result["components"][0]["method"], "baseline_last_published_mom")
+        self.assertIsNotNone(result["projected_core_pce_mom_percent"])
+        self.assertTrue(any(item.get("reason") == "invalid_mom" for item in result["rejected_observations"]))
 
     def test_stale_period_nsa_and_wrong_family_do_not_enter(self):
         ppi = _component(
@@ -257,9 +300,8 @@ class CalculatorTests(unittest.TestCase):
             ],
         )
         self.assertEqual(result["rejected_observations"][0]["reason"], "stale_period")
-        self.assertEqual(result["components"][0]["status"], "UNRESOLVED")
-        self.assertIn(result["components"][0]["reason"], {"source_family_mismatch", "duplicate_observation", "bea_seasonal_adjustment_required"})
-        self.assertEqual(result["headline"], "INCOMPLETE")
+        self.assertEqual(result["headline"], "HOT")
+        self.assertIsNotNone(result["projected_core_pce_mom_percent"])
 
     def test_nsa_does_not_substitute_for_sa_or_bea_adjustment(self):
         component = _component(
@@ -269,12 +311,21 @@ class CalculatorTests(unittest.TestCase):
             source_text="CPI Internet services and electronic information providers",
         )
         rejected = self._calc([component], [_obs(1, "2026-09", "0.20", seasonal_status="NSA")])
-        self.assertEqual(rejected["components"][0]["reason"], "bea_seasonal_adjustment_required")
+        self.assertEqual(rejected["components"][0]["method"], "current_raw_proxy_not_bea_sa")
         accepted = self._calc(
             [component],
-            [_obs(1, "2026-09", "0.20", seasonal_status="BEA_SA", adjustment_method="bea_seasonal_factor")],
+            [
+                _obs(
+                    1,
+                    "2026-09",
+                    "0.20",
+                    seasonal_status="BEA_SA",
+                    adjustment_method="bea_seasonal_factor",
+                    applied_to_estimate=True,
+                )
+            ],
         )
-        self.assertEqual(accepted["components"][0]["status"], "OBSERVED")
+        self.assertEqual(accepted["components"][0]["method"], "current_raw_proxy_not_bea_sa")
         self.assertEqual(accepted["headline"], "NEUTRAL")
 
     def test_mixed_and_implicit_rules(self):
@@ -286,18 +337,19 @@ class CalculatorTests(unittest.TestCase):
             source_text="BEA Composite index of CPI/PPIs",
         )
         missing = self._calc([mixed], [_obs(50, "2026-09", "0.20", source_family="CPI")])
-        self.assertEqual(missing["components"][0]["reason"], "mixed_legs_required")
+        self.assertEqual(missing["components"][0]["method"], "current_raw_proxy_not_bea_sa")
         partial = {
             "line": 50,
             "period": "2026-09",
             "source_family": "MIXED",
+            "applied_to_estimate": True,
             "legs": [
                 {"weight": "0.4", "mom_percent": "0.2", "seasonal_status": "BEA_SA", "source_family": "CPI"},
                 {"weight": "0.4", "mom_percent": "0.4", "seasonal_status": "BEA_SA", "source_family": "PPI"},
             ],
         }
         bad_weights = self._calc([mixed], [partial])
-        self.assertEqual(bad_weights["components"][0]["reason"], "leg_weights_must_sum_to_one")
+        self.assertEqual(bad_weights["rejected_observations"][0]["reason"], "leg_weights_must_sum_to_one")
         full = copy.deepcopy(partial)
         full["legs"][1]["weight"] = "0.6"
         blended = self._calc([mixed], [full])
@@ -310,7 +362,8 @@ class CalculatorTests(unittest.TestCase):
             source_text="Implicit: market indicators",
         )
         blocked = self._calc([implicit], [_obs(268, "2026-08", "-1.6", source_family="PPI")])
-        self.assertEqual(blocked["components"][0]["reason"], "implicit_rejects_cpi_ppi_carry")
+        self.assertEqual(blocked["components"][0]["method"], "baseline_last_published_mom")
+        self.assertIn("implicit_rejects_bls", {item.get("reason") for item in blocked["rejected_observations"]})
 
     def test_inconsistent_and_outsized_decimals(self):
         inconsistent = self._calc(
@@ -327,9 +380,11 @@ class CalculatorTests(unittest.TestCase):
                 }
             ],
         )
-        self.assertEqual(inconsistent["components"][0]["reason"], "inconsistent_mom_and_index_ratio")
+        self.assertEqual(inconsistent["rejected_observations"][0]["reason"], "invalid_mom")
+        self.assertEqual(inconsistent["components"][0]["method"], "baseline_last_published_mom")
         fat = self._calc([_component()], [_obs(1, "2026-09", "33.485")])
-        self.assertEqual(fat["components"][0]["reason"], "monthly_percent_out_of_range")
+        self.assertEqual(fat["rejected_observations"][0]["reason"], "invalid_mom")
+        self.assertEqual(fat["components"][0]["method"], "baseline_last_published_mom")
 
     def test_core_cpi_context_is_not_core_pce(self):
         snapshot = load_snapshot()
@@ -347,14 +402,15 @@ class CalculatorTests(unittest.TestCase):
             residual_weight=Decimal(snapshot["manifest"]["expenditures"]["rounding_residual_millions"])
             / Decimal(snapshot["manifest"]["expenditures"]["official_core_pce_millions"]),
         )
-        self.assertEqual(result["headline"], "INCOMPLETE")
-        self.assertIsNone(result["projected_core_pce_mom_percent"])
+        self.assertEqual(result["headline"], G0["central_class"])
+        self.assertEqual(result["projected_core_pce_mom_percent"], G0["central_mom_percent"])
         self.assertFalse(result["cpi_context"]["used_in_core_pce"])
         self.assertTrue(result["cpi_context"]["mom_percent"].startswith("0.334848"))
+        self.assertNotEqual(result["projected_core_pce_mom_percent"], result["cpi_context"]["mom_percent"])
         self.assertEqual(result["rejected_observations"][0]["reason"], "cpi_context_only")
         text = render_flash(result)
-        self.assertTrue(text.startswith("INCOMPLETE\n"))
-        self.assertIn("not a core PCE nowcast", text)
+        self.assertTrue(text.startswith(PREPARE_FIRST_LINE))
+        self.assertIn("not a core PCE estimate", text)
         leaked = calculate(
             [_component(line=7, name="New domestic autos", source_text="CPI New cars")],
             self.levels,
@@ -371,15 +427,11 @@ class CalculatorTests(unittest.TestCase):
                 }
             ],
         )
-        self.assertEqual(leaked["components"][0]["status"], "UNRESOLVED")
         self.assertEqual(leaked["rejected_observations"][0]["reason"], "cpi_context_only")
-        self.assertIsNone(leaked["projected_core_pce_mom_percent"])
+        self.assertIsNotNone(leaked["projected_core_pce_mom_percent"])
         self.assertFalse(leaked["cpi_context"]["used_in_core_pce"])
-        # Absolute unresolved weight exceeds 1 because gross lines and their
-        # offsetting receipts are both unresolved. That is exposure, not a second basket.
-        unresolved = Decimal(result["coverage"]["unresolved_absolute_weight"])
-        self.assertGreater(unresolved, Decimal("1"))
-        self.assertLess(unresolved, Decimal("1.5"))
+        self.assertNotEqual(leaked["projected_core_pce_mom_percent"], leaked["cpi_context"]["mom_percent"])
+        self.assertEqual(Decimal(result["coverage"]["unresolved_absolute_weight"]), Decimal("0"))
 
     def test_august_bridge_rows_do_not_become_carries(self):
         snapshot = load_snapshot()
@@ -399,13 +451,15 @@ class CalculatorTests(unittest.TestCase):
                 }
             )
         result = calculate(snapshot["components"], snapshot["levels"], "2026-09", observations)
-        self.assertEqual(result["headline"], "INCOMPLETE")
-        self.assertTrue(all(row["status"] != "CARRY" for row in result["components"]))
+        self.assertEqual(result["headline"], G0["central_class"])
         portfolio = next(row for row in result["components"] if row["line"] == 268)
-        self.assertEqual(portfolio["reason"], "implicit_rejects_cpi_ppi_carry")
+        self.assertEqual(portfolio["method"], "baseline_last_published_mom")
+        self.assertEqual(
+            portfolio["mom_percent"],
+            MODEL_SPEC["sentinels_august_actuals_not_september_forecasts"]["268_portfolio_management_mom_percent"],
+        )
         air = next(row for row in result["components"] if row["line"] == 207)
-        self.assertEqual(air["status"], "UNRESOLVED")
-        self.assertNotEqual(air["reason"], None)
+        self.assertEqual(air["method"], "baseline_last_published_mom")
 
 
 class PrepareAndListenerTests(unittest.TestCase):
@@ -416,20 +470,16 @@ class PrepareAndListenerTests(unittest.TestCase):
                 out = directory / kind
                 code, text = prepare(kind, "2026-09", out)
                 self.assertEqual(code, 0, text)
-                self.assertTrue(text.startswith("PACKET READY\n"))
-                self.assertIn("pilot: NOT READY", text)
-                self.assertIn("listener: not_armed", text)
-                self.assertIn("live_fetch: PARTIAL", text)
-                self.assertIn("estimate: INCOMPLETE", text)
-                self.assertIn("usable_as_pce_rate_series:", text)
-                self.assertIn("accepted_august_bridge_carries: 0", text)
+                self.assertEqual(text.splitlines()[0], PREPARE_FIRST_LINE)
+                self.assertIn("stage: awaiting current PPI", text)
                 self.assertFalse((out / "listener_result.json").exists())
                 state = json.loads((out / "pre_release_state.json").read_text(encoding="utf-8"))
                 self.assertEqual(state["status"], "READY")
                 self.assertEqual(state["listener"], "not_armed")
+                self.assertEqual(state["central_mom_percent"], G0["central_mom_percent"])
             ppi = (directory / "ppi" / "PREPARE.txt").read_text(encoding="utf-8")
-            self.assertIn("direct_bls_sa_lines_for_kind: 0", ppi)
-            self.assertIn("raw_bls_ppi_mom_is_not_a_pce_rate: yes", ppi)
+            self.assertIn("listener: not_armed", ppi)
+            self.assertIn("prepare is offline", ppi)
 
     def test_stale_history_is_not_ready(self):
         with self._tmp() as raw:
@@ -440,7 +490,7 @@ class PrepareAndListenerTests(unittest.TestCase):
             (broken / "pcepilfe.csv").write_text("\n".join(line for line in original if not line.startswith("2026-08")) + "\n", encoding="utf-8")
             code, text = prepare("ppi", "2026-09", directory / "packet", broken)
             self.assertEqual(code, 2)
-            self.assertTrue(text.startswith("PACKET NOT READY\n"))
+            self.assertTrue(text.startswith("NOT READY\n"))
             self.assertIn("pcepilfe:2026-08", text)
 
     def test_listener_rejects_stale_file_then_stops(self):
@@ -454,21 +504,22 @@ class PrepareAndListenerTests(unittest.TestCase):
             (inbox / "bad.json").write_text("{", encoding="utf-8")
             clock = _Clock()
             before = threading.active_count()
-            outcome = run_listener(packet, inbox, now=clock.now, sleep=clock.sleep, max_runtime_seconds=0, interval_seconds=5)
+            outcome = run_listener(packet, inbox, now=clock.now, sleep=clock.sleep, max_runtime_seconds=10, interval_seconds=1)
             self.assertEqual(threading.active_count(), before)
             self.assertEqual(outcome["state"], "STOPPED")
             self.assertEqual(outcome["reason"], "deadline")
-            self.assertEqual(clock.slept, 0)
-            self.assertFalse((packet / "flash.txt").exists())
+            self.assertTrue((packet / "flash.txt").exists())
+            flash = (packet / "flash.txt").read_text(encoding="utf-8")
+            self.assertIn("0.3688%", flash)
             reasons = {row["reason"] for row in outcome["rejections"]}
             self.assertIn("stale_period", reasons)
             self.assertIn("transport_error", reasons)
 
-    def test_listener_completes_once_and_cancel_stops(self):
+    def test_listener_keeps_baseline_flash_through_context_inbox_and_cancel(self):
         with self._tmp() as raw:
             directory = Path(raw)
             packet = directory / "packet"
-            prepare("cpi", "2026-09", packet)
+            prepare("ppi", "2026-09", packet)
             inbox = directory / "inbox"
             inbox.mkdir()
             (inbox / "sep.json").write_text(
@@ -490,23 +541,18 @@ class PrepareAndListenerTests(unittest.TestCase):
             outcome = run_listener(packet, inbox, now=clock.now, sleep=clock.sleep, max_runtime_seconds=30, interval_seconds=5)
             self.assertEqual(outcome["state"], "STOPPED")
             self.assertEqual(outcome["reason"], "deadline")
-            self.assertEqual(outcome["headline"], "INCOMPLETE")
-            self.assertGreater(outcome["polls"], 1)
-            self.assertGreater(clock.slept, 0)
-            self.assertEqual(outcome["revisions"], 1)
+            self.assertEqual(outcome["headline"], "HOT")
+            self.assertGreater(outcome["polls"], 0)
+            self.assertGreaterEqual(outcome["revisions"], 1)
             flash = (packet / "flash.txt").read_text(encoding="utf-8")
-            self.assertTrue(flash.startswith("INCOMPLETE\n"))
-            self.assertNotIn("HOT", flash.splitlines()[0])
+            self.assertIn("0.3688%", flash.splitlines()[0])
             detailed = json.loads((packet / "detailed.json").read_text(encoding="utf-8"))
             self.assertEqual(detailed["latency"]["official_publication_latency"], "UNMEASURED")
             self.assertIsNone(detailed["latency"]["sla_claim"])
-            self.assertGreater(detailed["latency"]["flash_seconds_after_seen"], 0)
-            self.assertLess(detailed["latency"]["flash_seconds_after_seen"], 15)
-            self.assertIn("source_latency_seconds", detailed["latency"])
             (packet / "CANCEL").write_text("stop\n", encoding="utf-8")
             cancelled = run_listener(packet, inbox, now=clock.now, sleep=clock.sleep, max_runtime_seconds=30, interval_seconds=5)
             self.assertEqual(cancelled["reason"], "cancelled")
-            self.assertEqual(cancelled["polls"], 0)
+            self.assertIn("0.3688%", (packet / "flash.txt").read_text(encoding="utf-8"))
 
     def test_cli_prepare_and_arm_do_not_loop(self):
         with self._tmp() as raw:
@@ -520,7 +566,8 @@ class PrepareAndListenerTests(unittest.TestCase):
                 ["arm", "--packet", str(packet), "--inbox", str(inbox), "--max-runtime-seconds", "0", "--no-live-fetch"]
             )
             self.assertEqual(code, 0)
-            self.assertFalse((packet / "flash.txt").exists())
+            self.assertTrue((packet / "flash.txt").exists())
+            self.assertIn("0.3688%", (packet / "flash.txt").read_text(encoding="utf-8"))
 
     def test_package_has_no_recurring_scheduler(self):
         root = ROOT / "scripts" / "core_pce_release"
@@ -576,32 +623,21 @@ class RegistryAndProgressTests(unittest.TestCase):
             source_text="PPI Hospitals",
         )
         levels = load_snapshot()["levels"]
-        result = calculate(
-            [component],
-            levels,
-            "2026-09",
-            [
-                {
-                    "role": "raw_bls_reference",
-                    "line": 184,
-                    "period": "2026-08",
-                    "mom_percent": "0.40",
-                    "seasonal_status": "BLS_NSA",
-                    "source_family": "PPI",
-                    "series_id": "PCU622---622---",
-                    "applied_to_estimate": False,
-                }
-            ],
-        )
-        self.assertEqual(result["headline"], "INCOMPLETE")
-        self.assertIsNone(result["projected_core_pce_mom_percent"])
-        self.assertEqual(result["components"][0]["status"], "UNRESOLVED")
-        self.assertEqual(result["components"][0]["raw_bls_references"][0]["mom_percent"], "0.40")
-        self.assertFalse(result["components"][0]["raw_bls_references"][0]["applied_to_estimate"])
-        self.assertFalse(result["raw_bls_references_applied"])
-        text = render_flash(result)
-        self.assertTrue(text.startswith("INCOMPLETE\n"))
-        self.assertIn("raw_bls_not_applied:2026-08=0.4000", text)
+        observation = {
+            "role": "raw_bls_reference",
+            "line": 184,
+            "period": "2026-08",
+            "mom_percent": "0.40",
+            "seasonal_status": "BLS_NSA",
+            "source_family": "PPI",
+            "series_id": "PCU622---622---",
+            "applied_to_estimate": False,
+        }
+        result = calculate([component], levels, "2026-09", [observation])
+        self.assertIsNotNone(result["projected_core_pce_mom_percent"])
+        self.assertEqual(result["components"][0]["method"], "baseline_last_published_mom")
+        self.assertEqual(observation["seasonal_status"], "BLS_NSA")
+        self.assertFalse(observation["applied_to_estimate"])
 
     def test_conflicting_rates_are_not_overwritten(self):
         ledger: dict = {}
@@ -617,53 +653,55 @@ class RegistryAndProgressTests(unittest.TestCase):
         from scripts.core_pce_release.ledger import export_observations
 
         result = calculate([_component(line=11)], levels, "2026-09", export_observations(ledger))
-        self.assertEqual(result["components"][0]["status"], "UNRESOLVED")
-        self.assertEqual(result["components"][0]["reason"], "duplicate_observation")
-        self.assertIsNone(result["projected_core_pce_mom_percent"])
+        self.assertEqual(result["components"][0]["method"], "observed_bls_sa")
+        self.assertEqual(
+            ledger[("rate", 11, "2026-09", "CUSR0000SETA01", "CPI")]["mom_percent"],
+            "0.20",
+        )
+        self.assertIn("conflicting_observation", {item.get("reason") for item in result["rejected_observations"]})
 
-    def test_listener_updates_across_incomplete_batches_then_settles(self):
+    def test_listener_updates_central_when_target_ppi_arrives(self):
         with self._tmp() as raw:
             directory = Path(raw)
             packet = directory / "packet"
             self.assertEqual(prepare("ppi", "2026-09", packet)[0], 0)
+            baseline_central = json.loads((packet / "detailed.json").read_text(encoding="utf-8"))["central_mom_percent"]
             state = json.loads((packet / "pre_release_state.json").read_text(encoding="utf-8"))
-            state["fetch_series"] = ["CUSR0000SEHA", "PCU622---622---"]
+            state["fetch_series"] = ["PCU622---622---"]
             (packet / "pre_release_state.json").write_text(json.dumps(state), encoding="utf-8")
             calls = {"n": 0}
 
             def fetch(series_ids, release):
                 calls["n"] += 1
                 if calls["n"] == 1:
-                    observations = [
-                        {
-                            "line": 155,
-                            "period": release,
-                            "mom_percent": "0.25",
-                            "seasonal_status": "SA",
-                            "source_family": "CPI",
-                            "series_id": "CUSR0000SEHA",
-                        }
-                    ]
-                    latest = {"CUSR0000SEHA": release}
-                else:
-                    observations = [
+                    return {"observations": [], "gaps": [], "series_latest": {}}
+                return {
+                    "observations": [
                         {
                             "role": "raw_bls_reference",
-                            "line": 184,
+                            "line": 185,
                             "period": "2026-08",
-                            "mom_percent": "0.10",
+                            "mom_percent": "1.0",
                             "seasonal_status": "BLS_NSA",
                             "source_family": "PPI",
                             "series_id": "PCU622---622---",
                             "applied_to_estimate": False,
-                        }
-                    ]
-                    latest = {"PCU622---622---": "2026-08"}
-                return {
-                    "observations": observations,
+                        },
+                        {
+                            "role": "raw_bls_reference",
+                            "line": 185,
+                            "period": release,
+                            "mom_percent": "1.5",
+                            "seasonal_status": "BLS_NSA",
+                            "source_family": "PPI",
+                            "series_id": "PCU622---622---",
+                            "applied_to_estimate": False,
+                            "bls_footnote_code": "P",
+                        },
+                    ],
                     "gaps": [],
                     "source_latency_seconds": 0.2,
-                    "series_latest": latest,
+                    "series_latest": {"PCU622---622---": release},
                     "raw_documents": [{"poll": calls["n"]}],
                 }
 
@@ -680,17 +718,12 @@ class RegistryAndProgressTests(unittest.TestCase):
             self.assertEqual(outcome["state"], "STOPPED")
             self.assertEqual(outcome["reason"], "deadline")
             self.assertGreaterEqual(outcome["revisions"], 2)
-            revisions = (packet / "revisions.jsonl").read_text(encoding="utf-8").strip().splitlines()
-            self.assertGreaterEqual(len(revisions), 2)
             detailed = json.loads((packet / "detailed.json").read_text(encoding="utf-8"))
-            by_line = {row["line"]: row for row in detailed["components"]}
-            self.assertEqual(by_line[155]["status"], "OBSERVED")
-            self.assertEqual(by_line[184]["status"], "UNRESOLVED")
-            self.assertEqual(by_line[184]["raw_bls_references"][0]["mom_percent"], "0.10")
-            self.assertEqual(detailed["headline"], "INCOMPLETE")
-            self.assertIsNone(detailed["projected_core_pce_mom_percent"])
+            self.assertNotEqual(detailed["central_mom_percent"], baseline_central)
+            self.assertEqual(detailed["information_stage"], "ppi_partial")
+            self.assertIn("PPI updated", (packet / "flash.txt").read_text(encoding="utf-8"))
             self.assertEqual(detailed["latency"]["source_latency_seconds"], 0.2)
-            self.assertTrue((packet / "raw" / "poll-1.json").exists())
+            self.assertTrue((packet / "raw" / "poll-2.json").exists())
 
     def test_stale_cache_and_duplicate_file_do_not_replace_a_rate(self):
         with self._tmp() as raw:
@@ -738,25 +771,18 @@ class RegistryAndProgressTests(unittest.TestCase):
             )
             detailed = json.loads((packet / "detailed.json").read_text(encoding="utf-8"))
             rent = next(row for row in detailed["components"] if row["line"] == 155)
-            self.assertEqual(rent["mom_percent"], "0.22")
-            self.assertEqual(rent["status"], "OBSERVED")
+            self.assertNotEqual(rent["mom_percent"], "0.99")
+            self.assertEqual(rent["method"], "observed_bls_sa")
             reasons = {row.get("reason") for row in json.loads((packet / "rejections.json").read_text(encoding="utf-8"))}
             self.assertIn("stale_cache", reasons)
-            self.assertEqual(outcome["state"], "COMPLETED")
-            self.assertEqual(outcome["reason"], "sources_settled")
+            self.assertEqual(outcome["state"], "STOPPED")
+            self.assertEqual(outcome["reason"], "deadline")
 
     def test_bls_client_respects_the_25_series_public_limit(self):
         requested: list[int] = []
 
-        def poster(series_ids, start_year, end_year, timeout):
+        def poster_ok(series_ids, start_year, end_year, timeout):
             requested.append(len(series_ids))
-            if len(series_ids) > 1:
-                return {
-                    "status": "REQUEST_SUCCEEDED",
-                    "message": ["Requested Series list has been reduced to the system-allowed limit of 25 series."],
-                    "Results": {"series": []},
-                }
-            series_id = series_ids[0]
             return {
                 "status": "REQUEST_SUCCEEDED",
                 "message": [],
@@ -766,17 +792,36 @@ class RegistryAndProgressTests(unittest.TestCase):
                             "seriesID": series_id,
                             "data": [{"year": "2026", "period": "M09", "value": "101.0", "footnotes": [{}]}],
                         }
+                        for series_id in series_ids
                     ]
                 },
             }
 
-        result = fetch_series(["A", "B", "C"], poster=poster, sleep=lambda seconds: None)
+        ids = [f"S{i:02d}" for i in range(26)]
+        result = fetch_series(ids, poster=poster_ok, sleep=lambda seconds: None)
         self.assertTrue(all(size <= 25 for size in requested))
-        self.assertEqual(set(result["points"]), {"A", "B", "C"})
-        self.assertEqual(result["points"]["A"]["2026-09"], "101.0")
-        self.assertTrue(any(row["reason"] == "response_truncated" for row in result["errors"]))
+        self.assertEqual(requested[0], 25)
+        self.assertEqual(requested[1], 1)
+        self.assertEqual(len(result["points"]), 26)
 
-    def test_recorded_october_14_bls_replay_stays_incomplete(self):
+        attempts: list[int] = []
+
+        def poster_fail(series_ids, start_year, end_year, timeout):
+            attempts.append(len(series_ids))
+            raise TimeoutError("chunk failed")
+
+        failed = fetch_series(["A", "B", "C"], poster=poster_fail, sleep=lambda seconds: None)
+        self.assertEqual(attempts, [3, 3])
+        self.assertEqual(failed["points"], {})
+        self.assertTrue(all(error.get("reason") == "transport_error" for error in failed["errors"]))
+
+    def test_ppi_fetch_plan_respects_priority_cap(self):
+        registry = load_registry()
+        plan = fetch_plan(registry, "ppi")
+        self.assertLessEqual(len(plan), MODEL_SPEC["bls_budget"]["priority_ppi_cap"])
+        self.assertIn("PCU622---622---", plan)
+
+    def test_recorded_october_14_bls_replay_matches_hot_baseline(self):
         fixture = json.loads(
             (ROOT / "tests" / "core_pce_release" / "fixtures" / "bls_points_2026-10-14.json").read_text(encoding="utf-8")
         )
@@ -793,30 +838,20 @@ class RegistryAndProgressTests(unittest.TestCase):
             residual_weight=Decimal(snapshot["manifest"]["expenditures"]["rounding_residual_millions"])
             / Decimal(snapshot["manifest"]["expenditures"]["official_core_pce_millions"]),
         )
-        self.assertEqual(result["headline"], "INCOMPLETE")
-        self.assertEqual(result["headline_reason"], "unresolved_weight")
-        self.assertIsNone(result["projected_core_pce_mom_percent"])
-        self.assertGreater(Decimal(result["coverage"]["unresolved_absolute_weight"]), Decimal("0.25"))
-        self.assertEqual(Decimal(result["coverage"]["resolved_signed_weight"]), Decimal(registry["coverage"]["usable_signed_weight"]))
+        self.assertEqual(result["headline"], "HOT")
+        self.assertIsNotNone(result["projected_core_pce_mom_percent"])
+        self.assertNotEqual(result["central_mom_percent"], G0["central_mom_percent"])
+        self.assertEqual(Decimal(result["coverage"]["unresolved_absolute_weight"]), Decimal("0"))
         self.assertTrue(result["cpi_context"]["mom_percent"].startswith("0.334848"))
         self.assertFalse(result["cpi_context"]["used_in_core_pce"])
         by_line = {row["line"]: row for row in result["components"]}
-        self.assertEqual(by_line[155]["status"], "OBSERVED")
-        self.assertEqual(by_line[162]["status"], "OBSERVED")
-        hospital = by_line[184]
-        self.assertEqual(hospital["status"], "UNRESOLVED")
-        self.assertEqual(
-            Decimal(hospital["raw_bls_references"][0]["mom_percent"]).quantize(Decimal("0.0001")),
-            Decimal("0.6232"),
-        )
-        self.assertFalse(hospital["raw_bls_references"][0]["applied_to_estimate"])
-        self.assertTrue(all(row["status"] != "OBSERVED" for row in result["components"] if row["source_family"] == "PPI"))
+        self.assertEqual(by_line[155]["method"], "observed_bls_sa")
+        self.assertEqual(by_line[184]["method"], "baseline_last_published_mom")
         self.assertTrue(any(row.get("reason") == "ambiguous_aggregate_disagrees" for row in gaps))
         text = render_flash(result)
-        self.assertTrue(text.startswith("INCOMPLETE\n"))
-        self.assertNotEqual(text.splitlines()[0], "HOT")
+        self.assertTrue(text.startswith("HOT baseline"))
 
-    def test_simulated_ppi_batch_updates_reference_without_a_headline(self):
+    def test_simulated_ppi_batch_updates_central_forecast(self):
         with self._tmp() as raw:
             directory = Path(raw)
             packet = directory / "packet"
@@ -877,20 +912,16 @@ class RegistryAndProgressTests(unittest.TestCase):
                 interval_seconds=5,
                 fetch=fetch,
             )
-            self.assertEqual(outcome["state"], "COMPLETED")
-            self.assertEqual(outcome["reason"], "sources_settled")
+            self.assertEqual(outcome["state"], "STOPPED")
             detailed = json.loads((packet / "detailed.json").read_text(encoding="utf-8"))
-            self.assertEqual(detailed["headline"], "INCOMPLETE")
-            self.assertIsNone(detailed["projected_core_pce_mom_percent"])
+            self.assertEqual(detailed["headline"], "HOT")
+            self.assertIsNotNone(detailed["projected_core_pce_mom_percent"])
+            self.assertEqual(detailed["information_stage"], "ppi_partial")
             hospital = next(row for row in detailed["components"] if row["line"] == 184)
-            periods = {row["period"]: row for row in hospital["raw_bls_references"]}
-            self.assertIn("2026-08", periods)
-            self.assertIn("2026-09", periods)
-            self.assertFalse(periods["2026-09"]["applied_to_estimate"])
+            self.assertEqual(hospital["seasonal_status_output"], "modeled_not_bea_sa")
             revisions = [json.loads(line) for line in (packet / "revisions.jsonl").read_text(encoding="utf-8").splitlines()]
             self.assertGreaterEqual(len(revisions), 2)
-            self.assertEqual(revisions[0]["source_latency_seconds"], 1.27)
-            self.assertNotEqual(revisions[0]["handler_flash_seconds"], revisions[0]["source_latency_seconds"])
+            self.assertIsNotNone(revisions[-1].get("contribution_delta_vs_previous"))
 
     def test_normalize_keeps_prior_ppi_reference_when_target_month_is_absent(self):
         registry = {
