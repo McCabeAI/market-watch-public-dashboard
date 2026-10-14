@@ -29,6 +29,15 @@ def load_snapshot(path: Path | None = None) -> dict:
     }
 
 
+def load_snapshot_component_history(snapshot_root: Path | None = None) -> dict | None:
+    """Load BEA component history co-located with a snapshot, if present."""
+    root = snapshot_root or DEFAULT_SNAPSHOT
+    path = root / "bea_component_history.json"
+    if not path.is_file():
+        return None
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
 def residual_weight(snapshot: dict) -> Decimal:
     expenditures = snapshot["manifest"]["expenditures"]
     official = Decimal(expenditures["official_core_pce_millions"])

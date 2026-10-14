@@ -17,7 +17,9 @@ from collections import defaultdict
 from decimal import Decimal
 from pathlib import Path
 
-from scripts.core_pce_release.snapshot import DEFAULT_SNAPSHOT
+from scripts.core_pce_release.snapshot import DEFAULT_SNAPSHOT, REPO_ROOT
+
+DEFAULT_SOURCE_OVERRIDES = REPO_ROOT / "data" / "core_pce_release" / "source_overrides.json"
 
 
 def _sha256(path: Path) -> str:
@@ -369,6 +371,26 @@ def build_registry(cu_path: Path, pc_path: Path, snapshot: Path) -> dict:
         "ambiguous": ambiguous,
         "unmatched": unmatched,
     }
+
+
+def load_source_overrides(path: Path | None = None) -> dict:
+    target = path or DEFAULT_SOURCE_OVERRIDES
+    return json.loads(target.read_text(encoding="utf-8"))
+
+
+def validate_name_variants(registry: dict, overrides: dict | None = None) -> list[str]:
+    """Reject name_variants whose series_id is absent from the committed registry."""
+    document = overrides if overrides is not None else load_source_overrides()
+    variants = document.get("name_variants") or []
+    if not variants:
+        return []
+    known = {str(row["series_id"]) for row in registry.get("verified") or []}
+    problems: list[str] = []
+    for entry in variants:
+        series_id = str(entry.get("series_id") or "")
+        if series_id not in known:
+            problems.append(f"unknown_name_variant_series:{series_id}")
+    return problems
 
 
 def main() -> None:
