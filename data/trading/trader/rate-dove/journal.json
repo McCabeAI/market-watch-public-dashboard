@@ -832,6 +832,62 @@
       "run_id": "overnight-20261013",
       "schema_version": 1,
       "thesis": "The book is a receive of the Canada 2027 H-Z curve from 3.40, and cash CORRA at 2.28 versus March 2.90 still leaves leftover tightening in the path. Oil at 106.65 is a headwind, but the existing curve receive already expresses the ease that has not been taken back. Hold the 42.5 million sleeve; do not add while Brent keeps Canadian inflation risk alive."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027H-Z",
+          "notional_usd": 42500000,
+          "position_id": "pos-9849cf751c27",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-14T05:31:38.673189-04:00",
+      "conviction": 58,
+      "decision_fingerprint": "7a2ae7fe3bc9905981d1aed2eb4e79c7ac79ab0b452d47dde1eb833b0adbc6ba",
+      "event_id": "jde-b15129140ce442bf",
+      "funding_view": null,
+      "invalidation": "The hold is wrong if the 2027 H-Z strip average backs up through the live ~3.16 mark toward the 3.40 entry because oil 105.69, or a reversal of Williams' 2027 US dovishness, is priced as a Canadian re-hike cycle rather than a sticky but still-too-high implied path.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-9849cf751c27"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "8277e9a138b526fde27fbfa996e5531ce3ca84ef452f5098981583a2d77d8e17",
+      "outcome_links": [],
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "db228f82ea4ac8c71942b77efd64d7e207de115b797819991947f9dbfa9f02c0"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-14T05:31:38.673189-04:00",
+        "evidence_hash": "3bad8ad5e244c14c9ffbbc8e4a6fc1ceddb775d0c8351952314dfc9f73731e13",
+        "overnight_run_id": "overnight-20261014",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Cash CORRA is 2.28 against a 2027 H-Z strip near 3.16, so the market still prices a large re-tightening above today's cash rate. Williams' 2027 US guidance plus that leftover gap keep the existing receive the right expression of underpriced easing. Oil at 105.69 is a reason not to add, not a reason to flatten the 42.5 million long.",
+      "run_id": "overnight-20261014",
+      "schema_version": 1,
+      "thesis": "Cash CORRA is 2.28 against a 2027 H-Z strip near 3.16, so the market still prices a large re-tightening above today's cash rate. Williams' 2027 US guidance plus that leftover gap keep the existing receive the right expression of underpriced easing. Oil at 105.69 is a reason not to add, not a reason to flatten the 42.5 million long."
     }
   ],
   "schema_version": 1,

@@ -832,6 +832,62 @@
       "run_id": "overnight-20261013",
       "schema_version": 1,
       "thesis": "The existing 75 million March 2027 SOFR pay still follows the higher-for-longer path: cash 3.87 versus 4.54 live, with the US 10-year at 5.24 and Brent at 106.65 supporting the trend. The contract has eased from the 4.62 entry toward 4.54, which is a pullback inside the trend rather than a break. Hold; do not add while the strip is off the entry."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-662bff0986be",
+          "rationale": "Keep the 75 million March 2027 SOFR pay; the 4.515 Williams dip is a pullback inside the higher-for-longer trend, not a break while oil and the 2026 hike stay.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-14T05:31:38.673189-04:00",
+      "conviction": 58,
+      "decision_fingerprint": "eb475c25ce0e1b4a77082769c1f381a4701e42ccc8412d9ae7b51ea91413b272",
+      "event_id": "jde-085dc962bcf2471e",
+      "funding_view": null,
+      "invalidation": "Cover if March 2027 SOFR implieds collapse toward cash 3.87, if December 2026 SR3Z6 loses the remaining 2026 hike versus cash 3.87, and if Brent reverses from 105.69 with the US 10-year giving up the 5.21 higher-yield trend.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-662bff0986be"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "392d6481d121a45c62a20af989dffe35354051fa9095e413477e11a5ac48e871",
+      "outcome_links": [],
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "03a9c7ee5dbb519529593552de8ba85fa136bd1de5ef3183ebca3e5e6068a910"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-14T05:31:38.673189-04:00",
+        "evidence_hash": "3bad8ad5e244c14c9ffbbc8e4a6fc1ceddb775d0c8351952314dfc9f73731e13",
+        "overnight_run_id": "overnight-20261014",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book remains short 75 million March 2027 SOFR from 4.62 versus a live 4.515 print, with cash at 3.87, the US ten-year at 5.21, and Brent at 105.69. Williams seeing no 2027 hike while still calling for one more 2026 hike is pullback risk, not a trend break, because December 2026 still sits at 4.25. Covering 4.515 would fade a higher-for-longer path that oil and the long end still support.",
+      "run_id": "overnight-20261014",
+      "schema_version": 1,
+      "thesis": "The book remains short 75 million March 2027 SOFR from 4.62 versus a live 4.515 print, with cash at 3.87, the US ten-year at 5.21, and Brent at 105.69. Williams seeing no 2027 hike while still calling for one more 2026 hike is pullback risk, not a trend break, because December 2026 still sits at 4.25. Covering 4.515 would fade a higher-for-longer path that oil and the long end still support."
     }
   ],
   "schema_version": 1,

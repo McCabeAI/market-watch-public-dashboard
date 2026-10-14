@@ -830,6 +830,62 @@
       "run_id": "overnight-20261013",
       "schema_version": 1,
       "thesis": "Risk appetite is intact with the S&P at 7807 and VIX at 15.21, while Brent at 106.65 keeps a cyclical impulse under Canada. The existing 50 million March 2027 CORRA pay remains the cleanest pro-growth expression even after the contract cheapened from 3.13 toward 2.90; that is path cheapening around the story, not a thesis break and not a reason to add while implied still sits well above cash 2.28."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-dd6fdaf39119",
+          "rationale": "Keep the existing 50 million March 2027 CORRA pay; do not add on the move from 3.13 to 2.905 while cash 2.28 versus March 2.905 has not retraced the priced path.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-14T05:31:38.673189-04:00",
+      "conviction": 55,
+      "decision_fingerprint": "e2669be2c456916f201a36cc9ecde9c8c39c6861a767a1c6d47d4951bd57dc71",
+      "event_id": "jde-310ef3b8db754987",
+      "funding_view": null,
+      "invalidation": "The pay is wrong if the oil bid reverses enough to remove Canada\u2019s cyclical impulse, if risk appetite breaks, or if March 2027 CORRA converges back toward cash 2.28.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-dd6fdaf39119"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "bf6fa30eeac06ca019ec529bb67a4cf187e873283e2d855fc4041002997a22f0",
+      "outcome_links": [],
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "294cdaed4c22f6f8d1b608cd7f657f8865f5b3a8939c96b361a988ba53b674bb"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-14T05:31:38.673189-04:00",
+        "evidence_hash": "3bad8ad5e244c14c9ffbbc8e4a6fc1ceddb775d0c8351952314dfc9f73731e13",
+        "overnight_run_id": "overnight-20261014",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Cash CORRA is 2.28 against March 2027 at 2.905 on the existing 50 million pay from 3.13, while Brent 105.69, WTI 94.14, the S&P 7805 and VIX 15.21 keep a cyclical, risk-on backdrop. Williams still wants one more 2026 hike and no 2027 hike, which is a tightening base case rather than a pivot to cuts; oil and global growth still look able to keep Canada\u2019s 2027 implied above cash even if the Fed 2027 hike is capped. The existing March 2027 CORRA pay remains the cleanest pro-growth expression; the cheapening from 3.13 to 2.905 is path movement around that story, not a reason to add or to rotate into USDCAD at 1.4241.",
+      "run_id": "overnight-20261014",
+      "schema_version": 1,
+      "thesis": "Cash CORRA is 2.28 against March 2027 at 2.905 on the existing 50 million pay from 3.13, while Brent 105.69, WTI 94.14, the S&P 7805 and VIX 15.21 keep a cyclical, risk-on backdrop. Williams still wants one more 2026 hike and no 2027 hike, which is a tightening base case rather than a pivot to cuts; oil and global growth still look able to keep Canada\u2019s 2027 implied above cash even if the Fed 2027 hike is capped. The existing March 2027 CORRA pay remains the cleanest pro-growth expression; the cheapening from 3.13 to 2.905 is path movement around that story, not a reason to add or to rotate into USDCAD at 1.4241."
     }
   ],
   "schema_version": 1,

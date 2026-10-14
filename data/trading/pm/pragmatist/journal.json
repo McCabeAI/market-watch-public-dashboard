@@ -830,6 +830,79 @@
       "run_id": "overnight-20261013",
       "schema_version": 1,
       "thesis": "The book stays a Canadian duration receive into March 2027. The contract has already come in to about 2.90 from a 3.13 entry while cash is still 2.28, so the remaining work is a grind along an easy Canadian path rather than a new swing. Overnight markets held a higher-oil, steady-risk tape, which is a watch for whether crude re-anchors North American hike pricing, not a reason to pay Canada or overlay currency. No extra rates or dollar-Canada risk is added until that oil-to-hikes channel actually prints in the front end."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pm-pragmatist-4e0cbc4e0b05",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        },
+        {
+          "action": "OPEN",
+          "asset_class": "rates_rv",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "NZ-US_10Y",
+          "notional_usd": 80000000,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-14T07:03:55.974585-04:00",
+      "conviction": 64,
+      "decision_fingerprint": "b892b22af708f79b19c7743be082a7f90be01c0ad96fc16a9fd9aa62a75901ce",
+      "event_id": "jde-bd1761596fc64a5d",
+      "funding_view": null,
+      "invalidation": "Cover the CORRA receive if Bank of Canada 2027 hikes are delivered or the strip reprices back through the 3.13 entry, especially on a sticky oil-and-goods inflation impulse. Cover the NZ-US short if the 10-year spread cheapens further from minus 23 basis points toward richer New Zealand, including on an RBNZ easing surprise or a Treasury-led selloff that leaves New Zealand yields stuck.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-pragmatist-3afafe53c6d7",
+        "pm-pragmatist-4e0cbc4e0b05"
+      ],
+      "linked_trade_ids": [
+        "trd-pm-pragmatist-pm-pragmatist-3afafe53c6d7"
+      ],
+      "memory_context_sha256": "7d9f9f300514e8a0a152ac85708b555a3d3c1d908c6b76bb266424e1415b1b86",
+      "outcome_links": [],
+      "owner_id": "pragmatist",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "ad8b7fc8176bf648fee64589ad30130125d4a7a278b33fc48878c217271d7036"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-14T05:31:38.673189-04:00",
+        "evidence_hash": "db6744dd592ca03a9764efd5ab6520db59304f5936182aeea84bb71fb5bca7d0",
+        "overnight_run_id": "overnight-20261014",
+        "review_id": "review-001",
+        "review_packet_id": "prp-pragmatist-overnight-20261014-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "March 2027 CORRA still prices a full hike cycle versus 2.28 cash, so the existing receive remains the core book rather than a completed trade. Williams\u2019 pushback on 2027 tightening supports that 2027 strips are the residual, but Canada already has the expression and the size. New Zealand 10s at 4.98 versus Treasuries at 5.21 is a first-percentile cheap-NZ dislocation and is the only overlay worth adding: pay New Zealand and receive US 10s, not more Canadian duration.",
+      "run_id": "overnight-20261014",
+      "schema_version": 1,
+      "thesis": "March 2027 CORRA still prices a full hike cycle versus 2.28 cash, so the existing receive remains the core book rather than a completed trade. Williams\u2019 pushback on 2027 tightening supports that 2027 strips are the residual, but Canada already has the expression and the size. New Zealand 10s at 4.98 versus Treasuries at 5.21 is a first-percentile cheap-NZ dislocation and is the only overlay worth adding: pay New Zealand and receive US 10s, not more Canadian duration."
     }
   ],
   "schema_version": 1,

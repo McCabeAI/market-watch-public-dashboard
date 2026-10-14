@@ -798,6 +798,69 @@
       "run_id": "overnight-20261013",
       "schema_version": 1,
       "thesis": "Overnight markets remain in a higher-oil, steady-risk setting, with a large amount of tightening already priced into the US and Canadian front ends and the Bank of Japan still more a December than an October story. From a flat book I will not pay for still more hikes when spare-capacity news and an already steep strip leave only a thin extra edge against funding on shocked risk capital. France fiscal stress and the live OPEC and Fed calendar argue for patience rather than a first clip."
+    },
+    {
+      "actions": [
+        {
+          "action": "NO_TRADE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-14T07:03:56.661506-04:00",
+      "conviction": 72,
+      "decision_fingerprint": "14b13e158aab9d340a117450221d8996244219d9a9261a790def5ce111ff6425",
+      "event_id": "jde-37a7fe1b81474215",
+      "funding_view": null,
+      "invalidation": "A receive in March 2027 SOFR becomes interesting if energy backs off and any remaining hike is delivered without a 2027 tightening path, leaving 4.515 clearly rich to a one-and-done hold. A NZ-US 10-year short is only worth revisiting if the spread tightens through about minus 10 basis points with stable oil, not on the current minus-23 print.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "211303691a375c1f6967f587ade91d9bf41a649221d42addbddb7adafef90903",
+      "outcome_links": [],
+      "owner_id": "grinder",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [
+            "rank_distortion_risk"
+          ],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": {
+            "allocator_vs_noise": "short_horizon_noise",
+            "chase_temptation": "no",
+            "heater_risk": "no",
+            "judgment_effect": "neither",
+            "junior_vs_self": "style",
+            "protecting_gains": "not_applicable"
+          },
+          "state_sha256": "aa6022fa95890609c9f6c21fc313b3340a76ddff5566f0bd4cc76d929ef4b8d4"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-14T05:31:38.673189-04:00",
+        "evidence_hash": "30036a7cebc2c7a6b15b370126d574284ae41d4936d3148b67d16fbd671ea395",
+        "overnight_run_id": "overnight-20261014",
+        "review_id": "review-001",
+        "review_packet_id": "prp-grinder-overnight-20261014-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Cash is the right seat. The only clean-looking expressions are a 23 basis-point NZ-US 10-year gap and March 2027 SOFR at 4.515 versus 3.87 cash, but both fail a preservation hurdle once Brent near 106, thin oil buffers, and a possible late-2026 hike are treated as live two-way risks. I will not pay official SOFR on shocked capital to own a non-extreme cross-market basis or to receive 2027 SOFR while energy and euro-area inflation are still pushing term premia up. The book stays flat until a markable dislocation has a catalyst that survives an oil shock.",
+      "run_id": "overnight-20261014",
+      "schema_version": 1,
+      "thesis": "Cash is the right seat. The only clean-looking expressions are a 23 basis-point NZ-US 10-year gap and March 2027 SOFR at 4.515 versus 3.87 cash, but both fail a preservation hurdle once Brent near 106, thin oil buffers, and a possible late-2026 hike are treated as live two-way risks. I will not pay official SOFR on shocked capital to own a non-extreme cross-market basis or to receive 2027 SOFR while energy and euro-area inflation are still pushing term premia up. The book stays flat until a markable dislocation has a catalyst that survives an oil shock."
     }
   ],
   "schema_version": 1,

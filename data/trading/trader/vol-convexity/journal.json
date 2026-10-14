@@ -798,6 +798,60 @@
       "run_id": "overnight-20261013",
       "schema_version": 1,
       "thesis": "VIX at 15.21 and a steady equity tape do not justify last-resort options when rates and spot already express the oil and policy story. A vol clip would pay SOFR on shocked-risk capital without a packet-supported convex payoff. Stay flat; options remain last resort."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Flat book. VIX 15.21 and SPX 7805 with oil and policy already in rates and spot do not justify paying SOFR on shocked-risk capital for an unmarkable vol clip.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-14T05:31:38.673189-04:00",
+      "conviction": 36,
+      "decision_fingerprint": "37d4c3362212d2a372c254fde208e17a0f46bd116b5e25683791be17e02b80bf",
+      "event_id": "jde-dcfce5e86f7c47ad",
+      "funding_view": null,
+      "invalidation": "This HOLD is wrong if a later freeze shows a markable options structure with premium, implied vol, and strikes whose convex payoff rates and spot cannot express, and last-resort use is then required.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "6bb7c593637edc6e23bc2442d72053f7709c04ce9abcf80969e6da049603e756",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "f22d1877983f8e1ab7eb442376f100eb8811d683e6da08360a2be237933659f7"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-14T05:31:38.673189-04:00",
+        "evidence_hash": "3bad8ad5e244c14c9ffbbc8e4a6fc1ceddb775d0c8351952314dfc9f73731e13",
+        "overnight_run_id": "overnight-20261014",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "This book is flat. The VIX is 15.21 and the S&P is near 7805, and rates and spot already express the oil and policy tape. A volatility clip is not a last-resort case here because this freeze does not name a markable convex payoff that linear rates or spot fail to express. Stay at the zero cash benchmark rather than paying funding on an unmarkable options clip.",
+      "run_id": "overnight-20261014",
+      "schema_version": 1,
+      "thesis": "This book is flat. The VIX is 15.21 and the S&P is near 7805, and rates and spot already express the oil and policy tape. A volatility clip is not a last-resort case here because this freeze does not name a markable convex payoff that linear rates or spot fail to express. Stay at the zero cash benchmark rather than paying funding on an unmarkable options clip."
     }
   ],
   "schema_version": 1,

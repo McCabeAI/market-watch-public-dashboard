@@ -42,14 +42,14 @@
     "nav_usd": 99979635.62,
     "net_pnl_usd": -20364.38,
     "pressure_flags": [],
-    "prior_competition_rank": 9,
-    "rank_change": 0,
+    "prior_competition_rank": 10,
+    "rank_change": -1,
     "raw_pnl_rank": 9,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 625000.0,
     "risk_capital_utilization": 0.0625,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 6942.19,
     "status": "ok"
   },
   "learning": {
@@ -60,7 +60,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "320556092dcca09ebd31914909ee1a79e3dab77542f72d6a7fbbba94fdf6c3bd",
+  "memory_context_sha256": "8f5c14677224f4c946dfb4254e025c9cdd41c08ad41b1fc116e85586d2d8c670",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -77,12 +77,12 @@
     {
       "asset_class": "rates",
       "conviction": 67,
-      "current_notional_usd": 12500000.0,
+      "current_notional_usd": 6250000.0,
       "entry_mark": 3.12,
       "instrument": "CORRA_2027-03",
       "opened_at": "2026-09-29T04:44:08.485973-04:00",
       "position_id": "pos-2709875e8c9c",
-      "risk_capital_usd": 125000.0,
+      "risk_capital_usd": 62500.0,
       "side": "short",
       "trade_id": "trd-trader-rate-hawk-pos-2709875e8c9c"
     },
@@ -108,8 +108,8 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.22
+        "trend": "down",
+        "value": 0.2
       },
       "complacency": {
         "band": "calm",
@@ -123,13 +123,13 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.32
+        "trend": "down",
+        "value": 0.3
       },
       "frustration": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.19
+        "trend": "down",
+        "value": 0.17
       },
       "revenge_pressure": {
         "band": "calm",
@@ -169,7 +169,7 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "4557ac04fd5532e5d33274baa341ef03a4ac3bec469e07ec089aa619caf958bd",
+    "state_sha256": "e70070c0a674e5ed98ff5f59973e2c422a008e8caffb15ec3c1b7b1a445b0e8f",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 1,

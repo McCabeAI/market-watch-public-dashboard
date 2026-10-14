@@ -834,6 +834,62 @@
       "run_id": "overnight-20261013",
       "schema_version": 1,
       "thesis": "March 2027 SOFR at 4.54 still sits well above cash 3.87, so the existing 10 million receive is a fade of a hike path that has not been delivered. The contract has already cheapened from the 4.58 entry toward 4.54, which is the desired direction, but Brent at 106.65 and a 5.24 ten-year keep term premium from collapsing. Hold the residual receive; do not add while oil keeps the strip from mean-reverting all the way back to cash."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-1477172adb86",
+          "rationale": "Keep the 10 million receive of unprinted March 2027 hikes; Williams seeing no 2027 hike supports the fade, but do not add into oil-supported term premium.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-14T05:31:38.673189-04:00",
+      "conviction": 55,
+      "decision_fingerprint": "5b603eb6eaff9f72cb575448c1b98eb165d02a26125ea1b46e3d26fcb4404cd2",
+      "event_id": "jde-1e300938cfba4fcb",
+      "funding_view": null,
+      "invalidation": "Cover if March 2027 SOFR extends through 4.58 on a delivered hike impulse that reopens 2027 tightening, or if cash SOFR itself rises toward the contract and removes the fade.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-1477172adb86"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "a3f0029d5c83de0696912bd6cebb48aa6a7543fe240428f67f8d9b4af7d14a49",
+      "outcome_links": [],
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "ae36c08061082be81db377ac8bc5aca5988672fc838baa89d4d1c7d5b020cd6e"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-14T05:31:38.673189-04:00",
+        "evidence_hash": "3bad8ad5e244c14c9ffbbc8e4a6fc1ceddb775d0c8351952314dfc9f73731e13",
+        "overnight_run_id": "overnight-20261014",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "March 2027 SOFR at 4.515 still sits well above cash 3.87, so the existing 10 million receive is a fade of a 2027 hike path that has not been delivered. New York Fed President Williams currently sees one more hike as appropriate this year but no need for a 2027 hike, which is the reversal condition for leaving that residual premium in the strip. The contract has already cheapened from the 4.58 entry toward 4.515, which is the desired direction, but Brent at 105.69 and the US 10-year at 5.21 keep term premium from collapsing. Hold the residual receive; do not add just because the fade has worked a bit while oil still anchors the back of the curve.",
+      "run_id": "overnight-20261014",
+      "schema_version": 1,
+      "thesis": "March 2027 SOFR at 4.515 still sits well above cash 3.87, so the existing 10 million receive is a fade of a 2027 hike path that has not been delivered. New York Fed President Williams currently sees one more hike as appropriate this year but no need for a 2027 hike, which is the reversal condition for leaving that residual premium in the strip. The contract has already cheapened from the 4.58 entry toward 4.515, which is the desired direction, but Brent at 105.69 and the US 10-year at 5.21 keep term premium from collapsing. Hold the residual receive; do not add just because the fade has worked a bit while oil still anchors the back of the curve."
     }
   ],
   "schema_version": 1,

@@ -830,6 +830,62 @@
       "run_id": "overnight-20261013",
       "schema_version": 1,
       "thesis": "United States cash at 3.87 and March strip at 4.54 still dominate Canada at 2.28 and 2.90, so the dollar versus the loonie remains the cleanest hold of that gap. A cross or an oil-tied Canada expression would add crude and risk beta the rate story does not need. Expensive crude near 106.65 can slow further dollar gains, which is why this is a hold of the existing long rather than an add."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDCAD",
+          "notional_usd": null,
+          "position_id": "pos-5317bc96d4eb",
+          "rationale": "Existing long 55 million USDCAD remains the correct USD-spot expression of the still-wide SOFR-CORRA gap.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-14T05:31:38.673189-04:00",
+      "conviction": 60,
+      "decision_fingerprint": "75a83f7bc33603997cbe3b93beae58d9d4350607cb309f3ed308831b3f2fde40",
+      "event_id": "jde-a3d5b24da7e542ba",
+      "funding_view": null,
+      "invalidation": "Exit if the SOFR versus CORRA advantage compresses sharply toward or through the already-narrower March strip, or if a sustained oil-and-risk bid reverses the dollar against Canada while United States rates stop supporting the long.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-5317bc96d4eb"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "6e8dc7bba448685476c4e8bcb32b526a47b3de1629daced5865a43d6b6b16d12",
+      "outcome_links": [],
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "7041876f1a3b3b054da08549881b80653c91b627fc99289f253e145a04356dcf"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-14T05:31:38.673189-04:00",
+        "evidence_hash": "3bad8ad5e244c14c9ffbbc8e4a6fc1ceddb775d0c8351952314dfc9f73731e13",
+        "overnight_run_id": "overnight-20261014",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "United States cash at 3.87 and the March 2027 strip at 4.515 still dominate Canada at 2.28 and 2.905, so the dollar versus the loonie remains the cleanest expression of that gap. A Canada cross would import oil and second-order risk the rate story does not need; keep the existing long USDCAD, now at 1.4241 and the 97th percentile of its one-year range. Brent at 105.69 can slow further dollar gains, which is why this stays a hold of that long rather than an add.",
+      "run_id": "overnight-20261014",
+      "schema_version": 1,
+      "thesis": "United States cash at 3.87 and the March 2027 strip at 4.515 still dominate Canada at 2.28 and 2.905, so the dollar versus the loonie remains the cleanest expression of that gap. A Canada cross would import oil and second-order risk the rate story does not need; keep the existing long USDCAD, now at 1.4241 and the 97th percentile of its one-year range. Brent at 105.69 can slow further dollar gains, which is why this stays a hold of that long rather than an add."
     }
   ],
   "schema_version": 1,

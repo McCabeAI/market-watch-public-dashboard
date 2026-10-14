@@ -808,6 +808,64 @@
       "run_id": "overnight-20261013",
       "schema_version": 1,
       "thesis": "Cash-versus-strip gaps in SOFR, CORRA and AONIA are already owned by other seats and are priced paths, not a fresh valuation dislocation. The US 10-year at 5.24 matches the existing defensive receive elsewhere, and New Zealand yields are unavailable so that value sleeve is closed. Stay flat rather than paying up for a crowded 2027 contract."
+    },
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "rates_rv",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "NZ-US_10Y",
+          "notional_usd": 80000000,
+          "position_id": null,
+          "rationale": "Flat book. Cash NZ minus US 10-year at minus 23 basis points is a first-percentile peer dislocation after screening cash 2-year; pay New Zealand 10-year versus receive US 10-year so the mark rises.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-14T05:31:38.673189-04:00",
+      "conviction": 56,
+      "decision_fingerprint": "254378e5b9cf3058e8e2f11659068c1e1672ce2b8c907e7549a8780aa5a5dd44",
+      "event_id": "jde-10d1c7255dcd4d26",
+      "funding_view": null,
+      "invalidation": "NZ minus US 10-year follows the 3 August 2022 analog and cheapens another 20 basis points or more from minus 23, or New Zealand labor stays cool enough that a durable New Zealand discount versus the United States becomes the fair 10-year gap.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-f895a4694dd7"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-value-guy-pos-f895a4694dd7"
+      ],
+      "memory_context_sha256": "200c1f5788a67e8bed1b7a7d958e88974ef37454391554413fecace8e95768dd",
+      "outcome_links": [],
+      "owner_id": "value-guy",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "ddce01ff2068b4d341612861707e29373fcdd64063ef6566bf5e5a4933358faa"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-14T05:31:38.673189-04:00",
+        "evidence_hash": "3bad8ad5e244c14c9ffbbc8e4a6fc1ceddb775d0c8351952314dfc9f73731e13",
+        "overnight_run_id": "overnight-20261014",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "New Zealand's 10-year cash yield is 4.98 percent against the US 10-year at 5.21 percent, so NZ minus US 10-year sits at minus 23 basis points, the first percentile of one-year history and the 0.3rd percentile of five-year history, after a 30 basis-point one-month cheapening in which the US 10-year rose 25 basis points and New Zealand's 10-year fell only 3. That is a cash peer-duration dislocation, not a 2-year pack because the kiwi is cheap: cash NZ minus US 2-year is already minus 99 basis points, and kiwi at 0.5613 is a separate spot residual. Convergence is pay New Zealand 10-year versus receive US 10-year so the spread rises toward its historical New Zealand premium; the 13 January 2025\u2026",
+      "run_id": "overnight-20261014",
+      "schema_version": 1,
+      "thesis": "New Zealand's 10-year cash yield is 4.98 percent against the US 10-year at 5.21 percent, so NZ minus US 10-year sits at minus 23 basis points, the first percentile of one-year history and the 0.3rd percentile of five-year history, after a 30 basis-point one-month cheapening in which the US 10-year rose 25 basis points and New Zealand's 10-year fell only 3. That is a cash peer-duration dislocation, not a 2-year pack because the kiwi is cheap: cash NZ minus US 2-year is already minus 99 basis points, and kiwi at 0.5613 is a separate spot residual. Convergence is pay New Zealand 10-year versus receive US 10-year so the spread rises toward its historical New Zealand premium; the 13 January 2025\u2026"
     }
   ],
   "schema_version": 1,

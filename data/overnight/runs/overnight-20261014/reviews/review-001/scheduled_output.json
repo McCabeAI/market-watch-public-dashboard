@@ -1,0 +1,3098 @@
+{
+  "agent_packet": {
+    "base_evidence_cutoff": "2026-10-14T05:31:38.673189-04:00",
+    "base_packet_sha256": "a0780f5cf86c8d1b36d5c624e8be6390e03b42821f47b918f29667793693686a",
+    "competition": {
+      "flat_book_pnl": "A flat seat has zero net financing/competition P&L: paper NAV earning SOFR is benchmarked at SOFR, so those flows cancel, and shocked-risk financing is zero.",
+      "funding_basis": "Official NY Fed SOFR ACT/360 is the zero-return competition benchmark, not free alpha. Every seat has $100m paper NAV that may be described as earning SOFR, but that capital is equally funded/benchmarked at SOFR so those flows cancel. Deployed shocked-risk capital pays the same official SOFR on trusted standard-shock risk capital: the absolute MTM loss from a 1% adverse spot move, a 100bp (1 percentage point) adverse outright rate move, or a 100bp adverse curve/RV spread move under the trusted duration-1 P&L convention. Equal risk capital receives equal financing treatment across asset classes. Notional is descriptive, not the funding base. A completely flat book \u2014 including no-trade-skeptic \u2014 therefore has zero net financing/competition P&L from SOFR cash or funding economics. Positive financing/carry alpha requires an explicit markable strategy that earns above SOFR or funds below SOFR. Weekends and holidays carry the last applicable published fixing until the next fixing. If official fixing history cannot be established, new funding accrual fails closed and prior canonical balances are preserved.",
+      "funding_convention": "ACT/360",
+      "funding_day_count": 360,
+      "funding_observation_date": "2026-10-09",
+      "funding_rate_annual": 0.0387,
+      "funding_source": "NY_FED",
+      "funding_source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr",
+      "instruction": "Do not optimize for gross notional or fill available capacity. Size risk from plausible adverse paths and historical excursions while staying inside the trusted risk-capital and drawdown limits. Flat cash at SOFR is the zero benchmark, not a source of alpha. The no-trade-skeptic must include a structured funding_view on every new risk or NO_TRADE thesis: the frozen official SOFR fixing, the relevant SR3 forward-curve view, its own assessment of whether realized funding will print higher, lower, or about the same as the curve, and the implication for remaining at the zero SOFR benchmark versus paying SOFR on shocked-risk capital.",
+      "metric": "net_pnl_after_funding",
+      "no_trade_allowed": true,
+      "objective": "Finish with the highest cumulative net paper P&L across the 14 standing seats.",
+      "risk_limits": {
+        "max_drawdown_usd": 5000000,
+        "paper_nav_usd": 100000000,
+        "risk_capital_limit_usd": 10000000,
+        "risk_capital_method": "mtm_standard_1pct_move"
+      }
+    },
+    "cross_assets": {
+      "generated_at": null,
+      "marks": [
+        {
+          "as_of": "2026-10-13",
+          "id": "WTI",
+          "label": "WTI futures",
+          "source": "Yahoo Finance",
+          "status": "ok",
+          "symbol": "CL=F",
+          "unit": "USD/bbl",
+          "value": 94.13999938964844
+        },
+        {
+          "as_of": "2026-10-13",
+          "id": "BRENT",
+          "label": "Brent futures",
+          "source": "Yahoo Finance",
+          "status": "ok",
+          "symbol": "BZ=F",
+          "unit": "USD/bbl",
+          "value": 105.69000244140625
+        },
+        {
+          "as_of": "2026-10-13",
+          "id": "GOLD",
+          "label": "Gold futures",
+          "source": "Yahoo Finance",
+          "status": "ok",
+          "symbol": "GC=F",
+          "unit": "USD/oz",
+          "value": 4177.2998046875
+        },
+        {
+          "as_of": "2026-10-13",
+          "id": "SP500",
+          "label": "S&P 500",
+          "source": "FRED / original series publisher",
+          "status": "ok",
+          "symbol": "SP500",
+          "unit": "index",
+          "value": 7805.45
+        },
+        {
+          "as_of": "2026-10-13",
+          "id": "NASDAQ",
+          "label": "Nasdaq Composite",
+          "source": "FRED / original series publisher",
+          "status": "ok",
+          "symbol": "NASDAQCOM",
+          "unit": "index",
+          "value": 27204.38
+        },
+        {
+          "as_of": "2026-10-13",
+          "id": "DOW",
+          "label": "Dow Jones",
+          "source": "FRED / original series publisher",
+          "status": "ok",
+          "symbol": "DJIA",
+          "unit": "index",
+          "value": 51670.1
+        },
+        {
+          "as_of": "2026-10-13",
+          "id": "RUSSELL",
+          "label": "Russell 2000",
+          "source": "Yahoo Finance",
+          "status": "ok",
+          "symbol": "^RUT",
+          "unit": "index",
+          "value": 2783.3701171875
+        },
+        {
+          "as_of": "2026-10-13",
+          "id": "COPPER",
+          "label": "Copper futures",
+          "source": "Yahoo Finance",
+          "status": "ok",
+          "symbol": "HG=F",
+          "unit": "USD/lb",
+          "value": 6.677999973297119
+        },
+        {
+          "as_of": "2026-10-12",
+          "id": "VIX",
+          "label": "VIX",
+          "source": "FRED / original series publisher",
+          "status": "ok",
+          "symbol": "VIXCLS",
+          "unit": "points",
+          "value": 15.21
+        }
+      ],
+      "provenance": "frozen_market_state",
+      "status": "partial"
+    },
+    "desk": {
+      "cash": {
+        "AONIA": 4.6,
+        "CORRA": 2.28,
+        "ESTR": 2.439,
+        "SOFR": 3.87,
+        "TONA": 1.227
+      },
+      "cross_assets": {
+        "BRENT": 105.69,
+        "COPPER": 6.678,
+        "DOW": 51670.1,
+        "GOLD": 4177.3,
+        "NASDAQ": 27204.38,
+        "RUSSELL": 2783.37,
+        "SP500": 7805.45,
+        "VIX": 15.21,
+        "WTI": 94.14
+      },
+      "eligibility": "All six countries US CA AU NZ EA JP are eligible for new risk. Partial scored gaps exist (AU surveys/confidence, JP surveys, NZ household/activity/wages) but do not veto new risk. Source-health timeouts are carry-forwards, not country bans.",
+      "fx": {
+        "AUDNZD": 1.2431,
+        "AUDUSD": 0.6978,
+        "CADJPY": 111.03,
+        "EURUSD": 1.1188,
+        "GBPUSD": 1.3247,
+        "NZDUSD": 0.5613,
+        "USDCAD": 1.4241,
+        "USDJPY": 158.12
+      },
+      "govies": {
+        "AU_10Y": 5.404,
+        "AU_2Y": 4.94,
+        "AU_5Y": 5.014,
+        "CA_10Y": 3.86,
+        "CA_2Y": 3.18,
+        "CA_5Y": 3.54,
+        "EA_10Y": 3.43,
+        "EA_2Y": 3.11,
+        "JP_10Y": 3.019,
+        "JP_2Y": 1.928,
+        "JP_5Y": 2.371,
+        "NZ_10Y": 4.98,
+        "NZ_2Y": 3.8,
+        "NZ_5Y": 4.42,
+        "US_10Y": 5.21,
+        "US_2Y": 4.79,
+        "US_30Y": 5.56,
+        "US_5Y": 5.0
+      },
+      "stir_2027": {
+        "AONIA_2027-03": 4.8,
+        "AONIA_2027-06": 4.87,
+        "AONIA_2027-09": 4.865,
+        "CORRA_2027-03": 2.905,
+        "CORRA_2027-06": 3.105,
+        "CORRA_2027-09": 3.26,
+        "CORRA_2027-12": 3.37,
+        "SOFR_2027-03": 4.515,
+        "SOFR_2027-06": 4.67,
+        "SOFR_2027-09": 4.73,
+        "SOFR_2027-12": 4.73,
+        "TONA_2027-03": 1.7025,
+        "TONA_2027-06": 1.9025
+      }
+    },
+    "evidence_cutoff": "2026-10-14T05:31:38.673189-04:00",
+    "funding_context": {
+      "authority": "Official NY Fed SOFR is the realized funding-rate authority. SR3 is forward context only.",
+      "sofr": {
+        "convention": "ACT/360",
+        "day_count": 360,
+        "effective_date": "2026-10-09",
+        "history": [
+          {
+            "effective_date": "2026-06-03",
+            "percent_rate": 3.61,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-04",
+            "percent_rate": 3.62,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-05",
+            "percent_rate": 3.63,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-08",
+            "percent_rate": 3.63,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-09",
+            "percent_rate": 3.6,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-10",
+            "percent_rate": 3.59,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-11",
+            "percent_rate": 3.6,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-12",
+            "percent_rate": 3.65,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-15",
+            "percent_rate": 3.69,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-16",
+            "percent_rate": 3.63,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-17",
+            "percent_rate": 3.63,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-18",
+            "percent_rate": 3.62,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-22",
+            "percent_rate": 3.61,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-23",
+            "percent_rate": 3.62,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-24",
+            "percent_rate": 3.62,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-25",
+            "percent_rate": 3.64,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-26",
+            "percent_rate": 3.62,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-29",
+            "percent_rate": 3.62,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-06-30",
+            "percent_rate": 3.68,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-01",
+            "percent_rate": 3.66,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-02",
+            "percent_rate": 3.64,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-06",
+            "percent_rate": 3.63,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-07",
+            "percent_rate": 3.62,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-08",
+            "percent_rate": 3.58,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-09",
+            "percent_rate": 3.53,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-10",
+            "percent_rate": 3.55,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-13",
+            "percent_rate": 3.6,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-14",
+            "percent_rate": 3.63,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-15",
+            "percent_rate": 3.64,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-16",
+            "percent_rate": 3.62,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-17",
+            "percent_rate": 3.59,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-20",
+            "percent_rate": 3.57,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-21",
+            "percent_rate": 3.61,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-22",
+            "percent_rate": 3.62,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-23",
+            "percent_rate": 3.64,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-24",
+            "percent_rate": 3.64,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-27",
+            "percent_rate": 3.64,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-28",
+            "percent_rate": 3.65,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-29",
+            "percent_rate": 3.65,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-30",
+            "percent_rate": 3.65,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-07-31",
+            "percent_rate": 3.66,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-03",
+            "percent_rate": 3.65,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-04",
+            "percent_rate": 3.66,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-05",
+            "percent_rate": 3.64,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-06",
+            "percent_rate": 3.65,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-07",
+            "percent_rate": 3.62,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-10",
+            "percent_rate": 3.63,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-11",
+            "percent_rate": 3.64,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-12",
+            "percent_rate": 3.62,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-13",
+            "percent_rate": 3.62,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-14",
+            "percent_rate": 3.62,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-17",
+            "percent_rate": 3.66,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-18",
+            "percent_rate": 3.65,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-19",
+            "percent_rate": 3.62,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-20",
+            "percent_rate": 3.63,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-21",
+            "percent_rate": 3.65,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-24",
+            "percent_rate": 3.65,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-25",
+            "percent_rate": 3.66,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-26",
+            "percent_rate": 3.64,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-27",
+            "percent_rate": 3.64,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-28",
+            "percent_rate": 3.65,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-08-31",
+            "percent_rate": 3.68,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-09-01",
+            "percent_rate": 3.66,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-09-02",
+            "percent_rate": 3.65,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-09-03",
+            "percent_rate": 3.66,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-09-04",
+            "percent_rate": 3.65,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-09-08",
+            "percent_rate": 3.64,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-09-09",
+            "percent_rate": 3.64,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-09-10",
+            "percent_rate": 3.62,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-09-11",
+            "percent_rate": 3.62,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-09-14",
+            "percent_rate": 3.62,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-09-15",
+            "percent_rate": 3.64,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-09-16",
+            "percent_rate": 3.62,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-09-17",
+            "percent_rate": 3.85,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-09-18",
+            "percent_rate": 3.85,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-09-21",
+            "percent_rate": 3.85,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-09-22",
+            "percent_rate": 3.87,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-09-23",
+            "percent_rate": 3.87,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-09-24",
+            "percent_rate": 3.88,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-09-25",
+            "percent_rate": 3.9,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-09-28",
+            "percent_rate": 3.9,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-09-29",
+            "percent_rate": 3.88,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-09-30",
+            "percent_rate": 3.9,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-10-01",
+            "percent_rate": 3.87,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-10-02",
+            "percent_rate": 3.88,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-10-05",
+            "percent_rate": 3.89,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-10-06",
+            "percent_rate": 3.9,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-10-07",
+            "percent_rate": 3.88,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-10-08",
+            "percent_rate": 3.87,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          },
+          {
+            "effective_date": "2026-10-09",
+            "percent_rate": 3.87,
+            "source": "NY_FED",
+            "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+          }
+        ],
+        "name": "SOFR",
+        "observation_date": "2026-10-09",
+        "percent_rate": 3.87,
+        "rate": 3.87,
+        "source": "NY_FED",
+        "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+      },
+      "status": "ok"
+    },
+    "fx": {
+      "AUDCAD": {
+        "as_of": "2026-10-13",
+        "pctile_1y": 91.86507936507937,
+        "ret_1d": -0.08775719844533736,
+        "ret_5d": -0.11624967954955157,
+        "spot": 0.9937628640928086,
+        "z_1y": 1.0328888395808764
+      },
+      "AUDJPY": {
+        "as_of": "2026-10-13",
+        "pctile_1y": 42.26190476190476,
+        "ret_1d": -0.24306892073164832,
+        "ret_5d": -0.033314323168609494,
+        "spot": 110.34117133412337,
+        "z_1y": 0.19038203753363497
+      },
+      "AUDNZD": {
+        "as_of": "2026-10-13",
+        "pctile_1y": 97.81746031746032,
+        "ret_1d": -0.19152205307322312,
+        "ret_5d": 0.015025276256785958,
+        "spot": 1.2431235576623216,
+        "z_1y": 1.6079941019491897
+      },
+      "AUDUSD": {
+        "as_of": "2026-10-13",
+        "pctile_1y": 42.65873015873016,
+        "ret_1d": 0.05636516621680965,
+        "ret_5d": -0.05620949608009518,
+        "spot": 0.6978107652965758,
+        "z_1y": 0.18242610344824164
+      },
+      "CADJPY": {
+        "as_of": "2026-10-13",
+        "pctile_1y": 14.087301587301587,
+        "ret_1d": -0.15544813921832823,
+        "ret_5d": 0.0830318806761543,
+        "spot": 111.03370363396724,
+        "z_1y": -1.2298384059384133
+      },
+      "EURJPY": {
+        "as_of": "2026-10-13",
+        "pctile_1y": 2.9761904761904763,
+        "ret_1d": -0.2368465572661238,
+        "ret_5d": -0.6960426606792081,
+        "spot": 176.91,
+        "z_1y": -2.122169301808695
+      },
+      "EURUSD": {
+        "as_of": "2026-10-13",
+        "pctile_1y": 1.3888888888888888,
+        "ret_1d": 0.06260620695821562,
+        "ret_5d": -0.7187860502262833,
+        "spot": 1.1188,
+        "z_1y": -2.7478704300058334
+      },
+      "GBPUSD": {
+        "as_of": "2026-10-13",
+        "pctile_1y": 18.055555555555557,
+        "ret_1d": 0.08393141311171526,
+        "ret_5d": -0.2250835891926095,
+        "spot": 1.3246507222353776,
+        "z_1y": -1.0594879908084702
+      },
+      "NZDJPY": {
+        "as_of": "2026-10-13",
+        "pctile_1y": 13.69047619047619,
+        "ret_1d": -0.05164578071799042,
+        "ret_5d": -0.04833233735818121,
+        "spot": 88.7612262304952,
+        "z_1y": -1.318788921681501
+      },
+      "NZDUSD": {
+        "as_of": "2026-10-13",
+        "pctile_1y": 2.9761904761904763,
+        "ret_1d": 0.24836288899412473,
+        "ret_5d": -0.07122407072346348,
+        "spot": 0.5613366113090161,
+        "z_1y": -1.7986414276295724
+      },
+      "USDCAD": {
+        "as_of": "2026-10-13",
+        "pctile_1y": 97.42063492063492,
+        "ret_1d": -0.1440411756140958,
+        "ret_5d": -0.06007395073444055,
+        "spot": 1.4241151233464426,
+        "z_1y": 1.871827057781109
+      },
+      "USDCHF": {
+        "as_of": "2026-10-13",
+        "pctile_1y": 97.42063492063492,
+        "ret_1d": -0.06256703611010606,
+        "ret_5d": 0.21816377605745618,
+        "spot": 0.8323203432248838,
+        "z_1y": 2.237535578897231
+      },
+      "USDJPY": {
+        "as_of": "2026-10-13",
+        "pctile_1y": 51.785714285714285,
+        "ret_1d": -0.2992654055052113,
+        "ret_5d": 0.022908049410630404,
+        "spot": 158.1247765462996,
+        "z_1y": 0.13433575205951334
+      }
+    },
+    "launch_id": "mwl-20261014T093138Z-d6061bbe",
+    "learning_obligations": {
+      "manifest_sha256": "a73d36c8498bc11a5f41e63219237fa689b3f98d7c799b4c0c357b83791d5313",
+      "obligation_count": 0
+    },
+    "overnight_run_id": "overnight-20261014",
+    "packet_sha256": "3bad8ad5e244c14c9ffbbc8e4a6fc1ceddb775d0c8351952314dfc9f73731e13",
+    "policy_benchmarks": {
+      "AU": {
+        "benchmark": {
+          "as_of": "13-Oct-2026",
+          "name": "AONIA",
+          "rate": 4.6
+        },
+        "status": "ok",
+        "terminal": {
+          "change_from_overnight_bps": 11.5,
+          "expiry": "2027-01",
+          "implied_rate": 4.715
+        }
+      },
+      "CA": {
+        "benchmark": {
+          "as_of": "2026-10-09",
+          "name": "CORRA",
+          "rate": 2.28
+        },
+        "status": "ok",
+        "terminal": {
+          "change_from_overnight_bps": 24.5,
+          "expiry": "2027-01",
+          "implied_rate": 2.525
+        }
+      },
+      "EA": {
+        "benchmark": {
+          "as_of": "2026-10-13",
+          "name": "\u20acSTR",
+          "rate": 2.439,
+          "source": "ECB_EST",
+          "source_url": "https://data.ecb.europa.eu/data/datasets/EST/data-information"
+        },
+        "status": "partial",
+        "terminal": null
+      },
+      "JP": {
+        "benchmark": {
+          "as_of": "2026-10-09",
+          "call_money_page": "https://www.boj.or.jp/en/statistics/market/short/mutan/index.htm",
+          "label": "TONA",
+          "name": "TONA",
+          "rate": 1.227,
+          "series_code": "STRDCLUCON",
+          "source": "BOJ_STAT_SEARCH_FM01",
+          "source_url": "https://www.stat-search.boj.or.jp/ssi/mtshtml/fm01_d_1_en.html",
+          "underlying_note": "Policy block uses BOJ FM01 STRDCLUCON (uncollateralized overnight call-rate daily average). OSE 3M TONA futures settle on 3-month compounded confirmed TONA (Act/365, 100 minus rate) per JPX contract specs \u2014 not the raw overnight print."
+        },
+        "status": "ok",
+        "terminal": {
+          "expiry": "2031-06",
+          "implied_rate": 2.935,
+          "price": 97.065
+        }
+      },
+      "US": {
+        "benchmark": {
+          "as_of": "2026-10-09",
+          "history": [
+            {
+              "effective_date": "2026-06-03",
+              "percent_rate": 3.61,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-04",
+              "percent_rate": 3.62,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-05",
+              "percent_rate": 3.63,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-08",
+              "percent_rate": 3.63,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-09",
+              "percent_rate": 3.6,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-10",
+              "percent_rate": 3.59,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-11",
+              "percent_rate": 3.6,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-12",
+              "percent_rate": 3.65,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-15",
+              "percent_rate": 3.69,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-16",
+              "percent_rate": 3.63,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-17",
+              "percent_rate": 3.63,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-18",
+              "percent_rate": 3.62,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-22",
+              "percent_rate": 3.61,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-23",
+              "percent_rate": 3.62,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-24",
+              "percent_rate": 3.62,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-25",
+              "percent_rate": 3.64,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-26",
+              "percent_rate": 3.62,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-29",
+              "percent_rate": 3.62,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-06-30",
+              "percent_rate": 3.68,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-01",
+              "percent_rate": 3.66,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-02",
+              "percent_rate": 3.64,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-06",
+              "percent_rate": 3.63,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-07",
+              "percent_rate": 3.62,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-08",
+              "percent_rate": 3.58,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-09",
+              "percent_rate": 3.53,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-10",
+              "percent_rate": 3.55,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-13",
+              "percent_rate": 3.6,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-14",
+              "percent_rate": 3.63,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-15",
+              "percent_rate": 3.64,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-16",
+              "percent_rate": 3.62,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-17",
+              "percent_rate": 3.59,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-20",
+              "percent_rate": 3.57,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-21",
+              "percent_rate": 3.61,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-22",
+              "percent_rate": 3.62,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-23",
+              "percent_rate": 3.64,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-24",
+              "percent_rate": 3.64,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-27",
+              "percent_rate": 3.64,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-28",
+              "percent_rate": 3.65,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-29",
+              "percent_rate": 3.65,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-30",
+              "percent_rate": 3.65,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-07-31",
+              "percent_rate": 3.66,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-03",
+              "percent_rate": 3.65,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-04",
+              "percent_rate": 3.66,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-05",
+              "percent_rate": 3.64,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-06",
+              "percent_rate": 3.65,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-07",
+              "percent_rate": 3.62,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-10",
+              "percent_rate": 3.63,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-11",
+              "percent_rate": 3.64,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-12",
+              "percent_rate": 3.62,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-13",
+              "percent_rate": 3.62,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-14",
+              "percent_rate": 3.62,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-17",
+              "percent_rate": 3.66,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-18",
+              "percent_rate": 3.65,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-19",
+              "percent_rate": 3.62,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-20",
+              "percent_rate": 3.63,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-21",
+              "percent_rate": 3.65,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-24",
+              "percent_rate": 3.65,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-25",
+              "percent_rate": 3.66,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-26",
+              "percent_rate": 3.64,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-27",
+              "percent_rate": 3.64,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-28",
+              "percent_rate": 3.65,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-08-31",
+              "percent_rate": 3.68,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-09-01",
+              "percent_rate": 3.66,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-09-02",
+              "percent_rate": 3.65,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-09-03",
+              "percent_rate": 3.66,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-09-04",
+              "percent_rate": 3.65,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-09-08",
+              "percent_rate": 3.64,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-09-09",
+              "percent_rate": 3.64,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-09-10",
+              "percent_rate": 3.62,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-09-11",
+              "percent_rate": 3.62,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-09-14",
+              "percent_rate": 3.62,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-09-15",
+              "percent_rate": 3.64,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-09-16",
+              "percent_rate": 3.62,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-09-17",
+              "percent_rate": 3.85,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-09-18",
+              "percent_rate": 3.85,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-09-21",
+              "percent_rate": 3.85,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-09-22",
+              "percent_rate": 3.87,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-09-23",
+              "percent_rate": 3.87,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-09-24",
+              "percent_rate": 3.88,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-09-25",
+              "percent_rate": 3.9,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-09-28",
+              "percent_rate": 3.9,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-09-29",
+              "percent_rate": 3.88,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-09-30",
+              "percent_rate": 3.9,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-10-01",
+              "percent_rate": 3.87,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-10-02",
+              "percent_rate": 3.88,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-10-05",
+              "percent_rate": 3.89,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-10-06",
+              "percent_rate": 3.9,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-10-07",
+              "percent_rate": 3.88,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-10-08",
+              "percent_rate": 3.87,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            },
+            {
+              "effective_date": "2026-10-09",
+              "percent_rate": 3.87,
+              "source": "NY_FED",
+              "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+            }
+          ],
+          "name": "SOFR",
+          "rate": 3.87,
+          "source": "NY_FED",
+          "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+        },
+        "status": "ok",
+        "terminal": {
+          "change_from_overnight_bps": 83.25,
+          "expiry": "2028-09",
+          "implied_rate": 4.7025
+        }
+      }
+    },
+    "rates_tenors": {
+      "AU": {
+        "status": "ok",
+        "tenors": {
+          "10Y": {
+            "as_of": "2026-10-07",
+            "pctile_1y": 99.0079365079365,
+            "value": 5.404,
+            "z_1y": 2.0287607936961085
+          },
+          "2Y": {
+            "as_of": "2026-10-07",
+            "pctile_1y": 93.84920634920636,
+            "value": 4.94,
+            "z_1y": 1.3977089342078108
+          },
+          "5Y": {
+            "as_of": "2026-10-07",
+            "pctile_1y": 96.23015873015873,
+            "value": 5.014,
+            "z_1y": 1.6036683112185306
+          }
+        }
+      },
+      "CA": {
+        "status": "ok",
+        "tenors": {
+          "10Y": {
+            "as_of": "2026-10-09",
+            "pctile_1y": 93.05555555555556,
+            "value": 3.86,
+            "z_1y": 1.819971398340534
+          },
+          "2Y": {
+            "as_of": "2026-10-09",
+            "pctile_1y": 91.86507936507937,
+            "value": 3.18,
+            "z_1y": 1.6355793943091146
+          },
+          "5Y": {
+            "as_of": "2026-10-09",
+            "pctile_1y": 92.26190476190476,
+            "value": 3.54,
+            "z_1y": 1.8665069626571595
+          },
+          "LONG": {
+            "as_of": "2026-10-09",
+            "pctile_1y": 93.45238095238095,
+            "value": 4.23,
+            "z_1y": 1.9239680644672734
+          }
+        }
+      },
+      "EA": {
+        "status": "ok",
+        "tenors": {
+          "10Y": {
+            "as_of": "2026-10-13",
+            "pctile_1y": 90.87301587301587,
+            "value": 3.43,
+            "z_1y": 1.7667049344514811
+          },
+          "2Y": {
+            "as_of": "2026-10-13",
+            "pctile_1y": 93.65079365079364,
+            "value": 3.11,
+            "z_1y": 1.64138222180438
+          },
+          "30Y": {
+            "as_of": "2026-10-13",
+            "pctile_1y": 87.89682539682539,
+            "value": 3.79,
+            "z_1y": 1.4137102849331438
+          },
+          "5Y": {
+            "as_of": "2026-10-13",
+            "pctile_1y": 91.86507936507937,
+            "value": 3.22,
+            "z_1y": 1.7687421875293816
+          }
+        }
+      },
+      "JP": {
+        "status": "ok",
+        "tenors": {
+          "10Y": {
+            "as_of": "2026-10-13",
+            "pctile_1y": 94.64285714285714,
+            "value": 3.019,
+            "z_1y": 1.4668477815070453
+          },
+          "2Y": {
+            "as_of": "2026-10-13",
+            "pctile_1y": 96.62698412698413,
+            "value": 1.928,
+            "z_1y": 2.106205515142157
+          },
+          "30Y": {
+            "as_of": "2026-10-13",
+            "pctile_1y": 92.26190476190476,
+            "value": 4.064,
+            "z_1y": 1.365539597600152
+          },
+          "5Y": {
+            "as_of": "2026-10-13",
+            "pctile_1y": 95.43650793650794,
+            "value": 2.371,
+            "z_1y": 1.7569490411404287
+          }
+        }
+      },
+      "NZ": {
+        "status": "ok",
+        "tenors": {
+          "10Y": {
+            "as_of": "2026-10-13",
+            "pctile_1y": 92.65873015873017,
+            "value": 4.98,
+            "z_1y": 1.624348894007339
+          },
+          "2Y": {
+            "as_of": "2026-10-13",
+            "pctile_1y": 91.07142857142857,
+            "value": 3.8,
+            "z_1y": 1.2871316338564815
+          },
+          "5Y": {
+            "as_of": "2026-10-13",
+            "pctile_1y": 91.07142857142857,
+            "value": 4.42,
+            "z_1y": 1.2737832516186705
+          }
+        }
+      },
+      "US": {
+        "status": "ok",
+        "tenors": {
+          "10Y": {
+            "as_of": "2026-10-13",
+            "pctile_1y": 95.83333333333333,
+            "value": 5.21,
+            "z_1y": 2.522758525679667
+          },
+          "2Y": {
+            "as_of": "2026-10-13",
+            "pctile_1y": 96.03174603174604,
+            "value": 4.79,
+            "z_1y": 2.2087875670124104
+          },
+          "30Y": {
+            "as_of": "2026-10-13",
+            "pctile_1y": 96.03174603174604,
+            "value": 5.56,
+            "z_1y": 2.451809629359446
+          },
+          "5Y": {
+            "as_of": "2026-10-13",
+            "pctile_1y": 95.83333333333333,
+            "value": 5.0,
+            "z_1y": 2.383562290752494
+          }
+        }
+      }
+    },
+    "research_supplement": {
+      "central_bank_research": [
+        {
+          "summary": "22 Sep remarks focused on discount window upgrades and quarter-end window use when repo pressures lifted, without signaling a funds-rate path.",
+          "title": "Fed Vice Chair Jefferson: discount window modernization supports Treasury and repo market functioning"
+        },
+        {
+          "summary": "22 Sep speech said reserves look ample, overnight rates trade slightly below IORB, and reserve management purchases were cut to zero since mid-August.",
+          "title": "NY Fed SOMA Manager Perli: reserves ample; overnight rates near IORB; RMPs cut to zero"
+        },
+        {
+          "summary": "18 Sep MPM materials confirm the uncollateralized overnight call target moves to about 1.25% from 24 Sep, with the basic loan rate at 1.5%.",
+          "title": "BoJ September hike implementation: ~1.25% call-rate target effective 24 September"
+        }
+      ],
+      "news": [
+        {
+          "headline": "Fed\u2019s Williams Currently Sees No Need for Rate Hike in 2027",
+          "summary": "Federal Reserve Bank of New York President John Williams said he still sees one more interest-rate hike as appropriate this year, but at the moment doesn\u2019t believe it will be necessary for the central bank to tighten further into 2027."
+        },
+        {
+          "headline": "Global Oil Supply Buffer Running 'Scarily Thin,' Aramco CEO Says",
+          "summary": "The oil stockpiles that cushion the world from supply shocks have become scarily thin unless the Strait of Hormuz reopens, according to Aramco's CEO."
+        },
+        {
+          "headline": "Euro-Zone Inflation Tops Estimates to Hit Three-Year High",
+          "summary": "Euro-area inflation quickened more than expected to the highest in three years."
+        },
+        {
+          "headline": "Iran's Oil Minister Resigns as Exports Dry Up Under US Pressure",
+          "summary": "Iran's oil minister resigned citing personal reasons as the Islamic Republic tries to sustain its oil industry under a tightening US blockade."
+        },
+        {
+          "headline": "LNG Trade Through Hormuz Extends Rebound Despite Shipping Risks",
+          "summary": "Shipments of LNG through the Strait of Hormuz extended a rebound that began in September."
+        },
+        {
+          "headline": "UK Firms Predict Faster Price Increases After Energy Costs Surge",
+          "summary": "The resurgence in oil and gas prices drove up UK businesses' inflation expectations as firms planned to pass on cost increases."
+        },
+        {
+          "headline": "China Oil Comeback Loses Steam as Iran War Drags On",
+          "summary": "A nascent recovery in Chinese oil demand has begun to falter as the Middle East conflict and limited Iranian supply keep crude prices high."
+        },
+        {
+          "headline": "Ray Dalio Warns China, Japan May Pull Back From Treasuries",
+          "summary": "Ray Dalio warned that the US Treasury market is vulnerable to a pullback of demand from China and Japan."
+        },
+        {
+          "headline": "Man Group Says 5.5% Yields Risk Cracking AI Capex, US Consumer",
+          "summary": "Man Group's Kristina Hooper warned that surging long-end Treasury yields threaten AI capital expenditures and US consumer resilience."
+        },
+        {
+          "headline": "Pimco's Stracke Says AI Spending Drove Yields, Not Inflation",
+          "summary": "Surging capital demand from hyperscalers and the AI ecosystem\u2014not inflation expectations\u2014is the primary force pushing real rates and bond yields higher, Pimco's Stracke said."
+        },
+        {
+          "headline": "Saudi Aramco\u2019s New China Refinery Venture Gets First Crude Cargo",
+          "summary": "Saudi Aramco and its local partners have received the first crude cargo for their new refining complex in China, bringing the billion-dollar mega plant a step closer to production."
+        },
+        {
+          "headline": "Morgan Stanley Expects Renewal of South African Fuel-Tax Relief",
+          "summary": "Morgan Stanley expects South Africa to reinstate fuel-tax relief measures for three months to cushion consumers from surging oil prices in next week\u2019s budget, along with details of a long-awaited rule change."
+        }
+      ],
+      "sources": [
+        "Bloomberg",
+        "NY Fed SOFR",
+        "RBA",
+        "Bank of Canada",
+        "BoJ",
+        "ECB",
+        "ASX"
+      ],
+      "summary": "Overnight trading left risk assets firm while energy and rates stayed the dominant macro story. The S&P 500 held near 7805 with the VIX at 15.21, even as Brent at 105.69 and WTI at 94.14 kept an inflation and term-premium overhang and gold traded around 4177. NY Fed President Williams said one additional hike could still be appropriate this year but argued against needing further tightening into 2027, a message that sits against a March 2027 SOFR strip near 4.52 versus cash SOFR at 3.87. Euro-area inflation printed a three-year high and UK firms flagged faster price increases tied to energy, while Aramco\u2019s CEO warned global oil buffers are dangerously thin amid Iran supply stress and uneven Hormuz flows. Next focus is whether crude and inflation surprises reprice 2027 policy paths and long yields, and whether equity calm persists if oil stays elevated."
+    },
+    "review_id": "review-001",
+    "schema_version": 1,
+    "tradable_key_contracts": {
+      "AONIA": [
+        {
+          "change_from_overnight_bps": 11.0,
+          "code": null,
+          "expiry": "2026-12",
+          "implied_rate": 4.71,
+          "price": 95.29
+        },
+        {
+          "change_from_overnight_bps": 20.0,
+          "code": null,
+          "expiry": "2027-03",
+          "implied_rate": 4.8,
+          "price": 95.2
+        },
+        {
+          "change_from_overnight_bps": 27.0,
+          "code": null,
+          "expiry": "2027-06",
+          "implied_rate": 4.87,
+          "price": 95.13
+        },
+        {
+          "change_from_overnight_bps": 26.5,
+          "code": null,
+          "expiry": "2027-09",
+          "implied_rate": 4.865,
+          "price": 95.135
+        },
+        {
+          "change_from_overnight_bps": 24.0,
+          "code": null,
+          "expiry": "2027-12",
+          "implied_rate": 4.84,
+          "price": 95.16
+        }
+      ],
+      "CORRA": [
+        {
+          "change_from_overnight_bps": 34.5,
+          "code": "CRAZ26",
+          "expiry": "2026-12",
+          "implied_rate": 2.625,
+          "price": 97.375
+        },
+        {
+          "change_from_overnight_bps": 62.5,
+          "code": "CRAH27",
+          "expiry": "2027-03",
+          "implied_rate": 2.905,
+          "price": 97.095
+        },
+        {
+          "change_from_overnight_bps": 82.5,
+          "code": "CRAM27",
+          "expiry": "2027-06",
+          "implied_rate": 3.105,
+          "price": 96.895
+        },
+        {
+          "change_from_overnight_bps": 98.0,
+          "code": "CRAU27",
+          "expiry": "2027-09",
+          "implied_rate": 3.26,
+          "price": 96.74
+        },
+        {
+          "change_from_overnight_bps": 109.0,
+          "code": "CRAZ27",
+          "expiry": "2027-12",
+          "implied_rate": 3.37,
+          "price": 96.63
+        }
+      ],
+      "ESTR": [],
+      "SOFR": [
+        {
+          "change_from_overnight_bps": 38.0,
+          "code": "SR3Z6",
+          "expiry": "2026-12",
+          "implied_rate": 4.25,
+          "price": 95.75
+        },
+        {
+          "change_from_overnight_bps": 64.5,
+          "code": "SR3H7",
+          "expiry": "2027-03",
+          "implied_rate": 4.515,
+          "price": 95.485
+        },
+        {
+          "change_from_overnight_bps": 80.0,
+          "code": "SR3M7",
+          "expiry": "2027-06",
+          "implied_rate": 4.67,
+          "price": 95.33
+        },
+        {
+          "change_from_overnight_bps": 86.0,
+          "code": "SR3U7",
+          "expiry": "2027-09",
+          "implied_rate": 4.73,
+          "price": 95.27
+        },
+        {
+          "change_from_overnight_bps": 86.0,
+          "code": "SR3Z7",
+          "expiry": "2027-12",
+          "implied_rate": 4.73,
+          "price": 95.27
+        }
+      ],
+      "TONA": [
+        {
+          "change_from_overnight_bps": 24.3,
+          "code": "270316",
+          "expiry": "2026-12",
+          "implied_rate": 1.47,
+          "price": 98.53
+        },
+        {
+          "change_from_overnight_bps": 47.55,
+          "code": "270615",
+          "expiry": "2027-03",
+          "implied_rate": 1.7025,
+          "price": 98.2975
+        },
+        {
+          "change_from_overnight_bps": 67.55,
+          "code": "270914",
+          "expiry": "2027-06",
+          "implied_rate": 1.9025,
+          "price": 98.0975
+        },
+        {
+          "change_from_overnight_bps": 80.8,
+          "code": "271214",
+          "expiry": "2027-09",
+          "implied_rate": 2.035,
+          "price": 97.965
+        },
+        {
+          "change_from_overnight_bps": 90.55,
+          "code": "280314",
+          "expiry": "2027-12",
+          "implied_rate": 2.1325,
+          "price": 97.8675
+        }
+      ]
+    },
+    "trade_permissions": {
+      "blocked_expressions": [],
+      "blocked_sources": [],
+      "countries": {
+        "AU": {
+          "eligible": true,
+          "gaps": [
+            "AU.Activity.business_surveys",
+            "AU.Consumer.confidence"
+          ],
+          "scored_status": "partial"
+        },
+        "CA": {
+          "eligible": true,
+          "gaps": [
+            "CA.Consumer.confidence"
+          ],
+          "scored_status": "ok"
+        },
+        "EA": {
+          "eligible": true,
+          "gaps": [],
+          "scored_status": "ok"
+        },
+        "JP": {
+          "eligible": true,
+          "gaps": [
+            "JP.Activity.business_surveys"
+          ],
+          "scored_status": "partial"
+        },
+        "NZ": {
+          "eligible": true,
+          "gaps": [
+            "NZ.Activity.gdp_domestic_demand",
+            "NZ.Consumer.income",
+            "NZ.Consumer.retail",
+            "NZ.Consumer.spending",
+            "NZ.Labor.wages"
+          ],
+          "scored_status": "partial"
+        },
+        "US": {
+          "eligible": true,
+          "gaps": [],
+          "scored_status": "ok"
+        }
+      },
+      "coverage": "PARTIAL",
+      "eligible": true,
+      "expansion_rule": "country_and_expression_specific",
+      "partial_expressions": [
+        "activity:US",
+        "activity:CA",
+        "activity:AU",
+        "activity:NZ",
+        "activity:EA",
+        "activity:JP",
+        "macro:AU",
+        "macro:NZ"
+      ],
+      "source_health": [
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "The read operation timed out",
+          "observation_period": "2026-Q2",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "series_id": "US.Activity.gdp_domestic_demand"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "HTTP 404",
+          "observation_period": "2026-08",
+          "retrieved_at": "2026-09-21T16:30:00Z",
+          "series_id": "US.Activity.manufacturing_surveys"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "HTTP 404",
+          "observation_period": "2026-08",
+          "retrieved_at": "2026-09-21T16:30:00Z",
+          "series_id": "US.Activity.services_surveys"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "The read operation timed out",
+          "observation_period": "2026-07",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "series_id": "US.Consumer.confidence"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "The read operation timed out",
+          "observation_period": "2026-07",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "series_id": "US.Consumer.income"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "The read operation timed out",
+          "observation_period": "2026-08",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "series_id": "US.Consumer.retail"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "The read operation timed out",
+          "observation_period": "2026-07",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "series_id": "US.Consumer.spending"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "The read operation timed out",
+          "observation_period": "2026-07",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "series_id": "US.Inflation.core_pce"
+        }
+      ],
+      "trade_eligible_countries": [
+        "US",
+        "CA",
+        "AU",
+        "NZ",
+        "EA",
+        "JP"
+      ]
+    },
+    "type": "OVERNIGHT_AGENT_EVIDENCE_PACKET"
+  },
+  "base_packet_sha256": "a0780f5cf86c8d1b36d5c624e8be6390e03b42821f47b918f29667793693686a",
+  "decisions": {
+    "carry-is-king": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "expected_mark_direction": "lower",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "No incremental rates or spot risk; managing the current 25 million AONIA March 2027 receive only.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "AONIA_2027-03",
+          "position_id": "pos-524ab67108ee",
+          "rationale": "Retain the 25 million receive; cash 4.60 versus live 4.80 is still residual carry, not a catalyst flatten.",
+          "reason": "Retain the 25 million receive; cash 4.60 versus live 4.80 is still residual carry, not a catalyst flatten.",
+          "side": "long"
+        }
+      ],
+      "alerts": [],
+      "conviction": 66,
+      "evidence_cutoff": "2026-10-14T05:31:38.673189-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "No incremental rates or spot risk; managing the current 25 million AONIA March 2027 receive only.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "Stand down if cash AONIA leaves the 4.60 regime, or if March 2027 is persistently repriced well beyond the current 20bp premium into a hike-premium fade. A small implied backup from a known oil headline is not invalidation.",
+      "memory_context_sha256": "8d1b955fdde853ad743ffb97cd01b5dee7d86dae2763e410777f7e8d8aa3ccda",
+      "overnight_run_id": "overnight-20261014",
+      "packet_sha256": "3bad8ad5e244c14c9ffbbc8e4a6fc1ceddb775d0c8351952314dfc9f73731e13",
+      "required_pitch": null,
+      "review_id": "review-001",
+      "risk_put_on": null,
+      "seat": "carry-is-king",
+      "thesis": "Cash AONIA is still 4.60 against March 2027 at 4.80, only 20 basis points over cash and a few basis points through the 4.83 entry. Holding-period return still comes from staying in the high-cash Australian market, not from fading a hike strip, and a known oil print does not overwhelm that receive. Keep the existing 25 million long and do not add without a cleaner dislocation versus unchanged cash."
+    },
+    "catalyst-junkie": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "No incremental rates or spot risk; managing the current book only.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "rationale": "Williams and the oil-buffer headlines are already in the tape, and the 2027 SOFR, CORRA and AONIA paths are already marked; no dated catalyst is clean enough to open risk from a flat book.",
+          "reason": "Williams and the oil-buffer headlines are already in the tape, and the 2027 SOFR, CORRA and AONIA paths are already marked; no dated catalyst is clean enough to open risk from a flat book."
+        }
+      ],
+      "alerts": [],
+      "conviction": 41,
+      "evidence_cutoff": "2026-10-14T05:31:38.673189-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "No incremental rates or spot risk; managing the current book only.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "Reassess if the next FOMC delivers a 2026 path that contradicts Williams, or if a dated oil-supply shock reprices 2027 SOFR, CORRA or AONIA away from the strips already on the board.",
+      "memory_context_sha256": "7b4f88597b1c50c9bf319fb5731242792a346bcc8b15e89c7ff9f55b13bd19fe",
+      "overnight_run_id": "overnight-20261014",
+      "packet_sha256": "3bad8ad5e244c14c9ffbbc8e4a6fc1ceddb775d0c8351952314dfc9f73731e13",
+      "required_pitch": null,
+      "review_id": "review-001",
+      "risk_put_on": null,
+      "seat": "catalyst-junkie",
+      "thesis": "Williams saying he sees one more hike this year and no 2027 hike is already in the tape, as is the Aramco warning that the global oil buffer is running thin. Front-end SOFR, CORRA and AONIA already price those 2027 paths, so fading or chasing either headline from a flat book would be trading news that has already printed, not a dated event still to force a mark. Stay flat until a scheduled policy decision or a fresh supply shock actually moves a markable 2027 contract."
+    },
+    "cross-merchant": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Dedicated spot seat. CADJPY is the clean non-USD expression of the still-open Canada versus Japan gap; USDJPY and USDCAD contaminate that differential with dollar policy.",
+            "selected": "spot",
+            "spot_candidate": {
+              "asset_class": "spot_fx",
+              "instrument": "CADJPY",
+              "rationale": "Isolates the Canada-Japan policy, carry and oil differential without a USD overlay."
+            }
+          },
+          "instrument": "CADJPY",
+          "position_id": "pos-44de67c4b24f",
+          "rationale": "Keep the existing 15 million CADJPY long; isolates CORRA-TONA carry and oil without USD.",
+          "reason": "Keep the existing 15 million CADJPY long; isolates CORRA-TONA carry and oil without USD.",
+          "side": "long"
+        }
+      ],
+      "alerts": [],
+      "conviction": 58,
+      "evidence_cutoff": "2026-10-14T05:31:38.673189-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "Dedicated spot seat. CADJPY is the clean non-USD expression of the still-open Canada versus Japan gap; USDJPY and USDCAD contaminate that differential with dollar policy.",
+        "selected": "spot",
+        "spot_candidate": {
+          "asset_class": "spot_fx",
+          "instrument": "CADJPY",
+          "rationale": "Isolates the Canada-Japan policy, carry and oil differential without a USD overlay."
+        }
+      },
+      "invalidation": "The CADJPY long is wrong if Brent no longer supports cheap CAD versus JPY, if the cheapness is a yen-haven bid rather than Canada lag, or if CORRA compresses toward TONA enough to erase the Canada-Japan carry and oil advantage. No numeric stop is supplied. An Australia-Canada tape is not a reason to reverse the closed fade.",
+      "memory_context_sha256": "c4c8a90c387f6f8c6165da57b50143fdec9897cf321aca48511e7ba348dd5e95",
+      "overnight_run_id": "overnight-20261014",
+      "packet_sha256": "3bad8ad5e244c14c9ffbbc8e4a6fc1ceddb775d0c8351952314dfc9f73731e13",
+      "required_pitch": null,
+      "review_id": "review-001",
+      "risk_put_on": null,
+      "seat": "cross-merchant",
+      "thesis": "Canada still pays CORRA 2.28 against TONA 1.227, CADJPY is 111.03 after a three-month minus 4.0 percent lag, and Brent at 105.69 keeps the oil exporter favored versus the importer; that Canada-Japan policy, carry and terms-of-trade gap is isolated in CADJPY, not in USDJPY at 158.12 or USDCAD at 1.4241, which would import a dollar factor. One-year CADJPY sits near the 14th percentile, cash carry is still about 105 basis points, and March implieds remain wider at 2.905 versus 1.7025, so this is a multi-week relative-value book rather than a two-day clip. Keep the existing 15 million CADJPY long; do not rotate into a dollar pair and do not reverse the closed Australia-Canada fade."
+    },
+    "dollar-king": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Spot-only seat: keep the existing long USDCAD as the USD expression. A CAD cross would import oil and second-order risk.",
+            "selected": "spot",
+            "spot_candidate": {
+              "asset_class": "spot_fx",
+              "instrument": "USDCAD",
+              "rationale": "Cash SOFR 3.87 versus CORRA 2.28 and March implieds 4.515 versus 2.905 still favor USD over CAD; the existing long USDCAD is the dollar-spot expression."
+            }
+          },
+          "instrument": "USDCAD",
+          "position_id": "pos-5317bc96d4eb",
+          "rationale": "Existing long 55 million USDCAD remains the correct USD-spot expression of the still-wide SOFR-CORRA gap.",
+          "reason": "Existing long 55 million USDCAD remains the correct USD-spot expression of the still-wide SOFR-CORRA gap.",
+          "side": "long"
+        }
+      ],
+      "alerts": [],
+      "conviction": 60,
+      "evidence_cutoff": "2026-10-14T05:31:38.673189-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "Spot-only seat: keep the existing long USDCAD as the USD expression. A CAD cross would import oil and second-order risk.",
+        "selected": "spot",
+        "spot_candidate": {
+          "asset_class": "spot_fx",
+          "instrument": "USDCAD",
+          "rationale": "Cash SOFR 3.87 versus CORRA 2.28 and March implieds 4.515 versus 2.905 still favor USD over CAD; the existing long USDCAD is the dollar-spot expression."
+        }
+      },
+      "invalidation": "Exit if the SOFR versus CORRA advantage compresses sharply toward or through the already-narrower March strip, or if a sustained oil-and-risk bid reverses the dollar against Canada while United States rates stop supporting the long.",
+      "memory_context_sha256": "6e8dc7bba448685476c4e8bcb32b526a47b3de1629daced5865a43d6b6b16d12",
+      "overnight_run_id": "overnight-20261014",
+      "packet_sha256": "3bad8ad5e244c14c9ffbbc8e4a6fc1ceddb775d0c8351952314dfc9f73731e13",
+      "required_pitch": null,
+      "review_id": "review-001",
+      "risk_put_on": null,
+      "seat": "dollar-king",
+      "thesis": "United States cash at 3.87 and the March 2027 strip at 4.515 still dominate Canada at 2.28 and 2.905, so the dollar versus the loonie remains the cleanest expression of that gap. A Canada cross would import oil and second-order risk the rate story does not need; keep the existing long USDCAD, now at 1.4241 and the 97th percentile of its one-year range. Brent at 105.69 can slow further dollar gains, which is why this stays a hold of that long rather than an add."
+    },
+    "mean-reverter": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "expected_mark_direction": "lower",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "No incremental rates or spot risk; managing the current book only. The existing March 2027 receive remains the fade, and adding is not justified while oil and the ten-year keep term premium intact.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "SOFR_2027-03",
+          "position_id": "pos-1477172adb86",
+          "rationale": "Keep the 10 million receive of unprinted March 2027 hikes; Williams seeing no 2027 hike supports the fade, but do not add into oil-supported term premium.",
+          "reason": "Keep the 10 million receive of unprinted March 2027 hikes; Williams seeing no 2027 hike supports the fade, but do not add into oil-supported term premium.",
+          "side": "long"
+        }
+      ],
+      "alerts": [],
+      "conviction": 55,
+      "evidence_cutoff": "2026-10-14T05:31:38.673189-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "No incremental rates or spot risk; managing the current book only. The existing March 2027 receive remains the fade, and adding is not justified while oil and the ten-year keep term premium intact.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "Cover if March 2027 SOFR extends through 4.58 on a delivered hike impulse that reopens 2027 tightening, or if cash SOFR itself rises toward the contract and removes the fade.",
+      "memory_context_sha256": "a3f0029d5c83de0696912bd6cebb48aa6a7543fe240428f67f8d9b4af7d14a49",
+      "overnight_run_id": "overnight-20261014",
+      "packet_sha256": "3bad8ad5e244c14c9ffbbc8e4a6fc1ceddb775d0c8351952314dfc9f73731e13",
+      "required_pitch": null,
+      "review_id": "review-001",
+      "risk_put_on": null,
+      "seat": "mean-reverter",
+      "thesis": "March 2027 SOFR at 4.515 still sits well above cash 3.87, so the existing 10 million receive is a fade of a 2027 hike path that has not been delivered. New York Fed President Williams currently sees one more hike as appropriate this year but no need for a 2027 hike, which is the reversal condition for leaving that residual premium in the strip. The contract has already cheapened from the 4.58 entry toward 4.515, which is the desired direction, but Brent at 105.69 and the US 10-year at 5.21 keep term premium from collapsing. Hold the residual receive; do not add just because the fade has worked a bit while oil still anchors the back of the curve."
+    },
+    "no-trade-skeptic": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "No incremental rates or spot risk; the book is flat and no expression clears the official SOFR hurdle versus the priced 2027 SR3 path.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "rationale": "Remain at the zero official-SOFR cash benchmark; paying SOFR on shocked-risk capital would only lease a hike path already in SR3.",
+          "reason": "Remain at the zero official-SOFR cash benchmark; paying SOFR on shocked-risk capital would only lease a hike path already in SR3."
+        }
+      ],
+      "alerts": [],
+      "conviction": 72,
+      "evidence_cutoff": "2026-10-14T05:31:38.673189-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "No incremental rates or spot risk; the book is flat and no expression clears the official SOFR hurdle versus the priced 2027 SR3 path.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "funding_view": {
+        "current_sofr": {
+          "observation_date": "2026-10-09",
+          "rate": 3.87
+        },
+        "forward_funding_assessment": "lower",
+        "implication": "Realized overnight funding should print near the 3.87 official fixing and lower than those SR3 forwards. Remain at the zero official-SOFR cash benchmark; do not pay SOFR on shocked-risk capital to own a hike path the curve already contains. Flat cash is not alpha.",
+        "sr3_forward_view": "Over this overnight horizon the frozen SR3 2027 path sits well above cash 3.87: March 4.515, June 4.67, September 4.73, December 4.73. Exact 1m/3m/6m/12m SR3 horizon matches in funding_context are null. That strip is a priced multi-meeting hiking path, not an overnight funding print."
+      },
+      "invalidation": "Take risk only if a later freeze shows a markable expression whose expected edge clears official SOFR charged on shocked-risk capital, rather than leasing the 2027 hike path the strip already contains.",
+      "memory_context_sha256": "5f06f85730ec8f7edfafae82a5eb449f3c7efb0f892706a4cbea169b9d598291",
+      "overnight_run_id": "overnight-20261014",
+      "packet_sha256": "3bad8ad5e244c14c9ffbbc8e4a6fc1ceddb775d0c8351952314dfc9f73731e13",
+      "required_pitch": null,
+      "review_id": "review-001",
+      "risk_put_on": null,
+      "seat": "no-trade-skeptic",
+      "thesis": "Official SOFR is 3.87 percent on the 9 October fixing, this book is flat, and the 2027 strip already prices hikes through March at 4.515 and September and December at 4.73. Paying or receiving that path from cash just leases shocked-risk capital at SOFR without an edge above the official fixing. Stay in cash; flat cash is the zero benchmark, not alpha."
+    },
+    "perma-bear": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "expected_mark_direction": "lower",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "No incremental rates or spot risk; managing the current book only. The live ten-year receive already sits on the already-sold long end; a hike-priced 2027 strip receive would fade tightening, and no marked risk-off currency print is on the closed tape.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "US_10Y",
+          "position_id": "pos-5ac8fc69cb81",
+          "rationale": "Keep the existing 25 million long US 10-year; do not receive hike-priced STIR.",
+          "reason": "Keep the existing 25 million long US 10-year; do not receive hike-priced STIR.",
+          "side": "long"
+        }
+      ],
+      "alerts": [],
+      "conviction": 58,
+      "evidence_cutoff": "2026-10-14T05:31:38.673189-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "No incremental rates or spot risk; managing the current book only. The live ten-year receive already sits on the already-sold long end; a hike-priced 2027 strip receive would fade tightening, and no marked risk-off currency print is on the closed tape.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "Cover if the ten-year backs through the 5.24 entry on oil-driven term premium with no growth break, or if equities and oil reverse together into a stable re-acceleration that removes the downside growth tail.",
+      "memory_context_sha256": "22d7a5635d1443bb7173a70aa951cca647495d97c4f564a68a2d573d8dc66649",
+      "overnight_run_id": "overnight-20261014",
+      "packet_sha256": "3bad8ad5e244c14c9ffbbc8e4a6fc1ceddb775d0c8351952314dfc9f73731e13",
+      "required_pitch": null,
+      "review_id": "review-001",
+      "risk_put_on": null,
+      "seat": "perma-bear",
+      "thesis": "Cash SOFR at 3.87 still sits below March 2027 at 4.515 and September 2027 at 4.73, so receiving that hike-priced strip would fade tightening rather than express a growth scare. Williams saying one more hike this year and no 2027 hike is needed argues that strip is too hawkish, but the cleaner defensive expression is the already-sold long end: the book is long the US 10-year from 5.24 against a live 5.21 mark, with the 30-year at 5.56. Equities at 7805 and VIX at 15.21 still treat landing as benign while Brent at 105.69 keeps term-premium risk alive, so keep the 25 million ten-year receive and do not add or rotate into an unmarked risk-off currency short."
+    },
+    "perma-bull": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "No incremental rates or spot risk; holding the current book.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "CORRA_2027-03",
+          "position_id": "pos-dd6fdaf39119",
+          "rationale": "Keep the existing 50 million March 2027 CORRA pay; do not add on the move from 3.13 to 2.905 while cash 2.28 versus March 2.905 has not retraced the priced path.",
+          "reason": "Keep the existing 50 million March 2027 CORRA pay; do not add on the move from 3.13 to 2.905 while cash 2.28 versus March 2.905 has not retraced the priced path.",
+          "side": "short"
+        }
+      ],
+      "alerts": [],
+      "conviction": 55,
+      "evidence_cutoff": "2026-10-14T05:31:38.673189-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "No incremental rates or spot risk; holding the current book.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "The pay is wrong if the oil bid reverses enough to remove Canada\u2019s cyclical impulse, if risk appetite breaks, or if March 2027 CORRA converges back toward cash 2.28.",
+      "memory_context_sha256": "bf6fa30eeac06ca019ec529bb67a4cf187e873283e2d855fc4041002997a22f0",
+      "overnight_run_id": "overnight-20261014",
+      "packet_sha256": "3bad8ad5e244c14c9ffbbc8e4a6fc1ceddb775d0c8351952314dfc9f73731e13",
+      "required_pitch": null,
+      "review_id": "review-001",
+      "risk_put_on": null,
+      "seat": "perma-bull",
+      "thesis": "Cash CORRA is 2.28 against March 2027 at 2.905 on the existing 50 million pay from 3.13, while Brent 105.69, WTI 94.14, the S&P 7805 and VIX 15.21 keep a cyclical, risk-on backdrop. Williams still wants one more 2026 hike and no 2027 hike, which is a tightening base case rather than a pivot to cuts; oil and global growth still look able to keep Canada\u2019s 2027 implied above cash even if the Fed 2027 hike is capped. The existing March 2027 CORRA pay remains the cleanest pro-growth expression; the cheapening from 3.13 to 2.905 is path movement around that story, not a reason to add or to rotate into USDCAD at 1.4241."
+    },
+    "positioning-cynic": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "No incremental rates or spot risk; managing the current book only.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "USDCAD",
+          "position_id": "pos-ccb6655acbad",
+          "rationale": "Keep the existing 15 million USDCAD short; do not join crowded STIR inventory or add the fade versus the dollar seat long.",
+          "reason": "Keep the existing 15 million USDCAD short; do not join crowded STIR inventory or add the fade versus the dollar seat long.",
+          "side": "short"
+        }
+      ],
+      "alerts": [],
+      "conviction": 54,
+      "evidence_cutoff": "2026-10-14T05:31:38.673189-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "No incremental rates or spot risk; managing the current book only.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "Reassess only if a later freeze shows the dollar seat has cut or flipped the USDCAD long and same-sign 2027 STIR inventory is no longer two-way, or if an unowned markable rate prints without duplicating the cash-to-forward receive.",
+      "memory_context_sha256": "5743e4e3e55c3b81a67e85b55a94e2d2e1b14045938660478dae6f4f8f7982bd",
+      "overnight_run_id": "overnight-20261014",
+      "packet_sha256": "3bad8ad5e244c14c9ffbbc8e4a6fc1ceddb775d0c8351952314dfc9f73731e13",
+      "required_pitch": null,
+      "review_id": "review-001",
+      "risk_put_on": null,
+      "seat": "positioning-cynic",
+      "thesis": "Desk STIR is still two-way, with 2027 SOFR and CORRA pays already on the book while the cash-to-forward receive remains the crowded other sign: CORRA March 2027 at 2.905 versus cash 2.28 is cheap versus cash, not an entry. The dollar seat is still long USDCAD against this 15 million short from 1.4246 with the pair at 1.4241, so adding the fade would stack the crowded other side rather than create new ownership asymmetry. Hold the existing short; do not rotate into an already-owned rates sleeve."
+    },
+    "rate-dove": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "No change to pos-9849cf751c27; oil 105.69 blocks an add, and the live ~3.16 versus cash 2.28 gap still supports staying in the receive.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "CORRA_2027H-Z",
+          "notional_usd": 42500000,
+          "position_id": "pos-9849cf751c27",
+          "side": "long"
+        }
+      ],
+      "alerts": [],
+      "conviction": 58,
+      "evidence_cutoff": "2026-10-14T05:31:38.673189-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "HOLD the existing CORRA_2027H-Z receive; no new expression is being selected or sized.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "The hold is wrong if the 2027 H-Z strip average backs up through the live ~3.16 mark toward the 3.40 entry because oil 105.69, or a reversal of Williams' 2027 US dovishness, is priced as a Canadian re-hike cycle rather than a sticky but still-too-high implied path.",
+      "memory_context_sha256": "8277e9a138b526fde27fbfa996e5531ce3ca84ef452f5098981583a2d77d8e17",
+      "overnight_run_id": "overnight-20261014",
+      "packet_sha256": "3bad8ad5e244c14c9ffbbc8e4a6fc1ceddb775d0c8351952314dfc9f73731e13",
+      "required_pitch": null,
+      "review_id": "review-001",
+      "risk_put_on": null,
+      "seat": "rate-dove",
+      "thesis": "Cash CORRA is 2.28 against a 2027 H-Z strip near 3.16, so the market still prices a large re-tightening above today's cash rate. Williams' 2027 US guidance plus that leftover gap keep the existing receive the right expression of underpriced easing. Oil at 105.69 is a reason not to add, not a reason to flatten the 42.5 million long."
+    },
+    "rate-hawk": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "expected_mark_direction": "higher",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "No incremental rates or spot risk; hold the existing US 2027 pay.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "SOFR_2027-09",
+          "position_id": "pos-c9184707c12b",
+          "rationale": "Sep-2027 at 4.73 versus cash 3.87 remains too easy against a 5.21 10-year and Brent 105.69; Williams' no-2027-hike call is the communication the pay fades. Do not add.",
+          "reason": "Sep-2027 at 4.73 versus cash 3.87 remains too easy against a 5.21 10-year and Brent 105.69; Williams' no-2027-hike call is the communication the pay fades. Do not add.",
+          "side": "short"
+        },
+        {
+          "action": "REDUCE",
+          "asset_class": "rates",
+          "expected_mark_direction": "higher",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "No incremental rates or spot risk; de-risk the Canada sleeve that has cheapened a lot.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 6250000,
+          "position_id": "pos-2709875e8c9c",
+          "rationale": "March 2027 CORRA has cheapened from 3.125 to 2.905. Cut half the remaining 12.5m and keep 6.25m against cash still at 2.28 and Brent 105.69.",
+          "reason": "March 2027 CORRA has cheapened from 3.125 to 2.905. Cut half the remaining 12.5m and keep 6.25m against cash still at 2.28 and Brent 105.69.",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "expected_mark_direction": "higher",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "No incremental rates or spot risk; hold the existing Australian 2027 pay.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "AONIA_2027-06",
+          "position_id": "pos-9cbf3f27dfff",
+          "rationale": "June 2027 at 4.87 versus cash 4.60 still leaves residual ease against an AU 10-year at 5.404 and Brent 105.69; keep the Australian pay.",
+          "reason": "June 2027 at 4.87 versus cash 4.60 still leaves residual ease against an AU 10-year at 5.404 and Brent 105.69; keep the Australian pay.",
+          "side": "short"
+        }
+      ],
+      "alerts": [],
+      "conviction": 62,
+      "evidence_cutoff": "2026-10-14T05:31:38.673189-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "No incremental rates or spot risk. Managing the existing three pays only: hold SOFR and AONIA, reduce CORRA.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "Cover the US pay if Sep-2027 SOFR falls through Dec-2026 4.25 toward cash 3.87 while Brent loses 100 and the 10-year loses 5.00. Cover residual Canada if Mar-2027 CORRA extends through 2.75. Cover Australia if Jun-2027 AONIA surrenders the remaining premium toward cash 4.60.",
+      "memory_context_sha256": "320556092dcca09ebd31914909ee1a79e3dab77542f72d6a7fbbba94fdf6c3bd",
+      "overnight_run_id": "overnight-20261014",
+      "packet_sha256": "3bad8ad5e244c14c9ffbbc8e4a6fc1ceddb775d0c8351952314dfc9f73731e13",
+      "required_pitch": null,
+      "review_id": "review-001",
+      "risk_put_on": null,
+      "seat": "rate-hawk",
+      "thesis": "Cash SOFR at 3.87 versus a 4.73 September 2027 plateau still looks too easy against a 5.21 ten-year and Brent at 105.69, even after Williams said one more 2026 hike and no 2027 hike. Hold the existing US and Australian pays. Cut half the remaining Canada pay after March CORRA cheapened from 3.125 to 2.905, while cash at 2.28 still leaves some residual tightening."
+    },
+    "trend-follower": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "expected_mark_direction": "higher",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "No incremental rates or spot risk; managing the current March 2027 SOFR pay only.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "SOFR_2027-03",
+          "position_id": "pos-662bff0986be",
+          "rationale": "Keep the 75 million March 2027 SOFR pay; the 4.515 Williams dip is a pullback inside the higher-for-longer trend, not a break while oil and the 2026 hike stay.",
+          "reason": "Keep the 75 million March 2027 SOFR pay; the 4.515 Williams dip is a pullback inside the higher-for-longer trend, not a break while oil and the 2026 hike stay.",
+          "side": "short"
+        }
+      ],
+      "alerts": [],
+      "conviction": 58,
+      "evidence_cutoff": "2026-10-14T05:31:38.673189-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "No incremental rates or spot risk; managing the current March 2027 SOFR pay only.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "Cover if March 2027 SOFR implieds collapse toward cash 3.87, if December 2026 SR3Z6 loses the remaining 2026 hike versus cash 3.87, and if Brent reverses from 105.69 with the US 10-year giving up the 5.21 higher-yield trend.",
+      "memory_context_sha256": "392d6481d121a45c62a20af989dffe35354051fa9095e413477e11a5ac48e871",
+      "overnight_run_id": "overnight-20261014",
+      "packet_sha256": "3bad8ad5e244c14c9ffbbc8e4a6fc1ceddb775d0c8351952314dfc9f73731e13",
+      "required_pitch": null,
+      "review_id": "review-001",
+      "risk_put_on": null,
+      "seat": "trend-follower",
+      "thesis": "The book remains short 75 million March 2027 SOFR from 4.62 versus a live 4.515 print, with cash at 3.87, the US ten-year at 5.21, and Brent at 105.69. Williams seeing no 2027 hike while still calling for one more 2026 hike is pullback risk, not a trend break, because December 2026 still sits at 4.25. Covering 4.515 would fade a higher-for-longer path that oil and the long end still support."
+    },
+    "value-guy": {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "rates_rv",
+          "conviction": 56,
+          "expected_mark_direction": "higher",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": {
+              "asset_class": "rates_rv",
+              "instrument": "NZ-US_10Y",
+              "rationale": "Pay New Zealand 10-year versus receive US 10-year in the cash NZ minus US 10-year spread. Canonical short: profits if the minus-23 basis-point mark rises toward the historical New Zealand premium."
+            },
+            "rates_tenor_scan": {
+              "cross_market_rv": {
+                "asset_class": "rates_rv",
+                "instrument": "NZ-US_10Y",
+                "rationale": "Cash NZ minus US 10-year at minus 23 basis points is the first percentile of one-year history and the 0.3rd percentile of five-year history, with a 13 January 2025 analog that reversed after the same 30 basis-point one-month cheapening.",
+                "status": "candidate"
+              },
+              "curve": {
+                "asset_class": "curve",
+                "instrument": "NZ_2s10s",
+                "rationale": "New Zealand 2s10s at 118 basis points is a steep domestic curve, not the US-relative cheapness that needs to converge.",
+                "status": "not_compelling"
+              },
+              "five_year": {
+                "asset_class": "rates_rv",
+                "instrument": "NZ-US_5Y",
+                "rationale": "Cash NZ minus US 5-year is minus 58 basis points and even more extreme on percentile, but the 5 June 2026 analog kept cheapening, and 5-year sits closer to policy than the 10-year cash screen.",
+                "status": "not_compelling"
+              },
+              "selected_bucket": "cross_market_rv",
+              "selection_rationale": "After scanning STIR, 2-year, 5-year, outright 10-year, and curve, the cleanest rates expression is the cash NZ minus US 10-year peer spread.",
+              "stir_policy_path": {
+                "asset_class": null,
+                "instrument": null,
+                "rationale": "Cash-versus-strip in SOFR, CORRA, and AONIA is already the crowded desk book. New Zealand has no OCR strip in the tradable paper-rate universe, so a short-end pack cannot express this peer dislocation.",
+                "status": "not_compelling"
+              },
+              "ten_year": {
+                "asset_class": "rates",
+                "instrument": "NZ_10Y",
+                "rationale": "Outright New Zealand 10-year is the 93rd percentile of its own history and US 10-year is the 96th. Neither cash 10-year is cheap in isolation; the dislocation is the peer spread.",
+                "status": "not_compelling"
+              },
+              "two_year": {
+                "asset_class": "rates_rv",
+                "instrument": "NZ-US_2Y",
+                "rationale": "Cash NZ minus US 2-year is already minus 99 basis points at the 2nd percentile. A 2-year cross-market spread is not cheap because the kiwi is cheap; after that cash screen the 2-year pack is not the residual.",
+                "status": "not_compelling"
+              }
+            },
+            "rationale": "The mispricing is the cash 10-year peer spread, not kiwi cheapness. Rates is cleaner than spot because NZ minus US 10-year is independently extreme after screening cash 2-year, and New Zealand is now eligible.",
+            "selected": "rates",
+            "spot_candidate": {
+              "asset_class": "spot_fx",
+              "instrument": "NZDUSD",
+              "rationale": "Long kiwi versus the dollar at 0.5613, the 2.8th percentile, is the FX residual after the cash 2-year screen. It imports oil and dollar beta the 10-year cash spread does not need."
+            }
+          },
+          "instrument": "NZ-US_10Y",
+          "lesson_considerations": [
+            {
+              "disposition": "APPLIES",
+              "lesson_id": "les-b02e04336ac7",
+              "rationale": "Cash NZ minus US 2-year is already minus 99 basis points, so a 2-year pack is not a residual to kiwi cheapness. The expression is the 10-year cash spread versus the United States, not REER."
+            }
+          ],
+          "notional_usd": 80000000,
+          "rationale": "Flat book. Cash NZ minus US 10-year at minus 23 basis points is a first-percentile peer dislocation after screening cash 2-year; pay New Zealand 10-year versus receive US 10-year so the mark rises.",
+          "side": "short"
+        }
+      ],
+      "alerts": [],
+      "conviction": 56,
+      "evidence_cutoff": "2026-10-14T05:31:38.673189-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": {
+          "asset_class": "rates_rv",
+          "instrument": "NZ-US_10Y",
+          "rationale": "Pay New Zealand 10-year versus receive US 10-year in the cash NZ minus US 10-year spread. Canonical short: profits if the minus-23 basis-point mark rises toward the historical New Zealand premium."
+        },
+        "rates_tenor_scan": {
+          "cross_market_rv": {
+            "asset_class": "rates_rv",
+            "instrument": "NZ-US_10Y",
+            "rationale": "Cash NZ minus US 10-year at minus 23 basis points is the first percentile of one-year history and the 0.3rd percentile of five-year history, with a 13 January 2025 analog that reversed after the same 30 basis-point one-month cheapening.",
+            "status": "candidate"
+          },
+          "curve": {
+            "asset_class": "curve",
+            "instrument": "NZ_2s10s",
+            "rationale": "New Zealand 2s10s at 118 basis points is a steep domestic curve, not the US-relative cheapness that needs to converge.",
+            "status": "not_compelling"
+          },
+          "five_year": {
+            "asset_class": "rates_rv",
+            "instrument": "NZ-US_5Y",
+            "rationale": "Cash NZ minus US 5-year is minus 58 basis points and even more extreme on percentile, but the 5 June 2026 analog kept cheapening, and 5-year sits closer to policy than the 10-year cash screen.",
+            "status": "not_compelling"
+          },
+          "selected_bucket": "cross_market_rv",
+          "selection_rationale": "After scanning STIR, 2-year, 5-year, outright 10-year, and curve, the cleanest rates expression is the cash NZ minus US 10-year peer spread.",
+          "stir_policy_path": {
+            "asset_class": null,
+            "instrument": null,
+            "rationale": "Cash-versus-strip in SOFR, CORRA, and AONIA is already the crowded desk book. New Zealand has no OCR strip in the tradable paper-rate universe, so a short-end pack cannot express this peer dislocation.",
+            "status": "not_compelling"
+          },
+          "ten_year": {
+            "asset_class": "rates",
+            "instrument": "NZ_10Y",
+            "rationale": "Outright New Zealand 10-year is the 93rd percentile of its own history and US 10-year is the 96th. Neither cash 10-year is cheap in isolation; the dislocation is the peer spread.",
+            "status": "not_compelling"
+          },
+          "two_year": {
+            "asset_class": "rates_rv",
+            "instrument": "NZ-US_2Y",
+            "rationale": "Cash NZ minus US 2-year is already minus 99 basis points at the 2nd percentile. A 2-year cross-market spread is not cheap because the kiwi is cheap; after that cash screen the 2-year pack is not the residual.",
+            "status": "not_compelling"
+          }
+        },
+        "rationale": "The mispricing is the cash 10-year peer spread, not kiwi cheapness. Rates is cleaner than spot because NZ minus US 10-year is independently extreme after screening cash 2-year, and New Zealand is now eligible.",
+        "selected": "rates",
+        "spot_candidate": {
+          "asset_class": "spot_fx",
+          "instrument": "NZDUSD",
+          "rationale": "Long kiwi versus the dollar at 0.5613, the 2.8th percentile, is the FX residual after the cash 2-year screen. It imports oil and dollar beta the 10-year cash spread does not need."
+        }
+      },
+      "invalidation": "NZ minus US 10-year follows the 3 August 2022 analog and cheapens another 20 basis points or more from minus 23, or New Zealand labor stays cool enough that a durable New Zealand discount versus the United States becomes the fair 10-year gap.",
+      "memory_context_sha256": "200c1f5788a67e8bed1b7a7d958e88974ef37454391554413fecace8e95768dd",
+      "overnight_run_id": "overnight-20261014",
+      "packet_sha256": "3bad8ad5e244c14c9ffbbc8e4a6fc1ceddb775d0c8351952314dfc9f73731e13",
+      "required_pitch": {
+        "asset_class": "rates_rv",
+        "instrument": "NZ-US_10Y",
+        "note": "Primary pitch is pay New Zealand 10-year versus receive US 10-year in cash NZ minus US 10-year.",
+        "side": "short"
+      },
+      "review_id": "review-001",
+      "risk_put_on": {
+        "asset_class": "rates_rv",
+        "instrument": "NZ-US_10Y",
+        "note": "Same expression as the pitch; 80 million notional is 800 thousand standard-shock risk capital.",
+        "notional_usd": 80000000,
+        "side": "short"
+      },
+      "seat": "value-guy",
+      "thesis": "New Zealand's 10-year cash yield is 4.98 percent against the US 10-year at 5.21 percent, so NZ minus US 10-year sits at minus 23 basis points, the first percentile of one-year history and the 0.3rd percentile of five-year history, after a 30 basis-point one-month cheapening in which the US 10-year rose 25 basis points and New Zealand's 10-year fell only 3. That is a cash peer-duration dislocation, not a 2-year pack because the kiwi is cheap: cash NZ minus US 2-year is already minus 99 basis points, and kiwi at 0.5613 is a separate spot residual. Convergence is pay New Zealand 10-year versus receive US 10-year so the spread rises toward its historical New Zealand premium; the 13 January 2025\u2026"
+    },
+    "vol-convexity": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "No last-resort options case is packet-supported; rates and spot already express oil and policy, so selected remains none and the book stays HOLD.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "rationale": "Flat book. VIX 15.21 and SPX 7805 with oil and policy already in rates and spot do not justify paying SOFR on shocked-risk capital for an unmarkable vol clip.",
+          "reason": "Flat book. VIX 15.21 and SPX 7805 with oil and policy already in rates and spot do not justify paying SOFR on shocked-risk capital for an unmarkable vol clip."
+        }
+      ],
+      "alerts": [],
+      "conviction": 36,
+      "evidence_cutoff": "2026-10-14T05:31:38.673189-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "No last-resort options case is packet-supported; rates and spot already express oil and policy, so selected remains none and the book stays HOLD.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "This HOLD is wrong if a later freeze shows a markable options structure with premium, implied vol, and strikes whose convex payoff rates and spot cannot express, and last-resort use is then required.",
+      "memory_context_sha256": "6bb7c593637edc6e23bc2442d72053f7709c04ce9abcf80969e6da049603e756",
+      "overnight_run_id": "overnight-20261014",
+      "packet_sha256": "3bad8ad5e244c14c9ffbbc8e4a6fc1ceddb775d0c8351952314dfc9f73731e13",
+      "required_pitch": null,
+      "review_id": "review-001",
+      "risk_put_on": null,
+      "seat": "vol-convexity",
+      "thesis": "This book is flat. The VIX is 15.21 and the S&P is near 7805, and rates and spot already express the oil and policy tape. A volatility clip is not a last-resort case here because this freeze does not name a markable convex payoff that linear rates or spot fail to express. Stay at the zero cash benchmark rather than paying funding on an unmarkable options clip."
+    }
+  },
+  "execution": {
+    "allowed_subagent_models": [
+      "composer-2.5",
+      "grok-4.6"
+    ],
+    "auto_used": false,
+    "composer_cap": 2,
+    "declared_composer_calls": 1,
+    "declared_grok_calls": 18,
+    "declared_total_model_calls": 19,
+    "grok_cap": 18,
+    "other_models_calls": 0,
+    "parent_model": "grok-4.6",
+    "total_model_cap": 20
+  },
+  "launch_id": "mwl-20261014T093138Z-d6061bbe",
+  "overnight_run_id": "overnight-20261014",
+  "pm_decisions": {
+    "grinder": {
+      "actions": [
+        {
+          "action": "NO_TRADE",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "No rates, spot, or options sleeve clears official SOFR on shocked-risk capital after oil and late-2026 hike two-way risk. Flat cash is the zero benchmark.",
+            "selected": "none",
+            "spot_candidate": null
+          }
+        }
+      ],
+      "conviction": 72,
+      "deployment_hurdle": {
+        "benchmark": "Official NY Fed SOFR ACT/360 3.87% as of 2026-10-09, charged on shocked-risk capital as the zero-alpha hurdle.",
+        "candidate_assessments": [
+          {
+            "asset_class": "rates_rv",
+            "hurdle_result": "does_not_clear",
+            "ignored_unrelated_gaps": [
+              "NZ household/activity/wages",
+              "AU surveys/confidence",
+              "JP surveys",
+              "options IV"
+            ],
+            "instrument": "NZ-US_10Y",
+            "markable": true,
+            "material_missing_data": [],
+            "rationale": "Cash 10-year marks are in hand at NZ 4.98 versus US 5.21, so the spread is markable at minus 23 basis points. A short even carries a running yield pickup, but 23 basis points is not extreme versus the already-wide 2-year gap, and oil near 106 plus a possible late-2026 hike is a fast adverse path for the US long end. Expected edge after that path does not clear official SOFR on shocked-risk capital."
+          },
+          {
+            "asset_class": "rates",
+            "hurdle_result": "does_not_clear",
+            "ignored_unrelated_gaps": [
+              "NZ household/activity/wages",
+              "AU surveys/confidence",
+              "JP surveys",
+              "options IV"
+            ],
+            "instrument": "SOFR_2027-03",
+            "markable": true,
+            "material_missing_data": [],
+            "rationale": "March 2027 SOFR at 4.515 versus cash 3.87 is markable, and Williams arguing against further 2027 tightening is the best directional tell. One more hike this year plus Brent 105.69, thin oil buffers, and euro-area inflation at a three-year high can reprice 2027 SOFR higher. Probability-weighted edge after that tail is too thin for a high preservation hurdle."
+          },
+          {
+            "asset_class": "rates",
+            "hurdle_result": "does_not_clear",
+            "ignored_unrelated_gaps": [
+              "NZ household/activity/wages",
+              "AU surveys/confidence",
+              "JP surveys",
+              "options IV"
+            ],
+            "instrument": "CORRA_2027-03",
+            "markable": true,
+            "material_missing_data": [],
+            "rationale": "CORRA cash 2.28 and March 2027 at 2.905 are markable, so 62 basis points of hikes are already in the contract. Oil strength is Canada-supportive and can justify that path, so neither a new pay nor a new receive has a clean expected edge over official SOFR charged on shocked-risk capital."
+          }
+        ],
+        "chosen_action_rationale": "All three markable candidates fail the official SOFR hurdle on their own economics, not because the packet is incomplete. The book is flat and deployment is not forced, so no-trade is the preservation action."
+      },
+      "evidence_cutoff": "2026-10-14T05:31:38.673189-04:00",
+      "execution": {
+        "principal_model": "grok-4.6",
+        "subagent_count": 0,
+        "subagent_models": []
+      },
+      "invalidation": "A receive in March 2027 SOFR becomes interesting if energy backs off and any remaining hike is delivered without a 2027 tightening path, leaving 4.515 clearly rich to a one-and-done hold. A NZ-US 10-year short is only worth revisiting if the spread tightens through about minus 10 basis points with stable oil, not on the current minus-23 print.",
+      "memory_context_sha256": "211303691a375c1f6967f587ade91d9bf41a649221d42addbddb7adafef90903",
+      "opportunity_scan": [
+        {
+          "asset_class": "rates_rv",
+          "instrument": "NZ-US_10Y",
+          "rationale": "Markable at minus 23 basis points off 4.98/5.21, but oil and hike risk hit a receive-US / pay-NZ sleeve."
+        },
+        {
+          "asset_class": "rates",
+          "instrument": "SOFR_2027-03",
+          "rationale": "Williams versus 4.515 is the cleanest US tell; oil and a possible late-2026 hike keep the receive from clearing a high hurdle."
+        },
+        {
+          "asset_class": "rates",
+          "instrument": "CORRA_2027-03",
+          "rationale": "62 basis points of hikes already priced; oil can justify the path, so a new pay or receive is not a preservation ticket."
+        },
+        {
+          "asset_class": "rates",
+          "instrument": "US_10Y",
+          "rationale": "Long-end receive at 5.21 is the wrong side of high oil and a possible additional hike."
+        },
+        {
+          "asset_class": "rates",
+          "instrument": "AONIA_2027-03",
+          "rationale": "Only 20 basis points over 4.60 cash; edge is too small to pay SOFR on shocked capital."
+        }
+      ],
+      "overnight_run_id": "overnight-20261014",
+      "packet_sha256": "3bad8ad5e244c14c9ffbbc8e4a6fc1ceddb775d0c8351952314dfc9f73731e13",
+      "pm_id": "grinder",
+      "pressure_assessment": {
+        "allocator_vs_noise": "short_horizon_noise",
+        "chase_temptation": "no",
+        "heater_risk": "no",
+        "judgment_effect": "neither",
+        "junior_vs_self": "style",
+        "protecting_gains": "not_applicable"
+      },
+      "principal_model": "grok-4.6",
+      "review_id": "review-001",
+      "subagent_count": 0,
+      "subagent_models": [],
+      "thesis": "Cash is the right seat. The only clean-looking expressions are a 23 basis-point NZ-US 10-year gap and March 2027 SOFR at 4.515 versus 3.87 cash, but both fail a preservation hurdle once Brent near 106, thin oil buffers, and a possible late-2026 hike are treated as live two-way risks. I will not pay official SOFR on shocked capital to own a non-extreme cross-market basis or to receive 2027 SOFR while energy and euro-area inflation are still pushing term premia up. The book stays flat until a markable dislocation has a catalyst that survives an oil shock."
+    },
+    "pragmatist": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "expected_mark_direction": "lower",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "No incremental rates or spot risk; managing the current book only.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "CORRA_2027-03",
+          "position_id": "pm-pragmatist-4e0cbc4e0b05",
+          "side": "long"
+        },
+        {
+          "action": "OPEN",
+          "asset_class": "rates_rv",
+          "expected_mark_direction": "higher",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": {
+              "asset_class": "rates_rv",
+              "instrument": "NZ-US_10Y",
+              "rationale": "Pay New Zealand 10-year versus receive US 10-year in the cash NZ minus US 10-year spread at minus 23 basis points."
+            },
+            "rationale": "The edge is a cash 10-year yield gap, so rates RV is the direct markable expression rather than FX or options.",
+            "selected": "rates",
+            "spot_candidate": {
+              "asset_class": "spot_fx",
+              "instrument": "NZDUSD",
+              "rationale": "Long kiwi at 0.5613 is the FX residual of cheap New Zealand; it imports oil and dollar beta the 10-year cash spread does not need."
+            }
+          },
+          "instrument": "NZ-US_10Y",
+          "notional_usd": 80000000,
+          "side": "short"
+        }
+      ],
+      "conviction": 64,
+      "evidence_cutoff": "2026-10-14T05:31:38.673189-04:00",
+      "execution": {
+        "principal_model": "grok-4.6",
+        "subagent_count": 0,
+        "subagent_models": []
+      },
+      "invalidation": "Cover the CORRA receive if Bank of Canada 2027 hikes are delivered or the strip reprices back through the 3.13 entry, especially on a sticky oil-and-goods inflation impulse. Cover the NZ-US short if the 10-year spread cheapens further from minus 23 basis points toward richer New Zealand, including on an RBNZ easing surprise or a Treasury-led selloff that leaves New Zealand yields stuck.",
+      "memory_context_sha256": "7d9f9f300514e8a0a152ac85708b555a3d3c1d908c6b76bb266424e1415b1b86",
+      "opportunity_scan": [
+        {
+          "asset_class": "rates",
+          "instrument": "CORRA_2027-03",
+          "rationale": "Core residual: 2.28 cash versus 2.905 March still prices hikes the 2027 strip may not deliver."
+        },
+        {
+          "asset_class": "rates_rv",
+          "instrument": "NZ-US_10Y",
+          "rationale": "First-percentile 10-year gap at minus 23 basis points; clean overlay away from Canadian STIR."
+        },
+        {
+          "asset_class": "rates",
+          "instrument": "SOFR_2027-03",
+          "rationale": "Williams versus 4.515/3.87 is real but the same 2027-easing factor already in the book."
+        },
+        {
+          "asset_class": "spot_fx",
+          "instrument": "USDCAD",
+          "rationale": "Easier-Canada CAD weakness is muddied by high crude supporting the commodity currency."
+        },
+        {
+          "asset_class": "rates",
+          "instrument": "AONIA_2027-03",
+          "rationale": "Only about 20 basis points over 4.60 cash; less leftover premium than CORRA."
+        }
+      ],
+      "overnight_run_id": "overnight-20261014",
+      "packet_sha256": "3bad8ad5e244c14c9ffbbc8e4a6fc1ceddb775d0c8351952314dfc9f73731e13",
+      "pm_id": "pragmatist",
+      "portfolio_construction": {
+        "adverse_scenario": "Oil stays scarce with Brent near 106 and thin buffers, euro-area inflation remains at a three-year high, and goods inflation forces 2026-27 hike paths higher. CORRA March 2027 reprices toward the 3.13 entry or through it. A Treasury-led selloff that leaves New Zealand 10s unchanged would also hurt a short NZ-US spread.",
+        "candidate_interactions": [
+          {
+            "instrument": "NZ-US_10Y",
+            "interaction": "diversify",
+            "rationale": "Different country pair and 10-year cash RV versus a 2027 Canadian STIR receiver; complementary residual, not duplicate Canadian beta."
+          },
+          {
+            "instrument": "SOFR_2027-03",
+            "interaction": "duplicate_beta",
+            "rationale": "Same 2027 tightening-overpriced theme as the CORRA book; stacks the oil and inflation adverse path."
+          },
+          {
+            "instrument": "US_10Y",
+            "interaction": "duplicate_beta",
+            "rationale": "Adds outright duration and would clone the long-Treasury leg inside NZ-US."
+          },
+          {
+            "instrument": "AONIA_2027-03",
+            "interaction": "duplicate_beta",
+            "rationale": "Another 2027 receiver with only about 20 basis points of hike premium over 4.60 cash."
+          },
+          {
+            "instrument": "USDCAD",
+            "interaction": "offset",
+            "rationale": "Easier Canada would weaken CAD, but Brent near 106 supports the commodity currency, so the hedge is two-sided."
+          }
+        ],
+        "chosen_actions_rationale": "HOLD the 450 million CORRA receive because the residual versus cash is still large and plausible adverse P&L already sizes the ticket. OPEN 80 million short NZ-US 10-year as a singles-and-doubles overlay on a markable first-percentile dislocation: pay New Zealand and receive US, expected mark higher from minus 23 basis points. Eighty million keeps spread adverse P&L in the low single-digit millions and does not fill risk capital for its own sake.",
+        "existing_book_summary": "Single working receive: long 450 million CORRA March 2027 at 3.13, live mark 2.905, shocked risk about 4.5 million against the 100 million standard-shock limit. Concentrated Canadian front-end duration, no hedges, and well inside both the shocked-risk cap and the 50 million drawdown stop.",
+        "independent_handoff_opportunities": [
+          {
+            "asset_class": "rates_rv",
+            "instrument": "NZ-US_10Y",
+            "markable": true,
+            "rationale": "Frozen cash NZ 10-year 4.98 versus US 10-year 5.21 is minus 23 basis points, a first-percentile peer dislocation with an explicit markable mid; paying the spread is an independent RV, not a second CORRA ticket."
+          }
+        ],
+        "rejected_complements": [
+          {
+            "instrument": "SOFR_2027-03",
+            "reason": "Duplicates 2027 easing beta on the same oil and inflation fail path."
+          },
+          {
+            "instrument": "US_10Y",
+            "reason": "Adds net duration the book does not need once NZ-US already supplies a Treasury receive."
+          },
+          {
+            "instrument": "AONIA_2027-03",
+            "reason": "Thinner leftover hike premium and the same rates-down factor."
+          },
+          {
+            "instrument": "USDCAD",
+            "reason": "Energy support for CAD offsets the easing channel."
+          }
+        ]
+      },
+      "principal_model": "grok-4.6",
+      "review_id": "review-001",
+      "subagent_count": 0,
+      "subagent_models": [],
+      "thesis": "March 2027 CORRA still prices a full hike cycle versus 2.28 cash, so the existing receive remains the core book rather than a completed trade. Williams\u2019 pushback on 2027 tightening supports that 2027 strips are the residual, but Canada already has the expression and the size. New Zealand 10s at 4.98 versus Treasuries at 5.21 is a first-percentile cheap-NZ dislocation and is the only overlay worth adding: pay New Zealand and receive US 10s, not more Canadian duration."
+    },
+    "swinger": {
+      "actions": [
+        {
+          "action": "ADD",
+          "asset_class": "rates",
+          "expected_mark_direction": "lower",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": {
+              "asset_class": "rates",
+              "instrument": "CORRA_2027-03",
+              "rationale": "Receive more March 2027 CORRA: cash 2.28 versus live 2.905 still leaves a hike path in the strip."
+            },
+            "rationale": "Adding to the existing concentrated CORRA receive is the expression rather than a new currency overlay.",
+            "selected": "rates",
+            "spot_candidate": {
+              "asset_class": "spot_fx",
+              "instrument": "USDCAD",
+              "rationale": "The policy-rate gap favors the dollar, but FX is a slower expression of the Canada-stay-easy view already in the book."
+            }
+          },
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 500000000,
+          "position_id": "pm-swinger-2070479ca321",
+          "side": "long"
+        }
+      ],
+      "conviction": 72,
+      "evidence_cutoff": "2026-10-14T05:31:38.673189-04:00",
+      "execution": {
+        "principal_model": "grok-4.6",
+        "subagent_count": 0,
+        "subagent_models": []
+      },
+      "invalidation": "Close the receive if March 2027 CORRA trades back through 3.13 with cash rising, which would mean Canada is delivering 2027 hikes rather than fading them. A persistent oil shock that re-anchors Canadian inflation and holds the 2027 strip toward 3.20-3.30 without a subsequent fade is the same verdict.",
+      "memory_context_sha256": "a2693303372f17f7d4fd14d7d46c49e547b2e456b2513abfd6a5d14e96a6cd62",
+      "opportunity_scan": [
+        {
+          "asset_class": "rates",
+          "instrument": "CORRA_2027-03",
+          "rationale": "Cash 2.28 versus March 2.905 still prices a 2027 hike cycle; residual edge is large enough to press the existing receive."
+        },
+        {
+          "asset_class": "rates_rv",
+          "instrument": "NZ-US_10Y",
+          "rationale": "Cash 10Y at 4.98 versus 5.21 is a first-percentile dislocation, but a second theme would dilute the Canadian concentration."
+        },
+        {
+          "asset_class": "rates",
+          "instrument": "SOFR_2027-03",
+          "rationale": "Williams versus 4.515/3.87 is the same 2027-hike fade, but the 5.21 10Y and Brent 105.69 keep US term premium two-way."
+        },
+        {
+          "asset_class": "rates",
+          "instrument": "AONIA_2027-03",
+          "rationale": "Only 20bp over 4.60 cash; residual carry is real but too small to swing."
+        },
+        {
+          "asset_class": "spot_fx",
+          "instrument": "USDCAD",
+          "rationale": "The policy-rate gap still favors the dollar, but FX is a slower expression of the Canada-stay-easy view already in the book."
+        }
+      ],
+      "overnight_run_id": "overnight-20261014",
+      "packet_sha256": "3bad8ad5e244c14c9ffbbc8e4a6fc1ceddb775d0c8351952314dfc9f73731e13",
+      "pm_id": "swinger",
+      "pressure_assessment": {
+        "allocator_vs_noise": "short_horizon_noise",
+        "chase_temptation": "no",
+        "heater_risk": "no",
+        "judgment_effect": "sharpening",
+        "junior_vs_self": "style",
+        "protecting_gains": "no"
+      },
+      "principal_model": "grok-4.6",
+      "review_id": "review-001",
+      "subagent_count": 0,
+      "subagent_models": [],
+      "thesis": "March 2027 CORRA still prices more than 60 basis points of tightening versus 2.28 cash after the New York Fed lead argued against a 2027 hike campaign. That is the same overpriced Canadian re-tightening this book is already receiving; overnight oil is accepted volatility, not a reason to stand down while the strip remains rich. Shocked risk on the existing line is small versus a plausible remaining fade toward cash, so the aggressive expression is to add to the receive rather than open a second country."
+    }
+  },
+  "review_id": "review-001",
+  "schedule_id": "market-watch-weekday-0205",
+  "schema_version": 1,
+  "type": "OVERNIGHT_SCHEDULED_OUTPUT"
+}

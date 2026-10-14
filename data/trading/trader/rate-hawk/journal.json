@@ -1047,6 +1047,94 @@
       "run_id": "overnight-20261013",
       "schema_version": 1,
       "thesis": "The 2027 pay strip still points the right way in the United States and Australia: cash SOFR 3.87 versus September 2027 at 4.77, and cash AONIA 4.60 versus June 2027 at 4.86, leave too much ease against Brent at 106.65. Canada is the weak sleeve. March 2027 CORRA has cheapened from the 3.125 pay toward 2.90 while cash sits at 2.28, so half the Canada pay comes off rather than waiting for a full retrace. Hold the SOFR September and AONIA June pays."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-09",
+          "notional_usd": null,
+          "position_id": "pos-c9184707c12b",
+          "rationale": "Sep-2027 at 4.73 versus cash 3.87 remains too easy against a 5.21 10-year and Brent 105.69; Williams' no-2027-hike call is the communication the pay fades. Do not add.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "REDUCE",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 6250000,
+          "position_id": "pos-2709875e8c9c",
+          "rationale": "March 2027 CORRA has cheapened from 3.125 to 2.905. Cut half the remaining 12.5m and keep 6.25m against cash still at 2.28 and Brent 105.69.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-06",
+          "notional_usd": null,
+          "position_id": "pos-9cbf3f27dfff",
+          "rationale": "June 2027 at 4.87 versus cash 4.60 still leaves residual ease against an AU 10-year at 5.404 and Brent 105.69; keep the Australian pay.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-14T05:31:38.673189-04:00",
+      "conviction": 62,
+      "decision_fingerprint": "9e1cb49a5bdb925d391a4c1c6a92858c36c8ffffbad9d0e82413e653f36fe095",
+      "event_id": "jde-71474dc733844a0e",
+      "funding_view": null,
+      "invalidation": "Cover the US pay if Sep-2027 SOFR falls through Dec-2026 4.25 toward cash 3.87 while Brent loses 100 and the 10-year loses 5.00. Cover residual Canada if Mar-2027 CORRA extends through 2.75. Cover Australia if Jun-2027 AONIA surrenders the remaining premium toward cash 4.60.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-2709875e8c9c",
+        "pos-9cbf3f27dfff",
+        "pos-c9184707c12b"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-rate-hawk-pos-2709875e8c9c"
+      ],
+      "memory_context_sha256": "320556092dcca09ebd31914909ee1a79e3dab77542f72d6a7fbbba94fdf6c3bd",
+      "outcome_links": [],
+      "owner_id": "rate-hawk",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "4557ac04fd5532e5d33274baa341ef03a4ac3bec469e07ec089aa619caf958bd"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-14T05:31:38.673189-04:00",
+        "evidence_hash": "3bad8ad5e244c14c9ffbbc8e4a6fc1ceddb775d0c8351952314dfc9f73731e13",
+        "overnight_run_id": "overnight-20261014",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Cash SOFR at 3.87 versus a 4.73 September 2027 plateau still looks too easy against a 5.21 ten-year and Brent at 105.69, even after Williams said one more 2026 hike and no 2027 hike. Hold the existing US and Australian pays. Cut half the remaining Canada pay after March CORRA cheapened from 3.125 to 2.905, while cash at 2.28 still leaves some residual tightening.",
+      "run_id": "overnight-20261014",
+      "schema_version": 1,
+      "thesis": "Cash SOFR at 3.87 versus a 4.73 September 2027 plateau still looks too easy against a 5.21 ten-year and Brent at 105.69, even after Williams said one more 2026 hike and no 2027 hike. Hold the existing US and Australian pays. Cut half the remaining Canada pay after March CORRA cheapened from 3.125 to 2.905, while cash at 2.28 still leaves some residual tightening."
     }
   ],
   "schema_version": 1,

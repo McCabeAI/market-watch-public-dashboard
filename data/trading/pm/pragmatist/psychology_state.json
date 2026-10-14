@@ -4,9 +4,9 @@
     "chase_pressure": {
       "band": "calm",
       "baseline": 0.1,
-      "delta_last_cycle": -0.0143,
+      "delta_last_cycle": -0.012,
       "half_life_cycles": 4.0,
-      "value": 0.1753
+      "value": 0.1633
     },
     "complacency": {
       "band": "calm",
@@ -25,16 +25,16 @@
     "external_pressure": {
       "band": "calm",
       "baseline": 0.1,
-      "delta_last_cycle": -0.0255,
+      "delta_last_cycle": -0.0227,
       "half_life_cycles": 6.0,
-      "value": 0.3085
+      "value": 0.2858
     },
     "frustration": {
       "band": "calm",
       "baseline": 0.1,
-      "delta_last_cycle": -0.0074,
+      "delta_last_cycle": -0.0059,
       "half_life_cycles": 3.0,
-      "value": 0.1286
+      "value": 0.1227
     },
     "revenge_pressure": {
       "band": "calm",
@@ -58,21 +58,21 @@
       "value": 0.25
     }
   },
-  "cycle_count": 9,
+  "cycle_count": 10,
   "engine_version": 1,
   "flags": [],
   "flat_cycles_pending": 0,
   "last_capital_owner_standing": "good_standing",
-  "last_event_seq": 17,
+  "last_event_seq": 18,
   "last_learning_status": "compliant",
   "last_repeated_error_counts": {},
   "last_review_id": "review-001",
-  "last_run_id": "overnight-20261013",
+  "last_run_id": "overnight-20261014",
   "metrics": {
     "conviction_volatility": 0.0,
     "distortion_verdicts": 0,
     "inconclusive_verdicts": 0,
-    "self_report_clean_cycles": 9,
+    "self_report_clean_cycles": 10,
     "self_report_mismatches": 0,
     "sharpened_verdicts": 0
   },
@@ -81,7 +81,7 @@
   "profile_version": 1,
   "provenance": "seeded_baseline_v1",
   "schema_version": 1,
-  "state_sha256": "ad8b7fc8176bf648fee64589ad30130125d4a7a278b33fc48878c217271d7036",
+  "state_sha256": "9a8a52a0a763ab69465420add5c68761fba5fd466c83977745d23a12d9538126",
   "streaks": {
     "flat_cycles": 0,
     "session_loss": 0,
@@ -93,6 +93,8 @@
     "hold_through_pain": {},
     "revenge": []
   },
-  "trailing_open_risk_capital_usd": [],
+  "trailing_open_risk_capital_usd": [
+    800000.0
+  ],
   "type": "TRADER_PSYCHOLOGY_STATE"
 }

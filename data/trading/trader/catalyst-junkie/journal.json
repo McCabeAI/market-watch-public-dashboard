@@ -810,6 +810,60 @@
       "run_id": "overnight-20261013",
       "schema_version": 1,
       "thesis": "Saudi and OPEC supply headlines and the Bank of Japan leaning against an October hike are already in the tape, not a fresh mispricing that needs a new clip. Front-end SOFR, CORRA and AONIA already price their 2027 paths, and New Zealand risk is off because household and activity prints could not be verified. Stay flat until a dated, packet-supported catalyst opens a clean rates expression."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Williams and the oil-buffer headlines are already in the tape, and the 2027 SOFR, CORRA and AONIA paths are already marked; no dated catalyst is clean enough to open risk from a flat book.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-14T05:31:38.673189-04:00",
+      "conviction": 41,
+      "decision_fingerprint": "dad21376890ab65850ae51fae339f042598de0e39f42af1823291e5d29947313",
+      "event_id": "jde-65e692824fca437e",
+      "funding_view": null,
+      "invalidation": "Reassess if the next FOMC delivers a 2026 path that contradicts Williams, or if a dated oil-supply shock reprices 2027 SOFR, CORRA or AONIA away from the strips already on the board.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "7b4f88597b1c50c9bf319fb5731242792a346bcc8b15e89c7ff9f55b13bd19fe",
+      "outcome_links": [],
+      "owner_id": "catalyst-junkie",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "1058bcfdd63291cd95c3a0911534436f56a3e807626172eae59bd1df8c498334"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-14T05:31:38.673189-04:00",
+        "evidence_hash": "3bad8ad5e244c14c9ffbbc8e4a6fc1ceddb775d0c8351952314dfc9f73731e13",
+        "overnight_run_id": "overnight-20261014",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Williams saying he sees one more hike this year and no 2027 hike is already in the tape, as is the Aramco warning that the global oil buffer is running thin. Front-end SOFR, CORRA and AONIA already price those 2027 paths, so fading or chasing either headline from a flat book would be trading news that has already printed, not a dated event still to force a mark. Stay flat until a scheduled policy decision or a fresh supply shock actually moves a markable 2027 contract.",
+      "run_id": "overnight-20261014",
+      "schema_version": 1,
+      "thesis": "Williams saying he sees one more hike this year and no 2027 hike is already in the tape, as is the Aramco warning that the global oil buffer is running thin. Front-end SOFR, CORRA and AONIA already price those 2027 paths, so fading or chasing either headline from a flat book would be trading news that has already printed, not a dated event still to force a mark. Stay flat until a scheduled policy decision or a fresh supply shock actually moves a markable 2027 contract."
     }
   ],
   "schema_version": 1,
