@@ -54,7 +54,21 @@ def _coverage_block(result: dict) -> list[str]:
     lines.append(f"  PPI/CPI carry lines: {len(carried)}")
     if result.get("sensitivity", {}).get("stable") is False:
         lines.append("  carry sensitivity: classification changes inside +/-50bp")
+    reference_count = sum(1 for row in result["components"] if row.get("raw_bls_references"))
+    if reference_count:
+        lines.append(f"  raw BLS references not applied to the estimate: {reference_count}")
     return lines
+
+
+def _reference_suffix(references: list[dict]) -> str:
+    if not references:
+        return ""
+    parts = []
+    for reference in references:
+        mom = "conflict" if reference.get("mom_percent") is None else _display(reference.get("mom_percent"))
+        mark = " preliminary" if reference.get("bls_footnote_code") == "P" else ""
+        parts.append(f"{reference.get('period')}={mom}{mark}")
+    return " raw_bls_not_applied:" + ",".join(parts)
 
 
 def _context_block(result: dict) -> list[str]:
@@ -75,9 +89,10 @@ def _component_lines(rows: list[dict]) -> list[str]:
         mom = "none" if row["mom_percent"] is None else _display(row["mom_percent"])
         contribution = "none" if row["contribution_percent"] is None else _display(row["contribution_percent"])
         reason = row["reason"] or row["assumption"] or ""
+        reference = _reference_suffix(row.get("raw_bls_references") or [])
         lines.append(
             f"  {row['line']} {row['status']} w={_display(row['weight_share'])} "
-            f"mom={mom} contrib={contribution} {row['source_family']} {reason} {row['name']}"
+            f"mom={mom} contrib={contribution} {row['source_family']} {reason} {row['name']}{reference}"
         )
     return lines
 

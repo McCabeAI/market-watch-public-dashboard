@@ -57,8 +57,12 @@ def calculate(
     anchor_level = levels.get(anchor)
     grouped: dict[int, list[dict]] = {}
     rejected: list[dict] = []
+    references: list[dict] = []
     for row in observations:
-        if row.get("series_id") == "CUSR0000SA0L1E":
+        if row.get("role") == "raw_bls_reference":
+            references.append(row)
+            continue
+        if row.get("series_id") == "CUSR0000SA0L1E" or row.get("role") == "cpi_context_only":
             rejected.append(
                 {
                     "reason": "cpi_context_only",
@@ -132,11 +136,13 @@ def calculate(
                 "source_text": component.get("source_text"),
                 "status": status,
                 "assumption": assumption if status != "UNRESOLVED" else None,
+                "series_id": None if chosen_mom is None else (pool[0].get("series_id") if pool else None),
                 "mom_percent": _text(chosen_mom),
                 "contribution_percent": _text(contribution),
                 "reason": reason,
             }
         )
+    _attach_references(resolved_rows, references)
 
     pre_rates = rates_ending(levels, anchor)
     horizons: dict[str, dict] = {}
@@ -231,4 +237,52 @@ def calculate(
         "rejected_observations": rejected,
         "cpi_context": _cpi_context(observations),
         "approximation": "first_order_expenditure_share",
+        "raw_bls_references_applied": False,
     }
+
+
+def _attach_references(rows: list[dict], references: list[dict]) -> None:
+    grouped: dict[int, list[dict]] = {}
+    for reference in references:
+        try:
+            line = int(reference["line"])
+        except (KeyError, TypeError, ValueError):
+            continue
+        grouped.setdefault(line, []).append(reference)
+    for row in rows:
+        items = grouped.get(int(row["line"]))
+        if not items:
+            continue
+        by_period: dict[str, list[dict]] = {}
+        for item in items:
+            by_period.setdefault(str(item.get("period") or ""), []).append(item)
+        published = []
+        for period, period_items in sorted(by_period.items()):
+            moms = {item.get("mom_percent") for item in period_items}
+            sample = period_items[0]
+            if len(moms) != 1 or any(item.get("has_conflict") for item in period_items):
+                published.append(
+                    {
+                        "period": period,
+                        "mom_percent": None,
+                        "applied_to_estimate": False,
+                        "series_id": sample.get("series_id"),
+                        "reason": "conflicting_raw_bls_reference",
+                    }
+                )
+                continue
+            published.append(
+                {
+                    "period": period,
+                    "mom_percent": sample.get("mom_percent"),
+                    "applied_to_estimate": False,
+                    "series_id": sample.get("series_id"),
+                    "series_ids": sample.get("series_ids"),
+                    "seasonal_status": sample.get("seasonal_status"),
+                    "source_family": sample.get("source_family"),
+                    "note": sample.get("note"),
+                    "bls_footnote_code": sample.get("bls_footnote_code"),
+                    "bls_footnote": sample.get("bls_footnote"),
+                }
+            )
+        row["raw_bls_references"] = published

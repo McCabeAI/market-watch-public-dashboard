@@ -7,6 +7,7 @@ import json
 import time
 from pathlib import Path
 
+from scripts.core_pce_release.acquire import acquire_official
 from scripts.core_pce_release.calculator import calculate
 from scripts.core_pce_release.listener import run_listener
 from scripts.core_pce_release.packet import load_packet, prepare
@@ -65,6 +66,11 @@ def main(argv: list[str] | None = None) -> int:
     arm_parser.add_argument("--inbox", type=Path, required=True)
     arm_parser.add_argument("--max-runtime-seconds", type=float, default=0)
     arm_parser.add_argument("--interval-seconds", type=float, default=5)
+    arm_parser.add_argument(
+        "--no-live-fetch",
+        action="store_true",
+        help="Inbox only. The operator pilot omits this flag so arm fetches BLS itself.",
+    )
 
     args = parser.parse_args(argv)
     if args.command == "prepare":
@@ -75,6 +81,9 @@ def main(argv: list[str] | None = None) -> int:
         code, text = _run(args.packet, args.observations)
         print(text, end="")
         return code
+    def _fetch(series_ids: list[str], release: str) -> dict:
+        return acquire_official(series_ids, release)
+
     outcome = run_listener(
         args.packet,
         args.inbox,
@@ -82,6 +91,7 @@ def main(argv: list[str] | None = None) -> int:
         sleep=time.sleep,
         max_runtime_seconds=args.max_runtime_seconds,
         interval_seconds=args.interval_seconds,
+        fetch=None if args.no_live_fetch else _fetch,
     )
     if outcome.get("headline"):
         flash = (args.packet / "flash.txt").read_text(encoding="utf-8")

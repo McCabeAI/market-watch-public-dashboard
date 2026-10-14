@@ -6,7 +6,7 @@ import json
 from decimal import Decimal
 from pathlib import Path
 
-from scripts.core_pce_release.acquire import live_fetch_status
+from scripts.core_pce_release.acquire import fetch_plan, live_fetch_status, load_registry
 from scripts.core_pce_release.history import break_even_mom, rates_ending, shift_month
 from scripts.core_pce_release.snapshot import load_snapshot, residual_weight, validate_snapshot
 
@@ -32,7 +32,9 @@ def prepare(kind: str, release: str, out_dir: Path, snapshot_dir: Path | None = 
         if rates[months] is None or thresholds[months] is None:
             problems.append(f"history_window:{months}")
     status = "READY" if not problems else "NOT READY"
-    fetch = live_fetch_status()
+    registry = load_registry()
+    fetch = live_fetch_status(registry)
+    planned = fetch_plan(registry, kind) if status == "READY" else []
     direct = [
         row
         for row in snapshot["components"]
@@ -48,6 +50,8 @@ def prepare(kind: str, release: str, out_dir: Path, snapshot_dir: Path | None = 
         "snapshot_dir": str(snapshot["root"]),
         "listener": "not_armed",
         "live_fetch": fetch,
+        "fetch_series": planned,
+        "registry_coverage": registry.get("coverage"),
         "estimate_status": "INCOMPLETE",
         "estimate_reason": "observations are not part of prepare; nothing has been estimated",
         "accepted_august_bridge_carries": snapshot["manifest"]["accepted_august_bridge_carries"],
@@ -63,20 +67,26 @@ def prepare(kind: str, release: str, out_dir: Path, snapshot_dir: Path | None = 
         },
         "activation": {
             "run": "python -m scripts.core_pce_release run --packet <packet> --observations <file>",
-            "arm": "python -m scripts.core_pce_release arm --packet <packet> --inbox <dir> --max-runtime-seconds 900",
-            "note": "arm is a foreground process for one release. It is not started by prepare.",
+            "arm": "python -m scripts.core_pce_release arm --packet <packet> --inbox <dir> --max-runtime-seconds 900 --interval-seconds 10",
+            "note": (
+                "prepare does not fetch and does not arm. arm is a foreground process for one release. "
+                "A chat message does not start it. There is no hosted worker in this repository."
+            ),
         },
     }
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "pre_release_state.json").write_text(json.dumps(state, indent=2) + "\n", encoding="utf-8")
     lines = [
-        status,
+        f"PACKET {status}",
+        "pilot: NOT READY",
+        "estimate: INCOMPLETE",
         f"kind: {kind}",
         f"release: {release}",
         f"anchor: {anchor}",
         "listener: not_armed",
         f"live_fetch: {fetch['status']}",
-        "estimate: INCOMPLETE",
+        f"fetch_series: {len(planned)}",
+        f"usable_as_pce_rate_series: {fetch['usable_as_pce_rate_series']}",
         f"accepted_august_bridge_carries: {state['accepted_august_bridge_carries']}",
         f"direct_bls_sa_lines_for_kind: {len(direct)}",
     ]
