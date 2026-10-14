@@ -1,34 +1,31 @@
-"""Multi-horizon HOT / NEUTRAL / COLD. There is no single-month HOT cutoff."""
+"""Multi-horizon HOT / NEUTRAL / COLD (nowcast_repair_v1)."""
 
 from __future__ import annotations
 
 from decimal import Decimal
 
-DEADBAND_ANNUALIZED_PP = Decimal("0.05")
 TARGET_ANNUALIZED = Decimal("2")
 
 
-def _sign(delta: Decimal) -> int:
-    if delta > DEADBAND_ANNUALIZED_PP:
-        return 1
-    if delta < -DEADBAND_ANNUALIZED_PP:
-        return -1
-    return 0
-
-
-def classify_momentum(deltas: dict[int, Decimal], post_3m: Decimal) -> str:
-    """Classify from 3/6/9 deltas versus the pre-release windows.
-
-    HOT requires the 3-month and at least one other horizon to accelerate,
-    with the post 3-month rate above 2%. A lone 0.28% month is not HOT when
-    the 6- and 9-month moves stay inside the deadband. COLD requires at least
-    two horizons to decelerate and the 3-month window itself not to accelerate.
-    """
-    signs = {months: _sign(deltas[months]) for months in (3, 6, 9)}
-    up = sum(1 for value in signs.values() if value == 1)
-    down = sum(1 for value in signs.values() if value == -1)
-    if up >= 2 and signs[3] == 1 and post_3m > TARGET_ANNUALIZED:
+def classify_momentum(deltas: dict[int, Decimal], post_3m: Decimal | None = None) -> str:
+    """HOT when 3- and 6-month deltas are strictly positive; COLD when both negative."""
+    d3 = deltas[3]
+    d6 = deltas[6]
+    if d3 > 0 and d6 > 0:
         return "HOT"
-    if down >= 2 and signs[3] != 1:
+    if d3 < 0 and d6 < 0:
         return "COLD"
     return "NEUTRAL"
+
+
+def nine_month_direction(delta_9: Decimal) -> str:
+    if delta_9 > 0:
+        return "accelerating"
+    if delta_9 < 0:
+        return "decelerating"
+    return "unchanged"
+
+
+def gap_to_two(post_rates: dict[int, Decimal]) -> dict[int, Decimal]:
+    two = Decimal("2")
+    return {months: post_rates[months] - two for months in (3, 6, 9)}

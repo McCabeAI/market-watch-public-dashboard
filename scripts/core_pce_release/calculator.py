@@ -1,9 +1,11 @@
-"""First-order CPI/PPI/mixed/implicit bridge. One function for flash and detailed."""
+"""First-order core PCE nowcast (nowcast_repair_v1)."""
 
 from __future__ import annotations
 
 from decimal import Decimal
 
+from scripts.core_pce_release.acquire import load_registry
+from scripts.core_pce_release.estimates import apply_observations
 from scripts.core_pce_release.history import (
     annualized,
     break_even_mom,
@@ -11,12 +13,12 @@ from scripts.core_pce_release.history import (
     rates_ending,
     shift_month,
 )
-from scripts.core_pce_release.observations import accept_observation
-from scripts.core_pce_release.verdict import classify_momentum
+from scripts.core_pce_release.prepare_model import build_baseline, load_component_history, load_cpi_cache
+from scripts.core_pce_release.uncertainty import classification_sensitive
+from scripts.core_pce_release.verdict import classify_momentum, gap_to_two, nine_month_direction
 
-UNRESOLVED_ABS_WEIGHT_LIMIT = Decimal("0.0025")
-CARRY_SENSITIVITY_PP = (Decimal("0.25"), Decimal("0.50"))
 HORIZONS = (3, 6, 9)
+METHOD_VERSION = "nowcast_repair_v1"
 
 
 def _text(value: Decimal | None) -> str | None:
@@ -52,106 +54,36 @@ def calculate(
     observations: list[dict],
     *,
     residual_weight: Decimal = Decimal(0),
+    baseline: dict | None = None,
 ) -> dict:
     anchor = shift_month(target_period, -1)
     anchor_level = levels.get(anchor)
-    grouped: dict[int, list[dict]] = {}
-    rejected: list[dict] = []
-    references: list[dict] = []
-    for row in observations:
-        if row.get("role") == "raw_bls_reference":
-            references.append(row)
-            continue
-        if row.get("series_id") == "CUSR0000SA0L1E" or row.get("role") == "cpi_context_only":
-            rejected.append(
-                {
-                    "reason": "cpi_context_only",
-                    "series_id": row.get("series_id"),
-                    "line": row.get("line"),
-                }
-            )
-            continue
-        if row.get("series_id") and row.get("line") in (None, ""):
-            rejected.append({"reason": "not_a_pce_line", "series_id": row.get("series_id")})
-            continue
-        period = str(row.get("period") or "")
-        if period not in {target_period, anchor}:
-            rejected.append({"line": row.get("line"), "period": period, "reason": "stale_period"})
-            continue
-        try:
-            line = int(row["line"])
-        except (KeyError, TypeError, ValueError):
-            rejected.append({"reason": "line_missing"})
-            continue
-        grouped.setdefault(line, []).append(row)
 
-    resolved_rows: list[dict] = []
-    unresolved_abs = abs(residual_weight)
-    resolved_signed = Decimal(0)
-    carry_abs = Decimal(0)
-    resolved_contribution = Decimal(0)
-
-    for component in components:
-        weight = Decimal(component["weight_share"])
-        line = int(component["line"])
-        chosen_mom = None
-        reason = "no_observation"
-        assumption = None
-        candidates = grouped.get(line, [])
-        target_rows = [row for row in candidates if str(row.get("period")) == target_period]
-        prior_rows = [row for row in candidates if str(row.get("period")) == anchor]
-        pool = target_rows or prior_rows
-        assumption = "observed" if target_rows else "carry_prior_mom" if prior_rows else None
-        if len(pool) > 1:
-            reason = "duplicate_observation"
-            pool = []
-        if pool:
-            mom, error = accept_observation(component, pool[0])
-            if error or mom is None:
-                reason = error or "missing_mom"
-                if assumption == "carry_prior_mom" and error == "index_level_without_base":
-                    reason = "price_level_is_not_a_mom_carry"
-            else:
-                chosen_mom = mom
-                reason = None
-        status = "UNRESOLVED"
-        contribution = None
-        if chosen_mom is not None and assumption is not None:
-            status = "CARRY" if assumption == "carry_prior_mom" else "OBSERVED"
-            contribution = weight * chosen_mom
-            resolved_contribution += contribution
-            resolved_signed += weight
-            if status == "CARRY":
-                carry_abs += abs(weight)
-        else:
-            unresolved_abs += abs(weight)
-        resolved_rows.append(
-            {
-                "line": line,
-                "name": component.get("name"),
-                "weight_share": format(weight, "f"),
-                "source_family": component.get("source_family"),
-                "policy": component.get("policy"),
-                "seasonal_status": component.get("seasonal_status"),
-                "source_text": component.get("source_text"),
-                "status": status,
-                "assumption": assumption if status != "UNRESOLVED" else None,
-                "series_id": None if chosen_mom is None else (pool[0].get("series_id") if pool else None),
-                "mom_percent": _text(chosen_mom),
-                "contribution_percent": _text(contribution),
-                "reason": reason,
-            }
+    if baseline is None:
+        history = load_component_history()
+        cpi_cache = load_cpi_cache()
+        registry = load_registry()
+        cpi_points = cpi_cache["points"]
+        baseline = build_baseline(
+            components,
+            history,
+            cpi_points,
+            registry,
+            target_period=target_period,
+            anchor_period=anchor,
         )
-    _attach_references(resolved_rows, references)
+
+    bundle = apply_observations(baseline, components, observations, target_period=target_period)
+    integrity = bundle.get("integrity") or {"blocked": False, "reasons": []}
+    blocked = bool(integrity.get("blocked"))
 
     pre_rates = rates_ending(levels, anchor)
     horizons: dict[str, dict] = {}
     history_ok = anchor_level is not None
-    post_rates: dict[int, Decimal | None] = {months: None for months in HORIZONS}
     for months in HORIZONS:
         before = pre_rates[months]
         unchanged = break_even_mom(levels, anchor, months)
-        if before is None or unchanged is None or anchor_level is None:
+        if before is None or unchanged is None:
             history_ok = False
         horizons[str(months)] = {
             "before": _text(before),
@@ -160,129 +92,95 @@ def calculate(
             "unchanged_momentum_mom_percent": _text(unchanged),
         }
 
-    coverage_ok = unresolved_abs <= UNRESOLVED_ABS_WEIGHT_LIMIT and history_ok
+    central_text = bundle["central_mom_percent"]
+    low_text = bundle["low_mom_percent"]
+    high_text = bundle["high_mom_percent"]
+    low_headline = "INCOMPLETE"
+    high_headline = "INCOMPLETE"
     headline = "INCOMPLETE"
-    headline_reason = "history_incomplete" if not history_ok else "unresolved_weight"
-    projected = None
-    sensitivity_cases: list[dict] = []
-    sensitivity_stable: bool | None = None
+    headline_reason = None
+    projected: str | None = None
+    post_rates: dict[int, Decimal] = {}
+    gap: dict[int, str] = {}
+    direction_9 = "unchanged"
 
-    if coverage_ok:
-        projected = resolved_contribution
+    if history_ok and not blocked:
+        projected = central_text
         assert anchor_level is not None
-        new_level = project_level(anchor_level, projected)
-        for months in HORIZONS:
-            base_period = shift_month(target_period, -months)
-            post_rate = annualized(new_level, levels[base_period], months)
-            post_rates[months] = post_rate
-            before = Decimal(horizons[str(months)]["before"])
-            horizons[str(months)]["after"] = _text(post_rate)
-            horizons[str(months)]["delta"] = _text(post_rate - before)
-        deltas = {months: Decimal(horizons[str(months)]["delta"]) for months in HORIZONS}
-        base_class = classify_momentum(deltas, post_rates[3] or Decimal(0))
-        headline = base_class
-        headline_reason = None
-        sensitivity_stable = True
-        carried = [row for row in resolved_rows if row["status"] == "CARRY" and row["mom_percent"] is not None]
-        if carried:
-            for shift in CARRY_SENSITIVITY_PP:
-                for direction in (shift, -shift):
-                    shocked = resolved_contribution
-                    for row in carried:
-                        weight = Decimal(row["weight_share"])
-                        shocked += weight * direction
-                    shocked_level = project_level(anchor_level, shocked)
-                    shocked_post = {}
-                    shocked_delta = {}
-                    for months in HORIZONS:
-                        base_period = shift_month(target_period, -months)
-                        rate = annualized(shocked_level, levels[base_period], months)
-                        shocked_post[months] = rate
-                        shocked_delta[months] = rate - Decimal(horizons[str(months)]["before"])
-                    shocked_class = classify_momentum(shocked_delta, shocked_post[3])
-                    sensitivity_cases.append(
-                        {
-                            "carry_shift_mom_pp": format(direction, "f"),
-                            "mom_percent": format(shocked, "f"),
-                            "headline": shocked_class,
-                        }
-                    )
-                    if shocked_class != base_class:
-                        sensitivity_stable = False
-            if not sensitivity_stable:
-                headline = "INCOMPLETE"
-                headline_reason = "carry_sensitivity"
-                projected = None
-                for months in HORIZONS:
-                    horizons[str(months)]["after"] = None
-                    horizons[str(months)]["delta"] = None
+        central_mom = Decimal(central_text)
+        low_mom = Decimal(low_text)
+        high_mom = Decimal(high_text)
+
+        for label, mom in (("central", central_mom), ("low", low_mom), ("high", high_mom)):
+            new_level = project_level(anchor_level, mom)
+            deltas: dict[int, Decimal] = {}
+            posts: dict[int, Decimal] = {}
+            for months in HORIZONS:
+                base_period = shift_month(target_period, -months)
+                post_rate = annualized(new_level, levels[base_period], months)
+                posts[months] = post_rate
+                before = Decimal(horizons[str(months)]["before"])
+                if label == "central":
+                    horizons[str(months)]["after"] = _text(post_rate)
+                    horizons[str(months)]["delta"] = _text(post_rate - before)
+                deltas[months] = post_rate - before
+            if label == "central":
+                post_rates = posts
+                headline = classify_momentum(deltas)
+            elif label == "low":
+                low_headline = classify_momentum(deltas)
+            else:
+                high_headline = classify_momentum(deltas)
+
+        direction_9 = nine_month_direction(Decimal(horizons["9"]["delta"]))
+        gap = {months: _text(gap_to_two(post_rates)[months]) for months in HORIZONS}
+    elif blocked:
+        headline_reason = "integrity_blocked"
+    elif not history_ok:
+        headline_reason = "history_incomplete"
+
+    reliability = bundle.get("reliability_abs_weight") or {}
+    coverage = {
+        "observed_absolute_weight": reliability.get("observed", "0"),
+        "transformed_absolute_weight": reliability.get("transformed", "0"),
+        "carried_absolute_weight": reliability.get("carried", "0"),
+        "proxy_absolute_weight": reliability.get("proxy", "0"),
+        "baseline_absolute_weight": reliability.get("baseline", "0"),
+        "unresolved_absolute_weight": "0" if not blocked else reliability.get("baseline", "0"),
+        "unresolved_limit": None,
+        "rounding_residual_weight": format(residual_weight, "f"),
+    }
+
+    rejected = list(bundle.get("rejected_observations") or [])
+    for row in observations:
+        if row.get("series_id") == "CUSR0000SA0L1E" or row.get("role") == "cpi_context_only":
+            if not any(item.get("reason") == "cpi_context_only" for item in rejected):
+                rejected.append({"reason": "cpi_context_only", "series_id": row.get("series_id")})
 
     return {
         "headline": headline,
+        "low_headline": low_headline,
+        "high_headline": high_headline,
         "headline_reason": headline_reason,
+        "classification_sensitive": classification_sensitive(headline, low_headline, high_headline),
+        "nine_month_direction": direction_9,
+        "gap_to_two_percent": gap,
         "target_period": target_period,
         "anchor_period": anchor,
-        "projected_core_pce_mom_percent": _text(projected),
-        "resolved_contribution_percent": _text(resolved_contribution),
+        "projected_core_pce_mom_percent": projected,
+        "central_mom_percent": central_text,
+        "low_mom_percent": low_text,
+        "high_mom_percent": high_text,
         "horizons": horizons,
-        "coverage": {
-            "resolved_signed_weight": format(resolved_signed, "f"),
-            "unresolved_absolute_weight": format(unresolved_abs, "f"),
-            "carry_absolute_weight": format(carry_abs, "f"),
-            "unresolved_limit": format(UNRESOLVED_ABS_WEIGHT_LIMIT, "f"),
-            "rounding_residual_weight": format(residual_weight, "f"),
-        },
-        "sensitivity": {"stable": sensitivity_stable, "cases": sensitivity_cases},
-        "components": resolved_rows,
+        "coverage": coverage,
+        "components": bundle["rows"],
+        "attribution": bundle.get("attribution") or [],
         "rejected_observations": rejected,
         "cpi_context": _cpi_context(observations),
-        "approximation": "first_order_expenditure_share",
-        "raw_bls_references_applied": False,
+        "information_stage": bundle.get("information_stage") or "post_cpi_pre_ppi",
+        "integrity": integrity,
+        "method_version": METHOD_VERSION,
+        "approximation": "first_order_signed_expenditure_share",
+        "not_official_pce": True,
+        "scenario_range_is_confidence_interval": False,
     }
-
-
-def _attach_references(rows: list[dict], references: list[dict]) -> None:
-    grouped: dict[int, list[dict]] = {}
-    for reference in references:
-        try:
-            line = int(reference["line"])
-        except (KeyError, TypeError, ValueError):
-            continue
-        grouped.setdefault(line, []).append(reference)
-    for row in rows:
-        items = grouped.get(int(row["line"]))
-        if not items:
-            continue
-        by_period: dict[str, list[dict]] = {}
-        for item in items:
-            by_period.setdefault(str(item.get("period") or ""), []).append(item)
-        published = []
-        for period, period_items in sorted(by_period.items()):
-            moms = {item.get("mom_percent") for item in period_items}
-            sample = period_items[0]
-            if len(moms) != 1 or any(item.get("has_conflict") for item in period_items):
-                published.append(
-                    {
-                        "period": period,
-                        "mom_percent": None,
-                        "applied_to_estimate": False,
-                        "series_id": sample.get("series_id"),
-                        "reason": "conflicting_raw_bls_reference",
-                    }
-                )
-                continue
-            published.append(
-                {
-                    "period": period,
-                    "mom_percent": sample.get("mom_percent"),
-                    "applied_to_estimate": False,
-                    "series_id": sample.get("series_id"),
-                    "series_ids": sample.get("series_ids"),
-                    "seasonal_status": sample.get("seasonal_status"),
-                    "source_family": sample.get("source_family"),
-                    "note": sample.get("note"),
-                    "bls_footnote_code": sample.get("bls_footnote_code"),
-                    "bls_footnote": sample.get("bls_footnote"),
-                }
-            )
-        row["raw_bls_references"] = published

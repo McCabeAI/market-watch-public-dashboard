@@ -53,6 +53,14 @@ def _leg_mom(component: dict, leg: dict) -> tuple[Decimal | None, str | None]:
     return mom, None
 
 
+def raw_source_mom(observation: dict) -> Decimal | None:
+    """Monthly percent from a raw BLS reference without BEA-SA relabeling."""
+    mom, error = derive_mom(observation)
+    if error:
+        return None
+    return mom
+
+
 def accept_observation(component: dict, observation: dict) -> tuple[Decimal | None, str | None]:
     """Return a usable monthly percent or a rejection reason. Never invents one."""
     policy = component["policy"]
