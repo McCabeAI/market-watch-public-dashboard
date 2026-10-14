@@ -24,6 +24,13 @@ DIGEST_WINDOW_RE = re.compile(
     r'(\d{1,2})\s+([A-Z][a-z]{2})\s+[^→<]+→\s*'
     r'(\d{1,2})\s+([A-Z][a-z]{2})\s+[^<]+</div>'
 )
+UNDATED_PROVENANCE_RE = re.compile(
+    r'data-news-provenance="undated".*?'
+    r'<div class="scanline"><b>Provenance:</b> Publication dates not supplied · packet accepted '
+    r'(\d{1,2})\s+([A-Z][a-z]{2})\s+(\d{4})'
+    r'[^<]*</div>',
+    re.S,
+)
 LAST_REFRESH_RE = re.compile(
     r'Last refreshed\s+(\d{1,2})\s+([A-Z][a-z]{2})\s+(\d{4})'
 )
@@ -81,7 +88,86 @@ def _sync_front_alert(html: str, story_count: int, display_window: str, scan_dat
     return html
 
 
+def _sync_undated_news_summary(html: str) -> str:
+    provenance = UNDATED_PROVENANCE_RE.search(html)
+    if not provenance:
+        raise ValueError("undated research provenance block not found")
+
+    refreshed = LAST_REFRESH_RE.search(html)
+    if not refreshed:
+        raise ValueError("Last 24 Hours refresh timestamp not found")
+
+    end_day, end_mon, year = provenance.groups()
+    refreshed_day, refreshed_mon, refreshed_year = refreshed.groups()
+    if (int(end_day), end_mon, year) != (int(refreshed_day), refreshed_mon, refreshed_year):
+        raise ValueError(
+            "undated research acceptance date does not match Last 24 Hours refresh date"
+        )
+
+    story_count = html.count('<details class="story"')
+    if not 1 <= story_count <= 12:
+        raise ValueError(f"invalid undated research story count: {story_count}")
+
+    scan_date = f"{int(end_day)} {end_mon} {year}"
+    display_window = "age-unverified accepted research"
+
+    html, scan_replacements = NEWS_SCAN_RE.subn(
+        rf"\1 {scan_date}\2",
+        html,
+        count=1,
+    )
+    if scan_replacements != 1:
+        raise ValueError("Market News last-scanned summary could not be synchronized")
+
+    html, tape_replacements = CURRENT_TAPE_RE.subn(
+        rf"\g<1>{story_count}\g<2>{display_window}\g<3>",
+        html,
+        count=1,
+    )
+    if tape_replacements != 1:
+        raise ValueError("Current tape summary could not be synchronized")
+
+    drivers = DRIVER_RE.findall(html)
+    if not 1 <= len(drivers) <= 3:
+        raise ValueError(f"invalid Top Market Drivers count: {len(drivers)}")
+
+    lead_title = drivers[0][0].strip()
+    driver_summary = " ".join(
+        f"<b>{title.strip()}:</b> {summary.strip()}" for title, summary in drivers
+    )
+    replacement = (
+        '<div class="news-alert market-alert">'
+        '<div class="flag">MARKET NEWS · AGE UNVERIFIED</div>'
+        f'<div><h3>{lead_title}</h3><p>{driver_summary}</p>'
+        f'<span class="alert-sub">{story_count} accepted summaries without verified publication dates '
+        f"· Last scanned {scan_date}.</span></div>"
+        '<label for="p-news">Open News &amp; Research</label>'
+        '</div>'
+    )
+    html, replacements = FRONT_ALERT_RE.subn(replacement, html, count=1)
+    if replacements != 1:
+        raise ValueError("Front-page Market News alert could not be synchronized")
+
+    if f"<b>Last scanned:</b> {scan_date}" not in html:
+        raise ValueError("Market News last-scanned summary verification failed")
+    if (
+        f'<div class="news-count">{story_count}</div>'
+        f"<p>curated market-relevant stories in the {display_window} window"
+    ) not in html:
+        raise ValueError("Current tape summary verification failed")
+    if (
+        f"{story_count} accepted summaries without verified publication dates "
+        f"· Last scanned {scan_date}."
+    ) not in html:
+        raise ValueError("Front-page Market News alert verification failed")
+
+    return html
+
+
 def sync_news_summary(html: str) -> str:
+    if 'data-news-provenance="undated"' in html and '<div class="stitle">7-Day Quick Digest</div>' not in html:
+        return _sync_undated_news_summary(html)
+
     window = DIGEST_WINDOW_RE.search(html)
     if not window:
         raise ValueError("7-Day Quick Digest window not found")

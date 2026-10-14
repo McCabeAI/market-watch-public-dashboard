@@ -14,6 +14,7 @@ from scripts.overnight.errors import PublicationError, SchemaError
 from scripts.overnight.freshness import age_status
 from scripts.overnight.store import OvernightStore, sha256_json, write_json
 from scripts.overnight.public_prose import public_research_summary
+from scripts.overnight.research_publishability import validate_research_supplement_publishability
 
 ACCEPTED_PUBLIC_NEWS_REL = "data/overnight/accepted_public_news.json"
 ACCEPTED_PUBLIC_NEWS_TYPE = "OVERNIGHT_ACCEPTED_PUBLIC_NEWS"
@@ -96,6 +97,13 @@ def build_accepted_public_news(
 ) -> dict[str, Any]:
     if not news and not central_bank_research:
         raise SchemaError("accepted public news requires at least one research item")
+    validate_research_supplement_publishability(
+        {
+            "news": news,
+            "central_bank_research": central_bank_research,
+            "sources": [],
+        }
+    )
     return {
         "schema_version": 1,
         "type": ACCEPTED_PUBLIC_NEWS_TYPE,

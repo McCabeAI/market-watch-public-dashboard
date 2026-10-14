@@ -33,6 +33,7 @@ on:
       - "scripts/harvest_au_pmi.py"
       - "tests/test_sync_news_summary.py"
       - "tests/test_overnight_news_refresh.py"
+      - "tests/test_research_publishability.py"
       - "tests/test_temperature_scores.py"
       - "tests/test_temperature_level.py"
       - "tests/test_temperature_history_audit.py"
@@ -181,7 +182,14 @@ jobs:
           story_count="$(grep -o 'class=\"story\"' _site/index.html | wc -l | tr -d '[:space:]')"
           test "$story_count" -ge 1
           test "$story_count" -le 12
-          grep -Fq '7-Day Quick Digest' _site/index.html
+          if grep -Fq '7-Day Quick Digest' _site/index.html; then
+            echo "dated 7-Day Quick Digest present"
+          elif grep -Fq 'Accepted Overnight Research · Age Unverified' _site/index.html; then
+            echo "undated age-unverified research digest present"
+          else
+            echo "missing dated or undated news digest section"
+            exit 1
+          fi
 
       - name: Extend dashboard to six economies
         shell: bash
@@ -425,7 +433,14 @@ jobs:
           grep -Fq 'Trader Book · paper P&L' _site/index.html
           grep -Fq 'Last 24 Hours · Desk Summary' _site/index.html
           grep -Fq 'Live 1–100 Score Board' _site/index.html
-          grep -Fq '7-Day Quick Digest' _site/index.html
+          if grep -Fq '7-Day Quick Digest' _site/index.html; then
+            echo "dated 7-Day Quick Digest present"
+          elif grep -Fq 'Accepted Overnight Research · Age Unverified' _site/index.html; then
+            echo "undated age-unverified research digest present"
+          else
+            echo "missing dated or undated news digest section"
+            exit 1
+          fi
           grep -Fq 'Market Data · official snapshot' _site/index.html
 
       - name: Add Trader Room tab
