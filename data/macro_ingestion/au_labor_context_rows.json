@@ -1,0 +1,312 @@
+[
+  {
+    "id": "AU.Labor.full_time",
+    "country": "AU",
+    "dimension": "Labor",
+    "component": "full_time",
+    "role": "context",
+    "weight": 0.0,
+    "series_id": "A84423041X",
+    "canonical_name": "Employed persons, full-time, seasonally adjusted",
+    "publisher": "Australian Bureau of Statistics",
+    "distributor": null,
+    "classification": "official",
+    "endpoint": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/aug-2026/62020001.xlsx",
+    "registry_urls": [
+      "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia"
+    ],
+    "units": "thousands",
+    "seasonal_adjustment": true,
+    "transform": "thousands_sa",
+    "cadence": "monthly",
+    "timezone": "Australia/Sydney",
+    "release_rule": {
+      "kind": "country_local_schedule_required",
+      "timezone": "Australia/Sydney",
+      "dates": []
+    },
+    "retrieval_method": "abs_time_series_workbook",
+    "adapter": "scripts.macro_ingestion.adapters.au",
+    "score_weight_policy": "weight_must_remain_zero",
+    "added_by": "au-labor-reliability-20261014"
+  },
+  {
+    "id": "AU.Labor.part_time",
+    "country": "AU",
+    "dimension": "Labor",
+    "component": "part_time",
+    "role": "context",
+    "weight": 0.0,
+    "series_id": "A84423042A",
+    "canonical_name": "Employed persons, part-time, seasonally adjusted",
+    "publisher": "Australian Bureau of Statistics",
+    "distributor": null,
+    "classification": "official",
+    "endpoint": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/aug-2026/62020001.xlsx",
+    "registry_urls": [
+      "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia"
+    ],
+    "units": "thousands",
+    "seasonal_adjustment": true,
+    "transform": "thousands_sa",
+    "cadence": "monthly",
+    "timezone": "Australia/Sydney",
+    "release_rule": {
+      "kind": "country_local_schedule_required",
+      "timezone": "Australia/Sydney",
+      "dates": []
+    },
+    "retrieval_method": "abs_time_series_workbook",
+    "adapter": "scripts.macro_ingestion.adapters.au",
+    "score_weight_policy": "weight_must_remain_zero",
+    "added_by": "au-labor-reliability-20261014"
+  },
+  {
+    "id": "AU.Labor.employment_level",
+    "country": "AU",
+    "dimension": "Labor",
+    "component": "employment_level",
+    "role": "context",
+    "weight": 0.0,
+    "series_id": "A84423043C",
+    "canonical_name": "Employed persons, total, seasonally adjusted (stock level)",
+    "publisher": "Australian Bureau of Statistics",
+    "distributor": null,
+    "classification": "official",
+    "endpoint": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/aug-2026/62020001.xlsx",
+    "registry_urls": [
+      "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia"
+    ],
+    "units": "thousands",
+    "seasonal_adjustment": true,
+    "transform": "thousands_sa",
+    "cadence": "monthly",
+    "timezone": "Australia/Sydney",
+    "release_rule": {
+      "kind": "country_local_schedule_required",
+      "timezone": "Australia/Sydney",
+      "dates": []
+    },
+    "retrieval_method": "abs_time_series_workbook",
+    "adapter": "scripts.macro_ingestion.adapters.au",
+    "score_weight_policy": "weight_must_remain_zero",
+    "added_by": "au-labor-reliability-20261014"
+  },
+  {
+    "id": "AU.Labor.unemployed_persons",
+    "country": "AU",
+    "dimension": "Labor",
+    "component": "unemployed_persons",
+    "role": "context",
+    "weight": 0.0,
+    "series_id": "A84423046K",
+    "canonical_name": "Unemployed persons, seasonally adjusted",
+    "publisher": "Australian Bureau of Statistics",
+    "distributor": null,
+    "classification": "official",
+    "endpoint": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/aug-2026/62020001.xlsx",
+    "registry_urls": [
+      "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia"
+    ],
+    "units": "thousands",
+    "seasonal_adjustment": true,
+    "transform": "thousands_sa",
+    "cadence": "monthly",
+    "timezone": "Australia/Sydney",
+    "release_rule": {
+      "kind": "country_local_schedule_required",
+      "timezone": "Australia/Sydney",
+      "dates": []
+    },
+    "retrieval_method": "abs_time_series_workbook",
+    "adapter": "scripts.macro_ingestion.adapters.au",
+    "score_weight_policy": "weight_must_remain_zero",
+    "added_by": "au-labor-reliability-20261014"
+  },
+  {
+    "id": "AU.Labor.labour_force",
+    "country": "AU",
+    "dimension": "Labor",
+    "component": "labour_force",
+    "role": "context",
+    "weight": 0.0,
+    "series_id": "A84423047L",
+    "canonical_name": "Labour force, total persons, seasonally adjusted",
+    "publisher": "Australian Bureau of Statistics",
+    "distributor": null,
+    "classification": "official",
+    "endpoint": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/aug-2026/62020001.xlsx",
+    "registry_urls": [
+      "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia"
+    ],
+    "units": "thousands",
+    "seasonal_adjustment": true,
+    "transform": "thousands_sa",
+    "cadence": "monthly",
+    "timezone": "Australia/Sydney",
+    "release_rule": {
+      "kind": "country_local_schedule_required",
+      "timezone": "Australia/Sydney",
+      "dates": []
+    },
+    "retrieval_method": "abs_time_series_workbook",
+    "adapter": "scripts.macro_ingestion.adapters.au",
+    "score_weight_policy": "weight_must_remain_zero",
+    "added_by": "au-labor-reliability-20261014"
+  },
+  {
+    "id": "AU.Labor.employment_to_population",
+    "country": "AU",
+    "dimension": "Labor",
+    "component": "employment_to_population",
+    "role": "context",
+    "weight": 0.0,
+    "series_id": "A84423054K",
+    "canonical_name": "Employment to population ratio, seasonally adjusted",
+    "publisher": "Australian Bureau of Statistics",
+    "distributor": null,
+    "classification": "official",
+    "endpoint": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/aug-2026/62020001.xlsx",
+    "registry_urls": [
+      "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia"
+    ],
+    "units": "percent",
+    "seasonal_adjustment": true,
+    "transform": "percent",
+    "cadence": "monthly",
+    "timezone": "Australia/Sydney",
+    "release_rule": {
+      "kind": "country_local_schedule_required",
+      "timezone": "Australia/Sydney",
+      "dates": []
+    },
+    "retrieval_method": "abs_time_series_workbook",
+    "adapter": "scripts.macro_ingestion.adapters.au",
+    "score_weight_policy": "weight_must_remain_zero",
+    "added_by": "au-labor-reliability-20261014"
+  },
+  {
+    "id": "AU.Labor.underemployment_rate",
+    "country": "AU",
+    "dimension": "Labor",
+    "component": "underemployment_rate",
+    "role": "context",
+    "weight": 0.0,
+    "series_id": "A85255725J",
+    "canonical_name": "Underemployment rate, seasonally adjusted",
+    "publisher": "Australian Bureau of Statistics",
+    "distributor": null,
+    "classification": "official",
+    "endpoint": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/aug-2026/62020X28.xlsx",
+    "registry_urls": [
+      "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia"
+    ],
+    "units": "percent",
+    "seasonal_adjustment": true,
+    "transform": "percent",
+    "cadence": "monthly",
+    "timezone": "Australia/Sydney",
+    "release_rule": {
+      "kind": "country_local_schedule_required",
+      "timezone": "Australia/Sydney",
+      "dates": []
+    },
+    "retrieval_method": "abs_time_series_workbook",
+    "adapter": "scripts.macro_ingestion.adapters.au",
+    "score_weight_policy": "weight_must_remain_zero",
+    "added_by": "au-labor-reliability-20261014"
+  },
+  {
+    "id": "AU.Labor.underutilisation_rate",
+    "country": "AU",
+    "dimension": "Labor",
+    "component": "underutilisation_rate",
+    "role": "context",
+    "weight": 0.0,
+    "series_id": "A85255726K",
+    "canonical_name": "Labour underutilisation rate, seasonally adjusted",
+    "publisher": "Australian Bureau of Statistics",
+    "distributor": null,
+    "classification": "official",
+    "endpoint": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/aug-2026/62020X28.xlsx",
+    "registry_urls": [
+      "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia"
+    ],
+    "units": "percent",
+    "seasonal_adjustment": true,
+    "transform": "percent",
+    "cadence": "monthly",
+    "timezone": "Australia/Sydney",
+    "release_rule": {
+      "kind": "country_local_schedule_required",
+      "timezone": "Australia/Sydney",
+      "dates": []
+    },
+    "retrieval_method": "abs_time_series_workbook",
+    "adapter": "scripts.macro_ingestion.adapters.au",
+    "score_weight_policy": "weight_must_remain_zero",
+    "added_by": "au-labor-reliability-20261014"
+  },
+  {
+    "id": "AU.Labor.underemployed_persons",
+    "country": "AU",
+    "dimension": "Labor",
+    "component": "underemployed_persons",
+    "role": "context",
+    "weight": 0.0,
+    "series_id": "A85255719L",
+    "canonical_name": "Underemployed persons, total, seasonally adjusted",
+    "publisher": "Australian Bureau of Statistics",
+    "distributor": null,
+    "classification": "official",
+    "endpoint": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/aug-2026/62020X28.xlsx",
+    "registry_urls": [
+      "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia"
+    ],
+    "units": "thousands",
+    "seasonal_adjustment": true,
+    "transform": "thousands_sa",
+    "cadence": "monthly",
+    "timezone": "Australia/Sydney",
+    "release_rule": {
+      "kind": "country_local_schedule_required",
+      "timezone": "Australia/Sydney",
+      "dates": []
+    },
+    "retrieval_method": "abs_time_series_workbook",
+    "adapter": "scripts.macro_ingestion.adapters.au",
+    "score_weight_policy": "weight_must_remain_zero",
+    "added_by": "au-labor-reliability-20261014"
+  },
+  {
+    "id": "AU.Labor.hours_worked",
+    "country": "AU",
+    "dimension": "Labor",
+    "component": "hours_worked",
+    "role": "context",
+    "weight": 0.0,
+    "series_id": "A84426277X",
+    "canonical_name": "Monthly hours worked in all jobs, persons, seasonally adjusted",
+    "publisher": "Australian Bureau of Statistics",
+    "distributor": null,
+    "classification": "official",
+    "endpoint": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/aug-2026/62020017.xlsx",
+    "registry_urls": [
+      "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia"
+    ],
+    "units": "thousand_hours",
+    "seasonal_adjustment": true,
+    "transform": "thousand_hours_sa",
+    "cadence": "monthly",
+    "timezone": "Australia/Sydney",
+    "release_rule": {
+      "kind": "country_local_schedule_required",
+      "timezone": "Australia/Sydney",
+      "dates": []
+    },
+    "retrieval_method": "abs_time_series_workbook",
+    "adapter": "scripts.macro_ingestion.adapters.au",
+    "score_weight_policy": "weight_must_remain_zero",
+    "added_by": "au-labor-reliability-20261014"
+  }
+]

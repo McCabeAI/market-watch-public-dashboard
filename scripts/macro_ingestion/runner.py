@@ -29,6 +29,7 @@ from scripts.macro_ingestion.vintage import (
     load_store,
     save_store,
 )
+from scripts.macro_ingestion.source_health_summary import build_source_health_summary
 from scripts.macro_ingestion.windows import POST_FREEZE_DIR, cutoff_class, write_post_freeze_delta
 
 DEFAULT_TIMEOUT_SECONDS = 20
@@ -44,6 +45,15 @@ PROTECTED_LABOR_IDS = frozenset(
         "US.Labor.payrolls",
         "US.Labor.unemployment",
         "US.Labor.wages",
+        "AU.Labor.unemployment",
+        "AU.Labor.employment",
+    }
+)
+
+AU_EARLY_LABOR_IDS = frozenset(
+    {
+        "AU.Labor.unemployment",
+        "AU.Labor.employment",
     }
 )
 
@@ -172,6 +182,13 @@ def _point_transform(point: dict[str, Any], transform: str, allowed: frozenset[s
     return candidate if candidate in allowed else transform
 
 
+def _is_http_404(payload: dict[str, Any]) -> bool:
+    if payload.get("http_status") == 404:
+        return True
+    error = str(payload.get("error") or "")
+    return "HTTP 404" in error
+
+
 def _validate_points(points: list[dict[str, Any]]) -> str | None:
     for point in points:
         if "period" not in point:
@@ -228,6 +245,15 @@ def _classify_points(
         return override, [], payload.get("error"), False
 
     if not payload.get("ok"):
+        if payload.get("http_status") == 403:
+            return "license_gap", [], payload.get("error") or "HTTP 403", False
+        if _is_http_404(payload):
+            due = latest_due_release(spec, when)
+            if due is None:
+                payload["ledger_extra"] = {"publication_state": "not_yet_due"}
+                return "checked_unchanged", [], None, False
+            payload["ledger_extra"] = {"publication_state": "due_missing"}
+            return "due_missing", [], "HTTP 404", False
         return "source_failed", [], payload.get("error") or "adapter_not_ok", False
 
     points = payload.get("points") or []
@@ -555,6 +581,125 @@ def _fetch_once(
     return replace_index
 
 
+def _ingest_country_pending(
+    pending: list[dict[str, Any]],
+    *,
+    fetch_fn: Callable[..., dict[str, Any]],
+    opener: Callable[..., dict[str, Any]],
+    when: datetime,
+    timeout_seconds: float,
+    rows: list[dict[str, Any]],
+    checked_at: str,
+    cal_as_of: str,
+    cutoff: str,
+    mode: str,
+    raw_dir: Path | None,
+    country: str,
+    obs_dir: Path,
+    post_freeze_changes: list[dict[str, Any]],
+    clock: Callable[[], float],
+    run_start: float,
+    country_start: float,
+    run_budget_seconds: float,
+    country_budget_seconds: float,
+    attempts: int,
+) -> set[str]:
+    """Fetch pending series for one country; return ids that received a ledger row."""
+    admitted: set[str] = set()
+    pending = sorted(
+        pending,
+        key=lambda spec: (_series_lane(spec, when), str(spec.get("id") or "")),
+    )
+    protected_due_total = sum(1 for spec in pending if _protected_due_labor(spec, when))
+    protected_admitted = 0
+    failed_for_retry: list[tuple[dict[str, Any], int]] = []
+    for spec in pending:
+        if _budget_exhausted(clock, run_start, country_start, run_budget_seconds, country_budget_seconds):
+            rows.append(
+                _deferred_row(
+                    spec,
+                    checked_at=checked_at,
+                    calibration_as_of=cal_as_of,
+                    cutoff_class=cutoff,
+                    scheduler_kind="skipped_admission",
+                    scheduler_reason=_deferred_admission_reason(
+                        spec,
+                        when=when,
+                        protected_due_total=protected_due_total,
+                        protected_admitted=protected_admitted,
+                    ),
+                )
+            )
+            continue
+
+        row_index = _fetch_once(
+            spec,
+            fetch_fn=fetch_fn,
+            opener=opener,
+            now=when,
+            timeout_seconds=timeout_seconds,
+            rows=rows,
+            checked_at=checked_at,
+            cal_as_of=cal_as_of,
+            cutoff=cutoff,
+            mode=mode,
+            raw_dir=raw_dir,
+            country=country,
+            obs_dir=obs_dir,
+            post_freeze_changes=post_freeze_changes,
+        )
+        admitted.add(str(spec["id"]))
+        if _protected_due_labor(spec, when):
+            protected_admitted += 1
+        row = rows[row_index]
+        if (
+            attempts > 1
+            and row.get("status") == "source_failed"
+            and row.get("error") != "budget_deferred"
+        ):
+            failed_for_retry.append((spec, row_index))
+
+    protected_failures = sum(1 for spec, _ in failed_for_retry if _protected_due_labor(spec, when))
+    protected_retries_admitted = 0
+    failed_for_retry.sort(key=lambda item: (_series_lane(item[0], when), str(item[0].get("id") or "")))
+
+    for spec, row_index in failed_for_retry:
+        if _budget_exhausted(clock, run_start, country_start, run_budget_seconds, country_budget_seconds):
+            _append_scheduler_event(
+                rows[row_index],
+                kind="skipped_retry",
+                reason=_skipped_retry_reason(
+                    spec,
+                    when=when,
+                    protected_failures=protected_failures,
+                    protected_retries_admitted=protected_retries_admitted,
+                ),
+            )
+            continue
+        _fetch_once(
+            spec,
+            fetch_fn=fetch_fn,
+            opener=opener,
+            now=when,
+            timeout_seconds=timeout_seconds,
+            rows=rows,
+            checked_at=checked_at,
+            cal_as_of=cal_as_of,
+            cutoff=cutoff,
+            mode=mode,
+            raw_dir=raw_dir,
+            country=country,
+            obs_dir=obs_dir,
+            post_freeze_changes=post_freeze_changes,
+            replace_index=row_index,
+            extra_attempts=attempts - 1,
+        )
+        if _protected_due_labor(spec, when):
+            protected_retries_admitted += 1
+
+    return admitted
+
+
 def run_ingestion(
     *,
     mode: str = "offline",
@@ -594,6 +739,43 @@ def run_ingestion(
 
     clock = monotonic or _time.monotonic
     run_start = clock()
+    early_admitted_ids: set[str] = set()
+
+    if "AU" in target_countries:
+        au_fetch_fn = load_country_adapter("AU")
+        if au_fetch_fn is not None:
+            au_series = grouped.get("AU", [])
+            au_early_pending = [
+                spec
+                for spec in au_series
+                if str(spec.get("id") or "") in AU_EARLY_LABOR_IDS
+                and latest_due_release(spec, when) is not None
+                and (only_series_ids is None or str(spec["id"]) in only_series_ids)
+            ]
+            if au_early_pending:
+                au_early_start = clock()
+                early_admitted_ids = _ingest_country_pending(
+                    au_early_pending,
+                    fetch_fn=au_fetch_fn,
+                    opener=opener,
+                    when=when,
+                    timeout_seconds=timeout_seconds,
+                    rows=rows,
+                    checked_at=checked_at,
+                    cal_as_of=cal_as_of,
+                    cutoff=cutoff,
+                    mode=mode,
+                    raw_dir=raw_dir,
+                    country="AU",
+                    obs_dir=obs_dir,
+                    post_freeze_changes=post_freeze_changes,
+                    clock=clock,
+                    run_start=run_start,
+                    country_start=au_early_start,
+                    run_budget_seconds=run_budget_seconds,
+                    country_budget_seconds=country_budget_seconds,
+                    attempts=attempts,
+                )
 
     for country in target_countries:
         country_start = clock()
@@ -626,91 +808,32 @@ def run_ingestion(
             spec
             for spec in series_list
             if only_series_ids is None or str(spec["id"]) in only_series_ids
+            if str(spec.get("id") or "") not in early_admitted_ids
         ]
-        pending.sort(key=lambda spec: (_series_lane(spec, when), str(spec.get("id") or "")))
-        protected_due_total = sum(1 for spec in pending if _protected_due_labor(spec, when))
-        protected_admitted = 0
-        # One attempt per series before any retry. A slow FRED read must not
-        # spend the country budget and stamp untouched series budget_deferred.
-        failed_for_retry: list[tuple[dict[str, Any], int]] = []
-        for spec in pending:
-            if _budget_exhausted(clock, run_start, country_start, run_budget_seconds, country_budget_seconds):
-                rows.append(
-                    _deferred_row(
-                        spec,
-                        checked_at=checked_at,
-                        calibration_as_of=cal_as_of,
-                        cutoff_class=cutoff,
-                        scheduler_kind="skipped_admission",
-                        scheduler_reason=_deferred_admission_reason(
-                            spec,
-                            when=when,
-                            protected_due_total=protected_due_total,
-                            protected_admitted=protected_admitted,
-                        ),
-                    )
-                )
-                continue
-
-            row_index = _fetch_once(
-                spec,
-                fetch_fn=fetch_fn,
-                opener=opener,
-                now=when,
-                timeout_seconds=timeout_seconds,
-                rows=rows,
-                checked_at=checked_at,
-                cal_as_of=cal_as_of,
-                cutoff=cutoff,
-                mode=mode,
-                raw_dir=raw_dir,
-                country=country,
-                obs_dir=obs_dir,
-                post_freeze_changes=post_freeze_changes,
-            )
-            if _protected_due_labor(spec, when):
-                protected_admitted += 1
-            row = rows[row_index]
-            if attempts > 1 and row.get("status") == "source_failed" and row.get("error") != "budget_deferred":
-                failed_for_retry.append((spec, row_index))
-
-        protected_failures = sum(1 for spec, _ in failed_for_retry if _protected_due_labor(spec, when))
-        protected_retries_admitted = 0
-        failed_for_retry.sort(key=lambda item: (_series_lane(item[0], when), str(item[0].get("id") or "")))
-
-        for spec, row_index in failed_for_retry:
-            if _budget_exhausted(clock, run_start, country_start, run_budget_seconds, country_budget_seconds):
-                _append_scheduler_event(
-                    rows[row_index],
-                    kind="skipped_retry",
-                    reason=_skipped_retry_reason(
-                        spec,
-                        when=when,
-                        protected_failures=protected_failures,
-                        protected_retries_admitted=protected_retries_admitted,
-                    ),
-                )
-                continue
-            _fetch_once(
-                spec,
-                fetch_fn=fetch_fn,
-                opener=opener,
-                now=when,
-                timeout_seconds=timeout_seconds,
-                rows=rows,
-                checked_at=checked_at,
-                cal_as_of=cal_as_of,
-                cutoff=cutoff,
-                mode=mode,
-                raw_dir=raw_dir,
-                country=country,
-                obs_dir=obs_dir,
-                post_freeze_changes=post_freeze_changes,
-                replace_index=row_index,
-                extra_attempts=attempts - 1,
-            )
-            if _protected_due_labor(spec, when):
-                protected_retries_admitted += 1
+        if not pending:
+            continue
+        _ingest_country_pending(
+            pending,
+            fetch_fn=fetch_fn,
+            opener=opener,
+            when=when,
+            timeout_seconds=timeout_seconds,
+            rows=rows,
+            checked_at=checked_at,
+            cal_as_of=cal_as_of,
+            cutoff=cutoff,
+            mode=mode,
+            raw_dir=raw_dir,
+            country=country,
+            obs_dir=obs_dir,
+            post_freeze_changes=post_freeze_changes,
+            clock=clock,
+            run_start=run_start,
+            country_start=country_start,
+            run_budget_seconds=run_budget_seconds,
+            country_budget_seconds=country_budget_seconds,
+            attempts=attempts,
+        )
 
     write_ledger(rows, health_dir=health_dir or (ROOT / "data/macro_ingestion/health"), run_id=run_id)
 
@@ -744,4 +867,5 @@ def run_ingestion(
         "cutoff_class": cutoff,
         "rows": rows,
         "post_freeze_path": str(post_freeze_path) if post_freeze_path else None,
+        "source_health_summary": build_source_health_summary(rows),
     }

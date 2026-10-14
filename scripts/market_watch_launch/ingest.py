@@ -133,7 +133,11 @@ def _enrich_row(
 def _score_bridge_payload(lineage: dict[str, Any]) -> dict[str, Any]:
     appended = lineage.get("appended_points") or []
     summary = f"appended={len(appended)}"
-    payload: dict[str, Any] = {"ok": bool(lineage.get("ok")), "summary": summary}
+    payload: dict[str, Any] = {
+        "ok": bool(lineage.get("ok")),
+        "summary": summary,
+        "rejections": list(lineage.get("rejections") or []),
+    }
     if lineage.get("score_state_sha256"):
         payload["state_sha256"] = lineage["score_state_sha256"]
     return payload
@@ -162,6 +166,7 @@ def _lineage_details(lineage: dict[str, Any]) -> dict[str, Any]:
         "appended_count": lineage.get("appended_count", 0),
         "checked_at": lineage.get("checked_at"),
         "appended_points": lineage.get("appended_points") or [],
+        "rejections": list(lineage.get("rejections") or []),
         "lineage_dir": lineage.get("lineage_dir"),
     }
 
@@ -372,7 +377,7 @@ def _fixture_ingestion(
         reason = "missing_country_history"
     elif not lineage.get("ok"):
         status = "failed"
-        reason = "score_bridge_failed"
+        reason = "score_lineage_rejected" if lineage.get("rejections") else "score_bridge_failed"
     else:
         status = "succeeded"
         reason = None
@@ -400,7 +405,7 @@ def _live_ingestion(
     when: datetime,
     launch_id: str | None,
     root: Path,
-) -> tuple[dict[str, Any], str]:
+) -> tuple[dict[str, Any], str, str | None]:
     base = launch_dir / "ingestion"
     observations_dir = base / "observations"
     health_dir = base / "health"
@@ -480,6 +485,24 @@ def _live_ingestion(
     for row in rows:
         row["attempts"] = attempts.get(str(row["series_id"]), _row_fetch_attempts(row))
 
+    from scripts.macro_ingestion.au_labor_evidence import (
+        build_au_labor_evidence_packet,
+        gather_au_labor_collector_results,
+    )
+    from scripts.macro_ingestion.runner import live_opener
+
+    def _evidence_opener(url: str, timeout: float = 8, **kwargs: Any) -> dict[str, Any]:
+        return live_opener(url, timeout=timeout, **kwargs)
+
+    evidence_points, evidence_gaps = gather_au_labor_collector_results(when, _evidence_opener)
+    evidence_packet = build_au_labor_evidence_packet(
+        when,
+        points=evidence_points,
+        gaps=evidence_gaps,
+    )
+    evidence_path = base / "au_labor_evidence.json"
+    evidence_path.write_text(json.dumps(evidence_packet, indent=2) + "\n", encoding="utf-8")
+
     checked_at = str(result.get("checked_at") or _utc_iso(when))
     history_dir = _canonical_history_dir(root)
     lineage = stage_verified_lineage(
@@ -494,6 +517,13 @@ def _live_ingestion(
     matrix_path = launch_dir / "source_matrix.json"
     matrix_path.write_text(json.dumps(source_matrix, indent=2) + "\n", encoding="utf-8")
 
+    if not lineage.get("ok"):
+        status = "failed"
+        reason = "score_lineage_rejected"
+    else:
+        status = "succeeded"
+        reason = None
+
     details = {
         "mode": "live",
         "countries": list(_LAUNCH_COUNTRIES),
@@ -507,7 +537,7 @@ def _live_ingestion(
         "checked_at": result.get("checked_at"),
         "cutoff_class": result.get("cutoff_class"),
     }
-    return details, "succeeded"
+    return details, status, reason
 
 
 def run(launch: dict, ctx: dict) -> dict:
@@ -532,13 +562,12 @@ def run(launch: dict, ctx: dict) -> dict:
                 checked_at=checked_at,
             )
         elif mode == "live":
-            details, status = _live_ingestion(
+            details, status, reason = _live_ingestion(
                 launch_dir=launch_dir,
                 when=when,
                 launch_id=launch.get("launch_id"),
                 root=Path(ctx["root"]),
             )
-            reason = None
         else:
             return stage_receipt(
                 _STAGE,

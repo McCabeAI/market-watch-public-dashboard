@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import copy
 import hashlib
 import json
 import math
@@ -14,10 +15,12 @@ from typing import Any
 from scripts.country_registry import history_files
 from scripts.macro_ingestion.contract import load_catalog
 from scripts.macro_ingestion.semantic_guards import implausible_nz_employment_qoq_values
+from scripts.macro_ingestion.canonical_bridge import _skip_id
 from scripts.macro_ingestion.score_bridge import (
     points_from_observation_stores,
     recompute_scores_after_observation,
 )
+from scripts.temperature_level import period_sort_key
 from scripts.temperature_level import (
     CALIBRATION_PATH,
     build_score_state,
@@ -29,6 +32,18 @@ from scripts.temperature_level import (
 LINEAGE_SUBDIR = "lineage"
 HISTORY_SUBDIR = "history"
 STAGED_SCORES_NAME = "temperature_scores.json"
+
+_BLOCKING_SKIP_REASONS = frozenset({"partial_transform_mismatch", "partial_series_mismatch"})
+_NON_BLOCKING_SKIP_REASONS = frozenset(
+    {
+        "duplicate_value",
+        "context_not_scored",
+        "not_a_forward_observation",
+        "methodology_break_guard",
+        "final_not_superseded_by_flash",
+        "retired_unobserved",
+    }
+)
 
 
 def _sha256_bytes(data: bytes) -> str:
@@ -68,6 +83,129 @@ def _copy_canonical_histories(canonical_history_dir: Path, staging_history_dir: 
         src = canonical_history_dir / filename
         if src.is_file():
             shutil.copy2(src, staging_history_dir / filename)
+
+
+def _latest_history_period(
+    histories: dict[str, dict[str, Any]],
+    calibration: dict[str, Any],
+    catalog_id: str,
+) -> str | None:
+    spec = calibration.get("components", {}).get(catalog_id)
+    if not isinstance(spec, dict):
+        return None
+    country = catalog_id.split(".", 1)[0]
+    history = histories.get(country)
+    if not isinstance(history, dict):
+        return None
+    history_key = spec.get("history_key")
+    comp = (history.get("components") or {}).get(history_key)
+    if not isinstance(comp, dict):
+        return None
+    src_tf = str(spec.get("source_transformation") or "")
+    series_id = str(spec.get("series_id") or "")
+    periods: list[str] = []
+    for obs in comp.get("observations") or []:
+        if not isinstance(obs, dict):
+            continue
+        if str(obs.get("transformation") or "") != src_tf:
+            continue
+        if series_id and obs.get("series_id") and str(obs.get("series_id")) != series_id:
+            continue
+        period = obs.get("reference_period") or obs.get("period")
+        if isinstance(period, str):
+            periods.append(period)
+    if not periods:
+        return None
+    return max(periods, key=period_sort_key)
+
+
+def _point_merge_outcome(
+    point: dict[str, Any],
+    *,
+    appended: list[dict[str, Any]],
+    skipped: list[dict[str, Any]],
+    append_index: int,
+    skip_index: int,
+) -> tuple[str | None, dict[str, Any] | None, int, int]:
+    """Return (skip_reason, append_entry, next_append_index, next_skip_index)."""
+    catalog_id = str(point.get("catalog_id") or point.get("id") or "")
+    period = str(point.get("period") or "")
+    series_id = str(point.get("series_id") or "")
+    transformation = str(point.get("transformation") or "")
+
+    if append_index < len(appended):
+        entry = appended[append_index]
+        if (
+            str(entry.get("id") or "") == catalog_id
+            and str(entry.get("reference_period") or "") == period
+            and str(entry.get("series_id") or "") == series_id
+            and str(entry.get("transformation") or "") == transformation
+        ):
+            return None, entry, append_index + 1, skip_index
+
+    if skip_index < len(skipped) and str(skipped[skip_index].get("id") or "") == _skip_id(point):
+        reason = str(skipped[skip_index].get("reason") or "")
+        return reason, None, append_index, skip_index + 1
+
+    return "unknown", None, append_index, skip_index
+
+
+def _scored_lineage_rejections(
+    *,
+    points: list[dict[str, Any]],
+    merge: dict[str, Any],
+    histories_before_merge: dict[str, dict[str, Any]],
+    calibration: dict[str, Any],
+) -> list[dict[str, Any]]:
+    appended = list(merge.get("appended") or [])
+    skipped = list(merge.get("skipped") or [])
+    rejections: list[dict[str, Any]] = []
+    ai = 0
+    si = 0
+
+    for point in points:
+        role = str(point.get("role") or "")
+        catalog_id = str(point.get("catalog_id") or point.get("id") or "")
+        reason, entry, ai, si = _point_merge_outcome(
+            point, appended=appended, skipped=skipped, append_index=ai, skip_index=si
+        )
+        if role != "scored":
+            continue
+        period = str(point.get("period") or "")
+        series_id = str(point.get("series_id") or "")
+        transformation = str(point.get("transformation") or "")
+
+        if entry is not None:
+            continue
+
+        skip_reason = reason or "unknown"
+        if skip_reason in _NON_BLOCKING_SKIP_REASONS:
+            continue
+
+        # Block only a new release. A historical replay whose catalog transform
+        # already differs from calibration (for example AU.Consumer.confidence)
+        # must not fail an otherwise valid launch.
+        latest = _latest_history_period(histories_before_merge, calibration, catalog_id)
+        newer = bool(
+            latest is not None and period and period_sort_key(period) > period_sort_key(latest)
+        )
+        blocking = newer and (
+            skip_reason in _BLOCKING_SKIP_REASONS or skip_reason != "duplicate_value"
+        )
+        if not blocking:
+            continue
+
+        rejections.append(
+            {
+                "id": catalog_id,
+                "reason": skip_reason,
+                "series_id": series_id,
+                "transformation": transformation,
+                "period": period,
+            }
+        )
+
+    return rejections
 
 
 def _filter_finite_points(points: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -199,6 +337,7 @@ def stage_verified_lineage(
 
     _copy_canonical_histories(canonical_history_dir, staging_history)
     working_histories = load_history(staging_history)
+    histories_before_merge = copy.deepcopy(working_histories)
     calibration = load_calibration(calibration_path)
 
     baseline_state = build_score_state(calibration, compute_state(calibration, working_histories))
@@ -242,6 +381,8 @@ def stage_verified_lineage(
             "score_state_sha256": None,
             "provenance_sha256": _provenance_sha256([]),
             "appended_points": [],
+            "appended_count": 0,
+            "rejections": [],
             "component_deltas": [],
             "lineage_dir": str(lineage_root),
             "mode": mode,
@@ -250,6 +391,29 @@ def stage_verified_lineage(
 
     merge = bridge.merge or {}
     merge_appended = list(merge.get("appended") or [])
+    rejections = _scored_lineage_rejections(
+        points=verified_points,
+        merge=merge,
+        histories_before_merge=histories_before_merge,
+        calibration=calibration,
+    )
+    if rejections:
+        _copy_canonical_histories(canonical_history_dir, staging_history)
+        if scores_path.is_file():
+            scores_path.unlink()
+        return {
+            "ok": False,
+            "checked_at": checked_at,
+            "score_state_sha256": None,
+            "provenance_sha256": _provenance_sha256([]),
+            "appended_points": [],
+            "appended_count": 0,
+            "rejections": rejections,
+            "component_deltas": [],
+            "lineage_dir": str(lineage_root),
+            "mode": mode,
+            "error": "score_lineage_rejected",
+        }
 
     if not scores_path.is_file():
         _write_json_atomic(scores_path, bridge.state)
@@ -322,6 +486,7 @@ def stage_verified_lineage(
         "provenance_sha256": provenance_sha256,
         "appended_points": appended_points,
         "appended_count": len(appended_points),
+        "rejections": [],
         "component_deltas": component_deltas,
         "lineage_dir": str(lineage_root),
         "mode": mode,
