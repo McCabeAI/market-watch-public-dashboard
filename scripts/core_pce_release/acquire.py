@@ -106,19 +106,46 @@ def _merge_fetched(primary: dict, secondary: dict) -> dict:
     merged["source_latency_seconds"] = float(primary.get("source_latency_seconds") or 0) + float(
         secondary.get("source_latency_seconds") or 0
     )
-    merged["requests_made"] = int(secondary.get("requests_made") or 0)
-    merged["elapsed_seconds"] = float(secondary.get("elapsed_seconds") or 0)
-    merged["budget_exhausted"] = bool(secondary.get("budget_exhausted"))
+    merged["requests_made"] = int(primary.get("requests_made") or 0) + int(secondary.get("requests_made") or 0)
+    merged["elapsed_seconds"] = max(
+        float(primary.get("elapsed_seconds") or 0),
+        float(secondary.get("elapsed_seconds") or 0),
+    )
+    merged["budget_exhausted"] = bool(primary.get("budget_exhausted")) or bool(secondary.get("budget_exhausted"))
+    merged["quota_exhausted"] = bool(primary.get("quota_exhausted")) or bool(secondary.get("quota_exhausted"))
+    primary_reason = primary.get("quota_reason")
+    secondary_reason = secondary.get("quota_reason")
+    merged["quota_reason"] = secondary_reason or primary_reason
+    if secondary.get("quota_status") or primary.get("quota_status"):
+        merged["quota_status"] = secondary.get("quota_status") or primary.get("quota_status")
     merged["key_present"] = bool(primary.get("key_present"))
     return merged
 
 
-def acquire_official(series_ids: list[str], release: str, registry: dict | None = None) -> dict:
+def _quota_blocks_secondary(fetched: dict) -> bool:
+    if fetched.get("quota_exhausted"):
+        return True
+    return any(error.get("reason") == "bls_quota" for error in fetched.get("errors") or [])
+
+
+def acquire_official(
+    series_ids: list[str],
+    release: str,
+    registry: dict | None = None,
+    *,
+    quota=None,
+    poster=None,
+) -> dict:
     """One bounded BLS pull. Does not arm a listener and does not loop forever."""
     document = registry if registry is not None else load_registry()
     year = release[:4]
     budget_state: dict = {}
-    fetched = fetch_series(series_ids, start_year=year, end_year=year, budget_state=budget_state)
+    fetch_kwargs: dict = {"start_year": year, "end_year": year, "budget_state": budget_state}
+    if quota is not None:
+        fetch_kwargs["quota"] = quota
+    if poster is not None:
+        fetch_kwargs["poster"] = poster
+    fetched = fetch_series(series_ids, **fetch_kwargs)
 
     priority_ids = list(dict.fromkeys(series_ids))
     ambiguous_ids = optional_ambiguous_ppi_series(document)
@@ -131,16 +158,12 @@ def acquire_official(series_ids: list[str], release: str, registry: dict | None 
         and set(priority_ids) & ppi_priority
         and _priority_fetch_succeeded(fetched)
         and not fetched.get("budget_exhausted")
+        and not _quota_blocks_secondary(fetched)
     ):
         room = MAX_PPI_POLL_SERIES - len(priority_ids)
         if room > 0:
             follow_up = follow_up[:room]
-            secondary = fetch_series(
-                follow_up,
-                start_year=year,
-                end_year=year,
-                budget_state=budget_state,
-            )
+            secondary = fetch_series(follow_up, **fetch_kwargs)
             fetched = _merge_fetched(fetched, secondary)
 
     observations, gaps = build_observations(document, fetched["points"], release)
@@ -163,6 +186,9 @@ def acquire_official(series_ids: list[str], release: str, registry: dict | None 
         "requested": fetched["requested"],
         "requests_made": fetched.get("requests_made", 0),
         "budget_exhausted": fetched.get("budget_exhausted", False),
+        "quota_exhausted": fetched.get("quota_exhausted", False),
+        "quota_reason": fetched.get("quota_reason"),
+        "quota_status": fetched.get("quota_status"),
         "key_present": fetched.get("key_present", False),
         "elapsed_seconds": fetched.get("elapsed_seconds", 0.0),
     }

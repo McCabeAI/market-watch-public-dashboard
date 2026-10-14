@@ -8,6 +8,12 @@ import time
 import urllib.error
 import urllib.request
 from decimal import Decimal
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from scripts.core_pce_release.bls_quota import BLSQuotaLedger
+
+from scripts.core_pce_release.bls_quota import bls_message_indicates_quota, redact_registration_key
 
 API_URL = "https://api.bls.gov/publicAPI/v2/timeseries/data/"
 
@@ -81,6 +87,29 @@ def _new_budget_state(now: float) -> dict:
     }
 
 
+def _scrub_secret(value, secret: str | None):
+    if not secret:
+        return value
+    if isinstance(value, str):
+        return redact_registration_key(value, secret)
+    if isinstance(value, list):
+        return [_scrub_secret(item, secret) for item in value]
+    if isinstance(value, dict):
+        return {key: _scrub_secret(item, secret) for key, item in value.items()}
+    return value
+
+
+def _read_http_json(exc: urllib.error.HTTPError) -> dict | None:
+    try:
+        payload = exc.read().decode("utf-8")
+    except (OSError, UnicodeDecodeError):
+        return None
+    try:
+        return json.loads(payload)
+    except json.JSONDecodeError:
+        return None
+
+
 def fetch_series(
     series_ids: list[str],
     *,
@@ -95,6 +124,7 @@ def fetch_series(
     poster=_post,
     now=time.perf_counter,
     budget_state: dict | None = None,
+    quota: BLSQuotaLedger | None = None,
 ) -> dict:
     """Fetch monthly points within the BLS request budget."""
     registration_key = _registration_key()
@@ -114,6 +144,10 @@ def fetch_series(
     elif "started_at" not in state:
         state.update(_new_budget_state(now()))
 
+    quota_reason: str | None = None
+    quota_exhausted = False
+    registration_key_for_redact = _registration_key()
+
     def elapsed_seconds() -> float:
         return now() - state["started_at"]
 
@@ -128,14 +162,24 @@ def fetch_series(
             return False
         return True
 
+    def _stop_quota(reason: str) -> None:
+        nonlocal quota_exhausted, quota_reason
+        quota_exhausted = True
+        quota_reason = reason
+        state["exhausted"] = True
+
     def _consume(document: dict, requested: list[str]) -> None:
-        raw_documents.append(document)
+        if quota is not None and bls_message_indicates_quota(document.get("message")):
+            _stop_quota("bls_throttled")
+            quota.mark_daily_throttled()
+            errors.append({"reason": "bls_quota", "status": document.get("status"), "series_ids": requested})
+            return
+        raw_documents.append(_scrub_secret(document, registration_key_for_redact))
         if document.get("status") != "REQUEST_SUCCEEDED":
             errors.append(
                 {
                     "reason": "bls_status",
                     "status": document.get("status"),
-                    "message": document.get("message"),
                     "series_ids": requested,
                 }
             )
@@ -164,6 +208,7 @@ def fetch_series(
                 errors.append({"reason": "series_missing", "series_id": series_id})
 
     def _request_chunk(chunk: list[str]) -> None:
+        nonlocal quota_exhausted, quota_reason
         if not chunk:
             return
         if not budget_allows_next_request():
@@ -173,12 +218,28 @@ def fetch_series(
 
         last_error: Exception | None = None
         document: dict | None = None
+        attempt_row = None
         for attempt in range(max_attempts_per_request):
+            if state["exhausted"] and quota_exhausted:
+                for series_id in chunk:
+                    errors.append({"reason": "budget_exhausted", "series_id": series_id})
+                return
             if not budget_allows_next_request():
                 for series_id in chunk:
                     errors.append({"reason": "budget_exhausted", "series_id": series_id})
                 return
-            state["requests_made"] += 1
+            if quota is not None:
+                allowed, deny_reason, attempt_row = quota.begin_attempt(series_count=len(chunk))
+                if not allowed:
+                    quota_exhausted = deny_reason in {"ceiling", "bls_throttled", "ledger_unreadable"}
+                    quota_reason = deny_reason
+                    state["exhausted"] = True
+                    for series_id in chunk:
+                        errors.append({"reason": deny_reason or "quota_exhausted", "series_id": series_id})
+                    return
+                state["requests_made"] += 1
+            else:
+                state["requests_made"] += 1
             started = now()
             try:
                 try:
@@ -191,17 +252,56 @@ def fetch_series(
                     )
                 except TypeError:
                     document = poster(chunk, start_year, end_year, timeout)
+            except urllib.error.HTTPError as exc:
+                state["source_latency_seconds"] += now() - started
+                if quota is not None:
+                    status = exc.code
+                    body = _read_http_json(exc)
+                    if status == 429 or (body and bls_message_indicates_quota(body.get("message"))):
+                        outcome = "http_429" if status == 429 else "bls_quota"
+                        quota.record_http_outcome(attempt_row, outcome, status)
+                        _stop_quota("bls_throttled")
+                        last_error = exc
+                        break
+                    if status >= 500:
+                        quota.record_http_outcome(attempt_row, "http_error", status)
+                        last_error = exc
+                        if attempt + 1 < max_attempts_per_request and budget_allows_next_request():
+                            sleep(retry_sleep_seconds)
+                        continue
+                    quota.record_http_outcome(attempt_row, "http_error", status)
+                    last_error = exc
+                    break
+                last_error = exc
+                if attempt + 1 < max_attempts_per_request:
+                    sleep(retry_sleep_seconds)
+                continue
             except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
                 state["source_latency_seconds"] += now() - started
+                if quota is not None:
+                    quota.record_http_outcome(attempt_row, "transport", None)
                 last_error = exc
                 if attempt + 1 < max_attempts_per_request:
                     sleep(retry_sleep_seconds)
                 continue
             state["source_latency_seconds"] += now() - started
+            if quota is not None and bls_message_indicates_quota(document.get("message")):
+                quota.record_http_outcome(attempt_row, "bls_quota", None)
+                _stop_quota("bls_throttled")
+                for series_id in chunk:
+                    errors.append({"reason": "bls_quota", "series_id": series_id})
+                return
+            if quota is not None:
+                quota.record_http_outcome(attempt_row, "ok", 200)
             break
+
+        if quota_exhausted:
+            return
 
         if document is None:
             detail = str(last_error) if last_error is not None else "unknown"
+            if registration_key_for_redact:
+                detail = redact_registration_key(detail, registration_key_for_redact)
             for series_id in chunk:
                 errors.append({"reason": "transport_error", "series_id": series_id, "detail": detail})
             return
@@ -217,14 +317,19 @@ def fetch_series(
 
     chunks = [ordered[index : index + chunk_size] for index in range(0, len(ordered), chunk_size)] or []
     for chunk in chunks:
-        if state["exhausted"]:
+        if state["exhausted"] or quota_exhausted:
             for series_id in chunk:
                 if series_id not in points:
                     errors.append({"reason": "budget_exhausted", "series_id": series_id})
             continue
         _request_chunk(chunk)
 
-    return {
+    if registration_key_for_redact:
+        errors = _scrub_secret(errors, registration_key_for_redact)
+        raw_documents = _scrub_secret(raw_documents, registration_key_for_redact)
+        footnotes = _scrub_secret(footnotes, registration_key_for_redact)
+
+    result = {
         "points": points,
         "latest": latest,
         "footnotes": footnotes,
@@ -237,3 +342,8 @@ def fetch_series(
         "budget_exhausted": state["exhausted"],
         "key_present": key_present,
     }
+    if quota is not None:
+        result["quota_exhausted"] = quota_exhausted
+        result["quota_reason"] = quota_reason
+        result["quota_status"] = quota.status_dict(quota_reason)
+    return result

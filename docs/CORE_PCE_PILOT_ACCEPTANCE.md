@@ -44,3 +44,11 @@ python -m scripts.core_pce_release arm \
 ```
 
 Prepare is offline. Arm fetches only when that second command is typed, and it needs HTTPS to `api.bls.gov`. `--max-runtime-seconds 0` prints the baseline and stops. Cancel by writing `CANCEL` in the packet directory. This acceptance does not start that process, merge the branch, or create a schedule.
+
+## BLS budget (local cap)
+
+The numerical pilot verdict above is unchanged: **PILOT READY — PRELIMINARY FORECAST** at central `0.3688405280179773205064998201` (HOT), low `0.1759189058295244177603611525`, high `0.5030684119319698761678417501`, stage `awaiting current PPI`, with 3/6/9-month horizons as in `model_spec.json`.
+
+Live unattended polling is **NOT READY** and is not installed. A person still has to type `arm`.
+
+Live `arm` keeps a conservative per-packet ledger at `{packet}/bls_quota.json` (America/New_York calendar day; the BLS FAQ states a daily limit and does not publish the reset clock). Default ceilings are **8** HTTP calls per day without a BLS registration key and **24** with `BLS_API_KEY` or `BLS_REGISTRATION_KEY` present, versus public allowances of 25 and 500. A key in the environment is not a remaining balance. Other programs' use of the same allowance is unknown, so BLS can still reject a request inside this cap. `--interval-seconds` only sets the listener wake interval; pacing and the ledger gate HTTP. The September 2026 PPI pilot does not call BLS before **2026-10-15 08:30 America/New_York** unless `--not-before` overrides. Optional flags: `--bls-daily-ceiling N` (integer ≥ 0; a larger N does not create BLS quota) and `--not-before` (timezone-aware ISO-8601). On local ceiling, an unreadable ledger, or a BLS throttle, network stops, the last flash stays, and the CLI prints `bls_quota: …`. An unreadable ledger is not replaced with a zero count. Quota responses are not archived. Re-arm the same packet the same Eastern day to continue the ledger.

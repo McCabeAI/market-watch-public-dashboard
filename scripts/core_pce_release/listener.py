@@ -92,6 +92,7 @@ def run_listener(
     previous_central: str | None = None
     last_headline: str | None = None
     latest_seen: dict[str, str] = {}
+    last_quota_status: dict | None = None
 
     def _reject_stale_latest(batch: dict) -> dict:
         fresh_observations = []
@@ -172,6 +173,8 @@ def run_listener(
                 "headline": last_headline,
                 "revisions": revisions,
             }
+            if last_quota_status is not None:
+                outcome["bls_quota"] = last_quota_status
             (packet_dir / "listener_result.json").write_text(json.dumps(outcome, indent=2) + "\n", encoding="utf-8")
             return outcome
 
@@ -185,6 +188,8 @@ def run_listener(
                 "outstanding_series": len(_outstanding(expected, ledger, release)),
                 "rejections": rejections,
             }
+            if last_quota_status is not None:
+                outcome["bls_quota"] = last_quota_status
             (packet_dir / "listener_result.json").write_text(json.dumps(outcome, indent=2) + "\n", encoding="utf-8")
             return outcome
 
@@ -200,6 +205,8 @@ def run_listener(
             if batch and not isinstance(batch, dict):
                 raise TypeError("fetch must return a dict")
             if batch:
+                if batch.get("quota_status"):
+                    last_quota_status = batch.get("quota_status")
                 source_latency = batch.get("source_latency_seconds")
                 batch = _reject_stale_latest(batch)
                 for gap in batch.get("gaps") or []:
