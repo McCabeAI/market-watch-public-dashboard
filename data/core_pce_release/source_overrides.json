@@ -1,0 +1,87 @@
+{
+  "schema": "core_pce_source_overrides_v1",
+  "method_version": "nowcast_repair_v1",
+  "shared_series_codes": {
+    "E1NPH1": {
+      "lines": [
+        184,
+        359
+      ],
+      "driver": "identical_mom",
+      "price_series_code": "DNPHRG"
+    },
+    "E1NPN1": {
+      "lines": [
+        188,
+        360
+      ],
+      "driver": "identical_mom",
+      "price_series_code": "DNPNRG"
+    },
+    "E1REL1": {
+      "lines": [
+        325,
+        364
+      ],
+      "driver": "identical_mom",
+      "price_series_code": "DRELRG"
+    },
+    "E1GIV1": {
+      "lines": [
+        326,
+        365
+      ],
+      "driver": "identical_mom",
+      "price_series_code": "DGIVRG"
+    }
+  },
+  "same_ppi_news_groups": [
+    {
+      "source_text": "PPI Hospitals",
+      "series_id": "PCU622---622---",
+      "lines_with_own_baseline": [
+        184,
+        185,
+        186
+      ],
+      "offset_copies_full_mom_from": {
+        "359": 184
+      },
+      "excluded_lines": [
+        346
+      ],
+      "note": "Proprietary and government hospitals keep their own August BEA baselines and add the same PPI news. Nonprofit household sales and the NPISH offset share DNPHRG, so they copy one mom and cancel. Gross output line 346 stays on its own published index."
+    }
+  ],
+  "implicit_lines_reject_bls": [
+    163,
+    255,
+    268
+  ],
+  "forbidden_mappings": [
+    {
+      "line": 268,
+      "series_id": "PCU5231505231501011",
+      "rejected_mom_percent": "-1.6",
+      "reason": "Brokerage PPI is not the post-2026-09-30 portfolio-management source. BEA classifies that line as implicit."
+    }
+  ],
+  "published_flat_index_lines": [
+    346
+  ],
+  "weight_share_authoritative_lines": [
+    16
+  ],
+  "ambiguous_series_must_agree": {
+    "174": [
+      "PCU6211--6211--",
+      "PCU62111-62111-"
+    ]
+  },
+  "do_not_fuzzy_match": [
+    "PPI Domestic scheduled passenger air transportation",
+    "drycleaning versus dry cleaning",
+    "sewage versus sewerage"
+  ],
+  "name_variants": []
+}
