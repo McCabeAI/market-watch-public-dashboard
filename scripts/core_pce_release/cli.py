@@ -75,11 +75,11 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     if args.command == "prepare":
         code, text = prepare(args.kind, args.release, args.out, args.snapshot)
-        print(text, end="")
+        print(text, end="", flush=True)
         return code
     if args.command == "run":
         code, text = _run(args.packet, args.observations)
-        print(text, end="")
+        print(text, end="", flush=True)
         return code
 
     def _fetch(series_ids: list[str], release: str) -> dict:
