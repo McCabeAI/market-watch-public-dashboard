@@ -130,25 +130,10 @@ class CaScoreLineageTests(unittest.TestCase):
             self.assertTrue(result["ok"], msg=result.get("error"))
             self.assertNotEqual(result.get("error"), "score_lineage_rejected")
             self.assertEqual(result.get("rejections") or [], [])
-            self.assertGreaterEqual(result["appended_count"], 5)
-
-            appended = result["appended_points"]
-            by_id = {p["catalog_id"]: p for p in appended}
-
-            self.assertIn("CA.Labor.employment", by_id)
-            self.assertEqual(by_id["CA.Labor.employment"]["period"], "2026-09")
-            self.assertEqual(by_id["CA.Labor.employment"]["transformation"], "mom_sa_change_thousands")
-            self.assertEqual(by_id["CA.Labor.employment"]["source_series_id"], "v2062811_derived_mom_change")
-            self.assertAlmostEqual(float(by_id["CA.Labor.employment"]["value"]), -68.29999999999927)
-
-            self.assertEqual(by_id["CA.Labor.unemployment"]["source_series_id"], "v2062815")
-            self.assertAlmostEqual(float(by_id["CA.Labor.unemployment"]["value"]), 6.5)
-
-            self.assertEqual(by_id["CA.Labor.wages"]["source_series_id"], "v105812645_derived_yoy")
-
-            self.assertIn("AU.Labor.employment", by_id)
-            self.assertIn("AU.Labor.unemployment", by_id)
-            self.assertNotIn("CA.Activity.gdp_domestic_demand", by_id)
+            # This historical store has already been promoted into canonical history.
+            # Replaying it must be idempotent and preserve source provenance.
+            self.assertEqual(result["appended_count"], 0)
+            self.assertEqual(result["appended_points"], [])
 
             staged_ca = json.loads((launch_dir / "lineage" / "history" / "ca.json").read_text(encoding="utf-8"))
             labor_expect = {
@@ -179,6 +164,13 @@ class CaScoreLineageTests(unittest.TestCase):
                 self.assertEqual(rows[0]["transformation"], tf)
                 self.assertEqual(rows[0]["source_series_id"], src)
 
+            staged_au = json.loads((launch_dir / "lineage" / "history" / "au.json").read_text(encoding="utf-8"))
+            for key in ("Labor.employment", "Labor.unemployment"):
+                self.assertTrue(any(
+                    row.get("reference_period") == "2026-09"
+                    for row in staged_au["components"][key]["observations"]
+                ), key)
+
             gdp_obs = staged_ca["components"]["Activity.gdp_domestic_demand"]["observations"]
             q2_rows = [
                 o
@@ -206,14 +198,15 @@ class CaScoreLineageTests(unittest.TestCase):
             observations_dir=OBS_DIR, catalog=catalog, checked_at=CHECKED_AT
         )
         first = merge_scored_points(work, cal, points, checked_at=CHECKED_AT)
-        self.assertTrue(any(a["id"].startswith("CA.Labor.") for a in first["appended"]))
+        self.assertFalse(any(a["id"].startswith("CA.Labor.") for a in first["appended"]))
         second = merge_scored_points(work, cal, points, checked_at=CHECKED_AT)
-        labor_dup = [
-            s
-            for s in second["skipped"]
-            if str(s.get("id", "")).startswith("CA.Labor.") and s.get("reason") == "duplicate_value"
-        ]
-        self.assertEqual(len(labor_dup), 3)
+        for outcome in (first, second):
+            labor_dup = [
+                s
+                for s in outcome["skipped"]
+                if str(s.get("id", "")).startswith("CA.Labor.") and s.get("reason") == "duplicate_value"
+            ]
+            self.assertEqual(len(labor_dup), 3)
 
     def test_synthetic_quarterly_gdp_mapping(self) -> None:
         cal = load_calibration(CALIBRATION_PATH)
@@ -348,7 +341,7 @@ class CaScoreLineageTests(unittest.TestCase):
             "catalog_id": "CA.Labor.unemployment",
             "role": "scored",
             "series_id": "wrong_series",
-            "period": "2026-09",
+            "period": "2026-10",
             "value": 6.5,
             "transformation": "percent",
         }
@@ -357,7 +350,7 @@ class CaScoreLineageTests(unittest.TestCase):
             "catalog_id": "CA.Labor.unemployment",
             "role": "scored",
             "series_id": "v2062815",
-            "period": "2026-11",
+            "period": "2026-12",
             "value": 6.5,
             "transformation": "percent",
         }
@@ -375,7 +368,7 @@ class CaScoreLineageTests(unittest.TestCase):
             launch_dir.mkdir()
             result = stage_verified_lineage(
                 launch_dir=launch_dir,
-                checked_at=CHECKED_AT,
+                checked_at="2026-11-15T08:52:22Z",
                 canonical_history_dir=HISTORY_DIR,
                 calibration_path=CALIBRATION_PATH,
                 points=[wrong, future, bad_gdp],
@@ -387,20 +380,20 @@ class CaScoreLineageTests(unittest.TestCase):
         self.assertEqual(result["appended_count"], 0)
         reasons = {(row["id"], row["period"], row["reason"], row["series_id"], row["transformation"]) for row in result["rejections"]}
         self.assertIn(
-            ("CA.Labor.unemployment", "2026-09", "partial_series_mismatch", "wrong_series", "percent"),
+            ("CA.Labor.unemployment", "2026-10", "partial_series_mismatch", "wrong_series", "percent"),
             reasons,
         )
         self.assertIn(
-            ("CA.Labor.unemployment", "2026-11", "future_release", "v2062815", "percent"),
+            ("CA.Labor.unemployment", "2026-12", "future_release", "v2062815", "percent"),
             reasons,
         )
         self.assertIn(
             ("CA.Activity.gdp_domestic_demand", "2026-Q3", "partial_transform_mismatch", GDP_COMBINED, "mom_sa_pct"),
             reasons,
         )
-    def test_already_calibrated_unemployment_merges(self) -> None:
+    def test_already_calibrated_unemployment_idempotent_and_forward_merges(self) -> None:
         cal = load_calibration(CALIBRATION_PATH)
-        histories = load_history(HISTORY_DIR)
+        work = copy.deepcopy(load_history(HISTORY_DIR))
         point = {
             "country": "CA",
             "catalog_id": "CA.Labor.unemployment",
@@ -410,8 +403,16 @@ class CaScoreLineageTests(unittest.TestCase):
             "value": 6.5,
             "transformation": "percent",
         }
-        result = merge_scored_points(copy.deepcopy(histories), cal, [point], checked_at=CHECKED_AT)
-        self.assertEqual(len(result["appended"]), 1)
+        replay = merge_scored_points(work, cal, [dict(point)], checked_at=CHECKED_AT)
+        self.assertEqual(replay["appended"], [])
+        self.assertEqual(replay["skipped"], [{"id": "CA.Labor.unemployment", "reason": "duplicate_value"}])
+
+        forward = {**point, "period": "2026-10", "value": 6.6}
+        accepted = merge_scored_points(work, cal, [forward], checked_at="2026-11-15T08:52:22Z")
+        self.assertEqual(len(accepted["appended"]), 1, accepted)
+        rows = work["CA"]["components"]["Labor.unemployment"]["observations"]
+        self.assertEqual(rows[-1]["reference_period"], "2026-10")
+        self.assertEqual(rows[-1]["series_id"], point["series_id"])
 
 
 if __name__ == "__main__":

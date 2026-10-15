@@ -172,7 +172,8 @@ class TestCanonicalBridge(unittest.TestCase):
 
                 point = _base_point(fixture, period=next_period, value=3.25)
                 result = merge_scored_points(
-                    histories, self.calibration, [point], checked_at=checked_at
+                    histories, self.calibration, [point],
+                    checked_at=(f"{period_after(next_period)}-20T12:00:00Z" if country == "CA" else checked_at),
                 )
                 self.assertEqual(len(result["appended"]), 1, result)
                 after_len = len(histories[country]["components"][history_key]["observations"])
