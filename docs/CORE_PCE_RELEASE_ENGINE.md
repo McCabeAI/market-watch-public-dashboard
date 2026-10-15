@@ -2,6 +2,8 @@
 
 Manual, one-release CPI/PPI to core PCE nowcast (`nowcast_repair_v1`). It does not score inflation, arm itself, claim an 08:30 ET publication SLA, or install a schedule.
 
+`.github/workflows/run-ppi-oneshot.yml` is a separate one-shot for the issue title `[run-ppi] 2026-09`. It is not the listener, and it does not install a schedule.
+
 ## September 2026 PPI pilot
 
 `prepare ppi --release 2026-09` computes the post-CPI / pre-PPI numerical baseline from committed BEA component history and the October 14, 2026 CPI cache. It prints and writes the class, central/low/high scenario moms, horizons, and reliability weights. It does **not** call BLS, does **not** arm a listener, and does **not** mark the estimate INCOMPLETE merely because September PPI is still unpublished.
@@ -31,10 +33,13 @@ C7 point-in-time backtesting and G8 model selection are **not** part of these co
 
 ## Operator commands
 
-Nothing runs because a chat message said “prepare PPI”. There is no cron, GitHub workflow, or hosted worker in this repository.
+A chat message does not run this calculator. There is no cron and no listener workflow. The one-shot path is an issue titled exactly `[run-ppi] 2026-09`, opened by a human collaborator with admin, maintain, or write permission, with the event sender equal to the issue author. The workflow authenticates that creator, runs `run-ppi` once, comments the numbers, uploads `audit.json`, and exits. It does not arm the listener, poll, retry later, deploy, or call a model.
+
+Missing, stale, or unpublished September PPI is commented as `NOT YET AVAILABLE`. A throttled or failed BLS response is commented as `ERROR`. Neither case replaces the offline baseline.
 
 ```bash
 python -m scripts.core_pce_release prepare ppi --release 2026-09 --out /tmp/pce-ppi-2026-09
+python -m scripts.core_pce_release run-ppi --release 2026-09 --out /tmp/pce-ppi-2026-09
 python -m scripts.core_pce_release arm \
   --packet /tmp/pce-ppi-2026-09 \
   --inbox /tmp/pce-ppi-2026-09/inbox \
@@ -67,7 +72,8 @@ BEA Table 2.4.4U dated 2026-09-30 and Q2 2026 weights anchor the component map. 
 ```bash
 python -m unittest tests.core_pce_release.test_delivery \
   tests.core_pce_release.test_forecasting \
-  tests.core_pce_release.test_model_preparation
+  tests.core_pce_release.test_model_preparation \
+  tests.core_pce_release.test_run_ppi_oneshot
 ```
 
 Packets under `--out` are runtime output; `data/core_pce_release/packets/` is gitignored.
