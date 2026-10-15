@@ -223,7 +223,7 @@ def _filter_finite_points(points: list[dict[str, Any]]) -> list[dict[str, Any]]:
 def _provenance_record(point: dict[str, Any]) -> dict[str, Any]:
     value = _finite_value(point.get("value"))
     assert value is not None
-    return {
+    record: dict[str, Any] = {
         "country": str(point.get("country") or ""),
         "catalog_id": str(point.get("catalog_id") or point.get("id") or ""),
         "period": str(point.get("period")),
@@ -233,6 +233,13 @@ def _provenance_record(point: dict[str, Any]) -> dict[str, Any]:
         "vintage": point.get("vintage"),
         "raw_sha256": point.get("raw_sha256"),
     }
+    src_series = point.get("source_series_id")
+    if isinstance(src_series, str) and src_series:
+        record["source_series_id"] = src_series
+    src_tf = point.get("source_transformation")
+    if isinstance(src_tf, str) and src_tf:
+        record["source_transformation"] = src_tf
+    return record
 
 
 def _provenance_sha256(records: list[dict[str, Any]]) -> str:

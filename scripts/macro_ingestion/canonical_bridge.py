@@ -9,6 +9,7 @@ from typing import Any
 
 from scripts.country_registry import history_files
 from scripts.macro_freshness import values_close
+from scripts.macro_ingestion.ca_score_identity import prepare_ca_score_point
 from scripts.temperature_level import (
     build_paths,
     build_score_state,
@@ -150,6 +151,10 @@ def merge_scored_points(
 
     for point in points:
         point_id = _skip_id(point)
+        ca_block = prepare_ca_score_point(point, checked_at=checked_at)
+        if ca_block is not None:
+            skipped.append({"id": point_id, "reason": ca_block})
+            continue
         role = str(point.get("role") or "")
         catalog_id = str(point.get("catalog_id") or point_id)
         weight = _component_weight(calibration, catalog_id)
@@ -321,6 +326,8 @@ def _append_row(
     row = dict(template)
     row.pop("calibration_lookback", None)
     row.pop("notes", None)
+    row.pop("source_series_id", None)
+    row.pop("source_transformation", None)
     row["reference_period"] = period
     row["value"] = value
     row["series_id"] = series_id
@@ -339,6 +346,12 @@ def _append_row(
     release_date = point.get("release_date")
     if isinstance(release_date, str) and release_date and release_date != cal_as_of:
         row["release_date"] = release_date
+    src_series = point.get("source_series_id")
+    if isinstance(src_series, str) and src_series and src_series != series_id:
+        row["source_series_id"] = src_series
+    src_tf = point.get("source_transformation")
+    if isinstance(src_tf, str) and src_tf and src_tf != transformation:
+        row["source_transformation"] = src_tf
     observations.append(row)
 
 
