@@ -29,6 +29,10 @@ on:
           - EA
           - JP
   pull_request:
+    # Inbox scheduled_output.json is accepted by pull_request_target
+    # (overnight-scheduled-output.yml). Any other changed file still runs this suite.
+    paths-ignore:
+      - "data/overnight/inbox/**/scheduled_output.json"
 
 permissions:
   contents: write

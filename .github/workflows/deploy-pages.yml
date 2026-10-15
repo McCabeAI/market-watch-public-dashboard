@@ -94,6 +94,8 @@ on:
       - "scripts/country_detail/attention.py"
       - "tests/test_country_detail_*.py"
       - "docs/COUNTRY_DETAIL_ATTENTION_V1.md"
+      # Must stay after data/overnight/**. Inbox JSON is accepted elsewhere.
+      - "!data/overnight/inbox/**/scheduled_output.json"
 
 permissions:
   contents: read
