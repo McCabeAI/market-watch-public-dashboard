@@ -104,7 +104,7 @@ jobs:
           if-no-files-found: error
 
       - name: Comment execution error
-        if: steps.calc.outcome == 'failure'
+        if: failure() && steps.calc.outcome == 'failure'
         env:
           GH_TOKEN: ${{ github.token }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
