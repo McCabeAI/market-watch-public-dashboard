@@ -131,6 +131,31 @@ class OneShotPpiTests(unittest.TestCase):
         self.assertFalse((self.out / "listener_result.json").exists())
         self.assertFalse((self.out / "bls_quota.json").exists())
 
+    def test_live_default_poster_is_not_overridden_by_none(self) -> None:
+        document = _document([_hospital_series(september=True)])
+        calls = []
+
+        def fake_fetch(series_ids, **kwargs):
+            self.assertNotIn("poster", kwargs)
+            calls.append(list(series_ids))
+            return {
+                "points": {HOSPITAL: {"2026-07": "10000", "2026-08": "10100", "2026-09": "10251.5"}},
+                "latest": {HOSPITAL: "2026-09"},
+                "footnotes": {},
+                "errors": [],
+                "raw_documents": [document],
+                "source_latency_seconds": 0.01,
+                "requested": list(series_ids),
+                "requests_made": 1,
+                "budget_exhausted": False,
+                "key_present": False,
+            }
+
+        with mock.patch("scripts.core_pce_release.oneshot.fetch_series", side_effect=fake_fetch):
+            result = run_oneshot(self.out)
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(result["availability"], AVAILABILITY_FRESH)
+
     def test_stale_august_ppi_is_not_fresh_and_preserves_baseline(self) -> None:
         document = _document([_hospital_series(september=False, wild_august=True)])
         result, calls = self._run(document)
