@@ -1,0 +1,114 @@
+name: Run PPI one-shot
+
+# One BLS request for the September 2026 PPI issue, then a comment and an
+# audit artifact. Issue opened is the only trigger. This file does not poll,
+# deploy, or call a model.
+
+on:
+  issues:
+    types:
+      - opened
+
+permissions:
+  contents: read
+  issues: write
+  # Artifact upload. This workflow does not deploy.
+  actions: write
+
+concurrency:
+  group: run-ppi-oneshot-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  authorize:
+    name: Authorize PPI issue
+    if: >-
+      github.event.issue.title == '[run-ppi] 2026-09' &&
+      github.event.issue.user.type == 'User' &&
+      github.event.sender.type == 'User' &&
+      github.event.sender.login == github.event.issue.user.login
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      authorized: ${{ steps.auth.outputs.authorized }}
+      reason: ${{ steps.auth.outputs.reason }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Authorize issue creator
+        id: auth
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_AUTHOR_LOGIN: ${{ github.event.issue.user.login }}
+          ISSUE_AUTHOR_TYPE: ${{ github.event.issue.user.type }}
+          ISSUE_SENDER_LOGIN: ${{ github.event.sender.login }}
+          ISSUE_SENDER_TYPE: ${{ github.event.sender.type }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python3 -m scripts.core_pce_release authorize-ppi-issue
+
+  execute:
+    name: One-shot PPI calculation
+    needs: authorize
+    if: needs.authorize.outputs.authorized == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Calculate once
+        id: calc
+        env:
+          OUT_DIR: ${{ runner.temp }}/run-ppi-2026-09
+          BLS_API_KEY: ${{ secrets.BLS_API_KEY }}
+          BLS_REGISTRATION_KEY: ${{ secrets.BLS_REGISTRATION_KEY }}
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python3 -m scripts.core_pce_release run-ppi --release 2026-09 --out "$OUT_DIR"
+
+      - name: Comment numerical result
+        if: steps.calc.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          OUT_DIR: ${{ runner.temp }}/run-ppi-2026-09
+        run: |
+          set -euo pipefail
+          gh issue comment "$ISSUE_NUMBER" --body-file "$OUT_DIR/comment.md"
+
+      - name: Upload audit artifact
+        if: steps.calc.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: run-ppi-2026-09-${{ github.run_id }}
+          path: ${{ runner.temp }}/run-ppi-2026-09
+          retention-days: 30
+          if-no-files-found: error
+
+      - name: Comment execution error
+        if: steps.calc.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          set -euo pipefail
+          python3 -c 'from pathlib import Path; Path("/tmp/run-ppi-error.md").write_text("availability: ERROR\nreason: oneshot_execution_failed\nestimate: unchanged\noffline baseline: HOT +0.3688405280179773205064998201%\nrevised central: HOT +0.3688405280179773205064998201%\nNo revised core PCE figure was published. This run does not schedule a retry.\nlistener: not_invoked\narm: not_invoked\nretries_scheduled: 0\n", encoding="utf-8")'
+          gh issue comment "$ISSUE_NUMBER" --body-file /tmp/run-ppi-error.md

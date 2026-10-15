@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -18,6 +19,12 @@ from scripts.core_pce_release.bls_quota import (
 )
 from scripts.core_pce_release.calculator import calculate
 from scripts.core_pce_release.listener import run_listener
+from scripts.core_pce_release.oneshot import (
+    authorize_from_environment,
+    run_oneshot,
+    write_github_output,
+    write_unexpected_error,
+)
 from scripts.core_pce_release.packet import load_packet, prepare
 from scripts.core_pce_release.report import render_detailed, render_flash
 from scripts.core_pce_release.snapshot import DEFAULT_SNAPSHOT, load_snapshot, residual_weight
@@ -100,6 +107,12 @@ def main(
     run_parser.add_argument("--packet", type=Path, required=True)
     run_parser.add_argument("--observations", type=Path, required=True)
 
+    run_ppi_parser = sub.add_parser("run-ppi")
+    run_ppi_parser.add_argument("--release", default="2026-09")
+    run_ppi_parser.add_argument("--out", type=Path, required=True)
+
+    sub.add_parser("authorize-ppi-issue")
+
     arm_parser = sub.add_parser("arm")
     arm_parser.add_argument("--packet", type=Path, required=True)
     arm_parser.add_argument("--inbox", type=Path, required=True)
@@ -122,6 +135,21 @@ def main(
         code, text = _run(args.packet, args.observations)
         print(text, end="", flush=True)
         return code
+    if args.command == "authorize-ppi-issue":
+        decision = authorize_from_environment(os.environ)
+        write_github_output(decision)
+        print(json.dumps({"authorized": decision["authorized"], "reason": decision["reason"]}), flush=True)
+        return 0
+    if args.command == "run-ppi":
+        if args.release != "2026-09":
+            print("refusing: release must be 2026-09", flush=True)
+            return 2
+        try:
+            run_oneshot(args.out, release=args.release)
+        except Exception:  # noqa: BLE001 — comment stays free of exception text
+            write_unexpected_error(args.out)
+            return 1
+        return 0
 
     wall = wall_clock or (lambda: datetime.now(timezone.utc))
     mono = monotonic or time.monotonic
