@@ -60,6 +60,8 @@ on:
       - ".github/workflows/overnight-pipeline.yml"
       - ".github/workflows/overnight-scheduled-output.yml"
       - ".github/workflows/deploy-pages.yml"
+      # Must stay after data/overnight/**. Inbox JSON is accepted elsewhere.
+      - "!data/overnight/inbox/**/scheduled_output.json"
 
 permissions:
   contents: write

@@ -31,6 +31,10 @@ on:
   issues:
     types: [opened]
   pull_request:
+    # Inbox scheduled_output.json is accepted by pull_request_target
+    # (overnight-scheduled-output.yml). Any other changed file still runs this suite.
+    paths-ignore:
+      - "data/overnight/inbox/**/scheduled_output.json"
 
 permissions:
   contents: write
@@ -350,4 +354,5 @@ jobs:
             tests.test_mw_launch_lineage \
             tests.test_mw_launch_completion \
             tests.test_mw_launch_integration \
+            tests.test_pr_path_triggers \
             -v
