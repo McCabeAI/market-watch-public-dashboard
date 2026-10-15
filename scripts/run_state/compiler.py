@@ -140,6 +140,49 @@ def compile_catalog(catalog: Mapping[str, Any]) -> List[Dict[str, Any]]:
     return compiled
 
 
+def compile_identity_views(catalog: Mapping[str, Any]) -> List[Dict[str, Any]]:
+    """Project score identity beside compiled definitions.
+
+    SeriesDefinition bodies are not modified, so ``definition_id`` hashes stay
+    the acquisition contract. Rows the compiler cannot represent (for example a
+    null source id) are returned with ``definition`` null and no invented hash.
+    """
+
+    from scripts.run_state.identity import view_for_definition
+
+    series = catalog.get("series")
+    if not isinstance(series, list):
+        raise ContractError("catalog missing series list")
+    catalog_publisher = catalog.get("publisher") or ""
+    views: List[Dict[str, Any]] = []
+    for row in series:
+        if not isinstance(row, dict):
+            raise ContractError("catalog series entry must be an object")
+        try:
+            definition = _compile_row(row, catalog_publisher)
+        except ContractError as exc:
+            views.append(
+                {
+                    "concept_id": row.get("id"),
+                    "definition_id": None,
+                    "definition": None,
+                    "compile_error": str(exc),
+                    "identity": {
+                        "concept_id": row.get("id"),
+                        "source_series_id": row.get("series_id"),
+                        "source_transformation": row.get("transform"),
+                        "units": row.get("units"),
+                        "projection": "uncompiled",
+                    },
+                }
+            )
+            continue
+        view = view_for_definition(definition, row)
+        view["definition"] = definition
+        views.append(view)
+    return views
+
+
 def load_and_compile(path: str | Path = "data/macro_ingestion/catalog.json") -> List[Dict[str, Any]]:
     text = Path(path).read_text(encoding="utf-8")
     catalog = json.loads(text)
