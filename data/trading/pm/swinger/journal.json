@@ -899,6 +899,69 @@
       "run_id": "overnight-20261014",
       "schema_version": 1,
       "thesis": "March 2027 CORRA still prices more than 60 basis points of tightening versus 2.28 cash after the New York Fed lead argued against a 2027 hike campaign. That is the same overpriced Canadian re-tightening this book is already receiving; overnight oil is accepted volatility, not a reason to stand down while the strip remains rich. Shocked risk on the existing line is small versus a plausible remaining fade toward cash, so the aggressive expression is to add to the receive rather than open a second country."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pm-swinger-2070479ca321",
+          "rationale": "Keep the concentrated March 2027 CORRA receive; remaining edge after the 3.014 to 2.89 move does not justify adding.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-15T07:33:38.222546-04:00",
+      "conviction": 68,
+      "decision_fingerprint": "0587acec6e25d4391c8fdca24be5dcee639e10a2002e4fea7d171580ae9942cd",
+      "event_id": "jde-9c9f210bb321469e",
+      "funding_view": null,
+      "invalidation": "The receive is wrong if CORRA cash firms through about 2.75 on a hike or hawkish repricing, if March implied reclaims about 3.20, or if sustained triple-digit oil plus a bid in the US 10-year forces a Canadian tightening impulse the contract has not already paid for.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-swinger-2070479ca321"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "9d2744bf57895483f09ca1745ea1970d3d7d9d1be527c47f40f67345399381df",
+      "outcome_links": [],
+      "owner_id": "swinger",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": {
+            "allocator_vs_noise": "short_horizon_noise",
+            "chase_temptation": "no",
+            "heater_risk": "no",
+            "judgment_effect": "sharpening",
+            "junior_vs_self": "style",
+            "protecting_gains": "no"
+          },
+          "state_sha256": "54b0292e99c24e09c557d11d0d31a7a234fd04e7da6ec99c6437bd4c276862b8"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-15T06:25:03.487055-04:00",
+        "evidence_hash": "5d4dff1fc21fd6fdcafb4d8aab202649857c3b871dc1e739650c99e392e3fd8e",
+        "overnight_run_id": "overnight-20261015",
+        "review_id": "review-001",
+        "review_packet_id": "prp-swinger-overnight-20261015-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "March 2027 CORRA still prices a large rebound from cash near 2.28 toward 2.89. That hike-back remains too much if Canada has already delivered the easing cycle and does not need to re-tighten with the Fed. Brent near 106 and a 5.19 US 10-year are the live threats, but they size the remaining path rather than kill the receive. Keep the concentrated long; do not dilute it with a second sleeve.",
+      "run_id": "overnight-20261015",
+      "schema_version": 1,
+      "thesis": "March 2027 CORRA still prices a large rebound from cash near 2.28 toward 2.89. That hike-back remains too much if Canada has already delivered the easing cycle and does not need to re-tighten with the Fed. Brent near 106 and a 5.19 US 10-year are the live threats, but they size the remaining path rather than kill the receive. Keep the concentrated long; do not dilute it with a second sleeve."
     }
   ],
   "schema_version": 1,

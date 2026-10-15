@@ -1135,6 +1135,92 @@
       "run_id": "overnight-20261014",
       "schema_version": 1,
       "thesis": "Cash SOFR at 3.87 versus a 4.73 September 2027 plateau still looks too easy against a 5.21 ten-year and Brent at 105.69, even after Williams said one more 2026 hike and no 2027 hike. Hold the existing US and Australian pays. Cut half the remaining Canada pay after March CORRA cheapened from 3.125 to 2.905, while cash at 2.28 still leaves some residual tightening."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-09",
+          "notional_usd": null,
+          "position_id": "pos-c9184707c12b",
+          "rationale": "Keep the 25 million September 2027 SOFR pay; cash 3.89 versus 4.68 still leaves a hiking path.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-2709875e8c9c",
+          "rationale": "Keep the 6.25 million March 2027 CORRA pay; 2.89 versus cash 2.28 is still light against oil-driven inflation.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-06",
+          "notional_usd": null,
+          "position_id": "pos-9cbf3f27dfff",
+          "rationale": "Keep the 25 million June 2027 AONIA pay; 4.875 versus cash 4.60 is the thinnest but still live hawk residual.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-15T06:25:03.487055-04:00",
+      "conviction": 62,
+      "decision_fingerprint": "97cea5a6c84dc9656e8c67cef0dc7e1de168c6e07ef5429b277b249bc44a9296",
+      "event_id": "jde-21b7d8799d4949df",
+      "funding_view": null,
+      "invalidation": "Cut the pays if Brent reverses without a replacement inflation impulse, or if those 2027 contracts collapse toward cash 3.89, 2.28 and 4.60 instead of repricing higher.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-2709875e8c9c",
+        "pos-9cbf3f27dfff",
+        "pos-c9184707c12b"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "da1fb81aa2d9f7e0e3d88b606231aa0985592c8b02c7976e3f7610fb1544a735",
+      "outcome_links": [],
+      "owner_id": "rate-hawk",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "e70070c0a674e5ed98ff5f59973e2c422a008e8caffb15ec3c1b7b1a445b0e8f"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-15T06:25:03.487055-04:00",
+        "evidence_hash": "64729e32ef0fd2a604371d7578bf00935369106d1b44fea0217249f1a690e0f6",
+        "overnight_run_id": "overnight-20261015",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Oil near 106 and euro-area inflation at a three-year high keep global terminals too low versus the three existing pays. September 2027 SOFR at 4.68 still sits 79 basis points over cash 3.89, March 2027 CORRA at 2.89 still prices 61 basis points over 2.28, and June 2027 AONIA at 4.875 is only 27 basis points over 4.60. Leave all three shorts in place; the marks have cheapened, but the hiking paths have not been delivered.",
+      "run_id": "overnight-20261015",
+      "schema_version": 1,
+      "thesis": "Oil near 106 and euro-area inflation at a three-year high keep global terminals too low versus the three existing pays. September 2027 SOFR at 4.68 still sits 79 basis points over cash 3.89, March 2027 CORRA at 2.89 still prices 61 basis points over 2.28, and June 2027 AONIA at 4.875 is only 27 basis points over 4.60. Leave all three shorts in place; the marks have cheapened, but the hiking paths have not been delivered."
     }
   ],
   "schema_version": 1,

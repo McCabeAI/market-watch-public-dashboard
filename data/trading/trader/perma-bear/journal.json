@@ -890,6 +890,62 @@
       "run_id": "overnight-20261014",
       "schema_version": 1,
       "thesis": "Cash SOFR at 3.87 still sits below March 2027 at 4.515 and September 2027 at 4.73, so receiving that hike-priced strip would fade tightening rather than express a growth scare. Williams saying one more hike this year and no 2027 hike is needed argues that strip is too hawkish, but the cleaner defensive expression is the already-sold long end: the book is long the US 10-year from 5.24 against a live 5.21 mark, with the 30-year at 5.56. Equities at 7805 and VIX at 15.21 still treat landing as benign while Brent at 105.69 keeps term-premium risk alive, so keep the 25 million ten-year receive and do not add or rotate into an unmarked risk-off currency short."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "US_10Y",
+          "notional_usd": null,
+          "position_id": "pos-5ac8fc69cb81",
+          "rationale": "Keep the 25 million US 10-year receive as fragility insurance; do not receive the still-rich policy strip.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-15T06:25:03.487055-04:00",
+      "conviction": 57,
+      "decision_fingerprint": "69826796f33b53a665487d1a8b578e67c34bde6961251e73232aee885ecd05a0",
+      "event_id": "jde-0566ac1a29a04bac",
+      "funding_view": null,
+      "invalidation": "The hold fails if US 10-year yields reverse back through the 5.24 entry while Brent stays elevated, or if March 2027 SOFR collapses toward cash with risk assets bid.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-5ac8fc69cb81"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "a7f2590367248e3b66c56c252ea9a1336223965dc930aa3b7aa053346a473256",
+      "outcome_links": [],
+      "owner_id": "perma-bear",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "655f50963cd25aad6467822215ce3c23203b5c4df6dfb61696847fc02c439792"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-15T06:25:03.487055-04:00",
+        "evidence_hash": "64729e32ef0fd2a604371d7578bf00935369106d1b44fea0217249f1a690e0f6",
+        "overnight_run_id": "overnight-20261015",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Cash SOFR at 3.89 still sits below a hike-priced futures path while the VIX at 15.27 treats the landing as orderly, so receiving that strip is not a defensive expression. Oil remains the live stress channel. The existing 10-year receive at 5.19 from 5.24 is the tenor where tightening is already in the price, and that is the insurance to keep rather than add.",
+      "run_id": "overnight-20261015",
+      "schema_version": 1,
+      "thesis": "Cash SOFR at 3.89 still sits below a hike-priced futures path while the VIX at 15.27 treats the landing as orderly, so receiving that strip is not a defensive expression. Oil remains the live stress channel. The existing 10-year receive at 5.19 from 5.24 is the tenor where tightening is already in the price, and that is the insurance to keep rather than add."
     }
   ],
   "schema_version": 1,

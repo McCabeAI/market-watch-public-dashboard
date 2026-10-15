@@ -888,6 +888,62 @@
       "run_id": "overnight-20261014",
       "schema_version": 1,
       "thesis": "The book remains short 75 million March 2027 SOFR from 4.62 versus a live 4.515 print, with cash at 3.87, the US ten-year at 5.21, and Brent at 105.69. Williams seeing no 2027 hike while still calling for one more 2026 hike is pullback risk, not a trend break, because December 2026 still sits at 4.25. Covering 4.515 would fade a higher-for-longer path that oil and the long end still support."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-662bff0986be",
+          "rationale": "Keep the 75 million March 2027 SOFR pay; 4.515 versus cash 3.89 is a pullback inside the hiking-path trend.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-15T06:25:03.487055-04:00",
+      "conviction": 61,
+      "decision_fingerprint": "9c3c96dc4c7566fda94f57a1283b88b8af446b61f4a4473108be60e929209a7a",
+      "event_id": "jde-6bd44367d87b4cae",
+      "funding_view": null,
+      "invalidation": "Cover if March 2027 SOFR loses a distinct hiking premium versus cash 3.89, or if the 10-year and Brent jointly break the higher-rate regime.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-662bff0986be"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "9c71f50b53d4bebd9765b3b4ecd8974e2cd057dd80504af0046c5698f63aeee0",
+      "outcome_links": [],
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "00e1d88f7dbb0ef3f9a4983a4b5994a00cdf3cd5bcb85fdeec69796c3cc1bde8"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-15T06:25:03.487055-04:00",
+        "evidence_hash": "64729e32ef0fd2a604371d7578bf00935369106d1b44fea0217249f1a690e0f6",
+        "overnight_run_id": "overnight-20261015",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The SOFR strip still prices a hiking path from cash 3.89 to March 2027 at 4.515 and September at 4.68, while the US 10-year at 5.19 and Brent at 106 keep that higher-for-longer tape intact. The 75 million pay from 4.62 now lives at 4.515, a pullback inside the trend rather than a break. Covering that dip would be a premature fade.",
+      "run_id": "overnight-20261015",
+      "schema_version": 1,
+      "thesis": "The SOFR strip still prices a hiking path from cash 3.89 to March 2027 at 4.515 and September at 4.68, while the US 10-year at 5.19 and Brent at 106 keep that higher-for-longer tape intact. The 75 million pay from 4.62 now lives at 4.515, a pullback inside the trend rather than a break. Covering that dip would be a premature fade."
     }
   ],
   "schema_version": 1,

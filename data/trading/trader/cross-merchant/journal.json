@@ -904,6 +904,62 @@
       "run_id": "overnight-20261014",
       "schema_version": 1,
       "thesis": "Canada still pays CORRA 2.28 against TONA 1.227, CADJPY is 111.03 after a three-month minus 4.0 percent lag, and Brent at 105.69 keeps the oil exporter favored versus the importer; that Canada-Japan policy, carry and terms-of-trade gap is isolated in CADJPY, not in USDJPY at 158.12 or USDCAD at 1.4241, which would import a dollar factor. One-year CADJPY sits near the 14th percentile, cash carry is still about 105 basis points, and March implieds remain wider at 2.905 versus 1.7025, so this is a multi-week relative-value book rather than a two-day clip. Keep the existing 15 million CADJPY long; do not rotate into a dollar pair and do not reverse the closed Australia-Canada fade."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CADJPY",
+          "notional_usd": null,
+          "position_id": "pos-44de67c4b24f",
+          "rationale": "Keep the 15 million CADJPY long; oil still supports Canada versus Japan and AUDCAD is not a new gap.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-15T06:25:03.487055-04:00",
+      "conviction": 58,
+      "decision_fingerprint": "6cbd9bc443f54c4eaac73ec6371b87c6c9cd116f16ac38b9371b5df57063fe45",
+      "event_id": "jde-d945329be3b54959",
+      "funding_view": null,
+      "invalidation": "Cover if Brent no longer supports the exporter-versus-importer read or if CADJPY reverses back through the 110.90 entry.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-44de67c4b24f"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "18d537b465e1b71ccf4f0b6a70f570df3eed058df28bdea296ea621f36efd486",
+      "outcome_links": [],
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "2589edd3491a893f9e0a6b6f31a7a6f432a9e20d1471183eb1320106e9f83040"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-15T06:25:03.487055-04:00",
+        "evidence_hash": "64729e32ef0fd2a604371d7578bf00935369106d1b44fea0217249f1a690e0f6",
+        "overnight_run_id": "overnight-20261015",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold the long CADJPY. It isolates oil-exporter Canada versus oil-importer Japan without a dollar leg, and Brent near 106 still supports that cut while the book is in from 110.90 to 111.44. AONIA at 4.60 versus CORRA at 2.28 is not a new Australia-Canada gap, so AUDCAD stays closed.",
+      "run_id": "overnight-20261015",
+      "schema_version": 1,
+      "thesis": "Hold the long CADJPY. It isolates oil-exporter Canada versus oil-importer Japan without a dollar leg, and Brent near 106 still supports that cut while the book is in from 110.90 to 111.44. AONIA at 4.60 versus CORRA at 2.28 is not a new Australia-Canada gap, so AUDCAD stays closed."
     }
   ],
   "schema_version": 1,

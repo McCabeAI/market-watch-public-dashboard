@@ -890,6 +890,62 @@
       "run_id": "overnight-20261014",
       "schema_version": 1,
       "thesis": "March 2027 SOFR at 4.515 still sits well above cash 3.87, so the existing 10 million receive is a fade of a 2027 hike path that has not been delivered. New York Fed President Williams currently sees one more hike as appropriate this year but no need for a 2027 hike, which is the reversal condition for leaving that residual premium in the strip. The contract has already cheapened from the 4.58 entry toward 4.515, which is the desired direction, but Brent at 105.69 and the US 10-year at 5.21 keep term premium from collapsing. Hold the residual receive; do not add just because the fade has worked a bit while oil still anchors the back of the curve."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-1477172adb86",
+          "rationale": "Keep the 10 million March 2027 SOFR receive; residual hike premium versus cash 3.89 is still the fade.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-15T06:25:03.487055-04:00",
+      "conviction": 60,
+      "decision_fingerprint": "55480a23bea6a7e34efd82734bbf1b01a0c6cb48e1c1f50617fa021d9cc977fb",
+      "event_id": "jde-3519fff95dab4148",
+      "funding_view": null,
+      "invalidation": "Cover if March 2027 implied revisits 4.58 on a persistent oil bid, or if cash SOFR rises enough that the forward premium is no longer leftover hike overhang.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-1477172adb86"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "af2ced22213f97203828399d558d2b5dcfdf0ddaed2b97d4daf4d8fbcd1a20b7",
+      "outcome_links": [],
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "6aa64b085ab5aaf07d7c8b6f8e9cba7d8759bbde1e4fb422974127a2f80195a9"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-15T06:25:03.487055-04:00",
+        "evidence_hash": "64729e32ef0fd2a604371d7578bf00935369106d1b44fea0217249f1a690e0f6",
+        "overnight_run_id": "overnight-20261015",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Cash SOFR at 3.89 versus March 2027 at 4.515 still leaves 62 basis points of hike premium, so the 10 million receive remains a fade of a stretched path rather than a chase of a spent move. The contract has cheapened from 4.58 toward 4.515, which is the desired direction, but oil and the 5.19 10-year keep term premium from collapsing, so do not add.",
+      "run_id": "overnight-20261015",
+      "schema_version": 1,
+      "thesis": "Cash SOFR at 3.89 versus March 2027 at 4.515 still leaves 62 basis points of hike premium, so the 10 million receive remains a fade of a stretched path rather than a chase of a spent move. The contract has cheapened from 4.58 toward 4.515, which is the desired direction, but oil and the 5.19 10-year keep term premium from collapsing, so do not add."
     }
   ],
   "schema_version": 1,

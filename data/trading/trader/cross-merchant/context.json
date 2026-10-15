@@ -105,15 +105,17 @@
     "material_threshold_usd": 2000000.0,
     "nav_usd": 99932220.11,
     "net_pnl_usd": -67779.89,
-    "pressure_flags": [],
-    "prior_competition_rank": 12,
-    "rank_change": 0,
+    "pressure_flags": [
+      "rank_shock"
+    ],
+    "prior_competition_rank": 8,
+    "rank_change": 4,
     "raw_pnl_rank": 12,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 150000.0,
     "risk_capital_utilization": 0.015,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -54922.99,
     "status": "ok"
   },
   "learning": {
@@ -123,8 +125,17 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [],
-  "memory_context_sha256": "18d537b465e1b71ccf4f0b6a70f570df3eed058df28bdea296ea621f36efd486",
+  "learning_obligations": [
+    {
+      "kind": "performance_reflection",
+      "obligation_id": "rfd-f11aa23728bb",
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "reference": "rfd-f11aa23728bb",
+      "source_run_id": null
+    }
+  ],
+  "memory_context_sha256": "3f1aec81621217c178217b29130c2889739b39ea2f353fd628540ec41cb308c8",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -148,13 +159,13 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.12
+        "trend": "down",
+        "value": 0.11
       },
       "complacency": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "up",
+        "value": 0.15
       },
       "defensiveness": {
         "band": "calm",
@@ -164,12 +175,12 @@
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.19
+        "value": 0.16
       },
       "frustration": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.12
+        "trend": "down",
+        "value": 0.11
       },
       "revenge_pressure": {
         "band": "calm",
@@ -178,8 +189,8 @@
       },
       "self_trust": {
         "band": "steady",
-        "trend": "flat",
-        "value": 0.5
+        "trend": "up",
+        "value": 0.51
       },
       "thesis_attachment": {
         "band": "calm",
@@ -197,18 +208,23 @@
     "profile_version": 1,
     "recent_events": [
       {
-        "kind": "rank_drop_minor",
+        "kind": "session_gain",
+        "magnitude": 0.10984598,
+        "run_id": "overnight-20261015"
+      },
+      {
+        "kind": "rank_gain_major",
         "magnitude": 1.0,
-        "run_id": "overnight-20261005"
+        "run_id": "overnight-20261015"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "2589edd3491a893f9e0a6b6f31a7a6f432a9e20d1471183eb1320106e9f83040",
+    "state_sha256": "212504560caafeb32f4fdbd8c9202268902aad17923f54ed97d93b8166521460",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
-      "session_win": 0
+      "session_win": 1
     }
   },
   "recent_closed_trades": [
@@ -237,7 +253,24 @@
   ],
   "recent_funding_views": [],
   "recent_performance_reflections": [],
-  "reflections_due": [],
+  "reflections_due": [
+    {
+      "created_at": "2026-10-15T06:25:03.487055-04:00",
+      "created_run_id": null,
+      "facts": {
+        "competition_rank": 12,
+        "drawdown_usd": 67779.89,
+        "lesson_ids": [],
+        "net_pnl_usd": -67779.89,
+        "prior_competition_rank": 8,
+        "trade_ids": []
+      },
+      "reflection_due_id": "rfd-f11aa23728bb",
+      "trigger_ids": [
+        "rank_shock"
+      ]
+    }
+  ],
   "schema_version": 4,
   "type": "IDENTITY_MEMORY_CONTEXT"
 }

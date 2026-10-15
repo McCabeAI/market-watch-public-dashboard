@@ -888,6 +888,62 @@
       "run_id": "overnight-20261014",
       "schema_version": 1,
       "thesis": "Cash CORRA is 2.28 against a 2027 H-Z strip near 3.16, so the market still prices a large re-tightening above today's cash rate. Williams' 2027 US guidance plus that leftover gap keep the existing receive the right expression of underpriced easing. Oil at 105.69 is a reason not to add, not a reason to flatten the 42.5 million long."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027H-Z",
+          "notional_usd": null,
+          "position_id": "pos-9849cf751c27",
+          "rationale": "Keep the 42.5 million 2027 CORRA pack receive; the hike path versus cash 2.28 is still the easing residual.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-15T06:25:03.487055-04:00",
+      "conviction": 62,
+      "decision_fingerprint": "5a3bceaa44b1e3b6d17fa43d43e3fe3f1c2450b00744d24a1114e2d3c7c43180",
+      "event_id": "jde-3a71d2ce7862467f",
+      "funding_view": null,
+      "invalidation": "The receive fails if the 2027 CORRA pack implied rises back through 3.40, or if cash 2.28 and March 2.89 reprice higher together on delivered tightening.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-9849cf751c27"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "9beb82897659ba2696d70e743f65a1894c6cb1fed0dfc40998b4d853cc4ec2e9",
+      "outcome_links": [],
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "69ff2b8ca01ee5d5e169c9970af4a5a2a89dc0282a5166a1c50640fd5d4c3747"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-15T06:25:03.487055-04:00",
+        "evidence_hash": "64729e32ef0fd2a604371d7578bf00935369106d1b44fea0217249f1a690e0f6",
+        "overnight_run_id": "overnight-20261015",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Cash CORRA at 2.28 versus a 2027 strip through 3.34 still embeds a hiking path, and the live H-Z pack near 3.16 remains below the 3.40 receive. Restrictive policy should weaken demand before that tightening is delivered. Brent at 106 is a headwind, but it does not erase the cash-to-forward premium or justify fading a working long.",
+      "run_id": "overnight-20261015",
+      "schema_version": 1,
+      "thesis": "Cash CORRA at 2.28 versus a 2027 strip through 3.34 still embeds a hiking path, and the live H-Z pack near 3.16 remains below the 3.40 receive. Restrictive policy should weaken demand before that tightening is delivered. Brent at 106 is a headwind, but it does not erase the cash-to-forward premium or justify fading a working long."
     }
   ],
   "schema_version": 1,

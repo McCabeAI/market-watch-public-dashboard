@@ -886,6 +886,62 @@
       "run_id": "overnight-20261014",
       "schema_version": 1,
       "thesis": "United States cash at 3.87 and the March 2027 strip at 4.515 still dominate Canada at 2.28 and 2.905, so the dollar versus the loonie remains the cleanest expression of that gap. A Canada cross would import oil and second-order risk the rate story does not need; keep the existing long USDCAD, now at 1.4241 and the 97th percentile of its one-year range. Brent at 105.69 can slow further dollar gains, which is why this stays a hold of that long rather than an add."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDCAD",
+          "notional_usd": null,
+          "position_id": "pos-5317bc96d4eb",
+          "rationale": "Keep the 55 million USDCAD long; the policy-rate gap still favors the dollar.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-15T06:25:03.487055-04:00",
+      "conviction": 71,
+      "decision_fingerprint": "00b4968c4515b1bac2cf5095d4eed513a914bf46aaef526c91941d3c1d59359d",
+      "event_id": "jde-fd7f22c2fc6348fc",
+      "funding_view": null,
+      "invalidation": "Reassess if the SOFR-CORRA and Canada-US 2-year advantage compresses or reverses, removing the policy case for staying long the pair.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-5317bc96d4eb"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "0f97f25a1656dfa2f7045bbdfd7c2bdbf7be68245a8af43fc784c8e74df689e8",
+      "outcome_links": [],
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "3f4d0cdad53a46ee503f321da5eb005fe33d8b189978df63dd2c9b650f54ddab"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-15T06:25:03.487055-04:00",
+        "evidence_hash": "64729e32ef0fd2a604371d7578bf00935369106d1b44fea0217249f1a690e0f6",
+        "overnight_run_id": "overnight-20261015",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book already holds the cleanest dollar pair: long USDCAD from 1.4010, live 1.4219. Official SOFR at 3.89 versus CORRA at 2.28 and a Canadian 2-year 160 basis points through Treasuries still pay the dollar versus Canada. Brent near 106 is a reason not to add after the move, not a reason to close while the rate gap remains.",
+      "run_id": "overnight-20261015",
+      "schema_version": 1,
+      "thesis": "The book already holds the cleanest dollar pair: long USDCAD from 1.4010, live 1.4219. Official SOFR at 3.89 versus CORRA at 2.28 and a Canadian 2-year 160 basis points through Treasuries still pay the dollar versus Canada. Brent near 106 is a reason not to add after the move, not a reason to close while the rate gap remains."
     }
   ],
   "schema_version": 1,

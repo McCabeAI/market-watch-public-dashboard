@@ -1159,6 +1159,77 @@
       "run_id": "overnight-20261014",
       "schema_version": 1,
       "thesis": "Official SOFR is 3.87 percent on the 9 October fixing, this book is flat, and the 2027 strip already prices hikes through March at 4.515 and September and December at 4.73. Paying or receiving that path from cash just leases shocked-risk capital at SOFR without an edge above the official fixing. Stay in cash; flat cash is the zero benchmark, not alpha."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Remain at the zero official-SOFR cash benchmark; paying SOFR on shocked-risk capital would only lease a hike path already in SR3.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-15T06:25:03.487055-04:00",
+      "conviction": 72,
+      "decision_fingerprint": "5e1af507f9f0268981f77d855dacff44580deeea7addd223ffd4216e95214fd1",
+      "event_id": "jde-e3e77901e18544e1",
+      "funding_view": {
+        "current_sofr": {
+          "observation_date": "2026-10-13",
+          "rate": 3.89
+        },
+        "forward_funding_assessment": "lower",
+        "implication": "Realized overnight funding should print near the 3.89 official fixing and lower than those SR3 forwards. Remain at the zero official-SOFR cash benchmark; do not pay SOFR on shocked-risk capital to own a hike path the curve already contains. Flat cash is not alpha.",
+        "sr3_forward_view": "Over this overnight horizon the frozen SR3 2027 path sits well above cash 3.89: March 4.515, June 4.645, September 4.68, December 4.66. Exact 1m/3m/6m/12m SR3 horizon matches in funding_context are null. That strip is a priced multi-meeting hiking path, not an overnight funding print."
+      },
+      "invalidation": "Take risk only if a later freeze shows a markable expression whose expected edge clears official SOFR charged on shocked-risk capital, rather than leasing the 2027 hike path the strip already contains.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "2741f017dda19ce9723f2ea9eda9cd63c56c138fee16e32102d3b3b3cd19a378",
+      "outcome_links": [],
+      "owner_id": "no-trade-skeptic",
+      "owner_type": "trader",
+      "payload": {
+        "funding_view": {
+          "current_sofr": {
+            "observation_date": "2026-10-13",
+            "rate": 3.89
+          },
+          "forward_funding_assessment": "lower",
+          "implication": "Realized overnight funding should print near the 3.89 official fixing and lower than those SR3 forwards. Remain at the zero official-SOFR cash benchmark; do not pay SOFR on shocked-risk capital to own a hike path the curve already contains. Flat cash is not alpha.",
+          "sr3_forward_view": "Over this overnight horizon the frozen SR3 2027 path sits well above cash 3.89: March 4.515, June 4.645, September 4.68, December 4.66. Exact 1m/3m/6m/12m SR3 horizon matches in funding_context are null. That strip is a priced multi-meeting hiking path, not an overnight funding print."
+        },
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "bc932042ab5e75fdb5a82c2529d26adb647514e0d9d43c310141ad3b5ac9fa4c"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-15T06:25:03.487055-04:00",
+        "evidence_hash": "64729e32ef0fd2a604371d7578bf00935369106d1b44fea0217249f1a690e0f6",
+        "overnight_run_id": "overnight-20261015",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Official SOFR is 3.89 percent on the 13 October fixing, this book is flat, and the 2027 strip already prices hikes through March at 4.515 and September at 4.68. Paying or receiving that path from cash just leases shocked-risk capital at SOFR without an edge above the official fixing. Stay in cash; flat cash is the zero benchmark, not alpha.",
+      "run_id": "overnight-20261015",
+      "schema_version": 1,
+      "thesis": "Official SOFR is 3.89 percent on the 13 October fixing, this book is flat, and the 2027 strip already prices hikes through March at 4.515 and September at 4.68. Paying or receiving that path from cash just leases shocked-risk capital at SOFR without an edge above the official fixing. Stay in cash; flat cash is the zero benchmark, not alpha."
     }
   ],
   "schema_version": 1,

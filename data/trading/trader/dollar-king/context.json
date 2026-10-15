@@ -49,7 +49,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 550000.0,
     "risk_capital_utilization": 0.055,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 87614.97,
     "status": "ok"
   },
   "learning": {
@@ -60,7 +60,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "0f97f25a1656dfa2f7045bbdfd7c2bdbf7be68245a8af43fc784c8e74df689e8",
+  "memory_context_sha256": "0e3cecb859a8b2353b6fbb22ddfefca3d0a40b1e6bd924eec50d5f4ef558e379",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -90,12 +90,12 @@
       "complacency": {
         "band": "calm",
         "trend": "down",
-        "value": 0.16
+        "value": 0.15
       },
       "defensiveness": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.2
+        "trend": "up",
+        "value": 0.21
       },
       "external_pressure": {
         "band": "calm",
@@ -104,13 +104,13 @@
       },
       "frustration": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "up",
+        "value": 0.12
       },
       "revenge_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.05
+        "trend": "up",
+        "value": 0.06
       },
       "self_trust": {
         "band": "steady",
@@ -133,22 +133,22 @@
     "profile_version": 1,
     "recent_events": [
       {
-        "kind": "session_gain",
-        "magnitude": 0.10431688,
-        "run_id": "overnight-20261006"
-      },
-      {
         "kind": "session_loss",
         "magnitude": 0.096701,
         "run_id": "overnight-20261013"
+      },
+      {
+        "kind": "session_loss",
+        "magnitude": 0.17522994,
+        "run_id": "overnight-20261015"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "3f4d0cdad53a46ee503f321da5eb005fe33d8b189978df63dd2c9b650f54ddab",
+    "state_sha256": "04915b311e97e18275d5e8c914114051f1f277e0b0a4c14619e32e8ec5ce8edf",
     "streaks": {
       "flat_cycles": 0,
-      "session_loss": 1,
+      "session_loss": 2,
       "session_win": 0
     }
   },
