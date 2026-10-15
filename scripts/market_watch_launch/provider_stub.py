@@ -14,6 +14,21 @@ from scripts.pm.grinder import synthetic_grinder_hurdle
 from scripts.pm.portfolio import synthetic_portfolio_construction
 
 
+def _research_supplement(base_packet: dict[str, Any]) -> dict[str, Any]:
+    from scripts.macro_ingestion.au_labor_handoff import (
+        leading_block_from_frozen,
+        merge_research_supplement,
+    )
+
+    stub = {
+        "summary": "Stub provider: no live model research after trusted freeze.",
+        "news": [],
+        "central_bank_research": [],
+        "sources": [],
+    }
+    return merge_research_supplement(stub, leading_block_from_frozen(base_packet))
+
+
 def _frozen_cross_assets(packet: dict[str, Any]) -> dict[str, Any]:
     from scripts.cross_asset_data import frozen_cross_assets_from_evidence
 
@@ -121,12 +136,7 @@ def build_stub_output(
         "base_evidence_cutoff": base_packet["as_of"],
         "evidence_cutoff": cutoff,
         "competition": base_packet.get("competition"),
-        "research_supplement": {
-            "summary": "Stub provider: no live model research after trusted freeze.",
-            "news": [],
-            "central_bank_research": [],
-            "sources": [],
-        },
+        "research_supplement": _research_supplement(base_packet),
         "cross_assets": _frozen_cross_assets(base_packet),
         "trade_permissions": base_packet.get("trade_permissions"),
     }

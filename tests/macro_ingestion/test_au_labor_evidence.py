@@ -47,8 +47,10 @@ IVI_XLSX_AUGUST = (
 
 def _fixture_opener(url: str) -> dict:
     mapping = {
+        anz.NEWSROOM_INDEX_URL: (LEADING_FIXTURES / "anz_newsroom_index_excerpt.html").read_bytes(),
         ANZ_PRESS: (LEADING_FIXTURES / "anz_press_release_sep2026_excerpt.html").read_bytes(),
         ANZ_XLSX: (LEADING_FIXTURES / "anz_job_ads_data_sep26.xlsx").read_bytes(),
+        nab.NEWS_INDEX_URL: (LEADING_FIXTURES / "nab_news_index_excerpt.html").read_bytes(),
         NAB_NEWS: (LEADING_FIXTURES / "nab_trade_sept2026_excerpt.html").read_bytes(),
         NAB_PDF: (LEADING_FIXTURES / "nab_survey_sep2026_pages12.pdf").read_bytes(),
         SEEK_CATEGORY: (LEADING_FIXTURES / "seek_employment_reports_category_excerpt.html").read_bytes(),

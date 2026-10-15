@@ -71,26 +71,41 @@ def gather_au_labor_collector_results(
     return points, gaps
 
 
-def _observation_from_point(point: dict[str, Any], as_of: date) -> dict[str, Any] | None:
+def _observation_from_point(point: dict[str, Any], as_of: date | datetime) -> dict[str, Any] | None:
     catalog_id = str(point.get("id") or "")
     period = str(point.get("period") or "")
     if not catalog_id or not period:
         return None
-    if _period_blocked(catalog_id, period, as_of):
+    as_of_date = _as_date(as_of)
+    if _period_blocked(catalog_id, period, as_of_date):
         return None
     if not observation_eligible(point.get("release_date"), as_of):
         return None
     publisher = point.get("publisher")
     if publisher is None:
         return None
+    release_date = point.get("release_date")
+    vintage = point.get("vintage") or (f"release:{release_date}" if release_date else None)
+    provenance = {
+        "publisher": publisher,
+        "source_url": point.get("source_url"),
+        "raw_sha256": point.get("raw_sha256"),
+        "release_date": release_date,
+        "revision_status": point.get("revision_status"),
+        "transformation": point.get("transformation"),
+        "discovery": point.get("provenance"),
+    }
     obs: dict[str, Any] = {
         "id": catalog_id,
         "publisher": publisher,
         "period": period,
-        "release_date": point.get("release_date"),
+        "release_date": release_date,
+        "vintage": vintage,
+        "source_url": point.get("source_url"),
         "raw_sha256": point.get("raw_sha256"),
         "units": point.get("units"),
         "weight": 0.0,
+        "provenance": provenance,
     }
     if "value" in point:
         obs["value"] = point["value"]
@@ -121,11 +136,11 @@ def build_au_labor_evidence_packet(
     as_of_date = _as_date(as_of)
     point_list = list(points or [])
     gap_list = list(gaps or [])
-    point_list = filter_observations_by_asof(point_list, as_of_date)
+    point_list = filter_observations_by_asof(point_list, as_of)
 
     observations: list[dict[str, Any]] = []
     for point in point_list:
-        obs = _observation_from_point(point, as_of_date)
+        obs = _observation_from_point(point, as_of)
         if obs is not None:
             observations.append(obs)
 
