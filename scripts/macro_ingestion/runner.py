@@ -245,8 +245,14 @@ def _classify_points(
         return override, [], payload.get("error"), False
 
     if not payload.get("ok"):
-        if payload.get("http_status") == 403:
-            return "license_gap", [], payload.get("error") or "HTTP 403", False
+        error = str(payload.get("error") or "")
+        # EA flash due-window HTML/403 is a missing primary print, not a license wall.
+        # The adapter omits license_gap on purpose so an unpublished listing cannot score.
+        flash_due_miss = str(spec.get("id") or "") == "EA.Activity.flash_composite_pmi" or error.startswith(
+            "primary_flash_pdf_unavailable"
+        )
+        if payload.get("http_status") == 403 and not flash_due_miss:
+            return "license_gap", [], error or "HTTP 403", False
         if _is_http_404(payload):
             due = latest_due_release(spec, when)
             if due is None:

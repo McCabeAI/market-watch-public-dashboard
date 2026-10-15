@@ -482,6 +482,7 @@ def _flash_primary_unavailable(
     if flash_only:
         return _base_payload(
             ok=False,
+            status="source_failed",
             error=f"primary_flash_pdf_unavailable at {url}",
             http_status=http_status,
             body=body,
@@ -879,6 +880,7 @@ def _fetch_sp_composite_pmi(
         if not selected:
             return _base_payload(
                 ok=False,
+                status="source_failed",
                 error=f"primary_flash_pdf_unavailable; {_attempt_summary(attempts)}",
                 http_status=last_status,
                 body=last_body,
