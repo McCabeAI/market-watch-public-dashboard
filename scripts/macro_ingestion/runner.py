@@ -31,6 +31,7 @@ from scripts.macro_ingestion.vintage import (
 )
 from scripts.macro_ingestion.source_health_summary import build_source_health_summary
 from scripts.macro_ingestion.windows import POST_FREEZE_DIR, cutoff_class, write_post_freeze_delta
+from scripts.run_state.identity import classify_point_transform
 
 DEFAULT_TIMEOUT_SECONDS = 20
 DEFAULT_COUNTRY_BUDGET_SECONDS = 8 * 60
@@ -165,9 +166,9 @@ def _confirms_period(
 def _allowed_point_transforms(spec: dict[str, Any]) -> frozenset[str]:
     """Spec transform plus any opt-in ``derived_transforms`` the catalog row declares.
 
-    Rows without ``derived_transforms`` keep the legacy behaviour: every point
-    is stored under the row's single ``transform`` regardless of what the
-    adapter wrote on the point.
+    Rows without ``derived_transforms`` accept only the row transform. An
+    adapter value outside that set is a mismatch and is not rewritten. A point
+    that omits ``transformation`` still uses the row transform.
     """
     base = str(spec.get("transform", ""))
     derived = spec.get("derived_transforms") or []
@@ -175,11 +176,22 @@ def _allowed_point_transforms(spec: dict[str, Any]) -> frozenset[str]:
 
 
 def _point_transform(point: dict[str, Any], transform: str, allowed: frozenset[str]) -> str:
-    candidate = point.get("transformation")
-    if candidate is None:
-        return transform
-    candidate = str(candidate)
-    return candidate if candidate in allowed else transform
+    classification = classify_point_transform(point.get("transformation"), transform, allowed)
+    if classification == "accepted":
+        return str(point.get("transformation"))
+    return transform
+
+
+def _unexpected_point_transforms(
+    points: list[dict[str, Any]],
+    transform: str,
+    allowed: frozenset[str],
+) -> list[str]:
+    unexpected: list[str] = []
+    for point in points:
+        if classify_point_transform(point.get("transformation"), transform, allowed) == "mismatch":
+            unexpected.append(str(point.get("transformation")))
+    return unexpected
 
 
 def _is_http_404(payload: dict[str, Any]) -> bool:
@@ -281,6 +293,23 @@ def _classify_points(
     payload_vintage = payload.get("vintage")
     payload_vintage_str = str(payload_vintage) if payload_vintage is not None else None
     allowed_transforms = _allowed_point_transforms(spec)
+    unexpected = _unexpected_point_transforms(points, transform, allowed_transforms)
+    if unexpected:
+        ledger_extra: dict[str, Any] = {
+            "contract_mismatch": {
+                "reason": "unexpected_transformation",
+                "concept_id": str(spec["id"]),
+                "source_series_id": series_id,
+                "expected": sorted(allowed_transforms),
+                "actual": sorted(set(unexpected)),
+                "persisted": False,
+            },
+        }
+        raw_sha = payload.get("raw_sha256")
+        if raw_sha is not None:
+            ledger_extra["raw_sha256"] = raw_sha
+        payload["ledger_extra"] = ledger_extra
+        return "transform_mismatch", [], "unexpected_transformation", False
 
     for point in points:
         period = str(point["period"])

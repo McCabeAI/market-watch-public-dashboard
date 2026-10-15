@@ -22,6 +22,8 @@ STATUS_VOCABULARY: tuple[str, ...] = (
     "not_applicable",
     "calendar_unparsed",
     "incomplete_country",
+    "transform_mismatch",
+    "contract_mismatch",
 )
 
 _ZERO_WEIGHT_ROLES = frozenset({"context", "registry_unweighted", "explanatory_alias"})

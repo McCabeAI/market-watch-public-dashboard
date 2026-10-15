@@ -562,7 +562,7 @@ class TestCanadaEnergyAdapter(unittest.TestCase):
 
     # -- runner opt-in semantics -------------------------------------------
 
-    def test_legacy_rows_ignore_point_transformation_without_opt_in(self) -> None:
+    def test_mixed_point_transforms_reject_without_derived_opt_in(self) -> None:
         from scripts.macro_ingestion.adapters import clear_adapter_overrides, register_adapter_override
 
         spec = self._spec("CA.Labor.unemployment")
@@ -582,14 +582,51 @@ class TestCanadaEnergyAdapter(unittest.TestCase):
 
         register_adapter_override("CA", fake_fetch)
         try:
-            self._run(self._mini_catalog(spec), _FixtureOpener({}))
+            result = self._run(self._mini_catalog(spec), _FixtureOpener({}))
         finally:
             clear_adapter_overrides()
+        self.assertEqual(result["rows"][0]["status"], "transform_mismatch")
+        self.assertEqual(result["rows"][0]["error"], "unexpected_transformation")
+        extra = result["rows"][0].get("contract_mismatch") or {}
+        self.assertEqual(extra.get("reason"), "unexpected_transformation")
+        self.assertEqual(extra.get("expected"), ["percent"])
+        self.assertEqual(extra.get("actual"), ["calendar_day_rate"])
+        self.assertIs(extra.get("persisted"), False)
+        self.assertEqual(self._store(), [])
+
+    def test_absent_point_transformation_uses_configured_transform(self) -> None:
+        from scripts.macro_ingestion.adapters import clear_adapter_overrides, register_adapter_override
+
+        spec = self._spec("CA.Labor.unemployment")
+
+        def fake_fetch(spec, *, opener, now, timeout=20):
+            return {
+                "ok": True,
+                "points": [{"period": "2026-08", "value": 6.4}],
+                "vintage": "latest_available:test",
+                "raw_sha256": "abc",
+                "http_status": 200,
+            }
+
+        register_adapter_override("CA", fake_fetch)
+        try:
+            result = self._run(self._mini_catalog(spec), _FixtureOpener({}))
+        finally:
+            clear_adapter_overrides()
+        self.assertEqual(result["rows"][0]["status"], "new_observation")
         rows = self._store()
-        # Both points collapse onto the row's own transform; the second one is
-        # then a duplicate of the same (series, period, transform, sha) key.
-        self.assertEqual({r["transformation"] for r in rows}, {"percent"})
         self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["transformation"], "percent")
+
+    def test_derived_transforms_opt_in_stores_declared_transform(self) -> None:
+        spec = self._spec("CA.Energy.gas_marketable_production")
+        opener = _FixtureOpener({STATCAN_WDS_URL: WDS_GAS_FIXTURE.read_bytes()})
+        result = self._run(self._mini_catalog(spec), opener)
+        self.assertEqual(result["rows"][0]["status"], "new_observation")
+        rows = self._store()
+        transforms = {r["transformation"] for r in rows}
+        self.assertIn(MONTHLY_LEVEL, transforms)
+        self.assertIn(CALENDAR_DAY_RATE, transforms)
 
 
 class TestLiveSmokeEnergy(unittest.TestCase):
