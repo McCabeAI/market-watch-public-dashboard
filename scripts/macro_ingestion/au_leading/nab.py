@@ -12,9 +12,18 @@ from urllib.parse import urljoin
 
 from pypdf import PdfReader
 
+from scripts.macro_ingestion.au_leading.asof import observation_eligible
+from scripts.macro_ingestion.au_leading.discovery import (
+    MAX_PAGES,
+    bounded_get,
+    failure_class,
+    honest_transport_failure,
+)
+
 CATALOG_ID = "AU.Labor.nab_employment_subindex"
 PUBLISHER = "nab_business_survey"
 
+NEWS_INDEX_URL = "https://www.nabtrade.com.au/insights/news/"
 NEWS_URL = (
     "https://www.nabtrade.com.au/insights/news/2026/10/nab-business-survey---september-2026"
 )
@@ -36,27 +45,107 @@ class FetchAttempt:
     outcome: str
 
 
-def _asof_visible(as_of: date, release_date: date) -> bool:
-    return as_of >= release_date
+_MONTHS = {
+    "january": 1,
+    "february": 2,
+    "march": 3,
+    "april": 4,
+    "may": 5,
+    "june": 6,
+    "july": 7,
+    "august": 8,
+    "september": 9,
+    "october": 10,
+    "november": 11,
+    "december": 12,
+}
+
+
+def _record_attempt(attempts: list[FetchAttempt], url: str, resp: dict[str, Any], *, ok_outcome: str) -> None:
+    body = resp.get("body") or b""
+    attempts.append(
+        FetchAttempt(
+            url=url,
+            http_status=resp.get("http_status"),
+            content_type=resp.get("content_type"),
+            sha256=_sha256(body) if body else None,
+            outcome=ok_outcome if resp.get("ok") else str(failure_class(resp) or "source_failed"),
+        )
+    )
+
+
+def _gap(status: str, reason: str) -> dict[str, str]:
+    return {"id": CATALOG_ID, "publisher": PUBLISHER, "status": status, "reason": reason}
+
+
+def _index_article_links(html: str) -> list[str]:
+    found: list[str] = []
+    for match in re.finditer(r'href="([^"]+)"', html, flags=re.IGNORECASE):
+        href = unescape(match.group(1))
+        if "nab-business-survey" not in href.lower():
+            continue
+        if href.startswith("http"):
+            url = href
+        elif href.startswith("/"):
+            url = urljoin("https://www.nabtrade.com.au/", href)
+        else:
+            url = urljoin(NEWS_INDEX_URL, href)
+        if url not in found:
+            found.append(url)
+        if len(found) >= MAX_PAGES:
+            break
+    return found
+
+
+def _period_from_text(text: str) -> str | None:
+    match = re.search(
+        r"business survey\s*[-–—]\s*([A-Za-z]+)\s+(\d{4})",
+        text,
+        flags=re.IGNORECASE,
+    )
+    if not match:
+        match = re.search(
+            r"nab-business-survey---([a-z]+)-(\d{4})",
+            text,
+            flags=re.IGNORECASE,
+        )
+    if not match:
+        return None
+    month = _MONTHS.get(match.group(1).lower())
+    if month is None:
+        return None
+    return f"{int(match.group(2)):04d}-{month:02d}"
+
+
+def _parse_release_date(html: str) -> date | None:
+    match = re.search(
+        r"(\d{1,2})\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{4})",
+        html,
+        flags=re.IGNORECASE,
+    )
+    if not match:
+        return None
+    month = _MONTHS.get(match.group(2).lower())
+    if month is None:
+        return None
+    return date(int(match.group(3)), month, int(match.group(1)))
 
 
 def _sha256(body: bytes) -> str:
     return hashlib.sha256(body).hexdigest()
 
 
-def _discover_pdf_url(html: str) -> str | None:
-    for m in re.finditer(
-        r'href="(https://www\.nab\.com\.au/content/dam/[^"]+Business%20Survey[^"]+\.pdf)"',
-        html,
-        flags=re.IGNORECASE,
-    ):
-        return unescape(m.group(1))
-    for m in re.finditer(
-        r'href="([^"]+2026m09[^"]+Survey[^"]+\.pdf)"',
-        html,
-        flags=re.IGNORECASE,
-    ):
-        return urljoin(NEWS_URL, unescape(m.group(1)))
+def _discover_pdf_url(html: str, page_url: str) -> str | None:
+    patterns = (
+        r'href="(https://www\.nab\.com\.au/content/dam/[^"]+Business%20Survey[^"]*\.pdf)"',
+        r'href="(https://www\.nab\.com\.au/content/dam/[^"]+Monthly%20Business%20Survey[^"]*\.pdf)"',
+        r'href="([^"]+Business%20Survey[^"]*\.pdf)"',
+        r'href="([^"]+Monthly%20Business%20Survey[^"]*\.pdf)"',
+    )
+    for pattern in patterns:
+        match = re.search(pattern, html, flags=re.IGNORECASE)
+        if match:
+            return urljoin(page_url, unescape(match.group(1)))
     return None
 
 
@@ -91,79 +180,104 @@ def _parse_employment_index(text: str) -> float:
 def collect_nab(
     *,
     as_of: date,
-    opener: Callable[[str], dict[str, Any]],
+    opener: Callable[..., dict[str, Any]],
 ) -> dict[str, Any]:
     attempts: list[FetchAttempt] = []
     gaps: list[dict[str, str]] = []
     points: list[dict[str, Any]] = []
     qualitative: list[dict[str, str]] = []
 
-    if not _asof_visible(as_of, RELEASE_DATE):
+    index = bounded_get(opener, NEWS_INDEX_URL)
+    _record_attempt(attempts, NEWS_INDEX_URL, index, ok_outcome="parsed")
+    candidates: list[dict[str, Any]] = []
+    if honest_transport_failure(index):
         gaps.append(
-            {
-                "id": CATALOG_ID,
-                "publisher": PUBLISHER,
-                "status": "not_yet_released",
-                "reason": f"release_date {RELEASE_DATE.isoformat()} after as_of {as_of.isoformat()}",
-            }
+            _gap(
+                failure_class(index) or "source_failed",
+                str(index.get("error") or f"NAB news index transport failure HTTP {index.get('http_status')}"),
+            )
         )
         return {"points": points, "gaps": gaps, "qualitative": qualitative, "attempts": attempts}
-
-    news = opener(NEWS_URL)
-    news_body = news.get("body") or b""
-    news_sha = _sha256(news_body) if news_body else None
-    attempts.append(
-        FetchAttempt(
-            url=NEWS_URL,
-            http_status=news.get("http_status"),
-            content_type=news.get("content_type"),
-            sha256=news_sha,
-            outcome="parsed" if news.get("ok") else "source_failed",
-        )
-    )
-    if not news.get("ok"):
+    if index.get("ok") and index.get("body"):
+        html = (index.get("body") or b"").decode("utf-8", errors="replace")
+        for url in _index_article_links(html):
+            candidates.append({"news_url": url, "provenance": "publisher_index"})
+    if not candidates:
         gaps.append(
+            _gap(
+                "discovery_gap",
+                "NAB news index did not list a dated business survey; controlled vintage index used",
+            )
+        )
+        candidates.append(
             {
-                "id": CATALOG_ID,
-                "publisher": PUBLISHER,
-                "status": "source_failed",
-                "reason": str(news.get("error") or "news page fetch failed"),
+                "news_url": NEWS_URL,
+                "provenance": "controlled_release_index",
+                "release_date": RELEASE_DATE,
+                "reference_period": REFERENCE_PERIOD,
             }
         )
+
+    chosen: dict[str, Any] | None = None
+    for cand in candidates[:MAX_PAGES]:
+        news_url = str(cand["news_url"])
+        news = bounded_get(opener, news_url)
+        _record_attempt(attempts, news_url, news, ok_outcome="parsed")
+        if honest_transport_failure(news):
+            gaps.append(_gap(failure_class(news) or "source_failed", str(news.get("error") or "NAB article transport failure")))
+            continue
+        if not news.get("ok") or not news.get("body"):
+            gaps.append(_gap("source_failed", str(news.get("error") or "news page fetch failed")))
+            continue
+        html = (news.get("body") or b"").decode("utf-8", errors="replace")
+        release_date = _parse_release_date(html) or cand.get("release_date")
+        period = _period_from_text(html) or _period_from_text(news_url) or cand.get("reference_period")
+        if release_date is None or period is None:
+            gaps.append(_gap("source_failed", f"release date or reference period missing on {news_url}"))
+            continue
+        if not observation_eligible(release_date, as_of):
+            gaps.append(
+                _gap(
+                    "not_yet_released",
+                    f"release_date {release_date.isoformat()} not eligible at as_of {as_of.isoformat()}",
+                )
+            )
+            continue
+        pdf_url = _discover_pdf_url(html, news_url)
+        if pdf_url is None and cand.get("provenance") == "controlled_release_index":
+            pdf_url = DEFAULT_PDF_URL
+        if not pdf_url:
+            gaps.append(_gap("license_gap", f"employment survey PDF link missing on {news_url}"))
+            continue
+        if chosen is None or release_date > chosen["release_date"]:
+            chosen = {
+                "news_url": news_url,
+                "release_date": release_date,
+                "period": period,
+                "pdf_url": pdf_url,
+                "provenance": cand.get("provenance") or "publisher_index",
+                "html": html,
+            }
+
+    if chosen is None:
+        if not any(g.get("status") == "not_yet_released" for g in gaps):
+            gaps.append(_gap("source_failed", "no eligible NAB employment release discovered"))
         return {"points": points, "gaps": gaps, "qualitative": qualitative, "attempts": attempts}
 
-    html = news_body.decode("utf-8", errors="replace")
-    pdf_url = _discover_pdf_url(html) or DEFAULT_PDF_URL
-
-    pdf = opener(pdf_url)
+    pdf_url = str(chosen["pdf_url"])
+    pdf = bounded_get(opener, pdf_url)
     pdf_body = pdf.get("body") or b""
-    pdf_sha = _sha256(pdf_body) if pdf_body else None
-    attempts.append(
-        FetchAttempt(
-            url=pdf_url,
-            http_status=pdf.get("http_status"),
-            content_type=pdf.get("content_type"),
-            sha256=pdf_sha,
-            outcome="parsed" if pdf.get("ok") else "license_gap",
-        )
-    )
+    _record_attempt(attempts, pdf_url, pdf, ok_outcome="parsed")
     if not pdf.get("ok") or not pdf_body:
         qualitative.append(
             {
                 "publisher": PUBLISHER,
-                "release_date": RELEASE_DATE.isoformat(),
-                "source_url": NEWS_URL,
-                "summary": "September 2026 survey commentary available; full PDF not retrieved.",
+                "release_date": chosen["release_date"].isoformat(),
+                "source_url": chosen["news_url"],
+                "summary": "Survey commentary page retrieved; employment PDF not retrieved.",
             }
         )
-        gaps.append(
-            {
-                "id": CATALOG_ID,
-                "publisher": PUBLISHER,
-                "status": "license_gap",
-                "reason": "employment sub-index spreadsheet/PDF not accessible",
-            }
-        )
+        gaps.append(_gap(failure_class(pdf) or "license_gap", "employment sub-index PDF not accessible"))
         return {"points": points, "gaps": gaps, "qualitative": qualitative, "attempts": attempts}
 
     try:
@@ -172,36 +286,31 @@ def collect_nab(
         qualitative.append(
             {
                 "publisher": PUBLISHER,
-                "release_date": RELEASE_DATE.isoformat(),
-                "source_url": NEWS_URL,
+                "release_date": chosen["release_date"].isoformat(),
+                "source_url": chosen["news_url"],
                 "summary": str(exc),
             }
         )
-        gaps.append(
-            {
-                "id": CATALOG_ID,
-                "publisher": PUBLISHER,
-                "status": "qualitative_only",
-                "reason": str(exc),
-            }
-        )
+        gaps.append(_gap("qualitative_only", str(exc)))
         return {"points": points, "gaps": gaps, "qualitative": qualitative, "attempts": attempts}
 
+    release_date = chosen["release_date"]
     points.append(
         {
             "id": CATALOG_ID,
             "publisher": PUBLISHER,
             "weight": 0.0,
-            "period": REFERENCE_PERIOD,
+            "period": chosen["period"],
             "value": value,
             "units": UNITS,
             "transformation": "level",
             "series_label": "employment_subindex",
-            "release_date": RELEASE_DATE.isoformat(),
-            "raw_sha256": pdf_sha,
+            "release_date": release_date.isoformat(),
+            "raw_sha256": _sha256(pdf_body),
             "source_url": pdf_url,
-            "vintage": f"release:{RELEASE_DATE.isoformat()}",
+            "vintage": f"release:{release_date.isoformat()}",
             "revision_status": "latest_available",
+            "provenance": chosen["provenance"],
         }
     )
     return {"points": points, "gaps": gaps, "qualitative": qualitative, "attempts": attempts}

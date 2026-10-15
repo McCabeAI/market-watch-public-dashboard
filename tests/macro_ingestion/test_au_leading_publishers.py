@@ -28,8 +28,10 @@ SEEK_AUGUST = seek.AUGUST_ARTICLE_URL
 
 def _fixture_mapping() -> dict[str, bytes]:
     return {
+        anz.NEWSROOM_INDEX_URL: (FIXTURES / "anz_newsroom_index_excerpt.html").read_bytes(),
         ANZ_PRESS: (FIXTURES / "anz_press_release_sep2026_excerpt.html").read_bytes(),
         ANZ_XLSX: (FIXTURES / "anz_job_ads_data_sep26.xlsx").read_bytes(),
+        nab.NEWS_INDEX_URL: (FIXTURES / "nab_news_index_excerpt.html").read_bytes(),
         NAB_NEWS: (FIXTURES / "nab_trade_sept2026_excerpt.html").read_bytes(),
         NAB_PDF: (FIXTURES / "nab_survey_sep2026_pages12.pdf").read_bytes(),
         SEEK_CATEGORY: (FIXTURES / "seek_employment_reports_category_excerpt.html").read_bytes(),
