@@ -94,6 +94,9 @@ APPROVED_PROJECTIONS: dict[str, SourceProjection] = {
         seasonal_adjustment=False,
         kind="label",
     ),
+    # Recognized source/score labels. rewrite stays false: history already
+    # stores the score id, and applying the alias to the Oct 15 observation
+    # store would append prints and change accepted scores.
     "CA.Inflation.headline": SourceProjection(
         concept_id="CA.Inflation.headline",
         source_series_id="v41690973_derived_yoy",
@@ -104,6 +107,7 @@ APPROVED_PROJECTIONS: dict[str, SourceProjection] = {
         units="percent",
         seasonal_adjustment=False,
         kind="label",
+        rewrite=False,
     ),
     "CA.Consumer.retail": SourceProjection(
         concept_id="CA.Consumer.retail",
@@ -115,6 +119,7 @@ APPROVED_PROJECTIONS: dict[str, SourceProjection] = {
         units="percent",
         seasonal_adjustment=True,
         kind="label",
+        rewrite=False,
     ),
     "CA.Consumer.income": SourceProjection(
         concept_id="CA.Consumer.income",
@@ -126,6 +131,7 @@ APPROVED_PROJECTIONS: dict[str, SourceProjection] = {
         units="percent",
         seasonal_adjustment=True,
         kind="label",
+        rewrite=False,
     ),
     "CA.Consumer.spending": SourceProjection(
         concept_id="CA.Consumer.spending",
@@ -137,6 +143,7 @@ APPROVED_PROJECTIONS: dict[str, SourceProjection] = {
         units="percent",
         seasonal_adjustment=True,
         kind="label",
+        rewrite=False,
     ),
     "CA.Activity.gdp_domestic_demand": SourceProjection(
         concept_id="CA.Activity.gdp_domestic_demand",
