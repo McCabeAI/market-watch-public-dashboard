@@ -105,6 +105,21 @@ def _frozen_cross_assets(packet: dict[str, Any]) -> dict[str, Any]:
     return frozen_cross_assets_from_evidence(packet)
 
 
+def _research_supplement_for_packet(packet: dict[str, Any]) -> dict[str, Any]:
+    from scripts.macro_ingestion.au_labor_handoff import (
+        leading_block_from_frozen,
+        merge_research_supplement,
+    )
+
+    stub = {
+        "summary": "Deterministic overnight dry-run; no live research supplement.",
+        "news": [],
+        "central_bank_research": [],
+        "sources": [],
+    }
+    return merge_research_supplement(stub, leading_block_from_frozen(packet))
+
+
 def _ensure_agent_packet_for_pm(
     store: OvernightStore,
     run_id: str,
@@ -130,12 +145,7 @@ def _ensure_agent_packet_for_pm(
             "base_packet_sha256": packet["packet_sha256"],
             "base_evidence_cutoff": packet["as_of"],
             "funding_context": packet.get("funding_context"),
-            "research_supplement": {
-                "summary": "Deterministic overnight dry-run; no live research supplement.",
-                "news": [],
-                "central_bank_research": [],
-                "sources": [],
-            },
+            "research_supplement": _research_supplement_for_packet(packet),
             "cross_assets": _frozen_cross_assets(packet),
         },
         review_id=review_id,

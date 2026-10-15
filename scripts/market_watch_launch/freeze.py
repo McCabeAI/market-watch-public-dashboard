@@ -66,16 +66,16 @@ def apply_macro_overlay(
     lineage_summary = ingest.get("lineage")
     if not rows:
         if launch_dir is not None and lineage_summary:
-            return apply_lineage_to_macro_hard(families, launch_dir, lineage_summary)
-        return families
+            families = apply_lineage_to_macro_hard(families, launch_dir, lineage_summary)
+        return _attach_au_labor_leading(families, launch)
     try:
         from scripts.market_watch_launch import quality_gate as qg
 
         if hasattr(qg, "apply_macro_overlay") and isinstance(rows, list):
             out = qg.apply_macro_overlay(families, rows)
             if launch_dir is not None and lineage_summary:
-                return apply_lineage_to_macro_hard(out, launch_dir, lineage_summary)
-            return out
+                out = apply_lineage_to_macro_hard(out, launch_dir, lineage_summary)
+            return _attach_au_labor_leading(out, launch)
     except Exception:
         pass
     out = deepcopy(families)
@@ -89,7 +89,18 @@ def apply_macro_overlay(
     out["macro_hard"] = macro
     if launch_dir is not None and lineage_summary:
         out = apply_lineage_to_macro_hard(out, launch_dir, lineage_summary)
-    return out
+    return _attach_au_labor_leading(out, launch)
+
+
+def _attach_au_labor_leading(families: dict[str, Any], launch: dict[str, Any]) -> dict[str, Any]:
+    """Copy the ingest evidence block onto macro_hard without altering score fields."""
+    ingest = ((launch.get("stages") or {}).get("01_ingest") or {}).get("details") or {}
+    packet = ingest.get("au_labor_evidence")
+    if not isinstance(packet, dict):
+        return families
+    from scripts.macro_ingestion.au_labor_handoff import attach_leading_to_families
+
+    return attach_leading_to_families(families, packet)
 
 
 def _trade_permissions(launch: dict[str, Any]) -> dict[str, Any]:

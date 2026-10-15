@@ -11,6 +11,12 @@ from typing import Any, Callable
 
 from scripts.australia_housing_data import collect_australia_housing
 from scripts.macro_ingestion.calendar import latest_due_release
+from scripts.macro_ingestion.au_labor_qa import (
+    TABLE1_SIBLING_SERIES,
+    format_identity_mismatch,
+    labour_siblings_present,
+    validate_table1_labour_point,
+)
 from scripts.harvest_au_pmi import (
     PMI_LISTING_URL,
     SEED_GUIDS,
@@ -65,6 +71,20 @@ _LABOUR_WORKBOOK_IDS = {
     "AU.Labor.employment",
     "AU.Labor.participation",
 }
+
+AU_LFS_MODERNISATION_METHODOLOGY_NOTE = (
+    "August 2026 Labour Force Survey modernisation may affect comparability "
+    "with earlier periods; informational context only — scored series unchanged."
+)
+
+_LABOUR_TABLE1_WORKBOOK_MARKER = "62020001.xlsx"
+
+_workbook_bytes_cache: dict[str, dict[str, Any]] = {}
+
+
+def clear_workbook_cache() -> None:
+    """Drop cached ABS workbook bytes (for test isolation)."""
+    _workbook_bytes_cache.clear()
 
 _ENGLISH_MONTH_SLUGS = (
     "jan",
@@ -147,27 +167,12 @@ def _quarter_end_month(period: str) -> int:
     return int(period.split("-Q")[1]) * 3
 
 
-def parse_abs_time_series_workbook(
-    data: bytes,
+def _parse_series_column(
+    rows: list[tuple[Any, ...]],
     series_id: str,
     *,
     cadence: str,
 ) -> list[tuple[str, float]]:
-    """Parse ABS 'Time Series Workbook' Data* sheet for one Series ID column."""
-    try:
-        import openpyxl
-    except ImportError as exc:  # pragma: no cover - dependency in requirements-market-state
-        raise RuntimeError("openpyxl required for ABS workbook parse") from exc
-
-    if data[:2] != b"PK":
-        raise ValueError("not_xlsx_zip")
-
-    wb = openpyxl.load_workbook(io.BytesIO(data), read_only=True, data_only=True)
-    data_sheet = next((wb[name] for name in wb.sheetnames if name.startswith("Data")), None)
-    if data_sheet is None:
-        raise ValueError("missing_data_sheet")
-
-    rows = list(data_sheet.iter_rows(values_only=True))
     if len(rows) < 11:
         raise ValueError("workbook_too_short")
 
@@ -179,6 +184,9 @@ def parse_abs_time_series_workbook(
             break
     if col_index is None:
         raise ValueError(f"series_id_not_in_workbook:{series_id}")
+
+    if header_ids[col_index] != series_id:
+        raise ValueError(f"series_id_header_mismatch:{series_id}")
 
     out: list[tuple[str, float]] = []
     for row in rows[10:]:
@@ -198,6 +206,82 @@ def parse_abs_time_series_workbook(
     if not out:
         raise ValueError("no_observations_parsed")
     return out
+
+
+def parse_abs_time_series_workbook(
+    data: bytes,
+    series_id: str,
+    *,
+    cadence: str,
+) -> list[tuple[str, float]]:
+    """Parse ABS 'Time Series Workbook' Data* sheets for one Series ID column."""
+    try:
+        import openpyxl
+    except ImportError as exc:  # pragma: no cover - dependency in requirements-market-state
+        raise RuntimeError("openpyxl required for ABS workbook parse") from exc
+
+    if data[:2] != b"PK":
+        raise ValueError("not_xlsx_zip")
+
+    wb = openpyxl.load_workbook(io.BytesIO(data), read_only=True, data_only=True)
+    data_sheet_names = [name for name in wb.sheetnames if name.startswith("Data")]
+    if not data_sheet_names:
+        raise ValueError("missing_data_sheet")
+
+    last_exc: ValueError | None = None
+    for sheet_name in data_sheet_names:
+        data_sheet = wb[sheet_name]
+        rows = list(data_sheet.iter_rows(values_only=True))
+        try:
+            return _parse_series_column(rows, series_id, cadence=cadence)
+        except ValueError as exc:
+            if str(exc) == f"series_id_not_in_workbook:{series_id}":
+                last_exc = exc
+                continue
+            raise
+    if last_exc is not None:
+        raise last_exc
+    raise ValueError(f"series_id_not_in_workbook:{series_id}")
+
+
+def parse_abs_workbook_columns(
+    data: bytes,
+    series_ids: set[str] | frozenset[str],
+    *,
+    cadence: str,
+) -> dict[str, list[tuple[str, float]]]:
+    """Parse multiple series id columns present anywhere in Data* sheets."""
+    try:
+        import openpyxl
+    except ImportError as exc:  # pragma: no cover
+        raise RuntimeError("openpyxl required for ABS workbook parse") from exc
+
+    if data[:2] != b"PK":
+        raise ValueError("not_xlsx_zip")
+
+    wb = openpyxl.load_workbook(io.BytesIO(data), read_only=True, data_only=True)
+    remaining = set(series_ids)
+    found: dict[str, list[tuple[str, float]]] = {}
+    for sheet_name in wb.sheetnames:
+        if not sheet_name.startswith("Data") or not remaining:
+            continue
+        rows = list(wb[sheet_name].iter_rows(values_only=True))
+        if len(rows) < 11:
+            continue
+        header_ids = rows[9]
+        for sid in list(remaining):
+            if sid not in header_ids:
+                continue
+            try:
+                found[sid] = _parse_series_column(rows, sid, cadence=cadence)
+                remaining.discard(sid)
+            except ValueError:
+                continue
+    return found
+
+
+def _is_labour_table1_workbook_url(url: str) -> bool:
+    return _LABOUR_TABLE1_WORKBOOK_MARKER in (url or "")
 
 
 def _derive_mom_change_thousands(levels: list[tuple[str, float]]) -> list[tuple[str, float]]:
@@ -332,6 +416,10 @@ def _fetch_workbook_bytes(
     opener: Callable[..., dict[str, Any]],
     timeout: float,
 ) -> dict[str, Any]:
+    cached = _workbook_bytes_cache.get(url)
+    if cached is not None:
+        return dict(cached)
+
     resp = opener(url, timeout=timeout)
     body = resp.get("body") or b""
     if _looks_like_challenge(body, expect="xlsx"):
@@ -346,11 +434,15 @@ def _fetch_workbook_bytes(
             url=resp.get("url") or url,
         )
     if not resp.get("ok") or not body:
+        http_status = resp.get("http_status")
+        error = resp.get("error") or "fetch_failed"
+        if http_status == 404 and "404" not in str(error):
+            error = "HTTP 404"
         return _base_payload(
             ok=False,
             status="source_failed",
-            http_status=resp.get("http_status"),
-            error=resp.get("error") or "fetch_failed",
+            http_status=http_status,
+            error=error,
             body=body,
         )
     if body[:2] != b"PK":
@@ -362,7 +454,7 @@ def _fetch_workbook_bytes(
             raw_sha256=_sha256(body),
             body=body,
         )
-    return {
+    result = {
         "ok": True,
         "body": body,
         "http_status": resp.get("http_status"),
@@ -370,6 +462,8 @@ def _fetch_workbook_bytes(
         "raw_sha256": _sha256(body),
         "url": resp.get("url") or url,
     }
+    _workbook_bytes_cache[url] = result
+    return dict(result)
 
 
 def _fetch_abs_workbook_series(
@@ -432,6 +526,7 @@ def _fetch_abs_workbook_series(
             transform=transform,
             source_url=url,
         )
+        qa_period = expected_period
         if point is None:
             observed = series[-1][0] if series else None
             return _base_payload(
@@ -451,6 +546,7 @@ def _fetch_abs_workbook_series(
             source_url=url,
             max_period=max_period,
         )
+        qa_period = point["period"] if point else None
         if point is None:
             return _base_payload(
                 ok=False,
@@ -461,6 +557,35 @@ def _fetch_abs_workbook_series(
                 http_status=fetched.get("http_status"),
             )
 
+    if (
+        qa_period
+        and _is_labour_table1_workbook_url(url)
+        and series_id in TABLE1_SIBLING_SERIES
+    ):
+        try:
+            sibling_cols = parse_abs_workbook_columns(
+                fetched["body"],
+                TABLE1_SIBLING_SERIES,
+                cadence=cadence,
+            )
+        except ValueError:
+            sibling_cols = {}
+        if labour_siblings_present(sibling_cols):
+            mismatch = validate_table1_labour_point(qa_period, sibling_cols)
+            if mismatch:
+                return _base_payload(
+                    ok=False,
+                    status="source_failed",
+                    error=format_identity_mismatch(mismatch),
+                    raw_sha256=fetched.get("raw_sha256"),
+                    body=fetched.get("body") or b"",
+                    http_status=fetched.get("http_status"),
+                )
+
+    extra: dict[str, Any] = {}
+    if _is_labour_table1_workbook_url(url):
+        extra["methodology_note"] = AU_LFS_MODERNISATION_METHODOLOGY_NOTE
+
     return _base_payload(
         ok=True,
         points=[point],
@@ -468,6 +593,7 @@ def _fetch_abs_workbook_series(
         raw_sha256=fetched.get("raw_sha256"),
         http_status=fetched.get("http_status"),
         body=fetched.get("body") or b"",
+        **extra,
     )
 
 
@@ -646,6 +772,116 @@ def _fetch_pmi(
     )
 
 
+def _map_leading_point(point: dict[str, Any], spec: dict[str, Any]) -> dict[str, Any]:
+    transform = str(spec.get("transform") or "")
+    return {
+        "period": point["period"],
+        "value": point["value"],
+        "transformation": point.get("transformation") or transform,
+        "revision_status": point.get("revision_status") or "latest_available",
+        "source_url": point.get("source_url"),
+        "release_date": point.get("release_date"),
+        "units": point.get("units") or spec.get("units"),
+        "raw_sha256": point.get("raw_sha256"),
+    }
+
+
+def _leading_gap_for_spec(gaps: list[dict[str, Any]], spec_id: str) -> dict[str, Any] | None:
+    for gap in gaps:
+        if str(gap.get("id") or "") == spec_id:
+            return gap
+    return None
+
+
+def _fetch_au_leading_series(
+    spec: dict[str, Any],
+    *,
+    opener: Callable[..., dict[str, Any]],
+    now: datetime,
+) -> dict[str, Any] | None:
+    method = str(spec.get("retrieval_method") or "")
+    spec_id = str(spec.get("id") or "")
+    as_of_date = now.date()
+
+    def _wrap_opener(url: str) -> dict[str, Any]:
+        return opener(url, timeout=20)
+
+    if method == "jsa_ivi_xlsx":
+        from scripts.macro_ingestion.au_leading import jsa_ivi
+
+        collected = jsa_ivi.fetch_ivi(as_of=now, opener=_wrap_opener)
+    elif method == "jsa_reos_xlsx":
+        from scripts.macro_ingestion.au_leading import jsa_reos
+
+        collected = jsa_reos.fetch_reos(as_of=now, opener=_wrap_opener)
+    elif method == "anz_indeed_xlsx":
+        from scripts.macro_ingestion.au_leading import anz
+
+        collected = anz.collect_anz(as_of=as_of_date, opener=_wrap_opener)
+    elif method == "nab_monthly_business_survey_pdf":
+        from scripts.macro_ingestion.au_leading import nab
+
+        collected = nab.collect_nab(as_of=as_of_date, opener=_wrap_opener)
+    elif method == "seek_employment_report_html":
+        from scripts.macro_ingestion.au_leading import seek
+
+        collected = seek.collect_seek(as_of=as_of_date, opener=_wrap_opener)
+    else:
+        return None
+
+    raw_points = collected.get("points") or []
+    gaps = collected.get("gaps") or []
+    points = [
+        _map_leading_point(point, spec)
+        for point in raw_points
+        if str(point.get("id") or spec_id) == spec_id
+    ]
+
+    if points:
+        digest = next((p.get("raw_sha256") for p in points if p.get("raw_sha256")), None)
+        vintage = raw_points[0].get("vintage") if raw_points else None
+        return _base_payload(
+            ok=True,
+            points=points,
+            vintage=vintage,
+            raw_sha256=digest,
+            http_status=200,
+        )
+
+    gap = _leading_gap_for_spec(gaps, spec_id)
+    if gap is not None:
+        status = str(gap.get("status") or "source_failed")
+        if status == "not_yet_released":
+            return _base_payload(ok=True, points=[], http_status=None)
+        if status in {"license_gap", "source_failed"}:
+            return _base_payload(
+                ok=False,
+                status=status,
+                error=str(gap.get("reason") or status),
+                points=[],
+            )
+
+    if method == "jsa_reos_xlsx" and collected.get("status") in {"source_failed", "license_gap"}:
+        return _base_payload(
+            ok=False,
+            status=str(collected.get("status")),
+            error=str(
+                gap.get("reason") if gap else collected.get("status") or "REOS workbook missing"
+            ),
+            points=[],
+        )
+
+    if collected.get("status") == "source_failed" and not points:
+        return _base_payload(
+            ok=False,
+            status="source_failed",
+            error=str(gap.get("reason") if gap else "leading_source_failed"),
+            points=[],
+        )
+
+    return _base_payload(ok=True, points=[])
+
+
 def fetch_series(
     spec: dict[str, Any],
     *,
@@ -703,6 +939,14 @@ def fetch_series(
             now=now,
             max_period=max_period,
         )
+
+    leading_payload = _fetch_au_leading_series(
+        spec,
+        opener=opener,
+        now=now,
+    )
+    if leading_payload is not None:
+        return leading_payload
 
     return _base_payload(
         ok=False,

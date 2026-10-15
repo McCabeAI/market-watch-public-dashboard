@@ -17,7 +17,11 @@ import sys
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from scripts.macro_ingestion.adapters.au import fetch_series, parse_abs_time_series_workbook
+from scripts.macro_ingestion.adapters.au import (
+    clear_workbook_cache,
+    fetch_series,
+    parse_abs_time_series_workbook,
+)
 from scripts.macro_ingestion.contract import load_catalog
 from scripts.macro_ingestion.runner import live_opener, run_ingestion
 from scripts.macro_ingestion.vintage import append_observation, load_store, save_store
@@ -50,12 +54,14 @@ def _build_abs_workbook(series_id: str, observations: list[tuple[datetime, float
 
 class TestAustraliaAdapter(unittest.TestCase):
     def setUp(self) -> None:
+        clear_workbook_cache()
         self.catalog = load_catalog()
         self.tmp = tempfile.TemporaryDirectory()
         self.obs_dir = Path(self.tmp.name) / "observations"
         self.health_dir = Path(self.tmp.name) / "health"
 
     def tearDown(self) -> None:
+        clear_workbook_cache()
         self.tmp.cleanup()
 
     def _mini_catalog(self, spec: dict) -> dict:
@@ -357,6 +363,7 @@ class TestAustraliaAdapter(unittest.TestCase):
             datetime(2026, 9, 21, 12, 0, tzinfo=timezone.utc),
             datetime(2026, 9, 30, 1, 0, tzinfo=timezone.utc),
         ):
+            clear_workbook_cache()
             seen: list[str] = []
 
             def opener(url: str, *, timeout: float = 20) -> dict:

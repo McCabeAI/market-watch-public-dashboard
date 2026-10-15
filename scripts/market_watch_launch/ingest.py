@@ -133,7 +133,11 @@ def _enrich_row(
 def _score_bridge_payload(lineage: dict[str, Any]) -> dict[str, Any]:
     appended = lineage.get("appended_points") or []
     summary = f"appended={len(appended)}"
-    payload: dict[str, Any] = {"ok": bool(lineage.get("ok")), "summary": summary}
+    payload: dict[str, Any] = {
+        "ok": bool(lineage.get("ok")),
+        "summary": summary,
+        "rejections": list(lineage.get("rejections") or []),
+    }
     if lineage.get("score_state_sha256"):
         payload["state_sha256"] = lineage["score_state_sha256"]
     return payload
@@ -162,6 +166,7 @@ def _lineage_details(lineage: dict[str, Any]) -> dict[str, Any]:
         "appended_count": lineage.get("appended_count", 0),
         "checked_at": lineage.get("checked_at"),
         "appended_points": lineage.get("appended_points") or [],
+        "rejections": list(lineage.get("rejections") or []),
         "lineage_dir": lineage.get("lineage_dir"),
     }
 
@@ -273,7 +278,11 @@ def _merge_ingestion_rows(
 def _build_source_matrix(
     rows: list[dict[str, Any]],
     catalog_series: list[dict[str, Any]],
+    *,
+    leading_packet: dict[str, Any] | None = None,
 ) -> tuple[list[dict[str, Any]], str]:
+    from scripts.macro_ingestion.au_labor_handoff import merge_source_matrix
+
     by_id = index_series_rows(catalog_series)
     matrix: list[dict[str, Any]] = []
     for row in rows:
@@ -291,8 +300,108 @@ def _build_source_matrix(
                 "http_403": "HTTP 403" in error_text,
             }
         )
+    matrix = merge_source_matrix(matrix, leading_packet)
     matrix.sort(key=lambda item: (str(item.get("country") or ""), str(item.get("series_id") or "")))
     return matrix, _sha256_json(matrix)
+
+
+def _au_labor_evidence_for_launch(
+    when: datetime,
+    *,
+    live: bool,
+) -> dict[str, Any]:
+    """Build the as-of leading packet. Fixture mode never opens the network."""
+    from scripts.macro_ingestion.au_labor_evidence import (
+        build_au_labor_evidence_packet,
+        gather_au_labor_collector_results,
+    )
+
+    if live:
+        from scripts.macro_ingestion.runner import live_opener
+
+        def _opener(url: str, timeout: float = 8, **kwargs: Any) -> dict[str, Any]:
+            return live_opener(url, timeout=timeout, **kwargs)
+
+        try:
+            points, gaps = gather_au_labor_collector_results(when, _opener)
+        except Exception as exc:  # noqa: BLE001 — leading-source failure must not invent values
+            points = []
+            gaps = [
+                {
+                    "id": "AU.Labor.leading",
+                    "publisher": "au_labor",
+                    "status": "source_failed",
+                    "reason": f"leading collector transport error: {exc}",
+                }
+            ]
+    else:
+        points, gaps = gather_au_labor_collector_results(when, _offline_leading_opener)
+    return build_au_labor_evidence_packet(when, points=points, gaps=gaps)
+
+
+def _offline_leading_opener(url: str, timeout: float = 8, **_kwargs: Any) -> dict[str, Any]:
+    """Read committed AU leading fixtures. Unknown URLs are an explicit miss."""
+    _ = timeout
+    from scripts.macro_ingestion.au_leading import anz, jsa_ivi, jsa_reos, nab, seek
+
+    root = Path(__file__).resolve().parents[2]
+    leading = root / "tests/macro_ingestion/fixtures/au/leading"
+    jsa = root / "tests/macro_ingestion/fixtures/au/jsa"
+    mapping = {
+        anz.NEWSROOM_INDEX_URL: leading / "anz_newsroom_index_excerpt.html",
+        anz.PRESS_RELEASE_URL: leading / "anz_press_release_sep2026_excerpt.html",
+        anz.DEFAULT_XLSX_URL: leading / "anz_job_ads_data_sep26.xlsx",
+        nab.NEWS_INDEX_URL: leading / "nab_news_index_excerpt.html",
+        nab.NEWS_URL: leading / "nab_trade_sept2026_excerpt.html",
+        nab.DEFAULT_PDF_URL: leading / "nab_survey_sep2026_pages12.pdf",
+        seek.CATEGORY_URL: leading / "seek_employment_reports_category_excerpt.html",
+        seek.AUGUST_ARTICLE_URL: leading / "seek_employment_report_august26_excerpt.html",
+        jsa_ivi.IVI_LANDING_URL: jsa / "ivi_landing_august2026_excerpt.html",
+        (
+            "https://www.jobsandskills.gov.au/sites/default/files/2026-09/"
+            "internet_vacancies_anzsco_skill_level_states_and_territories_-_august_2026.xlsx"
+        ): jsa / "internet_vacancies_skill_level_states_august_2026.xlsx",
+        jsa_reos.REOS_LANDING_URL: jsa / "reos_landing_august2026_excerpt.html",
+    }
+    path = mapping.get(url)
+    if path is None or not path.is_file():
+        return {
+            "ok": False,
+            "url": url,
+            "http_status": None,
+            "body": b"",
+            "error": "fixture_miss",
+        }
+    return {
+        "ok": True,
+        "url": url,
+        "http_status": 200,
+        "content_type": "application/octet-stream",
+        "body": path.read_bytes(),
+        "error": None,
+    }
+
+
+def _write_au_labor_handoff(
+    *,
+    launch_dir: Path,
+    when: datetime,
+    rows: list[dict[str, Any]],
+    catalog_series: list[dict[str, Any]],
+    live: bool,
+) -> tuple[dict[str, Any], str]:
+    evidence = _au_labor_evidence_for_launch(when, live=live)
+    evidence_path = launch_dir / "ingestion" / "au_labor_evidence.json"
+    evidence_path.parent.mkdir(parents=True, exist_ok=True)
+    evidence_path.write_text(json.dumps(evidence, indent=2) + "\n", encoding="utf-8")
+    source_matrix, source_matrix_sha256 = _build_source_matrix(
+        rows,
+        catalog_series,
+        leading_packet=evidence,
+    )
+    matrix_path = launch_dir / "source_matrix.json"
+    matrix_path.write_text(json.dumps(source_matrix, indent=2) + "\n", encoding="utf-8")
+    return evidence, source_matrix_sha256
 
 
 def _fixture_ingestion(
@@ -372,11 +481,18 @@ def _fixture_ingestion(
         reason = "missing_country_history"
     elif not lineage.get("ok"):
         status = "failed"
-        reason = "score_bridge_failed"
+        reason = "score_lineage_rejected" if lineage.get("rejections") else "score_bridge_failed"
     else:
         status = "succeeded"
         reason = None
 
+    evidence, source_matrix_sha256 = _write_au_labor_handoff(
+        launch_dir=launch_dir,
+        when=when,
+        rows=rows,
+        catalog_series=catalog["series"],
+        live=False,
+    )
     details = {
         "mode": "fixture",
         "countries": list(_LAUNCH_COUNTRIES),
@@ -384,6 +500,8 @@ def _fixture_ingestion(
         "gaps": _gap_entries(rows),
         "score_bridge": score_bridge,
         "lineage": _lineage_details(lineage),
+        "au_labor_evidence": evidence,
+        "source_matrix_sha256": source_matrix_sha256,
         "live_fetch": False,
         "invented_values": False,
         "checked_at": checked_at,
@@ -400,7 +518,7 @@ def _live_ingestion(
     when: datetime,
     launch_id: str | None,
     root: Path,
-) -> tuple[dict[str, Any], str]:
+) -> tuple[dict[str, Any], str, str | None]:
     base = launch_dir / "ingestion"
     observations_dir = base / "observations"
     health_dir = base / "health"
@@ -490,9 +608,20 @@ def _live_ingestion(
         mode="live",
     )
 
-    source_matrix, source_matrix_sha256 = _build_source_matrix(rows, catalog["series"])
-    matrix_path = launch_dir / "source_matrix.json"
-    matrix_path.write_text(json.dumps(source_matrix, indent=2) + "\n", encoding="utf-8")
+    evidence_packet, source_matrix_sha256 = _write_au_labor_handoff(
+        launch_dir=launch_dir,
+        when=when,
+        rows=rows,
+        catalog_series=catalog["series"],
+        live=True,
+    )
+
+    if not lineage.get("ok"):
+        status = "failed"
+        reason = "score_lineage_rejected"
+    else:
+        status = "succeeded"
+        reason = None
 
     details = {
         "mode": "live",
@@ -501,13 +630,14 @@ def _live_ingestion(
         "gaps": _gap_entries(rows),
         "score_bridge": _score_bridge_payload(lineage),
         "lineage": _lineage_details(lineage),
+        "au_labor_evidence": evidence_packet,
         "source_matrix_sha256": source_matrix_sha256,
         "live_fetch": True,
         "invented_values": False,
         "checked_at": result.get("checked_at"),
         "cutoff_class": result.get("cutoff_class"),
     }
-    return details, "succeeded"
+    return details, status, reason
 
 
 def run(launch: dict, ctx: dict) -> dict:
@@ -532,13 +662,12 @@ def run(launch: dict, ctx: dict) -> dict:
                 checked_at=checked_at,
             )
         elif mode == "live":
-            details, status = _live_ingestion(
+            details, status, reason = _live_ingestion(
                 launch_dir=launch_dir,
                 when=when,
                 launch_id=launch.get("launch_id"),
                 root=Path(ctx["root"]),
             )
-            reason = None
         else:
             return stage_receipt(
                 _STAGE,
