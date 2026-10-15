@@ -662,7 +662,7 @@ def run_oneshot(
         max_elapsed_seconds=ONESHOT_MAX_ELAPSED_SECONDS,
         max_attempts_per_request=ONESHOT_MAX_ATTEMPTS,
         sleep=_sleep,
-        poster=poster,
+        **({"poster": poster} if poster is not None else {}),
     )
     fetched = _scrub_obj(fetched)
     flash = (out_dir / "flash.txt").read_text(encoding="utf-8")
