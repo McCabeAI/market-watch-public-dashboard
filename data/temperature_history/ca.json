@@ -707,6 +707,20 @@
           "retrieved_at": "2026-09-21T14:45:36Z",
           "release_date": "2026-09-04",
           "series_id": "LFS_unemployment_rate_v2062815"
+        },
+        {
+          "reference_period": "2026-09",
+          "value": 6.5,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028701",
+          "vintage": "latest_available:b8413c6e73d6",
+          "retrieved_at": "2026-10-15T10:25:03Z",
+          "release_date": "2026-09-04",
+          "series_id": "LFS_unemployment_rate_v2062815",
+          "revision_status": "final",
+          "source_series_id": "v2062815"
         }
       ],
       "gaps": [
@@ -913,6 +927,21 @@
           "series_id": "LFS_avg_hourly_wage_v105812645",
           "raw_level": 37.02,
           "notes": "y/y from avg hourly wages (14-10-0320)."
+        },
+        {
+          "reference_period": "2026-09",
+          "value": 2.338227297444262,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410032001",
+          "vintage": "latest_available:369ef8cf8e3f",
+          "retrieved_at": "2026-10-15T10:25:03Z",
+          "release_date": "2026-09-04",
+          "series_id": "LFS_avg_hourly_wage_v105812645",
+          "raw_level": 37.02,
+          "revision_status": "final",
+          "source_series_id": "v105812645_derived_yoy"
         }
       ],
       "gaps": [
@@ -1108,6 +1137,21 @@
           "release_date": "2026-09-04",
           "series_id": "LFS_employment_level_v2062811",
           "raw_level": 21173.1
+        },
+        {
+          "reference_period": "2026-09",
+          "value": -68.29999999999927,
+          "units": "thousands of persons, seasonally adjusted",
+          "transformation": "mom_sa_change_thousands",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028701",
+          "vintage": "latest_available:9c612ecf220b",
+          "retrieved_at": "2026-10-15T10:25:03Z",
+          "release_date": "2026-09-04",
+          "series_id": "LFS_employment_level_v2062811",
+          "raw_level": 21173.1,
+          "revision_status": "final",
+          "source_series_id": "v2062811_derived_mom_change"
         }
       ],
       "gaps": [
