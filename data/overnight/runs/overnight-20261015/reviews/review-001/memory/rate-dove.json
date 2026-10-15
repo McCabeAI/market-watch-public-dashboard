@@ -1,0 +1,174 @@
+{
+  "active_lessons": [],
+  "as_of": "2026-10-15T06:25:03.487055-04:00",
+  "calibration": {
+    "average_holding_seconds": null,
+    "average_realized_pnl_usd": null,
+    "breakeven": 0,
+    "by_asset_class": {},
+    "closed_trade_count": 0,
+    "conviction_buckets": {
+      "high": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "low": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "medium": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      }
+    },
+    "losses": 0,
+    "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
+    "total_realized_pnl_usd": 0.0,
+    "wins": 0
+  },
+  "capital_owner": null,
+  "consequence": {
+    "competition_cohort_size": 14,
+    "competition_eligible": true,
+    "competition_rank": 2,
+    "competitive_rank": 2,
+    "drawdown_usd": 45.69,
+    "giveback_usd": 45.69,
+    "high_water_nav_usd": 100093008.07,
+    "material_threshold_usd": 2000000.0,
+    "nav_usd": 100092962.38,
+    "net_pnl_usd": 92962.38,
+    "pressure_flags": [],
+    "prior_competition_rank": 2,
+    "rank_change": 0,
+    "raw_pnl_rank": 2,
+    "recent_pattern": "flat",
+    "risk_capital_limit_usd": 10000000.0,
+    "risk_capital_usd": 425000.0,
+    "risk_capital_utilization": 0.0425,
+    "session_pnl_change_usd": 0.0,
+    "status": "ok"
+  },
+  "learning": {
+    "competition_eligible": true,
+    "learning_default_age_runs": 0,
+    "learning_default_count": 0,
+    "learning_status": "compliant",
+    "repeated_error_escalations": []
+  },
+  "learning_obligations": [],
+  "memory_context_sha256": "9beb82897659ba2696d70e743f65a1894c6cb1fed0dfc40998b4d853cc4ec2e9",
+  "open_positions": [
+    {
+      "asset_class": "rates",
+      "conviction": 59,
+      "current_notional_usd": 42500000.0,
+      "entry_mark": 3.4,
+      "instrument": "CORRA_2027H-Z",
+      "opened_at": "2026-09-19T22:36:50.082404-04:00",
+      "position_id": "pos-9849cf751c27",
+      "risk_capital_usd": 425000.0,
+      "side": "long",
+      "trade_id": "trd-trader-rate-dove-pos-9849cf751c27"
+    }
+  ],
+  "owner_id": "rate-dove",
+  "owner_type": "trader",
+  "postmortems_due": [],
+  "psychology": {
+    "active_flags": [],
+    "applicable": true,
+    "axes": {
+      "chase_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.1
+      },
+      "complacency": {
+        "band": "calm",
+        "trend": "down",
+        "value": 0.15
+      },
+      "defensiveness": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.2
+      },
+      "external_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.1
+      },
+      "frustration": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.1
+      },
+      "revenge_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.05
+      },
+      "self_trust": {
+        "band": "steady",
+        "trend": "flat",
+        "value": 0.51
+      },
+      "thesis_attachment": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.35
+      }
+    },
+    "boundary": "Private decision machinery. Never quote or paraphrase in public prose. This state never sizes, forces, or blocks a trade.",
+    "metrics": {
+      "conviction_volatility": 0.0,
+      "distortion_verdicts": 0,
+      "self_report_mismatches": 0,
+      "sharpened_verdicts": 0
+    },
+    "profile_version": 1,
+    "recent_events": [
+      {
+        "kind": "self_report_admission_overconfidence",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261005"
+      }
+    ],
+    "required_checks": {},
+    "schema_version": 1,
+    "state_sha256": "69ff2b8ca01ee5d5e169c9970af4a5a2a89dc0282a5166a1c50640fd5d4c3747",
+    "streaks": {
+      "flat_cycles": 0,
+      "session_loss": 0,
+      "session_win": 1
+    }
+  },
+  "recent_closed_trades": [],
+  "recent_funding_views": [],
+  "recent_performance_reflections": [
+    {
+      "attribution": [
+        "variance_luck",
+        "thesis",
+        "sizing"
+      ],
+      "lesson_id": null,
+      "no_new_lesson": "The rank 2-to-8-to-2 move with an interim drawdown then positive net is bounded ordinary variance around a correctly signed receive; the original process remains sound. Do not add because rank recovered.",
+      "pressure_effect": "none",
+      "reflection_id": "prf-02c296305348",
+      "run_id": "overnight-20261005",
+      "skill_vs_luck": "mixed",
+      "trigger_ids": [
+        "rank_shock"
+      ],
+      "what_happened_vs_expected": "Expected a grind lower in 2027 implieds toward cash. Instead printed a rank 2-to-8 drawdown near 89633 and net near -5787, then recovered to rank 2 and positive net, with live H-Z near 3.264 still only partway from 3.40 toward 2.30."
+    }
+  ],
+  "reflections_due": [],
+  "schema_version": 4,
+  "type": "IDENTITY_MEMORY_CONTEXT"
+}

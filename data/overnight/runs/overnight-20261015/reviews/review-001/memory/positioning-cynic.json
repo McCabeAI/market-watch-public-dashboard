@@ -1,0 +1,214 @@
+{
+  "active_lessons": [
+    {
+      "contradiction_count": 0,
+      "future_rule": "No new receive on CORRA 2027-03 while crowding is flagged, regardless of cash-strip cheapness; if the hold cannot extend beyond one session, do not enter.",
+      "lesson_id": "les-a9925954d887",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-86d9c87862a0"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null
+      },
+      "source_run_id": "overnight-20260929",
+      "status": "active",
+      "text": "Cheap versus cash is not an entry when the receive is already the crowded desk position.",
+      "trade_ids": [
+        "trd-trader-positioning-cynic-pos-142ad113f303"
+      ]
+    }
+  ],
+  "as_of": "2026-10-15T06:25:03.487055-04:00",
+  "calibration": {
+    "average_holding_seconds": 117123,
+    "average_realized_pnl_usd": 3375.0,
+    "breakeven": 1,
+    "by_asset_class": {
+      "rates": {
+        "count": 2,
+        "total_realized_pnl_usd": 6750.0
+      }
+    },
+    "closed_trade_count": 2,
+    "conviction_buckets": {
+      "high": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "low": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "medium": {
+        "average_pnl_usd": 3375.0,
+        "count": 2,
+        "hit_rate": 1.0
+      }
+    },
+    "losses": 0,
+    "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
+    "total_realized_pnl_usd": 6750.0,
+    "wins": 1
+  },
+  "capital_owner": null,
+  "consequence": {
+    "competition_cohort_size": 14,
+    "competition_eligible": true,
+    "competition_rank": 3,
+    "competitive_rank": 3,
+    "drawdown_usd": 1781.05,
+    "giveback_usd": 1781.05,
+    "high_water_nav_usd": 100013181.89,
+    "material_threshold_usd": 2000000.0,
+    "nav_usd": 100011400.84,
+    "net_pnl_usd": 11400.84,
+    "pressure_flags": [],
+    "prior_competition_rank": 3,
+    "rank_change": 0,
+    "raw_pnl_rank": 3,
+    "recent_pattern": "flat",
+    "risk_capital_limit_usd": 10000000.0,
+    "risk_capital_usd": 150000.0,
+    "risk_capital_utilization": 0.015,
+    "session_pnl_change_usd": 0.0,
+    "status": "ok"
+  },
+  "learning": {
+    "competition_eligible": true,
+    "learning_default_age_runs": 0,
+    "learning_default_count": 1,
+    "learning_status": "compliant",
+    "repeated_error_escalations": []
+  },
+  "learning_obligations": [],
+  "memory_context_sha256": "a6003b478519c4ab311bf6669d035a89422cf1a35da753098adaf8947df28010",
+  "open_positions": [
+    {
+      "asset_class": "spot_fx",
+      "conviction": 56,
+      "current_notional_usd": 15000000.0,
+      "entry_mark": 1.42,
+      "instrument": "USDCAD",
+      "opened_at": "2026-10-02T05:40:56.963171-04:00",
+      "position_id": "pos-ccb6655acbad",
+      "risk_capital_usd": 150000.0,
+      "side": "short",
+      "trade_id": "trd-trader-positioning-cynic-pos-ccb6655acbad"
+    }
+  ],
+  "owner_id": "positioning-cynic",
+  "owner_type": "trader",
+  "postmortems_due": [],
+  "psychology": {
+    "active_flags": [],
+    "applicable": true,
+    "axes": {
+      "chase_pressure": {
+        "band": "calm",
+        "trend": "down",
+        "value": 0.13
+      },
+      "complacency": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.1
+      },
+      "defensiveness": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.2
+      },
+      "external_pressure": {
+        "band": "calm",
+        "trend": "down",
+        "value": 0.21
+      },
+      "frustration": {
+        "band": "calm",
+        "trend": "down",
+        "value": 0.13
+      },
+      "revenge_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.05
+      },
+      "self_trust": {
+        "band": "steady",
+        "trend": "flat",
+        "value": 0.49
+      },
+      "thesis_attachment": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.25
+      }
+    },
+    "boundary": "Private decision machinery. Never quote or paraphrase in public prose. This state never sizes, forces, or blocks a trade.",
+    "metrics": {
+      "conviction_volatility": 0.0,
+      "distortion_verdicts": 0,
+      "self_report_mismatches": 0,
+      "sharpened_verdicts": 0
+    },
+    "profile_version": 1,
+    "recent_events": [
+      {
+        "kind": "rank_drop_minor",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261006"
+      }
+    ],
+    "required_checks": {},
+    "schema_version": 1,
+    "state_sha256": "902b9ba8be54d53b61ea180f400fa9c82f478296e95daccdbe63c0a71f13d2ea",
+    "streaks": {
+      "flat_cycles": 0,
+      "session_loss": 0,
+      "session_win": 0
+    }
+  },
+  "recent_closed_trades": [
+    {
+      "asset_class": "rates",
+      "closed_at": "2026-09-22T15:40:57.474758-04:00",
+      "conviction": 57,
+      "holding_duration_seconds": 171269,
+      "instrument": "AONIA_2027-03",
+      "opened_at": "2026-09-20T16:06:28.069463-04:00",
+      "realized_pnl_usd": 6750.0,
+      "side": "short",
+      "trade_id": "trd-trader-positioning-cynic-pos-f18c10895ae3"
+    },
+    {
+      "asset_class": "rates",
+      "closed_at": "2026-09-20T16:06:28.069463-04:00",
+      "conviction": 56,
+      "holding_duration_seconds": 62977,
+      "instrument": "CORRA_2027-03",
+      "opened_at": "2026-09-19T22:36:50.082404-04:00",
+      "realized_pnl_usd": 0.0,
+      "side": "long",
+      "trade_id": "trd-trader-positioning-cynic-pos-142ad113f303"
+    }
+  ],
+  "recent_funding_views": [],
+  "recent_performance_reflections": [],
+  "reflections_due": [],
+  "schema_version": 4,
+  "type": "IDENTITY_MEMORY_CONTEXT"
+}

@@ -1,0 +1,202 @@
+{
+  "active_lessons": [
+    {
+      "contradiction_count": 0,
+      "future_rule": "If the live implied has not retraced the priced policy path (spot CORRA 2.30 vs Mar27 3.125), treat rank and mark shocks as non-signals: hold or reduce only, never add to a recovering leaderboard.",
+      "lesson_id": "les-4e8a63b10376",
+      "maturity": "candidate",
+      "postmortem_ids": [],
+      "reflection_ids": [
+        "prf-20093ee1f067"
+      ],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null
+      },
+      "source_run_id": "overnight-20260929",
+      "status": "active",
+      "text": "A rank drop that dwarfs a 0.5bp adverse tick in the live implied is competition variance, not a thesis break, and a recovered rank is not permission to add.",
+      "trade_ids": []
+    }
+  ],
+  "as_of": "2026-10-15T06:25:03.487055-04:00",
+  "calibration": {
+    "average_holding_seconds": null,
+    "average_realized_pnl_usd": null,
+    "breakeven": 0,
+    "by_asset_class": {},
+    "closed_trade_count": 0,
+    "conviction_buckets": {
+      "high": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "low": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "medium": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      }
+    },
+    "losses": 0,
+    "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
+    "total_realized_pnl_usd": 0.0,
+    "wins": 0
+  },
+  "capital_owner": null,
+  "consequence": {
+    "competition_cohort_size": 14,
+    "competition_eligible": true,
+    "competition_rank": 14,
+    "competitive_rank": 14,
+    "drawdown_usd": 123631.27,
+    "giveback_usd": 123631.27,
+    "high_water_nav_usd": 100009786.12,
+    "material_threshold_usd": 2000000.0,
+    "nav_usd": 99886154.85,
+    "net_pnl_usd": -113845.15,
+    "pressure_flags": [],
+    "prior_competition_rank": 14,
+    "rank_change": 0,
+    "raw_pnl_rank": 14,
+    "recent_pattern": "mixed",
+    "risk_capital_limit_usd": 10000000.0,
+    "risk_capital_usd": 500000.0,
+    "risk_capital_utilization": 0.05,
+    "session_pnl_change_usd": 0.0,
+    "status": "ok"
+  },
+  "learning": {
+    "competition_eligible": true,
+    "learning_default_age_runs": 0,
+    "learning_default_count": 0,
+    "learning_status": "compliant",
+    "repeated_error_escalations": []
+  },
+  "learning_obligations": [],
+  "memory_context_sha256": "588d0e6f9438776bb504e9f230ffb71b7af0546509e0ab97f4e54a63a1a2c4d9",
+  "open_positions": [
+    {
+      "asset_class": "rates",
+      "conviction": 63,
+      "current_notional_usd": 50000000,
+      "entry_mark": 3.13,
+      "instrument": "CORRA_2027-03",
+      "opened_at": "2026-09-19T22:36:50.082404-04:00",
+      "position_id": "pos-dd6fdaf39119",
+      "risk_capital_usd": 500000.0,
+      "side": "short",
+      "trade_id": "trd-trader-perma-bull-pos-dd6fdaf39119"
+    }
+  ],
+  "owner_id": "perma-bull",
+  "owner_type": "trader",
+  "postmortems_due": [],
+  "psychology": {
+    "active_flags": [],
+    "applicable": true,
+    "axes": {
+      "chase_pressure": {
+        "band": "calm",
+        "trend": "down",
+        "value": 0.16
+      },
+      "complacency": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.13
+      },
+      "defensiveness": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.2
+      },
+      "external_pressure": {
+        "band": "calm",
+        "trend": "down",
+        "value": 0.25
+      },
+      "frustration": {
+        "band": "calm",
+        "trend": "down",
+        "value": 0.14
+      },
+      "revenge_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.05
+      },
+      "self_trust": {
+        "band": "steady",
+        "trend": "flat",
+        "value": 0.49
+      },
+      "thesis_attachment": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.4
+      }
+    },
+    "boundary": "Private decision machinery. Never quote or paraphrase in public prose. This state never sizes, forces, or blocks a trade.",
+    "metrics": {
+      "conviction_volatility": 0.0,
+      "distortion_verdicts": 0,
+      "self_report_mismatches": 0,
+      "sharpened_verdicts": 0
+    },
+    "profile_version": 1,
+    "recent_events": [
+      {
+        "kind": "rank_drop_minor",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261006"
+      }
+    ],
+    "required_checks": {},
+    "schema_version": 1,
+    "state_sha256": "a6bb3772db2085e9610e73830cd609910889ab3bf430393b390cdb27aec88ed3",
+    "streaks": {
+      "flat_cycles": 0,
+      "session_loss": 1,
+      "session_win": 0
+    }
+  },
+  "recent_closed_trades": [],
+  "recent_funding_views": [],
+  "recent_performance_reflections": [
+    {
+      "attribution": [
+        "variance_luck",
+        "variance",
+        "sizing"
+      ],
+      "lesson_id": "les-4e8a63b10376",
+      "no_new_lesson": null,
+      "pressure_effect": "sharpening",
+      "reflection_id": "prf-20093ee1f067",
+      "run_id": "overnight-20260929",
+      "skill_vs_luck": "mixed",
+      "trigger_ids": [
+        "rank_shock"
+      ],
+      "what_happened_vs_expected": "The CAD implieds pay was expected to track a still-priced BoC hike path, not a leaderboard crash. At trigger, rank fell 4 to 8 with a drawdown of 15107.64 and net result of -5321.52, but frozen Mar27 CORRA only moved 3.13 to 3.125 while spot CORRA 2.30 versus 3.125 still priced tightening. Rank has since recovered to 4 and the shock was mark-to-market and competition variance around an intact rates thesis, not a broken growth/oil-into-BoC story."
+    }
+  ],
+  "reflections_due": [],
+  "schema_version": 4,
+  "type": "IDENTITY_MEMORY_CONTEXT"
+}
