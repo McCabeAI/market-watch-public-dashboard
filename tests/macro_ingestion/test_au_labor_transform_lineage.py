@@ -14,16 +14,27 @@ ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from scripts.macro_ingestion.canonical_bridge import merge_scored_points
+from scripts.macro_ingestion.canonical_bridge import merge_scored_points, period_after
 from scripts.macro_ingestion.contract import load_catalog
 from scripts.market_watch_launch.lineage import stage_verified_lineage
-from scripts.temperature_level import CALIBRATION_PATH, load_calibration, load_history
+from scripts.temperature_level import CALIBRATION_PATH, load_calibration, load_history, period_sort_key
 
 CATALOG_ID = "AU.Labor.unemployment"
 SERIES_ID = "A84423050A"
 PERIOD = "2026-08"
 VALUE = 4.6462961
 TRANSFORM = "percent"
+
+
+def _next_unemployment_period(histories: dict) -> str:
+    """Synthetic next release; canonical history already includes later prints."""
+    rows = histories["AU"]["components"]["Labor.unemployment"]["observations"]
+    latest = max(
+        (row["reference_period"] for row in rows
+         if row.get("series_id") == SERIES_ID and row.get("transformation") == TRANSFORM),
+        key=period_sort_key,
+    )
+    return period_after(latest)
 
 
 class AuLaborTransformLineageTests(unittest.TestCase):
@@ -67,21 +78,23 @@ class AuLaborTransformLineageTests(unittest.TestCase):
         histories = load_history(ROOT / "data" / "temperature_history")
         au = copy.deepcopy(histories["AU"])
         work = {"AU": au}
+        next_period = _next_unemployment_period(work)
+        checked_at = f"{period_after(next_period)}-20T02:00:00Z"
 
         point = {
             "country": "AU",
             "catalog_id": CATALOG_ID,
             "role": "scored",
             "series_id": SERIES_ID,
-            "period": PERIOD,
+            "period": next_period,
             "value": VALUE,
             "transformation": TRANSFORM,
         }
-        first = merge_scored_points(work, cal, [point], checked_at="2026-09-24T02:00:00Z")
+        first = merge_scored_points(work, cal, [point], checked_at=checked_at)
         self.assertEqual(len(first["appended"]), 1)
         self.assertEqual(cal_path.read_bytes(), cal_before)
 
-        second = merge_scored_points(work, cal, [point], checked_at="2026-09-24T02:01:00Z")
+        second = merge_scored_points(work, cal, [point], checked_at=checked_at)
         self.assertEqual(second["skipped"], [{"id": CATALOG_ID, "reason": "duplicate_value"}])
         self.assertEqual(len(second["appended"]), 0)
 
@@ -111,12 +124,13 @@ class AuLaborTransformLineageTests(unittest.TestCase):
         )
 
     def test_lineage_rejects_transform_mismatch_fail_closed(self) -> None:
+        next_period = _next_unemployment_period(load_history(ROOT / "data" / "temperature_history"))
         bad_point = {
             "country": "AU",
             "catalog_id": CATALOG_ID,
             "role": "scored",
             "series_id": SERIES_ID,
-            "period": PERIOD,
+            "period": next_period,
             "value": VALUE,
             "transformation": "unemployment_rate_sa",
         }
@@ -125,7 +139,7 @@ class AuLaborTransformLineageTests(unittest.TestCase):
             launch_dir.mkdir()
             result = stage_verified_lineage(
                 launch_dir=launch_dir,
-                checked_at="2026-09-24T02:00:00Z",
+                checked_at=f"{period_after(next_period)}-20T02:00:00Z",
                 canonical_history_dir=ROOT / "data" / "temperature_history",
                 calibration_path=CALIBRATION_PATH,
                 points=[bad_point],
@@ -135,7 +149,7 @@ class AuLaborTransformLineageTests(unittest.TestCase):
             self.assertEqual(result["appended_count"], 0)
             self.assertTrue(result["rejections"])
             self.assertEqual(result["rejections"][0]["reason"], "partial_transform_mismatch")
-            self.assertEqual(result["rejections"][0]["period"], PERIOD)
+            self.assertEqual(result["rejections"][0]["period"], next_period)
             scores = launch_dir / "lineage" / "temperature_scores.json"
             self.assertFalse(scores.is_file())
 
