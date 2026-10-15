@@ -4381,11 +4381,24 @@
     },
     "08_pages": {
       "artifact": null,
-      "details": {},
+      "details": {
+        "dispatched": true,
+        "dry_run": false,
+        "executed": false,
+        "plan": {
+          "event": "workflow_dispatch",
+          "launch_id": "mwl-20261015T102503Z-a4e00d7e",
+          "ref": "main",
+          "review_id": "review-001",
+          "workflow": "deploy-pages.yml"
+        },
+        "production_published": false,
+        "publication_state": "dispatched"
+      },
       "finished_at": null,
-      "input_sha256": null,
+      "input_sha256": "c6e612d20c833b5e117243f6c62b3cb187d3228ea9b42cae0d05ce70274cfb6c",
       "output_sha256": null,
-      "reason": null,
+      "reason": "pages_dispatch_requested",
       "source_run_url": null,
       "stage": "08_pages",
       "started_at": null,
