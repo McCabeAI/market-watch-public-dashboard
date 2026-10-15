@@ -338,9 +338,6 @@ def fetch_reos(
             "attempts": attempts,
         }
 
-    if release_date is None:
-        release_date = date.today()
-
     if not xlsx_body.startswith(b"PK"):
         for cid in (
             CATALOG_ID_RECRUITING,
@@ -353,6 +350,27 @@ def fetch_reos(
                     "publisher": "jsa_reos",
                     "status": "source_failed",
                     "reason": "REOS workbook response is not a valid XLSX archive",
+                }
+            )
+        return {
+            "status": "source_failed",
+            "points": [],
+            "gaps": gap_rows,
+            "attempts": attempts,
+        }
+
+    if release_date is None:
+        for cid in (
+            CATALOG_ID_RECRUITING,
+            CATALOG_ID_DIFFICULTY,
+            CATALOG_ID_HIRING_INTENT,
+        ):
+            gap_rows.append(
+                {
+                    "id": cid,
+                    "publisher": "jsa_reos",
+                    "status": "source_failed",
+                    "reason": "release provenance missing; observation quarantined",
                 }
             )
         return {
