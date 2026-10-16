@@ -168,7 +168,12 @@ def _tradable_curve_contract_mark(
             "value": _number(row["implied_rate"], f"{curve_id} {contract_key}"),
             "quote_unit": "percent",
             "source": f"market_state.tradable_rate_curves.{curve_id.upper()}.{expiry}.implied_rate",
-            "as_of": state.get("generated_at") or row.get("as_of") or row.get("expiry"),
+            "as_of": (
+                row.get("observation_date")
+                or row.get("as_of")
+                or state.get("generated_at")
+                or row.get("expiry")
+            ),
             "kind": "direct",
         }
     raise PaperMarkError(f"{curve_id} contract {contract_key} unavailable")

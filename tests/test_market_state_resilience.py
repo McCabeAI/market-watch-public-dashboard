@@ -32,7 +32,17 @@ from scripts.market_state import (
 from scripts.overnight.books import apply_action, empty_seat, _expression_for_freshness_gate
 from scripts.overnight.errors import FreshnessError
 from scripts.overnight.freshness import assert_action_allowed, expression_dependencies
-from scripts.policy_path_data import build_tradable_rate_curves, collect_policy_paths, validate_policy_paths
+from scripts.market_watch_launch.quality_gate import evaluate_gate
+from scripts.overnight.paper_marks import resolve_paper_mid
+from scripts.policy_path_data import (
+    CME_SR3_QUOTES_V2_URL,
+    CME_SR3_URL,
+    CME_SOFR_BULLETIN_URL,
+    ESIGNAL_SR3_CHAIN_URL,
+    build_tradable_rate_curves,
+    collect_policy_paths,
+    validate_policy_paths,
+)
 
 NY = ZoneInfo("America/New_York")
 
@@ -526,6 +536,357 @@ class PaperExpressionGateTests(unittest.TestCase):
             _expression_for_freshness_gate(seat, {"action": "OPEN", "instrument": "BASKET"}, candidate),
             {"benchmark": "AONIA"},
         )
+
+
+def _minimal_sofr_json() -> bytes:
+    return json.dumps(
+        {
+            "refRates": [
+                {"type": "SOFR", "effectiveDate": "2026-10-15", "percentRate": 3.64},
+            ]
+        }
+    ).encode()
+
+
+def _sr3_policy_fetch(
+    *,
+    settlement_by_trade_date: dict[str, bytes] | None = None,
+    quotes_v2: bytes | None = None,
+    quote_html: bytes | None = None,
+    bulletin: bytes | None = None,
+    esignal_html: bytes | None = None,
+    call_log: list[str] | None = None,
+):
+    settlement_by_trade_date = settlement_by_trade_date or {}
+
+    def fetch(url: str, **_kwargs: object) -> bytes:
+        if call_log is not None:
+            call_log.append(url)
+        if "newyorkfed.org" in url:
+            return _minimal_sofr_json()
+        if "8462" in url and "Settlements" in url:
+            for trade_date, body in settlement_by_trade_date.items():
+                if f"tradeDate={trade_date}" in url:
+                    return body
+            raise _http_403(url)
+        if url == CME_SR3_QUOTES_V2_URL:
+            if quotes_v2 is None:
+                raise _http_403(url)
+            return quotes_v2
+        if url == CME_SR3_URL:
+            if quote_html is None:
+                raise _http_403(url)
+            return quote_html
+        if url == CME_SOFR_BULLETIN_URL:
+            if bulletin is None:
+                raise _http_403(url)
+            return bulletin
+        if url == ESIGNAL_SR3_CHAIN_URL:
+            if esignal_html is None:
+                raise _http_403(url)
+            return esignal_html
+        raise _http_403(url)
+
+    return fetch
+
+
+class Sr3AcquisitionRepairTests(unittest.TestCase):
+    def test_sr3_acquisition_order_and_no_curl_cffi(self) -> None:
+        calls: list[str] = []
+        settlements_fail = json.dumps(
+            {"reportType": "Final", "tradeDate": "10/16/2026", "settlements": []}
+        ).encode()
+        quotes_ok = json.dumps(
+            {
+                "tradeDate": "15 Oct 2026",
+                "quotes": [
+                    {
+                        "quoteCode": "SR3H7",
+                        "expirationMonth": "MAR 2027",
+                        "last": "96.500",
+                    },
+                    {
+                        "quoteCode": "SR3U7",
+                        "expirationMonth": "SEP 2027",
+                        "last": "96.250",
+                    },
+                ],
+            }
+        ).encode()
+        fetch = _sr3_policy_fetch(
+            settlement_by_trade_date={
+                "10/16/2026": settlements_fail,
+            },
+            quotes_v2=quotes_ok,
+            call_log=calls,
+        )
+        with mock.patch(
+            "scripts.policy_path_data._curl_cffi_get",
+            side_effect=AssertionError("curl_cffi must not run in injected fetch tests"),
+        ):
+            paths = collect_policy_paths(today=date(2026, 10, 16), fetch_bytes=fetch)
+        us = paths["countries"]["US"]
+        self.assertEqual(us["status"], "ok")
+        self.assertEqual([row["code"] for row in us["contracts_3m"]], ["SR3H7", "SR3U7"])
+        sr3_calls = [url for url in calls if "8462" in url or url in {
+            CME_SR3_QUOTES_V2_URL,
+            CME_SR3_URL,
+            CME_SOFR_BULLETIN_URL,
+            ESIGNAL_SR3_CHAIN_URL,
+        }]
+        self.assertTrue(any("Settlements" in url for url in sr3_calls))
+        self.assertIn(CME_SR3_QUOTES_V2_URL, sr3_calls)
+        self.assertLess(
+            next(i for i, url in enumerate(sr3_calls) if "Settlements" in url),
+            sr3_calls.index(CME_SR3_QUOTES_V2_URL),
+        )
+
+    def test_final_settlement_on_prior_session_uses_trade_date_not_today(self) -> None:
+        empty_today = json.dumps(
+            {"reportType": "Final", "tradeDate": "10/16/2026", "settlements": []}
+        ).encode()
+        prior_final = json.dumps(
+            {
+                "reportType": "Final",
+                "tradeDate": "10/15/2026",
+                "settlements": [
+                    {"month": "MAR 27", "settle": "96.50"},
+                    {"month": "SEP 27", "settle": "96.25"},
+                ],
+            }
+        ).encode()
+        non_final = json.dumps(
+            {
+                "reportType": "Preliminary",
+                "tradeDate": "10/15/2026",
+                "settlements": [{"month": "MAR 27", "settle": "96.50"}],
+            }
+        ).encode()
+        fetch = _sr3_policy_fetch(
+            settlement_by_trade_date={
+                "10/16/2026": empty_today,
+                "10/15/2026": prior_final,
+                "10/14/2026": non_final,
+            },
+        )
+        with mock.patch("scripts.policy_path_data._curl_cffi_get", side_effect=AssertionError):
+            paths = collect_policy_paths(today=date(2026, 10, 16), fetch_bytes=fetch)
+        rows = paths["countries"]["US"]["contracts_3m"]
+        self.assertEqual([row["expiry"] for row in rows], ["2027-03", "2027-09"])
+        self.assertEqual(rows[0]["observation_date"], "2026-10-15")
+        self.assertEqual(rows[0]["as_of"], "2026-10-15")
+
+    def test_preliminary_and_stale_settlements_are_rejected(self) -> None:
+        preliminary = json.dumps(
+            {
+                "reportType": "Preliminary",
+                "tradeDate": "10/16/2026",
+                "settlements": [
+                    {"month": "MAR 27", "settle": "96.50"},
+                    {"month": "SEP 27", "settle": "96.25"},
+                ],
+            }
+        ).encode()
+        stale_final = json.dumps(
+            {
+                "reportType": "Final",
+                "tradeDate": "09/01/2026",
+                "settlements": [
+                    {"month": "MAR 27", "settle": "90.10"},
+                    {"month": "SEP 27", "settle": "90.20"},
+                ],
+            }
+        ).encode()
+        prior_final = json.dumps(
+            {
+                "reportType": "Final",
+                "tradeDate": "10/15/2026",
+                "settlements": [
+                    {"month": "MAR 27", "settle": "96.10"},
+                    {"month": "SEP 27", "settle": "96.20"},
+                ],
+            }
+        ).encode()
+        fetch = _sr3_policy_fetch(
+            settlement_by_trade_date={
+                "10/16/2026": preliminary,
+                "10/15/2026": stale_final,
+                "10/14/2026": prior_final,
+            },
+        )
+        with mock.patch("scripts.policy_path_data._curl_cffi_get", side_effect=AssertionError):
+            paths = collect_policy_paths(today=date(2026, 10, 16), fetch_bytes=fetch)
+        rows = paths["countries"]["US"]["contracts_3m"]
+        self.assertEqual(rows[0]["observation_date"], "2026-10-15")
+        self.assertEqual(rows[0]["implied_rate"], 3.9)
+        self.assertEqual(rows[1]["implied_rate"], 3.8)
+
+    def test_all_sr3_sources_fail_keeps_ny_fed_sofr_partial(self) -> None:
+        fetch = _sr3_policy_fetch()
+        with mock.patch("scripts.policy_path_data._curl_cffi_get", side_effect=AssertionError):
+            paths = collect_policy_paths(today=date(2026, 10, 16), fetch_bytes=fetch)
+        us = paths["countries"]["US"]
+        self.assertEqual(us["status"], "partial")
+        self.assertEqual(us["benchmark"]["rate"], 3.64)
+        self.assertEqual(us["contracts_3m"], [])
+        curves = build_tradable_rate_curves(paths)
+        self.assertEqual(curves["curves"]["SOFR"]["status"], "unavailable")
+        err = curves["curves"]["SOFR"]["error"]
+        for needle in (
+            "CME SR3 settlements",
+            "CME SR3 quotes v2",
+            "CME SR3 quote page",
+            "CME SR3 bulletin",
+            "eSignal SR3",
+            "2027-03",
+            "2027-09",
+        ):
+            self.assertIn(needle, err)
+
+    def test_esignal_sr3_without_delayed_banner_is_rejected(self) -> None:
+        esignal = b"""
+        <table>
+          <tr><td>THREE MONTH SOFR (SR3 H27-CME)</td><td>Mar'27</td><td>96.50</td></tr>
+        </table>
+        """
+        fetch = _sr3_policy_fetch(esignal_html=esignal)
+        with mock.patch("scripts.policy_path_data._curl_cffi_get", side_effect=AssertionError):
+            paths = collect_policy_paths(today=date(2026, 10, 16), fetch_bytes=fetch)
+        err = paths["countries"]["US"]["sr3_error"]
+        self.assertIn("eSignal SR3", err)
+        self.assertIn("delayed data observation timestamp", err)
+        curves = build_tradable_rate_curves(paths)
+        self.assertEqual(curves["curves"]["SOFR"]["status"], "unavailable")
+        for needle in ("CME SR3 settlements", "quotes v2", "quote page", "bulletin", "eSignal SR3"):
+            self.assertIn(needle, curves["curves"]["SOFR"]["error"])
+
+    def test_real_strip_missing_sep_2027_reports_target_gap(self) -> None:
+        final = json.dumps(
+            {
+                "reportType": "Final",
+                "tradeDate": "10/15/2026",
+                "settlements": [{"month": "MAR 27", "settle": "96.50"}],
+            }
+        ).encode()
+        fetch = _sr3_policy_fetch(
+            settlement_by_trade_date={"10/16/2026": final},
+        )
+        with mock.patch("scripts.policy_path_data._curl_cffi_get", side_effect=AssertionError):
+            paths = collect_policy_paths(today=date(2026, 10, 16), fetch_bytes=fetch)
+        curves = build_tradable_rate_curves(paths)
+        sofr = curves["curves"]["SOFR"]
+        self.assertEqual(sofr["status"], "ok")
+        self.assertEqual(sofr["missing_target_maturities"], ["2027-09"])
+        self.assertEqual(len(sofr["contracts"]), 1)
+
+    def test_settlement_fixture_end_to_end_paper_marks(self) -> None:
+        final = json.dumps(
+            {
+                "reportType": "Final",
+                "tradeDate": "10/15/2026",
+                "settlements": [
+                    {"month": "MAR 27", "settle": "96.50"},
+                    {"month": "SEP 27", "settle": "96.25"},
+                ],
+            }
+        ).encode()
+        fetch = _sr3_policy_fetch(
+            settlement_by_trade_date={"10/16/2026": final},
+        )
+        with mock.patch("scripts.policy_path_data._curl_cffi_get", side_effect=AssertionError):
+            paths = collect_policy_paths(today=date(2026, 10, 16), fetch_bytes=fetch)
+        curves = build_tradable_rate_curves(paths)
+        state = {
+            "generated_at": "2026-10-16T12:00:00Z",
+            "policy_paths": paths,
+            "tradable_rate_curves": curves,
+        }
+        mar = resolve_paper_mid(state, "SOFR_2027-03", asset_class="rates")
+        sep = resolve_paper_mid(state, "SOFR_2027-09", asset_class="rates")
+        self.assertEqual(mar["value"], 3.5)
+        self.assertEqual(sep["value"], 3.75)
+        self.assertIn("tradable_rate_curves.SOFR", mar["source"])
+        self.assertIn("tradable_rate_curves.SOFR", sep["source"])
+        self.assertEqual(mar["as_of"], "2026-10-15")
+        self.assertEqual(sep["as_of"], "2026-10-15")
+        self.assertNotEqual(mar["as_of"], state["generated_at"])
+
+
+class SofrQualityGateSr3Tests(unittest.TestCase):
+    def _gate_packet(self, *, sofr_curve_status: str, contracts: list[dict] | None) -> dict:
+        packet = _packet()
+        packet["rates"]["US"]["status"] = "ok"
+        packet["rates"]["CA"]["status"] = "ok"
+        packet["rates"]["AU"]["status"] = "ok"
+        if sofr_curve_status == "unavailable":
+            packet["tradable_rate_curves"]["curves"]["SOFR"] = {
+                "status": "unavailable",
+                "error": "SR3 strip unavailable",
+                "contracts": [],
+            }
+            packet["policy_paths"]["countries"]["US"]["status"] = "partial"
+            packet["policy_paths"]["countries"]["US"]["contracts_3m"] = []
+        else:
+            packet["tradable_rate_curves"]["curves"]["SOFR"] = {
+                "status": "ok",
+                "contracts": contracts or [],
+            }
+            packet["policy_paths"]["countries"]["US"]["contracts_3m"] = contracts or []
+        return packet
+
+    def _sofr_positions(self) -> list[dict]:
+        return [
+            {
+                "position_id": "pos-h7",
+                "seat": "rate-hawk",
+                "instrument": "SOFR_2027-03",
+                "asset_class": "rates",
+            },
+            {
+                "position_id": "pos-u7",
+                "seat": "rate-hawk",
+                "instrument": "SOFR_2027-09",
+                "asset_class": "rates",
+            },
+        ]
+
+    def _verified_us_row(self) -> dict:
+        return {
+            "series_id": "US.Inflation.core_pce",
+            "country": "US",
+            "role": "scored",
+            "weight": 1.0,
+            "status": "checked_unchanged",
+            "release_due": False,
+        }
+
+    def test_unavailable_sofr_curve_blocks_existing_book(self) -> None:
+        packet = self._gate_packet(sofr_curve_status="unavailable", contracts=None)
+        families = _families(packet)
+        result = evaluate_gate(
+            rows=[self._verified_us_row()],
+            families=families,
+            positions=self._sofr_positions(),
+        )
+        self.assertEqual(result["outcome"], "BLOCKED")
+        self.assertEqual(result["reason"], "existing_book_unmarkable")
+        for row in result["unmarkable_positions"]:
+            self.assertIsNone(row["observation_date"])
+
+    def test_ok_sofr_curve_with_targets_does_not_block_book(self) -> None:
+        contracts = [
+            {"expiry": "2027-03", "code": "SR3H7", "implied_rate": 3.5},
+            {"expiry": "2027-09", "code": "SR3U7", "implied_rate": 3.75},
+        ]
+        packet = self._gate_packet(sofr_curve_status="ok", contracts=contracts)
+        families = _families(packet)
+        result = evaluate_gate(
+            rows=[self._verified_us_row()],
+            families=families,
+            positions=self._sofr_positions(),
+        )
+        self.assertNotEqual(result.get("reason"), "existing_book_unmarkable")
+        self.assertFalse(result.get("unmarkable_positions"))
 
 
 class SofrDecouplingTests(unittest.TestCase):
