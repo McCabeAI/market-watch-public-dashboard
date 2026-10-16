@@ -766,6 +766,58 @@ def _fetch_cme_bytes(
         raise primary_exc
 
 
+def _parse_cme_sr3_update_time(value: object) -> str | None:
+    if value is None:
+        return None
+    text = str(value).strip()
+    if not text:
+        return None
+    for fmt in (
+        "%A, %d %b %Y %I:%M %p",
+        "%A, %d %b %Y %I:%M:%S %p",
+    ):
+        try:
+            return datetime.strptime(text, fmt).date().isoformat()
+        except ValueError:
+            pass
+    return None
+
+
+def _verified_cme_sr3_settlement_observation_date(
+    payload: object,
+    *,
+    session_date: date,
+) -> str:
+    if isinstance(payload, list):
+        raise ValueError("bare list CME SR3 settlements payload is undated")
+    if not isinstance(payload, dict):
+        raise ValueError(f"unexpected CME SR3 settlements payload type: {type(payload)!r}")
+    report_type = payload.get("reportType")
+    if report_type is None or str(report_type).strip().lower() != "final":
+        raise ValueError(f"non-final CME SR3 settlement reportType={report_type!r}")
+    settlements = payload.get("settlements")
+    if not isinstance(settlements, list) or not settlements:
+        raise ValueError("empty CME SR3 settlements payload")
+    observation_date = _iso_calendar_date(payload.get("tradeDate"))
+    if not observation_date:
+        raise ValueError("CME SR3 settlements payload missing verified tradeDate")
+    if observation_date != session_date.isoformat():
+        raise ValueError(
+            "CME SR3 tradeDate "
+            f"{observation_date!r} does not match requested session {session_date.isoformat()!r}"
+        )
+    update_time = payload.get("updateTime")
+    if update_time is not None and str(update_time).strip():
+        updated = _parse_cme_sr3_update_time(update_time)
+        if not updated:
+            raise ValueError(f"unparseable CME SR3 updateTime={update_time!r}")
+        if updated != observation_date:
+            raise ValueError(
+                f"CME SR3 updateTime date {updated!r} contradicts tradeDate {observation_date!r}"
+            )
+    return observation_date
+
+
 def _fetch_recent_cme_sr3_settlements(
     *,
     today: date,
@@ -781,16 +833,10 @@ def _fetch_recent_cme_sr3_settlements(
             raw = _fetch_cme_bytes(fetch_bytes, url, referer=CME_SR3_URL)
             body = raw.decode("utf-8", errors="replace")
             payload = json.loads(body)
-            if isinstance(payload, dict):
-                report_type = payload.get("reportType")
-                if report_type is not None and str(report_type).strip().lower() != "final":
-                    raise ValueError(f"non-final CME SR3 settlement reportType={report_type!r}")
-                settlements = payload.get("settlements") or []
-                if not settlements:
-                    raise ValueError("empty CME SR3 settlements payload")
-                observation_date = _iso_calendar_date(payload.get("tradeDate")) or d.isoformat()
-            else:
-                observation_date = d.isoformat()
+            observation_date = _verified_cme_sr3_settlement_observation_date(
+                payload,
+                session_date=d,
+            )
             rows = parse_cme_sr3_settlements_json(
                 body,
                 benchmark=benchmark,
