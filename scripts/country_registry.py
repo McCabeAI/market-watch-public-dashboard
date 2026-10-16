@@ -112,6 +112,22 @@ def expected_temperature_gauge_count(registry: dict[str, Any] | None = None) -> 
     return len(temperature_countries(registry)) * len(DIMENSIONS)
 
 
+def paper_sovereign_admission(code: str, registry: dict[str, Any] | None = None) -> str:
+    """Ongoing paper-mark permission for a sovereign curve.
+
+    ``approved`` countries may be entered when their frozen mark is usable.
+    ``research_only`` countries stay out of new risk regardless of a numeric
+    research print. Unknown codes are ``unknown`` and fail closed.
+    """
+    spec = economies(registry).get(str(code or "").upper())
+    if not isinstance(spec, dict):
+        return "unknown"
+    value = spec.get("paper_sovereign_admission") or "approved"
+    if value not in {"approved", "research_only"}:
+        return "unknown"
+    return str(value)
+
+
 def extra_rate_tenor(code: str, registry: dict[str, Any] | None = None) -> str | None:
     tenors = list(economies(registry)[code].get("rate_tenors") or [])
     extras = [t for t in tenors if t not in TEMPERATURE_TENORS]

@@ -17,6 +17,7 @@ from scripts.overnight.delta import compute_delta
 from scripts.overnight.errors import EvidenceBoundaryError, OvernightError, SchemaError
 from scripts.overnight.evidence import freeze_snapshot, require_snapshot
 from scripts.overnight.ledger import load_or_create
+from scripts.overnight.mark_admission import frozen_permission_fields
 from scripts.overnight.store import OvernightStore
 from scripts.run_state.replay import ScoreConflict, reject_unequal_score_copies
 
@@ -123,6 +124,7 @@ def _trade_permissions(launch: dict[str, Any]) -> dict[str, Any]:
         },
         "source_health": list(gate.get("source_health") or []),
         "expansion_rule": "country_and_expression_specific",
+        **frozen_permission_fields(gate),
     }
 
 

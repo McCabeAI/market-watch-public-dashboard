@@ -169,6 +169,11 @@ def expression_dependencies(
         deps.add("CORRA_curve")
     if re.search(_bounded_token("AONIA"), upper):
         deps.add("AONIA_curve")
+    from scripts.overnight.mark_admission import classify_exposure
+
+    info = classify_exposure(instrument, asset_class=asset_class, expression=expression)
+    for dep in info.get("spot_rate_deps_to_ignore") or ():
+        deps.discard(dep)
     return deps
 
 
@@ -284,6 +289,19 @@ def assert_action_allowed(
     asset_class: str | None = None,
     expression: Any = None,
 ) -> list[str]:
+    if action in {"OPEN", "ADD", "HEDGE"}:
+        from scripts.overnight.mark_admission import entry_rejection
+
+        rejection = entry_rejection(
+            instrument,
+            asset_class=asset_class,
+            expression=expression,
+            action=action,
+        )
+        if rejection:
+            raise FreshnessError(
+                f"{seat} {action} blocked: {rejection['reason']}: {rejection['message']}"
+            )
     blocked = blocked_expanding_families(families)
     if action in EXPANDING_ACTIONS and blocked:
         raise FreshnessError(

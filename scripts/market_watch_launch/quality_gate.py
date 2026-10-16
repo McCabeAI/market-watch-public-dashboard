@@ -172,6 +172,8 @@ def _unmarkable_positions(
                     "position_id": position_id,
                     "seat": seat,
                     "instrument": instrument,
+                    "asset_class": asset_class,
+                    "paper_expression": expression,
                     "dependency": dependency,
                     "dependency_status": status,
                     "observation_date": observation_date,
@@ -416,14 +418,21 @@ def evaluate_gate(
     base["partial_legs"] = partial_legs
     base["trade_eligible_countries"] = trade_eligible_countries
     if positions:
+        from scripts.overnight.mark_admission import quarantine_decision
+
         unmarkable = _unmarkable_positions(packet, positions)
         if unmarkable:
-            base["outcome"] = "BLOCKED"
-            base["reason"] = "existing_book_unmarkable"
-            base["eligible"] = False
+            decision = quarantine_decision(
+                unmarkable, trade_eligible_countries=trade_eligible_countries
+            )
             base["unmarkable_positions"] = unmarkable
-            base["coverage"] = "PARTIAL" if trade_eligible_countries else "NONE"
-            return base
+            base.update(decision["gate_fields"])
+            if decision["mode"] == "block":
+                base["outcome"] = "BLOCKED"
+                base["reason"] = "existing_book_unmarkable"
+                base["eligible"] = False
+                base["coverage"] = "PARTIAL" if trade_eligible_countries else "NONE"
+                return base
 
     if not trade_eligible_countries:
         base["outcome"] = "BLOCKED"
@@ -437,6 +446,7 @@ def evaluate_gate(
         or nondue_scored_gaps
         or blocking_scored
         or blocked_expressions
+        or base.get("quarantined_positions")
     )
     base["coverage"] = "PARTIAL" if has_partial else "COMPLETE"
     base["eligible"] = True

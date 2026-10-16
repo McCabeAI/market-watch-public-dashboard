@@ -278,6 +278,45 @@ def _enforce_learning_quality(
     _drop_blocked_submissions(payload, inadequate_submission_refs(cleaned))
 
 
+def _selected_candidate(action: dict[str, Any], decision: dict[str, Any]) -> dict[str, Any] | None:
+    """Memo candidate trusted application uses when the action omits an instrument."""
+    memo = action.get("expression_memo") or decision.get("expression_memo") or {}
+    if not isinstance(memo, dict):
+        return None
+    selected = memo.get("selected")
+    candidate = {
+        "rates": memo.get("rates_candidate"),
+        "spot": memo.get("spot_candidate"),
+        "options": memo.get("options_candidate"),
+    }.get(selected)
+    return candidate if isinstance(candidate, dict) else None
+
+
+def _scan_decision_new_risk(
+    decision: dict[str, Any],
+    *,
+    seat: str,
+    positions: list[Any] | None,
+    unresolved_position_ids: set[str],
+) -> list[dict[str, Any]]:
+    from scripts.overnight.mark_admission import scan_new_risk
+
+    findings: list[dict[str, Any]] = []
+    for action in decision.get("actions") or []:
+        if not isinstance(action, dict):
+            continue
+        findings.extend(
+            scan_new_risk(
+                [action],
+                seat=seat,
+                positions=positions,
+                unresolved_position_ids=unresolved_position_ids,
+                selected_candidate=_selected_candidate(action, decision),
+            )
+        )
+    return findings
+
+
 def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str, Any]:
     if payload.get("schema_version") != SCHEMA_VERSION:
         raise SchemaError("scheduled output schema_version mismatch")
@@ -439,6 +478,53 @@ def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str,
         obligations=obligation_manifest.get("obligations") or [],
         manifest_sha256=obligation_manifest.get("manifest_sha256"),
     )
+    from scripts.overnight.mark_admission import unresolved_research_position_ids
+    from scripts.overnight.paper_marks import resolve_paper_mid
+
+    market_state = market_state_from_families(base.get("families") or {})
+    prior_books = base.get("prior_books") or {}
+    prior_pm = base.get("prior_pm_books") or {}
+    admission_findings: list[dict[str, Any]] = []
+    for seat, decision in decisions.items():
+        if not isinstance(decision, dict):
+            continue
+        seat_book = (prior_books.get("seats") or {}).get(seat) or {}
+        positions = seat_book.get("positions") if isinstance(seat_book, dict) else None
+        unresolved = unresolved_research_position_ids(
+            positions,
+            market_state=market_state,
+            resolve_mark=resolve_paper_mid,
+        )
+        admission_findings.extend(
+            _scan_decision_new_risk(
+                decision,
+                seat=seat,
+                positions=positions,
+                unresolved_position_ids=unresolved,
+            )
+        )
+    if isinstance(pm_decisions, dict):
+        pm_prior = (prior_pm.get("pms") or {}) if isinstance(prior_pm, dict) else {}
+        for pm_id, pm_decision in pm_decisions.items():
+            if not isinstance(pm_decision, dict):
+                continue
+            pm_book = pm_prior.get(pm_id) if isinstance(pm_prior, dict) else None
+            positions = pm_book.get("positions") if isinstance(pm_book, dict) else None
+            unresolved = unresolved_research_position_ids(
+                positions,
+                market_state=market_state,
+                resolve_mark=resolve_paper_mid,
+            )
+            admission_findings.extend(
+                _scan_decision_new_risk(
+                    pm_decision,
+                    seat=pm_id,
+                    positions=positions,
+                    unresolved_position_ids=unresolved,
+                )
+            )
+    if admission_findings:
+        payload["_admission_rejections"] = admission_findings
     return payload
 
 
