@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import copy
 import json
 import sys
 import unittest
@@ -12,10 +13,15 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from scripts.macro_ingestion.contract import load_calibration, load_catalog
-from scripts.macro_ingestion.series_preflight import run_weighted_series_preflight
+from scripts.macro_ingestion.series_preflight import (
+    ledger_rows_for_preflight_mismatches,
+    run_weighted_series_preflight,
+)
 from scripts.run_state.identity import (
+    REASON_MISSING_CALIBRATION,
     REASON_SOURCE_SERIES_MISMATCH,
     REASON_TRANSFORM_MISMATCH,
+    preflight_weighted_series,
 )
 from scripts.temperature_level import load_history
 
@@ -36,6 +42,15 @@ class TestSeriesContractPreflight(unittest.TestCase):
         self.assertGreater(report["checked"], 0)
         self.assertEqual(report["mismatches"], [])
         self.assertEqual(report["blocked_countries"], [])
+        # Positively weighted scored rows with an explicit observed:false
+        # calibration entry stay omitted. They are not missing-calibration failures.
+        calibration = load_calibration()
+        catalog_rows = {row["id"]: row for row in load_catalog()["series"]}
+        for concept_id in ("CA.Consumer.confidence", "AU.Consumer.retail"):
+            self.assertIs(calibration["components"][concept_id].get("observed"), False)
+            self.assertEqual(catalog_rows[concept_id]["role"], "scored")
+            self.assertGreater(float(catalog_rows[concept_id]["weight"]), 0.0)
+            self.assertNotIn(concept_id, {m["concept_id"] for m in report["mismatches"]})
 
     def test_au_unemployment_series_id_drift_blocks_au_only(self) -> None:
         catalog = load_catalog()
@@ -117,6 +132,70 @@ class TestSeriesContractPreflight(unittest.TestCase):
         self.assertEqual(series_hits[0]["expected"], "v2062815")
         self.assertEqual(series_hits[0]["actual"], wrong_id)
         self.assertEqual(report["blocked_countries"], ["CA"])
+
+    def test_missing_calibration_deleted_component_blocks_au_only(self) -> None:
+        catalog = load_catalog()
+        calibration = copy.deepcopy(load_calibration())
+        calibration["components"].pop("AU.Labor.unemployment")
+        report = preflight_weighted_series(
+            catalog=catalog,
+            calibration=calibration,
+            histories=self._histories(),
+        )
+        self.assertFalse(report["ok"])
+        self.assertEqual(report["blocked_countries"], ["AU"])
+        au = [m for m in report["mismatches"] if m["concept_id"] == "AU.Labor.unemployment"]
+        self.assertEqual(len(au), 1)
+        self.assertEqual(au[0]["country"], "AU")
+        self.assertEqual(au[0]["component"], "unemployment")
+        self.assertEqual(au[0]["source"], "calibration")
+        self.assertEqual(au[0]["field"], "component")
+        self.assertEqual(au[0]["expected"], "AU.Labor.unemployment")
+        self.assertIsNone(au[0]["actual"])
+        self.assertEqual(au[0]["reason"], REASON_MISSING_CALIBRATION)
+        countries = {m["country"] for m in report["mismatches"]}
+        self.assertEqual(countries, {"AU"})
+        ledger = ledger_rows_for_preflight_mismatches(
+            report["mismatches"],
+            checked_at="2026-01-01",
+            calibration_as_of_value="2026-01-01",
+            cutoff_class_value="test",
+        )
+        self.assertEqual(len(ledger), 1)
+        self.assertEqual(ledger[0]["status"], "contract_mismatch")
+        cm = ledger[0]["contract_mismatch"]
+        for key in (
+            "concept_id",
+            "country",
+            "component",
+            "source",
+            "field",
+            "expected",
+            "actual",
+            "reason",
+        ):
+            self.assertIn(key, cm)
+
+    def test_missing_calibration_null_or_non_mapping_blocks_ca_only(self) -> None:
+        for bad_value, expected_actual in ((None, None), ("not_a_mapping", "str")):
+            catalog = load_catalog()
+            calibration = copy.deepcopy(load_calibration())
+            calibration["components"]["CA.Labor.wages"] = bad_value
+            report = preflight_weighted_series(
+                catalog=catalog,
+                calibration=calibration,
+                histories=self._histories(),
+            )
+            self.assertFalse(report["ok"])
+            self.assertEqual(report["blocked_countries"], ["CA"])
+            hits = [m for m in report["mismatches"] if m["concept_id"] == "CA.Labor.wages"]
+            self.assertEqual(len(hits), 1)
+            self.assertEqual(hits[0]["field"], "component")
+            self.assertEqual(hits[0]["expected"], "CA.Labor.wages")
+            self.assertEqual(hits[0]["actual"], expected_actual)
+            self.assertEqual(hits[0]["reason"], REASON_MISSING_CALIBRATION)
+            countries = {m["country"] for m in report["mismatches"]}
+            self.assertEqual(countries, {"CA"})
 
 
 if __name__ == "__main__":

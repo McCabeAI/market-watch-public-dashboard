@@ -28,6 +28,7 @@ REASON_SCORE_SERIES_MISMATCH = "score_series_mismatch"
 REASON_SOURCE_SERIES_MISMATCH = "source_series_mismatch"
 REASON_DEFINITION_MISMATCH = "definition_mismatch"
 REASON_HISTORY_MISMATCH = "history_mismatch"
+REASON_MISSING_CALIBRATION = "missing_calibration"
 
 MERGE_PARTIAL_TRANSFORM = "partial_transform_mismatch"
 MERGE_FUTURE = "future_release"
@@ -817,10 +818,25 @@ def preflight_weighted_series(
             continue
         concept_id = str(row.get("id") or "")
         component = components.get(concept_id)
-        if not isinstance(component, Mapping) or component.get("observed") is False:
+        country = str(row.get("country") or "")
+        if not isinstance(component, Mapping):
+            mismatches.append(
+                _mismatch(
+                    concept_id=concept_id,
+                    country=country,
+                    component=str(row.get("component") or ""),
+                    source="calibration",
+                    field="component",
+                    expected=concept_id,
+                    actual=None if component is None else type(component).__name__,
+                    reason=REASON_MISSING_CALIBRATION,
+                )
+            )
+            checked += 1
+            continue
+        if component.get("observed") is False:
             continue
         checked += 1
-        country = str(row.get("country") or "")
         history = _history_component(histories, country, component.get("history_key"))
         if histories is not None and history is None:
             mismatches.append(
