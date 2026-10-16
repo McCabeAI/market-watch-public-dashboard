@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import copy
 import json
 import shutil
 import sys
@@ -23,10 +24,17 @@ from scripts.core_pce_release.import_price_bridge import (
     nsa_sensitivity_envelope,
 )
 from scripts.core_pce_release.import_price_fixture import ImportPriceSourceError, load_import_price_bundle
+from scripts.core_pce_release.import_price_line335 import (
+    load_line335_history,
+    predict_month,
+    september_2026_estimate,
+    walk_forward,
+)
 from scripts.core_pce_release.import_price_report import reconstruct_import_price_increment
 
 BUNDLE = ROOT / "data" / "core_pce_release" / "import_price_2026-10-16"
 CONTRACT = json.loads((BUNDLE / "g0_contract.json").read_text(encoding="utf-8"))
+HISTORY_PATH = BUNDLE / "line335_history.json"
 
 IMPORT_INDEX = Decimal("190.8")
 IMPORT_PRIOR = Decimal("169.4")
@@ -38,12 +46,14 @@ CARRIED_335 = Decimal("3.920759759301939753741850400")
 WEIGHT_335 = Decimal("0.003967987953834691354596872703")
 DELTA_IMPORT = "0.03456935692791517287606283182"
 DELTA_PPI = "-0.03197462036763559059953097081"
+OCT15_CENTRAL = CONTRACT["prior_post_ppi_central_mom_percent"]
 
 
 class ImportPriceIncrementalTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.bundle = load_import_price_bundle(BUNDLE)
+        cls.history = load_line335_history(HISTORY_PATH)
 
     def test_source_identity(self):
         import_leg = self.bundle["import_leg"]
@@ -115,18 +125,67 @@ class ImportPriceIncrementalTests(unittest.TestCase):
         )
         self.assertEqual(blocked["reason"], "nsa_passed_as_bea_sa")
 
+    def test_no_september_2026_bea_index_in_history(self):
+        self.assertNotIn("2026-09", self.history["bea_indexes"])
+
+    def test_september_bls_indexes_in_history(self):
+        imp = self.history["predictors"]["import_air_passenger_fares"]["indexes"]
+        ppi = self.history["predictors"]["ppi_international_scheduled_passenger"]["indexes"]
+        self.assertEqual(imp["2026-09"], "190.8")
+        self.assertEqual(imp["2026-08"], "169.4")
+        self.assertEqual(ppi["2026-09"], "265.040")
+        self.assertEqual(ppi["2026-08"], "276.479")
+
+    def test_gate_passes_and_model_beats_baselines(self):
+        wf = walk_forward(self.history)
+        self.assertTrue(wf["gate_passed"])
+        self.assertGreaterEqual(wf["n"], 60)
+        self.assertLess(wf["mae"]["model"], wf["mae"]["carry"])
+        self.assertLess(wf["mae"]["model"], wf["mae"]["three_month"])
+
+    def test_predict_month_matches_walk_forward(self):
+        wf = walk_forward(self.history)
+        pred = predict_month(self.history, "2019-06")
+        record = next(r for r in wf["records"] if r["period"] == "2019-06")
+        self.assertAlmostEqual(pred["prediction"], record["prediction"], places=9)
+
+    def test_predict_month_ignores_future_bea_labels(self):
+        pred_base = predict_month(self.history, "2019-06")
+        trimmed = copy.deepcopy(self.history)
+        trimmed["bea_indexes"] = {k: v for k, v in trimmed["bea_indexes"].items() if k < "2019-06"}
+        pred_trim = predict_month(trimmed, "2019-06")
+        self.assertAlmostEqual(pred_base["prediction"], pred_trim["prediction"], places=9)
+
+    def test_september_estimate_ignores_injected_bea_label(self):
+        base = september_2026_estimate(self.history)
+        poisoned = copy.deepcopy(self.history)
+        poisoned["bea_indexes"]["2026-09"] = "999.0"
+        alt = september_2026_estimate(poisoned)
+        self.assertEqual(base["model_mom"], alt["model_mom"])
+
     def test_exact_prior_replication_and_determinism(self):
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp)
             report = reconstruct_import_price_increment(out, release="2026-09", bundle_dir=BUNDLE)
-            self.assertEqual(report["central_mom_percent"], CONTRACT["prior_post_ppi_central_mom_percent"])
-            self.assertEqual(report["low_mom_percent"], CONTRACT["prior_post_ppi_low_mom_percent"])
-            self.assertEqual(report["high_mom_percent"], CONTRACT["prior_post_ppi_high_mom_percent"])
-            self.assertEqual(report["delta_versus_october_15_ppi_central_percent"], "0")
-            self.assertFalse(report["line_335"]["central_updated"])
+            self.assertEqual(report["october15_ppi_central_mom_percent"], OCT15_CENTRAL)
             self.assertEqual(report["pre_ppi_central_mom_percent"], CONTRACT["prior_post_cpi_pre_ppi_central_mom_percent"])
             for line in ("207", "336", "339"):
                 self.assertTrue(report["protected_lines"][line]["unchanged"])
+            model_mom = Decimal(report["line_335"]["model_mom_percent"])
+            if report["line_335"]["model"]["gate_passed"]:
+                expected_delta = WEIGHT_335 * (model_mom - CARRIED_335)
+                actual_delta = Decimal(report["delta_versus_october_15_ppi_central_percent"])
+                self.assertEqual(actual_delta, Decimal(report["central_mom_percent"]) - Decimal(OCT15_CENTRAL))
+                self.assertEqual(
+                    Decimal(report["attribution"][0]["central_contribution_delta_percent"]),
+                    actual_delta,
+                )
+                self.assertAlmostEqual(actual_delta, expected_delta, places=27)
+                self.assertNotEqual(report["central_mom_percent"], OCT15_CENTRAL)
+                self.assertTrue(report["line_335"]["central_updated"])
+            else:
+                self.assertEqual(report["central_mom_percent"], OCT15_CENTRAL)
+                self.assertEqual(report["delta_versus_october_15_ppi_central_percent"], "0")
             first = (out / "incremental_report.json").read_bytes()
             reconstruct_import_price_increment(out, release="2026-09", bundle_dir=BUNDLE)
             second = (out / "incremental_report.json").read_bytes()
@@ -137,9 +196,10 @@ class ImportPriceIncrementalTests(unittest.TestCase):
             report = reconstruct_import_price_increment(Path(tmp), bundle_dir=BUNDLE)
             row = report["attribution"][0]
             self.assertEqual(row["line"], 335)
-            self.assertEqual(row["central_contribution_delta_percent"], "0")
             self.assertIn("w_import_1", row["endpoint_contribution_deltas_percent"])
             self.assertIn("w_import_0", row["endpoint_contribution_deltas_percent"])
+            if report["line_335"]["model"]["gate_passed"]:
+                self.assertNotEqual(row["central_contribution_delta_percent"], "0")
 
     def test_source_failure_fixture_sha_mismatch(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -154,8 +214,8 @@ class ImportPriceIncrementalTests(unittest.TestCase):
             if (out / "incremental_report.json").exists():
                 payload = json.loads((out / "incremental_report.json").read_text(encoding="utf-8"))
                 self.assertEqual(
-                    payload.get("central_mom_percent"),
-                    CONTRACT["prior_post_ppi_central_mom_percent"],
+                    payload.get("october15_ppi_central_mom_percent"),
+                    OCT15_CENTRAL,
                 )
 
     def test_reconstruct_refuses_other_release(self):

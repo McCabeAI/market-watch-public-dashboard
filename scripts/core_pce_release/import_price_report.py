@@ -1,7 +1,8 @@
-"""October 2026 import-price sensitivity report (central unchanged)."""
+"""October 2026 import-price incremental report (PPI replay + optional line 335 model)."""
 
 from __future__ import annotations
 
+import copy
 import json
 from decimal import Decimal
 from pathlib import Path
@@ -9,7 +10,8 @@ from typing import Any
 
 from scripts.core_pce_release.acquire import fetch_plan, load_registry
 from scripts.core_pce_release.bls import _points
-from scripts.core_pce_release.calculator import calculate
+from scripts.core_pce_release.calculator import HORIZONS, calculate
+from scripts.core_pce_release.history import annualized, break_even_mom, project_level, rates_ending, shift_month
 from scripts.core_pce_release.import_price_bridge import (
     ENVELOPE_LABEL,
     LINE_335,
@@ -20,6 +22,14 @@ from scripts.core_pce_release.import_price_bridge import (
     mom_unchanged,
     nsa_sensitivity_envelope,
 )
+from scripts.core_pce_release.import_price_line335 import (
+    MODEL_ID,
+    _estimate_json_safe,
+    load_line335_history,
+    september_2026_estimate,
+)
+from scripts.core_pce_release.uncertainty import classification_sensitive, scenario_bounds
+from scripts.core_pce_release.verdict import classify_momentum, gap_to_two, nine_month_direction
 from scripts.core_pce_release.import_price_fixture import (
     ImportPriceSourceError,
     _DEFAULT_BUNDLE_DIR,
@@ -36,7 +46,8 @@ from scripts.core_pce_release.snapshot import load_snapshot, residual_weight
 
 RELEASE = "2026-09"
 SCHEMA = "core_pce_import_price_increment_v1"
-FORECAST_STAGE = "post_ppi_import_price_sensitivity"
+FORECAST_STAGE_SENSITIVITY = "post_ppi_import_price_sensitivity"
+FORECAST_STAGE_MODEL = "post_ppi_import_price_model_estimate"
 
 _PRIOR_POST_PPI_CENTRAL = "0.3674603939775941051607229995"
 _PRIOR_POST_PPI_LOW = "0.1766433957314642778172140867"
@@ -154,6 +165,96 @@ def _write_json(path: Path, payload: dict) -> None:
     path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
+def _text(value: Decimal | None) -> str | None:
+    if value is None:
+        return None
+    return format(value, "f")
+
+
+def _refresh_contribution(row: dict) -> None:
+    weight = Decimal(row["weight_share"])
+    row["contribution_percent"] = format(weight * Decimal(row["mom_percent"]), "f")
+
+
+def _recompute_forecast_metrics(
+    post_ppi: dict,
+    components: list[dict],
+    *,
+    target_period: str,
+) -> dict[str, Any]:
+    snapshot = load_snapshot()
+    levels = snapshot["levels"]
+    anchor = shift_month(target_period, -1)
+    anchor_level = levels.get(anchor)
+    pre_rates = rates_ending(levels, anchor)
+    horizons: dict[str, dict] = {}
+    history_ok = anchor_level is not None
+    for months in HORIZONS:
+        before = pre_rates[months]
+        unchanged = break_even_mom(levels, anchor, months)
+        if before is None or unchanged is None:
+            history_ok = False
+        horizons[str(months)] = {
+            "before": _text(before),
+            "after": None,
+            "delta": None,
+            "unchanged_momentum_mom_percent": _text(unchanged),
+        }
+
+    bounds = scenario_bounds(components)
+    central_text = bounds["central_mom_percent"]
+    low_text = bounds["low_mom_percent"]
+    high_text = bounds["high_mom_percent"]
+    low_headline = "INCOMPLETE"
+    high_headline = "INCOMPLETE"
+    headline = post_ppi.get("headline", "INCOMPLETE")
+    direction_9 = post_ppi.get("nine_month_direction", "unchanged")
+    gap: dict[int, str] = {}
+    central_posts: dict[int, Decimal] = {}
+
+    if history_ok:
+        assert anchor_level is not None
+        central_mom = Decimal(central_text)
+        low_mom = Decimal(low_text)
+        high_mom = Decimal(high_text)
+        for label, mom in (("central", central_mom), ("low", low_mom), ("high", high_mom)):
+            new_level = project_level(anchor_level, mom)
+            deltas: dict[int, Decimal] = {}
+            posts: dict[int, Decimal] = {}
+            for months in HORIZONS:
+                base_period = shift_month(target_period, -months)
+                post_rate = annualized(new_level, levels[base_period], months)
+                posts[months] = post_rate
+                before = Decimal(horizons[str(months)]["before"])
+                if label == "central":
+                    horizons[str(months)]["after"] = _text(post_rate)
+                    horizons[str(months)]["delta"] = _text(post_rate - before)
+                deltas[months] = post_rate - before
+            if label == "central":
+                central_posts = posts
+                headline = classify_momentum(deltas)
+            elif label == "low":
+                low_headline = classify_momentum(deltas)
+            else:
+                high_headline = classify_momentum(deltas)
+        direction_9 = nine_month_direction(Decimal(horizons["9"]["delta"]))
+        gap = {months: _text(gap_to_two(central_posts)[months]) for months in HORIZONS}
+
+    return {
+        "central_mom_percent": central_text,
+        "low_mom_percent": low_text,
+        "high_mom_percent": high_text,
+        "headline": headline,
+        "low_headline": low_headline,
+        "high_headline": high_headline,
+        "classification_sensitive": classification_sensitive(headline, low_headline, high_headline),
+        "nine_month_direction": direction_9,
+        "gap_to_two_percent": gap,
+        "horizons": horizons,
+        "components": components,
+    }
+
+
 def _render_markdown(report: dict[str, Any], contract: dict[str, Any]) -> str:
     line = report.get("line_335") or {}
     envelope = line.get("sensitivity_envelope") or {}
@@ -172,20 +273,24 @@ def _render_markdown(report: dict[str, Any], contract: dict[str, Any]) -> str:
         "",
         "## Central nowcast",
         "",
-        f"The post–October 15 PPI central core PCE month-over-month nowcast remains "
-        f"**{report['central_mom_percent']}%** (headline **{report['headline']}**, "
-        f"information stage `{report['information_stage']}`). "
-        f"Delta versus the October 15 PPI estimate: **{report['delta_versus_october_15_ppi_central_percent']}**.",
+        f"Post–October 15 PPI replay central: **{report.get('october15_ppi_central_mom_percent')}%**. "
+        f"Published central: **{report['central_mom_percent']}%** (headline **{report['headline']}**, "
+        f"stage `{report['forecast_stage']}`). "
+        f"Delta versus October 15 PPI: **{report['delta_versus_october_15_ppi_central_percent']}**.",
         "",
-        "No revised central was published from today's U.S. import and export price release. "
-        "BEA line 335 (passenger fares for foreign travel) is carried at the last published "
-        "component rate; verified BEA weights and a BEA-equivalent seasonal composite are not available.",
+        "The official BEA weighted-SA composite for line 335 remains unpublished. "
+        "When the pre-specified pseudo-OOS gate passes, the central shifts only by the "
+        "signed expenditure-share effect of replacing the carried line-335 rate with the "
+        "model estimate (estimated slopes, not BEA weights). Otherwise the October 15 PPI "
+        "central is unchanged.",
         "",
         "## Line 335 (blocked central update)",
         "",
         f"- BEA seasonal status: {bea.get('seasonal_status', 'SA by BEA')}",
-        f"- Carried MoM: {line.get('carried_mom_percent')}% ({line.get('method')})",
-        f"- Central update blocked: `{line.get('blocked', {}).get('reason')}`",
+        f"- Carried MoM: {line.get('carried_mom_percent')}% ({line.get('carried_method', line.get('method'))})",
+        f"- Model MoM (if published): {line.get('model_mom_percent', 'n/a')}",
+        f"- Official composite blocked: `{line.get('blocked', {}).get('reason')}`",
+        f"- Central updated from model: {line.get('central_updated')}",
         "",
         "## NSA sensitivity envelope (not an official core PCE revision)",
         "",
@@ -201,8 +306,8 @@ def _render_markdown(report: dict[str, Any], contract: dict[str, Any]) -> str:
         f"- w = 0 (international PPI {ppi_leg.get('series_id')}): "
         f"contribution delta **{w0.get('contribution_delta_percent')}** pp",
         "",
-        "These numbers are a labeled NSA proxy envelope only. They are **not** an official "
-        "core PCE revision and must not replace the unchanged central.",
+        "These endpoint numbers are a labeled NSA proxy envelope. They are not the published "
+        "central. The published central, when the gate passes, is the model estimate above.",
         "",
         "## Sources",
         "",
@@ -269,38 +374,110 @@ def reconstruct_import_price_increment(
     w_import_1 = envelope["endpoints"]["w_import_1"]["contribution_delta_percent"]
     w_import_0 = envelope["endpoints"]["w_import_0"]["contribution_delta_percent"]
 
+    october15_central = post_ppi["central_mom_percent"]
+    history_path = _bundle_root(bundle_dir) / "line335_history.json"
+    line335_history = load_line335_history(history_path)
+    model_estimate = september_2026_estimate(line335_history)
+    gate_passed = bool(model_estimate["gate_passed"])
+    model_mom = model_estimate["model_mom"]
+    mom_shift = model_mom - carried_mom
+
+    central_mom_percent = october15_central
+    low_mom_percent = post_ppi["low_mom_percent"]
+    high_mom_percent = post_ppi["high_mom_percent"]
+    headline = post_ppi["headline"]
+    delta_vs_oct15 = Decimal(0)
+    forecast_stage = FORECAST_STAGE_SENSITIVITY
+    reliability_classification = "sensitivity_not_bea_sa"
+    central_revision_allowed = False
+    model_estimated_central_published = False
+    low_confidence: dict[str, Any] | None = None
+    recomputed: dict[str, Any] | None = None
+
+    if gate_passed:
+        components = copy.deepcopy(post_ppi["components"])
+        for row in components:
+            if int(row.get("line") or 0) != LINE_335:
+                continue
+            for key in ("mom_percent", "low_mom_percent", "high_mom_percent"):
+                row[key] = format(Decimal(row[key]) + mom_shift, "f")
+            row["method"] = MODEL_ID
+            row["reliability"] = model_estimate["label"]
+            row["assumption"] = (
+                "September 2026 line-335 rate from pre-specified BLS-driven model; "
+                "not BEA's official weighted SA composite."
+            )
+            _refresh_contribution(row)
+        recomputed = _recompute_forecast_metrics(post_ppi, components, target_period=RELEASE)
+        central_mom_percent = recomputed["central_mom_percent"]
+        low_mom_percent = recomputed["low_mom_percent"]
+        high_mom_percent = recomputed["high_mom_percent"]
+        headline = recomputed["headline"]
+        delta_vs_oct15 = Decimal(central_mom_percent) - Decimal(october15_central)
+        forecast_stage = FORECAST_STAGE_MODEL
+        reliability_classification = "model_estimated_latest_vintage_pseudo_oos"
+        model_estimated_central_published = True
+        signed_contribution_delta = delta_vs_oct15
+    else:
+        signed_contribution_delta = Decimal(0)
+        low_confidence = {
+            "model_mom_percent": format(model_mom, "f"),
+            "gate_passed": False,
+            "note": "Pseudo-OOS gate failed; October 15 PPI central retained.",
+        }
+
+    pce_scale_error = weight_share * Decimal(str(model_estimate["oos"]["mae"]["model"]))
+
     report: dict[str, Any] = {
         "schema": SCHEMA,
         "release": RELEASE,
-        "forecast_stage": FORECAST_STAGE,
-        "central_revision_allowed": False,
-        "central_mom_percent": post_ppi["central_mom_percent"],
-        "low_mom_percent": post_ppi["low_mom_percent"],
-        "high_mom_percent": post_ppi["high_mom_percent"],
-        "delta_versus_october_15_ppi_central_percent": "0",
+        "forecast_stage": forecast_stage,
+        "central_revision_allowed": central_revision_allowed,
+        "model_estimated_central_published": model_estimated_central_published,
+        "october15_ppi_central_mom_percent": october15_central,
+        "central_mom_percent": central_mom_percent,
+        "low_mom_percent": low_mom_percent,
+        "high_mom_percent": high_mom_percent,
+        "delta_versus_october_15_ppi_central_percent": format(delta_vs_oct15, "f"),
         "information_stage": post_ppi["information_stage"],
-        "headline": post_ppi["headline"],
+        "headline": headline,
         "pre_ppi_central_mom_percent": pre_ppi["central_mom_percent"],
         "line_335": {
             "line": LINE_335,
             "weight_share": format(weight_share, "f"),
             "sign": sign,
             "carried_mom_percent": format(carried_mom, "f"),
-            "method": bea_line.get("carried_method", "baseline_last_published_mom"),
-            "reliability": "carried",
+            "carried_method": bea_line.get("carried_method", "baseline_last_published_mom"),
+            "model_mom_percent": format(model_mom, "f"),
+            "model_id": MODEL_ID,
+            "method": MODEL_ID if gate_passed else bea_line.get("carried_method", "baseline_last_published_mom"),
+            "reliability": model_estimate["label"] if gate_passed else "carried",
             "seasonal_status_bea": bea_line.get("seasonal_status", "SA by BEA"),
-            "central_updated": False,
+            "central_updated": gate_passed,
             "blocked": {
                 "reason": blocked.get("reason"),
                 "central_revision_allowed": blocked.get("central_revision_allowed"),
             },
             "sensitivity_envelope": envelope,
+            "model": {
+                "coefficients": model_estimate["coefficients"],
+                "mode": model_estimate["mode"],
+                "seasonal_factors": model_estimate["seasonal_factors"],
+                "training_end": model_estimate["training_end"],
+                "slopes_are_estimated_not_bea_weights": True,
+                "single_vintage_caveat": (
+                    "Latest-revised BLS and BEA history only; not an ALFRED real-time backtest."
+                ),
+                "oos": model_estimate["oos"],
+                "gate_passed": gate_passed,
+                "pce_scale_error_percent": format(pce_scale_error, "f"),
+            },
         },
         "attribution": [
             {
                 "line": LINE_335,
                 "signed_weight_share": format(sign * weight_share, "f"),
-                "central_contribution_delta_percent": "0",
+                "central_contribution_delta_percent": format(signed_contribution_delta, "f"),
                 "endpoint_contribution_deltas_percent": {
                     "w_import_1": w_import_1,
                     "w_import_0": w_import_0,
@@ -348,7 +525,7 @@ def reconstruct_import_price_increment(
             "ppi_oneshot_frozen_series_count": len(provenance.get("ppi_oneshot", {}).get("frozen_series_ids") or []),
             "ppi_oneshot_raw_sha256": integrity.get("ppi_oneshot_raw_documents_sha256"),
         },
-        "reliability_classification": "sensitivity_not_bea_sa",
+        "reliability_classification": reliability_classification,
         "ppi_oneshot_raw_sha256": integrity.get("ppi_oneshot_raw_documents_sha256"),
         "bls_api_air_2026_file_sha256": integrity.get("bls_api_air_2026_file_sha256"),
         "missing_for_validated_central_revision": list(bea_line.get("required_for_central_revision") or []),
@@ -357,6 +534,16 @@ def reconstruct_import_price_increment(
         "import_index_ratio_mom_percent": format(import_mom, "f"),
         "published_rounded_import_percent_not_used": format(_PUBLISHED_ROUNDED_IMPORT, "f"),
     }
+    if low_confidence is not None:
+        report["low_confidence_conditional_scenario"] = low_confidence
+    if recomputed is not None:
+        report["horizons"] = recomputed["horizons"]
+        report["gap_to_two_percent"] = recomputed["gap_to_two_percent"]
+        report["nine_month_direction"] = recomputed["nine_month_direction"]
+        report["classification_sensitive"] = recomputed["classification_sensitive"]
+        report["low_headline"] = recomputed["low_headline"]
+        report["high_headline"] = recomputed["high_headline"]
+        report["components"] = recomputed["components"]
 
     audit: dict[str, Any] = {
         "schema": "core_pce_import_price_increment_audit_v1",
@@ -373,6 +560,8 @@ def reconstruct_import_price_increment(
             "match": True,
         },
         "line_335_blocked": blocked,
+        "line_335_model": _estimate_json_safe(model_estimate),
+        "line_335_gate_passed": gate_passed,
         "nsa_envelope": envelope,
         "protected_lines_unchanged": list(PROTECTED_LINES),
     }

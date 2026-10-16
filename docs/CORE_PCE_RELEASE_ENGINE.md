@@ -37,7 +37,7 @@ A chat message does not run this calculator. There is no cron and no listener wo
 
 Missing, stale, or unpublished September PPI is commented as `NOT YET AVAILABLE`. A throttled or failed BLS response is commented as `ERROR`. Neither case replaces the offline baseline.
 
-`import-price` replays the frozen October 15 PPI central from committed fixtures and leaves that central unchanged. The October 16 import-air observation is reported only as a **labeled NSA sensitivity envelope** for BEA line 335. The command does not arm the listener, does not call BLS, and does not change the `[run-ppi]` workflow or trigger. See `docs/CORE_PCE_IMPORT_PRICE_2026-10-16.md`.
+`import-price` replays the frozen October 15 PPI central from committed fixtures, then may publish a **model-estimated** shift for BEA line 335 when a pre-specified pseudo-OOS gate passes (otherwise the October 15 central is unchanged). The official BEA weighted-SA composite remains unpublished; the NSA sensitivity envelope is still reported. The command does not arm the listener, does not call BLS, and does not change the `[run-ppi]` workflow or trigger. See `docs/CORE_PCE_IMPORT_PRICE_2026-10-16.md`.
 
 ```bash
 python -m scripts.core_pce_release prepare ppi --release 2026-09 --out /tmp/pce-ppi-2026-09

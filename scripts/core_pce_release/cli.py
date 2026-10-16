@@ -177,8 +177,15 @@ def main(
         w1 = (endpoints.get("w_import_1") or {}).get("contribution_delta_percent")
         w0 = (endpoints.get("w_import_0") or {}).get("contribution_delta_percent")
         blocked = line.get("blocked") or {}
+        model_block = line.get("model") or {}
+        print(
+            f"october15_ppi_central_mom_percent={report.get('october15_ppi_central_mom_percent')}",
+            flush=True,
+        )
         print(f"central_mom_percent={report['central_mom_percent']}", flush=True)
         print(f"delta_versus_october_15_ppi_central_percent={report['delta_versus_october_15_ppi_central_percent']}", flush=True)
+        print(f"line_335_model_mom_percent={line.get('model_mom_percent')}", flush=True)
+        print(f"line_335_gate_passed={model_block.get('gate_passed')}", flush=True)
         print(f"line_335_blocked={blocked.get('reason')}", flush=True)
         print(f"endpoint_w_import_1_contribution_delta_percent={w1}", flush=True)
         print(f"endpoint_w_import_0_contribution_delta_percent={w0}", flush=True)
