@@ -10,9 +10,15 @@ from pathlib import Path
 from typing import Any
 
 from scripts.macro_ingestion.calendar import latest_due_release, release_due as calendar_release_due
-from scripts.macro_ingestion.contract import index_series_rows, load_catalog
+from scripts.macro_ingestion.contract import calibration_as_of, index_series_rows, load_catalog
 from scripts.macro_ingestion.retries import DEFAULT_ATTEMPTS
 from scripts.macro_ingestion.runner import run_ingestion
+from scripts.macro_ingestion.series_preflight import (
+    ledger_rows_for_preflight_mismatches,
+    preflight_summary_for_details,
+    run_weighted_series_preflight,
+)
+from scripts.macro_ingestion.windows import cutoff_class
 from scripts.macro_ingestion.vintage import latest_period_in_store, load_store
 from scripts.market_watch_launch.contract import COUNTRIES, stage_receipt
 from scripts.market_watch_launch.lineage import stage_verified_lineage
@@ -127,6 +133,9 @@ def _enrich_row(
         row["release_due"] = False
         if observation_period and not row["due_period"]:
             row["due_period"] = observation_period
+    mismatch = raw.get("contract_mismatch")
+    if isinstance(mismatch, dict):
+        row["contract_mismatch"] = mismatch
     return row
 
 
@@ -526,45 +535,66 @@ def _live_ingestion(
     for path in (observations_dir, health_dir, raw_dir):
         path.mkdir(parents=True, exist_ok=True)
 
-    result = run_ingestion(
-        mode="live",
-        countries=list(_LAUNCH_COUNTRIES),
-        now=when,
-        run_id=launch_id,
-        persist_canonical=False,
-        observations_dir=observations_dir,
-        health_dir=health_dir,
-        raw_dir=raw_dir,
-        # Breadth first: try every scored series once before spending the
-        # remaining budget retrying flaky sources.
-        timeout_seconds=10,
-        country_budget_seconds=180,
-        run_budget_seconds=15 * 60,
-        attempts=1,
+    catalog = load_catalog()
+    checked_at = _utc_iso(when)
+    cal_as_of = calibration_as_of(catalog)
+    cutoff = cutoff_class(when)
+    preflight = run_weighted_series_preflight(root=root, catalog=catalog)
+    contract_rows = ledger_rows_for_preflight_mismatches(
+        list(preflight.get("mismatches") or []),
+        checked_at=checked_at,
+        calibration_as_of_value=cal_as_of,
+        cutoff_class_value=cutoff,
     )
-    if not result.get("rows"):
-        raise RuntimeError("ingestion returned no rows")
+    blocked = frozenset(preflight.get("blocked_countries") or [])
+    allowed_countries = [code for code in _LAUNCH_COUNTRIES if code not in blocked]
 
-    attempts: dict[str, int] = {}
-    for row in result["rows"]:
-        sid = str(row["series_id"])
-        attempts[sid] = _row_fetch_attempts(row, configured_attempts=1)
-
-    retry_ids = {
-        str(row["series_id"])
-        for row in result["rows"]
-        if _should_retry_live_row(row)
-    }
-    if retry_ids:
-        retry_result = run_ingestion(
+    if allowed_countries:
+        result = run_ingestion(
             mode="live",
-            countries=list(_LAUNCH_COUNTRIES),
+            countries=allowed_countries,
             now=when,
             run_id=launch_id,
             persist_canonical=False,
             observations_dir=observations_dir,
             health_dir=health_dir,
             raw_dir=raw_dir,
+            catalog=catalog,
+            # Breadth first: try every scored series once before spending the
+            # remaining budget retrying flaky sources.
+            timeout_seconds=10,
+            country_budget_seconds=180,
+            run_budget_seconds=15 * 60,
+            attempts=1,
+        )
+    else:
+        result = {"rows": [], "checked_at": checked_at, "cutoff_class": cutoff}
+
+    merged_fetch_rows = list(result.get("rows") or []) + contract_rows
+    if not merged_fetch_rows:
+        raise RuntimeError("ingestion returned no rows")
+
+    attempts: dict[str, int] = {}
+    for row in merged_fetch_rows:
+        sid = str(row["series_id"])
+        attempts[sid] = _row_fetch_attempts(row, configured_attempts=1)
+
+    retry_ids = {
+        str(row["series_id"])
+        for row in merged_fetch_rows
+        if _should_retry_live_row(row)
+    }
+    if retry_ids and allowed_countries:
+        retry_result = run_ingestion(
+            mode="live",
+            countries=allowed_countries,
+            now=when,
+            run_id=launch_id,
+            persist_canonical=False,
+            observations_dir=observations_dir,
+            health_dir=health_dir,
+            raw_dir=raw_dir,
+            catalog=catalog,
             timeout_seconds=20,
             country_budget_seconds=120,
             run_budget_seconds=8 * 60,
@@ -574,11 +604,10 @@ def _live_ingestion(
         for row in retry_result.get("rows") or []:
             sid = str(row["series_id"])
             attempts[sid] = attempts.get(sid, 0) + _row_fetch_attempts(row, configured_attempts=2)
-        merged_raw = _merge_ingestion_rows(result["rows"], retry_result["rows"], attempts=attempts)
+        merged_raw = _merge_ingestion_rows(merged_fetch_rows, retry_result["rows"], attempts=attempts)
     else:
-        merged_raw = _merge_ingestion_rows(result["rows"], [], attempts=attempts)
+        merged_raw = _merge_ingestion_rows(merged_fetch_rows, [], attempts=attempts)
 
-    catalog = load_catalog()
     by_id = index_series_rows(catalog["series"])
     rows = [
         _enrich_row(raw, by_id[str(raw["series_id"])], when=when, observations_dir=observations_dir)
@@ -636,6 +665,7 @@ def _live_ingestion(
         "invented_values": False,
         "checked_at": result.get("checked_at"),
         "cutoff_class": result.get("cutoff_class"),
+        "series_contract_preflight": preflight_summary_for_details(preflight),
     }
     return details, status, reason
 

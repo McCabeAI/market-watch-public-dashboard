@@ -55,6 +55,8 @@ BLOCKING_SERIES_STATUSES: frozenset[str] = frozenset(
         "due_missing",
         "source_failed",
         "incomplete_country",
+        "transform_mismatch",
+        "contract_mismatch",
     }
 )
 OPTIONAL_GAP_STATUSES: frozenset[str] = frozenset(
