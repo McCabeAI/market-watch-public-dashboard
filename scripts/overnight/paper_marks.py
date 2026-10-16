@@ -586,6 +586,21 @@ def hydrate_action_mids(
             instrument = pos.get("instrument")
             asset_class = pos.get("asset_class")
             expression = action.get("paper_expression") or pos.get("paper_expression")
+        if kind in {"OPEN", "ADD", "HEDGE"}:
+            from scripts.overnight.mark_admission import entry_rejection
+
+            rejection = entry_rejection(
+                instrument,
+                asset_class=asset_class if isinstance(asset_class, str) else None,
+                expression=expression if isinstance(expression, Mapping) else None,
+                action=kind,
+            )
+            if rejection:
+                action["_admission_rejection"] = rejection
+                action["_paper_mark_error"] = f"{rejection['reason']}: {rejection['message']}"
+                for key in ("price", "mark_price", "paper_mid_source", "paper_mid_as_of", "paper_mid_kind"):
+                    action.pop(key, None)
+                continue
         try:
             mark = resolve_paper_mid(
                 market_state,

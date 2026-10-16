@@ -627,6 +627,50 @@ def apply_action(
         "options": memo_for_gate.get("options_candidate"),
     }.get(selected)
     selected_candidate = selected_candidate if isinstance(selected_candidate, dict) else {}
+    if kind in {"OPEN", "ADD", "HEDGE"}:
+        from scripts.overnight.mark_admission import (
+            action_exposure,
+            entry_rejection,
+            seat_valuation_block,
+            unresolved_research_position_ids,
+        )
+        from scripts.overnight.paper_marks import resolve_paper_mid
+
+        gate_instrument, gate_asset_class, gate_expression = action_exposure(
+            action,
+            seat_book.get("positions"),
+            selected_candidate=selected_candidate,
+        )
+        rejection = entry_rejection(
+            gate_instrument,
+            asset_class=gate_asset_class if isinstance(gate_asset_class, str) else None,
+            expression=gate_expression if isinstance(gate_expression, dict) else None,
+            action=kind,
+        )
+        if rejection:
+            return _block_expansion(
+                seat_book,
+                action,
+                when=stamp,
+                run_id=run_id,
+                result="blocked_admission",
+                reason=f"{rejection['reason']}: {rejection['message']}",
+            )
+        unresolved = unresolved_research_position_ids(
+            seat_book.get("positions"),
+            market_state=market_state,
+            resolve_mark=resolve_paper_mid,
+        )
+        seat_block = seat_valuation_block(seat_book.get("positions"), unresolved)
+        if seat_block:
+            return _block_expansion(
+                seat_book,
+                action,
+                when=stamp,
+                run_id=run_id,
+                result="blocked_admission",
+                reason=f"{seat_block['reason']}: {seat_block['message']}",
+            )
     try:
         blocked = assert_action_allowed(
             kind,

@@ -112,7 +112,11 @@ def assess_provider_payload(
     except Exception:
         return {"ok": False, "reason": "rejected"}
 
-    return {"ok": True, "reason": None}
+    out: dict[str, Any] = {"ok": True, "reason": None}
+    rejections = payload.get("_admission_rejections") or []
+    if rejections:
+        out["admission_rejections"] = rejections
+    return out
 
 
 def _success_details(
@@ -122,6 +126,7 @@ def _success_details(
     packet_sha256: str | None,
     already_applied: bool,
     stub: bool,
+    admission_rejections: list[Any] | None = None,
 ) -> dict[str, Any]:
     details: dict[str, Any] = {
         "review_id": review_id,
@@ -135,7 +140,24 @@ def _success_details(
     }
     if stub:
         details["stub"] = True
+    if admission_rejections:
+        details["admission_rejections"] = admission_rejections
     return details
+
+
+def _admission_rejections_for_details(
+    assessment: dict[str, Any] | None,
+    payload: dict[str, Any] | None,
+) -> list[Any]:
+    if assessment:
+        found = assessment.get("admission_rejections")
+        if found:
+            return list(found)
+    if payload:
+        found = payload.get("_admission_rejections")
+        if found:
+            return list(found)
+    return []
 
 
 def run(launch: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
@@ -201,6 +223,7 @@ def run(launch: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
                     packet_sha256=packet_sha256,
                     already_applied=True,
                     stub=False,
+                    admission_rejections=_admission_rejections_for_details(None, payload),
                 ),
             )
 
@@ -226,6 +249,7 @@ def run(launch: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
                 packet_sha256=packet_sha256,
                 already_applied=False,
                 stub=False,
+                admission_rejections=_admission_rejections_for_details(assessment, payload),
             ),
         )
 
@@ -254,6 +278,7 @@ def run(launch: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
                 packet_sha256=packet_sha256,
                 already_applied=True,
                 stub=True,
+                admission_rejections=_admission_rejections_for_details(None, None),
             ),
         )
 
@@ -282,5 +307,6 @@ def run(launch: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
             packet_sha256=packet_sha256,
             already_applied=False,
             stub=True,
+            admission_rejections=_admission_rejections_for_details(assessment, payload),
         ),
     )

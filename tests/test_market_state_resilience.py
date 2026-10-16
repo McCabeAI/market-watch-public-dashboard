@@ -274,9 +274,20 @@ class PreflightGateTests(unittest.TestCase):
         packet["rates"]["NZ"] = {"status": "unavailable", "error": "RBNZ HTTP 403"}
         packet["unavailable_sources"] = ["NZ_rates"]
         families = _families(packet)
-        for instrument in ("AUDNZD", "NZDUSD", "NZ-US_2Y", "AU-NZ_10Y"):
-            with self.assertRaises(FreshnessError):
+        for instrument in ("NZ-US_2Y", "AU-NZ_10Y", "NZ_10Y"):
+            with self.assertRaises(FreshnessError) as ctx:
                 assert_action_allowed("OPEN", families, seat="cross-merchant", instrument=instrument)
+            self.assertIn("unsupported_mark_source", str(ctx.exception))
+        for instrument in ("AUDNZD", "NZDUSD"):
+            assert_action_allowed(
+                "OPEN",
+                families,
+                seat="cross-merchant",
+                instrument=instrument,
+                asset_class="spot_fx",
+            )
+        self.assertNotIn("NZ_rates", expression_dependencies("NZDUSD", asset_class="spot_fx"))
+        self.assertIn("NZ_rates", expression_dependencies("NZ-US_10Y"))
 
     def test_stale_jp_blocks_only_jp_expressions(self) -> None:
         packet = _packet()

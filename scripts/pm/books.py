@@ -41,6 +41,7 @@ from scripts.overnight.paper_marks import (
     find_position,
     hydrate_action_mids,
     refresh_positions,
+    resolve_paper_mid,
 )
 from scripts.pm.constants import (
     ACTIONS,
@@ -551,6 +552,38 @@ def apply_action(
         raise CapError(f"{pm_id} is RISK_STOPPED after breaching the hard drawdown limit")
     if kind == "HEDGE" and not hedge_allowed(pm_id):
         raise SchemaError(f"{pm_id} mandate prohibits HEDGE; reduce or close instead")
+    if kind in {"OPEN", "ADD", "HEDGE"}:
+        from scripts.overnight.mark_admission import (
+            action_exposure,
+            entry_rejection,
+            seat_valuation_block,
+            unresolved_research_position_ids,
+        )
+
+        gate_instrument, gate_asset_class, gate_expression = action_exposure(
+            action,
+            book.get("positions"),
+        )
+        rejection = entry_rejection(
+            gate_instrument,
+            asset_class=gate_asset_class if isinstance(gate_asset_class, str) else None,
+            expression=gate_expression if isinstance(gate_expression, dict) else None,
+            action=kind,
+        )
+        if rejection:
+            raise MarkError(
+                f"{pm_id} {kind} blocked_admission: {rejection['reason']}: {rejection['message']}"
+            )
+        unresolved = unresolved_research_position_ids(
+            book.get("positions"),
+            market_state=market_state,
+            resolve_mark=resolve_paper_mid,
+        )
+        seat_block = seat_valuation_block(book.get("positions"), unresolved)
+        if seat_block:
+            raise MarkError(
+                f"{pm_id} {kind} blocked_admission: {seat_block['reason']}: {seat_block['message']}"
+            )
     if kind in {"OPEN", "ADD", "HEDGE"} and action.get("_paper_mark_error"):
         raise MarkError(
             f"{pm_id} {kind} blocked_mark: deterministic paper mark unavailable "
@@ -823,13 +856,18 @@ def apply_decision(
             kind = str(action.get("action") or "")
             if kind not in expanding:
                 raise
+            reason_text = str(exc)
+            if "unsupported_mark_source" in reason_text or "entry_not_approved" in reason_text:
+                result = "blocked_admission"
+            else:
+                result = "blocked_mark"
             _record_blocked_expansion(
                 book,
                 action,
                 when=stamp,
                 run_id=run_id,
-                result="blocked_mark",
-                reason=str(exc),
+                result=result,
+                reason=reason_text,
             )
             blocked_expansion = True
         except CapError as exc:
