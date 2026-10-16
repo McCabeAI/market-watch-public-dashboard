@@ -1,0 +1,92 @@
+{
+  "schema": "core_pce_import_price_provenance_v1",
+  "bundle": "import_price_2026-10-16",
+  "retrieved_at_utc": "2026-10-16T12:47:22Z",
+  "target_period": "2026-09",
+  "prior_period": "2026-08",
+  "bls_public_api": {
+    "endpoint": "https://api.bls.gov/publicAPI/v2/timeseries/data/",
+    "method": "POST",
+    "request_body": {
+      "seriesid": ["EIUIV142", "PCU4811114811112"],
+      "startyear": "2026",
+      "endyear": "2026"
+    },
+    "response_file": "bls_api_air_2026.json",
+    "fallback": false,
+    "fallback_source": null,
+    "g0_contract_values_matched": true
+  },
+  "series": {
+    "import_leg": {
+      "series_id": "EIUIV142",
+      "title": "Monthly import price index for balance of payments V142, Air passenger fares, not seasonally adjusted",
+      "period": "2026-09",
+      "prior_period": "2026-08",
+      "seasonal_status": "NSA",
+      "index": "190.8",
+      "prior_index": "169.4",
+      "release": {
+        "release_id": "USDL-26-1577",
+        "embargo_until": "2026-10-16T08:30:00-04:00",
+        "table": "Table 10",
+        "news_release_url": "https://www.bls.gov/news.release/ximpim.nr0.htm"
+      },
+      "technical_note_quote": "All indexes use a modified Laspeyres formula and are not seasonally adjusted.",
+      "published_rounded_percent_change_display_only": "12.6",
+      "published_rounding_is_not_the_calculation_input": true,
+      "august_index_matches_prior_publication_cited_by_g0": "169.4"
+    },
+    "international_ppi_leg": {
+      "series_id": "PCU4811114811112",
+      "title": "PPI industry data for Scheduled passenger air transportation-International, not seasonally adjusted",
+      "period": "2026-09",
+      "prior_period": "2026-08",
+      "seasonal_status": "NSA",
+      "index": "265.040",
+      "prior_index": "276.479",
+      "footnote_code": "P",
+      "footnote_text": "Preliminary. All indexes are subject to monthly revisions up to four months after original publication.",
+      "in_frozen_ppi_oneshot": false
+    }
+  },
+  "ppi_oneshot": {
+    "artifact": "run-ppi-2026-09-38736202128",
+    "workflow_run": "https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/38736202128",
+    "raw_documents_file": "ppi_oneshot_raw_documents.json",
+    "sha_method": "sha256 of json.dumps(raw_documents, sort_keys=True).encode('utf-8')",
+    "frozen_series_ids": [
+      "PCU622---622---",
+      "PCU5241265241262",
+      "PCU523150523150102",
+      "PCU5231505231502012",
+      "PCU5231505231501011",
+      "PCU5231505231501012",
+      "PCU5613805613802"
+    ],
+    "refetch_forbidden": true
+  },
+  "integrity": {
+    "ppi_oneshot_raw_documents_sha256": "f92fcdff3e57dbb19d5f6a2575f77f70986cf22c4c3f1a5ae9a5b747c59b5581",
+    "bls_api_air_2026_file_sha256": "66bcc7b3e848e6a8734f43176ae2251cf59920a8c7f24603e1851f3e7c04e416"
+  },
+  "bea_line_335": {
+    "line": 335,
+    "name": "Passenger fares for foreign travel",
+    "source_text": "Weighted average of BLS import price index for air travel and PPI for international scheduled air passenger fares.",
+    "seasonal_status": "SA by BEA",
+    "weights_published": false,
+    "primary_source": {
+      "url": "https://www.bea.gov/sites/default/files/2026-10/FAQ521-Sep26-update.xlsx",
+      "sha256": "66c53c60cd0c2b1258589e0d8239beed95d0a1ff9822575a640c3dc5da701c7b",
+      "table": "BEA Table 2.4.4 U-D. Price Indexes for PCE: Source Data",
+      "item": 335
+    }
+  },
+  "excluded_inputs": {
+    "headline_all_imports_mom_percent_not_used": "+1.1",
+    "statement": "Headline U.S. import-price inflation (all-imports +1.1 percent) is not used for line 335 or the central core PCE nowcast."
+  },
+  "g0_contract": "g0_contract.json",
+  "central_revision_allowed": false
+}

@@ -1,0 +1,127 @@
+{
+  "schema": "core_pce_import_price_g0_contract_v1",
+  "frozen_by": "G0",
+  "target_release": "2026-09",
+  "anchor_period": "2026-08",
+  "decision": "central_unchanged_sensitivity_only",
+  "central_revision_allowed": false,
+  "prior_post_ppi_central_mom_percent": "0.3674603939775941051607229995",
+  "prior_post_ppi_low_mom_percent": "0.1766433957314642778172140867",
+  "prior_post_ppi_high_mom_percent": "0.5010010018376246819432868609",
+  "prior_post_cpi_pre_ppi_central_mom_percent": "0.3688405280179773205064998201",
+  "prior_information_stage": "ppi_partial",
+  "prior_headline": "HOT",
+  "ppi_oneshot": {
+    "issue": "https://github.com/McCabeAI/market-watch-public-dashboard/issues/203",
+    "workflow_run": "https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/38736202128",
+    "artifact": "run-ppi-2026-09-38736202128",
+    "raw_documents_sha256": "f92fcdff3e57dbb19d5f6a2575f77f70986cf22c4c3f1a5ae9a5b747c59b5581",
+    "sha_method": "sha256 of json.dumps(raw_documents, sort_keys=True).encode('utf-8')",
+    "replay_instruction": "Rebuild observations only from this frozen raw document. Do not refetch these seven PPI series."
+  },
+  "bea_line_335": {
+    "line": 335,
+    "name": "Passenger fares for foreign travel",
+    "nipa_code": "DAFTRC",
+    "bea_series_code": "E1AFT1",
+    "sign": 1,
+    "weight_share": "0.003967987953834691354596872703",
+    "q2_2026_millions": "77601",
+    "source_text": "Weighted average of BLS import price index for air travel and PPI for international scheduled air passenger fares.",
+    "seasonal_status": "SA by BEA",
+    "source_family": "OTHER",
+    "policy": "not_directly_usable",
+    "carried_mom_percent": "3.920759759301939753741850400",
+    "carried_method": "baseline_last_published_mom",
+    "primary_source": {
+      "table": "BEA Table 2.4.4 U-D. Price Indexes for PCE: Source Data",
+      "item": 335,
+      "url": "https://www.bea.gov/sites/default/files/2026-10/FAQ521-Sep26-update.xlsx",
+      "sha256": "66c53c60cd0c2b1258589e0d8239beed95d0a1ff9822575a640c3dc5da701c7b",
+      "dated_cell": "2026-09-30",
+      "weights_published": false
+    },
+    "handbook": {
+      "document": "NIPA Handbook Chapter 5, Table 5.B, line 109 Foreign travel by U.S. residents",
+      "url": "https://www.bea.gov/resources/methodologies/nipa-handbook/pdf/chapter-05.pdf",
+      "price_text": "Travel expenditures: BEA composite index of foreign CPIs (exchange-rate adjusted). Passenger fare imports: BLS import price index for air passenger fares. Passenger fare payments to U.S. carriers: PPI for international scheduled passenger air transportation.",
+      "weights_published": false
+    },
+    "blocked_because": [
+      "Table 2.4.4 U-D names a weighted average and does not publish the two source proportions.",
+      "Handbook Chapter 5 identifies the two indexes as prices for two expenditure pieces and does not publish the line-335 monthly weights.",
+      "Seasonal status is SA by BEA. Both BLS inputs verified below are not seasonally adjusted. No September 2026 BEA seasonal factor for E1AFT1 is in the source map.",
+      "A convex combination of the NSA legs is therefore not a BEA-equivalent component rate."
+    ],
+    "required_for_central_revision": [
+      "Primary nonnegative weights on the import-air index and the international scheduled PPI that sum to one inside line 335 and match the PCE consumer concept.",
+      "A documented BEA seasonal factor or SA index for September 2026 versus August 2026 for that same composite.",
+      "Explicit confirmation that no third price leg enters line 335."
+    ]
+  },
+  "lines_not_updated": {
+    "207": "PPI Domestic scheduled passenger air transportation. Not the import air passenger fare index.",
+    "336": "BEA composite of foreign CPIs, exchange-rate adjusted. Not an import-price leg.",
+    "339": "Fixed-weighted travel CPIs and PPIs for domestic scheduled air passenger fares and travel agencies. Negative PCE weight. Import air fares are not a named leg."
+  },
+  "import_leg": {
+    "series_id": "EIUIV142",
+    "series_title": "Monthly import price index for balance of payments V142, Air passenger fares, not seasonally adjusted",
+    "seasonal_status": "NSA",
+    "base_period": "2000=100",
+    "period": "2026-09",
+    "index": "190.8",
+    "prior_period": "2026-08",
+    "prior_index": "169.4",
+    "july_2026_index": "190.8",
+    "index_ratio_mom_percent": "12.63282172373081463990554900",
+    "published_rounded_percent_change": "12.6",
+    "published_rounding_is_not_the_calculation_input": true,
+    "august_index_matches_prior_publication": "169.4",
+    "release": {
+      "agency": "BLS",
+      "program": "U.S. Import and Export Price Indexes",
+      "release_id": "USDL-26-1577",
+      "embargo_until": "2026-10-16T08:30:00-04:00",
+      "reference_month": "2026-09",
+      "table": "Table 10",
+      "news_release_url": "https://www.bls.gov/news.release/ximpim.nr0.htm",
+      "timeseries_url": "https://data.bls.gov/timeseries/EIUIV142",
+      "technical_note": "All indexes use a modified Laspeyres formula and are not seasonally adjusted. Index values are rounded to the tenth. Percent changes are derived from the rounded indexes and then rounded to the tenth."
+    }
+  },
+  "international_ppi_leg": {
+    "series_id": "PCU4811114811112",
+    "series_title": "PPI industry data for Scheduled passenger air transportation-International, not seasonally adjusted",
+    "seasonal_status": "NSA",
+    "base_period": "198912",
+    "period": "2026-09",
+    "index": "265.040",
+    "prior_period": "2026-08",
+    "prior_index": "276.479",
+    "index_ratio_mom_percent": "-4.137384756165929419594254900",
+    "footnote_code": "P",
+    "footnote_text": "Preliminary. All indexes are subject to monthly revisions up to four months after original publication.",
+    "in_frozen_ppi_oneshot": false,
+    "note": "Retrieved from the BLS public API on 2026-10-16. Not one of the seven series in the frozen PPI one-shot raw document. Do not mix with the earlier FRED August print of 280.421."
+  },
+  "nsa_proxy_envelope_not_a_central_revision": {
+    "label": "nsa_proxy_envelope_not_bea_sa",
+    "weight_selection": "none",
+    "equal_weights_used": false,
+    "formula": "For every unpublished import-leg share w in [0, 1], NSA proxy mom = w*import_index_ratio_mom + (1-w)*ppi_index_ratio_mom. Contribution delta = line_335_weight * (proxy_mom - carried_mom). Report only the signed endpoints. Do not choose w. Do not replace the central.",
+    "import_endpoint_contribution_delta_percent": "0.03456935692791517287606283182",
+    "ppi_endpoint_contribution_delta_percent": "-0.03197462036763559059953097081",
+    "implied_central_if_misapplied_import_endpoint": "0.4020297509055092780367858313",
+    "implied_central_if_misapplied_ppi_endpoint": "0.3354857736099585145611920287",
+    "these_implied_centrals_are_not_estimates": true
+  },
+  "fail_closed": [
+    "missing_international_ppi_leg",
+    "missing_import_leg",
+    "weights_unverified",
+    "nsa_passed_as_bea_sa",
+    "fixture_sha_mismatch",
+    "source_period_not_2026-09"
+  ]
+}
