@@ -111,6 +111,11 @@ def main(
     run_ppi_parser.add_argument("--release", default="2026-09")
     run_ppi_parser.add_argument("--out", type=Path, required=True)
 
+    import_price_parser = sub.add_parser("import-price")
+    import_price_parser.add_argument("--release", default="2026-09")
+    import_price_parser.add_argument("--out", type=Path, required=True)
+    import_price_parser.add_argument("--bundle-dir", type=Path, default=None)
+
     sub.add_parser("authorize-ppi-issue")
 
     arm_parser = sub.add_parser("arm")
@@ -149,6 +154,41 @@ def main(
         except Exception:  # noqa: BLE001 — comment stays free of exception text
             write_unexpected_error(args.out)
             return 1
+        return 0
+    if args.command == "import-price":
+        if args.release != "2026-09":
+            print("refusing: release must be 2026-09", flush=True)
+            return 2
+        from scripts.core_pce_release.import_price_fixture import ImportPriceSourceError
+        from scripts.core_pce_release.import_price_report import reconstruct_import_price_increment
+
+        try:
+            report = reconstruct_import_price_increment(
+                args.out,
+                release=args.release,
+                bundle_dir=args.bundle_dir,
+            )
+        except ImportPriceSourceError as exc:
+            print(f"import-price blocked: {exc.reason}", flush=True)
+            return 2
+        line = report.get("line_335") or {}
+        envelope = line.get("sensitivity_envelope") or {}
+        endpoints = envelope.get("endpoints") or {}
+        w1 = (endpoints.get("w_import_1") or {}).get("contribution_delta_percent")
+        w0 = (endpoints.get("w_import_0") or {}).get("contribution_delta_percent")
+        blocked = line.get("blocked") or {}
+        model_block = line.get("model") or {}
+        print(
+            f"october15_ppi_central_mom_percent={report.get('october15_ppi_central_mom_percent')}",
+            flush=True,
+        )
+        print(f"central_mom_percent={report['central_mom_percent']}", flush=True)
+        print(f"delta_versus_october_15_ppi_central_percent={report['delta_versus_october_15_ppi_central_percent']}", flush=True)
+        print(f"line_335_model_mom_percent={line.get('model_mom_percent')}", flush=True)
+        print(f"line_335_gate_passed={model_block.get('gate_passed')}", flush=True)
+        print(f"line_335_blocked={blocked.get('reason')}", flush=True)
+        print(f"endpoint_w_import_1_contribution_delta_percent={w1}", flush=True)
+        print(f"endpoint_w_import_0_contribution_delta_percent={w0}", flush=True)
         return 0
 
     wall = wall_clock or (lambda: datetime.now(timezone.utc))
