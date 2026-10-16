@@ -37,9 +37,12 @@ A chat message does not run this calculator. There is no cron and no listener wo
 
 Missing, stale, or unpublished September PPI is commented as `NOT YET AVAILABLE`. A throttled or failed BLS response is commented as `ERROR`. Neither case replaces the offline baseline.
 
+`import-price` replays the frozen October 15 PPI central from committed fixtures and leaves that central unchanged. The October 16 import-air observation is reported only as a **labeled NSA sensitivity envelope** for BEA line 335. The command does not arm the listener, does not call BLS, and does not change the `[run-ppi]` workflow or trigger. See `docs/CORE_PCE_IMPORT_PRICE_2026-10-16.md`.
+
 ```bash
 python -m scripts.core_pce_release prepare ppi --release 2026-09 --out /tmp/pce-ppi-2026-09
 python -m scripts.core_pce_release run-ppi --release 2026-09 --out /tmp/pce-ppi-2026-09
+python -m scripts.core_pce_release import-price --release 2026-09 --out /tmp/pce-import-2026-09
 python -m scripts.core_pce_release arm \
   --packet /tmp/pce-ppi-2026-09 \
   --inbox /tmp/pce-ppi-2026-09/inbox \
@@ -73,7 +76,8 @@ BEA Table 2.4.4U dated 2026-09-30 and Q2 2026 weights anchor the component map. 
 python -m unittest tests.core_pce_release.test_delivery \
   tests.core_pce_release.test_forecasting \
   tests.core_pce_release.test_model_preparation \
-  tests.core_pce_release.test_run_ppi_oneshot
+  tests.core_pce_release.test_run_ppi_oneshot \
+  tests.core_pce_release.test_import_price_incremental
 ```
 
 Packets under `--out` are runtime output; `data/core_pce_release/packets/` is gitignored.
