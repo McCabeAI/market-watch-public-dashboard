@@ -6,7 +6,19 @@ import hashlib
 import re
 
 from scripts.overnight.clock import isoformat, now_ny, parse_iso
-from scripts.overnight.news_relevance import apply_transmission
+from scripts.overnight.news_relevance import (
+    _any_phrase,
+    _any_word,
+    _hormuz_acute,
+    _hormuz_diplomatic,
+    _hormuz_mentioned,
+    _india_named,
+    _oil_supply_role,
+    _phrase,
+    _vietnam_named,
+    _word,
+    apply_transmission,
+)
 
 OFFICIAL_SOURCES = frozenset(
     {
@@ -30,16 +42,63 @@ _TWELVE_HOURS_SECONDS = 12 * 3600
 
 def _tokenize_headline(headline: str) -> set[str]:
     tokens = re.findall(r"[a-z0-9']+", (headline or "").lower())
-    return {t for t in tokens if len(t) > 2 and t not in DEDUP_STOP}
+    filtered = {t for t in tokens if len(t) > 2 and t not in DEDUP_STOP}
+    return {"hormuz" if t == "ormuz" else t for t in filtered}
+
+
+def _loose_oil_word(text: str) -> bool:
+    return _any_word(text, ("oil", "crude", "hormuz", "supply")) or _word(text, "ormuz")
+
+
+def _headline_facet(headline: str) -> str:
+    text = (headline or "").lower()
+    # A supply role outranks a domestic trade/GDP phrase on the same headline
+    # so an export halt is not clustered into the suppressed domestic story.
+    if _india_named(text) and _oil_supply_role(text):
+        return "india_oil"
+    if _india_named(text) and _any_phrase(
+        text, ("trade deficit", "trade gap", "import bill")
+    ):
+        return "india_trade"
+    if _india_named(text) and _loose_oil_word(text):
+        return "india_oil"
+    if _vietnam_named(text) and _oil_supply_role(text):
+        return "vietnam_oil"
+    if _vietnam_named(text) and _word(text, "gdp"):
+        return "vietnam_gdp"
+    if _vietnam_named(text) and _loose_oil_word(text):
+        return "vietnam_oil"
+    if _hormuz_mentioned(text) and _hormuz_diplomatic(text) and not _hormuz_acute(text):
+        return "hormuz_diplomacy"
+    if _hormuz_mentioned(text):
+        return "hormuz_supply"
+    tokens = _tokenize_headline(headline)
+    if "coreweave" in tokens and (
+        _word(text, "cds")
+        or _phrase(text, "credit default")
+        or _word(text, "debt")
+        or _word(text, "distress")
+    ):
+        return "coreweave_cds"
+    if "coreweave" in tokens:
+        return "coreweave_other"
+    return ""
 
 
 def _same_event(a: str, b: str) -> bool:
     ta, tb = _tokenize_headline(a), _tokenize_headline(b)
     if not ta or not tb:
         return False
+    fa, fb = _headline_facet(a), _headline_facet(b)
+    if fa and fb and fa != fb:
+        return False
+    if ("coreweave" in ta) ^ ("coreweave" in tb):
+        return False
     shared = ta & tb
     if len(shared) < 4:
         return False
+    if fa and fb and fa == fb:
+        return True
     union = ta | tb
     jaccard = len(shared) / len(union) if union else 0.0
     return jaccard >= 0.55

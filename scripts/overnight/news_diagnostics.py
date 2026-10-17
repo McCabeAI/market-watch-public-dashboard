@@ -129,12 +129,102 @@ def _count_by_stage(stories: Iterable[StoryRow]) -> dict[str, int]:
     return counts
 
 
+def _publication_row_from_mapping(
+    row: Mapping[str, Any],
+    *,
+    outcome: str,
+    reason: str,
+    cap: int | None,
+    slot: str | None,
+    family: str = "news",
+) -> dict[str, Any]:
+    source = row.get("source")
+    if source is None:
+        source = row.get("source_name")
+    return {
+        "headline": row.get("headline"),
+        "url": row.get("url"),
+        "source": source,
+        "published_at": row.get("published_at"),
+        "id": row.get("id") if row.get("id") else None,
+        "family": family,
+        "outcome": outcome,
+        "reason": reason,
+        "cap": cap,
+        "slot": slot,
+    }
+
+
+def _derive_publication_rows(
+    acquisition: dict[str, Any],
+    merge: Mapping[str, Any] | None,
+) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for receipt in acquisition.get("receipts") or []:
+        if receipt.get("status") != "failed":
+            continue
+        rows.append(
+            _publication_row_from_mapping(
+                {
+                    "url": receipt.get("surface"),
+                    "source": receipt.get("source"),
+                },
+                outcome="not_fetched",
+                reason=str(receipt.get("failure") or ""),
+                cap=None,
+                slot=None,
+            )
+        )
+
+    for drop in acquisition.get("story_drops") or []:
+        reason = str(drop.get("reason") or "")
+        cap = 60 if reason == "safety_ceiling" else None
+        rows.append(
+            _publication_row_from_mapping(
+                drop,
+                outcome="fetched_filtered",
+                reason=reason,
+                cap=cap,
+                slot=None,
+            )
+        )
+
+    if merge is not None:
+        for diag in merge.get("diagnostics_rows") or []:
+            stage = str(diag.get("stage") or "")
+            if stage == STAGE_PRESENTATION_SUPPRESSION:
+                continue
+            if stage == STAGE_SHOWN:
+                rows.append(
+                    _publication_row_from_mapping(
+                        diag,
+                        outcome="research_top_24",
+                        reason=str(diag.get("reason") or ""),
+                        cap=24,
+                        slot=None,
+                    )
+                )
+            elif stage == STAGE_RELEVANCE_REJECTION:
+                rows.append(
+                    _publication_row_from_mapping(
+                        diag,
+                        outcome="scored_suppress",
+                        reason=str(diag.get("reason") or ""),
+                        cap=None,
+                        slot=None,
+                    )
+                )
+
+    return rows
+
+
 def build_report(
     acquisition: dict[str, Any],
     merge: dict[str, Any] | None = None,
     *,
     when: Any = None,
     extra_rows: Iterable[Mapping[str, Any]] = (),
+    publication_rows: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Build a shadow diagnostics report from acquisition and optional merge output."""
     receipts = acquisition.get("receipts") or []
@@ -151,6 +241,9 @@ def build_report(
             stories.append(story)
 
     story_dicts = [s.as_dict() for s in stories]
+    derived_publication_rows = _derive_publication_rows(acquisition, merge)
+    if publication_rows is not None:
+        derived_publication_rows.extend(publication_rows)
     return {
         "type": REPORT_TYPE,
         "schema_version": SCHEMA_VERSION,
@@ -159,6 +252,7 @@ def build_report(
         "receipts": receipts,
         "counts": _count_by_stage(stories),
         "stories": story_dicts,
+        "publication_rows": derived_publication_rows,
     }
 
 

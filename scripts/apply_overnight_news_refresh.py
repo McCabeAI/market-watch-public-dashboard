@@ -381,6 +381,365 @@ def _rollup_html(
     raise ValueError("accepted overnight research has no renderable items for the rolling windows or undated fallback")
 
 
+def _publication_identity(item: dict[str, Any]) -> tuple[str, str]:
+    return (_item_url(item), _display_title(item))
+
+
+def _publication_fields(item: dict[str, Any]) -> dict[str, Any]:
+    family = str(item.get("_family") or "news")
+    return {
+        "headline": _display_title(item),
+        "url": _item_url(item) or None,
+        "source": str(item.get("source_name") or item.get("institution") or "").strip() or None,
+        "published_at": item.get("published_at"),
+        "id": item.get("id") if item.get("id") else None,
+        "family": family,
+    }
+
+
+def _publication_row(
+    item: dict[str, Any],
+    *,
+    outcome: str,
+    reason: str,
+    cap: int | None,
+    slot: str | None,
+) -> dict[str, Any]:
+    return {
+        **_publication_fields(item),
+        "outcome": outcome,
+        "reason": reason,
+        "cap": cap,
+        "slot": slot,
+    }
+
+
+def _raw_publication_row(
+    raw: dict[str, Any],
+    *,
+    family: str,
+    outcome: str,
+    reason: str,
+    cap: int | None,
+    slot: str | None,
+) -> dict[str, Any]:
+    title = _display_title(raw)
+    url = _item_url(raw)
+    return {
+        "headline": title or None,
+        "url": url or None,
+        "source": str(raw.get("source_name") or raw.get("institution") or "").strip() or None,
+        "published_at": raw.get("published_at"),
+        "id": raw.get("id") if raw.get("id") else None,
+        "family": family,
+        "outcome": outcome,
+        "reason": reason,
+        "cap": cap,
+        "slot": slot,
+    }
+
+
+def explain_display_slots(dataset: dict[str, Any], *, cutoff: datetime) -> list[dict[str, Any]]:
+    """Explain webpage slot membership using the same slice math as the HTML builders."""
+    rows: list[dict[str, Any]] = []
+    research = dataset.get("agent_research") or {}
+    start_24 = cutoff - timedelta(hours=24)
+    start_7 = cutoff - timedelta(days=7)
+
+    dated_combined: list[dict[str, Any]] = []
+    undated_combined: list[dict[str, Any]] = []
+
+    for family, items in (
+        ("news", research.get("news") or []),
+        ("central_bank_research", research.get("central_bank_research") or []),
+    ):
+        for raw in items:
+            if not isinstance(raw, dict):
+                continue
+            title = _display_title(raw)
+            summary = str(raw.get("summary") or "").strip()
+            if not title or not summary:
+                rows.append(
+                    _raw_publication_row(
+                        raw,
+                        family=family,
+                        outcome="display_slot_drop",
+                        reason="missing_title_or_summary",
+                        cap=None,
+                        slot=None,
+                    )
+                )
+                continue
+
+            published = _parse_iso(raw.get("published_at"))
+            if raw.get("published_at") not in (None, "") and published is None:
+                rows.append(
+                    _raw_publication_row(
+                        raw,
+                        family=family,
+                        outcome="display_slot_drop",
+                        reason="malformed_timestamp",
+                        cap=None,
+                        slot=None,
+                    )
+                )
+                continue
+
+            item = _normalize_raw_item(raw, family=family)
+            if item is None:
+                continue
+            if published is not None:
+                item["_published"] = published
+                dated_combined.append(item)
+            else:
+                undated_combined.append(item)
+
+    dated_items, undated_items = _partition_items(dataset)
+
+    def _dedupe_drops(combined: list[dict[str, Any]], *, sort_key) -> None:
+        seen: set[tuple[str, str]] = set()
+        for item in sorted(combined, key=sort_key, reverse=True):
+            ident = _publication_identity(item)
+            if ident in seen:
+                rows.append(
+                    _publication_row(
+                        item,
+                        outcome="display_slot_drop",
+                        reason="deduped",
+                        cap=None,
+                        slot=None,
+                    )
+                )
+                continue
+            seen.add(ident)
+
+    _dedupe_drops(dated_combined, sort_key=lambda row: row["_published"])
+    _dedupe_drops(
+        undated_combined,
+        sort_key=lambda row: (_impact(row)[0] == "HIGH", _display_title(row)),
+    )
+
+    last24_pool = [row for row in dated_items if start_24 <= row["_published"] <= cutoff]
+    last24_slots = {_publication_identity(row) for row in last24_pool[:6]}
+
+    digest = [row for row in dated_items if start_7 <= row["_published"] <= cutoff]
+    digest_ids = {_publication_identity(row) for row in digest}
+
+    ranked_undated = sorted(
+        undated_items,
+        key=lambda row: (_impact(row)[0] == "HIGH", _display_title(row)),
+        reverse=True,
+    )
+
+    driver_slots: set[tuple[str, str]] = set()
+    dated_story_slots = {_publication_identity(row) for row in digest[:12]}
+
+    if digest:
+        ranked_drivers = sorted(
+            digest,
+            key=lambda row: (_impact(row)[0] == "HIGH", row["_published"]),
+            reverse=True,
+        )
+        driver_slots = {_publication_identity(row) for row in ranked_drivers[:3]}
+        supplement_rows = ranked_undated[: max(0, 12 - len(digest))] if undated_items else []
+    elif undated_items:
+        driver_slots = {_publication_identity(row) for row in ranked_undated[:3]}
+        supplement_rows = ranked_undated[:12]
+    else:
+        supplement_rows = []
+
+    supplement_slots = {_publication_identity(row) for row in supplement_rows}
+
+    def _emit_last24(item: dict[str, Any]) -> None:
+        ident = _publication_identity(item)
+        published = item["_published"]
+        if ident in last24_slots:
+            rows.append(
+                _publication_row(
+                    item,
+                    outcome="published",
+                    reason="in_slot",
+                    cap=6,
+                    slot="last_24_hours",
+                )
+            )
+        elif published < start_24 or published > cutoff:
+            rows.append(
+                _publication_row(
+                    item,
+                    outcome="display_slot_drop",
+                    reason="outside_24h",
+                    cap=6,
+                    slot="last_24_hours",
+                )
+            )
+        elif ident in {_publication_identity(row) for row in last24_pool}:
+            rows.append(
+                _publication_row(
+                    item,
+                    outcome="display_slot_drop",
+                    reason="beyond_6",
+                    cap=6,
+                    slot="last_24_hours",
+                )
+            )
+
+    def _emit_drivers(item: dict[str, Any]) -> None:
+        ident = _publication_identity(item)
+        if not digest and not undated_items:
+            return
+        if digest:
+            if ident not in digest_ids:
+                return
+            if ident in driver_slots:
+                rows.append(
+                    _publication_row(
+                        item,
+                        outcome="published",
+                        reason="in_slot",
+                        cap=3,
+                        slot="top_market_drivers",
+                    )
+                )
+            else:
+                rows.append(
+                    _publication_row(
+                        item,
+                        outcome="display_slot_drop",
+                        reason="beyond_3",
+                        cap=3,
+                        slot="top_market_drivers",
+                    )
+                )
+        elif ident in driver_slots:
+            rows.append(
+                _publication_row(
+                    item,
+                    outcome="published",
+                    reason="in_slot",
+                    cap=3,
+                    slot="top_market_drivers",
+                )
+            )
+
+    def _emit_digest(item: dict[str, Any]) -> None:
+        ident = _publication_identity(item)
+        if ident in dated_story_slots:
+            rows.append(
+                _publication_row(
+                    item,
+                    outcome="published",
+                    reason="in_slot",
+                    cap=12,
+                    slot="digest_stories",
+                )
+            )
+        elif ident in digest_ids:
+            rows.append(
+                _publication_row(
+                    item,
+                    outcome="display_slot_drop",
+                    reason="beyond_12",
+                    cap=12,
+                    slot="digest_stories",
+                )
+            )
+        else:
+            rows.append(
+                _publication_row(
+                    item,
+                    outcome="display_slot_drop",
+                    reason="outside_7d",
+                    cap=12,
+                    slot="digest_stories",
+                )
+            )
+
+    for item in dated_items:
+        _emit_last24(item)
+        _emit_drivers(item)
+        _emit_digest(item)
+
+    if digest and undated_items:
+        for item in ranked_undated:
+            ident = _publication_identity(item)
+            if ident in supplement_slots:
+                rows.append(
+                    _publication_row(
+                        item,
+                        outcome="published",
+                        reason="in_slot",
+                        cap=12,
+                        slot="digest_stories",
+                    )
+                )
+            elif len(digest) >= 12:
+                rows.append(
+                    _publication_row(
+                        item,
+                        outcome="display_slot_drop",
+                        reason="dated_digest_full",
+                        cap=12,
+                        slot="digest_stories",
+                    )
+                )
+            else:
+                rows.append(
+                    _publication_row(
+                        item,
+                        outcome="display_slot_drop",
+                        reason="beyond_12",
+                        cap=12,
+                        slot="digest_stories",
+                    )
+                )
+    elif not digest and undated_items:
+        for item in ranked_undated:
+            ident = _publication_identity(item)
+            if ident in driver_slots:
+                rows.append(
+                    _publication_row(
+                        item,
+                        outcome="published",
+                        reason="in_slot",
+                        cap=3,
+                        slot="top_market_drivers",
+                    )
+                )
+            else:
+                rows.append(
+                    _publication_row(
+                        item,
+                        outcome="display_slot_drop",
+                        reason="beyond_3",
+                        cap=3,
+                        slot="top_market_drivers",
+                    )
+                )
+            if ident in supplement_slots:
+                rows.append(
+                    _publication_row(
+                        item,
+                        outcome="published",
+                        reason="in_slot",
+                        cap=12,
+                        slot="digest_stories",
+                    )
+                )
+            else:
+                rows.append(
+                    _publication_row(
+                        item,
+                        outcome="display_slot_drop",
+                        reason="beyond_12",
+                        cap=12,
+                        slot="digest_stories",
+                    )
+                )
+
+    return rows
+
+
 def _rollup_mode(dated_items: list[dict[str, Any]], undated_items: list[dict[str, Any]], cutoff: datetime) -> str:
     start = cutoff - timedelta(days=7)
     digest = [row for row in dated_items if start <= row["_published"] <= cutoff]

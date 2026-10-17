@@ -33,12 +33,19 @@ BLOOMBERG_EQUITY_QUERY = (
 )
 
 REUTERS_CREDIT_QUERY = (
-    'site:reuters.com ("private credit" OR "high-yield" OR "credit spread" OR CLO OR "funding stress")'
+    'site:reuters.com ("private credit" OR "high-yield" OR "credit spread" OR CLO OR "funding stress" '
+    'OR CoreWeave OR CDS OR "credit default")'
 )
 
 REUTERS_SURFACE = "https://www.reuters.com/arc/outboundfeeds/news-sitemap/?outputType=xml"
 
 REUTERS_HEADLINE_ONLY = "Headline-only public metadata; article body was not retrieved."
+
+CNBC_SITEMAP_URL = "https://www.cnbc.com/sitemap_news.xml"
+CNBC_HEADLINE_ONLY = "Headline-only public metadata; article body was not retrieved."
+CNBC_CREDIT_QUERY = (
+    'site:cnbc.com (CoreWeave OR CDS OR "credit default" OR "credit default swap")'
+)
 
 _BING_QFT = "interval%3d%227%22"
 
@@ -94,6 +101,21 @@ def discovery_surfaces() -> list[dict[str, Any]]:
             "kind": "bing_rss",
             "source_name": "Reuters",
             "distribution_weight": "standard",
+        },
+        {
+            "source": "cnbc",
+            "surface": CNBC_SITEMAP_URL,
+            "kind": "cnbc_sitemap",
+            "source_name": "CNBC",
+            "distribution_weight": "standard",
+        },
+        {
+            "source": "cnbc_credit",
+            "surface": _bing_surface(CNBC_CREDIT_QUERY),
+            "kind": "bing_rss",
+            "source_name": "CNBC",
+            "distribution_weight": "standard",
+            "allowed_hosts": ("cnbc.com",),
         },
         {
             "source": "fed_monetary",
@@ -161,6 +183,8 @@ def parse_surface(
         )
     if kind == "reuters_sitemap":
         return _parse_reuters_sitemap(data, surface=surface, cutoff=cutoff)
+    if kind == "cnbc_sitemap":
+        return _parse_cnbc_sitemap(data, surface=surface, cutoff=cutoff)
     if kind == "rss_official":
         return _parse_rss_official(
             data,
@@ -193,7 +217,11 @@ def _canonical_from_bing_link(link: str) -> str | None:
     if url.startswith("http://"):
         url = "https://" + url[7:]
     host = urlparse(url).netloc.lower()
-    if host.endswith("bloomberg.com") or host.endswith("reuters.com"):
+    if (
+        host.endswith("bloomberg.com")
+        or host.endswith("reuters.com")
+        or host.endswith("cnbc.com")
+    ):
         return url
     return None
 
@@ -393,6 +421,70 @@ def _parse_reuters_sitemap(
     return {"raw_count": raw_count, "items": items, "dropped": dropped}
 
 
+def _parse_cnbc_sitemap(
+    data: bytes,
+    *,
+    surface: str,
+    cutoff: datetime,
+) -> dict[str, Any]:
+    window_start = cutoff - timedelta(hours=24)
+    ns = {
+        "sm": "http://www.sitemaps.org/schemas/sitemap/0.9",
+        "news": "http://www.google.com/schemas/sitemap-news/0.9",
+    }
+    items: list[dict[str, Any]] = []
+    dropped: list[dict[str, Any]] = []
+    raw_count = 0
+    root = ET.fromstring(data)
+    for url_el in root.findall("sm:url", ns):
+        loc_el = url_el.find("sm:loc", ns)
+        news_el = url_el.find("news:news", ns)
+        if loc_el is None or news_el is None:
+            continue
+        title_el = news_el.find("news:title", ns)
+        pub_el = news_el.find("news:publication_date", ns)
+        name_el = news_el.find("news:publication/news:name", ns)
+        headline = (title_el.text if title_el is not None else "").strip()
+        loc = (loc_el.text if loc_el is not None else "").strip()
+        if not headline or not loc:
+            continue
+        raw_count += 1
+        snippet = CNBC_HEADLINE_ONLY
+        path = urlparse(loc).path.lower()
+        if _path_blocked(path):
+            dropped.append({"headline": headline, "url": loc, "reason": "path_drop"})
+            continue
+        published = _parse_pub_iso(pub_el.text if pub_el is not None else "")
+        if published is None or published > cutoff or published < window_start:
+            dropped.append(
+                {
+                    "headline": headline,
+                    "url": loc,
+                    "reason": "window" if published is not None else "unparsed_date",
+                }
+            )
+            continue
+        pub_name = (name_el.text if name_el is not None else "").strip() or "CNBC"
+        if pub_name != "CNBC":
+            dropped.append({"headline": headline, "url": loc, "reason": "publication_name"})
+            continue
+        items.append(
+            {
+                "published_at": isoformat(published),
+                "url": loc,
+                "headline": headline,
+                "summary": snippet,
+                "source_name": "CNBC",
+                "verification_status": "single_source",
+                "primary_category": _primary_category(headline, snippet),
+                "discovery_surface": surface,
+                "distribution_weight": "standard",
+            }
+        )
+    items.sort(key=lambda x: x["published_at"], reverse=True)
+    return {"raw_count": raw_count, "items": items, "dropped": dropped}
+
+
 def _is_boj_boe_surface(surface: str) -> bool:
     return any(marker in surface for marker in _BOJ_BOE_SURFACE_MARKERS)
 
@@ -402,6 +494,12 @@ def _boj_boe_title_kept(title: str) -> bool:
     if any(
         phrase in t
         for phrase in (
+            "bank rate",
+            "money market operations",
+            "complementary deposit facility",
+            "financial stability",
+            "intervention",
+            "official cash rate",
             "monetary policy",
             "policy board",
             "policy rate",

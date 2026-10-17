@@ -97,8 +97,13 @@ class RelevanceTests(unittest.TestCase):
         self.assertGreaterEqual(scored["score"], 10)
         self.assertTrue(recall_candidate(COREWEAVE_HEADLINE, ""))
         scare = "Analysis:Why CoreWeave is in the crosshairs of the AI scare"
-        self.assertTrue(recall_candidate(scare, ""))
-        self.assertEqual(score_transmission(scare, "")["reason_code"], "ai_capex_credit")
+        self.assertFalse(recall_candidate(scare, ""))
+        self.assertNotEqual(
+            score_transmission(scare, "")["reason_code"], "ai_capex_credit"
+        )
+        self.assertEqual(
+            score_transmission(scare, "")["reason_code"], "ambiguous_transmission"
+        )
         ormuz = score_transmission(
             "Guarda Revolucionária do Irã afirma que dois petroleiros atingiram minas no Estreito de Ormuz",
             "",
@@ -114,6 +119,85 @@ class RelevanceTests(unittest.TestCase):
         self.assertEqual(india["disposition"], "suppress")
         self.assertEqual(india["reason_code"], "incidental_link_only")
         self.assertFalse(recall_candidate(VIETNAM_HEADLINE, "Parliament growth target."))
+
+    def test_domestic_subject_suppress_with_oil_supply_escape(self) -> None:
+        india = score_transmission(INDIA_HEADLINE, INDIA_SUMMARY)
+        self.assertEqual(india["disposition"], "suppress")
+        self.assertEqual(india["reason_code"], "incidental_link_only")
+        oil_export = score_transmission(
+            "India oil-export halt widens the trade deficit",
+            "Crude exports halted and Brent jumped.",
+        )
+        self.assertNotEqual(oil_export["disposition"], "suppress")
+        self.assertNotEqual(oil_export["reason_code"], "incidental_link_only")
+        self.assertEqual(oil_export["reason_code"], "oil_supply_shock")
+        self.assertIn(oil_export["disposition"], {"assess", "show"})
+        hormuz_india = score_transmission(
+            "India halts crude exports after Hormuz closure widened the trade gap",
+            "",
+        )
+        self.assertEqual(hormuz_india["disposition"], "show")
+        self.assertEqual(hormuz_india["reason_code"], "oil_supply_shock")
+        self.assertNotEqual(hormuz_india["reason_code"], "incidental_link_only")
+        vietnam = score_transmission(VIETNAM_HEADLINE, "Parliament growth target.")
+        self.assertEqual(vietnam["disposition"], "suppress")
+        self.assertFalse(recall_candidate(VIETNAM_HEADLINE, "Parliament growth target."))
+        vietnam_oil = score_transmission(
+            "Vietnam GDP slump cuts crude exports",
+            "Exports halted and Brent rose.",
+        )
+        self.assertNotEqual(vietnam_oil["disposition"], "suppress")
+        self.assertEqual(vietnam_oil["reason_code"], "oil_supply_shock")
+        indo = score_transmission(INDONESIA_HEADLINE, INDONESIA_SUMMARY)
+        self.assertEqual(indo["disposition"], "suppress")
+        self.assertEqual(indo["reason_code"], "local_non_g10_macro")
+        palm = score_transmission(
+            "Indonesia fires spread as palm oil exports are halted",
+            "",
+        )
+        self.assertEqual(palm["disposition"], "suppress")
+        self.assertEqual(palm["reason_code"], "local_non_g10_macro")
+        hyphen = score_transmission(
+            "Indonesia fires spread as palm-oil exports are halted",
+            "",
+        )
+        self.assertEqual(hyphen["disposition"], "suppress")
+        self.assertEqual(hyphen["reason_code"], "local_non_g10_macro")
+        crude_palm = score_transmission(
+            "Indonesia fires halt crude palm oil exports",
+            "",
+        )
+        self.assertEqual(crude_palm["disposition"], "suppress")
+        self.assertEqual(crude_palm["reason_code"], "local_non_g10_macro")
+        palm_only = score_transmission("Indonesia palm oil exports are halted", "")
+        self.assertNotEqual(palm_only["reason_code"], "oil_supply_shock")
+        self.assertIn(palm_only["disposition"], {"suppress", "hold-for-review"})
+        indian = score_transmission(
+            "Indian trade deficit widened on the import bill",
+            "Surging oil prices pushed up the import bill.",
+        )
+        self.assertEqual(indian["disposition"], "suppress")
+        self.assertEqual(indian["reason_code"], "incidental_link_only")
+        indo_crude = score_transmission(
+            "Indonesia refinery fire halts crude exports",
+            "Brent rose.",
+        )
+        self.assertNotEqual(indo_crude["disposition"], "suppress")
+        self.assertEqual(indo_crude["reason_code"], "oil_supply_shock")
+
+    def test_official_policy_scores_and_recall(self) -> None:
+        bank_rate = score_transmission("Bank rate maintained at 3.75%", "")
+        self.assertIn(bank_rate["disposition"], {"assess", "show"})
+        self.assertEqual(bank_rate["reason_code"], "g10_policy_path")
+        self.assertIn("GBP", bank_rate["affected_assets"])
+        self.assertTrue(recall_candidate("Bank rate maintained at 3.75%", ""))
+        self.assertFalse(recall_candidate("Monetary Policy Committee dates for 2027", ""))
+        self.assertFalse(
+            recall_candidate("Services Producer Price Index for August", "")
+        )
+        ocr = score_transmission("Official Cash Rate unchanged", "")
+        self.assertIn("NZD", ocr["affected_assets"])
+        self.assertNotIn(ocr["disposition"], {"hold-for-review", "suppress"})
 
     def test_chicago_fed_is_retained(self) -> None:
         scored = score_transmission(CHICAGO_HEADLINE, "The Chicago Fed CFNAI for August 2026 was -0.04.")

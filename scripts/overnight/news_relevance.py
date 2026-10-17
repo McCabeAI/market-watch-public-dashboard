@@ -109,9 +109,83 @@ def _transmission_from_parts(
     }
 
 
+def _without_palm_oil(text: str) -> str:
+    """Drop palm-oil phrases before crude/oil tokens are tested."""
+    out = text
+    for phrase in ("crude palm-oil", "crude palm oil", "palm-oil", "palm oil"):
+        out = out.replace(phrase, " ")
+    return out
+
+
+def _non_palm_oil_token(text: str) -> bool:
+    return _any_word(_without_palm_oil(text), ("oil", "crude", "brent", "wti"))
+
+
+def _india_named(text: str) -> bool:
+    return _word(text, "india") or _word(text, "indian")
+
+
+def _vietnam_named(text: str) -> bool:
+    return _word(text, "vietnam") or _word(text, "vietnamese")
+
+
+def _oil_supply_role(text: str) -> bool:
+    if _hormuz_mentioned(text) or _word(text, "opec"):
+        return True
+    if _non_palm_oil_token(text) and _any_word(
+        text,
+        (
+            "export",
+            "exports",
+            "halt",
+            "halts",
+            "embargo",
+            "blockade",
+            "outage",
+            "shutdown",
+            "supply",
+        ),
+    ):
+        return True
+    return False
+
+
+def _official_policy_phrase(text: str) -> bool:
+    return _any_phrase(
+        text,
+        (
+            "bank rate",
+            "gilt",
+            "money market operations",
+            "complementary deposit facility",
+            "official cash rate",
+            "monetary policy meeting",
+            "monetary policy summary",
+            "financial stability",
+        ),
+    ) or _any_word(text, ("ocr", "intervention"))
+
+
+def _transmission_role(text: str) -> bool:
+    return (
+        _oil_supply_role(text)
+        or _credit_funding(text)
+        or _ai_financing_recall(text)
+        or _g10_policy_fires(text)
+        or _usd_rates_fires(text)
+        or _fiscal_interest(text)
+        or (_sanctions_story(text) and _energy_context(text))
+        or _official_policy_phrase(text)
+    )
+
+
 def _subject_rule(text: str) -> dict[str, Any] | None:
     comps = _empty_components()
-    if _word(text, "vietnam") and _word(text, "gdp"):
+    if (
+        _vietnam_named(text)
+        and _word(text, "gdp")
+        and not _transmission_role(text)
+    ):
         comps["subject_penalty"] = -8
         return _transmission_from_parts(
             disposition="suppress",
@@ -122,8 +196,10 @@ def _subject_rule(text: str) -> dict[str, Any] | None:
             score=-8,
             components=comps,
         )
-    if _word(text, "india") and _any_phrase(
-        text, ("trade deficit", "trade gap", "import bill")
+    if (
+        _india_named(text)
+        and _any_phrase(text, ("trade deficit", "trade gap", "import bill"))
+        and not _transmission_role(text)
     ):
         comps["subject_penalty"] = -8
         return _transmission_from_parts(
@@ -135,8 +211,12 @@ def _subject_rule(text: str) -> dict[str, Any] | None:
             score=-8,
             components=comps,
         )
-    if _word(text, "indonesia") and (
-        _any_word(text, ("fire", "fires", "forest")) or "forest fire" in text
+    if (
+        _word(text, "indonesia")
+        and (
+            _any_word(text, ("fire", "fires", "forest")) or "forest fire" in text
+        )
+        and not _transmission_role(text)
     ):
         comps["subject_penalty"] = -8
         return _transmission_from_parts(
@@ -149,7 +229,7 @@ def _subject_rule(text: str) -> dict[str, Any] | None:
             components=comps,
         )
     noise_hit = _any_word(text, ("podcast", "golf", "celebrity"))
-    supply_escape = _any_word(text, ("hormuz", "opec", "brent", "wti", "crude"))
+    supply_escape = _hormuz_mentioned(text)
     if noise_hit and not supply_escape:
         comps["subject_penalty"] = -10
         return _transmission_from_parts(
@@ -200,8 +280,6 @@ def _chicago_fed_activity(text: str) -> bool:
 
 
 def _coreweave_rule(text: str) -> bool:
-    if _word(text, "coreweave"):
-        return True
     cds_hit = _word(text, "cds") or _phrase(text, "credit default")
     context = _any_word(text, ("ai", "debt", "distress", "coreweave"))
     return cds_hit and context
@@ -281,8 +359,19 @@ def _g10_assets(text: str, usd_rates: bool) -> list[str]:
         assets.extend(["USD", "UST"])
     if _word(text, "ecb"):
         assets.append("EUR")
-    if _phrase(text, "bank of england") or _word(text, "boe"):
+    if (
+        _phrase(text, "bank of england")
+        or _word(text, "boe")
+        or _phrase(text, "bank rate")
+        or _word(text, "gilt")
+    ):
         assets.append("GBP")
+    if _phrase(text, "money market operations") or _phrase(
+        text, "complementary deposit facility"
+    ):
+        assets.append("JPY")
+    if _phrase(text, "official cash rate") or _word(text, "ocr"):
+        assets.append("NZD")
     if _phrase(text, "bank of japan") or _word(text, "boj"):
         assets.append("JPY")
     if _phrase(text, "bank of canada") or _word(text, "boc"):
@@ -306,7 +395,8 @@ def _sanctions_story(text: str) -> bool:
 
 
 def _energy_context(text: str) -> bool:
-    return _any_word(text, ("oil", "crude", "diesel", "energy", "lng", "brent", "wti", "opec", "hormuz"))
+    stripped = _without_palm_oil(text)
+    return _any_word(stripped, ("oil", "crude", "diesel", "energy", "lng", "brent", "wti", "opec", "hormuz"))
 
 
 def _fiscal_interest(text: str) -> bool:
@@ -318,7 +408,7 @@ def _fiscal_interest(text: str) -> bool:
 def _bare_oil(text: str) -> bool:
     if _hormuz_mentioned(text):
         return False
-    return _any_word(text, ("oil", "brent", "wti", "crude"))
+    return _non_palm_oil_token(text)
 
 
 def _credit_funding(text: str) -> bool:
@@ -434,8 +524,8 @@ def score_transmission(headline: str, summary: str) -> dict[str, Any]:
             )
         return _hold_review()
 
-    if _g10_trigger(text):
-        g10 = _g10_policy_fires(text)
+    if _g10_trigger(text) or _g10_policy_fires(text) or _official_policy_phrase(text):
+        g10 = _g10_policy_fires(text) or _official_policy_phrase(text)
         usd = _usd_rates_fires(text)
         fired: list[str] = []
         if g10:
@@ -562,13 +652,11 @@ def score_transmission(headline: str, summary: str) -> dict[str, Any]:
 
 def _noise_would_suppress(text: str) -> bool:
     noise_hit = _any_word(text, ("podcast", "golf", "celebrity"))
-    supply_escape = _any_word(text, ("hormuz", "opec", "brent", "wti", "crude"))
+    supply_escape = _hormuz_mentioned(text)
     return noise_hit and not supply_escape
 
 
 def _recall_positive_classes(text: str) -> bool:
-    if _word(text, "coreweave"):
-        return True
     if _chicago_fed_activity(text):
         return True
     if _any_word(
@@ -638,8 +726,16 @@ def _recall_positive_classes(text: str) -> bool:
             "bank of japan",
             "bank of canada",
             "reserve bank",
+            "bank rate",
+            "gilt",
+            "money market operations",
+            "complementary deposit facility",
+            "official cash rate",
+            "monetary policy meeting",
+            "monetary policy summary",
+            "financial stability",
         ),
-    ):
+    ) or _any_word(text, ("ocr", "intervention")):
         return True
     equity = _any_word(text, ("selloff",)) or _phrase(text, "s&p") or _word(
         text, "nasdaq"

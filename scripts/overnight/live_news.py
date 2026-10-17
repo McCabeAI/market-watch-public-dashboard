@@ -196,6 +196,8 @@ def _receipt(
 def _allowed_hosts_for_surface(source: str, kind: str) -> tuple[str, ...]:
     if kind == "bing_rss" and source == "reuters_credit":
         return ("reuters.com",)
+    if kind == "bing_rss" and source == "cnbc_credit":
+        return ("cnbc.com",)
     if kind == "bing_rss":
         return ("bloomberg.com",)
     return ()
@@ -284,7 +286,9 @@ def acquire_current_news(
         kind = entry["kind"]
         source_name = entry["source_name"]
         distribution_weight = entry.get("distribution_weight") or "standard"
-        allowed_hosts = _allowed_hosts_for_surface(source, kind)
+        allowed_hosts = tuple(entry.get("allowed_hosts") or ()) or _allowed_hosts_for_surface(
+            source, kind
+        )
         try:
             data = fn(surface_url)
             parsed = parse_surface(

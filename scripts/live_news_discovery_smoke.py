@@ -33,6 +33,7 @@ def main(argv: list[str] | None = None) -> int:
 
         candidates = result.get("candidates") or []
         merge = merge_live_news(baseline=[], live_candidates=candidates, when=when)
+        # build_report publication_rows describe the research pool, not webpage 6/3/12 slots.
         report = build_report(result, merge, when=when)
         write_report(args.report_path, report)
 
