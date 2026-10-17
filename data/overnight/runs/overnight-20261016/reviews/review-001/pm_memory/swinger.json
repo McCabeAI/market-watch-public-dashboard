@@ -1,0 +1,165 @@
+{
+  "active_lessons": [],
+  "as_of": "2026-10-17T08:58:03.216823-04:00",
+  "calibration": {
+    "average_holding_seconds": null,
+    "average_realized_pnl_usd": null,
+    "breakeven": 0,
+    "by_asset_class": {},
+    "closed_trade_count": 0,
+    "conviction_buckets": {
+      "high": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "low": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "medium": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      }
+    },
+    "losses": 0,
+    "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
+    "total_realized_pnl_usd": 0.0,
+    "wins": 0
+  },
+  "capital_owner": {
+    "force_deployment": false,
+    "mandate": "swinger",
+    "notes": [],
+    "pressure_flags": [],
+    "standing": "good_standing"
+  },
+  "consequence": {
+    "best_trader_net_pnl_usd": 816471.05,
+    "best_trader_outearn_streak": 0,
+    "best_trader_seat": "dollar-king",
+    "capital_normalized": false,
+    "competition_cohort_size": 4,
+    "competition_eligible": true,
+    "competition_rank": 1,
+    "competitive_rank": 1,
+    "drawdown_usd": 1296.67,
+    "gap_to_best_trader_usd": 322880.2,
+    "high_water_nav_usd": 1001140647.92,
+    "max_drawdown_usd": 50000000.0,
+    "net_after_funding_pnl_usd": 1139351.25,
+    "pressure_flags": [],
+    "raw_pnl_rank": 1,
+    "spread_to_leader_pm_usd": 0.0,
+    "status": "ok",
+    "total_pnl_usd": 1167500.0
+  },
+  "learning": {
+    "competition_eligible": true,
+    "learning_default_age_runs": 0,
+    "learning_default_count": 0,
+    "learning_status": "compliant",
+    "repeated_error_escalations": []
+  },
+  "learning_obligations": [],
+  "memory_context_sha256": "ee7608395dced9d2059f5b8ed7cd88baa2a0481494ce9947375354ca00aba826",
+  "open_positions": [
+    {
+      "asset_class": "rates",
+      "conviction": 72,
+      "current_notional_usd": 1200000000.0,
+      "entry_mark": 3.13,
+      "instrument": "CORRA_2027-03",
+      "opened_at": "2026-09-19T22:52:44.433062-04:00",
+      "position_id": "pm-swinger-2070479ca321",
+      "risk_capital_usd": 12000000.0,
+      "side": "long",
+      "trade_id": "trd-pm-swinger-pm-swinger-2070479ca321"
+    }
+  ],
+  "owner_id": "swinger",
+  "owner_type": "pm",
+  "postmortems_due": [],
+  "psychology": {
+    "active_flags": [],
+    "applicable": true,
+    "axes": {
+      "chase_pressure": {
+        "band": "calm",
+        "trend": "down",
+        "value": 0.17
+      },
+      "complacency": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.1
+      },
+      "defensiveness": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.2
+      },
+      "external_pressure": {
+        "band": "calm",
+        "trend": "down",
+        "value": 0.25
+      },
+      "frustration": {
+        "band": "calm",
+        "trend": "down",
+        "value": 0.12
+      },
+      "revenge_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.05
+      },
+      "self_trust": {
+        "band": "steady",
+        "trend": "flat",
+        "value": 0.5
+      },
+      "thesis_attachment": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.25
+      }
+    },
+    "boundary": "Private decision machinery. Never quote or paraphrase in public prose. This state never sizes, forces, or blocks a trade.",
+    "metrics": {
+      "conviction_volatility": 0.0,
+      "distortion_verdicts": 0,
+      "self_report_mismatches": 0,
+      "sharpened_verdicts": 0
+    },
+    "profile_version": 1,
+    "recent_events": [
+      {
+        "kind": "competitive_flag_active",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261007"
+      },
+      {
+        "kind": "competitive_flag_active",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261014"
+      }
+    ],
+    "required_checks": {},
+    "schema_version": 1,
+    "state_sha256": "6db720be0ad9035af7e5b09163413fcc24134e5ac3b1cc2e3034b9c97938b281",
+    "streaks": {
+      "flat_cycles": 0,
+      "session_loss": 0,
+      "session_win": 0
+    }
+  },
+  "recent_closed_trades": [],
+  "recent_funding_views": [],
+  "recent_performance_reflections": [],
+  "reflections_due": [],
+  "schema_version": 4,
+  "type": "IDENTITY_MEMORY_CONTEXT"
+}
