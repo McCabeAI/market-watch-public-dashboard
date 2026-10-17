@@ -5,6 +5,8 @@ import json
 import unittest
 
 from scripts.policy_path_data import (
+    _expiry_from_sr3_code,
+    _extract_esignal_delayed_observation_date,
     build_tradable_rate_curves,
     parse_asx_cash_futures_html,
     parse_boc_corra_html,
@@ -12,6 +14,7 @@ from scripts.policy_path_data import (
     parse_cme_sofr_bulletin_text,
     parse_cme_sr3_bulletin_text,
     parse_cme_sr3_html,
+    parse_cme_sr3_quotes_json,
     parse_cme_sr3_settlements_json,
     parse_cme_sofr_html,
     parse_cme_sofr_settlements_json,
@@ -116,6 +119,109 @@ TOTAL SR1 FUT 0 127818 1302349 + 11967
         self.assertEqual([r["code"] for r in rows], ["SR3Z6", "SR3H7"])
         self.assertEqual(rows[0]["implied_rate"], 4.3)
         self.assertEqual(rows[1]["open_interest"], 1700000.0)
+
+    def test_cme_sr3_settlements_json_labels_filters_and_observation_stamp(self):
+        payload = json.dumps({
+            "settlements": [
+                {"month": "TOTAL SR3", "settle": "96.50"},
+                {"month": "", "settle": "96.50"},
+                {"month": "JAN 27", "settle": "96.50"},
+                {"month": "SEP 26", "settle": "96.00"},
+                {"month": "MAR 2027", "settlement": "96.50"},
+                {"month": "SEP27", "settlementPrice": "96.25"},
+                {"month": "DEC 27", "settle": "not-a-number"},
+                {"month": "JUN 27", "settle": "89.99"},
+                {"month": "DEC 27", "settle": "100.51"},
+            ]
+        })
+        rows = parse_cme_sr3_settlements_json(
+            payload,
+            benchmark=3.5,
+            observation_date="2026-10-15",
+            source_url="https://example.test/sr3-settle",
+        )
+        self.assertEqual([r["expiry"] for r in rows], ["2027-03", "2027-09"])
+        self.assertEqual([r["code"] for r in rows], ["SR3H7", "SR3U7"])
+        self.assertEqual(rows[0]["implied_rate"], 3.5)
+        self.assertEqual(rows[1]["implied_rate"], 3.75)
+        mar_only = parse_cme_sr3_settlements_json(
+            json.dumps({"settlements": [{"month": "MAR 27", "settle": "96.50"}]}),
+            benchmark=3.5,
+        )
+        self.assertEqual(mar_only[0]["expiry"], "2027-03")
+        for row in rows:
+            self.assertEqual(row["observation_date"], "2026-10-15")
+            self.assertEqual(row["as_of"], "2026-10-15")
+            self.assertEqual(row["source_url"], "https://example.test/sr3-settle")
+
+    def test_cme_sr3_quotes_v2_delayed_prior_and_validation(self):
+        payload = json.dumps({
+            "tradeDate": "15 Oct 2026",
+            "quotes": [
+                {
+                    "quoteCode": "SR3H7",
+                    "expirationMonth": "MAR 2027",
+                    "last": "96.500",
+                },
+                {
+                    "quoteCode": "SR3U7",
+                    "expirationMonth": "SEP 2027",
+                    "last": "-",
+                    "priorSettle": "96.250",
+                },
+                {
+                    "quoteCode": "SR3Z7",
+                    "expirationMonth": "DEC 2027",
+                    "last": "12.0",
+                    "priorSettle": "96.10",
+                },
+                {
+                    "quoteCode": "SR3H7",
+                    "expirationMonth": "SEP 2027",
+                    "last": "96.40",
+                },
+            ],
+        })
+        rows = parse_cme_sr3_quotes_json(payload, benchmark=3.5)
+        self.assertEqual(len(rows), 2)
+        by_code = {row["code"]: row for row in rows}
+        self.assertEqual(by_code["SR3H7"]["implied_rate"], 3.5)
+        self.assertEqual(by_code["SR3H7"]["source"], "CME_SR3_DELAYED_QUOTE")
+        self.assertEqual(by_code["SR3U7"]["implied_rate"], 3.75)
+        self.assertEqual(by_code["SR3U7"]["source"], "CME_SR3_PRIOR_SETTLEMENT")
+        self.assertNotIn("SR3Z7", by_code)
+
+    def test_cme_sr3_quotes_v2_requires_trade_or_update_timestamp(self):
+        payload = json.dumps({"quotes": [{"quoteCode": "SR3H7", "last": "96.50"}]})
+        with self.assertRaises(ValueError) as ctx:
+            parse_cme_sr3_quotes_json(payload, benchmark=3.5)
+        self.assertIn("tradeDate", str(ctx.exception))
+
+    def test_sr3_code_only_quote_expiry_rolls_forward_from_reference_year(self):
+        payload = json.dumps({
+            "tradeDate": "2026-10-15",
+            "quotes": [{"quoteCode": "SR3H0", "last": "96.50"}],
+        })
+        rows = parse_cme_sr3_quotes_json(payload, benchmark=3.5)
+        self.assertEqual(rows[0]["expiry"], "2030-03")
+        self.assertEqual(rows[0]["code"], "SR3H0")
+        self.assertEqual(_expiry_from_sr3_code("SR3H0", reference_year=2026), "2030-03")
+
+    def test_esignal_sr3_delayed_banner_sets_observation_date(self):
+        html = """
+        <p>Delayed data retrieved on Oct 15 2026</p>
+        <table>
+          <tr><th>Contract</th><th>Month</th><th>Last</th></tr>
+          <tr><td>THREE MONTH SOFR (SR3 H27-CME)</td><td>Mar'27</td><td>96.50</td></tr>
+        </table>
+        """
+        self.assertEqual(
+            _extract_esignal_delayed_observation_date(html),
+            "2026-10-15",
+        )
+        rows = parse_esignal_sr3_html(html, benchmark=3.5)
+        self.assertEqual(rows[0]["code"], "SR3H7")
+        self.assertEqual(rows[0]["implied_rate"], 3.5)
 
     def test_cme_daily_bulletin_sr3(self):
         text = """

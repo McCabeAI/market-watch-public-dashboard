@@ -3,7 +3,12 @@
 from __future__ import annotations
 
 import copy
+import math
+import re
+from datetime import date
 from typing import Any
+
+from scripts.policy_path_data import _iso_calendar_date
 
 from scripts.market_watch_launch.contract import (
     BLOCKING_SERIES_STATUSES,
@@ -135,11 +140,100 @@ def _ca_only_preflight_stale(packet: dict[str, Any]) -> bool:
     return _normalize_preflight_stale(packet) == {"CA_rates"}
 
 
+_SOFR_CONTRACT_INSTRUMENT = re.compile(r"^SOFR_(20\d{2}-\d{2})$", re.I)
+
+
+def _session_calendar_date(packet: dict[str, Any]) -> date | None:
+    observed = _iso_calendar_date(packet.get("generated_at"))
+    if not observed:
+        return None
+    return date.fromisoformat(observed)
+
+
+def _sofr_contract_row(packet: dict[str, Any], expiry: str) -> dict[str, Any] | None:
+    curves = packet.get("tradable_rate_curves")
+    curve_map = curves.get("curves") if isinstance(curves, dict) else None
+    block = curve_map.get("SOFR") if isinstance(curve_map, dict) else None
+    if not isinstance(block, dict):
+        return None
+    target = expiry.upper()
+    for row in block.get("contracts") or []:
+        if not isinstance(row, dict):
+            continue
+        if str(row.get("expiry") or "").upper() == target:
+            return row
+    return None
+
+
+def _sofr_contract_provenance(
+    packet: dict[str, Any],
+    expiry: str,
+) -> tuple[str | None, str]:
+    """Return (observation_date, dependency_status) for a held SOFR contract."""
+    session = _session_calendar_date(packet)
+    if session is None:
+        row = _sofr_contract_row(packet, expiry)
+        row_date = None
+        if row is not None:
+            for key in ("observation_date", "as_of"):
+                candidate = _iso_calendar_date(row.get(key))
+                if candidate and candidate != expiry:
+                    row_date = candidate
+                    break
+        return row_date, "invalid"
+
+    row = _sofr_contract_row(packet, expiry)
+    if row is None:
+        return None, "missing"
+    provenance = None
+    for key in ("observation_date", "as_of"):
+        candidate = _iso_calendar_date(row.get(key))
+        if candidate and candidate != expiry:
+            provenance = candidate
+            break
+    if not provenance:
+        return None, "invalid"
+
+    observed = date.fromisoformat(provenance)
+    delta = (session - observed).days
+    if delta > 8:
+        return provenance, "stale"
+    if delta < -1:
+        return provenance, "invalid"
+    return provenance, "ok"
+
+
+def _sofr_contract_unmarkable_row(
+    packet: dict[str, Any],
+    position: dict[str, Any],
+    *,
+    expiry: str,
+    failure: str,
+    dependency_status: str,
+    observation_date: str | None,
+) -> dict[str, Any]:
+    instrument = position.get("instrument")
+    return {
+        "position_id": position.get("position_id"),
+        "seat": position.get("seat"),
+        "instrument": instrument,
+        "asset_class": position.get("asset_class"),
+        "paper_expression": position.get("paper_expression") or position.get("expression"),
+        "dependency": "SOFR_curve",
+        "dependency_status": dependency_status,
+        "observation_date": observation_date,
+        "reason": (
+            f"position {instrument!r} SOFR contract {expiry} is unmarkable ({failure})"
+        ),
+    }
+
+
 def _unmarkable_positions(
     packet: dict[str, Any],
     positions: list[Any],
 ) -> list[dict[str, Any]]:
     from scripts.overnight.freshness import _dependency_status, expression_dependencies
+    from scripts.overnight.paper_marks import PaperMarkError, resolve_paper_mid
 
     out: list[dict[str, Any]] = []
     for position in positions:
@@ -158,32 +252,86 @@ def _unmarkable_positions(
             )
         ):
             status = _dependency_status(packet, dependency)
-            if status not in _BLOCKING_LEG_STATUSES:
+            if status in _BLOCKING_LEG_STATUSES:
+                observation_date = None
+                if dependency.endswith("_rates"):
+                    code = dependency[: -len("_rates")]
+                    rates = packet.get("rates") if isinstance(packet.get("rates"), dict) else {}
+                    block = rates.get(code) if isinstance(rates, dict) else None
+                    if isinstance(block, dict):
+                        observation_date = block.get("latest_observation")
+                out.append(
+                    {
+                        "position_id": position_id,
+                        "seat": seat,
+                        "instrument": instrument,
+                        "asset_class": asset_class,
+                        "paper_expression": expression,
+                        "dependency": dependency,
+                        "dependency_status": status,
+                        "observation_date": observation_date,
+                        "reason": (
+                            f"position {instrument!r} depends on {dependency} ({status}); "
+                            f"latest observation {observation_date}"
+                        ),
+                    }
+                )
+                break
+            if dependency != "SOFR_curve":
                 continue
-            observation_date = None
-            if dependency.endswith("_rates"):
-                code = dependency[: -len("_rates")]
-                rates = packet.get("rates") if isinstance(packet.get("rates"), dict) else {}
-                block = rates.get(code) if isinstance(rates, dict) else None
-                if isinstance(block, dict):
-                    observation_date = block.get("latest_observation")
-            out.append(
-                {
-                    "position_id": position_id,
-                    "seat": seat,
-                    "instrument": instrument,
-                    "asset_class": asset_class,
-                    "paper_expression": expression,
-                    "dependency": dependency,
-                    "dependency_status": status,
-                    "observation_date": observation_date,
-                    "reason": (
-                        f"position {instrument!r} depends on {dependency} ({status}); "
-                        f"latest observation {observation_date}"
-                    ),
-                }
-            )
-            break
+            match = _SOFR_CONTRACT_INSTRUMENT.match(str(instrument or ""))
+            if not match:
+                continue
+            expiry = match.group(1)
+            try:
+                mark = resolve_paper_mid(
+                    packet,
+                    str(instrument),
+                    asset_class=asset_class,
+                )
+                rate = float(mark["value"])
+                if not math.isfinite(rate) or rate <= -2 or rate >= 25:
+                    raise PaperMarkError(f"SOFR contract {expiry} implied rate out of bounds")
+            except PaperMarkError:
+                provenance, dep_status = _sofr_contract_provenance(packet, expiry)
+                if _sofr_contract_row(packet, expiry) is None:
+                    failure = "missing"
+                    dep_status = "missing"
+                else:
+                    failure = "invalid"
+                    dep_status = dep_status if dep_status != "ok" else "invalid"
+                out.append(
+                    _sofr_contract_unmarkable_row(
+                        packet,
+                        position,
+                        expiry=expiry,
+                        failure=failure,
+                        dependency_status=dep_status,
+                        observation_date=provenance,
+                    )
+                )
+                break
+            provenance, dep_status = _sofr_contract_provenance(packet, expiry)
+            if dep_status != "ok":
+                if dep_status == "invalid" and provenance is None:
+                    failure = "undated"
+                else:
+                    failure = {
+                        "missing": "missing",
+                        "stale": "stale",
+                        "invalid": "invalid",
+                    }.get(dep_status, dep_status)
+                out.append(
+                    _sofr_contract_unmarkable_row(
+                        packet,
+                        position,
+                        expiry=expiry,
+                        failure=failure,
+                        dependency_status=dep_status,
+                        observation_date=provenance,
+                    )
+                )
+                break
     return out
 
 

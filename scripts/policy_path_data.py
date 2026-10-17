@@ -43,6 +43,12 @@ CME_SR3_SETTLEMENTS_TEMPLATE = (
     + CME_SR3_PRODUCT_ID
     + "/FUT?tradeDate={trade_date}&strategy=DEFAULT&pageSize=500"
 )
+CME_SR3_QUOTES_V2_URL = (
+    "https://www.cmegroup.com/CmeWS/mvc/quotes/v2/" + CME_SR3_PRODUCT_ID
+)
+_SR3_QUARTERLY_MONTHS = frozenset({"MAR", "JUN", "SEP", "DEC"})
+_SR3_MONTH_CODES = {"MAR": "H", "JUN": "M", "SEP": "U", "DEC": "Z"}
+_SR3_TARGET_MATURITIES = ("2027-03", "2027-09")
 RBA_F1_URL = "https://www.rba.gov.au/statistics/tables/csv/f1-data.csv"
 RBA_F1_PAGE = "https://www.rba.gov.au/statistics/tables/"
 ASX_EOD_TEMPLATE = "https://www.asx.com.au/data/futures/reports/EODWebMarketSummary{yymmdd}SFD.htm"
@@ -138,9 +144,12 @@ def _contract_row(
     source: str,
     volume: float | None = None,
     open_interest: float | None = None,
+    observation_date: str | None = None,
+    as_of: str | None = None,
+    source_url: str | None = None,
 ) -> dict[str, Any]:
     implied = 100.0 - price
-    return {
+    row: dict[str, Any] = {
         "expiry": expiry,
         "code": code,
         "price": round(price, 6),
@@ -150,6 +159,13 @@ def _contract_row(
         "open_interest": open_interest,
         "source": source,
     }
+    if observation_date:
+        row["observation_date"] = observation_date
+    if as_of:
+        row["as_of"] = as_of
+    if source_url:
+        row["source_url"] = source_url
+    return row
 
 
 def parse_boc_corra_json(text: str) -> dict[str, Any]:
@@ -255,6 +271,171 @@ def _parse_cme_month(label: str) -> str | None:
         return None
     year = 2000 + int(m.group(2))
     return f"{year:04d}-{MONTHS[m.group(1)]:02d}"
+
+
+def _iso_calendar_date(value: object) -> str | None:
+    if value is None:
+        return None
+    s = str(value).strip()
+    if not s:
+        return None
+    for fmt in (
+        "%Y-%m-%d",
+        "%m/%d/%Y",
+        "%m/%d/%y",
+        "%d %b %Y",
+        "%d %B %Y",
+        "%b %d %Y",
+        "%B %d %Y",
+        "%d-%b-%Y",
+    ):
+        try:
+            return datetime.strptime(s, fmt).date().isoformat()
+        except ValueError:
+            pass
+    if re.fullmatch(r"\d{8}", s):
+        try:
+            return datetime.strptime(s, "%Y%m%d").date().isoformat()
+        except ValueError:
+            pass
+    if "T" in s:
+        try:
+            return datetime.fromisoformat(s.replace("Z", "+00:00")).date().isoformat()
+        except ValueError:
+            pass
+    return None
+
+
+def _parse_sr3_month_label(label: str) -> tuple[str, str, str] | None:
+    """Return (expiry YYYY-MM, quarterly month abbr, year digit) from a CME month label."""
+    raw = _clean(label).upper()
+    if not raw or raw == "TOTAL" or raw.startswith("TOTAL"):
+        return None
+    spaced = re.sub(r"\s+", " ", raw)
+    m = re.fullmatch(r"([A-Z]{3,9})\s+(\d{2}|\d{4})", spaced)
+    if not m:
+        compact = re.sub(r"\s+", "", spaced)
+        m = re.fullmatch(r"([A-Z]{3,9})(\d{2}|\d{4})", compact)
+    if not m:
+        return None
+    month_token = m.group(1)
+    month_abbr = None
+    for key in _SR3_QUARTERLY_MONTHS:
+        if month_token == key or month_token.startswith(key):
+            month_abbr = key
+            break
+    if month_abbr is None:
+        return None
+    year_token = m.group(2)
+    year = int(year_token) if len(year_token) == 4 else 2000 + int(year_token)
+    expiry = f"{year:04d}-{MONTHS[month_abbr]:02d}"
+    return expiry, month_abbr, year_token[-1]
+
+
+def _sr3_settlement_price(item: dict[str, Any]) -> float | None:
+    for key in ("settle", "settlement", "settlementPrice"):
+        price = _num(item.get(key))
+        if price is not None:
+            return price
+    return None
+
+
+def _filter_sr3_expired_contracts(
+    rows: list[dict[str, Any]],
+    observation_date: str | None,
+) -> list[dict[str, Any]]:
+    if not observation_date:
+        return rows
+    obs = datetime.strptime(observation_date, "%Y-%m-%d").date()
+    obs_key = (obs.year, obs.month)
+    kept: list[dict[str, Any]] = []
+    for row in rows:
+        expiry = str(row.get("expiry") or "")
+        if len(expiry) < 7:
+            kept.append(row)
+            continue
+        exp_key = (int(expiry[:4]), int(expiry[5:7]))
+        if exp_key < obs_key:
+            continue
+        kept.append(row)
+    return kept
+
+
+def _stamp_sr3_contract_metadata(
+    rows: list[dict[str, Any]],
+    *,
+    observation_date: str | None,
+    source_url: str | None,
+) -> list[dict[str, Any]]:
+    if not observation_date and not source_url:
+        return rows
+    stamped: list[dict[str, Any]] = []
+    for row in rows:
+        updated = dict(row)
+        if observation_date:
+            updated["observation_date"] = observation_date
+            updated["as_of"] = observation_date
+        if source_url:
+            updated["source_url"] = source_url
+        stamped.append(updated)
+    return stamped
+
+
+def _extract_cme_bulletin_trade_date(text: str) -> str | None:
+    for pattern in (
+        r"TRADE\s+DATE[:\s]+(\d{1,2}/\d{1,2}/\d{4})",
+        r"FOR\s+TRADE\s+DATE[:\s]+(\d{1,2}/\d{1,2}/\d{4})",
+        r"\b(\d{1,2}\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{4})\b",
+    ):
+        match = re.search(pattern, text, re.I)
+        if match:
+            iso = _iso_calendar_date(match.group(1))
+            if iso:
+                return iso
+    return None
+
+
+def _extract_esignal_delayed_observation_date(text: str) -> str | None:
+    match = re.search(
+        r"Delayed data retrieved on\s+([A-Za-z]+\s+\d{1,2}\s+\d{4})",
+        text,
+        re.I,
+    )
+    if not match:
+        return None
+    return _iso_calendar_date(match.group(1))
+
+
+def _expiry_from_sr3_code(code: str, *, reference_year: int = 2026) -> str | None:
+    """Map a single-digit CME year code into the listing decade around reference_year.
+
+    Digit 0 in 2026 is 2030, not 2020. Years more than one year behind the
+    reference roll forward ten years.
+    """
+    m = re.fullmatch(r"SR3([HMUZ])(\d)", code.upper())
+    if not m:
+        return None
+    month = {"H": 3, "M": 6, "U": 9, "Z": 12}[m.group(1)]
+    digit = int(m.group(2))
+    year = (reference_year // 10) * 10 + digit
+    if year < reference_year - 1:
+        year += 10
+    return f"{year:04d}-{month:02d}"
+
+
+def _expiration_month_matches_code(expiration_month: str, code: str) -> bool:
+    parsed = _parse_sr3_month_label(expiration_month)
+    if not parsed:
+        return False
+    expiry, month_abbr, year_digit = parsed
+    m = re.fullmatch(r"SR3([HMUZ])(\d)", code.upper())
+    if not m:
+        return False
+    expected_abbr = next(
+        (abbr for abbr, letter in _SR3_MONTH_CODES.items() if letter == m.group(1)),
+        None,
+    )
+    return expected_abbr == month_abbr and year_digit == m.group(2) and expiry.endswith(f"-{MONTHS[month_abbr]:02d}")
 
 
 def parse_cme_sofr_settlements_json(text: str, *, benchmark: float) -> list[dict[str, Any]]:
@@ -408,35 +589,233 @@ def parse_cme_sr3_html(text: str, *, benchmark: float) -> list[dict[str, Any]]:
     return rows
 
 
-def parse_cme_sr3_settlements_json(text: str, *, benchmark: float) -> list[dict[str, Any]]:
+def parse_cme_sr3_settlements_json(
+    text: str,
+    *,
+    benchmark: float,
+    observation_date: str | None = None,
+    source_url: str | None = None,
+) -> list[dict[str, Any]]:
     """Parse official CME settlement API rows for product 8462 (Three-Month SOFR)."""
     payload = json.loads(text)
-    month_codes = {"MAR": "H", "JUN": "M", "SEP": "U", "DEC": "Z"}
+    items = payload if isinstance(payload, list) else payload.get("settlements") or []
     rows: list[dict[str, Any]] = []
-    for item in payload.get("settlements") or []:
+    for item in items:
+        if not isinstance(item, dict):
+            continue
         label = str(item.get("month") or "")
-        expiry = _parse_cme_month(label)
-        price = _num(item.get("settle"))
-        m = re.fullmatch(r"([A-Z]{3})\s+(\d{2})", _clean(label).upper())
-        if not expiry or not m or m.group(1) not in month_codes:
+        parsed = _parse_sr3_month_label(label)
+        price = _sr3_settlement_price(item)
+        if not parsed or price is None or not 90.0 < price < 100.5:
             continue
-        if price is None or not 90.0 < price < 100.5:
-            continue
+        expiry, month_abbr, year_digit = parsed
         rows.append(
             _contract_row(
                 expiry=expiry,
-                code=f"SR3{month_codes[m.group(1)]}{m.group(2)[-1]}",
+                code=f"SR3{_SR3_MONTH_CODES[month_abbr]}{year_digit}",
                 price=price,
                 benchmark=benchmark,
                 source="CME_SR3_SETTLEMENT",
                 volume=_num(item.get("volume")),
                 open_interest=_num(item.get("openInterest")),
+                observation_date=observation_date,
+                as_of=observation_date,
+                source_url=source_url,
             )
         )
     rows.sort(key=lambda row: row["expiry"])
+    rows = _filter_sr3_expired_contracts(rows, observation_date)
     if not rows:
         raise ValueError("CME Three-Month SOFR settlement response contained no usable quarterly contracts")
     return rows
+
+
+def parse_cme_sr3_quotes_json(
+    text: str,
+    *,
+    benchmark: float,
+    source_url: str | None = None,
+) -> list[dict[str, Any]]:
+    """Parse CME quotes v2 JSON for Three-Month SOFR (product 8462)."""
+    payload = json.loads(text)
+    observation_date = _iso_calendar_date(payload.get("tradeDate"))
+    if not observation_date:
+        for quote in payload.get("quotes") or []:
+            if not isinstance(quote, dict):
+                continue
+            observation_date = _iso_calendar_date(quote.get("lastUpdated"))
+            if observation_date:
+                break
+    if not observation_date:
+        raise ValueError("CME SR3 quotes v2 response missing tradeDate")
+
+    rows: list[dict[str, Any]] = []
+    for quote in payload.get("quotes") or []:
+        if not isinstance(quote, dict):
+            continue
+        code = str(quote.get("quoteCode") or "").upper()
+        if not re.fullmatch(r"SR3[HMUZ]\d", code):
+            continue
+        expiration_month = str(quote.get("expirationMonth") or "")
+        if expiration_month and not _expiration_month_matches_code(expiration_month, code):
+            continue
+        expiry = _parse_sr3_month_label(expiration_month)
+        if expiry:
+            expiry = expiry[0]
+        else:
+            exp_date = _iso_calendar_date(quote.get("expirationDate"))
+            if exp_date:
+                expiry = exp_date[:7]
+            else:
+                ref_year = int(observation_date[:4]) if observation_date else 2026
+                expiry = _expiry_from_sr3_code(code, reference_year=ref_year)
+        if not expiry:
+            continue
+
+        last_raw = quote.get("last")
+        last_s = str(last_raw).strip() if last_raw is not None else ""
+        last_price = _num(last_raw) if last_s and last_s != "-" else None
+        prior_price = _num(quote.get("priorSettle"))
+
+        price: float | None = None
+        source = "CME_SR3_DELAYED_QUOTE"
+        if last_s and last_s != "-":
+            if last_price is None or not 90.0 < last_price < 100.5:
+                continue
+            price = last_price
+        elif prior_price is not None and 90.0 < prior_price < 100.5:
+            price = prior_price
+            source = "CME_SR3_PRIOR_SETTLEMENT"
+        else:
+            continue
+
+        rows.append(
+            _contract_row(
+                expiry=expiry,
+                code=code,
+                price=price,
+                benchmark=benchmark,
+                source=source,
+                volume=_num(quote.get("volume")),
+                observation_date=observation_date,
+                as_of=observation_date,
+                source_url=source_url,
+            )
+        )
+
+    rows = sorted({row["code"]: row for row in rows}.values(), key=lambda row: row["expiry"])
+    rows = _filter_sr3_expired_contracts(rows, observation_date)
+    if not rows:
+        raise ValueError("CME SR3 quotes v2 response contained no usable quarterly contracts")
+    return rows
+
+
+def _curl_cffi_get(url: str, *, referer: str | None = None) -> bytes | None:
+    try:
+        from curl_cffi import requests as cffi_requests
+    except ImportError:
+        return None
+    headers = {
+        "Accept": "*/*",
+        "Accept-Language": "en-US,en;q=0.8",
+    }
+    if referer:
+        headers["Referer"] = referer
+    for impersonate in ("chrome", "safari18_0"):
+        try:
+            resp = cffi_requests.get(url, impersonate=impersonate, timeout=30, headers=headers)
+        except Exception:
+            continue
+        if getattr(resp, "status_code", 0) == 200 and resp.content:
+            return bytes(resp.content)
+    return None
+
+
+def _is_production_fetch_bytes(fetch_bytes: FetchBytes) -> bool:
+    return (
+        getattr(fetch_bytes, "__module__", None) == "scripts.market_state"
+        and getattr(fetch_bytes, "__name__", None) == "fetch_bytes"
+    )
+
+
+def _invoke_fetch_bytes(fetch_bytes: FetchBytes, url: str, **kwargs: Any) -> bytes:
+    try:
+        return fetch_bytes(url, retries=1, **kwargs)
+    except TypeError:
+        return fetch_bytes(url, **kwargs)
+
+
+def _fetch_cme_bytes(
+    fetch_bytes: FetchBytes,
+    url: str,
+    *,
+    referer: str | None = None,
+    **kwargs: Any,
+) -> bytes:
+    kwargs.setdefault("user_agent", _BROWSER_UA)
+    if referer:
+        kwargs.setdefault("referer", referer)
+    try:
+        return _invoke_fetch_bytes(fetch_bytes, url, **kwargs)
+    except Exception as primary_exc:
+        if not _is_production_fetch_bytes(fetch_bytes):
+            raise
+        data = _curl_cffi_get(url, referer=referer or kwargs.get("referer"))
+        if data:
+            return data
+        raise primary_exc
+
+
+def _parse_cme_sr3_update_time(value: object) -> str | None:
+    if value is None:
+        return None
+    text = str(value).strip()
+    if not text:
+        return None
+    for fmt in (
+        "%A, %d %b %Y %I:%M %p",
+        "%A, %d %b %Y %I:%M:%S %p",
+    ):
+        try:
+            return datetime.strptime(text, fmt).date().isoformat()
+        except ValueError:
+            pass
+    return None
+
+
+def _verified_cme_sr3_settlement_observation_date(
+    payload: object,
+    *,
+    session_date: date,
+) -> str:
+    if isinstance(payload, list):
+        raise ValueError("bare list CME SR3 settlements payload is undated")
+    if not isinstance(payload, dict):
+        raise ValueError(f"unexpected CME SR3 settlements payload type: {type(payload)!r}")
+    report_type = payload.get("reportType")
+    if report_type is None or str(report_type).strip().lower() != "final":
+        raise ValueError(f"non-final CME SR3 settlement reportType={report_type!r}")
+    settlements = payload.get("settlements")
+    if not isinstance(settlements, list) or not settlements:
+        raise ValueError("empty CME SR3 settlements payload")
+    observation_date = _iso_calendar_date(payload.get("tradeDate"))
+    if not observation_date:
+        raise ValueError("CME SR3 settlements payload missing verified tradeDate")
+    if observation_date != session_date.isoformat():
+        raise ValueError(
+            "CME SR3 tradeDate "
+            f"{observation_date!r} does not match requested session {session_date.isoformat()!r}"
+        )
+    update_time = payload.get("updateTime")
+    if update_time is not None and str(update_time).strip():
+        updated = _parse_cme_sr3_update_time(update_time)
+        if not updated:
+            raise ValueError(f"unparseable CME SR3 updateTime={update_time!r}")
+        if updated != observation_date:
+            raise ValueError(
+                f"CME SR3 updateTime date {updated!r} contradicts tradeDate {observation_date!r}"
+            )
+    return observation_date
 
 
 def _fetch_recent_cme_sr3_settlements(
@@ -451,18 +830,39 @@ def _fetch_recent_cme_sr3_settlements(
         trade_date = d.strftime("%m/%d/%Y")
         url = CME_SR3_SETTLEMENTS_TEMPLATE.format(trade_date=trade_date)
         try:
-            body = fetch_bytes(
-                url,
-                user_agent=(
-                    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-                    "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
-                ),
-                referer=CME_SR3_URL,
-            ).decode("utf-8", errors="replace")
-            return parse_cme_sr3_settlements_json(body, benchmark=benchmark), url
+            raw = _fetch_cme_bytes(fetch_bytes, url, referer=CME_SR3_URL)
+            body = raw.decode("utf-8", errors="replace")
+            payload = json.loads(body)
+            observation_date = _verified_cme_sr3_settlement_observation_date(
+                payload,
+                session_date=d,
+            )
+            rows = parse_cme_sr3_settlements_json(
+                body,
+                benchmark=benchmark,
+                observation_date=observation_date,
+                source_url=url,
+            )
+            _accept_fresh_sr3_rows(rows, today)
+            return rows, url
         except Exception as exc:
             last_error = exc
     raise ValueError(f"no usable CME SR3 settlement response in 8-day lookback: {last_error}")
+
+
+def _accept_fresh_sr3_rows(rows: list[dict[str, Any]], today: date) -> None:
+    """Reject undated, stale, or future-dated strips. Do not relabel them as today."""
+    if not rows:
+        raise ValueError("SR3 source returned no contracts")
+    observed_raw = rows[0].get("observation_date") or rows[0].get("as_of")
+    observed = _iso_calendar_date(observed_raw)
+    if not observed:
+        raise ValueError("SR3 source missing verified observation date")
+    delta = (today - date.fromisoformat(observed)).days
+    if delta > 8:
+        raise ValueError(f"SR3 observation {observed} is older than 8 days")
+    if delta < -1:
+        raise ValueError(f"SR3 observation {observed} is after the session date")
 
 
 def parse_esignal_sofr_html(text: str, *, benchmark: float) -> list[dict[str, Any]]:
@@ -817,68 +1217,95 @@ def _acquire_sr3_contracts(
     today: date,
     benchmark: float,
 ) -> tuple[list[dict[str, Any]], str, str]:
-    """SR3 tradable curve. A transient eSignal 403 falls through to CME sources.
-
-    fetch_bytes already retries HTTP 403. This chain then tries the accepted
-    public CME settlement API, the CME quote page, and the CME daily bulletin.
-    """
+    """SR3 tradable curve via CME official sources, then delayed eSignal fallback."""
     errors: list[str] = []
-    try:
-        html = _fetch_text(fetch_bytes, ESIGNAL_SR3_CHAIN_URL, user_agent=_BROWSER_UA)
-        return (
-            parse_esignal_sr3_html(html, benchmark=benchmark),
-            ESIGNAL_SR3_CHAIN_URL,
-            "delayed CME SR3 futures chain via eSignal",
-        )
-    except Exception as exc:
-        errors.append(f"eSignal SR3: {exc}")
-        # One explicit extra attempt so a transient 403 is retried before fallback.
-        try:
-            html = _fetch_text(fetch_bytes, ESIGNAL_SR3_CHAIN_URL, user_agent=_BROWSER_UA)
-            return (
-                parse_esignal_sr3_html(html, benchmark=benchmark),
-                ESIGNAL_SR3_CHAIN_URL,
-                "delayed CME SR3 futures chain via eSignal retry",
-            )
-        except Exception as retry_exc:
-            errors.append(f"eSignal SR3 retry: {retry_exc}")
+
+    def _fresh(rows: list[dict[str, Any]], url: str, method: str) -> tuple[list[dict[str, Any]], str, str]:
+        _accept_fresh_sr3_rows(rows, today)
+        return rows, url, method
+
     try:
         rows, url = _fetch_recent_cme_sr3_settlements(
             today=today,
             fetch_bytes=fetch_bytes,
             benchmark=benchmark,
         )
-        return rows, url, "CME SR3 settlements API"
+        return _fresh(rows, url, "CME SR3 settlements API")
     except Exception as exc:
         errors.append(f"CME SR3 settlements: {exc}")
     try:
-        html = _fetch_text(
-            fetch_bytes,
-            CME_SR3_URL,
-            user_agent=_BROWSER_UA,
-            referer=CME_SR3_URL,
+        body = _fetch_cme_bytes(fetch_bytes, CME_SR3_QUOTES_V2_URL, referer=CME_SR3_URL).decode(
+            "utf-8",
+            errors="replace",
         )
-        return (
-            parse_cme_sr3_html(html, benchmark=benchmark),
-            CME_SR3_URL,
-            "CME Three-Month SOFR delayed quote page",
+        rows = parse_cme_sr3_quotes_json(
+            body,
+            benchmark=benchmark,
+            source_url=CME_SR3_QUOTES_V2_URL,
         )
+        return _fresh(rows, CME_SR3_QUOTES_V2_URL, "CME SR3 quotes v2 API")
+    except Exception as exc:
+        errors.append(f"CME SR3 quotes v2: {exc}")
+    try:
+        html = _fetch_cme_bytes(fetch_bytes, CME_SR3_URL, referer=CME_SR3_URL).decode(
+            "utf-8",
+            errors="replace",
+        )
+        rows = parse_cme_sr3_html(html, benchmark=benchmark)
+        return _fresh(rows, CME_SR3_URL, "CME Three-Month SOFR delayed quote page")
     except Exception as exc:
         errors.append(f"CME SR3 quote page: {exc}")
     try:
-        bulletin = fetch_bytes(
+        bulletin = _fetch_cme_bytes(
+            fetch_bytes,
             CME_SOFR_BULLETIN_URL,
-            user_agent=_BROWSER_UA,
             referer="https://www.cmegroup.com/market-data/daily-bulletin.html",
         )
-        return (
-            parse_cme_sr3_bulletin_pdf(bulletin, benchmark=benchmark),
-            CME_SOFR_BULLETIN_URL,
-            "CME Daily Bulletin SR3 settlements",
+        try:
+            from pypdf import PdfReader
+        except ImportError as exc:
+            raise ValueError("pypdf required for CME Daily Bulletin") from exc
+        reader = PdfReader(io.BytesIO(bulletin))
+        text = "\n".join(page.extract_text() or "" for page in reader.pages)
+        observation_date = _extract_cme_bulletin_trade_date(text)
+        if not observation_date:
+            raise ValueError("CME Daily Bulletin SR3 block missing verified trade date")
+        rows = parse_cme_sr3_bulletin_text(text, benchmark=benchmark)
+        rows = _stamp_sr3_contract_metadata(
+            rows,
+            observation_date=observation_date,
+            source_url=CME_SOFR_BULLETIN_URL,
         )
+        rows = _filter_sr3_expired_contracts(rows, observation_date)
+        if not rows:
+            raise ValueError("CME Daily Bulletin SR3 block contained no current quarterly contracts")
+        return _fresh(rows, CME_SOFR_BULLETIN_URL, "CME Daily Bulletin SR3 settlements")
     except Exception as exc:
         errors.append(f"CME SR3 bulletin: {exc}")
-    raise ValueError("SR3 credential-free fallback chain failed: " + "; ".join(errors))
+    try:
+        raw = _fetch_cme_bytes(fetch_bytes, ESIGNAL_SR3_CHAIN_URL, referer=ESIGNAL_SR3_CHAIN_URL)
+        html = raw.decode("utf-8", errors="replace") if isinstance(raw, (bytes, bytearray)) else str(raw)
+        observation_date = _extract_esignal_delayed_observation_date(html)
+        if not observation_date:
+            raise ValueError("eSignal SR3 page missing delayed data observation timestamp")
+        rows = parse_esignal_sr3_html(html, benchmark=benchmark)
+        rows = _stamp_sr3_contract_metadata(
+            rows,
+            observation_date=observation_date,
+            source_url=ESIGNAL_SR3_CHAIN_URL,
+        )
+        rows = _filter_sr3_expired_contracts(rows, observation_date)
+        if not rows:
+            raise ValueError("eSignal delayed CME SR3 quote board contained no current quarterly contracts")
+        return _fresh(rows, ESIGNAL_SR3_CHAIN_URL, "delayed CME SR3 futures chain via eSignal")
+    except Exception as exc:
+        errors.append(f"eSignal SR3: {exc}")
+    targets = ", ".join(_SR3_TARGET_MATURITIES)
+    raise ValueError(
+        "SR3 credential-free fallback chain failed "
+        f"(target maturities {targets}): "
+        + "; ".join(errors)
+    )
 
 
 def collect_policy_paths(
@@ -1101,13 +1528,18 @@ def build_tradable_rate_curves(policy_paths: dict[str, Any]) -> dict[str, Any]:
         block = countries.get(country) or {}
         rows = block.get(family) if block.get("status") in {"ok", "partial"} else None
         if not isinstance(rows, list) or not rows:
+            strip_error = f"{curve_id} tradable futures strip unavailable"
+            if curve_id == "SOFR":
+                sr3_error = block.get("sr3_error")
+                if sr3_error:
+                    strip_error = str(sr3_error)
             curves[curve_id] = {
                 "status": "unavailable",
                 "country": country,
-                "error": f"{curve_id} tradable futures strip unavailable",
+                "error": strip_error,
             }
             continue
-        curves[curve_id] = {
+        curve_block: dict[str, Any] = {
             "status": "ok",
             "country": country,
             "benchmark": block.get("benchmark"),
@@ -1118,6 +1550,15 @@ def build_tradable_rate_curves(policy_paths: dict[str, Any]) -> dict[str, Any]:
             "source_url": source_url,
             "mark_convention": "implied_rate = 100 - futures price",
         }
+        if curve_id == "SOFR":
+            missing_targets = [
+                maturity
+                for maturity in _SR3_TARGET_MATURITIES
+                if not any(str(row.get("expiry") or "") == maturity for row in rows)
+            ]
+            if missing_targets:
+                curve_block["missing_target_maturities"] = missing_targets
+        curves[curve_id] = curve_block
 
     ea = countries.get("EA") or {}
     ea_tradable = ea.get("tradable_curve") if isinstance(ea.get("tradable_curve"), dict) else {}
