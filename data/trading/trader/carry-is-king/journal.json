@@ -948,6 +948,62 @@
       "run_id": "overnight-20261015",
       "schema_version": 1,
       "thesis": "March 2027 AONIA at 4.805 still prices about 20 basis points of hikes versus cash 4.60, so the existing 25 million receive is paid to wait while cash policy has not moved. Brent at 106 is a headline, not a cash-rate change, and does not justify flattening that receive while the gap stays wide."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-524ab67108ee",
+          "rationale": "Keep the 25 million March 2027 AONIA receive; cash is unchanged at 4.60 and the path premium is still modest carry.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-17T08:58:03.216823-04:00",
+      "conviction": 74,
+      "decision_fingerprint": "ec3aa6df1a387d915f6d787dbf39710812485b76ee6d97ef7e107f1c790e84d0",
+      "event_id": "jde-b47e0fb97b4c42ce",
+      "funding_view": null,
+      "invalidation": "Cover if cash AONIA leaves 4.60 higher so the March gap closes from the cash side, or if March implied backs up through the 4.83 entry on a delivered or firmly signaled RBA tightening path.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-524ab67108ee"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "4ddabf82bf64dbb970938a0396224717a946def9e4a91ee5a53f8f371b974f40",
+      "outcome_links": [],
+      "owner_id": "carry-is-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "761b860d37a0bfaa3b11766b079bc925d5a19efb3dbc9bd9c34ac110a8ba7dfd"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-17T08:58:03.216823-04:00",
+        "evidence_hash": "6def0cd6ba8d7f90a15f26e9348cafe7d793c6c81ea49153cc66957710134d94",
+        "overnight_run_id": "overnight-20261016",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "AONIA cash is still 4.60 while March 2027 sits at 4.765, so the strip still pays a modest path premium versus cash. The book already receives 4.83 in that contract, and the remaining gap is carry the position is paid to wait for rather than a reason to cut. Brent at 109.86 is an oil headline, not an RBA cash change, and the Australian 10-year at 5.314 does not reprice near-dated policy. Hold the receive unless cash itself moves.",
+      "run_id": "overnight-20261016",
+      "schema_version": 1,
+      "thesis": "AONIA cash is still 4.60 while March 2027 sits at 4.765, so the strip still pays a modest path premium versus cash. The book already receives 4.83 in that contract, and the remaining gap is carry the position is paid to wait for rather than a reason to cut. Brent at 109.86 is an oil headline, not an RBA cash change, and the Australian 10-year at 5.314 does not reprice near-dated policy. Hold the receive unless cash itself moves."
     }
   ],
   "schema_version": 1,

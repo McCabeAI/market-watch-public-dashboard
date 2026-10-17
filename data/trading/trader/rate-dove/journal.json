@@ -944,6 +944,62 @@
       "run_id": "overnight-20261015",
       "schema_version": 1,
       "thesis": "Cash CORRA at 2.28 versus a 2027 strip through 3.34 still embeds a hiking path, and the live H-Z pack near 3.16 remains below the 3.40 receive. Restrictive policy should weaken demand before that tightening is delivered. Brent at 106 is a headwind, but it does not erase the cash-to-forward premium or justify fading a working long."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027H-Z",
+          "notional_usd": null,
+          "position_id": "pos-9849cf751c27",
+          "rationale": "Keep the 42.5 million CORRA 2027 H-Z receive; cash 2.27 has not delivered the 2027 hike path.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-17T08:58:03.216823-04:00",
+      "conviction": 66,
+      "decision_fingerprint": "b26f97c5ce0f82cd31bebad55ab5a97549d2d0861eccb26af37cabea20dd428c",
+      "event_id": "jde-3a57f532b2af403f",
+      "funding_view": null,
+      "invalidation": "The easing residual is gone if the Bank of Canada delivers a cash-rate hike from 2.27, or if the 2027 CORRA strip reprices higher because Canadian policy confirms tightening rather than because oil and euro-area inflation print as headlines.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-9849cf751c27"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "8984d24109fd9249624b39ed2847ed52a3b2e0ed1f8e1723e10e0fa5c8bc7407",
+      "outcome_links": [],
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "d8bf1aa4d95ceff456997c26d9cbed99589dbf344fb8dcc3ea86b92ad636a9ef"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-17T08:58:03.216823-04:00",
+        "evidence_hash": "6def0cd6ba8d7f90a15f26e9348cafe7d793c6c81ea49153cc66957710134d94",
+        "overnight_run_id": "overnight-20261016",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Canadian cash is still 2.27 while CORRA March 2027 at 2.91 through December 2027 at 3.38 continues to price a 2027 hiking path that has not been delivered. Oil at 109.86 and euro-area inflation are hawkish headlines, not a Bank of Canada cash hike, so the long 2027 H-Z receive still has residual versus a delivered tightening. The existing expression remains the cleanest way to fade that unpaid 2027 path.",
+      "run_id": "overnight-20261016",
+      "schema_version": 1,
+      "thesis": "Canadian cash is still 2.27 while CORRA March 2027 at 2.91 through December 2027 at 3.38 continues to price a 2027 hiking path that has not been delivered. Oil at 109.86 and euro-area inflation are hawkish headlines, not a Bank of Canada cash hike, so the long 2027 H-Z receive still has residual versus a delivered tightening. The existing expression remains the cleanest way to fade that unpaid 2027 path."
     }
   ],
   "schema_version": 1,

@@ -918,6 +918,60 @@
       "run_id": "overnight-20261015",
       "schema_version": 1,
       "thesis": "This freeze has no scheduled policy decision, and March 2027 STIR already embeds the 2027 paths: SOFR 4.515 versus cash 3.89, CORRA 2.89 versus 2.28, AONIA 4.805 versus 4.60. The dated headlines are speeches and a trade deficit, not a meeting or a dated supply shock still to force a mark. Stay flat until a scheduled decision or a fresh shock actually moves a markable 2027 contract."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "No dated catalyst is clean enough to open risk from a flat book; 2027 paths are already marked.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-17T08:58:03.216823-04:00",
+      "conviction": 64,
+      "decision_fingerprint": "b95e86374800fc4a6e704a4804629260a3d3efef7924072079c8a770284753cd",
+      "event_id": "jde-b52acc8a8e434d04",
+      "funding_view": null,
+      "invalidation": "Reassess if a later freeze shows a dated policy decision or a discrete energy disruption that actually moves 2027 SOFR, CORRA, or AONIA away from the strips already on the board.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "13dba6ecb915010b192fb460eb93f12b6ddb848bad588ad08846945a0a01b115",
+      "outcome_links": [],
+      "owner_id": "catalyst-junkie",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "7af30b57baee15e4c2b44be551371a77c278e40405c52ca657a5093178cfea90"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-17T08:58:03.216823-04:00",
+        "evidence_hash": "6def0cd6ba8d7f90a15f26e9348cafe7d793c6c81ea49153cc66957710134d94",
+        "overnight_run_id": "overnight-20261016",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "This freeze has speeches and an already-marked 2027 strip, not a meeting or a shock still waiting to reprice. SOFR March 2027 at 4.485 versus cash 3.89, CORRA March 2027 at 2.91 versus 2.27, and AONIA March 2027 at 4.765 versus 4.60 are printed paths, while the dated Vietnam, India, and ECB comments have already occurred. Hormuz and Brent at 109.86 are a rolling headline, not a dated mark. With the book flat, stay out.",
+      "run_id": "overnight-20261016",
+      "schema_version": 1,
+      "thesis": "This freeze has speeches and an already-marked 2027 strip, not a meeting or a shock still waiting to reprice. SOFR March 2027 at 4.485 versus cash 3.89, CORRA March 2027 at 2.91 versus 2.27, and AONIA March 2027 at 4.765 versus 4.60 are printed paths, while the dated Vietnam, India, and ECB comments have already occurred. Hormuz and Brent at 109.86 are a rolling headline, not a dated mark. With the book flat, stay out."
     }
   ],
   "schema_version": 1,

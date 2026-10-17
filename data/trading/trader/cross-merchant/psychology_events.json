@@ -369,6 +369,81 @@
       "subject": {
         "rank_change": -4
       }
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [
+          150000.0
+        ],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-10-17T08:58:03.216823-04:00",
+      "event_id": "pse-000017",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "cross-merchant",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261016",
+      "seq": 17,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-10-17T08:58:03.216823-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "chase_pressure": -0.0037,
+        "complacency": 0.0428,
+        "external_pressure": -0.0126,
+        "frustration": -0.0033,
+        "self_trust": 0.0098
+      },
+      "event_id": "pse-000018",
+      "kind": "rank_gain_major",
+      "magnitude": 1.0,
+      "mismatch": false,
+      "owner_id": "cross-merchant",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261016",
+      "scale": 1.0,
+      "seq": 18,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "rank_change": -3
+      }
+    },
+    {
+      "at": "2026-10-17T08:58:03.216823-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "external_pressure": 0.0421,
+        "self_trust": -0.0152
+      },
+      "event_id": "pse-000019",
+      "kind": "self_report_admission_pressure_distorting",
+      "magnitude": 1.0,
+      "mismatch": false,
+      "owner_id": "cross-merchant",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261016",
+      "scale": 1.0,
+      "seq": 19,
+      "soften": false,
+      "source": {
+        "layer": "self_report"
+      },
+      "subject": {
+        "reflection_id": "prf-a765d8be723d"
+      }
     }
   ],
   "owner_id": "cross-merchant",

@@ -950,6 +950,62 @@
       "run_id": "overnight-20261015",
       "schema_version": 1,
       "thesis": "The crowded expression is still the desk long in USDCAD; the existing 15 million short from 1.4246, live 1.4219, is already the ownership-asymmetric fade. March 2027 CORRA at 2.89 versus cash 2.28 looks cheap versus cash, but 2027 STIR inventory is already two-way and a new receive is blocked while that crowding is flagged. Hold the dollar short; do not join the rates crowd."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDCAD",
+          "notional_usd": null,
+          "position_id": "pos-ccb6655acbad",
+          "rationale": "Keep the 15 million USDCAD short; do not join crowded 2027 strip inventory.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-17T08:58:03.216823-04:00",
+      "conviction": 62,
+      "decision_fingerprint": "3cdc2d90db84473a07864780338263bda767bc99387159012a11f820550c2223",
+      "event_id": "jde-be8ec09a723246d3",
+      "funding_view": null,
+      "invalidation": "The fade is wrong if USDCAD reclaims and holds above 1.42 while Brent stops supporting CAD, so the SOFR-CORRA gap starts trending the dollar again instead of sitting as a crowded dollar-Canada long.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-ccb6655acbad"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "da2b457729d331a4e462a4800e789d323dfbfe71fc909e3f21cd94452640b968",
+      "outcome_links": [],
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "de3972e06f3f192f7fdd3a85f9f2d894880f6d3993677ae5e3aa0f343dcc158d"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-17T08:58:03.216823-04:00",
+        "evidence_hash": "6def0cd6ba8d7f90a15f26e9348cafe7d793c6c81ea49153cc66957710134d94",
+        "overnight_run_id": "overnight-20261016",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "SOFR at 3.89 versus CORRA at 2.27 still favors the dollar on the rate gap, which is why dollar-Canada longs are the crowded expression and why the live short USDCAD remains the cleaner ownership-asymmetric fade. Brent at 109.86 can keep supporting CAD against that consensus dollar bid. 2027 SOFR, CORRA, and AONIA pays and receives are already congested across the desk, so a new strip overlay would join inventory rather than own a scarce side. Hold the existing short.",
+      "run_id": "overnight-20261016",
+      "schema_version": 1,
+      "thesis": "SOFR at 3.89 versus CORRA at 2.27 still favors the dollar on the rate gap, which is why dollar-Canada longs are the crowded expression and why the live short USDCAD remains the cleaner ownership-asymmetric fade. Brent at 109.86 can keep supporting CAD against that consensus dollar bid. 2027 SOFR, CORRA, and AONIA pays and receives are already congested across the desk, so a new strip overlay would join inventory rather than own a scarce side. Hold the existing short."
     }
   ],
   "schema_version": 1,

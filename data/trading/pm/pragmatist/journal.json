@@ -974,6 +974,77 @@
       "run_id": "overnight-20261015",
       "schema_version": 1,
       "thesis": "Keep the working receive in March 2027 CORRA as the core expression: cash at 2.28 versus the 2.89 contract still leaves residual Canadian easing in the strip. Keep the small New Zealand versus US 10-year short as a limited overlay that needs the spread to reprice higher from minus 20 basis points. With every trader seat holding and no new handoff, adding another G10 rates or FX line would mostly duplicate global duration rather than improve the book."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pm-pragmatist-4e0cbc4e0b05",
+          "rationale": "Keep the 450 million March 2027 CORRA receive; do not add after the move from 3.13 to 2.91.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates_rv",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "NZ-US_10Y",
+          "notional_usd": null,
+          "position_id": "pm-pragmatist-3afafe53c6d7",
+          "rationale": "Keep the 80 million NZ-US 10-year short as a quarantined overlay; do not add while official New Zealand yields are unavailable.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-17T14:23:53.584721-04:00",
+      "conviction": 66,
+      "decision_fingerprint": "3c92c5654e342d236ba5ed0ed20ba34fc558b95be620b3b005889b363cf1f57d",
+      "event_id": "jde-c9acda2c4bf44ec9",
+      "funding_view": null,
+      "invalidation": "Cut the CORRA receive if March implied reprices toward the 3.13 entry or cash backs up through the easing path on a hawkish Bank of Canada or oil-led inflation impulse. Do not add New Zealand risk while official yields are unavailable.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-pragmatist-3afafe53c6d7",
+        "pm-pragmatist-4e0cbc4e0b05"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "20096e7c34bdf19c0629d5dd6ac8b4128dd8e0e58962c776fc2b9bf86e818fd1",
+      "outcome_links": [],
+      "owner_id": "pragmatist",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "82b161fb833b6d4fa6066a43713df3e533033896866f009298c05675d66eaaf5"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-17T08:58:03.216823-04:00",
+        "evidence_hash": "c9e9b3853beecb5b3b5cb1d65bc9d8bf34a80b67b8a4f88c96f89898de79c537",
+        "overnight_run_id": "overnight-20261016",
+        "review_id": "review-001",
+        "review_packet_id": "prp-pragmatist-overnight-20261016-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Keep the working receive in March 2027 CORRA as the core expression: cash at 2.27 versus the 2.91 contract still leaves residual Canadian easing in the strip. Keep the New Zealand versus US 10-year short as a quarantined overlay that cannot be marked while official New Zealand yields are unavailable. With every trader seat holding and no new handoff, adding another G10 rates or FX line would mostly duplicate global duration rather than improve the book.",
+      "run_id": "overnight-20261016",
+      "schema_version": 1,
+      "thesis": "Keep the working receive in March 2027 CORRA as the core expression: cash at 2.27 versus the 2.91 contract still leaves residual Canadian easing in the strip. Keep the New Zealand versus US 10-year short as a quarantined overlay that cannot be marked while official New Zealand yields are unavailable. With every trader seat holding and no new handoff, adding another G10 rates or FX line would mostly duplicate global duration rather than improve the book."
     }
   ],
   "schema_version": 1,

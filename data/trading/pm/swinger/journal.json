@@ -962,6 +962,62 @@
       "run_id": "overnight-20261015",
       "schema_version": 1,
       "thesis": "March 2027 CORRA still prices a large rebound from cash near 2.28 toward 2.89. That hike-back remains too much if Canada has already delivered the easing cycle and does not need to re-tighten with the Fed. Brent near 106 and a 5.19 US 10-year are the live threats, but they size the remaining path rather than kill the receive. Keep the concentrated long; do not dilute it with a second sleeve."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pm-swinger-2070479ca321",
+          "rationale": "Keep the concentrated March 2027 CORRA receive; cash 2.27 versus 2.91 still prices too much hike-back.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-17T14:23:53.312744-04:00",
+      "conviction": 74,
+      "decision_fingerprint": "d96e72bacb0ee984d6df2f481b2b0440ee923f91be6d42e22a7e7f626d0e7542",
+      "event_id": "jde-50cc25fb2bda461c",
+      "funding_view": null,
+      "invalidation": "March 2027 CORRA stops falling because cash itself is pulled back up toward the forwards, or because oil-driven inflation and a weaker Canadian dollar force a genuine hike-back that cash starts to validate.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-swinger-2070479ca321"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "ee7608395dced9d2059f5b8ed7cd88baa2a0481494ce9947375354ca00aba826",
+      "outcome_links": [],
+      "owner_id": "swinger",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "6db720be0ad9035af7e5b09163413fcc24134e5ac3b1cc2e3034b9c97938b281"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-17T08:58:03.216823-04:00",
+        "evidence_hash": "35089cea12a3e27ea3ab0ab8601ff9db7661fa9dca1c3c57b225020b805fd2e2",
+        "overnight_run_id": "overnight-20261016",
+        "review_id": "review-001",
+        "review_packet_id": "prp-swinger-overnight-20261016-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Canada has already delivered easing with cash at 2.27, yet March 2027 still sits at 2.91 and therefore still prices a large hike-back from the delivered cash rate. That implied re-tightening remains too much if the cuts stick and growth does not force a new hiking cycle. The book is already the concentrated receive; oil near 110 and a soft Canadian dollar are two-way risks, not a reason to cut or to add. Stay long March 2027 and let the remaining gap to cash do the work.",
+      "run_id": "overnight-20261016",
+      "schema_version": 1,
+      "thesis": "Canada has already delivered easing with cash at 2.27, yet March 2027 still sits at 2.91 and therefore still prices a large hike-back from the delivered cash rate. That implied re-tightening remains too much if the cuts stick and growth does not force a new hiking cycle. The book is already the concentrated receive; oil near 110 and a soft Canadian dollar are two-way risks, not a reason to cut or to add. Stay long March 2027 and let the remaining gap to cash do the work."
     }
   ],
   "schema_version": 1,

@@ -906,6 +906,60 @@
       "run_id": "overnight-20261015",
       "schema_version": 1,
       "thesis": "This book is flat. The VIX is 15.27 and the S&P is near 7719, and rates and spot already express the oil and policy tape. A volatility clip is not a last-resort case here because this freeze does not name a markable convex payoff. Stay at the zero cash benchmark rather than paying funding on an unmarkable options clip."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Flat book. VIX 16.46 and no listed options marks; rates and spot already express oil and policy.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-17T08:58:03.216823-04:00",
+      "conviction": 72,
+      "decision_fingerprint": "8231dcea0241ca95a137f7f1f99e19a01251091386487f3cf4dc21470016c0c0",
+      "event_id": "jde-0fea6388ee2d4e94",
+      "funding_view": null,
+      "invalidation": "This hold is wrong if a later freeze shows a markable options structure with premium, implied vol, and strikes whose convex payoff rates and spot cannot express.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "7b9d2132d9bf97a3333d143bed14503ca7ec8227576ab86235779a1dc516f873",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "00f9005e81c3e7ec4afa116184e04ffc4ff5df98fba7cecb15b339f6793ad15e"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-17T08:58:03.216823-04:00",
+        "evidence_hash": "6def0cd6ba8d7f90a15f26e9348cafe7d793c6c81ea49153cc66957710134d94",
+        "overnight_run_id": "overnight-20261016",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Oil, metals, and the rates curve already carry the policy-and-supply shock in linear markets: Brent, gold, SOFR versus March 2027, and USDCAD leave little unpriced directional edge. Uncertain timing of the next oil or policy impulse would normally favor bounded-risk optionality, but this freeze lists no premium, implied volatility, or strikes. With the book flat and no markable convex payoff, standing aside dominates inventing a vol surface.",
+      "run_id": "overnight-20261016",
+      "schema_version": 1,
+      "thesis": "Oil, metals, and the rates curve already carry the policy-and-supply shock in linear markets: Brent, gold, SOFR versus March 2027, and USDCAD leave little unpriced directional edge. Uncertain timing of the next oil or policy impulse would normally favor bounded-risk optionality, but this freeze lists no premium, implied volatility, or strikes. With the book flat and no markable convex payoff, standing aside dominates inventing a vol surface."
     }
   ],
   "schema_version": 1,

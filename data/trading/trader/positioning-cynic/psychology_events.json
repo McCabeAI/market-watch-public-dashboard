@@ -363,6 +363,58 @@
       "run_id": "overnight-20261015",
       "seq": 16,
       "skipped_reason": null
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [
+          150000.0
+        ],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-10-17T08:58:03.216823-04:00",
+      "event_id": "pse-000017",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "positioning-cynic",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261016",
+      "seq": 17,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-10-17T08:58:03.216823-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "chase_pressure": -0.0002,
+        "complacency": 0.0053,
+        "defensiveness": -0.0007,
+        "external_pressure": -0.0005,
+        "frustration": -0.0009,
+        "revenge_pressure": -0.0002,
+        "self_trust": 0.003
+      },
+      "event_id": "pse-000018",
+      "kind": "session_gain",
+      "magnitude": 0.12245358,
+      "mismatch": false,
+      "owner_id": "positioning-cynic",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261016",
+      "scale": 1.0,
+      "seq": 18,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "session_pnl_change_usd": 61226.79
+      }
     }
   ],
   "owner_id": "positioning-cynic",

@@ -42,8 +42,8 @@
     "nav_usd": 100000000.0,
     "net_pnl_usd": 0.0,
     "pressure_flags": [],
-    "prior_competition_rank": 4,
-    "rank_change": 0,
+    "prior_competition_rank": 6,
+    "rank_change": -2,
     "raw_pnl_rank": 4,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
@@ -60,7 +60,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "7b9d2132d9bf97a3333d143bed14503ca7ec8227576ab86235779a1dc516f873",
+  "memory_context_sha256": "88d90e6d95c4cc4b3694288f3f569ff4b720a3a8e732e879965c061073b4a5b2",
   "open_positions": [],
   "owner_id": "vol-convexity",
   "owner_type": "trader",
@@ -71,8 +71,8 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.21
+        "trend": "up",
+        "value": 0.25
       },
       "complacency": {
         "band": "calm",
@@ -86,13 +86,13 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.15
+        "trend": "up",
+        "value": 0.22
       },
       "frustration": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.14
+        "trend": "up",
+        "value": 0.18
       },
       "revenge_pressure": {
         "band": "calm",
@@ -122,24 +122,24 @@
       {
         "kind": "flat_with_market",
         "magnitude": 1.0,
-        "run_id": "overnight-20261013"
-      },
-      {
-        "kind": "flat_with_market",
-        "magnitude": 1.0,
-        "run_id": "overnight-20261014"
-      },
-      {
-        "kind": "flat_with_market",
-        "magnitude": 1.0,
         "run_id": "overnight-20261015"
+      },
+      {
+        "kind": "rank_drop_minor",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261016"
+      },
+      {
+        "kind": "flat_with_market",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261016"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "00f9005e81c3e7ec4afa116184e04ffc4ff5df98fba7cecb15b339f6793ad15e",
+    "state_sha256": "8b0d70ed21061dc40855ce695958cbfe6408131b037905afee7da0134f16a2ac",
     "streaks": {
-      "flat_cycles": 11,
+      "flat_cycles": 12,
       "session_loss": 0,
       "session_win": 0
     }

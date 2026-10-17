@@ -942,6 +942,62 @@
       "run_id": "overnight-20261015",
       "schema_version": 1,
       "thesis": "Brent near 106 and an orderly tape keep cyclical catch-up in Canada on the table versus cash CORRA at 2.28. March 2027 CORRA at 2.89 still prices that path after the slide from the 3.13 entry, so the existing pay is an adverse mark rather than a broken view. Leave the 50 million short unchanged while the cash-to-forward hike gap remains open."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-dd6fdaf39119",
+          "rationale": "Keep the 50 million March 2027 CORRA pay; cash 2.27 versus 2.91 still prices catch-up tightening.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-17T08:58:03.216823-04:00",
+      "conviction": 66,
+      "decision_fingerprint": "aea03ffda4eb5da61875336116301fca47444227137119c0689af59928192089",
+      "event_id": "jde-47f27cd0f35b4e09",
+      "funding_view": null,
+      "invalidation": "The view breaks if Canadian growth and inflation roll over enough that March 2027 CORRA is priced back toward cash rather than toward the two-year, or if a genuine risk-off break forces a sustained easier Bank of Canada path.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-dd6fdaf39119"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "f527a97c9bd9547ec901cf635052bfe83cf90e2a28705f3a818f59ced1c4c316",
+      "outcome_links": [],
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "aa4926ec65e6dc765d4a0e7e9402db28c2cf7ad7613e6eb0ca92f4019d271052"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-17T08:58:03.216823-04:00",
+        "evidence_hash": "6def0cd6ba8d7f90a15f26e9348cafe7d793c6c81ea49153cc66957710134d94",
+        "overnight_run_id": "overnight-20261016",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Canadian policy still looks behind a resilient risk complex: cash CORRA at 2.27 sits well below March 2027 at 2.91 and the two-year at 3.20, while oil above 100, a 16-handle VIX, and firm equity leave little case for a deeper easing path. Staying short March 2027 CORRA is the cleanest cyclical catch-up expression. Spot CAD would mix that view with dollar and Hormuz beta. Hold the pay while growth and inflation still argue for Canadian yields to catch higher, not lower.",
+      "run_id": "overnight-20261016",
+      "schema_version": 1,
+      "thesis": "Canadian policy still looks behind a resilient risk complex: cash CORRA at 2.27 sits well below March 2027 at 2.91 and the two-year at 3.20, while oil above 100, a 16-handle VIX, and firm equity leave little case for a deeper easing path. Staying short March 2027 CORRA is the cleanest cyclical catch-up expression. Spot CAD would mix that view with dollar and Hormuz beta. Hold the pay while growth and inflation still argue for Canadian yields to catch higher, not lower."
     }
   ],
   "schema_version": 1,

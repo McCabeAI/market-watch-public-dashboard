@@ -946,6 +946,62 @@
       "run_id": "overnight-20261015",
       "schema_version": 1,
       "thesis": "Cash SOFR at 3.89 versus March 2027 at 4.515 still leaves 62 basis points of hike premium, so the 10 million receive remains a fade of a stretched path rather than a chase of a spent move. The contract has cheapened from 4.58 toward 4.515, which is the desired direction, but oil and the 5.19 10-year keep term premium from collapsing, so do not add."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-1477172adb86",
+          "rationale": "Keep the 10 million March 2027 SOFR receive; the 2027 hike path is still stretched versus cash.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-17T08:58:03.216823-04:00",
+      "conviction": 64,
+      "decision_fingerprint": "3e4f10720f4f2fcb84050959f449381d8b273499b987d79e567d750e68fe1077",
+      "event_id": "jde-60df74c4e414459f",
+      "funding_view": null,
+      "invalidation": "March 2027 SOFR stops mean-reverting toward cash because SOFR cash itself reprices higher or because oil and euro-area inflation validate the remaining hike premium rather than leaving it as an overshoot versus 3.89.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-1477172adb86"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "7efebaf3af331af13f262d38462c03df728be82b85d9c0a59f72b0e1a8d223bb",
+      "outcome_links": [],
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "c32358161c2944110644d97608aeb7e9261fcb35e015c877a3e68379e018211d"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-17T08:58:03.216823-04:00",
+        "evidence_hash": "6def0cd6ba8d7f90a15f26e9348cafe7d793c6c81ea49153cc66957710134d94",
+        "overnight_run_id": "overnight-20261016",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "March 2027 SOFR at 4.485 still prices about 60 basis points of hikes versus 3.89 cash, so the 2027 path remains stretched against the overnight anchor. The existing receive is the clean US rates fade of that overshoot; the live mark below the 4.58 entry is consistent with normalization starting, not with the stretch being gone. Brent at 109.86 and euro-area inflation can keep the strip from reverting, which argues against adding, not against holding.",
+      "run_id": "overnight-20261016",
+      "schema_version": 1,
+      "thesis": "March 2027 SOFR at 4.485 still prices about 60 basis points of hikes versus 3.89 cash, so the 2027 path remains stretched against the overnight anchor. The existing receive is the clean US rates fade of that overshoot; the live mark below the 4.58 entry is consistent with normalization starting, not with the stretch being gone. Brent at 109.86 and euro-area inflation can keep the strip from reverting, which argues against adding, not against holding."
     }
   ],
   "schema_version": 1,
