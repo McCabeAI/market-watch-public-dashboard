@@ -2,6 +2,8 @@
 
 Status: implemented, not deployed. A nonpublishing shadow ran on 2026-10-17. Accepted public news on `main` was not rewritten.
 
+The follow-up on this branch is `docs/news_intelligence/repair_followup_review.md`. It supersedes the CoreWeave recall claim and the hard India/Vietnam suppress below. The 15 Oct CNBC CDS URL is an unresolved discovery blocker. Domestic India and Vietnam stories suppress only when they lack a transmission role.
+
 ## What changed
 
 Discovery is no longer one Bing macro query plus a Reuters sitemap, scored with keyword bonuses and cut to 8 items per source and 16 after the merge. Each in-window row is scored for G10 transmission before any display cap. `presentation_caps` stay 6 and 3. The HTML story window stays 12. A newest-60 safety ceiling per surface is a parse bound, recorded as `discovery_failure` / `safety_ceiling` when it binds. It is not a relevance rank.
