@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import weakref
 from typing import Any, Callable
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
@@ -19,7 +20,8 @@ class SourceError(Exception):
         self.detail = detail
         super().__init__(f"{code}: {detail}" if detail else code)
 
-_BY_OPENER: dict[int, dict[str, bytes]] = {}
+# Weak keys so a freed stub opener cannot leave cached bytes under a reused id.
+_BY_OPENER: weakref.WeakKeyDictionary = weakref.WeakKeyDictionary()
 
 
 def clear_caches() -> None:
@@ -34,14 +36,18 @@ def cache_key(url: str, data: bytes | None = None) -> str:
 
 
 def cache_get(opener: Callable[..., Any], key: str) -> bytes | None:
-    slot = _BY_OPENER.get(id(opener))
+    slot = _BY_OPENER.get(opener)
     if not slot or key not in slot:
         return None
     return slot[key]
 
 
 def cache_put(opener: Callable[..., Any], key: str, body: bytes) -> bytes:
-    _BY_OPENER.setdefault(id(opener), {})[key] = body
+    slot = _BY_OPENER.get(opener)
+    if slot is None:
+        slot = {}
+        _BY_OPENER[opener] = slot
+    slot[key] = body
     return body
 
 

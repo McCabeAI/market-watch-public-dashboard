@@ -4,14 +4,22 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
+import sys
 from pathlib import Path
 from typing import Any
 
 from scripts.canadian_cpi_release.contract import NowcastResult, Snapshot, add_months
 from scripts.canadian_cpi_release.engine import backtest_headline, forecast_release
 from scripts.canadian_cpi_release.report import render_nowcast_report
-from scripts.canadian_cpi_release.sources.acquire import fetch_live, load_snapshot
+from scripts.canadian_cpi_release.sources.acquire import (
+    fetch_live,
+    load_snapshot,
+    save_snapshot,
+    snapshot_canonical_bytes,
+)
+from scripts.canadian_cpi_release.sources.cache import SourceError
 
 ASTRA_HEADLINE_NSA_MOM = 0.1325244
 ASTRA_METRICS_CSV = (
@@ -81,6 +89,31 @@ def _reference_comparison(headline_nsa_mom: float | None) -> dict[str, Any]:
             "0.1325244 is an external research reference (Astra), not a model input."
         ),
     }
+
+
+def _live_archive_dir(out: Path, release: str, as_of: str, snapshot: Snapshot) -> Path:
+    digest = hashlib.sha256(snapshot_canonical_bytes(snapshot)).hexdigest()[:12]
+    safe_as_of = as_of.replace(":", "").replace("/", "-")
+    return out / "runs" / f"{release}-asof-{safe_as_of}-{digest}"
+
+
+def _write_nowcast_files(
+    directory: Path,
+    payload: dict[str, Any],
+    text: str,
+    *,
+    immutable: bool,
+) -> None:
+    json_bytes = _deterministic_json(payload).encode("utf-8")
+    text_out = text if text.endswith("\n") else text + "\n"
+    json_path = directory / "nowcast.json"
+    text_path = directory / "nowcast.txt"
+    if immutable and json_path.exists() and json_path.read_bytes() != json_bytes:
+        raise SourceError("archive_conflict", "nowcast.json differs from the archived forecast")
+    if immutable and text_path.exists() and text_path.read_text(encoding="utf-8") != text_out:
+        raise SourceError("archive_conflict", "nowcast.txt differs from the archived forecast")
+    json_path.write_bytes(json_bytes)
+    text_path.write_text(text_out, encoding="utf-8")
 
 
 def _nowcast_payload(result: NowcastResult, snapshot: Snapshot) -> dict[str, Any]:
@@ -158,35 +191,77 @@ def _resolve_snapshot(args: argparse.Namespace, through: str | None = None) -> S
     return fetch_live(through_period=period)
 
 
+def _publish_nowcast(
+    dest: Path,
+    result: NowcastResult,
+    snapshot: Snapshot,
+    *,
+    archive_info: dict[str, Any] | None,
+    immutable: bool,
+) -> str:
+    payload = _nowcast_payload(result, snapshot)
+    if archive_info is not None:
+        payload["input_archive"] = archive_info
+    text = render_nowcast_report(payload)
+    _write_nowcast_files(dest, payload, text, immutable=immutable)
+    print(text, end="" if text.endswith("\n") else "\n")
+    return text
+
+
 def cmd_nowcast(args: argparse.Namespace) -> int:
-    snapshot = _resolve_snapshot(args)
     release = args.release
     as_of = args.as_of
     out = Path(args.out)
-    out.mkdir(parents=True, exist_ok=True)
+    live = bool(getattr(args, "live", False))
+    try:
+        snapshot = _resolve_snapshot(args)
+        archive_info = None
+        if live:
+            out.mkdir(parents=True, exist_ok=True)
+            archive = _live_archive_dir(out, release, as_of, snapshot)
+            manifest = save_snapshot(snapshot, archive)
+            relative = archive.relative_to(out).as_posix()
+            archive_info = {
+                "path": relative,
+                "snapshot_sha256": manifest["snapshot_sha256"],
+                "replay_fixture": f"{relative}/snapshot.json",
+            }
+            dest = archive
+            immutable = True
+        else:
+            out.mkdir(parents=True, exist_ok=True)
+            dest = out
+            immutable = False
 
-    if _fixture_stale_for_release(snapshot, release):
-        blocked = NowcastResult(
-            release=release,
-            as_of=as_of,
-            status="blocked",
-            blockers=["fixture_stale_for_release"],
-            assumptions=[],
+        if _fixture_stale_for_release(snapshot, release):
+            blocked = NowcastResult(
+                release=release,
+                as_of=as_of,
+                status="blocked",
+                blockers=["fixture_stale_for_release"],
+                assumptions=[],
+            )
+            _publish_nowcast(
+                dest,
+                blocked,
+                snapshot,
+                archive_info=archive_info,
+                immutable=immutable,
+            )
+            return 2
+
+        result = forecast_release(snapshot, release, as_of)
+        _publish_nowcast(
+            dest,
+            result,
+            snapshot,
+            archive_info=archive_info,
+            immutable=immutable,
         )
-        payload = _nowcast_payload(blocked, snapshot)
-        text = render_nowcast_report(payload)
-        out.joinpath("nowcast.json").write_text(_deterministic_json(payload), encoding="utf-8")
-        out.joinpath("nowcast.txt").write_text(text, encoding="utf-8")
-        print(text, end="" if text.endswith("\n") else "\n")
+        return 0 if result.status == "ok" else 2
+    except (SourceError, OSError) as exc:
+        print(f"NOT PUBLISHED\nreason: {exc}\n", file=sys.stderr)
         return 2
-
-    result = forecast_release(snapshot, release, as_of)
-    payload = _nowcast_payload(result, snapshot)
-    text = render_nowcast_report(payload)
-    out.joinpath("nowcast.json").write_text(_deterministic_json(payload), encoding="utf-8")
-    out.joinpath("nowcast.txt").write_text(text, encoding="utf-8")
-    print(text, end="" if text.endswith("\n") else "\n")
-    return 0 if result.status == "ok" else 2
 
 
 def cmd_backtest(args: argparse.Namespace) -> int:

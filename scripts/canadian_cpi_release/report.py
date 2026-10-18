@@ -27,6 +27,15 @@ def render_nowcast_report(payload: dict[str, Any]) -> str:
     status = payload.get("status", "")
     lines.append(f"Canadian CPI nowcast — release {release} (as-of {as_of})")
     lines.append(f"Status: {status}")
+    archive = payload.get("input_archive") or {}
+    if archive:
+        lines.append(f"Input archive: {archive.get('path')}")
+        lines.append(f"Snapshot sha256: {archive.get('snapshot_sha256')}")
+        lines.append(
+            "Replay fixture: "
+            f"{archive.get('replay_fixture')} "
+            "(pass this snapshot.json to --fixture; do not refetch)"
+        )
     lines.append("")
 
     if status != "ok":

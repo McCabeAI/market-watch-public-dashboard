@@ -14,6 +14,31 @@ PYTHONPATH=. python3 -m scripts.canadian_cpi_release nowcast \
 
 Writes `nowcast.json` and `nowcast.txt`; prints the text report on stdout. Exit **0** when `status` is `ok`, **2** when blocked.
 
+### Live fetch archive
+
+`--live` writes an immutable run directory and does not replace an earlier archive:
+
+```text
+<out>/runs/<release>-asof-<as-of>-<snapshot_sha12>/
+  snapshot.json
+  manifest.json
+  raw/                  # StatCan JSON and NRCan HTML actually fetched
+  nowcast.json
+  nowcast.txt
+```
+
+The report prints that path and the snapshot sha256. Replay the same forecast with no network:
+
+```bash
+PYTHONPATH=. python3 -m scripts.canadian_cpi_release nowcast \
+  --release 2026-09 \
+  --as-of 2026-10-16 \
+  --fixture <out>/runs/<release>-asof-<as-of>-<snapshot_sha12>/snapshot.json \
+  --out /tmp/ca_cpi_replay
+```
+
+A different snapshot already stored under that directory is a hard failure (`archive_conflict` or `archive_raw_missing`), exit 2, and the previous files stay in place. Fixture mode still writes directly under `--out`.
+
 ### September 2026 result (fixture, as-of 2026-10-16)
 
 | Field | Value |

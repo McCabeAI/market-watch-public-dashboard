@@ -5,7 +5,7 @@ from __future__ import annotations
 import hashlib
 import re
 from dataclasses import dataclass
-from typing import Any, Callable
+from typing import Any, Callable, Iterable
 
 from scripts.canadian_cpi_release.contract import NRCAN_PAGES, Observation, SERIES_BY_ID
 from scripts.canadian_cpi_release.sources.cache import SourceError
@@ -55,6 +55,11 @@ def _page_hash_for_period(period: str, pages: list[NrcanRawPage], canonical_id: 
     return hashlib.sha256(b"").hexdigest()
 
 
+def periods_after(periods: Iterable[str], through_period: str) -> list[str]:
+    """Months strictly after the requested through period. YYYY-MM compares in order."""
+    return sorted(period for period in periods if period > through_period)
+
+
 def _missing_months(covered: set[str], through_period: str) -> list[str]:
     year, month = 2016, 7
     end_year, end_month = int(through_period[:4]), int(through_period[5:7])
@@ -81,7 +86,9 @@ def collect_nrcan(
     notes: list[str] = []
     observations: list[Observation] = []
     raw_pages: list[NrcanRawPage] = []
-    end_year = max(int(through_period[:4]), 2026)
+    if len(through_period) != 7 or through_period[4] != "-":
+        raise SourceError("nrcan_bad_through_period", through_period)
+    end_year = int(through_period[:4])
     years = list(range(2016, end_year + 1))
 
     for canonical_id in ("nrcan_gasoline", "nrcan_furnace_oil"):
@@ -113,13 +120,15 @@ def collect_nrcan(
                 "This is not a substituted research value."
             )
 
-        if any(p > REQUIRED_END for p in combined):
-            october = [p for p in combined if p.startswith("2026-10")]
-            if october:
-                notes.append(
-                    f"{canonical_id}: October 2026 monthly row present on NRCan pages "
-                    f"(e.g. {october[0]}={combined[october[0]]}); model must gate by as_of."
-                )
+        future = periods_after(combined, through_period)
+        if future:
+            shown = future[0]
+            notes.append(
+                f"{canonical_id}: {len(future)} monthly row(s) after requested through period "
+                f"{through_period} were retained in the source archive and are not eligible as "
+                f"the target-month input (first {shown}={combined[shown]}). "
+                "The forecast gates them by release month and as_of."
+            )
 
         for period, value in sorted(combined.items()):
             observations.append(
