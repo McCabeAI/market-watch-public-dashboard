@@ -1,0 +1,149 @@
+{
+  "type": "NEWS_INTELLIGENCE_SHADOW_SUMMARY",
+  "note": "Nonpublishing smoke on 2026-10-17. Stdout preview and full story list are not stored. Counts come from the local shadow report.",
+  "partial": false,
+  "cutoff": "2026-10-17T18:35:55.615951-04:00",
+  "receipts": [
+    {
+      "source": "bloomberg",
+      "status": "ok",
+      "candidate_count": 8,
+      "result_count": 2,
+      "failure": null
+    },
+    {
+      "source": "reuters",
+      "status": "ok",
+      "candidate_count": 50,
+      "result_count": 2,
+      "failure": null
+    },
+    {
+      "source": "bloomberg_credit",
+      "status": "ok",
+      "candidate_count": 0,
+      "result_count": 0,
+      "failure": null
+    },
+    {
+      "source": "bloomberg_equity",
+      "status": "ok",
+      "candidate_count": 0,
+      "result_count": 0,
+      "failure": null
+    },
+    {
+      "source": "reuters_credit",
+      "status": "ok",
+      "candidate_count": 0,
+      "result_count": 0,
+      "failure": null
+    },
+    {
+      "source": "fed_monetary",
+      "status": "ok",
+      "candidate_count": 15,
+      "result_count": 0,
+      "failure": null
+    },
+    {
+      "source": "boc_press",
+      "status": "ok",
+      "candidate_count": 0,
+      "result_count": 0,
+      "failure": null
+    },
+    {
+      "source": "rba_media",
+      "status": "ok",
+      "candidate_count": 0,
+      "result_count": 0,
+      "failure": null
+    },
+    {
+      "source": "ecb_press",
+      "status": "ok",
+      "candidate_count": 15,
+      "result_count": 0,
+      "failure": null
+    },
+    {
+      "source": "boj_whatsnew",
+      "status": "ok",
+      "candidate_count": 51,
+      "result_count": 0,
+      "failure": null
+    },
+    {
+      "source": "boe_news",
+      "status": "ok",
+      "candidate_count": 50,
+      "result_count": 0,
+      "failure": null
+    }
+  ],
+  "counts": {
+    "discovery_failure": 0,
+    "relevance_rejection": 185,
+    "presentation_suppression": 0,
+    "shown": 4
+  },
+  "watched_rows": [
+    {
+      "headline": "Vietnam Prime Minister Targets 2027 GDP Growth of at Least 10%",
+      "source": "bloomberg",
+      "published_at": null,
+      "stage": "relevance_rejection",
+      "reason": "window"
+    },
+    {
+      "headline": "Bloomberg This Weekend: Trump Halts Russia Sanctions",
+      "source": "bloomberg",
+      "published_at": null,
+      "stage": "relevance_rejection",
+      "reason": "path_drop"
+    },
+    {
+      "headline": "India, West Indies draw T20 series after rain washes out decider",
+      "source": "reuters",
+      "published_at": "2026-10-17T13:17:07.587000-04:00",
+      "stage": "relevance_rejection",
+      "reason": "stage1_recall"
+    },
+    {
+      "headline": "Festival crush in Indian city of\u00a0Kolkata kills at least 17, local media say",
+      "source": "reuters",
+      "published_at": "2026-10-17T12:50:58.916000-04:00",
+      "stage": "relevance_rejection",
+      "reason": "stage1_recall"
+    },
+    {
+      "headline": "US Interest Costs Hit Record $1 Trillion, Risking Debt Snowball",
+      "source": "Bloomberg",
+      "published_at": "2026-10-17T01:00:00-04:00",
+      "stage": "shown",
+      "reason": "usd_rates_repricing"
+    },
+    {
+      "headline": "Trump Halts New Russia Energy Sanctions to Ease Diesel Costs",
+      "source": "Bloomberg",
+      "published_at": "2026-10-16T22:45:00-04:00",
+      "stage": "shown",
+      "reason": "geopolitics_haven_or_oil"
+    },
+    {
+      "headline": "Guarda Revolucion\u00e1ria do Ir\u00e3 afirma que dois petroleiros atingiram minas no Estreito de\u00a0Ormuz",
+      "source": "Reuters",
+      "published_at": "2026-10-17T12:55:02.803000-04:00",
+      "stage": "shown",
+      "reason": "oil_supply_shock"
+    },
+    {
+      "headline": "Zelenskiy criticizes Trump's waiver of sanctions on Russia as 'wrong'",
+      "source": "Reuters",
+      "published_at": "2026-10-16T21:17:48.703000-04:00",
+      "stage": "shown",
+      "reason": "geopolitics_haven_or_oil"
+    }
+  ]
+}

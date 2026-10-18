@@ -2,27 +2,27 @@
 
 from __future__ import annotations
 
-import email.utils
-import hashlib
 import re
-import xml.etree.ElementTree as ET
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Any, Callable
-from urllib.parse import parse_qs, unquote, urlparse, quote
+from urllib.parse import quote
 
-from scripts.overnight.clock import isoformat, now_ny, parse_iso
+from scripts.overnight.clock import isoformat, now_ny
+from scripts.overnight.news_cluster import merge_live_news
+from scripts.overnight.news_relevance import recall_candidate
+from scripts.overnight.news_sources import (
+    BLOOMBERG_QUERY,
+    DISCOVERY_USER_AGENT,
+    REUTERS_SURFACE,
+    discovery_surfaces,
+    parse_surface,
+)
 
 Fetcher = Callable[[str], bytes]
 
-BLOOMBERG_QUERY = (
-    "site:bloomberg.com (Federal Reserve OR FOMC OR inflation OR CPI OR payrolls OR Treasury OR yields "
-    "OR oil OR Brent OR crude OR Hormuz OR OPEC OR FX OR dollar OR tariff OR sanctions OR "
-    '"central bank" OR RBA OR "Bank of Canada" OR RBNZ OR ECB OR "Bank of Japan")'
-)
 BLOOMBERG_SURFACE = (
     f"https://www.bing.com/news/search?q={quote(BLOOMBERG_QUERY)}&format=rss&qft=interval%3d%227%22"
 )
-REUTERS_SURFACE = "https://www.reuters.com/arc/outboundfeeds/news-sitemap/?outputType=xml"
 
 REQUIRED_SOURCES = ("bloomberg", "reuters")
 
@@ -68,10 +68,6 @@ MARKET_TOKENS = (
 
 NOISE_EXCLUDE = ("podcast", "golf", "celebrity")
 
-ENERGY_TOKENS = ("oil", "crude", "brent", "hormuz", "opec")
-RATES_INFLATION_FED = ("treasury", "yield", "inflation", "cpi", "fed", "fomc")
-FX_TARIFF = ("fx", "tariff", "sanction", "dollar", "forex", "currency")
-
 OFFICIAL_SOURCES = frozenset(
     {
         "Federal Reserve",
@@ -83,12 +79,6 @@ OFFICIAL_SOURCES = frozenset(
         "Bank of England",
     }
 )
-
-DEDUP_STOP = frozenset(
-    {"the", "and", "for", "after", "with", "says", "said", "its", "won", "will", "not"}
-)
-
-REUTERS_HEADLINE_ONLY = "Headline-only public metadata; article body was not retrieved."
 
 _COUNTRY_ATTRIBUTION_ORDER = ("US", "CA", "AU", "NZ", "EA", "JP")
 
@@ -164,10 +154,8 @@ def attribute_country_codes(headline: str, snippet: str) -> list[str]:
     return [code for code in _COUNTRY_ATTRIBUTION_ORDER if code in matched]
 
 
-_USER_AGENT = (
-    "MarketWatch-Public-News-Discovery/1.0 "
-    "(McCabeAI market-watch-public-dashboard; lawful RSS/sitemap discovery only)"
-)
+# Per-surface safety ceiling diagnostics (source id -> applied).
+SAFETY_CEILING_APPLIED: dict[str, bool] = {}
 
 
 def _default_fetcher(url: str) -> bytes:
@@ -176,230 +164,12 @@ def _default_fetcher(url: str) -> bytes:
     req = urllib.request.Request(
         url,
         headers={
-            "User-Agent": _USER_AGENT,
+            "User-Agent": DISCOVERY_USER_AGENT,
             "Accept": "application/rss+xml, application/xml, text/xml, */*",
         },
     )
     with urllib.request.urlopen(req, timeout=20) as resp:
         return resp.read()
-
-
-def _strip_html(text: str) -> str:
-    return re.sub(r"<[^>]+>", " ", text or "").strip()
-
-
-def _collapse_ws(text: str, max_len: int = 400) -> str:
-    collapsed = re.sub(r"\s+", " ", (text or "").strip())
-    if len(collapsed) <= max_len:
-        return collapsed
-    return collapsed[: max_len - 1].rstrip() + "…"
-
-
-def _canonical_from_bing_link(link: str) -> str | None:
-    parsed = urlparse(link)
-    qs = parse_qs(parsed.query)
-    raw = qs.get("url", [None])[0]
-    if not raw:
-        return None
-    url = unquote(raw)
-    if url.startswith("http://"):
-        url = "https://" + url[7:]
-    host = urlparse(url).netloc.lower()
-    if host.endswith("bloomberg.com") or host.endswith("reuters.com"):
-        return url
-    return None
-
-
-def _headline_clean(title: str) -> str:
-    t = (title or "").strip()
-    for suffix in (" - Bloomberg.com", " - Bloomberg"):
-        if t.endswith(suffix):
-            t = t[: -len(suffix)].strip()
-    return t
-
-
-def _contains_market_token(blob: str, tok: str) -> bool:
-    if " " in tok:
-        return tok in blob
-    return re.search(rf"\b{re.escape(tok)}\b", blob, flags=re.IGNORECASE) is not None
-
-
-def _text_matches_market_gate(headline: str, snippet: str) -> bool:
-    blob = f"{headline} {snippet}".lower()
-    has_macro = any(_contains_market_token(blob, tok) for tok in MARKET_TOKENS)
-    if not has_macro:
-        return False
-    policy_tokens = (
-        *ENERGY_TOKENS,
-        *RATES_INFLATION_FED,
-        "fx",
-        "forex",
-        "dollar",
-        "currency",
-        "tariff",
-        "sanction",
-        "central bank",
-        "rba",
-        "rbnz",
-        "bank of canada",
-        "boc",
-        "ecb",
-        "bank of japan",
-        "boj",
-        "fed",
-        "fomc",
-    )
-    energy_rates_fx_policy = any(_contains_market_token(blob, tok) for tok in policy_tokens)
-    if not energy_rates_fx_policy and any(noise in blob for noise in NOISE_EXCLUDE):
-        return False
-    return True
-
-
-def _primary_category(headline: str, snippet: str) -> str:
-    blob = f"{headline} {snippet}".lower()
-    if any(_contains_market_token(blob, t) for t in ENERGY_TOKENS):
-        return "energy"
-    if _contains_market_token(blob, "cpi") or _contains_market_token(blob, "inflation"):
-        return "inflation"
-    if any(
-        _contains_market_token(blob, t)
-        for t in ("fed", "fomc", "central bank", "rate cut", "rate hike", "policy rate")
-    ):
-        return "monetary_policy"
-    if _contains_market_token(blob, "treasury") or _contains_market_token(blob, "yield"):
-        return "rates"
-    if any(_contains_market_token(blob, t) for t in ("dollar", "fx", "forex", "currency")):
-        return "fx"
-    if any(_contains_market_token(blob, t) for t in ("iran", "hormuz", "sanction", "tariff")):
-        return "geopolitics"
-    return "macro"
-
-
-def _parse_pub_rss(pub: str) -> datetime | None:
-    if not pub:
-        return None
-    try:
-        dt = email.utils.parsedate_to_datetime(pub)
-        return now_ny(dt)
-    except (TypeError, ValueError, OverflowError):
-        return None
-
-
-def _parse_pub_iso(pub: str) -> datetime | None:
-    if not pub:
-        return None
-    try:
-        return parse_iso(pub.replace("Z", "+00:00") if pub.endswith("Z") else pub)
-    except ValueError:
-        return None
-
-
-def _publisher_family(source_name: str) -> str:
-    if source_name == "Bloomberg":
-        return "bloomberg"
-    if source_name == "Reuters":
-        return "reuters"
-    return source_name.lower()
-
-
-def _parse_bing_rss(data: bytes, *, surface: str, cutoff: datetime) -> tuple[int, list[dict[str, Any]]]:
-    window_start = cutoff - timedelta(hours=24)
-    out: list[dict[str, Any]] = []
-    raw_count = 0
-    root = ET.fromstring(data)
-    channel = root.find("channel")
-    if channel is None:
-        return 0, out
-    for item in channel.findall("item"):
-        title_el = item.find("title")
-        link_el = item.find("link")
-        pub_el = item.find("pubDate")
-        desc_el = item.find("description")
-        source_el = item.find("Source")
-        headline = _headline_clean(title_el.text if title_el is not None else "")
-        link = link_el.text if link_el is not None else ""
-        canonical = _canonical_from_bing_link(link)
-        if not canonical:
-            continue
-        source_name = (source_el.text if source_el is not None else "").strip() or "Bloomberg"
-        if "bloomberg" not in canonical.lower():
-            continue
-        source_name = "Bloomberg"
-        raw_count += 1
-        path = urlparse(canonical).path.lower()
-        if "/video" in path or "/newsletter" in path or "/podcast" in path:
-            continue
-        snippet = _collapse_ws(_strip_html(desc_el.text if desc_el is not None else ""))
-        if not _text_matches_market_gate(headline, snippet):
-            continue
-        published = _parse_pub_rss(pub_el.text if pub_el is not None else "")
-        if published is None or published > cutoff or published < window_start:
-            continue
-        out.append(
-            {
-                "published_at": isoformat(published),
-                "url": canonical,
-                "headline": headline,
-                "summary": snippet,
-                "source_name": source_name,
-                "verification_status": "single_source",
-                "primary_category": _primary_category(headline, snippet),
-                "country_codes": attribute_country_codes(headline, snippet),
-                "discovery_surface": surface,
-                "distribution_weight": "high",
-            }
-        )
-    out.sort(key=lambda x: x["published_at"], reverse=True)
-    return raw_count, out[:8]
-
-
-def _parse_reuters_sitemap(data: bytes, *, surface: str, cutoff: datetime) -> tuple[int, list[dict[str, Any]]]:
-    window_start = cutoff - timedelta(hours=24)
-    ns = {
-        "sm": "http://www.sitemaps.org/schemas/sitemap/0.9",
-        "news": "http://www.google.com/schemas/sitemap-news/0.9",
-    }
-    out: list[dict[str, Any]] = []
-    raw_count = 0
-    root = ET.fromstring(data)
-    for url_el in root.findall("sm:url", ns):
-        loc_el = url_el.find("sm:loc", ns)
-        news_el = url_el.find("news:news", ns)
-        if loc_el is None or news_el is None:
-            continue
-        title_el = news_el.find("news:title", ns)
-        pub_el = news_el.find("news:publication_date", ns)
-        name_el = news_el.find("news:publication/news:name", ns)
-        headline = (title_el.text if title_el is not None else "").strip()
-        loc = (loc_el.text if loc_el is not None else "").strip()
-        if not headline or not loc:
-            continue
-        raw_count += 1
-        snippet = REUTERS_HEADLINE_ONLY
-        if not _text_matches_market_gate(headline, snippet):
-            continue
-        published = _parse_pub_iso(pub_el.text if pub_el is not None else "")
-        if published is None or published > cutoff or published < window_start:
-            continue
-        pub_name = (name_el.text if name_el is not None else "").strip() or "Reuters"
-        if pub_name != "Reuters":
-            continue
-        out.append(
-            {
-                "published_at": isoformat(published),
-                "url": loc,
-                "headline": headline,
-                "summary": snippet,
-                "source_name": "Reuters",
-                "verification_status": "single_source",
-                "primary_category": _primary_category(headline, snippet),
-                "country_codes": attribute_country_codes(headline, snippet),
-                "discovery_surface": surface,
-                "distribution_weight": "standard",
-            }
-        )
-    out.sort(key=lambda x: x["published_at"], reverse=True)
-    return raw_count, out[:8]
 
 
 def _receipt(
@@ -411,8 +181,9 @@ def _receipt(
     result_count: int,
     failure: str | None,
     surface: str | None,
+    feed_health: str | None = None,
 ) -> dict[str, Any]:
-    return {
+    out: dict[str, Any] = {
         "source": source,
         "checked_at": checked_at,
         "status": status,
@@ -421,44 +192,57 @@ def _receipt(
         "failure": failure,
         "surface": surface,
     }
+    if feed_health is not None:
+        out["feed_health"] = feed_health
+    return out
 
 
-def _fetch_source(
+def _allowed_hosts_for_surface(source: str, kind: str) -> tuple[str, ...]:
+    if kind == "bing_rss" and source == "reuters_credit":
+        return ("reuters.com",)
+    if kind == "bing_rss" and source == "cnbc_credit":
+        return ("cnbc.com",)
+    if kind == "bing_rss":
+        return ("bloomberg.com",)
+    return ()
+
+
+def _drop_row(item: dict[str, Any], *, source: str, stage: str, reason: str) -> dict[str, Any]:
+    return {
+        "headline": item.get("headline"),
+        "url": item.get("url"),
+        "source": source,
+        "published_at": item.get("published_at"),
+        "stage": stage,
+        "reason": reason,
+    }
+
+
+def _apply_recall_and_ceiling(
+    parsed_items: list[dict[str, Any]],
+    *,
     source: str,
-    surface: str,
-    fetcher: Fetcher,
-    cutoff: datetime,
-    checked_at: str,
-    parser: Callable[..., tuple[int, list[dict[str, Any]]]],
-) -> tuple[dict[str, Any], list[dict[str, Any]]]:
-    try:
-        data = fetcher(surface)
-        raw_count, candidates = parser(data, surface=surface, cutoff=cutoff)
-        return (
-            _receipt(
-                source,
-                checked_at=checked_at,
-                status="ok",
-                candidate_count=raw_count,
-                result_count=len(candidates),
-                failure=None,
-                surface=surface,
-            ),
-            candidates,
-        )
-    except Exception as exc:  # noqa: BLE001
-        return (
-            _receipt(
-                source,
-                checked_at=checked_at,
-                status="failed",
-                candidate_count=0,
-                result_count=0,
-                failure=str(exc),
-                surface=surface,
-            ),
-            [],
-        )
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    recalled: list[dict[str, Any]] = []
+    drops: list[dict[str, Any]] = []
+    for item in parsed_items:
+        headline = str(item.get("headline") or "")
+        summary = str(item.get("summary") or "")
+        if not recall_candidate(headline, summary):
+            drops.append(_drop_row(item, source=source, stage="relevance_rejection", reason="stage1_recall"))
+            continue
+        stamped = dict(item)
+        stamped["country_codes"] = attribute_country_codes(headline, summary)
+        recalled.append(stamped)
+    recalled.sort(key=lambda x: x.get("published_at") or "", reverse=True)
+    if len(recalled) > 60:
+        SAFETY_CEILING_APPLIED[source] = True
+        for omitted in recalled[60:]:
+            drops.append(
+                _drop_row(omitted, source=source, stage="discovery_failure", reason="safety_ceiling")
+            )
+        recalled = recalled[:60]
+    return recalled, drops
 
 
 def acquire_current_news(
@@ -468,20 +252,24 @@ def acquire_current_news(
     fetcher: Fetcher | None = None,
 ) -> dict[str, Any]:
     """Return {mode, cutoff, partial, receipts, candidates}."""
+    SAFETY_CEILING_APPLIED.clear()
     cutoff = now_ny(when)
     cutoff_iso = isoformat(cutoff)
+    surfaces = discovery_surfaces()
+
     if offline:
         skipped = [
             _receipt(
-                src,
+                entry["source"],
                 checked_at=cutoff_iso,
                 status="skipped",
                 candidate_count=0,
                 result_count=0,
                 failure=None,
                 surface=None,
+                feed_health="skipped",
             )
-            for src in REQUIRED_SOURCES
+            for entry in surfaces
         ]
         return {
             "mode": "offline",
@@ -495,30 +283,104 @@ def acquire_current_news(
     checked_at = cutoff_iso
     receipts: list[dict[str, Any]] = []
     candidates: list[dict[str, Any]] = []
+    story_drops: list[dict[str, Any]] = []
 
-    bloomberg_receipt, bloomberg_items = _fetch_source(
-        "bloomberg",
-        BLOOMBERG_SURFACE,
-        fn,
-        cutoff,
-        checked_at,
-        _parse_bing_rss,
-    )
-    receipts.append(bloomberg_receipt)
-    candidates.extend(bloomberg_items)
+    for entry in surfaces:
+        source = entry["source"]
+        surface_url = entry["surface"]
+        kind = entry["kind"]
+        source_name = entry["source_name"]
+        distribution_weight = entry.get("distribution_weight") or "standard"
+        allowed_hosts = tuple(entry.get("allowed_hosts") or ()) or _allowed_hosts_for_surface(
+            source, kind
+        )
+        try:
+            data = fn(surface_url)
+            parsed = parse_surface(
+                kind,
+                data,
+                surface=surface_url,
+                cutoff=cutoff,
+                source_name=source_name,
+                distribution_weight=distribution_weight,
+                allowed_hosts=allowed_hosts or ("bloomberg.com",),
+            )
+            for dropped in parsed.get("dropped") or []:
+                story_drops.append(
+                    _drop_row(
+                        dropped,
+                        source=source,
+                        stage="relevance_rejection",
+                        reason=str(dropped.get("reason") or "mechanical_drop"),
+                    )
+                )
+            feed_parse = parsed.get("feed_parse") or (
+                "parsed" if parsed["raw_count"] > 0 else "empty"
+            )
+            if feed_parse == "unparsed":
+                receipts.append(
+                    _receipt(
+                        source,
+                        checked_at=checked_at,
+                        status="failed",
+                        candidate_count=0,
+                        result_count=0,
+                        failure="unparsed_feed_items",
+                        surface=surface_url,
+                        feed_health="zero_item_parse",
+                    )
+                )
+                continue
+            survivors, recall_drops = _apply_recall_and_ceiling(parsed["items"], source=source)
+            story_drops.extend(recall_drops)
+            raw_count = int(parsed["raw_count"])
+            result_count = len(survivors)
+            if result_count > 0:
+                feed_health = "candidates"
+            elif raw_count == 0:
+                feed_health = "empty_feed"
+            elif not parsed["items"]:
+                feed_health = "no_in_window"
+            else:
+                feed_health = "no_relevant_candidates"
+            receipts.append(
+                _receipt(
+                    source,
+                    checked_at=checked_at,
+                    status="ok",
+                    candidate_count=raw_count,
+                    result_count=result_count,
+                    failure=None,
+                    surface=surface_url,
+                    feed_health=feed_health,
+                )
+            )
+            candidates.extend(survivors)
+        except Exception as exc:  # noqa: BLE001
+            receipts.append(
+                _receipt(
+                    source,
+                    checked_at=checked_at,
+                    status="failed",
+                    candidate_count=0,
+                    result_count=0,
+                    failure=str(exc),
+                    surface=surface_url,
+                    feed_health="fetch_failed",
+                )
+            )
 
-    reuters_receipt, reuters_items = _fetch_source(
-        "reuters",
-        REUTERS_SURFACE,
-        fn,
-        cutoff,
-        checked_at,
-        _parse_reuters_sitemap,
-    )
-    receipts.append(reuters_receipt)
-    candidates.extend(reuters_items)
+    seen_urls: set[str] = set()
+    deduped: list[dict[str, Any]] = []
+    for item in candidates:
+        url = str(item.get("url") or "")
+        if url and url in seen_urls:
+            continue
+        if url:
+            seen_urls.add(url)
+        deduped.append(item)
 
-    statuses = {r["source"]: r["status"] for r in receipts}
+    statuses = {r["source"]: r["status"] for r in receipts if r["source"] in REQUIRED_SOURCES}
     partial = (
         statuses.get("bloomberg") == "failed" and statuses.get("reuters") == "ok"
     ) or (statuses.get("reuters") == "failed" and statuses.get("bloomberg") == "ok")
@@ -528,255 +390,22 @@ def acquire_current_news(
         "cutoff": cutoff_iso,
         "partial": partial,
         "receipts": receipts,
-        "candidates": candidates,
+        "candidates": deduped,
+        "story_drops": story_drops,
     }
 
 
-def _tokenize_headline(headline: str) -> set[str]:
-    tokens = re.findall(r"[a-z0-9']+", (headline or "").lower())
-    return {t for t in tokens if len(t) > 2 and t not in DEDUP_STOP}
-
-
-def _same_event(a: str, b: str) -> bool:
-    ta, tb = _tokenize_headline(a), _tokenize_headline(b)
-    if not ta or not tb:
-        return False
-    shared = ta & tb
-    if len(shared) < 4:
-        return False
-    union = ta | tb
-    jaccard = len(shared) / len(union) if union else 0.0
-    return jaccard >= 0.55
-
-
-def _edge_from_item(item: dict[str, Any]) -> dict[str, Any]:
-    return {
-        "source_name": item.get("source_name"),
-        "url": item.get("url"),
-        "headline": item.get("headline"),
-        "published_at": item.get("published_at"),
-        "snippet": item.get("summary") or item.get("snippet"),
-        "distribution_weight": item.get("distribution_weight") or "standard",
-        "discovery_surface": item.get("discovery_surface"),
-    }
-
-
-def _stable_id(edges: list[dict[str, Any]]) -> str:
-    urls = sorted({str(e.get("url") or "") for e in edges if e.get("url")})
-    digest = hashlib.sha256("|".join(urls).encode("utf-8")).hexdigest()[:16]
-    return f"news:{digest}"
-
-
-def _verification_from_edges(edges: list[dict[str, Any]], prior_statuses: list[str] | None = None) -> str:
-    """Publisher count can corroborate. It must not downgrade a baseline status."""
-    if any(str(e.get("source_name") or "") in OFFICIAL_SOURCES for e in edges):
-        return "official"
-    families = {_publisher_family(str(e.get("source_name") or "")) for e in edges if e.get("source_name")}
-    if len(families) >= 2:
-        return "corroborated"
-    for status in prior_statuses or []:
-        if status in {"official", "corroborated", "single_source", "unverified"}:
-            return status
-    return "single_source"
-
-
-def _salience_components(item: dict[str, Any], edges: list[dict[str, Any]], when: datetime, from_live: bool) -> dict[str, int]:
-    text = f"{item.get('headline') or ''} {item.get('summary') or ''}".lower()
-    tier3 = ("fed", "fomc", "inflation", "cpi", "payroll", "treasury", "yield", "oil", "crude", "brent", "hormuz", "fx", "dollar", "tariff", "central bank")
-    tier1_relevance = (
-        3
-        if any(_contains_market_token(text, t) for t in tier3)
-        else (2 if any(_contains_market_token(text, t) for t in MARKET_TOKENS) else 0)
-    )
-    if any(_contains_market_token(text, t) for t in ENERGY_TOKENS) or any(
-        _contains_market_token(text, t) for t in RATES_INFLATION_FED
-    ):
-        transmission = 3
-    elif any(_contains_market_token(text, t) for t in FX_TARIFF):
-        transmission = 2
-    else:
-        transmission = 1
-    distribution_weight = 2 if any(str(e.get("source_name")) == "Bloomberg" for e in edges) else 0
-    cutoff = now_ny(when)
-    try:
-        pub = parse_iso(str(item.get("published_at") or ""))
-    except ValueError:
-        pub = cutoff
-    recency = 2 if (cutoff - pub) <= timedelta(hours=12) else 0
-    novelty = 2 if from_live else 0
-    return {
-        "tier1_relevance": tier1_relevance,
-        "transmission": transmission,
-        "novelty": novelty,
-        "distribution_weight": distribution_weight,
-        "recency": recency,
-    }
-
-
-def _apply_salience(item: dict[str, Any], edges: list[dict[str, Any]], when: datetime, from_live: bool) -> None:
-    components = _salience_components(item, edges, when, from_live)
-    score = sum(components.values())
-    distribution = "high" if any(str(e.get("source_name")) == "Bloomberg" for e in edges) else "standard"
-    item["market_salience"] = {
-        "score": score,
-        "distribution": distribution,
-        "components": components,
-    }
-
-
-def _merge_cluster(
-    baseline_items: list[dict[str, Any]],
-    live_items: list[dict[str, Any]],
-    when: datetime,
-) -> dict[str, Any]:
-    edges: list[dict[str, Any]] = []
-    for raw in baseline_items + live_items:
-        if raw.get("source_edges"):
-            edges.extend(dict(e) for e in raw["source_edges"])
-        else:
-            edges.append(_edge_from_item(raw))
-
-    # Deduplicate edges by url
-    seen_urls: set[str] = set()
-    unique_edges: list[dict[str, Any]] = []
-    for e in edges:
-        url = str(e.get("url") or "")
-        if url and url in seen_urls:
-            continue
-        if url:
-            seen_urls.add(url)
-        unique_edges.append(e)
-
-    bloomberg_edges = [e for e in unique_edges if e.get("source_name") == "Bloomberg"]
-    if bloomberg_edges:
-        bloomberg_edges.sort(key=lambda e: e.get("published_at") or "", reverse=True)
-        display = bloomberg_edges[0]
-    else:
-        unique_edges.sort(key=lambda e: e.get("published_at") or "", reverse=True)
-        display = unique_edges[0]
-
-    from_live = bool(live_items)
-    published_at = max((e.get("published_at") or "") for e in unique_edges)
-    prior_statuses = [str(item.get("verification_status") or "") for item in baseline_items]
-
-    merged: dict[str, Any] = {
-        "headline": display.get("headline"),
-        "url": display.get("url"),
-        "summary": baseline_items[0].get("summary") if baseline_items else (live_items[0].get("summary") if live_items else ""),
-        "published_at": published_at,
-        "source_name": display.get("source_name"),
-        "verification_status": _verification_from_edges(unique_edges, prior_statuses),
-        "primary_category": (live_items[0] if live_items else baseline_items[0]).get("primary_category", "macro"),
-        "country_codes": (live_items[0] if live_items else baseline_items[0]).get("country_codes", ["US"]),
-        "source_edges": unique_edges,
-        "id": _stable_id(unique_edges),
-    }
-    if not merged["summary"] and live_items:
-        merged["summary"] = live_items[0].get("summary", "")
-    _apply_salience(merged, unique_edges, when, from_live)
-    return merged
-
-
-def _cap_items(items: list[dict[str, Any]], baseline_urls: set[str], live_urls: set[str]) -> list[dict[str, Any]]:
-    if len(items) <= 16:
-        return items
-
-    def has_live_bloomberg(item: dict[str, Any]) -> bool:
-        for e in item.get("source_edges") or []:
-            if e.get("source_name") == "Bloomberg" and str(e.get("url") or "") in live_urls:
-                return True
-        return False
-
-    def is_live_only(item: dict[str, Any]) -> bool:
-        edges = item.get("source_edges") or []
-        urls = {str(e.get("url") or "") for e in edges}
-        return bool(urls & live_urls) and not bool(urls & baseline_urls)
-
-    def is_baseline_only(item: dict[str, Any]) -> bool:
-        edges = item.get("source_edges") or []
-        urls = {str(e.get("url") or "") for e in edges}
-        return bool(urls & baseline_urls) and not bool(urls & live_urls)
-
-    kept = list(items)
-    while len(kept) > 16:
-        droppable = [
-            i
-            for i in kept
-            if is_live_only(i) and not has_live_bloomberg(i)
-        ]
-        if droppable:
-            droppable.sort(key=lambda x: x.get("market_salience", {}).get("score", 0))
-            kept.remove(droppable[0])
-            continue
-        droppable = [i for i in kept if is_baseline_only(i)]
-        if droppable:
-            droppable.sort(key=lambda x: x.get("market_salience", {}).get("score", 0))
-            kept.remove(droppable[0])
-            continue
-        kept.sort(key=lambda x: x.get("market_salience", {}).get("score", 0))
-        kept.pop(0)
-    return kept
-
-
-def merge_live_news(
-    *,
-    baseline: list[dict[str, Any]],
-    live_candidates: list[dict[str, Any]],
-    when: datetime,
-) -> dict[str, Any]:
-    """Return {items, research_supplement}."""
-    baseline_urls = {str(i.get("url") or "") for i in baseline if i.get("url")}
-    live_urls = {str(i.get("url") or "") for i in live_candidates if i.get("url")}
-
-    clusters: list[dict[str, Any]] = []
-    for item in baseline:
-        headline = str(item.get("headline") or "")
-        matched = False
-        for cluster in clusters:
-            if _same_event(headline, str(cluster["headline"])):
-                cluster["baseline"].append(item)
-                matched = True
-                break
-        if not matched:
-            clusters.append({"headline": headline, "baseline": [item], "live": []})
-
-    for item in live_candidates:
-        headline = str(item.get("headline") or "")
-        matched = False
-        for cluster in clusters:
-            if _same_event(headline, str(cluster["headline"])):
-                cluster["live"].append(item)
-                matched = True
-                break
-        if not matched:
-            clusters.append({"headline": headline, "baseline": [], "live": [item]})
-
-    merged_items: list[dict[str, Any]] = []
-    for cluster in clusters:
-        merged_items.append(_merge_cluster(cluster["baseline"], cluster["live"], when))
-
-    merged_items = _cap_items(merged_items, baseline_urls, live_urls)
-
-    merged_items.sort(
-        key=lambda x: (
-            (x.get("market_salience") or {}).get("score", 0),
-            x.get("published_at") or "",
-        ),
-        reverse=True,
-    )
-
-    flat_sources: list[dict[str, Any]] = []
-    for item in merged_items:
-        flat_sources.extend(item.get("source_edges") or [])
-
-    top_ids = [item["id"] for item in merged_items[:3]]
-
-    supplement = {
-        "summary": None,
-        "news": merged_items,
-        "central_bank_research": [],
-        "sources": flat_sources,
-        "top_market_driver_candidates": top_ids,
-        "presentation_caps": {"last_24_hours": 6, "top_market_drivers": 3},
-    }
-    return {"items": merged_items, "research_supplement": supplement}
+__all__ = [
+    "BLOOMBERG_QUERY",
+    "BLOOMBERG_SURFACE",
+    "Fetcher",
+    "MARKET_TOKENS",
+    "NOISE_EXCLUDE",
+    "OFFICIAL_SOURCES",
+    "REQUIRED_SOURCES",
+    "REUTERS_SURFACE",
+    "SAFETY_CEILING_APPLIED",
+    "acquire_current_news",
+    "attribute_country_codes",
+    "merge_live_news",
+]
