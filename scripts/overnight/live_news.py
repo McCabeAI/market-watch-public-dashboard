@@ -181,8 +181,9 @@ def _receipt(
     result_count: int,
     failure: str | None,
     surface: str | None,
+    feed_health: str | None = None,
 ) -> dict[str, Any]:
-    return {
+    out: dict[str, Any] = {
         "source": source,
         "checked_at": checked_at,
         "status": status,
@@ -191,6 +192,9 @@ def _receipt(
         "failure": failure,
         "surface": surface,
     }
+    if feed_health is not None:
+        out["feed_health"] = feed_health
+    return out
 
 
 def _allowed_hosts_for_surface(source: str, kind: str) -> tuple[str, ...]:
@@ -263,6 +267,7 @@ def acquire_current_news(
                 result_count=0,
                 failure=None,
                 surface=None,
+                feed_health="skipped",
             )
             for entry in surfaces
         ]
@@ -309,17 +314,45 @@ def acquire_current_news(
                         reason=str(dropped.get("reason") or "mechanical_drop"),
                     )
                 )
+            feed_parse = parsed.get("feed_parse") or (
+                "parsed" if parsed["raw_count"] > 0 else "empty"
+            )
+            if feed_parse == "unparsed":
+                receipts.append(
+                    _receipt(
+                        source,
+                        checked_at=checked_at,
+                        status="failed",
+                        candidate_count=0,
+                        result_count=0,
+                        failure="unparsed_feed_items",
+                        surface=surface_url,
+                        feed_health="zero_item_parse",
+                    )
+                )
+                continue
             survivors, recall_drops = _apply_recall_and_ceiling(parsed["items"], source=source)
             story_drops.extend(recall_drops)
+            raw_count = int(parsed["raw_count"])
+            result_count = len(survivors)
+            if result_count > 0:
+                feed_health = "candidates"
+            elif raw_count == 0:
+                feed_health = "empty_feed"
+            elif not parsed["items"]:
+                feed_health = "no_in_window"
+            else:
+                feed_health = "no_relevant_candidates"
             receipts.append(
                 _receipt(
                     source,
                     checked_at=checked_at,
                     status="ok",
-                    candidate_count=parsed["raw_count"],
-                    result_count=len(survivors),
+                    candidate_count=raw_count,
+                    result_count=result_count,
                     failure=None,
                     surface=surface_url,
+                    feed_health=feed_health,
                 )
             )
             candidates.extend(survivors)
@@ -333,6 +366,7 @@ def acquire_current_news(
                     result_count=0,
                     failure=str(exc),
                     surface=surface_url,
+                    feed_health="fetch_failed",
                 )
             )
 

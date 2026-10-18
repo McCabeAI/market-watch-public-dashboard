@@ -42,6 +42,7 @@ REUTERS_SURFACE = "https://www.reuters.com/arc/outboundfeeds/news-sitemap/?outpu
 REUTERS_HEADLINE_ONLY = "Headline-only public metadata; article body was not retrieved."
 
 CNBC_SITEMAP_URL = "https://www.cnbc.com/sitemap_news.xml"
+CNBC_INVESTING_RSS_URL = "https://www.cnbc.com/id/15839069/device/rss/rss.html"
 CNBC_HEADLINE_ONLY = "Headline-only public metadata; article body was not retrieved."
 CNBC_CREDIT_QUERY = (
     'site:cnbc.com (CoreWeave OR CDS OR "credit default" OR "credit default swap")'
@@ -118,6 +119,20 @@ def discovery_surfaces() -> list[dict[str, Any]]:
             "allowed_hosts": ("cnbc.com",),
         },
         {
+            "source": "cnbc_investing",
+            "surface": CNBC_INVESTING_RSS_URL,
+            "kind": "cnbc_rss",
+            "source_name": "CNBC",
+            "distribution_weight": "standard",
+        },
+        {
+            "source": "rbnz_news",
+            "surface": "https://www.rbnz.govt.nz/feeds/news",
+            "kind": "rss_official",
+            "source_name": "Reserve Bank of New Zealand",
+            "distribution_weight": "standard",
+        },
+        {
             "source": "fed_monetary",
             "surface": "https://www.federalreserve.gov/feeds/press_monetary.xml",
             "kind": "rss_official",
@@ -185,6 +200,14 @@ def parse_surface(
         return _parse_reuters_sitemap(data, surface=surface, cutoff=cutoff)
     if kind == "cnbc_sitemap":
         return _parse_cnbc_sitemap(data, surface=surface, cutoff=cutoff)
+    if kind == "cnbc_rss":
+        return _parse_cnbc_rss(
+            data,
+            surface=surface,
+            cutoff=cutoff,
+            source_name=source_name,
+            distribution_weight=distribution_weight,
+        )
     if kind == "rss_official":
         return _parse_rss_official(
             data,
@@ -193,7 +216,7 @@ def parse_surface(
             source_name=source_name,
             distribution_weight=distribution_weight,
         )
-    return {"raw_count": 0, "items": [], "dropped": []}
+    return {"raw_count": 0, "items": [], "dropped": [], "feed_parse": "empty"}
 
 
 def _strip_html(text: str) -> str:
@@ -310,7 +333,12 @@ def _parse_bing_rss(
     root = ET.fromstring(data)
     channel = root.find("channel")
     if channel is None:
-        return {"raw_count": 0, "items": items, "dropped": dropped}
+        return {
+            "raw_count": 0,
+            "items": items,
+            "dropped": dropped,
+            "feed_parse": _feed_parse_simple(0),
+        }
     for item in channel.findall("item"):
         title_el = item.find("title")
         link_el = item.find("link")
@@ -354,7 +382,12 @@ def _parse_bing_rss(
             }
         )
     items.sort(key=lambda x: x["published_at"], reverse=True)
-    return {"raw_count": raw_count, "items": items, "dropped": dropped}
+    return {
+        "raw_count": raw_count,
+        "items": items,
+        "dropped": dropped,
+        "feed_parse": _feed_parse_simple(raw_count),
+    }
 
 
 def _parse_reuters_sitemap(
@@ -418,7 +451,12 @@ def _parse_reuters_sitemap(
             }
         )
     items.sort(key=lambda x: x["published_at"], reverse=True)
-    return {"raw_count": raw_count, "items": items, "dropped": dropped}
+    return {
+        "raw_count": raw_count,
+        "items": items,
+        "dropped": dropped,
+        "feed_parse": _feed_parse_simple(raw_count),
+    }
 
 
 def _parse_cnbc_sitemap(
@@ -482,7 +520,74 @@ def _parse_cnbc_sitemap(
             }
         )
     items.sort(key=lambda x: x["published_at"], reverse=True)
-    return {"raw_count": raw_count, "items": items, "dropped": dropped}
+    return {
+        "raw_count": raw_count,
+        "items": items,
+        "dropped": dropped,
+        "feed_parse": _feed_parse_simple(raw_count),
+    }
+
+
+def _parse_cnbc_rss(
+    data: bytes,
+    *,
+    surface: str,
+    cutoff: datetime,
+    source_name: str,
+    distribution_weight: str,
+) -> dict[str, Any]:
+    window_start = cutoff - timedelta(hours=24)
+    items: list[dict[str, Any]] = []
+    dropped: list[dict[str, Any]] = []
+    raw_count = 0
+    root = ET.fromstring(data)
+    channel = next((c for c in root if _local_tag(c.tag) == "channel"), None)
+    feed_items = _find_children(channel, "item") if channel is not None else []
+    for item in feed_items:
+        headline = _child_text(item, "title")
+        link = _upgrade_https(_child_text(item, "link"))
+        if not headline or not link:
+            continue
+        if not link.startswith("https://"):
+            continue
+        host = urlparse(link).netloc.lower()
+        if not host.endswith("cnbc.com"):
+            continue
+        raw_count += 1
+        path = urlparse(link).path.lower()
+        if _path_blocked(path):
+            dropped.append({"headline": headline, "url": link, "reason": "path_drop"})
+            continue
+        published = _parse_pub_rss(_child_text(item, "pubDate"))
+        if published is None or published > cutoff or published < window_start:
+            dropped.append(
+                {
+                    "headline": headline,
+                    "url": link,
+                    "reason": "window" if published is not None else "unparsed_date",
+                }
+            )
+            continue
+        items.append(
+            {
+                "published_at": isoformat(published),
+                "url": link,
+                "headline": headline,
+                "summary": CNBC_HEADLINE_ONLY,
+                "source_name": source_name,
+                "verification_status": "single_source",
+                "primary_category": _primary_category(headline, CNBC_HEADLINE_ONLY),
+                "discovery_surface": surface,
+                "distribution_weight": distribution_weight,
+            }
+        )
+    items.sort(key=lambda x: x["published_at"], reverse=True)
+    return {
+        "raw_count": raw_count,
+        "items": items,
+        "dropped": dropped,
+        "feed_parse": _feed_parse_rss_official(raw_count, len(feed_items)),
+    }
 
 
 def _is_boj_boe_surface(surface: str) -> bool:
@@ -551,6 +656,76 @@ def _find_children(parent: ET.Element, local: str) -> list[ET.Element]:
     return [c for c in parent if _local_tag(c.tag) == local]
 
 
+def _child_text(parent: ET.Element, local: str) -> str:
+    for child in parent:
+        if _local_tag(child.tag) == local:
+            return (child.text or "").strip()
+    return ""
+
+
+def _upgrade_https(url: str) -> str:
+    if url.startswith("http://"):
+        return "https://" + url[7:]
+    return url
+
+
+def _rss_item_link(item: ET.Element) -> str:
+    link = _child_text(item, "link")
+    if link:
+        return _upgrade_https(link)
+    about = item.attrib.get("about") or item.attrib.get(
+        "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about"
+    )
+    if about:
+        return _upgrade_https(about.strip())
+    return ""
+
+
+def _parse_official_pub(item: ET.Element) -> datetime | None:
+    for local in ("pubDate", "date", "updated", "published"):
+        raw = _child_text(item, local)
+        if not raw:
+            continue
+        if local == "pubDate":
+            published = _parse_pub_rss(raw)
+            if published is not None:
+                return published
+            published = _parse_pub_iso(raw)
+            if published is not None:
+                return published
+        else:
+            published = _parse_pub_iso(raw)
+            if published is not None:
+                return published
+            published = _parse_pub_rss(raw)
+            if published is not None:
+                return published
+    return None
+
+
+def _feed_parse_rss_official(raw_count: int, element_count: int) -> str:
+    if element_count == 0:
+        return "empty"
+    if raw_count == 0:
+        return "unparsed"
+    return "parsed"
+
+
+def _feed_parse_simple(raw_count: int) -> str:
+    return "parsed" if raw_count > 0 else "empty"
+
+
+def _count_rss_items(root: ET.Element, root_local: str) -> int:
+    if root_local == "feed":
+        return len(_find_children(root, "entry"))
+    if root_local == "RDF":
+        return len([el for el in root.iter() if _local_tag(el.tag) == "item"])
+    channel = next((c for c in root if _local_tag(c.tag) == "channel"), None)
+    if channel is None:
+        return 0
+    return len(_find_children(channel, "item"))
+
+
 def _parse_rss_official(
     data: bytes,
     *,
@@ -566,20 +741,40 @@ def _parse_rss_official(
     title_filter = _is_boj_boe_surface(surface)
     root = ET.fromstring(data)
     root_local = _local_tag(root.tag)
+    element_count = _count_rss_items(root, root_local)
 
     if root_local == "feed":
-        entries = _find_children(root, "entry")
-        for entry in entries:
-            title_el = next((c for c in entry if _local_tag(c.tag) == "title"), None)
-            headline = _atom_text(title_el)
-            link = _atom_link(entry)
+        for entry in _find_children(root, "entry"):
+            headline = _child_text(entry, "title")
+            link = _upgrade_https(_atom_link(entry))
             if not headline or not link:
                 continue
             raw_count += 1
-            updated_el = next((c for c in entry if _local_tag(c.tag) == "updated"), None)
-            summary_el = next((c for c in entry if _local_tag(c.tag) == "summary"), None)
-            published = _parse_pub_iso(_atom_text(updated_el))
-            snippet = _collapse_ws(_strip_html(_atom_text(summary_el)))
+            snippet = _collapse_ws(_strip_html(_child_text(entry, "summary")))
+            published = _parse_official_pub(entry)
+            _append_official_item(
+                items,
+                dropped,
+                headline=headline,
+                link=link,
+                snippet=snippet,
+                published=published,
+                cutoff=cutoff,
+                window_start=window_start,
+                surface=surface,
+                source_name=source_name,
+                distribution_weight=distribution_weight,
+                title_filter=title_filter,
+            )
+    elif root_local == "RDF":
+        for item in (el for el in root.iter() if _local_tag(el.tag) == "item"):
+            headline = _child_text(item, "title")
+            link = _rss_item_link(item)
+            if not headline or not link:
+                continue
+            raw_count += 1
+            snippet = _collapse_ws(_strip_html(_child_text(item, "description")))
+            published = _parse_official_pub(item)
             _append_official_item(
                 items,
                 dropped,
@@ -595,21 +790,22 @@ def _parse_rss_official(
                 title_filter=title_filter,
             )
     else:
-        channel = root.find("channel")
+        channel = next((c for c in root if _local_tag(c.tag) == "channel"), None)
         if channel is None:
-            return {"raw_count": 0, "items": items, "dropped": dropped}
-        for item in channel.findall("item"):
-            title_el = item.find("title")
-            link_el = item.find("link")
-            pub_el = item.find("pubDate")
-            desc_el = item.find("description")
-            headline = (title_el.text if title_el is not None else "").strip()
-            link = (link_el.text if link_el is not None else "").strip()
+            return {
+                "raw_count": 0,
+                "items": items,
+                "dropped": dropped,
+                "feed_parse": _feed_parse_rss_official(0, element_count),
+            }
+        for item in _find_children(channel, "item"):
+            headline = _child_text(item, "title")
+            link = _rss_item_link(item)
             if not headline or not link:
                 continue
             raw_count += 1
-            snippet = _collapse_ws(_strip_html(desc_el.text if desc_el is not None else ""))
-            published = _parse_pub_rss(pub_el.text if pub_el is not None else "")
+            snippet = _collapse_ws(_strip_html(_child_text(item, "description")))
+            published = _parse_official_pub(item)
             _append_official_item(
                 items,
                 dropped,
@@ -626,7 +822,12 @@ def _parse_rss_official(
             )
 
     items.sort(key=lambda x: x["published_at"], reverse=True)
-    return {"raw_count": raw_count, "items": items, "dropped": dropped}
+    return {
+        "raw_count": raw_count,
+        "items": items,
+        "dropped": dropped,
+        "feed_parse": _feed_parse_rss_official(raw_count, element_count),
+    }
 
 
 def _append_official_item(
@@ -644,6 +845,7 @@ def _append_official_item(
     distribution_weight: str,
     title_filter: bool,
 ) -> None:
+    link = _upgrade_https(link)
     if title_filter and not _boj_boe_title_kept(headline):
         dropped.append({"headline": headline, "url": link, "reason": "official_title_filter"})
         return

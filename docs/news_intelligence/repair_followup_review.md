@@ -1,5 +1,7 @@
 # News intelligence follow-up review
 
+Third pass (2026-10-18): BoC/RBA RSS 1.0 parsing, the RBNZ RSS fallback, and the CNBC investing RSS are recorded in `docs/news_intelligence/repair_third_pass.md`. Gate 1 in this file stays unresolved. The limits below that say BoC/RBA parse as zero items, and that RBNZ has no verified feed, are the prior pass. They are superseded by that note.
+
 Branch: `cursor/market-watch-g10-news-intelligence-overhaul-six-phase-grok-composer-graph-bbf3`. Pull request: https://github.com/McCabeAI/market-watch-public-dashboard/pull/215. Not merged. Not deployed. `data/overnight/accepted_public_news.json` was not modified.
 
 Focused tests, 2026-10-17:

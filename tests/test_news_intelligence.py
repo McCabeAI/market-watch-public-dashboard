@@ -314,7 +314,18 @@ class DiscoveryTests(unittest.TestCase):
         )
         bloomberg = next(r for r in acquisition["receipts"] if r["source"] == "bloomberg")
         self.assertEqual(bloomberg["result_count"], 60)
-        self.assertEqual(len(bloomberg), 7)
+        self.assertEqual(bloomberg["feed_health"], "candidates")
+        for key in (
+            "source",
+            "checked_at",
+            "status",
+            "candidate_count",
+            "result_count",
+            "failure",
+            "surface",
+            "feed_health",
+        ):
+            self.assertIn(key, bloomberg)
         ceilings = [
             row
             for row in acquisition["story_drops"]
