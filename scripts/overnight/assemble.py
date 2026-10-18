@@ -139,6 +139,12 @@ def assemble_dataset(
         last_successful_pm_run_id=last_successful_pm_run_id,
     )
     collect = store.read_artifact(run_id, "collect.json") if store.has_artifact(run_id, "collect.json") else {}
+    raw_supplement = (agent_packet or {}).get("research_supplement")
+    agent_research: dict[str, Any] | None = None
+    if isinstance(raw_supplement, dict):
+        agent_research = dict(raw_supplement)
+        if raw_supplement.get("news"):
+            agent_research["news"] = list((families.get("news") or {}).get("items") or [])
     dataset = {
         "schema_version": SCHEMA_VERSION,
         "type": "OVERNIGHT_MORNING_DATASET",
@@ -156,7 +162,9 @@ def assemble_dataset(
         "evidence_cutoff": snapshot.get("as_of"),
         "packet_sha256": snapshot.get("packet_sha256"),
         "trade_permissions": snapshot.get("trade_permissions") or collect.get("trade_permissions"),
-        "agent_research": (agent_packet or {}).get("research_supplement"),
+        "agent_research": agent_research
+        if agent_research is not None
+        else (agent_packet or {}).get("research_supplement"),
         "agent_research_cutoff": (agent_packet or {}).get("evidence_cutoff"),
         "trader_books": public_books_view(books),
         "publication": decision,

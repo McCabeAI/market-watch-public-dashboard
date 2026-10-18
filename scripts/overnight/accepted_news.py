@@ -14,6 +14,7 @@ from scripts.overnight.errors import PublicationError, SchemaError
 from scripts.overnight.freshness import age_status
 from scripts.overnight.store import OvernightStore, sha256_json, write_json
 from scripts.overnight.public_prose import public_research_summary
+from scripts.overnight.news_relevance import apply_transmission, public_news_rows
 from scripts.overnight.research_publishability import validate_research_supplement_publishability
 
 ACCEPTED_PUBLIC_NEWS_REL = "data/overnight/accepted_public_news.json"
@@ -28,6 +29,37 @@ def packet_has_accepted_research(packet: dict[str, Any] | None) -> bool:
         return False
     supplement = packet.get("research_supplement") or {}
     return bool(supplement.get("news")) or bool(supplement.get("central_bank_research"))
+
+
+def overlay_drop_rows(news: list[Any]) -> list[dict[str, Any]]:
+    """Publication-trail rows for packet news dropped by overlay transmission scoring."""
+    out: list[dict[str, Any]] = []
+    for row in news:
+        if not isinstance(row, dict):
+            continue
+        scored = apply_transmission(row)
+        disposition = (scored.get("transmission") or {}).get("disposition")
+        if disposition not in ("suppress", "hold-for-review"):
+            continue
+        transmission = scored.get("transmission") or {}
+        reason = str(transmission.get("reason_code") or disposition)
+        title = str(row.get("headline") or row.get("title") or "").strip()
+        url = str(row.get("url") or "").strip()
+        out.append(
+            {
+                "headline": title or None,
+                "url": url or None,
+                "source": str(row.get("source_name") or "").strip() or None,
+                "published_at": row.get("published_at"),
+                "id": None,
+                "family": "news",
+                "outcome": "overlay_drop",
+                "reason": reason,
+                "cap": None,
+                "slot": None,
+            }
+        )
+    return out
 
 
 def overlay_accepted_research(
@@ -52,12 +84,13 @@ def overlay_accepted_research(
 
     news = supplement.get("news") or []
     if news:
+        items = public_news_rows(news)
         out["news"] = {
             "status": status,
             "as_of": cutoff,
-            "digest": sha256_json(news),
+            "digest": sha256_json(items),
             "notes": ["accepted current-cycle ACP research supplement"],
-            "items": list(news),
+            "items": items,
         }
 
     central_bank = supplement.get("central_bank_research") or []
