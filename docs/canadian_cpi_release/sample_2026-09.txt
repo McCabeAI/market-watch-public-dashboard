@@ -1,0 +1,89 @@
+Canadian CPI nowcast — release 2026-09 (as-of 2026-10-16)
+Status: ok
+
+Headline (NSA, model B2)
+  MoM %:     0.1326
+  Index:     170.025115
+  YoY %:     3.1080
+  SA MoM %:  0.4979
+
+Special aggregates (official indexes, model A on NSA levels)
+  Ex-energy is not the same series as ex-food-and-energy; do not conflate them.
+  Ex-energy NSA MoM %: -0.0342  YoY %: 2.1818
+  Ex-energy SA MoM %: unavailable — table 18-10-0006-01 does not publish an ex-energy SA index (sa_method=unavailable_no_official_sa).
+  Ex-food-and-energy NSA MoM %: 0.0383  SA MoM %: 0.2361  YoY %: 2.2270
+  Ex-gasoline NSA MoM %: -0.0361  (no official SA; sa_method=unavailable_no_official_sa)
+
+Bank of Canada core-style measures (from official indexes)
+  CPI-trim YoY %: 1.8451  MoM %: 0.1823  3m ann. %: 2.5796
+  CPI-median YoY %: 1.9039  MoM %: 0.1791  3m ann. %: 2.5329
+  CPI-common: unavailable in this snapshot
+
+Contribution table (disjoint leaves; nested diagnostic excluded from sum)
+  cpi_nsa_food: -0.043108 pp  status=modeled
+  cpi_nsa_household_ops: 0.000540 pp  status=modeled
+  cpi_nsa_clothing: 0.072516 pp  status=modeled
+  cpi_nsa_health: 0.002083 pp  status=modeled
+  cpi_nsa_recreation: -0.018602 pp  status=modeled
+  cpi_nsa_alcohol: -0.001868 pp  status=modeled
+  cpi_nsa_gasoline: 0.213339 pp  status=observed_bridge — NRCan bridge forecast, not the official CPI microdata gasoline print
+  transportation_ex_gasoline: -0.171001 pp  status=attribution_residual
+    (Not an official ex-gasoline index.)
+  cpi_nsa_fuel_oil: 0.027959 pp  status=observed_bridge — NRCan bridge forecast, not the official CPI fuel-oil microdata print
+  cpi_nsa_replacement_cost: -0.002745 pp  status=lagged_official_bridge — lagged NHPI bridge, not a direct CPI microdata outcome
+  shelter_ex_fuel_and_replacement: 0.053462 pp  status=attribution_residual
+    (Not an official shelter ex-fuel/replacement index.)
+  shelter_ex_fuel_oil: 0.050717 pp [nested_diagnostic — not in leaf sum]
+    (Includes the lagged replacement-cost bridge. Not part of the disjoint leaf sum.)
+  Leaf sum: 0.132576 pp (headline B2 0.132576 pp)
+
+Basket
+  Year 2025  link month 2026-04  status=current
+
+Uncertainty
+  Empirical pseudo-OOS residual band, latest index vintage; not a calibrated probability; not the sum of component extremes.
+  10th–90th band (pp): -0.0759 – 0.4353
+
+Source provenance (hashes)
+  https://www150.statcan.gc.ca/t1/wds/rest/getDataFromVectorsAndLatestNPeriods  sha256=c41ab9eefa931ea3…  bytes=769363
+  https://www150.statcan.gc.ca/t1/wds/rest/getDataFromVectorsAndLatestNPeriods  sha256=0bd05ec385d899c0…  bytes=767999
+  https://www150.statcan.gc.ca/t1/wds/rest/getDataFromVectorsAndLatestNPeriods  sha256=c2c7de7f7df700fa…  bytes=670260
+  https://www150.statcan.gc.ca/t1/wds/rest/getDataFromVectorsAndLatestNPeriods  sha256=4a0c3edc8c7e618a…  bytes=30601
+  https://www150.statcan.gc.ca/t1/wds/rest/getDataFromVectorsAndLatestNPeriods  sha256=7ab36b723a2efaac…  bytes=30567
+  https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=1&locationID=66&frequency=M&priceYear=2016  sha256=6c7daa69b72204b6…  bytes=46812
+  https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=1&locationID=66&frequency=M&priceYear=2017  sha256=b89ff074de4d6fe1…  bytes=54538
+  https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=1&locationID=66&frequency=M&priceYear=2018  sha256=10978310af04a7a7…  bytes=54463
+  https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=1&locationID=66&frequency=M&priceYear=2019  sha256=ab55325a4d118d45…  bytes=54504
+  https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=1&locationID=66&frequency=M&priceYear=2020  sha256=e656d5a6df462702…  bytes=54478
+  https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=1&locationID=66&frequency=M&priceYear=2021  sha256=5029d34464113ed4…  bytes=54521
+  https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=1&locationID=66&frequency=M&priceYear=2022  sha256=3dbd510783423890…  bytes=54523
+  https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=1&locationID=66&frequency=M&priceYear=2023  sha256=e4ae4209e93d3b41…  bytes=54510
+  https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=1&locationID=66&frequency=M&priceYear=2024  sha256=c2a60f34b6364c03…  bytes=54441
+  https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=1&locationID=66&frequency=M&priceYear=2025  sha256=9ca4e4d4ffd87291…  bytes=54545
+  https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=1&locationID=66&frequency=M&priceYear=2026  sha256=6d5f4579ce407b13…  bytes=51918
+  https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=7&locationID=66&frequency=M&priceYear=2016  sha256=5820dbbf772d943e…  bytes=46668
+  https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=7&locationID=66&frequency=M&priceYear=2017  sha256=96c22b1efa80ddc5…  bytes=53115
+  https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=7&locationID=66&frequency=M&priceYear=2018  sha256=31d66bb4ca0901d5…  bytes=54442
+  https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=7&locationID=66&frequency=M&priceYear=2019  sha256=66e642b372e8a61b…  bytes=54438
+  https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=7&locationID=66&frequency=M&priceYear=2020  sha256=dfbdb28bf8796465…  bytes=54403
+  https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=7&locationID=66&frequency=M&priceYear=2021  sha256=dc555ce9aa2d1ef6…  bytes=54412
+  https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=7&locationID=66&frequency=M&priceYear=2022  sha256=b97715c6dabe24b5…  bytes=54269
+  https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=7&locationID=66&frequency=M&priceYear=2023  sha256=caba0a452c1a1524…  bytes=54401
+  https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=7&locationID=66&frequency=M&priceYear=2024  sha256=77002f6e889125e4…  bytes=54434
+  https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=7&locationID=66&frequency=M&priceYear=2025  sha256=61bece89f31bfa70…  bytes=54427
+  https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=7&locationID=66&frequency=M&priceYear=2026  sha256=e8d2874d09798664…  bytes=51843
+  Note: NRCan HTML pages are archived in fixture raw/ with sha256; NRCan does not publish observation-level retrieval timestamps on the historical pages.
+  Note: StatCan table 18-10-0259 (real-time CPI vintages) was not bulk-downloaded; cube coverage known from this task is reference periods through 2026-03 and releases through 2026-04-20, so May–August 2026 core vintages are not in that table. Current core indexes are from 18-10-0256.
+  Note: nrcan_gasoline: October 2026 monthly row present on NRCan pages (e.g. 2026-10=186.2); model must gate by as_of.
+  Note: nrcan_furnace_oil: official NRCan monthly Canada table missing 1 month(s) in required 2016-07..2026-09 window (first gap 2017-08); snapshot retains available rows only.
+  Note: nrcan_furnace_oil: October 2026 monthly row present on NRCan pages (e.g. 2026-10=246.6); model must gate by as_of.
+  Note: NRCan fuel prices: historical posting timestamps are not archived; a completed reference month is treated as eligible once that month has ended and as_of is on or after month-end.
+
+Assumptions
+  - NRCan fuel observations without published_at are treated as eligible when reference month <= forecast month and month-end(period) <= as_of civil date.
+
+Reference comparison (post-forecast, not a model input)
+  Astra reference NSA MoM %: 0.1325244
+  Absolute difference (pp): 0.000052
+  Reproduced within 0.001 pp: True
+  0.1325244 is an external research reference (Astra), not a model input.

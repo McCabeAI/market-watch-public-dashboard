@@ -1,0 +1,568 @@
+{
+  "as_of": "2026-10-16",
+  "assumptions": [
+    "NRCan fuel observations without published_at are treated as eligible when reference month <= forecast month and month-end(period) <= as_of civil date."
+  ],
+  "base_index": 164.9,
+  "baselines": {
+    "A": -0.0948037303278343,
+    "B2": 0.1325763171949602,
+    "carry": -0.05679923349310129,
+    "mean3": 0.04133192204798028,
+    "season5": -0.04897802792491091
+  },
+  "basket": {
+    "basket_link": "2026-04",
+    "basket_status": "current",
+    "basket_year": 2025
+  },
+  "basket_link": "2026-04",
+  "basket_status": "current",
+  "basket_year": 2025,
+  "blockers": [],
+  "components": [
+    {
+      "bridge_applied": false,
+      "canonical_id": "cpi_nsa_food",
+      "method": "modeled",
+      "mom_a": -0.25595385154240513,
+      "mom_forecast": -0.25595385154240513
+    },
+    {
+      "bridge_applied": false,
+      "canonical_id": "cpi_nsa_shelter",
+      "method": "modeled",
+      "mom_a": 0.22202189027238645,
+      "mom_forecast": 0.22202189027238645
+    },
+    {
+      "bridge_applied": false,
+      "canonical_id": "cpi_nsa_household_ops",
+      "method": "modeled",
+      "mom_a": 0.004217795676306146,
+      "mom_forecast": 0.004217795676306146
+    },
+    {
+      "bridge_applied": false,
+      "canonical_id": "cpi_nsa_clothing",
+      "method": "modeled",
+      "mom_a": 1.6528087108109164,
+      "mom_forecast": 1.6528087108109164
+    },
+    {
+      "bridge_applied": false,
+      "canonical_id": "cpi_nsa_transportation",
+      "method": "modeled",
+      "mom_a": -0.9091033857925446,
+      "mom_forecast": -0.9091033857925446
+    },
+    {
+      "bridge_applied": false,
+      "canonical_id": "cpi_nsa_health",
+      "method": "modeled",
+      "mom_a": 0.03877557081145516,
+      "mom_forecast": 0.03877557081145516
+    },
+    {
+      "bridge_applied": false,
+      "canonical_id": "cpi_nsa_recreation",
+      "method": "modeled",
+      "mom_a": -0.18291115296054028,
+      "mom_forecast": -0.18291115296054028
+    },
+    {
+      "bridge_applied": false,
+      "canonical_id": "cpi_nsa_alcohol",
+      "method": "modeled",
+      "mom_a": -0.05016864837772379,
+      "mom_forecast": -0.05016864837772379
+    },
+    {
+      "bridge_applied": true,
+      "canonical_id": "cpi_nsa_gasoline",
+      "method": "observed_bridge",
+      "mom_a": 0.05805442919847126,
+      "mom_forecast": 5.52855664399543
+    },
+    {
+      "bridge_applied": true,
+      "canonical_id": "cpi_nsa_fuel_oil",
+      "method": "observed_bridge",
+      "mom_a": 5.246879417665225,
+      "mom_forecast": 11.677060195032785
+    },
+    {
+      "bridge_applied": true,
+      "canonical_id": "cpi_nsa_replacement_cost",
+      "method": "lagged_official_bridge",
+      "mom_a": -0.08431086515306174,
+      "mom_forecast": -0.06375154444519085
+    }
+  ],
+  "contributions": [
+    {
+      "canonical_id": "cpi_nsa_food",
+      "contribution_pp": -0.04310790889275669,
+      "mom": -0.25595385154240513,
+      "role": "contribution_leaf",
+      "share": 0.16842062986348455,
+      "status": "modeled"
+    },
+    {
+      "canonical_id": "cpi_nsa_household_ops",
+      "contribution_pp": 0.0005401835946157974,
+      "mom": 0.004217795676306146,
+      "role": "contribution_leaf",
+      "share": 0.12807249000949197,
+      "status": "modeled"
+    },
+    {
+      "canonical_id": "cpi_nsa_clothing",
+      "contribution_pp": 0.0725159087785398,
+      "mom": 1.6528087108109164,
+      "role": "contribution_leaf",
+      "share": 0.043874350555038744,
+      "status": "modeled"
+    },
+    {
+      "canonical_id": "cpi_nsa_health",
+      "contribution_pp": 0.002083492413686466,
+      "mom": 0.03877557081145516,
+      "role": "contribution_leaf",
+      "share": 0.053732088789030956,
+      "status": "modeled"
+    },
+    {
+      "canonical_id": "cpi_nsa_recreation",
+      "contribution_pp": -0.018602027031115145,
+      "mom": -0.18291115296054028,
+      "role": "contribution_leaf",
+      "share": 0.10169979648604692,
+      "status": "modeled"
+    },
+    {
+      "canonical_id": "cpi_nsa_alcohol",
+      "contribution_pp": -0.0018679435197152786,
+      "mom": -0.05016864837772379,
+      "role": "contribution_leaf",
+      "share": 0.03723328373631638,
+      "status": "modeled"
+    },
+    {
+      "canonical_id": "cpi_nsa_gasoline",
+      "contribution_pp": 0.21333902085517664,
+      "mom": 5.52855664399543,
+      "role": "contribution_leaf",
+      "share": 0.03858855657866585,
+      "status": "observed_bridge"
+    },
+    {
+      "canonical_id": "transportation_ex_gasoline",
+      "contribution_pp": -0.17100059384701227,
+      "mom": null,
+      "note": "Not an official ex-gasoline index.",
+      "role": "contribution_leaf",
+      "share": 0.18563384523545892,
+      "status": "attribution_residual"
+    },
+    {
+      "canonical_id": "cpi_nsa_fuel_oil",
+      "contribution_pp": 0.02795882171649898,
+      "mom": 11.677060195032785,
+      "role": "contribution_leaf",
+      "share": 0.0023943373802587887,
+      "status": "observed_bridge"
+    },
+    {
+      "canonical_id": "cpi_nsa_replacement_cost",
+      "contribution_pp": -0.0027450073812347597,
+      "mom": -0.06375154444519085,
+      "role": "contribution_leaf",
+      "share": 0.0430578961674368,
+      "status": "lagged_official_bridge"
+    },
+    {
+      "canonical_id": "shelter_ex_fuel_and_replacement",
+      "contribution_pp": 0.053462370508276624,
+      "mom": null,
+      "note": "Not an official shelter ex-fuel/replacement index.",
+      "role": "contribution_leaf",
+      "share": 0.2810304942166142,
+      "status": "attribution_residual"
+    },
+    {
+      "canonical_id": "shelter_ex_fuel_oil",
+      "contribution_pp": 0.050717363127041865,
+      "mom": null,
+      "note": "Includes the lagged replacement-cost bridge. Not part of the disjoint leaf sum.",
+      "role": "nested_diagnostic",
+      "share": 0.2810304942166142,
+      "status": "nested_diagnostic"
+    }
+  ],
+  "core": {
+    "cpi_common": {
+      "reason": "CPI-common factor model is not identified in this engine.",
+      "status": "unavailable"
+    },
+    "cpi_median": {
+      "annualized_3m": 2.532899042534198,
+      "base_level": 220.7,
+      "forecast_level": 224.90200992418733,
+      "measure": "core_median_index",
+      "method": "mean3_mean6_blend",
+      "mom_forecast": 0.1790690085466895,
+      "note": "Not a 55-component CPI reconstruction.",
+      "previous_level": 224.5,
+      "status": "available",
+      "yoy_forecast": 1.903946499405218
+    },
+    "cpi_trim": {
+      "annualized_3m": 2.5795664639642,
+      "base_level": 216.9,
+      "forecast_level": 220.90204653749961,
+      "measure": "core_trim_index",
+      "method": "mean3_mean6_blend",
+      "mom_forecast": 0.18233403061207837,
+      "note": "Not a 55-component CPI reconstruction.",
+      "previous_level": 220.5,
+      "status": "available",
+      "yoy_forecast": 1.845111358920981
+    },
+    "reconstruction_note": "Core trim and median are forecast from official index histories only; no research-proxy trim from CPI components."
+  },
+  "headline_index": 170.02511458659706,
+  "headline_nsa_mom": 0.1325763171949602,
+  "headline_sa_mom": 0.49794661424806275,
+  "headline_yoy": 3.1080136971479932,
+  "model_version": "ca_cpi_b2_v1",
+  "previous_index": 169.8,
+  "provenance": [
+    {
+      "bytes": 769363,
+      "canonical_ids": [
+        "cpi_nsa_all_items",
+        "cpi_nsa_clothing",
+        "cpi_nsa_food",
+        "cpi_nsa_health",
+        "cpi_nsa_household_ops",
+        "cpi_nsa_recreation",
+        "cpi_nsa_shelter",
+        "cpi_nsa_transportation"
+      ],
+      "sha256": "c41ab9eefa931ea354bdf65cf416ea25469ccd8dd28fd472a59b257e9784fbd6",
+      "url": "https://www150.statcan.gc.ca/t1/wds/rest/getDataFromVectorsAndLatestNPeriods"
+    },
+    {
+      "bytes": 767999,
+      "canonical_ids": [
+        "cpi_nsa_alcohol",
+        "cpi_nsa_energy",
+        "cpi_nsa_ex_energy",
+        "cpi_nsa_ex_food_energy",
+        "cpi_nsa_ex_gasoline",
+        "cpi_nsa_fuel_oil",
+        "cpi_nsa_gasoline",
+        "cpi_nsa_replacement_cost"
+      ],
+      "sha256": "0bd05ec385d899c059162cb9d45f2911396406ab51dd519d7e05dd61a8d20208",
+      "url": "https://www150.statcan.gc.ca/t1/wds/rest/getDataFromVectorsAndLatestNPeriods"
+    },
+    {
+      "bytes": 670260,
+      "canonical_ids": [
+        "core_median_index",
+        "core_median_yoy",
+        "core_trim_index",
+        "core_trim_yoy",
+        "cpi_sa_all_items",
+        "cpi_sa_ex_food_energy",
+        "nhpi_house_only"
+      ],
+      "sha256": "c2c7de7f7df700fa434ab9211f2611da7d04f888d776f75c8e1f5e5fc7718ff5",
+      "url": "https://www150.statcan.gc.ca/t1/wds/rest/getDataFromVectorsAndLatestNPeriods"
+    },
+    {
+      "bytes": 30601,
+      "canonical_ids": [
+        "cpi_nsa_all_items__weight",
+        "cpi_nsa_clothing__weight",
+        "cpi_nsa_food__weight",
+        "cpi_nsa_health__weight",
+        "cpi_nsa_household_ops__weight",
+        "cpi_nsa_recreation__weight",
+        "cpi_nsa_shelter__weight",
+        "cpi_nsa_transportation__weight"
+      ],
+      "sha256": "4a0c3edc8c7e618ac2e7293a8932aa6536b724b835e52cdf766c347e2fee2557",
+      "url": "https://www150.statcan.gc.ca/t1/wds/rest/getDataFromVectorsAndLatestNPeriods"
+    },
+    {
+      "bytes": 30567,
+      "canonical_ids": [
+        "cpi_nsa_alcohol__weight",
+        "cpi_nsa_energy__weight",
+        "cpi_nsa_ex_energy__weight",
+        "cpi_nsa_ex_food_energy__weight",
+        "cpi_nsa_ex_gasoline__weight",
+        "cpi_nsa_fuel_oil__weight",
+        "cpi_nsa_gasoline__weight",
+        "cpi_nsa_replacement_cost__weight"
+      ],
+      "sha256": "7ab36b723a2efaac2b7da2abb01112ab9827097632334585999683d125d33b85",
+      "url": "https://www150.statcan.gc.ca/t1/wds/rest/getDataFromVectorsAndLatestNPeriods"
+    },
+    {
+      "bytes": 46812,
+      "canonical_ids": [
+        "nrcan_gasoline"
+      ],
+      "sha256": "6c7daa69b72204b615e269c79492452fba9beecf1c39d21f2bfbdd09174c2120",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=1&locationID=66&frequency=M&priceYear=2016"
+    },
+    {
+      "bytes": 54538,
+      "canonical_ids": [
+        "nrcan_gasoline"
+      ],
+      "sha256": "b89ff074de4d6fe16819c54610a0acf271bfcfc8cdeb9a5d75caf7aba19e55ea",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=1&locationID=66&frequency=M&priceYear=2017"
+    },
+    {
+      "bytes": 54463,
+      "canonical_ids": [
+        "nrcan_gasoline"
+      ],
+      "sha256": "10978310af04a7a74c77d37de627659cefff16b59e2d446c2ceafee6d13e8704",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=1&locationID=66&frequency=M&priceYear=2018"
+    },
+    {
+      "bytes": 54504,
+      "canonical_ids": [
+        "nrcan_gasoline"
+      ],
+      "sha256": "ab55325a4d118d452bdb660c976724640c013d1f0c55eae002f2e744b249fc15",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=1&locationID=66&frequency=M&priceYear=2019"
+    },
+    {
+      "bytes": 54478,
+      "canonical_ids": [
+        "nrcan_gasoline"
+      ],
+      "sha256": "e656d5a6df462702056ee210bdfec31050d3ce6c293761255921f35e403ce20b",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=1&locationID=66&frequency=M&priceYear=2020"
+    },
+    {
+      "bytes": 54521,
+      "canonical_ids": [
+        "nrcan_gasoline"
+      ],
+      "sha256": "5029d34464113ed4af4c290eb5da9d3a2d2f50cf588551f875a5341a28d1a6d8",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=1&locationID=66&frequency=M&priceYear=2021"
+    },
+    {
+      "bytes": 54523,
+      "canonical_ids": [
+        "nrcan_gasoline"
+      ],
+      "sha256": "3dbd5107834238907313d28b26582ad4d5e77934220dc242c348ce74ca4d233d",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=1&locationID=66&frequency=M&priceYear=2022"
+    },
+    {
+      "bytes": 54510,
+      "canonical_ids": [
+        "nrcan_gasoline"
+      ],
+      "sha256": "e4ae4209e93d3b413450595ac0bd01b45e8b963b5cc4ecfcb1cb4c90bb998e3d",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=1&locationID=66&frequency=M&priceYear=2023"
+    },
+    {
+      "bytes": 54441,
+      "canonical_ids": [
+        "nrcan_gasoline"
+      ],
+      "sha256": "c2a60f34b6364c0394c76622b2e514f9dcc49e68266f14fac8c86e9803d3c50a",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=1&locationID=66&frequency=M&priceYear=2024"
+    },
+    {
+      "bytes": 54545,
+      "canonical_ids": [
+        "nrcan_gasoline"
+      ],
+      "sha256": "9ca4e4d4ffd872916333e6d22675ed7a043b0fcc7682082750c1702e5f88fa9e",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=1&locationID=66&frequency=M&priceYear=2025"
+    },
+    {
+      "bytes": 51918,
+      "canonical_ids": [
+        "nrcan_gasoline"
+      ],
+      "sha256": "6d5f4579ce407b13fafef2755bfdc0b95276827b5439bfe0afcb0f0582221811",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=1&locationID=66&frequency=M&priceYear=2026"
+    },
+    {
+      "bytes": 46668,
+      "canonical_ids": [
+        "nrcan_furnace_oil"
+      ],
+      "sha256": "5820dbbf772d943ed5afb4ae0323d4ede43e409f9d478739dd5672fda624237b",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=7&locationID=66&frequency=M&priceYear=2016"
+    },
+    {
+      "bytes": 53115,
+      "canonical_ids": [
+        "nrcan_furnace_oil"
+      ],
+      "sha256": "96c22b1efa80ddc5556e0988038dcf732708907dca3e8d832937a42db4a89c5d",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=7&locationID=66&frequency=M&priceYear=2017"
+    },
+    {
+      "bytes": 54442,
+      "canonical_ids": [
+        "nrcan_furnace_oil"
+      ],
+      "sha256": "31d66bb4ca0901d5ae60f33b9f014fc52bc532012c8a5375c7c307ea2890b28f",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=7&locationID=66&frequency=M&priceYear=2018"
+    },
+    {
+      "bytes": 54438,
+      "canonical_ids": [
+        "nrcan_furnace_oil"
+      ],
+      "sha256": "66e642b372e8a61bdf51cac300e9f7d92e596078b615fce237336ecf35b94c11",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=7&locationID=66&frequency=M&priceYear=2019"
+    },
+    {
+      "bytes": 54403,
+      "canonical_ids": [
+        "nrcan_furnace_oil"
+      ],
+      "sha256": "dfbdb28bf8796465ee82d2a4e4d4da2b081608be807cdaeec727d76b5425bab9",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=7&locationID=66&frequency=M&priceYear=2020"
+    },
+    {
+      "bytes": 54412,
+      "canonical_ids": [
+        "nrcan_furnace_oil"
+      ],
+      "sha256": "dc555ce9aa2d1ef6c2a4c8c28d6be2fc9287a81c7e516b22fa1a8e13b98145ff",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=7&locationID=66&frequency=M&priceYear=2021"
+    },
+    {
+      "bytes": 54269,
+      "canonical_ids": [
+        "nrcan_furnace_oil"
+      ],
+      "sha256": "b97715c6dabe24b5af42220dead6c17537e7b7b108d7546d2b68ace59f0eade4",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=7&locationID=66&frequency=M&priceYear=2022"
+    },
+    {
+      "bytes": 54401,
+      "canonical_ids": [
+        "nrcan_furnace_oil"
+      ],
+      "sha256": "caba0a452c1a15242c9940b36cf4c9185f93e8473c3c258aea608a7a15a3ad09",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=7&locationID=66&frequency=M&priceYear=2023"
+    },
+    {
+      "bytes": 54434,
+      "canonical_ids": [
+        "nrcan_furnace_oil"
+      ],
+      "sha256": "77002f6e889125e432d90759a89a683e5e90a835523f3bf304a6ded84294bb41",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=7&locationID=66&frequency=M&priceYear=2024"
+    },
+    {
+      "bytes": 54427,
+      "canonical_ids": [
+        "nrcan_furnace_oil"
+      ],
+      "sha256": "61bece89f31bfa7030d6d2fc8e47fa9d3a674f8ecb0d357d28ee9a7268e98909",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=7&locationID=66&frequency=M&priceYear=2025"
+    },
+    {
+      "bytes": 51843,
+      "canonical_ids": [
+        "nrcan_furnace_oil"
+      ],
+      "sha256": "e8d2874d09798664b4cd82680b9506c9a713e05ffc0e56861285484c23db6f27",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=7&locationID=66&frequency=M&priceYear=2026"
+    },
+    {
+      "note": "NRCan HTML pages are archived in fixture raw/ with sha256; NRCan does not publish observation-level retrieval timestamps on the historical pages."
+    },
+    {
+      "note": "StatCan table 18-10-0259 (real-time CPI vintages) was not bulk-downloaded; cube coverage known from this task is reference periods through 2026-03 and releases through 2026-04-20, so May\u2013August 2026 core vintages are not in that table. Current core indexes are from 18-10-0256."
+    },
+    {
+      "note": "nrcan_gasoline: October 2026 monthly row present on NRCan pages (e.g. 2026-10=186.2); model must gate by as_of."
+    },
+    {
+      "note": "nrcan_furnace_oil: official NRCan monthly Canada table missing 1 month(s) in required 2016-07..2026-09 window (first gap 2017-08); snapshot retains available rows only."
+    },
+    {
+      "note": "nrcan_furnace_oil: October 2026 monthly row present on NRCan pages (e.g. 2026-10=246.6); model must gate by as_of."
+    },
+    {
+      "note": "NRCan fuel prices: historical posting timestamps are not archived; a completed reference month is treated as eligible once that month has ended and as_of is on or after month-end."
+    }
+  ],
+  "reference_comparison": {
+    "absolute_difference": 5.1917194960227064e-05,
+    "astra_headline_nsa_mom": 0.1325244,
+    "astra_note": "0.1325244 is an external research reference (Astra), not a model input.",
+    "reproduced_within_0_001_pp": true
+  },
+  "release": "2026-09",
+  "schema_version": "canadian_cpi_release_v1",
+  "special_aggregates": {
+    "cpi_nsa_ex_energy": {
+      "canonical_id": "cpi_nsa_ex_energy",
+      "nsa_method": "modeled",
+      "nsa_mom": -0.03422140158634876,
+      "sa_method": "unavailable_no_official_sa",
+      "sa_mom": null,
+      "yoy": 2.1817687643883366
+    },
+    "cpi_nsa_ex_food_energy": {
+      "canonical_id": "cpi_nsa_ex_food_energy",
+      "nsa_method": "modeled",
+      "nsa_mom": 0.038294418499958086,
+      "sa_method": "seasonal_median_bridge",
+      "sa_mom": 0.23609669270469724,
+      "yoy": 2.2270344508223516
+    },
+    "cpi_nsa_ex_gasoline": {
+      "canonical_id": "cpi_nsa_ex_gasoline",
+      "nsa_method": "modeled",
+      "nsa_mom": -0.03605326318533214,
+      "sa_method": "unavailable_no_official_sa",
+      "sa_mom": null,
+      "yoy": 2.2915386338728583
+    }
+  },
+  "status": "ok",
+  "uncertainty": {
+    "bands": {
+      "0.05": -0.24832291277060964,
+      "0.1": -0.07593858002912293,
+      "0.25": 0.04064093208730965,
+      "0.5": 0.18131992557235987,
+      "0.75": 0.33628063333415914,
+      "0.9": 0.43528859916765344,
+      "0.95": 0.5501696174827835
+    },
+    "error_quantiles": {
+      "0.05": -0.38089922996556985,
+      "0.1": -0.20851489722408315,
+      "0.25": -0.09193538510765056,
+      "0.5": 0.04874360837739966,
+      "0.75": 0.20370431613919895,
+      "0.9": 0.30271228197269323,
+      "0.95": 0.4175933002878233
+    },
+    "label": "Empirical pseudo-OOS residual band, latest index vintage; not a calibrated probability; not the sum of component extremes.",
+    "n_errors": 92,
+    "reliability": "ok"
+  }
+}
