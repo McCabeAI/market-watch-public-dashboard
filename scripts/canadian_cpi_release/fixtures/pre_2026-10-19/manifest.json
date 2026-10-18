@@ -1,0 +1,336 @@
+{
+  "notes": [
+    "StatCan table 18-10-0259 (real-time CPI vintages) was not bulk-downloaded; cube coverage known from this task is reference periods through 2026-03 and releases through 2026-04-20, so May\u2013August 2026 core vintages are not in that table. Current core indexes are from 18-10-0256.",
+    "nrcan_gasoline: October 2026 monthly row present on NRCan pages (e.g. 2026-10=186.2); model must gate by as_of.",
+    "nrcan_furnace_oil: official NRCan monthly Canada table missing 1 month(s) in required 2016-07..2026-09 window (first gap 2017-08); snapshot retains available rows only.",
+    "nrcan_furnace_oil: October 2026 monthly row present on NRCan pages (e.g. 2026-10=246.6); model must gate by as_of.",
+    "NRCan fuel prices: historical posting timestamps are not archived; a completed reference month is treated as eligible once that month has ended and as_of is on or after month-end."
+  ],
+  "observation_count": 10076,
+  "observation_counts_by_canonical_id": {
+    "core_median_index": 420,
+    "core_median_yoy": 420,
+    "core_trim_index": 420,
+    "core_trim_yoy": 420,
+    "cpi_nsa_alcohol": 420,
+    "cpi_nsa_alcohol__weight": 16,
+    "cpi_nsa_all_items": 420,
+    "cpi_nsa_all_items__weight": 16,
+    "cpi_nsa_clothing": 420,
+    "cpi_nsa_clothing__weight": 16,
+    "cpi_nsa_energy": 420,
+    "cpi_nsa_energy__weight": 16,
+    "cpi_nsa_ex_energy": 420,
+    "cpi_nsa_ex_energy__weight": 16,
+    "cpi_nsa_ex_food_energy": 420,
+    "cpi_nsa_ex_food_energy__weight": 16,
+    "cpi_nsa_ex_gasoline": 344,
+    "cpi_nsa_ex_gasoline__weight": 14,
+    "cpi_nsa_food": 420,
+    "cpi_nsa_food__weight": 16,
+    "cpi_nsa_fuel_oil": 420,
+    "cpi_nsa_fuel_oil__weight": 16,
+    "cpi_nsa_gasoline": 420,
+    "cpi_nsa_gasoline__weight": 16,
+    "cpi_nsa_health": 420,
+    "cpi_nsa_health__weight": 16,
+    "cpi_nsa_household_ops": 420,
+    "cpi_nsa_household_ops__weight": 15,
+    "cpi_nsa_recreation": 420,
+    "cpi_nsa_recreation__weight": 16,
+    "cpi_nsa_replacement_cost": 420,
+    "cpi_nsa_replacement_cost__weight": 16,
+    "cpi_nsa_shelter": 420,
+    "cpi_nsa_shelter__weight": 16,
+    "cpi_nsa_transportation": 420,
+    "cpi_nsa_transportation__weight": 16,
+    "cpi_sa_all_items": 416,
+    "cpi_sa_ex_food_energy": 416,
+    "nhpi_house_only": 420,
+    "nrcan_furnace_oil": 123,
+    "nrcan_gasoline": 124
+  },
+  "retrieved_at": "2026-10-18T12:00:00Z",
+  "schema_version": "canadian_cpi_release_v1",
+  "snapshot_path": "snapshot.json",
+  "snapshot_sha256": "47af23576212bf43e57e54d82eca5afa259f393a7e53fb6ae8465805392f52bf",
+  "source_records": [
+    {
+      "bytes": 769363,
+      "canonical_ids": [
+        "cpi_nsa_all_items",
+        "cpi_nsa_clothing",
+        "cpi_nsa_food",
+        "cpi_nsa_health",
+        "cpi_nsa_household_ops",
+        "cpi_nsa_recreation",
+        "cpi_nsa_shelter",
+        "cpi_nsa_transportation"
+      ],
+      "path": "raw/statcan_0.json",
+      "sha256": "c41ab9eefa931ea354bdf65cf416ea25469ccd8dd28fd472a59b257e9784fbd6",
+      "url": "https://www150.statcan.gc.ca/t1/wds/rest/getDataFromVectorsAndLatestNPeriods"
+    },
+    {
+      "bytes": 767999,
+      "canonical_ids": [
+        "cpi_nsa_alcohol",
+        "cpi_nsa_energy",
+        "cpi_nsa_ex_energy",
+        "cpi_nsa_ex_food_energy",
+        "cpi_nsa_ex_gasoline",
+        "cpi_nsa_fuel_oil",
+        "cpi_nsa_gasoline",
+        "cpi_nsa_replacement_cost"
+      ],
+      "path": "raw/statcan_1.json",
+      "sha256": "0bd05ec385d899c059162cb9d45f2911396406ab51dd519d7e05dd61a8d20208",
+      "url": "https://www150.statcan.gc.ca/t1/wds/rest/getDataFromVectorsAndLatestNPeriods"
+    },
+    {
+      "bytes": 670260,
+      "canonical_ids": [
+        "core_median_index",
+        "core_median_yoy",
+        "core_trim_index",
+        "core_trim_yoy",
+        "cpi_sa_all_items",
+        "cpi_sa_ex_food_energy",
+        "nhpi_house_only"
+      ],
+      "path": "raw/statcan_2.json",
+      "sha256": "c2c7de7f7df700fa434ab9211f2611da7d04f888d776f75c8e1f5e5fc7718ff5",
+      "url": "https://www150.statcan.gc.ca/t1/wds/rest/getDataFromVectorsAndLatestNPeriods"
+    },
+    {
+      "bytes": 30601,
+      "canonical_ids": [
+        "cpi_nsa_all_items__weight",
+        "cpi_nsa_clothing__weight",
+        "cpi_nsa_food__weight",
+        "cpi_nsa_health__weight",
+        "cpi_nsa_household_ops__weight",
+        "cpi_nsa_recreation__weight",
+        "cpi_nsa_shelter__weight",
+        "cpi_nsa_transportation__weight"
+      ],
+      "path": "raw/statcan_weight_0.json",
+      "sha256": "4a0c3edc8c7e618ac2e7293a8932aa6536b724b835e52cdf766c347e2fee2557",
+      "url": "https://www150.statcan.gc.ca/t1/wds/rest/getDataFromVectorsAndLatestNPeriods"
+    },
+    {
+      "bytes": 30567,
+      "canonical_ids": [
+        "cpi_nsa_alcohol__weight",
+        "cpi_nsa_energy__weight",
+        "cpi_nsa_ex_energy__weight",
+        "cpi_nsa_ex_food_energy__weight",
+        "cpi_nsa_ex_gasoline__weight",
+        "cpi_nsa_fuel_oil__weight",
+        "cpi_nsa_gasoline__weight",
+        "cpi_nsa_replacement_cost__weight"
+      ],
+      "path": "raw/statcan_weight_1.json",
+      "sha256": "7ab36b723a2efaac2b7da2abb01112ab9827097632334585999683d125d33b85",
+      "url": "https://www150.statcan.gc.ca/t1/wds/rest/getDataFromVectorsAndLatestNPeriods"
+    },
+    {
+      "bytes": 46812,
+      "canonical_ids": [
+        "nrcan_gasoline"
+      ],
+      "path": "raw/nrcan_nrcan_gasoline_2016.html",
+      "sha256": "6c7daa69b72204b615e269c79492452fba9beecf1c39d21f2bfbdd09174c2120",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=1&locationID=66&frequency=M&priceYear=2016"
+    },
+    {
+      "bytes": 54538,
+      "canonical_ids": [
+        "nrcan_gasoline"
+      ],
+      "path": "raw/nrcan_nrcan_gasoline_2017.html",
+      "sha256": "b89ff074de4d6fe16819c54610a0acf271bfcfc8cdeb9a5d75caf7aba19e55ea",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=1&locationID=66&frequency=M&priceYear=2017"
+    },
+    {
+      "bytes": 54463,
+      "canonical_ids": [
+        "nrcan_gasoline"
+      ],
+      "path": "raw/nrcan_nrcan_gasoline_2018.html",
+      "sha256": "10978310af04a7a74c77d37de627659cefff16b59e2d446c2ceafee6d13e8704",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=1&locationID=66&frequency=M&priceYear=2018"
+    },
+    {
+      "bytes": 54504,
+      "canonical_ids": [
+        "nrcan_gasoline"
+      ],
+      "path": "raw/nrcan_nrcan_gasoline_2019.html",
+      "sha256": "ab55325a4d118d452bdb660c976724640c013d1f0c55eae002f2e744b249fc15",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=1&locationID=66&frequency=M&priceYear=2019"
+    },
+    {
+      "bytes": 54478,
+      "canonical_ids": [
+        "nrcan_gasoline"
+      ],
+      "path": "raw/nrcan_nrcan_gasoline_2020.html",
+      "sha256": "e656d5a6df462702056ee210bdfec31050d3ce6c293761255921f35e403ce20b",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=1&locationID=66&frequency=M&priceYear=2020"
+    },
+    {
+      "bytes": 54521,
+      "canonical_ids": [
+        "nrcan_gasoline"
+      ],
+      "path": "raw/nrcan_nrcan_gasoline_2021.html",
+      "sha256": "5029d34464113ed4af4c290eb5da9d3a2d2f50cf588551f875a5341a28d1a6d8",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=1&locationID=66&frequency=M&priceYear=2021"
+    },
+    {
+      "bytes": 54523,
+      "canonical_ids": [
+        "nrcan_gasoline"
+      ],
+      "path": "raw/nrcan_nrcan_gasoline_2022.html",
+      "sha256": "3dbd5107834238907313d28b26582ad4d5e77934220dc242c348ce74ca4d233d",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=1&locationID=66&frequency=M&priceYear=2022"
+    },
+    {
+      "bytes": 54510,
+      "canonical_ids": [
+        "nrcan_gasoline"
+      ],
+      "path": "raw/nrcan_nrcan_gasoline_2023.html",
+      "sha256": "e4ae4209e93d3b413450595ac0bd01b45e8b963b5cc4ecfcb1cb4c90bb998e3d",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=1&locationID=66&frequency=M&priceYear=2023"
+    },
+    {
+      "bytes": 54441,
+      "canonical_ids": [
+        "nrcan_gasoline"
+      ],
+      "path": "raw/nrcan_nrcan_gasoline_2024.html",
+      "sha256": "c2a60f34b6364c0394c76622b2e514f9dcc49e68266f14fac8c86e9803d3c50a",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=1&locationID=66&frequency=M&priceYear=2024"
+    },
+    {
+      "bytes": 54545,
+      "canonical_ids": [
+        "nrcan_gasoline"
+      ],
+      "path": "raw/nrcan_nrcan_gasoline_2025.html",
+      "sha256": "9ca4e4d4ffd872916333e6d22675ed7a043b0fcc7682082750c1702e5f88fa9e",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=1&locationID=66&frequency=M&priceYear=2025"
+    },
+    {
+      "bytes": 51918,
+      "canonical_ids": [
+        "nrcan_gasoline"
+      ],
+      "path": "raw/nrcan_nrcan_gasoline_2026.html",
+      "sha256": "6d5f4579ce407b13fafef2755bfdc0b95276827b5439bfe0afcb0f0582221811",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=1&locationID=66&frequency=M&priceYear=2026"
+    },
+    {
+      "bytes": 46668,
+      "canonical_ids": [
+        "nrcan_furnace_oil"
+      ],
+      "path": "raw/nrcan_nrcan_furnace_oil_2016.html",
+      "sha256": "5820dbbf772d943ed5afb4ae0323d4ede43e409f9d478739dd5672fda624237b",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=7&locationID=66&frequency=M&priceYear=2016"
+    },
+    {
+      "bytes": 53115,
+      "canonical_ids": [
+        "nrcan_furnace_oil"
+      ],
+      "path": "raw/nrcan_nrcan_furnace_oil_2017.html",
+      "sha256": "96c22b1efa80ddc5556e0988038dcf732708907dca3e8d832937a42db4a89c5d",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=7&locationID=66&frequency=M&priceYear=2017"
+    },
+    {
+      "bytes": 54442,
+      "canonical_ids": [
+        "nrcan_furnace_oil"
+      ],
+      "path": "raw/nrcan_nrcan_furnace_oil_2018.html",
+      "sha256": "31d66bb4ca0901d5ae60f33b9f014fc52bc532012c8a5375c7c307ea2890b28f",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=7&locationID=66&frequency=M&priceYear=2018"
+    },
+    {
+      "bytes": 54438,
+      "canonical_ids": [
+        "nrcan_furnace_oil"
+      ],
+      "path": "raw/nrcan_nrcan_furnace_oil_2019.html",
+      "sha256": "66e642b372e8a61bdf51cac300e9f7d92e596078b615fce237336ecf35b94c11",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=7&locationID=66&frequency=M&priceYear=2019"
+    },
+    {
+      "bytes": 54403,
+      "canonical_ids": [
+        "nrcan_furnace_oil"
+      ],
+      "path": "raw/nrcan_nrcan_furnace_oil_2020.html",
+      "sha256": "dfbdb28bf8796465ee82d2a4e4d4da2b081608be807cdaeec727d76b5425bab9",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=7&locationID=66&frequency=M&priceYear=2020"
+    },
+    {
+      "bytes": 54412,
+      "canonical_ids": [
+        "nrcan_furnace_oil"
+      ],
+      "path": "raw/nrcan_nrcan_furnace_oil_2021.html",
+      "sha256": "dc555ce9aa2d1ef6c2a4c8c28d6be2fc9287a81c7e516b22fa1a8e13b98145ff",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=7&locationID=66&frequency=M&priceYear=2021"
+    },
+    {
+      "bytes": 54269,
+      "canonical_ids": [
+        "nrcan_furnace_oil"
+      ],
+      "path": "raw/nrcan_nrcan_furnace_oil_2022.html",
+      "sha256": "b97715c6dabe24b5af42220dead6c17537e7b7b108d7546d2b68ace59f0eade4",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=7&locationID=66&frequency=M&priceYear=2022"
+    },
+    {
+      "bytes": 54401,
+      "canonical_ids": [
+        "nrcan_furnace_oil"
+      ],
+      "path": "raw/nrcan_nrcan_furnace_oil_2023.html",
+      "sha256": "caba0a452c1a15242c9940b36cf4c9185f93e8473c3c258aea608a7a15a3ad09",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=7&locationID=66&frequency=M&priceYear=2023"
+    },
+    {
+      "bytes": 54434,
+      "canonical_ids": [
+        "nrcan_furnace_oil"
+      ],
+      "path": "raw/nrcan_nrcan_furnace_oil_2024.html",
+      "sha256": "77002f6e889125e432d90759a89a683e5e90a835523f3bf304a6ded84294bb41",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=7&locationID=66&frequency=M&priceYear=2024"
+    },
+    {
+      "bytes": 54427,
+      "canonical_ids": [
+        "nrcan_furnace_oil"
+      ],
+      "path": "raw/nrcan_nrcan_furnace_oil_2025.html",
+      "sha256": "61bece89f31bfa7030d6d2fc8e47fa9d3a674f8ecb0d357d28ee9a7268e98909",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=7&locationID=66&frequency=M&priceYear=2025"
+    },
+    {
+      "bytes": 51843,
+      "canonical_ids": [
+        "nrcan_furnace_oil"
+      ],
+      "path": "raw/nrcan_nrcan_furnace_oil_2026.html",
+      "sha256": "e8d2874d09798664b4cd82680b9506c9a713e05ffc0e56861285484c23db6f27",
+      "url": "https://www2.nrcan.gc.ca/eneene/sources/pripri/prices_bycity_e.cfm?productID=7&locationID=66&frequency=M&priceYear=2026"
+    }
+  ]
+}
