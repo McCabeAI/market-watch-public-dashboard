@@ -1,0 +1,38 @@
+{
+  "archive_directory": "docs/canadian_cpi_release/candidates/2026-09-asof-2026-10-18",
+  "correction_recorded_at": "2026-10-18T21:03:26.748168-04:00",
+  "correction_recorded_at_utc": "2026-10-19T01:03:26.748214+00:00",
+  "data_cutoff": {
+    "as_of": "2026-10-18",
+    "as_of_note": "Date-only as_of is end of that civil day in America/Toronto (parse_as_of).",
+    "freeze_before": "2026-10-19T08:30:00-04:00",
+    "note": "as_of and freeze_before are data/policy cutoffs, not generation times."
+  },
+  "git_commit": {
+    "git_commit_time": "2026-10-19T00:17:23+00:00",
+    "note": "Committer timestamp only; not generated_at. The synthetic generated_at is later than this commit and cannot be the execution time.",
+    "sha": "747b80ebdbe0acec077a6536636823c4fa1024e4"
+  },
+  "input_snapshot_sha256": {
+    "airfare_snapshot": "39765c33d68270ab7597d10a623fc2171a3d1af33b9ce79a10387cf6a38c0f23",
+    "cpi_snapshot": "47af23576212bf43e57e54d82eca5afa259f393a7e53fb6ae8465805392f52bf"
+  },
+  "pre_release_label_on_the_historical_text_refers_to_the_data_cutoff_not_the_synthetic_clock": true,
+  "schema_version": "canadian_cpi_ex_energy_provenance_correction_v1",
+  "synthetic_generated_at_in_forecast_files": {
+    "explanation": "Hardcoded constant for deterministic output; not a measured execution clock.",
+    "status": "synthetic_unknown",
+    "value": "2026-10-18T23:59:59-04:00"
+  },
+  "true_execution_time": {
+    "note": "The true execution time was not recorded and is not reconstructed here.",
+    "reconstructed": false,
+    "recorded": false
+  },
+  "unchanged_forecast_file_sha256": {
+    "backtest_airfare.json": "2a21495070ef47b506211f1930440eeba00223e925f4d7208aff44ea9e3e034a",
+    "backtest_ex_energy.json": "b41e81878281aec1e95f2c111948e4cf8a3ab2eaed170de9c6a075a75c91f07d",
+    "candidate.json": "b4cf0652666f1ab477fe2d466ecf03d32e8247f49e0f4bd3a91b1dca4d88b78b",
+    "candidate.txt": "6225b86a7860fcdb65a9b3e65d3579df66231ceeee0c30ce73fe335886c917d0"
+  }
+}

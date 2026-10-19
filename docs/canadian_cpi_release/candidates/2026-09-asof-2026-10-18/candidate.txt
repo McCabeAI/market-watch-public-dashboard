@@ -1,0 +1,47 @@
+PRE-RELEASE CANDIDATE — Canadian CPI ex-energy — release 2026-09 (as-of 2026-10-18)
+This is NOT the canonical 2026-10-16 B2 nowcast in docs/canadian_cpi_release/sample_2026-09.
+Status: ok
+Generated at: 2026-10-18T23:59:59-04:00 (America/Toronto)
+
+Published ex-energy estimate
+  NSA MoM %: -0.0342
+  YoY %:     2.1818
+  Promoted:  False
+  Selected:  direct_ex_energy
+
+Shadow forecasts (delta vs direct ex-energy, pp)
+  component: MoM % -0.0147  delta 0.019482 pp
+  blend_equal: MoM % -0.0245  delta 0.009741 pp
+  airfare_on_direct: MoM % -0.0340  delta 0.000255 pp
+  airfare_on_component: MoM % -0.0145  delta 0.019737 pp  [shadow_not_selected; scored=False]
+
+Backtest MAE (ex-energy models, NSA MoM %)
+  model                     from_2019     recent_2025_26september     
+  direct                    0.212905      0.204239      0.236839      
+  component                 0.211794      0.191222      0.225832      
+  blend_equal               0.211058      0.193319      0.231336      
+
+Backtest MAE (direct vs airfare_on_direct on ex-energy actuals)
+  model                     from_2019     recent_2025_26september     
+  direct                    0.212905      0.204239      0.236839      
+  airfare_on_direct         0.217199      0.222162      0.234438      
+
+Airfare source vectors (fixture)
+  Index vector:  41691151  2.199.0.0.0.0.0.0.0.0
+  Weight vector: 91859102  1.183.1.1.0.0.0.0.0.0
+  sha256: e69d44ee81cd38671d33cb888792c93fc8062e1b03be81734361dd3472733a56
+  sha256: 1c7ca586dcbd293e39ad332b179efd4ae57b015d63d34048fc2e626d1924bb9d
+
+Limitations
+  - Latest-vintage pseudo-OOS evaluation; not a full real-time vintage replay.
+  - NSA CPI is mostly unrevised but basket weights can revise.
+  - NRCan month-end assumption is unchanged and unused by this ex-energy path.
+  - September 2026 CPI actual was not in the fixtures and was not used.
+  - This artifact does not replace docs/canadian_cpi_release/sample_2026-09.
+  - No incremental ex-energy accuracy is claimed for this candidate; the walk-forward backtest did not clear the predeclared 0.005 pp MAE improvement bar on 2019+ with the recent window not worse than direct.
+  - Latest-vintage snapshot: published_at gates eligibility; this is not a full real-time vintage replay.
+  - NSA CPI is mostly unrevised but basket weights can revise.
+  - NRCan is not used in this ex-energy component path.
+  - food and all-items-excluding-food-and-energy partition all-items-excluding-energy in the published basket weights. The month-over-month reconstruction uses price-updated shares and is an approximation of the published ex-energy index, not a second official index.
+
+September 2026 CPI actual not used.

@@ -12,7 +12,9 @@ from typing import Any
 
 from scripts.canadian_cpi_release.contract import NowcastResult, Snapshot, add_months
 from scripts.canadian_cpi_release.engine import backtest_headline, forecast_release
+from scripts.canadian_cpi_release.ex_energy_candidate import ArchiveConflict, write_ex_energy_candidate
 from scripts.canadian_cpi_release.report import render_nowcast_report
+from scripts.canadian_cpi_release.sources.airfare_statcan import load_airfare_snapshot
 from scripts.canadian_cpi_release.sources.acquire import (
     fetch_live,
     load_snapshot,
@@ -264,6 +266,38 @@ def cmd_nowcast(args: argparse.Namespace) -> int:
         return 2
 
 
+def cmd_ex_energy_candidate(args: argparse.Namespace) -> int:
+    cpi = load_snapshot(Path(args.fixture))
+    airfare = load_airfare_snapshot(Path(args.airfare_fixture))
+    out = Path(args.out)
+    try:
+        candidate = write_ex_energy_candidate(
+            out,
+            cpi,
+            airfare,
+            release=args.release,
+            as_of=args.as_of,
+            cpi_snapshot_path=Path(args.fixture),
+            airfare_snapshot_path=Path(args.airfare_fixture),
+        )
+    except ArchiveConflict as exc:
+        print(f"NOT PUBLISHED\nreason: {exc}\n", file=sys.stderr)
+        return 2
+
+    archive_path = candidate.get("archive_path")
+    if not archive_path:
+        blockers = candidate.get("blockers") or []
+        if "generated_after_freeze" in blockers:
+            print("NOT PUBLISHED\nreason: generated_after_freeze\n", file=sys.stderr)
+        return 2
+
+    print(archive_path)
+    text_path = Path(archive_path) / "candidate.txt"
+    if text_path.is_file():
+        print(text_path.read_text(encoding="utf-8"), end="")
+    return 0 if candidate.get("status") == "ok" else 2
+
+
 def cmd_backtest(args: argparse.Namespace) -> int:
     snapshot = _resolve_snapshot(args, through=args.through)
     as_of = args.as_of
@@ -318,6 +352,27 @@ def main(argv: list[str] | None = None) -> int:
     backtest_p.add_argument("--start", default="2017-01", help="First month (default 2017-01)")
     _add_source_args(backtest_p)
     backtest_p.set_defaults(func=cmd_backtest)
+
+    cand_p = sub.add_parser(
+        "ex-energy-candidate",
+        help="Ex-energy pre-release candidate (shadows + walk-forward promotion)",
+    )
+    cand_p.add_argument("--release", required=True, help="CPI reference month YYYY-MM")
+    cand_p.add_argument("--as-of", required=True, dest="as_of", help="Information cutoff YYYY-MM-DD")
+    cand_p.add_argument("--out", type=Path, required=True, help="Output directory")
+    cand_p.add_argument(
+        "--fixture",
+        type=Path,
+        required=True,
+        help="Frozen main CPI snapshot.json (no network)",
+    )
+    cand_p.add_argument(
+        "--airfare-fixture",
+        type=Path,
+        required=True,
+        help="Frozen airfare snapshot.json (no network)",
+    )
+    cand_p.set_defaults(func=cmd_ex_energy_candidate)
 
     args = parser.parse_args(argv)
     return int(args.func(args))

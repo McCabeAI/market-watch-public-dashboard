@@ -184,3 +184,113 @@ def render_nowcast_report(payload: dict[str, Any]) -> str:
     lines.append("")
 
     return "\n".join(lines)
+
+
+def render_ex_energy_candidate_report(payload: dict[str, Any]) -> str:
+    """Plain-text report for the ex-energy pre-release candidate (not canonical B2)."""
+    lines: list[str] = []
+    release = payload.get("release", "")
+    as_of = payload.get("as_of", "")
+    pre_release = payload.get("pre_release") is True
+    if pre_release:
+        lines.append(
+            f"PRE-RELEASE CANDIDATE — Canadian CPI ex-energy — release {release}"
+        )
+    else:
+        lines.append(f"Canadian CPI ex-energy — release {release}")
+    lines.append(
+        "This is NOT the canonical 2026-10-16 B2 nowcast in docs/canadian_cpi_release/sample_2026-09."
+    )
+    lines.append(f"Status: {payload.get('status', '')}")
+    lines.append(f"Data cutoff as-of: {as_of}")
+    lines.append(f"Freeze before: {payload.get('freeze_before', '')}")
+    generated_at = payload.get("generated_at")
+    generated_at_utc = payload.get("generated_at_utc")
+    if generated_at:
+        lines.append(f"Generated at (Toronto): {generated_at}")
+        lines.append(f"Generated at UTC: {generated_at_utc or ''}")
+    else:
+        lines.append(
+            "Generated at: unstamped (build-only payload; this is not an archived run)."
+        )
+    lines.append("")
+
+    if payload.get("status") != "ok":
+        for b in payload.get("blockers") or []:
+            lines.append(f"  Blocker: {b}")
+        lines.append("")
+        lines.append("September 2026 CPI actual not used.")
+        return "\n".join(lines) + "\n"
+
+    pub = payload.get("published") or {}
+    lines.append("Published ex-energy estimate")
+    lines.append(f"  NSA MoM %: {_fmt(pub.get('ex_energy_nsa_mom'))}")
+    lines.append(f"  YoY %:     {_fmt(pub.get('ex_energy_yoy'))}")
+    lines.append(f"  Promoted:  {pub.get('promoted')}")
+    lines.append(f"  Selected:  {pub.get('selected_model')}")
+    lines.append("")
+
+    shadows = payload.get("shadows") or {}
+    lines.append("Shadow forecasts (delta vs direct ex-energy, pp)")
+    for key in ("component", "blend_equal", "airfare_on_direct", "airfare_on_component"):
+        row = shadows.get(key) or {}
+        mom = row.get("nsa_mom")
+        delta = row.get("delta_vs_direct_pp")
+        extra = ""
+        if key == "airfare_on_component":
+            extra = f"  [{row.get('status')}; scored={row.get('scored')}]"
+        lines.append(
+            f"  {key}: MoM % {_fmt(mom)}  delta {_fmt(delta, 6)} pp{extra}"
+        )
+    lines.append("")
+
+    bt = (payload.get("backtest") or {}).get("ex_energy") or {}
+    air_bt = (payload.get("backtest") or {}).get("airfare") or {}
+    regimes = ("from_2019", "recent_2025_26", "september")
+    models_ex = ("direct", "component", "blend_equal")
+    models_air = ("direct", "airfare_on_direct")
+
+    def mae_table(metrics: list[dict[str, Any]], models: tuple[str, ...], title: str) -> None:
+        lines.append(title)
+        header = "  model".ljust(28) + "".join(r.ljust(14) for r in regimes)
+        lines.append(header)
+        for model in models:
+            parts = [f"  {model}".ljust(28)]
+            for regime in regimes:
+                mae = None
+                for row in metrics:
+                    if row.get("model") == model and row.get("regime") == regime:
+                        mae = row.get("MAE")
+                        break
+                parts.append(_fmt(mae, 6).ljust(14))
+            lines.append("".join(parts))
+        lines.append("")
+
+    mae_table(bt.get("metrics") or [], models_ex, "Backtest MAE (ex-energy models, NSA MoM %)")
+    mae_table(
+        air_bt.get("metrics") or [],
+        models_air,
+        "Backtest MAE (direct vs airfare_on_direct on ex-energy actuals)",
+    )
+
+    attr = payload.get("attribution") or {}
+    air_attr = attr.get("airfare") or {}
+    lines.append("Airfare source vectors (fixture)")
+    lines.append(
+        f"  Index vector:  {air_attr.get('index_vector_id')}  {air_attr.get('index_coordinate')}"
+    )
+    lines.append(
+        f"  Weight vector: {air_attr.get('weight_vector_id')}  {air_attr.get('weight_coordinate')}"
+    )
+    for digest in air_attr.get("fixture_sha256") or []:
+        lines.append(f"  sha256: {digest}")
+    lines.append("")
+
+    lines.append("Limitations")
+    for lim in payload.get("limitations") or []:
+        lines.append(f"  - {lim}")
+    lines.append("")
+    lines.append("September 2026 CPI actual not used.")
+    lines.append("")
+
+    return "\n".join(lines)
