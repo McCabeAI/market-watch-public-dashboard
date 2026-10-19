@@ -960,6 +960,60 @@
       "run_id": "overnight-20261016",
       "schema_version": 1,
       "thesis": "Oil, metals, and the rates curve already carry the policy-and-supply shock in linear markets: Brent, gold, SOFR versus March 2027, and USDCAD leave little unpriced directional edge. Uncertain timing of the next oil or policy impulse would normally favor bounded-risk optionality, but this freeze lists no premium, implied volatility, or strikes. With the book flat and no markable convex payoff, standing aside dominates inventing a vol surface."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Flat book. VIX 16.46 and no listed options marks; rates and spot already express oil and policy.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-19T04:47:49.555730-04:00",
+      "conviction": 72,
+      "decision_fingerprint": "ee5bc87f3ab69851008cadf111af7d18b4e0c1b00000cf504fcfd7e8d087dd2b",
+      "event_id": "jde-fad210fa938b4377",
+      "funding_view": null,
+      "invalidation": "This hold is wrong if a later freeze shows a markable options structure with premium, implied vol, and strikes whose convex payoff rates and spot cannot express.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "f4300e555b2f16f2618acef0917dd5fccf0739bd69f2d804f2b6fd93e8436e41",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "8b0d70ed21061dc40855ce695958cbfe6408131b037905afee7da0134f16a2ac"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-19T04:47:49.555730-04:00",
+        "evidence_hash": "e93018d91b4aedf5912116c5a68494a04c79e6dd66a464b0d6be39d484eae505",
+        "overnight_run_id": "overnight-20261019",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "VIX is 16.46 against Brent 109.86, euro inflation at a three-year high, the S&P near 7659, and policy strips above cash, with no listed options surface, strikes, or implied vols in the freeze. That is underpriced event convexity with uncertain timing, so spot and cash are the wrong instruments while equity vol stays contained. With the book flat and no markable convex payoff, standing aside dominates inventing a vol surface.",
+      "run_id": "overnight-20261019",
+      "schema_version": 1,
+      "thesis": "VIX is 16.46 against Brent 109.86, euro inflation at a three-year high, the S&P near 7659, and policy strips above cash, with no listed options surface, strikes, or implied vols in the freeze. That is underpriced event convexity with uncertain timing, so spot and cash are the wrong instruments while equity vol stays contained. With the book flat and no markable convex payoff, standing aside dominates inventing a vol surface."
     }
   ],
   "schema_version": 1,

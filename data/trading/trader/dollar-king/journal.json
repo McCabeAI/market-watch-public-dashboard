@@ -998,6 +998,62 @@
       "run_id": "overnight-20261016",
       "schema_version": 1,
       "thesis": "The United States still pays a wide premium over Canada: SOFR at 3.89 versus CORRA at 2.27 and a Canadian two-year 157 basis points through Treasuries keep the dollar the funded, higher-yielding leg. That gap is cleanest in spot USDCAD. Brent at 109.86 can support the loonie and is the main offset, but oil strength alone does not close a 150-basis-point-plus rate advantage. Hold the existing long USDCAD while dollar policy carry versus Canada remains intact."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDCAD",
+          "notional_usd": null,
+          "position_id": "pos-5317bc96d4eb",
+          "rationale": "Keep the 55 million USDCAD long; the US-Canada rates gap still ranks the dollar and oil is a reason not to add, not to exit.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-19T04:47:49.555730-04:00",
+      "conviction": 66,
+      "decision_fingerprint": "45c23f2d73ba6b4d1fc26680c547700fed3a5281403aa12de515f6ee45429e15",
+      "event_id": "jde-c7aaf0426220487b",
+      "funding_view": null,
+      "invalidation": "The dollar-over-Canada case fails if the US-Canada policy or 2-year advantage compresses enough to erase the dollar's yield rank, or if an oil-led CAD bid drives USDCAD back through the 1.40 entry on a sustained basis.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-5317bc96d4eb"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "296b744aa1739a38a0ad569890579603bdec40b5b70d3939ddb7cc45fc396078",
+      "outcome_links": [],
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "676245d609e15be42040818d8e2a41add9232ced3ff5b36a4e92d1afa4d10586"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-19T04:47:49.555730-04:00",
+        "evidence_hash": "e93018d91b4aedf5912116c5a68494a04c79e6dd66a464b0d6be39d484eae505",
+        "overnight_run_id": "overnight-20261019",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Policy and 2-year gaps still rank the dollar over the Canadian dollar: SOFR 3.89 versus CORRA 2.27 and US 2-year 4.74 versus Canada 2-year 3.20, a 157bp gap. The live book already expresses that view in USDCAD at 1.4161 versus the 1.40 entry, so the job is to keep that dollar leg, not to reopen a second ticket. Brent at 109.86 is a real CAD support and is why size is not added after the move from 1.40, but oil does not outrank the rates gap.",
+      "run_id": "overnight-20261019",
+      "schema_version": 1,
+      "thesis": "Policy and 2-year gaps still rank the dollar over the Canadian dollar: SOFR 3.89 versus CORRA 2.27 and US 2-year 4.74 versus Canada 2-year 3.20, a 157bp gap. The live book already expresses that view in USDCAD at 1.4161 versus the 1.40 entry, so the job is to keep that dollar leg, not to reopen a second ticket. Brent at 109.86 is a real CAD support and is why size is not added after the move from 1.40, but oil does not outrank the rates gap."
     }
   ],
   "schema_version": 1,

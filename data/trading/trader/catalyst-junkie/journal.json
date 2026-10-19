@@ -972,6 +972,60 @@
       "run_id": "overnight-20261016",
       "schema_version": 1,
       "thesis": "This freeze has speeches and an already-marked 2027 strip, not a meeting or a shock still waiting to reprice. SOFR March 2027 at 4.485 versus cash 3.89, CORRA March 2027 at 2.91 versus 2.27, and AONIA March 2027 at 4.765 versus 4.60 are printed paths, while the dated Vietnam, India, and ECB comments have already occurred. Hormuz and Brent at 109.86 are a rolling headline, not a dated mark. With the book flat, stay out."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "No dated catalyst is clean enough to open risk from a flat book; 2027 paths are already marked.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-19T04:47:49.555730-04:00",
+      "conviction": 64,
+      "decision_fingerprint": "bdb2637b894dd27b9ebced298ddea31768001d25b84e10daed290ef8a2e8a497",
+      "event_id": "jde-ca952fcd6c954f2f",
+      "funding_view": null,
+      "invalidation": "Reassess if a later freeze shows a dated policy decision or a discrete energy disruption that actually moves 2027 SOFR, CORRA, or AONIA away from the strips already on the board.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "c2bc2809e991d961c4ce29011276b565cd9f4f3baf28419608fc34db4c6f2066",
+      "outcome_links": [],
+      "owner_id": "catalyst-junkie",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "fa366b4b96498df30b3f5295da8fc21a68a4320b534dadbfb291ddc4b05ca88c"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-19T04:47:49.555730-04:00",
+        "evidence_hash": "e93018d91b4aedf5912116c5a68494a04c79e6dd66a464b0d6be39d484eae505",
+        "overnight_run_id": "overnight-20261019",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Stay flat: this freeze has speeches and already-marked 2027 strips, not a meeting or a shock still waiting to reprice. SOFR March 2027 at 4.485 versus cash 3.89 and CORRA March at 2.99 versus 2.27 are printed paths. Euro inflation at a three-year high and Brent at 109.86 are a commodity-shock regime, but the ECB can take time and the euro short-rate strip is unavailable. Opening risk here would be a level thesis, not a dated catalyst.",
+      "run_id": "overnight-20261019",
+      "schema_version": 1,
+      "thesis": "Stay flat: this freeze has speeches and already-marked 2027 strips, not a meeting or a shock still waiting to reprice. SOFR March 2027 at 4.485 versus cash 3.89 and CORRA March at 2.99 versus 2.27 are printed paths. Euro inflation at a three-year high and Brent at 109.86 are a commodity-shock regime, but the ECB can take time and the euro short-rate strip is unavailable. Opening risk here would be a level thesis, not a dated catalyst."
     }
   ],
   "schema_version": 1,

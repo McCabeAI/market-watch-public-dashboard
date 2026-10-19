@@ -1000,6 +1000,62 @@
       "run_id": "overnight-20261016",
       "schema_version": 1,
       "thesis": "The 2027 SOFR strip remains well above cash, so the priced hike path is still the dominant trend. March 2027 at 4.485 versus cash at 3.89, with September 2027 at 4.675 and the 10-year at 5.09, is a continuation regime rather than a policy reversal. Elevated Brent and a contained VIX keep inflation and risk conditions aligned with that path. The March mark dip is an adverse fluctuation in an existing pay, not a fade signal, so the short is held."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-662bff0986be",
+          "rationale": "Keep the 75 million March 2027 SOFR pay; the hike-path trend versus cash 3.89 is intact.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-19T04:47:49.555730-04:00",
+      "conviction": 64,
+      "decision_fingerprint": "171a1c08cd65a8919bce6b679fc10ffd5755c5a88b4669e18b0e700cab965246",
+      "event_id": "jde-48d26f356ebb49b0",
+      "funding_view": null,
+      "invalidation": "Continuation fails if March 2027 SOFR implied trades through cash SOFR 3.89, eliminating the strip-over-cash premium.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-662bff0986be"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "694f4132a3299b940411bd947d5be3888630eed4684b7e8db54686afdcb26ff8",
+      "outcome_links": [],
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "36809638aa432989b0ee5ab54fd05aa61cb36974ed37724af11707a922426dd6"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-19T04:47:49.555730-04:00",
+        "evidence_hash": "e93018d91b4aedf5912116c5a68494a04c79e6dd66a464b0d6be39d484eae505",
+        "overnight_run_id": "overnight-20261019",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The March 2027 SOFR strip is still above cash, and the US 10-year at 5.09 with Brent near 110 keep the higher-for-longer price trend in force. The book is already expressing that trend as a 75 million pay; the move from 4.58 to 4.485 is a local strip dip, not a regime break. Cash is still 3.89, the strip still prices a premium, and VIX at 16.46 is not a stress pivot. Hold the existing pay until the strip-above-cash condition actually fails.",
+      "run_id": "overnight-20261019",
+      "schema_version": 1,
+      "thesis": "The March 2027 SOFR strip is still above cash, and the US 10-year at 5.09 with Brent near 110 keep the higher-for-longer price trend in force. The book is already expressing that trend as a 75 million pay; the move from 4.58 to 4.485 is a local strip dip, not a regime break. Cash is still 3.89, the strip still prices a premium, and VIX at 16.46 is not a stress pivot. Hold the existing pay until the strip-above-cash condition actually fails."
     }
   ],
   "schema_version": 1,

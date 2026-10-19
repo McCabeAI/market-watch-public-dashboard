@@ -1016,6 +1016,62 @@
       "run_id": "overnight-20261016",
       "schema_version": 1,
       "thesis": "Brent at 109.86 and WTI at 101.41 still favor exporter Canada against importer Japan, so CADJPY remains the cleanest G10 expression of that terms-of-trade gap without a dollar overlay. The live long is working at 111.59 versus 110.90 and no Canada or Japan policy surprise has compressed that differential. AONIA 4.60 versus CORRA 2.27 is the same known cash wedge, not a fresh Australia-versus-Canada shock, so it does not justify reopening a closed AUDCAD fade."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CADJPY",
+          "notional_usd": null,
+          "position_id": "pos-44de67c4b24f",
+          "rationale": "Keep the 15 million CADJPY long; oil still supports Canada versus Japan and AUDCAD is not a new gap.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-19T04:47:49.555730-04:00",
+      "conviction": 68,
+      "decision_fingerprint": "490f492addda750fcd43d13f120221f1cd46086b0957781c46891da0ef6fb8d9",
+      "event_id": "jde-67506d2d751244f7",
+      "funding_view": null,
+      "invalidation": "The Canada-versus-Japan view breaks if crude falls hard enough to erase Canada's energy surplus advantage, or if a Bank of Japan tightening or Bank of Canada easing surprise compresses the policy and growth gap while oil stays bid.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-44de67c4b24f"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "5801f94b239d10498ccb9352062989fd73105a6af2b04766239798b19c92bed8",
+      "outcome_links": [],
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "8d7272587ddfbc7f236c12fc645625eebd23fb8017f37ff30a4ba494401a63d2"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-19T04:47:49.555730-04:00",
+        "evidence_hash": "e93018d91b4aedf5912116c5a68494a04c79e6dd66a464b0d6be39d484eae505",
+        "overnight_run_id": "overnight-20261019",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Brent at 109.86 and WTI at 101.41 still price Canada as the surplus energy exporter and Japan as the importer, so long CADJPY is the cleanest G10 expression of that terms-of-trade gap without a dollar overlay. The live long is working at 111.59 versus 110.90, and AONIA at 4.60 versus CORRA at 2.27 is the same known Australia-Canada cash wedge rather than a new shock, so faded AUDCAD stays shut.",
+      "run_id": "overnight-20261019",
+      "schema_version": 1,
+      "thesis": "Brent at 109.86 and WTI at 101.41 still price Canada as the surplus energy exporter and Japan as the importer, so long CADJPY is the cleanest G10 expression of that terms-of-trade gap without a dollar overlay. The live long is working at 111.59 versus 110.90, and AONIA at 4.60 versus CORRA at 2.27 is the same known Australia-Canada cash wedge rather than a new shock, so faded AUDCAD stays shut."
     }
   ],
   "schema_version": 1,

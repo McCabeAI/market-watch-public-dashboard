@@ -980,6 +980,69 @@
       "run_id": "overnight-20261016",
       "schema_version": 1,
       "thesis": "The book stays flat. March 2027 implieds already sit about 64 basis points (CORRA), 60 basis points (SOFR), and 16 basis points (AONIA) away from cash, so those gaps are the market path, not unpriced edge after official SOFR on shocked-risk capital. The US 10-year at 5.09 and USDCAD at 1.4161 are markable but do not offer a preservation-scale expected profit after charging official SOFR. Stay in cash."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Remain flat; independently marked CORRA, SOFR, AONIA, US 10-year and USDCAD do not clear official SOFR on shocked-risk capital.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-19T05:51:29.861114-04:00",
+      "conviction": 38,
+      "decision_fingerprint": "5e6a272443d19837c98c773e1d2daa9ce149e2478d2d8eb6f5b210fe8001311d",
+      "event_id": "jde-19be8917d77a4324",
+      "funding_view": null,
+      "invalidation": "Cash would be the wrong stance if March 2027 Australian implied rates rose by a full 25 basis-point hike while the capital required for a reversal stayed modest, or if US or Canadian front-end implied hikes were clearly unwound while overnight prints stayed firm. A sustained further jump in crude that passed through into Australian or US market rates, rather than into a growth scare, would also reopen a small pay.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "0a7856f67598d259648a18cb655940d4d6de4b4b5dc273cbe01212ca55f38e53",
+      "outcome_links": [],
+      "owner_id": "grinder",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [
+            "rank_distortion_risk"
+          ],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": {
+            "allocator_vs_noise": "short_horizon_noise",
+            "chase_temptation": "no",
+            "heater_risk": "no",
+            "judgment_effect": "sharpening",
+            "junior_vs_self": "style",
+            "protecting_gains": "not_applicable"
+          },
+          "state_sha256": "cbb53e247c3479d2ba1f614e23117a6a956933184973316d18c621d47843f6ac"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-19T04:47:49.555730-04:00",
+        "evidence_hash": "8ad03b0a690695f47c24913fe2f0e16a6830803f56b05ad9357c4b7804128da9",
+        "overnight_run_id": "overnight-20261019",
+        "review_id": "review-001",
+        "review_packet_id": "prp-grinder-overnight-20261019-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Remain in cash. United States, Canada, and Australia already price a clear rise in front-end implied rates versus today's overnight prints, while crude near 101 to 110 cuts both ways for inflation and growth. Paying March 2027 Australian overnight is the cleanest directional sketch because the strip is still only a little above cash, but that gap is a thin 16 basis points and does not survive a conservative adverse path after charging official dollar funding on the capital that path would consume. Canadian and US March 2027 contracts already embed about 72 and 60 basis points of tightening, so paying them chases a move that is in the price and receiving them fights the oil impulse. First risk from a zero book needs a wider, more one-sided expected path than anything on this tape.",
+      "run_id": "overnight-20261019",
+      "schema_version": 1,
+      "thesis": "Remain in cash. United States, Canada, and Australia already price a clear rise in front-end implied rates versus today's overnight prints, while crude near 101 to 110 cuts both ways for inflation and growth. Paying March 2027 Australian overnight is the cleanest directional sketch because the strip is still only a little above cash, but that gap is a thin 16 basis points and does not survive a conservative adverse path after charging official dollar funding on the capital that path would consume. Canadian and US March 2027 contracts already embed about 72 and 60 basis points of tightening, so paying them chases a move that is in the price and receiving them fights the oil impulse. First risk from a zero book needs a wider, more one-sided expected path than anything on this tape."
     }
   ],
   "schema_version": 1,

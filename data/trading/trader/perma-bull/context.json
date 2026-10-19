@@ -70,14 +70,14 @@
     "nav_usd": 99888492.76,
     "net_pnl_usd": -111507.24,
     "pressure_flags": [],
-    "prior_competition_rank": 13,
-    "rank_change": 0,
+    "prior_competition_rank": 12,
+    "rank_change": 1,
     "raw_pnl_rank": 13,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 500000.0,
     "risk_capital_utilization": 0.05,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -39891.94,
     "status": "ok"
   },
   "learning": {
@@ -88,7 +88,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "9b91c043a019074695cfdfff92f62d9c23cef2775905b00bf192f61191072c46",
+  "memory_context_sha256": "a1c86dc573f84099b6bc969c80908a38763bdbb16d95ea1ec615bed26733bfb4",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -101,6 +101,18 @@
       "risk_capital_usd": 500000.0,
       "side": "short",
       "trade_id": "trd-trader-perma-bull-pos-dd6fdaf39119"
+    },
+    {
+      "asset_class": "rates",
+      "conviction": 70,
+      "current_notional_usd": 25000000.0,
+      "entry_mark": 4.76,
+      "instrument": "AONIA_2027-03",
+      "opened_at": "2026-10-19T04:47:49.555730-04:00",
+      "position_id": "pos-78563c24fe05",
+      "risk_capital_usd": 250000.0,
+      "side": "short",
+      "trade_id": "trd-trader-perma-bull-pos-78563c24fe05"
     }
   ],
   "owner_id": "perma-bull",
@@ -128,11 +140,11 @@
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.22
+        "value": 0.2
       },
       "frustration": {
         "band": "calm",
-        "trend": "down",
+        "trend": "flat",
         "value": 0.12
       },
       "revenge_pressure": {
@@ -162,7 +174,7 @@
     "recent_events": [],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "8ba0c7915ec3b7850aa76beba4ee8288d49a41d2db0f83fd44b036eade9d4f3b",
+    "state_sha256": "36af99d4c18197894b57499a24b3ea2ebcffe494cb21bbf63db3fe184398c2ca",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 1,

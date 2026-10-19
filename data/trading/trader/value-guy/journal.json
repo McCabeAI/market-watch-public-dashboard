@@ -978,6 +978,62 @@
       "run_id": "overnight-20261016",
       "schema_version": 1,
       "thesis": "The existing New Zealand versus US 10-year short stays on as a quarantined line: official New Zealand government yields are unavailable, so the spread cannot be marked and no New Zealand risk can be added. Canada 10-year yields at 3.83 against a 5.09 US 10-year leave a wide CA-US gap worth watching, but this book cannot take fresh risk while the New Zealand line is unmarkable. Hold the existing short only."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates_rv",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "NZ-US_10Y",
+          "notional_usd": null,
+          "position_id": "pos-f895a4694dd7",
+          "rationale": "Keep the 80 million NZ-US 10-year short as a quarantined, unmarkable line; do not add New Zealand risk.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-19T04:47:49.555730-04:00",
+      "conviction": 42,
+      "decision_fingerprint": "11bf011bfc1a5cdb4e43c167759fe71dca406836eb74610f0c173a7e95c6113f",
+      "event_id": "jde-889fc78f06cd4b79",
+      "funding_view": null,
+      "invalidation": "Cut the New Zealand-US short only after an official New Zealand 10-year print shows the original spread thesis has already converged. Do not add New Zealand risk while official yields are unavailable.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-f895a4694dd7"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "aa3f85d037a9cb51de3dd4c98e2baa9364a53dd9a50c92271d85a87015ec25b0",
+      "outcome_links": [],
+      "owner_id": "value-guy",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "f600d946b86787ab7d01692daad7458b52adc004500fe11d353d0f6c1cd50b5c"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-19T04:47:49.555730-04:00",
+        "evidence_hash": "e93018d91b4aedf5912116c5a68494a04c79e6dd66a464b0d6be39d484eae505",
+        "overnight_run_id": "overnight-20261019",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book already holds a short New Zealand versus United States 10-year from -23, but official New Zealand government yields are still unavailable, so this seat cannot mark that spread and cannot take any new risk. Canada-US at -127bp and Australia-US at +12bp are usable as peer context only; they do not replace a New Zealand yield. Hold the existing 80 million short until official New Zealand yields return; do not add, hedge, or rotate.",
+      "run_id": "overnight-20261019",
+      "schema_version": 1,
+      "thesis": "The book already holds a short New Zealand versus United States 10-year from -23, but official New Zealand government yields are still unavailable, so this seat cannot mark that spread and cannot take any new risk. Canada-US at -127bp and Australia-US at +12bp are usable as peer context only; they do not replace a New Zealand yield. Hold the existing 80 million short until official New Zealand yields return; do not add, hedge, or rotate."
     }
   ],
   "schema_version": 1,

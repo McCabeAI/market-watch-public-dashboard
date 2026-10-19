@@ -1004,6 +1004,62 @@
       "run_id": "overnight-20261016",
       "schema_version": 1,
       "thesis": "AONIA cash is still 4.60 while March 2027 sits at 4.765, so the strip still pays a modest path premium versus cash. The book already receives 4.83 in that contract, and the remaining gap is carry the position is paid to wait for rather than a reason to cut. Brent at 109.86 is an oil headline, not an RBA cash change, and the Australian 10-year at 5.314 does not reprice near-dated policy. Hold the receive unless cash itself moves."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-524ab67108ee",
+          "rationale": "Keep the 25 million March 2027 AONIA receive; cash is still 4.60 and the path premium is still modest carry.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-19T04:47:49.555730-04:00",
+      "conviction": 80,
+      "decision_fingerprint": "e1e32804da2c98ac8774d7c42ab4ec52623bfdc7591574c221b3a422942a4a7b",
+      "event_id": "jde-b02547160c094171",
+      "funding_view": null,
+      "invalidation": "Exit only if cash AONIA prints away from 4.60 toward the implied path, or if the Bank of Australia explicitly restates a hawkish reaction function. An oil-only backup in March implied while cash remains 4.60 is not invalidation.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-524ab67108ee"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "1c0747e0320919c838ec01dc2f3068383416e5332868581b4160deb315794326",
+      "outcome_links": [],
+      "owner_id": "carry-is-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "a5d57f2e3825f9123cd51a6c950accfcf193e386e95b4a5ac9714609eb287066"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-19T04:47:49.555730-04:00",
+        "evidence_hash": "e93018d91b4aedf5912116c5a68494a04c79e6dd66a464b0d6be39d484eae505",
+        "overnight_run_id": "overnight-20261019",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Cash AONIA is still 4.60 while March 2027 AONIA is 4.765, so the implied path still prices a hike gap that cash has not delivered. The book already receives 4.83 on 25 million of that contract, which keeps collecting the cash-implied differential and already shows a 6.5bp mark-to-market buffer. Brent at 109.86 is an oil-price impulse, not a cash-rate print, so it does not pay to flatten a funded receive. Hold the existing AONIA receive until cash itself moves.",
+      "run_id": "overnight-20261019",
+      "schema_version": 1,
+      "thesis": "Cash AONIA is still 4.60 while March 2027 AONIA is 4.765, so the implied path still prices a hike gap that cash has not delivered. The book already receives 4.83 on 25 million of that contract, which keeps collecting the cash-implied differential and already shows a 6.5bp mark-to-market buffer. Brent at 109.86 is an oil-price impulse, not a cash-rate print, so it does not pay to flatten a funded receive. Hold the existing AONIA receive until cash itself moves."
     }
   ],
   "schema_version": 1,

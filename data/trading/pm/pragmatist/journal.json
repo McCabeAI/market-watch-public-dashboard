@@ -1045,6 +1045,77 @@
       "run_id": "overnight-20261016",
       "schema_version": 1,
       "thesis": "Keep the working receive in March 2027 CORRA as the core expression: cash at 2.27 versus the 2.91 contract still leaves residual Canadian easing in the strip. Keep the New Zealand versus US 10-year short as a quarantined overlay that cannot be marked while official New Zealand yields are unavailable. With every trader seat holding and no new handoff, adding another G10 rates or FX line would mostly duplicate global duration rather than improve the book."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pm-pragmatist-4e0cbc4e0b05",
+          "rationale": "Keep the 450 million March 2027 CORRA receive; cash 2.27 versus 2.99 still leaves residual Canadian easing in the strip.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates_rv",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "NZ-US_10Y",
+          "notional_usd": null,
+          "position_id": "pm-pragmatist-3afafe53c6d7",
+          "rationale": "Keep the 80 million NZ-US 10-year short as a quarantined overlay; do not add while official New Zealand yields are unavailable.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-19T05:51:29.606400-04:00",
+      "conviction": 66,
+      "decision_fingerprint": "8ea4b38dfb3215c550896849189f2c894bc612cb50098f97baee96c5b6c96baa",
+      "event_id": "jde-ab0f3d1800ea40a4",
+      "funding_view": null,
+      "invalidation": "The Canadian receive is wrong if March 2027 implied policy climbs back through 3.13 toward the rest of the 2027 strip, or if cash itself backs up from 2.27 on an oil-led inflation impulse. A New Zealand residual that cannot be marked is a separate book-level stop; it is not solved by paying Australia.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-pragmatist-3afafe53c6d7",
+        "pm-pragmatist-4e0cbc4e0b05"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "e0a71b43bbbbabd5fd40a18e44061d850a1c7b041c3812ce39f820961aadb27a",
+      "outcome_links": [],
+      "owner_id": "pragmatist",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "f4fd911eb03ededbd6a9defd2d75d93018e685d336c60384407404b2f63ebe76"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-19T04:47:49.555730-04:00",
+        "evidence_hash": "a1ed605e57b5ffbb40b16f6b015b2dc56200c7ddc7346e8bc1573c926060bba7",
+        "overnight_run_id": "overnight-20261019",
+        "review_id": "review-001",
+        "review_packet_id": "prp-pragmatist-overnight-20261019-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book already owns the cleanest 2027 policy receive on the eligible set. Canadian cash is 2.27 while March 2027 still prints 2.99, so a large tightening cycle remains in the strip even after the contract has come in from 3.13. Keep receiving that point. The New Zealand versus United States 10-year residual stays parked because the New Zealand leg cannot be priced, and this seat will not add New Zealand risk. Paying March 2027 Australian overnight would not repair a Canada-led backup and, on a shared 2027 rates selloff, would simply fight the existing receive. Crude near 101 is a live inflation watch, not a reason to overlay a small Australian pay or to chase more of the same Canadian beta.",
+      "run_id": "overnight-20261019",
+      "schema_version": 1,
+      "thesis": "The book already owns the cleanest 2027 policy receive on the eligible set. Canadian cash is 2.27 while March 2027 still prints 2.99, so a large tightening cycle remains in the strip even after the contract has come in from 3.13. Keep receiving that point. The New Zealand versus United States 10-year residual stays parked because the New Zealand leg cannot be priced, and this seat will not add New Zealand risk. Paying March 2027 Australian overnight would not repair a Canada-led backup and, on a shared 2027 rates selloff, would simply fight the existing receive. Crude near 101 is a live inflation watch, not a reason to overlay a small Australian pay or to chase more of the same Canadian beta."
     }
   ],
   "schema_version": 1,

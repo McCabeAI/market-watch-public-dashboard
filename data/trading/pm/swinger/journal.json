@@ -1018,6 +1018,62 @@
       "run_id": "overnight-20261016",
       "schema_version": 1,
       "thesis": "Canada has already delivered easing with cash at 2.27, yet March 2027 still sits at 2.91 and therefore still prices a large hike-back from the delivered cash rate. That implied re-tightening remains too much if the cuts stick and growth does not force a new hiking cycle. The book is already the concentrated receive; oil near 110 and a soft Canadian dollar are two-way risks, not a reason to cut or to add. Stay long March 2027 and let the remaining gap to cash do the work."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pm-swinger-2070479ca321",
+          "rationale": "Keep the concentrated March 2027 CORRA receive; cash 2.27 versus 2.99 still prices too much hike-back.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-19T05:51:29.351412-04:00",
+      "conviction": 83,
+      "decision_fingerprint": "c8e4a72436408eac10d74c64f7f64cf5fd619f1bfc9e1c62b79e68a1a72c8cd7",
+      "event_id": "jde-7b876c5e0f5f482d",
+      "funding_view": null,
+      "invalidation": "The receive is done if March 2027 Canadian implied revisits 3.13 and then 3.25 while cash stays near 2.27, or if cash itself is lifted toward the strip so the 72 basis point gap is delivered rather than faded. A confirmed Canadian inflation or growth break that forces the Bank to validate the full priced path also kills it.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-swinger-2070479ca321"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "f6ed0fad79ad118a630ea2000a93ab209e0d3be88c866919d133521f0d81960a",
+      "outcome_links": [],
+      "owner_id": "swinger",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "588d2d7e5b8a78fb3becd34a1770a3a42680ea8df0ad15aaa736790c8149d0a8"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-19T04:47:49.555730-04:00",
+        "evidence_hash": "c5184171b6f848dc039a3e18d445200facc95f0be9eb2ed570006f54ed3d78cc",
+        "overnight_run_id": "overnight-20261019",
+        "review_id": "review-001",
+        "review_packet_id": "prp-swinger-overnight-20261019-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "March 2027 Canadian implied still sits 72 basis points above 2.27 cash, so the 1.2 billion receive stays the only line. The contract has already come in from 3.13 to 2.99 and that path matches a receive, not a break. Energy-supported risk, a three-year high in euro inflation, and thin oil buffers can keep global strips bid, but they do not close the Canadian overshoot or justify paying Australia. I leave the 25 million Australian pay and the 12.5 million Treasury cut on the table as challenges.",
+      "run_id": "overnight-20261019",
+      "schema_version": 1,
+      "thesis": "March 2027 Canadian implied still sits 72 basis points above 2.27 cash, so the 1.2 billion receive stays the only line. The contract has already come in from 3.13 to 2.99 and that path matches a receive, not a break. Energy-supported risk, a three-year high in euro inflation, and thin oil buffers can keep global strips bid, but they do not close the Canadian overshoot or justify paying Australia. I leave the 25 million Australian pay and the 12.5 million Treasury cut on the table as challenges."
     }
   ],
   "schema_version": 1,
