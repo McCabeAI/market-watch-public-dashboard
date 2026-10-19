@@ -191,16 +191,28 @@ def render_ex_energy_candidate_report(payload: dict[str, Any]) -> str:
     lines: list[str] = []
     release = payload.get("release", "")
     as_of = payload.get("as_of", "")
-    lines.append(
-        f"PRE-RELEASE CANDIDATE — Canadian CPI ex-energy — release {release} (as-of {as_of})"
-    )
+    pre_release = payload.get("pre_release") is True
+    if pre_release:
+        lines.append(
+            f"PRE-RELEASE CANDIDATE — Canadian CPI ex-energy — release {release}"
+        )
+    else:
+        lines.append(f"Canadian CPI ex-energy — release {release}")
     lines.append(
         "This is NOT the canonical 2026-10-16 B2 nowcast in docs/canadian_cpi_release/sample_2026-09."
     )
     lines.append(f"Status: {payload.get('status', '')}")
-    lines.append(
-        f"Generated at: {payload.get('generated_at', '')} ({payload.get('as_of_timezone', '')})"
-    )
+    lines.append(f"Data cutoff as-of: {as_of}")
+    lines.append(f"Freeze before: {payload.get('freeze_before', '')}")
+    generated_at = payload.get("generated_at")
+    generated_at_utc = payload.get("generated_at_utc")
+    if generated_at:
+        lines.append(f"Generated at (Toronto): {generated_at}")
+        lines.append(f"Generated at UTC: {generated_at_utc or ''}")
+    else:
+        lines.append(
+            "Generated at: unstamped (build-only payload; this is not an archived run)."
+        )
     lines.append("")
 
     if payload.get("status") != "ok":

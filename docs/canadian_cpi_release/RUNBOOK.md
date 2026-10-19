@@ -156,12 +156,20 @@ Separate from the canonical B2 nowcast above. Builds release **2026-09** with fr
 PYTHONPATH=. python3 -m scripts.canadian_cpi_release ex-energy-candidate \
   --release 2026-09 \
   --as-of 2026-10-18 \
-  --out docs/canadian_cpi_release/candidates/2026-09-asof-2026-10-18 \
+  --out docs/canadian_cpi_release/candidates \
   --fixture scripts/canadian_cpi_release/fixtures/pre_2026-10-19/snapshot.json \
   --airfare-fixture scripts/canadian_cpi_release/fixtures/airfare_pre_2026-10-19/snapshot.json
 ```
 
-Writes `candidate.json`, `candidate.txt`, `backtest_ex_energy.json`, and `backtest_airfare.json`. Exit **0** when `status` is `ok`, **2** when blocked (e.g. an eligible 2026-09 observation at the as-of).
+`--out` is a **parent** directory. Each successful pre-freeze run publishes an immutable directory:
+
+`runs/<release>-asof-<as-of>/<compact-generated-at-toronto>-<sha12>/`
+
+containing `candidate.json`, `candidate.txt`, optional `backtest_ex_energy.json` / `backtest_airfare.json`, and `manifest.json` (`canadian_cpi_ex_energy_archive_manifest_v1` with input/output sha256). Identical math + clock is idempotent (no mtime rewrite). Conflicting bytes at the same run path raise **ArchiveConflict** (exit **2**, `NOT PUBLISHED` on stderr). Runs at or after the freeze window publish nothing (blocker `generated_after_freeze`).
+
+The checked-in forecast bundle `docs/canadian_cpi_release/candidates/2026-09-asof-2026-10-18/` keeps the original published numbers; its `generated_at` field (`2026-10-18T23:59:59-04:00`) is **synthetic / unknown** (hardcoded for determinism, not wall clock). See `PROVENANCE_CORRECTION.json` in that directory.
+
+Exit **0** only when `status` is `ok` **and** an archive was published; **2** when blocked, frozen out, or on archive conflict.
 
 ### Published estimate (fixture)
 

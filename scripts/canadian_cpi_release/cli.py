@@ -12,7 +12,7 @@ from typing import Any
 
 from scripts.canadian_cpi_release.contract import NowcastResult, Snapshot, add_months
 from scripts.canadian_cpi_release.engine import backtest_headline, forecast_release
-from scripts.canadian_cpi_release.ex_energy_candidate import write_ex_energy_candidate
+from scripts.canadian_cpi_release.ex_energy_candidate import ArchiveConflict, write_ex_energy_candidate
 from scripts.canadian_cpi_release.report import render_nowcast_report
 from scripts.canadian_cpi_release.sources.airfare_statcan import load_airfare_snapshot
 from scripts.canadian_cpi_release.sources.acquire import (
@@ -270,14 +270,29 @@ def cmd_ex_energy_candidate(args: argparse.Namespace) -> int:
     cpi = load_snapshot(Path(args.fixture))
     airfare = load_airfare_snapshot(Path(args.airfare_fixture))
     out = Path(args.out)
-    candidate = write_ex_energy_candidate(
-        out,
-        cpi,
-        airfare,
-        release=args.release,
-        as_of=args.as_of,
-    )
-    text_path = out / "candidate.txt"
+    try:
+        candidate = write_ex_energy_candidate(
+            out,
+            cpi,
+            airfare,
+            release=args.release,
+            as_of=args.as_of,
+            cpi_snapshot_path=Path(args.fixture),
+            airfare_snapshot_path=Path(args.airfare_fixture),
+        )
+    except ArchiveConflict as exc:
+        print(f"NOT PUBLISHED\nreason: {exc}\n", file=sys.stderr)
+        return 2
+
+    archive_path = candidate.get("archive_path")
+    if not archive_path:
+        blockers = candidate.get("blockers") or []
+        if "generated_after_freeze" in blockers:
+            print("NOT PUBLISHED\nreason: generated_after_freeze\n", file=sys.stderr)
+        return 2
+
+    print(archive_path)
+    text_path = Path(archive_path) / "candidate.txt"
     if text_path.is_file():
         print(text_path.read_text(encoding="utf-8"), end="")
     return 0 if candidate.get("status") == "ok" else 2

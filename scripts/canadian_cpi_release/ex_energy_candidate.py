@@ -2,11 +2,20 @@
 
 from __future__ import annotations
 
+import copy
+import hashlib
 import json
+import os
+import shutil
+import uuid
+from collections.abc import Callable
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+from zoneinfo import ZoneInfo
 
-from scripts.canadian_cpi_release.contract import Snapshot, add_months, published_on_or_before
+from scripts.canadian_cpi_release.contract import Snapshot, add_months, parse_as_of, published_on_or_before
+from scripts.canadian_cpi_release.sources.acquire import snapshot_canonical_bytes
 from scripts.canadian_cpi_release.engine import ObsIndex, forecast_release
 from scripts.canadian_cpi_release.ex_energy_component import (
     component_ex_energy_nowcast,
@@ -47,8 +56,17 @@ from scripts.canadian_cpi_release.model import compute_moms, forecast_model_a
 from scripts.canadian_cpi_release.ex_energy_interfaces import FOOD_ID
 from scripts.canadian_cpi_release.uncertainty import uncertainty_from_errors
 
-GENERATED_AT = "2026-10-18T23:59:59-04:00"
 AIRFARE_BACKTEST_SCHEMA = "canadian_cpi_airfare_backtest_v1"
+ARCHIVE_MANIFEST_SCHEMA = "canadian_cpi_ex_energy_archive_manifest_v1"
+TORONTO = ZoneInfo("America/Toronto")
+
+
+class ArchiveConflict(Exception):
+    """Published archive directory exists with different bytes."""
+
+
+def toronto_now() -> datetime:
+    return datetime.now(TORONTO)
 
 UNCERTAINTY_LABEL = (
     "Empirical pseudo-OOS ex-energy residual band, latest vintage; "
@@ -259,7 +277,6 @@ def _trim_backtest_for_archive(bt: dict[str, Any], schema: str) -> dict[str, Any
         "end": bt.get("end"),
         "metrics": bt.get("metrics"),
         "limitations": bt.get("limitations"),
-        "generated_at": GENERATED_AT,
         "timezone": CANDIDATE_AS_OF_TIMEZONE,
     }
     if "paired_vs_direct" in bt:
@@ -290,7 +307,6 @@ def build_ex_energy_candidate(
         "as_of": as_of,
         "as_of_timezone": CANDIDATE_AS_OF_TIMEZONE,
         "freeze_before": FREEZE_BEFORE,
-        "generated_at": GENERATED_AT,
         "status": "blocked" if blockers else "ok",
         "blockers": blockers,
     }
@@ -479,40 +495,210 @@ def deterministic_json(payload: dict[str, Any]) -> str:
     return json.dumps(payload, indent=2, sort_keys=True) + "\n"
 
 
+def stamp_archive_times(payload: dict[str, Any], generated_at: datetime) -> dict[str, Any]:
+    if generated_at.tzinfo is None:
+        raise ValueError("naive_datetime_rejected")
+    gen_toronto = generated_at.astimezone(TORONTO)
+    freeze = datetime.fromisoformat(FREEZE_BEFORE).astimezone(TORONTO)
+    stamp = {
+        "generated_at": gen_toronto.isoformat(),
+        "generated_at_utc": gen_toronto.astimezone(timezone.utc).isoformat(),
+        "pre_release": gen_toronto < freeze,
+    }
+    out = copy.deepcopy(payload)
+    out.update(stamp)
+    backtest = out.get("backtest")
+    if isinstance(backtest, dict):
+        for key in ("ex_energy", "airfare"):
+            section = backtest.get(key)
+            if isinstance(section, dict):
+                backtest[key] = {**section, **stamp}
+    return out
+
+
+def _compact_generated_at(generated_at: datetime) -> str:
+    toronto = generated_at.astimezone(TORONTO)
+    return toronto.strftime("%Y%m%dT%H%M%S") + toronto.strftime("%z")
+
+
+def _deterministic_sha12(payload: dict[str, Any]) -> str:
+    digest = hashlib.sha256(deterministic_json(payload).encode("utf-8")).hexdigest()
+    return digest[:12]
+
+
+def _safe_as_of_label(as_of: str) -> str:
+    return as_of.replace(":", "").replace("/", "-")
+
+
+def _fsync_file(path: Path) -> None:
+    with path.open("rb") as fh:
+        os.fsync(fh.fileno())
+
+
+def _sha256_bytes(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
+
+
+def _manifest_input_entry(
+    snapshot: Snapshot,
+    path: Path | None,
+) -> dict[str, Any]:
+    entry: dict[str, Any] = {
+        "snapshot_canonical_sha256": _sha256_bytes(snapshot_canonical_bytes(snapshot)),
+    }
+    if path is not None:
+        entry["path"] = path.as_posix()
+        entry["file_sha256"] = _sha256_bytes(path.read_bytes())
+    source_sha: list[str] = []
+    for rec in snapshot.source_records or []:
+        digest = rec.get("sha256")
+        if digest:
+            source_sha.append(str(digest))
+    if source_sha:
+        entry["source_record_sha256"] = source_sha
+    return entry
+
+
 def write_ex_energy_candidate(
-    out_dir: Path,
+    parent_out: Path,
     cpi_snapshot: Snapshot,
     airfare_snapshot: Snapshot,
     *,
     release: str = CANDIDATE_RELEASE,
     as_of: str = CANDIDATE_AS_OF,
+    clock: Callable[[], datetime] | None = None,
+    run_backtests: bool = True,
+    ex_backtest: dict[str, Any] | None = None,
+    air_backtest: dict[str, Any] | None = None,
+    cpi_snapshot_path: Path | None = None,
+    airfare_snapshot_path: Path | None = None,
+    on_before_publish: Callable[[Path], None] | None = None,
 ) -> dict[str, Any]:
-    out_dir.mkdir(parents=True, exist_ok=True)
-    candidate = build_ex_energy_candidate(cpi_snapshot, airfare_snapshot, release=release, as_of=as_of)
-    candidate_path = out_dir / "candidate.json"
-    candidate_path.write_text(deterministic_json(candidate), encoding="utf-8")
-
     from scripts.canadian_cpi_release.report import render_ex_energy_candidate_report
 
-    text = render_ex_energy_candidate_report(candidate)
-    text_out = text if text.endswith("\n") else text + "\n"
-    (out_dir / "candidate.txt").write_text(text_out, encoding="utf-8")
+    now_fn = clock if clock is not None else toronto_now
+    built = build_ex_energy_candidate(
+        cpi_snapshot,
+        airfare_snapshot,
+        release=release,
+        as_of=as_of,
+        run_backtests=run_backtests,
+        ex_backtest=ex_backtest,
+        air_backtest=air_backtest,
+    )
+    generated_at = now_fn()
+    stamped = stamp_archive_times(built, generated_at)
 
-    if candidate.get("status") == "ok" and "backtest" in candidate:
-        ex_archive = candidate["backtest"]["ex_energy"]
-        air_archive = candidate["backtest"]["airfare"]
-        (out_dir / "backtest_ex_energy.json").write_text(
-            deterministic_json(ex_archive), encoding="utf-8"
-        )
-        (out_dir / "backtest_airfare.json").write_text(
-            deterministic_json(air_archive), encoding="utf-8"
-        )
-    return candidate
+    if not stamped.get("pre_release"):
+        blockers = list(stamped.get("blockers") or [])
+        if "generated_after_freeze" not in blockers:
+            blockers.append("generated_after_freeze")
+        stamped["status"] = "blocked"
+        stamped["blockers"] = blockers
+        return stamped
+
+    sha12 = _deterministic_sha12(built)
+    compact_ts = _compact_generated_at(generated_at)
+    safe_as_of = _safe_as_of_label(as_of)
+    final_dir = (
+        parent_out
+        / "runs"
+        / f"{release}-asof-{safe_as_of}"
+        / f"{compact_ts}-{sha12}"
+    )
+    staging_dir: Path | None = parent_out / f".staging-{uuid.uuid4().hex}"
+
+    try:
+        staging_dir.mkdir(parents=True, exist_ok=False)
+        files_to_write: dict[str, bytes] = {}
+
+        candidate_bytes = deterministic_json(stamped).encode("utf-8")
+        files_to_write["candidate.json"] = candidate_bytes
+
+        text = render_ex_energy_candidate_report(stamped)
+        text_out = text if text.endswith("\n") else text + "\n"
+        files_to_write["candidate.txt"] = text_out.encode("utf-8")
+
+        if stamped.get("status") == "ok" and "backtest" in stamped:
+            ex_archive = stamped["backtest"]["ex_energy"]
+            air_archive = stamped["backtest"]["airfare"]
+            files_to_write["backtest_ex_energy.json"] = deterministic_json(ex_archive).encode("utf-8")
+            files_to_write["backtest_airfare.json"] = deterministic_json(air_archive).encode("utf-8")
+
+        outputs: dict[str, dict[str, Any]] = {}
+        for name, content in files_to_write.items():
+            path = staging_dir / name
+            path.write_bytes(content)
+            _fsync_file(path)
+            outputs[name] = {
+                "sha256": _sha256_bytes(content),
+                "bytes": len(content),
+            }
+
+        manifest: dict[str, Any] = {
+            "schema_version": ARCHIVE_MANIFEST_SCHEMA,
+            "generated_at": stamped["generated_at"],
+            "generated_at_utc": stamped["generated_at_utc"],
+            "as_of": as_of,
+            "as_of_resolved": parse_as_of(as_of).isoformat(),
+            "freeze_before": FREEZE_BEFORE,
+            "pre_release": True,
+            "inputs": {
+                "cpi_snapshot": _manifest_input_entry(cpi_snapshot, cpi_snapshot_path),
+                "airfare_snapshot": _manifest_input_entry(airfare_snapshot, airfare_snapshot_path),
+            },
+            "outputs": outputs,
+        }
+        manifest_bytes = deterministic_json(manifest).encode("utf-8")
+        manifest_path = staging_dir / "manifest.json"
+        manifest_path.write_bytes(manifest_bytes)
+        _fsync_file(manifest_path)
+
+        if on_before_publish is not None:
+            on_before_publish(staging_dir)
+
+        if final_dir.exists():
+            mismatch = False
+            for name, content in files_to_write.items():
+                existing = final_dir / name
+                if not existing.is_file() or existing.read_bytes() != content:
+                    mismatch = True
+                    break
+            manifest_existing = final_dir / "manifest.json"
+            if not manifest_existing.is_file() or manifest_existing.read_bytes() != manifest_bytes:
+                mismatch = True
+            if mismatch:
+                shutil.rmtree(staging_dir)
+                staging_dir = None
+                raise ArchiveConflict(
+                    f"archive exists at {final_dir} with different bytes"
+                )
+            shutil.rmtree(staging_dir)
+            staging_dir = None
+        else:
+            final_dir.parent.mkdir(parents=True, exist_ok=True)
+            os.rename(staging_dir, final_dir)
+            staging_dir = None
+
+        result = dict(stamped)
+        result["archive_path"] = str(final_dir)
+        result["manifest_path"] = str(final_dir / "manifest.json")
+        result["manifest_sha256"] = _sha256_bytes(manifest_bytes)
+        return result
+    except ArchiveConflict:
+        raise
+    except Exception:
+        if staging_dir is not None and staging_dir.exists():
+            shutil.rmtree(staging_dir, ignore_errors=True)
+        raise
 
 
 __all__ = [
+    "ArchiveConflict",
     "build_ex_energy_candidate",
     "decide_promotion",
-    "write_ex_energy_candidate",
     "deterministic_json",
+    "stamp_archive_times",
+    "toronto_now",
+    "write_ex_energy_candidate",
 ]
