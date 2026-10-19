@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-10-17T08:58:03.216823-04:00",
+  "as_of": "2026-10-19T04:47:49.555730-04:00",
   "central_bank_research": [
     {
       "headline": "Fed Vice Chair Jefferson: discount window modernization supports Treasury and repo market functioning",
@@ -19,70 +19,740 @@
   ],
   "news": [
     {
+      "headline": "ECB in No Rush to Act Amid Opposing Economic Forces, Kazaks Says",
+      "market_salience": {
+        "components": {
+          "asset_named": 3,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 5,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 15
+      },
+      "published_at": "2026-10-14T20:59:00-04:00",
+      "summary": "The European Central Bank can afford to take some time in analyzing inflation dynamics that are shaped by opposing forces in the global economy, Governing Council member Martins Kazaks said.",
+      "transmission": {
+        "affected_assets": [
+          "USD",
+          "UST",
+          "EUR"
+        ],
+        "channel": "g10_policy",
+        "channels": [
+          "g10_policy",
+          "usd_rates"
+        ],
+        "components": {
+          "asset_named": 3,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 5,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "disposition": "show",
+        "reason_code": "g10_policy_path",
+        "score": 15
+      }
+    },
+    {
       "headline": "Global Oil Supply Buffer Running 'Scarily Thin,' Aramco CEO Says",
-      "summary": "The oil stockpiles that cushion the world from supply shocks have become scarily thin unless the Strait of Hormuz reopens, according to Aramco's CEO."
-    },
-    {
-      "headline": "Euro-Zone Inflation Tops Estimates to Hit Three-Year High",
-      "summary": "Euro-area inflation quickened more than expected to the highest in three years."
-    },
-    {
-      "headline": "Iran's Oil Minister Resigns as Exports Dry Up Under US Pressure",
-      "summary": "Iran's oil minister resigned citing personal reasons as the Islamic Republic tries to sustain its oil industry under a tightening US blockade."
+      "market_salience": {
+        "components": {
+          "asset_named": 3,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 4,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 5,
+          "channel_usd_rates": 0,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 3,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 15
+      },
+      "summary": "The oil stockpiles that cushion the world from supply shocks have become scarily thin unless the Strait of Hormuz reopens, according to Aramco's CEO.",
+      "transmission": {
+        "affected_assets": [
+          "Brent",
+          "USD",
+          "WTI",
+          "CAD",
+          "UST"
+        ],
+        "channel": "oil_energy_tot",
+        "channels": [
+          "oil_energy_tot",
+          "geopolitics_haven"
+        ],
+        "components": {
+          "asset_named": 3,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 4,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 5,
+          "channel_usd_rates": 0,
+          "shock": 3,
+          "subject_penalty": 0
+        },
+        "disposition": "show",
+        "reason_code": "oil_supply_shock",
+        "score": 15
+      }
     },
     {
       "headline": "LNG Trade Through Hormuz Extends Rebound Despite Shipping Risks",
-      "summary": "Shipments of LNG through the Strait of Hormuz extended a rebound that began in September."
+      "market_salience": {
+        "components": {
+          "asset_named": 3,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 4,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 5,
+          "channel_usd_rates": 0,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 3,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 15
+      },
+      "summary": "Shipments of LNG through the Strait of Hormuz extended a rebound that began in September.",
+      "transmission": {
+        "affected_assets": [
+          "Brent",
+          "USD",
+          "WTI",
+          "CAD",
+          "UST"
+        ],
+        "channel": "oil_energy_tot",
+        "channels": [
+          "oil_energy_tot",
+          "geopolitics_haven"
+        ],
+        "components": {
+          "asset_named": 3,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 4,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 5,
+          "channel_usd_rates": 0,
+          "shock": 3,
+          "subject_penalty": 0
+        },
+        "disposition": "show",
+        "reason_code": "oil_supply_shock",
+        "score": 15
+      }
     },
     {
-      "headline": "UK Firms Predict Faster Price Increases After Energy Costs Surge",
-      "summary": "The resurgence in oil and gas prices drove up UK businesses' inflation expectations as firms planned to pass on cost increases."
+      "headline": "Treasury yields move lower as investors assess U.S. inflation backdrop",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 9
+      },
+      "published_at": "2026-10-19T04:45:49-04:00",
+      "summary": "Headline-only public metadata; article body was not retrieved.",
+      "transmission": {
+        "affected_assets": [
+          "USD",
+          "UST"
+        ],
+        "channel": "usd_rates",
+        "channels": [
+          "usd_rates"
+        ],
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "disposition": "assess",
+        "reason_code": "usd_rates_repricing",
+        "score": 9
+      }
     },
     {
-      "headline": "China Oil Comeback Loses Steam as Iran War Drags On",
-      "summary": "A nascent recovery in Chinese oil demand has begun to falter as the Middle East conflict and limited Iranian supply keep crude prices high."
+      "headline": "BoE looks into claim Barclays private credit exposure misrepresented, FT reports",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 5,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 9
+      },
+      "published_at": "2026-10-19T03:26:34.505000-04:00",
+      "summary": "Headline-only public metadata; article body was not retrieved.",
+      "transmission": {
+        "affected_assets": [
+          "GBP"
+        ],
+        "channel": "g10_policy",
+        "channels": [
+          "g10_policy"
+        ],
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 5,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "disposition": "assess",
+        "reason_code": "g10_policy_path",
+        "score": 9
+      }
     },
     {
-      "headline": "Ray Dalio Warns China, Japan May Pull Back From Treasuries",
-      "summary": "Ray Dalio warned that the US Treasury market is vulnerable to a pullback of demand from China and Japan."
-    },
-    {
-      "headline": "Man Group Says 5.5% Yields Risk Cracking AI Capex, US Consumer",
-      "summary": "Man Group's Kristina Hooper warned that surging long-end Treasury yields threaten AI capital expenditures and US consumer resilience."
-    },
-    {
-      "headline": "Pimco's Stracke Says AI Spending Drove Yields, Not Inflation",
-      "summary": "Surging capital demand from hyperscalers and the AI ecosystem\u2014not inflation expectations\u2014is the primary force pushing real rates and bond yields higher, Pimco's Stracke said."
-    },
-    {
-      "headline": "Vietnam Prime Minister Targets 2027 GDP Growth of at Least 10%",
-      "published_at": "2026-10-16T16:03:00-04:00",
-      "summary": "Vietnam\u2019s Prime Minister Le Minh Hung projected gross domestic product will expand at least 10% next year as he outlined the nation\u2019s economic targets in a speech to parliament."
-    },
-    {
-      "headline": "India Trade Deficit Widened in September on Higher Import Bill",
-      "published_at": "2026-10-14T22:34:00-04:00",
-      "summary": "India\u2019s trade gap expanded in September as festive demand and surging oil prices pushed up imports, adding to risks from the drawn-out conflict in the Middle East."
-    },
-    {
-      "headline": "ECB in No Rush to Act Amid Opposing Economic Forces, Kazaks Says",
-      "published_at": "2026-10-14T20:59:00-04:00",
-      "summary": "The European Central Bank can afford to take some time in analyzing inflation dynamics that are shaped by opposing forces in the global economy, Governing Council member Martins Kazaks said."
+      "headline": "Gold rises as investors weigh Fed rate outlook, lower oil prices",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 5,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 9
+      },
+      "published_at": "2026-10-18T23:11:33.443000-04:00",
+      "summary": "Headline-only public metadata; article body was not retrieved.",
+      "transmission": {
+        "affected_assets": [
+          "USD"
+        ],
+        "channel": "g10_policy",
+        "channels": [
+          "g10_policy"
+        ],
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 5,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "disposition": "assess",
+        "reason_code": "g10_policy_path",
+        "score": 9
+      }
     },
     {
       "headline": "Draghi Says AI Can Help US Steady Debt If Congress Curbs Deficit",
+      "market_salience": {
+        "components": {
+          "asset_named": 3,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 5,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 3,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 11
+      },
       "published_at": "2026-10-14T21:41:00-04:00",
-      "summary": "The US wouldn\u2019t have to try too hard to stabilize its debt if politicians could agree on deficit cuts, according to former European Central Bank chief Mario Draghi."
+      "summary": "The US wouldn\u2019t have to try too hard to stabilize its debt if politicians could agree on deficit cuts, according to former European Central Bank chief Mario Draghi.",
+      "transmission": {
+        "affected_assets": [
+          "credit_spreads",
+          "UST"
+        ],
+        "channel": "credit_funding",
+        "channels": [
+          "credit_funding"
+        ],
+        "components": {
+          "asset_named": 3,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 5,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "shock": 3,
+          "subject_penalty": 0
+        },
+        "disposition": "show",
+        "reason_code": "ai_capex_credit",
+        "score": 11
+      }
+    },
+    {
+      "headline": "New framework supports access to basic transaction services",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 5,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 9
+      },
+      "published_at": "2026-10-18T07:00:00-04:00",
+      "summary": "The Reserve Bank of New Zealand has brought together public and private sector organisations to sign a Memorandum of Understanding aimed at supporting access to basic transaction services.",
+      "transmission": {
+        "affected_assets": [],
+        "channel": "g10_policy",
+        "channels": [
+          "g10_policy"
+        ],
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 5,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "disposition": "assess",
+        "reason_code": "g10_policy_path",
+        "score": 9
+      }
+    },
+    {
+      "headline": "China Oil Comeback Loses Steam as Iran War Drags On",
+      "market_salience": {
+        "components": {
+          "asset_named": 3,
+          "channel_china_spillover": 5,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 10
+      },
+      "summary": "A nascent recovery in Chinese oil demand has begun to falter as the Middle East conflict and limited Iranian supply keep crude prices high.",
+      "transmission": {
+        "affected_assets": [
+          "AUD",
+          "iron_ore"
+        ],
+        "channel": "china_spillover",
+        "channels": [
+          "china_spillover"
+        ],
+        "components": {
+          "asset_named": 3,
+          "channel_china_spillover": 5,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "disposition": "show",
+        "reason_code": "china_commodity_spillover",
+        "score": 10
+      }
     },
     {
       "headline": "Draghi Sees High Bar for ECB to Help France With Crisis Tool",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 5,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 9
+      },
       "published_at": "2026-10-14T20:59:00-04:00",
-      "summary": "The European Central Bank is unlikely to step in any time soon with market intervention to help France, according to its former chief, Mario Draghi."
+      "summary": "The European Central Bank is unlikely to step in any time soon with market intervention to help France, according to its former chief, Mario Draghi.",
+      "transmission": {
+        "affected_assets": [
+          "EUR"
+        ],
+        "channel": "g10_policy",
+        "channels": [
+          "g10_policy"
+        ],
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 5,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "disposition": "assess",
+        "reason_code": "g10_policy_path",
+        "score": 9
+      }
+    },
+    {
+      "headline": "Euro-Zone Inflation Tops Estimates to Hit Three-Year High",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 9
+      },
+      "summary": "Euro-area inflation quickened more than expected to the highest in three years.",
+      "transmission": {
+        "affected_assets": [
+          "USD",
+          "UST"
+        ],
+        "channel": "usd_rates",
+        "channels": [
+          "usd_rates"
+        ],
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "disposition": "assess",
+        "reason_code": "usd_rates_repricing",
+        "score": 9
+      }
+    },
+    {
+      "headline": "UK Firms Predict Faster Price Increases After Energy Costs Surge",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 9
+      },
+      "summary": "The resurgence in oil and gas prices drove up UK businesses' inflation expectations as firms planned to pass on cost increases.",
+      "transmission": {
+        "affected_assets": [
+          "USD",
+          "UST"
+        ],
+        "channel": "usd_rates",
+        "channels": [
+          "usd_rates"
+        ],
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "disposition": "assess",
+        "reason_code": "usd_rates_repricing",
+        "score": 9
+      }
+    },
+    {
+      "headline": "Man Group Says 5.5% Yields Risk Cracking AI Capex, US Consumer",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 9
+      },
+      "summary": "Man Group's Kristina Hooper warned that surging long-end Treasury yields threaten AI capital expenditures and US consumer resilience.",
+      "transmission": {
+        "affected_assets": [
+          "USD",
+          "UST"
+        ],
+        "channel": "usd_rates",
+        "channels": [
+          "usd_rates"
+        ],
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "disposition": "assess",
+        "reason_code": "usd_rates_repricing",
+        "score": 9
+      }
+    },
+    {
+      "headline": "Pimco's Stracke Says AI Spending Drove Yields, Not Inflation",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 9
+      },
+      "summary": "Surging capital demand from hyperscalers and the AI ecosystem\u2014not inflation expectations\u2014is the primary force pushing real rates and bond yields higher, Pimco's Stracke said.",
+      "transmission": {
+        "affected_assets": [
+          "USD",
+          "UST"
+        ],
+        "channel": "usd_rates",
+        "channels": [
+          "usd_rates"
+        ],
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "disposition": "assess",
+        "reason_code": "usd_rates_repricing",
+        "score": 9
+      }
+    },
+    {
+      "headline": "Iran's Oil Minister Resigns as Exports Dry Up Under US Pressure",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 5,
+          "channel_usd_rates": 0,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 0,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 7
+      },
+      "summary": "Iran's oil minister resigned citing personal reasons as the Islamic Republic tries to sustain its oil industry under a tightening US blockade.",
+      "transmission": {
+        "affected_assets": [
+          "Brent",
+          "WTI"
+        ],
+        "channel": "oil_energy_tot",
+        "channels": [
+          "oil_energy_tot"
+        ],
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 5,
+          "channel_usd_rates": 0,
+          "shock": 0,
+          "subject_penalty": 0
+        },
+        "disposition": "assess",
+        "reason_code": "oil_supply_shock",
+        "score": 7
+      }
     }
   ],
-  "overnight_run_id": "overnight-20261016",
+  "overnight_run_id": "overnight-20261019",
   "schema_version": 1,
   "source": "overnight-assemble-overlay",
-  "summary": "Overnight markets leaned into an energy-led risk tone: Brent near 109.86 and WTI above 101.41, with U.S. equities softer around 7659 on the S&P and the VIX near 16.46, while the U.S. 10-year yield eased to about 5.09%. Story flow highlighted worryingly thin oil buffers, Middle East supply and shipping stress, and euro-area inflation running hotter than expected to a three-year high, alongside competing narratives that long-end yields reflect AI capital demand more than broad inflation. Policy strips still sit above cash in the United States, Canada, and Australia. New Zealand remains off limits for fresh risk until household income, retail spending, wages, and domestic-demand prints and usable official yield workbooks can be verified. Watch crude logistics, euro inflation spillovers, and Treasury demand commentary from major reserve holders.",
+  "summary": "Overnight markets stayed in an energy-supported risk tone: Brent 109.86 and WTI 101.41, gold 4181.10, the S&P near 7659, and the VIX at 16.46, while the US 10-year yield sat at 5.09%. Policy strips still sit above cash in the United States, Canada, and Australia, and the Canadian March 2027 contract marks 2.99 against 2.27 cash. Story flow stressed thin oil buffers, Hormuz shipping, and euro-area inflation at a three-year high, with competing claims that long-end yields reflect AI capital demand more than broad inflation. The ECB can take time amid opposing forces. New Zealand remains off limits for fresh risk until household income, retail spending, wages, and domestic-demand prints and usable official yields can be verified. Watch crude logistics, euro inflation spillovers, and the US inflation backdrop against that still-high energy complex.",
   "type": "OVERNIGHT_ACCEPTED_PUBLIC_NEWS"
 }
