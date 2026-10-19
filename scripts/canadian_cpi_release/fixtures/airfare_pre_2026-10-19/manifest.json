@@ -1,0 +1,41 @@
+{
+  "schema_version": "canadian_cpi_airfare_snapshot_v1",
+  "retrieved_at": "2026-10-18T12:00:00Z",
+  "snapshot_path": "snapshot.json",
+  "snapshot_sha256": "39765c33d68270ab7597d10a623fc2171a3d1af33b9ce79a10387cf6a38c0f23",
+  "observation_count": 436,
+  "observation_counts_by_canonical_id": {
+    "cpi_nsa_air_transportation": 420,
+    "cpi_nsa_air_transportation__weight": 16
+  },
+  "source_records": [
+    {
+      "url": "https://www150.statcan.gc.ca/t1/wds/rest/getDataFromVectorsAndLatestNPeriods",
+      "sha256": "e69d44ee81cd38671d33cb888792c93fc8062e1b03be81734361dd3472733a56",
+      "bytes": 96202,
+      "vector_id": 41691151,
+      "role": "index",
+      "path": "raw/airfare_index.json"
+    },
+    {
+      "url": "https://www150.statcan.gc.ca/t1/wds/rest/getDataFromVectorsAndLatestNPeriods",
+      "sha256": "1c7ca586dcbd293e39ad332b179efd4ae57b015d63d34048fc2e626d1924bb9d",
+      "bytes": 3815,
+      "vector_id": 91859102,
+      "role": "weight",
+      "path": "raw/airfare_weight.json"
+    }
+  ],
+  "provenance": {
+    "index_vector_id": 41691151,
+    "weight_vector_id": 91859102,
+    "index_coordinate": "2.199.0.0.0.0.0.0.0.0",
+    "weight_coordinate": "1.183.1.1.0.0.0.0.0.0",
+    "cube_end_date": "2026-08-01",
+    "info_sha256": "fbced765b2ac972aee1d3af90f6b256ef016b43aa4532d40683cab9d6bdced83"
+  },
+  "blockers": [],
+  "notes": [
+    "StatCan cubeEndDate 2026-08-01 precedes 2026-09; no September actual expected."
+  ]
+}

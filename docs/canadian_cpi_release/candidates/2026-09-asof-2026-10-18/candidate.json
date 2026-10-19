@@ -1,0 +1,703 @@
+{
+  "airfare_shadow": {
+    "adjusted_direct_ex_energy_mom": -0.033966508946461686,
+    "adjusted_ex_food_energy_mom": 0.038605390584711706,
+    "airfare_model_a_baseline_mom": -11.76704693886651,
+    "airfare_model_a_method": "modeled",
+    "as_of": "2026-10-18",
+    "assumptions": [],
+    "basket_weight_2025_percent": 1.1,
+    "blockers": [],
+    "direct_ex_energy_mom": -0.03422140158634876,
+    "direct_ex_food_energy_mom": 0.038294418499958086,
+    "limitations": [
+      "Airfare index values are latest-vintage StatCan WDS points in the separate airfare fixture.",
+      "releaseTime gates as-of eligibility; historical index revisions are not reconstructed.",
+      "NRCan is not used for air transportation."
+    ],
+    "methods": {
+      "ridge_model_a": {
+        "comparator": true,
+        "method": "modeled",
+        "mom": -11.76704693886651
+      },
+      "same_month_mean_10": {
+        "mom": -11.749175474168947,
+        "promotion_eligible": true,
+        "short_seasonal_sample": false
+      },
+      "season5_engine": {
+        "comparator": true,
+        "mom": -14.052245781950145
+      }
+    },
+    "moms": {
+      "ridge_model_a": -11.76704693886651,
+      "same_month_mean_10": -11.749175474168947,
+      "season5_engine": -14.052245781950145
+    },
+    "promotion_eligible": true,
+    "provenance": {
+      "basket_link": "2026-04",
+      "basket_status": "current",
+      "basket_year": 2025,
+      "index_coordinate": "2.199.0.0.0.0.0.0.0.0",
+      "index_vector_id": 41691151,
+      "sha256": [
+        "e69d44ee81cd38671d33cb888792c93fc8062e1b03be81734361dd3472733a56",
+        "1c7ca586dcbd293e39ad332b179efd4ae57b015d63d34048fc2e626d1924bb9d"
+      ],
+      "source_records": [
+        {
+          "bytes": 96202,
+          "path": "raw/airfare_index.json",
+          "role": "index",
+          "sha256": "e69d44ee81cd38671d33cb888792c93fc8062e1b03be81734361dd3472733a56",
+          "url": "https://www150.statcan.gc.ca/t1/wds/rest/getDataFromVectorsAndLatestNPeriods",
+          "vector_id": 41691151
+        },
+        {
+          "bytes": 3815,
+          "path": "raw/airfare_weight.json",
+          "role": "weight",
+          "sha256": "1c7ca586dcbd293e39ad332b179efd4ae57b015d63d34048fc2e626d1924bb9d",
+          "url": "https://www150.statcan.gc.ca/t1/wds/rest/getDataFromVectorsAndLatestNPeriods",
+          "vector_id": 91859102
+        }
+      ],
+      "vintage_note": "Basket vintage from main CPI all-items weight publication timestamps via select_basket_vintage.",
+      "weight_coordinate": "1.183.1.1.0.0.0.0.0.0",
+      "weight_vector_id": 91859102
+    },
+    "release": "2026-09",
+    "shares": {
+      "cpi_nsa_air_transportation": 0.013329311384986643,
+      "cpi_nsa_ex_energy": 0.9345672670860984,
+      "cpi_nsa_ex_food_energy": 0.7660311955279044
+    }
+  },
+  "as_of": "2026-10-18",
+  "as_of_timezone": "America/Toronto",
+  "attribution": {
+    "accuracy_claim": "No incremental ex-energy accuracy is claimed for this candidate; the walk-forward backtest did not clear the predeclared 0.005 pp MAE improvement bar on 2019+ with the recent window not worse than direct.",
+    "airfare": {
+      "basket_weight_2025_percent": 1.1,
+      "fixture_sha256": [
+        "e69d44ee81cd38671d33cb888792c93fc8062e1b03be81734361dd3472733a56",
+        "1c7ca586dcbd293e39ad332b179efd4ae57b015d63d34048fc2e626d1924bb9d"
+      ],
+      "index_coordinate": "2.199.0.0.0.0.0.0.0.0",
+      "index_vector_id": 41691151,
+      "model_a_baseline_mom": -11.76704693886651,
+      "model_moms": {
+        "ridge_model_a": -11.76704693886651,
+        "same_month_mean_10": -11.749175474168947,
+        "season5_engine": -14.052245781950145
+      },
+      "price_updated_share": 0.013329311384986643,
+      "weight_coordinate": "1.183.1.1.0.0.0.0.0.0",
+      "weight_vector_id": 91859102
+    },
+    "basket": {
+      "basket_link": "2026-04",
+      "basket_year": 2025,
+      "ex_energy_share": 0.9345672670860984,
+      "ex_food_energy_share": 0.7660311955279044,
+      "food_share": 0.16842062986348455,
+      "weight_gap": 0.010000000000019327
+    },
+    "canonical_as_of": "2026-10-16",
+    "canonical_ex_energy_nsa_mom": -0.03422140158634876,
+    "canonical_ex_energy_yoy": 2.1817687643883366,
+    "canonical_headline_nsa_mom": 0.1325763171949602,
+    "canonical_replay_ex_energy_nsa_mom": -0.03422140158634876,
+    "canonical_replay_headline_nsa_mom": 0.1325763171949602,
+    "identity_recent_mae": 0.0295859783572192,
+    "shadow_deltas_vs_direct_pp": {
+      "airfare_on_component": 0.01973700012064533,
+      "airfare_on_direct": 0.0002548926398870735,
+      "blend_equal": 0.009741037995726749,
+      "component": 0.019482075991453497
+    }
+  },
+  "backtest": {
+    "airfare": {
+      "airfare_promoted": false,
+      "as_of": "2026-10-18",
+      "end": "2026-08",
+      "generated_at": "2026-10-18T23:59:59-04:00",
+      "limitations": [
+        "Airfare index values are latest-vintage StatCan WDS points in the separate airfare fixture.",
+        "releaseTime gates as-of eligibility; historical index revisions are not reconstructed.",
+        "NRCan is not used for air transportation."
+      ],
+      "metrics": [
+        {
+          "MAE": 5.795747940088256,
+          "RMSE": 8.694515441369823,
+          "bias": -0.3663886756511633,
+          "direction": 0.6724137931034483,
+          "model": "same_month_mean_10",
+          "n": 116,
+          "regime": "all"
+        },
+        {
+          "MAE": 5.006552216199161,
+          "RMSE": 7.57803480408675,
+          "bias": -0.14985636846060812,
+          "direction": 0.7068965517241379,
+          "model": "season5_engine",
+          "n": 116,
+          "regime": "all"
+        },
+        {
+          "MAE": 5.867798553013593,
+          "RMSE": 7.903496833147602,
+          "bias": -0.7661910022638696,
+          "direction": 0.6206896551724138,
+          "model": "ridge_model_a",
+          "n": 116,
+          "regime": "all"
+        },
+        {
+          "MAE": 0.21039169915693628,
+          "RMSE": 0.2623537951085694,
+          "bias": -0.054915232157998484,
+          "direction": 0.6810344827586207,
+          "model": "direct",
+          "n": 116,
+          "regime": "all"
+        },
+        {
+          "MAE": 0.21357040862151844,
+          "RMSE": 0.2688114820523947,
+          "bias": -0.05023827199457864,
+          "direction": 0.6982758620689655,
+          "model": "airfare_on_direct",
+          "n": 116,
+          "regime": "all"
+        },
+        {
+          "MAE": 0.21151832097891454,
+          "RMSE": 0.26439279253213516,
+          "bias": -0.048875870100200995,
+          "comparator": true,
+          "direction": 0.7068965517241379,
+          "model": "airfare_on_direct_season5",
+          "n": 116,
+          "regime": "all"
+        },
+        {
+          "MAE": 0.21039169915693628,
+          "RMSE": 0.2623537951085694,
+          "bias": -0.054915232157998484,
+          "comparator": true,
+          "direction": 0.6810344827586207,
+          "model": "airfare_on_direct_ridge",
+          "n": 116,
+          "regime": "all"
+        },
+        {
+          "MAE": 6.302355587446181,
+          "RMSE": 9.142648783968253,
+          "bias": -0.07479859862182472,
+          "direction": 0.6739130434782609,
+          "model": "same_month_mean_10",
+          "n": 92,
+          "regime": "from_2019"
+        },
+        {
+          "MAE": 5.333515390531066,
+          "RMSE": 7.823119584225455,
+          "bias": 0.1776425879246624,
+          "direction": 0.6847826086956522,
+          "model": "season5_engine",
+          "n": 92,
+          "regime": "from_2019"
+        },
+        {
+          "MAE": 6.356172418851491,
+          "RMSE": 8.266216403425384,
+          "bias": -0.5056731616160048,
+          "direction": 0.6195652173913043,
+          "model": "ridge_model_a",
+          "n": 92,
+          "regime": "from_2019"
+        },
+        {
+          "MAE": 0.21290536714690994,
+          "RMSE": 0.2640549185838758,
+          "bias": -0.05824775659886663,
+          "direction": 0.7065217391304348,
+          "model": "direct",
+          "n": 92,
+          "regime": "from_2019"
+        },
+        {
+          "MAE": 0.21719943319292104,
+          "RMSE": 0.27166284847383004,
+          "bias": -0.05356515715001128,
+          "direction": 0.7282608695652174,
+          "model": "airfare_on_direct",
+          "n": 92,
+          "regime": "from_2019"
+        },
+        {
+          "MAE": 0.21581228537071123,
+          "RMSE": 0.2673285431696412,
+          "bias": -0.05216942482658115,
+          "comparator": true,
+          "direction": 0.7391304347826086,
+          "model": "airfare_on_direct_season5",
+          "n": 92,
+          "regime": "from_2019"
+        },
+        {
+          "MAE": 0.21290536714690994,
+          "RMSE": 0.2640549185838758,
+          "bias": -0.05824775659886663,
+          "comparator": true,
+          "direction": 0.7065217391304348,
+          "model": "airfare_on_direct_ridge",
+          "n": 92,
+          "regime": "from_2019"
+        },
+        {
+          "MAE": 4.83151370313862,
+          "RMSE": 6.834716542214032,
+          "bias": 0.19124070513673538,
+          "direction": 0.7,
+          "model": "same_month_mean_10",
+          "n": 20,
+          "regime": "recent_2025_26"
+        },
+        {
+          "MAE": 4.146355613169002,
+          "RMSE": 5.213990709215211,
+          "bias": 0.07604241356471006,
+          "direction": 0.75,
+          "model": "season5_engine",
+          "n": 20,
+          "regime": "recent_2025_26"
+        },
+        {
+          "MAE": 4.809904537727773,
+          "RMSE": 6.163061148566211,
+          "bias": -0.442197743864166,
+          "direction": 0.6,
+          "model": "ridge_model_a",
+          "n": 20,
+          "regime": "recent_2025_26"
+        },
+        {
+          "MAE": 0.20423936519724234,
+          "RMSE": 0.28625410093268605,
+          "bias": -0.0022402434111622946,
+          "direction": 0.6,
+          "model": "direct",
+          "n": 20,
+          "regime": "recent_2025_26"
+        },
+        {
+          "MAE": 0.22216231539217945,
+          "RMSE": 0.3067900829979516,
+          "bias": 0.007362047829347955,
+          "direction": 0.6,
+          "model": "airfare_on_direct",
+          "n": 20,
+          "regime": "recent_2025_26"
+        },
+        {
+          "MAE": 0.21906154533821084,
+          "RMSE": 0.29507148058823884,
+          "bias": 0.005267315885082879,
+          "comparator": true,
+          "direction": 0.6,
+          "model": "airfare_on_direct_season5",
+          "n": 20,
+          "regime": "recent_2025_26"
+        },
+        {
+          "MAE": 0.20423936519724234,
+          "RMSE": 0.28625410093268605,
+          "bias": -0.0022402434111622946,
+          "comparator": true,
+          "direction": 0.6,
+          "model": "airfare_on_direct_ridge",
+          "n": 20,
+          "regime": "recent_2025_26"
+        },
+        {
+          "MAE": 7.660481802744897,
+          "RMSE": 9.404319502319895,
+          "bias": 7.660481802744897,
+          "direction": 1.0,
+          "model": "same_month_mean_10",
+          "n": 9,
+          "regime": "september"
+        },
+        {
+          "MAE": 4.482777661758412,
+          "RMSE": 7.472696145873639,
+          "bias": 4.291843704291223,
+          "direction": 1.0,
+          "model": "season5_engine",
+          "n": 9,
+          "regime": "september"
+        },
+        {
+          "MAE": 6.604079401840403,
+          "RMSE": 7.7022349274411885,
+          "bias": 5.003850827996099,
+          "direction": 0.8888888888888888,
+          "model": "ridge_model_a",
+          "n": 9,
+          "regime": "september"
+        },
+        {
+          "MAE": 0.236839164121202,
+          "RMSE": 0.2664287126710943,
+          "bias": 0.09361653141548452,
+          "direction": 0.1111111111111111,
+          "model": "direct",
+          "n": 9,
+          "regime": "september"
+        },
+        {
+          "MAE": 0.23443792813892314,
+          "RMSE": 0.279673199114091,
+          "bias": 0.1067855852893223,
+          "direction": 0.2222222222222222,
+          "model": "airfare_on_direct",
+          "n": 9,
+          "regime": "september"
+        },
+        {
+          "MAE": 0.22066263808351755,
+          "RMSE": 0.2733538214527071,
+          "bias": 0.07798965639273489,
+          "comparator": true,
+          "direction": 0.3333333333333333,
+          "model": "airfare_on_direct_season5",
+          "n": 9,
+          "regime": "september"
+        },
+        {
+          "MAE": 0.236839164121202,
+          "RMSE": 0.2664287126710943,
+          "bias": 0.09361653141548452,
+          "comparator": true,
+          "direction": 0.1111111111111111,
+          "model": "airfare_on_direct_ridge",
+          "n": 9,
+          "regime": "september"
+        }
+      ],
+      "paired_abs_error_from_2019": {
+        "mae_delta": 0.004294066046011118,
+        "n": 92,
+        "n_improved": 42,
+        "n_tie": 0,
+        "n_worse": 50
+      },
+      "schema_version": "canadian_cpi_airfare_backtest_v1",
+      "start": "2017-01",
+      "timezone": "America/Toronto"
+    },
+    "ex_energy": {
+      "as_of": "2026-10-18",
+      "blocked_months": 0,
+      "end": "2026-08",
+      "generated_at": "2026-10-18T23:59:59-04:00",
+      "limitations": [
+        "Pseudo-OOS latest vintage, not a full real-time vintage backtest.",
+        "NSA CPI is mostly unrevised but basket weights can revise.",
+        "NRCan is not used here.",
+        "food and all-items-excluding-food-and-energy partition all-items-excluding-energy in the published basket weights. The month-over-month reconstruction uses price-updated shares and is an approximation of the published ex-energy index, not a second official index."
+      ],
+      "metrics": [
+        {
+          "MAE": 0.21039169915693628,
+          "RMSE": 0.2623537951085694,
+          "bias": -0.054915232157998484,
+          "direction": 0.6810344827586207,
+          "model": "direct",
+          "n": 116,
+          "regime": "all"
+        },
+        {
+          "MAE": 0.21290536714690994,
+          "RMSE": 0.2640549185838758,
+          "bias": -0.05824775659886663,
+          "direction": 0.7065217391304348,
+          "model": "direct",
+          "n": 92,
+          "regime": "from_2019"
+        },
+        {
+          "MAE": 0.20423936519724234,
+          "RMSE": 0.28625410093268605,
+          "bias": -0.0022402434111622946,
+          "direction": 0.6,
+          "model": "direct",
+          "n": 20,
+          "regime": "recent_2025_26"
+        },
+        {
+          "MAE": 0.236839164121202,
+          "RMSE": 0.2664287126710943,
+          "bias": 0.09361653141548452,
+          "direction": 0.1111111111111111,
+          "model": "direct",
+          "n": 9,
+          "regime": "september"
+        },
+        {
+          "MAE": 0.20826238780040854,
+          "RMSE": 0.26316469454897795,
+          "bias": -0.0639797805335441,
+          "direction": 0.6982758620689655,
+          "model": "component",
+          "n": 116,
+          "regime": "all"
+        },
+        {
+          "MAE": 0.21179447652270159,
+          "RMSE": 0.2654926915554086,
+          "bias": -0.06643423195349493,
+          "direction": 0.7391304347826086,
+          "model": "component",
+          "n": 92,
+          "regime": "from_2019"
+        },
+        {
+          "MAE": 0.19122169690279056,
+          "RMSE": 0.2675274234812251,
+          "bias": -0.0009568044429870252,
+          "direction": 0.65,
+          "model": "component",
+          "n": 20,
+          "regime": "recent_2025_26"
+        },
+        {
+          "MAE": 0.2258324287561546,
+          "RMSE": 0.26328279072167177,
+          "bias": 0.07190426950545435,
+          "direction": 0.3333333333333333,
+          "model": "component",
+          "n": 9,
+          "regime": "september"
+        },
+        {
+          "MAE": 0.2078305150557194,
+          "RMSE": 0.26142496946266186,
+          "bias": -0.059447506345771284,
+          "direction": 0.6896551724137931,
+          "model": "blend_equal",
+          "n": 116,
+          "regime": "all"
+        },
+        {
+          "MAE": 0.21105798906097756,
+          "RMSE": 0.2633324397657932,
+          "bias": -0.06234099427618078,
+          "direction": 0.717391304347826,
+          "model": "blend_equal",
+          "n": 92,
+          "regime": "from_2019"
+        },
+        {
+          "MAE": 0.19331873388221257,
+          "RMSE": 0.27410174508758584,
+          "bias": -0.0015985239270746472,
+          "direction": 0.6,
+          "model": "blend_equal",
+          "n": 20,
+          "regime": "recent_2025_26"
+        },
+        {
+          "MAE": 0.2313357964386783,
+          "RMSE": 0.2643196854202236,
+          "bias": 0.08276040046046945,
+          "direction": 0.2222222222222222,
+          "model": "blend_equal",
+          "n": 9,
+          "regime": "september"
+        }
+      ],
+      "paired_vs_direct": {
+        "blend_equal_from_2019": {
+          "mae_delta": -0.0018473780859324224,
+          "n": 92,
+          "n_improved": 49,
+          "n_tie": 0,
+          "n_worse": 43
+        },
+        "blend_equal_recent_2025_26": {
+          "mae_delta": -0.010920631315029766,
+          "n": 20,
+          "n_improved": 13,
+          "n_tie": 0,
+          "n_worse": 7
+        },
+        "component_from_2019": {
+          "mae_delta": -0.0011108906242083105,
+          "n": 92,
+          "n_improved": 48,
+          "n_tie": 0,
+          "n_worse": 44
+        },
+        "component_recent_2025_26": {
+          "mae_delta": -0.013017668294451787,
+          "n": 20,
+          "n_improved": 12,
+          "n_tie": 0,
+          "n_worse": 8
+        }
+      },
+      "schema_version": "canadian_cpi_ex_energy_backtest_v1",
+      "start": "2017-01",
+      "timezone": "America/Toronto"
+    }
+  },
+  "blockers": [],
+  "component_nowcast": {
+    "as_of": "2026-10-18",
+    "assumptions": [],
+    "basket_link": "2026-04",
+    "basket_status": "current",
+    "basket_weight_percent": {
+      "ex_energy": 93.32,
+      "ex_food_energy": 76.4,
+      "food": 16.93,
+      "weight_gap": 0.010000000000019327
+    },
+    "basket_year": 2025,
+    "blockers": [],
+    "forecasts": {
+      "blend_equal": {
+        "method": "equal_blend_predeclared",
+        "nsa_mom": -0.02448036359062201,
+        "yoy": 2.191725736723882
+      },
+      "component": {
+        "method": "partition_food_ex_food_energy",
+        "nsa_mom": -0.01473932559489526,
+        "yoy": 2.201682709059405
+      },
+      "direct": {
+        "method": "forecast_model_a",
+        "nsa_mom": -0.03422140158634876,
+        "yoy": 2.1817687643883366
+      }
+    },
+    "identity": {
+      "note": "food and all-items-excluding-food-and-energy partition all-items-excluding-energy in the published basket weights. The month-over-month reconstruction uses price-updated shares and is an approximation of the published ex-energy index, not a second official index.",
+      "recent_mae": 0.0295859783572192,
+      "recent_n": 92,
+      "residual_mom": null
+    },
+    "limitations": [
+      "Latest-vintage snapshot: published_at gates eligibility; this is not a full real-time vintage replay.",
+      "NSA CPI is mostly unrevised but basket weights can revise.",
+      "NRCan is not used in this ex-energy component path.",
+      "food and all-items-excluding-food-and-energy partition all-items-excluding-energy in the published basket weights. The month-over-month reconstruction uses price-updated shares and is an approximation of the published ex-energy index, not a second official index."
+    ],
+    "methods": {
+      "direct": "forecast_model_a",
+      "ex_food_energy": "forecast_model_a",
+      "food": "forecast_model_a"
+    },
+    "release": "2026-09",
+    "shares": {
+      "ex_energy": 0.9345672670860984,
+      "ex_food_energy": 0.7660311955279044,
+      "food": 0.16842062986348455,
+      "partition_sum": 0.9344518253913889
+    },
+    "status": "ok"
+  },
+  "freeze_before": "2026-10-19T08:30:00-04:00",
+  "generated_at": "2026-10-18T23:59:59-04:00",
+  "limitations": [
+    "Latest-vintage pseudo-OOS evaluation; not a full real-time vintage replay.",
+    "NSA CPI is mostly unrevised but basket weights can revise.",
+    "NRCan month-end assumption is unchanged and unused by this ex-energy path.",
+    "September 2026 CPI actual was not in the fixtures and was not used.",
+    "This artifact does not replace docs/canadian_cpi_release/sample_2026-09.",
+    "No incremental ex-energy accuracy is claimed for this candidate; the walk-forward backtest did not clear the predeclared 0.005 pp MAE improvement bar on 2019+ with the recent window not worse than direct.",
+    "Latest-vintage snapshot: published_at gates eligibility; this is not a full real-time vintage replay.",
+    "NSA CPI is mostly unrevised but basket weights can revise.",
+    "NRCan is not used in this ex-energy component path.",
+    "food and all-items-excluding-food-and-energy partition all-items-excluding-energy in the published basket weights. The month-over-month reconstruction uses price-updated shares and is an approximation of the published ex-energy index, not a second official index."
+  ],
+  "promotion": {
+    "airfare_notes": [
+      "airfare_on_direct_did_not_clear_mae_bar_or_paired_test"
+    ],
+    "airfare_promoted": false,
+    "blend_promoted": false,
+    "blend_reason": "did_not_clear_mae_bar_or_paired_test",
+    "component_promoted": false,
+    "component_reason": "did_not_clear_mae_bar_or_paired_test",
+    "metrics_snapshot": {
+      "airfare_paired_from_2019_mae_delta": 0.004294066046011118,
+      "blend_from_2019_mae_delta": -0.0018473780859324224,
+      "component_from_2019_mae_delta": -0.0011108906242083105
+    }
+  },
+  "published": {
+    "ex_energy_nsa_mom": -0.03422140158634876,
+    "ex_energy_yoy": 2.1817687643883366,
+    "promoted": false,
+    "selected_model": "direct_ex_energy"
+  },
+  "release": "2026-09",
+  "schema_version": "canadian_cpi_ex_energy_candidate_v1",
+  "shadows": {
+    "airfare_on_component": {
+      "delta_vs_component_pp": 0.00025492412919183444,
+      "delta_vs_direct_pp": 0.01973700012064533,
+      "note": "September delta versus component is the only in-sample figure; no walk-forward MAE for airfare_on_component.",
+      "nsa_mom": -0.014484401465703426,
+      "scored": false,
+      "status": "shadow_not_selected"
+    },
+    "airfare_on_direct": {
+      "delta_vs_direct_pp": 0.0002548926398870735,
+      "nsa_mom": -0.033966508946461686
+    },
+    "blend_equal": {
+      "delta_vs_direct_pp": 0.009741037995726749,
+      "nsa_mom": -0.02448036359062201
+    },
+    "component": {
+      "delta_vs_direct_pp": 0.019482075991453497,
+      "nsa_mom": -0.01473932559489526
+    }
+  },
+  "status": "ok",
+  "uncertainty": {
+    "bands": {
+      "0.05": -0.41284339940372594,
+      "0.1": -0.2604871906249041,
+      "0.25": -0.15893596463283247,
+      "0.5": 0.027449609520175118,
+      "0.75": 0.19575212101782927,
+      "0.9": 0.3558288479930498,
+      "0.95": 0.4568991845452586
+    },
+    "error_quantiles": {
+      "0.05": -0.3786219978173772,
+      "0.1": -0.22626578903855532,
+      "0.25": -0.1247145630464837,
+      "0.5": 0.06167101110652388,
+      "0.75": 0.22997352260417803,
+      "0.9": 0.3900502495793986,
+      "0.95": 0.49112058613160736
+    },
+    "label": "Empirical pseudo-OOS ex-energy residual band, latest vintage; not a probability; not headline B2 bands.",
+    "n_errors": 92,
+    "reliability": "ok"
+  }
+}

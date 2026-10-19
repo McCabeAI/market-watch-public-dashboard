@@ -1,0 +1,155 @@
+{
+  "as_of": "2026-10-18",
+  "blocked_months": 0,
+  "end": "2026-08",
+  "generated_at": "2026-10-18T23:59:59-04:00",
+  "limitations": [
+    "Pseudo-OOS latest vintage, not a full real-time vintage backtest.",
+    "NSA CPI is mostly unrevised but basket weights can revise.",
+    "NRCan is not used here.",
+    "food and all-items-excluding-food-and-energy partition all-items-excluding-energy in the published basket weights. The month-over-month reconstruction uses price-updated shares and is an approximation of the published ex-energy index, not a second official index."
+  ],
+  "metrics": [
+    {
+      "MAE": 0.21039169915693628,
+      "RMSE": 0.2623537951085694,
+      "bias": -0.054915232157998484,
+      "direction": 0.6810344827586207,
+      "model": "direct",
+      "n": 116,
+      "regime": "all"
+    },
+    {
+      "MAE": 0.21290536714690994,
+      "RMSE": 0.2640549185838758,
+      "bias": -0.05824775659886663,
+      "direction": 0.7065217391304348,
+      "model": "direct",
+      "n": 92,
+      "regime": "from_2019"
+    },
+    {
+      "MAE": 0.20423936519724234,
+      "RMSE": 0.28625410093268605,
+      "bias": -0.0022402434111622946,
+      "direction": 0.6,
+      "model": "direct",
+      "n": 20,
+      "regime": "recent_2025_26"
+    },
+    {
+      "MAE": 0.236839164121202,
+      "RMSE": 0.2664287126710943,
+      "bias": 0.09361653141548452,
+      "direction": 0.1111111111111111,
+      "model": "direct",
+      "n": 9,
+      "regime": "september"
+    },
+    {
+      "MAE": 0.20826238780040854,
+      "RMSE": 0.26316469454897795,
+      "bias": -0.0639797805335441,
+      "direction": 0.6982758620689655,
+      "model": "component",
+      "n": 116,
+      "regime": "all"
+    },
+    {
+      "MAE": 0.21179447652270159,
+      "RMSE": 0.2654926915554086,
+      "bias": -0.06643423195349493,
+      "direction": 0.7391304347826086,
+      "model": "component",
+      "n": 92,
+      "regime": "from_2019"
+    },
+    {
+      "MAE": 0.19122169690279056,
+      "RMSE": 0.2675274234812251,
+      "bias": -0.0009568044429870252,
+      "direction": 0.65,
+      "model": "component",
+      "n": 20,
+      "regime": "recent_2025_26"
+    },
+    {
+      "MAE": 0.2258324287561546,
+      "RMSE": 0.26328279072167177,
+      "bias": 0.07190426950545435,
+      "direction": 0.3333333333333333,
+      "model": "component",
+      "n": 9,
+      "regime": "september"
+    },
+    {
+      "MAE": 0.2078305150557194,
+      "RMSE": 0.26142496946266186,
+      "bias": -0.059447506345771284,
+      "direction": 0.6896551724137931,
+      "model": "blend_equal",
+      "n": 116,
+      "regime": "all"
+    },
+    {
+      "MAE": 0.21105798906097756,
+      "RMSE": 0.2633324397657932,
+      "bias": -0.06234099427618078,
+      "direction": 0.717391304347826,
+      "model": "blend_equal",
+      "n": 92,
+      "regime": "from_2019"
+    },
+    {
+      "MAE": 0.19331873388221257,
+      "RMSE": 0.27410174508758584,
+      "bias": -0.0015985239270746472,
+      "direction": 0.6,
+      "model": "blend_equal",
+      "n": 20,
+      "regime": "recent_2025_26"
+    },
+    {
+      "MAE": 0.2313357964386783,
+      "RMSE": 0.2643196854202236,
+      "bias": 0.08276040046046945,
+      "direction": 0.2222222222222222,
+      "model": "blend_equal",
+      "n": 9,
+      "regime": "september"
+    }
+  ],
+  "paired_vs_direct": {
+    "blend_equal_from_2019": {
+      "mae_delta": -0.0018473780859324224,
+      "n": 92,
+      "n_improved": 49,
+      "n_tie": 0,
+      "n_worse": 43
+    },
+    "blend_equal_recent_2025_26": {
+      "mae_delta": -0.010920631315029766,
+      "n": 20,
+      "n_improved": 13,
+      "n_tie": 0,
+      "n_worse": 7
+    },
+    "component_from_2019": {
+      "mae_delta": -0.0011108906242083105,
+      "n": 92,
+      "n_improved": 48,
+      "n_tie": 0,
+      "n_worse": 44
+    },
+    "component_recent_2025_26": {
+      "mae_delta": -0.013017668294451787,
+      "n": 20,
+      "n_improved": 12,
+      "n_tie": 0,
+      "n_worse": 8
+    }
+  },
+  "schema_version": "canadian_cpi_ex_energy_backtest_v1",
+  "start": "2017-01",
+  "timezone": "America/Toronto"
+}

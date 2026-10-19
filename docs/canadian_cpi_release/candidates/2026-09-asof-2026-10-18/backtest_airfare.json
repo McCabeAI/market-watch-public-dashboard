@@ -1,0 +1,283 @@
+{
+  "airfare_promoted": false,
+  "as_of": "2026-10-18",
+  "end": "2026-08",
+  "generated_at": "2026-10-18T23:59:59-04:00",
+  "limitations": [
+    "Airfare index values are latest-vintage StatCan WDS points in the separate airfare fixture.",
+    "releaseTime gates as-of eligibility; historical index revisions are not reconstructed.",
+    "NRCan is not used for air transportation."
+  ],
+  "metrics": [
+    {
+      "MAE": 5.795747940088256,
+      "RMSE": 8.694515441369823,
+      "bias": -0.3663886756511633,
+      "direction": 0.6724137931034483,
+      "model": "same_month_mean_10",
+      "n": 116,
+      "regime": "all"
+    },
+    {
+      "MAE": 5.006552216199161,
+      "RMSE": 7.57803480408675,
+      "bias": -0.14985636846060812,
+      "direction": 0.7068965517241379,
+      "model": "season5_engine",
+      "n": 116,
+      "regime": "all"
+    },
+    {
+      "MAE": 5.867798553013593,
+      "RMSE": 7.903496833147602,
+      "bias": -0.7661910022638696,
+      "direction": 0.6206896551724138,
+      "model": "ridge_model_a",
+      "n": 116,
+      "regime": "all"
+    },
+    {
+      "MAE": 0.21039169915693628,
+      "RMSE": 0.2623537951085694,
+      "bias": -0.054915232157998484,
+      "direction": 0.6810344827586207,
+      "model": "direct",
+      "n": 116,
+      "regime": "all"
+    },
+    {
+      "MAE": 0.21357040862151844,
+      "RMSE": 0.2688114820523947,
+      "bias": -0.05023827199457864,
+      "direction": 0.6982758620689655,
+      "model": "airfare_on_direct",
+      "n": 116,
+      "regime": "all"
+    },
+    {
+      "MAE": 0.21151832097891454,
+      "RMSE": 0.26439279253213516,
+      "bias": -0.048875870100200995,
+      "comparator": true,
+      "direction": 0.7068965517241379,
+      "model": "airfare_on_direct_season5",
+      "n": 116,
+      "regime": "all"
+    },
+    {
+      "MAE": 0.21039169915693628,
+      "RMSE": 0.2623537951085694,
+      "bias": -0.054915232157998484,
+      "comparator": true,
+      "direction": 0.6810344827586207,
+      "model": "airfare_on_direct_ridge",
+      "n": 116,
+      "regime": "all"
+    },
+    {
+      "MAE": 6.302355587446181,
+      "RMSE": 9.142648783968253,
+      "bias": -0.07479859862182472,
+      "direction": 0.6739130434782609,
+      "model": "same_month_mean_10",
+      "n": 92,
+      "regime": "from_2019"
+    },
+    {
+      "MAE": 5.333515390531066,
+      "RMSE": 7.823119584225455,
+      "bias": 0.1776425879246624,
+      "direction": 0.6847826086956522,
+      "model": "season5_engine",
+      "n": 92,
+      "regime": "from_2019"
+    },
+    {
+      "MAE": 6.356172418851491,
+      "RMSE": 8.266216403425384,
+      "bias": -0.5056731616160048,
+      "direction": 0.6195652173913043,
+      "model": "ridge_model_a",
+      "n": 92,
+      "regime": "from_2019"
+    },
+    {
+      "MAE": 0.21290536714690994,
+      "RMSE": 0.2640549185838758,
+      "bias": -0.05824775659886663,
+      "direction": 0.7065217391304348,
+      "model": "direct",
+      "n": 92,
+      "regime": "from_2019"
+    },
+    {
+      "MAE": 0.21719943319292104,
+      "RMSE": 0.27166284847383004,
+      "bias": -0.05356515715001128,
+      "direction": 0.7282608695652174,
+      "model": "airfare_on_direct",
+      "n": 92,
+      "regime": "from_2019"
+    },
+    {
+      "MAE": 0.21581228537071123,
+      "RMSE": 0.2673285431696412,
+      "bias": -0.05216942482658115,
+      "comparator": true,
+      "direction": 0.7391304347826086,
+      "model": "airfare_on_direct_season5",
+      "n": 92,
+      "regime": "from_2019"
+    },
+    {
+      "MAE": 0.21290536714690994,
+      "RMSE": 0.2640549185838758,
+      "bias": -0.05824775659886663,
+      "comparator": true,
+      "direction": 0.7065217391304348,
+      "model": "airfare_on_direct_ridge",
+      "n": 92,
+      "regime": "from_2019"
+    },
+    {
+      "MAE": 4.83151370313862,
+      "RMSE": 6.834716542214032,
+      "bias": 0.19124070513673538,
+      "direction": 0.7,
+      "model": "same_month_mean_10",
+      "n": 20,
+      "regime": "recent_2025_26"
+    },
+    {
+      "MAE": 4.146355613169002,
+      "RMSE": 5.213990709215211,
+      "bias": 0.07604241356471006,
+      "direction": 0.75,
+      "model": "season5_engine",
+      "n": 20,
+      "regime": "recent_2025_26"
+    },
+    {
+      "MAE": 4.809904537727773,
+      "RMSE": 6.163061148566211,
+      "bias": -0.442197743864166,
+      "direction": 0.6,
+      "model": "ridge_model_a",
+      "n": 20,
+      "regime": "recent_2025_26"
+    },
+    {
+      "MAE": 0.20423936519724234,
+      "RMSE": 0.28625410093268605,
+      "bias": -0.0022402434111622946,
+      "direction": 0.6,
+      "model": "direct",
+      "n": 20,
+      "regime": "recent_2025_26"
+    },
+    {
+      "MAE": 0.22216231539217945,
+      "RMSE": 0.3067900829979516,
+      "bias": 0.007362047829347955,
+      "direction": 0.6,
+      "model": "airfare_on_direct",
+      "n": 20,
+      "regime": "recent_2025_26"
+    },
+    {
+      "MAE": 0.21906154533821084,
+      "RMSE": 0.29507148058823884,
+      "bias": 0.005267315885082879,
+      "comparator": true,
+      "direction": 0.6,
+      "model": "airfare_on_direct_season5",
+      "n": 20,
+      "regime": "recent_2025_26"
+    },
+    {
+      "MAE": 0.20423936519724234,
+      "RMSE": 0.28625410093268605,
+      "bias": -0.0022402434111622946,
+      "comparator": true,
+      "direction": 0.6,
+      "model": "airfare_on_direct_ridge",
+      "n": 20,
+      "regime": "recent_2025_26"
+    },
+    {
+      "MAE": 7.660481802744897,
+      "RMSE": 9.404319502319895,
+      "bias": 7.660481802744897,
+      "direction": 1.0,
+      "model": "same_month_mean_10",
+      "n": 9,
+      "regime": "september"
+    },
+    {
+      "MAE": 4.482777661758412,
+      "RMSE": 7.472696145873639,
+      "bias": 4.291843704291223,
+      "direction": 1.0,
+      "model": "season5_engine",
+      "n": 9,
+      "regime": "september"
+    },
+    {
+      "MAE": 6.604079401840403,
+      "RMSE": 7.7022349274411885,
+      "bias": 5.003850827996099,
+      "direction": 0.8888888888888888,
+      "model": "ridge_model_a",
+      "n": 9,
+      "regime": "september"
+    },
+    {
+      "MAE": 0.236839164121202,
+      "RMSE": 0.2664287126710943,
+      "bias": 0.09361653141548452,
+      "direction": 0.1111111111111111,
+      "model": "direct",
+      "n": 9,
+      "regime": "september"
+    },
+    {
+      "MAE": 0.23443792813892314,
+      "RMSE": 0.279673199114091,
+      "bias": 0.1067855852893223,
+      "direction": 0.2222222222222222,
+      "model": "airfare_on_direct",
+      "n": 9,
+      "regime": "september"
+    },
+    {
+      "MAE": 0.22066263808351755,
+      "RMSE": 0.2733538214527071,
+      "bias": 0.07798965639273489,
+      "comparator": true,
+      "direction": 0.3333333333333333,
+      "model": "airfare_on_direct_season5",
+      "n": 9,
+      "regime": "september"
+    },
+    {
+      "MAE": 0.236839164121202,
+      "RMSE": 0.2664287126710943,
+      "bias": 0.09361653141548452,
+      "comparator": true,
+      "direction": 0.1111111111111111,
+      "model": "airfare_on_direct_ridge",
+      "n": 9,
+      "regime": "september"
+    }
+  ],
+  "paired_abs_error_from_2019": {
+    "mae_delta": 0.004294066046011118,
+    "n": 92,
+    "n_improved": 42,
+    "n_tie": 0,
+    "n_worse": 50
+  },
+  "schema_version": "canadian_cpi_airfare_backtest_v1",
+  "start": "2017-01",
+  "timezone": "America/Toronto"
+}

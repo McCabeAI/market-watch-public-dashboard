@@ -147,3 +147,41 @@ jobs:
 ```
 
 No schedule, `repository_dispatch`, `workflow_run`, cron, LLM calls, auto-merge, or deployment.
+
+## Ex-energy pre-release candidate (as-of 2026-10-18)
+
+Separate from the canonical B2 nowcast above. Builds release **2026-09** with freeze before **2026-10-19T08:30:00-04:00** (America/Toronto).
+
+```bash
+PYTHONPATH=. python3 -m scripts.canadian_cpi_release ex-energy-candidate \
+  --release 2026-09 \
+  --as-of 2026-10-18 \
+  --out docs/canadian_cpi_release/candidates/2026-09-asof-2026-10-18 \
+  --fixture scripts/canadian_cpi_release/fixtures/pre_2026-10-19/snapshot.json \
+  --airfare-fixture scripts/canadian_cpi_release/fixtures/airfare_pre_2026-10-19/snapshot.json
+```
+
+Writes `candidate.json`, `candidate.txt`, `backtest_ex_energy.json`, and `backtest_airfare.json`. Exit **0** when `status` is `ok`, **2** when blocked (e.g. an eligible 2026-09 observation at the as-of).
+
+### Published estimate (fixture)
+
+| Field | Value |
+| --- | --- |
+| Published ex-energy NSA MoM % | -0.03422140158634876 (same as canonical direct) |
+| Promoted | false |
+| Selected model | `direct_ex_energy` |
+
+Shadow NSA MoM % (delta vs direct, pp): component **-0.01473932559489526** (+0.019482), blend_equal **-0.02448036359062201** (+0.009741), airfare_on_direct **-0.033966508946461686** (+0.000255), airfare_on_component **-0.014484401465703426** (+0.019737, not selected).
+
+### Walk-forward MAE (2017-01–2026-08, as-of 2026-10-18)
+
+| Model | from_2019 | recent_2025_26 | september |
+| --- | --- | --- | --- |
+| direct | 0.212905 | 0.204239 | 0.236839 |
+| component | 0.211794 | 0.191222 | 0.225832 |
+| blend_equal | 0.211058 | 0.193319 | 0.231336 |
+| airfare_on_direct | 0.217199 | 0.222162 | 0.234438 |
+
+Airfare fixture vectors: index **41691151** (`2.199.0.0.0.0.0.0.0.0`), weight **91859102** (`1.183.1.1.0.0.0.0.0.0`); basket weight 2025 **1.10** %.
+
+Archive path: `docs/canadian_cpi_release/candidates/2026-09-asof-2026-10-18/`. September 2026 CPI actual was not in the fixtures and was not used; this does not replace `sample_2026-09`.
