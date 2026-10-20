@@ -1,0 +1,156 @@
+{
+  "active_lessons": [],
+  "as_of": "2026-10-20T09:31:20.120731-04:00",
+  "calibration": {
+    "average_holding_seconds": null,
+    "average_realized_pnl_usd": null,
+    "breakeven": 0,
+    "by_asset_class": {},
+    "closed_trade_count": 0,
+    "conviction_buckets": {
+      "high": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "low": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "medium": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      }
+    },
+    "losses": 0,
+    "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
+    "total_realized_pnl_usd": 0.0,
+    "wins": 0
+  },
+  "capital_owner": null,
+  "consequence": {
+    "competition_cohort_size": 14,
+    "competition_eligible": true,
+    "competition_rank": 13,
+    "competitive_rank": 13,
+    "drawdown_usd": 166671.03,
+    "giveback_usd": 166671.03,
+    "high_water_nav_usd": 100062016.81,
+    "material_threshold_usd": 2000000.0,
+    "nav_usd": 99895345.78,
+    "net_pnl_usd": -104654.22,
+    "pressure_flags": [],
+    "prior_competition_rank": 13,
+    "rank_change": 0,
+    "raw_pnl_rank": 13,
+    "recent_pattern": "mixed",
+    "risk_capital_limit_usd": 10000000.0,
+    "risk_capital_usd": 750000.0,
+    "risk_capital_utilization": 0.075,
+    "session_pnl_change_usd": 0.0,
+    "status": "ok"
+  },
+  "learning": {
+    "competition_eligible": true,
+    "learning_default_age_runs": 0,
+    "learning_default_count": 0,
+    "learning_status": "compliant",
+    "repeated_error_escalations": []
+  },
+  "learning_obligations": [],
+  "memory_context_sha256": "cccc97a3dc8d35fc70132685a54f8c677f084b686cc2dd8a962cd987d68f0ab8",
+  "open_positions": [
+    {
+      "asset_class": "rates",
+      "conviction": 63,
+      "current_notional_usd": 75000000.0,
+      "entry_mark": 4.58,
+      "instrument": "SOFR_2027-03",
+      "opened_at": "2026-09-19T22:36:50.082404-04:00",
+      "position_id": "pos-662bff0986be",
+      "risk_capital_usd": 750000.0,
+      "side": "short",
+      "trade_id": "trd-trader-trend-follower-pos-662bff0986be"
+    }
+  ],
+  "owner_id": "trend-follower",
+  "owner_type": "trader",
+  "postmortems_due": [],
+  "psychology": {
+    "active_flags": [],
+    "applicable": true,
+    "axes": {
+      "chase_pressure": {
+        "band": "calm",
+        "trend": "down",
+        "value": 0.15
+      },
+      "complacency": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.1
+      },
+      "defensiveness": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.2
+      },
+      "external_pressure": {
+        "band": "calm",
+        "trend": "down",
+        "value": 0.22
+      },
+      "frustration": {
+        "band": "calm",
+        "trend": "down",
+        "value": 0.12
+      },
+      "revenge_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.05
+      },
+      "self_trust": {
+        "band": "steady",
+        "trend": "flat",
+        "value": 0.49
+      },
+      "thesis_attachment": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.25
+      }
+    },
+    "boundary": "Private decision machinery. Never quote or paraphrase in public prose. This state never sizes, forces, or blocks a trade.",
+    "metrics": {
+      "conviction_volatility": 0.0,
+      "distortion_verdicts": 0,
+      "self_report_mismatches": 0,
+      "sharpened_verdicts": 0
+    },
+    "profile_version": 1,
+    "recent_events": [
+      {
+        "kind": "session_gain",
+        "magnitude": 0.0890325,
+        "run_id": "overnight-20261013"
+      }
+    ],
+    "required_checks": {},
+    "schema_version": 1,
+    "state_sha256": "a333654c69b2884a31dfd73e35a6b5cc6bda50dc09aa353834ac4012363a20db",
+    "streaks": {
+      "flat_cycles": 0,
+      "session_loss": 0,
+      "session_win": 1
+    }
+  },
+  "recent_closed_trades": [],
+  "recent_funding_views": [],
+  "recent_performance_reflections": [],
+  "reflections_due": [],
+  "schema_version": 4,
+  "type": "IDENTITY_MEMORY_CONTEXT"
+}
