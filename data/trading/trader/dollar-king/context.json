@@ -49,7 +49,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 550000.0,
     "risk_capital_utilization": 0.055,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 340514.45,
     "status": "ok"
   },
   "learning": {
@@ -60,17 +60,17 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "f788f8df49c182a68b3c6acbc80ba3e927d31d60479e33dd2cb1bb086c1c779a",
+  "memory_context_sha256": "08b550ef1dfff1c59d21e41e7610ef574f3fd4c79b38f221c6a9acf68511d452",
   "open_positions": [
     {
       "asset_class": "spot_fx",
       "conviction": 64,
-      "current_notional_usd": 55000000.0,
+      "current_notional_usd": 35000000.0,
       "entry_mark": 1.4,
       "instrument": "USDCAD",
       "opened_at": "2026-09-19T22:36:50.082404-04:00",
       "position_id": "pos-5317bc96d4eb",
-      "risk_capital_usd": 550000.0,
+      "risk_capital_usd": 350000.0,
       "side": "long",
       "trade_id": "trd-trader-dollar-king-pos-5317bc96d4eb"
     }
@@ -89,38 +89,38 @@
       },
       "complacency": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.13
+        "trend": "down",
+        "value": 0.08
       },
       "defensiveness": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.23
+        "trend": "up",
+        "value": 0.34
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.11
+        "trend": "up",
+        "value": 0.14
       },
       "frustration": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.15
+        "trend": "up",
+        "value": 0.29
       },
       "revenge_pressure": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.07
+        "trend": "up",
+        "value": 0.12
       },
       "self_trust": {
         "band": "steady",
-        "trend": "flat",
-        "value": 0.59
+        "trend": "down",
+        "value": 0.56
       },
       "thesis_attachment": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.36
+        "trend": "up",
+        "value": 0.37
       }
     },
     "boundary": "Private decision machinery. Never quote or paraphrase in public prose. This state never sizes, forces, or blocks a trade.",
@@ -134,21 +134,26 @@
     "recent_events": [
       {
         "kind": "session_loss",
-        "magnitude": 0.17522994,
-        "run_id": "overnight-20261015"
+        "magnitude": 0.45702018,
+        "run_id": "overnight-20261016"
       },
       {
         "kind": "session_loss",
-        "magnitude": 0.45702018,
-        "run_id": "overnight-20261016"
+        "magnitude": 0.6810289,
+        "run_id": "overnight-20261020"
+      },
+      {
+        "kind": "giveback",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261020"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "e2fa32b028fa563d6b2de1c7d00c9048a81b0b0fa4acf2a797760dba1949c20a",
+    "state_sha256": "ab56384b3a8579bffc25b1a13704de361318764dec68ca45e7cded83431e5c98",
     "streaks": {
       "flat_cycles": 0,
-      "session_loss": 3,
+      "session_loss": 4,
       "session_win": 0
     }
   },

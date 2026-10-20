@@ -1056,6 +1056,80 @@
       "run_id": "overnight-20261019",
       "schema_version": 1,
       "thesis": "The March 2027 SOFR strip is still above cash, and the US 10-year at 5.09 with Brent near 110 keep the higher-for-longer price trend in force. The book is already expressing that trend as a 75 million pay; the move from 4.58 to 4.485 is a local strip dip, not a regime break. Cash is still 3.89, the strip still prices a premium, and VIX at 16.46 is not a stress pivot. Hold the existing pay until the strip-above-cash condition actually fails."
+    },
+    {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 75000000,
+          "position_id": "pos-662bff0986be",
+          "rationale": "Close the 75 million March 2027 SOFR pay from 4.6217 versus live 4.52; that tenor has not confirmed the 10-year backup.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "US_10Y",
+          "notional_usd": 75000000,
+          "position_id": null,
+          "rationale": "Pay 75 million US 10-year at 5.15; +21bp over one month and +6bp versus the prior freeze is the continuation.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-20T09:31:20.120731-04:00",
+      "conviction": 70,
+      "decision_fingerprint": "cd2b18b2a07b05edb3bc8f4bdc3d798b8ca83f23f6f974500b6f41d43fa11ce0",
+      "event_id": "jde-bd460e3e35904c72",
+      "funding_view": null,
+      "invalidation": "US 10Y yield reversing through the prior freeze 5.09 without a new high. Do not re-pay SOFR_2027-03 unless that contract itself starts printing higher implied rates rather than remaining a 4.52 lag to the 10Y backup.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-06e7a6ec76da",
+        "pos-662bff0986be"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-trend-follower-pos-06e7a6ec76da",
+        "trd-trader-trend-follower-pos-662bff0986be"
+      ],
+      "memory_context_sha256": "cccc97a3dc8d35fc70132685a54f8c677f084b686cc2dd8a962cd987d68f0ab8",
+      "outcome_links": [],
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "a333654c69b2884a31dfd73e35a6b5cc6bda50dc09aa353834ac4012363a20db"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-20T09:31:20.120731-04:00",
+        "evidence_hash": "124708b9bd87462ac7aeab44ae0d717031c41157f553d267db2c78478656b8fd",
+        "overnight_run_id": "overnight-20261020",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "US 10Y at 5.15 is still in a persistent backup, +21bp over one month and +6bp versus the prior freeze at 5.09, with WTI 103.66 and Brent 109.55 holding term-premium support and VIX 18.44 offering no risk-off bid for duration. That is the clean continuation; fading it because front-end STIR has lagged would be premature. The book short in SOFR_2027-03 from 4.6217 versus live 4.52 is the wrong tenor: it is already ~10bp adverse, the freeze supplies no independent Mar27 uptrend, and adding would only average a loser. Close the Mar27 pay and replace it with a US 10Y pay; USDJPY 158.245 is the same higher-yield impulse in FX but is only a live print, so rates are cleaner overnight.",
+      "run_id": "overnight-20261020",
+      "schema_version": 1,
+      "thesis": "US 10Y at 5.15 is still in a persistent backup, +21bp over one month and +6bp versus the prior freeze at 5.09, with WTI 103.66 and Brent 109.55 holding term-premium support and VIX 18.44 offering no risk-off bid for duration. That is the clean continuation; fading it because front-end STIR has lagged would be premature. The book short in SOFR_2027-03 from 4.6217 versus live 4.52 is the wrong tenor: it is already ~10bp adverse, the freeze supplies no independent Mar27 uptrend, and adding would only average a loser. Close the Mar27 pay and replace it with a US 10Y pay; USDJPY 158.245 is the same higher-yield impulse in FX but is only a live print, so rates are cleaner overnight."
     }
   ],
   "schema_version": 1,

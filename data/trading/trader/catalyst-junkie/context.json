@@ -65,8 +65,21 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "1e1e3682bfd8d0530cca83e4aeff52558ca20756b3ab0889d1b6d8d0cb0d410c",
-  "open_positions": [],
+  "memory_context_sha256": "c268aaeebe039c38f6d8576b803cea9e39ea8c38946b35fc5f7458f62640c4d7",
+  "open_positions": [
+    {
+      "asset_class": "rates",
+      "conviction": 67,
+      "current_notional_usd": 20000000.0,
+      "entry_mark": 4.52,
+      "instrument": "SOFR_2027-03",
+      "opened_at": "2026-10-20T09:31:20.120731-04:00",
+      "position_id": "pos-fca0c79a2e45",
+      "risk_capital_usd": 200000.0,
+      "side": "short",
+      "trade_id": "trd-trader-catalyst-junkie-pos-fca0c79a2e45"
+    }
+  ],
   "owner_id": "catalyst-junkie",
   "owner_type": "trader",
   "postmortems_due": [],
@@ -76,8 +89,8 @@
     "axes": {
       "chase_pressure": {
         "band": "elevated",
-        "trend": "up",
-        "value": 0.41
+        "trend": "down",
+        "value": 0.36
       },
       "complacency": {
         "band": "calm",
@@ -91,13 +104,13 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.24
+        "trend": "down",
+        "value": 0.22
       },
       "frustration": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.16
+        "trend": "down",
+        "value": 0.14
       },
       "revenge_pressure": {
         "band": "calm",
@@ -127,11 +140,6 @@
       {
         "kind": "flat_with_market",
         "magnitude": 1.0,
-        "run_id": "overnight-20261015"
-      },
-      {
-        "kind": "flat_with_market",
-        "magnitude": 1.0,
         "run_id": "overnight-20261016"
       },
       {
@@ -142,9 +150,9 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "4d0d316ec98a0876c9c38c3d408de0c116411df2ae07ff58f001f1629958eb55",
+    "state_sha256": "ee2a7926441eb416d2f2e7c22fd8d23ba4e4b576f3e633e60bfd6ac2eb7afde5",
     "streaks": {
-      "flat_cycles": 13,
+      "flat_cycles": 0,
       "session_loss": 0,
       "session_win": 0
     }

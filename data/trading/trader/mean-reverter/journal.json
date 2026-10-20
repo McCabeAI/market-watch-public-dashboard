@@ -1058,6 +1058,62 @@
       "run_id": "overnight-20261019",
       "schema_version": 1,
       "thesis": "Cash SOFR at 3.89 versus March 2027 at 4.485 still leaves about 60bp of forward premium, which is the stretched policy path to fade rather than a trend to chase. The existing receive from 4.58 is already harvesting that compression at a 4.485 live mark. Brent at 109.86 and the US 10-year at 5.09 can delay further terminal fade, which argues against adding size but does not retire the residual gap. Hold the 10 million March 2027 receive."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 10000000,
+          "position_id": "pos-1477172adb86",
+          "rationale": "Keep the 10 million March 2027 SOFR receive from 4.58, live 4.52; 65bp of hikes versus cash still looks like a crowded overshoot.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-20T09:31:20.120731-04:00",
+      "conviction": 61,
+      "decision_fingerprint": "08b99063bed7b5336a2e35c8826e4f61b5d47251685dce179d87749ae2429e25",
+      "event_id": "jde-717796fc96fa4885",
+      "funding_view": null,
+      "invalidation": "SOFR_2027-03 implied rate revisits 4.58 or higher, or WTI 103.66 / Brent 109.55 hold or extend and drag US 10Y through 5.15 in a way that validates the 4.52/4.71 hike path instead of an overshoot.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-1477172adb86"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "0a40da5b0f0ff0df78dde4106e5ecf91ca13196f06e14df66381e7309dfaedf4",
+      "outcome_links": [],
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "9757061e82e2c79068f08234aa6850ac6c983852185b4ee2f48f94818800c7cb"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-20T09:31:20.120731-04:00",
+        "evidence_hash": "124708b9bd87462ac7aeab44ae0d717031c41157f553d267db2c78478656b8fd",
+        "overnight_run_id": "overnight-20261020",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "SOFR Mar27 at 4.52 still prices 65bp of hikes versus 3.87 cash, and Sep27 at 4.71 plus US 10Y at 5.15 keep that re-hiking path looking like a crowded overshoot, so the existing receive remains the fade. The long from 4.58 is already working about 6bp; rank-10 size and WTI 103.66 / Brent 109.55 still bid argue against adding overnight. CA 2Y +12bp in one day and CORRA Mar27 at 3.01 versus 2.26 cash are statistically stretched, but oil keeps the hawkish impulse live and there is no confirmed reversal catalyst, so that fade is not opened. Hold the 10mm SOFR Mar27 receive and wait for the energy-led scare to exhaust before adding or rotating.",
+      "run_id": "overnight-20261020",
+      "schema_version": 1,
+      "thesis": "SOFR Mar27 at 4.52 still prices 65bp of hikes versus 3.87 cash, and Sep27 at 4.71 plus US 10Y at 5.15 keep that re-hiking path looking like a crowded overshoot, so the existing receive remains the fade. The long from 4.58 is already working about 6bp; rank-10 size and WTI 103.66 / Brent 109.55 still bid argue against adding overnight. CA 2Y +12bp in one day and CORRA Mar27 at 3.01 versus 2.26 cash are statistically stretched, but oil keeps the hawkish impulse live and there is no confirmed reversal catalyst, so that fade is not opened. Hold the 10mm SOFR Mar27 receive and wait for the energy-led scare to exhaust before adding or rotating."
     }
   ],
   "schema_version": 1,

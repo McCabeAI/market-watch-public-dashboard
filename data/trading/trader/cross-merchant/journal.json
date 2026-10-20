@@ -1072,6 +1072,62 @@
       "run_id": "overnight-20261019",
       "schema_version": 1,
       "thesis": "Brent at 109.86 and WTI at 101.41 still price Canada as the surplus energy exporter and Japan as the importer, so long CADJPY is the cleanest G10 expression of that terms-of-trade gap without a dollar overlay. The live long is working at 111.59 versus 110.90, and AONIA at 4.60 versus CORRA at 2.27 is the same known Australia-Canada cash wedge rather than a new shock, so faded AUDCAD stays shut."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CADJPY",
+          "notional_usd": 15000000,
+          "position_id": "pos-44de67c4b24f",
+          "rationale": "Keep the 15 million CADJPY long; the CA-JP carry, curve, and oil stack remains intact.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-20T09:31:20.120731-04:00",
+      "conviction": 64,
+      "decision_fingerprint": "3176830085f2b5ec677e8c65140c6da9b64e8c0d99f4fd8294af0bf427891d82",
+      "event_id": "jde-102ffc68bbe2466a",
+      "funding_view": null,
+      "invalidation": "The CA-JP relative-value case fails if CADJPY gives back the post-entry advance through the only packet entry in hand (110.8978) alongside a reversal in WTI and/or the CA-JP 10Y gap (3.93 vs 2.935), or if BoJ/MoF JPY action reprices the yen independently of the Canadian differential. Additional technical levels: null.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-44de67c4b24f"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "6a0fb67b20814792d5c7fdc90bec37c9aba9444c8d7e663c9e3e9a984eb03364",
+      "outcome_links": [],
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "8b1c4dc0c34ca9d3a2e336cf4265c4a8184c9e07af75f47c2f7d6c06d2b57f1e"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-20T09:31:20.120731-04:00",
+        "evidence_hash": "124708b9bd87462ac7aeab44ae0d717031c41157f553d267db2c78478656b8fd",
+        "overnight_run_id": "overnight-20261020",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Keep the working long CADJPY 15 million from 110.8978 versus live 112.438. CADJPY still isolates the Canada-minus-Japan carry, curve, and oil-exporter versus energy-importer differential without USD policy or USD risk-beta contamination. Do not switch into USDCAD, USDJPY, EURJPY, or EURCAD, and do not add on the oil tape.",
+      "run_id": "overnight-20261020",
+      "schema_version": 1,
+      "thesis": "Keep the working long CADJPY 15 million from 110.8978 versus live 112.438. CADJPY still isolates the Canada-minus-Japan carry, curve, and oil-exporter versus energy-importer differential without USD policy or USD risk-beta contamination. Do not switch into USDCAD, USDJPY, EURJPY, or EURCAD, and do not add on the oil tape."
     }
   ],
   "schema_version": 1,

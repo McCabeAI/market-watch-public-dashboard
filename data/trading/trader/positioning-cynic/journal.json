@@ -1062,6 +1062,62 @@
       "run_id": "overnight-20261019",
       "schema_version": 1,
       "thesis": "The crowded occupancy is long USDCAD plus two-way March 2027 CORRA, so the sparse expression is the existing USDCAD short, not a new Canadian-rates receive. Brent at 109.86 still supports CAD even though SOFR at 3.89 versus CORRA at 2.27 is a real dollar rate cushion the long-USDCAD crowd already owns. Hold the 15 million short from 1.42; do not recycle the CAD view into March 2027 CORRA."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDCAD",
+          "notional_usd": 15000000,
+          "position_id": "pos-ccb6655acbad",
+          "rationale": "Keep the 15 million USDCAD short from 1.42459 versus live 1.4074; do not add at the crowded CAD-bullish print.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-20T09:31:20.120731-04:00",
+      "conviction": 61,
+      "decision_fingerprint": "feca6fa3c3dd014b32717e5ecf830b03b8d16d0b51a2ea45482f2d1966332fc7",
+      "event_id": "jde-3a91996ba4434385",
+      "funding_view": null,
+      "invalidation": "Cut or exit if USDCAD reclaims the 1.42459 entry, or if the seat is asked to add notional at 1.4074 without positioning. Do not substitute New Zealand rates overnight while New Zealand is closed.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-ccb6655acbad"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "46faa37fbfbfba38b94ab9dfa9f81c70d7808e8e5f4d033a52a73afc89c08d8f",
+      "outcome_links": [],
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "46021ea597f60fce610e120ffbc7e8db034d77174004ae84b9b13a01f42a7007"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-20T09:31:20.120731-04:00",
+        "evidence_hash": "124708b9bd87462ac7aeab44ae0d717031c41157f553d267db2c78478656b8fd",
+        "overnight_run_id": "overnight-20261020",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The working short USDCAD from 1.42459 still has the ownership edge versus 1.4074; CAD-bullish is the crowded side after the rally, not a reason to add. SOFR Mar27 at 4.52 versus cash 3.87 and CORRA Mar27 at 3.01 versus 2.26 already embed substantial easing, so cheap-versus-cash is not an entry, and receiving either front end would be the crowded desk expression. Another seat is already long USDCAD at 1.4074 against WTI 103.66, which is a fade of the same oil-CAD move rather than a signal to flip or to chase a new short. Hold the existing 15,000,000; do not add, do not receive, and do not open a fresh USDCAD short at live 1.40739 while CME positioning is unavailable.",
+      "run_id": "overnight-20261020",
+      "schema_version": 1,
+      "thesis": "The working short USDCAD from 1.42459 still has the ownership edge versus 1.4074; CAD-bullish is the crowded side after the rally, not a reason to add. SOFR Mar27 at 4.52 versus cash 3.87 and CORRA Mar27 at 3.01 versus 2.26 already embed substantial easing, so cheap-versus-cash is not an entry, and receiving either front end would be the crowded desk expression. Another seat is already long USDCAD at 1.4074 against WTI 103.66, which is a fade of the same oil-CAD move rather than a signal to flip or to chase a new short. Hold the existing 15,000,000; do not add, do not receive, and do not open a fresh USDCAD short at live 1.40739 while CME positioning is unavailable."
     }
   ],
   "schema_version": 1,

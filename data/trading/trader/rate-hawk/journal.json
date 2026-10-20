@@ -1393,6 +1393,92 @@
       "run_id": "overnight-20261019",
       "schema_version": 1,
       "thesis": "Cash SOFR at 3.89 versus September 2027 at 4.675 still sits well below the US 10-year at 5.09, so the 2027 terminal remains the underpriced higher-rate residual even after the mark from the 4.75 pay. Brent at 109.86 and euro inflation at a three-year high keep a goods-price impulse in the reaction function; that is even less in AONIA June 2027 at 4.81 versus cash 4.60 and still supports the CORRA March 2027 pay at 2.99 versus cash 2.27. The three existing pays already own that residual; do not add, cut, or rotate."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-09",
+          "notional_usd": 25000000,
+          "position_id": "pos-c9184707c12b",
+          "rationale": "Keep the 25 million September 2027 SOFR pay; oil and US 10-year at 5.15 still support a higher terminal, but about 84bp is already priced so do not add.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 6250000,
+          "position_id": "pos-2709875e8c9c",
+          "rationale": "Keep the 6.25 million March 2027 CORRA pay; CA 2-year at 3.33 versus the 3.01 strip is the hawkish dislocation, size already small.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-06",
+          "notional_usd": 25000000,
+          "position_id": "pos-9cbf3f27dfff",
+          "rationale": "Keep the 25 million June 2027 AONIA pay; only about 23bp of hikes are priced versus cash 4.60.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-20T09:31:20.120731-04:00",
+      "conviction": 62,
+      "decision_fingerprint": "786232b31690470d01507e6db6dfe471f88e6a158e694b590a9d5b38b7ca7398",
+      "event_id": "jde-3165344910704f8d",
+      "funding_view": null,
+      "invalidation": "Hawkish residual dies if CA 2Y gives back the +12bp without CORRA Mar27 moving up through 3.01, if AONIA Jun27 compresses from 4.83 toward cash 4.60, or if SOFR Sep27 cheapens through 4.71 toward Mar27 4.52 while WTI/Brent reverse from 103.66/109.55 and the skip-Oct/hike-Dec path is taken as a lower terminal rather than a delayed hike.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-2709875e8c9c",
+        "pos-9cbf3f27dfff",
+        "pos-c9184707c12b"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "a0ec90833b06d5a9cb99e195194693d2c2a906c07bd306360a5a4bb61925d52d",
+      "outcome_links": [],
+      "owner_id": "rate-hawk",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "366ddc33693159ac197c89473bf58f38f804f1cf5596ce2b5966b21bdbda081b"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-20T09:31:20.120731-04:00",
+        "evidence_hash": "124708b9bd87462ac7aeab44ae0d717031c41157f553d267db2c78478656b8fd",
+        "overnight_run_id": "overnight-20261020",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Oil at WTI 103.66 and Brent 109.55 is a persistence impulse, Canadian cash has already re-priced hawkish while March 2027 CORRA at 3.01 still sits through the 2-year, and June 2027 AONIA only prices about 23bp of hikes versus about 84bp in September 2027 SOFR. The book already pays September 2027 SOFR, March 2027 CORRA, and June 2027 AONIA, all adverse versus entry, so the existing pays still map to underpriced path risk rather than a cover. Hold all three shorts; no new tenor overnight.",
+      "run_id": "overnight-20261020",
+      "schema_version": 1,
+      "thesis": "Oil at WTI 103.66 and Brent 109.55 is a persistence impulse, Canadian cash has already re-priced hawkish while March 2027 CORRA at 3.01 still sits through the 2-year, and June 2027 AONIA only prices about 23bp of hikes versus about 84bp in September 2027 SOFR. The book already pays September 2027 SOFR, March 2027 CORRA, and June 2027 AONIA, all adverse versus entry, so the existing pays still map to underpriced path risk rather than a cover. Hold all three shorts; no new tenor overnight."
     }
   ],
   "schema_version": 1,

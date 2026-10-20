@@ -1060,6 +1060,62 @@
       "run_id": "overnight-20261019",
       "schema_version": 1,
       "thesis": "Cash AONIA is still 4.60 while March 2027 AONIA is 4.765, so the implied path still prices a hike gap that cash has not delivered. The book already receives 4.83 on 25 million of that contract, which keeps collecting the cash-implied differential and already shows a 6.5bp mark-to-market buffer. Brent at 109.86 is an oil-price impulse, not a cash-rate print, so it does not pay to flatten a funded receive. Hold the existing AONIA receive until cash itself moves."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-03",
+          "notional_usd": 25000000,
+          "position_id": "pos-524ab67108ee",
+          "rationale": "Keep the 25 million March 2027 AONIA receive from 4.83, live 4.785; cash 4.60 still pays the receiver if policy is unchanged.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-20T09:31:20.120731-04:00",
+      "conviction": 74,
+      "decision_fingerprint": "523b1046d843eef80de9e07c2c7f21e4c4b640188fdf25c0ddcb494228644fed",
+      "event_id": "jde-91a31a79c4a448f2",
+      "funding_view": null,
+      "invalidation": "RBA cash-policy tightening from 4.60, or a large persistent AONIA Mar27 path re-pricing higher that is not a small implied backup. A modest retrace toward the 4.83 entry is not invalidation. Hormuz only invalidates if it lifts cash policy or produces that large persistent re-pricing.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-524ab67108ee"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "ed3c01b62fac4fc0cb91c82f199c4f20dd9fd028e1f43cea56b8623baa73bcc8",
+      "outcome_links": [],
+      "owner_id": "carry-is-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "931bb62eedccb5c8a89f8b4f071afbcf40f2368cc8f3084fdb455711a70ff379"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-20T09:31:20.120731-04:00",
+        "evidence_hash": "124708b9bd87462ac7aeab44ae0d717031c41157f553d267db2c78478656b8fd",
+        "overnight_run_id": "overnight-20261020",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Keep the working AONIA Mar27 receive. Cash AONIA at 4.60 versus Mar27 at 4.785 still pays the receiver about 18.5bp if policy is unchanged, and the seat is already 4.5bp in the money from 4.83. Hormuz is a live energy catalyst with WTI 103.66 and Brent 109.55, but it has not moved RBA cash and the implied path has eased rather than suffered a large persistent backup. A carry receive is not cut on an exciting oil headline or a small implied backup; it is held until cash policy changes or the Mar27 path is durably re-priced.",
+      "run_id": "overnight-20261020",
+      "schema_version": 1,
+      "thesis": "Keep the working AONIA Mar27 receive. Cash AONIA at 4.60 versus Mar27 at 4.785 still pays the receiver about 18.5bp if policy is unchanged, and the seat is already 4.5bp in the money from 4.83. Hormuz is a live energy catalyst with WTI 103.66 and Brent 109.55, but it has not moved RBA cash and the implied path has eased rather than suffered a large persistent backup. A carry receive is not cut on an exciting oil headline or a small implied backup; it is held until cash policy changes or the Mar27 path is durably re-priced."
     }
   ],
   "schema_version": 1,

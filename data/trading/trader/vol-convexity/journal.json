@@ -1014,6 +1014,60 @@
       "run_id": "overnight-20261019",
       "schema_version": 1,
       "thesis": "VIX is 16.46 against Brent 109.86, euro inflation at a three-year high, the S&P near 7659, and policy strips above cash, with no listed options surface, strikes, or implied vols in the freeze. That is underpriced event convexity with uncertain timing, so spot and cash are the wrong instruments while equity vol stays contained. With the book flat and no markable convex payoff, standing aside dominates inventing a vol surface."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Remain flat; no markable listed-vol surface, and linear rates or equity would not be convexity.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-20T09:31:20.120731-04:00",
+      "conviction": 70,
+      "decision_fingerprint": "cd2dcb382b8f344bd04c8b64aedc14d1ec72f4aa18f61b6fb6332e3bef54868d",
+      "event_id": "jde-b230c67f4ca34192",
+      "funding_view": null,
+      "invalidation": "Re-scan if a markable listed-vol surface appears, if Hormuz follow-through reprices oil-to-rates without the Mar27-cash 65bp cushion, if UST 2s/5s/30s prints allow a curve expression, or if NZ reopen posts NEW rates levels. A collapse in Mar27 toward cash that shows the hike path as the misprice would flip the rates candidate from rejected pay to a receive study, still not an options OPEN.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "779dca25d1d7b4ee5d170344d33ba672a28947041b1e91878b32148dfc61d360",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "0bbc7b67c88337b83eabd31be24ef197da2d8d28a6c0e49f2f2ad0ef9baf26ba"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-20T09:31:20.120731-04:00",
+        "evidence_hash": "124708b9bd87462ac7aeab44ae0d717031c41157f553d267db2c78478656b8fd",
+        "overnight_run_id": "overnight-20261020",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hormuz is overnight binary risk and VIX is already 18.44 versus 16.46, so linear equity spot is the wrong instrument: escalation gaps indexes down, de-escalation squeezes them, and neocloud credit is idiosyncratic. US 10Y at 5.15 and SOFR Mar27 at 4.52 versus 3.87 cash already embed a 65bp hike path, so paying rates overnight is a directional inflation bet, not cheap convexity. Options are unmarkable with no IV surface in the frozen packet, and missing 2s/5s/30s plus NZ-closed NEW marks block a curve or NZ rates substitute. Book stays flat rather than forcing a linear expression.",
+      "run_id": "overnight-20261020",
+      "schema_version": 1,
+      "thesis": "Hormuz is overnight binary risk and VIX is already 18.44 versus 16.46, so linear equity spot is the wrong instrument: escalation gaps indexes down, de-escalation squeezes them, and neocloud credit is idiosyncratic. US 10Y at 5.15 and SOFR Mar27 at 4.52 versus 3.87 cash already embed a 65bp hike path, so paying rates overnight is a directional inflation bet, not cheap convexity. Options are unmarkable with no IV surface in the frozen packet, and missing 2s/5s/30s plus NZ-closed NEW marks block a curve or NZ rates substitute. Book stays flat rather than forcing a linear expression."
     }
   ],
   "schema_version": 1,

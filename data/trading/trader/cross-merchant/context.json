@@ -106,14 +106,14 @@
     "nav_usd": 100007496.84,
     "net_pnl_usd": 7496.84,
     "pressure_flags": [],
-    "prior_competition_rank": 5,
-    "rank_change": 0,
+    "prior_competition_rank": 3,
+    "rank_change": 2,
     "raw_pnl_rank": 5,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 150000.0,
     "risk_capital_utilization": 0.015,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -114609.09,
     "status": "ok"
   },
   "learning": {
@@ -124,7 +124,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "6a0fb67b20814792d5c7fdc90bec37c9aba9444c8d7e663c9e3e9a984eb03364",
+  "memory_context_sha256": "38ff4a32245ba9bae908c135f93f297513604bc3fa6452a342a6be0c07153640",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -153,7 +153,7 @@
       },
       "complacency": {
         "band": "calm",
-        "trend": "down",
+        "trend": "flat",
         "value": 0.18
       },
       "defensiveness": {
@@ -164,7 +164,7 @@
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.18
+        "value": 0.17
       },
       "frustration": {
         "band": "calm",
@@ -179,7 +179,7 @@
       "self_trust": {
         "band": "steady",
         "trend": "flat",
-        "value": 0.5
+        "value": 0.51
       },
       "thesis_attachment": {
         "band": "calm",
@@ -199,26 +199,26 @@
       {
         "kind": "rank_gain_major",
         "magnitude": 1.0,
-        "run_id": "overnight-20261015"
-      },
-      {
-        "kind": "rank_gain_major",
-        "magnitude": 1.0,
         "run_id": "overnight-20261016"
       },
       {
         "kind": "self_report_admission_pressure_distorting",
         "magnitude": 1.0,
         "run_id": "overnight-20261016"
+      },
+      {
+        "kind": "session_gain",
+        "magnitude": 0.22921818,
+        "run_id": "overnight-20261020"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "8b1c4dc0c34ca9d3a2e336cf4265c4a8184c9e07af75f47c2f7d6c06d2b57f1e",
+    "state_sha256": "acbf2b71dd008c623ba365d6ac453ffef0171e5ae6847ffffb36243378b61f26",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
-      "session_win": 1
+      "session_win": 2
     }
   },
   "recent_closed_trades": [

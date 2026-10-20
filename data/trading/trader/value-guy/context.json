@@ -32,16 +32,16 @@
   ],
   "as_of": "2026-10-20T09:31:20.120731-04:00",
   "calibration": {
-    "average_holding_seconds": 234247,
-    "average_realized_pnl_usd": -56000.0,
-    "breakeven": 0,
+    "average_holding_seconds": 383514,
+    "average_realized_pnl_usd": -28000.0,
+    "breakeven": 1,
     "by_asset_class": {
       "rates_rv": {
-        "count": 1,
+        "count": 2,
         "total_realized_pnl_usd": -56000.0
       }
     },
-    "closed_trade_count": 1,
+    "closed_trade_count": 2,
     "conviction_buckets": {
       "high": {
         "average_pnl_usd": null,
@@ -54,8 +54,8 @@
         "hit_rate": null
       },
       "medium": {
-        "average_pnl_usd": -56000.0,
-        "count": 1,
+        "average_pnl_usd": -28000.0,
+        "count": 2,
         "hit_rate": 0.0
       }
     },
@@ -77,7 +77,7 @@
     "nav_usd": 99943343.2,
     "net_pnl_usd": null,
     "pressure_flags": [],
-    "prior_competition_rank": 11,
+    "prior_competition_rank": 13,
     "rank_change": null,
     "raw_pnl_rank": null,
     "recent_pattern": "flat",
@@ -95,21 +95,8 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "e5bae44927f36cf93e141fe8dac30776254015fdde7d158d459aaa579a9c32fa",
-  "open_positions": [
-    {
-      "asset_class": "rates_rv",
-      "conviction": 56,
-      "current_notional_usd": 80000000.0,
-      "entry_mark": -23.0,
-      "instrument": "NZ-US_10Y",
-      "opened_at": "2026-10-14T05:31:38.673189-04:00",
-      "position_id": "pos-f895a4694dd7",
-      "risk_capital_usd": 800000.0,
-      "side": "short",
-      "trade_id": "trd-trader-value-guy-pos-f895a4694dd7"
-    }
-  ],
+  "memory_context_sha256": "b9da1eb12d5a6e1a05e140ab9b6a5bb28aa19ead4b4858d74cc2949af05f9f40",
+  "open_positions": [],
   "owner_id": "value-guy",
   "owner_type": "trader",
   "postmortems_due": [],
@@ -119,8 +106,8 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.16
+        "trend": "up",
+        "value": 0.17
       },
       "complacency": {
         "band": "calm",
@@ -134,13 +121,13 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.18
+        "trend": "up",
+        "value": 0.24
       },
       "frustration": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.13
+        "trend": "up",
+        "value": 0.15
       },
       "revenge_pressure": {
         "band": "calm",
@@ -168,14 +155,14 @@
     "profile_version": 1,
     "recent_events": [
       {
-        "kind": "flat_with_market",
+        "kind": "rank_drop_minor",
         "magnitude": 1.0,
-        "run_id": "overnight-20261013"
+        "run_id": "overnight-20261020"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "0c45a7f72f0631853adfdf3b7f2102df0e14a2cfd78dcf43c42afdf8bb401cf1",
+    "state_sha256": "09a10fcf56f30c81ebfe42003e351504b24b3b4625f451c1f65ae895db16be43",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
@@ -183,6 +170,17 @@
     }
   },
   "recent_closed_trades": [
+    {
+      "asset_class": "rates_rv",
+      "closed_at": "2026-10-20T09:31:20.120731-04:00",
+      "conviction": 56,
+      "holding_duration_seconds": 532781,
+      "instrument": "NZ-US_10Y",
+      "opened_at": "2026-10-14T05:31:38.673189-04:00",
+      "realized_pnl_usd": 0.0,
+      "side": "short",
+      "trade_id": "trd-trader-value-guy-pos-f895a4694dd7"
+    },
     {
       "asset_class": "rates_rv",
       "closed_at": "2026-09-22T15:40:57.474758-04:00",

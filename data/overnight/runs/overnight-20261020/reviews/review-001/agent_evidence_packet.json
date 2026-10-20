@@ -1,0 +1,841 @@
+{
+  "base_evidence_cutoff": "2026-10-20T09:31:20.120731-04:00",
+  "base_packet_sha256": "0c4855f44a7ca8809aaf1389c4a322dbb24b500cc6c885ddf449b2a204495b32",
+  "competition": {
+    "flat_book_pnl": "A flat seat has zero net financing/competition P&L: paper NAV earning SOFR is benchmarked at SOFR, so those flows cancel, and shocked-risk financing is zero.",
+    "funding_basis": "Official NY Fed SOFR ACT/360 is the zero-return competition benchmark, not free alpha. Every seat has $100m paper NAV that may be described as earning SOFR, but that capital is equally funded/benchmarked at SOFR so those flows cancel. Deployed shocked-risk capital pays the same official SOFR on trusted standard-shock risk capital: the absolute MTM loss from a 1% adverse spot move, a 100bp (1 percentage point) adverse outright rate move, or a 100bp adverse curve/RV spread move under the trusted duration-1 P&L convention. Equal risk capital receives equal financing treatment across asset classes. Notional is descriptive, not the funding base. A completely flat book \u2014 including no-trade-skeptic \u2014 therefore has zero net financing/competition P&L from SOFR cash or funding economics. Positive financing/carry alpha requires an explicit markable strategy that earns above SOFR or funds below SOFR. Weekends and holidays carry the last applicable published fixing until the next fixing. If official fixing history cannot be established, new funding accrual fails closed and prior canonical balances are preserved.",
+    "funding_convention": "ACT/360",
+    "funding_day_count": 360,
+    "funding_observation_date": "2026-10-19",
+    "funding_rate_annual": 0.0387,
+    "funding_source": "NY_FED",
+    "funding_source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr",
+    "instruction": "Do not optimize for gross notional or fill available capacity. Size risk from plausible adverse paths and historical excursions while staying inside the trusted risk-capital and drawdown limits. Flat cash at SOFR is the zero benchmark, not a source of alpha. The no-trade-skeptic must include a structured funding_view on every new risk or NO_TRADE thesis: the frozen official SOFR fixing, the relevant SR3 forward-curve view, its own assessment of whether realized funding will print higher, lower, or about the same as the curve, and the implication for remaining at the zero SOFR benchmark versus paying SOFR on shocked-risk capital.",
+    "metric": "net_pnl_after_funding",
+    "no_trade_allowed": true,
+    "objective": "Finish with the highest cumulative net paper P&L across the 14 standing seats.",
+    "risk_limits": {
+      "max_drawdown_usd": 5000000,
+      "paper_nav_usd": 100000000,
+      "risk_capital_limit_usd": 10000000,
+      "risk_capital_method": "mtm_standard_1pct_move"
+    }
+  },
+  "cross_assets": {
+    "generated_at": "2026-10-20T13:49:27Z",
+    "marks": [
+      {
+        "as_of": "2026-10-19",
+        "id": "WTI",
+        "label": "WTI futures",
+        "source": "Yahoo Finance",
+        "status": "ok",
+        "symbol": "CL=F",
+        "unit": "USD/bbl",
+        "value": 103.66000366210938
+      },
+      {
+        "as_of": "2026-10-19",
+        "id": "BRENT",
+        "label": "Brent futures",
+        "source": "Yahoo Finance",
+        "status": "ok",
+        "symbol": "BZ=F",
+        "unit": "USD/bbl",
+        "value": 109.55000305175781
+      },
+      {
+        "as_of": "2026-10-19",
+        "id": "GOLD",
+        "label": "Gold futures",
+        "source": "Yahoo Finance",
+        "status": "ok",
+        "symbol": "GC=F",
+        "unit": "USD/oz",
+        "value": 4160.10009765625
+      },
+      {
+        "as_of": "2026-10-19",
+        "id": "SP500",
+        "label": "S&P 500",
+        "source": "FRED / original series publisher",
+        "status": "ok",
+        "symbol": "SP500",
+        "unit": "index",
+        "value": 7690.73
+      },
+      {
+        "as_of": "2026-10-19",
+        "id": "NASDAQ",
+        "label": "Nasdaq Composite",
+        "source": "FRED / original series publisher",
+        "status": "ok",
+        "symbol": "NASDAQCOM",
+        "unit": "index",
+        "value": 26430.89
+      },
+      {
+        "as_of": "2026-10-19",
+        "id": "DOW",
+        "label": "Dow Jones",
+        "source": "FRED / original series publisher",
+        "status": "ok",
+        "symbol": "DJIA",
+        "unit": "index",
+        "value": 51966.03
+      },
+      {
+        "as_of": "2026-10-19",
+        "id": "RUSSELL",
+        "label": "Russell 2000",
+        "source": "Yahoo Finance",
+        "status": "ok",
+        "symbol": "^RUT",
+        "unit": "index",
+        "value": 2728.300048828125
+      },
+      {
+        "as_of": "2026-10-19",
+        "id": "COPPER",
+        "label": "Copper futures",
+        "source": "Yahoo Finance",
+        "status": "ok",
+        "symbol": "HG=F",
+        "unit": "USD/lb",
+        "value": 6.538000106811523
+      },
+      {
+        "as_of": "2026-10-19",
+        "id": "VIX",
+        "label": "VIX",
+        "source": "FRED / original series publisher",
+        "status": "ok",
+        "symbol": "VIXCLS",
+        "unit": "points",
+        "value": 18.44
+      }
+    ],
+    "provenance": "frozen_market_state",
+    "status": "ok"
+  },
+  "desk": {
+    "cash": {
+      "AONIA": 4.6,
+      "CORRA": 2.26,
+      "ESTR": 2.441,
+      "SOFR": 3.87,
+      "TONA": 1.227
+    },
+    "cross_assets": {
+      "BRENT": 109.55,
+      "COPPER": 6.538,
+      "DOW": 51966.03,
+      "GOLD": 4160.1,
+      "NASDAQ": 26430.89,
+      "RUSSELL": 2728.3,
+      "SP500": 7690.73,
+      "VIX": 18.44,
+      "WTI": 103.66
+    },
+    "eligibility": "The United States, Canada, Australia, the euro area, and Japan are eligible for new risk; New Zealand is restricted for new risk because due household income, retail, spending, wages and domestic-demand releases could not be verified, and official New Zealand government yields are unavailable.",
+    "fx": {
+      "AUDCAD": 0.9831964152352503,
+      "AUDJPY": 110.54891710231516,
+      "AUDNZD": 1.23176499875529,
+      "AUDUSD": 0.6985934777196914,
+      "CADJPY": 112.4382833270034,
+      "EURAUD": 1.6068,
+      "EURCAD": 1.5798,
+      "EURJPY": 177.63,
+      "EURUSD": 1.1225,
+      "GBPUSD": 1.333056231815213,
+      "NZDUSD": 0.5671483427647535,
+      "USDCAD": 1.4073942093541203,
+      "USDJPY": 158.24498886414253
+    },
+    "govies": {
+      "AU_10Y": 5.314,
+      "AU_2Y": 4.919,
+      "AU_5Y": 4.976,
+      "CA_10Y": 3.93,
+      "CA_2Y": 3.33,
+      "CA_5Y": 3.64,
+      "EA_10Y": 3.42,
+      "EA_2Y": 3.08,
+      "JP_10Y": 2.935,
+      "JP_2Y": 1.904,
+      "US_10Y": 5.15,
+      "US_2Y": 4.77,
+      "US_30Y": 5.48,
+      "US_5Y": 4.94
+    },
+    "rate_rv": {
+      "AU-EA_10Y": 186.4,
+      "CA-AU_10Y": -146.4,
+      "CA-EA_10Y": 50.0,
+      "CA-US_10Y": -122.0,
+      "CA-US_2Y": -144.0,
+      "EA-US_10Y": -172.0,
+      "EA-US_2Y": -167.0,
+      "JP-US_10Y": -221.5,
+      "JP-US_2Y": -286.6
+    },
+    "stir_2027": {
+      "AONIA_2027-03": 4.785,
+      "AONIA_2027-06": 4.83,
+      "CORRA_2027-03": 3.01,
+      "CORRA_2027-06": 3.21,
+      "CORRA_2027-09": 3.35,
+      "CORRA_2027-12": 3.455,
+      "SOFR_2026-12": 4.25,
+      "SOFR_2027-03": 4.52,
+      "SOFR_2027-06": 4.67,
+      "SOFR_2027-09": 4.71,
+      "SOFR_2027-12": 4.695,
+      "TONA_2027-03": 1.68,
+      "TONA_2027-06": 1.88
+    }
+  },
+  "evidence_cutoff": "2026-10-20T09:31:20.120731-04:00",
+  "funding_context": {
+    "authority": "Official NY Fed SOFR is the realized funding-rate authority. SR3 is forward context only.",
+    "forward_summaries": {
+      "12m": null,
+      "1m": null,
+      "3m": null,
+      "6m": null
+    },
+    "notes": [
+      "Forward summaries are exact SR3 expiry-month matches only; unsupported horizons stay null.",
+      "Realized accounting never uses SR3 or a model funding forecast."
+    ],
+    "sofr": {
+      "convention": "ACT/360",
+      "day_count": 360,
+      "effective_date": "2026-10-19",
+      "percent_rate": 3.87,
+      "source": "NY_FED",
+      "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+    },
+    "sr3": {
+      "contracts": [
+        {
+          "change_from_overnight_bps": 38.0,
+          "code": "SR3Z6",
+          "expiry": "2026-12",
+          "implied_rate": 4.25,
+          "price": 95.75
+        },
+        {
+          "change_from_overnight_bps": 65.0,
+          "code": "SR3H7",
+          "expiry": "2027-03",
+          "implied_rate": 4.52,
+          "price": 95.48
+        },
+        {
+          "change_from_overnight_bps": 80.0,
+          "code": "SR3M7",
+          "expiry": "2027-06",
+          "implied_rate": 4.67,
+          "price": 95.33
+        },
+        {
+          "change_from_overnight_bps": 84.0,
+          "code": "SR3U7",
+          "expiry": "2027-09",
+          "implied_rate": 4.71,
+          "price": 95.29
+        },
+        {
+          "change_from_overnight_bps": 82.5,
+          "code": "SR3Z7",
+          "expiry": "2027-12",
+          "implied_rate": 4.695,
+          "price": 95.305
+        },
+        {
+          "change_from_overnight_bps": 80.5,
+          "code": "SR3H8",
+          "expiry": "2028-03",
+          "implied_rate": 4.675,
+          "price": 95.325
+        },
+        {
+          "change_from_overnight_bps": 79.5,
+          "code": "SR3M8",
+          "expiry": "2028-06",
+          "implied_rate": 4.665,
+          "price": 95.335
+        },
+        {
+          "change_from_overnight_bps": 79.0,
+          "code": "SR3U8",
+          "expiry": "2028-09",
+          "implied_rate": 4.66,
+          "price": 95.34
+        },
+        {
+          "change_from_overnight_bps": 77.5,
+          "code": "SR3Z8",
+          "expiry": "2028-12",
+          "implied_rate": 4.645,
+          "price": 95.355
+        },
+        {
+          "change_from_overnight_bps": 76.5,
+          "code": "SR3H9",
+          "expiry": "2029-03",
+          "implied_rate": 4.635,
+          "price": 95.365
+        },
+        {
+          "change_from_overnight_bps": 76.0,
+          "code": "SR3M9",
+          "expiry": "2029-06",
+          "implied_rate": 4.63,
+          "price": 95.37
+        },
+        {
+          "change_from_overnight_bps": 76.0,
+          "code": "SR3U9",
+          "expiry": "2029-09",
+          "implied_rate": 4.63,
+          "price": 95.37
+        },
+        {
+          "change_from_overnight_bps": 76.0,
+          "code": "SR3Z9",
+          "expiry": "2029-12",
+          "implied_rate": 4.63,
+          "price": 95.37
+        },
+        {
+          "change_from_overnight_bps": 76.5,
+          "code": "SR3H0",
+          "expiry": "2030-03",
+          "implied_rate": 4.635,
+          "price": 95.365
+        },
+        {
+          "change_from_overnight_bps": 77.5,
+          "code": "SR3M0",
+          "expiry": "2030-06",
+          "implied_rate": 4.645,
+          "price": 95.355
+        },
+        {
+          "change_from_overnight_bps": 79.0,
+          "code": "SR3U0",
+          "expiry": "2030-09",
+          "implied_rate": 4.66,
+          "price": 95.34
+        },
+        {
+          "change_from_overnight_bps": 81.0,
+          "code": "SR3Z0",
+          "expiry": "2030-12",
+          "implied_rate": 4.68,
+          "price": 95.32
+        },
+        {
+          "change_from_overnight_bps": 83.5,
+          "code": "SR3H1",
+          "expiry": "2031-03",
+          "implied_rate": 4.705,
+          "price": 95.295
+        },
+        {
+          "change_from_overnight_bps": 86.5,
+          "code": "SR3M1",
+          "expiry": "2031-06",
+          "implied_rate": 4.735,
+          "price": 95.265
+        },
+        {
+          "change_from_overnight_bps": 89.5,
+          "code": "SR3U1",
+          "expiry": "2031-09",
+          "implied_rate": 4.765,
+          "price": 95.235
+        },
+        {
+          "change_from_overnight_bps": 92.5,
+          "code": "SR3Z1",
+          "expiry": "2031-12",
+          "implied_rate": 4.795,
+          "price": 95.205
+        },
+        {
+          "change_from_overnight_bps": 95.5,
+          "code": "SR3H2",
+          "expiry": "2032-03",
+          "implied_rate": 4.825,
+          "price": 95.175
+        },
+        {
+          "change_from_overnight_bps": 98.0,
+          "code": "SR3M2",
+          "expiry": "2032-06",
+          "implied_rate": 4.85,
+          "price": 95.15
+        },
+        {
+          "change_from_overnight_bps": 101.0,
+          "code": "SR3U2",
+          "expiry": "2032-09",
+          "implied_rate": 4.88,
+          "price": 95.12
+        },
+        {
+          "change_from_overnight_bps": 103.5,
+          "code": "SR3Z2",
+          "expiry": "2032-12",
+          "implied_rate": 4.905,
+          "price": 95.095
+        },
+        {
+          "change_from_overnight_bps": 106.5,
+          "code": "SR3H3",
+          "expiry": "2033-03",
+          "implied_rate": 4.935,
+          "price": 95.065
+        },
+        {
+          "change_from_overnight_bps": 109.0,
+          "code": "SR3M3",
+          "expiry": "2033-06",
+          "implied_rate": 4.96,
+          "price": 95.04
+        },
+        {
+          "change_from_overnight_bps": 111.5,
+          "code": "SR3U3",
+          "expiry": "2033-09",
+          "implied_rate": 4.985,
+          "price": 95.015
+        },
+        {
+          "change_from_overnight_bps": 114.0,
+          "code": "SR3Z3",
+          "expiry": "2033-12",
+          "implied_rate": 5.01,
+          "price": 94.99
+        },
+        {
+          "change_from_overnight_bps": 115.5,
+          "code": "SR3H4",
+          "expiry": "2034-03",
+          "implied_rate": 5.025,
+          "price": 94.975
+        },
+        {
+          "change_from_overnight_bps": 118.5,
+          "code": "SR3M4",
+          "expiry": "2034-06",
+          "implied_rate": 5.055,
+          "price": 94.945
+        },
+        {
+          "change_from_overnight_bps": 119.5,
+          "code": "SR3U4",
+          "expiry": "2034-09",
+          "implied_rate": 5.065,
+          "price": 94.935
+        },
+        {
+          "change_from_overnight_bps": 124.0,
+          "code": "SR3Z4",
+          "expiry": "2034-12",
+          "implied_rate": 5.11,
+          "price": 94.89
+        },
+        {
+          "change_from_overnight_bps": 125.0,
+          "code": "SR3H5",
+          "expiry": "2035-03",
+          "implied_rate": 5.12,
+          "price": 94.88
+        },
+        {
+          "change_from_overnight_bps": 127.5,
+          "code": "SR3M5",
+          "expiry": "2035-06",
+          "implied_rate": 5.145,
+          "price": 94.855
+        },
+        {
+          "change_from_overnight_bps": 130.0,
+          "code": "SR3U5",
+          "expiry": "2035-09",
+          "implied_rate": 5.17,
+          "price": 94.83
+        },
+        {
+          "change_from_overnight_bps": 134.5,
+          "code": "SR3Z5",
+          "expiry": "2035-12",
+          "implied_rate": 5.215,
+          "price": 94.785
+        },
+        {
+          "change_from_overnight_bps": 135.5,
+          "code": "SR3H6",
+          "expiry": "2036-03",
+          "implied_rate": 5.225,
+          "price": 94.775
+        }
+      ],
+      "instrument": "CME Three-Month SOFR futures",
+      "product_code": "SR3"
+    },
+    "status": "ok"
+  },
+  "launch_id": "mwl-20261020T133120Z-0e652381",
+  "learning_obligations": {
+    "manifest_sha256": "d580d1a8cd6d23f918b19c2603ef07c048ffc77ae81d12391dd870348f519642",
+    "obligation_count": 0
+  },
+  "overnight_run_id": "overnight-20261020",
+  "packet_sha256": "124708b9bd87462ac7aeab44ae0d717031c41157f553d267db2c78478656b8fd",
+  "research_supplement": {
+    "central_bank_research": [
+      {
+        "headline": "Fed Vice Chair Jefferson: discount window modernization supports Treasury and repo market functioning",
+        "summary": "22 September remarks on discount window upgrades and quarter-end window use; no funds-rate path signal.",
+        "title": "Fed Vice Chair Jefferson: discount window modernization supports Treasury and repo market functioning"
+      },
+      {
+        "headline": "NY Fed SOMA Manager Perli: reserves ample; overnight rates near IORB; RMPs cut to zero",
+        "summary": "22 September speech highlighting ample reserves, overnight rates near IORB, and reduction of RMPs to zero.",
+        "title": "NY Fed SOMA Manager Perli: reserves ample; overnight rates near IORB; RMPs cut to zero"
+      },
+      {
+        "headline": "BoJ September hike implementation: ~1.25% call-rate target effective 24 September",
+        "summary": "Basic loan rate set at 1.5% with call-rate target near 1.25% effective 24 September.",
+        "title": "BoJ September hike implementation: ~1.25% call-rate target effective 24 September"
+      }
+    ],
+    "news": [
+      {
+        "headline": "Iran Strikes More Ship Engine Rooms in Ramp-Up of Hormuz Attacks",
+        "published_at": "2026-10-20T01:31:00-04:00",
+        "summary": "Iranian attacks in the Persian Gulf are striking more ships and causing more severe damage than earlier in the conflict, bringing fresh risks to energy flows from the region.",
+        "title": "Iran Strikes More Ship Engine Rooms in Ramp-Up of Hormuz Attacks"
+      },
+      {
+        "headline": "Global Oil Supply Buffer Running 'Scarily Thin,' Aramco CEO Says",
+        "summary": "Stockpiles that cushion supply shocks are scarily thin unless Hormuz reopens.",
+        "title": "Global Oil Supply Buffer Running 'Scarily Thin,' Aramco CEO Says"
+      },
+      {
+        "headline": "LNG Trade Through Hormuz Extends Rebound Despite Shipping Risks",
+        "summary": "LNG shipments through Hormuz extended a rebound that began in September.",
+        "title": "LNG Trade Through Hormuz Extends Rebound Despite Shipping Risks"
+      },
+      {
+        "headline": "China Oil Comeback Loses Steam as Iran War Drags On",
+        "summary": "Chinese oil demand recovery is faltering as the Middle East conflict and limited Iranian supply keep crude high.",
+        "title": "China Oil Comeback Loses Steam as Iran War Drags On"
+      },
+      {
+        "headline": "CoreWeave\u2019s Bond Rout Should Make the Fed Cautious",
+        "published_at": "2026-10-19T23:00:00-04:00",
+        "summary": "Corporate credit is stirring; CoreWeave bonds dropped this month.",
+        "title": "CoreWeave\u2019s Bond Rout Should Make the Fed Cautious"
+      },
+      {
+        "headline": "HSBC says CoreWeave shares to drop another 30%-plus because of structural concerns for neoclouds",
+        "published_at": "2026-10-20T00:37:00-04:00",
+        "summary": "HSBC warns CoreWeave shares could fall more than 30% on structural concerns for neocloud operators.",
+        "title": "HSBC says CoreWeave shares to drop another 30%-plus because of structural concerns for neoclouds"
+      },
+      {
+        "headline": "CoreWeave debt selloff poses limited risk to global banks, J.P. Morgan says",
+        "published_at": "2026-10-19T20:30:00-04:00",
+        "summary": "J.P. Morgan argues the CoreWeave debt selloff poses limited risk to global banks.",
+        "title": "CoreWeave debt selloff poses limited risk to global banks, J.P. Morgan says"
+      },
+      {
+        "headline": "CNBC Daily Open: Tech investors buy the dip \u2014 but debt remains a concern",
+        "published_at": "2026-10-19T14:11:00-04:00",
+        "summary": "Nasdaq rallied while tech investors bought the dip, but debt remains a concern; CoreWeave is still off menu and Oracle bonds trade near junk.",
+        "title": "CNBC Daily Open: Tech investors buy the dip \u2014 but debt remains a concern"
+      },
+      {
+        "headline": "Markets' squeal is music to Fed ears \u2014 but still too faint",
+        "published_at": "2026-10-19T23:32:00-04:00",
+        "summary": "Recent stocks and bonds selloff amounts to some tightening, but it is still faint versus the Fed\u2019s work.",
+        "title": "Markets' squeal is music to Fed ears \u2014 but still too faint"
+      },
+      {
+        "headline": "Fed to skip October but raise rates again in December, nearly all economists say",
+        "published_at": "2026-10-20T08:43:23.682000-04:00",
+        "summary": "Survey coverage suggests economists expect the Fed to skip October but raise rates again in December.",
+        "title": "Fed to skip October but raise rates again in December, nearly all economists say"
+      },
+      {
+        "headline": "ECB in No Rush to Act Amid Opposing Economic Forces, Kazaks Says",
+        "published_at": "2026-10-14T20:59:00-04:00",
+        "summary": "The ECB can take time analyzing inflation dynamics shaped by opposing global forces.",
+        "title": "ECB in No Rush to Act Amid Opposing Economic Forces, Kazaks Says"
+      },
+      {
+        "headline": "ECB\u2019s Rehn Says French Spread to Germany Has Widened Somewhat",
+        "published_at": "2026-10-19T23:44:00-04:00",
+        "summary": "French-German spreads have widened from global and country-specific factors.",
+        "title": "ECB\u2019s Rehn Says French Spread to Germany Has Widened Somewhat"
+      },
+      {
+        "headline": "TSX falls at open on weakness in miners, persistent inflation",
+        "published_at": "2026-10-20T06:27:22.885000-04:00",
+        "summary": "Canada\u2019s TSX fell at the open on weakness in miners and persistent inflation concerns.",
+        "title": "TSX falls at open on weakness in miners, persistent inflation"
+      },
+      {
+        "headline": "Ryanair CEO Predicts Historic Jump in Air Fares Next Year",
+        "published_at": "2026-10-19T21:59:00-04:00",
+        "summary": "Ryanair\u2019s CEO predicts a historic jump in air fares next year as Middle East war drives oil prices.",
+        "title": "Ryanair CEO Predicts Historic Jump in Air Fares Next Year"
+      },
+      {
+        "headline": "Asia Refiners in Dispute With Saudis Over 2027 Oil Contracts",
+        "published_at": "2026-10-19T21:44:00-04:00",
+        "summary": "Asian refiners are in dispute with Saudi Arabia over 2027 oil contracts.",
+        "title": "Asia Refiners in Dispute With Saudis Over 2027 Oil Contracts"
+      },
+      {
+        "headline": "Chipmakers Lead Korean Stock Selloff on Yield Spike, IPO Stumble",
+        "published_at": "2026-10-19T15:24:00-04:00",
+        "summary": "Chipmakers led a Korean equity selloff amid a yield spike and an IPO stumble.",
+        "title": "Chipmakers Lead Korean Stock Selloff on Yield Spike, IPO Stumble"
+      }
+    ],
+    "sources": [
+      {
+        "name": "NY Fed",
+        "what": "SOFR 3.87% effective 2026-10-19"
+      },
+      {
+        "name": "Frozen cash and STIR",
+        "what": "CORRA, AONIA, TONA, ESTR and implied policy paths as of freeze"
+      },
+      {
+        "name": "Frozen government yields",
+        "what": "US, CA, AU, EA, JP curves; NZ official yields unavailable"
+      },
+      {
+        "name": "Frozen cross-asset marks",
+        "what": "WTI, Brent, gold, U.S. equities, copper, VIX as of 2026-10-19"
+      },
+      {
+        "name": "Frozen FX",
+        "what": "G10 and selected crosses as of 2026-10-19"
+      },
+      {
+        "name": "News wire summaries",
+        "what": "Energy, credit, ECB, and equity stories through evidence cutoff"
+      }
+    ],
+    "summary": "Overnight markets traded with a firmer energy bid and a cautious risk tone: WTI near 103.66 and Brent 109.55 kept inflation angst in focus while U.S. equities held elevated levels (S&P 7690, Nasdaq 26430) and VIX sat at 18.44. Persian Gulf shipping attacks intensified, reinforcing thin-buffer warnings on oil supply even as some LNG flows through Hormuz continued to recover. Rates and credit stayed in the spotlight\u2014U.S. 10-year yields around 5.15% with mixed housing-driven headlines, while CoreWeave\u2019s debt and equity stress fed debate on whether private credit strains should make the Fed more cautious. ECB officials stressed patience amid opposing forces and somewhat wider French-German spreads. New Zealand remains off-limits for new risk until domestic demand and official yields can be verified. Watch Hormuz escalation, front-end pricing (SOFR Dec26 4.25%), and whether AI-linked credit wobble broadens."
+  },
+  "review_id": "review-001",
+  "schema_version": 1,
+  "trade_permissions": {
+    "block_why": null,
+    "blocked_expressions": [],
+    "blocked_sources": [],
+    "countries": {
+      "AU": {
+        "eligible": true,
+        "gaps": [
+          "AU.Activity.business_surveys",
+          "AU.Consumer.confidence"
+        ],
+        "scored_status": "partial"
+      },
+      "CA": {
+        "eligible": true,
+        "gaps": [
+          "CA.Consumer.confidence"
+        ],
+        "scored_status": "ok"
+      },
+      "EA": {
+        "eligible": true,
+        "gaps": [],
+        "scored_status": "ok"
+      },
+      "JP": {
+        "eligible": true,
+        "gaps": [
+          "JP.Activity.business_surveys"
+        ],
+        "scored_status": "partial"
+      },
+      "NZ": {
+        "eligible": false,
+        "gaps": [
+          "NZ.Activity.gdp_domestic_demand",
+          "NZ.Consumer.income",
+          "NZ.Consumer.retail",
+          "NZ.Consumer.spending",
+          "NZ.Labor.wages"
+        ],
+        "scored_status": "partial"
+      },
+      "US": {
+        "eligible": true,
+        "gaps": [],
+        "scored_status": "ok"
+      }
+    },
+    "coverage": "PARTIAL",
+    "eligible": true,
+    "expansion_rule": "country_and_expression_specific",
+    "hold_decisions_emitted": 0,
+    "partial_expressions": [
+      "activity:US",
+      "activity:CA",
+      "activity:AU",
+      "activity:NZ",
+      "activity:EA",
+      "activity:JP",
+      "macro:AU",
+      "macro:NZ"
+    ],
+    "quarantine_mode": "isolate",
+    "quarantine_reason": "unsupported_mark_source",
+    "quarantined_positions": [
+      {
+        "asset_class": "rates_rv",
+        "dependency": "NZ_rates",
+        "dependency_status": "unavailable",
+        "instrument": "NZ-US_10Y",
+        "live_marked": false,
+        "observation_date": null,
+        "pnl_available": false,
+        "position_id": "pos-f895a4694dd7",
+        "quarantined": true,
+        "reason": "position 'NZ-US_10Y' is research-only and unmarkable on NZ_rates (unavailable); valuation unavailable, new risk blocked for this seat",
+        "reason_code": "unsupported_mark_source",
+        "scoring": false,
+        "seat": "value-guy"
+      },
+      {
+        "asset_class": "rates_rv",
+        "dependency": "NZ_rates",
+        "dependency_status": "unavailable",
+        "instrument": "NZ-US_10Y",
+        "live_marked": false,
+        "observation_date": null,
+        "pnl_available": false,
+        "position_id": "pm-pragmatist-3afafe53c6d7",
+        "quarantined": true,
+        "reason": "position 'NZ-US_10Y' is research-only and unmarkable on NZ_rates (unavailable); valuation unavailable, new risk blocked for this seat",
+        "reason_code": "unsupported_mark_source",
+        "scoring": false,
+        "seat": "pragmatist"
+      }
+    ],
+    "restricted_seats": [
+      "pragmatist",
+      "value-guy"
+    ],
+    "seat_risk": {
+      "pragmatist": "unavailable_new_risk",
+      "value-guy": "unavailable_new_risk"
+    },
+    "source_health": [
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-Q2",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Activity.gdp_domestic_demand"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "HTTP 404",
+        "observation_period": "2026-08",
+        "retrieved_at": "2026-09-21T16:30:00Z",
+        "series_id": "US.Activity.manufacturing_surveys"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "HTTP 404",
+        "observation_period": "2026-08",
+        "retrieved_at": "2026-09-21T16:30:00Z",
+        "series_id": "US.Activity.services_surveys"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-07",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Consumer.confidence"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-07",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Consumer.income"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-08",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Consumer.retail"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-07",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Consumer.spending"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-07",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Inflation.core_pce"
+      }
+    ],
+    "synthetic_holds": false,
+    "trade_eligible_countries": [
+      "US",
+      "CA",
+      "AU",
+      "EA",
+      "JP"
+    ]
+  },
+  "type": "OVERNIGHT_AGENT_EVIDENCE_PACKET"
+}

@@ -1372,6 +1372,71 @@
       "run_id": "overnight-20261019",
       "schema_version": 1,
       "thesis": "Official SOFR is 3.89 percent on the 15 October fixing, this book is flat, and the 2027 strip already prices hikes through March at 4.485 and September at 4.675. Paying or receiving that path from cash just leases shocked-risk capital at SOFR without an edge above the official fixing. Existing books already express USDCAD, CORRA, SOFR, and AONIA, which makes those lines crowded for a flat initiator. Stay in cash; flat cash is the zero benchmark, not alpha."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Remain flat at the official SOFR benchmark; the frozen packet does not show an edge that beats 3.87 percent on shocked-risk capital.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-20T09:31:20.120731-04:00",
+      "conviction": 78,
+      "decision_fingerprint": "1e81afb9c2c7d2a96b214f5c738b357389744ce29abb9533f8c73cf641285205",
+      "event_id": "jde-94d9c06c5f264546",
+      "funding_view": {
+        "current_sofr": "Official NY Fed SOFR 3.87% effective 19 Oct, ACT/360.",
+        "forward_funding_assessment": "lower",
+        "implication": "Overnight realized funding should print near the 3.87% official fixing, below the 4.25-4.71 strip, so remaining at the zero official-SOFR benchmark keeps the cash rate without paying SOFR on shocked-risk capital. Any OPEN must beat 3.87% plus that already-steep path; the frozen packet does not show such an edge, and flat cash is not alpha.",
+        "sr3_forward_view": "Frozen SOFR strip prices a hike path well above cash: Dec26 4.25, Mar27 4.52, Jun27 4.67, Sep27 4.71, so forwards already embed substantial tightening from 3.87% through late 2027."
+      },
+      "invalidation": "A new official SOFR print away from 3.87% that the Dec26-Sep27 strip has not already discounted; a packet-supported front-end dislocation versus Dec26 4.25 / Mar27 4.52 that is independent of Hormuz oil, 10Y 5.15, and skip-Oct-hike-Dec; or NZ reopen with a NEW mispricing versus the same SR3 path that can be expressed without paying SOFR on uncompensated shocked-risk capital.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "0f1be7c1ed362caca462291be1e0feca2ccb7741c70fad051dcf7e1dce05a9f8",
+      "outcome_links": [],
+      "owner_id": "no-trade-skeptic",
+      "owner_type": "trader",
+      "payload": {
+        "funding_view": {
+          "current_sofr": "Official NY Fed SOFR 3.87% effective 19 Oct, ACT/360.",
+          "forward_funding_assessment": "lower",
+          "implication": "Overnight realized funding should print near the 3.87% official fixing, below the 4.25-4.71 strip, so remaining at the zero official-SOFR benchmark keeps the cash rate without paying SOFR on shocked-risk capital. Any OPEN must beat 3.87% plus that already-steep path; the frozen packet does not show such an edge, and flat cash is not alpha.",
+          "sr3_forward_view": "Frozen SOFR strip prices a hike path well above cash: Dec26 4.25, Mar27 4.52, Jun27 4.67, Sep27 4.71, so forwards already embed substantial tightening from 3.87% through late 2027."
+        },
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "f720e63c521b97d7f755570f8c22276d1756a314a1631f0410c325cfd80447d0"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-20T09:31:20.120731-04:00",
+        "evidence_hash": "124708b9bd87462ac7aeab44ae0d717031c41157f553d267db2c78478656b8fd",
+        "overnight_run_id": "overnight-20261020",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The overnight book is already flat, and nothing in the frozen packet clears a shocked-risk SOFR hurdle. Official SOFR is 3.87% while the SR3 strip is already 4.25 Dec26 through 4.71 Sep27, the 10Y is 5.15, and skip-Oct-hike-Dec is the crowded path sitting in that curve. Hormuz is in the tape at WTI 103.66 / Brent 109.55 with VIX only 18.44, CoreWeave is not a rates-first overnight expression, and NZ is closed so NEW cannot be used. Opening risk would pay SOFR on capital against priced, noisy, poorly timed narratives; remaining at the zero official-SOFR benchmark is the only seat that does not manufacture a trade.",
+      "run_id": "overnight-20261020",
+      "schema_version": 1,
+      "thesis": "The overnight book is already flat, and nothing in the frozen packet clears a shocked-risk SOFR hurdle. Official SOFR is 3.87% while the SR3 strip is already 4.25 Dec26 through 4.71 Sep27, the 10Y is 5.15, and skip-Oct-hike-Dec is the crowded path sitting in that curve. Hormuz is in the tape at WTI 103.66 / Brent 109.55 with VIX only 18.44, CoreWeave is not a rates-first overnight expression, and NZ is closed so NEW cannot be used. Opening risk would pay SOFR on capital against priced, noisy, poorly timed narratives; remaining at the zero official-SOFR benchmark is the only seat that does not manufacture a trade."
     }
   ],
   "schema_version": 1,

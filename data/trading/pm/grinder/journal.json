@@ -1043,6 +1043,69 @@
       "run_id": "overnight-20261019",
       "schema_version": 1,
       "thesis": "Remain in cash. United States, Canada, and Australia already price a clear rise in front-end implied rates versus today's overnight prints, while crude near 101 to 110 cuts both ways for inflation and growth. Paying March 2027 Australian overnight is the cleanest directional sketch because the strip is still only a little above cash, but that gap is a thin 16 basis points and does not survive a conservative adverse path after charging official dollar funding on the capital that path would consume. Canadian and US March 2027 contracts already embed about 72 and 60 basis points of tightening, so paying them chases a move that is in the price and receiving them fights the oil impulse. First risk from a zero book needs a wider, more one-sided expected path than anything on this tape."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Neither March 2027 SOFR pay nor US 10-year pay clears official SOFR on shocked-risk capital; the flat book stays flat.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-20T11:09:46.976022-04:00",
+      "conviction": 72,
+      "decision_fingerprint": "cbf2e71bcc4bcc50c88c5f5f62f24b431ca7311b6c72256b06568146eabaf5fc",
+      "event_id": "jde-32662b1de5014a0e",
+      "funding_view": null,
+      "invalidation": "Reopen only if a markable candidate still clears 3.87 percent SOFR on shocked capital after carry: March 2027 SOFR pay would need a discrete hawkish or oil impulse that is not already in 4.52, with trader agreement and a smaller adverse-P&L size. A US 10-year pay would need a fresh selloff catalyst beyond the 5.15 level, not a larger trend notional.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "483d5d64cfe0ca9cdcc8a1a7146f28aa7624a5be9c6afab1e752a8e39af27a6c",
+      "outcome_links": [],
+      "owner_id": "grinder",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [
+            "rank_distortion_risk"
+          ],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": {
+            "allocator_vs_noise": "short_horizon_noise",
+            "chase_temptation": "no",
+            "heater_risk": "no",
+            "judgment_effect": "sharpening",
+            "junior_vs_self": "style",
+            "protecting_gains": "not_applicable"
+          },
+          "state_sha256": "400c8618dd5ab34fab40c634dfa71f62f20440b426542942591aa9c152a66d61"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-20T09:31:20.120731-04:00",
+        "evidence_hash": "b7f0cb98152e4dabcb112b357a6f8ce215b885ffe9f45af01de21a72311c89fa",
+        "overnight_run_id": "overnight-20261020",
+        "review_id": "review-001",
+        "review_packet_id": "prp-grinder-overnight-20261020-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book is flat and neither overnight handoff pays enough expected edge after official SOFR charged on shocked-risk capital. March 2027 SOFR at 4.52 already embeds about 65bp of tightening versus 3.87 cash, so paying it is a further-hawkish bet with negative carry and a split trader book. Shorting the US 10-year at 5.15 pays a wide term premium into conflicting long/short handoffs and a 75 million trend size that is too large for a preservation book. Sitting out remains the consistent action; deployment is not forced.",
+      "run_id": "overnight-20261020",
+      "schema_version": 1,
+      "thesis": "The book is flat and neither overnight handoff pays enough expected edge after official SOFR charged on shocked-risk capital. March 2027 SOFR at 4.52 already embeds about 65bp of tightening versus 3.87 cash, so paying it is a further-hawkish bet with negative carry and a split trader book. Shorting the US 10-year at 5.15 pays a wide term premium into conflicting long/short handoffs and a 75 million trend size that is too large for a preservation book. Sitting out remains the consistent action; deployment is not forced."
     }
   ],
   "schema_version": 1,

@@ -77,7 +77,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 750000.0,
     "risk_capital_utilization": 0.075,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -14919.38,
     "status": "ok"
   },
   "learning": {
@@ -88,7 +88,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "7de9188dc0c1a834108e588544a14013af3ad9712c3480b8c9284e495ec2e243",
+  "memory_context_sha256": "3cc7d1b8e623c6ad73171704341b2a1808f48ea3af222b6e6125929ed40f05e7",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -113,6 +113,18 @@
       "risk_capital_usd": 250000.0,
       "side": "short",
       "trade_id": "trd-trader-perma-bull-pos-78563c24fe05"
+    },
+    {
+      "asset_class": "rates",
+      "conviction": 67,
+      "current_notional_usd": 50000000.0,
+      "entry_mark": 4.52,
+      "instrument": "SOFR_2027-03",
+      "opened_at": "2026-10-20T09:31:20.120731-04:00",
+      "position_id": "pos-35db4e56bf42",
+      "risk_capital_usd": 500000.0,
+      "side": "short",
+      "trade_id": "trd-trader-perma-bull-pos-35db4e56bf42"
     }
   ],
   "owner_id": "perma-bull",
@@ -125,12 +137,12 @@
       "chase_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.14
+        "value": 0.13
       },
       "complacency": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.12
+        "value": 0.11
       },
       "defensiveness": {
         "band": "calm",
@@ -140,12 +152,12 @@
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.2
+        "value": 0.19
       },
       "frustration": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.12
+        "value": 0.11
       },
       "revenge_pressure": {
         "band": "calm",
@@ -155,7 +167,7 @@
       "self_trust": {
         "band": "steady",
         "trend": "flat",
-        "value": 0.49
+        "value": 0.5
       },
       "thesis_attachment": {
         "band": "calm",
@@ -174,7 +186,7 @@
     "recent_events": [],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "36af99d4c18197894b57499a24b3ea2ebcffe494cb21bbf63db3fe184398c2ca",
+    "state_sha256": "bc89be5a594f84545a8d1582c1efde506fe9c812f3162ea7c3e613bf7209a123",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 1,
