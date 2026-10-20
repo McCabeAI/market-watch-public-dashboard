@@ -153,6 +153,13 @@ def freeze_snapshot(
     )
     # Shared packet carries the digest only. Full rows are a private review artifact.
     packet["learning_obligations"] = manifest_binding(full_manifest)
+    from scripts.prima_pressure.handoff import block_from_market_state, unavailable_block
+
+    packet["canada_prima_pressure"] = (
+        block_from_market_state(market_state)
+        if isinstance(market_state, dict)
+        else unavailable_block("market_state_missing")
+    )
     from scripts.pm.store import PMStore
 
     pm_store = PMStore(root=store.root, state_root=store.state_root)

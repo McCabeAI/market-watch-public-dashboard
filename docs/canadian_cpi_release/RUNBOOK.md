@@ -193,3 +193,7 @@ Shadow NSA MoM % (delta vs direct, pp): component **-0.01473932559489526** (+0.0
 Airfare fixture vectors: index **41691151** (`2.199.0.0.0.0.0.0.0.0`), weight **91859102** (`1.183.1.1.0.0.0.0.0.0`); basket weight 2025 **1.10** %.
 
 Archive path: `docs/canadian_cpi_release/candidates/2026-09-asof-2026-10-18/`. September 2026 CPI actual was not in the fixtures and was not used; this does not replace `sample_2026-09`.
+
+## Medium-term Prima-pressure
+
+The nowcast text report includes a separate section **Medium-term Prima-pressure (distinct from the B2 next-print nowcast)**. The aggregate Prima-pressure proxy is **not** an input to the B2 headline or component math. IPPI ex-energy lag-1 is evaluated only via `evaluate_ippi_gate` (pseudo-OOS); it stays **shadow-only** unless that gate documents at least **0.02** percentage-point MAE improvement on **24** or more evaluation points. The checked-in CLI path passes an empty IPPI history, so the central forecast is unchanged. Gasoline remains the **NRCan** bridge in the contribution table.

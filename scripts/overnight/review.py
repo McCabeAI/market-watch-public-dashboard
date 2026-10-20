@@ -117,7 +117,10 @@ def _research_supplement_for_packet(packet: dict[str, Any]) -> dict[str, Any]:
         "central_bank_research": [],
         "sources": [],
     }
-    return merge_research_supplement(stub, leading_block_from_frozen(packet))
+    merged = merge_research_supplement(stub, leading_block_from_frozen(packet))
+    from scripts.prima_pressure.handoff import block_from_frozen, merge_prima_research
+
+    return merge_prima_research(merged, block_from_frozen(packet))
 
 
 def _ensure_agent_packet_for_pm(

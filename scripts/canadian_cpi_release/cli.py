@@ -13,6 +13,7 @@ from typing import Any
 from scripts.canadian_cpi_release.contract import NowcastResult, Snapshot, add_months
 from scripts.canadian_cpi_release.engine import backtest_headline, forecast_release
 from scripts.canadian_cpi_release.ex_energy_candidate import ArchiveConflict, write_ex_energy_candidate
+from scripts.canadian_cpi_release.prima_link import attach_medium_term_prima, evaluate_ippi_gate
 from scripts.canadian_cpi_release.report import render_nowcast_report
 from scripts.canadian_cpi_release.sources.airfare_statcan import load_airfare_snapshot
 from scripts.canadian_cpi_release.sources.acquire import (
@@ -204,6 +205,9 @@ def _publish_nowcast(
     payload = _nowcast_payload(result, snapshot)
     if archive_info is not None:
         payload["input_archive"] = archive_info
+    payload = attach_medium_term_prima(
+        payload, block=None, gate=evaluate_ippi_gate([])
+    )
     text = render_nowcast_report(payload)
     _write_nowcast_files(dest, payload, text, immutable=immutable)
     print(text, end="" if text.endswith("\n") else "\n")
