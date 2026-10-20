@@ -20,6 +20,41 @@ def _core_measure(payload: dict[str, Any], key: str) -> dict[str, Any]:
     return dict(core.get(key) or {})
 
 
+def _medium_term_prima_lines(payload: dict[str, Any]) -> list[str]:
+    title = "Medium-term Prima-pressure (distinct from the B2 next-print nowcast)"
+    lines = ["", title]
+    ctx = payload.get("medium_term_prima_pressure")
+    if not ctx:
+        lines.append("  Direction: UNAVAILABLE")
+        lines.append("  Prima-pressure block was not supplied.")
+        lines.append(
+            "  This section is not an input to the B2 forecast and does not replace "
+            "the NRCan gasoline or fuel-oil bridges."
+        )
+        return lines
+
+    block = ctx.get("block") or {}
+    direction = block.get("direction") or "UNAVAILABLE"
+    lines.append(f"  Direction: {direction}")
+    subs = block.get("subcomponent_directions")
+    if subs:
+        lines.append("  Subcomponent directions:")
+        for ch, d in subs.items():
+            lines.append(f"    {ch}: {d}")
+    coverage = block.get("coverage")
+    if coverage is not None:
+        lines.append(f"  Coverage: {_fmt(float(coverage), 4)}")
+    change_mpr = block.get("change_since_last_mpr")
+    if change_mpr:
+        lines.append(f"  Change since last MPR: {change_mpr}")
+    note = ctx.get("note") or (
+        "This section is not an input to the B2 forecast and does not replace "
+        "the NRCan gasoline or fuel-oil bridges."
+    )
+    lines.append(f"  {note}")
+    return lines
+
+
 def render_nowcast_report(payload: dict[str, Any]) -> str:
     lines: list[str] = []
     release = payload.get("release", "")
@@ -44,7 +79,7 @@ def render_nowcast_report(payload: dict[str, Any]) -> str:
             lines.append("Blockers:")
             for b in blockers:
                 lines.append(f"  - {b}")
-        lines.append("")
+        lines.extend(_medium_term_prima_lines(payload))
         return "\n".join(lines) + "\n"
 
     lines.append("Headline (NSA, model B2)")
@@ -183,6 +218,7 @@ def render_nowcast_report(payload: dict[str, Any]) -> str:
         lines.append(f"  {ref['astra_note']}")
     lines.append("")
 
+    lines.extend(_medium_term_prima_lines(payload))
     return "\n".join(lines)
 
 

@@ -1431,6 +1431,11 @@ def build_snapshot(
     if nz_error:
         nz_source["error"] = nz_error
         nz_source["observation_date"] = None
+    from scripts.prima_pressure.handoff import prima_block_for_snapshot
+
+    canada_prima_pressure = prima_block_for_snapshot(
+        today, include_cross_assets=include_cross_assets
+    )
     return {
         "policy_paths": policy_paths,
         "tradable_rate_curves": tradable_rate_curves,
@@ -1456,6 +1461,7 @@ def build_snapshot(
         },
         "opportunities": opportunities,
         "positioning": positioning,
+        "canada_prima_pressure": canada_prima_pressure,
         "schema_version": 1,
         "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
         "window_start": start.isoformat(),
