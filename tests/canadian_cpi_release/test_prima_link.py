@@ -16,6 +16,7 @@ if str(ROOT) not in sys.path:
 from scripts.canadian_cpi_release.cli import _nowcast_payload, main as cli_main
 from scripts.canadian_cpi_release.engine import forecast_release
 from scripts.canadian_cpi_release.prima_link import (
+    _ols_intercept_and_slope,
     attach_medium_term_prima,
     evaluate_ippi_gate,
 )
@@ -41,6 +42,22 @@ def _synthetic_rows_linear(n: int, scale: float = 0.5) -> list[dict]:
     return rows
 
 
+def _synthetic_rows_b2_incremental(n: int) -> list[dict]:
+    rows: list[dict] = []
+    for i in range(n):
+        x = 100.0 + ((i % 13) - 6)
+        b2 = 0.10 + 0.01 * (i % 3)
+        actual = b2 + 0.08 * (x - 100.0)
+        rows.append(
+            {
+                "component_mom": actual,
+                "ippi_ex_energy_mom_lag1": x,
+                "b2_ex_energy_forecast": b2,
+            }
+        )
+    return rows
+
+
 class PrimaLinkTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
@@ -48,11 +65,55 @@ class PrimaLinkTests(unittest.TestCase):
 
     def test_ippi_gate_admits_exact_linear_history(self) -> None:
         gate = evaluate_ippi_gate(_synthetic_rows_linear(80))
+        self.assertFalse(gate["admitted"])
+        self.assertEqual(gate["decision"], "shadow_only")
+        self.assertIn("b2_ex_energy_forecast", gate["reason"].lower())
+
+    def test_ols_slope_uses_centered_predictors(self) -> None:
+        x = [100.0 + i for i in range(-5, 6)]
+        residual = [0.5 * (xi - 100.0) for xi in x]
+        _, beta = _ols_intercept_and_slope(residual, x)
+        self.assertAlmostEqual(beta, 0.5, places=9)
+        buggy = sum(r * xi for r, xi in zip(residual, x)) / sum(xi * xi for xi in x)
+        self.assertGreater(abs(buggy - 0.5), 0.2)
+        self.assertNotAlmostEqual(buggy, beta, places=3)
+
+    def test_ippi_gate_admits_incremental_value_over_b2(self) -> None:
+        rows = _synthetic_rows_b2_incremental(80)
+        gate = evaluate_ippi_gate(rows)
         self.assertTrue(gate["admitted"])
         self.assertEqual(gate["decision"], "admitted")
+        self.assertEqual(gate["benchmark"], "b2_ex_energy_forecast")
         self.assertGreaterEqual(gate["evaluation_points"], 24)
-        self.assertIsNotNone(gate["mae_improvement"])
         self.assertGreaterEqual(gate["mae_improvement"], 0.02)
+        self.assertIsNotNone(gate["residual_beta"])
+        self.assertAlmostEqual(gate["residual_beta"], 0.08, places=6)
+
+        eval_rows = rows[24:]
+        b2_errors = [abs(r["component_mom"] - r["b2_ex_energy_forecast"]) for r in eval_rows]
+        mean_b2_mae = sum(b2_errors) / len(b2_errors)
+        ys = [r["component_mom"] for r in eval_rows]
+        mean_y_mae = sum(abs(y - sum(ys) / len(ys)) for y in ys) / len(ys)
+        self.assertNotAlmostEqual(mean_b2_mae, mean_y_mae, places=6)
+        self.assertAlmostEqual(gate["baseline_mae"], mean_b2_mae, places=9)
+
+    def test_ippi_gate_shadow_when_b2_already_perfect(self) -> None:
+        rows: list[dict] = []
+        for i in range(80):
+            x = 2.0 + 0.3 * ((i % 11) - 5)
+            b2 = 0.12 + 0.04 * x
+            rows.append(
+                {
+                    "component_mom": b2,
+                    "ippi_ex_energy_mom_lag1": x,
+                    "b2_ex_energy_forecast": b2,
+                }
+            )
+        gate = evaluate_ippi_gate(rows)
+        self.assertFalse(gate["admitted"])
+        self.assertEqual(gate["decision"], "shadow_only")
+        self.assertIsNotNone(gate["mae_improvement"])
+        self.assertLess(abs(gate["mae_improvement"]), 0.02)
 
     def test_ippi_gate_shadow_on_noise_or_constant_lag(self) -> None:
         import random
@@ -62,6 +123,7 @@ class PrimaLinkTests(unittest.TestCase):
             {
                 "component_mom": rng.uniform(-0.2, 0.2),
                 "ippi_ex_energy_mom_lag1": rng.uniform(-0.05, 0.05),
+                "b2_ex_energy_forecast": 0.05,
             }
             for _ in range(80)
         ]
@@ -70,7 +132,11 @@ class PrimaLinkTests(unittest.TestCase):
         self.assertEqual(gate_noise["decision"], "shadow_only")
 
         const_rows = [
-            {"component_mom": 0.1 + 0.01 * (i % 5), "ippi_ex_energy_mom_lag1": 0.02}
+            {
+                "component_mom": 0.1 + 0.01 * (i % 5),
+                "ippi_ex_energy_mom_lag1": 0.02,
+                "b2_ex_energy_forecast": 0.09 + 0.005 * (i % 7),
+            }
             for i in range(80)
         ]
         gate_const = evaluate_ippi_gate(const_rows)
@@ -82,9 +148,10 @@ class PrimaLinkTests(unittest.TestCase):
         payload = _nowcast_payload(result, self.snapshot)
         headline_before = payload["headline_nsa_mom"]
         block = {"direction": "RISING", "status": "ok", "coverage": 0.8}
-        gate = evaluate_ippi_gate(_synthetic_rows_linear(80))
+        gate = evaluate_ippi_gate(_synthetic_rows_b2_incremental(80))
         out = attach_medium_term_prima(payload, block=block, gate=gate)
         self.assertEqual(out["headline_nsa_mom"], headline_before)
+        self.assertAlmostEqual(out["headline_nsa_mom"], SEPT_HEADLINE, places=6)
         self.assertFalse(out["medium_term_prima_pressure"]["forecast_active"])
         self.assertEqual(
             out["medium_term_prima_pressure"]["activation_held"],

@@ -25,9 +25,39 @@ from scripts.prima_pressure.contract import (
 Opener = Callable[..., bytes]
 
 
-def parse_yahoo_chart(blob: bytes, *, as_of: date) -> list[tuple[date, float]]:
+def _validate_yahoo_chart_meta(meta: dict[str, Any], requested_symbol: str) -> None:
+    if requested_symbol.endswith("=F") or "=F" in requested_symbol:
+        raise ValueError(f"continuous symbol not allowed: {requested_symbol}")
+    returned = meta.get("symbol")
+    if returned is not None and returned != requested_symbol:
+        raise ValueError(
+            f"chart meta.symbol {returned!r} does not match requested {requested_symbol!r}"
+        )
+    if returned is not None and (returned.endswith("=F") or "=F" in returned):
+        raise ValueError(f"continuous chart symbol rejected: {returned!r}")
+    instrument = meta.get("instrumentType")
+    if instrument is not None and instrument != "FUTURE":
+        raise ValueError(f"instrumentType {instrument!r} is not FUTURE")
+
+
+def parse_yahoo_chart(
+    blob: bytes, *, as_of: date, requested_symbol: str
+) -> list[tuple[date, float]]:
     """Completed daily closes with UTC session dates strictly before as_of."""
-    result = json.loads(blob)["chart"]["result"][0]
+    payload = json.loads(blob)
+    chart = payload.get("chart") or {}
+    if chart.get("error"):
+        err = chart["error"]
+        desc = err.get("description") or err.get("code") or str(err)
+        raise ValueError(f"Yahoo chart error: {desc}")
+    results = chart.get("result")
+    if not results:
+        raise ValueError("Yahoo chart Not Found")
+    result = results[0]
+    if result is None:
+        raise ValueError("Yahoo chart Not Found")
+    meta = result.get("meta") or {}
+    _validate_yahoo_chart_meta(meta, requested_symbol)
     closes = result["indicators"]["quote"][0]["close"]
     out: list[tuple[date, float]] = []
     for ts, v in zip(result["timestamp"], closes):
@@ -51,10 +81,10 @@ def contract_history(
     opener: Opener,
 ) -> tuple[list[tuple[date, float]], str | None]:
     symbol = contract_symbol(root, year, month)
-    url = YAHOO_CHART_URL.format(symbol=symbol, range="6mo")
+    url = YAHOO_CHART_URL.format(symbol=symbol)
     try:
         blob = opener(url)
-        return parse_yahoo_chart(blob, as_of=as_of), None
+        return parse_yahoo_chart(blob, as_of=as_of, requested_symbol=symbol), None
     except Exception as exc:
         return [], f"{type(exc).__name__}: {exc}"
 
@@ -140,7 +170,7 @@ def _build_point(
         return None
     obs_date, price = history[-1]
     age_days = (as_of - obs_date).days
-    url = YAHOO_CHART_URL.format(symbol=symbol, range="6mo")
+    url = YAHOO_CHART_URL.format(symbol=symbol)
     return {
         "maturity_months": maturity_months,
         "contract_month": period_key(year, month),
@@ -274,7 +304,7 @@ def _product_price(
         "symbol": symbol,
         "price": price,
         "observation_date": iso_date(obs_date),
-        "source_url": YAHOO_CHART_URL.format(symbol=symbol, range="6mo"),
+        "source_url": YAHOO_CHART_URL.format(symbol=symbol),
     }
 
 

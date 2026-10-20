@@ -52,9 +52,12 @@ POLICY_GAP_FALLING = NEUTRAL_BAND
 TARGET_MATURITY_MONTHS = (0, 3, 6, 12, 24)
 GALLONS_PER_BARREL = 42.0
 YAHOO_CHART_URL = (
-    "https://query1.finance.yahoo.com/v8/finance/chart/{symbol}"
-    "?range={range}&interval=1d"
+    "https://query2.finance.yahoo.com/v8/finance/chart/{symbol}"
+    "?range=3mo&interval=1d"
 )
+
+# CME public settlements for BZ/CL list final trade dates only for recent sessions;
+# they do not provide the ~30-day history shock_persistence needs for 1m changes.
 
 # Yahoo chart of a specific NYMEX contract. BZ=F and CL=F continuous histories
 # are not curve observations and must not be requested by the curve collector.

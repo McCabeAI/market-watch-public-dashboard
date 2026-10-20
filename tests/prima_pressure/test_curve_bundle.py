@@ -17,18 +17,23 @@ from scripts.prima_pressure.mpr import build_mpr_comparison
 from scripts.prima_pressure.producer import build_producer_prices
 
 
-def _yahoo_bytes(closes_by_date: dict[date, float]) -> bytes:
+def _yahoo_bytes(closes_by_date: dict[date, float], *, symbol: str | None = None) -> bytes:
     dates = sorted(closes_by_date)
     timestamps = [int(datetime(d.year, d.month, d.day, tzinfo=timezone.utc).timestamp()) for d in dates]
     closes = [closes_by_date[d] for d in dates]
+    result: dict = {
+        "timestamp": timestamps,
+        "indicators": {"quote": [{"close": closes}]},
+    }
+    if symbol is not None:
+        result["meta"] = {
+            "symbol": symbol,
+            "instrumentType": "FUTURE",
+            "exchangeName": "NYM",
+        }
     payload = {
         "chart": {
-            "result": [
-                {
-                    "timestamp": timestamps,
-                    "indicators": {"quote": [{"close": closes}]},
-                }
-            ]
+            "result": [result],
         }
     }
     return json.dumps(payload).encode("utf-8")
@@ -57,7 +62,7 @@ class CurveBundleTests(unittest.TestCase):
                 raise AssertionError("unexpected POST")
             for sym, series in charts.items():
                 if sym in url:
-                    return _yahoo_bytes(series)
+                    return _yahoo_bytes(series, symbol=sym)
             raise FileNotFoundError(url)
 
         curve = build_curve("brent_last_day", as_of, opener)
@@ -84,7 +89,7 @@ class CurveBundleTests(unittest.TestCase):
         def opener(url: str, data: bytes | None = None) -> bytes:
             for sym, series in charts.items():
                 if sym in url:
-                    return _yahoo_bytes(series)
+                    return _yahoo_bytes(series, symbol=sym)
             raise FileNotFoundError(url)
 
         curve = build_curve("brent_last_day", as_of, opener)
@@ -104,7 +109,8 @@ class CurveBundleTests(unittest.TestCase):
             if ".NYM" not in url:
                 raise FileNotFoundError(url)
             # minimal single-bar response for any listed contract
-            return _yahoo_bytes(_daily_series(as_of - timedelta(days=1), 3, 75.0))
+            sym = url.split("/chart/")[1].split("?")[0]
+            return _yahoo_bytes(_daily_series(as_of - timedelta(days=1), 3, 75.0), symbol=sym)
 
         build_curve("brent_last_day", as_of, opener)
         build_curve("wti", as_of, opener)
@@ -207,7 +213,7 @@ class CurveBundleTests(unittest.TestCase):
 
         def opener(url: str, data: bytes | None = None) -> bytes:
             if ho_sym in url:
-                return _yahoo_bytes(_daily_series(as_of - timedelta(days=1), 2, 2.0))
+                return _yahoo_bytes(_daily_series(as_of - timedelta(days=1), 2, 2.0), symbol=ho_sym)
             raise FileNotFoundError(url)
 
         margin = build_refinery_margin(as_of, wti_curve, opener)
@@ -229,6 +235,74 @@ class CurveBundleTests(unittest.TestCase):
         self.assertEqual(curve["points"], [])
         self.assertEqual(len(seen), 1)
         self.assertNotIn("BZ=F", seen[0])
+
+    def test_continuous_meta_symbol_rejected_for_requested_maturity(self) -> None:
+        as_of = date(2026, 10, 20)
+        front_y, front_m = 2026, 12
+        front_symbol = contract_symbol("BZ", front_y, front_m)
+        twelve_y, twelve_m = 2027, 12
+        twelve_symbol = contract_symbol("BZ", twelve_y, twelve_m)
+        end = as_of - timedelta(days=1)
+
+        def opener(url: str, data: bytes | None = None) -> bytes:
+            if front_symbol in url:
+                return _yahoo_bytes(_daily_series(end, 40, 80.0), symbol=front_symbol)
+            if twelve_symbol in url:
+                return _yahoo_bytes(_daily_series(end, 40, 90.0), symbol="BZ=F")
+            raise FileNotFoundError(url)
+
+        curve = build_curve("brent_last_day", as_of, opener)
+        self.assertIn(12, curve["missing_maturities"])
+        by_mat = {p["maturity_months"]: p for p in curve["points"]}
+        self.assertIn(0, by_mat)
+        self.assertNotIn(12, by_mat)
+        if by_mat.get(0):
+            self.assertNotEqual(by_mat[0].get("price"), 90.0)
+
+    def test_wrong_listed_meta_symbol_not_used_for_maturity(self) -> None:
+        as_of = date(2026, 10, 20)
+        front_symbol = contract_symbol("BZ", 2026, 12)
+        other_symbol = contract_symbol("BZ", 2027, 3)
+        twelve_symbol = contract_symbol("BZ", 2027, 12)
+        end = as_of - timedelta(days=1)
+        charts = {
+            front_symbol: _daily_series(end, 40, 80.0),
+            twelve_symbol: _daily_series(end, 40, 85.0),
+        }
+
+        def opener(url: str, data: bytes | None = None) -> bytes:
+            for sym, series in charts.items():
+                if sym in url:
+                    if sym == twelve_symbol:
+                        return _yahoo_bytes(series, symbol=other_symbol)
+                    return _yahoo_bytes(series, symbol=sym)
+            raise FileNotFoundError(url)
+
+        curve = build_curve("brent_last_day", as_of, opener)
+        self.assertIn(12, curve["missing_maturities"])
+
+    def test_404_on_first_front_candidate_continues_walk(self) -> None:
+        as_of = date(2026, 10, 20)
+        from scripts.prima_pressure.contract import add_months
+
+        first_y, first_m = add_months(as_of.year, as_of.month, 1)
+        first_sym = contract_symbol("BZ", first_y, first_m)
+        second_y, second_m = add_months(first_y, first_m, 1)
+        second_sym = contract_symbol("BZ", second_y, second_m)
+        end = as_of - timedelta(days=1)
+
+        def opener(url: str, data: bytes | None = None) -> bytes:
+            if first_sym in url:
+                raise OSError("HTTP Error 404: Not Found")
+            if second_sym in url:
+                return _yahoo_bytes(_daily_series(end, 40, 78.0), symbol=second_sym)
+            raise FileNotFoundError(url)
+
+        curve = build_curve("brent_last_day", as_of, opener)
+        by_mat = {p["maturity_months"]: p for p in curve["points"]}
+        self.assertEqual(by_mat[0]["symbol"], second_sym)
+        self.assertEqual(by_mat[0]["price"], 78.0)
+        self.assertNotEqual(by_mat[0]["contract_month"], f"{first_y:04d}-{first_m:02d}")
 
 
 if __name__ == "__main__":
