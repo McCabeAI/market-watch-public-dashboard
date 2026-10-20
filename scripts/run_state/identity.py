@@ -16,6 +16,7 @@ import re
 from dataclasses import dataclass
 from typing import Any, Mapping
 
+from scripts.macro_freshness import values_close
 from scripts.temperature_level import parse_period, period_sort_key
 
 REASON_UNKNOWN_SERIES = "unknown_series"
@@ -55,7 +56,9 @@ class SourceProjection:
     seasonal_adjustment: bool
     kind: str
     context_series_ids: tuple[str, ...] = ()
+    component_series_ids: tuple[str, ...] = ()
     rewrite: bool = True
+    rewrite_forward_only: bool = False
 
 
 # Exact allowlist. Same-transform rows are publisher-id versus calibrated-id
@@ -96,8 +99,9 @@ APPROVED_PROJECTIONS: dict[str, SourceProjection] = {
         kind="label",
     ),
     # Recognized source/score labels. rewrite stays false: history already
-    # stores the score id, and applying the alias to the Oct 15 observation
-    # store would append prints and change accepted scores.
+    # stores the score id, and a blanket alias would revise August 2026
+    # (history 3.03 vs index ratio 3.033980582524265). Forward-only rewrite
+    # with a scored gate appends 2026-09 without touching accepted prints.
     "CA.Inflation.headline": SourceProjection(
         concept_id="CA.Inflation.headline",
         source_series_id="v41690973_derived_yoy",
@@ -109,6 +113,24 @@ APPROVED_PROJECTIONS: dict[str, SourceProjection] = {
         seasonal_adjustment=False,
         kind="label",
         rewrite=False,
+        rewrite_forward_only=True,
+    ),
+    "CA.Inflation.underlying": SourceProjection(
+        concept_id="CA.Inflation.underlying",
+        source_series_id="CPI_trim_and_median_yoy",
+        source_transformation="yoy_pct",
+        score_series_id=None,
+        score_transformation="yoy_pct",
+        frequency="monthly",
+        units="percent",
+        seasonal_adjustment=False,
+        kind="equal_mean_components",
+        component_series_ids=(
+            "CPI_trim_yoy_v108785715",
+            "CPI_median_yoy_v108785714",
+        ),
+        rewrite=False,
+        rewrite_forward_only=False,
     ),
     "CA.Consumer.retail": SourceProjection(
         concept_id="CA.Consumer.retail",
@@ -259,11 +281,41 @@ def _frequency_matches(projection: SourceProjection, period: str) -> bool:
     return False
 
 
+def _forward_only_rewrite_allowed(
+    period: str,
+    point_value: Any,
+    scored_gate: tuple[str | None, float | None] | None,
+) -> bool:
+    if scored_gate is None:
+        return False
+    latest_period, latest_value = scored_gate
+    if latest_period is None:
+        return True
+    try:
+        period_key = period_sort_key(period)
+        latest_key = period_sort_key(latest_period)
+    except ValueError:
+        return False
+    if period_key > latest_key:
+        return True
+    if period_key < latest_key:
+        return False
+    if latest_value is None:
+        return False
+    try:
+        value = float(point_value)
+    except (TypeError, ValueError):
+        return False
+    return values_close(latest_value, value)
+
+
 def _normalize_label(
     point: dict[str, Any],
     projection: SourceProjection,
     period: str,
     checked_at: str,
+    *,
+    scored_gate: tuple[str | None, float | None] | None = None,
 ) -> str | None:
     series_id = str(point.get("series_id") or "")
     transformation = str(point.get("transformation") or "")
@@ -277,8 +329,37 @@ def _normalize_label(
     if _period_is_future(period, checked_at):
         return MERGE_FUTURE
     if series_id == source_id and source_id != score_id:
+        if projection.rewrite_forward_only and not projection.rewrite:
+            if not _forward_only_rewrite_allowed(period, point.get("value"), scored_gate):
+                return None
         _preserve_source_fields(point, source_series_id=source_id)
         point["series_id"] = score_id
+    return None
+
+
+def _normalize_equal_mean_components(
+    point: dict[str, Any],
+    projection: SourceProjection,
+    period: str,
+    checked_at: str,
+) -> str | None:
+    """Reject a future or off-frequency aggregate or component print.
+
+    The aggregate id is not rewritten onto either component. A component id
+    with the approved transform passes through for the history merge.
+    """
+
+    series_id = str(point.get("series_id") or "")
+    transformation = str(point.get("transformation") or "")
+    source_id = projection.source_series_id or ""
+    if transformation != projection.source_transformation:
+        return None
+    if series_id != source_id and series_id not in projection.component_series_ids:
+        return None
+    if _period_is_future(period, checked_at):
+        return MERGE_FUTURE
+    if not _frequency_matches(projection, period):
+        return MERGE_FREQUENCY
     return None
 
 
@@ -327,7 +408,12 @@ def _normalize_frequency_split(
     return None
 
 
-def normalize_score_point(point: dict[str, Any], *, checked_at: str) -> str | None:
+def normalize_score_point(
+    point: dict[str, Any],
+    *,
+    checked_at: str,
+    scored_gate: tuple[str | None, float | None] | None = None,
+) -> str | None:
     """Project an approved source id onto its score id, in place.
 
     Returns a merge skip reason, or None when the point may continue. Unknown
@@ -337,8 +423,11 @@ def normalize_score_point(point: dict[str, Any], *, checked_at: str) -> str | No
 
     catalog_id = str(point.get("catalog_id") or point.get("id") or "")
     projection = projection_for(catalog_id)
-    if projection is None or not projection.rewrite:
+    if projection is None:
         return None
+    if not projection.rewrite:
+        if not projection.rewrite_forward_only and projection.kind != "equal_mean_components":
+            return None
     country = point.get("country")
     concept_country = projection.concept_id.split(".", 1)[0]
     if country is not None and str(country) != concept_country:
@@ -347,9 +436,17 @@ def normalize_score_point(point: dict[str, Any], *, checked_at: str) -> str | No
     if not isinstance(period, str):
         return None
     if projection.kind == "frequency_split":
+        if not projection.rewrite:
+            return None
         return _normalize_frequency_split(point, projection, period, checked_at)
     if projection.kind == "label":
-        return _normalize_label(point, projection, period, checked_at)
+        if not projection.rewrite and not projection.rewrite_forward_only:
+            return None
+        return _normalize_label(
+            point, projection, period, checked_at, scored_gate=scored_gate
+        )
+    if projection.kind == "equal_mean_components":
+        return _normalize_equal_mean_components(point, projection, period, checked_at)
     return None
 
 
@@ -398,6 +495,39 @@ def classify_source_point(point: Mapping[str, Any], *, checked_at: str) -> dict[
             base["reason"] = REASON_FUTURE_RELEASE
             return base
         base["action"] = "accept"
+        return base
+    if projection.kind == "equal_mean_components":
+        components = set(projection.component_series_ids)
+        source_id = projection.source_series_id
+        transform = projection.source_transformation
+        if series_id == source_id and transformation == transform:
+            if _period_is_future(period, checked_at):
+                base["action"] = "reject"
+                base["reason"] = REASON_FUTURE_RELEASE
+                return base
+            if not _frequency_matches(projection, period):
+                base["action"] = "reject"
+                base["reason"] = REASON_FREQUENCY_MISMATCH
+                return base
+            base["action"] = "requires_components"
+            return base
+        if series_id in components and transformation == transform:
+            if not _frequency_matches(projection, period):
+                base["action"] = "reject"
+                base["reason"] = REASON_FREQUENCY_MISMATCH
+                return base
+            if _period_is_future(period, checked_at):
+                base["action"] = "reject"
+                base["reason"] = REASON_FUTURE_RELEASE
+                return base
+            base["action"] = "accept"
+            return base
+        if series_id in components or series_id == source_id:
+            base["action"] = "reject"
+            base["reason"] = REASON_TRANSFORM_MISMATCH
+            return base
+        base["action"] = "reject"
+        base["reason"] = REASON_UNKNOWN_SERIES
         return base
     if projection.kind == "frequency_split":
         monthly = _period_kind(period) == "M"
@@ -558,12 +688,21 @@ def _check_projection_row(
         component.get("source_transformation"),
         REASON_TRANSFORM_MISMATCH,
     )
+    if projection.component_series_ids:
+        add(
+            "calibration",
+            "series_ids",
+            list(projection.component_series_ids),
+            list(component.get("series_ids") or []),
+            REASON_SCORE_SERIES_MISMATCH,
+        )
     if history is not None:
         header_series = _blank_series_id(history.get("series_id"))
         allowed_series = {
             projection.source_series_id,
             projection.score_series_id,
             *projection.context_series_ids,
+            *projection.component_series_ids,
         }
         if header_series not in allowed_series:
             found.append(
