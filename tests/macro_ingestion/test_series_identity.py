@@ -11,8 +11,9 @@ ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from scripts.macro_ingestion.ca_score_identity import prepare_ca_score_point
+from scripts.macro_ingestion.ca_score_identity import expand_equal_mean_points, prepare_ca_score_point
 from scripts.macro_ingestion.contract import load_catalog
+from scripts.macro_ingestion.score_bridge import points_from_observation_stores
 from scripts.run_state.identity import (
     REASON_FREQUENCY_MISMATCH,
     REASON_FUTURE_RELEASE,
@@ -24,7 +25,10 @@ from scripts.run_state.identity import (
 from scripts.temperature_level import CALIBRATION_PATH, load_calibration, load_history
 
 CHECKED_AT = "2026-10-15T08:52:22Z"
+CHECKED_AT_OCT20 = "2026-10-20T11:13:00Z"
 HISTORY_DIR = ROOT / "data" / "temperature_history"
+LAUNCH_OCT20 = ROOT / "data/market_watch_launches/mwl-20261020T111300Z-56f4da26"
+OBS_DIR_OCT20 = LAUNCH_OCT20 / "ingestion/observations"
 
 GDP_COMBINED = "monthly_v65201210;quarterly_v1594571783"
 GDP_COMPOUND_TF = "mom_sa_pct_and_qoq_sa_pct"
@@ -242,6 +246,80 @@ class SeriesIdentityTests(unittest.TestCase):
         self.assertIsNone(prepare_ca_score_point(point, checked_at=CHECKED_AT))
         self.assertEqual(point["series_id"], snap["series_id"])
         self.assertNotIn("source_series_id", point)
+
+    def test_ca_headline_forward_only_rewrite_oct20(self) -> None:
+        cal = load_calibration(CALIBRATION_PATH)
+        histories = load_history(HISTORY_DIR)
+        sept = _ca_base(
+            catalog_id="CA.Inflation.headline",
+            series_id="v41690973_derived_yoy",
+            transformation="yoy_pct",
+            value=3.092783505154628,
+        )
+        reason = prepare_ca_score_point(
+            sept, checked_at=CHECKED_AT_OCT20, histories=histories, calibration=cal
+        )
+        self.assertIsNone(reason)
+        self.assertEqual(sept["series_id"], "CPI_all_items_index_v41690973")
+        self.assertEqual(sept["source_series_id"], "v41690973_derived_yoy")
+
+        aug = _ca_base(
+            catalog_id="CA.Inflation.headline",
+            series_id="v41690973_derived_yoy",
+            transformation="yoy_pct",
+            period="2026-08",
+            value=3.033980582524265,
+        )
+        aug_snap = copy.deepcopy(aug)
+        self.assertIsNone(
+            prepare_ca_score_point(
+                aug, checked_at=CHECKED_AT_OCT20, histories=histories, calibration=cal
+            )
+        )
+        self.assertEqual(aug, aug_snap)
+
+        no_hist = _ca_base(
+            catalog_id="CA.Inflation.headline",
+            series_id="v41690973_derived_yoy",
+            transformation="yoy_pct",
+            value=3.092783505154628,
+        )
+        self.assertIsNone(prepare_ca_score_point(no_hist, checked_at=CHECKED_AT_OCT20))
+        self.assertEqual(no_hist["series_id"], "v41690973_derived_yoy")
+
+    def test_ca_underlying_equal_mean_classify_and_expand(self) -> None:
+        catalog = load_catalog()
+        points = points_from_observation_stores(
+            observations_dir=OBS_DIR_OCT20,
+            catalog=catalog,
+            checked_at=CHECKED_AT_OCT20,
+        )
+        aggregate = next(p for p in points if p.get("catalog_id") == "CA.Inflation.underlying")
+        cls = classify_source_point(aggregate, checked_at=CHECKED_AT_OCT20)
+        self.assertEqual(cls["action"], "requires_components")
+
+        expanded = expand_equal_mean_points(
+            [aggregate], observations_dir=OBS_DIR_OCT20, checked_at=CHECKED_AT_OCT20
+        )
+        self.assertEqual(len(expanded), 2)
+        by_series = {p["series_id"]: p for p in expanded}
+        self.assertAlmostEqual(float(by_series["CPI_trim_yoy_v108785715"]["value"]), 1.8)
+        self.assertAlmostEqual(float(by_series["CPI_median_yoy_v108785714"]["value"]), 1.9)
+        for row in expanded:
+            cls_row = classify_source_point(row, checked_at=CHECKED_AT_OCT20)
+            self.assertEqual(cls_row["action"], "accept")
+
+        trim_cls = classify_source_point(
+            {
+                "country": "CA",
+                "catalog_id": "CA.Inflation.headline",
+                "series_id": "CPI_trim_yoy_v108785715",
+                "transformation": "yoy_pct",
+                "period": "2026-09",
+            },
+            checked_at=CHECKED_AT_OCT20,
+        )
+        self.assertEqual(trim_cls["reason"], REASON_UNKNOWN_SERIES)
 
     def test_wrong_country_us_not_rewritten(self) -> None:
         point = {

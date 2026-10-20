@@ -15,6 +15,7 @@ from typing import Any
 from scripts.country_registry import history_files
 from scripts.macro_ingestion.contract import load_catalog
 from scripts.macro_ingestion.semantic_guards import implausible_nz_employment_qoq_values
+from scripts.macro_ingestion.ca_score_identity import expand_equal_mean_points
 from scripts.macro_ingestion.canonical_bridge import _skip_id
 from scripts.macro_ingestion.score_bridge import (
     points_from_observation_stores,
@@ -362,6 +363,12 @@ def stage_verified_lineage(
         raw_points = list(points)
 
     verified_points = _filter_finite_points(raw_points)
+    if observations_dir is not None:
+        verified_points = expand_equal_mean_points(
+            verified_points,
+            observations_dir=observations_dir,
+            checked_at=checked_at,
+        )
 
     before_metrics: dict[str, dict[str, Any] | None] = {}
     for point in verified_points:

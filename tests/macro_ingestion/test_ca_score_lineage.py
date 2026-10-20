@@ -14,13 +14,21 @@ ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from scripts.macro_ingestion.ca_score_identity import expand_equal_mean_points, prepare_ca_score_point
+from scripts.run_state.identity import normalize_score_point
 from scripts.macro_ingestion.canonical_bridge import merge_scored_points
+from scripts.macro_ingestion.score_bridge import points_from_observation_stores
 from scripts.market_watch_launch.lineage import stage_verified_lineage
+from scripts.macro_ingestion.contract import load_catalog
 from scripts.temperature_level import CALIBRATION_PATH, load_calibration, load_history
 
 LAUNCH = ROOT / "data/market_watch_launches/mwl-20261015T085222Z-b4bbe448"
 OBS_DIR = LAUNCH / "ingestion/observations"
 CHECKED_AT = "2026-10-15T08:52:22Z"
+
+LAUNCH_OCT20 = ROOT / "data/market_watch_launches/mwl-20261020T111300Z-56f4da26"
+OBS_DIR_OCT20 = LAUNCH_OCT20 / "ingestion/observations"
+CHECKED_AT_OCT20 = "2026-10-20T11:13:00Z"
 HISTORY_DIR = ROOT / "data" / "temperature_history"
 SCORES_PATH = ROOT / "data" / "temperature_scores.json"
 
@@ -413,6 +421,306 @@ class CaScoreLineageTests(unittest.TestCase):
         rows = work["CA"]["components"]["Labor.unemployment"]["observations"]
         self.assertEqual(rows[-1]["reference_period"], "2026-10")
         self.assertEqual(rows[-1]["series_id"], point["series_id"])
+
+
+class CaInflationOct20LineageTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.cal_sha = _sha256_file(CALIBRATION_PATH)
+        cls.ca_hist_sha = _sha256_file(HISTORY_DIR / "ca.json")
+        cls.scores_sha = _sha256_file(SCORES_PATH)
+        cls.artifact = json.loads(
+            (LAUNCH_OCT20 / "artifacts" / "01_ingest.json").read_text(encoding="utf-8")
+        )
+        cls.ca_store = json.loads((OBS_DIR_OCT20 / "ca.json").read_text(encoding="utf-8"))
+
+    def test_oct20_artifact_rejections_reproduced_without_repair(self) -> None:
+        rejections = {r["id"]: r for r in self.artifact["lineage"]["rejections"]}
+        self.assertEqual(
+            rejections["CA.Inflation.headline"],
+            {
+                "id": "CA.Inflation.headline",
+                "period": "2026-09",
+                "reason": "partial_series_mismatch",
+                "series_id": "v41690973_derived_yoy",
+                "transformation": "yoy_pct",
+            },
+        )
+        self.assertEqual(
+            rejections["CA.Inflation.underlying"],
+            {
+                "id": "CA.Inflation.underlying",
+                "period": "2026-09",
+                "reason": "partial_series_mismatch",
+                "series_id": "CPI_trim_and_median_yoy",
+                "transformation": "yoy_pct",
+            },
+        )
+        cal = load_calibration(CALIBRATION_PATH)
+        histories = load_history(HISTORY_DIR)
+        catalog = load_catalog()
+        points = points_from_observation_stores(
+            observations_dir=OBS_DIR_OCT20, catalog=catalog, checked_at=CHECKED_AT_OCT20
+        )
+        headline_pt = next(
+            p for p in points if p.get("catalog_id") == "CA.Inflation.headline"
+        )
+        underlying_pt = next(
+            p for p in points if p.get("catalog_id") == "CA.Inflation.underlying"
+        )
+        headline_copy = copy.deepcopy(headline_pt)
+        self.assertIsNone(
+            prepare_ca_score_point(headline_copy, checked_at=CHECKED_AT_OCT20)
+        )
+        self.assertEqual(headline_copy["series_id"], "v41690973_derived_yoy")
+        self.assertIsNone(
+            normalize_score_point(headline_copy, checked_at=CHECKED_AT_OCT20, scored_gate=None)
+        )
+        self.assertEqual(headline_copy["series_id"], "v41690973_derived_yoy")
+
+        u_merge = merge_scored_points(
+            copy.deepcopy(histories), cal, [underlying_pt], checked_at=CHECKED_AT_OCT20
+        )
+        self.assertEqual(u_merge["skipped"][0]["reason"], "partial_series_mismatch")
+
+    def test_oct20_stage_verified_lineage_succeeds(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            launch_dir = Path(tmp) / "launch"
+            launch_dir.mkdir()
+            result = stage_verified_lineage(
+                launch_dir=launch_dir,
+                checked_at=CHECKED_AT_OCT20,
+                canonical_history_dir=HISTORY_DIR,
+                calibration_path=CALIBRATION_PATH,
+                observations_dir=OBS_DIR_OCT20,
+                mode="live",
+            )
+            self.assertTrue(result["ok"], msg=result.get("error"))
+            self.assertNotEqual(result.get("error"), "score_lineage_rejected")
+            self.assertEqual(result.get("rejections") or [], [])
+
+            staged_ca = json.loads(
+                (launch_dir / "lineage" / "history" / "ca.json").read_text(encoding="utf-8")
+            )
+            headline_rows = [
+                o
+                for o in staged_ca["components"]["Inflation.headline"]["observations"]
+                if o.get("reference_period") == "2026-09"
+            ]
+            self.assertEqual(len(headline_rows), 1)
+            self.assertEqual(headline_rows[0]["series_id"], "CPI_all_items_index_v41690973")
+            self.assertEqual(headline_rows[0]["transformation"], "yoy_pct")
+            self.assertAlmostEqual(float(headline_rows[0]["value"]), 3.092783505154628)
+            self.assertEqual(headline_rows[0]["source_series_id"], "v41690973_derived_yoy")
+            headline_provenance = [
+                row
+                for row in result["appended_points"]
+                if row.get("catalog_id") == "CA.Inflation.headline"
+            ]
+            self.assertEqual(len(headline_provenance), 1)
+            self.assertEqual(headline_provenance[0]["source_series_id"], "v41690973_derived_yoy")
+            self.assertEqual(headline_provenance[0]["transformation"], "yoy_pct")
+            self.assertAlmostEqual(float(headline_provenance[0]["value"]), 3.092783505154628)
+            headline_series_ids = {
+                o["series_id"]
+                for o in staged_ca["components"]["Inflation.headline"]["observations"]
+                if o.get("reference_period") == "2026-09"
+            }
+            self.assertEqual(headline_series_ids, {"CPI_all_items_index_v41690973"})
+
+            underlying = staged_ca["components"]["Inflation.underlying"]["observations"]
+            trim_sep = next(
+                o
+                for o in underlying
+                if o.get("reference_period") == "2026-09"
+                and o.get("series_id") == "CPI_trim_yoy_v108785715"
+            )
+            med_sep = next(
+                o
+                for o in underlying
+                if o.get("reference_period") == "2026-09"
+                and o.get("series_id") == "CPI_median_yoy_v108785714"
+            )
+            self.assertAlmostEqual(float(trim_sep["value"]), 1.8)
+            self.assertAlmostEqual(float(med_sep["value"]), 1.9)
+            self.assertEqual(trim_sep["source_series_id"], "CPI_trim_and_median_yoy")
+            self.assertEqual(med_sep["source_series_id"], "CPI_trim_and_median_yoy")
+            self.assertEqual(trim_sep["transformation"], "yoy_pct")
+            self.assertEqual(med_sep["transformation"], "yoy_pct")
+            underlying_provenance = [
+                row
+                for row in result["appended_points"]
+                if row.get("catalog_id") == "CA.Inflation.underlying"
+            ]
+            self.assertEqual(len(underlying_provenance), 2)
+            self.assertEqual(
+                {row["source_series_id"] for row in underlying_provenance},
+                {"CPI_trim_and_median_yoy"},
+            )
+            self.assertEqual(
+                {row["source_transformation"] for row in underlying_provenance},
+                {"yoy_pct"},
+            )
+            self.assertEqual(
+                {float(row["value"]) for row in underlying_provenance},
+                {1.8, 1.9},
+            )
+            self.assertNotAlmostEqual(float(trim_sep["value"]), 1.85)
+            self.assertNotAlmostEqual(float(med_sep["value"]), 1.85)
+
+            aug_trim = next(
+                o
+                for o in underlying
+                if o.get("reference_period") == "2026-08"
+                and o.get("series_id") == "CPI_trim_yoy_v108785715"
+            )
+            aug_med = next(
+                o
+                for o in underlying
+                if o.get("reference_period") == "2026-08"
+                and o.get("series_id") == "CPI_median_yoy_v108785714"
+            )
+            self.assertAlmostEqual(float(aug_trim["value"]), 1.9)
+            self.assertAlmostEqual(float(aug_med["value"]), 2.0)
+
+            self.assertEqual(_sha256_file(CALIBRATION_PATH), self.cal_sha)
+            self.assertEqual(_sha256_file(HISTORY_DIR / "ca.json"), self.ca_hist_sha)
+            self.assertEqual(_sha256_file(SCORES_PATH), self.scores_sha)
+
+    def test_oct20_inflation_adversarial_fail_closed(self) -> None:
+        cal = load_calibration(CALIBRATION_PATH)
+        histories = load_history(HISTORY_DIR)
+        catalog = load_catalog()
+        points = points_from_observation_stores(
+            observations_dir=OBS_DIR_OCT20, catalog=catalog, checked_at=CHECKED_AT_OCT20
+        )
+        headline = _obs_by_series_period(
+            self.ca_store, "v41690973_derived_yoy", "2026-09", "yoy_pct"
+        )
+        underlying = _obs_by_series_period(
+            self.ca_store, "CPI_trim_and_median_yoy", "2026-09", "yoy_pct"
+        )
+
+        def merge_one(point: dict) -> dict:
+            work = copy.deepcopy(histories)
+            before_h = len(work["CA"]["components"]["Inflation.headline"]["observations"])
+            before_u = len(work["CA"]["components"]["Inflation.underlying"]["observations"])
+            out = merge_scored_points(work, cal, [point], checked_at=CHECKED_AT_OCT20)
+            self.assertEqual(
+                len(work["CA"]["components"]["Inflation.headline"]["observations"]), before_h
+            )
+            self.assertEqual(
+                len(work["CA"]["components"]["Inflation.underlying"]["observations"]), before_u
+            )
+            return out
+
+        base_h = {
+            "country": "CA",
+            "catalog_id": "CA.Inflation.headline",
+            "role": "scored",
+            "series_id": "v41690973_derived_yoy",
+            "period": "2026-09",
+            "value": float(headline["value"]),
+            "transformation": "yoy_pct",
+            "raw_sha256": headline["raw_sha256"],
+        }
+        for bad in (
+            {**base_h, "series_id": "wrong_series"},
+            {**base_h, "transformation": "mom_sa_pct"},
+            {**base_h, "period": "2026-Q3"},
+            {**base_h, "period": "2026-11"},
+            {
+                **base_h,
+                "period": "2026-08",
+                "value": 3.033980582524265,
+            },
+        ):
+            out = merge_one(bad)
+            self.assertEqual(len(out["appended"]), 0)
+            self.assertTrue(out["skipped"])
+        august = merge_one({**base_h, "period": "2026-08", "value": 3.033980582524265})
+        self.assertEqual(august["skipped"][0]["reason"], "partial_series_mismatch")
+
+        future_trim = {
+            "country": "CA",
+            "catalog_id": "CA.Inflation.underlying",
+            "role": "scored",
+            "series_id": "CPI_trim_yoy_v108785715",
+            "transformation": "yoy_pct",
+            "period": "2026-11",
+            "value": 1.8,
+        }
+        future_out = merge_one(future_trim)
+        self.assertEqual(future_out["skipped"][0]["reason"], "future_release")
+        self.assertEqual(future_trim["series_id"], "CPI_trim_yoy_v108785715")
+        self.assertNotIn("source_series_id", future_trim)
+
+        base_u = {
+            "country": "CA",
+            "catalog_id": "CA.Inflation.underlying",
+            "role": "scored",
+            "period": "2026-09",
+            "value": float(underlying["value"]),
+            "transformation": "yoy_pct",
+            "series_id": "CPI_trim_and_median_yoy",
+            "raw_sha256": underlying["raw_sha256"],
+        }
+        for bad in (
+            {**base_u, "raw_sha256": "0" * 64},
+            {**base_u, "value": 9.99},
+            {**base_u, "period": "2026-10"},
+            {**base_u, "period": "2026-11"},
+        ):
+            expanded = expand_equal_mean_points(
+                [bad], observations_dir=OBS_DIR_OCT20, checked_at=CHECKED_AT_OCT20
+            )
+            out = merge_scored_points(
+                copy.deepcopy(histories), cal, expanded, checked_at=CHECKED_AT_OCT20
+            )
+            self.assertEqual(len(out["appended"]), 0)
+
+        trim_only = expand_equal_mean_points(
+            [base_u], observations_dir=OBS_DIR_OCT20, checked_at=CHECKED_AT_OCT20
+        )[0]
+        trim_only["series_id"] = "CPI_all_items_index_v41690973"
+        merge_one(trim_only)
+        med_as_headline = dict(trim_only)
+        med_as_headline["series_id"] = "CPI_median_yoy_v108785714"
+        med_as_headline["catalog_id"] = "CA.Inflation.headline"
+        merge_one(med_as_headline)
+
+        us_headline = {**base_h, "series_id": "v41690973_derived_yoy", "country": "US"}
+        merge_one(us_headline)
+        other_id = {**base_h, "series_id": "v41690973_derived_yoy", "catalog_id": "CA.Labor.wages"}
+        merge_one(other_id)
+
+    def test_oct20_expanded_september_idempotent_second_merge(self) -> None:
+        cal = load_calibration(CALIBRATION_PATH)
+        histories = load_history(HISTORY_DIR)
+        catalog = load_catalog()
+        raw_points = points_from_observation_stores(
+            observations_dir=OBS_DIR_OCT20, catalog=catalog, checked_at=CHECKED_AT_OCT20
+        )
+        inflation = [
+            p
+            for p in raw_points
+            if str(p.get("catalog_id") or "").startswith("CA.Inflation.")
+        ]
+        expanded = expand_equal_mean_points(
+            inflation, observations_dir=OBS_DIR_OCT20, checked_at=CHECKED_AT_OCT20
+        )
+        work = copy.deepcopy(histories)
+        first = merge_scored_points(work, cal, expanded, checked_at=CHECKED_AT_OCT20)
+        self.assertGreaterEqual(len(first["appended"]), 3)
+        second = merge_scored_points(work, cal, expanded, checked_at=CHECKED_AT_OCT20)
+        self.assertEqual(second["appended"], [])
+        inflation_dup = [
+            s
+            for s in second["skipped"]
+            if str(s.get("id", "")).startswith("CA.Inflation.")
+            and s.get("reason") == "duplicate_value"
+        ]
+        self.assertGreaterEqual(len(inflation_dup), 3)
 
 
 if __name__ == "__main__":

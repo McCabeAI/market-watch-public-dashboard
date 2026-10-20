@@ -151,7 +151,12 @@ def merge_scored_points(
 
     for point in points:
         point_id = _skip_id(point)
-        ca_block = prepare_ca_score_point(point, checked_at=checked_at)
+        ca_block = prepare_ca_score_point(
+            point,
+            checked_at=checked_at,
+            histories=histories,
+            calibration=calibration,
+        )
         if ca_block is not None:
             skipped.append({"id": point_id, "reason": ca_block})
             continue
