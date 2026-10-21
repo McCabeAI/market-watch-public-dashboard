@@ -1,6 +1,6 @@
 {
   "active_lessons": [],
-  "as_of": "2026-10-20T09:31:20.120731-04:00",
+  "as_of": "2026-10-21T08:22:07.869994-04:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -60,11 +60,19 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "7f6b6a0ca554fcbe0791e6c1ec7ca0b8c3fa652f413b9764b993d3efd3e99c16",
+  "memory_context_sha256": "8af5acd7cee4a63f78a8e09b9337a650911bc1fb40a5e1adfa0165ccbe927182",
   "open_positions": [],
   "owner_id": "vol-convexity",
   "owner_type": "trader",
   "postmortems_due": [],
+  "profit_harvest": {
+    "mechanical_orders": false,
+    "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
+    "obligations_due": [],
+    "order_policy": "review_only",
+    "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+    "review_required_position_ids": []
+  },
   "psychology": {
     "active_flags": [],
     "applicable": true,
@@ -148,6 +156,6 @@
   "recent_funding_views": [],
   "recent_performance_reflections": [],
   "reflections_due": [],
-  "schema_version": 4,
+  "schema_version": 5,
   "type": "IDENTITY_MEMORY_CONTEXT"
 }

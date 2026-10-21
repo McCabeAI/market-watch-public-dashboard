@@ -1,6 +1,6 @@
 {
   "active_lessons": [],
-  "as_of": "2026-10-20T11:14:05.975928-04:00",
+  "as_of": "2026-10-21T08:22:07.869994-04:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -31,7 +31,7 @@
   },
   "capital_owner": {
     "allocator_pressure": 7,
-    "credible_opportunities": "present",
+    "credible_opportunities": "unknown",
     "force_deployment": false,
     "hurdle": "SOFR",
     "mandate": "grinder",
@@ -77,11 +77,19 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "764d9e313e35d405476610871ea41372fcd559627d322a7ccb2ac6dce665530d",
+  "memory_context_sha256": "f7c4166747a79746a17454c977568f37574d69e2f9deb997c83f53f824d6e45a",
   "open_positions": [],
   "owner_id": "grinder",
   "owner_type": "pm",
   "postmortems_due": [],
+  "profit_harvest": {
+    "mechanical_orders": false,
+    "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
+    "obligations_due": [],
+    "order_policy": "review_only",
+    "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+    "review_required_position_ids": []
+  },
   "psychology": {
     "active_flags": [
       {
@@ -183,6 +191,6 @@
   "recent_funding_views": [],
   "recent_performance_reflections": [],
   "reflections_due": [],
-  "schema_version": 4,
+  "schema_version": 5,
   "type": "IDENTITY_MEMORY_CONTEXT"
 }

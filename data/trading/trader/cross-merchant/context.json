@@ -59,7 +59,7 @@
       ]
     }
   ],
-  "as_of": "2026-10-20T09:31:20.120731-04:00",
+  "as_of": "2026-10-21T08:22:07.869994-04:00",
   "calibration": {
     "average_holding_seconds": 399819,
     "average_realized_pnl_usd": -42866.74,
@@ -97,23 +97,23 @@
   "consequence": {
     "competition_cohort_size": 14,
     "competition_eligible": true,
-    "competition_rank": 5,
-    "competitive_rank": 5,
-    "drawdown_usd": 64.84,
-    "giveback_usd": 64.84,
-    "high_water_nav_usd": 100007561.68,
+    "competition_rank": 3,
+    "competitive_rank": 3,
+    "drawdown_usd": 16.12,
+    "giveback_usd": 16.12,
+    "high_water_nav_usd": 100122122.05,
     "material_threshold_usd": 2000000.0,
-    "nav_usd": 100007496.84,
-    "net_pnl_usd": 7496.84,
+    "nav_usd": 100122105.93,
+    "net_pnl_usd": 122105.93,
     "pressure_flags": [],
     "prior_competition_rank": 3,
-    "rank_change": 2,
-    "raw_pnl_rank": 5,
-    "recent_pattern": "flat",
+    "rank_change": 0,
+    "raw_pnl_rank": 3,
+    "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 150000.0,
     "risk_capital_utilization": 0.015,
-    "session_pnl_change_usd": -114609.09,
+    "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
   "learning": {
@@ -124,13 +124,48 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "38ff4a32245ba9bae908c135f93f297513604bc3fa6452a342a6be0c07153640",
+  "memory_context_sha256": "c168cb1af4841452ce87fcc920a87c034103db06306c35f7343d475368a2c1e3",
   "open_positions": [
     {
       "asset_class": "spot_fx",
       "conviction": 58,
       "current_notional_usd": 15000000.0,
       "entry_mark": 110.9,
+      "harvest": {
+        "asset_class": "spot_fx",
+        "catalyst_by": null,
+        "catalyst_logic": null,
+        "current_mark": 112.4382833270034,
+        "current_notional_usd": 15000000.0,
+        "entry_mark": 110.89779434607021,
+        "framing": null,
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": 0.0,
+        "holding_seconds": 1651270,
+        "horizon_elapsed_fraction": null,
+        "horizon_status": "unspecified",
+        "instrument": "CADJPY",
+        "intended_horizon_days": null,
+        "mae_usd": -22766.21,
+        "mechanical_order": false,
+        "mfe_usd": 208366.04,
+        "order_policy": "review_only",
+        "position_id": "pos-44de67c4b24f",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": null,
+        "realized_pnl_usd": 0.0,
+        "recorded_mfe_usd": 208366.04,
+        "retained_mfe_fraction": 1.0,
+        "review_required": true,
+        "review_threshold_usd": 150000.0,
+        "review_triggers": [
+          "material_winner"
+        ],
+        "side": "long",
+        "total_pnl_usd": 208366.04,
+        "trade_id": "trd-trader-cross-merchant-pos-44de67c4b24f",
+        "unrealized_pnl_usd": 208366.04
+      },
       "instrument": "CADJPY",
       "opened_at": "2026-10-02T05:40:56.963171-04:00",
       "position_id": "pos-44de67c4b24f",
@@ -142,6 +177,16 @@
   "owner_id": "cross-merchant",
   "owner_type": "trader",
   "postmortems_due": [],
+  "profit_harvest": {
+    "mechanical_orders": false,
+    "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
+    "obligations_due": [],
+    "order_policy": "review_only",
+    "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+    "review_required_position_ids": [
+      "pos-44de67c4b24f"
+    ]
+  },
   "psychology": {
     "active_flags": [],
     "applicable": true,
@@ -266,6 +311,6 @@
     }
   ],
   "reflections_due": [],
-  "schema_version": 4,
+  "schema_version": 5,
   "type": "IDENTITY_MEMORY_CONTEXT"
 }

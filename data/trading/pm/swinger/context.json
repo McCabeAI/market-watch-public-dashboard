@@ -1,6 +1,6 @@
 {
   "active_lessons": [],
-  "as_of": "2026-10-20T11:14:05.720042-04:00",
+  "as_of": "2026-10-21T08:22:07.869994-04:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -68,13 +68,46 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "fb894902e74c88b86be0c8d69de663d0d7c204f3dd53702b6b3f17b9e396ecc4",
+  "memory_context_sha256": "208174fc0a116c936781d37f1208b2ed90c3b200bd9adc6eb0fc3bbb234f23b7",
   "open_positions": [
     {
       "asset_class": "rates",
       "conviction": 72,
       "current_notional_usd": 4000000000.0,
       "entry_mark": 3.13,
+      "harvest": {
+        "asset_class": "rates",
+        "catalyst_by": null,
+        "catalyst_logic": null,
+        "current_mark": 3.01,
+        "current_notional_usd": 4000000000.0,
+        "entry_mark": 3.0113125,
+        "framing": null,
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": 1765000.0,
+        "holding_seconds": 2712563,
+        "horizon_elapsed_fraction": null,
+        "horizon_status": "unspecified",
+        "instrument": "CORRA_2027-03",
+        "intended_horizon_days": null,
+        "mae_usd": -977500.0,
+        "mechanical_order": false,
+        "mfe_usd": 1492500.0,
+        "order_policy": "review_only",
+        "position_id": "pm-swinger-2070479ca321",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": null,
+        "realized_pnl_usd": -325000.0,
+        "recorded_mfe_usd": 1492500.0,
+        "retained_mfe_fraction": -0.1826,
+        "review_required": false,
+        "review_threshold_usd": 40000000.0,
+        "review_triggers": [],
+        "side": "long",
+        "total_pnl_usd": -272500.0,
+        "trade_id": "trd-pm-swinger-pm-swinger-2070479ca321",
+        "unrealized_pnl_usd": 52500.0
+      },
       "instrument": "CORRA_2027-03",
       "opened_at": "2026-09-19T22:52:44.433062-04:00",
       "position_id": "pm-swinger-2070479ca321",
@@ -86,6 +119,14 @@
   "owner_id": "swinger",
   "owner_type": "pm",
   "postmortems_due": [],
+  "profit_harvest": {
+    "mechanical_orders": false,
+    "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
+    "obligations_due": [],
+    "order_policy": "review_only",
+    "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+    "review_required_position_ids": []
+  },
   "psychology": {
     "active_flags": [],
     "applicable": true,
@@ -169,6 +210,6 @@
   "recent_funding_views": [],
   "recent_performance_reflections": [],
   "reflections_due": [],
-  "schema_version": 4,
+  "schema_version": 5,
   "type": "IDENTITY_MEMORY_CONTEXT"
 }
