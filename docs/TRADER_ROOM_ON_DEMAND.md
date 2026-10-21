@@ -149,6 +149,8 @@ Debate `trade` and `conflict_synopsis.primary_trade` remain the single primary p
 - `paper_actions` may contain any number of book actions (`OPEN`, `ADD`, `HOLD`, `REDUCE`, `HEDGE`, `CLOSE`) with no arbitrary position-count cap;
 - rates/curve/rates-RV book sides use the trusted P&L convention, not trader shorthand: `long` = receive / long duration / profits when the canonical mark falls; `short` = pay / short duration / profits when the canonical mark rises. Every new rates `OPEN` declares `expected_mark_direction: lower|higher`, and validation requires `lower -> long`, `higher -> short`;
 - `[{"action":"HOLD"}]` is the explicit no-change decision;
+- every new `OPEN` or `HEDGE` paper action carries `lifecycle` (`framing` tactical, swing, or structural, `realization_logic`, `catalyst_logic`, and optional `horizon_days` / `catalyst_by`). Debate `horizon`, `target`, and `stop` stay descriptive. Unsupported levels stay null. Harvest thresholds are not those levels and are not orders;
+- when the seat's own open position is in `profit_harvest.review_required_position_ids`, a full-size hold also carries `harvest_reviews` separating thesis validity from remaining edge. `REDUCE` and `CLOSE` do not;
 - before choosing actions, the advocate must inspect only its own frozen memory sidecar and treat `open_positions` / their `position_id` values as the current book;
 - `ADD`, `REDUCE`, and `CLOSE` must target the existing `position_id`; an advocate must not duplicate an owned position merely because the same expression is still its primary pitch;
 - legacy `paper_capital` remains compatibility-only for old artifacts and is mapped to one action. New live runs must use `paper_actions`.

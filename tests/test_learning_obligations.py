@@ -135,6 +135,16 @@ def _open_action(instrument: str = "USDCAD") -> dict:
         "asset_class": "spot_fx",
         "expression_memo": memo,
         "thesis": "USD remains the cleanest expression against this pair.",
+        "lifecycle": _entry_lifecycle(),
+    }
+
+
+def _entry_lifecycle() -> dict:
+    return {
+        "framing": "tactical",
+        "horizon_days": 10,
+        "realization_logic": "Fixture spot gap pays if the pair extends inside the tactical window.",
+        "catalyst_logic": "The next frozen official print inside that window.",
     }
 
 
@@ -157,6 +167,7 @@ def _rates_first_spot_open_action(instrument: str = "USDCAD") -> dict:
         "asset_class": "spot_fx",
         "expression_memo": memo,
         "thesis": "USD remains the cleanest expression against this pair.",
+        "lifecycle": _entry_lifecycle(),
     }
 
 

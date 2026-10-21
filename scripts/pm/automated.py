@@ -102,6 +102,11 @@ def validate_pm_decisions(
             for row in decision["actions"]
             if isinstance(row, dict) and row.get("action") in {"OPEN", "ADD", "HEDGE"}
         ]
+        from scripts.trading.harvest import assert_expansion_lifecycle
+
+        for row in decision["actions"]:
+            if isinstance(row, dict):
+                assert_expansion_lifecycle(row, owner_id=pm_id)
         if expanding and memory_hashes:
             frozen_hash = memory_hashes.get(pm_id)
             supplied_hash = decision.get("memory_context_sha256")

@@ -35,6 +35,8 @@ Paper marks reuse `scripts/overnight/paper_marks.py`. Packet mids override model
 
 Actions: `OPEN / ADD / HOLD / REDUCE / HEDGE / CLOSE` plus explicit `NO_TRADE`.
 
+`OPEN` and `HEDGE` carry the same `lifecycle` block traders use (tactical, swing, or structural framing, realization logic, and catalyst logic). Each PM memory sidecar includes that PM's deterministic profit-harvest view. A material winner, a material giveback, an expired declared horizon, or a passed catalyst date requires `harvest_reviews` before `HOLD` or `NO_TRADE` keeps the position at full size. The review separates thesis validity from remaining forward edge and answers whether the PM would initiate that exact trade, size, and level if flat today. Thresholds do not submit take-profit orders. `REDUCE` and `CLOSE` still execute without that affirmation. This applies to swinger, pragmatist, grinder, and ChatGPT.
+
 ## Review packets
 
 Deterministic per-PM artifact:
