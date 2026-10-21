@@ -75,7 +75,7 @@ def cmd_verify_trim(args: argparse.Namespace) -> int:
     try:
         snapshot = load_snapshot(Path(args.fixture))
         report_path = write_trim_report(snapshot, Path(args.fixture).parent, Path(args.out))
-    except (SourceError, OSError) as exc:
+    except (SourceError, OSError, ValueError) as exc:
         print(f"NOT PUBLISHED\nreason: {exc}\n", file=sys.stderr)
         return 2
     print(report_path)
