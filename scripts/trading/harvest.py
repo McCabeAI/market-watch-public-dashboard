@@ -41,6 +41,9 @@ ORDER_POLICY = "review_only"
 REASON_MIN_CHARS = 40
 
 ENTRY_ACTIONS = frozenset({"OPEN", "HEDGE"})
+DERISK_ACTIONS = frozenset({"REDUCE", "CLOSE"})
+CONTINUATION_ACTIONS = frozenset({"HOLD", "NO_TRADE"})
+REEXPANSION_ACTIONS = frozenset({"ADD", "HEDGE"})
 
 
 def _text(value: Any) -> str | None:
@@ -567,8 +570,8 @@ def justification_reason(metrics: dict[str, Any], review: dict[str, Any] | None)
     if not isinstance(review, dict):
         return (
             f"{label} harvest_review: {triggers} requires an explicit review before keeping {kept}. "
-            f"{HARVEST_QUESTION} Otherwise CLOSE, or REDUCE until the residual is no longer a meaningful kept winner. "
-            "This is a review trigger, not a take-profit order."
+            f"{HARVEST_QUESTION} REDUCE and CLOSE still execute without this review. "
+            "A cut does not authorize the residual. This is not a take-profit order."
         )
     if not isinstance(review.get("thesis_still_valid"), bool):
         return f"{label} harvest_review: thesis_still_valid must be true or false, separate from remaining edge"
@@ -581,7 +584,7 @@ def justification_reason(metrics: dict[str, Any], review: dict[str, Any] | None)
         return (
             f"{label} harvest_review: keeping {kept} requires remaining_edge true and "
             f"would_initiate_flat yes. Thesis validity alone is not remaining edge. "
-            "CLOSE, and a REDUCE that leaves no meaningful residual, remain available without that answer."
+            "REDUCE and CLOSE remain executable without that answer."
         )
     reason = _text(review.get("remaining_edge_reason"))
     if not reason or len(reason) < REASON_MIN_CHARS:
@@ -601,6 +604,45 @@ def justification_reason(metrics: dict[str, Any], review: dict[str, Any] | None)
     return None
 
 
+def _position_pre_notional(position: dict[str, Any], metrics: dict[str, Any]) -> float:
+    pre = _money(position.get("notional_usd"))
+    if pre is None:
+        pre = _money(metrics.get("current_notional_usd")) or 0.0
+    return float(pre)
+
+
+def _obligation_due(trade: dict[str, Any]) -> bool:
+    obligation = trade.get("harvest_obligation")
+    return isinstance(obligation, dict) and obligation.get("status") == "due"
+
+
+def _targets_position(action: dict[str, Any], position_id: str, *, sole: bool) -> bool:
+    pid = action.get("position_id")
+    hedge = action.get("hedge_of")
+    if str(pid or "") == str(position_id) or str(hedge or "") == str(position_id):
+        return True
+    if sole and pid in (None, "", "__first__") and action.get("action") in DERISK_ACTIONS | REEXPANSION_ACTIONS:
+        return True
+    return False
+
+
+def _book_level_continuation(action: dict[str, Any]) -> bool:
+    return action.get("action") in CONTINUATION_ACTIONS and action.get("position_id") in (None, "", "__first__")
+
+
+def continuation_rejection(actions: list[dict[str, Any]], blocked: list[dict[str, Any]]) -> str | None:
+    """Reject a decision only when nothing left is an executable de-risk.
+
+    A REDUCE or CLOSE keeps the decision applicable. The unjustified hold or add
+    is split off later and is not a reason to discard the cut.
+    """
+    if not blocked:
+        return None
+    if any(isinstance(action, dict) and action.get("action") in DERISK_ACTIONS for action in actions):
+        return None
+    return str(blocked[0].get("reason") or "harvest_review required")
+
+
 def enforce_harvest_hold(
     decision: dict[str, Any],
     trades: list[dict[str, Any]],
@@ -608,51 +650,146 @@ def enforce_harvest_hold(
     *,
     as_of: datetime | None = None,
     owner_id: str,
-) -> list[dict[str, Any]]:
-    """Raise when a triggered winner's post-action residual lacks a re-underwrite.
+) -> dict[str, Any]:
+    """Split harvest review from de-risk. Never blocks REDUCE or CLOSE.
 
-    CLOSE, and a REDUCE that leaves no meaningful residual, need no harvest review.
-    A token cut, a partial cut that leaves a meaningful residual, or a later ADD
-    that restores that residual does not skip the review. This does not emit an order
-    and does not classify REDUCE or CLOSE as risk-expanding actions.
+    Returns accepted continuation reviews, continuation/add actions to block,
+    and the residual obligations those cuts would leave. Does not emit an order.
+    A missing review raises only through ``continuation_rejection`` when the
+    decision has no de-risk leg.
     """
     actions = [row for row in (decision.get("actions") or []) if isinstance(row, dict)]
     open_positions = _open_positions(positions)
-    metrics_rows = [
-        (harvest_metrics(_match_trade(trades, position), position, as_of=as_of), _match_trade(trades, position), position)
+    rows = [
+        (
+            harvest_metrics(_match_trade(trades, position), position, as_of=as_of),
+            _match_trade(trades, position),
+            position,
+        )
         for position in open_positions
     ]
     open_ids = [str(position.get("position_id")) for position in open_positions if position.get("position_id")]
-    pending: list[tuple[dict[str, Any], dict[str, Any]]] = []
-    for metrics, trade, position in metrics_rows:
+    sole = len(open_ids) == 1
+    pending: dict[str, dict[str, Any]] = {}
+    derisk_plans: dict[str, dict[str, Any]] = {}
+    for metrics, trade, position in rows:
         position_id = str(position.get("position_id") or "")
-        pre = _money(position.get("notional_usd"))
-        if pre is None:
-            pre = _money(metrics.get("current_notional_usd")) or 0.0
-        plan = residual_notional(pre, _actions_for_position(actions, position_id, open_ids))
+        if not position_id:
+            continue
+        pre = _position_pre_notional(position, metrics)
+        matched = _actions_for_position(actions, position_id, open_ids)
+        derisk_actions = [action for action in matched if action.get("action") in DERISK_ACTIONS]
+        plan = residual_notional(pre, derisk_actions)
         scaled = _scaled_harvest(trade, position, plan, as_of=as_of)
-        if not residual_needs_justification(metrics, plan, scaled):
-            continue
-        pending.append((review_metrics_for_residual(metrics, scaled, plan), plan))
+        due = _obligation_due(trade)
+        fraction = 1.0 if pre <= 0 else float(plan.get("residual_notional_usd") or 0.0) / pre if pre else 0.0
+        needs = residual_needs_justification(metrics, plan, scaled) or (
+            due and float(plan.get("residual_notional_usd") or 0.0) > 0 and fraction + 1e-12 >= MEANINGFUL_RESIDUAL_FRACTION
+        )
+        derisk_plans[position_id] = {"metrics": metrics, "trade": trade, "position": position, "plan": plan, "pre": pre}
+        if needs:
+            pending[position_id] = review_metrics_for_residual(metrics, scaled, plan)
+    triggered_count = len(pending)
+    blocked: list[dict[str, Any]] = []
     accepted: list[dict[str, Any]] = []
-    problems: list[str] = []
-    for reviewed, plan in pending:
-        review = matching_review(decision, reviewed, triggered_count=len(pending))
-        reason = justification_reason(reviewed, review)
-        if reason:
-            problems.append(f"{owner_id} {reason}")
-            continue
+    authorized: set[str] = set()
+
+    def _authorize(position_id: str, reviewed: dict[str, Any], review: dict[str, Any]) -> None:
+        authorized.add(position_id)
         accepted.append(
             {
-                "metrics_position_id": reviewed.get("position_id"),
+                "metrics_position_id": position_id,
                 "review": review,
                 "triggers": list(reviewed.get("review_triggers") or []),
-                "residual_notional_usd": plan.get("residual_notional_usd"),
+                "residual_notional_usd": reviewed.get("residual_notional_usd"),
             }
         )
-    if problems:
-        raise HarvestReviewError(problems[0])
-    return accepted
+
+    for action in actions:
+        kind = action.get("action")
+        if kind in DERISK_ACTIONS:
+            continue
+        if kind in CONTINUATION_ACTIONS:
+            targets = open_ids if _book_level_continuation(action) else [
+                pid for pid in pending if _targets_position(action, pid, sole=sole)
+            ]
+            unmet: list[str] = []
+            ready: list[tuple[str, dict[str, Any], dict[str, Any]]] = []
+            for position_id in targets:
+                reviewed = pending.get(position_id)
+                if not reviewed:
+                    continue
+                review = matching_review(decision, reviewed, triggered_count=triggered_count)
+                reason = justification_reason(reviewed, review)
+                if reason:
+                    unmet.append(f"{owner_id} {reason}")
+                elif isinstance(review, dict):
+                    ready.append((position_id, reviewed, review))
+            if unmet:
+                blocked.append({"action": action, "reason": unmet[0], "result": "blocked"})
+            else:
+                for position_id, reviewed, review in ready:
+                    _authorize(position_id, reviewed, review)
+            continue
+        if kind not in REEXPANSION_ACTIONS:
+            continue
+        for position_id, bundle in derisk_plans.items():
+            if not _targets_position(action, position_id, sole=sole):
+                continue
+            restored = residual_notional(bundle["pre"], [*(
+                action_row
+                for action_row in _actions_for_position(actions, position_id, open_ids)
+                if action_row.get("action") in DERISK_ACTIONS
+            ), action])
+            restored_scaled = _scaled_harvest(bundle["trade"], bundle["position"], restored, as_of=as_of)
+            reviewed = pending.get(position_id)
+            if reviewed is None and residual_needs_justification(bundle["metrics"], restored, restored_scaled):
+                reviewed = review_metrics_for_residual(bundle["metrics"], restored_scaled, restored)
+            if reviewed is None:
+                continue
+            # Judge the add against the size it would actually create on top of the cut.
+            reviewed = dict(reviewed)
+            reviewed["residual_notional_usd"] = restored.get("residual_notional_usd")
+            reviewed["residual_fraction"] = restored.get("residual_fraction")
+            reason = justification_reason(reviewed, matching_review(decision, reviewed, triggered_count=max(triggered_count, 1)))
+            if reason:
+                blocked.append({"action": action, "reason": f"{owner_id} {reason}", "result": "blocked"})
+            else:
+                review = matching_review(decision, reviewed, triggered_count=max(triggered_count, 1))
+                if isinstance(review, dict):
+                    _authorize(position_id, reviewed, review)
+            break
+    obligations = []
+    for position_id, reviewed in pending.items():
+        if position_id in authorized:
+            continue
+        obligations.append(
+            {
+                "position_id": position_id,
+                "trade_id": reviewed.get("trade_id"),
+                "residual_notional_usd": reviewed.get("residual_notional_usd"),
+                "triggers": list(reviewed.get("review_triggers") or []),
+                "status": "due",
+            }
+        )
+    return {"accepted": accepted, "blocked": blocked, "obligations": obligations}
+
+
+def assert_harvest_continuation(
+    decision: dict[str, Any],
+    trades: list[dict[str, Any]],
+    positions: list[dict[str, Any]] | None,
+    *,
+    as_of: datetime | None = None,
+    owner_id: str,
+) -> dict[str, Any]:
+    """Raise when a continuation decision has no executable de-risk leg."""
+    plan = enforce_harvest_hold(decision, trades, positions, as_of=as_of, owner_id=owner_id)
+    actions = [row for row in (decision.get("actions") or []) if isinstance(row, dict)]
+    reason = continuation_rejection(actions, plan["blocked"])
+    if reason:
+        raise HarvestReviewError(reason)
+    return plan
 
 
 def replay_mark_path(
@@ -754,4 +891,86 @@ def persist_accepted_harvest(
             updated["lifecycle"] = fresh
             record["reunderwrite"] = fresh
         updated.setdefault("harvest_reviews", []).append(record)
+        # A continuation review answers the residual. Clearing happens in
+        # sync_harvest_obligations so a pure reduce cannot consume this review.
+        store.write_trade(updated)
+
+
+def sync_harvest_obligations(
+    store: Any,
+    decision: dict[str, Any],
+    *,
+    owner_type: str,
+    owner_id: str,
+    positions_before: list[dict[str, Any]],
+    allowed_actions: list[dict[str, Any]],
+    when: datetime | None,
+    run_id: str | None,
+    as_of: datetime | None = None,
+) -> None:
+    """Record the residual that executed de-risk actually left.
+
+    Blocked adds are not in ``allowed_actions``, so the obligation uses the
+    post-cut size. An accepted continuation review clears it. REDUCE and CLOSE
+    never require the review in order to run.
+    """
+    from scripts.trading.ledger import find_trade_by_position
+
+    stamp = isoformat(now_ny(when))
+    moment = as_of or when
+    open_positions = _open_positions(positions_before)
+    open_ids = [str(position.get("position_id")) for position in open_positions if position.get("position_id")]
+    authorized = {
+        str(item.get("metrics_position_id"))
+        for item in (decision.get("_harvest_accepted") or [])
+        if item.get("metrics_position_id")
+    }
+    for position in open_positions:
+        position_id = str(position.get("position_id") or "")
+        if not position_id:
+            continue
+        trade = find_trade_by_position(
+            store, owner_type=owner_type, owner_id=owner_id, position_id=position_id
+        )
+        if not trade or trade.get("owner_id") != owner_id:
+            continue
+        metrics = harvest_metrics(trade, position, as_of=moment)
+        pre = _position_pre_notional(position, metrics)
+        executed = [
+            action
+            for action in allowed_actions
+            if isinstance(action, dict)
+            and action.get("action") in DERISK_ACTIONS | REEXPANSION_ACTIONS
+            and _targets_position(action, position_id, sole=len(open_ids) == 1)
+        ]
+        plan = residual_notional(pre, executed)
+        scaled = _scaled_harvest(trade, position, plan, as_of=moment)
+        net = float(plan.get("residual_notional_usd") or 0.0)
+        meaningful = net > 0 and residual_needs_justification(metrics, plan, scaled)
+        updated = deepcopy(trade)
+        if position_id in authorized or not meaningful:
+            if isinstance(updated.get("harvest_obligation"), dict):
+                updated["harvest_obligation"] = {
+                    **updated["harvest_obligation"],
+                    "status": "satisfied" if position_id in authorized else "retired",
+                    "residual_notional_usd": plan.get("residual_notional_usd"),
+                    "updated_at": stamp,
+                    "run_id": run_id,
+                    "mechanical_order": False,
+                }
+                store.write_trade(updated)
+            continue
+        reviewed = review_metrics_for_residual(metrics, scaled, plan)
+        updated["harvest_obligation"] = {
+            "status": "due",
+            "position_id": position_id,
+            "trade_id": trade.get("trade_id"),
+            "residual_notional_usd": plan.get("residual_notional_usd"),
+            "triggers": list(reviewed.get("review_triggers") or []),
+            "updated_at": stamp,
+            "run_id": run_id,
+            "question": HARVEST_QUESTION,
+            "order_policy": ORDER_POLICY,
+            "mechanical_order": False,
+        }
         store.write_trade(updated)

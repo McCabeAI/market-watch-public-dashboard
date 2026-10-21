@@ -185,7 +185,7 @@ Triggers, and only triggers, are:
 
 A small early gain, including Dollar King's first ~$133k on USDCAD, does not trip `material_winner`. The same path does trip it while the trade is still near its high, before the later giveback from about $954k MFE.
 
-When a triggered position would still be kept at a meaningful residual size, `HOLD`, `NO_TRADE`, a token `REDUCE`, or a partial `REDUCE` plus a later `ADD` requires `harvest_reviews` (or one `harvest_review` when only one position is triggered). The review is about the post-action residual, not the size that existed before the decision:
+`REDUCE` and `CLOSE` always execute without `harvest_reviews`. A partial cut does not answer the residual. When the executed cut leaves a meaningful triggered residual, the trade keeps an explicit `harvest_obligation` for the actual post-cut size. The next `HOLD` / `NO_TRADE`, and any `ADD` or other re-expansion, must answer that residual. A blocked add is not part of the size. A token cut, or a cut followed by an add, does not retire the obligation. The continuation review is `harvest_reviews` (or one `harvest_review` when only one position is triggered):
 
 - `thesis_still_valid` boolean
 - `remaining_edge` boolean, separate from the thesis flag

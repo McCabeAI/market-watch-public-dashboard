@@ -170,15 +170,20 @@ def _profit_harvest_block(open_positions: list[dict[str, Any]]) -> dict[str, Any
     from scripts.trading.harvest import HARVEST_QUESTION, ORDER_POLICY
 
     required = []
+    obligations_due = []
     for row in open_positions:
         harvest = row.get("harvest") or {}
         if harvest.get("review_required") and harvest.get("position_id"):
             required.append(harvest["position_id"])
+        pending = harvest.get("pending_review") or {}
+        if pending.get("status") == "due" and harvest.get("position_id"):
+            obligations_due.append(harvest["position_id"])
     return {
         "order_policy": ORDER_POLICY,
         "mechanical_orders": False,
         "question": HARVEST_QUESTION,
         "review_required_position_ids": required,
+        "obligations_due": obligations_due,
         "note": (
             "Thresholds trigger a harvest review. They are not take-profit or stop orders. "
             "An intact thesis does not by itself justify holding full size."
@@ -208,6 +213,16 @@ def open_position_context(
             }
         )
         harvest = harvest_metrics(row, position or None, as_of=as_of)
+        obligation = row.get("harvest_obligation")
+        if isinstance(obligation, dict) and obligation.get("status") == "due":
+            harvest = dict(harvest)
+            harvest["pending_review"] = {
+                "status": "due",
+                "residual_notional_usd": obligation.get("residual_notional_usd"),
+                "triggers": list(obligation.get("triggers") or []),
+                "question": obligation.get("question"),
+                "mechanical_order": False,
+            }
         out.append(
             {
                 "trade_id": row.get("trade_id"),

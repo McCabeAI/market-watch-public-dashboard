@@ -331,7 +331,8 @@ def _enforce_scheduled_harvest(
     Uses the frozen prior books. Missing ledgers evaluate from those positions
     alone. This does not create an order.
     """
-    from scripts.trading.harvest import enforce_harvest_hold
+    from scripts.trading.errors import HarvestReviewError
+    from scripts.trading.harvest import continuation_rejection, enforce_harvest_hold
     from scripts.trading.store import TradingStore
 
     trading = TradingStore(root=store.root, state_root=store.state_root)
@@ -352,13 +353,19 @@ def _enforce_scheduled_harvest(
             continue
         seat_book = ((prior_books or {}).get("seats") or {}).get(seat) or {}
         positions = seat_book.get("positions") if isinstance(seat_book, dict) else []
-        enforce_harvest_hold(decision, trades("trader", seat), positions or [], as_of=stamp, owner_id=seat)
+        plan = enforce_harvest_hold(decision, trades("trader", seat), positions or [], as_of=stamp, owner_id=seat)
+        reason = continuation_rejection(decision.get("actions") or [], plan["blocked"])
+        if reason:
+            raise HarvestReviewError(reason)
     for pm_id, decision in (pm_decisions or {}).items():
         if not isinstance(decision, dict):
             continue
         book = ((prior_pm or {}).get("pms") or {}).get(pm_id) or {}
         positions = book.get("positions") if isinstance(book, dict) else []
-        enforce_harvest_hold(decision, trades("pm", pm_id), positions or [], as_of=stamp, owner_id=pm_id)
+        plan = enforce_harvest_hold(decision, trades("pm", pm_id), positions or [], as_of=stamp, owner_id=pm_id)
+        reason = continuation_rejection(decision.get("actions") or [], plan["blocked"])
+        if reason:
+            raise HarvestReviewError(reason)
 
 
 def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str, Any]:

@@ -661,6 +661,18 @@ def apply_trader_review_with_memory(
             when=stamp,
             run_id=run_id,
         )
+        from scripts.trading.harvest import sync_harvest_obligations
+
+        sync_harvest_obligations(
+            store,
+            decision,
+            owner_type="trader",
+            owner_id=seat,
+            positions_before=list(prior_positions[seat].values()),
+            allowed_actions=list(decision.get("actions") or []),
+            when=stamp,
+            run_id=run_id,
+        )
         build_memory_context(store, "trader", seat, when=stamp, exclude_run_id=run_id)
         decision["journal_event_id"] = event["event_id"]
     validate_books(updated)
@@ -853,6 +865,18 @@ def apply_pm_decision_with_memory(
         decision,
         owner_type="pm",
         owner_id=pm_id,
+        when=stamp,
+        run_id=run_id,
+    )
+    from scripts.trading.harvest import sync_harvest_obligations
+
+    sync_harvest_obligations(
+        store,
+        decision,
+        owner_type="pm",
+        owner_id=pm_id,
+        positions_before=list(prior.values()),
+        allowed_actions=list(decision.get("actions") or []),
         when=stamp,
         run_id=run_id,
     )
