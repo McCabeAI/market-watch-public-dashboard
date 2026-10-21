@@ -32,6 +32,8 @@ from scripts.au_cpi_release.models import (
     add_months,
     add_quarters,
     aggregation_identity,
+    embedded_headline_sa_mom,
+    headline_coherence,
     base_effect_contributions,
     build_frame,
     electricity_history,
@@ -395,6 +397,32 @@ def forecast_release(
         trim_claim=str(trim["g5_claim"]),
         equivalence=str(trim["quarterly_legacy_equivalence"]["verdict"]),
     )
+    nsa_method = selection["headline_nsa_mom"].get("model")
+    sa_method = selection["headline_sa_mom"].get("model")
+    nsa_value = (bundle.get("headline_nsa_mom") or {}).get("values", {}).get(nsa_method)
+    sa_value = (bundle.get("headline_sa_mom") or {}).get("values", {}).get(sa_method)
+    coherence = headline_coherence(
+        nsa_method=None if nsa_method is None else str(nsa_method),
+        nsa_mom=None if nsa_value is None else float(nsa_value),
+        sa_method=None if sa_method is None else str(sa_method),
+        sa_mom=None if sa_value is None else float(sa_value),
+        embedded_sa_mom=embedded_headline_sa_mom(frame, release, None if nsa_method is None else str(nsa_method)),
+        seasonal_movement=headline_seasonal,
+        index_previous=frame.get("headline_nsa_index", predecessor),
+        index_lag=frame.get("headline_nsa_index", add_months(release, -12)),
+    )
+    if coherence["flag_abs_gap_at_least_0_05pp"]:
+        caveat = (
+            "Headline NSA and SA forecasts are not one SA path. "
+            f"The NSA model embeds SA MoM {coherence['implied_sa_mom_inside_selected_nsa_model']}; "
+            f"the selected SA forecast is {coherence['selected_sa_mom']}. "
+            f"NSA MoM gap {coherence['mom_gap_pp']} pp, YoY gap {coherence['yoy_gap_pp']} pp. "
+            "The rule-selected values are not overridden."
+        )
+        for target_id in ("headline_nsa_mom", "headline_nsa_yoy", "headline_sa_mom", "headline_sa_yoy"):
+            block = targets.get(target_id)
+            if block is not None:
+                block.setdefault("caveats", []).append(caveat)
     run_status = "ok"
     if any(block.get("status") == "blocked" for block in targets.values()):
         run_status = "blocked"
@@ -433,6 +461,7 @@ def forecast_release(
             "sa_aggregate_gap_vs_999901": sa_gap,
             "index_publication_convention": convention,
             "seasonal_factors": seasonal,
+            "headline_coherence": coherence,
             "electricity": electricity,
             "base_effects_sep_2025": base_effects,
             "forecast_contributors": {

@@ -105,6 +105,20 @@ def render_nowcast(result: dict[str, Any]) -> str:
     lines.append(str(seasonal.get("reason")))
     lines.append(f"all-groups movement: {_fmt(seasonal.get('all_groups_seasonal_movement_implied'), 6)}")
     lines.append(str(seasonal.get("all_groups_seasonal_source")))
+    coherence = diagnostics.get("headline_coherence") or {}
+    if coherence:
+        lines.append("")
+        lines.append("Headline coherence (selected values are not overridden)")
+        lines.append(
+            f"implied SA inside NSA model: {_fmt(coherence.get('implied_sa_mom_inside_selected_nsa_model'), 4)} "
+            f"selected SA: {_fmt(coherence.get('selected_sa_mom'), 4)} "
+            f"SA path gap: {_fmt(coherence.get('sa_path_gap_pp'), 4)}"
+        )
+        lines.append(
+            f"NSA from selected SA x seasonal: {_fmt(coherence.get('nsa_mom_implied_by_selected_sa_forecast'), 4)} "
+            f"selected NSA: {_fmt(coherence.get('selected_nsa_mom'), 4)} "
+            f"MoM gap: {_fmt(coherence.get('mom_gap_pp'), 4)} YoY gap: {_fmt(coherence.get('yoy_gap_pp'), 4)}"
+        )
     electricity = diagnostics.get("electricity") or {}
     lines.append("")
     lines.append("Electricity")

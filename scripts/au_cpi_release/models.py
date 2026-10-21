@@ -873,6 +873,73 @@ def _bottom_up(
     return value, meta
 
 
+def embedded_headline_sa_mom(frame: Frame, target: str, method: str | None) -> float | None:
+    """SA MoM path inside an NSA model of the form sa_persistence_x_seasonal_k.
+
+    Other NSA models do not embed a single all-groups SA forecast.
+    """
+    prefix = "sa_persistence_x_seasonal_"
+    if not method or not str(method).startswith(prefix):
+        return None
+    window = int(str(method)[len(prefix) :])
+    return mean_last(frame, "headline_sa_index", target, window, previous_month)
+
+
+def headline_coherence(
+    *,
+    nsa_method: str | None,
+    nsa_mom: float | None,
+    sa_method: str | None,
+    sa_mom: float | None,
+    embedded_sa_mom: float | None,
+    seasonal_movement: float | None,
+    index_previous: float | None,
+    index_lag: float | None,
+) -> dict[str, Any]:
+    """Compare the SA path inside the NSA forecast with the selected SA forecast.
+
+    Does not change either selected value. ``mom_gap_pp`` is selected NSA MoM
+    minus the NSA MoM implied by the selected SA forecast and the all-groups
+    seasonal movement. The YoY gap uses the same two MoMs and the official indexes.
+    """
+    nsa_from_sa = None
+    if sa_mom is not None and seasonal_movement is not None:
+        nsa_from_sa = combine_sa_and_seasonal(sa_mom, seasonal_movement)
+    mom_gap = None if nsa_mom is None or nsa_from_sa is None else nsa_mom - nsa_from_sa
+    sa_gap = None if embedded_sa_mom is None or sa_mom is None else embedded_sa_mom - sa_mom
+    yoy_selected = None
+    yoy_from_sa = None
+    yoy_gap = None
+    if None not in (index_previous, index_lag, nsa_mom):
+        yoy_selected = yoy_from_change(index_previous, index_lag, nsa_mom)  # type: ignore[arg-type]
+    if None not in (index_previous, index_lag, nsa_from_sa):
+        yoy_from_sa = yoy_from_change(index_previous, index_lag, nsa_from_sa)  # type: ignore[arg-type]
+    if yoy_selected is not None and yoy_from_sa is not None:
+        yoy_gap = yoy_selected - yoy_from_sa
+    flagged = (mom_gap is not None and abs(mom_gap) >= 0.05) or (yoy_gap is not None and abs(yoy_gap) >= 0.05)
+    return {
+        "nsa_method": nsa_method,
+        "sa_method": sa_method,
+        "selected_nsa_mom": nsa_mom,
+        "selected_sa_mom": sa_mom,
+        "implied_sa_mom_inside_selected_nsa_model": embedded_sa_mom,
+        "all_groups_seasonal_movement": seasonal_movement,
+        "nsa_mom_implied_by_selected_sa_forecast": nsa_from_sa,
+        "mom_gap_pp": mom_gap,
+        "sa_path_gap_pp": sa_gap,
+        "yoy_from_selected_nsa": yoy_selected,
+        "yoy_from_sa_implied_nsa": yoy_from_sa,
+        "yoy_gap_pp": yoy_gap,
+        "flag_abs_gap_at_least_0_05pp": flagged,
+        "values_not_overridden": True,
+        "note": (
+            "The selected NSA model and the selected SA model can embed different SA paths. "
+            "mom_gap_pp is the selected NSA MoM minus the NSA MoM obtained by applying the "
+            "all-groups seasonal movement to the selected SA forecast. Neither selected value is replaced."
+        ),
+    }
+
+
 def _sa_seasonal_headline(frame: Frame, target: str, window: int) -> float | None:
     sa_mean = mean_last(frame, "headline_sa_index", target, window, previous_month)
     movement = _implied_seasonal_movement(
