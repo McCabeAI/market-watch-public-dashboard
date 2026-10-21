@@ -210,6 +210,29 @@ def cmd_replay(args: Any) -> int:
     return 0
 
 
+def cmd_scorecard(args: Any) -> int:
+    from scripts.au_cpi_release.calendar import sydney_now
+    from scripts.au_cpi_release.scorecard import ScorecardError, write_scorecard
+
+    nowcast_path = Path(args.nowcast)
+    run_dir = nowcast_path.parent if args.run_dir is None else Path(args.run_dir)
+    try:
+        generated = _aware_datetime(args.generated_at).isoformat()
+        path = write_scorecard(
+            nowcast_path=nowcast_path,
+            actual_fixture=Path(args.actual_fixture),
+            out=Path(args.out),
+            run_dir=run_dir,
+            generated_at=generated,
+        )
+    except ScorecardError as exc:
+        return _fail(exc.code if not exc.detail else f"{exc.code}: {exc.detail}")
+    except (OSError, ValueError, KeyError) as exc:
+        return _fail(str(exc))
+    print(path)
+    return 0
+
+
 def register_nowcast_commands(sub: Any) -> None:
     nowcast = sub.add_parser("nowcast", help="Pre-release nowcast written to an immutable run archive")
     nowcast.add_argument("--release", required=True, help="Reference month, for example 2026-09")
@@ -229,3 +252,11 @@ def register_nowcast_commands(sub: Any) -> None:
     replay = sub.add_parser("replay", help="Recompute an archived nowcast and require byte-identical nowcast.json")
     replay.add_argument("--run-dir", type=Path, required=True)
     replay.set_defaults(func=cmd_replay)
+
+    scorecard = sub.add_parser("scorecard", help="Post-release forecast vs actual (refuses before release time)")
+    scorecard.add_argument("--nowcast", type=Path, required=True, help="nowcast.json (run dir inferred from parent)")
+    scorecard.add_argument("--actual-fixture", type=Path, required=True, help="Post-release snapshot.json")
+    scorecard.add_argument("--out", type=Path, required=True, help="Directory for scorecard.json and scorecard.txt")
+    scorecard.add_argument("--run-dir", type=Path, default=None, help="Run archive for manifest verification")
+    scorecard.add_argument("--generated-at", dest="generated_at", default=None)
+    scorecard.set_defaults(func=cmd_scorecard)
