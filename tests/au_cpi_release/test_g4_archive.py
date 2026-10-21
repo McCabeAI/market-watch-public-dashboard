@@ -9,12 +9,14 @@ from pathlib import Path
 from unittest.mock import patch
 from zoneinfo import ZoneInfo
 
+from scripts.au_cpi_release import BACKTEST_ARCHIVE_MANIFEST_SCHEMA
 from scripts.au_cpi_release.archive import (
     ARCHIVE_MANIFEST_SCHEMA,
     ArchiveConflict,
     GeneratedAfterFreeze,
     assert_before_freeze,
     publish_tree,
+    write_backtest_archive,
     write_run_archive,
 )
 from scripts.au_cpi_release.cli import main
@@ -118,6 +120,43 @@ class ArchiveTests(unittest.TestCase):
                     generated_at=generated,
                 )
             self.assertEqual((directory / "raw" / "a.csv").read_bytes(), b"abc")
+
+    def test_backtest_archive_manifest_covers_outputs(self) -> None:
+        snapshot = Snapshot(
+            observations=(),
+            source_records=(),
+            retrieved_at="2026-10-21T00:00:00Z",
+            notes=(),
+        )
+        payload = b'{"schema_version":"au_cpi_backtest_v1"}\n'
+        text = b"label: pseudo_oos_latest_vintage\n"
+        with tempfile.TemporaryDirectory() as tmp:
+            directory = Path(tmp) / "backtests" / "all-asof-test"
+            manifest = write_backtest_archive(
+                directory,
+                snapshot,
+                as_of="2026-10-22T01:00:00+11:00",
+                release=None,
+                generated_at="2026-10-22T01:00:00+11:00",
+                backtest_json=payload,
+                backtest_txt=text,
+            )
+            self.assertEqual(manifest["schema_version"], BACKTEST_ARCHIVE_MANIFEST_SCHEMA)
+            listed = manifest["files"]
+            self.assertIn("backtest.json", listed)
+            self.assertIn("backtest.txt", listed)
+            self.assertEqual((directory / "backtest.json").read_bytes(), payload)
+            with self.assertRaises(ArchiveConflict):
+                write_backtest_archive(
+                    directory,
+                    snapshot,
+                    as_of="2026-10-22T01:00:00+11:00",
+                    release=None,
+                    generated_at="2026-10-22T01:00:00+11:00",
+                    backtest_json=b'{"schema_version":"au_cpi_backtest_v1","changed":true}\n',
+                    backtest_txt=text,
+                )
+            self.assertEqual((directory / "backtest.json").read_bytes(), payload)
 
     def test_cli_requires_live_and_conflict_exits_2(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

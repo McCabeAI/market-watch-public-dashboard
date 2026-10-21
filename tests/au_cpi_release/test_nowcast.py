@@ -467,11 +467,15 @@ class CliTests(unittest.TestCase):
                     "--fixture",
                     str(FIXTURE),
                     "--out",
-                    str(out / "backtest"),
+                    str(out),
                 ]
             )
             self.assertEqual(backtest_code, 0)
-            metrics = json.loads((out / "backtest" / "backtest.json").read_text(encoding="utf-8"))
+            backtest_dirs = list((out / "backtests").iterdir())
+            self.assertEqual(len(backtest_dirs), 1)
+            backtest_dir = backtest_dirs[0]
+            self.assertTrue((backtest_dir / "manifest.json").is_file())
+            metrics = json.loads((backtest_dir / "backtest.json").read_text(encoding="utf-8"))
             self.assertEqual(metrics["label"], "pseudo_oos_latest_vintage")
             scored = [row for row in metrics["metrics"] if row["n"] > 0 and row["sub_period"] == "full"]
             self.assertTrue(scored)
@@ -482,7 +486,7 @@ class CliTests(unittest.TestCase):
                 self.assertIsNotNone(row["mae"])
             self.assertTrue(metrics["leakage_guard"]["monthly_2026-08"]["pass"])
             self.assertTrue(any(row.get("not_a_skill_estimate") for row in metrics["true_vintage"]["rows"]))
-            self.assertTrue((out / "backtest" / "backtest.txt").is_file())
+            self.assertTrue((backtest_dir / "backtest.txt").is_file())
 
 
 if __name__ == "__main__":

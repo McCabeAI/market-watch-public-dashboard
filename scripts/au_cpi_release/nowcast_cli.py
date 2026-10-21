@@ -134,6 +134,7 @@ def cmd_nowcast(args: Any) -> int:
 
 
 def cmd_backtest(args: Any) -> int:
+    from scripts.au_cpi_release.archive import ArchiveConflict, backtest_archive_dir, write_backtest_archive
     from scripts.au_cpi_release.backtest import run_backtest
     from scripts.au_cpi_release.engine import load_context
     from scripts.au_cpi_release.models import build_frame
@@ -159,13 +160,21 @@ def cmd_backtest(args: Any) -> int:
             ctx=ctx,
             frame=frame,
         )
+        directory = backtest_archive_dir(Path(args.out), args.release, as_of, snapshot)
+        write_backtest_archive(
+            directory,
+            snapshot,
+            as_of=as_of,
+            release=args.release,
+            generated_at=generated.isoformat(),
+            backtest_json=canonical_json_bytes(result),
+            backtest_txt=render_backtest(result).encode("utf-8"),
+        )
+    except ArchiveConflict as exc:
+        return _fail(str(exc))
     except (SourceError, InformationSetError, OSError, ValueError, RuntimeError) as exc:
         return _fail(str(exc))
-    out = Path(args.out)
-    out.mkdir(parents=True, exist_ok=True)
-    (out / "backtest.json").write_bytes(canonical_json_bytes(result))
-    (out / "backtest.txt").write_text(render_backtest(result), encoding="utf-8")
-    print(out / "backtest.json")
+    print(directory)
     return 0
 
 
@@ -245,7 +254,12 @@ def register_nowcast_commands(sub: Any) -> None:
     backtest = sub.add_parser("backtest", help="Walk-forward pseudo-OOS and the true-vintage section")
     backtest.add_argument("--as-of", dest="as_of", required=True)
     backtest.add_argument("--fixture", type=Path, required=True)
-    backtest.add_argument("--out", type=Path, required=True)
+    backtest.add_argument("--out", type=Path, required=True, help="Parent directory for backtests/")
+    backtest.add_argument(
+        "--release",
+        default=None,
+        help="Optional reference month label for the archive directory (default: all)",
+    )
     backtest.add_argument("--generated-at", dest="generated_at", default=None)
     backtest.set_defaults(func=cmd_backtest)
 

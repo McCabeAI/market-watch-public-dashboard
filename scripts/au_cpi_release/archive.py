@@ -18,7 +18,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from scripts.au_cpi_release import ARCHIVE_MANIFEST_SCHEMA
+from scripts.au_cpi_release import ARCHIVE_MANIFEST_SCHEMA, BACKTEST_ARCHIVE_MANIFEST_SCHEMA
 from scripts.au_cpi_release.calendar import REPO_ROOT, parse_timestamp
 from scripts.au_cpi_release.contract import Snapshot
 from scripts.au_cpi_release.sources.acquire import snapshot_canonical_bytes, snapshot_sha256
@@ -57,6 +57,12 @@ def snapshot_archive_dir(out: Path, as_of: str, snapshot: Snapshot) -> Path:
 def run_archive_dir(out: Path, release: str, as_of: str, snapshot: Snapshot) -> Path:
     digest = snapshot_sha256(snapshot)[:12]
     return Path(out) / "runs" / f"{release}-asof-{compact_token(as_of)}-{digest}"
+
+
+def backtest_archive_dir(out: Path, release: str | None, as_of: str, snapshot: Snapshot) -> Path:
+    digest = snapshot_sha256(snapshot)[:12]
+    release_token = release if release else "all"
+    return Path(out) / "backtests" / f"{release_token}-asof-{compact_token(as_of)}-{digest}"
 
 
 def tool_git_commit() -> str | None:
@@ -257,4 +263,33 @@ def write_run_archive(
         release_time=release_time,
         generated_at=generated_at.isoformat(),
     )
+    return publish_tree(directory, files, manifest)
+
+
+def write_backtest_archive(
+    directory: Path,
+    snapshot: Snapshot,
+    *,
+    as_of: str,
+    release: str | None,
+    generated_at: str,
+    backtest_json: bytes,
+    backtest_txt: bytes,
+) -> dict[str, Any]:
+    """Publish a backtest directory with backtest.json, backtest.txt, and manifest.json."""
+    files = {
+        "backtest.json": backtest_json,
+        "backtest.txt": backtest_txt,
+    }
+    manifest: dict[str, Any] = {
+        "as_of": as_of,
+        "files": _file_hashes(files),
+        "files_note": "sha256 and bytes of every archived file except manifest.json, whose contents include this listing",
+        "generated_at": generated_at,
+        "release": release,
+        "schema_version": BACKTEST_ARCHIVE_MANIFEST_SCHEMA,
+        "snapshot_sha256": snapshot_sha256(snapshot),
+        "tool_git_commit": tool_git_commit(),
+        "tool_git_dirty": tool_git_dirty(),
+    }
     return publish_tree(directory, files, manifest)
