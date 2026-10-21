@@ -103,7 +103,18 @@ def _register_verify_trim(sub: Any) -> None:
     parser.set_defaults(func=cmd_verify_trim)
 
 
+def _ensure_extensions() -> None:
+    """Load T2 commands once, through the register_command extension point."""
+    if getattr(_ensure_extensions, "done", False):
+        return
+    _ensure_extensions.done = True  # type: ignore[attr-defined]
+    from scripts.au_cpi_release.nowcast_cli import register_nowcast_commands
+
+    register_command(register_nowcast_commands)
+
+
 def build_parser() -> argparse.ArgumentParser:
+    _ensure_extensions()
     parser = argparse.ArgumentParser(prog="python -m scripts.au_cpi_release")
     sub = parser.add_subparsers(dest="command", required=True)
     _register_snapshot(sub)
