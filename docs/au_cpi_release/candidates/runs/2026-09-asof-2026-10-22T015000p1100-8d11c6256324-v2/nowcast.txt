@@ -1,0 +1,160 @@
+Australian CPI pre-release nowcast
+status: ok
+release: 2026-09 at 2026-10-28T11:30:00+11:00
+as_of: 2026-10-22T01:50:00+11:00
+generated_at: 2026-10-22T05:54:51+11:00
+snapshot_retrieved_at: 2026-10-21T13:26:33Z
+snapshot_sha256: 8d11c6256324217abd72a0983c54ec543e0b814e5266784a27809805511e3d41
+
+Targets
+target | status | period | value | 1dp | method | n | low_sample | band68 | band90
+headline_nsa_mom | ok | 2026-09 | 0.5056 | 0.5 | sa_persistence_x_seasonal_12 | 16 | True | [0.141, 0.870] half 0.365 | [-0.125, 1.136] half 0.630
+headline_nsa_yoy | ok | 2026-09 | 4.0232 | 4.0 | sa_persistence_x_seasonal_12 | 16 | True | [3.646, 4.401] half 0.377 | [3.371, 4.676] half 0.652
+headline_sa_mom | ok | 2026-09 | 0.3233 | 0.3 | mean_12 | 16 | True | [-0.055, 0.701] half 0.378 | [-0.286, 0.932] half 0.609
+headline_sa_yoy | ok | 2026-09 | 3.9972 | 4.0 | mean_12 | 16 | True | [3.605, 4.389] half 0.392 | [3.366, 4.628] half 0.631
+trimmed_mean_monthly_sa_mom | ok | 2026-09 | 0.2931 | 0.3 | mean_12 | 16 | True | [0.240, 0.347] half 0.054 | [0.152, 0.434] half 0.141
+trimmed_mean_monthly_sa_yoy | ok | 2026-09 | 3.6056 | 3.6 | mean_12 | 16 | True | [3.550, 3.661] half 0.055 | [3.460, 3.751] half 0.146
+trimmed_mean_quarterly_legacy_qoq | ok | 2026-Q3 | 0.8126 | 0.8 | persistence | 176 | False | [0.600, 1.025] half 0.212 | [0.413, 1.213] half 0.400
+trimmed_mean_quarterly_legacy_yoy | ok | 2026-Q3 | 3.4346 | 3.4 | persistence | 174 | False | [3.217, 3.652] half 0.218 | [3.024, 3.845] half 0.410
+weighted_median_monthly_sa_mom | ok | 2026-09 | 0.2502 | 0.3 | persistence | 27 | False | [0.170, 0.330] half 0.080 | [0.111, 0.389] half 0.139
+weighted_median_monthly_sa_yoy | ok | 2026-09 | 3.4352 | 3.4 | persistence | 17 | True | [3.353, 3.517] half 0.082 | [3.292, 3.578] half 0.143
+headline_nsa_quarterly_qoq | ok | 2026-Q3 | 1.1968 | 1.2 | sa_persistence_x_seasonal_12 | 16 | True | [1.074, 1.320] half 0.123 | [0.984, 1.409] half 0.213
+headline_nsa_quarterly_yoy | ok | 2026-Q3 | 3.8148 | 3.8 | sa_persistence_x_seasonal_12 | 16 | True | [3.689, 3.941] half 0.126 | [3.597, 4.033] half 0.218
+
+Quarterly headline (quarter average of monthly NSA)
+period: 2026-Q3
+QoQ: 1.1968 (1dp 1.2) YoY: 3.8148 (1dp 3.8)
+release-month index: 104.0232
+prior-quarter average: 102.3067 quarter average: 103.5311
+inherited monthly method: sa_persistence_x_seasonal_12
+
+Selection (common sample; full-sample metrics kept underneath)
+headline_nsa_mom: sa_persistence_x_seasonal_12 (lowest_common_sample_mae_beats_baseline_by_at_least_0.02pp) common_n=16 common_mae=0.2737
+  common sa_persistence_x_seasonal_12: n=16 mae=0.2737 full_n=16 full_mae=0.2737
+  common sa_persistence_x_seasonal_6: n=16 mae=0.2943 full_n=16 full_mae=0.2943
+  common component_bottom_up_6: n=16 mae=0.3334 full_n=20 full_mae=0.2983
+  common seasonal_naive: n=16 mae=0.3500 full_n=16 full_mae=0.3500
+  common sa_persistence_x_seasonal_3: n=16 mae=0.3629 full_n=16 full_mae=0.3629
+  common component_bottom_up_3: n=16 mae=0.3951 full_n=20 full_mae=0.3491
+  full sa_persistence_x_seasonal_12: n=16 mae=0.2737 bias=-0.0488 rmse=0.3687
+  full sa_persistence_x_seasonal_6: n=16 mae=0.2943 bias=-0.0173 rmse=0.3727
+  full component_bottom_up_6: n=20 mae=0.2983 bias=-0.0178 rmse=0.3770
+  full component_bottom_up_3: n=20 mae=0.3491 bias=-0.0027 rmse=0.4362
+  full seasonal_naive: n=16 mae=0.3500 bias=-0.0979 rmse=0.4288
+  full sa_persistence_x_seasonal_3: n=16 mae=0.3629 bias=-0.0376 rmse=0.4434
+headline_sa_mom: mean_12 (lowest_common_sample_mae_beats_baseline_by_at_least_0.02pp) common_n=16 common_mae=0.2744
+  unequal-sample legacy would have chosen component_sa_6 (lowest_mae_beats_baseline_by_at_least_0.02pp)
+  common mean_12: n=16 mae=0.2744 full_n=16 full_mae=0.2744
+  common mean_6: n=16 mae=0.2960 full_n=22 full_mae=0.2773
+  common component_sa_6: n=16 mae=0.3063 full_n=20 full_mae=0.2714
+  common mean_3: n=16 mae=0.3586 full_n=25 full_mae=0.3087
+  common persistence: n=16 mae=0.3661 full_n=27 full_mae=0.3403
+  common component_sa_3: n=16 mae=0.3703 full_n=20 full_mae=0.3246
+  full component_sa_6: n=20 mae=0.2714 bias=-0.0136 rmse=0.3502
+  full mean_12: n=16 mae=0.2744 bias=-0.0454 rmse=0.3646
+  full mean_6: n=22 mae=0.2773 bias=-0.0574 rmse=0.3563
+  full mean_3: n=25 mae=0.3087 bias=-0.0339 rmse=0.3927
+  full component_sa_3: n=20 mae=0.3246 bias=0.0015 rmse=0.4073
+  full persistence: n=27 mae=0.3403 bias=-0.0145 rmse=0.4633
+trimmed_mean_monthly_sa_mom: mean_12 (lowest_common_sample_mae_beats_baseline_by_at_least_0.02pp) common_n=16 common_mae=0.0634
+  unequal-sample legacy would have chosen mean_6 (lowest_mae_beats_baseline_by_at_least_0.02pp)
+  common mean_12: n=16 mae=0.0634 full_n=16 full_mae=0.0634
+  common mean_6: n=16 mae=0.0641 full_n=22 full_mae=0.0597
+  common component_trim_6: n=16 mae=0.0652 full_n=20 full_mae=0.0615
+  common mean_3: n=16 mae=0.0682 full_n=25 full_mae=0.0673
+  common component_trim_3: n=16 mae=0.0756 full_n=20 full_mae=0.0698
+  common persistence: n=16 mae=0.0998 full_n=27 full_mae=0.0970
+  full mean_6: n=22 mae=0.0597 bias=-0.0149 rmse=0.0828
+  full component_trim_6: n=20 mae=0.0615 bias=-0.0206 rmse=0.0872
+  full mean_12: n=16 mae=0.0634 bias=-0.0252 rmse=0.0890
+  full mean_3: n=25 mae=0.0673 bias=-0.0007 rmse=0.0926
+  full component_trim_3: n=20 mae=0.0698 bias=-0.0043 rmse=0.0939
+  full persistence: n=27 mae=0.0970 bias=0.0047 rmse=0.1203
+trimmed_mean_quarterly_legacy_qoq: persistence (baseline_has_lowest_common_sample_mae) common_n=173 common_mae=0.1786
+  common persistence: n=173 mae=0.1786 full_n=176 full_mae=0.1818
+  common mean_4: n=173 mae=0.1868 full_n=173 full_mae=0.1868
+  full persistence: n=176 mae=0.1818 bias=0.0096 rmse=0.2408
+  full mean_4: n=173 mae=0.1868 bias=0.0235 rmse=0.2605
+  ineligible proxy_bridge_non_equivalent: n=8 mae=0.0942
+weighted_median_monthly_sa_mom: persistence (no_model_beats_baseline_by_0.02pp_on_common_sample) common_n=16 common_mae=0.0771
+  common mean_12: n=16 mae=0.0654 full_n=16 full_mae=0.0654
+  common mean_6: n=16 mae=0.0679 full_n=22 full_mae=0.0638
+  common mean_3: n=16 mae=0.0696 full_n=25 full_mae=0.0702
+  common persistence: n=16 mae=0.0771 full_n=27 full_mae=0.0777
+  full mean_6: n=22 mae=0.0638 bias=-0.0063 rmse=0.0750
+  full mean_12: n=16 mae=0.0654 bias=-0.0094 rmse=0.0751
+  full mean_3: n=25 mae=0.0702 bias=0.0059 rmse=0.0826
+  full persistence: n=27 mae=0.0777 bias=0.0049 rmse=0.0883
+
+Aggregation identity (class NSA changes vs all-groups)
+n_full=20 mean_abs=0.0038 max_abs=0.0078 link_months=[]
+SA aggregate vs 999901: n=20 mean_abs=0.0041 max_abs=0.0136 mean_gap=-0.0010
+
+Seasonal factors
+forward_factors_for_target: False
+source: implied_nsa_over_sa_same_month_last_year
+table8_max_period: 2026-08
+Table 8 factors end at 2026-08. 0 of 87 classes have a factor in 2026-09, so the target month is not a forward-factor month. Class seasonal movements are the implied NSA/SA index ratio versus the same month a year earlier.
+all-groups movement: 1.001817
+implied NSA/SA index ratio from the same month last year. Table 8 is an expenditure-class factor file and has no all-groups column.
+
+Headline coherence (selected values are not overridden)
+implied SA inside NSA model: 0.3233 selected SA: 0.3233 SA path gap: 0.0000
+NSA from selected SA x seasonal: 0.5056 selected NSA: 0.5056 MoM gap: 0.0000 YoY gap: 0.0000
+
+Electricity
+  2024-09 NSA MoM -7.3334 SA MoM -5.2790 contribution_measure_4 - derived_mom_pp -
+  2025-09 NSA MoM -0.4480 SA MoM 1.4304 contribution_measure_4 2.3700 derived_mom_pp -0.0100
+  sensitivity primary_non_seasonal_mean_sa_3: mom -0.5657 contribution_pp -0.0147 minus_primary 0.0000
+  sensitivity seasonal_naive_same_month_last_year: mom -0.4480 contribution_pp -0.0116 minus_primary 0.0031
+  sensitivity implied_seasonal_implied_nsa_over_sa_same_month_last_year: mom -2.4071 contribution_pp -0.0626 minus_primary -0.0479
+  sensitivity non_seasonal_mean_sa_6: mom -0.4235 contribution_pp -0.0110 minus_primary 0.0037
+  sensitivity non_seasonal_last_sa_mom: mom 1.7372 contribution_pp 0.0452 minus_primary 0.0599
+
+Forecast contributors (top 10)
+model: component_bottom_up_3 selected=False
+The selected headline model has no class split. These rows are the component_bottom_up_3 diagnostic, not the selected number.
+  40102 International holiday travel and accommodation: mom 5.233 weight 0.0284 pp 0.1487 implied_nsa_over_sa_same_month_last_year
+  40081 Automotive fuel: mom 3.808 weight 0.0357 pp 0.1358 implied_nsa_over_sa_same_month_last_year
+  40101 Domestic holiday travel and accommodation: mom 4.643 weight 0.0290 pp 0.1346 implied_nsa_over_sa_same_month_last_year
+  40090 Tobacco: mom 4.267 weight 0.0205 pp 0.0874 implied_nsa_over_sa_same_month_last_year
+  114121 Fruit: mom -6.018 weight 0.0094 pp -0.0564 implied_nsa_over_sa_same_month_last_year
+  97560 Property rates and charges: mom 3.825 weight 0.0147 pp 0.0562 implied_nsa_over_sa_same_month_last_year
+  114122 Vegetables: mom -2.471 weight 0.0110 pp -0.0272 implied_nsa_over_sa_same_month_last_year
+  1144 Other financial services: mom 0.691 weight 0.0374 pp 0.0258 implied_nsa_over_sa_same_month_last_year
+  97554 Garments for women: mom -2.323 weight 0.0107 pp -0.0249 implied_nsa_over_sa_same_month_last_year
+  97559 New dwelling purchase by owner-occupiers: mom 0.304 weight 0.0757 pp 0.0230 implied_nsa_over_sa_same_month_last_year
+Travel
+  40102 International holiday travel and accommodation: mom 5.233 source implied_nsa_over_sa_same_month_last_year movement 1.0486
+  40101 Domestic holiday travel and accommodation: mom 4.643 source implied_nsa_over_sa_same_month_last_year movement 1.0435
+
+September 2025 base effects (top 10 by absolute class contribution)
+  40102 International holiday travel and accommodation: mom 5.664 pp 0.1644
+  40101 Domestic holiday travel and accommodation: mom 4.037 pp 0.1200
+  40090 Tobacco: mom 5.197 pp 0.0992
+  97560 Property rates and charges: mom 6.247 pp 0.0897
+  114121 Fruit: mom -5.944 pp -0.0567
+  97559 New dwelling purchase by owner-occupiers: mom 0.664 pp 0.0496
+  97554 Garments for women: mom -3.129 pp -0.0355
+  40083 Other services in respect of motor vehicles: mom 2.239 pp 0.0292
+  115485 Glassware, tableware and household utensils: mom -7.834 pp -0.0291
+  40058 Furniture: mom 2.501 pp 0.0289
+
+Trim reconstruction: pass claim reconstruction
+Quarterly legacy equivalence: equivalent
+Proxy bridge (not selected): value 1.0438 overlap n=8 mean_abs_gap=0.0732
+Quarterly shadow conflict
+proxy_bridge_non_equivalent is ineligible under the pre-registered n>=12 rule (pseudo-OOS n=8). It is a different statistic from the legacy quarterly trimmed mean and is not the forecast. Relative to persistence it signals upside risk.
+bridge value 1.0438 overlap_n=8 pseudo_oos_n=8 MAE=0.0942 mean_gap_vs_legacy=0.0228
+2024+ persistence band (diagnostic, not used): n=10 68% [0.635, 0.991] half 0.178 90% [0.533, 1.092] half 0.280
+
+Leakage
+max_visible_headline_period=2026-08 target_in_visible=False
+  monthly_2026-08: pass=True removed=432
+  quarterly_2026-Q2: pass=True removed=905
+
+Boundaries
+cpi_m_unused=True
+monthly_tm_is_not_quarterly=True
+methodology_breaks_guard_untouched=True
+Shadow-only weighted median. No writes to temperature history, catalogs, or Market Watch.

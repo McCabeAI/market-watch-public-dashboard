@@ -1,0 +1,18 @@
+{
+  "accept": "application/vnd.sdmx.data+csv",
+  "bytes": 33865,
+  "cpi_q_10001_headline_quarterly_index_http_status": 404,
+  "fixture_hashes_unchanged": {
+    "abs_cpi_analytical_sa.csv": "1ae31961120e59ab61c78dbc877133564f70c502e0d4d2b88a34dc415fa63021",
+    "abs_cpi_headline_original.csv": "ede7bc06a12f89afcd37a90eca1da5c3ec4949f843831648591f453b00fce0f9",
+    "abs_cpi_q.csv": "d32ca99168a35c72a955de19c3681d4a51cddc5335e46907e5371c6b5bb98ff9",
+    "snapshot_sha256": "8d11c6256324217abd72a0983c54ec543e0b814e5266784a27809805511e3d41"
+  },
+  "http_status": 200,
+  "latest_time_period": "2026-Q2",
+  "note": "Additive pull for quarterly headline CPI 2.0.0 series 1+2+3.10001.10.50.Q. Not part of frozen snapshot 8d11c6256324. ABS website returned HTTP 503 on 2026-10-21; monthly API hashes matched the fixture so the frozen snapshot was not replaced.",
+  "quarterly_base_period_note": "Base period 25 (September 2025 month)",
+  "retrieved_at": "2026-10-21T18:32:59Z",
+  "sha256": "bb6cbc42ed32b9f5f079159ff4784d1e4873e4cc4736dba75c70aff0ba51b82f",
+  "url": "https://data.api.abs.gov.au/rest/data/ABS,CPI,2.0.0/1+2+3.10001.10.50.Q"
+}
