@@ -172,15 +172,6 @@ def freeze_snapshot(
     if snapshot_path.is_file():
         raise EvidenceBoundaryError(f"refusing to overwrite frozen evidence for {review_id}")
     store.write_artifact(run_id, "evidence_snapshot.json", packet, review_id=review_id)
-    from scripts.prima_pressure.presentation import record_observation
-
-    record_observation(
-        store.state_root,
-        packet["canada_prima_pressure"],
-        observed_at=str(packet.get("as_of") or ""),
-        source_id=f"{run_id}/{review_id}",
-        source_kind="overnight_evidence_snapshot",
-    )
     store.write_artifact(run_id, "learning_obligations.json", full_manifest, review_id=review_id)
     meta["status"] = "frozen"
     meta["immutable"] = True
