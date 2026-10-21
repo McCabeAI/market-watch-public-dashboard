@@ -7,6 +7,7 @@ import unittest
 from scripts.au_cpi_release.contract import (
     REGIME_CPI_M_LEGACY,
     REGIME_COMPLETE_MONTHLY,
+    REGIME_QUARTERLY_HEADLINE_NSA,
     REGIME_QUARTERLY_LEGACY_TM,
     TARGET_IDS,
     RegimeBoundaryError,
@@ -23,6 +24,8 @@ class BoundaryTests(unittest.TestCase):
                 "headline_nsa_yoy",
                 "headline_sa_mom",
                 "headline_sa_yoy",
+                "headline_nsa_quarterly_qoq",
+                "headline_nsa_quarterly_yoy",
                 "trimmed_mean_monthly_sa_mom",
                 "trimmed_mean_monthly_sa_yoy",
                 "trimmed_mean_quarterly_legacy_qoq",
@@ -60,6 +63,20 @@ class BoundaryTests(unittest.TestCase):
         self.assertEqual(allowed.regime, REGIME_COMPLETE_MONTHLY)
         quarterly = guard_series_use("trimmed_mean_quarterly_legacy_qoq")
         self.assertEqual(quarterly.regime, REGIME_QUARTERLY_LEGACY_TM)
+
+    def test_quarterly_headline_and_legacy_trimmed_mean_are_not_interchangeable(self) -> None:
+        with self.assertRaises(RegimeBoundaryError):
+            guard_series_use(
+                "headline_nsa_quarterly_qoq",
+                target_id="trimmed_mean_quarterly_legacy_qoq",
+            )
+        with self.assertRaises(RegimeBoundaryError):
+            guard_series_use(
+                "trimmed_mean_quarterly_legacy_qoq",
+                target_id="headline_nsa_quarterly_qoq",
+            )
+        headline = guard_series_use("headline_nsa_quarterly_qoq")
+        self.assertEqual(headline.regime, REGIME_QUARTERLY_HEADLINE_NSA)
 
     def test_cpi_m_is_not_complete_monthly_history(self) -> None:
         with self.assertRaises(RegimeBoundaryError):
