@@ -5,6 +5,7 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+import shutil
 import sys
 import tempfile
 import unittest
@@ -52,6 +53,108 @@ def _obs_by_series_period(
             continue
         return obs
     raise AssertionError(f"missing {series_id} {period} {transformation}")
+
+
+OCT20_PROMOTED_CPI_ROWS: tuple[dict, ...] = (
+    {
+        "component": "Inflation.headline",
+        "series_id": "CPI_all_items_index_v41690973",
+        "reference_period": "2026-09",
+        "transformation": "yoy_pct",
+        "value": 3.092783505154628,
+        "source_series_id": "v41690973_derived_yoy",
+    },
+    {
+        "component": "Inflation.underlying",
+        "series_id": "CPI_trim_yoy_v108785715",
+        "reference_period": "2026-09",
+        "transformation": "yoy_pct",
+        "value": 1.8,
+        "source_series_id": "CPI_trim_and_median_yoy",
+    },
+    {
+        "component": "Inflation.underlying",
+        "series_id": "CPI_median_yoy_v108785714",
+        "reference_period": "2026-09",
+        "transformation": "yoy_pct",
+        "value": 1.9,
+        "source_series_id": "CPI_trim_and_median_yoy",
+    },
+)
+
+_PROMOTED_CPI_MATCH_KEYS = {
+    (row["component"], row["series_id"], row["reference_period"], row["transformation"])
+    for row in OCT20_PROMOTED_CPI_ROWS
+}
+
+
+def _pre_promotion_ca_histories(histories: dict) -> tuple[dict, list[dict]]:
+    work = copy.deepcopy(histories)
+    ca = work["CA"]
+    removed: list[dict] = []
+    for comp_key, comp_data in ca.get("components", {}).items():
+        obs_list = comp_data.get("observations") or []
+        kept: list[dict] = []
+        for obs in obs_list:
+            key = (
+                comp_key,
+                obs.get("series_id"),
+                obs.get("reference_period"),
+                obs.get("transformation"),
+            )
+            if key in _PROMOTED_CPI_MATCH_KEYS:
+                removed.append(
+                    {
+                        "component": comp_key,
+                        "series_id": obs.get("series_id"),
+                        "reference_period": obs.get("reference_period"),
+                        "transformation": obs.get("transformation"),
+                        "value": obs.get("value"),
+                        "source_series_id": obs.get("source_series_id"),
+                    }
+                )
+            else:
+                kept.append(obs)
+        comp_data["observations"] = kept
+    return work, removed
+
+
+def _assert_exact_promoted_cpi_removed(test: unittest.TestCase, removed: list[dict]) -> None:
+    test.assertEqual(len(removed), 3)
+    for expected in OCT20_PROMOTED_CPI_ROWS:
+        key = (
+            expected["component"],
+            expected["series_id"],
+            expected["reference_period"],
+            expected["transformation"],
+        )
+        matches = [
+            row
+            for row in removed
+            if (
+                row["component"],
+                row["series_id"],
+                row["reference_period"],
+                row["transformation"],
+            )
+            == key
+        ]
+        test.assertEqual(len(matches), 1, msg=f"missing removal for {key}")
+        row = matches[0]
+        test.assertEqual(row["source_series_id"], expected["source_series_id"])
+        test.assertEqual(row["series_id"], expected["series_id"])
+        test.assertEqual(row["transformation"], expected["transformation"])
+        test.assertAlmostEqual(float(row["value"]), float(expected["value"]))
+
+
+def _write_pre_promotion_history_dir(dest: Path, histories: dict) -> None:
+    dest.mkdir(parents=True, exist_ok=True)
+    for src in HISTORY_DIR.glob("*.json"):
+        shutil.copy2(src, dest / src.name)
+    (dest / "ca.json").write_text(
+        json.dumps(histories["CA"], indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
 
 
 class CaScoreLineageTests(unittest.TestCase):
@@ -485,12 +588,53 @@ class CaInflationOct20LineageTests(unittest.TestCase):
 
     def test_oct20_stage_verified_lineage_succeeds(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
-            launch_dir = Path(tmp) / "launch"
+            tmp_root = Path(tmp)
+            canonical_histories = load_history(HISTORY_DIR)
+            before_counts = {
+                key: len(canonical_histories["CA"]["components"][key]["observations"])
+                for key in canonical_histories["CA"]["components"]
+            }
+            stripped_histories, removed = _pre_promotion_ca_histories(canonical_histories)
+            _assert_exact_promoted_cpi_removed(self, removed)
+            after_counts = {
+                key: len(stripped_histories["CA"]["components"][key]["observations"])
+                for key in stripped_histories["CA"]["components"]
+            }
+            self.assertEqual(before_counts["Inflation.headline"] - 1, after_counts["Inflation.headline"])
+            self.assertEqual(
+                before_counts["Inflation.underlying"] - 2, after_counts["Inflation.underlying"]
+            )
+            for key, count in before_counts.items():
+                if key not in ("Inflation.headline", "Inflation.underlying"):
+                    self.assertEqual(count, after_counts[key])
+
+            canonical_history_dir = tmp_root / "canonical_history"
+            _write_pre_promotion_history_dir(canonical_history_dir, stripped_histories)
+            written_ca = json.loads(
+                (canonical_history_dir / "ca.json").read_text(encoding="utf-8")
+            )
+            for expected in OCT20_PROMOTED_CPI_ROWS:
+                comp_obs = written_ca["components"][expected["component"]]["observations"]
+                matches = [
+                    o
+                    for o in comp_obs
+                    if o.get("series_id") == expected["series_id"]
+                    and o.get("reference_period") == expected["reference_period"]
+                    and o.get("transformation") == expected["transformation"]
+                ]
+                self.assertEqual(matches, [], msg=expected)
+            for name in ("us.json", "au.json", "nz.json", "ea.json", "jp.json"):
+                self.assertEqual(
+                    (canonical_history_dir / name).read_bytes(),
+                    (HISTORY_DIR / name).read_bytes(),
+                )
+
+            launch_dir = tmp_root / "launch"
             launch_dir.mkdir()
             result = stage_verified_lineage(
                 launch_dir=launch_dir,
                 checked_at=CHECKED_AT_OCT20,
-                canonical_history_dir=HISTORY_DIR,
+                canonical_history_dir=canonical_history_dir,
                 calibration_path=CALIBRATION_PATH,
                 observations_dir=OBS_DIR_OCT20,
                 mode="live",
@@ -582,6 +726,27 @@ class CaInflationOct20LineageTests(unittest.TestCase):
             )
             self.assertAlmostEqual(float(aug_trim["value"]), 1.9)
             self.assertAlmostEqual(float(aug_med["value"]), 2.0)
+
+            self.assertEqual(result["appended_count"], 3)
+            self.assertEqual(len(result["appended_points"]), 3)
+            headline_prov = next(
+                row
+                for row in result["appended_points"]
+                if row.get("catalog_id") == "CA.Inflation.headline"
+            )
+            self.assertEqual(headline_prov["source_series_id"], "v41690973_derived_yoy")
+            self.assertEqual(headline_prov["transformation"], "yoy_pct")
+            self.assertNotIn("source_transformation", headline_prov)
+            underlying_prov = [
+                row
+                for row in result["appended_points"]
+                if row.get("catalog_id") == "CA.Inflation.underlying"
+            ]
+            self.assertEqual(len(underlying_prov), 2)
+            for row in underlying_prov:
+                self.assertEqual(row["source_series_id"], "CPI_trim_and_median_yoy")
+                self.assertEqual(row["source_transformation"], "yoy_pct")
+                self.assertEqual(row["transformation"], "yoy_pct")
 
             self.assertEqual(_sha256_file(CALIBRATION_PATH), self.cal_sha)
             self.assertEqual(_sha256_file(HISTORY_DIR / "ca.json"), self.ca_hist_sha)
@@ -709,10 +874,70 @@ class CaInflationOct20LineageTests(unittest.TestCase):
         expanded = expand_equal_mean_points(
             inflation, observations_dir=OBS_DIR_OCT20, checked_at=CHECKED_AT_OCT20
         )
-        work = copy.deepcopy(histories)
-        first = merge_scored_points(work, cal, expanded, checked_at=CHECKED_AT_OCT20)
-        self.assertGreaterEqual(len(first["appended"]), 3)
-        second = merge_scored_points(work, cal, expanded, checked_at=CHECKED_AT_OCT20)
+
+        canonical_replay = merge_scored_points(
+            copy.deepcopy(histories),
+            cal,
+            copy.deepcopy(expanded),
+            checked_at=CHECKED_AT_OCT20,
+        )
+        self.assertEqual(canonical_replay["appended"], [])
+        canonical_dup = [
+            s
+            for s in canonical_replay["skipped"]
+            if str(s.get("id", "")).startswith("CA.Inflation.")
+            and s.get("reason") == "duplicate_value"
+        ]
+        self.assertEqual(len(canonical_dup), 3)
+
+        stripped_histories, removed = _pre_promotion_ca_histories(copy.deepcopy(histories))
+        _assert_exact_promoted_cpi_removed(self, removed)
+
+        work = copy.deepcopy(stripped_histories)
+        first = merge_scored_points(
+            work, cal, copy.deepcopy(expanded), checked_at=CHECKED_AT_OCT20
+        )
+        self.assertEqual(len(first["appended"]), 3)
+        appended_series = {
+            (row["series_id"], row["reference_period"], row["transformation"])
+            for row in first["appended"]
+        }
+        self.assertEqual(
+            appended_series,
+            {
+                ("CPI_all_items_index_v41690973", "2026-09", "yoy_pct"),
+                ("CPI_trim_yoy_v108785715", "2026-09", "yoy_pct"),
+                ("CPI_median_yoy_v108785714", "2026-09", "yoy_pct"),
+            },
+        )
+        headline_row = next(
+            o
+            for o in work["CA"]["components"]["Inflation.headline"]["observations"]
+            if o.get("reference_period") == "2026-09"
+            and o.get("series_id") == "CPI_all_items_index_v41690973"
+        )
+        trim_row = next(
+            o
+            for o in work["CA"]["components"]["Inflation.underlying"]["observations"]
+            if o.get("reference_period") == "2026-09"
+            and o.get("series_id") == "CPI_trim_yoy_v108785715"
+        )
+        med_row = next(
+            o
+            for o in work["CA"]["components"]["Inflation.underlying"]["observations"]
+            if o.get("reference_period") == "2026-09"
+            and o.get("series_id") == "CPI_median_yoy_v108785714"
+        )
+        self.assertAlmostEqual(float(headline_row["value"]), 3.092783505154628)
+        self.assertAlmostEqual(float(trim_row["value"]), 1.8)
+        self.assertAlmostEqual(float(med_row["value"]), 1.9)
+        self.assertEqual(headline_row["source_series_id"], "v41690973_derived_yoy")
+        self.assertEqual(trim_row["source_series_id"], "CPI_trim_and_median_yoy")
+        self.assertEqual(med_row["source_series_id"], "CPI_trim_and_median_yoy")
+
+        second = merge_scored_points(
+            work, cal, copy.deepcopy(expanded), checked_at=CHECKED_AT_OCT20
+        )
         self.assertEqual(second["appended"], [])
         inflation_dup = [
             s
@@ -720,7 +945,11 @@ class CaInflationOct20LineageTests(unittest.TestCase):
             if str(s.get("id", "")).startswith("CA.Inflation.")
             and s.get("reason") == "duplicate_value"
         ]
-        self.assertGreaterEqual(len(inflation_dup), 3)
+        self.assertEqual(len(inflation_dup), 3)
+
+        self.assertEqual(_sha256_file(CALIBRATION_PATH), self.cal_sha)
+        self.assertEqual(_sha256_file(HISTORY_DIR / "ca.json"), self.ca_hist_sha)
+        self.assertEqual(_sha256_file(SCORES_PATH), self.scores_sha)
 
 
 if __name__ == "__main__":
