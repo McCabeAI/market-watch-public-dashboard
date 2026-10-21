@@ -58,6 +58,7 @@ from scripts.au_cpi_release.uncertainty import (
     PSEUDO_OOS_LABEL,
     absolute_error_band,
     propagate_yoy_band,
+    select_common_sample,
     select_model,
     symmetric_interval,
 )
@@ -350,7 +351,13 @@ def forecast_release(
             )
 
     backtest = run_backtest(snapshot, as_of=as_of_norm, generated_at=generated_norm, ctx=ctx, frame=frame)
-    selection = {target: select_model(backtest["metrics"], target) for target in CHANGE_TARGETS}
+    selection_legacy = {target: select_model(backtest["metrics"], target) for target in CHANGE_TARGETS}
+    selection = {
+        target: select_common_sample(backtest["errors"], backtest["metrics"], target) for target in CHANGE_TARGETS
+    }
+    for target in CHANGE_TARGETS:
+        selection[target]["legacy_model"] = selection_legacy[target].get("model")
+        selection[target]["changed_vs_unequal_sample"] = selection[target].get("model") != selection_legacy[target].get("model")
     bundle = release_model_bundle(frame, release, ctx)
     trim = _trim_summary(snapshot, snapshot_dir)
     identity = aggregation_identity(frame, ctx.classes, before=release)
@@ -419,6 +426,8 @@ def forecast_release(
         "snapshot_sha256": snapshot_sha256(snapshot),
         "targets": targets,
         "selection": selection,
+        "selection_common_sample": selection,
+        "selection_unequal_sample_legacy": selection_legacy,
         "diagnostics": {
             "aggregation_identity": identity,
             "sa_aggregate_gap_vs_999901": sa_gap,
@@ -551,7 +560,9 @@ def _assemble_targets(
             continue
         errors = _errors_for(backtest, change_target, str(method))
         band68, band90 = _band_pair(errors, float(value))
-        n = int(chosen.get("n") or len(errors))
+        # Bands use the full walk-forward sample. Selection n is the common sample.
+        n = len(errors)
+        n_common = chosen.get("common_n")
         low_sample = n < 20
         status = _status_for(change_target, str(method), trim_claim=trim_claim, equivalence=equivalence)
         caveats = _caveats(change_target, str(method), low_sample=low_sample, trim_claim=trim_claim, equivalence=equivalence)
@@ -568,8 +579,13 @@ def _assemble_targets(
             "band68": band68,
             "band90": band90,
             "n": n,
+            "n_band": n,
+            "n_common_sample": n_common,
             "low_sample": low_sample,
             "mae": chosen.get("mae"),
+            "mae_full_sample": chosen.get("full_sample_mae"),
+            "changed_vs_unequal_sample": chosen.get("changed_vs_unequal_sample"),
+            "band_note": "68/90 bands use this model's full walk-forward errors (n). Selection MAE uses the common sample (n_common_sample).",
             "shadow_only": change_target.startswith("weighted_median"),
             "caveats": caveats,
             "candidate_models": list(CANDIDATE_MODELS[change_target]),
@@ -607,6 +623,7 @@ def _assemble_targets(
             "band90": yoy_90,
             "n": yoy_n,
             "n_change_sample": n,
+            "n_common_sample": n_common,
             "low_sample": low_sample or yoy_n < 20,
             "mae": None if yoy_metric is None else yoy_metric.get("mae"),
             "shadow_only": change_target.startswith("weighted_median"),
@@ -644,7 +661,7 @@ def _caveats(target: str, method: str, *, low_sample: bool, trim_claim: str, equ
     ]
     if low_sample:
         notes.append("low_sample: the walk-forward sample has n < 20, so the error band is descriptive rather than a stable quantile.")
-    notes.append("The 68% and 90% bands are empirical absolute-error quantiles with a floor of 0.05 percentage points (one-decimal rounding half-width).")
+    notes.append("The 68% and 90% bands are empirical absolute-error quantiles of this model's full walk-forward errors, with a floor of 0.05 percentage points. Selection uses the common sample, which can be smaller.")
     if target.startswith("headline_nsa"):
         notes.append(
             "Electricity rebate timing is not a separate official series. component_bottom_up replaces class 40055 seasonality with a recent SA mean; seasonal_naive does not."

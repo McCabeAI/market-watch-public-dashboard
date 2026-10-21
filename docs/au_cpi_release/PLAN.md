@@ -138,3 +138,7 @@ T0 plan commit (Composer 2.5)
 - True-vintage backtests are essentially unavailable (one in-repo vintage, July 2026); results are pseudo-OOS and labeled so.
 - Release-date history before 2026-08 may need rule inference; labeled per entry.
 - No fabricated series, weights, seasonal factors, rebates, consensus or model skill.
+
+## 9. Reviewer amendment A1 (2026-10-21, before the 2026-10-28 release)
+
+Selection is evaluated on the common sample of eligible candidates and the baseline. Reason: unequal-sample MAE comparisons are not like-for-like. This amendment was made before any September 2026 outcome exists. Both the common-sample result and the earlier unequal-sample result are reported.

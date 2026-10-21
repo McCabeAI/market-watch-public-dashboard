@@ -63,11 +63,23 @@ def render_nowcast(result: dict[str, Any]) -> str:
             )
         )
     lines.append("")
-    lines.append("Selection")
+    lines.append("Selection (common sample; full-sample metrics kept underneath)")
+    legacy = result.get("selection_unequal_sample_legacy") or {}
     for target, chosen in result.get("selection", {}).items():
-        lines.append(f"{target}: {chosen.get('model')} ({chosen.get('reason')}) n={chosen.get('n')} mae={_fmt(chosen.get('mae'), 4)}")
+        lines.append(
+            f"{target}: {chosen.get('model')} ({chosen.get('reason')}) "
+            f"common_n={chosen.get('common_n')} common_mae={_fmt(chosen.get('mae'), 4)}"
+        )
+        previous = legacy.get(target) or {}
+        if previous.get("model") != chosen.get("model"):
+            lines.append(f"  unequal-sample legacy would have chosen {previous.get('model')} ({previous.get('reason')})")
+        for row in chosen.get("candidates_common_sample") or []:
+            lines.append(
+                f"  common {row.get('model')}: n={row.get('n')} mae={_fmt(row.get('mae'), 4)} "
+                f"full_n={row.get('full_n')} full_mae={_fmt(row.get('full_mae'), 4)}"
+            )
         for row in chosen.get("candidates") or []:
-            lines.append(f"  {row.get('model')}: n={row.get('n')} mae={_fmt(row.get('mae'), 4)} bias={_fmt(row.get('bias'), 4)} rmse={_fmt(row.get('rmse'), 4)}")
+            lines.append(f"  full {row.get('model')}: n={row.get('n')} mae={_fmt(row.get('mae'), 4)} bias={_fmt(row.get('bias'), 4)} rmse={_fmt(row.get('rmse'), 4)}")
         for row in chosen.get("ineligible") or []:
             lines.append(f"  ineligible {row.get('model')}: n={row.get('n')} mae={_fmt(row.get('mae'), 4)}")
     diagnostics = result.get("diagnostics") or {}

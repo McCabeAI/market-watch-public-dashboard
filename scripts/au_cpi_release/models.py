@@ -28,11 +28,11 @@ ELECTRICITY_CLASS = "40055"
 TRAVEL_DOMESTIC_CLASS = "40101"
 TRAVEL_INTERNATIONAL_CLASS = "40102"
 
-# Operational selection rule. The sentence in PLAN.md section 5 is recorded
-# beside this definition by uncertainty.select_model. A non-baseline model is
-# kept only when it is the lowest-MAE model with n >= 12 and its MAE is at
-# least 0.02 percentage points below the baseline.
-SELECTION_RULE = (
+# Reviewer amendment A1 (2026-10-21), before the September 2026 outcome.
+# MAE is compared on the intersection of periods where every eligible model
+# and the baseline both have an error. The earlier unequal-sample wording is
+# kept so that result can still be reported.
+LEGACY_SELECTION_RULE = (
     "Per target, pick the model with the lowest pseudo-OOS MAE in the target "
     "regime among models with n >= 12. If that set is empty, or the lowest-MAE "
     "model does not beat the simplest baseline by at least 0.02 percentage points "
@@ -43,6 +43,19 @@ SELECTION_RULE = (
     "arithmetic. proxy_bridge_non_equivalent is a different statistic (a "
     "quarter-average of the monthly trimmed mean) and is excluded from the "
     "candidate set; it is reported only as a labeled proxy."
+)
+SELECTION_RULE = (
+    "Per target, eligible candidates are models with pseudo-OOS n >= 12 in the "
+    "target regime. MAE for those candidates and the simplest baseline is computed "
+    "on the intersection of their target periods. If that common sample has n < 12, "
+    "use the baseline (common_sample_below_12). Otherwise pick the lowest common-sample "
+    "MAE only when it beats the baseline's common-sample MAE by at least 0.02 "
+    "percentage points; otherwise use the baseline. The simplest baseline is "
+    "seasonal_naive for headline_nsa_mom and persistence for every other change "
+    "target. Year-ended rates inherit the selected change model via index arithmetic. "
+    "Bands use the selected model's full walk-forward errors, not the common sample. "
+    "proxy_bridge_non_equivalent is excluded from the candidate set. The earlier "
+    "unequal-sample rule is still computed and reported as selection_unequal_sample_legacy."
 )
 MIN_SELECTION_N = 12
 MIN_IMPROVEMENT_PP = 0.02
