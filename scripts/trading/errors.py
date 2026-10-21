@@ -23,3 +23,10 @@ class RationaleError(SchemaError):
 
 class OwnershipError(SchemaError):
     """A reflection referenced a trade or identity it does not own."""
+
+
+class HarvestReviewError(SchemaError):
+    """A full-size hold is missing the required profit-harvest re-underwrite.
+
+    REDUCE and CLOSE stay available. This is not a mechanical take-profit.
+    """

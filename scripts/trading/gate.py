@@ -160,6 +160,18 @@ def learning_gate_reason(
     return None
 
 
+def _book_positions(store: TradingStore, owner_type: str, owner_id: str) -> list[dict[str, Any]]:
+    from scripts.trading.consequence import _read_pm_books, _read_trader_books
+
+    if owner_type == "trader":
+        books = _read_trader_books(store)
+        seat = ((books or {}).get("seats") or {}).get(owner_id) or {}
+        return list(seat.get("positions") or [])
+    books = _read_pm_books(store)
+    book = ((books or {}).get("pms") or {}).get(owner_id) or {}
+    return list(book.get("positions") or [])
+
+
 def evaluate_decision_actions(
     store: TradingStore,
     *,
@@ -169,13 +181,17 @@ def evaluate_decision_actions(
     run_id: str | None,
     expected_memory_sha256: str | None,
     trader_books: dict[str, Any] | None = None,
+    positions: list[dict[str, Any]] | None = None,
+    as_of: Any = None,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     """Split a decision into executable actions and explicitly blocked expansions.
 
-    HOLD / NO_TRADE / REDUCE / CLOSE always remain in the executable set.
-    OPEN / ADD / HEDGE fail closed independently when rationale or memory
-    obligations are not met. Same-run postmortems are excluded so a CLOSE
-    in this decision cannot retroactively block a already-valid sibling action.
+    REDUCE / CLOSE remain executable. HOLD / NO_TRADE remain executable unless
+    a profit-harvest review is triggered and the full-size hold is not
+    re-underwritten. OPEN / ADD / HEDGE fail closed independently when
+    rationale or memory obligations are not met. Same-run postmortems are
+    excluded so a CLOSE in this decision cannot retroactively block an
+    already-valid sibling action.
     """
     allowed: list[dict[str, Any]] = []
     blocked: list[dict[str, Any]] = []
@@ -197,6 +213,18 @@ def evaluate_decision_actions(
     # The model cannot hide or replace the sidecar. Flags come from the store
     # on de-risk decisions too, so the journal can record an optional check.
     context["psychology"] = _psychology_context(store, owner_type, owner_id)
+    from scripts.trading.harvest import enforce_harvest_hold
+
+    book_positions = positions
+    if book_positions is None:
+        book_positions = _book_positions(store, owner_type, owner_id)
+    decision["_harvest_accepted"] = enforce_harvest_hold(
+        decision,
+        store.trades_for(owner_type, owner_id),
+        book_positions,
+        as_of=as_of,
+        owner_id=owner_id,
+    )
     if expanding_actions(decision):
         memory_reason = learning_gate_reason(
             store,

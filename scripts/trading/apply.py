@@ -256,6 +256,7 @@ def _sync_history_row(
                 locked_expression_family=(new_pos or {}).get("locked_expression_family")
                 or row.get("locked_expression_family"),
                 hedge_of_position_id=hedge_target,
+                lifecycle=action.get("lifecycle") if isinstance(action.get("lifecycle"), dict) else None,
                 evidence_cutoff=evidence_cutoff,
                 evidence_hash=evidence_hash,
                 evidence_packet_id=evidence_packet_id,
@@ -320,6 +321,7 @@ def _sync_history_row(
         paper_expression=action.get("paper_expression") or (current or prior or {}).get("paper_expression"),
         locked_expression_family=row.get("locked_expression_family")
         or (current or prior or {}).get("locked_expression_family"),
+        lifecycle=action.get("lifecycle") if isinstance(action.get("lifecycle"), dict) else None,
         evidence_cutoff=evidence_cutoff,
         evidence_hash=evidence_hash,
         evidence_packet_id=evidence_packet_id,
@@ -387,7 +389,13 @@ def _observe_marks(store: TradingStore, owner_type: str, owner_id: str, position
             store, owner_type=owner_type, owner_id=owner_id, position_id=position.get("position_id") or ""
         )
         if trade:
-            observe_open_mark(store, trade, unrealized_pnl_usd=position.get("unrealized_pnl_usd"))
+            observe_open_mark(
+            store,
+            trade,
+            unrealized_pnl_usd=position.get("unrealized_pnl_usd"),
+            mark=position.get("mark_price"),
+            mark_as_of=position.get("mark_as_of") or position.get("entry_price_as_of"),
+        )
 
 
 def _prepare_identity(
@@ -400,6 +408,7 @@ def _prepare_identity(
     expected_memory_sha256: str | None,
     when: datetime | None,
     trader_books: dict[str, Any] | None = None,
+    positions: list[dict[str, Any]] | None = None,
 ) -> list[dict[str, Any]]:
     try:
         apply_reflections(store, decision, owner_type=owner_type, owner_id=owner_id, run_id=run_id, when=when)
@@ -425,6 +434,8 @@ def _prepare_identity(
         run_id=run_id,
         expected_memory_sha256=expected_memory_sha256,
         trader_books=trader_books,
+        positions=positions,
+        as_of=when,
     )
     raise_if_unexecutable(blocked, allowed)
     decision["actions"] = allowed
@@ -525,6 +536,7 @@ def apply_trader_review_with_memory(
             run_id=run_id,
             expected_memory_sha256=hashes.get(seat) or payload.get("memory_context_sha256"),
             when=stamp,
+            positions=list(books["seats"][seat].get("positions") or []),
         )
     hist_lens = {seat: len(books["seats"][seat].get("history") or []) for seat in STANDING_SEATS}
     prior_positions = {
@@ -639,6 +651,16 @@ def apply_trader_review_with_memory(
             alerts=list(seat_book.get("alerts") or []),
             when=stamp,
         )
+        from scripts.trading.harvest import persist_accepted_harvest
+
+        persist_accepted_harvest(
+            store,
+            decision,
+            owner_type="trader",
+            owner_id=seat,
+            when=stamp,
+            run_id=run_id,
+        )
         build_memory_context(store, "trader", seat, when=stamp, exclude_run_id=run_id)
         decision["journal_event_id"] = event["event_id"]
     validate_books(updated)
@@ -694,6 +716,7 @@ def apply_pm_decision_with_memory(
         expected_memory_sha256=expected,
         when=stamp,
         trader_books=trader_books,
+        positions=list(books["pms"][pm_id].get("positions") or []),
     )
     prior = {p["position_id"]: deepcopy(p) for p in books["pms"][pm_id].get("positions") or []}
     hist_len = len(books["pms"][pm_id].get("history") or [])
@@ -822,6 +845,16 @@ def apply_pm_decision_with_memory(
         positions=list(book.get("positions") or []),
         alerts=list(book.get("alerts") or []),
         when=stamp,
+    )
+    from scripts.trading.harvest import persist_accepted_harvest
+
+    persist_accepted_harvest(
+        store,
+        decision,
+        owner_type="pm",
+        owner_id=pm_id,
+        when=stamp,
+        run_id=run_id,
     )
     build_memory_context(
         store,

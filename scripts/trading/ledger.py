@@ -168,6 +168,7 @@ def record_lifecycle_event(
     overnight_run_id: str | None = None,
     trader_room_run_id: str | None = None,
     review_id: str | None = None,
+    lifecycle: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     if kind not in LEDGER_EVENT_KINDS:
         raise SchemaError(f"unknown ledger event kind {kind}")
@@ -249,6 +250,14 @@ def record_lifecycle_event(
             trade["hedge_trade_id"] = trade_id_for(
                 owner_type=owner_type, owner_id=owner_id, position_id=hedge_of_position_id
             )
+        if isinstance(lifecycle, dict):
+            from scripts.trading.harvest import normalize_lifecycle
+
+            stored = normalize_lifecycle(lifecycle)
+            stored["anchored_at"] = trade.get("opened_at")
+            stored["source"] = "entry"
+            trade["lifecycle"] = stored
+            trade["entry_lifecycle"] = deepcopy(stored)
     if current_notional_usd is not None and not (kind == "HEDGE" and not created):
         current = abs(_money(current_notional_usd) or 0.0)
         trade["current_notional_usd"] = current
@@ -305,18 +314,31 @@ def record_lifecycle_event(
     return trade
 
 
-def observe_open_mark(store: TradingStore, trade: dict[str, Any], *, unrealized_pnl_usd: Any) -> dict[str, Any]:
+def observe_open_mark(
+    store: TradingStore,
+    trade: dict[str, Any],
+    *,
+    unrealized_pnl_usd: Any,
+    mark: Any = None,
+    mark_as_of: Any = None,
+) -> dict[str, Any]:
     """Update MFE/MAE from a canonical mark observed while the trade is open."""
     if trade.get("status") != "open":
         return trade
     pnl = _money(unrealized_pnl_usd)
-    if pnl is None:
+    if pnl is None and mark in (None, ""):
         return trade
     updated = deepcopy(trade)
-    mfe = updated.get("mfe_usd")
-    mae = updated.get("mae_usd")
-    updated["mfe_usd"] = pnl if mfe is None else max(float(mfe), pnl)
-    updated["mae_usd"] = pnl if mae is None else min(float(mae), pnl)
+    if pnl is not None:
+        mfe = updated.get("mfe_usd")
+        mae = updated.get("mae_usd")
+        updated["mfe_usd"] = pnl if mfe is None else max(float(mfe), pnl)
+        updated["mae_usd"] = pnl if mae is None else min(float(mae), pnl)
+        updated["last_unrealized_pnl_usd"] = pnl
+    if mark not in (None, ""):
+        updated["last_mark"] = float(mark)
+    if mark_as_of not in (None, ""):
+        updated["last_mark_as_of"] = _text(mark_as_of)
     if updated != trade:
         store.write_trade(updated)
     return updated

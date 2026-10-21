@@ -153,18 +153,61 @@ def recent_closed(trades: list[dict[str, Any]], *, limit: int = RECENT_CLOSED_CA
     return out
 
 
-def open_position_context(trades: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def _identity_positions(
+    owner_type: str,
+    owner_id: str,
+    trader_books: dict[str, Any] | None,
+    pm_books: dict[str, Any] | None,
+) -> list[dict[str, Any]]:
+    if owner_type == "trader":
+        seat = ((trader_books or {}).get("seats") or {}).get(owner_id) or {}
+        return list(seat.get("positions") or [])
+    book = ((pm_books or {}).get("pms") or {}).get(owner_id) or {}
+    return list(book.get("positions") or [])
+
+
+def _profit_harvest_block(open_positions: list[dict[str, Any]]) -> dict[str, Any]:
+    from scripts.trading.harvest import HARVEST_QUESTION, ORDER_POLICY
+
+    required = []
+    for row in open_positions:
+        harvest = row.get("harvest") or {}
+        if harvest.get("review_required") and harvest.get("position_id"):
+            required.append(harvest["position_id"])
+    return {
+        "order_policy": ORDER_POLICY,
+        "mechanical_orders": False,
+        "question": HARVEST_QUESTION,
+        "review_required_position_ids": required,
+        "note": (
+            "Thresholds trigger a harvest review. They are not take-profit or stop orders. "
+            "An intact thesis does not by itself justify holding full size."
+        ),
+    }
+
+
+def open_position_context(
+    trades: list[dict[str, Any]],
+    positions: list[dict[str, Any]] | None = None,
+    *,
+    as_of: datetime | None = None,
+) -> list[dict[str, Any]]:
+    from scripts.trading.harvest import harvest_metrics
+
+    by_id = {str(row.get("position_id")): row for row in positions or [] if isinstance(row, dict) and row.get("position_id")}
     open_rows = [row for row in trades if row.get("status") == "open"]
     out = []
     for row in open_rows:
+        position = by_id.get(str(row.get("position_id"))) or {}
         capital = position_risk_capital(
             {
-                "asset_class": row.get("asset_class"),
-                "notional_usd": row.get("current_notional_usd"),
-                "entry_price": row.get("entry_mark"),
-                "mark_price": row.get("last_mark") or row.get("entry_mark"),
+                "asset_class": position.get("asset_class") or row.get("asset_class"),
+                "notional_usd": position.get("notional_usd") or row.get("current_notional_usd"),
+                "entry_price": position.get("entry_price") or row.get("entry_mark"),
+                "mark_price": position.get("mark_price") or row.get("last_mark") or row.get("entry_mark"),
             }
         )
+        harvest = harvest_metrics(row, position or None, as_of=as_of)
         out.append(
             {
                 "trade_id": row.get("trade_id"),
@@ -177,6 +220,7 @@ def open_position_context(trades: list[dict[str, Any]]) -> list[dict[str, Any]]:
                 "entry_mark": row.get("entry_mark"),
                 "opened_at": row.get("opened_at"),
                 "conviction": row.get("conviction"),
+                "harvest": harvest,
             }
         )
     return out
@@ -379,7 +423,16 @@ def ensure_reflections_due(
         prior_drawdown=prior_state.get("last_drawdown_usd"),
         prior_high_water=prior_state.get("last_high_water_nav_usd"),
     )
+    from scripts.trading.harvest import profit_giveback_triggers
+
     triggers.extend(journal_learning_triggers(store.trades_for(owner_type, owner_id)))
+    triggers.extend(
+        profit_giveback_triggers(
+            store.trades_for(owner_type, owner_id),
+            list(book_row.get("positions") or []),
+            as_of=when,
+        )
+    )
     due_doc = store.read_reflections_due(owner_type, owner_id)
     obligated: set[tuple[str, str]] = set()
     for item in due_doc.get("items") or []:
@@ -504,6 +557,11 @@ def build_memory_context(
             pm_book=pm_book,
             review_packet=review_packet,
         )
+    open_positions = open_position_context(
+        trades,
+        _identity_positions(owner_type, owner_id, trader_books, pm_books),
+        as_of=when,
+    )
     body = {
         "schema_version": MEMORY_SCHEMA_VERSION,
         "type": "IDENTITY_MEMORY_CONTEXT",
@@ -537,7 +595,8 @@ def build_memory_context(
             for row in reflections_due
         ],
         "recent_performance_reflections": recent_performance_reflections(store, owner_type, owner_id),
-        "open_positions": open_position_context(trades),
+        "open_positions": open_positions,
+        "profit_harvest": _profit_harvest_block(open_positions),
         "recent_funding_views": [
             event.get("funding_view")
             for event in reversed(store.read_journal(owner_type, owner_id).get("events") or [])
