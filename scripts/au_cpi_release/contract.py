@@ -245,6 +245,14 @@ def guard_series_use(
         raise RegimeBoundaryError(
             f"quarterly legacy trimmed mean {series_id} cannot be used for quarterly headline target {target_id}"
         )
+    if _is_quarterly_headline_nsa(target) and _is_monthly_tm(spec):
+        raise RegimeBoundaryError(
+            f"monthly trimmed mean {series_id} cannot be used for quarterly headline target {target_id}"
+        )
+    if _is_monthly_tm(target) and _is_quarterly_headline_nsa(spec):
+        raise RegimeBoundaryError(
+            f"quarterly headline NSA {series_id} cannot be used for monthly trimmed-mean target {target_id}"
+        )
     if _is_monthly_tm(target) and _is_quarterly_legacy_tm(spec):
         raise RegimeBoundaryError(
             f"quarterly legacy trimmed mean {series_id} cannot be used for monthly trimmed-mean target {target_id}"

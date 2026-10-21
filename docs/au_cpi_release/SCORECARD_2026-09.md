@@ -26,8 +26,8 @@ Refuses with exit **2** (`scorecard_before_release`) unless the actual snapshot 
 | headline_nsa_yoy | ok | 2026-09 | 4.0232469489590805 | 4.0 | sa_persistence_x_seasonal_12 | 3.6459491732127036 | 4.400544724705435 | 3.3707840737516426 | 4.675709824166474 | 16 | true | | |
 | headline_sa_mom | ok | 2026-09 | 0.3232749005800978 | 0.3 | mean_12 | -0.05456820799570222 | 0.7011180091558977 | -0.2855287428262233 | 0.9320785439864189 | 16 | true | | |
 | headline_sa_yoy | ok | 2026-09 | 3.997166455474477 | 4.0 | mean_12 | 3.6054865317922236 | 4.388846379156686 | 3.366068099636599 | 4.628264811312333 | 16 | true | | |
-| headline_nsa_quarterly_qoq | ok | 2026-Q3 | 1.1968092496282612 | 1.2 | quarter_average_of_monthly_nsa (inherits sa_persistence_x_seasonal_12 MoM) | | | | | 16 | true | | |
-| headline_nsa_quarterly_yoy | ok | 2026-Q3 | 3.8148428868771456 | 3.8 | quarter_average_of_monthly_nsa (inherits sa_persistence_x_seasonal_12 MoM) | | | | | 16 | true | | |
+| headline_nsa_quarterly_qoq | ok | 2026-Q3 | 1.1968092496282612 | 1.2 | quarter_average_of_monthly_nsa (inherits sa_persistence_x_seasonal_12 MoM) | 1.0738789173767582 | 1.3197395818797641 | 0.9842252292947995 | 1.4093932699617229 | 16 | true | | |
+| headline_nsa_quarterly_yoy | ok | 2026-Q3 | 3.8148428868771456 | 3.8 | quarter_average_of_monthly_nsa (inherits sa_persistence_x_seasonal_12 MoM) | 3.6887322592461746 | 3.9409535145081165 | 3.596759166305108 | 4.032926607449183 | 16 | true | | |
 | trimmed_mean_monthly_sa_mom | ok | 2026-09 | 0.293090608139888 | 0.3 | mean_12 | 0.23953428411088054 | 0.3466469321688955 | 0.15197325208257767 | 0.43420796419719837 | 16 | true | | |
 | trimmed_mean_monthly_sa_yoy | ok | 2026-09 | 3.6056003046294416 | 3.6 | mean_12 | 3.550275106577505 | 3.660925502681356 | 3.459822083028463 | 3.751378526230398 | 16 | true | | |
 | trimmed_mean_quarterly_legacy_qoq | ok | 2026-Q3 | 0.8125952260030544 | 0.8 | persistence | 0.60048678223239 | 1.0247036697737189 | 0.4125651288231724 | 1.2126253231829365 | 176 | false | | |

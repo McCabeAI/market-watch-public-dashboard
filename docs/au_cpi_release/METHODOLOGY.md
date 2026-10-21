@@ -119,7 +119,7 @@ Nothing was fit to external “0.9–1.0” commentary ranges; economist consens
 - Short monthly history (~**16** common months for several models; widespread `low_sample`).
 - Headline NSA bands can be wide under small **n**.
 - Quarterly bridge **upside risk** (~**1.04** % QoQ proxy vs **0.81** % persistence selected) — different statistic.
-- ABS website maintenance (until **2026-10-22**) blocked live workbook fetch; fixture relies on API + Wayback/in-repo bytes.
+- ABS website still returned HTTP 503 at **2026-10-21T18:33Z** (after the maintenance notice that said 22 October). No new workbook bytes were fetched. The frozen fixture remains API + Wayback/in-repo bytes.
 - Wayback mirrors are third-party; labelled with capture time — not sole authority when API agrees.
 - No official pre-release fuel, electricity-rebate, or travel timing series in the snapshot.
 - Latest-vintage SA revisions leak into pseudo-OOS.

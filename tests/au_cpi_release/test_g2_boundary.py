@@ -77,6 +77,16 @@ class BoundaryTests(unittest.TestCase):
             )
         headline = guard_series_use("headline_nsa_quarterly_qoq")
         self.assertEqual(headline.regime, REGIME_QUARTERLY_HEADLINE_NSA)
+        with self.assertRaises(RegimeBoundaryError):
+            guard_series_use(
+                "trimmed_mean_monthly_sa_index",
+                target_id="headline_nsa_quarterly_qoq",
+            )
+        with self.assertRaises(RegimeBoundaryError):
+            guard_series_use(
+                "headline_nsa_quarterly_index",
+                target_id="trimmed_mean_monthly_sa_mom",
+            )
 
     def test_cpi_m_is_not_complete_monthly_history(self) -> None:
         with self.assertRaises(RegimeBoundaryError):
