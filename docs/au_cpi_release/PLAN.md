@@ -57,6 +57,7 @@ All outputs are **shadow-only**: no writes to `data/temperature_history/`, `data
 | --- | --- | --- | --- |
 | `headline_nsa_mom`, `headline_nsa_yoy` | All groups CPI original, Australia | CPI 2.0.0 `1.10001.10.50.M` (+2, +3) | forecast |
 | `headline_sa_mom`, `headline_sa_yoy` | All groups CPI seasonally adjusted | CPI 2.0.0 `1.999901.20.50.M` | forecast |
+| `headline_nsa_quarterly_qoq`, `headline_nsa_quarterly_yoy` | Quarter-average of monthly all-groups original indexes (CPI 2.0.0 quarterly headline, not CPI_Q) | CPI 2.0.0 `2.10001.10.50.Q` / `3.10001.10.50.Q` | schema **v2** only; quarter-end months; inherits selected `headline_nsa_mom` via identity (not MAE-selected) |
 | `trimmed_mean_monthly_sa_mom`, `trimmed_mean_monthly_sa_yoy` | Monthly trimmed mean (complete Monthly CPI) | CPI 2.0.0 `1.999902.20.50.M` | forecast; `proxy` label unless G5 passes for any component-based variant |
 | `trimmed_mean_quarterly_legacy_qoq`, `..._yoy` | Quarterly trimmed mean, pre-Oct-2025 methods (Appendix 1a) | CPI_Q 1.0.0 `1.999902.20.50.Q` (verify vs Appendix 1a / RBA G1) | forecast if source equivalence verified, otherwise `blocked` or explicitly `proxy` |
 | `weighted_median_monthly_sa_mom/yoy` | Optional shadow diagnostic | CPI 2.0.0 `1.999903.20.50.M` | shadow diagnostic only |

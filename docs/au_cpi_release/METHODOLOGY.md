@@ -10,6 +10,7 @@ Shadow-only engine for the **complete Monthly CPI** (ABS `ABS,CPI,2.0.0`) and th
 | headline_sa_mom / yoy | target | CPI, 2.0.0 | 2.999901.20.50.M / 3.999901.20.50.M | M | complete_monthly_cpi | mom / yoy | `abs_cpi_analytical_sa.csv` |
 | trimmed_mean_monthly_sa_mom / yoy | target | CPI, 2.0.0 | 2.999902.20.50.M / 3.999902.20.50.M | M | complete_monthly_cpi | mom / yoy | `abs_cpi_analytical_sa.csv` |
 | weighted_median_monthly_sa_mom / yoy | shadow diagnostic | CPI, 2.0.0 | 2.999903.20.50.M / 3.999903.20.50.M | M | complete_monthly_cpi | mom / yoy | `abs_cpi_analytical_sa.csv` |
+| headline_nsa_quarterly_qoq / yoy | target (schema v2, quarter-end only) | CPI, 2.0.0 | 2.10001.10.50.Q / 3.10001.10.50.Q | Q | quarterly_headline_nsa | qoq / yoy | quarter-average identity of monthly NSA; provenance CSV archived separately |
 | trimmed_mean_quarterly_legacy_qoq / yoy | target | CPI_Q, 1.0.0 | 2.999902.20.50.Q / 3.999902.20.50.Q | Q | quarterly_legacy_tm | qoq / yoy | `abs_cpi_q.csv`; cross-check `rba_g1.csv` |
 | headline_nsa_index | input | CPI, 2.0.0 | 1.10001.10.50.M | M | complete_monthly_cpi | index | API + workbook overlap |
 | class NSA / SA indexes | input | CPI, 2.0.0 | per-class INDEX | M | complete_monthly_cpi | index | `abs_cpi_class_original.csv`, `abs_cpi_class_sa.csv` |
@@ -23,7 +24,7 @@ Vintage labelling: API rows carry calendar `published_at` per reference month; i
 
 ## ABS methodology boundaries
 
-- **Monthly trimmed mean** (complete Monthly CPI, INDEX 999902 monthly) and **legacy quarterly trimmed mean** (pre-October 2025 methods, CPI_Q / Appendix 1a) are **different statistics**. Target ids are never interchangeable; code raises `RegimeBoundaryError` on cross-use.
+- **Monthly trimmed mean** (complete Monthly CPI, INDEX 999902 monthly), **quarterly headline NSA** (quarter average of monthly all-groups original indexes from CPI 2.0.0 `1.10001.10.50.Q`), and **legacy quarterly trimmed mean** (pre-October 2025 methods, CPI_Q / Appendix 1a) are **different statistics**. Target ids are never interchangeable; code raises `RegimeBoundaryError` on cross-use.
 - **`ABS,CPI_M,1.2.0`** (discontinued Monthly CPI Indicator) is **not** used as target history.
 - The existing `methodology_breaks` guard on `Inflation.underlying` in `data/temperature_history/au.json` is **untouched**; this engine does not write scored history.
 
@@ -88,6 +89,30 @@ Bands use the **selected model’s full** walk-forward |error| quantiles (68% / 
 | Single in-repo workbook vintage | `true_vintage` | Diagnostic only; most rows **blocked** |
 
 Never mix the two in one metric.
+
+## Quarterly headline NSA (schema `au_cpi_nowcast_v2`)
+
+From the December quarter 2025 onward, ABS publishes a **quarterly headline CPI** series (`ABS,CPI,2.0.0`, keys `1+2+3.10001.10.50.Q`) that aligns with the **average of published two-decimal monthly all-groups original indexes** within rounding for quarters from **2025-Q4** forward. Earlier official quarterly indexes are a **re-referenced legacy quarterly CPI** and are **not** equivalent to that month-average identity (gaps ≥ 0.02 index points on 2024-Q2–2025-Q2 in the archived API pull).
+
+The v2 nowcast adds `headline_nsa_quarterly_qoq` and `headline_nsa_quarterly_yoy` on **quarter-end** release months only. They are **not** selected by the MAE rule: they inherit the selected `headline_nsa_mom` forecast for the release month via index arithmetic (September 2026 example: QoQ **1.1968092496282612** % → **1.2** at 1 dp; YoY **3.8148428868771456** % → **3.8**). Bands propagate the selected monthly MoM band through the same identity.
+
+Identity evidence (additive, not in the frozen snapshot): `docs/au_cpi_release/provenance/2026-10-21T183259Z-abs-cpi-headline-quarterly/` (API sha256 `bb6cbc42…`, latest period **2026-Q2**; **2026-Q3** absent).
+
+Schema **`au_cpi_nowcast_v1`** remains frozen for replay of the pre-repair candidate; it omits these targets entirely.
+
+## Quarterly trimmed-mean audit (September 2026 fixture)
+
+| Statistic | 2026-Q3 QoQ (%) | Selected? |
+| --- | ---: | --- |
+| Legacy quarterly trimmed mean, **persistence** | 0.8125952260030544 | **yes** (pre-registered rule) |
+| Monthly-to-quarterly **proxy bridge** (`proxy_bridge_non_equivalent`, monthly TM persistence inside the bridge) | 1.0437709077788515 | **no** (ineligible; different statistic) |
+| Hypothetical mean_12 bridge (not implemented as a candidate) | ~1.0604 | **no** |
+
+On eight overlap quarters where the bridge uses actual monthly TM indexes, mean gap vs legacy is about **+0.0228** pp and mean absolute gap about **0.0732** pp (max about **0.1492** pp in 2024-Q4); the sign flips across quarters.
+
+Pseudo-OOS on CPI_Q 999902 index levels: **persistence** full-sample MAE ≈ **0.181841** beats **mean_4** ≈ **0.186827**; common-sample **n = 173**. On **2024+** only, mean_4 MAE improvement ≈ **0.0127** pp (**below** the 0.02 pp threshold, **n < 12**), so it is diagnostic only. **Seasonal naive** (same quarter last year) full-sample MAE ≈ **0.2668**, worse than persistence; it is **not** added to `CANDIDATE_MODELS`.
+
+Nothing was fit to external “0.9–1.0” commentary ranges; economist consensus was **not** an input (presentation-only external commentary may exist but is not archived here as a primary source).
 
 ## Limitations
 

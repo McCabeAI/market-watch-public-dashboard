@@ -46,25 +46,38 @@ Exit **0** on success; **2** on `ArchiveConflict`, source errors, or missing `--
 
 **After ABS website maintenance (expected back 2026-10-22):** rerun `snapshot --live` to attach workbook bytes (Tables 7/8, Appendix 1a) that were unavailable during maintenance. Until then, the committed fixture uses the ABS Data API plus archived Wayback/in-repo workbooks documented in `snapshot.json` notes.
 
-### Nowcast (fixture — September 2026 candidate)
+### Nowcast schemas (v1 frozen vs v2 publication)
+
+| Schema | Archive directory | Contents |
+| --- | --- | --- |
+| `au_cpi_nowcast_v1` | `…-<sha12>/` (no suffix) | Full snapshot + raw bytes; immutable pre-repair candidate |
+| `au_cpi_nowcast_v2` (default CLI) | `…-<sha12>-v2/` with `--reference-snapshot` | Slim archive: `nowcast.json`, `nowcast.txt`, `manifest.json` + `snapshot_path` / `snapshot_sha256` |
+
+Monthly API hashes on **2026-10-21** matched the frozen fixture (`ede7bc06…` headline original, `1ae31961…` analytical SA, `d32ca991…` CPI_Q); the fixture was **not** replaced. ABS website returned **HTTP 503** on 2026-10-21 so workbook bytes were not refreshed.
+
+Additive quarterly-headline provenance (not part of snapshot `8d11c6256324`): `docs/au_cpi_release/provenance/2026-10-21T183259Z-abs-cpi-headline-quarterly/`.
+
+### Nowcast (fixture — September 2026 v2 candidate)
 
 ```bash
 PYTHONPATH=. python3 -m scripts.au_cpi_release nowcast \
   --release 2026-09 \
   --as-of 2026-10-22T01:50:00+11:00 \
+  --generated-at "$(PYTHONPATH=. python3 -c 'from scripts.au_cpi_release.calendar import sydney_now; print(sydney_now().isoformat())')" \
   --fixture scripts/au_cpi_release/fixtures/pre_2026-10-28/snapshot.json \
+  --reference-snapshot \
   --out docs/au_cpi_release/candidates
 ```
 
-Do **not** pass `--generated-at` for a production candidate unless replaying; default is wall-clock Sydney time and must be **before** the release freeze.
+`generated_at` must be timezone-aware and **before** `2026-10-28T11:30:00+11:00`. Default publication schema is **v2**; monthly and legacy quarterly trimmed-mean targets match the frozen **v1** floats.
 
-Writes:
+A full embedded snapshot run (no `--reference-snapshot`) still writes `snapshot.json` and `raw/` under `…-<sha12>/` (see tests).
+
+Writes (`--reference-snapshot`):
 
 ```text
-<out>/runs/<release>-asof-<as-of>-<snapshot_sha12>/
-  snapshot.json
+<out>/runs/<release>-asof-<as-of>-<sha12>-v2/
   manifest.json
-  raw/
   nowcast.json
   nowcast.txt
 ```
@@ -96,10 +109,21 @@ Writes `<out>/backtests/<release-or-all>-asof-<as-of>-<snapshot_sha12>/` with `b
 
 ### Replay
 
+**v1 (frozen, embedded snapshot):**
+
 ```bash
 PYTHONPATH=. python3 -m scripts.au_cpi_release replay \
   --run-dir docs/au_cpi_release/candidates/runs/2026-09-asof-2026-10-22T015000p1100-8d11c6256324
 ```
+
+**v2 (reference snapshot):**
+
+```bash
+PYTHONPATH=. python3 -m scripts.au_cpi_release replay \
+  --run-dir docs/au_cpi_release/candidates/runs/2026-09-asof-2026-10-22T015000p1100-8d11c6256324-v2
+```
+
+Replay reads `schema_version` from archived `nowcast.json`. When `snapshot.json` is absent, it loads `manifest.snapshot_path` from the repo root and verifies `snapshot_sha256`.
 
 Exit **0** only if recomputed `nowcast.json` matches archived bytes and manifest hashes verify.
 
@@ -140,7 +164,7 @@ Common `reason` tokens: `generated_after_freeze`, `snapshot_retrieved_after_rele
 ## Archive layout
 
 - **Snapshots:** `<out>/snapshots/asof-<as-of>-<sha12>/`
-- **Runs:** `<out>/runs/<release>-asof-<as-of>-<sha12>/`
+- **Runs:** `<out>/runs/<release>-asof-<as-of>-<sha12>/` (v1) or `…-<sha12>-v2/` (v2 reference snapshot)
 - **Backtests:** `<out>/backtests/<release-or-all>-asof-<as-of>-<sha12>/`
 
 Each archive includes `manifest.json` with per-file `sha256` and `bytes`. Identical bytes are idempotent; conflicting bytes raise `ArchiveConflict` and leave prior files untouched.
