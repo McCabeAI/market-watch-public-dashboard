@@ -40,6 +40,41 @@ MARKET = {
 }
 
 
+def _open_winner(
+    *,
+    position_id: str = "pos-win",
+    trade_id: str = "trd-trader-dollar-king-pos-win",
+    notional: float = 55_000_000,
+    pnl: float = 610_000,
+) -> tuple[dict, dict, datetime]:
+    trade = {
+        "trade_id": trade_id,
+        "position_id": position_id,
+        "instrument": "USDCAD",
+        "asset_class": "spot_fx",
+        "side": "long",
+        "status": "open",
+        "opened_at": "2026-09-19T12:00:00-04:00",
+        "entry_mark": 1.36,
+        "peak_notional_usd": notional,
+        "current_notional_usd": notional,
+        "realized_pnl_usd": 0,
+        "mfe_usd": pnl,
+    }
+    position = {
+        "position_id": position_id,
+        "instrument": "USDCAD",
+        "asset_class": "spot_fx",
+        "side": "long",
+        "notional_usd": notional,
+        "entry_price": 1.36,
+        "mark_price": 1.38,
+        "unrealized_pnl_usd": pnl,
+        "opened_at": trade["opened_at"],
+    }
+    return trade, position, datetime(2026, 9, 28, 8, 0, tzinfo=NY)
+
+
 def _lifecycle(**overrides) -> dict:
     payload = {
         "framing": "tactical",
@@ -242,13 +277,14 @@ class ProfitHarvestTests(unittest.TestCase):
         self.assertEqual(len(accepted), 1)
         with self.assertRaises(HarvestReviewError):
             enforce_harvest_hold({"actions": [{"action": "HOLD"}]}, [trade], [position], as_of=as_of, owner_id="dollar-king")
-        enforce_harvest_hold(
-            {"actions": [{"action": "REDUCE", "position_id": "pos-win", "notional_usd": 20_000_000}]},
-            [trade],
-            [position],
-            as_of=as_of,
-            owner_id="dollar-king",
-        )
+        with self.assertRaises(HarvestReviewError):
+            enforce_harvest_hold(
+                {"actions": [{"action": "REDUCE", "position_id": "pos-win", "notional_usd": 20_000_000}]},
+                [trade],
+                [position],
+                as_of=as_of,
+                owner_id="dollar-king",
+            )
         enforce_harvest_hold(
             {"actions": [{"action": "CLOSE", "position_id": "pos-win"}]},
             [trade],
@@ -256,6 +292,145 @@ class ProfitHarvestTests(unittest.TestCase):
             as_of=as_of,
             owner_id="dollar-king",
         )
+
+    def test_residual_size_review_blocks_token_and_round_trip_cuts(self) -> None:
+        trade, position, as_of = _open_winner()
+        other_trade, other_position, _as_of = _open_winner(position_id="pos-other", trade_id="trd-other")
+
+        with self.assertRaises(HarvestReviewError):
+            enforce_harvest_hold(
+                {"actions": [{"action": "REDUCE", "position_id": "pos-win", "notional_usd": 1}]},
+                [trade],
+                [position],
+                as_of=as_of,
+                owner_id="dollar-king",
+            )
+        token = {
+            "actions": [{"action": "REDUCE", "position_id": "pos-win", "notional_usd": 1}],
+            "harvest_reviews": [_review(position_id="pos-win")],
+        }
+        accepted = enforce_harvest_hold(token, [trade], [position], as_of=as_of, owner_id="dollar-king")
+        self.assertEqual(accepted[0]["residual_notional_usd"], 54_999_999.0)
+        self.assertEqual(token["actions"][0]["action"], "REDUCE")
+        self.assertNotIn("action", accepted[0])
+
+        with self.assertRaises(HarvestReviewError):
+            enforce_harvest_hold(
+                {"actions": [{"action": "REDUCE", "position_id": "pos-win", "notional_usd": 20_000_000}]},
+                [trade],
+                [position],
+                as_of=as_of,
+                owner_id="dollar-king",
+            )
+        partial = enforce_harvest_hold(
+            {
+                "actions": [{"action": "REDUCE", "position_id": "pos-win", "notional_usd": 20_000_000}],
+                "harvest_reviews": [_review(position_id="pos-win")],
+            },
+            [trade],
+            [position],
+            as_of=as_of,
+            owner_id="dollar-king",
+        )
+        self.assertEqual(partial[0]["residual_notional_usd"], 35_000_000.0)
+
+        enforce_harvest_hold(
+            {"actions": [{"action": "REDUCE", "position_id": "pos-win", "notional_usd": 47_000_000}]},
+            [trade],
+            [position],
+            as_of=as_of,
+            owner_id="dollar-king",
+        )
+        with self.assertRaises(HarvestReviewError):
+            enforce_harvest_hold(
+                {"actions": [{"action": "REDUCE", "position_id": "pos-win", "notional_usd": 45_000_000}]},
+                [trade],
+                [position],
+                as_of=as_of,
+                owner_id="dollar-king",
+            )
+
+        with self.assertRaises(HarvestReviewError):
+            enforce_harvest_hold(
+                {
+                    "actions": [
+                        {"action": "REDUCE", "position_id": "pos-win", "notional_usd": 50_000_000},
+                        {"action": "ADD", "position_id": "pos-win", "notional_usd": 40_000_000},
+                    ]
+                },
+                [trade],
+                [position],
+                as_of=as_of,
+                owner_id="dollar-king",
+            )
+        round_trip = enforce_harvest_hold(
+            {
+                "actions": [
+                    {"action": "REDUCE", "position_id": "pos-win", "notional_usd": 47_000_000},
+                    {"action": "ADD", "position_id": "pos-win", "notional_usd": 5_000_000},
+                ],
+                "harvest_reviews": [_review(position_id="pos-win")],
+            },
+            [trade],
+            [position],
+            as_of=as_of,
+            owner_id="dollar-king",
+        )
+        self.assertEqual(round_trip[0]["residual_notional_usd"], 13_000_000.0)
+
+        enforce_harvest_hold(
+            {"actions": [{"action": "CLOSE", "position_id": "pos-win"}]},
+            [trade],
+            [position],
+            as_of=as_of,
+            owner_id="dollar-king",
+        )
+        enforce_harvest_hold(
+            {"actions": [{"action": "REDUCE", "position_id": "pos-win", "notional_usd": 55_000_000}]},
+            [trade],
+            [position],
+            as_of=as_of,
+            owner_id="dollar-king",
+        )
+
+        books = [position, other_position]
+        trades = [trade, other_trade]
+        with self.assertRaises(HarvestReviewError):
+            enforce_harvest_hold(
+                {"actions": [{"action": "CLOSE", "position_id": "pos-win"}]},
+                trades,
+                books,
+                as_of=as_of,
+                owner_id="dollar-king",
+            )
+        with self.assertRaises(HarvestReviewError):
+            enforce_harvest_hold(
+                {
+                    "actions": [
+                        {"action": "REDUCE", "position_id": "pos-win", "notional_usd": 1},
+                        {"action": "HOLD"},
+                    ],
+                    "harvest_reviews": [_review(position_id="pos-win")],
+                },
+                trades,
+                books,
+                as_of=as_of,
+                owner_id="dollar-king",
+            )
+        both = enforce_harvest_hold(
+            {
+                "actions": [
+                    {"action": "CLOSE", "position_id": "pos-win"},
+                    {"action": "HOLD"},
+                ],
+                "harvest_reviews": [_review(position_id="pos-other")],
+            },
+            trades,
+            books,
+            as_of=as_of,
+            owner_id="dollar-king",
+        )
+        self.assertEqual([row["metrics_position_id"] for row in both], ["pos-other"])
 
     def test_expired_horizon_requires_reunderwrite_from_current_conditions(self) -> None:
         opened = datetime(2026, 9, 1, 9, 0, tzinfo=NY)
@@ -397,9 +572,9 @@ class ProfitHarvestTests(unittest.TestCase):
         reduced["dollar-king"]["actions"] = [{
             "action": "REDUCE",
             "position_id": position["position_id"],
-            "notional_usd": 5_000_000,
+            "notional_usd": 16_000_000,
             "price": 1.39,
-            "rationale": "Harvest part of the delivered move without a mechanical target.",
+            "rationale": "Cut the line down to a stub that is no longer a meaningful residual winner.",
         }]
         after = apply_trader_review_with_memory(
             updated,
@@ -412,7 +587,7 @@ class ProfitHarvestTests(unittest.TestCase):
             when=datetime(2026, 9, 30, 12, 0, tzinfo=NY),
             market_state=MARKET,
         )
-        self.assertEqual(after["seats"]["dollar-king"]["positions"][0]["notional_usd"], 15_000_000)
+        self.assertEqual(after["seats"]["dollar-king"]["positions"][0]["notional_usd"], 4_000_000)
 
     def test_pm_hold_uses_the_same_gate(self) -> None:
         context = build_memory_context(self.store, "pm", "pragmatist")

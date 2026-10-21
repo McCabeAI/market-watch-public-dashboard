@@ -30,6 +30,9 @@ GIVEBACK_RETAINED_FRACTION = 0.70
 # A deeper giveback can open a causal reflection. It still does not write a lesson.
 MAJOR_GIVEBACK_RETAINED_FRACTION = 0.50
 MAJOR_GIVEBACK_MIN_USD = 100_000.0
+# A residual at or above this share of the pre-action notional is still a kept position.
+# A smaller residual can still require review when its scaled P&L remains a material winner.
+MEANINGFUL_RESIDUAL_FRACTION = 0.25
 
 HARVEST_QUESTION = (
     "If flat today, would you initiate this exact trade at this exact size and level?"
@@ -37,8 +40,6 @@ HARVEST_QUESTION = (
 ORDER_POLICY = "review_only"
 REASON_MIN_CHARS = 40
 
-CONTINUATION_ACTIONS = frozenset({"HOLD", "NO_TRADE"})
-DERISK_SIZE_ACTIONS = frozenset({"REDUCE", "CLOSE"})
 ENTRY_ACTIONS = frozenset({"OPEN", "HEDGE"})
 
 
@@ -380,22 +381,145 @@ def position_harvests(
     ]
 
 
-def kept_full_size_ids(actions: list[dict[str, Any]], open_ids: list[str]) -> list[str]:
-    """Positions a decision leaves at their current size.
+def _positive_notional(action: dict[str, Any]) -> float | None:
+    raw = action.get("notional_usd")
+    if raw in (None, ""):
+        return None
+    try:
+        value = float(raw)
+    except (TypeError, ValueError):
+        return None
+    if value <= 0:
+        return None
+    return value
 
-    REDUCE and CLOSE harvest. HOLD, NO_TRADE, and silence keep full current size.
-    """
-    covered: set[str] = set()
-    known = list(open_ids)
+
+def _actions_for_position(
+    actions: list[dict[str, Any]],
+    position_id: str,
+    open_ids: list[str],
+) -> list[dict[str, Any]]:
+    sole = len(open_ids) == 1
+    matched: list[dict[str, Any]] = []
     for action in actions:
-        if not isinstance(action, dict) or action.get("action") not in DERISK_SIZE_ACTIONS:
+        if not isinstance(action, dict) or action.get("action") not in {"ADD", "REDUCE", "CLOSE"}:
             continue
         pid = action.get("position_id")
-        if pid in known:
-            covered.add(str(pid))
-        elif pid in (None, "", "__first__") and len(known) == 1:
-            covered.add(known[0])
-    return [pid for pid in known if pid not in covered]
+        if str(pid or "") == str(position_id) or (sole and pid in (None, "", "__first__")):
+            matched.append(action)
+    return matched
+
+
+def residual_notional(pre_notional_usd: float, actions: list[dict[str, Any]]) -> dict[str, Any]:
+    """Net the decision's size changes. An unsized REDUCE does not count as a harvest.
+
+    Actions apply in order, so a later ADD restores exposure that an earlier REDUCE removed.
+    """
+    net = max(float(pre_notional_usd or 0.0), 0.0)
+    reduced = 0.0
+    added = 0.0
+    for action in actions:
+        kind = action.get("action")
+        if kind == "CLOSE":
+            reduced += max(net, 0.0)
+            net = 0.0
+        elif kind == "REDUCE":
+            cut = _positive_notional(action)
+            if cut is None:
+                continue
+            applied = min(cut, max(net, 0.0))
+            net = round(max(0.0, net - applied), 2)
+            reduced += applied
+        elif kind == "ADD":
+            add = _positive_notional(action) or 0.0
+            net = round(net + add, 2)
+            added += add
+    pre = round(max(float(pre_notional_usd or 0.0), 0.0), 2)
+    residual = round(max(net, 0.0), 2)
+    fraction = None if pre <= 0 else round(residual / pre, 4)
+    return {
+        "pre_notional_usd": pre,
+        "residual_notional_usd": residual,
+        "residual_fraction": fraction,
+        "reduced_usd": round(reduced, 2),
+        "added_usd": round(added, 2),
+    }
+
+
+def _scaled_harvest(
+    trade: dict[str, Any],
+    position: dict[str, Any],
+    residual: dict[str, Any],
+    *,
+    as_of: datetime | None,
+) -> dict[str, Any]:
+    """Harvest view of the size the decision would leave, not the size it started with."""
+    pre = float(residual["pre_notional_usd"] or 0.0)
+    net = float(residual["residual_notional_usd"] or 0.0)
+    if pre <= 0 or net <= 0:
+        return {"review_required": False, "review_triggers": [], "mechanical_order": False, "order_policy": ORDER_POLICY}
+    scale = net / pre
+    scaled_trade = deepcopy(trade)
+    for key in ("mfe_usd", "mae_usd"):
+        if scaled_trade.get(key) not in (None, ""):
+            scaled_trade[key] = round(float(scaled_trade[key]) * scale, 2)
+    scaled_trade["peak_notional_usd"] = net
+    scaled_trade["initial_notional_usd"] = net
+    scaled_trade["current_notional_usd"] = net
+    scaled_trade["realized_pnl_usd"] = 0.0
+    scaled_position = deepcopy(position)
+    scaled_position["notional_usd"] = net
+    if position.get("unrealized_pnl_usd") not in (None, ""):
+        scaled_position["unrealized_pnl_usd"] = round(float(position["unrealized_pnl_usd"]) * scale, 2)
+    return harvest_metrics(scaled_trade, scaled_position, as_of=as_of)
+
+
+def residual_needs_justification(
+    metrics: dict[str, Any],
+    residual: dict[str, Any],
+    scaled: dict[str, Any],
+) -> bool:
+    """True when the post-action size is still a kept triggered winner.
+
+    A flat close, or a cut that leaves only a non-meaningful stub whose scaled
+    P&L is no longer a material winner, does not need a remaining-edge answer.
+    """
+    if not metrics.get("review_required"):
+        return False
+    net = float(residual.get("residual_notional_usd") or 0.0)
+    if net <= 0:
+        return False
+    pre = float(residual.get("pre_notional_usd") or 0.0)
+    fraction = 1.0 if pre <= 0 else net / pre
+    if fraction + 1e-12 >= MEANINGFUL_RESIDUAL_FRACTION:
+        return True
+    return bool(set(scaled.get("review_triggers") or []) & {"material_winner", "giveback"})
+
+
+def review_metrics_for_residual(
+    metrics: dict[str, Any],
+    scaled: dict[str, Any],
+    residual: dict[str, Any],
+) -> dict[str, Any]:
+    pre = float(residual.get("pre_notional_usd") or 0.0)
+    net = float(residual.get("residual_notional_usd") or 0.0)
+    fraction = 1.0 if pre <= 0 else net / pre
+    if fraction + 1e-12 >= MEANINGFUL_RESIDUAL_FRACTION:
+        triggers = list(metrics.get("review_triggers") or [])
+    else:
+        triggers = [name for name in (scaled.get("review_triggers") or []) if name in {"material_winner", "giveback"}]
+        for clock in ("horizon_expired", "catalyst"):
+            if clock in (metrics.get("review_triggers") or []) and triggers and clock not in triggers:
+                triggers.append(clock)
+    reviewed = dict(metrics)
+    reviewed["review_required"] = True
+    reviewed["review_triggers"] = triggers
+    reviewed["full_size_hold_requires_reunderwrite"] = "horizon_expired" in triggers
+    reviewed["residual_notional_usd"] = round(net, 2)
+    reviewed["residual_fraction"] = round(fraction, 4)
+    reviewed["mechanical_order"] = False
+    reviewed["order_policy"] = ORDER_POLICY
+    return reviewed
 
 
 def _review_rows(decision: dict[str, Any]) -> list[dict[str, Any]]:
@@ -438,10 +562,12 @@ def justification_reason(metrics: dict[str, Any], review: dict[str, Any] | None)
         return None
     label = metrics.get("position_id") or metrics.get("trade_id") or metrics.get("instrument") or "position"
     triggers = ", ".join(metrics.get("review_triggers") or [])
+    fraction = metrics.get("residual_fraction")
+    kept = "full size" if fraction is None or float(fraction) >= 0.999 else "the post-action residual"
     if not isinstance(review, dict):
         return (
-            f"{label} harvest_review: {triggers} requires an explicit review before HOLD full size. "
-            f"{HARVEST_QUESTION} Otherwise REDUCE or CLOSE. "
+            f"{label} harvest_review: {triggers} requires an explicit review before keeping {kept}. "
+            f"{HARVEST_QUESTION} Otherwise CLOSE, or REDUCE until the residual is no longer a meaningful kept winner. "
             "This is a review trigger, not a take-profit order."
         )
     if not isinstance(review.get("thesis_still_valid"), bool):
@@ -453,9 +579,9 @@ def justification_reason(metrics: dict[str, Any], review: dict[str, Any] | None)
         return f"{label} harvest_review: would_initiate_flat must be yes or no. {HARVEST_QUESTION}"
     if review.get("remaining_edge") is not True or answer != "yes":
         return (
-            f"{label} harvest_review: full-size HOLD requires remaining_edge true and "
+            f"{label} harvest_review: keeping {kept} requires remaining_edge true and "
             f"would_initiate_flat yes. Thesis validity alone is not remaining edge. "
-            "REDUCE or CLOSE remains available."
+            "CLOSE, and a REDUCE that leaves no meaningful residual, remain available without that answer."
         )
     reason = _text(review.get("remaining_edge_reason"))
     if not reason or len(reason) < REASON_MIN_CHARS:
@@ -469,7 +595,7 @@ def justification_reason(metrics: dict[str, Any], review: dict[str, Any] | None)
         except SchemaError as exc:
             return (
                 f"{label} harvest_review: the intended horizon has expired. "
-                f"HOLD full size requires a fresh re-underwrite from current conditions ({exc}). "
+                f"Keeping {kept} requires a fresh re-underwrite from current conditions ({exc}). "
                 "A tactical trade does not become structural by silence."
             )
     return None
@@ -483,24 +609,47 @@ def enforce_harvest_hold(
     as_of: datetime | None = None,
     owner_id: str,
 ) -> list[dict[str, Any]]:
-    """Raise when a triggered position is kept at full size without a re-underwrite.
+    """Raise when a triggered winner's post-action residual lacks a re-underwrite.
 
-    Returns the accepted reviews. Does not emit an order.
+    CLOSE, and a REDUCE that leaves no meaningful residual, need no harvest review.
+    A token cut, a partial cut that leaves a meaningful residual, or a later ADD
+    that restores that residual does not skip the review. This does not emit an order
+    and does not classify REDUCE or CLOSE as risk-expanding actions.
     """
     actions = [row for row in (decision.get("actions") or []) if isinstance(row, dict)]
-    metrics_rows = position_harvests(trades, positions, as_of=as_of)
-    open_ids = [str(row["position_id"]) for row in metrics_rows if row.get("position_id")]
-    kept = set(kept_full_size_ids(actions, open_ids))
-    triggered = [row for row in metrics_rows if row.get("review_required") and str(row.get("position_id")) in kept]
+    open_positions = _open_positions(positions)
+    metrics_rows = [
+        (harvest_metrics(_match_trade(trades, position), position, as_of=as_of), _match_trade(trades, position), position)
+        for position in open_positions
+    ]
+    open_ids = [str(position.get("position_id")) for position in open_positions if position.get("position_id")]
+    pending: list[tuple[dict[str, Any], dict[str, Any]]] = []
+    for metrics, trade, position in metrics_rows:
+        position_id = str(position.get("position_id") or "")
+        pre = _money(position.get("notional_usd"))
+        if pre is None:
+            pre = _money(metrics.get("current_notional_usd")) or 0.0
+        plan = residual_notional(pre, _actions_for_position(actions, position_id, open_ids))
+        scaled = _scaled_harvest(trade, position, plan, as_of=as_of)
+        if not residual_needs_justification(metrics, plan, scaled):
+            continue
+        pending.append((review_metrics_for_residual(metrics, scaled, plan), plan))
     accepted: list[dict[str, Any]] = []
     problems: list[str] = []
-    for metrics in triggered:
-        review = matching_review(decision, metrics, triggered_count=len(triggered))
-        reason = justification_reason(metrics, review)
+    for reviewed, plan in pending:
+        review = matching_review(decision, reviewed, triggered_count=len(pending))
+        reason = justification_reason(reviewed, review)
         if reason:
             problems.append(f"{owner_id} {reason}")
             continue
-        accepted.append({"metrics_position_id": metrics.get("position_id"), "review": review, "triggers": list(metrics.get("review_triggers") or [])})
+        accepted.append(
+            {
+                "metrics_position_id": reviewed.get("position_id"),
+                "review": review,
+                "triggers": list(reviewed.get("review_triggers") or []),
+                "residual_notional_usd": plan.get("residual_notional_usd"),
+            }
+        )
     if problems:
         raise HarvestReviewError(problems[0])
     return accepted

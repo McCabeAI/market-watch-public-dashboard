@@ -185,13 +185,13 @@ Triggers, and only triggers, are:
 
 A small early gain, including Dollar King's first ~$133k on USDCAD, does not trip `material_winner`. The same path does trip it while the trade is still near its high, before the later giveback from about $954k MFE.
 
-When any kept position is triggered, `HOLD` / `NO_TRADE` at the current size requires `harvest_reviews` (or one `harvest_review` when only one position is triggered):
+When a triggered position would still be kept at a meaningful residual size, `HOLD`, `NO_TRADE`, a token `REDUCE`, or a partial `REDUCE` plus a later `ADD` requires `harvest_reviews` (or one `harvest_review` when only one position is triggered). The review is about the post-action residual, not the size that existed before the decision:
 
 - `thesis_still_valid` boolean
 - `remaining_edge` boolean, separate from the thesis flag
 - `would_initiate_flat`: `yes` or `no`, answering whether the seat would initiate this exact trade at this exact size and level if flat today
 - `remaining_edge_reason` when full size is affirmed
 
-Full size is allowed only when `remaining_edge` is true and `would_initiate_flat` is `yes`. A true thesis with no remaining edge is not enough. `REDUCE` and `CLOSE` do not need that affirmation. An expired horizon also needs `reunderwrite` (`framing`, horizon, realization, catalyst) measured from the current review, which restarts the horizon clock and does not rewrite the entry mark. A tactical trade does not become structural because nobody mentioned the clock.
+Keeping that residual is allowed only when `remaining_edge` is true and `would_initiate_flat` is `yes`. A true thesis with no remaining edge is not enough. The answer is for the size the decision leaves. A residual is meaningful when it is at least 25% of the pre-action notional, or when its pro-rata peak P&L is still a material winner. A `$1` cut does not retire the review. Cutting and then adding the size back does not either. `CLOSE`, and a `REDUCE` that leaves no meaningful residual, execute without that affirmation. `REDUCE` and `CLOSE` stay de-risk actions: memory, rationale, and psychology gates do not block them, and no threshold creates an order. An expired horizon on a meaningful residual also needs `reunderwrite` (`framing`, horizon, realization, catalyst) measured from the current review, which restarts the horizon clock and does not rewrite the entry mark. A tactical trade does not become structural by silence. One position's cut does not excuse a second triggered position.
 
 A major giveback (retained MFE at or below 50% after a material peak, and at least $100k given back) adds reflection trigger `profit_giveback` on that `trade_id`. Clearing it still accepts a substantive `no_new_lesson`. The hook does not write a lesson by itself and does not block `REDUCE` / `CLOSE`.
