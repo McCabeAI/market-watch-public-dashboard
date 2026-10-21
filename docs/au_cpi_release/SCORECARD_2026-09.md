@@ -2,13 +2,13 @@
 
 Pre-release forecasts are from the committed candidate run. Fill **Actual** and **Error** after the ABS release using the `scorecard` command (post-release snapshot required).
 
-**Candidate run:** `docs/au_cpi_release/candidates/runs/2026-09-asof-2026-10-22T012500p1100-8d11c6256324/`  
+**Candidate run:** `docs/au_cpi_release/candidates/runs/2026-09-asof-2026-10-22T015000p1100-8d11c6256324/`  
 **Release time:** 2026-10-28T11:30:00+11:00 (Australia/Sydney) = 2026-10-27T20:30:00-04:00 (America/New_York).
 
 ## Post-release command
 
 ```bash
-RUN_DIR=docs/au_cpi_release/candidates/runs/2026-09-asof-2026-10-22T012500p1100-8d11c6256324
+RUN_DIR=docs/au_cpi_release/candidates/runs/2026-09-asof-2026-10-22T015000p1100-8d11c6256324
 PYTHONPATH=. python3 -m scripts.au_cpi_release scorecard \
   --nowcast "$RUN_DIR/nowcast.json" \
   --actual-fixture /path/to/post_release_snapshot.json \

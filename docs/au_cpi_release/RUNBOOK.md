@@ -51,7 +51,7 @@ Exit **0** on success; **2** on `ArchiveConflict`, source errors, or missing `--
 ```bash
 PYTHONPATH=. python3 -m scripts.au_cpi_release nowcast \
   --release 2026-09 \
-  --as-of 2026-10-22T01:25:00+11:00 \
+  --as-of 2026-10-22T01:50:00+11:00 \
   --fixture scripts/au_cpi_release/fixtures/pre_2026-10-28/snapshot.json \
   --out docs/au_cpi_release/candidates
 ```
@@ -85,20 +85,20 @@ PYTHONPATH=. python3 -m scripts.au_cpi_release nowcast \
 ### Backtest
 
 ```bash
-RUN_DIR=docs/au_cpi_release/candidates/runs/2026-09-asof-2026-10-22T012500p1100-8d11c6256324
 PYTHONPATH=. python3 -m scripts.au_cpi_release backtest \
-  --as-of 2026-10-22T01:25:00+11:00 \
+  --release 2026-09 \
+  --as-of 2026-10-22T01:50:00+11:00 \
   --fixture scripts/au_cpi_release/fixtures/pre_2026-10-28/snapshot.json \
-  --out "$RUN_DIR"
+  --out docs/au_cpi_release/candidates
 ```
 
-Writes `backtest.json` and `backtest.txt` under `--out`. Label inside JSON: **pseudo_oos_latest_vintage** (not true vintage).
+Writes `<out>/backtests/<release-or-all>-asof-<as-of>-<snapshot_sha12>/` with `backtest.json`, `backtest.txt`, and `manifest.json`. Label inside JSON: **pseudo_oos_latest_vintage** (not true vintage).
 
 ### Replay
 
 ```bash
 PYTHONPATH=. python3 -m scripts.au_cpi_release replay \
-  --run-dir docs/au_cpi_release/candidates/runs/2026-09-asof-2026-10-22T012500p1100-8d11c6256324
+  --run-dir docs/au_cpi_release/candidates/runs/2026-09-asof-2026-10-22T015000p1100-8d11c6256324
 ```
 
 Exit **0** only if recomputed `nowcast.json` matches archived bytes and manifest hashes verify.
@@ -114,7 +114,7 @@ PYTHONPATH=. python3 -m scripts.au_cpi_release verify-trim \
 ### Scorecard (post-release only)
 
 ```bash
-RUN_DIR=docs/au_cpi_release/candidates/runs/2026-09-asof-2026-10-22T012500p1100-8d11c6256324
+RUN_DIR=docs/au_cpi_release/candidates/runs/2026-09-asof-2026-10-22T015000p1100-8d11c6256324
 PYTHONPATH=. python3 -m scripts.au_cpi_release scorecard \
   --nowcast "$RUN_DIR/nowcast.json" \
   --actual-fixture /path/to/post_release_snapshot.json \
@@ -141,6 +141,7 @@ Common `reason` tokens: `generated_after_freeze`, `snapshot_retrieved_after_rele
 
 - **Snapshots:** `<out>/snapshots/asof-<as-of>-<sha12>/`
 - **Runs:** `<out>/runs/<release>-asof-<as-of>-<sha12>/`
+- **Backtests:** `<out>/backtests/<release-or-all>-asof-<as-of>-<sha12>/`
 
 Each archive includes `manifest.json` with per-file `sha256` and `bytes`. Identical bytes are idempotent; conflicting bytes raise `ArchiveConflict` and leave prior files untouched.
 
@@ -148,10 +149,13 @@ Each archive includes `manifest.json` with per-file `sha256` and `bytes`. Identi
 
 | Field | Value |
 | --- | --- |
-| Run directory | `docs/au_cpi_release/candidates/runs/2026-09-asof-2026-10-22T012500p1100-8d11c6256324` |
-| `as_of` | 2026-10-22T01:25:00+11:00 |
-| `generated_at` | 2026-10-22T01:25:26+11:00 |
-| `nowcast.json` sha256 | `41b95fb915d9ac0677e7f1965f10a60b11d6ac4158b6266619617af383f4e7ed` |
+| Run directory | `docs/au_cpi_release/candidates/runs/2026-09-asof-2026-10-22T015000p1100-8d11c6256324` |
+| Backtest archive | `docs/au_cpi_release/candidates/backtests/2026-09-asof-2026-10-22T015000p1100-8d11c6256324` |
+| `as_of` | 2026-10-22T01:50:00+11:00 |
+| `generated_at` | 2026-10-22T01:50:06+11:00 |
+| `nowcast.json` sha256 | `2cf6f2da67f2d259d3cb1cdacc9bc4b84ec95237a80c01ea8e24b46cc5edfa12` |
+| `tool_git_dirty` (run manifest) | false |
+| Supersedes | `2026-09-asof-2026-10-22T012500p1100-8d11c6256324` (removed; had `tool_git_dirty: true` from uncommitted working tree) |
 | Fixture `retrieved_at` | 2026-10-21T13:26:33Z |
 
 See `SCORECARD_2026-09.md` for the forecast table and post-release scorecard command.

@@ -1,6 +1,6 @@
 # Australian CPI walk-forward backtest — September 2026 candidate
 
-Source: `docs/au_cpi_release/candidates/runs/2026-09-asof-2026-10-22T012500p1100-8d11c6256324/backtest.json` (pseudo-OOS latest vintage, `as_of` 2026-10-22T01:25:00+11:00). Numbers below are copied from that file; do not edit by hand.
+Source: `docs/au_cpi_release/candidates/backtests/2026-09-asof-2026-10-22T015000p1100-8d11c6256324/backtest.json` (pseudo-OOS latest vintage, `as_of` 2026-10-22T01:50:00+11:00). Numbers below are copied from that file; do not edit by hand.
 
 ### headline_nsa_mom (sub_period=full)
 
