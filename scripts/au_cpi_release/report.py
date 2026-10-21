@@ -169,6 +169,22 @@ def render_nowcast(result: dict[str, Any]) -> str:
         f"Proxy bridge (not selected): value {_fmt(bridge.get('value') if isinstance(bridge, dict) else None, 4)} "
         f"overlap n={gap.get('n_overlap')} mean_abs_gap={_fmt(gap.get('mean_abs_gap_pp'), 4)}"
     )
+    quarterly = (result.get("targets") or {}).get("trimmed_mean_quarterly_legacy_qoq") or {}
+    conflict = quarterly.get("shadow_conflicts") or {}
+    if conflict:
+        lines.append("Quarterly shadow conflict")
+        lines.append(str(conflict.get("sentence")))
+        lines.append(
+            f"bridge value {_fmt(conflict.get('value'), 4)} overlap_n={conflict.get('overlap_n')} "
+            f"pseudo_oos_n={conflict.get('pseudo_oos_n')} MAE={_fmt(conflict.get('pseudo_oos_mae'), 4)} "
+            f"mean_gap_vs_legacy={_fmt(conflict.get('mean_gap_vs_legacy_pp'), 4)}"
+        )
+    diagnostic = quarterly.get("band68_2024_plus_diagnostic") or {}
+    if diagnostic:
+        lines.append(
+            f"2024+ persistence band (diagnostic, not used): n={diagnostic.get('n')} "
+            f"68% {_interval(diagnostic)} 90% {_interval(quarterly.get('band90_2024_plus_diagnostic'))}"
+        )
     lines.append("")
     lines.append("Leakage")
     leakage = result.get("leakage_checks") or {}

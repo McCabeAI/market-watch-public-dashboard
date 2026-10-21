@@ -423,6 +423,7 @@ def forecast_release(
             block = targets.get(target_id)
             if block is not None:
                 block.setdefault("caveats", []).append(caveat)
+    _attach_quarterly_shadow(targets, bundle, backtest)
     run_status = "ok"
     if any(block.get("status") == "blocked" for block in targets.values()):
         run_status = "blocked"
@@ -535,6 +536,102 @@ def forecast_release(
         ],
     }
     return result
+
+
+def _attach_quarterly_shadow(
+    targets: dict[str, Any],
+    bundle: dict[str, Any],
+    backtest: dict[str, Any],
+) -> None:
+    """Put the ineligible bridge and the 2024+ persistence band on the quarterly targets.
+
+    Neither replaces the selected persistence forecast or the full-regime band.
+    """
+    qoq_id = "trimmed_mean_quarterly_legacy_qoq"
+    yoy_id = YOY_OF[qoq_id]
+    qoq = targets.get(qoq_id)
+    if not qoq or qoq.get("status") == "blocked" or qoq.get("value") is None:
+        return
+    gap = backtest.get("quarterly_bridge_gap_actual_months") or {}
+    mae_row = next(
+        (
+            row
+            for row in backtest.get("metrics") or []
+            if row.get("target") == qoq_id
+            and row.get("model") == PROXY_BRIDGE_MODEL
+            and row.get("sub_period") == "full"
+        ),
+        None,
+    )
+    bridge = (bundle.get(qoq_id) or {}).get("details") or {}
+    pseudo_n = None if mae_row is None else mae_row.get("n")
+    conflicts = {
+        "model": PROXY_BRIDGE_MODEL,
+        "value": bridge.get("proxy_bridge_value"),
+        "overlap_n": gap.get("n_overlap"),
+        "pseudo_oos_n": pseudo_n,
+        "pseudo_oos_mae": None if mae_row is None else mae_row.get("mae"),
+        "mean_gap_vs_legacy_pp": gap.get("mean_gap_pp"),
+        "mean_abs_gap_vs_legacy_pp": gap.get("mean_abs_gap_pp"),
+        "max_abs_gap_vs_legacy_pp": gap.get("max_abs_gap_pp"),
+        "ineligible": True,
+        "ineligible_reason": "pre_registered_n_below_12",
+        "sentence": (
+            f"{PROXY_BRIDGE_MODEL} is ineligible under the pre-registered n>=12 rule "
+            f"(pseudo-OOS n={pseudo_n}). It is a different statistic from the legacy quarterly "
+            "trimmed mean and is not the forecast. Relative to persistence it signals upside risk."
+        ),
+    }
+    recent_errors = [
+        float(row["error"])
+        for row in backtest.get("errors") or []
+        if row.get("target") == qoq_id
+        and row.get("model") == "persistence"
+        and row.get("label") == PSEUDO_OOS_LABEL
+        and "-Q" in str(row.get("period"))
+        and str(row.get("period")) >= "2024-Q1"
+    ]
+    note = (
+        "Quantiles of legacy quarterly trimmed-mean persistence errors in 2024+ only. "
+        "Diagnostic. Not the pre-registered full-regime band and not used for the forecast."
+    )
+    qoq_68, qoq_90 = _band_pair(recent_errors, float(qoq["value"]))
+    for band, probability in ((qoq_68, 0.68), (qoq_90, 0.90)):
+        band["label"] = "diagnostic_not_used"
+        band["used"] = False
+        band["sub_period"] = "2024_plus"
+        band["model"] = "persistence"
+        band["n"] = len(recent_errors)
+        band["probability"] = probability
+        band["note"] = note
+    qoq["shadow_conflicts"] = conflicts
+    qoq["band68_2024_plus_diagnostic"] = qoq_68
+    qoq["band90_2024_plus_diagnostic"] = qoq_90
+    yoy = targets.get(yoy_id)
+    if not yoy or yoy.get("value") is None or yoy.get("index_previous") is None or yoy.get("index_lag") is None:
+        return
+    yoy["shadow_conflicts"] = conflicts
+    for source, key in ((qoq_68, "band68_2024_plus_diagnostic"), (qoq_90, "band90_2024_plus_diagnostic")):
+        half = (source.get("quantile") or {}).get("half_width_pp")
+        propagated = None
+        if half is not None:
+            propagated = propagate_yoy_band(
+                index_previous=float(yoy["index_previous"]),
+                index_lag=float(yoy["index_lag"]),
+                change_percent=float(qoq["value"]),
+                half_width_pp=float(half),
+            )
+        yoy[key] = {
+            "label": "diagnostic_not_used",
+            "used": False,
+            "sub_period": "2024_plus",
+            "model": "persistence",
+            "n": len(recent_errors),
+            "note": note,
+            "quantile": source.get("quantile"),
+            "interval": propagated,
+            "propagated_from_qoq_diagnostic_band": True,
+        }
 
 
 def _lag_index(frame: Any, target: str, release: str, quarter: str | None) -> tuple[float | None, float | None, str | None]:
