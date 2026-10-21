@@ -1073,6 +1073,10 @@ def build_projection(root: Path | None = None, *, as_of: str | None = None) -> d
                 catalog={"series": list(catalog_by_id.values()), "status_vocabulary": []},
                 observations_dir=root / "data" / "macro_ingestion" / "observations",
             )
+        if country == "CA":
+            from scripts.prima_pressure.presentation import build_presentation
+
+            country_payload["prima_pressure"] = build_presentation(root)
         countries_out[country] = country_payload
 
     if as_of is None:
