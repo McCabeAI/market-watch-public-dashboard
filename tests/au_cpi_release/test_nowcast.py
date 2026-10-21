@@ -24,7 +24,7 @@ from scripts.au_cpi_release.models import (
 )
 from scripts.au_cpi_release.sources.acquire import load_snapshot
 from scripts.au_cpi_release.trim import expenditure_class_ids, load_structure
-from scripts.au_cpi_release.uncertainty import select_model
+from scripts.au_cpi_release.uncertainty import select_common_sample, select_model
 
 FIXTURE = (
     Path(__file__).resolve().parents[2]
@@ -130,6 +130,84 @@ class SelectionTests(unittest.TestCase):
         ]
         chosen = select_model(rows, "headline_nsa_mom")
         self.assertEqual(chosen["model"], "seasonal_naive")
+
+    def _error(self, target: str, model: str, period: str, error: float, *, eligible: bool = True) -> dict:
+        return {
+            "label": "pseudo_oos_latest_vintage",
+            "target": target,
+            "model": model,
+            "period": period,
+            "error": error,
+            "eligible": eligible,
+        }
+
+    def test_common_sample_falls_back_when_the_intersection_is_below_12(self) -> None:
+        target = "headline_sa_mom"
+        errors = [self._error(target, "persistence", f"p{i:02d}", 0.30) for i in range(20)]
+        errors += [self._error(target, "mean_3", f"p{i:02d}", 0.01) for i in range(12, 28)]
+        metrics = [
+            self._row(target, "persistence", 20, 0.30),
+            self._row(target, "mean_3", 16, 0.01),
+        ]
+        chosen = select_common_sample(errors, metrics, target)
+        self.assertEqual(chosen["model"], "persistence")
+        self.assertEqual(chosen["reason"], "common_sample_below_12")
+        self.assertEqual(chosen["common_n"], 8)
+        self.assertEqual(len(chosen["candidates_common_sample"]), 2)
+
+    def test_common_sample_can_keep_the_baseline_when_unequal_samples_would_not(self) -> None:
+        target = "headline_sa_mom"
+        errors = [self._error(target, "persistence", f"c{i:02d}", 0.10) for i in range(12)]
+        errors += [self._error(target, "persistence", f"e{i:02d}", 0.50) for i in range(8)]
+        errors += [self._error(target, "mean_3", f"c{i:02d}", 0.20) for i in range(12)]
+        metrics = [
+            self._row(target, "persistence", 20, 0.26),
+            self._row(target, "mean_3", 12, 0.20),
+        ]
+        legacy = select_model(metrics, target)
+        chosen = select_common_sample(errors, metrics, target)
+        self.assertEqual(legacy["model"], "mean_3")
+        self.assertEqual(chosen["model"], "persistence")
+        self.assertEqual(chosen["reason"], "baseline_has_lowest_common_sample_mae")
+        self.assertEqual(chosen["common_n"], 12)
+        self.assertAlmostEqual(chosen["mae"], 0.10)
+        self.assertTrue(chosen["candidates"])
+        self.assertTrue(all("mae" in row and "n" in row for row in chosen["candidates"]))
+
+    def test_common_sample_still_requires_a_0_02_improvement(self) -> None:
+        target = "headline_sa_mom"
+        errors = [self._error(target, "persistence", f"c{i:02d}", 0.30) for i in range(12)]
+        errors += [self._error(target, "mean_3", f"c{i:02d}", 0.29) for i in range(12)]
+        metrics = [
+            self._row(target, "persistence", 12, 0.30),
+            self._row(target, "mean_3", 12, 0.29),
+        ]
+        chosen = select_common_sample(errors, metrics, target)
+        self.assertEqual(chosen["model"], "persistence")
+        self.assertEqual(chosen["reason"], "no_model_beats_baseline_by_0.02pp_on_common_sample")
+        clear = [
+            self._error(target, "persistence", f"c{i:02d}", 0.30) for i in range(12)
+        ] + [self._error(target, "mean_3", f"c{i:02d}", 0.10) for i in range(12)]
+        winner = select_common_sample(clear, metrics, target)
+        self.assertEqual(winner["model"], "mean_3")
+        self.assertGreaterEqual(winner["improvement_vs_baseline_pp"], 0.02)
+
+    def test_ineligible_bridge_does_not_shrink_the_common_sample(self) -> None:
+        target = "trimmed_mean_quarterly_legacy_qoq"
+        errors = [self._error(target, "persistence", f"q{i:02d}", 0.20) for i in range(12)]
+        errors += [self._error(target, "mean_4", f"q{i:02d}", 0.20) for i in range(12)]
+        errors += [
+            self._error(target, "proxy_bridge_non_equivalent", f"z{i:02d}", 0.01, eligible=False) for i in range(8)
+        ]
+        metrics = [
+            self._row(target, "persistence", 12, 0.20),
+            self._row(target, "mean_4", 12, 0.20),
+            self._row(target, "proxy_bridge_non_equivalent", 8, 0.01, eligible=False),
+        ]
+        chosen = select_common_sample(errors, metrics, target)
+        self.assertEqual(chosen["common_n"], 12)
+        self.assertNotIn("proxy_bridge_non_equivalent", chosen["common_sample_models"])
+        self.assertEqual(chosen["ineligible"][0]["model"], "proxy_bridge_non_equivalent")
 
     def test_proxy_bridge_is_not_selectable(self) -> None:
         rows = [
@@ -248,6 +326,23 @@ class EngineTests(unittest.TestCase):
             snapshot_dir=FIXTURE.parent,
         )
         self.assertEqual(clean["status"], "ok")
+        coherence = clean["diagnostics"]["headline_coherence"]
+        for key in (
+            "implied_sa_mom_inside_selected_nsa_model",
+            "nsa_mom_implied_by_selected_sa_forecast",
+            "mom_gap_pp",
+            "yoy_gap_pp",
+        ):
+            self.assertIn(key, coherence)
+        self.assertTrue(coherence["values_not_overridden"])
+        self.assertEqual(coherence["selected_nsa_mom"], clean["targets"]["headline_nsa_mom"]["value"])
+        self.assertEqual(coherence["selected_sa_mom"], clean["targets"]["headline_sa_mom"]["value"])
+        self.assertIn("selection_common_sample", clean)
+        self.assertIn("selection_unequal_sample_legacy", clean)
+        self.assertEqual(
+            clean["selection_common_sample"]["headline_nsa_mom"]["model"],
+            clean["targets"]["headline_nsa_mom"]["method"],
+        )
         for target, block in clean["targets"].items():
             other = dirty["targets"][target]
             self.assertEqual(block["value"], other["value"])
