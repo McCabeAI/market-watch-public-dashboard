@@ -41,7 +41,18 @@
           "thesis": { "type": ["string", "null"] },
           "invalidation": { "type": ["string", "null"] },
           "conviction": { "type": ["integer", "null"], "minimum": 0, "maximum": 100 },
-          "note": { "type": ["string", "null"] }
+          "note": { "type": ["string", "null"] },
+          "lifecycle": {
+            "type": "object",
+            "description": "Required on OPEN and HEDGE. Review clock, not a take-profit.",
+            "properties": {
+              "framing": { "enum": ["tactical", "swing", "structural"] },
+              "horizon_days": { "type": "integer", "minimum": 1, "maximum": 366 },
+              "realization_logic": { "type": "string" },
+              "catalyst_logic": { "type": "string" },
+              "catalyst_by": { "type": ["string", "null"] }
+            }
+          }
         }
       }
     },
@@ -51,6 +62,21 @@
     "rationale": { "type": ["string", "null"] },
     "synthesis": { "type": ["string", "null"] },
     "memory_context_sha256": { "type": ["string", "null"], "minLength": 32 },
+    "harvest_reviews": {
+      "type": "array",
+      "description": "Required only to keep a triggered position at full size. Not an order.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "position_id": { "type": ["string", "null"] },
+          "trade_id": { "type": ["string", "null"] },
+          "thesis_still_valid": { "type": "boolean" },
+          "remaining_edge": { "type": "boolean" },
+          "would_initiate_flat": { "enum": ["yes", "no"] },
+          "remaining_edge_reason": { "type": "string" }
+        }
+      }
+    },
     "postmortems": {
       "type": "array",
       "items": {

@@ -1,0 +1,2367 @@
+{
+  "schema_version": 1,
+  "type": "OVERNIGHT_SCHEDULED_OUTPUT",
+  "schedule_id": "market-watch-weekday-0205",
+  "launch_id": "mwl-20261021T122207Z-138d9e80",
+  "overnight_run_id": "overnight-20261021",
+  "review_id": "review-001",
+  "base_packet_sha256": "6d9c285e3346e5e14f98d8eb29c85386e771764db4d4a5cf735253474766ab93",
+  "agent_packet": {
+    "type": "OVERNIGHT_AGENT_EVIDENCE_PACKET",
+    "overnight_run_id": "overnight-20261021",
+    "review_id": "review-001",
+    "base_packet_sha256": "6d9c285e3346e5e14f98d8eb29c85386e771764db4d4a5cf735253474766ab93",
+    "base_evidence_cutoff": "2026-10-21T08:22:07.869994-04:00",
+    "evidence_cutoff": "2026-10-21T08:22:07.869994-04:00",
+    "competition": {
+      "flat_book_pnl": "A flat seat has zero net financing/competition P&L: paper NAV earning SOFR is benchmarked at SOFR, so those flows cancel, and shocked-risk financing is zero.",
+      "funding_basis": "Official NY Fed SOFR ACT/360 is the zero-return competition benchmark, not free alpha. Every seat has $100m paper NAV that may be described as earning SOFR, but that capital is equally funded/benchmarked at SOFR so those flows cancel. Deployed shocked-risk capital pays the same official SOFR on trusted standard-shock risk capital: the absolute MTM loss from a 1% adverse spot move, a 100bp (1 percentage point) adverse outright rate move, or a 100bp adverse curve/RV spread move under the trusted duration-1 P&L convention. Equal risk capital receives equal financing treatment across asset classes. Notional is descriptive, not the funding base. A completely flat book \u2014 including no-trade-skeptic \u2014 therefore has zero net financing/competition P&L from SOFR cash or funding economics. Positive financing/carry alpha requires an explicit markable strategy that earns above SOFR or funds below SOFR. Weekends and holidays carry the last applicable published fixing until the next fixing. If official fixing history cannot be established, new funding accrual fails closed and prior canonical balances are preserved.",
+      "funding_convention": "ACT/360",
+      "funding_day_count": 360,
+      "funding_observation_date": "2026-10-20",
+      "funding_rate_annual": 0.0388,
+      "funding_source": "NY_FED",
+      "funding_source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr",
+      "instruction": "Do not optimize for gross notional or fill available capacity. Size risk from plausible adverse paths and historical excursions while staying inside the trusted risk-capital and drawdown limits. Flat cash at SOFR is the zero benchmark, not a source of alpha. The no-trade-skeptic must include a structured funding_view on every new risk or NO_TRADE thesis: the frozen official SOFR fixing, the relevant SR3 forward-curve view, its own assessment of whether realized funding will print higher, lower, or about the same as the curve, and the implication for remaining at the zero SOFR benchmark versus paying SOFR on shocked-risk capital.",
+      "metric": "net_pnl_after_funding",
+      "no_trade_allowed": true,
+      "objective": "Finish with the highest cumulative net paper P&L across the 14 standing seats.",
+      "risk_limits": {
+        "max_drawdown_usd": 5000000,
+        "paper_nav_usd": 100000000,
+        "risk_capital_limit_usd": 10000000,
+        "risk_capital_method": "mtm_standard_1pct_move"
+      }
+    },
+    "trade_permissions": {
+      "block_why": null,
+      "blocked_expressions": [],
+      "blocked_sources": [],
+      "countries": {
+        "AU": {
+          "eligible": false,
+          "gaps": [
+            "AU.Labor.employment",
+            "AU.Labor.unemployment",
+            "AU.Activity.business_surveys",
+            "AU.Activity.gdp_domestic_demand",
+            "AU.Consumer.confidence",
+            "AU.Consumer.income",
+            "AU.Consumer.retail",
+            "AU.Consumer.spending",
+            "AU.Inflation.headline",
+            "AU.Inflation.underlying",
+            "AU.Labor.wages"
+          ],
+          "scored_status": "partial"
+        },
+        "CA": {
+          "eligible": true,
+          "gaps": [
+            "CA.Consumer.confidence"
+          ],
+          "scored_status": "ok"
+        },
+        "EA": {
+          "eligible": true,
+          "gaps": [],
+          "scored_status": "ok"
+        },
+        "JP": {
+          "eligible": true,
+          "gaps": [
+            "JP.Activity.business_surveys"
+          ],
+          "scored_status": "partial"
+        },
+        "NZ": {
+          "eligible": false,
+          "gaps": [
+            "NZ.Activity.gdp_domestic_demand",
+            "NZ.Consumer.income",
+            "NZ.Consumer.retail",
+            "NZ.Consumer.spending",
+            "NZ.Labor.wages"
+          ],
+          "scored_status": "partial"
+        },
+        "US": {
+          "eligible": true,
+          "gaps": [],
+          "scored_status": "ok"
+        }
+      },
+      "coverage": "PARTIAL",
+      "eligible": true,
+      "expansion_rule": "country_and_expression_specific",
+      "hold_decisions_emitted": 0,
+      "partial_expressions": [
+        "activity:US",
+        "activity:CA",
+        "activity:AU",
+        "activity:NZ",
+        "activity:EA",
+        "activity:JP",
+        "macro:AU",
+        "macro:NZ"
+      ],
+      "quarantine_mode": "isolate",
+      "quarantine_reason": "unsupported_mark_source",
+      "quarantined_positions": [
+        {
+          "asset_class": "rates_rv",
+          "dependency": "NZ_rates",
+          "dependency_status": "unavailable",
+          "instrument": "NZ-US_10Y",
+          "live_marked": false,
+          "observation_date": null,
+          "pnl_available": false,
+          "position_id": "pm-pragmatist-3afafe53c6d7",
+          "quarantined": true,
+          "reason": "position 'NZ-US_10Y' is research-only and unmarkable on NZ_rates (unavailable); valuation unavailable, new risk blocked for this seat",
+          "reason_code": "unsupported_mark_source",
+          "scoring": false,
+          "seat": "pragmatist"
+        }
+      ],
+      "restricted_seats": [
+        "pragmatist"
+      ],
+      "seat_risk": {
+        "pragmatist": "unavailable_new_risk"
+      },
+      "source_health": [
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "The read operation timed out",
+          "observation_period": "2026-Q2",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "series_id": "US.Activity.gdp_domestic_demand"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "HTTP 404",
+          "observation_period": "2026-08",
+          "retrieved_at": "2026-09-21T16:30:00Z",
+          "series_id": "US.Activity.manufacturing_surveys"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "HTTP 404",
+          "observation_period": "2026-08",
+          "retrieved_at": "2026-09-21T16:30:00Z",
+          "series_id": "US.Activity.services_surveys"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "The read operation timed out",
+          "observation_period": "2026-07",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "series_id": "US.Consumer.confidence"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "The read operation timed out",
+          "observation_period": "2026-07",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "series_id": "US.Consumer.income"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "The read operation timed out",
+          "observation_period": "2026-08",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "series_id": "US.Consumer.retail"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "The read operation timed out",
+          "observation_period": "2026-07",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "series_id": "US.Consumer.spending"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "The read operation timed out",
+          "observation_period": "2026-07",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "series_id": "US.Inflation.core_pce"
+        }
+      ],
+      "synthetic_holds": false,
+      "trade_eligible_countries": [
+        "US",
+        "CA",
+        "EA",
+        "JP"
+      ]
+    },
+    "cross_assets": {
+      "generated_at": null,
+      "marks": [
+        {
+          "as_of": "2026-10-20",
+          "id": "WTI",
+          "label": "WTI futures",
+          "source": "Yahoo Finance",
+          "status": "ok",
+          "symbol": "CL=F",
+          "unit": "USD/bbl",
+          "value": 101.79000091552734
+        },
+        {
+          "as_of": "2026-10-20",
+          "id": "BRENT",
+          "label": "Brent futures",
+          "source": "Yahoo Finance",
+          "status": "ok",
+          "symbol": "BZ=F",
+          "unit": "USD/bbl",
+          "value": 108.79000091552734
+        },
+        {
+          "as_of": "2026-10-20",
+          "id": "GOLD",
+          "label": "Gold futures",
+          "source": "Yahoo Finance",
+          "status": "ok",
+          "symbol": "GC=F",
+          "unit": "USD/oz",
+          "value": 4142.60009765625
+        },
+        {
+          "as_of": "2026-10-20",
+          "id": "SP500",
+          "label": "S&P 500",
+          "source": "FRED / original series publisher",
+          "status": "ok",
+          "symbol": "SP500",
+          "unit": "index",
+          "value": 7712.57
+        },
+        {
+          "as_of": "2026-10-20",
+          "id": "NASDAQ",
+          "label": "Nasdaq Composite",
+          "source": "FRED / original series publisher",
+          "status": "ok",
+          "symbol": "NASDAQCOM",
+          "unit": "index",
+          "value": 26424.82
+        },
+        {
+          "as_of": "2026-10-20",
+          "id": "DOW",
+          "label": "Dow Jones",
+          "source": "FRED / original series publisher",
+          "status": "ok",
+          "symbol": "DJIA",
+          "unit": "index",
+          "value": 52495.88
+        },
+        {
+          "as_of": "2026-10-20",
+          "id": "RUSSELL",
+          "label": "Russell 2000",
+          "source": "Yahoo Finance",
+          "status": "ok",
+          "symbol": "^RUT",
+          "unit": "index",
+          "value": 2773.419921875
+        },
+        {
+          "as_of": "2026-10-20",
+          "id": "COPPER",
+          "label": "Copper futures",
+          "source": "Yahoo Finance",
+          "status": "ok",
+          "symbol": "HG=F",
+          "unit": "USD/lb",
+          "value": 6.566500186920166
+        },
+        {
+          "as_of": "2026-10-19",
+          "id": "VIX",
+          "label": "VIX",
+          "source": "FRED / original series publisher",
+          "status": "ok",
+          "symbol": "VIXCLS",
+          "unit": "points",
+          "value": 18.44
+        }
+      ],
+      "provenance": "frozen_market_state",
+      "status": "ok"
+    },
+    "desk": {
+      "cash": {
+        "SOFR": 3.88,
+        "CORRA": 2.26,
+        "AONIA": 4.6,
+        "ESTR": 2.44,
+        "TONA": 1.227
+      },
+      "fx": {
+        "EURUSD": 1.1215,
+        "USDJPY": 158.12750780205084,
+        "GBPUSD": 1.3346741562336364,
+        "AUDUSD": 0.6984927752864972,
+        "USDCAD": 1.405082478823005,
+        "USDCHF": 0.8236290682122158,
+        "NZDUSD": 0.5679056106947539,
+        "EURJPY": 177.34,
+        "EURGBP": 0.84028,
+        "EURCAD": 1.5758,
+        "CADJPY": 112.53966239370479,
+        "AUDJPY": 110.45092177379173,
+        "AUDCAD": 0.9814399601395118,
+        "GBPJPY": 211.04869805302994,
+        "EURAUD": 1.6056,
+        "EURCHF": 0.9237
+      },
+      "cross_assets": {
+        "WTI": 101.79000091552734,
+        "BRENT": 108.79000091552734,
+        "GOLD": 4142.60009765625,
+        "SP500": 7712.57,
+        "NASDAQ": 26424.82,
+        "DOW": 52495.88,
+        "RUSSELL": 2773.419921875,
+        "COPPER": 6.566500186920166,
+        "VIX": 18.44
+      },
+      "yields": {
+        "AU": {
+          "10Y": 5.314,
+          "2Y": 4.919,
+          "5Y": 4.976
+        },
+        "CA": {
+          "10Y": 3.93,
+          "2Y": 3.33,
+          "5Y": 3.64,
+          "LONG": 4.25
+        },
+        "EA": {
+          "10Y": 3.41,
+          "2Y": 3.09,
+          "30Y": 3.77,
+          "5Y": 3.21
+        },
+        "JP": {
+          "10Y": 2.927,
+          "2Y": 1.909,
+          "30Y": 3.992,
+          "5Y": 2.313
+        },
+        "NZ": {
+          "10Y": 5.06,
+          "2Y": 3.94,
+          "5Y": 4.52
+        },
+        "US": {
+          "10Y": 5.12,
+          "2Y": 4.79,
+          "30Y": 5.42,
+          "5Y": 4.94
+        }
+      },
+      "eligibility": "The United States, Canada, the euro area, and Japan are eligible for new risk. Australia is restricted for new risk because Australian labor, inflation, retail, spending, confidence and domestic-demand releases could not be verified. New Zealand is restricted for new risk because household income, retail, spending, wages and domestic-demand releases could not be verified, and official New Zealand government yields are unavailable."
+    },
+    "funding_context": {
+      "authority": "Official NY Fed SOFR is the realized funding-rate authority. SR3 is forward context only.",
+      "sofr": {
+        "percent_rate": 3.88,
+        "effective_date": "2026-10-20",
+        "convention": "ACT/360",
+        "source": "NY_FED"
+      },
+      "sr3": [
+        {
+          "expiry": "2026-12",
+          "implied_rate": 4.245
+        },
+        {
+          "expiry": "2027-03",
+          "implied_rate": 4.525
+        },
+        {
+          "expiry": "2027-06",
+          "implied_rate": 4.685
+        },
+        {
+          "expiry": "2027-09",
+          "implied_rate": 4.74
+        }
+      ]
+    },
+    "canada_prima_pressure": {
+      "change_since_last_mpr": "Versus the July 2026 MPR conditioning assumptions as of 2026-07-09, brent_end_2027_vs_prose is +16.58 USD per barrel versus 70.0. Observable monitoring only; not a reproduction of the Bank of Canada's Prima model.",
+      "conditioning_date": "2026-07-09",
+      "confidence": "high",
+      "coverage": 1.0,
+      "direction": "RISING",
+      "disclaimer": "Deterministic Market Watch proxy for observable oil-curve persistence and inflation-propagation channels. It is not a reconstruction or reproduction of the Bank of Canada's proprietary Prima model.",
+      "front_shock_classification": "parallel_upward_repricing",
+      "largest_drivers": [
+        "Brent last-day 2027-12 1m change +9.2 percent",
+        "Brent last-day 2028-12 1m change +6.2 percent",
+        "IPPI ex-energy mom +0.84 percent"
+      ],
+      "mpr_status": "partial",
+      "staleness": "producer inputs fresh; oil curve fresh",
+      "strength": "high",
+      "subcomponent_directions": {
+        "consumer_price_breadth": "RISING",
+        "demand_pass_through_constraint": "RISING",
+        "imported_pressure": "RISING",
+        "production_network_pressure": "RISING",
+        "shock_persistence": "RISING"
+      },
+      "title": "Canada Prima-pressure proxy"
+    },
+    "research_supplement": {
+      "summary": "Energy risk stays front and center as Hormuz attacks target ship engine rooms, leaving oil buffers uncomfortably thin even as LNG transits rebound. Brent sits near 109 and WTI above 101, feeding a rising Canadian prima-pressure read alongside firm IPPI ex-energy. U.S. rates are mixed: SOFR is 3.88%, the 10-year is 5.12% after a modest daily dip tied to soft housing, yet the policy debate still allows for more tightening. Treasury supply continues to lean on selective buyers with yields recently at multi-decade highs. Euro-area stress shows in a 5% French 10-year; UK CPI at 3.5% keeps hike talk alive while the ECB sounds in no hurry. Risk assets are resilient\u2014S&P 7712, Nasdaq 26425, gold 4142\u2014with credit headlines around CoreWeave and AI capex adding an inflation undertone. BoJ follow-through supports a call-rate path near 1.25% from late September. Australian labor, inflation, retail, spending, confidence and domestic-demand releases could not be verified, so new Australian risk stays closed; New Zealand new risk is also closed.",
+      "news": [
+        {
+          "headline": "Iran Strikes More Ship Engine Rooms in Ramp-Up of Hormuz Attacks",
+          "summary": "Iranian attacks in the Persian Gulf are striking more ships and causing more severe damage than earlier in the conflict, bringing fresh risks to energy flows from the region.",
+          "published_at": "2026-10-20T01:31:00-04:00"
+        },
+        {
+          "headline": "ECB in No Rush to Act Amid Opposing Economic Forces, Kazaks Says",
+          "summary": "The ECB can take time analyzing inflation dynamics shaped by opposing global forces.",
+          "published_at": "2026-10-14T20:59:00-04:00"
+        },
+        {
+          "headline": "Global Oil Supply Buffer Running 'Scarily Thin,' Aramco CEO Says",
+          "summary": "Stockpiles that cushion supply shocks are scarily thin unless Hormuz reopens."
+        },
+        {
+          "headline": "LNG Trade Through Hormuz Extends Rebound Despite Shipping Risks",
+          "summary": "LNG shipments through Hormuz extended a rebound that began in September."
+        },
+        {
+          "headline": "The Treasury Market\u2019s New Power Brokers Are Pickier Than Ever",
+          "summary": "Beset by a selloff in Treasuries that\u2019s sent benchmark yields to multidecade highs, the US government is finding itself increasingly dependent on investors who only buy if the price is right.",
+          "published_at": "2026-10-20T23:16:00-04:00"
+        },
+        {
+          "headline": "China uses crude stockpiles, but rising oil imports may curtail draws",
+          "summary": "Headline-only public metadata; article body was not retrieved.",
+          "published_at": "2026-10-20T20:31:09.015000-04:00"
+        },
+        {
+          "headline": "This Janus Henderson fund manager owns CoreWeave debt \u2014 here's why he's sticking with it",
+          "summary": "Headline-only public metadata; article body was not retrieved.",
+          "published_at": "2026-10-20T20:12:44-04:00"
+        },
+        {
+          "headline": "Housing is flashing warning signs just as the Fed weighs more interest rate hikes",
+          "summary": "Headline-only public metadata; article body was not retrieved.",
+          "published_at": "2026-10-21T07:20:58-04:00"
+        },
+        {
+          "headline": "French 10-year bond yield hits 5% for first time since 2002 amid unrest",
+          "summary": "Headline-only public metadata; article body was not retrieved.",
+          "published_at": "2026-10-21T06:40:01-04:00"
+        },
+        {
+          "headline": "UK inflation jumps to 3.5% \u2014 cementing rate hike expectations",
+          "summary": "Headline-only public metadata; article body was not retrieved.",
+          "published_at": "2026-10-21T03:50:10-04:00"
+        },
+        {
+          "headline": "Russia Frees US Teacher After Trump Eases Sanctions",
+          "summary": "Russia freed an American teacher four years after he was convicted of fighting for Ukraine following a decison by President Donald Trump to ease sanctions on the country.",
+          "published_at": "2026-10-21T00:28:00-04:00"
+        },
+        {
+          "headline": "BlackRock\u2019s Fink Says Slow AI Buildout Would Spur Inflation",
+          "summary": "BlackRock Inc. Chief Executive Officer Larry Fink warned that delays in building data centers could raise computing costs and threaten economic growth as demand for artificial intelligence accelerates ...",
+          "published_at": "2026-10-20T20:12:00-04:00"
+        },
+        {
+          "headline": "CoreWeave debt selloff poses limited risk to global banks, J.P. Morgan says",
+          "summary": "J.P. Morgan argues the CoreWeave debt selloff poses limited risk to global banks.",
+          "published_at": "2026-10-19T20:30:00-04:00"
+        },
+        {
+          "headline": "CNBC Daily Open: Tech investors buy the dip \u2014 but debt remains a concern",
+          "summary": "Nasdaq rallied while tech investors bought the dip, but debt remains a concern; CoreWeave is still off menu and Oracle bonds trade near junk.",
+          "published_at": "2026-10-19T14:11:00-04:00"
+        },
+        {
+          "headline": "10-year Treasury yield moves lower after weak housing data",
+          "summary": "Headline-only public metadata; article body was not retrieved.",
+          "published_at": "2026-10-20T16:03:14-04:00"
+        },
+        {
+          "headline": "Trading Day: Oil reversal lifts spirits",
+          "summary": "US stocks rose on Tuesday, shrugging off global weakness earlier in the day as oil prices pulled back sharply from six-month highs, a reversal that also pushed longer-dated Treasury yields lower.",
+          "published_at": "2026-10-20T10:00:00-04:00"
+        },
+        {
+          "headline": "China Oil Comeback Loses Steam as Iran War Drags On",
+          "summary": "Chinese oil demand recovery is faltering as the Middle East conflict and limited Iranian supply keep crude high."
+        },
+        {
+          "headline": "Saudi crude oil exports hit five-month high in August, data shows",
+          "summary": "Headline-only public metadata; article body was not retrieved.",
+          "published_at": "2026-10-21T08:17:24.911000-04:00"
+        },
+        {
+          "headline": "Oil prices climb as traders assess Middle East developments",
+          "summary": "Headline-only public metadata; article body was not retrieved.",
+          "published_at": "2026-10-21T03:54:59-04:00"
+        },
+        {
+          "headline": "Key Mideast Oil Benchmark Hits 3-Month Low on Resilient Exports",
+          "summary": "A key benchmark for Middle East crude fell to its lowest in nearly three months, an indication of the resilience of the region\u2019s exports despite intensifying Iranian attacks on shipping.",
+          "published_at": "2026-10-20T18:49:00-04:00"
+        },
+        {
+          "headline": "Fed to skip October but raise rates again in December, nearly all economists say",
+          "summary": "Survey coverage suggests economists expect the Fed to skip October but raise rates again in December.",
+          "published_at": "2026-10-20T08:43:23.682000-04:00"
+        },
+        {
+          "headline": "TSX falls at open on weakness in miners, persistent inflation",
+          "summary": "Canada\u2019s TSX fell at the open on weakness in miners and persistent inflation concerns.",
+          "published_at": "2026-10-20T06:27:22.885000-04:00"
+        },
+        {
+          "headline": "ECB\u2019s Rehn Says French Spread to Germany Has Widened Somewhat",
+          "summary": "French-German spreads have widened from global and country-specific factors.",
+          "published_at": "2026-10-19T23:44:00-04:00"
+        },
+        {
+          "headline": "Markets' squeal is music to Fed ears \u2014 but still too faint",
+          "summary": "Recent stocks and bonds selloff amounts to some tightening, but it is still faint versus the Fed\u2019s work.",
+          "published_at": "2026-10-19T23:32:00-04:00"
+        }
+      ],
+      "central_bank_research": [
+        {
+          "headline": "Fed Vice Chair Jefferson: discount window modernization supports Treasury and repo market functioning",
+          "summary": "22 September remarks on discount window upgrades and quarter-end window use; no funds-rate path signal."
+        },
+        {
+          "headline": "NY Fed SOMA Manager Perli: reserves ample; overnight rates near IORB; RMPs cut to zero",
+          "summary": "22 September speech highlighting ample reserves, overnight rates near IORB, and reduction of RMPs to zero."
+        },
+        {
+          "headline": "BoJ September hike implementation: ~1.25% call-rate target effective 24 September",
+          "summary": "Basic loan rate set at 1.5% with call-rate target near 1.25% effective 24 September."
+        }
+      ],
+      "sources": [
+        {
+          "discovery_surface": null,
+          "distribution_weight": "standard",
+          "headline": "Iran Strikes More Ship Engine Rooms in Ramp-Up of Hormuz Attacks",
+          "published_at": "2026-10-20T01:31:00-04:00",
+          "snippet": "Iranian attacks in the Persian Gulf are striking more ships and causing more severe damage than earlier in the conflict, bringing fresh risks to energy flows from the region.",
+          "source_name": null,
+          "url": null
+        },
+        {
+          "discovery_surface": null,
+          "distribution_weight": "standard",
+          "headline": "ECB in No Rush to Act Amid Opposing Economic Forces, Kazaks Says",
+          "published_at": "2026-10-14T20:59:00-04:00",
+          "snippet": "The ECB can take time analyzing inflation dynamics shaped by opposing global forces.",
+          "source_name": null,
+          "url": null
+        },
+        {
+          "discovery_surface": null,
+          "distribution_weight": "standard",
+          "headline": "Global Oil Supply Buffer Running 'Scarily Thin,' Aramco CEO Says",
+          "published_at": null,
+          "snippet": "Stockpiles that cushion supply shocks are scarily thin unless Hormuz reopens.",
+          "source_name": null,
+          "url": null
+        },
+        {
+          "discovery_surface": null,
+          "distribution_weight": "standard",
+          "headline": "LNG Trade Through Hormuz Extends Rebound Despite Shipping Risks",
+          "published_at": null,
+          "snippet": "LNG shipments through Hormuz extended a rebound that began in September.",
+          "source_name": null,
+          "url": null
+        },
+        {
+          "discovery_surface": "https://www.bing.com/news/search?q=site%3Abloomberg.com%20%28Federal%20Reserve%20OR%20FOMC%20OR%20inflation%20OR%20CPI%20OR%20payrolls%20OR%20Treasury%20OR%20yields%20OR%20oil%20OR%20Brent%20OR%20crude%20OR%20Hormuz%20OR%20OPEC%20OR%20FX%20OR%20dollar%20OR%20tariff%20OR%20sanctions%20OR%20%22central%20bank%22%20OR%20RBA%20OR%20%22Bank%20of%20Canada%22%20OR%20RBNZ%20OR%20ECB%20OR%20%22Bank%20of%20Japan%22%29&format=rss&qft=interval%3d%227%22",
+          "distribution_weight": "high",
+          "headline": "The Treasury Market\u2019s New Power Brokers Are Pickier Than Ever",
+          "published_at": "2026-10-20T23:16:00-04:00",
+          "snippet": "Beset by a selloff in Treasuries that\u2019s sent benchmark yields to multidecade highs, the US government is finding itself increasingly dependent on investors who only buy if the price is right.",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-10-21/the-treasury-market-s-new-power-brokers-are-pickier-than-ever"
+        },
+        {
+          "discovery_surface": "https://www.reuters.com/arc/outboundfeeds/news-sitemap/?outputType=xml",
+          "distribution_weight": "standard",
+          "headline": "China uses crude stockpiles, but rising oil imports may curtail draws",
+          "published_at": "2026-10-20T20:31:09.015000-04:00",
+          "snippet": "Headline-only public metadata; article body was not retrieved.",
+          "source_name": "Reuters",
+          "url": "https://www.reuters.com/commentary/reuters-open-interest/china-uses-crude-stockpiles-rising-oil-imports-may-curtail-draws-2026-10-21/"
+        },
+        {
+          "discovery_surface": "https://www.cnbc.com/sitemap_news.xml",
+          "distribution_weight": "standard",
+          "headline": "This Janus Henderson fund manager owns CoreWeave debt \u2014 here's why he's sticking with it",
+          "published_at": "2026-10-20T20:12:44-04:00",
+          "snippet": "Headline-only public metadata; article body was not retrieved.",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/10/20/coreweave-debt-janus-henderson-lloyd.html"
+        },
+        {
+          "discovery_surface": "https://www.cnbc.com/sitemap_news.xml",
+          "distribution_weight": "standard",
+          "headline": "Housing is flashing warning signs just as the Fed weighs more interest rate hikes",
+          "published_at": "2026-10-21T07:20:58-04:00",
+          "snippet": "Headline-only public metadata; article body was not retrieved.",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/10/20/housing-mortgage-rates-real-estate-federal-reserve.html"
+        },
+        {
+          "discovery_surface": "https://www.cnbc.com/sitemap_news.xml",
+          "distribution_weight": "standard",
+          "headline": "French 10-year bond yield hits 5% for first time since 2002 amid unrest",
+          "published_at": "2026-10-21T06:40:01-04:00",
+          "snippet": "Headline-only public metadata; article body was not retrieved.",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/10/21/france-protests-bonds-debt.html"
+        },
+        {
+          "discovery_surface": "https://www.cnbc.com/sitemap_news.xml",
+          "distribution_weight": "standard",
+          "headline": "UK inflation jumps to 3.5% \u2014 cementing rate hike expectations",
+          "published_at": "2026-10-21T03:50:10-04:00",
+          "snippet": "Headline-only public metadata; article body was not retrieved.",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/10/21/inflation-uk-cpi-interest-rates.html"
+        },
+        {
+          "discovery_surface": "https://www.bing.com/news/search?q=site%3Abloomberg.com%20%28Federal%20Reserve%20OR%20FOMC%20OR%20inflation%20OR%20CPI%20OR%20payrolls%20OR%20Treasury%20OR%20yields%20OR%20oil%20OR%20Brent%20OR%20crude%20OR%20Hormuz%20OR%20OPEC%20OR%20FX%20OR%20dollar%20OR%20tariff%20OR%20sanctions%20OR%20%22central%20bank%22%20OR%20RBA%20OR%20%22Bank%20of%20Canada%22%20OR%20RBNZ%20OR%20ECB%20OR%20%22Bank%20of%20Japan%22%29&format=rss&qft=interval%3d%227%22",
+          "distribution_weight": "high",
+          "headline": "Russia Frees US Teacher After Trump Eases Sanctions",
+          "published_at": "2026-10-21T00:28:00-04:00",
+          "snippet": "Russia freed an American teacher four years after he was convicted of fighting for Ukraine following a decison by President Donald Trump to ease sanctions on the country.",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-10-21/russia-frees-us-teacher-during-witkoff-talks-after-trump-appeal"
+        },
+        {
+          "discovery_surface": "https://www.bing.com/news/search?q=site%3Abloomberg.com%20%28Federal%20Reserve%20OR%20FOMC%20OR%20inflation%20OR%20CPI%20OR%20payrolls%20OR%20Treasury%20OR%20yields%20OR%20oil%20OR%20Brent%20OR%20crude%20OR%20Hormuz%20OR%20OPEC%20OR%20FX%20OR%20dollar%20OR%20tariff%20OR%20sanctions%20OR%20%22central%20bank%22%20OR%20RBA%20OR%20%22Bank%20of%20Canada%22%20OR%20RBNZ%20OR%20ECB%20OR%20%22Bank%20of%20Japan%22%29&format=rss&qft=interval%3d%227%22",
+          "distribution_weight": "high",
+          "headline": "BlackRock\u2019s Fink Says Slow AI Buildout Would Spur Inflation",
+          "published_at": "2026-10-20T20:12:00-04:00",
+          "snippet": "BlackRock Inc. Chief Executive Officer Larry Fink warned that delays in building data centers could raise computing costs and threaten economic growth as demand for artificial intelligence accelerates ...",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-10-21/blackrock-s-fink-says-slow-data-center-buildout-is-inflationary"
+        },
+        {
+          "discovery_surface": null,
+          "distribution_weight": "standard",
+          "headline": "CoreWeave debt selloff poses limited risk to global banks, J.P. Morgan says",
+          "published_at": "2026-10-19T20:30:00-04:00",
+          "snippet": "J.P. Morgan argues the CoreWeave debt selloff poses limited risk to global banks.",
+          "source_name": null,
+          "url": null
+        },
+        {
+          "discovery_surface": null,
+          "distribution_weight": "standard",
+          "headline": "CNBC Daily Open: Tech investors buy the dip \u2014 but debt remains a concern",
+          "published_at": "2026-10-19T14:11:00-04:00",
+          "snippet": "Nasdaq rallied while tech investors bought the dip, but debt remains a concern; CoreWeave is still off menu and Oracle bonds trade near junk.",
+          "source_name": null,
+          "url": null
+        },
+        {
+          "discovery_surface": "https://www.cnbc.com/sitemap_news.xml",
+          "distribution_weight": "standard",
+          "headline": "10-year Treasury yield moves lower after weak housing data",
+          "published_at": "2026-10-20T16:03:14-04:00",
+          "snippet": "Headline-only public metadata; article body was not retrieved.",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/10/20/us-treasury-yields-investors-economy.html"
+        },
+        {
+          "discovery_surface": "https://www.bing.com/news/search?q=site%3Areuters.com%20%28%22private%20credit%22%20OR%20%22high-yield%22%20OR%20%22credit%20spread%22%20OR%20CLO%20OR%20%22funding%20stress%22%20OR%20CoreWeave%20OR%20CDS%20OR%20%22credit%20default%22%29&format=rss&qft=interval%3d%227%22",
+          "distribution_weight": "standard",
+          "headline": "Trading Day: Oil reversal lifts spirits",
+          "published_at": "2026-10-20T10:00:00-04:00",
+          "snippet": "US stocks rose on Tuesday, shrugging off global weakness earlier in the day as oil prices pulled back sharply from six-month highs, a reversal that also pushed longer-dated Treasury yields lower.",
+          "source_name": "Reuters",
+          "url": "https://www.reuters.com/commentary/reuters-open-interest/global-markets-trading-day-graphic-2026-10-20/"
+        },
+        {
+          "discovery_surface": null,
+          "distribution_weight": "standard",
+          "headline": "China Oil Comeback Loses Steam as Iran War Drags On",
+          "published_at": null,
+          "snippet": "Chinese oil demand recovery is faltering as the Middle East conflict and limited Iranian supply keep crude high.",
+          "source_name": null,
+          "url": null
+        },
+        {
+          "discovery_surface": "https://www.reuters.com/arc/outboundfeeds/news-sitemap/?outputType=xml",
+          "distribution_weight": "standard",
+          "headline": "Saudi crude oil exports hit five-month high in August, data shows",
+          "published_at": "2026-10-21T08:17:24.911000-04:00",
+          "snippet": "Headline-only public metadata; article body was not retrieved.",
+          "source_name": "Reuters",
+          "url": "https://www.reuters.com/business/energy/saudi-crude-oil-exports-hit-five-month-high-august-data-shows-2026-10-21/"
+        },
+        {
+          "discovery_surface": "https://www.cnbc.com/sitemap_news.xml",
+          "distribution_weight": "standard",
+          "headline": "Oil prices climb as traders assess Middle East developments",
+          "published_at": "2026-10-21T03:54:59-04:00",
+          "snippet": "Headline-only public metadata; article body was not retrieved.",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/10/21/oil-price-today-wti-brent-rise-on-middle-east-worries.html"
+        },
+        {
+          "discovery_surface": "https://www.bing.com/news/search?q=site%3Abloomberg.com%20%28Federal%20Reserve%20OR%20FOMC%20OR%20inflation%20OR%20CPI%20OR%20payrolls%20OR%20Treasury%20OR%20yields%20OR%20oil%20OR%20Brent%20OR%20crude%20OR%20Hormuz%20OR%20OPEC%20OR%20FX%20OR%20dollar%20OR%20tariff%20OR%20sanctions%20OR%20%22central%20bank%22%20OR%20RBA%20OR%20%22Bank%20of%20Canada%22%20OR%20RBNZ%20OR%20ECB%20OR%20%22Bank%20of%20Japan%22%29&format=rss&qft=interval%3d%227%22",
+          "distribution_weight": "high",
+          "headline": "Key Mideast Oil Benchmark Hits 3-Month Low on Resilient Exports",
+          "published_at": "2026-10-20T18:49:00-04:00",
+          "snippet": "A key benchmark for Middle East crude fell to its lowest in nearly three months, an indication of the resilience of the region\u2019s exports despite intensifying Iranian attacks on shipping.",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-10-21/key-mideast-oil-benchmark-hits-3-month-low-on-resilient-exports"
+        },
+        {
+          "discovery_surface": null,
+          "distribution_weight": "standard",
+          "headline": "Fed to skip October but raise rates again in December, nearly all economists say",
+          "published_at": "2026-10-20T08:43:23.682000-04:00",
+          "snippet": "Survey coverage suggests economists expect the Fed to skip October but raise rates again in December.",
+          "source_name": null,
+          "url": null
+        },
+        {
+          "discovery_surface": null,
+          "distribution_weight": "standard",
+          "headline": "TSX falls at open on weakness in miners, persistent inflation",
+          "published_at": "2026-10-20T06:27:22.885000-04:00",
+          "snippet": "Canada\u2019s TSX fell at the open on weakness in miners and persistent inflation concerns.",
+          "source_name": null,
+          "url": null
+        },
+        {
+          "discovery_surface": null,
+          "distribution_weight": "standard",
+          "headline": "ECB\u2019s Rehn Says French Spread to Germany Has Widened Somewhat",
+          "published_at": "2026-10-19T23:44:00-04:00",
+          "snippet": "French-German spreads have widened from global and country-specific factors.",
+          "source_name": null,
+          "url": null
+        },
+        {
+          "discovery_surface": null,
+          "distribution_weight": "standard",
+          "headline": "Markets' squeal is music to Fed ears \u2014 but still too faint",
+          "published_at": "2026-10-19T23:32:00-04:00",
+          "snippet": "Recent stocks and bonds selloff amounts to some tightening, but it is still faint versus the Fed\u2019s work.",
+          "source_name": null,
+          "url": null
+        }
+      ]
+    },
+    "learning_obligations": {
+      "manifest_sha256": "e6881ff3ca0544ce715ad12387dcb9df5b2e162a0c8424e21adcf3e48d9d780c",
+      "obligation_count": 3
+    },
+    "synthesis": {
+      "market_conclusion": "Sticky energy shock and uneven global inflation keep front-end hikes in play while U.S. duration trades a housing-led dip against still-elevated term premium.",
+      "developments": [
+        "Hormuz engine-room strikes and thin oil buffers; LNG flows recovering",
+        "Weak U.S. housing nudged the 10-year lower even as hike talk persists",
+        "French 10-year at 5%; UK CPI 3.5% lifts BOE hike expectations",
+        "ECB patience; CoreWeave stress with limited bank spill cited"
+      ],
+      "watch_next": [
+        "Further Hormuz/LNG and Brent path versus Canada inflation proxies",
+        "U.S. housing and labor follow-through for Fed and 2Y/10Y direction",
+        "UK and euro-area inflation prints versus ECB/BOE pricing"
+      ],
+      "desk_tensions": [
+        "dollar-king long USDCAD versus positioning-cynic short USDCAD",
+        "perma-bear long US 10-year versus trend-follower short US 10-year",
+        "SOFR Mar27 pay (perma-bull, catalyst-junkie) versus receive (mean-reverter)",
+        "CORRA Mar27 pay (perma-bull, rate-hawk) versus receive (rate-dove, swinger, pragmatist)"
+      ]
+    },
+    "packet_sha256": "f0f493aafb24e88247596c000992d11d2496da4bc04310be13aa1aea0605fca9"
+  },
+  "decisions": {
+    "dollar-king": {
+      "seat": "dollar-king",
+      "overnight_run_id": "overnight-20261021",
+      "review_id": "review-001",
+      "packet_sha256": "f0f493aafb24e88247596c000992d11d2496da4bc04310be13aa1aea0605fca9",
+      "evidence_cutoff": "2026-10-21T08:22:07.869994-04:00",
+      "memory_context_sha256": "9607f280bef264ecea9d055e272f6e776098be7aec3ac1adb3b52d5e151c7200",
+      "alerts": [],
+      "required_pitch": null,
+      "risk_put_on": null,
+      "conviction": 48,
+      "thesis": "United States yields still do the dollar's work: the two-year at 4.79, the ten-year at 5.12, and a SOFR strip that sits above the 3.88 fixing through next year. That is not a dollar-collapse tape, and the clean way to own it remains dollar spot rather than a cross. Dollar-Canada is the sleeve already on, but the Canadian leg has changed: crude is in three digits and Canada's relative impulse has turned higher, which is the mix that paid the loonie from the peak and gave back most of the win. The rate gap still supports a smaller long, not a full-size hold and not a fresh thirty-five million from flat.",
+      "invalidation": "The residual long is wrong if United States two-year yields lose their premium while oil stays in three digits and Canada's relative impulse remains higher, or if dollar-Canada trades back through the original entry area near 1.401 on that mix. Unknowns: intervention, Canadian policy reaction, and the next oil impulse; no stop or target is invented here.",
+      "expression_memo": {
+        "rates_candidate": null,
+        "spot_candidate": {
+          "instrument": "USDCAD",
+          "asset_class": "spot_fx",
+          "rationale": "USDCAD isolates the dollar versus CAD oil beta; EURUSD and USDJPY add extra regional residual."
+        },
+        "options_candidate": null,
+        "selected": "spot",
+        "rationale": "USD views belong in USD spot. Cut the winner and keep a USDCAD runner; do not rotate into EURUSD or USDJPY."
+      },
+      "actions": [
+        {
+          "action": "REDUCE",
+          "instrument": "USDCAD",
+          "asset_class": "spot_fx",
+          "side": "long",
+          "notional_usd": 20000000,
+          "position_id": "pos-5317bc96d4eb",
+          "rationale": "Cut twenty million and leave fifteen million. United States rate premium versus Canada is still the right dollar side, but three-digit oil and a rising Canadian impulse have already forced a large giveback from the peak, so full size is no longer a trade that would be initiated from flat. This keeps a residual dollar-spot expression and harvests the impaired Canadian sleeve.",
+          "reason": "Harvest the material winner after oil and Canada paid the loonie from the peak; residual rate gap does not justify full size.",
+          "expression_memo": {
+            "rates_candidate": null,
+            "spot_candidate": {
+              "instrument": "USDCAD",
+              "asset_class": "spot_fx",
+              "rationale": "USDCAD is the direct dollar benchmark versus the oil-linked Canadian leg inside the allowed set."
+            },
+            "options_candidate": null,
+            "selected": "spot",
+            "rationale": "Cut the material winner and keep a smaller dollar-Canada runner; do not rotate into euro-dollar or dollar-yen."
+          }
+        }
+      ],
+      "harvest_reviews": [
+        {
+          "position_id": "pos-5317bc96d4eb",
+          "thesis_still_valid": true,
+          "remaining_edge": true,
+          "would_initiate_flat": "no",
+          "remaining_edge_reason": "The United States yield premium versus Canada is still real, so a smaller dollar-Canada long still has a rate gap to earn, but it is not worth initiating a full book from flat against three-digit oil and a rising Canadian impulse."
+        }
+      ],
+      "performance_reflections": [
+        {
+          "reflection_due_id": "rfd-551d4aa318e9",
+          "what_happened_vs_expected": "The expected path was a grind higher in dollar-Canada while United States yields stayed restrictive versus Canada. The realized path was an overshoot to a large peak, then a giveback as oil held above 100 and Canada's relative impulse improved. Residual profit is still positive versus entry but far below the maximum favorable excursion, which is a harvest failure rather than a thesis reversal on the dollar leg.",
+          "attribution": [
+            "reaction_function",
+            "expression",
+            "sizing"
+          ],
+          "pressure_effect": "distorting",
+          "skill_vs_luck": "mixed",
+          "overconfidence_risk": "yes",
+          "chase_or_revenge": "no",
+          "lesson": "After a material dollar-Canada win, three-digit oil plus a rising Canadian impulse is a harvest trigger. Remaining United States rate edge belongs in reduced size, not in a full-size hold that waits to recapture the peak.",
+          "causal": {
+            "original_belief": "United States rate and growth premium versus a soft Canada would keep dollar-Canada trending higher, with restrictive United States policy dominating oil and local Canadian data, so the long could be held through noise after a good entry near 1.401.",
+            "observed_reality": "The pair did pay to a large peak, then gave most of that open profit back as oil held in three digits and Canada's relative impulse turned higher while United States two-year and ten-year yields remained 4.79 and 5.12.",
+            "assumptions_right": "The United States coupon curve stayed high, the SOFR strip still prices above the 3.88 fixing, and the dollar did not collapse versus other majors. Direction versus Canada was right enough to produce a large peak and leave the book still green versus entry.",
+            "assumptions_wrong_or_underweighted": "Three-digit crude and a rising Canadian relative impulse were treated as secondary overlays on a rates short of Canada. They are first-order for the Canadian leg. Harvest discipline on a material winner was underweighted versus letting the original dollar story run after the peak.",
+            "causal_divergence": "The peak-to-now giveback is a Canadian-leg squeeze from oil and a better Canadian impulse, not a bust of the United States rate story. Holding full size after that mix showed up converted a paid winner into a large giveback without a new dollar-negative catalyst.",
+            "same_information_counterfactual": "With the same three-digit oil and the same rising Canadian factor visible into the peak, a harvest cut into strength would have locked most of the peak and left a runner. Same information, smaller size after those Canadian positives printed, would have avoided the bulk of the giveback.",
+            "future_implication": "Dollar-Canada size has to be conditioned on oil and the Canadian impulse. A still-valid United States rate view is not a license to hold full size in a commodity currency after a material win has already paid.",
+            "decision_quality_attribution": "reaction_function"
+          }
+        }
+      ]
+    },
+    "cross-merchant": {
+      "seat": "cross-merchant",
+      "overnight_run_id": "overnight-20261021",
+      "review_id": "review-001",
+      "packet_sha256": "f0f493aafb24e88247596c000992d11d2496da4bc04310be13aa1aea0605fca9",
+      "evidence_cutoff": "2026-10-21T08:22:07.869994-04:00",
+      "memory_context_sha256": "c168cb1af4841452ce87fcc920a87c034103db06306c35f7343d475368a2c1e3",
+      "alerts": [],
+      "required_pitch": null,
+      "risk_put_on": null,
+      "conviction": 61,
+      "thesis": "The freeze still prints a Canada-versus-Japan gap that a dollar pair would smear. CADJPY is 112.54 on 20 Oct against a 110.9 entry, book mark about 112.44; WTI is 101.79 and Brent is 108.79; Canada Prima-pressure is rising with end-2027 Brent 16.58 above the July MPR 70 conditioning; CORRA is 2.26 versus March 2027 2.995; TONA is 1.227 with March 2027 TONA 1.6825; Canada 10Y is 3.93 versus Japan 10Y 2.927. That is still oil-exporter versus oil-importer, a 103bp cash-carry lead, and a BoC path that prices 73bp of tightening against 46bp in TONA, without feeding SOFR 3.88 or the 3.75-4.00 funds range through USDCAD or USDJPY. This seat reads remaining edge at the freeze: CADJPY is only the 28th one-year percentile and z -0.59, so 112.54 has not used up the cheapness that 110.9 bought, while the five-year 81st percentile is the longer-window caution, not a reason to switch expression. EURCAD at 1.5758 (2nd one-year percentile, one-month -2.07%) is CAD already having won versus the euro; chasing short EURCAD from here is a completed move, not a cleaner CA-EA differential. EURJPY at 177.34 (about the 6th one-year percentile, three-month -4.77%) is broad yen strength that CADJPY has already damped (three-month only -3.11%) because oil and carry offset Japan; long EURJPY would throw away that Canada leg. EURGBP at 0.8403 (0.2 one-year percentile) is a UK/BoE 3.75% 6-3 hold with three members preferring a hike, not an eligible US/CA/EA/JP cross and not a substitute for the CA-JP oil-policy stack. AONIA 4.60 versus CORRA 2.26 is the same known Australia-Canada cash wedge, not a new AU-versus-CA policy, growth, inflation, or carry shock, so the closed AUDCAD fade stays shut and no new Australia risk is opened. What the freeze does not show is the next BoJ/MoF yen action or whether crude stays bid; those sit in invalidation rather than in a new cross.",
+      "invalidation": "The Canada-Japan relative-value case fails if CADJPY gives back the post-entry advance through 110.9 alongside a reversal in WTI 101.79 and/or Brent 108.79 and/or compression of the Canada-Japan 10Y gap (3.93 versus 2.927), or if BoJ/MoF yen action reprices JPY independently of the Canadian oil, carry, and hike-path differential. Additional technical levels: null.",
+      "expression_memo": {
+        "rates_candidate": null,
+        "spot_candidate": {
+          "instrument": "CADJPY",
+          "asset_class": "spot_fx",
+          "rationale": "Spot CADJPY isolates the Canada-minus-Japan oil, carry, and policy-path gap. USDCAD and USDJPY contaminate that view with the 3.75-4.00 funds range and SOFR 3.88. EURCAD and EURJPY are more extreme on one-year percentiles but chase a completed euro-cheap / yen-strong move rather than the still-mid CADJPY one-year window."
+        },
+        "options_candidate": null,
+        "selected": "spot",
+        "rationale": "This seat is spot-only. CADJPY remains the cleanest non-dollar expression of exporter Canada versus importer Japan; dollar pairs mix in US policy beta, and the cheaper euro crosses are the wrong differential once CADJPY is still only the 28th one-year percentile."
+      },
+      "actions": [
+        {
+          "action": "HOLD",
+          "position_id": "pos-44de67c4b24f",
+          "instrument": "CADJPY",
+          "asset_class": "spot_fx",
+          "side": "long",
+          "notional_usd": 15000000,
+          "rationale": "Keep the working 15 million CADJPY long. The CA-JP oil, carry, and hike-path stack is intact at freeze 112.54; do not add on the oil tape, do not switch into USDCAD, USDJPY, EURJPY, or EURCAD, and do not reopen AUDCAD.",
+          "expression_memo": {
+            "rates_candidate": null,
+            "spot_candidate": {
+              "instrument": "CADJPY",
+              "asset_class": "spot_fx",
+              "rationale": "CADJPY is the cleanest non-USD expression of the Canada-Japan oil, carry, and policy gap."
+            },
+            "options_candidate": null,
+            "selected": "spot",
+            "rationale": "Dedicated spot seat: keep the live CADJPY long. No replacement Europe or Australia cross."
+          },
+          "reason": "Keep the working 15 million CADJPY long. The CA-JP oil, carry, and hike-path stack is intact at freeze 112.54; do not add on the oil tape, do not switch into USDCAD, USDJPY, EURJPY, or EURCAD, and do not reopen AUDCAD."
+        }
+      ],
+      "harvest_reviews": [
+        {
+          "position_id": "pos-44de67c4b24f",
+          "thesis_still_valid": true,
+          "remaining_edge": true,
+          "would_initiate_flat": "yes",
+          "remaining_edge_reason": "If flat at freeze 112.54, this seat would still open the same 15 million CADJPY long. One-year percentile 28 and z -0.59 mean the level has not exhausted cheapness versus the 110.9 entry, Brent 108.79 and rising Prima-pressure still fund exporter Canada versus importer Japan, and CORRA 2.26 to March 2027 2.995 still prices more tightening than TONA 1.227 to 1.6825, so carry and policy path continue to pay from this size and mark. The 208k running peak is a review trigger, not a target; no add on the oil tape."
+        }
+      ]
+    },
+    "value-guy": {
+      "seat": "value-guy",
+      "overnight_run_id": "overnight-20261021",
+      "review_id": "review-001",
+      "packet_sha256": "f0f493aafb24e88247596c000992d11d2496da4bc04310be13aa1aea0605fca9",
+      "evidence_cutoff": "2026-10-21T08:22:07.869994-04:00",
+      "memory_context_sha256": "e6d820cf41d63e553bc8e461ed1e32ba367aecaef040f7f491d64a8965f026bf",
+      "alerts": [],
+      "required_pitch": null,
+      "risk_put_on": null,
+      "conviction": 55,
+      "thesis": "Value needs a documented dislocation versus history, fundamentals, or a markable peer spread, plus a reason convergence starts now. The only previously live 10Y value line, NZ-US_10Y, is unmarkable and NZ new risk is blocked. The remaining CAD question is not in SOFR-CORRA packs: cash SOFR-CORRA is 1.62 and Mar27 SOFR-CORRA is 1.530, a 0.09 gap, so the residual, if any, is USDCAD 1.4051. That spot print has no REER, PPP, or terms-of-trade denominator in the freeze, and US 10Y 5.12 versus CA 10Y 3.93 has no historical map either. With the book already flat, the actionable trade is to stay flat rather than force a tenor or relabel an unanchored move as cheapness.",
+      "invalidation": "A later freeze that supplies a signed oil terms-of-trade move plus a quantified United States, Canada, euro-area, or Japan valuation extreme would reopen the scan.",
+      "expression_memo": {
+        "rates_candidate": null,
+        "spot_candidate": null,
+        "options_candidate": null,
+        "selected": "none",
+        "rationale": "Stand down. Canada-United States 10s is the cleanest listed gap but has no valuation anchor; stay flat."
+      },
+      "actions": [
+        {
+          "action": "HOLD",
+          "rationale": "No allowed valuation expression clears after the unmarkable New Zealand flatten.",
+          "reason": "No allowed valuation expression clears after the unmarkable New Zealand flatten.",
+          "expression_memo": {
+            "rates_candidate": null,
+            "spot_candidate": null,
+            "options_candidate": null,
+            "selected": "none",
+            "rationale": "Book remains flat. No new United States, Canada, euro-area, or Japan risk. New Zealand stays closed."
+          }
+        }
+      ],
+      "postmortems": [
+        {
+          "postmortem_id": "pmd-0585bb95b1a3",
+          "trade_id": "trd-trader-value-guy-pos-f895a4694dd7",
+          "what_worked": "The book was flattened at the last valid mark instead of substituting an invented New Zealand 10-year or rolling the idea into a different unanchored New Zealand dollar expression.",
+          "what_failed": "The chosen expression could not survive a single session of missing New Zealand marks, so the valuation thesis was never tested.",
+          "thesis_assessment": "The New Zealand versus United States 10-year short was a relative-value convergence expression whose economic content was not observed; a flat exit at the unchanged mark leaves the thesis neither proven nor disproven.",
+          "expression_assessment": "Ten-year cross-market is the right home for a slow New Zealand versus United States real-yield dislocation, but it is unusable when one leg is unmarkable and New Zealand new risk is blocked.",
+          "timing_assessment": "The exit was forced by mark integrity, not by a valuation clock or a convergence signal.",
+          "sizing_assessment": "Flattening a single unmarkable line to zero at unchanged marks shows no sizing error in the outcome; residual risk is now none.",
+          "no_new_lesson": "A flatten at an unchanged mark with zero realized result is bounded operational variance from an unmarkable New Zealand leg; the process of not warehousing unmarkable New Zealand risk remains sound.",
+          "causal": {
+            "original_belief": "The New Zealand versus United States 10-year short at minus 23 basis points was a slow-convergence value dislocation worth holding in rates.",
+            "observed_reality": "The New Zealand 10-year input became unavailable, the spread could not be marked, and the line was flattened at the unchanged minus-23 mark with zero realized result.",
+            "assumptions_right": "A yield-gap thesis belongs in a rates cross rather than in an improvised spot substitute, and flattening at the last valid mark avoided inventing a New Zealand level.",
+            "assumptions_wrong_or_underweighted": "Continuous markability of the New Zealand 10-year leg was treated as given rather than as a binding constraint on a warehoused value expression.",
+            "causal_divergence": "The spread and result did not move because the market could not be marked, not because the valuation gap closed or the thesis was falsified at a new print.",
+            "same_information_counterfactual": "Given unmarkability, the same flatten at the last valid mark would still be taken; holding or rotating into an unanchored New Zealand or Australian substitute would be the error.",
+            "future_implication": "Keep New Zealand closed while the 10-year leg is unmarkable; do not force a substitute tenor or spot residual without a fresh valuation anchor.",
+            "decision_quality_attribution": "expression"
+          }
+        }
+      ]
+    },
+    "trend-follower": {
+      "seat": "trend-follower",
+      "overnight_run_id": "overnight-20261021",
+      "review_id": "review-001",
+      "packet_sha256": "f0f493aafb24e88247596c000992d11d2496da4bc04310be13aa1aea0605fca9",
+      "evidence_cutoff": "2026-10-21T08:22:07.869994-04:00",
+      "memory_context_sha256": "b144fe553aac9fc2320724703ad6072783ce4b6791e3cad2e0ebce8f114fc7ae",
+      "alerts": [],
+      "required_pitch": null,
+      "risk_put_on": null,
+      "conviction": 68,
+      "thesis": "US 10-year at 5.12 is a 3bp dip after weak housing inside a still-live backup: plus 11bp over one month, plus 49bp over three months, and the 94th percentile of the past year. The 5.09 line has not broken, oil remains triple-digit at WTI 101.79 and Brent 108.79, and VIX 18.44 is not a duration bid. The front end firmed on the same session (2-year 4.79, plus 2bp; March 2027 SOFR 4.525 versus cash 3.88), so housing did not turn the hiking path. Covering the 75 million 10-year pay would be a premature fade. Keep that pay. Do not add on a one-day housing print. Do not re-pay March 2027 SOFR after that contract failed to confirm the backup. USDJPY at 158.13 is the same yield impulse in FX but sits near the median with a three-month downtrend, so the 10-year pay remains the cleaner continuation.",
+      "invalidation": "Cut or exit if the US 10-year reverses through 5.09 without a new high. Housing headlines alone do not count. Do not re-pay March 2027 SOFR unless that contract itself starts printing higher implied rates rather than remaining near 4.525.",
+      "expression_memo": {
+        "selected": "rates",
+        "rationale": "The US 10-year at 5.12 is the documented continuation after a 3bp housing dip. USDJPY at 158.13 is the same yield impulse in FX but is near the median with a three-month downtrend, so the existing 10-year pay is cleaner.",
+        "rates_candidate": {
+          "instrument": "US_10Y",
+          "asset_class": "rates",
+          "rationale": "Pay/short the US 10-year at 5.12. Plus 11bp over one month, plus 49bp over three months, 94th percentile, oil still bid, and the 5.09 line intact. Strongest persistent yield trend in the eligible set."
+        },
+        "spot_candidate": {
+          "instrument": "USDJPY",
+          "asset_class": "spot_fx",
+          "rationale": "USDJPY 158.13 is the same higher-yield impulse in FX, but it is near the one-year median with a three-month downtrend, so it is noisier than the 10-year pay."
+        },
+        "options_candidate": null,
+        "rates_tenor_scan": {
+          "selected_bucket": "ten_year",
+          "selection_rationale": "Keep the US 10-year pay because it is the confirming continuation. March 2027 SOFR is still the lagging tenor near 4.525 and is not re-entered.",
+          "stir_policy_path": {
+            "status": "not_compelling",
+            "instrument": "SOFR_2027-03",
+            "asset_class": "rates",
+            "rationale": "March 2027 SOFR at 4.525 versus cash 3.88 still prices about 65bp of hikes, but the contract only ticked 0.5bp from 4.52 and did not confirm the 10-year backup. September 2027 at 4.74 is the strip peak, not a reason to re-pay the lagging March contract."
+          },
+          "two_year": {
+            "status": "not_compelling",
+            "instrument": "US_2Y",
+            "asset_class": "rates",
+            "rationale": "US 2-year at 4.79 firmed 2bp on the housing session and sits at the 96th percentile, but the one-month move is only plus 3bp versus plus 11bp in the 10-year. It supports the path; it is not the cleaner continuation."
+          },
+          "five_year": {
+            "status": "not_compelling",
+            "instrument": "US_5Y",
+            "asset_class": "rates",
+            "rationale": "US 5-year at 4.94 was unchanged on the day and is only plus 8bp over one month, a weaker continuation than the 10-year."
+          },
+          "ten_year": {
+            "status": "candidate",
+            "instrument": "US_10Y",
+            "asset_class": "rates",
+            "rationale": "Pay/short US 10-year at 5.12. A 3bp housing dip inside plus 11bp over one month, plus 49bp over three months, and the 94th percentile. Existing 75 million pay already owns this trend."
+          },
+          "curve": {
+            "status": "not_compelling",
+            "instrument": "US_2s10s",
+            "asset_class": "curve",
+            "rationale": "Levels imply about 33bp of 2s10s. The housing session flattened as the 2-year rose 2bp and the 10-year fell 3bp. That one-day flatten is not a durable curve trend versus the outright 10-year pay."
+          },
+          "cross_market_rv": {
+            "status": "not_compelling",
+            "instrument": "CA_10Y",
+            "asset_class": "rates_rv",
+            "rationale": "Canada 10-year at 3.93 jumped 9bp in one day but is only plus 1bp over one month, so it is not the persistent backup. CORRA March 2027 at 2.995 is an unmatched tenor versus US 10-year 5.12. Australia and New Zealand are closed for new rates risk."
+          }
+        }
+      },
+      "actions": [
+        {
+          "action": "HOLD",
+          "instrument": "US_10Y",
+          "asset_class": "rates",
+          "side": "short",
+          "position_id": "pos-06e7a6ec76da",
+          "notional_usd": 75000000,
+          "expected_mark_direction": "higher",
+          "rationale": "Keep the 75 million US 10-year pay from 5.15 versus live 5.12. A 3bp housing dip inside a plus-11bp one-month backup is not a reversal, and the 5.09 line is intact.",
+          "reason": "Keep the 75 million US 10-year pay from 5.15 versus live 5.12. A 3bp housing dip inside a plus-11bp one-month backup is not a reversal, and the 5.09 line is intact.",
+          "expression_memo": {
+            "selected": "rates",
+            "rationale": "The US 10-year at 5.12 is the documented continuation after a 3bp housing dip. USDJPY at 158.13 is the same yield impulse in FX but is near the median with a three-month downtrend, so the existing 10-year pay is cleaner.",
+            "rates_candidate": {
+              "instrument": "US_10Y",
+              "asset_class": "rates",
+              "rationale": "Pay/short the US 10-year at 5.12. Plus 11bp over one month, plus 49bp over three months, 94th percentile, oil still bid, and the 5.09 line intact. Strongest persistent yield trend in the eligible set."
+            },
+            "spot_candidate": {
+              "instrument": "USDJPY",
+              "asset_class": "spot_fx",
+              "rationale": "USDJPY 158.13 is the same higher-yield impulse in FX, but it is near the one-year median with a three-month downtrend, so it is noisier than the 10-year pay."
+            },
+            "options_candidate": null,
+            "rates_tenor_scan": {
+              "selected_bucket": "ten_year",
+              "selection_rationale": "Keep the US 10-year pay because it is the confirming continuation. March 2027 SOFR is still the lagging tenor near 4.525 and is not re-entered.",
+              "stir_policy_path": {
+                "status": "not_compelling",
+                "instrument": "SOFR_2027-03",
+                "asset_class": "rates",
+                "rationale": "March 2027 SOFR at 4.525 versus cash 3.88 still prices about 65bp of hikes, but the contract only ticked 0.5bp from 4.52 and did not confirm the 10-year backup. September 2027 at 4.74 is the strip peak, not a reason to re-pay the lagging March contract."
+              },
+              "two_year": {
+                "status": "not_compelling",
+                "instrument": "US_2Y",
+                "asset_class": "rates",
+                "rationale": "US 2-year at 4.79 firmed 2bp on the housing session and sits at the 96th percentile, but the one-month move is only plus 3bp versus plus 11bp in the 10-year. It supports the path; it is not the cleaner continuation."
+              },
+              "five_year": {
+                "status": "not_compelling",
+                "instrument": "US_5Y",
+                "asset_class": "rates",
+                "rationale": "US 5-year at 4.94 was unchanged on the day and is only plus 8bp over one month, a weaker continuation than the 10-year."
+              },
+              "ten_year": {
+                "status": "candidate",
+                "instrument": "US_10Y",
+                "asset_class": "rates",
+                "rationale": "Pay/short US 10-year at 5.12. A 3bp housing dip inside plus 11bp over one month, plus 49bp over three months, and the 94th percentile. Existing 75 million pay already owns this trend."
+              },
+              "curve": {
+                "status": "not_compelling",
+                "instrument": "US_2s10s",
+                "asset_class": "curve",
+                "rationale": "Levels imply about 33bp of 2s10s. The housing session flattened as the 2-year rose 2bp and the 10-year fell 3bp. That one-day flatten is not a durable curve trend versus the outright 10-year pay."
+              },
+              "cross_market_rv": {
+                "status": "not_compelling",
+                "instrument": "CA_10Y",
+                "asset_class": "rates_rv",
+                "rationale": "Canada 10-year at 3.93 jumped 9bp in one day but is only plus 1bp over one month, so it is not the persistent backup. CORRA March 2027 at 2.995 is an unmatched tenor versus US 10-year 5.12. Australia and New Zealand are closed for new rates risk."
+              }
+            }
+          }
+        }
+      ],
+      "postmortems": [
+        {
+          "postmortem_id": "pmd-06b0602f8ba0",
+          "trade_id": "trd-trader-trend-follower-pos-662bff0986be",
+          "what_worked": "The hiking-cycle and term-premium read stayed visible in the US 10-year backup and in still-elevated oil, and the original invalidation correctly refused to treat housing headlines as a path break.",
+          "what_failed": "The March 2027 SOFR pay did not confirm the 10-year backup. Implieds fell from 4.58 at entry and from the 4.71 add to 4.52 at exit, so the chosen tenor was the wrong continuation vehicle.",
+          "thesis_assessment": "The higher-for-longer thesis was not invalidated by inflation or labor. It was expressed in the wrong contract.",
+          "expression_assessment": "Outright 10-year pay was the confirming trend. March 2027 SOFR was a lagging policy-path proxy that drifted lower while the sovereign curve backed up.",
+          "timing_assessment": "The add at 4.71 increased exposure after that contract had already become the lagging tenor relative to the 10-year.",
+          "sizing_assessment": "Scaling from 50 million to 75 million on the lagging contract magnified the expression error. The later 75 million 10-year pay belongs on the confirming tenor, not as a reason to re-enter March 2027 SOFR.",
+          "lesson": "When a SOFR contract stops confirming a live US 10-year backup, rotate the pay to the confirming tenor instead of holding or adding to the laggard.",
+          "future_rule": "Do not keep or add to a SOFR pay whose implied rate is drifting lower while the US 10-year is still making a documented backup; migrate to the confirming tenor or exit.",
+          "causal": {
+            "original_belief": "Paying March 2027 SOFR would keep capturing a continuing US hiking cycle because the delivered hike, an upward-sloping strip, and aligned two-year and ten-year backups would lift that contract's implied rate.",
+            "observed_reality": "The US 10-year kept backing up while March 2027 SOFR drifted from 4.58 at entry and 4.71 at the add down to 4.52 at exit. The chosen contract did not confirm the sovereign backup, and the pay was closed on that tenor failure rather than on an inflation or labor break.",
+            "assumptions_right": "The hiking and term-premium impulse remained visible in the 10-year backup and in still-elevated oil. The original invalidation correctly said housing-pain headlines were not enough to kill the path, and no inflation or labor break printed while the trade was open.",
+            "assumptions_wrong_or_underweighted": "I underweighted how far a single March 2027 SOFR contract can decouple from the 10-year backup. The add at 4.71 treated that contract as the aligned price expression even after it had already become the lagging tenor.",
+            "causal_divergence": "The macro regime stayed higher-for-longer, but the instrument's implied rate mean-reverted while the 10-year continuation persisted. The loss came from staying in the lagging STIR tenor, not from a broken hiking-cycle thesis.",
+            "decision_quality_attribution": "expression",
+            "same_information_counterfactual": "Once March 2027 SOFR stopped printing higher implieds while the 10-year was still backing up, the pay should have been migrated to the 10-year immediately rather than held for about a month waiting for STIR confirmation.",
+            "future_implication": "When a SOFR contract lags a documented sovereign-yield backup, treat it as an expression problem and rotate to the confirming tenor instead of averaging or holding the laggard."
+          }
+        }
+      ]
+    },
+    "mean-reverter": {
+      "seat": "mean-reverter",
+      "overnight_run_id": "overnight-20261021",
+      "review_id": "review-001",
+      "packet_sha256": "f0f493aafb24e88247596c000992d11d2496da4bc04310be13aa1aea0605fca9",
+      "evidence_cutoff": "2026-10-21T08:22:07.869994-04:00",
+      "memory_context_sha256": "cb176254b305c6a94d2c4699f22067dc95eb97253be720f9b06faad1ad6773da",
+      "alerts": [],
+      "required_pitch": null,
+      "risk_put_on": null,
+      "conviction": 62,
+      "thesis": "The March 2027 SOFR receive remains the fade of a crowded hike overshoot. Cash SOFR is 3.88 against March 2027 at 4.525, a 64.5bp tightening path versus a 3.75-4.00 funds range. December 2026 is 4.245, June 2027 is 4.685 and September 2027 is 4.74, so the 2027 strip has not started to normalize even as WTI printed 101.79, Brent 108.79, and the 10-year eased 3bp to 5.12 after weak housing, with US labor and activity still cooling. The 10 million long from 4.58 is about 5.5bp in the money with a small open profit; that is not a harvest and not a reason to add while oil is still 101.79 and core inflation remains warm. US 2-year 4.79 and US 5-year 4.94 sit in the same rich complex but do not isolate the policy-path overshoot. The 10-year at the 94th percentile already used the housing print, so a fresh 10-year receive would chase the first 3bp. Twos-tens near 33bp is mixed, not a stretched curve. CORRA March 2027 at 2.995 versus 2.26 cash is statistically wide, but Canada oil-pressure is still rising and the last Canada 2-year print is 3.33 after a 12bp jump, so that fade is not opened. EURUSD 1.1215 and EURGBP 0.8403 are statistical extremes without a confirmed reversal, and a long euro would be a noisier fade of the same USD hike overshoot. Hold the 10 million receive and wait for oil to keep reversing and for the 4.525/4.74 path to cheapen before adding or rotating.",
+      "invalidation": "March 2027 SOFR implied rate revisits 4.58 or higher, or WTI 101.79 and Brent 108.79 re-bid and take US 10-year back through 5.12 in a way that validates the 4.525/4.74 hike path instead of an overshoot.",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": {
+          "asset_class": "rates",
+          "instrument": "SOFR_2027-03",
+          "rationale": "Cash SOFR 3.88 versus March 2027 at 4.525 still prices 64.5bp of hikes; that remains the crowded policy-path overshoot already held."
+        },
+        "rates_tenor_scan": {
+          "cross_market_rv": {
+            "asset_class": "rates",
+            "instrument": "CORRA_2027-03",
+            "rationale": "CORRA March 2027 at 2.995 versus 2.26 cash is statistically wide, but Canada 2-year last printed 3.33 with a 12bp jump and Canada oil-pressure is still rising, so that fade is not opened. The euro cash rate is 2.44 with no usable euro strip, Australia and New Zealand are not eligible, and Japan 10-year 2.927 has already given back about 10bp over a month.",
+            "status": "not_compelling"
+          },
+          "curve": {
+            "asset_class": null,
+            "instrument": null,
+            "rationale": "US 2-year 4.79 versus 10-year 5.12 is about 33bp. Twos rose 2bp while tens fell 3bp after housing; that is mixed, not a stretched curve with its own reversal condition.",
+            "status": "not_compelling"
+          },
+          "five_year": {
+            "asset_class": "rates",
+            "instrument": "US_5Y",
+            "rationale": "US 5-year 4.94 is the 94th percentile and unchanged on the day. It sits in the same rich complex but does not isolate the 64.5bp 2027 hike path as cleanly as March 2027 SOFR.",
+            "status": "not_compelling"
+          },
+          "selected_bucket": "stir_policy_path",
+          "selection_rationale": "March 2027 SOFR is the complete, already-working expression of the cash-versus-2027 hike overshoot.",
+          "stir_policy_path": {
+            "asset_class": "rates",
+            "instrument": "SOFR_2027-03",
+            "rationale": "Cash SOFR 3.88 versus March 2027 4.525, December 2026 4.245, June 2027 4.685 and September 2027 4.74. The 2027 strip has not cheapened even as oil reversed and the 10-year eased after housing.",
+            "status": "candidate"
+          },
+          "ten_year": {
+            "asset_class": "rates",
+            "instrument": "US_10Y",
+            "rationale": "US 10-year 5.12 is the 94th percentile and already used the housing print with a 3bp decline. A new 10-year receive would chase that first 3bp rather than fade a fresh extreme.",
+            "status": "not_compelling"
+          },
+          "two_year": {
+            "asset_class": "rates",
+            "instrument": "US_2Y",
+            "rationale": "US 2-year 4.79 is the 96th percentile and up 2bp. It blends the same hiking path; March 2027 SOFR isolates the overshoot more cleanly.",
+            "status": "not_compelling"
+          }
+        },
+        "rationale": "Keep the working March 2027 SOFR receive. A long euro would fade a statistical extreme without a confirmed reversal, and a new 10-year receive would chase the housing print.",
+        "selected": "rates",
+        "spot_candidate": {
+          "asset_class": "spot_fx",
+          "instrument": "EURUSD",
+          "rationale": "EURUSD 1.1215 is the 3.4th percentile and EURGBP 0.8403 is the 0.2nd, but those are statistical extremes without a confirmed reversal, and a long euro is a noisier fade of the same USD hike overshoot already held in March 2027 SOFR."
+        }
+      },
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "expected_mark_direction": "lower",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": {
+              "asset_class": "rates",
+              "instrument": "SOFR_2027-03",
+              "rationale": "Cash SOFR 3.88 versus March 2027 at 4.525 still prices 64.5bp of hikes; that remains the crowded policy-path overshoot already held."
+            },
+            "rates_tenor_scan": {
+              "cross_market_rv": {
+                "asset_class": "rates",
+                "instrument": "CORRA_2027-03",
+                "rationale": "CORRA March 2027 at 2.995 versus 2.26 cash is statistically wide, but Canada 2-year last printed 3.33 with a 12bp jump and Canada oil-pressure is still rising, so that fade is not opened. The euro cash rate is 2.44 with no usable euro strip, Australia and New Zealand are not eligible, and Japan 10-year 2.927 has already given back about 10bp over a month.",
+                "status": "not_compelling"
+              },
+              "curve": {
+                "asset_class": null,
+                "instrument": null,
+                "rationale": "US 2-year 4.79 versus 10-year 5.12 is about 33bp. Twos rose 2bp while tens fell 3bp after housing; that is mixed, not a stretched curve with its own reversal condition.",
+                "status": "not_compelling"
+              },
+              "five_year": {
+                "asset_class": "rates",
+                "instrument": "US_5Y",
+                "rationale": "US 5-year 4.94 is the 94th percentile and unchanged on the day. It sits in the same rich complex but does not isolate the 64.5bp 2027 hike path as cleanly as March 2027 SOFR.",
+                "status": "not_compelling"
+              },
+              "selected_bucket": "stir_policy_path",
+              "selection_rationale": "March 2027 SOFR is the complete, already-working expression of the cash-versus-2027 hike overshoot.",
+              "stir_policy_path": {
+                "asset_class": "rates",
+                "instrument": "SOFR_2027-03",
+                "rationale": "Cash SOFR 3.88 versus March 2027 4.525, December 2026 4.245, June 2027 4.685 and September 2027 4.74. The 2027 strip has not cheapened even as oil reversed and the 10-year eased after housing.",
+                "status": "candidate"
+              },
+              "ten_year": {
+                "asset_class": "rates",
+                "instrument": "US_10Y",
+                "rationale": "US 10-year 5.12 is the 94th percentile and already used the housing print with a 3bp decline. A new 10-year receive would chase that first 3bp rather than fade a fresh extreme.",
+                "status": "not_compelling"
+              },
+              "two_year": {
+                "asset_class": "rates",
+                "instrument": "US_2Y",
+                "rationale": "US 2-year 4.79 is the 96th percentile and up 2bp. It blends the same hiking path; March 2027 SOFR isolates the overshoot more cleanly.",
+                "status": "not_compelling"
+              }
+            },
+            "rationale": "Keep the working March 2027 SOFR receive. A long euro would fade a statistical extreme without a confirmed reversal, and a new 10-year receive would chase the housing print.",
+            "selected": "rates",
+            "spot_candidate": {
+              "asset_class": "spot_fx",
+              "instrument": "EURUSD",
+              "rationale": "EURUSD 1.1215 is the 3.4th percentile and EURGBP 0.8403 is the 0.2nd, but those are statistical extremes without a confirmed reversal, and a long euro is a noisier fade of the same USD hike overshoot already held in March 2027 SOFR."
+            }
+          },
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 10000000,
+          "position_id": "pos-1477172adb86",
+          "rationale": "Keep the 10 million March 2027 SOFR receive from 4.58, live 4.52/4.525; 64.5bp of hikes versus 3.88 cash is still the crowded overshoot, but oil at 101.79 and a 5.5bp cushion are not enough to add.",
+          "reason": "Keep the 10 million March 2027 SOFR receive from 4.58, live 4.52/4.525; 64.5bp of hikes versus 3.88 cash is still the crowded overshoot, but oil at 101.79 and a 5.5bp cushion are not enough to add.",
+          "side": "long"
+        }
+      ]
+    },
+    "carry-is-king": {
+      "seat": "carry-is-king",
+      "overnight_run_id": "overnight-20261021",
+      "review_id": "review-001",
+      "packet_sha256": "f0f493aafb24e88247596c000992d11d2496da4bc04310be13aa1aea0605fca9",
+      "evidence_cutoff": "2026-10-21T08:22:07.869994-04:00",
+      "memory_context_sha256": "4e5777c12225f560f40e28faf447407da82028612dd6b86c934e0484091f0a14",
+      "alerts": [],
+      "required_pitch": null,
+      "risk_put_on": null,
+      "conviction": 61,
+      "thesis": "The packet still pays the receiver for unused policy tightening that cash has not delivered. The widest eligible unused gap is Canada: cash CORRA 2.26 versus Mar27 2.995, a 73.5bp path premium, while September underlying inflation is 1.85 and labor is cooling. Triple-digit oil and a rising Canada oil-pressure proxy are known energy facts, not a cash-rate or reaction-function change, so they do not overwhelm the carry or justify staying out of the Canadian receive. Existing AONIA Mar27 remains a working, thinner 19bp receive and is held; new Australian risk is not added.",
+      "invalidation": "Exit if cash CORRA rises from 2.26 toward 2.995 or if oil-driven Canadian inflation makes the Bank deliver the priced hikes.",
+      "expression_memo": {
+        "rates_candidate": null,
+        "spot_candidate": null,
+        "options_candidate": null,
+        "selected": "none",
+        "rationale": "Hold the existing March 2027 AONIA receive and open March 2027 CORRA receive; do not add Australia."
+      },
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "instrument": "AONIA_2027-03",
+          "side": "long",
+          "position_id": "pos-524ab67108ee",
+          "notional_usd": 25000000,
+          "rationale": "Keep the working 25 million AONIA Mar27 receive from 4.83, live 4.79. Cash AONIA is still 4.60 so about 19bp of unused path remains. Harvest is not required. New Australian risk is not added.",
+          "reason": "Keep the working 25 million AONIA Mar27 receive from 4.83, live 4.79. Cash AONIA is still 4.60 so about 19bp of unused path remains. Harvest is not required. New Australian risk is not added.",
+          "expression_memo": {
+            "rates_candidate": null,
+            "spot_candidate": null,
+            "options_candidate": null,
+            "selected": "none",
+            "rationale": "No incremental Australia risk; keep the existing March 2027 AONIA receive."
+          }
+        },
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "instrument": "CORRA_2027-03",
+          "side": "long",
+          "expected_mark_direction": "lower",
+          "notional_usd": 25000000,
+          "lifecycle": {
+            "framing": "swing",
+            "horizon_days": 90,
+            "realization_logic": "Implied-minus-realized: CRAH27 at 2.995 cheapens if cash CORRA stays near 2.26 and the priced 73.5bp of hikes is not delivered.",
+            "catalyst_logic": "Cooling labor and 1.85 underlying inflation keep the Bank of Canada on hold; oil headlines without a cash-rate or reaction-function change do not exhaust the unused-hike carry.",
+            "catalyst_by": "2027-03-16"
+          },
+          "rationale": "Sidecar has no CORRA position, so this is a new OPEN rather than an ADD. Size matches the existing 25 million AONIA line: enough for duration-1 implied-rate P&L to matter versus SOFR on 250k of shocked risk, with most of the 10 million risk-capital cap unspent because energy pass-through can still overwhelm.",
+          "reason": "Sidecar has no CORRA position, so this is a new OPEN rather than an ADD. Size matches the existing 25 million AONIA line: enough for duration-1 implied-rate P&L to matter versus SOFR on 250k of shocked risk, with most of the 10 million risk-capital cap unspent because energy pass-through can still overwhelm.",
+          "expression_memo": {
+            "rates_candidate": {
+              "instrument": "CORRA_2027-03",
+              "asset_class": "rates",
+              "rationale": "Receive March 2027 CORRA at 2.995 versus cash 2.26; unused 73.5bp of Bank of Canada hikes is the carry."
+            },
+            "spot_candidate": {
+              "instrument": "USDCAD",
+              "asset_class": "spot_fx",
+              "rationale": "Long USDCAD would mix Fed path and oil beta into a Canada carry view."
+            },
+            "options_candidate": null,
+            "selected": "rates",
+            "rationale": "The unused Canada hike path belongs in March 2027 CORRA, not in dollar-Canada spot.",
+            "rates_tenor_scan": {
+              "stir_policy_path": {
+                "status": "candidate",
+                "instrument": "CORRA_2027-03",
+                "asset_class": "rates",
+                "rationale": "Cash CORRA 2.26 versus tradable CRAH27 2.995 is +73.5bp of unused tightening through Mar27, widening further to 3.20 Jun27 and 3.61 Dec28, with Canada eligible and the overnight path status ok. That is the cleanest patient receive of implied-minus-realized in the packet."
+              },
+              "two_year": {
+                "status": "not_compelling",
+                "instrument": "CA_2Y",
+                "asset_class": "rates",
+                "rationale": "CA 2Y is 3.33 as of 2026-10-19, 107bp over cash, but it is a lagged benchmark print that jumped 12bp in one session and mixes term premium with policy. The unused hike is isolated more cleanly in CRAH27 than in the 2Y bond."
+              },
+              "five_year": {
+                "status": "not_compelling",
+                "instrument": "CA_5Y",
+                "asset_class": "rates",
+                "rationale": "CA 5Y at 3.64 as of 2026-10-19 adds duration and oil/term-premium beta without tightening the cash-to-2027 policy-path discrepancy that the receive is paid to own."
+              },
+              "ten_year": {
+                "status": "not_compelling",
+                "instrument": "CA_10Y",
+                "asset_class": "rates",
+                "rationale": "CA 10Y at 3.93 and US 10Y at 5.12 are long-end level statements, not the unused overnight-to-Mar27 hike gap. They are not the carry expression."
+              },
+              "curve": {
+                "status": "not_compelling",
+                "instrument": "CA 2s10s",
+                "asset_class": "curve",
+                "rationale": "CA 2s10s is about 60bp and US 2s10s is 33bp. A curve expression would dilute the cash-versus-Mar27 73.5bp unused-hike carry into a spread that the packet does not show as the mispricing."
+              },
+              "cross_market_rv": {
+                "status": "not_compelling",
+                "instrument": "SOFR_2027-03 vs CORRA_2027-03",
+                "asset_class": "rates_rv",
+                "rationale": "SOFR Mar27 4.525 versus CORRA Mar27 2.995 is 153bp, almost in line with cash SOFR 3.88 versus CORRA 2.26 at 162bp, so the cross-market gap is already aligned. TONA Mar27 1.6825 versus cash 1.227 sits inside an active BoJ hiking cycle, so receiving it fights delivered policy. New AONIA risk is blocked by unverified Australian demand data."
+              },
+              "selected_bucket": "stir_policy_path",
+              "selection_rationale": "After scanning STIR, 2Y, 5Y, 10Y, curve and cross-market RV, CRAH27 is the only expression that directly owns the 73.5bp unused cash-to-Mar27 hike path in an eligible, markable curve."
+            }
+          }
+        }
+      ]
+    },
+    "vol-convexity": {
+      "seat": "vol-convexity",
+      "overnight_run_id": "overnight-20261021",
+      "review_id": "review-001",
+      "packet_sha256": "f0f493aafb24e88247596c000992d11d2496da4bc04310be13aa1aea0605fca9",
+      "evidence_cutoff": "2026-10-21T08:22:07.869994-04:00",
+      "memory_context_sha256": "8af5acd7cee4a63f78a8e09b9337a650911bc1fb40a5e1adfa0165ccbe927182",
+      "alerts": [],
+      "required_pitch": null,
+      "risk_put_on": null,
+      "conviction": 64,
+      "thesis": "the book is flat; official SOFR is 3.88 on 2026-10-20; SR3H7 / March 2027 SOFR settles at 4.525, 64.5bp above cash; US 10Y is 5.12; VIX is 18.44 as of 2026-10-19; WTI is 101.79, Brent 108.79, gold 4142.6; USDCAD is 1.40508 and USDJPY is 158.13; S&P is 7712.57; Canada Prima-pressure is rising on a persistent oil curve; Australia and New Zealand are ineligible for new risk; the freeze has no listed implied-vol surface, premiums, or strikes. oil-linked event risk still cuts both ways in spot, so USDCAD, USDJPY, and equity index spot are the wrong instruments when timing is unknown; paying March 2027 SOFR or selling 10Y duration is a linear inflation or hike bet on a path that is already 64.5bp through cash, not cheap convexity. FX or rates implied vol, skew, risk-reversal, fly, and option mids. Without those marks an options OPEN is not executable, and a last-resort options candidate is not opened.",
+      "invalidation": "Re-scan only if the next freeze prints a markable listed-vol surface with sourced premiums, implied vols, and strikes. A further oil or rates move by itself does not authorize linear spot or rates risk from this seat.",
+      "expression_memo": {
+        "rates_candidate": null,
+        "spot_candidate": null,
+        "options_candidate": null,
+        "selected": "none",
+        "rationale": "Neither linear rates nor spot dominates, and options cannot be specified. Stay flat."
+      },
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "rates_candidate": null,
+            "spot_candidate": null,
+            "options_candidate": null,
+            "selected": "none",
+            "rationale": "No markable listed implied-vol surface, premium, or strike mid exists in this freeze, so an options OPEN is not executable. Linear rates and spot are not convexity and are not substituted. The flat book is held."
+          },
+          "rationale": "Stay flat; no markable convexity and no cleaner linear expression while Hormuz timing is unresolved.",
+          "reason": "Stay flat; no markable convexity and no cleaner linear expression while Hormuz timing is unresolved."
+        }
+      ]
+    },
+    "positioning-cynic": {
+      "seat": "positioning-cynic",
+      "overnight_run_id": "overnight-20261021",
+      "review_id": "review-001",
+      "packet_sha256": "f0f493aafb24e88247596c000992d11d2496da4bc04310be13aa1aea0605fca9",
+      "evidence_cutoff": "2026-10-21T08:22:07.869994-04:00",
+      "memory_context_sha256": "8f4c90c6ce62c3fbe7e8dbb1dac79670e8fa201ff189525a0b62986c1472e31b",
+      "alerts": [],
+      "required_pitch": null,
+      "risk_put_on": null,
+      "conviction": 55,
+      "thesis": "The one-way crowded expression is the existing CORRA Mar27 receive. Cheapness versus cash is not an entry to join it. Pay that contract, and close the working USDCAD short because that fade would not be initiated at 1.4051.",
+      "invalidation": "The pay is wrong if March 2027 CORRA keeps compressing toward cash 2.26 while the existing receive stays on.",
+      "expression_memo": {
+        "rates_candidate": null,
+        "spot_candidate": null,
+        "options_candidate": null,
+        "selected": "none",
+        "rationale": "Cover the existing USDCAD short and pay the crowded March 2027 CORRA receive."
+      },
+      "actions": [
+        {
+          "action": "CLOSE",
+          "position_id": "pos-ccb6655acbad",
+          "instrument": "USDCAD",
+          "asset_class": "spot_fx",
+          "side": "short",
+          "thesis": "FACT: the working 15m USDCAD short from 1.42 is a material winner at packet mid 1.4051 with MFE about 181k and retained-MFE 1.0. INFERENCE: if flat today this exact 15m short would not be initiated at 1.4051 because the old 1.42 crowded long has already been squeezed and CAD-bullish after a 5d -1.34 percent move is no longer an unowned fade. UNKNOWN: CME CAD positioning.",
+          "invalidation": "Not applicable on a close.",
+          "expression_memo": {
+            "rates_candidate": null,
+            "spot_candidate": null,
+            "options_candidate": null,
+            "selected": "none",
+            "rationale": "Close the USDCAD short. Remaining edge is not present at this level and size; this is a harvest review outcome, not a take-profit order."
+          },
+          "notional_usd": 15000000
+        },
+        {
+          "action": "OPEN",
+          "instrument": "CORRA_2027-03",
+          "asset_class": "rates",
+          "side": "short",
+          "expected_mark_direction": "higher",
+          "notional_usd": 50000000,
+          "conviction": 55,
+          "thesis": "Pay CRAH27 to fade the existing 4.45bn CORRA Mar27 receive. Cheapness versus cash 2.26 is the crowded idea, not an unowned entry.",
+          "invalidation": "The pay is wrong if CRAH27 implied keeps compressing toward CORRA cash 2.26 while the existing receive stays on, or if Canada inflation/oil pressure reverses with labor still cool.",
+          "lifecycle": {
+            "framing": "swing",
+            "horizon_days": 30,
+            "realization_logic": "The crowded CORRA Mar27 receive is reduced or fails to compress toward cash if oil-driven Canada inflation pressure keeps the hike path alive.",
+            "catalyst_logic": "Flattening of the existing 4.45bn receive, or CRAH27 implied moving up toward the Canada 2Y 3.33 cash yield.",
+            "catalyst_by": null
+          },
+          "expression_memo": {
+            "rates_candidate": {
+              "instrument": "CORRA_2027-03",
+              "asset_class": "rates",
+              "rationale": "Pay CRAH27 to fade the existing 4.45bn receive rather than join cash-strip cheapness."
+            },
+            "spot_candidate": {
+              "instrument": "USDCAD",
+              "asset_class": "spot_fx",
+              "rationale": "Short USDCAD at 1.4051 is the spot alternative, but that exact trade would not be initiated if flat today."
+            },
+            "options_candidate": null,
+            "selected": "rates",
+            "rationale": "Rates are cleaner than spot. The unowned discrepancy is the crowded CORRA Mar27 receive; the USDCAD short is a spent fade at 1.4051.",
+            "rates_tenor_scan": {
+              "stir_policy_path": {
+                "status": "candidate",
+                "instrument": "CORRA_2027-03",
+                "asset_class": "rates",
+                "rationale": "CRAH27 at 2.995 versus CORRA 2.26 is the one-way crowded receive. Paying it is the unowned side."
+              },
+              "two_year": {
+                "status": "not_compelling",
+                "instrument": "CA 2Y",
+                "asset_class": "rates",
+                "rationale": "Canada 2Y 3.33 restates the same BoC path with worse ownership identification than CRAH27."
+              },
+              "five_year": {
+                "status": "not_compelling",
+                "instrument": "CA 5Y",
+                "asset_class": "rates",
+                "rationale": "Canada 5Y 3.64 is not the crowded receive and not the CFTC 10Y-note extreme."
+              },
+              "ten_year": {
+                "status": "not_compelling",
+                "instrument": "US 10Y",
+                "asset_class": "rates",
+                "rationale": "US 10Y 5.12 has 99th-percentile asset-manager longs, but the desk is already two-way with a 75m trend pay."
+              },
+              "curve": {
+                "status": "not_compelling",
+                "instrument": "CA 2s10s",
+                "asset_class": "curve",
+                "rationale": "Canada 2s10s 60bp has no identified one-way crowded inventory."
+              },
+              "cross_market_rv": {
+                "status": "not_compelling",
+                "instrument": "SOFR-CORRA_2027-03",
+                "asset_class": "rates_rv",
+                "rationale": "The crowding is the outright CORRA receive, not the SOFR-CORRA cross, and SOFR Mar27 is split-desk."
+              },
+              "selected_bucket": "stir_policy_path",
+              "selection_rationale": "Pay CORRA_2027-03 is the best rates expression after scanning STIR, 2Y, 5Y, 10Y, curve, and cross-market RV."
+            }
+          }
+        }
+      ]
+    },
+    "rate-hawk": {
+      "seat": "rate-hawk",
+      "overnight_run_id": "overnight-20261021",
+      "review_id": "review-001",
+      "packet_sha256": "f0f493aafb24e88247596c000992d11d2496da4bc04310be13aa1aea0605fca9",
+      "evidence_cutoff": "2026-10-21T08:22:07.869994-04:00",
+      "memory_context_sha256": "dddbdb724b99c5f72f09fd8e207783ed097828277fd5ba8a4c73658560e0330c",
+      "alerts": [],
+      "required_pitch": null,
+      "risk_put_on": null,
+      "conviction": 65,
+      "thesis": "Canada still underprices oil-driven hikes. March 2027 CORRA at 2.995 sits through a 3.33 two-year while the oil-inflation pressure proxy is RISING and Brent is 108.79 against a 70 MPR assumption. Double the existing 6.25 million pay; keep the September 2027 SOFR and June 2027 AONIA pays; do not add US into housing headlines or add Australia while new Australian risk is blocked.",
+      "invalidation": "March 2027 CORRA implied back through 2.725 toward cash 2.26 as the Canada 2-year leaves 3.33 and the oil-inflation pressure proxy stops rising.",
+      "expression_memo": {
+        "rates_candidate": {
+          "instrument": "CORRA_2027-03",
+          "asset_class": "rates",
+          "rationale": "Pay March 2027 CORRA at 2.995 as the live Canada hike-start residual versus cash 2.26 and 2-year 3.33."
+        },
+        "spot_candidate": {
+          "instrument": "USDCAD",
+          "asset_class": "spot_fx",
+          "rationale": "Short USDCAD at 1.405 would express a more hawkish Bank of Canada in CAD, but mixes Fed path and oil-beta."
+        },
+        "options_candidate": null,
+        "selected": "rates",
+        "rationale": "March 2027 CORRA isolates the underpriced Canada hike path; USDCAD is the noisier mix of USD and oil.",
+        "rates_tenor_scan": {
+          "stir_policy_path": {
+            "status": "candidate",
+            "instrument": "CORRA_2027-03",
+            "asset_class": "rates",
+            "rationale": "CORRA cash 2.26 versus March 2027 2.995 is the markable underpriced hike-start. New AONIA risk is blocked. EA futures unavailable. JP TONA is eligible but not the live oil impulse."
+          },
+          "two_year": {
+            "status": "not_compelling",
+            "instrument": "CA_2Y",
+            "asset_class": "rates",
+            "rationale": "Canada 2-year 3.33 confirms the strip is cheap but is dated 19 Oct versus live CORRA."
+          },
+          "five_year": {
+            "status": "not_compelling",
+            "instrument": "US_5Y",
+            "asset_class": "rates",
+            "rationale": "US 5-year 4.94 is unchanged on the day and is not the Canada oil-hike residual."
+          },
+          "ten_year": {
+            "status": "not_compelling",
+            "instrument": "US_10Y",
+            "asset_class": "rates",
+            "rationale": "US 10-year 5.12 fell 3bp on housing headlines; that is duration, not Canada policy path."
+          },
+          "curve": {
+            "status": "not_compelling",
+            "instrument": "US_2s10s",
+            "asset_class": "curve",
+            "rationale": "US 2s10s about 33bp and Canada 2s10s about 60bp lack a locked spread to size."
+          },
+          "cross_market_rv": {
+            "status": "not_compelling",
+            "instrument": "SOFR_2027-03-CORRA_2027-03",
+            "asset_class": "rates_rv",
+            "rationale": "The 153bp SOFR-CORRA March 2027 gap is unmatched construction; the impulse is Canada-specific."
+          },
+          "selected_bucket": "stir_policy_path",
+          "selection_rationale": "March 2027 CORRA is the cleanest live expression of underpriced Canadian hikes."
+        }
+      },
+      "actions": [
+        {
+          "action": "HOLD",
+          "position_id": "pos-c9184707c12b",
+          "instrument": "SOFR_2027-09",
+          "asset_class": "rates",
+          "side": "short",
+          "notional_usd": 25000000,
+          "expected_mark_direction": "higher",
+          "rationale": "Keep the 25 million September 2027 SOFR pay. Cash 3.88 versus implied 4.74 still prices about 86bp of hikes, and the contract has moved up from 4.71, but housing-versus-hikes headlines and the 10-year at 5.12 are a reason not to add US risk.",
+          "expression_memo": {
+            "rates_candidate": null,
+            "spot_candidate": null,
+            "options_candidate": null,
+            "selected": "none",
+            "rationale": "Existing September 2027 SOFR pay is kept; no new US tenor."
+          },
+          "reason": "Keep the 25 million September 2027 SOFR pay. Cash 3.88 versus implied 4.74 still prices about 86bp of hikes, and the contract has moved up from 4.71, but housing-versus-hikes headlines and the 10-year at 5.12 are a reason not to add US risk."
+        },
+        {
+          "action": "ADD",
+          "position_id": "pos-2709875e8c9c",
+          "instrument": "CORRA_2027-03",
+          "asset_class": "rates",
+          "side": "short",
+          "notional_usd": 6250000,
+          "expected_mark_direction": "higher",
+          "rationale": "Add 6.25 million to the March 2027 CORRA pay, taking it to 12.5 million, because 2.995 still sits through Canada 2-year 3.33 while the oil-inflation pressure proxy is RISING and Brent is 108.79. Size stays modest because underlying CPI is about 1.85 percent and employment is cooling.",
+          "expression_memo": {
+            "rates_candidate": {
+              "instrument": "CORRA_2027-03",
+              "asset_class": "rates",
+              "rationale": "Pay March 2027 CORRA at 2.995 as the live Canada hike-start residual versus cash 2.26 and 2-year 3.33."
+            },
+            "spot_candidate": {
+              "instrument": "USDCAD",
+              "asset_class": "spot_fx",
+              "rationale": "Short USDCAD at 1.405 would express a more hawkish Bank of Canada in CAD, but mixes Fed path and oil-beta."
+            },
+            "options_candidate": null,
+            "selected": "rates",
+            "rationale": "March 2027 CORRA isolates the underpriced Canada hike path; USDCAD is the noisier mix of USD and oil.",
+            "rates_tenor_scan": {
+              "stir_policy_path": {
+                "status": "candidate",
+                "instrument": "CORRA_2027-03",
+                "asset_class": "rates",
+                "rationale": "CORRA cash 2.26 versus March 2027 2.995 is the markable underpriced hike-start. New AONIA risk is blocked. EA futures unavailable. JP TONA is eligible but not the live oil impulse."
+              },
+              "two_year": {
+                "status": "not_compelling",
+                "instrument": "CA_2Y",
+                "asset_class": "rates",
+                "rationale": "Canada 2-year 3.33 confirms the strip is cheap but is dated 19 Oct versus live CORRA."
+              },
+              "five_year": {
+                "status": "not_compelling",
+                "instrument": "US_5Y",
+                "asset_class": "rates",
+                "rationale": "US 5-year 4.94 is unchanged on the day and is not the Canada oil-hike residual."
+              },
+              "ten_year": {
+                "status": "not_compelling",
+                "instrument": "US_10Y",
+                "asset_class": "rates",
+                "rationale": "US 10-year 5.12 fell 3bp on housing headlines; that is duration, not Canada policy path."
+              },
+              "curve": {
+                "status": "not_compelling",
+                "instrument": "US_2s10s",
+                "asset_class": "curve",
+                "rationale": "US 2s10s about 33bp and Canada 2s10s about 60bp lack a locked spread to size."
+              },
+              "cross_market_rv": {
+                "status": "not_compelling",
+                "instrument": "SOFR_2027-03-CORRA_2027-03",
+                "asset_class": "rates_rv",
+                "rationale": "The 153bp SOFR-CORRA March 2027 gap is unmatched construction; the impulse is Canada-specific."
+              },
+              "selected_bucket": "stir_policy_path",
+              "selection_rationale": "March 2027 CORRA is the cleanest live expression of underpriced Canadian hikes."
+            }
+          },
+          "reason": "Add 6.25 million to the March 2027 CORRA pay, taking it to 12.5 million, because 2.995 still sits through Canada 2-year 3.33 while the oil-inflation pressure proxy is RISING and Brent is 108.79. Size stays modest because underlying CPI is about 1.85 percent and employment is cooling."
+        },
+        {
+          "action": "HOLD",
+          "position_id": "pos-9cbf3f27dfff",
+          "instrument": "AONIA_2027-06",
+          "asset_class": "rates",
+          "side": "short",
+          "notional_usd": 25000000,
+          "expected_mark_direction": "higher",
+          "rationale": "Keep the 25 million June 2027 AONIA pay. Cash 4.60 versus 4.82 still prices only about 22bp of hikes, the thinnest G10 hike strip in the book, but new Australian risk is blocked so the line is not increased.",
+          "expression_memo": {
+            "rates_candidate": null,
+            "spot_candidate": null,
+            "options_candidate": null,
+            "selected": "none",
+            "rationale": "Existing June 2027 AONIA pay is kept; Australian new risk is blocked."
+          },
+          "reason": "Keep the 25 million June 2027 AONIA pay. Cash 4.60 versus 4.82 still prices only about 22bp of hikes, the thinnest G10 hike strip in the book, but new Australian risk is blocked so the line is not increased."
+        }
+      ]
+    },
+    "rate-dove": {
+      "seat": "rate-dove",
+      "overnight_run_id": "overnight-20261021",
+      "review_id": "review-001",
+      "packet_sha256": "f0f493aafb24e88247596c000992d11d2496da4bc04310be13aa1aea0605fca9",
+      "evidence_cutoff": "2026-10-21T08:22:07.869994-04:00",
+      "memory_context_sha256": "65b398f647abe84ba79f8e447f781ba1df55fac817f945148c8e1395eb4c3dc6",
+      "alerts": [],
+      "required_pitch": null,
+      "risk_put_on": null,
+      "conviction": 60,
+      "thesis": "Canada is still pricing a 2027 re-hike cycle that cash CORRA has not delivered. Overnight CORRA is 2.26 versus CRAH27 2.995, CRAM27 3.20, CRAU27 3.34 and CRAZ27 3.45, so the owned 2027 H-Z receive still fades about 73.5 to 119 basis points of unpaid tightening. Restrictive settings and cooling Canadian labor should stop that path from being delivered; the Canada prima-pressure proxy remaining RISING with WTI 101.79 is the hawkish risk that blocks an add, not a reason to pay the strip.",
+      "invalidation": "Sustained strip re-pricing back through the entry average, or cash CORRA rising from 2.26 toward March 2027 2.995.",
+      "expression_memo": {
+        "rates_candidate": null,
+        "spot_candidate": null,
+        "options_candidate": null,
+        "selected": "none",
+        "rationale": "Not expanding. Keep the working 2027 CORRA strip receive."
+      },
+      "actions": [
+        {
+          "action": "HOLD",
+          "position_id": "pos-9849cf751c27",
+          "instrument": "CORRA_2027H-Z",
+          "asset_class": "rates",
+          "side": "long",
+          "notional_usd": 42500000,
+          "rationale": "Keep the existing 42.5 million 2027 CORRA H-Z receive from 3.40. Packet implieds 2.995/3.20/3.34/3.45 versus cash 2.26 still price 73.5-119bp of unpaid hikes, so the strip remains the dove residual. Do not OPEN a duplicate. Do not ADD: the Canada prima-pressure proxy is RISING and CA 10Y 3.93 after +9bp 1d is the hawkish energy tape. Do not REDUCE or CLOSE: harvest is not required and cash has not delivered the path.",
+          "reason": "Keep the existing 42.5 million 2027 CORRA H-Z receive from 3.40. Packet implieds 2.995/3.20/3.34/3.45 versus cash 2.26 still price 73.5-119bp of unpaid hikes, so the strip remains the dove residual. Do not OPEN a duplicate. Do not ADD: the Canada prima-pressure proxy is RISING and CA 10Y 3.93 after +9bp 1d is the hawkish energy tape. Do not REDUCE or CLOSE: harvest is not required and cash has not delivered the path.",
+          "expression_memo": {
+            "rates_candidate": null,
+            "spot_candidate": null,
+            "options_candidate": null,
+            "selected": "none",
+            "rationale": "No incremental Canada risk; keep the existing 2027 CORRA strip receive."
+          }
+        }
+      ]
+    },
+    "perma-bull": {
+      "seat": "perma-bull",
+      "overnight_run_id": "overnight-20261021",
+      "review_id": "review-001",
+      "packet_sha256": "f0f493aafb24e88247596c000992d11d2496da4bc04310be13aa1aea0605fca9",
+      "evidence_cutoff": "2026-10-21T08:22:07.869994-04:00",
+      "memory_context_sha256": "9c12c1fd97b7037f007de1af08431ceb27d1bb3daca9b74c5ec985885d986035",
+      "alerts": [],
+      "required_pitch": null,
+      "risk_put_on": null,
+      "conviction": 62,
+      "thesis": "WTI 101.79 and Brent 108.79 with Hormuz engine-room attacks still ramping is an inflation impulse, not a growth break: VIX 18.44 and the S&P at 7712 still absorb it. Overnight CORRA 2.26 versus March 2027 at 2.995 prices only 73.5bp of Bank of Canada catch-up versus that oil tape and a still-rising Canada energy-pass-through proxy. Keep the existing March 2027 CORRA pay; the implied has not retraced that path, so this is not a size-up. Keep March 2027 SOFR at 4.525 versus cash 3.88 and March 2027 AONIA at 4.79 versus cash 4.60. Gold at 4142.6 is a geopolitical hedge, not a cover signal.",
+      "invalidation": "Cover the Canada pay if March 2027 CORRA falls from 2.995 toward cash 2.26 while Brent 108.79 and WTI 101.79 reverse, implying the hike path is abandoned. Cover the US pay if March 2027 SOFR moves down from 4.525 because the strip validates skip-October and removes December. Cover the Australia pay if March AONIA returns to cash 4.60 without a higher cash rate. A jump in VIX 18.44 with the S&P reversing the 7712 tape would also break the book. Do not use a 105 WTI headline as a trigger.",
+      "expression_memo": {
+        "rates_candidate": null,
+        "spot_candidate": null,
+        "options_candidate": null,
+        "selected": "none",
+        "rationale": "Not expanding. Keep the live March 2027 SOFR, CORRA, and AONIA pays."
+      },
+      "actions": [
+        {
+          "action": "HOLD",
+          "position_id": "pos-dd6fdaf39119",
+          "instrument": "CORRA_2027-03",
+          "asset_class": "rates",
+          "side": "short",
+          "notional_usd": 50000000,
+          "rationale": "Keep the 50 million March 2027 CORRA pay from 3.13 versus live 2.995; cash 2.26 still maps to a 73.5bp oil-inflation hike path, so the implied has not retraced and this is not a size-up.",
+          "reason": "Keep the 50 million March 2027 CORRA pay from 3.13 versus live 2.995; cash 2.26 still maps to a 73.5bp oil-inflation hike path, so the implied has not retraced and this is not a size-up.",
+          "expression_memo": {
+            "rates_candidate": null,
+            "spot_candidate": null,
+            "options_candidate": null,
+            "selected": "none",
+            "rationale": "No incremental Canada risk; keep the existing March 2027 CORRA pay."
+          }
+        },
+        {
+          "action": "HOLD",
+          "position_id": "pos-78563c24fe05",
+          "instrument": "AONIA_2027-03",
+          "asset_class": "rates",
+          "side": "short",
+          "notional_usd": 25000000,
+          "rationale": "Keep the 25 million March 2027 AONIA pay at 4.79 versus cash 4.60 as the existing Australian oil-inflation leg; Australian labor gaps close new Australian risk, so there is no add.",
+          "reason": "Keep the 25 million March 2027 AONIA pay at 4.79 versus cash 4.60 as the existing Australian oil-inflation leg; Australian labor gaps close new Australian risk, so there is no add.",
+          "expression_memo": {
+            "rates_candidate": null,
+            "spot_candidate": null,
+            "options_candidate": null,
+            "selected": "none",
+            "rationale": "No incremental Australia risk; keep the existing March 2027 AONIA pay."
+          }
+        },
+        {
+          "action": "HOLD",
+          "position_id": "pos-35db4e56bf42",
+          "instrument": "SOFR_2027-03",
+          "asset_class": "rates",
+          "side": "short",
+          "notional_usd": 50000000,
+          "rationale": "Keep the 50 million March 2027 SOFR pay at 4.525 versus cash 3.88; skip-October then December is still too small versus WTI 101.79 and Brent 108.79, and a 0.5bp tick is not permission to add.",
+          "reason": "Keep the 50 million March 2027 SOFR pay at 4.525 versus cash 3.88; skip-October then December is still too small versus WTI 101.79 and Brent 108.79, and a 0.5bp tick is not permission to add.",
+          "expression_memo": {
+            "rates_candidate": null,
+            "spot_candidate": null,
+            "options_candidate": null,
+            "selected": "none",
+            "rationale": "No incremental US risk; keep the existing March 2027 SOFR pay."
+          }
+        }
+      ]
+    },
+    "perma-bear": {
+      "seat": "perma-bear",
+      "overnight_run_id": "overnight-20261021",
+      "review_id": "review-001",
+      "packet_sha256": "f0f493aafb24e88247596c000992d11d2496da4bc04310be13aa1aea0605fca9",
+      "evidence_cutoff": "2026-10-21T08:22:07.869994-04:00",
+      "memory_context_sha256": "2d9f990b0a0f19a8da73d03364c99af28b35ec9eb7d92e8de00d4dd602ad4e73",
+      "alerts": [],
+      "required_pitch": null,
+      "risk_put_on": null,
+      "conviction": 64,
+      "thesis": "The cleanest defensive expression is still receive-duration in US 10-year: housing is the live growth channel, the 10-year remains a 94th-percentile 5.12 after only a 3bp housing-led giveback, and receiving SOFR/CORRA/TONA strips that already price hikes above cash would fade tightening rather than own slowdown.",
+      "invalidation": "The receive is wrong if the US 10-year reverses through the 5.24 entry on a renewed oil or term-premium backup.",
+      "expression_memo": {
+        "rates_candidate": null,
+        "spot_candidate": null,
+        "options_candidate": null,
+        "selected": "none",
+        "rationale": "Not expanding. Keep the live US 10-year receive; a 2027 SOFR receive would fade already-priced hikes."
+      },
+      "actions": [
+        {
+          "action": "HOLD",
+          "position_id": "pos-5ac8fc69cb81",
+          "instrument": "US_10Y",
+          "asset_class": "rates",
+          "side": "long",
+          "notional_usd": 12500000,
+          "rationale": "Sidecar already has LONG US_10Y pos-5ac8fc69cb81 at 5.24 / 12.5m, marked 5.12. Do not OPEN a duplicate and do not ADD after the housing-led 3bp dip: oil is still 101.79/108.79, inflation score 63.1 remains warm, and 12bp from entry is working but not a new edge. Harvest is not required. Shocked risk remains 0.125m versus the 10m cap.",
+          "reason": "Sidecar already has LONG US_10Y pos-5ac8fc69cb81 at 5.24 / 12.5m, marked 5.12. Do not OPEN a duplicate and do not ADD after the housing-led 3bp dip: oil is still 101.79/108.79, inflation score 63.1 remains warm, and 12bp from entry is working but not a new edge. Harvest is not required. Shocked risk remains 0.125m versus the 10m cap.",
+          "expression_memo": {
+            "rates_candidate": null,
+            "spot_candidate": null,
+            "options_candidate": null,
+            "selected": "none",
+            "rationale": "Not expanding. Keep the live US 10-year receive."
+          }
+        }
+      ]
+    },
+    "catalyst-junkie": {
+      "seat": "catalyst-junkie",
+      "overnight_run_id": "overnight-20261021",
+      "review_id": "review-001",
+      "packet_sha256": "f0f493aafb24e88247596c000992d11d2496da4bc04310be13aa1aea0605fca9",
+      "evidence_cutoff": "2026-10-21T08:22:07.869994-04:00",
+      "memory_context_sha256": "a832bd5a60d79493c52a70637f15e3e79523b6048944ac51ac6bc3823ada31d7",
+      "alerts": [],
+      "required_pitch": null,
+      "risk_put_on": null,
+      "conviction": 61,
+      "thesis": "Hormuz engine-room strikes remain the dated oil-to-Fed-path mechanism. Mar27 SOFR at 4.525 versus cash 3.88 still prices only about 64.5bp of tightening, a skip-October / hike-December-plus-a-bit map rather than an energy-war terminal. Crude eased to WTI 101.79 / Brent 108.79 and that hike is already partly in the strip, so do not add; the line is 0.5bp through 4.52 and headlines have not faded, so do not close. Hold pos-fca0c79a2e45. Do not reopen CA/EA/JP or spot.",
+      "invalidation": "Close if WTI and Brent fail while March 2027 SOFR cannot hold above 4.525, or if an October skip with dovish guidance cuts December and March odds.",
+      "expression_memo": {
+        "rates_candidate": null,
+        "spot_candidate": null,
+        "options_candidate": null,
+        "selected": "none",
+        "rationale": "Keep the live March 2027 SOFR pay as the Hormuz/hike expression."
+      },
+      "actions": [
+        {
+          "action": "HOLD",
+          "position_id": "pos-fca0c79a2e45",
+          "instrument": "SOFR_2027-03",
+          "asset_class": "rates",
+          "side": "short",
+          "rationale": "Manage existing pay pos-fca0c79a2e45. Engine-room strikes are still the dated mechanism and Mar27 at 4.525 versus cash 3.88 still prices only about 64.5bp. Crude's ease to 101.79/108.79 and the fact that the oil-hike is already partly in the strip cut remaining edge, so do not ADD. The line is 0.5bp through the 4.52 entry and headlines have not faded, so do not CLOSE. Do not OPEN a duplicate SOFR_2027-03 or a new CA/EA/JP line.",
+          "thesis": "Pay SOFR_2027-03: live Hormuz supply shock versus a skip-Oct / hike-Dec-plus-a-bit strip. HOLD existing position_id pos-fca0c79a2e45.",
+          "invalidation": "Hormuz headlines fade and crude extends through WTI 101.79 / Brent 108.79 while SOFR_2027-03 fails to hold above 4.525; an October skip with dovish guidance cuts Dec/Mar odds; or a housing/growth scare collapses Mar27 toward cash independently of oil.",
+          "notional_usd": 20000000,
+          "expected_mark_direction": "higher",
+          "reason": "Manage existing pay pos-fca0c79a2e45. Engine-room strikes are still the dated mechanism and Mar27 at 4.525 versus cash 3.88 still prices only about 64.5bp. Crude's ease to 101.79/108.79 and the fact that the oil-hike is already partly in the strip cut remaining edge, so do not ADD. The line is 0.5bp through the 4.52 entry and headlines have not faded, so do not CLOSE. Do not OPEN a duplicate SOFR_2027-03 or a new CA/EA/JP line.",
+          "expression_memo": {
+            "rates_candidate": null,
+            "spot_candidate": null,
+            "options_candidate": null,
+            "selected": "none",
+            "rationale": "No incremental US STIR risk; keep the existing March 2027 SOFR pay."
+          }
+        }
+      ]
+    },
+    "no-trade-skeptic": {
+      "seat": "no-trade-skeptic",
+      "overnight_run_id": "overnight-20261021",
+      "review_id": "review-001",
+      "packet_sha256": "f0f493aafb24e88247596c000992d11d2496da4bc04310be13aa1aea0605fca9",
+      "evidence_cutoff": "2026-10-21T08:22:07.869994-04:00",
+      "memory_context_sha256": "c941d56e85083484480b44d0b150cdbc0d246f42da0a36bc8de9044aed47d382",
+      "alerts": [],
+      "required_pitch": null,
+      "risk_put_on": null,
+      "conviction": 58,
+      "thesis": "No new risk; official SOFR 3.88 is the zero benchmark versus a hike-priced strip from December 2026 at 4.245 through September 2027 at 4.74.",
+      "invalidation": "Reopen only if a United States, Canada, euro-area, or Japan catalyst reprints after the oil fade while the front SOFR strip fails to hold the priced path.",
+      "expression_memo": {
+        "rates_candidate": null,
+        "spot_candidate": null,
+        "options_candidate": null,
+        "selected": "none",
+        "rationale": "No trade. Stay flat at the official SOFR zero benchmark; the hike path is already in the strip."
+      },
+      "actions": [
+        {
+          "action": "HOLD",
+          "rationale": "Stay flat; paying official SOFR on shocked-risk capital to express an already-priced hike path is worse than the zero benchmark.",
+          "reason": "Stay flat; paying official SOFR on shocked-risk capital to express an already-priced hike path is worse than the zero benchmark.",
+          "expression_memo": {
+            "rates_candidate": null,
+            "spot_candidate": null,
+            "options_candidate": null,
+            "selected": "none",
+            "rationale": "No incremental rates or spot risk; the book is flat and the overnight tape is priced."
+          }
+        }
+      ],
+      "funding_view": {
+        "current_sofr": "NY Fed official SOFR 3.88 percent, 20 Oct, ACT/360. That fixing is the zero benchmark and the realized funding authority for this review.",
+        "sr3_forward_view": "Over an overnight horizon the listed strip is deferred, not a one-session funding forecast: Dec26 4.245, Mar27 4.525, Jun27 4.685, Sep27 4.74. That path already prices a front-loaded rise from 3.88 toward 4.245 by Dec26 and 4.74 by Sep27. Overnight realized funding is the official SOFR print, not those deferred contracts.",
+        "forward_funding_assessment": "lower",
+        "implication": "Remain at the zero official-SOFR benchmark. Shocked-risk capital would pay 3.88 percent ACT/360 with no residual edge after funding. The strip, US 10Y 5.12, and CORRA 2.26 versus 2.995 already embed the hike and receive views; paying SOFR to warehouse overnight Hormuz/oil gap risk with NZ/AU closed and no listed vol is a funding cost, not a trade. Flat cash is not alpha; paying SOFR on uncompensated overnight risk is worse."
+      }
+    }
+  },
+  "pm_decisions": {
+    "swinger": {
+      "pm_id": "swinger",
+      "overnight_run_id": "overnight-20261021",
+      "review_id": "review-001",
+      "packet_sha256": "f0f493aafb24e88247596c000992d11d2496da4bc04310be13aa1aea0605fca9",
+      "evidence_cutoff": "2026-10-21T08:22:07.869994-04:00",
+      "memory_context_sha256": "208174fc0a116c936781d37f1208b2ed90c3b200bd9adc6eb0fc3bbb234f23b7",
+      "principal_model": "grok-4.6",
+      "subagent_count": 0,
+      "subagent_models": [],
+      "conviction": 74,
+      "thesis": "Stay concentrated long receive Canada March 2027. Official CORRA cash at 2.26 still sits far below the 2.995 contract, so the strip continues to price a large policy rebound that has not printed. Energy risk, Hormuz disruption, and rising domestic pressure are real, but oil already eased from the prior freeze and the contract still embeds a wide cash-to-strip gap. Overnight flow is split and does not justify splitting or flipping this book.",
+      "invalidation": "A sustained lift in March CORRA back through the low 3.10s together with confirmation that Canadian policy is reversing higher with oil and domestic pressure, not a one-session squeeze.",
+      "pressure_assessment": {
+        "judgment_effect": "sharpening",
+        "junior_vs_self": "style",
+        "chase_temptation": "yes",
+        "protecting_gains": "no",
+        "heater_risk": "yes",
+        "allocator_vs_noise": "short_horizon_noise"
+      },
+      "opportunity_scan": [
+        {
+          "instrument": "CORRA_2027-03",
+          "asset_class": "rates",
+          "side": "long",
+          "rationale": "Cash 2.26 versus 2.995 still prices a large rebound; the existing concentrated receive remains the Canada seat worth holding."
+        },
+        {
+          "instrument": "CORRA_2027-06",
+          "asset_class": "rates",
+          "side": "long",
+          "rationale": "June at 3.20 prices even more rebound than March, but opening it would split the book to chase a neighboring contract."
+        },
+        {
+          "instrument": "SOFR_2027-03",
+          "asset_class": "rates",
+          "side": "short",
+          "rationale": "March SOFR at 4.525 sits well above official 3.88, but that is a United States strip fight and not this concentrated Canada book."
+        },
+        {
+          "instrument": "USDCAD",
+          "asset_class": "spot_fx",
+          "side": "long",
+          "rationale": "Spot 1.40508 with oil still bid is the leading trader's seat; chasing it would dilute the rates thesis."
+        },
+        {
+          "instrument": "US_10Y",
+          "asset_class": "rates",
+          "side": "short",
+          "rationale": "Treasuries at 5.12 with an oil shock are a valid pay, but adding them would break concentration without improving the Canada receive."
+        }
+      ],
+      "actions": [
+        {
+          "action": "HOLD",
+          "instrument": "CORRA_2027-03",
+          "side": "long",
+          "notional_usd": 4000000000,
+          "asset_class": "rates",
+          "position_id": "pm-swinger-2070479ca321",
+          "expected_mark_direction": "lower",
+          "rationale": "The receive remains valid: 2.26 cash versus 2.995 March still pays for staying long duration. Size is already concentrated at mandate scale, so adding because juniors expanded the same contract or because the book is slightly behind would be a chase. Reducing into the pay-side trader cluster would be a hedge by another name.",
+          "reason": "Thesis intact; keep the concentrated March receive and do not chase overnight flow."
+        }
+      ],
+      "execution": {
+        "principal_model": "grok-4.6",
+        "subagent_count": 0,
+        "subagent_models": []
+      }
+    },
+    "pragmatist": {
+      "pm_id": "pragmatist",
+      "overnight_run_id": "overnight-20261021",
+      "review_id": "review-001",
+      "packet_sha256": "f0f493aafb24e88247596c000992d11d2496da4bc04310be13aa1aea0605fca9",
+      "evidence_cutoff": "2026-10-21T08:22:07.869994-04:00",
+      "memory_context_sha256": "5f28fbba3244ec53744623bf105d3deb53d75d749a54c3528f52e21d3f5cde80",
+      "principal_model": "grok-4.6",
+      "subagent_count": 0,
+      "subagent_models": [],
+      "conviction": 58,
+      "thesis": "Keep the Canadian March 2027 receive that is already working versus a 3.13 entry while cash sits at 2.26 and the freeze print is 2.995. Do not add size and do not open a second book while this seat cannot take new risk. Leave the unpriceable New Zealand versus United States 10-year short in place rather than inventing an exit.",
+      "invalidation": "A sustained rise in March 2027 CORRA back through 3.13, or a confirmed re-tightening path in Canada consistent with rising Prima pressure, would invalidate holding the full receive and argue to cut that markable line. The residual cross-market short is not an exit candidate until it can be priced.",
+      "opportunity_scan": [
+        {
+          "instrument": "CORRA_2027-03",
+          "asset_class": "rates",
+          "rationale": "Cash at 2.26 versus a 2.995 freeze print still prices a large tightening path; this is the only expanding markable handoff and it duplicates the existing receive."
+        },
+        {
+          "instrument": "SOFR_2027-03",
+          "asset_class": "rates",
+          "rationale": "March SOFR at 4.525 versus official cash 3.88 is a clean United States rates expression, but it would be new risk this seat cannot take."
+        },
+        {
+          "instrument": "US_10Y",
+          "asset_class": "rates",
+          "rationale": "The 10-year at 5.12 with oil still elevated is a duration diversifier versus Canadian front-end receive, not available under the new-risk lock."
+        },
+        {
+          "instrument": "AONIA_2027-03",
+          "asset_class": "rates",
+          "rationale": "March AONIA at 4.79 versus cash 4.60 is a tight Australian front-end, useful as a non-Canada rates name and still new risk."
+        },
+        {
+          "instrument": "USDCAD",
+          "asset_class": "spot_fx",
+          "rationale": "Spot 1.40508 could offset some Canadian rates beta through the dollar-Canada channel, but it would be a new line this seat cannot open."
+        }
+      ],
+      "portfolio_construction": {
+        "existing_book_summary": "Long 450 million March 2027 CORRA receive, position pm-pragmatist-4e0cbc4e0b05, entry 3.13, freeze mark 2.995 with a 3.01 companion print; harvest review is not required. Short 80 million New Zealand versus United States 10-year, position pm-pragmatist-3afafe53c6d7, entry about -23bp, current mark null, quarantined and unmarkable, which is why new risk is unavailable this cycle.",
+        "independent_handoff_opportunities": [
+          {
+            "instrument": "CORRA_2027-03",
+            "asset_class": "rates",
+            "markable": true,
+            "rationale": "Unique expanding markable handoff: carry-is-king wants receive 25 million, positioning-cynic wants pay 50 million, rate-hawk wants to add pay 6.25 million. Adding any of it would duplicate the existing 450 million receive and is blocked as new risk."
+          }
+        ],
+        "adverse_scenario": "Rising Prima pressure and still-elevated oil keep the Bank of Canada from delivering the remaining implied easing, so March 2027 CORRA backs up toward 3.20 and through the 3.13 entry while the quarantined New Zealand versus United States 10-year short stays unmarkable, leaving no hedge and no recycle of risk capital.",
+        "candidate_interactions": [
+          {
+            "instrument": "CORRA_2027-03",
+            "interaction": "duplicate_beta",
+            "rationale": "Any add or opposing pay in March 2027 CORRA stacks or fights the same Canadian front-end already owned at 450 million."
+          },
+          {
+            "instrument": "SOFR_2027-03",
+            "interaction": "diversify",
+            "rationale": "United States March SOFR would spread country risk versus the Canada receive, but it is new risk."
+          },
+          {
+            "instrument": "US_10Y",
+            "interaction": "complement",
+            "rationale": "Treasury duration would add a second rates path beside the Canadian strip, not a hedge of the existing receive."
+          },
+          {
+            "instrument": "USDCAD",
+            "interaction": "offset",
+            "rationale": "A dollar-Canada line could offset some Canadian rates beta through the FX channel, still a new position."
+          },
+          {
+            "instrument": "AONIA_2027-03",
+            "interaction": "diversify",
+            "rationale": "Australian front-end is a separate cash-rate path from CORRA, and still new risk."
+          },
+          {
+            "instrument": "NZ-US_10Y",
+            "interaction": "unrelated",
+            "rationale": "The existing unmarkable residual does not complete or hedge the live CORRA receive and cannot be resized."
+          }
+        ],
+        "chosen_actions_rationale": "HOLD the markable 450 million CORRA receive because it remains inside thesis versus 3.13, harvest is not due, and cutting it would shrink the only working expression without any ability to replace it. HOLD the 80 million New Zealand versus United States 10-year residual because it cannot be marked for an exit. Reject every complement because each requires OPEN, ADD, or HEDGE, all of which are unavailable while the residual is quarantined.",
+        "rejected_complements": [
+          {
+            "instrument": "CORRA_2027-03",
+            "reason": "Adding to the receive or opening an opposing pay is new risk and duplicate Canadian front-end beta."
+          },
+          {
+            "instrument": "SOFR_2027-03",
+            "reason": "New United States rates line is blocked under unavailable new risk."
+          },
+          {
+            "instrument": "US_10Y",
+            "reason": "New Treasury duration is blocked under unavailable new risk."
+          },
+          {
+            "instrument": "USDCAD",
+            "reason": "New dollar-Canada FX is blocked under unavailable new risk."
+          },
+          {
+            "instrument": "AONIA_2027-03",
+            "reason": "New Australian front-end is blocked under unavailable new risk."
+          }
+        ]
+      },
+      "actions": [
+        {
+          "action": "HOLD",
+          "instrument": "CORRA_2027-03",
+          "side": "long",
+          "notional_usd": 450000000,
+          "asset_class": "rates",
+          "position_id": "pm-pragmatist-4e0cbc4e0b05",
+          "expected_mark_direction": "lower",
+          "rationale": "Receive stays on at 450 million. Entry 3.13 versus freeze 2.995 still supports the long-duration convention, harvest review is not required, and size cannot be replaced if cut.",
+          "reason": "Receive stays on at 450 million. Entry 3.13 versus freeze 2.995 still supports the long-duration convention, harvest review is not required, and size cannot be replaced if cut."
+        },
+        {
+          "action": "HOLD",
+          "instrument": "NZ-US_10Y",
+          "side": "short",
+          "notional_usd": 80000000,
+          "asset_class": "rates_rv",
+          "position_id": "pm-pragmatist-3afafe53c6d7",
+          "rationale": "Quarantined residual with a null mark cannot be flattened at a trusted price; holding it is required so the seat does not force an unpriceable exit.",
+          "reason": "Quarantined residual with a null mark cannot be flattened at a trusted price; holding it is required so the seat does not force an unpriceable exit."
+        }
+      ],
+      "execution": {
+        "principal_model": "grok-4.6",
+        "subagent_count": 0,
+        "subagent_models": []
+      }
+    },
+    "grinder": {
+      "pm_id": "grinder",
+      "overnight_run_id": "overnight-20261021",
+      "review_id": "review-001",
+      "packet_sha256": "f0f493aafb24e88247596c000992d11d2496da4bc04310be13aa1aea0605fca9",
+      "evidence_cutoff": "2026-10-21T08:22:07.869994-04:00",
+      "memory_context_sha256": "f7c4166747a79746a17454c977568f37574d69e2f9deb997c83f53f824d6e45a",
+      "principal_model": "grok-4.6",
+      "subagent_count": 0,
+      "subagent_models": [],
+      "conviction": 61,
+      "thesis": "The Canadian front end already prices a large cash-to-March tightening path, domestic price pressure is still rising, and the only expanding rates name is two-way between receive and pay. Neither that contract nor the marked US March SOFR or 10-year shows a one-sided expected edge after charging official SOFR on a plausible policy-shock loss. Stay flat.",
+      "invalidation": "March Canadian implied would need to sit at a clear extreme versus cash and the Canadian 2-year, with price pressure moving in the same direction as the trade, so that expected P&L still covers official SOFR on shocked-risk capital. A one-sided US March SOFR or 10-year dislocation with the same property would also reopen risk.",
+      "opportunity_scan": [
+        {
+          "instrument": "CORRA_2027-03",
+          "asset_class": "rates",
+          "rationale": "Best-marked Canadian front-end contract: cash 2.26 versus 2.995 implied, with a rising strip and a rising price-pressure proxy, but junior receive and pay views cancel as a one-way deployment."
+        },
+        {
+          "instrument": "SOFR_2027-03",
+          "asset_class": "rates",
+          "rationale": "Official cash 3.88 versus 4.525 implied is a clean US hike-path mark, already held both long and short elsewhere, with no new one-sided catalyst."
+        },
+        {
+          "instrument": "US_10Y",
+          "asset_class": "rates",
+          "rationale": "Cash 5.12 in a 4.79/5.12/5.42 stack; duration is large relative to a two-way long-versus-short debate."
+        },
+        {
+          "instrument": "USDCAD",
+          "asset_class": "spot_fx",
+          "rationale": "Oil eased on a still-messy Hormuz tape with resilient exports, but missing forward points keep expected edge versus official SOFR incomplete."
+        },
+        {
+          "instrument": "US_2Y",
+          "asset_class": "rates",
+          "rationale": "Cash 4.79 sits above official SOFR 3.88 and frames the front-end hike path without offering a tighter or cleaner expression than March SOFR."
+        }
+      ],
+      "deployment_hurdle": {
+        "benchmark": "Official NY Fed SOFR 3.88% ACT/360 charged on shocked-risk capital.",
+        "candidate_assessments": [
+          {
+            "instrument": "CORRA_2027-03",
+            "asset_class": "rates",
+            "markable": true,
+            "hurdle_result": "does_not_clear",
+            "rationale": "Cash CORRA 2.26 versus March 2027 implied 2.995 already marks about 74 basis points of tightening, with Canadian 2s at 3.33 and the strip rising through 3.45 by December 2027. Receive needs that path to be excessive while domestic price pressure is rising. Pay needs even faster tightening than a path that is already steep, and crude has eased from the prior print. Trader expressions split receive versus pay. A 50-75bp two-way policy shock dominates any contested expected edge after a 3.88 percent official SOFR charge on that shocked capital.",
+            "material_missing_data": [],
+            "ignored_unrelated_gaps": [
+              "NZ official curve and cash rates",
+              "ESTR cash and futures",
+              "AONIA and other Australian new-risk names"
+            ]
+          },
+          {
+            "instrument": "SOFR_2027-03",
+            "asset_class": "rates",
+            "markable": true,
+            "hurdle_result": "does_not_clear",
+            "rationale": "Official SOFR 3.88 versus March 2027 implied 4.525 marks about 65 basis points of hikes. Existing books already sit both long and short the same name, and the frozen equity, VIX, and oil tape does not create a one-sided US policy catalyst. Expected edge after official SOFR on a comparable policy shock does not clear.",
+            "material_missing_data": [],
+            "ignored_unrelated_gaps": [
+              "NZ official curve and cash rates",
+              "ESTR cash and futures",
+              "AONIA and Australian new-risk block"
+            ]
+          }
+        ],
+        "chosen_action_rationale": "HOLD a flat book. The only expanding markable trader-handoff name, March 2027 CORRA, is two-way and does not clear official SOFR 3.88 percent ACT/360 on shocked-risk capital in either direction. March 2027 SOFR also fails the same hurdle. Unrelated NZ, ESTR, and Australia gaps are ignored and are not the reason to stay flat."
+      },
+      "pressure_assessment": {
+        "judgment_effect": "sharpening",
+        "junior_vs_self": "style",
+        "chase_temptation": "yes",
+        "protecting_gains": "not_applicable",
+        "heater_risk": "no",
+        "allocator_vs_noise": "short_horizon_noise"
+      },
+      "actions": [
+        {
+          "action": "HOLD",
+          "rationale": "Neither March 2027 CORRA nor March 2027 SOFR clears official SOFR on shocked-risk capital; the flat book stays flat.",
+          "reason": "Neither March 2027 CORRA nor March 2027 SOFR clears official SOFR on shocked-risk capital; the flat book stays flat.",
+          "expression_memo": {
+            "rates_candidate": null,
+            "spot_candidate": null,
+            "options_candidate": null,
+            "selected": "none",
+            "rationale": "No incremental rates or spot risk; the book is flat."
+          }
+        }
+      ],
+      "execution": {
+        "principal_model": "grok-4.6",
+        "subagent_count": 0,
+        "subagent_models": []
+      }
+    }
+  },
+  "learning_quality_review": {
+    "role": "learning_quality_examiner",
+    "model": "composer-2.5",
+    "call_count": 1,
+    "assessments": [
+      {
+        "owner_type": "trader",
+        "owner_id": "dollar-king",
+        "submission_kind": "performance_reflection",
+        "submission_ref": "rfd-551d4aa318e9",
+        "submission_state": "adequate",
+        "adequate": true,
+        "reasons": [
+          "Causal block complete with valid decision_quality_attribution reaction_function",
+          "Harvest versus thesis distinction tied to oil and Canadian impulse",
+          "Reflection fields specific; lesson is actionable not generic"
+        ]
+      },
+      {
+        "owner_type": "trader",
+        "owner_id": "trend-follower",
+        "submission_kind": "postmortem",
+        "submission_ref": "pmd-06b0602f8ba0",
+        "submission_state": "adequate",
+        "adequate": true,
+        "reasons": [
+          "Causal block complete with decision_quality_attribution expression",
+          "Postmortem separates intact thesis from lagging March 2027 SOFR vehicle",
+          "what_worked, what_failed, assessments, lesson, and future_rule are concrete"
+        ]
+      },
+      {
+        "owner_type": "trader",
+        "owner_id": "value-guy",
+        "submission_kind": "postmortem",
+        "submission_ref": "pmd-0585bb95b1a3",
+        "submission_state": "adequate",
+        "adequate": true,
+        "reasons": [
+          "Causal block complete; marks unavailability versus thesis falsification distinguished",
+          "Postmortem assessments address mark integrity and expression constraints",
+          "no_new_lesson is justified and non-platitude for a zero-result unmarkable exit"
+        ]
+      }
+    ]
+  },
+  "execution": {
+    "parent_model": "grok-4.6",
+    "allowed_subagent_models": [
+      "composer-2.5",
+      "grok-4.6"
+    ],
+    "auto_used": false,
+    "other_models_calls": 0,
+    "total_model_cap": 20,
+    "grok_cap": 18,
+    "composer_cap": 2,
+    "declared_total_model_calls": 20,
+    "declared_grok_calls": 18,
+    "declared_composer_calls": 2
+  }
+}

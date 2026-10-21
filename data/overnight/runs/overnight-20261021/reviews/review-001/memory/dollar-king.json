@@ -1,0 +1,240 @@
+{
+  "active_lessons": [],
+  "as_of": "2026-10-21T08:22:07.869994-04:00",
+  "calibration": {
+    "average_holding_seconds": null,
+    "average_realized_pnl_usd": null,
+    "breakeven": 0,
+    "by_asset_class": {},
+    "closed_trade_count": 0,
+    "conviction_buckets": {
+      "high": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "low": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "medium": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      }
+    },
+    "losses": 0,
+    "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
+    "total_realized_pnl_usd": 0.0,
+    "wins": 0
+  },
+  "capital_owner": null,
+  "consequence": {
+    "competition_cohort_size": 14,
+    "competition_eligible": true,
+    "competition_rank": 1,
+    "competitive_rank": 1,
+    "drawdown_usd": 705227.57,
+    "giveback_usd": 705227.57,
+    "high_water_nav_usd": 100952555.22,
+    "material_threshold_usd": 2000000.0,
+    "nav_usd": 100247327.65,
+    "net_pnl_usd": 247327.65,
+    "pressure_flags": [],
+    "prior_competition_rank": 1,
+    "rank_change": 0,
+    "raw_pnl_rank": 1,
+    "recent_pattern": "mixed",
+    "risk_capital_limit_usd": 10000000.0,
+    "risk_capital_usd": 350000.0,
+    "risk_capital_utilization": 0.035,
+    "session_pnl_change_usd": 0.0,
+    "status": "ok"
+  },
+  "learning": {
+    "competition_eligible": true,
+    "learning_default_age_runs": 0,
+    "learning_default_count": 0,
+    "learning_status": "compliant",
+    "repeated_error_escalations": []
+  },
+  "learning_obligations": [
+    {
+      "kind": "performance_reflection",
+      "obligation_id": "rfd-551d4aa318e9",
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "reference": "rfd-551d4aa318e9",
+      "source_run_id": null
+    }
+  ],
+  "memory_context_sha256": "9607f280bef264ecea9d055e272f6e776098be7aec3ac1adb3b52d5e151c7200",
+  "open_positions": [
+    {
+      "asset_class": "spot_fx",
+      "conviction": 64,
+      "current_notional_usd": 35000000.0,
+      "entry_mark": 1.4,
+      "harvest": {
+        "asset_class": "spot_fx",
+        "catalyst_by": null,
+        "catalyst_logic": null,
+        "current_mark": 1.4073942093541203,
+        "current_notional_usd": 35000000.0,
+        "entry_mark": 1.4010471204188482,
+        "framing": null,
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": 704397.85,
+        "holding_seconds": 2713517,
+        "horizon_elapsed_fraction": null,
+        "horizon_status": "unspecified",
+        "instrument": "USDCAD",
+        "intended_horizon_days": null,
+        "mae_usd": -24023.29,
+        "mechanical_order": false,
+        "mfe_usd": 953561.41,
+        "order_policy": "review_only",
+        "position_id": "pos-5317bc96d4eb",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": null,
+        "realized_pnl_usd": 90604.93,
+        "recorded_mfe_usd": 953561.41,
+        "retained_mfe_fraction": 0.2613,
+        "review_required": true,
+        "review_threshold_usd": 550000.0,
+        "review_triggers": [
+          "material_winner",
+          "giveback"
+        ],
+        "side": "long",
+        "total_pnl_usd": 249163.56,
+        "trade_id": "trd-trader-dollar-king-pos-5317bc96d4eb",
+        "unrealized_pnl_usd": 158558.63
+      },
+      "instrument": "USDCAD",
+      "opened_at": "2026-09-19T22:36:50.082404-04:00",
+      "position_id": "pos-5317bc96d4eb",
+      "risk_capital_usd": 350000.0,
+      "side": "long",
+      "trade_id": "trd-trader-dollar-king-pos-5317bc96d4eb"
+    }
+  ],
+  "owner_id": "dollar-king",
+  "owner_type": "trader",
+  "postmortems_due": [],
+  "profit_harvest": {
+    "mechanical_orders": false,
+    "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
+    "obligations_due": [],
+    "order_policy": "review_only",
+    "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+    "review_required_position_ids": [
+      "pos-5317bc96d4eb"
+    ]
+  },
+  "psychology": {
+    "active_flags": [],
+    "applicable": true,
+    "axes": {
+      "chase_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.1
+      },
+      "complacency": {
+        "band": "calm",
+        "trend": "down",
+        "value": 0.08
+      },
+      "defensiveness": {
+        "band": "calm",
+        "trend": "up",
+        "value": 0.34
+      },
+      "external_pressure": {
+        "band": "calm",
+        "trend": "up",
+        "value": 0.14
+      },
+      "frustration": {
+        "band": "calm",
+        "trend": "up",
+        "value": 0.29
+      },
+      "revenge_pressure": {
+        "band": "calm",
+        "trend": "up",
+        "value": 0.12
+      },
+      "self_trust": {
+        "band": "steady",
+        "trend": "down",
+        "value": 0.56
+      },
+      "thesis_attachment": {
+        "band": "calm",
+        "trend": "up",
+        "value": 0.37
+      }
+    },
+    "boundary": "Private decision machinery. Never quote or paraphrase in public prose. This state never sizes, forces, or blocks a trade.",
+    "metrics": {
+      "conviction_volatility": 0.0,
+      "distortion_verdicts": 0,
+      "self_report_mismatches": 0,
+      "sharpened_verdicts": 0
+    },
+    "profile_version": 1,
+    "recent_events": [
+      {
+        "kind": "session_loss",
+        "magnitude": 0.45702018,
+        "run_id": "overnight-20261016"
+      },
+      {
+        "kind": "session_loss",
+        "magnitude": 0.6810289,
+        "run_id": "overnight-20261020"
+      },
+      {
+        "kind": "giveback",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261020"
+      }
+    ],
+    "required_checks": {},
+    "schema_version": 1,
+    "state_sha256": "ab56384b3a8579bffc25b1a13704de361318764dec68ca45e7cded83431e5c98",
+    "streaks": {
+      "flat_cycles": 0,
+      "session_loss": 4,
+      "session_win": 0
+    }
+  },
+  "recent_closed_trades": [],
+  "recent_funding_views": [],
+  "recent_performance_reflections": [],
+  "reflections_due": [
+    {
+      "created_at": "2026-10-21T08:22:07.869994-04:00",
+      "created_run_id": null,
+      "facts": {
+        "competition_rank": 1,
+        "drawdown_usd": 705227.57,
+        "lesson_ids": [],
+        "net_pnl_usd": 247327.65,
+        "prior_competition_rank": 1,
+        "trade_ids": [
+          "trd-trader-dollar-king-pos-5317bc96d4eb"
+        ]
+      },
+      "reflection_due_id": "rfd-551d4aa318e9",
+      "trigger_ids": [
+        "profit_giveback"
+      ]
+    }
+  ],
+  "schema_version": 5,
+  "type": "IDENTITY_MEMORY_CONTEXT"
+}

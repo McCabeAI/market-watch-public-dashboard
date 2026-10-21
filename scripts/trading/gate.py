@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from scripts.trading.constants import DERISK_ACTIONS, EXPANDING_ACTIONS
-from scripts.trading.errors import LearningGateError, RationaleError
+from scripts.trading.errors import HarvestReviewError, LearningGateError, RationaleError
 from scripts.trading.learning import lesson_consideration_reason
 from scripts.trading.memory import active_lessons, outstanding_due, outstanding_reflections_due
 from scripts.trading.store import TradingStore, assert_identity
@@ -160,6 +160,18 @@ def learning_gate_reason(
     return None
 
 
+def _book_positions(store: TradingStore, owner_type: str, owner_id: str) -> list[dict[str, Any]]:
+    from scripts.trading.consequence import _read_pm_books, _read_trader_books
+
+    if owner_type == "trader":
+        books = _read_trader_books(store)
+        seat = ((books or {}).get("seats") or {}).get(owner_id) or {}
+        return list(seat.get("positions") or [])
+    books = _read_pm_books(store)
+    book = ((books or {}).get("pms") or {}).get(owner_id) or {}
+    return list(book.get("positions") or [])
+
+
 def evaluate_decision_actions(
     store: TradingStore,
     *,
@@ -169,13 +181,17 @@ def evaluate_decision_actions(
     run_id: str | None,
     expected_memory_sha256: str | None,
     trader_books: dict[str, Any] | None = None,
+    positions: list[dict[str, Any]] | None = None,
+    as_of: Any = None,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     """Split a decision into executable actions and explicitly blocked expansions.
 
-    HOLD / NO_TRADE / REDUCE / CLOSE always remain in the executable set.
-    OPEN / ADD / HEDGE fail closed independently when rationale or memory
-    obligations are not met. Same-run postmortems are excluded so a CLOSE
-    in this decision cannot retroactively block a already-valid sibling action.
+    REDUCE / CLOSE remain executable. HOLD / NO_TRADE remain executable unless
+    a profit-harvest review is triggered and the full-size hold is not
+    re-underwritten. OPEN / ADD / HEDGE fail closed independently when
+    rationale or memory obligations are not met. Same-run postmortems are
+    excluded so a CLOSE in this decision cannot retroactively block an
+    already-valid sibling action.
     """
     allowed: list[dict[str, Any]] = []
     blocked: list[dict[str, Any]] = []
@@ -197,6 +213,21 @@ def evaluate_decision_actions(
     # The model cannot hide or replace the sidecar. Flags come from the store
     # on de-risk decisions too, so the journal can record an optional check.
     context["psychology"] = _psychology_context(store, owner_type, owner_id)
+    from scripts.trading.harvest import DERISK_ACTIONS, enforce_harvest_hold
+
+    book_positions = positions
+    if book_positions is None:
+        book_positions = _book_positions(store, owner_type, owner_id)
+    harvest_plan = enforce_harvest_hold(
+        decision,
+        store.trades_for(owner_type, owner_id),
+        book_positions,
+        as_of=as_of,
+        owner_id=owner_id,
+    )
+    decision["_harvest_accepted"] = harvest_plan["accepted"]
+    decision["_harvest_obligations"] = harvest_plan["obligations"]
+    harvest_blocked = {id(row["action"]): row for row in harvest_plan["blocked"]}
     if expanding_actions(decision):
         memory_reason = learning_gate_reason(
             store,
@@ -208,6 +239,10 @@ def evaluate_decision_actions(
         )
     for action in decision_actions(decision):
         kind = action.get("action")
+        harvest_block = harvest_blocked.get(id(action))
+        if harvest_block and kind not in DERISK_ACTIONS:
+            blocked.append(harvest_block)
+            continue
         if kind in EXPANDING_ACTIONS:
             rationale_reason = expansion_rationale_reason(action, decision, owner_id=owner_id)
             if rationale_reason:
@@ -233,6 +268,8 @@ def raise_if_unexecutable(blocked: list[dict[str, Any]], allowed: list[dict[str,
     reason = str(blocked[0].get("reason") or "expansion blocked")
     if "missing required expansion rationale" in reason:
         raise RationaleError(reason)
+    if "harvest_review" in reason:
+        raise HarvestReviewError(reason)
     raise LearningGateError(reason)
 
 

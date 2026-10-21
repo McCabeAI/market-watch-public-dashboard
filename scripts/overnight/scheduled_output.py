@@ -317,6 +317,57 @@ def _scan_decision_new_risk(
     return findings
 
 
+def _enforce_scheduled_harvest(
+    store: OvernightStore,
+    decisions: dict[str, Any],
+    pm_decisions: dict[str, Any],
+    *,
+    prior_books: dict[str, Any],
+    prior_pm: dict[str, Any],
+    as_of: str | None,
+) -> None:
+    """Reject a full-size hold that has not re-underwritten a triggered winner.
+
+    Uses the frozen prior books. Missing ledgers evaluate from those positions
+    alone. This does not create an order.
+    """
+    from scripts.trading.errors import HarvestReviewError
+    from scripts.trading.harvest import continuation_rejection, enforce_harvest_hold
+    from scripts.trading.store import TradingStore
+
+    trading = TradingStore(root=store.root, state_root=store.state_root)
+
+    def trades(owner_type: str, owner_id: str) -> list[dict[str, Any]]:
+        if not trading.index_path().is_file():
+            return []
+        return trading.trades_for(owner_type, owner_id)
+
+    stamp = None
+    if isinstance(as_of, str):
+        try:
+            stamp = parse_iso(as_of)
+        except (TypeError, ValueError):
+            stamp = None
+    for seat, decision in decisions.items():
+        if not isinstance(decision, dict):
+            continue
+        seat_book = ((prior_books or {}).get("seats") or {}).get(seat) or {}
+        positions = seat_book.get("positions") if isinstance(seat_book, dict) else []
+        plan = enforce_harvest_hold(decision, trades("trader", seat), positions or [], as_of=stamp, owner_id=seat)
+        reason = continuation_rejection(decision.get("actions") or [], plan["blocked"])
+        if reason:
+            raise HarvestReviewError(reason)
+    for pm_id, decision in (pm_decisions or {}).items():
+        if not isinstance(decision, dict):
+            continue
+        book = ((prior_pm or {}).get("pms") or {}).get(pm_id) or {}
+        positions = book.get("positions") if isinstance(book, dict) else []
+        plan = enforce_harvest_hold(decision, trades("pm", pm_id), positions or [], as_of=stamp, owner_id=pm_id)
+        reason = continuation_rejection(decision.get("actions") or [], plan["blocked"])
+        if reason:
+            raise HarvestReviewError(reason)
+
+
 def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str, Any]:
     if payload.get("schema_version") != SCHEMA_VERSION:
         raise SchemaError("scheduled output schema_version mismatch")
@@ -436,6 +487,11 @@ def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str,
                 raise EvidenceBoundaryError(f"{seat} learning_gate: missing_memory_context_sha256")
             if supplied_hash != frozen_hash:
                 raise EvidenceBoundaryError(f"{seat} referenced a memory snapshot that is not this seat/run freeze")
+        from scripts.trading.harvest import assert_expansion_lifecycle
+
+        for row in decision["actions"]:
+            if isinstance(row, dict):
+                assert_expansion_lifecycle(row, owner_id=seat)
 
     from scripts.trading.obligations import trusted_obligation_manifest
 
@@ -473,6 +529,14 @@ def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str,
         for pm_id, decision in pm_decisions.items():
             if isinstance(decision, dict) and decision.get("review_id") not in (None, review_id):
                 raise EvidenceBoundaryError(f"{pm_id} review_id mismatch")
+    _enforce_scheduled_harvest(
+        store,
+        decisions,
+        pm_decisions if isinstance(pm_decisions, dict) else {},
+        prior_books=base.get("prior_books") or {},
+        prior_pm=base.get("prior_pm_books") or {},
+        as_of=agent_packet.get("evidence_cutoff"),
+    )
     _enforce_learning_quality(
         payload,
         obligations=obligation_manifest.get("obligations") or [],

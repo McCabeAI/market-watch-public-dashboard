@@ -444,6 +444,12 @@ class SchemaAndBoundaryTests(unittest.TestCase):
             "side": "long",
             "notional_usd": 10_000_000,
             "expected_mark_direction": "higher",
+            "lifecycle": {
+                "framing": "tactical",
+                "horizon_days": 15,
+                "realization_logic": "The front SOFR contract cheapens if the priced hike path is too high.",
+                "catalyst_logic": "The next official inflation or labor print inside the tactical window.",
+            },
         }]
         with self.assertRaises(SchemaError):
             validate_contribution(contribution, packet=packet, expected_agent="rate-hawk")
@@ -507,6 +513,12 @@ class SchemaAndBoundaryTests(unittest.TestCase):
             "asset_class": original["trade"]["asset_class"],
             "side": "long",
             "notional_usd": 1_000_000,
+            "lifecycle": {
+                "framing": "tactical",
+                "horizon_days": 10,
+                "realization_logic": "Fixture expression pays inside the tactical window.",
+                "catalyst_logic": "The next frozen official print inside that window.",
+            },
         }]
         with self.assertRaises(SchemaError):
             validate_rebuttal(

@@ -11,7 +11,7 @@ from scripts.pm.constants import PM_IDS as _PM_IDS
 ROOT = Path(__file__).resolve().parents[2]
 STATE_DIRNAME = "data/trading"
 SCHEMA_VERSION = 1
-MEMORY_SCHEMA_VERSION = 4
+MEMORY_SCHEMA_VERSION = 5
 PSYCH_SCHEMA_VERSION = 1
 PSYCH_PROFILE_VERSION = 1
 PSYCH_ENGINE_VERSION = 1
@@ -56,6 +56,7 @@ REFLECTION_TRIGGER_IDS = (
     "catalyst_or_reaction_diverged",
     "repeated_same_failure_mode",
     "explicit_lesson_contradiction",
+    "profit_giveback",
 )
 SWINGER_ESCALATION_EPISODES = 2
 REFLECTION_DUE_STATUSES = ("due", "submitted")

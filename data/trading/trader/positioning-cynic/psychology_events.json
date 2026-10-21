@@ -489,6 +489,87 @@
       "subject": {
         "session_pnl_change_usd": 91300.96
       }
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [
+          150000.0,
+          500000.0
+        ],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-10-21T08:22:07.869994-04:00",
+      "event_id": "pse-000022",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "positioning-cynic",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261021",
+      "seq": 22,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-10-21T08:22:07.869994-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "complacency": 0.0146,
+        "defensiveness": -0.0016,
+        "frustration": -0.0022,
+        "revenge_pressure": -0.001,
+        "self_trust": 0.0147,
+        "thesis_attachment": -0.0021
+      },
+      "event_id": "pse-000023",
+      "kind": "trade_win_close",
+      "magnitude": 0.41077009999999997,
+      "mismatch": false,
+      "owner_id": "positioning-cynic",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261021",
+      "scale": 1.0,
+      "seq": 23,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "family": "USDCAD",
+        "notional_usd": 15000000.0,
+        "realized_pnl_usd": 205385.05,
+        "side": "short",
+        "trade_id": "trd-trader-positioning-cynic-pos-ccb6655acbad"
+      }
+    },
+    {
+      "at": "2026-10-21T08:22:07.869994-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "complacency": 0.071,
+        "defensiveness": -0.004
+      },
+      "event_id": "pse-000024",
+      "kind": "size_escalation_after_streak",
+      "magnitude": 1.0,
+      "mismatch": false,
+      "owner_id": "positioning-cynic",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261021",
+      "scale": 1.0,
+      "seq": 24,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "risk_capital_usd": 500000.0
+      }
     }
   ],
   "owner_id": "positioning-cynic",

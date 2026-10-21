@@ -313,6 +313,39 @@
   outline-offset: 2px;
 }
 
+.country-detail .prima-pressure {
+  min-width: 0;
+}
+
+.country-detail .prima-context-note,
+.country-detail .prima-meta,
+.country-detail .prima-history {
+  font-size: 0.8rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.country-detail .prima-direction {
+  font-weight: 700;
+}
+
+.country-detail .prima-detail {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.country-detail .prima-detail summary {
+  cursor: pointer;
+  min-height: 2.75rem;
+  display: flex;
+  align-items: center;
+}
+
+.country-detail .prima-detail summary:focus-visible {
+  outline: 2px solid var(--cd-focus, #2563eb);
+  outline-offset: 2px;
+}
+
 .country-detail .history-table {
   width: 100%;
   border-collapse: collapse;

@@ -30,18 +30,22 @@
       ]
     }
   ],
-  "as_of": "2026-10-20T09:31:20.120731-04:00",
+  "as_of": "2026-10-21T08:22:07.869994-04:00",
   "calibration": {
-    "average_holding_seconds": 117123,
-    "average_realized_pnl_usd": 3375.0,
+    "average_holding_seconds": 628505,
+    "average_realized_pnl_usd": 70711.68,
     "breakeven": 1,
     "by_asset_class": {
       "rates": {
         "count": 2,
         "total_realized_pnl_usd": 6750.0
+      },
+      "spot_fx": {
+        "count": 1,
+        "total_realized_pnl_usd": 205385.05
       }
     },
-    "closed_trade_count": 2,
+    "closed_trade_count": 3,
     "conviction_buckets": {
       "high": {
         "average_pnl_usd": null,
@@ -54,15 +58,15 @@
         "hit_rate": null
       },
       "medium": {
-        "average_pnl_usd": 3375.0,
-        "count": 2,
+        "average_pnl_usd": 70711.68,
+        "count": 3,
         "hit_rate": 1.0
       }
     },
     "losses": 0,
     "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
-    "total_realized_pnl_usd": 6750.0,
-    "wins": 1
+    "total_realized_pnl_usd": 212135.05,
+    "wins": 2
   },
   "capital_owner": null,
   "consequence": {
@@ -70,21 +74,21 @@
     "competition_eligible": true,
     "competition_rank": 2,
     "competitive_rank": 2,
-    "drawdown_usd": 64.84,
-    "giveback_usd": 64.84,
-    "high_water_nav_usd": 100096128.02,
+    "drawdown_usd": 16.12,
+    "giveback_usd": 16.12,
+    "high_water_nav_usd": 100187380.26,
     "material_threshold_usd": 2000000.0,
-    "nav_usd": 100096063.18,
-    "net_pnl_usd": 96063.18,
+    "nav_usd": 100187364.14,
+    "net_pnl_usd": 187364.14,
     "pressure_flags": [],
-    "prior_competition_rank": 2,
-    "rank_change": 0,
+    "prior_competition_rank": 1,
+    "rank_change": 1,
     "raw_pnl_rank": 2,
-    "recent_pattern": "flat",
+    "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 150000.0,
     "risk_capital_utilization": 0.015,
-    "session_pnl_change_usd": -91300.96,
+    "session_pnl_change_usd": -24324.87,
     "status": "ok"
   },
   "learning": {
@@ -95,24 +99,65 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "4ba46175acf7395c740e32146f46af939a26ea2c15692f4ac31c4c7beb3c24f5",
+  "memory_context_sha256": "d5a6997fbbc0da2bc79058e6908db3d4f5f8faac556246811ad3117ff9218ed1",
   "open_positions": [
     {
-      "asset_class": "spot_fx",
-      "conviction": 56,
-      "current_notional_usd": 15000000.0,
-      "entry_mark": 1.42,
-      "instrument": "USDCAD",
-      "opened_at": "2026-10-02T05:40:56.963171-04:00",
-      "position_id": "pos-ccb6655acbad",
-      "risk_capital_usd": 150000.0,
+      "asset_class": "rates",
+      "conviction": 55,
+      "current_notional_usd": 50000000.0,
+      "entry_mark": 3.0,
+      "harvest": {
+        "asset_class": "rates",
+        "catalyst_by": null,
+        "catalyst_logic": "Flattening of the existing 4.45bn receive, or CRAH27 implied moving up toward the Canada 2Y 3.33 cash yield.",
+        "current_mark": 2.995,
+        "current_notional_usd": 50000000.0,
+        "entry_mark": 3.0,
+        "framing": "swing",
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": null,
+        "holding_seconds": 0,
+        "horizon_elapsed_fraction": 0.0,
+        "horizon_status": "within",
+        "instrument": "CORRA_2027-03",
+        "intended_horizon_days": 30,
+        "mae_usd": 0.0,
+        "mechanical_order": false,
+        "mfe_usd": 0.0,
+        "order_policy": "review_only",
+        "position_id": "pos-df316f59e974",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": "The crowded CORRA Mar27 receive is reduced or fails to compress toward cash if oil-driven Canada inflation pressure keeps the hike path alive.",
+        "realized_pnl_usd": 0.0,
+        "recorded_mfe_usd": 0.0,
+        "retained_mfe_fraction": null,
+        "review_required": false,
+        "review_threshold_usd": 500000.0,
+        "review_triggers": [],
+        "side": "short",
+        "total_pnl_usd": 0.0,
+        "trade_id": "trd-trader-positioning-cynic-pos-df316f59e974",
+        "unrealized_pnl_usd": 0.0
+      },
+      "instrument": "CORRA_2027-03",
+      "opened_at": "2026-10-21T08:22:07.869994-04:00",
+      "position_id": "pos-df316f59e974",
+      "risk_capital_usd": 500000.0,
       "side": "short",
-      "trade_id": "trd-trader-positioning-cynic-pos-ccb6655acbad"
+      "trade_id": "trd-trader-positioning-cynic-pos-df316f59e974"
     }
   ],
   "owner_id": "positioning-cynic",
   "owner_type": "trader",
   "postmortems_due": [],
+  "profit_harvest": {
+    "mechanical_orders": false,
+    "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
+    "obligations_due": [],
+    "order_policy": "review_only",
+    "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+    "review_required_position_ids": []
+  },
   "psychology": {
     "active_flags": [],
     "applicable": true,
@@ -120,22 +165,22 @@
       "chase_pressure": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.12
+        "value": 0.11
       },
       "complacency": {
         "band": "calm",
         "trend": "up",
-        "value": 0.11
+        "value": 0.2
       },
       "defensiveness": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.2
+        "trend": "down",
+        "value": 0.19
       },
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.17
+        "value": 0.16
       },
       "frustration": {
         "band": "calm",
@@ -149,8 +194,8 @@
       },
       "self_trust": {
         "band": "steady",
-        "trend": "flat",
-        "value": 0.5
+        "trend": "up",
+        "value": 0.52
       },
       "thesis_attachment": {
         "band": "calm",
@@ -169,18 +214,23 @@
     "recent_events": [
       {
         "kind": "session_gain",
-        "magnitude": 0.12245358,
-        "run_id": "overnight-20261016"
-      },
-      {
-        "kind": "session_gain",
         "magnitude": 0.18260192,
         "run_id": "overnight-20261020"
+      },
+      {
+        "kind": "trade_win_close",
+        "magnitude": 0.41077009999999997,
+        "run_id": "overnight-20261021"
+      },
+      {
+        "kind": "size_escalation_after_streak",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261021"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "c3796b249a90fc3f9d37e5cd678ea8b45f53c84bda7403f32a3b8388e9d7f0be",
+    "state_sha256": "cfd6e2bccbcc00813644a77a9ed49b6cfee4864898e18777eb20ef6c16beca32",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
@@ -188,6 +238,17 @@
     }
   },
   "recent_closed_trades": [
+    {
+      "asset_class": "spot_fx",
+      "closed_at": "2026-10-21T08:22:07.869994-04:00",
+      "conviction": 56,
+      "holding_duration_seconds": 1651270,
+      "instrument": "USDCAD",
+      "opened_at": "2026-10-02T05:40:56.963171-04:00",
+      "realized_pnl_usd": 205385.05,
+      "side": "short",
+      "trade_id": "trd-trader-positioning-cynic-pos-ccb6655acbad"
+    },
     {
       "asset_class": "rates",
       "closed_at": "2026-09-22T15:40:57.474758-04:00",
@@ -214,6 +275,6 @@
   "recent_funding_views": [],
   "recent_performance_reflections": [],
   "reflections_due": [],
-  "schema_version": 4,
+  "schema_version": 5,
   "type": "IDENTITY_MEMORY_CONTEXT"
 }

@@ -1114,6 +1114,62 @@
       "run_id": "overnight-20261020",
       "schema_version": 1,
       "thesis": "SOFR Mar27 at 4.52 still prices 65bp of hikes versus 3.87 cash, and Sep27 at 4.71 plus US 10Y at 5.15 keep that re-hiking path looking like a crowded overshoot, so the existing receive remains the fade. The long from 4.58 is already working about 6bp; rank-10 size and WTI 103.66 / Brent 109.55 still bid argue against adding overnight. CA 2Y +12bp in one day and CORRA Mar27 at 3.01 versus 2.26 cash are statistically stretched, but oil keeps the hawkish impulse live and there is no confirmed reversal catalyst, so that fade is not opened. Hold the 10mm SOFR Mar27 receive and wait for the energy-led scare to exhaust before adding or rotating."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 10000000,
+          "position_id": "pos-1477172adb86",
+          "rationale": "Keep the 10 million March 2027 SOFR receive from 4.58, live 4.52/4.525; 64.5bp of hikes versus 3.88 cash is still the crowded overshoot, but oil at 101.79 and a 5.5bp cushion are not enough to add.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-21T08:22:07.869994-04:00",
+      "conviction": 62,
+      "decision_fingerprint": "289732d77aef52bc89392fbc6a5ea2a338c75cd876e94bfe8bfa0fc1a32aca3c",
+      "event_id": "jde-924e974e7b714d8f",
+      "funding_view": null,
+      "invalidation": "March 2027 SOFR implied rate revisits 4.58 or higher, or WTI 101.79 and Brent 108.79 re-bid and take US 10-year back through 5.12 in a way that validates the 4.525/4.74 hike path instead of an overshoot.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-1477172adb86"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "cb176254b305c6a94d2c4699f22067dc95eb97253be720f9b06faad1ad6773da",
+      "outcome_links": [],
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "05f15e67ec9a4f18b0b5a0ff91aa1b8c85622f83dd21f9db5c9c752c815a5e15"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-21T08:22:07.869994-04:00",
+        "evidence_hash": "f0f493aafb24e88247596c000992d11d2496da4bc04310be13aa1aea0605fca9",
+        "overnight_run_id": "overnight-20261021",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The March 2027 SOFR receive remains the fade of a crowded hike overshoot. Cash SOFR is 3.88 against March 2027 at 4.525, a 64.5bp tightening path versus a 3.75-4.00 funds range. December 2026 is 4.245, June 2027 is 4.685 and September 2027 is 4.74, so the 2027 strip has not started to normalize even as WTI printed 101.79, Brent 108.79, and the 10-year eased 3bp to 5.12 after weak housing, with US labor and activity still cooling. The 10 million long from 4.58 is about 5.5bp in the money with a small open profit; that is not a harvest and not a reason to add while oil is still 101.79 and core inflation remains warm. US 2-year 4.79 and US 5-year 4.94 sit in the same rich complex but do not isolate the policy-path overshoot. The 10-year at the 94th percentile already used the housing print, so a fresh 10-year receive would chase the first 3bp. Twos-tens near 33bp is mixed, not a stretched curve. CORRA March 2027 at 2.995 versus 2.26 cash is statistically wide, but Canada oil-pressure is still rising and the last Canada 2-year print is 3.33 after a 12bp jump, so that fade is not opened. EURUSD 1.1215 and EURGBP 0.8403 are statistical extremes without a confirmed reversal, and a long euro would be a noisier fade of the same USD hike overshoot. Hold the 10 million receive and wait for oil to keep reversing and for the 4.525/4.74 path to cheapen before adding or rotating.",
+      "run_id": "overnight-20261021",
+      "schema_version": 1,
+      "thesis": "The March 2027 SOFR receive remains the fade of a crowded hike overshoot. Cash SOFR is 3.88 against March 2027 at 4.525, a 64.5bp tightening path versus a 3.75-4.00 funds range. December 2026 is 4.245, June 2027 is 4.685 and September 2027 is 4.74, so the 2027 strip has not started to normalize even as WTI printed 101.79, Brent 108.79, and the 10-year eased 3bp to 5.12 after weak housing, with US labor and activity still cooling. The 10 million long from 4.58 is about 5.5bp in the money with a small open profit; that is not a harvest and not a reason to add while oil is still 101.79 and core inflation remains warm. US 2-year 4.79 and US 5-year 4.94 sit in the same rich complex but do not isolate the policy-path overshoot. The 10-year at the 94th percentile already used the housing print, so a fresh 10-year receive would chase the first 3bp. Twos-tens near 33bp is mixed, not a stretched curve. CORRA March 2027 at 2.995 versus 2.26 cash is statistically wide, but Canada oil-pressure is still rising and the last Canada 2-year print is 3.33 after a 12bp jump, so that fade is not opened. EURUSD 1.1215 and EURGBP 0.8403 are statistical extremes without a confirmed reversal, and a long euro would be a noisier fade of the same USD hike overshoot. Hold the 10 million receive and wait for oil to keep reversing and for the 4.525/4.74 path to cheapen before adding or rotating."
     }
   ],
   "schema_version": 1,

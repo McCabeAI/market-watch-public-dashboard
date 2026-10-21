@@ -599,12 +599,184 @@ def _render_us_employment_context(block: Mapping[str, Any]) -> str:
     return "".join(parts)
 
 
+_PRIMA_CHANNEL_LABELS = {
+    "shock_persistence": "Shock persistence",
+    "production_network_pressure": "Production network pressure",
+    "imported_pressure": "Imported pressure",
+    "consumer_price_breadth": "Consumer price breadth",
+    "demand_pass_through_constraint": "Demand pass-through constraint",
+}
+
+
+def _render_prima_pressure(block: Mapping[str, Any] | None) -> str:
+    if not isinstance(block, Mapping):
+        block = {
+            "current": {
+                "direction": "UNAVAILABLE",
+                "subcomponent_directions": {
+                    ch: "UNAVAILABLE" for ch in _PRIMA_CHANNEL_LABELS
+                },
+                "confidence": None,
+                "coverage": None,
+                "staleness": None,
+                "status": "unavailable",
+                "reason": "no_persisted_prima_observation",
+                "mpr_status": "unavailable",
+                "conditioning_date": None,
+                "change_since_last_mpr": None,
+                "disclaimer": (
+                    "Deterministic Market Watch proxy for observable oil-curve persistence and "
+                    "inflation-propagation channels. It is not a reconstruction or reproduction "
+                    "of the Bank of Canada's proprietary Prima model."
+                ),
+                "largest_drivers": [],
+                "stale": False,
+            },
+            "history_state": "none",
+            "history_note": (
+                "History begins here: no stored Market Watch Prima observations have been recorded yet."
+            ),
+            "trend": [],
+            "transitions": [],
+        }
+
+    current = block.get("current") if isinstance(block.get("current"), Mapping) else {}
+    direction = str(current.get("direction") or "UNAVAILABLE")
+    subs = current.get("subcomponent_directions")
+    if not isinstance(subs, Mapping):
+        subs = {}
+
+    coverage = current.get("coverage")
+    if isinstance(coverage, (int, float)) and not isinstance(coverage, bool):
+        coverage_text = f"Coverage {float(coverage):.2f}"
+    else:
+        coverage_text = "Coverage unavailable"
+
+    confidence = current.get("confidence")
+    if confidence is not None and str(confidence).strip():
+        confidence_text = f"confidence {str(confidence).strip()}"
+    else:
+        confidence_text = "confidence unavailable"
+
+    stale_label = " Stale" if current.get("stale") else ""
+    status = str(current.get("status") or "").strip().lower()
+    reason = str(current.get("reason") or "").strip()
+    status_bits: list[str] = []
+    if status:
+        status_bits.append(f"Signal status: {_esc(status)}.")
+    if reason:
+        status_bits.append(_esc(reason) + ".")
+
+    aggregate_available = direction in {"RISING", "STABLE", "FALLING"}
+    partial_channels = [
+        label
+        for key, label in _PRIMA_CHANNEL_LABELS.items()
+        if aggregate_available and str(subs.get(key) or "UNAVAILABLE") == "UNAVAILABLE"
+    ]
+    if partial_channels:
+        status_bits.append(
+            "Partial channel coverage: "
+            + ", ".join(partial_channels)
+            + " unavailable."
+        )
+
+    drivers = current.get("largest_drivers")
+    driver_text = ""
+    if isinstance(drivers, list) and drivers:
+        driver_text = (
+            '<div class="prima-meta">Largest drivers: '
+            + _esc("; ".join(str(item) for item in drivers[:3]))
+            + "</div>"
+        )
+
+    history_note = str(block.get("history_note") or "")
+    history_state = str(block.get("history_state") or "")
+    trend = block.get("trend") if isinstance(block.get("trend"), list) else []
+    transitions = block.get("transitions") if isinstance(block.get("transitions"), list) else []
+
+    history_lines: list[str] = []
+    if history_state == "trend" and trend:
+        for point in trend:
+            if not isinstance(point, Mapping):
+                continue
+            at = str(point.get("observed_at") or "")
+            dir_word = str(point.get("direction") or "UNAVAILABLE")
+            history_lines.append(f"<div>{_esc(at)} · {_esc(dir_word)}</div>")
+        for transition in transitions:
+            if not isinstance(transition, Mapping):
+                continue
+            label = str(transition.get("label") or "")
+            from_at = str(transition.get("from_observed_at") or "")
+            to_at = str(transition.get("to_observed_at") or "")
+            if label:
+                history_lines.append(
+                    f"<div>{_esc(from_at)} → {_esc(to_at)}: {_esc(label)}</div>"
+                )
+    history_body = "".join(history_lines)
+
+    channel_rows = []
+    for channel, label in _PRIMA_CHANNEL_LABELS.items():
+        ch_dir = str(subs.get(channel) or "UNAVAILABLE")
+        channel_rows.append(
+            f'<div data-prima-channel="{_esc(channel)}">{_esc(label)}: {_esc(ch_dir)}</div>'
+        )
+
+    mpr_status = current.get("mpr_status")
+    conditioning_date = current.get("conditioning_date")
+    change_since = current.get("change_since_last_mpr")
+    change_text = str(change_since or "").strip()
+    if not change_text or change_text.lower() == "unavailable":
+        mpr_body = (
+            "<p>The comparison versus the last BoC MPR is unavailable.</p>"
+        )
+    else:
+        mpr_body = f"<p>{_esc(change_text)}</p>"
+    mpr_meta = []
+    if conditioning_date:
+        mpr_meta.append(f"Conditioning date: {_esc(conditioning_date)}")
+    if mpr_status is not None and str(mpr_status).strip():
+        mpr_meta.append(f"MPR status: {_esc(mpr_status)}")
+    if mpr_meta:
+        mpr_body = f'<p class="prima-meta">{". ".join(mpr_meta)}</p>{mpr_body}'
+
+    disclaimer = str(
+        current.get("disclaimer")
+        or (
+            "Deterministic Market Watch proxy for observable oil-curve persistence and "
+            "inflation-propagation channels. It is not a reconstruction or reproduction "
+            "of the Bank of Canada's proprietary Prima model."
+        )
+    )
+
+    status_html = (
+        f'<div class="prima-meta">{" ".join(status_bits)}</div>' if status_bits else ""
+    )
+
+    return (
+        f'<div class="evidence-block prima-pressure" data-prima-pressure="ca" data-prima-context="only">'
+        f'<div class="evidence-title">Prima Pressure</div>'
+        f'<div class="prima-context-note">context only — does not feed Inflation score</div>'
+        f'<div class="prima-meta">{_esc(disclaimer)}</div>'
+        f'<div class="prima-direction" data-prima-direction="{_esc(direction)}">{_esc(direction)}{_esc(stale_label)}</div>'
+        f'<div class="prima-meta">{_esc(coverage_text)} · {_esc(confidence_text)}</div>'
+        f"{status_html}"
+        f"{driver_text}"
+        f'<div class="prima-history">{_esc(history_note)}{history_body}</div>'
+        f'<details class="prima-detail"><summary>Component attribution</summary>'
+        f'<div class="prima-meta">{"".join(channel_rows)}</div></details>'
+        f'<details class="prima-detail"><summary>Versus last BoC MPR</summary>'
+        f"{mpr_body}</details>"
+        f"</div>"
+    )
+
+
 def _render_score_drilldown(
     country_code: str,
     observations: list[Mapping[str, Any]],
     score_state: Mapping[str, Any],
     members: list[Mapping[str, Any]],
     employment_context: Mapping[str, Any] | None = None,
+    prima_pressure: Mapping[str, Any] | None = None,
 ) -> str:
     obs_by_topic: dict[str, list[Mapping[str, Any]]] = {t: [] for t in TOPIC_IDS}
     for obs in observations:
@@ -656,6 +828,10 @@ def _render_score_drilldown(
             "LEVEL is the stored calibrated score. Impulse is separate from attention.</div>"
         )
 
+        prima_html = ""
+        if country_code == "CA" and dimension == "Inflation":
+            prima_html = _render_prima_pressure(prima_pressure)
+
         parts.append(
             f'<details class="{SCORE_DETAIL_CLASS_ATTRIBUTE}" id="{_esc(detail_id)}">'
             f'<summary class="score-summary">'
@@ -671,6 +847,7 @@ def _render_score_drilldown(
             f'<div class="evidence-grid">{hard_rows}</div>'
             f"{lineage}"
             f"</div>"
+            f"{prima_html}"
             f'<div class="{EVIDENCE_BLOCK_CONTEXT_CLASS}">'
             f'<div class="evidence-title">Context / corroboration</div>'
             f'<div class="evidence-grid">{ctx_rows}</div>'
@@ -703,6 +880,9 @@ def render_country_detail(
             score_state,
             members,
             employment_context=projection_country.get("employment_context")
+            if isinstance(projection_country, Mapping)
+            else None,
+            prima_pressure=projection_country.get("prima_pressure")
             if isinstance(projection_country, Mapping)
             else None,
         ),
