@@ -221,6 +221,12 @@ class ScheduledOutputTests(unittest.TestCase):
             "price": 9.99,
             "asset_class": "spot_fx",
             "expression_memo": memo,
+            "lifecycle": {
+                "framing": "tactical",
+                "horizon_days": 10,
+                "realization_logic": "Fixture spot gap pays if USDCAD extends inside the tactical window.",
+                "catalyst_logic": "The next frozen official US or Canada print inside that window.",
+            },
         }]
         packet = self.payload["agent_packet"]
         pm = self.payload["pm_decisions"]

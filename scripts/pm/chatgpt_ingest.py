@@ -95,6 +95,11 @@ def validate_chatgpt_decision(
         raise FreshnessError("ChatGPT decision evidence_cutoff does not match the current packet")
     if not isinstance(payload.get("actions"), list):
         raise SchemaError("ChatGPT decision actions must be a list")
+    from scripts.trading.harvest import assert_expansion_lifecycle
+
+    for row in payload["actions"]:
+        if isinstance(row, dict):
+            assert_expansion_lifecycle(row, owner_id=CHATGPT_PM_ID)
     if payload.get("conviction") is not None:
         conviction = int(payload["conviction"])
         if not 0 <= conviction <= 100:

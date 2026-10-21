@@ -26,6 +26,8 @@ Schema file: `data/pm/schema/chatgpt_decision.v1.json`
 | `thesis` / `invalidation` / `conviction` | optional but recommended |
 | `rationale` / `synthesis` | ChatGPT's final write-up |
 | `memory_context_sha256` | required for OPEN/ADD/HEDGE; must match this packet's own memory hash |
+| `lifecycle` on `OPEN` / `HEDGE` | `framing` tactical, swing, or structural, plus `realization_logic` and `catalyst_logic` |
+| `harvest_reviews` | required only when a kept open position has tripped a profit-harvest review. Separate `thesis_still_valid` from `remaining_edge`. Full size needs `remaining_edge: true` and `would_initiate_flat: "yes"`. Not a take-profit order. |
 | `postmortems` / `memory_updates` | optional structured reflection; cannot change marks or P&L |
 | `alerts` | list |
 | `future_data_requests` | optional list |

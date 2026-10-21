@@ -146,8 +146,52 @@ Initialize from current canonical books. Reconstruct only fields proven by live 
 
 ## 14. Prompt discipline
 
-The lifetime ledger and journal may grow in Git. The memory prompt surface stays bounded: deterministic calibration, up to 8 recent closed trades, up to 12 active lessons, outstanding postmortems, current open-position context, and a compact private psychology block. Do not stuff the complete journal into a prompt. No vector database, embeddings, or new external state service.
+The lifetime ledger and journal may grow in Git. The memory prompt surface stays bounded: deterministic calibration, up to 8 recent closed trades, up to 12 active lessons, outstanding postmortems, current open-position context including a profit-harvest block, and a compact private psychology block. Do not stuff the complete journal into a prompt. No vector database, embeddings, or new external state service.
 
 ## 15. Psychology (private)
 
 See `docs/TRADER_PSYCHOLOGY_V1.md`. Psychology state is derived from the append-only psychology event ledger and read into the hashed memory sidecar. It can require a self-check before `OPEN` / `ADD` / `HEDGE`. It cannot forbid a de-risk, and it is stripped from public prose.
+
+## 16. Profit harvest and trade lifecycle
+
+An intact macro thesis is not a reason to keep full size after a trade has delivered a material part of its move. Trusted code computes a harvest view for every open trader and PM position. Thresholds only trigger that review. They are not take-profit orders, stops, or book actions. The existing high-water drawdown flatten is unchanged and is not a profit target.
+
+Entry `OPEN` / `HEDGE` decisions carry `lifecycle`:
+
+| Field | Meaning |
+| --- | --- |
+| `framing` | `tactical`, `swing`, or `structural` |
+| `horizon_days` | Review clock. Defaults are 10 / 45 / 120 days when omitted. |
+| `realization_logic` | How the trade is expected to pay |
+| `catalyst_logic` | What realizes or exhausts the edge |
+| `catalyst_by` | Optional ISO date |
+
+The ledger stores that block as `lifecycle` and `entry_lifecycle`. Legacy trades without it stay valid. Their horizon status is `unspecified`, so silence does not invent an expiry. New scheduled, on-demand, automated-PM, and ChatGPT entries fail closed without the block.
+
+For each open position the memory sidecar carries, when the books can mark it:
+
+- entry and current mark
+- unrealized, realized, and total P&L
+- MFE, retained-MFE fraction, and giveback
+- holding time versus the intended horizon
+- `review_required` and the trigger ids
+
+Triggers, and only triggers, are:
+
+- `material_winner`: running peak P&L has reached at least one standard-shock risk unit on the peak notional, and at least $100k
+- `giveback`: that winner has retained 70% or less of the peak
+- `horizon_expired`: a declared horizon has elapsed
+- `catalyst`: a declared `catalyst_by` date has passed
+
+A small early gain, including Dollar King's first ~$133k on USDCAD, does not trip `material_winner`. The same path does trip it while the trade is still near its high, before the later giveback from about $954k MFE.
+
+`REDUCE` and `CLOSE` always execute without `harvest_reviews`. A partial cut does not answer the residual. When the executed cut leaves a meaningful triggered residual, the trade keeps an explicit `harvest_obligation` for the actual post-cut size. The next `HOLD` / `NO_TRADE`, and any `ADD` or other re-expansion, must answer that residual. A blocked add is not part of the size. A token cut, or a cut followed by an add, does not retire the obligation. The continuation review is `harvest_reviews` (or one `harvest_review` when only one position is triggered):
+
+- `thesis_still_valid` boolean
+- `remaining_edge` boolean, separate from the thesis flag
+- `would_initiate_flat`: `yes` or `no`, answering whether the seat would initiate this exact trade at this exact size and level if flat today
+- `remaining_edge_reason` when full size is affirmed
+
+Keeping that residual is allowed only when `remaining_edge` is true and `would_initiate_flat` is `yes`. A true thesis with no remaining edge is not enough. The answer is for the size the decision leaves. A residual is meaningful when it is at least 25% of the pre-action notional, or when its pro-rata peak P&L is still a material winner. A `$1` cut does not retire the review. Cutting and then adding the size back does not either. `CLOSE`, and a `REDUCE` that leaves no meaningful residual, execute without that affirmation. `REDUCE` and `CLOSE` stay de-risk actions: memory, rationale, and psychology gates do not block them, and no threshold creates an order. An expired horizon on a meaningful residual also needs `reunderwrite` (`framing`, horizon, realization, catalyst) measured from the current review, which restarts the horizon clock and does not rewrite the entry mark. A tactical trade does not become structural by silence. One position's cut does not excuse a second triggered position.
+
+A major giveback (retained MFE at or below 50% after a material peak, and at least $100k given back) adds reflection trigger `profit_giveback` on that `trade_id`. Clearing it still accepts a substantive `no_new_lesson`. The hook does not write a lesson by itself and does not block `REDUCE` / `CLOSE`.

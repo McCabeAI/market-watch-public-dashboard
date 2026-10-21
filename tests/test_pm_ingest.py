@@ -115,7 +115,19 @@ class ChatGPTIngestTests(unittest.TestCase):
             self.store,
             _decision(
                 self.packet,
-                actions=[{"action": "OPEN", "instrument": "USDCAD", "side": "long", "notional_usd": 10_000_000, "asset_class": "spot_fx"}],
+                actions=[{
+                    "action": "OPEN",
+                    "instrument": "USDCAD",
+                    "side": "long",
+                    "notional_usd": 10_000_000,
+                    "asset_class": "spot_fx",
+                    "lifecycle": {
+                        "framing": "tactical",
+                        "horizon_days": 10,
+                        "realization_logic": "Fixture spot gap pays if USDCAD extends inside the tactical window.",
+                        "catalyst_logic": "The next frozen official print inside that window.",
+                    },
+                }],
             ),
             write=True,
         )
@@ -136,7 +148,19 @@ class ChatGPTIngestTests(unittest.TestCase):
             self.store,
             _decision(
                 self.packet,
-                actions=[{"action": "OPEN", "instrument": "USDCAD", "side": "long", "notional_usd": 10_000_000, "asset_class": "spot_fx"}],
+                actions=[{
+                    "action": "OPEN",
+                    "instrument": "USDCAD",
+                    "side": "long",
+                    "notional_usd": 10_000_000,
+                    "asset_class": "spot_fx",
+                    "lifecycle": {
+                        "framing": "tactical",
+                        "horizon_days": 10,
+                        "realization_logic": "Fixture spot gap pays if USDCAD extends inside the tactical window.",
+                        "catalyst_logic": "The next frozen official print inside that window.",
+                    },
+                }],
             ),
             write=True,
         )
