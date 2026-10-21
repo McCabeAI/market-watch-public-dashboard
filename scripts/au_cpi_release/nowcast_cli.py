@@ -8,14 +8,17 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+from scripts.au_cpi_release import NOWCAST_SCHEMA_V2
 from scripts.au_cpi_release.archive import (
     ArchiveConflict,
     GeneratedAfterFreeze,
     assert_before_freeze,
     run_archive_dir,
+    write_reference_run_archive,
     write_run_archive,
 )
-from scripts.au_cpi_release.calendar import entry_for, parse_timestamp, sydney_now
+from scripts.au_cpi_release.calendar import REPO_ROOT, entry_for, parse_timestamp, sydney_now
+from scripts.au_cpi_release.sources.acquire import snapshot_sha256
 from scripts.au_cpi_release.report import canonical_json_bytes, render_backtest, render_nowcast
 
 
@@ -102,6 +105,7 @@ def cmd_nowcast(args: Any) -> int:
             as_of=as_of,
             generated_at=generated.isoformat(),
             snapshot_dir=Path(args.fixture).parent,
+            schema_version=NOWCAST_SCHEMA_V2,
         )
     except GeneratedAfterFreeze as exc:
         return _fail(str(exc))
@@ -110,19 +114,44 @@ def cmd_nowcast(args: Any) -> int:
     if result.get("status") != "ok":
         return _fail(f"{result.get('block_code')}: {result.get('block_detail')}")
     try:
-        directory = run_archive_dir(Path(args.out), args.release, as_of, snapshot)
+        reference = bool(getattr(args, "reference_snapshot", False))
+        directory = run_archive_dir(
+            Path(args.out),
+            args.release,
+            as_of,
+            snapshot,
+            suffix="v2" if reference else "",
+        )
         payload = canonical_json_bytes(result)
         text = render_nowcast(result).encode("utf-8")
-        write_run_archive(
-            directory,
-            snapshot,
-            _raw_files(snapshot, Path(args.fixture).parent),
-            as_of=as_of,
-            release=args.release,
-            release_time=release_time,
-            generated_at=generated,
-            extra_files={"nowcast.json": payload, "nowcast.txt": text},
-        )
+        extra = {"nowcast.json": payload, "nowcast.txt": text}
+        fixture_path = Path(args.fixture).resolve()
+        if reference:
+            try:
+                snapshot_path = str(fixture_path.relative_to(REPO_ROOT.resolve()))
+            except ValueError:
+                snapshot_path = str(fixture_path)
+            write_reference_run_archive(
+                directory,
+                snapshot,
+                snapshot_path=snapshot_path,
+                as_of=as_of,
+                release=args.release,
+                release_time=release_time,
+                generated_at=generated,
+                extra_files=extra,
+            )
+        else:
+            write_run_archive(
+                directory,
+                snapshot,
+                _raw_files(snapshot, Path(args.fixture).parent),
+                as_of=as_of,
+                release=args.release,
+                release_time=release_time,
+                generated_at=generated,
+                extra_files=extra,
+            )
     except ArchiveConflict as exc:
         return _fail(str(exc))
     except GeneratedAfterFreeze as exc:
@@ -200,13 +229,32 @@ def cmd_replay(args: Any) -> int:
             digest = hashlib.sha256(body).hexdigest()
             if digest != meta.get("sha256") or len(body) != int(meta.get("bytes")):
                 return _fail(f"hash mismatch: {name}")
-        snapshot = load_snapshot(run_dir / "snapshot.json")
+        archived_nowcast = json.loads((run_dir / "nowcast.json").read_text(encoding="utf-8"))
+        schema_version = str(archived_nowcast.get("schema_version") or "au_cpi_nowcast_v1")
+        snapshot_path = run_dir / "snapshot.json"
+        if snapshot_path.is_file():
+            snapshot = load_snapshot(snapshot_path)
+            snapshot_dir = run_dir
+        else:
+            rel = manifest.get("snapshot_path")
+            expected = manifest.get("snapshot_sha256")
+            if not rel:
+                return _fail("snapshot.json missing and manifest has no snapshot_path")
+            external = (REPO_ROOT / str(rel)).resolve()
+            if not external.is_file():
+                return _fail(f"snapshot_path not found: {external}")
+            snapshot = load_snapshot(external)
+            digest = snapshot_sha256(snapshot)
+            if expected and digest != expected:
+                return _fail(f"snapshot_sha256 mismatch: {digest} != {expected}")
+            snapshot_dir = external.parent
         result = forecast_release(
             snapshot,
             release=str(manifest["release"]),
             as_of=str(manifest["as_of"]),
             generated_at=str(manifest["generated_at"]),
-            snapshot_dir=run_dir,
+            snapshot_dir=snapshot_dir,
+            schema_version=schema_version,
         )
         recomputed = canonical_json_bytes(result)
         archived = (run_dir / "nowcast.json").read_bytes()
@@ -249,6 +297,12 @@ def register_nowcast_commands(sub: Any) -> None:
     nowcast.add_argument("--fixture", type=Path, required=True, help="snapshot.json")
     nowcast.add_argument("--out", type=Path, required=True, help="Parent directory for runs/")
     nowcast.add_argument("--generated-at", dest="generated_at", default=None, help="Timezone-aware stamp (default: now)")
+    nowcast.add_argument(
+        "--reference-snapshot",
+        dest="reference_snapshot",
+        action="store_true",
+        help="Slim archive referencing fixture snapshot_path instead of embedding snapshot.json",
+    )
     nowcast.set_defaults(func=cmd_nowcast)
 
     backtest = sub.add_parser("backtest", help="Walk-forward pseudo-OOS and the true-vintage section")

@@ -94,9 +94,16 @@ PUBLISHED_CHANGE_OF: dict[str, str] = {
     "weighted_median_monthly_sa_mom": "weighted_median_monthly_sa_mom",
 }
 
+QUARTERLY_HEADLINE_METHOD = "quarter_average_of_monthly_nsa"
+QUARTERLY_HEADLINE_IDENTITY_REPORT = (
+    "docs/au_cpi_release/provenance/2026-10-21T183259Z-abs-cpi-headline-quarterly"
+)
+
 REGIME_OF: dict[str, str] = {
     "headline_nsa_mom": "complete_monthly_cpi",
     "headline_nsa_yoy": "complete_monthly_cpi",
+    "headline_nsa_quarterly_qoq": "quarterly_headline_nsa",
+    "headline_nsa_quarterly_yoy": "quarterly_headline_nsa",
     "headline_sa_mom": "complete_monthly_cpi",
     "headline_sa_yoy": "complete_monthly_cpi",
     "trimmed_mean_monthly_sa_mom": "complete_monthly_cpi",
@@ -229,6 +236,75 @@ def month_quarter(period: str) -> str:
 
 def is_quarter_end_month(period: str) -> bool:
     return period[5:7] in {"03", "06", "09", "12"}
+
+
+def quarter_average_headline(
+    frame: Frame,
+    quarter: str,
+    last_month_mom: float | None = None,
+) -> dict[str, Any] | None:
+    """Three-month average of published monthly NSA headline indexes.
+
+    For the forecast quarter, ``last_month_mom`` supplies the final month via
+    ``previous_index * (1 + mom/100)``. For historical quarters, pass
+    ``last_month_mom=None`` so all three levels are read from the frame.
+    """
+    months = quarter_months(quarter)
+    levels: dict[str, float] = {}
+    for index, month in enumerate(months):
+        if index == 2 and last_month_mom is not None:
+            previous = frame.get("headline_nsa_index", previous_month(month))
+            if previous is None:
+                return None
+            levels[month] = previous * (1.0 + last_month_mom / 100.0)
+        else:
+            level = frame.get("headline_nsa_index", month)
+            if level is None:
+                return None
+            levels[month] = level
+    return {
+        "quarter": quarter,
+        "month_levels": levels,
+        "quarter_average": fmean(levels.values()),
+    }
+
+
+def quarterly_headline_qoq_yoy(
+    frame: Frame,
+    quarter: str,
+    last_month_mom: float | None,
+) -> dict[str, Any] | None:
+    """QoQ and YoY from quarter averages of monthly NSA headline indexes."""
+    current = quarter_average_headline(frame, quarter, last_month_mom=last_month_mom)
+    if current is None:
+        return None
+    prior = quarter_average_headline(frame, previous_quarter(quarter), last_month_mom=None)
+    lag = quarter_average_headline(frame, add_quarters(quarter, -4), last_month_mom=None)
+    if prior is None or lag is None:
+        return None
+    qoq = percent_change(current["quarter_average"], prior["quarter_average"])
+    yoy = percent_change(current["quarter_average"], lag["quarter_average"])
+    if qoq is None or yoy is None:
+        return None
+    return {
+        **current,
+        "prior_quarter_average": prior["quarter_average"],
+        "yoy_quarter_average": lag["quarter_average"],
+        "qoq": qoq,
+        "yoy": yoy,
+    }
+
+
+def quarterly_headline_at_mom(
+    frame: Frame,
+    quarter: str,
+    mom: float,
+) -> tuple[float | None, float | None]:
+    """QoQ and YoY at a single September (last-month) MoM assumption."""
+    bundle = quarterly_headline_qoq_yoy(frame, quarter, last_month_mom=mom)
+    if bundle is None:
+        return None, None
+    return float(bundle["qoq"]), float(bundle["yoy"])
 
 
 def period_key(period: str) -> tuple[int, int, int]:
@@ -1365,4 +1441,73 @@ def release_model_bundle(frame: Frame, release_month: str, ctx: ModelContext) ->
         if quarterly is None
         else {"values": quarterly, "details": {"proxy_bridge_value": bridge, "proxy_internal_monthly_model": "persistence"}},
         "quarter": quarter,
+    }
+
+
+def _observation_map_from_csv(path: Path, source_id: str) -> dict[tuple[str, str], float]:
+    from scripts.au_cpi_release.sources.abs_sdmx import parse_sdmx_csv
+
+    observations, _ = parse_sdmx_csv(path.read_bytes(), source_id=source_id)
+    return {(obs.canonical_id, obs.period): obs.value for obs in observations}
+
+
+def build_quarterly_headline_identity(
+    *,
+    quarterly_csv: Path,
+    monthly_csv: Path,
+) -> dict[str, Any]:
+    """Compare quarter averages of monthly NSA indexes to official quarterly headline series."""
+    monthly = _observation_map_from_csv(monthly_csv, "monthly_fixture")
+    quarterly = _observation_map_from_csv(quarterly_csv, "quarterly_fixture")
+    official_index = {
+        period: value
+        for (canonical_id, period), value in quarterly.items()
+        if canonical_id == "headline_nsa_quarterly_index"
+    }
+    official_qoq = {
+        period: value
+        for (canonical_id, period), value in quarterly.items()
+        if canonical_id == "headline_nsa_quarterly_qoq"
+    }
+    quarters = sorted(official_index)
+    rows: list[dict[str, Any]] = []
+    for quarter in quarters:
+        months = quarter_months(quarter)
+        levels = [monthly.get(("headline_nsa_index", month)) for month in months]
+        if any(level is None for level in levels):
+            rows.append({"quarter": quarter, "status": "missing_monthly_levels"})
+            continue
+        average = fmean(levels)  # type: ignore[arg-type]
+        official = official_index[quarter]
+        index_gap = average - official
+        prior = previous_quarter(quarter)
+        prior_levels = [monthly.get(("headline_nsa_index", month)) for month in quarter_months(prior)]
+        qoq_from_monthly = None
+        if not any(level is None for level in prior_levels):
+            qoq_from_monthly = percent_change(average, fmean(prior_levels))  # type: ignore[arg-type]
+        official_q = official_qoq.get(quarter)
+        rows.append(
+            {
+                "quarter": quarter,
+                "status": "ok",
+                "monthly_quarter_average": average,
+                "official_quarterly_index": official,
+                "index_gap": index_gap,
+                "abs_index_gap": abs(index_gap),
+                "qoq_from_monthly_average": qoq_from_monthly,
+                "qoq_from_monthly_average_1dp": None if qoq_from_monthly is None else round_1dp(qoq_from_monthly),
+                "official_qoq": official_q,
+                "official_qoq_1dp": None if official_q is None else round_1dp(official_q),
+            }
+        )
+    ok_rows = [row for row in rows if row.get("status") == "ok"]
+    post_2025_q4 = [row for row in ok_rows if row["quarter"] >= "2025-Q4"]
+    pre_equiv = [row for row in ok_rows if "2024-Q2" <= row["quarter"] <= "2025-Q2"]
+    return {
+        "quarters_in_official_quarterly_index": quarters,
+        "latest_official_quarter": quarters[-1] if quarters else None,
+        "2026_q3_in_official_quarterly": "2026-Q3" in official_index,
+        "rows": rows,
+        "max_abs_index_gap_post_2025_q4": max((row["abs_index_gap"] for row in post_2025_q4), default=None),
+        "max_abs_index_gap_2024_q2_through_2025_q2": max((row["abs_index_gap"] for row in pre_equiv), default=None),
     }

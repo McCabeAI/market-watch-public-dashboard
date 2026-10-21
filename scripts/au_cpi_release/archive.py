@@ -54,9 +54,10 @@ def snapshot_archive_dir(out: Path, as_of: str, snapshot: Snapshot) -> Path:
     return Path(out) / "snapshots" / f"asof-{compact_token(as_of)}-{digest}"
 
 
-def run_archive_dir(out: Path, release: str, as_of: str, snapshot: Snapshot) -> Path:
+def run_archive_dir(out: Path, release: str, as_of: str, snapshot: Snapshot, *, suffix: str = "") -> Path:
     digest = snapshot_sha256(snapshot)[:12]
-    return Path(out) / "runs" / f"{release}-asof-{compact_token(as_of)}-{digest}"
+    extra = f"-{suffix}" if suffix else ""
+    return Path(out) / "runs" / f"{release}-asof-{compact_token(as_of)}-{digest}{extra}"
 
 
 def backtest_archive_dir(out: Path, release: str | None, as_of: str, snapshot: Snapshot) -> Path:
@@ -234,6 +235,35 @@ def write_snapshot_archive(
         release_time=release_time,
         generated_at=generated_at,
     )
+    return publish_tree(directory, files, manifest)
+
+
+def write_reference_run_archive(
+    directory: Path,
+    snapshot: Snapshot,
+    *,
+    snapshot_path: str,
+    as_of: str,
+    release: str,
+    release_time: str,
+    generated_at: datetime,
+    extra_files: dict[str, bytes],
+) -> dict[str, Any]:
+    """Slim run archive: nowcast outputs plus manifest with external snapshot reference."""
+    assert_before_freeze(generated_at, parse_timestamp(release_time, date_only="start"))
+    files = dict(extra_files)
+    if "manifest.json" in files:
+        raise ValueError("manifest.json is written by publish_tree")
+    manifest = _base_manifest(
+        snapshot,
+        files,
+        as_of=as_of,
+        release=release,
+        release_time=release_time,
+        generated_at=generated_at.isoformat(),
+    )
+    manifest["snapshot_path"] = snapshot_path
+    manifest["snapshot_sha256"] = snapshot_sha256(snapshot)
     return publish_tree(directory, files, manifest)
 
 

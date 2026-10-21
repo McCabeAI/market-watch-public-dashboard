@@ -62,6 +62,22 @@ def render_nowcast(result: dict[str, Any]) -> str:
                 ]
             )
         )
+    qoq_block = (result.get("targets") or {}).get("headline_nsa_quarterly_qoq") or {}
+    yoy_block = (result.get("targets") or {}).get("headline_nsa_quarterly_yoy") or {}
+    if qoq_block or yoy_block:
+        lines.append("")
+        lines.append("Quarterly headline (quarter average of monthly NSA)")
+        lines.append(f"period: {qoq_block.get('period') or yoy_block.get('period')}")
+        lines.append(
+            f"QoQ: {_fmt(qoq_block.get('value'), 4)} (1dp {_fmt(qoq_block.get('value_1dp'), 1)}) "
+            f"YoY: {_fmt(yoy_block.get('value'), 4)} (1dp {_fmt(yoy_block.get('value_1dp'), 1)})"
+        )
+        lines.append(f"release-month index: {_fmt(qoq_block.get('last_month_index'), 4)}")
+        lines.append(
+            f"prior-quarter average: {_fmt(qoq_block.get('prior_quarter_average'), 4)} "
+            f"quarter average: {_fmt(qoq_block.get('quarter_average'), 4)}"
+        )
+        lines.append(f"inherited monthly method: {qoq_block.get('method')}")
     lines.append("")
     lines.append("Selection (common sample; full-sample metrics kept underneath)")
     legacy = result.get("selection_unequal_sample_legacy") or {}

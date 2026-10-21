@@ -10,7 +10,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from scripts.au_cpi_release import NOWCAST_SCHEMA
+from scripts.au_cpi_release import NOWCAST_SCHEMA_V1, NOWCAST_SCHEMA_V2
 from scripts.au_cpi_release.backtest import run_backtest
 from scripts.au_cpi_release.calendar import entry_for, parse_timestamp
 from scripts.au_cpi_release.contract import Snapshot, previous_month, previous_quarter
@@ -40,8 +40,13 @@ from scripts.au_cpi_release.models import (
     electricity_sensitivity,
     index_publication_convention,
     is_quarter_end_month,
+    quarter_end_month,
     load_table8_factors,
     month_quarter,
+    QUARTERLY_HEADLINE_IDENTITY_REPORT,
+    QUARTERLY_HEADLINE_METHOD,
+    quarterly_headline_at_mom,
+    quarterly_headline_qoq_yoy,
     release_model_bundle,
     round_1dp,
     sa_aggregate_gap,
@@ -65,6 +70,17 @@ from scripts.au_cpi_release.uncertainty import (
     symmetric_interval,
 )
 
+_QUARTERLY_HEADLINE_CAVEATS = (
+    "Pre-2025-Q4 official quarterly indexes are a re-referenced legacy quarterly CPI and are NOT "
+    "the quarter-average-of-monthly NSA transform used here.",
+    "From 2025-Q4 onward the published quarterly headline index matches the average of published "
+    "two-decimal monthly indexes within rounding; see the identity report at "
+    f"{QUARTERLY_HEADLINE_IDENTITY_REPORT}.",
+    "The point forecast uses quarter averages of published monthly indexes, including the model level "
+    "for the release month.",
+    "This is not the legacy quarterly trimmed mean and not the monthly-to-quarterly trimmed-mean bridge.",
+)
+
 
 def _aware(value: str, label: str) -> str:
     text = value.strip()
@@ -75,9 +91,18 @@ def _aware(value: str, label: str) -> str:
     return parse_timestamp(text).isoformat()
 
 
-def _blocked(code: str, detail: str, *, release: str, as_of: str, generated_at: str, snapshot: Snapshot | None) -> dict[str, Any]:
+def _blocked(
+    code: str,
+    detail: str,
+    *,
+    schema_version: str,
+    release: str,
+    as_of: str,
+    generated_at: str,
+    snapshot: Snapshot | None,
+) -> dict[str, Any]:
     return {
-        "schema_version": NOWCAST_SCHEMA,
+        "schema_version": schema_version,
         "status": "blocked",
         "block_code": code,
         "block_detail": detail,
@@ -279,20 +304,40 @@ def forecast_release(
     as_of: str,
     generated_at: str,
     snapshot_dir: Path | None = None,
+    schema_version: str = NOWCAST_SCHEMA_V2,
 ) -> dict[str, Any]:
     """Nowcast ``release`` from ``snapshot`` as it would have been known at ``as_of``."""
+    if schema_version not in (NOWCAST_SCHEMA_V1, NOWCAST_SCHEMA_V2):
+        schema_version = NOWCAST_SCHEMA_V2
     try:
         as_of_norm = _aware(as_of, "as_of")
         generated_norm = _aware(generated_at, "generated_at")
     except InformationSetError as exc:
-        return _blocked(exc.code, exc.detail, release=release, as_of=as_of, generated_at=generated_at, snapshot=snapshot)
+        return _blocked(
+            exc.code,
+            exc.detail,
+            schema_version=schema_version,
+            release=release,
+            as_of=as_of,
+            generated_at=generated_at,
+            snapshot=snapshot,
+        )
     except (ValueError, TypeError) as exc:
-        return _blocked("timestamp_unparseable", str(exc), release=release, as_of=as_of, generated_at=generated_at, snapshot=snapshot)
+        return _blocked(
+            "timestamp_unparseable",
+            str(exc),
+            schema_version=schema_version,
+            release=release,
+            as_of=as_of,
+            generated_at=generated_at,
+            snapshot=snapshot,
+        )
 
     if snapshot_dir is None:
         return _blocked(
             "required_series_missing",
             "snapshot_dir is required to read the class codelist and Table 8",
+            schema_version=schema_version,
             release=release,
             as_of=as_of_norm,
             generated_at=generated_norm,
@@ -301,12 +346,28 @@ def forecast_release(
     try:
         verify_snapshot_raw(snapshot, snapshot_dir)
     except SourceError as exc:
-        return _blocked(exc.code, exc.detail, release=release, as_of=as_of_norm, generated_at=generated_norm, snapshot=snapshot)
+        return _blocked(
+            exc.code,
+            exc.detail,
+            schema_version=schema_version,
+            release=release,
+            as_of=as_of_norm,
+            generated_at=generated_norm,
+            snapshot=snapshot,
+        )
 
     try:
         release_entry = entry_for(release)
     except (ValueError, RuntimeError) as exc:
-        return _blocked("release_unknown", str(exc), release=release, as_of=as_of_norm, generated_at=generated_norm, snapshot=snapshot)
+        return _blocked(
+            "release_unknown",
+            str(exc),
+            schema_version=schema_version,
+            release=release,
+            as_of=as_of_norm,
+            generated_at=generated_norm,
+            snapshot=snapshot,
+        )
     release_time = release_entry.release_at
     try:
         retrieved = parse_timestamp(snapshot.retrieved_at, date_only="start")
@@ -323,12 +384,28 @@ def forecast_release(
                 f"as_of {as_of_norm} >= release {release_time}",
             )
     except InformationSetError as exc:
-        return _blocked(exc.code, exc.detail, release=release, as_of=as_of_norm, generated_at=generated_norm, snapshot=snapshot)
+        return _blocked(
+            exc.code,
+            exc.detail,
+            schema_version=schema_version,
+            release=release,
+            as_of=as_of_norm,
+            generated_at=generated_norm,
+            snapshot=snapshot,
+        )
 
     try:
         ctx = load_context(snapshot, snapshot_dir)
     except (ValueError, SourceError, OSError) as exc:
-        return _blocked("required_series_missing", str(exc), release=release, as_of=as_of_norm, generated_at=generated_norm, snapshot=snapshot)
+        return _blocked(
+            "required_series_missing",
+            str(exc),
+            schema_version=schema_version,
+            release=release,
+            as_of=as_of_norm,
+            generated_at=generated_norm,
+            snapshot=snapshot,
+        )
 
     frame = build_frame(snapshot.observations, as_of=as_of_norm)
     predecessor = previous_month(release)
@@ -336,6 +413,7 @@ def forecast_release(
         return _blocked(
             "missing_t_minus_1",
             f"headline_nsa_index {predecessor} is not visible at {as_of_norm}",
+            schema_version=schema_version,
             release=release,
             as_of=as_of_norm,
             generated_at=generated_norm,
@@ -346,6 +424,7 @@ def forecast_release(
             return _blocked(
                 "required_series_missing",
                 f"{series_id} {predecessor} is not visible at {as_of_norm}",
+                schema_version=schema_version,
                 release=release,
                 as_of=as_of_norm,
                 generated_at=generated_norm,
@@ -424,6 +503,13 @@ def forecast_release(
             if block is not None:
                 block.setdefault("caveats", []).append(caveat)
     _attach_quarterly_shadow(targets, bundle, backtest)
+    if schema_version == NOWCAST_SCHEMA_V2:
+        _attach_quarterly_headline_nsa(
+            targets,
+            release=release,
+            frame=frame,
+            quarter=bundle.get("quarter"),
+        )
     run_status = "ok"
     if any(block.get("status") == "blocked" for block in targets.values()):
         run_status = "blocked"
@@ -440,7 +526,7 @@ def forecast_release(
         provenance_periods.extend([previous_quarter(quarter), add_quarters(quarter, -4), quarter])
 
     result = {
-        "schema_version": NOWCAST_SCHEMA,
+        "schema_version": schema_version,
         "status": run_status,
         "block_code": None if run_status == "ok" else "target_blocked",
         "block_detail": None
@@ -536,6 +622,131 @@ def forecast_release(
         ],
     }
     return result
+
+
+def _band_from_mom_endpoints(
+    frame: Any,
+    quarter: str,
+    mom_block: dict[str, Any],
+    band_key: str,
+    *,
+    kind: str,
+) -> dict[str, Any] | None:
+    band = mom_block.get(band_key)
+    if not band:
+        return None
+    interval = band.get("interval") or {}
+    low_mom = interval.get("lower")
+    high_mom = interval.get("upper")
+    center_mom = mom_block.get("value")
+    if low_mom is None or high_mom is None or center_mom is None:
+        return None
+    qoq_center, yoy_center = quarterly_headline_at_mom(frame, quarter, float(center_mom))
+    qoq_low, yoy_low = quarterly_headline_at_mom(frame, quarter, float(low_mom))
+    qoq_high, yoy_high = quarterly_headline_at_mom(frame, quarter, float(high_mom))
+    if kind == "qoq":
+        center = qoq_center
+        low_val, high_val = qoq_low, qoq_high
+    else:
+        center = yoy_center
+        low_val, high_val = yoy_low, yoy_high
+    if center is None or low_val is None or high_val is None:
+        return None
+    half = max(abs(center - low_val), abs(high_val - center))
+    propagated = symmetric_interval(center, half)
+    return {
+        "quantile": band.get("quantile"),
+        "interval": propagated,
+        "propagated_from_headline_nsa_mom_band": True,
+    }
+
+
+def _attach_quarterly_headline_nsa(
+    targets: dict[str, Any],
+    *,
+    release: str,
+    frame: Any,
+    quarter: str | None,
+) -> None:
+    qoq_id = "headline_nsa_quarterly_qoq"
+    yoy_id = "headline_nsa_quarterly_yoy"
+    if quarter is None:
+        for target_id in (qoq_id, yoy_id):
+            targets[target_id] = _blocked_target(
+                target_id,
+                period=None,
+                reason="release_month_is_not_a_quarter_end",
+            )
+        return
+    mom_block = targets.get("headline_nsa_mom") or {}
+    if mom_block.get("status") == "blocked" or mom_block.get("value") is None:
+        for target_id in (qoq_id, yoy_id):
+            targets[target_id] = _blocked_target(
+                target_id,
+                period=quarter,
+                reason="headline_nsa_mom_blocked",
+            )
+        return
+    mom = float(mom_block["value"])
+    bundle = quarterly_headline_qoq_yoy(frame, quarter, last_month_mom=mom)
+    if bundle is None:
+        for target_id in (qoq_id, yoy_id):
+            targets[target_id] = _blocked_target(
+                target_id,
+                period=quarter,
+                reason="required_monthly_index_missing_for_quarter_average",
+            )
+        return
+    method = str(mom_block.get("method"))
+    n = mom_block.get("n")
+    low_sample = bool(mom_block.get("low_sample"))
+    selection_reason = (
+        f"Quarter-average identity of selected headline_nsa_mom ({method}); not a separately selected model."
+    )
+    caveats = list(_QUARTERLY_HEADLINE_CAVEATS) + list(mom_block.get("caveats") or [])
+    band68_qoq = _band_from_mom_endpoints(frame, quarter, mom_block, "band68", kind="qoq")
+    band90_qoq = _band_from_mom_endpoints(frame, quarter, mom_block, "band90", kind="qoq")
+    targets[qoq_id] = {
+        "status": "ok",
+        "period": quarter,
+        "value": bundle["qoq"],
+        "value_1dp": round_1dp(float(bundle["qoq"])),
+        "unit": "percent",
+        "method": method,
+        "quarter_average_method": QUARTERLY_HEADLINE_METHOD,
+        "selected_by_rule": False,
+        "selection_reason": selection_reason,
+        "band68": band68_qoq,
+        "band90": band90_qoq,
+        "n": n,
+        "low_sample": low_sample,
+        "quarter_average": bundle["quarter_average"],
+        "prior_quarter_average": bundle["prior_quarter_average"],
+        "last_month_index": bundle["month_levels"][quarter_end_month(quarter)],
+        "caveats": caveats,
+        "shadow_only": False,
+    }
+    band68_yoy = _band_from_mom_endpoints(frame, quarter, mom_block, "band68", kind="yoy")
+    band90_yoy = _band_from_mom_endpoints(frame, quarter, mom_block, "band90", kind="yoy")
+    targets[yoy_id] = {
+        "status": "ok",
+        "period": quarter,
+        "value": bundle["yoy"],
+        "value_1dp": round_1dp(float(bundle["yoy"])),
+        "unit": "percent",
+        "method": method,
+        "quarter_average_method": QUARTERLY_HEADLINE_METHOD,
+        "selected_by_rule": False,
+        "selection_reason": selection_reason,
+        "band68": band68_yoy,
+        "band90": band90_yoy,
+        "n": n,
+        "low_sample": low_sample,
+        "quarter_average": bundle["quarter_average"],
+        "yoy_quarter_average": bundle["yoy_quarter_average"],
+        "caveats": caveats,
+        "shadow_only": False,
+    }
 
 
 def _attach_quarterly_shadow(

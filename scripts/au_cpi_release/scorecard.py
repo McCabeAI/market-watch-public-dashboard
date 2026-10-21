@@ -8,14 +8,15 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from scripts.au_cpi_release import NOWCAST_SCHEMA
+from scripts.au_cpi_release import NOWCAST_SCHEMA_V1, NOWCAST_SCHEMA_V2
 from scripts.au_cpi_release.calendar import parse_timestamp
 from scripts.au_cpi_release.contract import TARGET_IDS, TARGET_SPECS
-from scripts.au_cpi_release.models import round_1dp
+from scripts.au_cpi_release.models import quarterly_headline_qoq_yoy, round_1dp
 from scripts.au_cpi_release.report import canonical_json_bytes
 from scripts.au_cpi_release.sources.acquire import load_snapshot
 
 SCORECARD_SCHEMA = "au_cpi_scorecard_v1"
+VALID_NOWCAST_SCHEMAS = {NOWCAST_SCHEMA_V1, NOWCAST_SCHEMA_V2}
 
 
 class ScorecardError(Exception):
@@ -80,10 +81,28 @@ def _inside_band(actual: float, band: dict[str, Any] | None) -> bool | None:
 def _actual_for_target(lookup: ActualLookup, target_id: str, period: str | None) -> float | None:
     if period is None:
         return None
+    if target_id in ("headline_nsa_quarterly_qoq", "headline_nsa_quarterly_yoy"):
+        if "-Q" not in str(period):
+            return None
+        bundle = quarterly_headline_qoq_yoy(_lookup_frame(lookup), str(period), last_month_mom=None)
+        if bundle is None:
+            return None
+        return float(bundle["qoq"] if target_id.endswith("_qoq") else bundle["yoy"])
     spec = TARGET_SPECS.get(target_id)
     if spec is None:
         return lookup.values.get((target_id, period))
     return lookup.values.get((spec.canonical_id, period))
+
+
+def _lookup_frame(lookup: ActualLookup) -> Any:
+    from scripts.au_cpi_release.models import Frame
+
+    values = {
+        (canonical_id, period): value
+        for (canonical_id, period), value in lookup.values.items()
+        if canonical_id == "headline_nsa_index"
+    }
+    return Frame(values=values, vintage_policy="scorecard_actual")
 
 
 def build_scorecard(
@@ -93,7 +112,7 @@ def build_scorecard(
     run_dir: Path | None,
     generated_at: str,
 ) -> dict[str, Any]:
-    if nowcast.get("schema_version") != NOWCAST_SCHEMA:
+    if nowcast.get("schema_version") not in VALID_NOWCAST_SCHEMAS:
         raise ScorecardError("invalid_nowcast", f"schema_version {nowcast.get('schema_version')}")
     release_time = str(nowcast.get("release_time") or "")
     if not release_time:
@@ -134,6 +153,11 @@ def build_scorecard(
         ):
             missing_periods.append(f"{target_id}@{period}")
         actual = _actual_for_target(lookup, target_id, str(period) if period else None)
+        actual_official = None
+        if target_id in ("headline_nsa_quarterly_qoq", "headline_nsa_quarterly_yoy") and period:
+            spec = TARGET_SPECS.get(target_id)
+            if spec is not None:
+                actual_official = lookup.values.get((spec.canonical_id, str(period)))
         forecast = forecast_block.get("value")
         forecast_1dp = forecast_block.get("value_1dp")
         if forecast is None and forecast_block.get("status") == "blocked":
@@ -143,6 +167,7 @@ def build_scorecard(
                 "forecast": None,
                 "forecast_1dp": None,
                 "actual": actual,
+                "actual_official": actual_official,
                 "error": None,
                 "abs_error": None,
                 "inside_band68": None,
@@ -158,6 +183,7 @@ def build_scorecard(
                 "forecast": forecast,
                 "forecast_1dp": forecast_1dp,
                 "actual": actual,
+                "actual_official": actual_official,
                 "error": None,
                 "abs_error": None,
                 "inside_band68": None,
@@ -175,6 +201,7 @@ def build_scorecard(
             "forecast": float(forecast),
             "forecast_1dp": forecast_1dp,
             "actual": float(actual),
+            "actual_official": actual_official,
             "actual_1dp": actual_1dp,
             "error": error,
             "abs_error": abs(error),

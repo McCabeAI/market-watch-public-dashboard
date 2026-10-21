@@ -15,6 +15,7 @@ from scripts.au_cpi_release import SCHEMA_VERSION
 
 REGIME_COMPLETE_MONTHLY = "complete_monthly_cpi"
 REGIME_QUARTERLY_LEGACY_TM = "quarterly_legacy_tm"
+REGIME_QUARTERLY_HEADLINE_NSA = "quarterly_headline_nsa"
 REGIME_CPI_M_LEGACY = "monthly_cpi_indicator_legacy"
 
 TARGET_IDS: tuple[str, ...] = (
@@ -22,6 +23,8 @@ TARGET_IDS: tuple[str, ...] = (
     "headline_nsa_yoy",
     "headline_sa_mom",
     "headline_sa_yoy",
+    "headline_nsa_quarterly_qoq",
+    "headline_nsa_quarterly_yoy",
     "trimmed_mean_monthly_sa_mom",
     "trimmed_mean_monthly_sa_yoy",
     "trimmed_mean_quarterly_legacy_qoq",
@@ -104,6 +107,19 @@ def _quarterly_tm(canonical_id: str, key: str, transform: str, role: str) -> Ser
     )
 
 
+def _quarterly_headline_nsa(canonical_id: str, key: str, transform: str, role: str) -> SeriesSpec:
+    return _spec(
+        canonical_id,
+        "CPI",
+        "2.0.0",
+        key,
+        "Q",
+        REGIME_QUARTERLY_HEADLINE_NSA,
+        transform,
+        role,
+    )
+
+
 # Keys were read from the ABS Data API (CPI 2.0.0 / CPI_Q 1.0.0 / CPI_M 1.2.0).
 SERIES: tuple[SeriesSpec, ...] = (
     _monthly_cpi("headline_nsa_index", "1.10001.10.50.M", "index", "index_level"),
@@ -118,6 +134,9 @@ SERIES: tuple[SeriesSpec, ...] = (
     _monthly_cpi("weighted_median_monthly_sa_index", "1.999903.20.50.M", "index", "index_level"),
     _monthly_cpi("weighted_median_monthly_sa_mom", "2.999903.20.50.M", "mom", "target"),
     _monthly_cpi("weighted_median_monthly_sa_yoy", "3.999903.20.50.M", "yoy", "target"),
+    _quarterly_headline_nsa("headline_nsa_quarterly_index", "1.10001.10.50.Q", "index", "index_level"),
+    _quarterly_headline_nsa("headline_nsa_quarterly_qoq", "2.10001.10.50.Q", "qoq", "target"),
+    _quarterly_headline_nsa("headline_nsa_quarterly_yoy", "3.10001.10.50.Q", "yoy", "target"),
     _quarterly_tm("trimmed_mean_quarterly_legacy_index", "1.999902.20.50.Q", "index", "index_level"),
     _quarterly_tm("trimmed_mean_quarterly_legacy_qoq", "2.999902.20.50.Q", "qoq", "target"),
     _quarterly_tm("trimmed_mean_quarterly_legacy_yoy", "3.999902.20.50.Q", "yoy", "target"),
@@ -170,6 +189,10 @@ def _is_quarterly_legacy_tm(spec: SeriesSpec) -> bool:
     return spec.regime == REGIME_QUARTERLY_LEGACY_TM
 
 
+def _is_quarterly_headline_nsa(spec: SeriesSpec) -> bool:
+    return spec.regime == REGIME_QUARTERLY_HEADLINE_NSA
+
+
 def _is_cpi_m(spec: SeriesSpec) -> bool:
     return spec.regime == REGIME_CPI_M_LEGACY or spec.dataflow_id == "CPI_M"
 
@@ -199,6 +222,10 @@ def guard_series_use(
         raise RegimeBoundaryError(
             f"{series_id} is quarterly legacy trimmed mean and cannot be used as complete-monthly history"
         )
+    if as_complete_monthly_history and _is_quarterly_headline_nsa(spec):
+        raise RegimeBoundaryError(
+            f"{series_id} is quarterly headline NSA and cannot be used as complete-monthly history"
+        )
 
     if target_id is None:
         return spec
@@ -209,6 +236,14 @@ def guard_series_use(
     if _is_quarterly_legacy_tm(target) and _is_monthly_tm(spec):
         raise RegimeBoundaryError(
             f"monthly trimmed mean {series_id} cannot be used for quarterly legacy target {target_id}"
+        )
+    if _is_quarterly_legacy_tm(target) and _is_quarterly_headline_nsa(spec):
+        raise RegimeBoundaryError(
+            f"quarterly headline NSA {series_id} cannot be used for quarterly legacy trimmed-mean target {target_id}"
+        )
+    if _is_quarterly_headline_nsa(target) and _is_quarterly_legacy_tm(spec):
+        raise RegimeBoundaryError(
+            f"quarterly legacy trimmed mean {series_id} cannot be used for quarterly headline target {target_id}"
         )
     if _is_monthly_tm(target) and _is_quarterly_legacy_tm(spec):
         raise RegimeBoundaryError(
